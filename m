@@ -4,89 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C7F1C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 09:49:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E20BC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 10:30:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3505E85D;
-	Thu, 29 Sep 2022 11:48:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3505E85D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66004AE8;
+	Thu, 29 Sep 2022 12:30:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66004AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664444964;
-	bh=URHxb8lU81RnkvovOLqWHu3JtwNm+uTnov0gAOxG9/M=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1664447451;
+	bh=Ct3rpu6jdxUMpNcwrqLEGWuHzOZd+t40yGCSzkMNywQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TpezBVhJPtNp9FR1WyB1vaIOfsaudd9vMeXlOOl02n2UZiucu2ULORSsCXUBeuInt
-	 HB4loJVwOzgIfh2RK3qG38ud+DfSBy0EFS8MMkgdsX3QSpOBRvA+L8aGADB7e4RkfG
-	 LVf0ybcFU5Auc1KlgXp2gekOJODED/IHewrTpb4k=
+	b=FpWHb7VEzNLp24ibgBkt6KRV9BTXc0G7e1dyIlcjXZzR959qdf6HOFOtgc23kr6lW
+	 nI1c4nwTC+ipN7l3iZZkRsMX4kRZGq//7wliKDw2NW/xSzpreDokvvl3hg75DrfHMg
+	 C0KvYzXk/hz8i4pr2KJ0Ir4QoCdz7GP+OH+W87LA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CCE1FF800AA;
-	Thu, 29 Sep 2022 11:48:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA015F8016D;
+	Thu, 29 Sep 2022 12:30:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C5506F8023A; Thu, 29 Sep 2022 11:48:31 +0200 (CEST)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ id E95AFF8023A; Thu, 29 Sep 2022 12:29:57 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4E5CF80109
+ for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 12:29:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4E5CF80109
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="poxnamR5"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B74DF800AA
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 11:48:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B74DF800AA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="dfSpCvmU"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1664444906; x=1695980906;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=URHxb8lU81RnkvovOLqWHu3JtwNm+uTnov0gAOxG9/M=;
- b=dfSpCvmUrKAsA9MudGXusjEADbev34+k+Vs/VEI099QpeYdCO+vc71Oy
- uVr36nu/ULfr+TfpcKeV6bCqPEPF2xyrEsj9qjtjY2ub1Jid9S1aC7Ux3
- TKI4JFkwOxS+8eF/sDRTdtdIdn5LjcZlLqS/ZKua/1C3YpwCg9RrXhxIJ
- SWK4sU8YG8mqV3PmmBd+a0BeereCSVVo958GuhVsQYKQ6gSyAPSW3l8nv
- CLzfAp+z8l7RKftzJuOnqowdDrv7Lqvzsw9PX1r4aYBAuVyYmy/3Sy6s/
- 0cO3mZyzojTZs4JpnVYg7ri3Tstb4l5dJM1WTqEWd9XuLiSfb4WFFt7QR A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10484"; a="363691952"
-X-IronPort-AV: E=Sophos;i="5.93,354,1654585200"; d="scan'208";a="363691952"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Sep 2022 02:48:22 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10484"; a="690754011"
-X-IronPort-AV: E=Sophos;i="5.93,354,1654585200"; d="scan'208";a="690754011"
-Received: from crijnder-mobl.ger.corp.intel.com (HELO [10.251.211.131])
- ([10.251.211.131])
- by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 29 Sep 2022 02:48:18 -0700
-Message-ID: <3bddff5a-78ed-a3fa-841c-2f2f6a8f8bbb@linux.intel.com>
-Date: Thu, 29 Sep 2022 10:39:26 +0200
+ by dfw.source.kernel.org (Postfix) with ESMTPS id EFA7C60F4B;
+ Thu, 29 Sep 2022 10:29:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0BF6C433D6;
+ Thu, 29 Sep 2022 10:29:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1664447388;
+ bh=Ct3rpu6jdxUMpNcwrqLEGWuHzOZd+t40yGCSzkMNywQ=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=poxnamR56W7z9N/18lMs879J5ufX8i2zJa/w/DqL+L/GxfG6LqO7AyxiBdFTVB01x
+ nbht1fRozh7kFBqqvejepcLLIOhASO4/+obkBKm1FjZTJ1DbCyF9RHuwjFMI//cIH+
+ Vx5oZqoybi+7tT7nPFODRVy4bgvEjlRq7+vTZH/2jsMmsFFw4zbXB64QuD5H1eSo60
+ xf8nRPoJG5lhZrvD6QN4rdgA8+IV/vg/mI+N933rGFczyjpzItHcs/Z2xoh89IQVHh
+ yNdq3zGSbR3Lw22aIx1cOI3mrIEGqvohElgRs0Ly4i2X1dcaa/4keeq13DT7yaRibF
+ K/sdOqlLHSFoA==
+Date: Thu, 29 Sep 2022 11:29:41 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Venkata Prasad Potturu <venkataprasad.potturu@amd.corp-partner.google.com>
+Subject: Re: [RESEND] ASoC: amd: acp: Add setbias level for rt5682s codec in
+ machine driver
+Message-ID: <YzVzlZ4LOwaLkzHo@sirena.org.uk>
+References: <20220929070828.3950101-1-venkataprasad.potturu@amd.corp-partner.google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH] ASoC: Intel: sof_rt5682: remove
- SOF_RT1015_SPEAKER_AMP_100FS flag
-Content-Language: en-US
-To: "Lu, Brent" <brent.lu@intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-References: <20220913074906.926774-1-brent.lu@intel.com>
- <2577e4db-8593-cf37-135b-aa51b6268cd7@linux.intel.com>
- <CY5PR11MB6257A5CC3976FAEA2C713A4997559@CY5PR11MB6257.namprd11.prod.outlook.com>
- <d94a9abd-95ca-09ba-ab24-e4c38b832678@linux.intel.com>
- <CY5PR11MB6257AF53395DDF069A43D28E97579@CY5PR11MB6257.namprd11.prod.outlook.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <CY5PR11MB6257AF53395DDF069A43D28E97579@CY5PR11MB6257.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: "Rojewski, Cezary" <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Ajye Huang <ajye.huang@gmail.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- "Chiang, Mac" <mac.chiang@intel.com>, Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, "Gopal,
- Vamshi Krishna" <vamshi.krishna.gopal@intel.com>, "Zhi,
- Yong" <yong.zhi@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="SwTGG9bJqF3v2K7+"
+Content-Disposition: inline
+In-Reply-To: <20220929070828.3950101-1-venkataprasad.potturu@amd.corp-partner.google.com>
+X-Cookie: Last week's pet, this week's special.
+Cc: alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com, ssabakar@amd.com,
+ Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+ Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+ ye xingchen <ye.xingchen@zte.com.cn>, Basavaraj.Hiregoudar@amd.com,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jia-Ju Bai <baijiaju1990@gmail.com>, Akihiko Odaki <akihiko.odaki@gmail.com>,
+ Vijendar.Mukunda@amd.com, vsujithkumar.reddy@amd.com,
+ open list <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,30 +89,33 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--SwTGG9bJqF3v2K7+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 9/29/22 08:25, Lu, Brent wrote:
->>>
->>> I think TDM slot number is possible but not TX/RX mask. What we have
->>> in topology is union of tx/rx mask of all channels. We don't know the
->>> mask of specific channel in DAI_CONFIG.
->>>
->>> DAI_CONFIG(SSP, 0, BOARD_HP_BE_ID, SSP0-Codec,
->>>         SSP_CONFIG(I2S, SSP_CLOCK(mclk, 19200000, codec_mclk_in),
->>>                 SSP_CLOCK(bclk, 2400000, codec_slave),
->>>                 SSP_CLOCK(fsync, 48000, codec_slave),
->>>                 SSP_TDM(2, 25, 3, 3),
->>
->> the 3 3 is precisely the channel mask!
->>
-> 
-> Yes, but what we need in the hw_params() is the mask for individual channel,
-> like 0x1 for left and 0x2 for right.
+On Thu, Sep 29, 2022 at 12:38:22PM +0530, Venkata Prasad Potturu wrote:
+> From: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+>=20
+> Add set_bais_level function for rt5682s codec to enable bclk and lrclk
+> before codec widgets power on and disable bclk and lrclk after widgets
+> power down, to avoid pop noise
 
-Ah yes, you're talking about the mask configuration on the codec side,
-sorry I was confused with your reference to DAI_CONFIG. That would be
-platform-level information, not DSP topology information indeed.
+Please allow a reasonable time for review...
 
-Sounds good then, thanks for the explanations.
+--SwTGG9bJqF3v2K7+
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmM1c5QACgkQJNaLcl1U
+h9CfdQf+JNAC9Md2HFgBnBsxw6gz04oxAb/sihhvpSmvllsnbMTbgWFqOIEjad+P
+JA05eh7PHjC+ljLmmNU+DqK9SABZsnTzGXmMgkCIB//RrqtDIb1KFNZBpN7mozWu
+1UAEX7JdJAAhMU8n2qQTsho62/2g3IjZdwSiDKWK4zesQIDF6QiLNVUmQdyOuaUb
+VZHRafBVF5/k1J02Sl3hulVT6cqVchJ6J9JkHqRbjBo6GAWfld0dXqJyZ5+z/uIY
+P1dtk93LZYFkoDNZf/qcnkXDnC4nrLoU004qBz53EhePo3mB8HqDkzaI8OmCdD1o
+56h27TtvY08e5m8zGV8LKrEii9aEGQ==
+=33hd
+-----END PGP SIGNATURE-----
+
+--SwTGG9bJqF3v2K7+--
