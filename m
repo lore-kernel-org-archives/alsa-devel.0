@@ -4,88 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F179FC4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 09:25:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CB0FC433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 09:26:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 95C1515C2;
-	Thu, 29 Sep 2022 11:24:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95C1515C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 35E4F15E5;
+	Thu, 29 Sep 2022 11:25:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35E4F15E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664443506;
-	bh=PZQL3c1iET5TQBBPP47MtbbOmAshSwrNOSlBHz5G678=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1664443583;
+	bh=qCJlWCzZUOjlbWhUBr+CjY4sGdMeJ1qenSLOO28pr3Y=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tIoYC8xEhRXMznMtrr8Nlfw3ns0/CEqGrLrS3SfSJPBmNbUqVAV565ujHYvWY2x9D
-	 s/3Cmq59JA5VmVx7TGig4vKYH7RnHOqq4Fd/UusWT+hS7/e3Im0zmAlBy+dAoVvv4W
-	 mJDj2nb9U4ZUI8DzW6882D+nZS6xeBt9pCapmsDU=
+	b=UZ9q/S5yE7sJXPraLGYHIg6JtYG9DWdtbOpCzM+aE0BGneq/8mk90ZtJwnr4asr/2
+	 VJ89bIl4WV9wHWLjgzaYCooC7c/qDUzFmQQrBBMOPneVz8lpfCtKOJ+HIj7EI/tG1i
+	 zUP+jEPwzEVItSMdpDP7Z/zTdHt439tujS2HWEQc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3759FF8016D;
-	Thu, 29 Sep 2022 11:24:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2464F8023A;
+	Thu, 29 Sep 2022 11:25:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE11EF8023A; Thu, 29 Sep 2022 11:24:15 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 54C43F803DD; Thu, 29 Sep 2022 11:25:31 +0200 (CEST)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 226D7F800AA
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 11:24:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 226D7F800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 326A5F800AA
+ for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 11:25:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 326A5F800AA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="IwuYsUsF"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28T5hDdE019135;
- Thu, 29 Sep 2022 04:24:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=3+eIESPhSfDOAhcMZBe90JtfuCUIc2I6FMg1htKHDso=;
- b=IwuYsUsFvcna3hu1YsNuAGe02VB1J8bgMKsvy7d5mjgzTb5op95aOB2TUruLRXMADK3G
- ePxIAdSwXMXxOGJt1Yq/YIfrIAa9kHt0lbcqeF27fruhgZtUsajPMxC8RXl5lM0geY93
- bzqy/w7f1Kvo7foR9T7SxcTuBTCNhvrh8tfhVlQ+K+9J7QwsYnzI2jYsjMLVRYrdEmMx
- 7WlZH55m4Zl8NRtaw2HQkAgSvT4L9ns8KUIkPUydAWv2K3pY9DUj87F/y2FP8UXFyjwa
- atEwNrrJxBkDNyBkh6yxhXgoShO3iDUVKgVBQXgzA/YuSISv6WW7Ykm1oc2reBzC+Q3o tw== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3jsya2e0pa-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 29 Sep 2022 04:24:05 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Thu, 29 Sep
- 2022 04:24:03 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.12 via
- Frontend Transport; Thu, 29 Sep 2022 04:24:03 -0500
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B50973563;
- Thu, 29 Sep 2022 09:24:03 +0000 (UTC)
-Date: Thu, 29 Sep 2022 09:24:03 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: "Wang, Xiaolei" <Xiaolei.Wang@windriver.com>
-Subject: Re: wm8962 0-001a: ASoC: error at soc_component_read_no_lock on
- wm8962.0-001a: -16
-Message-ID: <20220929092403.GU92394@ediswmail.ad.cirrus.com>
-References: <MW5PR11MB57644C9D9797BB1F5B30B70795549@MW5PR11MB5764.namprd11.prod.outlook.com>
+ dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
+ header.b="LO/GFqKu"
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
+ [2.237.20.237])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested) (Authenticated sender: kholk11)
+ by madras.collabora.co.uk (Postfix) with ESMTPSA id 8446366022B4;
+ Thu, 29 Sep 2022 10:25:22 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1664443523;
+ bh=qCJlWCzZUOjlbWhUBr+CjY4sGdMeJ1qenSLOO28pr3Y=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+ b=LO/GFqKuGCASvKu0rA1gy3hLof1Q7Ud3Oy1HSNPRtfDtnfSyP/cg6zkjBtI9uJJmH
+ b0+rhEmqlTR36W5AeatLZSTYpKtwXueOCXLuX2OCLIV6oF2I7GwcUi+G5tPxzSS96P
+ X7mnXMU766MFUsCwZSXr/IUjvD++RJy3h4EtWX+2K7AMjNX4az3cd5GuhTF7dHv4aj
+ Me9R0v8J2MdFArLgh928AQzFcfbf8owpK8jUFt1AWSWmubcK6NIolsse3jgVf2cUiX
+ ETRIdFG9wb7rkFWn3sEj+7ar2mJAf+iVYgSPt9o5dF/tQnrhB/GzzNabNSLeAMRXgZ
+ 5Q0ICPrtRx1Zw==
+Message-ID: <aed50d17-3010-a5ee-a19d-14bfe5e6ac3d@collabora.com>
+Date: Thu, 29 Sep 2022 11:25:20 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <MW5PR11MB57644C9D9797BB1F5B30B70795549@MW5PR11MB5764.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: 1DUtl5DLHkTzgj4PUp7nnAeG_xc9n8He
-X-Proofpoint-GUID: 1DUtl5DLHkTzgj4PUp7nnAeG_xc9n8He
-X-Proofpoint-Spam-Reason: safe
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "steve@sk2.org" <steve@sk2.org>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>,
- "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
- "tiwai@suse.com" <tiwai@suse.com>,
- "chi.minghao@zte.com.cn" <chi.minghao@zte.com.cn>,
- "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- "aford173@gmail.com" <aford173@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH] ASoC: mediatek: mt8186: Fix spelling mistake "slect" ->
+ "select"
+Content-Language: en-US
+To: Colin Ian King <colin.i.king@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, alsa-devel@alsa-project.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20220928220417.66799-1-colin.i.king@gmail.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20220928220417.66799-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,29 +86,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Sep 28, 2022 at 02:44:30AM +0000, Wang, Xiaolei wrote:
-> Hi Jaroslav
+Il 29/09/22 00:04, Colin Ian King ha scritto:
+> There are some spelling mistakes in dev_err messages. Fix them.
 > 
-> When I tested the audio, I found that some registers in the
-> codec of wm8962.c will fail to read in the mainline kernel. I
-> found that wm8962_i2c_probe will enter runtime suspend after
-> startup, but in the following program:
-> 
-> snd_soc_bind_card
->      snd_soc_dapm_new_widgets
->          soc_dapm_read
->              snd_soc_component_read(dapm->component, reg);
-> 
-> There is no runtime resume, which cannot perform normal
-> reading and writing for volatile reg, because it has been
-> switched to regcache only in the process of runtime suspend. I
-> can't find the right place to resume, can you give me any
-> advice?
-> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-I think the first step would be could you clarify which register
-is being read here? Reading a volatile register as part of
-setting up the widgets does feel rather problematic.
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-Thanks,
-Charles
+
