@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65307C07E9D
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 09:08:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8145C04A95
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 09:09:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA84582C;
-	Thu, 29 Sep 2022 11:07:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA84582C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 05F69E0F;
+	Thu, 29 Sep 2022 11:08:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05F69E0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664442521;
-	bh=RK4s7/uNaAqAhFtPRU1dhFaGRXIiOmKeBZQwrSJAppM=;
+	s=default; t=1664442546;
+	bh=KxjNYUY8yaDPZ1Pl6MfIPMAhDcfPbGgBDXMj2r+zZMg=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PtjgOOmzot612C8alHwpnbzXlsugLO8PkPRptZOz2F7Fnp/q4J4Jw1PlZL3jeU0t6
-	 iySoI64/p0jbcOfSfmdKRAGc/hf8dGnMznJm+m/SHuun7IhbRSgd5R6OS4S7/6DNCH
-	 nBvZWCNQ7s03SLJSYPEv/EjDaHncWp1cnY1K0zlQ=
+	b=u4jcuMy14qv6jWmy123tUSYsGHN5etOJpzgxgGX1czzJMQ7x5Oy5XnC89JbG1K+Fl
+	 mMjq3Ev9jqXg/8S1evUBdzHM8erYhNUtWEXynDNjEAz0eHNdAub1+A3LuVk2qPgjKz
+	 qU/RwwNs/rlJkGe6T/EPwawt3r3jnPKmbPsggyOE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91BACF8016D;
-	Thu, 29 Sep 2022 11:07:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13AADF804B4;
+	Thu, 29 Sep 2022 11:08:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3BED2F8023A; Thu, 29 Sep 2022 11:07:49 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 205EDF804CA; Thu, 29 Sep 2022 11:08:02 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C2F2F80109
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 11:07:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C2F2F80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47C1CF8023A
+ for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 11:07:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47C1CF8023A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="D8bb/mwC"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28T5E04J026040;
- Thu, 29 Sep 2022 04:07:41 -0500
+ header.b="CA7HvUxN"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28T3krFF021124;
+ Thu, 29 Sep 2022 04:07:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=date : from : to : cc
  : subject : message-id : references : mime-version : content-type :
  in-reply-to; s=PODMain02222019;
- bh=tiuQKQS1hGsHqH97q0GVnL49shmwZ6ZDlxe96RPjpNw=;
- b=D8bb/mwCTybV90twdLgy4XG2zSH3WXJ6AU1/NPPdmDTZ+eVwn7S78kj60USfZoczdL5j
- QYMH6OiHsVzb+8IcDiGjKf6PHajk7RKUNrxl+8R12CYd73ZmNJ+vj024vo6vGU0SAqpU
- eKC8s0Aba/CHIGbFFUZnb1cd/FUR6F1SM/Z4Unl7DSvkElmD4Y1zNnPq6Nf7WqreW6TC
- mu7qYeY4JmwWOr6kgM044Ff5ebZ9FS25iaAQrS4OIOaPW+q4RvbDYI3Rpb4f7qxctJ1U
- RwJOMdDyhiUhd32rSw6YMSOACI4e8kfQ04IbMmxaM1ZuKLuRqPfxjQoXPbfV/wEqRUve 9g== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3jsxapp0q3-1
+ bh=HFdcsJcr68aYNNGQexiOZ6KFBlU78jamvV693+menlM=;
+ b=CA7HvUxNr/lQBUQ/XVMyAh+sWfPA3M4GV5rOWcOg5WNIhklOroQ6TnkrDLR9JG+vPDOw
+ ggXue7+Kj5qo/luewcDn9Sbn/n++3tsZkloAlN0w3IUAIoiVPoZksUxCQ+5izBjaer8g
+ tjH5WNZflMJKB0GI2erQMmVwlpAZoefLBxpAoQq6v2N71UvVOA7pOHgTIf6x6W/7eMuJ
+ zFsNDtkC51BZ0V9WH5N7gXokcaZwQSnG0554xIR3VqkyRPNkJi1hH4gSN+eXmAggT1TS
+ Gh2JpZy0xGrPMxJJfF5SdJ0YRGhj2XnNJZD4HIvGQM5LFDfpZVoP0Utev6XYpkqDF6lk GQ== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3jsya2e02x-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 29 Sep 2022 04:07:41 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 29 Sep 2022 04:07:52 -0500
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Thu, 29 Sep
- 2022 04:07:39 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.12 via Frontend Transport; Thu, 29 Sep 2022 04:07:39 -0500
+ 2022 04:07:50 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.12 via
+ Frontend Transport; Thu, 29 Sep 2022 04:07:50 -0500
 Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7B0473563;
- Thu, 29 Sep 2022 09:07:39 +0000 (UTC)
-Date: Thu, 29 Sep 2022 09:07:39 +0000
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8EC062D4;
+ Thu, 29 Sep 2022 09:07:50 +0000 (UTC)
+Date: Thu, 29 Sep 2022 09:07:50 +0000
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: Shang XiaoJing <shangxiaojing@huawei.com>
-Subject: Re: [PATCH -next 1/4] ASoC: cs35l36: Use DIV_ROUND_UP() instead of
+Subject: Re: [PATCH -next 2/4] ASoC: wm8978: Use DIV_ROUND_UP() instead of
  open-coding it
-Message-ID: <20220929090739.GR92394@ediswmail.ad.cirrus.com>
+Message-ID: <20220929090750.GS92394@ediswmail.ad.cirrus.com>
 References: <20220927140948.17696-1-shangxiaojing@huawei.com>
- <20220927140948.17696-2-shangxiaojing@huawei.com>
+ <20220927140948.17696-3-shangxiaojing@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20220927140948.17696-2-shangxiaojing@huawei.com>
+In-Reply-To: <20220927140948.17696-3-shangxiaojing@huawei.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: 1Os1KA0yU-WCDj7wVHj2iQ55yoxFe5OO
-X-Proofpoint-GUID: 1Os1KA0yU-WCDj7wVHj2iQ55yoxFe5OO
+X-Proofpoint-ORIG-GUID: oOM0RB30t99o8IJK6xDBRb7GH7Vmivuu
+X-Proofpoint-GUID: oOM0RB30t99o8IJK6xDBRb7GH7Vmivuu
 X-Proofpoint-Spam-Reason: safe
 Cc: alsa-devel@alsa-project.org, tanureal@opensource.cirrus.com,
  patches@opensource.cirrus.com, tiwai@suse.com, lgirdwood@gmail.com,
@@ -99,7 +99,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Sep 27, 2022 at 10:09:45PM +0800, Shang XiaoJing wrote:
+On Tue, Sep 27, 2022 at 10:09:46PM +0800, Shang XiaoJing wrote:
 > Use DIV_ROUND_UP() instead of open-coding it, which intents and makes it
 > more clear what is going on for the casual reviewer.
 > 
