@@ -4,63 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFB05C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 14:42:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 328EEC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 14:53:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75228857;
-	Thu, 29 Sep 2022 16:41:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75228857
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2C17AE8;
+	Thu, 29 Sep 2022 16:52:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2C17AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664462552;
-	bh=LZNlYRoXBpIqPwVeaEJOiOqjBblGK3j303JdHweNsFA=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1664463200;
+	bh=T/hYkto10LV4V6M7Q2AASMh2H6NPZuC5vSxnWGdZQAM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R+O67MI4OBXJI86LrBPrlgaHKHOmNTZYTY+kOKTZSgd5B7AVrWihEw4oSOL+Y4nFb
-	 HGKf0wghl8CXS/3TA9QHODWCyG+yOVRJsSea2haeSfiiw7md7jmLUnjxTaiuBDW2DV
-	 aCwwGBgwvEL8vn/JTdslMJiv4eQYQeFTbS0t+8OM=
+	b=X65iNTuXQU+5nGUlhIo5rzy0EEXonpMH0EjUvjMqw3sWB/w8a/FV1NwZI77E8VBK3
+	 hykgOBuGKKCGaOUnYHgEaNukn5Nfvcn+A8duFs7EKXduCRKllgo9GaFG1tPC9PM1cu
+	 DpuNFb0RD2ejjox9E6I08IHxcHA2hFTdApatz4vE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB4EAF8016D;
-	Thu, 29 Sep 2022 16:41:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 502A5F8016D;
+	Thu, 29 Sep 2022 16:52:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AC20BF8023A; Thu, 29 Sep 2022 16:41:39 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B1C32F800AA
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 16:41:33 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id F2F2CA0042;
- Thu, 29 Sep 2022 16:41:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz F2F2CA0042
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1664462493; bh=mhhaUT4Ay0Fu25jbyAsIXsNKYUdlHjuJMi6m6+RlF8s=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=tyX4Ah0HiYMkRdkiDfYTIUi4Fb+fldb4oTNjeVVylJes2Wjvh9DgzSWcuo3nx84I5
- MoEupH5E1I1BUOETq5AonOupTiOojcGxPauUcvFlwYxAs5qaxd+TkM44V+0i7p1az5
- 0VMt5lIitpUV2epZ0x9QGRxF0V19E4aE2RcgesIo=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
+ id 49C6EF8023A; Thu, 29 Sep 2022 16:52:29 +0200 (CEST)
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com
+ [IPv6:2607:f8b0:4864:20::b32])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Thu, 29 Sep 2022 16:41:30 +0200 (CEST)
-Message-ID: <93fd8d6c-a17c-5907-467c-4e93b24d04e7@perex.cz>
-Date: Thu, 29 Sep 2022 16:41:30 +0200
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 196F8F800AA
+ for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 16:52:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 196F8F800AA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="eFO3ZKn1"
+Received: by mail-yb1-xb32.google.com with SMTP id u64so1847741ybb.1
+ for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 07:52:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date;
+ bh=cRiBROZUMZ4RO1YIJbO8on2J/l8wLjUeU2JeFbV/Dvg=;
+ b=eFO3ZKn17a9Nj2KMJ8BZuiEauUPP79eUL5Y7Zv0Hzr0lDCsgTlwMY/0l73LiYi04rM
+ gYaOIBg3gFAHROiXHTBzeXAP4tCXrJvo8yr5k+y2ZCxASsBbA/V3IDXSPTCK1kC8shhQ
+ Dr7MjVdxXmZ2jRtmlOuJPM+M5WLuJ+4amXMd4hV3sLKoqyf5MkvHrHACqpSuKTbqm0Ln
+ lemZ/qdspDaWj9mzKCY4lK/hx6svh6vslyL//6GwGuJjQuvMhSOn1AUJ+jmUQMQHpdWH
+ NVn+6AQ/ce7DwhxKijlcZXDlK7SydJI1qw4WssR0RWd2aVl5niuGHyLWsLq+bbWaIyv1
+ e/vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date;
+ bh=cRiBROZUMZ4RO1YIJbO8on2J/l8wLjUeU2JeFbV/Dvg=;
+ b=CFBC+Nt4USPjM6/W9s9vaiCfBW+DayXt5v+I+u0RKKoslDD2+BfQgkzSEZCnNEyeew
+ DsbFKX1PqyIPIpye5rP6phS3M2DPifkis0BdivniXh9A4Chj6FKGVTBGCQQvcUN25GGT
+ 7u8WzXJFxtRVAuy7MqMqrxes4EHkwfoBWRlCSjM+ekXrSSN6Ak5QAENSJolZ6nrbTsVn
+ RTSUmtHbQ9VXEaCscBsXv6kk40vhkmz36XVgF6hIc1oKXeCVUlfYG5J59LkXdUMUH7qP
+ XaBiH36FZwVC7EATDGXyoBNrrgpC91rtJOEPek+o+0rat0Mn9XIrWBfFCdsug2ZlPqsP
+ SjTQ==
+X-Gm-Message-State: ACrzQf2sRmoG5DfUbl2RaCJpfnOAlLm+USTpV85clfeVItrM2gUkCjo0
+ tDK9H/t7nVg1HVJpzyBAsqH9r4Mt1z91/vTahZw=
+X-Google-Smtp-Source: AMsMyM4Pi401HcDMszsbINvIGNY9kue/h+QmEV05duXd1FVwVyf/RPxdSYURZclHgFbv9ejyeh+1r9ZeeoulZaxXy+A=
+X-Received: by 2002:a25:730a:0:b0:6bc:dbd6:8278 with SMTP id
+ o10-20020a25730a000000b006bcdbd68278mr223301ybc.155.1664463140548; Thu, 29
+ Sep 2022 07:52:20 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH] ASoC: core: clarify the driver name initialization
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-References: <20220929080654.326311-1-perex@perex.cz>
- <YzWf74wbZg6SbxNN@sirena.org.uk>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <YzWf74wbZg6SbxNN@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: ALSA development <alsa-devel@alsa-project.org>
+References: <CAFcO6XNk5Wtjju=DBOcJr46miBbaWT7jL+zjhWMp+xnz7k5K9A@mail.gmail.com>
+ <87v8pa306x.wl-tiwai@suse.de>
+ <CAFcO6XP2MpiAsF7YXYjgh7FMq+hyzFJjK8iBf=ccZ2B6BpNvOg@mail.gmail.com>
+ <87leq6gglm.wl-tiwai@suse.de>
+In-Reply-To: <87leq6gglm.wl-tiwai@suse.de>
+From: butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Date: Thu, 29 Sep 2022 22:52:10 +0800
+Message-ID: <CAFcO6XNsqKCzNBiBF4eYyh+RCSGBp_5HSzxF0gw0kgfQ2FDAiQ@mail.gmail.com>
+Subject: Re: A divide error bug in snd_pcm_write
+To: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,36 +94,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 29. 09. 22 15:38, Mark Brown wrote:
-> On Thu, Sep 29, 2022 at 10:06:54AM +0200, Jaroslav Kysela wrote:
->> The driver field in the struct snd_ctl_card_info is a valid
->> user space identifier. Actually, many ASoC drivers do not care
->> and let to initialize this field using a standard wrapping method.
-> 
-> This breaks at least an arm multi_v7_defconfig build:
-> 
-> /build/stage/linux/sound/soc/soc-core.c: In function ‘snd_soc_bind_card’:
-> /build/stage/linux/sound/soc/soc-core.c:2055:36: error: ‘struct snd_soc_card’ ha
-> s no member named ‘dmi_longname’
->   2055 |         if (card->long_name == card->dmi_longname)
->        |                                    ^~
-> 
-> 
->> Also, it does not make sense to set the driver field to the
->> card name composed from DMI. This card name is longer in most
->> (all?) cases. Use a generic "ASoC-DMI" string here.
-> 
-> This should be a separate change, and DMI is a term specific to the
-> ACPI/EFI so I don't think we should be using it as a generic here, this
-> seems like a step back.  If we want to make a change there I'd expect it
-> to be more picking the actual card driver name.
+This one fixes the problem.
+https://lore.kernel.org/all/20220926135558.26580-2-tiwai@suse.de/
 
-Thanks for the review. Yes, I made a mistake here. I wrongly mixed name and 
-long name strings in my head. I removed the DMI check and posted v2 of the patch.
+Regards,
+ butt3rflyh4ck.
 
-			Jaroslav
+On Tue, Sep 27, 2022 at 2:01 AM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Mon, 26 Sep 2022 19:16:48 +0200,
+> butt3rflyh4ck wrote:
+> >
+> > The latest kernel upstream.
+> > Yes, but using mmap, you can map the runtime->status page, and then
+> > copy the data through memcpy to overwrite the status->state data, or
+> > even more, which is incredible.
+>
+> Ah, then that's exactly the case my latest patch set covers.
+> Either the first patch or the second patch alone should work.
+>   https://lore.kernel.org/r/20220926135558.26580-2-tiwai@suse.de
+>   https://lore.kernel.org/r/20220926135558.26580-3-tiwai@suse.de
+>
+> Could you verify either of them fixes the problem?
+>
+>
+> thanks,
+>
+> Takashi
+
 
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Active Defense Lab of Venustech
