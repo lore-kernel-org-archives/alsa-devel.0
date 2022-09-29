@@ -4,65 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B7D7C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 15:05:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FC41C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 15:17:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BBB24164E;
-	Thu, 29 Sep 2022 17:04:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBB24164E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 69406827;
+	Thu, 29 Sep 2022 17:16:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69406827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664463934;
-	bh=aiThv1ilAFfLTXW+dMbJdEhS8yYVn5XfMAfT18jmxH4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1664464635;
+	bh=mVEW7JO/5gg4rXh1VB/iXP+N7uIZwhJ9sprNGbG8dR8=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lrOl22b+/cdN/Kiq/13+tLTLmF9fx5XkQdH/cajhcEbq24Fv7i7dqxkI8TwKKPzEQ
-	 s13qQ6bfp7kY+9YOgnsWSAfLx0NOrRyVRzA+g9ZT8eSBPeyIxAGMJjfaUBm1AbdbfX
-	 r6RSwbwBAmmLIU9sYivTkHCm2sHwUpa27f/5IoD4=
+	b=f9mdI97Mbe7ojW1mUV9O3eBcWSFMfVvefc0jax5cgkDyu9RZlpbZMo2YO24hgK1Ic
+	 b3nxx338mDbjtwRs6V5/mWOoAM5OyqrrFPNxg8r49JWN06/jXiS1rEMFGJ7Y96FEtQ
+	 3ataKIHQTkdjvwGWFsqQSAzEDVH2ehqmmD7t9Y5A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12F10F8053D;
-	Thu, 29 Sep 2022 17:03:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC3AEF8016D;
+	Thu, 29 Sep 2022 17:16:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88497F8053A; Thu, 29 Sep 2022 17:03:38 +0200 (CEST)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+ id 0ADA9F8023A; Thu, 29 Sep 2022 17:16:23 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 604ECF803DD
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 17:03:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 604ECF803DD
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Mdc3v2YYLzpSx3;
- Thu, 29 Sep 2022 23:00:27 +0800 (CST)
-Received: from kwepemm600014.china.huawei.com (7.193.23.54) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 29 Sep 2022 23:03:24 +0800
-Received: from huawei.com (10.90.53.225) by kwepemm600014.china.huawei.com
- (7.193.23.54) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Thu, 29 Sep
- 2022 23:03:23 +0800
-From: Zhang Qilong <zhangqilong3@huawei.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>, <matthias.bgg@gmail.com>,
- <ckeepax@opensource.wolfsonmicro.com>, <jeff_chang@richtek.com>
-Subject: [PATCH v2 -next 2/4] ASoC: wm5110: Fix PM disable depth imbalance in
- wm5110_probe
-Date: Thu, 29 Sep 2022 23:06:51 +0800
-Message-ID: <20220929150653.63845-3-zhangqilong3@huawei.com>
-X-Mailer: git-send-email 2.26.0.106.g9fadedd
-In-Reply-To: <20220929150653.63845-1-zhangqilong3@huawei.com>
-References: <20220929150653.63845-1-zhangqilong3@huawei.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9DFDEF800AA
+ for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 17:16:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DFDEF800AA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="ms21SE7B"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 7C0C0B820D1;
+ Thu, 29 Sep 2022 15:16:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F887C433D6;
+ Thu, 29 Sep 2022 15:16:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1664464578;
+ bh=mVEW7JO/5gg4rXh1VB/iXP+N7uIZwhJ9sprNGbG8dR8=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=ms21SE7B1GAZIuKbydj1TVvkdbHH24K9WjGzBPO37BM/vPYBV7sUFMIcWSyXLUxte
+ MCndNlidJ523R/WRkwnVzCgShZtzLMQ8iCtawPQe60wBZrvNH48yjlG9cz7XbclF/K
+ nSWYvMqIKdkluiEmNEW0Mvs8aLvXvEp4egc7Itn9KOdmCsC1DUVk5jnVOxxNmhK9xf
+ 4UlF4auB09qZ7HO/hoAkEb5XLM6lEP7rgXdDYBWEXqmJKn2zveKN8+nai3o8h5chaF
+ chD/kVO/51/N3tgLmKhMJbWM/cZStg74nqDjb3rhb0tadd47boUXd9y8zEQP4EHfDD
+ sb/HcXZjiTsjA==
+From: Mark Brown <broonie@kernel.org>
+To: Banajit Goswami <bgoswami@quicinc.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Takashi Iwai <tiwai@suse.com>, 
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>, 
+ Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <20220929131528.217502-1-krzysztof.kozlowski@linaro.org>
+References: <20220929131528.217502-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] ASoC: wcd-mbhc-v2: Revert "ASoC: wcd-mbhc-v2: use
+ pm_runtime_resume_and_get()"
+Message-Id: <166446457527.149592.13835062357104188946.b4-ty@kernel.org>
+Date: Thu, 29 Sep 2022 16:16:15 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.90.53.225]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600014.china.huawei.com (7.193.23.54)
-X-CFilter-Loop: Reflected
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-mediatek@lists.infradead.org
+X-Mailer: b4 0.10.0-dev-fc921
+Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,32 +90,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The pm_runtime_enable will increase power disable depth. Thus
-a pairing decrement is needed on the error handling path to
-keep it balanced according to context. We fix it by calling
-pm_runtime_enable when error returns.
+On Thu, 29 Sep 2022 15:15:28 +0200, Krzysztof Kozlowski wrote:
+> This reverts commit ddea4bbf287b6028eaa15a185d0693856956ecf2 ("ASoC:
+> wcd-mbhc-v2: use pm_runtime_resume_and_get()"), because it introduced
+> double runtime PM put if pm_runtime_get_sync() returns -EACCES:
+> 
+>   wcd934x-codec wcd934x-codec.3.auto: WCD934X Minor:0x1 Version:0x401
+>   wcd934x-codec wcd934x-codec.3.auto: Runtime PM usage count underflow!
+> 
+> [...]
 
-Fixes:5c6af635fd772 ("ASoC: wm5110: Add audio CODEC driver")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
----
-v2:
-- call pm_runtime_disable when error returns.
----
- sound/soc/codecs/wm5110.c | 1 +
- 1 file changed, 1 insertion(+)
+Applied to
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index f3f4a10bf0f7..e0b971620d0f 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -2500,6 +2500,7 @@ static int wm5110_probe(struct platform_device *pdev)
- 	arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 0);
- 	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, wm5110);
- err_jack_codec_dev:
-+	pm_runtime_disable(&pdev->dev);
- 	arizona_jack_codec_dev_remove(&wm5110->core);
- 
- 	return ret;
--- 
-2.25.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: wcd-mbhc-v2: Revert "ASoC: wcd-mbhc-v2: use pm_runtime_resume_and_get()"
+      commit: e18f6bcf8e864ea0e9690691d0d749c662b6a2c7
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
