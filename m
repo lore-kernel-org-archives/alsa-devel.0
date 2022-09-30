@@ -4,70 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5695C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Sep 2022 16:13:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2C07C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Sep 2022 16:21:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E36A816BE;
-	Fri, 30 Sep 2022 18:12:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E36A816BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5952016B9;
+	Fri, 30 Sep 2022 18:20:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5952016B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664554403;
-	bh=QEzJU0VS5kHZoLyV5Mc+p7c1jZc4wJxU/synCGYTbtg=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1664554875;
+	bh=zHOzuOAsx4FJrbmbBRXCwBpAs3bc84faf59NSjGalQI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QH1dT4FtDnu/mU8/6EzxlaYA7ya/l2plSpRIpG6bSU0S6c8tx+zMEUzNnVeSfmNNW
-	 2gfjVGj9U4GX5xmXPZMxx1aDMeMx2dtmzUg1PAGItJJCWg8vWcksYk+1nVNdrVqBRI
-	 sarZCBUsBTGBWcbcHNAF0r3GSmv4gZ69fWwAFOjY=
+	b=Ko2eBX4jJVXQxqAZjYj1Gr/+S4i3EM1FkT2qsi9fisQakVDJFmzpIQ3u4m4WqQ7z3
+	 CnwNHYRIJOEcNmv30BHfD9ioBpUgOUifoxtZZN9u+Aq9TnZnMPwHilKF/lD/HRCsd8
+	 m3HCXglGd02Z6PAY0hqFZrw5BlbTNb/wWLkpVCX0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 74747F800E8;
-	Fri, 30 Sep 2022 18:12:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BCA5AF80153;
+	Fri, 30 Sep 2022 18:20:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 05EB0F80155; Fri, 30 Sep 2022 18:12:31 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 28154F800E8; Fri, 30 Sep 2022 18:20:23 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8379AF800E8
- for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2022 18:12:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8379AF800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC952F800E8
+ for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2022 18:20:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC952F800E8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bhwMItzH"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="lAxfCTxN"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="bjUo7+fD"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A29C3623A0;
- Fri, 30 Sep 2022 16:12:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97458C433C1;
- Fri, 30 Sep 2022 16:12:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1664554345;
- bh=QEzJU0VS5kHZoLyV5Mc+p7c1jZc4wJxU/synCGYTbtg=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=bhwMItzH/LRgiLHZnJkpbEt20PHg13JMCiwnXQ62ROrEMTcsTN4HW+B+YGpSdsGil
- 5sShuZXm24UTWROjR+yisDWSa2WgKYfpe5kMUJ4j24k8bOichYgbOmoc/m+xF/6ccP
- hyEJsdVIDPFAH7/4Scd9bKqZQdEeRLccD0UxmFQVrxRH6AeDWTn7O40m/uD43spAei
- NP6jGC1Z6IRw7NGKD+JsXDNwlfYmwtdxN8vW568aV1evlW0CXMJUCD+3M33xgW6tBn
- GnRZEnIXigV2MgA/cS3Zv9CA1ESwM4EeWn6NwHeTug7nrAsDabHS+iuqIB/rhPubQ3
- BYY052k9UZ7Qg==
-From: Mark Brown <broonie@kernel.org>
-To: linux-arm-kernel@lists.infradead.org, Marek Vasut <marex@denx.de>
-In-Reply-To: <20220927185359.294322-1-marex@denx.de>
-References: <20220927185359.294322-1-marex@denx.de>
-Subject: Re: [PATCH v2] ASoC: dt-bindings: Document audio OF graph
- dai-tdm-slot-num dai-tdm-slot-width props
-Message-Id: <166455434333.614892.7791049768510643889.b4-ty@kernel.org>
-Date: Fri, 30 Sep 2022 17:12:23 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-fc921
-Cc: devicetree@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- alsa-devel@alsa-project.org
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C84D421907;
+ Fri, 30 Sep 2022 16:20:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1664554819; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=TwaqQFvNoCnaPFBmC4MMTJ21z98g0OIvTspvRItG31k=;
+ b=lAxfCTxNKMjQKZjncTkE+5Co1av8H7buSuz91zrcUVf0C/1gh5MegBA1YJWkBX0JGXXGAc
+ ol2xdClNJvdh1Y60YuBy1HN8fhUZ6Zn8RN6WTOjRV5xugqiWdrHYBb6CPkb5MOS4HL3EYi
+ NF4AZjXTTH1+Fs6UwFMbVQKsOSa28A4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1664554819;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=TwaqQFvNoCnaPFBmC4MMTJ21z98g0OIvTspvRItG31k=;
+ b=bjUo7+fD8n/VRkxYEvAwleEgglI2E7+sr1VIlqJFwtzKYAoPQILvJlAy99dvEWv/nPKHNp
+ ITipOAFcFTJgnSCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8E6B113677;
+ Fri, 30 Sep 2022 16:20:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id rwjoIUMXN2NJCAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Fri, 30 Sep 2022 16:20:19 +0000
+Date: Fri, 30 Sep 2022 18:20:18 +0200
+Message-ID: <871qrsj0l9.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC fixes for v6.0-rc7
+In-Reply-To: <20220930111000.BF4E8C433C1@smtp.kernel.org>
+References: <20220930111000.BF4E8C433C1@smtp.kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,37 +94,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 27 Sep 2022 20:53:59 +0200, Marek Vasut wrote:
-> Document dai-tdm-slot-num and dai-tdm-slot-width props as those are
-> parsed by simple graph card and may therefore appear in audio OF graph
-> node.
+On Fri, 30 Sep 2022 13:09:50 +0200,
+Mark Brown wrote:
 > 
+> The following changes since commit 0a0342ede303fc420f3a388e1ae82da3ae8ff6bd:
 > 
+>   ASoC: tas2770: Reinit regcache on reset (2022-09-19 18:48:43 +0100)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.0-rc7
+> 
+> for you to fetch changes up to e18f6bcf8e864ea0e9690691d0d749c662b6a2c7:
+> 
+>   ASoC: wcd-mbhc-v2: Revert "ASoC: wcd-mbhc-v2: use pm_runtime_resume_and_get()" (2022-09-29 15:20:12 +0100)
+> 
+> ----------------------------------------------------------------
+> ASoC: Last fixes for v6.0
+> 
+> In the even that there's another pull request here's some more driver
+> specific fixes.
 
-Applied to
+Pulled now.  But I already submitted the PR in this week, so postponed
+until the next one.  If one week delayed for the 6.0 release, we can
+make it in, otherwise it'll be in 6.1-rc1.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Thanks!
+thanks,
 
-[1/1] ASoC: dt-bindings: Document audio OF graph dai-tdm-slot-num dai-tdm-slot-width props
-      commit: 853110992cfefec433ca58cf7d69df4f639abe18
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Takashi
