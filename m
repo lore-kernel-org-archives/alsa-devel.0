@@ -4,78 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27282C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Sep 2022 14:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E47C4C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Sep 2022 14:59:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 08B7616AF;
-	Fri, 30 Sep 2022 16:57:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08B7616AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE78916A3;
+	Fri, 30 Sep 2022 16:58:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE78916A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664549926;
-	bh=xHF1iKVNgJe70trH7cgFDqD/bObygzK7r0RQL8iRKFs=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=YE/8HRVP6cEopEQ4CVj8yt9yiq9KEQBr229s4tuU8CugmW9+9cUPAdRn+P1qzMC8y
-	 h0IIFS+3gjyxdQbCPCA27a7lyJ7T3S1nh3Jm3W5LOjEfDef5qlz/Nqjoa1UPGBFXrj
-	 /FhwPzuyXbBbJ7z1qMP1hdacxHMHsuFhUVS+KNmc=
+	s=default; t=1664549952;
+	bh=sOmti45Mfv7L4gaO/iezcv5gEZjucvff+f5X641D6+E=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=gZdgQ9rHE17IXvSZWi6I0nES4i7N36jOG938lKTnQt5wPWGwa197TPGfLRuZQSSdT
+	 081NsCnlK7z0SSg1QZ3HBD+nKkyQjJIRzPYyoC2bahF7+0zWPhsSxZl1jrIzS8JjN4
+	 IQXgxBbUYu65ox3O/wpyrQ6McWs1LfQQFJ1uphKE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1871EF80539;
-	Fri, 30 Sep 2022 16:57:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9F19F80551;
+	Fri, 30 Sep 2022 16:57:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76A94F804E5; Fri, 30 Sep 2022 16:57:28 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ id 016E6F800AA; Fri, 30 Sep 2022 16:57:25 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B53FFF800E8
- for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2022 16:57:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B53FFF800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 931CAF800AA
+ for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2022 16:57:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 931CAF800AA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
- header.b="rdMFW+uU"
-X-UUID: e300753390f04e6b87c20ae6c7f92468-20220930
+ header.b="WmCgYS++"
+X-UUID: fa54f4adcc2044eb94333815e52daad3-20220930
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
  s=dk; 
- h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=1KsVmcC21V3+tfYOHCRgEq/NGum7kC4ACYWLIN7w6HM=; 
- b=rdMFW+uUAmp2hF84G5kvREZ+KRehK/Jy4PR3xInDxtqLWEMgfTCQ5vcBE0rDnWcvD+0jlR6Bp3zpLTKa3obotS1ExlTCujruabnh5jPa2j9VshGq/OCOyh0jQ5qe4MtsDEvpXf6qaXS1gbjzlUcO8tGXmWFsdNPFe/DkKdODzRU=;
+ h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From;
+ bh=Tt1QECZtZefC/UTgm9or5z8I2XvrYjCa1pogvR3ApGI=; 
+ b=WmCgYS++tKCJToXgaNdJowkmdLx9g0cwHObJVfEFc0nh0ND//7Tg0fabRQEkvFUYoiqryTxrn+GndNwVItCzcjUlYOft8T0j5HKaNEsiUGsAUb3al5YDVk54LiUN+Mtb04y5rqCzT5dW86XJDT1kiwEppMXPHzetFyoAMdY0i1o=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.11, REQID:d06da9fb-3797-496d-9b31-a465b5b1dee5, IP:0,
+X-CID-O-INFO: VERSION:1.1.11, REQID:01b0eccf-3fb7-4f7f-ab50-76c625654ce0, IP:0,
  U
- RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
- N:release,TS:90
-X-CID-INFO: VERSION:1.1.11, REQID:d06da9fb-3797-496d-9b31-a465b5b1dee5, IP:0,
+ RL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+ :release,TS:95
+X-CID-INFO: VERSION:1.1.11, REQID:01b0eccf-3fb7-4f7f-ab50-76c625654ce0, IP:0,
  URL
- :0,TC:0,Content:-5,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTIO
- N:quarantine,TS:90
-X-CID-META: VersionHash:39a5ff1, CLOUDID:ee0bcde4-87f9-4bb0-97b6-34957dc0fbbe,
+ :0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTION
+ :quarantine,TS:95
+X-CID-META: VersionHash:39a5ff1, CLOUDID:2c35a6a3-dc04-435c-b19b-71e131a5fc35,
  B
- ulkID:220930225711QLY7OQ5I,BulkQuantity:0,Recheck:0,SF:38|28|17|19|48|823|
+ ulkID:22093022570969LZE2DI,BulkQuantity:0,Recheck:0,SF:38|28|17|19|48|823|
  824,TC:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,
  COL:0
-X-UUID: e300753390f04e6b87c20ae6c7f92468-20220930
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+X-UUID: fa54f4adcc2044eb94333815e52daad3-20220930
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
  (envelope-from <trevor.wu@mediatek.com>)
  (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1542263875; Fri, 30 Sep 2022 22:57:09 +0800
+ with ESMTP id 1511614647; Fri, 30 Sep 2022 22:57:06 +0800
 Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Fri, 30 Sep 2022 22:57:08 +0800
+ 15.2.792.15; Fri, 30 Sep 2022 22:57:05 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.792.15 via Frontend Transport; Fri, 30 Sep 2022 22:57:07 +0800
+ 15.2.792.15 via Frontend Transport; Fri, 30 Sep 2022 22:57:05 +0800
 From: Trevor Wu <trevor.wu@mediatek.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
  <matthias.bgg@gmail.com>, <p.zabel@pengutronix.de>
-Subject: [PATCH 01/12] ASoC: mediatek: common: add SMC ops ID
-Date: Fri, 30 Sep 2022 22:56:50 +0800
-Message-ID: <20220930145701.18790-2-trevor.wu@mediatek.com>
+Subject: [PATCH 00/12] ASoC: mediatek: Add support for MT8188 SoC
+Date: Fri, 30 Sep 2022 22:56:49 +0800
+Message-ID: <20220930145701.18790-1-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20220930145701.18790-1-trevor.wu@mediatek.com>
-References: <20220930145701.18790-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK: N
@@ -97,41 +94,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SMC call is required to communicate with ATF for some secure operations,
-so we add SMC ops IDs to common header.
+This series of patches adds support for Mediatek AFE of MT8188 SoC.
+Patches are based on broonie tree "for-next" branch.
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
----
- sound/soc/mediatek/common/mtk-base-afe.h | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+Trevor Wu (12):
+  ASoC: mediatek: common: add SMC ops ID
+  ASoC: mediatek: mt8188: add common header
+  ASoC: mediatek: mt8188: support audsys clock
+  ASoC: mediatek: mt8188: support adda in platform driver
+  ASoC: mediatek: mt8188: support etdm in platform driver
+  ASoC: mediatek: mt8188: support pcmif in platform driver
+  ASoC: mediatek: mt8188: support audio clock control
+  ASoC: mediatek: mt8188: add platform driver
+  ASoC: mediatek: mt8188: add control for timing select
+  dt-bindings: mediatek: mt8188: add audio afe document
+  ASoC: mediatek: mt8188: add machine driver with mt6359
+  dt-bindings: mediatek: mt8188: add mt8188-mt6359 document
 
-diff --git a/sound/soc/mediatek/common/mtk-base-afe.h b/sound/soc/mediatek/common/mtk-base-afe.h
-index ef83e78c22a8..d33c2a3f54a9 100644
---- a/sound/soc/mediatek/common/mtk-base-afe.h
-+++ b/sound/soc/mediatek/common/mtk-base-afe.h
-@@ -11,6 +11,22 @@
- 
- #define MTK_STREAM_NUM (SNDRV_PCM_STREAM_LAST + 1)
- 
-+/* SMC CALL Operations */
-+enum mtk_audio_smc_call_op {
-+	MTK_AUDIO_SMC_OP_INIT = 0,
-+	MTK_AUDIO_SMC_OP_DRAM_REQUEST,
-+	MTK_AUDIO_SMC_OP_DRAM_RELEASE,
-+	MTK_AUDIO_SMC_OP_SRAM_REQUEST,
-+	MTK_AUDIO_SMC_OP_SRAM_RELEASE,
-+	MTK_AUDIO_SMC_OP_ADSP_REQUEST,
-+	MTK_AUDIO_SMC_OP_ADSP_RELEASE,
-+	MTK_AUDIO_SMC_OP_DOMAIN_SIDEBANDS,
-+	MTK_AUDIO_SMC_OP_BTCVSD_WRITE,
-+	MTK_AUDIO_SMC_OP_BTCVSD_UPDATE_CTRL_CLEAR,
-+	MTK_AUDIO_SMC_OP_BTCVSD_UPDATE_CTRL_UNDERFLOW,
-+	MTK_AUDIO_SMC_OP_NUM
-+};
-+
- struct mtk_base_memif_data {
- 	int id;
- 	const char *name;
+ .../bindings/sound/mt8188-afe-pcm.yaml        |  202 +
+ .../bindings/sound/mt8188-mt6359.yaml         |   70 +
+ sound/soc/mediatek/Kconfig                    |   23 +
+ sound/soc/mediatek/Makefile                   |    1 +
+ sound/soc/mediatek/common/mtk-base-afe.h      |   16 +
+ sound/soc/mediatek/mt8188/Makefile            |   15 +
+ sound/soc/mediatek/mt8188/mt8188-afe-clk.c    |  656 ++++
+ sound/soc/mediatek/mt8188/mt8188-afe-clk.h    |  114 +
+ sound/soc/mediatek/mt8188/mt8188-afe-common.h |  151 +
+ sound/soc/mediatek/mt8188/mt8188-afe-pcm.c    | 3451 +++++++++++++++++
+ sound/soc/mediatek/mt8188/mt8188-audsys-clk.c |  206 +
+ sound/soc/mediatek/mt8188/mt8188-audsys-clk.h |   15 +
+ .../soc/mediatek/mt8188/mt8188-audsys-clkid.h |   83 +
+ sound/soc/mediatek/mt8188/mt8188-dai-adda.c   |  639 +++
+ sound/soc/mediatek/mt8188/mt8188-dai-etdm.c   | 2598 +++++++++++++
+ sound/soc/mediatek/mt8188/mt8188-dai-pcm.c    |  362 ++
+ sound/soc/mediatek/mt8188/mt8188-mt6359.c     |  810 ++++
+ sound/soc/mediatek/mt8188/mt8188-reg.h        | 3300 ++++++++++++++++
+ 18 files changed, 12712 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8188-afe-pcm.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8188-mt6359.yaml
+ create mode 100644 sound/soc/mediatek/mt8188/Makefile
+ create mode 100644 sound/soc/mediatek/mt8188/mt8188-afe-clk.c
+ create mode 100644 sound/soc/mediatek/mt8188/mt8188-afe-clk.h
+ create mode 100644 sound/soc/mediatek/mt8188/mt8188-afe-common.h
+ create mode 100644 sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
+ create mode 100644 sound/soc/mediatek/mt8188/mt8188-audsys-clk.c
+ create mode 100644 sound/soc/mediatek/mt8188/mt8188-audsys-clk.h
+ create mode 100644 sound/soc/mediatek/mt8188/mt8188-audsys-clkid.h
+ create mode 100644 sound/soc/mediatek/mt8188/mt8188-dai-adda.c
+ create mode 100644 sound/soc/mediatek/mt8188/mt8188-dai-etdm.c
+ create mode 100644 sound/soc/mediatek/mt8188/mt8188-dai-pcm.c
+ create mode 100644 sound/soc/mediatek/mt8188/mt8188-mt6359.c
+ create mode 100644 sound/soc/mediatek/mt8188/mt8188-reg.h
+
 -- 
 2.18.0
 
