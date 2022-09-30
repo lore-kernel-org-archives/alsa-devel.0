@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FA4AC433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 30 Sep 2022 08:29:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38E07C433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 30 Sep 2022 08:29:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E01BD1677;
-	Fri, 30 Sep 2022 10:28:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E01BD1677
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C2B6167F;
+	Fri, 30 Sep 2022 10:28:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C2B6167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664526543;
-	bh=TZLyGE9FJQemU54GEhCuq0dM8vwxN8v4whQYxVkYgXo=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1664526551;
+	bh=nrbPkf3qWkyUb7znx0iYm2zgD8kFePTMuzvvp4oP0Dc=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R7MswmNvav9BPRm//maELfAb+qAWSNiqzKRsrOJMPrH6VWO7ZNDO7pAUnK/qbxHRK
-	 hM+K41M29VaNb+KSvGZsugM8TILm6n8wHv+vr/BJSRaP72o6FF90JlWPuT6kzSILph
-	 p4H37lRTIeKj1PnMJeS/M90lJbAkZKV6UcpSmg/A=
+	b=T+KnHQsDiY2WZwD0Jfy0pyTwDvHyhOh0jUqC1syObtbYMcKISBzMs59VZRPfnJAB7
+	 9jCm0eb0Qc292/FiiLjBGvH+pyX/ookhu2DYhNMBMiWphZiB//Xrv8rxGMahzZ77ri
+	 hrS+w7jToipEN5DWXQWhj98Le+bVI81fzdX0FCVM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71952F80539;
-	Fri, 30 Sep 2022 10:27:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0958F8053D;
+	Fri, 30 Sep 2022 10:27:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7591BF800AA; Fri, 30 Sep 2022 10:27:44 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 32737F80542; Fri, 30 Sep 2022 10:27:48 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2AF6AF800AA
- for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2022 10:27:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AF6AF800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC6B5F8053C
+ for <alsa-devel@alsa-project.org>; Fri, 30 Sep 2022 10:27:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC6B5F8053C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ahqP7KrX"
+ header.b="Z8gy6Y2d"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 33442B82698;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6B22E62265;
  Fri, 30 Sep 2022 08:27:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 757BCC433D7;
- Fri, 30 Sep 2022 08:27:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5689AC433C1;
+ Fri, 30 Sep 2022 08:27:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1664526459;
- bh=TZLyGE9FJQemU54GEhCuq0dM8vwxN8v4whQYxVkYgXo=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ahqP7KrXxAeXqx8k/7s4MxK6Y9kUtZ5CauZB0ROr2pTp5kVBhTARgbsNZUYpoCUiJ
- edrCABdb9/X4dGvI8sJWbXk97IV/xzfUKgQP7VPQN1g0CIDWhmAIu0ODiRjjwdyoqo
- 0Ds1rKcJY0apf9i0iTmhzmd8XoXH/RZS3fefAD+5931Vi/H0swQnyKaKCN41fJsg7d
- c3A6T75acX9bGdyTWmcqMX8GiTSC4l7gpOSIqXc2WOo94sL9qzHAU2awj7MnWAI7mT
- 37OojpkDl/nkk55t+rAAfHOe0cNywj/OlCO3CN3E/dMYeY/XqZm9KY8p/c1uWuc4Pz
- /Jf+4WLf0Tgkw==
+ s=k20201202; t=1664526460;
+ bh=nrbPkf3qWkyUb7znx0iYm2zgD8kFePTMuzvvp4oP0Dc=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=Z8gy6Y2ddRUoWB8wswhSIKsQ9WHQk2PsDIQsDWLq1G4h6pjnYJ73sbyMF1CiCgznQ
+ y6kRY+ougGvAlw0IEBVywXnTVfbBHPss4fAQolSLBXQDJpDcu5gRLyJIQbhOZIofA9
+ TeeDIvAFlldzP6UPQWnshKL4jyHn98CQd6y6guq/4m9AXWuRUdStVqv9naiv4YFlF5
+ tpTEj472oRwAMg3clYNh7EeP2IsDB63vMmU7LtdNQWRnxHDVESAjdrTGhkqxblF4fZ
+ ZlnnTJ+nY2qM9IPH98rHjks16WD7Lqfbw5OHRiKmk39Bd60ijEL3y1EvZULLHHVqxI
+ pNq2u/rk07Ncg==
 From: Mark Brown <broonie@kernel.org>
-To: perex@perex.cz, matthias.bgg@gmail.com, lgirdwood@gmail.com, tiwai@suse.com,
- Zhang Qilong <zhangqilong3@huawei.com>
-In-Reply-To: <20220928160116.125020-1-zhangqilong3@huawei.com>
-References: <20220928160116.125020-1-zhangqilong3@huawei.com>
-Subject: Re: [PATCH -next 0/4] Fix PM disable depth imbalance in probe
-Message-Id: <166452645819.46391.11087036933729907918.b4-ty@kernel.org>
-Date: Fri, 30 Sep 2022 09:27:38 +0100
+To: Jaroslav Kysela <perex@perex.cz>,
+ ALSA development <alsa-devel@alsa-project.org>
+In-Reply-To: <20220929143754.345144-1-perex@perex.cz>
+References: <20220929143754.345144-1-perex@perex.cz>
+Subject: Re: [PATCH v2] ASoC: core: clarify the driver name initialization
+Message-Id: <166452646007.46391.17341801502070959820.b4-ty@kernel.org>
+Date: Fri, 30 Sep 2022 09:27:40 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,17 +80,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 29 Sep 2022 00:01:12 +0800, Zhang Qilong wrote:
-> The pm_runtime_enable will increase power disable depth. Thus
-> a pairing decrement is needed on the error handling path to
-> keep it balanced according to context. We fix it by moving
-> pm_runtime_enable to the endding of probe.
-> 
-> Zhang Qilong (4):
->   ASoC: wm8997: Fix PM disable depth imbalance in wm8997_probe
->   ASoC: wm5110: Fix PM disable depth imbalance in wm5110_probe
->   ASoC: wm5102: Fix PM disable depth imbalance in wm5102_probe
->   ASoC: mt6660: Fix PM disable depth imbalance in mt6660_i2c_probe
+On Thu, 29 Sep 2022 16:37:54 +0200, Jaroslav Kysela wrote:
+> The driver field in the struct snd_ctl_card_info is a valid
+> user space identifier. Actually, many ASoC drivers do not care
+> and let to initialize this field using a standard wrapping method.
+> Unfortunately, in this way, this field becomes unusable and
+> unreadable for the drivers with longer card names. Also,
+> there is a possibility to have clashes (driver field has
+> only limit of 15 characters).
 > 
 > [...]
 
@@ -100,14 +97,8 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: wm8997: Fix PM disable depth imbalance in wm8997_probe
-      commit: 41a736ac20602f64773e80f0f5b32cde1830a44a
-[2/4] ASoC: wm5110: Fix PM disable depth imbalance in wm5110_probe
-      commit: 86b46bf1feb83898d89a2b4a8d08d21e9ea277a7
-[3/4] ASoC: wm5102: Fix PM disable depth imbalance in wm5102_probe
-      commit: fcbb60820cd3008bb44334a0395e5e57ccb77329
-[4/4] ASoC: mt6660: Fix PM disable depth imbalance in mt6660_i2c_probe
-      commit: b73f11e895e140537e7f8c7251211ccd3ce0782b
+[1/1] ASoC: core: clarify the driver name initialization
+      commit: c8d18e44022518ab026338ae86bf14cdf2e71887
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
