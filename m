@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D63A7C433F5
-	for <alsa-devel@archiver.kernel.org>; Sun,  2 Oct 2022 22:51:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89754C433FE
+	for <alsa-devel@archiver.kernel.org>; Sun,  2 Oct 2022 22:52:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6E432331;
-	Mon,  3 Oct 2022 00:50:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6E432331
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8CC2D28E5;
+	Mon,  3 Oct 2022 00:51:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CC2D28E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664751068;
-	bh=oRaeNM+kB4XeFHB9RkLIcAmmI+eFA6AzdtTYAyQE01c=;
+	s=default; t=1664751143;
+	bh=fePKjXwvZe4cssNgNOsnoApiIf49pkGwedEnC0k3pl0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WZRThJOXSxl7+2/aqt4p3EEUD+zjA4mPB3cIPkzwfdIzXY04bytVnZhU4dsTGKUjD
-	 sd8xcWiV3NLJ3DyFSYhk3zwo6Iy0B4BgJPGR9tfJOU2hplDODZOWS4LD9TfKYZendE
-	 28VWplc59YThqWgtD7o9WtE+Y0KGL5Fbd+4QCTUI=
+	b=fpc7V7cuOv2XxzqxkXDNPoF3JoUbBQQJ/Iqp1FqHKY7W5xS6LgplND6IrFucZ3d5J
+	 J1QQdPXMF4uPTNGVUmFz2CD1LyJlcUjnd4MY34a6wHJhnarmzakxaJcA/qZ17OBJXr
+	 pWVspT/rCS/9ilx0sP9IGSO9cN/zziaEfxT56V2I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6CCF8F8013D;
-	Mon,  3 Oct 2022 00:50:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32120F8013D;
+	Mon,  3 Oct 2022 00:51:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 85E4AF80246; Mon,  3 Oct 2022 00:50:15 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 72425F80246; Mon,  3 Oct 2022 00:51:32 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 79250F800CC
- for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2022 00:50:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79250F800CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id B6B92F800CC
+ for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2022 00:51:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6B92F800CC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="F9CoZiYV"
+ header.b="u4QqXy0P"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 4073BB80D9C;
- Sun,  2 Oct 2022 22:50:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8ACCC433C1;
- Sun,  2 Oct 2022 22:50:04 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 012E0B80D9B;
+ Sun,  2 Oct 2022 22:51:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C0BAC433C1;
+ Sun,  2 Oct 2022 22:51:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1664751006;
- bh=oRaeNM+kB4XeFHB9RkLIcAmmI+eFA6AzdtTYAyQE01c=;
+ s=k20201202; t=1664751085;
+ bh=fePKjXwvZe4cssNgNOsnoApiIf49pkGwedEnC0k3pl0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=F9CoZiYVoFagvS4pxe+nNcfHXHPgENUDZ77i+mCcg7x34qd14yBgzMU6Mvz9qMOyI
- lMBqoPEhZKJP6gVpWCUDRh2WXNSXkDXW/YfoyZpzHIqsvKoHv/hTqL+lTzx26sTiXz
- IAOcpKVukJAXpMN5YsZ7PWc/fD7mVg6F4Il3f9SsBfzg2HGEivbkoBrVam7nzh62x2
- RMrxo5lkvV4JDdYbhGYjKkwkVjBY1zoSuCc2HelGbK22v3UY3btJlZkLoKl093R7Nv
- Gnh8NOUKst6Lq+uHYDgeCSoeUQ+2xmOTQYNS05sI1ZJ0B5Vi+1gQOlI1EEb3oUfGpS
- x8SLs+xaiHgfw==
+ b=u4QqXy0P6hSOnCM7uWr3nw+MhYJ6Qom1iVuGiH91dRCcrwxK9DHp6SG1KntNUjw0L
+ MrTvG9n2xBV3gQBOiTEEw3LrQwkqxXcxg1yu+kZWpSg+KBPfzDj8uuyMDScA9vMleP
+ zOJSJ8WJxTfhmIJvcV20YlavN9QH7rzWyQDiKs9FojzpR6bgN7KXo++LE+knSFBnHi
+ KAFcE5jB3kUOtAnBSoEeW6W+VHmmTZsBuwT7KnsdJ5GLWfn7cAwBhG7D31ZgOEA/dP
+ iHa394xKrayCRPVR7O8TF1J+wVC/Tzt4dTVN+2AH5VHpUrdSYigaTPbX/w4mS3cNwM
+ 7E3FNv2+0g7ew==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.19 15/29] ALSA: hda/hdmi: Fix the converter reuse
+Subject: [PATCH AUTOSEL 5.15 12/20] ALSA: hda/hdmi: Fix the converter reuse
  for the silent stream
-Date: Sun,  2 Oct 2022 18:49:08 -0400
-Message-Id: <20221002224922.238837-15-sashal@kernel.org>
+Date: Sun,  2 Oct 2022 18:50:51 -0400
+Message-Id: <20221002225100.239217-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221002224922.238837-1-sashal@kernel.org>
-References: <20221002224922.238837-1-sashal@kernel.org>
+In-Reply-To: <20221002225100.239217-1-sashal@kernel.org>
+References: <20221002225100.239217-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -108,10 +109,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 6c209cd26c0c..22766810635b 100644
+index 24da843f39a1..b3bcc6df5985 100644
 --- a/sound/pci/hda/patch_hdmi.c
 +++ b/sound/pci/hda/patch_hdmi.c
-@@ -1267,6 +1267,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
+@@ -1259,6 +1259,7 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
  	set_bit(pcm_idx, &spec->pcm_in_use);
  	per_pin = get_pin(spec, pin_idx);
  	per_pin->cvt_nid = per_cvt->cvt_nid;
