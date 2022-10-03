@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71BECC433FE
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Oct 2022 03:26:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EF7CC433FE
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Oct 2022 03:26:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 10E192860;
-	Mon,  3 Oct 2022 05:25:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10E192860
+	by alsa0.perex.cz (Postfix) with ESMTPS id 90AEA287E;
+	Mon,  3 Oct 2022 05:25:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90AEA287E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664767560;
-	bh=DT8g9eRQnvl+uXqJJ0LofG0kEwNiHb+ZP7Ybcsx2GEU=;
+	s=default; t=1664767588;
+	bh=tVxwA556fGR31jlNvKAe2MLXn3vguq/WKc/VouZuLcw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=czawui3VUr6L5lIiHvH/2NgSQ9sZ/odNtmZzwVW5Mfm7S4lMhfNMDa7Q7kFvc1FYA
-	 x1jFq4rRSir7hkL4c56ZN0hZjpAnDO2K8bkL8pIiImpeQ+Dsq3yDRUAFx0u++7XKpN
-	 sSSM+BtP6QzO+xIig32CJN1vvyzI3MwVkyGGDCHA=
+	b=GG9toIeMUcCEsfq9hojl1BGNg3WGaIoR/8ALOEri8ZPcjngdAtMAATQYkf5TaLSOi
+	 B0bPmClEhFD7YUjOGb3bWsxxs34KdR06N/DzM0SBeHFfDLk99fuUXQzU+TBUcrzVFh
+	 98+VkVWAG/8yZ80t1uR0oitLe38vFsQf7KmpmFfI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46E90F804E4;
-	Mon,  3 Oct 2022 05:24:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58D79F80543;
+	Mon,  3 Oct 2022 05:24:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F14CF804E4; Mon,  3 Oct 2022 05:24:48 +0200 (CEST)
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com
- [IPv6:2607:f8b0:4864:20::42e])
+ id F2FBBF80549; Mon,  3 Oct 2022 05:24:52 +0200 (CEST)
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com
+ [IPv6:2607:f8b0:4864:20::52d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8D693F80224
- for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2022 05:24:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D693F80224
+ by alsa1.perex.cz (Postfix) with ESMTPS id 905D4F800B5
+ for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2022 05:24:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 905D4F800B5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=schmorgal.com header.i=@schmorgal.com
- header.b="CUUbIbXr"
-Received: by mail-pf1-x42e.google.com with SMTP id c3so4237911pfb.12
- for <alsa-devel@alsa-project.org>; Sun, 02 Oct 2022 20:24:40 -0700 (PDT)
+ header.b="S0YyQndT"
+Received: by mail-pg1-x52d.google.com with SMTP id q9so8657654pgq.8
+ for <alsa-devel@alsa-project.org>; Sun, 02 Oct 2022 20:24:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=schmorgal.com; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=1y4CMatLLOuro4rYb7OubdSD1veGSab01mNr081J92M=;
- b=CUUbIbXr4y7X+8xAYu6pggMYvjZ6bjnSOdyJkD56wqb+1K2VYP+WsqOpqUH9IhO/LZ
- ZL0hZyQmXIPZg6gLQOO54EVKepyBPWfU0xRQBuHLWtBnOobVagpC/w2SczQRiM0+iexI
- sCIdT48Suwxfxwuf4qdf/+uqPmwYx+RCOdvkY=
+ bh=DQquaZAcXIy4M+b8mdS34VA7TR7HzahIgM8NzE1IWeY=;
+ b=S0YyQndTN+fah/mp3zVqA/pfagjsIfATDQ3UQziRxt9h8+mrZxLvlmQyE8EtyRL+U1
+ 8A3ZwvPrgvcegiSczlVPSQaQD0C+POgsCUm+oKbvsi8xOL8fpLGJg6nQNn3VkYADIZnW
+ blO6kGP+xVXZo8d6Q7heb+TT+GDI2COYLl2Pk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=1y4CMatLLOuro4rYb7OubdSD1veGSab01mNr081J92M=;
- b=LerXAB3Q70CKDCrBddFXUWodQQJnhSOh2JsRkrLETV7YxIYxazxbHoW40irQLQpTTE
- /kkERiihj5OVT74tJ3E4uCkmy9GqibQ7bVp9KnE9QSo8cvigdx8d+fkUwTiDWK21k8WF
- M4Ab3LlEqy6dIi10SkUXyzKweuWxInr8g2MDdjy+jyUUfMclIIkq0wwjdQj5Wmrca3cd
- hSwETaI2W8K5XosCvzh/kos9FJYcw5rNOVp02c9m68bv7/1cmmkaCV0wgRHRv3OVAoWY
- pJmBfzTqcLrJ7W3u6YSdTLl3GUT5ZJiNrt+mpsAbSNS8IYtdV8wztXP58DHPBKiTCo0B
- +BrA==
-X-Gm-Message-State: ACrzQf1s1qtqcDHXYK68wPo1CNGdmJP0A+BcGXqWHKOnjoc+1mypIhfz
- WRc40BOHgBHZV7A4lYTxvCSY3w==
-X-Google-Smtp-Source: AMsMyM7cXSgnJr2XZBmkVT3lYym1Q9Qfw368cYr1s/XzYa9ZAOtBkV1xO4LefN4cJbEDs6czYM7u1w==
-X-Received: by 2002:a05:6a00:2316:b0:548:58b6:b17c with SMTP id
- h22-20020a056a00231600b0054858b6b17cmr20406125pfh.53.1664767479241; 
- Sun, 02 Oct 2022 20:24:39 -0700 (PDT)
+ bh=DQquaZAcXIy4M+b8mdS34VA7TR7HzahIgM8NzE1IWeY=;
+ b=S1IrstD0OHHn5Xokg84OjkWBHBnSZjS/fxMErQpXD0jw05fnaw4FwYiE4ttwMgrZuw
+ OV1a5yHPusNhkjhu6nYWGPy+09xEjxyhuyuZ8CavjB93zUtK3clYT3dIl2u8zhvUssQZ
+ sSOsS8+lmdZVP1IJ5sCPw0EUM57S5l+9e54ZyIzGvOT5fNJKMtigq4g2mq9ThNRwQu18
+ d9PWnrlia75+xyEtfApJ0NZDy3QVN/sEb6Q0FCABhh/oUAgpZI1DyS0AoOP+zfEchs+4
+ b4NE4FmRgNxo92aGlR9JLMu5/L8DAy6NoCbL36Tk+b6raWVXYCpRGJJbbJm6Id9nmkyq
+ SFGg==
+X-Gm-Message-State: ACrzQf0qebnv6RP7rq1xDuAZf+jMc8D5sKlg7m1a3lYcxtDwAgvIZWQ1
+ HTeXpTGIF9qubLpKBxvAQZEczw==
+X-Google-Smtp-Source: AMsMyM65B5CKIKoAtOoSsD0JpIFTe51j6BtOH9csjXvYeIEUaRkmVf8q4zPaQd9DaX2ABMPbeB+JHw==
+X-Received: by 2002:aa7:9710:0:b0:561:7692:fa11 with SMTP id
+ a16-20020aa79710000000b005617692fa11mr2402055pfg.39.1664767483319; 
+ Sun, 02 Oct 2022 20:24:43 -0700 (PDT)
 Received: from doug-ryzen-5700G.. ([50.45.132.124])
  by smtp.gmail.com with ESMTPSA id
- y25-20020aa78f39000000b0053e7d3b8d6dsm6157977pfr.1.2022.10.02.20.24.38
+ y25-20020aa78f39000000b0053e7d3b8d6dsm6157977pfr.1.2022.10.02.20.24.42
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 02 Oct 2022 20:24:38 -0700 (PDT)
+ Sun, 02 Oct 2022 20:24:43 -0700 (PDT)
 From: Doug Brown <doug@schmorgal.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2 1/3] ASoC: dt-bindings: add schema for WM8961
-Date: Sun,  2 Oct 2022 20:24:12 -0700
-Message-Id: <20221003032414.248326-2-doug@schmorgal.com>
+Subject: [PATCH v2 3/3] ASoC: codecs: allow WM8961 to be selected by the user
+Date: Sun,  2 Oct 2022 20:24:14 -0700
+Message-Id: <20221003032414.248326-4-doug@schmorgal.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221003032414.248326-1-doug@schmorgal.com>
 References: <20221003032414.248326-1-doug@schmorgal.com>
@@ -99,61 +99,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Create a simple DT schema for the existing Wolfson WM8961 driver so that
-DT support can be added to the driver.
+Allow the WM8961 driver to be enabled independently now that it is
+usable with devicetree.
 
 Signed-off-by: Doug Brown <doug@schmorgal.com>
 ---
- .../devicetree/bindings/sound/wlf,wm8961.yaml | 40 +++++++++++++++++++
- 1 file changed, 40 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/wlf,wm8961.yaml
+ sound/soc/codecs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/wlf,wm8961.yaml b/Documentation/devicetree/bindings/sound/wlf,wm8961.yaml
-new file mode 100644
-index 000000000000..795d34e1e97a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/wlf,wm8961.yaml
-@@ -0,0 +1,40 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/wlf,wm8961.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Wolfson WM8961 Ultra-Low Power Stereo CODEC
-+
-+maintainers:
-+  - patches@opensource.cirrus.com
-+
-+properties:
-+  compatible:
-+    const: wlf,wm8961
-+
-+  reg:
-+    maxItems: 1
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+required:
-+  - compatible
-+  - reg
-+  - '#sound-dai-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+          #address-cells = <1>;
-+          #size-cells = <0>;
-+
-+          wm8961: codec@4a {
-+                  compatible = "wlf,wm8961";
-+                  reg = <0x4a>;
-+                  #sound-dai-cells = <0>;
-+          };
-+    };
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index e3b90c425faf..2b5787ee8d31 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1929,7 +1929,7 @@ config SND_SOC_WM8960
+ 	depends on I2C
+ 
+ config SND_SOC_WM8961
+-	tristate
++	tristate "Wolfson Microelectronics WM8961 CODEC"
+ 	depends on I2C
+ 
+ config SND_SOC_WM8962
 -- 
 2.34.1
 
