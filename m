@@ -4,69 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A663C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  3 Oct 2022 16:48:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76A2FC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  3 Oct 2022 17:00:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED23D17E5;
-	Mon,  3 Oct 2022 18:47:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED23D17E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A5981848;
+	Mon,  3 Oct 2022 18:59:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A5981848
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664815729;
-	bh=8275/nUNkwTS9Z+rY35CEzhqt4CgDP9X5igmrk+BmuQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1664816410;
+	bh=OOzY0LPoO1nkak2DjGZtx6Lw5J2CqzyxsUf7/SzGTes=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KbT8iy/CkiRF4T7RYLu4GZiSAoTCYYzMBd0a/ov6UZPGVPkmhql3wKjKEK9nInOx+
-	 TG1EcOAC7zcvIBbs0cQm09SUMf0edp6yCRk/dn0xyqsc+Qx0LPoDxkbzQeZjPI3iDH
-	 at5XKuZ4H1hptngcL1dDoKV4m7Pz8CZqYLAJxwe0=
+	b=d+enkU6oZkz320brFRKpCOYl1WduYAPQqXK6SjwJ220sOnvf2ArRy6CbW4telb+6P
+	 PX+Wgj4PnGvbi+s6hSR6tKg/bqs2DcezE/orXj20eC3C304mESrx2EDv+FVeSr43Xn
+	 jkKceBOfkB8SCpYUmy9oe6ODa+g5/UfXO2TYZgQQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7818FF80224;
-	Mon,  3 Oct 2022 18:47:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B126EF80224;
+	Mon,  3 Oct 2022 18:59:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B1E45F80269; Mon,  3 Oct 2022 18:47:57 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id AD7F6F800B5; Mon,  3 Oct 2022 18:59:18 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64E51F800CC
- for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2022 18:47:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64E51F800CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A386F800B5
+ for <alsa-devel@alsa-project.org>; Mon,  3 Oct 2022 18:59:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A386F800B5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ccTXOr0V"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="HTPakP7+"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="H7DaTCWy"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id EA35B61165;
- Mon,  3 Oct 2022 16:47:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C594C433C1;
- Mon,  3 Oct 2022 16:47:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1664815671;
- bh=8275/nUNkwTS9Z+rY35CEzhqt4CgDP9X5igmrk+BmuQ=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ccTXOr0VeVzw1V7AvDqidgIJgg/1hNMxHhUMAirC/a6DhHOGSjk1DgmlKCtfecEnQ
- vA8DVXJN70vsACDl3DTPb7P1QFD5geWn/E4/BabHSx9xu0hkQriFP2MIGlVA9K4HH+
- ae1XEh5SSPa9r8rKiQp+nRrHQ3CeOsiTx+be7qgnB62gaqNOUs6h+gtPdh4HLlbpjJ
- ELka7AYkaAwioxFBRIsfbekJAXCNW+wsH9+DhT8uRrTAd5n+hfMq8ZzlFyGlV2NMUc
- csRC8ktVgAb5EP661b1xslTZyxHaFcU6pDanEAex/XArzGQTCLGeGzVNExVyzFcnk1
- nP8DolLl/vj4Q==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Zhang Qilong <zhangqilong3@huawei.com>, perex@perex.cz,
- ckeepax@opensource.wolfsonmicro.com, 
- matthias.bgg@gmail.com, tiwai@suse.com, jeff_chang@richtek.com
-In-Reply-To: <20220929150653.63845-1-zhangqilong3@huawei.com>
-References: <20220929150653.63845-1-zhangqilong3@huawei.com>
-Subject: Re: [PATCH v2 -next 0/4] Fix PM disable depth imbalance in probe
-Message-Id: <166481566916.272202.9369598232153225882.b4-ty@kernel.org>
-Date: Mon, 03 Oct 2022 17:47:49 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-fc921
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-mediatek@lists.infradead.org
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D6A3E21996;
+ Mon,  3 Oct 2022 16:59:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1664816355; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=QlolsTSvyEV2MT59EkuSB4J8DeKQvzGQl05T5iEnL+Q=;
+ b=HTPakP7+lYRTxnEUj08IwJAhDhdtrRDv9HHPSx+JiS989HVjVH+UNkqA7IKpzfy23YNEhP
+ uo+c8F4ElmG46VwmUduyqpl+u22l+zG5+9sxYPKi5DmoJXODGfTWmY7eHYSb0wjbK43H16
+ NYSailSF+Cz/RyXIDNtPV6r29+yPswU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1664816355;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=QlolsTSvyEV2MT59EkuSB4J8DeKQvzGQl05T5iEnL+Q=;
+ b=H7DaTCWyMv/aURUBFp4b+S3r7yM2SlQbi8C1le90kPtTU0MV1MsRXQUq6JtGaYg/hozfP5
+ kKty9bZMIxH8QGDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B9A7213522;
+ Mon,  3 Oct 2022 16:59:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id fW2LLOMUO2MEHwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 03 Oct 2022 16:59:15 +0000
+Date: Mon, 03 Oct 2022 18:59:15 +0200
+Message-ID: <87zgecq1wc.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC updates for v6.1
+In-Reply-To: <20221003124616.9A4ECC433D6@smtp.kernel.org>
+References: <20221003124616.9A4ECC433D6@smtp.kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,43 +94,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 29 Sep 2022 23:06:49 +0800, Zhang Qilong wrote:
-> The pm_runtime_enable will increase power disable depth. Thus
-> a pairing decrement is needed on the error handling path to
-> keep it balanced according to context. We fix it by calling
-> pm_runtime_disable when error returns.
+On Mon, 03 Oct 2022 14:46:05 +0200,
+Mark Brown wrote:
 > 
+> The following changes since commit 80e78fcce86de0288793a0ef0f6acf37656ee4cf:
+> 
+>   Linux 6.0-rc5 (2022-09-11 16:22:01 -0400)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v6.1
+> 
+> for you to fetch changes up to f0c8d7468af0001b80b0c86802ee28063f800987:
+> 
+>   ASoC: rockchip: i2s: use regmap_read_poll_timeout_atomic to poll I2S_CLR (2022-09-30 17:12:27 +0100)
+> 
+> ----------------------------------------------------------------
+> ASoC: Updates for v6.1
+> 
+> This has been a very quiet release for the core but quite a busy one for
+> drivers with a big crop of new drivers and lots of feature additions and
+> fixes to existing ones:
+> 
+>  - A new string helper parse_int_array_user().
+>  - Improvements to the SOF IPC4 code, especially around trace.
+>  - Support for AMD Rembrant DSPs, AMD Pink Sardine ACP 6.2, Apple Silcon
+>    systems, Everest ES8326, Intel Sky Lake and Kaby Lake, MediaTek
+>    MT8186 support, NXP i.MX8ULP DSPs, Qualcomm SC8280XP, SM8250 and SM8450
+>    and Texas Instruments SRC4392
+> 
+> There is a conflict with the conversion of I2C remove functions to void
+> in the cs42l42 driver which is fairly straightforward to resolve but
+> should be highlighted to Linus.
 
-Applied to
+Thanks, pulled now.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Thanks!
-
-[1/4] ASoC: wm8997: Fix PM disable depth imbalance in wm8997_probe
-      commit: 41a736ac20602f64773e80f0f5b32cde1830a44a
-[2/4] ASoC: wm5110: Fix PM disable depth imbalance in wm5110_probe
-      commit: 86b46bf1feb83898d89a2b4a8d08d21e9ea277a7
-[3/4] ASoC: wm5102: Fix PM disable depth imbalance in wm5102_probe
-      commit: fcbb60820cd3008bb44334a0395e5e57ccb77329
-[4/4] ASoC: mt6660: Fix PM disable depth imbalance in mt6660_i2c_probe
-      commit: b73f11e895e140537e7f8c7251211ccd3ce0782b
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Takashi
