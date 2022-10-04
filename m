@@ -4,42 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A42F9C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Oct 2022 14:51:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AF0CC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Oct 2022 16:38:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5535916FB;
-	Tue,  4 Oct 2022 16:50:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5535916FB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5FDE916F9;
+	Tue,  4 Oct 2022 18:37:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FDE916F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664895099;
-	bh=GwXpTbT/4KvzO2rf6LQ1upwlWU87erLSBYL865qkNrY=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1664901493;
+	bh=dgeSJBPiovnsZkOfe+VBSbXCEVLeqbAkvbk6rFkb1VQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PNM1tXhFOoK6fLn4iUY4tB9PuYEico8xiYcYl6WKeWs0KxLpn3nvcE3ApQUZuMEIE
-	 m2XIxV3Mfw0WiGBO3hbqiFw8sVniCVhdNMk2syjCoHg3tuHdli88lUMcQ0pg7Zsuld
-	 DJEPi0pyF9PFujts5TWT7rAPFn47Nq2/zkSJzVKo=
+	b=oNmnedZosuS0VDhnDnmGS6YvqIIsOWFXbgapP6R98NVfeG8RtfTwxfqqAjd5mMJwb
+	 etHSbn5ZIFiIP9fIuddeTQ18vNR999vrOwvNUekT0Iz2lBaGTuinyba9g16RNaqHFs
+	 nxze56khI2n07FGBJ6PNBWfV1IMOCaiFXYqge4eg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 074CAF80162;
-	Tue,  4 Oct 2022 16:50:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2D90F80162;
+	Tue,  4 Oct 2022 18:37:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2AEDF801EC; Tue,  4 Oct 2022 16:50:47 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 73CFEF800C1
- for <alsa-devel@alsa-project.org>; Tue,  4 Oct 2022 16:50:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73CFEF800C1
+ id 25AFEF801EC; Tue,  4 Oct 2022 18:37:21 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B001F8012A
+ for <alsa-devel@alsa-project.org>; Tue,  4 Oct 2022 18:37:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B001F8012A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="jPrTwaV/"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id DA1DA612F4;
+ Tue,  4 Oct 2022 16:37:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37D84C433C1;
+ Tue,  4 Oct 2022 16:37:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1664901430;
+ bh=dgeSJBPiovnsZkOfe+VBSbXCEVLeqbAkvbk6rFkb1VQ=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=jPrTwaV/jyHEYPz6ihoarcc+8z9jNrOYWWNlHW8uaJncGdPeMNxTgtRYm++wo3AX/
+ 0LxYs05EjJ1UzYkXpSJ1QqtsrB9NUqCD6eD7/9kk4PGbiIvL72V/A+7weUPRtou/UK
+ TpIaNCq4qcOBNzJz1r1SpsJ7eenXOwQP6XO8QLtEC2jy4qyIfDXiM2V1mKFDE3+57S
+ 46SAxksxjpPPZdZtct4BPA5vPgvORu6NQGRh4zc7L5kZnz3uwtuVZnexhIdmxXBSeJ
+ nH+lqSz90B1JebgYi30HhQY/u/KgU+bmRwDW+i/Z+NsTxEwHOk6s+NfNFtUwOwyVew
+ /rd3tbpLRo5yw==
+From: Mark Brown <broonie@kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, lgirdwood@gmail.com,
+ zhangqilong3@huawei.com
+In-Reply-To: <20221004115121.26180-1-peter.ujfalusi@linux.intel.com>
+References: <20221004115121.26180-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] Revert "ASoC: soc-component: using
+ pm_runtime_resume_and_get instead of pm_runtime_get_sync"
+Message-Id: <166490142892.242658.3884003304267132569.b4-ty@kernel.org>
+Date: Tue, 04 Oct 2022 17:37:08 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1664895045102411032-webhooks-bot@alsa-project.org>
-References: <1664895045102411032-webhooks-bot@alsa-project.org>
-Subject: tgl dmic volume too low
-Message-Id: <20221004145047.B2AEDF801EC@alsa1.perex.cz>
-Date: Tue,  4 Oct 2022 16:50:47 +0200 (CEST)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.10.0-dev-fc921
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,42 +82,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #224 was edited from yuvalk:
+On Tue, 4 Oct 2022 14:51:21 +0300, Peter Ujfalusi wrote:
+> From: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+> 
+> This reverts commit 08fc2a7448afc1660ec2f1b5c437fcd14155a7ee.
+> 
+> The reverted commit causes the following warnigs:
+> Runtime PM usage count underflow!
+> 
+> [...]
 
-x1carbon gen 9 (tiger lake)
-all capture devices at max volume (mic boost, capture, dmic0 front, dmic0 rear, dmic1 2nd front, dmic1 2nd rear, PGA2.0 2 M)
-still reads from mic is ~5-7% (as can be seen in `arecord -vv --format=dat /dev/null` )
+Applied to
 
-device is using sof-audio-pci-intel-tgl:
-```
-$ sudo lspci -vvv -s 00:1f.3
-00:1f.3 Audio device: Intel Corporation Tiger Lake-LP Smart Sound Technology Audio Controller (rev 20) (prog-if 80)
-	Subsystem: Lenovo Device 22d5
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
-	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-	Latency: 64
-	Interrupt: pin A routed to IRQ 185
-	IOMMU group: 13
-	Region 0: Memory at 603d1c8000 (64-bit, non-prefetchable) [size=16K]
-	Region 4: Memory at 603d000000 (64-bit, non-prefetchable) [size=1M]
-	Capabilities: [50] Power Management version 3
-		Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0-,D1-,D2-,D3hot+,D3cold+)
-		Status: D0 NoSoftRst+ PME-Enable- DSel=0 DScale=0 PME-
-	Capabilities: [80] Vendor Specific Information: Len=14 <?>
-	Capabilities: [60] MSI: Enable+ Count=1/1 Maskable- 64bit+
-		Address: 00000000fee00998  Data: 0000
-	Kernel driver in use: sof-audio-pci-intel-tgl
-	Kernel modules: snd_hda_intel, snd_sof_pci_intel_tgl
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-```
+Thanks!
 
-this is with linux-5.19.11 on arch linux
-sof-firmware 2.2.2-1
-alsa-card-profiles 1:0.3.58-1
-alsa-lib 1.2.7.2-1
-alsa-topology-conf 1.2.5.1-1
-alsa-ucm-conf 1.2.7.2-1
-alsa-utils 1.2.7-1
+[1/1] Revert "ASoC: soc-component: using pm_runtime_resume_and_get instead of pm_runtime_get_sync"
+      commit: 0c72dbc96be870e4de8f9707c9a4c6d7a641381c
 
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/224
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
