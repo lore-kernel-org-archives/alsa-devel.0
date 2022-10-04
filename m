@@ -4,71 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49C26C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Oct 2022 11:52:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17FDDC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Oct 2022 11:55:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E2C7816E2;
-	Tue,  4 Oct 2022 13:51:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2C7816E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id ACEFF16FF;
+	Tue,  4 Oct 2022 13:54:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACEFF16FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664884327;
-	bh=ismF+AEGmGPx3QEX3gt85btPu4GDpT1W/+k8ZzsQIoc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=SOBFr5a0rBfuFp8Mup/ngaeVhijoMd9qKOm1BTo7MC/s5H44eHpxFApVrr19p6e57
-	 LRUEHHg1CAeiiwgn8mXucTZ7SEdC7y65dG3uEuwmUUmgdiEmf0Xt1hYxwLEopHq+CX
-	 FizYreoNiKDq4iyaXPfzSjpvARgj9t4cbSfwZdyQ=
+	s=default; t=1664884506;
+	bh=VxuU8+tOXIxlabs6FTo/A5zqins5zLFrcbIP7i9/lIg=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=bbRcIc7WEgmzfK+5dEEc93liNYtQLDPALbk7IfIdBFUh/CIHQ5JZ5bx5gzocbvFiX
+	 suwVnsPBnE0WtOrh6a/3DQRVmLMPIqwztqKK0P92POaEhHqaSgSdmYQ9DiusdOESLh
+	 HVt8pnCusVoq1TQCV3KGNG16YAWoYuDfiDrkqaVs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76FD3F80162;
-	Tue,  4 Oct 2022 13:51:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43641F80162;
+	Tue,  4 Oct 2022 13:54:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D69CEF800C1; Tue,  4 Oct 2022 13:51:14 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 70BFBF801EC; Tue,  4 Oct 2022 13:54:14 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8D23F800C1
- for <alsa-devel@alsa-project.org>; Tue,  4 Oct 2022 13:51:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8D23F800C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76537F8012A
+ for <alsa-devel@alsa-project.org>; Tue,  4 Oct 2022 13:54:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76537F8012A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="IuhF+C2s"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1664884272; x=1696420272;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=ismF+AEGmGPx3QEX3gt85btPu4GDpT1W/+k8ZzsQIoc=;
- b=IuhF+C2sM7P0eoXPZJd6gFqCU3FyPWSzJqMx0hejNOfVYpljCijgSDbr
- kg1/jm7dKQ46lgJR6skLZq+kJQ00BuSkmwRZQofyTb+5hIixRkYW+Td5O
- bIQ/vvFNoxq1FjfQeDrfd5dr/lKJzU6sR6zHDUYzRk2/n61dXQik3TGhA
- y4ojKBS5ezEvO3OfttebCVezXRITsYPJFjBHgkS6mVCtzhF0ddfbcGCx9
- fxSB26O2ZI6+eYZ6bmHKcNrCgv8HU5S1OOH+YdVWSaBcC1fztEdVEWQaB
- OXPwUbWhqmpPM8WIZK3AIOyx7hCp+C8+1iUeeML65PdpZ2ow/XPp2980M A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10489"; a="283257321"
-X-IronPort-AV: E=Sophos;i="5.93,157,1654585200"; d="scan'208";a="283257321"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Oct 2022 04:51:07 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10489"; a="692460120"
-X-IronPort-AV: E=Sophos;i="5.93,157,1654585200"; d="scan'208";a="692460120"
-Received: from apietrus-mobl1.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.23.101])
- by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Oct 2022 04:51:05 -0700
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	zhangqilong3@huawei.com
-Subject: [PATCH] Revert "ASoC: soc-component: using pm_runtime_resume_and_get
- instead of pm_runtime_get_sync"
-Date: Tue,  4 Oct 2022 14:51:21 +0300
-Message-Id: <20221004115121.26180-1-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.37.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="WSkO+80a"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="naDGG8Dv"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 82354218FF;
+ Tue,  4 Oct 2022 11:54:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1664884447; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=UhmznXb39JLPBgAlyn/HPXax8IfX/xB0HtsJDlZQ+qI=;
+ b=WSkO+80aW4JzH2170R7XWiSItGWeL/V9MzvmtFE2C0IYOqweHaEBGst1h5FfvDkn5nSJax
+ /mp1e8y5MQRz47+XSyrfAuQ1kxIfVUj3hk9nSGSdvtNist6FwaQJ4i9LLVs/9cC8vxnZGK
+ NxAfhCjPemcdtrt5inyE5IyF7BgIDTw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1664884447;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=UhmznXb39JLPBgAlyn/HPXax8IfX/xB0HtsJDlZQ+qI=;
+ b=naDGG8Dv3DCJBkvwq12uivCvJ0Ww5tZNVl5wQ2rcSyB7Wwauck159pp0fnpQe1lhxHZsCL
+ VhvzotmlVqMsx3DQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 66192139D2;
+ Tue,  4 Oct 2022 11:54:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8hotGN8ePGPFLwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 04 Oct 2022 11:54:07 +0000
+Date: Tue, 04 Oct 2022 13:54:06 +0200
+Message-ID: <87h70jpzxd.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Geoffrey D. Bennett" <g@b4.vu>
+Subject: Re: [PATCH] ALSA: usb-audio: Split endpoint setups for hw_params and
+ prepare (take#2)
+In-Reply-To: <Yzr/aQ3nSTPeGDq1@m.b4.vu>
+References: <20220920181106.4894-1-tiwai@suse.de>
+	<Yzr/aQ3nSTPeGDq1@m.b4.vu>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,44 +96,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+On Mon, 03 Oct 2022 17:27:37 +0200,
+Geoffrey D. Bennett wrote:
+> 
+> Hi Takashi,
+> 
+> On Tue, Sep 20, 2022 at 08:11:06PM +0200, Takashi Iwai wrote:
+> > This is a second attempt to fix the bug appearing on Android with the
+> > recent kernel; the first try was ff878b408a03 and reverted at commit
+> > 79764ec772bc.
+> 
+> I found that full-duplex audio for Scarlett devices was broken in
+> 5.19.11 but working again 5.19.12, presumably due to this. escuta at
+> https://linuxmusicians.com/viewtopic.php?p=148734#p148734 reported
+> that it was broken from 5.19.9 but 5.19.8 worked (they also reported
+> that 5.9.12 didn't work, which I can't explain).
+> 
+> 5.19.12 and 6.0.0 work for me, but 6.0.0 + your v2 patch makes the
+> gnome sound settings app crash when setting the output device to
+> Scarlett if the input device was already set to Scarlett.
+> 
+> Using the gnome-control-center (42.3) app (Fedora 36, PipeWire 0.3.59,
+> WirePlumber 0.4.11) to test:
+> 
+> - Kernel 5.19.11: can't set both input and output device to Scarlett;
+>   changing output to Scarlett makes the input device switch to
+>   something else, and changing the input device to Scarlett makes the
+>   output device switch to something else
+> 
+> - Kernel 5.9.12 & 6.0.0: can set both input and output device to
+>   Scarlett, all good/normal
+> 
+> - Kernel 6.0.0+v2 patch: if both input and output device are already
+>   set to Scarlett, works fine. Change output device to something else
+>   then back to Scarlett, the settings app hangs. Kill the app, restart
+>   it, the input & output device are both Scarlett & it appears to work
+>   fine again until you change the output device to Scarlett when the
+>   input device is already Scarlett. Changing it in the other order
+>   (set input device to Scarlett when output device is already
+>   Scarlett) works no problem.
 
-This reverts commit 08fc2a7448afc1660ec2f1b5c437fcd14155a7ee.
+Hmm.  Just to be sure, could you verify the behavior with 6.0 +
+for-linus branch of sound git repo?
 
-The reverted commit causes the following warnigs:
-Runtime PM usage count underflow!
 
-This is due to the fact that the pm_runtime_resume_and_get() is calling
-pm_runtime_put_noidle() in case of < 0 return value of
-pm_runtime_get_sync() which includes the -EACCES.
-The change is wrong as -EACCES is returned in case of 'nested' get_sync()
-and it is a valid use of PM runtime.
+thanks,
 
-Fixes: 08fc2a7448af ("ASoC: soc-component: using pm_runtime_resume_and_get instead of pm_runtime_get_sync")
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
----
- sound/soc/soc-component.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-index 659b9ade4158..e12f8244242b 100644
---- a/sound/soc/soc-component.c
-+++ b/sound/soc/soc-component.c
-@@ -1213,9 +1213,11 @@ int snd_soc_pcm_component_pm_runtime_get(struct snd_soc_pcm_runtime *rtd,
- 	int i;
- 
- 	for_each_rtd_components(rtd, i, component) {
--		int ret = pm_runtime_resume_and_get(component->dev);
--		if (ret < 0 && ret != -EACCES)
-+		int ret = pm_runtime_get_sync(component->dev);
-+		if (ret < 0 && ret != -EACCES) {
-+			pm_runtime_put_noidle(component->dev);
- 			return soc_component_ret(component, ret);
-+		}
- 		/* mark stream if succeeded */
- 		soc_component_mark_push(component, stream, pm);
- 	}
--- 
-2.37.3
-
+Takashi
