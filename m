@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72AB6C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  4 Oct 2022 14:48:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A42F9C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue,  4 Oct 2022 14:51:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B36361660;
-	Tue,  4 Oct 2022 16:47:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B36361660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5535916FB;
+	Tue,  4 Oct 2022 16:50:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5535916FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664894913;
-	bh=dvtSCMOLUBksWIAbsPCAI+SownkArkMbwrdXw4+/Xcs=;
+	s=default; t=1664895099;
+	bh=GwXpTbT/4KvzO2rf6LQ1upwlWU87erLSBYL865qkNrY=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ac8HQ8zVox8KcdDyw1a0tGsy/SwN4HqEzwRAte6aGwRwQgzOgxTkYQR/cxow0bkd8
-	 cHnlueUPWZHCT/5B6z27do2Me2y3oyg1GbPXVoP4R6LLIEt/D08yFfb3JaD973iiZg
-	 5oO/t0Azq6Z0GFsfNO8L3dyntUihaBrTtLpPFfbM=
+	b=PNM1tXhFOoK6fLn4iUY4tB9PuYEico8xiYcYl6WKeWs0KxLpn3nvcE3ApQUZuMEIE
+	 m2XIxV3Mfw0WiGBO3hbqiFw8sVniCVhdNMk2syjCoHg3tuHdli88lUMcQ0pg7Zsuld
+	 DJEPi0pyF9PFujts5TWT7rAPFn47Nq2/zkSJzVKo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4020DF80162;
-	Tue,  4 Oct 2022 16:47:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 074CAF80162;
+	Tue,  4 Oct 2022 16:50:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4723DF801EC; Tue,  4 Oct 2022 16:47:42 +0200 (CEST)
+ id B2AEDF801EC; Tue,  4 Oct 2022 16:50:47 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id C6CD0F8012A
- for <alsa-devel@alsa-project.org>; Tue,  4 Oct 2022 16:47:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6CD0F8012A
+ by alsa1.perex.cz (Postfix) with ESMTP id 73CFEF800C1
+ for <alsa-devel@alsa-project.org>; Tue,  4 Oct 2022 16:50:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73CFEF800C1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1664894857067253113-webhooks-bot@alsa-project.org>
-References: <1664894857067253113-webhooks-bot@alsa-project.org>
+In-Reply-To: <1664895045102411032-webhooks-bot@alsa-project.org>
+References: <1664895045102411032-webhooks-bot@alsa-project.org>
 Subject: tgl dmic volume too low
-Message-Id: <20221004144742.4723DF801EC@alsa1.perex.cz>
-Date: Tue,  4 Oct 2022 16:47:42 +0200 (CEST)
+Message-Id: <20221004145047.B2AEDF801EC@alsa1.perex.cz>
+Date: Tue,  4 Oct 2022 16:50:47 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,7 +55,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #224 was opened from yuvalk:
+alsa-project/alsa-ucm-conf issue #224 was edited from yuvalk:
 
 x1carbon gen 9 (tiger lake)
 all capture devices at max volume (mic boost, capture, dmic0 front, dmic0 rear, dmic1 2nd front, dmic1 2nd rear, PGA2.0 2 M)
@@ -83,6 +83,14 @@ $ sudo lspci -vvv -s 00:1f.3
 	Kernel modules: snd_hda_intel, snd_sof_pci_intel_tgl
 
 ```
+
+this is with linux-5.19.11 on arch linux
+sof-firmware 2.2.2-1
+alsa-card-profiles 1:0.3.58-1
+alsa-lib 1.2.7.2-1
+alsa-topology-conf 1.2.5.1-1
+alsa-ucm-conf 1.2.7.2-1
+alsa-utils 1.2.7-1
 
 Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/224
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
