@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BE25C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  7 Oct 2022 16:17:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE4A7C433FE
+	for <alsa-devel@archiver.kernel.org>; Fri,  7 Oct 2022 16:18:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4AD9E164D;
-	Fri,  7 Oct 2022 18:16:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AD9E164D
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCD8B16BD;
+	Fri,  7 Oct 2022 18:17:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCD8B16BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665159449;
-	bh=SMZYy/Tm90/JulgBIwkR+5Hwk+PcvlZsJSgsIJTbYDE=;
+	s=default; t=1665159479;
+	bh=0C18M1EeYvgAMEt5H3ry/qfJWUUHL3rSeRrYBOf0P5o=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JOokDavLclWrT0pI/UiUJnw9+mxEoM/pgQsJVz8pnxUIxflhtztlYSgzGCkTqjXM0
-	 BzQ7p/hxRvoa9cnMLd8/3KaAd/4LDmjjCrFAijdAVRQjClui8jE9sIS2VtAPKGYZlq
-	 U7ZhQ1dQWpbC676Cr1ckf1JsyY74mZsPjD4lm8CY=
+	b=u77qpzex0PLfLeD93xsPHMExOZeo27DQMg+uy2mhSdNoLlwbg6dFPR0ejKrCoQq0t
+	 mPJKjz2HvFlW/pVFbKc1LMGlHuWP7SxH0kFxCkgC61z4e1zf8ykAiHYcdzoL/jf4q+
+	 BPcgVVqbCHl6DD0gn5qpnvb5Cq5ZOnTrr0BXyCdg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4EB5F8024C;
-	Fri,  7 Oct 2022 18:16:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70B3AF8012B;
+	Fri,  7 Oct 2022 18:17:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4B25F8012A; Fri,  7 Oct 2022 18:16:37 +0200 (CEST)
+ id 1321DF804D0; Fri,  7 Oct 2022 18:17:08 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 067B3F8012B
- for <alsa-devel@alsa-project.org>; Fri,  7 Oct 2022 18:16:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 067B3F8012B
+ by alsa1.perex.cz (Postfix) with ESMTP id 6FDB8F8012B
+ for <alsa-devel@alsa-project.org>; Fri,  7 Oct 2022 18:17:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FDB8F8012B
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1665159393393438101-webhooks-bot@alsa-project.org>
-References: <1665159393393438101-webhooks-bot@alsa-project.org>
+In-Reply-To: <1665159425251491070-webhooks-bot@alsa-project.org>
+References: <1665159425251491070-webhooks-bot@alsa-project.org>
 Subject: alsa-lib-1.2.7.2/src/pcm/pcm.c:3238 triggers SIGSEGV
-Message-Id: <20221007161637.A4B25F8012A@alsa1.perex.cz>
-Date: Fri,  7 Oct 2022 18:16:37 +0200 (CEST)
+Message-Id: <20221007161708.1321DF804D0@alsa1.perex.cz>
+Date: Fri,  7 Oct 2022 18:17:08 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,10 +55,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #274 was opened from mmokrejs:
+alsa-project/alsa-lib issue #274 was edited from mmokrejs:
 
 Hi,
-  I tried and example `espeak-ng "This is a test"` command but it crahes inside libasound2.
+  I tried an example command `espeak-ng "This is a test"` command but it crahes inside `libasound2`.
 
 ```
 [Thread debugging using libthread_db enabled]
