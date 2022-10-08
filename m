@@ -4,61 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50ED4C433F5
-	for <alsa-devel@archiver.kernel.org>; Sat,  8 Oct 2022 13:40:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E308C433F5
+	for <alsa-devel@archiver.kernel.org>; Sat,  8 Oct 2022 14:01:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C39A1673;
-	Sat,  8 Oct 2022 15:39:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C39A1673
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61DFE163A;
+	Sat,  8 Oct 2022 16:00:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61DFE163A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665236448;
-	bh=Cm1wr+Zb6j6RbPivM1qlV8EL71nqkTAhnkYZ6cpJ9Es=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=dal3dIGeTmq5qDmWs3OvLiMXxg317H59W/Koxuv3H9OE+SQ1B+rtc04c0zcTz3mqK
-	 PjWrIoQ4G/jm7KUF86GPk2LyhcbqoHHs3BMrCXsROWgbF+BHS/bSb8rbTw01ImxKX6
-	 +CoDoe42uTFdbTS8FT5E2hHtiCaDc4D11YXm0Jpk=
+	s=default; t=1665237679;
+	bh=PaH59fQPBjgww/J7dLVwCZoru+V+/E/v50gBpBddlGo=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=sbKRqMNX8c9SW9MTVE4OVYgSf37Xh/KILv/qcyN/+niK6SK+4pdi+EG7D80Mhs9MO
+	 20bWJhP3jcTDYGiPpKiEdU9fCyy1H68+WQg5mk4ml+RbmNReZAFCUAWbx836QsGGo2
+	 Z6xbH6rLvj4rnQeniTc59y6ubFeVlBcn4Fb16HdA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEE67F80542;
-	Sat,  8 Oct 2022 15:39:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D27BEF800B8;
+	Sat,  8 Oct 2022 16:00:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4166BF804E2; Sat,  8 Oct 2022 15:39:04 +0200 (CEST)
+ id AAC6FF80310; Sat,  8 Oct 2022 16:00:26 +0200 (CEST)
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DA83F80272
- for <alsa-devel@alsa-project.org>; Sat,  8 Oct 2022 15:38:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DA83F80272
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ml5m204VtzpVhN;
- Sat,  8 Oct 2022 21:35:46 +0800 (CST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99D93F800B8
+ for <alsa-devel@alsa-project.org>; Sat,  8 Oct 2022 16:00:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99D93F800B8
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ml6C54m9LzlXd7;
+ Sat,  8 Oct 2022 21:55:45 +0800 (CST)
 Received: from kwepemm600014.china.huawei.com (7.193.23.54) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 8 Oct 2022 21:38:52 +0800
+ 15.1.2375.31; Sat, 8 Oct 2022 22:00:15 +0800
 Received: from huawei.com (10.90.53.225) by kwepemm600014.china.huawei.com
  (7.193.23.54) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Sat, 8 Oct
- 2022 21:38:52 +0800
+ 2022 22:00:14 +0800
 From: Zhang Qilong <zhangqilong3@huawei.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>, <matthias.bgg@gmail.com>,
- <ckeepax@opensource.wolfsonmicro.com>, <jeff_chang@richtek.com>
-Subject: [PATCH -next 3/3] Revert "ASoC: wm8997: Fix PM disable depth
- imbalance in wm8997_probe"
-Date: Sat, 8 Oct 2022 21:43:58 +0800
-Message-ID: <20221008134358.131712-4-zhangqilong3@huawei.com>
+ <ckeepax@opensource.wolfsonmicro.com>, <jeff_chang@richtek.com>,
+ <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH -next] ASoC: mt6660: Keep the pm_runtime enables before
+ component stuff in mt6660_i2c_probe
+Date: Sat, 8 Oct 2022 22:05:22 +0800
+Message-ID: <20221008140522.134912-1-zhangqilong3@huawei.com>
 X-Mailer: git-send-email 2.26.0.106.g9fadedd
-In-Reply-To: <20221008134358.131712-1-zhangqilong3@huawei.com>
-References: <20221008134358.131712-1-zhangqilong3@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-Originating-IP: [10.90.53.225]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemm600014.china.huawei.com (7.193.23.54)
 X-CFilter-Loop: Reflected
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
@@ -78,40 +76,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This reverts commit 41a736ac20602f64773e80f0f5b32cde1830a44a.
-
-The pm_runtime_disable is redundant when error returns in
-wm8997_probe, we just revert the old patch to fix it.
+It would be better to keep the pm_runtime enables before the
+IRQ and component stuff. Both of those could start triggering
+PM runtime events.
 
 Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- sound/soc/codecs/wm8997.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/mt6660.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-index f8993176d5c0..c0207e9a7d53 100644
---- a/sound/soc/codecs/wm8997.c
-+++ b/sound/soc/codecs/wm8997.c
-@@ -1161,6 +1161,9 @@ static int wm8997_probe(struct platform_device *pdev)
- 		regmap_update_bits(arizona->regmap, wm8997_digital_vu[i],
- 				   WM8997_DIG_VU, WM8997_DIG_VU);
- 
-+	pm_runtime_enable(&pdev->dev);
-+	pm_runtime_idle(&pdev->dev);
-+
- 	arizona_init_common(arizona);
- 
- 	ret = arizona_init_vol_limit(arizona);
-@@ -1179,9 +1182,6 @@ static int wm8997_probe(struct platform_device *pdev)
- 		goto err_spk_irqs;
+diff --git a/sound/soc/codecs/mt6660.c b/sound/soc/codecs/mt6660.c
+index 554c33e8b62f..cc2df5f7ea19 100644
+--- a/sound/soc/codecs/mt6660.c
++++ b/sound/soc/codecs/mt6660.c
+@@ -503,14 +503,14 @@ static int mt6660_i2c_probe(struct i2c_client *client)
+ 		dev_err(chip->dev, "read chip revision fail\n");
+ 		goto probe_fail;
  	}
++	pm_runtime_set_active(chip->dev);
++	pm_runtime_enable(chip->dev);
  
--	pm_runtime_enable(&pdev->dev);
--	pm_runtime_idle(&pdev->dev);
--
+ 	ret = devm_snd_soc_register_component(chip->dev,
+ 					       &mt6660_component_driver,
+ 					       &mt6660_codec_dai, 1);
+-	if (!ret) {
+-		pm_runtime_set_active(chip->dev);
+-		pm_runtime_enable(chip->dev);
+-	}
++	if (ret)
++		pm_runtime_disable(chip->dev);
+ 
  	return ret;
  
- err_spk_irqs:
 -- 
 2.25.1
 
