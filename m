@@ -4,83 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A0B1C433F5
-	for <alsa-devel@archiver.kernel.org>; Sun,  9 Oct 2022 10:44:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DC8AC433FE
+	for <alsa-devel@archiver.kernel.org>; Sun,  9 Oct 2022 23:50:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1017E1EB;
-	Sun,  9 Oct 2022 12:43:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1017E1EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id A3C0C167E;
+	Mon, 10 Oct 2022 01:49:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3C0C167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665312261;
-	bh=7QpxV0g7vvFkYEskhnouI40Pm1s1Ztcw7wVbN4T/3kU=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1665359449;
+	bh=DBhVd95XpZutQyzgeXjErPc70e6GrTLKwZc/rk2PCZI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KfZZt9A7XHG73x0WV3DQOFGibHH0cTsOncY/faHokVa1hSVW5umgGjgUekS9Fnl60
-	 ra5os+iRb0p1RjsIObDd6FcYGYgmgj34tjVUf29z3uO9kUzaYdIXM0vg32PYc9eDTX
-	 xLFP2zh5FKP2D4ggZX94UWVoamUCz/BlBz7pF76c=
+	b=bOnLCTE3LmD7WMVcGOFY/RZJxdmZooDKIDFGDnSD67Dhjf+1qgYXuk0O70A8T3rZw
+	 MnxvT/d6+w3DTIOwCac7tqTXBpUytsZwqUGlw6zWhWby1srrwoQ2wm+2ACOBxHth4/
+	 4ekkylmUKg1MOtjVXQawj7sm8CYRhOiTjtrUun9E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2887F80543;
-	Sun,  9 Oct 2022 12:42:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1CA2CF80256;
+	Mon, 10 Oct 2022 01:49:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D04A8F80137; Sun,  9 Oct 2022 12:42:52 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id D0A3CF804CB; Mon, 10 Oct 2022 01:49:57 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 588CFF8052D
- for <alsa-devel@alsa-project.org>; Sun,  9 Oct 2022 12:42:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 588CFF8052D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 647E3F800B8
+ for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 01:49:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 647E3F800B8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="UtvuoI8G"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Biyt6ivu"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="pTAXnGc3"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id BB00E218D6;
- Sun,  9 Oct 2022 10:42:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1665312135; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=AVj340hVAF1Zp0Hd1iqtwpnN1AONA+fMt1ZEUSy1EFE=;
- b=UtvuoI8GZQlTjMfVpDRP49rDgoYIQOtVfiOsnNRf2Fi+WlvdvlFz0H+Q4274BmlPLd8Lp9
- dQ8ZYd6nvn0S5VhEVjRMCLmrSE1EuVZNgrzhOzyK3G+XzfMXiJQSWia/PiIz6zC41WFToG
- 9HK8gDAM68AHm35YCsDmwtl/itvzSOg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1665312135;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=AVj340hVAF1Zp0Hd1iqtwpnN1AONA+fMt1ZEUSy1EFE=;
- b=Biyt6ivu/VNFJLu42IEDwbQT0CrvgBJ95VvcJ8IdgyF/2UXS6yEw1aUm5PC5CGhbFLwUVm
- cBSJnZqlpfZXnfAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9FBB913AC8;
- Sun,  9 Oct 2022 10:42:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 6OlDJoelQmMsfAAAMHmgww
- (envelope-from <tiwai@suse.de>); Sun, 09 Oct 2022 10:42:15 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/4] ALSA: usb-audio: Avoid unnecessary interface change at EP
- close
-Date: Sun,  9 Oct 2022 12:42:09 +0200
-Message-Id: <20221009104212.18877-2-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20221009104212.18877-1-tiwai@suse.de>
-References: <20221009104212.18877-1-tiwai@suse.de>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 49DCEB80DE0;
+ Sun,  9 Oct 2022 23:49:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3AA6C433D6;
+ Sun,  9 Oct 2022 23:49:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1665359389;
+ bh=DBhVd95XpZutQyzgeXjErPc70e6GrTLKwZc/rk2PCZI=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=pTAXnGc3bBW8hVojdZY7HgrOgp6ZWLd0Gogb5w8MaFzD1hx7mMtEvUHVDqZF7JQDW
+ Lz47Fn4jFAY+RJzRWggojc8JAikOE6U0qDuxr/vSs+eIod1lTM/8s4tVTiTygCFGk0
+ qWbGDM9NHOkgKhcSDhIOiaHRRYRimGEv4DBe9TpjTGhydv4MC2Qh0ZCz2WtD1GEpuz
+ t01N1xfX1tIUZcKSIM1/NR8ywL8VqyMUzZ9oMlCX3sCtoRPVN5hMvZA1dWRDjUa5yb
+ B1IcZhaYpghUnaeAY9wX7YjkVZZZShrIcRcavgp/SldjRndGqkFB1BXDPFvCgITaaV
+ 5V9puwWd8K9hA==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.0 07/44] ALSA: hda: Fix page fault in
+ snd_hda_codec_shutdown()
+Date: Sun,  9 Oct 2022 19:48:55 -0400
+Message-Id: <20221009234932.1230196-7-sashal@kernel.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221009234932.1230196-1-sashal@kernel.org>
+References: <20221009234932.1230196-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
+Cc: Sasha Levin <sashal@kernel.org>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>,
+ tiwai@suse.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, peter.ujfalusi@linux.intel.com,
+ mkumard@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,46 +87,106 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We toggle USB interface at PCM prepare and reset at close.  When the
-PCM isn't prepared, resetting again makes little sense.
-Check the current altset and avoid unnecessary interface reset at EP
-close.
+From: Cezary Rojewski <cezary.rojewski@intel.com>
 
+[ Upstream commit f2bd1c5ae2cb0cf9525c9bffc0038c12dd7e1338 ]
+
+If early probe of HDAudio bus driver fails e.g.: due to missing
+firmware file, snd_hda_codec_shutdown() ends in manipulating
+uninitialized codec->pcm_list_head causing page fault.
+
+Initialization of HDAudio codec in ASoC is split in two:
+- snd_hda_codec_device_init()
+- snd_hda_codec_device_new()
+
+snd_hda_codec_device_init() is called during probe_codecs() by HDAudio
+bus driver while snd_hda_codec_device_new() is called by
+codec-component's ->probe(). The second call will not happen until all
+components required by related sound card are present within the ASoC
+framework. With firmware failing to load during the PCI's deferred
+initialization i.e.: probe_work(), no platform components are ever
+registered. HDAudio codec enumeration is done at that point though, so
+the codec components became registered to ASoC framework, calling
+snd_hda_codec_device_init() in the process.
+
+Now, during platform reboot snd_hda_codec_shutdown() is called for every
+codec found on the HDAudio bus causing oops if any of them has not
+completed both of their initialization steps. Relocating field
+initialization fixes the issue.
+
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Link: https://lore.kernel.org/r/20220816111727.3218543-7-cezary.rojewski@intel.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/endpoint.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/pci/hda/hda_codec.c | 41 +++++++++++++++++++--------------------
+ 1 file changed, 20 insertions(+), 21 deletions(-)
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 48a3843a08f1..f21acbc9f4f4 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -32,6 +32,7 @@ struct snd_usb_iface_ref {
- 	unsigned char iface;
- 	bool need_setup;
- 	int opened;
-+	int altset;
- 	struct list_head list;
- };
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 384426d7e9dd..4ae8b9574778 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -931,8 +931,28 @@ snd_hda_codec_device_init(struct hda_bus *bus, unsigned int codec_addr,
+ 	}
  
-@@ -899,6 +900,9 @@ static int endpoint_set_interface(struct snd_usb_audio *chip,
- 	int altset = set ? ep->altsetting : 0;
- 	int err;
+ 	codec->bus = bus;
++	codec->depop_delay = -1;
++	codec->fixup_id = HDA_FIXUP_ID_NOT_SET;
++	codec->core.dev.release = snd_hda_codec_dev_release;
++	codec->core.exec_verb = codec_exec_verb;
+ 	codec->core.type = HDA_DEV_LEGACY;
  
-+	if (ep->iface_ref->altset == altset)
-+		return 0;
++	mutex_init(&codec->spdif_mutex);
++	mutex_init(&codec->control_mutex);
++	snd_array_init(&codec->mixers, sizeof(struct hda_nid_item), 32);
++	snd_array_init(&codec->nids, sizeof(struct hda_nid_item), 32);
++	snd_array_init(&codec->init_pins, sizeof(struct hda_pincfg), 16);
++	snd_array_init(&codec->driver_pins, sizeof(struct hda_pincfg), 16);
++	snd_array_init(&codec->cvt_setups, sizeof(struct hda_cvt_setup), 8);
++	snd_array_init(&codec->spdif_out, sizeof(struct hda_spdif_out), 16);
++	snd_array_init(&codec->jacktbl, sizeof(struct hda_jack_tbl), 16);
++	snd_array_init(&codec->verbs, sizeof(struct hda_verb *), 8);
++	INIT_LIST_HEAD(&codec->conn_list);
++	INIT_LIST_HEAD(&codec->pcm_list_head);
++	INIT_DELAYED_WORK(&codec->jackpoll_work, hda_jackpoll_work);
++	refcount_set(&codec->pcm_ref, 1);
++	init_waitqueue_head(&codec->remove_sleep);
 +
- 	usb_audio_dbg(chip, "Setting usb interface %d:%d for EP 0x%x\n",
- 		      ep->iface, altset, ep->ep_num);
- 	err = usb_set_interface(chip->dev, ep->iface, altset);
-@@ -910,6 +914,7 @@ static int endpoint_set_interface(struct snd_usb_audio *chip,
- 
- 	if (chip->quirk_flags & QUIRK_FLAG_IFACE_DELAY)
- 		msleep(50);
-+	ep->iface_ref->altset = altset;
- 	return 0;
+ 	return codec;
  }
+ EXPORT_SYMBOL_GPL(snd_hda_codec_device_init);
+@@ -985,29 +1005,8 @@ int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
+ 	if (snd_BUG_ON(codec_addr > HDA_MAX_CODEC_ADDRESS))
+ 		return -EINVAL;
  
+-	codec->core.dev.release = snd_hda_codec_dev_release;
+-	codec->core.exec_verb = codec_exec_verb;
+-
+ 	codec->card = card;
+ 	codec->addr = codec_addr;
+-	mutex_init(&codec->spdif_mutex);
+-	mutex_init(&codec->control_mutex);
+-	snd_array_init(&codec->mixers, sizeof(struct hda_nid_item), 32);
+-	snd_array_init(&codec->nids, sizeof(struct hda_nid_item), 32);
+-	snd_array_init(&codec->init_pins, sizeof(struct hda_pincfg), 16);
+-	snd_array_init(&codec->driver_pins, sizeof(struct hda_pincfg), 16);
+-	snd_array_init(&codec->cvt_setups, sizeof(struct hda_cvt_setup), 8);
+-	snd_array_init(&codec->spdif_out, sizeof(struct hda_spdif_out), 16);
+-	snd_array_init(&codec->jacktbl, sizeof(struct hda_jack_tbl), 16);
+-	snd_array_init(&codec->verbs, sizeof(struct hda_verb *), 8);
+-	INIT_LIST_HEAD(&codec->conn_list);
+-	INIT_LIST_HEAD(&codec->pcm_list_head);
+-	refcount_set(&codec->pcm_ref, 1);
+-	init_waitqueue_head(&codec->remove_sleep);
+-
+-	INIT_DELAYED_WORK(&codec->jackpoll_work, hda_jackpoll_work);
+-	codec->depop_delay = -1;
+-	codec->fixup_id = HDA_FIXUP_ID_NOT_SET;
+ 
+ #ifdef CONFIG_PM
+ 	codec->power_jiffies = jiffies;
 -- 
-2.35.3
+2.35.1
 
