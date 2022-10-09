@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9929DC433FE
-	for <alsa-devel@archiver.kernel.org>; Sun,  9 Oct 2022 23:52:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CB0CC433FE
+	for <alsa-devel@archiver.kernel.org>; Sun,  9 Oct 2022 23:53:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC52C16D2;
-	Mon, 10 Oct 2022 01:51:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC52C16D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id A9D2316D1;
+	Mon, 10 Oct 2022 01:52:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9D2316D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665359558;
-	bh=8vlZOH+1gnjwy2xjkBABceLfZcQrgsu6aRHtvXp0IEs=;
+	s=default; t=1665359578;
+	bh=VIlYJ2ErGI6e9UFBzveHWStQsrDkc3EGp6+mnyrVdyw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aMluv4C4ivoldl1Vv3CkLLYkk5AtUPpv0vmzP4vWQjBjEabbE4X9jb/XXZBlPl/3n
-	 Lx3NBpXZENLkkNI+61qUbv42AJ4QX71s+V44sxw9PB8fxnc5ZpZFkf9dQHDseN5Ewr
-	 1/O0nfqvJiPWIq5yIwiWhjOGg9QUGaEhRYKAdYTc=
+	b=aKZ2i10C/hTgnQw5y93K84ruY5Fgdks4vHHEXpjh6j6xwBDIfhYCHCnFRQSVdMjxd
+	 oFp0QFgSBhLg+35BvdrLhoLscphKzqU51nbG546MRnfubB7CfSV/z6BxOj40sS1Nvo
+	 Z7TFLqlQKgvyS54mUZgC+D6OpbEeWpjKRwglQu6U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47A18F8055B;
-	Mon, 10 Oct 2022 01:51:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0DBF9F804F1;
+	Mon, 10 Oct 2022 01:51:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3484EF80552; Mon, 10 Oct 2022 01:51:09 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id AAB5BF8052D; Mon, 10 Oct 2022 01:51:42 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A77D0F80552;
- Mon, 10 Oct 2022 01:51:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A77D0F80552
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91495F800B8
+ for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 01:51:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91495F800B8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="T7nyoKmb"
+ header.b="ZBekQ7XP"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id F1CE9B80DE4;
- Sun,  9 Oct 2022 23:51:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2379CC433B5;
- Sun,  9 Oct 2022 23:51:02 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 39B1F60D2B;
+ Sun,  9 Oct 2022 23:51:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70F71C433D6;
+ Sun,  9 Oct 2022 23:51:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1665359463;
- bh=8vlZOH+1gnjwy2xjkBABceLfZcQrgsu6aRHtvXp0IEs=;
+ s=k20201202; t=1665359494;
+ bh=VIlYJ2ErGI6e9UFBzveHWStQsrDkc3EGp6+mnyrVdyw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=T7nyoKmbm4RSrJBh8Zeh9F0+mJzASl2ZTO+jBK/XQNOyredgvQTB20KjLpqaJlJ77
- LjSzDs81/kTS+Z5ZqlC7cFc5Ww9kwOjNfMuEEV9Wm3pdTKhIinLWk5IXIoxAJVRvbv
- JuPZv8q7JP3ranPDHaZHayM5NbqHPqCROd+/A0DcDUP2tm3gkeJsEzL2YpggLSkhER
- VhyNKT7suqLPZ4iPq5wjIN164RNjSXHn/Qazg7j+gNgOa3qQkxtymMLHVwBN+nT3K0
- CtqXCi2jIZ/BO6YJCZ3hvd6h3IKEF1LvIxUBXMdIFdpVzR5TR4/jw4rp4FKUBMm6eL
- ol4+ztu4/4VWw==
+ b=ZBekQ7XPdgHfM2gFJj1K0RGi02SHa4vpeLz8PVriJSo8v88kKexXjMxU/8o+rbcjd
+ mOzutTd6W/+1QW6kBsDMiJBwINJQncDysKVerPrLIL3Bf3rbYhm7uGaf59vpqfFi0f
+ i91Wy/LBhEvzSdzpQD+mhrlbAX6FQKW36luVKMSoLPNrc7NwLNM5aQerI02oLNhz7A
+ Qqs6IQED4/KJzbtyWI1a/N7w1mbt1lt8EV1/SFd2/D+AoBVZs+APs+7O38bLwfIAlt
+ oPaHFiN3PamAkfVwsjWd4EJ4brcoEd9c/hfh0p3dyGRbs27eh3lYoy3y6d67iqYej2
+ OytrkJ299Fczw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.0 28/44] ASoC: SOF: add quirk to override topology
- mclk_id
-Date: Sun,  9 Oct 2022 19:49:16 -0400
-Message-Id: <20221009234932.1230196-28-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.0 33/44] ASoC: amd: yc: Add ASUS UM5302TA into DMI
+ table
+Date: Sun,  9 Oct 2022 19:49:21 -0400
+Message-Id: <20221009234932.1230196-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221009234932.1230196-1-sashal@kernel.org>
 References: <20221009234932.1230196-1-sashal@kernel.org>
@@ -67,13 +66,10 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, guennadi.liakhovetski@linux.intel.com,
- alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- peter.ujfalusi@linux.intel.com, tiwai@suse.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- daniel.baluta@nxp.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
- ranjani.sridharan@linux.intel.com, Bard Liao <yung-chuan.liao@linux.intel.com>,
- sound-open-firmware@alsa-project.org
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ tiwai@suse.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
+ Mario Limonciello <mario.limonciello@amd.com>, Vijendar.Mukunda@amd.com,
+ Xiaoyan Li <lxy.lixiaoyan@gmail.com>, Syed.SabaKareem@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,101 +85,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Xiaoyan Li <lxy.lixiaoyan@gmail.com>
 
-[ Upstream commit d136949dd8e2e309dc2f186507486b71cbe9acdb ]
+[ Upstream commit 4df5b13dec9e1b5a12db47ee92eb3f7da5c3deb5 ]
 
-Some Intel-based platforms rely on a topology file that hard-codes the
-use of MCLK0. This is incorrect in 10% of the cases. Rather than
-generating yet another set of topology files, this patch adds a kernel
-module parameter to override the topology value.
+ASUS Zenbook S 13 OLED (UM5302TA) needs this quirk to get the built-in
+microphone working properly.
 
-In hindsight, we should never have allowed mclks to be specified in
-topology, this is a hardware-level information that should not have
-been visible in the topology.
-
-Future patches will try to set this value automagically, e.g. by
-parsing the NHLT content.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Link: https://lore.kernel.org/r/20220919115350.43104-3-pierre-louis.bossart@linux.intel.com
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=216270
+Signed-off-by: Xiaoyan Li <lxy.lixiaoyan@gmail.com>
+Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+Link: https://lore.kernel.org/r/20220920201436.19734-2-mario.limonciello@amd.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/intel/hda.c     | 11 +++++++++++
- sound/soc/sof/ipc3-topology.c |  7 +++++++
- sound/soc/sof/sof-priv.h      |  4 ++++
- 3 files changed, 22 insertions(+)
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 6d4ecbe14adf..ada2e6775749 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -376,6 +376,10 @@ static int dmic_num_override = -1;
- module_param_named(dmic_num, dmic_num_override, int, 0444);
- MODULE_PARM_DESC(dmic_num, "SOF HDA DMIC number");
- 
-+static int mclk_id_override = -1;
-+module_param_named(mclk_id, mclk_id_override, int, 0444);
-+MODULE_PARM_DESC(mclk_id, "SOF SSP mclk_id");
-+
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
- static bool hda_codec_use_common_hdmi = IS_ENABLED(CONFIG_SND_HDA_CODEC_HDMI);
- module_param_named(use_common_hdmi, hda_codec_use_common_hdmi, bool, 0444);
-@@ -1565,6 +1569,13 @@ struct snd_soc_acpi_mach *hda_machine_select(struct snd_sof_dev *sdev)
- 
- 			sof_pdata->tplg_filename = tplg_filename;
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index e0b24e1daef3..5eab3baf3573 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -171,6 +171,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "21J6"),
  		}
-+
-+		/* check if mclk_id should be modified from topology defaults */
-+		if (mclk_id_override >= 0) {
-+			dev_info(sdev->dev, "Overriding topology with MCLK %d from kernel_parameter\n", mclk_id_override);
-+			sdev->mclk_id_override = true;
-+			sdev->mclk_id_quirk = mclk_id_override;
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "UM5302TA"),
 +		}
- 	}
- 
- 	/*
-diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
-index 65923e7a5976..a39b43850f0e 100644
---- a/sound/soc/sof/ipc3-topology.c
-+++ b/sound/soc/sof/ipc3-topology.c
-@@ -1249,6 +1249,7 @@ static int sof_link_afe_load(struct snd_soc_component *scomp, struct snd_sof_dai
- static int sof_link_ssp_load(struct snd_soc_component *scomp, struct snd_sof_dai_link *slink,
- 			     struct sof_ipc_dai_config *config, struct snd_sof_dai *dai)
- {
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
- 	struct snd_soc_tplg_hw_config *hw_config = slink->hw_configs;
- 	struct sof_dai_private_data *private = dai->private;
- 	u32 size = sizeof(*config);
-@@ -1273,6 +1274,12 @@ static int sof_link_ssp_load(struct snd_soc_component *scomp, struct snd_sof_dai
- 
- 		config[i].hdr.size = size;
- 
-+		if (sdev->mclk_id_override) {
-+			dev_dbg(scomp->dev, "tplg: overriding topology mclk_id %d by quirk %d\n",
-+				config[i].ssp.mclk_id, sdev->mclk_id_quirk);
-+			config[i].ssp.mclk_id = sdev->mclk_id_quirk;
-+		}
-+
- 		/* copy differentiating hw configs to ipc structs */
- 		config[i].ssp.mclk_rate = le32_to_cpu(hw_config[i].mclk_rate);
- 		config[i].ssp.bclk_rate = le32_to_cpu(hw_config[i].bclk_rate);
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 823583086279..828c74bb75f8 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -594,6 +594,10 @@ struct snd_sof_dev {
- 	/* to protect the ipc_rx_handler_list  and  dsp_state_handler_list list */
- 	struct mutex client_event_handler_mutex;
- 
-+	/* quirks to override topology values */
-+	bool mclk_id_override;
-+	u16  mclk_id_quirk; /* same size as in IPC3 definitions */
-+
- 	void *private;			/* core does not touch this */
++	},
+ 	{}
  };
  
 -- 
