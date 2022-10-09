@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF5FFC433F5
-	for <alsa-devel@archiver.kernel.org>; Sun,  9 Oct 2022 23:51:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34DCAC433FE
+	for <alsa-devel@archiver.kernel.org>; Sun,  9 Oct 2022 23:52:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C817D16BD;
-	Mon, 10 Oct 2022 01:51:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C817D16BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60CDA83E;
+	Mon, 10 Oct 2022 01:51:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60CDA83E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665359512;
-	bh=rpwhqAxu7g2q3YqyG2REyODVriYQxeZ1tyF0riBzRNY=;
+	s=default; t=1665359525;
+	bh=FoAKBoM3BVE06nEwOQj9AKyKByzBVLYrsUm0mfXl8EQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T+U2SvKNBWzZviMy+1/coDukomtC1nVbxZ/RwlnXuJbqaIar57G/kkWBEgjZvpjOc
-	 3FSi6MeW0p2pVbYcqaTSP4pg54KTnFnUm7emDXAuPqSmpCzCamWtBH2cb+pPD7uY2v
-	 ZvbAuCWuzl0VCu2ZZXJhIDRUVnHoaQ56z+tb1hv0=
+	b=cGezN+RmoMC2rBoS4Bm5jDVCyoaCgWF+uABez4ZPplLR/HThyZ7tS/GK+FbxNgJJh
+	 R8MkCSQ69/Rqu1NQFoNvttSJUAMZMlOtXUt/eEPuinVk7D5xS67kQDrTp3ZJ/vs7Mo
+	 GG2jhEVzw98iAn9LZw303gMIwm3cD7tnrvbrhoTc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AC59F8052E;
-	Mon, 10 Oct 2022 01:51:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E884BF800EC;
+	Mon, 10 Oct 2022 01:51:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14E31F80548; Mon, 10 Oct 2022 01:51:01 +0200 (CEST)
+ id 76982F80551; Mon, 10 Oct 2022 01:51:04 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 482C1F8052E
- for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 01:50:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 482C1F8052E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D087F8053D
+ for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 01:51:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D087F8053D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="uQ4RrGO2"
+ header.b="t2tw1qWk"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C253B60CF5;
- Sun,  9 Oct 2022 23:50:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA3B4C433C1;
- Sun,  9 Oct 2022 23:50:52 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 90E8160C9B;
+ Sun,  9 Oct 2022 23:51:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 726F2C433D7;
+ Sun,  9 Oct 2022 23:50:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1665359454;
- bh=rpwhqAxu7g2q3YqyG2REyODVriYQxeZ1tyF0riBzRNY=;
+ s=k20201202; t=1665359460;
+ bh=FoAKBoM3BVE06nEwOQj9AKyKByzBVLYrsUm0mfXl8EQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=uQ4RrGO2iVp4FImXfl5bfu17+WfeK2M4v+mlDTItxuw3W2lMBwawj1okKlBHXbNWb
- ue1d14MLpM9voA2kAXN38O8ZJi1w8QfeA0hfp3J6muRkM17dG0ZQfLg2NvKUefAu/O
- fnqJ2vQUCZVP5KNozNB6/fYIV3ObdAEWcPqWvkhqHROfZ2+7CHY0nBXlgIEXD7bYRt
- Yrez6RY6wzOX5cKMEGokuXhQbNt51jUOulNexwTazjQC316C0JSnHvBl3v3JeM291j
- iIg4vvryVXmt5Z4HKmOvqcw0kjd3w0TilXiT0M6PKwBJcQOo0m3+EGqWDQucm9Qo0X
- WEdIT2UeH3EJg==
+ b=t2tw1qWkdMgLMIkEKAuaDwOvFv8/p8RNHCTnJaqkpdXrYPPc3OkEG+flJkl2IsDMw
+ Y6QZnsqV9m+s2+3WXCw/QYBlJ9k52LlcXEmC8jkej1Wl+JuJA7b3H0psclMMzgwoTd
+ b2bLt9cR+5C+fuqvQyKPkwXnAu2F93rv/LeTd9P5dj5XdZA9WObZxDplCEJE11LZMX
+ 3/gH56wD8g1o5xNBEuG7EAuW/lAG50MiTQBWY7TJMeG+UsE4F0mSkGETcJqoQNwfhK
+ hC9auInErdNk7s6d3N8t3Fg63B6v/79s3dChKF058CuLt9xQeA34cv1W0/4Q0PH44s
+ QWmzJ4muq93Aw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.0 25/44] ALSA: intel-dspconfig: add ES8336 support
- for AlderLake-PS
-Date: Sun,  9 Oct 2022 19:49:13 -0400
-Message-Id: <20221009234932.1230196-25-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.0 27/44] ASoC: sunxi: sun4i-codec: set
+ debugfs_prefix for CPU DAI component
+Date: Sun,  9 Oct 2022 19:49:15 -0400
+Message-Id: <20221009234932.1230196-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221009234932.1230196-1-sashal@kernel.org>
 References: <20221009234932.1230196-1-sashal@kernel.org>
@@ -67,14 +67,12 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- gongjun.song@intel.com, tiwai@suse.com,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Muralidhar Reddy <muralidhar.reddy@intel.com>,
- amadeuszx.slawinski@linux.intel.com, yung-chuan.liao@linux.intel.com,
- brent.lu@intel.com
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ ckeepax@opensource.cirrus.com, kuninori.morimoto.gx@renesas.com,
+ lgirdwood@gmail.com, samuel@sholland.org, tiwai@suse.com,
+ jernej.skrabec@gmail.com, wens@csie.org, Mark Brown <broonie@kernel.org>,
+ lchen@ambarella.com, linux-sunxi@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, Mikhail Rudenko <mike.rudenko@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,38 +88,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Muralidhar Reddy <muralidhar.reddy@intel.com>
+From: Mikhail Rudenko <mike.rudenko@gmail.com>
 
-[ Upstream commit 9db1c9fa214ef41d098633ff40a87284ca6e1870 ]
+[ Upstream commit 717a8ff20f32792d6a94f2883e771482c37d844b ]
 
-added quirks for ESS8336 for AlderLake-PS
+At present, succesfull probing of H3 Codec results in an error
 
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Muralidhar Reddy <muralidhar.reddy@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20220919114548.42769-1-pierre-louis.bossart@linux.intel.com
+    debugfs: Directory '1c22c00.codec' with parent 'H3 Audio Codec' already present!
+
+This is caused by a directory name conflict between codec
+components. Fix it by setting debugfs_prefix for the CPU DAI
+component.
+
+Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
+Link: https://lore.kernel.org/r/20220913212256.151799-2-mike.rudenko@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/intel-dsp-config.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/sunxi/sun4i-codec.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index 5a478649f338..b9eb3208f288 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -427,6 +427,11 @@ static const struct config_entry config_table[] = {
- 		.device = 0x51cd,
- 	},
- 	/* Alderlake-PS */
-+	{
-+		.flags = FLAG_SOF,
-+		.device = 0x51c9,
-+		.codec_hid =  &essx_83x6,
-+	},
- 	{
- 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
- 		.device = 0x51c9,
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 830beb38bf15..fdf3165acd70 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -1232,6 +1232,9 @@ static const struct snd_soc_component_driver sun8i_a23_codec_codec = {
+ static const struct snd_soc_component_driver sun4i_codec_component = {
+ 	.name			= "sun4i-codec",
+ 	.legacy_dai_naming	= 1,
++#ifdef CONFIG_DEBUG_FS
++	.debugfs_prefix		= "cpu",
++#endif
+ };
+ 
+ #define SUN4I_CODEC_RATES	SNDRV_PCM_RATE_CONTINUOUS
 -- 
 2.35.1
 
