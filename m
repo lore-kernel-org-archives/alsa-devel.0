@@ -4,73 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5990FC433F5
-	for <alsa-devel@archiver.kernel.org>; Sun,  9 Oct 2022 10:43:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19349C433F5
+	for <alsa-devel@archiver.kernel.org>; Sun,  9 Oct 2022 10:43:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 459371F2;
-	Sun,  9 Oct 2022 12:42:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 459371F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33D1A166C;
+	Sun,  9 Oct 2022 12:42:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33D1A166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665312190;
-	bh=4DDqoCxVDOHTohl0gQ5OJKp0HLUtZQHk5QqopdCAvO4=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=IGZ+xdbRcblx8SWvOyzpDHjJ7B4j3JZjExkMyhqOfWNGjbvkYUvaTaZlbkkGfueg9
-	 y4sD8pIQuBBzqd1BbLRF0BEXFrAXAJUBv72E2eJqlybo/ZEoZa1hl46Dws8NwXySGm
-	 DExTEBR7AeAQJRxxehCfQ6IJpxtJkAZKZZDE6qSU=
+	s=default; t=1665312214;
+	bh=yC2/hH/XleuyEkKT3SKtZ3bSfCuDXpVdHjsvjIQiCR4=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Fgokmc1ha2aUZG/9mML4SZOqUEp+9in48zdighabzXQCTPrSScyWkbzuOYg/vNQGI
+	 Q2szZ3Tcp8tWAn9KuLh1VYaJ7K6Bz9LFgznaTuBsmTZ4TyM/ddCGbMdUP7ewjK69FV
+	 EZQxve8fV79LdktFnmoxVA9K9qvcg/oMvVhJRTeo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DFC8DF804F1;
-	Sun,  9 Oct 2022 12:42:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6582FF80256;
+	Sun,  9 Oct 2022 12:42:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6EFAFF80517; Sun,  9 Oct 2022 12:42:18 +0200 (CEST)
+ id 30FE7F8052F; Sun,  9 Oct 2022 12:42:22 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11711F80137
- for <alsa-devel@alsa-project.org>; Sun,  9 Oct 2022 12:42:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11711F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39CEBF800EC
+ for <alsa-devel@alsa-project.org>; Sun,  9 Oct 2022 12:42:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39CEBF800EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="lQY/I4B9"; 
+ header.b="yMoTywq1"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="50k/AQZZ"
+ header.b="MpCGTXnZ"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9EA3E1F38C;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D9ADB1F8AF;
  Sun,  9 Oct 2022 10:42:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1665312135; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=CzdK35GOXe0FHQWGBcfhD4Hk2nPPzbv9LsYZrzXTzko=;
- b=lQY/I4B9QhJ354jp/Go84SF5ppVSqVls+nGCC97f7/ZtfGJaohk64BeRgt7jmk2Jd0+D/2
- owACVVlpSXg3/EZtj9ZAi11kQN/CNYUyaNwIKfuPGnslj+c90H0rGFuwttEbFC/49WBiSz
- agohhOZZcfPgMtLPyQL0sPK24271fzI=
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=YZs5k24zMJCinMNErz+bvmHJ+pr8wO/fj7nEjXZQeC8=;
+ b=yMoTywq13fd7LGxb6NIvYN+gueVPmS0aOmhfmcgj3Ljpna5lc2cgDf92WP/Lg7uQVBwSAd
+ F8Fr7WjYHAm/gENo9nreF8FVc9j1MPQRumw9hIqkPB7AL/f+OHzkXUE5+5Fy6wPRQSPoyB
+ XLWWOAfb99CawdUKOJ48TBp6YzgXPn0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1665312135;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=CzdK35GOXe0FHQWGBcfhD4Hk2nPPzbv9LsYZrzXTzko=;
- b=50k/AQZZ6WkbLokZ/aj/R5Nf7XjJXXG7cRi4iTKwOllDaRBiIA57t7uqsme7Juq7Oh31ZX
- p3utzdw7hEyhTsAQ==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=YZs5k24zMJCinMNErz+bvmHJ+pr8wO/fj7nEjXZQeC8=;
+ b=MpCGTXnZ1d+gP1dJexzsE/5+SuLSQV8FSH2ujnyaod2u7GIVJqRF8wCpCcK9NOwq3XtqRO
+ xxMRFy25tD5t52DQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7B5B4139F0;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BDC38139F0;
  Sun,  9 Oct 2022 10:42:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id r1dQHYelQmMsfAAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8DuXLYelQmMsfAAAMHmgww
  (envelope-from <tiwai@suse.de>); Sun, 09 Oct 2022 10:42:15 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/4] ALSA: usb-audio: More EP-related fixes
-Date: Sun,  9 Oct 2022 12:42:08 +0200
-Message-Id: <20221009104212.18877-1-tiwai@suse.de>
+Subject: [PATCH 2/4] ALSA: usb-audio: Apply mutex around
+ snd_usb_endpoint_set_params()
+Date: Sun,  9 Oct 2022 12:42:10 +0200
+Message-Id: <20221009104212.18877-3-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20221009104212.18877-1-tiwai@suse.de>
+References: <20221009104212.18877-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -88,25 +96,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is a series of small fixes for USB-audio endpoint management
-after the latest change to split prepare/hw_params.
+The protection with chip->mutex was lost after splitting
+snd_usb_endpoint_set_params() and snd_usb_endpoint_prepare().
+Apply the same mutex again to the former function.
 
+Fixes: 2be79d586454 ("ALSA: usb-audio: Split endpoint setups for hw_params and prepare (take#2)")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/endpoint.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-Takashi
-
-===
-
-Takashi Iwai (4):
-  ALSA: usb-audio: Avoid unnecessary interface change at EP close
-  ALSA: usb-audio: Apply mutex around snd_usb_endpoint_set_params()
-  ALSA: usb-audio: Correct the return code from
-    snd_usb_endpoint_set_params()
-  ALSA: usb-audio: Avoid superfluous endpoint setup
-
- sound/usb/card.h     |  3 ++-
- sound/usb/endpoint.c | 32 +++++++++++++++++++++++++-------
- 2 files changed, 27 insertions(+), 8 deletions(-)
-
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index f21acbc9f4f4..da378e565ef8 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -1337,10 +1337,11 @@ int snd_usb_endpoint_set_params(struct snd_usb_audio *chip,
+ 	const struct audioformat *fmt = ep->cur_audiofmt;
+ 	int err;
+ 
++	mutex_lock(&chip->mutex);
+ 	/* release old buffers, if any */
+ 	err = release_urbs(ep, false);
+ 	if (err < 0)
+-		return err;
++		goto unlock;
+ 
+ 	ep->datainterval = fmt->datainterval;
+ 	ep->maxpacksize = fmt->maxpacksize;
+@@ -1378,13 +1379,16 @@ int snd_usb_endpoint_set_params(struct snd_usb_audio *chip,
+ 	usb_audio_dbg(chip, "Set up %d URBS, ret=%d\n", ep->nurbs, err);
+ 
+ 	if (err < 0)
+-		return err;
++		goto unlock;
+ 
+ 	/* some unit conversions in runtime */
+ 	ep->maxframesize = ep->maxpacksize / ep->cur_frame_bytes;
+ 	ep->curframesize = ep->curpacksize / ep->cur_frame_bytes;
+ 
+-	return update_clock_ref_rate(chip, ep);
++	err = update_clock_ref_rate(chip, ep);
++ unlock:
++	mutex_unlock(&chip->mutex);
++	return err;
+ }
+ 
+ static int init_sample_rate(struct snd_usb_audio *chip,
 -- 
 2.35.3
 
