@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19349C433F5
-	for <alsa-devel@archiver.kernel.org>; Sun,  9 Oct 2022 10:43:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE5ADC433F5
+	for <alsa-devel@archiver.kernel.org>; Sun,  9 Oct 2022 10:44:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33D1A166C;
-	Sun,  9 Oct 2022 12:42:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33D1A166C
+	by alsa0.perex.cz (Postfix) with ESMTPS id EAB6C167F;
+	Sun,  9 Oct 2022 12:43:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAB6C167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665312214;
-	bh=yC2/hH/XleuyEkKT3SKtZ3bSfCuDXpVdHjsvjIQiCR4=;
+	s=default; t=1665312241;
+	bh=EUNRPoD5pJUItv0SgzR9EWEVg1uaemwCW231Mec3XxA=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Fgokmc1ha2aUZG/9mML4SZOqUEp+9in48zdighabzXQCTPrSScyWkbzuOYg/vNQGI
-	 Q2szZ3Tcp8tWAn9KuLh1VYaJ7K6Bz9LFgznaTuBsmTZ4TyM/ddCGbMdUP7ewjK69FV
-	 EZQxve8fV79LdktFnmoxVA9K9qvcg/oMvVhJRTeo=
+	b=i+9xpv2OYSdLuWJrn0dDJY31W/3iHtQM7g/hCQ7RAZoRmaX3M6Hq5PtV8tAiMAmmx
+	 tLt86bECruq466G9E0GXmGvym7tX6jlk7CRF8Us/0d5sABgvdt79OD9GgsmXWLuAc5
+	 ZIp31ArT3GCfE1cC4uEyltYzoGyQE7LgjYXl+1+Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6582FF80256;
+	by alsa1.perex.cz (Postfix) with ESMTP id D42DFF8052E;
 	Sun,  9 Oct 2022 12:42:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 30FE7F8052F; Sun,  9 Oct 2022 12:42:22 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 57069F8052E; Sun,  9 Oct 2022 12:42:23 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 39CEBF800EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1E37F80256
  for <alsa-devel@alsa-project.org>; Sun,  9 Oct 2022 12:42:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39CEBF800EC
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1E37F80256
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="yMoTywq1"; 
+ header.b="rH4xgFyI"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="MpCGTXnZ"
+ header.b="UrX7cP2B"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D9ADB1F8AF;
- Sun,  9 Oct 2022 10:42:15 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2911621959;
+ Sun,  9 Oct 2022 10:42:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1665312135; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1665312136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=YZs5k24zMJCinMNErz+bvmHJ+pr8wO/fj7nEjXZQeC8=;
- b=yMoTywq13fd7LGxb6NIvYN+gueVPmS0aOmhfmcgj3Ljpna5lc2cgDf92WP/Lg7uQVBwSAd
- F8Fr7WjYHAm/gENo9nreF8FVc9j1MPQRumw9hIqkPB7AL/f+OHzkXUE5+5Fy6wPRQSPoyB
- XLWWOAfb99CawdUKOJ48TBp6YzgXPn0=
+ bh=0SFdCkWtHyd6HyEKsbsfhAzuOqk9dDoRmh24GJT0E3s=;
+ b=rH4xgFyIzWCK17eYlVFDCbmQOitXzW+leyDlJpWaKQEoQrKWwC9F0aA3e/LydTf57UqvME
+ BIFs220QweeaNnTx/r4yqkInBCvVDrKGlCWmAkzDfCuphBaFojMIag8g+aowF6ff/FHbKF
+ k73vRJvTix/9i1Sw5hC33Gx6OEX3dAs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1665312135;
+ s=susede2_ed25519; t=1665312136;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=YZs5k24zMJCinMNErz+bvmHJ+pr8wO/fj7nEjXZQeC8=;
- b=MpCGTXnZ1d+gP1dJexzsE/5+SuLSQV8FSH2ujnyaod2u7GIVJqRF8wCpCcK9NOwq3XtqRO
- xxMRFy25tD5t52DQ==
+ bh=0SFdCkWtHyd6HyEKsbsfhAzuOqk9dDoRmh24GJT0E3s=;
+ b=UrX7cP2Bt36i+FhEUE70BWyTbEixM8y8tCah0OcxNBaBU+WHOEhObFiA2i1148IxNzWxkA
+ TtM/md8TGkEzWjDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BDC38139F0;
- Sun,  9 Oct 2022 10:42:15 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0E316139F0;
+ Sun,  9 Oct 2022 10:42:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 8DuXLYelQmMsfAAAMHmgww
- (envelope-from <tiwai@suse.de>); Sun, 09 Oct 2022 10:42:15 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id APGxAoilQmMsfAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Sun, 09 Oct 2022 10:42:16 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/4] ALSA: usb-audio: Apply mutex around
- snd_usb_endpoint_set_params()
-Date: Sun,  9 Oct 2022 12:42:10 +0200
-Message-Id: <20221009104212.18877-3-tiwai@suse.de>
+Subject: [PATCH 4/4] ALSA: usb-audio: Avoid superfluous endpoint setup
+Date: Sun,  9 Oct 2022 12:42:12 +0200
+Message-Id: <20221009104212.18877-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20221009104212.18877-1-tiwai@suse.de>
 References: <20221009104212.18877-1-tiwai@suse.de>
@@ -96,52 +95,99 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The protection with chip->mutex was lost after splitting
-snd_usb_endpoint_set_params() and snd_usb_endpoint_prepare().
-Apply the same mutex again to the former function.
+After splitting to snd_usb_endpoint_set_params() and *_prepare(), the
+skip of each function should be checked with different flags, while we
+still use ep->need_setup as the single one.  Introduce
+ep->need_prepare for indicating the need of prepare, and also add the
+missing check of ep->need_setup at the set_params.
 
 Fixes: 2be79d586454 ("ALSA: usb-audio: Split endpoint setups for hw_params and prepare (take#2)")
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/endpoint.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ sound/usb/card.h     |  3 ++-
+ sound/usb/endpoint.c | 17 ++++++++++++-----
+ 2 files changed, 14 insertions(+), 6 deletions(-)
 
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index ca75f2206170..40061550105a 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -129,7 +129,8 @@ struct snd_usb_endpoint {
+ 					   in a stream */
+ 	bool implicit_fb_sync;		/* syncs with implicit feedback */
+ 	bool lowlatency_playback;	/* low-latency playback mode */
+-	bool need_setup;		/* (re-)need for configure? */
++	bool need_setup;		/* (re-)need for hw_params? */
++	bool need_prepare;		/* (re-)need for prepare? */
+ 
+ 	/* for hw constraints */
+ 	const struct audioformat *cur_audiofmt;
 diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index f21acbc9f4f4..da378e565ef8 100644
+index 44cce6cec9da..d0b8d61d1d22 100644
 --- a/sound/usb/endpoint.c
 +++ b/sound/usb/endpoint.c
-@@ -1337,10 +1337,11 @@ int snd_usb_endpoint_set_params(struct snd_usb_audio *chip,
- 	const struct audioformat *fmt = ep->cur_audiofmt;
- 	int err;
+@@ -824,6 +824,7 @@ snd_usb_endpoint_open(struct snd_usb_audio *chip,
  
-+	mutex_lock(&chip->mutex);
+ 		ep->implicit_fb_sync = fp->implicit_fb;
+ 		ep->need_setup = true;
++		ep->need_prepare = true;
+ 
+ 		usb_audio_dbg(chip, "  channels=%d, rate=%d, format=%s, period_bytes=%d, periods=%d, implicit_fb=%d\n",
+ 			      ep->cur_channels, ep->cur_rate,
+@@ -952,7 +953,7 @@ void snd_usb_endpoint_close(struct snd_usb_audio *chip,
+ /* Prepare for suspening EP, called from the main suspend handler */
+ void snd_usb_endpoint_suspend(struct snd_usb_endpoint *ep)
+ {
+-	ep->need_setup = true;
++	ep->need_prepare = true;
+ 	if (ep->iface_ref)
+ 		ep->iface_ref->need_setup = true;
+ 	if (ep->clock_ref)
+@@ -1335,9 +1336,12 @@ int snd_usb_endpoint_set_params(struct snd_usb_audio *chip,
+ 				struct snd_usb_endpoint *ep)
+ {
+ 	const struct audioformat *fmt = ep->cur_audiofmt;
+-	int err;
++	int err = 0;
+ 
+ 	mutex_lock(&chip->mutex);
++	if (!ep->need_setup)
++		goto unlock;
++
  	/* release old buffers, if any */
  	err = release_urbs(ep, false);
  	if (err < 0)
--		return err;
-+		goto unlock;
- 
- 	ep->datainterval = fmt->datainterval;
- 	ep->maxpacksize = fmt->maxpacksize;
-@@ -1378,13 +1379,16 @@ int snd_usb_endpoint_set_params(struct snd_usb_audio *chip,
- 	usb_audio_dbg(chip, "Set up %d URBS, ret=%d\n", ep->nurbs, err);
- 
- 	if (err < 0)
--		return err;
-+		goto unlock;
- 
- 	/* some unit conversions in runtime */
- 	ep->maxframesize = ep->maxpacksize / ep->cur_frame_bytes;
+@@ -1386,8 +1390,11 @@ int snd_usb_endpoint_set_params(struct snd_usb_audio *chip,
  	ep->curframesize = ep->curpacksize / ep->cur_frame_bytes;
  
--	return update_clock_ref_rate(chip, ep);
-+	err = update_clock_ref_rate(chip, ep);
-+ unlock:
-+	mutex_unlock(&chip->mutex);
-+	return err;
- }
+ 	err = update_clock_ref_rate(chip, ep);
+-	if (err >= 0)
++	if (err >= 0) {
++		ep->need_setup = false;
+ 		err = 0;
++	}
++
+  unlock:
+ 	mutex_unlock(&chip->mutex);
+ 	return err;
+@@ -1437,7 +1444,7 @@ int snd_usb_endpoint_prepare(struct snd_usb_audio *chip,
+ 	mutex_lock(&chip->mutex);
+ 	if (WARN_ON(!ep->iface_ref))
+ 		goto unlock;
+-	if (!ep->need_setup)
++	if (!ep->need_prepare)
+ 		goto unlock;
  
- static int init_sample_rate(struct snd_usb_audio *chip,
+ 	/* If the interface has been already set up, just set EP parameters */
+@@ -1491,7 +1498,7 @@ int snd_usb_endpoint_prepare(struct snd_usb_audio *chip,
+ 	ep->iface_ref->need_setup = false;
+ 
+  done:
+-	ep->need_setup = false;
++	ep->need_prepare = false;
+ 	err = 1;
+ 
+ unlock:
 -- 
 2.35.3
 
