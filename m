@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14DEDC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Oct 2022 12:07:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C317C433FE
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Oct 2022 12:07:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C5922980;
-	Mon, 10 Oct 2022 14:06:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C5922980
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7915129A2;
+	Mon, 10 Oct 2022 14:06:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7915129A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665403658;
-	bh=QCz5bxo15VEkNJsvIJ4sTJx/idRityrxqBRwaMhJiHI=;
+	s=default; t=1665403665;
+	bh=Kzbz2//MEbFomVYT3Je8Ry2vhVhj4UV2as/D/dMydqQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UknWuvcmgZQBfb9EdYniDANIKEQ8RZAOjvlPBWMQHch9kOJkIyqb5XdKLeL9yakmC
-	 vF2wW9DHCU6P/hRdCZH+mwIFEsVNdKnKusKChTROcNUK7KeuZoS46Xo5eHJp+mAqnG
-	 LaI0MKg/XpQbt0muoGWTOfm+w9inpAuuNbsg+YLI=
+	b=lzKdENibKgMM/Q6nEsQ5GSesIVFYFJxvJHanlQSy+6dwF24xSar1SrI75JdBOrlvl
+	 KS4nD60Gd/FlQbsPfGIYBTuXV4zqoo0VLPs/1Ijdn7nAhUdXnipFpWbH8jS06QNh7s
+	 qMQ4xZ0FacakMBKJxBaOEylJTur/pYOymhETFh5U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 139C8F805AB;
-	Mon, 10 Oct 2022 14:04:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA0C6F805AF;
+	Mon, 10 Oct 2022 14:04:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BECC9F80571; Mon, 10 Oct 2022 14:04:11 +0200 (CEST)
+ id 4A1DEF805AC; Mon, 10 Oct 2022 14:04:16 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2055EF80570
- for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 14:04:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2055EF80570
+ by alsa1.perex.cz (Postfix) with ESMTPS id 596B5F80588
+ for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 14:04:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 596B5F80588
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="IdYzUZoN"
+ header.b="H5LQ/miQ"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1665403449; x=1696939449;
+ t=1665403454; x=1696939454;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=QCz5bxo15VEkNJsvIJ4sTJx/idRityrxqBRwaMhJiHI=;
- b=IdYzUZoNvbpkYCsqAMnZPIEt13mJwr3M/TEluYt3JfgZiIDyJXKpXKOH
- llvQiTjQzEBGf9T9TpXf4MXFP2B2yM4lLpdfj8auMk3//AZ80ynyuAKeJ
- TJKqFxWOn3LB3/SmIG7oLX00kNEMNYlSuLZgGFtmOgzPZNgdstABTLcKx
- nNGZMMfiU1tQ4Quyvi20cC8VuSw+cP9KcFR/7dJT9iGh0RWxn4PTA5lpn
- v9MRoP4ERHuiKFsd+3yCo3dmzJJGLVGY8xViJEd/htZ6x4i1Vn2wjNH3k
- RfwZYfnn7nNhaBNlSYrnxy3K1QrygI73JgHxc+lX61/ar3Eow04lPlf/X Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="368346105"
-X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="368346105"
+ bh=Kzbz2//MEbFomVYT3Je8Ry2vhVhj4UV2as/D/dMydqQ=;
+ b=H5LQ/miQ+lpmphvQtg1zUiKiWmrF2tYVadDy1N+0rNiV0iy4MSVXcfjQ
+ HwNSjxr225CHI4ZhkoRrMlYZScTMckanZNDiAKhX/45ppi0xi6QPklSJo
+ IaogV3sc0u2gzuF1b6zA95UsWqRLh4czGejB/0r6bkCB7vAh2BvYbgToY
+ NppItEKppf7sDLt9YnJs3GMtIDoXJPmOgkT/4ZK6MFhWeSRyis8Tkj1le
+ 9PZEvK/Wd+GAJiDUUqEK0EA3ifFM4dMB5xOgALk5vsxYMpRN08xzlUtYl
+ pSiCrJ1Iz6qp1/dBNAooXk4/63bdvitMNVHX4CmdoGkA6M+egp6hBkj+E w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="368346119"
+X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="368346119"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Oct 2022 05:04:07 -0700
+ 10 Oct 2022 05:04:11 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="871078938"
-X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="871078938"
+X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="871078947"
+X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="871078947"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga006.fm.intel.com with ESMTP; 10 Oct 2022 05:04:05 -0700
+ by fmsmga006.fm.intel.com with ESMTP; 10 Oct 2022 05:04:09 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v2 10/15] ASoC: Intel: avs: Do not reuse msg between different
- IPC handlers
-Date: Mon, 10 Oct 2022 14:19:50 +0200
-Message-Id: <20221010121955.718168-11-cezary.rojewski@intel.com>
+Subject: [PATCH v2 12/15] ASoC: Intel: avs: Do not print IPC error message
+ twice
+Date: Mon, 10 Oct 2022 14:19:52 +0200
+Message-Id: <20221010121955.718168-13-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221010121955.718168-1-cezary.rojewski@intel.com>
 References: <20221010121955.718168-1-cezary.rojewski@intel.com>
@@ -87,36 +87,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-While LOG_BUFFER_STATUS is a simple notification with only one
-meaningful field, same message ptr shall not be reused for two different
-handlers.
+ENABLE_LOGS and SYSTEM_TIME IPCs call LARGE_CONFIG_SET internally which
+dumps an error message in case of an error. There is no need to repeat
+the process in the top level handler.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/apl.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/intel/avs/messages.c | 19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/intel/avs/apl.c b/sound/soc/intel/avs/apl.c
-index b8e2b23c9f64..7c8ce98eda9d 100644
---- a/sound/soc/intel/avs/apl.c
-+++ b/sound/soc/intel/avs/apl.c
-@@ -133,12 +133,14 @@ static int apl_coredump(struct avs_dev *adev, union avs_notify_msg *msg)
- 	buf = apl_log_payload_addr(addr);
- 	memcpy_fromio(&layout, addr, sizeof(layout));
- 	if (!apl_is_entry_stackdump(buf + layout.read_ptr)) {
-+		union avs_notify_msg lbs_msg = AVS_NOTIFICATION(LOG_BUFFER_STATUS);
-+
- 		/*
- 		 * DSP awaits the remaining logs to be
- 		 * gathered before dumping stack
- 		 */
--		msg->log.core = msg->ext.coredump.core_id;
--		avs_dsp_op(adev, log_buffer_status, msg);
-+		lbs_msg.log.core = msg->ext.coredump.core_id;
-+		avs_dsp_op(adev, log_buffer_status, &lbs_msg);
- 	}
+diff --git a/sound/soc/intel/avs/messages.c b/sound/soc/intel/avs/messages.c
+index d4bcee1aabcf..6b0fecbf07c3 100644
+--- a/sound/soc/intel/avs/messages.c
++++ b/sound/soc/intel/avs/messages.c
+@@ -687,20 +687,13 @@ int avs_ipc_get_modules_info(struct avs_dev *adev, struct avs_mods_info **info)
  
- 	pos = dump + AVS_FW_REGS_SIZE;
+ int avs_ipc_set_enable_logs(struct avs_dev *adev, u8 *log_info, size_t size)
+ {
+-	int ret;
+-
+-	ret = avs_ipc_set_large_config(adev, AVS_BASEFW_MOD_ID, AVS_BASEFW_INST_ID,
+-				       AVS_BASEFW_ENABLE_LOGS, log_info, size);
+-	if (ret)
+-		dev_err(adev->dev, "enable logs failed: %d\n", ret);
+-
+-	return ret;
++	return avs_ipc_set_large_config(adev, AVS_BASEFW_MOD_ID, AVS_BASEFW_INST_ID,
++					AVS_BASEFW_ENABLE_LOGS, log_info, size);
+ }
+ 
+ int avs_ipc_set_system_time(struct avs_dev *adev)
+ {
+ 	struct avs_sys_time sys_time;
+-	int ret;
+ 	u64 us;
+ 
+ 	/* firmware expects UTC time in micro seconds */
+@@ -708,12 +701,8 @@ int avs_ipc_set_system_time(struct avs_dev *adev)
+ 	sys_time.val_l = us & UINT_MAX;
+ 	sys_time.val_u = us >> 32;
+ 
+-	ret = avs_ipc_set_large_config(adev, AVS_BASEFW_MOD_ID, AVS_BASEFW_INST_ID,
+-				       AVS_BASEFW_SYSTEM_TIME, (u8 *)&sys_time, sizeof(sys_time));
+-	if (ret)
+-		dev_err(adev->dev, "set system time failed: %d\n", ret);
+-
+-	return ret;
++	return avs_ipc_set_large_config(adev, AVS_BASEFW_MOD_ID, AVS_BASEFW_INST_ID,
++					AVS_BASEFW_SYSTEM_TIME, (u8 *)&sys_time, sizeof(sys_time));
+ }
+ 
+ int avs_ipc_copier_set_sink_format(struct avs_dev *adev, u16 module_id,
 -- 
 2.25.1
 
