@@ -4,73 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3FF6C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Oct 2022 12:08:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDFCDC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Oct 2022 12:10:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F087D29AC;
-	Mon, 10 Oct 2022 14:07:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F087D29AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04FDC2996;
+	Mon, 10 Oct 2022 14:09:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04FDC2996
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665403726;
-	bh=y30PTgU8msnrWFzBoNM3GWxnpWoJ49lG31Ykkyf5N+k=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1665403812;
+	bh=s3/QDNXgZ/2K+FUTKrf/gZ9xIJimRqklF88lgaVEM+w=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=grswbDURWuaz987DUKNum9VxXitZanz1nggi+dFpn3i69N7jbBO+dhPdq6DRqTcIi
-	 trdIOmLLhNQHbtqHSaA6e/KTW51M8YtBEPPwaumP792S9NHv93vFQoFSq+eOpwtUc8
-	 GIj8a5QpqaUgCXAOrwyRdAjNALrfJx4VsRthGJ0Q=
+	b=t6fZO2XTA8sZqpjCnjqVWqSvvdFs7J+t+tQzppgoidf3AYHtFX9Opnd4OYr6F1LKd
+	 PjNJ3KAvTK2NTrZLs7JowaM88/89U6tBpYyZP4mTmB4v/grxx8b9+NCpyvbceClCvL
+	 eHEwFXAB+eFI7fdh9HgLgCWKPVNvpK1r876t2NV4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3B4EF805C2;
-	Mon, 10 Oct 2022 14:04:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7CCAF801D5;
+	Mon, 10 Oct 2022 14:09:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8693BF805BB; Mon, 10 Oct 2022 14:04:20 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7B0DF8057A
- for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 14:04:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7B0DF8057A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="SoHYNk4W"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1665403457; x=1696939457;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=y30PTgU8msnrWFzBoNM3GWxnpWoJ49lG31Ykkyf5N+k=;
- b=SoHYNk4W1J7FV4iQ16HhMGgOg6QwTL3W5itqEDtO+KHZ0eU2zp3C3HK6
- GZy+akDvHYInDYPCIw7KCit4QgiB2WPuABZTJhgAf4d9PkuHTFi1GnH+J
- 5UTJFaqFf4f79nsg6zP63xt/kOldSxSY8QcnqU6eza09lM6pEmwYfZUnQ
- sY3Su+DZQq9ASR3rhgQC2c8x+ymR0x4X6WRQNNnj3J07jULPrISEPzCST
- 8S70GKlcYGHeqONOdWL9szbntUQKV+796UlWKuLZvKSI6BQZUjUZxyhzm
- Biz/mqa6wRGwDuwsQxbaV0QQWttlbCtD4OzoA8IegLm3+vnuxSBUQT2zw A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="368346132"
-X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="368346132"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Oct 2022 05:04:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="871078961"
-X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="871078961"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga006.fm.intel.com with ESMTP; 10 Oct 2022 05:04:13 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH v2 14/15] ASoC: Intel: avs: Simplify log control for SKL
-Date: Mon, 10 Oct 2022 14:19:54 +0200
-Message-Id: <20221010121955.718168-15-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221010121955.718168-1-cezary.rojewski@intel.com>
-References: <20221010121955.718168-1-cezary.rojewski@intel.com>
+ id 6495EF801D5; Mon, 10 Oct 2022 14:09:20 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 96BF4F80155
+ for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 14:09:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96BF4F80155
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- amadeuszx.slawinski@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1665403753918127060-webhooks-bot@alsa-project.org>
+References: <1665403753918127060-webhooks-bot@alsa-project.org>
+Subject: Mute PC Speaker by default
+Message-Id: <20221010120920.6495EF801D5@alsa1.perex.cz>
+Date: Mon, 10 Oct 2022 14:09:20 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,33 +55,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Loop only till the actual number of AudioDSP cores, not the value of
-mask made from said number.
+alsa-project/alsa-utils issue #172 was opened from lnussel:
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- sound/soc/intel/avs/skl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+SUSE has a [preset](https://build.opensuse.org/package/view_file/openSUSE:Factory/alsa-utils/01beep.conf) to mute the PC speaker by default  as it can be quite annoying (https://bugzilla.suse.com/show_bug.cgi?id=767270). Would it make sense to include that upstream?
 
-diff --git a/sound/soc/intel/avs/skl.c b/sound/soc/intel/avs/skl.c
-index bda5ec7510fe..dc98b5cf900f 100644
---- a/sound/soc/intel/avs/skl.c
-+++ b/sound/soc/intel/avs/skl.c
-@@ -28,12 +28,12 @@ static int skl_enable_logs(struct avs_dev *adev, enum avs_log_enable enable, u32
- 
- 	info->core_mask = resource_mask;
- 	if (enable)
--		for_each_set_bit(i, &resource_mask, GENMASK(num_cores, 0)) {
-+		for_each_set_bit(i, &resource_mask, num_cores) {
- 			info->logs_core[i].enable = enable;
- 			info->logs_core[i].min_priority = *priorities++;
- 		}
- 	else
--		for_each_set_bit(i, &resource_mask, GENMASK(num_cores, 0))
-+		for_each_set_bit(i, &resource_mask, num_cores)
- 			info->logs_core[i].enable = enable;
- 
- 	ret = avs_ipc_set_enable_logs(adev, (u8 *)info, size);
--- 
-2.25.1
-
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/172
+Repository URL: https://github.com/alsa-project/alsa-utils
