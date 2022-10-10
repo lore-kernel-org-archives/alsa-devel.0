@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67A05C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Oct 2022 11:56:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F927C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Oct 2022 11:56:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 983F5293E;
-	Mon, 10 Oct 2022 13:55:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 983F5293E
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0AEA290F;
+	Mon, 10 Oct 2022 13:55:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0AEA290F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665402974;
-	bh=757jksTD/InYrlah3Xg03lR97thx/bEezOxBraQzLUY=;
+	s=default; t=1665402996;
+	bh=y30PTgU8msnrWFzBoNM3GWxnpWoJ49lG31Ykkyf5N+k=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BhkyhbYGJ1kYKst8bcHh6ADEDrMmITumVRbE/wF0rgIAtI14rY87nGuQ8ef4795z5
-	 dMl4EXfWKqTqlCbrehxirujfdN+McisR/WayIUM07NEK/GwhlVhsPkj5XXNMbQoXyG
-	 ZZbmOraRVtcLTKRtTZCV7XN0ISPa307KnzSY/kEk=
+	b=D01sz2eLHPW5OK3oyQ6s6PI9EaJbMjSNbO/Xfrf2ElcbEGPae3bN0W+u6fmGiGbMO
+	 93dXFSe0c1EImfe89GT1ZKt4eFaxAoYfNuFHQXrnA6D8ndtR9lyQzNQZoGhMxxvvv7
+	 rcHpGahOP4z9rLyqizvuk91DF4haL8uQnGFrOCdo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A34FEF805BD;
-	Mon, 10 Oct 2022 13:52:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8CAF2F805C3;
+	Mon, 10 Oct 2022 13:52:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B99C3F805AF; Mon, 10 Oct 2022 13:52:08 +0200 (CEST)
+ id 2C07DF805C3; Mon, 10 Oct 2022 13:52:11 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 133A9F805BA
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4341F805B1
  for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 13:52:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 133A9F805BA
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4341F805B1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="DLWXHOhC"
+ header.b="SMe4wBWq"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1665402726; x=1696938726;
+ t=1665402725; x=1696938725;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=757jksTD/InYrlah3Xg03lR97thx/bEezOxBraQzLUY=;
- b=DLWXHOhCOxYhyh7DUGVRlMdLIdsGH0y/Lhszy8N0Gd2KxyLyjilpImB0
- RmGq9NrTOedebjSOEft8ALqOtY8dsOwT+HOz2RXbJBTb44YasBzTzd8xk
- bbpND+JLAsztw/7AT8gMaXVhZm3Oqlqoaz0v6nhLeeswcRGrATmLEPKki
- eU1QyTfDh8YOIzfhIgOBSCnyUQJ48joMAfhXbGtJFb4qv0WRdofLsANjw
- I/eGrpTrBnVcj0YIcNSK9bOOXfao0O3IRdP9aTiTdQu5bjBBvAdUQNlPg
- 4zjXEXBnfgQJRGKau02Oif44EYPhH6fKE77mDbOCVcNFGGN0gXNgkDX3B g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="390513270"
-X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="390513270"
+ bh=y30PTgU8msnrWFzBoNM3GWxnpWoJ49lG31Ykkyf5N+k=;
+ b=SMe4wBWqF20YJR0zEWpgWbELsXSKfpqwUacE9pWIui/HY1v259uO40ps
+ 5E17tYb7ShPD/9YYhqkJX+AQuEy6/UDgOhccJYvFo2RK5xkWihVPywUQS
+ YBzs0KipF5B5oBfh0kA8Sh1conWQIuHTMRYWp+SIYjflX0sVoU42oEGQl
+ 5uS2UnVxc72NthMwYgaA6cYwzBOZ1fmwm4vD5jdmcoS3DVnkALtlu2abY
+ pnnc5Ta/wTy0pbt3q1Myo6+xcvKOLpoItP6vIq4JxEvdTxor2ylIpbX1M
+ whljuQn18EmKAScuimb/mc2MeGbxPj+43Q9dwMzgsb4LCL0UwsO/N+izz Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="390513265"
+X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="390513265"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Oct 2022 04:52:04 -0700
+ 10 Oct 2022 04:52:02 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="954889196"
-X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="954889196"
+X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="954889161"
+X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="954889161"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga005.fm.intel.com with ESMTP; 10 Oct 2022 04:52:02 -0700
+ by fmsmga005.fm.intel.com with ESMTP; 10 Oct 2022 04:52:00 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 15/15] ASoC: codecs: hda: Fix spelling error in log message
-Date: Mon, 10 Oct 2022 14:07:49 +0200
-Message-Id: <20221010120749.716499-16-cezary.rojewski@intel.com>
+Subject: [PATCH 14/15] ASoC: Intel: avs: Simplify log control for SKL
+Date: Mon, 10 Oct 2022 14:07:48 +0200
+Message-Id: <20221010120749.716499-15-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221010120749.716499-1-cezary.rojewski@intel.com>
 References: <20221010120749.716499-1-cezary.rojewski@intel.com>
@@ -86,26 +86,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-To improve readability.
+Loop only till the actual number of AudioDSP cores, not the value of
+mask made from said number.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/codecs/hda.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/avs/skl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/hda.c b/sound/soc/codecs/hda.c
-index ad20a3dff9b7..712d8ba85f0e 100644
---- a/sound/soc/codecs/hda.c
-+++ b/sound/soc/codecs/hda.c
-@@ -213,7 +213,7 @@ static int hda_codec_probe(struct snd_soc_component *component)
+diff --git a/sound/soc/intel/avs/skl.c b/sound/soc/intel/avs/skl.c
+index bda5ec7510fe..dc98b5cf900f 100644
+--- a/sound/soc/intel/avs/skl.c
++++ b/sound/soc/intel/avs/skl.c
+@@ -28,12 +28,12 @@ static int skl_enable_logs(struct avs_dev *adev, enum avs_log_enable enable, u32
  
- 	patch = (hda_codec_patch_t)codec->preset->driver_data;
- 	if (!patch) {
--		dev_err(&hdev->dev, "no patch specified?\n");
-+		dev_err(&hdev->dev, "no patch specified\n");
- 		ret = -EINVAL;
- 		goto err;
- 	}
+ 	info->core_mask = resource_mask;
+ 	if (enable)
+-		for_each_set_bit(i, &resource_mask, GENMASK(num_cores, 0)) {
++		for_each_set_bit(i, &resource_mask, num_cores) {
+ 			info->logs_core[i].enable = enable;
+ 			info->logs_core[i].min_priority = *priorities++;
+ 		}
+ 	else
+-		for_each_set_bit(i, &resource_mask, GENMASK(num_cores, 0))
++		for_each_set_bit(i, &resource_mask, num_cores)
+ 			info->logs_core[i].enable = enable;
+ 
+ 	ret = avs_ipc_set_enable_logs(adev, (u8 *)info, size);
 -- 
 2.25.1
 
