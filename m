@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB662C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Oct 2022 11:53:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83DE5C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Oct 2022 11:53:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 16FDB290F;
-	Mon, 10 Oct 2022 13:52:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16FDB290F
+	by alsa0.perex.cz (Postfix) with ESMTPS id AAB822909;
+	Mon, 10 Oct 2022 13:52:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAB822909
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665402804;
-	bh=TrKv6NRrxHHjyhpDrmqB2VIl8onuWqb8Ctjnn4P1ik4=;
+	s=default; t=1665402821;
+	bh=QilF8Z7n8eLNvp+KakVg1PclRY0/AM3rUFbAPwChosc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hS59bol/42TqZfnMIewqC0tdeSz0bLCFRytV4aiGIF3Y5Av50pi2A6rFiX5LIGtbI
-	 jwmUbrZElQw6xDR+kAkp0ftMzvqsDzosOfz7R7Wih2KU5PzPe3IwrTnmE6O9j8wCXG
-	 kI4hJE9FhuANV9xUYjf2Z+Kgw2wKEHPJ26YYoFNc=
+	b=NcKp0lS2ZlnBKAy/IOtlumk0zibLGhm8lTXQg2i/h0A8Gw4+6esH1aIttdYyxRILN
+	 WvP5LfQUpaO8y02H+j1YdmERhRQzfbUEJQMr8hbwtaczMn0XbY5OVpD5yFibSXk8zk
+	 rQXnYQlmnjdxg5/tL/jr3rQipNJfoUTZuMyTmBTY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D58BF80256;
-	Mon, 10 Oct 2022 13:51:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 136B2F8055B;
+	Mon, 10 Oct 2022 13:51:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D047CF80559; Mon, 10 Oct 2022 13:51:51 +0200 (CEST)
+ id 342A9F80553; Mon, 10 Oct 2022 13:51:52 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A43AF801D5
- for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 13:51:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A43AF801D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 408A1F80256
+ for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 13:51:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 408A1F80256
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="BIBzwle/"
+ header.b="D866FxD2"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1665402705; x=1696938705;
+ t=1665402703; x=1696938703;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=TrKv6NRrxHHjyhpDrmqB2VIl8onuWqb8Ctjnn4P1ik4=;
- b=BIBzwle/VGuew5LX9zZ2G3mS0uY34XThTL7XozNZFeQzU1Bipzk5ApxJ
- CruXJhqLYCW7CucJha9ZstUH5sXOfkjuF5IEuCOBPdLq/4zqgWM+It4+6
- zf+CAz7wk3ItkX/jbFZelgZU0tBubmh6gxFdjSylnTsnB3J7OHCIM6tDC
- 65x8a+LwojQceX2fjxq2ZFSEnMFjhikbCxDZlPxVdc1WHvkTACbJNVPXR
- Yd5C7J9m69JZF5c62DKO6PYZJBHlFhZ6sTMrKC3XCeEoxvTr+w+ivEXe0
- aBdx6DxFNZyo9B/GOUXPCr0t8sWg6Q6Ph7zz3nthAX1WNyIf3cmNbPXXR w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="390513228"
-X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="390513228"
+ bh=QilF8Z7n8eLNvp+KakVg1PclRY0/AM3rUFbAPwChosc=;
+ b=D866FxD2ymIyevi4hiOKIXQ4VoOVZWTRZVD9F3SIJ/+FPcoNVtQyP4zE
+ 6IHNp5wfyBVBV2ShE9U/n885xtk3dfFfxXBXhQ44Vd08kJhmQrizZemX8
+ BuqK4RfSLHltu8bHiAYKxlU7YfkczwQy/Oj5Z3mLwvWYfKiESSVK2JRDw
+ XGLBTW4KxJZ9IQydkt0QCVW5AgZWL/V2dCuxP0dmxYMRZ+W8AOnXNXkZk
+ dm3Cql8Xm1gEW7Zs6edowbPERcBDy0mejD5UOybX322qXDdrEyt6QERAh
+ vJlFFlA9KCWsqioO/TNXkIPIXMQU4LUIx5PXdqgERZcGTMA8O8iiI2E/o Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="390513221"
+X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="390513221"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Oct 2022 04:51:43 -0700
+ 10 Oct 2022 04:51:41 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="954889044"
-X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="954889044"
+X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="954889043"
+X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="954889043"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga005.fm.intel.com with ESMTP; 10 Oct 2022 04:51:41 -0700
+ by fmsmga005.fm.intel.com with ESMTP; 10 Oct 2022 04:51:40 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 04/15] ASoC: Intel: avs: Add quirk for KBL-R RVP platform
-Date: Mon, 10 Oct 2022 14:07:38 +0200
-Message-Id: <20221010120749.716499-5-cezary.rojewski@intel.com>
+Subject: [PATCH 03/15] ASoC: codecs: rt298: Add quirk for KBL-R RVP platform
+Date: Mon, 10 Oct 2022 14:07:37 +0200
+Message-Id: <20221010120749.716499-4-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221010120749.716499-1-cezary.rojewski@intel.com>
 References: <20221010120749.716499-1-cezary.rojewski@intel.com>
@@ -88,72 +88,32 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-KBL-R RVPs contain built-in rt298 codec which requires different PLL
-clock and .dai_fmt configuration than seen on other boards.
+KBL-R RVP platforms also use combojack, so we need to enable that
+configuration for them.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/intel/avs/boards/rt298.c | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt298.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/intel/avs/boards/rt298.c b/sound/soc/intel/avs/boards/rt298.c
-index b28d36872dcb..58c9d9edecf0 100644
---- a/sound/soc/intel/avs/boards/rt298.c
-+++ b/sound/soc/intel/avs/boards/rt298.c
-@@ -6,6 +6,7 @@
- //          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
- //
- 
-+#include <linux/dmi.h>
- #include <linux/module.h>
- #include <sound/jack.h>
- #include <sound/pcm.h>
-@@ -14,6 +15,16 @@
- #include <sound/soc-acpi.h>
- #include "../../../codecs/rt298.h"
- 
-+static const struct dmi_system_id kblr_dmi_table[] = {
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index b0b53d4f07df..5f36064ed6e6 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -1166,6 +1166,13 @@ static const struct dmi_system_id force_combo_jack_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Geminilake")
+ 		}
+ 	},
 +	{
++		.ident = "Intel Kabylake R RVP",
 +		.matches = {
 +			DMI_MATCH(DMI_SYS_VENDOR, "Intel Corporation"),
-+			DMI_MATCH(DMI_BOARD_NAME, "Kabylake R DDR4 RVP"),
-+		},
++			DMI_MATCH(DMI_PRODUCT_NAME, "Kabylake Client platform")
++		}
 +	},
-+	{}
-+};
-+
- static const struct snd_kcontrol_new card_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
- 	SOC_DAPM_PIN_SWITCH("Mic Jack"),
-@@ -96,9 +107,15 @@ avs_rt298_hw_params(struct snd_pcm_substream *substream, struct snd_pcm_hw_param
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-+	unsigned int clk_freq;
- 	int ret;
+ 	{ }
+ };
  
--	ret = snd_soc_dai_set_sysclk(codec_dai, RT298_SCLK_S_PLL, 19200000, SND_SOC_CLOCK_IN);
-+	if (dmi_first_match(kblr_dmi_table))
-+		clk_freq = 24000000;
-+	else
-+		clk_freq = 19200000;
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, RT298_SCLK_S_PLL, clk_freq, SND_SOC_CLOCK_IN);
- 	if (ret < 0)
- 		dev_err(rtd->dev, "Set codec sysclk failed: %d\n", ret);
- 
-@@ -139,7 +156,10 @@ static int avs_create_dai_link(struct device *dev, const char *platform_name, in
- 	dl->platforms = platform;
- 	dl->num_platforms = 1;
- 	dl->id = 0;
--	dl->dai_fmt = SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS;
-+	if (dmi_first_match(kblr_dmi_table))
-+		dl->dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS;
-+	else
-+		dl->dai_fmt = SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS;
- 	dl->init = avs_rt298_codec_init;
- 	dl->be_hw_params_fixup = avs_rt298_be_fixup;
- 	dl->ops = &avs_rt298_ops;
 -- 
 2.25.1
 
