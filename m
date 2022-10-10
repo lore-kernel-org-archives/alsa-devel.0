@@ -4,70 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A23B2C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Oct 2022 11:20:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECCBFC433FE
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Oct 2022 11:44:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B2192856;
-	Mon, 10 Oct 2022 13:19:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B2192856
+	by alsa0.perex.cz (Postfix) with ESMTPS id 515D028C8;
+	Mon, 10 Oct 2022 13:43:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 515D028C8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665400825;
-	bh=Kovg57r5VykKe/+/1vpAjKiI6SWlnob5ulkWDfEuaLY=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1665402284;
+	bh=GOU4t9yqHznR3dgfuVRv65ynXhL6gd0l6Hv4Hcg3bpc=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RG6vKA9nlyHNJWSp6QJsjvaaDatnPTdVdBBj5iAf3t1qy0ayaYCQLXR06+CnfGIEb
-	 w7hPbGjGbDlMostr+f9taqiqE71aUH5GCr/eqsENdmz0b//DgdlJmXpXcwNjYbnR4g
-	 IY2CULyLzK+QiWKGvcBE10XwbZfG6bLbVQf1lq7Q=
+	b=S/2qjt2fYf5S0YXdhXxWGeqeFgLZgA8M4bMPJ3j1w7DSxtFAhoTcm+kMxHZDRRZzq
+	 g2wDAC9z3j0Q4JFTiWmbQn7E06ozLnWMWO1s3VcS9qhd4aL5SK+Vf5yQ+tbaHpdR7C
+	 8Q8r8cgnLI7/YTPa2jfzCFa61nfVIpafwC7yoOCc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A968AF80155;
-	Mon, 10 Oct 2022 13:19:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D6F6AF80155;
+	Mon, 10 Oct 2022 13:43:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0D07F80107; Mon, 10 Oct 2022 13:19:33 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 1F60AF804D8; Mon, 10 Oct 2022 13:43:52 +0200 (CEST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A56FF80107
- for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 13:19:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A56FF80107
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="do+O8KBy"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 3CB4FB80E70;
- Mon, 10 Oct 2022 11:19:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A4F9C433D6;
- Mon, 10 Oct 2022 11:19:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1665400769;
- bh=Kovg57r5VykKe/+/1vpAjKiI6SWlnob5ulkWDfEuaLY=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=do+O8KByAmhICHFjP9zRlZ3lgv8xdB45e+5xsEuNV1c5ydSPdFLpB4zQIuEQt732c
- ucggdO8j6Tax6bkHjxV3anSm6gXuYMUmyk/QhEWaJ6BP0B0yucEaVhha2S4YqafnN5
- oHcbGzO2dMChPTuZPmTDMpJz3IT+4tYu0tMYlQ8900rPUrAvsBqN3BBQjKRg0wkVzv
- TyUZSnPEqFMev20RNn2a16RkyhCU5HCnz36qK8o1q6HzfDvSfN1kzjqUGyoJkJyJrl
- WRN/JXTueIa9xp+uY3d0/GiXdGwQvZ3dIPzm4KPmlOH39DMEjbiRKqfi/kJSdMXllQ
- pBx2BeAFzVsww==
-Date: Mon, 10 Oct 2022 12:19:23 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Siarhei Volkau <lis8215@gmail.com>
-Subject: Re: [PATCH] ASoC: codecs: jz4725b: Various improvements and fixes
-Message-ID: <Y0P/u4pJT8rup8Za@sirena.org.uk>
-References: <20221008181655.2747857-1-lis8215@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40293F80155
+ for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 13:43:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40293F80155
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MmH476GWZzHv7K;
+ Mon, 10 Oct 2022 19:38:47 +0800 (CST)
+Received: from kwepemm600014.china.huawei.com (7.193.23.54) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 10 Oct 2022 19:43:45 +0800
+Received: from huawei.com (10.90.53.225) by kwepemm600014.china.huawei.com
+ (7.193.23.54) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 10 Oct
+ 2022 19:43:45 +0800
+From: Zhang Qilong <zhangqilong3@huawei.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>, <matthias.bgg@gmail.com>,
+ <ckeepax@opensource.wolfsonmicro.com>, <jeff_chang@richtek.com>,
+ <ckeepax@opensource.cirrus.com>
+Subject: [PATCH v2 -next 1/3] ASoC: wm5102: Revert "ASoC: wm5102: Fix PM
+ disable depth imbalance in wm5102_probe"
+Date: Mon, 10 Oct 2022 19:48:50 +0800
+Message-ID: <20221010114852.88127-2-zhangqilong3@huawei.com>
+X-Mailer: git-send-email 2.26.0.106.g9fadedd
+In-Reply-To: <20221010114852.88127-1-zhangqilong3@huawei.com>
+References: <20221010114852.88127-1-zhangqilong3@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="Op3ThFipb3tyblPC"
-Content-Disposition: inline
-In-Reply-To: <20221008181655.2747857-1-lis8215@gmail.com>
-X-Cookie: This sentence no verb.
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Paul Cercueil <paul@crapouillou.net>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.90.53.225]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600014.china.huawei.com (7.193.23.54)
+X-CFilter-Loop: Reflected
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-mediatek@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,62 +79,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This reverts commit fcbb60820cd3008bb44334a0395e5e57ccb77329.
 
---Op3ThFipb3tyblPC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The pm_runtime_disable is redundant when error returns in
+wm5102_probe, we just revert the old patch to fix it.
 
-On Sat, Oct 08, 2022 at 09:16:55PM +0300, Siarhei Volkau wrote:
-> The patch fixes:
-> - incorrectly represented dB values in alsamixer, et al.
-> - Line In path stays powered off during capturing or
->   bypass to mixer.
->=20
-> The patch improves:
-> - Exposes all mixer inputs (both Mics, LineIn and DAC) with their
->   gain controls.
-> - Exposes output stage (post mixer) gain control and makes it new
->   Master playback gain, DAC gain was the previous master.
->   However, no Master mute now.
->=20
-> Known issues:
-> - Bypass path enablement isn't applied immediately, for make
->   things going bit clock needs to be triggered for a bit,
->   e.g. by aplay dummy.wav
->   It might be a hardware bug, since the bit clock isn't
->   declared as required for codec operation.
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ sound/soc/codecs/wm5102.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-As covered in submitting-patches.rst this should really be split up into
-multiple patches, with one change per patch.  This is especially the
-case here since you have a mix of fixes and new features which should be
-applied differently.
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index e56e30d59760..adaf886b0a9d 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -2099,6 +2099,9 @@ static int wm5102_probe(struct platform_device *pdev)
+ 		regmap_update_bits(arizona->regmap, wm5102_digital_vu[i],
+ 				   WM5102_DIG_VU, WM5102_DIG_VU);
+ 
++	pm_runtime_enable(&pdev->dev);
++	pm_runtime_idle(&pdev->dev);
++
+ 	ret = arizona_request_irq(arizona, ARIZONA_IRQ_DSP_IRQ1,
+ 				  "ADSP2 Compressed IRQ", wm5102_adsp2_irq,
+ 				  wm5102);
+@@ -2131,9 +2134,6 @@ static int wm5102_probe(struct platform_device *pdev)
+ 		goto err_spk_irqs;
+ 	}
+ 
+-	pm_runtime_enable(&pdev->dev);
+-	pm_runtime_idle(&pdev->dev);
+-
+ 	return ret;
+ 
+ err_spk_irqs:
+-- 
+2.25.1
 
-> -	SOC_DOUBLE_R_TLV("Master Capture Volume",
-> +	SOC_DOUBLE_TLV("Master Capture Volume",
-> +		       JZ4725B_CODEC_REG_CGR10,
-> +		       REG_CGR10_GIL_OFFSET,
-> +		       REG_CGR10_GIR_OFFSET,
-> +		       0xf, 0, jz4725b_adc_tlv),
-> +	SOC_DOUBLE_R_TLV("Mixer Line In Bypass Playback Volume",
->  			 JZ4725B_CODEC_REG_CGR3,
-
-This doesn't appear to correspond to what your patch description said
-and will presumably cause problems for any existing configurations...
-
---Op3ThFipb3tyblPC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmND/7oACgkQJNaLcl1U
-h9Ck3gf+MN3H2Q8YLJKMm3xOdxFyrrH0ZsGoIK4lRoS2exdLznRoBee133qnowPW
-g+3+Oe3kzCX/Pd+uHl3u6Xsj63GkKUM7UewBPSqlxa0ErTBKPO7GSOaWKQanpyah
-oPvhJ4CXee0Ul6nS3STH8SKZ8v57Xca64GFHn7yQ+8mFvob6PspUsYhpk7098Obj
-nOMlKo1E1UCjZTJ6lmaPc5uSyBGb400n+t0jq1YYZEcWiRiCtqGITwctzplf3Cjo
-6gW0O9R8goqDdIZE/rFCoDu8PfEc69ulzSw4LaKPQJKHSXdFlY/Vrzz5w5NQJgM9
-R7ziLxg/PCEgA6SOQTt4KABRUxuGzw==
-=jUV/
------END PGP SIGNATURE-----
-
---Op3ThFipb3tyblPC--
