@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B53FC433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Oct 2022 11:54:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 781A4C433FE
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Oct 2022 11:55:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C39462927;
-	Mon, 10 Oct 2022 13:53:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C39462927
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B1472916;
+	Mon, 10 Oct 2022 13:54:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B1472916
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665402887;
-	bh=xN+Dl4IyK8wO1+W3xgwz+tpP2k/nEyWk0uXkXJasap8=;
+	s=default; t=1665402899;
+	bh=QCz5bxo15VEkNJsvIJ4sTJx/idRityrxqBRwaMhJiHI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kn1tM7ui1GyCOS3OlE0wO0YleHXdMFXus2MRPlO/y4nGquGm/fqTy2ayWMT4ZAVH2
-	 0NnXOh164jDwexEbaCOF34u13CFDIirKDKsrWU84kp5xewBFaidCOSq3HS8Bu2aCTK
-	 XO10YfJGUX+AjZC+31SS1bxBmZnWU7jKP/SWpudE=
+	b=MHk15Zo7+t4pxINGlddCSYla/AKx97YoeQTizOeNhqEPdFzBFpWeIHa9Hi97ADJO1
+	 81qpQzrEqMsb67GGTYcO4Bo/axCDIUnlIdx9vYUSQS1TzGV8Dg8p5ziuMUpvFoMw0X
+	 k/DqeFMdboBDtLwPKB5fPYmbU7aHdpjolDsIf7zw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 810ACF8057F;
+	by alsa1.perex.cz (Postfix) with ESMTP id E78DEF805A0;
 	Mon, 10 Oct 2022 13:51:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2A48EF80578; Mon, 10 Oct 2022 13:51:58 +0200 (CEST)
+ id 69B8FF80579; Mon, 10 Oct 2022 13:51:58 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3E39F80559
- for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 13:51:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3E39F80559
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7103BF80568
+ for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 13:51:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7103BF80568
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Mlw995p8"
+ header.b="bGUAKprr"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1665402712; x=1696938712;
+ t=1665402716; x=1696938716;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=xN+Dl4IyK8wO1+W3xgwz+tpP2k/nEyWk0uXkXJasap8=;
- b=Mlw995p8uZ+jNesXUKdfXPl/yZ0WsrHMEwDy5drkVK+dL8rFXwi59N2f
- oNSTlqxfb9LTbedaCz4ivA8vY0M7JCj3iE8g5qDkx/BaRwVBpZNP80j5r
- Cq0OSGhPWU1bgakIFb0FQTKmz76t35jRheQWibCRdaFwvnWLoxcurSvfd
- 24Sfb+o3jtGPdceOODKvG02mik84JFTcP/sUSU9bD56SIliILakhS+uDQ
- f6y0z7b0sJZUMHX4le/IQdHLqe5j94mrvLd70l4xmWFEl1sGUHoduoKgN
- xdr3G8Getdpd//H6zOvO4j5MTEaI3X3rYQ8VH6FMJkt2kaCjv3W+T1prz w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="390513246"
-X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="390513246"
+ bh=QCz5bxo15VEkNJsvIJ4sTJx/idRityrxqBRwaMhJiHI=;
+ b=bGUAKprrX+im57jOs2Igh8dvEx4Z6WA/RLcjMZ/6+iFAyi58f+pYO4zI
+ Omx7k+lEL1ftW6mqNmP6bXI4v3oRFZeDGLVf1jCVzuxswDGJCwpZTaENh
+ HM47Zz8cwR3D1tD0uQk8NH3lIX5aXbO6NS3vUbxZQJoFqYD7x7STK3bTU
+ aNdZ03/2sKMSuKP9Sxoyw6vzAKKyZw1wKdrPSbhqFm4f9H5sgd6XZEJXk
+ FzLBe5WqmpegtLqtdWnzRKZ0mXb3yOLBeIfvOnC9FzkyHC7Sdtd5JcPSj
+ 3YBc6t9oTyoB6BnKFA4Ca9F0+cmBndyhSUYq2uq4sED0IdJEtJOsHsGVf g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="390513251"
+X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="390513251"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Oct 2022 04:51:51 -0700
+ 10 Oct 2022 04:51:54 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="954889068"
-X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="954889068"
+X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="954889083"
+X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="954889083"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga005.fm.intel.com with ESMTP; 10 Oct 2022 04:51:49 -0700
+ by fmsmga005.fm.intel.com with ESMTP; 10 Oct 2022 04:51:53 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 08/15] ASoC: Intel: avs: Simplify d0ix disabling routine
-Date: Mon, 10 Oct 2022 14:07:42 +0200
-Message-Id: <20221010120749.716499-9-cezary.rojewski@intel.com>
+Subject: [PATCH 10/15] ASoC: Intel: avs: Do not reuse msg between different
+ IPC handlers
+Date: Mon, 10 Oct 2022 14:07:44 +0200
+Message-Id: <20221010120749.716499-11-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221010120749.716499-1-cezary.rojewski@intel.com>
 References: <20221010120749.716499-1-cezary.rojewski@intel.com>
@@ -86,27 +87,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-No need to atomic_add_return(1) when there is atomic_inc_return()
-available.
+While LOG_BUFFER_STATUS is a simple notification with only one
+meaningful field, same message ptr shall not be reused for two different
+handlers.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/ipc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/avs/apl.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/avs/ipc.c b/sound/soc/intel/avs/ipc.c
-index 77da206f7dbb..152f8d0bdf8e 100644
---- a/sound/soc/intel/avs/ipc.c
-+++ b/sound/soc/intel/avs/ipc.c
-@@ -74,7 +74,7 @@ int avs_dsp_disable_d0ix(struct avs_dev *adev)
- 	struct avs_ipc *ipc = adev->ipc;
- 
- 	/* Prevent PG only on the first disable. */
--	if (atomic_add_return(1, &ipc->d0ix_disable_depth) == 1) {
-+	if (atomic_inc_return(&ipc->d0ix_disable_depth) == 1) {
- 		cancel_delayed_work_sync(&ipc->d0ix_work);
- 		return avs_dsp_set_d0ix(adev, false);
+diff --git a/sound/soc/intel/avs/apl.c b/sound/soc/intel/avs/apl.c
+index b8e2b23c9f64..7c8ce98eda9d 100644
+--- a/sound/soc/intel/avs/apl.c
++++ b/sound/soc/intel/avs/apl.c
+@@ -133,12 +133,14 @@ static int apl_coredump(struct avs_dev *adev, union avs_notify_msg *msg)
+ 	buf = apl_log_payload_addr(addr);
+ 	memcpy_fromio(&layout, addr, sizeof(layout));
+ 	if (!apl_is_entry_stackdump(buf + layout.read_ptr)) {
++		union avs_notify_msg lbs_msg = AVS_NOTIFICATION(LOG_BUFFER_STATUS);
++
+ 		/*
+ 		 * DSP awaits the remaining logs to be
+ 		 * gathered before dumping stack
+ 		 */
+-		msg->log.core = msg->ext.coredump.core_id;
+-		avs_dsp_op(adev, log_buffer_status, msg);
++		lbs_msg.log.core = msg->ext.coredump.core_id;
++		avs_dsp_op(adev, log_buffer_status, &lbs_msg);
  	}
+ 
+ 	pos = dump + AVS_FW_REGS_SIZE;
 -- 
 2.25.1
 
