@@ -4,42 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDFCDC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Oct 2022 12:10:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89082C433FE
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Oct 2022 12:45:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 04FDC2996;
-	Mon, 10 Oct 2022 14:09:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04FDC2996
+	by alsa0.perex.cz (Postfix) with ESMTPS id 515882A3E;
+	Mon, 10 Oct 2022 14:44:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 515882A3E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665403812;
-	bh=s3/QDNXgZ/2K+FUTKrf/gZ9xIJimRqklF88lgaVEM+w=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1665405921;
+	bh=YjnheQVMs3rAB3/1RFPxjKtfthxg0rbaLJ+dOTqd8Yc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t6fZO2XTA8sZqpjCnjqVWqSvvdFs7J+t+tQzppgoidf3AYHtFX9Opnd4OYr6F1LKd
-	 PjNJ3KAvTK2NTrZLs7JowaM88/89U6tBpYyZP4mTmB4v/grxx8b9+NCpyvbceClCvL
-	 eHEwFXAB+eFI7fdh9HgLgCWKPVNvpK1r876t2NV4=
+	b=EOjethT2QOiXKul/I9doPWUDiumkVODj2gmmt64YZkGDVUV51t4VDrS+K8XVMLFhz
+	 k4SbYcCAoWnLnCyNkC/4MBzRMU+1EXRhIJPLptHWnDypX3dsnft9148guXoAQnizre
+	 PaPzMQTywee2yveQgqdVcNr/7qcf0wSQaP1ICIyo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7CCAF801D5;
-	Mon, 10 Oct 2022 14:09:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3887F801D5;
+	Mon, 10 Oct 2022 14:44:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6495EF801D5; Mon, 10 Oct 2022 14:09:20 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 96BF4F80155
- for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 14:09:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96BF4F80155
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1665403753918127060-webhooks-bot@alsa-project.org>
-References: <1665403753918127060-webhooks-bot@alsa-project.org>
-Subject: Mute PC Speaker by default
-Message-Id: <20221010120920.6495EF801D5@alsa1.perex.cz>
-Date: Mon, 10 Oct 2022 14:09:20 +0200 (CEST)
+ id 0D8DBF8032B; Mon, 10 Oct 2022 14:44:29 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9620EF800B8
+ for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 14:44:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9620EF800B8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="TQ0HmtkY"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="IW9H2DAr"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id CABB4218EA;
+ Mon, 10 Oct 2022 12:44:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1665405861; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=F5IgJriwaayDmrgPwWCQDE5Dc7KPhfEOss9beRoEOaA=;
+ b=TQ0HmtkY8qzmBf++MVPUSACx+1B4jvaAePMQL3qxceJ9MMySiNF1UoC9V59o2/J4DXZQwq
+ PFDciRaI7bw/v7h4pxqwe+cVD4n3MrEEp4L6d4+RxQq+W1U5nMwAkHEilzcfDS+GyuUv3A
+ zgQxn0JAm8vRR1jP9hC0mCwE81ukXBA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1665405861;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=F5IgJriwaayDmrgPwWCQDE5Dc7KPhfEOss9beRoEOaA=;
+ b=IW9H2DAr+HCysWTYFZw/OJbY+Mv7qTxRnzRmmTEC9jtx/wAQQnbCY9LtIid4LJa8NjYD3f
+ VCPc9LMLj3N4VCAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A91FC13ACA;
+ Mon, 10 Oct 2022 12:44:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 5/syKKUTRGN1awAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 10 Oct 2022 12:44:21 +0000
+Date: Mon, 10 Oct 2022 14:44:21 +0200
+Message-ID: <871qrfg862.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Luke D. Jones" <luke@ljones.dev>
+Subject: Re: [PATCH]  ALSA: hda/realtek: Add quirk for ASUS GV601R laptop
+In-Reply-To: <20221010070347.36883-1-luke@ljones.dev>
+References: <20221010070347.36883-1-luke@ljones.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,9 +94,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #172 was opened from lnussel:
+On Mon, 10 Oct 2022 09:03:47 +0200,
+Luke D. Jones wrote:
+> 
+> The ASUS ROG X16 (GV601R) series laptop has the same node-to-DAC pairs
+> as early models and the G14, this includes bass speakers which are by
+> default mapped incorrectly to the 0x06 node.
+> 
+> Add a quirk to use the same DAC pairs as the G14.
+> 
+> Signed-off-by: Luke D. Jones <luke@ljones.dev>
 
-SUSE has a [preset](https://build.opensuse.org/package/view_file/openSUSE:Factory/alsa-utils/01beep.conf) to mute the PC speaker by default  as it can be quite annoying (https://bugzilla.suse.com/show_bug.cgi?id=767270). Would it make sense to include that upstream?
+Thanks, applied (with Cc to stable).
 
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/172
-Repository URL: https://github.com/alsa-project/alsa-utils
+
+Takashi
