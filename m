@@ -4,66 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4512C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 10 Oct 2022 11:45:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A200C433FE
+	for <alsa-devel@archiver.kernel.org>; Mon, 10 Oct 2022 11:52:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 637EB28E0;
-	Mon, 10 Oct 2022 13:44:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 637EB28E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 23579290A;
+	Mon, 10 Oct 2022 13:51:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23579290A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665402340;
-	bh=zTN7qJpMUCViaMIoX3jk35n1CKzDZNbULEM+M7fPFLo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=QnmtlZ7xcdf4XU0eBT0HPorr3u9Y760Pikm3iXYDwrn1w7nLb5SVj5gvnWLTC059f
-	 d2tC1MiCj6gjN8+ZE2Hl6tjEHJ/RhT2u34ejycJoiByTczZu3IWlNSZFaN/XwGHOva
-	 4Q7fgkvL3za/OehSKg6dt8y4JmZBIhAfCnLEMfRI=
+	s=default; t=1665402753;
+	bh=hH8bb+DYQ5vLzs0wtWMB9nFso9Z8A9gkGBzTJojAi6I=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=uEzU+27CDUYdmc5vrD0LLlUBCavWnjdQU66fzHiPM6btGELtkV2L/Hh5J5/qsbAMI
+	 WaeuGEs1bPAJdMhBcJDzZlirHcnmjQBu207gGh1OwJXvX3e9yQ8qM81KB7z6uS7B1X
+	 9xV9rhdVtweL6YkZ3vmWxe6UxcuwqDpG9gPvYq5I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80F94F80542;
-	Mon, 10 Oct 2022 13:43:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF7C5F8032B;
+	Mon, 10 Oct 2022 13:51:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43903F80543; Mon, 10 Oct 2022 13:43:57 +0200 (CEST)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id E666FF80256; Mon, 10 Oct 2022 13:51:40 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9D608F80107
- for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 13:43:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D608F80107
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MmH4p63V1zVj1S;
- Mon, 10 Oct 2022 19:39:22 +0800 (CST)
-Received: from kwepemm600014.china.huawei.com (7.193.23.54) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 10 Oct 2022 19:43:46 +0800
-Received: from huawei.com (10.90.53.225) by kwepemm600014.china.huawei.com
- (7.193.23.54) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 10 Oct
- 2022 19:43:45 +0800
-From: Zhang Qilong <zhangqilong3@huawei.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>, <matthias.bgg@gmail.com>,
- <ckeepax@opensource.wolfsonmicro.com>, <jeff_chang@richtek.com>,
- <ckeepax@opensource.cirrus.com>
-Subject: [PATCH v2 -next 3/3] ASoC: wm8997: Revert "ASoC: wm8997: Fix PM
- disable depth imbalance in wm8997_probe"
-Date: Mon, 10 Oct 2022 19:48:52 +0800
-Message-ID: <20221010114852.88127-4-zhangqilong3@huawei.com>
-X-Mailer: git-send-email 2.26.0.106.g9fadedd
-In-Reply-To: <20221010114852.88127-1-zhangqilong3@huawei.com>
-References: <20221010114852.88127-1-zhangqilong3@huawei.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 02683F80155
+ for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 13:51:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02683F80155
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="HyT53yxE"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1665402699; x=1696938699;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=hH8bb+DYQ5vLzs0wtWMB9nFso9Z8A9gkGBzTJojAi6I=;
+ b=HyT53yxERGirVvulToWaMdSA4lFHCwsF1LkqDGa0mrd82vGsWLQQLsE2
+ Tv+v6Tk4UkD8jnY8ursogl17GbwbrMqdj7fHUprYN9rJPlQw+rOGZ/3QO
+ l4NhskKxLwCHzuZ+bb13rXK09o6l2wixDNfcmHfYw3qXtdivj2PgENjQa
+ fmdc04Qkq/1YI/CR96wOqziAJORAcQEnSS7+oGLL/q5PPsgYpYK1RTsfW
+ zFGLabFnob9jDpak2KHdxqR4zgnrnsSDsd6UcWi7FsTZSbadIHtTNdMxS
+ dWxFISxFd+/vPaB9ccfiPDpDIx74hg3eUUkwDWFrNkbf2xepdkahJPkZU Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="390513200"
+X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="390513200"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Oct 2022 04:51:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10495"; a="954889029"
+X-IronPort-AV: E=Sophos;i="5.95,173,1661842800"; d="scan'208";a="954889029"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by fmsmga005.fm.intel.com with ESMTP; 10 Oct 2022 04:51:34 -0700
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH 00/15] ASoC: Intel: avs: Fixes and new boards support
+Date: Mon, 10 Oct 2022 14:07:34 +0200
+Message-Id: <20221010120749.716499-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.90.53.225]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600014.china.huawei.com (7.193.23.54)
-X-CFilter-Loop: Reflected
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-mediatek@lists.infradead.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
+ amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,41 +84,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This reverts commit 41a736ac20602f64773e80f0f5b32cde1830a44a.
+Two fixes are leading the way - one addresses the incorrect DMA mask
+assignment (typo) at driver probe. The other, fixes a potential buffer
+overflow when copying data received from firmware to kernel buffer.
+However unlikely, the fix should still be there.
 
-The pm_runtime_disable is redundant when error returns in
-wm8997_probe, we just revert the old patch to fix it.
+Then a range of patches providing the support for:
+- AML with rt286 (machine board)
+- KBL-R for rt298 (codec)
+- KBL-R with rt298 (machine board)
+- APL/KBL with da7219 (machine board)
+- Addition of all the missing SKL-based PCI ids to core.c
 
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- sound/soc/codecs/wm8997.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Of the remaining changes, only one stands out - special case is provided
+for "unsupported" IPCs. The driver supports a range of platforms,
+however, on some generations given IPC may not be supported. Such call
+shall not be treated as "invalid" - those are two different scenarios.
 
-diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-index f8993176d5c0..c0207e9a7d53 100644
---- a/sound/soc/codecs/wm8997.c
-+++ b/sound/soc/codecs/wm8997.c
-@@ -1161,6 +1161,9 @@ static int wm8997_probe(struct platform_device *pdev)
- 		regmap_update_bits(arizona->regmap, wm8997_digital_vu[i],
- 				   WM8997_DIG_VU, WM8997_DIG_VU);
- 
-+	pm_runtime_enable(&pdev->dev);
-+	pm_runtime_idle(&pdev->dev);
-+
- 	arizona_init_common(arizona);
- 
- 	ret = arizona_init_vol_limit(arizona);
-@@ -1179,9 +1182,6 @@ static int wm8997_probe(struct platform_device *pdev)
- 		goto err_spk_irqs;
- 	}
- 
--	pm_runtime_enable(&pdev->dev);
--	pm_runtime_idle(&pdev->dev);
--
- 	return ret;
- 
- err_spk_irqs:
+Everything else in the patchset is mostly a readability improvement:
+spelling fixes and log messages issues, code simplification.
+
+Amadeusz Sławiński (4):
+  ASoC: codecs: rt298: Add quirk for KBL-R RVP platform
+  ASoC: Intel: avs: Add quirk for KBL-R RVP platform
+  ASoC: Intel: avs: Support da7219 on both KBL and APL
+  ASoC: Intel: avs: Add missing include to HDA board
+
+Cezary Rojewski (11):
+  ASoC: Intel: avs: Fix DMA mask assignment
+  ASoC: Intel: avs: Fix potential RX buffer overflow
+  ASoC: Intel: avs: Support AML with rt286 configuration
+  ASoC: Intel: avs: Add missing SKL-based device IDs
+  ASoC: Intel: avs: Simplify d0ix disabling routine
+  ASoC: Intel: avs: Do not reuse msg between different IPC handlers
+  ASoC: Intel: avs: Do not treat unsupported IPCs as invalid
+  ASoC: Intel: avs: Do not print IPC error message twice
+  ASoC: Intel: avs: Simplify ignore_fw_version description
+  ASoC: Intel: avs: Simplify log control for SKL
+  ASoC: codecs: hda: Fix spelling error in log message
+
+ sound/soc/codecs/hda.c                |  2 +-
+ sound/soc/codecs/rt298.c              |  7 +++++++
+ sound/soc/intel/avs/apl.c             |  6 ++++--
+ sound/soc/intel/avs/avs.h             |  4 +++-
+ sound/soc/intel/avs/board_selection.c |  6 ++++++
+ sound/soc/intel/avs/boards/da7219.c   |  6 +++++-
+ sound/soc/intel/avs/boards/hdaudio.c  |  1 +
+ sound/soc/intel/avs/boards/rt298.c    | 24 ++++++++++++++++++++++--
+ sound/soc/intel/avs/core.c            |  6 +++++-
+ sound/soc/intel/avs/ipc.c             |  5 +++--
+ sound/soc/intel/avs/loader.c          |  2 +-
+ sound/soc/intel/avs/messages.c        | 19 ++++---------------
+ sound/soc/intel/avs/messages.h        |  2 ++
+ sound/soc/intel/avs/skl.c             |  4 ++--
+ 14 files changed, 66 insertions(+), 28 deletions(-)
+
 -- 
 2.25.1
 
