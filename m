@@ -4,62 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDD65C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Oct 2022 06:04:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F38F0C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Oct 2022 06:04:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0CD7436B2;
-	Tue, 11 Oct 2022 08:03:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CD7436B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2758236AA;
+	Tue, 11 Oct 2022 08:04:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2758236AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665468274;
-	bh=v3LK9a3wwjqEswskgeveoeeq6g3vQSULu3KyivR7brA=;
-	h=Date:To:From:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1665468295;
+	bh=2Wy1lNZl5CVliIER5Lc4QQY7lJEOR+7bCFx7xTWPFS4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KO4cvPej78IV2GPuSIjQ94BN8H9URmmc1QDukzq+RtEgsb/TKiJXLlolMYVVVa4Fo
-	 p5qzNQqpiNTos/StpaCHhNgwbEsNo40E/fiC3srUP6uBSbc0blLxAeOPdtTTZzJoSR
-	 2FnyJxjZBzkHV9E5RIDrOvJfD5mHy9Y0NWlN9CP0=
+	b=o0LELq/TSf4H+zZSZiumcWgCi+5zb4yhyjc/9Q9fo1dQx9rMaBI+vXqkLKDGj2V6/
+	 uYHKlji1G5mREypwrLJTe/Vt+jNk4wwYRNWEyHqEXi28KCbQvLEhd37ief8S/nCY1/
+	 U48D0i/7ZlAsYScN4GjCaLxE791VTC6KsicqpbPs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07E8DF80551;
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D1C5F8055B;
 	Tue, 11 Oct 2022 08:02:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE8E4F804CB; Sun,  9 Oct 2022 04:01:57 +0200 (CEST)
-Received: from mail-4022.proton.ch (mail-4022.proton.ch [185.70.40.22])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id AC462F8032B; Mon, 10 Oct 2022 17:20:42 +0200 (CEST)
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com
+ [IPv6:2607:f8b0:4864:20::d34])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8FE73F80137
- for <alsa-devel@alsa-project.org>; Sun,  9 Oct 2022 04:01:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FE73F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5EE9FF80107
+ for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 17:20:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EE9FF80107
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=connolly.tech header.i=@connolly.tech
- header.b="FhTwH0n7"
-Date: Sun, 09 Oct 2022 02:01:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=connolly.tech;
- s=protonmail; t=1665280901; x=1665540101;
- bh=bOWJkhZwbLAJZMmQNK1Ow6lvYBOieY03TLORKHEfn/g=;
- h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
- Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
- Message-ID;
- b=FhTwH0n7qn2+H2uKLzIQPteezEzwymqG+rxxbJ4phr0L3Hoy3451eo7+5tWdPmtic
- Y4fgo2XG+BNuwQ9dhmtqkmDVN13/xwdLmJBGh+X1LwBkRE/bAl+ey1ZDplIoJYnoQQ
- 7h9WlHaWIHryVugSsw5lBBLfjwTTjYOEyg7jE22k=
-To: Dylan Van Assche <me@dylanvanassche.be>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-From: Caleb Connolly <caleb@connolly.tech>
-Subject: Re: [PATCH v2] sound: soc: codecs: wcd-mbhc-v2: expose ALSA control
- for jack
-Message-ID: <b06ef62e-7409-b347-fc6e-9e42bcd44419@connolly.tech>
-In-Reply-To: <20221007155716.10594-1-me@dylanvanassche.be>
-References: <20221007155716.10594-1-me@dylanvanassche.be>
-Feedback-ID: 10753939:user:proton
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="TBb+j24T"
+Received: by mail-io1-xd34.google.com with SMTP id p186so8681535iof.5
+ for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 08:20:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=AcKHzg1i2Me8EqhKFtNfioe60y1iB3hPVRhH6rIJCT4=;
+ b=TBb+j24Tql7lMGBRzux71qaHiImguWET6ioHZwhlZ4PdQUXhkEUgc9YOW2brTKqdnU
+ 8zTdhhtE7FUBVfXd1p7V5o1v4uCOYImJzPziLfaBNtDjB6Lrev5IY7SQNgg3pn5bQSMo
+ wLW9nC2azr6mXZPGtkuHgN7gGw8TMPg79Qe0VkSK8fjyc7/4zb1PCeDnQBZmDTzglw8j
+ /X5XK38i7eIYFwkLSxF6OUHXkgi42yJ8QQcXEtPTdKVOm+4NKMB8BmKaGRvvfzn+j3Hz
+ zSDOr32ibJj4YfXyruWXwLovx8aJxum1btItTe2ySVpLb3/D8dHAF3u1P9O+GaFv+WqJ
+ Feuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=AcKHzg1i2Me8EqhKFtNfioe60y1iB3hPVRhH6rIJCT4=;
+ b=UftGfEWQrTsteEQUbEeV8JCF9obt+7nABFu4DLde5mUi29BZBj/xs7I0ILr6KXxCy3
+ 5X13yQEGzW6kP8b37oQ4Ul/L+kWhLvFRei1IUMPizVEnJrnD8yRBqvobhZ9SnKru2ifF
+ eM9zcXi7CZDDAkLYSfpvdRPShYj2zi2W2ARLVDKDCbebVBCMkPmgHzpzP4mJPjO2wZPa
+ ICzNo6O7HW5aEuCMGji125UQKfZ384e3uMnbckUi4wZt4vJq9+6PbqzYwU2aTBvcRe1o
+ z78zY8mTRZx5m/ZFW1uul/0APrkjaQBOandcV4xPe7dc8Pgp1QanKXc7b37dcHjmxO7i
+ y5iQ==
+X-Gm-Message-State: ACrzQf1ID7/Bf0MC2FAktE1bgGWBEm1ObwkrKdsOPQQEiqEB8h+GeZJH
+ CWe5Vh/D87XeeM1PixqzcCUQrYf3lBb6JlsJflo=
+X-Google-Smtp-Source: AMsMyM7BgrMi5isfnHCX6JolmakAtvlRr3ULiJstScINCNYrgAduBakCoqPks5lDMlMfN79tBnKa/M8p1ql8Zm59T9A=
+X-Received: by 2002:a6b:6f02:0:b0:6bc:15d8:3446 with SMTP id
+ k2-20020a6b6f02000000b006bc15d83446mr3512864ioc.108.1665415235626; Mon, 10
+ Oct 2022 08:20:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20221008181655.2747857-1-lis8215@gmail.com>
+ <Y0P/u4pJT8rup8Za@sirena.org.uk>
+In-Reply-To: <Y0P/u4pJT8rup8Za@sirena.org.uk>
+From: Siarhei Volkau <lis8215@gmail.com>
+Date: Mon, 10 Oct 2022 18:20:24 +0300
+Message-ID: <CAKNVLfZhH3s=jBWAoSppXSotY9giRRJbub9MqxCtjdZKh4fprg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: codecs: jz4725b: Various improvements and fixes
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Mailman-Approved-At: Tue, 11 Oct 2022 08:02:20 +0200
-Cc: linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
- ~postmarketos/upstreaming@lists.sr.ht
+X-Mailman-Approved-At: Tue, 11 Oct 2022 08:02:21 +0200
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Paul Cercueil <paul@crapouillou.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,49 +97,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Tested on a OnePlus 6 running postmarketOS!
+=D0=BF=D0=BD, 10 =D0=BE=D0=BA=D1=82. 2022 =D0=B3. =D0=B2 14:19, Mark Brown =
+<broonie@kernel.org>:
+> As covered in submitting-patches.rst this should really be split up into
+> multiple patches, with one change per patch.  This is especially the
+> case here since you have a mix of fixes and new features which should be
+> applied differently.
 
-On 07/10/2022 16:57, Dylan Van Assche wrote:
-> Jack detection is currently fully functional via the input
-> interface together with multimedia buttons, but is not exposed
-> as an ALSA control. Therefore, ALSA clients such as PulseAudio
-> do not pick up the jack detection events as they only support
-> one of the possible interface (ALSA control or input interface,
-> but not both). Expose the jack events as an ALSA control and input
-> interface to provide ALSA clients both interfaces.
->
-> Signed-off-by: Dylan Van Assche <me@dylanvanassche.be>
+Got it, will rework.
 
-Tested-by: Caleb Connolly <caleb@connolly.tech>
+> > -     SOC_DOUBLE_R_TLV("Master Capture Volume",
+> > +     SOC_DOUBLE_TLV("Master Capture Volume",
+> > +                    JZ4725B_CODEC_REG_CGR10,
+> > +                    REG_CGR10_GIL_OFFSET,
+> > +                    REG_CGR10_GIR_OFFSET,
+> > +                    0xf, 0, jz4725b_adc_tlv),
+> > +     SOC_DOUBLE_R_TLV("Mixer Line In Bypass Playback Volume",
+> >                        JZ4725B_CODEC_REG_CGR3,
+>
+> This doesn't appear to correspond to what your patch description said
 
-> ---
->   sound/soc/codecs/wcd-mbhc-v2.c | 4 ++++
->   1 file changed, 4 insertions(+)
->
-> diff --git a/sound/soc/codecs/wcd-mbhc-v2.c b/sound/soc/codecs/wcd-mbhc-v=
-2.c
-> index 1911750f7445..1b75f49b2858 100644
-> --- a/sound/soc/codecs/wcd-mbhc-v2.c
-> +++ b/sound/soc/codecs/wcd-mbhc-v2.c
-> @@ -725,6 +725,10 @@ static int wcd_mbhc_initialise(struct wcd_mbhc *mbhc=
-)
->
->   =09mutex_lock(&mbhc->lock);
->
-> +=09ret =3D snd_jack_add_new_kctl(mbhc->jack->jack, "Headset Jack", WCD_M=
-BHC_JACK_MASK);
-> +=09if (ret)
-> +=09=09dev_warn(component->dev, "failed creating Headset Jack kctl with e=
-rr: %d\n", ret);
-> +
->   =09/* enable HS detection */
->   =09if (mbhc->mbhc_cb->hph_pull_up_control_v2)
->   =09=09mbhc->mbhc_cb->hph_pull_up_control_v2(component,
-> --
-> 2.37.3
->
+I forgot to mention that in the description, thanks.
 
---
-Kind Regards,
-Caleb
+> and will presumably cause problems for any existing configurations...
 
+I'm curious why this didn't cause problems earlier, as the wrong
+control was used
+for the Master Capture Volume.
