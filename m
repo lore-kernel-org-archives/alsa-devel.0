@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19949C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Oct 2022 14:38:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C5E1C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Oct 2022 14:38:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 379393DD7;
-	Tue, 11 Oct 2022 16:37:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 379393DD7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C14F3DF5;
+	Tue, 11 Oct 2022 16:37:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C14F3DF5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665499087;
-	bh=gToyMqVP3N5PwaLXWIJDP6Kr4bk2+5cjcnimpqwTgcs=;
+	s=default; t=1665499101;
+	bh=r5cS6hq6PwO4NDcNA80jD7cJSb8F0DPpYCNz+6TvrmM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qVP7N5jRg6NnPf4YMjdLaqf+VPsr6jlQmXXgn6CVeWCQ1tnrboVREeiOUy1zYJOZn
-	 mQM7EtSIES51dFeMYoil29oitvo2gYSNc1VHBvTEjSW26oEtrVV8qVuAuZLxXAtn/S
-	 b2s9izpa4uEmFv0WaeStyI47cWuiAUeadWRIfOBI=
+	b=hzbLVWYepQPGGbiJNIW9IAPWw0C3AfEU2MOiXeAH91SHh1zbxeO/zARU3Obs3doH2
+	 ysPL463ACl2+1JXHXgtcvCxieMpJCvS4l6IIxjDwkkiZaD8CP5j3K+/ycXG/mTRXYB
+	 0HIstpCnv0rnG34fNZiioR1fZpB4JVTSDZuReExA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3AB8F80543;
-	Tue, 11 Oct 2022 16:36:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 496E3F80551;
+	Tue, 11 Oct 2022 16:36:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B014FF80506; Tue, 11 Oct 2022 16:36:24 +0200 (CEST)
+ id C6E1FF801D5; Tue, 11 Oct 2022 16:36:24 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F980F80130
- for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2022 16:36:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F980F80130
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2A10BF802E8
+ for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2022 16:36:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A10BF802E8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="P2biYnYv"
+ header.b="M34IC+jC"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29B5tp62002064;
- Tue, 11 Oct 2022 09:36:15 -0500
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29B5tp64002064;
+ Tue, 11 Oct 2022 09:36:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=NQ/a9OMWp4UgIfiyTruCdgQ6jJ8h1zM9Y2bxV++LG1U=;
- b=P2biYnYvuarL//HN/G2wGHBr+9n6aq9qxWbq9wP9qinVFpPJ3b7aB69thFdQ2f1ypARP
- bTI2BBm4dHkrzs3Hfiuk19+TvibkF4gCUwsGH31I3yNXr6VBSflMIJna3BKs2/mHCu9L
- oAgcvyxxYJef0aDbyka1QdNFTNEfXs8Ts4yUmIqzEJO0m9HqFPSlueyC5NuL3+woXW+0
- zX6HJuJ/urBIza9ZBGy0XvTSF2lhM7H034Y8RFJQXGrYKnPmGsvBy7YJmZnFvcTy1007
- MemAODPfMf2Yrz7sf8lTQw/FuBLiWNOu1K4WWpw+xTuNzvuYK1g3jkL6yyh2ia3OWyuU lw== 
+ bh=T50Al95xo16TE632hM1pPOnnhfkBsFzckULNsLl5Dg0=;
+ b=M34IC+jCMj3DEhiz5bNE+bbPbhR8XDhL32+jaqpB1G2vVphaxM/8nm/wO5PiYmxDDNH7
+ gQUFsig7VsXxUu9cpPsyhfv444H/WmW0UGhLQfwOmLjBg8Usia1an6fMbtoEADMcdHg3
+ xRt1rhfjnF2fdIz/kYCQxZrNgy+v9XecBr79zDlYw6HyyA1urjeqfuwNkJyhfSoHaABP
+ Vo0l+pT11013gAKrznZQZV2dFDJD71V4F9S+KR6x9wLqmSDDkb4dZTHZuIjwOHPTEwTi
+ 2VwfdzLGbqyMu41L4hLAAtKQfN6nYzbaQ1iKMqD8vd53tgbI/2a5+sF+9ooEq4/dlkMD 5A== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3k36m1uhph-1
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3k36m1uhph-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 11 Oct 2022 09:36:15 -0500
+ Tue, 11 Oct 2022 09:36:16 -0500
 Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Tue, 11 Oct
@@ -61,26 +61,24 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
  15.2.1118.12 via Frontend Transport; Tue, 11 Oct 2022 09:36:13 -0500
 Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.202.160])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4A210356C;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8D7AD11DC;
  Tue, 11 Oct 2022 14:36:13 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v1 3/5] ALSA: hda/cs_dsp_ctl: Fix mutex inversion when
- creating controls
-Date: Tue, 11 Oct 2022 15:35:50 +0100
-Message-ID: <20221011143552.621792-4-sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 5/5] ALSA: hda: cs35l41: Support System Suspend
+Date: Tue, 11 Oct 2022 15:35:52 +0100
+Message-ID: <20221011143552.621792-6-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221011143552.621792-1-sbinding@opensource.cirrus.com>
 References: <20221011143552.621792-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: wMZZaay4mygZ5jOgKcCefWtPfsmXzEhW
-X-Proofpoint-ORIG-GUID: wMZZaay4mygZ5jOgKcCefWtPfsmXzEhW
+X-Proofpoint-GUID: QRUy-4emuWVfetDBlGVdFjtxyuPQq2jk
+X-Proofpoint-ORIG-GUID: QRUy-4emuWVfetDBlGVdFjtxyuPQq2jk
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
- Stefan Binding <sbinding@opensource.cirrus.com>
+ linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,214 +94,296 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Add support for system suspend into the CS35L41 HDA Driver.
+Since S4 suspend may power off the system, it is required
+that the driver ensure the part is safe to be shutdown before
+system suspend, as well as ensuring that the firmware is
+unloaded before shutdown. The part must then be restored
+on system resume, including re-downloading the firmware.
 
-Redesign the creation of ALSA controls so that the cs_dsp
-pwr_lock is not held when calling snd_ctl_add(). Instead of
-creating the ALSA control from the cs_dsp control_add callback,
-do it after cs_dsp_power_up() has completed. The existing
-functions are changed to return void instead of passing errors
-back - this duplicates the original behaviour, as cs_dsp does
-not abort firmware load if creation of a control fails.
-
-It is safe to walk the control list without taking any mutex
-provided that the caller is not trying to load a new firmware
-or remove the driver in parallel. There is no other situation
-that the list can change. So the caller can trigger creation
-of ALSA controls after cs_dsp_power_up() has returned. A cs_dsp
-control will have a non-NULL priv pointer if we have created
-an ALSA control.
-
-With the previous code the ALSA controls were created from
-the cs_dsp control_add callback. But this is called with
-pwr_lock held (as it is part of the DSP power-up sequence).
-The kernel lock checking will show a mutex inversion between
-this and the control creation path:
-
-control_add
-  pwr_lock held, takes controls_rwsem (in snd_ctl_add)
-
-get/put
-  controls_rwsem held, takes pwr_lock to call cs_dsp.
-
-This is not completely theoretical. Although the time window
-is very small, it is possible for these to run in parallel
-and deadlock the old implementation.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 ---
- sound/pci/hda/cs35l41_hda.c    |  8 ++---
- sound/pci/hda/hda_cs_dsp_ctl.c | 59 ++++++++++++++++++++--------------
- sound/pci/hda/hda_cs_dsp_ctl.h |  2 +-
- 3 files changed, 40 insertions(+), 29 deletions(-)
+ sound/pci/hda/cs35l41_hda.c | 160 ++++++++++++++++++++++++++++++------
+ 1 file changed, 136 insertions(+), 24 deletions(-)
 
 diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 3952f28537034..102ac4a94a9d6 100644
+index 89f6b4a28d3d7..e5f0549bf06d0 100644
 --- a/sound/pci/hda/cs35l41_hda.c
 +++ b/sound/pci/hda/cs35l41_hda.c
-@@ -91,20 +91,18 @@ static const struct reg_sequence cs35l41_hda_mute[] = {
- 	{ CS35L41_AMP_DIG_VOL_CTRL,	0x0000A678 }, // AMP_VOL_PCM Mute
- };
+@@ -461,9 +461,12 @@ static void cs35l41_remove_dsp(struct cs35l41_hda *cs35l41)
+ 	struct cs_dsp *dsp = &cs35l41->cs_dsp;
  
--static int cs35l41_control_add(struct cs_dsp_coeff_ctl *cs_ctl)
-+static void cs35l41_add_controls(struct cs35l41_hda *cs35l41)
- {
--	struct cs35l41_hda *cs35l41 = container_of(cs_ctl->dsp, struct cs35l41_hda, cs_dsp);
- 	struct hda_cs_dsp_ctl_info info;
- 
- 	info.device_name = cs35l41->amp_name;
- 	info.fw_type = cs35l41->firmware_type;
- 	info.card = cs35l41->codec->card;
- 
--	return hda_cs_dsp_control_add(cs_ctl, &info);
-+	hda_cs_dsp_add_controls(&cs35l41->cs_dsp, &info);
- }
- 
- static const struct cs_dsp_client_ops client_ops = {
--	.control_add = cs35l41_control_add,
- 	.control_remove = hda_cs_dsp_control_remove,
- };
- 
-@@ -435,6 +433,8 @@ static int cs35l41_init_dsp(struct cs35l41_hda *cs35l41)
- 	if (ret)
- 		goto err_release;
- 
-+	cs35l41_add_controls(cs35l41);
+ 	cancel_work_sync(&cs35l41->fw_load_work);
 +
- 	ret = cs35l41_save_calibration(cs35l41);
- 
- err_release:
-diff --git a/sound/pci/hda/hda_cs_dsp_ctl.c b/sound/pci/hda/hda_cs_dsp_ctl.c
-index 75fb691858172..1622a22f96f6a 100644
---- a/sound/pci/hda/hda_cs_dsp_ctl.c
-+++ b/sound/pci/hda/hda_cs_dsp_ctl.c
-@@ -97,7 +97,7 @@ static unsigned int wmfw_convert_flags(unsigned int in)
- 	return out;
++	mutex_lock(&cs35l41->fw_mutex);
+ 	cs35l41_shutdown_dsp(cs35l41);
+ 	cs_dsp_remove(dsp);
+ 	cs35l41->halo_initialized = false;
++	mutex_unlock(&cs35l41->fw_mutex);
  }
  
--static int hda_cs_dsp_add_kcontrol(struct hda_cs_dsp_coeff_ctl *ctl, const char *name)
-+static void hda_cs_dsp_add_kcontrol(struct hda_cs_dsp_coeff_ctl *ctl, const char *name)
- {
- 	struct cs_dsp_coeff_ctl *cs_ctl = ctl->cs_ctl;
- 	struct snd_kcontrol_new kcontrol = {0};
-@@ -107,7 +107,7 @@ static int hda_cs_dsp_add_kcontrol(struct hda_cs_dsp_coeff_ctl *ctl, const char
- 	if (cs_ctl->len > ADSP_MAX_STD_CTRL_SIZE) {
- 		dev_err(cs_ctl->dsp->dev, "KControl %s: length %zu exceeds maximum %d\n", name,
- 			cs_ctl->len, ADSP_MAX_STD_CTRL_SIZE);
--		return -EINVAL;
-+		return;
- 	}
- 
- 	kcontrol.name = name;
-@@ -120,24 +120,21 @@ static int hda_cs_dsp_add_kcontrol(struct hda_cs_dsp_coeff_ctl *ctl, const char
- 	/* Save ctl inside private_data, ctl is owned by cs_dsp,
- 	 * and will be freed when cs_dsp removes the control */
- 	kctl = snd_ctl_new1(&kcontrol, (void *)ctl);
--	if (!kctl) {
--		ret = -ENOMEM;
--		return ret;
--	}
-+	if (!kctl)
-+		return;
- 
- 	ret = snd_ctl_add(ctl->card, kctl);
- 	if (ret) {
- 		dev_err(cs_ctl->dsp->dev, "Failed to add KControl %s = %d\n", kcontrol.name, ret);
--		return ret;
-+		return;
- 	}
- 
- 	dev_dbg(cs_ctl->dsp->dev, "Added KControl: %s\n", kcontrol.name);
- 	ctl->kctl = kctl;
--
--	return 0;
+ /* Protection release cycle to get the speaker out of Safe-Mode */
+@@ -570,45 +573,148 @@ static int cs35l41_hda_channel_map(struct device *dev, unsigned int tx_num, unsi
+ 				    rx_slot);
  }
  
--int hda_cs_dsp_control_add(struct cs_dsp_coeff_ctl *cs_ctl, struct hda_cs_dsp_ctl_info *info)
-+static void hda_cs_dsp_control_add(struct cs_dsp_coeff_ctl *cs_ctl,
-+				   const struct hda_cs_dsp_ctl_info *info)
- {
- 	struct cs_dsp *cs_dsp = cs_ctl->dsp;
- 	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-@@ -145,13 +142,10 @@ int hda_cs_dsp_control_add(struct cs_dsp_coeff_ctl *cs_ctl, struct hda_cs_dsp_ct
- 	const char *region_name;
- 	int ret;
- 
--	if (cs_ctl->flags & WMFW_CTL_FLAG_SYS)
--		return 0;
--
- 	region_name = cs_dsp_mem_region_name(cs_ctl->alg_region.type);
- 	if (!region_name) {
--		dev_err(cs_dsp->dev, "Unknown region type: %d\n", cs_ctl->alg_region.type);
--		return -EINVAL;
-+		dev_warn(cs_dsp->dev, "Unknown region type: %d\n", cs_ctl->alg_region.type);
-+		return;
- 	}
- 
- 	ret = scnprintf(name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN, "%s %s %.12s %x", info->device_name,
-@@ -171,22 +165,39 @@ int hda_cs_dsp_control_add(struct cs_dsp_coeff_ctl *cs_ctl, struct hda_cs_dsp_ct
- 
- 	ctl = kzalloc(sizeof(*ctl), GFP_KERNEL);
- 	if (!ctl)
--		return -ENOMEM;
-+		return;
- 
- 	ctl->cs_ctl = cs_ctl;
- 	ctl->card = info->card;
- 	cs_ctl->priv = ctl;
- 
--	ret = hda_cs_dsp_add_kcontrol(ctl, name);
--	if (ret) {
--		dev_err(cs_dsp->dev, "Error (%d) adding control %s\n", ret, name);
--		kfree(ctl);
--		return ret;
--	}
-+	hda_cs_dsp_add_kcontrol(ctl, name);
-+}
- 
--	return 0;
-+void hda_cs_dsp_add_controls(struct cs_dsp *dsp, const struct hda_cs_dsp_ctl_info *info)
++static void cs35l41_ready_for_reset(struct cs35l41_hda *cs35l41)
 +{
-+	struct cs_dsp_coeff_ctl *cs_ctl;
++	mutex_lock(&cs35l41->fw_mutex);
++	if (cs35l41->firmware_running) {
++
++		regcache_cache_only(cs35l41->regmap, false);
++
++		cs35l41_exit_hibernate(cs35l41->dev, cs35l41->regmap);
++		cs35l41_shutdown_dsp(cs35l41);
++		cs35l41_safe_reset(cs35l41->regmap, cs35l41->hw_cfg.bst_type);
++
++		regcache_cache_only(cs35l41->regmap, true);
++		regcache_mark_dirty(cs35l41->regmap);
++	}
++	mutex_unlock(&cs35l41->fw_mutex);
++}
++
++static int cs35l41_system_suspend(struct device *dev)
++{
++	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
++	int ret;
++
++	dev_dbg(cs35l41->dev, "System Suspend\n");
++
++	if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST_NO_VSPK_SWITCH) {
++		dev_err(cs35l41->dev, "System Suspend not supported\n");
++		return -EINVAL;
++	}
++
++	ret = pm_runtime_force_suspend(dev);
++	if (ret)
++		return ret;
++
++	/* Shutdown DSP before system suspend */
++	cs35l41_ready_for_reset(cs35l41);
 +
 +	/*
-+	 * pwr_lock would cause mutex inversion with ALSA control lock compared
-+	 * to the get/put functions.
-+	 * It is safe to walk the list without holding a mutex because entries
-+	 * are persistent and only cs_dsp_power_up() or cs_dsp_remove() can
-+	 * change the list.
++	 * Reset GPIO may be shared, so cannot reset here.
++	 * However beyond this point, amps may be powered down.
 +	 */
-+	lockdep_assert_not_held(&dsp->pwr_lock);
++	return 0;
++}
 +
-+	list_for_each_entry(cs_ctl, &dsp->ctl_list, list) {
-+		if (cs_ctl->flags & WMFW_CTL_FLAG_SYS)
-+			continue;
++static int cs35l41_system_resume(struct device *dev)
++{
++	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
++	int ret;
 +
-+		if (cs_ctl->priv)
-+			continue;
++	dev_dbg(cs35l41->dev, "System Resume\n");
 +
-+		hda_cs_dsp_control_add(cs_ctl, info);
++	if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST_NO_VSPK_SWITCH) {
++		dev_err(cs35l41->dev, "System Resume not supported\n");
++		return -EINVAL;
 +	}
- }
--EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_control_add, SND_HDA_CS_DSP_CONTROLS);
-+EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_add_controls, SND_HDA_CS_DSP_CONTROLS);
- 
- void hda_cs_dsp_control_remove(struct cs_dsp_coeff_ctl *cs_ctl)
++
++	if (cs35l41->reset_gpio) {
++		usleep_range(2000, 2100);
++		gpiod_set_value_cansleep(cs35l41->reset_gpio, 1);
++	}
++
++	usleep_range(2000, 2100);
++
++	ret = pm_runtime_force_resume(dev);
++
++	mutex_lock(&cs35l41->fw_mutex);
++	if (!ret && cs35l41->request_fw_load && !cs35l41->fw_request_ongoing) {
++		cs35l41->fw_request_ongoing = true;
++		schedule_work(&cs35l41->fw_load_work);
++	}
++	mutex_unlock(&cs35l41->fw_mutex);
++
++	return ret;
++}
++
+ static int cs35l41_runtime_suspend(struct device *dev)
  {
-diff --git a/sound/pci/hda/hda_cs_dsp_ctl.h b/sound/pci/hda/hda_cs_dsp_ctl.h
-index 4babc69cf2f0c..2cf93359c4f23 100644
---- a/sound/pci/hda/hda_cs_dsp_ctl.h
-+++ b/sound/pci/hda/hda_cs_dsp_ctl.h
-@@ -29,7 +29,7 @@ struct hda_cs_dsp_ctl_info {
+ 	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
++	int ret = 0;
  
- extern const char * const hda_cs_dsp_fw_ids[HDA_CS_DSP_NUM_FW];
+-	dev_dbg(cs35l41->dev, "Suspend\n");
++	dev_dbg(cs35l41->dev, "Runtime Suspend\n");
  
--int hda_cs_dsp_control_add(struct cs_dsp_coeff_ctl *cs_ctl, struct hda_cs_dsp_ctl_info *info);
-+void hda_cs_dsp_add_controls(struct cs_dsp *dsp, const struct hda_cs_dsp_ctl_info *info);
- void hda_cs_dsp_control_remove(struct cs_dsp_coeff_ctl *cs_ctl);
- int hda_cs_dsp_write_ctl(struct cs_dsp *dsp, const char *name, int type,
- 			 unsigned int alg, const void *buf, size_t len);
+-	if (!cs35l41->firmware_running)
++	if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST_NO_VSPK_SWITCH) {
++		dev_dbg(cs35l41->dev, "Runtime Suspend not supported\n");
+ 		return 0;
++	}
+ 
+-	if (cs35l41_enter_hibernate(cs35l41->dev, cs35l41->regmap, cs35l41->hw_cfg.bst_type) < 0)
+-		return 0;
++	mutex_lock(&cs35l41->fw_mutex);
++
++	if (cs35l41->playback_started) {
++		regmap_multi_reg_write(cs35l41->regmap, cs35l41_hda_mute,
++				       ARRAY_SIZE(cs35l41_hda_mute));
++		cs35l41_global_enable(cs35l41->regmap, cs35l41->hw_cfg.bst_type, 0);
++		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
++				   CS35L41_AMP_EN_MASK, 0 << CS35L41_AMP_EN_SHIFT);
++		if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
++			regmap_write(cs35l41->regmap, CS35L41_GPIO1_CTRL1, 0x00000001);
++		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
++				   CS35L41_VMON_EN_MASK | CS35L41_IMON_EN_MASK,
++				   0 << CS35L41_VMON_EN_SHIFT | 0 << CS35L41_IMON_EN_SHIFT);
++		cs35l41->playback_started = false;
++	}
++
++	if (cs35l41->firmware_running) {
++		ret = cs35l41_enter_hibernate(cs35l41->dev, cs35l41->regmap,
++					      cs35l41->hw_cfg.bst_type);
++		if (ret)
++			goto err;
++	} else {
++		cs35l41_safe_reset(cs35l41->regmap, cs35l41->hw_cfg.bst_type);
++	}
+ 
+ 	regcache_cache_only(cs35l41->regmap, true);
+ 	regcache_mark_dirty(cs35l41->regmap);
+ 
+-	return 0;
++err:
++	mutex_unlock(&cs35l41->fw_mutex);
++
++	return ret;
+ }
+ 
+ static int cs35l41_runtime_resume(struct device *dev)
+ {
+ 	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
+-	int ret;
++	int ret = 0;
+ 
+-	dev_dbg(cs35l41->dev, "Resume.\n");
++	dev_dbg(cs35l41->dev, "Runtime Resume\n");
+ 
+ 	if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST_NO_VSPK_SWITCH) {
+-		dev_dbg(cs35l41->dev, "System does not support Resume\n");
++		dev_dbg(cs35l41->dev, "Runtime Resume not supported\n");
+ 		return 0;
+ 	}
+ 
+-	if (!cs35l41->firmware_running)
+-		return 0;
++	mutex_lock(&cs35l41->fw_mutex);
+ 
+ 	regcache_cache_only(cs35l41->regmap, false);
+ 
+-	ret = cs35l41_exit_hibernate(cs35l41->dev, cs35l41->regmap);
+-	if (ret) {
+-		regcache_cache_only(cs35l41->regmap, true);
+-		return ret;
++	if (cs35l41->firmware_running)	{
++		ret = cs35l41_exit_hibernate(cs35l41->dev, cs35l41->regmap);
++		if (ret) {
++			dev_warn(cs35l41->dev, "Unable to exit Hibernate.");
++			goto err;
++		}
+ 	}
+ 
+ 	/* Test key needs to be unlocked to allow the OTP settings to re-apply */
+@@ -617,13 +723,16 @@ static int cs35l41_runtime_resume(struct device *dev)
+ 	cs35l41_test_key_lock(cs35l41->dev, cs35l41->regmap);
+ 	if (ret) {
+ 		dev_err(cs35l41->dev, "Failed to restore register cache: %d\n", ret);
+-		return ret;
++		goto err;
+ 	}
+ 
+ 	if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
+ 		cs35l41_init_boost(cs35l41->dev, cs35l41->regmap, &cs35l41->hw_cfg);
+ 
+-	return 0;
++err:
++	mutex_unlock(&cs35l41->fw_mutex);
++
++	return ret;
+ }
+ 
+ static int cs35l41_smart_amp(struct cs35l41_hda *cs35l41)
+@@ -673,8 +782,6 @@ static int cs35l41_smart_amp(struct cs35l41_hda *cs35l41)
+ 
+ static void cs35l41_load_firmware(struct cs35l41_hda *cs35l41, bool load)
+ {
+-	pm_runtime_get_sync(cs35l41->dev);
+-
+ 	if (cs35l41->firmware_running && !load) {
+ 		dev_dbg(cs35l41->dev, "Unloading Firmware\n");
+ 		cs35l41_shutdown_dsp(cs35l41);
+@@ -684,9 +791,6 @@ static void cs35l41_load_firmware(struct cs35l41_hda *cs35l41, bool load)
+ 	} else {
+ 		dev_dbg(cs35l41->dev, "Unable to Load firmware.\n");
+ 	}
+-
+-	pm_runtime_mark_last_busy(cs35l41->dev);
+-	pm_runtime_put_autosuspend(cs35l41->dev);
+ }
+ 
+ static int cs35l41_fw_load_ctl_get(struct snd_kcontrol *kcontrol,
+@@ -702,16 +806,21 @@ static void cs35l41_fw_load_work(struct work_struct *work)
+ {
+ 	struct cs35l41_hda *cs35l41 = container_of(work, struct cs35l41_hda, fw_load_work);
+ 
++	pm_runtime_get_sync(cs35l41->dev);
++
+ 	mutex_lock(&cs35l41->fw_mutex);
+ 
+ 	/* Recheck if playback is ongoing, mutex will block playback during firmware loading */
+ 	if (cs35l41->playback_started)
+-		dev_err(cs35l41->dev, "Cannot Load/Unload firmware during Playback\n");
++		dev_err(cs35l41->dev, "Cannot Load/Unload firmware during Playback. Retrying...\n");
+ 	else
+ 		cs35l41_load_firmware(cs35l41, cs35l41->request_fw_load);
+ 
+ 	cs35l41->fw_request_ongoing = false;
+ 	mutex_unlock(&cs35l41->fw_mutex);
++
++	pm_runtime_mark_last_busy(cs35l41->dev);
++	pm_runtime_put_autosuspend(cs35l41->dev);
+ }
+ 
+ static int cs35l41_fw_load_ctl_put(struct snd_kcontrol *kcontrol,
+@@ -835,6 +944,8 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
+ 
+ 	pm_runtime_get_sync(dev);
+ 
++	mutex_lock(&cs35l41->fw_mutex);
++
+ 	comps->dev = dev;
+ 	if (!cs35l41->acpi_subsystem_id)
+ 		cs35l41->acpi_subsystem_id = kasprintf(GFP_KERNEL, "%.8x",
+@@ -847,10 +958,8 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
+ 	if (firmware_autostart) {
+ 		dev_dbg(cs35l41->dev, "Firmware Autostart.\n");
+ 		cs35l41->request_fw_load = true;
+-		mutex_lock(&cs35l41->fw_mutex);
+ 		if (cs35l41_smart_amp(cs35l41) < 0)
+ 			dev_warn(cs35l41->dev, "Cannot Run Firmware, reverting to dsp bypass...\n");
+-		mutex_unlock(&cs35l41->fw_mutex);
+ 	} else {
+ 		dev_dbg(cs35l41->dev, "Firmware Autostart is disabled.\n");
+ 	}
+@@ -859,6 +968,8 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
+ 
+ 	comps->playback_hook = cs35l41_hda_playback_hook;
+ 
++	mutex_unlock(&cs35l41->fw_mutex);
++
+ 	pm_runtime_mark_last_busy(dev);
+ 	pm_runtime_put_autosuspend(dev);
+ 
+@@ -1426,6 +1537,7 @@ EXPORT_SYMBOL_NS_GPL(cs35l41_hda_remove, SND_HDA_SCODEC_CS35L41);
+ 
+ const struct dev_pm_ops cs35l41_hda_pm_ops = {
+ 	RUNTIME_PM_OPS(cs35l41_runtime_suspend, cs35l41_runtime_resume, NULL)
++	SYSTEM_SLEEP_PM_OPS(cs35l41_system_suspend, cs35l41_system_resume)
+ };
+ EXPORT_SYMBOL_NS_GPL(cs35l41_hda_pm_ops, SND_HDA_SCODEC_CS35L41);
+ 
 -- 
 2.34.1
 
