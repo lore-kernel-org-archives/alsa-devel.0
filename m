@@ -4,63 +4,151 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55746C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Oct 2022 06:04:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC781C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Oct 2022 06:04:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 807B6368F;
-	Tue, 11 Oct 2022 08:03:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 807B6368F
+	by alsa0.perex.cz (Postfix) with ESMTPS id D54EE3699;
+	Tue, 11 Oct 2022 08:03:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D54EE3699
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665468243;
-	bh=bD3EDEsb+PlFPgNpnvW+dAhJjXHG3mMMh0or8hAT4CU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=VdRickOX8BqziYXLBzhlU8iJQCkyKwwOC9v00KGNMq44TYJQFKKkdfNoPbk5NcqgH
-	 W0d9o0XTMAAec4nZpfEQI71+oHflYE3hBmT1rDi77ygOAf1kUmZ895mkEynZIDICzD
-	 LuRsa2SJpjjATbk3j0/QDiKRdr1XbRIM2mdWb2Ho=
+	s=default; t=1665468248;
+	bh=F6whdzliCPX0Ut/5yxmInL6GnfLrONlsF+sP9Uqujzs=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=mBFbShodurjoDBIZhEyGXjajZPu/RbdlQxkIKcfUg3cAl8B0WDm/7Ah11djwX7RP/
+	 zB9jw8ZjQTMmF0g518g1gG7GftS54+hhrJhFNvzShPJEezDCCiyV1ms9T4C+QSIwNb
+	 SQPnayT5h6zbC9dFLcxZHLzhOTUzCTC3miXLEAoc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81DC0F80506;
-	Tue, 11 Oct 2022 08:02:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09528F80542;
+	Tue, 11 Oct 2022 08:02:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8DC42F800EC; Sun,  9 Oct 2022 09:48:35 +0200 (CEST)
-Received: from mail-m973.mail.163.com (mail-m973.mail.163.com [123.126.97.3])
- by alsa1.perex.cz (Postfix) with ESMTP id C1CB9F800EC
- for <alsa-devel@alsa-project.org>; Sun,  9 Oct 2022 09:48:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1CB9F800EC
+ id 14B27F80256; Tue, 11 Oct 2022 02:02:10 +0200 (CEST)
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com
+ [IPv6:2607:f8b0:4864:20::42c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 650ECF80107
+ for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2022 02:02:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 650ECF80107
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=163.com header.i=@163.com
- header.b="EUZdAIYq"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=lzHsQ
- 7uRE+Ob5IFFnxNujLW+JYw21myg9+tk4e/ZuAE=; b=EUZdAIYq5yYcAo9B3YYso
- +9E9cdA6IGsSaFM/58vOakxP5F4Dv2FVHhLX6KgnH0QWNlq7D2ED2nTQRTTKMWpc
- 7ilHNxxHUJqunTt0V8+qTSUFPrsZCGYKlK/m8/F/vMHZD8KSJ9VAhzV4eM9Ep5FR
- OatTLHv2pwxcuOKQvfxNGY=
-Received: from localhost.localdomain (unknown [116.128.244.169])
- by smtp3 (Coremail) with SMTP id G9xpCgBX2mvHfEJj6n2Gjw--.45155S2;
- Sun, 09 Oct 2022 15:48:24 +0800 (CST)
-From: Jiangshan Yi <13667453960@163.com>
-To: perex@perex.cz,
-	tiwai@suse.com
-Subject: [PATCH] ASoC: cx2072x: fix spelling typo in comment
-Date: Sun,  9 Oct 2022 15:48:16 +0800
-Message-Id: <20221009074816.2641162-1-13667453960@163.com>
-X-Mailer: git-send-email 2.25.1
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="BMj8f33/"
+Received: by mail-pf1-x42c.google.com with SMTP id 204so12028698pfx.10
+ for <alsa-devel@alsa-project.org>; Mon, 10 Oct 2022 17:02:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=HDvDPLCLAPPvF5TVvL+FWbJtEqmbYVODvwDkJg3SqIo=;
+ b=BMj8f33/fyuY4YUgfzIsC8MB079NtlG/lc5y1lSPpCGAsz+jvSYZCTpuRzKVZGf2GY
+ nZi6ZRgOudbzROz6pHhHElsWmoKQQy847SVQHPP6Lzs+V2eA/brEnXLuDstKnq7MW7Ih
+ TzHZfV7XKs3PD0GAaAkJAXCvXBlxf5lB+KS3lhnFICm9Tq4yaQhhQQax921FRXOWW/if
+ /toe/pDvQON4HdgY5CGmbYgif/tTyjDjkjRdKQFAulnURnCwp8NMFdEBa3NYmPI0A+fB
+ fhamlfjudZxMTaB+1mSMxDuObe1ocZe7cQbErJKQBTAEur2a0QkUbRoT5VJEglEdMX1y
+ d2HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=HDvDPLCLAPPvF5TVvL+FWbJtEqmbYVODvwDkJg3SqIo=;
+ b=wM9XeDLflXZzWyVEUr8dI0ql/Sy7MTFrRC56OAxm5ARWzgOMxMTvsvg4L89R39z0zV
+ t8YRecomrwI0An2sMwc7HjpSWjEnP7iYfY2mLcSDJ2QdCj7mDKg/nfnSqNA2qh/hwfG0
+ b/n60Ph/GX5qHSKfu2Oi1DZTwHjWw5T90HGkVrUwGw3fVOus7Yqc+H1ir+4xPCvTcqpm
+ hDgMyO+Sr7zXnJmuM/FGAzWnYbxTDqwK92p+F3OiyHys0XEyFqkrieaiZJbBjXabLwRV
+ 2z7YDgDMsCTNgyEiarcXqhcinRlcfc8EqiMu9z1QwSEVdeEtCO3MWLg/0kt+TU7Lagzq
+ XYbA==
+X-Gm-Message-State: ACrzQf2bWt1OE11/E52UyerdEoz6s5PE7+QFhJszwpB3AOdURX5ikQdu
+ tOCqylyCKBDMfaVuZqIUKb8=
+X-Google-Smtp-Source: AMsMyM7Y6pAnL5W1EJS9G7oSUu8S6FVrr9k2c5r6QKOELR9o0pNGH3yk7s3YJUqb5vMyZxDtzUjxCg==
+X-Received: by 2002:a63:4949:0:b0:442:b733:2fae with SMTP id
+ y9-20020a634949000000b00442b7332faemr18227721pgk.424.1665446520354; 
+ Mon, 10 Oct 2022 17:02:00 -0700 (PDT)
+Received: from sol (110-174-58-111.static.tpgi.com.au. [110.174.58.111])
+ by smtp.gmail.com with ESMTPSA id
+ v29-20020aa799dd000000b0056258a3606csm7454081pfi.215.2022.10.10.17.01.29
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 10 Oct 2022 17:01:59 -0700 (PDT)
+Date: Tue, 11 Oct 2022 08:01:27 +0800
+From: Kent Gibson <warthog618@gmail.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v2 02/36] gpiolib: cdev: Add missed header(s)
+Message-ID: <Y0SyVwjDl7NGfTPn@sol>
+References: <20221010201453.77401-1-andriy.shevchenko@linux.intel.com>
+ <20221010201453.77401-3-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: G9xpCgBX2mvHfEJj6n2Gjw--.45155S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrury7Jr47ZFy5Jw48urykKrg_yoW3ZrX_Ww
- 18W3y5Z3yqqFWSkr1jyrWjyF4Fv3Z5Cry8Crn5tr4UA3y5uayYyayvyF13C3W5Gr4vgasx
- XanxKr1aq34kKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
- 9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU1Tmh3UUUUU==
-X-Originating-IP: [116.128.244.169]
-X-CM-SenderInfo: bprtllyxuvjmiwq6il2tof0z/1tbiyAiV+1p7H8T2DwAAst
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221010201453.77401-3-andriy.shevchenko@linux.intel.com>
 X-Mailman-Approved-At: Tue, 11 Oct 2022 08:02:20 +0200
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, broonie@kernel.org, k2ci <kernel-bot@kylinos.cn>,
- Jiangshan Yi <yijiangshan@kylinos.cn>
+Cc: Andrew Lunn <andrew@lunn.ch>, Tomer Maimon <tmaimon77@gmail.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Linus Walleij <linus.walleij@linaro.org>, Tomasz Figa <tomasz.figa@gmail.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ Horatiu Vultur <horatiu.vultur@microchip.com>,
+ Emil Renner Berthing <kernel@esmil.dk>,
+ Phil Edworthy <phil.edworthy@renesas.com>, linux-samsung-soc@vger.kernel.org,
+ Samuel Holland <samuel@sholland.org>, Michal Simek <michal.simek@xilinx.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>,
+ NXP Linux Team <linux-imx@nxp.com>, Tali Perry <tali.perry1@gmail.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Thomas Gleixner <tglx@linutronix.de>,
+ linux-omap@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
+ Scott Branden <sbranden@broadcom.com>, Andrew Jeffery <andrew@aj.id.au>,
+ linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>, alsa-devel@alsa-project.org,
+ Alim Akhtar <alim.akhtar@samsung.com>, linux-aspeed@lists.ozlabs.org,
+ Thierry Reding <thierry.reding@gmail.com>, Viresh Kumar <vireshk@kernel.org>,
+ Gregory Clement <gregory.clement@bootlin.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Fabien Dessenne <fabien.dessenne@foss.st.com>, linux-media@vger.kernel.org,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, linux-arm-msm@vger.kernel.org,
+ Nicolas Ferre <nicolas.ferre@microchip.com>, linux-actions@lists.infradead.org,
+ linux-gpio@vger.kernel.org, soc@kernel.org,
+ linux-rpi-kernel@lists.infradead.org,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ linux-arm-kernel@lists.infradead.org, Dong Aisheng <aisheng.dong@nxp.com>,
+ Damien Le Moal <damien.lemoal@wdc.com>, linux-renesas-soc@vger.kernel.org,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, Jacky Bai <ping.bai@nxp.com>,
+ Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Fabio Estevam <festevam@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>,
+ Benjamin Fair <benjaminfair@google.com>, Nancy Yuen <yuenn@google.com>,
+ Chen-Yu Tsai <wens@csie.org>,
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+ Joel Stanley <joel@jms.id.au>, Chen-Yu Tsai <wenst@chromium.org>,
+ Orson Zhai <orsonzhai@gmail.com>,
+ Patrice Chotard <patrice.chotard@foss.st.com>, Ray Jui <rjui@broadcom.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Avi Fishman <avifishman70@gmail.com>, Patrick Venture <venture@google.com>,
+ Shawn Guo <shawnguo@kernel.org>,
+ Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+ Tony Lindgren <tony@atomide.com>, Konrad Dybcio <konrad.dybcio@somainline.org>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Paul Cercueil <paul@crapouillou.net>,
+ Haojian Zhuang <haojian.zhuang@linaro.org>, linux-riscv@lists.infradead.org,
+ Marc Zyngier <maz@kernel.org>, openbmc@lists.ozlabs.org,
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+ Prathamesh Shete <pshete@nvidia.com>, Andy Gross <agross@kernel.org>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Manivannan Sadhasivam <mani@kernel.org>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Billy Tsai <billy_tsai@aspeedtech.com>, linux-mediatek@lists.infradead.org,
+ linux-tegra@vger.kernel.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ patches@opensource.cirrus.com, Sean Wang <sean.wang@kernel.org>,
+ linux-mips@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Chunyan Zhang <zhang.lyra@gmail.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
+ Bartosz Golaszewski <brgl@bgdev.pl>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,33 +164,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Jiangshan Yi <yijiangshan@kylinos.cn>
+On Mon, Oct 10, 2022 at 11:14:18PM +0300, Andy Shevchenko wrote:
+> Do not imply that some of the generic headers may be always included.
+> Instead, include explicitly what we are direct user of.
+> 
+> While at it, sort headers alphabetically.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/gpio/gpiolib-cdev.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+> index f8041d4898d1..60a60e2d60c5 100644
+> --- a/drivers/gpio/gpiolib-cdev.c
+> +++ b/drivers/gpio/gpiolib-cdev.c
+> @@ -10,8 +10,9 @@
+>  #include <linux/device.h>
+>  #include <linux/err.h>
+>  #include <linux/file.h>
+> -#include <linux/gpio.h>
+>  #include <linux/gpio/driver.h>
+> +#include <linux/gpio.h>
+> +#include <linux/hte.h>
 
-Fix spelling typo in comment.
+Ok with the hte re-order.
 
-Reported-by: k2ci <kernel-bot@kylinos.cn>
-Signed-off-by: Jiangshan Yi <yijiangshan@kylinos.cn>
----
- sound/soc/codecs/cx2072x.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+But moving the gpio subsystem header after the gpio/driver is not
+alphabetical ('.' precedes '/') and it read better and made more sense
+to me the way it was.
 
-diff --git a/sound/soc/codecs/cx2072x.h b/sound/soc/codecs/cx2072x.h
-index ebdd567fa225..09e3a92b184f 100644
---- a/sound/soc/codecs/cx2072x.h
-+++ b/sound/soc/codecs/cx2072x.h
-@@ -177,7 +177,7 @@
- #define CX2072X_PLBK_DRC_PARM_LEN	9
- #define CX2072X_CLASSD_AMP_LEN		6
- 
--/* DAI interfae type */
-+/* DAI interface type */
- #define CX2072X_DAI_HIFI	1
- #define CX2072X_DAI_DSP		2
- #define CX2072X_DAI_DSP_PWM	3 /* 4 ch, including mic and AEC */
--- 
-2.25.1
+>  #include <linux/interrupt.h>
+>  #include <linux/irqreturn.h>
+>  #include <linux/kernel.h>
+> @@ -20,11 +21,12 @@
+>  #include <linux/mutex.h>
+>  #include <linux/pinctrl/consumer.h>
+>  #include <linux/poll.h>
+> +#include <linux/seq_file.h>
 
+I wasn't aware that we use anything from seq_file.
+What am I missing?
 
-No virus found
-		Checked by Hillstone Network AntiVirus
+Cheers,
+Kent.
 
+>  #include <linux/spinlock.h>
+>  #include <linux/timekeeping.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/workqueue.h>
+> -#include <linux/hte.h>
+> +
+>  #include <uapi/linux/gpio.h>
+>  
+>  #include "gpiolib.h"
+> -- 
+> 2.35.1
+> 
