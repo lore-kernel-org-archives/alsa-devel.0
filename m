@@ -4,81 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 801D3C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 11 Oct 2022 14:38:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8E59C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 11 Oct 2022 14:41:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99C2B2E5C;
-	Tue, 11 Oct 2022 16:38:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99C2B2E5C
+	by alsa0.perex.cz (Postfix) with ESMTPS id DCA073E08;
+	Tue, 11 Oct 2022 16:40:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DCA073E08
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665499132;
-	bh=IdWxKUESMMiGRcpCBcip+mLb933TZllT/n1vrFdqNc0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1665499259;
+	bh=hEEbjFNkUoUyMh2KpcSleFdDACALAdemRBKk4JXGLGE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bhauI9lUMw0qc7HGdrcpBT5lsjI5sdxX51MafnHjd4RdVXkaNWnK5db2qoh8rNlsj
-	 xP4E3/U4krETeQDCLUYuA6K5u1kWtSsJTOI3FK9zQhU21uaETFkK6T9wtM2agGIz2j
-	 eoIfO0djPW86Y1zuree81Gg0ZDG9io/+4aYHVkZ8=
+	b=YLorKwEaA6pD7LNQeKQHUrHXUI4PDRuxRfO4TRMLGeqtLbe8KqOyfy22n0mMWndeK
+	 E2YLx3p4lOTqo3fGBYZ0dB9HlVI3UjATA/4O+OjWz89gJDjC2VyVzGibkBbWTvsCNz
+	 D+mp2GaI1v3s/Oum2eIWjipKm7MO4hRypiYR1ekw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 846D7F80568;
-	Tue, 11 Oct 2022 16:36:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 82264F801D5;
+	Tue, 11 Oct 2022 16:40:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D9FEF80558; Tue, 11 Oct 2022 16:36:27 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 67FB5F8021D; Tue, 11 Oct 2022 16:40:08 +0200 (CEST)
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com
+ [209.85.219.49])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1576CF8021D
- for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2022 16:36:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1576CF8021D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="M3eEh+Jk"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29B5tp63002064;
- Tue, 11 Oct 2022 09:36:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=/bn+4fdIUIPJRUslDh7kAAlTL0j0sf0+OYvn4bA4pN8=;
- b=M3eEh+Jkd6BSFyJOpPlkXr844hA2T+VcGsyzJaVsUMp4p1J5CoxSCXity2aw6LKOUoab
- w41CoN9QTZC2UilAlk0jV2RFO/VoOL1cFQ1sd9l2FOY9PQ3zalgdVGH+t+OrAvmSBvAc
- 6XFuvI9Wphs87N76WsEwe2rI/5bnJ/T5+qHGKWpvVVzvXXL4WMa3c1WKB+goJe58ULFB
- /H4g4iRU9jyPdswKq3NLHGx9zCQu1ul15GuyjaShfTonktDp+wCj2AzLUCUauV5vy/V9
- qNWTf+mVzNAn1L72IWvzbH60Gp+kthnGOtV2L6PR5WGP7vUD/YMC0eaEpF6uFoEAGuL3 8Q== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3k36m1uhph-2
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 11 Oct 2022 09:36:16 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Tue, 11 Oct
- 2022 09:36:13 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.12 via Frontend Transport; Tue, 11 Oct 2022 09:36:13 -0500
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.202.160])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6E5F4468;
- Tue, 11 Oct 2022 14:36:13 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v1 4/5] ALSA: hda: cs35l41: Remove suspend/resume hda hooks
-Date: Tue, 11 Oct 2022 15:35:51 +0100
-Message-ID: <20221011143552.621792-5-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221011143552.621792-1-sbinding@opensource.cirrus.com>
-References: <20221011143552.621792-1-sbinding@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E050F80130
+ for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2022 16:40:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E050F80130
+Received: by mail-qv1-f49.google.com with SMTP id mx8so9052589qvb.8
+ for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2022 07:40:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=7sKcP+GTT+SWbU28Mvg7qTSCnoQqhpg8QoNv8i57vas=;
+ b=NK3qz+JnfAacVzANmdxh55WOoP/QlpCpWX8IGUj5eHHHp4lZgf4PLTCDPGqch0lZEQ
+ zz1R43jlSez5cmFBeXJBfz7wnMBZZbPfL4eOanaih8my8VJ8ooyNRieZbHNZLu7nLE0T
+ pB1TyUjREm31w++KZJfEnTf/LPWem5N64MqVr/mQq+O2xTKncIT/BX/6ttZEzkkkAwhP
+ JDrvzDANMYcrXDs376A7VGXnXuQ+LZSAZlbNMqeqFe3vrnBqlEyrC4pokOpbZZ2+JZGF
+ UQnF9vm1HLY4DnLlfKmtd6lX4zcx/27xTyxuaK2C0pyWjjd12bZ8MOieJi0kGQJ0Z1i0
+ Om6A==
+X-Gm-Message-State: ACrzQf1QfJxZm3ew4hTQ1BAuCEHtvweGOLHDl3h1K+sBYx1rnlu3cPFR
+ d77d8ifekKPvMBYDYKNUVWBfsDKMTKHdaQ==
+X-Google-Smtp-Source: AMsMyM4PGJIxLetoOGBMr4RUSLPGQ9oUyxKxeqh/1t9do+R5X+wCJpfmAau9hsn1bUszqAhqioGU1w==
+X-Received: by 2002:a05:6214:252c:b0:4b1:8d8b:9042 with SMTP id
+ gg12-20020a056214252c00b004b18d8b9042mr19150603qvb.29.1665499200781; 
+ Tue, 11 Oct 2022 07:40:00 -0700 (PDT)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com.
+ [209.85.219.176]) by smtp.gmail.com with ESMTPSA id
+ u10-20020a05620a430a00b006e702033b15sm12979182qko.66.2022.10.11.07.39.58
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 11 Oct 2022 07:39:58 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id y205so16683448yby.13
+ for <alsa-devel@alsa-project.org>; Tue, 11 Oct 2022 07:39:58 -0700 (PDT)
+X-Received: by 2002:a25:4fc2:0:b0:6be:afb4:d392 with SMTP id
+ d185-20020a254fc2000000b006beafb4d392mr21857240ybb.604.1665499197788; Tue, 11
+ Oct 2022 07:39:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: nS4tHdMcPQQ_ZbeWtoa-BoyRFDu8lZqY
-X-Proofpoint-ORIG-GUID: nS4tHdMcPQQ_ZbeWtoa-BoyRFDu8lZqY
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
+References: <20221010201453.77401-1-andriy.shevchenko@linux.intel.com>
+ <20221010201453.77401-3-andriy.shevchenko@linux.intel.com>
+ <Y0SyVwjDl7NGfTPn@sol>
+ <CAHp75Vf4oS8g0zxgismtLrzsJ7AE-bdMEq+GAzx2=Mwnhuk3UA@mail.gmail.com>
+ <Y0V0IXF3sASTGdMU@smile.fi.intel.com> <Y0V57gI75ik4ki3A@sol>
+ <Y0V9eJX7a0fe6EfX@smile.fi.intel.com>
+In-Reply-To: <Y0V9eJX7a0fe6EfX@smile.fi.intel.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 11 Oct 2022 16:39:46 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUhSKuJ3N5zf_+ad_dFu6kSmVTqRpgFUWtd54S9ryw=ew@mail.gmail.com>
+Message-ID: <CAMuHMdUhSKuJ3N5zf_+ad_dFu6kSmVTqRpgFUWtd54S9ryw=ew@mail.gmail.com>
+Subject: Re: [PATCH v2 02/36] gpiolib: cdev: Add missed header(s)
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Kent Gibson <warthog618@gmail.com>, linux-omap@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-aspeed@lists.ozlabs.org,
+ patches@opensource.cirrus.com, Bartosz Golaszewski <brgl@bgdev.pl>,
+ linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-rpi-kernel@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
+ linux-riscv@lists.infradead.org, alsa-devel@alsa-project.org,
+ openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+ linux-media@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,181 +105,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The current code uses calls from the HDA Codec driver to
-determine when to suspend/resume by calling hooks via the
-hda_component binding.
-However, this means the cs35l41 driver relies on the HDA
-Codec driver to tell it when to suspend or resume,
-creating an additional external dependency, and potentially
-creating race conditions in the future. It is better for
-the cs35l41 hda driver to decide for itself when the part
-should be suspended or resumed.
-This makes supporting system suspend easier.
+Hi Andy,
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/cs35l41_hda.c   | 31 ++++++++++++-------------------
- sound/pci/hda/hda_component.h |  2 --
- sound/pci/hda/patch_realtek.c | 19 +------------------
- 3 files changed, 13 insertions(+), 39 deletions(-)
+On Tue, Oct 11, 2022 at 4:31 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> On Tue, Oct 11, 2022 at 10:13:02PM +0800, Kent Gibson wrote:
+> > On Tue, Oct 11, 2022 at 04:48:17PM +0300, Andy Shevchenko wrote:
+> > > On Tue, Oct 11, 2022 at 11:05:42AM +0300, Andy Shevchenko wrote:
+> > > > On Tue, Oct 11, 2022 at 3:02 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > > > > On Mon, Oct 10, 2022 at 11:14:18PM +0300, Andy Shevchenko wrote:
+>
+> ...
+>
+> > > > > > -#include <linux/gpio.h>
+> > > > > >  #include <linux/gpio/driver.h>
+> > > > > > +#include <linux/gpio.h>
+> > > > > > +#include <linux/hte.h>
+> > > > >
+> > > > > Ok with the hte re-order.
+> > > > >
+> > > > > But moving the gpio subsystem header after the gpio/driver is not
+> > > > > alphabetical ('.' precedes '/') and it read better and made more sense
+> > > > > to me the way it was.
+> > > >
+> > > > I see, I guess this is vim sort vs shell sort. Strange, they should
+> > > > follow the locale settings...
+> > >
+> > > I have checked, the shell and vim sort gave the same result as in this patch.
+> > >
+> >
+> > The original order (sans hte.h) was done by VSCode Sort Lines Ascending,
+> > and that still returns the same result.  That matches what I would
+> > expect to see given the content of the text.
+> >
+> > And for me vim also gives the original order.
+> >
+> > Just to confirm - is '.' 0x2e and '/' 0x2f in your universe?
+>
+> $ LC_COLLATE=C sort test1.txt
+> #include <linux/gpio.h>
+> #include <linux/gpio/driver.h>
+>
+> $ LC_COLLATE= sort test1.txt
+> #include <linux/gpio/driver.h>
+> #include <linux/gpio.h>
+>
+> I guess this explains the difference. Currently I have en_US.UTF-8.
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 102ac4a94a9d6..89f6b4a28d3d7 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -487,10 +487,10 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
- 	struct regmap *reg = cs35l41->regmap;
- 	int ret = 0;
- 
--	mutex_lock(&cs35l41->fw_mutex);
--
- 	switch (action) {
- 	case HDA_GEN_PCM_ACT_OPEN:
-+		pm_runtime_get_sync(dev);
-+		mutex_lock(&cs35l41->fw_mutex);
- 		cs35l41->playback_started = true;
- 		if (cs35l41->firmware_running) {
- 			regmap_multi_reg_write(reg, cs35l41_hda_config_dsp,
-@@ -508,15 +508,21 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
- 					 CS35L41_AMP_EN_MASK, 1 << CS35L41_AMP_EN_SHIFT);
- 		if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
- 			regmap_write(reg, CS35L41_GPIO1_CTRL1, 0x00008001);
-+		mutex_unlock(&cs35l41->fw_mutex);
- 		break;
- 	case HDA_GEN_PCM_ACT_PREPARE:
-+		mutex_lock(&cs35l41->fw_mutex);
- 		ret = cs35l41_global_enable(reg, cs35l41->hw_cfg.bst_type, 1);
-+		mutex_unlock(&cs35l41->fw_mutex);
- 		break;
- 	case HDA_GEN_PCM_ACT_CLEANUP:
-+		mutex_lock(&cs35l41->fw_mutex);
- 		regmap_multi_reg_write(reg, cs35l41_hda_mute, ARRAY_SIZE(cs35l41_hda_mute));
- 		ret = cs35l41_global_enable(reg, cs35l41->hw_cfg.bst_type, 0);
-+		mutex_unlock(&cs35l41->fw_mutex);
- 		break;
- 	case HDA_GEN_PCM_ACT_CLOSE:
-+		mutex_lock(&cs35l41->fw_mutex);
- 		ret = regmap_update_bits(reg, CS35L41_PWR_CTRL2,
- 					 CS35L41_AMP_EN_MASK, 0 << CS35L41_AMP_EN_SHIFT);
- 		if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
-@@ -530,14 +536,16 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
- 		}
- 		cs35l41_irq_release(cs35l41);
- 		cs35l41->playback_started = false;
-+		mutex_unlock(&cs35l41->fw_mutex);
-+
-+		pm_runtime_mark_last_busy(dev);
-+		pm_runtime_put_autosuspend(dev);
- 		break;
- 	default:
- 		dev_warn(cs35l41->dev, "Playback action not supported: %d\n", action);
- 		break;
- 	}
- 
--	mutex_unlock(&cs35l41->fw_mutex);
--
- 	if (ret)
- 		dev_err(cs35l41->dev, "Regmap access fail: %d\n", ret);
- }
-@@ -618,19 +626,6 @@ static int cs35l41_runtime_resume(struct device *dev)
- 	return 0;
- }
- 
--static int cs35l41_hda_suspend_hook(struct device *dev)
--{
--	dev_dbg(dev, "Request Suspend\n");
--	pm_runtime_mark_last_busy(dev);
--	return pm_runtime_put_autosuspend(dev);
--}
--
--static int cs35l41_hda_resume_hook(struct device *dev)
--{
--	dev_dbg(dev, "Request Resume\n");
--	return pm_runtime_get_sync(dev);
--}
--
- static int cs35l41_smart_amp(struct cs35l41_hda *cs35l41)
- {
- 	int halo_sts;
-@@ -863,8 +858,6 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
- 	ret = cs35l41_create_controls(cs35l41);
- 
- 	comps->playback_hook = cs35l41_hda_playback_hook;
--	comps->suspend_hook = cs35l41_hda_suspend_hook;
--	comps->resume_hook = cs35l41_hda_resume_hook;
- 
- 	pm_runtime_mark_last_busy(dev);
- 	pm_runtime_put_autosuspend(dev);
-diff --git a/sound/pci/hda/hda_component.h b/sound/pci/hda/hda_component.h
-index 1223621bd62ca..534e845b9cd1d 100644
---- a/sound/pci/hda/hda_component.h
-+++ b/sound/pci/hda/hda_component.h
-@@ -16,6 +16,4 @@ struct hda_component {
- 	char name[HDA_MAX_NAME_SIZE];
- 	struct hda_codec *codec;
- 	void (*playback_hook)(struct device *dev, int action);
--	int (*suspend_hook)(struct device *dev);
--	int (*resume_hook)(struct device *dev);
- };
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 4b076912bbf4b..e6c4bb5fa041a 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4022,22 +4022,16 @@ static void alc5505_dsp_init(struct hda_codec *codec)
- static int alc269_suspend(struct hda_codec *codec)
- {
- 	struct alc_spec *spec = codec->spec;
--	int i;
- 
- 	if (spec->has_alc5505_dsp)
- 		alc5505_dsp_suspend(codec);
- 
--	for (i = 0; i < HDA_MAX_COMPONENTS; i++)
--		if (spec->comps[i].suspend_hook)
--			spec->comps[i].suspend_hook(spec->comps[i].dev);
--
- 	return alc_suspend(codec);
- }
- 
- static int alc269_resume(struct hda_codec *codec)
- {
- 	struct alc_spec *spec = codec->spec;
--	int i;
- 
- 	if (spec->codec_variant == ALC269_TYPE_ALC269VB)
- 		alc269vb_toggle_power_output(codec, 0);
-@@ -4068,10 +4062,6 @@ static int alc269_resume(struct hda_codec *codec)
- 	if (spec->has_alc5505_dsp)
- 		alc5505_dsp_resume(codec);
- 
--	for (i = 0; i < HDA_MAX_COMPONENTS; i++)
--		if (spec->comps[i].resume_hook)
--			spec->comps[i].resume_hook(spec->comps[i].dev);
--
- 	return 0;
- }
- #endif /* CONFIG_PM */
-@@ -6664,19 +6654,12 @@ static int comp_bind(struct device *dev)
- {
- 	struct hda_codec *cdc = dev_to_hda_codec(dev);
- 	struct alc_spec *spec = cdc->spec;
--	int ret, i;
-+	int ret;
- 
- 	ret = component_bind_all(dev, spec->comps);
- 	if (ret)
- 		return ret;
- 
--	if (snd_hdac_is_power_on(&cdc->core)) {
--		codec_dbg(cdc, "Resuming after bind.\n");
--		for (i = 0; i < HDA_MAX_COMPONENTS; i++)
--			if (spec->comps[i].resume_hook)
--				spec->comps[i].resume_hook(spec->comps[i].dev);
--	}
--
- 	return 0;
- }
- 
--- 
-2.34.1
+Throwing my can of paint into the mix...
 
+I think it is more logical to first include the general <linux/gpio.h>,
+followed by whatever <linux/gpio-foo.h> and <linux/gpio/bar.h>,
+irrespective of (language-specific or phonebook) sort order.
+
+Yeah, it sucks that this requires some manual work after running sort...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
