@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 140F0C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Oct 2022 00:23:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC8EFC4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Oct 2022 00:23:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F2A43E4B;
-	Thu, 13 Oct 2022 02:22:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F2A43E4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 14ACD53D2;
+	Thu, 13 Oct 2022 02:22:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14ACD53D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665620602;
-	bh=wLeGD5lVu1lsgq/jvNvxiLz5HP1zA+sY5Dwb1dXSLoo=;
+	s=default; t=1665620626;
+	bh=hLGgv80zqb0eH/0rrXCcqjAM83ghk/Zxp3QBbxDGP7c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PqiEb9mQhm/5f6VwZDsYs/A5+6WIQMwX/hyVn7gK1bydNi4YxDXVERO3vlZ3EFyhA
-	 9bAMC54ThwYEFFnYtkL/DCFHG0Bw9636SdhSlY6gN16HQ32JQktQqt38bf9pXVGELn
-	 sA4dzHTnFixtXtGiwh4uSSnUWMaBWNTiSbCrswJw=
+	b=E1TTXwKy7VgNOGt+x5gTZ9JfxNgtdVeFx7do1qlbDH9xi3UftQpPakW4cj9L1lCmY
+	 38ui/V10HgewIHBUw298jkpkpKDif38epmrQ1gFGNr+Nlpht4HToqGbUaulvEOCDBI
+	 1ezOhV3+FEoNMG/Kg3bS3SntMmA+kx9orqhmtPfo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D03CCF80246;
-	Thu, 13 Oct 2022 02:22:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 577E3F8013D;
+	Thu, 13 Oct 2022 02:22:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE871F802DB; Thu, 13 Oct 2022 02:22:30 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id CD439F804F2; Thu, 13 Oct 2022 02:22:32 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 504E9F80132
- for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2022 02:22:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 504E9F80132
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5D01F800F4
+ for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2022 02:22:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5D01F800F4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="o62Y4EMA"
+ header.b="urRz0cQ1"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 43A50B81CE4;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 5812F6166F;
+ Thu, 13 Oct 2022 00:22:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61AB8C433C1;
  Thu, 13 Oct 2022 00:22:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16484C433D6;
- Thu, 13 Oct 2022 00:22:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1665620543;
- bh=wLeGD5lVu1lsgq/jvNvxiLz5HP1zA+sY5Dwb1dXSLoo=;
+ s=k20201202; t=1665620545;
+ bh=hLGgv80zqb0eH/0rrXCcqjAM83ghk/Zxp3QBbxDGP7c=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=o62Y4EMA8rwgcZ2WkyPSsIgtMLYAayoaPYw+HXQMyyL8G8IGtth8UrfxUSHTjnl9M
- VNZGW8zr1GcUoo3O0RVzFUlxPlwSfHMa6B0WWLBY+xSwn8c0BDEQljDKdrM+plJgx4
- PBcPp3gxLDs9OH2HY5JPJHezDtCTIFFGhHzsmnxJArRV0j5mmo6sqQ69XTDV6evnBr
- z9Q3jXjw6r9k2+LkubvFYisnl1sGYR+1+wQOHb/rwGRdccLUSDBoMJ93v71YQuAIBg
- cDVOQtfGo6y9i4ZxG3zwjGUQH/2HnOI2ADbGyFFI9UmG5AHsA9ODjwhRNwbEv8cEZz
- dG6Nzo5i0ChmQ==
+ b=urRz0cQ12btGspoANQ7XpHxO7nYP1tltT92pWkNiuiAuTAAi7T5ua7n/8akt+Xp2w
+ dcmA2qsBbHRY4Qwqh28J++RJhsDGStKqvwCM72NgXZVAOt4K4DcoGBZLaEWkRpVXSl
+ e53aZrGvy4SOFfaMTFTt7FduZp89qsTopmvD2zEkF3b+5mHmGVdb1Nthe7lFQdajlJ
+ 6Vkk+uXb7wiRBooDvyIf+9dOhg2qMMPMWu3QIIneHlX79O5MFm8VuK70AqBmS5GX5W
+ wJ5Su2r9kMRQwJDoH79HjCS/bb7TWvxB3k/NXWbm2mxO8BJFB05/9nYidSwFichvVI
+ e25aXiyGC0EwA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 21/47] soundwire: cadence: Don't overwrite
- msg->buf during write commands
-Date: Wed, 12 Oct 2022 20:20:56 -0400
-Message-Id: <20221013002124.1894077-21-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 22/47] soundwire: intel: fix error handling on
+ dai registration issues
+Date: Wed, 12 Oct 2022 20:20:57 -0400
+Message-Id: <20221013002124.1894077-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221013002124.1894077-1-sashal@kernel.org>
 References: <20221013002124.1894077-1-sashal@kernel.org>
@@ -68,9 +68,9 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Vinod Koul <vkoul@kernel.org>, yung-chuan.liao@linux.intel.com
+ Rander Wang <rander.wang@intel.com>, Vinod Koul <vkoul@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,47 +86,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit ba05b39d265bdd16913f7684600d9d41e2796745 ]
+[ Upstream commit c6867cda906aadbce5e71efde9c78a26108b2bad ]
 
-The buf passed in struct sdw_msg must only be written for a READ,
-in that case the RDATA part of the response is the data value of the
-register.
+The call to intel_register_dai() may fail because of memory allocation
+issues or problems reported by the ASoC core. In all cases, when a
+error is thrown the component is not registered, it's invalid to
+unregister it.
 
-For a write command there is no RDATA, and buf should be assumed to
-be const and unmodifable. The original caller should not expect its data
-buffer to be corrupted by an sdw_nwrite().
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20220916103505.1562210-1-rf@opensource.cirrus.com
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Link: https://lore.kernel.org/r/20220919175721.354679-2-yung-chuan.liao@linux.intel.com
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soundwire/cadence_master.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/soundwire/intel.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index 4fcc3ba93004..18d2f9b3e201 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -545,9 +545,12 @@ cdns_fill_msg_resp(struct sdw_cdns *cdns,
- 		return SDW_CMD_IGNORED;
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 38e7f1a2bb97..89ee033f0c35 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -1407,7 +1407,6 @@ int intel_link_startup(struct auxiliary_device *auxdev)
+ 	ret = intel_register_dai(sdw);
+ 	if (ret) {
+ 		dev_err(dev, "DAI registration failed: %d\n", ret);
+-		snd_soc_unregister_component(dev);
+ 		goto err_interrupt;
  	}
  
--	/* fill response */
--	for (i = 0; i < count; i++)
--		msg->buf[i + offset] = FIELD_GET(CDNS_MCP_RESP_RDATA, cdns->response_buf[i]);
-+	if (msg->flags == SDW_MSG_FLAG_READ) {
-+		/* fill response */
-+		for (i = 0; i < count; i++)
-+			msg->buf[i + offset] = FIELD_GET(CDNS_MCP_RESP_RDATA,
-+							 cdns->response_buf[i]);
-+	}
- 
- 	return SDW_CMD_OK;
- }
 -- 
 2.35.1
 
