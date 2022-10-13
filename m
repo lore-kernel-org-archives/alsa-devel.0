@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06676C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Oct 2022 07:41:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46AAEC43217
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Oct 2022 07:41:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1EE405716;
-	Thu, 13 Oct 2022 09:41:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EE405716
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8BCA0571D;
+	Thu, 13 Oct 2022 09:41:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BCA0571D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665646915;
-	bh=e+rq1njXLDIFGJ1L7vYSkmDJlLwS5MpZBrXAFM5oqEA=;
+	s=default; t=1665646916;
+	bh=pg4jq5rHTn+7QRZZszkRS69hOfuJFKra2uSb2gTtzYM=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fyKrPAEq8N+cDH1JDKVzIfdkXNCjhw+Qel1LIkflbIYSF9Sji5O1+7WX0F7HXwDzN
-	 FTW3QIgDktHgO1se3M+ElqCkHXSmWA0bYD7YYA1IlDhYuaDLyfy24/2awQOjlnejxl
-	 QW37v8Nplj8/FD2dd8WXtYX5i3sRjwqtKgOzNkaY=
+	b=Oed5jq5sRBSGxLQaHo9Udg+Kjo7+KocvZc6h1FhuarbpG/fFVcY44+3NycK71m2Qz
+	 hyKIVuAcR3Ut0mpTFqR7Nq15qixGcA/oRjxC2wTPhWbPlMhN6UTDhhop/qSFIUH5jX
+	 my5h7elwtup4eZVJr8Kw9s5RjjGKbDMlWW4SQ0aM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 783CDF8053B;
-	Thu, 13 Oct 2022 09:40:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2AD6F80543;
+	Thu, 13 Oct 2022 09:41:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 354E1F8053C; Thu, 13 Oct 2022 09:40:46 +0200 (CEST)
+ id 5BD19F80548; Thu, 13 Oct 2022 09:41:02 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id E755AF80431
- for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2022 09:40:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E755AF80431
+ by alsa1.perex.cz (Postfix) with ESMTP id 5FDE6F80542
+ for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2022 09:40:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FDE6F80542
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1665646843754724979-webhooks-bot@alsa-project.org>
-References: <1665646843754724979-webhooks-bot@alsa-project.org>
+In-Reply-To: <1665646856069612026-webhooks-bot@alsa-project.org>
+References: <1665646856069612026-webhooks-bot@alsa-project.org>
 Subject: ALC4080 - ASRock X670E Taichi
-Message-Id: <20221013074046.354E1F8053C@alsa1.perex.cz>
-Date: Thu, 13 Oct 2022 09:40:46 +0200 (CEST)
+Message-Id: <20221013074102.5BD19F80548@alsa1.perex.cz>
+Date: Thu, 13 Oct 2022 09:41:02 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -61,8 +61,8 @@ This board's ALC4082 seems to be sitting here:
 `26ce:0a06 Generic USB Audio`
 
 After trying out the latest UCM configuration I also tried adding this to my USB-Audio.conf:
-`# 26ce:0a06 ASRock X670E Taichi
-Regex "USB((26ce:0a06)|(0414:a00e)|(0b05:(1996|1a(16|2[07])))|(0db0:(005a|151f|1feb|419c|82c7|a073|a47c|b202)))"`
+`# 26ce:0a06 ASRock X670E Taichi`
+`Regex "USB((26ce:0a06)|(0414:a00e)|(0b05:(1996|1a(16|2[07])))|(0db0:(005a|151f|1feb|419c|82c7|a073|a47c|b202)))"`
 
 but no dice (still recognized as "Generic USB Audio" and ports don't work). Sound works in Windows 11 and manually playing a sound like that works:
 `aplay -D plughw:Audio,1 /usr/share/sounds/alsa/Front_Left.wav    ` 
