@@ -4,54 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E53F6C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Oct 2022 12:57:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF858C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Oct 2022 13:07:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 957895AD8;
-	Thu, 13 Oct 2022 14:56:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 957895AD8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 874805AFC;
+	Thu, 13 Oct 2022 15:06:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 874805AFC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665665868;
-	bh=3tE8MvKn++O3yKnIGIxo0pOWUaMlycQva2nyPNKfeec=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=EGb6IGfl7x6qMBSsG+wJiuezgsmoPl1B/NNR3XnCCRTmhCmMplMLxLbgTx4XB6C45
-	 EEpzSury85Jw0T/ZxxEwpe7xpw2JqVK+uMmIjM1kMA7yCHGCrOp3nk60xZXnLaYdgg
-	 jeruDQrV9zsBHKPiLWiB0lORhbNNLD8MOecbUaHA=
+	s=default; t=1665666426;
+	bh=JHAw2W7prYpOOgCccUOYji7QcBQLE5R+0+cCc0zhULY=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=oYuFXj4iliFapnrDfMULYAqr75P5hJ1E4TIp/HnViCBmwgTWiRR2duilMNylhOgog
+	 QEEw/+PJRxQTlaKKqY4Jqm1NcBUKcHgwbjy0wmTSli8f592zXN5M3gmvzvexDmNuDf
+	 PPygKbYSZyPOgc44rlwdTad/U7y+zFnAXDN6hm+Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BC5CF80115;
-	Thu, 13 Oct 2022 14:56:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31D0DF80132;
+	Thu, 13 Oct 2022 15:06:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B61BF800C0; Thu, 13 Oct 2022 14:56:57 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ id 6498FF80269; Thu, 13 Oct 2022 15:06:15 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47A33F80115
+ for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2022 15:06:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47A33F80115
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="uStcIrFq"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 378C2F800C0
- for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2022 14:56:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 378C2F800C0
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 97F821B45BA;
- Thu, 13 Oct 2022 14:56:45 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 60F4E1B45BC;
- Thu, 13 Oct 2022 14:56:45 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 09EF31802204;
- Thu, 13 Oct 2022 20:56:43 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- p.zabel@pengutronix.de, viorel.suman@nxp.com
-Subject: [PATCH] ASoC: ak4458: add optional reset control to instead of gpio
-Date: Thu, 13 Oct 2022 20:36:51 +0800
-Message-Id: <1665664611-21350-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: shengjiu.wang@gmail.com
+ by ams.source.kernel.org (Postfix) with ESMTPS id 54389B81E23;
+ Thu, 13 Oct 2022 13:06:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B706C433D6;
+ Thu, 13 Oct 2022 13:06:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1665666367;
+ bh=JHAw2W7prYpOOgCccUOYji7QcBQLE5R+0+cCc0zhULY=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=uStcIrFqZDyUctkzYCTRX6VjcmLA682Ex50GQLamZqei2XpT3BV9rInyEAfAFcay0
+ NCcBfJqru0qoAu7fUzgTACNygIQkaEEQ2e1r6KbmpUfngdy1R/wPnjyqrAwSEu8YOi
+ r0a8shHWYfrMDPQpAuMokkuWOqQO3/7kvWcw/IaTtnhHbMytyhVYF7Qw+R2xgbDY82
+ XD8CeR+9HUV4G8/uuc7f27QKoj8AgrhL+ua+fTO45WOpRyZPxn5t3c0jS4HJeAx8sp
+ iv1lxCWMCLatC11zy0tZHdarIbJV0k3PpuE0Ce6gOCZpXxIFcuJZIcdkIvCePlDydF
+ 2alM4N0xle84w==
+Date: Thu, 13 Oct 2022 14:05:59 +0100
+From: Mark Brown <broonie@kernel.org>
+To: "Liao, Bard" <yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Add Richtek RT5512 Speaker Amp Driver
+Message-ID: <Y0gNN/HB53ISvwI3@sirena.org.uk>
+References: <20221013080643.6509-1-richtek.jeff.chang@gmail.com>
+ <Y0f98d0A04f8dzQV@sirena.org.uk>
+ <f84e2722-ca56-8440-a5af-550080bd1f8f@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="1DqoBQP/S/2TsyJM"
+Content-Disposition: inline
+In-Reply-To: <f84e2722-ca56-8440-a5af-550080bd1f8f@linux.intel.com>
+X-Cookie: Do you like "TENDER VITTLES"?
+Cc: jeff_chang@ricthek.com, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, Jeff Chang <richtek.jeff.chang@gmail.com>,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ Jeff <jeff_chang@richtek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,73 +86,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Viorel Suman <viorel.suman@nxp.com>
 
-Add optional reset control instead of GPIO to manage codec
-PDN pin.
+--1DqoBQP/S/2TsyJM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As there is reference counter for reset control, so need
-to remove one ak4458_reset in runtime resume to make the
-reference counter balance.
+On Thu, Oct 13, 2022 at 08:46:26PM +0800, Liao, Bard wrote:
+>=20
+> On 10/13/2022 8:00 PM, Mark Brown wrote:
+> > On Thu, Oct 13, 2022 at 04:06:43PM +0800, Jeff Chang wrote:
+> >=20
+> > > +config SND_SOC_RT5512
+> > > +	tristate "Mediatek RT5512 speaker amplifier"
+> > Looks like there's some Richtek/Mediatek branding confusion with this -
+> > it's a bit unclear.  It's all the same company in the end I guess so it
+> > doesn't matter.
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/codecs/ak4458.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+> Interesting, the naming of RT5512 looks like a Realtek codec. ^^
 
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index 626310859814..ac328d598291 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -13,6 +13,7 @@
- #include <linux/of_gpio.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/reset.h>
- #include <linux/slab.h>
- #include <sound/initval.h>
- #include <sound/pcm_params.h>
-@@ -46,6 +47,7 @@ struct ak4458_priv {
- 	struct device *dev;
- 	struct regmap *regmap;
- 	struct gpio_desc *reset_gpiod;
-+	struct reset_control *reset;
- 	struct gpio_desc *mute_gpiod;
- 	int digfil;	/* SSLOW, SD, SLOW bits */
- 	int fs;		/* sampling rate */
-@@ -633,6 +635,12 @@ static void ak4458_reset(struct ak4458_priv *ak4458, bool active)
- 	if (ak4458->reset_gpiod) {
- 		gpiod_set_value_cansleep(ak4458->reset_gpiod, active);
- 		usleep_range(1000, 2000);
-+	} else if (!IS_ERR_OR_NULL(ak4458->reset)) {
-+		if (active)
-+			reset_control_assert(ak4458->reset);
-+		else
-+			reset_control_deassert(ak4458->reset);
-+		usleep_range(1000, 2000);
- 	}
- }
- 
-@@ -668,7 +676,6 @@ static int __maybe_unused ak4458_runtime_resume(struct device *dev)
- 	if (ak4458->mute_gpiod)
- 		gpiod_set_value_cansleep(ak4458->mute_gpiod, 1);
- 
--	ak4458_reset(ak4458, true);
- 	ak4458_reset(ak4458, false);
- 
- 	regcache_cache_only(ak4458->regmap, false);
-@@ -748,6 +755,10 @@ static int ak4458_i2c_probe(struct i2c_client *i2c)
- 
- 	ak4458->drvdata = of_device_get_match_data(&i2c->dev);
- 
-+	ak4458->reset = devm_reset_control_get_optional_shared(ak4458->dev, NULL);
-+	if (IS_ERR(ak4458->reset))
-+		return PTR_ERR(ak4458->reset);
-+
- 	ak4458->reset_gpiod = devm_gpiod_get_optional(ak4458->dev, "reset",
- 						      GPIOD_OUT_LOW);
- 	if (IS_ERR(ak4458->reset_gpiod))
--- 
-2.34.1
+Yeah, exactly.
 
+--1DqoBQP/S/2TsyJM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNIDTcACgkQJNaLcl1U
+h9C8ZQf/Wg+lRkhpkE6ejB/Grl8dHwI6yoskSk9Bxa3ybD4gTRzJxgl4h63BBm+q
+yiY0Npm/r59c8/nAiVucxEQBzNYqZ3jVuS/XIRkZYlDl0FJtwnqmYwOkFu4r37Rq
+5eP6UG6xxBhQOovHRd0Von68ofEKC0UIqFogaqQeivNrCZFJ5URcOzZ9eeMFbs5y
+bdejtGzvggeS5I+sUfw9Uja8I9eMQxn9phHeLObzwQmJVScbAjGwor5tf9pbm7G0
+qyYOAaGVyBcRMQHPg8CFiLXjy1Vl4GcOhGzVgX8B9plEVx3uuVxSx6N3dkV18gS0
+gcVZu5wqfcejMC6IPyfjc0bt/UYU1Q==
+=ACP+
+-----END PGP SIGNATURE-----
+
+--1DqoBQP/S/2TsyJM--
