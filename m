@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 485BEC4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Oct 2022 15:28:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7430C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Oct 2022 15:33:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D45181786;
-	Thu, 13 Oct 2022 17:27:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D45181786
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70D5D544A;
+	Thu, 13 Oct 2022 17:32:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70D5D544A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665674880;
-	bh=92dfefEBZ055w01xQDRXSd+reVgliNEt1bYbYeL/zl8=;
+	s=default; t=1665675212;
+	bh=RV5/5LzwBSGW0x3Y5SxKtB9kx0ynVCRdjw9jho2dfYw=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=m+VhaY57gfUAMNR6WXln1c2T5VJg2Yi2md1uximHF36xSPaaFuGz5x4nWkScaojEg
-	 6H6e3OJ2ieSj32/y+FJgUkw9iIrWiUy11egIilSTn5X37heQGVslFw5mBQfzq98Y3z
-	 sfOGp4bcKQXYdZNxuOaZYAyQVmz16LrjVBqmLkFo=
+	b=XO7tO35pKFQIZGG7uSbrgQ3tM/Ep0zSpYRVQxPZYD+NMp9rw3zYH0C9lpxcgIR+Iv
+	 508YkMPBfnFo0auyvYzpYq0E3cL3SY3A0yRsj741vMWYThqNadz6fn905p2ON3PupQ
+	 tIWN6/1udGyu9ptL5UuTHOXG8ISXQLYO4BK891bo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 70A5BF80132;
-	Thu, 13 Oct 2022 17:27:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0949DF80132;
+	Thu, 13 Oct 2022 17:32:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C83E2F80269; Thu, 13 Oct 2022 17:27:08 +0200 (CEST)
+ id 136A2F80132; Thu, 13 Oct 2022 17:32:41 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id BA3E2F800C0
- for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2022 17:27:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA3E2F800C0
+ by alsa1.perex.cz (Postfix) with ESMTP id EC145F800C0
+ for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2022 17:32:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC145F800C0
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1665674822166090012-webhooks-bot@alsa-project.org>
-References: <1665674822166090012-webhooks-bot@alsa-project.org>
+In-Reply-To: <1665675153932095051-webhooks-bot@alsa-project.org>
+References: <1665675153932095051-webhooks-bot@alsa-project.org>
 Subject: Software volume control has very little effect on Behringer UMC204HD
-Message-Id: <20221013152708.C83E2F80269@alsa1.perex.cz>
-Date: Thu, 13 Oct 2022 17:27:08 +0200 (CEST)
+Message-Id: <20221013153241.136A2F80132@alsa1.perex.cz>
+Date: Thu, 13 Oct 2022 17:32:41 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -57,7 +57,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 alsa-project/alsa-ucm-conf issue #230 was edited from Spanfile:
 
-I'm using a Behringer UMC204HD with Pipewire and its UCM profile. The profile works fine that it properly splits the interface's four output channels into two stereo line outputs, and Pipewire is properly using them. There aren't any issues with audio crackling, latency or the sort, but the software volume control is affecting the actual volume output very little. Only the first few "notches" from 0 to 10 change the volume noticeably, however the lowest volume it allows is still somewhat loud. From there on the rest of the range doesn't change the volume much at all.
+I'm using a Behringer UMC204HD with its UCM profile and Pipewire. The profile works fine that it properly splits the interface's four output channels into two stereo line outputs, and Pipewire is properly using them. There aren't any issues with audio crackling, latency or the sort, but the software volume control is affecting the actual volume output very little. Only the first few "notches" from 0 to 10 change the volume noticeably, however the lowest volume it allows is still somewhat loud. From there on the rest of the range doesn't change the volume much at all.
 
 Using the Direct UCM profile lets the software volume control have much better range, but I need the Line A/B split in my setup so that profile is not an option. I haven't tried disabling UCM and configuring pro audio in Pipewire directly, but that doesn't sound like a proper fix.
 
