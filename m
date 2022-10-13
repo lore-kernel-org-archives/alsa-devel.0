@@ -4,95 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FAECC4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 13 Oct 2022 05:09:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 343E2C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 13 Oct 2022 07:41:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8696150FF;
-	Thu, 13 Oct 2022 07:09:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8696150FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 742BD5654;
+	Thu, 13 Oct 2022 09:40:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 742BD5654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665637796;
-	bh=C3VhjzEHOdLQxrCtsY5a20rZiHhkHO30UcV/i2DPsNs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=AMvaSfbVw5VFN1DxwpkcQDgb8cP7yqt2FTGb/lanBA+hzqwdilyB47l280huYvIaP
-	 eViGxBNCkEYOqrbbOwVHMxuHqpi0g2UX8sWWwDK4zJOKW1q94vkfBrgtgPQXCH/0gE
-	 L02Zs1TGRRf8f1Sltqn0+7Io7KpgWi1/KuboZbc4=
+	s=default; t=1665646864;
+	bh=G4KKG0w7pcmNY1m2HXej4xOYz2+gyLsa1o5tq7h6dfc=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=NVnAfNaU3vCvKV+29X3ShaqA28cfg4L9v6W025jf2jL9NNYVqeiYrgwJDRnWAiUDQ
+	 RoAidt4RhOivTRJDTVRprcoDOe0ZqSOCt0jyRlI6IHAqNEz2cYnMyyVrXRfAEPee6t
+	 luzUG3F/aQvdWlNwDv4tA2OM2hmhL038knvDFZNc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 295DCF80132;
-	Thu, 13 Oct 2022 07:09:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C4E6F80132;
+	Thu, 13 Oct 2022 09:40:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ED589F80269; Thu, 13 Oct 2022 07:09:03 +0200 (CEST)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3E1BF80115
- for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2022 07:08:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3E1BF80115
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="NWQapbWR"
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
- by mx0a-0031df01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29D4gGDD001011;
- Thu, 13 Oct 2022 05:08:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=hRi0hxvb8ULH4SSXgcEOBo/E1ayRuxkvHkANtCDsSNs=;
- b=NWQapbWRWpeLb4s9yBwyktnf27VoiwBfcVAsf4qBKJFNanENqxvI6a8Ragz+WhVyboQ5
- WIkkB/50Xtj/k6965IpQtdMv5FyAXX0TUZgbQ5BxLttOsmyisvyDAlbaFIyPB5z3/zm9
- jmBJF30A/OKGj12fgR6xvILvyFm47aMIQbXLe8YCaWH3I5lW/3GBd626yKi77p47/W7Q
- XPTK8O9GGUxQ0IhWdf+AzYGAiUTEtZJU5XBPak3h0UpnSMFYUKzBZV6U4QQ+RsECvGVv
- 6gPdolplGM+pXfsdqA1ObFDXBAwp7QiEI2Xt0vlkN9kF1YdPjTKd3hoCVZIbjhtyz0Ty Dw== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com
- [129.46.96.20])
- by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3k6ae4086h-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 13 Oct 2022 05:08:52 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com
- [10.47.209.196])
- by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 29D58pR0024144
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 13 Oct 2022 05:08:51 GMT
-Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.29; Wed, 12 Oct 2022 22:08:46 -0700
-From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-To: <agross@kernel.org>, <andersson@kernel.org>, <lgirdwood@gmail.com>,
- <broonie@kernel.org>, <robh+dt@kernel.org>, <quic_plai@quicinc.com>,
- <bgoswami@quicinc.com>, <perex@perex.cz>, <tiwai@suse.com>,
- <srinivas.kandagatla@linaro.org>, <quic_rohkumar@quicinc.com>,
- <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
- <linux-kernel@vger.kernel.org>, <swboyd@chromium.org>,
- <judyhsiao@chromium.org>, <devicetree@vger.kernel.org>
-Subject: [PATCH v2] ASoC: qcom: lpass-cpu: mark HDMI TX registers as volatile
-Date: Thu, 13 Oct 2022 10:38:31 +0530
-Message-ID: <1665637711-13300-1-git-send-email-quic_srivasam@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+ id 19C3BF80269; Thu, 13 Oct 2022 09:40:12 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 6807BF800A7
+ for <alsa-devel@alsa-project.org>; Thu, 13 Oct 2022 09:40:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6807BF800A7
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
- signatures=585085
-X-Proofpoint-ORIG-GUID: OGksqCcJge4VA7HNf3pIL5LRC_Ik1Z3G
-X-Proofpoint-GUID: OGksqCcJge4VA7HNf3pIL5LRC_Ik1Z3G
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-13_04,2022-10-12_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0
- suspectscore=0 priorityscore=1501 bulkscore=0 adultscore=0
- lowpriorityscore=0 clxscore=1015 malwarescore=0 phishscore=0 mlxscore=0
- spamscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2209130000 definitions=main-2210130030
-Cc: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1665646808819699049-webhooks-bot@alsa-project.org>
+References: <1665646808819699049-webhooks-bot@alsa-project.org>
+Subject: ALC4080 - ASRock X670E Taichi
+Message-Id: <20221013074012.19C3BF80269@alsa1.perex.cz>
+Date: Thu, 13 Oct 2022 09:40:12 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,48 +55,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Update HDMI volatile registers list as DMA, Channel Selection registers,
-vbit control registers are being reflected by hardware DP port
-disconnection.
+alsa-project/alsa-ucm-conf issue #229 was opened from hendrikb-101:
 
-This update is required to fix no display and no sound issue observed
-after reconnecting TAMA/SANWA DP cables.
-Once DP cable is unplugged, DMA control registers are being reset by
-hardware, however at second plugin, new dma control values does not
-updated to the dma hardware registers since new register value and
-cached values at the time of first plugin are same.
+This board's ALC4082 seems to be sitting here:
+`26ce:0a06 Generic USB Audio`
 
-Fixes: 7cb37b7bd0d3 ("ASoC: qcom: Add support for lpass hdmi driver")
+After trying out the latest UCM configuration I also tried adding this to my USB-Audio.conf:
+`# 26ce:0a06 ASRock X670E Taichi
+Regex "USB((26ce:0a06)|(0414:a00e)|(0b05:(1996|1a(16|2[07])))|(0db0:(005a|151f|1feb|419c|82c7|a073|a47c|b202)))"`
 
-Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-Reported-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
----
- sound/soc/qcom/lpass-cpu.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+but no dice (still recognized as "Generic USB Audio" and ports don't work). Sound works in Windows 11 and manually playing a sound like that works:
+`aplay -D plughw:Audio,1 /usr/share/sounds/alsa/Front_Left.wav    ` 
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 8a56f38..99a3b44 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -782,10 +782,18 @@ static bool lpass_hdmi_regmap_volatile(struct device *dev, unsigned int reg)
- 		return true;
- 	if (reg == LPASS_HDMI_TX_LEGACY_ADDR(v))
- 		return true;
-+	if (reg == LPASS_HDMI_TX_VBIT_CTL_ADDR(v))
-+		return true;
- 
- 	for (i = 0; i < v->hdmi_rdma_channels; ++i) {
- 		if (reg == LPAIF_HDMI_RDMACURR_REG(v, i))
- 			return true;
-+		if (reg == LPASS_HDMI_TX_DMA_ADDR(v, i))
-+			return true;
-+		if (reg == LPASS_HDMI_TX_CH_LSB_ADDR(v, i))
-+			return true;
-+		if (reg == LPASS_HDMI_TX_CH_MSB_ADDR(v, i))
-+			return true;
- 	}
- 	return false;
- }
--- 
-2.7.4
+Is there anything else different on this board besides the device's id?!
 
+This is my [alsa-info.txt](https://github.com/alsa-project/alsa-ucm-conf/files/9771968/alsa-info.txt).
+
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/229
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
