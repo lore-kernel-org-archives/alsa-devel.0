@@ -4,133 +4,138 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7EDAC4332F
-	for <alsa-devel@archiver.kernel.org>; Sun, 16 Oct 2022 07:34:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2BC4C4332F
+	for <alsa-devel@archiver.kernel.org>; Sun, 16 Oct 2022 07:34:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1ED905822;
-	Sun, 16 Oct 2022 09:33:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1ED905822
+	by alsa0.perex.cz (Postfix) with ESMTPS id E5E206E2D;
+	Sun, 16 Oct 2022 09:33:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5E206E2D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665905640;
-	bh=lZ8TVJQgXBejKqenPQhoxeb0GBpQ1MS4oW7Z//ejw4k=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1665905656;
+	bh=hnbqZSpB3rKi0sSyf7DI97w+SGg6LgXDxA6zW+Bv3gk=;
+	h=From:To:In-Reply-To:Subject:Date:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uorhGYkchLT1+WzSFiJ1j1Q5A58ByBPUySLJg4LC+3Gzd2tlT8cIAMyHsMezcvuLH
-	 BnR2DP/dUlmaMPOkv20aLGdHIUVynF/w8RUdMneBCW1Gl71KiWCSW3gGoM6H1e5lra
-	 ytZnbEVDKqnkr7BsNyi1PwFMtJ7ST0WsyWmSqnpI=
+	b=O8VpDVpzrJTc+bV2u61CglyiRCVm3x1shxzgAkPyUVhI2jpZ4bac+gkD9g6AYm4w3
+	 aenSKTxl96mZwjkEbEz7dNIjseTDyaqp7Wn96v13U8TIqGTwnwed/ZhaniQ9c4GNKw
+	 Ozuy8AiyOWJYxZCZlQXQbtyKH9NQjpPPws7Zt6U8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC8E2F805C0;
-	Sun, 16 Oct 2022 09:28:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B5D3F805C4;
+	Sun, 16 Oct 2022 09:28:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 255ABF80224; Fri, 14 Oct 2022 13:10:46 +0200 (CEST)
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+ id E0E08F80224; Fri, 14 Oct 2022 15:24:21 +0200 (CEST)
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8CC3AF802E3
- for <alsa-devel@alsa-project.org>; Fri, 14 Oct 2022 13:10:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CC3AF802E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A0C2F80115
+ for <alsa-devel@alsa-project.org>; Fri, 14 Oct 2022 15:24:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A0C2F80115
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com
- header.b="MziZwkX1"
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
- by mailout1.samsung.com (KnoxPortal) with ESMTP id
- 20221014111036epoutp01fbdb694e6e497dc80f659370284baaee~d6wNNBbvG2407624076epoutp01W
- for <alsa-devel@alsa-project.org>; Fri, 14 Oct 2022 11:10:36 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com
- 20221014111036epoutp01fbdb694e6e497dc80f659370284baaee~d6wNNBbvG2407624076epoutp01W
+ header.b="FXK+aXZ+"
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+ by mailout2.samsung.com (KnoxPortal) with ESMTP id
+ 20221014132409epoutp028d03d43950a024d1f270d2b90e8c0310~d8k0JOGd32474824748epoutp02c
+ for <alsa-devel@alsa-project.org>; Fri, 14 Oct 2022 13:24:09 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com
+ 20221014132409epoutp028d03d43950a024d1f270d2b90e8c0310~d8k0JOGd32474824748epoutp02c
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
- s=mail20170921; t=1665745836;
- bh=9SsgF3hWBhdrZJfljS7+eBsGPvly+gPDoy3K5tTIdBg=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=MziZwkX127b95mJ65tK57IEgMd6yRO/4O7vIf6qiGp0UkJQNE5yTHcM+DWe/S2gGC
- eGyzElqVDK9bCamL7KJ+u32TJYITSx2UO70XGZRktALjUdIX61EMJwBINyUKOpEUhs
- nF/FF3LPa7hJRRGPfkvwElApyezT9VBa7b6+38ig=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
- epcas5p3.samsung.com (KnoxPortal) with ESMTP id
- 20221014111036epcas5p34c04fce5100e24c348de56cf4482979a~d6wMq8x480410004100epcas5p38;
- Fri, 14 Oct 2022 11:10:36 +0000 (GMT)
-Received: from epsmges5p1new.samsung.com (unknown [182.195.38.174]) by
- epsnrtp2.localdomain (Postfix) with ESMTP id 4MpkFj3t7Hz4x9Pt; Fri, 14 Oct
- 2022 11:10:33 +0000 (GMT)
+ s=mail20170921; t=1665753849;
+ bh=yrOuse1uUrQ+ezg3S++UP/Ig12MY3vHjDOvlv7f8hzk=;
+ h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+ b=FXK+aXZ+DB0/sXS/3JL3W7Qd+D7vqN1QiHLU7ZEKH6dDi+wF+B0r9AlW2+kii6pxQ
+ oAQ8ot00DXR1fZ6sC9KQ6tciyCILavFnsHUIEid/ibBdQX1tclr36/XtkuFD0aIY9Y
+ H9qbVVw2OWhtrubMD3N8wIf3Jkb0b2dsRsPHyUn4=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+ epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+ 20221014132409epcas5p2c0fbdfdb5df2772baecbb2f28aed29ed~d8kztFSwi2551225512epcas5p2A;
+ Fri, 14 Oct 2022 13:24:09 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.179]) by
+ epsnrtp3.localdomain (Postfix) with ESMTP id 4MpnCp3Dpgz4x9Pt; Fri, 14 Oct
+ 2022 13:24:06 +0000 (GMT)
 Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
- epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
- 80.31.26992.9A349436; Fri, 14 Oct 2022 20:10:33 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
- epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
- 20221014104915epcas5p12414b87ea127b2d5bf521556bf841b00~d6dj9NWX52011520115epcas5p1k;
- Fri, 14 Oct 2022 10:49:15 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
- epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
- 20221014104915epsmtrp2f5c4039270bdfe8644ff8738d6f79eac~d6dj8SSSL0248602486epsmtrp2M;
- Fri, 14 Oct 2022 10:49:15 +0000 (GMT)
-X-AuditID: b6c32a49-0c7ff70000016970-3a-634943a9ba47
+ epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+ 86.FB.39477.6F269436; Fri, 14 Oct 2022 22:24:06 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+ epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+ 20221014132405epcas5p307221ed06f17f2c5773726611fd627fe~d8kwgzyfK2888628886epcas5p3W;
+ Fri, 14 Oct 2022 13:24:05 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+ epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+ 20221014132405epsmtrp17dd1e064b39e2c506f7b940eba1f3f8e~d8kwfqxo92627326273epsmtrp1e;
+ Fri, 14 Oct 2022 13:24:05 +0000 (GMT)
+X-AuditID: b6c32a4a-007ff70000019a35-32-634962f68e6d
 Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
- epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
- 6D.56.14392.BAE39436; Fri, 14 Oct 2022 19:49:15 +0900 (KST)
-Received: from cheetah.sa.corp.samsungelectronics.net (unknown
- [107.109.115.53]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
- 20221014104913epsmtip10879994e360ec84ae6bd8e31ffc0b4ea~d6dh1ysO_2736727367epsmtip1j;
- Fri, 14 Oct 2022 10:49:12 +0000 (GMT)
-From: Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, s.nawrocki@samsung.com, perex@perex.cz,
- tiwai@suse.com, pankaj.dubey@samsung.com, alim.akhtar@samsung.com,
- rcsekar@samsung.com, aswani.reddy@samsung.com
-Subject: [PATCH 6/6] arm64: dts: fsd: Add sound card node for Tesla FSD
-Date: Fri, 14 Oct 2022 15:51:51 +0530
-Message-Id: <20221014102151.108539-7-p.rajanbabu@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20221014102151.108539-1-p.rajanbabu@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLJsWRmVeSWpSXmKPExsWy7bCmuu5KZ89kg4cdMhYP5m1js7hy8RCT
- xaHNW9ktpj58wmYx/8g5Vou+Fw+ZLb5d6WCyuLxrDpvFjPP7mCyObgy2WLT1C7tF565+VotZ
- F3awWrTuPcJucfhNO6vFhu9rGR0EPDZ8bmLz2DnrLrvHplWdbB53ru1h89j3dhmbR9+WVYwe
- 67dcZfH4vEkugCMq2yYjNTEltUghNS85PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnF
- J0DXLTMH6AMlhbLEnFKgUEBicbGSvp1NUX5pSapCRn5xia1SakFKToFJgV5xYm5xaV66Xl5q
- iZWhgYGRKVBhQnbG1/VHGQse8Vds/XWdsYHxMk8XIyeHhICJxLZpi9m7GLk4hAR2M0q8PLsf
- yvnEKDFz1ismCOcbo8TXv1+BMhxgLTMPxEPE9zJKfJ73ghXCaWWSWP3zMTvIXDYBU4lVcxrB
- EiICTUwSbW8msoA4zAIbGSVOH3vIBFIlLOAuMXN7K5jNIqAq0bbqOVg3r4CtxMprm1ghLpSX
- WL3hADOIzSlgJ/G8pQlsqoTAUg6JZVt2sUAUuUjs63gPZQtLvDq+hR3ClpL4/G4vG4SdLzHt
- YzOUXSHR9nEDE4RtL3HgyhwWkN+YBTQl1u/ShwjLSkw9tQ6shFmAT6L39xOocl6JHfNgbFWJ
- 9cs3MULY0hL7ru+Fsj0kPvW0s0CCZSKjxKljD1gmMMrNQlixgJFxFaNkakFxbnpqsWmBYV5q
- OTzekvNzNzGC06mW5w7Guw8+6B1iZOJgPMQowcGsJML7WskzWYg3JbGyKrUoP76oNCe1+BCj
- KTAAJzJLiSbnAxN6Xkm8oYmlgYmZmZmJpbGZoZI47+IZWslCAumJJanZqakFqUUwfUwcnFIN
- TN3yMQfuzH0VIVN+/N3Z0ml7hL/NbElskLr1UGjS0z+PDU8GHK0JV1lfcmuDKMevjfm3jzBf
- a2MS/HX3y+17Ez4XRW+/rjNRYMGUH3VKntHCDV+dgVko4ri+7OLUVy+t7r0td+W6+EPLeNKj
- B5yTNivnHPhdvZX35+tL1udCDx4+k3L7zVwRicIXIUwWq6bGL7BRurwwfWb0t0XqNT8tniRK
- XI/32aKfEqlX17VP2l5rnhmDNG/7jHMTM7rap7A3PjZ5XMm56ey9SUzOjz9dWihb+pZ50Z0A
- /11cKy4z/sgJWexYxXbOe8fEJzn+TT6HStxmiuvIs6c92ucuxHT4F9fd6ktB04/feTJbeGvU
- ckElluKMREMt5qLiRAAffWYQMAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrELMWRmVeSWpSXmKPExsWy7bCSnO5qO89kg/uHBSwezNvGZnHl4iEm
- i0Obt7JbTH34hM1i/pFzrBZ9Lx4yW3y70sFkcXnXHDaLGef3MVkc3RhssWjrF3aLzl39rBaz
- LuxgtWjde4Td4vCbdlaLDd/XMjoIeGz43MTmsXPWXXaPTas62TzuXNvD5rHv7TI2j74tqxg9
- 1m+5yuLxeZNcAEcUl01Kak5mWWqRvl0CV8bX9UcZCx7xV2z9dZ2xgfEyTxcjB4eEgInEzAPx
- XYxcHEICuxklLp1pYO5i5ASKS0tM79/DBmELS6z895wdoqiZSWLCmcesIAk2AVOJVXMaWUES
- IgITmCROvjvGApJgFtjKKDH1sxGILSzgLjFzeysTiM0ioCrRtgpkEicHr4CtxMprm1ghNshL
- rN5wAGwzp4CdxPOWJrC4EFDN8/PvGCcw8i1gZFjFKJlaUJybnltsWGCYl1quV5yYW1yal66X
- nJ+7iREc7FqaOxi3r/qgd4iRiYPxEKMEB7OSCO9rJc9kId6UxMqq1KL8+KLSnNTiQ4zSHCxK
- 4rwXuk7GCwmkJ5akZqemFqQWwWSZODilGpimFXTcfB8msDMkzbuk9qHxyZZj7C0GclzvX/9Y
- VF5yVHSa+uqSd2eMFfeWmlw1Ygt1EZSRnBTy8DTz39Y/Fj85FNUbbm756JbmFH5/NnPQ5qAj
- GzICU06ni7ZxqW4/kJh5abfc3sBdsjsXrLdaZS9bfu7Drpg3aaluxW+5WlskZYR+heUrr09w
- V796el3j8wmvHDI8vz3ZqR7teIVdzo2rPNP4ZZusmnohu6+W5PrM/+XKjvd8rpz4emDv59KP
- Ny+8e3Hy5rN7LNpVKxvWnecJCxTUZdy4hZOpSazz+5VVvqeMzSpzF3mqBp+dv3fVy6CZ2/V/
- y9m1nt4gefV8CfcNZ/lFH9rMbS74XttYp6fEUpyRaKjFXFScCADuAJ825QIAAA==
-X-CMS-MailID: 20221014104915epcas5p12414b87ea127b2d5bf521556bf841b00
+ epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+ F1.82.18644.5F269436; Fri, 14 Oct 2022 22:24:05 +0900 (KST)
+Received: from alimakhtar03 (unknown [107.122.12.5]) by epsmtip1.samsung.com
+ (KnoxPortal) with ESMTPA id
+ 20221014132403epsmtip11ed64f79d840cf37673db40038970179~d8kuZpC6q2986329863epsmtip1C;
+ Fri, 14 Oct 2022 13:24:03 +0000 (GMT)
+From: "Alim Akhtar" <alim.akhtar@samsung.com>
+To: "'Padmanabhan Rajanbabu'" <p.rajanbabu@samsung.com>,
+ <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
+ <krzysztof.kozlowski+dt@linaro.org>, <s.nawrocki@samsung.com>,
+ <perex@perex.cz>, <tiwai@suse.com>, <pankaj.dubey@samsung.com>,
+ <rcsekar@samsung.com>, <aswani.reddy@samsung.com>
+In-Reply-To: <20221014102151.108539-6-p.rajanbabu@samsung.com>
+Subject: RE: [PATCH 5/6] arm64: dts: fsd: Add I2S DAI node for Tesla FSD
+Date: Fri, 14 Oct 2022 18:54:02 +0530
+Message-ID: <00c201d8dfd0$3bc6b720$b3542560$@samsung.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKFI9qd/qMOsyXBjKz4d8Q6MS4QvwIMhU34AXuYdz+smRZmYA==
+Content-Language: en-us
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHJsWRmVeSWpSXmKPExsWy7bCmuu63JM9kg01vhCyuXDzEZHFo81Z2
+ i6kPn7BZzD9yjtWi78VDZotvVzqYLC7vmsNmMeP8PiaLoxuDLRZt/cJu0bmrn9Vi1oUdrBat
+ e4+wWxx+085qseH7WkYHfo8Nn5vYPHbOusvusWlVJ5vHnWt72Dz2vV3G5tG3ZRWjx/otV1k8
+ Pm+SC+CIyrbJSE1MSS1SSM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvM
+ ATpeSaEsMacUKBSQWFyspG9nU5RfWpKqkJFfXGKrlFqQklNgUqBXnJhbXJqXrpeXWmJlaGBg
+ ZApUmJCdse7Na/aCpwoVvfNnsTYwTpDuYuTkkBAwkVh14j17FyMXh5DAbkaJeUc/M0E4nxgl
+ ZvbuYgKpEhL4zCixs60EpmPp3EZWiKJdjBJPpz+D6njJKLH3y19mkCo2AV2JHYvb2EBsEYEt
+ TBJ7N8WAFDELtAEVXVzL2MXIwcEpYCfRsK8UpEZYwEOi6c9eVpAwi4CqxNcT/iBhXgFLic0v
+ r7NA2IISJ2c+AbOZBeQltr+dwwxxkILEz6fLWCFWOUlMfvKVGaJGXOLl0SNgr0kIvOCQ2H/t
+ PjtEg4vEzwn7oZqFJV4d3wIVl5J42d/GDnKDBNA9i/5IQYQzJN4uX88IYdtLHLgyhwWkhFlA
+ U2L9Ln2IVXwSvb+fMEF08kp0tAlBVKtKNL+7ygJhS0tM7O5mhbA9JOZuW8Y+gVFxFpLHZiF5
+ bBaSB2YhLFvAyLKKUTK1oDg3PbXYtMAoL7UcHtvJ+bmbGMEJW8trB+PDBx/0DjEycTAeYpTg
+ YFYS4X2t5JksxJuSWFmVWpQfX1Sak1p8iNEUGNgTmaVEk/OBOSOvJN7QxNLAxMzMzMTS2MxQ
+ SZx38QytZCGB9MSS1OzU1ILUIpg+Jg5OqQambTELVet/7gm/fOVkuZWb42/b2IA1jxe/Om32
+ LSpscuc8D7+390/HH7XPzT23SVVkfrK72jmd0wz353hwXW1s2CPPVX3r7sa/dm767FtmNP/K
+ j9BquD6x/vsq81WfGNZMPPAyNNDd8lF4nEDZjktLgyvuaO60Z83T7g/czhOcLrfkGveZB3um
+ bzj1kzVP2v75opQLQduntnJV8k6elPD/4uevh5n7ZJ8fi11wxCm9al21u4Y058+kr1cZv+jx
+ ldyI/DPnyO7l+wNLZzv09bP+DV7bcSQ+/7zCPl+9d4ti3NQLFvm90XE/Zznz9JH7a9kXqgsq
+ lN7YPMNd6TbH1DnPnu51SRIy2MLE78ht5xOdrcRSnJFoqMVcVJwIABXfGUthBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFIsWRmVeSWpSXmKPExsWy7bCSnO7XJM9kg/WHDCyuXDzEZHFo81Z2
+ i6kPn7BZzD9yjtWi78VDZotvVzqYLC7vmsNmMeP8PiaLoxuDLRZt/cJu0bmrn9Vi1oUdrBat
+ e4+wWxx+085qseH7WkYHfo8Nn5vYPHbOusvusWlVJ5vHnWt72Dz2vV3G5tG3ZRWjx/otV1k8
+ Pm+SC+CI4rJJSc3JLEst0rdL4MpY9+Y1e8FThYre+bNYGxgnSHcxcnJICJhILJ3byNrFyMUh
+ JLCDUeLW8TcsEAlpiesbJ7BD2MISK/89Z4coes4ocarvJ1gRm4CuxI7FbWwgCRGBA0wSHb83
+ gI1iFuhilDj+dyUzRMtBRokvx/cDZTg4OAXsJBr2lYJ0Cwt4SDT92QsWZhFQlfh6wh8kzCtg
+ KbH55XUWCFtQ4uTMJ2A2s4C2RO/DVkYIW15i+9s5zBDXKUj8fLqMFcQWEXCSmPzkKzNEjbjE
+ y6NH2CcwCs9CMmoWklGzkIyahaRlASPLKkbJ1ILi3PTcYsMCo7zUcr3ixNzi0rx0veT83E2M
+ 4OjV0trBuGfVB71DjEwcjIcYJTiYlUR4Xyt5JgvxpiRWVqUW5ccXleakFh9ilOZgURLnvdB1
+ Ml5IID2xJDU7NbUgtQgmy8TBKdXAlK7Irjv96f9dwq+dzCI4tRqmy79JMa57LLQmcqesCL/r
+ roAor4oQm5kXX+9/ffN0Cv+hvwLfe2Z/j7fZ9CJpvVIf54FnqrtmWQb/7O991/ew7mRH5scq
+ ztilrnVrXJI5+7niOFoDDWe78/xItVRft/15lPzeHoPy3e1TvuZdKfFikT8pJbBgSeH0I2es
+ YxstUp5yLFs86f3LmWKXVzLrVVeXvc+quWHp2bFmUmpo8qQYz6gr5osLXxoriGtE1d9p/lLe
+ bn+idDZvTOfB/yu+GLY4Hovwc7tSXWiWFL53gb7Nqlp16RDV92ElNz5McTH/OX/aZr3Uvff1
+ Z6YLnL3+ev+i5WGbVunqirt77vFRYinOSDTUYi4qTgQAmI2UPk0DAAA=
+X-CMS-MailID: 20221014132405epcas5p307221ed06f17f2c5773726611fd627fe
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
 CMS-TYPE: 105P
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20221014104915epcas5p12414b87ea127b2d5bf521556bf841b00
+X-CMS-RootMailID: 20221014104911epcas5p394100ff6ed53be32c4d64c7e23e48833
 References: <20221014102151.108539-1-p.rajanbabu@samsung.com>
- <CGME20221014104915epcas5p12414b87ea127b2d5bf521556bf841b00@epcas5p1.samsung.com>
-X-Mailman-Approved-At: Sun, 16 Oct 2022 09:28:43 +0200
+ <CGME20221014104911epcas5p394100ff6ed53be32c4d64c7e23e48833@epcas5p3.samsung.com>
+ <20221014102151.108539-6-p.rajanbabu@samsung.com>
+X-Mailman-Approved-At: Sun, 16 Oct 2022 09:28:42 +0200
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>
+ linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -146,85 +151,139 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add device tree node support for sound card on Tesla FSD board
 
-Signed-off-by: Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>
----
- arch/arm64/boot/dts/tesla/fsd-evb.dts | 49 +++++++++++++++++++++++++++
- arch/arm64/boot/dts/tesla/fsd.dtsi    |  3 ++
- 2 files changed, 52 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/tesla/fsd-evb.dts b/arch/arm64/boot/dts/tesla/fsd-evb.dts
-index c0a4509499ab..ecaa3c2e3045 100644
---- a/arch/arm64/boot/dts/tesla/fsd-evb.dts
-+++ b/arch/arm64/boot/dts/tesla/fsd-evb.dts
-@@ -49,3 +49,52 @@
- &tdm_1 {
- 	status = "okay";
- };
-+
-+&sound {
-+	compatible = "tesla,fsd-sndcard";
-+	status = "okay";
-+	model = "fsd-i2s";
-+	widgets =
-+		"Speaker", "MAIN SPK",
-+		"Microphone", "MAIN MIC";
-+
-+	primary-dai-link-0 {
-+		link-name = "fsd-primary-0";
-+		dai-format = "i2s";
-+		tesla,bitclock-master = <&tdm_0>;
-+		tesla,frame-master = <&tdm_0>;
-+		cpu {
-+			sound-dai = <&tdm_0 0>;
-+		};
-+	};
-+
-+	secondary-dai-link-0 {
-+		link-name = "fsd-secondary-0";
-+		dai-format = "i2s";
-+		tesla,bitclock-master = <&tdm_0>;
-+		tesla,frame-master = <&tdm_0>;
-+		cpu {
-+			sound-dai = <&tdm_0 1>;
-+		};
-+	};
-+
-+	primary-dai-link-1 {
-+		link-name = "fsd-primary-1";
-+		dai-format = "i2s";
-+		tesla,bitclock-master = <&tdm_1>;
-+		tesla,frame-master = <&tdm_1>;
-+		cpu {
-+			sound-dai = <&tdm_1 0>;
-+		};
-+	};
-+
-+	secondary-dai-link-1 {
-+		link-name = "fsd-secondary-1";
-+		dai-format = "i2s";
-+		tesla,bitclock-master = <&tdm_1>;
-+		tesla,frame-master = <&tdm_1>;
-+		cpu {
-+			sound-dai = <&tdm_1 1>;
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/tesla/fsd.dtsi b/arch/arm64/boot/dts/tesla/fsd.dtsi
-index 5decad45a1b6..fc8931f830a7 100644
---- a/arch/arm64/boot/dts/tesla/fsd.dtsi
-+++ b/arch/arm64/boot/dts/tesla/fsd.dtsi
-@@ -847,6 +847,9 @@
- 			status = "disabled";
- 		};
- 
-+		sound: sound {
-+		};
-+
- 		timer@10040000 {
- 			compatible = "tesla,fsd-mct", "samsung,exynos4210-mct";
- 			reg = <0x0 0x10040000 0x0 0x800>;
--- 
-2.17.1
+>-----Original Message-----
+>From: Padmanabhan Rajanbabu [mailto:p.rajanbabu@samsung.com]
+>Sent: Friday, October 14, 2022 3:52 PM
+>To: lgirdwood@gmail.com; broonie@kernel.org; robh+dt@kernel.org;
+>krzysztof.kozlowski+dt@linaro.org; s.nawrocki@samsung.com;
+>perex@perex.cz; tiwai@suse.com; pankaj.dubey@samsung.com;
+>alim.akhtar@samsung.com; rcsekar@samsung.com;
+>aswani.reddy@samsung.com
+>Cc: alsa-devel@alsa-project.org; devicetree@vger.kernel.org; linux-
+>kernel@vger.kernel.org; linux-samsung-soc@vger.kernel.org; Padmanabhan
+>Rajanbabu <p.rajanbabu@samsung.com>
+>Subject: [PATCH 5/6] arm64: dts: fsd: Add I2S DAI node for Tesla FSD
+>
+>Add device tree node for I2S0 and I2S1 CPU DAI instances for Tesla FSD board
+>
+>Signed-off-by: Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>
+>---
+> arch/arm64/boot/dts/tesla/fsd-evb.dts      |  8 +++++
+> arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi | 14 ++++++++
+> arch/arm64/boot/dts/tesla/fsd.dtsi         | 38 ++++++++++++++++++++++
+> 3 files changed, 60 insertions(+)
+>
+>diff --git a/arch/arm64/boot/dts/tesla/fsd-evb.dts
+>b/arch/arm64/boot/dts/tesla/fsd-evb.dts
+>index 1db6ddf03f01..c0a4509499ab 100644
+>--- a/arch/arm64/boot/dts/tesla/fsd-evb.dts
+>+++ b/arch/arm64/boot/dts/tesla/fsd-evb.dts
+>@@ -41,3 +41,11 @@
+> &ufs {
+> 	status = "okay";
+> };
+>+
+>+&tdm_0 {
+>+	status = "okay";
+>+};
+>+
+>+&tdm_1 {
+>+	status = "okay";
+>+};
+>diff --git a/arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi
+>b/arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi
+>index e3852c946352..ff6f5d4b16dd 100644
+>--- a/arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi
+>+++ b/arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi
+>@@ -339,6 +339,20 @@
+> 		samsung,pin-pud = <FSD_PIN_PULL_UP>;
+> 		samsung,pin-drv = <FSD_PIN_DRV_LV4>;
+> 	};
+>+
+>+	i2s0_bus: i2s0-bus {
+>+		samsung,pins = "gpd1-0", "gpd1-1", "gpd1-2", "gpd1-3",
+>"gpd1-4";
+>+		samsung,pin-function = <FSD_PIN_FUNC_2>;
+>+		samsung,pin-pud = <FSD_PIN_PULL_DOWN>;
+>+		samsung,pin-drv = <FSD_PIN_DRV_LV4>;
+>+	};
+>+
+>+	i2s1_bus: i2s1-bus {
+>+		samsung,pins = "gpd2-0", "gpd2-1", "gpd2-2", "gpd2-3",
+>"gpd2-4";
+>+		samsung,pin-function = <FSD_PIN_FUNC_2>;
+>+		samsung,pin-pud = <FSD_PIN_PULL_DOWN>;
+>+		samsung,pin-drv = <FSD_PIN_DRV_LV4>;
+>+	};
+> };
+>
+> &pinctrl_pmu {
+>diff --git a/arch/arm64/boot/dts/tesla/fsd.dtsi
+>b/arch/arm64/boot/dts/tesla/fsd.dtsi
+>index f35bc5a288c2..5decad45a1b6 100644
+>--- a/arch/arm64/boot/dts/tesla/fsd.dtsi
+>+++ b/arch/arm64/boot/dts/tesla/fsd.dtsi
+>@@ -32,6 +32,8 @@
+> 		spi0 = &spi_0;
+> 		spi1 = &spi_1;
+> 		spi2 = &spi_2;
+>+		tdm0 = &tdm_0;
+>+		tdm1 = &tdm_1;
+> 	};
+>
+> 	cpus {
+>@@ -809,6 +811,42 @@
+> 			status = "disabled";
+> 		};
+>
+>+		tdm_0: tdm@140e0000 {
+>+			compatible = "samsung,exynos7-i2s";
+>+			reg = <0x0 0x140E0000 0x0 0x100>;
+Address should be all in small caps
+Make sure you have run 'make dtbs_check' 
+
+>+			interrupts = <GIC_SPI 206 IRQ_TYPE_LEVEL_HIGH>;
+>+			dmas = <&pdma1 14>, <&pdma1 13>, <&pdma1 12>;
+>+			dma-names = "tx", "rx", "tx-sec";
+>+			#clock-cells = <1>;
+>+			#sound-dai-cells = <1>;
+>+			clocks = <&clock_peric PERIC_HCLK_TDM0>,
+>+				 <&clock_peric PERIC_HCLK_TDM0>,
+>+				 <&clock_peric PERIC_PCLK_TDM0>;
+>+			clock-names = "i2s_opclk0", "i2s_opclk1", "iis";
+>+			pinctrl-names = "default";
+>+			pinctrl-0 = <&i2s0_bus>;
+>+			samsung,sec-dai-id = <0>;
+>+			status = "disabled";
+>+		};
+>+
+>+		tdm_1: tdm@140f0000 {
+>+			compatible = "samsung,exynos7-i2s";
+>+			reg = <0x0 0x140F0000 0x0 0x100>;
+Same as above
+
+>+			interrupts = <GIC_SPI 207 IRQ_TYPE_LEVEL_HIGH>;
+>+			dmas = <&pdma1 17>, <&pdma1 16>, <&pdma1 15>;
+>+			dma-names = "tx", "rx", "tx-sec";
+>+			#clock-cells = <1>;
+>+			#sound-dai-cells = <1>;
+>+			clocks = <&clock_peric PERIC_HCLK_TDM1>,
+>+				 <&clock_peric PERIC_HCLK_TDM1>,
+>+				 <&clock_peric PERIC_PCLK_TDM1>;
+>+			clock-names = "i2s_opclk0", "i2s_opclk1", "iis";
+>+			pinctrl-names = "default";
+>+			pinctrl-0 = <&i2s1_bus>;
+>+			samsung,sec-dai-id = <1>;
+>+			status = "disabled";
+>+		};
+>+
+> 		timer@10040000 {
+> 			compatible = "tesla,fsd-mct", "samsung,exynos4210-
+>mct";
+> 			reg = <0x0 0x10040000 0x0 0x800>;
+>--
+>2.17.1
+
 
