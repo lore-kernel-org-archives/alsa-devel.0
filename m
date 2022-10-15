@@ -4,86 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84BB9C4332F
-	for <alsa-devel@archiver.kernel.org>; Sun, 16 Oct 2022 07:29:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70E45C4332F
+	for <alsa-devel@archiver.kernel.org>; Sun, 16 Oct 2022 07:30:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4714168C9;
-	Sun, 16 Oct 2022 09:28:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4714168C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 555FF6B79;
+	Sun, 16 Oct 2022 09:29:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 555FF6B79
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665905375;
-	bh=9+1swGEePlzzPLuFMDDUTvETtv9LWuYLo7KJFFRzpQg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=fNw0DpAm6BzkSZ4keocKNOtc/8YDm0BBiGfWRZhIwBo7lj7paczLk7JlmlPov9VAb
-	 WzFW6X0STt0eVAzIVm8XbPXwIScvlTTSF1TDQ2QhAHv+kjsvmeOZN7Aci3+sQCTC/h
-	 QwPDlZ8F3+KkctMBDIyfp2arfrRp5GTl2jQNCuD0=
+	s=default; t=1665905398;
+	bh=9gL/f3smtuYtNO88ibSb/4tA1ncf2X4a9Cyu3TOsPic=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=BPajjJAn3XItQsrPVKamipwaxzEy4P3ACswr2VbVoPYGOwosWh/QeAIlG5k4Z7cAG
+	 XXBWl+6jpFmXeNbr0preFdC/+iGMGZMpenePP6XR8ZwPvao84eFo5Qxb+ZNpzHRPfe
+	 fK5qfzjraeI3sLXCnX1yXIP1v5+7X9srFQsMzbAY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF2F0F80149;
-	Sun, 16 Oct 2022 09:28:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E1A7F804B4;
+	Sun, 16 Oct 2022 09:28:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA5A6F801F7; Sun, 16 Oct 2022 01:34:14 +0200 (CEST)
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com
- [IPv6:2607:f8b0:4864:20::334])
+ id 7FEBEF801F7; Sun, 16 Oct 2022 01:34:24 +0200 (CEST)
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com
+ [IPv6:2001:4860:4864:20::2f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B3FAF8016A
- for <alsa-devel@alsa-project.org>; Sun, 16 Oct 2022 01:34:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B3FAF8016A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45EFAF80086
+ for <alsa-devel@alsa-project.org>; Sun, 16 Oct 2022 01:34:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45EFAF80086
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="HeSYkYVF"
-Received: by mail-ot1-x334.google.com with SMTP id
- a14-20020a9d470e000000b00661b66a5393so3880568otf.11
- for <alsa-devel@alsa-project.org>; Sat, 15 Oct 2022 16:34:12 -0700 (PDT)
+ header.b="muSxxiho"
+Received: by mail-oa1-x2f.google.com with SMTP id
+ 586e51a60fabf-12c8312131fso9884885fac.4
+ for <alsa-devel@alsa-project.org>; Sat, 15 Oct 2022 16:34:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=a+jzEUqbWtBeB9kCbXWG0XvcCyj0LENJYNoMRZHZ2sQ=;
- b=HeSYkYVFz5toVpabXxQDB+DAKyZfVC2VSAvN/xbuohc/iQJepvNJcH6kAYXhHIErI6
- 4RuCrCLOmaxQRMQiCXu6IUlIvnflyIzsZFXwnmjzTpUtRKc+JJcsEv98moo2Yy0ZiHBI
- OpamfUTOHwdfqhhk5Hz/Xhnjzfyhh3omDkWRscKjOfymKT5l8KMN+GnVpXjL7Y9+qmu2
- xa8ZiawTMWffwQdUsz3niyISnEIE/lEElLV1NdS/0maRlIGeSYJQfKe+2f7VGnIaoHq7
- NKRYg3De8/xilI3SpC5s4Mc64qPXICsAvMFvZ8maFh2hWkqSZEpqvZpCyrceVWi10Da8
- 9QZQ==
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=1m0RqvaU8CcvLjEgPz7d1jceF1TiMS+vA+25fd7T9/E=;
+ b=muSxxihox91FUI6kHRr7yKu3S6AalcTSrfFTR3dM9yTcSzf+UVf7XV4Y3/C6HLcbzC
+ zF56a9IHWYGmkkobPmNpdirA8S7oBMeRcxAx23Nyn78WIhk7S8Je6AV7qAyfb03nkTHE
+ YGnu26myGPJXp8c8SyHgGcKnqYfOHQlVMZAydrZiIBaBahKlenipi+6lArTqftxVHg54
+ zSTgIT+M2XXE+ifzByhe5LWADKXRhlorj55OEEjwNGcJALm8Du5jEclq1Uxyd69y2L0j
+ ilNv1fYAQW8pMEJ4WFyzQ9/LPLFrnTViQ4yCYcOjvso+1RsNT+9epgaZK5GW+dlVMqVl
+ SCdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=a+jzEUqbWtBeB9kCbXWG0XvcCyj0LENJYNoMRZHZ2sQ=;
- b=eFyumLns5iWsDiT8TI0WjYWp1yE4YzEcwShggy9Ky7CE2QLu5k6R1EIyhGRgm+1ZWk
- XRUysncdMnmh1VgYU3tAwjJQW9IgoTqEoUTqKXxjqrEmHjDpglE5u4m2qBwCc68XeLzP
- QbMRfdq8aGlOidargllhLt4TPpZ1gDbuLIIWBMnBthbq2LKQRs+Gc/8r4pPDJUmVU9sZ
- OKTkqB9X9Lg2Zt51ik/Ix/NHs3M1IVGg24Zgv5Yj6oxMFjSM6K6SKr0HTaCSuwXtwKD0
- Ck7150D5GTMYLHDeAevIftyac+wZammV87MFEUWDDqJnx4Nl9Glyr6nmLtV5hLGdLOX7
- I7qg==
-X-Gm-Message-State: ACrzQf1AQaGUVKsbenjWbp96U3IFSfV3SBoSeJLVYydwB9TeXUXPyWlJ
- 1tDhdHs8QwJP6Ynd4qU9k4g=
-X-Google-Smtp-Source: AMsMyM7GjyMRI5yohg0orqz5B3sv9bc0OjNgA2CyKOAqR7JhaUTQ+/f+xio/mOyi7OAXaT7UZMbo+Q==
-X-Received: by 2002:a9d:4915:0:b0:661:cf09:1752 with SMTP id
- e21-20020a9d4915000000b00661cf091752mr2048084otf.346.1665876850286; 
- Sat, 15 Oct 2022 16:34:10 -0700 (PDT)
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=1m0RqvaU8CcvLjEgPz7d1jceF1TiMS+vA+25fd7T9/E=;
+ b=rlt33hD1tnbc29EW2gmW/w5j0dH5o27J7gBmYM9mPfDHYwb3MFKkXmivDDVN9dtzst
+ T6wX2OTrY9zMMGtJBulxn8R8PMVddVfUk6g3lvJfTeqyOS/W3nAOjVLh9pFnb3rwt+gU
+ YrC9uXDZcWYP9k/W+eCtQdezJFlRwirsHFIBFgyQW2lU9peo6OaqJGcBab99dWbqs7rP
+ /l0PRo68ird4MMXUDc9lnAgxIe7E0mfbfTU4vGsAWB5XbBYgnT54QPDw6ctK+EtgAIjr
+ qImtsuSwrrVYdkRBZMMM0P3CZo/qTg0cNmuHuhJMTjaMo5nreV3UHYcJnbMOgO8KZso6
+ KTHg==
+X-Gm-Message-State: ACrzQf1NJ5m52VmbiAqBVKUQGtoqw2wAVhq8UtcpO8WPyKZqMMMC18xu
+ TFoBhvmtJGoHR6oaPNeyvFg=
+X-Google-Smtp-Source: AMsMyM6NpoEW7uV+vjQlw5+5bf1zbaYszcJOVcIsToHnDYk6J5ZzPaW3K2Vq+4FMMgDUoApvN7mphw==
+X-Received: by 2002:a05:6871:28e:b0:136:4f44:78a7 with SMTP id
+ i14-20020a056871028e00b001364f4478a7mr11526358oae.264.1665876856020; 
+ Sat, 15 Oct 2022 16:34:16 -0700 (PDT)
 Received: from bebop.lan
  (2603-8080-2704-6601-b457-170a-9e05-cc6d.res6.spectrum.com.
  [2603:8080:2704:6601:b457:170a:9e05:cc6d])
  by smtp.gmail.com with ESMTPSA id
- w3-20020a4adec3000000b004808e0d8467sm2653858oou.2.2022.10.15.16.34.09
+ w3-20020a4adec3000000b004808e0d8467sm2653858oou.2.2022.10.15.16.34.15
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 15 Oct 2022 16:34:09 -0700 (PDT)
+ Sat, 15 Oct 2022 16:34:15 -0700 (PDT)
 From: George Hilliard <thirtythreeforty@gmail.com>
 To: Clemens Ladisch <clemens@ladisch.de>,
  Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/2] sound: dice: Firestudio Mobile
-Date: Sat, 15 Oct 2022 18:33:28 -0500
-Message-Id: <20221015233330.8679-1-thirtythreeforty@gmail.com>
+Subject: [PATCH 1/2] sound: dice: Fix "Firestudio" typo
+Date: Sat, 15 Oct 2022 18:33:29 -0500
+Message-Id: <20221015233330.8679-2-thirtythreeforty@gmail.com>
 X-Mailer: git-send-email 2.38.0
+In-Reply-To: <20221015233330.8679-1-thirtythreeforty@gmail.com>
+References: <20221015233330.8679-1-thirtythreeforty@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Sun, 16 Oct 2022 09:28:42 +0200
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ George Hilliard <thirtythreeforty@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,14 +104,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This short series adds a configuration block for the Firestudio Mobile I
-just acquired.  Very similar to the Firestudio, but a lower port count.
+No functionality change, just a small cleanup before adding the
+Firestudio Mobile.
 
-My understanding is that the Low, Medium, and High speeds refer to
-48kHz, 96kHz, and 192kHz sample rates, of which only the first two are
-supported by this hardware line.  Please correct me if this is not
-correct.
+Signed-off-by: George Hilliard <thirtythreeforty@gmail.com>
+---
+ sound/firewire/dice/dice-presonus.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks!
-
+diff --git a/sound/firewire/dice/dice-presonus.c b/sound/firewire/dice/dice-presonus.c
+index 967cc3119a64..c85178e64667 100644
+--- a/sound/firewire/dice/dice-presonus.c
++++ b/sound/firewire/dice/dice-presonus.c
+@@ -11,7 +11,7 @@ struct dice_presonus_spec {
+ 	bool has_midi;
+ };
+ 
+-static const struct dice_presonus_spec dice_presonus_firesutio = {
++static const struct dice_presonus_spec dice_presonus_firestudio = {
+ 	.tx_pcm_chs = {{16, 16, 0}, {10, 2, 0} },
+ 	.rx_pcm_chs = {{16, 16, 0}, {10, 2, 0} },
+ 	.has_midi = true,
+@@ -23,7 +23,7 @@ int snd_dice_detect_presonus_formats(struct snd_dice *dice)
+ 		u32 model_id;
+ 		const struct dice_presonus_spec *spec;
+ 	} *entry, entries[] = {
+-		{0x000008, &dice_presonus_firesutio},
++		{0x000008, &dice_presonus_firestudio},
+ 	};
+ 	struct fw_csr_iterator it;
+ 	int key, val, model_id;
+-- 
+2.38.0
 
