@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0F12C4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 15 Oct 2022 07:51:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50469C4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 15 Oct 2022 07:55:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A8D77D4C;
-	Sat, 15 Oct 2022 09:50:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A8D77D4C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 063857D76;
+	Sat, 15 Oct 2022 09:54:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 063857D76
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665820299;
-	bh=2au5im0mhF4Of/0ZBDr/n6fchLaXnax/lJ++yMs+TuU=;
+	s=default; t=1665820524;
+	bh=W9bYnUbpMG7eddhCav/RP6VL6CTaTNhMOZxuypWzVBg=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=qUlBd2EBcoCtcTn3ecYwkRESsqUXBuejTxrQA3kaNM2qh4vwHthOBMX9zVsXp+8df
-	 oEFRtMm+d1lDutkX1FzWj0xGRGAxihYW8N7+V4seEKNd4L+ZoUVMnxSH4grFJMC1SK
-	 iwqzUNRTc7rRl9uY7jg0gxCL6Ih+EojGh/sdqHyI=
+	b=TyeEqkP7BZyM5gSw3tIMNpOH+aQ91zpr7HV4A5zqxDu6bG/4AITg3jQXWQqQOxXcv
+	 5aU0ptUY5hiBp0u6Wlz2n1et0DjatAdzQqtCPeyQ9fleB7lkjd0GKJUOmDb7NFQgCj
+	 OE6XgF+IFjwSH7DHFFtFDMQA7OnGSuDXWotaf4Wc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9FCEF801F5;
-	Sat, 15 Oct 2022 09:50:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA570F80086;
+	Sat, 15 Oct 2022 09:54:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 845EAF801F5; Sat, 15 Oct 2022 09:50:47 +0200 (CEST)
+ id 09053F801F5; Sat, 15 Oct 2022 09:54:32 +0200 (CEST)
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
  [205.220.180.131])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51714F80086
- for <alsa-devel@alsa-project.org>; Sat, 15 Oct 2022 09:50:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51714F80086
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3B546F80086
+ for <alsa-devel@alsa-project.org>; Sat, 15 Oct 2022 09:54:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B546F80086
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="lRlN3FeB"
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
- by mx0a-0031df01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29F7YrSO029613;
- Sat, 15 Oct 2022 07:50:38 GMT
+ header.b="FJLmpJGm"
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+ by mx0a-0031df01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29F7qfbA021819;
+ Sat, 15 Oct 2022 07:54:24 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
  subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=F23YjbuDGcrGHCQRskp9JybpBpW1/tFFRt7e3Br/QJY=;
- b=lRlN3FeBslJ7dfv1XSGEL+Dv5RiHtvK00Z+8MniZidO1CgrJtnhegVoDvyRyBL+fqFgI
- HT+U21961g+m145kg+ybBPPF1toa4Xxw1U327FQVLUUDBqqSpsDiXf0T0wTy7iZmK7G8
- 4jH7fxw/dVV6b02i1A9rKRlhxHuBFY5ia7zqfOiww68+Ef/nGHkmRyuQRhuHVclEsYEG
- Y2HDzrIm/SGIvHBR2mm7UZUpjsTehDa4VAripEgUd8j4uAApFigHdwYxLpTnnm5rWjGM
- ph4ZWx9CNwe51EquT+C7Qc//qk2M/+gDt1sUoiAaHtWijwJzYigBUnK1QFNufbM09eDZ lQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
+ bh=CYtjmRmOStgMuc7um41oNKAty4f/KrCZ+lC9NPxubVQ=;
+ b=FJLmpJGmHmV7beGC3nNWrUp5RA3oUn4Jei4EziB5qfsYp2+IKg06TgiR+S43Dv24C15b
+ xRuPB8ST/VMTfWxwlZR7fzA6Kli4HES3BD0wPDm1ZVKgq/sJqqvdLzB7cEGLmxecpLix
+ PJty5ASQSZwmnwlBLvSQKgFg6q2FHrlniPhVdikl8sNbfdlu5wnSrep/UQPyxjF0ysEU
+ x4myDxvMSHMqbIXkUpvgc1Xk0yAxB0sq5CdaDNFXmoSwuGqY0lFJsjTMZK6UTnnQvJnW
+ wwKkoC88phC8NYNCy9NaVdaaNK95LKoxul8D2lin2AGQoPoPh3HuAptRkYDRx5XBknG3 Ig== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
- by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3k7kvg8jy5-1
+ by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3k7m6u8h6s-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sat, 15 Oct 2022 07:50:38 +0000
+ Sat, 15 Oct 2022 07:54:23 +0000
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com
  [10.47.209.196])
- by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 29F7obvo006528
+ by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 29F7sM6e006321
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Sat, 15 Oct 2022 07:50:37 GMT
+ Sat, 15 Oct 2022 07:54:22 GMT
 Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.29; Sat, 15 Oct 2022 00:50:31 -0700
+ 15.2.986.29; Sat, 15 Oct 2022 00:54:16 -0700
 From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 To: <vkoul@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>,
  <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
@@ -71,8 +71,8 @@ To: <vkoul@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>,
  <linux-kernel@vger.kernel.org>, <swboyd@chromium.org>,
  <judyhsiao@chromium.org>
 Subject: [RESEND] dt-bindings: soundwire: Convert text file to yaml format
-Date: Sat, 15 Oct 2022 13:20:16 +0530
-Message-ID: <1665820216-32598-1-git-send-email-quic_srivasam@quicinc.com>
+Date: Sat, 15 Oct 2022 13:24:01 +0530
+Message-ID: <1665820441-617-1-git-send-email-quic_srivasam@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -82,18 +82,18 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: VFSlm7dQJEsOlItnMKMY3UhfVscI0RY4
-X-Proofpoint-GUID: VFSlm7dQJEsOlItnMKMY3UhfVscI0RY4
+X-Proofpoint-ORIG-GUID: O3USrCdYDNuyiWyf8nQSdtFJ7WMOEkNH
+X-Proofpoint-GUID: O3USrCdYDNuyiWyf8nQSdtFJ7WMOEkNH
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-10-15_03,2022-10-14_01,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- bulkscore=0
- lowpriorityscore=0 impostorscore=0 suspectscore=0 clxscore=1015
- malwarescore=0 priorityscore=1501 phishscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2210150043
-Cc: Ratna Deepthi Kudaravalli <quic_rkudarv@quicinc.com>,
+ lowpriorityscore=0 mlxscore=0
+ bulkscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501
+ suspectscore=0 clxscore=1015 adultscore=0 impostorscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2209130000
+ definitions=main-2210150044
+Cc: Ratna Deepthi Kudaravalli <quic_rkudarav@quicinc.com>,
  Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -113,8 +113,8 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 Update soundwire bindings with yaml formats.
 
 Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-Co-developed-by: Ratna Deepthi Kudaravalli <quic_rkudarv@quicinc.com>
-Signed-off-by: Ratna Deepthi Kudaravalli <quic_rkudarv@quicinc.com>
+Co-developed-by: Ratna Deepthi Kudaravalli <quic_rkudarav@quicinc.com>
+Signed-off-by: Ratna Deepthi Kudaravalli <quic_rkudarav@quicinc.com>
 ---
  .../devicetree/bindings/soundwire/qcom,sdw.txt     | 214 ---------------------
  .../devicetree/bindings/soundwire/qcom,sdw.yaml    | 185 ++++++++++++++++++
