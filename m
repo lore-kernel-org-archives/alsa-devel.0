@@ -4,82 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BAACC4332F
-	for <alsa-devel@archiver.kernel.org>; Sun, 16 Oct 2022 04:47:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2418EC4332F
+	for <alsa-devel@archiver.kernel.org>; Sun, 16 Oct 2022 06:24:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D1995892B;
-	Sun, 16 Oct 2022 06:46:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1995892B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 707B56E97;
+	Sun, 16 Oct 2022 08:23:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 707B56E97
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665895640;
-	bh=QQn7byL82/1hrXwSA0LxZhzgG1mJMbf435OfAw/sDk8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=lLZ7Fv+dlLD41BebkMvZSf1ZXsy8eVNQNqBk8+hHqnfLR0ix+e3brFiIXakZAG/3R
-	 xrcII2zlaBKUGowYl9TlVtSTt3B8DYrmfKsvG9HdvaW+x8MVmlJ1PFTjMC1WCBGoN+
-	 +ruD50WKbbMy3aNueAAl8/0QU0MUtmmK6faDg1/M=
+	s=default; t=1665901478;
+	bh=T2LHDa1F/8X6ZWAQVXUe1Mk1A9yLGivtpcD/rS0YNKg=;
+	h=In-Reply-To:References:From:Date:Subject:To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fSfavnRQlIH1CT1PvvMOAv47uTPRT666zZkMPQt41eDpFXneRlMFAi1pLRCarSlWx
+	 ImB1Zm/fUiKiW373Yv0Fn/VvIDKNrUVbl6+jpPCHkrgvWxlRR4zWMArHb8QvtDcmWv
+	 DZDLrdD26ytsuQMl87Mxx2lGXlY1f6hJyBpHxQyM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77D92F8016A;
-	Sun, 16 Oct 2022 06:46:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2423FF80271;
+	Sun, 16 Oct 2022 08:23:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8F60BF8027C; Sun, 16 Oct 2022 06:46:28 +0200 (CEST)
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com
- [IPv6:2607:f8b0:4864:20::62f])
+ id 250BFF8027C; Sun, 16 Oct 2022 08:23:47 +0200 (CEST)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
+ [IPv6:2a00:1450:4864:20::131])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5814F800F8
- for <alsa-devel@alsa-project.org>; Sun, 16 Oct 2022 06:46:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5814F800F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10857F800E5
+ for <alsa-devel@alsa-project.org>; Sun, 16 Oct 2022 08:23:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10857F800E5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="ig6Dy5kU"
-Received: by mail-pl1-x62f.google.com with SMTP id i6so8106077pli.12
- for <alsa-devel@alsa-project.org>; Sat, 15 Oct 2022 21:46:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=gOPGjdkUUwBD33Ljs14iPONiNzANh82bKNKcOAVpv2U=;
- b=ig6Dy5kUHX/xCi/qhfXtOSmXyx21TOvJnI+Qe0WYy+CrzaePjxltimPIbm/E/bz4b0
- Thq1g4ovro3P/B4Pwzu2sbOQuw9JJ4CvxNedhA80rlTJcVgvMeUPAxVGRH2KYByPLfe/
- 1RtuE2vyn1ARWx3ulPnABCPzy/EN3bXPyTcUYUcsq8oAvuIogH6oszJV8ymX2h/Y14Wo
- /PJNTVd/8mzaKDQyvwYbQQuMOjN7S48l3S8H603mRUAwkTWiSdR4gZuhD+KEJDUXHVrg
- fQdjrKnaCKiIqEtn9b8tpLq/Fe2+Zf0lP0aeI6z1eYMqy6d8ldiYOn7B5fyVGwY1HsUv
- BKeA==
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="AXil7smY"
+Received: by mail-lf1-x131.google.com with SMTP id b1so13100302lfs.7
+ for <alsa-devel@alsa-project.org>; Sat, 15 Oct 2022 23:23:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=to:subject:message-id:date:user-agent:from:references:in-reply-to
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=T2LHDa1F/8X6ZWAQVXUe1Mk1A9yLGivtpcD/rS0YNKg=;
+ b=AXil7smYB7PfmYlTdVof4PbndKTMln2PigDU3ZL7xnDFyxAcLPedAhZe2vPHsRrW1D
+ +lOI1m1xBpjCoKlOdxAWjxb/sIwA8V/In+3EsNEENfNzzD2Gd5QIB2iOvAgvGr1+b6aD
+ MV4Nj64GoUJawOorRVEfCIucWHPADyXWsGybs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=gOPGjdkUUwBD33Ljs14iPONiNzANh82bKNKcOAVpv2U=;
- b=EVYsW2IgGxpTwEjLXkWkMgYs+iCGNb/3pGDC3kWVWISbSTCfKOSmYAAsR5RYE93hPW
- GsjPLA/qfz/plC4pdXATRItoHU/2gVtRMngi6N4LDAUjnrSW3/0Pf9NpsbaDGTJleAQJ
- 9Y/lxBeO6d2fcT9aV7BiSq71oZJnvzIH95iAiBKm99nZANWgw+1O4DZ1O5Iccp87IoUv
- KrLlvi9Bu5XQLfx/0d9KdbDmMlrhRzsl7kHUn0o1o81A9GTUv1lvSPbuZA/w/VM8egXk
- 5k+apmTz3tD9rzw6pJVGh4yWSIroEz5zfZpzev1gnEKR9K0gCWYTmlETRWYAGocEbFW6
- 3F8w==
-X-Gm-Message-State: ACrzQf0ftIdljaoj67rVWgciZDI03uYzoa4WCrDw80opd2RylfzVduzk
- JAgU8T66gkU0psKEd1cmNw==
-X-Google-Smtp-Source: AMsMyM63j0z/1xvhysZgEbmP6pbY1z3+XW9PpVel3uuw8eOMbfB7ujM/Qo5QvMY8PkoBbfj2qSylXw==
-X-Received: by 2002:a17:902:c7c3:b0:182:7a62:4fa with SMTP id
- r3-20020a170902c7c300b001827a6204famr5855511pla.122.1665895579262; 
- Sat, 15 Oct 2022 21:46:19 -0700 (PDT)
-Received: from localhost.localdomain ([113.110.232.129])
- by smtp.gmail.com with ESMTPSA id
- z14-20020aa79e4e000000b005631a40a00bsm4308555pfq.139.2022.10.15.21.46.16
- (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
- Sat, 15 Oct 2022 21:46:18 -0700 (PDT)
-From: Ban Tao <fengzheng923@gmail.com>
-To: fengzheng923@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, wens@csie.org, jernej.skrabec@gmail.com,
- samuel@sholland.org
-Subject: [PATCH] ASoC: sun50i-dmic: avoid unused variable warning for
- sun50i_dmic_of_match
-Date: Sat, 15 Oct 2022 21:45:24 -0700
-Message-Id: <1665895524-122458-1-git-send-email-fengzheng923@gmail.com>
-X-Mailer: git-send-email 2.7.4
-Cc: alsa-devel@alsa-project.org, linux-sunxi@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+ h=to:subject:message-id:date:user-agent:from:references:in-reply-to
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=T2LHDa1F/8X6ZWAQVXUe1Mk1A9yLGivtpcD/rS0YNKg=;
+ b=afenpKGvVJIq2+V+kZnzP43efSJfM5pwROBIIMPHpFzTE3zVaTbRLEc9gnt8ZcTSb1
+ c8XC7dTIL8KwFUjNB9BeTdlQ8S4Onv2c4HGaz2jghrExsBf05ziIzhwWmwvi22Mk6B7A
+ srWKrlZIOZQXzb6or0Cf74y4jAXjmuGlIPF0wP0N8sV1190VQyNDrdS7h+dGh7/Q86zO
+ 1TM3AxK7n3jyYjb9TQ9juoGIA7JAeBdQGNQN4N7nQdigTotw5MzHsUOxssEsJoT4HQQB
+ gxVRzGf4xD1sffbhQsSVy8Dvq/pShCbwOzDXH+qnDWqZIsneQvSRAJ/6x/F62DE3tzi7
+ 8kEg==
+X-Gm-Message-State: ACrzQf1C17mVv+wKkUjxzlnWA4e0Y+O+iSNwz3Ji9qh9JRxskmcRsJUa
+ mgz6PxoFhqTqy7vh22zCsrZYHbZWHWeuX6eGoVKwzw==
+X-Google-Smtp-Source: AMsMyM4QkdUrKzw3LU316fQN2RC+8LGox104OVgN8g2hZ4RR5XJA8gQ5I8NuBJvXDuGPOuBNhX81APjz3z1+qKDx0Z4=
+X-Received: by 2002:a05:6512:3d89:b0:4a2:4d71:7d9e with SMTP id
+ k9-20020a0565123d8900b004a24d717d9emr1799720lfv.145.1665901418938; Sat, 15
+ Oct 2022 23:23:38 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Sat, 15 Oct 2022 23:23:38 -0700
+MIME-Version: 1.0
+In-Reply-To: <1665825530-7593-1-git-send-email-quic_srivasam@quicinc.com>
+References: <1665825530-7593-1-git-send-email-quic_srivasam@quicinc.com>
+From: Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date: Sat, 15 Oct 2022 23:23:38 -0700
+Message-ID: <CAE-0n51KTx+XBewfCq3GKK++iqzhNNKRMCY1RC-_8QzcfdSpeQ@mail.gmail.com>
+Subject: Re: [RESEND] Asoc: qcom: lpass-cpu: Mark HDMI TX parity register as
+ volatile
+To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>, agross@kernel.org, 
+ alsa-devel@alsa-project.org, andersson@kernel.org, bgoswami@quicinc.com, 
+ broonie@kernel.org, devicetree@vger.kernel.org, judyhsiao@chromium.org, 
+ lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, perex@perex.cz, quic_plai@quicinc.com, 
+ quic_rohkumar@quicinc.com, robh+dt@kernel.org, srinivas.kandagatla@linaro.org, 
+ tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,30 +97,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In configurations with CONFIG_OF=n, we get a harmless build warning:
+Quoting Srinivasa Rao Mandadapu (2022-10-15 02:18:50)
+> Update LPASS_HDMI_TX_PARITY_ADDR register as volatile, to fix
+> dp audio failures observed with some of external monitors.
+>
+> Fixes: 7cb37b7bd0d3 ("ASoC: qcom: Add support for lpass hdmi driver")
+>
+> Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+> ---
 
-sound/soc/sunxi/sun50i-dmic.c:268:34: warning: unused variable
-'sun50i_dmic_of_match' [-Wunused-const-variable]
-
-Signed-off-by: Ban Tao <fengzheng923@gmail.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
- sound/soc/sunxi/sun50i-dmic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmic.c
-index 86cff5a..62509cb 100644
---- a/sound/soc/sunxi/sun50i-dmic.c
-+++ b/sound/soc/sunxi/sun50i-dmic.c
-@@ -391,7 +391,7 @@ static const struct dev_pm_ops sun50i_dmic_pm = {
- static struct platform_driver sun50i_dmic_driver = {
- 	.driver         = {
- 		.name   = "sun50i-dmic",
--		.of_match_table = of_match_ptr(sun50i_dmic_of_match),
-+		.of_match_table = sun50i_dmic_of_match,
- 		.pm     = &sun50i_dmic_pm,
- 	},
- 	.probe          = sun50i_dmic_probe,
--- 
-2.7.4
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
