@@ -4,62 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79E09C433FE
-	for <alsa-devel@archiver.kernel.org>; Sun, 16 Oct 2022 07:34:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E527CC4332F
+	for <alsa-devel@archiver.kernel.org>; Sun, 16 Oct 2022 08:17:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ACBAE4982;
-	Sun, 16 Oct 2022 09:33:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACBAE4982
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4CDC8691A;
+	Sun, 16 Oct 2022 10:16:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CDC8691A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665905684;
-	bh=bkT6SjV4/UyDaGXq+jP0PfW64nl6qjIq+BQVyPY1/kw=;
-	h=Date:To:From:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=VpCzZbDADvAHMqWV/pT37a71HNtRbDJ9mZjQ5NBE3wVBd9Z2Ns3FW85AQyOWMSLWA
-	 AJCUvcqTE8bbaA2NtChmHAfOaAVfMmcbGxBCXD3onIKJg2bus9WJs5VM0rrkRjT1SA
-	 yG9ED2jIvDFsWQpdc6kiNPRtPE8K/bEzct2mo4TE=
+	s=default; t=1665908257;
+	bh=8jT9yLi+86aIbOmzALZPt/s2O3U3xs8ayIqYBZv0JWs=;
+	h=Date:To:References:From:Subject:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=pbxjE37XJVJ1HjFRMBRC0j4+xpaPqfL2WTLiNPvpBU22Xp8ByDTZC5NC5VJ03NlWV
+	 BrF8dZBRa9ZbvxlTqCohYkNMVcpmjYPA4xeo1QO1hLecxs/wQHoYeDAok5Wj4IW/pn
+	 akXOcGneVHpy0sx84i0UpSYjaELgzp+N3u8b7Bms=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D433F805D2;
-	Sun, 16 Oct 2022 09:28:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F27ADF8016A;
+	Sun, 16 Oct 2022 10:16:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E83AEF801F7; Sat, 15 Oct 2022 16:56:34 +0200 (CEST)
-Received: from tau07.net (svr01.tau07.net [62.112.43.237])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id C09F4F800F8; Sun, 16 Oct 2022 10:16:45 +0200 (CEST)
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de
+ [80.237.130.52])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3F142F800C1
- for <alsa-devel@alsa-project.org>; Sat, 15 Oct 2022 16:56:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F142F800C1
-Received: from localhost (localhost [127.0.0.1])
- by tau07.net (Postfix) with ESMTP id 94A7C68005E;
- Sat, 15 Oct 2022 16:56:28 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at taujhe.de
-Received: from tau07.net ([127.0.0.1])
- by localhost (srv01.tau07.net [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id idnl3dPwpGIP; Sat, 15 Oct 2022 16:56:27 +0200 (CEST)
-Received: from [IPV6:2003:f8:7706:8101:794f:8a7e:1941:4f5c]
- (p200300f877068101794f8a7e19414f5c.dip0.t-ipconnect.de
- [IPv6:2003:f8:7706:8101:794f:8a7e:1941:4f5c])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested) (Authenticated sender: jan)
- by tau07.net (Postfix) with ESMTPSA id 0ED8B680043;
- Sat, 15 Oct 2022 16:56:27 +0200 (CEST)
-Message-ID: <53ac9cce-51bf-100a-fa61-0dff6acd3a2d@taujhe.de>
-Date: Sat, 15 Oct 2022 16:56:26 +0200
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6317BF80149
+ for <alsa-devel@alsa-project.org>; Sun, 16 Oct 2022 10:16:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6317BF80149
+Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
+ by wp530.webpack.hosteurope.de running ExIM with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+ id 1ojyp6-00069P-Ie; Sun, 16 Oct 2022 10:16:40 +0200
+Message-ID: <93cdf7fd-29d3-8306-5b0b-25b0eb1ea52d@leemhuis.info>
+Date: Sun, 16 Oct 2022 10:16:40 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Content-Language: de-DE, en-GB
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-From: Jan Henke <Jan.Henke@taujhe.de>
-Subject: Regression in Linux Kernel v5.15.71 / external headset microphone
+ Thunderbird/102.3.1
+Content-Language: en-US, de-DE
+To: Takashi Iwai <tiwai@suse.de>, Jan Henke <Jan.Henke@taujhe.de>
+References: <53ac9cce-51bf-100a-fa61-0dff6acd3a2d@taujhe.de>
+ <877d102q3c.wl-tiwai@suse.de>
+From: Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: Regression in Linux Kernel v5.15.71 / external headset microphone
  stops working
-X-Mailman-Approved-At: Sun, 16 Oct 2022 09:28:43 +0200
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <877d102q3c.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+X-bounce-key: webpack.hosteurope.de; regressions@leemhuis.info; 1665908202;
+ fce0b2e8; 
+X-HE-SMSGID: 1ojyp6-00069P-Ie
 Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -76,55 +71,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello sound system maintainers,
+On 16.10.22 09:19, Takashi Iwai wrote:
+> On Sat, 15 Oct 2022 16:56:26 +0200,
+> Jan Henke wrote:
+>>
+>> a recent patch to the stable 5.15 linux branch unfortunately introduced a
+>> regression. From 5.15.71 onward (also in 5.19.15) plugging in an external
+>> headset into the audio jack no longer results in a working microphone.
+>> Symptoms are that there is no choice to set the connected device to microphone
+>> only (I am using GNOME, so once you plugin a device you get a dialogue to
+>> choose it's type, normally there are 3 choices, Headphone, Headset and
+>> Microphone, with the bug the last one is missing), and the connected
+>> microphone no longer records any audio. Note that you can still choose the
+>> headset microphone as audio input, it just does not record anything.
+>>
+>> Doing a git bisect I was able to identify the commit introducing this
+>> regression:
+>>
+>> a963fe6d0eb6ef0a15b3aade7c186cd5bb7bd01f is the first bad commit
+>> commit a963fe6d0eb6ef0a15b3aade7c186cd5bb7bd01f
+>> Author: Callum Osmotherly <callum.osmotherly@gmail.com>
+>> Date:   Thu Sep 15 22:36:08 2022 +0930
+> [...]
+>> Please revert this commit to restore the previous working condition on all
+>> affected branches, since an external headset is a very common use case with
+>> these kinds of laptops. There were similar commits for different laptop
+>> models, but I do not have any of these models, so I cannot say if they cause a
+>> similar regression.
+> 
+> It's been already reverted in the upstream, commit 417b9c51f597.
 
-a recent patch to the stable 5.15 linux branch unfortunately introduced 
-a regression. From 5.15.71 onward (also in 5.19.15) plugging in an 
-external headset into the audio jack no longer results in a working 
-microphone. Symptoms are that there is no choice to set the connected 
-device to microphone only (I am using GNOME, so once you plugin a device 
-you get a dialogue to choose it's type, normally there are 3 choices, 
-Headphone, Headset and Microphone, with the bug the last one is 
-missing), and the connected microphone no longer records any audio. Note 
-that you can still choose the headset microphone as audio input, it just 
-does not record anything.
+And FWIW, the backport for that patch is already in the queue for the
+next 5.15.y release:
 
-Doing a git bisect I was able to identify the commit introducing this 
-regression:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/tree/queue-5.15
 
-a963fe6d0eb6ef0a15b3aade7c186cd5bb7bd01f is the first bad commit
-commit a963fe6d0eb6ef0a15b3aade7c186cd5bb7bd01f
-Author: Callum Osmotherly <callum.osmotherly@gmail.com>
-Date:   Thu Sep 15 22:36:08 2022 +0930
-
-     ALSA: hda/realtek: Enable 4-speaker output Dell Precision 5530 laptop
-     
-     commit 1885ff13d4c42910b37a0e3f7c2f182520f4eed1 upstream.
-     
-     Just as with the 5570 (and the other Dell laptops), this enables the two
-     subwoofer speakers on the Dell Precision 5530 together with the main
-     ones, significantly increasing the audio quality. I've tested this
-     myself on a 5530 and can confirm it's working as expected.
-     
-     Signed-off-by: Callum Osmotherly <callum.osmotherly@gmail.com>
-     Cc: <stable@vger.kernel.org>
-     Link:https://lore.kernel.org/r/YyMjQO3mhyXlMbCf@piranha
-     Signed-off-by: Takashi Iwai <tiwai@suse.de>
-     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-  sound/pci/hda/patch_realtek.c | 1 +
-  1 file changed, 1 insertion(+)
-
-Which makes sense, since I noticed this regression on a Dell Precision 
-5530 laptop.
-
-Downstream bug report: https://bugs.gentoo.org/876843
-
-Please revert this commit to restore the previous working condition on 
-all affected branches, since an external headset is a very common use 
-case with these kinds of laptops. There were similar commits for 
-different laptop models, but I do not have any of these models, so I 
-cannot say if they cause a similar regression.
-
-Best regards,
-Jan Henke
+Ciao, Thorsten
