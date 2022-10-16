@@ -4,66 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62194C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 10:31:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F311C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 10:34:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A209AEEE;
-	Thu, 20 Oct 2022 12:30:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A209AEEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 168208A3E;
+	Thu, 20 Oct 2022 12:33:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 168208A3E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666261860;
-	bh=pIJZmSaxCUo46Z1lwbD1pjKvor4Bhl/o7cP+aYzE1MA=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=CgaEPKjbTSxvt6zuL9vaMw44VAqcBwR4tL7/tPsQgjgNt3L81npKdhnBQJw3C91gk
-	 gJ3QaOSRWWDXh/UFdUfwcaft/no8Vj8PftNeuYVJ1MCkCCkKCUiOXlYYRRYYQS5Vsx
-	 Fk2q1ARdjyIOxdeuNiIne6tZsQzZOOnsItTpe6eE=
+	s=default; t=1666262049;
+	bh=eZpLo25I2m8rKQ8+S7IWvS+8t3ApetbFBYM97B0jY0c=;
+	h=Date:In-Reply-To:Subject:From:To:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=amkbsjkdw4UFyMT54oLYguq1m580ITugZCZcF3UsFxqtHGOFLVBBUc41P3Tj2Ambs
+	 mQgD9Tk5p5y1vg11skmBYco5BPti21NPwQ+biZcYh5u60P37P+u6ClvXjKV1eYr9Ms
+	 c06a6cNQBcfAlI6IOb/+Vd2qXS6x6Q8SJ6Sig05A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DEE9DF800EC;
-	Thu, 20 Oct 2022 12:30:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB3EEF8032B;
+	Thu, 20 Oct 2022 12:33:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 08330F804E5; Thu, 20 Oct 2022 12:30:08 +0200 (CEST)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id C472EF80271; Sun, 16 Oct 2022 19:34:32 +0200 (CEST)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
+ [209.85.166.69])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE9EBF800EC
- for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2022 12:30:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE9EBF800EC
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.56])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MtNyY4mdSzmVDJ;
- Thu, 20 Oct 2022 18:25:09 +0800 (CST)
-Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 20 Oct 2022 18:29:39 +0800
-Received: from [10.174.178.174] (10.174.178.174) by
- dggpemm500007.china.huawei.com (7.185.36.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 20 Oct 2022 18:29:39 +0800
-Subject: Re: [PATCH] ASoC: Intel: Skylake: fix possible memory leak in
- skl_codec_device_init()
-To: Cezary Rojewski <cezary.rojewski@intel.com>, <alsa-devel@alsa-project.org>
-References: <20221020034548.2391293-1-yangyingliang@huawei.com>
- <876886cd-56f8-1ca7-aaa1-632a0b5ecfb6@intel.com>
-From: Yang Yingliang <yangyingliang@huawei.com>
-Message-ID: <f239b872-8b89-5eee-b810-d04f45a681c1@huawei.com>
-Date: Thu, 20 Oct 2022 18:29:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32749F80149
+ for <alsa-devel@alsa-project.org>; Sun, 16 Oct 2022 19:34:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32749F80149
+Received: by mail-io1-f69.google.com with SMTP id
+ u11-20020a6b490b000000b006bbcc07d893so5717369iob.9
+ for <alsa-devel@alsa-project.org>; Sun, 16 Oct 2022 10:34:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=to:from:subject:message-id:in-reply-to:date:mime-version
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=9HnUcMrpaOy4ZoL5ypHWvjmoyr0LqAIz7W4hYAK2fiI=;
+ b=WtqlbH33NFB0d16Jr15OKYtGo0yGjvZ61tA6/hqjqlOZmKVb+OBld5Gf74P4d71557
+ xWh7ait9/Wjj6PQdkSXJExGnXmr3+pF5gBAD2FQs7oYmSC99rNSiYsV5RXLLCzdtjD3D
+ 4yFmtxPVQGhOH4GCkFuSfPBIrO08RXNftYYL+XxY7qQIbVjSfr2Bp8mWMt7ME68uKxeH
+ 3ARW5wEhQrk9oNc7E5kTJSW0lkEPnSU+Fz+1LWmKckkva5pPrJUUqHYsZY5B2bm216am
+ jR4PbML0qipSIs/2IfqTxtcwvRBuQ9ZMEwTYZH2DmUQdnBYpij5z3PBrvA+rIODoED5S
+ Vs4A==
+X-Gm-Message-State: ACrzQf0hapxUs0/hvpSBAFSmx1w0Y/86dKTRDOJKYxIeBx3QKcSquv0Z
+ BVqDKJNNr5XTfC5zxo+BiK5yh8tTC+HbDcJ5JfSM38CtneGS
+X-Google-Smtp-Source: AMsMyM7qspteAsrK5Mgq3OaCHRR/wYcZjGnfTnfsk7GdfkdP3jG+nm1SS/vzaXgUf0BQGOpO5QgR8XlS8g1zTVGBw7BHfTVjcerF
 MIME-Version: 1.0
-In-Reply-To: <876886cd-56f8-1ca7-aaa1-632a0b5ecfb6@intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.178.174]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500007.china.huawei.com (7.185.36.183)
-X-CFilter-Loop: Reflected
-Cc: tiwai@suse.de, broonie@kernel.org, pierre-louis.bossart@linux.intel.com,
- kai.vehmanen@linux.intel.com, yangyingliang@huawei.com
+X-Received: by 2002:a05:6e02:184c:b0:2fc:4f65:9dee with SMTP id
+ b12-20020a056e02184c00b002fc4f659deemr3194230ilv.154.1665941663602; Sun, 16
+ Oct 2022 10:34:23 -0700 (PDT)
+Date: Sun, 16 Oct 2022 10:34:23 -0700
+In-Reply-To: <0000000000009d327505b0999237@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000013612005eb2a4525@google.com>
+Subject: Re: [syzbot] INFO: rcu detected stall in batadv_nc_worker (3)
+From: syzbot <syzbot+69904c3b4a09e8fa2e1b@syzkaller.appspotmail.com>
+To: a@unstable.cc, alsa-devel@alsa-project.org, 
+ b.a.t.m.a.n@lists.open-mesh.org, broonie@kernel.org, davem@davemloft.net, 
+ dvyukov@google.com, edumazet@google.com, hdanton@sina.com, jhs@mojatatu.com, 
+ jiri@resnulli.us, kuba@kernel.org, lgirdwood@gmail.com, 
+ linux-kernel@vger.kernel.org, mareklindner@neomailbox.ch, 
+ netdev@vger.kernel.org, pabeni@redhat.com, perex@perex.cz, 
+ povik+lin@cutebit.org, steve@sk2.org, sven@narfation.org, 
+ sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com, tglx@linutronix.de, 
+ tiwai@suse.com, tonymarislogistics@yandex.com, xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Thu, 20 Oct 2022 12:33:16 +0200
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,86 +86,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+syzbot has bisected this issue to:
 
-On 2022/10/20 16:39, Cezary Rojewski wrote:
-> On 2022-10-20 5:45 AM, Yang Yingliang wrote:
->> If snd_hdac_device_register() fails, 'codec' is leaked, free it
->> in snd_hdac_device_exit(). And device_initialize() is called in
->> snd_hdac_device_init(), it should call put_device() to give up
->> reference or the name allocated in dev_set_name() is leaked.
->> The snd_hdac_device_exit() will be called in dev->release().
->>
->> Fixes: e4746d94d00c ("ASoC: Intel: Skylake: Introduce HDA codec init 
->> and exit routines")
->> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
->> ---
->>   sound/soc/intel/skylake/skl.c | 8 ++++++--
->>   1 file changed, 6 insertions(+), 2 deletions(-)
->>
->> diff --git a/sound/soc/intel/skylake/skl.c 
->> b/sound/soc/intel/skylake/skl.c
->> index bbba2df33aaf..f0048e3fa619 100644
->> --- a/sound/soc/intel/skylake/skl.c
->> +++ b/sound/soc/intel/skylake/skl.c
->> @@ -691,7 +691,11 @@ static void load_codec_module(struct hda_codec 
->> *codec)
->>     static void skl_codec_device_exit(struct device *dev)
->>   {
->> -    snd_hdac_device_exit(dev_to_hdac_dev(dev));
->> +    struct hdac_device *hdac_dev = dev_to_hdac_dev(dev);
->> +    struct hda_codec *codec = container_of(hdac_dev, struct 
->> hda_codec, core);
->> +
->> +    snd_hdac_device_exit(hdac_dev);
->> +    kfree(codec);
->>   }
->>     static struct hda_codec *skl_codec_device_init(struct hdac_bus 
->> *bus, int addr)
->> @@ -711,7 +715,7 @@ static struct hda_codec 
->> *skl_codec_device_init(struct hdac_bus *bus, int addr)
->>       ret = snd_hdac_device_register(&codec->core);
->>       if (ret) {
->>           dev_err(bus->dev, "failed to register hdac device\n");
->> -        snd_hdac_device_exit(&codec->core);
->> +        put_device(&codec->core.dev);
->>           return ERR_PTR(ret);
->>       }
->
-> Hello,
->
-> That's a tricky one. And that's because the code added in commit [1] 
-> which you're fixing here, basically mimics the original code that has 
-> been removed later on in the series of mine [2].
->
-> The key part is: function snd_hda_codec_device_init() replaced 
-> snd_hdac_device_init(). I believe the former may generate codec-leak 
-> in situations you speak of.
-Yes, after using snd_hda_codec_device_init(), 'codec' is leaked.
-And there is another leak, the name allocated in dev_set_name() called 
-in snd_hdac_device_init() is always leaked if snd_hdac_device_register() 
-fails
-in snd_hdac_ext_bus_device_init() which is introduced by comit 
-dfe66a18780d ("ALSA: hdac_ext: add extended HDA bus").
->
-> Now, on to the fix. My suggestion is to start with removing the 
-> following line:
->     codec->core.dev.release = skl_codec_device_exit;
->
-> and skl_codec_device_exit() function itself. Let's leave the default 
-> as is and see if the leak still occurs.
-OK, I will send a v2.
+commit f8a4018c826fde6137425bbdbe524d5973feb173
+Author: Mark Brown <broonie@kernel.org>
+Date:   Thu Jun 2 13:53:04 2022 +0000
 
-Thanks,
-Yang
->
->
-> [1]: 
-> https://lore.kernel.org/alsa-devel/20220816111727.3218543-2-cezary.rojewski@intel.com/
-> [2]: 
-> https://lore.kernel.org/alsa-devel/20220816111727.3218543-6-cezary.rojewski@intel.com/
->
->
-> Regards,
-> Czarek
-> .
+    ASoC: tas2770: Use modern ASoC DAI format terminology
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=164d4978880000
+start commit:   55be6084c8e0 Merge tag 'timers-core-2022-10-05' of git://g..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=154d4978880000
+console output: https://syzkaller.appspot.com/x/log.txt?x=114d4978880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=df75278aabf0681a
+dashboard link: https://syzkaller.appspot.com/bug?extid=69904c3b4a09e8fa2e1b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16e2e478880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149ca17c880000
+
+Reported-by: syzbot+69904c3b4a09e8fa2e1b@syzkaller.appspotmail.com
+Fixes: f8a4018c826f ("ASoC: tas2770: Use modern ASoC DAI format terminology")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
