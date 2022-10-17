@@ -4,71 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32C06C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Oct 2022 11:37:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 584CCC43217
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Oct 2022 12:05:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C6566B5D;
-	Mon, 17 Oct 2022 13:36:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C6566B5D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 826F46D00;
+	Mon, 17 Oct 2022 14:04:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 826F46D00
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666006644;
-	bh=8qGy9UfVwi4BhKxbhVxrqPML0YObZ5NNiu0yo8NG8iA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=uLhDnJtBGR0NPAmXZcTq7b3DEIxGkx2Ec7EOJRPnZgHvVdawmnceQQnh4ulxa5E0e
-	 jg0XN1sbLVAjD4TNOSbqXXbWBxlMU46FL96MUT51G0TXqVgsBIdZrmXWEUlitkSrqU
-	 bLrZHYEwVlUeq0jAwvGvcN+2btiLXYpT/yMY7zbk=
+	s=default; t=1666008345;
+	bh=vdBoVakrmxcVaXZG11R6BqgPcf2xBevlfJytSL1irk8=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=NmnzjV71u6Y5Uu5hPm6wf0pDkJ7RWsE2jpLW6oy+rjs8N4vKslTiQDNNUKQcm0bO6
+	 tdHyMbY//XC0/gAUir5e6XtzSGW+1KFM22KxVue4mxIDp/bKcovB9J/eAem0EAQZva
+	 GtJRk/BSVG9Y+2bqfB9mO2G2QSWyTCZ79qxsMGuA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B13EF8025E;
-	Mon, 17 Oct 2022 13:36:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F208F8025A;
+	Mon, 17 Oct 2022 14:04:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB9CFF8025E; Mon, 17 Oct 2022 13:36:32 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 69B56F8025E; Mon, 17 Oct 2022 14:04:54 +0200 (CEST)
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com
+ [IPv6:2607:f8b0:4864:20::229])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8ECF7F800AA
- for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 13:36:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8ECF7F800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id D13F9F800E5
+ for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 14:04:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D13F9F800E5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="KfR1JbTk"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id D6D826103E;
- Mon, 17 Oct 2022 11:36:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5CDBC433D6;
- Mon, 17 Oct 2022 11:36:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666006588;
- bh=8qGy9UfVwi4BhKxbhVxrqPML0YObZ5NNiu0yo8NG8iA=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=KfR1JbTkeX+yFPO+3/KOVmhKlJAqNah/g+zi5StYrh+90OMUSeISy19ox87NhSkVD
- LRozXuXBeb9wwXYVIPLbBhUNuRj4JzJgvgs1B9B8yNoe8fpdKAW0md9Uy+oHWNCGn0
- S0i1S2IZd1vbji2fnebbPa1rDixJwvnaX2Lui6WGLaXgwW3NUiwz9FZbn6TYHMOG73
- SQioiTm+rVKflpC2zKitC68TXEQKoI05abR/axcoKXPaqi7+hbS5+Hu50vaI6VxUK1
- yyzaR+75xU733modJ4RmiChaPrP40bqqRsNYCCH7dwvOYEkGU8s/Y3TC+cWd2lkD7D
- HzYcKp3mJTwog==
-Date: Mon, 17 Oct 2022 12:36:23 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] ASoC: codecs: tlv320adc3xxx: Wrap adc3xxx_i2c_remove()
- in __exit_p()
-Message-ID: <Y00+N/2eE+GSrQqh@sirena.org.uk>
-References: <3225ba4cfe558d9380155e75385954dd21d4e7eb.1665909132.git.geert@linux-m68k.org>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="fgqhE3ZU"
+Received: by mail-oi1-x229.google.com with SMTP id y72so11852087oia.3
+ for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 05:04:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=92eFSiRgtqq3z5EJ8KsBZ5qnISbuSueBoNETN1Cx1TA=;
+ b=fgqhE3ZUdXWnC6eM1lNwjXig8oOhKp3MVcCZtIjrn6qBcCKJwAdvo3M7/iELoKQ75Q
+ wcGOh5TI2SysmzYZHvYK7jFNSNRsLC+ghzvB1xNDbXB4KL+IuLkKMxvkyRDLjAryPZPw
+ uP+6d14Zc7N3UduAzwE88+S21jmVIDXV2AM+s+fa2qYwPaVl2Tsabgxu68/EH0dLgFKh
+ S+KYFdYUkTbLUOpgf1P1MkgDE9ohZt+PQ1dnXC2X6kkqhmDwC5CR12Z5PSp7ZFv9VZzn
+ vG9zMjGc2nEOVKzYRjg3a58ftU6brAF7oy3W3gjI3Woi5ORevMN3I5fOM7VcZM4chsST
+ 2WJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=92eFSiRgtqq3z5EJ8KsBZ5qnISbuSueBoNETN1Cx1TA=;
+ b=A4Dt8Ns32JvcmpORR9lXZopQow1C0YdafgctB/03Rwfk1SrcVNg/UOsiwEm1Pj6TdQ
+ XgUH7X/0ViDBmyXatp5Q0M6PdJc5XPwbu6/fgpXc8VDX0TxiSWWGN3j9fUyddlWZGsFd
+ yl2MiiUNidVSBl224Ycx4J0WomhTWL888Ru0l48FqPfXCkeEVN1bWRTZ+65x0RmcgKAZ
+ k200podMKpzzm7S/lFoPwoyNgItp3SAd8KII7p0yP26NISnL2FHT9MY2uQNPuHaGIbER
+ 6ZMT+/kB73LlCEBlR3GZsF4x9EyyDG8rl6b1tdeh/i67GAJza1c8p6iAS4ltGnM1ggkr
+ j91Q==
+X-Gm-Message-State: ACrzQf16V9gwzyCa9Eok2fo80VN5USJB9wvP3HDnhW6yv3jiH/U3w+W1
+ 7+NjrIj+PpXi4RVXHqLm+wo=
+X-Google-Smtp-Source: AMsMyM41jg79l77hpZPJFygjLg4+EFIdd+ccp3V91wKu43b1JYHdvyeocYzX/UgKFkPXaOXT8M9lYw==
+X-Received: by 2002:aca:30c4:0:b0:355:24e0:8583 with SMTP id
+ w187-20020aca30c4000000b0035524e08583mr4567774oiw.42.1666008289194; 
+ Mon, 17 Oct 2022 05:04:49 -0700 (PDT)
+Received: from geday ([2804:7f2:8002:5105:b46b:dcd9:d624:ab27])
+ by smtp.gmail.com with ESMTPSA id
+ f17-20020a4ae611000000b00480b7efd5d9sm3292198oot.6.2022.10.17.05.04.46
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 17 Oct 2022 05:04:48 -0700 (PDT)
+Date: Mon, 17 Oct 2022 09:04:52 -0300
+From: Geraldo Nascimento <geraldogabriel@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: [RESEND PATCH v2] drm/bridge: dw-hdmi-i2s: set insert_pcuv bit if
+ hardware supports it
+Message-ID: <Y01E5MvrnmVhnekO@geday>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="oFfgUlb/hNvOP2FO"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3225ba4cfe558d9380155e75385954dd21d4e7eb.1665909132.git.geert@linux-m68k.org>
-X-Cookie: Real Users hate Real Programmers.
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Ricard Wanderlof <ricardw@axis.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>,
+ ALSA-devel <alsa-devel@alsa-project.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,36 +96,88 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Mark, resending this as it failed to apply in my last submission. Added
+Neil Armstrong to Cc: as hopefully he will be able to better review this.
 
---oFfgUlb/hNvOP2FO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks,
+Geraldo Nascimento
 
-On Sun, Oct 16, 2022 at 10:33:50AM +0200, Geert Uytterhoeven wrote:
-> If CONFIG_SND_SOC_TLV320ADC3XXX=3Dy:
->=20
->     `.exit.text' referenced in section `.data' of sound/soc/codecs/tlv320=
-adc3xxx.o: defined in discarded section `.exit.text' of sound/soc/codecs/tl=
-v320adc3xxx.o
->=20
-> Fix this by wrapping the adc3xxx_i2c_remove() pointer in __exit_p().
+---
 
-Why does this driver need this but most others don't?
+Starting with version 2.10a of Synopsys DesignWare HDMI controller the
+insert_pcuv bit was introduced. On RK3399pro SoM (Radxa Rock Pi N10),
+for example, if we neglect to set this bit and proceed to enable hdmi_sound
+and i2s2 on the device tree there will be extreme clipping of sound
+output, to the point that music sounds like white noise. Problem
+could also manifest as just mild cracking depending of HDMI audio
+implementation of sink. Setting insert_pcuv bit (bit 2 of
+aud_conf2 Audio Sample register) fixes this.
 
---oFfgUlb/hNvOP2FO
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Geraldo Nascimento <geraldogabriel@gmail.com>
 
------BEGIN PGP SIGNATURE-----
+---
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNNPjYACgkQJNaLcl1U
-h9DgUAf+OQ10eMrPjpgDk+H4uChrDC0hCUqAaTVFpeQkCkoqUOG/rXgnChAYLYN6
-oUFMN7WVbH/j33JxbrirLs+LMh6U4d4JjX7qnvsuM55X5f7XadjhJzunnGQfXLCh
-n45s3BcNpHRBPVGW+NUI5fe7vk8qqnEVT9FaxI0dT4gSwIpT1QkY0D5G3LtxEl+p
-BvEfxBg2BeGnUYlSoFvWnoELxxG3zg41Mspz58Hjr5ImHG6Rn16vUXLoGXEbnEtC
-saNpIRQNwRS4DFTT7bIHSnFCWn49ij7VYk6dDkuwsQQNP2HA87nXzVCbacUEAQvI
-mNrBpZyX2T2cV85b2IQYLAlK5xM34g==
-=cGIX
------END PGP SIGNATURE-----
+v1->v2: SoC->SoM on description, better commenting, minor style changes,
+	conditional application of fix for L-PCM only
 
---oFfgUlb/hNvOP2FO--
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio-20221017.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio-20221017.c
+@@ -42,6 +42,7 @@ static int dw_hdmi_i2s_hw_params(struct device *dev, void *data,
+ 	struct dw_hdmi *hdmi = audio->hdmi;
+ 	u8 conf0 = 0;
+ 	u8 conf1 = 0;
++	u8 conf2 = 0;
+ 	u8 inputclkfs = 0;
+ 
+ 	/* it cares I2S only */
+@@ -101,6 +102,28 @@ static int dw_hdmi_i2s_hw_params(struct device *dev, void *data,
+ 		return -EINVAL;
+ 	}
+ 
++	/*
++	 * dw-hdmi introduced insert_pcuv bit in
++	 * version 2.10a.
++	 *
++	 * This single bit (bit 2 of HDMI_AUD_CONF2)
++	 * when set to 1 will enable the insertion of the PCUV
++	 * (Parity, Channel Status, User bit and Validity)
++	 * bits on the incoming audio stream.
++	 * 
++	 * Support is limited to Linear PCM audio. If
++	 * neglected, the lack of valid PCUV bits
++	 * on L-PCM streams will cause anything from
++	 * mild cracking to full blown extreme
++	 * clipping depending on the HDMI audio
++	 * implementation of the sink.
++	 *
++	 */
++
++	if (hdmi_read(audio, HDMI_DESIGN_ID) >= 0x21 &&
++			!(hparms->iec.status[0] & IEC958_AES0_NONAUDIO))
++		conf2 = HDMI_AUD_CONF2_INSERT_PCUV;
++
+ 	dw_hdmi_set_sample_rate(hdmi, hparms->sample_rate);
+ 	dw_hdmi_set_channel_status(hdmi, hparms->iec.status);
+ 	dw_hdmi_set_channel_count(hdmi, hparms->channels);
+@@ -109,6 +120,7 @@ static int dw_hdmi_i2s_hw_params(struct device *dev, void *data,
+ 	hdmi_write(audio, inputclkfs, HDMI_AUD_INPUTCLKFS);
+ 	hdmi_write(audio, conf0, HDMI_AUD_CONF0);
+ 	hdmi_write(audio, conf1, HDMI_AUD_CONF1);
++	hdmi_write(audio, conf2, HDMI_AUD_CONF2);
+ 
+ 	return 0;
+ }
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-20221017.h
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-20221017.h
+@@ -931,6 +931,11 @@ enum {
+ 	HDMI_AUD_CONF1_WIDTH_16 = 0x10,
+ 	HDMI_AUD_CONF1_WIDTH_24 = 0x18,
+ 
++/* AUD_CONF2 field values */
++	HDMI_AUD_CONF2_HBR = 0x01,
++	HDMI_AUD_CONF2_NLPCM = 0x02,
++	HDMI_AUD_CONF2_INSERT_PCUV = 0x04,
++
+ /* AUD_CTS3 field values */
+ 	HDMI_AUD_CTS3_N_SHIFT_OFFSET = 5,
+ 	HDMI_AUD_CTS3_N_SHIFT_MASK = 0xe0,
