@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0F65C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Oct 2022 20:51:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD483C433FE
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Oct 2022 20:51:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA8BA8ABA;
-	Mon, 17 Oct 2022 22:50:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA8BA8ABA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 953808AD6;
+	Mon, 17 Oct 2022 22:50:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 953808AD6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666039900;
-	bh=9fgWs/EI3IVdQXFklmFduZe6R0awE7BsvexEGlGKXhY=;
+	s=default; t=1666039908;
+	bh=mOvIwdn+W7SeD5qeY+W1ifTb6gz0O+wAVKDn2Mvw9ZE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JoPlsShn831VQpvjRZYl6ugtgYNUWnp+o4aCuI+8FxOQWHlxDTrfc+AVGx5VqGn8X
-	 xuyHDew3S0WNyeKzhOPrKRqwqoDsd74BqCKYYeAzg29HHMT+wb5igrqNYQTBK3o27v
-	 0PHO7cQRNNMEuo0Ss9qjDQDkf7dgSk/GlGNigLGE=
+	b=rcyk7uCoYOgKAsN+mA8/kaghmdTWanb/Q+b5oatQw5zaP35ZdHnAc7a94McDpWNBq
+	 wlb/UR6kWmbtLcRS7cKNbjGpwXv4w9zJwHunUzh2NZ+pAGDnMPa4G4Qy0Tl76qxUiC
+	 HmPYtPmsIOcoDMLN86msL06AHBq9gzzTGNvRflgI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5456EF80533;
-	Mon, 17 Oct 2022 22:50:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4822BF80552;
+	Mon, 17 Oct 2022 22:50:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A01AF804D9; Mon, 17 Oct 2022 22:50:04 +0200 (CEST)
+ id E7CA4F804FE; Mon, 17 Oct 2022 22:50:08 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 23399F800AA
- for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 22:49:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23399F800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B1BBF804FE
+ for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 22:49:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B1BBF804FE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="NyuG8f9O"
+ header.b="MRyjPr10"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666039798; x=1697575798;
+ t=1666039800; x=1697575800;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=9fgWs/EI3IVdQXFklmFduZe6R0awE7BsvexEGlGKXhY=;
- b=NyuG8f9O5PcvPmSjw59/iUtDEUHA1EQofroZhfuT9v86THWjHGc28vws
- 3WBjsgl5hKSnJ7XpnEUWFzz0QEMIRz1pGqSkyh2Vrq/pEcFfJ39kPJODo
- 3A7mQ/RMPgg9H/xlFMIHShGxA7CbHDS4HxE1GDg1NTOE3KloOE7LMiHDi
- 1G5CtsSk6rRQI2smUBa1bqEvJxSjc3QSn3BMR9FfOAjOYUuyuEWEilZYp
- odUdhsX0/+UNAR0ogOCoM4VIIo7Gky+nVCivXZEUgynSWUpQ4ruiGgNpI
- woZXl44dxU3Sndsqiz4FzipgGfVo8O65oARVD5FGt9H4SWdKjaN0oRKvV g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="293286373"
-X-IronPort-AV: E=Sophos;i="5.95,192,1661842800"; d="scan'208";a="293286373"
+ bh=mOvIwdn+W7SeD5qeY+W1ifTb6gz0O+wAVKDn2Mvw9ZE=;
+ b=MRyjPr10GQsYzo/PMzbHehzs0TI3Or+ILh9UEV2XpNjWP/1BLbNTAqUV
+ 9H6iRcQOfprWtBz6dNk6PulCq0P57MZB/Wobi8givPpVzvhs4mJueDrzp
+ TMfj5/IPOtCWxlL0O68nR5mgUAYn6WZCVaCGj57jA/KWAgy8KMBDji/dy
+ +kxI1dB2QitZfqygCM+brzGL8Na6xbkfPsnJf+p5qraZuTN3WZpOr4yad
+ o3FCXOXwvLciljMYcc//QtcW59inVJZMasfjoVTF8LZ+qpNvVINBhnmFE
+ D2Imx6YkchMK2Usl0YktJ8k6QzzsLYWXtCKKeOWDWstRnxDYoMeX5fck5 Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="293286377"
+X-IronPort-AV: E=Sophos;i="5.95,192,1661842800"; d="scan'208";a="293286377"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Oct 2022 13:49:53 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="717633050"
-X-IronPort-AV: E=Sophos;i="5.95,192,1661842800"; d="scan'208";a="717633050"
+ 17 Oct 2022 13:49:54 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="717633061"
+X-IronPort-AV: E=Sophos;i="5.95,192,1661842800"; d="scan'208";a="717633061"
 Received: from cmontgom-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.54.140])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Oct 2022 13:49:52 -0700
+ 17 Oct 2022 13:49:54 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/3] ASoC: Intel: Skylake: simplify S3 resume flows
-Date: Mon, 17 Oct 2022 15:49:44 -0500
-Message-Id: <20221017204946.207986-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: SOF: Intel: hda-dsp: simplify S3 resume flows
+Date: Mon, 17 Oct 2022 15:49:46 -0500
+Message-Id: <20221017204946.207986-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221017204946.207986-1-pierre-louis.bossart@linux.intel.com>
 References: <20221017204946.207986-1-pierre-louis.bossart@linux.intel.com>
@@ -90,15 +90,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Commit cce6c149eba3a ("ASoC: Intel: Skylake: add link management")
-added a perfectly logical/symmetrical link handling for
-'suspend_active' aka S0ix
+The flow contains surprising parts that seem to have been inspired by
+the Skylake driver.
 
-However that commit also added a less obvious part, where during S3
-resume the code will "turn off the links which are off before suspend"
-as well as stop the cmd_io which is not started.
+During a resume from S3, the state of the links prior to suspend
+should not matter. One would have to assume that the links are powered
+down anyways prior to suspend, and there is also no specific code that
+turns links on unconditionally on resume.
 
-This sequence looks completely unnecessary and possibly wrong, remove it.
+Likewise, the snd_hdac_init_chip() routine will start the cmd_io
+handling, and it's not clear why we should care about the state of the
+DMA prior to suspend.
+
+This patch removes these two sequences to simplify the flow.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
@@ -106,29 +110,41 @@ Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/intel/skylake/skl.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ sound/soc/sof/intel/hda-dsp.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index bbba2df33aaf0..1cfdb04f589fe 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -387,15 +387,6 @@ static int skl_resume(struct device *dev)
- 			snd_hdac_bus_init_cmd_io(bus);
- 	} else {
- 		ret = _skl_resume(bus);
--
--		/* turn off the links which are off before suspend */
--		list_for_each_entry(hlink, &bus->hlink_list, list) {
--			if (!hlink->ref_count)
--				snd_hdac_ext_bus_link_power_down(hlink);
--		}
--
--		if (!bus->cmd_dma_state)
--			snd_hdac_bus_stop_cmd_io(bus);
- 	}
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index 3c76f843454b6..799c50fe24dab 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -677,10 +677,6 @@ static int hda_suspend(struct snd_sof_dev *sdev, bool runtime_suspend)
  
- 	return ret;
+ static int hda_resume(struct snd_sof_dev *sdev, bool runtime_resume)
+ {
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+-	struct hdac_bus *bus = sof_to_bus(sdev);
+-	struct hdac_ext_link *hlink = NULL;
+-#endif
+ 	int ret;
+ 
+ 	/* display codec must be powered before link reset */
+@@ -707,16 +703,6 @@ static int hda_resume(struct snd_sof_dev *sdev, bool runtime_resume)
+ 		if (sdev->system_suspend_target == SOF_SUSPEND_NONE)
+ 			hda_codec_jack_check(sdev);
+ 	}
+-
+-	/* turn off the links that were off before suspend */
+-	list_for_each_entry(hlink, &bus->hlink_list, list) {
+-		if (!hlink->ref_count)
+-			snd_hdac_ext_bus_link_power_down(hlink);
+-	}
+-
+-	/* check dma status and clean up CORB/RIRB buffers */
+-	if (!bus->cmd_dma_state)
+-		snd_hdac_bus_stop_cmd_io(bus);
+ #endif
+ 
+ 	/* enable ppcap interrupt */
 -- 
 2.34.1
 
