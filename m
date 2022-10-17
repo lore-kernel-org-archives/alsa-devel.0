@@ -4,83 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 584CCC43217
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Oct 2022 12:05:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13224C433FE
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Oct 2022 12:19:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 826F46D00;
-	Mon, 17 Oct 2022 14:04:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 826F46D00
+	by alsa0.perex.cz (Postfix) with ESMTPS id E5BA36BF5;
+	Mon, 17 Oct 2022 14:18:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5BA36BF5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666008345;
-	bh=vdBoVakrmxcVaXZG11R6BqgPcf2xBevlfJytSL1irk8=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=NmnzjV71u6Y5Uu5hPm6wf0pDkJ7RWsE2jpLW6oy+rjs8N4vKslTiQDNNUKQcm0bO6
-	 tdHyMbY//XC0/gAUir5e6XtzSGW+1KFM22KxVue4mxIDp/bKcovB9J/eAem0EAQZva
-	 GtJRk/BSVG9Y+2bqfB9mO2G2QSWyTCZ79qxsMGuA=
+	s=default; t=1666009166;
+	bh=RmYFEN28phqSp8mG6aCLWFWEADNDyPYb/TiMHr0QPNc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=uNMXXl9M+ZXl/1V5BnaB6tZZ/zJsLnNct+Gy04nsnYZd5q4VZaDefasrWCRtF9IXw
+	 G5kuRX2ZvCPk0qfX4kgOHuBXAScPwvr2Y0m1RL0tf5XxuMU4XiEhqJW7WdsRe459nd
+	 flVfqz2NFmBzeEFur7aFybLvN7fRtl6EcDUk4Acc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F208F8025A;
-	Mon, 17 Oct 2022 14:04:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92550F8025A;
+	Mon, 17 Oct 2022 14:18:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69B56F8025E; Mon, 17 Oct 2022 14:04:54 +0200 (CEST)
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com
- [IPv6:2607:f8b0:4864:20::229])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C9444F8025E; Mon, 17 Oct 2022 14:18:34 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D13F9F800E5
- for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 14:04:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D13F9F800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7A3E4F800E5
+ for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 14:18:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A3E4F800E5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="fgqhE3ZU"
-Received: by mail-oi1-x229.google.com with SMTP id y72so11852087oia.3
- for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 05:04:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-disposition:mime-version:message-id:subject:cc:to:from:date
- :from:to:cc:subject:date:message-id:reply-to;
- bh=92eFSiRgtqq3z5EJ8KsBZ5qnISbuSueBoNETN1Cx1TA=;
- b=fgqhE3ZUdXWnC6eM1lNwjXig8oOhKp3MVcCZtIjrn6qBcCKJwAdvo3M7/iELoKQ75Q
- wcGOh5TI2SysmzYZHvYK7jFNSNRsLC+ghzvB1xNDbXB4KL+IuLkKMxvkyRDLjAryPZPw
- uP+6d14Zc7N3UduAzwE88+S21jmVIDXV2AM+s+fa2qYwPaVl2Tsabgxu68/EH0dLgFKh
- S+KYFdYUkTbLUOpgf1P1MkgDE9ohZt+PQ1dnXC2X6kkqhmDwC5CR12Z5PSp7ZFv9VZzn
- vG9zMjGc2nEOVKzYRjg3a58ftU6brAF7oy3W3gjI3Woi5ORevMN3I5fOM7VcZM4chsST
- 2WJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-disposition:mime-version:message-id:subject:cc:to:from:date
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=92eFSiRgtqq3z5EJ8KsBZ5qnISbuSueBoNETN1Cx1TA=;
- b=A4Dt8Ns32JvcmpORR9lXZopQow1C0YdafgctB/03Rwfk1SrcVNg/UOsiwEm1Pj6TdQ
- XgUH7X/0ViDBmyXatp5Q0M6PdJc5XPwbu6/fgpXc8VDX0TxiSWWGN3j9fUyddlWZGsFd
- yl2MiiUNidVSBl224Ycx4J0WomhTWL888Ru0l48FqPfXCkeEVN1bWRTZ+65x0RmcgKAZ
- k200podMKpzzm7S/lFoPwoyNgItp3SAd8KII7p0yP26NISnL2FHT9MY2uQNPuHaGIbER
- 6ZMT+/kB73LlCEBlR3GZsF4x9EyyDG8rl6b1tdeh/i67GAJza1c8p6iAS4ltGnM1ggkr
- j91Q==
-X-Gm-Message-State: ACrzQf16V9gwzyCa9Eok2fo80VN5USJB9wvP3HDnhW6yv3jiH/U3w+W1
- 7+NjrIj+PpXi4RVXHqLm+wo=
-X-Google-Smtp-Source: AMsMyM41jg79l77hpZPJFygjLg4+EFIdd+ccp3V91wKu43b1JYHdvyeocYzX/UgKFkPXaOXT8M9lYw==
-X-Received: by 2002:aca:30c4:0:b0:355:24e0:8583 with SMTP id
- w187-20020aca30c4000000b0035524e08583mr4567774oiw.42.1666008289194; 
- Mon, 17 Oct 2022 05:04:49 -0700 (PDT)
-Received: from geday ([2804:7f2:8002:5105:b46b:dcd9:d624:ab27])
- by smtp.gmail.com with ESMTPSA id
- f17-20020a4ae611000000b00480b7efd5d9sm3292198oot.6.2022.10.17.05.04.46
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 17 Oct 2022 05:04:48 -0700 (PDT)
-Date: Mon, 17 Oct 2022 09:04:52 -0300
-From: Geraldo Nascimento <geraldogabriel@gmail.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: [RESEND PATCH v2] drm/bridge: dw-hdmi-i2s: set insert_pcuv bit if
- hardware supports it
-Message-ID: <Y01E5MvrnmVhnekO@geday>
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="MmUYf+hJ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1666009109; x=1697545109;
+ h=date:from:to:cc:subject:message-id:references:
+ mime-version:in-reply-to;
+ bh=RmYFEN28phqSp8mG6aCLWFWEADNDyPYb/TiMHr0QPNc=;
+ b=MmUYf+hJk9h3PVURw/QobnSQjibOC0oL5Tqo007jreRh8+mOpXuwD7jv
+ ow+MrMJrBDYanQt1JFYMg+sxnkPJbu6859RlZnbIHaZtv0mj3AelYxjQ+
+ QXskL/eE5RRkJMEdssJd3rqGaDKm+23XjBRNaqeUE3FPQEU1w/pcVV1O4
+ V6x/DJUZLvSaeU7ZG3/BaAT0m6ZL3FDYZaYXl129STQ8423r/yy0fPcf7
+ Hrx2QPgODG3cMXcsZWkEBHqrSNXTD1i18RKXl8VCpJzWMY6lxg+9tp4FF
+ /fggQEKIAxPiAp7JDgZa5kmbb234+0fqgYmgc65t7b4Sdl4c9Z4anli0P g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10502"; a="392086210"
+X-IronPort-AV: E=Sophos;i="5.95,191,1661842800"; d="scan'208";a="392086210"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Oct 2022 05:18:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10502"; a="623207818"
+X-IronPort-AV: E=Sophos;i="5.95,191,1661842800"; d="scan'208";a="623207818"
+Received: from smile.fi.intel.com ([10.237.72.54])
+ by orsmga007.jf.intel.com with ESMTP; 17 Oct 2022 05:18:20 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+ (envelope-from <andriy.shevchenko@linux.intel.com>)
+ id 1okP4U-008mkH-2E; Mon, 17 Oct 2022 15:18:18 +0300
+Date: Mon, 17 Oct 2022 15:18:18 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [rft, PATCH v2 00/36] pinctrl: Clean up and add missed headers
+Message-ID: <Y01ICtqd8uy/4/Mb@smile.fi.intel.com>
+References: <20221010201453.77401-1-andriy.shevchenko@linux.intel.com>
+ <CACRpkdZ1M3ckw+jFgvMqG4jvR-t_44GPoZ6ZDXszwZCJr-cDpg@mail.gmail.com>
+ <Y00f5exY2fM6IwZ+@smile.fi.intel.com>
+ <CACRpkdYmSOGtFz8W_RRkDqMXRRBOSB9jqSn65Sah90bf3Gm59g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
- ALSA-devel <alsa-devel@alsa-project.org>,
- dri-devel <dri-devel@lists.freedesktop.org>
+In-Reply-To: <CACRpkdYmSOGtFz8W_RRkDqMXRRBOSB9jqSn65Sah90bf3Gm59g@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Cc: Kent Gibson <warthog618@gmail.com>, linux-omap@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-aspeed@lists.ozlabs.org,
+ patches@opensource.cirrus.com, Bartosz Golaszewski <brgl@bgdev.pl>,
+ linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-rpi-kernel@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
+ linux-riscv@lists.infradead.org, alsa-devel@alsa-project.org,
+ openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+ linux-media@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,88 +100,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Mark, resending this as it failed to apply in my last submission. Added
-Neil Armstrong to Cc: as hopefully he will be able to better review this.
+On Mon, Oct 17, 2022 at 11:58:03AM +0200, Linus Walleij wrote:
+> On Mon, Oct 17, 2022 at 11:27 AM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Mon, Oct 17, 2022 at 11:02:09AM +0200, Linus Walleij wrote:
+> > > On Mon, Oct 10, 2022 at 10:15 PM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> > >
+> > > > Currently the header inclusion inside the pinctrl headers seems more arbitrary
+> > > > than logical. This series is basically out of two parts:
+> > > > - add missed headers to the pin control drivers / users
+> > > > - clean up the headers of pin control subsystem
+> > > >
+> > > > The idea is to have this series to be pulled after -rc1 by the GPIO and
+> > > > pin control subsystems, so all new drivers will utilize cleaned up headers
+> > > > of the pin control.
+> > >
+> > > Aha I see you want to send a pull request so I backed out the applied patches
+> > > from the series for now.
+> >
+> > Can I consider all that you answered to as Rb tag?
+> 
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-Thanks,
-Geraldo Nascimento
+Thank you!
 
----
+> I haven't reviewed in detail but I fully trust you to do the right thing
+> and fix any fallout so will happily pull this.
 
-Starting with version 2.10a of Synopsys DesignWare HDMI controller the
-insert_pcuv bit was introduced. On RK3399pro SoM (Radxa Rock Pi N10),
-for example, if we neglect to set this bit and proceed to enable hdmi_sound
-and i2s2 on the device tree there will be extreme clipping of sound
-output, to the point that music sounds like white noise. Problem
-could also manifest as just mild cracking depending of HDMI audio
-implementation of sink. Setting insert_pcuv bit (bit 2 of
-aud_conf2 Audio Sample register) fixes this.
+The plan is to push this to Linux Next for a couple of days and then I'll send
+PR to you and Bart.
 
-Signed-off-by: Geraldo Nascimento <geraldogabriel@gmail.com>
+-- 
+With Best Regards,
+Andy Shevchenko
 
----
 
-v1->v2: SoC->SoM on description, better commenting, minor style changes,
-	conditional application of fix for L-PCM only
-
---- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio-20221017.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio-20221017.c
-@@ -42,6 +42,7 @@ static int dw_hdmi_i2s_hw_params(struct device *dev, void *data,
- 	struct dw_hdmi *hdmi = audio->hdmi;
- 	u8 conf0 = 0;
- 	u8 conf1 = 0;
-+	u8 conf2 = 0;
- 	u8 inputclkfs = 0;
- 
- 	/* it cares I2S only */
-@@ -101,6 +102,28 @@ static int dw_hdmi_i2s_hw_params(struct device *dev, void *data,
- 		return -EINVAL;
- 	}
- 
-+	/*
-+	 * dw-hdmi introduced insert_pcuv bit in
-+	 * version 2.10a.
-+	 *
-+	 * This single bit (bit 2 of HDMI_AUD_CONF2)
-+	 * when set to 1 will enable the insertion of the PCUV
-+	 * (Parity, Channel Status, User bit and Validity)
-+	 * bits on the incoming audio stream.
-+	 * 
-+	 * Support is limited to Linear PCM audio. If
-+	 * neglected, the lack of valid PCUV bits
-+	 * on L-PCM streams will cause anything from
-+	 * mild cracking to full blown extreme
-+	 * clipping depending on the HDMI audio
-+	 * implementation of the sink.
-+	 *
-+	 */
-+
-+	if (hdmi_read(audio, HDMI_DESIGN_ID) >= 0x21 &&
-+			!(hparms->iec.status[0] & IEC958_AES0_NONAUDIO))
-+		conf2 = HDMI_AUD_CONF2_INSERT_PCUV;
-+
- 	dw_hdmi_set_sample_rate(hdmi, hparms->sample_rate);
- 	dw_hdmi_set_channel_status(hdmi, hparms->iec.status);
- 	dw_hdmi_set_channel_count(hdmi, hparms->channels);
-@@ -109,6 +120,7 @@ static int dw_hdmi_i2s_hw_params(struct device *dev, void *data,
- 	hdmi_write(audio, inputclkfs, HDMI_AUD_INPUTCLKFS);
- 	hdmi_write(audio, conf0, HDMI_AUD_CONF0);
- 	hdmi_write(audio, conf1, HDMI_AUD_CONF1);
-+	hdmi_write(audio, conf2, HDMI_AUD_CONF2);
- 
- 	return 0;
- }
---- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi-20221017.h
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi-20221017.h
-@@ -931,6 +931,11 @@ enum {
- 	HDMI_AUD_CONF1_WIDTH_16 = 0x10,
- 	HDMI_AUD_CONF1_WIDTH_24 = 0x18,
- 
-+/* AUD_CONF2 field values */
-+	HDMI_AUD_CONF2_HBR = 0x01,
-+	HDMI_AUD_CONF2_NLPCM = 0x02,
-+	HDMI_AUD_CONF2_INSERT_PCUV = 0x04,
-+
- /* AUD_CTS3 field values */
- 	HDMI_AUD_CTS3_N_SHIFT_OFFSET = 5,
- 	HDMI_AUD_CTS3_N_SHIFT_MASK = 0xe0,
