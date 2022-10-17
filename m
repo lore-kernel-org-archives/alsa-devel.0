@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A4B3C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 10:36:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5E1FC433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 10:36:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BCE798EEA;
-	Thu, 20 Oct 2022 12:35:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCE798EEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1A3FA5B2;
+	Thu, 20 Oct 2022 12:35:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1A3FA5B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666262200;
+	s=default; t=1666262207;
 	bh=683v4hUy0SmafI83To+Isl3SKfGOBhxnh8RoSe2BfVE=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MWsoD0zIA5A/DiAuNqN5vnNjbFht94OZnUP3m6XP3lQX7jbSs+m5JN4GBURlU0ehy
-	 /r+os2KGs8MxmLuXUFMAV3jCYZnIivcBmqdtQKTX+a2epNEe8RLd2nmZc/p1vGQajD
-	 6VKi4D1fFuNeqQ0mu6ZnBYj+CyIu6R8rCAUIhyXI=
+	b=IwevindokL0CU+3R7CTECH+vFNUJvshoH65LYZBQvjAwIX7PkOWyxQtyLlXJehabC
+	 EwV+K97ZYRA54greXCgfEn4ij0K0C54LOqGTBimFYhPVGk+cl0f0sbaHWNhjMFqg+X
+	 KUHECy/oAjXJypoJ9nVesqp9Vy0Vl0amGtf5Rfxs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C3D1F80571;
+	by alsa1.perex.cz (Postfix) with ESMTP id E0622F8057E;
 	Thu, 20 Oct 2022 12:33:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 300BBF800E5; Mon, 17 Oct 2022 10:59:02 +0200 (CEST)
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com
- [IPv6:2a00:1450:4864:20::531])
+ id D2E20F800E5; Mon, 17 Oct 2022 10:59:29 +0200 (CEST)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
+ [IPv6:2a00:1450:4864:20::532])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0DB2F800E5
- for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 10:58:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0DB2F800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62616F800E5
+ for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 10:59:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62616F800E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="hPfP+D37"
-Received: by mail-ed1-x531.google.com with SMTP id b12so15039658edd.6
- for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 01:58:59 -0700 (PDT)
+ header.b="lksiEjvW"
+Received: by mail-ed1-x532.google.com with SMTP id m16so15054270edc.4
+ for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 01:59:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:from:to:cc:subject:date:message-id:reply-to;
  bh=683v4hUy0SmafI83To+Isl3SKfGOBhxnh8RoSe2BfVE=;
- b=hPfP+D37HijUTE9jk/Mvwhzrn2ULe0YvDh99eK0zEKvuHU9cJdu/VKytnLQUG78bI5
- mtuLS+rfVj4L4Re6YsjDCb8XZQjE6KThaCbRlWhJuMr35QfCa1s2koAxFX5l4qQyWOKt
- de8o8Z5FmmUFEYLn+AOhAHFSRnOKRIB6JkdIgKOdiTHWAihtflzKXjpcSWXFLs+erTYb
- UqPBaaz6RWk1Ix2kb+avBworrHCfp8Kk+b3nCMEXnhhrqwP9bYtdFAdmYJ6kpE3Uehqu
- UqG6gsNZbIdEimOOnJbUDXmkBH6QdWkCdch1eNgSXZLTZd9qSZNk9FiCuat+hszHsjXC
- 6ofg==
+ b=lksiEjvW/nAWbEsO+blzNGlX655Up2aVmZ+qr0T9NR9G5GUsNcjQk105enmuN67BR7
+ UHuLmLhKHxaHkU36TaV9Xrzc4/1Mlhvz8HjOnUt2o2jQMYhw/AkxxpsY+KY9JqDIWmr8
+ d1N8XVJYpslnRfFjZ//gRs03NsDK+A8ODS8lqFRC9FLx2OTeFo8j/UonGbouh2xdQIF1
+ CAHcosPu7mJgfkyrQKLLzRcpcrZBYIJqNUVGjhEv6Dru9/97clFp4PixgHPrKN/KwWJx
+ EugpSAHDdmZ4VGm3mRypKMxek42bzXpjdM8R37iNxZxe8xCNEiF/voBmBrNuoLO4Wpal
+ gBNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
  bh=683v4hUy0SmafI83To+Isl3SKfGOBhxnh8RoSe2BfVE=;
- b=C0Hy3sWb9SXPlfb8YCrW6k35Cy7KkbdbGTamtkyhNWJbMO/PILK9AUR2wwBfaCBHMx
- yQcYQwyXIdNwnHiLRywRegIH4MQUZ41W0voW+M0YqRs2bR2+NHSfPxUfzQuSWvyI8Btq
- OcIjseDCcR7kZ49q6B1bi4vvUTfHDkr8M//B7nQMGOvyVecHoJIMW+JdVY/JkPy/seI6
- cxp7c1f6NzSAtq0Vf3KtfrCx6b7AyPO5hDVfZmw1KLSm9xKo8r6El3p6ZSWlDUD0XRJn
- q7u8MXFh29lPTUJX+z0iMI9rZhs6YkRJb6JMXVcPM6KPusfty+tVNqL2SZokBQk2vHwo
- peVg==
-X-Gm-Message-State: ACrzQf3OKneXuv8uhCuRCWxHvFHzh0d5sfcZOpOiXWHr1QNJU9+Svv4L
- q0SWswq8QBU5YJojJ9WWpjM1kxzlNhaLaiYC80GJrGX0RAQ=
-X-Google-Smtp-Source: AMsMyM4LugacycwGAbGG4lPXc3T2wAA4Sgm0tgzLwijTOIxMlDdR0/hFw6+2igxL6VLWw7mRrDr2KaiUfbylXIWuugs=
-X-Received: by 2002:a17:906:5d04:b0:77f:ca9f:33d1 with SMTP id
- g4-20020a1709065d0400b0077fca9f33d1mr7900873ejt.526.1665997127637; Mon, 17
- Oct 2022 01:58:47 -0700 (PDT)
+ b=VJ1uqovs/UsquwKnxiS6EEipQW7+aKROwJ6aiwQpeKr1gkA7wolh4uHUBF8GFaTgx2
+ 4ILZ770uAYFEAxOZoomNSAJ9qupiBPDBkdskWMNkppcYQgBdFsY88Z2AzLZK+QjSVEu6
+ CE3a/4I74QMBvNzn0pAJdLiKb1bGxQ0yZ0q6N1w78CPCYCena+7rBn3saa9BzARy7hCp
+ m5+f9/yxYn+Lo+l4bRuIW+YF7wRHS0bG+o5LbXgMwK1Jz8v/SFJFgkqhfb0u7WUuEKIs
+ iqKchW7Cpxa0UipL3+AgvSKGyXDJ8gxezcviYZpznGu+jzpfKuf3/Cy1V2Lvrdm8gSbt
+ uxCQ==
+X-Gm-Message-State: ACrzQf1ie8fKOb79Dmy4/Xawl4rvDibjaCCpHQas/wL15ZmP10eYOef1
+ rcde7+kL8r2PC1SQO7vBDF9Fsz/jEymKL/NRDuBV1g==
+X-Google-Smtp-Source: AMsMyM5jBTN66KnJzjKTSQ9NNCRMfOP0MRN6i+02F0jpqhh3OWSW+zYUeHqWxB6Vbv6U2MMRu+t1W7ApKxmC8RZ+8R4=
+X-Received: by 2002:a05:6402:2694:b0:45c:a035:34bc with SMTP id
+ w20-20020a056402269400b0045ca03534bcmr9170844edd.158.1665997165761; Mon, 17
+ Oct 2022 01:59:25 -0700 (PDT)
 MIME-Version: 1.0
 References: <20221010201453.77401-1-andriy.shevchenko@linux.intel.com>
- <20221010201453.77401-9-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20221010201453.77401-9-andriy.shevchenko@linux.intel.com>
+ <20221010201453.77401-10-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20221010201453.77401-10-andriy.shevchenko@linux.intel.com>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Mon, 17 Oct 2022 10:58:36 +0200
-Message-ID: <CACRpkdauAT3fmHn_739Z04rJ7g4paLQEu1f3Ab9VWygsAj6nmw@mail.gmail.com>
-Subject: Re: [PATCH v2 08/36] pinctrl: bcm: Add missed header(s)
+Date: Mon, 17 Oct 2022 10:59:14 +0200
+Message-ID: <CACRpkdaMdwurbFt-S63M_sGDS0L-VxPc+cee2Drj9h8iKtRXYw@mail.gmail.com>
+Subject: Re: [PATCH v2 09/36] pinctrl: cygnus-mux: Add missed header(s)
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Thu, 20 Oct 2022 12:33:17 +0200
