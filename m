@@ -4,74 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF1C1C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 17 Oct 2022 09:28:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7FA4C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 17 Oct 2022 09:59:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1FBAE3E5B;
-	Mon, 17 Oct 2022 11:27:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FBAE3E5B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 399C363E9;
+	Mon, 17 Oct 2022 11:58:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 399C363E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1665998899;
-	bh=uMXEjdYfJ4AJV1TGc6N3Z98FaBO6KSM8lYZW5Txc/+Q=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1666000751;
+	bh=B/Byge+Vue4J7Z80ANz5rsyrsoG83IPzp3UARO7F6/s=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nZYSqskLmvIEQCS7aHNLHNST+1DO3kUH5P/PgEAjWPiTvMDveGYWzBjRkxe0P1bX+
-	 lFRrr8O+zWkkNQta3cJn3ssksvLpNo+SDJhBwW1as5v1Zhn9XmEExS74U/dlm2jDhD
-	 3XE+QhkVUqCCa78ww5AP3HZx5UrDq7mXdz6Li6Dw=
+	b=mKlg1faQGtAqaJ0gN9X1uqQRVoBBMgP1bnf+YgAXZCfffh2+QETZ17S4r4SPB91/J
+	 2r2at8jy5fggnIPLKavomEP/XfjFX8HEsKGEH9O61gKhIEfXcLAaCsQQUWzfcRzYNS
+	 aMWIPe7Y+ZKDF4tWOeg3ISX27idLvExCjdR7Dius=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C195CF8025A;
-	Mon, 17 Oct 2022 11:27:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC975F80149;
+	Mon, 17 Oct 2022 11:58:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92056F800E5; Mon, 17 Oct 2022 11:27:27 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 75607F800AA; Mon, 17 Oct 2022 11:58:20 +0200 (CEST)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
+ [IPv6:2a00:1450:4864:20::630])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1842AF800E5
- for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 11:27:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1842AF800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id A2598F800AA
+ for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 11:58:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2598F800AA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="UKgbENQA"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1665998842; x=1697534842;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=uMXEjdYfJ4AJV1TGc6N3Z98FaBO6KSM8lYZW5Txc/+Q=;
- b=UKgbENQAuVrZvlHeKHdBgCK9C6tvmb//I/hArPNXeGX23QQLTkUmzPmt
- baoNPx4um+3acu4Km1ZAcOLfHjtRPwBu97UsowlMh55eYjuflQofd0j4c
- zKmfVhnY3wkw/Yii786C7Das8pHLARnwr9CMP+nBNOz0Stb1WIwBRuAKW
- 81yeYd0ajAAMVLW0m5g/nh0GIXN5axZ15Nks5/932jcGigkf+i9BaLwE9
- 5mf9lNHBvmmcC7N+aY7KwJkdvboegEnmbCBIqy84kLbuu2+boWZUCphdW
- +kDHyqUoaoYZbEZicK1jzZ58skecRY6c7H9hPs2g6OLBMUvx0hv033a2v Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10502"; a="369942018"
-X-IronPort-AV: E=Sophos;i="5.95,191,1661842800"; d="scan'208";a="369942018"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Oct 2022 02:27:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10502"; a="630619961"
-X-IronPort-AV: E=Sophos;i="5.95,191,1661842800"; d="scan'208";a="630619961"
-Received: from smile.fi.intel.com ([10.237.72.54])
- by fmsmga007.fm.intel.com with ESMTP; 17 Oct 2022 02:27:03 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1okMOj-008i6R-2u; Mon, 17 Oct 2022 12:27:01 +0300
-Date: Mon, 17 Oct 2022 12:27:01 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [rft, PATCH v2 00/36] pinctrl: Clean up and add missed headers
-Message-ID: <Y00f5exY2fM6IwZ+@smile.fi.intel.com>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="MUHWuYJa"
+Received: by mail-ej1-x630.google.com with SMTP id d26so23625683eje.10
+ for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 02:58:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=B/Byge+Vue4J7Z80ANz5rsyrsoG83IPzp3UARO7F6/s=;
+ b=MUHWuYJag6UdIGNJWiJWxn8WAAZ42CXEFTnECn+6skOIqg/uauJYEVg974vMd9sMEk
+ zE6zI7z18arTxzgN6sTudVQN0HH06/PzZJ+4X18m75Vy/bF7X3X+fEqiRAyn7cwpLeMe
+ 1S3Gkx8o3vO463r4qBmru/5P+HeV+QtYD7XFaMKTFQkBKEINKik6GSXOIGd4TakIzo/y
+ 22NV5ZvkVpf1kqoQWmMXugwEs+G3K/F00qz0J2gsZD0tyQrxzJVUb1Rv0OE2tl8BfDdT
+ 1Thx86QUb3Eo9BPHEOAqRcLadLrkm9xIrIOP9q0Nx+T+iVZxfi/eZSxmcD7GZQwM5l3C
+ f6SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=B/Byge+Vue4J7Z80ANz5rsyrsoG83IPzp3UARO7F6/s=;
+ b=SZhv1evzd5HBvYGsNmoeK1oj19GG+uK4dOpIThOl6G2aqWssZFd0RHd7AOAHa478eM
+ KBcATRQgb8+2L1ohFKrwnTUD3OqPbrgT7s3uHNpTzcRduo7OBPjJDmgFHz7YgFO/qTqE
+ 24lOM8HcaowzflyBOm4cxZQyURNr//56YPQXeZkzh+xu7djGeBa7gexryeYZc1+kyGAb
+ el5e3MrTdkCKBoQRIqBIdLh7EFyA/Cn/iMUeqhprydzB4ZGGYiR+amL/adfACpAfZugR
+ 1H8Lyu4iM0iSYUTwQXIcg8kVT/OymjreDxC31ej6C4bR4R/f97/oTO3/GHGdQErsR3R4
+ GzOA==
+X-Gm-Message-State: ACrzQf16H0Dq5OMQq/X4mwXM+Ic+swCFeN2/pTMOij/AOCViR0VDrF1F
+ ORRe5hErMYxl8Wacf6Bg3ddlIPPfWlqeLLFZrWLgLA==
+X-Google-Smtp-Source: AMsMyM4L0M6bcj2Wvh4KRdD8EKd7M4z6+eLVjZHPl1MFPGYp6JqekMO0KaAEpqZ8kDbWIS4EMUIR8qxcTy8qHdB2D/8=
+X-Received: by 2002:a17:907:7606:b0:78e:61d:757e with SMTP id
+ jx6-20020a170907760600b0078e061d757emr7556783ejc.690.1666000695069; Mon, 17
+ Oct 2022 02:58:15 -0700 (PDT)
+MIME-Version: 1.0
 References: <20221010201453.77401-1-andriy.shevchenko@linux.intel.com>
  <CACRpkdZ1M3ckw+jFgvMqG4jvR-t_44GPoZ6ZDXszwZCJr-cDpg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdZ1M3ckw+jFgvMqG4jvR-t_44GPoZ6ZDXszwZCJr-cDpg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+ <Y00f5exY2fM6IwZ+@smile.fi.intel.com>
+In-Reply-To: <Y00f5exY2fM6IwZ+@smile.fi.intel.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 17 Oct 2022 11:58:03 +0200
+Message-ID: <CACRpkdYmSOGtFz8W_RRkDqMXRRBOSB9jqSn65Sah90bf3Gm59g@mail.gmail.com>
+Subject: Re: [rft, PATCH v2 00/36] pinctrl: Clean up and add missed headers
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Cc: Kent Gibson <warthog618@gmail.com>, linux-omap@vger.kernel.org,
  linux-stm32@st-md-mailman.stormreply.com, linux-aspeed@lists.ozlabs.org,
  patches@opensource.cirrus.com, Bartosz Golaszewski <brgl@bgdev.pl>,
@@ -98,26 +103,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Oct 17, 2022 at 11:02:09AM +0200, Linus Walleij wrote:
-> On Mon, Oct 10, 2022 at 10:15 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> 
-> > Currently the header inclusion inside the pinctrl headers seems more arbitrary
-> > than logical. This series is basically out of two parts:
-> > - add missed headers to the pin control drivers / users
-> > - clean up the headers of pin control subsystem
+On Mon, Oct 17, 2022 at 11:27 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> On Mon, Oct 17, 2022 at 11:02:09AM +0200, Linus Walleij wrote:
+> > On Mon, Oct 10, 2022 at 10:15 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
 > >
-> > The idea is to have this series to be pulled after -rc1 by the GPIO and
-> > pin control subsystems, so all new drivers will utilize cleaned up headers
-> > of the pin control.
-> 
-> Aha I see you want to send a pull request so I backed out the applied patches
-> from the series for now.
+> > > Currently the header inclusion inside the pinctrl headers seems more arbitrary
+> > > than logical. This series is basically out of two parts:
+> > > - add missed headers to the pin control drivers / users
+> > > - clean up the headers of pin control subsystem
+> > >
+> > > The idea is to have this series to be pulled after -rc1 by the GPIO and
+> > > pin control subsystems, so all new drivers will utilize cleaned up headers
+> > > of the pin control.
+> >
+> > Aha I see you want to send a pull request so I backed out the applied patches
+> > from the series for now.
+>
+> Can I consider all that you answered to as Rb tag?
 
-Can I consider all that you answered to as Rb tag?
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
--- 
-With Best Regards,
-Andy Shevchenko
+I haven't reviewed in detail but I fully trust you to do the right thing
+and fix any fallout so will happily pull this.
 
-
+Yours,
+Linus Walleij
