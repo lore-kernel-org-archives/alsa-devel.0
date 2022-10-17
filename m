@@ -4,150 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3E79C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 10:35:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18811C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 10:35:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C94C58EEA;
-	Thu, 20 Oct 2022 12:34:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C94C58EEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A3DE8CA4;
+	Thu, 20 Oct 2022 12:34:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A3DE8CA4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666262099;
-	bh=FViSSKwYNLFy/8i7voLq1fvEAiC2E4b3lKUtg6bhSNs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=o9jPswRws3RsKCbrddCKrXRVbwx2fHifScde/KGaNMVj0kvaVkZlGBIYmLIzR8jwv
-	 CJK1+vz2mM+Z3jgaeORvG4tz6okNMrIeP+Fo00lCnjo910o/eelwXruG71vrjQeHda
-	 Cka8ebZVpI/5zKE8Oy4iORJ1HU7RnbyRGHkS5+Mk=
+	s=default; t=1666262104;
+	bh=AF1uOjUOcdbPKd9VpaWCFLH1+sLjoiPBHXXTZFjGWgo=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=XWg+Lf/g7aDYPT0B0FOULbzoghFvrA6hX97nBEZf6a8dkLyGZo7B0E31y+u4X9nLS
+	 NQZoru789LUw5CAUh/Pikyl9DGwfrB+KRGo4v5mJAD0iYtVh1kAaF0KpqCG6DTYuJp
+	 nfkDRIhG8NVCrZKMQ/f5cC4R9k/1ECiUix54O++A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AFCFDF80515;
-	Thu, 20 Oct 2022 12:33:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B7CFF80137;
+	Thu, 20 Oct 2022 12:33:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B7619F80496; Mon, 17 Oct 2022 14:16:35 +0200 (CEST)
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com
- [IPv6:2607:f8b0:4864:20::82b])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9A51F80149
- for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 14:16:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9A51F80149
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="G4XBw7Ot"
-Received: by mail-qt1-x82b.google.com with SMTP id g16so2696658qtu.2
- for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 05:16:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=FViSSKwYNLFy/8i7voLq1fvEAiC2E4b3lKUtg6bhSNs=;
- b=G4XBw7OtjlEVYhvq3ujakfFtUjrlMIkd5uVVPI4L3fSHgn9r2dYLTBKR1DSk55qy8/
- vjDDH2t4lQErUrsZ81N0WmnCPAq1TAG4psbIGjoQRhntN5Cmq1aF/T5qp0/euyInLZPZ
- /K8bnHyxQYrmvZCrh75klmy5Bz15Y/XvsM73Xs3LGuMo2izmCHPf5UYpUMbW37BEsOEV
- sVucDgXlyB1YZt4pqPGa9U7E85eMuIK9JN+tGTbAMfTNB3gqhaNnxWOxBOHdWu8HWlhw
- 4OAFcfWlF4Cka/k2IMLMYdJ1w8Emhfeq9FKglqB57GbZ26ff4iD6Qp74edFo/4+10u7I
- pv7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=FViSSKwYNLFy/8i7voLq1fvEAiC2E4b3lKUtg6bhSNs=;
- b=4XGkOovb13kdUgSIPvGAfFQIkYCvRPD41zq9AMVzCEJEq6MEQbvxqQAOgYcF19RD80
- SBmfduEfVbmOzGdpha+Xd5DmUupjdlfsrjni5xLyrs01WzZX70o97wzj96i/4J1XowFb
- HbbpulzsPmN/VvbhYFlmI7m+tQdI1r0e/TtpbuXhuCnSLuBmt3bMbmbf/WxMMsW2mDm+
- y3FbIaG0lofgY6Ubnizs7LGxnmw5FswNZNbzNFZmFbk76BRkaoAIYelMjQL85ub+plx/
- gYc8I03wDlzXONzR25PJUlYqfLQSM6Rd3+l/ZFWe9aCZaEMBXlK96MdF3o+x70Awasu0
- fuow==
-X-Gm-Message-State: ACrzQf1N7kbAHdnxfMjJ1GZyLnct5KoRDokfoQ1EV0iHRfeQrDkzDeyq
- KIUusP7833GCucB9vKDJVByLTzs0DGDwRNqVvpo=
-X-Google-Smtp-Source: AMsMyM5ONAbRwJ0mRV8lFkFN/+yOIGgrHcLBILWbhUW8XaqfnSolfxdkiScuiVdMZUaqcXP+J2a9nYR4SqM8sa8eRyQ=
-X-Received: by 2002:a05:622a:1045:b0:39c:e2e1:dc59 with SMTP id
- f5-20020a05622a104500b0039ce2e1dc59mr7379719qte.195.1666008987610; Mon, 17
- Oct 2022 05:16:27 -0700 (PDT)
+ id 5EC07F8025E; Mon, 17 Oct 2022 10:09:35 +0200 (CEST)
+Received: from zg8tmtyylji0my4xnjeumjiw.icoremail.net
+ (zg8tmtyylji0my4xnjeumjiw.icoremail.net [162.243.161.220])
+ by alsa1.perex.cz (Postfix) with SMTP id C66B2F80149
+ for <alsa-devel@alsa-project.org>; Mon, 17 Oct 2022 10:09:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C66B2F80149
+Received: from AEPW014EEK (unknown [10.28.61.203])
+ by master-mail (Coremail) with SMTP id AQAAfwDX5vioDU1js+UCAA--.11366S2;
+ Mon, 17 Oct 2022 16:09:16 +0800 (CST)
+From: <wangweidong.a@awinic.com>
+To: "'Mark Brown'" <broonie@kernel.org>
+Subject: Reply to review question [PATCH V2 1/2] ASoc:codes:Add Awinic AW883XX
+ audio amplifier driver
+Date: Mon, 17 Oct 2022 16:09:12 +0800
+Message-ID: <004301d8e1ff$c0464390$40d2cab0$@awinic.com>
 MIME-Version: 1.0
-References: <20221010201453.77401-1-andriy.shevchenko@linux.intel.com>
- <20221010201453.77401-2-andriy.shevchenko@linux.intel.com>
- <CACRpkdbdzFR-a_xh8EjLMAshTeesOYhD3-_Bkc=vi7iK72ZKtA@mail.gmail.com>
- <CAMRc=MexjuQw+hUDDfCVxiBEJ573jNb3Ko9SyOU-xJ03wOe8cQ@mail.gmail.com>
-In-Reply-To: <CAMRc=MexjuQw+hUDDfCVxiBEJ573jNb3Ko9SyOU-xJ03wOe8cQ@mail.gmail.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Mon, 17 Oct 2022 15:15:51 +0300
-Message-ID: <CAHp75VftkwPB-+jhCrhCdPRN0hLm5DLADMyAO45eBTRFfxiNuQ@mail.gmail.com>
-Subject: Re: [PATCH v2 01/36] gpiolib: tegra186: Add missed header(s)
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailman-Approved-At: Thu, 20 Oct 2022 12:33:16 +0200
-Cc: Andrew Lunn <andrew@lunn.ch>, Kent Gibson <warthog618@gmail.com>,
- Tomer Maimon <tmaimon77@gmail.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Linus Walleij <linus.walleij@linaro.org>, Tomasz Figa <tomasz.figa@gmail.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
- Horatiu Vultur <horatiu.vultur@microchip.com>,
- Emil Renner Berthing <kernel@esmil.dk>,
- Phil Edworthy <phil.edworthy@renesas.com>, linux-samsung-soc@vger.kernel.org,
- Samuel Holland <samuel@sholland.org>, Michal Simek <michal.simek@xilinx.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>,
- NXP Linux Team <linux-imx@nxp.com>, Tali Perry <tali.perry1@gmail.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Thomas Gleixner <tglx@linutronix.de>,
- linux-omap@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
- Scott Branden <sbranden@broadcom.com>, Andrew Jeffery <andrew@aj.id.au>,
- linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Claudiu Beznea <claudiu.beznea@microchip.com>, alsa-devel@alsa-project.org,
- Alim Akhtar <alim.akhtar@samsung.com>, linux-aspeed@lists.ozlabs.org,
- Thierry Reding <thierry.reding@gmail.com>, Viresh Kumar <vireshk@kernel.org>,
- Gregory Clement <gregory.clement@bootlin.com>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Fabien Dessenne <fabien.dessenne@foss.st.com>, linux-media@vger.kernel.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, linux-arm-msm@vger.kernel.org,
- Nicolas Ferre <nicolas.ferre@microchip.com>, linux-actions@lists.infradead.org,
- linux-gpio@vger.kernel.org, soc@kernel.org,
- linux-rpi-kernel@lists.infradead.org,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- linux-arm-kernel@lists.infradead.org, Dong Aisheng <aisheng.dong@nxp.com>,
- Damien Le Moal <damien.lemoal@wdc.com>, linux-renesas-soc@vger.kernel.org,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, Jacky Bai <ping.bai@nxp.com>,
- Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Fabio Estevam <festevam@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>,
- Benjamin Fair <benjaminfair@google.com>, Nancy Yuen <yuenn@google.com>,
- Chen-Yu Tsai <wens@csie.org>,
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
- Joel Stanley <joel@jms.id.au>, Chen-Yu Tsai <wenst@chromium.org>,
- Orson Zhai <orsonzhai@gmail.com>,
- Patrice Chotard <patrice.chotard@foss.st.com>, Ray Jui <rjui@broadcom.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Baolin Wang <baolin.wang@linux.alibaba.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Avi Fishman <avifishman70@gmail.com>, Patrick Venture <venture@google.com>,
- Shawn Guo <shawnguo@kernel.org>,
- =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
- Tony Lindgren <tony@atomide.com>, Konrad Dybcio <konrad.dybcio@somainline.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Paul Cercueil <paul@crapouillou.net>,
- Haojian Zhuang <haojian.zhuang@linaro.org>, linux-riscv@lists.infradead.org,
- Marc Zyngier <maz@kernel.org>, openbmc@lists.ozlabs.org,
- Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
- Prathamesh Shete <pshete@nvidia.com>, Andy Gross <agross@kernel.org>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Manivannan Sadhasivam <mani@kernel.org>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Billy Tsai <billy_tsai@aspeedtech.com>, linux-mediatek@lists.infradead.org,
- linux-tegra@vger.kernel.org,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- patches@opensource.cirrus.com, Sean Wang <sean.wang@kernel.org>,
- linux-mips@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Chunyan Zhang <zhang.lyra@gmail.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Shiraz Hashim <shiraz.linux.kernel@gmail.com>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: Adjh/4pnReKW4Z36Rw+LlHcjii8KPQ==
+Content-Language: zh-cn
+X-CM-TRANSID: AQAAfwDX5vioDU1js+UCAA--.11366S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Kw4fCryDJrW8tr4DKFW7urg_yoWkWF4DpF
+ WrJr90yFZ8tr43Zryftr40yryrAa48KFW7W3srA34kJwn8tr95tr18Gr4jvryxCFyfGF43
+ Xr42gFWrCF4rA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDU0xBIdaVrnRJUUU9m14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+ rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+ 1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+ JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+ CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+ 2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+ W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+ Y2ka0xkIwI1lw4CEc2x0rVAKj4xxMxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2IqxV
+ CFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r10
+ 6r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxV
+ WUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG
+ 6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
+ 0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUWUDXUUUUU=
+X-CM-SenderInfo: 5zdqw4phlg00vjodqt5zlqxuoofrz/
+X-Mailman-Approved-At: Thu, 20 Oct 2022 12:33:17 +0200
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ ckeepax@opensource.cirrus.com, tanureal@opensource.cirrus.com,
+ liweilei@awinic.com, tiwai@suse.com, zhaolei@awinic.com, cy_huang@richtek.com,
+ yijiangtao@awinic.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ quic_potturu@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -163,28 +85,338 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Oct 17, 2022 at 12:35 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> On Mon, Oct 17, 2022 at 10:52 AM Linus Walleij <linus.walleij@linaro.org>=
- wrote:
->>=C2=B7On Mon, Oct 10, 2022 at 10:15 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > > Do not imply that some of the generic headers may be always included.
-> > > Instead, include explicitly what we are direct user of.
-> > >
-> > > While at it, sort headers alphabetically.
-> > >
-> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> >
-> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Hi: Mark Brown
 
-> Andy: are you going to send it together with the corresponding pinctrl
-> changes in a separate PR?
+Thank you for your suggestion. I will fix the problem you raised in the next
+patch, but there is still a question here and I want to discuss it with you
 
-Yes, this is the plan, but I want first to push it to Linux Next (via
-my tree) for a couple of days, so we will be sure there are no
-compilation issues.
+This is rather too big to go through in one go so the review here is very
+high level but that's probably a good level for initial review here as there
+are a lot of stylistic and structural problems.  This doesn't really look
+like a Linux driver, it's not following the standard patterns or using
+standard frameworks in normal ways.
 
---=20
-With Best Regards,
-Andy Shevchenko
+It'd be good for you to look at how other drivers for similar devices are
+implemented and ensure that this driver looks similar, where a driver does
+something very different to other drivers that's usually a sign there's
+something up.
+
+> ---
+>  sound/soc/codecs/Kconfig                        |   10 +
+>  sound/soc/codecs/Makefile                       |    4 +
+>  sound/soc/codecs/aw883xx/aw883xx.c              | 2734
++++++++++++++++++++++++
+>  sound/soc/codecs/aw883xx/aw883xx.h              |  213 ++
+>  sound/soc/codecs/aw883xx/aw883xx_bin_parse.c    | 1392 ++++++++++++
+>  sound/soc/codecs/aw883xx/aw883xx_bin_parse.h    |  145 ++
+>  sound/soc/codecs/aw883xx/aw883xx_calib.c        | 2534
++++++++++++++++++++++
+>  sound/soc/codecs/aw883xx/aw883xx_calib.h        |  154 ++
+>  sound/soc/codecs/aw883xx/aw883xx_data_type.h    |  157 ++
+>  sound/soc/codecs/aw883xx/aw883xx_device.c       | 1734 ++++++++++++++
+>  sound/soc/codecs/aw883xx/aw883xx_device.h       |  557 +++++
+>  sound/soc/codecs/aw883xx/aw883xx_init.c         |  649 ++++++
+>  sound/soc/codecs/aw883xx/aw883xx_log.h          |   32 +
+>  sound/soc/codecs/aw883xx/aw883xx_monitor.c      | 1197 ++++++++++
+>  sound/soc/codecs/aw883xx/aw883xx_monitor.h      |  167 ++
+>  sound/soc/codecs/aw883xx/aw883xx_pid_2049_reg.h | 2388
+++++++++++++++++++++
+>  sound/soc/codecs/aw883xx/aw883xx_spin.c         |  807 +++++++
+>  sound/soc/codecs/aw883xx/aw883xx_spin.h         |   80 +
+>  18 files changed, 14954 insertions(+)
+
+This should as I previously suggested probably be split into multiple
+patches, adding the build integration at the end to preserve bisection.
+
+Answer: I modified and sent the patch to patch v3 as required
+
+> +#define AW883XX_DRIVER_VERSION "v1.3.0"
+
+The versioning for the overall kernel is enough, we don't track versions for
+individual drivers.
+
+Answer: I will fix this problem in patch v3.
+
+> +static unsigned int g_aw883xx_dev_cnt; static 
+> +DEFINE_MUTEX(g_aw883xx_lock); static struct aw_container 
+> +*g_awinic_cfg;
+
+If you're using globals there's something wrong with your driver design,
+everything should be working with the driver data.
+
+Answer: I will not use global variables in patch v3
+
+> +static const char *const aw883xx_switch[] = {"Disable", "Enable"};
+
+Simple on/off switches should be normal Switch controls not enums.
+
+Answer: I will fix this problem in patch v3.
+
+> +static int aw883xx_platform_init(struct aw883xx *aw883xx) { #ifdef 
+> +AW_QCOM_PLATFORM
+> +	aw883xx->aw_pa->platform = AW_QCOM;
+> +	return 0;
+> +#elif defined AW_MTK_PLATFORM
+> +	aw883xx->aw_pa->platform = AW_MTK;
+> +	return 0;
+> +#elif defined AW_SPRD_PLATFORM
+> +	aw883xx->aw_pa->platform = AW_SPRD;
+> +	return 0;
+> +#else
+> +	return -EINVAL;
+> +#endif
+> +}
+
+This is not how we do configuration for platforms in Linux, we build single
+kernel images that support multiple systems so build time configuration
+really doesn't work, and in any case selecting by SoC vendor isn't going to
+account for how people design their individual boards.  The driver should
+use some combination of DT and ACPI to figure out whatever configuration it
+needs, though a lot of what's here looks like it should just be in the
+machine driver.  The driver for a device should just support that device.
+
+Answer: I will fix this problem in patch v3.
+
+> +/*
+> + * aw883xx append suffix sound channel information  */ static void 
+> +*aw883xx_devm_kstrdup(struct device *dev, char *buf) {
+> +	char *str = NULL;
+> +
+> +	str = devm_kzalloc(dev, strlen(buf) + 1, GFP_KERNEL);
+> +	if (!str)
+> +		return str;
+> +	memcpy(str, buf, strlen(buf));
+> +	return str;
+> +}
+
+This is just devm_kstrdup().
+
+Answer: I will fix this problem in patch v3.
+
+> +/*
+> + * aw883xx distinguish between codecs and components by version  */ 
+> +#ifdef AW_KERNEL_VER_OVER_4_19_1
+
+Don't include any support for old kernels in upstream submissions.
+
+Answer: I will fix this problem in patch v3.
+
+> +int aw883xx_i2c_writes(struct aw883xx *aw883xx,
+> +		uint8_t reg_addr, uint8_t *buf, uint16_t len) {
+> +	int ret = -1;
+> +	uint8_t *data = NULL;
+> +
+> +	data = kmalloc(len + 1, GFP_KERNEL);
+> +	if (data == NULL)
+> +		return -ENOMEM;
+> +
+> +	data[0] = reg_addr;
+> +	memcpy(&data[1], buf, len);
+> +
+> +	ret = i2c_master_send(aw883xx->i2c, data, len + 1);
+
+I can't see why this isn't just using regmap.  All the actual I/O appears to
+be via a 16 bit regmap.
+
+Answer: I will fix this problem in patch v3.
+
+> +/*
+> + * aw883xx interrupt
+> + */
+> +static void aw883xx_interrupt_work(struct work_struct *work) {
+> +	struct aw883xx *aw883xx = container_of(work,
+> +				struct aw883xx, interrupt_work.work);
+> +	int16_t reg_value = 0;
+> +	int ret = -1;
+> +
+> +	aw_dev_info(aw883xx->dev, "enter");
+
+The driver should be quiet in normal operation unless thre is some error or
+it's reading back identifying information from the hardware.
+
+Answer: I will fix this problem in patch v3.
+
+> +	/*read reg value*/
+> +	ret = aw883xx_dev_get_int_status(aw883xx->aw_pa, &reg_value);
+> +	if (ret < 0)
+> +		aw_dev_err(aw883xx->dev, "get init_reg value failed");
+> +	else
+> +		aw_dev_info(aw883xx->dev, "int value 0x%x", reg_value);
+> +
+> +	/*clear init reg*/
+> +	aw883xx_dev_clear_int_status(aw883xx->aw_pa);
+> +
+> +	/*unmask interrupt*/
+> +	aw883xx_dev_set_intmask(aw883xx->aw_pa, true); }
+
+This doesn't actually do anything with the interrupt?
+
+Answer: I will fix this problem in patch v3.
+
+> +static int aw883xx_set_fmt(struct snd_soc_dai *dai, unsigned int fmt) 
+> +{
+> +	aw_snd_soc_codec_t *codec = aw883xx_get_codec(dai);
+> +
+> +	aw_dev_info(codec->dev, "fmt=0x%x", fmt);
+> +
+> +	return 0;
+> +}
+
+Remove empty functions, that includes that only log information.
+
+Answer: I will fix this problem in patch v3.
+
+> +static int aw883xx_mute(struct snd_soc_dai *dai, int mute, int 
+> +stream) {
+> +	aw_snd_soc_codec_t *codec = aw883xx_get_codec(dai);
+> +	struct aw883xx *aw883xx =
+> +		aw_componet_codec_ops.codec_get_drvdata(codec);
+> +
+> +	aw_dev_info(aw883xx->dev, "mute state=%d", mute);
+> +
+> +	if (stream != SNDRV_PCM_STREAM_PLAYBACK) {
+> +		aw_dev_info(aw883xx->dev, "capture");
+> +		return 0;
+> +	}
+> +
+> +	if (mute) {
+> +		aw883xx->pstream = AW883XX_STREAM_CLOSE;
+> +		cancel_delayed_work_sync(&aw883xx->start_work);
+> +		mutex_lock(&aw883xx->lock);
+> +		aw883xx_device_stop(aw883xx->aw_pa);
+> +		mutex_unlock(&aw883xx->lock);
+> +	} else {
+> +		aw883xx->pstream = AW883XX_STREAM_OPEN;
+> +		mutex_lock(&aw883xx->lock);
+> +		aw883xx_start(aw883xx, AW_ASYNC_START);
+> +		aw883xx_hold_dsp_spin_st(&aw883xx->aw_pa->spin_desc);
+> +		mutex_unlock(&aw883xx->lock);
+> +	}
+
+This doesn't look like a mute operation, it looks like it's starting and
+stopping the DSP.
+
+Answer: This is a mute operation ,aw883xx_device_stop is called in th
+aw883xx_mute function. This function not only executes the mute function
+aw883xx_dev_mute, but also disables dsp and power down. This is for the
+aw883xx chip low power optimization.
+
+> +static int aw883xx_dai_drv_append_suffix(struct aw883xx *aw883xx,
+> +				struct snd_soc_dai_driver *dai_drv,
+> +				int num_dai)
+
+I can't tell what all this append_suffix() stuff is supposed to do but it
+should probably be removed, if this is about distinguishing multiple devices
+then the core already has support for that which should be used instead.
+
+Answer:I will delete this part in patch v3
+
+> +static int aw883xx_set_fade_in_time(struct snd_kcontrol *kcontrol,
+> +	struct snd_ctl_elem_value *ucontrol) {
+> +	struct soc_mixer_control *mc =
+> +		(struct soc_mixer_control *)kcontrol->private_value;
+> +
+> +	if ((ucontrol->value.integer.value[0] > mc->max) ||
+> +		(ucontrol->value.integer.value[0] < mc->min)) {
+> +		aw_pr_dbg("set val %ld overflow %d or  less than :%d",
+> +			ucontrol->value.integer.value[0], mc->max, mc->min);
+> +		return 0;
+> +	}
+> +	aw883xx_dev_set_fade_time(ucontrol->value.integer.value[0], true);
+> +
+> +	aw_pr_dbg("step time %ld", ucontrol->value.integer.value[0]);
+> +	return 0;
+> +}
+
+If a control write changes a value it should return 1, you should run the
+mixer-test selftest which will identify this and a number of other issues.
+
+Answer: Could you tell me what is mixer-test selftest? I have checked other
+drivers, and there is no return 1.
+
+> +static int aw883xx_request_firmware_file(struct aw883xx *aw883xx) {
+> +	const struct firmware *cont = NULL;
+> +	struct aw_container *aw_cfg = NULL;
+> +	int ret = -1;
+> +	int i;
+> +
+> +	aw883xx->aw_pa->fw_status = AW_DEV_FW_FAILED;
+> +
+> +	for (i = 0; i < AW_REQUEST_FW_RETRIES; i++) {
+> +		ret = request_firmware(&cont, AW883XX_ACF_FILE,
+aw883xx->dev);
+
+Why are there retries here?  Other drivers that load firmware don't do that,
+and if it's required I'd expect the firmware framework to do it rather than
+have individual drivers open code it.
+
+Answer: I'll remove the retry code, and fix this problem in patch v3.
+
+> +static void aw883xx_fw_wrok(struct work_struct *work) {
+
+wrok?
+
+Answer: I will fix this problem in patch v3.
+
+> +static void aw883xx_load_fw(struct aw883xx *aw883xx) { #ifdef 
+> +AW_SYNC_LOAD
+> +		/*sync loading*/
+> +		aw883xx_request_firmware_file(aw883xx);
+> +#else
+> +		/*async loading*/
+> +		queue_delayed_work(aw883xx->work_queue,
+> +				&aw883xx->acf_work,
+> +
+msecs_to_jiffies(AW883XX_LOAD_FW_DELAY_TIME));
+> +#endif
+
+Why would this be a build time configuration?
+
+Answer: I will fix this problem in patch v3.
+
+> +/* flag addr_bytes data_bytes reg_num reg_addr*/ static int 
+> +aw883xx_awrw_parse_buf(struct aw883xx *aw883xx, const char *buf, 
+> +size_t count) {
+
+Remove all these sysfs APIs, they appear to be a combination of open coding
+features you shuld get from regmap and providing audio controls which should
+go via the ALSA API.
+
+Answer: I will fix this problem in patch v3.
+
+> +#define BigLittleSwap16(A)	((((uint16_t)(A) & 0xff00) >> 8) | \
+> +				 (((uint16_t)(A) & 0x00ff) << 8))
+> +
+> +#define BigLittleSwap32(A)	((((uint32_t)(A) & 0xff000000) >> 24) | \
+> +				(((uint32_t)(A) & 0x00ff0000) >> 8) | \
+> +				(((uint32_t)(A) & 0x0000ff00) << 8) | \
+> +				(((uint32_t)(A) & 0x000000ff) << 24))
+
+Don't open code stuff like this, use the standard kernel interfaces and use
+naming styles that follow the kernel coding style.
+
+Answer: I will fix this problem in patch v3.
+
+> +static int aw_check_data_version(struct aw_bin *bin, int bin_num) {
+> +	int i = 0;
+> +
+> +	DBG("enter\n");
+
+Use the kernel logging framework (though as previously indicated you
+shouldn't be logging noise like this).
+
+Answer: I will delete this part in patch v3.
+
+> +static void aw_fs_write(struct file *file, char *buf, size_t count, 
+> +loff_t *pos) { #ifdef AW_KERNEL_VER_OVER_5_4_0
+> +	kernel_write(file, buf, count, pos); #else
+> +	vfs_write(file, buf, count, pos);
+> +#endif
+> +}
+
+It is extremely worrying to see filesystem operations in a CODEC driver,
+this needs a very clear explanation as to what it's doing and why.
+
+Answer: I will delete this part in patch v3.
+
+
