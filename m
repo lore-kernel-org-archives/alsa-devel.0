@@ -4,83 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3CB8C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 14:03:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25E63C43217
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 15:23:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A54FD31C6;
-	Tue, 18 Oct 2022 16:02:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A54FD31C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E4433D9B;
+	Tue, 18 Oct 2022 17:22:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E4433D9B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666101795;
-	bh=Q/AAN/jX178lWFV+7STBkAguBxaz6NDImhcgpSh4sWQ=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1666106596;
+	bh=8HVB+h/nAapTteHBM0mVDY3pxzYv5MPXQEogHUdxd+s=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LFjS11SrnUOLJYc2UMwo3MRWw9Exw+75Hz0YDZDtgeACn0tUA+ke0oWMrgZMWXFW3
-	 IOR4CSWsLtnrQ4bVX8VJNyNTMkDWAN2JMoW0Imj8pwdL5JYkaYzoBsei+45f+vRSvw
-	 WuIMUIvidt7Updwdath3DK86hCqqt44ZMLBS9o8I=
+	b=VBXEQVQ3q1xMBD5JPdRPDQG+Ugdu0FRnYBDO7Mn0LeTwioYbWmJ5BruTgjj5IpEQi
+	 1xnM0AYosxlTcm2NDFpvchy0gRrbAkaHAFjPYel3O24e2pWGTSqQCDUfYDXV7/rULQ
+	 f3fYL2e3sN6+ydNwo0OfJpQum0kHmzUqTXnRuynI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55453F80166;
-	Tue, 18 Oct 2022 16:02:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 018EDF800AB;
+	Tue, 18 Oct 2022 17:22:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 172B9F804D0; Tue, 18 Oct 2022 16:02:23 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DF39BF800AB
- for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 16:02:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF39BF800AB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="k4kxtAIm"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="32pqBhpv"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id E1BD833E7E;
- Tue, 18 Oct 2022 14:02:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666101735; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZKM25W9LaYRaLBB90BGTQ0bFG666V64jPZMheKYsGLI=;
- b=k4kxtAIm466ZB9J07Mt7k9P+FsMydbNblPXp0knW6UAmrnGpkL5yxR+yuEORqVfn3jhgvg
- bYAziaC+W8QblrMmq0Wk25a7cOIt6jXS1gFLfk5dznfHufAXx3ay59njEnmH8eAVcCpaPq
- wXckNrcA9LcKLRIhnbcutYPCt6ASoWQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666101735;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZKM25W9LaYRaLBB90BGTQ0bFG666V64jPZMheKYsGLI=;
- b=32pqBhpvA7UZLr9RTb2TwRBwyn+qOyuIlLSuiJBPfCmPD8IZO1a20dNH6JE9zsp2LmMwmV
- 1Zjioaq+GAN9rlDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BEF1A13480;
- Tue, 18 Oct 2022 14:02:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id nTLpLeexTmOtMAAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 18 Oct 2022 14:02:15 +0000
-Date: Tue, 18 Oct 2022 16:02:15 +0200
-Message-ID: <87mt9tcjrs.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: Re: [PATCH v1] ALSA: hda/realtek: Add quirk for ASUS Zenbook using
- CS35L41
-In-Reply-To: <20221018121506.2561397-1-sbinding@opensource.cirrus.com>
-References: <20221018121506.2561397-1-sbinding@opensource.cirrus.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>
+ id 2B3F3F8024C; Tue, 18 Oct 2022 17:22:24 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id D608CF800AB
+ for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 17:22:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D608CF800AB
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1666106541289619923-webhooks-bot@alsa-project.org>
+References: <1666106541289619923-webhooks-bot@alsa-project.org>
+Subject: sof-es8336.conf
+Message-Id: <20221018152224.2B3F3F8024C@alsa1.perex.cz>
+Date: Tue, 18 Oct 2022 17:22:24 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,15 +55,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 18 Oct 2022 14:15:06 +0200,
-Stefan Binding wrote:
-> 
-> This Asus Zenbook laptop use Realtek HDA codec combined with
-> 2xCS35L41 Amplifiers using SPI with External Boost.
-> 
-> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+alsa-project/alsa-ucm-conf issue #231 was opened from junocomp:
 
-Thanks, applied.
+The only way for the `Headphone Mixer Volume` to be enabled at startup the following commands needs to be added.
 
+`sset Headphone 3
+`
+When adding this to `sof-essx8336.conf` and reload alsa I get the following error
 
-Takashi
+```
+sudo alsaucm reload
+ALSA lib parser.c:1194:(parse_sequence) error: sequence command 'sset' is ignored
+ALSA lib parser.c:1045:(parse_sequence) error: string type is expected for sequence command
+ALSA lib parser.c:2289:(parse_controls_boot) Unable to parse BootSequence
+ALSA lib main.c:1541:(snd_use_case_mgr_open) error: failed to import hw:0 use case configuration -22
+alsaucm: error failed to open sound card hw:0: Invalid argument
+```
+
+When running `amixer -c 0 sset Headphone 3` manually it works fine
+
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/231
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
