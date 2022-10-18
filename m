@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4659CC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 12:13:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F2CDC4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 12:13:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8013C4CB8;
-	Tue, 18 Oct 2022 14:12:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8013C4CB8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9395A8143;
+	Tue, 18 Oct 2022 14:12:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9395A8143
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666095208;
-	bh=u55hqlXJW8uYvmujppg6OWT/zzFqXGkS4BV7liCUg8w=;
+	s=default; t=1666095227;
+	bh=kQJ2AfBz113zvjUHzXsFb0AJBsjNzMxAJaogHFuPanU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ceLOB2FiUKlEDrLY3d6d8Y1hzrpQSFPuT24YwP6v+ky+Z7rQnVRj1Be8FUDT8A6s5
-	 +7d0OG6jhmgtoRMKo7f8aVUMHINRHfu9dbY8/OLkEvR4WlkOTlZA7Hrh8q8yhQoO8S
-	 TY2fynylO2CK48nUpwH3PZCDBTPjBG/Dd1giVC6I=
+	b=Epr+DHjrgFaoPYDwPySfHogGx02WP7mC6K7+L32i6qFVNk4rV5Ae+AkXgmL6zqYXo
+	 7fy24v8iRfUAOCNDQbiOsr1O7uCr2Jqqew+xqHEwg2l/DgI5Qs9eeogcZp+I8/8Ifo
+	 SeAhPoaxbWaeBc19u/ao7b/XvHP5j3Q7nMFNHmIc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A5355F805BB;
-	Tue, 18 Oct 2022 14:09:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01AD9F805C3;
+	Tue, 18 Oct 2022 14:09:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 91B28F8057E; Tue, 18 Oct 2022 14:09:36 +0200 (CEST)
+ id D5953F805AC; Tue, 18 Oct 2022 14:09:38 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 274D9F8056F
- for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 14:09:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 274D9F8056F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 511EEF8057C
+ for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 14:09:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 511EEF8057C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="b4vluRUG"
+ header.b="KdEkEHlO"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666094966; x=1697630966;
+ t=1666094972; x=1697630972;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=u55hqlXJW8uYvmujppg6OWT/zzFqXGkS4BV7liCUg8w=;
- b=b4vluRUGT3JcGkZcLm5FQ0PYLBzVv8pH6Ju8yMH7Jaxs18cqto5V+B6o
- Z5unczgeLlJLQLoexB/ewkn5CBVGibNtX9AV8w4uXMOJf466cElOlb3o/
- 02+pLl/nTLgpsQk3qsx4oEBiFAdeKzowLLtucFy4kWNOmGlMzc2KGIdAw
- Eu92Dlf+AmkeYfgM8Nb1FGKYLPLHa8OnKNHLXzP3UcByT79vMxNWUgDKU
- LeMgz1pT/Gbbt0gv7up7uEOTBbPOKcVokm4waw/Kr5AE8fpgx0tyTectD
- yODV5lC60V5Ef72KBef6klkyidDPMCzEDgOGfVjHco7JdBc0lW2dm5TOU g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="293452946"
-X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="293452946"
+ bh=kQJ2AfBz113zvjUHzXsFb0AJBsjNzMxAJaogHFuPanU=;
+ b=KdEkEHlOHBlfTD+WD7rJ8sD3v++fYBmq7tU+bASEZZ21FuRXRK8PhqUp
+ ITK76Z0lGa1OMrDW9YCsARvqKA6l1G3WmC78/TvEhSgudc0VFNGsj0E5i
+ AOxCZz8ti71zGVBHBtsotsMoTqiXfHfw7FPa7zkfrvDYp4+AfZUOxAcko
+ x2MTS7Ga2/hUwclq6X6ZHzuM4gPcs1iNHL9PDeln3+xY0UkTzwdGLB6cc
+ FSJ6QhILcKi1BQsQFmUSWIQsRDdv3XNN19JmVmsVZgjpDKHiw2JIo0i6u
+ S2C41n9ZSQkZ6G9SYyaWbPD90Bw+mvPro5u56FB/8Oz6jGK6V2vAlmxlO Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="293452988"
+X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="293452988"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Oct 2022 05:09:19 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="579757916"
-X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="579757916"
+ 18 Oct 2022 05:09:29 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="579758000"
+X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="579758000"
 Received: from mariaca1-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.27.127])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Oct 2022 05:09:11 -0700
+ 18 Oct 2022 05:09:27 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 07/19] ASoC: SOF: ipc: ops: Add support for optional init and
- exit callbacks
-Date: Tue, 18 Oct 2022 15:09:04 +0300
-Message-Id: <20221018120916.19820-8-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 13/19] ASoC: SOF: ipc4: Define platform dependent library
+ loading callback
+Date: Tue, 18 Oct 2022 15:09:10 +0300
+Message-Id: <20221018120916.19820-14-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221018120916.19820-1-peter.ujfalusi@linux.intel.com>
 References: <20221018120916.19820-1-peter.ujfalusi@linux.intel.com>
@@ -88,11 +88,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for IPC specific initialization (init) and cleanup (exit)
-callback.
-
-These callbacks can be used by IPC implementation to do basic
-initialization and cleanup.
+Platforms where external libraries can be supported should set the
+load_library callback to implement this functionality.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
@@ -100,57 +97,32 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Chao Song <chao.song@intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/ipc.c      | 6 ++++++
- sound/soc/sof/sof-priv.h | 6 ++++++
- 2 files changed, 12 insertions(+)
+ sound/soc/sof/ipc4-priv.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index 6ed3f9b6a0c4..30781e808a02 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -200,6 +200,9 @@ struct snd_sof_ipc *snd_sof_ipc_init(struct snd_sof_dev *sdev)
- 		return NULL;
- 	}
- 
-+	if (ops->init && ops->init(sdev))
-+		return NULL;
-+
- 	ipc->ops = ops;
- 
- 	return ipc;
-@@ -217,5 +220,8 @@ void snd_sof_ipc_free(struct snd_sof_dev *sdev)
- 	mutex_lock(&ipc->tx_mutex);
- 	ipc->disable_ipc_tx = true;
- 	mutex_unlock(&ipc->tx_mutex);
-+
-+	if (ipc->ops->exit)
-+		ipc->ops->exit(sdev);
- }
- EXPORT_SYMBOL(snd_sof_ipc_free);
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 3d70b57e4864..ea6013ab1d4a 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -443,6 +443,9 @@ struct sof_ipc_pcm_ops;
-  * @fw_loader:	Pointer to Firmware Loader ops
-  * @fw_tracing:	Pointer to Firmware tracing ops
-  *
-+ * @init:	Optional pointer for IPC related initialization
-+ * @exit:	Optional pointer for IPC related cleanup
+diff --git a/sound/soc/sof/ipc4-priv.h b/sound/soc/sof/ipc4-priv.h
+index ecfa9f701ef1..7e7115ada2a2 100644
+--- a/sound/soc/sof/ipc4-priv.h
++++ b/sound/soc/sof/ipc4-priv.h
+@@ -66,6 +66,8 @@ struct sof_ipc4_fw_library {
+  * @mtrace_log_bytes: log bytes as reported by the firmware via fw_config reply
+  * @max_libs_count: Maximum number of libraries support by the FW including the
+  *		    base firmware
 + *
-  * @tx_msg:	Function pointer for sending a 'short' IPC message
-  * @set_get_data: Function pointer for set/get data ('large' IPC message). This
-  *		function may split up the 'large' message and use the @tx_msg
-@@ -464,6 +467,9 @@ struct sof_ipc_ops {
- 	const struct sof_ipc_fw_loader_ops *fw_loader;
- 	const struct sof_ipc_fw_tracing_ops *fw_tracing;
- 
-+	int (*init)(struct snd_sof_dev *sdev);
-+	void (*exit)(struct snd_sof_dev *sdev);
++ * @load_library: Callback function for platform dependent library loading
+  */
+ struct sof_ipc4_fw_data {
+ 	u32 manifest_fw_hdr_offset;
+@@ -74,6 +76,9 @@ struct sof_ipc4_fw_data {
+ 	enum sof_ipc4_mtrace_type mtrace_type;
+ 	u32 mtrace_log_bytes;
+ 	u32 max_libs_count;
 +
- 	int (*tx_msg)(struct snd_sof_dev *sdev, void *msg_data, size_t msg_bytes,
- 		      void *reply_data, size_t reply_bytes, bool no_pm);
- 	int (*set_get_data)(struct snd_sof_dev *sdev, void *data, size_t data_bytes,
++	int (*load_library)(struct snd_sof_dev *sdev,
++			    struct sof_ipc4_fw_library *fw_lib, bool reload);
+ };
+ 
+ extern const struct sof_ipc_fw_loader_ops ipc4_loader_ops;
 -- 
 2.38.0
 
