@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B74C5C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 12:13:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4659CC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 12:13:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EFDBB3693;
-	Tue, 18 Oct 2022 14:12:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFDBB3693
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8013C4CB8;
+	Tue, 18 Oct 2022 14:12:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8013C4CB8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666095195;
-	bh=/OrsMGgNbcw0aPpY+4FXeVq9ye7nQn+4OqOdKHM8WkY=;
+	s=default; t=1666095208;
+	bh=u55hqlXJW8uYvmujppg6OWT/zzFqXGkS4BV7liCUg8w=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vU3cSfWjVCBavwsVP7mGTZq3qTID/6ck3BiNsDGt9Jo+u5V3wo+LSMgOQFohWe0BU
-	 Q8LReHC+1wCAMpLSWxdDki9rYuXyG4SJ4DIrdI24shKfjpplhYdyDpenRZk2xo2yF9
-	 g7LnSw5z04yRCjbYiIKiTfh3uHHy7u2T8MeEipDI=
+	b=ceLOB2FiUKlEDrLY3d6d8Y1hzrpQSFPuT24YwP6v+ky+Z7rQnVRj1Be8FUDT8A6s5
+	 +7d0OG6jhmgtoRMKo7f8aVUMHINRHfu9dbY8/OLkEvR4WlkOTlZA7Hrh8q8yhQoO8S
+	 TY2fynylO2CK48nUpwH3PZCDBTPjBG/Dd1giVC6I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97CBDF805B4;
-	Tue, 18 Oct 2022 14:09:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A5355F805BB;
+	Tue, 18 Oct 2022 14:09:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7FB50F80571; Tue, 18 Oct 2022 14:09:36 +0200 (CEST)
+ id 91B28F8057E; Tue, 18 Oct 2022 14:09:36 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2FCC6F8057E
- for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 14:09:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FCC6F8057E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 274D9F8056F
+ for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 14:09:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 274D9F8056F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="dBIFBJtl"
+ header.b="b4vluRUG"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666094973; x=1697630973;
+ t=1666094966; x=1697630966;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=/OrsMGgNbcw0aPpY+4FXeVq9ye7nQn+4OqOdKHM8WkY=;
- b=dBIFBJtlgAuBkv8ToKHIwJme3bvS7WPTXZ6XSHFQfkFlM7gLLYAbniRY
- z75wvRWdFAiJMTt9Hg5ucp9GyMBsfVxYoe+KIB5/urjwJCX26rq6b6+7k
- mTtBjPeFseUaijRhVvdnZOv+kUY1hCg/tw/JzAwb/ziciyUqBV9WyRCMP
- 7/ObzzNQZBGxUe0Nohs2qoDOU99Qu2z4uQJbbOQ0xsPMV8/Tt/DeQfv+t
- a2WllUUu084n2YGExr7bsN8Bu6rw+80VlkoOutgxoP+St1k/rjqWLrvKg
- /R92jZErcAc6w08O5ywSNl4JOuMd2md6plGnSWXVhG9FYkoej4xx4OyAS A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="293452993"
-X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="293452993"
+ bh=u55hqlXJW8uYvmujppg6OWT/zzFqXGkS4BV7liCUg8w=;
+ b=b4vluRUGT3JcGkZcLm5FQ0PYLBzVv8pH6Ju8yMH7Jaxs18cqto5V+B6o
+ Z5unczgeLlJLQLoexB/ewkn5CBVGibNtX9AV8w4uXMOJf466cElOlb3o/
+ 02+pLl/nTLgpsQk3qsx4oEBiFAdeKzowLLtucFy4kWNOmGlMzc2KGIdAw
+ Eu92Dlf+AmkeYfgM8Nb1FGKYLPLHa8OnKNHLXzP3UcByT79vMxNWUgDKU
+ LeMgz1pT/Gbbt0gv7up7uEOTBbPOKcVokm4waw/Kr5AE8fpgx0tyTectD
+ yODV5lC60V5Ef72KBef6klkyidDPMCzEDgOGfVjHco7JdBc0lW2dm5TOU g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="293452946"
+X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="293452946"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Oct 2022 05:09:31 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="579758022"
-X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="579758022"
+ 18 Oct 2022 05:09:19 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="579757916"
+X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="579757916"
 Received: from mariaca1-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.27.127])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Oct 2022 05:09:29 -0700
+ 18 Oct 2022 05:09:11 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 14/19] ASoC: SOF: Intel: hda: Add flag to indicate that the
- firmware is IMR booted
-Date: Tue, 18 Oct 2022 15:09:11 +0300
-Message-Id: <20221018120916.19820-15-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 07/19] ASoC: SOF: ipc: ops: Add support for optional init and
+ exit callbacks
+Date: Tue, 18 Oct 2022 15:09:04 +0300
+Message-Id: <20221018120916.19820-8-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221018120916.19820-1-peter.ujfalusi@linux.intel.com>
 References: <20221018120916.19820-1-peter.ujfalusi@linux.intel.com>
@@ -88,17 +88,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Dynamic loading of external libraries should not be done if the firmware
-was booted from IMR since in that case the libraries will be restored along
-with the basefw.
+Add support for IPC specific initialization (init) and cleanup (exit)
+callback.
 
-The booted_from_imr flag is introduced and set to true if the IMR boot was
-successful and to false if cold booting is executed.
-
-The reason for the new flag is that guessing from existing flags, used to
-decide if we should try booting from IMR or not is not going to be robust
-as the IMR boot itself can fail and in that case a full, cold boot is
-executed.
+These callbacks can be used by IPC implementation to do basic
+initialization and cleanup.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
@@ -106,44 +100,57 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Chao Song <chao.song@intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-loader.c | 6 +++++-
- sound/soc/sof/intel/hda.h        | 1 +
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/sof/ipc.c      | 6 ++++++
+ sound/soc/sof/sof-priv.h | 6 ++++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index 147ddc5ee932..5ed524e166d2 100644
---- a/sound/soc/sof/intel/hda-loader.c
-+++ b/sound/soc/sof/intel/hda-loader.c
-@@ -396,12 +396,16 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
- 		dev_dbg(sdev->dev, "IMR restore supported, booting from IMR directly\n");
- 		hda->boot_iteration = 0;
- 		ret = hda_dsp_boot_imr(sdev);
--		if (!ret)
-+		if (!ret) {
-+			hda->booted_from_imr = true;
- 			return 0;
-+		}
- 
- 		dev_warn(sdev->dev, "IMR restore failed, trying to cold boot\n");
+diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
+index 6ed3f9b6a0c4..30781e808a02 100644
+--- a/sound/soc/sof/ipc.c
++++ b/sound/soc/sof/ipc.c
+@@ -200,6 +200,9 @@ struct snd_sof_ipc *snd_sof_ipc_init(struct snd_sof_dev *sdev)
+ 		return NULL;
  	}
  
-+	hda->booted_from_imr = false;
++	if (ops->init && ops->init(sdev))
++		return NULL;
 +
- 	chip_info = desc->chip_info;
+ 	ipc->ops = ops;
  
- 	if (sdev->basefw.fw->size <= sdev->basefw.payload_offset) {
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 2ab3c3840b92..d004bcbb6326 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -481,6 +481,7 @@ enum sof_hda_D0_substate {
- struct sof_intel_hda_dev {
- 	bool imrboot_supported;
- 	bool skip_imr_boot;
-+	bool booted_from_imr;
+ 	return ipc;
+@@ -217,5 +220,8 @@ void snd_sof_ipc_free(struct snd_sof_dev *sdev)
+ 	mutex_lock(&ipc->tx_mutex);
+ 	ipc->disable_ipc_tx = true;
+ 	mutex_unlock(&ipc->tx_mutex);
++
++	if (ipc->ops->exit)
++		ipc->ops->exit(sdev);
+ }
+ EXPORT_SYMBOL(snd_sof_ipc_free);
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 3d70b57e4864..ea6013ab1d4a 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -443,6 +443,9 @@ struct sof_ipc_pcm_ops;
+  * @fw_loader:	Pointer to Firmware Loader ops
+  * @fw_tracing:	Pointer to Firmware tracing ops
+  *
++ * @init:	Optional pointer for IPC related initialization
++ * @exit:	Optional pointer for IPC related cleanup
++ *
+  * @tx_msg:	Function pointer for sending a 'short' IPC message
+  * @set_get_data: Function pointer for set/get data ('large' IPC message). This
+  *		function may split up the 'large' message and use the @tx_msg
+@@ -464,6 +467,9 @@ struct sof_ipc_ops {
+ 	const struct sof_ipc_fw_loader_ops *fw_loader;
+ 	const struct sof_ipc_fw_tracing_ops *fw_tracing;
  
- 	int boot_iteration;
- 
++	int (*init)(struct snd_sof_dev *sdev);
++	void (*exit)(struct snd_sof_dev *sdev);
++
+ 	int (*tx_msg)(struct snd_sof_dev *sdev, void *msg_data, size_t msg_bytes,
+ 		      void *reply_data, size_t reply_bytes, bool no_pm);
+ 	int (*set_get_data)(struct snd_sof_dev *sdev, void *data, size_t data_bytes,
 -- 
 2.38.0
 
