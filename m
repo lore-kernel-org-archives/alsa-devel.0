@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72389C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 12:11:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6FFDC4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 12:11:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 982069CBC;
-	Tue, 18 Oct 2022 14:10:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 982069CBC
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9CBE9C64;
+	Tue, 18 Oct 2022 14:10:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9CBE9C64
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666095099;
-	bh=5P62DW9xf2k+KmuQ0uQsQJVSWP+D+MMwtwWeRv1h9xg=;
+	s=default; t=1666095108;
+	bh=+VbW1XXRCFSOR+SHo27Ir/bLlx2ipKcCYnuw+5nVouI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lmij+1nP6pTmE+nvhdlssCmXSzBKX4okbeUDaGUsAv+6+MDkSGsNQ8lVBgzwaU0xq
-	 Y8RcYE/XYsr3VD6UCkcoaMGY/ocna2Xv7zk6swHpoujKwCOd7+R+T7yEHUHO0k2525
-	 Va/hqP+WJC6rACjycKz/K2OG6v12vVxBnqIMMR/4=
+	b=OkF6OP2D30Xdk5cLLy/UM4cbLLXXArHyvvrdnuplptYdp6CeCRCSLGzco0bbKaU0K
+	 k6nBXO1QygihqUHoqGSkwp7lRsDhtuw+FrNVfXlVx8xZHe4dMA9SAD9N2MzIzmS0Nc
+	 XcNyQgSg3SF4hV3FWat4HbLA8XTfQ5ewttav2zKM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32A98F8057B;
-	Tue, 18 Oct 2022 14:09:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1BA64F8057F;
+	Tue, 18 Oct 2022 14:09:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 89D70F80567; Tue, 18 Oct 2022 14:09:29 +0200 (CEST)
+ id 923C2F8057E; Tue, 18 Oct 2022 14:09:31 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1A8C4F80567
- for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 14:09:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A8C4F80567
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0520BF80564
+ for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 14:09:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0520BF80564
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="mTq2YPvo"
+ header.b="Au2pElVF"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666094964; x=1697630964;
+ t=1666094966; x=1697630966;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=5P62DW9xf2k+KmuQ0uQsQJVSWP+D+MMwtwWeRv1h9xg=;
- b=mTq2YPvoTC+vT3kSBadw19UxR/UO28/M6g7wwhjvtPRB9zeE3VewdFJ+
- JiGMilvxDG0JBH3pYdVDacEO5p0XsVfNUnl1i/Txt0pGC2O3C2gn7HWNL
- cXpqRgqfRfAG7VI2idPpMxL5Ij4PNBF+Mnbde6GoR9YvVaH6PzRmpYA7p
- F2usPit6Tvv4Hv5KdFM8oiri+pwxK+Y2Pe3FCzR1YlLS2s3nVSSUofqls
- kyGIBWDHhG52FyO6mHWO6a4nRYrHnAB3NUdNLlhRuLOJvWc872YnwQ7NN
- KVDCBkF8N3UmtLdpKiOcrZHazBK3g4thohq/kr/jL92jQTispTUnKqkQu w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="293452944"
-X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="293452944"
+ bh=+VbW1XXRCFSOR+SHo27Ir/bLlx2ipKcCYnuw+5nVouI=;
+ b=Au2pElVFk19SdNo4aiCB5UnWclQtKXJlvwnkMPYrE2+9hJaWOM6FQy8t
+ ZM60R3E9CP6jKeMCStoa+Z5iNQvHy2ywEkQIcuLK6t30WMc7HyO6Nq3mA
+ mCoeHL1B48s7M0STzNoRHfo6Wf5n6fSv2YYsUTk7/Q0aGjX56uuqqZNUy
+ 1yk2yn7PpURsy5OJc2zdie9evsCjtRPFLgF6KofrlqJLSkzczATEY52wU
+ YM/j+e/pBA7tRCnplBX5h9lXAiAoW42UdK/bj3ObNqLdqp2Mwwx9URZW3
+ kz5bJc0/pKN9IrmlKH1ozsKY16t5Pzm7UK49/spaKpg9mTqpvDYOE89RR A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="293452948"
+X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="293452948"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  18 Oct 2022 05:09:19 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="579757884"
-X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="579757884"
+X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="579757918"
+X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="579757918"
 Received: from mariaca1-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.27.127])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Oct 2022 05:09:07 -0700
+ 18 Oct 2022 05:09:14 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 06/19] ASoC: SOF: Drop the firmware and fw_offset from
- snd_sof_pdata
-Date: Tue, 18 Oct 2022 15:09:03 +0300
-Message-Id: <20221018120916.19820-7-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 08/19] ASoC: SOF: ipc4-loader: Save the maximum number of
+ libraries supported
+Date: Tue, 18 Oct 2022 15:09:05 +0300
+Message-Id: <20221018120916.19820-9-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221018120916.19820-1-peter.ujfalusi@linux.intel.com>
 References: <20221018120916.19820-1-peter.ujfalusi@linux.intel.com>
@@ -88,8 +88,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The SOF stack now uses the sdev->basefw to work with the SOF firmware, the
-information from plat_data can be dropped.
+The firmware supports external libraries (containing modules) to be loaded
+runtime.
+The firmware configuration contains the maximum number of libraries
+supported, including the base firmware (which is library 0).
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
@@ -97,70 +99,49 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Chao Song <chao.song@intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- include/sound/sof.h    | 4 ----
- sound/soc/sof/loader.c | 9 ---------
- 2 files changed, 13 deletions(-)
+ sound/soc/sof/ipc4-loader.c | 7 +++++++
+ sound/soc/sof/ipc4-priv.h   | 3 +++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/include/sound/sof.h b/include/sound/sof.h
-index 341fef19e612..e1f2f02666a7 100644
---- a/include/sound/sof.h
-+++ b/include/sound/sof.h
-@@ -59,15 +59,11 @@ enum sof_ipc_type {
-  * SOF Platform data.
+diff --git a/sound/soc/sof/ipc4-loader.c b/sound/soc/sof/ipc4-loader.c
+index 9f433e9b4cd3..2495a205ef78 100644
+--- a/sound/soc/sof/ipc4-loader.c
++++ b/sound/soc/sof/ipc4-loader.c
+@@ -202,6 +202,13 @@ static int sof_ipc4_query_fw_configuration(struct snd_sof_dev *sdev)
+ 			trace_sof_ipc4_fw_config(sdev, "Trace log size", *tuple->value);
+ 			ipc4_data->mtrace_log_bytes = *tuple->value;
+ 			break;
++		case SOF_IPC4_FW_CFG_MAX_LIBS_COUNT:
++			trace_sof_ipc4_fw_config(sdev, "maximum number of libraries",
++						 *tuple->value);
++			ipc4_data->max_libs_count = *tuple->value;
++			if (!ipc4_data->max_libs_count)
++				ipc4_data->max_libs_count = 1;
++			break;
+ 		default:
+ 			break;
+ 		}
+diff --git a/sound/soc/sof/ipc4-priv.h b/sound/soc/sof/ipc4-priv.h
+index e3b8484a2f1f..7f5c7a47b3a7 100644
+--- a/sound/soc/sof/ipc4-priv.h
++++ b/sound/soc/sof/ipc4-priv.h
+@@ -32,6 +32,8 @@ enum sof_ipc4_mtrace_type {
+  * @nhlt: NHLT table either from the BIOS or the topology manifest
+  * @mtrace_type: mtrace type supported on the booted platform
+  * @mtrace_log_bytes: log bytes as reported by the firmware via fw_config reply
++ * @max_libs_count: Maximum number of libraries support by the FW including the
++ *		    base firmware
   */
- struct snd_sof_pdata {
--	const struct firmware *fw;
- 	const char *name;
- 	const char *platform;
+ struct sof_ipc4_fw_data {
+ 	u32 manifest_fw_hdr_offset;
+@@ -40,6 +42,7 @@ struct sof_ipc4_fw_data {
+ 	void *nhlt;
+ 	enum sof_ipc4_mtrace_type mtrace_type;
+ 	u32 mtrace_log_bytes;
++	u32 max_libs_count;
+ };
  
- 	struct device *dev;
- 
--	/* indicate how many first bytes shouldn't be loaded into DSP memory. */
--	size_t fw_offset;
--
- 	/*
- 	 * notification callback used if the hardware initialization
- 	 * can take time or is handled in a workqueue. This callback
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index 1e31b7c296e7..723bd8267a3d 100644
---- a/sound/soc/sof/loader.c
-+++ b/sound/soc/sof/loader.c
-@@ -58,12 +58,6 @@ int snd_sof_load_firmware_raw(struct snd_sof_dev *sdev)
- 			fw_filename, ret);
- 	}
- 
--	/*
--	 * Until the platform code is switched to use the new container the fw
--	 * and payload offset must be set in plat_data
--	 */
--	plat_data->fw = sdev->basefw.fw;
--	plat_data->fw_offset = sdev->basefw.payload_offset;
- err:
- 	kfree(fw_filename);
- 
-@@ -73,7 +67,6 @@ EXPORT_SYMBOL(snd_sof_load_firmware_raw);
- 
- int snd_sof_load_firmware_memcpy(struct snd_sof_dev *sdev)
- {
--	struct snd_sof_pdata *plat_data = sdev->pdata;
- 	int ret;
- 
- 	ret = snd_sof_load_firmware_raw(sdev);
-@@ -108,7 +101,6 @@ int snd_sof_load_firmware_memcpy(struct snd_sof_dev *sdev)
- error:
- 	release_firmware(sdev->basefw.fw);
- 	sdev->basefw.fw = NULL;
--	plat_data->fw = NULL;
- 	return ret;
- 
- }
-@@ -194,6 +186,5 @@ void snd_sof_fw_unload(struct snd_sof_dev *sdev)
- 	/* TODO: support module unloading at runtime */
- 	release_firmware(sdev->basefw.fw);
- 	sdev->basefw.fw = NULL;
--	sdev->pdata->fw = NULL;
- }
- EXPORT_SYMBOL(snd_sof_fw_unload);
+ /**
 -- 
 2.38.0
 
