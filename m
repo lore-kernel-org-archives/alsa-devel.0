@@ -4,70 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BB07C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 11:30:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61C96C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 11:30:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53BD88E13;
-	Tue, 18 Oct 2022 13:29:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53BD88E13
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B5518DAD;
+	Tue, 18 Oct 2022 13:29:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B5518DAD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666092626;
-	bh=t7x/A8HbCw3ENFEa0NBFmoMvgPlcglz9IsJ2LAmequw=;
+	s=default; t=1666092640;
+	bh=2WaQRiHTmvcUWsaqC+uuKUaRlQvcNK/D5SC7IqqYZkA=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CF3kJj/4EG7tU/JS/AskSW96uM8sOHanp2TmAncpAp9Hw7JLwUsANGwuhj7TISZ0H
-	 pXF6XckUyKWp8jwkJ6dqMKbEminyiSmn9St5rOGpToNFIusog2skP3FqxqRof+m8H1
-	 w9Zky6grVojU/0SqLc5HIzG2K5Y2aFBQugYlJa/4=
+	b=Q3lPuOO5+Udg/qoOWCFGzYaiMy0aIGU1JDXZfz1ju+DQm2kRV9Hk6O+Tt+f+oOpUA
+	 whRmdRKS3frnmtIy/tndgsrgEQvizvJpdbK7VI0fJ9CTJn0+vhvQ+Phqc88H4ayo5z
+	 1RF1YfXjCasvTRWg0KQRd8UtcEviF9k+J80AHvgs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CC54DF8055A;
-	Tue, 18 Oct 2022 13:28:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D135F80564;
+	Tue, 18 Oct 2022 13:28:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 848AEF8054A; Tue, 18 Oct 2022 13:28:28 +0200 (CEST)
+ id 18776F8055B; Tue, 18 Oct 2022 13:28:30 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 12AB0F80543
- for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 13:28:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12AB0F80543
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5E7BDF80549
+ for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 13:28:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E7BDF80549
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ozVGQfH0"
+ header.b="GpNaJg7F"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id C77BEB81EA9;
- Tue, 18 Oct 2022 11:28:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 706DCC433B5;
- Tue, 18 Oct 2022 11:28:21 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 9E306B81EAA;
+ Tue, 18 Oct 2022 11:28:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72814C433D6;
+ Tue, 18 Oct 2022 11:28:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666092503;
- bh=t7x/A8HbCw3ENFEa0NBFmoMvgPlcglz9IsJ2LAmequw=;
+ s=k20201202; t=1666092506;
+ bh=2WaQRiHTmvcUWsaqC+uuKUaRlQvcNK/D5SC7IqqYZkA=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ozVGQfH0HK6rhGMYDfgkvZ7uDwIlPojVdg/p4xZ88I8W+do/H21R2wJAEFCQdBmYl
- zGLhNAWispSleNoCgX4JpVq/95Igt4iaxVg2o76xaBTPcYGQ7gfxgPVW8xoZ6DKfEZ
- 663qNLqrKCTr1+Dv6nviBSf6nlm2PyRBXPRjAKxKkAl3jI2gGCkVaWNBPpcRzL1zi8
- kIi7dTe//g7Pf5n40tCRdWDfIbPUs07wmbNCcWFGl7gOHv5PUdTQNRwbxtsj2bXIAY
- vG1Lb19RpFPIlfgSagsfXJiunqgcB0MGGT1J1QzoRaho1MtY/jO6VKSt8kLhgvFBqd
- w+bQSKsm+Feug==
+ b=GpNaJg7F6qGMlJB+p9vv6sO83YbXa0n7mB4RqXYTXYynFI82BGrHYrvZGoMD7DOrq
+ OcAlyol3RKdBMmurGCy9I04bXwcxKZhQCHF3RqAup46L9DPdj6hptg65d9nlOP4XGO
+ aObPQoD6L9NIVxaYdSOcrl7+Ij00+mDejhWSbhMQkYI74yFllLO7omQg8l9C5mzP82
+ zOR0UK4tQkHhd+sXSTxBRLZIDIKq2u8nbjU1j7F9r7JhQwFEjkIHBkjcrVfMqN1kHh
+ k2hqkp7jasoPsNc4iYP1PpQNtg57yToFHOhKpAoDYJi2EtlAs0TDzKQHlry2+gAohp
+ +JB9Fss4KMQpA==
 From: Mark Brown <broonie@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>, Xiubo.Lee@gmail.com, tiwai@suse.com,
- shengjiu.wang@gmail.com, 
- nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- festevam@gmail.com, perex@perex.cz
-In-Reply-To: <1663925494-9941-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1663925494-9941-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: fsl_micfil: Add Hardware Voice Activity Detector
- support
-Message-Id: <166609250118.155136.1014438138123181100.b4-ty@kernel.org>
-Date: Tue, 18 Oct 2022 12:28:21 +0100
+To: asahi@lists.linux.dev, alsa-devel@alsa-project.org,
+ Yang Yingliang <yangyingliang@huawei.com>
+In-Reply-To: <20220921153123.1508144-1-yangyingliang@huawei.com>
+References: <20220921153123.1508144-1-yangyingliang@huawei.com>
+Subject: Re: [PATCH -next] ASoC: cs42l83: change cs42l83_regmap to static
+Message-Id: <166609250519.155136.17284249606778071645.b4-ty@kernel.org>
+Date: Tue, 18 Oct 2022 12:28:25 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc: povik+lin@cutebit.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,16 +80,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 23 Sep 2022 17:31:34 +0800, Shengjiu Wang wrote:
-> The Hardware Voice Activity Detector (HWVAD) is a block
-> responsible for detect voice activity in a channel selected
-> by the user. It can be configured in Envelope-based or
-> Energy-based mode.
+On Wed, 21 Sep 2022 23:31:23 +0800, Yang Yingliang wrote:
+> cs42l83_regmap is only used in cs42l83-i2c.c now, change it to static.
 > 
-> There are additional two interrupts for HWVAD, one is event
-> interrupt, another is error interrupt.
 > 
-> [...]
 
 Applied to
 
@@ -100,8 +91,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl_micfil: Add Hardware Voice Activity Detector support
-      commit: 29dbfeecab85fc998d8c5c29473da33d272d0c85
+[1/1] ASoC: cs42l83: change cs42l83_regmap to static
+      commit: fb07a8493a7b205116c9825b16267a07ffae129c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
