@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7B77C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 11:29:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E880C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 11:30:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F6528FFE;
-	Tue, 18 Oct 2022 13:28:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F6528FFE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 290509A3F;
+	Tue, 18 Oct 2022 13:29:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 290509A3F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666092576;
-	bh=BUVIpGsmdTCdBA7+xoYUq7u8Hy6f/qPMi/vD85vO8qY=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1666092604;
+	bh=pI36XOkkoXboW1diIWhOh4jcI962SNyYxN1ABYije7U=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZzUnD9eV8X0n4PDMZKSNarmPVWRKDYcQ1UiVPV25ga+HcB6nQHG3dlcHJJfVNPojL
-	 LaUEif5tC5oF/bhOe3TWbDO2FuOlLal83yFDT0j9JSns2O5yh3io/2kbTj309jfpmb
-	 v0KLCB9oGzRlhwHqEnPrimQUv4kCNJXZtjhK/UzM=
+	b=iRk6qnA8RqJB8fxtR+ISh6M9szVmefpz/twCYNAZ/64pBRf3nM7dM6oL9gsj+G/sP
+	 bwr/2ABGNMdZC9cKBXCd3o7R3pLCjdo41zWEvb9ErFXymyFP+voElL0IFoLeQR3j3i
+	 YkQri/SozL0Iwe6Ar6uSSUFesuALgCxqjEqesbsA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48EE4F804C1;
-	Tue, 18 Oct 2022 13:28:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 874B3F80553;
+	Tue, 18 Oct 2022 13:28:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09716F8024C; Tue, 18 Oct 2022 13:28:21 +0200 (CEST)
+ id 79FD6F8053C; Tue, 18 Oct 2022 13:28:26 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97982F800AA
- for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 13:28:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97982F800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5B6AF804E0
+ for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 13:28:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5B6AF804E0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Bp+e3TWB"
+ header.b="DjsY5NGS"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 4C90B61480;
- Tue, 18 Oct 2022 11:28:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FC62C433D6;
- Tue, 18 Oct 2022 11:28:13 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A31BA61531;
+ Tue, 18 Oct 2022 11:28:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A290C433D6;
+ Tue, 18 Oct 2022 11:28:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666092496;
- bh=BUVIpGsmdTCdBA7+xoYUq7u8Hy6f/qPMi/vD85vO8qY=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=Bp+e3TWBZpcnp8j8oKCQlYshMQgFVn3sXqxmMAG43ZjFwS4dNTRjk1BtXTQJ445GH
- p/M3luP+EC0cwNFU8KCiTc6ua4qJ7y10sZfDLnWx8BFI3fWx5jHOSi18Jnw5ArvL1q
- NFq5iIGwqmCSTHetSMf6pITjCiWxY6ATqY3qtXWuxQQS8R/OBQiqLqWcnSj2HDtm7a
- 6lTaJPaQDikS1gPE4puAt7jwAzavsm8Eg4nHNhBtT8RzLiI9zZt8x5asH55we0qb8F
- 2SVevsbHCp7EDx79HJW2B5o38YED5rN5mH20B4O3nBFMR57gblqeA2G7zbnHpZLvHN
- FrsyuSB4axOew==
+ s=k20201202; t=1666092501;
+ bh=pI36XOkkoXboW1diIWhOh4jcI962SNyYxN1ABYije7U=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=DjsY5NGSNOLccv65O4yqW40NUssLaHumEw+oqIdgMXmc05jZgxYd6sr5BVPLdy8yq
+ lza28V6sN4N2ptonfgqcPc43f1vegrfn6Pz1UDXf7OJSe1SxWSA+fuE+b9mQAXqDPP
+ qWmdb+ljLdmmRPbDHA9Cjj8cWmYlFuhjl/DXW8+hHD+v0GanQRtujHn5lemv1xhY9v
+ hCwchU3wtDug0hHt/tw3hhK9ymh6aTjX2NJnSzKxrywCsJAjF71lzfeS8xS0QM1j+M
+ XQiGDBDVQEtOls1HC0D6DnWmlwA8Qy+m/XCLwoOR6514tZXZ8AvLK0BOI/SJB/+V2x
+ yUF8vYJsbbPLQ==
 From: Mark Brown <broonie@kernel.org>
-To: linuxppc-dev@lists.ozlabs.org, robh+dt@kernel.org,
- devicetree@vger.kernel.org, Xiubo.Lee@gmail.com, tiwai@suse.com, 
- linux-kernel@vger.kernel.org, shengjiu.wang@gmail.com,
- krzysztof.kozlowski+dt@linaro.org, nicoleotsuka@gmail.com, 
- alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- Chancel Liu <chancel.liu@nxp.com>, festevam@gmail.com, perex@perex.cz
-In-Reply-To: <20220930064441.2548505-1-chancel.liu@nxp.com>
-References: <20220930064441.2548505-1-chancel.liu@nxp.com>
-Subject: Re: [PATCH v3 0/7] Create a new sound card to access MICFIL based on
- rpmsg channel
-Message-Id: <166609249377.155136.8150989631074960130.b4-ty@kernel.org>
-Date: Tue, 18 Oct 2022 12:28:13 +0100
+To: Siarhei Volkau <lis8215@gmail.com>
+In-Reply-To: <20221010185423.3167208-1-lis8215@gmail.com>
+References: <Y0P/u4pJT8rup8Za@sirena.org.uk>
+ <20221010185423.3167208-1-lis8215@gmail.com>
+Subject: Re: [PATCH v2 0/6] ASoC: codecs: jz4725b: Various improvements and
+ fixes
+Message-Id: <166609249915.155136.16491946248695409974.b4-ty@kernel.org>
+Date: Tue, 18 Oct 2022 12:28:19 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Paul Cercueil <paul@crapouillou.net>, linux-mips@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,13 +83,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 30 Sep 2022 14:44:34 +0800, Chancel Liu wrote:
-> At a previous time, we have successfully created a virtual sound card
-> based on rpmsg. The sound card works under this mechanism Cortex-A core
-> tells the Cortex-M core the format, rate, channel, .etc configuration
-> of the PCM parameters and Cortex-M controls real hardware devices such
-> as SAI and DMA. From the view of Linux side, the sound card is bound to
-> a rpmsg channel through which it can access SAI.
+On Mon, 10 Oct 2022 21:54:17 +0300, Siarhei Volkau wrote:
+> The patchset fixes:
+>  - Line In path stays powered off during capturing or
+>    bypass to mixer.
+>  - incorrectly represented dB values in alsamixer, et al.
+>  - incorrect represented Capture input selector in alsamixer
+>    in Playback tab.
+>  - wrong control selected as Capture Master
 > 
 > [...]
 
@@ -100,20 +100,18 @@ Applied to
 
 Thanks!
 
-[1/7] ASoC: dt-bindings: fsl_rpmsg: Add a property to assign the rpmsg channel
-      commit: 3570e6873b1a506bca4b5788d71141944c55132c
-[2/7] ASoC: imx-audio-rpmsg: Create rpmsg channel for MICFIL
-      commit: f04189e0b85f6bbd10679e71061bf6d1ced5c539
-[3/7] ASoC: imx-pcm-rpmsg: Register different platform drivers
-      commit: b2c2a947b3412f6edb9a86f5b12d6420958e67ba
-[4/7] ASoC: imx-pcm-rpmsg: Multi-channel support for sound card based on rpmsg
-      commit: bdc0f6ca1c079ba790e0e227cff6164feae90460
-[5/7] ASoC: fsl_rpmsg: Register different ASoC machine devices
-      commit: 76a874caeab596972f529968aa0d19d4ba1d2197
-[6/7] ASoC: fsl_rpmsg: Multi-channel support in CPU DAI driver
-      commit: f26c1bb8a8ebe72748a3bb6f5d75079b642a33e8
-[7/7] ASoC: imx-rpmsg: Assign platform driver used by machine driver to link with
-      commit: 4b48440ea390bada41928920446928beb3652a76
+[1/6] ASoC: codecs: jz4725b: add missed Line In power control bit
+      commit: 1013999b431b4bcdc1f5ae47dd3338122751db31
+[2/6] ASoC: codecs: jz4725b: fix reported volume for Master ctl
+      commit: 088777bf65b98cfa4b5378119d0a7d49a58ece44
+[3/6] ASoC: codecs: jz4725b: use right control for Capture Volume
+      commit: 1538e2c8c9b7e7a656effcc6e4e7cfe8c1b405fd
+[4/6] ASoC: codecs: jz4725b: fix capture selector naming
+      commit: 80852f8268769715db335a22305e81a0c4a38a84
+[5/6] ASoC: codecs: jz4725b: use right control for Master Playback
+      commit: e6233ee25059de0eeac6ed3d9d49737afdbd5087
+[6/6] ASoC: codecs: jz4725b: add missed Mixer inputs
+      commit: 616c291820d155cbad258ecae5c7dbca2c01f07f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
