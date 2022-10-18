@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DC1DC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 12:12:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93635C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 12:12:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41C6D9CD5;
-	Tue, 18 Oct 2022 14:11:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41C6D9CD5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E0569C72;
+	Tue, 18 Oct 2022 14:11:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E0569C72
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666095125;
-	bh=WRiL5FicIm8MlioaADAFF1kA1ud1KmvJRcv93Oid9ec=;
+	s=default; t=1666095147;
+	bh=2xuMYsXyVmMBdsaMO//uDSCpQL/VZPCattQaQD7iJQM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fC8sZF5JhXMXzU1eteVUWMpIFCLJ3airbQlHrpxUvjpyzLMWfJJHPvV5fIPFVC5vU
-	 OBsjXlnP+0ykP/YF8z7e/JEpbu3V5e9fmTWqeuv+scVmTU3NzFiE82wv7pec+E8b8z
-	 dRPpKJtjRUVHBwDMAqxDSDcYLbLnGpAuyGgVvWeU=
+	b=pIBMY8np1gDYS8rbfKaCi15ZHYABnmhY/2rW8LK6eHVOTzbD0RE/aRMM3UwS68m+y
+	 OgfcEHWxfAqX3H368X4HCRpwB4ndIRLzg6ESJNlrEebPhPcOkVoiXwvr9WwjOjhiyP
+	 LbIPoZ//fUww/fL4yICwBHu2PmN1ip3YHJBQetOc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A5558F80567;
-	Tue, 18 Oct 2022 14:09:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 353BCF80587;
+	Tue, 18 Oct 2022 14:09:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3D1DF80580; Tue, 18 Oct 2022 14:09:33 +0200 (CEST)
+ id BA731F80589; Tue, 18 Oct 2022 14:09:34 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B1A4F80578
+ by alsa1.perex.cz (Postfix) with ESMTPS id 205F7F80579
  for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 14:09:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B1A4F80578
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 205F7F80579
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="NqG9IlOy"
+ header.b="iKlSn7Vl"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1666094968; x=1697630968;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=WRiL5FicIm8MlioaADAFF1kA1ud1KmvJRcv93Oid9ec=;
- b=NqG9IlOyACkMzLRQ4lV8JpuAbpbaiHRKQC6vNxUqb3u97Jg/9r6JmTX7
- Io/R0yjlKk9RsPGNSpNGp7C/UkLWJstCBCZqRIQkMjl/vTMKC+c0CbGqo
- Xz1as+9wper6Zp4SWC2bnvnFCVvvXaF7lrItJ6kvHbC+ip0onoHZOVoek
- sAv49ClF949ZHldCB/8u/Om55ZPnIygIXd2N0ogTexGT+HJNxlI4OB3CI
- hlv/ObW3ldUcd405gJAUECSHKVcNZOPDwQiuZlQCzFEkBwYlOkiJN/eCp
- J0hKjLUsJeRMl3/gTmnNFMB2D7UayOpGbOnixjBCqm720AgrLgZeoRfSL w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="293452952"
-X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="293452952"
+ bh=2xuMYsXyVmMBdsaMO//uDSCpQL/VZPCattQaQD7iJQM=;
+ b=iKlSn7Vl9GXnAsmSW6NtVhzCQ2OyMqqYNG73bekWnHtJK6BJ32rNkT7C
+ oaY06Llbl0QYASHX28HlA0CLVTNohyaeVLT9H/SG12dJgeUBLS4rSprbA
+ 6a03FYYAPLLeYJCZRPtWVoqk/+2W+MlwOEwTKTyrGPRSFXKFX6Ook+59J
+ ERz6rmXYFgxdtZJeDysFIZ4gq3mosTMblBGucbSHjjPjsHw0duZMDRCD4
+ phWY9/bN+zCQZKD31ePgq+tujgKXOWaY0YKA73qCYr4RNYrdmQ2Fdodfh
+ mA4E4fDfN/bWleeIRcvXu/3tc+d5zBNqNyOYWH1K3k323BsiJ1CBv7v6G g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="293452973"
+X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="293452973"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Oct 2022 05:09:20 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="579757921"
-X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="579757921"
+ 18 Oct 2022 05:09:24 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="579757957"
+X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="579757957"
 Received: from mariaca1-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.27.127])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Oct 2022 05:09:17 -0700
+ 18 Oct 2022 05:09:22 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 09/19] ASoC: SOF: ipc4: Convert the firmware handling (loader)
- to library convention
-Date: Tue, 18 Oct 2022 15:09:06 +0300
-Message-Id: <20221018120916.19820-10-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 11/19] ASoC: SOF: Add path definition for external firmware
+ libraries
+Date: Tue, 18 Oct 2022 15:09:08 +0300
+Message-Id: <20221018120916.19820-12-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221018120916.19820-1-peter.ujfalusi@linux.intel.com>
 References: <20221018120916.19820-1-peter.ujfalusi@linux.intel.com>
@@ -88,20 +88,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-With IPC4 each DSP loadable binary is a library, which contains
-ext_manifest section and loadable modules.
-The basefw is no exception, it is always library 0 and it can contain
-several modules, depending on the firmware build.
+IPC4 based firmware supports dynamically loaded external libraries.
+The libraries will be not stored alongside of the firmware or tplg files.
 
-The current code assumes only one binary, which is the basefw and has no
-concept of libraries.
-This patch introduces the library+modules abstraction and represents the
-basefw as library for the IPC4 loader codebase.
-The basefw loading and handling is not changing, it is still done by the
-generic code, but it's information is cloned under the library
-representation.
-
-The libraries are managed via XArray to offload the list and ID management.
+For intel platforms the default path will be:
+intel/avs-lib|sof-ipc4-lib/<platform>/ if a community key is used on the
+given machine then the libraries will be under 'community' directory, like
+it is done for the firmware itself.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
@@ -109,258 +102,79 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Chao Song <chao.song@intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/ipc4-loader.c   | 45 +++++++++++++++++++++++------
- sound/soc/sof/ipc4-priv.h     | 53 +++++++++++++++++++++++------------
- sound/soc/sof/ipc4-topology.c | 20 ++++++-------
- sound/soc/sof/ipc4.c          | 32 +++++++++++++++++++++
- 4 files changed, 113 insertions(+), 37 deletions(-)
+ include/sound/sof.h         |  6 +++++-
+ sound/soc/sof/sof-pci-dev.c | 26 ++++++++++++++++++++++++++
+ 2 files changed, 31 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/ipc4-loader.c b/sound/soc/sof/ipc4-loader.c
-index 2495a205ef78..5506ec997328 100644
---- a/sound/soc/sof/ipc4-loader.c
-+++ b/sound/soc/sof/ipc4-loader.c
-@@ -14,11 +14,12 @@
- #include "sof-priv.h"
- #include "ops.h"
+diff --git a/include/sound/sof.h b/include/sound/sof.h
+index e1f2f02666a7..266e66318f9c 100644
+--- a/include/sound/sof.h
++++ b/include/sound/sof.h
+@@ -82,6 +82,9 @@ struct snd_sof_pdata {
+ 	const char *tplg_filename_prefix;
+ 	const char *tplg_filename;
  
--static size_t sof_ipc4_fw_parse_ext_man(struct snd_sof_dev *sdev)
-+static size_t sof_ipc4_fw_parse_ext_man(struct snd_sof_dev *sdev,
-+					struct sof_ipc4_fw_library *fw_lib)
- {
- 	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
-+	const struct firmware *fw = fw_lib->sof_fw.fw;
- 	struct sof_man4_fw_binary_header *fw_header;
--	const struct firmware *fw = sdev->basefw.fw;
- 	struct sof_ext_manifest4_hdr *ext_man_hdr;
- 	struct sof_man4_module_config *fm_config;
- 	struct sof_ipc4_fw_module *fw_module;
-@@ -76,14 +77,13 @@ static size_t sof_ipc4_fw_parse_ext_man(struct snd_sof_dev *sdev)
- 	dev_dbg(sdev->dev, "Firmware name: %s, header length: %u, module count: %u\n",
- 		fw_header->name, fw_header->len, fw_header->num_module_entries);
- 
--	ipc4_data->fw_modules = devm_kmalloc_array(sdev->dev,
--						   fw_header->num_module_entries,
--						   sizeof(*fw_module), GFP_KERNEL);
--	if (!ipc4_data->fw_modules)
-+	fw_lib->modules = devm_kmalloc_array(sdev->dev, fw_header->num_module_entries,
-+					     sizeof(*fw_module), GFP_KERNEL);
-+	if (!fw_lib->modules)
- 		return -ENOMEM;
- 
--	ipc4_data->num_fw_modules = fw_header->num_module_entries;
--	fw_module = ipc4_data->fw_modules;
-+	fw_lib->num_modules = fw_header->num_module_entries;
-+	fw_module = fw_lib->modules;
- 
- 	fm_entry = (struct sof_man4_module *)((u8 *)fw_header + fw_header->len);
- 	remaining -= fw_header->len;
-@@ -133,6 +133,33 @@ static size_t sof_ipc4_fw_parse_ext_man(struct snd_sof_dev *sdev)
- 	return ext_man_hdr->len;
- }
- 
-+static size_t sof_ipc4_fw_parse_basefw_ext_man(struct snd_sof_dev *sdev)
-+{
-+	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
-+	struct sof_ipc4_fw_library *fw_lib;
-+	size_t payload_offset;
-+	int ret;
++	/* loadable external libraries available under this directory */
++	const char *fw_lib_prefix;
 +
-+	fw_lib = devm_kzalloc(sdev->dev, sizeof(*fw_lib), GFP_KERNEL);
-+	if (!fw_lib)
-+		return -ENOMEM;
-+
-+	fw_lib->sof_fw.fw = sdev->basefw.fw;
-+
-+	payload_offset = sof_ipc4_fw_parse_ext_man(sdev, fw_lib);
-+	if (payload_offset > 0) {
-+		fw_lib->sof_fw.payload_offset = payload_offset;
-+
-+		/* basefw ID is 0 */
-+		fw_lib->id = 0;
-+		ret = xa_insert(&ipc4_data->fw_lib_xa, 0, fw_lib, GFP_KERNEL);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return payload_offset;
-+}
-+
- static int sof_ipc4_validate_firmware(struct snd_sof_dev *sdev)
- {
- 	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
-@@ -224,6 +251,6 @@ static int sof_ipc4_query_fw_configuration(struct snd_sof_dev *sdev)
+ 	/* machine */
+ 	struct platform_device *pdev_mach;
+ 	const struct snd_soc_acpi_mach *machine;
+@@ -127,8 +130,9 @@ struct sof_dev_desc {
+ 	unsigned int ipc_supported_mask;
+ 	enum sof_ipc_type ipc_default;
  
- const struct sof_ipc_fw_loader_ops ipc4_loader_ops = {
- 	.validate = sof_ipc4_validate_firmware,
--	.parse_ext_manifest = sof_ipc4_fw_parse_ext_man,
-+	.parse_ext_manifest = sof_ipc4_fw_parse_basefw_ext_man,
- 	.query_fw_configuration = sof_ipc4_query_fw_configuration,
- };
-diff --git a/sound/soc/sof/ipc4-priv.h b/sound/soc/sof/ipc4-priv.h
-index 7f5c7a47b3a7..bce168083f09 100644
---- a/sound/soc/sof/ipc4-priv.h
-+++ b/sound/soc/sof/ipc4-priv.h
-@@ -24,11 +24,43 @@ enum sof_ipc4_mtrace_type {
- 	SOF_IPC4_MTRACE_INTEL_CAVS_2,
- };
+-	/* defaults paths for firmware and topology files */
++	/* defaults paths for firmware, library and topology files */
+ 	const char *default_fw_path[SOF_IPC_TYPE_COUNT];
++	const char *default_lib_path[SOF_IPC_TYPE_COUNT];
+ 	const char *default_tplg_path[SOF_IPC_TYPE_COUNT];
  
-+/**
-+ * struct sof_ipc4_fw_module - IPC4 module info
-+ * @sof_man4_module: Module info
-+ * @m_ida: Module instance identifier
-+ * @bss_size: Module object size
-+ * @private: Module private data
-+ */
-+struct sof_ipc4_fw_module {
-+	struct sof_man4_module man4_module_entry;
-+	struct ida m_ida;
-+	u32 bss_size;
-+	void *private;
-+};
+ 	/* default firmware name */
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index 643fd1036d60..f5ece43d0ec2 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -28,6 +28,10 @@ static char *fw_filename;
+ module_param(fw_filename, charp, 0444);
+ MODULE_PARM_DESC(fw_filename, "alternate filename for SOF firmware.");
+ 
++static char *lib_path;
++module_param(lib_path, charp, 0444);
++MODULE_PARM_DESC(lib_path, "alternate path for SOF firmware libraries.");
 +
-+/**
-+ * struct sof_ipc4_fw_library - IPC4 library information
-+ * @sof_fw: SOF Firmware of the library
-+ * @id: Library ID. 0 is reserved for basefw, external libraries must have unique
-+ *	ID number between 1 and (sof_ipc4_fw_data.max_libs_count - 1)
-+ *	Note: sof_ipc4_fw_data.max_libs_count == 1 implies that external libraries
-+ *	are not supported
-+ * @num_modules : Number of FW modules in the library
-+ * @modules: Array of FW modules
-+ */
-+struct sof_ipc4_fw_library {
-+	struct sof_firmware sof_fw;
-+	u32 id;
-+	int num_modules;
-+	struct sof_ipc4_fw_module *modules;
-+};
-+
- /**
-  * struct sof_ipc4_fw_data - IPC4-specific data
-  * @manifest_fw_hdr_offset: FW header offset in the manifest
-- * @num_fw_modules : Number of modules in base FW
-- * @fw_modules: Array of base FW modules
-+ * @fw_lib_xa: XArray for firmware libraries, including basefw (ID = 0)
-+ *	       Used to store the FW libraries and to manage the unique IDs of the
-+ *	       libraries.
-  * @nhlt: NHLT table either from the BIOS or the topology manifest
-  * @mtrace_type: mtrace type supported on the booted platform
-  * @mtrace_log_bytes: log bytes as reported by the firmware via fw_config reply
-@@ -37,28 +69,13 @@ enum sof_ipc4_mtrace_type {
-  */
- struct sof_ipc4_fw_data {
- 	u32 manifest_fw_hdr_offset;
--	int num_fw_modules;
--	void *fw_modules;
-+	struct xarray fw_lib_xa;
- 	void *nhlt;
- 	enum sof_ipc4_mtrace_type mtrace_type;
- 	u32 mtrace_log_bytes;
- 	u32 max_libs_count;
- };
- 
--/**
-- * struct sof_ipc4_fw_module - IPC4 module info
-- * @sof_man4_module : Module info
-- * @m_ida: Module instance identifier
-- * @bss_size: Module object size
-- * @private: Module private data
-- */
--struct sof_ipc4_fw_module {
--	struct sof_man4_module man4_module_entry;
--	struct ida m_ida;
--	u32 bss_size;
--	void *private;
--};
--
- extern const struct sof_ipc_fw_loader_ops ipc4_loader_ops;
- extern const struct sof_ipc_tplg_ops ipc4_tplg_ops;
- extern const struct sof_ipc_tplg_control_ops tplg_ipc4_control_ops;
-diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-index a81af5f73a4b..98f7f5421ba5 100644
---- a/sound/soc/sof/ipc4-topology.c
-+++ b/sound/soc/sof/ipc4-topology.c
-@@ -290,19 +290,19 @@ static int sof_ipc4_widget_set_module_info(struct snd_sof_widget *swidget)
- 	struct snd_soc_component *scomp = swidget->scomp;
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
- 	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
--	struct sof_ipc4_fw_module *fw_modules = ipc4_data->fw_modules;
-+	struct sof_ipc4_fw_library *fw_lib;
-+	unsigned long lib_id;
- 	int i;
- 
--	if (!fw_modules) {
--		dev_err(sdev->dev, "no fw_module information\n");
--		return -EINVAL;
--	}
-+	xa_for_each(&ipc4_data->fw_lib_xa, lib_id, fw_lib) {
-+		/* set module info */
-+		for (i = 0; i < fw_lib->num_modules; i++) {
-+			struct sof_ipc4_fw_module *module = &fw_lib->modules[i];
- 
--	/* set module info */
--	for (i = 0; i < ipc4_data->num_fw_modules; i++) {
--		if (guid_equal(&swidget->uuid, &fw_modules[i].man4_module_entry.uuid)) {
--			swidget->module_info = &fw_modules[i];
--			return 0;
-+			if (guid_equal(&swidget->uuid, &module->man4_module_entry.uuid)) {
-+				swidget->module_info = module;
-+				return 0;
-+			}
- 		}
+ static char *tplg_path;
+ module_param(tplg_path, charp, 0444);
+ MODULE_PARM_DESC(tplg_path, "alternate path for SOF topology.");
+@@ -272,6 +276,28 @@ int sof_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 			sof_pdata->desc->default_fw_path[sof_pdata->ipc_type];
  	}
  
-diff --git a/sound/soc/sof/ipc4.c b/sound/soc/sof/ipc4.c
-index 6eaa18e27e5a..abbeb832027b 100644
---- a/sound/soc/sof/ipc4.c
-+++ b/sound/soc/sof/ipc4.c
-@@ -8,6 +8,7 @@
- // Authors: Rander Wang <rander.wang@linux.intel.com>
- //	    Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
- //
-+#include <linux/firmware.h>
- #include <sound/sof/header.h>
- #include <sound/sof/ipc4/header.h>
- #include "sof-priv.h"
-@@ -657,7 +658,38 @@ static const struct sof_ipc_pm_ops ipc4_pm_ops = {
- 	.set_core_state = sof_ipc4_set_core_state,
- };
- 
-+static int sof_ipc4_init(struct snd_sof_dev *sdev)
-+{
-+	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
++	if (lib_path) {
++		sof_pdata->fw_lib_prefix = lib_path;
 +
-+	xa_init_flags(&ipc4_data->fw_lib_xa, XA_FLAGS_ALLOC);
++		dev_dbg(dev, "Module parameter used, changed fw_lib path to %s\n",
++			sof_pdata->fw_lib_prefix);
 +
-+	return 0;
-+}
++	} else if (sof_pdata->desc->default_lib_path[sof_pdata->ipc_type]) {
++		if (dmi_check_system(community_key_platforms) && sof_dmi_use_community_key) {
++			sof_pdata->fw_lib_prefix =
++				devm_kasprintf(dev, GFP_KERNEL, "%s/%s",
++					sof_pdata->desc->default_lib_path[sof_pdata->ipc_type],
++					"community");
 +
-+static void sof_ipc4_exit(struct snd_sof_dev *sdev)
-+{
-+	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
-+	struct sof_ipc4_fw_library *fw_lib;
-+	unsigned long lib_id;
-+
-+	xa_for_each(&ipc4_data->fw_lib_xa, lib_id, fw_lib) {
-+		/*
-+		 * The basefw (ID == 0) is handled by generic code, it is not
-+		 * loaded by IPC4 code.
-+		 */
-+		if (lib_id != 0)
-+			release_firmware(fw_lib->sof_fw.fw);
-+
-+		fw_lib->sof_fw.fw = NULL;
++			dev_dbg(dev,
++				"Platform uses community key, changed fw_lib path to %s\n",
++				sof_pdata->fw_lib_prefix);
++		} else {
++			sof_pdata->fw_lib_prefix =
++				sof_pdata->desc->default_lib_path[sof_pdata->ipc_type];
++		}
 +	}
 +
-+	xa_destroy(&ipc4_data->fw_lib_xa);
-+}
-+
- const struct sof_ipc_ops ipc4_ops = {
-+	.init = sof_ipc4_init,
-+	.exit = sof_ipc4_exit,
- 	.tx_msg = sof_ipc4_tx_msg,
- 	.rx_msg = sof_ipc4_rx_msg,
- 	.set_get_data = sof_ipc4_set_get_data,
+ 	if (tplg_path)
+ 		sof_pdata->tplg_filename_prefix = tplg_path;
+ 	else
 -- 
 2.38.0
 
