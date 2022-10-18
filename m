@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A7FCC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 12:12:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE124C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 12:12:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CCE439C6D;
-	Tue, 18 Oct 2022 14:11:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCE439C6D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1CC959CD9;
+	Tue, 18 Oct 2022 14:12:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CC959CD9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666095165;
-	bh=cIfPwd6KcUAgITrYV7LBA6hnFXIOA6UGS6RaevgUzu4=;
+	s=default; t=1666095173;
+	bh=BqN7gRQsa18TgqZUb9aUZFP0EcjnlGVxeGv6SHagRIs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZF8YcZbqwOCOroB9meDg0Y5bJ47Li1g8LHbMROzYajoC5uILujZrSnLzQxCEH7EAN
-	 33dj4T5nX4sCG1fmESpYRbPz6kHRP597jmKw4fgZu+6R0exVbRNUjo8EHzMtQz5jgv
-	 Nzg2CfH0PLFfARH/xlD1x5JhI3N2O7syvAqiRXCc=
+	b=clkJIc/n0aouoyXs43IaRjqurPbRoitSO12GsMhP7E39xGUkWg9DPyI+GrqnyH+zJ
+	 ULU1IZE240hRQ0SmiZXXPDd/iXnwodmPVEZAmQSFyA0y6Ubrb88ScAndxPWEDsQLFj
+	 N6MY1qfSfj3tC48G3M7OkUu/fJkTPF04XUgsL2/k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2574FF805AA;
+	by alsa1.perex.cz (Postfix) with ESMTP id D5E11F8057E;
 	Tue, 18 Oct 2022 14:09:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01ACAF80571; Tue, 18 Oct 2022 14:09:35 +0200 (CEST)
+ id EB520F80588; Tue, 18 Oct 2022 14:09:35 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1E4AF80571
- for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 14:09:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1E4AF80571
+ by alsa1.perex.cz (Postfix) with ESMTPS id E9262F80567
+ for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 14:09:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9262F80567
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="lmIXV/Q/"
+ header.b="ePyOCXKB"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666094968; x=1697630968;
+ t=1666094970; x=1697630970;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=cIfPwd6KcUAgITrYV7LBA6hnFXIOA6UGS6RaevgUzu4=;
- b=lmIXV/Q/9XJ2RxZBNp4Rj7egPrVSCR+ZHK9f7wp6JGWMv68L5lNHePAw
- 9B8eFjqa69/6Xy0mCQ+MBWeuld218rbBx6MT/qY6Nnw6GBlDO09W3po1z
- 40/YO/BiqOZJGCf909M4vjWmc63ejqHkO0ACvr9KV+1m4xhgZjiG2xPAi
- MgPPMrxJsge0WgoyASqzv78wcqu4oEYPyyfW2v5cRGtlyfgTkwHWd02Dq
- XIhsFMgPu4fgcSkcR4Nb/x0FBVDS/jj4ORrA3GyuiPFTdF2wsYPpZ7vnv
- yPxmKi6hEX36k5ALK4pB+kiZ/W/KO4xg2WbAobKjqxmxAQbZuzKvUZx02 g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="293452960"
-X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="293452960"
+ bh=BqN7gRQsa18TgqZUb9aUZFP0EcjnlGVxeGv6SHagRIs=;
+ b=ePyOCXKB7xWLo6jB+X1d7NgTQQo+DH3pEfS1ZuzZBHbwSsQqBQH43/vW
+ 3Ef+/+AFqe7CccvMgwg9hOcF67RODXr9b2EYboNiAPE/gPBXHTGiD4GUP
+ y6QAxTNK9c/FV6YcOxsB6Rpyu0ZB4Mj6caUKh3nxTdYx9UUwddtwIkIJ5
+ Az7Gpssiop/5CutA2dRgldByt2BHIUqrAROpMLGhhEWiGpKXO1IPGuk8+
+ MMNbQcQ7TqY/s1K+ye67Ga0LwNdKKXXrI5jOH5daWP6NySBDQcH8gnkRU
+ SPQZClx1M25rU0xXEz4ixJbV6pg+dCdBUQDjMA4Yt7uYc+rjA3DlzDvH/ A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="293452979"
+X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="293452979"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Oct 2022 05:09:22 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="579757936"
-X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="579757936"
+ 18 Oct 2022 05:09:27 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="579757979"
+X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="579757979"
 Received: from mariaca1-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.27.127])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Oct 2022 05:09:20 -0700
+ 18 Oct 2022 05:09:24 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 10/19] ASoC: SOF: IPC4: Add helper for looking up module by
- UUID
-Date: Tue, 18 Oct 2022 15:09:07 +0300
-Message-Id: <20221018120916.19820-11-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 12/19] ASoC: SOF: Intel: Set the default firmware library path
+ for IPC4
+Date: Tue, 18 Oct 2022 15:09:09 +0300
+Message-Id: <20221018120916.19820-13-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221018120916.19820-1-peter.ujfalusi@linux.intel.com>
 References: <20221018120916.19820-1-peter.ujfalusi@linux.intel.com>
@@ -88,9 +88,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a simple helper to walk the loaded libraries and their modules to make
-the ipc4-topology not aware of the underlying infrastructure and simplify
-the code.
+The default path for the external firmware libraries are:
+intel/avs-lib/<platform>
+or
+intel/sof-ipc4-lib/<platform>
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
@@ -98,85 +99,183 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Chao Song <chao.song@intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/ipc4-loader.c   | 21 +++++++++++++++++++++
- sound/soc/sof/ipc4-priv.h     |  3 +++
- sound/soc/sof/ipc4-topology.c | 17 +++--------------
- 3 files changed, 27 insertions(+), 14 deletions(-)
+ sound/soc/sof/intel/pci-apl.c |  6 ++++++
+ sound/soc/sof/intel/pci-cnl.c |  9 +++++++++
+ sound/soc/sof/intel/pci-icl.c |  6 ++++++
+ sound/soc/sof/intel/pci-mtl.c |  3 +++
+ sound/soc/sof/intel/pci-tgl.c | 21 +++++++++++++++++++++
+ 5 files changed, 45 insertions(+)
 
-diff --git a/sound/soc/sof/ipc4-loader.c b/sound/soc/sof/ipc4-loader.c
-index 5506ec997328..b7e8b3f3d4f0 100644
---- a/sound/soc/sof/ipc4-loader.c
-+++ b/sound/soc/sof/ipc4-loader.c
-@@ -160,6 +160,27 @@ static size_t sof_ipc4_fw_parse_basefw_ext_man(struct snd_sof_dev *sdev)
- 	return payload_offset;
- }
- 
-+struct sof_ipc4_fw_module *sof_ipc4_find_module_by_uuid(struct snd_sof_dev *sdev,
-+							const guid_t *uuid)
-+{
-+	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
-+	struct sof_ipc4_fw_library *fw_lib;
-+	unsigned long lib_id;
-+	int i;
-+
-+	if (guid_is_null(uuid))
-+		return NULL;
-+
-+	xa_for_each(&ipc4_data->fw_lib_xa, lib_id, fw_lib) {
-+		for (i = 0; i < fw_lib->num_modules; i++) {
-+			if (guid_equal(uuid, &fw_lib->modules[i].man4_module_entry.uuid))
-+				return &fw_lib->modules[i];
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
- static int sof_ipc4_validate_firmware(struct snd_sof_dev *sdev)
- {
- 	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
-diff --git a/sound/soc/sof/ipc4-priv.h b/sound/soc/sof/ipc4-priv.h
-index bce168083f09..ecfa9f701ef1 100644
---- a/sound/soc/sof/ipc4-priv.h
-+++ b/sound/soc/sof/ipc4-priv.h
-@@ -84,4 +84,7 @@ extern const struct sof_ipc_fw_tracing_ops ipc4_mtrace_ops;
- 
- int sof_ipc4_set_pipeline_state(struct snd_sof_dev *sdev, u32 id, u32 state);
- int sof_ipc4_mtrace_update_pos(struct snd_sof_dev *sdev, int core);
-+
-+struct sof_ipc4_fw_module *sof_ipc4_find_module_by_uuid(struct snd_sof_dev *sdev,
-+							const guid_t *uuid);
- #endif
-diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-index 98f7f5421ba5..ab85dde4303b 100644
---- a/sound/soc/sof/ipc4-topology.c
-+++ b/sound/soc/sof/ipc4-topology.c
-@@ -289,22 +289,11 @@ static int sof_ipc4_widget_set_module_info(struct snd_sof_widget *swidget)
- {
- 	struct snd_soc_component *scomp = swidget->scomp;
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
--	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
--	struct sof_ipc4_fw_library *fw_lib;
--	unsigned long lib_id;
--	int i;
- 
--	xa_for_each(&ipc4_data->fw_lib_xa, lib_id, fw_lib) {
--		/* set module info */
--		for (i = 0; i < fw_lib->num_modules; i++) {
--			struct sof_ipc4_fw_module *module = &fw_lib->modules[i];
-+	swidget->module_info = sof_ipc4_find_module_by_uuid(sdev, &swidget->uuid);
- 
--			if (guid_equal(&swidget->uuid, &module->man4_module_entry.uuid)) {
--				swidget->module_info = module;
--				return 0;
--			}
--		}
--	}
-+	if (swidget->module_info)
-+		return 0;
- 
- 	dev_err(sdev->dev, "failed to find module info for widget %s with UUID %pUL\n",
- 		swidget->widget->name, &swidget->uuid);
+diff --git a/sound/soc/sof/intel/pci-apl.c b/sound/soc/sof/intel/pci-apl.c
+index 998e219011f0..69279dcc92dc 100644
+--- a/sound/soc/sof/intel/pci-apl.c
++++ b/sound/soc/sof/intel/pci-apl.c
+@@ -33,6 +33,9 @@ static const struct sof_dev_desc bxt_desc = {
+ 		[SOF_IPC] = "intel/sof",
+ 		[SOF_INTEL_IPC4] = "intel/avs/apl",
+ 	},
++	.default_lib_path = {
++		[SOF_INTEL_IPC4] = "intel/avs-lib/apl",
++	},
+ 	.default_tplg_path = {
+ 		[SOF_IPC] = "intel/sof-tplg",
+ 		[SOF_INTEL_IPC4] = "intel/avs-tplg",
+@@ -61,6 +64,9 @@ static const struct sof_dev_desc glk_desc = {
+ 		[SOF_IPC] = "intel/sof",
+ 		[SOF_INTEL_IPC4] = "intel/avs/glk",
+ 	},
++	.default_lib_path = {
++		[SOF_INTEL_IPC4] = "intel/avs-lib/glk",
++	},
+ 	.default_tplg_path = {
+ 		[SOF_IPC] = "intel/sof-tplg",
+ 		[SOF_INTEL_IPC4] = "intel/avs-tplg",
+diff --git a/sound/soc/sof/intel/pci-cnl.c b/sound/soc/sof/intel/pci-cnl.c
+index c797356f7028..8db3f8d15b55 100644
+--- a/sound/soc/sof/intel/pci-cnl.c
++++ b/sound/soc/sof/intel/pci-cnl.c
+@@ -34,6 +34,9 @@ static const struct sof_dev_desc cnl_desc = {
+ 		[SOF_IPC] = "intel/sof",
+ 		[SOF_INTEL_IPC4] = "intel/avs/cnl",
+ 	},
++	.default_lib_path = {
++		[SOF_INTEL_IPC4] = "intel/avs-lib/cnl",
++	},
+ 	.default_tplg_path = {
+ 		[SOF_IPC] = "intel/sof-tplg",
+ 		[SOF_INTEL_IPC4] = "intel/avs-tplg",
+@@ -62,6 +65,9 @@ static const struct sof_dev_desc cfl_desc = {
+ 		[SOF_IPC] = "intel/sof",
+ 		[SOF_INTEL_IPC4] = "intel/avs/cnl",
+ 	},
++	.default_lib_path = {
++		[SOF_INTEL_IPC4] = "intel/avs-lib/cnl",
++	},
+ 	.default_tplg_path = {
+ 		[SOF_IPC] = "intel/sof-tplg",
+ 		[SOF_INTEL_IPC4] = "intel/avs-tplg",
+@@ -91,6 +97,9 @@ static const struct sof_dev_desc cml_desc = {
+ 		[SOF_IPC] = "intel/sof",
+ 		[SOF_INTEL_IPC4] = "intel/avs/cnl",
+ 	},
++	.default_lib_path = {
++		[SOF_INTEL_IPC4] = "intel/avs-lib/cnl",
++	},
+ 	.default_tplg_path = {
+ 		[SOF_IPC] = "intel/sof-tplg",
+ 		[SOF_INTEL_IPC4] = "intel/avs-tplg",
+diff --git a/sound/soc/sof/intel/pci-icl.c b/sound/soc/sof/intel/pci-icl.c
+index 48f24f8ace26..d6cf75e357db 100644
+--- a/sound/soc/sof/intel/pci-icl.c
++++ b/sound/soc/sof/intel/pci-icl.c
+@@ -34,6 +34,9 @@ static const struct sof_dev_desc icl_desc = {
+ 		[SOF_IPC] = "intel/sof",
+ 		[SOF_INTEL_IPC4] = "intel/avs/icl",
+ 	},
++	.default_lib_path = {
++		[SOF_INTEL_IPC4] = "intel/avs-lib/icl",
++	},
+ 	.default_tplg_path = {
+ 		[SOF_IPC] = "intel/sof-tplg",
+ 		[SOF_INTEL_IPC4] = "intel/avs-tplg",
+@@ -62,6 +65,9 @@ static const struct sof_dev_desc jsl_desc = {
+ 		[SOF_IPC] = "intel/sof",
+ 		[SOF_INTEL_IPC4] = "intel/avs/jsl",
+ 	},
++	.default_lib_path = {
++		[SOF_INTEL_IPC4] = "intel/avs-lib/jsl",
++	},
+ 	.default_tplg_path = {
+ 		[SOF_IPC] = "intel/sof-tplg",
+ 		[SOF_INTEL_IPC4] = "intel/avs-tplg",
+diff --git a/sound/soc/sof/intel/pci-mtl.c b/sound/soc/sof/intel/pci-mtl.c
+index 899b00d53d64..84445daf33af 100644
+--- a/sound/soc/sof/intel/pci-mtl.c
++++ b/sound/soc/sof/intel/pci-mtl.c
+@@ -34,6 +34,9 @@ static const struct sof_dev_desc mtl_desc = {
+ 	.default_fw_path = {
+ 		[SOF_INTEL_IPC4] = "intel/sof-ipc4/mtl",
+ 	},
++	.default_lib_path = {
++		[SOF_INTEL_IPC4] = "intel/sof-ipc4-lib/mtl",
++	},
+ 	.default_tplg_path = {
+ 		[SOF_INTEL_IPC4] = "intel/sof-ace-tplg",
+ 	},
+diff --git a/sound/soc/sof/intel/pci-tgl.c b/sound/soc/sof/intel/pci-tgl.c
+index 2d63cc236a68..f9cbf3ad85b3 100644
+--- a/sound/soc/sof/intel/pci-tgl.c
++++ b/sound/soc/sof/intel/pci-tgl.c
+@@ -34,6 +34,9 @@ static const struct sof_dev_desc tgl_desc = {
+ 		[SOF_IPC] = "intel/sof",
+ 		[SOF_INTEL_IPC4] = "intel/avs/tgl",
+ 	},
++	.default_lib_path = {
++		[SOF_INTEL_IPC4] = "intel/avs-lib/tgl",
++	},
+ 	.default_tplg_path = {
+ 		[SOF_IPC] = "intel/sof-tplg",
+ 		[SOF_INTEL_IPC4] = "intel/avs-tplg",
+@@ -62,6 +65,9 @@ static const struct sof_dev_desc tglh_desc = {
+ 		[SOF_IPC] = "intel/sof",
+ 		[SOF_INTEL_IPC4] = "intel/avs/tgl-h",
+ 	},
++	.default_lib_path = {
++		[SOF_INTEL_IPC4] = "intel/avs-lib/tgl-h",
++	},
+ 	.default_tplg_path = {
+ 		[SOF_IPC] = "intel/sof-tplg",
+ 		[SOF_INTEL_IPC4] = "intel/avs-tplg",
+@@ -90,6 +96,9 @@ static const struct sof_dev_desc ehl_desc = {
+ 		[SOF_IPC] = "intel/sof",
+ 		[SOF_INTEL_IPC4] = "intel/avs/ehl",
+ 	},
++	.default_lib_path = {
++		[SOF_INTEL_IPC4] = "intel/avs-lib/ehl",
++	},
+ 	.default_tplg_path = {
+ 		[SOF_IPC] = "intel/sof-tplg",
+ 		[SOF_INTEL_IPC4] = "intel/avs-tplg",
+@@ -118,6 +127,9 @@ static const struct sof_dev_desc adls_desc = {
+ 		[SOF_IPC] = "intel/sof",
+ 		[SOF_INTEL_IPC4] = "intel/avs/adl-s",
+ 	},
++	.default_lib_path = {
++		[SOF_INTEL_IPC4] = "intel/avs-lib/adl-s",
++	},
+ 	.default_tplg_path = {
+ 		[SOF_IPC] = "intel/sof-tplg",
+ 		[SOF_INTEL_IPC4] = "intel/avs-tplg",
+@@ -146,6 +158,9 @@ static const struct sof_dev_desc adl_desc = {
+ 		[SOF_IPC] = "intel/sof",
+ 		[SOF_INTEL_IPC4] = "intel/avs/adl",
+ 	},
++	.default_lib_path = {
++		[SOF_INTEL_IPC4] = "intel/avs-lib/adl",
++	},
+ 	.default_tplg_path = {
+ 		[SOF_IPC] = "intel/sof-tplg",
+ 		[SOF_INTEL_IPC4] = "intel/avs-tplg",
+@@ -174,6 +189,9 @@ static const struct sof_dev_desc rpls_desc = {
+ 		[SOF_IPC] = "intel/sof",
+ 		[SOF_INTEL_IPC4] = "intel/avs/rpl-s",
+ 	},
++	.default_lib_path = {
++		[SOF_INTEL_IPC4] = "intel/avs-lib/rpl-s",
++	},
+ 	.default_tplg_path = {
+ 		[SOF_IPC] = "intel/sof-tplg",
+ 		[SOF_INTEL_IPC4] = "intel/avs-tplg",
+@@ -202,6 +220,9 @@ static const struct sof_dev_desc rpl_desc = {
+ 		[SOF_IPC] = "intel/sof",
+ 		[SOF_INTEL_IPC4] = "intel/avs/rpl",
+ 	},
++	.default_lib_path = {
++		[SOF_INTEL_IPC4] = "intel/avs-lib/rpl",
++	},
+ 	.default_tplg_path = {
+ 		[SOF_IPC] = "intel/sof-tplg",
+ 		[SOF_INTEL_IPC4] = "intel/avs-tplg",
 -- 
 2.38.0
 
