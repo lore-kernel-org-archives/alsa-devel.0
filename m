@@ -4,75 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 771DDC4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 12:41:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1DE4C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 18 Oct 2022 12:50:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A76C59D4B;
-	Tue, 18 Oct 2022 14:40:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A76C59D4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id A5E879D5D;
+	Tue, 18 Oct 2022 14:49:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5E879D5D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666096895;
-	bh=Cj0vyCeT8hRFBYSIGfFgnpaekmuGw+CwRCb0zBS5rYQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1666097435;
+	bh=TwczKmsg0Mo/4ZwI5MSFQ/oO9PfdbJeeylWhJ79f2qs=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HDt2XKuvFR0bfd1hGgNheOotK2FJOUdin2vP/68mCyNhzInznsNar4yyGMOEx+7qF
-	 Y3tSgjFrXLIaCoOOTde4R3VDEDWEKPRHzG+ZL/vwjkvh8FDUrpdfbhCFgnKkqtW6mj
-	 T7o2/VJtfeH5kM50nTWXdoxt6frPFus+1VplFgbI=
+	b=okLgHlWYvRDH7lrJcNjwPCLnyZXllN/PbMSElikuPNw+LBC/TaS8uyRnLwAUGBOTq
+	 p90N47/+6uGQOrUbL6MSWv36Uq253NTUs2CxDheTBhSF6kDt8R/qFataY0o3YCJtjP
+	 /T1Gq0ClpNxTRZFGXTBOWRw002stTK8fOLEiuDCk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F21AF80557;
-	Tue, 18 Oct 2022 14:40:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 594F4F800E5;
+	Tue, 18 Oct 2022 14:49:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF50DF804D0; Tue, 18 Oct 2022 14:40:03 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id EA431F8024C; Tue, 18 Oct 2022 14:49:43 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5559FF800AA
+ for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 14:49:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5559FF800AA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="ur4B27pU"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B85CF804D0
- for <alsa-devel@alsa-project.org>; Tue, 18 Oct 2022 14:39:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B85CF804D0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="RraOyr5o"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666096797; x=1697632797;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=Cj0vyCeT8hRFBYSIGfFgnpaekmuGw+CwRCb0zBS5rYQ=;
- b=RraOyr5oI//1qjVZJD2Xk/lppnN5MQ8BrPsrjj++vsxJjjZ2SkdOF5Si
- 50MUxDxnhNZYu9U5K8ktl2mAR8S8Dcjzn1pYh1ZM2lzgJYxsXN+ZSAIUX
- 3EP9lcDdexNtl2W4COqVm2YDE70MeN4n5ELcjFtOrLpoKE4LSEc7KTJJ7
- 2EeokKvH5HNGECewL+WHzYMFPhYRelYZkrWlM0mj65cMukK2ozwHXBxpW
- 47w7u+IShSW/+pa4wNJnPSQlg9iXAQnc3crgySRHqTboS3Tcmg3AYePSw
- aV9u7lUu5/6fE//ck4++UIYChGQ+O8JOTaQNnKL2FcCkJcSdQau22GTJb A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="304828567"
-X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="304828567"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Oct 2022 05:39:54 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10503"; a="717912779"
-X-IronPort-AV: E=Sophos;i="5.95,193,1661842800"; d="scan'208";a="717912779"
-Received: from mariaca1-mobl.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.27.127])
- by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Oct 2022 05:39:51 -0700
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org
-Subject: [PATCH 3/4] ASoC: SOF: Intel: ipc4: Wait for channel to be free
- before sending a message
-Date: Tue, 18 Oct 2022 15:40:07 +0300
-Message-Id: <20221018124008.6846-4-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.38.0
-In-Reply-To: <20221018124008.6846-1-peter.ujfalusi@linux.intel.com>
-References: <20221018124008.6846-1-peter.ujfalusi@linux.intel.com>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 694AE6153C;
+ Tue, 18 Oct 2022 12:49:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01DDEC433C1;
+ Tue, 18 Oct 2022 12:49:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1666097377;
+ bh=TwczKmsg0Mo/4ZwI5MSFQ/oO9PfdbJeeylWhJ79f2qs=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=ur4B27pUiM+v43sacXhmahlHVrI3vyuRbQpWRLCXgVLC1tfDjDtFmcO/rvZ7MqIOd
+ /lbDHCDkmN4O7IazP+iPhEpseIbEsIGjSm983WakxcvHbGINDra1Y3r9UIHESKQ7H7
+ 0BhNqO+URC4kg+7urSMaFkVDmu3Ud++n4I7bS4i3/7NvJv6P8FKTCXJO+P+l4KoT7z
+ c8AhdbQSj4rgzr8yjb2YnwUezO9MvZBr2PYl8thABU6WbAY56rLBXJkE2w2TgQOb/e
+ zQTuBBjtwHMIMLUbk9lyZ1MMtus03fqKjalBNnjbD5Xzjp8H6TJc5zUDHgBQ2+ZoDl
+ d03VitzTUyTng==
+Date: Tue, 18 Oct 2022 13:49:33 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
+Subject: Re: [PATCH 06/11] ASoC: soc-dapm.c: merge dapm_power_one_widget()
+ and dapm_widget_set_power()
+Message-ID: <Y06g3XzdxHmHnGsU@sirena.org.uk>
+References: <8735bmqazf.wl-kuninori.morimoto.gx@renesas.com>
+ <87tu42owdd.wl-kuninori.morimoto.gx@renesas.com>
+ <9b721915-1428-81ee-1be9-29c2e9d36d5f@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, rander.wang@intel.com,
- pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
- ranjani.sridharan@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ceLzI03DYP6VS32+"
+Content-Disposition: inline
+In-Reply-To: <9b721915-1428-81ee-1be9-29c2e9d36d5f@linux.intel.com>
+X-Cookie: Lake Erie died for your sins.
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,230 +84,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Before attempting to send a message to the DSP we need to check if the
-downstream BUSY flag has been cleared by the firmware to avoid lost IPC
-messages by the firmware.
 
-This is required by a firmware which only acks the received message after
-it has sent a reply to the host.
-With a bad luck, the host would send a message before the firmware gets to
-the clearing the flag and thus losing a message.
+--ceLzI03DYP6VS32+
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
----
- sound/soc/sof/intel/cnl.c     | 17 +++++++++++++++++
- sound/soc/sof/intel/hda-ipc.c | 17 +++++++++++++++++
- sound/soc/sof/intel/hda.c     | 11 +++++++++++
- sound/soc/sof/intel/hda.h     |  9 +++++++++
- sound/soc/sof/intel/mtl.c     | 17 +++++++++++++++++
- 5 files changed, 71 insertions(+)
+On Tue, Oct 18, 2022 at 12:47:24PM +0200, Amadeusz S=C5=82awi=C5=84ski wrot=
+e:
+> On 10/18/2022 1:37 AM, Kuninori Morimoto wrote:
 
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index 2f2bcde42759..4bf233787757 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -37,6 +37,7 @@ irqreturn_t cnl_ipc4_irq_thread(int irq, void *context)
- {
- 	struct sof_ipc4_msg notification_data = {{ 0 }};
- 	struct snd_sof_dev *sdev = context;
-+	bool ack_received = false;
- 	bool ipc_irq = false;
- 	u32 hipcida, hipctdr;
- 
-@@ -50,6 +51,7 @@ irqreturn_t cnl_ipc4_irq_thread(int irq, void *context)
- 		cnl_ipc_dsp_done(sdev);
- 
- 		ipc_irq = true;
-+		ack_received = true;
- 	}
- 
- 	if (hipctdr & CNL_DSP_REG_HIPCTDR_BUSY) {
-@@ -98,6 +100,13 @@ irqreturn_t cnl_ipc4_irq_thread(int irq, void *context)
- 		/* This interrupt is not shared so no need to return IRQ_NONE. */
- 		dev_dbg_ratelimited(sdev->dev, "nothing to do in IPC IRQ thread\n");
- 
-+	if (ack_received) {
-+		struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
-+
-+		if (hdev->delayed_ipc_tx_msg)
-+			cnl_ipc4_send_msg(sdev, hdev->delayed_ipc_tx_msg);
-+	}
-+
- 	return IRQ_HANDLED;
- }
- 
-@@ -251,8 +260,16 @@ static bool cnl_compact_ipc_compress(struct snd_sof_ipc_msg *msg,
- 
- int cnl_ipc4_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg)
- {
-+	struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
- 	struct sof_ipc4_msg *msg_data = msg->msg_data;
- 
-+	if (hda_ipc4_tx_is_busy(sdev)) {
-+		hdev->delayed_ipc_tx_msg = msg;
-+		return 0;
-+	}
-+
-+	hdev->delayed_ipc_tx_msg = NULL;
-+
- 	/* send the message via mailbox */
- 	if (msg_data->data_size)
- 		sof_mailbox_write(sdev, sdev->host_box.offset, msg_data->data_ptr,
-diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
-index 4118532faf3f..b4668c969a29 100644
---- a/sound/soc/sof/intel/hda-ipc.c
-+++ b/sound/soc/sof/intel/hda-ipc.c
-@@ -69,8 +69,16 @@ int hda_dsp_ipc_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg)
- 
- int hda_dsp_ipc4_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg)
- {
-+	struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
- 	struct sof_ipc4_msg *msg_data = msg->msg_data;
- 
-+	if (hda_ipc4_tx_is_busy(sdev)) {
-+		hdev->delayed_ipc_tx_msg = msg;
-+		return 0;
-+	}
-+
-+	hdev->delayed_ipc_tx_msg = NULL;
-+
- 	/* send the message via mailbox */
- 	if (msg_data->data_size)
- 		sof_mailbox_write(sdev, sdev->host_box.offset, msg_data->data_ptr,
-@@ -122,6 +130,7 @@ irqreturn_t hda_dsp_ipc4_irq_thread(int irq, void *context)
- {
- 	struct sof_ipc4_msg notification_data = {{ 0 }};
- 	struct snd_sof_dev *sdev = context;
-+	bool ack_received = false;
- 	bool ipc_irq = false;
- 	u32 hipcie, hipct;
- 
-@@ -135,6 +144,7 @@ irqreturn_t hda_dsp_ipc4_irq_thread(int irq, void *context)
- 		hda_dsp_ipc_dsp_done(sdev);
- 
- 		ipc_irq = true;
-+		ack_received = true;
- 	}
- 
- 	if (hipct & HDA_DSP_REG_HIPCT_BUSY) {
-@@ -187,6 +197,13 @@ irqreturn_t hda_dsp_ipc4_irq_thread(int irq, void *context)
- 		/* This interrupt is not shared so no need to return IRQ_NONE. */
- 		dev_dbg_ratelimited(sdev->dev, "nothing to do in IPC IRQ thread\n");
- 
-+	if (ack_received) {
-+		struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
-+
-+		if (hdev->delayed_ipc_tx_msg)
-+			hda_dsp_ipc4_send_msg(sdev, hdev->delayed_ipc_tx_msg);
-+	}
-+
- 	return IRQ_HANDLED;
- }
- 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 1188ec51816b..eddd20beea0d 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -681,6 +681,17 @@ void hda_ipc4_dump(struct snd_sof_dev *sdev)
- 		hipci, hipcie, hipct, hipcte, hipcctl);
- }
- 
-+bool hda_ipc4_tx_is_busy(struct snd_sof_dev *sdev)
-+{
-+	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
-+	const struct sof_intel_dsp_desc *chip = hda->desc;
-+	u32 val;
-+
-+	val = snd_sof_dsp_read(sdev, HDA_DSP_BAR, chip->ipc_req);
-+
-+	return !!(val & chip->ipc_req_mask);
-+}
-+
- static int hda_init(struct snd_sof_dev *sdev)
- {
- 	struct hda_bus *hbus;
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 2ab3c3840b92..65657d145dc2 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -521,6 +521,14 @@ struct sof_intel_hda_dev {
- 
- 	/* Intel NHLT information */
- 	struct nhlt_acpi_table *nhlt;
-+
-+	/*
-+	 * Pointing to the IPC message if immediate sending was not possible
-+	 * because the downlink communication channel was BUSY at the time.
-+	 * The message will be re-tried when the channel becomes free (the ACK
-+	 * is received from the DSP for the previous message)
-+	 */
-+	struct snd_sof_ipc_msg *delayed_ipc_tx_msg;
- };
- 
- static inline struct hdac_bus *sof_to_bus(struct snd_sof_dev *s)
-@@ -852,6 +860,7 @@ int hda_dsp_core_stall_reset(struct snd_sof_dev *sdev, unsigned int core_mask);
- irqreturn_t cnl_ipc4_irq_thread(int irq, void *context);
- int cnl_ipc4_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg);
- irqreturn_t hda_dsp_ipc4_irq_thread(int irq, void *context);
-+bool hda_ipc4_tx_is_busy(struct snd_sof_dev *sdev);
- int hda_dsp_ipc4_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg);
- void hda_ipc4_dump(struct snd_sof_dev *sdev);
- extern struct sdw_intel_ops sdw_callback;
-diff --git a/sound/soc/sof/intel/mtl.c b/sound/soc/sof/intel/mtl.c
-index a9b31b31a4e4..9d1bc74395e7 100644
---- a/sound/soc/sof/intel/mtl.c
-+++ b/sound/soc/sof/intel/mtl.c
-@@ -90,8 +90,16 @@ static bool mtl_dsp_check_sdw_irq(struct snd_sof_dev *sdev)
- 
- static int mtl_ipc_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg)
- {
-+	struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
- 	struct sof_ipc4_msg *msg_data = msg->msg_data;
- 
-+	if (hda_ipc4_tx_is_busy(sdev)) {
-+		hdev->delayed_ipc_tx_msg = msg;
-+		return 0;
-+	}
-+
-+	hdev->delayed_ipc_tx_msg = NULL;
-+
- 	/* send the message via mailbox */
- 	if (msg_data->data_size)
- 		sof_mailbox_write(sdev, sdev->host_box.offset, msg_data->data_ptr,
-@@ -492,6 +500,7 @@ static irqreturn_t mtl_ipc_irq_thread(int irq, void *context)
- {
- 	struct sof_ipc4_msg notification_data = {{ 0 }};
- 	struct snd_sof_dev *sdev = context;
-+	bool ack_received = false;
- 	bool ipc_irq = false;
- 	u32 hipcida;
- 	u32 hipctdr;
-@@ -508,6 +517,7 @@ static irqreturn_t mtl_ipc_irq_thread(int irq, void *context)
- 		mtl_ipc_dsp_done(sdev);
- 
- 		ipc_irq = true;
-+		ack_received = true;
- 	}
- 
- 	if (hipctdr & MTL_DSP_REG_HFIPCXTDR_BUSY) {
-@@ -558,6 +568,13 @@ static irqreturn_t mtl_ipc_irq_thread(int irq, void *context)
- 		dev_dbg_ratelimited(sdev->dev, "nothing to do in IPC IRQ thread\n");
- 	}
- 
-+	if (ack_received) {
-+		struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
-+
-+		if (hdev->delayed_ipc_tx_msg)
-+			mtl_ipc_send_msg(sdev, hdev->delayed_ipc_tx_msg);
-+	}
-+
- 	return IRQ_HANDLED;
- }
- 
--- 
-2.38.0
+> > +	default:
+> > +	}
+>=20
+> This introduces build error when applied:
+>=20
+> sound/soc/soc-dapm.c: In function =E2=80=98dapm_power_one_widget=E2=80=99:
+> sound/soc/soc-dapm.c:1890:2: error: label at end of compound statement
+>  1890 |  default:
+>       |  ^~~~~~~
+>=20
+> (May be because of CONFIG_WERROR, but still it would be a warning at
+> least...)
 
+Probably also depends on toolchain.  In any case a break; is needed
+there.
+
+--ceLzI03DYP6VS32+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNOoNwACgkQJNaLcl1U
+h9DupAf+Mrr2mofgOEC4GdP/9+ONtbXJwq4iJ7XUmE465YpGBDmjmtcevGVpmnuh
+kQYbkLpkud++Js2PatBD4njJtTP+vuwK5dULdEQMJDFn/UHKcYY1pJOX4BKXfYBN
+7QgAM+UWUTv/GKh2zQ/vW4w4pmzEdTykXCbo+NImFHpYwOzF63v7vWgljtQ1Kpcr
+ZWnvJheUj6UIPjKF6sPkn3QHnPRVdmv6PrhfFUxrK7/kiMdUNaBvOfu6F2pOgWiu
+kAV6+wKLtPojfzpLE7pIlnKVM3o4X1t9h0l0P49LUflh5RhQKP5XAGYCF8pqABWW
+KVAM6n1g0Tf6MQ/fCiF7q0gkFUCx6A==
+=/xbj
+-----END PGP SIGNATURE-----
+
+--ceLzI03DYP6VS32+--
