@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 386ADC4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 14:19:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F6FDC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 14:19:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8BD3D8D64;
-	Wed, 19 Oct 2022 16:18:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BD3D8D64
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70C979D55;
+	Wed, 19 Oct 2022 16:18:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70C979D55
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666189155;
-	bh=tXQLFHlSeAsiNDD79FNLFbLupTj/kQwkiS+c6CLDdxc=;
+	s=default; t=1666189185;
+	bh=WH5i70XeKGAeEgrCwJA3ifnlvEUj3TNJXjLWKNsHxU0=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J3kYhUPCrc4wz7lfeMCwGaRHMnj51UVMigkvNNtNsc963Il+goKfbHFqCCx64ciew
-	 Ga7veDP6vw0lzJRiOTQkNiXVMjqfzs8HwksPSsR9Hhtk32HEz0XNdkSvvYnGnpO1WR
-	 LkVLqXiMKMG7F5Q5ljtvJEb1eMXFZa0WDGQB5NAA=
+	b=I5rK9mEb5d2w4Lxcmk6KTAL0YjqtEODxqg60G2SUdegZabIw/VghwqW0Xu/tup9KO
+	 Ol0w3JtEE1wHOZI/BrUgsnqkNumzlW1y8ujJGV/a0Qzsyb3r8fd98G5Hvxv8aJspqf
+	 Hjpsaf8pPnssIKUFd6qkSzpTN5eXaAjr8kPD2YJ4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16CBCF804CC;
-	Wed, 19 Oct 2022 16:18:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74FA0F8053C;
+	Wed, 19 Oct 2022 16:18:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43980F80137; Wed, 19 Oct 2022 16:18:23 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id C0E5AF804E0; Wed, 19 Oct 2022 16:18:24 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06B08F80137
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 16:18:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06B08F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2D6AFF80087
+ for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 16:18:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D6AFF80087
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="X8D6Yji0"
+ header.b="GtXztwl3"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 6542AB81EDB;
+ by ams.source.kernel.org (Postfix) with ESMTPS id C1E39B8249C;
+ Wed, 19 Oct 2022 14:18:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87FA7C433D6;
  Wed, 19 Oct 2022 14:18:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACD0EC433B5;
- Wed, 19 Oct 2022 14:18:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666189098;
- bh=tXQLFHlSeAsiNDD79FNLFbLupTj/kQwkiS+c6CLDdxc=;
+ s=k20201202; t=1666189099;
+ bh=WH5i70XeKGAeEgrCwJA3ifnlvEUj3TNJXjLWKNsHxU0=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=X8D6Yji0xKi0uN2/fiY2gyJXgxUWjRP9zukq1aZv6mquyJHy76r4IRk+RkzA1Zi6h
- aLQaKoxtoXZ0wOEX1NmvYEj3j50lE7F86UApVzcRFg4XH8fOdYX3Hs9Sgk66WY8yeO
- WTIpry2dZmkstskBCF1TpawbWkiDbsbPCUOnnFtC0g90L95cRZ20FKANGdwPw8SAa3
- 10VYhed1qK/Zaou6iVLhDQAu2dcnhvpJ8Jn0aN9c2n+tvtfV1ldnaOTN9CcDDCe6dR
- HdTG6wSzmoAHPwqtM09020H8wqkilizlZJYtwHDH/eHLWrn0JsAmVd2OtibkuHYLNo
- s8z4d7O8XiQlA==
+ b=GtXztwl3pK1dkAUTlLkzrIn/dfewmkJ/l6M/JjakMUh/pRwn6BxUDu+J0NaY2M5Ft
+ 4kM68ziPyq1Hyy7dWo+g/evNZA3EHhk1uDfbP1Ubk6e0TgCR9zKgNfbb586n2unR3R
+ hFbV5NygsCNtk/5hY2G2SF0Ha9DOEhwIMr8Yg6WYAwKN3YiS+sEwuRpa6KDNijeHzu
+ ukLwkO2T2DUW/0boZwddBld1TIMIos8cNEZOk3bg6S3bzpWtbIMvRaqL2bJTyqyxxz
+ AUUJkiYLGC+rFWExrg9vxFgywkp72iaDlU6HNb2Lrnfy08Y1afqa+eA706IUo+4F98
+ BRryfKh3jJmqw==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20221018124008.6846-1-peter.ujfalusi@linux.intel.com>
-References: <20221018124008.6846-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH 0/4] ASoC: SOF: Intel: Harden the IPC4 low level sequencing
-Message-Id: <166618909642.493922.1501988258287823466.b4-ty@kernel.org>
-Date: Wed, 19 Oct 2022 15:18:16 +0100
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8735bmqazf.wl-kuninori.morimoto.gx@renesas.com>
+References: <8735bmqazf.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: (subset) [PATCH 00/11] ASoC: soc-dapm.c random cleanups
+Message-Id: <166618909828.493922.4186411413795898303.b4-ty@kernel.org>
+Date: Wed, 19 Oct 2022 15:18:18 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- rander.wang@intel.com
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,16 +80,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 18 Oct 2022 15:40:04 +0300, Peter Ujfalusi wrote:
-> The IPC4 use of doorbell registers leaves some corner cases not well defined
-> and the 'correct sequences' are subjective in a sense.
-> The DSP doorbell registers are used as separate and independent channels and
-> the sequences for host -> DSP -> host (reply) can be racy.
+On Mon, 17 Oct 2022 23:36:04 +0000, Kuninori Morimoto wrote:
+> These are random cleanup for soc-dpam.c/h.
+> Basically, these are just cleanup, nothing changed.
 > 
-> For example:
-> The ACKing of a received message can happen before the firmware sends the reply
-> or it can as well happen after the reply has been sent and received by the host.
-> Both can be considered 'correct sequences' but they need different handling.
+> Kuninori Morimoto (11):
+>   ASoC: soc-dapm.c: replace snd_soc_dapm_wcache to snd_soc_dapm_widget
+>   ASoC: soc-dapm.c: tidyup error handling on snd_soc_dapm_add_route()
+>   ASoC: soc-dapm.c: remove no meaning variable from snd_soc_dapm_add_path()
+>   ASoC: soc-dapm.c: ignore parameter NULL at snd_soc_dapm_free_widget()
+>   ASoC: soc-dapm.c: cleanup dapm_widget_set_power()
+>   ASoC: soc-dapm.c: merge dapm_power_one_widget() and dapm_widget_set_power()
+>   ASoC: soc-dapm.c: cleanup snd_soc_dapm_new_dai()
+>   ASoC: soc-dapm.c: numerical order for dapm_up_seq
+>   ASoC: soc-dapm.h: cleanup white space
+>   ASoC: soc-dapm.h: fixup comment for snd_soc_dapm_widget_for_each_path()
+>   ASoC: soc-dpcm.h: remove snd_soc_dpcm::hw_param
 > 
 > [...]
 
@@ -100,14 +105,16 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: SOF: ipc4: Log the tx message before sending it
-      commit: 2d91d5715f5f3b24456ede20dbbe967a1d2a0a3e
-[2/4] ASoC: SOF: Intel: ipc4: Read the interrupt reason registers at the same time
-      commit: c8ed7ce242db83ca2c4e9eab557a88adbae5ef6a
-[3/4] ASoC: SOF: Intel: ipc4: Wait for channel to be free before sending a message
-      commit: 483e4cdfb502e6bea6b0a226a3ff7c22e60153de
-[4/4] ASoC: SOF: Intel: ipc4: Ack a received reply or notification separately
-      commit: 010c050fe9ea263e3fc17493822117610a23f662
+[01/11] ASoC: soc-dapm.c: replace snd_soc_dapm_wcache to snd_soc_dapm_widget
+        commit: 03e13efbb2113412ae7879258a82bdae86fc72e2
+[02/11] ASoC: soc-dapm.c: tidyup error handling on snd_soc_dapm_add_route()
+        commit: b913e9f4b313469dac7ae3083356baee3db4454f
+[03/11] ASoC: soc-dapm.c: remove no meaning variable from snd_soc_dapm_add_path()
+        commit: c1329a0f3bde6a655b9e6ce54b1ce47f46fa49f2
+[04/11] ASoC: soc-dapm.c: ignore parameter NULL at snd_soc_dapm_free_widget()
+        commit: 1c9096f32ad23f5867e752f238fd25e4fec55ecd
+[05/11] ASoC: soc-dapm.c: cleanup dapm_widget_set_power()
+        commit: 0135ae74b4f16fd08c9bad3b965234961d377fa7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
