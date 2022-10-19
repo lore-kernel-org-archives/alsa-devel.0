@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C546FC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 16:26:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8C07C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 16:26:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EFDFAAEAF;
-	Wed, 19 Oct 2022 18:25:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFDFAAEAF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 24224AE99;
+	Wed, 19 Oct 2022 18:25:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24224AE99
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666196782;
-	bh=Gjiglj8DxZLrQjy4SpbF+C8pip1fZlkfEBmPWG19EkI=;
+	s=default; t=1666196799;
+	bh=GqtPhcrDC08Vu3lcDrgRl4MHtpK7MFwuWpYKUhrNXXc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J/Hyu4H6TfnU881gxRig3NPgf0fLdD5EeIcIyTUvi+8aO4VIBEF7icePq4epNtCd2
-	 t6/o2Wq6YWYrEA/t15G55RpLm1ns4ORki2rP0d4CevVlNX6K/pc4f9AxarrpEnDBDy
-	 di4jvME5MLxondteEfjRIt7cBLzLYCzr2k/mmLxA=
+	b=gXfHMFXearcxg5f5YJRybl5DlVmwQ8bOm84EkGKbUQReFWwqaC8ZyXcMEEKzWIssV
+	 38zHlJF60HQMsz19x44S95Pp1ydSeQXwM3C75OGjM4+x86WBvJBoWh5eBCSUqL9F73
+	 +nQjmtjTfHraNP4k8hnPDhcpxIxCDFkN2fIbeQnE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9ED4DF80137;
-	Wed, 19 Oct 2022 18:24:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93D21F80578;
+	Wed, 19 Oct 2022 18:24:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28CA6F8055A; Wed, 19 Oct 2022 18:23:58 +0200 (CEST)
+ id 57E06F80578; Wed, 19 Oct 2022 18:24:01 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EA166F8054A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 697B8F80551
  for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 18:23:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA166F8054A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 697B8F80551
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="JcjNB8hF"
+ header.b="aiHihkTB"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1666196634; x=1697732634;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=Gjiglj8DxZLrQjy4SpbF+C8pip1fZlkfEBmPWG19EkI=;
- b=JcjNB8hFY29k3wOw9L0wW1/xXaUyC/RSBpYnqKih3+65bJrGJjIx4sve
- +VXTBjo4ziACBnhnOyoKBfBhvjXh8edzhwbyQjyntOFM3PmTZJXkWRj5B
- J3uJAWDNHK4BrGEKaoW2he9/xnjDOEQRCtRQbOQHMQov+B4pO+GZ5OK3D
- Icz8syxPbV37IdFy9Y6glV2D1XFyZnNpjAkOHDVX5ap2FpIaUiwivL+s5
- alw9hRRd+P+a0oa+Noli6H7jRM7pov6s3Mi+6DY+E4rWbXBxhqDip/d2G
- enOZOc1GCUI/4jKu0bZxW1E8C+Eg9qaCs38pvAwKCLt0f0OIVxHdUpR9f w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="286856251"
-X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; d="scan'208";a="286856251"
+ bh=GqtPhcrDC08Vu3lcDrgRl4MHtpK7MFwuWpYKUhrNXXc=;
+ b=aiHihkTBIengY13Eyf13gHh8WX7BgNiYvRHZPwhxRCl3Xs8p9wpWuS0u
+ xtJqmD90O+4Y+jl3Rsq9yFI9NNRtgQXNlsgQUxAAUr1T629XxbzHQvCPn
+ 6KvMSWTbAc+/TI8HrTe9sunMr4TMWhSrdIw9I5x1dBBP5ukf1Mj0w5eFM
+ f7UZnY57msVB0t2sepx4L6ekrehdwl5s9SuUFPKWovJKgwB4GmaMNBMBg
+ qpO/WlkbFgh8i90KVbMddHO+fJwgMu2c6/xlioFs/SIwonFcwZuDVz8Ys
+ o1rQbV8f3tV5lxYl+smkl7C6zL/6b+QAk5sJ/HEVTrI5DuWUYIuj9Se0k w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="286856244"
+X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; d="scan'208";a="286856244"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Oct 2022 09:21:29 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="698153853"
-X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; d="scan'208";a="698153853"
+ 19 Oct 2022 09:21:28 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="698153845"
+X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; d="scan'208";a="698153845"
 Received: from afsinurr-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.16.185])
  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  19 Oct 2022 09:21:28 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 08/10] ALSA: hda: ext: reduce ambiguity between 'multi-link'
- and 'link' DMA
-Date: Wed, 19 Oct 2022 11:21:13 -0500
-Message-Id: <20221019162115.185917-9-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 07/10] ALSA/ASoC: hda: ext: add 'bus' prefix for multi-link
+ stream setting
+Date: Wed, 19 Oct 2022 11:21:12 -0500
+Message-Id: <20221019162115.185917-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221019162115.185917-1-pierre-louis.bossart@linux.intel.com>
 References: <20221019162115.185917-1-pierre-louis.bossart@linux.intel.com>
@@ -90,68 +90,187 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-My esteemed colleagues keep using the same words for different things.
+All the helpers dealing with multi-link configurations are located in
+the hdac_ext_controller.c, except the two set/clear routines that
+modify the LOSIDV registers.
 
-The multi-link structure needs to be handled whether the DSP is
-enabled or not.
+For consistency, move the two helpers and add the 'bus' prefix. One
+could argue that the 'ml' prefix might be more relevant but that would
+be a larger code change.
 
-The host and link DMAs are only relevant when the DSP is enabled.
-
-Things get convoluted when there's an ambiguity between the LOSIDV
-settings in the multi-link register space and the selection of the
-stream_tag for the link DMA.
-
-Clarify with a rename that the static functions used are related to
-the host and link DMAs only.
-
-No functionality change, pure rename.
+No functionality change, just move and rename.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/hda/ext/hdac_ext_stream.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ include/sound/hdaudio_ext.h         |  8 ++++----
+ sound/hda/ext/hdac_ext_controller.c | 24 ++++++++++++++++++++++++
+ sound/hda/ext/hdac_ext_stream.c     | 24 ------------------------
+ sound/soc/intel/avs/pcm.c           |  4 ++--
+ sound/soc/intel/skylake/skl-pcm.c   |  6 +++---
+ sound/soc/sof/intel/hda-dai.c       |  6 +++---
+ 6 files changed, 36 insertions(+), 36 deletions(-)
 
+diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
+index 472fed072e985..79aea619adda4 100644
+--- a/include/sound/hdaudio_ext.h
++++ b/include/sound/hdaudio_ext.h
+@@ -121,10 +121,10 @@ int snd_hdac_ext_bus_link_power_up(struct hdac_ext_link *hlink);
+ int snd_hdac_ext_bus_link_power_down(struct hdac_ext_link *hlink);
+ int snd_hdac_ext_bus_link_power_up_all(struct hdac_bus *bus);
+ int snd_hdac_ext_bus_link_power_down_all(struct hdac_bus *bus);
+-void snd_hdac_ext_link_set_stream_id(struct hdac_ext_link *hlink,
+-				     int stream);
+-void snd_hdac_ext_link_clear_stream_id(struct hdac_ext_link *hlink,
+-				       int stream);
++void snd_hdac_ext_bus_link_set_stream_id(struct hdac_ext_link *hlink,
++					 int stream);
++void snd_hdac_ext_bus_link_clear_stream_id(struct hdac_ext_link *hlink,
++					   int stream);
+ 
+ int snd_hdac_ext_bus_link_get(struct hdac_bus *bus, struct hdac_ext_link *hlink);
+ int snd_hdac_ext_bus_link_put(struct hdac_bus *bus, struct hdac_ext_link *hlink);
+diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
+index c0b801fa93c09..08d3313f2df7e 100644
+--- a/sound/hda/ext/hdac_ext_controller.c
++++ b/sound/hda/ext/hdac_ext_controller.c
+@@ -253,6 +253,30 @@ int snd_hdac_ext_bus_link_power_down_all(struct hdac_bus *bus)
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_power_down_all);
+ 
++/**
++ * snd_hdac_ext_bus_link_set_stream_id - maps stream id to link output
++ * @link: HD-audio ext link to set up
++ * @stream: stream id
++ */
++void snd_hdac_ext_bus_link_set_stream_id(struct hdac_ext_link *link,
++					 int stream)
++{
++	snd_hdac_updatew(link->ml_addr, AZX_REG_ML_LOSIDV, (1 << stream), 1 << stream);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_set_stream_id);
++
++/**
++ * snd_hdac_ext_bus_link_clear_stream_id - maps stream id to link output
++ * @link: HD-audio ext link to set up
++ * @stream: stream id
++ */
++void snd_hdac_ext_bus_link_clear_stream_id(struct hdac_ext_link *link,
++					   int stream)
++{
++	snd_hdac_updatew(link->ml_addr, AZX_REG_ML_LOSIDV, (1 << stream), 0);
++}
++EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_clear_stream_id);
++
+ int snd_hdac_ext_bus_link_get(struct hdac_bus *bus,
+ 				struct hdac_ext_link *hlink)
+ {
 diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
-index da2a9b54a5bea..b36378bf6da6c 100644
+index c06beaaffe0a1..da2a9b54a5bea 100644
 --- a/sound/hda/ext/hdac_ext_stream.c
 +++ b/sound/hda/ext/hdac_ext_stream.c
-@@ -224,8 +224,8 @@ int snd_hdac_ext_stream_setup(struct hdac_ext_stream *hext_stream, int fmt)
+@@ -223,30 +223,6 @@ int snd_hdac_ext_stream_setup(struct hdac_ext_stream *hext_stream, int fmt)
+ }
  EXPORT_SYMBOL_GPL(snd_hdac_ext_stream_setup);
  
+-/**
+- * snd_hdac_ext_link_set_stream_id - maps stream id to link output
+- * @link: HD-audio ext link to set up
+- * @stream: stream id
+- */
+-void snd_hdac_ext_link_set_stream_id(struct hdac_ext_link *link,
+-				     int stream)
+-{
+-	snd_hdac_updatew(link->ml_addr, AZX_REG_ML_LOSIDV, (1 << stream), 1 << stream);
+-}
+-EXPORT_SYMBOL_GPL(snd_hdac_ext_link_set_stream_id);
+-
+-/**
+- * snd_hdac_ext_link_clear_stream_id - maps stream id to link output
+- * @link: HD-audio ext link to set up
+- * @stream: stream id
+- */
+-void snd_hdac_ext_link_clear_stream_id(struct hdac_ext_link *link,
+-				 int stream)
+-{
+-	snd_hdac_updatew(link->ml_addr, AZX_REG_ML_LOSIDV, (1 << stream), 0);
+-}
+-EXPORT_SYMBOL_GPL(snd_hdac_ext_link_clear_stream_id);
+-
  static struct hdac_ext_stream *
--hdac_ext_link_stream_assign(struct hdac_bus *bus,
--			    struct snd_pcm_substream *substream)
-+hdac_ext_link_dma_stream_assign(struct hdac_bus *bus,
-+				struct snd_pcm_substream *substream)
- {
- 	struct hdac_ext_stream *res = NULL;
- 	struct hdac_stream *hstream = NULL;
-@@ -260,8 +260,8 @@ hdac_ext_link_stream_assign(struct hdac_bus *bus,
+ hdac_ext_link_stream_assign(struct hdac_bus *bus,
+ 			    struct snd_pcm_substream *substream)
+diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
+index d77afe5c65b96..95cb87339400b 100644
+--- a/sound/soc/intel/avs/pcm.c
++++ b/sound/soc/intel/avs/pcm.c
+@@ -297,7 +297,7 @@ static int avs_dai_hda_be_hw_free(struct snd_pcm_substream *substream, struct sn
+ 		return -EINVAL;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		snd_hdac_ext_link_clear_stream_id(link, hdac_stream(link_stream)->stream_tag);
++		snd_hdac_ext_bus_link_clear_stream_id(link, hdac_stream(link_stream)->stream_tag);
+ 
+ 	return 0;
  }
+@@ -330,7 +330,7 @@ static int avs_dai_hda_be_prepare(struct snd_pcm_substream *substream, struct sn
+ 		return -EINVAL;
  
- static struct hdac_ext_stream *
--hdac_ext_host_stream_assign(struct hdac_bus *bus,
--			    struct snd_pcm_substream *substream)
-+hdac_ext_host_dma_stream_assign(struct hdac_bus *bus,
-+				struct snd_pcm_substream *substream)
- {
- 	struct hdac_ext_stream *res = NULL;
- 	struct hdac_stream *hstream = NULL;
-@@ -329,10 +329,10 @@ struct hdac_ext_stream *snd_hdac_ext_stream_assign(struct hdac_bus *bus,
- 		return hext_stream;
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		snd_hdac_ext_link_set_stream_id(link, hdac_stream(link_stream)->stream_tag);
++		snd_hdac_ext_bus_link_set_stream_id(link, hdac_stream(link_stream)->stream_tag);
  
- 	case HDAC_EXT_STREAM_TYPE_HOST:
--		return hdac_ext_host_stream_assign(bus, substream);
-+		return hdac_ext_host_dma_stream_assign(bus, substream);
+ 	ret = avs_dai_prepare(to_avs_dev(dai->dev), substream, dai);
+ 	if (ret)
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index f7e97b5a449fc..27b03c34abd09 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -198,8 +198,8 @@ int skl_pcm_link_dma_prepare(struct device *dev, struct skl_pipe_params *params)
+ 	if (stream->hstream.direction == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		list_for_each_entry(link, &bus->hlink_list, list) {
+ 			if (link->index == params->link_index)
+-				snd_hdac_ext_link_set_stream_id(link,
+-								stream_tag);
++				snd_hdac_ext_bus_link_set_stream_id(link,
++								    stream_tag);
+ 		}
+ 	}
  
- 	case HDAC_EXT_STREAM_TYPE_LINK:
--		return hdac_ext_link_stream_assign(bus, substream);
-+		return hdac_ext_link_dma_stream_assign(bus, substream);
+@@ -649,7 +649,7 @@ static int skl_link_hw_free(struct snd_pcm_substream *substream,
  
- 	default:
- 		return NULL;
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		stream_tag = hdac_stream(link_dev)->stream_tag;
+-		snd_hdac_ext_link_clear_stream_id(link, stream_tag);
++		snd_hdac_ext_bus_link_clear_stream_id(link, stream_tag);
+ 	}
+ 
+ 	snd_hdac_ext_stream_release(link_dev, HDAC_EXT_STREAM_TYPE_LINK);
+diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+index 575adf3133c27..64e8ca016b216 100644
+--- a/sound/soc/sof/intel/hda-dai.c
++++ b/sound/soc/sof/intel/hda-dai.c
+@@ -158,7 +158,7 @@ static int hda_link_dma_cleanup(struct snd_pcm_substream *substream,
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		stream_tag = hdac_stream(hext_stream)->stream_tag;
+-		snd_hdac_ext_link_clear_stream_id(hlink, stream_tag);
++		snd_hdac_ext_bus_link_clear_stream_id(hlink, stream_tag);
+ 	}
+ 	snd_soc_dai_set_dma_data(cpu_dai, substream, NULL);
+ 	snd_hdac_ext_stream_release(hext_stream, HDAC_EXT_STREAM_TYPE_LINK);
+@@ -194,8 +194,8 @@ static int hda_link_dma_params(struct hdac_ext_stream *hext_stream,
+ 	if (hext_stream->hstream.direction == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		list_for_each_entry(hlink, &bus->hlink_list, list) {
+ 			if (hlink->index == params->link_index)
+-				snd_hdac_ext_link_set_stream_id(hlink,
+-								stream_tag);
++				snd_hdac_ext_bus_link_set_stream_id(hlink,
++								    stream_tag);
+ 		}
+ 	}
+ 
 -- 
 2.34.1
 
