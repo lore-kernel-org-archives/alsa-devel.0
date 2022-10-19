@@ -4,126 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69436C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 00:38:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2139EC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 00:39:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 981765A89;
-	Wed, 19 Oct 2022 02:38:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 981765A89
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D6DD17C5;
+	Wed, 19 Oct 2022 02:38:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D6DD17C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666139931;
-	bh=6ser0M5HZ8EDxraEH/ysbcc2iQ+gJhDwk0XsZFJXGe4=;
+	s=default; t=1666139951;
+	bh=QB+3wt1ouhpJpsrupQxpbiZ46465zHSxemrQyBGg5m8=;
 	h=From:Subject:To:In-Reply-To:References:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T7DToIquvlA9oRFj3jz0iohdLIH4xVCKKnw/KgeBG4anPk01DxMlp6sqM9XEVyGzI
-	 /0GDqOqzq/+1xubstbV3y+qxzthZc7VZve8idGTlJSh1tFatPQbhYezGV9QfYaHS81
-	 Yei+bH6WwQpmU70RhPAAa3swMkx2IcETIHp51/BM=
+	b=hsxQlBE1+pspjmWMT6GioQjfbfW0++RwmX6JVFDKr0JUdYVqpqCVb42vA+Kun3GPk
+	 JCuoDtvIgkAfVfmJ/M9eJ7QU8V0RGja5pi67qVUU/S/kWJiYJ+F4zDuQPsSYZ477Dj
+	 2o/yRuMaK7iQ02DROspl5WXxAg96smEcVR7AQbLs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77BFEF80564;
-	Wed, 19 Oct 2022 02:37:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6EBDF8053B;
+	Wed, 19 Oct 2022 02:37:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B0F05F800E5; Wed, 19 Oct 2022 02:37:20 +0200 (CEST)
+ id 593F8F80579; Wed, 19 Oct 2022 02:37:29 +0200 (CEST)
 Received: from JPN01-OS0-obe.outbound.protection.outlook.com
  (mail-os0jpn01on2132.outbound.protection.outlook.com [40.107.113.132])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DFA7CF800E5
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 02:37:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFA7CF800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2C14CF800AA
+ for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 02:37:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C14CF800AA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=renesas.com header.i=@renesas.com
- header.b="LnB8txQp"
+ header.b="hpVjhACw"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U/vRQA/RzsY+Tjk5bar6XHLLuHEemd27otrgJoCB5tDjg1mjsojCPGJYhgKoTE8yOT1vXyWxEd1kJcrVV0SM3m3isfhzjWRbDVLZBJk4zlW7P5SWp+a1hDN30dYEPuUCAu+Hdfx91pzy84CoDG3JP2BDJp5ksexzNs9wcTAj+jm5AI1hxePTWUYb34z2ozhCLZ3XSFqWjRE17qS79QPzppOvM74aw5QhprDJ6MJfj/zChxMJF3mfMtQ3LsmS1ElSsa8jJbw0Mbe+dPNbOGzfMaYM0Fo+nn4PFwdpmS5rV+sjuMoQqw7Q3CdQt70TpFOCHZqhc6XyOOyZ1GyXUn8ALw==
+ b=Lko7Rk75XBd2G1VmUyQ4GWAal7X4Fey+EeBRFgWEWseWVc6hF2RDGHwIpPJSESgeR6NwCWBi5hZCTJcDP1mGuHyQ4vOcItsC3VrSpVd5IA/cH/Nh0rgzQf7pb8RYCBEuTB3XDEi7bFCur6whQOp/9vMHV55mDXAm3sQMDjZIxGusMgQKU26Y3FGdP120druh2XhwPJ8IPu6ld0tr2SWmcGa3dxNmUlH/525ojN1nRhcglO6sKI/sHxC5zt07S13gGmUXRp13iuJGvJ8LbQ7YE8WFgxi/upLgZI86rUMd5pgZwTwHvWXW16HETsPiZmW8mQ7qpwoX0y1p7LGADXlm3w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zX2sBo/Uzs11rRBRppCiFF2AevUhwUIC9YuM1AapP4E=;
- b=ZZfZC78D0b4ZFwXqVCB4WbrgVkmYVpos4SIqyVBxowMi8bUZ1FSmWKsdANzWZD5xx/ot28ms6SchvsQwLxmTnvEaK+uk6DmNqBD+ussFoEeCkp5V/Sn+/wxAr949aJGJk+2dS+nhx38JLZmNkh21YAEnkgpbQ2lcDiLGFuDnWdaZ5LFplFT4GrNiPiQhUUZafvuPk0W1CaDPpKH9xi8zEkb5L4ZIqw4artQLduav1FWD2B8aDUeZ9BcsnTMTHOzhRgxhJCxOtAvbP3yIJ/+B6X4B8wLls4tsKU4oG3FDuQBpBCxt94cHbAYtvmNGuwg61s6A4WJdZ1bmIiM64hreLw==
+ bh=U8GmyKLYjPI6WO6tQMsbWAe2YZf1jXH6TaAyCcOrq4g=;
+ b=kbMwQdO0/Q2oSs0H129yMksLdYbV4jXo1GA6g+YTi9hpWwaA1Gw80acegf9NrU0nDsY0z0YE+tmkirAQa6Otv1lJUYWqrTsx7HciLMrz2B6/RPoHdM6RyzPmxJ6G948pSaLpcN2G2Nlt1gWgvgi6ty+/i/ammGLa9dc0nDPBjHaqaJW+Zr5iaTMjDWeeKglhpRB5qkzXcEvqBaz2kksEWBioozoWBiRwJ05Lxbpfc1f/ff4ah0EMrcQkNww2drGkqBWud8qdyXDAm60rwuCOgMYHn3y31HEWF7S0QBOnPwaRDa8EFpdehrIl58xwnvPFB25YPJuiZI2yh17/RCJeCg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
  dkim=pass header.d=renesas.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zX2sBo/Uzs11rRBRppCiFF2AevUhwUIC9YuM1AapP4E=;
- b=LnB8txQpCErS2xAEuZiEfSjM/FwQGoKvZ0zgsRo75gMr8DTWRagFqQIusOODeGLp0cuoCibNlfLyENXugEleKTWvJlvxCAPYkzOmV+uHVkl1Hk64mOlxFJ34YDgR2h+NbIVaRSUMpDgL3vM72Nc4DtXDoomfO/BZUrrPVTMS8vg=
+ bh=U8GmyKLYjPI6WO6tQMsbWAe2YZf1jXH6TaAyCcOrq4g=;
+ b=hpVjhACwbbXMw1lv7nmqDYqrT//gsFs3w09h3d8JFb3SD+AAafrIVrBsu+mFwsDvzRJPs3BFiHjxbRk8Zf1mZxKZYBAkmHvbRLt/axz//ZGmaw3GqVLbGpa2b4tpnuKsrqimYOuj+gr1S9I9XlqfVwfsUWU89seWJBqjJcNz3pE=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=renesas.com;
 Received: from OS3PR01MB8426.jpnprd01.prod.outlook.com (2603:1096:604:194::10)
  by TYCPR01MB10149.jpnprd01.prod.outlook.com (2603:1096:400:1ed::12)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5723.33; Wed, 19 Oct
- 2022 00:37:07 +0000
+ 2022 00:37:20 +0000
 Received: from OS3PR01MB8426.jpnprd01.prod.outlook.com
  ([fe80::4cba:2bd5:dfd4:f3cf]) by OS3PR01MB8426.jpnprd01.prod.outlook.com
  ([fe80::4cba:2bd5:dfd4:f3cf%5]) with mapi id 15.20.5723.034; Wed, 19 Oct 2022
- 00:37:07 +0000
-Message-ID: <87zgdssl70.wl-kuninori.morimoto.gx@renesas.com>
+ 00:37:20 +0000
+Message-ID: <87wn8wsl6n.wl-kuninori.morimoto.gx@renesas.com>
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v2 08/11] ASoC: soc-dapm.c: numerical order for dapm_up_seq
+Subject: [PATCH v2 10/11] ASoC: soc-dapm.h: fixup comment for
+ snd_soc_dapm_widget_for_each_path()
 User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
 To: Mark Brown <broonie@kernel.org>
 In-Reply-To: <87bkq8tzu1.wl-kuninori.morimoto.gx@renesas.com>
 References: <87bkq8tzu1.wl-kuninori.morimoto.gx@renesas.com>
 Content-Type: text/plain; charset=US-ASCII
-Date: Wed, 19 Oct 2022 00:37:07 +0000
-X-ClientProxiedBy: TYCPR01CA0087.jpnprd01.prod.outlook.com
- (2603:1096:405:3::27) To OS3PR01MB8426.jpnprd01.prod.outlook.com
+Date: Wed, 19 Oct 2022 00:37:20 +0000
+X-ClientProxiedBy: TYCPR01CA0053.jpnprd01.prod.outlook.com
+ (2603:1096:405:2::17) To OS3PR01MB8426.jpnprd01.prod.outlook.com
  (2603:1096:604:194::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: OS3PR01MB8426:EE_|TYCPR01MB10149:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1ac2e52a-7a66-4695-dcd9-08dab16a0d4d
+X-MS-Office365-Filtering-Correlation-Id: c65d78ec-3f8f-47c8-f365-08dab16a1525
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HNaV3cPkvM+eIquy6yCj1m+FgnZyW+IQOU8h7cMwDaOTJi7mcaNcK36/D05ePsBzpM9Xpurn4abs7iOHVQ0kgpG/3+K6eKhxyW669ol9tAW7fhQPNrj24u6ui3mn768ERxLoA7zjZ8A5CxIug6h/5HvNjmojztB/E4IMczG9HPoKjbolNIsBZ07x7IXz8fnBxMMPBL5YVN9MZFd5stB2rTbeoROavQetYFG946K3eUd+mmB7vzYPg4dwySEqm3pTYHHquL5FX22wEZsguG9aNWQHisKDRzdGW6KOYkyipUHLjmsWNv8AI2hjpys3Dp8de9JHP3oPKMPTSYJi6bo0VZi9JxOT2k+geAgkucBekqnYHlzlA4IAyOe0Ee238oVof2jhOqYSaOLtQNgNHR9txKvz7L6ZPgdKcxJxiwYpsIRieH8eurfLHgcJDaO9lwtCshopUBapGRw/2gAmcQhd0IXazyS1fmTCgWjyOi0lvby0WVPAkzeOyHt9NOUS6XwEcDKXTnx5LUi9s27iOY08Kr0uEOz3EL16aJh2+bfSv50pcJPZDyXisa6cj6KBUAi5Zfkvyxv1VqIjuamuE8NKM5SutQdaaBIHJWWY9VwEuwB6xMe3YcLpuq/dwgh/5wRBtXGClWZp/7rLtgoLmYAsNf1s2YoVxRVXwV8aISVzBb5cNDrYG35rgUBa5H78YDmTQHD1yURkV3NlwqWdvMzYV6blhPQHcxmB+qycC3rcg/NpWnkHzBuFtFelb2+fTZ2nvhHkvDLarlcXJXM1gcsxfg==
+X-Microsoft-Antispam-Message-Info: uGznGzB3c9uyJwU7CE94zXb4vkOGAvWpsLBJKxO6OULjcDo1OuMoZLAKbExSekyCQuVHNlMNGRygdHyGDwHEakZWmc0RLhJ8tVm8+dp/zzkUKjEBuf/5UJPqe4NsosGtQPG0HmduVISLRqNQziobvjXx/xUE+LUopnF3K9DGfKfoacknlchYlOPw3StUTwe9S9IsTt0FXo4m95ozZ7ZirQs6VNkPJsyXNzoV01Gu5D3FTBA2+hZ+3hRXGBmONYyziKyWEazw47CSI4appA8Yip0bngYQ0bp4rEyesBTm5uDVvHeHVZ/z4y4mZ8o7lCgsVUG2mi8SYCVm/mG+e0rnmGsTYlqhFjL/xpcRLS7vwUkwHef0b79npQDQOesDyzSAxIHbDYGw8Ohr+E3SgIaIyuFhycQUTbiGRcXYWX0r4mJ/k7OLYZJhsGvt60ow5tbMU8EBlIe0rS3JvdT5SIDnxcgNhI900EHXJshBHhlQS8o07D4ralndLXZeO/gbjRdTVltEoPPPPzmsjRzz08G9YYreTznzlIHduhnHf2QFSy99l95e46DgUCbw8WCYjb4rOcVEb2EJ+j+1ZPLhEjhLsceYWMDtdL5q1buD0FoSOaGBxSv4Dnyq0dgwYEsn+/UUX/6OhcYW3LEGTjT3/KYWWyVgYGi4Z6v5R8JdPsWhB1Le52radJ5JsYZP475TR6CWtE5rvD3LSQVuPZkeLBkn+dz2fX73VQXnkimS31D3R+2oSYvHUFFbzIhVjcVALJ6+3vSKEjFBpGABLBvdj+pBsg==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:OS3PR01MB8426.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230022)(4636009)(366004)(136003)(376002)(39860400002)(396003)(346002)(451199015)(41300700001)(316002)(66476007)(4326008)(66946007)(8676002)(66556008)(36756003)(6916009)(38100700002)(6512007)(38350700002)(26005)(52116002)(6486002)(6506007)(478600001)(86362001)(186003)(83380400001)(2616005)(4744005)(2906002)(5660300002)(8936002);
+ SFS:(13230022)(4636009)(366004)(136003)(376002)(39860400002)(396003)(346002)(451199015)(41300700001)(316002)(66476007)(4326008)(66946007)(8676002)(66556008)(36756003)(6916009)(38100700002)(6512007)(38350700002)(26005)(52116002)(6486002)(6506007)(478600001)(86362001)(186003)(83380400001)(2616005)(2906002)(5660300002)(8936002);
  DIR:OUT; SFP:1102; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SoO1egTYMvvzejlpSGfwvaPByKSJwRWiw+WzZe9sFH5xxCDb7VtYeodOFeuA?=
- =?us-ascii?Q?mtFlB6QzyF40QamsmurhFp13QebqbcuIBl9lQ/kEDnT+9gTPuARNKHQOf6bL?=
- =?us-ascii?Q?mPSG5kXGEt0XpWLbtIFd/TaPUEow5ma1i6owoovGJ+B+jt+t/n5QZq8DsLbf?=
- =?us-ascii?Q?IwR+QMC+5o+gw6xG6w+xrwSZeVdoQlX1tvr6xpLkJwj62MdiQ2Ry3QwMrMH+?=
- =?us-ascii?Q?1YNOoPbILLt7QeHdH6xVFNG3JRIo9qpidWjI91aeDVe1D605hAhMcnEadwnA?=
- =?us-ascii?Q?GU5sS2qztHfyPlKoHkIaDr11F7IMOovAEeZDxKTNn7rYdmDxlEpPZiVENecC?=
- =?us-ascii?Q?jiniOo1cT7RD60uuvmTHEuAN2XPaCc99ft3eY5BDQmNArftvA036Hu5BUHcL?=
- =?us-ascii?Q?Bc7GxtMQS4dpUxerkqBv2SAL/QHcXpfx6+eT2o8Rti2Fkq3toMv43r6w9oOW?=
- =?us-ascii?Q?VNljz9D9hEpV29Ixp52uezhhFDnhOxOqjdRgrNVonf2H/db6VKzgaqE/GgH6?=
- =?us-ascii?Q?ZfhA9ucSPwbNUehDPRODD62OUko1WldtGvkevGumgw19VvMn3id4CbYfpb0E?=
- =?us-ascii?Q?o3VOCQNoh+717//SGfe1hd6zIdeWIieprBz4BjD4ddVKsiQ+yGjWrWAQwOVD?=
- =?us-ascii?Q?JzhQaf92ffKHhw06dqqk6ukRsGfEXi1WarjGQ8238Rc5T2g83vWex/N3PqXk?=
- =?us-ascii?Q?X+LqG2nyezDfzLHLjB/DsaGv7t3LAirtj/mf1Z5qTR6aoBdZd2uH2Zt9f8hY?=
- =?us-ascii?Q?JV0cYXRvrYDELwKVNTKaEH3Du4QBBr+ugmSPHGqVgNUYuwFhyRG5/cQ570hM?=
- =?us-ascii?Q?wuFzo28fVHz9Kdb6anrIIaZUAxMGcmwIn2ceWwhoplz7dURecsDpW5JIX2jB?=
- =?us-ascii?Q?pgiJ0LaBkpQUgwnQDAiL6Bv9xt6FECxMZ2B2r/oOdV0/7YzWv2REewZBrolQ?=
- =?us-ascii?Q?radP5X74pFVkRUTRwyyv32pfXrJ4oyK768Pm+5B1HbmQzu3fzpFBFdRW9g50?=
- =?us-ascii?Q?/qccqxQSikRQZxLX03lFzgQrSjsbsw+c4Xz/bhV9rhIQWAuiFSD7EB3A/hLP?=
- =?us-ascii?Q?fi5WTSh4gmKKgQ1v2gLmz+jpe6Rw26NOR67dpiWbIrXPIoP6gih+ZBa16/NE?=
- =?us-ascii?Q?0tpn99Dg4QJrgY+4oLecQhegje817Xdugzd0y/eCV7eri0Wkp/OOO1UYelgP?=
- =?us-ascii?Q?T/QM07ezLgVVhCLRoDGpCJ2/CGG2shNyHIkIDVArqA+UkF71xN6Zx3y1mnsi?=
- =?us-ascii?Q?n5KATx/CoukMBc1snDoca06ywfw034zkpHA06yBAIBYJN+XSxSxOoMHqLiar?=
- =?us-ascii?Q?EihFKbpOL1LfBAdYFeorV5tXuHBZDi0OhLpZvZjxX4HYgFAljbLcxklk4PXl?=
- =?us-ascii?Q?d61xSJxQ7WsKzcmmMyrGoAQXBIVCMXsvHZayz5TUyZFQMD8EQOb6YnQmtitk?=
- =?us-ascii?Q?PrwKZQoJJdaLwgEvjxciND4j+P3m9t65CjuLU36vAUH5eGoZu50gmXPCXwNR?=
- =?us-ascii?Q?oKBZD7Vu/1FZCG2Zqgt+j+RioVzXD2dRVDham9g0LryUVPCjo7yLGbuVqI/9?=
- =?us-ascii?Q?g5rkF6ABKYT03F3nL23gTnjYoVZXehy9xnQ0gwzi5OR7YNmKjofYjh8W2pUI?=
- =?us-ascii?Q?ZxcYDm/0TT+bR+KU2f9i1Kk=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Fz7CtPhgGhEnHnO6OYz3opqLs9I0bUxJlc00PEW55KatmSWnT2oouA6+jtMO?=
+ =?us-ascii?Q?irnlBPsQHj5iBeZaVQZw39JgqGB2zW92WdavZ8XR/4ZxThaoKLYYVlreOxtA?=
+ =?us-ascii?Q?agMXz8Oy/wxVP1+mTobDKq+EcqA+n0jKhW5GF0ILBsFBzao2+d6w/SUl6V5j?=
+ =?us-ascii?Q?GYxoLAIRHnhi1pTOubH2n0IXBWcu6HcKB85iNI02CZQ5Lp3ljtska+Na73+r?=
+ =?us-ascii?Q?pS82EGceEUbYKZaC25F4qUU3/fNut76WcAP8rsx/4PvqyYUrktuOEp2aQY/q?=
+ =?us-ascii?Q?IebjrBLPMlPWmw5BH3SFsg5Ty2XMRIimx+oPsQHPpAtiEtAvW9ByGpGzRU9D?=
+ =?us-ascii?Q?4M3SG2wjX2Aj9Fjz4z0jiHRgOKKBswN+Gspxc/kTIMFpgDUEeXEKxmftHnD9?=
+ =?us-ascii?Q?Sm24XrlLzXOeIjTJMEPb2dx/eZmFmEG57lrcntpmFrv+hNLWdzXJQqAHca5K?=
+ =?us-ascii?Q?DkdF+Oll2OufP9jRQIez3F5HyVA9/6fsxXiGe2Dd8UWe4GXg4jc43jLhHV7j?=
+ =?us-ascii?Q?zYKkH4due9Q4HxdHnQbCts723K/ayOk2rUThimA61zqt3zkMosikwYaT61we?=
+ =?us-ascii?Q?2vgAxskRayY0sotvtpRw1gRJyZeQ4McfJhLUo28DLU1vmVbh4Cn7pJRuKNxc?=
+ =?us-ascii?Q?GDsF32WKO2ZpgmygAQIswUVNXUxIfl2eUPdyKgCQh4cY8KSHwUZK5y3SU5Ou?=
+ =?us-ascii?Q?PI1Xz6RXIAY7h9/Gu2G16/wSCQeMRpYn0YT923R97eIgBzdoO5oQnRDBATnd?=
+ =?us-ascii?Q?LNdbOPkjsVPPivDTmzCGIdIudMn9NyaZkJvtc+i8HhqHxiW0V5zFsYAtrQJv?=
+ =?us-ascii?Q?5Z8Af373msrWUFmIQi8oQOOl8DM1jttZjSVjcr62d9eSwkvTVevIbXGxtGSh?=
+ =?us-ascii?Q?DIWx79wzsJuPHvhwtv+3Vv7RnPE3yJ45AJqf7JJQBltOyIaJ78Sc6Ors3RoG?=
+ =?us-ascii?Q?XsS4oh/JifLNim2SKvIeKZ5p/tABw37ojI4+7j2ygHuHkNQIvTQ+Z6U3qQ9S?=
+ =?us-ascii?Q?Qb+iGI3JccKzyBGQumHPKm3REQSi1i9Z516vXydbm+4APp/3NjJMX+wypCT1?=
+ =?us-ascii?Q?XuxLf1GHPO93Anpdsgs1NCwpqWJjprqLFRANbVtCtADHPYIld6/J6PWX3ESU?=
+ =?us-ascii?Q?dpBO2L6RaL6c8OrPVLZDLMSvGHH8HdibpajL0T2mzCi57gOMIp56PS5E8T5v?=
+ =?us-ascii?Q?a/U2O7DHyE1Sy4H58jlKUIHNP5G1fsTFiI+j4psOJ6Y8AA3P2iTLiBZ7YnFH?=
+ =?us-ascii?Q?2JYPCgdVsExzQ/Jph2ZAxe77fpFaJxMn4BD5c87FuhnN3Ssnb1uSFMdqPQeG?=
+ =?us-ascii?Q?Ve6NYA8TbLO/vuphLfWZlIZQwjFO43rfIzWz9NGxUMN8YGdJLpmKf9JvoSDB?=
+ =?us-ascii?Q?QldxDgqxKLII3VkV/jOfU4X6HlvI5+eeCUOWSslD8LUTIMQ1UfDBH4ifYCZy?=
+ =?us-ascii?Q?vTuEiSdQb50uG7Xuu3SsscDM9wLnHzm21sK1NDySGgZKjGn9aBwxXsLoe6V7?=
+ =?us-ascii?Q?G+tChC9e002u8yjLaD0Xl9jee/uHXM5aP+1QOV4sheexxxOSP9bAwl/HCo47?=
+ =?us-ascii?Q?NHnjx21H45YdHmjD5Oh8GdDOGrChfAc6OG08+oZK5Dj8KfVtyxWZlQFf3Fz3?=
+ =?us-ascii?Q?YbgfMxV7twi/qymxeaomjso=3D?=
 X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ac2e52a-7a66-4695-dcd9-08dab16a0d4d
+X-MS-Exchange-CrossTenant-Network-Message-Id: c65d78ec-3f8f-47c8-f365-08dab16a1525
 X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB8426.jpnprd01.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2022 00:37:07.4827 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2022 00:37:20.7210 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SQsT+3XPQ+1NZZaedJjBLhzz6vEwevgofiCo1bqip70ZfW0n75FHtGDcDLpEOHtlXlhVKPeFGbHf5iZ3ykBzh7y6yuf6Tdak46YvOna9idXbZ6So+DTun9rkVH+sdCdS
+X-MS-Exchange-CrossTenant-UserPrincipalName: /CYXpbbOoYyu6uJhp5paJHzuqPfgR74dpFxtBHFFu+l89WhkmzAAvxwVWkxf7qsyzeT5N5RomnX75ZX2WP2o9FWplem3YoEQ0/FQ5dGI6yrTjtWY6QUkVb/14pcvuevk
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB10149
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -141,32 +142,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-dapm_up_seq is arranged in numerical order, but _dai_link
-is out of order. This patch tidyup it.
+The comment of snd_soc_dapm_widget_for_each_path() (= X) has
+"_sink_" (= s), but this is typo.
+With "_sink_" is already exist at (A). This patch fixup it.
+
+	/**
+(s)	 * snd_soc_dapm_widget_for_each_sink_path - ...
+	 *                              ****
+	 */
+(X)	#define snd_soc_dapm_widget_for_each_path(w, dir, p)
+
+	/**
+(s)	 * snd_soc_dapm_widget_for_each_sink_path_safe - ...
+	 *                              ****
+	 */
+(X)	#define snd_soc_dapm_widget_for_each_path_safe(w, dir, p, next_p)
+
+(A)	#define snd_soc_dapm_widget_for_each_sink_path(w, p)
+	                                     ****
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- sound/soc/soc-dapm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/soc-dapm.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index ddaa079cfe5c..35edcb632bf5 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -71,9 +71,9 @@ static int dapm_up_seq[] = {
- 	[snd_soc_dapm_pinctrl] = 2,
- 	[snd_soc_dapm_clock_supply] = 2,
- 	[snd_soc_dapm_supply] = 3,
-+	[snd_soc_dapm_dai_link] = 3,
- 	[snd_soc_dapm_micbias] = 4,
- 	[snd_soc_dapm_vmid] = 4,
--	[snd_soc_dapm_dai_link] = 3,
- 	[snd_soc_dapm_dai_in] = 5,
- 	[snd_soc_dapm_dai_out] = 5,
- 	[snd_soc_dapm_aif_in] = 5,
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 44597e63344d..77495e5988c1 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -735,7 +735,7 @@ enum snd_soc_dapm_direction {
+ #define SND_SOC_DAPM_EP_SINK	SND_SOC_DAPM_DIR_TO_EP(SND_SOC_DAPM_DIR_OUT)
+ 
+ /**
+- * snd_soc_dapm_widget_for_each_sink_path - Iterates over all paths in the
++ * snd_soc_dapm_widget_for_each_path - Iterates over all paths in the
+  *   specified direction of a widget
+  * @w: The widget
+  * @dir: Whether to iterate over the paths where the specified widget is the
+@@ -746,7 +746,7 @@ enum snd_soc_dapm_direction {
+ 	list_for_each_entry(p, &w->edges[dir], list_node[dir])
+ 
+ /**
+- * snd_soc_dapm_widget_for_each_sink_path_safe - Iterates over all paths in the
++ * snd_soc_dapm_widget_for_each_path_safe - Iterates over all paths in the
+  *   specified direction of a widget
+  * @w: The widget
+  * @dir: Whether to iterate over the paths where the specified widget is the
+@@ -754,7 +754,7 @@ enum snd_soc_dapm_direction {
+  * @p: The path iterator variable
+  * @next_p: Temporary storage for the next path
+  *
+- *  This function works like snd_soc_dapm_widget_for_each_sink_path, expect that
++ *  This function works like snd_soc_dapm_widget_for_each_path, expect that
+  *  it is safe to remove the current path from the list while iterating
+  */
+ #define snd_soc_dapm_widget_for_each_path_safe(w, dir, p, next_p) \
 -- 
 2.25.1
 
