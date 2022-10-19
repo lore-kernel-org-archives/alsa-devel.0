@@ -4,75 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04CA0C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 15:51:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FE0DC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 15:52:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F4034ADF5;
-	Wed, 19 Oct 2022 17:50:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F4034ADF5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A89FADFF;
+	Wed, 19 Oct 2022 17:51:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A89FADFF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666194703;
-	bh=oMxztditmQbZR7+DrctklPnyl2cHfutQghmyLJRjwCQ=;
+	s=default; t=1666194721;
+	bh=dL9TR0vXaZI+UJpDpWwIt7YRbkDuvjL73+92DMaLhGc=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dEIz4bCg1Mm+sDACNck4rpiGJJf3xWmrX8bGBFmP9Jvslerdd6XszMDwnCEu6Whrm
-	 kFwxqukIuYPe2DSG5h6481VxiVX2cBpXq68g30AeIKtk+gqHeOWhZi11Bj2TH0MDuA
-	 KWqUv7VreE0qQ1vooJtD+Non3rCCcKPiTq4tfzxw=
+	b=DoaWVO/XGpFGkVD1Io44LGjVarupabbg3Pcx84u26Mzxwen9UmKTPKRR94fkWWU3d
+	 FdgmZmdRF0yLayVRiHDs0+/sk6/nqpcGOwtlaSMeutsBm1PjYlq2UDWYZSlJcO4WPE
+	 pOcOKpxua/MsCzjYrg6WGtynVZ23zjobUO6FtViw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E988BF80549;
-	Wed, 19 Oct 2022 17:50:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97F9AF80559;
+	Wed, 19 Oct 2022 17:50:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE415F80549; Wed, 19 Oct 2022 17:50:34 +0200 (CEST)
+ id 44FE5F8053C; Wed, 19 Oct 2022 17:50:35 +0200 (CEST)
 Received: from sin.source.kernel.org (sin.source.kernel.org
  [IPv6:2604:1380:40e1:4800::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3556CF804F1
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 17:50:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3556CF804F1
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8CF5F80137
+ for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 17:50:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8CF5F80137
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="juhzztDP"
+ header.b="CGQsdB5O"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 171CCCE22C9;
- Wed, 19 Oct 2022 15:50:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CFBAC433D6;
- Wed, 19 Oct 2022 15:50:20 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 4DF92CE22C8;
+ Wed, 19 Oct 2022 15:50:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9C44C433C1;
+ Wed, 19 Oct 2022 15:50:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666194623;
- bh=oMxztditmQbZR7+DrctklPnyl2cHfutQghmyLJRjwCQ=;
+ s=k20201202; t=1666194617;
+ bh=dL9TR0vXaZI+UJpDpWwIt7YRbkDuvjL73+92DMaLhGc=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=juhzztDPhSvnkTsGVI0KuTg9czWwFcxaBCk6Be6q69WSasQQcNsKWND43EUif1OQh
- I0CjGRRGUysZP9Kzc80OOse3wvOM/oQ0H1d0PwCXmdal7C6QGgeM5Xq6jEXUSZDBlh
- k+KDVlNm9FQH/EPllNLLKvd/2eA00fCnG3Q5J61fZHxjhEHMqAQKW0KgBgKqIjx/Ui
- 2RCgmUsCtDkLelZOXJZzWHM9uk1RjVi2u0cWbiLMjG9gG9xDg4hNjppPDhaVflRFs2
- pnTimfgXPMnWEAZSeQcpusoWTWxgV/rCEIOqtH9mZPNcs93PXNEDLSwpdIj6qErC6e
- O87zSXsWkx3Xg==
+ b=CGQsdB5OMOEksPOLaub87hQ2GaswWn+qu+jv6P7DM4/cQvxkZX1WxrEEpSeGruw8S
+ 7Q6wwyGjrgdG8AZpftDjjRhO3SrF/Xk/AAmMY5hrbGKRJhU+G2HriEg4EZRi6tXr/P
+ zWaoFMaO2HoCidynt5BjbJRs7MSeJbZiwm6LFFk/x2HmXLdE/eZg24wsv317Q/6y0H
+ qp5je7qkVSHSpmZuABfPKM3lBjBPir1Te2KgrMiySHKD3+/ED0Xind0BRs4Bk7fOjn
+ l/Wy+Cd7JY6oFCm165cwfMXW3siTGJBvjtP3/dICa7Zq4akJWo1bfmsNZKs+EMCJph
+ IsKCcZLgcz8Mw==
 From: Mark Brown <broonie@kernel.org>
-To: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20220921090750.3833256-1-venkataprasad.potturu@amd.com>
-References: <20220921090750.3833256-1-venkataprasad.potturu@amd.com>
-Subject: Re: [PATCH] ASoC: amd: acp: Add setbias level for rt5682s codec in
- machine driver
-Message-Id: <166619462028.884966.16711536183815156169.b4-ty@kernel.org>
-Date: Wed, 19 Oct 2022 16:50:20 +0100
+To: shumingf@realtek.com, lgirdwood@gmail.com
+In-Reply-To: <20221019095715.31082-1-shumingf@realtek.com>
+References: <20221019095715.31082-1-shumingf@realtek.com>
+Subject: Re: [PATCH 1/2] ASoC: rt1308-sdw: add the default value of some
+ registers
+Message-Id: <166619461541.884966.2105886090446844759.b4-ty@kernel.org>
+Date: Wed, 19 Oct 2022 16:50:15 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: Sunil-kumar.Dommati@amd.com, ssabakar@amd.com,
- Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
- Liam Girdwood <lgirdwood@gmail.com>, ye xingchen <ye.xingchen@zte.com.cn>,
- Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>,
- open list <linux-kernel@vger.kernel.org>,
- Akihiko Odaki <akihiko.odaki@gmail.com>, Vijendar.Mukunda@amd.com,
- vsujithkumar.reddy@amd.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, derek.fang@realtek.com, bard.liao@intel.com,
+ flove@realtek.com, pierre-louis.bossart@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,12 +83,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 21 Sep 2022 14:37:44 +0530, Venkata Prasad Potturu wrote:
-> Add set_bais_level function for rt5682s codec to enable bclk and lrclk
-> before codec widgets power on and disable bclk and lrclk after widgets
-> power down, to avoid pop noise
+On Wed, 19 Oct 2022 17:57:15 +0800, shumingf@realtek.com wrote:
+> From: Shuming Fan <shumingf@realtek.com>
 > 
+> The driver missed the default value of register 0xc070/0xc360.
+> This patch adds that default value to avoid invalid register access
+> when the device doesn't be enumerated yet.
+> BugLink: https://github.com/thesofproject/linux/issues/3924
 > 
+> [...]
 
 Applied to
 
@@ -101,8 +99,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: acp: Add setbias level for rt5682s codec in machine driver
-      commit: 9e693e81745f03845788ef409f03a39e92f8dd48
+[1/2] ASoC: rt1308-sdw: add the default value of some registers
+      commit: 75d8b1662ca5c20cf8365575222abaef18ff1f50
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
