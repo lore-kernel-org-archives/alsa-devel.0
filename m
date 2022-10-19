@@ -4,68 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0098C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 12:06:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86A5CC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 12:07:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A9C4A744;
-	Wed, 19 Oct 2022 14:06:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A9C4A744
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8EFE2A824;
+	Wed, 19 Oct 2022 14:06:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EFE2A824
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666181212;
-	bh=mPpMcGtARME6VGyFtDY+y9UjMx3qdzGu76iRwKZx1Sw=;
+	s=default; t=1666181219;
+	bh=a+Q3SW2Du7YQqCKcu2M+v4HbHHDjTVuzUncjGaTdCTo=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iSfq1Zqmx1CanBAlz0qBZvJ2NIqdEETicRFbjED6/meIcRf7O1cnp1a43e8S7nAX9
-	 lKq5g3aFB3UZcaqR8yQbaeJlWKTLv5HThXt/AFDDXp3X1Cf4DTQuO0GO1T/+JbPl5E
-	 JJGtcFoq8lnNcjsZ+j92YLxBIWDZhlcBTOGhjzdY=
+	b=ayn4tWtRX/vpzuG8d1hOygZdaN9gwndiBNIB2xKB/hTD4FxKPUNvWPYYQ9ikNfRAt
+	 RrAVgrwIZOk1FBrox1AX/egzzNnLHNk+dlmzvViqqa+Mq5A8LWfSeAhyJrk5tl1e/B
+	 yhAJrKwbphcEBStWB5L4k/Ewdnn5YG4oF/T4zmaY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C5B5F8053D;
-	Wed, 19 Oct 2022 14:05:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6BD80F80552;
+	Wed, 19 Oct 2022 14:05:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4C96FF804F1; Wed, 19 Oct 2022 14:05:13 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 6B8B1F8053C; Wed, 19 Oct 2022 14:05:15 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BEA57F804FA
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 14:05:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEA57F804FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC965F80087
+ for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 14:05:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC965F80087
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="u3vfQLZJ"
+ header.b="WKCU9deq"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id E2479B822CC;
- Wed, 19 Oct 2022 12:05:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D15FCC433D6;
- Wed, 19 Oct 2022 12:05:04 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 5B14161772;
+ Wed, 19 Oct 2022 12:05:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47F69C433C1;
+ Wed, 19 Oct 2022 12:05:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666181105;
- bh=mPpMcGtARME6VGyFtDY+y9UjMx3qdzGu76iRwKZx1Sw=;
+ s=k20201202; t=1666181110;
+ bh=a+Q3SW2Du7YQqCKcu2M+v4HbHHDjTVuzUncjGaTdCTo=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=u3vfQLZJ/ZfYpDUYSsIYen/WVASiVF1yr1bufPWpKcpqy1F6W5025ICRlDwBWlnvG
- nZMHEF7BwBiUEoY4+NeoW8LCEZwsUTlXNaVBuI9fNtDx4N3GBEUZFjnQPBkPVBhwAR
- 8wTz6TZhOKUw5O7h8OHFrLhvdwUBrh7jF+Sfh+tvdVuEKHkV6+boDT296sdB3j4dc1
- 5NYHroFYrSgkuVcErVepiSRmTPfUIP3aaTlVDW24jkcTFX2h67uZ/uRP0X6UpDJy9V
- TpF9AOalnH5VVQ+nfo5f4lnbnXYf8xd/e0pQOBPAdEqMv1MK3mfB0DCjOnDh5zs+gU
- CbCLklltaMG+w==
+ b=WKCU9deq3FM4gdIaBD9s22EbAKxA663mbS2SbG9x5hUXOzx8sB3bf8qHTx20AYwfM
+ mYlHt86qJHfYh2jCedM2/7ei7Uj71FBvpKzakQutXr7M8lKXesEagWm0SMCPmw29+4
+ g5xdVN8e6gwMK63HgJGGyeig2yGw0m6bOeLl8cFfaQ0eO6/FbHhM3lQHvPlhmV2NQf
+ ETmVVsIa1sUzubtNJ2I7X2ZJYmHXkSJNXToj4whlbZgKSnycZUK9j1cCoODCCYtGON
+ wVeA9vy+ZbBi9svnjS+Pr5V4gugBZuQZPhaigbHmCky/zX1Fn1FYsGa0vVeFOjorzE
+ eah3YSI2dTB9A==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20221017204946.207986-1-pierre-louis.bossart@linux.intel.com>
-References: <20221017204946.207986-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/3] ASoC: Intel/SOF: simplify S3 resume flows
-Message-Id: <166618110458.80223.3405293187719974346.b4-ty@kernel.org>
-Date: Wed, 19 Oct 2022 13:05:04 +0100
+To: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20221018122711.2559452-1-venkataprasad.potturu@amd.com>
+References: <20221018122711.2559452-1-venkataprasad.potturu@amd.com>
+Subject: Re: [PATCH] ASOC: amd: acp: Add TDM slots setting support for ACP I2S
+ controller
+Message-Id: <166618110801.80223.1404138981256305349.b4-ty@kernel.org>
+Date: Wed, 19 Oct 2022 13:05:08 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: tiwai@suse.de, Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Sunil-kumar.Dommati@amd.com, ssabakar@amd.com,
+ Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>, Basavaraj.Hiregoudar@amd.com,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ open list <linux-kernel@vger.kernel.org>, Vijendar.Mukunda@amd.com,
+ vsujithkumar.reddy@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,18 +86,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 17 Oct 2022 15:49:43 -0500, Pierre-Louis Bossart wrote:
-> All Intel drivers for cAVS platforms contain a sequence for S3 resume
-> which doesn't seem justified nor necessary. Forensic Git investigation
-> in internal repositories did not provide any rationale for the
-> implementation, and tests show no impact when those sequences are
-> removed.
+On Tue, 18 Oct 2022 17:57:06 +0530, Venkata Prasad Potturu wrote:
+> Modify set tdm slot function to set ACP I2S controller slots
+> in tdm mode based on number of slots.
 > 
-> This sequence was identified as problematic during a large HDaudio
-> cleanup where all programming sequences were revisited before
-> extensions are added.
 > 
-> [...]
 
 Applied to
 
@@ -100,12 +98,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: Intel: Skylake: simplify S3 resume flows
-      commit: fac33cb5c12c58e031a5e2f8e3e8c7de8604a764
-[2/3] ASoC: Intel: avs: simplify S3 resume flows
-      commit: 8e1ae6f62c7e8f904949e9c60a4a38715c8c0aff
-[3/3] ASoC: SOF: Intel: hda-dsp: simplify S3 resume flows
-      commit: 9f68d6e64f51bf62f8d2f7d82a425470e9aa3b24
+[1/1] ASOC: amd: acp: Add TDM slots setting support for ACP I2S controller
+      commit: bdde278a77d3220ba7991e6ff5e992716981ae30
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
