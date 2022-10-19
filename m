@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CAA8C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 12:34:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F84BC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 12:34:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49EEE3A27;
-	Wed, 19 Oct 2022 14:33:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49EEE3A27
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CEE98467;
+	Wed, 19 Oct 2022 14:33:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CEE98467
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666182847;
-	bh=Lo8tvxGIOYo47DnL+wzBI8+oasH0jlAOV1i9YkarM04=;
+	s=default; t=1666182851;
+	bh=oOnhVUIHiH0yGL9fC3+A+0Ub20Zf3b/FKt4v93Wr/rc=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q7lG/tbXSt1KLOm7Bfiu+ha5D9I81RJEbutb2Jb4bnanlWggBw8tcMSGPt1a1x04+
-	 +L+uzRX/qr5S9YoI918OuZyMpaicBbXr9wDgKg5D0imBmzu2k/ZJGFS0mAUPFBHy6Q
-	 9WWkB6wMwq48MQXWlERCRGc/cU3xRWv3A8G1CPqU=
+	b=Ot741f8ujMKdaUd+U0jzK1ZrdZPRxQJdYDBZ/xOfSvIO+WDj+kkr8jctbOHiRwCeb
+	 q7ViUN+sXl83MHWXpjN8npm3GvAjAO91W8EDkprUDFn4sUFkBDMBvU6tdmIbBALqZi
+	 1K2342myxuJ9ZikaezMdvYE2Gneg5KzI3rIvxPtM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9398F8053B;
-	Wed, 19 Oct 2022 14:32:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3870F80552;
+	Wed, 19 Oct 2022 14:32:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E88E8F80528; Wed, 19 Oct 2022 14:32:27 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 66BCAF80517; Wed, 19 Oct 2022 14:32:30 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CB49FF804CC
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 14:32:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB49FF804CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 24292F80137
+ for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 14:32:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24292F80137
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HcEnWO5c"
+ header.b="bn9zlEos"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C958561753;
- Wed, 19 Oct 2022 12:32:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3354CC433D6;
- Wed, 19 Oct 2022 12:32:20 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 6E70CB822C8;
+ Wed, 19 Oct 2022 12:32:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F12C0C433D6;
+ Wed, 19 Oct 2022 12:32:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666182741;
- bh=Lo8tvxGIOYo47DnL+wzBI8+oasH0jlAOV1i9YkarM04=;
+ s=k20201202; t=1666182746;
+ bh=oOnhVUIHiH0yGL9fC3+A+0Ub20Zf3b/FKt4v93Wr/rc=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=HcEnWO5cJfDdoi0h94TeHGJtxzV/9fp8Tb2FDgVaospRYjNhF8cvUC3B49+cvLsQ3
- pLS3Ygqzg4zoW941xlcWQTnK6uo0epJRPFBG+XuM6foBK1OYpcYOk15IwmPAu3OS8f
- 24dpZMe0gnf6ATMZe2WfN2d9QmLz2uJHCThWqJCQbiLYzirCJu3Afgi7fKxpDQRhs/
- /hdys4pkOb07QMxWiKoTeB4bZL/15Ow9ffAF0+xcFgUPuKf0iB2Ivmg6P/h/G3yqLZ
- 9H173NGb42K3X+gevrbGBohn5/gaubqIIJ0KeIkExfORlzdeWUsZ0BgidVEf+eDkAx
- Cmj87oYNo4yvg==
+ b=bn9zlEosaPgLlPqzyuLR9XmkCfO495g8zzJrlgVqpJFiEhsDWASolHyY1ypN/c4+R
+ L8sakCrWTyJHLKHTKawjwbE1wdtF80D63b+1kkAeSUEscVFytGy3HTejlvJMdYtsYA
+ ATRt/mUuZs+1KlAYSvgTHXWmYlwB33FjMWWLOmn8DMf6aU5kdt3C78QoMvHmauKK+N
+ IUkslxVqMZm3/nCMBNt/1JZGvUMh3S8aLDWU13ZBktSgxLtWdi3IESgmxPSf7QIWaz
+ fe738yS2rzUgLkTWAkJYnISYd1GbRLSaGJHZgAypzFCBpsshzP7gcJNT+ievtSiXgL
+ 2kLWf5qk6n1ow==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20221017204054.207512-1-pierre-louis.bossart@linux.intel.com>
-References: <20221017204054.207512-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: sof_sdw: add quirk variant for LAPBC710 NUC15
-Message-Id: <166618273994.118898.13332719077942259973.b4-ty@kernel.org>
-Date: Wed, 19 Oct 2022 13:32:19 +0100
+To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, lgirdwood@gmail.com
+In-Reply-To: <20221018121332.20802-1-peter.ujfalusi@linux.intel.com>
+References: <20221018121332.20802-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: ipc4-mtrace: protect per-core nodes against
+ multiple open
+Message-Id: <166618274472.118898.3768056072670907786.b4-ty@kernel.org>
+Date: Wed, 19 Oct 2022 13:32:24 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com, pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,11 +82,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 17 Oct 2022 15:40:54 -0500, Pierre-Louis Bossart wrote:
-> Some NUC15 LAPBC710 devices don't expose the same DMI information as
-> the Intel reference, add additional entry in the match table.
+On Tue, 18 Oct 2022 15:13:32 +0300, Peter Ujfalusi wrote:
+> From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 > 
+> Add protection against multiple open of the mtrace/coreN debugfs
+> nodes. This is not supported in the implementation, and this will
+> show up as unexpected behaviour of the interface, and potential
+> use of already freed memory.
 > 
+> [...]
 
 Applied to
 
@@ -93,8 +98,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: sof_sdw: add quirk variant for LAPBC710 NUC15
-      commit: 41deb2db64997d01110faaf763bd911d490dfde7
+[1/1] ASoC: SOF: ipc4-mtrace: protect per-core nodes against multiple open
+      commit: af6514f2f3828dc39c96cd4686ef5c9d8368626f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
