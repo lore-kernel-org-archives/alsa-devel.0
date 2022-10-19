@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F84BC4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 12:34:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F00B1C4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 12:34:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CEE98467;
-	Wed, 19 Oct 2022 14:33:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CEE98467
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0DF628D28;
+	Wed, 19 Oct 2022 14:33:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DF628D28
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666182851;
-	bh=oOnhVUIHiH0yGL9fC3+A+0Ub20Zf3b/FKt4v93Wr/rc=;
+	s=default; t=1666182859;
+	bh=o/UtyFjGrXucSKT7ap4G1SuW/Z9Tvzc8HO0i7bfhpEA=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ot741f8ujMKdaUd+U0jzK1ZrdZPRxQJdYDBZ/xOfSvIO+WDj+kkr8jctbOHiRwCeb
-	 q7ViUN+sXl83MHWXpjN8npm3GvAjAO91W8EDkprUDFn4sUFkBDMBvU6tdmIbBALqZi
-	 1K2342myxuJ9ZikaezMdvYE2Gneg5KzI3rIvxPtM=
+	b=P/5pONa6i4x0Cjmz/XFcmV/o/JmJSjzZUN41m+yaNoTkZCZlp+5xZ9Mwb1O6YcVf9
+	 untqD5URfc0zRmKeaTIV41VGPvCJVHXO678zK/AE+mAMmSgjCiEfKLoyHN5k6idEIJ
+	 3Pgt675VU4fZlbfPBU3O6Np3N/hIEiozpWbhNXHs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3870F80552;
-	Wed, 19 Oct 2022 14:32:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 604E9F80553;
+	Wed, 19 Oct 2022 14:32:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66BCAF80517; Wed, 19 Oct 2022 14:32:30 +0200 (CEST)
+ id A6DD1F804CB; Wed, 19 Oct 2022 14:32:32 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24292F80137
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 14:32:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24292F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6DB5CF804CB
+ for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 14:32:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DB5CF804CB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bn9zlEos"
+ header.b="Dcd76hTr"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 6E70CB822C8;
- Wed, 19 Oct 2022 12:32:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F12C0C433D6;
- Wed, 19 Oct 2022 12:32:24 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id B0BF3B823B4;
+ Wed, 19 Oct 2022 12:32:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 534BAC433D7;
+ Wed, 19 Oct 2022 12:32:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666182746;
- bh=oOnhVUIHiH0yGL9fC3+A+0Ub20Zf3b/FKt4v93Wr/rc=;
+ s=k20201202; t=1666182744;
+ bh=o/UtyFjGrXucSKT7ap4G1SuW/Z9Tvzc8HO0i7bfhpEA=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=bn9zlEosaPgLlPqzyuLR9XmkCfO495g8zzJrlgVqpJFiEhsDWASolHyY1ypN/c4+R
- L8sakCrWTyJHLKHTKawjwbE1wdtF80D63b+1kkAeSUEscVFytGy3HTejlvJMdYtsYA
- ATRt/mUuZs+1KlAYSvgTHXWmYlwB33FjMWWLOmn8DMf6aU5kdt3C78QoMvHmauKK+N
- IUkslxVqMZm3/nCMBNt/1JZGvUMh3S8aLDWU13ZBktSgxLtWdi3IESgmxPSf7QIWaz
- fe738yS2rzUgLkTWAkJYnISYd1GbRLSaGJHZgAypzFCBpsshzP7gcJNT+ievtSiXgL
- 2kLWf5qk6n1ow==
+ b=Dcd76hTrOB0+Bc8GhFPW7E9/AWH7EA1zMgC9NHTnutJdppbwEp2WmBoX9QQXeEtsa
+ gEOaGOtKzGTvmOqzlESwL8v5WtJVxOQcMxX5XxxKO/gfvKdStci+fx7aGXYLOV98qc
+ pXaX1emuDDxeaUkCHFgk878zHQaYIxTs/AnNUMSTNWRKdfneIcsUGLB8Vgezh8tK53
+ +2WgAGv22arye0CLurRoPtX/5zPdYFDnJePIC4LI9yHyh+X7JgsEmxgylrc55mSfn1
+ YwXUgYgECEUTFSoOs5dlRPcwSmCp/cfXFJP6McrTFHFubKUGHZRtAd3llz0S1Fc2dH
+ hMoIxUzdIEcVw==
 From: Mark Brown <broonie@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, lgirdwood@gmail.com
-In-Reply-To: <20221018121332.20802-1-peter.ujfalusi@linux.intel.com>
-References: <20221018121332.20802-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: ipc4-mtrace: protect per-core nodes against
- multiple open
-Message-Id: <166618274472.118898.3768056072670907786.b4-ty@kernel.org>
-Date: Wed, 19 Oct 2022 13:32:24 +0100
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20221017205728.210813-1-pierre-louis.bossart@linux.intel.com>
+References: <20221017205728.210813-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2] ASoC: Intel: sof_rt5682: Add quirk for Rex board
+Message-Id: <166618274307.118898.13405823402694326089.b4-ty@kernel.org>
+Date: Wed, 19 Oct 2022 13:32:23 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
- kai.vehmanen@linux.intel.com, pierre-louis.bossart@linux.intel.com
+Cc: tiwai@suse.de, Curtis Malainey <cujomalainey@chromium.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,15 +82,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 18 Oct 2022 15:13:32 +0300, Peter Ujfalusi wrote:
-> From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+On Mon, 17 Oct 2022 15:57:28 -0500, Pierre-Louis Bossart wrote:
+> From: Yong Zhi <yong.zhi@intel.com>
 > 
-> Add protection against multiple open of the mtrace/coreN debugfs
-> nodes. This is not supported in the implementation, and this will
-> show up as unexpected behaviour of the interface, and potential
-> use of already freed memory.
+> Add mtl_mx98357_rt5682 driver data for Chrome Rex board support.
 > 
-> [...]
+> 
 
 Applied to
 
@@ -98,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: ipc4-mtrace: protect per-core nodes against multiple open
-      commit: af6514f2f3828dc39c96cd4686ef5c9d8368626f
+[1/1] ASoC: Intel: sof_rt5682: Add quirk for Rex board
+      commit: b4dd2e3758709aa8a2abd1ac34c56bd09b980039
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
