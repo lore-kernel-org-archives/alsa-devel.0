@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA4E8C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 12:06:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38B42C4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 12:06:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84C02A0E1;
-	Wed, 19 Oct 2022 14:05:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84C02A0E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73536A6F8;
+	Wed, 19 Oct 2022 14:05:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73536A6F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666181161;
-	bh=C+sotepzrG+P1ZG2FS2Y5ZCcRArn0JseAY06t7IHhZ8=;
+	s=default; t=1666181185;
+	bh=F/vs8b7abjKQcTaqlC59wWBxEf22jzV2p9r8gJVIZGE=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vLT+NPAq7TPLvYQAcXHK9tXMzoRh/o1NC2fiF1wv0jdytKozgECL/wKgF0iMnRHcB
-	 qNy5/3dcEks+30LDxRMMqMuVEqM6JOyE2EfClUsx70jOFjahcefK2/JV7GqMOLJ3VY
-	 DGf7lTPncdlNGH3hAbo3vzaxjBLkIazc/1eOGuag=
+	b=h88HTkmmF3mGC6qG9yW8ZAfMtgicWrqTC1GAJlPv7WauDDI0crlZ3Hl3v7TYyKooo
+	 0MAJ0CmlyV+Rmz3z5b0MbYXKbbM1zFzlxA6mkSLMscMLhOvrEkHMfovyGLudxMtzMB
+	 nuIcQAm+bw0JKU5OxpNKZ96EYyTAayRH8m4d8ID4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D5FDF804CB;
-	Wed, 19 Oct 2022 14:05:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3699F804FA;
+	Wed, 19 Oct 2022 14:05:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 61724F80137; Wed, 19 Oct 2022 14:05:10 +0200 (CEST)
+ id B640AF80517; Wed, 19 Oct 2022 14:05:12 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 07F25F80137
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 14:05:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07F25F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43A39F804CC
+ for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 14:05:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43A39F804CC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="uArMu4/a"
+ header.b="E+NPxH+N"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id EBA7C61755;
- Wed, 19 Oct 2022 12:05:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 052F8C433C1;
- Wed, 19 Oct 2022 12:05:02 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 5495B60F57;
+ Wed, 19 Oct 2022 12:05:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3379FC433D7;
+ Wed, 19 Oct 2022 12:05:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666181104;
- bh=C+sotepzrG+P1ZG2FS2Y5ZCcRArn0JseAY06t7IHhZ8=;
+ s=k20201202; t=1666181107;
+ bh=F/vs8b7abjKQcTaqlC59wWBxEf22jzV2p9r8gJVIZGE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=uArMu4/abArcC2RinOawpJGUuehQ3gHVHZhxBoB33aUkWVaAEU1tGiuSpHw+jNoRJ
- q5d7/x6W3JtqwQy/Kcn/K1E7+WHkey/kx9su3xq+wtp0dwMyg94lLqmlmpcP+bU4Ca
- dHSAYuE1k+W6+vftLhUh2aqvc1xfELdS0PwKZEd0vLra44NvA4oJIY9D5kraVODr0X
- o1+iVEfsPC/iOzRBBcr5G3QegKAS0lkZp1UjAvQoJg5LJE1Sst7bVpWaSXb/cOI297
- FkzFQVIlj+uNoQCds1eMHedugbJs3pq+ork4tqKuWNarsP1cdMrcyDqnVoz2c5k2B5
- x06z5jvW7dh+Q==
+ b=E+NPxH+NYowTYhFvZA/si/KHWYqSmzmJUZSDAPHP3oaYblp6TcgreK0gD16Sb2KuV
+ 2yXfcvSM9i/vdsolg6CMdMSqygf3/mTElc7vXfEqyaOs6WCaPEOH+kQjATgDDbPMwI
+ ydvoF66VcwKUbmzxRdoEQ1iYoiaCdYfIka0gZg1dzvIR5S/n9miXjFqW/q76rQk6GT
+ JapIr8CTHoYjP8t419TzGTskGgJrRwUHXt3yM31BhZEI53aiCPe9x6iVzTTq7XkwmK
+ FdkU3nlAOoCCG881txjNg4BGmBdWMSPZsFQO52Y6V7BXAgqyJLZO38F4nEmhY25n6x
+ YPunp94YoomwQ==
 From: Mark Brown <broonie@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, lgirdwood@gmail.com
-In-Reply-To: <20221018133843.16958-1-peter.ujfalusi@linux.intel.com>
-References: <20221018133843.16958-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: ipc3: Log the tx message before sending it
-Message-Id: <166618110274.80223.448031052478531692.b4-ty@kernel.org>
-Date: Wed, 19 Oct 2022 13:05:02 +0100
+To: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
+ Colin Ian King <colin.i.king@gmail.com>, 
+ Peter Ujfalusi <peter.ujfalusi@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20221018152928.942186-1-colin.i.king@gmail.com>
+References: <20221018152928.942186-1-colin.i.king@gmail.com>
+Subject: Re: [PATCH] ASoC: twl4030: make read-only array ramp_base static const
+Message-Id: <166618110593.80223.11956786873062777747.b4-ty@kernel.org>
+Date: Wed, 19 Oct 2022 13:05:05 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: alsa-devel@alsa-project.org, yung-chuan.liao@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
- ranjani.sridharan@linux.intel.com
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,8 +83,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 18 Oct 2022 16:38:43 +0300, Peter Ujfalusi wrote:
-> It makes more sense to log the message before it is sent to the DSP.
+On Tue, 18 Oct 2022 16:29:28 +0100, Colin Ian King wrote:
+> Don't populate the read-only array ramp_base on the stack but
+> instead make it static const. Also makes the object code a
+> little smaller.
 > 
 > 
 
@@ -93,8 +96,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: ipc3: Log the tx message before sending it
-      commit: 73e4981f12325d9d128af68faedc3e36b6ff7c37
+[1/1] ASoC: twl4030: make read-only array ramp_base static const
+      commit: 67860d2a8e0db7783f680f6f1c1600ed34ed3a97
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
