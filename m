@@ -4,70 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38B42C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 12:06:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0098C4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 12:06:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 73536A6F8;
-	Wed, 19 Oct 2022 14:05:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73536A6F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A9C4A744;
+	Wed, 19 Oct 2022 14:06:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A9C4A744
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666181185;
-	bh=F/vs8b7abjKQcTaqlC59wWBxEf22jzV2p9r8gJVIZGE=;
+	s=default; t=1666181212;
+	bh=mPpMcGtARME6VGyFtDY+y9UjMx3qdzGu76iRwKZx1Sw=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=h88HTkmmF3mGC6qG9yW8ZAfMtgicWrqTC1GAJlPv7WauDDI0crlZ3Hl3v7TYyKooo
-	 0MAJ0CmlyV+Rmz3z5b0MbYXKbbM1zFzlxA6mkSLMscMLhOvrEkHMfovyGLudxMtzMB
-	 nuIcQAm+bw0JKU5OxpNKZ96EYyTAayRH8m4d8ID4=
+	b=iSfq1Zqmx1CanBAlz0qBZvJ2NIqdEETicRFbjED6/meIcRf7O1cnp1a43e8S7nAX9
+	 lKq5g3aFB3UZcaqR8yQbaeJlWKTLv5HThXt/AFDDXp3X1Cf4DTQuO0GO1T/+JbPl5E
+	 JJGtcFoq8lnNcjsZ+j92YLxBIWDZhlcBTOGhjzdY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3699F804FA;
-	Wed, 19 Oct 2022 14:05:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C5B5F8053D;
+	Wed, 19 Oct 2022 14:05:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B640AF80517; Wed, 19 Oct 2022 14:05:12 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 4C96FF804F1; Wed, 19 Oct 2022 14:05:13 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43A39F804CC
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 14:05:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43A39F804CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id BEA57F804FA
+ for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 14:05:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEA57F804FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="E+NPxH+N"
+ header.b="u3vfQLZJ"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 5495B60F57;
- Wed, 19 Oct 2022 12:05:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3379FC433D7;
+ by ams.source.kernel.org (Postfix) with ESMTPS id E2479B822CC;
  Wed, 19 Oct 2022 12:05:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D15FCC433D6;
+ Wed, 19 Oct 2022 12:05:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666181107;
- bh=F/vs8b7abjKQcTaqlC59wWBxEf22jzV2p9r8gJVIZGE=;
+ s=k20201202; t=1666181105;
+ bh=mPpMcGtARME6VGyFtDY+y9UjMx3qdzGu76iRwKZx1Sw=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=E+NPxH+NYowTYhFvZA/si/KHWYqSmzmJUZSDAPHP3oaYblp6TcgreK0gD16Sb2KuV
- 2yXfcvSM9i/vdsolg6CMdMSqygf3/mTElc7vXfEqyaOs6WCaPEOH+kQjATgDDbPMwI
- ydvoF66VcwKUbmzxRdoEQ1iYoiaCdYfIka0gZg1dzvIR5S/n9miXjFqW/q76rQk6GT
- JapIr8CTHoYjP8t419TzGTskGgJrRwUHXt3yM31BhZEI53aiCPe9x6iVzTTq7XkwmK
- FdkU3nlAOoCCG881txjNg4BGmBdWMSPZsFQO52Y6V7BXAgqyJLZO38F4nEmhY25n6x
- YPunp94YoomwQ==
+ b=u3vfQLZJ/ZfYpDUYSsIYen/WVASiVF1yr1bufPWpKcpqy1F6W5025ICRlDwBWlnvG
+ nZMHEF7BwBiUEoY4+NeoW8LCEZwsUTlXNaVBuI9fNtDx4N3GBEUZFjnQPBkPVBhwAR
+ 8wTz6TZhOKUw5O7h8OHFrLhvdwUBrh7jF+Sfh+tvdVuEKHkV6+boDT296sdB3j4dc1
+ 5NYHroFYrSgkuVcErVepiSRmTPfUIP3aaTlVDW24jkcTFX2h67uZ/uRP0X6UpDJy9V
+ TpF9AOalnH5VVQ+nfo5f4lnbnXYf8xd/e0pQOBPAdEqMv1MK3mfB0DCjOnDh5zs+gU
+ CbCLklltaMG+w==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
- Colin Ian King <colin.i.king@gmail.com>, 
- Peter Ujfalusi <peter.ujfalusi@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20221018152928.942186-1-colin.i.king@gmail.com>
-References: <20221018152928.942186-1-colin.i.king@gmail.com>
-Subject: Re: [PATCH] ASoC: twl4030: make read-only array ramp_base static const
-Message-Id: <166618110593.80223.11956786873062777747.b4-ty@kernel.org>
-Date: Wed, 19 Oct 2022 13:05:05 +0100
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20221017204946.207986-1-pierre-louis.bossart@linux.intel.com>
+References: <20221017204946.207986-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/3] ASoC: Intel/SOF: simplify S3 resume flows
+Message-Id: <166618110458.80223.3405293187719974346.b4-ty@kernel.org>
+Date: Wed, 19 Oct 2022 13:05:04 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: tiwai@suse.de, Cezary Rojewski <cezary.rojewski@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,12 +81,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 18 Oct 2022 16:29:28 +0100, Colin Ian King wrote:
-> Don't populate the read-only array ramp_base on the stack but
-> instead make it static const. Also makes the object code a
-> little smaller.
+On Mon, 17 Oct 2022 15:49:43 -0500, Pierre-Louis Bossart wrote:
+> All Intel drivers for cAVS platforms contain a sequence for S3 resume
+> which doesn't seem justified nor necessary. Forensic Git investigation
+> in internal repositories did not provide any rationale for the
+> implementation, and tests show no impact when those sequences are
+> removed.
 > 
+> This sequence was identified as problematic during a large HDaudio
+> cleanup where all programming sequences were revisited before
+> extensions are added.
 > 
+> [...]
 
 Applied to
 
@@ -96,8 +100,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: twl4030: make read-only array ramp_base static const
-      commit: 67860d2a8e0db7783f680f6f1c1600ed34ed3a97
+[1/3] ASoC: Intel: Skylake: simplify S3 resume flows
+      commit: fac33cb5c12c58e031a5e2f8e3e8c7de8604a764
+[2/3] ASoC: Intel: avs: simplify S3 resume flows
+      commit: 8e1ae6f62c7e8f904949e9c60a4a38715c8c0aff
+[3/3] ASoC: SOF: Intel: hda-dsp: simplify S3 resume flows
+      commit: 9f68d6e64f51bf62f8d2f7d82a425470e9aa3b24
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
