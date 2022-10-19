@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DA31C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 10:40:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69F03C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 10:40:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4BAFB8CA4;
-	Thu, 20 Oct 2022 12:39:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BAFB8CA4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 994C88A3E;
+	Thu, 20 Oct 2022 12:39:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 994C88A3E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666262409;
+	s=default; t=1666262427;
 	bh=kubHLafIrz0RpDb3CGgNiLVyMIsY49HSnQVqbHWTqCM=;
-	h=From:To:Subject:References:Date:In-Reply-To:Cc:List-Id:
+	h=From:To:Subject:In-Reply-To:References:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u+E0anilkKQ4ghaY5U0+PL7FFc1E8Q96aaSP2MkyCf35YlNy13fdXJ1dxI0igl05x
-	 4A7B7okmhhJTAWZsoWlvSXJAMCCsBtQiJnrwxQEa7cDoncBdJPJXM3AAjtzPWdjz7M
-	 /P9bSvpc14WBSlPVmueSv0l+4/H8Uo3RzAInL/Ak=
+	b=qzNrsSWOi+eyN4VE+Snb/I+ZA20al8f9/N85ZFBACUjvzltDclfNNanmsCWkGy5xt
+	 5YtkOqiadcjzDPmWxB6au93KvFfIJ9tZdSIoe+SifZ6GiXK1C3FstkCci9ZWDqnueY
+	 JbNeLXmkGP10msrFNddUc6+G4B+HU+b3wmpD+UOE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CED30F805E2;
-	Thu, 20 Oct 2022 12:33:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E02AF805E6;
+	Thu, 20 Oct 2022 12:33:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50F78F804E0; Wed, 19 Oct 2022 23:13:38 +0200 (CEST)
+ id 3ED5BF80166; Wed, 19 Oct 2022 23:13:57 +0200 (CEST)
 Received: from smtp.smtpout.orange.fr (smtp-25.smtpout.orange.fr
  [80.12.242.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69ACBF80137
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 23:13:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69ACBF80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F0CBF80137
+ for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 23:13:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F0CBF80137
 Received: from sopl295.home ([109.220.248.156]) by smtp.orange.fr with ESMTPA
- id lGNMo1N0Kg7y2lGNMocFLS; Wed, 19 Oct 2022 23:13:31 +0200
+ id lGNoo1NB2g7y2lGNpocFOd; Wed, 19 Oct 2022 23:13:51 +0200
 X-ME-Helo: sopl295.home
 X-ME-Auth: amFyem1pay5yb2JlcnRAb3JhbmdlLmZy
-X-ME-Date: Wed, 19 Oct 2022 23:13:31 +0200
+X-ME-Date: Wed, 19 Oct 2022 23:13:51 +0200
 X-ME-IP: 109.220.248.156
 From: Robert Jarzmik <jarzmik.robert@orange.fr>
 To: Arnd Bergmann <arnd@kernel.org>
 Subject: Re: [PATCH 00/30] ARM: pxa: remove all unused boards&drivers
-References: <20221019161831.3864786-1-arnd@kernel.org>
-X-URL: http://belgarath.falguerolles.org/
-Date: Wed, 19 Oct 2022 23:13:20 +0200
 In-Reply-To: <20221019161831.3864786-1-arnd@kernel.org> (Arnd Bergmann's
  message of "Wed, 19 Oct 2022 18:17:53 +0200")
-Message-ID: <m2sfjjh5zj.fsf@sopl295.home>
+References: <20221019161831.3864786-1-arnd@kernel.org>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1 (darwin)
+X-URL: http://belgarath.falguerolles.org/
+Date: Wed, 19 Oct 2022 23:13:48 +0200
+Message-ID: <m2r0z3h5yr.fsf@sopl295.home>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Mailman-Approved-At: Thu, 20 Oct 2022 12:33:16 +0200
