@@ -4,67 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04D67C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 15:51:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A971C4321E
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 15:51:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1747ADEB;
-	Wed, 19 Oct 2022 17:50:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1747ADEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8E61ADF6;
+	Wed, 19 Oct 2022 17:50:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8E61ADF6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666194671;
-	bh=AKdjSjqhfyMLh9EcXa2O+uSYw6EByKpCQewc2c+0jck=;
+	s=default; t=1666194677;
+	bh=wScyHxczwHL75RmoXOfql5d13NwOHcmOL0uKxW2svyU=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FTS1FYD0jLYS4Urf9Z4/HrMTbLPj1pVBNcFUe3hxMV8vZg9wt4S8KvGkkOufk39tx
-	 3LshBNPrfAHocM/Q8JlTkEFNHzeNd6vHj0eh5OJKdlitJQLpSfKANhzysMCfkVruQ0
-	 2E8T2Gghl2tRDISaqZpXRZB16WNkzTKMb1DkxZy4=
+	b=CurPlg3MbJu/i03i7TJ3yFAdMmIHODuhNJbCieYRM2XPqmcOYOGa/inuuwmi3etc9
+	 Hv8bMO89+Zj550EIG0k55nvnymOs2zOCIIyHtQWFFHGknUx5uRRTk78OpP9hUA2SN7
+	 a8CJ+G6dC9Xl6B/urMCyNDjEhboQcoHBSW9SmRcM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ADEAAF80542;
-	Wed, 19 Oct 2022 17:50:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56BDAF804FA;
+	Wed, 19 Oct 2022 17:50:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01CD3F80543; Wed, 19 Oct 2022 17:50:17 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id A84B5F804FA; Wed, 19 Oct 2022 17:50:26 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ACE7AF8053D
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 17:50:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACE7AF8053D
+ by alsa1.perex.cz (Postfix) with ESMTPS id CCC8CF80137
+ for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 17:50:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCC8CF80137
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="N482c+5c"
+ header.b="D/ZLocZF"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 6744F61920;
+ by sin.source.kernel.org (Postfix) with ESMTPS id D3869CE227D;
+ Wed, 19 Oct 2022 15:50:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62EB3C433D7;
  Wed, 19 Oct 2022 15:50:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A958CC433D6;
- Wed, 19 Oct 2022 15:50:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666194612;
- bh=AKdjSjqhfyMLh9EcXa2O+uSYw6EByKpCQewc2c+0jck=;
+ s=k20201202; t=1666194615;
+ bh=wScyHxczwHL75RmoXOfql5d13NwOHcmOL0uKxW2svyU=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=N482c+5c5LbnGDRacYUtcJC3ppY5zO4sARi9SOZhjGpq7Pe5nh2dAntYAd/miee1F
- JKNLcZhM4WBcPg5ebXvyZDrWNIt6MMd2W4rW00ZLpaSg1xCYLY0M2zjMmPNpvmfP9z
- Pcblnt31myzS41Hw6ef/dEOz18Zg+euf9i+CrbuNRtl+FpkykiqI5tcBulz8Jtzp3V
- a5GfPDKE7aKFEnRXnkZJYrTeMNc22GKsvdEG5BuXo4dfSz8yyGCI0qkKjB2rLpYc85
- C1P3P174+ys7toF6VyLNa9lpC7LdVxskzONnvTgk3U5N9QJ49moyRR0Efzd/MFT19l
- 1FWNYfIXjqXSg==
+ b=D/ZLocZFqh2oVDNt4qIJijuw6psZZCGYbZq/vMqTpVdAHmJab5OKwDkNJa9FZhS+R
+ 6U9yEV97Zoz/IEcwhoeRgpoyVELIlzUiofWUpEDoeO/xfuI2W+6opBwCt/2eiA8TLG
+ J1a9DdqVaTC1bmqmtJ0hkDgvAe6LBA79wEeuPfrl0em6jFFkI/z+cmjhPouDLSSs/R
+ htcs8QqrN7D7r8PspZR8YmDpa+M/VWwrBoaqVICPdvAOs1sLzRPmLKOBMWkTlCZKex
+ C+kvGspb0YsLZxErffHZPmGRcPApRb7YMk7FD6zo8S59GfxMd6L9lo8sWLVpu0kL37
+ uJEHAzB105RvQ==
 From: Mark Brown <broonie@kernel.org>
-To: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>, lgirdwood@gmail.com
-In-Reply-To: <20221019012302.633830-1-aidanmacdonald.0x0@gmail.com>
-References: <20221019012302.633830-1-aidanmacdonald.0x0@gmail.com>
-Subject: Re: [PATCH v2] ASoC: simple-card: Fix up checks for HW param fixups
-Message-Id: <166619461019.884966.4133490951229701907.b4-ty@kernel.org>
-Date: Wed, 19 Oct 2022 16:50:10 +0100
+To: alsa-devel@alsa-project.org, Paul Cercueil <paul@crapouillou.net>,
+ Jaroslav Kysela <perex@perex.cz>, 
+ Colin Ian King <colin.i.king@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ linux-mips@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <20221019071639.1003730-1-colin.i.king@gmail.com>
+References: <20221019071639.1003730-1-colin.i.king@gmail.com>
+Subject: Re: [PATCH][next][V2] ASoC: codecs: jz4725b: Fix spelling mistake
+ "Sourc" -> "Source", "Routee" -> "Route"
+Message-Id: <166619461311.884966.9257209469691313865.b4-ty@kernel.org>
+Date: Wed, 19 Oct 2022 16:50:13 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com,
- linux-kernel@vger.kernel.org, spujar@nvidia.com, tiwai@suse.com
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,17 +84,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 19 Oct 2022 02:23:02 +0100, Aidan MacDonald wrote:
-> The "convert-xxx" properties only have an effect for DPCM DAI links.
-> A DAI link is only created as DPCM if the device tree requires it;
-> part of this involves checking for the use of "convert-xxx" properties.
+On Wed, 19 Oct 2022 08:16:39 +0100, Colin Ian King wrote:
+> There are two spelling mistakes in codec routing description. Fix it.
 > 
-> When the convert-sample-format property was added, the checks got out
-> of sync. A DAI link that specified only convert-sample-format but did
-> not pass any of the other DPCM checks would not go into DPCM mode and
-> the convert-sample-format property would be silently ignored.
 > 
-> [...]
 
 Applied to
 
@@ -98,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: simple-card: Fix up checks for HW param fixups
-      commit: 32def55d237e8507d4eb8442628fc2e59a899ea0
+[1/1] ASoC: codecs: jz4725b: Fix spelling mistake "Sourc" -> "Source", "Routee" -> "Route"
+      commit: df496157a5afa1b6d1f4c46ad6549c2c346d1e59
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
