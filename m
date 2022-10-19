@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27956C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 17:40:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28E9DC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 17:40:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 532B6ABBB;
-	Wed, 19 Oct 2022 19:39:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 532B6ABBB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 59D0882A2;
+	Wed, 19 Oct 2022 19:39:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59D0882A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666201210;
-	bh=ZjS/LWGEcU8ADNV5Pup52JOGpU2MPFMzJr4TyS6rqoE=;
+	s=default; t=1666201228;
+	bh=fK9NFEINxXbfBr0eds/T4+ud4oC36CMMgTBVFvTaKtY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EDUTko6/O43GlBZdhF4qapzaGBysaNjy4sXU28savFUDiS6UvVxl405IYFUQJiHBn
-	 XupkKVt3RQkrm4B7jm1nTiMa3jZSTizT62qYhbUPuwBgzQIagmcoDnP7NIue8C/M9B
-	 OB5ecZ+MhDGi8Qf5mo0ugk9CwXz9QdH9A0gssEQw=
+	b=DWqrM5vuPkLJ2msN70km3VrRwsD7qC66pSFP2UsXqyzD3TqGXjOcxLyXo7yxadFwI
+	 DS76vIvaMAmCStfD7ck/aDrf4X036DeMl/fuFTENmKNp2zmEKd58lG9+gUAg5VCFFs
+	 XnE6ih0OZ1dnMhvYpK+zEjzmMDpm5oKCOOjkzNYY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E477F80568;
-	Wed, 19 Oct 2022 19:37:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A534F80579;
+	Wed, 19 Oct 2022 19:37:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5428DF80528; Wed, 19 Oct 2022 19:37:44 +0200 (CEST)
+ id 5DBADF80535; Wed, 19 Oct 2022 19:37:44 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C64FF80528
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 19:37:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C64FF80528
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9137CF80166
+ for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 19:37:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9137CF80166
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Qke1VHV+"
+ header.b="n8G361e7"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666201056; x=1697737056;
+ t=1666201058; x=1697737058;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=ZjS/LWGEcU8ADNV5Pup52JOGpU2MPFMzJr4TyS6rqoE=;
- b=Qke1VHV+hUaUSfXDBdEKF5OvPUE0a6z2LirfAkzWB6WerlQUYoXvUzy6
- BlYckyLX4NDkPekwcgJtMFEiroOZ6xPTvjOyCmAd7H86snMyB7yIyU0MK
- G/RC6TN4RTnnq1MsxpzKqjVaV2FCJjzH3Tk6x4mt705rQU94mH3F6XNTz
- ZNN/TrnhPD/AFjg4mkikNN4gmzJOKJTkpzch7oJcuBYUGjpqhvMk4VGMV
- SfA7d257rRdI3VHmcp+RUQzK6JLfMLYFX8acINQn3qH6cq2NOqwtPA7u/
- h03FItYmwFgiRXewqHqkEdD8XZARUog/D17DKADZdVcUF6UJQ3GZTujIX Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="333045680"
-X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; d="scan'208";a="333045680"
+ bh=fK9NFEINxXbfBr0eds/T4+ud4oC36CMMgTBVFvTaKtY=;
+ b=n8G361e7ScfL1Svj3soz2zlsZjxW4kW2tpaOjs4rvM46nRiLBwA9IRgT
+ ZE2EODbaOkBmHNayRUP9Cb+WLKy67cID/yh5AL+vaOjD7EQ3k9IbHs++b
+ Um5m4VLKx0lZC9QdOjK9FOknQojtsGNdKfaXz7cYQhd3UjeZE6j06014v
+ wIIx9X5dIbbf1OO0ooqwMMGS0tNWV8OH44i2dvtinnxgAnfbB+YbJnVIZ
+ /ZpXd+Gq9Fe/gCTUupJmh8gHDpjBH4bm9YowGrZlLO4ne3LDxxgSeki8R
+ rqs7EHRW+yqNS6Zo/qv11DhQrlAmzCYJz/etakGJnRSyF+d+irxJ+yMVB w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="333045712"
+X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; d="scan'208";a="333045712"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Oct 2022 10:37:19 -0700
+ 19 Oct 2022 10:37:25 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="771898539"
-X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; d="scan'208";a="771898539"
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="771898575"
+X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; d="scan'208";a="771898575"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga001.fm.intel.com with ESMTP; 19 Oct 2022 10:37:17 -0700
+ by fmsmga001.fm.intel.com with ESMTP; 19 Oct 2022 10:37:23 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 4/8] ASoC: Intel: avs: Restart instead of resuming HDA capture
- streams
-Date: Wed, 19 Oct 2022 19:53:13 +0200
-Message-Id: <20221019175317.1540919-5-cezary.rojewski@intel.com>
+Subject: [PATCH 7/8] ASoC: Intel: avs: Power and clock gating policy overriding
+Date: Wed, 19 Oct 2022 19:53:16 +0200
+Message-Id: <20221019175317.1540919-8-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221019175317.1540919-1-cezary.rojewski@intel.com>
 References: <20221019175317.1540919-1-cezary.rojewski@intel.com>
@@ -87,92 +86,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Resuming of capture streams for HD-Audio is unsupported so remove the
-relevant flag from the hardware params when assigning them during
-avs_component_hda_open().
+Provide pgctl/cgctl_mask module parameters for overriding power and
+clock gating policies respectively. These help deal with rare firmware
+loading failures on some configurations. There're no golden masks that
+cover all known problems so leave the defaults as is.
+
+While at it, update avs_hda_l1sen_enable()'s definition so it aligns
+with its power/clock friends.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/pcm.c | 50 ++++++++++++++++++++++-----------------
- 1 file changed, 28 insertions(+), 22 deletions(-)
+ sound/soc/intel/avs/core.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
-index 5c9923cba126..cce3756e2a4e 100644
---- a/sound/soc/intel/avs/pcm.c
-+++ b/sound/soc/intel/avs/pcm.c
-@@ -1023,34 +1023,34 @@ static int avs_component_resume(struct snd_soc_component *component)
- 	return avs_component_resume_prepare(component, false);
- }
+diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
+index 841bc9fa0d3b..da7aa7537435 100644
+--- a/sound/soc/intel/avs/core.c
++++ b/sound/soc/intel/avs/core.c
+@@ -27,6 +27,14 @@
+ #include "avs.h"
+ #include "cldma.h"
  
-+static const struct snd_pcm_hardware avs_pcm_hardware = {
-+	.info			= SNDRV_PCM_INFO_MMAP |
-+				  SNDRV_PCM_INFO_MMAP_VALID |
-+				  SNDRV_PCM_INFO_INTERLEAVED |
-+				  SNDRV_PCM_INFO_PAUSE |
-+				  SNDRV_PCM_INFO_RESUME |
-+				  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
-+	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
-+				  SNDRV_PCM_FMTBIT_S24_LE |
-+				  SNDRV_PCM_FMTBIT_S32_LE,
-+	.buffer_bytes_max	= AZX_MAX_BUF_SIZE,
-+	.period_bytes_min	= 128,
-+	.period_bytes_max	= AZX_MAX_BUF_SIZE / 2,
-+	.periods_min		= 2,
-+	.periods_max		= AZX_MAX_FRAG,
-+	.fifo_size		= 0,
-+};
++static u32 pgctl_mask = AZX_PGCTL_LSRMD_MASK;
++module_param(pgctl_mask, uint, 0444);
++MODULE_PARM_DESC(pgctl_mask, "PCI PGCTL policy override");
 +
- static int avs_component_open(struct snd_soc_component *component,
- 			      struct snd_pcm_substream *substream)
++static u32 cgctl_mask = AZX_CGCTL_MISCBDCGE_MASK;
++module_param(cgctl_mask, uint, 0444);
++MODULE_PARM_DESC(cgctl_mask, "PCI CGCTL policy override");
++
+ static void
+ avs_hda_update_config_dword(struct hdac_bus *bus, u32 reg, u32 mask, u32 value)
  {
- 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
--	struct snd_pcm_hardware hwparams;
+@@ -41,19 +49,16 @@ avs_hda_update_config_dword(struct hdac_bus *bus, u32 reg, u32 mask, u32 value)
  
- 	/* only FE DAI links are handled here */
- 	if (rtd->dai_link->no_pcm)
- 		return 0;
+ void avs_hda_power_gating_enable(struct avs_dev *adev, bool enable)
+ {
+-	u32 value;
++	u32 value = enable ? 0 : pgctl_mask;
  
--	hwparams.info = SNDRV_PCM_INFO_MMAP |
--			SNDRV_PCM_INFO_MMAP_VALID |
--			SNDRV_PCM_INFO_INTERLEAVED |
--			SNDRV_PCM_INFO_PAUSE |
--			SNDRV_PCM_INFO_RESUME |
--			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP;
--
--	hwparams.formats = SNDRV_PCM_FMTBIT_S16_LE |
--			   SNDRV_PCM_FMTBIT_S24_LE |
--			   SNDRV_PCM_FMTBIT_S32_LE;
--	hwparams.period_bytes_min = 128;
--	hwparams.period_bytes_max = AZX_MAX_BUF_SIZE / 2;
--	hwparams.periods_min = 2;
--	hwparams.periods_max = AZX_MAX_FRAG;
--	hwparams.buffer_bytes_max = AZX_MAX_BUF_SIZE;
--	hwparams.fifo_size = 0;
--
--	return snd_soc_set_runtime_hwparams(substream, &hwparams);
-+	return snd_soc_set_runtime_hwparams(substream, &avs_pcm_hardware);
+-	value = enable ? 0 : AZX_PGCTL_LSRMD_MASK;
+-	avs_hda_update_config_dword(&adev->base.core, AZX_PCIREG_PGCTL,
+-				    AZX_PGCTL_LSRMD_MASK, value);
++	avs_hda_update_config_dword(&adev->base.core, AZX_PCIREG_PGCTL, pgctl_mask, value);
  }
  
- static unsigned int avs_hda_stream_dpib_read(struct hdac_ext_stream *stream)
-@@ -1394,9 +1394,15 @@ static int avs_component_hda_open(struct snd_soc_component *component,
- 	struct hdac_ext_stream *link_stream;
- 	struct hda_codec *codec;
+ static void avs_hdac_clock_gating_enable(struct hdac_bus *bus, bool enable)
+ {
+-	u32 value;
++	u32 value = enable ? cgctl_mask : 0;
  
--	/* only BE DAI links are handled here */
--	if (!rtd->dai_link->no_pcm)
--		return avs_component_open(component, substream);
-+	if (!rtd->dai_link->no_pcm) {
-+		struct snd_pcm_hardware hwparams = avs_pcm_hardware;
-+
-+		/* RESUME unsupported for de-coupled HD-Audio capture. */
-+		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+			hwparams.info &= ~SNDRV_PCM_INFO_RESUME;
-+
-+		return snd_soc_set_runtime_hwparams(substream, &hwparams);
-+	}
+-	value = enable ? AZX_CGCTL_MISCBDCGE_MASK : 0;
+-	avs_hda_update_config_dword(bus, AZX_PCIREG_CGCTL, AZX_CGCTL_MISCBDCGE_MASK, value);
++	avs_hda_update_config_dword(bus, AZX_PCIREG_CGCTL, cgctl_mask, value);
+ }
  
- 	codec = dev_to_hda_codec(asoc_rtd_to_codec(rtd, 0)->dev);
- 	link_stream = snd_hdac_ext_stream_assign(&codec->bus->core, substream,
+ void avs_hda_clock_gating_enable(struct avs_dev *adev, bool enable)
+@@ -63,9 +68,8 @@ void avs_hda_clock_gating_enable(struct avs_dev *adev, bool enable)
+ 
+ void avs_hda_l1sen_enable(struct avs_dev *adev, bool enable)
+ {
+-	u32 value;
++	u32 value = enable ? AZX_VS_EM2_L1SEN : 0;
+ 
+-	value = enable ? AZX_VS_EM2_L1SEN : 0;
+ 	snd_hdac_chip_updatel(&adev->base.core, VS_EM2, AZX_VS_EM2_L1SEN, value);
+ }
+ 
 -- 
 2.25.1
 
