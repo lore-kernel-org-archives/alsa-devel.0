@@ -4,73 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25B16C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 15:53:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6922CC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 16:24:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C28C999E;
-	Wed, 19 Oct 2022 17:52:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C28C999E
+	by alsa0.perex.cz (Postfix) with ESMTPS id CDF77AE6F;
+	Wed, 19 Oct 2022 18:23:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDF77AE6F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666194825;
-	bh=fJdI2PBQOaREVvpTxeqc6G49+0wfiPXAfQXbuZuicAI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1666196680;
+	bh=RFj5l15qju6dtZdadoRkd50rXifIxJ4DQUDnxmQcciw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QARZE8Lc6tgczRNhh76uvR5ZX02HTMvw+uKmdagCXzF98i3Mmshh3OiDlzuGIw5lW
-	 zuq4/Ly/4pprzcA+y26q6iedDvmGzelvkGUzW4wBKKPSLam1yf2JA3PbDxRHgG9jQc
-	 zrgvtLXmVHqyIqwe0LaZ88Mp+y4vkezpMSdybc9I=
+	b=XTsY8wQiSuYrgrSZPb4fX20B9kBCiZ31sA2W/fF3OVGlI+lSzQwHpzL0F4SKR1iTT
+	 sy4WLNMnPvAcP89wlVJkt02LwT/vB/k0c4fqYJ5uQm0XoWaGOgQ+UVGllxTvSc1Im9
+	 6hb7d9dS6v+AI9Z+0VmXCkl/P9W64F2Sm/I1ip9o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C990AF804CB;
-	Wed, 19 Oct 2022 17:52:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3DE08F80517;
+	Wed, 19 Oct 2022 18:23:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ABC03F80137; Wed, 19 Oct 2022 17:52:53 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A11CFF80137
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 17:52:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A11CFF80137
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="KzYxiWbt"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 19951F804E0; Wed, 19 Oct 2022 18:23:49 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id B304761943;
- Wed, 19 Oct 2022 15:52:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D796C433C1;
- Wed, 19 Oct 2022 15:52:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666194765;
- bh=fJdI2PBQOaREVvpTxeqc6G49+0wfiPXAfQXbuZuicAI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=KzYxiWbt8AF/qFab0s3SEUyzaWb0qtYbQAWg9WYsn0nImZapgtW1W5B2dG4aRhDaB
- KWy7SS8AMOHx2v1KcaSvQ/7FT0dK43aPxl5t50tMzkCBMEhqYH9jA+0pNWuO4KSyzg
- qi2Q5B677LGUnpefIVMMwww4ts/Uf6R2sQBVVEH34caMO1ofjE8tt4YDzqZ7UtmltF
- cQYotxV+Is06tXeQurY2GV9w20fGnqmb1zEo6j43Kp7ZiF5GFT3nfXnRu1eyWMVefO
- EqqDwX4eWZlB7bFHCd62PceggAb7kjU2pUHr9ULcdzpoWg7qLCcoEi2y+6HrN/p5T4
- et62X2YEgQTEA==
-Date: Wed, 19 Oct 2022 16:52:38 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH 09/14] ASoC: remove unused davinci support
-Message-ID: <Y1AdRh3JaPFZLn60@sirena.org.uk>
-References: <20221019152947.3857217-1-arnd@kernel.org>
- <20221019152947.3857217-10-arnd@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC7C2F80137
+ for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 18:23:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC7C2F80137
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="GH2DMyVH"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1666196627; x=1697732627;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=RFj5l15qju6dtZdadoRkd50rXifIxJ4DQUDnxmQcciw=;
+ b=GH2DMyVHDL/RqgxXelo8NQgthfwbyWGQZ9XQjfpSETOKr2Zu/a/XceHh
+ Nj3k/uIZOhU757oTYYgXIggpVZCNoMETImuurFhleBtBEOpg51wXeBx2V
+ 8SWBjQ68tl8jIRhjeR/PlY6hx3mUwYLZYtAVCd+3XHeeZdExhTOT+r+b6
+ Fjvc5Vghi3Ezpe64UsLeOATCsfAjsTYP88yeT1YVC2kF2W0qMPA2xazwa
+ f/TsLDeuCwpsY0pNreJLQt6jUB397cZBCO4NCPBMTWqMy8LXJVqMOfbjk
+ 8Ef8CJ1p/H0v9DdDkWAbEspNjyWyxXa5r5mSOhwK5gENi1RgHrjPLdBy0 Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="286856213"
+X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; d="scan'208";a="286856213"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Oct 2022 09:21:25 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="698153813"
+X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; d="scan'208";a="698153813"
+Received: from afsinurr-mobl.amr.corp.intel.com (HELO
+ pbossart-mobl3.intel.com) ([10.212.16.185])
+ by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Oct 2022 09:21:24 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 01/10] ALSA: hda: ext: hdac_ext_controller: use helpers in loop
+Date: Wed, 19 Oct 2022 11:21:06 -0500
+Message-Id: <20221019162115.185917-2-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20221019162115.185917-1-pierre-louis.bossart@linux.intel.com>
+References: <20221019162115.185917-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="t3dbVmTiil0pAD+H"
-Content-Disposition: inline
-In-Reply-To: <20221019152947.3857217-10-arnd@kernel.org>
-X-Cookie: Only God can make random selections.
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
- Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
- Bartosz Golaszewski <brgl@bgdev.pl>, Takashi Iwai <tiwai@suse.com>,
- Sekhar Nori <nsekhar@ti.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Kevin Hilman <khilman@baylibre.com>, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.de,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Rander Wang <rander.wang@intel.com>, broonie@kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,34 +89,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+No need to copy/paste code, use helper instead.
 
---t3dbVmTiil0pAD+H
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+ sound/hda/ext/hdac_ext_controller.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-On Wed, Oct 19, 2022 at 05:29:35PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> The dm644x and dm3xx SoCs have been removed, as have the
-> da850_evm/da830_evm machines, the remaining machines all use the
-> DT based probing and do not use the vcif driver.
+diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
+index 80876b9a87f46..f521d286a3942 100644
+--- a/sound/hda/ext/hdac_ext_controller.c
++++ b/sound/hda/ext/hdac_ext_controller.c
+@@ -225,9 +225,7 @@ int snd_hdac_ext_bus_link_power_up_all(struct hdac_bus *bus)
+ 	int ret;
+ 
+ 	list_for_each_entry(hlink, &bus->hlink_list, list) {
+-		snd_hdac_updatel(hlink->ml_addr, AZX_REG_ML_LCTL,
+-				 AZX_ML_LCTL_SPA, AZX_ML_LCTL_SPA);
+-		ret = check_hdac_link_power_active(hlink, true);
++		ret = snd_hdac_ext_bus_link_power_up(hlink);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+@@ -246,9 +244,7 @@ int snd_hdac_ext_bus_link_power_down_all(struct hdac_bus *bus)
+ 	int ret;
+ 
+ 	list_for_each_entry(hlink, &bus->hlink_list, list) {
+-		snd_hdac_updatel(hlink->ml_addr, AZX_REG_ML_LCTL,
+-				 AZX_ML_LCTL_SPA, 0);
+-		ret = check_hdac_link_power_active(hlink, false);
++		ret = snd_hdac_ext_bus_link_power_down(hlink);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+-- 
+2.34.1
 
-Acked-by: Mark Brown <broonie@kernel.org>
-
---t3dbVmTiil0pAD+H
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNQHUYACgkQJNaLcl1U
-h9BTdwf453mQSwA5Mv146gjM9oiK/qfm7cNpWjxlZhT4KRrSVisjgjeGCKLzsqiU
-uOofwzIGivVdJGQ3xLUW2k8Jg9X6TI7Sfzje1kbMSBj698mkmb7RYsyos7BDzLDJ
-M83G0sZ3eOhJlX0tcZM20N9zqv5VPV6oEauZK58M+39jogswQ3LKWFGiaR+aoIkR
-yHUZqevTzYT1Y/+78LwAA6XTV6Y8kPPPvUKDwx9AVBPwYimqLqOnfnJhny7vOLdc
-R8D2GJkfAv0ON0KVpr4inwyyHYS9Lc/jnIuNp9WDt+GcccZR4NF5SJlqQU/mn6yO
-n3yv5QQR4mjnoTASLuUQ6cNVDEHW
-=jAkz
------END PGP SIGNATURE-----
-
---t3dbVmTiil0pAD+H--
