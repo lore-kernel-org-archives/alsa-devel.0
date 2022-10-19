@@ -4,69 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F00B1C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 12:34:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82F61C4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 12:41:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0DF628D28;
-	Wed, 19 Oct 2022 14:33:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DF628D28
+	by alsa0.perex.cz (Postfix) with ESMTPS id 286A0865B;
+	Wed, 19 Oct 2022 14:40:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 286A0865B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666182859;
-	bh=o/UtyFjGrXucSKT7ap4G1SuW/Z9Tvzc8HO0i7bfhpEA=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1666183262;
+	bh=8d6CdrccoT97cECfxO7g6a1f4262AbKj4LgQxlbZkwU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=P/5pONa6i4x0Cjmz/XFcmV/o/JmJSjzZUN41m+yaNoTkZCZlp+5xZ9Mwb1O6YcVf9
-	 untqD5URfc0zRmKeaTIV41VGPvCJVHXO678zK/AE+mAMmSgjCiEfKLoyHN5k6idEIJ
-	 3Pgt675VU4fZlbfPBU3O6Np3N/hIEiozpWbhNXHs=
+	b=k8+LXY5Fv3WXngFtXPgmgsQQQ9cghxqLMAmjUYZdXiekqdxjgWAwTTZrZPBpFt0rY
+	 7xbVIcHlS2p70VfJxrGMVtAaxt11umvoDpQUczB2yb6zpQPdtzZYaM3p8EvzrjUu/x
+	 NogrVVmHBGBOJChV9TjTYgs1CvdBumZxkuubDm7w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 604E9F80553;
-	Wed, 19 Oct 2022 14:32:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D0BE1F804CB;
+	Wed, 19 Oct 2022 14:40:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A6DD1F804CB; Wed, 19 Oct 2022 14:32:32 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id A1340F804CC; Wed, 19 Oct 2022 14:40:10 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6DB5CF804CB
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 14:32:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DB5CF804CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32359F80137
+ for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 14:40:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32359F80137
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Dcd76hTr"
+ header.b="SK8O4ky0"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id B0BF3B823B4;
- Wed, 19 Oct 2022 12:32:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 534BAC433D7;
- Wed, 19 Oct 2022 12:32:23 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 6EC11B82221;
+ Wed, 19 Oct 2022 12:40:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 247A9C433D6;
+ Wed, 19 Oct 2022 12:40:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666182744;
- bh=o/UtyFjGrXucSKT7ap4G1SuW/Z9Tvzc8HO0i7bfhpEA=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Dcd76hTrOB0+Bc8GhFPW7E9/AWH7EA1zMgC9NHTnutJdppbwEp2WmBoX9QQXeEtsa
- gEOaGOtKzGTvmOqzlESwL8v5WtJVxOQcMxX5XxxKO/gfvKdStci+fx7aGXYLOV98qc
- pXaX1emuDDxeaUkCHFgk878zHQaYIxTs/AnNUMSTNWRKdfneIcsUGLB8Vgezh8tK53
- +2WgAGv22arye0CLurRoPtX/5zPdYFDnJePIC4LI9yHyh+X7JgsEmxgylrc55mSfn1
- YwXUgYgECEUTFSoOs5dlRPcwSmCp/cfXFJP6McrTFHFubKUGHZRtAd3llz0S1Fc2dH
- hMoIxUzdIEcVw==
+ s=k20201202; t=1666183206;
+ bh=8d6CdrccoT97cECfxO7g6a1f4262AbKj4LgQxlbZkwU=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=SK8O4ky0fQMSolFb3X8ZM7WVIicmqRC7UhjbaecIOdbxO+xNDylUl3MU1PJ/Di9K+
+ kcE5wyJk1zQlNK9EV98lwe9t+ZYnJCxPo5ff8moOPMCaIjhiDE+Na+XeYLfMbyvGK+
+ Gqi9JoEV1JBL7hjIMIQsTjX532US5gfOGtf4EIMfIrQj00cBxsLuAHY1D0/524sg2i
+ 0xEWu1eyNZjxkU21pnwACWTN9jk+5dii9c/af14bIjb3YO2hnsDTU9Q06M0Q/I1etB
+ 2d3svVuKFbybaONqrM/zas28bHssLFMgP2+kKkV3JLPeJe6LuhG1Q5s0QnVFLbRwst
+ E/MhU1I/LumDQ==
+Date: Wed, 19 Oct 2022 13:40:00 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20221017205728.210813-1-pierre-louis.bossart@linux.intel.com>
-References: <20221017205728.210813-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: Intel: sof_rt5682: Add quirk for Rex board
-Message-Id: <166618274307.118898.13405823402694326089.b4-ty@kernel.org>
-Date: Wed, 19 Oct 2022 13:32:23 +0100
+To: Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH][next][V2] ASoC: codecs: jz4725b: Fix spelling mistake
+ "Sourc" -> "Source", "Routee" -> "Route"
+Message-ID: <Y0/wIPFAWH3cLQzx@sirena.org.uk>
+References: <20221019071639.1003730-1-colin.i.king@gmail.com>
+ <Y0/pSVbueZYXBsmA@sirena.org.uk>
+ <S820KR.GPNPWZ8QG3PG3@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-fc921
-Cc: tiwai@suse.de, Curtis Malainey <cujomalainey@chromium.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="BarSh9pR8ITjJrt2"
+Content-Disposition: inline
+In-Reply-To: <S820KR.GPNPWZ8QG3PG3@crapouillou.net>
+X-Cookie: I like your SNOOPY POSTER!!
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ linux-mips@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Colin Ian King <colin.i.king@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,37 +86,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 17 Oct 2022 15:57:28 -0500, Pierre-Louis Bossart wrote:
-> From: Yong Zhi <yong.zhi@intel.com>
-> 
-> Add mtl_mx98357_rt5682 driver data for Chrome Rex board support.
-> 
-> 
 
-Applied to
+--BarSh9pR8ITjJrt2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Wed, Oct 19, 2022 at 01:19:40PM +0100, Paul Cercueil wrote:
+> Le mer., oct. 19 2022 at 13:10:49 +0100, Mark Brown <broonie@kernel.org> a
+> > On Wed, Oct 19, 2022 at 08:16:39AM +0100, Colin Ian King wrote:
 
-Thanks!
+> > >  There are two spelling mistakes in codec routing description. Fix
+> > > it.
 
-[1/1] ASoC: Intel: sof_rt5682: Add quirk for Rex board
-      commit: b4dd2e3758709aa8a2abd1ac34c56bd09b980039
+> > Bit disappionting that people didn't notice the errors during boot
+> > there...
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> Well that's on you. You merged the patchset before anybody could review.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+That includes whoever wrote the code in the first place, and I do note
+that I applied version 3 of the series.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--BarSh9pR8ITjJrt2
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNP8CAACgkQJNaLcl1U
+h9Dvzgf/UwmdmQxOamn+37JPevW80uGyuE3ITBXUK9gT2Rb2ow1M8Bdm1QmlUjTx
+OImxIOYNNXJ+DZ4Tec4ybjtwlB0EaUvXRiw8TWePLZKwRDDrYoVSSyBfagTYSchD
+OUOIGJgifR/ECR15TApRJX2CyGCeoe0V31Vz0IkQD12a7xbVvdg8+3AbTp8+yQvD
+IJJTM0S/HUn07KktLl2xDFNvtSdPOekZE1Ju6sBd6i8ByNUcvOqGCp0pXUZnbTXy
+2LuOq+9qdh5PngUcDjlQ90B2sh5fIYJEu2hM+xRuLPbW0ENzS7pm9DNuvuIvTGYL
+BiboNnUF477UdJpVstIMKfqk6YIT5g==
+=fKUT
+-----END PGP SIGNATURE-----
+
+--BarSh9pR8ITjJrt2--
