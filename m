@@ -4,72 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1543FC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 12:11:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09570C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 12:20:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4FA4FA206;
-	Wed, 19 Oct 2022 14:11:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FA4FA206
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF936978F;
+	Wed, 19 Oct 2022 14:19:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF936978F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666181510;
-	bh=GWr+pXdg4KAo4cm6ndECUvEjk2iIp9Udlw6HdytD74s=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1666182045;
+	bh=kBxZdWNs2sQymXonGH3sE7btzwkr8+fiHmpcjO+m6eE=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JIxt2td5KzTeXk+igrTMdhHC6Dz7ydrEuuvdGKdqPmFaVe8mnOESP03FeIPMxA0yi
-	 CBih/lX5Hd0j6R8MHtQhDhpHPzYnFzo2a/1E4mwuKTt+rWUGPUrIHPH9zGg59nnq4U
-	 Pcd1P4iGu3Ie114lroC2qAeX6t9GdTNxHGvwNXjg=
+	b=NLFpIkUZtlpr3FkhCjTKzfwyCQndPWotIuChzN4NFXafxmbiD+MjMcfg8+88BtFdd
+	 bkhitE+h+irrpVX1xuMvLcBOqhFapo5kmdasR/kxuXqfUyUIcrv1NwzBlN/v064r4/
+	 +ahzomVs8O9E7nk0XKafbnJ6aWQOScJp62ZYJALE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF213F804CB;
-	Wed, 19 Oct 2022 14:10:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55559F804CB;
+	Wed, 19 Oct 2022 14:19:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16F85F80087; Wed, 19 Oct 2022 14:10:59 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 1BAF1F804E0; Wed, 19 Oct 2022 14:19:54 +0200 (CEST)
+Received: from aposti.net (aposti.net [89.234.176.197])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00E57F80087
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 14:10:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00E57F80087
+ by alsa1.perex.cz (Postfix) with ESMTPS id D89E4F80087
+ for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 14:19:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D89E4F80087
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="OjRgwK82"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id C04CCB822CC;
- Wed, 19 Oct 2022 12:10:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88008C433D7;
- Wed, 19 Oct 2022 12:10:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666181454;
- bh=GWr+pXdg4KAo4cm6ndECUvEjk2iIp9Udlw6HdytD74s=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=OjRgwK82xNTsABYyqlr8BKxalnQQsibfZTFAOamdK5hDwR/68+Cx2S/zX6i0MRQxp
- T0crx1/UCoUvIBNb08r6YB6S4aOpA66cGj52RwxQ+sJvET2GGqMSuAUuvmXNiVG3s9
- aTeXZ09DXkIm0Dzuy1OdMxVuMRQtL+f1fG1jaMUGy0nraMtyM1UNyQEaJPyahI4Rvz
- F5IHTKOhmBdG8PqB7zX5baQBOCj/Kg/fJCl9rUVecEFATYO+YzWltUuLB1vZ9FWG7w
- fN2ccE5iOoMFtTTcFjTAMxbjneGFbgD5mMaSvT/GYdNPn+MkRjLoedlJMPoYg6wLc3
- j9FS/IlvurxGg==
-Date: Wed, 19 Oct 2022 13:10:49 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Colin Ian King <colin.i.king@gmail.com>
+ dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net
+ header.b="iSe7IM2k"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+ s=mail; t=1666181989; h=from:from:sender:reply-to:subject:subject:date:date:
+ message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+ content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=pnl1tagyFChrkzlGz6HjWuYebtyn/vrMK3LiUP9HffM=;
+ b=iSe7IM2kvt4wU0f/R1sx7KtG14p7PsX14jZsac6EH/Hm+ePU37GS0i+lH/JrG+lxZcPuqW
+ DmjdFaUEzZT22AlfMpZZDgt0XxJXby/AMqyBZwfJBXH6gJ8v4auQOU3Q+rZ5kVj5SLqXCk
+ ALodkzAUcpiRyD1Vdr6oLNqZYjrO1Pw=
+Date: Wed, 19 Oct 2022 13:19:40 +0100
+From: Paul Cercueil <paul@crapouillou.net>
 Subject: Re: [PATCH][next][V2] ASoC: codecs: jz4725b: Fix spelling mistake
  "Sourc" -> "Source", "Routee" -> "Route"
-Message-ID: <Y0/pSVbueZYXBsmA@sirena.org.uk>
+To: Mark Brown <broonie@kernel.org>
+Message-Id: <S820KR.GPNPWZ8QG3PG3@crapouillou.net>
+In-Reply-To: <Y0/pSVbueZYXBsmA@sirena.org.uk>
 References: <20221019071639.1003730-1-colin.i.king@gmail.com>
+ <Y0/pSVbueZYXBsmA@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="RSRYBU1FRm2IiFjJ"
-Content-Disposition: inline
-In-Reply-To: <20221019071639.1003730-1-colin.i.king@gmail.com>
-X-Cookie: I like your SNOOPY POSTER!!
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
  linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
  linux-mips@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Paul Cercueil <paul@crapouillou.net>
+ Colin Ian King <colin.i.king@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,30 +76,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Mark,
 
---RSRYBU1FRm2IiFjJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Le mer., oct. 19 2022 at 13:10:49 +0100, Mark Brown=20
+<broonie@kernel.org> a =E9crit :
+> On Wed, Oct 19, 2022 at 08:16:39AM +0100, Colin Ian King wrote:
+>>  There are two spelling mistakes in codec routing description. Fix=20
+>> it.
+>=20
+> Bit disappionting that people didn't notice the errors during boot
+> there...
 
-On Wed, Oct 19, 2022 at 08:16:39AM +0100, Colin Ian King wrote:
-> There are two spelling mistakes in codec routing description. Fix it.
+Well that's on you. You merged the patchset before anybody could review.
 
-Bit disappionting that people didn't notice the errors during boot
-there...
+-Paul
 
---RSRYBU1FRm2IiFjJ
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNP6UgACgkQJNaLcl1U
-h9AMAAf/QC3eZNYr9/3n2kIr05IslQ40odVk7BW7aJxsPlGbyo3UWe9aVyLNxPFg
-ButRyaxZyFUaLjORA4747at7NxfUw6dkCBeq9WxQvLkOryJVmZIWVNhIDPDnquqP
-Ze6pexDoUZsvlEaVkJXd28PXKgQSjI6tLyQTG0y+wM4Xv5L05ISaSZtku0eZM28z
-DmG8fGdquHZFUZOVKQWu+Ny1G3sSkdrBkBUJcSkGVdn7TWIklLVqNuy4w3pq+0RF
-rviZ2Wo0NMzE5ksTXv2+t/UIYzNWjv/K0jcNVB16EnEqfI1pFDQJZyrKDrF1YyQu
-6Up7a5YP6VPCJgs3A3yWVpWcFahADw==
-=c0mZ
------END PGP SIGNATURE-----
-
---RSRYBU1FRm2IiFjJ--
