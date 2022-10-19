@@ -4,68 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5B13C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 17:15:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33FEAC43217
+	for <alsa-devel@archiver.kernel.org>; Wed, 19 Oct 2022 17:38:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DF558BCC;
-	Wed, 19 Oct 2022 19:14:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DF558BCC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 710CD4BF3;
+	Wed, 19 Oct 2022 19:37:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 710CD4BF3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666199702;
-	bh=i3IFe9Dp6l/D420+8OJkSHWipA4PgNu7QAMi3ng4M/M=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1666201106;
+	bh=NADZR7Qwn553ofQrjdY2wrnVsyEz0t1pfeM51fUskjk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EKYriMxqtsMFSLmW2XCiuBWk+kjRD6ajfAMRa4+PZLxmTAck7P/ZG9Dv7KU2AK9dH
-	 qn+rMUprMs7AmJlg9LhsFdf022+sHP0/RYZ/fViBXzm030wvXzFskIvFQtJFl+QmaT
-	 23qHfmrmImQdEeVvm52uCFCVrye+vV47L46JUURw=
+	b=B62Z8h+snazF0I/exImxkI3+PlqkCE0zFVVLR6XGqKS9OcLZifnRoOgqGk2FVRRW0
+	 8Ed88pbOHv04P9yHjtuCQ/ZJkfFyf1Jk0ChN8+yEoi886WBUw2WE9z1OJtIprS+7rx
+	 5X+insS8VkexleuZDerqQE7lMcCLyiNgXzMVmJVU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B989FF804E0;
-	Wed, 19 Oct 2022 19:13:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12127F804E0;
+	Wed, 19 Oct 2022 19:37:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD35EF80137; Wed, 19 Oct 2022 19:13:47 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8542BF80137
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 19:13:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8542BF80137
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="SrsYFKlC"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 5F30FF80087; Wed, 19 Oct 2022 19:37:34 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 02D02B8256D;
- Wed, 19 Oct 2022 17:13:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 697BEC433D6;
- Wed, 19 Oct 2022 17:13:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666199623;
- bh=i3IFe9Dp6l/D420+8OJkSHWipA4PgNu7QAMi3ng4M/M=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=SrsYFKlC/RbxJ7Or6yL4/7szHV9ILz72+XAa0dyZJr217Bl5TmsBuTTcVNK0wt97D
- 2q2EQT0FigVG2b4dxl7XJJ4L6DqUKPNrpv96eId9zEWP+6L/RAoRZsrKyVj7TDXoQ1
- ANq7MiIl6m+UI4uxw74HexLYN2bSISmph7KN16T/WKEhIZC2I1OnfsXfYsGydSd6jE
- D2cccJbUAgdUr//egmJjeZZRSQ622L8UnrcQHx3Tz39SjDEZ+N7ZBxINLGVqHz6WXY
- dvLSfgQQC/QjsU5VZnPOjuRjxh/86ZccRCxNM1PbJdEVVlMUSCBvF+HHiMJ1qZG0xj
- dPEi7uBxLX78g==
-From: Mark Brown <broonie@kernel.org>
-To: linkt <xazrael@hotmail.com>, lgirdwood@gmail.com, tiwai@suse.com,
- mario.limonciello@amd.com, perex@perex.cz
-In-Reply-To: <MEYPR01MB8397A3C27DE6206FA3EF834DB6239@MEYPR01MB8397.ausprd01.prod.outlook.com>
-References: <MEYPR01MB8397A3C27DE6206FA3EF834DB6239@MEYPR01MB8397.ausprd01.prod.outlook.com>
-Subject: Re: [PATCH -next] ASoC: amd: yc: Adding Lenovo ThinkBook 14 Gen 4+
- ARA and Lenovo ThinkBook 16 Gen 4+ ARA to the Quirks List
-Message-Id: <166619962215.1416660.1802527696570911480.b4-ty@kernel.org>
-Date: Wed, 19 Oct 2022 18:13:42 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id BDF6DF80087
+ for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 19:37:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDF6DF80087
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="lpIdxNsI"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1666201052; x=1697737052;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=NADZR7Qwn553ofQrjdY2wrnVsyEz0t1pfeM51fUskjk=;
+ b=lpIdxNsIPW82jGWYW3VE3xxJidJgpD+8uDYb03vPxBe0UePtpYKmhufu
+ f6lmBMgMlZMRtw1VTBaKnSrySa9WXJaZmVoqZZl1F9NnGoG4TkDJkXj9D
+ h4rwoUgWPH5vf9P2vi+Qm7FlLyWiFnp+0H9bx+OePF7iE6Y01AFDxZmrR
+ UR2auTMJ1CPhSLggCHRG21Y9lJknyYoi6AVKZOFg1+u/qb7Hu+FH6HCmE
+ LAyupSihXhhwKs8bgNSZuVcB31lf8QPYHFXJOigI/Tk/vrBKF07RYp5PF
+ 9syVmidfIJycTkXWf0niGegls202kVtVgmCkFuL2mUBZcXctxB4NsVmYc A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="333045650"
+X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; d="scan'208";a="333045650"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Oct 2022 10:37:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="771898514"
+X-IronPort-AV: E=Sophos;i="5.95,196,1661842800"; d="scan'208";a="771898514"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by fmsmga001.fm.intel.com with ESMTP; 19 Oct 2022 10:37:11 -0700
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH 1/8] ASoC: Intel: avs: Split pcm pages freeing operation from
+ hw_free()
+Date: Wed, 19 Oct 2022 19:53:10 +0200
+Message-Id: <20221019175317.1540919-2-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20221019175317.1540919-1-cezary.rojewski@intel.com>
+References: <20221019175317.1540919-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-fc921
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
+ amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,36 +87,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 11 Oct 2022 10:51:36 +0800, linkt wrote:
-> Lenovo ThinkBook 14 Gen 4+ ARA and ThinkBook 16 Gen 4+ ARA
-> need to be added to the list of quirks for the microphone to work properly.
-> 
-> 
+Prepare for introduction of PCM power management support. As freeing
+pages during the suspend operation is not desired, separate
+snd_pcm_lib_free_pages() from existing avs_dai_fe_hw_free() so that
+majority of the code found within it can be reused for standard and PM
+flows both.
 
-Applied to
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/soc/intel/avs/pcm.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
+index 8037b15cbdcf..d584e955216c 100644
+--- a/sound/soc/intel/avs/pcm.c
++++ b/sound/soc/intel/avs/pcm.c
+@@ -499,7 +499,7 @@ static int avs_dai_fe_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
+-static int avs_dai_fe_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
++static int __avs_dai_fe_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
+ {
+ 	struct avs_dma_data *data;
+ 	struct hdac_ext_stream *host_stream;
+@@ -523,9 +523,15 @@ static int avs_dai_fe_hw_free(struct snd_pcm_substream *substream, struct snd_so
+ 	snd_hdac_stream_cleanup(hdac_stream(host_stream));
+ 	hdac_stream(host_stream)->prepared = false;
+ 
+-	ret = snd_pcm_lib_free_pages(substream);
+-	if (ret < 0)
+-		dev_dbg(dai->dev, "Failed to free pages!\n");
++	return ret;
++}
++
++static int avs_dai_fe_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
++{
++	int ret;
++
++	ret = __avs_dai_fe_hw_free(substream, dai);
++	snd_pcm_lib_free_pages(substream);
+ 
+ 	return ret;
+ }
+-- 
+2.25.1
 
-Thanks!
-
-[1/1] ASoC: amd: yc: Adding Lenovo ThinkBook 14 Gen 4+ ARA and Lenovo ThinkBook 16 Gen 4+ ARA to the Quirks List
-      commit: a450b5c8739248069e11f72129fca61a56125577
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
