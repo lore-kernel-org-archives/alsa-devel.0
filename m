@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 015E1C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 12:18:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21287C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 12:18:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BA1A37AB;
-	Thu, 20 Oct 2022 14:17:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BA1A37AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55CF053DB;
+	Thu, 20 Oct 2022 14:17:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55CF053DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666268296;
-	bh=4TEBX8EwgFg+vodi7TTyk76ED89H2x9OnLo/TLKQtPA=;
+	s=default; t=1666268310;
+	bh=MnJXchsTKL9XXoOOWNznIqPwa4AthKtr5UkC8Caw+sA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PnQYyL7eFoGefl8HuWsPsZLaKobEYTlFXDpNlD+GM4SCNEvj4TZ7aLXxZt5LsRemz
-	 DWkcV4ZH2Iv6YVr+XQSO8zTn3hhOE1fR2O3stjJAS38E7HYPWjKHXYfJnMgQ3Kv7pG
-	 EZ3Fz9jf2/L7M0DwoI9tFMLAIkWcMdjoiP1z9cxg=
+	b=Dk9CsjBHrs5lNjfTLXVWG9gsoPl08tOrpTehQ4wMtC/BbArC8USABsU7juGaFeTJF
+	 xyLizommfYgw7LKfVU9Wi6KiLfjskS2zKkW0WbyuHChvGD9r8ie0yejcaI3xQFW5af
+	 nJa01/WGAqoPuvof/e9dKJ3anwSeSVE0tEF7vbBs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A786F80542;
-	Thu, 20 Oct 2022 14:13:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C276F80526;
+	Thu, 20 Oct 2022 14:13:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2E25F8053C; Thu, 20 Oct 2022 14:13:17 +0200 (CEST)
+ id 84F2BF8053C; Thu, 20 Oct 2022 14:13:18 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64695F805C9
- for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2022 14:13:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64695F805C9
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1371F805D4
+ for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2022 14:13:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1371F805D4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="HZQab413"
+ header.b="RfDaVPiW"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666267984; x=1697803984;
+ t=1666267993; x=1697803993;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=4TEBX8EwgFg+vodi7TTyk76ED89H2x9OnLo/TLKQtPA=;
- b=HZQab413BbNURgBRODl6co0r+rqZer3X6p6/vR3K5wU+dmnGXt6w8FUS
- 9X33G7tIcQlblpSbb/F7jCQzrVFzHsiTpbs2rIkFGgEGONJ8f69LAHyCi
- bSicOyTnYe4bobARXN2iSoZckHJ26w7FeDy6gOaPVo4ci4Qnn1Cd+IX1s
- EyBFB8UgfIeVYs920fr5eB8Z/sXxcW48/s9CCJbPFbFv6PQLfZVUWUizZ
- 6vLaJUqrdwoN9pgSfmYWm1YF6eVutKT96stpkHyBJq8fOmTF3hbxIqfX4
- 7gxszwLfMQOwzuCq//+k7Wxiyn8w0q1ndAOvKRORkUrL/JEChcZTEBO+N Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="333256424"
-X-IronPort-AV: E=Sophos;i="5.95,198,1661842800"; d="scan'208";a="333256424"
+ bh=MnJXchsTKL9XXoOOWNznIqPwa4AthKtr5UkC8Caw+sA=;
+ b=RfDaVPiWvl/VvpF6aSX1/wihcWMpqmMWqAoN9R+EX/yIuZ5ZKnaoWmUh
+ JgSZpwZ8K4Rr40fInRzGC5KO8DgxjmQzN6cmuU6PaRW7YCOXnV06sgFsX
+ /Qr6NtuHBcBrH57cKEdTIotFqwdlPC8jv2/Ldb0kOsvRU1GTYFrKzH76i
+ tUxuWE7jyQBDtENBP6SV+oHDvnmAW22BuEoptG4s01YV3pGqCRlfgh/6z
+ 8Q02JN1WgsUe363dlbr2b5Z/WzqCMRmkKVlMDEMvULppA69klmEnqV2sQ
+ T2fZhwuFzcFF0GIzfrB14SMbFHb0yaTo/Te9yUK0IIf40meh9s33BeBbY Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="333256456"
+X-IronPort-AV: E=Sophos;i="5.95,198,1661842800"; d="scan'208";a="333256456"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Oct 2022 05:13:01 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="663010150"
-X-IronPort-AV: E=Sophos;i="5.95,198,1661842800"; d="scan'208";a="663010150"
+ 20 Oct 2022 05:13:09 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="663010224"
+X-IronPort-AV: E=Sophos;i="5.95,198,1661842800"; d="scan'208";a="663010224"
 Received: from awrynn-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.12.86])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Oct 2022 05:12:58 -0700
+ 20 Oct 2022 05:13:07 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH v2 16/19] ASoC: SOF: loader: Add support for IPC dependent
- post firmware boot ops
-Date: Thu, 20 Oct 2022 15:12:35 +0300
-Message-Id: <20221020121238.18339-17-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH v2 19/19] ASoC: SOF: ipc4-loader: Support for loading external
+ libraries
+Date: Thu, 20 Oct 2022 15:12:38 +0300
+Message-Id: <20221020121238.18339-20-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221020121238.18339-1-peter.ujfalusi@linux.intel.com>
 References: <20221020121238.18339-1-peter.ujfalusi@linux.intel.com>
@@ -89,11 +89,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for executing IPC dependent tasks after a successful firmware
-boot.
+In case the requested module is not available among the loaded libraries,
+try to load it as external library.
 
-The new post_fw_boot ops can make the fw_loader query_fw_configuration
-callback redundant as IPC code can handle the first boot internally.
+The kernel will try to load the file from <fw_lib_prefix>/<module_uuid>.bin
+
+If the file found, then the ext manifest of it is parsed, placed it under
+XArray and the pointer to the module is returned to the caller.
+
+Releasing the firmware will be done on ipc cleanup time.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
@@ -101,48 +105,251 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Chao Song <chao.song@intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/loader.c   | 6 ++++++
- sound/soc/sof/sof-priv.h | 3 +++
- 2 files changed, 9 insertions(+)
+ sound/soc/sof/ipc4-loader.c | 155 ++++++++++++++++++++++++++++++++++--
+ sound/soc/sof/ipc4-priv.h   |   2 +
+ sound/soc/sof/ipc4.c        |   2 +-
+ 3 files changed, 153 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index 723bd8267a3d..a1c4a51636c9 100644
---- a/sound/soc/sof/loader.c
-+++ b/sound/soc/sof/loader.c
-@@ -174,6 +174,12 @@ int snd_sof_run_firmware(struct snd_sof_dev *sdev)
- 		return ret;
+diff --git a/sound/soc/sof/ipc4-loader.c b/sound/soc/sof/ipc4-loader.c
+index dbe3ee4ef08c..af0018b38cf0 100644
+--- a/sound/soc/sof/ipc4-loader.c
++++ b/sound/soc/sof/ipc4-loader.c
+@@ -14,6 +14,9 @@
+ #include "sof-priv.h"
+ #include "ops.h"
+ 
++/* The module ID includes the id of the library it is part of at offset 12 */
++#define SOF_IPC4_MOD_LIB_ID_SHIFT	12
++
+ static size_t sof_ipc4_fw_parse_ext_man(struct snd_sof_dev *sdev,
+ 					struct sof_ipc4_fw_library *fw_lib)
+ {
+@@ -71,17 +74,18 @@ static size_t sof_ipc4_fw_parse_ext_man(struct snd_sof_dev *sdev,
+ 		return -EINVAL;
  	}
  
-+	if (sdev->ipc->ops->post_fw_boot) {
-+		ret = sdev->ipc->ops->post_fw_boot(sdev);
-+		if (ret)
-+			return ret;
+-	dev_info(sdev->dev, "Loaded firmware version: %u.%u.%u.%u\n",
+-		 fw_header->major_version, fw_header->minor_version,
++	dev_info(sdev->dev, "Loaded firmware library: %s, version: %u.%u.%u.%u\n",
++		 fw_header->name, fw_header->major_version, fw_header->minor_version,
+ 		 fw_header->hotfix_version, fw_header->build_version);
+-	dev_dbg(sdev->dev, "Firmware name: %s, header length: %u, module count: %u\n",
+-		fw_header->name, fw_header->len, fw_header->num_module_entries);
++	dev_dbg(sdev->dev, "Header length: %u, module count: %u\n",
++		fw_header->len, fw_header->num_module_entries);
+ 
+ 	fw_lib->modules = devm_kmalloc_array(sdev->dev, fw_header->num_module_entries,
+ 					     sizeof(*fw_module), GFP_KERNEL);
+ 	if (!fw_lib->modules)
+ 		return -ENOMEM;
+ 
++	fw_lib->name = fw_header->name;
+ 	fw_lib->num_modules = fw_header->num_module_entries;
+ 	fw_module = fw_lib->modules;
+ 
+@@ -160,13 +164,111 @@ static size_t sof_ipc4_fw_parse_basefw_ext_man(struct snd_sof_dev *sdev)
+ 	return payload_offset;
+ }
+ 
++static int sof_ipc4_load_library_by_uuid(struct snd_sof_dev *sdev,
++					 unsigned long lib_id, const guid_t *uuid)
++{
++	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
++	struct sof_ipc4_fw_library *fw_lib;
++	const char *fw_filename;
++	size_t payload_offset;
++	int ret, i, err;
++
++	if (!sdev->pdata->fw_lib_prefix) {
++		dev_err(sdev->dev,
++			"Library loading is not supported due to not set library path\n");
++		return -EINVAL;
 +	}
 +
- 	if (sdev->first_boot && sdev->ipc->ops->fw_loader->query_fw_configuration)
- 		return sdev->ipc->ops->fw_loader->query_fw_configuration(sdev);
++	if (!ipc4_data->load_library) {
++		dev_err(sdev->dev, "Library loading is not supported on this platform\n");
++		return -EOPNOTSUPP;
++	}
++
++	fw_lib = devm_kzalloc(sdev->dev, sizeof(*fw_lib), GFP_KERNEL);
++	if (!fw_lib)
++		return -ENOMEM;
++
++	fw_filename = kasprintf(GFP_KERNEL, "%s/%pUL.bin",
++				sdev->pdata->fw_lib_prefix, uuid);
++	if (!fw_filename) {
++		ret = -ENOMEM;
++		goto free_fw_lib;
++	}
++
++	ret = request_firmware(&fw_lib->sof_fw.fw, fw_filename, sdev->dev);
++	if (ret < 0) {
++		dev_err(sdev->dev, "Library file '%s' is missing\n", fw_filename);
++		goto free_filename;
++	} else {
++		dev_dbg(sdev->dev, "Library file '%s' loaded\n", fw_filename);
++	}
++
++	payload_offset = sof_ipc4_fw_parse_ext_man(sdev, fw_lib);
++	if (payload_offset <= 0) {
++		if (!payload_offset)
++			ret = -EINVAL;
++		else
++			ret = payload_offset;
++
++		goto release;
++	}
++
++	fw_lib->sof_fw.payload_offset = payload_offset;
++	fw_lib->id = lib_id;
++
++	/* Fix up the module ID numbers within the library */
++	for (i = 0; i < fw_lib->num_modules; i++)
++		fw_lib->modules[i].man4_module_entry.id |= (lib_id << SOF_IPC4_MOD_LIB_ID_SHIFT);
++
++	/*
++	 * Make sure that the DSP is booted and stays up while attempting the
++	 * loading the library for the first time
++	 */
++	ret = pm_runtime_resume_and_get(sdev->dev);
++	if (ret < 0 && ret != -EACCES) {
++		dev_err_ratelimited(sdev->dev, "%s: pm_runtime resume failed: %d\n",
++				    __func__, ret);
++		goto release;
++	}
++
++	ret = ipc4_data->load_library(sdev, fw_lib, false);
++
++	pm_runtime_mark_last_busy(sdev->dev);
++	err = pm_runtime_put_autosuspend(sdev->dev);
++	if (err < 0)
++		dev_err_ratelimited(sdev->dev, "%s: pm_runtime idle failed: %d\n",
++				    __func__, err);
++
++	if (ret)
++		goto release;
++
++	ret = xa_insert(&ipc4_data->fw_lib_xa, lib_id, fw_lib, GFP_KERNEL);
++	if (unlikely(ret))
++		goto release;
++
++	kfree(fw_filename);
++
++	return 0;
++
++release:
++	release_firmware(fw_lib->sof_fw.fw);
++	/* Allocated within sof_ipc4_fw_parse_ext_man() */
++	devm_kfree(sdev->dev, fw_lib->modules);
++free_filename:
++	kfree(fw_filename);
++free_fw_lib:
++	devm_kfree(sdev->dev, fw_lib);
++
++	return ret;
++}
++
+ struct sof_ipc4_fw_module *sof_ipc4_find_module_by_uuid(struct snd_sof_dev *sdev,
+ 							const guid_t *uuid)
+ {
+ 	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
+ 	struct sof_ipc4_fw_library *fw_lib;
+ 	unsigned long lib_id;
+-	int i;
++	int i, ret;
  
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index ea6013ab1d4a..c7ab78b042aa 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -445,6 +445,8 @@ struct sof_ipc_pcm_ops;
-  *
-  * @init:	Optional pointer for IPC related initialization
-  * @exit:	Optional pointer for IPC related cleanup
-+ * @post_fw_boot: Optional pointer to execute IPC related tasks after firmware
-+ *		boot.
-  *
-  * @tx_msg:	Function pointer for sending a 'short' IPC message
-  * @set_get_data: Function pointer for set/get data ('large' IPC message). This
-@@ -469,6 +471,7 @@ struct sof_ipc_ops {
+ 	if (guid_is_null(uuid))
+ 		return NULL;
+@@ -178,6 +280,30 @@ struct sof_ipc4_fw_module *sof_ipc4_find_module_by_uuid(struct snd_sof_dev *sdev
+ 		}
+ 	}
  
- 	int (*init)(struct snd_sof_dev *sdev);
- 	void (*exit)(struct snd_sof_dev *sdev);
-+	int (*post_fw_boot)(struct snd_sof_dev *sdev);
++	/*
++	 * Do not attempt to load external library in case the maximum number of
++	 * firmware libraries have been already loaded
++	 */
++	if ((lib_id + 1) == ipc4_data->max_libs_count) {
++		dev_err(sdev->dev,
++			"%s: Maximum allowed number of libraries reached (%u)\n",
++			__func__, ipc4_data->max_libs_count);
++		return NULL;
++	}
++
++	/* The module cannot be found, try to load it as a library */
++	ret = sof_ipc4_load_library_by_uuid(sdev, lib_id + 1, uuid);
++	if (ret)
++		return NULL;
++
++	/* Look for the module in the newly loaded library, it should be available now */
++	xa_for_each_start(&ipc4_data->fw_lib_xa, lib_id, fw_lib, lib_id) {
++		for (i = 0; i < fw_lib->num_modules; i++) {
++			if (guid_equal(uuid, &fw_lib->modules[i].man4_module_entry.uuid))
++				return &fw_lib->modules[i];
++		}
++	}
++
+ 	return NULL;
+ }
  
- 	int (*tx_msg)(struct snd_sof_dev *sdev, void *msg_data, size_t msg_bytes,
- 		      void *reply_data, size_t reply_bytes, bool no_pm);
+@@ -270,6 +396,25 @@ int sof_ipc4_query_fw_configuration(struct snd_sof_dev *sdev)
+ 	return ret;
+ }
+ 
++int sof_ipc4_reload_fw_libraries(struct snd_sof_dev *sdev)
++{
++	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
++	struct sof_ipc4_fw_library *fw_lib;
++	unsigned long lib_id;
++	int ret = 0;
++
++	xa_for_each_start(&ipc4_data->fw_lib_xa, lib_id, fw_lib, 1) {
++		ret = ipc4_data->load_library(sdev, fw_lib, true);
++		if (ret) {
++			dev_err(sdev->dev, "%s: Failed to reload library: %s, %d\n",
++				__func__, fw_lib->name, ret);
++			break;
++		}
++	}
++
++	return ret;
++}
++
+ const struct sof_ipc_fw_loader_ops ipc4_loader_ops = {
+ 	.validate = sof_ipc4_validate_firmware,
+ 	.parse_ext_manifest = sof_ipc4_fw_parse_basefw_ext_man,
+diff --git a/sound/soc/sof/ipc4-priv.h b/sound/soc/sof/ipc4-priv.h
+index e4bd6d93fb0f..d6f35004c4b7 100644
+--- a/sound/soc/sof/ipc4-priv.h
++++ b/sound/soc/sof/ipc4-priv.h
+@@ -50,6 +50,7 @@ struct sof_ipc4_fw_module {
+  */
+ struct sof_ipc4_fw_library {
+ 	struct sof_firmware sof_fw;
++	const char *name;
+ 	u32 id;
+ 	int num_modules;
+ 	struct sof_ipc4_fw_module *modules;
+@@ -91,6 +92,7 @@ int sof_ipc4_set_pipeline_state(struct snd_sof_dev *sdev, u32 id, u32 state);
+ int sof_ipc4_mtrace_update_pos(struct snd_sof_dev *sdev, int core);
+ 
+ int sof_ipc4_query_fw_configuration(struct snd_sof_dev *sdev);
++int sof_ipc4_reload_fw_libraries(struct snd_sof_dev *sdev);
+ struct sof_ipc4_fw_module *sof_ipc4_find_module_by_uuid(struct snd_sof_dev *sdev,
+ 							const guid_t *uuid);
+ #endif
+diff --git a/sound/soc/sof/ipc4.c b/sound/soc/sof/ipc4.c
+index 91c4ea72b4b6..74cd7e956019 100644
+--- a/sound/soc/sof/ipc4.c
++++ b/sound/soc/sof/ipc4.c
+@@ -692,7 +692,7 @@ static int sof_ipc4_post_boot(struct snd_sof_dev *sdev)
+ 	if (sdev->first_boot)
+ 		return sof_ipc4_query_fw_configuration(sdev);
+ 
+-	return 0;
++	return sof_ipc4_reload_fw_libraries(sdev);
+ }
+ 
+ const struct sof_ipc_ops ipc4_ops = {
 -- 
 2.38.1
 
