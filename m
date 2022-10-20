@@ -4,72 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80AAAC433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 13:48:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14C95C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 13:54:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 51B8E7A59;
-	Thu, 20 Oct 2022 15:47:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51B8E7A59
+	by alsa0.perex.cz (Postfix) with ESMTPS id C299386E9;
+	Thu, 20 Oct 2022 15:54:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C299386E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666273719;
-	bh=Rf1szAh32hd1G3KF/Bs7TeoBWR6irNKWG/j6QHy9YgY=;
+	s=default; t=1666274093;
+	bh=RZeq8W1/V8H33koWZVSAJlRBDQ0L5DUCHyfXwjUWORU=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EJtWarFuArR3C9NUWWXW8uFBD1776NXO0itRlmxmgvTTkQL72hygkOfUH/k59rHy7
-	 5WrMPfz/opYIUMcBxVdLoUTjhkomLFHSeXEKzkqf1fhoCR1++9gFXklovzgZSmePsE
-	 fKD5LBrPemulQIzN9YMX5TDWGP7LYsmU+jMM5ZbU=
+	b=ZYknJyEeKIeEjS+lIIqwpztEGH0OfZ2cFcHlAR5Bpte4KmxtUqCs2tLSrifY6tBa+
+	 aDMY4GKB+l3jAC8DuncRdj3SWK08AI5H17N2FhkzLJG5LSzpV0dHLKm9CsjHEOAG5S
+	 ijipT/8mM/XjZDU0WZqpNhUiWUAjbVVbM0aW6Gfw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0454CF8032B;
-	Thu, 20 Oct 2022 15:47:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C179F8032B;
+	Thu, 20 Oct 2022 15:54:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B088CF804D8; Thu, 20 Oct 2022 15:47:47 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 51B08F804D8; Thu, 20 Oct 2022 15:54:02 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78440F800B5
- for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2022 15:47:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78440F800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id E6D9EF80137
+ for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2022 15:53:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6D9EF80137
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="d53J/zvS"
+ header.b="DY7c+1r7"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id D8DA461B60;
- Thu, 20 Oct 2022 13:47:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DADB8C433C1;
- Thu, 20 Oct 2022 13:47:41 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 5C54161B96;
+ Thu, 20 Oct 2022 13:53:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6066AC433D6;
+ Thu, 20 Oct 2022 13:53:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666273663;
- bh=Rf1szAh32hd1G3KF/Bs7TeoBWR6irNKWG/j6QHy9YgY=;
+ s=k20201202; t=1666274037;
+ bh=RZeq8W1/V8H33koWZVSAJlRBDQ0L5DUCHyfXwjUWORU=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=d53J/zvSG22zTuEQxr8pxSTWTMRBJnJ57sdbSPJsKuW2BNtwixzc53u3kBOWjSHZO
- /SWks/wZLylJnvpCjxC6H5fzEaY1Ljun6bk7DgridUNxrcWgrPfwPUmiJf2KzvMb/k
- b20kAM0kmf0eGRBk15Nu7Z8mPhQnPHkgiqsXrT3Iq467RV/8vyV8FxxY8Ofj/olvd/
- gZq6MgdblaXzgMwo4osmbNgYvEc5hgmkiO65ONI8U7Ns8Emhi2W0x/EdfyS0QBZCzW
- RQBSQa7NrZRlnp9n7GZmF5pGffztyAvI9a5pIfGovd9ruwC8fo2iWy2bq92zJlUqJP
- yJ+oU3b/FDaow==
-Date: Thu, 20 Oct 2022 14:47:38 +0100
+ b=DY7c+1r7C6SUFo2dQ8HFrWvxG5coZth6AKNMQ0V4fAw8nvzI3jvqutWM4tSeb2moT
+ XGuHdr8EoTbC7chyBqI/clmtqYhvc18v+6/0wNfcWOnTlb0HbIUtAmRGEOtAwofLLC
+ nPY2iy+aGuOIp0Opo2S+kXG4oe+6KwjAtahvvCTSDH/zG/6WNDa91ZRZXczjsRrb6V
+ 6RI/2IxRC5AKR2+XOoefyNzpmHz0VBPLUq6L5F0kUF/VCbmhIaa81zONqrpp8b1z+7
+ 6+1oFFSU3o7vb5VyVDSKPpUN5O7aziIqL9P/cICTqybLACsxy3vzMwBNb4XqLlRTAF
+ UREIME7UCVlIA==
+Date: Thu, 20 Oct 2022 14:53:52 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 07/10] ALSA/ASoC: hda: ext: add 'bus' prefix for
- multi-link stream setting
-Message-ID: <Y1FRermozwj2AEfB@sirena.org.uk>
+Subject: Re: [PATCH 10/10] ALSA/ASoC: hda: move SPIB/DRMS functionality from
+ ext layer
+Message-ID: <Y1FS8PxChyWe4WfD@sirena.org.uk>
 References: <20221019162115.185917-1-pierre-louis.bossart@linux.intel.com>
- <20221019162115.185917-8-pierre-louis.bossart@linux.intel.com>
+ <20221019162115.185917-11-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="MzPKzrl7AqkmUbDN"
+ protocol="application/pgp-signature"; boundary="Za8gDlWWAC24pOZ/"
 Content-Disposition: inline
-In-Reply-To: <20221019162115.185917-8-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20221019162115.185917-11-pierre-louis.bossart@linux.intel.com>
 X-Cookie: Today is what happened to yesterday.
-Cc: tiwai@suse.de,
- =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>,
- alsa-devel@alsa-project.org, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,30 +87,34 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---MzPKzrl7AqkmUbDN
+--Za8gDlWWAC24pOZ/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 19, 2022 at 11:21:12AM -0500, Pierre-Louis Bossart wrote:
-> All the helpers dealing with multi-link configurations are located in
-> the hdac_ext_controller.c, except the two set/clear routines that
-> modify the LOSIDV registers.
+On Wed, Oct 19, 2022 at 11:21:15AM -0500, Pierre-Louis Bossart wrote:
+> The SPIB and DRMS capabilities are orthogonal to the DSP enablement
+> and can be used whether the stream is coupled or not.
+>=20
+> The existing code partitioning makes limited sense, the capabilities
+> are parsed at the sound/hda level but helpers are located in
+> sound/hda/ext.
 
 Acked-by: Mark Brown <broonie@kernel.org>
 
---MzPKzrl7AqkmUbDN
+--Za8gDlWWAC24pOZ/
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNRUXkACgkQJNaLcl1U
-h9Cl/gf/b78NsJ2e+uPKk/MNhPC39orpJAWejGIp6tSS7Y6hyKgMdufavNvJp2bA
-B7bmBAYyC44d2fkdzJFZfVJb1LLm2/73BqgpAdd3eo2blrT9Ouw5Ax5rLtu2vRyB
-r/M6s7e4o6Z1QixCR+RTx8KeDer06SW2DNkTUaS0/i+/O+bjnyAovXkb7I88fmzi
-5dNCwBUSjZuHLcgCwd0FDPX95/PrLvgia3Xhqkx7/bMBjk9Zgb7/9LFzSQcdoHix
-VRk5KCYeizrDigfVoO0/5MVETUNH7kgF69LKW+qGls+AN1PYv7rV14aYn2ZKkZ9I
-Xlv/rXkE/DXfarvdhBJ86fRUhKPW2Q==
-=Sf77
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNRUu8ACgkQJNaLcl1U
+h9CBjwf/SR7otfKZIsszdKk4yBED75ntF439ao40ZfP0aJlDdn6IkNB0kAB0cfGo
+CHSKs19oam44HJdFHgKue71pgdgmgM/bfWmBfXMkhZeFtkEmbGMAnrGTijqNaV++
+nsFKg64AoKXmEGB51OtiJtGpHayXUw1/6o+hB48He180eA8u3TjRAJEJmeJlcuE+
+pqBmCDkUcDoeVvHGFbDTaCMe4rOQThx8ut5y3uuXskdenFzYTxlXIN3aRN3wX+au
+3kLadJsc39GpIY75ez3s40cFFrAwlqOxeZeseNdAMUDJyBpHUMVLAcZa2Y7mSmvT
+ebA/ShpLLj2PVNrunLKO42ERITBGpA==
+=tcCv
 -----END PGP SIGNATURE-----
 
---MzPKzrl7AqkmUbDN--
+--Za8gDlWWAC24pOZ/--
