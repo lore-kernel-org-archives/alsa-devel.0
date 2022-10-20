@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61732C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 12:17:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 015E1C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 12:18:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 985ABB966;
-	Thu, 20 Oct 2022 14:17:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 985ABB966
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2BA1A37AB;
+	Thu, 20 Oct 2022 14:17:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BA1A37AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666268277;
-	bh=VJ8eaoMoyC4cKnYOABwb1de3yBpTvyRDd/AdXhutmwE=;
+	s=default; t=1666268296;
+	bh=4TEBX8EwgFg+vodi7TTyk76ED89H2x9OnLo/TLKQtPA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NeJSjtuYhPUcxGqCJoYOk+0czA+9fUs8PS4g5FpNcExZ3ywnaVqwW0UpHU0Wv+Ct0
-	 /qwXc12SKQ1Xi8aZ7Um8IoptM7XS7hUObKtVN1GwjtHNWMPbv9fRGh2EJJVWS2OQDM
-	 QbcO1p5KOXBFer3nbkU4ktOEdJIS5DVqy949GY7s=
+	b=PnQYyL7eFoGefl8HuWsPsZLaKobEYTlFXDpNlD+GM4SCNEvj4TZ7aLXxZt5LsRemz
+	 DWkcV4ZH2Iv6YVr+XQSO8zTn3hhOE1fR2O3stjJAS38E7HYPWjKHXYfJnMgQ3Kv7pG
+	 EZ3Fz9jf2/L7M0DwoI9tFMLAIkWcMdjoiP1z9cxg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD41EF8053C;
-	Thu, 20 Oct 2022 14:13:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A786F80542;
+	Thu, 20 Oct 2022 14:13:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75EFAF805E4; Thu, 20 Oct 2022 14:13:17 +0200 (CEST)
+ id B2E25F8053C; Thu, 20 Oct 2022 14:13:17 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89FC9F805D8
- for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2022 14:13:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89FC9F805D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64695F805C9
+ for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2022 14:13:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64695F805C9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="NK9cpG2L"
+ header.b="HZQab413"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666267988; x=1697803988;
+ t=1666267984; x=1697803984;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=VJ8eaoMoyC4cKnYOABwb1de3yBpTvyRDd/AdXhutmwE=;
- b=NK9cpG2LPxvCNRnKibZ7TfXVgo08KTUd3/Tw61iNlNqezGNd9LTXpDnJ
- ViRsxx9UcWxzjfqKXU4uODUTcSr++80WyG2d6adSzFanvW9vtag7HGLhg
- uwjV1+bebmd5mqPBECfkihe7WVT4IqwpDJu8LMJowZLPW5zt+1NxPg3qX
- Fu93YNR9KVLyVpdy/ctegEqEd1CQ7lWeAz+Rtr7ikJ03JfHLsa189KEG1
- f3jQx4SJaytvt0BB+QYQhdXN65Ofktvi6uU6F6/ccNQe6Y7HxrsDwNkx3
- V0a0dYLaCUbvmHB6d+wG7sVRpIPEh2X2uZPrf9akGjQXUr6HZY2M5iEvB Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="333256446"
-X-IronPort-AV: E=Sophos;i="5.95,198,1661842800"; d="scan'208";a="333256446"
+ bh=4TEBX8EwgFg+vodi7TTyk76ED89H2x9OnLo/TLKQtPA=;
+ b=HZQab413BbNURgBRODl6co0r+rqZer3X6p6/vR3K5wU+dmnGXt6w8FUS
+ 9X33G7tIcQlblpSbb/F7jCQzrVFzHsiTpbs2rIkFGgEGONJ8f69LAHyCi
+ bSicOyTnYe4bobARXN2iSoZckHJ26w7FeDy6gOaPVo4ci4Qnn1Cd+IX1s
+ EyBFB8UgfIeVYs920fr5eB8Z/sXxcW48/s9CCJbPFbFv6PQLfZVUWUizZ
+ 6vLaJUqrdwoN9pgSfmYWm1YF6eVutKT96stpkHyBJq8fOmTF3hbxIqfX4
+ 7gxszwLfMQOwzuCq//+k7Wxiyn8w0q1ndAOvKRORkUrL/JEChcZTEBO+N Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="333256424"
+X-IronPort-AV: E=Sophos;i="5.95,198,1661842800"; d="scan'208";a="333256424"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Oct 2022 05:13:07 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="663010192"
-X-IronPort-AV: E=Sophos;i="5.95,198,1661842800"; d="scan'208";a="663010192"
+ 20 Oct 2022 05:13:01 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10505"; a="663010150"
+X-IronPort-AV: E=Sophos;i="5.95,198,1661842800"; d="scan'208";a="663010150"
 Received: from awrynn-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.12.86])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Oct 2022 05:13:04 -0700
+ 20 Oct 2022 05:12:58 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH v2 18/19] ASoC: SOF: loader: Remove the query_fw_configuration
- ops
-Date: Thu, 20 Oct 2022 15:12:37 +0300
-Message-Id: <20221020121238.18339-19-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH v2 16/19] ASoC: SOF: loader: Add support for IPC dependent
+ post firmware boot ops
+Date: Thu, 20 Oct 2022 15:12:35 +0300
+Message-Id: <20221020121238.18339-17-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221020121238.18339-1-peter.ujfalusi@linux.intel.com>
 References: <20221020121238.18339-1-peter.ujfalusi@linux.intel.com>
@@ -89,8 +89,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The query_fw_configuration callback is redundant and the only user of it
-was converted to use the generic post_fw_boot ops.
+Add support for executing IPC dependent tasks after a successful firmware
+boot.
+
+The new post_fw_boot ops can make the fw_loader query_fw_configuration
+callback redundant as IPC code can handle the first boot internally.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
@@ -98,51 +101,48 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Chao Song <chao.song@intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 ---
- sound/soc/sof/loader.c   | 10 ++--------
- sound/soc/sof/sof-priv.h |  4 ----
- 2 files changed, 2 insertions(+), 12 deletions(-)
+ sound/soc/sof/loader.c   | 6 ++++++
+ sound/soc/sof/sof-priv.h | 3 +++
+ 2 files changed, 9 insertions(+)
 
 diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index a1c4a51636c9..81d202e5ce53 100644
+index 723bd8267a3d..a1c4a51636c9 100644
 --- a/sound/soc/sof/loader.c
 +++ b/sound/soc/sof/loader.c
-@@ -174,14 +174,8 @@ int snd_sof_run_firmware(struct snd_sof_dev *sdev)
+@@ -174,6 +174,12 @@ int snd_sof_run_firmware(struct snd_sof_dev *sdev)
  		return ret;
  	}
  
--	if (sdev->ipc->ops->post_fw_boot) {
--		ret = sdev->ipc->ops->post_fw_boot(sdev);
--		if (ret)
--			return ret;
--	}
--
--	if (sdev->first_boot && sdev->ipc->ops->fw_loader->query_fw_configuration)
--		return sdev->ipc->ops->fw_loader->query_fw_configuration(sdev);
-+	if (sdev->ipc->ops->post_fw_boot)
-+		return sdev->ipc->ops->post_fw_boot(sdev);
++	if (sdev->ipc->ops->post_fw_boot) {
++		ret = sdev->ipc->ops->post_fw_boot(sdev);
++		if (ret)
++			return ret;
++	}
++
+ 	if (sdev->first_boot && sdev->ipc->ops->fw_loader->query_fw_configuration)
+ 		return sdev->ipc->ops->fw_loader->query_fw_configuration(sdev);
  
- 	return 0;
- }
 diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index c7ab78b042aa..403e81220244 100644
+index ea6013ab1d4a..c7ab78b042aa 100644
 --- a/sound/soc/sof/sof-priv.h
 +++ b/sound/soc/sof/sof-priv.h
-@@ -421,15 +421,11 @@ struct sof_ipc_pm_ops {
-  *			DSP.
-  *			The function implements generic, hardware independent way
-  *			of loading the initial firmware and its modules (if any).
-- * @query_fw_configuration: Optional function pointer to query information and
-- *			configuration from the booted firmware.
-- *			Executed after the first successful firmware boot.
-  */
- struct sof_ipc_fw_loader_ops {
- 	int (*validate)(struct snd_sof_dev *sdev);
- 	size_t (*parse_ext_manifest)(struct snd_sof_dev *sdev);
- 	int (*load_fw_to_dsp)(struct snd_sof_dev *sdev);
--	int (*query_fw_configuration)(struct snd_sof_dev *sdev);
- };
+@@ -445,6 +445,8 @@ struct sof_ipc_pcm_ops;
+  *
+  * @init:	Optional pointer for IPC related initialization
+  * @exit:	Optional pointer for IPC related cleanup
++ * @post_fw_boot: Optional pointer to execute IPC related tasks after firmware
++ *		boot.
+  *
+  * @tx_msg:	Function pointer for sending a 'short' IPC message
+  * @set_get_data: Function pointer for set/get data ('large' IPC message). This
+@@ -469,6 +471,7 @@ struct sof_ipc_ops {
  
- struct sof_ipc_tplg_ops;
+ 	int (*init)(struct snd_sof_dev *sdev);
+ 	void (*exit)(struct snd_sof_dev *sdev);
++	int (*post_fw_boot)(struct snd_sof_dev *sdev);
+ 
+ 	int (*tx_msg)(struct snd_sof_dev *sdev, void *msg_data, size_t msg_bytes,
+ 		      void *reply_data, size_t reply_bytes, bool no_pm);
 -- 
 2.38.1
 
