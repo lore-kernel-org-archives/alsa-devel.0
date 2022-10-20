@@ -4,72 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69F03C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 10:40:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93EE7C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 10:40:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 994C88A3E;
-	Thu, 20 Oct 2022 12:39:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 994C88A3E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B942697A9;
+	Thu, 20 Oct 2022 12:39:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B942697A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666262427;
-	bh=kubHLafIrz0RpDb3CGgNiLVyMIsY49HSnQVqbHWTqCM=;
-	h=From:To:Subject:In-Reply-To:References:Date:Cc:List-Id:
+	s=default; t=1666262437;
+	bh=DWD/+a3tWspqd9R6eZBRIia+z4497qxbwbDyZj76oLI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qzNrsSWOi+eyN4VE+Snb/I+ZA20al8f9/N85ZFBACUjvzltDclfNNanmsCWkGy5xt
-	 5YtkOqiadcjzDPmWxB6au93KvFfIJ9tZdSIoe+SifZ6GiXK1C3FstkCci9ZWDqnueY
-	 JbNeLXmkGP10msrFNddUc6+G4B+HU+b3wmpD+UOE=
+	b=QYz5+L+XQefb+OUHdyob0M3teEjBae77cBy81oz2xx9zB6Eps5J1nZrieRXt7s9W0
+	 0+Wa2StZv5YzTAMutyslmRDw5MwNT+B1WIM4CNehKW3BLuVqAXXsXmo+Kp5IuCq8Qj
+	 uutZeCOksFxuJ/Bg6uKpeT2n4FdjfyVZpDHFeLK4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E02AF805E6;
+	by alsa1.perex.cz (Postfix) with ESMTP id A1C80F805EA;
 	Thu, 20 Oct 2022 12:33:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3ED5BF80166; Wed, 19 Oct 2022 23:13:57 +0200 (CEST)
-Received: from smtp.smtpout.orange.fr (smtp-25.smtpout.orange.fr
- [80.12.242.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 52BE2F804D8; Thu, 20 Oct 2022 09:13:13 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F0CBF80137
- for <alsa-devel@alsa-project.org>; Wed, 19 Oct 2022 23:13:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F0CBF80137
-Received: from sopl295.home ([109.220.248.156]) by smtp.orange.fr with ESMTPA
- id lGNoo1NB2g7y2lGNpocFOd; Wed, 19 Oct 2022 23:13:51 +0200
-X-ME-Helo: sopl295.home
-X-ME-Auth: amFyem1pay5yb2JlcnRAb3JhbmdlLmZy
-X-ME-Date: Wed, 19 Oct 2022 23:13:51 +0200
-X-ME-IP: 109.220.248.156
-From: Robert Jarzmik <jarzmik.robert@orange.fr>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C676F80137
+ for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2022 09:13:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C676F80137
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="PMsAEFVD"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 2050461A2B;
+ Thu, 20 Oct 2022 07:13:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6806C433D6;
+ Thu, 20 Oct 2022 07:12:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1666249983;
+ bh=DWD/+a3tWspqd9R6eZBRIia+z4497qxbwbDyZj76oLI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=PMsAEFVD9WkedPvZ+l9oQhe6aKnlJ5QLEE/RAQL9Hdcc42aiZpvKQTxC305JfTGC7
+ HIiBFiyvAsNadm37u8Hfx9NL0Nj1ovVYawfZFWjT1jHyBqLcaoEzE81tld4QRTQcRq
+ 1sNrMwbOaEFU4cFBzyCu2yq8+QF/+T8uUuezBvAaVCLvMo+hQZNXbbrO5Bt1qnKPOA
+ g4FpFI4xvJ0seaFCmivcPDcVBVicUidY1B3W/JQo0AkYB93UbthGLj9zxp5tjjv3bX
+ WHNv0zjG+ItGUccu+GqbSLjLpERRSZOjraiWPPAD9FrnYnJaB7fbLDBRWdnEJDSzbh
+ r1FvJA9rT3QGg==
+Date: Thu, 20 Oct 2022 08:12:50 +0100
+From: Lee Jones <lee@kernel.org>
 To: Arnd Bergmann <arnd@kernel.org>
 Subject: Re: [PATCH 00/30] ARM: pxa: remove all unused boards&drivers
-In-Reply-To: <20221019161831.3864786-1-arnd@kernel.org> (Arnd Bergmann's
- message of "Wed, 19 Oct 2022 18:17:53 +0200")
+Message-ID: <Y1D08tpbdE52x7hN@google.com>
 References: <20221019161831.3864786-1-arnd@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1 (darwin)
-X-URL: http://belgarath.falguerolles.org/
-Date: Wed, 19 Oct 2022 23:13:48 +0200
-Message-ID: <m2r0z3h5yr.fsf@sopl295.home>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20221019161831.3864786-1-arnd@kernel.org>
 X-Mailman-Approved-At: Thu, 20 Oct 2022 12:33:16 +0200
 Cc: alexandre.belloni@bootlin.com, linux-usb@vger.kernel.org, vigneshr@ti.com,
- lgirdwood@gmail.com, viresh.kumar@linaro.org, linus.walleij@linaro.org,
- ulf.hansson@linaro.org, linux@dominikbrodowski.net,
+ viresh.kumar@linaro.org, linus.walleij@linaro.org, ulf.hansson@linaro.org,
+ linux@dominikbrodowski.net, linux-kernel@vger.kernel.org,
  wsa+renesas@sang-engineering.com, patches@opensource.cirrus.com,
  linux-mtd@lists.infradead.org, philipp.zabel@gmail.com,
  miquel.raynal@bootlin.com, damien.lemoal@opensource.wdc.com,
- kernel@wantstofly.org, linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org,
- brgl@bgdev.pl, lee@kernel.org, linux@armlinux.org.uk, marek.vasut@gmail.com,
+ Robert Jarzmik <robert.jarzmik@free.fr>, kernel@wantstofly.org,
+ linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org, brgl@bgdev.pl,
+ tiwai@suse.com, linux@armlinux.org.uk, marek.vasut@gmail.com,
  stern@rowland.harvard.edu, lost.distance@yahoo.com, slapin@ossfans.org,
  Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
  linux-input@vger.kernel.org, Haojian Zhuang <haojian.zhuang@gmail.com>,
  linux-gpio@vger.kernel.org, broonie@kernel.org, sre@kernel.org,
- linux-fbdev@vger.kernel.org, tiwai@suse.com,
- linux-arm-kernel@lists.infradead.org, balbi@kernel.org,
- mkpetch@internode.on.net, s.shtylyov@omp.ru, linux-ide@vger.kernel.org,
- jingoohan1@gmail.com, dri-devel@lists.freedesktop.org,
- dmitry.torokhov@gmail.com, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, sudipm.mukherjee@gmail.com,
+ linux-fbdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ balbi@kernel.org, mkpetch@internode.on.net, s.shtylyov@omp.ru,
+ linux-ide@vger.kernel.org, jingoohan1@gmail.com,
+ dri-devel@lists.freedesktop.org, dmitry.torokhov@gmail.com,
+ linux-mmc@vger.kernel.org, lgirdwood@gmail.com, sudipm.mukherjee@gmail.com,
  linux-renesas-soc@vger.kernel.org, gregkh@linuxfoundation.org,
  alsa-devel@alsa-project.org, deller@gmx.de, Daniel Mack <daniel@zonque.org>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -87,43 +99,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Arnd Bergmann <arnd@kernel.org> writes:
+On Wed, 19 Oct 2022, Arnd Bergmann wrote:
 
 > From: Arnd Bergmann <arnd@arndb.de>
-...zip...
-
+> 
+> Most of the legacy PXA board files were marked as unused in linux-5.19 and
+> can get removed in linux-6.2. There is support for pxa250/pxa270/pxa300
+> using devicetree already, which supports a number of boards, but progress
+> on converting the remaining ones has stalled over the past few years.
+> 
+> The two boards that are left in the tree for now are the three 'sharpsl'
+> variants (spitz/akita/borzoi) and the 'gumstix' family of machines.
+> Both of these are supported by qemu, which can be helpful for completing
+> the DT conversion.
+> 
+> Only PXA25x and PXA27x are left with full boardfile support, so PXA300
+> can get a lot simpler while still working with DT, and PXA310/320/93x
+> can be removed entirely.
+> 
 > A good number of drivers become impossible to select after this, so
 > each of these also get dropped. I'm including the driver patches in the
 > series here and can either merge them through the soc tree, or they
 > can get picked up by the individual subsystem maintainers. Since both
 > the platform and the drivers get removed, the order should not matter.
-This part is a bit ... bothering.
-I at least identified these :
->  delete mode 100644 drivers/input/touchscreen/wm9705.c
->  delete mode 100644 drivers/input/touchscreen/wm9712.c
->  delete mode 100644 drivers/input/touchscreen/wm9713.c
->  delete mode 100644 drivers/input/touchscreen/wm97xx-core.c
->  delete mode 100644 drivers/mfd/wm97xx-core.c
->  delete mode 100644 sound/ac97/bus.c
->  delete mode 100644 sound/ac97/codec.c
->  delete mode 100644 sound/ac97/snd_ac97_compat.c
+> 
+> Note that the patches here are generated with 'git format-patch -D'
+> and don't contain the contents of removed files because of the
+> significant size (the first patch is close to a megabyte).
+> 
+> Arnd Bergmann (30):
+>   ARM: pxa: remove unused board files
+>   ARM: pxa: remove irda leftover
+>   ARM: pxa: remove unused pxa3xx-ulpi
+>   ARM: pxa: drop pxa310/pxa320/pxa93x support
+>   ARM: pxa: prune unused device support
+>   power: remove z2_battery driver
+>   power: remove tosa_battery driver
+>   ata: remove palmld pata driver
+>   backlight: remove pxa tosa support
+>   input: remove pxa930_trkball driver
+>   input: remove pxa930_rotary keyboard driver
+>   input: remove zylonite touchscreen driver
+>   pcmcia: remove unused pxa/sa1100 drivers
+>   ASoC: pxa: remove unused board support
+>   ALSA: remove ac97 bus support
+>   mfd: remove wm97xx driver
+>   input: remove wm97xx support
+>   parport: remove ax88796 driver
+>   power: remove pda_power supply driver
+>   rtc: remove v3020 driver
+>   mfd: remove toshiba tmio drivers
+>   mfd: remove ucb1400 support
+>   mtd: remove tmio_nand driver
+>   mmc: remove tmio_mmc driver
+>   fbdev: remove tmiofb driver
+>   fbdev: remove w100fb driver
+>   leds: remove asic3 driver
+>   usb: remove ohci-tmio driver
+>   w1: remove ds1wm driver
+>   mfd: remove htc-pasic3 driver
 
-For the existing platforms working with devicetree support (mioa701 for
-example), the wm9713 was properly used, providing both sound support and input
-touchscreen.
-So was the a97 part, providing a framework to make the wm9713 work.
+Are you sure these went out?
 
-So I'm wondering how the choice to chop these drivers was done, and it is
-necessary to remove them. If so, maybe pxa support in the kernel should be
-removed all together, as people playing with it loose part of the working DT
-platforms they had.
+They do not appear to be in my inbox, nor lore.
 
-As for the removal of defconfigs and arch-pxa, sure, this was PXA's destiny.
-
-Cheers.
-
---
-Robert
-
-PS: If this mail is sent twice, sorry in advance, my mailer is a bad mood
-lately.
+-- 
+Lee Jones [李琼斯]
