@@ -4,72 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBD67C433FE
-	for <alsa-devel@archiver.kernel.org>; Sat, 22 Oct 2022 02:41:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3439EC38A2D
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 Oct 2022 02:42:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F41C382AF;
-	Sat, 22 Oct 2022 04:40:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F41C382AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id D5F259362;
+	Sat, 22 Oct 2022 04:41:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5F259362
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666406506;
-	bh=F2EHR+886Fkx6oIBJ7t6GLz64cS0vgAI77lAZDY05+M=;
+	s=default; t=1666406529;
+	bh=kF/xdr28uQrpRA72AFf0G6ObdUEgtJJsF4mCHOi/eWk=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p1s7J6rxoKpfKsiVZLOyhPMiOgju3LYbEgnWw7RTGb4zLD/0Xqb0ed1EdBf5x5ze0
-	 j8u3UbrbkF2AJ5RT+tbG0wqxAsobPXPcpy7TW+R2BurJUZIvoPmHJidLo7ci1WHaEs
-	 pENGNcnCfJnKwil+zGFn56fyDvWrw26jY+szczmU=
+	b=Sz1XlHRRMeHixW1n1B3cRQwGIiuPn+BtBhlB+7o7E4pJofqqn+yELn/xnZI4Zy6r1
+	 zBGxRaAmNWqsltPxaLyCb+mtINdGOsgs6YgZlcZoqTFE6JSbY6/l3S4+vDfOzxlYWi
+	 M/4bwFfh70jyT4Hx4rzy88q5j8HodSbsu1xK7m9k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A0A1DF80246;
-	Sat, 22 Oct 2022 04:40:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35503F80290;
+	Sat, 22 Oct 2022 04:41:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31EDCF80134; Sat, 22 Oct 2022 04:40:54 +0200 (CEST)
+ id 3CED6F80301; Sat, 22 Oct 2022 04:40:59 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D3157F80134
- for <alsa-devel@alsa-project.org>; Sat, 22 Oct 2022 04:40:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3157F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE102F8013D
+ for <alsa-devel@alsa-project.org>; Sat, 22 Oct 2022 04:40:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE102F8013D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="aAZFgMWQ"
+ header.b="S4QVWPxf"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666406452; x=1697942452;
+ t=1666406454; x=1697942454;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=F2EHR+886Fkx6oIBJ7t6GLz64cS0vgAI77lAZDY05+M=;
- b=aAZFgMWQuCVUWjMow9ZaIglmZVxIraHeb3nU4mEekPQU/BHDY97tmPbO
- 2gKAeOZqXZYmloxRo/54jJfW5coWJEG9YSLa7s+iZfjgXhu/Wl7XE0ak0
- CPoCphKchQsHs3qLbzacmeEgecK9rQl9Nwth3L847mvne29097/ctP24W
- UqsxHGyjdfNpVUZSJLSg+OQ5rR16GDZAuDqAtx5s1SxiyDypvEyitUheq
- WMdNNaqemtY4mWuAvix/bV7hYZhPqbCVFvgJoXh6TZkXpp93DZtzXI9he
- +EfOP6/f0jRynxJpaVd5EMzTZlSnCGcwq12eWRUTsDw009aG/wVw7u7kB g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10507"; a="308833528"
-X-IronPort-AV: E=Sophos;i="5.95,203,1661842800"; d="scan'208";a="308833528"
+ bh=kF/xdr28uQrpRA72AFf0G6ObdUEgtJJsF4mCHOi/eWk=;
+ b=S4QVWPxfZmeG3FwzQqQj/nmbvQmFzYULGYAlaxbPpjMI3Ybo+DmpC0/M
+ S7gW0hdOnA/c0nb/QMpBRpdVnYGkEbWBKzzYAiaRXDQEM/WSO9nrb5p4k
+ KllOyL0uw866aKvlIbeG38jZTMRPao+I+IoUXrl70JAQnoBuwm+JM+98L
+ El7hnwtGmu66OipZcadesH15vKeG7uN12cOgQP/wi9LH5erbOsJsmnR+3
+ nokfRzVmajWwcVDbWpuYxCsFJ1TrHxwtp2G8glxpuSvLib9Ro+4GNI5nN
+ Wrx4ruYpbsk4JtbFJu0HAMr+31vEW6QpNv8ZWaM0K861ccmGQLllA0TPa w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10507"; a="308833530"
+X-IronPort-AV: E=Sophos;i="5.95,203,1661842800"; d="scan'208";a="308833530"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Oct 2022 19:40:46 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10507"; a="773273980"
-X-IronPort-AV: E=Sophos;i="5.95,203,1661842800"; d="scan'208";a="773273980"
+ 21 Oct 2022 19:40:47 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10507"; a="773273982"
+X-IronPort-AV: E=Sophos;i="5.95,203,1661842800"; d="scan'208";a="773273982"
 Received: from kerendel-mobl1.amr.corp.intel.com (HELO [10.212.96.240])
  ([10.212.96.240])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Oct 2022 19:40:45 -0700
-Message-ID: <35f55696-c4c5-1f00-dc7e-b5c7dcf0a091@linux.intel.com>
-Date: Fri, 21 Oct 2022 12:09:29 -0500
+ 21 Oct 2022 19:40:46 -0700
+Message-ID: <5528f5e7-86fe-f53e-d8db-db91cdd25adb@linux.intel.com>
+Date: Fri, 21 Oct 2022 12:13:07 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.2.2
-Subject: Re: [PATCH v2 1/9] ASoC: qdsp6: audioreach: topology use idr_alloc_u32
+Subject: Re: [PATCH v2 5/9] ASoC: qdsp6: audioreach: simplify module_list sz
+ calculation
 Content-Language: en-US
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
 References: <20221021165207.13220-1-srinivas.kandagatla@linaro.org>
- <20221021165207.13220-2-srinivas.kandagatla@linaro.org>
+ <20221021165207.13220-6-srinivas.kandagatla@linaro.org>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20221021165207.13220-2-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20221021165207.13220-6-srinivas.kandagatla@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
@@ -92,13 +93,51 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 10/21/22 11:51, Srinivas Kandagatla wrote:
-> SubGraph and Module Instance ids take 32 bits, so use idr_alloc_u32
-> instead of idr_alloc to able to accomdate valid ranges.
+On 10/21/22 11:52, Srinivas Kandagatla wrote:
+> Simplify module_list size calcuation by doing inside modules loop.
 
-typo: accommodate.
+typo: calculation.
 
-Also worth checking https://www.kernel.org/doc/html/latest/core-api/idr.html
-"The IDR interface is deprecated; please use the XArray instead."
-
-
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  sound/soc/qcom/qdsp6/audioreach.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/qcom/qdsp6/audioreach.c b/sound/soc/qcom/qdsp6/audioreach.c
+> index 0015ec89d90b..87a3fd1f8107 100644
+> --- a/sound/soc/qcom/qdsp6/audioreach.c
+> +++ b/sound/soc/qcom/qdsp6/audioreach.c
+> @@ -430,7 +430,6 @@ void *audioreach_alloc_graph_pkt(struct q6apm *apm, struct audioreach_graph_info
+>  	struct audioreach_sub_graph *sgs;
+>  	struct apm_mod_list_obj *mlobj;
+>  	struct list_head *sg_list;
+> -	int num_modules_per_list;
+>  	int num_connections = 0;
+>  	int num_containers = 0;
+>  	int num_sub_graphs = 0;
+> @@ -451,6 +450,9 @@ void *audioreach_alloc_graph_pkt(struct q6apm *apm, struct audioreach_graph_info
+>  		list_for_each_entry(container, &sgs->container_list, node) {
+>  			num_containers++;
+>  			num_modules += container->num_modules;
+> +			ml_sz = ml_sz + sizeof(struct apm_module_list_params) +
+> +				APM_MOD_LIST_OBJ_PSIZE(mlobj, container->num_modules);
+> +
+>  			list_for_each_entry(module, &container->modules_list, node) {
+>  				if (module->src_mod_inst_id)
+>  					num_connections++;
+> @@ -459,11 +461,11 @@ void *audioreach_alloc_graph_pkt(struct q6apm *apm, struct audioreach_graph_info
+>  	}
+>  
+>  	num_modules_list = num_containers;
+> -	num_modules_per_list = num_modules/num_containers;
+>  	sg_sz = APM_SUB_GRAPH_PSIZE(sg_params, num_sub_graphs);
+>  	cont_sz = APM_CONTAINER_PSIZE(cont_params, num_containers);
+> -	ml_sz =	ALIGN(sizeof(struct apm_module_list_params) +
+> -		num_modules_list * APM_MOD_LIST_OBJ_PSIZE(mlobj,  num_modules_per_list), 8);
+> +
+> +	ml_sz = ALIGN(ml_sz, 8);
+> +
+>  	mp_sz = APM_MOD_PROP_PSIZE(mprop, num_modules);
+>  	mc_sz =	APM_MOD_CONN_PSIZE(mcon, num_connections);
+>  
