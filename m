@@ -4,82 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA419C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Oct 2022 06:19:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44D27C433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Oct 2022 06:38:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A93E93B2;
-	Fri, 21 Oct 2022 08:18:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A93E93B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95F1980C3;
+	Fri, 21 Oct 2022 08:37:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95F1980C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666333185;
-	bh=jGo3GIZqWA+OiKU7gxuctzt7e6+SJqzwzkVuIxU2qo0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1666334325;
+	bh=8pDF/FbIWIE7DyDoL/yaRVvS0OrjEpd57a9dB8C/qUc=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=l9ytLfMQo13VN3v0IC7j72TrgaUVT5uelnckzcb+ZxDkamgrJ1RX5FtvCwYFLHl84
-	 TI7XPbixlqmjfWgd6g6K4ebig+myfSFmxW9CrkXRyzIs3f1L7aDLb2tDEL2xJvvldf
-	 P9EyV3Wyr4TJqJAsHeol/UVwHGs8ZlW+OOc3BAe4=
+	b=QU7HX7g0O97bJbFUCLXgYKEm2QSi9nuLyi2a3yQRgG6RucoVOqgVOgka6XhjjrqiV
+	 jeUdBdXKWkumgrJ3EKQ2VxN4nwNa2S4hDTdQLyjFFt/T5Zbs9HGnaXGeokE/AlWDKY
+	 I13ZnmzTqn/f9WLJ0p6IdTc4U453loOLVXSEKVfg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB714F80134;
-	Fri, 21 Oct 2022 08:18:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3EBDFF80134;
+	Fri, 21 Oct 2022 08:37:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4B594F80118; Fri, 21 Oct 2022 08:18:53 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ id 9F3DBF80118; Fri, 21 Oct 2022 08:37:53 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 965F8F80118
+ for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 08:37:47 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id E8897A003F;
+ Fri, 21 Oct 2022 08:37:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz E8897A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1666334266; bh=7bheVmjzS5vyXhQGrqj0IHaOc01J9HG+8xqe7yCTVvQ=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+ b=VIrhv2XjwU6CYD/x0hf6IEW7mNnX8mJ4bToIBGDc7GTm6dC0mPtzdzECQuGtg4269
+ T0HaHW8LfrCQC3P/qDQMp7xrH29JwUA63baCQ8pJc4POCSNq/PW3ixEKpFsXLzSG1H
+ LqghmKvl/DsXcA3JxMcipehv1x+BAQJsQ5kR/BLY=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 26F56F80118
- for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 08:18:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26F56F80118
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="nqrk8CZ2"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="eICvxvmo"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 812E21F90F;
- Fri, 21 Oct 2022 06:18:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666333128; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=liod0Qgbw11Wm2miSEFyU6Lk4/K7ugeWAi8+5SI6jGU=;
- b=nqrk8CZ2AcdP1d6jBIlAAieU6noFwFbMS6w1B1K0Wc8xuwkljZZuVKpYYjwf8fvOZ1vyu/
- htynq9cFySCaLoxfCJaUqipIycLF2CcGxegqz4nAFjbOCvVBC6P3/GAzJCRITC2A6EAGI1
- 1BPxpLtBnpEhHm1Nmmg62nIu65aVNIM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666333128;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=liod0Qgbw11Wm2miSEFyU6Lk4/K7ugeWAi8+5SI6jGU=;
- b=eICvxvmoJOTT8ziO6BXd9AAiohu14/yjok0q69dQ/K0SnAnylNnU0W33f8JF9FmanX6jX4
- BrL9s+u4U5lFVoBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 42B441331A;
- Fri, 21 Oct 2022 06:18:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id UXODD8g5UmNnDgAAMHmgww
- (envelope-from <tiwai@suse.de>); Fri, 21 Oct 2022 06:18:48 +0000
-Date: Fri, 21 Oct 2022 08:18:47 +0200
-Message-ID: <8735bh8zso.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH 0/6] Fix direct renaming of hashed controls
-In-Reply-To: <cover.1666296963.git.maciej.szmigiero@oracle.com>
-References: <cover.1666296963.git.maciej.szmigiero@oracle.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Fri, 21 Oct 2022 08:37:43 +0200 (CEST)
+Message-ID: <708583ba-ea20-cc46-7ca1-ee213586441a@perex.cz>
+Date: Fri, 21 Oct 2022 08:37:43 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH v2] ASoC: core: clarify the driver name initialization
+Content-Language: en-US
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ ALSA development <alsa-devel@alsa-project.org>
+References: <20220929143754.345144-1-perex@perex.cz>
+ <eb7971c2-f5fe-afb5-9333-4b941b958355@linux.intel.com>
+ <8d461c81-5d70-cfbb-4653-979764a6b5a6@perex.cz>
+ <3770c782-d01c-37b6-73a5-2c45c869d541@linux.intel.com>
+ <2285503b-b2cd-bca4-d491-cf4e8eaac92a@perex.cz>
+ <5b94c9ef-a37b-9d71-ad05-5ce9ba103af0@linux.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <5b94c9ef-a37b-9d71-ad05-5ce9ba103af0@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,36 +81,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 20 Oct 2022 22:46:20 +0200,
-Maciej S. Szmigiero wrote:
+On 20. 10. 22 20:13, Pierre-Louis Bossart wrote:
+> Hi Jaroslav,
 > 
-> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+>> Nope. It's just a short path for the non-driver field to not further
+>> process the destination string (the name argument). The snprintf() call
+>> sets all field types (it's before the condition). Just set the
+>> driver_name field in the soc card structure and you will be fine.
+>>
+>> The UCM config must be updated to handle the new driver name. The fine
+>> selection key should probably use the card name, because long name is
+>> set from DMI:
+>>
+>> old:
+>>
+>> 1 [sofglkda7219max]: sof-glkda7219ma - sof-glkda7219max
+>>                       Google-Phaser360-rev4
+>>
+>> new:
+>>
+>> 1 [sofglkda7219max]: SOF-Intel - sof-glkda7219max
+>>                       Google-Phaser360-rev4
+>>
+>> UCM substitutions:
+>>
+>> 1 [${CardId}      ]: ${CardDriver} - ${CardName}
+>>                       ${CardLongName}
+>>
+>> UCM conf:
+>>
+>> mkdir -p ucm2/conf.d/SOF-Intel
+>> cat > ucm2/conf.d/SOF-Intel/SOF-Intel.conf <<EOF
+>> Syntax 6
+>> Include.0.File "/Intel/\${CardName}/\${CardName}.conf"
+>> EOF
 > 
-> I've noticed that some of mixer controls on my sound card seem to
-> be partially broken on the 6.0 kernel - alsactl wasn't able to find them
-> when restoring the mixer state.
+> I am not following any of this, sorry.
 > 
-> The issue was traced down to the recent addition of hashed controls lookup
-> in commit c27e1efb61c5 ("ALSA: control: Use xarray for faster lookups").
-> 
-> Since that commit it is *not* enough to just directly update the control
-> name field (like some of ALSA drivers were doing).
-> Now the hash entries for the modified control have to be updated too.
-> 
-> This patch set adds a snd_ctl_rename() function that takes care of doing
-> this operation properly for callers that already have the relevant
-> struct snd_kcontrol at hand and hold the control write lock (or simply
-> haven't registered the card yet).
-> 
-> These prerequisites hold true for all the call sites modified.
->     
-> The core controls change and the emu10k1 patch were runtime tested.
-> Similar patches for other devices were only compile tested.
+> The existing UCM configuration uses the card name, e.g.
+> sof-glkda7219max. That works and needs zero extra work.
 
-Good catch!
-Applied all patches now.
+Unfortunately, actually the wrapped driver names are used for the primary 
+lookups. The card name is not used at all in ucm2/conf.d.
 
+> If all the cards registered in sound/soc/intel/boards use the same
+> "SOF-Intel" driver name, then the driver name cannot be used for any UCM
+> selection.
 
-thanks,
+It can be used for the first level of the lookup. Eventually, we can add
+ucm2/conf.d/${CardDriver}/${CardName}.conf search path to ucm2/ucm.conf for 
+the direct lookups to handle this case, but it's just an optimization. I would 
+start with the ${CardName} redirection as I suggested. We can decide / make 
+the ucm.conf change later.
 
-Takashi
+> What is the point of including all the cardName.conf files at a higher
+> level that brings no obvious value beyond an indirection that we already
+> have with the path ucm2/Intel ?
+> 
+> What am I missing ??
+
+The goal is to fix the driver names (e.g. "sof-glkda7219ma", "sof-mt8195_r101" 
+etc.). If you like to keep the unique names, it's your decision. I just prefer 
+to have a string which is understandable to users. UCM can handle the finer 
+selection of the configuration at any level now. Examples: sof-soundwire, 
+USB-Audio (ucm2/USB-Audio/USB-Audio.conf), SOF (ucm2/Intel/SOF/HiFi.conf).
+
+						Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
