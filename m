@@ -4,61 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76A0BECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 14:45:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFE30C38A2D
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 14:46:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2F1C7482;
-	Mon, 24 Oct 2022 16:44:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2F1C7482
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB94F7488;
+	Mon, 24 Oct 2022 16:45:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB94F7488
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666622740;
-	bh=qj8Xn9uB1LYYuXnd5MrDQPrA7Oqlsb5m3B3hu0dcuK8=;
-	h=Date:To:From:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=O9PmXIRGmxXn5FB2QBAgVSPsEhu3ho1RDRRNjRD8ZCYdg7MjcIQPJmx5fqHBukq4h
-	 cscxeBf7Ym23I07gDDyD72ocghLnkHG7rmY9KwDgNO4OT479f5Vql/MbUXcEgw1Sl5
-	 pMBK/ptb8wgPZcqV0zQmUOw1d5QTWW4/rsh5eFFU=
+	s=default; t=1666622764;
+	bh=3bi4ymNHo3Dvs2JQ0CRE+dxdRH544C2L9oaVHVE+Ee4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=vLB0NP0pJYgdKmsRftyxBYrL+eHlm2nWq7gAUBCqDjgq+FpgRhgau2lCyytHaXakw
+	 WvKWJgDK7WBwu967cssu3jESF3JL66kGTBq8e/L0RGnDYlITA3yQv9BTq8Vn9rg1Wf
+	 Wu5yQkyXvbzIDidaKnZnHZbNfmU7RIkgEsQrz32M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 545AEF80506;
+	by alsa1.perex.cz (Postfix) with ESMTP id E03BEF8053D;
 	Mon, 24 Oct 2022 16:44:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 823FAF800B5; Fri, 21 Oct 2022 08:34:48 +0200 (CEST)
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.221.58])
+ id 23EB3F8021D; Fri, 21 Oct 2022 12:52:46 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id EB1E3F80118
+ for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 12:52:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB1E3F80118
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6EE47F800B5
- for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 08:34:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EE47F800B5
-X-QQ-mid: bizesmtpipv602t1666334073tg8l
-Received: from [127.0.0.1] ( [255.102.133.9]) by bizesmtp.qq.com (ESMTP) with 
- id ; Fri, 21 Oct 2022 14:34:32 +0800 (CST)
-X-QQ-SSF: 01000000000000B0O000000A0000000
-X-QQ-FEAT: wReDU7nm/Q2cX418S7HgcoF6AC1h4+/48kLxk6q0wPna4z/8BeGsMjegOnN6Q
- xpeZP2AcOu5Rawh1IrIeh6uCyHJWIvOdGaaCWoqFBNQuUjt1QUrA/jXbU0DlKrWwX6ewgvY
- 0yJbkgsLZ5vrMMLbIEqaOcQ8NasGnEBNzyoYR5wGGFqBrJrvYGu1HNeYuIyyQv75p4v0Ksm
- M3pvf6gXGUfqmWU/qkE8JgBM9B0IAGlKKUr5ZYIhXedZHC7YzZfU7/zysEbLass1pBMPZq4
- ukfTGE7FQRkMQhJgxwOdxfnipGj4vEYpG6eCchAGu0HpXjdhuxTLjpKk54UVi40Jt44/59x
- cUFFAufuuFND3UP9m1TtpekTpVYPw==
-X-QQ-GoodBg: 0
-Message-ID: <26B141B486BEF706+313d1732-e00c-ea41-3123-0d048d40ebb6@leohearts.com>
-Date: Fri, 21 Oct 2022 14:34:32 +0800
+ by ams.source.kernel.org (Postfix) with ESMTPS id BA6BEB82B96;
+ Fri, 21 Oct 2022 10:52:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AC6DC433D6;
+ Fri, 21 Oct 2022 10:52:33 +0000 (UTC)
+Date: Fri, 21 Oct 2022 11:52:30 +0100
+From: Mark Brown <broonie@debian.org>
+To: Adam Borowski <kilobyte@angband.pl>
+Subject: Re: [PATCH 0/6] a pile of randconfig fixes
+Message-ID: <Y1J57jJ1+FTG7U9O@sirena.org.uk>
+References: <20221020221749.33746-1-kilobyte@angband.pl>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.3
-Content-Language: en-US
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-From: Leohearts <leohearts@leohearts.com>
-Subject: [PATCH] ASoC: amd: yc: Add Lenovo Thinkbook 14+ 2022 21D0 to quirks
- table
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpipv:leohearts.com:qybglogicsvr:qybglogicsvr5
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="wWcrkmaG6Bl+vyW8"
+Content-Disposition: inline
+In-Reply-To: <20221020221749.33746-1-kilobyte@angband.pl>
+X-Cookie: On the eighth day, God created FORTRAN.
 X-Mailman-Approved-At: Mon, 24 Oct 2022 16:44:48 +0200
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Richard Weinberger <richard@nod.at>,
+ Takashi Iwai <tiwai@suse.com>, Khalil Blaiech <kblaiech@nvidia.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Jiaxin Yu <jiaxin.yu@mediatek.com>, Bingbu Cao <bingbu.cao@intel.com>,
+ Tianshu Qiu <tian.shu.qiu@intel.com>, Yong Zhi <yong.zhi@intel.com>,
+ Asmaa Mnebhi <asmaa@nvidia.com>, linux-mediatek@lists.infradead.org,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Brent Lu <brent.lu@intel.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-spi@vger.kernel.org,
+ Dan Scally <djrscally@gmail.com>, linux-crypto@vger.kernel.org,
+ Sakari Ailus <sakari.ailus@linux.intel.com>, linux-kernel@lists.debian.org,
+ linux-media@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,38 +90,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Lenovo Thinkbook 14+ 2022 (ThinkBook 14 G4+ ARA) uses Ryzen
-6000 processor, and has the same microphone problem as other
-ThinkPads with AMD Ryzen 6000 series CPUs, which has been
-listed in https://bugzilla.kernel.org/show_bug.cgi?id=216267.
 
-Adding 21D0 to quirks table solves this microphone problem
-for ThinkBook 14 G4+ ARA.
+--wWcrkmaG6Bl+vyW8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Taroe Leohearts <leohearts@leohearts.com>
----
- sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+On Fri, Oct 21, 2022 at 12:17:49AM +0200, Adam Borowski wrote:
 
-diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-index 2cb50d5cf..c8df5c25e 100644
---- a/sound/soc/amd/yc/acp6x-mach.c
-+++ b/sound/soc/amd/yc/acp6x-mach.c
-@@ -45,6 +45,13 @@ static struct snd_soc_card acp6x_card = {
- };
- 
- static const struct dmi_system_id yc_acp_quirk_table[] = {
-+	{
-+		.driver_data = &acp6x_card,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "21D0"),
-+		}
-+	},
- 	{
- 		.driver_data = &acp6x_card,
- 		.matches = {
--- 
-2.37.2
+> I've been doing randconfig build tests for quite a while, here's a pile of
+> fixes.  I'm not sure what's the best way to submit these: do you folks
+> prefer a series like this, or a number of individual submissions?
 
+Individual submissions would cut down on the noise from the enormous CC
+list.  If you were going to send as a patch series it should be a single
+message per patch as covered in sumbitting-patches.rst.
 
+--wWcrkmaG6Bl+vyW8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNSee4ACgkQJNaLcl1U
+h9BDwgf+IkbiCFyXzVrO3F8yBx883iUJM3R8A5LPsrxScBUzS3Nu7PgzWmko3Bfa
+wm/rXizNrMQPDqUakrtR8duh+w/eL6Lz3YrZEQEaM2fd8+MayJt9tXB4o/qfcrBc
+B3o7lbqL9Hp0yqRKKG8orcvyiJDpOh2Z+zLAYqy+LuFLuiv6kSKu8h7c2vm7DKCw
++wGkRN5blfrYPHGOoU/r6oqjT2qx6BFUsXpnILPw2XRtXlkYv37BLu4rRgZ7qc+D
+Afo+DwE5y6d9t9ebOL0UjvgveEysSY3VksxCcjtWru+wN/bjPbET1VFJUrfbMyGf
+y+JN6EsaYWeKmGsk5T5pZ5XczMBC+A==
+=kG7z
+-----END PGP SIGNATURE-----
+
+--wWcrkmaG6Bl+vyW8--
