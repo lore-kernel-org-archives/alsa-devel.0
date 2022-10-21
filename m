@@ -4,61 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3243AC433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Oct 2022 12:41:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90AD9C433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Oct 2022 12:54:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C71F8937;
-	Fri, 21 Oct 2022 14:40:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C71F8937
+	by alsa0.perex.cz (Postfix) with ESMTPS id 421AF8618;
+	Fri, 21 Oct 2022 14:53:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 421AF8618
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666356062;
-	bh=mPBLyPQJ5yYfcbCnFI0Kh40ilIY6OQ6ISl+slnB6lVY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=LpcIavAMseeFAYN+oNKWsNn7Qzqj8IceO84qrvoY791WekU+h9mDZCgDEEbuhohkI
-	 V1SzhXh9dj5IxhSvStVLsxjo+eGVkap61QAkUhIheft1+1o2fkDXMrzmfh/XO5QiUe
-	 kZahWLnCYHxhRz+KWd58wSZOjcWeEiftuesqOhho=
+	s=default; t=1666356887;
+	bh=4zia6d/9C/r0oMjbOLxT0k71pWLOutevN7Vh/LoS8WA=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=UaSlTqc9SjJGSPYUnqFT65BKk3axusIe+FCQPLI3loPT8hzmiE8T5HLVAfEGgKLdc
+	 +VK7eEmeoWH6jwZuVHXUad+/qHBlOSk/rfc76YKNiCa7+oik3YYxqHUr7dl0G9t84N
+	 hps3yhg8Xk013FVWiXzbDWG1acGw4ZxGbiEpCR+0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 800C8F80256;
-	Fri, 21 Oct 2022 14:39:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E474EF80118;
+	Fri, 21 Oct 2022 14:53:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31C6BF80134; Fri, 21 Oct 2022 14:39:50 +0200 (CEST)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 308A5F800B5; Fri, 21 Oct 2022 14:53:56 +0200 (CEST)
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com
+ [IPv6:2607:f8b0:4864:20::733])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB47FF80134
- for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 14:39:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB47FF80134
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.53])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Mv3v636VLzHv6Y;
- Fri, 21 Oct 2022 20:39:30 +0800 (CST)
-Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 21 Oct 2022 20:39:39 +0800
-Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
- (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Fri, 21 Oct
- 2022 20:39:35 +0800
-From: Yang Yingliang <yangyingliang@huawei.com>
-To: <alsa-devel@alsa-project.org>
-Subject: [PATCH v3 1/2] ASoC: Intel: Skylake: fix possible memory leak in
- skl_codec_device_init()
-Date: Fri, 21 Oct 2022 20:38:48 +0800
-Message-ID: <20221021123849.456857-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91A34F800B5
+ for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 14:53:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91A34F800B5
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="sNK2bvtb"
+Received: by mail-qk1-x733.google.com with SMTP id j21so1896786qkk.9
+ for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 05:53:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=/oSeaW5mIul8TIhIXdrPxIKt9VEUuWQxs7k14eD/1Ss=;
+ b=sNK2bvtb0ckWlAzBW2zlR/iBOi7oAQTHNcdG3EQDc0gDVdJvQWJSne5nmtCTDeKv01
+ LEFxTjBtiZGtP76wki/rZRcTfgMtxgXQ2fIVgTZvHVZxhvQWXGHWV+LR/IHyhLuZburc
+ 9rUKFqAC+xjzt721U30STNJfbv76tSnlTFjbzuaMOk9wEsDfYJNh3vHB6+BaUvOoG2p5
+ OtuPWxE7KbYy7QIy3Y7DKlKwULDiMVgLJTWdUMpntiC6Oih/Lnt7UoaAvTTT28BXeegI
+ 6d+xkHbZ3qQGW87JffuysvRdnff8FaHQGRcmJjJ51D7lpVozc2ViYex1iqvmZ1ymuZWJ
+ X8nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=/oSeaW5mIul8TIhIXdrPxIKt9VEUuWQxs7k14eD/1Ss=;
+ b=7TB4BP3WpLFmcl7p9ElEcQH4HDNJ3ided3g3l6EJ7yyTUB/emYFOGt2BG4koJUG1MG
+ wTnd3LjOQuwDUEhW8wfSYK266eTtvE+5kcs9BXBinuwoPy2OOE//7msDQaFRUZAI5o7N
+ yxcivxtL0/IXKlf7An4PmWbEHGSWgP/GhJTbJN1Rw5TPBUTzI0eyE5uokbIWrIDPDuSA
+ yDGsErc+Q5ix1QRwrcNPnAXOXjhPT55iZe4Mqe3kT9teklwuNWnJ03jcdm0dpIgS2XPx
+ NzSTsr9dta3ZeOPVsMIksYQupm1ovtc6DSpGX84BM98yaFKHFIcaKnrsHgIy7UOhOuTC
+ wt2Q==
+X-Gm-Message-State: ACrzQf0QHIpN0z17LLCFsXjbra1c3DVP5lGwirG5aH+1pNITlIF4kWSy
+ uSRWuSYRfkCVjLb24RrWKK00Tw==
+X-Google-Smtp-Source: AMsMyM6L4xxVRWdbLocFykTdac6DlxEUJbXwJLGOhwqvAy4RhLV8T3Niy3e9l/kTxGIuF9J8/g+4jQ==
+X-Received: by 2002:a05:620a:2487:b0:6ee:74a7:934b with SMTP id
+ i7-20020a05620a248700b006ee74a7934bmr14077470qkn.625.1666356828594; 
+ Fri, 21 Oct 2022 05:53:48 -0700 (PDT)
+Received: from [192.168.10.124] (pool-72-83-177-149.washdc.east.verizon.net.
+ [72.83.177.149]) by smtp.gmail.com with ESMTPSA id
+ w27-20020a05620a0e9b00b006cdd0939ffbsm9345492qkm.86.2022.10.21.05.53.46
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 21 Oct 2022 05:53:47 -0700 (PDT)
+Message-ID: <89340edb-2451-e648-e2e6-94c8f2410084@linaro.org>
+Date: Fri, 21 Oct 2022 08:53:45 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500007.china.huawei.com (7.185.36.183)
-X-CFilter-Loop: Reflected
-Cc: cezary.rojewski@intel.com, kai.vehmanen@linux.intel.com, tiwai@suse.de,
- pierre-louis.bossart@linux.intel.com, broonie@kernel.org,
- yangyingliang@huawei.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [PATCH 6/6] arm64: dts: fsd: Add sound card node for Tesla FSD
+To: Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>,
+ 'Alim Akhtar' <alim.akhtar@samsung.com>, lgirdwood@gmail.com,
+ broonie@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ s.nawrocki@samsung.com, perex@perex.cz, tiwai@suse.com,
+ pankaj.dubey@samsung.com, rcsekar@samsung.com, aswani.reddy@samsung.com
+References: <20221014102151.108539-1-p.rajanbabu@samsung.com>
+ <CGME20221014104915epcas5p12414b87ea127b2d5bf521556bf841b00@epcas5p1.samsung.com>
+ <20221014102151.108539-7-p.rajanbabu@samsung.com>
+ <00c301d8dfd0$f55ca230$e015e690$@samsung.com>
+ <04aa01d8e524$d253f2d0$76fbd870$@samsung.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <04aa01d8e524$d253f2d0$76fbd870$@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,55 +110,128 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If snd_hdac_device_register() fails, 'codec' and name allocated in
-dev_set_name() called in snd_hdac_device_init() are leaked. Fix this
-by calling put_device(), so they can be freed in snd_hda_codec_dev_release()
-and kobject_cleanup().
+On 21/10/2022 04:12, Padmanabhan Rajanbabu wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Alim Akhtar [mailto:alim.akhtar@samsung.com]
+>> Sent: 14 October 2022 06:59 PM
+>> To: 'Padmanabhan Rajanbabu' <p.rajanbabu@samsung.com>;
+>> lgirdwood@gmail.com; broonie@kernel.org; robh+dt@kernel.org;
+>> krzysztof.kozlowski+dt@linaro.org; s.nawrocki@samsung.com;
+>> perex@perex.cz; tiwai@suse.com; pankaj.dubey@samsung.com;
+>> rcsekar@samsung.com; aswani.reddy@samsung.com
+>> Cc: alsa-devel@alsa-project.org; devicetree@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; linux-samsung-soc@vger.kernel.org
+>> Subject: RE: [PATCH 6/6] arm64: dts: fsd: Add sound card node for Tesla FSD
+>>
+>>
+>>
+>>> -----Original Message-----
+>>> From: Padmanabhan Rajanbabu [mailto:p.rajanbabu@samsung.com]
+>>> Sent: Friday, October 14, 2022 3:52 PM
+>>> To: lgirdwood@gmail.com; broonie@kernel.org; robh+dt@kernel.org;
+>>> krzysztof.kozlowski+dt@linaro.org; s.nawrocki@samsung.com;
+>>> perex@perex.cz; tiwai@suse.com; pankaj.dubey@samsung.com;
+>>> alim.akhtar@samsung.com; rcsekar@samsung.com;
+>> aswani.reddy@samsung.com
+>>> Cc: alsa-devel@alsa-project.org; devicetree@vger.kernel.org; linux-
+>>> kernel@vger.kernel.org; linux-samsung-soc@vger.kernel.org;
+>> Padmanabhan
+>>> Rajanbabu <p.rajanbabu@samsung.com>
+>>> Subject: [PATCH 6/6] arm64: dts: fsd: Add sound card node for Tesla FSD
+>>>
+>>> Add device tree node support for sound card on Tesla FSD board
+>>>
+>>> Signed-off-by: Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>
+>>> ---
+>>> arch/arm64/boot/dts/tesla/fsd-evb.dts | 49
+>>> +++++++++++++++++++++++++++
+>>> arch/arm64/boot/dts/tesla/fsd.dtsi    |  3 ++
+>>> 2 files changed, 52 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/tesla/fsd-evb.dts
+>>> b/arch/arm64/boot/dts/tesla/fsd-evb.dts
+>>> index c0a4509499ab..ecaa3c2e3045 100644
+>>> --- a/arch/arm64/boot/dts/tesla/fsd-evb.dts
+>>> +++ b/arch/arm64/boot/dts/tesla/fsd-evb.dts
+>>> @@ -49,3 +49,52 @@
+>>> &tdm_1 {
+>>> 	status = "okay";
+>>> };
+>>> +
+>>> +&sound {
+>>> +	compatible = "tesla,fsd-sndcard";
+>>> +	status = "okay";
+>>> +	model = "fsd-i2s";
+>>> +	widgets =
+>>> +		"Speaker", "MAIN SPK",
+>>> +		"Microphone", "MAIN MIC";
+>>> +
+>>> +	primary-dai-link-0 {
+>>> +		link-name = "fsd-primary-0";
+>>> +		dai-format = "i2s";
+>>> +		tesla,bitclock-master = <&tdm_0>;
+>>> +		tesla,frame-master = <&tdm_0>;
+>>> +		cpu {
+>>> +			sound-dai = <&tdm_0 0>;
+>>> +		};
+>>> +	};
+>>> +
+>>> +	secondary-dai-link-0 {
+>>> +		link-name = "fsd-secondary-0";
+>>> +		dai-format = "i2s";
+>>> +		tesla,bitclock-master = <&tdm_0>;
+>>> +		tesla,frame-master = <&tdm_0>;
+>>> +		cpu {
+>>> +			sound-dai = <&tdm_0 1>;
+>>> +		};
+>>> +	};
+>>> +
+>>> +	primary-dai-link-1 {
+>>> +		link-name = "fsd-primary-1";
+>>> +		dai-format = "i2s";
+>>> +		tesla,bitclock-master = <&tdm_1>;
+>>> +		tesla,frame-master = <&tdm_1>;
+>>> +		cpu {
+>>> +			sound-dai = <&tdm_1 0>;
+>>> +		};
+>>> +	};
+>>> +
+>>> +	secondary-dai-link-1 {
+>>> +		link-name = "fsd-secondary-1";
+>>> +		dai-format = "i2s";
+>>> +		tesla,bitclock-master = <&tdm_1>;
+>>> +		tesla,frame-master = <&tdm_1>;
+>>> +		cpu {
+>>> +			sound-dai = <&tdm_1 1>;
+>>> +		};
+>>> +	};
+>>> +};
+>>> diff --git a/arch/arm64/boot/dts/tesla/fsd.dtsi
+>>> b/arch/arm64/boot/dts/tesla/fsd.dtsi
+>>> index 5decad45a1b6..fc8931f830a7 100644
+>>> --- a/arch/arm64/boot/dts/tesla/fsd.dtsi
+>>> +++ b/arch/arm64/boot/dts/tesla/fsd.dtsi
+>>> @@ -847,6 +847,9 @@
+>>> 			status = "disabled";
+>>> 		};
+>>>
+>>> +		sound: sound {
+>>> +		};
+>>> +
+>> Why to have an empty node in dtsi?
+> This is required as every node we use in dts should have the same declared in
 
-Fixes: e4746d94d00c ("ASoC: Intel: Skylake: Introduce HDA codec init and exit routines")
-Fixes: dfe66a18780d ("ALSA: hdac_ext: add extended HDA bus")
-Suggested-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
-v2 -> v3:
-  add suggest tag
+I see no reason why this is required.
 
-v1 -> v2:
-  remove skl_codec_device_exit() and use snd_hda_codec_dev_release() to fix leak
----
- sound/soc/intel/skylake/skl.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+> dtsi. Sound nodes in most of the platform is only declared (dummy node) in
+> dtsi and defining only in dts. Thus we are following the same.
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index bbba2df33aaf..3312b57e3c0c 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -689,11 +689,6 @@ static void load_codec_module(struct hda_codec *codec)
- 
- #endif /* CONFIG_SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC */
- 
--static void skl_codec_device_exit(struct device *dev)
--{
--	snd_hdac_device_exit(dev_to_hdac_dev(dev));
--}
--
- static struct hda_codec *skl_codec_device_init(struct hdac_bus *bus, int addr)
- {
- 	struct hda_codec *codec;
-@@ -706,12 +701,11 @@ static struct hda_codec *skl_codec_device_init(struct hdac_bus *bus, int addr)
- 	}
- 
- 	codec->core.type = HDA_DEV_ASOC;
--	codec->core.dev.release = skl_codec_device_exit;
- 
- 	ret = snd_hdac_device_register(&codec->core);
- 	if (ret) {
- 		dev_err(bus->dev, "failed to register hdac device\n");
--		snd_hdac_device_exit(&codec->core);
-+		put_device(&codec->core.dev);
- 		return ERR_PTR(ret);
- 	}
- 
--- 
-2.25.1
+Can you point me to Samsung platform doing this?
+
+Keep the code consistent with Exynos style.
+
+Best regards,
+Krzysztof
 
