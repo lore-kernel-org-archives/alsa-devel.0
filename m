@@ -4,42 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A9CCC38A2D
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Oct 2022 22:28:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBD67C433FE
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 Oct 2022 02:41:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B27A50BD;
-	Sat, 22 Oct 2022 00:27:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B27A50BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id F41C382AF;
+	Sat, 22 Oct 2022 04:40:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F41C382AF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666391311;
-	bh=RMZeO645L3PBHV1YiHLs0v6q9zvSW/uzhW0pcAGoooQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1666406506;
+	bh=F2EHR+886Fkx6oIBJ7t6GLz64cS0vgAI77lAZDY05+M=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=b6Qa7a+7ecqsCK2YfvgypCbQK1FEzSQdArFWYYmWKhYvcUazloZOXkLF5Hgfnmho/
-	 aZYENofv2gwxuVvzJsfrH7DY1xhXNN8SDnfGE65BqzZQiUZ4j1qhxzCYqlqYIzFytP
-	 kNrKIKXzH8x2oKjVTGBbH/hlhEIcijz3vpJYiFcA=
+	b=p1s7J6rxoKpfKsiVZLOyhPMiOgju3LYbEgnWw7RTGb4zLD/0Xqb0ed1EdBf5x5ze0
+	 j8u3UbrbkF2AJ5RT+tbG0wqxAsobPXPcpy7TW+R2BurJUZIvoPmHJidLo7ci1WHaEs
+	 pENGNcnCfJnKwil+zGFn56fyDvWrw26jY+szczmU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3BDDF80134;
-	Sat, 22 Oct 2022 00:27:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0A1DF80246;
+	Sat, 22 Oct 2022 04:40:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53DB4F80134; Sat, 22 Oct 2022 00:27:39 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 4FBBAF800B8
- for <alsa-devel@alsa-project.org>; Sat, 22 Oct 2022 00:27:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FBBAF800B8
+ id 31EDCF80134; Sat, 22 Oct 2022 04:40:54 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3157F80134
+ for <alsa-devel@alsa-project.org>; Sat, 22 Oct 2022 04:40:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3157F80134
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="aAZFgMWQ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1666406452; x=1697942452;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=F2EHR+886Fkx6oIBJ7t6GLz64cS0vgAI77lAZDY05+M=;
+ b=aAZFgMWQuCVUWjMow9ZaIglmZVxIraHeb3nU4mEekPQU/BHDY97tmPbO
+ 2gKAeOZqXZYmloxRo/54jJfW5coWJEG9YSLa7s+iZfjgXhu/Wl7XE0ak0
+ CPoCphKchQsHs3qLbzacmeEgecK9rQl9Nwth3L847mvne29097/ctP24W
+ UqsxHGyjdfNpVUZSJLSg+OQ5rR16GDZAuDqAtx5s1SxiyDypvEyitUheq
+ WMdNNaqemtY4mWuAvix/bV7hYZhPqbCVFvgJoXh6TZkXpp93DZtzXI9he
+ +EfOP6/f0jRynxJpaVd5EMzTZlSnCGcwq12eWRUTsDw009aG/wVw7u7kB g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10507"; a="308833528"
+X-IronPort-AV: E=Sophos;i="5.95,203,1661842800"; d="scan'208";a="308833528"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Oct 2022 19:40:46 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10507"; a="773273980"
+X-IronPort-AV: E=Sophos;i="5.95,203,1661842800"; d="scan'208";a="773273980"
+Received: from kerendel-mobl1.amr.corp.intel.com (HELO [10.212.96.240])
+ ([10.212.96.240])
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Oct 2022 19:40:45 -0700
+Message-ID: <35f55696-c4c5-1f00-dc7e-b5c7dcf0a091@linux.intel.com>
+Date: Fri, 21 Oct 2022 12:09:29 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.2.2
+Subject: Re: [PATCH v2 1/9] ASoC: qdsp6: audioreach: topology use idr_alloc_u32
+Content-Language: en-US
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
+References: <20221021165207.13220-1-srinivas.kandagatla@linaro.org>
+ <20221021165207.13220-2-srinivas.kandagatla@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20221021165207.13220-2-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1666391253116882086-webhooks-bot@alsa-project.org>
-References: <1666391253116882086-webhooks-bot@alsa-project.org>
-Subject: Using snd_device_name_hint() with iface "card"
-Message-Id: <20221021222739.53DB4F80134@alsa1.perex.cz>
-Date: Sat, 22 Oct 2022 00:27:39 +0200 (CEST)
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ bgoswami@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,42 +90,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #277 was edited from MathisMARION:
 
-Hello,
 
-I have been experimenting with the `alsa` library, and I tried to use the `snd_device_name_hint()` function to print information about devices. It doesn't seem documented [here](https://www.alsa-project.org/alsa-doc/alsa-lib/group___control.html) so I looked up for examples online, and explored the source code as well.
+On 10/21/22 11:51, Srinivas Kandagatla wrote:
+> SubGraph and Module Instance ids take 32 bits, so use idr_alloc_u32
+> instead of idr_alloc to able to accomdate valid ranges.
 
-Looking at the [source code](https://github.com/alsa-project/alsa-lib/blob/master/src/control/namehint.c#L582), it seems like the function should be able to take `"card"` as a valid interface. However when I run this function, it returns `ENOENT`. I ran my program with `gdb` and found that [this call](https://github.com/alsa-project/alsa-lib/blob/master/src/control/namehint.c#L639) to `add_card()` was returning the error. `add_card` calls `snd_config_search` which loops through a list to find a match. In my case I found out that the list contained `"cards"` (with an `s`), while the code was searching for `"card"` so I am left wondering if this was done on purpose. Moreover I can get info about my sound cards using `/proc/asound/cards` (with an `s` again) so it makes me doubt even more...
+typo: accommodate.
 
-I am running Ubuntu 20.04.5, and have installed `libasound2-dev` version `1.2.2-2.1ubuntu2.5`. I can give more info about my setup if needed, I am just unsure what other info would help as of right now.
+Also worth checking https://www.kernel.org/doc/html/latest/core-api/idr.html
+"The IDR interface is deprecated; please use the XArray instead."
 
-Here's a simple program reproducing my issue:
-```c
-#include <alsa/asoundlib.h>
-#include <stdio.h>
 
-int main()
-{
-    void **hints;
-    int ret;
-
-    ret = snd_device_name_hint(-1, "card", &hints);
-    if (ret) {
-        printf("snd_device_name_hint: %s\n", snd_strerror(ret));
-        return EXIT_FAILURE;
-    }
-    snd_device_name_free_hint(hints);
-    return EXIT_SUCCESS;
-}
-```
-```
-snd_device_name_hint: No such file or directory
-```
-Putting `"cards"` instead results in `EINVAL`:
-```
-snd_device_name_hint: Invalid argument
-```
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/277
-Repository URL: https://github.com/alsa-project/alsa-lib
