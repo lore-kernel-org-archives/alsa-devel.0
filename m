@@ -4,70 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CFF8C43219
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Oct 2022 08:30:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 144DEC4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Oct 2022 08:30:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F1BC7550;
-	Fri, 21 Oct 2022 10:29:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F1BC7550
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4019EC02D;
+	Fri, 21 Oct 2022 10:29:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4019EC02D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666341015;
-	bh=hLKiG2wTuOC7g1ehnKFJJTr+6jZfq77W2nAL7uySnco=;
+	s=default; t=1666341045;
+	bh=2KW3U3zRVTfCXMPZIriKAb5lUjpvdieW6Hx3C7l0Pas=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oTZnnyMv4e+8QUDaCPP+wOePOIYZ1lUgdw1hLhYmwYk4No/z9U0URLHj4PGs57fMR
-	 8W3h20C3NNDxnlDN6Kpo90TXf49Ea8yynvNBbvg/XZD69j79mBX3q2ZMRV9cMLXSZE
-	 OqR7+3H0HIUoKs2rPr0ouwXjgPaFHNvhF/sNYbOI=
+	b=NEhazMOqHxN4VgTAyWR0tIc78JheLfNZ52XasvviAsQiiuQfdYwNkuCSWU0tgORkC
+	 iHLA1juE91ldnSaVUVY8wNvdJrOuJkWk0QveiBog6jJLL3k1rdCiBE2cG8Mla3YQlN
+	 gKTG5CUhXfXJ5T5xqkx8ZQZruwuuJzg9ZlMYa85Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 918DBF80570;
-	Fri, 21 Oct 2022 10:27:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E83F6F805A0;
+	Fri, 21 Oct 2022 10:28:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9A815F80553; Fri, 21 Oct 2022 10:27:49 +0200 (CEST)
+ id 65E63F8057A; Fri, 21 Oct 2022 10:27:55 +0200 (CEST)
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5C847F804FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 655E3F80118
  for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 10:27:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C847F804FF
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 655E3F80118
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
- header.b="XtLQvKnV"
-X-UUID: 70e8c73822034951b7522869dea50f34-20221021
+ header.b="lQDT8fpn"
+X-UUID: 80825ff3fe3e4479b3f0d4f1d986d58e-20221021
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
  s=dk; 
  h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=i+IuxvMnobEvIOSPfxLzitjAj/zyGghsWarqDqoyqPc=; 
- b=XtLQvKnVHnEwQwhRJCtr6GBb0sB12RJeeX6prpZu5CDMirzcqs+RPm8lNGpPg9rNwYXjN0Pi9RYrIj3I78f/wcc04CKjbZHwDR/BlL8hWoi51OCf13cP8fgEblijI1e3Us9/HHVuF0xzk4QARYaMVNdd+3RjNyAdtIru8DcePTA=;
+ bh=WfLCD14oCrpaOHJmtTx4nl+Clca33fLuO9izR3Jl+BI=; 
+ b=lQDT8fpnNbT3YI5mYFUdca+awstjxvqq0LPEfDXPg4gDv9SafbSQ0bin3lbJJCaCoPnBYor1Syv7GvftgNB89t/FvFsqgez3wDaU4lg1gAGyPmzMXkwQgFA/EE47qCALZA9ybVuyJ/46KJYY10/tCD/qn725JwNWQMeWm6YnHWU=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.12, REQID:08ad9e89-8990-4ae8-b8f3-1fdf9581106f, IP:0,
+X-CID-O-INFO: VERSION:1.1.12, REQID:7e1dd733-b257-4849-87cf-28efd0411987, IP:0,
  U
- RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
- release,TS:0
-X-CID-META: VersionHash:62cd327, CLOUDID:66f742c8-03ab-4171-989e-341ab5339257,
+ RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+ :release,TS:-5
+X-CID-META: VersionHash:62cd327, CLOUDID:5784ac6c-89d3-4bfa-baad-dc632a24bca3,
  B
  ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
  RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-X-UUID: 70e8c73822034951b7522869dea50f34-20221021
+X-UUID: 80825ff3fe3e4479b3f0d4f1d986d58e-20221021
 Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by
  mailgw02.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
  (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
- with ESMTP id 1514769329; Fri, 21 Oct 2022 16:27:26 +0800
+ with ESMTP id 256220592; Fri, 21 Oct 2022 16:27:26 +0800
 Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
  mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.792.15; Fri, 21 Oct 2022 16:27:25 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.792.15 via Frontend Transport; Fri, 21 Oct 2022 16:27:25 +0800
+ 15.2.792.15 via Frontend Transport; Fri, 21 Oct 2022 16:27:24 +0800
 From: Trevor Wu <trevor.wu@mediatek.com>
 To: <broonie@kernel.org>, <tiwai@suse.com>, <robh+dt@kernel.org>,
  <matthias.bgg@gmail.com>, <p.zabel@pengutronix.de>
-Subject: [PATCH v2 09/12] ASoC: mediatek: mt8188: add control for timing select
-Date: Fri, 21 Oct 2022 16:27:16 +0800
-Message-ID: <20221021082719.18325-10-trevor.wu@mediatek.com>
+Subject: [PATCH v2 06/12] ASoC: mediatek: mt8188: support pcmif in platform
+ driver
+Date: Fri, 21 Oct 2022 16:27:13 +0800
+Message-ID: <20221021082719.18325-7-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20221021082719.18325-1-trevor.wu@mediatek.com>
 References: <20221021082719.18325-1-trevor.wu@mediatek.com>
@@ -94,537 +95,386 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add mixer control for irq and memif timing selection.
+Add mt8188 pcmif dai driver support
 
 Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
 ---
- sound/soc/mediatek/mt8188/mt8188-afe-pcm.c | 506 +++++++++++++++++++++
- 1 file changed, 506 insertions(+)
+ sound/soc/mediatek/mt8188/mt8188-dai-pcm.c | 366 +++++++++++++++++++++
+ 1 file changed, 366 insertions(+)
+ create mode 100644 sound/soc/mediatek/mt8188/mt8188-dai-pcm.c
 
-diff --git a/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c b/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
-index 6bef980846fa..57a31330e5f4 100644
---- a/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
-@@ -1394,6 +1394,510 @@ static const struct snd_soc_dapm_route mt8188_memif_routes[] = {
- 	{"O041", "I169 Switch", "I169"},
- };
- 
-+static const char * const mt8188_afe_1x_en_sel_text[] = {
-+	"a1sys_a2sys", "a3sys", "a4sys",
+diff --git a/sound/soc/mediatek/mt8188/mt8188-dai-pcm.c b/sound/soc/mediatek/mt8188/mt8188-dai-pcm.c
+new file mode 100644
+index 000000000000..4168b74ae22d
+--- /dev/null
++++ b/sound/soc/mediatek/mt8188/mt8188-dai-pcm.c
+@@ -0,0 +1,366 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * MediaTek ALSA SoC Audio DAI PCM I/F Control
++ *
++ * Copyright (c) 2022 MediaTek Inc.
++ * Author: Bicycle Tsai <bicycle.tsai@mediatek.com>
++ *         Trevor Wu <trevor.wu@mediatek.com>
++ *         Chun-Chia Chiu <chun-chia.chiu@mediatek.com>
++ */
++
++#include <linux/regmap.h>
++#include <sound/pcm_params.h>
++#include "mt8188-afe-clk.h"
++#include "mt8188-afe-common.h"
++#include "mt8188-reg.h"
++
++enum {
++	MTK_DAI_PCM_FMT_I2S,
++	MTK_DAI_PCM_FMT_EIAJ,
++	MTK_DAI_PCM_FMT_MODEA,
++	MTK_DAI_PCM_FMT_MODEB,
 +};
 +
-+static const unsigned int mt8188_afe_1x_en_sel_values[] = {
-+	0, 1, 2,
++enum {
++	MTK_DAI_PCM_CLK_A1SYS,
++	MTK_DAI_PCM_CLK_A2SYS,
++	MTK_DAI_PCM_CLK_26M_48K,
++	MTK_DAI_PCM_CLK_26M_441K,
 +};
 +
-+static SOC_VALUE_ENUM_SINGLE_DECL(dl2_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL1, 18, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(dl3_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL1, 20, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(dl6_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL1, 22, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(dl7_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL1, 24, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(dl8_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL1, 26, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(dl10_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL1, 28, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(dl11_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL1, 30, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(ul1_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL1, 0, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(ul2_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL1, 2, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(ul3_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL1, 4, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(ul4_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL1, 6, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(ul5_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL1, 8, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(ul6_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL1, 10, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(ul8_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL1, 12, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(ul9_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL1, 14, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(ul10_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL1, 16, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(asys_irq1_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL6, 0, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(asys_irq2_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL6, 2, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(asys_irq3_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL6, 4, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(asys_irq4_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL6, 6, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(asys_irq5_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL6, 8, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(asys_irq6_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL6, 10, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(asys_irq7_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL6, 12, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(asys_irq8_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL6, 14, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(asys_irq9_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL6, 16, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(asys_irq10_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL6, 18, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(asys_irq11_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL6, 20, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(asys_irq12_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL6, 22, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(asys_irq13_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL6, 24, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(asys_irq14_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL6, 26, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(asys_irq15_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL6, 28, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(asys_irq16_1x_en_sel_enum,
-+				  A3_A4_TIMING_SEL6, 30, 0x3,
-+				  mt8188_afe_1x_en_sel_text,
-+				  mt8188_afe_1x_en_sel_values);
-+
-+static const char * const mt8188_afe_fs_timing_sel_text[] = {
-+	"asys",
-+	"etdmout1_1x_en",
-+	"etdmout2_1x_en",
-+	"etdmout3_1x_en",
-+	"etdmin1_1x_en",
-+	"etdmin2_1x_en",
-+	"etdmin1_nx_en",
-+	"etdmin2_nx_en",
++struct mtk_dai_pcm_rate {
++	unsigned int rate;
++	unsigned int reg_value;
 +};
 +
-+static const unsigned int mt8188_afe_fs_timing_sel_values[] = {
-+	0,
-+	MT8188_ETDM_OUT1_1X_EN,
-+	MT8188_ETDM_OUT2_1X_EN,
-+	MT8188_ETDM_OUT3_1X_EN,
-+	MT8188_ETDM_IN1_1X_EN,
-+	MT8188_ETDM_IN2_1X_EN,
-+	MT8188_ETDM_IN1_NX_EN,
-+	MT8188_ETDM_IN2_NX_EN,
++struct mtk_dai_pcmif_priv {
++	unsigned int slave_mode;
++	unsigned int lrck_inv;
++	unsigned int bck_inv;
++	unsigned int format;
 +};
 +
-+static SOC_VALUE_ENUM_SINGLE_DECL(dl2_fs_timing_sel_enum,
-+				  SND_SOC_NOPM, 0, 0,
-+				  mt8188_afe_fs_timing_sel_text,
-+				  mt8188_afe_fs_timing_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(dl3_fs_timing_sel_enum,
-+				  SND_SOC_NOPM, 0, 0,
-+				  mt8188_afe_fs_timing_sel_text,
-+				  mt8188_afe_fs_timing_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(dl6_fs_timing_sel_enum,
-+				  SND_SOC_NOPM, 0, 0,
-+				  mt8188_afe_fs_timing_sel_text,
-+				  mt8188_afe_fs_timing_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(dl8_fs_timing_sel_enum,
-+				  SND_SOC_NOPM, 0, 0,
-+				  mt8188_afe_fs_timing_sel_text,
-+				  mt8188_afe_fs_timing_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(dl11_fs_timing_sel_enum,
-+				  SND_SOC_NOPM, 0, 0,
-+				  mt8188_afe_fs_timing_sel_text,
-+				  mt8188_afe_fs_timing_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(ul2_fs_timing_sel_enum,
-+				  SND_SOC_NOPM, 0, 0,
-+				  mt8188_afe_fs_timing_sel_text,
-+				  mt8188_afe_fs_timing_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(ul4_fs_timing_sel_enum,
-+				  SND_SOC_NOPM, 0, 0,
-+				  mt8188_afe_fs_timing_sel_text,
-+				  mt8188_afe_fs_timing_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(ul5_fs_timing_sel_enum,
-+				  SND_SOC_NOPM, 0, 0,
-+				  mt8188_afe_fs_timing_sel_text,
-+				  mt8188_afe_fs_timing_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(ul9_fs_timing_sel_enum,
-+				  SND_SOC_NOPM, 0, 0,
-+				  mt8188_afe_fs_timing_sel_text,
-+				  mt8188_afe_fs_timing_sel_values);
-+static SOC_VALUE_ENUM_SINGLE_DECL(ul10_fs_timing_sel_enum,
-+				  SND_SOC_NOPM, 0, 0,
-+				  mt8188_afe_fs_timing_sel_text,
-+				  mt8188_afe_fs_timing_sel_values);
++static const struct mtk_dai_pcm_rate mtk_dai_pcm_rates[] = {
++	{ .rate = 8000, .reg_value = 0, },
++	{ .rate = 16000, .reg_value = 1, },
++	{ .rate = 32000, .reg_value = 2, },
++	{ .rate = 48000, .reg_value = 3, },
++	{ .rate = 11025, .reg_value = 1, },
++	{ .rate = 22050, .reg_value = 2, },
++	{ .rate = 44100, .reg_value = 3, },
++};
 +
-+static int mt8188_memif_1x_en_sel_put(struct snd_kcontrol *kcontrol,
-+				      struct snd_ctl_elem_value *ucontrol)
++static int mtk_dai_pcm_mode(unsigned int rate)
 +{
-+	struct snd_soc_component *component =
-+		snd_soc_kcontrol_component(kcontrol);
-+	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
-+	struct mt8188_afe_private *afe_priv = afe->platform_priv;
-+	struct mtk_dai_memif_priv *memif_priv;
-+	unsigned int dai_id = kcontrol->id.device;
-+	long val = ucontrol->value.integer.value[0];
-+	int ret = 0;
++	int i;
 +
-+	memif_priv = afe_priv->dai_priv[dai_id];
++	for (i = 0; i < ARRAY_SIZE(mtk_dai_pcm_rates); i++)
++		if (mtk_dai_pcm_rates[i].rate == rate)
++			return mtk_dai_pcm_rates[i].reg_value;
 +
-+	if (val == memif_priv->asys_timing_sel)
-+		return 0;
-+
-+	ret = snd_soc_put_enum_double(kcontrol, ucontrol);
-+
-+	memif_priv->asys_timing_sel = val;
-+
-+	return ret;
++	return -EINVAL;
 +}
 +
-+static int mt8188_asys_irq_1x_en_sel_put(struct snd_kcontrol *kcontrol,
-+					 struct snd_ctl_elem_value *ucontrol)
++static const struct snd_kcontrol_new mtk_dai_pcm_o000_mix[] = {
++	SOC_DAPM_SINGLE_AUTODISABLE("I000 Switch", AFE_CONN0, 0, 1, 0),
++	SOC_DAPM_SINGLE_AUTODISABLE("I070 Switch", AFE_CONN0_2, 6, 1, 0),
++};
++
++static const struct snd_kcontrol_new mtk_dai_pcm_o001_mix[] = {
++	SOC_DAPM_SINGLE_AUTODISABLE("I001 Switch", AFE_CONN1, 1, 1, 0),
++	SOC_DAPM_SINGLE_AUTODISABLE("I071 Switch", AFE_CONN1_2, 7, 1, 0),
++};
++
++static const struct snd_soc_dapm_widget mtk_dai_pcm_widgets[] = {
++	SND_SOC_DAPM_MIXER("I002", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("I003", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("O000", SND_SOC_NOPM, 0, 0,
++			   mtk_dai_pcm_o000_mix,
++			   ARRAY_SIZE(mtk_dai_pcm_o000_mix)),
++	SND_SOC_DAPM_MIXER("O001", SND_SOC_NOPM, 0, 0,
++			   mtk_dai_pcm_o001_mix,
++			   ARRAY_SIZE(mtk_dai_pcm_o001_mix)),
++
++	SND_SOC_DAPM_SUPPLY("PCM_1_EN", PCM_INTF_CON1, 0, 0, NULL, 0),
++
++	SND_SOC_DAPM_INPUT("PCM1_INPUT"),
++	SND_SOC_DAPM_OUTPUT("PCM1_OUTPUT"),
++
++	SND_SOC_DAPM_CLOCK_SUPPLY("aud_asrc11"),
++	SND_SOC_DAPM_CLOCK_SUPPLY("aud_asrc12"),
++	SND_SOC_DAPM_CLOCK_SUPPLY("aud_pcmif"),
++};
++
++static const struct snd_soc_dapm_route mtk_dai_pcm_routes[] = {
++	{"I002", NULL, "PCM1 Capture"},
++	{"I003", NULL, "PCM1 Capture"},
++
++	{"O000", "I000 Switch", "I000"},
++	{"O001", "I001 Switch", "I001"},
++
++	{"O000", "I070 Switch", "I070"},
++	{"O001", "I071 Switch", "I071"},
++
++	{"PCM1 Playback", NULL, "O000"},
++	{"PCM1 Playback", NULL, "O001"},
++
++	{"PCM1 Playback", NULL, "PCM_1_EN"},
++	{"PCM1 Playback", NULL, "aud_asrc12"},
++	{"PCM1 Playback", NULL, "aud_pcmif"},
++
++	{"PCM1 Capture", NULL, "PCM_1_EN"},
++	{"PCM1 Capture", NULL, "aud_asrc11"},
++	{"PCM1 Capture", NULL, "aud_pcmif"},
++
++	{"PCM1_OUTPUT", NULL, "PCM1 Playback"},
++	{"PCM1 Capture", NULL, "PCM1_INPUT"},
++};
++
++static int mtk_dai_pcm_configure(struct snd_pcm_substream *substream,
++				 struct snd_soc_dai *dai)
 +{
-+	struct snd_soc_component *component =
-+		snd_soc_kcontrol_component(kcontrol);
-+	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct snd_pcm_runtime * const runtime = substream->runtime;
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
 +	struct mt8188_afe_private *afe_priv = afe->platform_priv;
-+	unsigned int id = kcontrol->id.device;
-+	long val = ucontrol->value.integer.value[0];
-+	int ret = 0;
++	struct mtk_dai_pcmif_priv *pcmif_priv = NULL;
++	unsigned int slave_mode;
++	unsigned int lrck_inv;
++	unsigned int bck_inv;
++	unsigned int fmt;
++	unsigned int bit_width = dai->sample_bits;
++	unsigned int val = 0;
++	unsigned int mask = 0;
++	int fs = 0;
++	int mode = 0;
 +
-+	if (val == afe_priv->irq_priv[id].asys_timing_sel)
-+		return 0;
++	if (dai->id < 0)
++		return -EINVAL;
 +
-+	ret = snd_soc_put_enum_double(kcontrol, ucontrol);
++	pcmif_priv = afe_priv->dai_priv[dai->id];
++	slave_mode = pcmif_priv->slave_mode;
++	lrck_inv = pcmif_priv->lrck_inv;
++	bck_inv = pcmif_priv->bck_inv;
++	fmt = pcmif_priv->format;
 +
-+	afe_priv->irq_priv[id].asys_timing_sel = val;
++	/* sync freq mode */
++	fs = mt8188_afe_fs_timing(runtime->rate);
++	if (fs < 0)
++		return -EINVAL;
 +
-+	return ret;
-+}
++	val |= FIELD_PREP(PCM_INTF_CON2_SYNC_FREQ_MODE_MASK, fs);
++	mask |= PCM_INTF_CON2_SYNC_FREQ_MODE_MASK;
 +
-+static int mt8188_memif_fs_timing_sel_get(struct snd_kcontrol *kcontrol,
-+					  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
-+	struct mt8188_afe_private *afe_priv = afe->platform_priv;
-+	struct mtk_dai_memif_priv *memif_priv;
-+	unsigned int dai_id = kcontrol->id.device;
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
++	/* clk domain sel */
++	if (runtime->rate % 8000)
++		val |= FIELD_PREP(PCM_INTF_CON2_CLK_DOMAIN_SEL_MASK,
++				  MTK_DAI_PCM_CLK_26M_441K);
++	else
++		val |= FIELD_PREP(PCM_INTF_CON2_CLK_DOMAIN_SEL_MASK,
++				  MTK_DAI_PCM_CLK_26M_48K);
++	mask |= PCM_INTF_CON2_CLK_DOMAIN_SEL_MASK;
 +
-+	memif_priv = afe_priv->dai_priv[dai_id];
++	regmap_update_bits(afe->regmap, PCM_INTF_CON2, mask, val);
 +
-+	ucontrol->value.enumerated.item[0] =
-+		snd_soc_enum_val_to_item(e, memif_priv->fs_timing);
++	val = 0;
++	mask = 0;
++
++	/* pcm mode */
++	mode = mtk_dai_pcm_mode(runtime->rate);
++	if (mode < 0)
++		return -EINVAL;
++
++	val |= FIELD_PREP(PCM_INTF_CON1_PCM_MODE_MASK, mode);
++	mask |= PCM_INTF_CON1_PCM_MODE_MASK;
++
++	/* pcm format */
++	val |= FIELD_PREP(PCM_INTF_CON1_PCM_FMT_MASK, fmt);
++	mask |= PCM_INTF_CON1_PCM_FMT_MASK;
++
++	/* pcm sync length */
++	if (fmt == MTK_DAI_PCM_FMT_MODEA ||
++	    fmt == MTK_DAI_PCM_FMT_MODEB)
++		val |= FIELD_PREP(PCM_INTF_CON1_SYNC_LENGTH_MASK, 1);
++	else
++		val |= FIELD_PREP(PCM_INTF_CON1_SYNC_LENGTH_MASK, bit_width);
++	mask |= PCM_INTF_CON1_SYNC_LENGTH_MASK;
++
++	/* pcm bits, word length */
++	if (bit_width > 16) {
++		val |= PCM_INTF_CON1_PCM_24BIT;
++		val |= PCM_INTF_CON1_PCM_WLEN_64BCK;
++	} else {
++		val |= PCM_INTF_CON1_PCM_16BIT;
++		val |= PCM_INTF_CON1_PCM_WLEN_32BCK;
++	}
++	mask |= PCM_INTF_CON1_PCM_BIT_MASK;
++	mask |= PCM_INTF_CON1_PCM_WLEN_MASK;
++
++	/* master/slave */
++	if (!slave_mode) {
++		val |= PCM_INTF_CON1_PCM_MASTER;
++
++		if (lrck_inv)
++			val |= PCM_INTF_CON1_SYNC_OUT_INV;
++		if (bck_inv)
++			val |= PCM_INTF_CON1_BCLK_OUT_INV;
++		mask |= PCM_INTF_CON1_CLK_OUT_INV_MASK;
++	} else {
++		val |= PCM_INTF_CON1_PCM_SLAVE;
++
++		if (lrck_inv)
++			val |= PCM_INTF_CON1_SYNC_IN_INV;
++		if (bck_inv)
++			val |= PCM_INTF_CON1_BCLK_IN_INV;
++		mask |= PCM_INTF_CON1_CLK_IN_INV_MASK;
++
++		// TODO: add asrc setting for slave mode
++	}
++	mask |= PCM_INTF_CON1_PCM_M_S_MASK;
++
++	regmap_update_bits(afe->regmap, PCM_INTF_CON1, mask, val);
 +
 +	return 0;
 +}
 +
-+static int mt8188_memif_fs_timing_sel_put(struct snd_kcontrol *kcontrol,
-+					  struct snd_ctl_elem_value *ucontrol)
++/* dai ops */
++static int mtk_dai_pcm_prepare(struct snd_pcm_substream *substream,
++			       struct snd_soc_dai *dai)
 +{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
-+	struct mt8188_afe_private *afe_priv = afe->platform_priv;
-+	struct mtk_dai_memif_priv *memif_priv;
-+	unsigned int dai_id = kcontrol->id.device;
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	unsigned int *item = ucontrol->value.enumerated.item;
-+	unsigned int prev_item = 0;
-+
-+	if (item[0] >= e->items)
-+		return -EINVAL;
-+
-+	memif_priv = afe_priv->dai_priv[dai_id];
-+
-+	prev_item = snd_soc_enum_val_to_item(e, memif_priv->fs_timing);
-+
-+	if (item[0] == prev_item)
++	if (dai->playback_widget->active || dai->capture_widget->active)
 +		return 0;
 +
-+	memif_priv->fs_timing = snd_soc_enum_item_to_val(e, item[0]);
-+
-+	return 1;
++	return mtk_dai_pcm_configure(substream, dai);
 +}
 +
-+static const struct snd_kcontrol_new mt8188_memif_controls[] = {
-+	MT8188_SOC_ENUM_EXT("dl2_1x_en_sel",
-+			    dl2_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_memif_1x_en_sel_put,
-+			    MT8188_AFE_MEMIF_DL2),
-+	MT8188_SOC_ENUM_EXT("dl3_1x_en_sel",
-+			    dl3_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_memif_1x_en_sel_put,
-+			    MT8188_AFE_MEMIF_DL3),
-+	MT8188_SOC_ENUM_EXT("dl6_1x_en_sel",
-+			    dl6_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_memif_1x_en_sel_put,
-+			    MT8188_AFE_MEMIF_DL6),
-+	MT8188_SOC_ENUM_EXT("dl7_1x_en_sel",
-+			    dl7_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_memif_1x_en_sel_put,
-+			    MT8188_AFE_MEMIF_DL7),
-+	MT8188_SOC_ENUM_EXT("dl8_1x_en_sel",
-+			    dl8_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_memif_1x_en_sel_put,
-+			    MT8188_AFE_MEMIF_DL8),
-+	MT8188_SOC_ENUM_EXT("dl10_1x_en_sel",
-+			    dl10_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_memif_1x_en_sel_put,
-+			    MT8188_AFE_MEMIF_DL10),
-+	MT8188_SOC_ENUM_EXT("dl11_1x_en_sel",
-+			    dl11_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_memif_1x_en_sel_put,
-+			    MT8188_AFE_MEMIF_DL11),
-+	MT8188_SOC_ENUM_EXT("ul1_1x_en_sel",
-+			    ul1_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_memif_1x_en_sel_put,
-+			    MT8188_AFE_MEMIF_UL1),
-+	MT8188_SOC_ENUM_EXT("ul2_1x_en_sel",
-+			    ul2_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_memif_1x_en_sel_put,
-+			    MT8188_AFE_MEMIF_UL2),
-+	MT8188_SOC_ENUM_EXT("ul3_1x_en_sel",
-+			    ul3_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_memif_1x_en_sel_put,
-+			    MT8188_AFE_MEMIF_UL3),
-+	MT8188_SOC_ENUM_EXT("ul4_1x_en_sel",
-+			    ul4_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_memif_1x_en_sel_put,
-+			    MT8188_AFE_MEMIF_UL4),
-+	MT8188_SOC_ENUM_EXT("ul5_1x_en_sel",
-+			    ul5_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_memif_1x_en_sel_put,
-+			    MT8188_AFE_MEMIF_UL5),
-+	MT8188_SOC_ENUM_EXT("ul6_1x_en_sel",
-+			    ul6_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_memif_1x_en_sel_put,
-+			    MT8188_AFE_MEMIF_UL6),
-+	MT8188_SOC_ENUM_EXT("ul8_1x_en_sel",
-+			    ul8_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_memif_1x_en_sel_put,
-+			    MT8188_AFE_MEMIF_UL8),
-+	MT8188_SOC_ENUM_EXT("ul9_1x_en_sel",
-+			    ul9_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_memif_1x_en_sel_put,
-+			    MT8188_AFE_MEMIF_UL9),
-+	MT8188_SOC_ENUM_EXT("ul10_1x_en_sel",
-+			    ul10_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_memif_1x_en_sel_put,
-+			    MT8188_AFE_MEMIF_UL10),
-+	MT8188_SOC_ENUM_EXT("asys_irq1_1x_en_sel",
-+			    asys_irq1_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_asys_irq_1x_en_sel_put,
-+			    MT8188_AFE_IRQ_13),
-+	MT8188_SOC_ENUM_EXT("asys_irq2_1x_en_sel",
-+			    asys_irq2_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_asys_irq_1x_en_sel_put,
-+			    MT8188_AFE_IRQ_14),
-+	MT8188_SOC_ENUM_EXT("asys_irq3_1x_en_sel",
-+			    asys_irq3_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_asys_irq_1x_en_sel_put,
-+			    MT8188_AFE_IRQ_15),
-+	MT8188_SOC_ENUM_EXT("asys_irq4_1x_en_sel",
-+			    asys_irq4_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_asys_irq_1x_en_sel_put,
-+			    MT8188_AFE_IRQ_16),
-+	MT8188_SOC_ENUM_EXT("asys_irq5_1x_en_sel",
-+			    asys_irq5_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_asys_irq_1x_en_sel_put,
-+			    MT8188_AFE_IRQ_17),
-+	MT8188_SOC_ENUM_EXT("asys_irq6_1x_en_sel",
-+			    asys_irq6_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_asys_irq_1x_en_sel_put,
-+			    MT8188_AFE_IRQ_18),
-+	MT8188_SOC_ENUM_EXT("asys_irq7_1x_en_sel",
-+			    asys_irq7_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_asys_irq_1x_en_sel_put,
-+			    MT8188_AFE_IRQ_19),
-+	MT8188_SOC_ENUM_EXT("asys_irq8_1x_en_sel",
-+			    asys_irq8_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_asys_irq_1x_en_sel_put,
-+			    MT8188_AFE_IRQ_20),
-+	MT8188_SOC_ENUM_EXT("asys_irq9_1x_en_sel",
-+			    asys_irq9_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_asys_irq_1x_en_sel_put,
-+			    MT8188_AFE_IRQ_21),
-+	MT8188_SOC_ENUM_EXT("asys_irq10_1x_en_sel",
-+			    asys_irq10_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_asys_irq_1x_en_sel_put,
-+			    MT8188_AFE_IRQ_22),
-+	MT8188_SOC_ENUM_EXT("asys_irq11_1x_en_sel",
-+			    asys_irq11_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_asys_irq_1x_en_sel_put,
-+			    MT8188_AFE_IRQ_23),
-+	MT8188_SOC_ENUM_EXT("asys_irq12_1x_en_sel",
-+			    asys_irq12_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_asys_irq_1x_en_sel_put,
-+			    MT8188_AFE_IRQ_24),
-+	MT8188_SOC_ENUM_EXT("asys_irq13_1x_en_sel",
-+			    asys_irq13_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_asys_irq_1x_en_sel_put,
-+			    MT8188_AFE_IRQ_25),
-+	MT8188_SOC_ENUM_EXT("asys_irq14_1x_en_sel",
-+			    asys_irq14_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_asys_irq_1x_en_sel_put,
-+			    MT8188_AFE_IRQ_26),
-+	MT8188_SOC_ENUM_EXT("asys_irq15_1x_en_sel",
-+			    asys_irq15_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_asys_irq_1x_en_sel_put,
-+			    MT8188_AFE_IRQ_27),
-+	MT8188_SOC_ENUM_EXT("asys_irq16_1x_en_sel",
-+			    asys_irq16_1x_en_sel_enum,
-+			    snd_soc_get_enum_double,
-+			    mt8188_asys_irq_1x_en_sel_put,
-+			    MT8188_AFE_IRQ_28),
-+	MT8188_SOC_ENUM_EXT("dl2_fs_timing_sel",
-+			    dl2_fs_timing_sel_enum,
-+			    mt8188_memif_fs_timing_sel_get,
-+			    mt8188_memif_fs_timing_sel_put,
-+			    MT8188_AFE_MEMIF_DL2),
-+	MT8188_SOC_ENUM_EXT("dl3_fs_timing_sel",
-+			    dl3_fs_timing_sel_enum,
-+			    mt8188_memif_fs_timing_sel_get,
-+			    mt8188_memif_fs_timing_sel_put,
-+			    MT8188_AFE_MEMIF_DL3),
-+	MT8188_SOC_ENUM_EXT("dl6_fs_timing_sel",
-+			    dl6_fs_timing_sel_enum,
-+			    mt8188_memif_fs_timing_sel_get,
-+			    mt8188_memif_fs_timing_sel_put,
-+			    MT8188_AFE_MEMIF_DL6),
-+	MT8188_SOC_ENUM_EXT("dl8_fs_timing_sel",
-+			    dl8_fs_timing_sel_enum,
-+			    mt8188_memif_fs_timing_sel_get,
-+			    mt8188_memif_fs_timing_sel_put,
-+			    MT8188_AFE_MEMIF_DL8),
-+	MT8188_SOC_ENUM_EXT("dl11_fs_timing_sel",
-+			    dl11_fs_timing_sel_enum,
-+			    mt8188_memif_fs_timing_sel_get,
-+			    mt8188_memif_fs_timing_sel_put,
-+			    MT8188_AFE_MEMIF_DL11),
-+	MT8188_SOC_ENUM_EXT("ul2_fs_timing_sel",
-+			    ul2_fs_timing_sel_enum,
-+			    mt8188_memif_fs_timing_sel_get,
-+			    mt8188_memif_fs_timing_sel_put,
-+			    MT8188_AFE_MEMIF_UL2),
-+	MT8188_SOC_ENUM_EXT("ul4_fs_timing_sel",
-+			    ul4_fs_timing_sel_enum,
-+			    mt8188_memif_fs_timing_sel_get,
-+			    mt8188_memif_fs_timing_sel_put,
-+			    MT8188_AFE_MEMIF_UL4),
-+	MT8188_SOC_ENUM_EXT("ul5_fs_timing_sel",
-+			    ul5_fs_timing_sel_enum,
-+			    mt8188_memif_fs_timing_sel_get,
-+			    mt8188_memif_fs_timing_sel_put,
-+			    MT8188_AFE_MEMIF_UL5),
-+	MT8188_SOC_ENUM_EXT("ul9_fs_timing_sel",
-+			    ul9_fs_timing_sel_enum,
-+			    mt8188_memif_fs_timing_sel_get,
-+			    mt8188_memif_fs_timing_sel_put,
-+			    MT8188_AFE_MEMIF_UL9),
-+	MT8188_SOC_ENUM_EXT("ul10_fs_timing_sel",
-+			    ul10_fs_timing_sel_enum,
-+			    mt8188_memif_fs_timing_sel_get,
-+			    mt8188_memif_fs_timing_sel_put,
-+			    MT8188_AFE_MEMIF_UL10),
++static int mtk_dai_pcm_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
++{
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
++	struct mt8188_afe_private *afe_priv = afe->platform_priv;
++	struct mtk_dai_pcmif_priv *pcmif_priv = NULL;
++
++	dev_dbg(dai->dev, "%s fmt 0x%x\n", __func__, fmt);
++
++	if (dai->id < 0)
++		return -EINVAL;
++
++	pcmif_priv = afe_priv->dai_priv[dai->id];
++
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		pcmif_priv->format = MTK_DAI_PCM_FMT_I2S;
++		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		pcmif_priv->format = MTK_DAI_PCM_FMT_MODEA;
++		break;
++	case SND_SOC_DAIFMT_DSP_B:
++		pcmif_priv->format = MTK_DAI_PCM_FMT_MODEB;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		pcmif_priv->bck_inv = 0;
++		pcmif_priv->lrck_inv = 0;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		pcmif_priv->bck_inv = 0;
++		pcmif_priv->lrck_inv = 1;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		pcmif_priv->bck_inv = 1;
++		pcmif_priv->lrck_inv = 0;
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		pcmif_priv->bck_inv = 1;
++		pcmif_priv->lrck_inv = 1;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_BC_FC:
++		pcmif_priv->slave_mode = 1;
++		break;
++	case SND_SOC_DAIFMT_BP_FP:
++		pcmif_priv->slave_mode = 0;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops mtk_dai_pcm_ops = {
++	.prepare	= mtk_dai_pcm_prepare,
++	.set_fmt	= mtk_dai_pcm_set_fmt,
 +};
 +
- static const struct snd_soc_component_driver mt8188_afe_pcm_dai_component = {
- 	.name = "mt8188-afe-pcm-dai",
- };
-@@ -2583,6 +3087,8 @@ static int mt8188_dai_memif_register(struct mtk_base_afe *afe)
- 	dai->num_dapm_widgets = ARRAY_SIZE(mt8188_memif_widgets);
- 	dai->dapm_routes = mt8188_memif_routes;
- 	dai->num_dapm_routes = ARRAY_SIZE(mt8188_memif_routes);
-+	dai->controls = mt8188_memif_controls;
-+	dai->num_controls = ARRAY_SIZE(mt8188_memif_controls);
- 
- 	return init_memif_priv_data(afe);
- }
++/* dai driver */
++#define MTK_PCM_RATES (SNDRV_PCM_RATE_8000_48000)
++
++#define MTK_PCM_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
++			 SNDRV_PCM_FMTBIT_S24_LE |\
++			 SNDRV_PCM_FMTBIT_S32_LE)
++
++static struct snd_soc_dai_driver mtk_dai_pcm_driver[] = {
++	{
++		.name = "PCM1",
++		.id = MT8188_AFE_IO_PCM,
++		.playback = {
++			.stream_name = "PCM1 Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = MTK_PCM_RATES,
++			.formats = MTK_PCM_FORMATS,
++		},
++		.capture = {
++			.stream_name = "PCM1 Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = MTK_PCM_RATES,
++			.formats = MTK_PCM_FORMATS,
++		},
++		.ops = &mtk_dai_pcm_ops,
++		.symmetric_rate = 1,
++		.symmetric_sample_bits = 1,
++	},
++};
++
++static int init_pcmif_priv_data(struct mtk_base_afe *afe)
++{
++	struct mt8188_afe_private *afe_priv = afe->platform_priv;
++	struct mtk_dai_pcmif_priv *pcmif_priv;
++
++	pcmif_priv = devm_kzalloc(afe->dev, sizeof(struct mtk_dai_pcmif_priv),
++				  GFP_KERNEL);
++	if (!pcmif_priv)
++		return -ENOMEM;
++
++	afe_priv->dai_priv[MT8188_AFE_IO_PCM] = pcmif_priv;
++	return 0;
++}
++
++int mt8188_dai_pcm_register(struct mtk_base_afe *afe)
++{
++	struct mtk_base_afe_dai *dai;
++
++	dai = devm_kzalloc(afe->dev, sizeof(*dai), GFP_KERNEL);
++	if (!dai)
++		return -ENOMEM;
++
++	list_add(&dai->list, &afe->sub_dais);
++
++	dai->dai_drivers = mtk_dai_pcm_driver;
++	dai->num_dai_drivers = ARRAY_SIZE(mtk_dai_pcm_driver);
++
++	dai->dapm_widgets = mtk_dai_pcm_widgets;
++	dai->num_dapm_widgets = ARRAY_SIZE(mtk_dai_pcm_widgets);
++	dai->dapm_routes = mtk_dai_pcm_routes;
++	dai->num_dapm_routes = ARRAY_SIZE(mtk_dai_pcm_routes);
++
++	return init_pcmif_priv_data(afe);
++}
 -- 
 2.18.0
 
