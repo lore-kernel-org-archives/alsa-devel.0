@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C1D6C38A2D
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Oct 2022 22:26:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A9CCC38A2D
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Oct 2022 22:28:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E456F9A2B;
-	Sat, 22 Oct 2022 00:25:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E456F9A2B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B27A50BD;
+	Sat, 22 Oct 2022 00:27:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B27A50BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666391177;
-	bh=rkeoNosBtpqJBt0/QT+qQBqro98gOopdOxRj+TGEhvc=;
+	s=default; t=1666391311;
+	bh=RMZeO645L3PBHV1YiHLs0v6q9zvSW/uzhW0pcAGoooQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OowVES7bmzx9UbSFmlx4jQ3MEXqOQ9L74X/ztyKd4r9H4Hna+3634MsGZ+a5q2l8t
-	 3F4FC+BXtSAcfqY0cb5cGxpJkXUcD6q/eJnsljIVLEzfpdm5saHwGvDSxkqy46EYFr
-	 Hrti5knkNPcLa62dGANCUCxlG6vKODcZhWAZDfmM=
+	b=b6Qa7a+7ecqsCK2YfvgypCbQK1FEzSQdArFWYYmWKhYvcUazloZOXkLF5Hgfnmho/
+	 aZYENofv2gwxuVvzJsfrH7DY1xhXNN8SDnfGE65BqzZQiUZ4j1qhxzCYqlqYIzFytP
+	 kNrKIKXzH8x2oKjVTGBbH/hlhEIcijz3vpJYiFcA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75931F80134;
-	Sat, 22 Oct 2022 00:25:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C3BDDF80134;
+	Sat, 22 Oct 2022 00:27:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 616FDF80118; Sat, 22 Oct 2022 00:25:24 +0200 (CEST)
+ id 53DB4F80134; Sat, 22 Oct 2022 00:27:39 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 5FCB8F80118
- for <alsa-devel@alsa-project.org>; Sat, 22 Oct 2022 00:25:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FCB8F80118
+ by alsa1.perex.cz (Postfix) with ESMTP id 4FBBAF800B8
+ for <alsa-devel@alsa-project.org>; Sat, 22 Oct 2022 00:27:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FBBAF800B8
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1666391117712142944-webhooks-bot@alsa-project.org>
-References: <1666391117712142944-webhooks-bot@alsa-project.org>
+In-Reply-To: <1666391253116882086-webhooks-bot@alsa-project.org>
+References: <1666391253116882086-webhooks-bot@alsa-project.org>
 Subject: Using snd_device_name_hint() with iface "card"
-Message-Id: <20221021222524.616FDF80118@alsa1.perex.cz>
-Date: Sat, 22 Oct 2022 00:25:24 +0200 (CEST)
+Message-Id: <20221021222739.53DB4F80134@alsa1.perex.cz>
+Date: Sat, 22 Oct 2022 00:27:39 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,7 +83,13 @@ int main()
     snd_device_name_free_hint(hints);
     return EXIT_SUCCESS;
 }
-
+```
+```
+snd_device_name_hint: No such file or directory
+```
+Putting `"cards"` instead results in `EINVAL`:
+```
+snd_device_name_hint: Invalid argument
 ```
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/277
