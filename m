@@ -4,75 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23F66C38A2D
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 14:47:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E693C38A2D
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 14:47:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4CCC574DE;
-	Mon, 24 Oct 2022 16:46:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CCC574DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38FB16037;
+	Mon, 24 Oct 2022 16:46:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38FB16037
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666622821;
-	bh=sxTNdRwmjEP/pMCeodGsSe/zixhxPFWA5F8S3yYJ3NU=;
-	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Tlpmz5ein6akUQqUjerpfN03mUfvNNck3XkOQ4/GIcC3MZgkoVFY+pD935pqTwwuJ
-	 tVjNLqjsLv9GfUZD+N/R6QmVo4hK2gg6xim2cnkPNYAI9+pe61FbqiLYmHTcffBNPV
-	 J1hDWFVxltJmkwu9TCjyScF40NW+NxBZk0oolJYk=
+	s=default; t=1666622843;
+	bh=dg+igT/kH5vNLile/55ugMghQ6bHOl5tdBoCQSBXYac=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=mKYNPC9vFuScWCdLiKbCSbWoTkKIkEUUuIprOq9s0ZE2hcDPFJrQ4QoiQGDv1QnIX
+	 J3z5+HPoST0POesXoDFsWEYwkLq03iTz7U2Ic2Xh49Gn15BlHooveelDobZ08vvlv8
+	 1X2+U4vUXFhLDOWZbO7il9P7++9LfCJ5bOY8YrQM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C84AEF80566;
-	Mon, 24 Oct 2022 16:44:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57F0AF80568;
+	Mon, 24 Oct 2022 16:44:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BF85EF804D8; Fri, 21 Oct 2022 01:12:24 +0200 (CEST)
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com
- [IPv6:2607:f8b0:4864:20::233])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 7EC36F8021D; Fri, 21 Oct 2022 08:44:53 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2CC22F800EC
- for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 01:12:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CC22F800EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15B14F800B5
+ for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 08:44:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15B14F800B5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="clFcBWW/"
-Received: by mail-oi1-x233.google.com with SMTP id o64so1317384oib.12
- for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2022 16:12:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
- :date:message-id:reply-to;
- bh=dtL8+LXCehGTZZ75CgUriMF+cyfRFTMUhkI4T0YkT08=;
- b=clFcBWW/algdeSfKgoxcdST+MQGEUKyeaAdcflPoK+UxyfZ+NOVpI6+aEYqnlsCYzK
- JcPs7/ZFMxnyp2wfpbdmTkyRXgTadqZvlFEV7Ph+KxklVMxm9XcDtnqNsGZn9B6TaX0w
- S3zhUPIDypBD42ebm+ZRNGgqlo/4eNadep8Cnh5jDiXP8A8v4gpEHhpfsn2FI1uS1Q/o
- gqdciRAh4YowHlLG8RhsxMzlmfHtf37AHilw2NICxNlplGEP4mj/yEwAp7GbtKpc48SC
- trTaHanw4SwSS9/IsOSB6rHaiiLDL5BTVtF6WL+npdAY4Sdadpu81UPqsqGsvdSvvq7K
- f+nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=to:subject:message-id:date:from:mime-version:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=dtL8+LXCehGTZZ75CgUriMF+cyfRFTMUhkI4T0YkT08=;
- b=ewFviL0nG7ywFnHAumYk02yXfGHdeYsEI62eO0GhrFs1dTIvKqt2qlXNppZSYsHLO+
- 6cLHaeI7NlRJbaqzSxpt09YvSFhy3hRdtQsTIlF1510tdJnxJqGWUGT3Gg1rD1Po6kAM
- jo9ZBL6J8+IGknviI5n4aO6SF1cHRHpiUn+UBf9Ot9UGZOIGXrTKG+OJEkmPAgsz3/CR
- pBTKrOszyhL2+sO2hK8kuTRpXXrh7tryt6sFKwOAxsrXwGS8jbkzNPm79os4XPJ3mChR
- afBXr7eaAlhISmZolu7FDok4dC+Fua1NFU0WrADImbhmkXxWA6TjrDk7gwCpqjVyKTAm
- xsmA==
-X-Gm-Message-State: ACrzQf2mypSzHo/RHAUtBlU3Cr2bg6ju4adiMjAEHAdE2Nzgr5Wcd+XK
- kiLue7FORhyV4FGb8pnSEU23jT/rq99TT2q+tCsr6zXBaVnBVQ==
-X-Google-Smtp-Source: AMsMyM6NvC86qTlR+yuzjXxCU1K78hLldQK5t2ffLPWSsmCOTi6sxDu4I/OGVAI0uVgP7dhjQNW0OGa/cpRQiIMhTj0=
-X-Received: by 2002:a05:6808:140b:b0:355:1cdb:b074 with SMTP id
- w11-20020a056808140b00b003551cdbb074mr9302207oiv.122.1666307538656; Thu, 20
- Oct 2022 16:12:18 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="AGeMyJeg"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 3C70F61DD2;
+ Fri, 21 Oct 2022 06:44:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBC4FC433D7;
+ Fri, 21 Oct 2022 06:44:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1666334687;
+ bh=dg+igT/kH5vNLile/55ugMghQ6bHOl5tdBoCQSBXYac=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=AGeMyJeg87UlxSe5k2XIw2g27XDq3ZEoGhJylOgn/Pc+deCE0ymZDPF3pyhTXbf62
+ BkfHG3/Jo3vHInZD0+8lFJ/J32KahCu6OAm/wJgPFxd9F/HemwazCjH13UA8hJ60mM
+ b7/YE//cHLp3hSWuNDGNIrsZr73GEPOrbsw5jMJf/PXtSzJrG6IggCpuVSgIjAuv7T
+ mkRnUX2cWBckGEDpW/KQuEh4jbsZI+7HVNHZJlkU6jCmsTyk4td814k6t0S+O3WWSh
+ 8xaaW5CBclarLFx8oWJMBlgIHD63a03DVy9s1ojqs8YIrBNztmRJ02YHmW3QFs0F8Q
+ AkwK4fKzudFJw==
+Date: Fri, 21 Oct 2022 08:44:44 +0200
+From: Wolfram Sang <wsa@kernel.org>
+To: Adam Borowski <kilobyte@angband.pl>
+Subject: Re: [PATCH 0/6] a pile of randconfig fixes
+Message-ID: <Y1I/3KPxSI1voRHh@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+ Adam Borowski <kilobyte@angband.pl>, linux-kernel@lists.debian.org,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ linux-mediatek@lists.infradead.org, alsa-devel@alsa-project.org,
+ David Howells <dhowells@redhat.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S. Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
+ linux-crypto@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ Yong Zhi <yong.zhi@intel.com>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Bingbu Cao <bingbu.cao@intel.com>, Dan Scally <djrscally@gmail.com>,
+ Tianshu Qiu <tian.shu.qiu@intel.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ linux-media@vger.kernel.org, Khalil Blaiech <kblaiech@nvidia.com>,
+ Asmaa Mnebhi <asmaa@nvidia.com>, linux-i2c@vger.kernel.org,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Brent Lu <brent.lu@intel.com>
+References: <20221020221749.33746-1-kilobyte@angband.pl>
 MIME-Version: 1.0
-From: Robert Wu <robertwu@google.com>
-Date: Thu, 20 Oct 2022 16:12:07 -0700
-Message-ID: <CAF+ETCVhkmhUK0XkHvPd5LzwVf9nvcuXEaayd50itF1DJ5JMBQ@mail.gmail.com>
-Subject: Disconnecting certain USB interfaces causes the sound card to go away
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ASNnxeSggHlth0r3"
+Content-Disposition: inline
+In-Reply-To: <20221020221749.33746-1-kilobyte@angband.pl>
 X-Mailman-Approved-At: Mon, 24 Oct 2022 16:44:49 +0200
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org, Vignesh Raghavendra <vigneshr@ti.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, Richard Weinberger <richard@nod.at>,
+ Takashi Iwai <tiwai@suse.com>, Khalil Blaiech <kblaiech@nvidia.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Jiaxin Yu <jiaxin.yu@mediatek.com>, Bingbu Cao <bingbu.cao@intel.com>,
+ Tianshu Qiu <tian.shu.qiu@intel.com>, Yong Zhi <yong.zhi@intel.com>,
+ Asmaa Mnebhi <asmaa@nvidia.com>, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Brent Lu <brent.lu@intel.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-spi@vger.kernel.org,
+ Dan Scally <djrscally@gmail.com>, linux-crypto@vger.kernel.org,
+ Sakari Ailus <sakari.ailus@linux.intel.com>, linux-kernel@lists.debian.org,
+ linux-media@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,35 +134,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi ALSA devs,
 
-I work on Android and starting from Android T, we use libusb to connect to
-an MIDI peripheral when Android is in host mode. We do this by opening the
-device, disconnecting the kernel MIDI interface, claiming the MIDI
-interface, and using its endpoints.
+--ASNnxeSggHlth0r3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-However, we started getting bug reports from customers that some USB
-peripherals stop playing audio once MIDI is opened.
 
-Disconnecting the kernel MIDI interface with USBDEVFS_DISCONNECT causes the
-USB sound card to disappear for some devices. I tested with 6 USB
-interfaces with both MIDI and audio and I found the following.
+> I've been doing randconfig build tests for quite a while, here's a pile of
+> fixes.  I'm not sure what's the best way to submit these: do you folks
+> prefer a series like this, or a number of individual submissions?
 
-1. I can disconnect the Audio Control, Audio Streaming, and Midi Streaming
-interfaces on the Komplete Audio 6 and the Alesis iO4 without the sound
-card disappearing.
-2. I can disconnect the Audio Streaming and MIDI Streaming interfaces on
-the PreSonus USB 96 without the sound card disappearing. Disconnecting the
-Audio Control interface causes the sound card to disappear.
-3. I can disconnect the Audio Streaming interface on the PreSonus Studio
-26c, Yamaha AG06, and the Focusrite Scarlett 2i4 without the sound card
-disappearing. Disconnecting the Audio Control or MIDI Streaming interfaces
-causes the sound card to disappear.
+You sent the one for i2c-mlxbf seperately, which I applied now.
 
-After calling USBDEVFS_RESET, the sound cards come back up.
 
-Does anyone know why certain USB peripherals do not handle
-USBDEVFS_DISCONNECT cleanly on certain interfaces?
+--ASNnxeSggHlth0r3
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Robert
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmNSP9wACgkQFA3kzBSg
+KbbjSg//Qpjk7lLoKdOzvsdmL0Mq2o5hT22qP9eF8TiQ3pE1B3B9C9AsdWQ7FjOB
+ClXU5SlQmHPj//fgEfmr9Vj2bKBssiA4QkjiF/fcjthcBqG2j3tLeQPRmFr6qcd7
+a873ogKipCuWcb7wHngTM9a7820xTtzm6AUCGCfWQHKiXjdCWsSdBoSEyHDocLiz
+CVpTOsOeH+pC5Sa1WwXdONrrOMoA1Cttpxu8Y/ZCLzyqQ4M+WL5j17g/jMihywZ3
+hg4uduAbJ9Oq2gWXAi8JvnNLPYE5RdYjk3d0j4jFxyxSD8DeIOjp1tw/UT6VSoWK
+n+ygnkytK+33BTuEoIKKEfl3O5XTYtERfroHf3trO+xaIMKqa06p3+qPM5+2Rnqx
+cZ9cfqYqw+vCs/zkbtzWArA81N4O/QBDhNe4ktHyFkChCAN8dJSf0Yx5QM1oY50f
+Vkj0kWe6nA34LURe2MazhrLSQP7ht/8WkC1l1efH+2gHOdNBmxsr3fqOvYznCziB
+BWT40k8BRRdByRFICeSeS001FW+AUlbpE8q637iYCR8sGyqxJmCCb541W35o2gdT
+5ciiIlzkqA3NudtWem09SR8UuBv9wXaiLx8qQXd72b/Na86U8dT3Bc8DKthJFWn6
+59ubRiZuumctWs6sE7kZ9aPXpPpci4isfJAhNOCtgJ7+pC+g65E=
+=s3Uy
+-----END PGP SIGNATURE-----
+
+--ASNnxeSggHlth0r3--
