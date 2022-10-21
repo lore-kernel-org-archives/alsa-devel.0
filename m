@@ -4,82 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDF9FC38A2D
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 14:05:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76A0BECAAA1
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 14:45:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C73F17410;
-	Mon, 24 Oct 2022 16:04:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C73F17410
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2F1C7482;
+	Mon, 24 Oct 2022 16:44:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2F1C7482
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666620318;
-	bh=f+j3Dm6Dsf6l61MU4fSlRirttep5qPT12IBzNs5XB94=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=hi/wqKWwTel5YrGICCY9IFZNmO6rp7Mov7/VeB7VSpikUbArLioU85ycvsHRureKA
-	 i+PMSTnRW3FAhnGVsMMKp6W1ONoVLqVKZEgyxwhO3/UAHKwh6wz4FczTiuaKUeOSXi
-	 xs1XNKGIaFDiOmTWeXraSCaxdc77xpasNv0ZLP4Y=
+	s=default; t=1666622740;
+	bh=qj8Xn9uB1LYYuXnd5MrDQPrA7Oqlsb5m3B3hu0dcuK8=;
+	h=Date:To:From:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=O9PmXIRGmxXn5FB2QBAgVSPsEhu3ho1RDRRNjRD8ZCYdg7MjcIQPJmx5fqHBukq4h
+	 cscxeBf7Ym23I07gDDyD72ocghLnkHG7rmY9KwDgNO4OT479f5Vql/MbUXcEgw1Sl5
+	 pMBK/ptb8wgPZcqV0zQmUOw1d5QTWW4/rsh5eFFU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6EE45F80533;
-	Mon, 24 Oct 2022 16:04:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 545AEF80506;
+	Mon, 24 Oct 2022 16:44:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D65DCF8053D; Mon, 24 Oct 2022 16:04:26 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 823FAF800B5; Fri, 21 Oct 2022 08:34:48 +0200 (CEST)
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.221.58])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D306FF80240
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 16:04:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D306FF80240
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="NF5mdkdl"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="US14vegp"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 469181FD59;
- Mon, 24 Oct 2022 14:04:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666620260; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Qaq9WInof3zmvpJCEWXSq0S+lrAq7e87Op2R9pRdblM=;
- b=NF5mdkdlnbh6A6YAdscChKAVCtW35Uj8T6CEDD2JfvSWuxxGrr+yXS1zLCpdfuP82jFCtc
- Nv+JbMW6BvqE0vjI25Qxp27wyXgKiAlZ+fwM0N73403iywyLLrLu+esA/+zIpDToUPC1ln
- HYLBAlmaeeBIlWTCAmSMaIArz/UIaHY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666620260;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Qaq9WInof3zmvpJCEWXSq0S+lrAq7e87Op2R9pRdblM=;
- b=US14vegpHlV9SsjBrETQNhKDk9/IFqXxxQwRvzuvpFxq5nQdA5RN5GGDiEUY/torDO4Dec
- g0+iJU4y2LV9ctDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 23F3E13357;
- Mon, 24 Oct 2022 14:04:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 2W/0B2SbVmPlEgAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 24 Oct 2022 14:04:20 +0000
-Date: Mon, 24 Oct 2022 16:04:19 +0200
-Message-ID: <87edux8gik.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Yang Yingliang <yangyingliang@huawei.com>
-Subject: Re: [PATCH] ALSA: hda: fix possible memory leak in
- azx_codec_configure()
-In-Reply-To: <20221024122646.1175390-1-yangyingliang@huawei.com>
-References: <20221024122646.1175390-1-yangyingliang@huawei.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6EE47F800B5
+ for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 08:34:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EE47F800B5
+X-QQ-mid: bizesmtpipv602t1666334073tg8l
+Received: from [127.0.0.1] ( [255.102.133.9]) by bizesmtp.qq.com (ESMTP) with 
+ id ; Fri, 21 Oct 2022 14:34:32 +0800 (CST)
+X-QQ-SSF: 01000000000000B0O000000A0000000
+X-QQ-FEAT: wReDU7nm/Q2cX418S7HgcoF6AC1h4+/48kLxk6q0wPna4z/8BeGsMjegOnN6Q
+ xpeZP2AcOu5Rawh1IrIeh6uCyHJWIvOdGaaCWoqFBNQuUjt1QUrA/jXbU0DlKrWwX6ewgvY
+ 0yJbkgsLZ5vrMMLbIEqaOcQ8NasGnEBNzyoYR5wGGFqBrJrvYGu1HNeYuIyyQv75p4v0Ksm
+ M3pvf6gXGUfqmWU/qkE8JgBM9B0IAGlKKUr5ZYIhXedZHC7YzZfU7/zysEbLass1pBMPZq4
+ ukfTGE7FQRkMQhJgxwOdxfnipGj4vEYpG6eCchAGu0HpXjdhuxTLjpKk54UVi40Jt44/59x
+ cUFFAufuuFND3UP9m1TtpekTpVYPw==
+X-QQ-GoodBg: 0
+Message-ID: <26B141B486BEF706+313d1732-e00c-ea41-3123-0d048d40ebb6@leohearts.com>
+Date: Fri, 21 Oct 2022 14:34:32 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.3
+Content-Language: en-US
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+From: Leohearts <leohearts@leohearts.com>
+Subject: [PATCH] ASoC: amd: yc: Add Lenovo Thinkbook 14+ 2022 21D0 to quirks
+ table
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpipv:leohearts.com:qybglogicsvr:qybglogicsvr5
+X-Mailman-Approved-At: Mon, 24 Oct 2022 16:44:48 +0200
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,47 +74,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 24 Oct 2022 14:26:46 +0200,
-Yang Yingliang wrote:
-> 
-> If the codec device is registered, after calling snd_hdac_device_unregister(),
-> codec has already been removed from chip bus, it should call put_device() to
-> give up reference to free codec and device name.
-> 
-> Fixes: c0f1886de7e1 ("ALSA: hda: intel: Allow repeatedly probing on codec configuration errors")
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Lenovo Thinkbook 14+ 2022 (ThinkBook 14 G4+ ARA) uses Ryzen
+6000 processor, and has the same microphone problem as other
+ThinkPads with AMD Ryzen 6000 series CPUs, which has been
+listed in https://bugzilla.kernel.org/show_bug.cgi?id=216267.
 
-Hrm, are you sure that this will result in a memory leak?
-put_device() is called at snd_hda_codec_unregister() that is invoked
-via dev_free callback of the snd_hda_codec object -- which is called
-when the top-level driver is removed.  I'm afraid that your patch will
-lead to a double-free.
+Adding 21D0 to quirks table solves this microphone problem
+for ThinkBook 14 G4+ ARA.
+
+Signed-off-by: Taroe Leohearts <leohearts@leohearts.com>
+---
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 2cb50d5cf..c8df5c25e 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -45,6 +45,13 @@ static struct snd_soc_card acp6x_card = {
+ };
+ 
+ static const struct dmi_system_id yc_acp_quirk_table[] = {
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "21D0"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
+-- 
+2.37.2
 
 
-thanks,
-
-Takashi
-
-> ---
->  sound/pci/hda/hda_controller.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-> index 0ff286b7b66b..f6a73ce300a4 100644
-> --- a/sound/pci/hda/hda_controller.c
-> +++ b/sound/pci/hda/hda_controller.c
-> @@ -1257,8 +1257,11 @@ int azx_codec_configure(struct azx *chip)
->  		/* unregister failed codecs if any codec has been probed */
->  		list_for_each_codec_safe(codec, next, &chip->bus) {
->  			if (!codec->configured) {
-> +				bool is_registered = device_is_registered(&codec->core.dev);
->  				codec_err(codec, "Unable to configure, disabling\n");
->  				snd_hdac_device_unregister(&codec->core);
-> +				if (is_registered)
-> +					put_device(&codec->core.dev);
->  			}
->  		}
->  	}
-> -- 
-> 2.25.1
-> 
