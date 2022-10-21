@@ -4,76 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D18ABC433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Oct 2022 16:38:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58607FA373E
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Oct 2022 16:54:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 303807045;
-	Fri, 21 Oct 2022 18:37:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 303807045
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA3988B1D;
+	Fri, 21 Oct 2022 18:53:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA3988B1D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666370318;
-	bh=1WmcIR8LQUdwWI92mwL+lEDUUMAxr+M2w9pm5h8V3XA=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=QggOGJIQi12WLzoo8nwd4SAzjyOy6k+/ldHIXv/vZX9yYF4UdCmXqzSYYNf+AJxX7
-	 tU6Fe1JLVCQ6xIJi3ZQSdH2BNSVCRnPs/DaFS6ZQ6nkwnuILEox04UwYTQ/+ZhJ0BM
-	 emqsCZ3VHYfdOlBfmoF0em2o1jYhHoksD2jrtZf4=
+	s=default; t=1666371238;
+	bh=Z0L1fGHwb8zUnRPkjlQ2iJ/2PY5z6AuejuRAOGT48Bk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=qgIot7+J3RRoT4wsMh3FSX2QjWGEYO7sp0C1LThysAfW26+O/uA9FEtm+woVRCoGf
+	 aLHgNE93HQ628OTCfV4jgeDNMSFJN7rghYZp9rras2KOSSWn1nwIQP/LODR6WbEbyW
+	 25rPuFIjZ+IAKd0Py9zoBwvH/k+18MmXNSTQb/ss=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5047F80134;
-	Fri, 21 Oct 2022 18:37:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86AE4F8021D;
+	Fri, 21 Oct 2022 18:53:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0DD21F80134; Fri, 21 Oct 2022 18:37:47 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id AD2E7F800B5; Fri, 21 Oct 2022 18:53:06 +0200 (CEST)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97DF3F800B5
- for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 18:37:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97DF3F800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2C604F800B5
+ for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 18:53:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C604F800B5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Xd0jNJ2s"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666370261; x=1697906261;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=1WmcIR8LQUdwWI92mwL+lEDUUMAxr+M2w9pm5h8V3XA=;
- b=Xd0jNJ2s1kC92Vf5QoXJr5Ux7KxhfPA8Y8m2fHVlDyuIMGcyUYFukG+C
- /DeJmfnir+fWNJgE25kVid7cfjD0s4ZSQ4h3uzKXooYlj7FO9ZJUdQRRV
- ++ITpRK4rVzI0ko0XF7uJ20+W7gQnxR2gHBMbzsRUlgYGNzwaH1uBhWXS
- 6IJzCOitzKJw/IZzMTmloBti2wnde+CJ3MQT2rYSux73mSO3ActVRjL9D
- 4xmSYKkN2nIy0pZ/DmeP+1Kk9+ASgncZAIl3ZQZbvE2depOOinBwP31YG
- Ur0Jm1+Y+LAF/oTD/6m7wSsSD+XzWA7cqH/kunOfJeEp/gI5PaVh0qNSz Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10507"; a="333622388"
-X-IronPort-AV: E=Sophos;i="5.95,202,1661842800"; d="scan'208";a="333622388"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Oct 2022 09:37:07 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10507"; a="755874415"
-X-IronPort-AV: E=Sophos;i="5.95,202,1661842800"; d="scan'208";a="755874415"
-Received: from legomezl-mobl1.amr.corp.intel.com (HELO [10.213.170.111])
- ([10.213.170.111])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Oct 2022 09:37:06 -0700
-Message-ID: <ad0a158f-6311-4da9-ee78-68e72decb056@linux.intel.com>
-Date: Fri, 21 Oct 2022 11:37:05 -0500
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="H6yqD+bC"
+Received: by mail-wr1-x42a.google.com with SMTP id v1so5847976wrt.11
+ for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 09:53:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=x9OiCeTYd5uwtgxnfokq334VISJqPFOEG4jCoBXmUcQ=;
+ b=H6yqD+bCUnAKFwa4WuP5unnQpoopWMDnHs8K1A07/c9lDLBtLdzHe8NWGiO5lstJlb
+ nVBZrpavBodHSeQL9ZniCsWcLYadN6wDTqM9MR9TTksZNNC4WgEwAEDaTfnUuBj8A9Qd
+ 3XA2l8Js5uUI3r8emrqWttrx62/rCSAkM21InLKAeWafOAlFEleo24qBCKWVMszeDxmU
+ hTEGvQC7BrQR69IVt6TWtlKCtRWY6kMTtaFJcgn4uawgYisv+2vkJRpGt3rI8irSdoVq
+ Coq2dNYrP1sv+jwnaJtrl39a8YCuxqgKvUBJ7TfDW9ZTJrMAsIEzv7VhQmwGZ3Zyvkqr
+ J/kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=x9OiCeTYd5uwtgxnfokq334VISJqPFOEG4jCoBXmUcQ=;
+ b=eOzj/Ph3XgTC42732Yp6hR8sv/ztw5KeU1L1GOC346aqRpHafbQrSns8K27dxc1sNP
+ DY36+4CBKss8ra8Qf8Ra6Bz6Z3+DJSz7dwpGwfWZbaAHCpUTAsWjgC5ANwI86/qqEG69
+ DjHdYz2odxwK0niBvyYshfZih7N3K2mvwuez3rxhtTjf184A4AOmdHqKEQnLNfqvuqMo
+ Zx17o6UHY8fy0d6kXuozp6EAsJ/6pP1GqWwjhYmo88wdZ8gZUVpUPxXG0vhURlO/IBx9
+ ShimpIlX5CFEJ0kBU1qL0bpuiSrxtTs97nnfj9Xv9JDOjzYC/6tEbvRHtWLqJZp4P20b
+ qt2g==
+X-Gm-Message-State: ACrzQf2jdqMYmygV7Cr2dvmb3txTIC6FBzohiEc9/qVDgDfsj1H1BKt+
+ EGqTIArM1RvAzHoLYqlbAWBRNQ==
+X-Google-Smtp-Source: AMsMyM5FcvSGOMyUgALVBEmrf1/MUzL3CxMm1g5sP2aXKScMYiHdIUV1O8xZ3U1kX8oVSXHmIO9aqg==
+X-Received: by 2002:a5d:6d89:0:b0:22e:4af7:84a5 with SMTP id
+ l9-20020a5d6d89000000b0022e4af784a5mr13232081wrs.4.1666371182045; 
+ Fri, 21 Oct 2022 09:53:02 -0700 (PDT)
+Received: from localhost.localdomain ([5.133.47.210])
+ by smtp.gmail.com with ESMTPSA id
+ n14-20020a5d400e000000b0022ae401e9e0sm19541773wrp.78.2022.10.21.09.53.00
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 21 Oct 2022 09:53:01 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Subject: [PATCH v2 0/9] ASoC: qdsp6: audioreach: add multi-port,
+ SAL and MFC support
+Date: Fri, 21 Oct 2022 17:51:58 +0100
+Message-Id: <20221021165207.13220-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.2.2
-Subject: Re: [PATCH] soundwire: intel: Initialize clock stop timeout
-Content-Language: en-US
-To: Bard Liao <yung-chuan.liao@linux.intel.com>, alsa-devel@alsa-project.org, 
- vkoul@kernel.org
-References: <20221020015624.1703950-1-yung-chuan.liao@linux.intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20221020015624.1703950-1-yung-chuan.liao@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: bard.liao@intel.com, vinod.koul@linaro.org, stable@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, tiwai@suse.com,
+ lgirdwood@gmail.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ bgoswami@quicinc.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,52 +97,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This patchset adds support to multi-port connections between AudioReach Modules
+which is required for sophisticated graphs like ECNS or Speaker Protection.
+Also as part of ECNS testing new module support for SAL and MFC are added.
 
 
-On 10/19/22 20:56, Bard Liao wrote:
-> From: Sjoerd Simons <sjoerd@collabora.com>
-> 
-> The bus->clk_stop_timeout member is only initialized to a non-zero value
-> during the codec driver probe. This can lead to corner cases where this
-> value remains pegged at zero when the bus suspends, which results in an
-> endless loop in sdw_bus_wait_for_clk_prep_deprep().
-> 
-> Corner cases include configurations with no codecs described in the
-> firmware, or delays in probing codec drivers.
-> 
-> Initializing the default timeout to the smallest non-zero value avoid this
-> problem and allows for the existing logic to be preserved: the
-> bus->clk_stop_timeout is set as the maximum required by all codecs
-> connected on the bus.
-> 
-> Fixes: 1f2dcf3a154ac ("soundwire: intel: set dev_num_ida_min")
-> Signed-off-by: Sjoerd Simons <sjoerd@collabora.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Chao Song <chao.song@intel.com>
-> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Tested on SM8450 with ECNS.
 
-this patch should be sent to GregKH/Linus as a 6.1-rcx fix, it does seem
-to make the life of Arch/Debian users less miserable - for some reason
-very large delays on driver probe seem to trigger this corner case and
-make things even worse.
+Thanks,
+Srini
 
-see https://github.com/thesofproject/linux/issues/3777 for details.
+Changes since v1:
+	Fixed two warnings on unused and unintialized variable.
 
-Thanks Vinod.
+Srinivas Kandagatla (9):
+  ASoC: qdsp6: audioreach: topology use idr_alloc_u32
+  ASoC: qdsp6: audioreach: remove unused connection_list
+  ASoC: qdsp6: audioreach: update dapm kcontrol private data
+  ASoC: qdsp6: audioreach: Simplify handing FE and BE graph connections
+  ASoC: qdsp6: audioreach: simplify module_list sz calculation
+  ASoC: qdsp6: audioreach: add support for more port connections
+  ASoC: qdsp6: audioreach: add support to enable SAL Module
+  ASoC: qdsp6: audioreach: add support for MFC Module
+  ASoC: qdsp6: audioreach: add support to enable module command
 
-> ---
->  drivers/soundwire/intel.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> index 25ec9c272239..78d35bb4852c 100644
-> --- a/drivers/soundwire/intel.c
-> +++ b/drivers/soundwire/intel.c
-> @@ -1311,6 +1311,7 @@ static int intel_link_probe(struct auxiliary_device *auxdev,
->  
->  	bus->link_id = auxdev->id;
->  	bus->dev_num_ida_min = INTEL_DEV_NUM_IDA_MIN;
-> +	bus->clk_stop_timeout = 1;
->  
->  	sdw_cdns_probe(cdns);
->  
+ include/uapi/sound/snd_ar_tokens.h |  27 +++
+ sound/soc/qcom/qdsp6/audioreach.c  | 310 ++++++++++++++++++++---------
+ sound/soc/qcom/qdsp6/audioreach.h  |  47 +++--
+ sound/soc/qcom/qdsp6/q6apm.c       |  84 +-------
+ sound/soc/qcom/qdsp6/q6apm.h       |   6 +-
+ sound/soc/qcom/qdsp6/topology.c    | 243 +++++++++++++++++++---
+ 6 files changed, 489 insertions(+), 228 deletions(-)
+
+-- 
+2.21.0
+
