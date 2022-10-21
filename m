@@ -4,79 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58607FA373E
-	for <alsa-devel@archiver.kernel.org>; Fri, 21 Oct 2022 16:54:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5BEFC433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Oct 2022 16:54:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA3988B1D;
-	Fri, 21 Oct 2022 18:53:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA3988B1D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C968E94FC;
+	Fri, 21 Oct 2022 18:53:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C968E94FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666371238;
-	bh=Z0L1fGHwb8zUnRPkjlQ2iJ/2PY5z6AuejuRAOGT48Bk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qgIot7+J3RRoT4wsMh3FSX2QjWGEYO7sp0C1LThysAfW26+O/uA9FEtm+woVRCoGf
-	 aLHgNE93HQ628OTCfV4jgeDNMSFJN7rghYZp9rras2KOSSWn1nwIQP/LODR6WbEbyW
-	 25rPuFIjZ+IAKd0Py9zoBwvH/k+18MmXNSTQb/ss=
+	s=default; t=1666371268;
+	bh=bT/Ak0m2Pii51JcNHTjaFhaS+1CXELbFxbCBdKMfMIA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=YOaD2PFK1+1th+/9uv51xdo4moceXEEpKsmL9CLQcmqh3sm8EbMdEU09p/CsEKaxq
+	 NUBw3B071+6EyWNy68lygz1TM6QV522Eyc6NExcWvP93eqXVRHUAVdAlMIJdoGUgEG
+	 JVZV2OFoHjisHUG39iPsHn3zulA2PMzYLGkdL+QQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86AE4F8021D;
-	Fri, 21 Oct 2022 18:53:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9AC3CF8053D;
+	Fri, 21 Oct 2022 18:53:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AD2E7F800B5; Fri, 21 Oct 2022 18:53:06 +0200 (CEST)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
+ id B8917F80542; Fri, 21 Oct 2022 18:53:11 +0200 (CEST)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2C604F800B5
- for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 18:53:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C604F800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97A14F80134
+ for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 18:53:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97A14F80134
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="H6yqD+bC"
-Received: by mail-wr1-x42a.google.com with SMTP id v1so5847976wrt.11
- for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 09:53:03 -0700 (PDT)
+ header.b="e5cCay4S"
+Received: by mail-wm1-x329.google.com with SMTP id
+ v130-20020a1cac88000000b003bcde03bd44so5502595wme.5
+ for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 09:53:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=x9OiCeTYd5uwtgxnfokq334VISJqPFOEG4jCoBXmUcQ=;
- b=H6yqD+bCUnAKFwa4WuP5unnQpoopWMDnHs8K1A07/c9lDLBtLdzHe8NWGiO5lstJlb
- nVBZrpavBodHSeQL9ZniCsWcLYadN6wDTqM9MR9TTksZNNC4WgEwAEDaTfnUuBj8A9Qd
- 3XA2l8Js5uUI3r8emrqWttrx62/rCSAkM21InLKAeWafOAlFEleo24qBCKWVMszeDxmU
- hTEGvQC7BrQR69IVt6TWtlKCtRWY6kMTtaFJcgn4uawgYisv+2vkJRpGt3rI8irSdoVq
- Coq2dNYrP1sv+jwnaJtrl39a8YCuxqgKvUBJ7TfDW9ZTJrMAsIEzv7VhQmwGZ3Zyvkqr
- J/kA==
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=S1Wbe703KgwRjRnGYT1UQwDcnhEdqY3xQGpBo/iRxEg=;
+ b=e5cCay4SFUrpxbbt6ZxM5tOq2iPJacFUiZ6rBvOTWdwCsnj2o12Egu9+sXict2iThJ
+ ARwmWdHIKdw0ja2J5x+9MdEl7cs4f2r0tnXfx+0bwPQmKYfzWEViMmx0gVwa6LpxgoIL
+ WMkC12dSMmOSXd4nAN+yjqm4NVbfNmSnJx9z3hxtta+lpbDkYftEQBwblf01wD10mSH2
+ WrkQnRZcl9eFD80EwYKR0mOxVxbJ4CyOJKkd1bHnSdF0yPHTns9OfXoqRkulvslnEm8x
+ 0EACz0O1lrr40AYC+zOnZ6F82clKqRStr2Cy39R+iQaZJxa/9ZSPLMYFKiz8QQvYO4vd
+ C+mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=x9OiCeTYd5uwtgxnfokq334VISJqPFOEG4jCoBXmUcQ=;
- b=eOzj/Ph3XgTC42732Yp6hR8sv/ztw5KeU1L1GOC346aqRpHafbQrSns8K27dxc1sNP
- DY36+4CBKss8ra8Qf8Ra6Bz6Z3+DJSz7dwpGwfWZbaAHCpUTAsWjgC5ANwI86/qqEG69
- DjHdYz2odxwK0niBvyYshfZih7N3K2mvwuez3rxhtTjf184A4AOmdHqKEQnLNfqvuqMo
- Zx17o6UHY8fy0d6kXuozp6EAsJ/6pP1GqWwjhYmo88wdZ8gZUVpUPxXG0vhURlO/IBx9
- ShimpIlX5CFEJ0kBU1qL0bpuiSrxtTs97nnfj9Xv9JDOjzYC/6tEbvRHtWLqJZp4P20b
- qt2g==
-X-Gm-Message-State: ACrzQf2jdqMYmygV7Cr2dvmb3txTIC6FBzohiEc9/qVDgDfsj1H1BKt+
- EGqTIArM1RvAzHoLYqlbAWBRNQ==
-X-Google-Smtp-Source: AMsMyM5FcvSGOMyUgALVBEmrf1/MUzL3CxMm1g5sP2aXKScMYiHdIUV1O8xZ3U1kX8oVSXHmIO9aqg==
-X-Received: by 2002:a5d:6d89:0:b0:22e:4af7:84a5 with SMTP id
- l9-20020a5d6d89000000b0022e4af784a5mr13232081wrs.4.1666371182045; 
- Fri, 21 Oct 2022 09:53:02 -0700 (PDT)
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=S1Wbe703KgwRjRnGYT1UQwDcnhEdqY3xQGpBo/iRxEg=;
+ b=Vb56Z7ocAjZ3iRAo3aFi8KEgA/NB5iOJHAtVeMSRWM9GRDadV3JcwcdvpzBXhd8WPG
+ BcHJTa3g+SFKCddjK9cjeb9wBU3eXgtqi9vs0ilKBoCQKkgPQ8yfTWmJcmmjyNVdFbqz
+ TZJTz1Y8RHpMd2WqJqeMcVbnzQokRKN+nvaDr+9rsRO1G5/L5LLCeY4NXgP9j98Xa5uF
+ aXaWqjDrhbQFCgpCOOjxARp66DDWdAXc3WckwuEkMAURIXVI47Plu+9/txOZ1GLSQMFT
+ YCR43gH/inTN53dv6rA+92H7t1nY2j/j/qmKo3XFQ1/uQAmnCGGGCZlUBUMDUTBy8ZU7
+ r73Q==
+X-Gm-Message-State: ACrzQf3SvbdBtRef2jjpk+sBEEd/HEI8R1yrfa/LHVtIN7dpxhRz67jL
+ DpxrcMhekBjubCYBZUB5XNzDZw==
+X-Google-Smtp-Source: AMsMyM4Zi4sKLRFeFhu+rJ2yQZJXndMNf9H1NeWhhIfBoirnv4nK0nEdKX+Zia/7SRN0e3AXMTIHEg==
+X-Received: by 2002:a05:600c:1e2a:b0:3c3:d770:1756 with SMTP id
+ ay42-20020a05600c1e2a00b003c3d7701756mr14158424wmb.134.1666371183770; 
+ Fri, 21 Oct 2022 09:53:03 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
  by smtp.gmail.com with ESMTPSA id
- n14-20020a5d400e000000b0022ae401e9e0sm19541773wrp.78.2022.10.21.09.53.00
+ n14-20020a5d400e000000b0022ae401e9e0sm19541773wrp.78.2022.10.21.09.53.02
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 21 Oct 2022 09:53:01 -0700 (PDT)
+ Fri, 21 Oct 2022 09:53:02 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v2 0/9] ASoC: qdsp6: audioreach: add multi-port,
- SAL and MFC support
-Date: Fri, 21 Oct 2022 17:51:58 +0100
-Message-Id: <20221021165207.13220-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 1/9] ASoC: qdsp6: audioreach: topology use idr_alloc_u32
+Date: Fri, 21 Oct 2022 17:51:59 +0100
+Message-Id: <20221021165207.13220-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20221021165207.13220-1-srinivas.kandagatla@linaro.org>
+References: <20221021165207.13220-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, tiwai@suse.com,
@@ -97,38 +101,90 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patchset adds support to multi-port connections between AudioReach Modules
-which is required for sophisticated graphs like ECNS or Speaker Protection.
-Also as part of ECNS testing new module support for SAL and MFC are added.
+SubGraph and Module Instance ids take 32 bits, so use idr_alloc_u32
+instead of idr_alloc to able to accomdate valid ranges.
 
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/qcom/qdsp6/topology.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Tested on SM8450 with ECNS.
-
-Thanks,
-Srini
-
-Changes since v1:
-	Fixed two warnings on unused and unintialized variable.
-
-Srinivas Kandagatla (9):
-  ASoC: qdsp6: audioreach: topology use idr_alloc_u32
-  ASoC: qdsp6: audioreach: remove unused connection_list
-  ASoC: qdsp6: audioreach: update dapm kcontrol private data
-  ASoC: qdsp6: audioreach: Simplify handing FE and BE graph connections
-  ASoC: qdsp6: audioreach: simplify module_list sz calculation
-  ASoC: qdsp6: audioreach: add support for more port connections
-  ASoC: qdsp6: audioreach: add support to enable SAL Module
-  ASoC: qdsp6: audioreach: add support for MFC Module
-  ASoC: qdsp6: audioreach: add support to enable module command
-
- include/uapi/sound/snd_ar_tokens.h |  27 +++
- sound/soc/qcom/qdsp6/audioreach.c  | 310 ++++++++++++++++++++---------
- sound/soc/qcom/qdsp6/audioreach.h  |  47 +++--
- sound/soc/qcom/qdsp6/q6apm.c       |  84 +-------
- sound/soc/qcom/qdsp6/q6apm.h       |   6 +-
- sound/soc/qcom/qdsp6/topology.c    | 243 +++++++++++++++++++---
- 6 files changed, 489 insertions(+), 228 deletions(-)
-
+diff --git a/sound/soc/qcom/qdsp6/topology.c b/sound/soc/qcom/qdsp6/topology.c
+index bd649c232a06..9a3d9e0eae53 100644
+--- a/sound/soc/qcom/qdsp6/topology.c
++++ b/sound/soc/qcom/qdsp6/topology.c
+@@ -44,7 +44,7 @@ static struct audioreach_graph_info *audioreach_tplg_alloc_graph_info(struct q6a
+ 	INIT_LIST_HEAD(&info->sg_list);
+ 
+ 	mutex_lock(&apm->lock);
+-	ret = idr_alloc(&apm->graph_info_idr, info, graph_id, graph_id + 1, GFP_KERNEL);
++	ret = idr_alloc_u32(&apm->graph_info_idr, info, &graph_id, graph_id, GFP_KERNEL);
+ 	mutex_unlock(&apm->lock);
+ 
+ 	if (ret < 0) {
+@@ -53,7 +53,7 @@ static struct audioreach_graph_info *audioreach_tplg_alloc_graph_info(struct q6a
+ 		return ERR_PTR(ret);
+ 	}
+ 
+-	info->id = ret;
++	info->id = graph_id;
+ 
+ 	return info;
+ }
+@@ -94,7 +94,7 @@ static struct audioreach_sub_graph *audioreach_tplg_alloc_sub_graph(struct q6apm
+ 	INIT_LIST_HEAD(&sg->container_list);
+ 
+ 	mutex_lock(&apm->lock);
+-	ret = idr_alloc(&apm->sub_graphs_idr, sg, sub_graph_id, sub_graph_id + 1, GFP_KERNEL);
++	ret = idr_alloc_u32(&apm->sub_graphs_idr, sg, &sub_graph_id, sub_graph_id, GFP_KERNEL);
+ 	mutex_unlock(&apm->lock);
+ 
+ 	if (ret < 0) {
+@@ -103,7 +103,7 @@ static struct audioreach_sub_graph *audioreach_tplg_alloc_sub_graph(struct q6apm
+ 		return ERR_PTR(ret);
+ 	}
+ 
+-	sg->sub_graph_id = ret;
++	sg->sub_graph_id = sub_graph_id;
+ 
+ 	return sg;
+ }
+@@ -136,7 +136,7 @@ static struct audioreach_container *audioreach_tplg_alloc_container(struct q6apm
+ 	INIT_LIST_HEAD(&cont->modules_list);
+ 
+ 	mutex_lock(&apm->lock);
+-	ret = idr_alloc(&apm->containers_idr, cont, container_id, container_id + 1, GFP_KERNEL);
++	ret = idr_alloc_u32(&apm->containers_idr, cont, &container_id, container_id, GFP_KERNEL);
+ 	mutex_unlock(&apm->lock);
+ 
+ 	if (ret < 0) {
+@@ -145,7 +145,7 @@ static struct audioreach_container *audioreach_tplg_alloc_container(struct q6apm
+ 		return ERR_PTR(ret);
+ 	}
+ 
+-	cont->container_id = ret;
++	cont->container_id = container_id;
+ 	cont->sub_graph = sg;
+ 	/* add to container list */
+ 	list_add_tail(&cont->node, &sg->container_list);
+@@ -181,7 +181,7 @@ static struct audioreach_module *audioreach_tplg_alloc_module(struct q6apm *apm,
+ 				       AR_MODULE_DYNAMIC_INSTANCE_ID_START,
+ 				       AR_MODULE_DYNAMIC_INSTANCE_ID_END, GFP_KERNEL);
+ 	} else {
+-		ret = idr_alloc(&apm->modules_idr, mod, module_id, module_id + 1, GFP_KERNEL);
++		ret = idr_alloc_u32(&apm->modules_idr, mod, &module_id, module_id, GFP_KERNEL);
+ 	}
+ 	mutex_unlock(&apm->lock);
+ 
+@@ -191,7 +191,7 @@ static struct audioreach_module *audioreach_tplg_alloc_module(struct q6apm *apm,
+ 		return ERR_PTR(ret);
+ 	}
+ 
+-	mod->instance_id = ret;
++	mod->instance_id = module_id;
+ 	/* add to module list */
+ 	list_add_tail(&mod->node, &cont->modules_list);
+ 	mod->container = cont;
 -- 
 2.21.0
 
