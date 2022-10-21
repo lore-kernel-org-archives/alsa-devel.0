@@ -4,50 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AFA6C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 20 Oct 2022 20:49:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA419C433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 21 Oct 2022 06:19:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0B089F83;
-	Thu, 20 Oct 2022 22:48:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0B089F83
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A93E93B2;
+	Fri, 21 Oct 2022 08:18:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A93E93B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666298940;
-	bh=vBxmsO5sEn+khyzAErGQ8M7NK5BAEEaxyIejiOYtqqo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1666333185;
+	bh=jGo3GIZqWA+OiKU7gxuctzt7e6+SJqzwzkVuIxU2qo0=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IHfQM4wGUmgqBLndDabAAkIWAB2Xi1z1IvlpagaQDkTyfHzFMqeECXytPF0JtW7QU
-	 NkwjRPKshurYwrcaiLYc2GpWy4rcs7ZpfjmKCkfkKUN+Ot4+RmtTvA8L1nL2e95weQ
-	 5RHCewcEudXM/RTrS2jJjwMcgXFpt0H1W9ube8dw=
+	b=l9ytLfMQo13VN3v0IC7j72TrgaUVT5uelnckzcb+ZxDkamgrJ1RX5FtvCwYFLHl84
+	 TI7XPbixlqmjfWgd6g6K4ebig+myfSFmxW9CrkXRyzIs3f1L7aDLb2tDEL2xJvvldf
+	 P9EyV3Wyr4TJqJAsHeol/UVwHGs8ZlW+OOc3BAe4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FFA8F8055C;
-	Thu, 20 Oct 2022 22:47:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB714F80134;
+	Fri, 21 Oct 2022 08:18:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76094F80564; Thu, 20 Oct 2022 22:47:09 +0200 (CEST)
-Received: from vps-vb.mhejs.net (vps-vb.mhejs.net [37.28.154.113])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4B594F80118; Fri, 21 Oct 2022 08:18:53 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3041BF8055C
- for <alsa-devel@alsa-project.org>; Thu, 20 Oct 2022 22:47:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3041BF8055C
-Received: from MUA by vps-vb.mhejs.net with esmtps (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94.2)
- (envelope-from <mail@maciej.szmigiero.name>)
- id 1olcRU-0007Vc-JN; Thu, 20 Oct 2022 22:47:04 +0200
-From: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-To: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 6/6] ALSA: ac97: Use snd_ctl_rename() to rename a control
-Date: Thu, 20 Oct 2022 22:46:26 +0200
-Message-Id: <adb68bfa0885ba4a2583794b828f8e20d23f67c7.1666296963.git.maciej.szmigiero@oracle.com>
-X-Mailer: git-send-email 2.37.3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26F56F80118
+ for <alsa-devel@alsa-project.org>; Fri, 21 Oct 2022 08:18:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26F56F80118
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="nqrk8CZ2"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="eICvxvmo"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 812E21F90F;
+ Fri, 21 Oct 2022 06:18:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1666333128; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=liod0Qgbw11Wm2miSEFyU6Lk4/K7ugeWAi8+5SI6jGU=;
+ b=nqrk8CZ2AcdP1d6jBIlAAieU6noFwFbMS6w1B1K0Wc8xuwkljZZuVKpYYjwf8fvOZ1vyu/
+ htynq9cFySCaLoxfCJaUqipIycLF2CcGxegqz4nAFjbOCvVBC6P3/GAzJCRITC2A6EAGI1
+ 1BPxpLtBnpEhHm1Nmmg62nIu65aVNIM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1666333128;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=liod0Qgbw11Wm2miSEFyU6Lk4/K7ugeWAi8+5SI6jGU=;
+ b=eICvxvmoJOTT8ziO6BXd9AAiohu14/yjok0q69dQ/K0SnAnylNnU0W33f8JF9FmanX6jX4
+ BrL9s+u4U5lFVoBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 42B441331A;
+ Fri, 21 Oct 2022 06:18:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id UXODD8g5UmNnDgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Fri, 21 Oct 2022 06:18:48 +0000
+Date: Fri, 21 Oct 2022 08:18:47 +0200
+Message-ID: <8735bh8zso.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 0/6] Fix direct renaming of hashed controls
 In-Reply-To: <cover.1666296963.git.maciej.szmigiero@oracle.com>
 References: <cover.1666296963.git.maciej.szmigiero@oracle.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -63,83 +95,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+On Thu, 20 Oct 2022 22:46:20 +0200,
+Maciej S. Szmigiero wrote:
+> 
+> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+> 
+> I've noticed that some of mixer controls on my sound card seem to
+> be partially broken on the 6.0 kernel - alsactl wasn't able to find them
+> when restoring the mixer state.
+> 
+> The issue was traced down to the recent addition of hashed controls lookup
+> in commit c27e1efb61c5 ("ALSA: control: Use xarray for faster lookups").
+> 
+> Since that commit it is *not* enough to just directly update the control
+> name field (like some of ALSA drivers were doing).
+> Now the hash entries for the modified control have to be updated too.
+> 
+> This patch set adds a snd_ctl_rename() function that takes care of doing
+> this operation properly for callers that already have the relevant
+> struct snd_kcontrol at hand and hold the control write lock (or simply
+> haven't registered the card yet).
+> 
+> These prerequisites hold true for all the call sites modified.
+>     
+> The core controls change and the emu10k1 patch were runtime tested.
+> Similar patches for other devices were only compile tested.
 
-With the recent addition of hashed controls lookup it's not enough to just
-update the control name field, the hash entries for the modified control
-have to be updated too.
+Good catch!
+Applied all patches now.
 
-snd_ctl_rename() takes care of that, so use it instead of directly
-modifying the control name.
 
-While we are at it, check also that the new control name doesn't
-accidentally overwrite the available buffer space.
+thanks,
 
-Fixes: c27e1efb61c5 ("ALSA: control: Use xarray for faster lookups")
-Cc: stable@vger.kernel.org
-Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
----
- sound/pci/ac97/ac97_codec.c | 32 ++++++++++++++++++++++++--------
- 1 file changed, 24 insertions(+), 8 deletions(-)
-
-diff --git a/sound/pci/ac97/ac97_codec.c b/sound/pci/ac97/ac97_codec.c
-index ceead55f13ab1..ff685321f1a11 100644
---- a/sound/pci/ac97/ac97_codec.c
-+++ b/sound/pci/ac97/ac97_codec.c
-@@ -2656,11 +2656,18 @@ EXPORT_SYMBOL(snd_ac97_resume);
-  */
- static void set_ctl_name(char *dst, const char *src, const char *suffix)
- {
--	if (suffix)
--		sprintf(dst, "%s %s", src, suffix);
--	else
--		strcpy(dst, src);
--}	
-+	const size_t msize = SNDRV_CTL_ELEM_ID_NAME_MAXLEN;
-+
-+	if (suffix) {
-+		if (snprintf(dst, msize, "%s %s", src, suffix) >= msize)
-+			pr_warn("ALSA: AC97 control name '%s %s' truncated to '%s'\n",
-+				src, suffix, dst);
-+	} else {
-+		if (strscpy(dst, src, msize) < 0)
-+			pr_warn("ALSA: AC97 control name '%s' truncated to '%s'\n",
-+				src, dst);
-+	}
-+}
- 
- /* remove the control with the given name and optional suffix */
- static int snd_ac97_remove_ctl(struct snd_ac97 *ac97, const char *name,
-@@ -2687,8 +2694,11 @@ static int snd_ac97_rename_ctl(struct snd_ac97 *ac97, const char *src,
- 			       const char *dst, const char *suffix)
- {
- 	struct snd_kcontrol *kctl = ctl_find(ac97, src, suffix);
-+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-+
- 	if (kctl) {
--		set_ctl_name(kctl->id.name, dst, suffix);
-+		set_ctl_name(name, dst, suffix);
-+		snd_ctl_rename(ac97->bus->card, kctl, name);
- 		return 0;
- 	}
- 	return -ENOENT;
-@@ -2707,11 +2717,17 @@ static int snd_ac97_swap_ctl(struct snd_ac97 *ac97, const char *s1,
- 			     const char *s2, const char *suffix)
- {
- 	struct snd_kcontrol *kctl1, *kctl2;
-+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-+
- 	kctl1 = ctl_find(ac97, s1, suffix);
- 	kctl2 = ctl_find(ac97, s2, suffix);
- 	if (kctl1 && kctl2) {
--		set_ctl_name(kctl1->id.name, s2, suffix);
--		set_ctl_name(kctl2->id.name, s1, suffix);
-+		set_ctl_name(name, s2, suffix);
-+		snd_ctl_rename(ac97->bus->card, kctl1, name);
-+
-+		set_ctl_name(name, s1, suffix);
-+		snd_ctl_rename(ac97->bus->card, kctl2, name);
-+
- 		return 0;
- 	}
- 	return -ENOENT;
+Takashi
