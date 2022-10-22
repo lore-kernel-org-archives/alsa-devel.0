@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33526C433FE
-	for <alsa-devel@archiver.kernel.org>; Sat, 22 Oct 2022 19:15:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F79CC04A95
+	for <alsa-devel@archiver.kernel.org>; Sat, 22 Oct 2022 19:16:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 51D6FAB04;
-	Sat, 22 Oct 2022 21:15:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51D6FAB04
+	by alsa0.perex.cz (Postfix) with ESMTPS id 74F99BFAF;
+	Sat, 22 Oct 2022 21:15:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74F99BFAF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666466152;
-	bh=d3R6okVKHjoNxNU2TGxkaOCSUVch4EdpyWf8I4YiTQs=;
+	s=default; t=1666466160;
+	bh=UjmgI9+q/8WIGaKASFpwVsOOOS8ERBdZMKv8fLzyang=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Cpohc1Jh1jF2mH7AvBikR1d6H/fjyGelWUuGwJM9pC15xOAm4GWkLzW6X4vakdeYK
-	 VOH3AztgoN/CT/Ot0aLeNOkE/sHNKSERJa7zfF00coLxloUZGvrnERFZAp0RnZDdGG
-	 eZyP1zJ2LmzccEQQtRNYnYYXylpVagWw+m3NPAA0=
+	b=j8InbRYu4t28Hnn07yWLXWuuycGZaP+HJ1Vx65Goa4KNRfE2rmjcTEvJum3J9a+UH
+	 ltCBjdk+CNHyFUDAuGhJwYug/WMQTCwTrhl+39Qrd99gsOHbmeBDIlZ8HlYPnairtc
+	 VEnk3VL22+SW2WZZ1Iv558Fl8lgpbGXfIYhx0xAI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE4EEF80548;
-	Sat, 22 Oct 2022 21:13:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E704F80571;
+	Sat, 22 Oct 2022 21:13:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 284BEF80570; Sat, 22 Oct 2022 21:13:38 +0200 (CEST)
+ id 3142EF80568; Sat, 22 Oct 2022 21:13:38 +0200 (CEST)
 Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
  [IPv6:2a00:1450:4864:20::42f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9372F80543
- for <alsa-devel@alsa-project.org>; Sat, 22 Oct 2022 21:13:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9372F80543
+ by alsa1.perex.cz (Postfix) with ESMTPS id CCBE0F8012A
+ for <alsa-devel@alsa-project.org>; Sat, 22 Oct 2022 21:13:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCBE0F8012A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="GX4PI7xF"
-Received: by mail-wr1-x42f.google.com with SMTP id bk15so9627501wrb.13
- for <alsa-devel@alsa-project.org>; Sat, 22 Oct 2022 12:13:29 -0700 (PDT)
+ header.b="Mk32tiD+"
+Received: by mail-wr1-x42f.google.com with SMTP id bv10so9729418wrb.4
+ for <alsa-devel@alsa-project.org>; Sat, 22 Oct 2022 12:13:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=ZPVuUDMde4iT9AFYS7nsIkkUonhoCr0Fb8M7bh3R14c=;
- b=GX4PI7xFh3h1a5tQ+2jYB4BRDQNT5bhmT+xD79rYbbl7YNX03JeigwGOM+X/O8XYE1
- AkDXwJfpZa0s27gAHffJ1JPJFVwyiBSqYHzsmLRkgoPsl0hLH5Om8jVtf5hC6SW48gRs
- cXixIq3C1yiUpvAJf3ADutAuKH9S+AUt7rrdLjU5nJnLgrE6aJKg0unu8ZdvH89tQ2m1
- yHEhslav1a2kvNrOISUwVaSIh3M9Hr4xlzxMK7LU44yHFoXGpkmV//seOLnstQ8PVt6W
- nMIlLyXY4Z0kPKURZizx6nUn6babx+RvqMLPNO/VhByUtqYJxXYBENDKeXQEui79phku
- O0OQ==
+ bh=pvKXzpxFzZWAwh4ulfZ9nH6QQVrhwgz8YLgYLKE7oQk=;
+ b=Mk32tiD+7lGM2PB2KBnwrwRs/5pG1IM2VWwXn+K1X6q+vW0rzntqHq9asZQRoo4Lgu
+ xpPq180y9ajoqHiSIw0RZuV1Jb7inx+Uxtaj42O5pNtCga+OsbxRmM7GF3ID7PVGg+fH
+ RZ/wecg6JaLqAIxZc8jwWP3koFUs6X4AeeDZmuR9egW6QaxA3cJdiToK5kH1bFQ4wfhq
+ bKpkxSF4VlzukSPq3CNgo1Bq0AqRR13XagfzPvLe+wC/NkzTCymBnuC8OYehqcw2EksS
+ M0xfBrJnVjTGfZ09pIuL/B7T42kEZThfIBaoYfGtH6kc8YWsDWvMyoTks+h36yORRDnP
+ iBjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=ZPVuUDMde4iT9AFYS7nsIkkUonhoCr0Fb8M7bh3R14c=;
- b=oC8Pop+ggzfszqQGfOBWVWVfiRoiRp7cCB4N3bIue6Tgh0/Q+JaXH/M7g55Key8q+z
- qjhaG38kA/L2hGl/tWoS/n1s3amV0/lzC2+6nrcaSYrAyoogxAWO8qXjQ+O30eeUFeIZ
- OaDZdCjyJE6zofyLkY54PBu69T9W2TulCWzGnngjISHgFJjyBgIXxRK8nttQsnfhADhd
- hnyBlmaZ/yLJyrrorsaiH3dZ4D08NH0b4quQwVgr2f2E2hZmbFsBd2NcPAUq5jeAQl82
- vR/2pWjUVhZh9UEmJ7ZMwqcOAVLkpk7t02YLha+ojY83N8ttBV+H4CzOzj+oGSYND/P8
- mVjg==
-X-Gm-Message-State: ACrzQf1cyK3toGfE3L6vf0HPEdgBC/NrgqxDUoicRQp+KeBwQ9t1Tttx
- 8o/aetzWugEfvgZf0gmrnnxfLNLMboH6LA==
-X-Google-Smtp-Source: AMsMyM7sfj1tIT11EFXmLQYW9l17m+aYcb0e5UsnUPvpXmLsBcsD/67Om6JTQeJ1XRJvEZaEGocMCQ==
-X-Received: by 2002:a05:6000:1546:b0:231:a69a:6e with SMTP id
- 6-20020a056000154600b00231a69a006emr17046543wry.616.1666466007552; 
- Sat, 22 Oct 2022 12:13:27 -0700 (PDT)
+ bh=pvKXzpxFzZWAwh4ulfZ9nH6QQVrhwgz8YLgYLKE7oQk=;
+ b=S7xcHlXbMPJaKB0PO/r6OpbYexqW0KDdjemDrUDVz0MI2owUCEOZzRI7JRFT43yg2W
+ kOmoBqNZ2QdclQMBWbZEVyCdlkdYQtZIBFsLFTNEUaO9F1K7rRXYwEhPC//zk76TNQ4C
+ PeL3+Y/QFNvJNeFvDtUuCCOvuj5Gsmg587rZbTg1IZdy5pLGgVtKS1Q2GS0zxsJILFQ9
+ yl8mHm+L9bDIKkmv1TTb0R1PUqW0H2H9JeSg51nPIrUlstYE5P47DAymp51uGnlslFSK
+ kM/+2nbYGinqEJHFVgVLivX0CtDI0lVqmWya6H62gHZTPxZdTYxtKetlmrnB05IqD1k6
+ HMIA==
+X-Gm-Message-State: ACrzQf2AwkKRQZ2KPnOjBv9SMP7w/AO9HErP3rZVSMAKlVBQ/+PpYw9l
+ BABIF2HqFVp3HAIKzTKuQPk=
+X-Google-Smtp-Source: AMsMyM4ZgiMk56yHI2oeiWzNd5O/Bb+8ZyfhfgGtlPvoGmNJ0BN1+6zyBptA05Wp39LxFyKTH4gDQQ==
+X-Received: by 2002:a5d:5691:0:b0:22c:db35:7939 with SMTP id
+ f17-20020a5d5691000000b0022cdb357939mr15694848wrv.102.1666466010555; 
+ Sat, 22 Oct 2022 12:13:30 -0700 (PDT)
 Received: from localhost (94.197.1.68.threembb.co.uk. [94.197.1.68])
  by smtp.gmail.com with ESMTPSA id
- l34-20020a05600c1d2200b003c6edc05159sm3603976wms.1.2022.10.22.12.13.26
+ j16-20020adfea50000000b00228d6bc8450sm26311735wrn.108.2022.10.22.12.13.29
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 22 Oct 2022 12:13:27 -0700 (PDT)
+ Sat, 22 Oct 2022 12:13:30 -0700 (PDT)
 From: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 To: paul@crapouillou.net, lgirdwood@gmail.com, broonie@kernel.org,
  perex@perex.cz, tiwai@suse.com
-Subject: [PATCH v5 5/9] ASoC: jz4740-i2s: Align macro values and sort includes
-Date: Sat, 22 Oct 2022 20:13:04 +0100
-Message-Id: <20221022191308.82348-6-aidanmacdonald.0x0@gmail.com>
+Subject: [PATCH v5 7/9] ASoC: jz4740-i2s: Support continuous sample rate
+Date: Sat, 22 Oct 2022 20:13:06 +0100
+Message-Id: <20221022191308.82348-8-aidanmacdonald.0x0@gmail.com>
 In-Reply-To: <20221022191308.82348-1-aidanmacdonald.0x0@gmail.com>
 References: <20221022191308.82348-1-aidanmacdonald.0x0@gmail.com>
 MIME-Version: 1.0
@@ -99,108 +99,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some purely cosmetic changes: line up all the macro values to
-make things easier to read and sort the includes alphabetically.
+The I2S controller on JZ47xx SoCs doesn't impose restrictions on
+sample rate and the driver doesn't make any assumptions about it,
+so the DAI should advertise a continuous sample rate range.
 
 Acked-by: Paul Cercueil <paul@crapouillou.net>
 Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 ---
- sound/soc/jz4740/jz4740-i2s.c | 66 +++++++++++++++++------------------
- 1 file changed, 32 insertions(+), 34 deletions(-)
+ sound/soc/jz4740/jz4740-i2s.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index 4767abea425f..c3235e993ffb 100644
+index fd35a8a51f60..201368f828ff 100644
 --- a/sound/soc/jz4740/jz4740-i2s.c
 +++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -4,6 +4,9 @@
-  */
- 
- #include <linux/bitfield.h>
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/dma-mapping.h>
- #include <linux/init.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
-@@ -13,11 +16,6 @@
- #include <linux/regmap.h>
- #include <linux/slab.h>
- 
--#include <linux/clk.h>
--#include <linux/delay.h>
--
--#include <linux/dma-mapping.h>
--
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -35,37 +33,37 @@
- #define JZ_REG_AIC_CLK_DIV	0x30
- #define JZ_REG_AIC_FIFO		0x34
- 
--#define JZ_AIC_CONF_OVERFLOW_PLAY_LAST BIT(6)
--#define JZ_AIC_CONF_INTERNAL_CODEC BIT(5)
--#define JZ_AIC_CONF_I2S BIT(4)
--#define JZ_AIC_CONF_RESET BIT(3)
--#define JZ_AIC_CONF_BIT_CLK_MASTER BIT(2)
--#define JZ_AIC_CONF_SYNC_CLK_MASTER BIT(1)
--#define JZ_AIC_CONF_ENABLE BIT(0)
--
--#define JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE GENMASK(21, 19)
--#define JZ_AIC_CTRL_INPUT_SAMPLE_SIZE GENMASK(18, 16)
--#define JZ_AIC_CTRL_ENABLE_RX_DMA BIT(15)
--#define JZ_AIC_CTRL_ENABLE_TX_DMA BIT(14)
--#define JZ_AIC_CTRL_MONO_TO_STEREO BIT(11)
--#define JZ_AIC_CTRL_SWITCH_ENDIANNESS BIT(10)
--#define JZ_AIC_CTRL_SIGNED_TO_UNSIGNED BIT(9)
-+#define JZ_AIC_CONF_OVERFLOW_PLAY_LAST	BIT(6)
-+#define JZ_AIC_CONF_INTERNAL_CODEC	BIT(5)
-+#define JZ_AIC_CONF_I2S			BIT(4)
-+#define JZ_AIC_CONF_RESET		BIT(3)
-+#define JZ_AIC_CONF_BIT_CLK_MASTER	BIT(2)
-+#define JZ_AIC_CONF_SYNC_CLK_MASTER	BIT(1)
-+#define JZ_AIC_CONF_ENABLE		BIT(0)
-+
-+#define JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE	GENMASK(21, 19)
-+#define JZ_AIC_CTRL_INPUT_SAMPLE_SIZE	GENMASK(18, 16)
-+#define JZ_AIC_CTRL_ENABLE_RX_DMA	BIT(15)
-+#define JZ_AIC_CTRL_ENABLE_TX_DMA	BIT(14)
-+#define JZ_AIC_CTRL_MONO_TO_STEREO	BIT(11)
-+#define JZ_AIC_CTRL_SWITCH_ENDIANNESS	BIT(10)
-+#define JZ_AIC_CTRL_SIGNED_TO_UNSIGNED	BIT(9)
- #define JZ_AIC_CTRL_TFLUSH		BIT(8)
- #define JZ_AIC_CTRL_RFLUSH		BIT(7)
--#define JZ_AIC_CTRL_ENABLE_ROR_INT BIT(6)
--#define JZ_AIC_CTRL_ENABLE_TUR_INT BIT(5)
--#define JZ_AIC_CTRL_ENABLE_RFS_INT BIT(4)
--#define JZ_AIC_CTRL_ENABLE_TFS_INT BIT(3)
--#define JZ_AIC_CTRL_ENABLE_LOOPBACK BIT(2)
--#define JZ_AIC_CTRL_ENABLE_PLAYBACK BIT(1)
--#define JZ_AIC_CTRL_ENABLE_CAPTURE BIT(0)
--
--#define JZ_AIC_I2S_FMT_DISABLE_BIT_CLK BIT(12)
--#define JZ_AIC_I2S_FMT_DISABLE_BIT_ICLK BIT(13)
--#define JZ_AIC_I2S_FMT_ENABLE_SYS_CLK BIT(4)
--#define JZ_AIC_I2S_FMT_MSB BIT(0)
--
--#define JZ_AIC_I2S_STATUS_BUSY BIT(2)
-+#define JZ_AIC_CTRL_ENABLE_ROR_INT	BIT(6)
-+#define JZ_AIC_CTRL_ENABLE_TUR_INT	BIT(5)
-+#define JZ_AIC_CTRL_ENABLE_RFS_INT	BIT(4)
-+#define JZ_AIC_CTRL_ENABLE_TFS_INT	BIT(3)
-+#define JZ_AIC_CTRL_ENABLE_LOOPBACK	BIT(2)
-+#define JZ_AIC_CTRL_ENABLE_PLAYBACK	BIT(1)
-+#define JZ_AIC_CTRL_ENABLE_CAPTURE	BIT(0)
-+
-+#define JZ_AIC_I2S_FMT_DISABLE_BIT_CLK	BIT(12)
-+#define JZ_AIC_I2S_FMT_DISABLE_BIT_ICLK	BIT(13)
-+#define JZ_AIC_I2S_FMT_ENABLE_SYS_CLK	BIT(4)
-+#define JZ_AIC_I2S_FMT_MSB		BIT(0)
-+
-+#define JZ_AIC_I2S_STATUS_BUSY		BIT(2)
- 
- struct i2s_soc_info {
- 	struct snd_soc_dai_driver *dai;
+@@ -390,13 +390,13 @@ static struct snd_soc_dai_driver jz4740_i2s_dai = {
+ 	.playback = {
+ 		.channels_min = 1,
+ 		.channels_max = 2,
+-		.rates = SNDRV_PCM_RATE_8000_48000,
++		.rates = SNDRV_PCM_RATE_CONTINUOUS,
+ 		.formats = JZ4740_I2S_FMTS,
+ 	},
+ 	.capture = {
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+-		.rates = SNDRV_PCM_RATE_8000_48000,
++		.rates = SNDRV_PCM_RATE_CONTINUOUS,
+ 		.formats = JZ4740_I2S_FMTS,
+ 	},
+ 	.symmetric_rate = 1,
+@@ -426,13 +426,13 @@ static struct snd_soc_dai_driver jz4770_i2s_dai = {
+ 	.playback = {
+ 		.channels_min = 1,
+ 		.channels_max = 2,
+-		.rates = SNDRV_PCM_RATE_8000_48000,
++		.rates = SNDRV_PCM_RATE_CONTINUOUS,
+ 		.formats = JZ4740_I2S_FMTS,
+ 	},
+ 	.capture = {
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+-		.rates = SNDRV_PCM_RATE_8000_48000,
++		.rates = SNDRV_PCM_RATE_CONTINUOUS,
+ 		.formats = JZ4740_I2S_FMTS,
+ 	},
+ 	.ops = &jz4740_i2s_dai_ops,
 -- 
 2.38.1
 
