@@ -4,75 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EADE3FA3740
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 15:07:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD11BC38A2D
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 15:14:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52A2D63DE;
-	Mon, 24 Oct 2022 17:07:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52A2D63DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FFF47256;
+	Mon, 24 Oct 2022 17:13:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FFF47256
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666624076;
-	bh=a+0l+LUieWCZmrTxkABAo7G3RJjD6TBzF2qMpoeot0g=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1666624455;
+	bh=G+qt7Tdcoffqe97dW0PX/m/UuOw84Y7ucmaGvLa7FwI=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Fd2UBzdXQZaA4/I8/xKq5ogq7ds16Noybxq1SNmrrc42XUa7ukmV2luoz9PmzKCfP
-	 TnfmkLra6PvYWcxg/POZPs10fhUxp33wJg/CcT5uQ8VAKReznyza7hOM81udUat2WY
-	 OQ0U/EUEzkyiqZa1d0rvUWdRBImClRvyPGYhOLg8=
+	b=U0e+qsK4WHpCxrZDTr6YdrlAZobmUJclJzVmzM7pdNoVGrxkagmZPhtflhaVK3aDq
+	 5p+Z2ekcWviNITyazjmEaprUW6CXiC9VSXYAO6r9Jur1AKSoykymJfiUoHIm05F20N
+	 Fht1Rg8G28cKVVJAEDoidGzooyO2eefupzlo5YFQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1CBFF8052F;
-	Mon, 24 Oct 2022 17:07:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05E55F80533;
+	Mon, 24 Oct 2022 17:13:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0E070F80506; Mon, 24 Oct 2022 17:07:04 +0200 (CEST)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+ id BF372F8053D; Mon, 24 Oct 2022 17:13:23 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 04F54F80506
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 17:06:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04F54F80506
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2524AF80506
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 17:13:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2524AF80506
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
- header.b="dkAHqwl+"
-Received: from notapiano (unknown [194.36.25.51])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
- SHA256) (No client certificate requested)
- (Authenticated sender: nfraprado)
- by madras.collabora.co.uk (Postfix) with ESMTPSA id 73C7F6602261;
- Mon, 24 Oct 2022 16:06:54 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1666624016;
- bh=a+0l+LUieWCZmrTxkABAo7G3RJjD6TBzF2qMpoeot0g=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=dkAHqwl+gmnr1C2LmiLEiW4FWHa5ABtkJd1/j9NX4JV9VKV/5nr1wN5uUH52ZVsbg
- SxS0oNtxTGkUoshk/1bOzBcmbKmG0q8JfP/NQ0UWW14Stz4O5HaLx85nHo5QvJktJP
- JoHX1GUOcT3ukiANEgW45A4pEBGib3CHQHn8U7f/8kj4JP8WiIxgMHqMJ7srbGQHDF
- wh4aQlcgtsjPn3PkAbTJGk40uOP28OriL58RQTcFyrN/6NKIqA5PIjD7rr7DJsZE0e
- cQxQ7uIztL+uY/32qfYDOQg9ID2Ic6Xby/AHaKmOB9Ye6D2yNReQhCiR+J2ahVdSiF
- OPoTmjxte6Ddg==
-Date: Mon, 24 Oct 2022 11:06:49 -0400
-From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 2/3] ASoC: dt-bindings: realtek,rt5682s: Add AVDD and
- MICVDD supplies
-Message-ID: <20221024150649.wbd54lcvgrj4kxgu@notapiano>
-References: <20221021190908.1502026-1-nfraprado@collabora.com>
- <20221021190908.1502026-3-nfraprado@collabora.com>
- <ae460461-5c20-9180-456c-8c01a4b1a7f1@linaro.org>
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="SDRNAqua"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1666624398; x=1698160398;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=G+qt7Tdcoffqe97dW0PX/m/UuOw84Y7ucmaGvLa7FwI=;
+ b=SDRNAqua8gjRzFvtXfU5NtncxahRjyuvsI1cUdPsG5g72R65OwxmxDki
+ 9t2S/+ohgGWyjb3eZM9ciyoKcI/J7DQay5swwfmfhQQGB/1wi88K7mtsT
+ 0Lo/y6/zCMja5q/5PFbE6dieLy1FHLCkFuzwtqvnOcEbiYdjRIvQFGV2J
+ JiD6WTzRpe9zkwkNL3+23UggVkvbHJd8dQgkQB+8/WfXGicBQKRb3+gsc
+ Tnhe61CPN3pQsKgE4M0s9JM+LlQwkucbOSXomMKtWQ4L4Zc+nhc7rEw58
+ qYz0xLyLxoN62D0wCuDUsB1wvfBWUhNpI2ceFv30etWGHhecLvPIm1Ahc Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="306174611"
+X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="306174611"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Oct 2022 08:13:11 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="626099065"
+X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="626099065"
+Received: from lmforney-mobl1.amr.corp.intel.com (HELO [10.209.175.17])
+ ([10.209.175.17])
+ by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Oct 2022 08:13:11 -0700
+Message-ID: <e2da2a30-c3fa-acc1-8c9c-78476e6f2461@linux.intel.com>
+Date: Mon, 24 Oct 2022 09:08:12 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.2.2
+Subject: Re: [PATCH v2] ASoC: core: clarify the driver name initialization
+Content-Language: en-US
+To: Jaroslav Kysela <perex@perex.cz>,
+ ALSA development <alsa-devel@alsa-project.org>
+References: <20220929143754.345144-1-perex@perex.cz>
+ <eb7971c2-f5fe-afb5-9333-4b941b958355@linux.intel.com>
+ <8d461c81-5d70-cfbb-4653-979764a6b5a6@perex.cz>
+ <3770c782-d01c-37b6-73a5-2c45c869d541@linux.intel.com>
+ <2285503b-b2cd-bca4-d491-cf4e8eaac92a@perex.cz>
+ <5b94c9ef-a37b-9d71-ad05-5ce9ba103af0@linux.intel.com>
+ <708583ba-ea20-cc46-7ca1-ee213586441a@perex.cz>
+ <df4f3b77-887f-8894-3bd7-3dd386af58f1@linux.intel.com>
+ <8d0ccf4a-a6d9-f914-70a9-c2ad55af3a04@perex.cz>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <8d0ccf4a-a6d9-f914-70a9-c2ad55af3a04@perex.cz>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ae460461-5c20-9180-456c-8c01a4b1a7f1@linaro.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Derek Fang <derek.fang@realtek.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, kernel@collabora.com,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,34 +96,137 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Oct 22, 2022 at 12:39:56PM -0400, Krzysztof Kozlowski wrote:
-> On 21/10/2022 15:09, N�colas F. R. A. Prado wrote:
-> > The rt5682s codec can have two supplies: AVDD and MICVDD. Add properties
-> > for them.
-> > 
-> > Signed-off-by: N�colas F. R. A. Prado <nfraprado@collabora.com>
-> > ---
-> > 
-> >  Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml b/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml
-> > index ea53a55015c4..ca1037e76f96 100644
-> > --- a/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml
-> > +++ b/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml
-> > @@ -90,6 +90,10 @@ properties:
-> >    "#sound-dai-cells":
-> >      const: 0
-> >  
-> > +  AVDD-supply: true
-> > +
-> > +  MICVDD-supply: true
-> > +
+
+
+On 10/24/22 01:19, Jaroslav Kysela wrote:
+> On 21. 10. 22 16:36, Pierre-Louis Bossart wrote:
+>>
+>>
+>> On 10/21/22 01:37, Jaroslav Kysela wrote:
+>>> On 20. 10. 22 20:13, Pierre-Louis Bossart wrote:
+>>>> Hi Jaroslav,
+>>>>
+>>>>> Nope. It's just a short path for the non-driver field to not further
+>>>>> process the destination string (the name argument). The snprintf()
+>>>>> call
+>>>>> sets all field types (it's before the condition). Just set the
+>>>>> driver_name field in the soc card structure and you will be fine.
+>>>>>
+>>>>> The UCM config must be updated to handle the new driver name. The fine
+>>>>> selection key should probably use the card name, because long name is
+>>>>> set from DMI:
+>>>>>
+>>>>> old:
+>>>>>
+>>>>> 1 [sofglkda7219max]: sof-glkda7219ma - sof-glkda7219max
+>>>>>                        Google-Phaser360-rev4
+>>>>>
+>>>>> new:
+>>>>>
+>>>>> 1 [sofglkda7219max]: SOF-Intel - sof-glkda7219max
+>>>>>                        Google-Phaser360-rev4
+>>>>>
+>>>>> UCM substitutions:
+>>>>>
+>>>>> 1 [${CardId}      ]: ${CardDriver} - ${CardName}
+>>>>>                        ${CardLongName}
+>>>>>
+>>>>> UCM conf:
+>>>>>
+>>>>> mkdir -p ucm2/conf.d/SOF-Intel
+>>>>> cat > ucm2/conf.d/SOF-Intel/SOF-Intel.conf <<EOF
+>>>>> Syntax 6
+>>>>> Include.0.File "/Intel/\${CardName}/\${CardName}.conf"
+>>>>> EOF
+>>>>
+>>>> I am not following any of this, sorry.
+>>>>
+>>>> The existing UCM configuration uses the card name, e.g.
+>>>> sof-glkda7219max. That works and needs zero extra work.
+>>>
+>>> Unfortunately, actually the wrapped driver names are used for the
+>>> primary lookups. The card name is not used at all in ucm2/conf.d.
+>>
+>> ok, that's interesting because I've always used the card name with
+>> alsaucm :-)
+>>
+>>
+>> Usage: alsaucm <options> [command]
+>>
+>> Available options:
+>>    -h,--help                  this help
+>>    -c,--card NAME             open card NAME
+>>
+>> alsaucm -c sof-glkda7219max set _verb HiFi set _enadev Headphone
+>>
+>> And if we move to use the driver name as the primary lookup then we'd
+>> still need the card name for alsaucm to work, so why use the driver name
+>> as a primary lookup?
 > 
-> How about keeping some order in the list of properties?
+> The driver name is used for the lookups as defined in ucm2/ucm.conf. The
+> driver/card name/card long name lookups are handled in the alsa-lib's
+> code (converted to "hw:X" UCM card name). If you turn this fallback off
+> (use "strict:sof-glkda7219max" UCM card name), things won't work.
 
-The current properties don't seem to follow any particular order and keeping the
-supplies grouped together seemed reasonable. What ordering do you suggest?
+Fair enough, I wasn't even aware of the existence of this 'strict'
+directive.
 
-Thanks,
-N�colas
+>> If we can report a less confusing driver name to the users, that's fine
+>> with me, but I don't get the idea of using the driver name as the first
+>> criterion to identify a setup, you'll also need the card name so why not
+>> use the card name as primary criterion?
+> 
+> It is not usable for the USB driver where every model has own name set
+> from USB descriptors for example.
+
+How would you use UCM in that context, the use of a driver name would
+lead to a lot of abstraction potentially, isn't there a risk of not
+being able to detect specific skews that need variants?
+
+>>>> If all the cards registered in sound/soc/intel/boards use the same
+>>>> "SOF-Intel" driver name, then the driver name cannot be used for any
+>>>> UCM
+>>>> selection.
+>>>
+>>> It can be used for the first level of the lookup. Eventually, we can add
+>>> ucm2/conf.d/${CardDriver}/${CardName}.conf search path to ucm2/ucm.conf
+>>> for the direct lookups to handle this case, but it's just an
+>>> optimization. I would start with the ${CardName} redirection as I
+>>> suggested. We can decide / make the ucm.conf change later.
+>>>
+>>>> What is the point of including all the cardName.conf files at a higher
+>>>> level that brings no obvious value beyond an indirection that we
+>>>> already
+>>>> have with the path ucm2/Intel ?
+>>>>
+>>>> What am I missing ??
+>>>
+>>> The goal is to fix the driver names (e.g. "sof-glkda7219ma",
+>>> "sof-mt8195_r101" etc.). If you like to keep the unique names, it's your
+>>> decision. I just prefer to have a string which is understandable to
+>>> users. UCM can handle the finer selection of the configuration at any
+>>> level now. Examples: sof-soundwire, USB-Audio
+>>> (ucm2/USB-Audio/USB-Audio.conf), SOF (ucm2/Intel/SOF/HiFi.conf).
+>>
+>> I don't mind setting a common string, it's not going to be possible to
+>> capture all hardware variations in 15 characters.
+>>
+>> What worries me is backwards compatibility with existing user setups. If
+>> someone updates their kernel and the change in driver name ends-up
+>> breaking audio that's a big no-no for me. That's a real issue for us in
+>> terms of support because we typically ask people reporting
+>> SOF/SoundWire/HDA/mic issues if they can installing with our development
+>> kernel.
+> 
+> We can use a similar mechanism as we did with
+> CONFIG_SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES . The distributions can
+> enable this when packages when UCM configs are updated. Also, new
+> drivers should use new driver name scheme, it's only for the current
+> drivers.
+
+That would be good indeed. FWIW, I reverted this patch in our
+development tree to remove confusing error messages that make tests fail.
+
+That would not be an Intel only option though, right? There are tons of
+other ASoC machine drivers who don't set the driver name at all, so it
+could take time to make that transition.
