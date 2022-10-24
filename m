@@ -4,69 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8554ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 12:55:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA05FFA373E
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 13:05:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A79C87664;
-	Mon, 24 Oct 2022 14:55:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A79C87664
+	by alsa0.perex.cz (Postfix) with ESMTPS id A865E7691;
+	Mon, 24 Oct 2022 15:04:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A865E7691
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666616152;
-	bh=R1hLjeE/13RmZT9ufBz7rWLCq9H/tdDCnbvNc5MNSl8=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=rOGKSYhQ/+pc2VNf3nRz0VeniuHoqpuVtsq6UBo3I9RPkI8IlohiwaPAg7kQdah+y
-	 2UjQ+JLjo1GgVWkkwMHCOvMgHBxugQ9EiDIlkLYxRkGSD3RSQA8R+eotaj+PRubDeM
-	 s7sqj7OdMto4Jpd93yLCMNi0DDXg+67A5W7mQ5zQ=
+	s=default; t=1666616713;
+	bh=eRSweSNYBVnFL4RXqNIHxHqL02Bf3gPIN5mHCC3vKfA=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ESmiu61pZvrR3vKJAk/Z36b0D509IQ3CkOqUWc5nhscTwV87e9K4pH2BSJGhZb3Wc
+	 qvkYZ2NPv6s9t+u1sQ+2b27OMI7uPt4P/JNYkAhkmpnrPf/bQthPy5uOa8+Kthzw31
+	 0RHSQb18DzqadSzsXHMPQXA/GmqsCScFdt5MJ6Vw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D15E2F8053D;
-	Mon, 24 Oct 2022 14:54:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 493C3F8052F;
+	Mon, 24 Oct 2022 15:04:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 109D2F8053D; Mon, 24 Oct 2022 14:54:38 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id A4A4BF80533; Mon, 24 Oct 2022 15:04:21 +0200 (CEST)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 91B28F80506
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 14:54:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91B28F80506
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47192F80431
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 15:04:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47192F80431
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="S7KytBzr"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 0BC016133B;
- Mon, 24 Oct 2022 12:54:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45FAAC433C1;
- Mon, 24 Oct 2022 12:54:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666616073;
- bh=R1hLjeE/13RmZT9ufBz7rWLCq9H/tdDCnbvNc5MNSl8=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=S7KytBzrEgUtUvhGpSBPw7Ci7Dxyb9OFPQEbkKVNQlekdg+ZQ4mJD3y8aEOzncjew
- raradZC55KujNvnu2t3Wkr/opFo1x5/QrOcSlOD8p5SmKKiBZKiEK8ainnHCkV7Vam
- cc//z2BK+Sj83zqcBD74KQGINKt9CztkjbKXhm0OSmmu1z9avL875s4v8UTegY4LDu
- VzG8SFuGv3N55n3iVRXsQgxIv6sHe5cPPLv/Zr1LlnDau04jbbR483flnOBHVK47hD
- OUTWxy+IJwIobFo/Qk3bZuy21AXjptm2Z5gCKLHj5/h5AvSUUkzVsFXkmls4YqSosP
- DhWPGoEo8Zmgw==
-From: Mark Brown <broonie@kernel.org>
-To: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh@kernel.org>
-In-Reply-To: <20221021175721.4005601-1-robh@kernel.org>
-References: <20221021175721.4005601-1-robh@kernel.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: Convert dmic-codec to DT schema
-Message-Id: <166661607199.206380.14009012211378211408.b4-ty@kernel.org>
-Date: Mon, 24 Oct 2022 13:54:31 +0100
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="RD2hU3Ko"
+Received: by mail-wr1-x435.google.com with SMTP id bk15so16058454wrb.13
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 06:04:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=ZcT81dsOX50qiaKz4vINoGth0qfnpFewSvnJVe0v6GM=;
+ b=RD2hU3KoduxI2YfWHayb28ysUwpHbeEzDpkWXSRe1hQVBB7vI5HJkjAEOIp9GG2e7S
+ Wb8q5wX5u3AoTjSl5a5sbj/7i5czN8IYwPyD7tCuhNgz9d6u4YJtwfNSYMSbwf3gEEaf
+ /407NCLoWXbwhgNM/ZT9cIH+9qgVRjxEGcw0sNpl6mcjbTO7mnAA3pOMxDjLLRGjymV/
+ DxX+D/Qf16djnAO0Cr5LUZLE3sUzs8Y4Tq8Xm44cc3n2Ws8abt1d2qWmvUey02whjXzQ
+ Ct1pgHdNW6H2JeMtgJ8VSygtxcbi+fwPiy80AP5If1uw5PDmCDn76/gs4jErczN/c86b
+ BOpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=ZcT81dsOX50qiaKz4vINoGth0qfnpFewSvnJVe0v6GM=;
+ b=bPaMAN0afaFCt9jWhDQW/osR9tpFqBDvi7WR/TVeaXsCQ95xkyi5bC6ByR+A0HXI3x
+ adtN1kB7a+6d1/IzhSrOcOJ7Eqyd0p5yRDnjbEYTZZgplc1Kza8N1c1zUwqS9aOqYpn6
+ skrj6BHn6XqKLBnfxVVAwmcL5N3uD1ZYBZyVDzRv+NDOpXq1YtXq7iLHX00cQsaysPHv
+ y5bRDP1t9VJ5BTOQLjreDSxAFRUOvVxGgtB7vMKiOvYmLECts8k2u7Ad1XK1FqAMKCzk
+ Ni0vUojU9RaiFx5rUMdJSefruv4jb6YTpI8M75EbuBSR6sg2ROvzDiZoRB7tCV7PjYrQ
+ jBXg==
+X-Gm-Message-State: ACrzQf2LSACeoVy7B3irRyExyDsk4qkIkkQKolV2RbTkTjZRFaMxac/6
+ N3P/UJmXmsHJejge2QcQCqc=
+X-Google-Smtp-Source: AMsMyM5PWCQoY1oCIj0f9q6/UiAGZDAiFpyTTtXsShfeswh89X4+ely/gnqcv+fClVfORRlZZaNl6w==
+X-Received: by 2002:a05:6000:1882:b0:230:9046:122 with SMTP id
+ a2-20020a056000188200b0023090460122mr20371363wri.49.1666616657310; 
+ Mon, 24 Oct 2022 06:04:17 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net.
+ [80.193.200.194]) by smtp.gmail.com with ESMTPSA id
+ f8-20020a0560001b0800b0023677fd2657sm1378422wrz.52.2022.10.24.06.04.16
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 24 Oct 2022 06:04:16 -0700 (PDT)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: rawmidi: remove variable dest_frames
+Date: Mon, 24 Oct 2022 14:04:15 +0100
+Message-Id: <20221024130415.2155860-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-fc921
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,38 +96,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 21 Oct 2022 12:57:21 -0500, Rob Herring wrote:
-> Convert the dmic-codec binding to DT schema format.
-> 
-> The '#sound-dai-cells' and 'sound-name-prefix' properties were not
-> documented, but are in use, so add them.
-> 
-> 
+Variable dest_frames is just being incremented and it's never used
+anywhere else. The variable and the increment are redundant so
+remove it.
 
-Applied to
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ sound/core/rawmidi.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
+index d8edb6055072..7147fda66d93 100644
+--- a/sound/core/rawmidi.c
++++ b/sound/core/rawmidi.c
+@@ -1050,7 +1050,6 @@ static int receive_with_tstamp_framing(struct snd_rawmidi_substream *substream,
+ 	struct snd_rawmidi_runtime *runtime = substream->runtime;
+ 	struct snd_rawmidi_framing_tstamp *dest_ptr;
+ 	struct snd_rawmidi_framing_tstamp frame = { .tv_sec = tstamp->tv_sec, .tv_nsec = tstamp->tv_nsec };
+-	int dest_frames = 0;
+ 	int orig_count = src_count;
+ 	int frame_size = sizeof(struct snd_rawmidi_framing_tstamp);
+ 
+@@ -1077,7 +1076,6 @@ static int receive_with_tstamp_framing(struct snd_rawmidi_substream *substream,
+ 		runtime->avail += frame_size;
+ 		runtime->hw_ptr += frame_size;
+ 		runtime->hw_ptr %= runtime->buffer_size;
+-		dest_frames++;
+ 	}
+ 	return orig_count - src_count;
+ }
+-- 
+2.37.3
 
-Thanks!
-
-[1/1] ASoC: dt-bindings: Convert dmic-codec to DT schema
-      commit: 8da313ad1bd020859e2ee8a3e8e97e52425e539c
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
