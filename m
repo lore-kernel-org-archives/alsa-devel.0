@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D39D5ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 14:02:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53F5EC38A2D
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 14:03:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0438F64D2;
-	Mon, 24 Oct 2022 16:01:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0438F64D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D0E17435;
+	Mon, 24 Oct 2022 16:02:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D0E17435
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666620169;
-	bh=+kCDjHbjf6aOggtkf1f/J150TB9aFvJ+vmf+LNzmoAc=;
+	s=default; t=1666620193;
+	bh=Sc6JOD4Tunt6yjY/pw2QNmtEIQoOXkr12v3xC+5FxkQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ra85UOVUwlLT8UxhjvF+mzkA7SRQN25iR22E6M8GQBAD78+y8rSa0LEz+/psFhIEM
-	 60Z3+CqSfnNMVe9WoLz5O0C5ap9iU7U1E0Qf4ctlW+qNuBrbjmJqDnDTKQfiXrmF0E
-	 9vIGcsn5H/u1fJPEsablqoMNk1TPcLhI5w/pcXyo=
+	b=P3YbTAUxz3OtO53xAm0tbEUNHh8f1L0JPWG6/vqbaZmTclp0cJsapgrJowkhFkn/2
+	 /xUbNIdXY77/r2+2Bpwxn6Izy9J1yaH6YwuXwj1Gj9BDLRfzO+25hj0C6ZHBdWtdGg
+	 nUKihnsrjomL3JBTbpOiMbK3ZALBXEz7EvCE0N6s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F3F2F8052F;
-	Mon, 24 Oct 2022 16:01:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D372F80542;
+	Mon, 24 Oct 2022 16:02:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB15DF80533; Mon, 24 Oct 2022 16:01:56 +0200 (CEST)
+ id 74B42F80506; Mon, 24 Oct 2022 16:02:05 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83644F80506
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 16:01:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83644F80506
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E015F80506
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 16:02:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E015F80506
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="wtlsJZiF"; 
+ header.b="BGOi0szi"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="qX3M7Qos"
+ header.b="3vR6boii"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id EE32922094;
- Mon, 24 Oct 2022 14:01:53 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7BF6F22085;
+ Mon, 24 Oct 2022 14:02:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1666620113; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1666620122; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=O5wbJg24BnX4/aa3sBO7xy1JrwZ2Eu5mva+x7WgR2s0=;
- b=wtlsJZiFpbcse0yZ1XcfhZAW9a4I12chUbKZdqDK8vwbTXcegmAVP2Pbl8Jl/G+3Jl5gPg
- BUVgjZpLbUmJmNExhEpQglUAQsdqcSp4dlGtvNM31lPqB0poIbuYQtArpkysonVEtTm9bO
- zUSCNbkiXG3yJeWyMSoku0YJPCFPiYk=
+ bh=3sD7i7jD39JQ2MHQVuKwknQl0Qpl+ItKUV0N3q/SQGs=;
+ b=BGOi0sziyozHQ+XLCV85rOmCWpb9AlPG3DodBvcnhI37g4bQEYncTByvF8JXK8vQqW5W7w
+ oqTY/KzxpZbNy1fgHKALUKtrg7wI9D8rw3Dxceka98XE9JJTdn7Vv60bSVbAMAk8HZzSnY
+ hdTwZr1OSmiGv0JuqmDbeyemY2j8UiQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1666620113;
+ s=susede2_ed25519; t=1666620122;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=O5wbJg24BnX4/aa3sBO7xy1JrwZ2Eu5mva+x7WgR2s0=;
- b=qX3M7QosHLUYDxA//KII7/1t6AKBpowqpmkPzLt6DKHctgwFvd6rHqRSvEgoEbsIs64wWh
- szZz1LFrEoqchUBQ==
+ bh=3sD7i7jD39JQ2MHQVuKwknQl0Qpl+ItKUV0N3q/SQGs=;
+ b=3vR6boiibbl/jObS+YAsskf5ZsEbThJHEqnhH5E4WZm/lKDc6h1j3H126ssIcENukaPnGy
+ ITdwkZ7K+CcKsXAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C71C013357;
- Mon, 24 Oct 2022 14:01:53 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5A12413357;
+ Mon, 24 Oct 2022 14:02:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id k4X1L9GaVmOdEQAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 24 Oct 2022 14:01:53 +0000
-Date: Mon, 24 Oct 2022 16:01:53 +0200
-Message-ID: <87h6zt8gmm.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id pj1gFdqaVmO0EQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 24 Oct 2022 14:02:02 +0000
+Date: Mon, 24 Oct 2022 16:02:01 +0200
+Message-ID: <87fsfd8gme.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Colin Ian King <colin.i.king@gmail.com>
-Subject: Re: [PATCH] ALSA: rawmidi: remove variable dest_frames
-In-Reply-To: <20221024130415.2155860-1-colin.i.king@gmail.com>
-References: <20221024130415.2155860-1-colin.i.king@gmail.com>
+Subject: Re: [PATCH] ALSA: asihpi: remove variable loops
+In-Reply-To: <20221024130803.2156295-1-colin.i.king@gmail.com>
+References: <20221024130803.2156295-1-colin.i.king@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -95,10 +95,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 24 Oct 2022 15:04:15 +0200,
+On Mon, 24 Oct 2022 15:08:03 +0200,
 Colin Ian King wrote:
 > 
-> Variable dest_frames is just being incremented and it's never used
+> Variable loops is just being incremented and it's never used
 > anywhere else. The variable and the increment are redundant so
 > remove it.
 > 
