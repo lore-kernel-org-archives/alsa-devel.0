@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7AB7FA3744
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 16:56:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A65C5C38A2D
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 16:56:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0B4D6FB3;
-	Mon, 24 Oct 2022 18:55:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0B4D6FB3
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDEBD2F77;
+	Mon, 24 Oct 2022 18:55:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDEBD2F77
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666630565;
-	bh=qmjhZyi70p2iPcs+iHIxnVjUb/ktUC2fx19Ez2zQMwA=;
+	s=default; t=1666630573;
+	bh=w9swYIkXNkBZZfU2ZBWl9Z1WnGYvpxxdRvAvou0740A=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Z64MPuwT34UrxJW3XL0ogCtwfWq/ai1aZASCTME4VRpJFkxKpQ9Dtx8Srm4JsOP7h
-	 8EbcdLLl7bZXsy5PyC7cL0GrvqY3e98jfpFz3sAmNItosRUWOtJF1R3hsqRzvZ0jd0
-	 72A2IIx0uT7OKfHXa2+t1LP7ptqR+o1gI+KpdSyw=
+	b=pfJcLzvVGAX+38D50tem/FY4YZh1kFJGhaGHuJnjZi8hJKstW1cNrOEq9s04CjSS9
+	 LwZLzJ2RbbYpYfClqhUiv51uOQXQs/yrkA8RNU4C3wUK8jOGG/Y5CF0RFK8cafWS7h
+	 kacw4iIGVbmbObiCdA4DlkuuSvGH1dzfgY0fe3q4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2587FF8054A;
+	by alsa1.perex.cz (Postfix) with ESMTP id CC7AFF8058C;
 	Mon, 24 Oct 2022 18:53:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF88DF8057D; Mon, 24 Oct 2022 18:53:38 +0200 (CEST)
+ id 70D90F8057E; Mon, 24 Oct 2022 18:53:39 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DB66DF8052F
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 18:53:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB66DF8052F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 33AD3F80431
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 18:53:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33AD3F80431
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="IqkxFCj3"
+ header.b="Iw4VrSMR"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666630414; x=1698166414;
+ t=1666630408; x=1698166408;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=qmjhZyi70p2iPcs+iHIxnVjUb/ktUC2fx19Ez2zQMwA=;
- b=IqkxFCj3CYgRANeyN6deetXTQINBIOZNeCbbAPDsrStcJy/KwFlI0PXn
- oN8OC68+fxW2VwNL3BuhbvPhcCCQThYf+UN0v7DGvS1lv35J3BQk2Mbqb
- B+U1Hqtu0c0VmNou/d8FlJeiAvQJ7fvD2GV14wfId6CY15Ae+zTUdMFap
- BH8S0rlrmcfp7Gbn4U7KOuVsdSKeQmkOnyBvZXSHoYNEZ+g3ZwMn5xIq/
- ZjuMA+3TfKAQxAXDEf0RxtfWzEOV/E7Boaidh4AyaEPYueo49D7t8e9LL
- cWmW3Q9h2z7s7b/kjy1iptpb8jJ3lRRCarpoI93xGQSErdWztgk6ogNT/ w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="287868647"
-X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="287868647"
+ bh=w9swYIkXNkBZZfU2ZBWl9Z1WnGYvpxxdRvAvou0740A=;
+ b=Iw4VrSMRH76kSCII5mbWKxzJGX1Y3HxHRH1BX+Ry3IvyrJ/golOrf1es
+ 0Ya2RVylYL8w7UhwEdm+DWd5/Og2xH4Ws5EVzXDQDIn1w3YBsyfpYWB/T
+ Mn54pipLEt/1e71pFxwhjrH3Ir2nmqEJHicx7QQlxlYzGwzweWOBaAbot
+ nyYLfWzA1uQm9RqiHqQenZFUrFahxwGjGvbCl+SW9gjELeq63sXijmsfO
+ O/SD2cnMdJSqu+lo7nXcmrNRGodLHKa642EQL962/qcUnch6HmnCVgEY3
+ gBqk/1xb8syFhyznIxAjHEWqoxSDjiVJIp+JBwotnM+GMTjDpnNtAGY32 Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="287868622"
+X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="287868622"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Oct 2022 09:53:29 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="609263067"
-X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="609263067"
+ 24 Oct 2022 09:53:24 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="609263050"
+X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="609263050"
 Received: from tdsilva-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.213.186.236])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Oct 2022 09:53:28 -0700
+ 24 Oct 2022 09:53:23 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 09/16] ASoC: SOF: Intel: hda-ctrl: remove useless sleep
-Date: Mon, 24 Oct 2022 11:53:03 -0500
-Message-Id: <20221024165310.246183-10-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 03/16] ASoC: SOF: ops: add readb/writeb helpers
+Date: Mon, 24 Oct 2022 11:52:57 -0500
+Message-Id: <20221024165310.246183-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221024165310.246183-1-pierre-louis.bossart@linux.intel.com>
 References: <20221024165310.246183-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Rander Wang <rander.wang@intel.com>, broonie@kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,37 +88,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The hda_dsp_ctrl_link_reset() already performs a usleep and a check that
-GCTL has been modified, there's no point in waiting more.
+These will be used to add more consistency in the SOF core and
+drivers.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-ctrl.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/sof/ops.h      | 18 ++++++++++++++++++
+ sound/soc/sof/sof-priv.h |  4 ++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda-ctrl.c b/sound/soc/sof/intel/hda-ctrl.c
-index 0c29bb196e593..7f387ad5ef6f4 100644
---- a/sound/soc/sof/intel/hda-ctrl.c
-+++ b/sound/soc/sof/intel/hda-ctrl.c
-@@ -207,16 +207,12 @@ int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset)
- 			goto err;
- 		}
+diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
+index a72f8043be64d..511c798eb1ebb 100644
+--- a/sound/soc/sof/ops.h
++++ b/sound/soc/sof/ops.h
+@@ -302,6 +302,15 @@ static inline int snd_sof_debugfs_add_region_item(struct snd_sof_dev *sdev,
+ }
  
--		usleep_range(500, 1000);
--
- 		/* exit HDA controller reset */
- 		ret = hda_dsp_ctrl_link_reset(sdev, false);
- 		if (ret < 0) {
- 			dev_err(sdev->dev, "error: failed to exit HDA controller reset\n");
- 			goto err;
- 		}
--
--		usleep_range(1000, 1200);
- 	}
+ /* register IO */
++static inline void snd_sof_dsp_writeb(struct snd_sof_dev *sdev, u32 bar,
++				      u32 offset, u8 value)
++{
++	if (sof_ops(sdev)->writeb)
++		sof_ops(sdev)->writeb(sdev, sdev->bar[bar] + offset, value);
++	else
++		writeb(value,  sdev->bar[bar] + offset);
++}
++
+ static inline void snd_sof_dsp_write(struct snd_sof_dev *sdev, u32 bar,
+ 				     u32 offset, u32 value)
+ {
+@@ -320,6 +329,15 @@ static inline void snd_sof_dsp_write64(struct snd_sof_dev *sdev, u32 bar,
+ 		writeq(value, sdev->bar[bar] + offset);
+ }
  
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++static inline u8 snd_sof_dsp_readb(struct snd_sof_dev *sdev, u32 bar,
++				   u32 offset)
++{
++	if (sof_ops(sdev)->readb)
++		return sof_ops(sdev)->readb(sdev, sdev->bar[bar] + offset);
++	else
++		return readb(sdev->bar[bar] + offset);
++}
++
+ static inline u32 snd_sof_dsp_read(struct snd_sof_dev *sdev, u32 bar,
+ 				   u32 offset)
+ {
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 403e81220244a..d3ede97b67590 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -171,6 +171,10 @@ struct snd_sof_dsp_ops {
+ 	 * TODO: consider removing these operations and calling respective
+ 	 * implementations directly
+ 	 */
++	void (*writeb)(struct snd_sof_dev *sof_dev, void __iomem *addr,
++		       u8 value); /* optional */
++	u8 (*readb)(struct snd_sof_dev *sof_dev,
++		    void __iomem *addr); /* optional */
+ 	void (*write)(struct snd_sof_dev *sof_dev, void __iomem *addr,
+ 		      u32 value); /* optional */
+ 	u32 (*read)(struct snd_sof_dev *sof_dev,
 -- 
 2.34.1
 
