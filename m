@@ -4,82 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D4A7ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 13:10:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BC8BECAAA1
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 13:12:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0E182F58;
-	Thu, 27 Oct 2022 15:09:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0E182F58
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E2242F58;
+	Thu, 27 Oct 2022 15:11:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E2242F58
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666876237;
-	bh=MCLBFO3GdgdeuhUJUcNaR1oNkl/w8+FZPyXKz03sSkk=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=iUQaVBb1/+POLJakHtfSdA7EYicwiwErlBdTpgEVNsOgmKC4rmEhbsCdwRaNg6rqH
-	 Jox/hjDaDc2AeR2cUXRwctZFuK2eRgXkQhgykmao4XcD+Y4C16CyOwAzs/hAhe9HPB
-	 kS5fmOeCXLzE1RJZmaEa6HsGt0OBpOsLB6OowHvU=
+	s=default; t=1666876338;
+	bh=FKCfpZ3vKNsKl3535D48sO9oOlR9vGFlgliflUjjq28=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MTDUO0vOV88P0ko90dBPz4HyE8I81VaNLEXdcIrK5bRyNJHM6DwPwglcZ/qM9ECaJ
+	 QBAEFSQ96CHr6clctgb1qqoGdgd3UxTOmkFR0i+Wc6FJHqVzNDAlbUXE6vlRkN4nxM
+	 kGDmpqpF3GIOfeNahkCy98c7eVodh66B9CR/sRMM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4135FF8025A;
-	Thu, 27 Oct 2022 15:09:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4BD93F80100;
+	Thu, 27 Oct 2022 15:11:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A679AF8025E; Thu, 27 Oct 2022 15:09:45 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 900CFF80533; Mon, 24 Oct 2022 19:42:46 +0200 (CEST)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com
+ [IPv6:2a00:1450:4864:20::52f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 90D4EF80095
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 15:09:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90D4EF80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F52CF80240
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 19:42:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F52CF80240
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="hd9Dis9q"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666876183; x=1698412183;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=MCLBFO3GdgdeuhUJUcNaR1oNkl/w8+FZPyXKz03sSkk=;
- b=hd9Dis9qN94nuHH3j8JninC6QCD5w7acol/NyihbjuZlzNcGxkAJJpXg
- fdv/dS6P1CnMzJLC5Sza8mHngvNSbd+GdtpO3v1o9vkPr3VMnM5fTuIy+
- 8vhaUlfrSAcp1RA1NAyO9SnpTWHHDVbzEEer8xf3JWPjEKV6faCKF0bGW
- vojbpRw7vv0Il608V9vhqzSZkw/rdsXHhVjQA2Ub+QqlcFhTH9R6CFPn9
- 8QzkvVVZbcg/eT/dKiIZmb7KlPO75bReVADNIvlUR8khv2DaPqrR7KrQs
- D+LOPISzExrePA5ZyS4YyF3yekqnzSWFXGthJWgiBloIpPxwP3S9OdxGj A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="295625498"
-X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="295625498"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 06:09:36 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="757692314"
-X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="757692314"
-Received: from djohn1-mobl1.amr.corp.intel.com (HELO [10.212.54.86])
- ([10.212.54.86])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 06:09:35 -0700
-Message-ID: <86b64496-71e0-7e2d-0911-f67e1684db20@linux.intel.com>
-Date: Thu, 27 Oct 2022 08:45:21 -0400
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="jNSWdfu1"
+Received: by mail-ed1-x52f.google.com with SMTP id y69so13838380ede.5
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 10:42:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=XVuWbfAQNF7o8tY+FUjntd4BtEqKHgEbwYupJmXfPzQ=;
+ b=jNSWdfu1c1zIwJqfwTl2ypRfT5G0cT7KaHsjoZMSo5EX5QsBYFbu3oloYWzPxYuMqS
+ alBRLws2jcsc/gf1nPOE64Mn2XKyFkRXVMaFq3WE+FvP77g6Rb+mhwPExUcm7peIB4vW
+ ONiRssssRFy8nqxJESJEPy6RzuGsQuxdgq+vXhZGHcdtPDkPxSIdlD5D6vitU1TETMyl
+ G3SNO0Ix3YeQP+T4Zz+tVz5v39pfX7tjLMHkw/RmJCXh4vFqRAddxirQfNNyfEOEsbH8
+ xxjQoDK8SFI9/dNXvbjn3Bjejf0N7SirIMM6qY4wmYsOLV/397yPaB2mWSNqU+lnB6T9
+ 12Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=XVuWbfAQNF7o8tY+FUjntd4BtEqKHgEbwYupJmXfPzQ=;
+ b=vnE9ErKMjA13hGKdKlVwFSyJUP/oFJZ7ZednSGrmoWOU8W3HiNcYdDlTVd55yzOlpy
+ xC74PIyjN40d+dNUcELXLWzRKAG0SXfT5Z1A+oaJDzWBcEd9pcCibcHLrtjVsVTq4pxo
+ 5ZtoYZ8/ZlveiOeXJ9BIVPF9p1Y9oF9VvMvYE0pvU8L5L7agaEHg6Yo319CUzsoGfir0
+ Y9ZE74plAu+NDi+8BtoBeCXxovLTrOvmrQ0J5dyvI1SrItLJ4kgPjt+QGkZew/AqSfMv
+ EFhQ9RfF+5jrbWhqO00nOpLAQeL/uqw9RSg/MECiuMOuplHc3cFGZXgBQFEd9tzfqKf/
+ z2TA==
+X-Gm-Message-State: ACrzQf04nBLsqLzP2f70kQbUReW+UXTsHb0kzZbvjwdmSm2SrdZMm+p+
+ XZRSBtIAdA6kQNdbRpYrHOzqmLq6rzSC5wpz
+X-Google-Smtp-Source: AMsMyM7LPndgC61ilqd4BgQfiaWkB0clqS6ENrbal3vIDrdwMTiaaYaVYxzrTfo1Ziq4jnC2G69I3w==
+X-Received: by 2002:a05:6402:2794:b0:461:d60c:30c7 with SMTP id
+ b20-20020a056402279400b00461d60c30c7mr4316218ede.392.1666633360755; 
+ Mon, 24 Oct 2022 10:42:40 -0700 (PDT)
+Received: from aw-m17.localdomain
+ (cpc91250-cmbg18-2-0-cust153.5-4.cable.virginm.net. [82.8.243.154])
+ by smtp.gmail.com with ESMTPSA id
+ a7-20020a17090640c700b0073d7bef38e3sm191219ejk.45.2022.10.24.10.42.39
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 24 Oct 2022 10:42:40 -0700 (PDT)
+From: Brent Mendelsohn <mendiebm@gmail.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: amd: yc: Add Alienware m17 R5 AMD into DMI table
+Date: Mon, 24 Oct 2022 18:42:27 +0100
+Message-Id: <20221024174227.4160-1-mendiebm@gmail.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.2.2
-Subject: Re: [PATCH 6/6] soundwire: qcom: add support for v1.7 Soundwire
- Controller
-Content-Language: en-US
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org,
- yung-chuan.liao@linux.intel.com
-References: <20221026110210.6575-1-srinivas.kandagatla@linaro.org>
- <20221026110210.6575-7-srinivas.kandagatla@linaro.org>
- <e3ebba30-65ec-183a-eb91-c5147c28441d@linux.intel.com>
- <619a829e-d902-eba9-537e-176a8acb149c@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <619a829e-d902-eba9-537e-176a8acb149c@linaro.org>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, andersson@kernel.org,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, sanyog.r.kale@intel.com
+X-Mailman-Approved-At: Thu, 27 Oct 2022 15:11:26 +0200
+Cc: Brent Mendelsohn <mendiebm@gmail.com>, broonie@kernel.org,
+ mario.limonciello@amd.com, Syed.SabaKareem@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,23 +97,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+This model requires an additional detection quirk to enable the
+internal microphone - BIOS doesn't seem to support AcpDmicConnected
+(nothing in acpidump output).
 
->>> @@ -1582,6 +1597,7 @@ static const struct of_device_id
->>> qcom_swrm_of_match[] = {
->>>       { .compatible = "qcom,soundwire-v1.3.0", .data =
->>> &swrm_v1_3_data },
->>>       { .compatible = "qcom,soundwire-v1.5.1", .data =
->>> &swrm_v1_5_data },
->>>       { .compatible = "qcom,soundwire-v1.6.0", .data =
->>> &swrm_v1_6_data },
->>> +    { .compatible = "qcom,soundwire-v1.7.0", .data = &swrm_v1_5_data },
->>
->> is this line intentional, it looks odd that 1.7 is compatible with 1.5,
->> but 1.6 isn't?
-> This is more around the data rather than compatible, 1.6 data is marked
-> with sw_clk_gate_required = true which is not the case with 1.7.
-> 
-> from 1.5 we use same frame shape info for 1.6, 1.7, except that 1.6 had
-> this sw_clk_gate_required flag set.
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=216590
+Signed-off-by: Brent Mendelsohn <mendiebm@gmail.com>
+---
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-probably worthy of a comment to show intent and explain the differences?
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 2cb50d5cf1a9..a868a890f00c 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -185,6 +185,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "UM5302TA"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Alienware"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Alienware m17 R5 AMD"),
++		}
++	},
+ 	{}
+ };
+ 
+-- 
+2.37.3
+
