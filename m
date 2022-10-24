@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90CC3ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 16:57:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25700ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 16:58:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7BD16FB3;
-	Mon, 24 Oct 2022 18:57:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7BD16FB3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5208E6FED;
+	Mon, 24 Oct 2022 18:57:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5208E6FED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666630675;
-	bh=5A6z4HS1wgeguMfFzjOsEIy+RM6gl0SI+tyoAggKO7c=;
+	s=default; t=1666630689;
+	bh=sWOBwgRsoy9y5kURmZI6YfuFPM6WQDD0eUCExvrxxZ8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cdASBc48CpdpEXwixNBrkZNU8M1XF3hJkXgrWVRaeLbGyKpB89inUhy1FYzIjk9ae
-	 By8czZseWMaiRtDOKKAE1zTiU/6rBjj1fRpimcjInUzzbBsaqkQIEqNzIDP1C+a6UA
-	 zS9ZHf3xB7UCBkeaXy04ERpVAdCtx6u4POswt5mE=
+	b=FxwGl2fBNxLz+Sf0Ch9Wv7dfKnUCJ3DheS/fc2eJsGY4C4U2hgWIUxnC/CZjAmu/E
+	 S+GC1lITwDsGcTG0ww+LWjOFJ8a5+hroSLCY2mzkM82pIJ4U9shwFmHtwacFrjyov/
+	 KcbMO+AO53WAEFQEFumBg47fFVQe/UWwUMZLA/iE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A67E1F805C2;
-	Mon, 24 Oct 2022 18:53:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C78FF805C6;
+	Mon, 24 Oct 2022 18:53:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33E3EF805A9; Mon, 24 Oct 2022 18:53:45 +0200 (CEST)
+ id 430FDF8059F; Mon, 24 Oct 2022 18:53:45 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E36A6F80551
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 18:53:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E36A6F80551
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A753F8055A
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 18:53:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A753F8055A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="k/7LO3dl"
+ header.b="UlQHxJO5"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666630418; x=1698166418;
+ t=1666630414; x=1698166414;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=5A6z4HS1wgeguMfFzjOsEIy+RM6gl0SI+tyoAggKO7c=;
- b=k/7LO3dlLtdZ1uzBun3lOCFN/tcNEFona4sz1tvNKfP5qc04V1Pv+gq2
- 7j2fAvs5hqapldZtgL2wA77tOozop5jaL2Y5RE0Qw4X4qTyrdXNtldkEl
- qBgRvsSjrYGrKKWrYLZwLcHGDz9htkC81FM+0b+aMNmuRaOc2Sf3viDWV
- yhxbzz2/u8coTiOZoy2snKWwJxrR6UvITWJ6VZvr5L0B0cO4e5SJXVduD
- zwK2TWDKeljRFQF68ksVnEvXgtCZo9SBPxSW9ZbN7GcrpMoQB11SjYwL0
- SahqyGfMAhmoV0yqJJ1MY9BFsVsWj5M7qf9QehlESuamy0G2AlBPxzanO A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="287868671"
-X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="287868671"
+ bh=sWOBwgRsoy9y5kURmZI6YfuFPM6WQDD0eUCExvrxxZ8=;
+ b=UlQHxJO59TBUHSOxNj5fB+8YbbiszFHESwsA//X4Urm0em7XmkqbP/Dd
+ RETHUQQC2j0C/cEPOqektTidDAde+PFVBbDrQ7iyw8P9ONPQpzu3qHmTQ
+ JQxlZnH0KfE/OSfAJHjw3KSgTVQR4h3jwww9Qjh30QzmNZ2Nm3Ch9sx+F
+ lOBGyajc16Epc/eRsWXgF+gboLJQLPDFn/U1R/Grxzp39OGi9LtmYePUj
+ waGTIT5LFKrgfY57eKMWFGw9sTwXbnzNCGaIypgHQmuXINwacuAHMU26Q
+ E3IyGKYpkM7ETwa1CapI98vdq0CGqcdj/QdD3ROf0/PTX7GzXiZ4+B2Rl w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="287868655"
+X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="287868655"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Oct 2022 09:53:33 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="609263083"
-X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="609263083"
+ 24 Oct 2022 09:53:30 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="609263072"
+X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="609263072"
 Received: from tdsilva-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.213.186.236])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Oct 2022 09:53:32 -0700
+ 24 Oct 2022 09:53:29 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 15/16] ASoC: SOF: Intel: hda-stream: use snd_sof_dsp_updateb()
- helper
-Date: Mon, 24 Oct 2022 11:53:09 -0500
-Message-Id: <20221024165310.246183-16-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 11/16] ASoC: SOF: Intel: hda: remove useless check on GCTL
+Date: Mon, 24 Oct 2022 11:53:05 -0500
+Message-Id: <20221024165310.246183-12-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221024165310.246183-1-pierre-louis.bossart@linux.intel.com>
 References: <20221024165310.246183-1-pierre-louis.bossart@linux.intel.com>
@@ -88,50 +87,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-No functionality change, only code consistency.
+Now that we always do a full reset, there's no point in checking if
+the controller is always out-of-reset. This is always true by
+construction.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-stream.c | 4 ++--
- sound/soc/sof/intel/hda.h        | 1 +
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/sof/intel/hda-ctrl.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
-index 6d130b8028b1c..1a39178cbf20f 100644
---- a/sound/soc/sof/intel/hda-stream.c
-+++ b/sound/soc/sof/intel/hda-stream.c
-@@ -398,7 +398,6 @@ int hda_dsp_iccmax_stream_hw_params(struct snd_sof_dev *sdev, struct hdac_ext_st
- 				    struct snd_dma_buffer *dmab,
- 				    struct snd_pcm_hw_params *params)
- {
--	struct hdac_bus *bus = sof_to_bus(sdev);
- 	struct hdac_stream *hstream = &hext_stream->hstream;
- 	int sd_offset = SOF_STREAM_SD_OFFSET(hstream);
- 	int ret;
-@@ -456,7 +455,8 @@ int hda_dsp_iccmax_stream_hw_params(struct snd_sof_dev *sdev, struct hdac_ext_st
- 				mask, mask);
+diff --git a/sound/soc/sof/intel/hda-ctrl.c b/sound/soc/sof/intel/hda-ctrl.c
+index e3334693c2926..8a8b5f93db254 100644
+--- a/sound/soc/sof/intel/hda-ctrl.c
++++ b/sound/soc/sof/intel/hda-ctrl.c
+@@ -214,13 +214,6 @@ int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev)
+ 	}
  
- 	/* Follow HW recommendation to set the guardband value to 95us during FW boot */
--	snd_hdac_chip_updateb(bus, VS_LTRP, HDA_VS_INTEL_LTRP_GB_MASK, HDA_LTRP_GB_VALUE_US);
-+	snd_sof_dsp_updateb(sdev, HDA_DSP_HDA_BAR, HDA_VS_INTEL_LTRP,
-+			    HDA_VS_INTEL_LTRP_GB_MASK, HDA_LTRP_GB_VALUE_US);
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+-	/* check to see if controller is ready */
+-	if (!snd_hdac_chip_readb(bus, GCTL)) {
+-		dev_dbg(bus->dev, "controller not ready!\n");
+-		ret = -EBUSY;
+-		goto err;
+-	}
+-
+ 	/* Accept unsolicited responses */
+ 	snd_hdac_chip_updatel(bus, GCTL, AZX_GCTL_UNSOL, AZX_GCTL_UNSOL);
  
- 	/* start DMA */
- 	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, sd_offset,
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index b2a785d0f0e94..17ed7e60cae81 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -307,6 +307,7 @@
- /* Intel Vendor Specific Registers */
- #define HDA_VS_INTEL_EM2		0x1030
- #define HDA_VS_INTEL_EM2_L1SEN		BIT(13)
-+#define HDA_VS_INTEL_LTRP		0x1048
- #define HDA_VS_INTEL_LTRP_GB_MASK	0x3F
- 
- /*  HIPCI */
 -- 
 2.34.1
 
