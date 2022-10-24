@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20106ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 16:58:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43EC1C38A2D
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 16:58:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2CCB95CFC;
-	Mon, 24 Oct 2022 18:57:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CCB95CFC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5BE905062;
+	Mon, 24 Oct 2022 18:57:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BE905062
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666630704;
-	bh=EIW4RUhtrCNYD5GG4iwRe+aaOzzEqGdGun5VizkT/cw=;
+	s=default; t=1666630728;
+	bh=s6/a6QMiU7l2u3Ca/40fg7t2cSVDMjLr0ervSJHqJNE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DYi4WfPI0Lp8TfFmhP630BuzMkbdbR+yZd1Kdv8H0Upup1Vpja2TrWbuxV22X5OOd
-	 lb8b02vspfWINDIkPy6/dXkx1BBLK8O25GkGwpPdV5nVQeMBsTJ0i0xcpLZVwdsm6m
-	 nylYEXCtZwP3CZnmCPZLaYq7eyzS8KwatG4SVfOk=
+	b=fqiMqp8vW+lh5MQGkZARFj0viLTMuTAgAddyslGescRGnmbitbhg5IXWc/gr/gpJg
+	 Ytqf7LfkZJw93mr0RDHh1RgZO54J3b/QOm1KDQEaX+/dtvHskJ5ylYFkdsF0jAozAs
+	 gJJRr16ABA1sXBF/34wzjEzUxe+yjwnVUwa470kg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A5E48F805C8;
-	Mon, 24 Oct 2022 18:53:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6D54F805D9;
+	Mon, 24 Oct 2022 18:53:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3129F805AA; Mon, 24 Oct 2022 18:53:45 +0200 (CEST)
+ id 9252CF805B2; Mon, 24 Oct 2022 18:53:48 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE6BFF80571
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 18:53:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE6BFF80571
+ by alsa1.perex.cz (Postfix) with ESMTPS id 974A4F80564
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 18:53:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 974A4F80564
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="lL/tybk+"
+ header.b="jUJoFB2f"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666630418; x=1698166418;
+ t=1666630416; x=1698166416;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=EIW4RUhtrCNYD5GG4iwRe+aaOzzEqGdGun5VizkT/cw=;
- b=lL/tybk+o5egEShXSPl9u+sd4vsp6/HAqzjHjzykoVJR/rM8JuEmsqcb
- wPjXAWYCAnsSZftpUaUJvOtIqR+4cKIBMcEaVdtML77gljNnI/RR4aw/X
- 1aTPv5HBuOJAzRri4nI1hfVcSUwer8vKSIzLPlEdZA8MKfSHchYD1GOwQ
- 44f7AESWs0fmiQIN8lElIWqoXMnzSytkZfZWjZx6N5NiLwPQ7LHQ8EMO1
- 5VwaQHRQZtwY7QxefgJRQR0E/8sS68qofaA6NnH7v5A5ESrx3No7QAa2K
- /BMh2sb+xjDjq4GDFzmHMnv0PTAbC9aizFf1ljho3MWg4YLrG84fRVUeN g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="287868675"
-X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="287868675"
+ bh=s6/a6QMiU7l2u3Ca/40fg7t2cSVDMjLr0ervSJHqJNE=;
+ b=jUJoFB2fbdgH9T+tjIN2KwQczYYu+NapV23xhgyT+rpW3CrXfgfDLs5P
+ UIeWaynC874w0Rl0YOMeV+wgDlcge6YYmORYjg8yy9dInlGxf2ZqTp+OI
+ b3y2fXoWV+BoZpSlMl6vkPhCUa0rMiMM8o3ebwpfFZFMc94/f5JlLIAGo
+ XEx2cn27dmxaNkdx7GtYO0BIf+UFa/zARRF/AL+EOLJIviQgc525Pk1J/
+ LdrkmNnh0b7vGYbOLl+qno4h/10Y1QdMGAeohCI8jQ8NlJFd2Wa835PWH
+ wKkM1qhk/d+BlAUQeNv2mT0M2ahbWOvbfQkYL1eZgbZ+yqEkKft9SUDLp w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="287868667"
+X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="287868667"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Oct 2022 09:53:34 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="609263091"
-X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="609263091"
+ 24 Oct 2022 09:53:32 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="609263082"
+X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="609263082"
 Received: from tdsilva-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.213.186.236])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Oct 2022 09:53:33 -0700
+ 24 Oct 2022 09:53:32 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 16/16] ASoC: SOF: Intel: hda-stream: use readb/writeb for
- stream registers
-Date: Mon, 24 Oct 2022 11:53:10 -0500
-Message-Id: <20221024165310.246183-17-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 14/16] ASoC: SOF: Intel: hda: use SOF helper for consistency
+Date: Mon, 24 Oct 2022 11:53:08 -0500
+Message-Id: <20221024165310.246183-15-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221024165310.246183-1-pierre-louis.bossart@linux.intel.com>
 References: <20221024165310.246183-1-pierre-louis.bossart@linux.intel.com>
@@ -88,34 +87,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-readb/writeb are used directly without any wrappers or references to
-the BAR, as usually done for other registers.
+No functionality change, just more consistency in the code.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-stream.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sof/intel/hda.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
-index 1a39178cbf20f..c858f30c08f9b 100644
---- a/sound/soc/sof/intel/hda-stream.c
-+++ b/sound/soc/sof/intel/hda-stream.c
-@@ -736,11 +736,11 @@ static bool hda_dsp_stream_check(struct hdac_bus *bus, u32 status)
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 2ee414600f779..79c32d948b2de 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -625,7 +625,6 @@ static bool hda_check_ipc_irq(struct snd_sof_dev *sdev)
  
- 	list_for_each_entry(s, &bus->stream_list, list) {
- 		if (status & BIT(s->index) && s->opened) {
--			sd_status = snd_hdac_stream_readb(s, SD_STS);
-+			sd_status = readb(s->sd_addr + SOF_HDA_ADSP_REG_SD_STS);
+ void hda_ipc_irq_dump(struct snd_sof_dev *sdev)
+ {
+-	struct hdac_bus *bus = sof_to_bus(sdev);
+ 	u32 adspis;
+ 	u32 intsts;
+ 	u32 intctl;
+@@ -637,7 +636,7 @@ void hda_ipc_irq_dump(struct snd_sof_dev *sdev)
+ 	intsts = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTSTS);
+ 	intctl = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL);
+ 	ppsts = snd_sof_dsp_read(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPSTS);
+-	rirbsts = snd_hdac_chip_readb(bus, RIRBSTS);
++	rirbsts = snd_sof_dsp_readb(sdev, HDA_DSP_HDA_BAR, AZX_REG_RIRBSTS);
  
- 			trace_sof_intel_hda_dsp_stream_status(bus->dev, s, sd_status);
- 
--			snd_hdac_stream_writeb(s, SD_STS, sd_status);
-+			writeb(sd_status, s->sd_addr + SOF_HDA_ADSP_REG_SD_STS);
- 
- 			active = true;
- 			if ((!s->substream && !s->cstream) ||
+ 	dev_err(sdev->dev, "hda irq intsts 0x%8.8x intlctl 0x%8.8x rirb %2.2x\n",
+ 		intsts, intctl, rirbsts);
 -- 
 2.34.1
 
