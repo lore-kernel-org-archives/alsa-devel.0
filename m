@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F4D7ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 16:57:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B821C38A2D
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 16:57:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C3A87036;
-	Mon, 24 Oct 2022 18:56:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C3A87036
+	by alsa0.perex.cz (Postfix) with ESMTPS id ABF547041;
+	Mon, 24 Oct 2022 18:56:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABF547041
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666630627;
-	bh=dlZlIGSlCoUGXrbXP2irFKEUlQlv/4Gvwh9efHK8Cz4=;
+	s=default; t=1666630643;
+	bh=Cxb94rhXkeUwxfqs3RlTvBKzgcy2PP0M/LmCMDnYOHI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=omQ+5DqADw93B5hKt+irH1O9SSu+q8KDb8zWUhFQskIvk6fEA0KRQJ9X7DAEp3d9+
-	 IoWorPItXWQqfDZcJMfX9p5CqArMhYPjScn+pdRdYa4dCxNaDINWbI/A9w2umncY3a
-	 JBWu3Cp2DzQWMBsfiPPjSwKprLff19+3J04wX3hE=
+	b=JEridmc4QevChX5/qFPrWR7+pYYVZlW634PkBtwap9dXKA/NgD0FCT+CVi3p5wtZk
+	 ASDn2sBAoU+EIyo3L2J7yiq9GAhNkvDNOjSkOfOoIRkwToYc494M9RW4uWQsEnIqo2
+	 YT2o5brN/BN8m7+/HRfgVzx3FqUGbxJS/ct00jkQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0ABDAF805B2;
+	by alsa1.perex.cz (Postfix) with ESMTP id 94378F805B6;
 	Mon, 24 Oct 2022 18:53:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D34FF8057C; Mon, 24 Oct 2022 18:53:41 +0200 (CEST)
+ id ADE0DF80580; Mon, 24 Oct 2022 18:53:42 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2DD2F8053D
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 18:53:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2DD2F8053D
+ by alsa1.perex.cz (Postfix) with ESMTPS id F3779F80533
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 18:53:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3779F80533
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="fnlPcv7M"
+ header.b="RjoXyt/a"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666630414; x=1698166414;
+ t=1666630416; x=1698166416;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=dlZlIGSlCoUGXrbXP2irFKEUlQlv/4Gvwh9efHK8Cz4=;
- b=fnlPcv7MKECJo+hY5B6hP71+MqhgL7MOYxGGinem6U4fPVWfwwr1ne61
- /DatqTvKseYgUBpx/b7nP8O2f9eCu6HoSZG8X47GStZ8zqerhq4+7zu62
- t/7P4774Cd9z4+S5PIudUMt+Cy7zDitA68vysR09Qo4EW06hwlUBBoMRs
- +dFCuqVCGuVbkHXp3Y+ERC0VjF15PkW/NFMPymnxMQxJtfILTZlZVcrvN
- IqNgjFE3fidp4V+ix1KfVSIN6XpBzP+zCeSp9K5eF/fnGcB9TIEXQCOcI
- wePdSSiX7WLB2YOcHMv1+8RbHs/ExFsPzrGumZgid95Xa4/SE/sG8B/a3 w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="287868652"
-X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="287868652"
+ bh=Cxb94rhXkeUwxfqs3RlTvBKzgcy2PP0M/LmCMDnYOHI=;
+ b=RjoXyt/aZzD6jq3+1V4em8kurU5X6P3WF0iFRMRmo8hD0i+Ye21KcQds
+ P5qu+iry4p6Ni5WCuaN8RxCFC7P+eu+JEZ3s96vMSUHIDNuYrJquTtCfu
+ qbSMeCVpuPGvrvZI0hFAGkYn2eH34Gw6yO16ThNkgyD173Z1u0CoOwfeB
+ FcYV79SkKfq8lY9p4HwPQ6unyJMHlMMYPE3HKWi4GJDM56QXIV32zDQ1Z
+ IY40I1byHbgYRk7e+m9lL519FtreUJbragZ2t9jvmAsVk0fbXDbPAlmq/
+ OdCsR8kl9vpJyasMgwfbk3AMuFWY9nI8R0Xwkuo34TXgxky9d1zQN/9vv Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="287868659"
+X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="287868659"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Oct 2022 09:53:29 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="609263069"
-X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="609263069"
+ 24 Oct 2022 09:53:31 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="609263076"
+X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="609263076"
 Received: from tdsilva-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.213.186.236])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Oct 2022 09:53:28 -0700
+ 24 Oct 2022 09:53:30 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 10/16] ASoC: SOF: Intel: hda: always do a full reset
-Date: Mon, 24 Oct 2022 11:53:04 -0500
-Message-Id: <20221024165310.246183-11-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 12/16] ASoC: SOF: Intel: hda-stream: use SOF helpers for
+ consistency
+Date: Mon, 24 Oct 2022 11:53:06 -0500
+Message-Id: <20221024165310.246183-13-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221024165310.246183-1-pierre-louis.bossart@linux.intel.com>
 References: <20221024165310.246183-1-pierre-louis.bossart@linux.intel.com>
@@ -87,103 +88,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There's no point in checking for a full-reset condition that is
-always-true in the callers.
+Not sure why we mixed sof and hdac helpers, this makes the code way
+less readable.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-ctrl.c | 26 ++++++++++++--------------
- sound/soc/sof/intel/hda-dsp.c  |  2 +-
- sound/soc/sof/intel/hda.c      |  2 +-
- sound/soc/sof/intel/hda.h      |  2 +-
- 4 files changed, 15 insertions(+), 17 deletions(-)
+ sound/soc/sof/intel/hda-stream.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-ctrl.c b/sound/soc/sof/intel/hda-ctrl.c
-index 7f387ad5ef6f4..e3334693c2926 100644
---- a/sound/soc/sof/intel/hda-ctrl.c
-+++ b/sound/soc/sof/intel/hda-ctrl.c
-@@ -182,7 +182,7 @@ int hda_dsp_ctrl_clock_power_gating(struct snd_sof_dev *sdev, bool enable)
- 	return 0;
- }
+diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
+index 8cb91788912cb..7ac703515be4a 100644
+--- a/sound/soc/sof/intel/hda-stream.c
++++ b/sound/soc/sof/intel/hda-stream.c
+@@ -697,7 +697,8 @@ bool hda_dsp_check_stream_irq(struct snd_sof_dev *sdev)
+ 	/* The function can be called at irq thread, so use spin_lock_irq */
+ 	spin_lock_irq(&bus->reg_lock);
  
--int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset)
-+int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev)
- {
- 	struct hdac_bus *bus = sof_to_bus(sdev);
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-@@ -199,20 +199,18 @@ int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset)
- #endif
- 	hda_dsp_ctrl_misc_clock_gating(sdev, false);
+-	status = snd_hdac_chip_readl(bus, INTSTS);
++	status = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTSTS);
++
+ 	trace_sof_intel_hda_dsp_check_stream_irq(sdev, status);
  
--	if (full_reset) {
--		/* reset HDA controller */
--		ret = hda_dsp_ctrl_link_reset(sdev, true);
--		if (ret < 0) {
--			dev_err(sdev->dev, "error: failed to reset HDA controller\n");
--			goto err;
--		}
-+	/* reset HDA controller */
-+	ret = hda_dsp_ctrl_link_reset(sdev, true);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed to reset HDA controller\n");
-+		goto err;
-+	}
+ 	/* if Register inaccessible, ignore it.*/
+@@ -778,7 +779,7 @@ irqreturn_t hda_dsp_stream_threaded_handler(int irq, void *context)
+ 	for (i = 0, active = true; i < 10 && active; i++) {
+ 		spin_lock_irq(&bus->reg_lock);
  
--		/* exit HDA controller reset */
--		ret = hda_dsp_ctrl_link_reset(sdev, false);
--		if (ret < 0) {
--			dev_err(sdev->dev, "error: failed to exit HDA controller reset\n");
--			goto err;
--		}
-+	/* exit HDA controller reset */
-+	ret = hda_dsp_ctrl_link_reset(sdev, false);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: failed to exit HDA controller reset\n");
-+		goto err;
- 	}
+-		status = snd_hdac_chip_readl(bus, INTSTS);
++		status = snd_sof_dsp_read(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTSTS);
  
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index 74067df96fdc4..6d896ea316806 100644
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -691,7 +691,7 @@ static int hda_resume(struct snd_sof_dev *sdev, bool runtime_resume)
- 	snd_sof_pci_update_bits(sdev, PCI_TCSEL, 0x07, 0);
- 
- 	/* reset and start hda controller */
--	ret = hda_dsp_ctrl_init_chip(sdev, true);
-+	ret = hda_dsp_ctrl_init_chip(sdev);
- 	if (ret < 0) {
- 		dev_err(sdev->dev,
- 			"error: failed to start controller after resume\n");
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index d63f843dc7aab..2ee414600f779 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -890,7 +890,7 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
- 		dev_dbg(sdev->dev, "PP capability, will probe DSP later.\n");
- 
- 	/* Init HDA controller after i915 init */
--	ret = hda_dsp_ctrl_init_chip(sdev, true);
-+	ret = hda_dsp_ctrl_init_chip(sdev);
- 	if (ret < 0) {
- 		dev_err(bus->dev, "error: init chip failed with ret: %d\n",
- 			ret);
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index c91fc36378235..6b1474d78ebb3 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -702,7 +702,7 @@ void hda_dsp_ctrl_ppcap_int_enable(struct snd_sof_dev *sdev, bool enable);
- int hda_dsp_ctrl_link_reset(struct snd_sof_dev *sdev, bool reset);
- void hda_dsp_ctrl_misc_clock_gating(struct snd_sof_dev *sdev, bool enable);
- int hda_dsp_ctrl_clock_power_gating(struct snd_sof_dev *sdev, bool enable);
--int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev, bool full_reset);
-+int hda_dsp_ctrl_init_chip(struct snd_sof_dev *sdev);
- void hda_dsp_ctrl_stop_chip(struct snd_sof_dev *sdev);
- /*
-  * HDA bus operations.
+ 		/* check streams */
+ 		active = hda_dsp_stream_check(bus, status);
 -- 
 2.34.1
 
