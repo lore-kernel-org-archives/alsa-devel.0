@@ -4,88 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E0A1C38A2D
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 14:46:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00D2EECAAA1
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 14:46:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 78CA350CC;
-	Mon, 24 Oct 2022 16:45:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78CA350CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id E35D958E6;
+	Mon, 24 Oct 2022 16:45:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E35D958E6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666622791;
-	bh=AqETouuXN7OV4H9J1IbapthNds+sApJIR1NE/JD9iRc=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1666622796;
+	bh=1Xdc6zLYEYbA/joDrujdupqN+QAqYN/5zZxMq8p42kk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=omibEq8odtB/gQgg8Kr4vAzP4D6PlmsdNLnoP/HxJQtgBDYEgGrCqix3SbFGqbdtq
-	 QWWMRjB4ZJaffBC6unY4KfwInUClm0a4OtASGejJgK49LNQ4UUDfsGNQ367VdQsShW
-	 nLxFnvVJPBXsLV8oHxPUwWRgm5NA2cIETDKO46p0=
+	b=pVgtZ3sah1hFbQifrwhVebkd3nRZo+rtv81aLzddX16g/78r/9lCPjl8OCVFzd5BZ
+	 TJ3Kt6sk/SBVgIR4qaLl01tSEBHA9MnaZjiF5QCRyyrO7/OC3gTrunRngmEGKWDG1n
+	 GsLP9a8VeAC/e66E3GjhRqHDDK7r7zKIw4cEqPJI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5EFB4F80551;
+	by alsa1.perex.cz (Postfix) with ESMTP id C2A9FF80552;
 	Mon, 24 Oct 2022 16:44:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 62826F8012A; Sat, 22 Oct 2022 17:19:03 +0200 (CEST)
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com
- [IPv6:2001:4860:4864:20::32])
+ id 8D2E1F80533; Mon, 24 Oct 2022 15:00:43 +0200 (CEST)
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com
+ [209.85.160.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 23F26F8012A
- for <alsa-devel@alsa-project.org>; Sat, 22 Oct 2022 17:18:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23F26F8012A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="gWrs34Ne"
-Received: by mail-oa1-x32.google.com with SMTP id
- 586e51a60fabf-13ae8117023so7077255fac.9
- for <alsa-devel@alsa-project.org>; Sat, 22 Oct 2022 08:18:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=gz0LxUsOUlJDcIAW5bPu+WDjpQGro2FyWxGKpu7r8bo=;
- b=gWrs34NeTJPV2fQ1MVoQY+zpFojHR3D/A6fVxaEOoPyaG1lz86TK/RINtSik3ihs6m
- epr6PhFlnoD33CCeTfWoNQCRee99kzlwRupaR937A3VU5HU4OTIvs/zluF82SMnywl6D
- HdEJ7m7PbwxapFaNOFa9ppWW4y91iGtKkwoLpnocgDPBTYKE8ItremNKc8YrHhceRIZp
- h3VMtehI1AqTwZwEWQcTgFOjDVRQQngjmAnbv2gz4Ef/Bbck+zcB6GCOTs8PKUKrqPeL
- 49sPdfcCEYUyqTEphtRdJczJc984b2NmTshEFvs/XiFALWDOPilFuaMHYm7NR6Fhz+qX
- X9nQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57A3EF80506
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 15:00:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57A3EF80506
+Received: by mail-oa1-f43.google.com with SMTP id
+ 586e51a60fabf-13ba86b5ac0so3111595fac.1
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 06:00:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=gz0LxUsOUlJDcIAW5bPu+WDjpQGro2FyWxGKpu7r8bo=;
- b=cYZ0prItr22uWVE5qAHQCNof5JVTDWTkus7y6Nx38vHsuROgFWLdm1pPBOjr+H2W3O
- CXHqpgtUOmtvr7Af1wqgnwjWo1YNctDJq4sxap1OLl+6qoZcsqEFLSiEC/orJN6tn7Uy
- bR+XvxJCqQycsL3F/2a2Agj+ABk6s8ei/JMEBHV4T+CCLiKW4SenV09mj8NpZZxVkuQZ
- h+Z/meQoWeib4XoRWrmgBc94PtDTgLuMR9R/LonFPICQGAdO209ZM+HWc4h2jJM4ot+4
- DvVL3+xw3mwdac7zTMekH87BcQ8J/lWRrLmxcmCcmZkUFeJYCTAcixEtpKYuXki+xDwH
- 9Lrg==
-X-Gm-Message-State: ACrzQf0KIvCsy3yARntyFCaGUwu7Z/LpCSJ5zHFkMeOV7RNbdoKle1IX
- 7WXHjUQzrczTfzXni4J/H0631g==
-X-Google-Smtp-Source: AMsMyM4Ums0et6AQMZox+xdB7Wz2plUu78klbaMd0EOzV1OnnwGbhhl8/BymyNDqbBFL+Y+cBT/t0g==
-X-Received: by 2002:a05:6870:f288:b0:131:de71:3eb6 with SMTP id
- u8-20020a056870f28800b00131de713eb6mr31239483oap.63.1666451935002; 
- Sat, 22 Oct 2022 08:18:55 -0700 (PDT)
-Received: from [10.203.8.70] ([205.153.95.177])
- by smtp.gmail.com with ESMTPSA id
- v5-20020a056870310500b00136c20b1c59sm11538284oaa.43.2022.10.22.08.18.50
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 22 Oct 2022 08:18:54 -0700 (PDT)
-Message-ID: <e7ace68a-98e5-63c8-7dd7-a35d0eba1c6e@linaro.org>
-Date: Sat, 22 Oct 2022 11:18:49 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=p+x9joGdXdBFLPPxN1p6d7/jrm+b1E7zu0ZikUl9XbM=;
+ b=X4X5rwpnEw3W/AKdWv/F0TOvFVZovgCWR6kyDnsh+yAutAzCFCqP9dDv09eoNoB2gi
+ M9yg9gxKiliJCNgBVEQ5ahF3WVVCJiftHckws1kNaM11/WfEiWlfwUEOKA9JsOBNvq+Y
+ CNuCU6FL7hYjHDPynUfTu9tSuY5nn9UcxjHFtunvS62CBvNgOER9C1Bh70Oz08FUq22d
+ 4cdSlRA6o4jae9FT2RF8MmlarEs99bpkfHY3BY8jwhN8RVsp3NCNkLGgJ21jZXe9N3N1
+ XY2jOWinN0s+UEyd7f1+crMs+gvnJJ7T7p9Negpnx4+zW69kjFA6+5YxkL0aK5HEDELE
+ KCrw==
+X-Gm-Message-State: ACrzQf1oy15y/h6IFeVvT7SPQ5vwzohCoVKR7rU9Te96ktrbVFYdcw9U
+ IPFGDjSiye4SEyvW7le72Q==
+X-Google-Smtp-Source: AMsMyM4RB1x55W7tWXLqKMCfn9+yNGKoyP28eeDXqoWuK46CSg7FurAIxSSG6961lNUtLuCZU2W88g==
+X-Received: by 2002:a05:6870:e9a8:b0:133:223f:49a1 with SMTP id
+ r40-20020a056870e9a800b00133223f49a1mr38235091oao.114.1666616434841; 
+ Mon, 24 Oct 2022 06:00:34 -0700 (PDT)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
+ g20-20020a056870c15400b0012796e8033dsm2716705oad.57.2022.10.24.06.00.33
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 24 Oct 2022 06:00:34 -0700 (PDT)
+Received: (nullmailer pid 1652638 invoked by uid 1000);
+ Mon, 24 Oct 2022 13:00:35 -0000
+Date: Mon, 24 Oct 2022 08:00:35 -0500
+From: Rob Herring <robh@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
 Subject: Re: [PATCH 00/21] ARM: s3c: clean out obsolete platforms
-To: Arnd Bergmann <arnd@kernel.org>, linux-arm-kernel@lists.infradead.org
+Message-ID: <20221024130035.GA1645003-robh@kernel.org>
 References: <20221021202254.4142411-1-arnd@kernel.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20221021202254.4142411-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 X-Mailman-Approved-At: Mon, 24 Oct 2022 16:44:48 +0200
 Cc: linux-fbdev@vger.kernel.org, linux-doc@vger.kernel.org,
  linux-iio@vger.kernel.org, alsa-devel@alsa-project.org,
@@ -99,9 +84,11 @@ Cc: linux-fbdev@vger.kernel.org, linux-doc@vger.kernel.org,
  linux-watchdog@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
  linux-pm@vger.kernel.org, linux-gpio@vger.kernel.org,
  Ben Dooks <ben-linux@fluff.org>, Simtec Linux Team <linux@simtec.co.uk>,
- linux-hwmon@vger.kernel.org, patches@opensource.cirrus.com,
- linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
+ patches@opensource.cirrus.com, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
  dmaengine@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -118,7 +105,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 21/10/2022 16:22, Arnd Bergmann wrote:
+On Fri, Oct 21, 2022 at 10:22:28PM +0200, Arnd Bergmann wrote:
 > From: Arnd Bergmann <arnd@arndb.de>
 > 
 > The s3c24xx platform was marked as deprecated a while ago,
@@ -135,10 +122,29 @@ On 21/10/2022 16:22, Arnd Bergmann wrote:
 > maintainers can pick them up into their own trees, whichever
 > they prefer.
 
-Just to be sure - do you expect me to ack the series, or rather as usual
-pick them up?
+[...]
 
+>  Documentation/arm/index.rst                   |    1 -
+>  Documentation/arm/samsung-s3c24xx/cpufreq.rst |   77 -
+>  .../arm/samsung-s3c24xx/eb2410itx.rst         |   59 -
+>  Documentation/arm/samsung-s3c24xx/gpio.rst    |  172 --
+>  Documentation/arm/samsung-s3c24xx/h1940.rst   |   41 -
+>  Documentation/arm/samsung-s3c24xx/index.rst   |   20 -
+>  Documentation/arm/samsung-s3c24xx/nand.rst    |   30 -
+>  .../arm/samsung-s3c24xx/overview.rst          |  311 ---
+>  Documentation/arm/samsung-s3c24xx/s3c2412.rst |  121 -
+>  Documentation/arm/samsung-s3c24xx/s3c2413.rst |   22 -
+>  .../arm/samsung-s3c24xx/smdk2440.rst          |   57 -
+>  Documentation/arm/samsung-s3c24xx/suspend.rst |  137 --
+>  .../arm/samsung-s3c24xx/usb-host.rst          |   91 -
+>  Documentation/arm/samsung/overview.rst        |   13 -
 
-Best regards,
-Krzysztof
+What about?:
 
+Documentation/devicetree/bindings/clock/samsung,s3c2410-clock.txt
+Documentation/devicetree/bindings/interrupt-controller/samsung,s3c24xx-irq.txt
+Documentation/devicetree/bindings/mmc/samsung,s3cmci.txt
+Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt
+Documentation/devicetree/bindings/usb/s3c2410-usb.txt
+
+Rob
