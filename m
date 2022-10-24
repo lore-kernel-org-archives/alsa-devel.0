@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7126FECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 16:55:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 975C9FA373F
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 16:55:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70CF66F77;
-	Mon, 24 Oct 2022 18:54:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70CF66F77
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E4256FD3;
+	Mon, 24 Oct 2022 18:54:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E4256FD3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666630512;
-	bh=OhENCqBXCVCRLqTLl75SxKjgJaDvk3tae2WdVfgE5lo=;
+	s=default; t=1666630515;
+	bh=z1ylxMAmAZliYsPntqDZjdwvOEZKF9ikAQI/gIXH780=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=K4l91fAaCQDb7F47q4B4K0vmBibdEQgUMwcbaFXgW5noHE04WfJy+4lv0CnRzjBdT
-	 K5XtiRitCUgN3nbP1ucHy3NypqkiuG1TzJ1N09+9oXWnf/LQH4MDzEgVCqDHBg1MHK
-	 lAzL6wlzgZl2WyPaT4nzLeKXXx1VeVdqhIV791cg=
+	b=Ou9qPnv9JmZA5swqfaGb1bFEBQ3ZtyhrQQzKiyGjGtqHcDNpTjBvDKeB3hLWsQANA
+	 MdSRikbyKQNMmORdz/9fAjfe9DOzltwfEXp3Waukk7/Ivf6eFoQMzZk/VxxcHHIFDY
+	 +Nw2FT0cfhHyE+68alibQn/ZAdVaV+qeka7Bp+8Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 854C4F80568;
-	Mon, 24 Oct 2022 18:53:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7321F8057A;
+	Mon, 24 Oct 2022 18:53:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CEE34F80558; Mon, 24 Oct 2022 18:53:33 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id C8A82F8055C; Mon, 24 Oct 2022 18:53:35 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3591DF8053D
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 18:53:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3591DF8053D
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2409F80533
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 18:53:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2409F80533
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="WWP2xWwe"
+ header.b="NwmvOTjl"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666630408; x=1698166408;
+ t=1666630412; x=1698166412;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=OhENCqBXCVCRLqTLl75SxKjgJaDvk3tae2WdVfgE5lo=;
- b=WWP2xWwesNca7i1oZXty8XJRV1zXwnfqcITKt+CcZD7Xe2sKIqguNs67
- bSnB3mBXTy7SRBZ04/n7X1mEQD/YLFvDYA/tVR6revHKv/rgw/y1oWmYX
- sQ51SV/gMcRo/7xuBmhMPH4JwcQHtfqb1dI3WizH5GgtUaVSP/GSQxy2U
- EB9Kx5g6X0Jb51LUDCYW4E3LY+M9VNQ5ZTC2hG6/cDoCnwPri5SUuXKYF
- a4EF0LSf3p6bDzi2aTimCP1zfbDDkGU37ELsPOepCiJgA029L/Qh5Y/7h
- VYmqdlqz9iwft/k+HUq3AO9j7nCG4Pe2res48J+lS7qhWRauSEy2Ohnrt g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="393787381"
-X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="393787381"
+ bh=z1ylxMAmAZliYsPntqDZjdwvOEZKF9ikAQI/gIXH780=;
+ b=NwmvOTjljF0lqhWTKIoZAq3LSTDCpjAR7VGTK8dXUGLqUuZDWSJcltR9
+ 2rwqGkJTbdKvluQZsBQEUfUXd+erJN+Xz3vQRVOS42moaT46heTFAZsRB
+ 2wIrO4l3nNpTwVcfQaR9PMtZMSMBHJ8lT59Z/sK2gAp03fUdvjwu40xN2
+ fZfqaxXvD61vXCYxYC8GTL4aSZ25rBVLoqu3h/zcQu1cr703i2zoQEldS
+ 4scyMZjiH2zhZQlJl2s0Uj3glRkIuFOa+88dAmHicgoQxzZuXMgF4UsLr
+ QL/WzTcvY3VuLGFpazHRFvb1eJSUhzUYkfHHi0eBeI9M1+bRDfEJ8s7A7 g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="287868641"
+X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="287868641"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Oct 2022 09:53:22 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="609263042"
-X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="609263042"
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Oct 2022 09:53:27 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="609263062"
+X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="609263062"
 Received: from tdsilva-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.213.186.236])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Oct 2022 09:53:21 -0700
+ 24 Oct 2022 09:53:26 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 01/16] ASoC: SOF: ops: fallback to mmio in helpers
-Date: Mon, 24 Oct 2022 11:52:55 -0500
-Message-Id: <20221024165310.246183-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 07/16] ASoC: SOF: Intel: hda-dai: use component_get_drvdata to
+ find hdac_bus
+Date: Mon, 24 Oct 2022 11:53:01 -0500
+Message-Id: <20221024165310.246183-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221024165310.246183-1-pierre-louis.bossart@linux.intel.com>
 References: <20221024165310.246183-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>, broonie@kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,79 +89,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Returning an error when a read/write is not implemented makes no
-sense, especially on read where no return value makes sense.
+Remove the last usage of substream->runtime->private_data in the
+HDAudio BE hw_params.
 
-Change the logic to directly fallback to mmio. If a platform truly
-wants other read/writes that are not plain vanilla mmio, it needs to
-implement its own routines.
+The SOF core saves the 'sdev' global context as component drvdata, and
+we already save the bus information in sdev.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/ops.h | 26 ++++++++++----------------
- 1 file changed, 10 insertions(+), 16 deletions(-)
+ sound/soc/sof/intel/hda-dai.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
-index 55d43adb6a295..a72f8043be64d 100644
---- a/sound/soc/sof/ops.h
-+++ b/sound/soc/sof/ops.h
-@@ -305,23 +305,19 @@ static inline int snd_sof_debugfs_add_region_item(struct snd_sof_dev *sdev,
- static inline void snd_sof_dsp_write(struct snd_sof_dev *sdev, u32 bar,
- 				     u32 offset, u32 value)
+diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+index c7b07c2693653..2bce8dff4627a 100644
+--- a/sound/soc/sof/intel/hda-dai.c
++++ b/sound/soc/sof/intel/hda-dai.c
+@@ -207,14 +207,17 @@ static int hda_link_dma_params(struct hdac_ext_stream *hext_stream,
+ static int hda_link_dma_hw_params(struct snd_pcm_substream *substream,
+ 				  struct snd_pcm_hw_params *params)
  {
--	if (sof_ops(sdev)->write) {
-+	if (sof_ops(sdev)->write)
- 		sof_ops(sdev)->write(sdev, sdev->bar[bar] + offset, value);
--		return;
--	}
--
--	dev_err_ratelimited(sdev->dev, "error: %s not defined\n", __func__);
-+	else
-+		writel(value,  sdev->bar[bar] + offset);
- }
+-	struct hdac_stream *hstream = substream->runtime->private_data;
+-	struct hdac_ext_stream *hext_stream;
+ 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+ 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+ 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 	struct hda_pipe_params p_params = {0};
+-	struct hdac_bus *bus = hstream->bus;
++	struct hdac_ext_stream *hext_stream;
+ 	struct hdac_ext_link *hlink;
++	struct snd_sof_dev *sdev;
++	struct hdac_bus *bus;
++
++	sdev = snd_soc_component_get_drvdata(cpu_dai->component);
++	bus = sof_to_bus(sdev);
  
- static inline void snd_sof_dsp_write64(struct snd_sof_dev *sdev, u32 bar,
- 				       u32 offset, u64 value)
- {
--	if (sof_ops(sdev)->write64) {
-+	if (sof_ops(sdev)->write64)
- 		sof_ops(sdev)->write64(sdev, sdev->bar[bar] + offset, value);
--		return;
--	}
--
--	dev_err_ratelimited(sdev->dev, "error: %s not defined\n", __func__);
-+	else
-+		writeq(value, sdev->bar[bar] + offset);
- }
- 
- static inline u32 snd_sof_dsp_read(struct snd_sof_dev *sdev, u32 bar,
-@@ -329,9 +325,8 @@ static inline u32 snd_sof_dsp_read(struct snd_sof_dev *sdev, u32 bar,
- {
- 	if (sof_ops(sdev)->read)
- 		return sof_ops(sdev)->read(sdev, sdev->bar[bar] + offset);
--
--	dev_err(sdev->dev, "error: %s not defined\n", __func__);
--	return -ENOTSUPP;
-+	else
-+		return readl(sdev->bar[bar] + offset);
- }
- 
- static inline u64 snd_sof_dsp_read64(struct snd_sof_dev *sdev, u32 bar,
-@@ -339,9 +334,8 @@ static inline u64 snd_sof_dsp_read64(struct snd_sof_dev *sdev, u32 bar,
- {
- 	if (sof_ops(sdev)->read64)
- 		return sof_ops(sdev)->read64(sdev, sdev->bar[bar] + offset);
--
--	dev_err(sdev->dev, "error: %s not defined\n", __func__);
--	return -ENOTSUPP;
-+	else
-+		return readq(sdev->bar[bar] + offset);
- }
- 
- /* block IO */
+ 	hext_stream = snd_soc_dai_get_dma_data(cpu_dai, substream);
+ 	if (!hext_stream) {
 -- 
 2.34.1
 
