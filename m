@@ -4,116 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2027EC38A2D
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 14:48:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EADE3FA3740
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 15:07:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 59C2174E0;
-	Mon, 24 Oct 2022 16:48:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59C2174E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52A2D63DE;
+	Mon, 24 Oct 2022 17:07:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52A2D63DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666622930;
-	bh=uZE8X+S/yZmr8syZH5OYba3dJqtgVh7jRFBnXe2r3P0=;
-	h=In-Reply-To:References:Date:From:To:Subject:Cc:List-Id:
+	s=default; t=1666624076;
+	bh=a+0l+LUieWCZmrTxkABAo7G3RJjD6TBzF2qMpoeot0g=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fKpB4rfy7jNtnb8KLQXCaXY1PWoRqHXvur743a3IKGClAEQAa6LUQzXvi3KfJ73CB
-	 t/bqEBXOy1Qi7tOYKVLNIrsoPVkLJ5Euu9Jt/kDxldIq6p4/CQpcXLezZ4v6iLCDV5
-	 JnMPLekYzL8tQDH8Lb9j5RnEokjTPBdxxqF/HWzg=
+	b=Fd2UBzdXQZaA4/I8/xKq5ogq7ds16Noybxq1SNmrrc42XUa7ukmV2luoz9PmzKCfP
+	 TnfmkLra6PvYWcxg/POZPs10fhUxp33wJg/CcT5uQ8VAKReznyza7hOM81udUat2WY
+	 OQ0U/EUEzkyiqZa1d0rvUWdRBImClRvyPGYhOLg8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB4D7F805AF;
-	Mon, 24 Oct 2022 16:44:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1CBFF8052F;
+	Mon, 24 Oct 2022 17:07:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9CA22F80506; Mon, 24 Oct 2022 15:19:22 +0200 (CEST)
-Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com
- [64.147.123.27])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 0E070F80506; Mon, 24 Oct 2022 17:07:04 +0200 (CEST)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D0E06F80506
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 15:19:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0E06F80506
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04F54F80506
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 17:06:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04F54F80506
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de
- header.b="q+NqZuUc"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="uYEImk9/"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailnew.west.internal (Postfix) with ESMTP id 011D42B066F0;
- Mon, 24 Oct 2022 09:19:09 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
- by compute3.internal (MEProxy); Mon, 24 Oct 2022 09:19:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
- :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
- :message-id:mime-version:references:reply-to:sender:subject
- :subject:to:to; s=fm2; t=1666617549; x=1666624749; bh=dNk4I7ELz1
- Q72dRob/8j+4seSTYFKAZT/RUPASjRJ5c=; b=q+NqZuUcR73y8BnZPPG5dx1Zsk
- 6km9xLqa6tEkJrornmVIrbgVsoTaG0EQRj//U3P/qs5FFUR0kQj3xsDpIMDiHNAP
- KHymuWr00P67rJl6tNZNMaSvfwBvDXs8mjOeO+DtIb91LFvy9u7IqPZlLBHzDqVY
- OqQ+UV/5sGJOiUEzmGUI9NOmwTaSDzu4RgOGbpc9QTg1ReluTq9aBn60FamJs6vN
- DKIJe0X1BrhoAYInvyHnNd5GZdOejs+w4Suvb5ImKHNqRwAYBvpipR0/HvaVLckd
- CHTLMlrLH5H5bEpdNq1ZJ2ZVvg8gjN0DzzHIiqNjzW420ViiiKKJHNZdB8zg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
- :feedback-id:from:from:in-reply-to:in-reply-to:message-id
- :mime-version:references:reply-to:sender:subject:subject:to:to
- :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; t=1666617549; x=1666624749; bh=dNk4I7ELz1Q72dRob/8j+4seSTYF
- KAZT/RUPASjRJ5c=; b=uYEImk9/JaoBLZkHmS4JMUN51UUW3Adz4NZ33zTXfhfn
- X2zc+bMCIXUEr4nNHo354GqKRASijikTpJx4FFU+epgcfr8J1IPlgZPNpNiYVB9M
- w8ihE4tr46Zh/a1sL2xOLJxavoW+rkvJ5mUtViAoLX1JGrLBO17yVcJcaCCL+4DZ
- U79zEm+ybsbN3XMbJe7XZH2qegoAJbChw5mNkbbe1D33ukaTT9FYQuJEpTpQ+3Cm
- dcgc9DJADBfxr4sonBlprzuNuFtddjyQxgp5OFhdXtZwXkncp0R9eBa1XvUUpv5H
- Fai3j/IlJ8ZfnHiUrjBdKzUP8vcWG93GWsi2JgpEew==
-X-ME-Sender: <xms:zZBWY4d6hZdrWDWBmQnXOunjtmGBLNtVOGtYlcpUAkqGnIq3nQ_ULg>
- <xme:zZBWY6ORVL4inZtEZ347UGYnYKlOyas-DedRgWZhgJSTlHghoiUBMTH5Vdl7j2SlB
- orGRM2A45E3sznwkiE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrgedtgedgheelucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
- nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
- htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
- teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
- hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:zZBWY5jMfpgYOekZ5Xiy1zZWPWGF2N1SaGbKcsqvIIsAoksVTelYew>
- <xmx:zZBWY98Y0Yr03VdtjC58Vfn64oQoe8znN7FH4bLecym0d8-7ie150w>
- <xmx:zZBWY0u1N4N4cR6ZhhO6MwuQK8N3p7TbkgEiIMvu0C2hnaFTg0G-QA>
- <xmx:zZBWY2px7fOBs4XObZs9jNKaCaM5g4TthCLLA4wr0bUEo7pzc_VBCiqJhiU>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
- id 3DDB5B60086; Mon, 24 Oct 2022 09:19:09 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-1047-g9e4af4ada4-fm-20221005.001-g9e4af4ad
-Mime-Version: 1.0
-Message-Id: <e5aa233d-526b-45ab-9acb-ab792b8686bc@app.fastmail.com>
-In-Reply-To: <20221024130035.GA1645003-robh@kernel.org>
-References: <20221021202254.4142411-1-arnd@kernel.org>
- <20221024130035.GA1645003-robh@kernel.org>
-Date: Mon, 24 Oct 2022 15:18:41 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Rob Herring" <robh@kernel.org>, "Arnd Bergmann" <arnd@kernel.org>
-Subject: Re: [PATCH 00/21] ARM: s3c: clean out obsolete platforms
-Content-Type: text/plain
-X-Mailman-Approved-At: Mon, 24 Oct 2022 16:44:49 +0200
-Cc: linux-fbdev@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-iio@vger.kernel.org, alsa-devel@alsa-project.org,
- dri-devel@lists.freedesktop.org, linux-ide@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
- linux-rtc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
- linux-pwm@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- linux-media@vger.kernel.org, devicetree@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- Ben Dooks <ben-linux@fluff.org>, Simtec Linux Team <linux@simtec.co.uk>,
- linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
- patches@opensource.cirrus.com, linux-usb@vger.kernel.org,
- "linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- dmaengine@vger.kernel.org
+ dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
+ header.b="dkAHqwl+"
+Received: from notapiano (unknown [194.36.25.51])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256) (No client certificate requested)
+ (Authenticated sender: nfraprado)
+ by madras.collabora.co.uk (Postfix) with ESMTPSA id 73C7F6602261;
+ Mon, 24 Oct 2022 16:06:54 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1666624016;
+ bh=a+0l+LUieWCZmrTxkABAo7G3RJjD6TBzF2qMpoeot0g=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=dkAHqwl+gmnr1C2LmiLEiW4FWHa5ABtkJd1/j9NX4JV9VKV/5nr1wN5uUH52ZVsbg
+ SxS0oNtxTGkUoshk/1bOzBcmbKmG0q8JfP/NQ0UWW14Stz4O5HaLx85nHo5QvJktJP
+ JoHX1GUOcT3ukiANEgW45A4pEBGib3CHQHn8U7f/8kj4JP8WiIxgMHqMJ7srbGQHDF
+ wh4aQlcgtsjPn3PkAbTJGk40uOP28OriL58RQTcFyrN/6NKIqA5PIjD7rr7DJsZE0e
+ cQxQ7uIztL+uY/32qfYDOQg9ID2Ic6Xby/AHaKmOB9Ye6D2yNReQhCiR+J2ahVdSiF
+ OPoTmjxte6Ddg==
+Date: Mon, 24 Oct 2022 11:06:49 -0400
+From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 2/3] ASoC: dt-bindings: realtek,rt5682s: Add AVDD and
+ MICVDD supplies
+Message-ID: <20221024150649.wbd54lcvgrj4kxgu@notapiano>
+References: <20221021190908.1502026-1-nfraprado@collabora.com>
+ <20221021190908.1502026-3-nfraprado@collabora.com>
+ <ae460461-5c20-9180-456c-8c01a4b1a7f1@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ae460461-5c20-9180-456c-8c01a4b1a7f1@linaro.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Derek Fang <derek.fang@realtek.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, kernel@collabora.com,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -129,72 +88,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Oct 24, 2022, at 15:00, Rob Herring wrote:
-> On Fri, Oct 21, 2022 at 10:22:28PM +0200, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> The s3c24xx platform was marked as deprecated a while ago,
->> and for the s3c64xx platform, we marked all except one legacy
->> board file as unused.
->> 
->> This series removes all of those, leaving only s3c64xx support
->> for DT based boots as well as the cragg6410 board file.
->> 
->> About half of the s3c specific drivers were only used on
->> the now removed machines, so these drivers can be retired
->> as well. I can either merge the driver removal patches through
->> the soc tree along with the board file patches, or subsystem
->> maintainers can pick them up into their own trees, whichever
->> they prefer.
->
-> [...]
->
->>  Documentation/arm/index.rst                   |    1 -
->>  Documentation/arm/samsung-s3c24xx/cpufreq.rst |   77 -
->>  .../arm/samsung-s3c24xx/eb2410itx.rst         |   59 -
->>  Documentation/arm/samsung-s3c24xx/gpio.rst    |  172 --
->>  Documentation/arm/samsung-s3c24xx/h1940.rst   |   41 -
->>  Documentation/arm/samsung-s3c24xx/index.rst   |   20 -
->>  Documentation/arm/samsung-s3c24xx/nand.rst    |   30 -
->>  .../arm/samsung-s3c24xx/overview.rst          |  311 ---
->>  Documentation/arm/samsung-s3c24xx/s3c2412.rst |  121 -
->>  Documentation/arm/samsung-s3c24xx/s3c2413.rst |   22 -
->>  .../arm/samsung-s3c24xx/smdk2440.rst          |   57 -
->>  Documentation/arm/samsung-s3c24xx/suspend.rst |  137 --
->>  .../arm/samsung-s3c24xx/usb-host.rst          |   91 -
->>  Documentation/arm/samsung/overview.rst        |   13 -
->
-> What about?:
->
-> Documentation/devicetree/bindings/clock/samsung,s3c2410-clock.txt
-> Documentation/devicetree/bindings/interrupt-controller/samsung,s3c24xx-irq.txt
-> Documentation/devicetree/bindings/mmc/samsung,s3cmci.txt
+On Sat, Oct 22, 2022 at 12:39:56PM -0400, Krzysztof Kozlowski wrote:
+> On 21/10/2022 15:09, Nícolas F. R. A. Prado wrote:
+> > The rt5682s codec can have two supplies: AVDD and MICVDD. Add properties
+> > for them.
+> > 
+> > Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> > ---
+> > 
+> >  Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml b/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml
+> > index ea53a55015c4..ca1037e76f96 100644
+> > --- a/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml
+> > +++ b/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml
+> > @@ -90,6 +90,10 @@ properties:
+> >    "#sound-dai-cells":
+> >      const: 0
+> >  
+> > +  AVDD-supply: true
+> > +
+> > +  MICVDD-supply: true
+> > +
+> 
+> How about keeping some order in the list of properties?
 
-Good catch!
+The current properties don't seem to follow any particular order and keeping the
+supplies grouped together seemed reasonable. What ordering do you suggest?
 
-I've removed these three now and and will add the removal to
-the same patch, also the related
-samsung,s3c2412-clock.txt and samsung,s3c2443-clock.txt
-files.
-
-> Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt
-
-samsung,s3c2412-nand is apparently still used on s3c6400,
-and the driver is selectable on that platform, so I think
-that should remain in there until we remove s3c64xx in 2024,
-even if it is not referenced by the dts files in the kernel.
-
-> Documentation/devicetree/bindings/usb/s3c2410-usb.txt
-
-Similarly, the driver is used on the crag6410 board
-(without DT), and probably just works with the DT based
-boards if one adds a node to s3c64xx.dtsi.
-
-I've also checked if any of the other removed drivers
-matches of_device_id[] strings to see if there are more
-bindings to kill off, but I don't see any that have
-now become obsolete. It did point me to pxa2xx_ac97_dt_ids,
-which Robert already complained about, this apparently
-is still used with dts files outside of mainline.
-
-      Arnd
+Thanks,
+Nícolas
