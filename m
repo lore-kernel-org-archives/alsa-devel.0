@@ -4,70 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C27AECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 14:03:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDF9FC38A2D
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 14:05:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE5587438;
-	Mon, 24 Oct 2022 16:02:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE5587438
+	by alsa0.perex.cz (Postfix) with ESMTPS id C73F17410;
+	Mon, 24 Oct 2022 16:04:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C73F17410
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666620219;
-	bh=pNwuaU1Ukcpu+2WY7FOqGXayA5lGqbb30IfbM7hnsHo=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1666620318;
+	bh=f+j3Dm6Dsf6l61MU4fSlRirttep5qPT12IBzNs5XB94=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Sg8g3aooRn7qU/X91vIk0UczssjzqFNtjIlVXkb5YKnGCarzh1s+RE/WUOf35cVim
-	 5t5Au8HfFAylL4kgQxnoWHRz0TEh/nKZ5ZAGsqWX++iQ5gIaJGoIruhnEoQE7O+QNT
-	 pabwhZ5ECoXsB24HagcjqciAk2bGHyoc5n0qxHc4=
+	b=hi/wqKWwTel5YrGICCY9IFZNmO6rp7Mov7/VeB7VSpikUbArLioU85ycvsHRureKA
+	 i+PMSTnRW3FAhnGVsMMKp6W1ONoVLqVKZEgyxwhO3/UAHKwh6wz4FczTiuaKUeOSXi
+	 xs1XNKGIaFDiOmTWeXraSCaxdc77xpasNv0ZLP4Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBECDF8054A;
-	Mon, 24 Oct 2022 16:02:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6EE45F80533;
+	Mon, 24 Oct 2022 16:04:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE993F80551; Mon, 24 Oct 2022 16:02:08 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id D65DCF8053D; Mon, 24 Oct 2022 16:04:26 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CDCC0F80240
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 16:02:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDCC0F80240
+ by alsa1.perex.cz (Postfix) with ESMTPS id D306FF80240
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 16:04:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D306FF80240
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="EmVx/iDv"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="NF5mdkdl"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="US14vegp"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 910BCB81B8A;
- Mon, 24 Oct 2022 14:02:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C74DC433D6;
- Mon, 24 Oct 2022 14:01:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666620120;
- bh=pNwuaU1Ukcpu+2WY7FOqGXayA5lGqbb30IfbM7hnsHo=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=EmVx/iDvv3b0A31uPTIJbXEwiPmYCrMxxgvtk0/N6LcykmG/6kiO3KW7rJjoITGDX
- jEJbUqjCWOr87OiQeqv+TORr/zhDoRuCo3tXQ1w5fUmIgEKSqG9QqWDzgSFoqAHLNR
- p0WP+MxEfpoO33CA8XLZ62Lpn41EoS6XiTtQh6LC+xR5wvv2ravMbo3WnVvd4vn3ho
- uB4B5JsjrjRShNYreRERf9V2MLlBxhZsZZLWgy8sBjepfb+5o/DtI0IB+Xty6z7Qh2
- T3xIH/jDfvoIKsldCuYQ21KEg4HBW69CAU3tcezG80QP8xDDgThmz+qiCiJLoPZBOz
- Sya0su8WFyROA==
-From: Mark Brown <broonie@kernel.org>
-To: samuel@sholland.org, lgirdwood@gmail.com, Ban Tao <fengzheng923@gmail.com>,
- perex@perex.cz, jernej.skrabec@gmail.com, tiwai@suse.com, wens@csie.org
-In-Reply-To: <1666511085-2748-1-git-send-email-fengzheng923@gmail.com>
-References: <1666511085-2748-1-git-send-email-fengzheng923@gmail.com>
-Subject: Re: [PATCH v2] ASoC: sun50i-dmic: avoid unused variable warning for
- sun50i_dmic_of_match
-Message-Id: <166662011789.251784.4030037448307420483.b4-ty@kernel.org>
-Date: Mon, 24 Oct 2022 15:01:57 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-fc921
-Cc: alsa-devel@alsa-project.org, linux-sunxi@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 469181FD59;
+ Mon, 24 Oct 2022 14:04:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1666620260; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Qaq9WInof3zmvpJCEWXSq0S+lrAq7e87Op2R9pRdblM=;
+ b=NF5mdkdlnbh6A6YAdscChKAVCtW35Uj8T6CEDD2JfvSWuxxGrr+yXS1zLCpdfuP82jFCtc
+ Nv+JbMW6BvqE0vjI25Qxp27wyXgKiAlZ+fwM0N73403iywyLLrLu+esA/+zIpDToUPC1ln
+ HYLBAlmaeeBIlWTCAmSMaIArz/UIaHY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1666620260;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Qaq9WInof3zmvpJCEWXSq0S+lrAq7e87Op2R9pRdblM=;
+ b=US14vegpHlV9SsjBrETQNhKDk9/IFqXxxQwRvzuvpFxq5nQdA5RN5GGDiEUY/torDO4Dec
+ g0+iJU4y2LV9ctDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 23F3E13357;
+ Mon, 24 Oct 2022 14:04:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 2W/0B2SbVmPlEgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 24 Oct 2022 14:04:20 +0000
+Date: Mon, 24 Oct 2022 16:04:19 +0200
+Message-ID: <87edux8gik.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Yang Yingliang <yangyingliang@huawei.com>
+Subject: Re: [PATCH] ALSA: hda: fix possible memory leak in
+ azx_codec_configure()
+In-Reply-To: <20221024122646.1175390-1-yangyingliang@huawei.com>
+References: <20221024122646.1175390-1-yangyingliang@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,38 +95,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 23 Oct 2022 00:44:45 -0700, Ban Tao wrote:
-> In configurations with CONFIG_OF=n, we get a harmless build warning:
+On Mon, 24 Oct 2022 14:26:46 +0200,
+Yang Yingliang wrote:
 > 
-> sound/soc/sunxi/sun50i-dmic.c:268:34: warning: unused variable
-> 'sun50i_dmic_of_match' [-Wunused-const-variable]
+> If the codec device is registered, after calling snd_hdac_device_unregister(),
+> codec has already been removed from chip bus, it should call put_device() to
+> give up reference to free codec and device name.
 > 
+> Fixes: c0f1886de7e1 ("ALSA: hda: intel: Allow repeatedly probing on codec configuration errors")
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+
+Hrm, are you sure that this will result in a memory leak?
+put_device() is called at snd_hda_codec_unregister() that is invoked
+via dev_free callback of the snd_hda_codec object -- which is called
+when the top-level driver is removed.  I'm afraid that your patch will
+lead to a double-free.
+
+
+thanks,
+
+Takashi
+
+> ---
+>  sound/pci/hda/hda_controller.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: sun50i-dmic: avoid unused variable warning for sun50i_dmic_of_match
-      commit: 2cfcc1085d3b7b7c893be41034853d4c63a41092
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+> diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+> index 0ff286b7b66b..f6a73ce300a4 100644
+> --- a/sound/pci/hda/hda_controller.c
+> +++ b/sound/pci/hda/hda_controller.c
+> @@ -1257,8 +1257,11 @@ int azx_codec_configure(struct azx *chip)
+>  		/* unregister failed codecs if any codec has been probed */
+>  		list_for_each_codec_safe(codec, next, &chip->bus) {
+>  			if (!codec->configured) {
+> +				bool is_registered = device_is_registered(&codec->core.dev);
+>  				codec_err(codec, "Unable to configure, disabling\n");
+>  				snd_hdac_device_unregister(&codec->core);
+> +				if (is_registered)
+> +					put_device(&codec->core.dev);
+>  			}
+>  		}
+>  	}
+> -- 
+> 2.25.1
+> 
