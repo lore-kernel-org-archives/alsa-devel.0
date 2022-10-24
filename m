@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74F82C38A2D
-	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 16:54:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7126FECAAA1
+	for <alsa-devel@archiver.kernel.org>; Mon, 24 Oct 2022 16:55:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC95D6FC1;
-	Mon, 24 Oct 2022 18:53:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC95D6FC1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70CF66F77;
+	Mon, 24 Oct 2022 18:54:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70CF66F77
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666630484;
-	bh=l3ybUj0jxYGiDkDkpXgUZXz4Q7rKY3WZTc7yZkJB8a0=;
+	s=default; t=1666630512;
+	bh=OhENCqBXCVCRLqTLl75SxKjgJaDvk3tae2WdVfgE5lo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eUeLx0cPlcE3hFE1cu8rUD0UXnleDfoe5ZSK0X6uCOH63QEmDt4W4RPo5J410l4J1
-	 +GBneAulkF07CZJToeGkejsMH2B5hLA4yjYDZObK4w0xKVb0AiHmkIZO0mElVzl2+c
-	 +2bob33fGlWq+n9dVoG5c41tnNQJdGLAaf0pQxeM=
+	b=K4l91fAaCQDb7F47q4B4K0vmBibdEQgUMwcbaFXgW5noHE04WfJy+4lv0CnRzjBdT
+	 K5XtiRitCUgN3nbP1ucHy3NypqkiuG1TzJ1N09+9oXWnf/LQH4MDzEgVCqDHBg1MHK
+	 lAzL6wlzgZl2WyPaT4nzLeKXXx1VeVdqhIV791cg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC441F80553;
-	Mon, 24 Oct 2022 18:53:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 854C4F80568;
+	Mon, 24 Oct 2022 18:53:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7FEA2F80553; Mon, 24 Oct 2022 18:53:32 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id CEE34F80558; Mon, 24 Oct 2022 18:53:33 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 823B3F8052F
- for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 18:53:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 823B3F8052F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3591DF8053D
+ for <alsa-devel@alsa-project.org>; Mon, 24 Oct 2022 18:53:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3591DF8053D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="I6BtnOoi"
+ header.b="WWP2xWwe"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666630407; x=1698166407;
+ t=1666630408; x=1698166408;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=l3ybUj0jxYGiDkDkpXgUZXz4Q7rKY3WZTc7yZkJB8a0=;
- b=I6BtnOoiOd6G9g+ms3NojwKIs6e9kmuVZVmpGeKfjAOBvo7be/OVB1UO
- w6GwPwGaN3lKETYNNIGYeV+TVkuKXx5yOc7I7YUPbsD7vXfY+Kl3iCPtn
- 9/pdijGaIUH5vCtMkmBOEfN5DcgOwNTF0liGltEwDxcqeTHdKW7iDawo5
- 5qg3EAEdKNvObBQtMRe3gXUpLJK9ps0f/S1UY0FW+ZzUsyboNLOdfCn7A
- +EnGSiT/MYLi1ZnZLAwG2DozvOHVnlCGS46QpPe+WruyBQ6avdnMxCV6g
- 2an5bGG5xTkbOo0dmTbQ/t1+UfPRQ3yDVbQ7O93UHtWeSCA/irW3DuRWh A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="305082253"
-X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="305082253"
+ bh=OhENCqBXCVCRLqTLl75SxKjgJaDvk3tae2WdVfgE5lo=;
+ b=WWP2xWwesNca7i1oZXty8XJRV1zXwnfqcITKt+CcZD7Xe2sKIqguNs67
+ bSnB3mBXTy7SRBZ04/n7X1mEQD/YLFvDYA/tVR6revHKv/rgw/y1oWmYX
+ sQ51SV/gMcRo/7xuBmhMPH4JwcQHtfqb1dI3WizH5GgtUaVSP/GSQxy2U
+ EB9Kx5g6X0Jb51LUDCYW4E3LY+M9VNQ5ZTC2hG6/cDoCnwPri5SUuXKYF
+ a4EF0LSf3p6bDzi2aTimCP1zfbDDkGU37ELsPOepCiJgA029L/Qh5Y/7h
+ VYmqdlqz9iwft/k+HUq3AO9j7nCG4Pe2res48J+lS7qhWRauSEy2Ohnrt g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="393787381"
+X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="393787381"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Oct 2022 09:53:23 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="609263046"
-X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="609263046"
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Oct 2022 09:53:22 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10510"; a="609263042"
+X-IronPort-AV: E=Sophos;i="5.95,209,1661842800"; d="scan'208";a="609263042"
 Received: from tdsilva-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.213.186.236])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Oct 2022 09:53:22 -0700
+ 24 Oct 2022 09:53:21 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 02/16] ASoC: SOF: Intel: use mmio fallback for all platforms
-Date: Mon, 24 Oct 2022 11:52:56 -0500
-Message-Id: <20221024165310.246183-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 01/16] ASoC: SOF: ops: fallback to mmio in helpers
+Date: Mon, 24 Oct 2022 11:52:55 -0500
+Message-Id: <20221024165310.246183-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221024165310.246183-1-pierre-louis.bossart@linux.intel.com>
 References: <20221024165310.246183-1-pierre-louis.bossart@linux.intel.com>
@@ -88,100 +88,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-No need to expose an indirection when we can use the fallback.
+Returning an error when a read/write is not implemented makes no
+sense, especially on read where no return value makes sense.
+
+Change the logic to directly fallback to mmio. If a platform truly
+wants other read/writes that are not plain vanilla mmio, it needs to
+implement its own routines.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/intel/bdw.c            |  6 +-----
- sound/soc/sof/intel/byt.c            | 12 ++----------
- sound/soc/sof/intel/hda-common-ops.c |  6 +-----
- sound/soc/sof/intel/pci-tng.c        |  6 +-----
- 4 files changed, 5 insertions(+), 25 deletions(-)
+ sound/soc/sof/ops.h | 26 ++++++++++----------------
+ 1 file changed, 10 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
-index a446154f28032..812a49b1d3f49 100644
---- a/sound/soc/sof/intel/bdw.c
-+++ b/sound/soc/sof/intel/bdw.c
-@@ -575,11 +575,7 @@ static struct snd_sof_dsp_ops sof_bdw_ops = {
- 	.run            = bdw_run,
- 	.reset          = bdw_reset,
+diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
+index 55d43adb6a295..a72f8043be64d 100644
+--- a/sound/soc/sof/ops.h
++++ b/sound/soc/sof/ops.h
+@@ -305,23 +305,19 @@ static inline int snd_sof_debugfs_add_region_item(struct snd_sof_dev *sdev,
+ static inline void snd_sof_dsp_write(struct snd_sof_dev *sdev, u32 bar,
+ 				     u32 offset, u32 value)
+ {
+-	if (sof_ops(sdev)->write) {
++	if (sof_ops(sdev)->write)
+ 		sof_ops(sdev)->write(sdev, sdev->bar[bar] + offset, value);
+-		return;
+-	}
+-
+-	dev_err_ratelimited(sdev->dev, "error: %s not defined\n", __func__);
++	else
++		writel(value,  sdev->bar[bar] + offset);
+ }
  
--	/* Register IO */
--	.write		= sof_io_write,
--	.read		= sof_io_read,
--	.write64	= sof_io_write64,
--	.read64		= sof_io_read64,
-+	/* Register IO uses direct mmio */
+ static inline void snd_sof_dsp_write64(struct snd_sof_dev *sdev, u32 bar,
+ 				       u32 offset, u64 value)
+ {
+-	if (sof_ops(sdev)->write64) {
++	if (sof_ops(sdev)->write64)
+ 		sof_ops(sdev)->write64(sdev, sdev->bar[bar] + offset, value);
+-		return;
+-	}
+-
+-	dev_err_ratelimited(sdev->dev, "error: %s not defined\n", __func__);
++	else
++		writeq(value, sdev->bar[bar] + offset);
+ }
  
- 	/* Block IO */
- 	.block_read	= sof_block_read,
-diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
-index e6dc4ff531c34..faf223b383605 100644
---- a/sound/soc/sof/intel/byt.c
-+++ b/sound/soc/sof/intel/byt.c
-@@ -225,11 +225,7 @@ static struct snd_sof_dsp_ops sof_byt_ops = {
- 	.run		= atom_run,
- 	.reset		= atom_reset,
+ static inline u32 snd_sof_dsp_read(struct snd_sof_dev *sdev, u32 bar,
+@@ -329,9 +325,8 @@ static inline u32 snd_sof_dsp_read(struct snd_sof_dev *sdev, u32 bar,
+ {
+ 	if (sof_ops(sdev)->read)
+ 		return sof_ops(sdev)->read(sdev, sdev->bar[bar] + offset);
+-
+-	dev_err(sdev->dev, "error: %s not defined\n", __func__);
+-	return -ENOTSUPP;
++	else
++		return readl(sdev->bar[bar] + offset);
+ }
  
--	/* Register IO */
--	.write		= sof_io_write,
--	.read		= sof_io_read,
--	.write64	= sof_io_write64,
--	.read64		= sof_io_read64,
-+	/* Register IO uses direct mmio */
+ static inline u64 snd_sof_dsp_read64(struct snd_sof_dev *sdev, u32 bar,
+@@ -339,9 +334,8 @@ static inline u64 snd_sof_dsp_read64(struct snd_sof_dev *sdev, u32 bar,
+ {
+ 	if (sof_ops(sdev)->read64)
+ 		return sof_ops(sdev)->read64(sdev, sdev->bar[bar] + offset);
+-
+-	dev_err(sdev->dev, "error: %s not defined\n", __func__);
+-	return -ENOTSUPP;
++	else
++		return readq(sdev->bar[bar] + offset);
+ }
  
- 	/* Block IO */
- 	.block_read	= sof_block_read,
-@@ -304,11 +300,7 @@ static struct snd_sof_dsp_ops sof_cht_ops = {
- 	.run		= atom_run,
- 	.reset		= atom_reset,
- 
--	/* Register IO */
--	.write		= sof_io_write,
--	.read		= sof_io_read,
--	.write64	= sof_io_write64,
--	.read64		= sof_io_read64,
-+	/* Register IO uses direct mmio */
- 
- 	/* Block IO */
- 	.block_read	= sof_block_read,
-diff --git a/sound/soc/sof/intel/hda-common-ops.c b/sound/soc/sof/intel/hda-common-ops.c
-index b2326396c870e..397303b3ac9d5 100644
---- a/sound/soc/sof/intel/hda-common-ops.c
-+++ b/sound/soc/sof/intel/hda-common-ops.c
-@@ -19,11 +19,7 @@ struct snd_sof_dsp_ops sof_hda_common_ops = {
- 	.probe		= hda_dsp_probe,
- 	.remove		= hda_dsp_remove,
- 
--	/* Register IO */
--	.write		= sof_io_write,
--	.read		= sof_io_read,
--	.write64	= sof_io_write64,
--	.read64		= sof_io_read64,
-+	/* Register IO uses direct mmio */
- 
- 	/* Block IO */
- 	.block_read	= sof_block_read,
-diff --git a/sound/soc/sof/intel/pci-tng.c b/sound/soc/sof/intel/pci-tng.c
-index f0f6d9ba88037..5b2b409752c58 100644
---- a/sound/soc/sof/intel/pci-tng.c
-+++ b/sound/soc/sof/intel/pci-tng.c
-@@ -144,11 +144,7 @@ struct snd_sof_dsp_ops sof_tng_ops = {
- 	.run		= atom_run,
- 	.reset		= atom_reset,
- 
--	/* Register IO */
--	.write		= sof_io_write,
--	.read		= sof_io_read,
--	.write64	= sof_io_write64,
--	.read64		= sof_io_read64,
-+	/* Register IO uses direct mmio */
- 
- 	/* Block IO */
- 	.block_read	= sof_block_read,
+ /* block IO */
 -- 
 2.34.1
 
