@@ -4,92 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7421C38A2D
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Oct 2022 12:43:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC6E8ECDFA1
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Oct 2022 12:44:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA5A45314;
-	Tue, 25 Oct 2022 14:43:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA5A45314
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6C61530E;
+	Tue, 25 Oct 2022 14:43:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6C61530E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666701837;
-	bh=wPZY9l0+jlBdtipx3EDsjoTgmvDjjxj9XrB+JG4g/rs=;
+	s=default; t=1666701884;
+	bh=34VsYq4n2RDUur/4vw8PqAd9uQlmkAzoXWzgUKgfGPs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EcwGFfm0z1/r8YObN1z6JI8s7WCwHUMIkycyQB/aaYtK85fEujs2BdQwDCWsooJrj
-	 gL2McZblSjPcHIJoY3Sa83Z6k/1ZOq5WMrAE6PuyVHWy0VbwSteR13GOBjZnt85eXf
-	 yG/wgFp+qe+pUKcyDz2y4vzv5tbVRQz88yje3+4M=
+	b=GnG+m2xll2smKvWpB9sfy6dBej82EeMwLCIQB0hkeTYXnxKNqyuoOMlBeRMygt9qw
+	 TEhFzlRDa7K4D/+nkfwGWzdEQV89+iHHymkEm0PMo1aCj6cenBYKXyI8TCqwcOuFWI
+	 TxozOghcCXgsrwhwXmTA1e4s6IjYqt8S/6bi7Rb4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2C92F80567;
-	Tue, 25 Oct 2022 14:42:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84B7DF80431;
+	Tue, 25 Oct 2022 14:43:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A89CDF80559; Tue, 25 Oct 2022 14:42:08 +0200 (CEST)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
- [IPv6:2a00:1450:4864:20::42d])
+ id 8289BF80448; Tue, 25 Oct 2022 14:43:51 +0200 (CEST)
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
+ [IPv6:2a00:1450:4864:20::430])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CB1F9F80559
- for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2022 14:42:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB1F9F80559
+ by alsa1.perex.cz (Postfix) with ESMTPS id 07328F80240
+ for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2022 14:43:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07328F80240
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="p7sLxOhF"
-Received: by mail-wr1-x42d.google.com with SMTP id l14so13382737wrw.2
- for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2022 05:42:02 -0700 (PDT)
+ header.b="CGWd9EGm"
+Received: by mail-wr1-x430.google.com with SMTP id o4so12405479wrq.6
+ for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2022 05:43:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=4Ic2JEDn8iIKh6kokfWzyIvyt1AwKkoMppVSCI5C57s=;
- b=p7sLxOhF7+RJa8UpoEmVVGga9/XxYJpHt9VYi4nB27HDInsNdVKl7A7Y7xodOhf69i
- cH4p45wrXBpH/+j58uHRVEPx6mxh/2gQckDVhrgiGCsUh2ynjtz/IBUS9xWyK2fYpC97
- ds2Ro5NO2Ho8uNlbpqNj6GO2mpGF4KKPfRwhoSf+FnqBq9kw4hpbqz5kplGxdOap8pvc
- nkTIEyN5cbLojENWjdgwwecAr4ejh7T8CkVx6Cc6JRqgtS7O5SoOxMymWmJexfOrWeoK
- Zm82tzz/g9IR2WW1Wkt62/F8UDLk7lV/5fp9xSUxnVSXRy6hoTpp6OcmSUn8vhSmBfHS
- 3CSg==
+ bh=h4bB9DG6I4yQg1VaBFFskr0kCoybfjGK9a489xozqbQ=;
+ b=CGWd9EGmlJFK+YEPgI0l2hwe3QK0ZhOT+JHvVsiZC12bo+c4Jl/FAYJrdHvAalOpGt
+ tllbwPXcjRHsXQblFv5wBCsA+ty066EcfLUUp3vq6jrgpqnCqf5fS8/J1FkAml46w5yQ
+ tGseitrCIP8oromfF0eRIfZdWQWi2HtjVV0Dkq9KDifUwNdXpfMbqoiGOSksX7lTAln9
+ bLuFQYXiUwWkd/i6dJqmss6GUSSdrz/4sDW9ZpmRhAlNVYZ+yjvTlyCsYz2IfUoCLaTa
+ kjMSP2GYVCuZOnYOe03eK2yd8xVrU4sjiIjmnirDbhaLGlIfyZ2JIE6LdJzGBTV9bPVK
+ +Fng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=4Ic2JEDn8iIKh6kokfWzyIvyt1AwKkoMppVSCI5C57s=;
- b=5/759/gNNEK3TDguW2+tVLGEar40U5HG3iWsMM+4Gw8RZVtWUvFw6y+l4lc4nvhfz/
- 5F51H1DZgh25+JmGs3qxnoW0XM6WIzwJNMSbSjxAwcwtwTnEbErPqvIPFzY/sM50YDoa
- vtOMfUXbBb2JxAf2szh0moA036ZvnbqOnhC4aYZSPTSqTZRSp2RZOE+JFgnkMsSb8HXn
- E601FcOIC/JwROme1MMxEdnciRke0bOyZ/A+5g5WM95D+Yx4fMaSM19py0Mp+izrVjOi
- zws5Xw6wDuiikejI3fbOUloztLGnxt8w7Iu9nUo688B70/KiOtuAq8flDUviz2VKr5gJ
- DUBg==
-X-Gm-Message-State: ACrzQf37sAXNaPH87BH6OW9DdbsQDJG0eBINAtUnV+nGZ5Fdn/giYQZA
- 3jgZh/OILJHj7t7gq4LSsYk=
-X-Google-Smtp-Source: AMsMyM4PfHc5iZZPnvgw3lB96B0iv3Tf8sL+cm4ldHaMrUPmjOZBcBtMm3ogjXQBRx7LsZBd9zG5SA==
-X-Received: by 2002:a05:600c:1c1e:b0:3c6:fa3c:32a9 with SMTP id
- j30-20020a05600c1c1e00b003c6fa3c32a9mr15113010wms.203.1666701720859; 
- Tue, 25 Oct 2022 05:42:00 -0700 (PDT)
-Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch.
+ bh=h4bB9DG6I4yQg1VaBFFskr0kCoybfjGK9a489xozqbQ=;
+ b=FC72JMvScIiM7527GQvNOn7t3szK41GWCJWat69meH6zZhGdxqPEhr/Pi0X/oFaaYR
+ 1RcblFLhThcIFX6N1qoIxVKiixFV6auKe+8fjglOSeQ7gAFCj5wdWQ9MwyB1uTqqerVE
+ 1ZVQeXeqlbPSHm7ILDnZ+oxHojKpN20LSKJO+Wud0sXusBHnvBr+SoJ3Xx38GTfXtjdg
+ Azl/qCR0r2KcCyDSskFVO2b2hpBjIgy0hx49kS/h4dV5CSgFqPPMCN5MfS3FLPoEpRda
+ 11lEnuvleI7B1HUUQyk6LWikj7zp+umLNZFH/GkbxHMPmn6w42BmcYD8kgDqDr/OlMh5
+ 9Iqg==
+X-Gm-Message-State: ACrzQf2atrrikED8VW5H86pB/W91aLq0Gacn7Rr8lZ4UQYgymQ7C8mhA
+ PpfrzJMUeJvTiQXO2gEDYw4=
+X-Google-Smtp-Source: AMsMyM5SL1IRETz58Y983NAHYtT70ugOevrG0yz5LC3UXysNz92AImLC0KI/69prTy1jTOu7poogHw==
+X-Received: by 2002:adf:e985:0:b0:236:6a53:3a16 with SMTP id
+ h5-20020adfe985000000b002366a533a16mr8737605wrm.501.1666701827348; 
+ Tue, 25 Oct 2022 05:43:47 -0700 (PDT)
+Received: from archbook.localnet (84-72-105-84.dclient.hispeed.ch.
  [84.72.105.84]) by smtp.gmail.com with ESMTPSA id
- ay19-20020a05600c1e1300b003a1980d55c4sm11250664wmb.47.2022.10.25.05.41.59
+ bp4-20020a5d5a84000000b0022e57e66824sm3163700wrb.99.2022.10.25.05.43.46
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 25 Oct 2022 05:42:00 -0700 (PDT)
+ Tue, 25 Oct 2022 05:43:46 -0700 (PDT)
 From: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH 3/4] ASoC: dt-bindings: rockchip: i2s-tdm: Add RK3588
- compatible
-Date: Tue, 25 Oct 2022 14:41:31 +0200
-Message-Id: <20221025124132.399729-4-frattaroli.nicolas@gmail.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221025124132.399729-1-frattaroli.nicolas@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Heiko Stuebner <heiko@sntech.de>,
+ Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+Subject: Re: [PATCH 4/4] ASoC: rockchip: i2s_tdm: Add support for RK3588
+Date: Tue, 25 Oct 2022 14:43:45 +0200
+Message-ID: <3478206.uukdV1xfrs@archbook>
+In-Reply-To: <20221025124132.399729-5-frattaroli.nicolas@gmail.com>
 References: <20221025124132.399729-1-frattaroli.nicolas@gmail.com>
+ <20221025124132.399729-5-frattaroli.nicolas@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,25 +103,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This adds the compatible string for the RK3588 SoC.
+On Dienstag, 25. Oktober 2022 14:41:32 CEST Nicolas Frattaroli wrote:
+> This adds support for the RK3588 SoC to the I2S/TDM driver.
+> ---
+>  sound/soc/rockchip/rockchip_i2s_tdm.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
+> index 917f17107891..08b90ec5cc80 100644
+> --- a/sound/soc/rockchip/rockchip_i2s_tdm.c
+> +++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
+> @@ -1318,6 +1318,7 @@ static const struct of_device_id rockchip_i2s_tdm_match[] = {
+>  	{ .compatible = "rockchip,rk1808-i2s-tdm", .data = &rk1808_i2s_soc_data },
+>  	{ .compatible = "rockchip,rk3308-i2s-tdm", .data = &rk3308_i2s_soc_data },
+>  	{ .compatible = "rockchip,rk3568-i2s-tdm", .data = &rk3568_i2s_soc_data },
+> +	{ .compatible = "rockchip,rk3588-i2s-tdm" },
+>  	{ .compatible = "rockchip,rv1126-i2s-tdm", .data = &rv1126_i2s_soc_data },
+>  	{},
+>  };
+> @@ -1556,7 +1557,7 @@ static int rockchip_i2s_tdm_probe(struct platform_device *pdev)
+>  	i2s_tdm->dev = &pdev->dev;
+>  
+>  	of_id = of_match_device(rockchip_i2s_tdm_match, &pdev->dev);
+> -	if (!of_id || !of_id->data)
+> +	if (!of_id)
+>  		return -EINVAL;
+>  
+>  	spin_lock_init(&i2s_tdm->lock);
+> 
+Oops, forgot the signoff on this one.
+For this purpose:
 
 Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
----
- Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml b/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
-index 8646cdc692d7..0503f4f3fb1a 100644
---- a/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
-+++ b/Documentation/devicetree/bindings/sound/rockchip,i2s-tdm.yaml
-@@ -21,6 +21,7 @@ properties:
-       - rockchip,rk1808-i2s-tdm
-       - rockchip,rk3308-i2s-tdm
-       - rockchip,rk3568-i2s-tdm
-+      - rockchip,rk3588-i2s-tdm
-       - rockchip,rv1126-i2s-tdm
- 
-   reg:
--- 
-2.38.1
+My apologies.
+
 
