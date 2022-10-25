@@ -4,85 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4F88C38A2D
-	for <alsa-devel@archiver.kernel.org>; Tue, 25 Oct 2022 19:58:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E785FA3740
+	for <alsa-devel@archiver.kernel.org>; Tue, 25 Oct 2022 20:14:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C31731ACA;
-	Tue, 25 Oct 2022 21:57:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C31731ACA
+	by alsa0.perex.cz (Postfix) with ESMTPS id BCA184B43;
+	Tue, 25 Oct 2022 22:13:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCA184B43
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666727927;
-	bh=DIZ7E5sm0oVhsFi7Syn1ZuCebIsgM//+qsvyda8C3ww=;
+	s=default; t=1666728841;
+	bh=LxSxRxqD6xZhQJWNK6dvxLp4Arzn7vD5/UZLW0kutsk=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QOqNAjbln5GxsIBuG98BYMFotwjmh8vbaNZ5Zn+eCbQ14Ryro+vH82LKJWDTzgeGk
-	 jNRJNLxkoS2TKn3OkLuhOkWeo9dv3/3NYHNmspc3el+I1Mx1CEw+kRa8OmVUitRnMn
-	 llIUR8oq9MmLBLwwLVV6XOtZk/pQn384GNFjyymo=
+	b=XYw6DqRj/gXK8v6SsuRZtM8jQVivU5G0ypEv/MkEVUJnk3cNzlMDhsOV3J1/D2Xz5
+	 wWD31Cbev3pBlo98m5++CO1wsqYO4DvZiPwnga5ErTcYK9Ddih43qvKOTNQ8mKdk8E
+	 CKWDTpLqFRRkrAwT30LRwhKVJGFIMclDnA8UQOhE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 549D4F8042F;
-	Tue, 25 Oct 2022 21:57:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A34AF8042F;
+	Tue, 25 Oct 2022 22:13:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E4E8F80431; Tue, 25 Oct 2022 21:57:55 +0200 (CEST)
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com
- [IPv6:2607:f8b0:4864:20::e36])
+ id 6FE83F80431; Tue, 25 Oct 2022 22:13:09 +0200 (CEST)
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com
+ [IPv6:2607:f8b0:4864:20::e31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 430D8F80100
- for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2022 21:57:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 430D8F80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11924F80100
+ for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2022 22:13:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11924F80100
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="e+qZj/QT"
-Received: by mail-vs1-xe36.google.com with SMTP id 128so12216444vsz.12
- for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2022 12:57:48 -0700 (PDT)
+ header.b="K3/2yhlJ"
+Received: by mail-vs1-xe31.google.com with SMTP id h4so12271051vsr.11
+ for <alsa-devel@alsa-project.org>; Tue, 25 Oct 2022 13:13:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=content-transfer-encoding:cc:to:subject:message-id:date:from
  :in-reply-to:references:mime-version:from:to:cc:subject:date
  :message-id:reply-to;
- bh=DIZ7E5sm0oVhsFi7Syn1ZuCebIsgM//+qsvyda8C3ww=;
- b=e+qZj/QT7BhnoLzJRhfbZB8ytdCtnQT+EOebSeFOrEpqlQvGI9ku8p0ouxhXeQC90R
- cRR65HJVboQ0DaJOdu5FN826Twnr/HDNbCNgIR/fazK5GRVLx5K2Caup9By3OEvRc6VL
- XBzcF3L7iVveJmBZAFmITG2HQ4cJGeDC9ZuW8=
+ bh=1CDt1y7e7BIyTnclLO8/l8wF0JXVZnj5kZesVA/eyFg=;
+ b=K3/2yhlJoAiQZi9EIf9ab9ebsvLBXlapY9+VwvPvvaVRJdx5Qh7HaDiz2pbdxMyjy6
+ 7O0o8Vn/BmDMXgzxWGyev/NBW9V/cCjmYxXMKeQtMV/TakUujFewAyvj3sGn29sXYTwy
+ HJUaeg9EChZ2sMJxySltPYCDU+/TXDc57BhfM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:cc:to:subject:message-id:date:from
  :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=DIZ7E5sm0oVhsFi7Syn1ZuCebIsgM//+qsvyda8C3ww=;
- b=nYziqLnA08JHqARi0OEraxV4LOsIsTV3JT+v9T0jQF6eM8+dp94G5EazgCgX7YfelX
- UlUHZrmhhIhHCywVmM8/HfXKYBaLzTeuz7hmNgb3ZrlH1AefUMEvhAt/2+fGUOQ9rxWt
- fV9FCUxximHBiZyFSREl6DC9yqO6Nmx36MgLZFYOwy65xXwcEsKMyRm6A45VqrnVE+hk
- xNyN6wkN3UTC4JrM1RM2r0U7tLgIsm2wXW7afd2ckotAlVwgfFd56cUbcRPndy2Njdeh
- RU1HrljuNAiLzH7P4Haqe5jX5wnSj4WxOIwozLg3JyRJEF/zFebFJWBpUmrOyrVkgOJv
- k54w==
-X-Gm-Message-State: ACrzQf1YnO1RJ3CMp8rJoR0Rykk77bI6Z1De6SCTUqJm36WKGXosCG+D
- TGgc+OHjMPomcIs+rIoJTt/GDBahG71YfA7bb3I2/A==
-X-Google-Smtp-Source: AMsMyM68yxjtygGzCNmwCEf3ID4HFVpQ7xTLBDVwuunh8zLtsSitwC+a8tjP/31TtJUhFd+flFlgXTV/pYKdu1XQ+UY=
-X-Received: by 2002:a67:f684:0:b0:392:ac17:f9b0 with SMTP id
- n4-20020a67f684000000b00392ac17f9b0mr23400930vso.85.1666727866859; Tue, 25
- Oct 2022 12:57:46 -0700 (PDT)
+ bh=1CDt1y7e7BIyTnclLO8/l8wF0JXVZnj5kZesVA/eyFg=;
+ b=F1Zmr5+j/GiO5feokfQJGhuXfCUwOhBb8B6ne8plhtcPBrrrNAFYOBXOgykFkXc7aw
+ UkhxDkeR041YsCJYlPXB5kKntwtNL3gitWPge+QdR/cFb3PhgGoykiXV0XKA5xiYC7f0
+ fzpl2Vkhy+INZvaT2ZkDODiIDARVu0dIqh69u5tfy8jVmDrpjGTBnU1nBLXNe3nlju/v
+ GVm3JFP0T/aVlOYdqNkzJotvAM2AvOcbxR8p9UtI40CLGhKuea+ZtQAoI9yhqQj/moOl
+ RBa9m2d6Jf8zlmn6MD7HlDSBXoHhvmiO4ifLS4tyOBrtHOynuap8YMB/4+RT5lay/zpD
+ gTeg==
+X-Gm-Message-State: ACrzQf2zjtvjCP/PZRyNIafEtwJOhq0Gk32xqWOhyPzFZQEg8qbUlG5i
+ a+34fnPuzD2SZzCHg6sZTLpKlOAgwdICBtaqmvm/3A==
+X-Google-Smtp-Source: AMsMyM442Daimvpeuj+fzZhj86o7I+uEPF+apOJTcNTkmGt7gJrIuTpph61tawRfa3xTlXfYPexjfx9DegwQ7Ul9dgo=
+X-Received: by 2002:a67:f106:0:b0:3aa:efc:8610 with SMTP id
+ n6-20020a67f106000000b003aa0efc8610mr8867914vsk.65.1666728780555; Tue, 25 Oct
+ 2022 13:13:00 -0700 (PDT)
 MIME-Version: 1.0
 References: <20221024220015.1759428-1-nfraprado@collabora.com>
- <20221024220015.1759428-2-nfraprado@collabora.com>
- <b1863393-0b73-ca44-12ae-567982b07f68@collabora.com>
-In-Reply-To: <b1863393-0b73-ca44-12ae-567982b07f68@collabora.com>
+ <20221024220015.1759428-3-nfraprado@collabora.com>
+In-Reply-To: <20221024220015.1759428-3-nfraprado@collabora.com>
 From: Chen-Yu Tsai <wenst@chromium.org>
-Date: Tue, 25 Oct 2022 12:57:35 -0700
-Message-ID: <CAGXv+5HJQYjkQ7Vrggn5oYRYQu6YH8NS4QmfcP16Zk9kbEJNeA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] ASoC: dt-bindings: realtek,
- rt5682s: Add #sound-dai-cells
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Date: Tue, 25 Oct 2022 13:12:49 -0700
+Message-ID: <CAGXv+5HJo5x2ieOegmv5vkfh+rTevdR_fri-7PeK+Gd+GXVjNw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] ASoC: dt-bindings: realtek, rt5682s: Add AVDD and
+ MICVDD supplies
+To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Derek Fang <derek.fang@realtek.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, kernel@collabora.com
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Derek Fang <derek.fang@realtek.com>,
+ kernel@collabora.com,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,20 +98,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Oct 25, 2022 at 3:07 AM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
+On Mon, Oct 24, 2022 at 3:01 PM N=C3=ADcolas F. R. A. Prado
+<nfraprado@collabora.com> wrote:
 >
-> Il 25/10/22 00:00, N=C3=ADcolas F. R. A. Prado ha scritto:
-> > The rt5682s codec is a DAI provider with two interfaces - AIF1 and AIF2
-> > - and therefore should have a #sound-dai-cells property that is equal t=
-o
-> > 1. Add it.
-> >
-> > Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
-> >
->
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collab=
-ora.com>
+> The rt5682s codec can have two supplies: AVDD and MICVDD. They are
 
-Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
+The actual chip also has LDO1_IN (for digital core and charge pump)
+and DBVDD (for I/O). However in the Chromebook designs these two
+and AVDD are all provided from the same power rail, through separate
+filter banks.
+
+Neither does the datasheet specify the ordering of AVDD, DBVDD, and
+LDO1_IN for power sequencing, just that three should be toggled together.
+
+Should we model these? Or wait until some design actually splits these?
+
+
+ChenYu
+
+
+> already used by sc7180-trogdor-kingoftown.dtsi, so document them in the
+> binding.
+>
+> Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
+>
+> ---
+>
+> Changes in v2:
+> - Added mention that property is already used in a DT to the commit
+>   message
+>
+>  Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml=
+ b/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml
+> index 1c0b06d82369..ac1dea5b4450 100644
+> --- a/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml
+> +++ b/Documentation/devicetree/bindings/sound/realtek,rt5682s.yaml
+> @@ -90,6 +90,10 @@ properties:
+>    "#sound-dai-cells":
+>      const: 1
+>
+> +  AVDD-supply: true
+> +
+> +  MICVDD-supply: true
+> +
+>  additionalProperties: false
+>
+>  required:
+> --
+> 2.38.1
+>
