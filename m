@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F84EC38A2D
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Oct 2022 13:36:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8D4CC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Oct 2022 13:36:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C462E1FA8;
-	Wed, 26 Oct 2022 15:35:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C462E1FA8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E8853BEA;
+	Wed, 26 Oct 2022 15:35:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E8853BEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666791370;
-	bh=dpLGzQwfKrcRxmPSfAVJZ6u4CmLx7kxAQIL3CRVd5hQ=;
+	s=default; t=1666791395;
+	bh=eBkUT70PaUO6Yro3YkaeOaCWjN0EOntVd/NZJIZpRik=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PvShN5bmZXW4On5WSp81LWhURQQbaUON127xPbzEmvFRWzj8YxFKfPOnV/cfPxd2s
-	 8b5rgWGCpoTFZ9rPQV8LDfLXfdTD7J1ugsntlfgAf6/MycdGe/TCDCw7J8jrEf871d
-	 nOhFRn28sjpz/+ujddIxBvai8Qw8T9UZyxtdrnuE=
+	b=hhAlicuiyMqgedehhZtt9YZ0nWHhwWsrf/4CMMSBIGPwnNW6mVKhkFdEr0LXfW8+v
+	 SMWVSICi3RjASZ+0YidKu9UrHXxfcv06fb4K6JqkOeauUk608zmYsier1Gsv2r7Bco
+	 75Rsw+R91bmuc71Of2YyMAXn4xWymW/LeF95GlLQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ECCC7F80567;
-	Wed, 26 Oct 2022 15:34:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1C03F80578;
+	Wed, 26 Oct 2022 15:34:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 589E0F8057E; Wed, 26 Oct 2022 15:34:07 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id 1E816F8016C; Wed, 26 Oct 2022 15:34:10 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B2AB1F80567
- for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2022 15:34:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2AB1F80567
+ by alsa1.perex.cz (Postfix) with ESMTPS id 002A5F8016C
+ for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2022 15:34:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 002A5F8016C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="i0KlzG1a"
+ header.b="lLPsmIak"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666791241; x=1698327241;
+ t=1666791243; x=1698327243;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=dpLGzQwfKrcRxmPSfAVJZ6u4CmLx7kxAQIL3CRVd5hQ=;
- b=i0KlzG1a+aEf/EjL9wzfhO5cRMCpJRXOjt0FvIqO4gZvmtA9HVZqxIrU
- BAFjdEZ/nXHlrHSME6UposnMLz61XFzmBdFJ+oKSqTKdpposiOWjl34c7
- vRIte73JuPuazrPvqwTcRSJZjK4GvvSdoruFf0ke3b/uofyqF5RHDqUNz
- RCPp+hbvPQ1Xs1u+6uSD2Lc8VJhA1erXlR99rXIMTOx2q3yKrH50RTQxJ
- ZwCVooAX6KJDBA+LlGJ+0F0dFma4UgtleMshpf8HNSql6dfQrFh7QeV0y
- 8eafm62pmTdm2NFQ9xVZ+h0RBRtWgHRVZ333ZRiwAYwerws0q4zVvabNY g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="288340773"
-X-IronPort-AV: E=Sophos;i="5.95,214,1661842800"; d="scan'208";a="288340773"
+ bh=eBkUT70PaUO6Yro3YkaeOaCWjN0EOntVd/NZJIZpRik=;
+ b=lLPsmIakCqTjUlSOvaM7Y+jevD1sPsJJ2xP3gr6HUjOWRKn++t8IZGTK
+ 8j9ItpIUXB67uEJO8cMz4LjtNoX4S6aRBikH1uDl9PCUlbiw9fFcTE6ub
+ gLmN54H/xRH/P/Qzb4Qm670z1t/SaLJZQrsIRFM5N4TqBSTgq9TdfjkM7
+ b3q6vsXNbMRPeydlx2qyx73kgjr6CSclsi7xLk4Rgr6TN4YokI0wRYO99
+ 8PTsQOQ/+HqeZYdV6ruj2hRk6sE5lD2tnoYt1hmYfs8q3h+OkAVMrYWha
+ pqNMbv7VBT5eDRE1TiRh0ntQ4ESY4Led9rl7PvPFimjWCAtoF6R2nz78r A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="372155629"
+X-IronPort-AV: E=Sophos;i="5.95,214,1661842800"; d="scan'208";a="372155629"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Oct 2022 06:33:54 -0700
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Oct 2022 06:33:39 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="609952723"
-X-IronPort-AV: E=Sophos;i="5.95,214,1661842800"; d="scan'208";a="609952723"
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="609952690"
+X-IronPort-AV: E=Sophos;i="5.95,214,1661842800"; d="scan'208";a="609952690"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga006.jf.intel.com with ESMTP; 26 Oct 2022 06:33:40 -0700
+ by orsmga006.jf.intel.com with ESMTP; 26 Oct 2022 06:33:35 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v2 7/9] ASoC: Intel: avs: Standby power-state support
-Date: Wed, 26 Oct 2022 15:50:12 +0200
-Message-Id: <20221026135014.1403705-8-cezary.rojewski@intel.com>
+Subject: [PATCH v2 5/9] ASoC: Intel: avs: Restart instead of resuming HDA
+ capture streams
+Date: Wed, 26 Oct 2022 15:50:10 +0200
+Message-Id: <20221026135014.1403705-6-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221026135014.1403705-1-cezary.rojewski@intel.com>
 References: <20221026135014.1403705-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.com,
- Piotr Maziarz <piotrx.maziarz@linux.intel.com>,
- pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com,
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
  amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -87,194 +87,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Piotr Maziarz <piotrx.maziarz@linux.intel.com>
+Resuming of capture streams for HD-Audio is unsupported so remove the
+relevant flag from the hardware params when assigning them during
+avs_component_hda_open().
 
-Introduce avs_suspend_standby() and avs_resume_standby() to support S0IX
-streaming. The AudioDSP is not shutdown during such scenario and the PCI
-device is armed for possible wake operation through an audio event.
-
-As capability for a stream to be active during low power S0 is based off
-of ->ignore_suspend, adjust the field's value according to platform
-capabilities if needed.
-
-Signed-off-by: Piotr Maziarz <piotrx.maziarz@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/avs.h      |  7 ++++
- sound/soc/intel/avs/core.c     | 75 ++++++++++++++++++++++++++++++----
- sound/soc/intel/avs/topology.c | 10 +++++
- 3 files changed, 85 insertions(+), 7 deletions(-)
+ sound/soc/intel/avs/pcm.c | 50 ++++++++++++++++++++++-----------------
+ 1 file changed, 28 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/intel/avs/avs.h b/sound/soc/intel/avs/avs.h
-index fb73d207697f..8d05b27608fe 100644
---- a/sound/soc/intel/avs/avs.h
-+++ b/sound/soc/intel/avs/avs.h
-@@ -24,6 +24,13 @@ struct avs_tplg_library;
- struct avs_soc_component;
- struct avs_ipc_msg;
- 
-+#ifdef CONFIG_ACPI
-+#define AVS_S0IX_SUPPORTED \
-+	(acpi_gbl_FADT.flags & ACPI_FADT_LOW_POWER_S0)
-+#else
-+#define AVS_S0IX_SUPPORTED false
-+#endif
-+
- /*
-  * struct avs_dsp_ops - Platform-specific DSP operations
-  *
-diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
-index 0aaded90a99a..6b68d926c9f4 100644
---- a/sound/soc/intel/avs/core.c
-+++ b/sound/soc/intel/avs/core.c
-@@ -534,12 +534,30 @@ static void avs_pci_remove(struct pci_dev *pci)
- 	pm_runtime_get_noresume(&pci->dev);
+diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
+index 88a85a7786b7..b40886178c73 100644
+--- a/sound/soc/intel/avs/pcm.c
++++ b/sound/soc/intel/avs/pcm.c
+@@ -1009,34 +1009,34 @@ static int avs_component_resume(struct snd_soc_component *component)
+ 	return avs_component_resume_prepare(component, false);
  }
  
--static int __maybe_unused avs_suspend_common(struct avs_dev *adev)
-+static int avs_suspend_standby(struct avs_dev *adev)
-+{
-+	struct hdac_bus *bus = &adev->base.core;
-+	struct pci_dev *pci = adev->base.pci;
++static const struct snd_pcm_hardware avs_pcm_hardware = {
++	.info			= SNDRV_PCM_INFO_MMAP |
++				  SNDRV_PCM_INFO_MMAP_VALID |
++				  SNDRV_PCM_INFO_INTERLEAVED |
++				  SNDRV_PCM_INFO_PAUSE |
++				  SNDRV_PCM_INFO_RESUME |
++				  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
++	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
++				  SNDRV_PCM_FMTBIT_S24_LE |
++				  SNDRV_PCM_FMTBIT_S32_LE,
++	.buffer_bytes_max	= AZX_MAX_BUF_SIZE,
++	.period_bytes_min	= 128,
++	.period_bytes_max	= AZX_MAX_BUF_SIZE / 2,
++	.periods_min		= 2,
++	.periods_max		= AZX_MAX_FRAG,
++	.fifo_size		= 0,
++};
 +
-+	if (bus->cmd_dma_state)
-+		snd_hdac_bus_stop_cmd_io(bus);
-+
-+	snd_hdac_ext_bus_link_power_down_all(bus);
-+
-+	enable_irq_wake(pci->irq);
-+	pci_save_state(pci);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused avs_suspend_common(struct avs_dev *adev, bool low_power)
+ static int avs_component_open(struct snd_soc_component *component,
+ 			      struct snd_pcm_substream *substream)
  {
- 	struct hdac_bus *bus = &adev->base.core;
- 	int ret;
+ 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+-	struct snd_pcm_hardware hwparams;
  
- 	flush_work(&adev->probe_work);
-+	if (low_power && adev->num_lp_paths)
-+		return avs_suspend_standby(adev);
- 
- 	snd_hdac_ext_bus_link_power_down_all(bus);
- 
-@@ -577,11 +595,30 @@ static int __maybe_unused avs_suspend_common(struct avs_dev *adev)
- 	return 0;
- }
- 
--static int __maybe_unused avs_resume_common(struct avs_dev *adev, bool purge)
-+static int avs_resume_standby(struct avs_dev *adev)
-+{
-+	struct hdac_bus *bus = &adev->base.core;
-+	struct pci_dev *pci = adev->base.pci;
-+
-+	pci_restore_state(pci);
-+	disable_irq_wake(pci->irq);
-+
-+	snd_hdac_ext_bus_link_power_up_all(bus);
-+
-+	if (bus->cmd_dma_state)
-+		snd_hdac_bus_init_cmd_io(bus);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused avs_resume_common(struct avs_dev *adev, bool low_power, bool purge)
- {
- 	struct hdac_bus *bus = &adev->base.core;
- 	int ret;
- 
-+	if (low_power && adev->num_lp_paths)
-+		return avs_resume_standby(adev);
-+
- 	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
- 	avs_hdac_bus_init_chip(bus, true);
- 
-@@ -599,26 +636,50 @@ static int __maybe_unused avs_resume_common(struct avs_dev *adev, bool purge)
- 
- static int __maybe_unused avs_suspend(struct device *dev)
- {
--	return avs_suspend_common(to_avs_dev(dev));
-+	return avs_suspend_common(to_avs_dev(dev), true);
- }
- 
- static int __maybe_unused avs_resume(struct device *dev)
- {
--	return avs_resume_common(to_avs_dev(dev), true);
-+	return avs_resume_common(to_avs_dev(dev), true, true);
- }
- 
- static int __maybe_unused avs_runtime_suspend(struct device *dev)
- {
--	return avs_suspend_common(to_avs_dev(dev));
-+	return avs_suspend_common(to_avs_dev(dev), true);
- }
- 
- static int __maybe_unused avs_runtime_resume(struct device *dev)
- {
--	return avs_resume_common(to_avs_dev(dev), true);
-+	return avs_resume_common(to_avs_dev(dev), true, false);
-+}
-+
-+static int __maybe_unused avs_freeze(struct device *dev)
-+{
-+	return avs_suspend_common(to_avs_dev(dev), false);
-+}
-+static int __maybe_unused avs_thaw(struct device *dev)
-+{
-+	return avs_resume_common(to_avs_dev(dev), false, true);
-+}
-+
-+static int __maybe_unused avs_poweroff(struct device *dev)
-+{
-+	return avs_suspend_common(to_avs_dev(dev), false);
-+}
-+
-+static int __maybe_unused avs_restore(struct device *dev)
-+{
-+	return avs_resume_common(to_avs_dev(dev), false, true);
- }
- 
- static const struct dev_pm_ops avs_dev_pm = {
--	SET_SYSTEM_SLEEP_PM_OPS(avs_suspend, avs_resume)
-+	.suspend = avs_suspend,
-+	.resume = avs_resume,
-+	.freeze = avs_freeze,
-+	.thaw = avs_thaw,
-+	.poweroff = avs_poweroff,
-+	.restore = avs_restore,
- 	SET_RUNTIME_PM_OPS(avs_runtime_suspend, avs_runtime_resume, NULL)
- };
- 
-diff --git a/sound/soc/intel/avs/topology.c b/sound/soc/intel/avs/topology.c
-index 8a9f9fc48938..e845eaf0a1e7 100644
---- a/sound/soc/intel/avs/topology.c
-+++ b/sound/soc/intel/avs/topology.c
-@@ -1405,6 +1405,11 @@ static int avs_widget_load(struct snd_soc_component *comp, int index,
- 	if (!le32_to_cpu(dw->priv.size))
+ 	/* only FE DAI links are handled here */
+ 	if (rtd->dai_link->no_pcm)
  		return 0;
  
-+	if (w->ignore_suspend && !AVS_S0IX_SUPPORTED) {
-+		dev_info_once(comp->dev, "Device does not support S0IX, check BIOS settings\n");
-+		w->ignore_suspend = false;
-+	}
-+
- 	tplg = acomp->tplg;
- 	mach = dev_get_platdata(comp->card->dev);
+-	hwparams.info = SNDRV_PCM_INFO_MMAP |
+-			SNDRV_PCM_INFO_MMAP_VALID |
+-			SNDRV_PCM_INFO_INTERLEAVED |
+-			SNDRV_PCM_INFO_PAUSE |
+-			SNDRV_PCM_INFO_RESUME |
+-			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP;
+-
+-	hwparams.formats = SNDRV_PCM_FMTBIT_S16_LE |
+-			   SNDRV_PCM_FMTBIT_S24_LE |
+-			   SNDRV_PCM_FMTBIT_S32_LE;
+-	hwparams.period_bytes_min = 128;
+-	hwparams.period_bytes_max = AZX_MAX_BUF_SIZE / 2;
+-	hwparams.periods_min = 2;
+-	hwparams.periods_max = AZX_MAX_FRAG;
+-	hwparams.buffer_bytes_max = AZX_MAX_BUF_SIZE;
+-	hwparams.fifo_size = 0;
+-
+-	return snd_soc_set_runtime_hwparams(substream, &hwparams);
++	return snd_soc_set_runtime_hwparams(substream, &avs_pcm_hardware);
+ }
  
-@@ -1442,6 +1447,11 @@ static int avs_dai_load(struct snd_soc_component *comp, int index,
- static int avs_link_load(struct snd_soc_component *comp, int index, struct snd_soc_dai_link *link,
- 			 struct snd_soc_tplg_link_config *cfg)
- {
-+	if (link->ignore_suspend && !AVS_S0IX_SUPPORTED) {
-+		dev_info_once(comp->dev, "Device does not support S0IX, check BIOS settings\n");
-+		link->ignore_suspend = false;
-+	}
+ static unsigned int avs_hda_stream_dpib_read(struct hdac_ext_stream *stream)
+@@ -1380,9 +1380,15 @@ static int avs_component_hda_open(struct snd_soc_component *component,
+ 	struct hdac_ext_stream *link_stream;
+ 	struct hda_codec *codec;
+ 
+-	/* only BE DAI links are handled here */
+-	if (!rtd->dai_link->no_pcm)
+-		return avs_component_open(component, substream);
++	if (!rtd->dai_link->no_pcm) {
++		struct snd_pcm_hardware hwparams = avs_pcm_hardware;
 +
- 	if (!link->no_pcm) {
- 		/* Stream control handled by IPCs. */
- 		link->nonatomic = true;
++		/* RESUME unsupported for de-coupled HD-Audio capture. */
++		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++			hwparams.info &= ~SNDRV_PCM_INFO_RESUME;
++
++		return snd_soc_set_runtime_hwparams(substream, &hwparams);
++	}
+ 
+ 	codec = dev_to_hda_codec(asoc_rtd_to_codec(rtd, 0)->dev);
+ 	link_stream = snd_hdac_ext_stream_assign(&codec->bus->core, substream,
 -- 
 2.25.1
 
