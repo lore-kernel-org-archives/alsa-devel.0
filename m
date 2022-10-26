@@ -4,90 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A51D8C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Oct 2022 11:05:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F24F7C38A2D
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Oct 2022 12:09:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DEDF43F14;
-	Wed, 26 Oct 2022 13:04:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DEDF43F14
+	by alsa0.perex.cz (Postfix) with ESMTPS id 394763E25;
+	Wed, 26 Oct 2022 14:09:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 394763E25
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666782299;
-	bh=Zvsu/mTvQWVh2WxKwOd1mcR0uZ5LqJKABqgw005MUoQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1666786193;
+	bh=6GO+1naSchVtB9OB7cx9jrETFuUcq4qgOoZ+p9txW30=;
+	h=Date:Subject:From:References:To:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VfuXFuiZ2SKf9vGX3m6GMafCfwxlOiOePgELuL4YhI6VZNt1hZVqrxgI5Y47M6UOa
-	 ef6rw1l0Y9O3Vd/FnNojDoceTewTw4bk0zXS6PYL9c1hTezIxY6cIycgOAghSUE47B
-	 5CM+zhQrNx0HVuqGKeUHkBNkXtfY5Ok5eG1vHgHE=
+	b=SpQwzbFj7sSsYhQhdLDjssaqlmcdOSXVDQN5VfEUcHWy22kaDYq/9ZqS/PFP840v6
+	 uTcdcIOH1RNts9l3DvewW4CKjcskby5z1RbMIwQAeiLcB9x2YcLpspAeJioOUYvPrF
+	 ykL3rdUDj6/ova0J9x/JJVsKq2bCq+Z9+QMUlA2g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89C6AF80570;
-	Wed, 26 Oct 2022 13:02:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C985CF80240;
+	Wed, 26 Oct 2022 14:09:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A35B4F80557; Wed, 26 Oct 2022 13:02:36 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1FA66F80271; Wed, 26 Oct 2022 14:09:02 +0200 (CEST)
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de
+ [80.237.130.52])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A05CCF80240
- for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2022 13:02:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A05CCF80240
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="VrUr1NCq"
-Received: by mail-wm1-x335.google.com with SMTP id 5so2149062wmo.1
- for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2022 04:02:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=Icdth5bW06+FTiDoc6hzh4mTVqW0L169qAB+NpMSMiM=;
- b=VrUr1NCqQmWFyAAU8xzsnEdntA2wopK+LECDVycJpX4G8I9suVjN5U2pA/sRjdlQc2
- AjUMKsTseDp1cTKb1O1il6+2kxcppqLOqrhR2Ekv8lQ6m4TiO991UyalYak5OxK99zxg
- vmDbHoZcft+3vVRz0QmX4tZ+OC4vGw0x8naTY/mvyBGMcamwAWU6wF34wlFy9Hq43MBU
- /CoIuijMweor3KlcVb3yXz+0rM8lBIjOcuoFhvfeeBlxtllk7oO4x9IYtwfM/P9Wsg2O
- YpmcQwBpz/U/JByaWi/jllXHminB/nirn90SXxjbZyaeacCUzDKP/Ui1sT5WIDh/3icv
- KJFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=Icdth5bW06+FTiDoc6hzh4mTVqW0L169qAB+NpMSMiM=;
- b=NNHG+5EmYp1hmJpwNyn/tukscsqcApXo3lqW8XPnUnFlXGpX1t86NiboLDJw6puoni
- tSj9YtkxB+aOb6Str+4aAbF5GTEN3BNv9FFCT6ww/2qXPULHV/O7JOsskpCC9s5mMG/K
- Hbllx/X0T+SKpKMZ5UJiqBCCe9usWC3yuPZIQodZYQjk650fusufNhb68yBmGcINYkSt
- o+pV+5JMAXecBCX7EdXMFSdBcg/ddLpCHGgUoFmilUTOU4VjlZp5cN4t6bZ7LMWx8jhu
- maRdaB6g5+ZC/2+MH0r4DopIfFDGtrgSfr70PU4X+IsMdRuCe35n/XswEWUn0zUspzpj
- rNRg==
-X-Gm-Message-State: ACrzQf09lMMysK89qH9I6u1OPJM93Tm1ENRztSyNzaqiaZ8IYtC10xEo
- r3FylOaCZKL5YkVuUkvnD0iN+w==
-X-Google-Smtp-Source: AMsMyM4q4OHE6RmbiZDYRwiXOXmCru6tDJV/srJq2vODKrrYg75XoI6m51lSA+DN0/3zGGraIQKS0A==
-X-Received: by 2002:a05:600c:3d8a:b0:3c6:f241:cb36 with SMTP id
- bi10-20020a05600c3d8a00b003c6f241cb36mr1993088wmb.115.1666782145763; 
- Wed, 26 Oct 2022 04:02:25 -0700 (PDT)
-Received: from localhost.localdomain ([5.133.47.210])
- by smtp.gmail.com with ESMTPSA id
- z7-20020a5d44c7000000b0023672104c24sm5237415wrr.74.2022.10.26.04.02.24
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 26 Oct 2022 04:02:25 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: vkoul@kernel.org,
-	yung-chuan.liao@linux.intel.com
-Subject: [PATCH 3/6] soundwire: qcom: remove unused SWRM_SPECIAL_CMD_ID
-Date: Wed, 26 Oct 2022 12:02:07 +0100
-Message-Id: <20221026110210.6575-4-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20221026110210.6575-1-srinivas.kandagatla@linaro.org>
-References: <20221026110210.6575-1-srinivas.kandagatla@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 159EFF80100
+ for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2022 14:08:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 159EFF80100
+Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
+ by wp530.webpack.hosteurope.de running ExIM with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+ id 1onfDN-0004cQ-4G; Wed, 26 Oct 2022 14:08:57 +0200
+Message-ID: <f34cafd4-f224-ad10-6962-e8f6c709cb39@leemhuis.info>
+Date: Wed, 26 Oct 2022 14:08:56 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [Regression] Bug 216613 - Sound stopped working with v6.0.3 on
+ Lenovo T14 Gen2i: ASoC: error at snd_soc_component_probe #forregzbot
+Content-Language: en-US, de-DE
+From: Thorsten Leemhuis <regressions@leemhuis.info>
+References: <2c028797-b313-be93-7b1e-8d838e694948@leemhuis.info>
+To: "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+In-Reply-To: <2c028797-b313-be93-7b1e-8d838e694948@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, andersson@kernel.org,
- pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org, srinivas.kandagatla@linaro.org,
- krzysztof.kozlowski+dt@linaro.org, sanyog.r.kale@intel.com
+X-bounce-key: webpack.hosteurope.de; regressions@leemhuis.info; 1666786139;
+ 5108ec38; 
+X-HE-SMSGID: 1onfDN-0004cQ-4G
+Cc: alsa-devel@alsa-project.org,
+ "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,23 +73,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/soundwire/qcom.c | 1 -
- 1 file changed, 1 deletion(-)
+[Note: this mail is primarily send for documentation purposes and/or for
+regzbot, my Linux kernel regression tracking bot. That's why I removed
+most or all folks from the list of recipients, but left any that looked
+like a mailing lists. These mails usually contain '#forregzbot' in the
+subject, to make them easy to spot and filter out.]
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index cee2b2223141..7bc8cd0e906b 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -104,7 +104,6 @@
- #define SWRM_REG_VAL_PACK(data, dev, id, reg)	\
- 			((reg) | ((id) << 16) | ((dev) << 20) | ((data) << 24))
- 
--#define SWRM_SPECIAL_CMD_ID	0xF
- #define MAX_FREQ_NUM		1
- #define TIMEOUT_MS		100
- #define QCOM_SWRM_MAX_RD_LEN	0x1
--- 
-2.21.0
+On 22.10.22 08:35, Thorsten Leemhuis wrote:
+> Hi, this is your Linux kernel regression tracker speaking.
+> 
+> I noticed a regression report in bugzilla.kernel.org. As many (most?)
+> kernel developer don't keep an eye on it, I decided to forward it by
+> mail. Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=216613 :
+> 
+>>  Grzegorz Alibożek 2022-10-21 19:26:43 UTC
+>>
+>> After upgrade kernel from 6.0.2 to 6.0.3 on Lenovo T14 Gen2i, sound stopped working.
+>> dmesg:
+>>
+>> paź 21 21:11:45 kernel: snd_hda_codec_hdmi ehdaudio0D2: failed to create hda codec -12
+>> paź 21 21:11:45 kernel: snd_hda_codec_hdmi ehdaudio0D2: ASoC: error at snd_soc_component_probe on ehdaudio0D2: -12
+>> paź 21 21:11:45 kernel: skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: failed to instantiate card -12
+>>
+>> [reply] [−] Comment 1 Grzegorz Alibożek 2022-10-21 19:56:43 UTC
+>>
+>> Created attachment 303070 [details]
+>> trace
 
+#regzbot introduced: 7494e2e6c55ed19
+#regzbot fixed-by: 02356311982b
