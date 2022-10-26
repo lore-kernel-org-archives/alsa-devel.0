@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B70C1C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Oct 2022 13:35:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C403BC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Oct 2022 13:35:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8B8F3D99;
-	Wed, 26 Oct 2022 15:34:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8B8F3D99
+	by alsa0.perex.cz (Postfix) with ESMTPS id C37693B4E;
+	Wed, 26 Oct 2022 15:35:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C37693B4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666791339;
-	bh=dQKkzmZ3yfEQdV4udzrrUVDha8AaXSEuw3JA3rqff7s=;
+	s=default; t=1666791357;
+	bh=X5RaVP6ovgJ2pb7UBXvGxFeO7CVEU9xAwZaQ1Lj2nTA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TihMfJQkv0CxYAAMLhtJIYNdqvIAFkHwT98eevz0Y7tccHEru/bLg8z2N4Nujxr0G
-	 RKlXaCE+gwnrAFtLN3JzviYCZ0pyEt54Ynzz1Mh4wmicC81ZOwFecsNlXw6kjqF3I3
-	 eyhdTKMmZORnxwawIBIYMI4peul3ncCVbJ4vJN4E=
+	b=L/bizrJLNEdMm/JxfH9JMeQCnVkTi8fzq1hTYNhLsTIE5V1C5+z1BGTop5t+8n3Wi
+	 hUZMxUSAQNBTPxtiF7dDuU4CxOURWXY+XUl2O/C1kgmdympBXxVWvNGgRsytpLEC2B
+	 hSkdJkiedigERoe5VwQ8+6ldehUCaIxPQCKq0G3c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B698F80564;
-	Wed, 26 Oct 2022 15:33:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3EBB9F80579;
+	Wed, 26 Oct 2022 15:34:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 449F4F8055A; Wed, 26 Oct 2022 15:33:45 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 3E087F8057B; Wed, 26 Oct 2022 15:34:05 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3FAC4F80271
- for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2022 15:33:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FAC4F80271
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8851F80570
+ for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2022 15:33:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8851F80570
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="kEaO1erv"
+ header.b="ZyEos/Hj"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666791216; x=1698327216;
+ t=1666791240; x=1698327240;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=dQKkzmZ3yfEQdV4udzrrUVDha8AaXSEuw3JA3rqff7s=;
- b=kEaO1ervJKOqPmxWq405CnUYS3pfBrnsD4QhQTLRzkue7Mo+cJSuXBtD
- xN172ZFjNJ86+QI/O5eD4WejSabmTq85xMRAZ+Osqh2iRO/17K8/hEBYo
- GKv2f/OkGgF7NqTFkhJehb/ZKRGe/jRVG3MkH3jze3rd1kPwkZvCzIpvA
- 4TuA46j6Mzlrzwqw/l+TL8pbzjhcdTMPeYsyXpQPYnZj5pkg95tU2xnur
- 8O4xj9I2Mw2J20MHDiJBn4fDBKMla7w79K64ji2403IdXYASTxk75d4UK
- /wQ/N3uX79pYBiyuT2Ydsfq4DZknEOUmwzUecfQ29fU0SXF+PH/RJ1Xc0 w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="372155603"
-X-IronPort-AV: E=Sophos;i="5.95,214,1661842800"; d="scan'208";a="372155603"
+ bh=X5RaVP6ovgJ2pb7UBXvGxFeO7CVEU9xAwZaQ1Lj2nTA=;
+ b=ZyEos/HjTLK+MSAdUqIZ/kA2PHSdAnIu4pmw/WhgSMNl8HAALT6O+R5u
+ gDrJ5onmhkQqXMEmbQ+QQGNZL1IAfy99i6lucG9JIYwXangLvYxS+fUqZ
+ y5yGt3fC8MOqSj1bwxade4+YghNWZD4OY1M30s39c2l8GwsQyoXx8MKsG
+ lUb0TRy75db80MQjOJYoK5frqwY1DwVX2t+vhrl2oKwY298koBur/aL4D
+ DG/6Nu/fCmzVz/iF4SAjrCokibnIfmeOzxop4Mfec4DTCPWyxdOUlcBp+
+ 55dsRIMbCPlTNKNzqDtEEShYJMZTtoxbmMa+nbUT1yE7P4hSpTEGSRnUc w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="288340772"
+X-IronPort-AV: E=Sophos;i="5.95,214,1661842800"; d="scan'208";a="288340772"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Oct 2022 06:33:32 -0700
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Oct 2022 06:33:54 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="609952667"
-X-IronPort-AV: E=Sophos;i="5.95,214,1661842800"; d="scan'208";a="609952667"
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="609952742"
+X-IronPort-AV: E=Sophos;i="5.95,214,1661842800"; d="scan'208";a="609952742"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga006.jf.intel.com with ESMTP; 26 Oct 2022 06:33:30 -0700
+ by orsmga006.jf.intel.com with ESMTP; 26 Oct 2022 06:33:49 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v2 3/9] ALSA: hda: Introduce snd_hdac_stream_wait_drsm()
-Date: Wed, 26 Oct 2022 15:50:08 +0200
-Message-Id: <20221026135014.1403705-4-cezary.rojewski@intel.com>
+Subject: [PATCH v2 8/9] ASoC: Intel: avs: Power and clock gating policy
+ overriding
+Date: Wed, 26 Oct 2022 15:50:13 +0200
+Message-Id: <20221026135014.1403705-9-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221026135014.1403705-1-cezary.rojewski@intel.com>
 References: <20221026135014.1403705-1-cezary.rojewski@intel.com>
@@ -86,61 +87,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Allow for waiting for DRSM bit for specified stream to be cleared from
-HDAudio library level. Drivers may utilize this optional step during the
-stream resume procedure.
+Provide pgctl/cgctl_mask module parameters for overriding power and
+clock gating policies respectively. These help deal with rare firmware
+loading failures on some configurations. There're no golden masks that
+cover all known problems so leave the defaults as is.
 
-Suggested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+While at it, update avs_hda_l1sen_enable()'s definition so it aligns
+with its power/clock friends.
+
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- include/sound/hdaudio.h |  1 +
- sound/hda/hdac_stream.c | 21 +++++++++++++++++++++
- 2 files changed, 22 insertions(+)
+ sound/soc/intel/avs/core.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 78f1809a4ad6..a6872537724d 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -597,6 +597,7 @@ int snd_hdac_stream_get_spbmaxfifo(struct hdac_bus *bus,
- 				   struct hdac_stream *azx_dev);
- void snd_hdac_stream_drsm_enable(struct hdac_bus *bus,
- 				 bool enable, int index);
-+int snd_hdac_stream_wait_drsm(struct hdac_stream *azx_dev);
- int snd_hdac_stream_set_dpibr(struct hdac_bus *bus,
- 			      struct hdac_stream *azx_dev, u32 value);
- int snd_hdac_stream_set_lpib(struct hdac_stream *azx_dev, u32 value);
-diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
-index 35fe2bd582ac..59e8bfe4feca 100644
---- a/sound/hda/hdac_stream.c
-+++ b/sound/hda/hdac_stream.c
-@@ -821,6 +821,27 @@ void snd_hdac_stream_drsm_enable(struct hdac_bus *bus,
- }
- EXPORT_SYMBOL_GPL(snd_hdac_stream_drsm_enable);
+diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
+index 6b68d926c9f4..f7bc06404dbc 100644
+--- a/sound/soc/intel/avs/core.c
++++ b/sound/soc/intel/avs/core.c
+@@ -27,6 +27,14 @@
+ #include "avs.h"
+ #include "cldma.h"
  
-+/*
-+ * snd_hdac_stream_wait_drsm - wait for HW to clear RSM for a stream
-+ * @azx_dev: HD-audio core stream to await RSM for
-+ *
-+ * Returns 0 on success and -ETIMEDOUT upon a timeout.
-+ */
-+int snd_hdac_stream_wait_drsm(struct hdac_stream *azx_dev)
-+{
-+	struct hdac_bus *bus = azx_dev->bus;
-+	u32 mask, reg;
-+	int ret;
++static u32 pgctl_mask = AZX_PGCTL_LSRMD_MASK;
++module_param(pgctl_mask, uint, 0444);
++MODULE_PARM_DESC(pgctl_mask, "PCI PGCTL policy override");
 +
-+	mask = 1 << azx_dev->index;
++static u32 cgctl_mask = AZX_CGCTL_MISCBDCGE_MASK;
++module_param(cgctl_mask, uint, 0444);
++MODULE_PARM_DESC(cgctl_mask, "PCI CGCTL policy override");
 +
-+	ret = readb_poll_timeout(bus->drsmcap + AZX_REG_DRSM_CTL, reg, !(reg & mask), 250, 2000);
-+	if (ret)
-+		dev_dbg(bus->dev, "polling RSM 0x%08x failed: %d\n", mask, ret);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_stream_wait_drsm);
-+
- /**
-  * snd_hdac_stream_set_dpibr - sets the dpibr value of a stream
-  * @bus: HD-audio core bus
+ static void
+ avs_hda_update_config_dword(struct hdac_bus *bus, u32 reg, u32 mask, u32 value)
+ {
+@@ -41,19 +49,16 @@ avs_hda_update_config_dword(struct hdac_bus *bus, u32 reg, u32 mask, u32 value)
+ 
+ void avs_hda_power_gating_enable(struct avs_dev *adev, bool enable)
+ {
+-	u32 value;
++	u32 value = enable ? 0 : pgctl_mask;
+ 
+-	value = enable ? 0 : AZX_PGCTL_LSRMD_MASK;
+-	avs_hda_update_config_dword(&adev->base.core, AZX_PCIREG_PGCTL,
+-				    AZX_PGCTL_LSRMD_MASK, value);
++	avs_hda_update_config_dword(&adev->base.core, AZX_PCIREG_PGCTL, pgctl_mask, value);
+ }
+ 
+ static void avs_hdac_clock_gating_enable(struct hdac_bus *bus, bool enable)
+ {
+-	u32 value;
++	u32 value = enable ? cgctl_mask : 0;
+ 
+-	value = enable ? AZX_CGCTL_MISCBDCGE_MASK : 0;
+-	avs_hda_update_config_dword(bus, AZX_PCIREG_CGCTL, AZX_CGCTL_MISCBDCGE_MASK, value);
++	avs_hda_update_config_dword(bus, AZX_PCIREG_CGCTL, cgctl_mask, value);
+ }
+ 
+ void avs_hda_clock_gating_enable(struct avs_dev *adev, bool enable)
+@@ -63,9 +68,8 @@ void avs_hda_clock_gating_enable(struct avs_dev *adev, bool enable)
+ 
+ void avs_hda_l1sen_enable(struct avs_dev *adev, bool enable)
+ {
+-	u32 value;
++	u32 value = enable ? AZX_VS_EM2_L1SEN : 0;
+ 
+-	value = enable ? AZX_VS_EM2_L1SEN : 0;
+ 	snd_hdac_chip_updatel(&adev->base.core, VS_EM2, AZX_VS_EM2_L1SEN, value);
+ }
+ 
 -- 
 2.25.1
 
