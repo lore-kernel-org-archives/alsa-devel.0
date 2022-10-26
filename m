@@ -4,73 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8A32C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Oct 2022 13:37:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 066CEC38A2D
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Oct 2022 14:30:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 143B93D91;
-	Wed, 26 Oct 2022 15:36:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 143B93D91
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E17D3CB1;
+	Wed, 26 Oct 2022 16:29:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E17D3CB1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666791421;
-	bh=Z5asaram1WWtQMaa/wUVK7mt9aU54t5z8LA86RvAR2o=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1666794606;
+	bh=JhICXDYHl8r7W3smxwnbkCN+Q3r8+01MVO8dtA2iU4A=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QEHW+DIQzqWfI82rZNUnHPx18vjM20M77uZFCyKa8Ilq+5DeXmP7Ahkay/32CKzrF
-	 SQIeveemdSGNxaJs8T2hFuOfABnJ6Poj4eW3C2CR+pvGN7/b5jiytq1oT3OaEYh9HO
-	 EwZMovkMi/8n1Djv3MsXheikVRbTFZaN8FkKC5Ic=
+	b=qKn9k1lXLuhhOV5PmcDRglAAkbFbEf8LpcKtHqbNvtcf9bEBom3ME7Nvyjr8Ebp5H
+	 84hryj+SCwHeR3GJQAxkgv3V7nourODN05uCgkP0lhPantiQ+Ucg7O3lQk8+2Q9R3f
+	 py0lTwtHbNvfY/RXqPayIpkAPsIHZ41tYY+IgvrU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EBF32F805A9;
-	Wed, 26 Oct 2022 15:34:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2DF30F80240;
+	Wed, 26 Oct 2022 16:29:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82775F80578; Wed, 26 Oct 2022 15:34:11 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id EFA8EF80271; Wed, 26 Oct 2022 16:29:12 +0200 (CEST)
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com
+ [IPv6:2607:f8b0:4864:20::72e])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 09A02F80578
- for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2022 15:34:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09A02F80578
+ by alsa1.perex.cz (Postfix) with ESMTPS id 618B6F80100
+ for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2022 16:29:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 618B6F80100
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="d8F57x0s"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666791245; x=1698327245;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=Z5asaram1WWtQMaa/wUVK7mt9aU54t5z8LA86RvAR2o=;
- b=d8F57x0siMcT3h7xXu1WvRdJ1UmixsVkPVR/RvrDYRNWGXv4Ce2/YpOm
- 1gWh9rx7JyHXRCP5k9bfawpjYc0BKSax23n5QAL1EfaG2G1mVuFPDXtip
- s0vqbvzkNxW9OZLAF/6tUSUZ3ab4t3sgYrhoaWBQVQJB9AqIDKp8L9NKM
- IPQA/1LRmPpa/n7BQ/WRb3dXlGu/A7CtIs1iE4JEjm5XIqXGC1cAqGJSw
- O/2BObtq71VR5Q6fM/qSBqoFq0oD/iBytl7RXZHZc4zs1FCBQa/AX98LA
- jP0XuB+WRlYowFMOcibwPbnFimMnPTjKD1/0eYzbgWA5hQquVljM+YKtL A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="372155634"
-X-IronPort-AV: E=Sophos;i="5.95,214,1661842800"; d="scan'208";a="372155634"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Oct 2022 06:33:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="609952701"
-X-IronPort-AV: E=Sophos;i="5.95,214,1661842800"; d="scan'208";a="609952701"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga006.jf.intel.com with ESMTP; 26 Oct 2022 06:33:38 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH v2 6/9] ASoC: Intel: avs: Count low power streams
-Date: Wed, 26 Oct 2022 15:50:11 +0200
-Message-Id: <20221026135014.1403705-7-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221026135014.1403705-1-cezary.rojewski@intel.com>
-References: <20221026135014.1403705-1-cezary.rojewski@intel.com>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="xmhb1LPv"
+Received: by mail-qk1-x72e.google.com with SMTP id l9so8080007qkk.11
+ for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2022 07:29:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=HepF+4A2/3ZWV1tTO7JvfOk/wi0W7kiAoRviokUEQWk=;
+ b=xmhb1LPv6lF+utwsSzmBJo6aHeftPiH2Kyv4Bvr4KAlYL2U4tSNzSstC39opm1m5Rs
+ Aszx1vnXqIpzkkRmAtd22JdQo95UE/RT1/6x0tAhvHJ4YwrJj38vaAv/uGIvh9sESCX6
+ LIaVQCQHFwjJNL6ZhbLZfFEyHVG+XE47c0AoymmQS5/pkgVunpLDSldYJHlsbUivK3n+
+ OPsEEcb5gI0GbyofsB8lEcGs5BcpWZJDpHwkM6DUicGJ6YJHxnAg7gQ8HtvxqurK917c
+ 8lXs2vckc72kTJN2aHETO3eVnL+u5khewCIpyjaqZmDTxILwvBAkGxklGQRLTfLUD7KC
+ VIAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=HepF+4A2/3ZWV1tTO7JvfOk/wi0W7kiAoRviokUEQWk=;
+ b=CKDvaDZvKVCEYwec8sKn1F0Y3rMyS/s1yAr2CEuOAJpR0Ks65V9AFUhJ9qqefatxTw
+ XftnnaCNZZZW4t06eieb+8k+9ZEczVLhxx6u8K+OdZZvdljyocUuFcSQX30sWTtYsuB2
+ 5XCZFVR4Vg/P8Rd4uJs1W8SDA04So9YJnzUwH77imCPCMIKdb+6C6tqcRZnYzMSSvWaZ
+ kdnXW9E9PWv8t9ZGr3+jfMcOvFx1A5JNNIJEfypBy+U9d1c17ZfK0uyi8LwZn3Bdv3Ff
+ 93oyYT1nm19pJyZuh73fD76/jjLCg8Xbslxu1WZkA9kgnBRPY+3FvZt/9ESopoBjreKZ
+ 1jYw==
+X-Gm-Message-State: ACrzQf3aFU697SJJWJqFdIqCADZ+uMwxKsewGAGj6KUNeXs5sLJ/ln6y
+ 9wHFCyklWyUZCyzaAfJQED9KsA==
+X-Google-Smtp-Source: AMsMyM6lpu83qpTJZs3g3pyaL3a9mQY9MGnGVNyB0/eSs1gGWO65GWGZ6/h84n2kWseHL1Vvyk1gdQ==
+X-Received: by 2002:a05:620a:370c:b0:6ee:cece:c779 with SMTP id
+ de12-20020a05620a370c00b006eececec779mr29445511qkb.727.1666794541727; 
+ Wed, 26 Oct 2022 07:29:01 -0700 (PDT)
+Received: from [192.168.1.11] ([64.57.193.93])
+ by smtp.gmail.com with ESMTPSA id
+ s16-20020a05620a255000b006cbe3be300esm4011966qko.12.2022.10.26.07.29.00
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 26 Oct 2022 07:29:01 -0700 (PDT)
+Message-ID: <5264f9e1-b67e-479d-843c-c92230cfd0c3@linaro.org>
+Date: Wed, 26 Oct 2022 10:28:59 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- amadeuszx.slawinski@linux.intel.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.0
+Subject: Re: [PATCH 5/6] dt-bindings: soundwire: qcom: add v1.7.0 support
+Content-Language: en-US
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org,
+ yung-chuan.liao@linux.intel.com
+References: <20221026110210.6575-1-srinivas.kandagatla@linaro.org>
+ <20221026110210.6575-6-srinivas.kandagatla@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20221026110210.6575-6-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-arm-msm@vger.kernel.org, andersson@kernel.org,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, sanyog.r.kale@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,78 +106,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Streaming in S0iX differs from SX scenarios. Store the number of
-so-called low-power streams to be able to differentiate between the two.
+On 26/10/2022 07:02, Srinivas Kandagatla wrote:
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/soundwire/qcom,sdw.txt | 1 +
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- sound/soc/intel/avs/avs.h |  1 +
- sound/soc/intel/avs/pcm.c | 15 +++++++++++++++
- 2 files changed, 16 insertions(+)
 
-diff --git a/sound/soc/intel/avs/avs.h b/sound/soc/intel/avs/avs.h
-index 91f78eb11bc1..fb73d207697f 100644
---- a/sound/soc/intel/avs/avs.h
-+++ b/sound/soc/intel/avs/avs.h
-@@ -127,6 +127,7 @@ struct avs_dev {
- 	struct list_head fw_list;
- 	int *core_refs;		/* reference count per core */
- 	char **lib_names;
-+	int num_lp_paths;
- 
- 	struct completion fw_ready;
- 	struct work_struct probe_work;
-diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
-index b40886178c73..2fd53d597cd9 100644
---- a/sound/soc/intel/avs/pcm.c
-+++ b/sound/soc/intel/avs/pcm.c
-@@ -60,6 +60,8 @@ avs_dai_find_path_template(struct snd_soc_dai *dai, bool is_fe, int direction)
- static int avs_dai_startup(struct snd_pcm_substream *substream, struct snd_soc_dai *dai, bool is_fe,
- 			   const struct snd_soc_dai_ops *ops)
- {
-+	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-+	struct avs_dev *adev = to_avs_dev(dai->dev);
- 	struct avs_tplg_path_template *template;
- 	struct avs_dma_data *data;
- 
-@@ -78,6 +80,9 @@ static int avs_dai_startup(struct snd_pcm_substream *substream, struct snd_soc_d
- 	data->template = template;
- 	snd_soc_dai_set_dma_data(dai, substream, data);
- 
-+	if (rtd->dai_link->ignore_suspend)
-+		adev->num_lp_paths++;
-+
- 	return 0;
- }
- 
-@@ -164,8 +169,13 @@ static int avs_dai_nonhda_be_startup(struct snd_pcm_substream *substream, struct
- 
- static void avs_dai_nonhda_be_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- {
-+	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-+	struct avs_dev *adev = to_avs_dev(dai->dev);
- 	struct avs_dma_data *data;
- 
-+	if (rtd->dai_link->ignore_suspend)
-+		adev->num_lp_paths--;
-+
- 	data = snd_soc_dai_get_dma_data(dai, substream);
- 
- 	snd_soc_dai_set_dma_data(dai, substream, NULL);
-@@ -479,8 +489,13 @@ static int avs_dai_fe_startup(struct snd_pcm_substream *substream, struct snd_so
- 
- static void avs_dai_fe_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- {
-+	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
-+	struct avs_dev *adev = to_avs_dev(dai->dev);
- 	struct avs_dma_data *data;
- 
-+	if (rtd->dai_link->ignore_suspend)
-+		adev->num_lp_paths--;
-+
- 	data = snd_soc_dai_get_dma_data(dai, substream);
- 
- 	snd_soc_dai_set_dma_data(dai, substream, NULL);
--- 
-2.25.1
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
 
