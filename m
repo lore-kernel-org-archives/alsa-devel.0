@@ -4,93 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42799C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Oct 2022 09:20:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 421F8C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Oct 2022 11:03:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7FF5A3D16;
-	Wed, 26 Oct 2022 11:19:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FF5A3D16
+	by alsa0.perex.cz (Postfix) with ESMTPS id 634BD3F14;
+	Wed, 26 Oct 2022 13:02:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 634BD3F14
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666776042;
-	bh=9Ae4L/WwlykF22KreQk3Mq9ViPbKVnw52osNbV6IaL0=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Q9rF2gGSZV1H9llWDE78JAv3vVA+8SiOq3spduGhCVVQcgJb/TzkVNZb3uNiX96e9
-	 FPodZKRgh4rmxYuedC/lI3jit6RdKUpsqgUGs+MRRHdmnP9t/Yupny7/sdt4ZG0Ehh
-	 Lzwwjai9W6BQIjm7maVmTOdGj8kaYInhaK5tQlic=
+	s=default; t=1666782197;
+	bh=7zV1+7HO2dmqDK6pHpY9KK0AXFwO2u4U1sSugThh4+w=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=lAEHd+raKlSXBZYFY95wtuIPTa9U+gYoAwpSXo2VCq4/+H5+M7cfBvvAJW14cyciS
+	 SsWR1MWYGWrJmrrLpbtloSIsPPcHwr+76mqePecY+kGpFC3iiYeUXyG2QKx1eiO0D4
+	 RLWABu6pi/msjPwuW0esGfsVlRhO0hY3OYTxkomk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20A6AF80240;
-	Wed, 26 Oct 2022 11:19:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5379F80100;
+	Wed, 26 Oct 2022 13:02:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF3E5F80271; Wed, 26 Oct 2022 11:19:50 +0200 (CEST)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
+ id 1FCC4F80100; Wed, 26 Oct 2022 13:02:26 +0200 (CEST)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
+ [IPv6:2a00:1450:4864:20::32b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 444D4F800BB
- for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2022 11:19:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 444D4F800BB
+ by alsa1.perex.cz (Postfix) with ESMTPS id B003CF80100
+ for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2022 13:02:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B003CF80100
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Os3CANdZ"
-Received: by mail-wr1-x434.google.com with SMTP id bs21so9392043wrb.4
- for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2022 02:19:47 -0700 (PDT)
+ header.b="H1JTRzh/"
+Received: by mail-wm1-x32b.google.com with SMTP id
+ l16-20020a05600c4f1000b003c6c0d2a445so1255009wmq.4
+ for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2022 04:02:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=+vvLMd9vnkZI8EzpD9XjigLCKktXXyr3j+Ca9tW6zSc=;
- b=Os3CANdZlXG2loOTmbB8GVV0kux7vtMLUrM6BXvveJ1XmAGULocAcl04MTbfQtgKHZ
- ZogXwPfXcyuUoE8fhJosJMlabM5JN1sDQftzcdN06ukbYROVYK+DVBU47D+YyGx5ocK5
- wuhRtq0iSQQxLpllqZAJP0F3NBycKOZe7yhJxhyHBPgzUjzRv6n1wmf7iyoVnJQ1mEOw
- QP6JjocO5+YT1ZcUzHp2thVVWx7q/4ul2IFZHMoN5zRrDi6UuutfO9AtMMyzbmDGiNRH
- py2swijRZbkDaqrS28X33rCiTGpEj6KHQpgD8WfnnZ7sVEvR1xQbwtiPpf+XNfliKqF8
- D1SA==
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=b0Xtwax/hQw5d4kEBGpw81Qb64TNz4VlkoBE9EnSw6Q=;
+ b=H1JTRzh/+cqFTGYsUz3J4xpK2fL5tdimFZxJxHzXZgBXDlv9mUjzoxacA2Mx8gzWx3
+ AWieO3BfftliDuDOti4BQUrtVr2YKSYvSjf6+CKzsyHNvSOM2VBXqHetY4d497lHmnRk
+ y/1p687MiGW2FvFZ/96hpR7MOB/PZQwYLJfG5WkCc7mclkv832tQBTWLqAaN0mi+3+Jl
+ eDvw0YjefHRtN/8+MmPGeE5klnBcBfH7W8F0kPapxvWehbDm5KmwR/u0iLrw3sUCqy21
+ yFGbcK/KwhGaWEau+vKjAhhFkvZIBWzHqy8z4xXmrL9+GQITsNaX2XJjh+0MheK4+yLb
+ qRrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=+vvLMd9vnkZI8EzpD9XjigLCKktXXyr3j+Ca9tW6zSc=;
- b=fIJ96p9NRuqysRN4x/BwXSBPAqQA73E9zd82PVSeWotwVLkBAG8nwMZK2aXMPwQRNA
- 7kLQxn4cWN4jOv3DobXymp2ghAV+GHWSqOWMk2zgW7ca0cpaCjveWqlMCLOa4/WDkGAC
- RoPDtmrzaDjPhT8QhfxNVHgCDgQYIlt/DIsi1q+H8Wf1rN4MB9poO5yEg5Uy1nb/D0fO
- NF3qGtSmS9aivAVX0oIfB0CR01mmOk7NaW04Yz6J7X2mZenk2nT0xx/wCWXYapaWtkav
- FmhFOQ1CCrfT6KnYBwI31jcRy7v2+xm//Ujn5X+c4N73gNZfBZwRkI7jXztibKJTn8IK
- rHIg==
-X-Gm-Message-State: ACrzQf373ilRxFqOS2m6HLds3sdYKbdpl0s75pYdnGoOVN/d62Z2JUp9
- 8/1a9KIb3jirqnHOiQjsN5PGQQ==
-X-Google-Smtp-Source: AMsMyM4ERMKN8mXF1n7JYQJq8K3dGg1HUzsKsTY9L1ZoG3ILEkjuCGg4X927odxJLccu51fROJeatw==
-X-Received: by 2002:a5d:6d0d:0:b0:230:1b65:a378 with SMTP id
- e13-20020a5d6d0d000000b002301b65a378mr28987089wrq.406.1666775986311; 
- Wed, 26 Oct 2022 02:19:46 -0700 (PDT)
-Received: from [192.168.1.195] ([5.133.47.210])
- by smtp.googlemail.com with ESMTPSA id
- j31-20020a05600c1c1f00b003c701c12a17sm1378685wms.12.2022.10.26.02.19.45
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 26 Oct 2022 02:19:45 -0700 (PDT)
-Message-ID: <4d2fcabe-291a-9f8d-ca48-eaf52e00695e@linaro.org>
-Date: Wed, 26 Oct 2022 10:19:44 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [PATCH v2 1/9] ASoC: qdsp6: audioreach: topology use idr_alloc_u32
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org
-References: <20221021165207.13220-1-srinivas.kandagatla@linaro.org>
- <20221021165207.13220-2-srinivas.kandagatla@linaro.org>
- <35f55696-c4c5-1f00-dc7e-b5c7dcf0a091@linux.intel.com>
-Content-Language: en-US
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=b0Xtwax/hQw5d4kEBGpw81Qb64TNz4VlkoBE9EnSw6Q=;
+ b=vZ/AKLFO75e8mm4ySHR0rRzB7+ixzAnJWoUGkued15BfUWtEzDmxA/76FxVTRt7SWw
+ OW5JBGHbUb/We0ZWR4prD105KvSKkEN8AEBfqcOFacSyHeF5NkS5bpK3vTfvUGoSYW2O
+ SQZRx2SZt8/CiynkA+GoBH/gA+xngvD2cwUPl6EA+4P/LYdfmZjjU4U+5RS0sjYs8J5C
+ PqoDJi3g3iSq90p8r2vYl8+yi5Kzp6Z9XrAXZTLqPRmi717bgT+HwvZCGwkkxRf0x9Ql
+ soP/fGtCvDGSbQE63zy6c2t4B7+JP1FsJdWw6Zxf+P26mmzGbIaKcvCpmN2uUtsUatYN
+ /8AQ==
+X-Gm-Message-State: ACrzQf3kCj8gSRN7mwvzSz3UAQi0C3s0G8P0Jxcz1XT2lmHp/wFvHSuK
+ H1xylMx0ffELIyUYiucp7iexAQ==
+X-Google-Smtp-Source: AMsMyM4XDDQL21MzqtmKiCE7tMg6rgbbNYjeN8Myv8+4yCqDeA5g3zB9saxlZn0oY2W2pdUfsFOPZg==
+X-Received: by 2002:a05:600c:3384:b0:3c6:f25a:96e9 with SMTP id
+ o4-20020a05600c338400b003c6f25a96e9mr2039053wmp.112.1666782141702; 
+ Wed, 26 Oct 2022 04:02:21 -0700 (PDT)
+Received: from localhost.localdomain ([5.133.47.210])
+ by smtp.gmail.com with ESMTPSA id
+ z7-20020a5d44c7000000b0023672104c24sm5237415wrr.74.2022.10.26.04.02.20
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 26 Oct 2022 04:02:20 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <35f55696-c4c5-1f00-dc7e-b5c7dcf0a091@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
- bgoswami@quicinc.com
+To: vkoul@kernel.org,
+	yung-chuan.liao@linux.intel.com
+Subject: [PATCH 0/6] soundwire: qcom: fixes and support for v1.7
+Date: Wed, 26 Oct 2022 12:02:04 +0100
+Message-Id: <20221026110210.6575-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-arm-msm@vger.kernel.org, andersson@kernel.org,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org, srinivas.kandagatla@linaro.org,
+ krzysztof.kozlowski+dt@linaro.org, sanyog.r.kale@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,30 +100,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thanks Pierre,
+This patchset has 2 fixes around fifo handling adds support
+for v1.7.0 controller found in SM8450 SoCs. Also a patch to
+make reset optional for v1.6 as this is not required for sc8280xp.
 
-On 21/10/2022 18:09, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 10/21/22 11:51, Srinivas Kandagatla wrote:
->> SubGraph and Module Instance ids take 32 bits, so use idr_alloc_u32
->> instead of idr_alloc to able to accomdate valid ranges.
-> 
-> typo: accommodate.
->
-will fix it in next version
+Thanks,
+Srini
 
-> Also worth checking https://www.kernel.org/doc/html/latest/core-api/idr.html
-> "The IDR interface is deprecated; please use the XArray instead."
-Thanks for this hit, this looks really good and specially lookups 
-without Locking, this could cleanup the code a bit.
+Srinivas Kandagatla (6):
+  soundwire: qcom: reinit broadcast completion
+  soundwire: qcom: check for outanding writes before doing a read
+  soundwire: qcom: remove unused SWRM_SPECIAL_CMD_ID
+  soundwire: qcom: make reset optional for v1.6 controller
+  dt-bindings: soundwire: qcom: add v1.7.0 support
+  soundwire: qcom: add support for v1.7 Soundwire Controller
 
-Having said that I would still like this patch go as it is with idr for 
-now, and I can plan to rework on converting idr to xa later, as there 
-are few more Qcom Audio drivers that have usage of idr.
+ .../bindings/soundwire/qcom,sdw.txt           |  1 +
+ drivers/soundwire/qcom.c                      | 34 ++++++++++++++++---
+ 2 files changed, 30 insertions(+), 5 deletions(-)
 
-thanks,
-srini
+-- 
+2.21.0
 
-> 
-> 
