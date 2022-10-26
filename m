@@ -4,64 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85FADC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 26 Oct 2022 07:18:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD54FC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 26 Oct 2022 07:18:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7F7F4117;
-	Wed, 26 Oct 2022 09:17:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7F7F4117
+	by alsa0.perex.cz (Postfix) with ESMTPS id D498A4126;
+	Wed, 26 Oct 2022 09:17:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D498A4126
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666768692;
-	bh=vVzu7eTnrwZ2NcZHoP8HWV3sYW9l/QA0ML8mjfjBHiI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=j7UuoA26IsB+tAszMNsh6J6M1/UeBoCvRrj7xuuj2rVMCVBcakaucXQ/vqO0fJ4gw
-	 dgxXNiD7ZBp0qRWawVSGvebxEGhj4D4HdstNGqafk5htRejhLwya570NJdaWwL1Htb
-	 u7Tl64pNDigaphPAm8S2tDAQel+LEQp2JD3Uij4k=
+	s=default; t=1666768716;
+	bh=8/eH7Gu81CNmTsHwbaGvDjXLn8pW44OxlFiYMaTQxsk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=oI6OefWMAnw7BpMHdWO6JXk3/hF8msCpV5g4J2G8+35Fum1vrYEMSWigQ5GGSQWMd
+	 Djq+mGv3jsPzPQVqyuJtOyp8HcZGApRXjUOyZ3ytvXP8DTYa2I/m0AYqq5xoWZgfpS
+	 gbB3d8ug5v63zeD7wIAgWkQxLZpN9HQnjrfROgYI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6862CF8027C;
-	Wed, 26 Oct 2022 09:17:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3EF02F80240;
+	Wed, 26 Oct 2022 09:17:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 97F6EF80100; Wed, 26 Oct 2022 09:17:20 +0200 (CEST)
+ id DD9E7F804B4; Wed, 26 Oct 2022 09:17:25 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3261DF80100
- for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2022 09:17:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3261DF80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 306E6F80240
+ for <alsa-devel@alsa-project.org>; Wed, 26 Oct 2022 09:17:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 306E6F80240
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="jk9CI3Jy"
+ header.b="QwE5dLM+"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666768638; x=1698304638;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=vVzu7eTnrwZ2NcZHoP8HWV3sYW9l/QA0ML8mjfjBHiI=;
- b=jk9CI3Jy2rYG/GLpP+0zk1uWYiqu6nvKIWDiFOE6jBYRGKyIKJoKjF9a
- WLAU0+mqsqz9QQnfm6jxXWT/0y2qZ2XZ6GQZrljqJP09e8cNfGBHepBK/
- hiFN5ZCXTavXqUeiVu9ciL0SoEU0prKdMRSB9GO0MvIdDutH7M/fRDBsp
- JLgDYsN61Z/DoGsJ44W7MS0bmKr148daFDimLpoIwntIfnKvBquIPjgGh
- Bxe7GfasZnZjTKzWQHpZA9slGcoKHTGRFaGlnTJlMoIum+e7iZultf1A4
- k2EId/+oW4dvI1PcWBUFSzt4b64QYnpNgCPQorSWMLucBAu/5nCTTuP8b A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10511"; a="287596187"
-X-IronPort-AV: E=Sophos;i="5.95,213,1661842800"; d="scan'208";a="287596187"
+ t=1666768640; x=1698304640;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=8/eH7Gu81CNmTsHwbaGvDjXLn8pW44OxlFiYMaTQxsk=;
+ b=QwE5dLM+01XEiJEduMvURuSHvBxWtzRP4fde6qsjWqIjoeGPThzznrkU
+ 4N/vjmohHONmsV90fEVpylI8xRdczYyxa/6w/y4qVMxBYYE7cCBxKnMxN
+ SFw3mwbMRPjGm4Yj2lSP6MY39i7iUmvDtVXGI9aeJocl5xL69R7V7udQa
+ gu6Gij1hTOuYAJSh0mXW78yMDKAl425UAmngFXkUJioeNgzXnglyanwaO
+ ExIWNQlGjuN+2WX5LjVcXiwo4PvuX+tsvr9qhSJROwRDDpjoR7NeJcoMU
+ zGXepyUBG9RToLfHhxb9zCbrbh0YLp74r3163BuGsOSL2YwB3gSwffe78 A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10511"; a="287596228"
+X-IronPort-AV: E=Sophos;i="5.95,213,1661842800"; d="scan'208";a="287596228"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Oct 2022 00:16:56 -0700
+ 26 Oct 2022 00:17:01 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10511"; a="663096896"
-X-IronPort-AV: E=Sophos;i="5.95,213,1661842800"; d="scan'208";a="663096896"
+X-IronPort-AV: E=McAfee;i="6500,9779,10511"; a="663096914"
+X-IronPort-AV: E=Sophos;i="5.95,213,1661842800"; d="scan'208";a="663096914"
 Received: from brentlu-brix.itwn.intel.com ([10.5.253.25])
- by orsmga008.jf.intel.com with ESMTP; 26 Oct 2022 00:16:52 -0700
+ by orsmga008.jf.intel.com with ESMTP; 26 Oct 2022 00:16:57 -0700
 From: Brent Lu <brent.lu@intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/2] ASoC: Intel: sof_rt5682: quirk auto detection
-Date: Wed, 26 Oct 2022 15:14:07 +0800
-Message-Id: <20221026071409.3235144-1-brent.lu@intel.com>
+Subject: [PATCH 1/2] ASoC: Intel: add helpers to detect SoCs
+Date: Wed, 26 Oct 2022 15:14:08 +0800
+Message-Id: <20221026071409.3235144-2-brent.lu@intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20221026071409.3235144-1-brent.lu@intel.com>
+References: <20221026071409.3235144-1-brent.lu@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: "balamurugan . c" <balamurugan.c@intel.com>,
@@ -94,20 +97,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A new feature to compose quirk value according to the result of
-amplifier and SoC type detection at runtime.
+Add helpers to detect JSL, TGL, ADL, and ADL-N SoCs.
 
-Brent Lu (2):
-  ASoC: Intel: add helpers to detect SoCs
-  ASoC: Intel: sof_rt5682: quirk auto detection
+Signed-off-by: Brent Lu <brent.lu@intel.com>
+---
+ include/linux/platform_data/x86/soc.h | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
- include/linux/platform_data/x86/soc.h         |  24 +++
- sound/soc/intel/boards/sof_rt5682.c           | 173 +++++++-----------
- .../intel/common/soc-acpi-intel-adl-match.c   |  12 +-
- .../intel/common/soc-acpi-intel-jsl-match.c   |   6 +-
- .../intel/common/soc-acpi-intel-tgl-match.c   |   6 +-
- 5 files changed, 101 insertions(+), 120 deletions(-)
-
+diff --git a/include/linux/platform_data/x86/soc.h b/include/linux/platform_data/x86/soc.h
+index da05f425587a..08d08c91d57b 100644
+--- a/include/linux/platform_data/x86/soc.h
++++ b/include/linux/platform_data/x86/soc.h
+@@ -33,6 +33,10 @@ SOC_INTEL_IS_CPU(cht, ATOM_AIRMONT);
+ SOC_INTEL_IS_CPU(apl, ATOM_GOLDMONT);
+ SOC_INTEL_IS_CPU(glk, ATOM_GOLDMONT_PLUS);
+ SOC_INTEL_IS_CPU(cml, KABYLAKE_L);
++SOC_INTEL_IS_CPU(jsl, ATOM_TREMONT_L);
++SOC_INTEL_IS_CPU(tgl, TIGERLAKE_L);
++SOC_INTEL_IS_CPU(adl, ALDERLAKE_L);
++SOC_INTEL_IS_CPU(adl_n, ALDERLAKE_N);
+ 
+ #else /* IS_ENABLED(CONFIG_X86) */
+ 
+@@ -60,6 +64,26 @@ static inline bool soc_intel_is_cml(void)
+ {
+ 	return false;
+ }
++
++static inline bool soc_intel_is_jsl(void)
++{
++	return false;
++}
++
++static inline bool soc_intel_is_tgl(void)
++{
++	return false;
++}
++
++static inline bool soc_intel_is_adl(void)
++{
++	return false;
++}
++
++static inline bool soc_intel_is_adl_n(void)
++{
++	return false;
++}
+ #endif /* IS_ENABLED(CONFIG_X86) */
+ 
+ #endif /* __PLATFORM_DATA_X86_SOC_H */
 -- 
 2.25.1
 
