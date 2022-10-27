@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5BFCFA3740
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 19:39:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8921FA3740
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 19:40:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 240EC2DC7;
-	Thu, 27 Oct 2022 21:38:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 240EC2DC7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A5042DB0;
+	Thu, 27 Oct 2022 21:39:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A5042DB0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666899583;
-	bh=KDmkBbSjkY8BCjKuM7SlR6305BR9vVq6KNCxp0eQlyQ=;
+	s=default; t=1666899601;
+	bh=3l31m3UNM5J6SqzitpcKaeqqD4ntI7MZ+7QJFKiOZxc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PdPDSyaX9cpPJQGokeBKfGihUasuV378xh0tX9PtenjPdK0aEJugKyGSL8sVSVOpb
-	 QAZJqIi9doTDwNdm51uydyXr4MbenOXu+G5IutQvwPGg/c2AMV92+G5AFea7uNbr/B
-	 mKBKuEB+szV4SQdlMGIMDKmPMUa3ymTjYUKPDDR8=
+	b=HpWl72qohslLXhxd2gSjJnmxX8C6GXe9SVehsuEgOGLTTIiPX2ymUUcpa/Y8ojBoe
+	 PnAWPygbb25KQpy1cL/xrRSqDbD3k9lPMaud+OwJ3KJKQ0vpzRxyXa4x9EkSHdWDQO
+	 g0vRp25UIWKqLIeIkkl+7+8eOr6XMxksIvOCI/pM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F0D8F805B3;
-	Thu, 27 Oct 2022 21:36:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4EBC7F805BD;
+	Thu, 27 Oct 2022 21:36:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2A0AF8054A; Thu, 27 Oct 2022 21:36:27 +0200 (CEST)
+ id 34219F8058C; Thu, 27 Oct 2022 21:36:28 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6D56FF804D9
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 21:36:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D56FF804D9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 674CFF80100
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 21:36:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 674CFF80100
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="mdyMkY8z"
+ header.b="Cm9YTbrh"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666899381; x=1698435381;
+ t=1666899375; x=1698435375;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=KDmkBbSjkY8BCjKuM7SlR6305BR9vVq6KNCxp0eQlyQ=;
- b=mdyMkY8zRNDGV0IdVKSx9ku/BjVD5P11pZy0ZzcW/+dBce/vYTvXAKkc
- zyCHaNL7w2RfAVkLQP7XWlPRZjX2/RIVtrmaNmH0vXZb+5GOh/2f03h/W
- Lm3es6lm9AWUuv/qJ+CXJ8DAaA+6ZXkP4zexGGav/9X05l12NOBqQRmDl
- eU6G+Ar9Q8yIAxr8zFo4okbA5b+XfHAV4rvjCJJ2ajl960WoaBm6/mSaI
- zOjECDDD9vvNCnvfhBs9ouCey28zJf2oZrGk7rburJxCDXAtapn47aJT6
- iIvwsNt/VXiG5P5BZjrIF8av+i4csrSTPXooHPvpCEAFJosM0dSx/OBJL w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="334957843"
-X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; d="scan'208";a="334957843"
+ bh=3l31m3UNM5J6SqzitpcKaeqqD4ntI7MZ+7QJFKiOZxc=;
+ b=Cm9YTbrhEZSZta2kGGfKGuIFQwjchKYpXxfgqOoUZHuG51FXB8VeYFtB
+ z8ycfZmJPQbVCVOLVAh64lXdCODrCwRdtjUqI5RjZoh1ZaDXFGwdoUayA
+ 6z+jp4q/URDutATGWs2VkVVPMBSKUXitAPTafrHfbu9vsAQzMBgkWZkYJ
+ jmneK/ypAk/RqBRmgZBWaXj4ZSuUznFnLRht9OhsA6Eabxdnk0qdEaO24
+ 7IP9qpTujmti9PN41UHgshmQGIr8VdZ/8MrHFvLv2FCvw1GaThCDB8Zt7
+ 3I3hXm03rOV8AqwS9VO4ZrCKGccO6WtKO5o4I8WKuUiIKFEHZZY1mo6kk A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="334957829"
+X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; d="scan'208";a="334957829"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 12:36:18 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="632527039"
-X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; d="scan'208";a="632527039"
+ 27 Oct 2022 12:36:13 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="632527012"
+X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; d="scan'208";a="632527012"
 Received: from vmehta-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.212.6.254])
  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 12:36:17 -0700
+ 27 Oct 2022 12:36:12 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 13/21] ASoC: SOF: Intel: hda-ctrl: use helper to clear RIRB
- status
-Date: Thu, 27 Oct 2022 15:35:32 -0400
-Message-Id: <20221027193540.259520-14-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 09/21] ASoC: SOF: Intel: hda-codec: add
+ hda_codec_device_remove() helper
+Date: Thu, 27 Oct 2022 15:35:28 -0400
+Message-Id: <20221027193540.259520-10-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221027193540.259520-1-pierre-louis.bossart@linux.intel.com>
 References: <20221027193540.259520-1-pierre-louis.bossart@linux.intel.com>
@@ -91,7 +91,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Change to use helper and avoid conditional compilation.
+Continue split between controller and codec.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
@@ -99,25 +99,67 @@ Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-ctrl.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ sound/soc/sof/intel/hda-codec.c | 9 +++++++++
+ sound/soc/sof/intel/hda.c       | 5 +----
+ sound/soc/sof/intel/hda.h       | 2 ++
+ 3 files changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-ctrl.c b/sound/soc/sof/intel/hda-ctrl.c
-index f94c6be336f3..3aea36c077c9 100644
---- a/sound/soc/sof/intel/hda-ctrl.c
-+++ b/sound/soc/sof/intel/hda-ctrl.c
-@@ -290,10 +290,7 @@ void hda_dsp_ctrl_stop_chip(struct snd_sof_dev *sdev)
- 	snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR, SOF_HDA_WAKESTS,
- 			  SOF_HDA_WAKESTS_INT_MASK);
+diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+index ff40ec623118..1e8e184151f2 100644
+--- a/sound/soc/sof/intel/hda-codec.c
++++ b/sound/soc/sof/intel/hda-codec.c
+@@ -280,6 +280,15 @@ void hda_codec_set_codec_wakeup(struct snd_sof_dev *sdev, bool status)
+ }
+ EXPORT_SYMBOL_NS_GPL(hda_codec_set_codec_wakeup, SND_SOC_SOF_HDA_AUDIO_CODEC);
+ 
++void hda_codec_device_remove(struct snd_sof_dev *sdev)
++{
++	struct hdac_bus *bus = sof_to_bus(sdev);
++
++	/* codec removal, invoke bus_device_remove */
++	snd_hdac_ext_bus_device_remove(bus);
++}
++EXPORT_SYMBOL_NS_GPL(hda_codec_device_remove, SND_SOC_SOF_HDA_AUDIO_CODEC);
++
+ #endif /* CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC */
+ 
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC) && IS_ENABLED(CONFIG_SND_HDA_CODEC_HDMI)
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 6a1ee7f81d61..e08b57fa3bfc 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -1173,10 +1173,7 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
+ 	/* cancel any attempt for DSP D0I3 */
+ 	cancel_delayed_work_sync(&hda->d0i3_work);
  
 -#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
--	/* clear rirb status */
--	snd_hdac_chip_writeb(bus, RIRBSTS, RIRB_INT_MASK);
+-	/* codec removal, invoke bus_device_remove */
+-	snd_hdac_ext_bus_device_remove(bus);
 -#endif
-+	hda_codec_rirb_status_clear(sdev);
++	hda_codec_device_remove(sdev);
  
- 	/* clear interrupt status register */
- 	snd_sof_dsp_write(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTSTS,
+ 	hda_sdw_exit(sdev);
+ 
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 8705ddd6f8ed..a2b90784fac0 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -722,6 +722,7 @@ void hda_codec_init_cmd_io(struct snd_sof_dev *sdev);
+ void hda_codec_detect_mask(struct snd_sof_dev *sdev);
+ void hda_codec_rirb_status_clear(struct snd_sof_dev *sdev);
+ void hda_codec_set_codec_wakeup(struct snd_sof_dev *sdev, bool status);
++void hda_codec_device_remove(struct snd_sof_dev *sdev);
+ 
+ #else
+ 
+@@ -733,6 +734,7 @@ static inline void hda_codec_init_cmd_io(struct snd_sof_dev *sdev) { }
+ static inline void hda_codec_detect_mask(struct snd_sof_dev *sdev) { }
+ static inline void hda_codec_rirb_status_clear(struct snd_sof_dev *sdev) { }
+ static inline void hda_codec_set_codec_wakeup(struct snd_sof_dev *sdev, bool status) { }
++static inline void hda_codec_device_remove(struct snd_sof_dev *sdev) { }
+ 
+ #endif /* CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC */
+ 
 -- 
 2.34.1
 
