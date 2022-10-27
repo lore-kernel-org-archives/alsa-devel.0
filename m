@@ -4,64 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4BFBC38A2D
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 07:42:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6ADC6FA373D
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 08:07:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B4173160;
-	Thu, 27 Oct 2022 09:41:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B4173160
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7A2328F7;
+	Thu, 27 Oct 2022 10:06:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7A2328F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666856527;
-	bh=B0e4dYMMAY22wZtJm0ZCgVqNvJCu7iQDrCQ4ct+1pRg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1666858053;
+	bh=HyxcGuolgwzu3ItAus7OgJHtNbLCL6rQ15m8cAlAtEg=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=siDf+VNNdQy2u+4XCdq/bnuwhFg/NjBZa1zHstGdIFawDgpbTeyUwboYPknATYzH3
-	 z+yXKUPNQh+tqEFDUrUr9lUA7B6+NZBMjeUX0HJs3rArxKEpm0AdE1ewkXRPCF2Bj+
-	 b5m2YDTbySNFyJ4JVGonuoMIBdHbcDFYmYV26is8=
+	b=rToECf3XeiFbcZNrHvoFYe7NYZhHKRjiom657WV/KGOVm2qAXpISNAVL4GqGIzXD7
+	 T3uyl7FnsVm2gDXM4g9WcTe96k2xnDoBHp05JwNHZWp+vC2FHJPMrFRtSsB10SZDvp
+	 4Wqo7QmSABIncP9Yd2iHoC24jR5BDc4qbwbyQvpc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6428F8025A;
-	Thu, 27 Oct 2022 09:41:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32EBDF8025A;
+	Thu, 27 Oct 2022 10:06:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B15AF8025E; Thu, 27 Oct 2022 09:41:15 +0200 (CEST)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 1D2B8F8025E; Thu, 27 Oct 2022 10:06:42 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 50C8EF80095
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 09:41:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50C8EF80095
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.53])
- by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MyctL3Nh6z15M19;
- Thu, 27 Oct 2022 15:36:10 +0800 (CST)
-Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 27 Oct 2022 15:41:04 +0800
-Received: from [10.174.178.174] (10.174.178.174) by
- dggpemm500007.china.huawei.com (7.185.36.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 27 Oct 2022 15:41:04 +0800
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2FC04F80100
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 10:06:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FC04F80100
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="eTErvCVD"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="VIdR26Fr"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 59641228C4;
+ Thu, 27 Oct 2022 08:06:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1666857991; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=l1hbvmIy+b7DQo66904Q6hmWtuZVS72VPYew8vdZ4UI=;
+ b=eTErvCVD04XpVXI/Zzh7sU77er5zH+vUE21pir5ZCLSq6iLpfnfgMxxX9EgbnR2iV34+A3
+ 4tubqB2prp3cHB5YQ4JGbU4diAXpAsRsXvT5V4fK7zjT1so07fz/CsqgWQ9qC2PrKMK6+Q
+ z9INplGrSmc4xHnZ0P+cI3f5KtenU3o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1666857991;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=l1hbvmIy+b7DQo66904Q6hmWtuZVS72VPYew8vdZ4UI=;
+ b=VIdR26Fro+ksgTFo3s8v4oINDnt95Nm/xdL2MtChlbWsuJkoZ4iZLNuLYCGMAbdvUICOAi
+ tnZB9r5hArfvaXDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 36FE1134CA;
+ Thu, 27 Oct 2022 08:06:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id CQeYDAc8WmOuNgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Thu, 27 Oct 2022 08:06:31 +0000
+Date: Thu, 27 Oct 2022 10:06:30 +0200
+Message-ID: <87ilk5ofll.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Yang Yingliang <yangyingliang@huawei.com>
 Subject: Re: [PATCH] ALSA: aoa: i2sbus: fix possible memory leak in
  i2sbus_add_dev()
-To: Takashi Iwai <tiwai@suse.de>
+In-Reply-To: <91e667bb-b6dd-4966-eba6-31de4f2b56a7@huawei.com>
 References: <20221027013438.991920-1-yangyingliang@huawei.com>
  <87r0ytojos.wl-tiwai@suse.de>
-From: Yang Yingliang <yangyingliang@huawei.com>
-Message-ID: <91e667bb-b6dd-4966-eba6-31de4f2b56a7@huawei.com>
-Date: Thu, 27 Oct 2022 15:41:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <87r0ytojos.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+ <91e667bb-b6dd-4966-eba6-31de4f2b56a7@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.178.174]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500007.china.huawei.com (7.185.36.183)
-X-CFilter-Loop: Reflected
 Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linuxppc-dev@lists.ozlabs.org,
  johannes@sipsolutions.net
 X-BeenThere: alsa-devel@alsa-project.org
@@ -79,78 +101,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, 27 Oct 2022 09:41:03 +0200,
+Yang Yingliang wrote:
+> 
+> 
+> On 2022/10/27 14:38, Takashi Iwai wrote:
+> > On Thu, 27 Oct 2022 03:34:38 +0200,
+> > Yang Yingliang wrote:
+> >> dev_set_name() in soundbus_add_one() allocates memory for name, it need be
+> >> freed when of_device_register() fails, call soundbus_dev_put() to give up
+> >> the reference that hold in device_initialize(), so that it can be freed in
+> >> kobject_cleanup() when the refcount hit to 0. And other resources are also
+> >> freed in i2sbus_release_dev(), so it can return 0 directly.
+> >> 
+> >> Fixes: f3d9478b2ce4 ("[ALSA] snd-aoa: add snd-aoa")
+> >> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> > The check of kobj state is awkward, but it seems to be the simplest
+> > way...  Applied now.  Thanks!
+> 
+> Indeed, it's awkward, shall we introduce a helper like this:
+> 
+> diff --git a/sound/aoa/soundbus/i2sbus/core.c
+> b/sound/aoa/soundbus/i2sbus/core.c
+> index f6841daf9e3b..950c37e0297e 100644
+> --- a/sound/aoa/soundbus/i2sbus/core.c
+> +++ b/sound/aoa/soundbus/i2sbus/core.c
+> @@ -302,7 +302,7 @@ static int i2sbus_add_dev(struct macio_dev *macio,
+> 
+>         if (soundbus_add_one(&dev->sound)) {
+>                 printk(KERN_DEBUG "i2sbus: device registration error!\n");
+> -               if (dev->sound.ofdev.dev.kobj.state_initialized) {
+> +               if (soundbus_dev_initialized(&dev->sound)) {
+>                         soundbus_dev_put(&dev->sound);
+>                         return 0;
+>                 }
+> diff --git a/sound/aoa/soundbus/soundbus.h b/sound/aoa/soundbus/soundbus.h
+> index 3a99c1f1a3ca..2c9c95cf156a 100644
+> --- a/sound/aoa/soundbus/soundbus.h
+> +++ b/sound/aoa/soundbus/soundbus.h
+> @@ -174,6 +174,10 @@ struct soundbus_dev {
+> 
+>  extern int soundbus_add_one(struct soundbus_dev *dev);
+>  extern void soundbus_remove_one(struct soundbus_dev *dev);
+> +static inline bool soundbus_dev_initialized(struct soundbus_dev *dev)
+> +{
+> +       return dev->ofdev.dev.kobj.state_initialized;
+> +}
 
-On 2022/10/27 14:38, Takashi Iwai wrote:
-> On Thu, 27 Oct 2022 03:34:38 +0200,
-> Yang Yingliang wrote:
->> dev_set_name() in soundbus_add_one() allocates memory for name, it need be
->> freed when of_device_register() fails, call soundbus_dev_put() to give up
->> the reference that hold in device_initialize(), so that it can be freed in
->> kobject_cleanup() when the refcount hit to 0. And other resources are also
->> freed in i2sbus_release_dev(), so it can return 0 directly.
->>
->> Fixes: f3d9478b2ce4 ("[ALSA] snd-aoa: add snd-aoa")
->> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> The check of kobj state is awkward, but it seems to be the simplest
-> way...  Applied now.  Thanks!
-
-Indeed, it's awkward, shall we introduce a helper like this:
-
-diff --git a/sound/aoa/soundbus/i2sbus/core.c 
-b/sound/aoa/soundbus/i2sbus/core.c
-index f6841daf9e3b..950c37e0297e 100644
---- a/sound/aoa/soundbus/i2sbus/core.c
-+++ b/sound/aoa/soundbus/i2sbus/core.c
-@@ -302,7 +302,7 @@ static int i2sbus_add_dev(struct macio_dev *macio,
-
- Â Â Â Â Â Â Â  if (soundbus_add_one(&dev->sound)) {
- Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  printk(KERN_DEBUG "i2sbus: device registration error!\n");
--Â Â Â Â Â Â Â Â Â Â Â Â Â Â  if (dev->sound.ofdev.dev.kobj.state_initialized) {
-+Â Â Â Â Â Â Â Â Â Â Â Â Â Â  if (soundbus_dev_initialized(&dev->sound)) {
- Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  soundbus_dev_put(&dev->sound);
- Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  return 0;
- Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  }
-diff --git a/sound/aoa/soundbus/soundbus.h b/sound/aoa/soundbus/soundbus.h
-index 3a99c1f1a3ca..2c9c95cf156a 100644
---- a/sound/aoa/soundbus/soundbus.h
-+++ b/sound/aoa/soundbus/soundbus.h
-@@ -174,6 +174,10 @@ struct soundbus_dev {
-
- Â extern int soundbus_add_one(struct soundbus_dev *dev);
- Â extern void soundbus_remove_one(struct soundbus_dev *dev);
-+static inline bool soundbus_dev_initialized(struct soundbus_dev *dev)
-+{
-+Â Â Â Â Â Â  return dev->ofdev.dev.kobj.state_initialized;
-+}
+I think it's not worth much as it's used only at a single place.
 
 
-Thanks,
-Yang
->
->
-> Takashi
->
->
->> ---
->>   sound/aoa/soundbus/i2sbus/core.c | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/sound/aoa/soundbus/i2sbus/core.c b/sound/aoa/soundbus/i2sbus/core.c
->> index faf6b03131ee..f6841daf9e3b 100644
->> --- a/sound/aoa/soundbus/i2sbus/core.c
->> +++ b/sound/aoa/soundbus/i2sbus/core.c
->> @@ -302,6 +302,10 @@ static int i2sbus_add_dev(struct macio_dev *macio,
->>   
->>   	if (soundbus_add_one(&dev->sound)) {
->>   		printk(KERN_DEBUG "i2sbus: device registration error!\n");
->> +		if (dev->sound.ofdev.dev.kobj.state_initialized) {
->> +			soundbus_dev_put(&dev->sound);
->> +			return 0;
->> +		}
->>   		goto err;
->>   	}
->>   
->> -- 
->> 2.25.1
->>
-> .
+Takashi
