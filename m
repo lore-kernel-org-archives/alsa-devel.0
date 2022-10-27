@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 686B2FA3740
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 12:33:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 453ECECAAA1
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 12:33:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F4A63062;
-	Thu, 27 Oct 2022 14:32:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F4A63062
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73408306F;
+	Thu, 27 Oct 2022 14:32:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73408306F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666873981;
-	bh=cqHkJpkiY2RJ+JPhvFBirYieeMEGz9MTXcB6l/w9TCc=;
+	s=default; t=1666874000;
+	bh=3f4kH9guzDKd0tZe3rePE0YTUNF++plqK87nxUjOZs4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MNRKUbRcwdMe2D/8des2Gwxn0lWZxjE0622LG2t/XnPGBM3RJFq5cq/R1Ew0tH5L8
-	 uLrJZC0Hz8dhNEGONllFbBqfGSkC1gWD5Ctm6oSHXXrr5qB059u1D9BZF9PnHoITk/
-	 G4gvO0oYMIRTuHDsYukcmD2hXL+WjQps3dsMw2nw=
+	b=rPShyz8+vDxxdou+wZsRuhooAhJQwPWxrXiIeM5R1s8gbBPeIzbnAmavWjK7Y4NJx
+	 CYQUqSTZz30SXrY1aE2l3oTPknhNKYZRaA1jxRq8cmbetLYA29cIdWS5LEMbNzzBa2
+	 q7LoX0d2XwTApWNqr/9erNsYVzB1j4BRZ7zehoiM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0B38F8057C;
-	Thu, 27 Oct 2022 14:30:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5AEC7F80559;
+	Thu, 27 Oct 2022 14:30:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D7740F8055A; Thu, 27 Oct 2022 14:30:35 +0200 (CEST)
+ id F3842F80568; Thu, 27 Oct 2022 14:30:35 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 179F7F80100
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 14:30:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 179F7F80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id F100BF8054A
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 14:30:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F100BF8054A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="G6Gv90Ha"
+ header.b="V/G6Z96K"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666873826; x=1698409826;
+ t=1666873828; x=1698409828;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=cqHkJpkiY2RJ+JPhvFBirYieeMEGz9MTXcB6l/w9TCc=;
- b=G6Gv90HacZmDj8MSXrcTkzvG5/5HdomulSjUxUa0K/WpYSnhG6bCLksH
- Xj+GY4Ogs1JiArxjo365Qdt0PtbMeHn6jdePowP1iRTkUMnzg4i+x15FZ
- ldLXfiMapUJL9YPFAcxH7kb5WnL1opke8dkb3/Cf+bErP9JTvoVIxloKe
- yTO2fOwXm2j5fZlozC1nS44/rLKNLZAdtzKxeqSb5sN441TnlwZIlZfKn
- GEwEyWGyz1BCwJJLhVFdQryXoP+0CboC/Oquq9y6kpJhJoeeGvLvHM8sl
- I90MddyaF5EMn8ubHyz328VwbVwyxvxK/j2BzAE9//xTs9bgEfhJzqInv Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="334839904"
-X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="334839904"
+ bh=3f4kH9guzDKd0tZe3rePE0YTUNF++plqK87nxUjOZs4=;
+ b=V/G6Z96KHiHK9bdjwyfgjx3J/j4izV7HIY7/qx0DKWF7btbKftdMzfj6
+ ++ka0orOTRrUd6oSIhrydteYctJu8kMkHy8k5heGrFOJuuu4z6n7t01ob
+ maP2JrKUthM+ObdYdebDQ0KhnH2IzpMcWuANK5sPFEV3ySwZlXF05K4yF
+ aZ64ssf+CmUJqu2g3xTmTGBpD+cqNqki4ZYBqsnhRrFtcE6SOUeGXFZi1
+ 43h8wx3jfQqOTseTCCi0eyTAn2EY1sjdtOp7SlCv6eEHwRN3+FqAur0gZ
+ yF7bFvjqAeifD6LL4Usab8wEOGwi8/fh4JGs6rLHxu8/u22CKnHjx3pAy g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="334839926"
+X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="334839926"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 05:30:14 -0700
+ 27 Oct 2022 05:30:19 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="807435685"
-X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="807435685"
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="807435715"
+X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="807435715"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga005.jf.intel.com with ESMTP; 27 Oct 2022 05:30:12 -0700
+ by orsmga005.jf.intel.com with ESMTP; 27 Oct 2022 05:30:17 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v4 3/9] ALSA: hda: Introduce snd_hdac_stream_wait_drsm()
-Date: Thu, 27 Oct 2022 14:46:56 +0200
-Message-Id: <20221027124702.1761002-4-cezary.rojewski@intel.com>
+Subject: [PATCH v4 5/9] ASoC: Intel: avs: Restart instead of resuming HDA
+ capture streams
+Date: Thu, 27 Oct 2022 14:46:58 +0200
+Message-Id: <20221027124702.1761002-6-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221027124702.1761002-1-cezary.rojewski@intel.com>
 References: <20221027124702.1761002-1-cezary.rojewski@intel.com>
@@ -86,67 +87,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Allow for waiting for DRSM bit for specified stream to be cleared from
-HDAudio library level. Drivers may utilize this optional step during the
-stream resume procedure.
+Resuming of capture streams for HD-Audio is unsupported so remove the
+relevant flag from the hardware params when assigning them during
+avs_component_hda_open().
 
-Suggested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
+ sound/soc/intel/avs/pcm.c | 50 ++++++++++++++++++++++-----------------
+ 1 file changed, 28 insertions(+), 22 deletions(-)
 
-Changes in v4:
-- replaced readb_poll_timeout() with read_poll_timeout() for the DRSM
-  polling function as the register is u32 wide, not u8
-
- include/sound/hdaudio.h |  1 +
- sound/hda/hdac_stream.c | 22 ++++++++++++++++++++++
- 2 files changed, 23 insertions(+)
-
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 78f1809a4ad6..a6872537724d 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -597,6 +597,7 @@ int snd_hdac_stream_get_spbmaxfifo(struct hdac_bus *bus,
- 				   struct hdac_stream *azx_dev);
- void snd_hdac_stream_drsm_enable(struct hdac_bus *bus,
- 				 bool enable, int index);
-+int snd_hdac_stream_wait_drsm(struct hdac_stream *azx_dev);
- int snd_hdac_stream_set_dpibr(struct hdac_bus *bus,
- 			      struct hdac_stream *azx_dev, u32 value);
- int snd_hdac_stream_set_lpib(struct hdac_stream *azx_dev, u32 value);
-diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
-index 35fe2bd582ac..3b250ee7f6a7 100644
---- a/sound/hda/hdac_stream.c
-+++ b/sound/hda/hdac_stream.c
-@@ -821,6 +821,28 @@ void snd_hdac_stream_drsm_enable(struct hdac_bus *bus,
+diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
+index db29496e16ab..660129508c08 100644
+--- a/sound/soc/intel/avs/pcm.c
++++ b/sound/soc/intel/avs/pcm.c
+@@ -1004,34 +1004,34 @@ static int avs_component_resume(struct snd_soc_component *component)
+ 	return avs_component_resume_prepare(component, false);
  }
- EXPORT_SYMBOL_GPL(snd_hdac_stream_drsm_enable);
  
-+/*
-+ * snd_hdac_stream_wait_drsm - wait for HW to clear RSM for a stream
-+ * @azx_dev: HD-audio core stream to await RSM for
-+ *
-+ * Returns 0 on success and -ETIMEDOUT upon a timeout.
-+ */
-+int snd_hdac_stream_wait_drsm(struct hdac_stream *azx_dev)
-+{
-+	struct hdac_bus *bus = azx_dev->bus;
-+	u32 mask, reg;
-+	int ret;
++static const struct snd_pcm_hardware avs_pcm_hardware = {
++	.info			= SNDRV_PCM_INFO_MMAP |
++				  SNDRV_PCM_INFO_MMAP_VALID |
++				  SNDRV_PCM_INFO_INTERLEAVED |
++				  SNDRV_PCM_INFO_PAUSE |
++				  SNDRV_PCM_INFO_RESUME |
++				  SNDRV_PCM_INFO_NO_PERIOD_WAKEUP,
++	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
++				  SNDRV_PCM_FMTBIT_S24_LE |
++				  SNDRV_PCM_FMTBIT_S32_LE,
++	.buffer_bytes_max	= AZX_MAX_BUF_SIZE,
++	.period_bytes_min	= 128,
++	.period_bytes_max	= AZX_MAX_BUF_SIZE / 2,
++	.periods_min		= 2,
++	.periods_max		= AZX_MAX_FRAG,
++	.fifo_size		= 0,
++};
 +
-+	mask = 1 << azx_dev->index;
+ static int avs_component_open(struct snd_soc_component *component,
+ 			      struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+-	struct snd_pcm_hardware hwparams;
+ 
+ 	/* only FE DAI links are handled here */
+ 	if (rtd->dai_link->no_pcm)
+ 		return 0;
+ 
+-	hwparams.info = SNDRV_PCM_INFO_MMAP |
+-			SNDRV_PCM_INFO_MMAP_VALID |
+-			SNDRV_PCM_INFO_INTERLEAVED |
+-			SNDRV_PCM_INFO_PAUSE |
+-			SNDRV_PCM_INFO_RESUME |
+-			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP;
+-
+-	hwparams.formats = SNDRV_PCM_FMTBIT_S16_LE |
+-			   SNDRV_PCM_FMTBIT_S24_LE |
+-			   SNDRV_PCM_FMTBIT_S32_LE;
+-	hwparams.period_bytes_min = 128;
+-	hwparams.period_bytes_max = AZX_MAX_BUF_SIZE / 2;
+-	hwparams.periods_min = 2;
+-	hwparams.periods_max = AZX_MAX_FRAG;
+-	hwparams.buffer_bytes_max = AZX_MAX_BUF_SIZE;
+-	hwparams.fifo_size = 0;
+-
+-	return snd_soc_set_runtime_hwparams(substream, &hwparams);
++	return snd_soc_set_runtime_hwparams(substream, &avs_pcm_hardware);
+ }
+ 
+ static unsigned int avs_hda_stream_dpib_read(struct hdac_ext_stream *stream)
+@@ -1375,9 +1375,15 @@ static int avs_component_hda_open(struct snd_soc_component *component,
+ 	struct hdac_ext_stream *link_stream;
+ 	struct hda_codec *codec;
+ 
+-	/* only BE DAI links are handled here */
+-	if (!rtd->dai_link->no_pcm)
+-		return avs_component_open(component, substream);
++	if (!rtd->dai_link->no_pcm) {
++		struct snd_pcm_hardware hwparams = avs_pcm_hardware;
 +
-+	ret = read_poll_timeout(snd_hdac_reg_readl, reg, !(reg & mask), 250, 2000, false, bus,
-+				bus->drsmcap + AZX_REG_DRSM_CTL);
-+	if (ret)
-+		dev_dbg(bus->dev, "polling RSM 0x%08x failed: %d\n", mask, ret);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(snd_hdac_stream_wait_drsm);
++		/* RESUME unsupported for de-coupled HD-Audio capture. */
++		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++			hwparams.info &= ~SNDRV_PCM_INFO_RESUME;
 +
- /**
-  * snd_hdac_stream_set_dpibr - sets the dpibr value of a stream
-  * @bus: HD-audio core bus
++		return snd_soc_set_runtime_hwparams(substream, &hwparams);
++	}
+ 
+ 	codec = dev_to_hda_codec(asoc_rtd_to_codec(rtd, 0)->dev);
+ 	link_stream = snd_hdac_ext_stream_assign(&codec->bus->core, substream,
 -- 
 2.25.1
 
