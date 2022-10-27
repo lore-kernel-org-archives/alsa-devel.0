@@ -4,60 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40FFBC67871
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 10:00:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD8DFC67871
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 10:20:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C6283158;
-	Thu, 27 Oct 2022 11:59:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C6283158
+	by alsa0.perex.cz (Postfix) with ESMTPS id 17C343179;
+	Thu, 27 Oct 2022 12:19:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17C343179
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666864836;
-	bh=ts7UveB4bl8TOH08I/UI18hZRyo9X++t/ACRQ2EROII=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1666866033;
+	bh=oyc4PjKzd64qt8yr4qwKao1yolfIh1KjcWGzW/iUeVg=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dRGIbS82dtO/k0GNFM6FWnBGQOTTkKvmoWJP7UkSjdIytPAbKcVClkr/bWh5wBNug
-	 ZBM5IGLmvH888qIhL+cHUIQLo7Xf12Jngl0wpCHyFbmB9Aj972RGKPnioqTWoeceiJ
-	 BTWcwwssbJfckZArm+KuiB81IOnvX5BD99Mst+3s=
+	b=YcJVsDG2XSpg+K/bzsRY2oMpbNiutogk9FFRVcqhAvTkQeKpAvHWoD+Z0WImQaLlT
+	 bPcgSI0Czn48ayM4E/+0R34YMEoIbozdHGPjTazOu0mT6/YI3d+cPqEWhUPCjoZqHC
+	 xV4FlPXDN2IDvwCNLw+Z8JWSCd7b8vvmXG/PEgOQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C5DFF80559;
-	Thu, 27 Oct 2022 11:58:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B854F8025A;
+	Thu, 27 Oct 2022 12:19:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5274F8055B; Thu, 27 Oct 2022 11:58:56 +0200 (CEST)
-Received: from hutie.ust.cz (unknown [IPv6:2a03:3b40:fe:f0::1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 515D5F8025E; Thu, 27 Oct 2022 12:19:41 +0200 (CEST)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BDB13F80095
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 11:58:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDB13F80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id D48C8F8016C
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 12:19:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D48C8F8016C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="Yy6o+PYY"
-From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1666864725; bh=2Fc+yisSwfIomFrwc/B3SPRno9UwMqdBRdReCF0H+cU=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=Yy6o+PYYi8oZ3I31rDpzKVL1SdeZHBdl66Nya8PTgGaSZ2vLqtl7m/cMeLkAJax9D
- PbuJVZB1unK+byWC+IIfwqpKvHFngT9LrP3fUn1yg7iZI0Zp5SE1TLjvRg+KjjUQbp
- Ej4kzqEICrdFpaX+62ZM3M0BMCKzpdGTfZqKwS3I=
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Subject: [PATCH 3/3] ASoC: tas2780: Fix set_tdm_slot in case of single slot
-Date: Thu, 27 Oct 2022 11:58:00 +0200
-Message-Id: <20221027095800.16094-3-povik+lin@cutebit.org>
-In-Reply-To: <20221027095800.16094-1-povik+lin@cutebit.org>
-References: <20221027095800.16094-1-povik+lin@cutebit.org>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="gKA2dW3f"
+Received: by mail-wm1-x336.google.com with SMTP id
+ bg9-20020a05600c3c8900b003bf249616b0so792916wmb.3
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 03:19:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=p3v8EBCOL/pBarxV0ODSGCNmHcX5fEuS/fZKHlL3Tpw=;
+ b=gKA2dW3fJ2rFkjzoulrUEa0ZDzOT0UEWyrFD/SIlWhEb6Whcmyl6CQAToGDwyRWYIJ
+ L256X0v3MeZ37S0/8KOzsxMjhEGFBmJJDa3AxZR6Q2WocPGUKDteY2MxuuKoDQdgzV/M
+ 5HMuHkRSrZgeZFcaC9hGoL/xffJEUk944P8pq6u/+WeCzeApEbiuAX7XQWGNkpbo3PoL
+ ymvNPOx4jvD+0ZlMbF1UJPli0/VxcBsd6pf4ScXWLGf8clXlSjovCcPOLlrO9+85LmpL
+ ysiq4xEo4G50hftAGd4vfdz3bH9w49ipcSdKOwEX4oZbEiSZJF9QmdTGDZE9Gun1Lkur
+ uEIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=p3v8EBCOL/pBarxV0ODSGCNmHcX5fEuS/fZKHlL3Tpw=;
+ b=0Sgto6Hrtzp7tDSB/Ry31NsZSh39sU74brvK1X1rc2i2Sj7aAkUlj6U/B1u/PUMxL5
+ 6FetfcEGHZG8xyprXd6+4GlTVEAgOacLGlYxcfdNp+eJPvNMEqDm8Lzv+wDa/ikiGlF5
+ RVmGk315dclkGnqJSpZG7Bj7tpYvYzfJUxd7EvsjgAOdXiqJ1eXGINPPVtg2ndNO39y9
+ j3TK2YsHpRH1rhwQ92IwxcUdoq8wN5otdnmtiBrJnj866l/Bzdyg+z/R+DN8C0f1BSSn
+ S5kP0RD3ECA6fj/jW0EPbmQwgBkWRog3XTBLwoCT+QtuOTCe/094lstnTmswcgBSgmNE
+ D1Rw==
+X-Gm-Message-State: ACrzQf170e1nC5b9IwN8YpdlxYQIOw/EeI8vj7nqAMzNHe6xJtcRzX6S
+ cLogJ2xI8uXUD5EPeaKurB6daQ==
+X-Google-Smtp-Source: AMsMyM7Z0QwLULgwz0dq3qhv6BQb+6iwiHd/mM4Ad8Zaf10YeEBPSMLE6J0xqkKIeai1eHLPuCoM9g==
+X-Received: by 2002:a05:600c:1c9d:b0:3c5:8081:1fc4 with SMTP id
+ k29-20020a05600c1c9d00b003c580811fc4mr5425907wms.161.1666865974182; 
+ Thu, 27 Oct 2022 03:19:34 -0700 (PDT)
+Received: from [192.168.1.194] ([5.133.47.210])
+ by smtp.googlemail.com with ESMTPSA id
+ l3-20020a05600c4f0300b003a5f3f5883dsm4703642wmq.17.2022.10.27.03.19.32
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 27 Oct 2022 03:19:33 -0700 (PDT)
+Message-ID: <619a829e-d902-eba9-537e-176a8acb149c@linaro.org>
+Date: Thu, 27 Oct 2022 11:19:28 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Stephen Kitt <steve@sk2.org>,
- linux-kernel@vger.kernel.org, shenghao-ding@ti.com, kevin-lu@ti.com,
- Jos Dehaes <jos.dehaes@gmail.com>, Frank Shi <shifu0704@thundersoft.com>,
- Raphael-Xu <13691752556@139.com>,
- =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>,
- asahi@lists.linux.dev
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH 6/6] soundwire: qcom: add support for v1.7 Soundwire
+ Controller
+Content-Language: en-US
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ vkoul@kernel.org, yung-chuan.liao@linux.intel.com
+References: <20221026110210.6575-1-srinivas.kandagatla@linaro.org>
+ <20221026110210.6575-7-srinivas.kandagatla@linaro.org>
+ <e3ebba30-65ec-183a-eb91-c5147c28441d@linux.intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <e3ebba30-65ec-183a-eb91-c5147c28441d@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-arm-msm@vger.kernel.org, andersson@kernel.org,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, sanyog.r.kale@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,56 +109,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There's a special branch in the set_tdm_slot op for the case of nslots
-being 1, but:
+Hi Pierre,
 
- (1) That branch can never work (there's a check for tx_mask being
-     non-zero, later there's another check for it *being* zero; one or
-     the other always throws -EINVAL).
+On 26/10/2022 21:14, Pierre-Louis Bossart wrote:
+> 
+>> @@ -1582,6 +1597,7 @@ static const struct of_device_id qcom_swrm_of_match[] = {
+>>   	{ .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
+>>   	{ .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
+>>   	{ .compatible = "qcom,soundwire-v1.6.0", .data = &swrm_v1_6_data },
+>> +	{ .compatible = "qcom,soundwire-v1.7.0", .data = &swrm_v1_5_data },
+> 
+> is this line intentional, it looks odd that 1.7 is compatible with 1.5,
+> but 1.6 isn't?
+This is more around the data rather than compatible, 1.6 data is marked 
+with sw_clk_gate_required = true which is not the case with 1.7.
 
- (2) The intention of the branch seems to be what the general other
-     branch reduces to in case of nslots being 1.
+from 1.5 we use same frame shape info for 1.6, 1.7, except that 1.6 had 
+this sw_clk_gate_required flag set.
 
-For those reasons remove the 'nslots being 1' special case.
+--srini
 
-Fixes: eae9f9ce181b ("ASoC: add tas2780 driver")
-Suggested-by: Jos Dehaes <jos.dehaes@gmail.com>
-Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
----
- sound/soc/codecs/tas2780.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
-
-diff --git a/sound/soc/codecs/tas2780.c b/sound/soc/codecs/tas2780.c
-index a6db6f0e5431..afdf0c863aa1 100644
---- a/sound/soc/codecs/tas2780.c
-+++ b/sound/soc/codecs/tas2780.c
-@@ -380,20 +380,13 @@ static int tas2780_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 	if (tx_mask == 0 || rx_mask != 0)
- 		return -EINVAL;
- 
--	if (slots == 1) {
--		if (tx_mask != 1)
--			return -EINVAL;
--		left_slot = 0;
--		right_slot = 0;
-+	left_slot = __ffs(tx_mask);
-+	tx_mask &= ~(1 << left_slot);
-+	if (tx_mask == 0) {
-+		right_slot = left_slot;
- 	} else {
--		left_slot = __ffs(tx_mask);
--		tx_mask &= ~(1 << left_slot);
--		if (tx_mask == 0) {
--			right_slot = left_slot;
--		} else {
--			right_slot = __ffs(tx_mask);
--			tx_mask &= ~(1 << right_slot);
--		}
-+		right_slot = __ffs(tx_mask);
-+		tx_mask &= ~(1 << right_slot);
- 	}
- 
- 	if (tx_mask != 0 || left_slot >= slots || right_slot >= slots)
--- 
-2.33.0
-
+> 
