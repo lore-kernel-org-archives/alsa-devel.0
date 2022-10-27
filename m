@@ -4,88 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D595AC38A2D
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 10:31:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2C62C38A2D
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 10:31:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E185B31C8;
-	Thu, 27 Oct 2022 12:30:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E185B31C8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00350319A;
+	Thu, 27 Oct 2022 12:30:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00350319A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666866668;
-	bh=IIiPbBzLfiQBx8QGGB1f+nXXsVz81oGRwU/3j+iifdo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1666866693;
+	bh=WwOA04jwVwLuv8hoGaeDHRFSy8FuWLQNwxQsrV66CQ8=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ri2C1/F7ugnyublX4gJ66k/QR/dGuN9OwRXZi1Sui10wTcOzQF0ggKKFAeqAtZfy2
-	 gdQZ2hUfdFB8620JF1qdqfyPROa9n74GM49pMkcvNTqj0Hz/v9SoFfI4hB11ekXgdy
-	 72IKVQ+HDQhscv7kZOOHxBRi/OWeGL7M47r5L61k=
+	b=Q43pCVtQ4BNGc7/aFy5kxMcOZ+hDkBZg7ITIQx1wRxah2Y7Qht17PJ43xw1R/ChDm
+	 32dsnf0+glQVg9V2FsEWsrDeeD9xcMEMU/4ovLv8jyY8Y0QG3I6IQWr0/0Yv/ko38S
+	 VPA2+pPqPN4pAK6bhkZjZNjHP/b+1KSLDbywKa8U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13D61F8059F;
-	Thu, 27 Oct 2022 12:28:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8639AF8025E;
+	Thu, 27 Oct 2022 12:29:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E92ADF8057C; Thu, 27 Oct 2022 12:27:58 +0200 (CEST)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 0AE4AF80496; Thu, 27 Oct 2022 12:29:46 +0200 (CEST)
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7CADBF80552
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 12:27:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CADBF80552
+ by alsa1.perex.cz (Postfix) with ESMTPS id C990EF80095
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 12:29:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C990EF80095
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="kmV7eRAw"
-Received: by mail-wr1-x430.google.com with SMTP id bs21so1400141wrb.4
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 03:27:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=8PzGOU3cHi3C/xmeEh0jzvedpAW9sTnCtCJCz/dvKXw=;
- b=kmV7eRAwmX8oQYf73+tBJXu8eVBs3MEay0gi6/jZolwjNmntD04cdJrbfmVKBYB+CV
- r9lpGwwm2qZhvgMLWHLMc2LbSjONA7zBfHof42h3Ri4DgnMaRT06/ORl+SYOupi+jfdP
- 4m+yh8AiGtfzvWMiqzIGXu1hDGRWKy/qPaNZ2a9CYqZjyAFczd+78pW0rX+32BrYBmf3
- ql+5TjspKrIkVn79k35TiRprdY9j5r22rErgkm0pksOT7htanoBuY+mnodh+ZgAutGrL
- zYj4tjKGrjebdTjxzsvzUNrAo/7IXblaM3iPc8u3iq6SuS2wChxQDx9Lvi87SLE7HZEp
- f+qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=8PzGOU3cHi3C/xmeEh0jzvedpAW9sTnCtCJCz/dvKXw=;
- b=8NBuomaRD6LsiFo0sSAxD/8PVdz4v5VTa+vtzbER8BA8POQsSauqNEjpLlzYhy1JUm
- cAQBSzq1IYtHsoga+K7JKRXGU0xR9M/xbnrd3uAkXhRJczcx0VpQXUQVFpk/XlfMNu82
- /faBIX3qjtciAsV99GpN8sk5+FuUMXObE7k5Aq6zvRPagKxvyTCstHLZSttuuM63j63e
- +bvnSW/pDAdL07b43d3ohOl9HPJsvauCyzZMPfCk4KRjfBOZ+lY280+T3YeiFhFBGWIi
- yuVgrKu6DSOagLK70UInTmN9oE2Sq95NflRYsX+DqtEfAyggV8PU6E7zQ72c4ya42drM
- 5fxg==
-X-Gm-Message-State: ACrzQf1feMTuqI7wZBzXecBBLqXIK159uueRPOCSWEdMiWaCo1XGj57T
- XRDOnkfQS253I7pfzza/YkZKzA==
-X-Google-Smtp-Source: AMsMyM4oW1eAyDqgv6Txm8fwAyZp2AlhsWI2Ho4+c1Tv2pcgZRqCElLkiMSTBdHOgDUCMidAwPNocQ==
-X-Received: by 2002:a5d:5988:0:b0:236:6e28:a493 with SMTP id
- n8-20020a5d5988000000b002366e28a493mr14754569wri.66.1666866465783; 
- Thu, 27 Oct 2022 03:27:45 -0700 (PDT)
-Received: from localhost.localdomain ([5.133.47.210])
- by smtp.gmail.com with ESMTPSA id
- fc7-20020a05600c524700b003b505d26776sm5088674wmb.5.2022.10.27.03.27.44
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 27 Oct 2022 03:27:44 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH v3 5/9] ASoC: qdsp6: audioreach: simplify module_list sz
- calculation
-Date: Thu, 27 Oct 2022 11:27:06 +0100
-Message-Id: <20221027102710.21407-6-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20221027102710.21407-1-srinivas.kandagatla@linaro.org>
-References: <20221027102710.21407-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="lcpiygCw"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1666866584; x=1698402584;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=WwOA04jwVwLuv8hoGaeDHRFSy8FuWLQNwxQsrV66CQ8=;
+ b=lcpiygCw/OH1edWFNthYzCIzJIWYed0vaY4hG9KLmN9mB+lb3QIYcYsy
+ NuA5FDferkSankleATxg0WerAvM7JMOBZSq++d8oPPfSHKb0VAdr3WkE4
+ 1QT8kM23ZSeQZpxFCdtXcCrk7WeE97c+29Ue1woFBG3OsSX6RHQ4FK6xR
+ PYDD2O+E/Hlgs+n2mmb2+d0Z4oCkkii5WlriSEMTX2pkOFe5gAuBfZv8F
+ OUrcRxsFZQm2hlmuq3XD7k7hrhnITW0Rlx2EF/W0EgTjbOLElav6yDyYN
+ T5d4j/hImlamzu6ot7DWBMsGzl6AjKAIgjLxGadxIhHtbN5JP5tpR3rfZ g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="370253772"
+X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="370253772"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Oct 2022 03:29:40 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="627123244"
+X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="627123244"
+Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.241.18])
+ ([10.99.241.18])
+ by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Oct 2022 03:29:37 -0700
+Message-ID: <3977c2b3-ead3-3904-820a-d602aa04c51b@linux.intel.com>
+Date: Thu, 27 Oct 2022 12:29:35 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, tiwai@suse.com,
- lgirdwood@gmail.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- bgoswami@quicinc.com, linux-kernel@vger.kernel.org
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Subject: Re: [PATCH v3 3/9] ALSA: hda: Introduce snd_hdac_stream_wait_drsm()
+To: Takashi Iwai <tiwai@suse.de>, Cezary Rojewski <cezary.rojewski@intel.com>
+References: <20221027082331.1561740-1-cezary.rojewski@intel.com>
+ <20221027082331.1561740-4-cezary.rojewski@intel.com>
+ <874jvpo9by.wl-tiwai@suse.de>
+Content-Language: en-US
+From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+In-Reply-To: <874jvpo9by.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: hdegoede@redhat.com, alsa-devel@alsa-project.org, broonie@kernel.org,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,50 +91,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Simplify module_list size calculation by doing inside modules loop.
+On 10/27/2022 12:21 PM, Takashi Iwai wrote:
+> On Thu, 27 Oct 2022 10:23:25 +0200,
+> Cezary Rojewski wrote:
+>> --- a/sound/hda/hdac_stream.c
+>> +++ b/sound/hda/hdac_stream.c
+>> @@ -821,6 +821,27 @@ void snd_hdac_stream_drsm_enable(struct hdac_bus *bus,
+>>   }
+>>   EXPORT_SYMBOL_GPL(snd_hdac_stream_drsm_enable);
+>>   
+>> +/*
+>> + * snd_hdac_stream_wait_drsm - wait for HW to clear RSM for a stream
+>> + * @azx_dev: HD-audio core stream to await RSM for
+>> + *
+>> + * Returns 0 on success and -ETIMEDOUT upon a timeout.
+>> + */
+>> +int snd_hdac_stream_wait_drsm(struct hdac_stream *azx_dev)
+>> +{
+>> +	struct hdac_bus *bus = azx_dev->bus;
+>> +	u32 mask, reg;
+>> +	int ret;
+>> +
+>> +	mask = 1 << azx_dev->index;
+>> +
+>> +	ret = readb_poll_timeout(bus->drsmcap + AZX_REG_DRSM_CTL, reg, !(reg & mask), 250, 2000);
+> 
+> Remember that HD-audio bus doesn't always allow readb().  Tegra
+> requires the aligned access, for example.
+> 
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/qdsp6/audioreach.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/qcom/qdsp6/audioreach.c b/sound/soc/qcom/qdsp6/audioreach.c
-index 0015ec89d90b..87a3fd1f8107 100644
---- a/sound/soc/qcom/qdsp6/audioreach.c
-+++ b/sound/soc/qcom/qdsp6/audioreach.c
-@@ -430,7 +430,6 @@ void *audioreach_alloc_graph_pkt(struct q6apm *apm, struct audioreach_graph_info
- 	struct audioreach_sub_graph *sgs;
- 	struct apm_mod_list_obj *mlobj;
- 	struct list_head *sg_list;
--	int num_modules_per_list;
- 	int num_connections = 0;
- 	int num_containers = 0;
- 	int num_sub_graphs = 0;
-@@ -451,6 +450,9 @@ void *audioreach_alloc_graph_pkt(struct q6apm *apm, struct audioreach_graph_info
- 		list_for_each_entry(container, &sgs->container_list, node) {
- 			num_containers++;
- 			num_modules += container->num_modules;
-+			ml_sz = ml_sz + sizeof(struct apm_module_list_params) +
-+				APM_MOD_LIST_OBJ_PSIZE(mlobj, container->num_modules);
-+
- 			list_for_each_entry(module, &container->modules_list, node) {
- 				if (module->src_mod_inst_id)
- 					num_connections++;
-@@ -459,11 +461,11 @@ void *audioreach_alloc_graph_pkt(struct q6apm *apm, struct audioreach_graph_info
- 	}
- 
- 	num_modules_list = num_containers;
--	num_modules_per_list = num_modules/num_containers;
- 	sg_sz = APM_SUB_GRAPH_PSIZE(sg_params, num_sub_graphs);
- 	cont_sz = APM_CONTAINER_PSIZE(cont_params, num_containers);
--	ml_sz =	ALIGN(sizeof(struct apm_module_list_params) +
--		num_modules_list * APM_MOD_LIST_OBJ_PSIZE(mlobj,  num_modules_per_list), 8);
-+
-+	ml_sz = ALIGN(ml_sz, 8);
-+
- 	mp_sz = APM_MOD_PROP_PSIZE(mprop, num_modules);
- 	mc_sz =	APM_MOD_CONN_PSIZE(mcon, num_connections);
- 
--- 
-2.21.0
+The readb_poll_timeout macro was updated to take care of that,
+https://lore.kernel.org/all/20221007084856.1638302-1-amadeuszx.slawinski@linux.intel.com/
+so it should be fine?
 
