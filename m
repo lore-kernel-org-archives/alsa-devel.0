@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CBADFA3740
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 12:32:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91536FA3740
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 12:32:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A2EE307F;
-	Thu, 27 Oct 2022 14:31:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A2EE307F
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8916307D;
+	Thu, 27 Oct 2022 14:31:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8916307D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666873932;
-	bh=pn64UoVv+8iVAqwShoKp1ObqWZRwXm8R7H29OzRwFtE=;
+	s=default; t=1666873955;
+	bh=dpLGzQwfKrcRxmPSfAVJZ6u4CmLx7kxAQIL3CRVd5hQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mnIrpENJ+VK61f7O1A1tpKD4d04H6Er7P2uMaF1M0d0gmCfmYlv1DpcCxRgHR2RLj
-	 5xaTz4yNti6kQLIrSidT1SOYa4wOUjiqBwT5RLZcWNDWfgXnUIfq8rW08RD2MeAS/j
-	 Meb3q9tPUp+RAxE5dr9V2vIRY+iZU45Q/fy2B5BE=
+	b=qDqVLZavNJY0SBetvJw32Y4aLDLDbs6a0WxgF1smFpybMOrJAAxw7Jc72adO2hPYT
+	 emE6SstWHYguyD9aLFlvdcYJrd5w2o1YMkFJ97g1fgDQa9R+eQ2iaq+2vYgUqFcUHQ
+	 wyyV4xKjSstP1F7yI0bG4z3JtY7jLEFl/vVNZcdE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 094DDF804AD;
-	Thu, 27 Oct 2022 14:30:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8BE5F8055A;
+	Thu, 27 Oct 2022 14:30:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5CA72F80563; Thu, 27 Oct 2022 14:30:33 +0200 (CEST)
+ id 5FDC5F8055B; Thu, 27 Oct 2022 14:30:34 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D21EEF804AD
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 14:30:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D21EEF804AD
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5889F80558
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 14:30:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5889F80558
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="DGdxd4dT"
+ header.b="GDGUbyK6"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666873828; x=1698409828;
+ t=1666873829; x=1698409829;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=pn64UoVv+8iVAqwShoKp1ObqWZRwXm8R7H29OzRwFtE=;
- b=DGdxd4dTZXuiMpgKfqj/Rnfk3LCExBNVt7NAnl7F+62tScu8IJV+G2Hp
- h6x9I1jPItvnHEuveKBUQDLvKLCv+MJrLr0tsF73zlsmzyNO6weZiaxX+
- 3G1HTxRQXULQKHtS/LQcMoa9+QOGNQBI2WmpMFp1oHuM5U/cTOneSUkGA
- IpsuOyQbjQsJpptAEh07mx9QcSZUQsMGuRyPTCnJWJluLyjw0q+NtbShl
- ryuilfjbsQZTCY9m7VITeLfbakl6p6+U7NU2C2xSKbJ0ZDmTgg+zt2Fcl
- TKNIu14FTg9WawVKAV70hMlPe4AIgQBMPBxOOOCtZE9gr4zvhrRMokC50 Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="334839916"
-X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="334839916"
+ bh=dpLGzQwfKrcRxmPSfAVJZ6u4CmLx7kxAQIL3CRVd5hQ=;
+ b=GDGUbyK6V5qcT1mSGV+o8K9ovxgPUOqjWpMoB1ax26YKr/08wzfMnBot
+ o9e4rwzRp7kyOB4HzkswSQfn1C65/WUgqnnOS6AasxxCLtK2Pm+Jq4aYb
+ GryrTskqIlj06OhwbdtY71TT+M3eNnCSiQLbqKKZmI7ioUWW6aQoYAb/x
+ haFVAXIWn2OJVRkCWw0CXYqymwveZBkaueT56AcSn9BTRygQvkKAbvml1
+ oXyM+B4xVWpYLyHRsqQDWJjQy+jwlMoMF6179DZ853RIk4vKM57DTNf4I
+ PcuQJY0KECdUav6EYu7qKs8n2f5N/CjGuLRSQku3Qp64NLgW8lPwf5v0N w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="334839945"
+X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="334839945"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 05:30:16 -0700
+ 27 Oct 2022 05:30:24 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="807435704"
-X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="807435704"
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="807435755"
+X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="807435755"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga005.jf.intel.com with ESMTP; 27 Oct 2022 05:30:14 -0700
+ by orsmga005.jf.intel.com with ESMTP; 27 Oct 2022 05:30:21 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v4 4/9] ASoC: Intel: avs: Handle SUSPEND and RESUME triggers
-Date: Thu, 27 Oct 2022 14:46:57 +0200
-Message-Id: <20221027124702.1761002-5-cezary.rojewski@intel.com>
+Subject: [PATCH v4 7/9] ASoC: Intel: avs: Standby power-state support
+Date: Thu, 27 Oct 2022 14:47:00 +0200
+Message-Id: <20221027124702.1761002-8-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221027124702.1761002-1-cezary.rojewski@intel.com>
 References: <20221027124702.1761002-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.com,
+ Piotr Maziarz <piotrx.maziarz@linux.intel.com>,
+ pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com,
  amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -87,191 +87,194 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+From: Piotr Maziarz <piotrx.maziarz@linux.intel.com>
 
-With power management operations added, service SUSPEND and RESUME
-trigger commands for running streams.
+Introduce avs_suspend_standby() and avs_resume_standby() to support S0IX
+streaming. The AudioDSP is not shutdown during such scenario and the PCI
+device is armed for possible wake operation through an audio event.
 
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+As capability for a stream to be active during low power S0 is based off
+of ->ignore_suspend, adjust the field's value according to platform
+capabilities if needed.
+
+Signed-off-by: Piotr Maziarz <piotrx.maziarz@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/pcm.c | 75 +++++++++++++++++++++++++++++++--------
- 1 file changed, 60 insertions(+), 15 deletions(-)
+ sound/soc/intel/avs/avs.h      |  7 ++++
+ sound/soc/intel/avs/core.c     | 75 ++++++++++++++++++++++++++++++----
+ sound/soc/intel/avs/topology.c | 10 +++++
+ 3 files changed, 85 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
-index df965dbb8d12..db29496e16ab 100644
---- a/sound/soc/intel/avs/pcm.c
-+++ b/sound/soc/intel/avs/pcm.c
-@@ -208,30 +208,43 @@ static int avs_dai_nonhda_be_prepare(struct snd_pcm_substream *substream, struct
- static int avs_dai_nonhda_be_trigger(struct snd_pcm_substream *substream, int cmd,
- 				     struct snd_soc_dai *dai)
+diff --git a/sound/soc/intel/avs/avs.h b/sound/soc/intel/avs/avs.h
+index fb73d207697f..8d05b27608fe 100644
+--- a/sound/soc/intel/avs/avs.h
++++ b/sound/soc/intel/avs/avs.h
+@@ -24,6 +24,13 @@ struct avs_tplg_library;
+ struct avs_soc_component;
+ struct avs_ipc_msg;
+ 
++#ifdef CONFIG_ACPI
++#define AVS_S0IX_SUPPORTED \
++	(acpi_gbl_FADT.flags & ACPI_FADT_LOW_POWER_S0)
++#else
++#define AVS_S0IX_SUPPORTED false
++#endif
++
+ /*
+  * struct avs_dsp_ops - Platform-specific DSP operations
+  *
+diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
+index 0aaded90a99a..6b68d926c9f4 100644
+--- a/sound/soc/intel/avs/core.c
++++ b/sound/soc/intel/avs/core.c
+@@ -534,12 +534,30 @@ static void avs_pci_remove(struct pci_dev *pci)
+ 	pm_runtime_get_noresume(&pci->dev);
+ }
+ 
+-static int __maybe_unused avs_suspend_common(struct avs_dev *adev)
++static int avs_suspend_standby(struct avs_dev *adev)
++{
++	struct hdac_bus *bus = &adev->base.core;
++	struct pci_dev *pci = adev->base.pci;
++
++	if (bus->cmd_dma_state)
++		snd_hdac_bus_stop_cmd_io(bus);
++
++	snd_hdac_ext_bus_link_power_down_all(bus);
++
++	enable_irq_wake(pci->irq);
++	pci_save_state(pci);
++
++	return 0;
++}
++
++static int __maybe_unused avs_suspend_common(struct avs_dev *adev, bool low_power)
  {
-+	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
- 	struct avs_dma_data *data;
- 	int ret = 0;
+ 	struct hdac_bus *bus = &adev->base.core;
+ 	int ret;
  
- 	data = snd_soc_dai_get_dma_data(dai, substream);
+ 	flush_work(&adev->probe_work);
++	if (low_power && adev->num_lp_paths)
++		return avs_suspend_standby(adev);
  
- 	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		if (rtd->dai_link->ignore_suspend)
-+			break;
-+		fallthrough;
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		ret = avs_path_pause(data->path);
-+		if (ret < 0) {
-+			dev_err(dai->dev, "pause BE path failed: %d\n", ret);
-+			break;
-+		}
+ 	snd_hdac_ext_bus_link_power_down_all(bus);
+ 
+@@ -577,11 +595,30 @@ static int __maybe_unused avs_suspend_common(struct avs_dev *adev)
+ 	return 0;
+ }
+ 
+-static int __maybe_unused avs_resume_common(struct avs_dev *adev, bool purge)
++static int avs_resume_standby(struct avs_dev *adev)
++{
++	struct hdac_bus *bus = &adev->base.core;
++	struct pci_dev *pci = adev->base.pci;
 +
- 		ret = avs_path_run(data->path, AVS_TPLG_TRIGGER_AUTO);
- 		if (ret < 0)
- 			dev_err(dai->dev, "run BE path failed: %d\n", ret);
- 		break;
- 
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		if (rtd->dai_link->ignore_suspend)
-+			break;
-+		fallthrough;
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		ret = avs_path_pause(data->path);
- 		if (ret < 0)
- 			dev_err(dai->dev, "pause BE path failed: %d\n", ret);
- 
--		if (cmd == SNDRV_PCM_TRIGGER_STOP) {
--			ret = avs_path_reset(data->path);
--			if (ret < 0)
--				dev_err(dai->dev, "reset BE path failed: %d\n", ret);
--		}
-+		ret = avs_path_reset(data->path);
-+		if (ret < 0)
-+			dev_err(dai->dev, "reset BE path failed: %d\n", ret);
- 		break;
- 
- 	default:
-@@ -351,6 +364,7 @@ static int avs_dai_hda_be_prepare(struct snd_pcm_substream *substream, struct sn
- static int avs_dai_hda_be_trigger(struct snd_pcm_substream *substream, int cmd,
- 				  struct snd_soc_dai *dai)
++	pci_restore_state(pci);
++	disable_irq_wake(pci->irq);
++
++	snd_hdac_ext_bus_link_power_up_all(bus);
++
++	if (bus->cmd_dma_state)
++		snd_hdac_bus_init_cmd_io(bus);
++
++	return 0;
++}
++
++static int __maybe_unused avs_resume_common(struct avs_dev *adev, bool low_power, bool purge)
  {
-+	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
- 	struct hdac_ext_stream *link_stream;
- 	struct avs_dma_data *data;
- 	int ret = 0;
-@@ -361,15 +375,29 @@ static int avs_dai_hda_be_trigger(struct snd_pcm_substream *substream, int cmd,
- 	link_stream = substream->runtime->private_data;
+ 	struct hdac_bus *bus = &adev->base.core;
+ 	int ret;
  
- 	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		if (rtd->dai_link->ignore_suspend)
-+			break;
-+		fallthrough;
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		snd_hdac_ext_stream_start(link_stream);
- 
-+		ret = avs_path_pause(data->path);
-+		if (ret < 0) {
-+			dev_err(dai->dev, "pause BE path failed: %d\n", ret);
-+			break;
-+		}
++	if (low_power && adev->num_lp_paths)
++		return avs_resume_standby(adev);
 +
- 		ret = avs_path_run(data->path, AVS_TPLG_TRIGGER_AUTO);
- 		if (ret < 0)
- 			dev_err(dai->dev, "run BE path failed: %d\n", ret);
- 		break;
+ 	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
+ 	avs_hdac_bus_init_chip(bus, true);
  
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		if (rtd->dai_link->ignore_suspend)
-+			break;
-+		fallthrough;
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		ret = avs_path_pause(data->path);
-@@ -378,11 +406,9 @@ static int avs_dai_hda_be_trigger(struct snd_pcm_substream *substream, int cmd,
+@@ -599,26 +636,50 @@ static int __maybe_unused avs_resume_common(struct avs_dev *adev, bool purge)
  
- 		snd_hdac_ext_stream_clear(link_stream);
- 
--		if (cmd == SNDRV_PCM_TRIGGER_STOP) {
--			ret = avs_path_reset(data->path);
--			if (ret < 0)
--				dev_err(dai->dev, "reset BE path failed: %d\n", ret);
--		}
-+		ret = avs_path_reset(data->path);
-+		if (ret < 0)
-+			dev_err(dai->dev, "reset BE path failed: %d\n", ret);
- 		break;
- 
- 	default:
-@@ -587,6 +613,7 @@ static int avs_dai_fe_prepare(struct snd_pcm_substream *substream, struct snd_so
- 
- static int avs_dai_fe_trigger(struct snd_pcm_substream *substream, int cmd, struct snd_soc_dai *dai)
+ static int __maybe_unused avs_suspend(struct device *dev)
  {
-+	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
- 	struct avs_dma_data *data;
- 	struct hdac_ext_stream *host_stream;
- 	struct hdac_bus *bus;
-@@ -598,17 +625,36 @@ static int avs_dai_fe_trigger(struct snd_pcm_substream *substream, int cmd, stru
- 	bus = hdac_stream(host_stream)->bus;
+-	return avs_suspend_common(to_avs_dev(dev));
++	return avs_suspend_common(to_avs_dev(dev), true);
+ }
  
- 	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		if (rtd->dai_link->ignore_suspend)
-+			break;
-+		fallthrough;
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		spin_lock_irqsave(&bus->reg_lock, flags);
- 		snd_hdac_stream_start(hdac_stream(host_stream), true);
- 		spin_unlock_irqrestore(&bus->reg_lock, flags);
+ static int __maybe_unused avs_resume(struct device *dev)
+ {
+-	return avs_resume_common(to_avs_dev(dev), true);
++	return avs_resume_common(to_avs_dev(dev), true, true);
+ }
  
-+		/* Timeout on DRSM poll shall not stop the resume so ignore the result. */
-+		if (cmd == SNDRV_PCM_TRIGGER_RESUME)
-+			snd_hdac_stream_wait_drsm(hdac_stream(host_stream));
+ static int __maybe_unused avs_runtime_suspend(struct device *dev)
+ {
+-	return avs_suspend_common(to_avs_dev(dev));
++	return avs_suspend_common(to_avs_dev(dev), true);
+ }
+ 
+ static int __maybe_unused avs_runtime_resume(struct device *dev)
+ {
+-	return avs_resume_common(to_avs_dev(dev), true);
++	return avs_resume_common(to_avs_dev(dev), true, false);
++}
 +
-+		ret = avs_path_pause(data->path);
-+		if (ret < 0) {
-+			dev_err(dai->dev, "pause FE path failed: %d\n", ret);
-+			break;
-+		}
++static int __maybe_unused avs_freeze(struct device *dev)
++{
++	return avs_suspend_common(to_avs_dev(dev), false);
++}
++static int __maybe_unused avs_thaw(struct device *dev)
++{
++	return avs_resume_common(to_avs_dev(dev), false, true);
++}
 +
- 		ret = avs_path_run(data->path, AVS_TPLG_TRIGGER_AUTO);
- 		if (ret < 0)
- 			dev_err(dai->dev, "run FE path failed: %d\n", ret);
++static int __maybe_unused avs_poweroff(struct device *dev)
++{
++	return avs_suspend_common(to_avs_dev(dev), false);
++}
 +
- 		break;
++static int __maybe_unused avs_restore(struct device *dev)
++{
++	return avs_resume_common(to_avs_dev(dev), false, true);
+ }
  
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		if (rtd->dai_link->ignore_suspend)
-+			break;
-+		fallthrough;
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		ret = avs_path_pause(data->path);
-@@ -619,11 +665,9 @@ static int avs_dai_fe_trigger(struct snd_pcm_substream *substream, int cmd, stru
- 		snd_hdac_stream_stop(hdac_stream(host_stream));
- 		spin_unlock_irqrestore(&bus->reg_lock, flags);
+ static const struct dev_pm_ops avs_dev_pm = {
+-	SET_SYSTEM_SLEEP_PM_OPS(avs_suspend, avs_resume)
++	.suspend = avs_suspend,
++	.resume = avs_resume,
++	.freeze = avs_freeze,
++	.thaw = avs_thaw,
++	.poweroff = avs_poweroff,
++	.restore = avs_restore,
+ 	SET_RUNTIME_PM_OPS(avs_runtime_suspend, avs_runtime_resume, NULL)
+ };
  
--		if (cmd == SNDRV_PCM_TRIGGER_STOP) {
--			ret = avs_path_reset(data->path);
--			if (ret < 0)
--				dev_err(dai->dev, "reset FE path failed: %d\n", ret);
--		}
-+		ret = avs_path_reset(data->path);
-+		if (ret < 0)
-+			dev_err(dai->dev, "reset FE path failed: %d\n", ret);
- 		break;
+diff --git a/sound/soc/intel/avs/topology.c b/sound/soc/intel/avs/topology.c
+index 8a9f9fc48938..e845eaf0a1e7 100644
+--- a/sound/soc/intel/avs/topology.c
++++ b/sound/soc/intel/avs/topology.c
+@@ -1405,6 +1405,11 @@ static int avs_widget_load(struct snd_soc_component *comp, int index,
+ 	if (!le32_to_cpu(dw->priv.size))
+ 		return 0;
  
- 	default:
-@@ -974,6 +1018,7 @@ static int avs_component_open(struct snd_soc_component *component,
- 			SNDRV_PCM_INFO_MMAP_VALID |
- 			SNDRV_PCM_INFO_INTERLEAVED |
- 			SNDRV_PCM_INFO_PAUSE |
-+			SNDRV_PCM_INFO_RESUME |
- 			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP;
++	if (w->ignore_suspend && !AVS_S0IX_SUPPORTED) {
++		dev_info_once(comp->dev, "Device does not support S0IX, check BIOS settings\n");
++		w->ignore_suspend = false;
++	}
++
+ 	tplg = acomp->tplg;
+ 	mach = dev_get_platdata(comp->card->dev);
  
- 	hwparams.formats = SNDRV_PCM_FMTBIT_S16_LE |
+@@ -1442,6 +1447,11 @@ static int avs_dai_load(struct snd_soc_component *comp, int index,
+ static int avs_link_load(struct snd_soc_component *comp, int index, struct snd_soc_dai_link *link,
+ 			 struct snd_soc_tplg_link_config *cfg)
+ {
++	if (link->ignore_suspend && !AVS_S0IX_SUPPORTED) {
++		dev_info_once(comp->dev, "Device does not support S0IX, check BIOS settings\n");
++		link->ignore_suspend = false;
++	}
++
+ 	if (!link->no_pcm) {
+ 		/* Stream control handled by IPCs. */
+ 		link->nonatomic = true;
 -- 
 2.25.1
 
