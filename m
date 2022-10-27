@@ -4,80 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B801C38A2D
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 10:28:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A263AC67871
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 10:29:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41B591F32;
-	Thu, 27 Oct 2022 12:27:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41B591F32
+	by alsa0.perex.cz (Postfix) with ESMTPS id AFB0231B7;
+	Thu, 27 Oct 2022 12:28:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFB0231B7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666866515;
-	bh=DgrwPbWMswbN1Y/9nBD8F4gk0wRBaMfj14Lmzw0eKRI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=W19TUdn4R/6L+wvK7zmlQJ5pVJYn7Bhr0pbkkMNlxNBAYJedqZygnfCCBRZTK7VmC
-	 viec/eNci6OHDR5KjuYHHLBm5MYGsjWiMU+2UxMtetESUs9pjS2n6R/eQIToNtu8fY
-	 TabuZ5he1gzbAWTUY/Vvmiu0kV6RKfCJz68EMgJU=
+	s=default; t=1666866539;
+	bh=GbGqGWjautlyUMBdNp2VsjtFNe5O+51aNQ7ONjB1S1s=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=N4MA4Z0K3thVvCBB5TZThxKLdp8Cg5cqwYCQXRwdPCPgjtK4rrex3NvsDRbymabDH
+	 5hALd0FwY+dyY+9MG/R9C0uR+QVncFcAd4h24D7+Sx3feodTfNhXj30sVaZ7UZzt/R
+	 mQ5yjEirByzwidZcKC8E1vXz1p3cID2XetHZaJeo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C21D3F8025E;
-	Thu, 27 Oct 2022 12:27:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3F9BF804D9;
+	Thu, 27 Oct 2022 12:27:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A3452F80095; Thu, 27 Oct 2022 12:27:43 +0200 (CEST)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
- [IPv6:2a00:1450:4864:20::32e])
+ id B5224F804FE; Thu, 27 Oct 2022 12:27:47 +0200 (CEST)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2C020F80095
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 12:27:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C020F80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id A217BF8016C
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 12:27:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A217BF8016C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="fVIZxf6l"
-Received: by mail-wm1-x32e.google.com with SMTP id
- bh7-20020a05600c3d0700b003c6fb3b2052so818274wmb.2
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 03:27:40 -0700 (PDT)
+ header.b="OfmcnN2A"
+Received: by mail-wr1-x435.google.com with SMTP id bk15so1357740wrb.13
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 03:27:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=c10Qe+zVZwwhBmGpXr4d44up0IldqesvWFfpeof/vkk=;
- b=fVIZxf6ldVYp8IBSoyM4y0u487MzBl4hyvzk2dmHbQ6cAjTw/gb3hGHq/fNXIAIknO
- wUkpKa9NXUqqXGvKs6y5a8aP8ah7+k+Rb+Fvm6NiM4U8TfDVENUquvVTE3jaiCy3hY5b
- PyEu71SuL7hVubSIhG1CUe5OAhkqivw5IieTuSkvBgKBZyQ2LASo4CAZrhvbf6HwsxmX
- YceOtRHXKz8Uos6/HkcbfK/Z7fEruPIQTFalW53j55EMLMzkkGWeVx+CpYvAPT2Oj++D
- D0Y3hoD5NuErKKUQoZ345ja+k0N3bPc3JTmNUfacDfh/JEqMEvIXu2mYNShWqmRm7ojv
- zR3g==
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=cF5Zvj+Kzci/ADALngKgDuePH0r1ubNxIDC6FLO5nXI=;
+ b=OfmcnN2ATMaOpm5S6kmUIuDgV9Frpxx46brWhLZxI1dy82qO45G2ZGVowls6lCKTWO
+ HAqZnnXtVgJrIQP/DUGZqt5mFCCzx5Y7lSMkGOKJx4WW+LGu2Z5nZLcssfuyNcnuC/4k
+ JFWkhSpO/CZyeaaJLrou68ss3ypdAP9sZSA71qq9jpwCWmnUFM6zok3vylJKFKDyQgXI
+ liThdInxxTImzhJIjRlZIFwJ9f7kMtwXuT2rlaeZRCqkIBy+ig4gi0rACnSq5I4y+ZPI
+ Yfr5/Vg57Vhc0aKaSaZ3vLERuUNXYS4R8dZ+9EPd1xc3aShX3CvfmTJvYpSUZt0R5FmB
+ x7Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=c10Qe+zVZwwhBmGpXr4d44up0IldqesvWFfpeof/vkk=;
- b=dXQUYYG6rx94fcHLbHNxV5hOQ6+jlmNEkWi82rBngPMy7GFOigNeGOIAbKCjKaH3t1
- u7poVlGJI/ZeSDMZOzqjO5vGNbTfAT7wI4sd0aw1qKq+8LD0rcw8H3P4vjK4PsCxMo1f
- ySviLbM26kI/8EqQ+8ps/5h3/UvyGoK1zDLMYdhGZ4LCI3khWPbLQad7/YSl1aWpHLR9
- Kkm742zCSv54Q3sZIGKuG5GKohK0/qmqpAIbOsGBSqQJfFfTDrgBXNf3RBQI0LWxaTnU
- rey2jwq0x/4LflBytTkOorMnQKyrCdBbJDBN0Z/oqBf5SOxy2wTfvLYpRvkh1aeL5GhP
- JISQ==
-X-Gm-Message-State: ACrzQf3Vl+V/FkL6BMyDcCmkmV3gUolUeUAvw4+RrraoJxsmo08vV/re
- q8D3ejth7GY1VXsTELE6BliykQ==
-X-Google-Smtp-Source: AMsMyM5XkM9qBJkZHViwAVqTaVREs+du9SVmS5VfkwGNbmlgN1NNuWvkGYxmgCXT5+ZG1v56r31oVA==
-X-Received: by 2002:a1c:7405:0:b0:3cf:55ea:6520 with SMTP id
- p5-20020a1c7405000000b003cf55ea6520mr436038wmc.46.1666866459346; 
- Thu, 27 Oct 2022 03:27:39 -0700 (PDT)
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=cF5Zvj+Kzci/ADALngKgDuePH0r1ubNxIDC6FLO5nXI=;
+ b=Ofk8xb1KdnsFfYuEoMPse/qhvjlysXJTWN2ChulAnbRqPj/hfnVJGJsizqcrnlKioY
+ Oli88+7MhK6/81pEAc16LW3wUb/I/gloJFfeujYoAkCgYjERTHo5aOmb57h+QdE1BSGY
+ 8+yLr3P8TgPT2VZjg3UNMd+zJ4WjczytIBAanwEbClKpxMT0n4nLoH9ftzXO1YAKqe82
+ DcrIjz/tefAUs3NaFw+keNfbVkz7/e74mATjbTSi/kRnOWPO6S6mkkdkg0DT2JlUlXQ1
+ aqTX+vusO9F3V+XaBmnNvG/f70PPSoBZpU8qCAwvjL2C2RzCLJyl/Mmtoshy50rbz3PF
+ vRKg==
+X-Gm-Message-State: ACrzQf3qrh/ct7YWsg+lhXrUhfY4uXaCsNS0CZs6iU1trfc6LWnO5+ZQ
+ KD+bOtgUWb5CIjEZHUb1jTddVQ==
+X-Google-Smtp-Source: AMsMyM6DoyMFwCAihYX8DnGbkz/UnKKCrN0y33wb+sh9AQ/ZFnMVkmJJ8x01wwKJnoT+Hxu81BRRZw==
+X-Received: by 2002:adf:e7c8:0:b0:236:6a30:cb2e with SMTP id
+ e8-20020adfe7c8000000b002366a30cb2emr15899887wrn.12.1666866461938; 
+ Thu, 27 Oct 2022 03:27:41 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
  by smtp.gmail.com with ESMTPSA id
- fc7-20020a05600c524700b003b505d26776sm5088674wmb.5.2022.10.27.03.27.38
+ fc7-20020a05600c524700b003b505d26776sm5088674wmb.5.2022.10.27.03.27.40
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 27 Oct 2022 03:27:38 -0700 (PDT)
+ Thu, 27 Oct 2022 03:27:41 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v3 0/9] ASoC: qdsp6: audioreach: add multi-port,
- SAL and MFC support
-Date: Thu, 27 Oct 2022 11:27:01 +0100
-Message-Id: <20221027102710.21407-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 2/9] ASoC: qdsp6: audioreach: remove unused connection_list
+Date: Thu, 27 Oct 2022 11:27:03 +0100
+Message-Id: <20221027102710.21407-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20221027102710.21407-1-srinivas.kandagatla@linaro.org>
+References: <20221027102710.21407-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, tiwai@suse.com,
@@ -98,39 +100,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patchset adds support to multi-port connections between AudioReach Modules
-which is required for sophisticated graphs like ECNS or Speaker Protection.
-Also as part of ECNS testing new module support for SAL and MFC are added.
+Remove unused connection_list parameter.
 
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/qcom/qdsp6/audioreach.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-Tested on SM8450 with ECNS.
-
-Thanks,
-Srini
-
-Changes since v2:
-	Fixed two spelling mistakes in commit message
-	No code changes.
-
-Srinivas Kandagatla (9):
-  ASoC: qdsp6: audioreach: topology use idr_alloc_u32
-  ASoC: qdsp6: audioreach: remove unused connection_list
-  ASoC: qdsp6: audioreach: update dapm kcontrol private data
-  ASoC: qdsp6: audioreach: Simplify handing FE and BE graph connections
-  ASoC: qdsp6: audioreach: simplify module_list sz calculation
-  ASoC: qdsp6: audioreach: add support for more port connections
-  ASoC: qdsp6: audioreach: add support to enable SAL Module
-  ASoC: qdsp6: audioreach: add support for MFC Module
-  ASoC: qdsp6: audioreach: add support to enable module command
-
- include/uapi/sound/snd_ar_tokens.h |  27 +++
- sound/soc/qcom/qdsp6/audioreach.c  | 310 ++++++++++++++++++++---------
- sound/soc/qcom/qdsp6/audioreach.h  |  47 +++--
- sound/soc/qcom/qdsp6/q6apm.c       |  84 +-------
- sound/soc/qcom/qdsp6/q6apm.h       |   6 +-
- sound/soc/qcom/qdsp6/topology.c    | 243 +++++++++++++++++++---
- 6 files changed, 489 insertions(+), 228 deletions(-)
-
+diff --git a/sound/soc/qcom/qdsp6/audioreach.h b/sound/soc/qcom/qdsp6/audioreach.h
+index 3ee8bfcd0121..36779ad1952d 100644
+--- a/sound/soc/qcom/qdsp6/audioreach.h
++++ b/sound/soc/qcom/qdsp6/audioreach.h
+@@ -595,7 +595,6 @@ struct audioreach_graph_info {
+ 	int id;
+ 	uint32_t num_sub_graphs;
+ 	struct list_head sg_list;
+-	struct list_head connection_list;
+ };
+ 
+ struct audioreach_sub_graph {
 -- 
 2.21.0
 
