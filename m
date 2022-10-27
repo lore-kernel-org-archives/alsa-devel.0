@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C406DC38A2D
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 08:10:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6F7BC38A2D
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 08:10:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFAC732C3;
-	Thu, 27 Oct 2022 10:09:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFAC732C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0680832EB;
+	Thu, 27 Oct 2022 10:09:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0680832EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666858207;
-	bh=GyhN74WLqRKZuWlouvPzDAC75xmeQ8tROgAKJv9VemA=;
+	s=default; t=1666858220;
+	bh=jmujsjyGLm6r9HxgKoELq8kIQcO3Vafz5I0Pw/IAAlc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bnsI5fMDilP3i0NmAHy2M455snvkkPkKZkbme7AgOt5hcso0ZwdyQ3BFN4Pu4omVb
-	 7m+YDZsdVaubOGl50jlYbqNlzcm8CnkQnCgpAzR6q45qMm21oxoQVILZEyAqkK58ko
-	 aV2UQdU9OPtPu9m663QrZAMnsCWpnMjnttvx3IFA=
+	b=ObQ3pXLjRK47wa1hlhlPeFuBQLFbDdXPamPla/bjhUrF8O+K2H3G8oXEdSKGjrapM
+	 hlCpYZcf5vsmg/9w/NuoWQX59sUWGSbJ0zVaQU2AiMGhbJbQpKslA1K1F75i6jkpxn
+	 S+E8dik7uN82JJDNZ5YbrdX+nsgWdjXZYd9Uu4g4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA294F80589;
-	Thu, 27 Oct 2022 10:07:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 527F6F805A1;
+	Thu, 27 Oct 2022 10:07:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1DC8F8055B; Thu, 27 Oct 2022 10:07:32 +0200 (CEST)
+ id 12B5AF8054A; Thu, 27 Oct 2022 10:07:33 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DF5C7F8055B
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 10:07:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF5C7F8055B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3188DF80551
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 10:07:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3188DF80551
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="jXWS5emR"
+ header.b="FdNqoBb8"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666858047; x=1698394047;
+ t=1666858044; x=1698394044;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=GyhN74WLqRKZuWlouvPzDAC75xmeQ8tROgAKJv9VemA=;
- b=jXWS5emRFaNicjYw/w0Wbj0aAZT+bZ8O6AaQ2+MR7rMBBB5tnvd0GLqd
- +ZDXb6aBmZ7GI86gZrK21YaQA7vxxjiWWSGrW5FiCUmaTkgBozofpgI37
- TwhpDlD4DUIPLckHuyQasWJwKJF9f3ZoKR8aK5PiprFx1L8W4S56NcC0f
- tx3gHDUF+eUlRy8z4ktnC+k1BRpjmPNTXPUcmsC1uOyfpy7iQBPEore+9
- njEmB4PC1frxuuwuspC+lXcNrrR/IAW6x3Jr4Bm5zIYL3Dx3bG+ghuFxq
- ZAUOdgWeikAEVIMUb/bJC0ywR3buOMw0NS1IGMcn2zU0L7Dt398Pi6j/y w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="291462745"
-X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="291462745"
+ bh=jmujsjyGLm6r9HxgKoELq8kIQcO3Vafz5I0Pw/IAAlc=;
+ b=FdNqoBb81F9Syga2amqHepIxJFrL/ajkM32OwRixRsQ+p+fi+JCST0OC
+ v3XwscML34VbqB2p28wy4VZOISFq3esvgjdm68qXDX1GWYwxoU61A4tty
+ C3n2j4+/Scx0OBaRKsFd25unCfa1UVs8BG5SEACt8hO7Esfa9iiFKaaYZ
+ 9sCxi13P524EqsJUah835h/m4Nvgrm+4apIsboJrGGhG73lAALXuJEQm0
+ EEvVAvCnuNxW7FgQfpcnX8R+mGiYg4VyZ+2IIVzNXQN0KUR0CDs2HaZlw
+ gFp+mHGQopolUHz0yKclW+xcwRllabeyWHv9XV6uSjWwk/XQkw3m44Npm A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="291462725"
+X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="291462725"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 01:07:15 -0700
+ 27 Oct 2022 01:07:09 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="961534896"
-X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="961534896"
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="961534873"
+X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="961534873"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga005.fm.intel.com with ESMTP; 27 Oct 2022 01:07:14 -0700
+ by fmsmga005.fm.intel.com with ESMTP; 27 Oct 2022 01:07:07 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v3 9/9] ASoC: Intel: avs: Enact power gating policy
-Date: Thu, 27 Oct 2022 10:23:31 +0200
-Message-Id: <20221027082331.1561740-10-cezary.rojewski@intel.com>
+Subject: [PATCH v3 6/9] ASoC: Intel: avs: Count low power streams
+Date: Thu, 27 Oct 2022 10:23:28 +0200
+Message-Id: <20221027082331.1561740-7-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221027082331.1561740-1-cezary.rojewski@intel.com>
 References: <20221027082331.1561740-1-cezary.rojewski@intel.com>
@@ -86,76 +86,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Update all firmware loading functions to also account for the power
-gating policy. As module loading routine is missing the chicken bits
-manipulation entirely, add the entire set there.
+Streaming in S0iX differs from SX scenarios. Store the number of
+so-called low-power streams to be able to differentiate between the two.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/loader.c | 10 ++++++++++
- sound/soc/intel/avs/pcm.c    |  2 ++
- 2 files changed, 12 insertions(+)
+ sound/soc/intel/avs/avs.h |  1 +
+ sound/soc/intel/avs/pcm.c | 15 +++++++++++++++
+ 2 files changed, 16 insertions(+)
 
-diff --git a/sound/soc/intel/avs/loader.c b/sound/soc/intel/avs/loader.c
-index eb10e45790e7..56bb0a59249d 100644
---- a/sound/soc/intel/avs/loader.c
-+++ b/sound/soc/intel/avs/loader.c
-@@ -224,11 +224,19 @@ static int avs_cldma_load_module(struct avs_dev *adev, struct avs_module_entry *
- 	if (ret < 0)
- 		return ret;
+diff --git a/sound/soc/intel/avs/avs.h b/sound/soc/intel/avs/avs.h
+index 91f78eb11bc1..fb73d207697f 100644
+--- a/sound/soc/intel/avs/avs.h
++++ b/sound/soc/intel/avs/avs.h
+@@ -127,6 +127,7 @@ struct avs_dev {
+ 	struct list_head fw_list;
+ 	int *core_refs;		/* reference count per core */
+ 	char **lib_names;
++	int num_lp_paths;
  
-+	avs_hda_power_gating_enable(adev, false);
-+	avs_hda_clock_gating_enable(adev, false);
-+	avs_hda_l1sen_enable(adev, false);
-+
- 	hda_cldma_set_data(cl, (void *)mod->data, mod->size);
- 	hda_cldma_transfer(cl, msecs_to_jiffies(AVS_CLDMA_START_DELAY_MS));
- 	ret = avs_ipc_load_modules(adev, &mentry->module_id, 1);
- 	hda_cldma_stop(cl);
- 
-+	avs_hda_l1sen_enable(adev, true);
-+	avs_hda_clock_gating_enable(adev, true);
-+	avs_hda_power_gating_enable(adev, true);
-+
- 	if (ret) {
- 		dev_err(adev->dev, "load module %d failed: %d\n", mentry->module_id, ret);
- 		avs_release_last_firmware(adev);
-@@ -605,6 +613,7 @@ int avs_dsp_boot_firmware(struct avs_dev *adev, bool purge)
- 	for (i = 1; i < adev->fw_cfg.max_libs_count; i++)
- 		memset(adev->lib_names[i], 0, AVS_LIB_NAME_SIZE);
- 
-+	avs_hda_power_gating_enable(adev, false);
- 	avs_hda_clock_gating_enable(adev, false);
- 	avs_hda_l1sen_enable(adev, false);
- 
-@@ -625,6 +634,7 @@ int avs_dsp_boot_firmware(struct avs_dev *adev, bool purge)
- reenable_gating:
- 	avs_hda_l1sen_enable(adev, true);
- 	avs_hda_clock_gating_enable(adev, true);
-+	avs_hda_power_gating_enable(adev, true);
- 
- 	if (ret < 0)
- 		return ret;
+ 	struct completion fw_ready;
+ 	struct work_struct probe_work;
 diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
-index 157d25e32e16..ca624fbb5c0d 100644
+index 660129508c08..157d25e32e16 100644
 --- a/sound/soc/intel/avs/pcm.c
 +++ b/sound/soc/intel/avs/pcm.c
-@@ -737,6 +737,7 @@ static int avs_component_load_libraries(struct avs_soc_component *acomp)
- 	if (ret < 0)
- 		return ret;
+@@ -60,6 +60,8 @@ avs_dai_find_path_template(struct snd_soc_dai *dai, bool is_fe, int direction)
+ static int avs_dai_startup(struct snd_pcm_substream *substream, struct snd_soc_dai *dai, bool is_fe,
+ 			   const struct snd_soc_dai_ops *ops)
+ {
++	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
++	struct avs_dev *adev = to_avs_dev(dai->dev);
+ 	struct avs_tplg_path_template *template;
+ 	struct avs_dma_data *data;
  
-+	avs_hda_power_gating_enable(adev, false);
- 	avs_hda_clock_gating_enable(adev, false);
- 	avs_hda_l1sen_enable(adev, false);
+@@ -78,6 +80,9 @@ static int avs_dai_startup(struct snd_pcm_substream *substream, struct snd_soc_d
+ 	data->template = template;
+ 	snd_soc_dai_set_dma_data(dai, substream, data);
  
-@@ -744,6 +745,7 @@ static int avs_component_load_libraries(struct avs_soc_component *acomp)
++	if (rtd->dai_link->ignore_suspend)
++		adev->num_lp_paths++;
++
+ 	return 0;
+ }
  
- 	avs_hda_l1sen_enable(adev, true);
- 	avs_hda_clock_gating_enable(adev, true);
-+	avs_hda_power_gating_enable(adev, true);
+@@ -164,8 +169,13 @@ static int avs_dai_nonhda_be_startup(struct snd_pcm_substream *substream, struct
  
- 	if (!ret)
- 		ret = avs_module_info_init(adev, false);
+ static void avs_dai_nonhda_be_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
+ {
++	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
++	struct avs_dev *adev = to_avs_dev(dai->dev);
+ 	struct avs_dma_data *data;
+ 
++	if (rtd->dai_link->ignore_suspend)
++		adev->num_lp_paths--;
++
+ 	data = snd_soc_dai_get_dma_data(dai, substream);
+ 
+ 	snd_soc_dai_set_dma_data(dai, substream, NULL);
+@@ -479,8 +489,13 @@ static int avs_dai_fe_startup(struct snd_pcm_substream *substream, struct snd_so
+ 
+ static void avs_dai_fe_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
+ {
++	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
++	struct avs_dev *adev = to_avs_dev(dai->dev);
+ 	struct avs_dma_data *data;
+ 
++	if (rtd->dai_link->ignore_suspend)
++		adev->num_lp_paths--;
++
+ 	data = snd_soc_dai_get_dma_data(dai, substream);
+ 
+ 	snd_soc_dai_set_dma_data(dai, substream, NULL);
 -- 
 2.25.1
 
