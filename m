@@ -4,67 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05DABFA3740
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 12:31:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7041ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 12:31:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36AF12DC2;
-	Thu, 27 Oct 2022 14:30:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36AF12DC2
+	by alsa0.perex.cz (Postfix) with ESMTPS id AB7F13061;
+	Thu, 27 Oct 2022 14:30:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB7F13061
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666873877;
-	bh=6DI1POJhiqU6U4Pzcge3kqPT/f+3U6YacVd6stkwqAo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Kaky02f/elgoQU//RBZCmEsBcv1zaJW1sUx3Qce/5XnCrF+2JOg3DeOVQDy8kZWls
-	 aIG1ZZrkmjQXsKKEBcPuE/B1HZEtvJFrku6yAGO1wG86DVXtcNaFacQUENLD45Gx+s
-	 pMj/8PCzHVSoXEHKXPrKKNJRBW6IY3II4QhhJK3o=
+	s=default; t=1666873901;
+	bh=HlZwH+VTqSabzxMqXe77Yo1nAcjc60LNfCp7xD53Es0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fvHZBipb/Zf5YabivmTHs6Mrb0EXDyLJsINr6wrStzFZ3N7l8W1fC99Ux/miPHMxl
+	 iIZ1HxNU2cCCdv1qj/ntNQgvg8Wt+Q00Y5vNfbtKOQvS4gO8AQVcIgxMElud31oVGw
+	 eFHehL2TQvesUeoPR3iiWY+cP/cYaO9a1H4kcEHE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1FE1F80496;
-	Thu, 27 Oct 2022 14:30:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64EE8F80552;
+	Thu, 27 Oct 2022 14:30:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92734F80095; Thu, 27 Oct 2022 14:30:24 +0200 (CEST)
+ id E7154F804AD; Thu, 27 Oct 2022 14:30:25 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21E03F80095
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 14:30:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21E03F80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1884BF80100
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 14:30:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1884BF80100
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="lvzLB23T"
+ header.b="V1Mi43+P"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666873822; x=1698409822;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=6DI1POJhiqU6U4Pzcge3kqPT/f+3U6YacVd6stkwqAo=;
- b=lvzLB23TsZ/aBWnihoa+GE8oXy1sbv+KTusL1HNKsP7Bdu/SKDRcaQyy
- 5RDeZ+8kvR7xy7FxxaDKbujrXAp1sk9yeboGl3geQqAdSmc/hfJT4+REB
- AhE8dTH6OGglqIEKhitsENZG3SdrxGUIo+YG8d5IeYPSkm9mtzvH8VulL
- vrVspcK+UWREUG0o/VyQ5L7WEPwAdtV24Kg4Efi/qv/MjlTCI7yerakV3
- 11E6O2ol9h2Fc75eURNouqdITiXU4HiMnMPR3eM042xk8g1wQPNzP852O
- /yGZjkSiVo2O0x7SMjO+vz6znhcEPzFtxrZUBAUrTl6XyvPK6Yc5hX4Vj w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="334839870"
-X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="334839870"
+ t=1666873824; x=1698409824;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=HlZwH+VTqSabzxMqXe77Yo1nAcjc60LNfCp7xD53Es0=;
+ b=V1Mi43+PQVWa+8sl5tqIMgY3OD4jMvBImyQEV6TSPU26crp7fYhjo05b
+ yE3yWmDoP3HdYncEUAs7RGM82qBcbF0OzhLIttKWCMt4SVMk7s8+Bs4mJ
+ dbgRC+kabo+5z+QzVnLjtxEnASxnn5g+UAQdV7gG2FhvQ4Kp6pbMP2ZRQ
+ QQaM5afFuX8LeLqrVE7le8osou4/2jBTCIebEIA1YFznGkpVOto5tTWgn
+ Tyyy99dbuaX8VXr/pnWeLG66guhajZuYig5c3CqS9SPyUEHxO+I9jf6vC
+ kBR0Kk/x8r+zeRDOyT6Qr1qQt6KnPj+LftChxkXL3YUwEMZ+tzc0jpiW2 A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="334839881"
+X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="334839881"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 05:30:07 -0700
+ 27 Oct 2022 05:30:09 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="807435619"
-X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="807435619"
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="807435634"
+X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="807435634"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga005.jf.intel.com with ESMTP; 27 Oct 2022 05:30:05 -0700
+ by orsmga005.jf.intel.com with ESMTP; 27 Oct 2022 05:30:07 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v4 0/9] ASoC: Intel: avs: PCM power management
-Date: Thu, 27 Oct 2022 14:46:53 +0200
-Message-Id: <20221027124702.1761002-1-cezary.rojewski@intel.com>
+Subject: [PATCH v4 1/9] ASoC: Intel: avs: Split pcm pages freeing operation
+ from hw_free()
+Date: Thu, 27 Oct 2022 14:46:54 +0200
+Message-Id: <20221027124702.1761002-2-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20221027124702.1761002-1-cezary.rojewski@intel.com>
+References: <20221027124702.1761002-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
  pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
@@ -84,82 +87,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Goal of the series is implementation of suspend/resume operations for a
-PCM stream along with all the collaterals connected to the subject.
+Prepare for introduction of PCM power management support. As freeing
+pages during the suspend operation is not desired, separate
+snd_pcm_lib_free_pages() from existing avs_dai_fe_hw_free() so that
+majority of the code found within it can be reused for standard and PM
+flows both.
 
-Start with splitting avs_dai_fe_hw_free() as ideally we would like to
-reuse as much of existing code as possible but snd_pcm_lib_free_pages()
-is not desired part of the function when speaking of suspend operation.
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/soc/intel/avs/pcm.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-The actual implementation of suspend/resume() for component drivers
-follows. For most scenarios, the PM flow is similar to standard
-streaming one, except for the part where the position register are being
-saved and the lack of PCM pages freeing. To reduce code duplication, all
-avs_dai_suspend_XXX() and avs_dai_resume_XXX() functions reuse their
-non-PM equivalents.
-Order of operations is affected by the fact that path binding/unbinding
-happens only in FE part of the stream.
-
-Above essentially unlocks SX+streaming scenarios i.e.: power transitions
-with an ongoing stream.
-
-As some streams are allowed to run in low power state, support is
-provided for S0iX state. The handlers check ACPI capabilities and the
-number of active low-power paths before deciding between SX and S0iX
-flows.
-
-The last portion of the patchset is addition of power/clock gating
-overrides. There is no single set of registers that ensures AudioDSP
-firmware loads 100% of time on every single configuration. By having
-them exposed, user can have the loading procedure behavior adjusted for
-their configuration without having to recompile the kernel.
-
-
-Changes in v4:
-- replaced readb_poll_timeout() with read_poll_timeout() for the DRSM
-  polling function as the register is u32 wide, not u8
-
-Changes in v3:
-- fixed unused-but-set-variable warnings reported by the test robot
-
-Changes in v2:
-- moved DRSM reg polling to separate function,
-  snd_hdac_stream_wait_drsm() as suggested by Pierre
-- moved the acpi_gbl_FADT under AVS_S0IX_SUPPORTED macro and relocated
-  the checks from pcm.c to topology.c so that the low-power streams are
-  filtered as early as possible
-- fixed compilation when CONFIG_ACPI is disabled as reported by the test
-  robot
-- simplified all the avs_dai_resume/suspend_xxx() by moving
-  ->ignore_suspend check one level up, to avs_component_pm_op()
-  (patch 0002)
-
-
-Amadeusz Sławiński (1):
-  ASoC: Intel: avs: Handle SUSPEND and RESUME triggers
-
-Cezary Rojewski (7):
-  ASoC: Intel: avs: Split pcm pages freeing operation from hw_free()
-  ASoC: Intel: avs: Introduce PCM power management routines
-  ALSA: hda: Introduce snd_hdac_stream_wait_drsm()
-  ASoC: Intel: avs: Restart instead of resuming HDA capture streams
-  ASoC: Intel: avs: Count low power streams
-  ASoC: Intel: avs: Power and clock gating policy overriding
-  ASoC: Intel: avs: Enact power gating policy
-
-Piotr Maziarz (1):
-  ASoC: Intel: avs: Standby power-state support
-
- include/sound/hdaudio.h        |   1 +
- include/sound/hdaudio_ext.h    |   5 +
- sound/hda/hdac_stream.c        |  22 ++
- sound/soc/intel/avs/avs.h      |   8 +
- sound/soc/intel/avs/core.c     |  97 +++++++--
- sound/soc/intel/avs/loader.c   |  10 +
- sound/soc/intel/avs/pcm.c      | 368 +++++++++++++++++++++++++++++----
- sound/soc/intel/avs/topology.c |  10 +
- 8 files changed, 461 insertions(+), 60 deletions(-)
-
+diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
+index 293336c2fc63..fea801243d37 100644
+--- a/sound/soc/intel/avs/pcm.c
++++ b/sound/soc/intel/avs/pcm.c
+@@ -499,7 +499,7 @@ static int avs_dai_fe_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
+-static int avs_dai_fe_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
++static int __avs_dai_fe_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
+ {
+ 	struct avs_dma_data *data;
+ 	struct hdac_ext_stream *host_stream;
+@@ -523,9 +523,15 @@ static int avs_dai_fe_hw_free(struct snd_pcm_substream *substream, struct snd_so
+ 	snd_hdac_stream_cleanup(hdac_stream(host_stream));
+ 	hdac_stream(host_stream)->prepared = false;
+ 
+-	ret = snd_pcm_lib_free_pages(substream);
+-	if (ret < 0)
+-		dev_dbg(dai->dev, "Failed to free pages!\n");
++	return ret;
++}
++
++static int avs_dai_fe_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
++{
++	int ret;
++
++	ret = __avs_dai_fe_hw_free(substream, dai);
++	snd_pcm_lib_free_pages(substream);
+ 
+ 	return ret;
+ }
 -- 
 2.25.1
 
