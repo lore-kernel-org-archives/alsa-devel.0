@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC548FA3740
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 12:32:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 686B2FA3740
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 12:33:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC1B83078;
-	Thu, 27 Oct 2022 14:31:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC1B83078
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9F4A63062;
+	Thu, 27 Oct 2022 14:32:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F4A63062
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666873964;
-	bh=GyhN74WLqRKZuWlouvPzDAC75xmeQ8tROgAKJv9VemA=;
+	s=default; t=1666873981;
+	bh=cqHkJpkiY2RJ+JPhvFBirYieeMEGz9MTXcB6l/w9TCc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WsWPDb9BTgZp0B1mzLdFww8maSwHmUO5rEgbl0l1+xiSp0tbZpB6jO8p05oQNhYhh
-	 vv9UDHVknyeBcOyML3uClkcswA+UuTn7T4Wc7NWkv2G2mXtdUVJycbGkzdxAErTV0w
-	 sIqLh3lndj7l6P7mKMLwUBEGjXc1ZwDpSI8P7+ww=
+	b=MNRKUbRcwdMe2D/8des2Gwxn0lWZxjE0622LG2t/XnPGBM3RJFq5cq/R1Ew0tH5L8
+	 uLrJZC0Hz8dhNEGONllFbBqfGSkC1gWD5Ctm6oSHXXrr5qB059u1D9BZF9PnHoITk/
+	 G4gvO0oYMIRTuHDsYukcmD2hXL+WjQps3dsMw2nw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2EAC6F80568;
+	by alsa1.perex.cz (Postfix) with ESMTP id B0B38F8057C;
 	Thu, 27 Oct 2022 14:30:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B35C9F8056F; Thu, 27 Oct 2022 14:30:35 +0200 (CEST)
+ id D7740F8055A; Thu, 27 Oct 2022 14:30:35 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F578F8055A
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 14:30:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F578F8055A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 179F7F80100
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 14:30:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 179F7F80100
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="jpHg990I"
+ header.b="G6Gv90Ha"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666873830; x=1698409830;
+ t=1666873826; x=1698409826;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=GyhN74WLqRKZuWlouvPzDAC75xmeQ8tROgAKJv9VemA=;
- b=jpHg990Ii7vdX29sRyk1hBkAPFGaO5ULD1jVB9SK+eWptNSXc12werXm
- VqSuMoshndGAmqIYz8UBZD0QXdmtrXXPJ64DdrC5eND8qsXRyGS3x/vpE
- cZfdFOjP9pDiIkNmRpaTxY+WpmYrQoIFWelM+/Ev+9jkQVdgOkGDXB0n7
- Es+E2PPUQDwvO6VplPin1CZElQVca1CyAyiqsjnTZH0zGVWzmMPjjrgrK
- VSWGVxy+XVSSPP8k6NQaDBnGHuc2RwKYIyeIlC5k+zyxQbDYiKEtb6p/Z
- MX7lxgv7g48ICJdKJ1yHhBLuMgrTNNcorqUbIVcCoqUK9paGIvruAQHy2 g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="334839976"
-X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="334839976"
+ bh=cqHkJpkiY2RJ+JPhvFBirYieeMEGz9MTXcB6l/w9TCc=;
+ b=G6Gv90HacZmDj8MSXrcTkzvG5/5HdomulSjUxUa0K/WpYSnhG6bCLksH
+ Xj+GY4Ogs1JiArxjo365Qdt0PtbMeHn6jdePowP1iRTkUMnzg4i+x15FZ
+ ldLXfiMapUJL9YPFAcxH7kb5WnL1opke8dkb3/Cf+bErP9JTvoVIxloKe
+ yTO2fOwXm2j5fZlozC1nS44/rLKNLZAdtzKxeqSb5sN441TnlwZIlZfKn
+ GEwEyWGyz1BCwJJLhVFdQryXoP+0CboC/Oquq9y6kpJhJoeeGvLvHM8sl
+ I90MddyaF5EMn8ubHyz328VwbVwyxvxK/j2BzAE9//xTs9bgEfhJzqInv Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="334839904"
+X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="334839904"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 05:30:28 -0700
+ 27 Oct 2022 05:30:14 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="807435782"
-X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="807435782"
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="807435685"
+X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="807435685"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga005.jf.intel.com with ESMTP; 27 Oct 2022 05:30:26 -0700
+ by orsmga005.jf.intel.com with ESMTP; 27 Oct 2022 05:30:12 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v4 9/9] ASoC: Intel: avs: Enact power gating policy
-Date: Thu, 27 Oct 2022 14:47:02 +0200
-Message-Id: <20221027124702.1761002-10-cezary.rojewski@intel.com>
+Subject: [PATCH v4 3/9] ALSA: hda: Introduce snd_hdac_stream_wait_drsm()
+Date: Thu, 27 Oct 2022 14:46:56 +0200
+Message-Id: <20221027124702.1761002-4-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221027124702.1761002-1-cezary.rojewski@intel.com>
 References: <20221027124702.1761002-1-cezary.rojewski@intel.com>
@@ -86,76 +86,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Update all firmware loading functions to also account for the power
-gating policy. As module loading routine is missing the chicken bits
-manipulation entirely, add the entire set there.
+Allow for waiting for DRSM bit for specified stream to be cleared from
+HDAudio library level. Drivers may utilize this optional step during the
+stream resume procedure.
 
+Suggested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/loader.c | 10 ++++++++++
- sound/soc/intel/avs/pcm.c    |  2 ++
- 2 files changed, 12 insertions(+)
 
-diff --git a/sound/soc/intel/avs/loader.c b/sound/soc/intel/avs/loader.c
-index eb10e45790e7..56bb0a59249d 100644
---- a/sound/soc/intel/avs/loader.c
-+++ b/sound/soc/intel/avs/loader.c
-@@ -224,11 +224,19 @@ static int avs_cldma_load_module(struct avs_dev *adev, struct avs_module_entry *
- 	if (ret < 0)
- 		return ret;
+Changes in v4:
+- replaced readb_poll_timeout() with read_poll_timeout() for the DRSM
+  polling function as the register is u32 wide, not u8
+
+ include/sound/hdaudio.h |  1 +
+ sound/hda/hdac_stream.c | 22 ++++++++++++++++++++++
+ 2 files changed, 23 insertions(+)
+
+diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+index 78f1809a4ad6..a6872537724d 100644
+--- a/include/sound/hdaudio.h
++++ b/include/sound/hdaudio.h
+@@ -597,6 +597,7 @@ int snd_hdac_stream_get_spbmaxfifo(struct hdac_bus *bus,
+ 				   struct hdac_stream *azx_dev);
+ void snd_hdac_stream_drsm_enable(struct hdac_bus *bus,
+ 				 bool enable, int index);
++int snd_hdac_stream_wait_drsm(struct hdac_stream *azx_dev);
+ int snd_hdac_stream_set_dpibr(struct hdac_bus *bus,
+ 			      struct hdac_stream *azx_dev, u32 value);
+ int snd_hdac_stream_set_lpib(struct hdac_stream *azx_dev, u32 value);
+diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
+index 35fe2bd582ac..3b250ee7f6a7 100644
+--- a/sound/hda/hdac_stream.c
++++ b/sound/hda/hdac_stream.c
+@@ -821,6 +821,28 @@ void snd_hdac_stream_drsm_enable(struct hdac_bus *bus,
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_stream_drsm_enable);
  
-+	avs_hda_power_gating_enable(adev, false);
-+	avs_hda_clock_gating_enable(adev, false);
-+	avs_hda_l1sen_enable(adev, false);
++/*
++ * snd_hdac_stream_wait_drsm - wait for HW to clear RSM for a stream
++ * @azx_dev: HD-audio core stream to await RSM for
++ *
++ * Returns 0 on success and -ETIMEDOUT upon a timeout.
++ */
++int snd_hdac_stream_wait_drsm(struct hdac_stream *azx_dev)
++{
++	struct hdac_bus *bus = azx_dev->bus;
++	u32 mask, reg;
++	int ret;
 +
- 	hda_cldma_set_data(cl, (void *)mod->data, mod->size);
- 	hda_cldma_transfer(cl, msecs_to_jiffies(AVS_CLDMA_START_DELAY_MS));
- 	ret = avs_ipc_load_modules(adev, &mentry->module_id, 1);
- 	hda_cldma_stop(cl);
- 
-+	avs_hda_l1sen_enable(adev, true);
-+	avs_hda_clock_gating_enable(adev, true);
-+	avs_hda_power_gating_enable(adev, true);
++	mask = 1 << azx_dev->index;
 +
- 	if (ret) {
- 		dev_err(adev->dev, "load module %d failed: %d\n", mentry->module_id, ret);
- 		avs_release_last_firmware(adev);
-@@ -605,6 +613,7 @@ int avs_dsp_boot_firmware(struct avs_dev *adev, bool purge)
- 	for (i = 1; i < adev->fw_cfg.max_libs_count; i++)
- 		memset(adev->lib_names[i], 0, AVS_LIB_NAME_SIZE);
- 
-+	avs_hda_power_gating_enable(adev, false);
- 	avs_hda_clock_gating_enable(adev, false);
- 	avs_hda_l1sen_enable(adev, false);
- 
-@@ -625,6 +634,7 @@ int avs_dsp_boot_firmware(struct avs_dev *adev, bool purge)
- reenable_gating:
- 	avs_hda_l1sen_enable(adev, true);
- 	avs_hda_clock_gating_enable(adev, true);
-+	avs_hda_power_gating_enable(adev, true);
- 
- 	if (ret < 0)
- 		return ret;
-diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
-index 157d25e32e16..ca624fbb5c0d 100644
---- a/sound/soc/intel/avs/pcm.c
-+++ b/sound/soc/intel/avs/pcm.c
-@@ -737,6 +737,7 @@ static int avs_component_load_libraries(struct avs_soc_component *acomp)
- 	if (ret < 0)
- 		return ret;
- 
-+	avs_hda_power_gating_enable(adev, false);
- 	avs_hda_clock_gating_enable(adev, false);
- 	avs_hda_l1sen_enable(adev, false);
- 
-@@ -744,6 +745,7 @@ static int avs_component_load_libraries(struct avs_soc_component *acomp)
- 
- 	avs_hda_l1sen_enable(adev, true);
- 	avs_hda_clock_gating_enable(adev, true);
-+	avs_hda_power_gating_enable(adev, true);
- 
- 	if (!ret)
- 		ret = avs_module_info_init(adev, false);
++	ret = read_poll_timeout(snd_hdac_reg_readl, reg, !(reg & mask), 250, 2000, false, bus,
++				bus->drsmcap + AZX_REG_DRSM_CTL);
++	if (ret)
++		dev_dbg(bus->dev, "polling RSM 0x%08x failed: %d\n", mask, ret);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(snd_hdac_stream_wait_drsm);
++
+ /**
+  * snd_hdac_stream_set_dpibr - sets the dpibr value of a stream
+  * @bus: HD-audio core bus
 -- 
 2.25.1
 
