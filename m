@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 087F6FA3740
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 19:37:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4ED7FA3740
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 19:37:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 051EB2DC6;
-	Thu, 27 Oct 2022 21:36:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 051EB2DC6
+	by alsa0.perex.cz (Postfix) with ESMTPS id C552B2DB4;
+	Thu, 27 Oct 2022 21:37:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C552B2DB4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666899445;
-	bh=VxFccdJ8eFX8YQpbBjOx217t3AgYTLeNa00RZgnlJ9g=;
+	s=default; t=1666899471;
+	bh=jp84543Dz5iSmY7f0aaxD/1wl33rSRQ129XLjUbL2Mw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=elaKA1VI0N5fUBn2fBOG/hJr9H3tE2cP9FVpAMMEVQXvYSXCgYU+pLhbAAlQ9vOS6
-	 B/x5Y6pOVPiw3jwWS53J4O5BE45OkVR0qmPbcI97oiwv5r1dQLOKREQx3o9iQbK9Rr
-	 5R1xXpSjPUqGzAhjPYh2HJANAmSXW9HoLTedETsI=
+	b=nKNN9YR5L1oyEM+XwPO6YttZXN8Eur9zMizb83d/4OsmbQq/uuyywfXHiiyiRmXzY
+	 8J7A4lbKcIYy61rrIvvaLLelDJq8Nluu7/ZGtMc9Ua+hD0hs0nFOBsSqpvZ7QOAJqd
+	 Td3mDnah2RH5i4VxiwII7yhYR1H07lpTsMkYIEbA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64B2BF80553;
-	Thu, 27 Oct 2022 21:36:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66007F8055A;
+	Thu, 27 Oct 2022 21:36:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C5A5F80553; Thu, 27 Oct 2022 21:36:14 +0200 (CEST)
+ id 6DE29F80557; Thu, 27 Oct 2022 21:36:14 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 935A6F80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id BF237F8025E
  for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 21:36:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 935A6F80100
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF237F8025E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="OREeyn8m"
+ header.b="azvmozec"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1666899368; x=1698435368;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=VxFccdJ8eFX8YQpbBjOx217t3AgYTLeNa00RZgnlJ9g=;
- b=OREeyn8mFS0nvVJTfZKDne5unIXwe7FdFFBAbiYL7a/Tlg5/X839PWAl
- o5DdYwgzPsTjpi8YrhdvFzH2sYuBhPF0shb7vvHaNTeuV5EVVmSChJxYR
- 9YVhzSfnY7cFWssR2+J0K3lV6FG4aeWTXeE5rH8FfsJ+CbqCSd/fB6Sfa
- KTjiKYBMn8ajkvxYRWU4BT/Zk1DUuVo+z3Hu6lqhCRmcefnXYmO/n7SSk
- MYRsqGN390RxMixUzvbVD9yU2mvpr8lDrlYCGJupngcPEqGtL7xX+gWnk
- 6/memQE61LrvtCtljE+uRnzy4Qj2zUjzF+PFmz+UJd9Z0mIEE2pCJhnoP Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="334957798"
-X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; d="scan'208";a="334957798"
+ bh=jp84543Dz5iSmY7f0aaxD/1wl33rSRQ129XLjUbL2Mw=;
+ b=azvmozec/WtVbU969HbW1I0ASC3ip4z3cwnKx5QDQT4ezH3VauHRG1S2
+ vQb869mVxHoA+YOOIWJiujL41GLKvkSToKvAFx3oIMVDXmK/iW9o88TMf
+ A1nJ1IdmxX/4xZAR8Y5LmaGMZnJ9zwAYwVDGctBH6RC9yUyZepmI/2Dt6
+ 8v3WZ7jZNvBgrH5kOMd7nbihJ2rtgqjS7nhzKE1LtQMNn2zYU4IdHwJGm
+ w+1DNJJ3WI3h1Wpuc37iB8Cka9a7O9DqaKpfXyXevuM0HxY8SpPuQfXku
+ 72pEfqg6xV473Kg8xZI0TH3fPuN9FsD7j1LTtBuMtVneQGUfWgbWmxGM5 Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="334957807"
+X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; d="scan'208";a="334957807"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 12:36:03 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="632526944"
-X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; d="scan'208";a="632526944"
+ 27 Oct 2022 12:36:05 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="632526957"
+X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; d="scan'208";a="632526957"
 Received: from vmehta-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.212.6.254])
  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 12:36:02 -0700
+ 27 Oct 2022 12:36:04 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 01/21] ASoC: SOF: Intel: remove option to disable the
- common_hdmi handling
-Date: Thu, 27 Oct 2022 15:35:20 -0400
-Message-Id: <20221027193540.259520-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 02/21] ASoC: SOF: Intel: remove all dependencies on
+ SND_SOC_HDAC_HDMI
+Date: Thu, 27 Oct 2022 15:35:21 -0400
+Message-Id: <20221027193540.259520-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221027193540.259520-1-pierre-louis.bossart@linux.intel.com>
 References: <20221027193540.259520-1-pierre-louis.bossart@linux.intel.com>
@@ -91,9 +91,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We've been using the same option for quite some time now, it's time to
-remove the kernel parameter to disable the common HDaudio codec
-handling.
+remove all dependencies on SND_SOC_HDAC_HDMI and
+clean-up ifdefs. The machine driver still supports this configuration
+used by the Skylake driver.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
@@ -101,114 +101,39 @@ Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-codec.c | 12 +++---------
- sound/soc/sof/intel/hda.c       | 10 ++--------
- sound/soc/sof/intel/hda.h       |  6 ++----
- 3 files changed, 7 insertions(+), 21 deletions(-)
+ sound/soc/sof/intel/hda-codec.c | 3 +--
+ sound/soc/sof/intel/hda.h       | 4 +---
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-index f2ec2a6c2e0f..d5242b6e1552 100644
+index d5242b6e1552..7feaf2ccb642 100644
 --- a/sound/soc/sof/intel/hda-codec.c
 +++ b/sound/soc/sof/intel/hda-codec.c
-@@ -133,8 +133,7 @@ static struct hda_codec *hda_codec_device_init(struct hdac_bus *bus, int addr, i
+@@ -231,8 +231,7 @@ void hda_codec_probe_bus(struct snd_sof_dev *sdev)
  }
+ EXPORT_SYMBOL_NS(hda_codec_probe_bus, SND_SOC_SOF_HDA_AUDIO_CODEC);
  
- /* probe individual codec */
--static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
--			   bool hda_codec_use_common_hdmi)
-+static int hda_codec_probe(struct snd_sof_dev *sdev, int address)
+-#if IS_ENABLED(CONFIG_SND_HDA_CODEC_HDMI) || \
+-	IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC) && IS_ENABLED(CONFIG_SND_HDA_CODEC_HDMI)
+ 
+ void hda_codec_i915_display_power(struct snd_sof_dev *sdev, bool enable)
  {
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
- 	struct hdac_hda_priv *hda_priv;
-@@ -164,10 +163,6 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
- 	if (!hda_priv)
- 		return -ENOMEM;
- 
--	/* only probe ASoC codec drivers for HDAC-HDMI */
--	if (!hda_codec_use_common_hdmi && (resp & 0xFFFF0000) == IDISP_VID_INTEL)
--		type = HDA_DEV_ASOC;
--
- 	codec = hda_codec_device_init(&hbus->core, address, type);
- 	ret = PTR_ERR_OR_ZERO(codec);
- 	if (ret < 0)
-@@ -215,8 +210,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
- }
- 
- /* Codec initialization */
--void hda_codec_probe_bus(struct snd_sof_dev *sdev,
--			 bool hda_codec_use_common_hdmi)
-+void hda_codec_probe_bus(struct snd_sof_dev *sdev)
- {
- 	struct hdac_bus *bus = sof_to_bus(sdev);
- 	int i, ret;
-@@ -227,7 +221,7 @@ void hda_codec_probe_bus(struct snd_sof_dev *sdev,
- 		if (!(bus->codec_mask & (1 << i)))
- 			continue;
- 
--		ret = hda_codec_probe(sdev, i, hda_codec_use_common_hdmi);
-+		ret = hda_codec_probe(sdev, i);
- 		if (ret < 0) {
- 			dev_warn(bus->dev, "codec #%d probe error, ret: %d\n",
- 				 i, ret);
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 79c32d948b2d..fe0e8221534e 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -383,12 +383,6 @@ static int mclk_id_override = -1;
- module_param_named(mclk_id, mclk_id_override, int, 0444);
- MODULE_PARM_DESC(mclk_id, "SOF SSP mclk_id");
- 
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
--static bool hda_codec_use_common_hdmi = IS_ENABLED(CONFIG_SND_HDA_CODEC_HDMI);
--module_param_named(use_common_hdmi, hda_codec_use_common_hdmi, bool, 0444);
--MODULE_PARM_DESC(use_common_hdmi, "SOF HDA use common HDMI codec driver");
--#endif
--
- static const struct hda_dsp_msg_code hda_dsp_rom_fw_error_texts[] = {
- 	{HDA_DSP_ROM_CSE_ERROR, "error: cse error"},
- 	{HDA_DSP_ROM_CSE_WRONG_RESPONSE, "error: cse wrong response"},
-@@ -929,7 +923,7 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
- 		snd_hdac_ext_bus_get_ml_capabilities(bus);
- 
- 	/* create codec instances */
--	hda_codec_probe_bus(sdev, hda_codec_use_common_hdmi);
-+	hda_codec_probe_bus(sdev);
- 
- 	if (!HDA_IDISP_CODEC(bus->codec_mask))
- 		hda_codec_i915_display_power(sdev, false);
-@@ -1335,7 +1329,7 @@ static void hda_generic_machine_select(struct snd_sof_dev *sdev,
- 	if (*mach) {
- 		mach_params = &(*mach)->mach_params;
- 		mach_params->codec_mask = bus->codec_mask;
--		mach_params->common_hdmi_codec_drv = hda_codec_use_common_hdmi;
-+		mach_params->common_hdmi_codec_drv = true;
- 	}
- }
- #else
 diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 17ed7e60cae8..e715bae32cad 100644
+index e715bae32cad..7a3184ed8b70 100644
 --- a/sound/soc/sof/intel/hda.h
 +++ b/sound/soc/sof/intel/hda.h
-@@ -714,8 +714,7 @@ void sof_hda_bus_init(struct hdac_bus *bus, struct device *dev);
- /*
-  * HDA Codec operations.
-  */
--void hda_codec_probe_bus(struct snd_sof_dev *sdev,
--			 bool hda_codec_use_common_hdmi);
-+void hda_codec_probe_bus(struct snd_sof_dev *sdev);
- void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev, bool enable);
- void hda_codec_jack_check(struct snd_sof_dev *sdev);
+@@ -720,9 +720,7 @@ void hda_codec_jack_check(struct snd_sof_dev *sdev);
  
-@@ -731,8 +730,7 @@ int hda_codec_i915_exit(struct snd_sof_dev *sdev);
+ #endif /* CONFIG_SND_SOC_SOF_HDA */
  
- #else
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA) && \
+-	(IS_ENABLED(CONFIG_SND_HDA_CODEC_HDMI) || \
+-	 IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC) && IS_ENABLED(CONFIG_SND_HDA_CODEC_HDMI)
  
--static inline void hda_codec_i915_display_power(struct snd_sof_dev *sdev,
--						bool enable) { }
-+static inline void hda_codec_i915_display_power(struct snd_sof_dev *sdev, bool enable) { }
- static inline int hda_codec_i915_init(struct snd_sof_dev *sdev) { return 0; }
- static inline int hda_codec_i915_exit(struct snd_sof_dev *sdev) { return 0; }
- 
+ void hda_codec_i915_display_power(struct snd_sof_dev *sdev, bool enable);
+ int hda_codec_i915_init(struct snd_sof_dev *sdev);
 -- 
 2.34.1
 
