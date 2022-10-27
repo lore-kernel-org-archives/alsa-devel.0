@@ -4,72 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 555C3C38A2D
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 08:43:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E5F3C38A2D
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 09:38:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C96823104;
-	Thu, 27 Oct 2022 10:42:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C96823104
+	by alsa0.perex.cz (Postfix) with ESMTPS id 872C93138;
+	Thu, 27 Oct 2022 11:37:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 872C93138
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666860210;
-	bh=CQw/1XgA6G4VkvWR6lQp1wcqpNwHVYgmKcAXoblQn0s=;
+	s=default; t=1666863494;
+	bh=1AeRpLKsggfCeZnoBPLQJZizOfvIpEswbQA0a2UvKLQ=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=HrUfbGSi3JcXwKyp8y/9sHspJxelc+SJx/zhjOoa+ab5th3+YriR0fNNsLrXEaNXA
-	 Z5kvoktqTCvhy/zBfCzhOJW7SgsqPKVtpsJz0KDLgothqpJJ0NW508X2cIyBjgQHQW
-	 ++lGcTbcuXJS6lWpq25BXS8OU0hYjTd6OGhwcgc4=
+	b=QW+m1aLAisL0bmuhyy99LRgQJYEly7Ybdbw9AVm7EJPGjQp0VU05f/UDVS33n7bdo
+	 rpZYJ7tMmL9v20ygdHMA+Oka/IH8yHdb1c3HEQmph5kP5W5exPLamGyPMmT/YAvWXv
+	 jid8+uICGKFz8mPNa5yCEgx5PJ9fFAbQTUingvss=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 597AFF80100;
-	Thu, 27 Oct 2022 10:42:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21987F8025A;
+	Thu, 27 Oct 2022 11:37:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D98F1F8025E; Thu, 27 Oct 2022 10:42:38 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 6A793F8025E; Thu, 27 Oct 2022 11:37:22 +0200 (CEST)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7FFAF80100
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 10:42:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7FFAF80100
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="J4bu8zXF"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666860155; x=1698396155;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=CQw/1XgA6G4VkvWR6lQp1wcqpNwHVYgmKcAXoblQn0s=;
- b=J4bu8zXF+6tozGZYyer1JMphuD4XpVgl9uU1RPMVynefEqSTwZ62nE4S
- TBtQuKE8Biq6MToPs0lzePo7TmxkMyAwi+0yPM1kWqXoyrrQesV5NcqsW
- JNtmyyLFBfeyvcIs9t5GeZpUOAWP16j49/3MscZaRMy0LmzBXclLCcLdz
- mS8G1fgQdl8yKTIr97vwD+rdRRL/J2OUpP7rhzPEyL13rUFwCiYa+K9gH
- V7b7mJ+GkjXiMKEKcxH6sKCt2jkOKPqIYcE/DOMKNWZxBDobP9VaJ/jC4
- /z1lHPXMLm6+cn6wTUFthYvBCBed+ICgVdyyrjIASu8ULeMiphCHbaDRg g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="334795898"
-X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="334795898"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 01:42:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="632328094"
-X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="632328094"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga002.jf.intel.com with ESMTP; 27 Oct 2022 01:41:59 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [RESEND PATCH] ASoC: core: Exit all links before removing their
- components
-Date: Thu, 27 Oct 2022 10:58:40 +0200
-Message-Id: <20221027085840.1562698-1-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id A0176F80100
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 11:37:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0176F80100
+Received: from kwepemi500015.china.huawei.com (unknown [172.30.72.55])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MygV15FsgzpW54;
+ Thu, 27 Oct 2022 17:33:45 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by kwepemi500015.china.huawei.com
+ (7.221.188.92) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Thu, 27 Oct
+ 2022 17:37:11 +0800
+From: Zheng Bin <zhengbin13@huawei.com>
+To: <srinivas.kandagatla@linaro.org>, <gregkh@linuxfoundation.org>,
+ <krzysztof.kozlowski@linaro.org>, <alsa-devel@alsa-project.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] slimbus: qcom-ngd: Fix build error when
+ CONFIG_SLIM_QCOM_NGD_CTRL=y && CONFIG_QCOM_RPROC_COMMON=m
+Date: Thu, 27 Oct 2022 17:59:04 +0800
+Message-ID: <20221027095904.3388959-1-zhengbin13@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- amadeuszx.slawinski@linux.intel.com
+Content-Type: text/plain
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemi500015.china.huawei.com (7.221.188.92)
+X-CFilter-Loop: Reflected
+Cc: zhengbin13@huawei.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,81 +70,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Flows leading to link->init() and link->exit() are not symmetric.
-Currently the relevant part of card probe sequence goes as:
+If CONFIG_SLIM_QCOM_NGD_CTRL=y, CONFIG_QCOM_RPROC_COMMON=m, COMPILE_TEST=y,
+bulding fails:
 
-	for_each_card_rtds(card, rtd)
-		for_each_rtd_components(rtd, i, component)
-			component->probe()
-	for_each_card_rtds(card, rtd)
-		for_each_rtd_dais(rtd, i, dai)
-			dai->probe()
-	for_each_card_rtds(card, rtd)
-		rtd->init()
+drivers/slimbus/qcom-ngd-ctrl.o: In function `qcom_slim_ngd_ctrl_probe':
+qcom-ngd-ctrl.c:(.text+0x330): undefined reference to `qcom_register_ssr_notifier'
+qcom-ngd-ctrl.c:(.text+0x5fc): undefined reference to `qcom_unregister_ssr_notifier'
+drivers/slimbus/qcom-ngd-ctrl.o: In function `qcom_slim_ngd_remove':
+qcom-ngd-ctrl.c:(.text+0x90c): undefined reference to `qcom_unregister_ssr_notifier'
 
-On the other side, equivalent remove sequence goes as:
+Make SLIM_QCOM_NGD_CTRL depends on QCOM_RPROC_COMMON || (COMPILE_TEST && !QCOM_RPROC_COMMON) to fix this.
 
-	for_each_card_rtds(card, rtd)
-		for_each_rtd_dais(rtd, i, dai)
-			dai->remove()
-	for_each_card_rtds(card, rtd)
-		for_each_rtd_components(rtd, i, component)
-			component->remove()
-	for_each_card_rtds(card, rtd)
-		rtd->exit()
-
-what can lead to errors as link->exit() may still operate on resources
-owned by its components despite the probability of them being freed
-during the component->remove().
-
-This change modifies the remove sequence to:
-
-	for_each_card_rtds(card, rtd)
-		rtd->exit()
-	for_each_card_rtds(card, rtd)
-		for_each_rtd_dais(rtd, i, dai)
-			dai->remove()
-	for_each_card_rtds(card, rtd)
-		for_each_rtd_components(rtd, i, component)
-			component->remove()
-
-so code found in link->exit() is safe to touch any component stuff as
-component->remove() has not been called yet.
-
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Fixes: e291691c6977 ("slimbus: qcom-ngd-ctrl: allow compile testing without QCOM_RPROC_COMMON")
+Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
 ---
+ drivers/slimbus/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Original review for v1:
-https://lore.kernel.org/alsa-devel/20220621115758.3154933-1-cezary.rojewski@intel.com/
-
- sound/soc/soc-core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4a3fca50a536..638e781df3b0 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -935,9 +935,6 @@ void snd_soc_remove_pcm_runtime(struct snd_soc_card *card,
- {
- 	lockdep_assert_held(&client_mutex);
- 
--	/* release machine specific resources */
--	snd_soc_link_exit(rtd);
--
- 	/*
- 	 * Notify the machine driver for extra destruction
- 	 */
-@@ -1888,6 +1885,9 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card)
- 
- 	snd_soc_dapm_shutdown(card);
- 
-+	/* release machine specific resources */
-+	for_each_card_rtds(card, rtd)
-+		snd_soc_link_exit(rtd);
- 	/* remove and free each DAI */
- 	soc_remove_link_dais(card);
- 	soc_remove_link_components(card);
--- 
-2.25.1
+diff --git a/drivers/slimbus/Kconfig b/drivers/slimbus/Kconfig
+index 2ed821f75816..a0fdf9d792cb 100644
+--- a/drivers/slimbus/Kconfig
++++ b/drivers/slimbus/Kconfig
+@@ -23,7 +23,7 @@ config SLIM_QCOM_CTRL
+ config SLIM_QCOM_NGD_CTRL
+ 	tristate "Qualcomm SLIMbus Satellite Non-Generic Device Component"
+ 	depends on HAS_IOMEM && DMA_ENGINE && NET
+-	depends on QCOM_RPROC_COMMON || COMPILE_TEST
++	depends on QCOM_RPROC_COMMON || (COMPILE_TEST && !QCOM_RPROC_COMMON)
+ 	depends on ARCH_QCOM || COMPILE_TEST
+ 	select QCOM_QMI_HELPERS
+ 	select QCOM_PDR_HELPERS
+--
+2.31.1
 
