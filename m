@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82902FA3740
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 19:41:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DCB4ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 19:42:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A545A2DA1;
-	Thu, 27 Oct 2022 21:40:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A545A2DA1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95DDD2DAF;
+	Thu, 27 Oct 2022 21:41:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95DDD2DAF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666899706;
-	bh=5S7qA+u4YIZObxipMP1lfwIipfQRKU0YnoESJVcoEMY=;
+	s=default; t=1666899725;
+	bh=DOPsl7eh/L5GCNTINXTpcAIX55By8BK/YgCoZ/3V3bE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MUgNohnEblqxDvsWqYR3qb/6YN5WI8CzgN6V8pZF+AF0IUXt/Q7/wLdh7TA+VFg4+
-	 sb13vDnkxWBLTNJ7EIgDGQv4XnczsZmZrP8zWb3WTUCsJWYHA6DQw7xsI3/vE1uBGs
-	 6U24rlH3UR+HbQgyaHTJfkIc/fortqQHFZ4WbnZQ=
+	b=knrDrOVvZdN0XorCH+K3m/J3iF7fpV8DWWgeqTZ3hmjD8vGONQwMzvxIv/AgzfuTq
+	 BPIr1iEBQ4UsA+lg5GWjiGPpHnTRc3u0bzWRqsFcTiEy2VgRD846wtrEiUf5tz0+1D
+	 32TdrGX0fk7B8p0z2K9nszd3+HeOwFXwruuRk3zw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19AF9F805D6;
+	by alsa1.perex.cz (Postfix) with ESMTP id B3DA8F805DA;
 	Thu, 27 Oct 2022 21:36:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1A9F6F80580; Thu, 27 Oct 2022 21:36:37 +0200 (CEST)
+ id 55EDAF805C5; Thu, 27 Oct 2022 21:36:37 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63553F80589
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 21:36:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63553F80589
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32589F8058C
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 21:36:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32589F8058C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="mG+2gaa7"
+ header.b="a09taGKn"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666899387; x=1698435387;
+ t=1666899389; x=1698435389;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=5S7qA+u4YIZObxipMP1lfwIipfQRKU0YnoESJVcoEMY=;
- b=mG+2gaa7vaMxZXWCWb4jNYrEfiOifs+Dujnetzj51DiTVBKVTTxsbr4G
- 2RPKqAFwDo/3pcawHpi9snVcy8haQALk6+3nXQHb5+4C6dN9NJYxVug1h
- yHSiPO85VNaGwj75tV2P3EANp+vtY3P+aEzb4Kts6H917Jz6/SFpoYvtd
- IypImVIK6FadGyzdPvmbqlyCDRSjYRyULvHgxdYUMtXzhqMGXUzJuSi7h
- sPYtI098ctkJu1RdA1/E4H+QnxQ9Vqql0erAoVZ0/GxzNVtJ5M1HX+2Uh
- YygEtCclFBcYfo7cDIDkdPRh/++jLGti0+4QpiGQzvtbMTrG5r9VN8pT1 Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="334957872"
-X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; d="scan'208";a="334957872"
+ bh=DOPsl7eh/L5GCNTINXTpcAIX55By8BK/YgCoZ/3V3bE=;
+ b=a09taGKnHZxQic1wg5zP20zVXmIIG+yw5GY+NtZzU3C9yVk8yXwJFmkG
+ uVQlk0J5VQH2wtLOKe0X+wY7TPdzjbKRDdPkYzVsXK6rLHEfz7SimtczL
+ zGItlCzGKi6PEPKyAXqdmJ7VcR6fUlebPRM6s1R3ilOdjse72r2Mlcl2N
+ 8R48PiK6SLEU7y5xFEujEu6MvVYLwJsHy7gOmDYpdJY4z1oZ14aEE+eHS
+ 407Xn53du0hkfIYZKpcm0egkfdrV8tDyqMhQo+qLbGdDB5/0jaiTxVA2w
+ JHfqrRaH8IB1ArPrPGeiH8KonPaXFK53fU1zw63hna23MBqJ7qP2csUsU A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="334957885"
+X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; d="scan'208";a="334957885"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 12:36:25 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="632527072"
-X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; d="scan'208";a="632527072"
+ 27 Oct 2022 12:36:27 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="632527088"
+X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; d="scan'208";a="632527088"
 Received: from vmehta-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.212.6.254])
  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 12:36:23 -0700
+ 27 Oct 2022 12:36:26 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 18/21] ASoC: SOF: Intel: add hda_bus_ml_free helper
-Date: Thu, 27 Oct 2022 15:35:37 -0400
-Message-Id: <20221027193540.259520-19-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 20/21] ASoC: SOF: Intel: hda-codec: use GPL-2.0-only license
+Date: Thu, 27 Oct 2022 15:35:39 -0400
+Message-Id: <20221027193540.259520-21-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221027193540.259520-1-pierre-louis.bossart@linux.intel.com>
 References: <20221027193540.259520-1-pierre-louis.bossart@linux.intel.com>
@@ -90,9 +90,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add helper matching allocation done in hda_bus_ml_get_capabilities().
+All the HDAudio codec handling is completely specific to Linux and
+completely dependency on GPL2.0 code, specifically the snd_hdac_
+library.
 
-No functionality change, just clearer code partitioning.
+There was no intention to have a dual-license for this code, this was
+an oversight that needs to be corrected. Update the SPDX and
+EXPORT_SYMBOL information, no functionality change otherwise.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
@@ -100,72 +104,85 @@ Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-mlink.c | 14 ++++++++++++++
- sound/soc/sof/intel/hda.c       |  5 ++---
- sound/soc/sof/intel/hda.h       |  2 ++
- 3 files changed, 18 insertions(+), 3 deletions(-)
+ sound/soc/sof/intel/hda-codec.c | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-mlink.c b/sound/soc/sof/intel/hda-mlink.c
-index 2cdee03e4a47..76ab9a2e7bb3 100644
---- a/sound/soc/sof/intel/hda-mlink.c
-+++ b/sound/soc/sof/intel/hda-mlink.c
-@@ -34,6 +34,20 @@ void hda_bus_ml_get_capabilities(struct hdac_bus *bus)
- 		snd_hdac_ext_bus_get_ml_capabilities(bus);
+diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+index 60c15f9f0f3c..50a7e3f08285 100644
+--- a/sound/soc/sof/intel/hda-codec.c
++++ b/sound/soc/sof/intel/hda-codec.c
+@@ -1,7 +1,4 @@
+-// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+-//
+-// This file is provided under a dual BSD/GPLv2 license.  When using or
+-// redistributing this file, you may do so under either license.
++// SPDX-License-Identifier: GPL-2.0-only
+ //
+ // Copyright(c) 2018 Intel Corporation. All rights reserved.
+ //
+@@ -83,7 +80,7 @@ void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev, bool enable)
+ 
+ 	snd_hdac_chip_updatew(bus, WAKEEN, STATESTS_INT_MASK, mask);
  }
+-EXPORT_SYMBOL_NS(hda_codec_jack_wake_enable, SND_SOC_SOF_HDA_AUDIO_CODEC);
++EXPORT_SYMBOL_NS_GPL(hda_codec_jack_wake_enable, SND_SOC_SOF_HDA_AUDIO_CODEC);
  
-+void hda_bus_ml_free(struct hdac_bus *bus)
-+{
-+	struct hdac_ext_link *hlink;
-+
-+	if (!bus->mlcap)
-+		return;
-+
-+	while (!list_empty(&bus->hlink_list)) {
-+		hlink = list_first_entry(&bus->hlink_list, struct hdac_ext_link, list);
-+		list_del(&hlink->list);
-+		kfree(hlink);
-+	}
-+}
-+
- void hda_bus_ml_put_all(struct hdac_bus *bus)
+ /* check jack status after resuming from suspend mode */
+ void hda_codec_jack_check(struct snd_sof_dev *sdev)
+@@ -99,7 +96,7 @@ void hda_codec_jack_check(struct snd_sof_dev *sdev)
+ 		if (codec->jacktbl.used)
+ 			pm_request_resume(&codec->core.dev);
+ }
+-EXPORT_SYMBOL_NS(hda_codec_jack_check, SND_SOC_SOF_HDA_AUDIO_CODEC);
++EXPORT_SYMBOL_NS_GPL(hda_codec_jack_check, SND_SOC_SOF_HDA_AUDIO_CODEC);
+ 
+ #if IS_ENABLED(CONFIG_SND_HDA_GENERIC)
+ #define is_generic_config(bus) \
+@@ -218,7 +215,7 @@ void hda_codec_probe_bus(struct snd_sof_dev *sdev)
+ 		}
+ 	}
+ }
+-EXPORT_SYMBOL_NS(hda_codec_probe_bus, SND_SOC_SOF_HDA_AUDIO_CODEC);
++EXPORT_SYMBOL_NS_GPL(hda_codec_probe_bus, SND_SOC_SOF_HDA_AUDIO_CODEC);
+ 
+ void hda_codec_check_for_state_change(struct snd_sof_dev *sdev)
  {
- 	struct hdac_ext_link *hlink;
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index aa56f2967edc..619179e7f15c 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -1201,9 +1201,8 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
- 		pci_free_irq_vectors(pci);
+@@ -231,7 +228,7 @@ void hda_codec_check_for_state_change(struct snd_sof_dev *sdev)
+ 		snd_hdac_chip_writew(bus, STATESTS, codec_mask);
+ 	}
+ }
+-EXPORT_SYMBOL_NS(hda_codec_check_for_state_change, SND_SOC_SOF_HDA_AUDIO_CODEC);
++EXPORT_SYMBOL_NS_GPL(hda_codec_check_for_state_change, SND_SOC_SOF_HDA_AUDIO_CODEC);
  
- 	hda_dsp_stream_free(sdev);
--#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
--	snd_hdac_ext_link_free_all(bus);
--#endif
-+
-+	hda_bus_ml_free(sof_to_bus(sdev));
+ void hda_codec_detect_mask(struct snd_sof_dev *sdev)
+ {
+@@ -355,7 +352,7 @@ void hda_codec_i915_display_power(struct snd_sof_dev *sdev, bool enable)
+ 		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, enable);
+ 	}
+ }
+-EXPORT_SYMBOL_NS(hda_codec_i915_display_power, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
++EXPORT_SYMBOL_NS_GPL(hda_codec_i915_display_power, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
  
- 	iounmap(sdev->bar[HDA_DSP_BAR]);
- 	iounmap(bus->remap_addr);
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index f0c9bb6d567d..ea73fd17ae28 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -764,6 +764,7 @@ static inline int hda_codec_i915_exit(struct snd_sof_dev *sdev) { return 0; }
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+ int hda_codec_i915_init(struct snd_sof_dev *sdev)
+ {
+@@ -372,7 +369,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
  
- void hda_bus_ml_get_capabilities(struct hdac_bus *bus);
-+void hda_bus_ml_free(struct hdac_bus *bus);
- void hda_bus_ml_put_all(struct hdac_bus *bus);
- void hda_bus_ml_reset_losidv(struct hdac_bus *bus);
- int hda_bus_ml_resume(struct hdac_bus *bus);
-@@ -772,6 +773,7 @@ int hda_bus_ml_suspend(struct hdac_bus *bus);
- #else
+ 	return 0;
+ }
+-EXPORT_SYMBOL_NS(hda_codec_i915_init, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
++EXPORT_SYMBOL_NS_GPL(hda_codec_i915_init, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
  
- static inline void hda_bus_ml_get_capabilities(struct hdac_bus *bus) { }
-+static inline void hda_bus_ml_free(struct hdac_bus *bus) { }
- static inline void hda_bus_ml_put_all(struct hdac_bus *bus) { }
- static inline void hda_bus_ml_reset_losidv(struct hdac_bus *bus) { }
- static inline int hda_bus_ml_resume(struct hdac_bus *bus) { return 0; }
+ int hda_codec_i915_exit(struct snd_sof_dev *sdev)
+ {
+@@ -386,7 +383,7 @@ int hda_codec_i915_exit(struct snd_sof_dev *sdev)
+ 
+ 	return snd_hdac_i915_exit(bus);
+ }
+-EXPORT_SYMBOL_NS(hda_codec_i915_exit, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
++EXPORT_SYMBOL_NS_GPL(hda_codec_i915_exit, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
+ 
+ #endif
+ 
 -- 
 2.34.1
 
