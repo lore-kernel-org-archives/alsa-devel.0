@@ -4,74 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AABDECAAA1
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 12:33:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2591FECAAA1
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 12:34:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B07393092;
-	Thu, 27 Oct 2022 14:33:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B07393092
+	by alsa0.perex.cz (Postfix) with ESMTPS id 491042E05;
+	Thu, 27 Oct 2022 14:33:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 491042E05
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666874034;
-	bh=X5RaVP6ovgJ2pb7UBXvGxFeO7CVEU9xAwZaQ1Lj2nTA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1666874049;
+	bh=jB3Sy3lQh+g42Om28hBG9fQIjHlM5JaLLJYyHJKWjqU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Wy92FroaSIB1DS4G7JvG1PvKLG1RmyoiAW8b3s9TfhI/SrqqnAVCXQzx5cvX5+Yy1
-	 qOjSwpmAr7Nzkq0WW463vC8zN2XokSbA2fTYcDmWuQmzxZxaMBFDV53ob0dflUfbqV
-	 Gsh/evy/joSNDWOhgOuSiSjozEkKPM2eWcGmzyvA=
+	b=IaHqL9vnFUwUBco5Ieo8kUuK0Uy0Gub/3phhzfRhT1aVVAd0liYYg7PZVk82gZT5w
+	 dF2dlY+iIN+nM0Egyq/6fECSv0V3s15P50AfzkAnqLpd1CiFjGX0ibINm6P80qMsVn
+	 Ozyj+8iXFrfKCK38cE3zFNfWvb0bIhDj7lXeqpDI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6DCEF805A9;
-	Thu, 27 Oct 2022 14:30:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D070F80496;
+	Thu, 27 Oct 2022 14:31:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 13B5DF80580; Thu, 27 Oct 2022 14:30:39 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 22310F80095; Thu, 27 Oct 2022 14:31:42 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45B72F80095
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 14:31:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45B72F80095
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="d4UIJiMZ"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 005EDF80559
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 14:30:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 005EDF80559
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="IE6YmKQx"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666873830; x=1698409830;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=X5RaVP6ovgJ2pb7UBXvGxFeO7CVEU9xAwZaQ1Lj2nTA=;
- b=IE6YmKQx/h4S04PY/LNia3CH9deyq/KEmQZ+AKJ16t1STzJzCKxHDv0J
- z0g70p4sTxaIxlNy9g+ZEGO3AkPCIzyXkRPgzxhVP0Qat6UAKvJR3zUyw
- wiO7qiwK9sFdYIKE65LOX5nZNURl2pA1a6DQZbQU28AL0HOqOLPb7/LNF
- q8iEEuHyg+IiHhpfqflsRk+7Z6VsIg4NOPN54PX13Rdr4nKEgc2ZvAqt7
- vh0mHoL5f7/ec438fXXY78oJ1pqu+S4e48uX5jtTpbBeUQLOE/fiqihpC
- OvIPU6CLwd24AIv31WtFWdRshY4ra0+LWGeKBl8vKbltAy1Btd/6kexeM w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="334839965"
-X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="334839965"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 05:30:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="807435766"
-X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="807435766"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga005.jf.intel.com with ESMTP; 27 Oct 2022 05:30:24 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH v4 8/9] ASoC: Intel: avs: Power and clock gating policy
- overriding
-Date: Thu, 27 Oct 2022 14:47:01 +0200
-Message-Id: <20221027124702.1761002-9-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221027124702.1761002-1-cezary.rojewski@intel.com>
-References: <20221027124702.1761002-1-cezary.rojewski@intel.com>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 50490B8254D;
+ Thu, 27 Oct 2022 12:31:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5399C433D6;
+ Thu, 27 Oct 2022 12:31:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1666873894;
+ bh=jB3Sy3lQh+g42Om28hBG9fQIjHlM5JaLLJYyHJKWjqU=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=d4UIJiMZIz803b/bD8pE8mTWS4jlKFxUWbFy6b/ooalf6/SBwhR2KLD013OKf2l84
+ pEmCH7LGUlyOyTevHgooK/A8DOTbW6/QtvAnhcox8o3l+8SfVz2hUJDsft+TaPvqTz
+ Fu025ZDYu7KNjrddMFEgmJCkmL6gyjpQGzaLkWcfhb9W2JtaBSMmX/AZQ4q6pItkzs
+ D6E2/1aLy6dOk27kbUkmJxfgF9pwCM/ssEHxTGsEQr+sxZ3y7XXRXghAtT+ezj7s8Q
+ paWMeMTOuE3+wQw7h/Jbm31FwNRLT/odwnS9zji+/g/nmkXZ8fPKFlmCLucfI3IY0X
+ xlc83wz5aI7YA==
+Date: Thu, 27 Oct 2022 13:31:28 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Peter Bergin <peter@berginkonsult.se>
+Subject: Re: [PATCH] ASoc: cs42xx8-i2c.c: add module device table for of
+Message-ID: <Y1p6ILuOA6Dgjh7o@sirena.org.uk>
+References: <20221027115057.442925-1-peter@berginkonsult.se>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- amadeuszx.slawinski@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="jdB2L9eetq1D28fw"
+Content-Disposition: inline
+In-Reply-To: <20221027115057.442925-1-peter@berginkonsult.se>
+X-Cookie: Forgive and forget.
+Cc: alsa-devel@alsa-project.org, tanureal@opensource.cirrus.com,
+ patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, rf@opensource.cirrus.com,
+ james.schulman@cirrus.com, david.rhodes@cirrus.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,73 +85,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Provide pgctl/cgctl_mask module parameters for overriding power and
-clock gating policies respectively. These help deal with rare firmware
-loading failures on some configurations. There're no golden masks that
-cover all known problems so leave the defaults as is.
 
-While at it, update avs_hda_l1sen_enable()'s definition so it aligns
-with its power/clock friends.
+--jdB2L9eetq1D28fw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- sound/soc/intel/avs/core.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+On Thu, Oct 27, 2022 at 01:50:56PM +0200, Peter Bergin wrote:
+> When trying to connect the device with the driver through of
+> it is not working. The of_device_id is defined in cs42xx8.c
+> but is not correctly included in cs42xx8-i2c.c. Also add the
+> matching table for of in the i2c file.
+>=20
+> Signed-off-by: Peter Bergin <peter@berginkonsult.se>
+> ---
+>  sound/soc/codecs/cs42xx8-i2c.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
-index 6b68d926c9f4..f7bc06404dbc 100644
---- a/sound/soc/intel/avs/core.c
-+++ b/sound/soc/intel/avs/core.c
-@@ -27,6 +27,14 @@
- #include "avs.h"
- #include "cldma.h"
- 
-+static u32 pgctl_mask = AZX_PGCTL_LSRMD_MASK;
-+module_param(pgctl_mask, uint, 0444);
-+MODULE_PARM_DESC(pgctl_mask, "PCI PGCTL policy override");
-+
-+static u32 cgctl_mask = AZX_CGCTL_MISCBDCGE_MASK;
-+module_param(cgctl_mask, uint, 0444);
-+MODULE_PARM_DESC(cgctl_mask, "PCI CGCTL policy override");
-+
- static void
- avs_hda_update_config_dword(struct hdac_bus *bus, u32 reg, u32 mask, u32 value)
- {
-@@ -41,19 +49,16 @@ avs_hda_update_config_dword(struct hdac_bus *bus, u32 reg, u32 mask, u32 value)
- 
- void avs_hda_power_gating_enable(struct avs_dev *adev, bool enable)
- {
--	u32 value;
-+	u32 value = enable ? 0 : pgctl_mask;
- 
--	value = enable ? 0 : AZX_PGCTL_LSRMD_MASK;
--	avs_hda_update_config_dword(&adev->base.core, AZX_PCIREG_PGCTL,
--				    AZX_PGCTL_LSRMD_MASK, value);
-+	avs_hda_update_config_dword(&adev->base.core, AZX_PCIREG_PGCTL, pgctl_mask, value);
- }
- 
- static void avs_hdac_clock_gating_enable(struct hdac_bus *bus, bool enable)
- {
--	u32 value;
-+	u32 value = enable ? cgctl_mask : 0;
- 
--	value = enable ? AZX_CGCTL_MISCBDCGE_MASK : 0;
--	avs_hda_update_config_dword(bus, AZX_PCIREG_CGCTL, AZX_CGCTL_MISCBDCGE_MASK, value);
-+	avs_hda_update_config_dword(bus, AZX_PCIREG_CGCTL, cgctl_mask, value);
- }
- 
- void avs_hda_clock_gating_enable(struct avs_dev *adev, bool enable)
-@@ -63,9 +68,8 @@ void avs_hda_clock_gating_enable(struct avs_dev *adev, bool enable)
- 
- void avs_hda_l1sen_enable(struct avs_dev *adev, bool enable)
- {
--	u32 value;
-+	u32 value = enable ? AZX_VS_EM2_L1SEN : 0;
- 
--	value = enable ? AZX_VS_EM2_L1SEN : 0;
- 	snd_hdac_chip_updatel(&adev->base.core, VS_EM2, AZX_VS_EM2_L1SEN, value);
- }
- 
--- 
-2.25.1
+This should move the ID table out of cs42xx8.c, not just duplicate it.
 
+--jdB2L9eetq1D28fw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNaeh8ACgkQJNaLcl1U
+h9B8CQf8DD7owUCdSXZJtO0j/G7dVE9/97tFr5nvpkSXlsLfX2B9h8X7EB5RX9WC
+6JaI0Ord7nqIj+NZXtxdakI17hpTPZ8Jxm9CDNCb5VHFp9GxAF+wh06Q4JdPysSk
+IpQ4Hex72fTd3N2HyyXIf5si0GzJ5kGxwyeXinG/ScudKzngfNlA12q+Pt3bfu0H
+g/9sNqirIYaqgHeacnJ/Ns6KLc/ZK9wLTrEFgu6rsn+CVo3aBmAXeyz38RA2g+lz
+RqM/3xUYFWgBXtFKw0Mziw4CYMvq5EJ08FJCrbP9SEGDyg010P8YFfnkZrQP+7PJ
+3W66WXwqwdbZeuUh3BIDM5bApty4Rg==
+=zgpj
+-----END PGP SIGNATURE-----
+
+--jdB2L9eetq1D28fw--
