@@ -4,77 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 914CEFA3742
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 11:52:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05DABFA3740
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 12:31:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5271A3120;
-	Thu, 27 Oct 2022 13:51:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5271A3120
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36AF12DC2;
+	Thu, 27 Oct 2022 14:30:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36AF12DC2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666871557;
-	bh=bSDF2qtZ8AtZtWyQjs10cklMHLBZyUTQhWSTJJbrmvo=;
+	s=default; t=1666873877;
+	bh=6DI1POJhiqU6U4Pzcge3kqPT/f+3U6YacVd6stkwqAo=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Zh7EAmUC26Wa923LSa9BhOSlHnIdGIvmoBNe9icccH6zC/UjYsecTOOyR6YQOiy3C
-	 BT+PFU0D9Vy+jOfcSk5zgx6eqbqi5+VGA9DftX8LuBQJlndgPqFePSZMBzDC1/o9Or
-	 75j8dVVOIVskLJSxib1oFLjt7C6yargiXW8j2Vns=
+	b=Kaky02f/elgoQU//RBZCmEsBcv1zaJW1sUx3Qce/5XnCrF+2JOg3DeOVQDy8kZWls
+	 aIG1ZZrkmjQXsKKEBcPuE/B1HZEtvJFrku6yAGO1wG86DVXtcNaFacQUENLD45Gx+s
+	 pMj/8PCzHVSoXEHKXPrKKNJRBW6IY3II4QhhJK3o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DEA74F80100;
-	Thu, 27 Oct 2022 13:51:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1FE1F80496;
+	Thu, 27 Oct 2022 14:30:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 54DA9F8025E; Thu, 27 Oct 2022 13:51:46 +0200 (CEST)
-Received: from mailrelay3-1.pub.mailoutpod1-cph3.one.com
- (mailrelay3-1.pub.mailoutpod1-cph3.one.com [46.30.210.184])
+ id 92734F80095; Thu, 27 Oct 2022 14:30:24 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 61E06F8016C
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 13:51:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61E06F8016C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21E03F80095
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 14:30:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21E03F80095
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=berginkonsult.se header.i=@berginkonsult.se
- header.b="FL7ERPP2"; 
- dkim=permerror (0-bit key) header.d=berginkonsult.se
- header.i=@berginkonsult.se header.b="3VKMLIL+"
-Received: from mailrelay2.pub.mailoutpod2-cph3.one.com
- (mailrelay2.pub.mailoutpod2-cph3.one.com [104.37.34.7])
- by mailrelay3.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPS
- id b7a5db00-55ed-11ed-be8b-d0431ea8bb03;
- Thu, 27 Oct 2022 11:51:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=berginkonsult.se; s=rsa1;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
- from; bh=JC/HHWF4gaghp1JRdLxc59f6ipPtlD2CyXsBq4Sp1Sk=;
- b=FL7ERPP2jG+w/KDqVlq8iIsOMXYp5+kwuyX/Hy4PTBFQFqsMPBLjdz/JjcAJhAlIB9a2xo3CwJUxN
- +rZ6rKRUDIZrf1o6mS7OHL8pcGn/23WFSJqKYaN/gp4ppfXo51QuvBEgtmIepDtBbD54TFoBRa8dRp
- HtERZnucLABLL/BpO8igalzhBQ44nntPsY5Ss3hVAJBbVjggwbuTGUd2xSmEgOevimZfqBVbKq63Eb
- Gg06emRF9cgjsw9o2FnWxUWgCqGM0DE5FQ+qiWpaN1xgZQaXauzgQ/sN4FiLww0ONFTHxkLmDoKqKj
- l2xr0alXxA2OA2ldcEUxfvQQfKAd4Cg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
- d=berginkonsult.se; s=ed1;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
- from; bh=JC/HHWF4gaghp1JRdLxc59f6ipPtlD2CyXsBq4Sp1Sk=;
- b=3VKMLIL+XpEr8iGvmz0W5KovJn1ZtaEUXk0s0Gz0lL4KcY9W57xEqlCrOOtV6uNk/C+ynDwQ3NLSh
- j1pe7nFBQ==
-X-HalOne-ID: b46a7e99-55ed-11ed-9b66-335755252108
-Received: from pbergin-7420.. (ua-213-113-159-147.bbcust.telenor.se
- [213.113.159.147]) by mailrelay2 (Halon) with ESMTPSA
- id b46a7e99-55ed-11ed-9b66-335755252108;
- Thu, 27 Oct 2022 11:51:38 +0000 (UTC)
-From: Peter Bergin <peter@berginkonsult.se>
-To: james.schulman@cirrus.com, david.rhodes@cirrus.com,
- tanureal@opensource.cirrus.com, rf@opensource.cirrus.com
-Subject: [PATCH] ASoc: cs42xx8-i2c.c: add module device table for of
-Date: Thu, 27 Oct 2022 13:50:56 +0200
-Message-Id: <20221027115057.442925-1-peter@berginkonsult.se>
-X-Mailer: git-send-email 2.34.1
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="lvzLB23T"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1666873822; x=1698409822;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=6DI1POJhiqU6U4Pzcge3kqPT/f+3U6YacVd6stkwqAo=;
+ b=lvzLB23TsZ/aBWnihoa+GE8oXy1sbv+KTusL1HNKsP7Bdu/SKDRcaQyy
+ 5RDeZ+8kvR7xy7FxxaDKbujrXAp1sk9yeboGl3geQqAdSmc/hfJT4+REB
+ AhE8dTH6OGglqIEKhitsENZG3SdrxGUIo+YG8d5IeYPSkm9mtzvH8VulL
+ vrVspcK+UWREUG0o/VyQ5L7WEPwAdtV24Kg4Efi/qv/MjlTCI7yerakV3
+ 11E6O2ol9h2Fc75eURNouqdITiXU4HiMnMPR3eM042xk8g1wQPNzP852O
+ /yGZjkSiVo2O0x7SMjO+vz6znhcEPzFtxrZUBAUrTl6XyvPK6Yc5hX4Vj w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="334839870"
+X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="334839870"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Oct 2022 05:30:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10512"; a="807435619"
+X-IronPort-AV: E=Sophos;i="5.95,217,1661842800"; d="scan'208";a="807435619"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by orsmga005.jf.intel.com with ESMTP; 27 Oct 2022 05:30:05 -0700
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH v4 0/9] ASoC: Intel: avs: PCM power management
+Date: Thu, 27 Oct 2022 14:46:53 +0200
+Message-Id: <20221027124702.1761002-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Peter Bergin <peter@berginkonsult.se>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
- linux-kernel@vger.kernel.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
+ amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,34 +84,82 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When trying to connect the device with the driver through of
-it is not working. The of_device_id is defined in cs42xx8.c
-but is not correctly included in cs42xx8-i2c.c. Also add the
-matching table for of in the i2c file.
+Goal of the series is implementation of suspend/resume operations for a
+PCM stream along with all the collaterals connected to the subject.
 
-Signed-off-by: Peter Bergin <peter@berginkonsult.se>
----
- sound/soc/codecs/cs42xx8-i2c.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Start with splitting avs_dai_fe_hw_free() as ideally we would like to
+reuse as much of existing code as possible but snd_pcm_lib_free_pages()
+is not desired part of the function when speaking of suspend operation.
 
-diff --git a/sound/soc/codecs/cs42xx8-i2c.c b/sound/soc/codecs/cs42xx8-i2c.c
-index cb06a06d48b0..6e8ee28d01f8 100644
---- a/sound/soc/codecs/cs42xx8-i2c.c
-+++ b/sound/soc/codecs/cs42xx8-i2c.c
-@@ -37,6 +37,13 @@ static int cs42xx8_i2c_remove(struct i2c_client *i2c)
- 	return 0;
- }
- 
-+const struct of_device_id cs42xx8_of_match[] = {
-+	{ .compatible = "cirrus,cs42448", .data = &cs42448_data, },
-+	{ .compatible = "cirrus,cs42888", .data = &cs42888_data, },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, cs42xx8_of_match);
-+
- static struct i2c_device_id cs42xx8_i2c_id[] = {
- 	{"cs42448", (kernel_ulong_t)&cs42448_data},
- 	{"cs42888", (kernel_ulong_t)&cs42888_data},
+The actual implementation of suspend/resume() for component drivers
+follows. For most scenarios, the PM flow is similar to standard
+streaming one, except for the part where the position register are being
+saved and the lack of PCM pages freeing. To reduce code duplication, all
+avs_dai_suspend_XXX() and avs_dai_resume_XXX() functions reuse their
+non-PM equivalents.
+Order of operations is affected by the fact that path binding/unbinding
+happens only in FE part of the stream.
+
+Above essentially unlocks SX+streaming scenarios i.e.: power transitions
+with an ongoing stream.
+
+As some streams are allowed to run in low power state, support is
+provided for S0iX state. The handlers check ACPI capabilities and the
+number of active low-power paths before deciding between SX and S0iX
+flows.
+
+The last portion of the patchset is addition of power/clock gating
+overrides. There is no single set of registers that ensures AudioDSP
+firmware loads 100% of time on every single configuration. By having
+them exposed, user can have the loading procedure behavior adjusted for
+their configuration without having to recompile the kernel.
+
+
+Changes in v4:
+- replaced readb_poll_timeout() with read_poll_timeout() for the DRSM
+  polling function as the register is u32 wide, not u8
+
+Changes in v3:
+- fixed unused-but-set-variable warnings reported by the test robot
+
+Changes in v2:
+- moved DRSM reg polling to separate function,
+  snd_hdac_stream_wait_drsm() as suggested by Pierre
+- moved the acpi_gbl_FADT under AVS_S0IX_SUPPORTED macro and relocated
+  the checks from pcm.c to topology.c so that the low-power streams are
+  filtered as early as possible
+- fixed compilation when CONFIG_ACPI is disabled as reported by the test
+  robot
+- simplified all the avs_dai_resume/suspend_xxx() by moving
+  ->ignore_suspend check one level up, to avs_component_pm_op()
+  (patch 0002)
+
+
+Amadeusz Sławiński (1):
+  ASoC: Intel: avs: Handle SUSPEND and RESUME triggers
+
+Cezary Rojewski (7):
+  ASoC: Intel: avs: Split pcm pages freeing operation from hw_free()
+  ASoC: Intel: avs: Introduce PCM power management routines
+  ALSA: hda: Introduce snd_hdac_stream_wait_drsm()
+  ASoC: Intel: avs: Restart instead of resuming HDA capture streams
+  ASoC: Intel: avs: Count low power streams
+  ASoC: Intel: avs: Power and clock gating policy overriding
+  ASoC: Intel: avs: Enact power gating policy
+
+Piotr Maziarz (1):
+  ASoC: Intel: avs: Standby power-state support
+
+ include/sound/hdaudio.h        |   1 +
+ include/sound/hdaudio_ext.h    |   5 +
+ sound/hda/hdac_stream.c        |  22 ++
+ sound/soc/intel/avs/avs.h      |   8 +
+ sound/soc/intel/avs/core.c     |  97 +++++++--
+ sound/soc/intel/avs/loader.c   |  10 +
+ sound/soc/intel/avs/pcm.c      | 368 +++++++++++++++++++++++++++++----
+ sound/soc/intel/avs/topology.c |  10 +
+ 8 files changed, 461 insertions(+), 60 deletions(-)
+
 -- 
-2.34.1
+2.25.1
 
