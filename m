@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DCB4ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 19:42:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA4ECFA3740
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 19:42:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 95DDD2DAF;
-	Thu, 27 Oct 2022 21:41:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95DDD2DAF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27D422DF3;
+	Thu, 27 Oct 2022 21:41:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27D422DF3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666899725;
-	bh=DOPsl7eh/L5GCNTINXTpcAIX55By8BK/YgCoZ/3V3bE=;
+	s=default; t=1666899739;
+	bh=nIv7P42SwKbD9y60YPg592tzHtlPVeM83BqoJUZoDyk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=knrDrOVvZdN0XorCH+K3m/J3iF7fpV8DWWgeqTZ3hmjD8vGONQwMzvxIv/AgzfuTq
-	 BPIr1iEBQ4UsA+lg5GWjiGPpHnTRc3u0bzWRqsFcTiEy2VgRD846wtrEiUf5tz0+1D
-	 32TdrGX0fk7B8p0z2K9nszd3+HeOwFXwruuRk3zw=
+	b=J9zpsF8J9EhAcHmd7McSbqCWSnk50r0gz/qdWpJP8fY0iVq+cioS7rdvbSRQIH+a1
+	 bvw7mYtsoxpMmDtEZwoF5R5GIUN24dBIeczoo8cs9pphxerBffkJu/VptLcQ/bi5Tg
+	 0uNNVCqJ71mZ4EHgdVDUibVavQ9V7IdrEdJY1PNs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3DA8F805DA;
-	Thu, 27 Oct 2022 21:36:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35016F805E0;
+	Thu, 27 Oct 2022 21:36:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55EDAF805C5; Thu, 27 Oct 2022 21:36:37 +0200 (CEST)
+ id E342EF805C6; Thu, 27 Oct 2022 21:36:38 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 32589F8058C
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 21:36:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32589F8058C
+ by alsa1.perex.cz (Postfix) with ESMTPS id CF3EFF804D9
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 21:36:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF3EFF804D9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="a09taGKn"
+ header.b="BCr+9TJu"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1666899389; x=1698435389;
+ t=1666899388; x=1698435388;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=DOPsl7eh/L5GCNTINXTpcAIX55By8BK/YgCoZ/3V3bE=;
- b=a09taGKnHZxQic1wg5zP20zVXmIIG+yw5GY+NtZzU3C9yVk8yXwJFmkG
- uVQlk0J5VQH2wtLOKe0X+wY7TPdzjbKRDdPkYzVsXK6rLHEfz7SimtczL
- zGItlCzGKi6PEPKyAXqdmJ7VcR6fUlebPRM6s1R3ilOdjse72r2Mlcl2N
- 8R48PiK6SLEU7y5xFEujEu6MvVYLwJsHy7gOmDYpdJY4z1oZ14aEE+eHS
- 407Xn53du0hkfIYZKpcm0egkfdrV8tDyqMhQo+qLbGdDB5/0jaiTxVA2w
- JHfqrRaH8IB1ArPrPGeiH8KonPaXFK53fU1zw63hna23MBqJ7qP2csUsU A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="334957885"
-X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; d="scan'208";a="334957885"
+ bh=nIv7P42SwKbD9y60YPg592tzHtlPVeM83BqoJUZoDyk=;
+ b=BCr+9TJuP4HI9du0hbrQKEmLvLiuzdp4ItR3p27+lT4K7W5mGmHXwT6a
+ HDmfCO43BNoHNKynq7swY2rOaDSvXpVEdQkdCbn6GmtKYSULbxWmKmhPw
+ 1mCrjkwHFrscV7o4PYrncf3nkORquFpDeLdTaLsXd5r8GMIuucb1Wy6/n
+ fnf7f75KK65/rxJnG75W+SqbOtzx0spKZp80BrTg3lURXWD2P7PggBAUP
+ pL+dNp3qOB0vCd0X/EzpShmiPEicfstLtoEwBv236H0zTgV42sNXDOf26
+ Wy+pyGdFzL2iMt+qRvHdcP4YAdGBVIJjiQyoaQdQIdd/U3hIG75N4ZSaf g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="334957876"
+X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; d="scan'208";a="334957876"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 12:36:27 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="632527088"
-X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; d="scan'208";a="632527088"
+ 27 Oct 2022 12:36:26 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10513"; a="632527076"
+X-IronPort-AV: E=Sophos;i="5.95,218,1661842800"; d="scan'208";a="632527076"
 Received: from vmehta-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.212.6.254])
  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Oct 2022 12:36:26 -0700
+ 27 Oct 2022 12:36:25 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 20/21] ASoC: SOF: Intel: hda-codec: use GPL-2.0-only license
-Date: Thu, 27 Oct 2022 15:35:39 -0400
-Message-Id: <20221027193540.259520-21-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 19/21] ASoC: SOF: Intel: hda: clarify Kconfig dependencies
+Date: Thu, 27 Oct 2022 15:35:38 -0400
+Message-Id: <20221027193540.259520-20-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221027193540.259520-1-pierre-louis.bossart@linux.intel.com>
 References: <20221027193540.259520-1-pierre-louis.bossart@linux.intel.com>
@@ -90,13 +90,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-All the HDAudio codec handling is completely specific to Linux and
-completely dependency on GPL2.0 code, specifically the snd_hdac_
-library.
-
-There was no intention to have a dual-license for this code, this was
-an oversight that needs to be corrected. Update the SPDX and
-EXPORT_SYMBOL information, no functionality change otherwise.
+Since we've moved to the same flows for HDaudio and iDISP codecs, we
+need to be more consistent about dependencies.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
@@ -104,85 +99,81 @@ Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-codec.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
+ sound/soc/sof/intel/hda-dai.c | 10 +++++-----
+ sound/soc/sof/intel/hda.c     |  4 ++--
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-index 60c15f9f0f3c..50a7e3f08285 100644
---- a/sound/soc/sof/intel/hda-codec.c
-+++ b/sound/soc/sof/intel/hda-codec.c
-@@ -1,7 +1,4 @@
--// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
--//
--// This file is provided under a dual BSD/GPLv2 license.  When using or
--// redistributing this file, you may do so under either license.
-+// SPDX-License-Identifier: GPL-2.0-only
- //
- // Copyright(c) 2018 Intel Corporation. All rights reserved.
- //
-@@ -83,7 +80,7 @@ void hda_codec_jack_wake_enable(struct snd_sof_dev *sdev, bool enable)
+diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
+index 6e368974abd1..0cb7af719c66 100644
+--- a/sound/soc/sof/intel/hda-dai.c
++++ b/sound/soc/sof/intel/hda-dai.c
+@@ -27,7 +27,7 @@ static bool hda_use_tplg_nhlt;
+ module_param_named(sof_use_tplg_nhlt, hda_use_tplg_nhlt, bool, 0444);
+ MODULE_PARM_DESC(sof_use_tplg_nhlt, "SOF topology nhlt override");
  
- 	snd_hdac_chip_updatew(bus, WAKEEN, STATESTS_INT_MASK, mask);
- }
--EXPORT_SYMBOL_NS(hda_codec_jack_wake_enable, SND_SOC_SOF_HDA_AUDIO_CODEC);
-+EXPORT_SYMBOL_NS_GPL(hda_codec_jack_wake_enable, SND_SOC_SOF_HDA_AUDIO_CODEC);
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
  
- /* check jack status after resuming from suspend mode */
- void hda_codec_jack_check(struct snd_sof_dev *sdev)
-@@ -99,7 +96,7 @@ void hda_codec_jack_check(struct snd_sof_dev *sdev)
- 		if (codec->jacktbl.used)
- 			pm_request_resume(&codec->core.dev);
- }
--EXPORT_SYMBOL_NS(hda_codec_jack_check, SND_SOC_SOF_HDA_AUDIO_CODEC);
-+EXPORT_SYMBOL_NS_GPL(hda_codec_jack_check, SND_SOC_SOF_HDA_AUDIO_CODEC);
- 
- #if IS_ENABLED(CONFIG_SND_HDA_GENERIC)
- #define is_generic_config(bus) \
-@@ -218,7 +215,7 @@ void hda_codec_probe_bus(struct snd_sof_dev *sdev)
- 		}
- 	}
- }
--EXPORT_SYMBOL_NS(hda_codec_probe_bus, SND_SOC_SOF_HDA_AUDIO_CODEC);
-+EXPORT_SYMBOL_NS_GPL(hda_codec_probe_bus, SND_SOC_SOF_HDA_AUDIO_CODEC);
- 
- void hda_codec_check_for_state_change(struct snd_sof_dev *sdev)
+ struct hda_pipe_params {
+ 	u32 ch;
+@@ -772,7 +772,7 @@ void hda_set_dai_drv_ops(struct snd_sof_dev *sdev, struct snd_sof_dsp_ops *ops)
+ 				ops->drv[i].ops = &ipc3_ssp_dai_ops;
+ 				continue;
+ 			}
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
+ 			if (strstr(ops->drv[i].name, "iDisp") ||
+ 			    strstr(ops->drv[i].name, "Analog") ||
+ 			    strstr(ops->drv[i].name, "Digital"))
+@@ -793,7 +793,7 @@ void hda_set_dai_drv_ops(struct snd_sof_dev *sdev, struct snd_sof_dsp_ops *ops)
+ 				ops->drv[i].ops = &ipc4_ssp_dai_ops;
+ 				continue;
+ 			}
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
+ 			if (strstr(ops->drv[i].name, "iDisp") ||
+ 			    strstr(ops->drv[i].name, "Analog") ||
+ 			    strstr(ops->drv[i].name, "Digital"))
+@@ -911,7 +911,7 @@ struct snd_soc_dai_driver skl_dai[] = {
+ 		.channels_max = 4,
+ 	},
+ },
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
  {
-@@ -231,7 +228,7 @@ void hda_codec_check_for_state_change(struct snd_sof_dev *sdev)
- 		snd_hdac_chip_writew(bus, STATESTS, codec_mask);
- 	}
- }
--EXPORT_SYMBOL_NS(hda_codec_check_for_state_change, SND_SOC_SOF_HDA_AUDIO_CODEC);
-+EXPORT_SYMBOL_NS_GPL(hda_codec_check_for_state_change, SND_SOC_SOF_HDA_AUDIO_CODEC);
+ 	.name = "iDisp1 Pin",
+ 	.playback = {
+@@ -984,7 +984,7 @@ int hda_dsp_dais_suspend(struct snd_sof_dev *sdev)
+ 	 * Since the component suspend is called last, we can trap this corner case
+ 	 * and force the DAIs to release their resources.
+ 	 */
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
+ 	int ret;
  
- void hda_codec_detect_mask(struct snd_sof_dev *sdev)
+ 	ret = hda_dai_suspend(sof_to_bus(sdev));
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 619179e7f15c..99be5ef78324 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -791,7 +791,7 @@ static int check_nhlt_ssp_mclk_mask(struct snd_sof_dev *sdev, int ssp_num)
+ 	return intel_nhlt_ssp_mclk_mask(nhlt, ssp_num);
+ }
+ 
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA) || IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC) || IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
+ 
+ static const char *fixup_tplg_name(struct snd_sof_dev *sdev,
+ 				   const char *sof_tplg_filename,
+@@ -1222,7 +1222,7 @@ int hda_power_down_dsp(struct snd_sof_dev *sdev)
+ 	return hda_dsp_core_reset_power_down(sdev, chip->host_managed_cores_mask);
+ }
+ 
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA_AUDIO_CODEC)
+ static void hda_generic_machine_select(struct snd_sof_dev *sdev,
+ 				       struct snd_soc_acpi_mach **mach)
  {
-@@ -355,7 +352,7 @@ void hda_codec_i915_display_power(struct snd_sof_dev *sdev, bool enable)
- 		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, enable);
- 	}
- }
--EXPORT_SYMBOL_NS(hda_codec_i915_display_power, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
-+EXPORT_SYMBOL_NS_GPL(hda_codec_i915_display_power, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
- 
- int hda_codec_i915_init(struct snd_sof_dev *sdev)
- {
-@@ -372,7 +369,7 @@ int hda_codec_i915_init(struct snd_sof_dev *sdev)
- 
- 	return 0;
- }
--EXPORT_SYMBOL_NS(hda_codec_i915_init, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
-+EXPORT_SYMBOL_NS_GPL(hda_codec_i915_init, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
- 
- int hda_codec_i915_exit(struct snd_sof_dev *sdev)
- {
-@@ -386,7 +383,7 @@ int hda_codec_i915_exit(struct snd_sof_dev *sdev)
- 
- 	return snd_hdac_i915_exit(bus);
- }
--EXPORT_SYMBOL_NS(hda_codec_i915_exit, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
-+EXPORT_SYMBOL_NS_GPL(hda_codec_i915_exit, SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
- 
- #endif
- 
 -- 
 2.34.1
 
