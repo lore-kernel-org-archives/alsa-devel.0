@@ -4,85 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0B3DECAAA1
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 13:37:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2929DFA3740
+	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 13:38:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9DF3290C;
-	Thu, 27 Oct 2022 15:36:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9DF3290C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57A432FC0;
+	Thu, 27 Oct 2022 15:37:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57A432FC0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666877847;
-	bh=fcD3i38tih/t450LyEv0RqQmZcGH/IRBhD3dzjW7Ntc=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1666877904;
+	bh=5YAEco5Tq5AjmO/fVsK+NqVFKGrLuVvUAlTBWUtrozY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WjY0HciF50CPhK/uFYK6Fq7yxUTLyPyiLz+h84QEcOr8TzPaMCQ1Dh4TGc0TovggX
-	 3emHvmwX5cdLb3Ld0r4DEVxnwpJslnDpq6gdO+AcWoWXyXcurEwFjE9tJjmQyarHKb
-	 BQ897UvW+9d2ElwxxqYgk8/BRaUmlI76G1u2/mLw=
+	b=HYvYwNORqXi1ulvXc6UC416cPLL48jIFqvLO+7z7l1N+NN1eSqQLYACyCynoj31Zm
+	 ph0BAl8KDhiHORKzzH/yH6+E9pT7XPWcmtM0Ng6a9DUn6VPlJrNMjE+gC/iAn+uObR
+	 2GMNuaVFhcqGeOgQwyl5zFdjIRDUWtFchz6nMPMw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5BAEBF8025A;
-	Thu, 27 Oct 2022 15:36:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0771BF8025E;
+	Thu, 27 Oct 2022 15:37:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07B59F8025E; Thu, 27 Oct 2022 15:36:37 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 873B3F8025A; Thu, 27 Oct 2022 15:37:32 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E3B08F8016C
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 15:36:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3B08F8016C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="p2dD10/n"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 77A0AF80496
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 15:37:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77A0AF80496
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id D12B6B82562;
- Thu, 27 Oct 2022 13:36:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE5E3C433D7;
- Thu, 27 Oct 2022 13:36:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666877791;
- bh=fcD3i38tih/t450LyEv0RqQmZcGH/IRBhD3dzjW7Ntc=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=p2dD10/n12DRMFyjak+v7jZXOk9zlkcHhT5zkKeAvSDmH4ZNifqdEJowSy4MfCt0R
- +R+qYpZtqVX/LIswpRVepyUp3RNVGFAFuQhHljbBupOFwyludIvqvi6lJ0xnJ225r9
- /zxrKcUw0JG/BX86NeaQ8R5yWoJnWQeHqvJZOQh274ijer8NDA6JIQuCw9qjb45v6p
- LwUZ4zKsKZYf/F/YetfAkco8c+deTpKiXAkkxAwbw62CnTsTB0wy4LHfitNlaEluG/
- GNa0oVV2sc16a/PKbNS0p7TyIPdmAYz1x39DPinXHpqX+pN2l9Sht/I00ngRReQySz
- 0S7sXqIps/fEQ==
-Date: Thu, 27 Oct 2022 14:36:24 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 2/2] ASoC: Intel: sof_rt5682: quirk auto detection
-Message-ID: <Y1qJWDXishQ0pWkM@sirena.org.uk>
-References: <20221026071409.3235144-1-brent.lu@intel.com>
- <20221026071409.3235144-3-brent.lu@intel.com>
- <6916c126-c710-330a-ffcd-50dd3cdc47d3@linux.intel.com>
- <CY5PR11MB6257D168A60B712088BC7CF797339@CY5PR11MB6257.namprd11.prod.outlook.com>
- <bba5dc19-c0c4-2409-6cd2-c8fa91950444@linux.intel.com>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 902CB62308;
+ Thu, 27 Oct 2022 13:37:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9C06C4347C;
+ Thu, 27 Oct 2022 13:37:21 +0000 (UTC)
+Date: Thu, 27 Oct 2022 09:37:36 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] ALSA: Use del_timer_sync() before freeing timer
+Message-ID: <20221027093736.1e8cc9b9@gandalf.local.home>
+In-Reply-To: <87pmedojfv.wl-tiwai@suse.de>
+References: <20221026231236.6834b551@gandalf.local.home>
+ <87pmedojfv.wl-tiwai@suse.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="aSBYaSpkfMbKyRhv"
-Content-Disposition: inline
-In-Reply-To: <bba5dc19-c0c4-2409-6cd2-c8fa91950444@linux.intel.com>
-X-Cookie: Forgive and forget.
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Rojewski,
- Cezary" <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, "Song,
- Gongjun" <gongjun.song@intel.com>, "Gopal,
- Vamshi Krishna" <vamshi.krishna.gopal@intel.com>,
- Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Chiang,
- Mac" <mac.chiang@intel.com>, "Wang, Rander" <rander.wang@intel.com>, "C,
- Balamurugan" <balamurugan.c@intel.com>, Chao Song <chao.song@linux.intel.com>,
- "Reddy, Muralidhar" <muralidhar.reddy@intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Ajye Huang <ajye.huang@gmail.com>, Bard Liao <yung-chuan.liao@linux.intel.com>,
- "Lu, Brent" <brent.lu@intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Zhi,
- Yong" <yong.zhi@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, Stephen Boyd <sboyd@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, LKML <linux-kernel@vger.kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Guenter Roeck <linux@roeck-us.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,37 +71,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, 27 Oct 2022 08:43:32 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
---aSBYaSpkfMbKyRhv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Applied now with the fix of unused variable warning.
 
-On Wed, Oct 26, 2022 at 08:30:00PM -0500, Pierre-Louis Bossart wrote:
-> On 10/26/22 19:13, Lu, Brent wrote:
+Thanks Takashi!
 
-> > I'm thinking about using kernel module parameters for those boards which do not
-> > use default SSP port allocation. Not sure it's doable for machine driver module.
-
-> That's not a working solution IMHO, the kernel parameters should be used
-> by expert developers only for specific and short-term debug. It's not
-> possible to add a dependency on kernel parameters, that would prevent a
-> kernel update.
-
-Right, and it really doesn't work for distributions.
-
---aSBYaSpkfMbKyRhv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNaiVcACgkQJNaLcl1U
-h9CpWAf9EuU66Nkj3rIR3UHKpodUXBtYkdKdRpjY+l4zDJeggtk6ReDLj3r8Ea/+
-JpKpstTYUlLNorsKoXY6E7N396S8hk+JVGJus+V4Xmea5OFBVQfTu41ueUTkDNBT
-r0d/QSs9l/UGm++YNyWOIgVoftSLfbFwsqqFPw0opUM3ImbB4CDft52x0Mm6StHQ
-riUAV2y+uXmzMK+oE+w8QyegxHttJXkjHcFcM0ok5iAoA7g7bezVVFEE1ndw/T1M
-1HxIMVnKbI4xGcaI6w33rguriufF4mATS0lao/vejizB7OUybHtW9gaQfA73xKDA
-IQMq7EDowX6yJuFM6BLon8N+QfLQaw==
-=spCX
------END PGP SIGNATURE-----
-
---aSBYaSpkfMbKyRhv--
+-- Steve
