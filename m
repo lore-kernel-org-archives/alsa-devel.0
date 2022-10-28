@@ -4,75 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D59A9C38A02
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Oct 2022 10:59:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5DE8ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Oct 2022 11:29:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 165C32836;
-	Fri, 28 Oct 2022 12:58:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 165C32836
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29D192090;
+	Fri, 28 Oct 2022 13:29:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29D192090
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666954758;
-	bh=wSbXFh7ARUVjIFut7VmSHqRrzlhIsC2f690NqWfFock=;
+	s=default; t=1666956593;
+	bh=6BWpUv9YCNj+rw9Dlvx3piMeifPJz53Dnij8qkSg5v8=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Kw05lhQz+xDHkv+MY3/dhhSWzsm5KVJuaW1Rasce9EV7cEf3Txiu82Ws1Wh2fgvO1
-	 J8k2oUU97PxKlWWMZBJf0wtM0IQZOnhcB6YfVQU8GtGyZ0g2VnQ7+lFsgd2NB9XCxg
-	 AO7+Holaomp7lHsyOVmPv5qVsmmoAPNHHIFuGEtk=
+	b=bJk8ub1oL5HGwMmrV1/ripQcARJYW0ljoQ46t7/Rhcuuu0aXn4ZbueqCDBCIbvr1b
+	 jWJcjET9FM4vrx+M3jHr/4jwBDTqadeS8BHjXsdem4K0C6luaG8J7MM0BGLLuNC8JR
+	 R9V9w1rHmggclPZGrV9DR5OVPPnAu48bax1ose1U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF2BCF80551;
-	Fri, 28 Oct 2022 12:58:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0E4DF8016A;
+	Fri, 28 Oct 2022 13:29:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ABA9EF80552; Fri, 28 Oct 2022 12:58:16 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id EDD62F8024C; Fri, 28 Oct 2022 13:28:56 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83E3DF8051D
- for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2022 12:58:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83E3DF8051D
+ by alsa1.perex.cz (Postfix) with ESMTPS id C9EB0F800E1
+ for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2022 13:28:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9EB0F800E1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LiIMsceH"
+ header.b="cAMIzphT"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id AD62AB82953;
- Fri, 28 Oct 2022 10:58:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55E6BC433C1;
- Fri, 28 Oct 2022 10:58:09 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 54498627B8;
+ Fri, 28 Oct 2022 11:28:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4634C433D7;
+ Fri, 28 Oct 2022 11:28:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666954692;
- bh=wSbXFh7ARUVjIFut7VmSHqRrzlhIsC2f690NqWfFock=;
+ s=k20201202; t=1666956525;
+ bh=6BWpUv9YCNj+rw9Dlvx3piMeifPJz53Dnij8qkSg5v8=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=LiIMsceH4+Du864QrRSonSkMOTqw2po4qsVpIb1OCgXs6nl+9E7S6NIYbWmI1bXtq
- 8lsz9+zbuarRxHpCvsGEv9dfX6Eo5e8pyrLT4pBf1QHe8hqTeRe+OY7bW1M69PsZtq
- 0UIYYgkdGAFh9hjbP5lCiZrijGe48Nd0MzOfcfpqqam5u2eMqWygCrDH6qW11Zpgxv
- +Sh9T5fLa6MgJsRjahyzW2aSEsFn2JBQKYcia+U34S+kEdjq2CagRqXl0B798196Fd
- Zd96twoAIO0HrlyTR0RkIrsDkfBdVVkA1z08LPk+DiO+zW+tjhFEMByWrJrtsWhcS1
- hvEuKEnRLHF2g==
-Date: Fri, 28 Oct 2022 11:58:06 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Venkata Prasad Potturu <venkataprasad.potturu@amd.corp-partner.google.com>
-Subject: Re: [PATCH] CHROMIUM: ASoC: amd: acp: Add tdm support for codecs in
- machine driver
-Message-ID: <Y1u1vj0K3m33wCTd@sirena.org.uk>
-References: <20221028103443.30375-1-venkataprasad.potturu@amd.corp-partner.google.com>
+ b=cAMIzphTh+Jnm7MsF4ShxjCOdti21q5Lh6Z9/Uuxl4axmgTCFYDSr6DYAZ22FD79F
+ +pEiPvY1pOO91TE0QWZGF2MdzNqR3S2XNgbuE64kIHr6HGJOknd2wYAvyWBNqWMNAz
+ kgEOsdnrzCmVt37krEjXHjcmSftitEOPGw+XM09TwzzaOSFTh5SrKQNeREDAfJR0YR
+ uikHdncfVImqocju8sXkJZ55aF+elIcEQCYU1bmiBzHUED5Qiu4ffyw5fAU6CGnFnU
+ EhBafEvOxiVF105+31Cm5A3wld4rBo8KDU0aI39ei2/FYMT2lRv3/dsvPhRFM+6PE5
+ rhq5appBMy1RA==
+Date: Fri, 28 Oct 2022 16:58:39 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH] soundwire: intel: Initialize clock stop timeout
+Message-ID: <Y1u855YZ/B3Q+FiI@matsya>
+References: <20221020015624.1703950-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="JMQDwmQnkQx5pq8/"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221028103443.30375-1-venkataprasad.potturu@amd.corp-partner.google.com>
-X-Cookie: Life -- Love It or Leave It.
-Cc: alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com, ssabakar@amd.com,
- Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
- Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
- ye xingchen <ye.xingchen@zte.com.cn>, Basavaraj.Hiregoudar@amd.com,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Akihiko Odaki <akihiko.odaki@gmail.com>, Vijendar.Mukunda@amd.com,
- vsujithkumar.reddy@amd.com, open list <linux-kernel@vger.kernel.org>
+In-Reply-To: <20221020015624.1703950-1-yung-chuan.liao@linux.intel.com>
+Cc: stable@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, bard.liao@intel.com,
+ pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,39 +81,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 20-10-22, 09:56, Bard Liao wrote:
+> From: Sjoerd Simons <sjoerd@collabora.com>
+> 
+> The bus->clk_stop_timeout member is only initialized to a non-zero value
+> during the codec driver probe. This can lead to corner cases where this
+> value remains pegged at zero when the bus suspends, which results in an
+> endless loop in sdw_bus_wait_for_clk_prep_deprep().
+> 
+> Corner cases include configurations with no codecs described in the
+> firmware, or delays in probing codec drivers.
+> 
+> Initializing the default timeout to the smallest non-zero value avoid this
+> problem and allows for the existing logic to be preserved: the
+> bus->clk_stop_timeout is set as the maximum required by all codecs
+> connected on the bus.
 
---JMQDwmQnkQx5pq8/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to fixes, thanks
 
-On Fri, Oct 28, 2022 at 04:04:41PM +0530, Venkata Prasad Potturu wrote:
-
-> +static int tdm_mode = 0;
-> +module_param_named(tdm_mode, tdm_mode, int, 0444);
-> +MODULE_PARM_DESC(tdm_mode, "Set 1 for tdm mode, set 0 for i2s mode");
-
-Why is this a module parameter - how would a user decide to set this?
-Is it something that someone might want to change at runtime?
-
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
-
---JMQDwmQnkQx5pq8/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNbtb0ACgkQJNaLcl1U
-h9D8Dwf/QiIzLylr1xgVaq4dbxjUm9R5UJN5je/Jb3kVw4bwasSnkiqtTnmrbaSS
-yLIy1FBYm0pw5SRhaPlG6vWSBqJ9LrAOxEeJj/w1aw8E5djxn/AWHGC2/RVNN7K4
-CN7GBQUNEMXnejeFjhza/cwZjD3wqBOYOWlg0ymmbEil2Og9YCnvxRzwYg15fUPh
-eEl5hqHt0fpuSLFKKeIzdVAVNfo1XpUc6NnIjb8ns2lCMdLK6oqfZla9UMzOvzsO
-EpmeAp5ziXp2v1ggIHx0jP4bGhVcx1lpyQv6D6v8VNMbNbI2LUZlhUQa2altyglK
-7oI3JoiKBazvBZP5bRzp390vCGe/yg==
-=f1zx
------END PGP SIGNATURE-----
-
---JMQDwmQnkQx5pq8/--
+-- 
+~Vinod
