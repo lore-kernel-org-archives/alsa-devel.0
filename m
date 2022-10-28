@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BAB8C38A02
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Oct 2022 19:25:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A24D5C38A02
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Oct 2022 19:25:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FF71886;
-	Fri, 28 Oct 2022 21:24:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FF71886
+	by alsa0.perex.cz (Postfix) with ESMTPS id B28EEAE8;
+	Fri, 28 Oct 2022 21:24:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B28EEAE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666985109;
-	bh=ot5Sa9Mlp08Yo/46BwMaqi/qloDRG4Ii89sgfRGOd54=;
+	s=default; t=1666985132;
+	bh=8//h+tyapzLVTU5tcVVz+UK6ke4W6O7sJMkE3L3lUk8=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TQU7vpoyV90jGxb0X+rMWrSMvVozAc0Y6/pKZ2XgmIePVepX6TEOJQvsdHgf46eTl
-	 Nbs1b5YWNXrKdwEI86YhOTGbz0AcC+jjJ+9sNeIjSbAKINChQ2g1IpDHhcC18bRrZw
-	 1ndhixbbmagQL89g7+yOvgBt+RsJBvy++uulJcqY=
+	b=blZvrTp66MNQaFdVXrOiMIMOLZl2mi4Qy5fxG6yxbNtZ6TCKygoVqqUuVEwHJM8hB
+	 C0CzNEIeElPSR2klUpGVsqnpM36crmjLuFdTneGUJQB/Joqslrb0nuspJkIHAg1ow0
+	 dE2im+qyrZkSc3Oad1gWiCKVLy0aeE512Wb4j6e0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B67DF8025A;
-	Fri, 28 Oct 2022 21:24:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AEC62F80095;
+	Fri, 28 Oct 2022 21:24:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0E0A5F8025A; Fri, 28 Oct 2022 21:24:17 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 84934F804BD; Fri, 28 Oct 2022 21:24:19 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A449EF8016A
- for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2022 21:24:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A449EF8016A
+ by alsa1.perex.cz (Postfix) with ESMTPS id E8C41F80095
+ for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2022 21:24:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8C41F80095
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ojd1RVNw"
+ header.b="qGYXPELW"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id DD84FB82BE2;
- Fri, 28 Oct 2022 19:24:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA3EFC433C1;
- Fri, 28 Oct 2022 19:24:09 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 82C6162A26;
+ Fri, 28 Oct 2022 19:24:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10082C433D6;
+ Fri, 28 Oct 2022 19:24:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666985051;
- bh=ot5Sa9Mlp08Yo/46BwMaqi/qloDRG4Ii89sgfRGOd54=;
+ s=k20201202; t=1666985053;
+ bh=8//h+tyapzLVTU5tcVVz+UK6ke4W6O7sJMkE3L3lUk8=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ojd1RVNw6hyaCCrYdsqnQgEpBn6ofM9IfNeBwiFPt1RQXzavRtsRoouFedFSCkv0B
- XF2PFc4N5tLNeNqZKLxMbn0TWFiVJeWF8qw4OCzV/QwioO6f//BlxEBlv941jj/MDj
- NAG0+64eerSXeiwFXtmTJLutHb4G61oEYACGK+TOppuWFA5FCMngtMrXSxvpez7F+w
- xYBvtFp2399YT7/hqBa7BLyhrf9/cuJ3n0uJ3mkL09+iUJPEL1ZENNZEoeDVl6TREk
- pcoif7BTuZgesclLg4cfnuNAxzHcWPNRX5WODORRlgtDsxdrWapBA7+70Kp1vQ+qnM
- VVvjJ09wxESzw==
+ b=qGYXPELWt1WeG5WS5xiF4ANqv504+Qmpmexgb5MJ0+Tbw96ZjDDin0TDTx5WVS9HH
+ PbtDss+cIJqBCI8nxoLqg6KAAAEXNLikkmpPa5ILBEmp7ivYs/16L/mdKWxwJ5ofwr
+ P9tuk+pc/xMdQwpEkZ2x94DsDEo0ziBHmRsdzb/ep0t58Y6i1d81YuXItIRBTSDcmb
+ 4wzNtylYIF3HZYEJVBaPc6D5IADdnIKd9xSJQbEwjJ4526gbzkhlFRrJyKFvgC2vnv
+ tybvYLcKOXhAKH0u79/ftl+uHpDyHwl9noRxiNK0pvwt9hIP8UMIhCk3sN/ldsDIyG
+ rd501z5oOs8Cw==
 From: Mark Brown <broonie@kernel.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20220915123837.11591-1-srinivas.kandagatla@linaro.org>
-References: <20220915123837.11591-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 0/9] ASoC: qdsp6: audioreach: add multi-port,
+In-Reply-To: <20221027102710.21407-1-srinivas.kandagatla@linaro.org>
+References: <20221027102710.21407-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v3 0/9] ASoC: qdsp6: audioreach: add multi-port,
  SAL and MFC support
-Message-Id: <166698504930.1386510.17260012636035709007.b4-ty@kernel.org>
-Date: Fri, 28 Oct 2022 20:24:09 +0100
+Message-Id: <166698505174.1386510.10315804075480658283.b4-ty@kernel.org>
+Date: Fri, 28 Oct 2022 20:24:11 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -82,7 +81,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 15 Sep 2022 13:38:28 +0100, Srinivas Kandagatla wrote:
+On Thu, 27 Oct 2022 11:27:01 +0100, Srinivas Kandagatla wrote:
 > This patchset adds support to multi-port connections between AudioReach Modules
 > which is required for sophisticated graphs like ECNS or Speaker Protection.
 > Also as part of ECNS testing new module support for SAL and MFC are added.
