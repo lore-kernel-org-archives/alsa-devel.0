@@ -4,89 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4625EFA3740
-	for <alsa-devel@archiver.kernel.org>; Thu, 27 Oct 2022 20:43:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66C77FA373D
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Oct 2022 02:06:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9A242BCF;
-	Thu, 27 Oct 2022 22:42:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9A242BCF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7EE1A2AF3;
+	Fri, 28 Oct 2022 04:05:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EE1A2AF3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666903393;
-	bh=8g/NvpXF90lFd3MK6y1uk8Tp2PL5UqO5GTNCv7dIPN8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=SE284N5ro/B9EY1lTucPNK3p8sdwuhwtAw+xpVu3y4lYwdh+AxzAMeZaY0MlWLlkc
-	 MuvU+shnKQWJ+hqHIcbHXt2RPvpc7sYIJdGGDMQaQqmFFOA50RZGMDXjCrgwIrMa65
-	 TfFpKo7h8Aa2qn4i24gXqnBox3aSGhLbLE1FZAxM=
+	s=default; t=1666922762;
+	bh=9VS1pgNDCS2ZSURUuTagRPUskjKjTg4/IiYWB5ualMM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=jrKTZUDTqbniVXQo8ZijQXH623bpjEHH8S64C2IoUUUiz25rdueSRQRGYbC6rgxYi
+	 zvQEawuJEAMymKmQh47NpU9+AvRkhORjabZn/Xf1Y3ZRVnTZCz9VRxZt5Ol7lnj/ol
+	 AAuQSLHchBoEH66ew0thWyBQBGu95N0AQjr3qao8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D238F8025A;
-	Thu, 27 Oct 2022 22:42:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20555F8024C;
+	Fri, 28 Oct 2022 04:05:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9A4CDF8025E; Thu, 27 Oct 2022 22:42:22 +0200 (CEST)
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com
- [IPv6:2607:f8b0:4864:20::a2c])
+ id CF86DF8025A; Fri, 28 Oct 2022 04:05:10 +0200 (CEST)
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com
+ [IPv6:2607:f8b0:4864:20::62f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 87B46F80100
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 22:42:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87B46F80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7138DF800E1
+ for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2022 04:05:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7138DF800E1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="mfcsfrDE"
-Received: by mail-vk1-xa2c.google.com with SMTP id a66so1479966vkc.3
- for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 13:42:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=8g/NvpXF90lFd3MK6y1uk8Tp2PL5UqO5GTNCv7dIPN8=;
- b=mfcsfrDE3cI/GmCb3UBhTkX6gdZNSZz8f0vHfemZ3spIk9sGzim525YmQAu3FndJM/
- DyNGThWRZ+hL0jEqnxsVkKqwq7Qofv7yjYruWxi1JYVVH80AYmwFKsjuOrshqQVUUJXt
- GDyodQj01+3C1NUg31BGShO3HSqO3ziCeznVc=
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="XsXJYqPK"
+Received: by mail-pl1-x62f.google.com with SMTP id f23so3599775plr.6
+ for <alsa-devel@alsa-project.org>; Thu, 27 Oct 2022 19:05:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=CtkfxuL3SBLlD88tuz/f1paKiwFmKn/vjuKEUjO8cqY=;
+ b=XsXJYqPK4JB3mQvipMsjAP9YV0KxlKsKuibMQGgAAj2QsZ3PTj52EMjdyGx7Owftm9
+ w+6r7aVMpBzW6hQZaZcrs7y28UggkX0wpkdpgUNS1YXF5WaiLg+33bZa7gXEqxPVv+OQ
+ Pvgn46O1PHN6Du5bhJ0yefdZtY4J8NVPvz2cNJveVEb01zJSEDUwrz+phB7J1l4/3Gh5
+ M5cz1x32xJX8hNuEy1BLULv1N59tBKJwExNOJjVsEEZOm9yNXvyrX/L+FvqJx9jWR+y5
+ ImYD5VyG/M8MWPa/KkPm6aQcboM2wJO362towx4iERqjo+zb6wLy+9TVr+NkBEYhqHFX
+ n+IA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=8g/NvpXF90lFd3MK6y1uk8Tp2PL5UqO5GTNCv7dIPN8=;
- b=UN85FlIzjYZ42+4r+3EqLFrJwviME3Il8qMW/VjAEYqUmgG5Rh1RtEpsWLMIYLfd0Z
- YFeZXJ7cVozNnaL9vYgNEV8/XkON62CEOTzhWesx2NR7/C3iSHJtSf+kMrBKSIwhPrtp
- buu3y9EMnlTiy6cAP44ub7oZVTEr3UOfkpzzfjcmcntRfCiv4OaoadBF/HRi/xlzVzQe
- BulQWbORxf+p5ejylSAXsR+31xFBwlW1Vs7TKmyLLtrdY8VBFgAZmsirsAAzRQiEKc+N
- UMQQLCRKo0ihCAS6+ucMo+7znveMALkdhGejIhe8iWJROfmq7Wh3Me+zfOWCXQbr1tNw
- VKIg==
-X-Gm-Message-State: ACrzQf1WuSDxmgaiZ6S+5rRNyJ/5LEj4hDS/j7ciSA7MgH0HWNaXML+G
- YgwXziFMw8x43CPMXs7fz7KvAmF2F0NObxrGjBaqPw==
-X-Google-Smtp-Source: AMsMyM5e8H7JiXPDjiqKLc+IO2hoeZk2b3j2tenM4xk6Apsvq9cUZwBocikHt7yRA3c12RqM2flZsv1TL5jE9g/WLd8=
-X-Received: by 2002:a1f:9116:0:b0:3a2:362b:fea9 with SMTP id
- t22-20020a1f9116000000b003a2362bfea9mr27041203vkd.11.1666903334314; Thu, 27
- Oct 2022 13:42:14 -0700 (PDT)
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=CtkfxuL3SBLlD88tuz/f1paKiwFmKn/vjuKEUjO8cqY=;
+ b=z0377ZQR0ObPbtbTaTU58f+9I6hBxnHpFAjAWJ7HqeznCwCGCwzEY6RFm2LYSqdCHC
+ 5feqhg45PlrZ+amz90NnvOtQO8Jmd/tUloOmGfWEos4lzojxnNxgRv0f8KX/II2cfb1X
+ fJRHIOHVH/O3yNbzZfsSOhRC1glF+bTgwo/G6vP/ryJnLcwNRPhIDKE+sxmXM4704YTZ
+ Cmbe2OLJbEPE+0SaDbjWLFTg0Grh054KJLxZAIx4m9KySpX90Nu4Q6C85ridWVLmc8HQ
+ RgW5A4dVPVAQPDxsWTa/tHOMHL/BAAY+Yw3t+eXK2pFWDK30o8dWfVZcmvaYSgEggZKq
+ yZaQ==
+X-Gm-Message-State: ACrzQf06aZEoUkvFDjyJu1E8HPBQD0phNSuXGpVgS1Dsj/FZLxFiq4HN
+ 9+WmUoTpP8Mr3EHk1+rGAralkUnoip4WUjMQ
+X-Google-Smtp-Source: AMsMyM4ELz96nBdYlMpa9oj/SbM3Wvtf0e0xog72r/K2cnDTkbiJYJ+88LTsxyIlzFH5GTS2YvygBA==
+X-Received: by 2002:a17:903:2411:b0:184:7159:dce6 with SMTP id
+ e17-20020a170903241100b001847159dce6mr53958020plo.101.1666922699622; 
+ Thu, 27 Oct 2022 19:04:59 -0700 (PDT)
+Received: from localhost ([114.86.225.171]) by smtp.gmail.com with ESMTPSA id
+ y29-20020aa79e1d000000b0056b9df2a15esm1792528pfq.62.2022.10.27.19.04.58
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 27 Oct 2022 19:04:59 -0700 (PDT)
+From: Zhu Ning <zhuning0077@gmail.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v1] ASoC: sof_es8336: reduce pop noise on speaker
+Date: Fri, 28 Oct 2022 10:04:56 +0800
+Message-Id: <20221028020456.90286-1-zhuning0077@gmail.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-References: <20221024220015.1759428-1-nfraprado@collabora.com>
- <20221024220015.1759428-3-nfraprado@collabora.com>
- <CAGXv+5HJo5x2ieOegmv5vkfh+rTevdR_fri-7PeK+Gd+GXVjNw@mail.gmail.com>
- <20221027143627.nbbketezqunkclxh@notapiano>
- <CAGXv+5Hki=VsvZrtANujFYseBp0Lxj4WVf3nzT7cx1kkMmWPFg@mail.gmail.com>
- <CAGXv+5EZO0+Af-Fmz8JW0SiV+b5He8ZSrinJ3TtaCP0vEoW1Mg@mail.gmail.com>
- <20221027192015.qbmf4bwwok63wytz@notapiano>
-In-Reply-To: <20221027192015.qbmf4bwwok63wytz@notapiano>
-From: Chen-Yu Tsai <wenst@chromium.org>
-Date: Thu, 27 Oct 2022 13:42:01 -0700
-Message-ID: <CAGXv+5H3B33cTJ7mxd11D3WALHo90fCdTXKXZRfnaK4GATnPMA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] ASoC: dt-bindings: realtek, rt5682s: Add AVDD and
- MICVDD supplies
-To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Derek Fang <derek.fang@realtek.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, kernel@collabora.com,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Transfer-Encoding: 8bit
+Cc: Zhu Ning <zhuning0077@gmail.com>, pierre-louis.bossart@linux.intel.com,
+ tiwai@suse.com, broonie@kernel.org, Zhu Ning <zhuning@everest-semi.com>,
+ yangxiaohua@everest-semi.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,88 +95,129 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Oct 27, 2022 at 12:20 PM N=C3=ADcolas F. R. A. Prado
-<nfraprado@collabora.com> wrote:
->
-> On Thu, Oct 27, 2022 at 11:11:08AM -0700, Chen-Yu Tsai wrote:
-> > On Thu, Oct 27, 2022 at 10:48 AM Chen-Yu Tsai <wenst@chromium.org> wrot=
-e:
-> > >
-> > > On Thu, Oct 27, 2022 at 7:36 AM N=C3=ADcolas F. R. A. Prado
-> > > <nfraprado@collabora.com> wrote:
-> > > >
-> > > > On Tue, Oct 25, 2022 at 01:12:49PM -0700, Chen-Yu Tsai wrote:
-> > > > > On Mon, Oct 24, 2022 at 3:01 PM N=C3=ADcolas F. R. A. Prado
-> > > > > <nfraprado@collabora.com> wrote:
-> > > > > >
-> > > > > > The rt5682s codec can have two supplies: AVDD and MICVDD. They =
-are
-> > > > >
-> > > > > The actual chip also has LDO1_IN (for digital core and charge pum=
-p)
-> > > > > and DBVDD (for I/O). However in the Chromebook designs these two
-> > > > > and AVDD are all provided from the same power rail, through separ=
-ate
-> > > > > filter banks.
-> > > >
-> > > > What about rt5682 (no s), does that chip also have these same suppl=
-ies?
-> >
-> > (Missed this question)
-> >
-> > The RT5682 has the same supplies, plus the VBAT one.
-> >
-> > ChenYu
-> >
-> > > > Also, since you already gave the purpose of these other supplies, c=
-ould you also
-> > > > tell the purpose of AVDD, MICVDD and (for rt5682) VBAT? That way I =
-could add
-> > > > some description for them in the binding.
-> > >
-> > > As Mark mentioned in his reply, these are quite standard names.
-> > >
-> > > AVDD is for the analog bits. MICVDD is for the microphone bias.
-> > > VBAT is called battery power in the datasheet. The block diagram
-> > > shows it going through an internal controllable LDO whose output
-> > > then powers MICVDD. This could be used in designs that don't
-> > > include a suitable external supply for MICVDD. If MICVDD is provided,
-> > > then one would turn the internal LDO off.
-> > >
-> > > So either VBAT or MICVDD has to be provided.
->
-> So if I get this right we should be making the following supplies require=
-d:
-> AVDD
-> VBAT or MICVDD (on rt5682s there's no VBAT so just MICVDD)
+The Speaker GPIO needs to be turned on slightly behind the codec turned on.
+It also need to be turned off slightly before the codec turned down.
+Current code uses delay in DAPM_EVENT to do it but the mdelay delays the
+DAPM itself and thus has no effect. A delayed_work is added to turn on the
+speaker.
+The Speaker is turned off in .trigger since trigger is called slightly
+before the DAPM events.
 
-That's right.
+Signed-off-by: Zhu Ning <zhuning@everest-semi.com>
 
-> And for LDO1_ON and DBVDD what would be the best way to model? Should we =
-make
-> them required in the binding as well and add them pointing to the same re=
-gulator
-> from AVDD in the chromebook DT or just leave them as optional?
+------------
 
-They should be required. And we then describe them to match the board.
+v1: cancel delayed work while disabling speaker.
+---
+ sound/soc/intel/boards/sof_es8336.c | 60 ++++++++++++++++++++++-------
+ 1 file changed, 46 insertions(+), 14 deletions(-)
 
-ChenYu
+diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
+index fbb42e54947a..70713e4b07dc 100644
+--- a/sound/soc/intel/boards/sof_es8336.c
++++ b/sound/soc/intel/boards/sof_es8336.c
+@@ -63,6 +63,7 @@ struct sof_es8336_private {
+ 	struct snd_soc_jack jack;
+ 	struct list_head hdmi_pcm_list;
+ 	bool speaker_en;
++	struct delayed_work pcm_pop_work;
+ };
+ 
+ struct sof_hdmi_pcm {
+@@ -111,6 +112,46 @@ static void log_quirks(struct device *dev)
+ 		dev_info(dev, "quirk headset at mic1 port enabled\n");
+ }
+ 
++static void pcm_pop_work_events(struct work_struct *work)
++{
++	struct sof_es8336_private *priv =
++		container_of(work, struct sof_es8336_private, pcm_pop_work.work);
++
++	gpiod_set_value_cansleep(priv->gpio_speakers, priv->speaker_en);
++
++	if (quirk & SOF_ES8336_HEADPHONE_GPIO)
++		gpiod_set_value_cansleep(priv->gpio_headphone, priv->speaker_en);
++
++}
++
++static int sof_8336_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_card *card = rtd->card;
++	struct sof_es8336_private *priv = snd_soc_card_get_drvdata(card);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++	case SNDRV_PCM_TRIGGER_RESUME:
++		break;
++
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_STOP:
++		if (priv->speaker_en == false)
++			if (substream->stream == 0) {
++				cancel_delayed_work(&priv->pcm_pop_work);
++				gpiod_set_value_cansleep(priv->gpio_speakers, true);
++			}
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int sof_es8316_speaker_power_event(struct snd_soc_dapm_widget *w,
+ 					  struct snd_kcontrol *kcontrol, int event)
+ {
+@@ -122,19 +163,7 @@ static int sof_es8316_speaker_power_event(struct snd_soc_dapm_widget *w,
+ 
+ 	priv->speaker_en = !SND_SOC_DAPM_EVENT_ON(event);
+ 
+-	if (SND_SOC_DAPM_EVENT_ON(event))
+-		msleep(70);
+-
+-	gpiod_set_value_cansleep(priv->gpio_speakers, priv->speaker_en);
+-
+-	if (!(quirk & SOF_ES8336_HEADPHONE_GPIO))
+-		return 0;
+-
+-	if (SND_SOC_DAPM_EVENT_ON(event))
+-		msleep(70);
+-
+-	gpiod_set_value_cansleep(priv->gpio_headphone, priv->speaker_en);
+-
++	queue_delayed_work(system_wq, &priv->pcm_pop_work, msecs_to_jiffies(70));
+ 	return 0;
+ }
+ 
+@@ -344,6 +373,7 @@ static int sof_es8336_hw_params(struct snd_pcm_substream *substream,
+ /* machine stream operations */
+ static struct snd_soc_ops sof_es8336_ops = {
+ 	.hw_params = sof_es8336_hw_params,
++	.trigger = sof_8336_trigger,
+ };
+ 
+ static struct snd_soc_dai_link_component platform_component[] = {
+@@ -723,7 +753,8 @@ static int sof_es8336_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	INIT_LIST_HEAD(&priv->hdmi_pcm_list);
+-
++	INIT_DELAYED_WORK(&priv->pcm_pop_work,
++				pcm_pop_work_events);
+ 	snd_soc_card_set_drvdata(card, priv);
+ 
+ 	if (mach->mach_params.dmic_num > 0) {
+@@ -752,6 +783,7 @@ static int sof_es8336_remove(struct platform_device *pdev)
+ 	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 	struct sof_es8336_private *priv = snd_soc_card_get_drvdata(card);
+ 
++	cancel_delayed_work(&priv->pcm_pop_work);
+ 	gpiod_put(priv->gpio_speakers);
+ 	device_remove_software_node(priv->codec_dev);
+ 	put_device(priv->codec_dev);
+-- 
+2.37.2
 
-> Thanks,
-> N=C3=ADcolas
->
-> > >
-> > > ChenYu
-> > >
-> > > > Thanks,
-> > > > N=C3=ADcolas
-> > > >
-> > > > >
-> > > > > Neither does the datasheet specify the ordering of AVDD, DBVDD, a=
-nd
-> > > > > LDO1_IN for power sequencing, just that three should be toggled t=
-ogether.
-> > > > >
-> > > > > Should we model these? Or wait until some design actually splits =
-these?
-> > > > [..]
