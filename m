@@ -4,70 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AAB4ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Oct 2022 16:04:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D477ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Oct 2022 16:08:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21D501EE4;
-	Fri, 28 Oct 2022 18:03:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21D501EE4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D5D01B50;
+	Fri, 28 Oct 2022 18:07:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D5D01B50
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666973050;
-	bh=wNXKotwuuxgi6yUVKqYwBdPAK78kh9kgseKN/VlZMsQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=d+wWZ+AMxK8GngpvaRh+x7O8idnb/9qONhW2BPrXXPqQNx948PAnvMqg8Z8mOSVhZ
-	 apewZwOrp/nvC0VmIVI1hu8xtogCIbeMjqdydGVj2oj/c5dEsOcQgG/61qnU3yU9ts
-	 /yb8eBEdH2vxCyA/qyJOWYmxOkd+S8aVvgL4pH9s=
+	s=default; t=1666973319;
+	bh=fUUNzUPro632vHb3h48FvHNnok6nwfJQ9VSZfjuTw9E=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=S+LZhICu6Lsew14BO8otUoaDQbhkw1RrAomtMkluyxYIJmkak9cYmfVxL7xYL7YQ6
+	 HCBpfNm7UANXS0CyOxlvySzTliwgYXRIG03SipVIB8yDv8/jEoqbhJ/LyJar2aQbHA
+	 g07OdVeIStHuM9AxZcShcBOY2gq41iDuVja9Jvnw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17A52F804BD;
-	Fri, 28 Oct 2022 18:03:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E9B42F8016A;
+	Fri, 28 Oct 2022 18:07:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 26D7DF804DF; Fri, 28 Oct 2022 18:02:58 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 446C2F8024C; Fri, 28 Oct 2022 18:07:47 +0200 (CEST)
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com
+ [IPv6:2607:f8b0:4864:20::434])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D954BF8025A
- for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2022 18:02:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D954BF8025A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QoMxNCkb"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 0E78CB828F7;
- Fri, 28 Oct 2022 16:02:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99C60C433D7;
- Fri, 28 Oct 2022 16:02:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1666972973;
- bh=wNXKotwuuxgi6yUVKqYwBdPAK78kh9kgseKN/VlZMsQ=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=QoMxNCkbqCrOrhXaqnGoLA1VvcD3H75wwfwDf4OmM04KM6glN09KDgQGZ12VkVQVW
- DL+lkbzixjKEznebXjDlvZtDbvqWfHPChXvnNfsQokZPKiB/wg9z0EAZ/GcAeWvTE5
- ySAgSvhMx8cATgMQ3GT/8UMaFY0q3usVtI3roTXE5Un6D21+Ny0cZUDFhLJ3JLP+XU
- 5sc0suRcC57UX4gv45jaHbE1WVkH5UN81F+xxVhy2mTRtU/NwE+FJ/wGTVooHxJnaL
- Kw1W3b9ac5bff3ZNOX9/KOwbj4mNNVxaufY5KHuEJMgVtjXHPLemjuDMJbhNzR+dZU
- RMNwt01hsnRLA==
-From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, festevam@gmail.com, nicoleotsuka@gmail.com,
- Shengjiu Wang <shengjiu.wang@nxp.com>, 
- lgirdwood@gmail.com, Xiubo.Lee@gmail.com, shengjiu.wang@gmail.com,
- alsa-devel@alsa-project.org, perex@perex.cz
-In-Reply-To: <1666940627-7611-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1666940627-7611-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: fsl_xcvr: Add Counter registers
-Message-Id: <166697297135.717517.11089794085800695281.b4-ty@kernel.org>
-Date: Fri, 28 Oct 2022 17:02:51 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B43FF80095
+ for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2022 18:07:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B43FF80095
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key)
+ header.d=compal-corp-partner-google-com.20210112.gappssmtp.com
+ header.i=@compal-corp-partner-google-com.20210112.gappssmtp.com
+ header.b="TBwhRcOe"
+Received: by mail-pf1-x434.google.com with SMTP id k22so5162148pfd.3
+ for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2022 09:07:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=compal-corp-partner-google-com.20210112.gappssmtp.com; s=20210112;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=zOOeNwz1lHcYrYVw7YxVzbU02ivQx+BTv/5n41W3bX0=;
+ b=TBwhRcOe7hVlwmqY6HUfGe6XCFoCRE1+KHVYm8ubTunpaq8IuWSDdHZb0mv7AKJ0pb
+ 6vqGCQEcYnmEH7blpAnG8YrWz/NCb05cw2LMNk4fISFhMogzeBzvbhplkPQ2zmmjWTYE
+ DNuW5ykjw2/p1Z6y7Xp3DoQhat2+FvBfTxygO1qOR+N26sYyumfE9AsHNgN3/4BudxYx
+ 0DH+n2Uf9SF/Fgwh7/gu0zLI1Fj9hAv/bNvQfKQSGy8TK4Q/TDKr0bR8jxGrSja8hc3X
+ knx5Se357JcvpcBS4oKAz/Zf7pdwvbG0P5HYMh+ZEgBQcq6ByJ1WblRdXzR4gSxjwMlk
+ Jwdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=zOOeNwz1lHcYrYVw7YxVzbU02ivQx+BTv/5n41W3bX0=;
+ b=lwNCTookDIzkuGiGdSg43itRi/wFg8FrIHrKYmZDfx6zkMEnY7EEmlt120zojTPMox
+ rlb+xT5F00MZ1LHbGrEBt84aaRyyow3ai2q0p0CZ9Lp91HwcPtxYv5DSQgMlN0n2SsGc
+ dGSbmZmYkRiRXiy4DZpXiwsQRTFfkZ0z2nB4tjAJH+CYVK49zX9djt1f+5YrCYu2czAQ
+ WhjT43PI65XAirAC4fZEveYxrw0zz1Ly7gkKnqA4wfeg9ppv1yFoP046nFONgJZw4dv7
+ JOT3O9iC7Um2sEPCn4Kuvpcml/ZVJiUEEICLAOx+Ee49osDU808c5LdoIxnbAMxo9VxS
+ HOhw==
+X-Gm-Message-State: ACrzQf3WhNZytVjwYXb1aAFhAeuAi94Yej0lkjnK1tC1WcyLCbCxYI4N
+ xjwPyZ3Y1ggG0SLlH8ioVlhtYA==
+X-Google-Smtp-Source: AMsMyM4RcOrg2Q1kN+KY0hi/d1VbeCr4RdhBFV8N97v5IKoJxGQz8UMgUwHdhkR8Xx3H/wL+OZoRwg==
+X-Received: by 2002:a05:6a00:847:b0:56c:b03f:8a1a with SMTP id
+ q7-20020a056a00084700b0056cb03f8a1amr140694pfk.47.1666973261937; 
+ Fri, 28 Oct 2022 09:07:41 -0700 (PDT)
+Received: from localhost.localdomain (118-167-210-30.dynamic-ip.hinet.net.
+ [118.167.210.30]) by smtp.gmail.com with ESMTPSA id
+ b70-20020a621b49000000b0056abfa74eddsm3112071pfb.147.2022.10.28.09.07.38
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 28 Oct 2022 09:07:41 -0700 (PDT)
+From: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/2] Modify documentation and machine driver for
+ mt8186_rt1019_rt5682s sound card
+Date: Sat, 29 Oct 2022 00:07:31 +0800
+Message-Id: <20221028160733.1390230-1-ajye_huang@compal.corp-partner.google.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-fc921
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ "chunxu . li" <chunxu.li@mediatek.com>,
+ =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?=
+ <nfraprado@collabora.com>, Mark Brown <broonie@kernel.org>,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>,
+ linux-mediatek@lists.infradead.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-arm-kernel@lists.infradead.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,42 +108,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 28 Oct 2022 15:03:47 +0800, Shengjiu Wang wrote:
-> These counter registers are part of register list,
-> add them to complete the register map
-> 
-> - DMAC counter control registers
-> - Data path Timestamp counter register
-> - Data path bit counter register
-> - Data path bit count timestamp register
-> - Data path bit read timestamp register
-> 
-> [...]
+v1:
+- Documentation: Add dmic-gpios optional prop for two DMICs case.
+- dmic codec driver: 
+  - "dmic-gpios" property is used for amixer control to switch
+     the dmic signal source between the Front and Rear Dmic.
 
-Applied to
+Thanks for the review!
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Ajye Huang (2):
+  ASoC: mediatek: dt-bindings: modify machine bindings for two MICs case
+  ASoC: mediatek: mt8186-rt5682: Modify machine driver for two DMICs
+    case
 
-Thanks!
+ .../sound/mt8186-mt6366-rt1019-rt5682s.yaml   |   6 +
+ .../mt8186/mt8186-mt6366-rt1019-rt5682s.c     | 104 +++++++++++++++++-
+ 2 files changed, 109 insertions(+), 1 deletion(-)
 
-[1/1] ASoC: fsl_xcvr: Add Counter registers
-      commit: 107d170dc46e14cfa575d1b995107ef2f2e51dfe
+-- 
+2.25.1
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
