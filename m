@@ -4,42 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E70FEECAAA1
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Oct 2022 10:28:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 327C6ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Fri, 28 Oct 2022 10:29:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2208122DC;
-	Fri, 28 Oct 2022 12:27:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2208122DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36CF7237B;
+	Fri, 28 Oct 2022 12:28:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36CF7237B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1666952905;
-	bh=HUCHtGo5OqBeDHVIkKbMbdpxmHfV5BXqjHLAWCLswaM=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=AAe4IKTVXV65gSYmsmn4bmaJb/mrs9lDqdbAPWETtVr1SfXM3k6IXY5lFDcfX7tl8
-	 e16XUweb3ZqG/GAegiY+6XtQHUdbsFH1nqWA0vQ7BFI86PhVlz45J+TXob3nXePZW2
-	 uztIQX84QWLKBHCHOwZZd9ZTxYZU848/2EvYksTs=
+	s=default; t=1666952938;
+	bh=XVAIcvMCzJaUV+NGmV+BTgNSJsf76Q70kbU7CcZB4bw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=DXo+07TC4h27OYvtZW3EcALAS6OUNtzwP80IDKRQ/MxDCdvtTGBi7j3IJJ2GBO1gH
+	 UfJsfD4LkUpux12lTb5r8gZacNjK/q8I07i4GlyLaz8qYAH89Mi/AflbSVDsbnlbWG
+	 lgukyTjhL5o5Fm/9StAa5yYu2q4a66lBCZ2tlj0E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C754EF8024C;
-	Fri, 28 Oct 2022 12:27:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D22E6F804C1;
+	Fri, 28 Oct 2022 12:28:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B4973F8025A; Fri, 28 Oct 2022 12:27:33 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id A90ABF80095
- for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2022 12:27:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A90ABF80095
+ id 2D716F804D0; Fri, 28 Oct 2022 12:28:04 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97B3AF804BD
+ for <alsa-devel@alsa-project.org>; Fri, 28 Oct 2022 12:27:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97B3AF804BD
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="qSw5M9DL"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 29S8GWBB025212; Fri, 28 Oct 2022 05:27:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=OzT4Gt69XWBmuQAva6s+oI0KZ1tAj7O3wcHzoxG9PKA=;
+ b=qSw5M9DLxOSYMYfL5zaOGwIm1Sy5N18sCffeFuYwtfy5dPB8hapUY6VWSXIeXRw6vXla
+ PCOINUsoOWiPRy5pBGU9OvPCX9uV2tIE7pbBnJ1GeIr3eFo7DMJzZ+oP+z3Z0d5A4c8x
+ kDRGG1Pj37w++wYeoyBCunMCODLyLCWnF0Yg56kFMsu7m9+aMFoEHYc9z7ErTot9l1ca
+ U6flmTcnl10xEVfoUgGqskOuxvGzZdzFGTBJhu7dgQfsi6ecJis3nhmJ6FMevo2qSTEp
+ APBGowlwZI9Dxfb2qmgEPO2ut4gO6uSn3jyeV9ft7tG4a8gd9BYRyqfSMD7bHKPkBcuc lQ== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kfaq1a7xs-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 28 Oct 2022 05:27:54 -0500
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Fri, 28 Oct
+ 2022 05:27:52 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.12 via
+ Frontend Transport; Fri, 28 Oct 2022 05:27:52 -0500
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.202.160])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 93F8EB06;
+ Fri, 28 Oct 2022 10:27:52 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v1] ALSA: hda/realtek: Add quirk for ASUS Zenbook using CS35L41
+Date: Fri, 28 Oct 2022 11:27:42 +0100
+Message-ID: <20221028102742.2588687-1-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1666952847013259888-webhooks-bot@alsa-project.org>
-References: <1666952847013259888-webhooks-bot@alsa-project.org>
-Subject: alsamixer not readable in xterm
-Message-Id: <20221028102733.B4973F8025A@alsa1.perex.cz>
-Date: Fri, 28 Oct 2022 12:27:33 +0200 (CEST)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: uVLVHDzsVvcSQDhgDejHTJwFmA6x4T1O
+X-Proofpoint-GUID: uVLVHDzsVvcSQDhgDejHTJwFmA6x4T1O
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,15 +91,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #176 was opened from Frank-Steiner:
+This Asus Zenbook laptop use Realtek HDA codec combined with
+2xCS35L41 Amplifiers using I2C with Internal Boost.
 
-Hi,
-after upgrading from opensuse 15.3 to 15.4 we realized alsamixer is not useable in standard xterm with white background (which is our default) because the black background vanished. Found https://mailman.alsa-project.org/pipermail/alsa-devel/2021-June/185925.html which explains it. 
-But that patch was a bad idea for everyone just using standard xterms and not themed ones.
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Adding sth. like a "--black-background" switch could be helpful for those people not working with themed X11...
-cu,
-Frank
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 701a72ec5629a..b4f7ff8cfe41b 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9404,6 +9404,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x1e8e, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA401),
+ 	SND_PCI_QUIRK(0x1043, 0x1c52, "ASUS Zephyrus G15 2022", ALC289_FIXUP_ASUS_GA401),
+ 	SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14", ALC289_FIXUP_ASUS_GA401),
++	SND_PCI_QUIRK(0x1043, 0x1f12, "ASUS UM5302", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1f92, "ASUS ROG Flow X16", ALC289_FIXUP_ASUS_GA401),
+ 	SND_PCI_QUIRK(0x1043, 0x3030, "ASUS ZN270IE", ALC256_FIXUP_ASUS_AIO_GPIO2),
+ 	SND_PCI_QUIRK(0x1043, 0x831a, "ASUS P901", ALC269_FIXUP_STEREO_DMIC),
+-- 
+2.34.1
 
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/176
-Repository URL: https://github.com/alsa-project/alsa-utils
