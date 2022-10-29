@@ -4,81 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 718D8C38A02
-	for <alsa-devel@archiver.kernel.org>; Fri, 28 Oct 2022 23:48:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6A68C38A02
+	for <alsa-devel@archiver.kernel.org>; Sat, 29 Oct 2022 00:07:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ADCD986F;
-	Sat, 29 Oct 2022 01:47:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADCD986F
+	by alsa0.perex.cz (Postfix) with ESMTPS id E895D86E;
+	Sat, 29 Oct 2022 02:06:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E895D86E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667000877;
-	bh=hB5fE6S2HQ2dHPl7HVJSxxHZcSmMmavYRsA3XNFzfwM=;
+	s=default; t=1667002048;
+	bh=9mAs5jNV4WUCIWHIz12h6HYmxWFxyAyczC1Iz+15III=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=g1u1A5gkgbWKmxM0cQbrr9zMX/oTf5py4bytYqih9zz7BQLHY3D+/ilcDnIa9nnVi
-	 L/Yz25ifnQNqy+iGCnzFAUTPbQOp/tXM4l7kXB+2ao4wayZZCPQXhRqT7VWCKdhcg1
-	 5fQfVliDNNWm31tpBOjMv6erCdgEMLaXRGAZ7+aA=
+	b=RynbNzpLbzMQXfph0MFrWVyrWchjaPy9PnZ22eugSQuCTjK8y778PRRNUit50/oX1
+	 KzdLm1xQbSKfcwnGweClBoknYum6+JAg3SbH7+n0+m2W+5lBvoZBLoZirZoJdKGFfx
+	 cQ/dJKsPg85lS1NSkTl6PNxD/zIZ+4oLKLyAd0yc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48AE8F8024C;
-	Sat, 29 Oct 2022 01:47:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 858DFF8024C;
+	Sat, 29 Oct 2022 02:06:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE03FF8025A; Sat, 29 Oct 2022 01:47:05 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id C98C5F8025A; Sat, 29 Oct 2022 02:06:36 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F41CF8016A
- for <alsa-devel@alsa-project.org>; Sat, 29 Oct 2022 01:47:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F41CF8016A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 08827F80095
+ for <alsa-devel@alsa-project.org>; Sat, 29 Oct 2022 02:06:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08827F80095
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="c+IMnUh0"
+ header.b="O4Jn5exJ"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 33E9962AE5;
- Fri, 28 Oct 2022 23:47:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16871C433D6;
- Fri, 28 Oct 2022 23:46:57 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id EFB7762B27;
+ Sat, 29 Oct 2022 00:06:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6815CC433C1;
+ Sat, 29 Oct 2022 00:06:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1667000819;
- bh=hB5fE6S2HQ2dHPl7HVJSxxHZcSmMmavYRsA3XNFzfwM=;
+ s=k20201202; t=1667001987;
+ bh=9mAs5jNV4WUCIWHIz12h6HYmxWFxyAyczC1Iz+15III=;
  h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=c+IMnUh0cw/5I9OwpiVH/87RYGhRzQcEY3LqtjiL4TOTD/mWeymZWRyBuQhoFftq4
- SjAHCsDgyk0WIlHpVUZ4nvg44DzjbYR7iRq/t+1oNpSyDbD104TZ3O1HLnEJ2fAGC1
- +Sj3j/EbDe/kJLer2o+/9kfm9BvS9V8yuCScICsdAWBac9MgrfzjHbXqnvuLs9sbVJ
- OdZhjO0oMDHvnOhqrS+HFTFD+yONBWYSSSkYRRhOHPr/xY0hXLmOAG7kznEuNmWj6k
- O0jDOMiNfIreJW3/wo7WTSlRliOUEGYknlJvHW5xZx9yezMPuyNoY5jYk0BFCRfn4o
- w7szPXFkQdumg==
-Message-ID: <d5bb33db-5c26-fbfa-0d12-46ca41d80785@kernel.org>
-Date: Fri, 28 Oct 2022 19:46:56 -0400
+ b=O4Jn5exJSC1oinHzGUVzKD6MQB97DxrY5kPQCT7jfJSvJEeaH+NW8VeyzSdCXkGfg
+ nQsuxM5d3FLx+aVigLkvxDNRt+tTF4xkJlOy8KWJLzvWjBtRqqOjIhWjD4hWVzn2sA
+ L/VBCQttsy+qON+gUPZ5CnhjD6kNMoK8A/5+f+1S0TugTv9pEaLx5G8aDz9u/jyN6p
+ KtU8fV3gz2v5ovTbnuh7gvZz5eW5z+cu/0CIWWaSjDHLA/+hzzShWiDNzz39EH04Xj
+ usoRuNEEb+VIwPgqxNotwSBEj6i97F2+QSR7HQRxJ16mHcGqibPuiIhslcWgtVYJve
+ RQWDlgClnvANA==
+Message-ID: <1cd3a240-886e-82cb-e821-74f82f1afec1@kernel.org>
+Date: Fri, 28 Oct 2022 20:06:23 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.4.1
-Subject: Re: [PATCH 10/12] dt-bindings: mediatek: mt8188: add audio afe
+Subject: Re: [PATCH v2 10/12] dt-bindings: mediatek: mt8188: add audio afe
  document
 Content-Language: en-US
-To: =?UTF-8?B?VHJldm9yIFd1ICjlkLPmlofoia8p?= <Trevor.Wu@mediatek.com>,
- "robh@kernel.org" <robh@kernel.org>
-References: <20220930145701.18790-1-trevor.wu@mediatek.com>
- <20220930145701.18790-11-trevor.wu@mediatek.com>
- <166457526101.1112313.13428811477972046652.robh@kernel.org>
- <ac5d872ac8dfa40bd5238589f85d78ad6ba6d706.camel@mediatek.com>
+To: Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org, tiwai@suse.com,
+ robh+dt@kernel.org, matthias.bgg@gmail.com, p.zabel@pengutronix.de
+References: <20221021082719.18325-1-trevor.wu@mediatek.com>
+ <20221021082719.18325-11-trevor.wu@mediatek.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <ac5d872ac8dfa40bd5238589f85d78ad6ba6d706.camel@mediatek.com>
+In-Reply-To: <20221021082719.18325-11-trevor.wu@mediatek.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>, "tiwai@suse.com" <tiwai@suse.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
- "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ angelogioacchino.delregno@collabora.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,18 +89,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 04/10/2022 23:57, Trevor Wu (吳文良) wrote:
->> date:
->>
->> pip3 install dtschema --upgrade
->>
->> Please check and re-submit.
->>
+On 21/10/2022 04:27, Trevor Wu wrote:
+> Add mt8188 audio afe document.
 > 
-> After upgrading dtschema, I can see the problem.
-> I will correct it in V2.
+> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
 
-Correct also cc list.
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC.  It might happen, that command when run on an older
+kernel, gives you outdated entries.  Therefore please be sure you base
+your patches on recent Linux kernel.
+
+> ---
+>  .../bindings/sound/mt8188-afe-pcm.yaml        | 187 ++++++++++++++++++
+>  1 file changed, 187 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/mt8188-afe-pcm.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/mt8188-afe-pcm.yaml b/Documentation/devicetree/bindings/sound/mt8188-afe-pcm.yaml
+> new file mode 100644
+> index 000000000000..b2c548c31e4d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/mt8188-afe-pcm.yaml
+
+Name matching compatible.
 
 
 Best regards,
