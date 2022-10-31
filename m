@@ -4,58 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBC65FA3744
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Oct 2022 13:44:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37C5FFA3744
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Oct 2022 13:49:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 173471670;
-	Mon, 31 Oct 2022 14:44:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 173471670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 528011670;
+	Mon, 31 Oct 2022 14:48:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 528011670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667223893;
-	bh=hyneCm479zd0bR4fv3bx7EGLU12t+6Ed6Njv3CjifdA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=WrExMSt2cTVsRU7ZLKOzstla/uD/Sb3uFUJbWNY87ro8SMtNetwCZa0uBfIkp1LSi
-	 AYIM+t/g0o81JNTCCs7QyIvCxZBwBCqM2hC1jhn638EfR31257XocuRokKr9gnX7RB
-	 WbZKlC+f/jqM4Xl2qbDMolL/yQDbFNP2ts2ogRLc=
+	s=default; t=1667224138;
+	bh=zloeK88Mo3rXvIh1QDgstrp2zmvNfrPREk0bl86BddI=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=AG0pNmGY+qsH6N9cTLN7fR8Iu8rZ12eKxCU/4Ei5H88wffFQF6bjBChsmf1NwfWxb
+	 JgJpFoMVwmNyb1DBt2YZ7IbrSqi/1wmTS+rEHuHcO5Zz21ymIn8gWi1jk0z6hypPkt
+	 LK96c0wEp0VEsuhjBpKBoKNEj0n60akF5bMPjavM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6D42F8015B;
-	Mon, 31 Oct 2022 14:44:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E9400F800E1;
+	Mon, 31 Oct 2022 14:48:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2A78F80163; Mon, 31 Oct 2022 14:44:01 +0100 (CET)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ id DA13EF800F3; Mon, 31 Oct 2022 14:48:06 +0100 (CET)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D22ACF800E1
- for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 14:43:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D22ACF800E1
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.57])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4N1DrQ0R0JzHvVP;
- Mon, 31 Oct 2022 21:43:34 +0800 (CST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57202F800E1
+ for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 14:48:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57202F800E1
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.56])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4N1DxW0LX4zmVZv;
+ Mon, 31 Oct 2022 21:47:59 +0800 (CST)
 Received: from dggpemm500013.china.huawei.com (7.185.36.172) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 31 Oct 2022 21:43:51 +0800
-Received: from ubuntu1804.huawei.com (10.67.175.36) by
- dggpemm500013.china.huawei.com (7.185.36.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 31 Oct 2022 21:43:51 +0800
-From: Chen Zhongjin <chenzhongjin@huawei.com>
-To: <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH] ASoC: soc-utils: Remove __exit for snd_soc_util_exit()
-Date: Mon, 31 Oct 2022 21:40:31 +0800
-Message-ID: <20221031134031.256511-1-chenzhongjin@huawei.com>
-X-Mailer: git-send-email 2.17.1
+ 15.1.2375.31; Mon, 31 Oct 2022 21:48:00 +0800
+Received: from [10.67.108.67] (10.67.108.67) by dggpemm500013.china.huawei.com
+ (7.185.36.172) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 31 Oct
+ 2022 21:48:00 +0800
+Message-ID: <4712b4ec-1e76-862c-4383-9496233a262a@huawei.com>
+Date: Mon, 31 Oct 2022 21:47:58 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.175.36]
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0
+Subject: Re: [PATCH] ASoC: core: Fix use-after-free in snd_soc_exit()
+To: Mark Brown <broonie@kernel.org>
+References: <20221028031603.59416-1-chenzhongjin@huawei.com>
+ <166697367874.746166.7503879951900455151.b4-ty@kernel.org>
+ <b30fa009-9174-da95-5799-149837e199e6@huawei.com>
+ <Y1/IC1DWcKzvSDb5@sirena.org.uk>
+Content-Language: en-US
+From: Chen Zhongjin <chenzhongjin@huawei.com>
+In-Reply-To: <Y1/IC1DWcKzvSDb5@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.108.67]
 X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  dggpemm500013.china.huawei.com (7.185.36.172)
 X-CFilter-Loop: Reflected
-Cc: tiwai@suse.com, broonie@kernel.org, chenzhongjin@huawei.com,
- lgirdwood@gmail.com
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,30 +80,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-snd_soc_util_exit() is called in __init snd_soc_init() for cleanup.
-Remove the __exit annotation for it to fix the build warning:
+On 2022/10/31 21:05, Mark Brown wrote:
+> On Sat, Oct 29, 2022 at 12:34:19PM +0800, Chen Zhongjin wrote:
+>
+>> Since snd_soc_util_exit is only used in snd_soc_init() and snd_soc_exit(),
+>> could you please add this fix to the patch and delete _exit for
+>> snd_soc_util_exit()?
+>> Or should I send a v2 version to replace current one?
+> As the mail you got when the patch was applied said:
+>
+> | If any updates are required or you are submitting further changes they
+> | should be sent as incremental updates against current git, existing
+> | patches will not be replaced.
+>
+> so please submit another patch on top of what's there currently as
+> normal.
 
-WARNING: modpost: sound/soc/snd-soc-core.o: section mismatch in reference: init_module (section: .init.text) -> snd_soc_util_exit (section: .exit.text)
+Thanks for answer! Will remember for the next time.
 
-Fixes: 6ec27c53886c ("ASoC: core: Fix use-after-free in snd_soc_exit()")
-Signed-off-by: Chen Zhongjin <chenzhongjin@huawei.com>
----
- sound/soc/soc-utils.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Have send the fix up patch:
 
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index a3b6df2378b4..a4dba0b751e7 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -264,7 +264,7 @@ int __init snd_soc_util_init(void)
- 	return ret;
- }
- 
--void __exit snd_soc_util_exit(void)
-+void snd_soc_util_exit(void)
- {
- 	platform_driver_unregister(&soc_dummy_driver);
- 	platform_device_unregister(soc_dummy_dev);
--- 
-2.17.1
+ASoC: soc-utils: Remove __exit for snd_soc_util_exit()
+
+
+Best,
+
+Chen
 
