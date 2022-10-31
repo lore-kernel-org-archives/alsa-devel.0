@@ -4,77 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 013EAFA3741
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Oct 2022 20:39:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59B4CECAAA1
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Oct 2022 20:49:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7696D1620;
-	Mon, 31 Oct 2022 21:38:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7696D1620
+	by alsa0.perex.cz (Postfix) with ESMTPS id C44FA1652;
+	Mon, 31 Oct 2022 21:48:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C44FA1652
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667248749;
-	bh=DGQPVO1YfTFNH+1iT2+Jg/UbLmbdBE/wwWeHbVOm8XA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=bakUWaK+1YEBVC7Pc37E/3GahoK1p2eRhOFvaanJEGSw3yB6w/juUh97yEENqLOPD
-	 uLNeqRLrLL4RXestYy2gkOlsW2yqc26hX93WzgFuvV3xD4dpfKMLEr3YhjdyVTvcUe
-	 lIGqGqHTKfBDHqXgQiFBiNxvsIcdMfhNIIl2SAlM=
+	s=default; t=1667249343;
+	bh=O1v863hX945DEcIME2b4UEzO+vPVa0QHCHXH0He84SE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=K/rmovJjKrFYeDDVz3UK+Np3MZpMtwH/zAvwfWPd8Q0xIrsTFiAuSSubgwLvqPp5s
+	 kAcVTy92Ml2lhzlRBc+fK4rPMi31WIKugLpmxG9vwIJFbK9FM/2fTJERPpfaUh6bhN
+	 d02Z+NlTqLXUUAHGLx6HTfdSajubszEkdYoW9rL8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4659F800F3;
-	Mon, 31 Oct 2022 21:38:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3DBF2F800F3;
+	Mon, 31 Oct 2022 21:48:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7CA2BF8015B; Mon, 31 Oct 2022 21:38:17 +0100 (CET)
-Received: from mailrelay4-1.pub.mailoutpod1-cph3.one.com
- (mailrelay4-1.pub.mailoutpod1-cph3.one.com [46.30.210.185])
+ id 46332F8015B; Mon, 31 Oct 2022 21:48:11 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3CBE7F800CC
+ for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 21:48:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CBE7F800CC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="lKpgE8UB"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B2507F800E1
- for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 21:38:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2507F800E1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=berginkonsult.se header.i=@berginkonsult.se
- header.b="cw2wtB63"; 
- dkim=permerror (0-bit key) header.d=berginkonsult.se
- header.i=@berginkonsult.se header.b="UUbWdtHD"
-Received: from mailrelay2.pub.mailoutpod2-cph3.one.com
- (mailrelay2.pub.mailoutpod2-cph3.one.com [104.37.34.7])
- by mailrelay4.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPS
- id ee76cdc0-595b-11ed-824f-d0431ea8bb10;
- Mon, 31 Oct 2022 20:38:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=berginkonsult.se; s=rsa1;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
- from; bh=LZgWzj1DV2YwhApqlnR9pyjFzmdX/olcHYd6kth181k=;
- b=cw2wtB63eQ+YbjTSWFVI8qwuoAoCJohU00hA1XaMa2wXrQu3zg25SPFjm4GGlsXrMLgBNpGqd330d
- dHtflKrhHaNMLn+JSoQbAxSGT4Tohjem9mssfmPp/NDhfJE0f2Yke5qYXTsViEkfSHn13tmeO/HhLW
- 5QcZ1VOCZ1ZrgRj8+OCvhmN0moTXy4dc/aK3UuO8/Xuwoj9bvn4DEbAkYRA9exkjo5ddjsxjSrZsJn
- Z1bjpztiRvE3rNZPk74c+hYESJkZQ4ayGCQzwZ7BLMCWOCeD52ZeOOB3qrAyAUS2VIL416ddxgE4D8
- pfaVe3GtG/AD1nURqI/QKRMY5Q86h1A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
- d=berginkonsult.se; s=ed1;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
- from; bh=LZgWzj1DV2YwhApqlnR9pyjFzmdX/olcHYd6kth181k=;
- b=UUbWdtHD61jjgMwJMFUmB3eL3k7QZloqeKzvNRGODN8Lc60htWCV6rB42a0H1XAKOJuNFgaggEZQm
- 98DANqXDQ==
-X-HalOne-ID: ec594405-595b-11ed-a68e-335755252108
-Received: from pbergin-7420.. (ua-213-113-159-147.bbcust.telenor.se
- [213.113.159.147]) by mailrelay2 (Halon) with ESMTPSA
- id ec594405-595b-11ed-a68e-335755252108;
- Mon, 31 Oct 2022 20:38:09 +0000 (UTC)
-From: Peter Bergin <peter@berginkonsult.se>
-To: james.schulman@cirrus.com, david.rhodes@cirrus.com,
- tanureal@opensource.cirrus.com, rf@opensource.cirrus.com,
- broonie@kernel.org, ckeepax@opensource.cirrus.com
-Subject: [PATCH v3] ASoC: cs42xx8-i2c.c: add module device table for of
-Date: Mon, 31 Oct 2022 21:37:23 +0100
-Message-Id: <20221031203723.168177-1-peter@berginkonsult.se>
-X-Mailer: git-send-email 2.34.1
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 74D4061453;
+ Mon, 31 Oct 2022 20:48:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25DF4C433D6;
+ Mon, 31 Oct 2022 20:48:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1667249283;
+ bh=O1v863hX945DEcIME2b4UEzO+vPVa0QHCHXH0He84SE=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=lKpgE8UBzPnYE8ZIlS9EGGNr9CAT9sceJxbPtgUhThoajOrAecoZ0vPcZ8ah1tWo1
+ hwwfXUyEGcWhpin0jwG2LpHUKnLoWDkeEinaP8h1zHn1wjd108e3It0LMrjKFaKPuB
+ kEH+FKBQl3Mpu6OG6PU0OI0bpDhsuv5dthQFr70iA5QuxE1hdHRHNHkU205EX/ZBCF
+ Ir1vIX7jv80QzH/dGbThZzXqy0evDjw2D5OVZEUYL8y1yNAuybCgA016r4lax0U8fB
+ XJcXsFZrCfM89PUTMI1reDy2MKSlWcp7+qbo4FiOEwPVWw4wgv2M3nWJBZ7g4Bw08w
+ RVOvVfQdjVhEA==
+Date: Mon, 31 Oct 2022 20:47:57 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v1 1/2] ASoC: dt-bindings: Document dmic_sel-gpios
+ optional prop for two DMICs case
+Message-ID: <Y2A0fdwnHTqw/NDw@sirena.org.uk>
+References: <20221028102450.1161382-1-ajye_huang@compal.corp-partner.google.com>
+ <20221028102450.1161382-2-ajye_huang@compal.corp-partner.google.com>
+ <Y1vDYNOwZNOco1hq@sirena.org.uk>
+ <20221031184343.GA3235956-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Peter Bergin <peter@berginkonsult.se>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="pRY+kIEVcpKIGhxD"
+Content-Disposition: inline
+In-Reply-To: <20221031184343.GA3235956-robh@kernel.org>
+X-Cookie: Are you still an ALCOHOLIC?
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ angelogioacchino.delregno@collabora.corp-partner.google.com,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,145 +91,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When trying to connect the device with the driver through
-device-tree it is not working. The of_device_id is defined in
-cs42xx8.c but is not correctly included in cs42xx8-i2c.c.
 
-Move of_device_id table to cs42xx8-i2c.c. Get cs42xx8_driver_data
-in cs42xx8_i2c_probe() and pass as argument to cs42xx8_probe(). Move
-error check if no driver data found to cs42xx8_i2c_probe().
+--pRY+kIEVcpKIGhxD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Peter Bergin <peter@berginkonsult.se>
----
-v3: Revert new funtionality in _probe and not changing behavior.
-    Move back data structs to common module to be able to use
-    for other interfaces later.
+On Mon, Oct 31, 2022 at 01:43:43PM -0500, Rob Herring wrote:
+> On Fri, Oct 28, 2022 at 12:56:16PM +0100, Mark Brown wrote:
 
-v2: reworked and removed duplication of cs42xx8_of_match
+> > If we're going to do this we should also allow the bindings to label the
+> > mics appropriately so that the control presented can reflect the actual
+> > hardware.  It does feel like it might fit better to do this separately
+> > to the DMIC driver as a mux between the DMIC and the DAI it's connected
+> > to but equally with the way things are at the minute that feels like
+> > it's probably disproportionate effort.
 
- sound/soc/codecs/cs42xx8-i2c.c | 28 +++++++++++++++++++++++++---
- sound/soc/codecs/cs42xx8.c     | 22 +++-------------------
- sound/soc/codecs/cs42xx8.h     |  3 +--
- 3 files changed, 29 insertions(+), 24 deletions(-)
+> Are there other needs for DAI muxes? We already have a mux binding, so=20
+> defining a DAI mux would work for any type of muxing control, not just=20
+> GPIO.
 
-diff --git a/sound/soc/codecs/cs42xx8-i2c.c b/sound/soc/codecs/cs42xx8-i2c.c
-index bd80e9fc907f..052ffb7dcfc6 100644
---- a/sound/soc/codecs/cs42xx8-i2c.c
-+++ b/sound/soc/codecs/cs42xx8-i2c.c
-@@ -12,15 +12,30 @@
- 
- #include <linux/i2c.h>
- #include <linux/module.h>
-+#include <linux/of_device.h>
- #include <linux/pm_runtime.h>
- #include <sound/soc.h>
- 
- #include "cs42xx8.h"
- 
-+static const struct of_device_id cs42xx8_of_match[];
-+
- static int cs42xx8_i2c_probe(struct i2c_client *i2c)
- {
--	int ret = cs42xx8_probe(&i2c->dev,
--			devm_regmap_init_i2c(i2c, &cs42xx8_regmap_config));
-+	int ret;
-+	struct cs42xx8_driver_data *drvdata;
-+	const struct of_device_id *of_id;
-+
-+	of_id = of_match_device(cs42xx8_of_match, &i2c->dev);
-+	if (!of_id) {
-+		dev_err(&i2c->dev, "failed to find driver data\n");
-+		return -EINVAL;
-+	}
-+
-+	drvdata = (struct cs42xx8_driver_data *)of_id->data;
-+
-+	ret = cs42xx8_probe(&i2c->dev,
-+		devm_regmap_init_i2c(i2c, &cs42xx8_regmap_config), drvdata);
- 	if (ret)
- 		return ret;
- 
-@@ -35,7 +50,14 @@ static void cs42xx8_i2c_remove(struct i2c_client *i2c)
- 	pm_runtime_disable(&i2c->dev);
- }
- 
--static struct i2c_device_id cs42xx8_i2c_id[] = {
-+static const struct of_device_id cs42xx8_of_match[] = {
-+	{ .compatible = "cirrus,cs42448", .data = &cs42448_data, },
-+	{ .compatible = "cirrus,cs42888", .data = &cs42888_data, },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, cs42xx8_of_match);
-+
-+static const struct i2c_device_id cs42xx8_i2c_id[] = {
- 	{"cs42448", (kernel_ulong_t)&cs42448_data},
- 	{"cs42888", (kernel_ulong_t)&cs42888_data},
- 	{}
-diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
-index d14eb2f6e1dd..4558ec38a7ac 100644
---- a/sound/soc/codecs/cs42xx8.c
-+++ b/sound/soc/codecs/cs42xx8.c
-@@ -13,7 +13,6 @@
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/gpio/consumer.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
-@@ -511,17 +510,8 @@ const struct cs42xx8_driver_data cs42888_data = {
- };
- EXPORT_SYMBOL_GPL(cs42888_data);
- 
--const struct of_device_id cs42xx8_of_match[] = {
--	{ .compatible = "cirrus,cs42448", .data = &cs42448_data, },
--	{ .compatible = "cirrus,cs42888", .data = &cs42888_data, },
--	{ /* sentinel */ }
--};
--MODULE_DEVICE_TABLE(of, cs42xx8_of_match);
--EXPORT_SYMBOL_GPL(cs42xx8_of_match);
--
--int cs42xx8_probe(struct device *dev, struct regmap *regmap)
-+int cs42xx8_probe(struct device *dev, struct regmap *regmap, struct cs42xx8_driver_data *drvdata)
- {
--	const struct of_device_id *of_id;
- 	struct cs42xx8_priv *cs42xx8;
- 	int ret, val, i;
- 
-@@ -535,17 +525,11 @@ int cs42xx8_probe(struct device *dev, struct regmap *regmap)
- 	if (cs42xx8 == NULL)
- 		return -ENOMEM;
- 
--	cs42xx8->regmap = regmap;
- 	dev_set_drvdata(dev, cs42xx8);
- 
--	of_id = of_match_device(cs42xx8_of_match, dev);
--	if (of_id)
--		cs42xx8->drvdata = of_id->data;
-+	cs42xx8->regmap = regmap;
- 
--	if (!cs42xx8->drvdata) {
--		dev_err(dev, "failed to find driver data\n");
--		return -EINVAL;
--	}
-+	cs42xx8->drvdata = drvdata;
- 
- 	cs42xx8->gpiod_reset = devm_gpiod_get_optional(dev, "reset",
- 							GPIOD_OUT_HIGH);
-diff --git a/sound/soc/codecs/cs42xx8.h b/sound/soc/codecs/cs42xx8.h
-index d36c61b6df74..342389e8b1a8 100644
---- a/sound/soc/codecs/cs42xx8.h
-+++ b/sound/soc/codecs/cs42xx8.h
-@@ -22,8 +22,7 @@ extern const struct dev_pm_ops cs42xx8_pm;
- extern const struct cs42xx8_driver_data cs42448_data;
- extern const struct cs42xx8_driver_data cs42888_data;
- extern const struct regmap_config cs42xx8_regmap_config;
--extern const struct of_device_id cs42xx8_of_match[];
--int cs42xx8_probe(struct device *dev, struct regmap *regmap);
-+int cs42xx8_probe(struct device *dev, struct regmap *regmap, struct cs42xx8_driver_data *drvdata);
- 
- /* CS42888 register map */
- #define CS42XX8_CHIPID				0x01	/* Chip ID */
--- 
-2.34.1
+I suspect that anything that is more complex than a GPIO should be a
+full fledged CODEC with the muxing internal to the CODEC and just
+described that way.
 
+--pRY+kIEVcpKIGhxD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNgNH0ACgkQJNaLcl1U
+h9CPiQf+LUWw1ke44xSDRkole2tffbqEgGrQ0COXYU/ML5N5/q7uaKxeDi1B+9d6
+d1ApwJ8uynaEU6uxxoBlgI1DECj4+1nKYVTujWBinU9jHlqNqbHld6urtcqC/CLC
+eNUAl/BvuvlgbPDnZVuRL5452ra73bPqZShjx3ZHEgDRBvBQ0Rk5sAms8TGIdg51
+yI4FY9XhHr3XCF/4GfZj2wKjip1mszPFOTvvwlmu6Dm1GQtTHffyMH5N2/u59MAy
+7F0qRipL6HTKkJ0aiPPOULHJfWX72vCik1o5VvlDTRGswbw/+9UWR2rM9Mj00F2F
+sv6gCaIhR0tvygxrEokN2LZkfFK9Lg==
+=gzmB
+-----END PGP SIGNATURE-----
+
+--pRY+kIEVcpKIGhxD--
