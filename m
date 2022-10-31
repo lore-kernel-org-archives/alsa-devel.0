@@ -4,90 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3159BECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Oct 2022 18:30:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBFACFA3741
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Oct 2022 18:30:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 410501663;
-	Mon, 31 Oct 2022 19:29:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 410501663
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC4DF163D;
+	Mon, 31 Oct 2022 19:29:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC4DF163D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667241022;
-	bh=rd4aH5yKQg9ZWV1iLp8KmMOfmUzPUEvXpEimyXAK4hY=;
+	s=default; t=1667241043;
+	bh=t5lid12CJGIdiFtHbqBAOOuz2rmbonGfsixXSMfYuCQ=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pAOYeh9F0cJDzI0Vagm5xVs7jaSWED7zXCxYWD2ORkr8du4LiqxP+VzmM0txuASe2
-	 Lr5lBbPtM8B6fz9uxzLi9P8NR7WetritEFq4JutKvXEXmNQIEHyPmlulYAHqBXyyCg
-	 Pv/5zDUaq/C5hsgbYzFxnS+DeDLnkt+DOFlurCBQ=
+	b=Gbc20KtE18Fu4sKqwmQrLuPO8czo8kWofZVXbrk/0hnikEZhybbk1O97ALywizdYO
+	 P0DbsHVNrGu6bn3cFUdjubVQdg01Jxl0zcR+0LXefdWwIFdKkt2ANYOT9SW9T4YyfZ
+	 ZlFXUq71BgwVOAZYAY5ya4tf8KjtWxKXDy/voSPU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0A446F80549;
-	Mon, 31 Oct 2022 19:28:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7CE2EF80558;
+	Mon, 31 Oct 2022 19:29:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6322DF800F3; Mon, 31 Oct 2022 19:28:56 +0100 (CET)
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
- [IPv6:2a00:1450:4864:20::435])
+ id B1031F8055B; Mon, 31 Oct 2022 19:29:15 +0100 (CET)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
+ [IPv6:2a00:1450:4864:20::335])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 27D0CF800F3
- for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 19:28:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27D0CF800F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9C3AAF80558
+ for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 19:29:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C3AAF80558
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="uucY1kmE"
-Received: by mail-wr1-x435.google.com with SMTP id k8so17209337wrh.1
- for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 11:28:49 -0700 (PDT)
+ header.b="HZ/0UJ8w"
+Received: by mail-wm1-x335.google.com with SMTP id
+ bg9-20020a05600c3c8900b003bf249616b0so8556451wmb.3
+ for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 11:29:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:in-reply-to:from:references:cc:to
  :content-language:subject:user-agent:mime-version:date:message-id
  :from:to:cc:subject:date:message-id:reply-to;
- bh=h35T5Hic3J51sigkp5EEtU4mlYTV/OS/n5zLOUZsiBY=;
- b=uucY1kmELif0QSAUGxuI8Yjx3mwszezx/Fennu3ZAWQiSGO2sHVyH/YvYxKgMmS6h7
- vPH8+bvyZ+Vc09UECMLNNkIz2KpJg1uWrgxOKgFzMPMB4WS6uqM0krDsoNQla/CtbrhC
- 9j9wkTcgRgW2KE1wqTakIVtQL50ztUnocTifn5/A0yZU+nW+GKQ7oaBts1Vkp9sSze3V
- qG189t6fzdmurZrrlIM9u6E2lxKJPWSCw9wMovOeXBAvmujdyhq/UoJnRoGwnHGFGqCa
- 6FFmEK8E/68XCk5obB8iewNKLRXx77unWVcwRJdJzuqfD1vGoplhk3X4cCptRpcNJPpt
- q/jA==
+ bh=LlUfkjYYiQUn+hV5fhdZbKU09G31Rb+nq+V7VvzQ2Fs=;
+ b=HZ/0UJ8wkTGZ/sCQeiRZoBv52Db+m0n8A3KfzelK5fr4LXUcAMToPZ7R7FfWtUVw4a
+ za9cQ5L+iQYLdYSD0Y84NljCjxTqe/uSH/8CIHWAakb/Galvyx0733h3HTD8as01M+ZW
+ EZC1Fnp6qRtvbrrADEIZ1v8Mfi+Hr4NegLHLFJ/VwjHKBX13OVzX9qOYyszmARfjZy1d
+ wizxDraCQfrxtSIatUxunX+VHKU2aSuRf1VqAPLA2CSsp72/LkDpRB0MrawrGXfSL590
+ QdaFL2kmDz8rjbSkvYbka9fMQRco/y+nSO7h2XnneQ3FrNgWj9MSsENgDPcV3U5jqUTe
+ vbyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:in-reply-to:from:references:cc:to
  :content-language:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=h35T5Hic3J51sigkp5EEtU4mlYTV/OS/n5zLOUZsiBY=;
- b=oLfQvRkNe0R2ppnRjpbfUl1zv2o3mI+BwbLQw0MOnV/r684bL9sv1AwY8fCrPOnuTy
- 0ILto57EJkxLqcs5Tk+uGun/MuCs+Ft4+iW/UgawCzvzXZj4f4dEG4qd5VgZH3S2g7y6
- 0dBiQu/twheM5k0jddF3FqTHS+AsvVNCzrAwNx1LMyq6jZd43WUj8Bu9s/kFzSRjfNBB
- ocO3W0/mCLQGfRD6m20St+qQLBl3SAgp+D4b+W/zRkBrnAQYo2QVJXMAGyViU42d+/Y+
- WO/uV39105guW6vEg1onynmqrghNEvIFc7Z2faR9JsvWWNzo64fIBs1Wrogqj9NmwZcR
- Uh3g==
-X-Gm-Message-State: ACrzQf1VFoG/HByFzrGyj0m8CJdP+hm4eck1pBb/VmAqrjPoHTlvjiwl
- hdtqjmWQC8BkLwhPku7/l6CKFg==
-X-Google-Smtp-Source: AMsMyM7JAFvWx7qbxwPIobW+LKAz0wDyr7j6fO5Z1wVLD/dNkgD//E6e01YKgWoDNyb/xA4agSqrHA==
-X-Received: by 2002:adf:f447:0:b0:236:5840:1c72 with SMTP id
- f7-20020adff447000000b0023658401c72mr8685031wrp.686.1667240928422; 
- Mon, 31 Oct 2022 11:28:48 -0700 (PDT)
+ bh=LlUfkjYYiQUn+hV5fhdZbKU09G31Rb+nq+V7VvzQ2Fs=;
+ b=uhXI5L5FY/VnBbnkeQBdSJu0QhnHc3fMxk9J6o8UOy9tnAHFLgKQoPRa4Qj6AJEeOk
+ /px4OXZ7+V39vWJpaNuIosAwZid/pQLHAF2NyPZE8asAKK2gWNc4NxkcIY+StJCSrWHQ
+ VrZViCdwhHAxWWctSSLCueMNN72PwRRADLp0cj2odOg+cE0Z2bQ8xsXuwT5ECVZ1Bp7A
+ IKCQaM0e+dWGcIfqC5ebJFSe4WrrqZ/NZ6IjB1n7R/NLxnT4i88LYprEGULpfD1teGpz
+ GWapwQmj6qcjUevCGIK8XMHdu+CFFKL8woYt10Fqh3A8HgvLQlJPT83vJn5kRJC5nkLT
+ p+Bw==
+X-Gm-Message-State: ACrzQf2sEJbMKFuOmh7M3qg3hYTdTGkRriDR4Eyu1AkViGPC3ihMip54
+ 553gBsDXCGPn0XmO4Qsu6IzklQ==
+X-Google-Smtp-Source: AMsMyM78R6nUUr+MeluBZtUpWGSDuxd/FMrN+uJmxzmIigg7TLZxDyukSL5adbjFn2RdeWVvBW8qpg==
+X-Received: by 2002:a05:600c:695:b0:3c6:b7f1:6f39 with SMTP id
+ a21-20020a05600c069500b003c6b7f16f39mr9385279wmn.5.1667240947769; 
+ Mon, 31 Oct 2022 11:29:07 -0700 (PDT)
 Received: from [192.168.1.195] ([5.133.47.210])
  by smtp.googlemail.com with ESMTPSA id
- j3-20020a05600c1c0300b003b4ff30e566sm26812630wms.3.2022.10.31.11.28.47
+ bj29-20020a0560001e1d00b002366b241cf3sm7746285wrb.35.2022.10.31.11.29.06
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 31 Oct 2022 11:28:47 -0700 (PDT)
-Message-ID: <35a3097e-ecb6-78ff-5a34-ed89a1fed362@linaro.org>
-Date: Mon, 31 Oct 2022 18:28:46 +0000
+ Mon, 31 Oct 2022 11:29:07 -0700 (PDT)
+Message-ID: <8e3bd948-6649-742b-ea4c-4f7236d156a5@linaro.org>
+Date: Mon, 31 Oct 2022 18:29:06 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.2.2
-Subject: Re: [PATCH] slimbus: stream: correct presence rate frequencies
+Subject: Re: [PATCH 1/2] slimbus: qcom-ngd-ctrl: check for device runtime PM
+ status during ISR
 Content-Language: en-US
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@somainline.org>, linux-arm-msm@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20220929165202.410937-1-krzysztof.kozlowski@linaro.org>
+References: <20220928132011.455347-1-krzysztof.kozlowski@linaro.org>
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20220929165202.410937-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20220928132011.455347-1-krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: stable@vger.kernel.org
+Cc: Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,37 +108,40 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 29/09/2022 17:52, Krzysztof Kozlowski wrote:
-> Correct few frequencies in presence rate table - multiplied by 10
-> (110250 instead of 11025 Hz).
+On 28/09/2022 14:20, Krzysztof Kozlowski wrote:
+> Slimbus core interrupt is getting fired after suspend. At this point
+> ADSP slimbus hardware is off with gated clocks which is leading to an
+> unclocked access when HLOS slimbus tried to read the interrupt
+> status register in the ISR.
 > 
-Good catch,
-
-Applied thanks,
--srini
-> Fixes: abb9c9b8b51b ("slimbus: stream: add stream support")
-> Cc: <stable@vger.kernel.org>
+> Co-developed-by: Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
+> Signed-off-by: Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->   drivers/slimbus/stream.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
+
+Applied both,
+
+--srini
+>   drivers/slimbus/qcom-ngd-ctrl.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/slimbus/stream.c b/drivers/slimbus/stream.c
-> index f7da72ab504c..a476fa6549cc 100644
-> --- a/drivers/slimbus/stream.c
-> +++ b/drivers/slimbus/stream.c
-> @@ -67,10 +67,10 @@ static const int slim_presence_rate_table[] = {
->   	384000,
->   	768000,
->   	0, /* Reserved */
-> -	110250,
-> -	220500,
-> -	441000,
-> -	882000,
-> +	11025,
-> +	22050,
-> +	44100,
-> +	88200,
->   	176400,
->   	352800,
->   	705600,
+> diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+> index cec11aa106bf..ba36eb5c0de3 100644
+> --- a/drivers/slimbus/qcom-ngd-ctrl.c
+> +++ b/drivers/slimbus/qcom-ngd-ctrl.c
+> @@ -763,7 +763,14 @@ static irqreturn_t qcom_slim_ngd_interrupt(int irq, void *d)
+>   {
+>   	struct qcom_slim_ngd_ctrl *ctrl = d;
+>   	void __iomem *base = ctrl->ngd->base;
+> -	u32 stat = readl(base + NGD_INT_STAT);
+> +	u32 stat;
+> +
+> +	if (pm_runtime_suspended(ctrl->ctrl.dev)) {
+> +		dev_warn_once(ctrl->dev, "Interrupt received while suspended\n");
+> +		return IRQ_NONE;
+> +	}
+> +
+> +	stat = readl(base + NGD_INT_STAT);
+>   
+>   	if ((stat & NGD_INT_MSG_BUF_CONTE) ||
+>   		(stat & NGD_INT_MSG_TX_INVAL) || (stat & NGD_INT_DEV_ERR) ||
