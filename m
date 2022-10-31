@@ -4,73 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0344ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Oct 2022 13:10:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDAD3ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Oct 2022 13:42:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1FDA091;
-	Mon, 31 Oct 2022 14:09:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FDA091
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1BE22166E;
+	Mon, 31 Oct 2022 14:41:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BE22166E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667221838;
-	bh=x05963W2dqV1bExHNBIDhn9obN9+F+LJRKzghxQaRuY=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1667223745;
+	bh=2dz1M+B8TIpl43v5vd4vjUv91V2N3rN90HT3YVMZ6Do=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lLqfpBh/LOfyaArIfV7KS5yDUX2xcmE2qkqEMz4oyquILsyLEyuygO3w5oPqtaS/O
-	 ncEkkLWSdwUu/Ui2nkvQQiydDLPTl3UE1suajIPY7ulFZreuPyi3pSKdeOm5J+iDOm
-	 am4oOErCC848dX3YLsc+jCFHWtQR79gMM2jNXQz4=
+	b=GBS0z7+DIVkYJWyflSfva3pV71N2A5G6j6mS9g4LLNJTKVvX1ELeJwgBMX2zdBAmT
+	 /uocGzkgmO7lnKAcSydVwFIFMYzpidmghSJljQJ0HYMHeZaZeJnJT5EUOgQcgmPnXJ
+	 vHytpXY5Vbvb1UdbU+MqobGCUqHGVvq7O9nqyy40=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F612F8015B;
-	Mon, 31 Oct 2022 14:09:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0861F8015B;
+	Mon, 31 Oct 2022 14:41:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9308BF80163; Mon, 31 Oct 2022 14:09:45 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 735F0F800CC
- for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 14:09:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 735F0F800CC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="M4g3CXaE"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 387A2F80163; Mon, 31 Oct 2022 14:41:33 +0100 (CET)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C6CF6611DF;
- Mon, 31 Oct 2022 13:09:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9419C433C1;
- Mon, 31 Oct 2022 13:09:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1667221774;
- bh=x05963W2dqV1bExHNBIDhn9obN9+F+LJRKzghxQaRuY=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=M4g3CXaEsNQBhg8iIvVgpXM8DkacbUwkl83NkQROkfOq3JuqL+rfKxK0UiiTMOfeh
- dNgp3wTBPdN9WtyC5j751jwProCMXL8w5CvHo4tVbOicLzRA/NGTw8Ve4B84m5Y6KP
- VpdyQd2iyxfCG1K05yoaQMElNNuNfbu9LLW+rZM/z8G/UK/3RZ7V33ZET3FRVq/MKA
- ajD/Q4ZZoc1KdDHVdy81KmXJ4ccf74lF9NjvxprZ9ZmSrMa8BeJoJskEW8BGx4FvcC
- zW/LWE2R2LEi99Ywph5E6DHa3tMbdanKay8R9Gt3HuaiUuTt27VfC7BW2Gacx5pC5H
- VxCh/5ebL3Axw==
-Date: Mon, 31 Oct 2022 13:09:28 +0000
-From: Mark Brown <broonie@kernel.org>
-To: =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0842EF800F3
+ for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 14:41:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0842EF800F3
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
+ header.b="YJCX/qGj"
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
+ [2.237.20.237])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits))
+ (No client certificate requested) (Authenticated sender: kholk11)
+ by madras.collabora.co.uk (Postfix) with ESMTPSA id 29C146602040;
+ Mon, 31 Oct 2022 13:41:28 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1667223688;
+ bh=2dz1M+B8TIpl43v5vd4vjUv91V2N3rN90HT3YVMZ6Do=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+ b=YJCX/qGjDqMSKn7g/SEhQmVycMgs11cemi9QciV8uD1hy2D1p+d5tDx7TUncfpGU+
+ 7m7Ls95h/Fsp682coUMlyVzdoVD8ETmVgMX+x2C0xqBKJi7mZ10MWOChbDGLd0Uika
+ VTexgi78Nn70zLD6vffC55VoW9yJXNNy1su1fgCiCY+6oPPU2nXIWYvMCBrVZ6NNi3
+ 49nfnElNQKgbaZh4QTgJ/94TEH5DjWzHOhXnUw7Xnc5nEu71zeTUxSoHB33MIYVGL3
+ 8XB3ACUe1BcJ6ibOdYNWIOIlMViU6HXNqYiQ7SAmaWtEAK/MgJrc+70s6K7a+RGuCP
+ Lq/w60prWCAMg==
+Message-ID: <9599f3d0-670e-f971-f5be-96061ab0531c@collabora.com>
+Date: Mon, 31 Oct 2022 14:41:25 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.3
 Subject: Re: [PATCH 6/8] ASoC: rt5682: Support dbvdd and ldo1-in supplies
-Message-ID: <Y1/JCN+mtlT0r/rw@sirena.org.uk>
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>,
+ =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>
 References: <20221028205540.3197304-1-nfraprado@collabora.com>
  <20221028205540.3197304-7-nfraprado@collabora.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="lwPxwuBKxUgXsGLF"
-Content-Disposition: inline
-In-Reply-To: <20221028205540.3197304-7-nfraprado@collabora.com>
-X-Cookie: Sign here without admitting guilt.
+ <Y1/JCN+mtlT0r/rw@sirena.org.uk>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <Y1/JCN+mtlT0r/rw@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- kernel@collabora.com,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+ kernel@collabora.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,37 +88,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Il 31/10/22 14:09, Mark Brown ha scritto:
+> On Fri, Oct 28, 2022 at 04:55:38PM -0400, Nícolas F. R. A. Prado wrote:
+> 
+>> @@ -35,6 +35,8 @@ const char *rt5682_supply_names[RT5682_NUM_SUPPLIES] = {
+>>   	"AVDD",
+>>   	"MICVDD",
+>>   	"VBAT",
+>> +	"dbvdd",
+>> +	"ldo1-in",
+> 
+> Why are we making these inconsistent in style with the other supplies?
 
---lwPxwuBKxUgXsGLF
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Right. That would be the same for rt5682s, and for the entire series. :\
 
-On Fri, Oct 28, 2022 at 04:55:38PM -0400, N=EDcolas F. R. A. Prado wrote:
-
-> @@ -35,6 +35,8 @@ const char *rt5682_supply_names[RT5682_NUM_SUPPLIES] =
-=3D {
->  	"AVDD",
->  	"MICVDD",
->  	"VBAT",
-> +	"dbvdd",
-> +	"ldo1-in",
-
-Why are we making these inconsistent in style with the other supplies?
-
---lwPxwuBKxUgXsGLF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNfyQcACgkQJNaLcl1U
-h9DdQQf9GAk+mEXiS/YEqRmvTdmMbShtgqvY01OdsBpTaWe4fXM9SjrNTht/RbZe
-K6HW3Aer75TA64p5n/AZaBf9EcnYk0leRuIgILguybyzxASIpOUeozpR1Skvdzlr
-1Hi5ztBMD1GrqFRxRV9XZ9HDuy/jL8x4uunbzmEd4x7oVf3KBbdXqPaoCQZylmUh
-rp057jbeyXJztV1F1Gpf4YXW+UhTX9jtvpakHlfxJ64d3ihgQsiXSLpsNs0exxvU
-LCahhb0BudeFj9m0Eow4UTfJljCH/xJ8i/Q2g/kyKzifNgLqkZY/RyMYX0WLdHgH
-MBCPXKh1aRU+sn4lC83eD3JmRJKTxQ==
-=UmuG
------END PGP SIGNATURE-----
-
---lwPxwuBKxUgXsGLF--
+Cheers,
+angelo
