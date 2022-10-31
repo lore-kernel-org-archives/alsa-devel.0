@@ -4,89 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 986DCECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Oct 2022 18:29:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FDBFECAAA1
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Oct 2022 18:30:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A7311673;
-	Mon, 31 Oct 2022 19:29:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A7311673
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC9D61683;
+	Mon, 31 Oct 2022 19:29:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC9D61683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667240995;
-	bh=KmpZz6ktjP7+A9mZwyc/aqW39QGUMXLnVlW6v3Ksbmk=;
+	s=default; t=1667241026;
+	bh=VFoRZA6JMSG/cvaV9p1LWvpAvO6bRrZRnl/P0/MDl5U=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NzCtUQJQCskc3SA0CSt4OFXOwbPImXnMzbVght/FubyDH4dMhvwgFQ2+LeldRHt5p
-	 zAbxkyN46H5FAilSIhNmc72mo6Qv4l0OBeZ9vZvi7daF14uCNGZBaCvKCNshulQG0J
-	 pu0PgHjHCSBOYWtYBvJMXThfsJePH4lQyzrnsaHY=
+	b=ftm/FlamXLCm8l+P67dBcGIgMagbjGVJbWlJgxJlMirN+17eLCI9WqP9VS2+rbwVb
+	 hMOFTbFKlZ5aEVhjm93YzEAXl7PAk5TqAXpNkTSyRTjaSpgEaORV6QKhsrEuu1XsY1
+	 rco5K0e2cc/idu7qSjpJMyK964Q6aG0yK24cuEtw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DAD9AF802E8;
-	Mon, 31 Oct 2022 19:28:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4E7DF800E1;
+	Mon, 31 Oct 2022 19:29:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09B32F800E1; Mon, 31 Oct 2022 19:28:49 +0100 (CET)
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
- [IPv6:2a00:1450:4864:20::332])
+ id 7EE7CF80558; Mon, 31 Oct 2022 19:29:05 +0100 (CET)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6272DF800E1
- for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 19:28:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6272DF800E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F226F80552
+ for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 19:28:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F226F80552
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="OKiMbfMl"
-Received: by mail-wm1-x332.google.com with SMTP id
- c3-20020a1c3503000000b003bd21e3dd7aso11348377wma.1
- for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 11:28:38 -0700 (PDT)
+ header.b="d4CnvNDI"
+Received: by mail-wm1-x329.google.com with SMTP id 5so7628672wmo.1
+ for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 11:28:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:in-reply-to:from:references:to
  :content-language:subject:user-agent:mime-version:date:message-id
  :from:to:cc:subject:date:message-id:reply-to;
- bh=ESah86fGc7L+Xbl/WXQlaeWbmtq7glSFyBOHkEwRjqA=;
- b=OKiMbfMlnlrjIVC7hqN1GYU7bYVxo8PqmAJSpyszeI5Kr351mcEpP4ZUPw15jrTSkM
- fTuiEXLF3N5/7rw4RmrUH3y50sidwjoYGEFpgufEQfpiOouV7t7LkdWWNiHgea9LAH2I
- oqflhu6Ld3hywlOJ/UCfWhSfKMhuN98oTFdbszWK1RnkM+kT7g9ZhwOA21eqYihSMLWd
- xIKeE1wNvcKXkzADTSZN66Yn0kOtdIg0M6SPxG8NJRAr0yMw/FWAyvopenK4WTDm5RQ5
- 9INbzv8vy5tEzrvOle7+Q48OryUwgB1TN+q16HWwrpoN/NplcwcQgnrp6i5eaqg2XLtv
- hFAQ==
+ bh=kUHDIHfTHvE+Ti0vvj6SEtCpulXlPZfgxMR3wyAbMCg=;
+ b=d4CnvNDIxCD0H28VAA+U0guyZMJ2QYN1DogRcqfmXvo7eqA/MMwaXIZGRCy6QrN4dv
+ 7Sf+ptYULqcK24JSQ/EpUTF+axOypIbCU85mcegZ60tW6xxE+fGN1TzpfLRAdYwZJZCx
+ IPpixdP818jos4menf+0spQQbJEwu9jeYLF0Omlmi9uBTLfoZA2OQgg39y+Q0i0SuqkW
+ gkypUcTGx5PuUGkjmk04oofHprRtWWGYP0wB9S8t5crGw7jb+ty4DOdZzknW1kPyRaw5
+ 8a+uiUBFUkpDq/mRmEZyoDA7Tcszp8sj5i28QJzDuaVKQJHDxuL4HhLcdhOXwoV+FZmJ
+ 6iig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:in-reply-to:from:references:to
  :content-language:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=ESah86fGc7L+Xbl/WXQlaeWbmtq7glSFyBOHkEwRjqA=;
- b=VC6WHUI6aRDvB1lvkxK7oLGGFPKWRuge0q4IlmtDt+rIRwJ2WDg8gwJTjijkK543R5
- VlfFsYczdHqvbe4GpVod5CvYsL+9Y25SfxvTwA2Eztg2EMqd1GJPe4GAQdNDSC7irAp1
- z8vDtPc1W/UZHqur/tyGake4I4JcS/MkrrMKva32gFLK9WnrRsnVjmy+A9R4/fynGm4/
- ecFcOKog0yOX/PJ82jO8+1KjjGznjjAhgxEoM6AghsUjwBcfoPSxOQgkwENn4Ai5qOUh
- sghUUl0yUPjfRGgC6Buav0ZJzNjAVL511swSnzLPGB5fcw78prIncL4ltuM+4XGKcmfo
- IqcA==
-X-Gm-Message-State: ACrzQf2IOoGEMfhYdlIgkNcvMbnqPUQTOOYMC4vG4Y5eTyOZKW89l6eq
- wiAszfk/fvZTXoPxgl5u09rlAQ==
-X-Google-Smtp-Source: AMsMyM6LZLbegfSTuGAx7nz+anwW1Np5zaqnxyRYWtVfOMGGgUCeTnXu7wrpu2A1gpL3YkX0uRa8BA==
-X-Received: by 2002:a05:600c:1694:b0:3cf:56a9:fe64 with SMTP id
- k20-20020a05600c169400b003cf56a9fe64mr14035284wmn.112.1667240917252; 
- Mon, 31 Oct 2022 11:28:37 -0700 (PDT)
+ bh=kUHDIHfTHvE+Ti0vvj6SEtCpulXlPZfgxMR3wyAbMCg=;
+ b=ftJhRSzTi2RP/9GcvfwJQj+9UfyEaE3uBAEhSJPwPotu+qCQTSQG2xwcAyrydRqDth
+ z6W2GxbMmZS/Frc9Ub7V14DwMCuGe/p9ka0paGUDRuINWj+2rXTY0yUnbENLicpIIGvn
+ wP1K5xfezVAR+RprwH81s83Kxp2LUrM7R5LlEgXqoqiuzRiJV01wg2TEwg9IG8W5pQI1
+ CVGPFdPm4ty3yJ3AC57tGFvKTpVcv9d8Py2YWArlAEjNY/v9ZRStNBc+c8C2vSEsADHL
+ OP2xg2Y0MkT3aTK+ujgzgTjXl6pMgtzLoBveJt1J0tDPz2XChAljVmL6WfB58mf/JEJz
+ AWVA==
+X-Gm-Message-State: ACrzQf0YQHiISMJzpqZ6WI5F3SUN4Oj3aj/ch/fROx7XUMmpqI57RKf+
+ v7Iv9tNMNJ2FAX1IM31uqM22og==
+X-Google-Smtp-Source: AMsMyM4GnNmljpEATOt6DHzH3LtKOU2Knri8PMbYG1W2OFAlPUdsGeaW15eeeBvjdqXHpbSJehvGWQ==
+X-Received: by 2002:a05:600c:1549:b0:3ce:794f:d801 with SMTP id
+ f9-20020a05600c154900b003ce794fd801mr9129071wmg.63.1667240937823; 
+ Mon, 31 Oct 2022 11:28:57 -0700 (PDT)
 Received: from [192.168.1.195] ([5.133.47.210])
  by smtp.googlemail.com with ESMTPSA id
- bx7-20020a5d5b07000000b00228cbac7a25sm7795160wrb.64.2022.10.31.11.28.36
+ f7-20020a1c6a07000000b003a3170a7af9sm7894668wmc.4.2022.10.31.11.28.56
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 31 Oct 2022 11:28:36 -0700 (PDT)
-Message-ID: <addac524-a168-16ba-c736-5b116b6e98af@linaro.org>
-Date: Mon, 31 Oct 2022 18:28:35 +0000
+ Mon, 31 Oct 2022 11:28:57 -0700 (PDT)
+Message-ID: <57a8c6f4-0bea-f596-e50f-cfe441764eee@linaro.org>
+Date: Mon, 31 Oct 2022 18:28:56 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.2.2
-Subject: Re: [PATCH -next] slimbus: qcom-ngd: Fix build error when
- CONFIG_SLIM_QCOM_NGD_CTRL=y && CONFIG_QCOM_RPROC_COMMON=m
+Subject: Re: [PATCH v2 1/2] slimbus: stream: handle unsupported bitrates for
+ presence rate
 Content-Language: en-US
-To: Zheng Bin <zhengbin13@huawei.com>, gregkh@linuxfoundation.org,
- krzysztof.kozlowski@linaro.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-References: <20221027095904.3388959-1-zhengbin13@huawei.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@somainline.org>, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20220930100015.259106-1-krzysztof.kozlowski@linaro.org>
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20221027095904.3388959-1-zhengbin13@huawei.com>
+In-Reply-To: <20220930100015.259106-1-krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -106,41 +106,61 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 27/10/2022 10:59, Zheng Bin wrote:
-> If CONFIG_SLIM_QCOM_NGD_CTRL=y, CONFIG_QCOM_RPROC_COMMON=m, COMPILE_TEST=y,
-> bulding fails:
+On 30/09/2022 11:00, Krzysztof Kozlowski wrote:
+> Handle errors of getting presence rate for unsupported stream bitrate,
+> instead of sending -EINVAL in change content message.
 > 
-> drivers/slimbus/qcom-ngd-ctrl.o: In function `qcom_slim_ngd_ctrl_probe':
-> qcom-ngd-ctrl.c:(.text+0x330): undefined reference to `qcom_register_ssr_notifier'
-> qcom-ngd-ctrl.c:(.text+0x5fc): undefined reference to `qcom_unregister_ssr_notifier'
-> drivers/slimbus/qcom-ngd-ctrl.o: In function `qcom_slim_ngd_remove':
-> qcom-ngd-ctrl.c:(.text+0x90c): undefined reference to `qcom_unregister_ssr_notifier'
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 > 
-> Make SLIM_QCOM_NGD_CTRL depends on QCOM_RPROC_COMMON || (COMPILE_TEST && !QCOM_RPROC_COMMON) to fix this.
-> 
-> Fixes: e291691c6977 ("slimbus: qcom-ngd-ctrl: allow compile testing without QCOM_RPROC_COMMON")
-> Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
 > ---
 
-Applied thanks,
+Applied both,
+thanks,
 
 --srini
->   drivers/slimbus/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/slimbus/Kconfig b/drivers/slimbus/Kconfig
-> index 2ed821f75816..a0fdf9d792cb 100644
-> --- a/drivers/slimbus/Kconfig
-> +++ b/drivers/slimbus/Kconfig
-> @@ -23,7 +23,7 @@ config SLIM_QCOM_CTRL
->   config SLIM_QCOM_NGD_CTRL
->   	tristate "Qualcomm SLIMbus Satellite Non-Generic Device Component"
->   	depends on HAS_IOMEM && DMA_ENGINE && NET
-> -	depends on QCOM_RPROC_COMMON || COMPILE_TEST
-> +	depends on QCOM_RPROC_COMMON || (COMPILE_TEST && !QCOM_RPROC_COMMON)
->   	depends on ARCH_QCOM || COMPILE_TEST
->   	select QCOM_QMI_HELPERS
->   	select QCOM_PDR_HELPERS
-> --
-> 2.31.1
+> Changes since v1:
+> 1. Rebase (drop development pieces in the context).
+> 2. Return prrate (which has errno) instead of -EINVAL.
+> 3. Add Rb tag.
+> ---
+>   drivers/slimbus/stream.c | 11 +++++++++--
+>   1 file changed, 9 insertions(+), 2 deletions(-)
 > 
+> diff --git a/drivers/slimbus/stream.c b/drivers/slimbus/stream.c
+> index d5ce974e880b..f631d5ed9809 100644
+> --- a/drivers/slimbus/stream.c
+> +++ b/drivers/slimbus/stream.c
+> @@ -204,7 +204,7 @@ int slim_stream_prepare(struct slim_stream_runtime *rt,
+>   {
+>   	struct slim_controller *ctrl = rt->dev->ctrl;
+>   	struct slim_port *port;
+> -	int num_ports, i, port_id;
+> +	int num_ports, i, port_id, prrate;
+>   
+>   	if (rt->ports) {
+>   		dev_err(&rt->dev->dev, "Stream already Prepared\n");
+> @@ -221,6 +221,13 @@ int slim_stream_prepare(struct slim_stream_runtime *rt,
+>   	rt->bps = cfg->bps;
+>   	rt->direction = cfg->direction;
+>   
+> +	prrate = slim_get_prate_code(cfg->rate);
+> +	if (prrate < 0) {
+> +		dev_err(&rt->dev->dev, "Cannot get presence rate for rate %d Hz\n",
+> +			cfg->rate);
+> +		return prrate;
+> +	}
+> +
+>   	if (cfg->rate % ctrl->a_framer->superfreq) {
+>   		/*
+>   		 * data rate not exactly multiple of super frame,
+> @@ -241,7 +248,7 @@ int slim_stream_prepare(struct slim_stream_runtime *rt,
+>   		port = &rt->ports[i];
+>   		port->state = SLIM_PORT_DISCONNECTED;
+>   		port->id = port_id;
+> -		port->ch.prrate = slim_get_prate_code(cfg->rate);
+> +		port->ch.prrate = prrate;
+>   		port->ch.id = cfg->chs[i];
+>   		port->ch.data_fmt = SLIM_CH_DATA_FMT_NOT_DEFINED;
+>   		port->ch.aux_fmt = SLIM_CH_AUX_FMT_NOT_APPLICABLE;
