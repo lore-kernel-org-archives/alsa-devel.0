@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B638FECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Oct 2022 15:51:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BE7DFA3741
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Oct 2022 15:51:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 395711672;
-	Mon, 31 Oct 2022 16:50:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 395711672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 459061681;
+	Mon, 31 Oct 2022 16:50:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 459061681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667231466;
-	bh=quE/JPurgz4Mzf+i5ERxx3tZHeSVqlNfHhCtD91heeA=;
+	s=default; t=1667231497;
+	bh=PPsobXz7PwRLli089/iR1UgdapPNYt2Ba6WY9lRPD5w=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OKXaru1f9ScFloHKP5+qYY84ooavRLPHYiflQ3PvmSkSkdP2jycL7m0vZkwMEUY4z
-	 oOU0sm7SiHeFFS4nqSKf2EjdeDcwX6dT+k0GT+cPunVtOy5kFbPCnzuYzjC8u+xpIa
-	 xeKRGHyFGVFkclzFn7m9hn5ScOtzLmpN0dfn7msQ=
+	b=U/pHu77az6KS0sqwuxbTbvUNs5EgcipA6xf9I3IyA6zSHP3XGHMURCVDx/h5G3H39
+	 /O0GcJ2ihPVaVG/hd4A5kygYLroiSlluAW0BsQsU8EsB/EGF/1advRG/ztVWX5VjQQ
+	 qqLQkST1G3G0IaCEWGQkWz/ty+kgjU8/JaF1IHmo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1111FF800CC;
-	Mon, 31 Oct 2022 16:49:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2898F80564;
+	Mon, 31 Oct 2022 16:50:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3DA81F80256; Mon, 31 Oct 2022 16:49:51 +0100 (CET)
+ id 31D5FF80557; Mon, 31 Oct 2022 16:49:57 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3DDC3F800CC
- for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 16:49:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3DDC3F800CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2939DF800F3
+ for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 16:49:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2939DF800F3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="cgRx2F7b"
+ header.b="iCq0tQBt"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1667231389; x=1698767389;
+ t=1667231391; x=1698767391;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=quE/JPurgz4Mzf+i5ERxx3tZHeSVqlNfHhCtD91heeA=;
- b=cgRx2F7bi2sxil9364Z4C0G+/gkGU+80i05+JPoDLpaJkpNvo9GN/Qgz
- sGAT08UaSJsLY0ZhDYByAE6wrb2ebJ7959jz0xhhymFdkmBtQhnPLa3xC
- wRjte3GA1Wkra9mWW74jT6bL4+2NGtrobHPI8yTppWTJ6uDb7w4S9lWmQ
- +s3QEWVwUZ+gj6EVW200dbfR0vJ6Z+KCNPxBzXBaUcylofdnBgHxhD0oy
- BxgAnRvMzcZEnAWGnCdr8ZQLMa3l5S8DAjj/uarUk1uH4HZvMcsih/PS2
- KS/e87zkfr4QDResRpUB/kbJaXYyUo2gMlbK4SfBYBx3pR9txL/mne+bU Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10517"; a="308929901"
-X-IronPort-AV: E=Sophos;i="5.95,228,1661842800"; d="scan'208";a="308929901"
+ bh=PPsobXz7PwRLli089/iR1UgdapPNYt2Ba6WY9lRPD5w=;
+ b=iCq0tQBtSvLlDWOzK/U03C+UfehYYv9iAovYn6U1zm+/8xhtQYh/4zyN
+ T5IAnuDPb46P9yh0AFzdilGOkh5N2SMr07qwD+O/gdbNLP+7+uovZBS0F
+ yx8W+2xcWSoGHOkNrLsaHqRH/ULj1xS1YkoroAQFLxuWV6HVDWStZR+Eq
+ KSTWVhb0i/eGORYhUUHuJC7UMzqBN5Mss4VpBLxDQDkxY6PKmqaWPIIlH
+ nhNH9TbTYD5yr56YLnjcQOdZTl3C5XyhR/MF+ptyTh3IOmck2j0Vz0kUc
+ CqxXELHmuAn8KyhkgT5FQs6/lLxVUo/Nvqx6waq2tiGLgZqRqFSomnoBF g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10517"; a="308929928"
+X-IronPort-AV: E=Sophos;i="5.95,228,1661842800"; d="scan'208";a="308929928"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Oct 2022 08:49:38 -0700
+ 31 Oct 2022 08:49:45 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10517"; a="776178890"
-X-IronPort-AV: E=Sophos;i="5.95,228,1661842800"; d="scan'208";a="776178890"
+X-IronPort-AV: E=McAfee;i="6500,9779,10517"; a="776178907"
+X-IronPort-AV: E=Sophos;i="5.95,228,1661842800"; d="scan'208";a="776178907"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga001.fm.intel.com with ESMTP; 31 Oct 2022 08:49:35 -0700
+ by fmsmga001.fm.intel.com with ESMTP; 31 Oct 2022 08:49:42 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 1/7] ASoC: codecs: da7219: Introduce set_jack() callback
-Date: Mon, 31 Oct 2022 17:02:21 +0100
-Message-Id: <20221031160227.2352630-2-cezary.rojewski@intel.com>
+Subject: [PATCH 3/7] ASoC: mediatek: Drop da7219_aad_jack_det() usage
+Date: Mon, 31 Oct 2022 17:02:23 +0100
+Message-Id: <20221031160227.2352630-4-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221031160227.2352630-1-cezary.rojewski@intel.com>
 References: <20221031160227.2352630-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Vijendar.Mukunda@amd.com,
  heiko@sntech.de, AjitKumar.Pandey@amd.com, linux-rockchip@lists.infradead.org,
@@ -89,46 +88,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Do not access the internal function directly, do so through
+component->set_jack() instead.
 
-Codec driver for da7219 implements jack detect functionality, but does
-not integrate it with the framework. Platform component drivers are
-accessing the functionality through internal da7219_aad_jack_det()
-instead.
-
-Address this by implementing set_jack() for the codec.
-
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/codecs/da7219.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c        | 3 +--
+ sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c | 4 ++--
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 4746c8700451..7468ee4af2ea 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -2633,11 +2633,20 @@ static int da7219_resume(struct snd_soc_component *component)
- #define da7219_resume NULL
- #endif
+diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+index 9f22d3939818..97dbb31c412e 100644
+--- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+@@ -14,7 +14,6 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
  
-+static int da7219_set_jack(struct snd_soc_component *component, struct snd_soc_jack *jack,
-+			   void *data)
-+{
-+	da7219_aad_jack_det(component, jack);
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_component_driver soc_component_dev_da7219 = {
- 	.probe			= da7219_probe,
- 	.remove			= da7219_remove,
- 	.suspend		= da7219_suspend,
- 	.resume			= da7219_resume,
-+	.set_jack		= da7219_set_jack,
- 	.set_bias_level		= da7219_set_bias_level,
- 	.controls		= da7219_snd_controls,
- 	.num_controls		= ARRAY_SIZE(da7219_snd_controls),
+-#include "../../codecs/da7219-aad.h"
+ #include "../../codecs/da7219.h"
+ #include "../../codecs/rt1015.h"
+ #include "../common/mtk-afe-platform-driver.h"
+@@ -592,7 +591,7 @@ mt8183_da7219_max98357_headset_init(struct snd_soc_component *component)
+ 	snd_jack_set_key(
+ 		priv->headset_jack.jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
+ 
+-	da7219_aad_jack_det(component, &priv->headset_jack);
++	snd_soc_component_set_jack(component, &priv->headset_jack, NULL);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c b/sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c
+index cfca6bdee834..db5d2bec7a95 100644
+--- a/sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c
++++ b/sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c
+@@ -11,10 +11,10 @@
+ #include <linux/module.h>
+ #include <linux/of_device.h>
+ #include <linux/pm_runtime.h>
++#include <sound/jack.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ 
+-#include "../../codecs/da7219-aad.h"
+ #include "../../codecs/da7219.h"
+ #include "../../codecs/mt6358.h"
+ #include "../common/mtk-afe-platform-driver.h"
+@@ -100,7 +100,7 @@ static int mt8186_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ 	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
+ 	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
+ 
+-	da7219_aad_jack_det(cmpnt_codec, &priv->headset_jack);
++	snd_soc_component_set_jack(cmpnt_codec, &priv->headset_jack, NULL);
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
