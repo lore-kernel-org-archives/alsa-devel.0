@@ -4,49 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82B6AFA3741
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Oct 2022 06:49:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53D70C38A02
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Oct 2022 06:50:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A73521664;
-	Mon, 31 Oct 2022 07:48:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A73521664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75C251640;
+	Mon, 31 Oct 2022 07:49:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75C251640
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667198965;
-	bh=N89MQFDLIL03usdxnlb/BiCbTY50GOFUdXXeg4KDC6w=;
-	h=Date:To:From:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qu2tJgnHvGRiPcsUugnZouBZbsca+35W0Lg2ouEwkPI/SqyZhgQH9ol1fAtTTlBE5
-	 ZqjEqTdJVvQZ1hcJakyUIqSCFC3QH1taaoabgzdnuAakqjMLUP/JWEa7Pd+FrIFLQG
-	 hL1OXc1y2HeTmZGo3cwFdB+bSlKPSBw3q0O7qf1g=
+	s=default; t=1667199002;
+	bh=nOTCKQUX5IKV/o5OVs3z4/g2rB8ZbLXQrhIPssStR0s=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ay3FfLcj2XKg151wgRqXVU55V/Zg6N7qZ5ROio0ApyU/3xjfbbqY2AZ+6JE3GkUeh
+	 axeNZbotnmJyMhYTs/chdvJ0I75JcmezUAgMNSrlCNXI0P8THO/8AFSNHn5g/eEGi1
+	 eFrrw7vyjy69/zRi2xGmJ90ylgLgKqI1KDfFSUsY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 419A0F805AA;
-	Mon, 31 Oct 2022 07:45:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CE079F8015B;
+	Mon, 31 Oct 2022 07:46:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74C49F80217; Sun, 30 Oct 2022 23:50:18 +0100 (CET)
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::229])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 2871AF800CC; Mon, 31 Oct 2022 07:46:56 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F03CF800E1
- for <alsa-devel@alsa-project.org>; Sun, 30 Oct 2022 23:50:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F03CF800E1
-Received: (Authenticated sender: ash@heyquark.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 1FA9AFF802;
- Sun, 30 Oct 2022 22:50:07 +0000 (UTC)
-Message-ID: <7ecd4417-d860-4773-c1c1-b07433342390@heyquark.com>
-Date: Mon, 31 Oct 2022 09:50:02 +1100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Content-Language: en-AU
-To: alsa-devel@alsa-project.org, perex@perex.cz, tiwai@suse.com
-From: Ash Logan <ash@heyquark.com>
-Subject: Missing USB IDs for M-Audio Micro
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Mailman-Approved-At: Mon, 31 Oct 2022 07:45:35 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26087F800CC
+ for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 07:46:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26087F800CC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="UEBZmv9L"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="ExKjhXPe"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 780541F88B;
+ Mon, 31 Oct 2022 06:46:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1667198809; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=WVZsumy82ZVKhFyW4LgzVfFuXFo8OFU1iBmgA7FamPw=;
+ b=UEBZmv9LrtFWjEFw4ahAS6+QaQ9NdsOwTfKqagdq45FXcPg6tD0WVuPPPipicYjdce2s/0
+ s5yfDsDvxcCcTzdKZFbDzk04zlTF3LoudWXfhDHq/py6VQXoE0T+KItCJyfLtlMjWRtd65
+ Bkm4ZuwU5RUFkB6NNKJChnqNwOGB0/o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1667198809;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=WVZsumy82ZVKhFyW4LgzVfFuXFo8OFU1iBmgA7FamPw=;
+ b=ExKjhXPe2xPbeuyallqbf3euYXkvxduxE7z8WlqSRQrsi/1G8vHcP2wu3kehOEiwBfFStk
+ RYb9Lt4IftB+uPBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5437E13AAD;
+ Mon, 31 Oct 2022 06:46:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id PNy5E1lvX2MtDgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 31 Oct 2022 06:46:49 +0000
+Date: Mon, 31 Oct 2022 07:46:48 +0100
+Message-ID: <87k04glcbr.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Ash Logan <ash@heyquark.com>
+Subject: Re: Missing USB IDs for M-Audio Micro
+In-Reply-To: <7ecd4417-d860-4773-c1c1-b07433342390@heyquark.com>
+References: <7ecd4417-d860-4773-c1c1-b07433342390@heyquark.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -62,448 +94,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello!
+On Sun, 30 Oct 2022 23:50:02 +0100,
+Ash Logan wrote:
+> 
+> Hello!
+> 
+> I have an M-Audio Micro USB soundcard, which works great, though I
+> have to manually add the USB IDs to snd-usb-audio when I want to use
+> it.
+> 
+> echo 0763 201a > /sys/module/snd_usb_audio/drivers/usb\:snd-usb-audio/new_id
+> 
+> I was hoping you could add the IDs somewhere in the driver to enable
+> it by default, since the output, input and even bass boost "feature"
+> seem to work just fine.
+> 
+> Below is the lsusb information for this device.
 
-I have an M-Audio Micro USB soundcard, which works great, though I have 
-to manually add the USB IDs to snd-usb-audio when I want to use it.
+Could you try the patch below?
 
-echo 0763 201a > /sys/module/snd_usb_audio/drivers/usb\:snd-usb-audio/new_id
 
-I was hoping you could add the IDs somewhere in the driver to enable it 
-by default, since the output, input and even bass boost "feature" seem 
-to work just fine.
+thanks,
 
-Below is the lsusb information for this device.
+Takashi
 
-Thanks!
-Ash
+-- 8< --
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: usb-audio: Add quirk entry for M-Audio Micro
 
-Bus 003 Device 004: ID 0763:201a M-Audio M-Audio Micro
-Device Descriptor:
-   bLength                18
-   bDescriptorType         1
-   bcdUSB               1.10
-   bDeviceClass          255 Vendor Specific Class
-   bDeviceSubClass         0
-   bDeviceProtocol         0
-   bMaxPacketSize0         8
-   idVendor           0x0763 M-Audio
-   idProduct          0x201a M-Audio Micro
-   bcdDevice            0.08
-   iManufacturer           1 M-Audio
-   iProduct                2 M-Audio Micro
-   iSerial                 0
-   bNumConfigurations      1
-   Configuration Descriptor:
-     bLength                 9
-     bDescriptorType         2
-     wTotalLength       0x0186
-     bNumInterfaces          3
-     bConfigurationValue     1
-     iConfiguration          3 G7 2006/06/08 16:08
-     bmAttributes         0x80
-       (Bus Powered)
-     MaxPower              100mA
-     Interface Descriptor:
-       bLength                 9
-       bDescriptorType         4
-       bInterfaceNumber        0
-       bAlternateSetting       0
-       bNumEndpoints           0
-       bInterfaceClass         1 Audio
-       bInterfaceSubClass      1 Control Device
-       bInterfaceProtocol      0
-       iInterface              0
-       AudioControl Interface Descriptor:
-         bLength                10
-         bDescriptorType        36
-         bDescriptorSubtype      1 (HEADER)
-         bcdADC               1.00
-         wTotalLength       0x007c
-         bInCollection           2
-         baInterfaceNr(0)        1
-         baInterfaceNr(1)        2
-       AudioControl Interface Descriptor:
-         bLength                12
-         bDescriptorType        36
-         bDescriptorSubtype      2 (INPUT_TERMINAL)
-         bTerminalID            10
-         wTerminalType      0x0201 Microphone
-         bAssocTerminal          0
-         bNrChannels             2
-         wChannelConfig     0x0003
-           Left Front (L)
-           Right Front (R)
-         iChannelNames           0
-         iTerminal               0
-       AudioControl Interface Descriptor:
-         bLength                12
-         bDescriptorType        36
-         bDescriptorSubtype      2 (INPUT_TERMINAL)
-         bTerminalID            11
-         wTerminalType      0x0603 Line Connector
-         bAssocTerminal          0
-         bNrChannels             2
-         wChannelConfig     0x0003
-           Left Front (L)
-           Right Front (R)
-         iChannelNames           0
-         iTerminal               0
-       AudioControl Interface Descriptor:
-         bLength                12
-         bDescriptorType        36
-         bDescriptorSubtype      2 (INPUT_TERMINAL)
-         bTerminalID            12
-         wTerminalType      0x0101 USB Streaming
-         bAssocTerminal          0
-         bNrChannels             2
-         wChannelConfig     0x0003
-           Left Front (L)
-           Right Front (R)
-         iChannelNames           0
-         iTerminal               0
-       AudioControl Interface Descriptor:
-         bLength                13
-         bDescriptorType        36
-         bDescriptorSubtype      6 (FEATURE_UNIT)
-         bUnitID                 2
-         bSourceID              10
-         bControlSize            2
-         bmaControls(0)     0x0002
-           Volume Control
-         bmaControls(1)     0x0000
-         bmaControls(2)     0x0000
-         iFeature                0
-       AudioControl Interface Descriptor:
-         bLength                13
-         bDescriptorType        36
-         bDescriptorSubtype      6 (FEATURE_UNIT)
-         bUnitID                 3
-         bSourceID              11
-         bControlSize            2
-         bmaControls(0)     0x0002
-           Volume Control
-         bmaControls(1)     0x0000
-         bmaControls(2)     0x0000
-         iFeature                0
-       AudioControl Interface Descriptor:
-         bLength                 8
-         bDescriptorType        36
-         bDescriptorSubtype      5 (SELECTOR_UNIT)
-         bUnitID                 7
-         bNrInPins               2
-         baSourceID(0)           2
-         baSourceID(1)           3
-         iSelector               0
-       AudioControl Interface Descriptor:
-         bLength                13
-         bDescriptorType        36
-         bDescriptorSubtype      6 (FEATURE_UNIT)
-         bUnitID                 1
-         bSourceID              12
-         bControlSize            2
-         bmaControls(0)     0x0155
-           Mute Control
-           Bass Control
-           Treble Control
-           Automatic Gain Control
-           Bass Boost Control
-         bmaControls(1)     0x0002
-           Volume Control
-         bmaControls(2)     0x0002
-           Volume Control
-         iFeature                0
-       AudioControl Interface Descriptor:
-         bLength                 9
-         bDescriptorType        36
-         bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-         bTerminalID            20
-         wTerminalType      0x0301 Speaker
-         bAssocTerminal          0
-         bSourceID               1
-         iTerminal               0
-       AudioControl Interface Descriptor:
-         bLength                13
-         bDescriptorType        36
-         bDescriptorSubtype      6 (FEATURE_UNIT)
-         bUnitID                 6
-         bSourceID               7
-         bControlSize            2
-         bmaControls(0)     0x0003
-           Mute Control
-           Volume Control
-         bmaControls(1)     0x0000
-         bmaControls(2)     0x0000
-         iFeature                0
-       AudioControl Interface Descriptor:
-         bLength                 9
-         bDescriptorType        36
-         bDescriptorSubtype      3 (OUTPUT_TERMINAL)
-         bTerminalID            13
-         wTerminalType      0x0101 USB Streaming
-         bAssocTerminal          0
-         bSourceID               6
-         iTerminal               0
-     Interface Descriptor:
-       bLength                 9
-       bDescriptorType         4
-       bInterfaceNumber        1
-       bAlternateSetting       0
-       bNumEndpoints           0
-       bInterfaceClass         1 Audio
-       bInterfaceSubClass      2 Streaming
-       bInterfaceProtocol      0
-       iInterface              0
-     Interface Descriptor:
-       bLength                 9
-       bDescriptorType         4
-       bInterfaceNumber        1
-       bAlternateSetting       1
-       bNumEndpoints           1
-       bInterfaceClass         1 Audio
-       bInterfaceSubClass      2 Streaming
-       bInterfaceProtocol      0
-       iInterface              0
-       AudioStreaming Interface Descriptor:
-         bLength                 7
-         bDescriptorType        36
-         bDescriptorSubtype      1 (AS_GENERAL)
-         bTerminalLink          12
-         bDelay                  0 frames
-         wFormatTag         0x0001 PCM
-       AudioStreaming Interface Descriptor:
-         bLength                14
-         bDescriptorType        36
-         bDescriptorSubtype      2 (FORMAT_TYPE)
-         bFormatType             1 (FORMAT_TYPE_I)
-         bNrChannels             1
-         bSubframeSize           2
-         bBitResolution         16
-         bSamFreqType            0 Continuous
-         tLowerSamFreq        6400
-         tUpperSamFreq       48000
-       Endpoint Descriptor:
-         bLength                 9
-         bDescriptorType         5
-         bEndpointAddress     0x01  EP 1 OUT
-         bmAttributes            9
-           Transfer Type            Isochronous
-           Synch Type               Adaptive
-           Usage Type               Data
-         wMaxPacketSize     0x0064  1x 100 bytes
-         bInterval               1
-         bRefresh                0
-         bSynchAddress           0
-         AudioStreaming Endpoint Descriptor:
-           bLength                 7
-           bDescriptorType        37
-           bDescriptorSubtype      1 (EP_GENERAL)
-           bmAttributes         0x01
-             Sampling Frequency
-           bLockDelayUnits         2 Decoded PCM samples
-           wLockDelay         0x0001
-     Interface Descriptor:
-       bLength                 9
-       bDescriptorType         4
-       bInterfaceNumber        1
-       bAlternateSetting       2
-       bNumEndpoints           1
-       bInterfaceClass         1 Audio
-       bInterfaceSubClass      2 Streaming
-       bInterfaceProtocol      0
-       iInterface              0
-       AudioStreaming Interface Descriptor:
-         bLength                 7
-         bDescriptorType        36
-         bDescriptorSubtype      1 (AS_GENERAL)
-         bTerminalLink          12
-         bDelay                  0 frames
-         wFormatTag         0x0001 PCM
-       AudioStreaming Interface Descriptor:
-         bLength                14
-         bDescriptorType        36
-         bDescriptorSubtype      2 (FORMAT_TYPE)
-         bFormatType             1 (FORMAT_TYPE_I)
-         bNrChannels             2
-         bSubframeSize           2
-         bBitResolution         16
-         bSamFreqType            0 Continuous
-         tLowerSamFreq        6400
-         tUpperSamFreq       48000
-       Endpoint Descriptor:
-         bLength                 9
-         bDescriptorType         5
-         bEndpointAddress     0x01  EP 1 OUT
-         bmAttributes            9
-           Transfer Type            Isochronous
-           Synch Type               Adaptive
-           Usage Type               Data
-         wMaxPacketSize     0x00c8  1x 200 bytes
-         bInterval               1
-         bRefresh                0
-         bSynchAddress           0
-         AudioStreaming Endpoint Descriptor:
-           bLength                 7
-           bDescriptorType        37
-           bDescriptorSubtype      1 (EP_GENERAL)
-           bmAttributes         0x01
-             Sampling Frequency
-           bLockDelayUnits         2 Decoded PCM samples
-           wLockDelay         0x0001
-     Interface Descriptor:
-       bLength                 9
-       bDescriptorType         4
-       bInterfaceNumber        2
-       bAlternateSetting       0
-       bNumEndpoints           0
-       bInterfaceClass         1 Audio
-       bInterfaceSubClass      2 Streaming
-       bInterfaceProtocol      0
-       iInterface              0
-     Interface Descriptor:
-       bLength                 9
-       bDescriptorType         4
-       bInterfaceNumber        2
-       bAlternateSetting       1
-       bNumEndpoints           1
-       bInterfaceClass         1 Audio
-       bInterfaceSubClass      2 Streaming
-       bInterfaceProtocol      0
-       iInterface              0
-       AudioStreaming Interface Descriptor:
-         bLength                 7
-         bDescriptorType        36
-         bDescriptorSubtype      1 (AS_GENERAL)
-         bTerminalLink          13
-         bDelay                  0 frames
-         wFormatTag         0x0001 PCM
-       AudioStreaming Interface Descriptor:
-         bLength                14
-         bDescriptorType        36
-         bDescriptorSubtype      2 (FORMAT_TYPE)
-         bFormatType             1 (FORMAT_TYPE_I)
-         bNrChannels             1
-         bSubframeSize           1
-         bBitResolution          8
-         bSamFreqType            0 Continuous
-         tLowerSamFreq        6400
-         tUpperSamFreq       48000
-       Endpoint Descriptor:
-         bLength                 9
-         bDescriptorType         5
-         bEndpointAddress     0x84  EP 4 IN
-         bmAttributes            9
-           Transfer Type            Isochronous
-           Synch Type               Adaptive
-           Usage Type               Data
-         wMaxPacketSize     0x0032  1x 50 bytes
-         bInterval               1
-         bRefresh                0
-         bSynchAddress           0
-         AudioStreaming Endpoint Descriptor:
-           bLength                 7
-           bDescriptorType        37
-           bDescriptorSubtype      1 (EP_GENERAL)
-           bmAttributes         0x01
-             Sampling Frequency
-           bLockDelayUnits         2 Decoded PCM samples
-           wLockDelay         0x0001
-     Interface Descriptor:
-       bLength                 9
-       bDescriptorType         4
-       bInterfaceNumber        2
-       bAlternateSetting       2
-       bNumEndpoints           1
-       bInterfaceClass         1 Audio
-       bInterfaceSubClass      2 Streaming
-       bInterfaceProtocol      0
-       iInterface              0
-       AudioStreaming Interface Descriptor:
-         bLength                 7
-         bDescriptorType        36
-         bDescriptorSubtype      1 (AS_GENERAL)
-         bTerminalLink          13
-         bDelay                  0 frames
-         wFormatTag         0x0001 PCM
-       AudioStreaming Interface Descriptor:
-         bLength                14
-         bDescriptorType        36
-         bDescriptorSubtype      2 (FORMAT_TYPE)
-         bFormatType             1 (FORMAT_TYPE_I)
-         bNrChannels             1
-         bSubframeSize           2
-         bBitResolution         16
-         bSamFreqType            0 Continuous
-         tLowerSamFreq        6400
-         tUpperSamFreq       48000
-       Endpoint Descriptor:
-         bLength                 9
-         bDescriptorType         5
-         bEndpointAddress     0x84  EP 4 IN
-         bmAttributes            9
-           Transfer Type            Isochronous
-           Synch Type               Adaptive
-           Usage Type               Data
-         wMaxPacketSize     0x0064  1x 100 bytes
-         bInterval               1
-         bRefresh                0
-         bSynchAddress           0
-         AudioStreaming Endpoint Descriptor:
-           bLength                 7
-           bDescriptorType        37
-           bDescriptorSubtype      1 (EP_GENERAL)
-           bmAttributes         0x01
-             Sampling Frequency
-           bLockDelayUnits         2 Decoded PCM samples
-           wLockDelay         0x0001
-     Interface Descriptor:
-       bLength                 9
-       bDescriptorType         4
-       bInterfaceNumber        2
-       bAlternateSetting       3
-       bNumEndpoints           1
-       bInterfaceClass         1 Audio
-       bInterfaceSubClass      2 Streaming
-       bInterfaceProtocol      0
-       iInterface              0
-       AudioStreaming Interface Descriptor:
-         bLength                 7
-         bDescriptorType        36
-         bDescriptorSubtype      1 (AS_GENERAL)
-         bTerminalLink          13
-         bDelay                  0 frames
-         wFormatTag         0x0001 PCM
-       AudioStreaming Interface Descriptor:
-         bLength                14
-         bDescriptorType        36
-         bDescriptorSubtype      2 (FORMAT_TYPE)
-         bFormatType             1 (FORMAT_TYPE_I)
-         bNrChannels             2
-         bSubframeSize           2
-         bBitResolution         16
-         bSamFreqType            0 Continuous
-         tLowerSamFreq        6400
-         tUpperSamFreq       48000
-       Endpoint Descriptor:
-         bLength                 9
-         bDescriptorType         5
-         bEndpointAddress     0x84  EP 4 IN
-         bmAttributes            9
-           Transfer Type            Isochronous
-           Synch Type               Adaptive
-           Usage Type               Data
-         wMaxPacketSize     0x00c8  1x 200 bytes
-         bInterval               1
-         bRefresh                0
-         bSynchAddress           0
-         AudioStreaming Endpoint Descriptor:
-           bLength                 7
-           bDescriptorType        37
-           bDescriptorSubtype      1 (EP_GENERAL)
-           bmAttributes         0x01
-             Sampling Frequency
-           bLockDelayUnits         2 Decoded PCM samples
-           wLockDelay         0x0001
-can't get debug descriptor: Resource temporarily unavailable
-Device Status:     0x0000
-   (Bus Powered)
+M-Audio Micro (0762:201a) defines the descriptor as vendor-specific,
+while the content seems class-compliant.  Just overriding the probe
+makes the device working.
+
+Reported-by: Ash Logan <ash@heyquark.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/7ecd4417-d860-4773-c1c1-b07433342390@heyquark.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/quirks-table.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 06dfdd45cff8..874fcf245747 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2049,6 +2049,10 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 		}
+ 	}
+ },
++{
++	/* M-Audio Micro */
++	USB_DEVICE_VENDOR_SPEC(0x0763, 0x201a),
++},
+ {
+ 	USB_DEVICE_VENDOR_SPEC(0x0763, 0x2030),
+ 	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
+-- 
+2.35.3
+
