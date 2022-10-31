@@ -4,42 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3BCCFA3741
-	for <alsa-devel@archiver.kernel.org>; Mon, 31 Oct 2022 17:07:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D004BFA3741
+	for <alsa-devel@archiver.kernel.org>; Mon, 31 Oct 2022 17:18:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 050791687;
-	Mon, 31 Oct 2022 18:06:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 050791687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61EB11687;
+	Mon, 31 Oct 2022 18:18:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61EB11687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667236065;
-	bh=US/HYKumOFAtAMMcUMv5hpuKFTeXDrOmo2C/5S9vV6Y=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1667236734;
+	bh=7B4mt/JqRyfkzxBQI3wCz50Y4M0ckz1lU2P1fhTt9K0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FJS3uTPpGAtUdxXyMHOFNm5+FcGKLSN+XLFDG6HzYOdjW3YK9c87y3XuUuUz+WMK1
-	 eza2mBd4/knH/PrWFXjoFgxT761/LO3FjbZGWR+b7cxj+tGnFLtxj80EFP388tZT56
-	 BcUzwVRVXYWaCNKX4DL3n139wmjHEb83qdClz1MA=
+	b=YsaKqcQf6lnVbcMeLQvrI2X6S56d0jL668P6Py7wITds6Dc0/mv321ns1OfrL7AVG
+	 ThfNSl9tuH8M6xjV5d0D+sG5dYkrzhKTZxk1pgHxhOgWc/CyX6V+iaszgKI2ZOsNBD
+	 04s07fFq/A8UMQk1yT0hztpARI7IEdoyYeoR+xBM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E5FFF8015B;
-	Mon, 31 Oct 2022 18:06:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00221F800E1;
+	Mon, 31 Oct 2022 18:18:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 824F3F80163; Mon, 31 Oct 2022 18:06:52 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 46C34F800E1
- for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 18:06:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46C34F800E1
+ id EE989F800E1; Mon, 31 Oct 2022 18:18:02 +0100 (CET)
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com
+ [209.85.167.177])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 71824F800E1
+ for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 18:17:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71824F800E1
+Received: by mail-oi1-f177.google.com with SMTP id y67so13470078oiy.1
+ for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 10:17:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=7pOvyjw1Chc1Qo3mwyQQ5nSHExlsUwet1RU0yznC5TE=;
+ b=6DKb80WbW4lBbM9o59x3vtrCrhCDCHrNlMaNk+9ryLKySsFJuYLkGIeXrqJfZtp6NE
+ csQb7m3xBYZ0ddzRsomPZu3WqIVXgqDXCIZ9s+enLg+BgLO3RGEgANEP+hG2DtQlxq9X
+ 399bgRBr2yopGLBDkVy0jW3V2I4TjxSWSgzIuH9JdbsGyKqrnjH1TVkAhNJltL9vHvQ1
+ ySZsTwNx01l7dfTGPH96PCmz+Lby+fTu9qBJTJ6wONixsn6cdX7odYaPUf7fvUI9ZhlD
+ aSbEvtm8TtgKTcoADanx79ssUTXifqSTL8QXngt/D1DlvYW4ABvqcT8IO+cGTQCr/024
+ LTuQ==
+X-Gm-Message-State: ACrzQf1/jbpje9cXY1MVg3EaTVKL2uLj8IT+y+BW9n5i366IG6ZN2fNT
+ xbfMpd1/ONqg5SsT8BN7kw==
+X-Google-Smtp-Source: AMsMyM4hwSJ/t/sMgz8pe9Mn/V17zTjGPM4dJIHLWsN4XqhLFE8N5tkSwNmUpwHLALXTF9rtwNPhfQ==
+X-Received: by 2002:a05:6808:1992:b0:359:d863:e870 with SMTP id
+ bj18-20020a056808199200b00359d863e870mr6990457oib.289.1667236674184; 
+ Mon, 31 Oct 2022 10:17:54 -0700 (PDT)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
+ t9-20020a4adbc9000000b004768f725b7csm2567227oou.23.2022.10.31.10.17.53
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 31 Oct 2022 10:17:53 -0700 (PDT)
+Received: (nullmailer pid 3025675 invoked by uid 1000);
+ Mon, 31 Oct 2022 17:17:55 -0000
+Date: Mon, 31 Oct 2022 12:17:55 -0500
+From: Rob Herring <robh@kernel.org>
+To: Chancel Liu <chancel.liu@nxp.com>
+Subject: Re: [PATCH 1/3] ASoC: dt-bindings: fsl, micfil: Add compatible string
+ for i.MX93 platform
+Message-ID: <166723667417.3025615.2589955186893152938.robh@kernel.org>
+References: <20221028082750.991822-1-chancel.liu@nxp.com>
+ <20221028082750.991822-2-chancel.liu@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1667236009458420992-webhooks-bot@alsa-project.org>
-References: <1667236009458420992-webhooks-bot@alsa-project.org>
-Subject: feat: add support for ASUS ROG Strix Z790-E Gaming Wifi
-Message-Id: <20221031170652.824F3F80163@alsa1.perex.cz>
-Date: Mon, 31 Oct 2022 18:06:52 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221028082750.991822-2-chancel.liu@nxp.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ broonie@kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, nicoleotsuka@gmail.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, shengjiu.wang@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,10 +92,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #235 was opened from DASPRiD:
 
-I've verified this profile on my motherboard, and both back- and front jacks seem to work fine, including SPDIF.
+On Fri, 28 Oct 2022 16:27:48 +0800, Chancel Liu wrote:
+> Add compatible string "fsl,imx93-micfil" for i.MX93 platform
+> 
+> Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
+> ---
+>  Documentation/devicetree/bindings/sound/fsl,micfil.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/235
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/235.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Acked-by: Rob Herring <robh@kernel.org>
