@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F187C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Nov 2022 10:52:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A666DC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Nov 2022 10:54:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC9AC168D;
-	Tue,  1 Nov 2022 11:51:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC9AC168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 671DB168D;
+	Tue,  1 Nov 2022 11:53:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 671DB168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667299934;
-	bh=Rm3T8xtZLx+mP3fX+g+Dz+UaJAxO3wJiS1ItSslh8hk=;
+	s=default; t=1667300058;
+	bh=wxbjsNKLwbPSgAf7PsC/pR0zjFstC/YPaMQiW1Pza3c=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cCpLygVVZJnBQIx4KcHt0E04+ZudarN8KGdAk+xYSzb/38q1X8t5BMe6ii+lZ/MLH
-	 WxlWEo494teqCP9Yjviye5GeWKITiadVFW3R9AgaY+ya1E3uKnJnE3peydcDcZD4BO
-	 pBMEIEyuGAg1FoNsvzbMXJRVcOywtGg3pOPPW3R4=
+	b=nJyKAtqDoA2awEmn6qXcrG0sFVvyRkIuyZH6qiuPeont4rmqVRhYJtOdor6shqTeb
+	 wJooLpK1WNqF2lPPwt34KG5ScshRIhS0PLLti0t8FOqe2M7qyvbK4/EUhKi//BUDtg
+	 mPrZJeKyRuBLxtm57TCcf48DV9hHijR7ym+4EscM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E9F9F8028D;
-	Tue,  1 Nov 2022 11:51:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F37DF8028D;
+	Tue,  1 Nov 2022 11:53:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0FD69F80155; Tue,  1 Nov 2022 11:51:22 +0100 (CET)
+ id DD785F80423; Tue,  1 Nov 2022 11:53:26 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E63BFF80155
- for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2022 11:51:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E63BFF80155
+ by alsa1.perex.cz (Postfix) with ESMTPS id F3923F80155
+ for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2022 11:53:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3923F80155
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="nldf51+c"; 
+ header.b="A83CPt4S"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="XZsZkWBt"
+ header.b="KS8jmhHe"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 9AAAA1F90C;
- Tue,  1 Nov 2022 10:51:14 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 632C71F90C;
+ Tue,  1 Nov 2022 10:53:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1667299874; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1667300000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=m/tqrif9gECCnlmuhAd8sLJgbFa5N5fA0sPSNU+Auuo=;
- b=nldf51+cWxZToDl2oJppnS38MKItOf9HUZ0e3Qp59Ofvl9/6R27wdh8GuqXrM7FlAslaai
- aVNBMIc6ChDpEx0kwf6JgpRndGHsX7eOShiVQh29gp4twkdudqq2Mhm7htA/FAs+jRSUYO
- Wi61AKep7PTizuyti+Ay4d15ojqRkVY=
+ bh=ZdTjQtjZ1IPT7Rv08RbCZY6GCn7ECBVZh3Q4ei8uQpU=;
+ b=A83CPt4S0Kq11C2SJKBQm+wBEFWfzRkU2+QJP+ER5STog/aBDsIzZVdSK2pU3Wdisb4hzg
+ 18HCIV9f22x+kpX3GlKF/HO59wQOoU7IZBLTFrYlTJKR62w1e2DV9Y+73FhuOb/zB30Rq7
+ 2gQ0rd0NCS05YDKW/nWiDsRS5CenyiI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1667299874;
+ s=susede2_ed25519; t=1667300000;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=m/tqrif9gECCnlmuhAd8sLJgbFa5N5fA0sPSNU+Auuo=;
- b=XZsZkWBtMJBQ+Argnqeck0V6ZBHzz5N8k3L5EFfkP2bvyMwBZXB4BjTx0fUKQOBDQUEWTI
- JC6/s0JlOtg32EDw==
+ bh=ZdTjQtjZ1IPT7Rv08RbCZY6GCn7ECBVZh3Q4ei8uQpU=;
+ b=KS8jmhHe8OtTwcFaIhAL8f+wA3s/tWQqzDAViyt8oto4nCjDq8DugPbV3rxKmZF63TemWH
+ ey6ZOc8+C5PTmFCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 720571346F;
- Tue,  1 Nov 2022 10:51:14 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 46EFF1346F;
+ Tue,  1 Nov 2022 10:53:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id NV2yGSL6YGPIXwAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 01 Nov 2022 10:51:14 +0000
-Date: Tue, 01 Nov 2022 11:51:13 +0100
-Message-ID: <87sfj36j8e.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id ICO+EKD6YGO0YAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 01 Nov 2022 10:53:20 +0000
+Date: Tue, 01 Nov 2022 11:53:19 +0100
+Message-ID: <87r0yn6j4w.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ALSA: hda: clarify comments on SCF changes
-In-Reply-To: <20221031195505.249929-1-pierre-louis.bossart@linux.intel.com>
-References: <20221031195505.249929-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: hda: intel-dsp-config: add ES83x6 quirk for IceLake
+In-Reply-To: <20221031195639.250062-1-pierre-louis.bossart@linux.intel.com>
+References: <20221031195639.250062-1-pierre-louis.bossart@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,30 +95,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 31 Oct 2022 20:55:05 +0100,
+On Mon, 31 Oct 2022 20:56:39 +0100,
 Pierre-Louis Bossart wrote:
 > 
-> The commit 1f9d3d98694b1 ("ALSA: hda - set intel audio clock to a
-> proper value") added a number of misleading comments.
+> Yet another hardware variant we need to handle.
 > 
-> There is no ability to detect if an SCF value was set or not, what the
-> code does is prevent the use of the 6MHz audio clock represented by
-> the value 0 in LCTL.SCF. Changing the SCF settings does require the
-> link to be power-cycled, but in all other cases the link is powered
-> automatically when exiting reset. In other words, the power-cycle is
-> an exception to the rule that the HDaudio legacy driver does not need
-> to program SPA/CPA bits.
-> 
-> In addition, the SCF related changes are only relevant for the first
-> link.
-> 
-> No functionality change, only comment clarifications.
-> 
+> Link: https://github.com/thesofproject/linux/issues/3873
 > Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Reviewed-by: Rander Wang <rander.wang@intel.com>
+> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-Thanks, applied.
+I think that's ALSA HD-audio stuff, but it would make sense only with
+the combination of the change in ASoC side.  So it's better to go
+through Mark's tree.
 
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+
+
+thanks,
 
 Takashi
+
+
+> ---
+>  sound/hda/intel-dsp-config.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+> index b9eb3208f288..ae31bb127594 100644
+> --- a/sound/hda/intel-dsp-config.c
+> +++ b/sound/hda/intel-dsp-config.c
+> @@ -320,6 +320,11 @@ static const struct config_entry config_table[] = {
+>  			{}
+>  		}
+>  	},
+> +	{
+> +		.flags = FLAG_SOF,
+> +		.device = 0x34c8,
+> +		.codec_hid =  &essx_83x6,
+> +	},
+>  	{
+>  		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+>  		.device = 0x34c8,
+> -- 
+> 2.34.1
+> 
