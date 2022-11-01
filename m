@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 954A8C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  1 Nov 2022 18:29:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F291C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue,  1 Nov 2022 18:29:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9F04AE8;
-	Tue,  1 Nov 2022 19:28:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9F04AE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id BEFB4167C;
+	Tue,  1 Nov 2022 19:28:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEFB4167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667327344;
-	bh=3psEzr0e9wYtwIUmu4oDyKrc2AlqzddERfnC8G8Tess=;
+	s=default; t=1667327368;
+	bh=Q/ASLzwOmrV4hjupm9mEgkVuRzO7MvpPOVD1mz30ntI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=h5x878kCZvxreOWfjXQBCZL5L5vnAz5Z6Q+en+gaudSaatsl+EkIT6L19IEyQ+k/P
-	 +ZwwqCwC6wL8o5eTB67NV/Oum4cOTNrOBucTZB7m4LvGeKzjoM2RSphDhsRzOwG1+s
-	 JoJS9qzr4rrjMuk3o/KyUPvnTYsiqC+krHEKf8KE=
+	b=NEUxIHWr9Kl36ZdXfcS44qb+jauQrL09qvyN7KIQ35bRtFN4yxUn30+WH+X7B6hvR
+	 8GXdtU3S9ace3bZt3lQXWd9aEZ8skKjpq0gzJnYnPL1/COo/TYJ5c89lJa4poKTmTp
+	 dsN83n1wutWyl1W2YTFJYexwyYELI6cIcXd7Akc8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D452F8028D;
-	Tue,  1 Nov 2022 19:28:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04713F80519;
+	Tue,  1 Nov 2022 19:28:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48278F804AB; Tue,  1 Nov 2022 19:28:10 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 4967BF80155; Tue,  1 Nov 2022 19:28:11 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8646FF800F3
- for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2022 19:28:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8646FF800F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5E84F80155
+ for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2022 19:28:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5E84F80155
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="gj/gZkva"
+ header.b="k5gANrV9"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id CB0DCB81ED4;
- Tue,  1 Nov 2022 18:28:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E90C433D6;
- Tue,  1 Nov 2022 18:28:01 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6B638615C9;
+ Tue,  1 Nov 2022 18:28:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC667C433C1;
+ Tue,  1 Nov 2022 18:28:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1667327282;
- bh=3psEzr0e9wYtwIUmu4oDyKrc2AlqzddERfnC8G8Tess=;
+ s=k20201202; t=1667327283;
+ bh=Q/ASLzwOmrV4hjupm9mEgkVuRzO7MvpPOVD1mz30ntI=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=gj/gZkvaj1d+NacnykWMbYwxkk+8GoB2vcod3yo4K686kqfgfhuYBlO++jzkZzgYf
- GlOqdTjCnduzDSBqwPq0xyFb3bH6hhuCc6kNG42w9v1fNxZoCnOPpi5j6jSxecURAB
- C5ABcBFUgjRdh8hIb11KvaRvpS4Qpkfggi96j57RFVQDv4xT94eJmyRwDKwnp0thei
- 8huPyFqvMkuomXlz+CgPozMShbdTltOcx0XZfCZxZDTQBuhCixNU/w2iWbpTiZ7YvT
- lqni1Q7z5wzMQ5p/smEfddY5DsQZK0GNiEifymVbk/pp6YdBJz5wcQxl67Wz1bJUl1
- Ytfr+1t/HdpDg==
+ b=k5gANrV9k0LA6m1AKq3mQSB5nwbFZGl7JyPUV+EQEpAUhi1nCQ59MgPjnvAywGmIA
+ y2fOOHA/5AG6mtHTk/hzrReLchhhPJij+cmAUdOy2p5reWi6VJgz3/1mzFk0XihBzK
+ QmvIdxMDC5snY7LkqTLAnGS3F+8IL2hpnIsOfbSpgULwy+p/AIJLDxifnpLylrYe4r
+ kwHjJa+vc69csFVJ069VEwKMnDo4geN15+Vqd0H90aMHMk1eJAp5OZeidX2w7kxc0t
+ lUp1hJaeT3p+sMaLgAYUb3EzVrgZnXBtGzqzoS5kk5xYwzs5THtdc1zA7LZaz79uZ2
+ HVm/yCHZ1J/zw==
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20221031195639.250062-1-pierre-louis.bossart@linux.intel.com>
-References: <20221031195639.250062-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: hda: intel-dsp-config: add ES83x6 quirk for IceLake
-Message-Id: <166732728134.298210.15008002909565814769.b4-ty@kernel.org>
-Date: Tue, 01 Nov 2022 18:28:01 +0000
+In-Reply-To: <20221031195836.250193-1-pierre-louis.bossart@linux.intel.com>
+References: <20221031195836.250193-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: soc-acpi: add ES83x6 support to IceLake
+Message-Id: <166732728269.298210.14554411001229186520.b4-ty@kernel.org>
+Date: Tue, 01 Nov 2022 18:28:02 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -81,8 +80,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 31 Oct 2022 15:56:39 -0400, Pierre-Louis Bossart wrote:
-> Yet another hardware variant we need to handle.
+On Mon, 31 Oct 2022 15:58:36 -0400, Pierre-Louis Bossart wrote:
+> Missing entry to find a machine driver for ES83x6-based platforms.
 > 
 > 
 
@@ -92,8 +91,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: hda: intel-dsp-config: add ES83x6 quirk for IceLake
-      commit: 5d73263f9e7c54ccb20814dc50809b9deb9e2bc7
+[1/1] ASoC: Intel: soc-acpi: add ES83x6 support to IceLake
+      commit: 9a1d248bb4beaf1b43d17ba12481ee0629fa29b9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
