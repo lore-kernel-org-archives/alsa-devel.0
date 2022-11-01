@@ -4,75 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21CC4C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Nov 2022 14:18:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A86F2C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Nov 2022 14:18:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF03E1652;
-	Wed,  2 Nov 2022 15:17:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF03E1652
+	by alsa0.perex.cz (Postfix) with ESMTPS id D0C651695;
+	Wed,  2 Nov 2022 15:17:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0C651695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667398698;
-	bh=AOMR9SnvQO4J3D72dWab1TiiI3Z0ctfdEIh0iyOPyWg=;
+	s=default; t=1667398722;
+	bh=Atb07j6KNgwKxdk8Jcl0CDLakqWwL1dt1gKnqL9QU90=;
 	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:Reply-To:From;
-	b=nnT5nVu9Ihj6PZmaMzRn3wAs6Fb8f4i+GxhtIN8zVgFt2Y2APNIwZC3YNYOCdE94u
-	 ASbAD2cfRJQDKZQrDwBFyBadjV26D3iHJsToXRSachJHwOz6FPnZm82/9DwjapQymE
-	 kZmyB2SyZwrOZ/iw8geQHCifIkUrZaqEhRttk/xo=
+	b=SzXLt1oemcbIXWhww7r72OhIVdjtmJQ5m5nipI/nSUbRpKiwgheShnUw6ctYuzxMn
+	 Pzwdx11PQpjeHK7z/TeAS5q2UCj4j4R4dFkd2b/BSWlAia0wNVyPe0P8swgm6hN3Y1
+	 TKufeVayBK/t8RpC26zA704qwoztOrvvsYaDIXFg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6DBCAF80155;
-	Wed,  2 Nov 2022 15:17:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12F96F8047B;
+	Wed,  2 Nov 2022 15:17:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A765DF80163; Tue,  1 Nov 2022 02:04:43 +0100 (CET)
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com
- [IPv6:2607:f8b0:4864:20::534])
+ id DF932F8021D; Tue,  1 Nov 2022 02:08:43 +0100 (CET)
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com
+ [IPv6:2607:f8b0:4864:20::1032])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F291BF800CC
- for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2022 02:04:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F291BF800CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6496AF800F3
+ for <alsa-devel@alsa-project.org>; Tue,  1 Nov 2022 02:08:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6496AF800F3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="ddFOCcQ+"
-Received: by mail-pg1-x534.google.com with SMTP id b5so12149435pgb.6
- for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 18:04:40 -0700 (PDT)
+ header.b="G/qsep9+"
+Received: by mail-pj1-x1032.google.com with SMTP id l6so11880279pjj.0
+ for <alsa-devel@alsa-project.org>; Mon, 31 Oct 2022 18:08:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
  :subject:date:message-id:reply-to;
- bh=mmEW8219CJ1DYDPVFVBcNXYdO5oEHDNeBQ0+FkOQP/8=;
- b=ddFOCcQ+43QbuHyQYOYbbR99Sq2I2v/Zfw7B+QpWGD5hXsD/10vIQuBAmy7X0ln4XJ
- 27xxSE35d+9r4CTNkFrvEWaUZVTRpMcx9/4qQGWL4ywAh/3oB1mDvPbdpKkZy/3Z6MUG
- eg883NaFIEwAihUrFtBB13hC52yySWFfluqktJL7ca/fbnRTkfRBvIaf/+JseR6AJr97
- o7DMxsfn5Cf+opSLXXiFetpRWpUdsfXgM9L8LAb2oiAsAc3t4q7dySWfOAwC/2oOBn74
- XtkeXkxP048qfukWyJzjR3Q/ZqsgRDy2Oc/MYKc6wXhye77qF83gme8KC2MPoe0vEy19
- MDPg==
+ bh=87D1DIsm59BtOXDVm5u5ujWBF82YPU6s4OSpxniyum0=;
+ b=G/qsep9+q0UsHdPwmKvoWL+WyU6qBdxyZWRWmb74T4QctSHM5yytQoWbLYdbJ6OlEY
+ 3b+cINMzKk8LhC9PsuVTTt9B9LMJIvLrvZLmGfnWsXgQRbpf3GJClEoBsCNLZ7CWYG9j
+ LaF6pWH+N7GJspZ0bXKZ1cO2nzqkrJM7CzCUzcmgdQuoXkkYkEJCFr1Qzg6a+fBVw3Aw
+ pOTJd+aF5E3BAu5jCQ/dKkC75HIlPk4Z6dwLGZRIr2ZVVV8bbZ7k18OuHlmCpPHi8HR5
+ PUUhAPzmd7k/hmzAMkrVzlAd8I1hIUhw4uV2ilT2Vf0VdKRUEDcH9UJzNlkg8BGCwU2V
+ AB9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=to:subject:message-id:date:from:reply-to:mime-version
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=mmEW8219CJ1DYDPVFVBcNXYdO5oEHDNeBQ0+FkOQP/8=;
- b=ej29MB9cnQ/PzRsgpXGTdV9f7ouvqQyTKXnjj2GjOFaA799Yan2wS1mgD2pUu5EGXw
- 77cSqg71WkEmaxIbFp8lLxOaGGvBo1x5NlQVpadLOMx4MyRPvwBmEGZZDd1ql4cmd3BC
- N7qSA8rvlSS1YZDYGCMxaLDNQIm4INckX42oKhbRlyn7VUmy5qO5jBVPz646kRBFVHJk
- NjasFAJJFSWk855D8D6ytzE8vEdYLYP7IcswQwvfl96p/dMLAm/rhyKpcblu7SQoLF47
- MiYhy4zizJia4XOAS7hjj+Jy3o5h7xliEX65tfC4fnyZa71TnmT11TKlC73oKPWPXz/0
- Q9Bg==
-X-Gm-Message-State: ACrzQf09avX1yc5FcyaEb3e3L1a8hAS5M0mW/12QRKPoFucINLvyVlFC
- LaC8Ij154+cTSNUb4ky5qtHByZnq6zXm7IvJaAI85rtQz3Q=
-X-Google-Smtp-Source: AMsMyM5HSSJXXfiXMPti6vb8a2FkFNP/ITbtl3ykprdmkHfINHAcJy4ZHyeSaeb6YvHYnEs7DYcUVNEOx3MszgfgCCE=
-X-Received: by 2002:a05:6a00:1a04:b0:52a:d4dc:5653 with SMTP id
- g4-20020a056a001a0400b0052ad4dc5653mr17321470pfv.69.1667264677513; Mon, 31
- Oct 2022 18:04:37 -0700 (PDT)
+ bh=87D1DIsm59BtOXDVm5u5ujWBF82YPU6s4OSpxniyum0=;
+ b=kkrkswZy0SqTNpJX5yoFw8GbwYu6zlJfZ6kcslyhzXaq3oLj+R2WA3lBMmn278Zo4r
+ RjkinXl82jX8X9Kr3+lr6Qn4NEVkjU56yRrtOZ49SK3b6mljFtGFNBf2rzAmIO6JK1uc
+ KsaLC+tZHQaOK3JZeWokcMUCgqMa+Z5QTh0iE8iAAuVwmQSR+Dz1Ibte3Xq0FV3TKk/Q
+ t2G45HAVr5BK5HMijJyu4JS/s6czDdbf2PWfhPXXY7gotdr4XuRNeWOQHhBZefhxZaWU
+ snxCvUMJba95WPZ7yG8PBiaWWjda8QMFXZmsbtq4Wp+tNnuw/F2WNL4uIDdYdcvnI/D4
+ 16iw==
+X-Gm-Message-State: ACrzQf0QkDPunB0CKv/lM+brzsLxoHw2Mwk6tXe+O45UEnTDcbf/6Qzw
+ FK7YAeD+LPykJHmPbdXO5ajPLMzoTHkt3a6ycVGwzVUS
+X-Google-Smtp-Source: AMsMyM6wu2vQCcii1by4deAaz8B3hlPulq4MJNS2FCmjY9r3So9bncxQBabpEEj6bTm7J4ar9b3eOMWSdytK69IofBA=
+X-Received: by 2002:a17:90b:4cc5:b0:212:fbb8:bd02 with SMTP id
+ nd5-20020a17090b4cc500b00212fbb8bd02mr35785pjb.29.1667264915380; Mon, 31 Oct
+ 2022 18:08:35 -0700 (PDT)
 MIME-Version: 1.0
 From: David Jaffe <davidajaffe@gmail.com>
-Date: Mon, 31 Oct 2022 18:04:26 -0700
-Message-ID: <CAG74igXPJjnQF6-nbXn2bXywWA0cKpR3cDhYPwg=fKN6J_yZZA@mail.gmail.com>
-Subject: building aplay / arecord
+Date: Mon, 31 Oct 2022 18:08:24 -0700
+Message-ID: <CAG74igUcg-=1pz+YBOxCHR0K_N+k6YUv6n+d71BCEqAdvVVYCg@mail.gmail.com>
+Subject: Feedback with embedded USB audio gadget
 To: alsa-devel@alsa-project.org
 X-Mailman-Approved-At: Wed, 02 Nov 2022 15:17:26 +0100
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Content-Filtered-By: Mailman/MimeDel 2.1.15
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -90,10 +89,10 @@ Reply-To: davidajaffe@gmail.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Newbie question...
-
-I downloaded the alsa-utils source and it says to run ./configure.  But no
-such file exists.  And if I go to aplay and type =E2=80=9Cmake aplay=E2=80=
-=9D it can=E2=80=99t find
-a file called =E2=80=9Caconfig.h=E2=80=9D, which is presumably written by
-./configure.  What am I missing?
+I see that the USB Gadget has an explicit feedback node.   It seems to
+deliver a constant (00 00 30 00) for a sample rate of 48kHz.    I see that
+the value is initialized to a combination of the sample rate and the
+"pitch", which appears to be a control of the driver.  Is the pitch plumbed
+up to the user-level through alsa somehow (if so how)?    If not, is there
+some ALSA layer that servos the pitch to keep the host clock and the
+embedded clock synchronized?
