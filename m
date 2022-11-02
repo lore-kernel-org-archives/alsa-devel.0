@@ -4,73 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0DE6C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Nov 2022 18:22:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C416C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Nov 2022 18:22:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C78101669;
-	Wed,  2 Nov 2022 19:21:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C78101669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 84CBB169C;
+	Wed,  2 Nov 2022 19:21:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84CBB169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667413315;
-	bh=aHKXHg5yRWCszz4RN5TUFELZQbFWp0LXSet1RHes8lw=;
+	s=default; t=1667413335;
+	bh=OfMwEPRyzP69cf0RbqYMeq7wYptVsG5Ag1i1BjFEAS4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZlUTx2Bz9ftQS6hc3163LKE4TmUYJambFzLDXsA7sJqju1FOTbd5fGs9ItDkxWElC
-	 FijpTqzVP5C+3HVEhtWNCcwpObKoZLSmEhZgMVKoHStCCBe/QXPzAXDk7BJSE0G1tC
-	 mD9z67lH1JgYpsARDeAOtiR55bo9ijouI7hlmx7k=
+	b=LvW7N7QeOTfgtePsIS8xmsmwFzqpa8hc1NP02FQmjdO6EgcOhoubEC3xAsh5NjkGX
+	 BxHic9AeS13rvNh92P7YxFdrEAce0y8xqBlpa1rH64fkwiTX9i1Zt55HFSRHQaroXY
+	 JCYS3CTm8tOWJPR+yYJpduMvQVsY00By0A2zLabA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE309F80558;
-	Wed,  2 Nov 2022 19:20:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6EF28F80564;
+	Wed,  2 Nov 2022 19:20:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9B9E2F80558; Wed,  2 Nov 2022 19:20:18 +0100 (CET)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+ id 27B7BF8055B; Wed,  2 Nov 2022 19:20:20 +0100 (CET)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6AE8BF8026D
- for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2022 19:20:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AE8BF8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11848F80254
+ for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2022 19:20:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11848F80254
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
- header.b="LqLVraj7"
+ header.b="T8GiEKHc"
 Received: from notapiano.myfiosgateway.com (unknown
  [IPv6:2600:4041:5b1a:cd00:524d:e95d:1a9c:492a])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested) (Authenticated sender: nfraprado)
- by madras.collabora.co.uk (Postfix) with ESMTPSA id AFC3066028E3;
- Wed,  2 Nov 2022 18:20:11 +0000 (GMT)
+ by madras.collabora.co.uk (Postfix) with ESMTPSA id E344E6602948;
+ Wed,  2 Nov 2022 18:20:14 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1667413213;
- bh=aHKXHg5yRWCszz4RN5TUFELZQbFWp0LXSet1RHes8lw=;
+ s=mail; t=1667413216;
+ bh=OfMwEPRyzP69cf0RbqYMeq7wYptVsG5Ag1i1BjFEAS4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=LqLVraj7daBs/qNGOyMgszO7PYrOjdyFfjnFJkoiTC/1Jxm/fdHpn0MZNNjV/xUG1
- b3Z+YeiUD0HOls+xF1xUB8EfRTcIy/2diBZJonReDRRWGhA0t29hD/yq0j1MYKI4b9
- eu/eJZCBtewDSvaKdl0j7KdrJS72+y7SaCc1xlT2boF2tHuejdDD0xlja5TjdcC/ol
- 1y6pTQcLfzmyYA6AMGsydD7QgHx/yyqfVxIa9rZx24pTRUl/i1MuQ8gZh2ET6VQzFF
- MNb1qX2O0oXwypUhidFIpRE4syMtSyg6o0s4pUfbFJxnVhvCW0C5V1aav0HiKUUUMh
- iDE4Mo2/OxTPA==
+ b=T8GiEKHc8UtFOYUTrPUOVTnAL1fBOP0leZVHpAvJGznyzxuomjwzC3xFcrlqgcaZc
+ NH9gSfQTB9k1f8OysAGYkJ1DakMgh5w2EA9ZxzAx/3ryKYPQB7RBMefBi6dvDuHkLY
+ H919o8MLhJMWZcghrXV0ISVX8ePMgHnBUbjBXSpl8GWUdvqbYuT8ZQAn7TpMMaJGLH
+ 5IoTZBAQm/H5616oyeO4wl9DmQCCQrT/CVSXHFmquP5cc/KCe4Ai1OeGrQYhcs0Xqy
+ X3VHib7o3BtzrR0Fup7JIMtXosIlpWL+RsME7YyYkpXgRJKOWs3LFVNrhxREIdRDW7
+ pZ16b9a1UcSfw==
 From: =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?=
  <nfraprado@collabora.com>
 To: Mark Brown <broonie@kernel.org>,
 	Bjorn Andersson <andersson@kernel.org>
-Subject: [PATCH v2 3/8] ASoC: dt-bindings: rt5682: Add AVDD,
- MICVDD and VBAT supplies
-Date: Wed,  2 Nov 2022 14:19:57 -0400
-Message-Id: <20221102182002.255282-4-nfraprado@collabora.com>
+Subject: [PATCH v2 5/8] ASoC: rt5682s: Support DBVDD and LDO1-IN supplies
+Date: Wed,  2 Nov 2022 14:19:59 -0400
+Message-Id: <20221102182002.255282-6-nfraprado@collabora.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221102182002.255282-1-nfraprado@collabora.com>
 References: <20221102182002.255282-1-nfraprado@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org,
  =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?=
- <nfraprado@collabora.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ <nfraprado@collabora.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Chen-Yu Tsai <wenst@chromium.org>, kernel@collabora.com,
  AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -88,46 +87,80 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The rt5682 codec has three supplies - AVDD, MICVDD and VBAT - which are
-already used by sc7180-trogdor.dtsi. Document them in the binding.
+Add support for the DBVDD and LDO1-IN supplies.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+
 ---
 
-(no changes since v1)
+Changes in v2:
+- Made names uppercase
 
- Documentation/devicetree/bindings/sound/rt5682.txt | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/codecs/rt5682s.c | 22 ++++++++++++++++++++++
+ sound/soc/codecs/rt5682s.h |  2 ++
+ 2 files changed, 24 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/rt5682.txt b/Documentation/devicetree/bindings/sound/rt5682.txt
-index 6b87db68337c..89e6245b870e 100644
---- a/Documentation/devicetree/bindings/sound/rt5682.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5682.txt
-@@ -8,6 +8,15 @@ Required properties:
- 
- - reg : The I2C address of the device.
- 
-+- AVDD-supply: phandle to the regulator supplying analog power through the
-+  AVDD pin
-+
-+- MICVDD-supply: phandle to the regulator supplying power for the microphone
-+  bias through the MICVDD pin. Either MICVDD or VBAT should be present.
-+
-+- VBAT-supply: phandle to the regulator supplying battery power through the
-+  VBAT pin. Either MICVDD or VBAT should be present.
-+
- Optional properties:
- 
- - interrupts : The CODEC's interrupt output.
-@@ -75,4 +84,7 @@ rt5682 {
- 
- 	clocks = <&osc>;
- 	clock-names = "mclk";
-+
-+	AVDD-supply = <&avdd_reg>;
-+	MICVDD-supply = <&micvdd_reg>;
+diff --git a/sound/soc/codecs/rt5682s.c b/sound/soc/codecs/rt5682s.c
+index 80c673aa14db..f5e5dbc3b0f0 100644
+--- a/sound/soc/codecs/rt5682s.c
++++ b/sound/soc/codecs/rt5682s.c
+@@ -44,6 +44,8 @@ static const struct rt5682s_platform_data i2s_default_platform_data = {
+ static const char *rt5682s_supply_names[RT5682S_NUM_SUPPLIES] = {
+ 	[RT5682S_SUPPLY_AVDD] = "AVDD",
+ 	[RT5682S_SUPPLY_MICVDD] = "MICVDD",
++	[RT5682S_SUPPLY_DBVDD] = "DBVDD",
++	[RT5682S_SUPPLY_LDO1_IN] = "LDO1-IN",
  };
+ 
+ static const struct reg_sequence patch_list[] = {
+@@ -3089,6 +3091,14 @@ static void rt5682s_i2c_disable_regulators(void *data)
+ 	if (ret)
+ 		dev_err(dev, "Failed to disable supply AVDD: %d\n", ret);
+ 
++	ret = regulator_disable(rt5682s->supplies[RT5682S_SUPPLY_DBVDD].consumer);
++	if (ret)
++		dev_err(dev, "Failed to disable supply DBVDD: %d\n", ret);
++
++	ret = regulator_disable(rt5682s->supplies[RT5682S_SUPPLY_LDO1_IN].consumer);
++	if (ret)
++		dev_err(dev, "Failed to disable supply LDO1-IN: %d\n", ret);
++
+ 	usleep_range(1000, 1500);
+ 
+ 	ret = regulator_disable(rt5682s->supplies[RT5682S_SUPPLY_MICVDD].consumer);
+@@ -3150,6 +3160,18 @@ static int rt5682s_i2c_probe(struct i2c_client *i2c)
+ 		return ret;
+ 	}
+ 
++	ret = regulator_enable(rt5682s->supplies[RT5682S_SUPPLY_DBVDD].consumer);
++	if (ret) {
++		dev_err(&i2c->dev, "Failed to enable supply DBVDD: %d\n", ret);
++		return ret;
++	}
++
++	ret = regulator_enable(rt5682s->supplies[RT5682S_SUPPLY_LDO1_IN].consumer);
++	if (ret) {
++		dev_err(&i2c->dev, "Failed to enable supply LDO1-IN: %d\n", ret);
++		return ret;
++	}
++
+ 	if (gpio_is_valid(rt5682s->pdata.ldo1_en)) {
+ 		if (devm_gpio_request_one(&i2c->dev, rt5682s->pdata.ldo1_en,
+ 					  GPIOF_OUT_INIT_HIGH, "rt5682s"))
+diff --git a/sound/soc/codecs/rt5682s.h b/sound/soc/codecs/rt5682s.h
+index 45464a041765..67f86a38a1cc 100644
+--- a/sound/soc/codecs/rt5682s.h
++++ b/sound/soc/codecs/rt5682s.h
+@@ -1438,6 +1438,8 @@ struct pll_calc_map {
+ enum {
+ 	RT5682S_SUPPLY_AVDD,
+ 	RT5682S_SUPPLY_MICVDD,
++	RT5682S_SUPPLY_DBVDD,
++	RT5682S_SUPPLY_LDO1_IN,
+ 	RT5682S_NUM_SUPPLIES,
+ };
+ 
 -- 
 2.38.1
 
