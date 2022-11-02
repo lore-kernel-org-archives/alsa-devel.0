@@ -4,69 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B4FAC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  2 Nov 2022 21:53:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 371CFC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed,  2 Nov 2022 22:06:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4C9A515C1;
-	Wed,  2 Nov 2022 22:52:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C9A515C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDF09161E;
+	Wed,  2 Nov 2022 23:05:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDF09161E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667426019;
-	bh=CAXmNDqw3R9TEdENrUnA6H8Sfz9kM+6hXtsSbJ20eio=;
+	s=default; t=1667426775;
+	bh=FS4e9nhVtW6hkotHWpM6LTMoaYsDhDQveLHvBrHl6HM=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qpvU1ShCa0XYidpFN8PGLaEHBviy0FPiIncESVU/DJ0ci3KsuVJOMwL/6BG3nCtty
-	 +od1c1mpCk3eMzjPwL3DCebkMw2A8Jf/+RmEmA11BtIypF+hEGaYc9Xr7PpE88ukTb
-	 pyVJNrbFtdpwlrcrctBj4silludN/olGMsMBqk3s=
+	b=UdDBmYfuVPZ6tmlWSVdRAlcO9uWxF4OrBTpEB1zzpf70xvlpkIFFtlq4FVGfiF12d
+	 c6Xa1EC2evoQ9HAVAXCS0ZoE16D5BO9kNVgp8weTTKFF9x8UOoDLhRz7v3udteLvq+
+	 WyEopxrYvMqToSs39IEFIip7uAwDmLNdeRx0WVe8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CAD04F80254;
-	Wed,  2 Nov 2022 22:52:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74617F80254;
+	Wed,  2 Nov 2022 23:05:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A196BF8026D; Wed,  2 Nov 2022 22:52:46 +0100 (CET)
-Received: from 7.mo548.mail-out.ovh.net (7.mo548.mail-out.ovh.net
- [46.105.33.25])
+ id 12008F8026D; Wed,  2 Nov 2022 23:05:23 +0100 (CET)
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78B99F801D5
- for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2022 22:52:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78B99F801D5
-Received: from mxplan2.mail.ovh.net (unknown [10.108.20.195])
- by mo548.mail-out.ovh.net (Postfix) with ESMTPS id 6C6C220A26
- for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2022 21:52:39 +0000 (UTC)
-Received: from gnuinos.org (37.59.142.108) by DAG5EX1.mxp2.local (172.16.2.9)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.12; Wed, 2 Nov
- 2022 22:52:38 +0100
-Authentication-Results: garm.ovh; auth=pass
- (GARM-108S0029d384dd9-7574-4b76-878b-4f0506cebac0,
- 1DFBCCADF7BBE204CC0E3BBD30E5C178FDFA6A19) smtp.auth=aitor_czr@gnuinos.org
-X-OVh-ClientIp: 88.10.253.183
-Message-ID: <b5a0798d-68ad-bbb1-97af-8ea11aed9e31@gnuinos.org>
-Date: Wed, 2 Nov 2022 22:52:37 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE9E1F80155
+ for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2022 23:05:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE9E1F80155
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="AQ4DdkJ1"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1667426721; x=1698962721;
+ h=message-id:date:mime-version:subject:to:references:from:
+ in-reply-to:content-transfer-encoding;
+ bh=FS4e9nhVtW6hkotHWpM6LTMoaYsDhDQveLHvBrHl6HM=;
+ b=AQ4DdkJ1lUItMKHb4qNuhyu13m2vH+yUSWlfnYgjRHpAzH70VRqceGVp
+ lr3SUx7Vc+b2AoibBMT5DnLKDmMSY58YuLJr1f88DetlJ5Uwf9qwql1fX
+ h7GE5rSfLU6DodjKNmOaxOxuxw0BZRf7gK6i4eJBdNtx/W7Fbjft1gzGD
+ E4Yhrs0f9wL0yiMv9tVkMfkjnEi/reYXKAHJ6DmL19JOYCHzgMPNJX74I
+ VY0OByRyImL+4fHX6RwxF/l0l7oFgD5CKgbVk3YI9wsvyC5zztyHhQKkF
+ gko0vF0nw2RU2C5vRuH/lQxpYmdgEQh/TUNbR4N1bTX/zcvkxDA5Gv3Ar Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10519"; a="371625931"
+X-IronPort-AV: E=Sophos;i="5.95,235,1661842800"; d="scan'208";a="371625931"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Nov 2022 15:05:16 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10519"; a="585556710"
+X-IronPort-AV: E=Sophos;i="5.95,235,1661842800"; d="scan'208";a="585556710"
+Received: from xuehongy-mobl1.amr.corp.intel.com (HELO [10.212.18.5])
+ ([10.212.18.5])
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Nov 2022 15:05:16 -0700
+Message-ID: <2bbe7bed-21d4-018a-8957-10d9dbe0c661@linux.intel.com>
+Date: Wed, 2 Nov 2022 18:05:14 -0400
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.0
-Subject: Re: building aplay / arecord
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.2.2
+Subject: Re: [PATCH] Fix kbl_rt5663_rt5514_max98927 regression
+To: Jason Montleon <jmontleo@redhat.com>, regressions@lists.linux.dev,
+ oder_chiou@realtek.com, cezary.rojewski@intel.com,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.cirrus.com>
+References: <20221102200527.4174076-1-jmontleo@redhat.com>
 Content-Language: en-US
-To: <alsa-devel@alsa-project.org>
-References: <CAG74igXPJjnQF6-nbXn2bXywWA0cKpR3cDhYPwg=fKN6J_yZZA@mail.gmail.com>
- <Y2KJntHXy19DEBck@shelf.conquest>
-From: aitor <aitor_czr@gnuinos.org>
-In-Reply-To: <Y2KJntHXy19DEBck@shelf.conquest>
-X-Originating-IP: [37.59.142.108]
-X-ClientProxiedBy: DAG7EX1.mxp2.local (172.16.2.13) To DAG5EX1.mxp2.local
- (172.16.2.9)
-X-Ovh-Tracer-GUID: 9ac2a255-229e-4e6c-9df9-4f478cdb8ab9
-X-Ovh-Tracer-Id: 16620252951775864343
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvgedrudejgdduheegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpegtkfffgggfuffvfhfhjghisegrtderredtfeejnecuhfhrohhmpegrihhtohhruceorghithhorhgptgiirhesghhnuhhinhhoshdrohhrgheqnecuggftrfgrthhtvghrnhepudelveetveekjefhvddvkefgkeffhefghfeuhfevleekvddtueethedvhfevtdefnecukfhppeduvdejrddtrddtrddupdefjedrheelrddugedvrddutdeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeorghithhorhgptgiirhesghhnuhhinhhoshdrohhrgheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheprghlshgrqdguvghvvghlsegrlhhsrgdqphhrohhjvggtthdrohhrghdpoffvtefjohhsthepmhhoheegkedpmhhouggvpehsmhhtphhouhht
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20221102200527.4174076-1-jmontleo@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,39 +89,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi David,
+On 11/2/22 16:05, Jason Montleon wrote:
+> Starting with 6.0-rc1 these messages are logged and the sound card
+> is unavailable. Adding legacy_dai_naming to the rt5514-spi causes
+> it to function properly again.
+> 
+> [   16.928454] kbl_r5514_5663_max kbl_r5514_5663_max: ASoC: CPU DAI
+> spi-PRP0001:00 not registered
+> [   16.928561] platform kbl_r5514_5663_max: deferred probe pending
 
-On 2/11/22 16:15, ael wrote:
+Thanks for reporting this regression, much appreciated.
 
-> On Mon, Oct 31, 2022 at 06:04:26PM -0700, David Jaffe wrote:
->> Newbie question...
->>
->> I downloaded the alsa-utils source and it says to run ./configure.  But no
->> such file exists.  And if I go to aplay and type “make aplay” it can’t find
->> a file called “aconfig.h”, which is presumably written by
->> ./configure.  What am I missing?
-> I think that you need to run autoconf on the configure.ac file which
-> you should have: it is there in the git directory.
->
-> Perhaps read
->   man autoconf ?
->
-> The INSTALL file does indeed say run ./configure without explaining that
-> you need autoconf if ./configure is not present.
+a) you need to CC: maintainers Mark Brown and Takashi Iwai
+b) the commit title should be something like "ASoC: rt5514: fix legacy
+dai naming".
+c) it's not clear if this is actually enough. there's no
+legacy_dai_naming for e.g. rt5663 and the .endianness member is not set.
 
-Projects making use of the autotools often provide a script named `autogen.sh`
-to do the job concerning to autoconf. Try with this:
+Adding Charles Keepax for comments.
 
-$ autoreconf -f -i -s
-
-This will generate the configure script.
-
-On the other hand, as suggested by ael, the manpages will give you the meaning
-of the arguments passed to the command:
-
-$ man autoreconf
-
-Hope this helps,
-
-Aitor.
-
+> ---
+>  sound/soc/codecs/rt5514-spi.c | 15 ++++++++-------
+>  1 file changed, 8 insertions(+), 7 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+> index 1a25a3787935..362663abcb89 100644
+> --- a/sound/soc/codecs/rt5514-spi.c
+> +++ b/sound/soc/codecs/rt5514-spi.c
+> @@ -298,13 +298,14 @@ static int rt5514_spi_pcm_new(struct snd_soc_component *component,
+>  }
+>  
+>  static const struct snd_soc_component_driver rt5514_spi_component = {
+> -	.name		= DRV_NAME,
+> -	.probe		= rt5514_spi_pcm_probe,
+> -	.open		= rt5514_spi_pcm_open,
+> -	.hw_params	= rt5514_spi_hw_params,
+> -	.hw_free	= rt5514_spi_hw_free,
+> -	.pointer	= rt5514_spi_pcm_pointer,
+> -	.pcm_construct	= rt5514_spi_pcm_new,
+> +	.name			= DRV_NAME,
+> +	.probe			= rt5514_spi_pcm_probe,
+> +	.open			= rt5514_spi_pcm_open,
+> +	.hw_params		= rt5514_spi_hw_params,
+> +	.hw_free		= rt5514_spi_hw_free,
+> +	.pointer		= rt5514_spi_pcm_pointer,
+> +	.pcm_construct		= rt5514_spi_pcm_new,
+> +	.legacy_dai_naming	= 1,
+>  };
+>  
+>  /**
