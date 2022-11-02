@@ -4,84 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C571C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Nov 2022 08:13:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E795C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Nov 2022 08:16:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C40F7164D;
-	Fri,  4 Nov 2022 09:12:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C40F7164D
+	by alsa0.perex.cz (Postfix) with ESMTPS id F393B1650;
+	Fri,  4 Nov 2022 09:16:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F393B1650
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667549598;
-	bh=uWwmhgcsBPenKl7JmhwzVs3eHXXjt9nOCGgGtijN/eg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=TdsI0JuJS26rUlGn/jdEug92H1wk7xO2TTlIG1rqlck4C85E/eMeXEQDB0MaTZ9RP
-	 n/xyMqK+31EfJKM/Oxr/GBxOafRbs5aHt8Dj6D8ZKwVMOb02VC5Fvl1HW5xB+A3S76
-	 X/vFsM16Gmsn7rkFQIBmPM+zcXJnS1rR+ipC55Wc=
+	s=default; t=1667549813;
+	bh=7ucb8BPK0zlQNy7Zr3kpJxiV+K4vaiF2ELEMLb9fFms=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=TurO6fgZkNK+TKNpGOhH37u8Jy3lIB/eYbmL42GSjsXOX/rK+GKU6v3iV72SM3wKj
+	 d33CIHen30tfy4grKns770Rx02iJcfWDEY8SzZGbKOYni+NlBk0Cn2sm2TCbvggXDM
+	 OWGrOa63xQG+CG2njHXNxEfFktDOpPQfq8RgceM0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB5FBF8049E;
-	Fri,  4 Nov 2022 09:12:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9BAA9F80431;
+	Fri,  4 Nov 2022 09:16:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63FC2F8049E; Fri,  4 Nov 2022 09:12:07 +0100 (CET)
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com
- [IPv6:2a00:1450:4864:20::235])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1D96DF8026D; Wed,  2 Nov 2022 21:05:58 +0100 (CET)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06C94F80431
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 09:11:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06C94F80431
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E7A8F80085
+ for <alsa-devel@alsa-project.org>; Wed,  2 Nov 2022 21:05:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E7A8F80085
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="atN2ZKbo"
-Received: by mail-lj1-x235.google.com with SMTP id u2so5292094ljl.3
- for <alsa-devel@alsa-project.org>; Fri, 04 Nov 2022 01:11:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=cc3CO5vMV1fLoJhb1rs4l2wovAV2tMTz6ycRMi/IIuI=;
- b=atN2ZKbo/4ZRiKF05JBDSgH4fXl4cK6CuFOW34vsPYDr9xDwoFW7eoAmoN44kLFIEh
- iVOb6hpcFDENGdWbpczMRou3mI2ImIwTKrsF95t17Q3Zu9Vxv9Stns1zuV2KawIOVN1T
- zAF4RKaT4QR9xX9GuWdJMezJdV0i/YZdSwn8MkBKVVphbKLPRTeeO0YAerbEoPpL++wF
- C+lULqUidTXnDlBbKyAKWE1hgBsIlHFnxbI7gBB2y7uPlBPY8gsorYNkVGZj3JsuAfio
- pbt3LDrxf7DWr+HfJfIjKbge2d4U+TaHHuqxL3AFdIdCEAKPq+y9V4Ms4tuAD8Rb52ku
- gVtg==
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="G+FCkyDJ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1667419553;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=Uxs3/q0q6AMOjvn/NBkbxt+h2qoRa/eYcqVm0+4ic8c=;
+ b=G+FCkyDJ3DQ13MikGtwBiO+dGosj9vhGgkbzbcshTw6dqRCSpclyS58bJSNQw/U8odyr0e
+ 5r9FRudTXrQE6hUGRrfqrLsNVYDD68RNcUC/gh2stxXORHvWHoi6k3r8XOSc9RXlfXBsMa
+ QToTA6iU+ydm3AX4BSEpUlLFvkHsRm4=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-20-ugHddEUXN9Oo8fUSZbLk0w-1; Wed, 02 Nov 2022 16:05:52 -0400
+X-MC-Unique: ugHddEUXN9Oo8fUSZbLk0w-1
+Received: by mail-qk1-f198.google.com with SMTP id
+ h8-20020a05620a284800b006b5c98f09fbso16470512qkp.21
+ for <alsa-devel@alsa-project.org>; Wed, 02 Nov 2022 13:05:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=cc3CO5vMV1fLoJhb1rs4l2wovAV2tMTz6ycRMi/IIuI=;
- b=77E3/IV5+KVi2tKQzcjll7m5VRmKuxk9JqepV0e28e6V8rYJSk57g5f9DlCt53Twg5
- FDZnrDY8FwE78zaqt702UMq8Aaytt+zZeyUFanlWPc5WtujEiwQ2B5h4DQHlbvvxqnmN
- wstoWerG+oTmpVacSwJpZiim+TM27ridTb0IkyKDz5Pjf+2JlW+QtN2EMWU81TCyNv/4
- LgVqUUvqBbpQ5juAQOyJSCJO0/lRQ+oe2vSNX2sbBqgT37FNhpzCkL1sgmud9bw1FufK
- W9iDCSfzy42xtf4oz5uNZt2UvDgNzFDTnSoUlQ7QjYRM/XlojqVTTvbNj6r4nZgJTewW
- yk2g==
-X-Gm-Message-State: ACrzQf1kT4qb6da7q7OAU28kdVkzbmNkjnCPH71jzenxS/Be6zYXXHSL
- BmttIgt9d7lJdZDCMvWd0FLMqBEc5E/+0Nv4iGE=
-X-Google-Smtp-Source: AMsMyM4L+2uD3jYywr6ANDr+mMKQ3CY/ezMwhDUlzfRhqsbWxHUW/dtcb5KNLh6oesWLUae3WgAtcO76D9ffBrP3BJ4=
-X-Received: by 2002:a05:651c:1184:b0:277:64ad:384d with SMTP id
- w4-20020a05651c118400b0027764ad384dmr7651212ljo.248.1667549514480; Fri, 04
- Nov 2022 01:11:54 -0700 (PDT)
+ bh=Uxs3/q0q6AMOjvn/NBkbxt+h2qoRa/eYcqVm0+4ic8c=;
+ b=StDSf9DDl1Az+1DhAIe841UsLxkwLBXSXyvmMZqdDoCx0Ep3TrUuXJ4SOKA1ZgdPJP
+ 6/FDyyxBug3plSOvU6ev1BPPvKM8PrKoqnmdZdDLx8uowXkD7HCy6vEsqRc8/lScnQax
+ cjDXxIY0HONKV2LeowLIwTaiIvcBaJ3i03s61lfYkTYSChdODcDZzt+AYaEo7DDsse/F
+ vE2kjOgMBqdUNTd6FaM5sPYD+7M1xmeyaCfWxUaUfnlgk8Ao2JTl52bNDlTauAAKqJlJ
+ Ra6WGviNm5//ZszGduk3eZCb9gc7eEmMlYN7I0QoKCYVgE8eckNJTlLQCIxlr70w7fKO
+ 0Sew==
+X-Gm-Message-State: ACrzQf2GJppXMiXENgpQlIBCutWtDI3VPSwcZTf24gc5SDvyajh5SiIX
+ D4P1t/URTzhj8sD7qQRyqgukKLP65ZcnpNbVfiut9vAZLTgirUt1mOTNQGekI6Frouk8IvGqc5k
+ cLomME0Jv4SPJdEaHGstTJRo=
+X-Received: by 2002:ae9:e70b:0:b0:6fa:509f:cb2d with SMTP id
+ m11-20020ae9e70b000000b006fa509fcb2dmr6619206qka.181.1667419551926; 
+ Wed, 02 Nov 2022 13:05:51 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM6CrBAmul+SCZYHBCb6wd3h5Qc27RUpezgm/1M2t7EUgGC8eesqAc8ynMlkBSqvxPbKonQmGA==
+X-Received: by 2002:ae9:e70b:0:b0:6fa:509f:cb2d with SMTP id
+ m11-20020ae9e70b000000b006fa509fcb2dmr6619169qka.181.1667419551537; 
+ Wed, 02 Nov 2022 13:05:51 -0700 (PDT)
+Received: from p1.montleon.intra (066-026-073-226.inf.spectrum.com.
+ [66.26.73.226]) by smtp.gmail.com with ESMTPSA id
+ br30-20020a05620a461e00b006fa468342a3sm3831105qkb.108.2022.11.02.13.05.50
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 02 Nov 2022 13:05:50 -0700 (PDT)
+From: Jason Montleon <jmontleo@redhat.com>
+To: regressions@lists.linux.dev, oder_chiou@realtek.com,
+ cezary.rojewski@intel.com, pierre-louis.bossart@linux.intel.com,
+ alsa-devel@alsa-project.org
+Subject: [PATCH] Fix kbl_rt5663_rt5514_max98927 regression
+Date: Wed,  2 Nov 2022 16:05:27 -0400
+Message-Id: <20221102200527.4174076-1-jmontleo@redhat.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-References: <20221103182016.95808-1-marex@denx.de>
-In-Reply-To: <20221103182016.95808-1-marex@denx.de>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Fri, 4 Nov 2022 16:11:42 +0800
-Message-ID: <CAA+D8ANyXq7N+QfupnncTiJjEb8AN7hnb6T-1Cf8xs8yfYUFfg@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: dt-bindings: fsl-sai: Convert to YAML DT schema
-To: Marek Vasut <marex@denx.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Fabio Estevam <festevam@gmail.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"; x-default=true
+X-Mailman-Approved-At: Fri, 04 Nov 2022 09:16:01 +0100
+Cc: Jason Montleon <jmontleo@redhat.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,255 +109,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Nov 4, 2022 at 2:20 AM Marek Vasut <marex@denx.de> wrote:
+Starting with 6.0-rc1 these messages are logged and the sound card
+is unavailable. Adding legacy_dai_naming to the rt5514-spi causes
+it to function properly again.
 
-> Convert the SAI bindings to YAML DT schema to permit validation.
-> Add Shengjiu as maintainer, derived from sound/soc/fsl/fsl_sai.c
-> get_maintainer result.
->
-> Describe existing used combinations of compatible strings, add the
-> missing imx7d-sai compatible string which is used on i.MX7 .
->
-> Properties lsb-first, fsl,sai-synchronous-rx, fsl,sai-asynchronous,
-> fsl,dataline are no longer listed as required, since those are clearly
-> optional, even the description says so, so does their usage.
->
-> Fix the undefined edma channel macro per arch/arm/boot/dts/vfxxx.dtsi ,
-> use the value itself just like in the vfxxx.dtsi .
->
-> Document interrupts property, which was previously undocumented, but
-> it is required property of this IP.
->
-> Document #sound-sai-cells, which should be zero for this IP.
->
-> Document fsl,imx6ul-iomuxc-gpr and its dependency on MX6UL and
-> fsl,sai-mclk-direction-output .
->
-> Signed-off-by: Marek Vasut <marex@denx.de>
-> ---
-> Cc: Fabio Estevam <festevam@gmail.com>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Nicolin Chen <nicoleotsuka@gmail.com>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Shengjiu Wang <shengjiu.wang@gmail.com>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: Xiubo Li <Xiubo.Lee@gmail.com>
-> Cc: alsa-devel@alsa-project.org
-> To: devicetree@vger.kernel.org
-> ---
->  .../devicetree/bindings/sound/fsl-sai.yaml    | 188 ++++++++++++++++++
->
+[   16.928454] kbl_r5514_5663_max kbl_r5514_5663_max: ASoC: CPU DAI
+spi-PRP0001:00 not registered
+[   16.928561] platform kbl_r5514_5663_max: deferred probe pending
+---
+ sound/soc/codecs/rt5514-spi.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-Documentation/devicetree/bindings/sound/fsl,sai.yaml
-I have done conversion. If there is any update/change, please send patch
-base on it.
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 1a25a3787935..362663abcb89 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
+@@ -298,13 +298,14 @@ static int rt5514_spi_pcm_new(struct snd_soc_component *component,
+ }
+ 
+ static const struct snd_soc_component_driver rt5514_spi_component = {
+-	.name		= DRV_NAME,
+-	.probe		= rt5514_spi_pcm_probe,
+-	.open		= rt5514_spi_pcm_open,
+-	.hw_params	= rt5514_spi_hw_params,
+-	.hw_free	= rt5514_spi_hw_free,
+-	.pointer	= rt5514_spi_pcm_pointer,
+-	.pcm_construct	= rt5514_spi_pcm_new,
++	.name			= DRV_NAME,
++	.probe			= rt5514_spi_pcm_probe,
++	.open			= rt5514_spi_pcm_open,
++	.hw_params		= rt5514_spi_hw_params,
++	.hw_free		= rt5514_spi_hw_free,
++	.pointer		= rt5514_spi_pcm_pointer,
++	.pcm_construct		= rt5514_spi_pcm_new,
++	.legacy_dai_naming	= 1,
+ };
+ 
+ /**
+-- 
+2.37.3
 
-best regards
-wang shengjiu
-
-
->  1 file changed, 188 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/fsl-sai.yaml
->
-> diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.yaml
-> b/Documentation/devicetree/bindings/sound/fsl-sai.yaml
-> new file mode 100644
-> index 0000000000000..e6620a127f419
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/fsl-sai.yaml
-> @@ -0,0 +1,188 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/fsl-sai.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale Synchronous Audio Interface (SAI).
-> +
-> +maintainers:
-> +  - Shengjiu Wang <shengjiu.wang@gmail.com>
-> +
-> +description:
-> +  The SAI is based on I2S module that used communicating with audio
-> +  codecs, which provides a synchronous audio interface that supports
-> +  fullduplex serial interfaces with frame synchronization such as I2S,
-> +  AC97, TDM, and codec/DSP interfaces.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - fsl,imx6ul-sai
-> +              - fsl,imx7d-sai
-> +          - const: fsl,imx6sx-sai
-> +
-> +      - items:
-> +          - enum:
-> +              - fsl,imx8mm-sai
-> +              - fsl,imx8mn-sai
-> +              - fsl,imx8mp-sai
-> +          - const: fsl,imx8mq-sai
-> +
-> +      - items:
-> +          - enum:
-> +              - fsl,imx6sx-sai
-> +              - fsl,imx7ulp-sai
-> +              - fsl,imx8mq-sai
-> +              - fsl,imx8qm-sai
-> +              - fsl,imx8ulp-sai
-> +              - fsl,vf610-sai
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    minItems: 4
-> +    maxItems: 6
-> +
-> +  clock-names:
-> +    minItems: 4
-> +    items:
-> +      - const: bus
-> +      - const: mclk1
-> +      - const: mclk2
-> +      - const: mclk3
-> +      - const: pll8k
-> +      - const: pll11k
-> +
-> +  dmas:
-> +    maxItems: 2
-> +
-> +  dma-names:
-> +    items:
-> +      - const: tx
-> +      - const: rx
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  lsb-first:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: |
-> +      Configures whether the LSB or the MSB is transmitted first for the
-> +      fifo data. If this property is absent, the MSB is transmitted first
-> +      as default, or the LSB is transmitted first.
-> +
-> +  fsl,sai-synchronous-rx:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: |
-> +      This is a boolean property. If present, indicating that SAI will
-> +      work in the synchronous mode (sync Tx with Rx) which means both
-> +      the transmitter and the receiver will send and receive data by
-> +      following receiver's bit clocks and frame sync clocks.
-> +      If both fsl,sai-asynchronous and fsl,sai-synchronous-rx are
-> +      absent, the default synchronous mode (sync Rx with Tx) will
-> +      be used, which means both transmitter and receiver will send
-> +      and receive data by following clocks of transmitter.
-> +      fsl,sai-asynchronous and fsl,sai-synchronous-rx are exclusive.
-> +
-> +  fsl,sai-asynchronous:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: |
-> +      If present, indicating that SAI will work in the asynchronous
-> +      mode, which means both transmitter and receiver will send and
-> +      receive data by following their own bit clocks and frame sync
-> +      clocks separately.
-> +      If both fsl,sai-asynchronous and fsl,sai-synchronous-rx are
-> +      absent, the default synchronous mode (sync Rx with Tx) will
-> +      be used, which means both transmitter and receiver will send
-> +      and receive data by following clocks of transmitter.
-> +      fsl,sai-asynchronous and fsl,sai-synchronous-rx are exclusive.
-> +
-> +  fsl,dataline:
-> +    $ref: /schemas/types.yaml#/definitions/uint8-array
-> +    description: |
-> +      Configure the dataline. It has 3 values for each configuration:
-> +      first one means the type: I2S(1) or PDM(2)
-> +      second one is dataline mask for 'rx'
-> +      third one is dataline mask for 'tx'.
-> +      for example: fsl,dataline = <1 0xff 0xff 2 0xff 0x11>;
-> +      means I2S type rx mask is 0xff, tx mask is 0xff, PDM type
-> +      rx mask is 0xff, tx mask is 0x11 (dataline 1 and 4 enabled).
-> +
-> +  fsl,sai-mclk-direction-output:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: |
-> +      If present, indicates that SAI will output the SAI MCLK clock.
-> +
-> +  fsl,imx6ul-iomuxc-gpr:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: Phandle to MX6UL IOMUXC GPR shared register file.
-> +
-> +  big-endian:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: |
-> +     Required if all the SAI registers are big-endian rather
-> +     than little-endian.
-> +
-> +  "#sound-dai-cells":
-> +    const: 0
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - dmas
-> +  - dma-names
-> +  - interrupts
-> +
-> +unevaluatedProperties: false
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - fsl,imx6ul-sai
-> +    then:
-> +      dependencies:
-> +        fsl,imx6ul-iomuxc-gpr: [ "fsl,sai-mclk-direction-output" ]
-> +
-> +  - if:
-> +      not:
-> +        properties:
-> +          compatible:
-> +            contains:
-> +              enum:
-> +                - fsl,imx6ul-sai
-> +                - fsl,imx8mm-sai
-> +                - fsl,imx8mn-sai
-> +                - fsl,imx8mp-sai
-> +                - fsl,imx8mq-sai
-> +    then:
-> +      properties:
-> +        fsl,sai-mclk-direction-output: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/vf610-clock.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +    sai@40031000 {
-> +      compatible = "fsl,vf610-sai";
-> +      reg = <0x40031000 0x1000>;
-> +      interrupts = <86 IRQ_TYPE_LEVEL_HIGH>;
-> +      pinctrl-names = "default";
-> +      pinctrl-0 = <&pinctrl_sai2_1>;
-> +      clocks = <&clks VF610_CLK_PLATFORM_BUS>, <&clks VF610_CLK_SAI2>,
-> +               <&clks 0>, <&clks 0>;
-> +      clock-names = "bus", "mclk1", "mclk2", "mclk3";
-> +      dma-names = "tx", "rx";
-> +      dmas = <&edma0 0 21>, <&edma0 0 20>;
-> +      big-endian;
-> +      lsb-first;
-> +    };
-> --
-> 2.35.1
->
->
