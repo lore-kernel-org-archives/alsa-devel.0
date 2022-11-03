@@ -4,60 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A705CC433FE
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Nov 2022 15:01:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A0C4C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Nov 2022 15:07:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 081F115F9;
-	Thu,  3 Nov 2022 16:00:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 081F115F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34A59161E;
+	Thu,  3 Nov 2022 16:07:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34A59161E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667487673;
-	bh=EtzumMG2w2djCrYXZlGM5awMP+oQZFwAVHccn1008I4=;
-	h=Date:To:References:From:Subject:In-Reply-To:Cc:List-Id:
+	s=default; t=1667488074;
+	bh=AlRYcuAJ77jgiLWIz/wB/uARMDb+CkRslxMObVLIscQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ji3FsxHFf+00HnCUTQPQ9PH4G14EsqyfH3Jbf6Gp4+S1VtFTiibez22ZIkFQM+YJO
-	 tTRqurKNEISxMvzEb/aJYCxEyOGgTWHzGoj9TH5ndJ6Ii1f7kCSewO+qC4WoW8GdG3
-	 msZaBZJfqkMSjKR5K1eU+83HU74yIsHXlX1hBqZg=
+	b=TXrT1soQWXFxUQ6K53Uxuto7LnizA8fYSFCwGlsmBEahkxfoW+74n1ctMmUcKTICF
+	 SuEli8jXZ2UgHqdZ0u8q0KlrgdkGD17ja8rAx9hMnr5BkiGbtZgqyKs0GiBzV1b0+R
+	 7zdok7eKfWa7FXnqZ6iQCve5y5emzFzHOWGVlN38=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7CF77F8051C;
-	Thu,  3 Nov 2022 16:00:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA0C2F800BF;
+	Thu,  3 Nov 2022 16:07:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D09DF8051E; Thu,  3 Nov 2022 16:00:21 +0100 (CET)
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de
- [80.237.130.52])
+ id 41977F8051E; Thu,  3 Nov 2022 16:07:03 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A870F801D5
- for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2022 16:00:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A870F801D5
-Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
- by wp530.webpack.hosteurope.de running ExIM with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
- id 1oqbhY-0005Y3-F7; Thu, 03 Nov 2022 16:00:16 +0100
-Message-ID: <63521d44-bba4-5795-fd44-fb55b9ced99f@leemhuis.info>
-Date: Thu, 3 Nov 2022 16:00:15 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 309A8F800BF
+ for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2022 16:06:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 309A8F800BF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="Bi6rVkvt"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 2A34Raid013092; Thu, 3 Nov 2022 10:06:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=VSKkQlCAvlfq+PjIDvYqLxIkd3eAOqv2nWa7XM9kWKg=;
+ b=Bi6rVkvtJw8HgmNdd2EQgLdjJ7GIHPtYf9BafcGx3j145O+8k2XJn9Sxz7xWHlzPFZG+
+ HQE6BEYDEW3VDKqpxIGMMEwe4nhnbmdsc5hjwauUpR4IkAlNC23yBDCwPeScmlViGqcV
+ bcoRKif/dcqi2Wu2uPWbZUYsozEo2Fpd2dfiTcsPiBgPiEC954GgiyYwG5Jh7L3kjytg
+ aJ671lGxiI79ctaBRuqEJ7cogo9YWBIlbkJMAbyxSNdX/xI9WZB0IYr7XmUtLK0pixda
+ JTwXUaBeDulQAuzb6XzqbGIzDMO+wlNHr5vQaMNWuSoCmqgkEm+PjoYt57aC5xiehtK8 Yg== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kh0kppdmy-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 03 Nov 2022 10:06:51 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.15; Thu, 3 Nov
+ 2022 10:06:49 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.15 via Frontend Transport; Thu, 3 Nov 2022 10:06:49 -0500
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 979CC45A;
+ Thu,  3 Nov 2022 15:06:49 +0000 (UTC)
+Date: Thu, 3 Nov 2022 15:06:49 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Jason Montleon <jmontleo@redhat.com>
+Subject: Re: [PATCH v4 1/2] ASoC: rt5514: fix legacy dai naming
+Message-ID: <20221103150649.GB10437@ediswmail.ad.cirrus.com>
+References: <20221103144612.4431-1-jmontleo@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.0
-Content-Language: en-US, de-DE
-To: Takashi Iwai <tiwai@suse.de>, Jason Montleon <jmontleo@redhat.com>
-References: <87v8nwmgso.wl-tiwai@suse.de>
- <20221103131144.2942-1-jmontleo@redhat.com> <87k04cmavy.wl-tiwai@suse.de>
- <87iljwmarm.wl-tiwai@suse.de>
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: Re: [PATCH v2 1/2] ASoC: rt5514: fix legacy dai naming
-In-Reply-To: <87iljwmarm.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de; regressions@leemhuis.info; 1667487620;
- e7311772; 
-X-HE-SMSGID: 1oqbhY-0005Y3-F7
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20221103144612.4431-1-jmontleo@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: d-IM0Gu1Jg-Sf_lZ1-tsbl8f8vl0QWnI
+X-Proofpoint-GUID: d-IM0Gu1Jg-Sf_lZ1-tsbl8f8vl0QWnI
+X-Proofpoint-Spam-Reason: safe
 Cc: oder_chiou@realtek.com, cezary.rojewski@intel.com,
- ckeepax@opensource.cirrus.com, regressions@lists.linux.dev, tiwai@suse.com,
- alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ regressions@lists.linux.dev, tiwai@suse.com, alsa-devel@alsa-project.org,
+ stable@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
  broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -74,22 +96,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 03.11.22 14:24, Takashi Iwai wrote:
+On Thu, Nov 03, 2022 at 10:46:11AM -0400, Jason Montleon wrote:
+> Starting with 6.0-rc1 these messages are logged and the sound card
+> is unavailable. Adding legacy_dai_naming to the rt5514-spi causes
+> it to function properly again.
+> 
+> [   16.928454] kbl_r5514_5663_max kbl_r5514_5663_max: ASoC: CPU DAI
+> spi-PRP0001:00 not registered
+> [   16.928561] platform kbl_r5514_5663_max: deferred probe pending
+> 
+> Fixes: fc34ece41f71 ("ASoC: Refactor non_legacy_dai_naming flag")
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=216641
+> Signed-off-by: Jason Montleon <jmontleo@redhat.com>
+> ---
 
-> - Link (or BugLink tag) to pointing to the kernel bugzilla URL
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-No, not BugLink. To quote Linus from here:
-https://lore.kernel.org/all/CAHk-=wgs38ZrfPvy=nOwVkVzjpM3VFU1zobP37Fwd_h9iAD5JQ@mail.gmail.com/
-
-```
-> BugLink: https://lore.kernel.org/r/20220610205038.GA3050413@paulmck-ThinkPad-P17-Gen-1
-> BugLink: https://lore.kernel.org/r/CAMdYzYpF4FNTBPZsEFeWRuEwSies36QM_As8osPWZSr2q-viEA@mail.gmail.com
-
-[...]
-
-please stop making up random tags that make no sense.
-
-Just use "Link:"
-```
-
-Ciao, Thorsten
+Thanks,
+Charles
