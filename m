@@ -4,76 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27F28C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Nov 2022 16:35:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2852C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Nov 2022 16:36:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 88F5441;
-	Thu,  3 Nov 2022 17:35:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88F5441
+	by alsa0.perex.cz (Postfix) with ESMTPS id A585A1664;
+	Thu,  3 Nov 2022 17:35:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A585A1664
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667493353;
-	bh=/ccW2ZLYtie//iuE3Z0X9cbimEJCwup/DH2xpMNHLnI=;
+	s=default; t=1667493377;
+	bh=1bZ5ecY99o5UCyVe5TJENub+Nw0ProKQsUg0Kzu1JqE=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rixVm8qEnM8HOu/IM6hNXpDbquvg+ttfdMqboODQVaRLKIN0WSAqquKGxdezO2rgk
-	 LWPxTlMWaqOAhSxauHCYEA/D/2K0pXt5GucTthuzro+4a+zj61GMRX4R+Ey2x8CSB8
-	 srqAN5z+xniir3Dy6K/Bn6gEQnQDjX7cMWJSy0Po=
+	b=ishooq38bdBaMcGaR26uW+WSupBKk6ppf1oj0RHIHTBjnXMND9jrkcKjBOCZxkjor
+	 Qzrsf50QpmLJoMeFvxpgqAVjvLFO1VHOPDOMAqqdb6XKEUL1fauatqoXXbLaN+9otf
+	 gTiqL8riIHuVEIsm/h5GcLzX4Ns+LlduGsohc8tA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07CCCF8051E;
-	Thu,  3 Nov 2022 17:35:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D1C1F80525;
+	Thu,  3 Nov 2022 17:35:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 977E8F8051E; Thu,  3 Nov 2022 17:35:01 +0100 (CET)
+ id ED955F8052F; Thu,  3 Nov 2022 17:35:03 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A5032F80155
- for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2022 17:34:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5032F80155
+ by alsa1.perex.cz (Postfix) with ESMTPS id E16B9F801D5
+ for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2022 17:35:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E16B9F801D5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UWukCzRG"
+ header.b="pugZWxZ9"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 5D60761F65;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 3D9A161F76;
+ Thu,  3 Nov 2022 16:34:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EEE6C433C1;
  Thu,  3 Nov 2022 16:34:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC8E7C433D6;
- Thu,  3 Nov 2022 16:34:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1667493294;
- bh=/ccW2ZLYtie//iuE3Z0X9cbimEJCwup/DH2xpMNHLnI=;
+ s=k20201202; t=1667493298;
+ bh=1bZ5ecY99o5UCyVe5TJENub+Nw0ProKQsUg0Kzu1JqE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=UWukCzRGudBv919/sH+I74MEzypxqLqYpIvPo+K0bDcfXWiWyDMyD6iMuQPIhOtL0
- j4uh5dfTRvuifo39nRCKLeELXdhbUdvDqp21GVSiXdyeYPTq93n+WF0rgsyWbgCfXD
- SBXLEtYj4br6ie5vVw7sXYuK7VX9ER1WKdtTmoHv4fjpuDQft3x17gxRFgbtk+xi0b
- Im+Y5+cO63sgDPY0pjSa3QvILW1IVRqPFAI4hfcCI4+l3d9bGe8h6OEh4OomJuuWoJ
- JRp0TswL+av9oAc+vtrBb0x1OV0OrmhaqdYrH7EPDTDMHp8DMNF8tXUaLv/Ia2g7IF
- sH9N9pR0bXD3A==
+ b=pugZWxZ9sd4FvO2QFlxG9DmTHqxW4pdt/8PogD0nqELib+B3eDWJ9EODZMUR2gkPL
+ KrlGbkb1P8WSQtMx/VTEAVT/OsN3wZHdq9oS4wTpmEESU3jvi0LNNtErqmoBdpR1az
+ ULQ8shjm6AlB3aiF7at8TcfzDNQsYoz1ka3Fy85bV/g8cIaNCWf0+M55mK9amjXCkN
+ N8G6/lQF7oaGbn7YigJBZpNssJdE6pvy9smhewO20ZosFHWSkfuoK5aeHGmT9e5KKG
+ TpH+euxB27/8szBsd7idR6kly0fbnP1Rbjp1fNmNLXzG4rRXd2eThTGmWdUztwoKBo
+ 3H9nCFVoUSrsg==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Colin Ian King <colin.i.king@gmail.com>, 
- Jaroslav Kysela <perex@perex.cz>, Brent Lu <brent.lu@intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, 
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
- Bard Liao <yung-chuan.liao@linux.intel.com>, alsa-devel@alsa-project.org,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, 
- Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20221103120624.72583-1-colin.i.king@gmail.com>
-References: <20221103120624.72583-1-colin.i.king@gmail.com>
-Subject: Re: [PATCH] ASoC: Intel: cirrus-common: Make const array uid_strings
- static
-Message-Id: <166749329166.480833.13410330883416925257.b4-ty@kernel.org>
-Date: Thu, 03 Nov 2022 16:34:51 +0000
+To: linux-kernel@vger.kernel.org,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+In-Reply-To: <20221102125936.2176748-1-ajye_huang@compal.corp-partner.google.com>
+References: <20221102125936.2176748-1-ajye_huang@compal.corp-partner.google.com>
+Subject: Re: [PATCH v6 0/2] Modify documentation and machine driver for
+ mt8186_rt1019_rt5682s sound card
+Message-Id: <166749329508.480833.14513589396076855857.b4-ty@kernel.org>
+Date: Thu, 03 Nov 2022 16:34:55 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, "chunxu . li" <chunxu.li@mediatek.com>, "Nícolas F . R . A . Prado" <nfraprado@collabora.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>, Rob Herring <robh+dt@kernel.org>, linux-mediatek@lists.infradead.org, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Matthias Brugger <matthias.bgg@gmail.com>, linux-arm-kernel@lists.infradead.org, AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,11 +82,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 3 Nov 2022 12:06:24 +0000, Colin Ian King wrote:
-> Don't populate the read-only const array uid_strings on the stack but
-> instead make it static. Also makes the object code a little smaller.
+On Wed, 2 Nov 2022 20:59:34 +0800, Ajye Huang wrote:
+> v6:
+> - dmic codec driver:
+>   - Modify "FrontMic" to "Front Mic" and "RearMic" to "Rear Mic"
+>     to consisit with commit 3cfbf07c6d27 mentioned in description.
 > 
+> v5:
+> - Documentation:
+>   - Add #include <dt-bindings/gpio/gpio.h> in order to use
+>     GPIO_ACTIVE_HIGH.
+>   - Remove the change-id in message.
 > 
+> [...]
 
 Applied to
 
@@ -101,8 +102,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: cirrus-common: Make const array uid_strings static
-      commit: b43d0c0a42b2c44da824b3de0364d73be722a8c7
+[1/2] ASoC: mediatek: dt-bindings: modify machine bindings for two MICs case
+      commit: f8639c385f7e8325b73c83a6ec0865f8c036e1ad
+[2/2] ASoC: mediatek: mt8186-rt5682: Modify machine driver for two DMICs case
+      commit: e14657c0f0022e02c8f25fa9c56afae3d3db9e77
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
