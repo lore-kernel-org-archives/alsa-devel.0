@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F75CC4332F
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Nov 2022 09:00:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBDF2C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Nov 2022 09:03:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D41E2F7;
-	Thu,  3 Nov 2022 09:59:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D41E2F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9122715E0;
+	Thu,  3 Nov 2022 10:02:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9122715E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667466038;
-	bh=yyA4nshyOejFruW2qTCDX0nI9Crc4tmHokItn82rW+k=;
+	s=default; t=1667466182;
+	bh=510sRv24hOV1wpfQEDVR+KdeGI/4GV2/R4TwmE7oPTo=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u98MD4iilrqPldohDcG8bsc21Wksd2r+mSeo7FYM0p6u7nfFDqNd/SBbqrXx+QtE8
-	 O2gIk+zh2YfnXGXshoquatD13COdBuWBmubsoBpa6VJAsvlDOrjzFBcZchRokrlfuC
-	 dw5TmG1aZYW5OAU6hcBNPMF6lSrfD0zrJsMN6Ors=
+	b=pQ0dUCz/ry87alL1aAoBUCrh5Om3eDCV79S/yPm7PiLKVS+/PqYsyZkFlyb6qvaof
+	 7PYK52hgX/1NgeYTs9VyWd81KFNJF8omBIPA9CJEx9Pm106GGW+WN0fyRboxlLdOgH
+	 PrzZ5o6VUayB0i+KkT2R6zPPMZUEHqsLehSNDh70=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6E8C9F8051C;
-	Thu,  3 Nov 2022 09:59:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44706F8051C;
+	Thu,  3 Nov 2022 10:02:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 869AFF80155; Thu,  3 Nov 2022 09:59:46 +0100 (CET)
+ id 76BAEF8051E; Thu,  3 Nov 2022 10:02:10 +0100 (CET)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4D720F80155
- for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2022 09:59:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D720F80155
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4DE55F801D5
+ for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2022 10:02:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DE55F801D5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
- header.b="PSxgdhGa"
+ header.b="b7JGsFlC"
 Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
  [2.237.20.237])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits))
  (No client certificate requested) (Authenticated sender: kholk11)
- by madras.collabora.co.uk (Postfix) with ESMTPSA id E11BC6600366;
- Thu,  3 Nov 2022 08:59:37 +0000 (GMT)
+ by madras.collabora.co.uk (Postfix) with ESMTPSA id BD62166028FD;
+ Thu,  3 Nov 2022 09:02:02 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1667465979;
- bh=yyA4nshyOejFruW2qTCDX0nI9Crc4tmHokItn82rW+k=;
+ s=mail; t=1667466123;
+ bh=510sRv24hOV1wpfQEDVR+KdeGI/4GV2/R4TwmE7oPTo=;
  h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=PSxgdhGag8XE9XK1B8mnVZNqTZgJqYvHfsY6M/w7vbYXSfwg5wEBe2fcxRHdEnAtw
- eH2tk7CntQM2Sq2k/5WGSqqdihck3cW3gTa+HyapP8VbDiGGhedTgj8crQAfBt3JZD
- DSlP0Vna11jsKz2p5ZWY+0RPOXRSWpkP9VEUWg4z+BUgeoQOIt/8L5n4MzRlN2AxYG
- Zx75XWGTnh7eFoTtz3mFSPwAxJjbI8RuizPdnv3uZpUePnrnp/7HS3NtC7sWD5YXnw
- Fm8gAYD2gcPWfPqq8fYgERwbcfCRvm7gKhsON8Ddz7T41ju1DUz5KLF5MDPvGyv+ld
- z9Cyi8mG96KWQ==
-Message-ID: <128d8f47-1e60-bb64-e457-d61ceb17c176@collabora.com>
-Date: Thu, 3 Nov 2022 09:59:35 +0100
+ b=b7JGsFlCs/MU7fEVavBB6XxS8v6BhCjRuqpMmoKIDO0a9l1RNaXW2L6iFe3r/bG1m
+ X4j4kgy+y0d4+zrajo5whvXJtsV0DikSKzE1O0Uec1JtRvpNfbkvz7+1Wg3WkL3laY
+ 7t1A28s7Am24y3vQ9ob45CGTcv7KATTpkQVdQB/V7mptozX1qdg/UJjC3qhXFe0DwA
+ B3TMK4xzBt9x+72LdAZoLXYZD1NTtF0jXy9/FAfQzwtEgjOlZShw1SWYhICP+oVd3E
+ F4IVMalJrfqjvG+0qsBie820NHmgh3y7yEG+zoJtNsI29MndXzqYpo65JIebFAnuMo
+ GQH+u99wHyRHw==
+Message-ID: <c1b8df00-2be6-9cf2-0e1e-b4c838fd12cc@collabora.com>
+Date: Thu, 3 Nov 2022 10:02:00 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.3.3
-Subject: Re: [PATCH v6 2/2] ASoC: mediatek: mt8186-rt5682: Modify machine
- driver for two DMICs case
+Subject: Re: [PATCH v6 1/2] ASoC: mediatek: dt-bindings: modify machine
+ bindings for two MICs case
+Content-Language: en-US
 To: Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
  linux-kernel@vger.kernel.org
 References: <20221102125936.2176748-1-ajye_huang@compal.corp-partner.google.com>
- <20221102125936.2176748-3-ajye_huang@compal.corp-partner.google.com>
-Content-Language: en-US
+ <20221102125936.2176748-2-ajye_huang@compal.corp-partner.google.com>
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20221102125936.2176748-3-ajye_huang@compal.corp-partner.google.com>
+In-Reply-To: <20221102125936.2176748-2-ajye_huang@compal.corp-partner.google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
@@ -93,16 +93,10 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Il 02/11/22 13:59, Ajye Huang ha scritto:
-> Having two DMICs, a front DMIC and a Rear DMIC,
-> but only host audio input AUX port0 is used for these two Dmics.
-> A "dmic-gpios" property is used for a mixer control to switch
-> the dmic signal source between the Front and Rear Dmic.
-> 
-> Refer to this one as an example,
-> commit 3cfbf07c6d27
-> ("ASoC: qcom: sc7180: Modify machine driver for 2mic")
+> Add a property "dmic-gpios" for switching between two MICs.
 > 
 > Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
 
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
 
