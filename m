@@ -4,70 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B36CAC4332F
-	for <alsa-devel@archiver.kernel.org>; Thu,  3 Nov 2022 16:36:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC618C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu,  3 Nov 2022 18:16:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D3EB167F;
-	Thu,  3 Nov 2022 17:35:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D3EB167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27C8AE0F;
+	Thu,  3 Nov 2022 19:15:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27C8AE0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667493405;
-	bh=NtaRBSuTx4gEY3TFWYZ6lJZlhJEbnOaOQ4bJzzzyP+Y=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1667499373;
+	bh=ue0QTPXG2gQ3H5WYfpdjU3OegguiiLtgstYnj9DUpMk=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IielFd5wrpRoMm3dUcO7JeWK9n176zD45gV9qGiNSkfkhmEPrqGFyyR+Edu0VYKIs
-	 lGxjtaDruAo7n4LOcy/vKuNwA8qLV0ZuN04tH9CKZSmtY+LFcCSa1KK3hz54WvOsaJ
-	 3nXFoqJRPjqhNsQSHyXFk2fpwK3IiqbT0J40Vxl0=
+	b=E92cbb8fxTHKp5sHOOqIR/RbOwFtIS3SbDkAs5Ix9gq0O7/yplKlSRLD+gsSkblTb
+	 tRBMLmQdp9ETBvY/dIMr/Tb9E8IvnkaeAgN+81OH4HK5MFUYRi/eauVdo9IAkIrpjI
+	 0boUK5ollVypK/5hdju7d0PeMb1AmmlT21D6F9O4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 62D63F8055A;
-	Thu,  3 Nov 2022 17:35:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0488F800BF;
+	Thu,  3 Nov 2022 19:15:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 39FCEF80526; Thu,  3 Nov 2022 17:35:07 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B697CF8051C
- for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2022 17:35:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B697CF8051C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ESO1GdyN"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 14C55F8051E; Thu,  3 Nov 2022 19:15:21 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 28032B82955;
- Thu,  3 Nov 2022 16:35:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26B6EC433B5;
- Thu,  3 Nov 2022 16:34:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1667493300;
- bh=NtaRBSuTx4gEY3TFWYZ6lJZlhJEbnOaOQ4bJzzzyP+Y=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ESO1GdyN04Cfhk8H6tukrp5qdl5/qNbXrw2eqb+rP+pswB7OCFb8WTNDmDdyn0nJ/
- UYAVc00ZLSt5teJG4ByiEJzho3HIvxCdFGgQ894Vi3OfsvVTSYRmYcfq0dVXGGPwrg
- bHxOEFW6Rphy2AOtDKQZ2SCZWUHwHehp/Q1zO9upk026dwJm8daWabyOuD+yGjQqK6
- bw5/KVP0O0vQqa328liPezzjhpb/tiuFmu0CTA9DxCZdJbbUqaINMZBwhU7sdy0NiC
- CXP8KFsBK+4bcoaGPKgyEc/6+xFhR2y/5xan+xjTclyDh1hYebgbOlQBELyq/bvnAV
- OebWJ2JkJiE3Q==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Maarten Zanders <maarten.zanders@mind.be>, Takashi Iwai <tiwai@suse.com>
-In-Reply-To: <20221028191303.166115-1-maarten.zanders@mind.be>
-References: <20221028191303.166115-1-maarten.zanders@mind.be>
-Subject: Re: [PATCH] ASoC: simple-mux: add read function
-Message-Id: <166749329885.480833.18370914734469838368.b4-ty@kernel.org>
-Date: Thu, 03 Nov 2022 16:34:58 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id EFEB1F801D5
+ for <alsa-devel@alsa-project.org>; Thu,  3 Nov 2022 19:15:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFEB1F801D5
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="HsGhbY4A"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1667499319; x=1699035319;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=ue0QTPXG2gQ3H5WYfpdjU3OegguiiLtgstYnj9DUpMk=;
+ b=HsGhbY4ABssG8Yya6C5gxfAfDHwYVvXwXlhC4ZS2GPW/p4ZjhgEZKYIA
+ NsSxm5JdOMcU2HS0wBIomkCORF+h2XsD7eUwTAL6DwSyY+KWKbAOzQSjo
+ Xzk86gko8lT9JhCyEVlsaqkTIPI4W4FYYzZJVhTefCgOuEejsXcb971Rh
+ DHQaHnujSiWIOe4bojQqwYyGwL62SYFG+UDcUoKnQC9aqx9pBi0YrEBcJ
+ HYzEApH1OlNUeY0UXL3jZBA2ZnZ9ijnmWGJRLfkuk0Obi7HzTJBIB7jTl
+ Qvy9TdX66G0uXb+22kKAyDsJeYyIME27Ad0c90Hm3ON0bqrbQRn76jCd2 g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10520"; a="309759305"
+X-IronPort-AV: E=Sophos;i="5.96,134,1665471600"; d="scan'208";a="309759305"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Nov 2022 11:14:54 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10520"; a="964033685"
+X-IronPort-AV: E=Sophos;i="5.96,134,1665471600"; d="scan'208";a="964033685"
+Received: from cmelone-mobl.amr.corp.intel.com (HELO [10.212.66.233])
+ ([10.212.66.233])
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Nov 2022 11:14:53 -0700
+Message-ID: <cdb6baf9-dd36-39d1-937b-06be09da8242@linux.intel.com>
+Date: Thu, 3 Nov 2022 10:24:46 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-fc921
-Cc: alexandre.belloni@bootlin.com, alsa-devel@alsa-project.org,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- linux-kernel@vger.kernel.org
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.4.0
+Subject: Re: [PATCH] ASoC: Intel: cirrus-common: Make const array uid_strings
+ static
+Content-Language: en-US
+To: Colin Ian King <colin.i.king@gmail.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Brent Lu <brent.lu@intel.com>,
+ alsa-devel@alsa-project.org
+References: <20221103120624.72583-1-colin.i.king@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20221103120624.72583-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,40 +97,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 28 Oct 2022 21:13:01 +0200, Maarten Zanders wrote:
-> During initialisation DAPM tries to read the state of the MUX
-> being connected, resulting in this error log:
-> input-mux: ASoC: error at soc_component_read_no_lock on input-mux: -5
+On 11/3/22 8:06 AM, Colin Ian King wrote:
+> Don't populate the read-only const array uid_strings on the stack but
+> instead make it static. Also makes the object code a little smaller.
 > 
-> Provide a read function which allows DAPM to read the state of the
-> MUX.
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+> ---
+>   sound/soc/intel/boards/sof_cirrus_common.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> [...]
+> diff --git a/sound/soc/intel/boards/sof_cirrus_common.c b/sound/soc/intel/boards/sof_cirrus_common.c
+> index 6e39eda77385..851c516c8f5b 100644
+> --- a/sound/soc/intel/boards/sof_cirrus_common.c
+> +++ b/sound/soc/intel/boards/sof_cirrus_common.c
+> @@ -155,7 +155,7 @@ static const char * const cs35l41_name_prefixes[] = { "WL", "WR", "TL", "TR" };
+>    */
+>   static int cs35l41_compute_codec_conf(void)
+>   {
+> -	const char * const uid_strings[] = { "0", "1", "2", "3" };
+> +	static const char * const uid_strings[] = { "0", "1", "2", "3" };
+>   	unsigned int uid, sz = 0;
+>   	struct acpi_device *adev;
+>   	struct device *physdev;
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: simple-mux: add read function
-      commit: f7d97cb564a2ac5517ee7cc933de729e533d659a
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
