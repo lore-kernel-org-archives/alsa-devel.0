@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 996E2C433FE
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Nov 2022 07:20:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AEF9C4332F
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Nov 2022 07:20:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3DEE1718;
-	Sat,  5 Nov 2022 08:19:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3DEE1718
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4FC6A171B;
+	Sat,  5 Nov 2022 08:19:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FC6A171B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667632827;
-	bh=wUbMrwrN41Q9yshHLu56uxaXfBgvFGNU5DxK45MwFTw=;
+	s=default; t=1667632843;
+	bh=wiPrQrPtwHN8JkTzjgovj5i1AFxQRgKSk4e/VekItv0=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fZa34ZzEwOSDU7EQ2fQEcr1v9VXSh+JY9afwegLdq+hMgchcTAU2nt/RTc/XMgs/c
-	 KlCs0FW69NCTZXf67Qf3nfis5cj/X4O1dPAlympKafxv55VriLxJ+XC7aBqt/qjXRg
-	 chFRKLxN3ekA+8SaowWGqN73ITQayI/koaxeLrGw=
+	b=bkdKGdbmj9AqsZ457J9jfvFcvLUTAmviWZG2/fxNEKtSoiQbroDIe+neTmdprFM03
+	 AM9b3Leyjv0cfXs/jPuW+JC/nS04t7GxpfdI2hDRxDdz7wLhu1YgjZ5SiGU5mLepYr
+	 EzDjX8rTY2usCiSTimiV8C65KpLbR5Rka9hbnSDY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 694F1F8076D;
-	Sat,  5 Nov 2022 08:04:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F2D2F8075E;
+	Sat,  5 Nov 2022 08:04:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1D726F80448; Fri,  4 Nov 2022 14:33:57 +0100 (CET)
+ id 8B02EF804AC; Fri,  4 Nov 2022 14:33:59 +0100 (CET)
 Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
  [66.111.4.221])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8DCB5F8047D
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 14:33:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DCB5F8047D
+ by alsa1.perex.cz (Postfix) with ESMTPS id D7ED6F80431
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 14:33:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7ED6F80431
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="S1pINkBq"; 
+ header.b="YtFpLN/R"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="kML05Bx+"
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
- by mailnew.nyi.internal (Postfix) with ESMTP id C50CB5805A0;
- Fri,  4 Nov 2022 09:33:49 -0400 (EDT)
+ header.i=@messagingengine.com header.b="IDim9Knh"
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailnew.nyi.internal (Postfix) with ESMTP id 1CB475805AF;
+ Fri,  4 Nov 2022 09:33:56 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute2.internal (MEProxy); Fri, 04 Nov 2022 09:33:49 -0400
+ by compute3.internal (MEProxy); Fri, 04 Nov 2022 09:33:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
  :cc:content-transfer-encoding:content-type:date:date:from:from
  :in-reply-to:in-reply-to:message-id:mime-version:references
- :reply-to:sender:subject:subject:to:to; s=fm3; t=1667568829; x=
- 1667576029; bh=hEKOJDq7NCncgYxMXlHU+pU/ROWXe3uUCVEMV5q4hLU=; b=S
- 1pINkBqcWESXdghzvqqTZs9BO5lYuLhhZ5CGl0LcVdYKJznnGhoFG5VAn6oAtboI
- PyXtNU7GcGMKE6HOpd8uAuJ/yE/7GMkS72XKbuhyY885bfdumczASzwEy1Nf/zpT
- iOOjL9D46vC+kxk7CAzmcxo+kBvdt3oN3c9fc7YnuCEzZiHFLs2HrcOT4/JNaO9k
- ifs22l75gcVnUeRYd5I/Cld6iewIBHO8v6mMpazQjMa6kyJqYUWZI70+wU6V2BN+
- ygHUDlhy4ufoILFm2mXWYbtNPP19UZoB/ugqgXh8HxR0mjVDq2QQ2wt9VUjcHnbA
- 8t7JSisnfH/d/NDMCH3pQ==
+ :reply-to:sender:subject:subject:to:to; s=fm3; t=1667568836; x=
+ 1667576036; bh=8i9Mndy2jbfBk1MIVA7c/A2hrdbXrLt4ZlzMYH+ZKBI=; b=Y
+ tFpLN/RrfKWUEcWDR0f4VrdRTlj4gIMKGGpfK0akKub31fTdbquIY/iS3Ua2LFqo
+ chXDAEUzsvUrNYDMr91oZozPbA1gpnelWwcINGl2rx+gHlT6em+qGNhMZ4Jpbo+s
+ OxWGotUcAVThTMFOKgTnbY5eVDjboisUaiJqJXcvmmAQ/x8LioOlI0Gw4zjA8i0r
+ YcF3pggSXgWn5eQd3A9hrEUHDTDKmXHsezYWpKflijmMJETSEA1OuyQakkyyKH9E
+ f9Zw4Tj341f7UEjA+mG7kxo/uGP/D2HT32QZzh5aVzVo0fkdHtHEFgpklLUePDiu
+ +/50mfTLVF8VAFoDbo+8A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:cc:content-transfer-encoding
  :content-type:date:date:feedback-id:feedback-id:from:from
  :in-reply-to:in-reply-to:message-id:mime-version:references
  :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1667568829; x=
- 1667576029; bh=hEKOJDq7NCncgYxMXlHU+pU/ROWXe3uUCVEMV5q4hLU=; b=k
- ML05Bx+lgy7VkDGEd1tIwrJVJ99fvXAcPO+Ca3QUdxrT0gnJ0kRUJKT2wg1wxNRO
- AasTRQIK74xQgAjvRk+gFLLzTWL6JAz3rr6QHO4xSHkThMWMuoQuAedlFQ7oTjXB
- Pen0hx2qf0D+hasFFLKwlb2+53oGASLO/WWFQzTmprDJUZbgfkF1V70Jj59asmlZ
- UiA6df7slql0NX+AYcZ42QCnNSdxKDGAIS17jazcDb+EOu27jAvgGAPIaPcc/aHD
- ymKSmrbFpBKas4mAqmu9kMld3Dk0+xYlrycDhgL91+oMXn0jwzHLBd67LwBtaVXH
- TM4TW2lwglrsmvagKiebg==
-X-ME-Sender: <xms:vRRlY_snyScnvJfLmail2yPg8fu9Mdo30nKzXzBgdoIlQm7duIMiVg>
- <xme:vRRlYwek63ciyiAob-zbhplr1JrQt6qs-VKloBuvF2lFSmT_liT69fDoTzWSBQ6Ev
- qw-hxwV8Cj_gi8NcUc>
-X-ME-Received: <xmr:vRRlYyx5hwTR9_NsPsrJyfv43x3upPKmTncwpkpxwfQB3BL0tHwflbjvFSWmr7NZv6pd_zFd1lBOLROOY5_cDSTSWIRRXhT6RF1UxiVX4ZXYCw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrvddugdehvdcutefuodetggdotefrodftvf
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1667568836; x=
+ 1667576036; bh=8i9Mndy2jbfBk1MIVA7c/A2hrdbXrLt4ZlzMYH+ZKBI=; b=I
+ Dim9KnhBoO75TmaMviA33lXsyJaI5GzBZhMxr7PkD2xhbo4GP+AAk/aLXQuiGx5g
+ gBq2LY6aTVQDjm/uWk9LEKn+6vlJTw0bdMMgvWzsxkNNLli5iPshkfcFqTZ983y9
+ UnSDBNmrN/PSdmukA7VZhzVEQTyNRUBT6R7kicjqHtX8UoTrBEreK9m56whIkCoP
+ VTfrQM0aJfyLkF2x+qQpo2BugpbKSVEebmNKyHDY6PCE+4//j89QnLeD/Mr7LqZG
+ 6xzsj9WkR4zZDyJa+fKLcPkGmFseQ2AJTkgkdowkMltbPQWAQBwIwRQHyq9/whOZ
+ ZmaOxa1PlWGSgJ8frasGQ==
+X-ME-Sender: <xms:wxRlY_sGaUKevWVJcyUWxXmH_gF14N4bWQN11bmRePnvVSai8iA9YA>
+ <xme:wxRlYweXVwQYfjMOnu_orcFboj0UgVJbgOFePmjCiqUJ0TgHS_jHaYgpxXPX6YlD0
+ lbJi89X4ME9_hJbqM4>
+X-ME-Received: <xmr:wxRlYyzwz87gIICWoAMSvh1qDLD0w_tlewKaE9XxM22KDLnwDZ9Lbd6CyUhB0kwbUIgC8REVHMg5L4cRbCjrs6r4KQEVftdOMhHhl7v9Qp4otQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrvddugdehudcutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
  fjughrpefhfffugggtgffkfhgjvfevofesthekredtredtjeenucfhrhhomhepofgrgihi
  mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
  htthgvrhhnpeduudduhfevjeetfeegvdffvdevvdejudegudekjeehtdelhfffveethfej
- ledtveenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+ ledtveenucevlhhushhtvghrufhiiigvpeeinecurfgrrhgrmhepmhgrihhlfhhrohhmpe
  hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:vRRlY-OL_8VoH1nEAQYXd0Apy8v2isOjIKeh4xpGpWNZ8kjm6IXTVw>
- <xmx:vRRlY_9FBPEDgh51KfDic2CwepuaEVuAOS-2cJizs9ilI_sypmfwuQ>
- <xmx:vRRlY-WDr59S-fJwheMZlHR3UOaZFkVQy0InlpVkIK96TMP1X0fM1A>
- <xmx:vRRlY5cRcl7dK3vkZTdHFnyk_laqLI2Haoiywo3LrtEkJlXg-r4wnQ>
+X-ME-Proxy: <xmx:wxRlY-M2xLXb2o2X9JvAgpWTdk8tzd77fs3G_O89BKyfGhHPVUZEow>
+ <xmx:wxRlY_8UY10jK9A0kF2NsrKGiBxLBAqT1IE5AlUkQ7ZLRGk3KT_i2Q>
+ <xmx:wxRlY-WmB8bYawzGPDv5ppZqGGo8HW1ayy05wOhsijdSQRm4hCOBPg>
+ <xmx:xBRlY5dsSb2BVE_qW1PBYqjGk9oiX0uB6lms6dkAlzDGMKViO62QGg>
 Feedback-ID: i8771445c:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 4 Nov 2022 09:33:48 -0400 (EDT)
+ 4 Nov 2022 09:33:55 -0400 (EDT)
 From: Maxime Ripard <maxime@cerno.tech>
-Date: Fri, 04 Nov 2022 14:18:14 +0100
-Subject: [PATCH v2 57/65] clk: ingenic: tcu: Switch to determine_rate
+Date: Fri, 04 Nov 2022 14:18:17 +0100
+Subject: [PATCH v2 60/65] clk: stm32: composite: Switch to determine_rate
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20221018-clk-range-checks-fixes-v2-57-f6736dec138e@cerno.tech>
+Message-Id: <20221018-clk-range-checks-fixes-v2-60-f6736dec138e@cerno.tech>
 References: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
 In-Reply-To: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
 To: Stephen Boyd <sboyd@kernel.org>,
@@ -133,11 +133,11 @@ To: Stephen Boyd <sboyd@kernel.org>,
  Max Filippov <jcmvbkbc@gmail.com>,
  Geert Uytterhoeven <geert+renesas@glider.be>
 X-Mailer: b4 0.11.0-dev-99e3a
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2825; i=maxime@cerno.tech;
- h=from:subject:message-id; bh=wUbMrwrN41Q9yshHLu56uxaXfBgvFGNU5DxK45MwFTw=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDMmpAt9uZeRsEZz3PfGUUdnyeWsEFx2Zrns00b49+M+ZvAMB
- SteudJSyMIhxMciKKbLECJsviTs163UnG988mDmsTCBDGLg4BWAi3/4z/GI2nHdaY3amI8vLK9+qo2
- 6+TZ3nc4894/uZ/PTrDZF2jccZGS4tya/dwt7vnOc018usYGdpTvTSknTbFd732ln+fOq/zg8A
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3796; i=maxime@cerno.tech;
+ h=from:subject:message-id; bh=wiPrQrPtwHN8JkTzjgovj5i1AFxQRgKSk4e/VekItv0=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDMmpAt+2uc8y+efrdmg9i7mF6t9F12s1T8acW/1o/bozHvv/
+ 7rVO7yhlYRDjYpAVU2SJETZfEndq1utONr55MHNYmUCGMHBxCsBEvjUy/M9KP163gqVsrXqg9h954S
+ fCJlMuyn63NnK9Xp+vJOM8kZGR4bf7tEXfjytNd2E8m5rGw/yAJfHgUtvQST9Zou1Ezl6sZgMA
 X-Developer-Key: i=maxime@cerno.tech; a=openpgp;
  fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 X-Mailman-Approved-At: Sat, 05 Nov 2022 08:03:32 +0100
@@ -165,7 +165,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The Ingenic TCU clocks implements a mux with a set_parent hook, but
+The STM32 composite clocks implements a mux with a set_parent hook, but
 doesn't provide a determine_rate implementation.
 
 This is a bit odd, since set_parent() is there to, as its name implies,
@@ -195,51 +195,72 @@ oversight, the clock behaviour can be adjusted later on.
 
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/clk/ingenic/tcu.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ drivers/clk/stm32/clk-stm32-core.c | 31 +++++++++++++++++++++----------
+ 1 file changed, 21 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/clk/ingenic/tcu.c b/drivers/clk/ingenic/tcu.c
-index d5544cbc5c48..7d04ef40b7cf 100644
---- a/drivers/clk/ingenic/tcu.c
-+++ b/drivers/clk/ingenic/tcu.c
-@@ -178,18 +178,21 @@ static u8 ingenic_tcu_get_prescale(unsigned long rate, unsigned long req_rate)
- 	return 5; /* /1024 divider */
+diff --git a/drivers/clk/stm32/clk-stm32-core.c b/drivers/clk/stm32/clk-stm32-core.c
+index 3247539683c9..4027ca7d9806 100644
+--- a/drivers/clk/stm32/clk-stm32-core.c
++++ b/drivers/clk/stm32/clk-stm32-core.c
+@@ -349,14 +349,15 @@ static int clk_stm32_divider_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	return ret;
  }
  
--static long ingenic_tcu_round_rate(struct clk_hw *hw, unsigned long req_rate,
--		unsigned long *parent_rate)
-+static int ingenic_tcu_determine_rate(struct clk_hw *hw,
-+				      struct clk_rate_request *req)
+-static long clk_stm32_divider_round_rate(struct clk_hw *hw, unsigned long rate,
+-					 unsigned long *prate)
++static int clk_stm32_divider_determine_rate(struct clk_hw *hw,
++					    struct clk_rate_request *req)
  {
--	unsigned long rate = *parent_rate;
-+	unsigned long rate = req->best_parent_rate;
- 	u8 prescale;
+ 	struct clk_stm32_div *div = to_clk_stm32_divider(hw);
+ 	const struct stm32_div_cfg *divider;
++	unsigned long rate;
  
--	if (req_rate > rate)
+ 	if (div->div_id == NO_STM32_DIV)
 -		return rate;
-+	if (req->rate > rate) {
++		return 0;
+ 
+ 	divider = &div->clock_data->dividers[div->div_id];
+ 
+@@ -367,14 +368,24 @@ static long clk_stm32_divider_round_rate(struct clk_hw *hw, unsigned long rate,
+ 		val =  readl(div->base + divider->offset) >> divider->shift;
+ 		val &= clk_div_mask(divider->width);
+ 
+-		return divider_ro_round_rate(hw, rate, prate, divider->table,
+-				divider->width, divider->flags,
+-				val);
++		rate = divider_ro_round_rate(hw, req->rate, &req->best_parent_rate,
++					     divider->table, divider->width, divider->flags,
++					     val);
++		if (rate < 0)
++			return rate;
++
 +		req->rate = rate;
 +		return 0;
-+	}
+ 	}
  
--	prescale = ingenic_tcu_get_prescale(rate, req_rate);
-+	prescale = ingenic_tcu_get_prescale(rate, req->rate);
- 
--	return rate >> (prescale * 2);
-+	req->rate = rate >> (prescale * 2);
+-	return divider_round_rate_parent(hw, clk_hw_get_parent(hw),
+-					 rate, prate, divider->table,
+-					 divider->width, divider->flags);
++	rate = divider_round_rate_parent(hw, clk_hw_get_parent(hw),
++					 req->rate, &req->best_parent_rate,
++					 divider->table, divider->width, divider->flags);
++	if (rate < 0)
++		return rate;
++
++	req->rate = rate;
 +	return 0;
  }
  
- static int ingenic_tcu_set_rate(struct clk_hw *hw, unsigned long req_rate,
-@@ -219,7 +222,7 @@ static const struct clk_ops ingenic_tcu_clk_ops = {
- 	.set_parent	= ingenic_tcu_set_parent,
- 
- 	.recalc_rate	= ingenic_tcu_recalc_rate,
--	.round_rate	= ingenic_tcu_round_rate,
-+	.determine_rate	= ingenic_tcu_determine_rate,
- 	.set_rate	= ingenic_tcu_set_rate,
- 
- 	.enable		= ingenic_tcu_enable,
+ static unsigned long clk_stm32_divider_recalc_rate(struct clk_hw *hw,
+@@ -602,7 +613,7 @@ static void clk_stm32_composite_disable_unused(struct clk_hw *hw)
+ const struct clk_ops clk_stm32_composite_ops = {
+ 	.set_rate	= clk_stm32_composite_set_rate,
+ 	.recalc_rate	= clk_stm32_composite_recalc_rate,
+-	.round_rate	= clk_stm32_composite_round_rate,
++	.determine_rate	= clk_stm32_composite_determine_rate,
+ 	.get_parent	= clk_stm32_composite_get_parent,
+ 	.set_parent	= clk_stm32_composite_set_parent,
+ 	.enable		= clk_stm32_composite_gate_enable,
 
 -- 
 b4 0.11.0-dev-99e3a
