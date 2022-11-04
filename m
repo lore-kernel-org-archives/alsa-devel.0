@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D690DC433FE
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Nov 2022 07:21:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E260CC433FE
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Nov 2022 07:21:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A3F3171D;
-	Sat,  5 Nov 2022 08:20:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A3F3171D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 515F61720;
+	Sat,  5 Nov 2022 08:20:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 515F61720
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667632859;
-	bh=wHANmveZ5/10ctV/K4Ia+5unC0OKbDapXscWnzGylWQ=;
+	s=default; t=1667632874;
+	bh=daasTM65TpyDU3lTRJTlSg4u93TDv996zFOnzlSvaFA=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iWCuJ3wKP6oj3eBqL7R6mDBuwxgt8Oxqxnx186krRT9rBNDSRerr8OdWLOPKK4yV/
-	 viRum6NKz4pncYbFVXb332eazxeD7V6T33bH5p5wt4thOpWTipxAXDBV4U5sTRGnkf
-	 aUm2LmRt22WQDZLnAjyKpGWtVc76hLMmn2tUv2Us=
+	b=k6urCwSK93h1VMXiCGfpfGJd5FxJ4/MfnisHYItoKbqPTO/FGN19mFWg2CGDRfZW2
+	 pwG2KmxuGjHR1B2N2rY5GGUa/tvPyocTRds8IZmu92cSwIn50p39mD3oet4NwwJVAY
+	 X+M69epkftfXUPO6u7u/Jf0PDGztjN+r+4vQmZkE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6922CF8077B;
+	by alsa1.perex.cz (Postfix) with ESMTP id DFB1EF80791;
 	Sat,  5 Nov 2022 08:04:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D5BEBF804AC; Fri,  4 Nov 2022 14:34:00 +0100 (CET)
+ id 9A6BBF8047D; Fri,  4 Nov 2022 14:34:01 +0100 (CET)
 Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
  [66.111.4.221])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8CF2F80149
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 14:33:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8CF2F80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 00691F801D5
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 14:33:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00691F801D5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="SRCVgcuN"; 
+ header.b="Q3Ra3AB2"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="I0O1xdRY"
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
- by mailnew.nyi.internal (Postfix) with ESMTP id 09C265805A6;
- Fri,  4 Nov 2022 09:33:54 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute1.internal (MEProxy); Fri, 04 Nov 2022 09:33:54 -0400
+ header.i=@messagingengine.com header.b="YUz2HJW7"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailnew.nyi.internal (Postfix) with ESMTP id 388665805B4;
+ Fri,  4 Nov 2022 09:33:58 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute4.internal (MEProxy); Fri, 04 Nov 2022 09:33:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
  :cc:content-transfer-encoding:content-type:date:date:from:from
  :in-reply-to:in-reply-to:message-id:mime-version:references
- :reply-to:sender:subject:subject:to:to; s=fm3; t=1667568834; x=
- 1667576034; bh=GG5ym4w6gS7mppovC+jUWC3Q6mS58OHFw/6k+J3fjVU=; b=S
- RCVgcuNLOZQWJqCmiFCaCWCIwu1itgRuWApbu0MWrG4xSFiOCksP+3wK8ALgy2Hp
- g5aiUqeQcPRAbTodFxK/Q5CJMQU/k/gI1B2LxPXSskE5fqULNkm5nQjz2mNyII/3
- lHaLe+qkI6KI+0IcuxnQzJAJtiuMfUqPEbm3QTrqOfI52LVkGl/fsxaZAhZKEBHm
- Ao7kPzZiIz2Dipr6AwqKNuJI4LcoHQuN4chGOTjDFKOXzG4oVj5g+uf4q1rZmfpJ
- QxPlZXZcM0xX+V2RcdFQeEj5vPX1DdnNrwAAC038o1keXCuMaymOugtaZmAlgZn+
- 0x3MiTyhy7MIP31Q2EAUw==
+ :reply-to:sender:subject:subject:to:to; s=fm3; t=1667568838; x=
+ 1667576038; bh=RbJFjhJY2TFF1lJTZFwIQdxmhPzyUybipUNKWB96MsE=; b=Q
+ 3Ra3AB2nKL0bgtpEsQAzlQKLFWbfTmOkYDnJ6/FBNt5fvG0QmLCbOnBxpF1ySwMC
+ Yz2o1iITyZCZ8jtmro9Mb/V2WrKXs5eC79j7CMTzcPkC6z/Y38FStwoY8pYQK9EI
+ /r+gApD6ujd0MgAAmaARvcDdJWc+43olJP/jtx1IeGhSAfaZmAoju6oGO7bJ23rB
+ ex+P/h87RkdyD0rFRVYGWJdKBzt97cHL3t0OPgQMKO2CBluBCKUpsb6V0LaxIWVj
+ j//39zQ5LeCS1J9z8y1h9pk9HOzs7oTdf4i8Rb5FsVCDAURRhS4Uh8QjkcahAHSl
+ v9P8EoGK+xRh/maERpQDw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:cc:content-transfer-encoding
  :content-type:date:date:feedback-id:feedback-id:from:from
  :in-reply-to:in-reply-to:message-id:mime-version:references
  :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1667568834; x=
- 1667576034; bh=GG5ym4w6gS7mppovC+jUWC3Q6mS58OHFw/6k+J3fjVU=; b=I
- 0O1xdRYDoueM7vK2wygcLY5do5ltiblZk6+oJdkoswTKR/k7tuZeYDmcfMKF5XHS
- XVq/mr4QXhMbuOqN3mQSeDXRbwUyaJ4GBzCdb1Ivx6/bbPpH+IQUZD6IDZCpUrRq
- l80OUc8seHcdJ49Co4eBzIISQVFoXJDSaQVKH66OdZUhoYTa5KXtspJlaf9l9snv
- kTtNAie1pzufoi+s8ETL6DxVtproo/QT2wIXO3I68HmScr/Wx+vXfzwUpoT3ova1
- 5v6jBzokCkQPm9IVY/lSBFisZzx4HAUqG4rlyrWOpZXIj7NHA/G0FH3Fm5Th47IO
- Al2Fx8WFaY1T/chDWT3QA==
-X-ME-Sender: <xms:wRRlY2F7BRScn46lR52E6lUU5ppwdeSQQxCZKkDSnUirxnRgIEg6sw>
- <xme:wRRlY3XKkJacmvdRpeKGKP56X7XjwdxEaggTxvasaYLgb3Qf7VdJ101j2QQdfQhcW
- HKbMGzqmd8HsY9M32I>
-X-ME-Received: <xmr:wRRlYwKqx0LiyjvpERabe7CYkBdaiaGV68bGeHWrdGbVBRXoetUI6h341advKeIpVvfA19qpN1QkIsxMta2RhAQHIcFNbJ87XyEsegzV9Kz5jw>
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1667568838; x=
+ 1667576038; bh=RbJFjhJY2TFF1lJTZFwIQdxmhPzyUybipUNKWB96MsE=; b=Y
+ Uz2HJW7Df6UJ57JKYalorP5rZGStbcie3GXoywXbWbC16GVlmBsXgCGCDy3NCQFL
+ VZ/7dHjsvlyPvnEfKZXsPyD/dd+Q1eaa39oLHIk1XWEkLRiuvZwXO2cBTM7q8JGU
+ PbK7hiC80g/ZO3llZSkE53FB3JIm2uvS16keZ6efiQolGTNwoasvfxgF778M+g5G
+ Hjmcd//FqwwpbfPkqFdNJnkPoL9Feh6QB4h36b7aQtc9INCjoaFupJSHu7c+FW8m
+ m5Tp2iI4a9mlU5UoHfwyxpEwmwsknxyLAxeRSRCDFDdAMOE+XAUCbzPU5tTNBEQA
+ o0wPP937kkPYLJfTUW0PA==
+X-ME-Sender: <xms:xhRlY10n0F_e4HXDzU05jnmK-_F00n-mpnjmKLN_R0v6MxkEW514jw>
+ <xme:xhRlY8FssAZV390g6s-8wyfCJ9KLzfy-J52SynNGfGRKPv1PaHZXi-k2AjnfOTFwE
+ g0c2RU_66dEGsinPGc>
+X-ME-Received: <xmr:xhRlY14MIPJZiatxEbxZ0-33Sv3Ds_gxPvMqICLUQA9wBwGH7AJXFQ-QAkpyNKfdbY50Q53aRt-kgujRCg1VodaZTeDkQCwN8Q9PlyB_iAx0Lw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrvddugdehudcutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
  fjughrpefhfffugggtgffkfhgjvfevofesthekredtredtjeenucfhrhhomhepofgrgihi
  mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
  htthgvrhhnpeduudduhfevjeetfeegvdffvdevvdejudegudekjeehtdelhfffveethfej
- ledtveenucevlhhushhtvghrufhiiigvpeehnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+ ledtveenucevlhhushhtvghrufhiiigvpeefnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
  hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:wRRlYwGbfIwPEfNSUqi0_NrIVddrT4mtPMNn3SYuDkSvoOn0up3R3Q>
- <xmx:wRRlY8WpgMPF-C8pRgr_xJTevWzSdTYjV0Y8cMSUahNVyeTZVohvpA>
- <xmx:wRRlYzPj0a5xyN2jiP184QHygoffP2nN3duVIXTcczu4sL6uZRb9kQ>
- <xmx:whRlY5Vi4hHDzdOQtxKh55AAOjGMXzvmKZRqg1uwtZII0sjTaPuvqg>
+X-ME-Proxy: <xmx:xhRlYy0kTRJXPZJ408zclXzVcwO9QrYAxxpr-HUNCnwCCnCuGDSH8g>
+ <xmx:xhRlY4GZGLW0qickadcxSIEN_X4FPzIVucHjktgNo__NqtGau-ihCw>
+ <xmx:xhRlYz_eNRdRePW_Sm48uy3zIhf7XTi_CCmjrxYXjwYldUr1K-uLqA>
+ <xmx:xhRlY4GeQoOiHNUYUayJQJEim7pGhUo_a5RnMM0oijVpW09xPOCl0A>
 Feedback-ID: i8771445c:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 4 Nov 2022 09:33:53 -0400 (EDT)
+ 4 Nov 2022 09:33:57 -0400 (EDT)
 From: Maxime Ripard <maxime@cerno.tech>
-Date: Fri, 04 Nov 2022 14:18:16 +0100
-Subject: [PATCH v2 59/65] clk: st: flexgen: Switch to determine_rate
+Date: Fri, 04 Nov 2022 14:18:18 +0100
+Subject: [PATCH v2 61/65] clk: tegra: periph: Switch to determine_rate
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20221018-clk-range-checks-fixes-v2-59-f6736dec138e@cerno.tech>
+Message-Id: <20221018-clk-range-checks-fixes-v2-61-f6736dec138e@cerno.tech>
 References: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
 In-Reply-To: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
 To: Stephen Boyd <sboyd@kernel.org>,
@@ -133,11 +133,11 @@ To: Stephen Boyd <sboyd@kernel.org>,
  Max Filippov <jcmvbkbc@gmail.com>,
  Geert Uytterhoeven <geert+renesas@glider.be>
 X-Mailer: b4 0.11.0-dev-99e3a
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2844; i=maxime@cerno.tech;
- h=from:subject:message-id; bh=wHANmveZ5/10ctV/K4Ia+5unC0OKbDapXscWnzGylWQ=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDMmpAt/ihaLmpGk9M3B/veFZ5Z39u+z5H337dDiz7uwFpnU7
- A6x+dJSyMIhxMciKKbLECJsviTs163UnG988mDmsTCBDGLg4BWAiv6czMlw5EfDuScBWX6uW9I4DXF
- 1K/4qV870X9/LGtazR2Z/UMovhn9bp3VEnDoc3WlzQuriXnz+1KC7fU2VqOf8Ui3eWJy5oMQEA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3277; i=maxime@cerno.tech;
+ h=from:subject:message-id; bh=daasTM65TpyDU3lTRJTlSg4u93TDv996zFOnzlSvaFA=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDMmpAt+4rIOjdVaH8RfG61mGJp45FtVdcfhKZpRK/Qohb0aj
+ HZc6SlkYxLgYZMUUWWKEzZfEnZr1upONbx7MHFYmkCEMXJwCMBFuXob/voXac6IjnPkr7qw9Ent9fV
+ Ln0gnzN9tEpL/prvX5Lf3AmOGf0XXfN+URC4VbDtzM3TzDbn7pR7PtDR3J4u+fWGc1MncwAgA=
 X-Developer-Key: i=maxime@cerno.tech; a=openpgp;
  fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 X-Mailman-Approved-At: Sat, 05 Nov 2022 08:03:32 +0100
@@ -165,7 +165,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The ST Flexgen clocks implements a mux with a set_parent hook, but
+The Tegra periph clocks implements a mux with a set_parent hook, but
 doesn't provide a determine_rate implementation.
 
 This is a bit odd, since set_parent() is there to, as its name implies,
@@ -195,49 +195,56 @@ oversight, the clock behaviour can be adjusted later on.
 
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/clk/st/clk-flexgen.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ drivers/clk/tegra/clk-periph.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/clk/st/clk-flexgen.c b/drivers/clk/st/clk-flexgen.c
-index 7ae4f656191e..5292208c4dd8 100644
---- a/drivers/clk/st/clk-flexgen.c
-+++ b/drivers/clk/st/clk-flexgen.c
-@@ -119,20 +119,21 @@ clk_best_div(unsigned long parent_rate, unsigned long rate)
- 	return parent_rate / rate + ((rate > (2*(parent_rate % rate))) ? 0 : 1);
+diff --git a/drivers/clk/tegra/clk-periph.c b/drivers/clk/tegra/clk-periph.c
+index 367396c62259..ce8cab5f1978 100644
+--- a/drivers/clk/tegra/clk-periph.c
++++ b/drivers/clk/tegra/clk-periph.c
+@@ -45,16 +45,22 @@ static unsigned long clk_periph_recalc_rate(struct clk_hw *hw,
+ 	return div_ops->recalc_rate(div_hw, parent_rate);
  }
  
--static long flexgen_round_rate(struct clk_hw *hw, unsigned long rate,
--				   unsigned long *prate)
-+static int flexgen_determine_rate(struct clk_hw *hw,
-+				  struct clk_rate_request *req)
+-static long clk_periph_round_rate(struct clk_hw *hw, unsigned long rate,
+-				  unsigned long *prate)
++static int clk_periph_determine_rate(struct clk_hw *hw,
++				     struct clk_rate_request *req)
  {
- 	unsigned long div;
+ 	struct tegra_clk_periph *periph = to_clk_periph(hw);
+ 	const struct clk_ops *div_ops = periph->div_ops;
+ 	struct clk_hw *div_hw = &periph->divider.hw;
++	unsigned long rate;
  
- 	/* Round div according to exact prate and wished rate */
--	div = clk_best_div(*prate, rate);
-+	div = clk_best_div(req->best_parent_rate, req->rate);
+ 	__clk_hw_set_clk(div_hw, hw);
  
- 	if (clk_hw_get_flags(hw) & CLK_SET_RATE_PARENT) {
--		*prate = rate * div;
--		return rate;
-+		req->best_parent_rate = req->rate * div;
-+		return 0;
- 	}
- 
--	return *prate / div;
-+	req->rate = req->best_parent_rate / div;
+-	return div_ops->round_rate(div_hw, rate, prate);
++	rate = div_ops->round_rate(div_hw, req->rate, &req->best_parent_rate);
++	if (rate < 0)
++		return rate;
++
++	req->rate = rate;
 +	return 0;
  }
  
- static unsigned long flexgen_recalc_rate(struct clk_hw *hw,
-@@ -197,7 +198,7 @@ static const struct clk_ops flexgen_ops = {
- 	.is_enabled = flexgen_is_enabled,
- 	.get_parent = flexgen_get_parent,
- 	.set_parent = flexgen_set_parent,
--	.round_rate = flexgen_round_rate,
-+	.determine_rate = flexgen_determine_rate,
- 	.recalc_rate = flexgen_recalc_rate,
- 	.set_rate = flexgen_set_rate,
+ static int clk_periph_set_rate(struct clk_hw *hw, unsigned long rate,
+@@ -130,7 +136,7 @@ const struct clk_ops tegra_clk_periph_ops = {
+ 	.get_parent = clk_periph_get_parent,
+ 	.set_parent = clk_periph_set_parent,
+ 	.recalc_rate = clk_periph_recalc_rate,
+-	.round_rate = clk_periph_round_rate,
++	.determine_rate = clk_periph_determine_rate,
+ 	.set_rate = clk_periph_set_rate,
+ 	.is_enabled = clk_periph_is_enabled,
+ 	.enable = clk_periph_enable,
+@@ -154,7 +160,7 @@ static const struct clk_ops tegra_clk_periph_no_gate_ops = {
+ 	.get_parent = clk_periph_get_parent,
+ 	.set_parent = clk_periph_set_parent,
+ 	.recalc_rate = clk_periph_recalc_rate,
+-	.round_rate = clk_periph_round_rate,
++	.determine_rate = clk_periph_determine_rate,
+ 	.set_rate = clk_periph_set_rate,
+ 	.restore_context = clk_periph_restore_context,
  };
 
 -- 
