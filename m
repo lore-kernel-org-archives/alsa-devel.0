@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DA0CC4332F
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Nov 2022 07:12:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1316C433FE
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Nov 2022 07:12:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D214F16CF;
-	Sat,  5 Nov 2022 08:11:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D214F16CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED6F516CE;
+	Sat,  5 Nov 2022 08:11:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED6F516CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667632319;
-	bh=FUptvuI3F63mAIhxBYRO2PMltn/Yw3CvkS3mja0KFvM=;
+	s=default; t=1667632335;
+	bh=qtN8YmaUvPGpHcy8Dy+enw7ZsB7uxefygNx/9UP+R2Y=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iETLgBRpfDygYql0NubaB/sc+/FwAh6le9zQAJY/MhRZnytYr6YLZtVeUcAYrE24j
-	 xMsfpOn/9LsPDKG64+HhKbqsYmZGLUPrjs8TAk1qPL/hDjdxGJnnvI9xIv9UHOOfi6
-	 JMlVCI2mfMAU8sWfnPWnVp6XbViaP8r0OwygHWyQ=
+	b=mqfWlJgS7HxyAyg+METw6xAW5csX1TH8OcwSwGVTMhexB/H3r6hGInBxyyE4pjqjk
+	 CGjpITr6mQeSZy7iS8l291Jv1OkHHxvsklqmlL+Q5bp/+1MPm0vl87glp/Yf2rzpOi
+	 P8aMCyU9ZF9iyVNkY6OeKfybI+h6GKBONxR9iGHo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A839F8061F;
+	by alsa1.perex.cz (Postfix) with ESMTP id F2B1FF80623;
 	Sat,  5 Nov 2022 08:03:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ED0C4F804AC; Fri,  4 Nov 2022 14:18:48 +0100 (CET)
+ id 9DA79F8047D; Fri,  4 Nov 2022 14:18:58 +0100 (CET)
 Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
  [66.111.4.221])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A913DF80448
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 14:18:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A913DF80448
+ by alsa1.perex.cz (Postfix) with ESMTPS id 85BF2F80431
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 14:18:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85BF2F80431
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="yZOTQaSk"; 
+ header.b="hX2tpSuU"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="kocjtyoB"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailnew.nyi.internal (Postfix) with ESMTP id E1D0E580558;
- Fri,  4 Nov 2022 09:18:41 -0400 (EDT)
+ header.i=@messagingengine.com header.b="JgP9Nyqw"
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailnew.nyi.internal (Postfix) with ESMTP id BD83F580559;
+ Fri,  4 Nov 2022 09:18:51 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute5.internal (MEProxy); Fri, 04 Nov 2022 09:18:41 -0400
+ by compute1.internal (MEProxy); Fri, 04 Nov 2022 09:18:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
  :cc:content-transfer-encoding:content-type:date:date:from:from
  :in-reply-to:in-reply-to:message-id:mime-version:references
- :reply-to:sender:subject:subject:to:to; s=fm3; t=1667567921; x=
- 1667575121; bh=ryNmbFJM4diOGk8okA5Tqnn27dGfir9PKyxk50XOcPc=; b=y
- ZOTQaSkMUBYQeuVZ/i7oVURymR8TVy1qgr7EHudwMPs9CxjDy9m08iDZTRUkxNCz
- 9vMcquerZa6C0uV9+MeKoSupX+AqG9uc/rteuxg7LiGHfimpYr4SqpkhFYrSzhyX
- k75O5SnT1b19L33C7oHAdWp+smugMk83Iat4NZH/ObwTHzTEXis3NYyj6kKq5oJq
- LvJme0ZPRwcNI+B6aHhVWX26I87RCVF/2p+8Cq33aI/LZxKrHlK6JrOLLgGui8D3
- eEGO6wCi1BzFUQoW7io4hVzDdXhuD0I0eZ87xCfWgoob3YN7aDQLY4RwfXXpYlMj
- ynr8iUuiIHd8rhIfLIV/A==
+ :reply-to:sender:subject:subject:to:to; s=fm3; t=1667567931; x=
+ 1667575131; bh=x/RnpdCq8+l4EBCIw1+peBD+1x1bRnGWgIjtgh7TZMo=; b=h
+ X2tpSuUgsYz8JHnokK5gCBSla06jpKoxkkj6fjH9JIZwX+IZM5OJ3TE5o+wU8L8U
+ 1SC07858vt3iW3/1xK/5+CZvZ0bko5yAzjN6RhHMQAOvVZEC1l7AqjIXYQqSpHiS
+ 88IwCYd30Vp/m4a87X7S86R35utHVTwrFlhsOcw64CkcUsGDdX6MBQ+pu8oEYEqo
+ zHC+ChzMxXJi0UahYgSLGyWqAfifSm5A2O3QFwW6GlognSOIYB5h+i6fSb9DArLl
+ lgye938EblJpIS2GDNiktjCBdfjA3hHcuSKWydmgW5QIQ6dwyKqdOYYQKnIVGrrA
+ SyB4Vs9Soco3SgQx5knzg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:cc:content-transfer-encoding
  :content-type:date:date:feedback-id:feedback-id:from:from
  :in-reply-to:in-reply-to:message-id:mime-version:references
  :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1667567921; x=
- 1667575121; bh=ryNmbFJM4diOGk8okA5Tqnn27dGfir9PKyxk50XOcPc=; b=k
- ocjtyoBv6Gxm60Vv2ETo2pxrQE6Aj8LnWrNWs5GoUeGj+0GREUMHKWCNWn0Yy0k3
- ap+YhXB1RJBQmpRbV3LMu8Ww8iMiRv20ZWzC6QqWa8W4DI97+g+RbqUAKwHV0wRd
- 0V2EcOkNFtLvkFSTTjvoT7ZuNbaNc/GrXkJ5rzSA0yiq7YRX0RNVs84eI629ujUu
- Kr4nvY6rCnxA2xiP3GKX0w+XTpfwLCpbfOEVjlcbET2iez0M8JoWgS7h7ilA7EmM
- Q7+ZL7aAu8uhqU45D1CHMTrz1MxWDyi+yzE/IxWd1kRpLtgriLz+gQKJX2QYdpGQ
- N5Kf/qsx6/n6jxhtcIS8Q==
-X-ME-Sender: <xms:MRFlY1LkIJS9vsieqZT0SfCGVYV-4OR_SY99Jv08-jat8M8-04J7VQ>
- <xme:MRFlYxL_sH6WdKX4rQNKcJfoLnYVxTOASGXXXMmiPRpzOPhDav0LVKLnG0FTUnCUM
- 8DjTlQcFMCdFBk622w>
-X-ME-Received: <xmr:MRFlY9sef67li-HvFcdWF2pPjSAzVUxJOKmEpKu-9AT0tkhQtFPQvpz4HXhGp7AuhwnjHOqaN3L0mHiZDOo-H2jk5AeDqfmWnWnTFsol14JuPg>
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1667567931; x=
+ 1667575131; bh=x/RnpdCq8+l4EBCIw1+peBD+1x1bRnGWgIjtgh7TZMo=; b=J
+ gP9Nyqw4uJNzPp1bH8YqEDeesONVVGHerTPniEFT9S7UHs08JZpB94wh03wTExsB
+ Cqg870pHDbkWZ6y7+7Tb16JcR0OttUdSqGZ1Ohzyow34ToXA17hB2nVqNCy3cWJp
+ X5piRIe40AofkW46w0rsPgDLwIN7V+Fe5cEaFPDzEyZMT6oPidaUQ3nBF9Pd41uy
+ zetM+3ClJ03fTlQ8fJii1uwoi4uv8CkMXSlnvBWTe7hU/WIhXQ7vJIfggniZk2ov
+ /DVviPFHuuJcb7UnC+Q0Xn7sF6DWOKVsXCuL35S8H2Q7Z7YGlaqYiAhMYea/ciN6
+ 3iDK9xY0lq76GRvE7T6bw==
+X-ME-Sender: <xms:OxFlY6XYIMtD2jnSdijwBzjzZ3t7dRgqesQ28dzTjeh8H9cPIYVfQg>
+ <xme:OxFlY2mYshUzCTi9_HIy0i1R9OSqF6BhzB7Sd-K3NCUg7TN9K1771BeisWWZ9l5z9
+ Pq7f6BUBvgq8IVKbB8>
+X-ME-Received: <xmr:OxFlY-aSJTie6I68h8Ak87a1yL1QZM5TRiBMk-xSyUzPuf0HDDF9nquGs-q8T4HWLfg2B9mvysY6u3eDS_0FXOrryI7Xz_hKyqjvGvEwGAV-7g>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrvddugdegkecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
  fjughrpefhfffugggtgffkfhgjvfevofesthekredtredtjeenucfhrhhomhepofgrgihi
  mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
  htthgvrhhnpeduudduhfevjeetfeegvdffvdevvdejudegudekjeehtdelhfffveethfej
- ledtveenucevlhhushhtvghrufhiiigvpeehnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+ ledtveenucevlhhushhtvghrufhiiigvpeeinecurfgrrhgrmhepmhgrihhlfhhrohhmpe
  hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:MRFlY2ZRoCKl1ZzT8ui9yFY_vrc8WYuS7M-8Ne8jlaK17ksGBqOpKw>
- <xmx:MRFlY8YQsIErPue2nRvW6LlpVu7MAI5E99fvbVF69DFhMbviJ1VfSg>
- <xmx:MRFlY6CkdxLB7aEOVSZDXgtS8FGCbks0SJOs6uNBCHbpycKTytMFEA>
- <xmx:MRFlY0o3nPYFZWBOERUEUHCBXLvtsF-QEvpws5613AeLcOzwstffBQ>
+X-ME-Proxy: <xmx:OxFlYxWc5c43Q4H2LlmTezidfkQs3Sp-o7_AQk3fuLD-EmMBLYPthg>
+ <xmx:OxFlY0kXnrdJREVFCkQsiLzkwcywlKBzC13TdrODJH061nvxfflLIg>
+ <xmx:OxFlY2ccbn0Z0fyGg1WDAQU0TZUJUy5UTocwYZNYWT_PBfMKHCfgJQ>
+ <xmx:OxFlY-lU2iW4NkDK6ci5CRNjcv2QkyRW4A2nQwGDqnpgSd6e7Allqg>
 Feedback-ID: i8771445c:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 4 Nov 2022 09:18:40 -0400 (EDT)
+ 4 Nov 2022 09:18:50 -0400 (EDT)
 From: Maxime Ripard <maxime@cerno.tech>
-Date: Fri, 04 Nov 2022 14:17:42 +0100
-Subject: [PATCH v2 25/65] clk: imx: scu: Add a determine_rate hook
+Date: Fri, 04 Nov 2022 14:17:45 +0100
+Subject: [PATCH v2 28/65] clk: renesas: r9a06g032: Add a determine_rate hook
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20221018-clk-range-checks-fixes-v2-25-f6736dec138e@cerno.tech>
+Message-Id: <20221018-clk-range-checks-fixes-v2-28-f6736dec138e@cerno.tech>
 References: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
 In-Reply-To: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
 To: Stephen Boyd <sboyd@kernel.org>,
@@ -133,11 +133,11 @@ To: Stephen Boyd <sboyd@kernel.org>,
  Max Filippov <jcmvbkbc@gmail.com>,
  Geert Uytterhoeven <geert+renesas@glider.be>
 X-Mailer: b4 0.11.0-dev-99e3a
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2828; i=maxime@cerno.tech;
- h=from:subject:message-id; bh=FUptvuI3F63mAIhxBYRO2PMltn/Yw3CvkS3mja0KFvM=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDMmpAl/09/PK679nObU2X/T2a32roICJZXu8t7YaNbvOYtlR
- JbO0o5SFQYyLQVZMkSVG2HxJ3KlZrzvZ+ObBzGFlAhnCwMUpABMJDmZk6H0T9btj78RNW+6x53x66M
- 182f3B+fMGBU92zO6TDIrdsZXhf/BJ/XBTpYs/pfR+r/e4ru9ie9mvN3o/O4PAGbkT3R03mAE=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2424; i=maxime@cerno.tech;
+ h=from:subject:message-id; bh=qtN8YmaUvPGpHcy8Dy+enw7ZsB7uxefygNx/9UP+R2Y=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDMmpAl8YryTd5Eg5oODvGn3v6Q/XhmnHGms6tv7idpbgWb1k
+ ygn9jlIWBjEuBlkxRZYYYfMlcadmve5k45sHM4eVCWQIAxenAExkTRYjw83aXKOQbSeesfRYnS40/X
+ rv8I7MmQKXPRQTyjpM5hzIsGf477fh/Dzt9IdLl+lF6/866rTl76rP0/i/O+W9lP1txHuwmR0A
 X-Developer-Key: i=maxime@cerno.tech; a=openpgp;
  fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 X-Mailman-Approved-At: Sat, 05 Nov 2022 08:03:31 +0100
@@ -165,8 +165,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The iMX SCU mux clock implements a mux with a set_parent hook, but
-doesn't provide a determine_rate implementation.
+The Renesas r9a06g032 bitselect clock implements a mux with a set_parent
+hook, but doesn't provide a determine_rate implementation.
 
 This is a bit odd, since set_parent() is there to, as its name implies,
 change the parent of a clock. However, the most likely candidate to
@@ -196,44 +196,30 @@ behavior now and it can be further refined down the line.
 
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/clk/imx/clk-scu.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/clk/renesas/r9a06g032-clocks.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/imx/clk-scu.c b/drivers/clk/imx/clk-scu.c
-index 1e6870f3671f..66e49fea5f8a 100644
---- a/drivers/clk/imx/clk-scu.c
-+++ b/drivers/clk/imx/clk-scu.c
-@@ -785,6 +785,7 @@ static int clk_gpr_mux_scu_set_parent(struct clk_hw *hw, u8 index)
+diff --git a/drivers/clk/renesas/r9a06g032-clocks.c b/drivers/clk/renesas/r9a06g032-clocks.c
+index 983faa5707b9..70c37097ca6e 100644
+--- a/drivers/clk/renesas/r9a06g032-clocks.c
++++ b/drivers/clk/renesas/r9a06g032-clocks.c
+@@ -773,6 +773,7 @@ static int r9a06g032_clk_mux_set_parent(struct clk_hw *hw, u8 index)
  }
  
- static const struct clk_ops clk_gpr_mux_scu_ops = {
+ static const struct clk_ops clk_bitselect_ops = {
 +	.determine_rate = __clk_mux_determine_rate,
- 	.get_parent = clk_gpr_mux_scu_get_parent,
- 	.set_parent = clk_gpr_mux_scu_set_parent,
+ 	.get_parent = r9a06g032_clk_mux_get_parent,
+ 	.set_parent = r9a06g032_clk_mux_set_parent,
  };
-@@ -836,7 +837,7 @@ struct clk_hw *__imx_clk_gpr_scu(const char *name, const char * const *parent_na
- 	struct imx_scu_clk_node *clk_node;
- 	struct clk_gpr_scu *clk;
- 	struct clk_hw *hw;
--	struct clk_init_data init;
-+	struct clk_init_data init = {};
- 	int ret;
+@@ -797,7 +798,7 @@ r9a06g032_register_bitsel(struct r9a06g032_priv *clocks,
  
- 	if (rsrc_id >= IMX_SC_R_LAST || gpr_id >= IMX_SC_C_LAST)
-@@ -868,10 +869,11 @@ struct clk_hw *__imx_clk_gpr_scu(const char *name, const char * const *parent_na
- 	if (flags & IMX_SCU_GPR_CLK_DIV)
- 		init.ops = &clk_gpr_div_scu_ops;
+ 	init.name = desc->name;
+ 	init.ops = &clk_bitselect_ops;
+-	init.flags = CLK_SET_RATE_PARENT;
++	init.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT;
+ 	init.parent_names = names;
+ 	init.num_parents = 2;
  
--	if (flags & IMX_SCU_GPR_CLK_MUX)
-+	if (flags & IMX_SCU_GPR_CLK_MUX) {
- 		init.ops = &clk_gpr_mux_scu_ops;
-+		init.flags |= CLK_SET_RATE_NO_REPARENT;
-+	}
- 
--	init.flags = 0;
- 	init.name = name;
- 	init.parent_names = parent_name;
- 	init.num_parents = num_parents;
 
 -- 
 b4 0.11.0-dev-99e3a
