@@ -4,98 +4,152 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81FF4C433FE
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Nov 2022 07:09:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC625C4332F
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Nov 2022 07:10:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CAD016A4;
-	Sat,  5 Nov 2022 08:08:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CAD016A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id DEA1B162F;
+	Sat,  5 Nov 2022 08:09:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DEA1B162F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667632181;
-	bh=nbLTtZHdfpv1b/Nl7/dH3yrfjrIomM+d2Luw0dbCmCQ=;
-	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1667632231;
+	bh=JEUZtb9tXOof5sAOCA5zwNzO7GBHkJSDJOl0Zd1+YdE=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Zw7/cPlXLh3LZT16YoFYPcs3aZO0TM8JQvWfiSyjNTX9n8Wzf/1rqadyKSf/IB2M5
-	 lygZRwp3iiHcm3tVSSOrxjCbRruCKa9pQTpEHrQwf/ew/HNeiUGJeAM0N2cOeARlrO
-	 U6/4S6rzTP+OOgPTt1dBKnOHr7Ml26stkSWlZqo8=
+	b=HeVG85P1K/by/onlCkbuTotT+y7I63kUUv2ReY5jrwNR+WBZJ/wb6DCk4XAqk6x9h
+	 cpNCmjGQ3g089g/F7pXRj2UMKXeTKJTC8iKvuB53XvvOqKANiFKexBPD4NuL3CCRYt
+	 svoNR0hmeVrsqdGRrR09tploRyTQ3Wmztt8ILmko=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C47B8F805E0;
-	Sat,  5 Nov 2022 08:03:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81A94F80607;
+	Sat,  5 Nov 2022 08:03:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2625AF80448; Fri,  4 Nov 2022 15:31:58 +0100 (CET)
-Received: from aposti.net (aposti.net [89.234.176.197])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 2DBF7F8049E; Fri,  4 Nov 2022 14:18:36 +0100 (CET)
+Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
+ [66.111.4.221])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2091DF801D5
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 15:31:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2091DF801D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0BC90F80448
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 14:18:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BC90F80448
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net
- header.b="CpbNQdJ/"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
- s=mail; t=1667572309; h=from:from:sender:reply-to:subject:subject:date:date:
- message-id:message-id:to:to:cc:cc:mime-version:mime-version:
- content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=yJcwJHHN5pttniHz+NbbkUJe8GLWXEpymY5u4z+2Tls=;
- b=CpbNQdJ/BWVPt6aAZUIABOUDvKsIEPL9U91j803wkEpi9xnD/0w4adiBYeJcN8TJFfSWVl
- x/lvi9fmHRkBC7J3u5FRclEUbJUWbDpV47bpFyqI8WWI72nrAKvHhlIMavR+GX46Lp5ZKT
- 4vVIrBF8TIdJDdEsSYvgVdovc3N1IRg=
-Date: Fri, 04 Nov 2022 14:31:20 +0000
-From: Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 56/65] clk: ingenic: cgu: Switch to determine_rate
-To: Maxime Ripard <maxime@cerno.tech>
-Message-Id: <80VTKR.CE8RVN8M3ZYK3@crapouillou.net>
-In-Reply-To: <20221018-clk-range-checks-fixes-v2-56-f6736dec138e@cerno.tech>
-References: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
- <20221018-clk-range-checks-fixes-v2-56-f6736dec138e@cerno.tech>
+ dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
+ header.b="KEsFXPNG"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="cKjJHMiL"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailnew.nyi.internal (Postfix) with ESMTP id 090795804F5;
+ Fri,  4 Nov 2022 09:18:29 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute4.internal (MEProxy); Fri, 04 Nov 2022 09:18:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
+ :cc:content-transfer-encoding:content-type:date:date:from:from
+ :in-reply-to:in-reply-to:message-id:mime-version:references
+ :reply-to:sender:subject:subject:to:to; s=fm3; t=1667567909; x=
+ 1667575109; bh=luagwsSex2THKzX/CP22BYGQdlBn413TABDvuAp6fwQ=; b=K
+ EsFXPNGj99Bf0Ygoq6pEKFBZqzxTFQ58Xowuql0miB+VgiLCs6WlsfrQmJ+n1vnC
+ EsM7+KwJgItMNf/R4jBypbhDaH+lE0JEjLRGfNlBEmIBFQLLk4e5+YJrQFgozEtL
+ 6iKrn4RK4MzrVX0Y7eZtCO9T/MDr148y5hdFOtxwCFB0H/6ld6JRzq/72ul9cyja
+ XRv8dlnAZoVWTgoseMeLQibVivVmeg8GkgPN2RrAgq2216t9cQ9hwPoGM3iOpzU3
+ 533auOaN4AMUFriqLe0UASdaIujgVpKmFlEGqwl25N3HXRIDDdvlVhnmhMv42lrp
+ lxYcYu1ZynHwb+njql4gQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:cc:content-transfer-encoding
+ :content-type:date:date:feedback-id:feedback-id:from:from
+ :in-reply-to:in-reply-to:message-id:mime-version:references
+ :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1667567909; x=
+ 1667575109; bh=luagwsSex2THKzX/CP22BYGQdlBn413TABDvuAp6fwQ=; b=c
+ KjJHMiLbInvMzOadRkNJBSe7i4mYeLZErYacU1nqsZD+xK+FiRzmvYFiP6l8UXX0
+ UUN0twglI+QtR3Q8jTo0/PCkKQwootlRB2oI6tQn85TrF+ox6n2VXcDR34RVz1Wf
+ ti03a1IJS6ZJs7O3Kfo9iWsiynbrFcZyFLpfQLAVKv0iQ3izxTHzAirUDn01HWUv
+ akeTzvRVBk2rFCIyL2jaXN6PomXEDfbCoWXWRSTurB3UbWPCL//vDZJvotoMolF1
+ tXzSLRKRGHxboiG0UyVuh0EpoCCZzLMJCxco0PF/GNCQof0Zsr8uWIh24tZec8jx
+ eH9RkYTyl75cHw+7bWsmA==
+X-ME-Sender: <xms:JBFlY1RRdyUvcEbcKW-lL532FACk0MFdB3LhxtGj0o6P5PpSGRX36g>
+ <xme:JBFlY-w0RUBbsfozZa-gi1c9kqZlP2QhF-P-Ib7jrsF5IWGnplBlkxIJSoeO_5eyO
+ odYQz6bKYLz2JtWnvY>
+X-ME-Received: <xmr:JBFlY63o8_PtmNjaeJS-DhABr8qqX42nbrHMxBLBurkmxaTBPOAbi9ZiCiAlTM0rm2z7-bEqOELhk0G1u20JY_XfZ6Dl0vTUXIwCnmx6g3QQkw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrvddugdegkecutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+ fjughrpefhfffugggtgffkfhgjvfevofesthekredtredtjeenucfhrhhomhepofgrgihi
+ mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+ htthgvrhhnpeduudduhfevjeetfeegvdffvdevvdejudegudekjeehtdelhfffveethfej
+ ledtveenucevlhhushhtvghrufhiiigvpedvnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+ hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:JBFlY9DrRMzYcIdTYyycJjcFYVl166k4uZy35tSzK18LpmEcakSC3g>
+ <xmx:JBFlY-gLOeUM2tTM6PSFy0b3DDGJGJkHShwS97aXlLOhVP5nnWGxJg>
+ <xmx:JBFlYxoew4Q_GKxVG2HUeZKmL7FPmDPqoQ773TDxTVMaXYNxf6YwQQ>
+ <xmx:JRFlY1To7ld1VFK6o4dvaK-CpR_XrolSAQCkVShFkElbhi3z3om76Q>
+Feedback-ID: i8771445c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 4 Nov 2022 09:18:28 -0400 (EDT)
+From: Maxime Ripard <maxime@cerno.tech>
+Date: Fri, 04 Nov 2022 14:17:36 +0100
+Subject: [PATCH v2 19/65] clk: vc5: clkout: Add a determine_rate hook
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Mailman-Approved-At: Sat, 05 Nov 2022 08:03:30 +0100
-Cc: Ulf Hansson <ulf.hansson@linaro.org>,
- Prashant Gaikwad <pgaikwad@nvidia.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Michael Turquette <mturquette@baylibre.com>, Sekhar Nori <nsekhar@ti.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- dri-devel@lists.freedesktop.org, Max Filippov <jcmvbkbc@gmail.com>,
- Thierry Reding <thierry.reding@gmail.com>, linux-phy@lists.infradead.org,
- David Airlie <airlied@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- linux-stm32@st-md-mailman.stormreply.com, Abel Vesa <abelvesa@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Samuel Holland <samuel@sholland.org>, Chunyan Zhang <zhang.lyra@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, linux-tegra@vger.kernel.org,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Chen-Yu Tsai <wens@csie.org>,
- NXP Linux Team <linux-imx@nxp.com>, Orson Zhai <orsonzhai@gmail.com>,
- linux-mips@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Linus Walleij <linus.walleij@linaro.org>, linux-rtc@vger.kernel.org,
- linux-clk@vger.kernel.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
- Daniel Vetter <daniel@ffwll.ch>, alsa-devel@alsa-project.org,
- Manivannan Sadhasivam <mani@kernel.org>, linux-kernel@vger.kernel.org,
- Sascha Hauer <s.hauer@pengutronix.de>, linux-actions@lists.infradead.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
- linux-mediatek@lists.infradead.org,
- Baolin Wang <baolin.wang@linux.alibaba.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- linux-arm-kernel@lists.infradead.org,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Alessandro Zummo <a.zummo@towertech.it>, linux-sunxi@lists.linux.dev,
- Stephen Boyd <sboyd@kernel.org>, patches@opensource.cirrus.com,
- Peter De Schrijver <pdeschrijver@nvidia.com>,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20221018-clk-range-checks-fixes-v2-19-f6736dec138e@cerno.tech>
+References: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
+In-Reply-To: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
+To: Stephen Boyd <sboyd@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Chen-Yu Tsai <wens@csie.org>, Daniel Vetter <daniel@ffwll.ch>,
  Nicolas Ferre <nicolas.ferre@microchip.com>,
- Andreas =?iso-8859-1?q?F=E4rber?= <afaerber@suse.de>,
- linux-renesas-soc@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
- Vinod Koul <vkoul@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- David Lechner <david@lechnology.com>, Shawn Guo <shawnguo@kernel.org>,
- Claudiu Beznea <claudiu.beznea@microchip.com>
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Shawn Guo <shawnguo@kernel.org>,
+ Fabio Estevam <festevam@gmail.com>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>,
+ Michael Turquette <mturquette@baylibre.com>,
+ Dinh Nguyen <dinguyen@kernel.org>, Paul Cercueil <paul@crapouillou.net>,
+ Chunyan Zhang <zhang.lyra@gmail.com>,
+ Manivannan Sadhasivam <mani@kernel.org>,
+ Andreas Färber <afaerber@suse.de>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Abel Vesa <abelvesa@kernel.org>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Alessandro Zummo <a.zummo@towertech.it>,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Orson Zhai <orsonzhai@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Prashant Gaikwad <pgaikwad@nvidia.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Vinod Koul <vkoul@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
+ Sekhar Nori <nsekhar@ti.com>, Kishon Vijay Abraham I <kishon@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Takashi Iwai <tiwai@suse.com>,
+ David Airlie <airlied@gmail.com>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ David Lechner <david@lechnology.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+ Max Filippov <jcmvbkbc@gmail.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>
+X-Mailer: b4 0.11.0-dev-99e3a
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2931; i=maxime@cerno.tech;
+ h=from:subject:message-id; bh=JEUZtb9tXOof5sAOCA5zwNzO7GBHkJSDJOl0Zd1+YdE=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDMmpAp+TbuhP93XRl9+0dOEe7Rm33CbPlOu4JRPSc7rkw4L1
+ Biy1HaUsDGJcDLJiiiwxwuZL4k7Net3JxjcPZg4rE8gQBi5OAZjIrDSGf6azgqLsvy1gX1v01eEkYz
+ /HFrsYFZmVN68fPGbAJqjavIyR4db843pKvvmpMbZBE1itOVL2ezbJBJ0UOb1Z5qDq6z+yLAA=
+X-Developer-Key: i=maxime@cerno.tech; a=openpgp;
+ fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
+X-Mailman-Approved-At: Sat, 05 Nov 2022 08:03:31 +0100
+Cc: linux-rtc@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+ linux-actions@lists.infradead.org, linux-mips@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-clk@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, Maxime Ripard <maxime@cerno.tech>,
+ linux-phy@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,123 +165,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Maxime,
+The Versaclock5 "clkout" clock implements a mux with a set_parent hook,
+but doesn't provide a determine_rate implementation.
 
-Le ven. 4 nov. 2022 =E0 14:18:13 +0100, Maxime Ripard=20
-<maxime@cerno.tech> a =E9crit :
-> The Ingenic CGU clocks implements a mux with a set_parent hook, but
-> doesn't provide a determine_rate implementation.
->=20
-> This is a bit odd, since set_parent() is there to, as its name=20
-> implies,
-> change the parent of a clock. However, the most likely candidate to
-> trigger that parent change is a call to clk_set_rate(), with
-> determine_rate() figuring out which parent is the best suited for a
-> given rate.
->=20
-> The other trigger would be a call to clk_set_parent(), but it's far=20
-> less
-> used, and it doesn't look like there's any obvious user for that=20
-> clock.
->=20
-> So, the set_parent hook is effectively unused, possibly because of an
-> oversight. However, it could also be an explicit decision by the
-> original author to avoid any reparenting but through an explicit call=20
-> to
-> clk_set_parent().
->=20
-> The driver does implement round_rate() though, which means that we can
-> change the rate of the clock, but we will never get to change the
-> parent.
->=20
-> However, It's hard to tell whether it's been done on purpose or not.
->=20
-> Since we'll start mandating a determine_rate() implementation, let's
-> convert the round_rate() implementation to a determine_rate(), which
-> will also make the current behavior explicit. And if it was an
-> oversight, the clock behaviour can be adjusted later on.
+This is a bit odd, since set_parent() is there to, as its name implies,
+change the parent of a clock. However, the most likely candidate to
+trigger that parent change is a call to clk_set_rate(), with
+determine_rate() figuring out which parent is the best suited for a
+given rate.
 
-So it's partly on purpose, partly because I didn't know about=20
-.determine_rate.
+The other trigger would be a call to clk_set_parent(), but it's far less
+used, and it doesn't look like there's any obvious user for that clock.
 
-There's nothing odd about having a lonely .set_parent callback; in my=20
-case the clocks are parented from the device tree.
+So, the set_parent hook is effectively unused, possibly because of an
+oversight. However, it could also be an explicit decision by the
+original author to avoid any reparenting but through an explicit call to
+clk_set_parent().
 
-Having the clocks driver trigger a parent change when requesting a rate=20
-change sounds very dangerous, IMHO. My MMC controller can be parented=20
-to the external 48 MHz oscillator, and if the card requests 50 MHz, it=20
-could switch to one of the PLLs. That works as long as the PLLs don't=20
-change rate, but if one is configured as driving the CPU clock, it=20
-becomes messy.
-The thing is, the clocks driver has no way to know whether or not it is=20
-"safe" to use a designated parent.
+The latter case would be equivalent to setting the flag
+CLK_SET_RATE_NO_REPARENT, together with setting our determine_rate hook
+to __clk_mux_determine_rate(). Indeed, if no determine_rate
+implementation is provided, clk_round_rate() (through
+clk_core_round_rate_nolock()) will call itself on the parent if
+CLK_SET_RATE_PARENT is set, and will not change the clock rate
+otherwise. __clk_mux_determine_rate() has the exact same behavior when
+CLK_SET_RATE_NO_REPARENT is set.
 
-For that reason, in practice, I never actually want to have a clock=20
-re-parented - it's almost always a bad idea vs. sticking to the parent=20
-clock configured in the DTS.
+And if it was an oversight, then we are at least explicit about our
+behavior now and it can be further refined down the line.
 
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+---
+ drivers/clk/clk-versaclock5.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
->  drivers/clk/ingenic/cgu.c | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
->=20
-> diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
-> index 1f7ba30f5a1b..0c9c8344ad11 100644
-> --- a/drivers/clk/ingenic/cgu.c
-> +++ b/drivers/clk/ingenic/cgu.c
-> @@ -491,22 +491,23 @@ ingenic_clk_calc_div(struct clk_hw *hw,
->  	return div;
->  }
->=20
-> -static long
-> -ingenic_clk_round_rate(struct clk_hw *hw, unsigned long req_rate,
-> -		       unsigned long *parent_rate)
-> +static int ingenic_clk_determine_rate(struct clk_hw *hw,
-> +				      struct clk_rate_request *req)
->  {
->  	struct ingenic_clk *ingenic_clk =3D to_ingenic_clk(hw);
->  	const struct ingenic_cgu_clk_info *clk_info =3D=20
-> to_clk_info(ingenic_clk);
->  	unsigned int div =3D 1;
->=20
->  	if (clk_info->type & CGU_CLK_DIV)
-> -		div =3D ingenic_clk_calc_div(hw, clk_info, *parent_rate, req_rate);
-> +		div =3D ingenic_clk_calc_div(hw, clk_info, req->best_parent_rate,
-> +					   req->rate);
+diff --git a/drivers/clk/clk-versaclock5.c b/drivers/clk/clk-versaclock5.c
+index e858066c2c3f..661ab1ca3d83 100644
+--- a/drivers/clk/clk-versaclock5.c
++++ b/drivers/clk/clk-versaclock5.c
+@@ -728,6 +728,7 @@ static int vc5_clk_out_set_parent(struct clk_hw *hw, u8 index)
+ static const struct clk_ops vc5_clk_out_ops = {
+ 	.prepare	= vc5_clk_out_prepare,
+ 	.unprepare	= vc5_clk_out_unprepare,
++	.determine_rate	= __clk_mux_determine_rate,
+ 	.set_parent	= vc5_clk_out_set_parent,
+ 	.get_parent	= vc5_clk_out_get_parent,
+ };
+@@ -1115,7 +1116,7 @@ static int vc5_probe(struct i2c_client *client)
+ 	init.name = kasprintf(GFP_KERNEL, "%pOFn.out0_sel_i2cb",
+ 			      client->dev.of_node);
+ 	init.ops = &vc5_clk_out_ops;
+-	init.flags = CLK_SET_RATE_PARENT;
++	init.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT;
+ 	init.parent_names = parent_names;
+ 	parent_names[0] = clk_hw_get_name(&vc5->clk_mux);
+ 	init.num_parents = 1;
+@@ -1141,7 +1142,7 @@ static int vc5_probe(struct i2c_client *client)
+ 		init.name = kasprintf(GFP_KERNEL, "%pOFn.out%d",
+ 				      client->dev.of_node, idx + 1);
+ 		init.ops = &vc5_clk_out_ops;
+-		init.flags = CLK_SET_RATE_PARENT;
++		init.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT;
+ 		init.parent_names = parent_names;
+ 		init.num_parents = 2;
+ 		vc5->clk_out[n].num = idx;
 
-Sorry but I'm not sure that this works.
-
-You replace the "parent_rate" with the "best_parent_rate", and that=20
-means you only check the requested rate vs. the parent with the highest=20
-frequency, and not vs. the actual parent that will be used.
-
-Cheers,
--Paul
-
->  	else if (clk_info->type & CGU_CLK_FIXDIV)
->  		div =3D clk_info->fixdiv.div;
->  	else if (clk_hw_can_set_rate_parent(hw))
-> -		*parent_rate =3D req_rate;
-> +		req->best_parent_rate =3D req->rate;
->=20
-> -	return DIV_ROUND_UP(*parent_rate, div);
-> +	req->rate =3D DIV_ROUND_UP(req->best_parent_rate, div);
-> +	return 0;
->  }
->=20
->  static inline int ingenic_clk_check_stable(struct ingenic_cgu *cgu,
-> @@ -626,7 +627,7 @@ static const struct clk_ops ingenic_clk_ops =3D {
->  	.set_parent =3D ingenic_clk_set_parent,
->=20
->  	.recalc_rate =3D ingenic_clk_recalc_rate,
-> -	.round_rate =3D ingenic_clk_round_rate,
-> +	.determine_rate =3D ingenic_clk_determine_rate,
->  	.set_rate =3D ingenic_clk_set_rate,
->=20
->  	.enable =3D ingenic_clk_enable,
->=20
-> --
-> b4 0.11.0-dev-99e3a
-
-
+-- 
+b4 0.11.0-dev-99e3a
