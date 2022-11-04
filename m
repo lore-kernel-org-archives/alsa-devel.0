@@ -4,59 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 958F1C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Nov 2022 16:04:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A0ABC43217
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Nov 2022 16:04:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7C281663;
-	Fri,  4 Nov 2022 17:03:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7C281663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9952F1655;
+	Fri,  4 Nov 2022 17:04:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9952F1655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667577867;
-	bh=4wqiqhylKn4XJA8+PSXtRpQlTD9kexzvL4ZPUDwF0x0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=faK76zYpy9eswMIA3FcArwiH2qGSjCSxV5Eykc49bKZG9YVssSAwYS+Roj3KVq3W1
-	 iTUryDTZiiIsRUiGsG/5TkeqVrRpnNEwEA6HrS8f4p8rLLRuEaEMeeh5o/Y3RMtc/U
-	 asyQeWhVnhcR5YnlWY6biFAxeXVzLuqxGolrjMbQ=
+	s=default; t=1667577894;
+	bh=AbcYLh7YM4Q3nsFtE/FYP3xHAZ/rU9PZNBeC6ncDzHY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=pN+Dgo+UQD9Ja8Gmmm/RREojyJ9dhRDrJqGDA18yJqpgXynijbBS+HSVwmKBPTMdZ
+	 +nuxiOdwB3cHl3UrbZrZKuql4TcAUGLqbGx/Tp6zVovmxB/a8rzlhOGejO+qUQrjso
+	 z6ridZAqb6Xs/rEJwXPdSRunSfV7kCBnmX4H7Da4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27C51F8047D;
+	by alsa1.perex.cz (Postfix) with ESMTP id B7760F80506;
 	Fri,  4 Nov 2022 17:03:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E07CDF804E7; Fri,  4 Nov 2022 17:03:35 +0100 (CET)
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+ id 742C8F804E7; Fri,  4 Nov 2022 17:03:36 +0100 (CET)
+Received: from phobos.denx.de (phobos.denx.de
+ [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF1EBF80149
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 17:03:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF1EBF80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 37A3FF8047D
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 17:03:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37A3FF8047D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de
- header.b="lRP9Nhis"
+ header.b="vmrfmJNY"
 Received: from tr.lan (ip-86-49-120-218.bb.vodafone.cz [86.49.120.218])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
  (No client certificate requested)
  (Authenticated sender: marex@denx.de)
- by phobos.denx.de (Postfix) with ESMTPSA id BDCAD8523A;
- Fri,  4 Nov 2022 17:03:27 +0100 (CET)
+ by phobos.denx.de (Postfix) with ESMTPSA id 578A78523F;
+ Fri,  4 Nov 2022 17:03:28 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
  s=phobos-20191101; t=1667577808;
- bh=xLYlXk7h+LkLezJ2VuK6I4kDNLPrw8cSeJgG970U+Ps=;
- h=From:To:Cc:Subject:Date:From;
- b=lRP9Nhis4zPZro68wItkVrIfoeqXSl2KQY21mBWCoK6KFweJdROw/R95nYvHsrDQS
- kjrgjQ56HtL8DrXojNjsWlMHqyTLfIJKXq3fkbFl8j28ijDQIdp31Z5y/9zh5Xx70d
- PD9eAyz/fu+u4vt83kPtzfWMkGQ3OHdaNXMdWRNher2xhNtX9lLIvMv6c42N2GqCQw
- Kj5Oftx0jDD+mJI17Wb4wT8YCbZF1A2o1zeBQlM7wxqYxlWffqWxVUsN2uCfZuD7Pu
- GnBB/H1llvdRccmOxlN/2gdp9dObceiOs1uaviIL9cRTpXXLqeDHyFPYhyi79D8Wvc
- H67Bx/DVzxElg==
+ bh=wbhn+skkupJVu+1v7hIeX5XvWmqgUIxMAmPAUVDuk78=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=vmrfmJNYlCunX96RsaPRE6dyyQcrKPG5YGbAYljzqw4nRPY+mQUhX1Cy96Xi3OpPv
+ kwRkqXWr7QclEwQJgbMCzbXZCj5FKdLG1KMPuJ+VoVdpzLg6gUy1RGqc63hVngD84p
+ 1Sk8atYPIw6aD/z2i7lD9giX8kdB5hvgwqj3vNiB9sja1xLoZivQlv8cDDOGhPGg+/
+ 2VBGlkRs0nt9k7RJP9onEqt03rBx7IJlEyYV5IEfmmqRub8mwminsWvBh4VZK7jELx
+ M5+KKMCIYFC1fC0JqM6gOadbMpqn1ViTHGm8jwRB1+VQi0K4nnV6P4DcedlLGjjvZr
+ DhfwLE4YZTW3w==
 From: Marek Vasut <marex@denx.de>
 To: devicetree@vger.kernel.org
-Subject: [PATCH 1/3] ASoC: dt-bindings: fsl-sai: Fix mx6ul and mx7d compatible
- strings
-Date: Fri,  4 Nov 2022 17:03:13 +0100
-Message-Id: <20221104160315.213836-1-marex@denx.de>
+Subject: [PATCH 2/3] ASoC: dt-bindings: fsl-sai: Use minItems 5 for i.MX8MN
+ clock and similar
+Date: Fri,  4 Nov 2022 17:03:14 +0100
+Message-Id: <20221104160315.213836-2-marex@denx.de>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221104160315.213836-1-marex@denx.de>
+References: <20221104160315.213836-1-marex@denx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: clamav-milter 0.103.6 at phobos.denx.de
@@ -83,9 +87,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Describe existing used combinations of compatible strings on MX6UL
-and MX7D, which are backward compatible with MX6SX. Add the missing
-imx7d-sai compatible string which is used on i.MX7 .
+The i.MX8MN currently uses "bus", "mclk0", "mclk1", "mclk2", "mclk3"
+clock, which adds up to 5 clock total. Use minItems 5 for this setup.
 
 Signed-off-by: Marek Vasut <marex@denx.de>
 ---
@@ -102,51 +105,22 @@ Cc: Xiubo Li <Xiubo.Lee@gmail.com>
 Cc: alsa-devel@alsa-project.org
 To: devicetree@vger.kernel.org
 ---
- .../devicetree/bindings/sound/fsl,sai.yaml    | 24 ++++++++++++-------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+ Documentation/devicetree/bindings/sound/fsl,sai.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Documentation/devicetree/bindings/sound/fsl,sai.yaml b/Documentation/devicetree/bindings/sound/fsl,sai.yaml
-index 11aab891288d2..05bad828cc353 100644
+index 05bad828cc353..59a13cd0887e9 100644
 --- a/Documentation/devicetree/bindings/sound/fsl,sai.yaml
 +++ b/Documentation/devicetree/bindings/sound/fsl,sai.yaml
-@@ -18,15 +18,12 @@ description: |
- properties:
-   compatible:
-     oneOf:
--      - enum:
--          - fsl,vf610-sai
--          - fsl,imx6sx-sai
--          - fsl,imx6ul-sai
--          - fsl,imx7ulp-sai
--          - fsl,imx8mq-sai
--          - fsl,imx8qm-sai
--          - fsl,imx8ulp-sai
--          - fsl,imx93-sai
-+      - items:
-+          - enum:
-+              - fsl,imx6ul-sai
-+              - fsl,imx7d-sai
-+          - const: fsl,imx6sx-sai
-+
+@@ -74,7 +74,7 @@ properties:
+           - const: mclk3
+           - const: pll8k
+           - const: pll11k
+-        minItems: 4
++        minItems: 5
        - items:
-           - enum:
-               - fsl,imx8mm-sai
-@@ -34,6 +31,15 @@ properties:
-               - fsl,imx8mp-sai
-           - const: fsl,imx8mq-sai
- 
-+      - items:
-+          - enum:
-+              - fsl,imx6sx-sai
-+              - fsl,imx7ulp-sai
-+              - fsl,imx8mq-sai
-+              - fsl,imx8qm-sai
-+              - fsl,imx8ulp-sai
-+              - fsl,vf610-sai
-+
-   reg:
-     maxItems: 1
- 
+           - const: bus
+           - const: mclk1
 -- 
 2.35.1
 
