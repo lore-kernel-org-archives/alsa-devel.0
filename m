@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EA93C4332F
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Nov 2022 07:20:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 996E2C433FE
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Nov 2022 07:20:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7804F1716;
-	Sat,  5 Nov 2022 08:19:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7804F1716
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3DEE1718;
+	Sat,  5 Nov 2022 08:19:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3DEE1718
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667632812;
-	bh=MbfBGfNkM8+Fx2bW6mWZyrQOFEdgYBpFkszGxyCct/o=;
+	s=default; t=1667632827;
+	bh=wUbMrwrN41Q9yshHLu56uxaXfBgvFGNU5DxK45MwFTw=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TvyIrGiCzba36ODMZ+3a53vCuT7rTuJOAVYiwHlkYM+8zExCeNSsWkToApfUNW1VT
-	 F3UBYZjJrZTMUTy2k9ZFY09rwUX6gWhHV19V7AQ6iXKwYGsLvec3vAA7/qDIZE5ZaM
-	 1nmnsMGxFKRIzaK6mX1HBXPyczcgkY+IGyv93ykA=
+	b=fZa34ZzEwOSDU7EQ2fQEcr1v9VXSh+JY9afwegLdq+hMgchcTAU2nt/RTc/XMgs/c
+	 KlCs0FW69NCTZXf67Qf3nfis5cj/X4O1dPAlympKafxv55VriLxJ+XC7aBqt/qjXRg
+	 chFRKLxN3ekA+8SaowWGqN73ITQayI/koaxeLrGw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C50AF80768;
-	Sat,  5 Nov 2022 08:04:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 694F1F8076D;
+	Sat,  5 Nov 2022 08:04:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 359B9F8049E; Fri,  4 Nov 2022 14:33:55 +0100 (CET)
+ id 1D726F80448; Fri,  4 Nov 2022 14:33:57 +0100 (CET)
 Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
  [66.111.4.221])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BFFDCF80448
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 14:33:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFFDCF80448
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8DCB5F8047D
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 14:33:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DCB5F8047D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="Q3alsfm9"; 
+ header.b="S1pINkBq"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="k2IfcCL8"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailnew.nyi.internal (Postfix) with ESMTP id EC3235805A9;
- Fri,  4 Nov 2022 09:33:51 -0400 (EDT)
+ header.i=@messagingengine.com header.b="kML05Bx+"
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+ by mailnew.nyi.internal (Postfix) with ESMTP id C50CB5805A0;
+ Fri,  4 Nov 2022 09:33:49 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute5.internal (MEProxy); Fri, 04 Nov 2022 09:33:51 -0400
+ by compute2.internal (MEProxy); Fri, 04 Nov 2022 09:33:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
  :cc:content-transfer-encoding:content-type:date:date:from:from
  :in-reply-to:in-reply-to:message-id:mime-version:references
- :reply-to:sender:subject:subject:to:to; s=fm3; t=1667568831; x=
- 1667576031; bh=3SayXt0/D6WxnYze/EYNShXO6XiADGikWDKu2qyjPH8=; b=Q
- 3alsfm9UsUSiVuvki3aPQBiMbtcumgeCqm/udg1EnIjDa4XLZiG/Gj/RNjpuFO3+
- kHUxfVO7z+WjrfDZ9Jm0aoSbyodiNgm2DGJQRybGX3hChO9nDBHTsUbC1y9EgNqM
- z1zeJOHLSPDbJ1mqYNrfVMBcjjBnJk284GBSopqV/anlXaoEEEA2K3AQsiBRpNb3
- NAF9Ip0GDIbLO7d/VyE5LwbVpFmDWhQBxCIvYEtMDnpcYkL4Ylz5mw3dSylSOPMC
- +7BSLzNwihfkTJe+KlSAI+CQFfEUXo/6pmDPBfoJQgRz6Q4dFmCQN8urky3mGz02
- XI0G/xprHLTPqrursWLxg==
+ :reply-to:sender:subject:subject:to:to; s=fm3; t=1667568829; x=
+ 1667576029; bh=hEKOJDq7NCncgYxMXlHU+pU/ROWXe3uUCVEMV5q4hLU=; b=S
+ 1pINkBqcWESXdghzvqqTZs9BO5lYuLhhZ5CGl0LcVdYKJznnGhoFG5VAn6oAtboI
+ PyXtNU7GcGMKE6HOpd8uAuJ/yE/7GMkS72XKbuhyY885bfdumczASzwEy1Nf/zpT
+ iOOjL9D46vC+kxk7CAzmcxo+kBvdt3oN3c9fc7YnuCEzZiHFLs2HrcOT4/JNaO9k
+ ifs22l75gcVnUeRYd5I/Cld6iewIBHO8v6mMpazQjMa6kyJqYUWZI70+wU6V2BN+
+ ygHUDlhy4ufoILFm2mXWYbtNPP19UZoB/ugqgXh8HxR0mjVDq2QQ2wt9VUjcHnbA
+ 8t7JSisnfH/d/NDMCH3pQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:cc:content-transfer-encoding
  :content-type:date:date:feedback-id:feedback-id:from:from
  :in-reply-to:in-reply-to:message-id:mime-version:references
  :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1667568831; x=
- 1667576031; bh=3SayXt0/D6WxnYze/EYNShXO6XiADGikWDKu2qyjPH8=; b=k
- 2IfcCL8aVNsXppKPSwBg7YkXwLHTF+ofimflsF3lzaP0Wl3fC3zcYMWb87hTzeJb
- MjXWqTbiNiqbqn/ZlXWVKrQZjEwbaKsK88oGk18mcmQeSKKE21Rccx/Ti+/R3jVu
- XAcSMsBANE/iKkpVXVJmgWuAT2LzycZawKeIlYJ4GcifB5yAB7iOXQ0CUhCn1lNJ
- vQ8aCtlxuJBVCS7r2WRepwLaqX+MnJdVkRQA8Gk1zSnyf0mqIgFrWQb7cw4nLd/R
- GXaom5wnteT7EheB1X2eYFwprXyhpZc1G7N8mU0M3r9ExQpRwCv5atQaI5qT4hgx
- 7m393h0+PDTxONdwjF0cA==
-X-ME-Sender: <xms:vxRlYyLuoDLa_nwCFtKTCQbyvyG8e8f_AIMFWuVHimwSAQ8SQ-nvgA>
- <xme:vxRlY6IMxm981-6IQMPjRoKXJC1Ua62qvwx2v_zy6ZbEB5LRCtk5zSXPcWetdF8-o
- -DLexmx9Ii8daqzJxw>
-X-ME-Received: <xmr:vxRlYytFZZ8N29MSnMyr354hHnnKc_YzLlVq_kfecHUWoFu_YmFQFw61iLTIokqLgMWqnjAKmkpBzqJ1tDYb1DbKjer3GdTgkJ6TfcL2qu4Eqg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrvddugdehudcutefuodetggdotefrodftvf
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1667568829; x=
+ 1667576029; bh=hEKOJDq7NCncgYxMXlHU+pU/ROWXe3uUCVEMV5q4hLU=; b=k
+ ML05Bx+lgy7VkDGEd1tIwrJVJ99fvXAcPO+Ca3QUdxrT0gnJ0kRUJKT2wg1wxNRO
+ AasTRQIK74xQgAjvRk+gFLLzTWL6JAz3rr6QHO4xSHkThMWMuoQuAedlFQ7oTjXB
+ Pen0hx2qf0D+hasFFLKwlb2+53oGASLO/WWFQzTmprDJUZbgfkF1V70Jj59asmlZ
+ UiA6df7slql0NX+AYcZ42QCnNSdxKDGAIS17jazcDb+EOu27jAvgGAPIaPcc/aHD
+ ymKSmrbFpBKas4mAqmu9kMld3Dk0+xYlrycDhgL91+oMXn0jwzHLBd67LwBtaVXH
+ TM4TW2lwglrsmvagKiebg==
+X-ME-Sender: <xms:vRRlY_snyScnvJfLmail2yPg8fu9Mdo30nKzXzBgdoIlQm7duIMiVg>
+ <xme:vRRlYwek63ciyiAob-zbhplr1JrQt6qs-VKloBuvF2lFSmT_liT69fDoTzWSBQ6Ev
+ qw-hxwV8Cj_gi8NcUc>
+X-ME-Received: <xmr:vRRlYyx5hwTR9_NsPsrJyfv43x3upPKmTncwpkpxwfQB3BL0tHwflbjvFSWmr7NZv6pd_zFd1lBOLROOY5_cDSTSWIRRXhT6RF1UxiVX4ZXYCw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrvddugdehvdcutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
  fjughrpefhfffugggtgffkfhgjvfevofesthekredtredtjeenucfhrhhomhepofgrgihi
  mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
  htthgvrhhnpeduudduhfevjeetfeegvdffvdevvdejudegudekjeehtdelhfffveethfej
- ledtveenucevlhhushhtvghrufhiiigvpeeinecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+ ledtveenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
  hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:vxRlY3aByiwkk5oxKjpEKagmnGpOPnmndpg4gQjj3Ilb7GgHs5BwKA>
- <xmx:vxRlY5bnlOsu07dTU3eetC00JGRwabUQ7sowwjPJXr1iRcYmDB8QiA>
- <xmx:vxRlYzD7pSlJ53eBjQDvxLkV6obRrxl33X2zJc9yyOCYFwjhVKETpg>
- <xmx:vxRlY1robqxis5S8PaOYdcx7BwRV-iBXHBwRI7x4eHXngkhfMMskEA>
+X-ME-Proxy: <xmx:vRRlY-OL_8VoH1nEAQYXd0Apy8v2isOjIKeh4xpGpWNZ8kjm6IXTVw>
+ <xmx:vRRlY_9FBPEDgh51KfDic2CwepuaEVuAOS-2cJizs9ilI_sypmfwuQ>
+ <xmx:vRRlY-WDr59S-fJwheMZlHR3UOaZFkVQy0InlpVkIK96TMP1X0fM1A>
+ <xmx:vRRlY5cRcl7dK3vkZTdHFnyk_laqLI2Haoiywo3LrtEkJlXg-r4wnQ>
 Feedback-ID: i8771445c:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 4 Nov 2022 09:33:50 -0400 (EDT)
+ 4 Nov 2022 09:33:48 -0400 (EDT)
 From: Maxime Ripard <maxime@cerno.tech>
-Date: Fri, 04 Nov 2022 14:18:15 +0100
-Subject: [PATCH v2 58/65] clk: sprd: composite: Switch to determine_rate
+Date: Fri, 04 Nov 2022 14:18:14 +0100
+Subject: [PATCH v2 57/65] clk: ingenic: tcu: Switch to determine_rate
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20221018-clk-range-checks-fixes-v2-58-f6736dec138e@cerno.tech>
+Message-Id: <20221018-clk-range-checks-fixes-v2-57-f6736dec138e@cerno.tech>
 References: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
 In-Reply-To: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
 To: Stephen Boyd <sboyd@kernel.org>,
@@ -133,11 +133,11 @@ To: Stephen Boyd <sboyd@kernel.org>,
  Max Filippov <jcmvbkbc@gmail.com>,
  Geert Uytterhoeven <geert+renesas@glider.be>
 X-Mailer: b4 0.11.0-dev-99e3a
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2634; i=maxime@cerno.tech;
- h=from:subject:message-id; bh=MbfBGfNkM8+Fx2bW6mWZyrQOFEdgYBpFkszGxyCct/o=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDMmpAt8q5ZTls+9o2XY9lc2ZaaDIeyCNPWbOGsN+pavfum4s
- ZcvrKGVhEONikBVTZIkRNl8Sd2rW6042vnkwc1iZQIYwcHEKwERi1jEyrCqQsJ926f6TzvqDFi7n1K
- qcLqfeufKy72+ZZtu7+89jexkZ5k5kX1LJdmVj15Z1r7ZGxm2ydpx1/FrrgjL2NWf/ybyczwgA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2825; i=maxime@cerno.tech;
+ h=from:subject:message-id; bh=wUbMrwrN41Q9yshHLu56uxaXfBgvFGNU5DxK45MwFTw=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDMmpAt9uZeRsEZz3PfGUUdnyeWsEFx2Zrns00b49+M+ZvAMB
+ SteudJSyMIhxMciKKbLECJsviTs163UnG988mDmsTCBDGLg4BWAi3/4z/GI2nHdaY3amI8vLK9+qo2
+ 6+TZ3nc4894/uZ/PTrDZF2jccZGS4tya/dwt7vnOc018usYGdpTvTSknTbFd732ln+fOq/zg8A
 X-Developer-Key: i=maxime@cerno.tech; a=openpgp;
  fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 X-Mailman-Approved-At: Sat, 05 Nov 2022 08:03:32 +0100
@@ -165,8 +165,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The Spreadtrum composite clocks implements a mux with a set_parent
-hook, but doesn't provide a determine_rate implementation.
+The Ingenic TCU clocks implements a mux with a set_parent hook, but
+doesn't provide a determine_rate implementation.
 
 This is a bit odd, since set_parent() is there to, as its name implies,
 change the parent of a clock. However, the most likely candidate to
@@ -195,46 +195,51 @@ oversight, the clock behaviour can be adjusted later on.
 
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/clk/sprd/composite.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/clk/ingenic/tcu.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/clk/sprd/composite.c b/drivers/clk/sprd/composite.c
-index ebb644820b1e..d3a852720c07 100644
---- a/drivers/clk/sprd/composite.c
-+++ b/drivers/clk/sprd/composite.c
-@@ -9,13 +9,19 @@
+diff --git a/drivers/clk/ingenic/tcu.c b/drivers/clk/ingenic/tcu.c
+index d5544cbc5c48..7d04ef40b7cf 100644
+--- a/drivers/clk/ingenic/tcu.c
++++ b/drivers/clk/ingenic/tcu.c
+@@ -178,18 +178,21 @@ static u8 ingenic_tcu_get_prescale(unsigned long rate, unsigned long req_rate)
+ 	return 5; /* /1024 divider */
+ }
  
- #include "composite.h"
- 
--static long sprd_comp_round_rate(struct clk_hw *hw, unsigned long rate,
--				unsigned long *parent_rate)
-+static int sprd_comp_determine_rate(struct clk_hw *hw,
-+				    struct clk_rate_request *req)
+-static long ingenic_tcu_round_rate(struct clk_hw *hw, unsigned long req_rate,
+-		unsigned long *parent_rate)
++static int ingenic_tcu_determine_rate(struct clk_hw *hw,
++				      struct clk_rate_request *req)
  {
- 	struct sprd_comp *cc = hw_to_sprd_comp(hw);
-+	unsigned long rate;
+-	unsigned long rate = *parent_rate;
++	unsigned long rate = req->best_parent_rate;
+ 	u8 prescale;
  
--	return sprd_div_helper_round_rate(&cc->common, &cc->div,
--					 rate, parent_rate);
-+	rate = sprd_div_helper_round_rate(&cc->common, &cc->div,
-+					  req->rate, &req->best_parent_rate);
-+	if (rate < 0)
-+		return rate;
-+
-+	req->rate = rate;
+-	if (req_rate > rate)
+-		return rate;
++	if (req->rate > rate) {
++		req->rate = rate;
++		return 0;
++	}
+ 
+-	prescale = ingenic_tcu_get_prescale(rate, req_rate);
++	prescale = ingenic_tcu_get_prescale(rate, req->rate);
+ 
+-	return rate >> (prescale * 2);
++	req->rate = rate >> (prescale * 2);
 +	return 0;
  }
  
- static unsigned long sprd_comp_recalc_rate(struct clk_hw *hw,
-@@ -53,7 +59,7 @@ const struct clk_ops sprd_comp_ops = {
- 	.get_parent	= sprd_comp_get_parent,
- 	.set_parent	= sprd_comp_set_parent,
+ static int ingenic_tcu_set_rate(struct clk_hw *hw, unsigned long req_rate,
+@@ -219,7 +222,7 @@ static const struct clk_ops ingenic_tcu_clk_ops = {
+ 	.set_parent	= ingenic_tcu_set_parent,
  
--	.round_rate	= sprd_comp_round_rate,
-+	.determine_rate	= sprd_comp_determine_rate,
- 	.recalc_rate	= sprd_comp_recalc_rate,
- 	.set_rate	= sprd_comp_set_rate,
- };
+ 	.recalc_rate	= ingenic_tcu_recalc_rate,
+-	.round_rate	= ingenic_tcu_round_rate,
++	.determine_rate	= ingenic_tcu_determine_rate,
+ 	.set_rate	= ingenic_tcu_set_rate,
+ 
+ 	.enable		= ingenic_tcu_enable,
 
 -- 
 b4 0.11.0-dev-99e3a
