@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C6F5C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Nov 2022 14:57:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A53EC4332F
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Nov 2022 14:57:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 229BD1622;
-	Fri,  4 Nov 2022 15:56:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 229BD1622
+	by alsa0.perex.cz (Postfix) with ESMTPS id 06D891663;
+	Fri,  4 Nov 2022 15:56:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06D891663
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667573821;
-	bh=aFT+OYWwtWWikyYe2ydT4JOUjF+vaIMzzwvgJK0u6u0=;
+	s=default; t=1667573845;
+	bh=MnImCmWDPv3dphWbt7ZOdBidCmswfX5FKBN4bBqb3hM=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mSJ9NM6C5kxUZGvJbJKL4TsC12Nv8uSZdXp3dbZWLApjMs8T5gxRF96q+r9zGK29t
-	 R36OXVuJXUVUF4yZMIXatxCu20disYuDPoKfh3CIvl/2//58isbiqDEtR43mPKhDxT
-	 3d/M720flpgXcFH/laBx/GvUEYYoJZzpxqoFMmJc=
+	b=vqNICG4hMASs62luTUjWvCQbkmLiQBIrXLfQPlluWz4Lx/2fxn3ntmplzsT+Q8cYw
+	 kFhN0g4dmCyq3JK//rBjwoiU5SAlVtp5bFHiTeBvAhxnlCvEmyRrdEmkKoXb7U+SdG
+	 BYxXdPxIupsM7SRugvtlEXkk7pu3z01TIqbTB9Ck=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B48ABF80431;
-	Fri,  4 Nov 2022 15:56:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B3BCF8049E;
+	Fri,  4 Nov 2022 15:56:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2CDA1F80448; Fri,  4 Nov 2022 15:56:09 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 97994F804AC; Fri,  4 Nov 2022 15:56:13 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A06F5F801D5
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 15:56:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A06F5F801D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 53055F8049E
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 15:56:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53055F8049E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="sCTs4qMp"
+ header.b="Rlv2JQx7"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id CA91F62236;
- Fri,  4 Nov 2022 14:56:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75E7FC433D6;
- Fri,  4 Nov 2022 14:56:01 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id A4AAFB82E8D;
+ Fri,  4 Nov 2022 14:56:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18AABC433D7;
+ Fri,  4 Nov 2022 14:56:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1667573763;
- bh=aFT+OYWwtWWikyYe2ydT4JOUjF+vaIMzzwvgJK0u6u0=;
+ s=k20201202; t=1667573769;
+ bh=MnImCmWDPv3dphWbt7ZOdBidCmswfX5FKBN4bBqb3hM=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=sCTs4qMpQHoWjZwWKZylJU5GOrjmgd5bBsy0I3pfZ9THAWllObwZzZ8Me2QOMcrqb
- ORhc4xj9oT/Z0IigtSXNdzcXcxZ5a1c7ZaK4X9u6tEX46lKvrkdT/xYGcKAzjdQiBO
- VHYfz1Bml0McMBViOUrLN+OewKqxu6ZkPeOkzr9VhpMNcV5s6NbP3HvYVK9xn/M32b
- ONVa8FQZ8vsRf9yb4Z0lTS9KxC9zNCPs6/5lskvWEKJACF46wsoxVgJ/D2uvqI+6KS
- cpdKNPnfBrVlVUUbO0f9GGzFqbkrPrAmihh4icXjFzx/dKohjXFZ/Idy0KT6G/HNdr
- ndnz/sfYo1oNQ==
+ b=Rlv2JQx7uSqpV6bvQLw6X4fzO8gJTleJFba+KjQML3UvJei1aXOtfKOtJPaPv8TWy
+ rmUmCUhjmWo/cpyy3uUxPqS0sgXcOtMNvcmAZVoZNCu4DivKzxjMzf5tfEPpk3blfd
+ VVbMGfU9Qrq7kPeyLzxbyTW9mmYZ1jyS1TksVvpfjgn5d2C3ao6/JIwufzaKpxVioL
+ 6etkz0PkNTRYJyB4yysAhSDFcLTqcYj3xfaTQNZKs93KdXmOHbGn/PnQ0o9ds9Jkmq
+ uzAWPoEmg8ARqnDcamjHjzzRakhrTZhjzSv3/nGL1v/Ell44uvp1yrLQoy/NVCe1hg
+ ptkF7UYOJbXDg==
 From: Mark Brown <broonie@kernel.org>
-To: Jason Montleon <jmontleo@redhat.com>, pierre-louis.bossart@linux.intel.com
-In-Reply-To: <20221103144612.4431-1-jmontleo@redhat.com>
-References: <20221103144612.4431-1-jmontleo@redhat.com>
-Subject: Re: [PATCH v4 1/2] ASoC: rt5514: fix legacy dai naming
-Message-Id: <166757376119.346347.7384763439814980163.b4-ty@kernel.org>
-Date: Fri, 04 Nov 2022 14:56:01 +0000
+To: Sanjay R Mehta <sanju.mehta@amd.com>, Takashi Iwai <tiwai@suse.com>,
+ Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+In-Reply-To: <20221104100637.13376-1-vitalyr@opensource.cirrus.com>
+References: <20221104100637.13376-1-vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH] spi: amd: Fix SPI_SPD7 value
+Message-Id: <166757376782.346504.17328725307428801040.b4-ty@kernel.org>
+Date: Fri, 04 Nov 2022 14:56:07 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: oder_chiou@realtek.com, cezary.rojewski@intel.com,
- ckeepax@opensource.cirrus.com, regressions@lists.linux.dev,
- alsa-devel@alsa-project.org, tiwai@suse.com, stable@vger.kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,27 +81,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 3 Nov 2022 10:46:11 -0400, Jason Montleon wrote:
-> Starting with 6.0-rc1 these messages are logged and the sound card
-> is unavailable. Adding legacy_dai_naming to the rt5514-spi causes
-> it to function properly again.
+On Fri, 4 Nov 2022 10:06:37 +0000, Vitaly Rodionov wrote:
+> According to data sheet SPI_SPD7 should be set to 7.
 > 
-> [   16.928454] kbl_r5514_5663_max kbl_r5514_5663_max: ASoC: CPU DAI
-> spi-PRP0001:00 not registered
-> [   16.928561] platform kbl_r5514_5663_max: deferred probe pending
 > 
-> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/2] ASoC: rt5514: fix legacy dai naming
-      commit: 392cc13c5ec72ccd6bbfb1bc2339502cc59dd285
-[2/2] ASoC: rt5677: fix legacy dai naming
-      commit: a1dca8774faf3f77eb34fa0ac6f3e2b82290b1e4
+[1/1] spi: amd: Fix SPI_SPD7 value
+      commit: bff6bef701db784bb159a659e99c785b4594fc96
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
