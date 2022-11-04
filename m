@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4631AC433FE
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Nov 2022 07:07:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21637C4332F
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Nov 2022 07:07:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74BF01675;
-	Sat,  5 Nov 2022 08:06:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74BF01675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D466168E;
+	Sat,  5 Nov 2022 08:07:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D466168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667632057;
-	bh=6IusAj9w3/tB8c67BjbXsxFLlirYjqevo85MFxaRu+Q=;
+	s=default; t=1667632073;
+	bh=Gej66EsLQRO3ewM0fRnTAOk0KO3GEvBFH3z5OOVIT6U=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=szB5HnJNHK6SU5W09DfgV0mKs9DzeLycPVsaikkZslKkDaDtbr10zrMk1JaiknIm4
-	 DhRV9/guOik5M/c4oZ5dOrw/X4jS2sNJeKcSMIueaoPaHcpaDCtz/2oPuTPnxLlD5I
-	 3feeST+tMVZXtHqyzIdPE0UmSIfQk7m3RUyegf4Q=
+	b=e+K/heF+TNKszZG8GKlFp8AjusXs7N99y+AxMwT6xqYBob7hIk/uWDmRNiJqzBquG
+	 pzVgfYTaLsR+RrqZykTmcNTC8Eu1b2Imx1963JkERBB735KvU1cUKbf6QIfnVuZ4Og
+	 mtaZX7x2fMXsTzL4gKqFh+bj/S9s/rVtdPsAOLFw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA5CBF805B2;
-	Sat,  5 Nov 2022 08:03:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5390DF805B6;
+	Sat,  5 Nov 2022 08:03:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A52B1F80448; Fri,  4 Nov 2022 14:18:16 +0100 (CET)
+ id A810DF804AC; Fri,  4 Nov 2022 14:18:20 +0100 (CET)
 Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
  [66.111.4.221])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2D612F8047D
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 14:18:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D612F8047D
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1502F801D5
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 14:18:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1502F801D5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="gexMH46J"; 
+ header.b="JUdmX+9O"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="AbiPP7Hx"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailnew.nyi.internal (Postfix) with ESMTP id 5FD305804B2;
- Fri,  4 Nov 2022 09:18:09 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Fri, 04 Nov 2022 09:18:09 -0400
+ header.i=@messagingengine.com header.b="YIkzRWpA"
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailnew.nyi.internal (Postfix) with ESMTP id E82ED5804B8;
+ Fri,  4 Nov 2022 09:18:13 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute5.internal (MEProxy); Fri, 04 Nov 2022 09:18:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
  :cc:content-transfer-encoding:content-type:date:date:from:from
  :in-reply-to:in-reply-to:message-id:mime-version:references
- :reply-to:sender:subject:subject:to:to; s=fm3; t=1667567889; x=
- 1667575089; bh=HSdFwQ3aW19zofmGUIyzD52AzOA8mMIUukqySVU5Fxw=; b=g
- exMH46JBY4nrfTxtsAVPMinzBNkX+8+g6BdrM/jCohcU7TfjvqLP0pv8xrPVI573
- L32KLdvZgWspf84qIDSefyC55ognb8gtlpa4gyenbzihCDx9B+aeBh75uAKsuPc/
- OMePI4Ukr7zyZf8TAWbbpTjlf1tGfjlMB5KhJq2OWRwSrsvReua9KUhfdINkY1HI
- 5+00U+dfoHwTRfbfqfqRWy+6Y2D5LQc3aw1yaF3AXQuMQMTXHPG90kHp+DvsjSbL
- 3f51o4E9huiwauUyMwg7M9+PCvOrGMJfpm+q7BjlKokD5jSnl0kEapRyCSSE36OC
- WUzsSr9BxIAmcSlZUqCnQ==
+ :reply-to:sender:subject:subject:to:to; s=fm3; t=1667567893; x=
+ 1667575093; bh=OsqVSaB4puHg3xKhCHX6duSiOM6c63DJuikQrynCI44=; b=J
+ UdmX+9OKT2Rm/H4Zvu4K4UuKBkK1sMcCKQaVisqCi96xyOcKWhfAdPkpBvu/d8i7
+ DTe+qV1+RoQExQZN9ZLePj0t/mZ6Pr+SFY0av3sKpTtyl361UjVFrLjGoTPGhT7r
+ YXLC3MMFT4Q+GdO8dJ44D02tJE6Or/dutXkttpYCJFAMMXW8rx/AybLqjyBZ70V3
+ c41Sx627XrxI7RjWbmiAIdedoPMQEc3jzrazkJeOSooGhCH5KqObWRFY6YhCjQho
+ TshI9BVXpGzfsX3I7mSnW5WSeIGYqPtOW2mMmmJUxaCoBY+qL+3erKEkaSMhBICT
+ igJ28mS7cTnY9F2hP8Djw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:cc:content-transfer-encoding
  :content-type:date:date:feedback-id:feedback-id:from:from
  :in-reply-to:in-reply-to:message-id:mime-version:references
  :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1667567889; x=
- 1667575089; bh=HSdFwQ3aW19zofmGUIyzD52AzOA8mMIUukqySVU5Fxw=; b=A
- biPP7HxWRM2nrGMfQZiT/vH7QrSVae2oXaq6/ibwrHHKDCL8eWdvnqH6TDSIqHgs
- Go01KRYa0XITm7jMTwJMfXDd/WrKe89YEtVhP4yR1OT2LIdtwWt8QaWfNHqzJBoY
- jSBDzq9m03pjrd/48dAPSa0BBuBEEPs1gZdyU+4mhnixFcoDGW7wSj5K9nklAuFv
- xM/kbaGWkC+f74B/lfSyGa9GU4qTj/iEIksYt1WPLs9pXrqNh4LV+6VyazMtGFS5
- 6qE3P4anbi0F2a9f7Ezp2HsTB1zsC/BAfWFhjNeONJz3wnYcsyyz5WZVeJkD5S8u
- kfLnT33QBGCbvRnT1HgWA==
-X-ME-Sender: <xms:ERFlY-aPgM6HEqmGMCnfW30TmzXo6Ebdseu3a-hdl-voPY6GYm4GUQ>
- <xme:ERFlYxYFBNLX8u2qWBGVKwuMlwoVhdOKs3K3BNul6VWktR1_JJJ2UbDo35JTyxJam
- clxYRYqXKUxBvYosAU>
-X-ME-Received: <xmr:ERFlY49G8MN_KrZS-5czMcZAA4VQhIzXXmEF0OiFW4zBrA1M9bhcx7uS4_xf09Z6bgm8qYhtOWHt_fD5sdBKLRiHeMI5_1v5_WjD2bFOldf9uw>
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1667567893; x=
+ 1667575093; bh=OsqVSaB4puHg3xKhCHX6duSiOM6c63DJuikQrynCI44=; b=Y
+ IkzRWpABgj7fwxnSUL/qucvfBI/d69CQlduw7Tc+W7f3sIzFPGpGrdNHrD6Clu5v
+ g77nMrZ60/YwKP31G6cUe1HdtRGN9OCh4xkNWc61Rx2dVkAPyrsajDY7a6Vs1X3I
+ dsQVEyjSu2cbZo8x05vEGY0TRkdf2GMEByECJhpO3Dc0Z+PGHOjMmYflqFuMpulZ
+ KaESgglUPSCMhHcnVAJ4tp/Rs6sl+wDzp2tB6mKq7jV4vtY0AIPfhnDm1FkeozI0
+ 6MdJxNTZ1zIqha32nI5F4U5msMpYAjgGzOKYuWFD42w9K8q/pB1aElL0b7/wA5FU
+ +BceI7UF5yfnUV2g5H+gQ==
+X-ME-Sender: <xms:FRFlY86WRwruppkE9FbdLgHNJELGP6oSrru8qxWCwFE_I2aDuUv_4A>
+ <xme:FRFlY95l1qMONGOdzm49F58fO6U7LPgJ79k5ovr6v4QJV1K1HG8WhL2oPkucfY-Kr
+ WmrMWSUJl11tV-_fqc>
+X-ME-Received: <xmr:FRFlY7cr18Wl4mVO1zA7m6ObT06FgGW0sotKKy1yaOIOe6jfndHYGnB3zRFuSA5EkILSZ2dLltfM-R3pSJ3L1TrANMKPobtjYTxxGQ94hvU7-A>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrvddugdegkecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
  fjughrpefhfffugggtgffkfhgjvfevofesthekredtredtjeenucfhrhhomhepofgrgihi
  mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
  htthgvrhhnpeduudduhfevjeetfeegvdffvdevvdejudegudekjeehtdelhfffveethfej
- ledtveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+ ledtveenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
  hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:ERFlYwrxaZ9E_N-JSOBTXpLUen3USPs4gxowOV7P2YjZV5p6L2jQHw>
- <xmx:ERFlY5phJiyD5RuroAvFRKtoQjqVFAIzoYVbp0wc6tElE0Yu6W8tOQ>
- <xmx:ERFlY-SG5k5tYlab6jMQZ7f0AUsX7Nr8QStvKumXnjxO7_nZvwS4gg>
- <xmx:ERFlYy4xAF6KHzFYmJpK3Js9u3ueI2qxQCMW_fnG9XBZUO2RqLjTSA>
+X-ME-Proxy: <xmx:FRFlYxJze9G9dN0Mok9qhQ0xDtye07V5phzOKhMunMtQ--zYPVu3MQ>
+ <xmx:FRFlYwLvzQcBJPc4zlGrHzvg3jwmjx0RVyvJ3eB8CEFi5OZnYgMzeg>
+ <xmx:FRFlYywsKeqB1fKAAbSCtfiJtePVaxDd-EsHCUxTvFF-yETDWJCgJw>
+ <xmx:FRFlY7aTHMoULKaBJ_zXzCjZoSf9Cht3D4tA-BMYm5qkz3DBjp0QJA>
 Feedback-ID: i8771445c:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 4 Nov 2022 09:18:08 -0400 (EDT)
+ 4 Nov 2022 09:18:12 -0400 (EDT)
 From: Maxime Ripard <maxime@cerno.tech>
-Date: Fri, 04 Nov 2022 14:17:27 +0100
-Subject: [PATCH v2 10/65] clk: k210: pll: Add a determine_rate hook
+Date: Fri, 04 Nov 2022 14:17:29 +0100
+Subject: [PATCH v2 12/65] clk: k210: mux: Add a determine_rate hook
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20221018-clk-range-checks-fixes-v2-10-f6736dec138e@cerno.tech>
+Message-Id: <20221018-clk-range-checks-fixes-v2-12-f6736dec138e@cerno.tech>
 References: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
 In-Reply-To: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
 To: Stephen Boyd <sboyd@kernel.org>,
@@ -133,11 +133,11 @@ To: Stephen Boyd <sboyd@kernel.org>,
  Max Filippov <jcmvbkbc@gmail.com>,
  Geert Uytterhoeven <geert+renesas@glider.be>
 X-Mailer: b4 0.11.0-dev-99e3a
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3687; i=maxime@cerno.tech;
- h=from:subject:message-id; bh=6IusAj9w3/tB8c67BjbXsxFLlirYjqevo85MFxaRu+Q=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDMmpAp9nzthWO/9t0mWP8nM3/zoJhbxUmy21Sfoov+JM69Pr
- Dvfqd5SyMIhxMciKKbLECJsviTs163UnG988mDmsTCBDGLg4BWAi07sYGVoy354y73h5YENih8nUsr
- g9MW+nWu4+9+yQcnpXSND8d0cYGf6tkbWT0VozTcysrrua6ZDO77JVH8/Or98hHfVx9uLcRcwA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2437; i=maxime@cerno.tech;
+ h=from:subject:message-id; bh=Gej66EsLQRO3ewM0fRnTAOk0KO3GEvBFH3z5OOVIT6U=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDMmpAp8dNxo9c8+bwh8eeYrv+62PPtM/1YozJZderJgWpfWJ
+ uVe3o5SFQYyLQVZMkSVG2HxJ3KlZrzvZ+ObBzGFlAhnCwMUpABMpP8DwkzF56zNRqdWf0o6Gxx0J3X
+ 37ivsXY6+mzc9zF5bLvzRjZWBk2JeW/O9TzQcx6T/TGS+Jv/e7wzB5qYDD8d3nJ1fwf7LoZQcA
 X-Developer-Key: i=maxime@cerno.tech; a=openpgp;
  fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 X-Mailman-Approved-At: Sat, 05 Nov 2022 08:03:31 +0100
@@ -165,7 +165,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The K210 PLL clock implements a mux with a set_parent hook, but
+The K210 mux clock implements a mux with a set_parent hook, but
 doesn't provide a determine_rate implementation.
 
 This is a bit odd, since set_parent() is there to, as its name implies,
@@ -196,63 +196,30 @@ behavior now and it can be further refined down the line.
 
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/clk/clk-k210.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/clk/clk-k210.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/clk/clk-k210.c b/drivers/clk/clk-k210.c
-index 67a7cb3503c3..279931a38127 100644
+index 5b9fd00d14e1..cdd7230f8f66 100644
 --- a/drivers/clk/clk-k210.c
 +++ b/drivers/clk/clk-k210.c
-@@ -537,6 +537,7 @@ static const struct clk_ops k210_pll2_ops = {
- 	.disable	= k210_pll_disable,
- 	.is_enabled	= k210_pll_is_enabled,
- 	.recalc_rate	= k210_pll_get_rate,
+@@ -780,6 +780,7 @@ static unsigned long k210_clk_get_rate(struct clk_hw *hw,
+ static const struct clk_ops k210_clk_mux_ops = {
+ 	.enable		= k210_clk_enable,
+ 	.disable	= k210_clk_disable,
 +	.determine_rate = __clk_mux_determine_rate,
- 	.set_parent	= k210_pll2_set_parent,
- 	.get_parent	= k210_pll2_get_parent,
- };
-@@ -544,7 +545,8 @@ static const struct clk_ops k210_pll2_ops = {
- static int __init k210_register_pll(struct device_node *np,
- 				    struct k210_sysclk *ksc,
- 				    enum k210_pll_id pllid, const char *name,
--				    int num_parents, const struct clk_ops *ops)
-+				    int num_parents, const struct clk_ops *ops,
-+				    unsigned long flags)
- {
- 	struct k210_pll *pll = &ksc->plls[pllid];
- 	struct clk_init_data init = {};
-@@ -558,6 +560,7 @@ static int __init k210_register_pll(struct device_node *np,
- 	init.parent_data = parent_data;
- 	init.num_parents = num_parents;
- 	init.ops = ops;
-+	init.flags = flags;
+ 	.set_parent	= k210_clk_set_parent,
+ 	.get_parent	= k210_clk_get_parent,
+ 	.recalc_rate	= k210_clk_get_rate,
+@@ -832,7 +833,7 @@ static inline void __init k210_register_mux_clk(struct device_node *np,
+ 		{ .hw = &ksc->plls[K210_PLL0].hw }
+ 	};
  
- 	pll->hw.init = &init;
- 	pll->ksc = ksc;
-@@ -574,19 +577,20 @@ static int __init k210_register_plls(struct device_node *np,
- 		k210_init_pll(ksc->regs, i, &ksc->plls[i]);
+-	k210_register_clk(np, ksc, id, parent_data, 2, 0);
++	k210_register_clk(np, ksc, id, parent_data, 2, CLK_SET_RATE_NO_REPARENT);
+ }
  
- 	/* PLL0 and PLL1 only have IN0 as parent */
--	ret = k210_register_pll(np, ksc, K210_PLL0, "pll0", 1, &k210_pll_ops);
-+	ret = k210_register_pll(np, ksc, K210_PLL0, "pll0", 1, &k210_pll_ops, 0);
- 	if (ret) {
- 		pr_err("%pOFP: register PLL0 failed\n", np);
- 		return ret;
- 	}
--	ret = k210_register_pll(np, ksc, K210_PLL1, "pll1", 1, &k210_pll_ops);
-+	ret = k210_register_pll(np, ksc, K210_PLL1, "pll1", 1, &k210_pll_ops, 0);
- 	if (ret) {
- 		pr_err("%pOFP: register PLL1 failed\n", np);
- 		return ret;
- 	}
- 
- 	/* PLL2 has IN0, PLL0 and PLL1 as parents */
--	ret = k210_register_pll(np, ksc, K210_PLL2, "pll2", 3, &k210_pll2_ops);
-+	ret = k210_register_pll(np, ksc, K210_PLL2, "pll2", 3, &k210_pll2_ops,
-+				CLK_SET_RATE_NO_REPARENT);
- 	if (ret) {
- 		pr_err("%pOFP: register PLL2 failed\n", np);
- 		return ret;
+ static inline void __init k210_register_in0_child(struct device_node *np,
 
 -- 
 b4 0.11.0-dev-99e3a
