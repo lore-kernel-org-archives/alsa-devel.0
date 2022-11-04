@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECFB4C433FE
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Nov 2022 07:15:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46F84C433FE
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Nov 2022 07:16:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE30716F7;
-	Sat,  5 Nov 2022 08:14:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE30716F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FFCD16F9;
+	Sat,  5 Nov 2022 08:15:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FFCD16F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667632549;
-	bh=afkbyj6qSgUvTXcAti18h6pkdtwmG8YUcM+gKscM/p0=;
+	s=default; t=1667632565;
+	bh=Iy1qQJ0znBUKLYMmx1qyBFpOyf2xzBCZjv3Ms6vHOyQ=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=m0VpSepYSWOJFF0PXfSlhJN4VXD45dtmzLmc3135yjRyEOsLeCHXdJQVZGG+bsdHt
-	 uaHVWzUzBx2wMia7Rm8ZANXLh5aLLc5dqgN7p8vMXZXnyf2gkjWaT3st7q8ycFZOP7
-	 eA/XWqV+7crVrg4pKe44oQ9IVqc/3dP4Bq5shvdw=
+	b=phoSgV99FiAq7DQlVF8WAzT7ad01lru2H2DzaHgJY6brzR+MDCBmipTzWSQiXnLYS
+	 exy2q+KDE6OyhypEyGeM3lckRnDyKQxNIcykuXFj5miZ0ot2dK3WLWy9oeGKS1mXGi
+	 ny9B1bAXVEp3exfBIJGeNDF8Hez43VllMiRYFreQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34863F80687;
-	Sat,  5 Nov 2022 08:04:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 03DF5F806E8;
+	Sat,  5 Nov 2022 08:04:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 46665F80552; Fri,  4 Nov 2022 14:33:16 +0100 (CET)
+ id AA2AFF8047D; Fri,  4 Nov 2022 14:33:18 +0100 (CET)
 Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com
  [66.111.4.221])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9F8DFF801D5
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 14:33:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F8DFF801D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 615C2F80431
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 14:33:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 615C2F80431
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="TI/kFokF"; 
+ header.b="NDUApnRs"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="pZIJwbyf"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailnew.nyi.internal (Postfix) with ESMTP id D5DFA580272;
- Fri,  4 Nov 2022 09:33:12 -0400 (EDT)
+ header.i=@messagingengine.com header.b="RQChmzzA"
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+ by mailnew.nyi.internal (Postfix) with ESMTP id 9B72B580456;
+ Fri,  4 Nov 2022 09:33:10 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute5.internal (MEProxy); Fri, 04 Nov 2022 09:33:12 -0400
+ by compute2.internal (MEProxy); Fri, 04 Nov 2022 09:33:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
  :cc:content-transfer-encoding:content-type:date:date:from:from
  :in-reply-to:in-reply-to:message-id:mime-version:references
- :reply-to:sender:subject:subject:to:to; s=fm3; t=1667568792; x=
- 1667575992; bh=M1Idicxec/SjsVbngLWtURd6yauqH0OPCkHzY+mm2fk=; b=T
- I/kFokFdLJrFTpdeHySAOi9asq+6S/Yhv/SuovPeXSRXrEHGTfat2muVNXrOGwF1
- b/HmX4erdMDkOPHYaS7eg4nOyVl9d4anAlDtYRXkeA5ilNKHMnqcbiMmOvP3ikU5
- PX7aYeFZuxsZ+OICHGX5eOqs5uF5BJx+fJQ5hG+1FuGdqv3voIDKixibPc1HxYFx
- Wq6zm3RSHupADOkFl5fiE8B6PyGdGw0u5UdG+3SDr/lWI0oURJT50Gc+IKXOlXBM
- D3j9Sr4PsHMxN63LlY19rt8wHqcbppEGyWnAOkGJcQ+oUJslNiiWqUYD1CYRgWGq
- MwB7Mm7VlwaKsKb23Q7zg==
+ :reply-to:sender:subject:subject:to:to; s=fm3; t=1667568790; x=
+ 1667575990; bh=n64sOLiagnviVv3HjsxkegJ5AjY5p57YrMPjGj42NiQ=; b=N
+ DUApnRs/rAKtCZmBe2Wm6s30ujm0TpOYHX4pXaMBY6oJ9Fb3M4PNfv1EWMi4aEgx
+ v1jvaYP8prDSIxQzIkR3b+H+GuKo5hcFx7TyPX/mYkd21gPm2hY5xEal3ao/t+51
+ hCstWdcMea+COQCxhXldDKpP76bcUq3zQgLpYpvDGFZhYWCJ59GndmH1X/kU1MRT
+ YLiJJzuMq09leXG1USYF6I44I+Si2yhd6KYPLpohQeX1PKFqfX8uehsd7RQJPOkS
+ ws/T2vLKKOYxmd0vSmw7ZwaRYh4Xi1X31qCa01FCbgmOQVLXxaBUjx0bsinMFIBu
+ 3c6d7+hvyKuSbWfOaQzDw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:cc:content-transfer-encoding
  :content-type:date:date:feedback-id:feedback-id:from:from
  :in-reply-to:in-reply-to:message-id:mime-version:references
  :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1667568792; x=
- 1667575992; bh=M1Idicxec/SjsVbngLWtURd6yauqH0OPCkHzY+mm2fk=; b=p
- ZIJwbyfBMa3i9+2YI02nMxsGb2L06OItCgy92XFtfKT8AdbV37yfPraGmXoMdJtE
- 5Zn2RNNZQGyBIfOs4DxlUpv9y/W8Qyt6sW2NZGCkWJl+SzpL6elXO0aIQ5dzmLNL
- v2LpN3R5TlX36pL622dO5/G4xgsXvzV8h3XEmEKOj7rJyj37iVrArFvoq0NnMYV+
- MLVleTazeU9arh32Graxcl8hKk0Fy9A22bZRYMRrRwzagMUDWmxcGNywHPevMB74
- eyYARkqcCrcfC73RgpX8lZaZ6EC2i1M7UcAdrZYb1b9goGm1vOvqZn1pJ5kE7aMV
- khzMg1Fi1f31iqz6Qztig==
-X-ME-Sender: <xms:mBRlY6LxvxsLba6SSdY9ZNgER4B8lShF__lcyp5OprC_mu-_QvFhTQ>
- <xme:mBRlYyKKH8nyeOeYYTVXpVog7qx8npUT6iDOknkyfcmXIcUvjNapfORtGKprQZ2DH
- N2xlM_raBqvOQdf314>
-X-ME-Received: <xmr:mBRlY6u0QMPeNujC_5zp2tIu5oX5vWBXTJAAdFcKU6Z4YvlN3RTcNTHne4X1XdejCNbCPUu26L8oH7kA32i1bkKaDJX52D-bVpLQHb5eMgNH9A>
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1667568790; x=
+ 1667575990; bh=n64sOLiagnviVv3HjsxkegJ5AjY5p57YrMPjGj42NiQ=; b=R
+ QChmzzAm/9yfSs0GvKAwp/hkTgAo2XndsU9uHr2S32CNmGLfr8Cre3PuxKQMPM2r
+ x2igjFHMSbfW/WinY/LFXIAaHMRE8dX+WEv5KUDyb9RnmvMoNQpbggd4Xk78hRg7
+ RcH8R1NW00WK5wCnamrztGDax90UWXoz81LmQmDXa11jViIFqeRkRyzf0vrC63Fi
+ M/DoQWRBKKUOLs6gggemUcXAKrK5J8NZP+PwAs7yy0iLzzjY5xBqs9HZpYPQ0see
+ F42tua2NFt+XyO0HY0tNgVofHinjSjJCHdIq+ZW28cVYMOfwVTramQE8Gmi7Yekl
+ /Q93eTbVjnxDgeSipQiqg==
+X-ME-Sender: <xms:lhRlY5lmQe6S0N6-D9A1NIKoIfyXgj8w06Qde-aCTfLWje9vHan0rQ>
+ <xme:lhRlY01BCL9Svn-tOafh3qY7xEthzPBRi1hv0xrEjEun6GbT9DNn1DdB9DrzyU490
+ dOh8BwCHKUXEguFZp8>
+X-ME-Received: <xmr:lhRlY_pTi7EQdldnQFOg2EJyi01DPO1RUu7oZZwnN2cNUEpbv6pWjWO1OohoLBluY2EjmHYfM4ZxhWYK-lL6fuPn1rlwg74pAuYPSeQrrbggZQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvgedrvddugdehudcutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
  fjughrpefhfffugggtgffkfhgjvfevofesthekredtredtjeenucfhrhhomhepofgrgihi
  mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
  htthgvrhhnpeduudduhfevjeetfeegvdffvdevvdejudegudekjeehtdelhfffveethfej
- ledtveenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+ ledtveenucevlhhushhtvghrufhiiigvpeefnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
  hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:mBRlY_b6ZWHAxr7SO2HYtIn0wF4YwuOXyq-9A8RAD5xBs2wHsvCQCA>
- <xmx:mBRlYxaj8AJUz9dopRXbAakzXt506FRwVBhBZmCFBmoZ-IzDoB5PUg>
- <xmx:mBRlY7DQKWDpUSpDBMgzmUYLmd2yLvq49Lw_TfoEUftNb4eqhAbFVw>
- <xmx:mBRlY9r5hSgQBLe_J4gbH_AIA-dgFOtJYMbHTVw5l8wiwb8-qzqXzA>
+X-ME-Proxy: <xmx:lhRlY5nJIEHnItycc_Efs7qbpkqbwobt8rae8JfIF1MzWghbllsaVg>
+ <xmx:lhRlY30QZfOU8caMtejw-odH98PPT23xznqsp5pgRWsoz0YGZhA66A>
+ <xmx:lhRlY4vv-ogsd10OQtiKb_c80CVMfLU3w3_lMdRCPez9rIqpT2TiRg>
+ <xmx:lhRlY626jUFgqAoZd2zL6EMicjxn8oqIRgJ8QkPaxo7IsgJsJctACg>
 Feedback-ID: i8771445c:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 4 Nov 2022 09:33:11 -0400 (EDT)
+ 4 Nov 2022 09:33:09 -0400 (EDT)
 From: Maxime Ripard <maxime@cerno.tech>
-Date: Fri, 04 Nov 2022 14:17:58 +0100
-Subject: [PATCH v2 41/65] phy: ti: j721e-wiz: Add a determine_rate hook
+Date: Fri, 04 Nov 2022 14:17:57 +0100
+Subject: [PATCH v2 40/65] phy: ti: am654-serdes: Add a determine_rate hook
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20221018-clk-range-checks-fixes-v2-41-f6736dec138e@cerno.tech>
+Message-Id: <20221018-clk-range-checks-fixes-v2-40-f6736dec138e@cerno.tech>
 References: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
 In-Reply-To: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
 To: Stephen Boyd <sboyd@kernel.org>,
@@ -133,11 +133,11 @@ To: Stephen Boyd <sboyd@kernel.org>,
  Max Filippov <jcmvbkbc@gmail.com>,
  Geert Uytterhoeven <geert+renesas@glider.be>
 X-Mailer: b4 0.11.0-dev-99e3a
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2117; i=maxime@cerno.tech;
- h=from:subject:message-id; bh=afkbyj6qSgUvTXcAti18h6pkdtwmG8YUcM+gKscM/p0=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDMmpAl97jY/NC4n+c4Vtz7cprTo9U/35pwQf3PtA0MPH7Wi2
- X0F8RykLgxgXg6yYIkuMsPmSuFOzXney8c2DmcPKBDKEgYtTACbixsXwV+DDte6+ih8Ffye5yD66xm
- Ca/XNezczs4FfFM3xvdjoKqzH8d+dY6JAlxDbV64drmyjTlt2sn12kCtPZrFO3cj/t/1LOAwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2171; i=maxime@cerno.tech;
+ h=from:subject:message-id; bh=Iy1qQJ0znBUKLYMmx1qyBFpOyf2xzBCZjv3Ms6vHOyQ=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDMmpAl8bvL0V1bnzAmZ4XbSQXOei+LKj9v2TL6tdfZauPuP5
+ iF2so5SFQYyLQVZMkSVG2HxJ3KlZrzvZ+ObBzGFlAhnCwMUpABP5x8DwP+OfmohMW56dbvv+FWpmTl
+ paQix/H7EFeXRlGHMU6QfdY/in6K/HzcC92EBr6ZG/22O/buxrUOc8skp2D1+8xkT1zazcAA==
 X-Developer-Key: i=maxime@cerno.tech; a=openpgp;
  fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 X-Mailman-Approved-At: Sat, 05 Nov 2022 08:03:31 +0100
@@ -165,7 +165,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The TI J721e Wiz clock implements a mux with a set_parent
+The TI AM654 SerDes clock implements a mux with a set_parent
 hook, but doesn't provide a determine_rate implementation.
 
 This is a bit odd, since set_parent() is there to, as its name implies,
@@ -199,20 +199,20 @@ unlikely.
 
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/phy/ti/phy-j721e-wiz.c | 1 +
+ drivers/phy/ti/phy-am654-serdes.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
-index 141b51af4427..bd0691e5de47 100644
---- a/drivers/phy/ti/phy-j721e-wiz.c
-+++ b/drivers/phy/ti/phy-j721e-wiz.c
-@@ -781,6 +781,7 @@ static int wiz_clk_mux_set_parent(struct clk_hw *hw, u8 index)
+diff --git a/drivers/phy/ti/phy-am654-serdes.c b/drivers/phy/ti/phy-am654-serdes.c
+index 0be727bb9f79..f2061ce4e62d 100644
+--- a/drivers/phy/ti/phy-am654-serdes.c
++++ b/drivers/phy/ti/phy-am654-serdes.c
+@@ -634,6 +634,7 @@ static int serdes_am654_clk_mux_set_parent(struct clk_hw *hw, u8 index)
  }
  
- static const struct clk_ops wiz_clk_mux_ops = {
+ static const struct clk_ops serdes_am654_clk_mux_ops = {
 +	.determine_rate = __clk_mux_determine_rate,
- 	.set_parent = wiz_clk_mux_set_parent,
- 	.get_parent = wiz_clk_mux_get_parent,
+ 	.set_parent = serdes_am654_clk_mux_set_parent,
+ 	.get_parent = serdes_am654_clk_mux_get_parent,
  };
 
 -- 
