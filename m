@@ -4,77 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1082DC4332F
-	for <alsa-devel@archiver.kernel.org>; Fri,  4 Nov 2022 07:13:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B655FC4332F
+	for <alsa-devel@archiver.kernel.org>; Fri,  4 Nov 2022 08:07:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 48C53163C;
-	Fri,  4 Nov 2022 08:12:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48C53163C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 49AF1163C;
+	Fri,  4 Nov 2022 09:06:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49AF1163C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667545988;
-	bh=PUWdQK3rOzqbwuRdi5nHbCwQDz6H2sHaMf4mm2gn+sY=;
+	s=default; t=1667549245;
+	bh=Sg5hn9I3KovFJDrScV2tQt3kZejNYFqVdIrQNvvBgIw=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=teFcy77XgTJ3CcWai28B23lUlLsjtN3nwZOSQJLL4dLlU5Er/Dm55yhUsPQNa0uIO
-	 LZHu+Qyv1tjj3LYphElb4ZVsGwUyJX2X9OH4gG4Ckg/fDq4ifdzPl/h4aipQh0FxyH
-	 +Tykgihmtl9/pwgTQlJzRvQ1hfHA7Foc/CbSI3ac=
+	b=JqmFnm/tWdSW7wy1Ks4Abu7VQZjr6OQVn50+4ILhj5Wic5NfhzYQg1gcbwiAGMh+4
+	 uMWEt78sd0NQmGLKhrYZuzBjKdB8CZb31V73eaIpE5Vk3Xy/SQPW2Zqdgt7ic40I+P
+	 d1Syca0ChFl9KVRfFFMBxWRoAKl4u2m9HO2KLyrg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4457F80431;
-	Fri,  4 Nov 2022 08:12:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B98CAF80431;
+	Fri,  4 Nov 2022 09:06:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8CD99F80448; Fri,  4 Nov 2022 08:12:16 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id DA37BF80448; Fri,  4 Nov 2022 09:06:32 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5B6D4F801D5
- for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 08:12:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B6D4F801D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id E339DF80155
+ for <alsa-devel@alsa-project.org>; Fri,  4 Nov 2022 09:06:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E339DF80155
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="BY2yVzAC"; 
+ header.b="jobQ07YB"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="qLts6ezm"
+ header.b="U9PwoIxR"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 74189218EC;
- Fri,  4 Nov 2022 07:12:09 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 27D2E1F74A;
+ Fri,  4 Nov 2022 08:06:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1667545929; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1667549185; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=LL81uK+aN/ZrKn6tbUNDzuG9HRl0DQASNkhSw6+aLmc=;
- b=BY2yVzACwB90mWdPCYz9d1X1ku3aW2bk2FO9Yu5vxQm6npnMNtZl1aYwbb46dxqr/FgZlY
- qe4rb+eRmnHQesf5UrL3l9qvYiug0UFfIBRMNIwJF5toSpNzXV64vnzE+kHQWu7g8quftc
- 5UiY/nexb4sebI8xITrB4AJA/b55EoE=
+ bh=NAHPqz+JQ+byLy9st95AQKWD4OGH/5xZSKGvNLc2mPQ=;
+ b=jobQ07YBlp8o1TuEKPf0S/jnKshiutGuIibFhTMYImlw9g4mrXsw3x7MLxfDrfygUP0PkQ
+ Xv6Krg9wcP3UaolJ/fz6pVcKzFPIKPCJIH6LqFumTZY4XuAderPv7MQVDOXjt+/VIJbDYH
+ dWrG7ZDjfNTUe9zRB/8Ck7PzFlqHyiA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1667545929;
+ s=susede2_ed25519; t=1667549185;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=LL81uK+aN/ZrKn6tbUNDzuG9HRl0DQASNkhSw6+aLmc=;
- b=qLts6ezm1XNxQFDyHqVvR55kcHURKxjLzrqNpVRIWPX+eU9HMhpsCjEX8BY9VrA7qrs3HA
- oIsnsCVCxOJqU1Dg==
+ bh=NAHPqz+JQ+byLy9st95AQKWD4OGH/5xZSKGvNLc2mPQ=;
+ b=U9PwoIxRiXolSQKXnwESJ2Sfsd9AwoTZhVWrIz9de56NkH1d+2204n2LFQcn1lz+rwutFH
+ 43o0KkYa8jtNBIAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 53FFC1346F;
- Fri,  4 Nov 2022 07:12:09 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 045DB13216;
+ Fri,  4 Nov 2022 08:06:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id EkfRE0m7ZGMwOgAAMHmgww
- (envelope-from <tiwai@suse.de>); Fri, 04 Nov 2022 07:12:09 +0000
-Date: Fri, 04 Nov 2022 08:12:08 +0100
-Message-ID: <874jvfkxbr.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id ERJFAAHIZGMYUwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Fri, 04 Nov 2022 08:06:25 +0000
+Date: Fri, 04 Nov 2022 09:06:24 +0100
+Message-ID: <871qqjkutb.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: aichao <aichao@kylinos.cn>
-Subject: Re: [PATCH] ALSA: usb-audio: fix usb camero disconnect issue
-In-Reply-To: <20221104013236.3480427-1-aichao@kylinos.cn>
-References: <20221104013236.3480427-1-aichao@kylinos.cn>
+Subject: Re: [PATCH] ALSA: usb-audio: fix Hamedal C20 usb camero disconnect
+ issue
+In-Reply-To: <20221104073518.120807-1-aichao@kylinos.cn>
+References: <20221104073518.120807-1-aichao@kylinos.cn>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -94,58 +95,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 04 Nov 2022 02:32:36 +0100,
+On Fri, 04 Nov 2022 08:35:18 +0100,
 aichao wrote:
 > 
-> When current rate is different from the runtime rate,
+> For Hamedal C20, the current rate is different from the runtime rate,
 > snd_usb_endpoint stop and close endpoint to resetting rate.
 > if snd_usb_endpoint close the endpoint, sometimes usb will
 >  disconnect the device.
+> 
+> Signed-off-by: aichao <aichao@kylinos.cn>
 
-What do you mean...?  snd_usb_endpoint_close() never disconnects the
-device by itself.
+OK, this is more understandable than the previous one.
 
-Please elaborate the problem.
+But it doesn't look like a proper workaround, and we need to figure
+out the culprit more deeply.  The interface is anyway reset once when
+the parameter is changed / re-setup.  Doesn't it hit the same problem?
+Or it's about clearing the interface and keep it for long time?
 
+In anyway, please give lsusb -v output of the device.
+
+BTW, is aichao your full name?  The sign-off must be with the real
+full name, and it's a legal requirement.
+
+
+thanks,
 
 Takashi
 
-> 
-> Signed-off-by: aichao <aichao@kylinos.cn>
+
 > ---
->  sound/usb/pcm.c | 5 -----
->  1 file changed, 5 deletions(-)
+>  sound/usb/endpoint.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-> index 5dc9266180e3..2ae4a55cbaa8 100644
-> --- a/sound/usb/pcm.c
-> +++ b/sound/usb/pcm.c
-> @@ -517,7 +517,6 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
->  		if (snd_usb_endpoint_compatible(chip, subs->data_endpoint,
->  						fmt, hw_params))
->  			goto unlock;
-> -		close_endpoints(chip, subs);
->  	}
+> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+> index 533919a28856..c19e420b1780 100644
+> --- a/sound/usb/endpoint.c
+> +++ b/sound/usb/endpoint.c
+> @@ -825,7 +825,9 @@ void snd_usb_endpoint_close(struct snd_usb_audio *chip,
+>  	usb_audio_dbg(chip, "Closing EP 0x%x (count %d)\n",
+>  		      ep->ep_num, ep->opened);
 >  
->  	subs->data_endpoint = snd_usb_endpoint_open(chip, fmt, hw_params, false);
-> @@ -546,9 +545,6 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
->  	ret = configure_endpoints(chip, subs);
+> -	if (!--ep->iface_ref->opened)
+> +	if (!--ep->iface_ref->opened
+> +		&& (le16_to_cpu(chip->dev->descriptor.idVendor) != 0x0525)
+> +		&& (le16_to_cpu(chip->dev->descriptor.idProduct) != 0xa4ad))
+>  		endpoint_set_interface(chip, ep, false);
 >  
->   unlock:
-> -	if (ret < 0)
-> -		close_endpoints(chip, subs);
-> -
->  	snd_usb_unlock_shutdown(chip);
->   stop_pipeline:
->  	if (ret < 0)
-> @@ -574,7 +570,6 @@ static int snd_usb_hw_free(struct snd_pcm_substream *substream)
->  	if (!snd_usb_lock_shutdown(chip)) {
->  		if (stop_endpoints(subs))
->  			sync_pending_stops(subs);
-> -		close_endpoints(chip, subs);
->  		snd_usb_unlock_shutdown(chip);
->  	}
->  
+>  	if (!--ep->opened) {
 > -- 
 > 2.25.1
 > 
