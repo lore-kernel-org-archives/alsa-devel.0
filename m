@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60F36C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 17:21:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F079CC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 17:21:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BFB931692;
-	Wed,  9 Nov 2022 18:20:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFB931692
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29A3A1672;
+	Wed,  9 Nov 2022 18:20:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29A3A1672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668014483;
-	bh=74w+uDnCsYfSAV0QrenUVRizPeVM1U02MhkyuOdW4MU=;
+	s=default; t=1668014502;
+	bh=tPQ6JQ2e0fLUyAcKgHXy/BE/uDCgrGLetb3YKtdLZSs=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hhAWhXzvdnZYwzSr9aXtLkd1gRS5O3pWRITMfUVZHTEQfgGSI5TxB3f+TM5pEQb3a
-	 4Sp4TvhKDgDFRqPxAiz/mnLr/knPldnHv+0rbknYFLisjey9QCEqScPBgyFdFtlooM
-	 R7Q0NgWmipjR13dUa+FFn8oRunCaTlRu2R2vLlUw=
+	b=A4/KMCHXYn9z2XvqukR9e7Jkm+5x3zJHitFZU9QTrXzcEv4yZ+m7xDYbPA6nS6of5
+	 ZQE7SrhI671agYUawBAtAqwye3FpUGjED2Ndpw4x1MpvQ/jTPW1zHjUfn0MOhM951k
+	 N7sX8pHk0uRQcr7U9ow2v/ZJrmYGTvUmmfDN+PT0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B3E2F805D4;
+	by alsa1.perex.cz (Postfix) with ESMTP id BC99EF805D6;
 	Wed,  9 Nov 2022 18:16:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1787AF803DC; Sat,  5 Nov 2022 22:45:58 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id 1463FF803DC; Sat,  5 Nov 2022 22:48:09 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A5ECF801D5
- for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2022 22:45:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A5ECF801D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 09B42F80271
+ for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2022 22:48:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09B42F80271
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 8A73FCE069C;
- Sat,  5 Nov 2022 21:45:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74BDDC433D6;
- Sat,  5 Nov 2022 21:45:44 +0000 (UTC)
-Date: Sat, 5 Nov 2022 17:45:42 -0400
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 383BD60B9E;
+ Sat,  5 Nov 2022 21:48:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37383C433D6;
+ Sat,  5 Nov 2022 21:47:58 +0000 (UTC)
+Date: Sat, 5 Nov 2022 17:47:56 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Linus Torvalds <torvalds@linux-foundation.org>
 Subject: Re: [PATCH v4a 00/38] timers: Use timer_shutdown*() before freeing
  timers
-Message-ID: <20221105174542.21bd7e86@rorschach.local.home>
+Message-ID: <20221105174756.38062fce@rorschach.local.home>
 In-Reply-To: <CAHk-=wjkkomrdcrAxxFijs-Lih6vHze+A2TgM+v7-Z7ZkXT+WA@mail.gmail.com>
 References: <20221105060024.598488967@goodmis.org>
  <CAHk-=wi95dGkg7DiuOZ27gGW+mxJipn9ykB6LHB-HrbbLG6OMQ@mail.gmail.com>
@@ -96,42 +96,21 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 On Sat, 5 Nov 2022 14:13:14 -0700
 Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-> And trying "when != ptr->timer" actually does the right thing in that
-> it gets rid of the case where the timer is modified outside of the
-> del_timer() case, *but* it also causes odd other changes to the
-> output.
-> 
-> Look at what it generates for that
-> 
->    drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-> 
-> file, which finds a lot of triggers with the "when !=  ptr->timer",
-> but only does one without it.
+> (Comparing output is also fun because the ordering of the patches is
+> random, so consecutive runs with the same rule will give different
+> patches. I assume that it's just because it's done in parallel, but it
+> doesn't help the "try to see what changes when you change the script"
+> ;)
 
-I added an expression, and it appears to work:
+What I do to compare is:
 
-At least for this case.
+ patch -p1 < cocci1.patch
+ git commit -a
+ git show | patch -p1 -R
+ patch -p1 < cocci2.patch
+ git diff
 
-@@
-expression E;
-identifier ptr, timer, rfield, slab;
-@@
-(
--       del_timer(&ptr->timer);
-+       timer_shutdown(&ptr->timer);
-|
--       del_timer_sync(&ptr->timer);
-+       timer_shutdown_sync(&ptr->timer);
-)
-  ... when != ptr->timer.function = E;
-(
-        kfree_rcu(ptr, rfield);
-|
-        kmem_cache_free(slab, ptr);
-|
-        kfree(ptr);
-)
-
-Now I need to add return and goto cases here.
+Then I see how things changed. This is how I was able to show you the
+tweaks I made.
 
 -- Steve
