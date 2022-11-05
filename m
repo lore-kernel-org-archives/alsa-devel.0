@@ -4,85 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53CDDC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 17:14:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1169C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 17:16:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 112861650;
-	Wed,  9 Nov 2022 18:13:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 112861650
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0992163A;
+	Wed,  9 Nov 2022 18:15:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0992163A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668014064;
-	bh=k/mDQ5OTD3MCM0Jb9Kuwaj0vCqcqRqTYf1ofte2SFr8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1668014201;
+	bh=VEF9nH+bDiK2Co4S+zlZK9hIWwwW3PPr6fDYmkOi8n4=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FKtlC++k3+KJ6uFKqtH/AF4p6GukP4y7AzWv/c6ZrdYjaD/WpMo894u53WEZhoK0u
-	 MA7EfR4RsT6v4OasY6gQ02zK2oGZzy8YJYcZ4HI3bjhYkpLay+kg+fwwjEUYJ/0MsI
-	 YrKkjnJMDZZ8SI2tsqpyq+oAv6QezpDgoRzj3PrE=
+	b=SEW5sqS+gz7fpCSaOWoBG2NgKdRyq6EETl059I84dUinHHMcSeUBhmfOHhPJS34xO
+	 8rkeJgNqjMyYoV7QBJ9vGzmfwNJTKul/Ak3i1g6l+SG2tPBWr2zIzoqlUXUUsIRlp1
+	 YwtBW5C58mXPxCHQrSSPGKiDHbUCA7w+nw46b7Es=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AAAD9F80166;
-	Wed,  9 Nov 2022 18:13:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D25DF800EC;
+	Wed,  9 Nov 2022 18:15:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7AC90F80166; Wed,  9 Nov 2022 18:13:31 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ id A13B3F803DC; Sat,  5 Nov 2022 11:34:22 +0100 (CET)
+Received: from aposti.net (aposti.net [89.234.176.197])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0E589F80121
- for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2022 18:13:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E589F80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B8FCF801D5
+ for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2022 11:34:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B8FCF801D5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="SsAB9wlf"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="mWCwsdKD"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 49B7A22BD8;
- Wed,  9 Nov 2022 17:13:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1668014008; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net
+ header.b="3fY3IZ0h"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+ s=mail; t=1667644455; h=from:from:sender:reply-to:subject:subject:date:date:
+ message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+ content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=iyI3Omlj30cZVssRB+37QkumiLtelzvWU2f7Wx0booM=;
- b=SsAB9wlf5qA7l7usvZyMhpFCdyr9gee8yTKdp22Mu1kWqX9yQaMHkJLaf6CbW11+GIO4l5
- mQ3sLcHsdBZnWY5M6Yt4D3jA5w/ORrSGB1zkCBAPQfbDC4ILnYhEGn6ia4M0ii49hL5xcl
- iopaQNvo/gyl3GGXEQvAlGpBigpw7Zg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1668014008;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=iyI3Omlj30cZVssRB+37QkumiLtelzvWU2f7Wx0booM=;
- b=mWCwsdKD6ocd2+fudJihlZZcY3oK2GmtJiePetiTOLevLI6iPDbMCFJwayS/lky6k/OTRT
- NmAEcpXLOR2Q4kAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0E5EE139F1;
- Wed,  9 Nov 2022 17:13:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 0VY8Arjfa2PdCgAAMHmgww
- (envelope-from <tiwai@suse.de>); Wed, 09 Nov 2022 17:13:28 +0000
-Date: Wed, 09 Nov 2022 18:13:27 +0100
-Message-ID: <87h6z8xd8o.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Add Positivo C6300 model quirk
-In-Reply-To: <87k044xdbh.wl-tiwai@suse.de>
-References: <20221109160909.4578-1-edson.drosdeck@gmail.com>
- <87k044xdbh.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: sbinding@opensource.cirrus.com, tanureal@opensource.cirrus.com,
- tangmeng@uniontech.com, p.jungkamp@gmx.net, tcrawford@system76.com,
- tiwai@suse.com, wse@tuxedocomputers.com, kai.heng.feng@canonical.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+ bh=TDaskHbQLkzLxZhbc0A77T82ys2sKHjzGtgSbl/eTqE=;
+ b=3fY3IZ0hJPiRN8vNazn9bcQMqR2JrjTIi9AXqwxwIe42aFOkSxs8/LodJeR17HX6gwP6nU
+ mZNm0vTVRbGLApx4Wl/flL8cOh+VgCBw+PxQes5goKWi15jShjtTx3YJEDgMNwV2KlXCJe
+ TCPPbMNaz+6Yvnpx7NfiTwQwJoNtT18=
+Date: Sat, 05 Nov 2022 10:33:54 +0000
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v2 56/65] clk: ingenic: cgu: Switch to determine_rate
+To: Maxime Ripard <maxime@cerno.tech>
+Message-Id: <IOEVKR.TWFKJND2FJ473@crapouillou.net>
+In-Reply-To: <20221104145946.orsyrhiqvypisl5j@houat>
+References: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
+ <20221018-clk-range-checks-fixes-v2-56-f6736dec138e@cerno.tech>
+ <80VTKR.CE8RVN8M3ZYK3@crapouillou.net>
+ <20221104145946.orsyrhiqvypisl5j@houat>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Mailman-Approved-At: Wed, 09 Nov 2022 18:15:49 +0100
+Cc: Ulf Hansson <ulf.hansson@linaro.org>,
+ Prashant Gaikwad <pgaikwad@nvidia.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Michael Turquette <mturquette@baylibre.com>, Sekhar Nori <nsekhar@ti.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ dri-devel@lists.freedesktop.org, Max Filippov <jcmvbkbc@gmail.com>,
+ Thierry Reding <thierry.reding@gmail.com>, linux-phy@lists.infradead.org,
+ David Airlie <airlied@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ linux-stm32@st-md-mailman.stormreply.com, Abel Vesa <abelvesa@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Samuel Holland <samuel@sholland.org>, Chunyan Zhang <zhang.lyra@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, linux-tegra@vger.kernel.org,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Chen-Yu Tsai <wens@csie.org>,
+ NXP Linux Team <linux-imx@nxp.com>, Orson Zhai <orsonzhai@gmail.com>,
+ linux-mips@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-rtc@vger.kernel.org,
+ linux-clk@vger.kernel.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Daniel Vetter <daniel@ffwll.ch>, alsa-devel@alsa-project.org,
+ Manivannan Sadhasivam <mani@kernel.org>, linux-kernel@vger.kernel.org,
+ Sascha Hauer <s.hauer@pengutronix.de>, linux-actions@lists.infradead.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ linux-arm-kernel@lists.infradead.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Alessandro Zummo <a.zummo@towertech.it>, linux-sunxi@lists.linux.dev,
+ Stephen Boyd <sboyd@kernel.org>, patches@opensource.cirrus.com,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Andreas =?iso-8859-1?q?F=E4rber?= <afaerber@suse.de>,
+ linux-renesas-soc@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ David Lechner <david@lechnology.com>, Shawn Guo <shawnguo@kernel.org>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,20 +113,141 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 09 Nov 2022 18:11:46 +0100,
-Takashi Iwai wrote:
-> 
-> On Wed, 09 Nov 2022 17:09:09 +0100,
-> Edson Juliano Drosdeck wrote:
-> > 
-> > Positivo Master C6300 (1849:a233) require quirk for anabling headset-mic
-> > 
-> > Signed-off-by: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
-> 
-> Thanks, applied now.
+Hi Maxime,
 
-Erm, no, as you already wrote, it's incorrect, doesn't build.
-Dropped now.
+Le ven. 4 nov. 2022 =E0 15:59:46 +0100, Maxime Ripard=20
+<maxime@cerno.tech> a =E9crit :
+> Hi Paul,
+>=20
+> On Fri, Nov 04, 2022 at 02:31:20PM +0000, Paul Cercueil wrote:
+>>  Le ven. 4 nov. 2022 =E0 14:18:13 +0100, Maxime Ripard=20
+>> <maxime@cerno.tech> a
+>>  =E9crit :
+>>  > The Ingenic CGU clocks implements a mux with a set_parent hook,=20
+>> but
+>>  > doesn't provide a determine_rate implementation.
+>>  >
+>>  > This is a bit odd, since set_parent() is there to, as its name=20
+>> implies,
+>>  > change the parent of a clock. However, the most likely candidate=20
+>> to
+>>  > trigger that parent change is a call to clk_set_rate(), with
+>>  > determine_rate() figuring out which parent is the best suited for=20
+>> a
+>>  > given rate.
+>>  >
+>>  > The other trigger would be a call to clk_set_parent(), but it's=20
+>> far less
+>>  > used, and it doesn't look like there's any obvious user for that=20
+>> clock.
+>>  >
+>>  > So, the set_parent hook is effectively unused, possibly because=20
+>> of an
+>>  > oversight. However, it could also be an explicit decision by the
+>>  > original author to avoid any reparenting but through an explicit=20
+>> call to
+>>  > clk_set_parent().
+>>  >
+>>  > The driver does implement round_rate() though, which means that=20
+>> we can
+>>  > change the rate of the clock, but we will never get to change the
+>>  > parent.
+>>  >
+>>  > However, It's hard to tell whether it's been done on purpose or=20
+>> not.
+>>  >
+>>  > Since we'll start mandating a determine_rate() implementation,=20
+>> let's
+>>  > convert the round_rate() implementation to a determine_rate(),=20
+>> which
+>>  > will also make the current behavior explicit. And if it was an
+>>  > oversight, the clock behaviour can be adjusted later on.
+>>=20
+>>  So it's partly on purpose, partly because I didn't know about
+>>  .determine_rate.
+>>=20
+>>  There's nothing odd about having a lonely .set_parent callback; in=20
+>> my case
+>>  the clocks are parented from the device tree.
+>>=20
+>>  Having the clocks driver trigger a parent change when requesting a=20
+>> rate
+>>  change sounds very dangerous, IMHO. My MMC controller can be=20
+>> parented to the
+>>  external 48 MHz oscillator, and if the card requests 50 MHz, it=20
+>> could switch
+>>  to one of the PLLs. That works as long as the PLLs don't change=20
+>> rate, but if
+>>  one is configured as driving the CPU clock, it becomes messy.
+>>  The thing is, the clocks driver has no way to know whether or not=20
+>> it is
+>>  "safe" to use a designated parent.
+>>=20
+>>  For that reason, in practice, I never actually want to have a clock
+>>  re-parented - it's almost always a bad idea vs. sticking to the=20
+>> parent clock
+>>  configured in the DTS.
+>=20
+> Yeah, and this is totally fine. But we need to be explicit about it.=20
+> The
+> determine_rate implementation I did in all the patches is an exact
+> equivalent to the round_rate one if there was one. We will never ask=20
+> to
+> change the parent.
+>=20
+> Given what you just said, I would suggest to set the
+> CLK_SET_RATE_NO_REPARENT flag as well.
+
+But that would introduce policy into the driver... The fact that I=20
+don't want the MMC parented to the PLLs, doesn't mean that it's an=20
+invalid configuration per se.
+
+Cheers,
+-Paul
+
+>>=20
+>>  > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+>>  > ---
+>>  >  drivers/clk/ingenic/cgu.c | 15 ++++++++-------
+>>  >  1 file changed, 8 insertions(+), 7 deletions(-)
+>>  >
+>>  > diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
+>>  > index 1f7ba30f5a1b..0c9c8344ad11 100644
+>>  > --- a/drivers/clk/ingenic/cgu.c
+>>  > +++ b/drivers/clk/ingenic/cgu.c
+>>  > @@ -491,22 +491,23 @@ ingenic_clk_calc_div(struct clk_hw *hw,
+>>  >  	return div;
+>>  >  }
+>>  >
+>>  > -static long
+>>  > -ingenic_clk_round_rate(struct clk_hw *hw, unsigned long req_rate,
+>>  > -		       unsigned long *parent_rate)
+>>  > +static int ingenic_clk_determine_rate(struct clk_hw *hw,
+>>  > +				      struct clk_rate_request *req)
+>>  >  {
+>>  >  	struct ingenic_clk *ingenic_clk =3D to_ingenic_clk(hw);
+>>  >  	const struct ingenic_cgu_clk_info *clk_info =3D
+>>  > to_clk_info(ingenic_clk);
+>>  >  	unsigned int div =3D 1;
+>>  >
+>>  >  	if (clk_info->type & CGU_CLK_DIV)
+>>  > -		div =3D ingenic_clk_calc_div(hw, clk_info, *parent_rate,=20
+>> req_rate);
+>>  > +		div =3D ingenic_clk_calc_div(hw, clk_info, req->best_parent_rate,
+>>  > +					   req->rate);
+>>=20
+>>  Sorry but I'm not sure that this works.
+>>=20
+>>  You replace the "parent_rate" with the "best_parent_rate", and that=20
+>> means
+>>  you only check the requested rate vs. the parent with the highest=20
+>> frequency,
+>>  and not vs. the actual parent that will be used.
+>=20
+> best_parent_rate is initialized to the current parent rate, not the
+> parent with the highest frequency:
+> https://elixir.bootlin.com/linux/v6.1-rc3/source/drivers/clk/clk.c#L1471
+>=20
+> Maxime
 
 
-Takashi
