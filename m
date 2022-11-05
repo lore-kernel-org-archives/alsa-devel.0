@@ -4,59 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 390D6C43217
-	for <alsa-devel@archiver.kernel.org>; Sat,  5 Nov 2022 06:02:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE0B6C4332F
+	for <alsa-devel@archiver.kernel.org>; Sat,  5 Nov 2022 07:03:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 422A61616;
-	Sat,  5 Nov 2022 07:01:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 422A61616
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6BAB86E;
+	Sat,  5 Nov 2022 08:02:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6BAB86E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667628152;
-	bh=R21yatxMhCZCEtV6KTp1Sci+NG8CUo+hIRYOdjt32Rg=;
-	h=Date:From:To:Subject:References:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=RreGQAW/FDZyBCyABZqxTKENqZjDYsYxnSSqshNtFc7LOXz5/2a+bAFLdr/IF2j2I
-	 JSZLoNSdyF5B5S2INw/2KbT4Ec5pmz+GGMBeGUYXBitr1qy7GdC44Oq+sEb6u4fRbS
-	 OOj9JhcVY6RQGTGsEjqaxGt8MCcl2HMuRldfY8yk=
+	s=default; t=1667631792;
+	bh=FjSkGKTpynJvO5BC1qqcUA6XXwPQHfLpNXiyFgQRt4M=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=kTKMTv1FU7/i1PO/8d0FNv5QT2WDWlDOHp/0B7jFmc/C0wr25gFwNh9qkEXa4FAk6
+	 oEZy9H2x/rl8vugp5OChv7TcfY6iLdoRIQQEPup+TWic7+ArebtVfhbdm28OGn4FVB
+	 CK2L1gtPzTrzBK6VSqpzy2c/ti5nJzXr4/daa0+Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2EACF8012F;
-	Sat,  5 Nov 2022 07:01:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62BFAF8027C;
+	Sat,  5 Nov 2022 08:02:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F0ABF80494; Sat,  5 Nov 2022 07:01:40 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 5177AF8012F; Sat,  5 Nov 2022 08:02:19 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57C2DF8027C
- for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2022 07:01:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57C2DF8027C
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD52CF8012F
+ for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2022 08:02:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD52CF8012F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="2I+2StYS"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="25nVj3JN"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 0843D60A53;
- Sat,  5 Nov 2022 06:01:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72D65C43470;
- Sat,  5 Nov 2022 06:01:31 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.96)
- (envelope-from <rostedt@goodmis.org>) id 1orCFj-007Osw-1v;
- Sat, 05 Nov 2022 02:01:59 -0400
-Message-ID: <20221105060159.433729602@goodmis.org>
-User-Agent: quilt/0.66
-Date: Sat, 05 Nov 2022 02:00:49 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH v4a 25/38] timers: ALSA: Use timer_shutdown_sync() before
- freeing timer
-References: <20221105060024.598488967@goodmis.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: alsa-devel@alsa-project.org, Stephen Boyd <sboyd@kernel.org>,
- Linus Torvalds <torvalds@linux-foundation.org>, Takashi Iwai <tiwai@suse.de>,
- Austin Kim <austin.kim@lge.com>, Thomas Gleixner <tglx@linutronix.de>,
- Anna-Maria Gleixner <anna-maria@linutronix.de>,
- Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id BF49021A9D;
+ Sat,  5 Nov 2022 07:02:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1667631730; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=X0ppagksfAuALDrGwQ5qm6wqSQlWibYY5ZY3yG6vXnU=;
+ b=2I+2StYS5TRC944cTGyH+xqFoWRc296KW5JzNeALLhXSBMb1xVA7vvjPXK0GENwTlufY83
+ CYJ+55dZcsetam1cidIbhwgAUwykQ1GxSR0HM559RkjxZLjB3gyAo3z4ENIIlke8tUvE5D
+ Dha33eHOUoRbYXDF+VD5+rUgAJIM0z0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1667631730;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=X0ppagksfAuALDrGwQ5qm6wqSQlWibYY5ZY3yG6vXnU=;
+ b=25nVj3JNHFoy9d3QgojV7ns7y3m14CR/oRF1mRPbj6PkvA8Q6WYIGqSjYs19TbRwlwcoiJ
+ FoblJEVNw3OJsCBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 957E813AA6;
+ Sat,  5 Nov 2022 07:02:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id uQN0I3IKZmNCfQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Sat, 05 Nov 2022 07:02:10 +0000
+Date: Sat, 05 Nov 2022 08:02:10 +0100
+Message-ID: <87cza1j34d.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Xian Wang <dev@xianwang.io>
+Subject: Re: [PATCH] patch_ca0132: add quirk for EVGA Z390 DARK
+In-Reply-To: <20221104202913.13904-1-dev@xianwang.io>
+References: <20221104202913.13904-1-dev@xianwang.io>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,47 +95,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Fri, 04 Nov 2022 21:29:13 +0100,
+Xian Wang wrote:
+> 
+> The Z390 DARK mainboard uses a CA0132 audio controller. The quirk is
+> needed to enable surround sound and 3.5mm headphone jack handling in
+> the front audio connector as well as in the rear of the board when in
+> stereo mode.
+> 
+> Page 97 of the linked manual contains instructions to setup the
+> controller.
+> 
+> Link: https://www.evga.com/support/manuals/files/131-CS-E399.pdf
+> 
+> Cc: stable@vger.kernel.org
+> 
+> Signed-off-by: Xian Wang <dev@xianwang.io>
 
-Before a timer is freed, timer_shutdown_sync() must be called.
+Thanks, applied now.
 
-Link: https://lore.kernel.org/all/20221104054053.431922658@goodmis.org/
 
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Austin Kim <austin.kim@lge.com>
-Cc: alsa-devel@alsa-project.org
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- sound/i2c/other/ak4117.c | 2 +-
- sound/synth/emux/emux.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/i2c/other/ak4117.c b/sound/i2c/other/ak4117.c
-index 1bc43e927d82..640501bb3ca6 100644
---- a/sound/i2c/other/ak4117.c
-+++ b/sound/i2c/other/ak4117.c
-@@ -47,7 +47,7 @@ static void reg_dump(struct ak4117 *ak4117)
- 
- static void snd_ak4117_free(struct ak4117 *chip)
- {
--	del_timer_sync(&chip->timer);
-+	timer_shutdown_sync(&chip->timer);
- 	kfree(chip);
- }
- 
-diff --git a/sound/synth/emux/emux.c b/sound/synth/emux/emux.c
-index a870759d179e..0006c3ddb51d 100644
---- a/sound/synth/emux/emux.c
-+++ b/sound/synth/emux/emux.c
-@@ -129,7 +129,7 @@ int snd_emux_free(struct snd_emux *emu)
- 	if (! emu)
- 		return -EINVAL;
- 
--	del_timer_sync(&emu->tlist);
-+	timer_shutdown_sync(&emu->tlist);
- 
- 	snd_emux_proc_free(emu);
- 	snd_emux_delete_virmidi(emu);
--- 
-2.35.1
+Takashi
