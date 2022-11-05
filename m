@@ -4,90 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFACAC4332F
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 17:18:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C758C4332F
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 17:18:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D44F163A;
-	Wed,  9 Nov 2022 18:17:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D44F163A
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2C90167A;
+	Wed,  9 Nov 2022 18:17:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2C90167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668014304;
-	bh=vipwvc1//PeYOkbmhgVU3syVSrf+PuvTJkmAWXVm/q0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=T6OMWRItlXsESJoww2ScCWwz+Bv/k5nkw2QMF9sVYJyuYKfA++cfy0b44ltQ+34nI
-	 cbKuoCrZgGujH/bQdZGWnnpUmNM1ROYKNkKW+BiZBzOpqCTYsazAc5QE91lM172/UO
-	 aRAwweo2F2p7y9NtCle0b7tcHjv4TfP652oyFYk0=
+	s=default; t=1668014311;
+	bh=CQLjbNDmFwUAJ1ZN1xZlzSdFueeYzbvzgBu+x9ugdAQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fRPq9jPuXiK6tMyckKoIyfDonwX63ObREfByA3qC/akzfgvHlTchaE98SC2r1G0Bh
+	 nqcNLj78pVqp2Kik5Ix2avy698YzQyNs526876ur/tO4aQSJTWexwa6mbl7BlSaWsh
+	 RDNWWLzIMkEyhnNYdyau8MD8CDWZ7TszEzb99fFI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4944F80578;
-	Wed,  9 Nov 2022 18:15:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3DA75F80579;
+	Wed,  9 Nov 2022 18:15:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF8B6F803DC; Sat,  5 Nov 2022 10:39:42 +0100 (CET)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
+ id EA506F803DC; Sat,  5 Nov 2022 15:18:25 +0100 (CET)
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com
+ [IPv6:2607:f8b0:4864:20::22a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46632F801D5
- for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2022 10:39:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46632F801D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id A2494F80271
+ for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2022 15:18:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2494F80271
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="eZUXAjEg"
-Received: by mail-wm1-x329.google.com with SMTP id
- a11-20020a05600c2d4b00b003cf6f5fd9f1so4485146wmg.2
- for <alsa-devel@alsa-project.org>; Sat, 05 Nov 2022 02:39:39 -0700 (PDT)
+ header.b="cEC5IT1X"
+Received: by mail-oi1-x22a.google.com with SMTP id p127so7941266oih.9
+ for <alsa-devel@alsa-project.org>; Sat, 05 Nov 2022 07:18:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=g7pK56t2R6Ps3nWxcCA0h4Y93S07BBRs7F+fa1Fp9yo=;
- b=eZUXAjEgKFh1gKa76NKDihcp9jKqj+CroyCLGuKPjIH9/yonf3Ah69KSQJPXeY4oJF
- 3NWqsjWItl5VSyLGnqJ87QregktPBqtfzFOTDgn/jWDTdpSP8nmYydVVCG7UkAiT4GOc
- oV+inyNe/Pz9tz5Ddsz3aHcxZEM+DPp8nuAFWco0MFdLT5pM9SWNiwHEOeWs598GZrBw
- NFAUXwoegA7jsBvTUinXSGxjHtA1EZvr8x7HVZnzGUI09X1YjTAtLKbeBfLxvh98WD1T
- /b1ukzw076V0J26RGr/kye4Uyr11f84PEpUlxh/WWNlgkVUolx9J3X0aHP4HyCO6Ks34
- LdLQ==
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+ :reply-to; bh=PYhR6hYWBdnOcbKjn7H8NpQf1Qg9j5JtEEKHrz9oi/g=;
+ b=cEC5IT1XpqlAK68Dgo5+fxnDFCjVpzY0DRagRqxTDry42i1dK2tcbNHYd7Ayss+LTR
+ Zq5Ih2v2443bsxwUvCZI2AevutQelDkhHOJqQhhh90RAdGwH1ztuIkNBULvbO0OWUDyB
+ Zs3Rt+XqCTKE2Cs9eS/ndyLispMby6sUmCV9hIPpDCZ1JKOuE8AnRRE6npVgjTBnltto
+ YYH4ZircOfT5HS0GEZGZOnxYVDveuMG1fd0QtTxHxYW8Huxn/roqBK+JFSqL6Tdp87g+
+ GSZROE0361WHir4UDtfX6jA945ccs7fZ7mz9TOtoNTCBa80eZ2tSlHY0p6xlLXtkRQTo
+ pyNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=g7pK56t2R6Ps3nWxcCA0h4Y93S07BBRs7F+fa1Fp9yo=;
- b=r7kmcDUhYJwdPJj3f8h9JBtfuJFkXK3+jL+BDTnQ90zdUHwEzRL5Lt4E/3O6NIflIl
- m2z82eRiNPAT9hVyP/4s/ZeYLFFAN0dym+3OBckKgWYhh9gCjx96m41R7W0GRH97POt2
- S7Nx1NF7HAeJwEqtx2EUfyZCOi6IMPqbcpI1Lp+KgNcgmie0LMeaEY9Bl3DrBCvK8zOB
- V9DykATp3LHsVwazH7+uLvevlrRdmXLvD89E/DPl3vAwZUKyrD4gfLMhVZNUNP67nm8V
- iOXDNXd1myB3AGLFTvp9mnjaRamzySlg9qN/DLDN2PCOsm8CLQmXHsLE9SVlcJhhu4zj
- LJRw==
-X-Gm-Message-State: ACrzQf2tNkcC/pAMYCBQPzVxEIHvUxsnFfemnQAX4cd7SURNuKgMxmos
- ZUjLzy37l4AIaYchihj/L1M=
-X-Google-Smtp-Source: AMsMyM5PvPcwHf6V3i5PsjristDEGZsePtXLhYQmhw8olTLE3aZB+mn4rbBIJZcB50eBAaseYY23OQ==
-X-Received: by 2002:a1c:27c6:0:b0:3c2:e6df:c79b with SMTP id
- n189-20020a1c27c6000000b003c2e6dfc79bmr35729022wmn.14.1667641177909; 
- Sat, 05 Nov 2022 02:39:37 -0700 (PDT)
-Received: from localhost.localdomain ([213.177.192.129])
- by smtp.googlemail.com with ESMTPSA id
- z11-20020a05600c0a0b00b003b4868eb71bsm6073622wmp.25.2022.11.05.02.39.37
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=PYhR6hYWBdnOcbKjn7H8NpQf1Qg9j5JtEEKHrz9oi/g=;
+ b=CQaNQiFaq/DNT2ZA2a1zFmitlqavJcvskUc0jB29+LgCoGYMJk4NocArXWVlCLxyFe
+ dlC6TgCBK9qNthh+sqZNirS21M45X3rY9Kw0gSwMK3vgWcC9rIJmoMnKl59WQWzw8cmH
+ QxInMtaKR8I/Gj2bCiog5eA54X3fzUJg+wOHqc3QGQJ6vF/TGeATTfbOweDzI/AF+rGH
+ fn7wQ5YDz3o528mP47nM0xQvc2w160JVCVG7+I/gPwQ0sShgJDXlx4tHU9KffRMt7Kr4
+ G0Hx1Lvkg4Mrsj05JZjm6q+U+GAhmrlABKgmDAFw9uybU0buJ8FDRkVmc3h3hWd+zMxq
+ 6aaA==
+X-Gm-Message-State: ACrzQf3ldnU7SwitNlOayk9kXo08l89UNc6jfquXNwLzibAFVn0aIzOB
+ L+AvRLVtL7sLd1FOiK5IUqE=
+X-Google-Smtp-Source: AMsMyM5In/UjkQAOQkguZQ2rHL63I8msSs9c6an0J/9gKdjSX2hezT8PwL34Y+85tQUi0BEYyplo0Q==
+X-Received: by 2002:a05:6808:2104:b0:35a:5e9:a411 with SMTP id
+ r4-20020a056808210400b0035a05e9a411mr18764923oiw.168.1667657900081; 
+ Sat, 05 Nov 2022 07:18:20 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+ by smtp.gmail.com with ESMTPSA id
+ e1-20020a056870c0c100b00132741e966asm830469oad.51.2022.11.05.07.18.18
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 05 Nov 2022 02:39:37 -0700 (PDT)
-From: Juan Alfonso Reyes Ajenjo <juanalfonso.reyes@gmail.com>
-To: 
-Subject: [PATCH] Fix tas2562 volume table values
-Date: Sat,  5 Nov 2022 10:39:16 +0100
-Message-Id: <20221105093918.12274-1-juanalfonso.reyes@gmail.com>
-X-Mailer: git-send-email 2.25.1
+ Sat, 05 Nov 2022 07:18:19 -0700 (PDT)
+Date: Sat, 5 Nov 2022 07:18:17 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v4a 00/38] timers: Use timer_shutdown*() before freeing
+ timers
+Message-ID: <20221105141817.GF1606271@roeck-us.net>
+References: <20221105060024.598488967@goodmis.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Wed, 09 Nov 2022 18:15:50 +0100
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
- <alsa-devel@alsa-project.org>, Fabio Estevam <festevam@denx.de>,
- Charles Keepax <ckeepax@opensource.cirrus.com>, juanalfonso.reyes@gmail.com,
- open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>,
- Mark Brown <broonie@kernel.org>, Gustavo Plaza Roma <gplazar03@gmail.com>,
- Stephen Kitt <steve@sk2.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221105060024.598488967@goodmis.org>
+X-Mailman-Approved-At: Wed, 09 Nov 2022 18:15:49 +0100
+Cc: alsa-devel@alsa-project.org, linux-staging@lists.linux.dev,
+ linux-doc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org, Thomas Gleixner <tglx@linutronix.de>,
+ linux-leds@vger.kernel.org, drbd-dev@lists.linbit.com,
+ linux-s390@vger.kernel.org, linux-nilfs@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-atm-general@lists.sourceforge.net, linux-afs@lists.infradead.org,
+ lvs-devel@vger.kernel.org, linux-acpi@vger.kernel.org, coreteam@netfilter.org,
+ intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
+ tipc-discussion@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+ linux-media@vger.kernel.org, bridge@lists.linux-foundation.org,
+ linux-pm@vger.kernel.org, intel-gfx@lists.freedesktop.org, rcu@vger.kernel.org,
+ cgroups@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
+ Anna-Maria Gleixner <anna-maria@linutronix.de>, linux-edac@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-nfs@vger.kernel.org,
+ linux-parisc@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+ netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-bluetooth@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,41 +119,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch fixes -90dB value (0x84a3 instead of 0x695b)
-This patch adds missing -20dB value (0x06666666)
-float_vol_db_lookup must have 56 values as volume is from 0 to 55 (0-110dB)
+On Sat, Nov 05, 2022 at 02:00:24AM -0400, Steven Rostedt wrote:
+> 
+> Back in April, I posted an RFC patch set to help mitigate a common issue
+> where a timer gets armed just before it is freed, and when the timer
+> goes off, it crashes in the timer code without any evidence of who the
+> culprit was. I got side tracked and never finished up on that patch set.
+> Since this type of crash is still our #1 crash we are seeing in the field,
+> it has become a priority again to finish it.
+> 
+> The last version of that patch set is here:
+> 
+>   https://lore.kernel.org/all/20221104054053.431922658@goodmis.org/
+> 
+> I'm calling this version 4a as it only has obvious changes were the timer that
+> is being shutdown is in the same function where it will be freed or released,
+> as this series should be "safe" for adding. I'll be calling the other patches
+> 4b for the next merge window.
+> 
 
-Co-developed-by: Gustavo Plaza Roma <gplazar03@gmail.com>
-Signed-off-by: Gustavo Plaza Roma <gplazar03@gmail.com>
-Signed-off-by: Juan Alfonso Reyes Ajenjo <juanalfonso.reyes@gmail.com>
----
- sound/soc/codecs/tas2562.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Just in case you didn't notice:
 
-diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
-index b486d0b..acbdf77 100644
---- a/sound/soc/codecs/tas2562.c
-+++ b/sound/soc/codecs/tas2562.c
-@@ -33,15 +33,16 @@
- static const unsigned int float_vol_db_lookup[] = {
- 0x00000d43, 0x000010b2, 0x00001505, 0x00001a67, 0x00002151,
- 0x000029f1, 0x000034cd, 0x00004279, 0x000053af, 0x0000695b,
--0x0000695b, 0x0000a6fa, 0x0000d236, 0x000108a4, 0x00014d2a,
-+0x000084a3, 0x0000a6fa, 0x0000d236, 0x000108a4, 0x00014d2a,
- 0x0001a36e, 0x00021008, 0x000298c0, 0x000344df, 0x00041d8f,
- 0x00052e5a, 0x000685c8, 0x00083621, 0x000a566d, 0x000d03a7,
- 0x0010624d, 0x0014a050, 0x0019f786, 0x0020b0bc, 0x0029279d,
- 0x0033cf8d, 0x004139d3, 0x00521d50, 0x00676044, 0x0082248a,
- 0x00a3d70a, 0x00ce4328, 0x0103ab3d, 0x0146e75d, 0x019b8c27,
- 0x02061b89, 0x028c423f, 0x03352529, 0x0409c2b0, 0x05156d68,
--0x080e9f96, 0x0a24b062, 0x0cc509ab, 0x10137987, 0x143d1362,
--0x197a967f, 0x2013739e, 0x28619ae9, 0x32d64617, 0x40000000
-+0x06666666, 0x080e9f96, 0x0a24b062, 0x0cc509ab, 0x10137987,
-+0x143d1362, 0x197a967f, 0x2013739e, 0x28619ae9, 0x32d64617,
-+0x40000000
- };
- 
- struct tas2562_data {
--- 
-2.7.4
+Looking through the resulting code, I think some of the remaining
+calls to del_singleshot_timer_sync() can be converted as well.
 
+The calls in drivers/staging/wlan-ng/prism2usb.c:prism2sta_disconnect_usb()
+are obvious (the containing data structure is freed in the same function).
+For drivers/char/tpm/tpm-dev-common.c:tpm_common_release(), the containing
+data structure is freed in the calling code.
+
+Thanks,
+Guenter
