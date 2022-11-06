@@ -4,70 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5191CC433FE
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Nov 2022 17:09:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6927C4332F
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Nov 2022 17:09:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 801CB9F6;
-	Sun,  6 Nov 2022 18:08:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 801CB9F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0004415F9;
+	Sun,  6 Nov 2022 18:08:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0004415F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667754538;
-	bh=0962/nnKhBf2bAmZiiQyeQHRPm1jDKsRvyc8iH052qE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=CUfYsIcJX4yk5WF7GrZXHiIOJLbGPqklTd1wlZUQXWzJ0srB4kAROWsNqn6hGM8Gd
-	 5icuXimirji1VX/T9xnDjkz4E5jgY8cFdG33PIzdqN79ILW4tfi4RqJtziqteK6uuj
-	 Xu1gxZXk9wupovUdrKmt6ipOT/eTzs/0h4tXB5U8=
+	s=default; t=1667754551;
+	bh=/m+ws4LtJVeV9zdgtIhbPo9cdoq0Rje2NJJD+yX3fok=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=GRx2abTDiUXk+AFRkshPJdUvJrPDUgVuAM9sEdK3GEne6twHTRNxIhE3a+nBdy96s
+	 Z3TEpPxEaPdxEEcUhxwqJHMEqs/Y2GFAbKIlc1okkKC0ddCIDWTMuEboDxmlHjmAcc
+	 Jdx12S+TDhwURLLB9L4vFWidal0whmEBEfxYGubk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B52C0F80240;
-	Sun,  6 Nov 2022 18:05:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 378ACF804BC;
+	Sun,  6 Nov 2022 18:05:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 828DEF804D8; Sun,  6 Nov 2022 18:05:15 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id E265BF805CA; Sun,  6 Nov 2022 18:05:17 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24B3AF80137
- for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2022 18:05:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24B3AF80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id D4CDEF804BC
+ for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2022 18:04:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4CDEF804BC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="H0KrOs/E"
+ header.b="Xw8RdSzr"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 67C1AB80C6A;
- Sun,  6 Nov 2022 17:05:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA81EC433B5;
- Sun,  6 Nov 2022 17:05:10 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id AD21560C8F;
+ Sun,  6 Nov 2022 17:04:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2163BC433C1;
+ Sun,  6 Nov 2022 17:04:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1667754312;
- bh=0962/nnKhBf2bAmZiiQyeQHRPm1jDKsRvyc8iH052qE=;
- h=From:To:Cc:Subject:Date:From;
- b=H0KrOs/EieNO4jYP/9GyMpVKh6g5KkvwOTr+ZOyG4hScgtTf63RAFM5KUMnZIWqEu
- bXh9mIun6zktp8GGjpJBxGKYGlHX4qiaCYZWNFFD5MndbdGRDGXHzqgiBshOqWvode
- Vm/1qOkEvqrhOdnhdfvBeRV7pJX5zQpI7ydNbxsRPI8BufNu8jihhaCDhGNYAZsPgV
- pJrnrbeC8n8bSnNl+SpAEpwrDK8rdVf3lkKWPdM0AKB8a2j+3Taca8DAspAAKYzxtU
- hqMI7l6ZNpZ1AyYdDcjnccS874VIAkuLD0/QCbNYiEaBdDm4mhCv6wmhZk+GErqvcC
- n0pImiLP+biZw==
+ s=k20201202; t=1667754251;
+ bh=/m+ws4LtJVeV9zdgtIhbPo9cdoq0Rje2NJJD+yX3fok=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=Xw8RdSzrdpsGQziwYNtcrLtVG6JS+RksKg7yM6Jb0F7SctpanpsYkHnL6XW8RNdEf
+ 6AQMfDBO+x1Ija17OASnTSkKyg6fgN9yd8rT2kR4gTdkxBjBSPT82rn5G57hMSu6MY
+ xuylFSXkJslwimqn8wJvPxC79kOmaSXfq0FdF7VoGVeRllOUqGqLlh7g+OmrrKXiVy
+ VF5PuH8CIfTMh8fkaQOKjMoqlwK/dE3GSRRcRTPbRGa0Pg+ZMJgPyQmY8/ubJlLAOU
+ UvWqh9Rg77HcvJgm3Hf2YM5fKIhKQAcGBBiC2llKQfEb7+YQZIuCmkdFlF7ec4hUQr
+ 57Npbln49TLUw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 01/18] ASoC: wm5102: Revert "ASoC: wm5102: Fix PM
- disable depth imbalance in wm5102_probe"
-Date: Sun,  6 Nov 2022 12:04:50 -0500
-Message-Id: <20221106170509.1580304-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.0 11/30] ASoC: codecs: jz4725b: add missed Line In
+ power control bit
+Date: Sun,  6 Nov 2022 12:03:23 -0500
+Message-Id: <20221106170345.1579893-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221106170345.1579893-1-sashal@kernel.org>
+References: <20221106170345.1579893-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
- Zhang Qilong <zhangqilong3@huawei.com>, tiwai@suse.com, lgirdwood@gmail.com,
- Mark Brown <broonie@kernel.org>
+ tiwai@suse.com, lgirdwood@gmail.com, paul@crapouillou.net,
+ Siarhei Volkau <lis8215@gmail.com>, Mark Brown <broonie@kernel.org>,
+ linux-mips@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,48 +85,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Siarhei Volkau <lis8215@gmail.com>
 
-[ Upstream commit de71d7567e358effd06dfc3e2a154b25f1331c10 ]
+[ Upstream commit 1013999b431b4bcdc1f5ae47dd3338122751db31 ]
 
-This reverts commit fcbb60820cd3008bb44334a0395e5e57ccb77329.
+Line In path stayed powered off during capturing or
+bypass to mixer.
 
-The pm_runtime_disable is redundant when error returns in
-wm5102_probe, we just revert the old patch to fix it.
-
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20221010114852.88127-2-zhangqilong3@huawei.com
+Signed-off-by: Siarhei Volkau <lis8215@gmail.com>
+Link: https://lore.kernel.org/r/20221016132648.3011729-2-lis8215@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm5102.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/jz4725b.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index c8adce8936bc..621598608bf0 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -2087,6 +2087,9 @@ static int wm5102_probe(struct platform_device *pdev)
- 		regmap_update_bits(arizona->regmap, wm5102_digital_vu[i],
- 				   WM5102_DIG_VU, WM5102_DIG_VU);
+diff --git a/sound/soc/codecs/jz4725b.c b/sound/soc/codecs/jz4725b.c
+index 5201a8f6d7b6..cc7a48c96aa4 100644
+--- a/sound/soc/codecs/jz4725b.c
++++ b/sound/soc/codecs/jz4725b.c
+@@ -236,7 +236,8 @@ static const struct snd_soc_dapm_widget jz4725b_codec_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIXER("DAC to Mixer", JZ4725B_CODEC_REG_CR1,
+ 			   REG_CR1_DACSEL_OFFSET, 0, NULL, 0),
  
-+	pm_runtime_enable(&pdev->dev);
-+	pm_runtime_idle(&pdev->dev);
-+
- 	ret = arizona_request_irq(arizona, ARIZONA_IRQ_DSP_IRQ1,
- 				  "ADSP2 Compressed IRQ", wm5102_adsp2_irq,
- 				  wm5102);
-@@ -2119,9 +2122,6 @@ static int wm5102_probe(struct platform_device *pdev)
- 		goto err_spk_irqs;
- 	}
+-	SND_SOC_DAPM_MIXER("Line In", SND_SOC_NOPM, 0, 0, NULL, 0),
++	SND_SOC_DAPM_MIXER("Line In", JZ4725B_CODEC_REG_PMR1,
++			   REG_PMR1_SB_LIN_OFFSET, 1, NULL, 0),
+ 	SND_SOC_DAPM_MIXER("HP Out", JZ4725B_CODEC_REG_CR1,
+ 			   REG_CR1_HP_DIS_OFFSET, 1, NULL, 0),
  
--	pm_runtime_enable(&pdev->dev);
--	pm_runtime_idle(&pdev->dev);
--
- 	return ret;
- 
- err_spk_irqs:
 -- 
 2.35.1
 
