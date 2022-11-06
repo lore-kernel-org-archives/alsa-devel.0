@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FA57C433FE
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Nov 2022 17:16:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5559AC4332F
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Nov 2022 17:16:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A6EC1675;
-	Sun,  6 Nov 2022 18:15:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A6EC1675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 79470169B;
+	Sun,  6 Nov 2022 18:15:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79470169B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667754961;
-	bh=e1zY74w8f4+l/6QfJLwmoA1WI0KbNI093vQ5gi1TV2c=;
+	s=default; t=1667754975;
+	bh=yD5wR7fgqJU2uAEkzYI9IAhV4Rq3fi1KsLtAsFoPHpc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Myj7/ZC3BYla66KzV3b+IR2D1hUYVNAIPvl/GpE7XMSuXYtxrcuqdfRiEdOopnS9z
-	 hse0uWnQ/PN6e7sN86tzUvgf0pmgLCqYfqHi9siTqMLVxOEJXCrqDK9mP0DzIJB6BS
-	 zEJ2RUW1ORbRFnqMiy2r1cpxcuqcwa+v/9i4xvqs=
+	b=EGRqkQlHCLPfC2fNEGrvxsA/PzLrTQmnFSZMn2LyzUBIp39SE8UsuCNZIQB3Mhnhe
+	 Hg8HoxU2n2LkSE8I+28Hl+jiHX5VYl3gvLVFPW3deirO/4JX6d9eLGyrvZCmUCEfg5
+	 pSy+2UCAlRJ+PxR7bzmPHkjkCJh27TGQ6xRdu8Y4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 206CBF80633;
-	Sun,  6 Nov 2022 18:07:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 015A1F8063A;
+	Sun,  6 Nov 2022 18:07:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28060F8063C; Sun,  6 Nov 2022 18:06:59 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 3E202F80633; Sun,  6 Nov 2022 18:06:59 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED2FFF8063A
- for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2022 18:06:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED2FFF8063A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F11CF80588
+ for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2022 18:06:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F11CF80588
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="tpV6r9wQ"
+ header.b="BxIhBcAq"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 0A20A60D14;
- Sun,  6 Nov 2022 17:06:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5993DC43145;
- Sun,  6 Nov 2022 17:06:51 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 8BF0260C55;
+ Sun,  6 Nov 2022 17:06:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2538C433D6;
+ Sun,  6 Nov 2022 17:06:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1667754412;
- bh=e1zY74w8f4+l/6QfJLwmoA1WI0KbNI093vQ5gi1TV2c=;
+ s=k20201202; t=1667754409;
+ bh=yD5wR7fgqJU2uAEkzYI9IAhV4Rq3fi1KsLtAsFoPHpc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=tpV6r9wQZMcCIQsR9DZMwXDT5vkdmlIjqqUmB04mTwp7iJ39S+kZ8HCHu20KIGuew
- xAHfvmMjDl9bBZydGYzotb4wRFgWs7/4oOVwBPyC0WnTmazwJ+FqFoN1oNWBO6sTCD
- v7CNHJ23865C96UxHk6HTyCFcql/BH0bQ2F+6kwY46rRFQ29qVpagIBMwJJUJWnC/5
- TjT+6oqJ3/5cNVAR5agJPAo4kXO20jCuy4pJb1lKAsGcFHtlqIcX2sUn8mt5QTO/Oj
- Lke+FuoQWEiNFTN482d9Bsk61qRqc/NQXua4NLcrgiz14QLp0y8KkbP39n4oOGcBrY
- sx8uNjWxgBnCQ==
+ b=BxIhBcAqln8h5yrW4Urs3gV+piH14zlsn5F6a47sOcVhUw10U5MTKczmP4U+Skg/0
+ eOJb47yWhDm706WD/ylAfC49x6efjIpreX/TPdOKObnkauX9OC6HrDffQL+ZY2EVy4
+ u3dQgIubKCzP1swrGZe1Gb8qmjoQbnwOGE+uG7O/eTBjeBSlAgvBwCZ7L/SX+IEmgD
+ Xbbf07ZPOYXoCkQFHTXGSHa11MpARn4NCd9HWoLLuw6vp4NjrpykVosQIqKoZjGQEK
+ 0Yft98s38UaSwmR9h0y1slXeW0yck487kTFM44t+O/FLHNQSiYMb1gM8vXA44D9HdS
+ QbS2loT7MRt9w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 06/12] ASoC: codecs: jz4725b: add missed Line In
- power control bit
-Date: Sun,  6 Nov 2022 12:06:30 -0500
-Message-Id: <20221106170637.1580802-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 04/12] ASoC: wm8962: Add an event handler for
+ TEMP_HP and TEMP_SPK
+Date: Sun,  6 Nov 2022 12:06:28 -0500
+Message-Id: <20221106170637.1580802-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221106170637.1580802-1-sashal@kernel.org>
 References: <20221106170637.1580802-1-sashal@kernel.org>
@@ -67,9 +68,10 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- tiwai@suse.com, lgirdwood@gmail.com, paul@crapouillou.net,
- Siarhei Volkau <lis8215@gmail.com>, Mark Brown <broonie@kernel.org>,
- linux-mips@vger.kernel.org
+ Xiaolei Wang <xiaolei.wang@windriver.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
+ tiwai@suse.com, lgirdwood@gmail.com, chi.minghao@zte.com.cn,
+ Mark Brown <broonie@kernel.org>, steve@sk2.org, Adam Ford <aford173@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,35 +87,114 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Siarhei Volkau <lis8215@gmail.com>
+From: Xiaolei Wang <xiaolei.wang@windriver.com>
 
-[ Upstream commit 1013999b431b4bcdc1f5ae47dd3338122751db31 ]
+[ Upstream commit ee1aa2ae3eaa96e70229fa61deee87ef4528ffdf ]
 
-Line In path stayed powered off during capturing or
-bypass to mixer.
+In wm8962 driver, the WM8962_ADDITIONAL_CONTROL_4 is used as a volatile
+register, but this register mixes a bunch of volatile status bits and a
+bunch of non-volatile control bits. The dapm widgets TEMP_HP and
+TEMP_SPK leverages the control bits in this register. After the wm8962
+probe, the regmap will bet set to cache only mode, then a read error
+like below would be triggered when trying to read the initial power
+state of the dapm widgets TEMP_HP and TEMP_SPK.
+  wm8962 0-001a: ASoC: error at soc_component_read_no_lock
+  on wm8962.0-001a: -16
 
-Signed-off-by: Siarhei Volkau <lis8215@gmail.com>
-Link: https://lore.kernel.org/r/20221016132648.3011729-2-lis8215@gmail.com
+In order to fix this issue, we add event handler to actually power
+up/down these widgets. With this change, we also need to explicitly
+power off these widgets in the wm8962 probe since they are enabled
+by default.
+
+Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
+Tested-by: Adam Ford <aford173@gmail.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20221010092014.2229246-1-xiaolei.wang@windriver.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/jz4725b.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm8962.c | 54 +++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 52 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/jz4725b.c b/sound/soc/codecs/jz4725b.c
-index 2567a5d15b55..a04b8d5d1ded 100644
---- a/sound/soc/codecs/jz4725b.c
-+++ b/sound/soc/codecs/jz4725b.c
-@@ -236,7 +236,8 @@ static const struct snd_soc_dapm_widget jz4725b_codec_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIXER("DAC to Mixer", JZ4725B_CODEC_REG_CR1,
- 			   REG_CR1_DACSEL_OFFSET, 0, NULL, 0),
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index ebaee468057b..c384ca3681e9 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -1840,6 +1840,49 @@ SOC_SINGLE_TLV("SPKOUTR Mixer DACR Volume", WM8962_SPEAKER_MIXER_5,
+ 	       4, 1, 0, inmix_tlv),
+ };
  
--	SND_SOC_DAPM_MIXER("Line In", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Line In", JZ4725B_CODEC_REG_PMR1,
-+			   REG_PMR1_SB_LIN_OFFSET, 1, NULL, 0),
- 	SND_SOC_DAPM_MIXER("HP Out", JZ4725B_CODEC_REG_CR1,
- 			   REG_CR1_HP_DIS_OFFSET, 1, NULL, 0),
++static int tp_event(struct snd_soc_dapm_widget *w,
++		    struct snd_kcontrol *kcontrol, int event)
++{
++	int ret, reg, val, mask;
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++
++	ret = pm_runtime_resume_and_get(component->dev);
++	if (ret < 0) {
++		dev_err(component->dev, "Failed to resume device: %d\n", ret);
++		return ret;
++	}
++
++	reg = WM8962_ADDITIONAL_CONTROL_4;
++
++	if (!strcmp(w->name, "TEMP_HP")) {
++		mask = WM8962_TEMP_ENA_HP_MASK;
++		val = WM8962_TEMP_ENA_HP;
++	} else if (!strcmp(w->name, "TEMP_SPK")) {
++		mask = WM8962_TEMP_ENA_SPK_MASK;
++		val = WM8962_TEMP_ENA_SPK;
++	} else {
++		pm_runtime_put(component->dev);
++		return -EINVAL;
++	}
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMD:
++		val = 0;
++		fallthrough;
++	case SND_SOC_DAPM_POST_PMU:
++		ret = snd_soc_component_update_bits(component, reg, mask, val);
++		break;
++	default:
++		WARN(1, "Invalid event %d\n", event);
++		pm_runtime_put(component->dev);
++		return -EINVAL;
++	}
++
++	pm_runtime_put(component->dev);
++
++	return 0;
++}
++
+ static int cp_event(struct snd_soc_dapm_widget *w,
+ 		    struct snd_kcontrol *kcontrol, int event)
+ {
+@@ -2132,8 +2175,10 @@ SND_SOC_DAPM_SUPPLY("TOCLK", WM8962_ADDITIONAL_CONTROL_1, 0, 0, NULL, 0),
+ SND_SOC_DAPM_SUPPLY_S("DSP2", 1, WM8962_DSP2_POWER_MANAGEMENT,
+ 		      WM8962_DSP2_ENA_SHIFT, 0, dsp2_event,
+ 		      SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+-SND_SOC_DAPM_SUPPLY("TEMP_HP", WM8962_ADDITIONAL_CONTROL_4, 2, 0, NULL, 0),
+-SND_SOC_DAPM_SUPPLY("TEMP_SPK", WM8962_ADDITIONAL_CONTROL_4, 1, 0, NULL, 0),
++SND_SOC_DAPM_SUPPLY("TEMP_HP", SND_SOC_NOPM, 0, 0, tp_event,
++		SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
++SND_SOC_DAPM_SUPPLY("TEMP_SPK", SND_SOC_NOPM, 0, 0, tp_event,
++		SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
  
+ SND_SOC_DAPM_MIXER("INPGAL", WM8962_LEFT_INPUT_PGA_CONTROL, 4, 0,
+ 		   inpgal, ARRAY_SIZE(inpgal)),
+@@ -3750,6 +3795,11 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
+ 	if (ret < 0)
+ 		goto err_pm_runtime;
+ 
++	regmap_update_bits(wm8962->regmap, WM8962_ADDITIONAL_CONTROL_4,
++			    WM8962_TEMP_ENA_HP_MASK, 0);
++	regmap_update_bits(wm8962->regmap, WM8962_ADDITIONAL_CONTROL_4,
++			    WM8962_TEMP_ENA_SPK_MASK, 0);
++
+ 	regcache_cache_only(wm8962->regmap, true);
+ 
+ 	/* The drivers should power up as needed */
 -- 
 2.35.1
 
