@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE4F0C433FE
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Nov 2022 17:09:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4864FC43217
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Nov 2022 17:09:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E2E4B1632;
-	Sun,  6 Nov 2022 18:08:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2E4B1632
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71EBF1634;
+	Sun,  6 Nov 2022 18:08:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71EBF1634
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667754566;
-	bh=+xJaLsec8UslbCPI7l0OXafdrxQf8ut4IN37UUvG8+s=;
+	s=default; t=1667754579;
+	bh=gsVXRYCR9lVIvBRGS7VnApwkMRqk9CPCHhrgfVyh1XM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oL1bf2tiny7ZozUBUXKnnwxKCBGhCvDsvco1Su4m9fLIBM3A1CiH/nb/rx/28/neI
-	 FDzWCcymZwrrmVT+PyBSRv+r31tgEkWsz9UetV3qN1FXmoonzqazUDUX+/zQn536JS
-	 d/gOEJKuLdELP5QcjagPd5WSTcbc2juVHx9XEvNo=
+	b=JchB3vuMaEgCYV2nuB9XSoiNAaEObPQslTgki27pM+/XTsY3wSiGQBVTy1D/QJamY
+	 EXYJc15kFOFQHfPayPz5XKne+kb0tP2tWZJT5qlNJGWgn481iBgeulO+CWj3HxY2xz
+	 VoRMIW4IflWIKKuGtMahKkmvqQhe8uPm4JW4rt3A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0164F80570;
-	Sun,  6 Nov 2022 18:05:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77C1BF805D7;
+	Sun,  6 Nov 2022 18:05:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 349ECF80566; Sun,  6 Nov 2022 18:05:22 +0100 (CET)
+ id 84ECBF805D7; Sun,  6 Nov 2022 18:05:25 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1774F800AB
- for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2022 18:05:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1774F800AB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 73AE3F80238
+ for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2022 18:05:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73AE3F80238
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mSZ6aaQO"
+ header.b="muxwargl"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 83D7860CF5;
- Sun,  6 Nov 2022 17:05:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFC6EC433C1;
- Sun,  6 Nov 2022 17:05:13 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6479D60C3F;
+ Sun,  6 Nov 2022 17:05:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5CF1C433D6;
+ Sun,  6 Nov 2022 17:05:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1667754314;
- bh=+xJaLsec8UslbCPI7l0OXafdrxQf8ut4IN37UUvG8+s=;
+ s=k20201202; t=1667754321;
+ bh=gsVXRYCR9lVIvBRGS7VnApwkMRqk9CPCHhrgfVyh1XM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=mSZ6aaQOGH/B+LDg34dn+jjdNxBDtYbOw35qKljvKSn4j5Cll8Rd66s8DGq5w/MEE
- Oi+KCkyhEjZKVbGaicrOck2AcBv/RLo/7IcicESuC2fbU4GdVz4ww/4etxmtjtuv4u
- IKTuJ0LXwabC5AuJ5q05xolFNy4i2BWBGquowqI44rWO053WcOfBctl2rQ8bT3ZF25
- 81WxDGOxybhMwbF0Pi1835FfcC6e8oW/1r25wp4w8h+0B6dDli8H8HHlWMmSS9e/gp
- NA+PuYUWdUMxakGCBuXLDA8HBDaZUECLO83z7+8byvbCcnDTt1Q7cL3UUBbx8JpvNN
- 9ms3xTR2jwFbQ==
+ b=muxwarglnq6BbU8YxZ2kHEXJtdvx9SyGPoD0vAztG1ZSMYTohz39I4BE+PWrbZWdd
+ ICnCQhD0PfHlodPrBssbbD9Aqfpq+QzjZT27TdHHjRq3YkLnRBlFfJhhdX4cb4mt5m
+ fBHDRQAMQqrdoBg/3x1u8TolD4KJ+YdPfx666MlwEGUG0K6xMfd+3EAcb9XncgfvUu
+ 4+0Za5IDGwJYqSqj3P99DoUjMjZGdmKshp4LswKZZgf5lF40Vqdzpt0pQrVP9O6RpM
+ 6e8QQEolNE/yIMGUFZgFXE9ERij4LwuD0s/TgV0sg8m08xAneMK+59Ml2DenFiGhiU
+ cxQ7tayl41low==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 02/18] ASoC: wm5110: Revert "ASoC: wm5110: Fix PM
- disable depth imbalance in wm5110_probe"
-Date: Sun,  6 Nov 2022 12:04:51 -0500
-Message-Id: <20221106170509.1580304-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 04/18] ASoC: mt6660: Keep the pm_runtime enables
+ before component stuff in mt6660_i2c_probe
+Date: Sun,  6 Nov 2022 12:04:53 -0500
+Message-Id: <20221106170509.1580304-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221106170509.1580304-1-sashal@kernel.org>
 References: <20221106170509.1580304-1-sashal@kernel.org>
@@ -67,10 +67,12 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org, steve@sk2.org,
  Zhang Qilong <zhangqilong3@huawei.com>, tiwai@suse.com, lgirdwood@gmail.com,
- Mark Brown <broonie@kernel.org>
+ chi.minghao@zte.com.cn, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+ ckeepax@opensource.cirrus.com, linux-arm-kernel@lists.infradead.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,46 +90,44 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 7d4e966f4cd73ff69bf06934e8e14a33fb7ef447 ]
+[ Upstream commit c4ab29b0f3a6f1e167c5a627f7cd036c1d2b7d65 ]
 
-This reverts commit 86b46bf1feb83898d89a2b4a8d08d21e9ea277a7.
-
-The pm_runtime_disable is redundant when error returns in
-wm5110_probe, we just revert the old patch to fix it.
+It would be better to keep the pm_runtime enables before the
+IRQ and component stuff. Both of those could start triggering
+PM runtime events.
 
 Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20221010114852.88127-3-zhangqilong3@huawei.com
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Link: https://lore.kernel.org/r/20221008140522.134912-1-zhangqilong3@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm5110.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/mt6660.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 66a4827c16bd..7c6e01720d65 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -2458,6 +2458,9 @@ static int wm5110_probe(struct platform_device *pdev)
- 		regmap_update_bits(arizona->regmap, wm5110_digital_vu[i],
- 				   WM5110_DIG_VU, WM5110_DIG_VU);
- 
-+	pm_runtime_enable(&pdev->dev);
-+	pm_runtime_idle(&pdev->dev);
-+
- 	ret = arizona_request_irq(arizona, ARIZONA_IRQ_DSP_IRQ1,
- 				  "ADSP2 Compressed IRQ", wm5110_adsp2_irq,
- 				  wm5110);
-@@ -2490,9 +2493,6 @@ static int wm5110_probe(struct platform_device *pdev)
- 		goto err_spk_irqs;
+diff --git a/sound/soc/codecs/mt6660.c b/sound/soc/codecs/mt6660.c
+index a0a3fd60e93a..7d7f97b8c7c4 100644
+--- a/sound/soc/codecs/mt6660.c
++++ b/sound/soc/codecs/mt6660.c
+@@ -504,14 +504,14 @@ static int mt6660_i2c_probe(struct i2c_client *client,
+ 		dev_err(chip->dev, "read chip revision fail\n");
+ 		goto probe_fail;
  	}
++	pm_runtime_set_active(chip->dev);
++	pm_runtime_enable(chip->dev);
  
--	pm_runtime_enable(&pdev->dev);
--	pm_runtime_idle(&pdev->dev);
--
+ 	ret = devm_snd_soc_register_component(chip->dev,
+ 					       &mt6660_component_driver,
+ 					       &mt6660_codec_dai, 1);
+-	if (!ret) {
+-		pm_runtime_set_active(chip->dev);
+-		pm_runtime_enable(chip->dev);
+-	}
++	if (ret)
++		pm_runtime_disable(chip->dev);
+ 
  	return ret;
  
- err_spk_irqs:
 -- 
 2.35.1
 
