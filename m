@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92E0FC433FE
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Nov 2022 17:14:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D974CC4332F
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Nov 2022 17:14:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C429D167D;
-	Sun,  6 Nov 2022 18:13:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C429D167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B0C4168A;
+	Sun,  6 Nov 2022 18:13:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B0C4168A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667754866;
-	bh=BMx0qXfysCm6idszSFX1CP/wYoVZfQ+FpHyLUpSlzXE=;
+	s=default; t=1667754881;
+	bh=NSYIezykGFvVUMwGYCG5DyKv09eJL769Py78ZlwLQuc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KhD3CFyJoR8IeGjJ+g32w+Tdy1e3EZQb3Fg0YxXUnpcXdDpXJnwSI0Sj5eLWiWVQu
-	 nGfGG6xzFTLLEp7TY49X2hZmr/C5Uu6aTygnkicTETfyu8IeNuiYR4B6CfgXp83NR1
-	 zvA8KQEh0Y+iUVWmAdCRzq8o0Zd7MsCIHtkOOKJY=
+	b=NWfEYPfY5PmrKSI/jLuhD7RMQ7aCSV9S83SJtJqMMlEgYYyQ7p5gFRjDCCBSGSHAC
+	 VC0LR2Y5Mh0OjQzoVAneJaMl5uiZpAq/mjkdxJb9Iiv4/pWPEONI1CsX3LrTKs/4xV
+	 kDMeFXgY+EDEFxScdEwyQbLo2qlKfLioaSSW+6AU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4E9CF8061B;
-	Sun,  6 Nov 2022 18:06:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1FAA2F80622;
+	Sun,  6 Nov 2022 18:06:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79D3BF8061B; Sun,  6 Nov 2022 18:06:27 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id EBB4AF80622; Sun,  6 Nov 2022 18:06:32 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 15584F80612
- for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2022 18:06:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15584F80612
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15ADCF80619
+ for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2022 18:06:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15ADCF80619
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kMY6AXVx"
+ header.b="KyVmTzOj"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 55CADB80B3A;
- Sun,  6 Nov 2022 17:06:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE4C4C43142;
- Sun,  6 Nov 2022 17:06:13 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 8858960CE8;
+ Sun,  6 Nov 2022 17:06:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53D8CC433C1;
+ Sun,  6 Nov 2022 17:06:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1667754375;
- bh=BMx0qXfysCm6idszSFX1CP/wYoVZfQ+FpHyLUpSlzXE=;
+ s=k20201202; t=1667754383;
+ bh=NSYIezykGFvVUMwGYCG5DyKv09eJL769Py78ZlwLQuc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=kMY6AXVxDCHnG5buEQCGgeVnkWBh2Gdk0vGOlgTPdEjlfaYT7e6OoTtXxBPvAZKND
- dSrFysdL53toC1+aDBTC/bHjk1+1PrpNtCLZ6m0cF7rnpionyYNbWVhFUvxBRcvhYv
- spBnHZmPdXBUdL7UKtXA2WmSV6av1PCe3/Gz/siNa+MU10frtdeDWp7vBQAjRFvPgs
- WWNkPWTv7ilezOi2w/S9ckI4Ds+UneIKZGzuK9M9pr5p6I7ciV6tjU6d0bIpUjk+6c
- fhCavsrYEt9V81rPzQ9ec4S8x/RW1Yld/tQxu39E4lM8XwI7AdVQ1GBDdnmKC2U2LP
- Voy+TNyjOFrNQ==
+ b=KyVmTzOjKW7uVd8FUNRDQGZLKkENNSK4oKG0LvNyzdEpOjPq/2yoN7+s8V6iXeCzo
+ psMI0MmtMhJaBAOxva0DZvwgn28P9Zgsfd3IIvoIf9wICVzpanHBzrpCW3s+s01hQW
+ fEqnQJctUbFYu88n6YTthfafB71wasnCqjjQgThxR3aAq3F0L246KQDPcAsdtW49Ah
+ tSYygootiuyd42cvkOkVSjd9pIRvIb9mGfQkIdFl6VuDDqIsIy04jqZcNyMXY6W9E6
+ uaSE8W4SJB+7PtvHiTe2M6j9aW2oUcj5W7C+yokEd9oWU3Lc8yHSlVqFzfg7zwc5Mv
+ KohlVYhsHjZgQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 07/16] ASoC: codecs: jz4725b: add missed Line In
- power control bit
-Date: Sun,  6 Nov 2022 12:05:44 -0500
-Message-Id: <20221106170555.1580584-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 11/16] ASoC: Intel: sof_sdw: add quirk variant
+ for LAPBC710 NUC15
+Date: Sun,  6 Nov 2022 12:05:48 -0500
+Message-Id: <20221106170555.1580584-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221106170555.1580584-1-sashal@kernel.org>
 References: <20221106170555.1580584-1-sashal@kernel.org>
@@ -66,10 +66,14 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- tiwai@suse.com, lgirdwood@gmail.com, paul@crapouillou.net,
- Siarhei Volkau <lis8215@gmail.com>, Mark Brown <broonie@kernel.org>,
- linux-mips@vger.kernel.org
+Cc: Sasha Levin <sashal@kernel.org>, cezary.rojewski@intel.com,
+ kai.vehmanen@linux.intel.com, rander.wang@intel.com,
+ peter.ujfalusi@linux.intel.com, tiwai@suse.com,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, i@cpp.in,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, yong.zhi@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,35 +89,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Siarhei Volkau <lis8215@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 1013999b431b4bcdc1f5ae47dd3338122751db31 ]
+[ Upstream commit 41deb2db64997d01110faaf763bd911d490dfde7 ]
 
-Line In path stayed powered off during capturing or
-bypass to mixer.
+Some NUC15 LAPBC710 devices don't expose the same DMI information as
+the Intel reference, add additional entry in the match table.
 
-Signed-off-by: Siarhei Volkau <lis8215@gmail.com>
-Link: https://lore.kernel.org/r/20221016132648.3011729-2-lis8215@gmail.com
+BugLink: https://github.com/thesofproject/linux/issues/3885
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Link: https://lore.kernel.org/r/20221017204054.207512-1-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/jz4725b.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/sof_sdw.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/sound/soc/codecs/jz4725b.c b/sound/soc/codecs/jz4725b.c
-index e49374c72e70..9f6f4e941e55 100644
---- a/sound/soc/codecs/jz4725b.c
-+++ b/sound/soc/codecs/jz4725b.c
-@@ -236,7 +236,8 @@ static const struct snd_soc_dapm_widget jz4725b_codec_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIXER("DAC to Mixer", JZ4725B_CODEC_REG_CR1,
- 			   REG_CR1_DACSEL_OFFSET, 0, NULL, 0),
- 
--	SND_SOC_DAPM_MIXER("Line In", SND_SOC_NOPM, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Line In", JZ4725B_CODEC_REG_PMR1,
-+			   REG_PMR1_SB_LIN_OFFSET, 1, NULL, 0),
- 	SND_SOC_DAPM_MIXER("HP Out", JZ4725B_CODEC_REG_CR1,
- 			   REG_CR1_HP_DIS_OFFSET, 1, NULL, 0),
- 
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 25548555d8d7..5e1a718a64da 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -175,6 +175,17 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 					SOF_SDW_PCH_DMIC |
+ 					SOF_RT711_JD_SRC_JD2),
+ 	},
++	{
++		/* NUC15 LAPBC710 skews */
++		.callback = sof_sdw_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Intel Corporation"),
++			DMI_MATCH(DMI_BOARD_NAME, "LAPBC710"),
++		},
++		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
++					SOF_SDW_PCH_DMIC |
++					RT711_JD1),
++	},
+ 	/* TigerLake-SDCA devices */
+ 	{
+ 		.callback = sof_sdw_quirk_cb,
 -- 
 2.35.1
 
