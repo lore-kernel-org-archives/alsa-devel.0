@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 460B6C4332F
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Nov 2022 17:13:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FC7DC43217
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Nov 2022 17:13:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6AA08166D;
-	Sun,  6 Nov 2022 18:12:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AA08166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id D184F1F1;
+	Sun,  6 Nov 2022 18:12:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D184F1F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667754785;
-	bh=7KTEvaEN6pllnL953loH5YZMkruYuS0cDZuxGKvU1Qw=;
+	s=default; t=1667754808;
+	bh=1ORQlxAowSfhXvICF3tR/7GM3ipW9w9XtoSFsQVIZSo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LFfsgvY34XwjkNEGu+oS+sC3fX7cfyJ0PRONQC253HOfBv9IMv3hvgqDTswwUs0TM
-	 k7kcasEx8PRsm6i+arWJiuxlPj4R9peIv0jaDZ85jGAU9zeb/pmzfqlHbm+MwV4nbn
-	 +T+oUR9zuypJO33Hh07kTPG7E+P8ctVc61bUz4zo=
+	b=PgJ4/Q+QCLdyHX2OAcfT/SgLP11dmF90+CtiPLsB5Xh78XDBMA+DMZuzxlyC4KAbg
+	 UBJ9fW2r1t9u/kO7+WXnEZGy0ilPjrX7flAE40AWhu3dGUi53sbhiqvdGphpKbAoCe
+	 33fpqKGAu6VimqUztapnruePH3ZKtXbyg6jj5vv4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF578F80601;
-	Sun,  6 Nov 2022 18:06:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89184F80611;
+	Sun,  6 Nov 2022 18:06:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D36A0F805F3; Sun,  6 Nov 2022 18:06:13 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 8325EF8060F; Sun,  6 Nov 2022 18:06:19 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D07D9F80601
- for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2022 18:06:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D07D9F80601
+ by alsa1.perex.cz (Postfix) with ESMTPS id 026BBF80602
+ for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2022 18:06:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 026BBF80602
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="q0WZoGfm"
+ header.b="iNYAPNJv"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A9DCE60CEC;
- Sun,  6 Nov 2022 17:06:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B768C433C1;
- Sun,  6 Nov 2022 17:06:02 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 8A7B6B80C6A;
+ Sun,  6 Nov 2022 17:06:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0CE9C433C1;
+ Sun,  6 Nov 2022 17:06:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1667754363;
- bh=7KTEvaEN6pllnL953loH5YZMkruYuS0cDZuxGKvU1Qw=;
+ s=k20201202; t=1667754370;
+ bh=1ORQlxAowSfhXvICF3tR/7GM3ipW9w9XtoSFsQVIZSo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=q0WZoGfm5CAZ3UyzKkhp9baK/szyxh5CepOwfA7J6uR8ZGJcKnZP7pp0ujaxeuIC9
- Ujq5kf09xYoxxkgelGNJfxOop050ocKX3+TzwrRGo5WGhGfO0UY3xOfTB0oG45GyLO
- d85S8QfWPMx3XMcL0pRm7fThWZQQXpaZJyKt0JFMDyX+bSDRjORCrRch6PnjZJu9d8
- gveykBCeU6E8o4RrQhZnVbOxAc7kfdJPQPGxNHXlIppxCflm0kbNUGoCfi5wS780aK
- 7TIbArT6/yFq3r8eOPSqwO7QQz5uyYhPxNpTZXpOR69BNUNuhcsST/XU2+N0i4t4Gt
- GXV+ENz4wniSw==
+ b=iNYAPNJvzBRCYFzk+07IkSJ2y4SIX4D7CH16CamHnKBBbppy4XjAR98/V1WyvwhOO
+ N0e+135awTUzHMje+DPAh1wdYkOPk9DAOtgCDmWPKaOzhcHeCb92Jom2FFWw35d8B1
+ xzwhHvv90vqhScBelORftGh5Uyv32Lh4ww7n3Mv8gGNWQrmMwLxvYCXJHooq58sYb1
+ l3im4NgqlZ6sKT9Pr7nR9iMmUNlQ+lM8TKBT8CM/KXqXLGGo0sdjYy9kmTUJEEXc61
+ Gcyy8d7/qMf5qi+l3idxGTBSNKkBmSsrq36KE1GgpLqKJ0FRbQGQdMENmyW3xS1DGj
+ Letg+tU+6WaGg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 03/16] ASoC: wm8997: Revert "ASoC: wm8997: Fix PM
- disable depth imbalance in wm8997_probe"
-Date: Sun,  6 Nov 2022 12:05:40 -0500
-Message-Id: <20221106170555.1580584-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 05/16] ASoC: wm8962: Add an event handler for
+ TEMP_HP and TEMP_SPK
+Date: Sun,  6 Nov 2022 12:05:42 -0500
+Message-Id: <20221106170555.1580584-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221106170555.1580584-1-sashal@kernel.org>
 References: <20221106170555.1580584-1-sashal@kernel.org>
@@ -68,9 +68,10 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Xiaolei Wang <xiaolei.wang@windriver.com>,
  Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
- Zhang Qilong <zhangqilong3@huawei.com>, tiwai@suse.com, lgirdwood@gmail.com,
- Mark Brown <broonie@kernel.org>
+ tiwai@suse.com, lgirdwood@gmail.com, chi.minghao@zte.com.cn,
+ Mark Brown <broonie@kernel.org>, steve@sk2.org, Adam Ford <aford173@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,48 +87,114 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Xiaolei Wang <xiaolei.wang@windriver.com>
 
-[ Upstream commit 68ce83e3bb26feba0fcdd59667fde942b3a600a1 ]
+[ Upstream commit ee1aa2ae3eaa96e70229fa61deee87ef4528ffdf ]
 
-This reverts commit 41a736ac20602f64773e80f0f5b32cde1830a44a.
+In wm8962 driver, the WM8962_ADDITIONAL_CONTROL_4 is used as a volatile
+register, but this register mixes a bunch of volatile status bits and a
+bunch of non-volatile control bits. The dapm widgets TEMP_HP and
+TEMP_SPK leverages the control bits in this register. After the wm8962
+probe, the regmap will bet set to cache only mode, then a read error
+like below would be triggered when trying to read the initial power
+state of the dapm widgets TEMP_HP and TEMP_SPK.
+  wm8962 0-001a: ASoC: error at soc_component_read_no_lock
+  on wm8962.0-001a: -16
 
-The pm_runtime_disable is redundant when error returns in
-wm8997_probe, we just revert the old patch to fix it.
+In order to fix this issue, we add event handler to actually power
+up/down these widgets. With this change, we also need to explicitly
+power off these widgets in the wm8962 probe since they are enabled
+by default.
 
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
+Tested-by: Adam Ford <aford173@gmail.com>
 Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20221010114852.88127-4-zhangqilong3@huawei.com
+Link: https://lore.kernel.org/r/20221010092014.2229246-1-xiaolei.wang@windriver.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm8997.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm8962.c | 54 +++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 52 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-index 07378714b013..229f2986cd96 100644
---- a/sound/soc/codecs/wm8997.c
-+++ b/sound/soc/codecs/wm8997.c
-@@ -1156,6 +1156,9 @@ static int wm8997_probe(struct platform_device *pdev)
- 		regmap_update_bits(arizona->regmap, wm8997_digital_vu[i],
- 				   WM8997_DIG_VU, WM8997_DIG_VU);
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 38651022e3d5..21574447650c 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -1840,6 +1840,49 @@ SOC_SINGLE_TLV("SPKOUTR Mixer DACR Volume", WM8962_SPEAKER_MIXER_5,
+ 	       4, 1, 0, inmix_tlv),
+ };
  
-+	pm_runtime_enable(&pdev->dev);
-+	pm_runtime_idle(&pdev->dev);
++static int tp_event(struct snd_soc_dapm_widget *w,
++		    struct snd_kcontrol *kcontrol, int event)
++{
++	int ret, reg, val, mask;
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
 +
- 	arizona_init_common(arizona);
++	ret = pm_runtime_resume_and_get(component->dev);
++	if (ret < 0) {
++		dev_err(component->dev, "Failed to resume device: %d\n", ret);
++		return ret;
++	}
++
++	reg = WM8962_ADDITIONAL_CONTROL_4;
++
++	if (!strcmp(w->name, "TEMP_HP")) {
++		mask = WM8962_TEMP_ENA_HP_MASK;
++		val = WM8962_TEMP_ENA_HP;
++	} else if (!strcmp(w->name, "TEMP_SPK")) {
++		mask = WM8962_TEMP_ENA_SPK_MASK;
++		val = WM8962_TEMP_ENA_SPK;
++	} else {
++		pm_runtime_put(component->dev);
++		return -EINVAL;
++	}
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMD:
++		val = 0;
++		fallthrough;
++	case SND_SOC_DAPM_POST_PMU:
++		ret = snd_soc_component_update_bits(component, reg, mask, val);
++		break;
++	default:
++		WARN(1, "Invalid event %d\n", event);
++		pm_runtime_put(component->dev);
++		return -EINVAL;
++	}
++
++	pm_runtime_put(component->dev);
++
++	return 0;
++}
++
+ static int cp_event(struct snd_soc_dapm_widget *w,
+ 		    struct snd_kcontrol *kcontrol, int event)
+ {
+@@ -2133,8 +2176,10 @@ SND_SOC_DAPM_SUPPLY("TOCLK", WM8962_ADDITIONAL_CONTROL_1, 0, 0, NULL, 0),
+ SND_SOC_DAPM_SUPPLY_S("DSP2", 1, WM8962_DSP2_POWER_MANAGEMENT,
+ 		      WM8962_DSP2_ENA_SHIFT, 0, dsp2_event,
+ 		      SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+-SND_SOC_DAPM_SUPPLY("TEMP_HP", WM8962_ADDITIONAL_CONTROL_4, 2, 0, NULL, 0),
+-SND_SOC_DAPM_SUPPLY("TEMP_SPK", WM8962_ADDITIONAL_CONTROL_4, 1, 0, NULL, 0),
++SND_SOC_DAPM_SUPPLY("TEMP_HP", SND_SOC_NOPM, 0, 0, tp_event,
++		SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
++SND_SOC_DAPM_SUPPLY("TEMP_SPK", SND_SOC_NOPM, 0, 0, tp_event,
++		SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
  
- 	ret = arizona_init_vol_limit(arizona);
-@@ -1174,9 +1177,6 @@ static int wm8997_probe(struct platform_device *pdev)
- 		goto err_spk_irqs;
- 	}
+ SND_SOC_DAPM_MIXER("INPGAL", WM8962_LEFT_INPUT_PGA_CONTROL, 4, 0,
+ 		   inpgal, ARRAY_SIZE(inpgal)),
+@@ -3760,6 +3805,11 @@ static int wm8962_i2c_probe(struct i2c_client *i2c,
+ 	if (ret < 0)
+ 		goto err_pm_runtime;
  
--	pm_runtime_enable(&pdev->dev);
--	pm_runtime_idle(&pdev->dev);
--
- 	return ret;
++	regmap_update_bits(wm8962->regmap, WM8962_ADDITIONAL_CONTROL_4,
++			    WM8962_TEMP_ENA_HP_MASK, 0);
++	regmap_update_bits(wm8962->regmap, WM8962_ADDITIONAL_CONTROL_4,
++			    WM8962_TEMP_ENA_SPK_MASK, 0);
++
+ 	regcache_cache_only(wm8962->regmap, true);
  
- err_spk_irqs:
+ 	/* The drivers should power up as needed */
 -- 
 2.35.1
 
