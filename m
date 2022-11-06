@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8B76C43217
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Nov 2022 17:13:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B54C6C4332F
+	for <alsa-devel@archiver.kernel.org>; Sun,  6 Nov 2022 17:13:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D6951680;
-	Sun,  6 Nov 2022 18:12:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D6951680
+	by alsa0.perex.cz (Postfix) with ESMTPS id D39A01682;
+	Sun,  6 Nov 2022 18:13:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D39A01682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667754820;
-	bh=CmcmcPI2VcpXv3yrjN2gijnu1MKsTMCTQ/7zNYKHIAc=;
+	s=default; t=1667754835;
+	bh=Yju+PhhyVD9sWa2cDZ0LBKCrZ14Wgc8+ncDP2v35HR8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oLO2GxjFFwaZZsb8FuaJmrqTWnItxqzvNHs0i8be4ADhdEGk3jf4iULFs3PJpB5NL
-	 7E3PHnECs6Tn4dU3STwFtj5Q9XZ2qB69qG7Ze0C7wWLKKlpuBU50yin99Ci2Mrbqof
-	 /qG/xpXw/cZE9kGpO1LtgtZD/uFnyQYlu+MP3UBk=
+	b=HXK5QZH2URJ89wH587+X32f4IW7H/EBJV8rEUFI4rR89/+L8Byokdc+O9pLU3w/i5
+	 nf3fw4lC4mOWa2SSwrFpR2qSZNhUgdwgK7rAXQVDjr+SsHURqObdsYfrlOiz7gKxbE
+	 +q0dzq8Hwvd1NdlYx1SStKt2+V3ozMOXZKawrXTs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C2E5F80615;
-	Sun,  6 Nov 2022 18:06:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1808EF8061A;
+	Sun,  6 Nov 2022 18:06:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CABD5F80616; Sun,  6 Nov 2022 18:06:22 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 85FCAF80616; Sun,  6 Nov 2022 18:06:23 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7492EF80602
- for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2022 18:06:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7492EF80602
+ by alsa1.perex.cz (Postfix) with ESMTPS id 016DEF80610
+ for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2022 18:06:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 016DEF80610
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="CrJmh2RD"
+ header.b="jBtgP52u"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 60A00B80C80;
- Sun,  6 Nov 2022 17:06:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2713C433D6;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A94B960CEF;
  Sun,  6 Nov 2022 17:06:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7146CC43470;
+ Sun,  6 Nov 2022 17:06:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1667754378;
- bh=CmcmcPI2VcpXv3yrjN2gijnu1MKsTMCTQ/7zNYKHIAc=;
+ s=k20201202; t=1667754376;
+ bh=Yju+PhhyVD9sWa2cDZ0LBKCrZ14Wgc8+ncDP2v35HR8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=CrJmh2RDOG4KGzhMOxi4N6SSU2+/TdXQRbv0CaXk1zD46yVHWsTP/J4PQDFFFUBQY
- Wf27ecrm5ipbQ+i9EVWcMi+l2eURVyVrWsYT3ZPhxsBgGndhZ96MjEWzBMaHxtgAoD
- pfrB8czzGZ384kX3CQ96ABSUk3T/LJvb6/wY9Uim/VrCyP/RSMoT4XOb2yGQN/D/Iv
- JflngA+MzkriyCvJWfZMAjuSuwBXQJbp3vqEHEt46SMkpQ9PhiTDoszm3KVM52/8q2
- aVdjdq8fczwtPcKB/Znc7X4Mblh2iy0T+F0Oyu3/BTGHPQwUrry7t8+GgKC5U2XQN4
- QRwNYlzNo4AwA==
+ b=jBtgP52u4GRm3XaWUIMsyFQ2kP7KA8+gRHKoEc+gRofxNhBtIL1MgkPKG9vAj7Gwt
+ rO62BrXLTNBnwlJYAp/ebJSkKkIY/whP0vLAtv+zTcnUU7oa/icuL4Jh8bXBg/PTGV
+ FXTSt6Su2v8fXr+VLdSPR5h1vvL35miwc70Q+Ls8Cy75HOVV8XhsJFZbNkwk1Tkbhe
+ euE3jR7SQfyqw24LgqkDusGBdUK2TD+cWeIElRMaEX0NmDqt2pO2E+hqtHGPpPmeQ/
+ FIpFiMucWj9xKtIQzYKr63jcrwZsQYtPsq5ilrhyljiuaofQxGb7Le8AjD7vSVPsMz
+ oQjEvvinfpqBg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 09/16] ASoC: codecs: jz4725b: use right control
- for Capture Volume
-Date: Sun,  6 Nov 2022 12:05:46 -0500
-Message-Id: <20221106170555.1580584-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 08/16] ASoC: codecs: jz4725b: fix reported volume
+ for Master ctl
+Date: Sun,  6 Nov 2022 12:05:45 -0500
+Message-Id: <20221106170555.1580584-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221106170555.1580584-1-sashal@kernel.org>
 References: <20221106170555.1580584-1-sashal@kernel.org>
@@ -87,65 +87,37 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Siarhei Volkau <lis8215@gmail.com>
 
-[ Upstream commit 1538e2c8c9b7e7a656effcc6e4e7cfe8c1b405fd ]
+[ Upstream commit 088777bf65b98cfa4b5378119d0a7d49a58ece44 ]
 
-Line In Bypass control is used as Master Capture at the moment
-this is completely incorrect.
+DAC volume control is the Master Playback Volume at the moment
+and it reports wrong levels in alsamixer and other alsa apps.
 
-Current control routed to Mixer instead of ADC, thus can't affect
-Capture path. ADC control shall be used instead.
-
-ADC volume control parameters are different, so the patch fixes that
-as well. Manual says (16.6.3.2 Programmable input attenuation amplifier:
-PGATM) that gain varies in range 0dB..22.5dB with 1.5dB step.
+The patch fixes that, as stated in manual on the jz4725b SoC
+(16.6.3.4 Programmable attenuation: GOD) the ctl range varies
+from -22.5dB to 0dB with 1.5dB step.
 
 Signed-off-by: Siarhei Volkau <lis8215@gmail.com>
-Link: https://lore.kernel.org/r/20221016132648.3011729-4-lis8215@gmail.com
+Link: https://lore.kernel.org/r/20221016132648.3011729-3-lis8215@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/jz4725b.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ sound/soc/codecs/jz4725b.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/jz4725b.c b/sound/soc/codecs/jz4725b.c
-index 6f3d4ead9150..9dc8d76bf104 100644
+index 9f6f4e941e55..6f3d4ead9150 100644
 --- a/sound/soc/codecs/jz4725b.c
 +++ b/sound/soc/codecs/jz4725b.c
-@@ -136,13 +136,16 @@ enum {
- #define REG_CGR3_GO1L_OFFSET		0
- #define REG_CGR3_GO1L_MASK		(0x1f << REG_CGR3_GO1L_OFFSET)
- 
-+#define REG_CGR10_GIL_OFFSET		0
-+#define REG_CGR10_GIR_OFFSET		4
-+
- struct jz_icdc {
- 	struct regmap *regmap;
- 	void __iomem *base;
+@@ -142,8 +142,8 @@ struct jz_icdc {
  	struct clk *clk;
  };
  
--static const SNDRV_CTL_TLVD_DECLARE_DB_LINEAR(jz4725b_line_tlv, -1500, 600);
-+static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(jz4725b_adc_tlv,     0, 150, 0);
- static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(jz4725b_dac_tlv, -2250, 150, 0);
+-static const SNDRV_CTL_TLVD_DECLARE_DB_LINEAR(jz4725b_dac_tlv, -2250, 0);
+ static const SNDRV_CTL_TLVD_DECLARE_DB_LINEAR(jz4725b_line_tlv, -1500, 600);
++static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(jz4725b_dac_tlv, -2250, 150, 0);
  
  static const struct snd_kcontrol_new jz4725b_codec_controls[] = {
-@@ -151,11 +154,11 @@ static const struct snd_kcontrol_new jz4725b_codec_controls[] = {
- 		       REG_CGR1_GODL_OFFSET,
- 		       REG_CGR1_GODR_OFFSET,
- 		       0xf, 1, jz4725b_dac_tlv),
--	SOC_DOUBLE_R_TLV("Master Capture Volume",
--			 JZ4725B_CODEC_REG_CGR3,
--			 JZ4725B_CODEC_REG_CGR2,
--			 REG_CGR2_GO1R_OFFSET,
--			 0x1f, 1, jz4725b_line_tlv),
-+	SOC_DOUBLE_TLV("Master Capture Volume",
-+		       JZ4725B_CODEC_REG_CGR10,
-+		       REG_CGR10_GIL_OFFSET,
-+		       REG_CGR10_GIR_OFFSET,
-+		       0xf, 0, jz4725b_adc_tlv),
- 
- 	SOC_SINGLE("Master Playback Switch", JZ4725B_CODEC_REG_CR1,
- 		   REG_CR1_DAC_MUTE_OFFSET, 1, 1),
+ 	SOC_DOUBLE_TLV("Master Playback Volume",
 -- 
 2.35.1
 
