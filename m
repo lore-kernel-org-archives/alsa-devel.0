@@ -4,76 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 362D0C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Nov 2022 08:58:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BD55C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Nov 2022 09:05:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57B4A86F;
-	Mon,  7 Nov 2022 09:57:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57B4A86F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C10B823;
+	Mon,  7 Nov 2022 10:04:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C10B823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667811514;
-	bh=8AdWr6gsw1IbehCj2aqwWLhJNGiYdPitsUyC103G0QU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=OeV4owiu6WJTApWi/TWGoAWUTN9KCB5n2yTId/gr1DxUD/idO0xwnh9m6zvBP+IQA
-	 Wy2D0YNit6/GEU/PvQoighGDfWCeTn22tB2FHSlckhjWKabmtnGwxpPF6gkc/UTqDp
-	 LIdQwrdSqKoZrv6GzOzgLphmn0BTni4qI6tLySqc=
+	s=default; t=1667811907;
+	bh=wzcadR9LYAZH8hRy9PL/sijlwCn6gSnkuD0BoN2O3IY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=gf3zXgyoAoYHR8recUSiheIAKEP6iKzOz6YbHwP2a30UX+W1OM1tMK8TvjdK9U8g+
+	 mOWAUIx64R5MTL8IwE2eMVn5EQUPsiv9K/P/jB/Jv3ssRr6wjFdNt5vvVI3TToYrdL
+	 f7USlcg7Kl7y5B0iBqJyPT+d27zCn5LoRk03aUd8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3298F8055A;
-	Mon,  7 Nov 2022 09:56:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D69D5F800EC;
+	Mon,  7 Nov 2022 10:04:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 562CAF80557; Mon,  7 Nov 2022 09:56:55 +0100 (CET)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ id A05ADF8025A; Mon,  7 Nov 2022 10:04:15 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C86DF8024C
- for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2022 09:56:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C86DF8024C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 308A0F800EC
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2022 10:04:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 308A0F800EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="NvxQyLeV"
+ header.b="C9mekZUN"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1667811412; x=1699347412;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=8AdWr6gsw1IbehCj2aqwWLhJNGiYdPitsUyC103G0QU=;
- b=NvxQyLeVAaBww2Oi+DJ89tHyipAew2QPaMrQHtZioHTjtzEwOijgDG0W
- Fdy6DyWd/A1p32up0VviRbiQb7hCvilpzeX5IhRL6LKNZV6pCYlfdK8V9
- W+j3F3fuqXV9wFChUMyUuPUL4daNcPtIvSC4rd2fB1z5NCnYsY4A76H80
- 2jpc3woZD2JgH9cIqiQjhIvPIYiddUzgA5Vj+hsbbof3Cb4c/OAhwXkcU
- C1zPO9Lz22CmADYmebOnEzl738d5mOFYaiDvmklmveOpazJEwU35/28qn
- 5fa+OMl4BaS5h2UsN4UJ19j39NmgTCPp1q7BN8hRzsdIrD+pN+TzeNTH8 w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10523"; a="372481190"
-X-IronPort-AV: E=Sophos;i="5.96,143,1665471600"; d="scan'208";a="372481190"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Nov 2022 00:56:49 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10523"; a="635831466"
-X-IronPort-AV: E=Sophos;i="5.96,143,1665471600"; d="scan'208";a="635831466"
+ t=1667811850; x=1699347850;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=wzcadR9LYAZH8hRy9PL/sijlwCn6gSnkuD0BoN2O3IY=;
+ b=C9mekZUNM6o8D2fggGf0xhQeCrmJnBBuFF3wOKhRDOy3Knln6yREACDM
+ VONN3cL7Tr2qpronx61cFxJPsLyhJVUltjDDAOaisivTBXi8JRWKxYUkh
+ 9MS2AAheT7YkF3dCP5A/eV78vEkP/lDQrqmwYUyJyKTbUZnALm4rBfoN9
+ y0HbO1Ds5zLfjYzZeJaFRkgwiSI6oz1zE1g3Ddgk2GB9Hu/4IqmH1iSTT
+ 7LuEbrqULoO+6JGgkHiBLcBJ5Ca1tZ2+Khb4aLA8omNz7SYMzeutf1oMl
+ yO/3u3wYmFRimOa062j6SRiUJ/nZ5IJdFiF7XAMDFI7JGCwJT8jtnFCDe w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10523"; a="311498691"
+X-IronPort-AV: E=Sophos;i="5.96,143,1665471600"; d="scan'208";a="311498691"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Nov 2022 01:04:06 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10523"; a="741412431"
+X-IronPort-AV: E=Sophos;i="5.96,143,1665471600"; d="scan'208";a="741412431"
 Received: from akharade-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.14.37])
- by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Nov 2022 00:56:46 -0800
+ by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Nov 2022 01:04:04 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	chao.song@linux.intel.com
-Subject: [PATCH 3/3] ASoC: SOF: topology: Add helper to get/put widget queue id
-Date: Mon,  7 Nov 2022 10:57:06 +0200
-Message-Id: <20221107085706.2550-4-peter.ujfalusi@linux.intel.com>
+	broonie@kernel.org
+Subject: [PATCH] ASoC: SOF: topology: No need to assign core ID if token
+ parsing failed
+Date: Mon,  7 Nov 2022 11:04:33 +0200
+Message-Id: <20221107090433.5146-1-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221107085706.2550-1-peter.ujfalusi@linux.intel.com>
-References: <20221107085706.2550-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, rander.wang@intel.com,
- ranjani.sridharan@linux.intel.com, yung-chuan.liao@linux.intel.com
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ kai.vehmanen@linux.intel.com, ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,275 +84,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Chao Song <chao.song@linux.intel.com>
+Move the return value check before attempting to assign the core ID to the
+swidget since we are going to fail the sof_widget_ready() and free up
+swidget anyways.
 
-Add get/put queue id helper to manage queue id in route
-setup and route free.
+Fixes: 909dadf21aae ("ASoC: SOF: topology: Make DAI widget parsing IPC agnostic")
 
-The queue allocation rules are:
-
-  - If widget only has one sink/source pin, zero will be
-returned as the queue ID directly.
-
-  - If widget has more than one sink/source pins, and pin
-binding array is defined in topology, queue ID will be
-allocated according to the pin binding array.
-
-  - If widget has more than one sink/sink pins, and pin
-binding array is not defined, Linux ID allocation will be
-used to allocate queue ID dynamically.
-
-Signed-off-by: Chao Song <chao.song@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Suggested-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/ipc4-topology.c | 133 ++++++++++++++++++++++++++++++----
- sound/soc/sof/sof-audio.h     |   6 ++
- sound/soc/sof/topology.c      |   5 ++
- 3 files changed, 131 insertions(+), 13 deletions(-)
+ sound/soc/sof/topology.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-index ab85dde4303b..92b5f934d20f 100644
---- a/sound/soc/sof/ipc4-topology.c
-+++ b/sound/soc/sof/ipc4-topology.c
-@@ -1577,6 +1577,88 @@ static int sof_ipc4_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget
- 	return ret;
- }
- 
-+static int sof_ipc4_get_queue_id(struct snd_sof_widget *src_widget,
-+				 struct snd_sof_widget *sink_widget, bool pin_type)
-+{
-+	struct snd_sof_widget *current_swidget;
-+	struct snd_soc_component *scomp;
-+	struct ida *queue_ida;
-+	const char *buddy_name;
-+	char **pin_binding;
-+	u32 num_pins;
-+	int i;
-+
-+	if (pin_type == SOF_PIN_TYPE_SOURCE) {
-+		current_swidget = src_widget;
-+		pin_binding = src_widget->src_pin_binding;
-+		queue_ida = &src_widget->src_queue_ida;
-+		num_pins = src_widget->num_source_pins;
-+		buddy_name = sink_widget->widget->name;
-+	} else {
-+		current_swidget = sink_widget;
-+		pin_binding = sink_widget->sink_pin_binding;
-+		queue_ida = &sink_widget->sink_queue_ida;
-+		num_pins = sink_widget->num_sink_pins;
-+		buddy_name = src_widget->widget->name;
-+	}
-+
-+	scomp = current_swidget->scomp;
-+
-+	if (num_pins < 1) {
-+		dev_err(scomp->dev, "invalid %s num_pins: %d for queue allocation for %s\n",
-+			(pin_type == SOF_PIN_TYPE_SOURCE ? "source" : "sink"),
-+			num_pins, current_swidget->widget->name);
-+		return -EINVAL;
-+	}
-+
-+	/* If there is only one sink/source pin, queue id must be 0 */
-+	if (num_pins == 1)
-+		return 0;
-+
-+	/* Allocate queue ID from pin binding array if it is defined in topology. */
-+	if (pin_binding) {
-+		for (i = 0; i < num_pins; i++) {
-+			if (!strcmp(pin_binding[i], buddy_name))
-+				return i;
-+		}
-+		/*
-+		 * Fail if no queue ID found from pin binding array, so that we don't
-+		 * mixed use pin binding array and ida for queue ID allocation.
-+		 */
-+		dev_err(scomp->dev, "no %s queue id found from pin binding array for %s\n",
-+			(pin_type == SOF_PIN_TYPE_SOURCE ? "source" : "sink"),
-+			current_swidget->widget->name);
-+		return -EINVAL;
-+	}
-+
-+	/* If no pin binding array specified in topology, use ida to allocate one */
-+	return ida_alloc_max(queue_ida, num_pins, GFP_KERNEL);
-+}
-+
-+static void sof_ipc4_put_queue_id(struct snd_sof_widget *swidget, int queue_id,
-+				  bool pin_type)
-+{
-+	struct ida *queue_ida;
-+	char **pin_binding;
-+	int num_pins;
-+
-+	if (pin_type == SOF_PIN_TYPE_SOURCE) {
-+		pin_binding = swidget->src_pin_binding;
-+		queue_ida = &swidget->src_queue_ida;
-+		num_pins = swidget->num_source_pins;
-+	} else {
-+		pin_binding = swidget->sink_pin_binding;
-+		queue_ida = &swidget->sink_queue_ida;
-+		num_pins = swidget->num_sink_pins;
-+	}
-+
-+	/* Nothing to free if queue ID is not allocated with ida. */
-+	if (num_pins == 1 || pin_binding)
-+		return;
-+
-+	ida_free(queue_ida, queue_id);
-+}
-+
- static int sof_ipc4_route_setup(struct snd_sof_dev *sdev, struct snd_sof_route *sroute)
- {
- 	struct snd_sof_widget *src_widget = sroute->src_widget;
-@@ -1585,12 +1667,29 @@ static int sof_ipc4_route_setup(struct snd_sof_dev *sdev, struct snd_sof_route *
- 	struct sof_ipc4_fw_module *sink_fw_module = sink_widget->module_info;
- 	struct sof_ipc4_msg msg = {{ 0 }};
- 	u32 header, extension;
--	int src_queue = 0;
--	int dst_queue = 0;
- 	int ret;
- 
--	dev_dbg(sdev->dev, "bind %s -> %s\n",
--		src_widget->widget->name, sink_widget->widget->name);
-+	sroute->src_queue_id = sof_ipc4_get_queue_id(src_widget, sink_widget,
-+						     SOF_PIN_TYPE_SOURCE);
-+	if (sroute->src_queue_id < 0) {
-+		dev_err(sdev->dev, "failed to get queue ID for source widget: %s\n",
-+			src_widget->widget->name);
-+		return sroute->src_queue_id;
-+	}
-+
-+	sroute->dst_queue_id = sof_ipc4_get_queue_id(src_widget, sink_widget,
-+						     SOF_PIN_TYPE_SINK);
-+	if (sroute->dst_queue_id < 0) {
-+		dev_err(sdev->dev, "failed to get queue ID for sink widget: %s\n",
-+			sink_widget->widget->name);
-+		sof_ipc4_put_queue_id(src_widget, sroute->src_queue_id,
-+				      SOF_PIN_TYPE_SOURCE);
-+		return sroute->dst_queue_id;
-+	}
-+
-+	dev_dbg(sdev->dev, "bind %s:%d -> %s:%d\n",
-+		src_widget->widget->name, sroute->src_queue_id,
-+		sink_widget->widget->name, sroute->dst_queue_id);
- 
- 	header = src_fw_module->man4_module_entry.id;
- 	header |= SOF_IPC4_MOD_INSTANCE(src_widget->instance_id);
-@@ -1600,17 +1699,23 @@ static int sof_ipc4_route_setup(struct snd_sof_dev *sdev, struct snd_sof_route *
- 
- 	extension = sink_fw_module->man4_module_entry.id;
- 	extension |= SOF_IPC4_MOD_EXT_DST_MOD_INSTANCE(sink_widget->instance_id);
--	extension |= SOF_IPC4_MOD_EXT_DST_MOD_QUEUE_ID(dst_queue);
--	extension |= SOF_IPC4_MOD_EXT_SRC_MOD_QUEUE_ID(src_queue);
-+	extension |= SOF_IPC4_MOD_EXT_DST_MOD_QUEUE_ID(sroute->dst_queue_id);
-+	extension |= SOF_IPC4_MOD_EXT_SRC_MOD_QUEUE_ID(sroute->src_queue_id);
- 
- 	msg.primary = header;
- 	msg.extension = extension;
- 
- 	ret = sof_ipc_tx_message(sdev->ipc, &msg, 0, NULL, 0);
--	if (ret < 0)
-+	if (ret < 0) {
- 		dev_err(sdev->dev, "%s: failed to bind modules %s -> %s\n",
- 			__func__, src_widget->widget->name, sink_widget->widget->name);
- 
-+		sof_ipc4_put_queue_id(src_widget, sroute->src_queue_id,
-+				      SOF_PIN_TYPE_SOURCE);
-+		sof_ipc4_put_queue_id(sink_widget, sroute->dst_queue_id,
-+				      SOF_PIN_TYPE_SINK);
-+	}
-+
- 	return ret;
- }
- 
-@@ -1622,12 +1727,11 @@ static int sof_ipc4_route_free(struct snd_sof_dev *sdev, struct snd_sof_route *s
- 	struct sof_ipc4_fw_module *sink_fw_module = sink_widget->module_info;
- 	struct sof_ipc4_msg msg = {{ 0 }};
- 	u32 header, extension;
--	int src_queue = 0;
--	int dst_queue = 0;
- 	int ret;
- 
--	dev_dbg(sdev->dev, "unbind modules %s -> %s\n",
--		src_widget->widget->name, sink_widget->widget->name);
-+	dev_dbg(sdev->dev, "unbind modules %s:%d -> %s:%d\n",
-+		src_widget->widget->name, sroute->src_queue_id,
-+		sink_widget->widget->name, sroute->dst_queue_id);
- 
- 	header = src_fw_module->man4_module_entry.id;
- 	header |= SOF_IPC4_MOD_INSTANCE(src_widget->instance_id);
-@@ -1637,8 +1741,8 @@ static int sof_ipc4_route_free(struct snd_sof_dev *sdev, struct snd_sof_route *s
- 
- 	extension = sink_fw_module->man4_module_entry.id;
- 	extension |= SOF_IPC4_MOD_EXT_DST_MOD_INSTANCE(sink_widget->instance_id);
--	extension |= SOF_IPC4_MOD_EXT_DST_MOD_QUEUE_ID(dst_queue);
--	extension |= SOF_IPC4_MOD_EXT_SRC_MOD_QUEUE_ID(src_queue);
-+	extension |= SOF_IPC4_MOD_EXT_DST_MOD_QUEUE_ID(sroute->dst_queue_id);
-+	extension |= SOF_IPC4_MOD_EXT_SRC_MOD_QUEUE_ID(sroute->src_queue_id);
- 
- 	msg.primary = header;
- 	msg.extension = extension;
-@@ -1648,6 +1752,9 @@ static int sof_ipc4_route_free(struct snd_sof_dev *sdev, struct snd_sof_route *s
- 		dev_err(sdev->dev, "failed to unbind modules %s -> %s\n",
- 			src_widget->widget->name, sink_widget->widget->name);
- 
-+	sof_ipc4_put_queue_id(sink_widget, sroute->dst_queue_id, SOF_PIN_TYPE_SINK);
-+	sof_ipc4_put_queue_id(src_widget, sroute->src_queue_id, SOF_PIN_TYPE_SOURCE);
-+
- 	return ret;
- }
- 
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index efc80a5febc3..1b5b3ea53a6e 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -422,6 +422,9 @@ struct snd_sof_widget {
- 	char **sink_pin_binding;
- 	char **src_pin_binding;
- 
-+	struct ida src_queue_ida;
-+	struct ida sink_queue_ida;
-+
- 	void *private;		/* core does not touch this */
- };
- 
-@@ -435,6 +438,9 @@ struct snd_sof_route {
- 	struct snd_sof_widget *sink_widget;
- 	bool setup;
- 
-+	int src_queue_id;
-+	int dst_queue_id;
-+
- 	void *private;
- };
- 
 diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 3b1290d34131..176f64a86c26 100644
+index 38855dd60617..6a0e7f3b5023 100644
 --- a/sound/soc/sof/topology.c
 +++ b/sound/soc/sof/topology.c
-@@ -1392,6 +1392,8 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
- 	swidget->id = w->id;
- 	swidget->pipeline_id = index;
- 	swidget->private = NULL;
-+	ida_init(&swidget->src_queue_ida);
-+	ida_init(&swidget->sink_queue_ida);
+@@ -1344,16 +1344,6 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ 		break;
+ 	}
  
- 	ret = sof_parse_tokens(scomp, swidget, comp_pin_tokens,
- 			       ARRAY_SIZE(comp_pin_tokens), priv->array,
-@@ -1624,6 +1626,9 @@ static int sof_widget_unload(struct snd_soc_component *scomp,
- 	if (widget_ops[swidget->id].ipc_free)
- 		widget_ops[swidget->id].ipc_free(swidget);
+-	if (sof_debug_check_flag(SOF_DBG_DISABLE_MULTICORE)) {
+-		swidget->core = SOF_DSP_PRIMARY_CORE;
+-	} else {
+-		int core = sof_get_token_value(SOF_TKN_COMP_CORE_ID, swidget->tuples,
+-					       swidget->num_tuples);
+-
+-		if (core >= 0)
+-			swidget->core = core;
+-	}
+-
+ 	/* check token parsing reply */
+ 	if (ret < 0) {
+ 		dev_err(scomp->dev,
+@@ -1365,6 +1355,16 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ 		return ret;
+ 	}
  
-+	ida_destroy(&swidget->src_queue_ida);
-+	ida_destroy(&swidget->sink_queue_ida);
++	if (sof_debug_check_flag(SOF_DBG_DISABLE_MULTICORE)) {
++		swidget->core = SOF_DSP_PRIMARY_CORE;
++	} else {
++		int core = sof_get_token_value(SOF_TKN_COMP_CORE_ID, swidget->tuples,
++					       swidget->num_tuples);
 +
- 	sof_free_pin_binding(swidget, SOF_PIN_TYPE_SINK);
- 	sof_free_pin_binding(swidget, SOF_PIN_TYPE_SOURCE);
- 
++		if (core >= 0)
++			swidget->core = core;
++	}
++
+ 	/* bind widget to external event */
+ 	if (tw->event_type) {
+ 		if (widget_ops[w->id].bind_event) {
 -- 
 2.38.1
 
