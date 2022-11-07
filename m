@@ -4,82 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11A4BC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Nov 2022 15:02:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6325C433FE
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Nov 2022 15:03:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F8F41DA;
-	Mon,  7 Nov 2022 16:01:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F8F41DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE1D4820;
+	Mon,  7 Nov 2022 16:02:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE1D4820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667833346;
-	bh=Gwl817qdWCkyUsypT+mBMX99k8wTF8oxqsN3mD/crgM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1667833413;
+	bh=yxMOyAvFpaoQ5D2SrgR2ayip+R3mqaD4uz06aFKbDgU=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uM/eDTcf+ZYwTXH3YRLYGrtDwBnDCxneTI3ahqW813YsXqFjwpvqqVjOjqsqgVGO8
-	 FZcBC+t20ygd3++8KDY52t0tvrxh00WuDUaex/GnU+J/hiIYag5bLXn6I/uz+I9pVI
-	 lfgtKO1E5hZCv7kf/nfF4coHWPORQ3sVxRh58kKE=
+	b=IRRNH74bYHO8KmvU7dl9LpjsGpMWbLSX7df24T2fWmszBsN80g3OTH0xWoNSQR5mt
+	 zTQbI+zZ25z5RxzGTtdX6zdWxm+Eeh307Ono7D5b35AEob2yhT5uesoZY6tTbYu9+P
+	 lZRMgucsrYB6IOjaA6Qre6XYrb3fGPXv5VTTIcCo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ACD15F8024C;
-	Mon,  7 Nov 2022 16:01:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C648F8024C;
+	Mon,  7 Nov 2022 16:02:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B44B8F8025A; Mon,  7 Nov 2022 16:01:34 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id CBFC1F800AE; Mon,  7 Nov 2022 16:02:42 +0100 (CET)
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com
+ [IPv6:2a00:1450:4864:20::229])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C338F800AE
- for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2022 16:01:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C338F800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id AFD0FF800AE
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2022 16:02:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFD0FF800AE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="tHijNVUt"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 1711761147;
- Mon,  7 Nov 2022 15:01:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7765BC433C1;
- Mon,  7 Nov 2022 15:01:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1667833288;
- bh=Gwl817qdWCkyUsypT+mBMX99k8wTF8oxqsN3mD/crgM=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=tHijNVUt0qfZl48XvsISPf+Ifk1Yumatus3hQzyZpbyAI3YNHCGgtSd9bruG9GXka
- GSyntLryCBQCgtcsDPLRKHMlDr01rDuaJdMF0LXhdHt+fZUsOwMv21OzS1xJgGPbbc
- IwdlO/7kpJ5IiaNnUzKeEwH4Q639bdtQNsqtRhcOlEaxqvmrA9qPdL5qvaDvhvshuv
- ZFVh4WElKAUq+2yeNWdfPWLhm9JW9H8Aneb+iU5QEune6lrnYbj2cj8kZcLKDKQAfY
- J42Ynul1ZxrntPLOwrkjooUynerPeu2TQ8wrTvKw6J1l/xdmNU4E6XFlRie/Zvh6n+
- XIOGJ80Fb96ww==
-Date: Mon, 7 Nov 2022 15:01:22 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
-Subject: Re: [PATCH] CHROMIUM: ASoC: amd: acp: Add tdm support for codecs in
- machine driver
-Message-ID: <Y2kdwms39CQUMQp/@sirena.org.uk>
-References: <20221028103443.30375-1-venkataprasad.potturu@amd.corp-partner.google.com>
- <Y1u1vj0K3m33wCTd@sirena.org.uk>
- <b384e012-31c5-8412-8b05-cd026c5d6a0f@amd.com>
- <Y2EttkwUvMReQcqg@sirena.org.uk>
- <ca006546-9b0c-34df-2a33-a4f10b68f815@amd.com>
- <Y2JVWmJsprt0xnKH@sirena.org.uk>
- <7b97682d-5cf1-8be1-9c62-41c9fbd89018@amd.com>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="Sa3GlGhK"
+Received: by mail-lj1-x229.google.com with SMTP id d20so16662016ljc.12
+ for <alsa-devel@alsa-project.org>; Mon, 07 Nov 2022 07:02:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=fODzgR6f5QIFQoQpSBqUjOLDxlY3mnOv7TGRHuzFTmQ=;
+ b=Sa3GlGhKz9uFh2xqVF8cJoU3Rjyu+lW99l4UTK5vaJQyJGY6nBEgvS0sw04i2CTloO
+ bsEm3VpZONpb7/0esp7CVMuVMI0WhPcfnK4wfKSJBdQZWTliIllDagRJbTVMLjWVfMB/
+ y7nOTLmb+q8rBgXSIyLUO8Dy8CFYQ9ra93pHcCjU3iJFxmCcidG9C7lwTRq5WNBrT5zy
+ 2BI50NMYSP2Jlv+QCsIIVgCnREo91KPRqexIfjimqLibHRiZ8yv3+lw6O6DeppQkqrzx
+ j5Jcqd+rbgT+8Izh6bAq+KIbx/7p7XBzgWKhQy8DCK64B7Hr5oesOQiXBYHUndvSskGE
+ fBcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=fODzgR6f5QIFQoQpSBqUjOLDxlY3mnOv7TGRHuzFTmQ=;
+ b=VWrqJoWwDCAuQ8TFW1Nu+JZzMA+1MU/fGY+znhfpTYRuOP0kKMNtazLd6Vksa4h0f3
+ Rnv2RUaPhJ6kWa0zjej+2+2FOV0MB4YPhBfdFSmQvUPG38Cu9EqD16ubPLTMro69mc90
+ dAWk06FoQoZ+9aKSyg5a4NQWcZOi5PnamTQzfFykCt6/43irgDmXB/EmbYFcrkI7ikDc
+ BwSpxUI4Bkst5GE0kJfPRfJ8PTmrA605k9Yk5B7LxykHJhslqCvOvP/YcGJg1auw8aUq
+ SEIQq8/1EAbgRJapsnkGOcXy0yFl5Ud97W/BE4Lw6v2BdQmcFealORTKivG7WH515BxC
+ asZw==
+X-Gm-Message-State: ACrzQf232JbpAmNUrtpjLwrQeRG5ScALsG+NGFNCwQVpqsfomOVCACfQ
+ d+1Gufz7BdxdIuw0H/wekuaW8Q==
+X-Google-Smtp-Source: AMsMyM6B0W0l3KqZ9xRH+gtlHucDMeOI7PEKTYEscM5ZWSFSyC5tIOLxpnuRvNgZsHoxQ2HzMi+yNQ==
+X-Received: by 2002:a2e:bc11:0:b0:277:6018:6f07 with SMTP id
+ b17-20020a2ebc11000000b0027760186f07mr12809516ljf.16.1667833347512; 
+ Mon, 07 Nov 2022 07:02:27 -0800 (PST)
+Received: from [192.168.0.20]
+ (088156142199.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.199])
+ by smtp.gmail.com with ESMTPSA id
+ x23-20020ac24897000000b0048aee825e2esm1272499lfc.282.2022.11.07.07.02.25
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 07 Nov 2022 07:02:26 -0800 (PST)
+Message-ID: <88c55827-067c-e6b1-a841-be70c05b7fc4@linaro.org>
+Date: Mon, 7 Nov 2022 16:02:24 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="u3jPCXTCofiGGOee"
-Content-Disposition: inline
-In-Reply-To: <7b97682d-5cf1-8be1-9c62-41c9fbd89018@amd.com>
-X-Cookie: Minimum charge for booths.
-Cc: alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com, ssabakar@amd.com,
- Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
- ye xingchen <ye.xingchen@zte.com.cn>, Basavaraj.Hiregoudar@amd.com,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Venkata Prasad Potturu <venkataprasad.potturu@amd.corp-partner.google.com>,
- Vijendar.Mukunda@amd.com, vsujithkumar.reddy@amd.com,
- Akihiko Odaki <akihiko.odaki@gmail.com>,
- open list <linux-kernel@vger.kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH v4 1/3] arm64: dts: qcom: Update soundwire slave node names
+Content-Language: en-US
+To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>, vkoul@kernel.org,
+ agross@kernel.org, andersson@kernel.org, robh+dt@kernel.org,
+ broonie@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, quic_rohkumar@quicinc.com,
+ srinivas.kandagatla@linaro.org, dianders@chromium.org, swboyd@chromium.org,
+ judyhsiao@chromium.org, alsa-devel@alsa-project.org,
+ quic_rjendra@quicinc.com, konrad.dybcio@somainline.org, mka@chromium.org
+References: <1667830844-31566-1-git-send-email-quic_srivasam@quicinc.com>
+ <1667830844-31566-2-git-send-email-quic_srivasam@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <1667830844-31566-2-git-send-email-quic_srivasam@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: Ratna Deepthi Kudaravalli <quic_rkudarav@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,46 +110,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 07/11/2022 15:20, Srinivasa Rao Mandadapu wrote:
+> Update soundwire slave nodes of WSA speaker to match with
+> dt-bindings pattern properties regular expression.
+> 
+> This modifiction is required to avoid dtbs-check errors
+> occurred with qcom,soundwire.yaml.
+> 
+> Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+> Co-developed-by: Ratna Deepthi Kudaravalli <quic_rkudarav@quicinc.com>
+> Signed-off-by: Ratna Deepthi Kudaravalli <quic_rkudarav@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts             | 4 ++--
+>  arch/arm64/boot/dts/qcom/sdm845-db845c.dts           | 4 ++--
+>  arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 4 ++--
+>  arch/arm64/boot/dts/qcom/sdm850-samsung-w737.dts     | 4 ++--
+>  arch/arm64/boot/dts/qcom/sm8250-mtp.dts              | 4 ++--
+>  5 files changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> index 2c08500..983e8a9 100644
+> --- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> +++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> @@ -1007,7 +1007,7 @@
+>  };
+>  
+>  &swr0 {
+> -	left_spkr: wsa8810-left {
+> +	left_spkr: wsa8810@0,3 {
 
---u3jPCXTCofiGGOee
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+While changing it, make the node names generic, so:
 
-On Mon, Nov 07, 2022 at 04:04:40PM +0530, Venkata Prasad Potturu wrote:
-> On 11/2/22 17:02, Mark Brown wrote:
+speaker@0,3
 
-> > Why would the user choose one value or the other, and why would this
-> > choice be something that only changes at module load time?  If this is
-> > user controllable I'd really expect it to be runtime controllable.
-> > You're not explaining why this is a module parameter.
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
 
-> Different vendors/OEM's use the same hardware as one need I2S mode and ot=
-her
-> need TDM mode, using common driver=A0 to support=A0 I2S and TDM mode with=
- this
-> parameter.
+>  		compatible = "sdw10217211000";
+>  		reg = <0 3>;
+>  		powerdown-gpios = <&tlmm 130 GPIO_ACTIVE_HIGH>;
+> @@ -1016,7 +1016,7 @@
+>  		#sound-dai-cells = <0>;
+>  	};
+>  
+> -	right_spkr: wsa8810-right {
+> +	right_spkr: wsa8810@0,4 {
 
-If a given board needs a specific configuration we should be configuring
-based on identifying the board, not hoping that the user somehow knows
-that this configuration is required and can work out how to do it.  If
-this is purely a software setting depending on the software stack
-running on the device then it should be selected at runtime by that
-software as part of the use case management.
+speaker@0,4
 
---u3jPCXTCofiGGOee
-Content-Type: application/pgp-signature; name="signature.asc"
+and so on...
 
------BEGIN PGP SIGNATURE-----
+Best regards,
+Krzysztof
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNpHcEACgkQJNaLcl1U
-h9Actwf/XNs2J7Ffddfy8nVY0H6pR5ug6RjoG3sOjBiBm3NonuNjnBmAD1rYCjOW
-t6KnGt1Q656Eyz6ycPZz09PDIWT80wv/zYbzGU2fyk3hpyZzG8AhJrU0AybvRSmI
-g/mEgzC3X0aOnXRm4eF4oTdBxab6weg+LbwSASDByPOP710bNQtM/0MjKd6Jpz3C
-iY7XJj4BrVynqak3IbjwY1hgX94yY/ZeRUbDE8/iC4+z/F0ORoQCM85xJ3UZgC8a
-ikYvz4jJcumSQMeSwuOoQF4xLo7dvF0NSnm5V/DiXO0T3eEwJm193lLxTExEjhhG
-YW/u9RRJjDiRsLpN2zCJ0TMJk6rvMQ==
-=WKwD
------END PGP SIGNATURE-----
-
---u3jPCXTCofiGGOee--
