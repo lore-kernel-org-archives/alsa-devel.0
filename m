@@ -4,81 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FFCAC43219
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Nov 2022 14:17:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B38F0C433FE
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Nov 2022 14:17:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C88C8100;
-	Mon,  7 Nov 2022 15:16:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C88C8100
+	by alsa0.perex.cz (Postfix) with ESMTPS id 952B582A;
+	Mon,  7 Nov 2022 15:16:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 952B582A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667830624;
-	bh=DcDGcsM+G7CglgtzRKzAYxIrebBljZJiiO20FyXWofg=;
+	s=default; t=1667830647;
+	bh=Zp9d5lmlEwYQNB/2LUwcFa0f7+iSm6v+/s/K1TzfYyg=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NVBuyzGQlM8oDz5EY2mmUmG5UOUva8/PvGwOx7QWEROagTL+t6QIRqaI5xbeHBYo0
-	 exKVCe8sEU49BxFVtSBGL6p9KigKLiM817KcH6mKODJdFZN2TUVGeVeNOprurPpz/Y
-	 EQ9d8ujwxd87MYkErmGHwZKLjtV9wWCrKXlW7PtM=
+	b=uiVH53080w+s/DvcZqe8KljtwvvHUbohIRCvths5FEHVswTbx5aQzc/NxdzEyHzc2
+	 2JbvTh2Cz4R+hIGTHLPJ2abmX95IkqG4jyJTlJSiNgsnrNzvi9Afywjg7pl0AQiXY8
+	 I0SVZkbPrfa5zAKSBLoVmo0ky5wOeMKVK86s6R5Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71E8CF80116;
-	Mon,  7 Nov 2022 15:16:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2BBBF804BD;
+	Mon,  7 Nov 2022 15:16:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CC871F80116; Mon,  7 Nov 2022 15:16:13 +0100 (CET)
+ id BE8CBF8024C; Mon,  7 Nov 2022 15:16:15 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CAC7F80116
- for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2022 15:16:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CAC7F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26328F8024C
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2022 15:16:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26328F8024C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="e4TgeECW"
+ header.b="k78C+Tug"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1667830568; x=1699366568;
+ t=1667830570; x=1699366570;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=DcDGcsM+G7CglgtzRKzAYxIrebBljZJiiO20FyXWofg=;
- b=e4TgeECWEq+jRMgf8zJzlOb3C1Rykod945nwhEg+FfUwRlMdbF8/4OJR
- 11j5U7R+ea8MFp2PJ1SX+YFukrVvCpzSOUAeH6CUTqQuWMrBk9sX8tq0x
- agHiuT2CeqdJ/qaFWAplPA6YZaCx2mc5yh32z0zH0QUdZ7grMuKBigfXt
- cbj1UK89imhP+9x5ZCn5DybiYavzF3uR+/1ea4XIqS3ciNc7yXwW3eEUj
- 08FF3fX3mkYKpSI3DzaYE5puRs5ZYVyJQNbQgKNRkuAoDMYgTqSO5Oe/P
- 9qbHfNlqVVzdLFyFvI8cF/SYAqXz2DSeyUSX5hUGHjl7unZPNOLlisFHT g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="374669603"
-X-IronPort-AV: E=Sophos;i="5.96,145,1665471600"; d="scan'208";a="374669603"
+ bh=Zp9d5lmlEwYQNB/2LUwcFa0f7+iSm6v+/s/K1TzfYyg=;
+ b=k78C+TugyrQS6aFMmBp/TxtfIyqvt8Rq9nqrEOGHSNX3EPHyHgyQFaR+
+ hTnvrtaaxdS/kxsmKwu7JyMhMNTm1INSwW5/QCaoj2P8Q85aCwVDhzJxU
+ 6Nxk+OQ+VDU8jNl6Vy0/SdMNgxQ8LjpIMdL5sBG9Af1F7TjBcE58bESVL
+ nNDljZtEZ67V96vmwY8AcJzZCTSTPdZGoV+fwnNnlINskGK4vvoMk6jGO
+ +yVhtylwar5jSQxRizcMVs6P0L23NizSv3va0nehwFQEwe/2czC4MIqoi
+ m5KgIjnJ7ioIoL/RS1y3eFMucAig7RWgxQRpW9L2jMLjrG1+w/S9iHyzY A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="374669612"
+X-IronPort-AV: E=Sophos;i="5.96,145,1665471600"; d="scan'208";a="374669612"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Nov 2022 06:15:46 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="965162793"
-X-IronPort-AV: E=Sophos;i="5.96,145,1665471600"; d="scan'208";a="965162793"
+ 07 Nov 2022 06:15:47 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10524"; a="965162794"
+X-IronPort-AV: E=Sophos;i="5.96,145,1665471600"; d="scan'208";a="965162794"
 Received: from seanabue-mobl.amr.corp.intel.com (HELO [10.212.82.80])
  ([10.212.82.80])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Nov 2022 06:15:45 -0800
-Message-ID: <4d0038fa-ab79-e3dd-44b6-e8b90a836bfe@linux.intel.com>
-Date: Mon, 7 Nov 2022 08:11:47 -0600
+ 07 Nov 2022 06:15:46 -0800
+Message-ID: <dff6e7af-6a07-587e-79d0-706fe7ec6504@linux.intel.com>
+Date: Mon, 7 Nov 2022 08:14:47 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.2.2
-Subject: Re: [PATCH 1/3] ASoC: component: Propagate result of suspend and
- resume callbacks
+Subject: Re: [PATCH] CHROMIUM: ASoC: amd: acp: Add tdm support for codecs in
+ machine driver
 Content-Language: en-US
-To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
- broonie@kernel.org
-References: <20221104131244.3920179-1-cezary.rojewski@intel.com>
- <20221104131244.3920179-2-cezary.rojewski@intel.com>
- <b8bd9830-c933-092b-42db-75dd39bcb0c0@linux.intel.com>
- <c6ec7267-df1f-e119-7cbc-0d841085a1c4@linux.intel.com>
+To: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+ Mark Brown <broonie@kernel.org>
+References: <20221028103443.30375-1-venkataprasad.potturu@amd.corp-partner.google.com>
+ <Y1u1vj0K3m33wCTd@sirena.org.uk>
+ <b384e012-31c5-8412-8b05-cd026c5d6a0f@amd.com>
+ <Y2EttkwUvMReQcqg@sirena.org.uk>
+ <ca006546-9b0c-34df-2a33-a4f10b68f815@amd.com>
+ <Y2JVWmJsprt0xnKH@sirena.org.uk>
+ <7b97682d-5cf1-8be1-9c62-41c9fbd89018@amd.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <c6ec7267-df1f-e119-7cbc-0d841085a1c4@linux.intel.com>
+In-Reply-To: <7b97682d-5cf1-8be1-9c62-41c9fbd89018@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: hdegoede@redhat.com, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com, ssabakar@amd.com,
+ Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+ ye xingchen <ye.xingchen@zte.com.cn>, Basavaraj.Hiregoudar@amd.com,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Venkata Prasad Potturu <venkataprasad.potturu@amd.corp-partner.google.com>,
+ Vijendar.Mukunda@amd.com, vsujithkumar.reddy@amd.com,
+ Akihiko Odaki <akihiko.odaki@gmail.com>,
+ open list <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,69 +104,33 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 11/7/22 02:51, Amadeusz Sławiński wrote:
-> On 11/4/2022 3:00 PM, Pierre-Louis Bossart wrote:
->>
->>
->> On 11/4/22 09:12, Cezary Rojewski wrote:
->>> From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
->>>
->>> Both component->driver->suspend and ->resume() do return an int value
->>> but it isn't propagated to the core later on. Update
->>> snd_soc_component_suspend() and snd_soc_component_resume() so that the
->>> possible errors are not squelched.
->>
->> This looks alright on paper but could break existing solutions.
->> There are a number of cases where an error during suspend is not fatal
->> and you don't want to prevent a system suspend if this is recoverable on
->> resume.
->>
->> See for example the errors on clock-stop for SoundWire, which are
->> squelched on purpose. See also Andy Ross' PR to precisely stop
->> propagating errors in SOF
->> https://github.com/thesofproject/linux/pull/3863
->>
->> Maybe a less intrusive change would be to add a WARN_ON or something
->> visible to make sure solutions are fixed, and only critical issues can
->> prevent suspend? And in a second step the errors are propagated.
->>
+On 11/7/22 04:34, Venkata Prasad Potturu wrote:
 > 
-> Do note that thread you've pointed out handles device suspend, by which
-
-If by 'that thread' you are referring to PR #3863, then it's an
-excellent example of a desire NOT to propage suspend errors and at the
-same time an example of a configuration where suspend would not work
-without additional changes.
-
-> I mean, it is modification of sof_suspend(), called by
-> snd_sof_runtime_suspend() which is then registered as handler in:
-> sound/soc/sof/sof-pci-dev.c: SET_RUNTIME_PM_OPS(snd_sof_runtime_suspend,
-> snd_sof_runtime_resume,
-> sound/soc/sof/sof-acpi-dev.c:
-> SET_RUNTIME_PM_OPS(snd_sof_runtime_suspend, snd_sof_runtime_resume,
-> sound/soc/sof/sof-of-dev.c: SET_RUNTIME_PM_OPS(snd_sof_runtime_suspend,
-> snd_sof_runtime_resume,
-> and then taking TGL device for example there is:
-> static struct pci_driver snd_sof_pci_intel_tgl_driver = {
->     (...)
->         .driver = {
->                 .pm = &sof_pci_pm,
->         },
-> };
+> On 11/2/22 17:02, Mark Brown wrote:
+>>> On 11/1/22 20:01, Mark Brown wrote:
+>>>> On Tue, Nov 01, 2022 at 03:15:08PM +0530, Venkata Prasad Potturu wrote:
+>>>> Right, that's what the code does but why is this something that should
+>>>> be controlled in this fashion?
+>>> This machine driver is common for TDM mode and I2S mode, user can
+>>> select TDM
+>>> mode or I2S mode.
+>> Why would the user choose one value or the other, and why would this
+>> choice be something that only changes at module load time?  If this is
+>> user controllable I'd really expect it to be runtime controllable.
+>> You're not explaining why this is a module parameter.
 > 
-> And what this patch set changes is handling of .suspend callback present
-> in struct snd_soc_component_driver, which as evidenced by followup
-> patches is handled in ASoC core while audio is being suspended.
-> As far as I can tell SOF makes no direct use of this callback.
+> Different vendors/OEM's use the same hardware as one need I2S mode and
+> other need TDM mode, using common driver  to support  I2S and TDM mode
+> with this parameter.
 > 
-> I'm not negating that maybe there should be a bit of time when only
-> warning is emitted, just making sure that we are on the same page, about
-> what is being changed.
+> 
+> static int tdm_mode = 0;
+> module_param_named(tdm_mode, tdm_mode, int, 0444);
+> 
+> And this can be runtime controllable by setting permissions as 0644, we
+> will change and send next version patch.
 
-I don't think there is an impact on SOF indeed.
-
-I was just making the point that well-intended changes to propagate
-error status can break platforms. we've had a similar case when trying
-to add checks on pm_runtime_get_sync() and saw multiple errors. Adding
-more error checks when they were not there from the very beginning is a
-difficult thing to achieve without regressions.
+kernel parameters are difficult to manage for distributions using a
+single-build. Either all platforms use the kernel parameter or none of
+them do. That would not allow a per-platform choice of parameters.
+Using DMI quirks or ACPI identifiers would be a lot less problematic, no?
