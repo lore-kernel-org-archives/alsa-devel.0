@@ -4,84 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BC7DC4332F
-	for <alsa-devel@archiver.kernel.org>; Sun,  6 Nov 2022 17:45:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26492C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Nov 2022 01:35:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9334215C3;
-	Sun,  6 Nov 2022 18:44:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9334215C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 58D4D1EB;
+	Mon,  7 Nov 2022 02:34:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58D4D1EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667756736;
-	bh=hpjBmVAFvmSRsLP2IyvqOyJxasz5DLjdwiNDwWBmnDI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=HO57WeNSxv/RUOgkaP2vI10Ce603ABdpS9pnfNTYPenQvuh3g4ng80l6ut4Zqo8vn
-	 8o3vAX5u8WyyTxyFWaFlm/veahDRDtHOE+mEGn8BB17oNTQJqgZAol6ZUU7I56MWAF
-	 9PWURs9ALMAfIsIRabxYIbiCB8B3pgfHKoyi5V5M=
+	s=default; t=1667784911;
+	bh=c6gfSvzCnsTyGBLe33w74JaUEzLQ/NkcpE4ib9BwGY8=;
+	h=From:Subject:To:Date:References:Cc:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:From;
+	b=pAfSyz5wKLgXgWTb2UeF/cqk1V8ACAV7s283HaWCEnB/9XBpJGPrBNusQNRjFKrUx
+	 HloYjiWnNflFqjYObflJIk5OLfDjUj5RaMU7QiqoC3H1Xg7zJijAesqplpFPAWD7Qb
+	 NlQ6KWzhRrC10rxt+WCJgCsDmR4K/zB0+r22/9Xo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F314F80118;
-	Sun,  6 Nov 2022 18:44:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0069DF80118;
+	Mon,  7 Nov 2022 02:34:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C072AF80137; Sun,  6 Nov 2022 18:44:44 +0100 (CET)
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com
- [IPv6:2607:f8b0:4864:20::d36])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 22B53F80137; Mon,  7 Nov 2022 02:34:19 +0100 (CET)
+Received: from mailgw.kylinos.cn (unknown [124.126.103.232])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1E03F800BB
- for <alsa-devel@alsa-project.org>; Sun,  6 Nov 2022 18:44:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1E03F800BB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="FdnOLJCa"
-Received: by mail-io1-xd36.google.com with SMTP id d123so7249527iof.7
- for <alsa-devel@alsa-project.org>; Sun, 06 Nov 2022 09:44:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=LmwpYCTGFDgeBb3yaFM0SZa/jnM1t19xpWxBuBKJal8=;
- b=FdnOLJCaxhF57Ct4n+8ZKrn1+v5QwMN+hsh06h/iWEb1N8H9iGKcFf6xiTsvHnaAIi
- KehmF31IWBfev4X0kwpNLvQfbOSYqsP9jjGJgagF58XtGeO22Qw/zyQd65J02lQTRH1n
- qFXeMRJsW9/bRiJ9vHdV9S6oZuIxtgVB8N5sIp6jf1MGi8m4bymCETSvaRU2pCQuxJ9J
- OXpPHaDeadltcQUwxRLiCM+80tBDiz6QB3KPs0yBfY4Rl3HLbcbjPhOWcbokvl/AeUqk
- 45DTKn9D3LLfcoOBU/84Nb6s8T2QHof2mBeY1eoQ7s14pkGmBNC08NtXNz8DGt9aIaA6
- zXuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=LmwpYCTGFDgeBb3yaFM0SZa/jnM1t19xpWxBuBKJal8=;
- b=tX9Ch6fTTv2eH28WRY2vt4CpB34z1LoGCE+TMjcwCyaw5EII4qR5+X2w0SBIR0fc2+
- ++wFuiVY+kYULFTC4ZLTGjdMNnFw7+OyW8rlM9SnZAoOhBGbPrOBrK+2pG9cAAut+ap+
- zvI7Q+1I5+0eUXT/5n9Ckw4TNnUI0pY/EZuHJ+MHNO1gwifoxTfPQa1PigZpt7Pfh0LX
- 4TJH/ATZgTjo3GRS+3x8ddLl0m0S5diDIitAL5bjjdDFdSx1R1nMGbZ+tEfpYpz/gyKo
- f64p0v7tRxgWsE3+CUwmizWIdATx6oq+BYbMndzH7W+YQovg2jJ9ur7AlTV/Rn7qu9zk
- t6Qw==
-X-Gm-Message-State: ACrzQf33TcsOlhI5jH3yY+wlhACBo7LUICXVQId6HfvpYmbVRXmqLJb/
- +XUyPYJigScuik44Jn7QOIobUiekWG6b9YDfThc=
-X-Google-Smtp-Source: AMsMyM418EFQAdgZSCnwSka9QG7J5t/0cMR9HkkhAMxXuxbHyH/U0bq+Cin5uEekUmsh5uyq/C/AGzh6E6wYz9I6AcA=
-X-Received: by 2002:a5d:9552:0:b0:6ce:64b7:5198 with SMTP id
- a18-20020a5d9552000000b006ce64b75198mr19618284ios.108.1667756679822; Sun, 06
- Nov 2022 09:44:39 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8ACD7F800BB
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2022 02:34:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8ACD7F800BB
+X-UUID: 64a417c4e36449f6abfab5e360c125df-20221107
+X-UUID: 64a417c4e36449f6abfab5e360c125df-20221107
+Received: from cs2c.com.cn [(192.168.0.8)] by mailgw
+ (envelope-from <aichao@kylinos.cn>) (Generic MTA)
+ with ESMTP id 1108827578; Mon, 07 Nov 2022 09:34:08 +0800
+Received: by cs2c.com.cn (NSMail, from userid 0)
+ id 9346E18D0E095; Mon,  7 Nov 2022 09:33:57 +0800 (CST)
+From: =?UTF-8?B?6Im+6LaF?= <aichao@kylinos.cn>
+Subject: =?UTF-8?B?5Zue5aSNOiBSZTog5Zue5aSNOiBSZTogW1BBVENIXSBBTFNBOiB1c2ItYXVkaW86IGZpeCBIYW1lZGFsIEMyMCB1c2IgY2FtZXJvIGRpc2Nvbm5lY3QgaXNzdWU=?=
+To: =?UTF-8?B?VGFrYXNoaSBJd2Fp?= <tiwai@suse.de>,
+Date: Mon, 07 Nov 2022 09:33:57 +0800
+X-Mailer: NSMAIL 6.0
+Message-ID: <1ky6wp89pgz-1ky6wp89ph0@nsmail6.0>
+References: 87pme3jazk.wl-tiwai@suse.de
+X-Delaysendtime: Mon, 07 Nov 2022 09:33:57 +0800
+X-ns-mid: webmail-63686085-1ky86n1o
 MIME-Version: 1.0
-References: <20221106170637.1580802-1-sashal@kernel.org>
- <20221106170637.1580802-9-sashal@kernel.org>
-In-Reply-To: <20221106170637.1580802-9-sashal@kernel.org>
-From: Siarhei Volkau <lis8215@gmail.com>
-Date: Sun, 6 Nov 2022 20:44:28 +0300
-Message-ID: <CAKNVLfZ63utLSOujoTZqN8jHKwYwqb-Z0E=VwueFmwMJf961iA@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 5.4 09/12] ASoC: codecs: jz4725b: fix capture
- selector naming
-To: Sasha Levin <sashal@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org, paul@crapouillou.net,
- Mark Brown <broonie@kernel.org>, linux-mips@vger.kernel.org
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,11 +66,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-=D0=B2=D1=81, 6 =D0=BD=D0=BE=D1=8F=D0=B1. 2022 =D0=B3. =D0=B2 20:06, Sasha =
-Levin <sashal@kernel.org>:
-> +       {"ADC Sourc Capture Routee", "Line In", "Line In"},
+       Yes, the audio device is a UAC1 device, and it used
+   set_sample_rate_v1 to set sample.
 
-Please make sure you're grabbing df496157a5af companion commit.
+       So, I add a quirk to keep up the USB interface up even if the audio
+   stream is closed.
 
-BR,
-Siarhei
+
+   ----
+
+
+   ä¸»ãé¢ï¼Re: åå¤: Re: [PATCH] ALSA: usb-audio: fix Hamedal C20 usb
+   camero disconnect issue
+   æ¥ãæï¼2022-11-04 17:59
+   åä»¶äººï¼Takashi Iwai
+   æ¶ä»¶äººï¼è¾è¶
+
+   On Fri, 04 Nov 2022 10:50:48 +0100,
+   è¾è¶ wrote:
+   >
+   > I 'm sorry, I don't know whether you receiver my mail for 'lsusb -v'
+   to
+   > Hamedal C20
+   I received your previous mails including lsusb -v output.  But the
+   post was filtered out by some reason?
+   So the audio device looks like a UAC1 device.  And this one requires
+   to keep up the USB interface up even if the audio stream is closed
+   (not about the parameter changes)?
+   Takashi
