@@ -4,53 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26492C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Nov 2022 01:35:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE964C433FE
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Nov 2022 04:27:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 58D4D1EB;
-	Mon,  7 Nov 2022 02:34:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58D4D1EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB497822;
+	Mon,  7 Nov 2022 05:26:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB497822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667784911;
-	bh=c6gfSvzCnsTyGBLe33w74JaUEzLQ/NkcpE4ib9BwGY8=;
-	h=From:Subject:To:Date:References:Cc:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=pAfSyz5wKLgXgWTb2UeF/cqk1V8ACAV7s283HaWCEnB/9XBpJGPrBNusQNRjFKrUx
-	 HloYjiWnNflFqjYObflJIk5OLfDjUj5RaMU7QiqoC3H1Xg7zJijAesqplpFPAWD7Qb
-	 NlQ6KWzhRrC10rxt+WCJgCsDmR4K/zB0+r22/9Xo=
+	s=default; t=1667795242;
+	bh=EQigBQMD8jvxcc49a5ARtMpdgsT6ZOxToLvVMLTZwGs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=X+cUooySsb35Kw8OM8TlPXMXF/cjocYUoFV+8q9C7Gx8zGCRC0+jke09OEh8PhWDK
+	 zBrGb+NUTf193x+mzgPCd5JLStWwZK8FAndYFZ9hWwwT/SEWup0Fih5NbFKj1Y8PeT
+	 ebeHo6rBkQEcedDyIKpYb1ibis95wPL99Y506Lss=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0069DF80118;
-	Mon,  7 Nov 2022 02:34:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A04BAF8024C;
+	Mon,  7 Nov 2022 05:26:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22B53F80137; Mon,  7 Nov 2022 02:34:19 +0100 (CET)
-Received: from mailgw.kylinos.cn (unknown [124.126.103.232])
+ id 4DBB4F8025A; Mon,  7 Nov 2022 05:26:30 +0100 (CET)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8ACD7F800BB
- for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2022 02:34:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8ACD7F800BB
-X-UUID: 64a417c4e36449f6abfab5e360c125df-20221107
-X-UUID: 64a417c4e36449f6abfab5e360c125df-20221107
-Received: from cs2c.com.cn [(192.168.0.8)] by mailgw
- (envelope-from <aichao@kylinos.cn>) (Generic MTA)
- with ESMTP id 1108827578; Mon, 07 Nov 2022 09:34:08 +0800
-Received: by cs2c.com.cn (NSMail, from userid 0)
- id 9346E18D0E095; Mon,  7 Nov 2022 09:33:57 +0800 (CST)
-From: =?UTF-8?B?6Im+6LaF?= <aichao@kylinos.cn>
-Subject: =?UTF-8?B?5Zue5aSNOiBSZTog5Zue5aSNOiBSZTogW1BBVENIXSBBTFNBOiB1c2ItYXVkaW86IGZpeCBIYW1lZGFsIEMyMCB1c2IgY2FtZXJvIGRpc2Nvbm5lY3QgaXNzdWU=?=
-To: =?UTF-8?B?VGFrYXNoaSBJd2Fp?= <tiwai@suse.de>,
-Date: Mon, 07 Nov 2022 09:33:57 +0800
-X-Mailer: NSMAIL 6.0
-Message-ID: <1ky6wp89pgz-1ky6wp89ph0@nsmail6.0>
-References: 87pme3jazk.wl-tiwai@suse.de
-X-Delaysendtime: Mon, 07 Nov 2022 09:33:57 +0800
-X-ns-mid: webmail-63686085-1ky86n1o
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5631F800EC
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2022 05:26:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5631F800EC
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D6A781A0AD2;
+ Mon,  7 Nov 2022 05:26:22 +0100 (CET)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9DA551A0ADB;
+ Mon,  7 Nov 2022 05:26:22 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 5B9AD180222D;
+ Mon,  7 Nov 2022 12:26:19 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org
+Subject: [PATCH] pcm: rate - check rate type for using
+ snd_pcm_rate_slave_frames
+Date: Mon,  7 Nov 2022 12:05:12 +0800
+Message-Id: <1667793912-18957-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: shengjiu.wang@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,31 +67,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-       Yes, the audio device is a UAC1 device, and it used
-   set_sample_rate_v1 to set sample.
+With plughw device and mmap case, the plug pcm fast_ops pointer is same
+as slave pcm fast_ops, but ops pointer is different, which cause
+the "bus error" in snd_pcm_rate_slave_frames.
 
-       So, I add a quirk to keep up the USB interface up even if the audio
-   stream is closed.
+The test command is
+arecord -Dplughw:x -r12000 -c2 -fS16_LE -M temp.wav
 
+This patch is to add pcm type check as commit:
+d21e0e01 pcm: plugin - fix avail_min calculation on rate plugin
 
-   ----
+Fixes: d9dbb57b ("pcm: rate - rewrite the may_wait_for_avail_min callback for the rate plugin")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ src/pcm/pcm_rate.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
+diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
+index e8815e8b..dc502202 100644
+--- a/src/pcm/pcm_rate.c
++++ b/src/pcm/pcm_rate.c
+@@ -1304,8 +1304,11 @@ static snd_pcm_uframes_t snd_pcm_rate_slave_frames(snd_pcm_t *pcm, snd_pcm_ufram
+ static int snd_pcm_rate_may_wait_for_avail_min(snd_pcm_t *pcm,
+ 					       snd_pcm_uframes_t avail)
+ {
+-	return snd_pcm_plugin_may_wait_for_avail_min_conv(pcm, avail,
+-							  snd_pcm_rate_slave_frames);
++	if (snd_pcm_type(pcm) == SND_PCM_TYPE_RATE)
++		return snd_pcm_plugin_may_wait_for_avail_min_conv(pcm, avail,
++								  snd_pcm_rate_slave_frames);
++	else
++		return snd_pcm_plugin_may_wait_for_avail_min_conv(pcm, avail, NULL);
+ }
+ 
+ static const snd_pcm_fast_ops_t snd_pcm_rate_fast_ops = {
+-- 
+2.34.1
 
-   ä¸»ãé¢ï¼Re: åå¤: Re: [PATCH] ALSA: usb-audio: fix Hamedal C20 usb
-   camero disconnect issue
-   æ¥ãæï¼2022-11-04 17:59
-   åä»¶äººï¼Takashi Iwai
-   æ¶ä»¶äººï¼è¾è¶
-
-   On Fri, 04 Nov 2022 10:50:48 +0100,
-   è¾è¶ wrote:
-   >
-   > I 'm sorry, I don't know whether you receiver my mail for 'lsusb -v'
-   to
-   > Hamedal C20
-   I received your previous mails including lsusb -v output.  But the
-   post was filtered out by some reason?
-   So the audio device looks like a UAC1 device.  And this one requires
-   to keep up the USB interface up even if the audio stream is closed
-   (not about the parameter changes)?
-   Takashi
