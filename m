@@ -4,95 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89270C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 17:17:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55943C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 17:17:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAAA5166A;
-	Wed,  9 Nov 2022 18:16:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAAA5166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 862DE163E;
+	Wed,  9 Nov 2022 18:16:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 862DE163E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668014224;
-	bh=r24XYaIe8xewa/oag7PK18sVLOrhA1zCiQ1CFnzjd8E=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1668014252;
+	bh=1xvX5eQKgCMUhFTQX7oGNg1CzrrGd4sG2z1YXhvU/5o=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kxiIjqjSPWufbdmvBb749SIo5cMkWwch2Vpqurz+0FwQBS3upvepRH8vq2afH0MgS
-	 zpQnhetECWGPxHcz3KAh3Zq/PXax1W1fzIfD88TlM7ticVUEonsb8aNlIOf0UOO/9S
-	 ifK1WR3sh/r0ZehW2R7gh7YKtsgWvkdSARQZCu3o=
+	b=caEabOlR/xp2hjKbH6CJRIouLy3X0HodkUyek9TKR4JRtZob7iMJPydgLxMqCXNro
+	 HuirTXtVHg+RpWq65iPMoEAIFLyw4r2E3twgOWaqHwiKmzrTAHI2b9hJ5zgOZCJyB6
+	 0Vio3hLB2nLoLFmxjwqEZGnMa0gZrHykBRF8FiAk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E29BF8023B;
+	by alsa1.perex.cz (Postfix) with ESMTP id BCD96F80549;
 	Wed,  9 Nov 2022 18:15:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BDCACF803DC; Sat,  5 Nov 2022 22:03:38 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71E50F80271
- for <alsa-devel@alsa-project.org>; Sat,  5 Nov 2022 22:03:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71E50F80271
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com
- header.b="Ek158U/I"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 12ADCF8025A; Mon,  7 Nov 2022 15:53:35 +0100 (CET)
+Received: from vern.gendns.com (vern.gendns.com [98.142.107.122])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 5B12CB808C4;
- Sat,  5 Nov 2022 21:03:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69FADC433D6;
- Sat,  5 Nov 2022 21:03:26 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
- dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com
- header.b="Ek158U/I"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105; 
- t=1667682204;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=eqdLYS8BDcnZ1CTVSLTL2V9mpBrsInljjeWX569KabI=;
- b=Ek158U/IwAdzp/7JgxH8/niYIDD2c7iDpM/q00frrsf+kptgL3uCiSQ7Xlb7SIQ9YvTtg5
- hlBVvQrg9GahoQxIsHXxgh/CGzM4sTACdo/WX2PYJwuZbLx0SZ+njeVN3snq9LgpG5MQMr
- EBxmnADIwq+lyFhZU+rPI7l5k3bHDuo=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id f7ca4808
- (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO); 
- Sat, 5 Nov 2022 21:03:23 +0000 (UTC)
-Date: Sat, 5 Nov 2022 22:03:18 +0100
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v4a 00/38] timers: Use timer_shutdown*() before freeing
- timers
-Message-ID: <Y2bPlllkHo5DUmLY@zx2c4.com>
-References: <20221105060024.598488967@goodmis.org>
- <CAHk-=wi95dGkg7DiuOZ27gGW+mxJipn9ykB6LHB-HrbbLG6OMQ@mail.gmail.com>
- <20221105123642.596371c7@rorschach.local.home>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90C85F800EC
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2022 15:53:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90C85F800EC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=lechnology.com header.i=@lechnology.com
+ header.b="uoFE+zNk"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+ In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+ :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+ Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+ List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+ bh=yY2+3tqYHY5/Nj0gegT3dgan1cJadcoMTwqFRr5L2kw=; b=uoFE+zNkTW8nSe/gzYuumfpsP+
+ NvcVijNGM28CoRMokRZKPl1GdsfUdYxaotECOilfwMGqj6BDffp/BjbYJ4yNFbz+s2CxdyH6cX5Lr
+ MQbgkIJMMe4KCteld8LCqTAZGoq+yD1zwmKygBYrGlp9J890ITSxlUQinxYNMXaiIbjzZUNRkZLPc
+ eQ2bF+MdrKjTwAU1agFFumWE06f/sHmpU9d19bt9GE5dpUDqDWL2FEa0Etn1r/hl1rGdDPytmUEgS
+ 3qcGJfAXI4zguO45vQRaGV2eDPPiAkD2S2PXeDRuGclR0xc+REj5X8IrdHJHPFg3D/FX3vIL0qFxd
+ Z+O33w3Q==;
+Received: from ip98-183-112-30.ok.ok.cox.net ([98.183.112.30]:44606
+ helo=[192.168.0.134]) by vern.gendns.com with esmtpsa (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.95)
+ (envelope-from <david@lechnology.com>) id 1os3Ut-00DZTt-S5;
+ Mon, 07 Nov 2022 09:53:15 -0500
+Message-ID: <7a2bf9aa-9489-fc91-9338-ec9d0835a43c@lechnology.com>
+Date: Mon, 7 Nov 2022 08:52:56 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20221105123642.596371c7@rorschach.local.home>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Subject: Re: [PATCH v2 21/65] clk: davinci: da8xx-cfgchip: Add a
+ determine_rate hook
+Content-Language: en-US
+To: Maxime Ripard <maxime@cerno.tech>
+References: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
+ <20221018-clk-range-checks-fixes-v2-21-f6736dec138e@cerno.tech>
+ <187e61cd-7d02-2453-acf1-30180559d42f@lechnology.com>
+ <20221107120611.vutsgpgpcorsgzwp@houat>
+From: David Lechner <david@lechnology.com>
+In-Reply-To: <20221107120611.vutsgpgpcorsgzwp@houat>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse,
+ please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - alsa-project.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id:
+ davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 X-Mailman-Approved-At: Wed, 09 Nov 2022 18:15:49 +0100
-Cc: alsa-devel@alsa-project.org, linux-staging@lists.linux.dev,
- linux-doc@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org, Thomas Gleixner <tglx@linutronix.de>,
- linux-leds@vger.kernel.org, drbd-dev@lists.linbit.com,
- linux-s390@vger.kernel.org, linux-nilfs@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-atm-general@lists.sourceforge.net, linux-afs@lists.infradead.org,
- lvs-devel@vger.kernel.org, linux-acpi@vger.kernel.org, coreteam@netfilter.org,
- intel-wired-lan@lists.osuosl.org, linux-input@vger.kernel.org,
- tipc-discussion@lists.sourceforge.net, linux-ext4@vger.kernel.org,
- Guenter Roeck <linux@roeck-us.net>, linux-media@vger.kernel.org,
- bridge@lists.linux-foundation.org, linux-pm@vger.kernel.org,
- intel-gfx@lists.freedesktop.org, rcu@vger.kernel.org, cgroups@vger.kernel.org,
- openipmi-developer@lists.sourceforge.net,
- Anna-Maria Gleixner <anna-maria@linutronix.de>, linux-edac@vger.kernel.org,
- linux-block@vger.kernel.org, linux-nfs@vger.kernel.org,
- linux-parisc@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
- netdev@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-bluetooth@vger.kernel.org, netfilter-devel@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>,
+ Prashant Gaikwad <pgaikwad@nvidia.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Michael Turquette <mturquette@baylibre.com>, Sekhar Nori <nsekhar@ti.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ dri-devel@lists.freedesktop.org, Paul Cercueil <paul@crapouillou.net>,
+ Max Filippov <jcmvbkbc@gmail.com>, Thierry Reding <thierry.reding@gmail.com>,
+ linux-phy@lists.infradead.org, David Airlie <airlied@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>, linux-stm32@st-md-mailman.stormreply.com,
+ Abel Vesa <abelvesa@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Samuel Holland <samuel@sholland.org>, Chunyan Zhang <zhang.lyra@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, linux-tegra@vger.kernel.org,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Chen-Yu Tsai <wens@csie.org>,
+ NXP Linux Team <linux-imx@nxp.com>, Orson Zhai <orsonzhai@gmail.com>,
+ linux-mips@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-rtc@vger.kernel.org,
+ linux-clk@vger.kernel.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Daniel Vetter <daniel@ffwll.ch>, alsa-devel@alsa-project.org,
+ Manivannan Sadhasivam <mani@kernel.org>, linux-kernel@vger.kernel.org,
+ Sascha Hauer <s.hauer@pengutronix.de>, linux-actions@lists.infradead.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ linux-arm-kernel@lists.infradead.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Alessandro Zummo <a.zummo@towertech.it>, linux-sunxi@lists.linux.dev,
+ Stephen Boyd <sboyd@kernel.org>, patches@opensource.cirrus.com,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>,
+ linux-renesas-soc@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Shawn Guo <shawnguo@kernel.org>, Claudiu Beznea <claudiu.beznea@microchip.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,31 +135,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Nov 05, 2022 at 12:36:42PM -0400, Steven Rostedt wrote:
-> ----------------------8<------------------------
-> @@
-> identifier ptr, timer, rfield, slab;
-> @@
-> (
-> -	del_timer(&ptr->timer);
-> +	timer_shutdown(&ptr->timer);
-> |
-> -	del_timer_sync(&ptr->timer);
-> +	timer_shutdown_sync(&ptr->timer);
-> )
->     ...
-> (
-> 	kfree_rcu(ptr, rfield);
-> |
-> 	kmem_cache_free(slab, ptr);
-> |
-> 	kfree(ptr);
-> )
-> ---------------------->8------------------------
+On 11/7/22 6:06 AM, Maxime Ripard wrote:
+> Hi David,
+> 
+> On Fri, Nov 04, 2022 at 11:45:17AM -0500, David Lechner wrote:
+>> On 11/4/22 8:17 AM, Maxime Ripard wrote:
+>>> The Davinci DA8xxx cfgchip mux clock implements a mux with a set_parent
+>>> hook, but doesn't provide a determine_rate implementation.
+>>>
+>>> This is a bit odd, since set_parent() is there to, as its name implies,
+>>> change the parent of a clock. However, the most likely candidate to
+>>> trigger that parent change is a call to clk_set_rate(), with
+>>> determine_rate() figuring out which parent is the best suited for a
+>>> given rate.
+>>>
+>>> The other trigger would be a call to clk_set_parent(), but it's far less
+>>> used, and it doesn't look like there's any obvious user for that clock.
+>>>
+>>> So, the set_parent hook is effectively unused, possibly because of an
+>>> oversight. However, it could also be an explicit decision by the
+>>> original author to avoid any reparenting but through an explicit call to
+>>> clk_set_parent().
+>>
+>>
+>> The parent is defined in the device tree and is not expected to change
+>> at runtime, so if I am understanding the patch correctly, setting the
+>> CLK_SET_RATE_NO_REPARENT flag seems correct.
+> 
+> Is that an acked-by/reviewed-by?
+> 
+> Thanks!
+> Maxime
 
-Something that might help here is changing the `...` into
-`... when exists` or into `... when != ptr` or similar.
-See this section of the manual:
-https://coccinelle.gitlabpages.inria.fr/website/docs/main_grammar004.html
+The commit message could be updated to be more certain now, but sure...
 
-Jason
+Acked-by: David Lechner <david@lechnology.com>
