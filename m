@@ -4,65 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D46EC433FE
-	for <alsa-devel@archiver.kernel.org>; Mon,  7 Nov 2022 08:56:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A1C6C433FE
+	for <alsa-devel@archiver.kernel.org>; Mon,  7 Nov 2022 08:57:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA9561DB;
-	Mon,  7 Nov 2022 09:55:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA9561DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5E1E6822;
+	Mon,  7 Nov 2022 09:56:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E1E6822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667811396;
-	bh=hPwj94MWF/Zorm4aOBb95Urft2bovYV2W04S1cTWGpQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nXAi3g7Qx5THs2s0NCjpj/qGD8/b+V6sYebJ0nZ4Qxw1/Upl9pJmXFKbR/nrFR+qJ
-	 7TOjxc1RMRfXr2IGmTTCcXSKw0psR/osG5d2P9DuxvKEqBdRw2hxhESOEYHZGBYw5U
-	 rSCRsYbocV2J/NUvDvzBEft9YAfunEXl89DWBo3M=
+	s=default; t=1667811458;
+	bh=Sy+udHQ358tyh2+I8pFvLeKtYKkBFziI4cvLCcZdmbg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=VsJy7yOvUkeF19gZ+smGqVrOjKnp7Vq7v1KGFLU8IeEZ5Yx91kiD9cgr8q5uj8mJJ
+	 iafmZa9Om7Lfc8Agrob/OkzZjfhroTG6zs7GZspg3yAXmKAMihpNZfrnzLQ7BhwO/n
+	 Uv1rm7Ut6bInutvwPhu5Snep4Pz0oP+2V2qhneo8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7937EF8024C;
-	Mon,  7 Nov 2022 09:55:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1617BF804BD;
+	Mon,  7 Nov 2022 09:56:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE629F8025A; Mon,  7 Nov 2022 09:55:45 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D2180F800EC
- for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2022 09:55:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2180F800EC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="U35RMGne"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id B0E81F804BD; Mon,  7 Nov 2022 09:56:46 +0100 (CET)
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A663460F2E;
- Mon,  7 Nov 2022 08:55:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABC35C433C1;
- Mon,  7 Nov 2022 08:55:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1667811336;
- bh=hPwj94MWF/Zorm4aOBb95Urft2bovYV2W04S1cTWGpQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=U35RMGne0xH8ZNoPjGnGEQNHXhydjeJay4ZD0dftxSs4ryFXkVreJDf5WVNy++xCN
- IWOfk4huOJmbpu8GqCf1Vgbup4aML+wbdgk6V1a06w48LScZosF8ewz2irqjCK7raN
- JW61OwoAquq0QqUoMePtaPRsbQSdz0KAKevnBYp8=
-Date: Mon, 7 Nov 2022 09:55:32 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: John Veness <john-linux@pelago.org.uk>
-Subject: Re: [PATCH] ALSA: usb-audio: Add quirks for MacroSilicon
- MS2100/MS2106 devices (5.10)
-Message-ID: <Y2jIBPGASBqZ4A/L@kroah.com>
-References: <20221103181544.18958-1-john-linux@pelago.org.uk>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F149F800EC
+ for <alsa-devel@alsa-project.org>; Mon,  7 Nov 2022 09:56:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F149F800EC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="FSWleOwg"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1667811404; x=1699347404;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=Sy+udHQ358tyh2+I8pFvLeKtYKkBFziI4cvLCcZdmbg=;
+ b=FSWleOwgSL2po28E6ayCJ0gFz9GTBhp7DqfT4+6yt18eHTLnq9gnqYBF
+ S2883SFxrK3XtJnHdXyWuhw5GnASz6bd+prvECECRaNMqU5N0aI3bzsIx
+ xrK0kxxe9NFjN6G35LEvphnauAsFV3SPXPu06RV+EbPsLfBILQjj9CKZf
+ RbPFcW5pV79pfi+6WuBKTRRYujFpV6jg5OKtBQFoltp2eP8wNpEhpT56J
+ QP2yiLZsA7qRTz9hfbIeM0C2sRVDnvJGv+iPrA1l6ojVJZ+NRv+Opsjmf
+ GkpoVnGNxST4+W//zi3x7h0snzEn+29VfZyorpFyR0DeU455SFD2RNYrt g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10523"; a="372481162"
+X-IronPort-AV: E=Sophos;i="5.96,143,1665471600"; d="scan'208";a="372481162"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Nov 2022 00:56:40 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10523"; a="635831426"
+X-IronPort-AV: E=Sophos;i="5.96,143,1665471600"; d="scan'208";a="635831426"
+Received: from akharade-mobl.ger.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.252.14.37])
+ by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Nov 2022 00:56:38 -0800
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	chao.song@linux.intel.com
+Subject: [PATCH 0/3] ASoC: SOF: ipc4-topology: Add widget queue support
+Date: Mon,  7 Nov 2022 10:57:03 +0200
+Message-Id: <20221107085706.2550-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221103181544.18958-1-john-linux@pelago.org.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
- stable@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, rander.wang@intel.com,
+ ranjani.sridharan@linux.intel.com, yung-chuan.liao@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,18 +86,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Nov 03, 2022 at 06:15:44PM +0000, John Veness wrote:
-> [ Upstream commit 6e2c9105e0b743c92a157389d40f00b81bdd09fe]
-> 
-> Backported to 5.10.
-> 
-> Treat the claimed 96kHz 1ch in the descriptors as 48kHz 2ch, so that
-> the audio stream doesn't sound mono. Also fix initial stream
-> alignment, so that left and right channels are in the correct order.
-> 
-> Signed-off-by: John Veness <john-linux@pelago.org.uk>
-> Cc: <stable@vger.kernel.org> # 5.10
+Hi,
 
-Now queued up, thanks.
+with SOF topology2 for IPC4, widgets might have mutliple queues they can be
+connected.
+The queues to use between components are descibed in the topology file.
 
-greg k-h
+This series adds widget queue support (specify which pin to connect) for
+ipc4-topology with topology2.
+
+Note: currently queue 0 of a widget is used as hardwired default.
+
+Regards,
+Peter
+---
+Chao Song (3):
+  ASoC: SOF: Add support for parsing the number of sink/source pins
+  ASoC: SOF: Add support to parse pin binding array from topology
+  ASoC: SOF: topology: Add helper to get/put widget queue id
+
+ include/uapi/sound/sof/tokens.h |   9 ++
+ sound/soc/sof/ipc4-topology.c   | 133 +++++++++++++++++++++---
+ sound/soc/sof/sof-audio.h       |  42 ++++++++
+ sound/soc/sof/topology.c        | 177 ++++++++++++++++++++++++++++++--
+ 4 files changed, 340 insertions(+), 21 deletions(-)
+
+-- 
+2.38.1
+
