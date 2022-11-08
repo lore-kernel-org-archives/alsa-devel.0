@@ -4,100 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C2DEC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 04:29:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E91D9C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 05:30:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 27196843;
-	Tue,  8 Nov 2022 05:28:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27196843
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29DC8209;
+	Tue,  8 Nov 2022 06:29:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29DC8209
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667881754;
-	bh=UJEGS5ECCs57pGynTcx/Ve7HdqEyHSaJYsCwYSEqWkU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1667885433;
+	bh=7gkKU+Kthws7LEKrAo+qSOfkUTeFTxTtAI7TZIkf8ao=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tZQz9b+CfCakRz4xSciWPslN++tHpsvNi4Xmnu6Pn/lDj/pgLQqj9e6/F+8ETQKtq
-	 fsScHnjL5Wt3b7VgH5ZSX1R28C8p3ZL026Iby2OVRNW1ekso/Tsd7RSsSLz05pYL26
-	 Kn9LFpVzAQ03zqCFdEEhwg/ef/TOz1XdjfuloP+I=
+	b=ds2WHeL6h6CpxZdClsa2B0uVNhQIwgPGzk5SGSjJkQQUNEQdZLKc0OqRSQnPSOm4I
+	 UdEEpMytz6Q9La5AbC5FExfumyB55CNbkpfy7bxjjz8c6NTUyfXqPQLt/JmWqJbpFa
+	 90N8bBJ1N/EnD/GGYkGF6ywWR1PZHefwMN+vm45s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3838F8028B;
-	Tue,  8 Nov 2022 05:27:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B04EEF8016A;
+	Tue,  8 Nov 2022 06:29:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 56274F8025D; Tue,  8 Nov 2022 05:27:37 +0100 (CET)
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com
- [IPv6:2607:f8b0:4864:20::1030])
+ id 959D9F8016E; Tue,  8 Nov 2022 06:29:37 +0100 (CET)
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
+ [IPv6:2a00:1450:4864:20::12d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3EAFF8025D
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 05:27:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3EAFF8025D
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key)
- header.d=compal-corp-partner-google-com.20210112.gappssmtp.com
- header.i=@compal-corp-partner-google-com.20210112.gappssmtp.com
- header.b="b8vZnjuK"
-Received: by mail-pj1-x1030.google.com with SMTP id
- m6-20020a17090a5a4600b00212f8dffec9so12344846pji.0
- for <alsa-devel@alsa-project.org>; Mon, 07 Nov 2022 20:27:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=compal-corp-partner-google-com.20210112.gappssmtp.com; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=RIIGd8oP3sziwMfS5bjNdlZ83g03MLKO/gH68/ERIKg=;
- b=b8vZnjuKOV19audB3sn+ISPXH+awdfhfeJtmIytlnPM8pImaTJVYKLhIcjrVIvzS1Z
- wUGo6Vsv673ZH3Y73EfasjM3agz4k35iV5TnWXgZ7PazN7aSgcxTWtWe76YjKDSVXTUB
- gKnzifFd8Ophnyb2JGwApkeSmk84zZAVYBcrxfCX9IWhpjfOK6RB9VH5pjj/DXtaN5a5
- 82cBYM4KwX5yCXiHpBAK+fUg/yflgOO/EvAty35VlXPH3N05iKf+Lvdb+oR092R+I2oM
- 09mvwNYzNCZYLzGWjrV6W8AoN4R+6Cq2J1Ytr4jENHUjHXfEo4aU6GRSS3T2oYx8XIuG
- CJJA==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 44F9BF800F4
+ for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 06:29:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44F9BF800F4
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="U12K6aCH"
+Received: by mail-lf1-x12d.google.com with SMTP id g7so19721832lfv.5
+ for <alsa-devel@alsa-project.org>; Mon, 07 Nov 2022 21:29:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=UgQPPhTi3somNr8brvqCVrv35jcNzf/K6iUmv2+8mAE=;
+ b=U12K6aCH5eEcVhcCvvLWEhnFdcy7FkwyNvf0HPD+MBlBREMb5ffbXt3xKyRRbMUhI0
+ eAcZMdCRz1xklDCuwy/s24W7y1KdbR62Lax6fSZVb7Q1TeEhQV7aNhMb4lcCLPQ5im86
+ I9QVYiNFV0rwMiJ1MjS+DqzA8e/n0oCU0vzzXhwq97niJjjWp8vq9dPH5BpLxUsLwWbi
+ jeLz38r/tc8yCXoK0fxlW9uxUiVu5HXcV8dX+f/Oi9yZhPiXKym0uGklerkrBXLUcmzK
+ +CJiboA+Rpg8FLD77zEaHY6NPEvnvXohCqbqqwryqNeSgtqRpl1ijIQoT++zx4JaUuQ9
+ 5ogQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=RIIGd8oP3sziwMfS5bjNdlZ83g03MLKO/gH68/ERIKg=;
- b=4Y5tzjrW5h13OqTRNCQzMa2v6N8QcDaYI9+mu59Lqhqr/WNnY4Fh2GFMNYVDdb9/UF
- Z3J4/v+p+3YB5SRfCyYU33NdHmW2WF7kFG02CgGG6+PrkuRrBGOUiRdrpTnhpzE/Kol1
- /zsv2m4ofnJoA59RW1Rm8plXmJzAgOiG2Qr/Xh5qouxxUKDf3BPpiTLsDz98B6vUvtP6
- RxR91j1npJupM7ZQzKwPbX4BPZvxnd4miIE+ewfKE/+mpaQCnLSo4KRxElokxFdXrt2A
- i8Q9WRh7laIRwOpYqotXitXDTr/vyMemYQRSfd+ZlR2Hdn1oFwBIuY/wU36ysLhKUjOQ
- lBwg==
-X-Gm-Message-State: ACrzQf00ZfJ9KjRWzdKDNYnCHBQpcdgOIZPtlguxIuLJ9PMrrjAZ+U3n
- SL+v6ixOThZb8guCHjxvNvLhcA==
-X-Google-Smtp-Source: AMsMyM4Zyf89FLUAoW4CNQByU6fT4GCrJPUd+YcTiXulxLCcqVtH4ZqdfuELixR3ErWYZ9AZnttmYw==
-X-Received: by 2002:a17:90a:fc94:b0:213:f73a:86a7 with SMTP id
- ci20-20020a17090afc9400b00213f73a86a7mr43210065pjb.144.1667881652413; 
- Mon, 07 Nov 2022 20:27:32 -0800 (PST)
-Received: from localhost.localdomain (118-167-183-234.dynamic-ip.hinet.net.
- [118.167.183.234]) by smtp.gmail.com with ESMTPSA id
- j63-20020a625542000000b005627868e27esm5265945pfb.127.2022.11.07.20.27.29
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 07 Nov 2022 20:27:32 -0800 (PST)
-From: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/2] ASoC: Intel: sof rt5682: remove the duplicate codes
-Date: Tue,  8 Nov 2022 12:27:16 +0800
-Message-Id: <20221108042716.2930255-3-ajye_huang@compal.corp-partner.google.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221108042716.2930255-1-ajye_huang@compal.corp-partner.google.com>
-References: <20221108042716.2930255-1-ajye_huang@compal.corp-partner.google.com>
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=UgQPPhTi3somNr8brvqCVrv35jcNzf/K6iUmv2+8mAE=;
+ b=cV44/qsqpDxtQxPpHI0466vEJtlOcpmyedeFEQqZSPumxC/jdWvpd/wFecAkWqcJVH
+ MUL+UykzR6ZOesUZXjUXXntZcafr8dkuWdmbkwa5yeUFdVYD3cvYaeP5m3n8R5z3sbRg
+ JPOcG5vs7U1BkTkxVia5NvZHi/2W2AVA4trhZ2mKmmoiCIhNAQwP/pDS1K0oZDr0HESo
+ z+K3dab9Z1MGMFGOdnqr33oVQ76fXcXZI1XV1cUpPr3h2g/zLk2EVwnYtKOZFbxdN9YS
+ w+kx/S47yy6b3O30tfHOTaxw1GISjiXuz50zzCa/lo84GIUYOiuck4xbdiiyAfSN2B0y
+ LrXA==
+X-Gm-Message-State: ACrzQf1w9/TiRq9i+0S2SM7Sk9CV2LmbIj52Ld7615pkpMcekingKoVA
+ 95qO4EtlE3BVH7z+cUo74jktdXwhz5nXRB5DoQY=
+X-Google-Smtp-Source: AMsMyM7esPtP1ZIbv7q2BVp+vAtlFCe3VzamiJwL7Ma5Y5mpP9Scy/KXaLyQg7/bb28pfKOpkiWuHRKOQZs8fmqpHYg=
+X-Received: by 2002:ac2:58d8:0:b0:4af:af1f:87e0 with SMTP id
+ u24-20020ac258d8000000b004afaf1f87e0mr17991846lfo.283.1667885368012; Mon, 07
+ Nov 2022 21:29:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Libin Yang <libin.yang@intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org,
- Mac Chiang <mac.chiang@intel.com>, Mark Brown <broonie@kernel.org>,
- Muralidhar Reddy <muralidhar.reddy@intel.com>,
- ye xingchen <ye.xingchen@zte.com.cn>, David Lin <CTLIN0@nuvoton.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Brent Lu <brent.lu@intel.com>,
- Vamshi Krishna <vamshi.krishna.gopal@intel.com>, Yong Zhi <yong.zhi@intel.com>
+References: <20221107215201.434212-1-marex@denx.de>
+In-Reply-To: <20221107215201.434212-1-marex@denx.de>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Tue, 8 Nov 2022 13:29:16 +0800
+Message-ID: <CAA+D8AOGLUKfg6sfkf7k4P8XnQdDHpjmy4jQK648Mnmupuugyg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: Enable transmitter when generating MCLK
+To: Marek Vasut <marex@denx.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Fabio Estevam <festevam@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,28 +95,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Remove the redundant code to prevent user confuse.
+On Tue, Nov 8, 2022 at 5:52 AM Marek Vasut <marex@denx.de> wrote:
 
-Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
----
- sound/soc/intel/boards/sof_rt5682.c | 4 ----
- 1 file changed, 4 deletions(-)
+> For SAI to generate MCLK on external SoC pad, the transmitter must be
+> enabled as well. With transmitter disabled, no clock are generated.
+> Enable the transmitter using the TERE bit.
+>
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 0e803c1c2b06..4a2f91249b10 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -867,10 +867,6 @@ static int sof_audio_probe(struct platform_device *pdev)
- 	if (acpi_dev_present("RTL5682", NULL, -1))
- 		sof_rt5682_quirk |= SOF_RT5682S_HEADPHONE_CODEC_PRESENT;
- 
--	/* Detect the headset codec variant to support machines in DMI quirk */
--	if (acpi_dev_present("RTL5682", NULL, -1))
--		sof_rt5682_quirk |= SOF_RT5682S_HEADPHONE_CODEC_PRESENT;
--
- 	if (soc_intel_is_byt() || soc_intel_is_cht()) {
- 		is_legacy_cpu = 1;
- 		dmic_be_num = 0;
--- 
-2.25.1
+It is already done in trigger(), why need to do this operation in probe()
+and set_bclk() again?
 
+best regards
+wang shengjiu
+
+>
+> Signed-off-by: Marek Vasut <marex@denx.de>
+> ---
+> Cc: Fabio Estevam <festevam@gmail.com>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+> Cc: Shengjiu Wang <shengjiu.wang@gmail.com>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: Xiubo Li <Xiubo.Lee@gmail.com>
+> To: alsa-devel@alsa-project.org
+> ---
+>  sound/soc/fsl/fsl_sai.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+> index 1c9be8a5dcb13..98c62027e5799 100644
+> --- a/sound/soc/fsl/fsl_sai.c
+> +++ b/sound/soc/fsl/fsl_sai.c
+> @@ -503,6 +503,10 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai,
+> bool tx, u32 freq)
+>                 /* SAI is in master mode at this point, so enable MCLK */
+>                 regmap_update_bits(sai->regmap, FSL_SAI_MCTL,
+>                                    FSL_SAI_MCTL_MCLK_EN,
+> FSL_SAI_MCTL_MCLK_EN);
+> +
+> +               /* Transmitter must be enabled to generate MCLK on pad */
+> +               regmap_update_bits(sai->regmap, FSL_SAI_xCSR(1, ofs),
+> +                                  FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
+>         }
+>
+>         return 0;
+> @@ -1445,6 +1449,11 @@ static int fsl_sai_probe(struct platform_device
+> *pdev)
+>             sai->soc_data->max_register >= FSL_SAI_MCTL) {
+>                 regmap_update_bits(sai->regmap, FSL_SAI_MCTL,
+>                                    FSL_SAI_MCTL_MCLK_EN,
+> FSL_SAI_MCTL_MCLK_EN);
+> +
+> +               /* Transmitter must be enabled to generate MCLK on pad */
+> +               regmap_update_bits(sai->regmap,
+> +                                  FSL_SAI_xCSR(1,
+> sai->soc_data->reg_offset),
+> +                                  FSL_SAI_CSR_TERE, FSL_SAI_CSR_TERE);
+>         }
+>
+>         ret = pm_runtime_put_sync(dev);
+> --
+> 2.35.1
+>
+>
