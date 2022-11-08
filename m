@@ -4,63 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E251C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 14:47:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEDE6C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 14:48:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AAEF2847;
-	Tue,  8 Nov 2022 15:46:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAEF2847
+	by alsa0.perex.cz (Postfix) with ESMTPS id A51D2E11;
+	Tue,  8 Nov 2022 15:47:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A51D2E11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667918865;
-	bh=RMyu/TDNhMiSLZgPEfg4PPfz0KV8hBP6tnFr8sWoXS0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=fp/iWxRmj2JDEaKT1PcmhZj7T3t6aqQ/6rKbrnKtjjhGT52ZGFRV8MM17L4Wxtsrd
-	 V4PMUvEabfsves/rpspVnLvEKg9UabZ4hX9Gaiylj/17VAmXB7B1kGnHoGO1UJeNag
-	 1lZClVCKDXeRE4ORqA1apzoZKam88lwRKEjdY+0w=
+	s=default; t=1667918893;
+	bh=O/DPRp3JZERVOiZE82aQJNOYv9sMzlMXZNP9WycyYeM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=rqkC6mGBnPdPMa4eoVIwS3WilibUan3aXEGjYq/8CsqfnRZxSeAawuBW0FyO2NzZq
+	 AjYymw8Z2P15oF+z/edK2bFxOQM+6PLkZI/UdLxlfl3frkbFScADj1juLMKetxw6Zp
+	 PlspV6fMyO7CFS4DNAKXvUa4YsuPVkG7x0zxlU2w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E6C5F8024C;
-	Tue,  8 Nov 2022 15:46:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2993F8055A;
+	Tue,  8 Nov 2022 15:47:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EC403F8025D; Tue,  8 Nov 2022 15:46:50 +0100 (CET)
+ id 15A8FF8055B; Tue,  8 Nov 2022 15:47:05 +0100 (CET)
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
  [205.220.180.131])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22F05F800EC
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 15:46:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22F05F800EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8F06F80558
+ for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 15:46:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8F06F80558
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="DQThg95g"
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+ header.b="J4z3cGMv"
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
  by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2A8E8Cwi021563; Tue, 8 Nov 2022 14:46:46 GMT
+ 2A8E366u016290; Tue, 8 Nov 2022 14:46:57 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=xY2h5+UrR73hVYHlPLptrNsNGUN3y4EyCh+wOIi6Oy8=;
- b=DQThg95gIPWRmtEtuwy2yBifaEah0HTt4sORa7P5qMZMQ/oJcBXSLPiUhJyQ9TTqSG8I
- vCHCAWbQ1Q3nHwvVqwqRZCXYKp0mN/y0eMeGGWzCtho+VYnlRW80OMZhgR5AI6mfrwZV
- On/ma0u90ctyKPeYj1s9sO3S59/aEL3c6qwiFrC9vrUAOJdQ+/XByp5rCb+rTySMvXHK
- IxAGkYaxEjH4U9fjSFSEuyDuyREFYi/yTxjoreSpAvJrCq1z9XDruBIg2lG3taINCOYd
- axmRwnnEy1LxLrhpkgaSRveZg/zJBOcs1/nEAeLILnFPW07DmY7GQM8e/Rvm+QeZQpPz mA== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=9oo/c7vbak5qvm3xU8HIY45Y3ri83dVLbjW4JEiXagQ=;
+ b=J4z3cGMvgOXLV4fmE5hfCE9cjSFxX3T1w9gV7iyDcbHE0fIjOSbB0vCDDkWIsIW2zHwP
+ c+7n13rDA/3aQjDSKKig0vCCdzBTE4vE0cbeMTffPxk39PBXEmCkVfvGwzF2Zv4UW9la
+ FmfiBo+YEZBxPK5RcjUVv4oly+YkV3lMFRksnw6vnj1HEe1BkTnWisVQiqCoud0nv+Hf
+ JQyHTQh3EfHgErhaHSuUwwx+xEEOq5+581E+aHoPvmN5HiUSO6bovPgSTRGDSX8wpZhb
+ Y6PFvnvX5IUJk0tadSO5yXDUDgCijqorONAn8kA3RQupNZaout17NUEUDL0LqvpIC8wd 2Q== 
 Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
- by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3kqht896fs-1
+ by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3kqhmgh6ks-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 08 Nov 2022 14:46:46 +0000
+ Tue, 08 Nov 2022 14:46:57 +0000
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com
  [10.47.209.196])
- by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2A8EkjKR008059
+ by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2A8EkpGl008093
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 8 Nov 2022 14:46:45 GMT
+ Tue, 8 Nov 2022 14:46:51 GMT
 Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.29; Tue, 8 Nov 2022 06:46:39 -0800
+ 15.2.986.29; Tue, 8 Nov 2022 06:46:45 -0800
 From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 To: <vkoul@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>,
  <robh+dt@kernel.org>, <broonie@kernel.org>,
@@ -71,10 +73,12 @@ To: <vkoul@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>,
  <judyhsiao@chromium.org>, <alsa-devel@alsa-project.org>,
  <quic_rjendra@quicinc.com>, <konrad.dybcio@somainline.org>,
  <mka@chromium.org>
-Subject: [PATCH v6 0/4]  Convert soundwire bindings to DT schema
-Date: Tue, 8 Nov 2022 20:15:59 +0530
-Message-ID: <1667918763-32445-1-git-send-email-quic_srivasam@quicinc.com>
+Subject: [PATCH v6 1/4] arm64: dts: qcom: Update soundwire secondary node names
+Date: Tue, 8 Nov 2022 20:16:00 +0530
+Message-ID: <1667918763-32445-2-git-send-email-quic_srivasam@quicinc.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1667918763-32445-1-git-send-email-quic_srivasam@quicinc.com>
+References: <1667918763-32445-1-git-send-email-quic_srivasam@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.80.80.8]
@@ -83,18 +87,19 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: PMRg16jl0ynzdb_SRsKG26fR5zqlTGyq
-X-Proofpoint-GUID: PMRg16jl0ynzdb_SRsKG26fR5zqlTGyq
+X-Proofpoint-GUID: D4dfnVhg_fY1HgW6_oSFVTq-LMDcLUls
+X-Proofpoint-ORIG-GUID: D4dfnVhg_fY1HgW6_oSFVTq-LMDcLUls
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-11-07_11,2022-11-08_01,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- mlxlogscore=863
- impostorscore=0 suspectscore=0 clxscore=1015 bulkscore=0 phishscore=0
- adultscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ lowpriorityscore=0
+ clxscore=1015 impostorscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
+ priorityscore=1501 phishscore=0 malwarescore=0 mlxscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2210170000 definitions=main-2211080089
-Cc: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Cc: Ratna Deepthi Kudaravalli <quic_rkudarav@quicinc.com>,
+ Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,46 +115,134 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Convert soundwire bindings text file to DT schema and update
-device tree entries to follow strict dt-bindings.
-Changes since V5:
-  -- Update indentation of few properties description.
-  -- Update minimum and maximum limit for few properties.
-  -- Fix Typo errors in commit message.
-  -- Update commit message with differences from text file.
-Changes Since V4:
-  -- Update interrupt names in example.
-  -- Fix blank lines.
-  -- Remove dependecy patch info.
-  -- Split dtsi patches as per SoC.
-Changes Since V3:
-  -- Remove subnode description and add appropriate pattern properties.
-  -- Add interrput names in example.
-  -- update some properties description.
-  -- Revert minIteams change in previous version.
-  -- Rebase to latest code base.
-  -- Update dtsi node names,
-  -- Remove redundant property in soundwire node.
+Update soundwire secondary nodes of WSA speaker to match with
+dt-bindings pattern properties regular expression.
 
-Srinivasa Rao Mandadapu (4):
-  arm64: dts: qcom: Update soundwire secondary node names
-  arm64: dts: qcom: sm8250: Remove redundant soundwire property
-  arm64: dts: qcom: sc7280: Remove redundant soundwire property
-  dt-bindings: soundwire: Convert text bindings to DT Schema
+This modification is required to avoid dtbs-check errors
+occurred with qcom,soundwire.yaml.
 
- .../devicetree/bindings/soundwire/qcom,sdw.txt     | 215 ----------------
- .../bindings/soundwire/qcom,soundwire.yaml         | 270 +++++++++++++++++++++
- arch/arm64/boot/dts/qcom/qrb5165-rb5.dts           |   4 +-
- arch/arm64/boot/dts/qcom/sc7280.dtsi               |   1 -
- arch/arm64/boot/dts/qcom/sdm845-db845c.dts         |   4 +-
- .../boot/dts/qcom/sdm850-lenovo-yoga-c630.dts      |   4 +-
- arch/arm64/boot/dts/qcom/sdm850-samsung-w737.dts   |   4 +-
- arch/arm64/boot/dts/qcom/sm8250-mtp.dts            |   4 +-
- arch/arm64/boot/dts/qcom/sm8250.dtsi               |   1 -
- 9 files changed, 280 insertions(+), 227 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
- create mode 100644 Documentation/devicetree/bindings/soundwire/qcom,soundwire.yaml
+Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Co-developed-by: Ratna Deepthi Kudaravalli <quic_rkudarav@quicinc.com>
+Signed-off-by: Ratna Deepthi Kudaravalli <quic_rkudarav@quicinc.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/qrb5165-rb5.dts             | 4 ++--
+ arch/arm64/boot/dts/qcom/sdm845-db845c.dts           | 4 ++--
+ arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 4 ++--
+ arch/arm64/boot/dts/qcom/sdm850-samsung-w737.dts     | 4 ++--
+ arch/arm64/boot/dts/qcom/sm8250-mtp.dts              | 4 ++--
+ 5 files changed, 10 insertions(+), 10 deletions(-)
 
+diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+index 2c08500..4c39cec 100644
+--- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
++++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+@@ -1007,7 +1007,7 @@
+ };
+ 
+ &swr0 {
+-	left_spkr: wsa8810-left {
++	left_spkr: speaker@0,3 {
+ 		compatible = "sdw10217211000";
+ 		reg = <0 3>;
+ 		powerdown-gpios = <&tlmm 130 GPIO_ACTIVE_HIGH>;
+@@ -1016,7 +1016,7 @@
+ 		#sound-dai-cells = <0>;
+ 	};
+ 
+-	right_spkr: wsa8810-right {
++	right_spkr: speaker@0,4 {
+ 		compatible = "sdw10217211000";
+ 		reg = <0 4>;
+ 		powerdown-gpios = <&tlmm 130 GPIO_ACTIVE_HIGH>;
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+index 8ba3188..df61526 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
++++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+@@ -1091,7 +1091,7 @@
+ 	vdd-io-supply = <&vreg_s4a_1p8>;
+ 
+ 	swm: swm@c85 {
+-		left_spkr: wsa8810-left {
++		left_spkr: speaker@0,1 {
+ 			compatible = "sdw10217201000";
+ 			reg = <0 1>;
+ 			powerdown-gpios = <&wcdgpio 1 GPIO_ACTIVE_HIGH>;
+@@ -1100,7 +1100,7 @@
+ 			#sound-dai-cells = <0>;
+ 		};
+ 
+-		right_spkr: wsa8810-right {
++		right_spkr: speaker@0,2 {
+ 			compatible = "sdw10217201000";
+ 			powerdown-gpios = <&wcdgpio 1 GPIO_ACTIVE_HIGH>;
+ 			reg = <0 2>;
+diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+index 0c375ec..f32b744 100644
+--- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
++++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+@@ -785,7 +785,7 @@
+ 	qcom,mbhc-headphone-vthreshold-microvolt = <50000>;
+ 
+ 	swm: swm@c85 {
+-		left_spkr: wsa8810-left {
++		left_spkr: speaker@0,3 {
+ 			compatible = "sdw10217211000";
+ 			reg = <0 3>;
+ 			powerdown-gpios = <&wcdgpio 1 GPIO_ACTIVE_HIGH>;
+@@ -794,7 +794,7 @@
+ 			#sound-dai-cells = <0>;
+ 		};
+ 
+-		right_spkr: wsa8810-right {
++		right_spkr: speaker@0,4 {
+ 			compatible = "sdw10217211000";
+ 			powerdown-gpios = <&wcdgpio 2 GPIO_ACTIVE_HIGH>;
+ 			reg = <0 4>;
+diff --git a/arch/arm64/boot/dts/qcom/sdm850-samsung-w737.dts b/arch/arm64/boot/dts/qcom/sdm850-samsung-w737.dts
+index f93d748..aa06a4a 100644
+--- a/arch/arm64/boot/dts/qcom/sdm850-samsung-w737.dts
++++ b/arch/arm64/boot/dts/qcom/sdm850-samsung-w737.dts
+@@ -717,7 +717,7 @@
+ 	qcom,mbhc-headphone-vthreshold-microvolt = <50000>;
+ 
+ 	swm: swm@c85 {
+-		left_spkr: wsa8810-left {
++		left_spkr: speaker@0,3 {
+ 			compatible = "sdw10217211000";
+ 			reg = <0 3>;
+ 			powerdown-gpios = <&wcdgpio 1 GPIO_ACTIVE_HIGH>;
+@@ -726,7 +726,7 @@
+ 			#sound-dai-cells = <0>;
+ 		};
+ 
+-		right_spkr: wsa8810-right {
++		right_spkr: speaker@0,4 {
+ 			compatible = "sdw10217211000";
+ 			powerdown-gpios = <&wcdgpio 2 GPIO_ACTIVE_HIGH>;
+ 			reg = <0 4>;
+diff --git a/arch/arm64/boot/dts/qcom/sm8250-mtp.dts b/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
+index 9db6136..532a77f 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
++++ b/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
+@@ -757,7 +757,7 @@
+ };
+ 
+ &swr0 {
+-	left_spkr: wsa8810-right@0,3{
++	left_spkr: speaker@0,3 {
+ 		compatible = "sdw10217211000";
+ 		reg = <0 3>;
+ 		powerdown-gpios = <&tlmm 26 GPIO_ACTIVE_HIGH>;
+@@ -766,7 +766,7 @@
+ 		#sound-dai-cells = <0>;
+ 	};
+ 
+-	right_spkr: wsa8810-left@0,4{
++	right_spkr: speaker@0,4 {
+ 		compatible = "sdw10217211000";
+ 		reg = <0 4>;
+ 		powerdown-gpios = <&tlmm 127 GPIO_ACTIVE_HIGH>;
 -- 
 2.7.4
 
