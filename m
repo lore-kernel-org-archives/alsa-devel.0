@@ -4,101 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA58CC4332F
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 10:37:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C8C2C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 11:05:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3ED45846;
-	Tue,  8 Nov 2022 11:37:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ED45846
+	by alsa0.perex.cz (Postfix) with ESMTPS id E491082C;
+	Tue,  8 Nov 2022 12:04:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E491082C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667903876;
-	bh=T+oIHKmaZnuZbEoSOr+mnIaB7DkRgjaMBfAYIzhDlYA=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1667905501;
+	bh=XaBdxRjUZjWiYi/UU6XdULmnAXVS96JTxTikA1au8DU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YY88nkTakQzu9rnky0benC+Gk2z9h6EqtV5z9CDOFH1Qv6Ufk81Fpi26dgVCs+s3m
-	 nwIE8XuScVSdzFhnUxTuRYlYWco4JfTBnN9CdO7A6kK0nL4Uuy1CJ7Q5zCF3zhOw9P
-	 YpcXCmfFnP5mm1NMRPVI/CCTDCMH+6GGYQmZuqsw=
+	b=ea+D/oL4Q2TUWR/CnD3Nt88K1u7gSXr2LKWDcLwxsdS2OdSWttkM5RqKqyCib+ZL8
+	 yXWYo35PTBHxd1jodVZiXVbS3GhLfLghda0uPmF9jOqExmObN7OCnATt1kXVMwQ71e
+	 D2vlwq93But27NMKWrVnUIOE1bx3kHGMwI8XweQU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E103DF8016E;
-	Tue,  8 Nov 2022 11:37:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 95C64F8016A;
+	Tue,  8 Nov 2022 12:04:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6B3AEF801D8; Tue,  8 Nov 2022 11:37:04 +0100 (CET)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
- [IPv6:2a00:1450:4864:20::130])
+ id ED7E2F801D8; Tue,  8 Nov 2022 12:04:09 +0100 (CET)
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com
+ [IPv6:2607:f8b0:4864:20::e2e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95EFDF8016A
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 11:37:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95EFDF8016A
+ by alsa1.perex.cz (Postfix) with ESMTPS id CA361F8016A
+ for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 12:04:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA361F8016A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="qxlKoNOC"
-Received: by mail-lf1-x130.google.com with SMTP id j4so20691325lfk.0
- for <alsa-devel@alsa-project.org>; Tue, 08 Nov 2022 02:37:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=F1eU2MNzr9lEfofB/L6YKz5jRjvrNUwGoC1RPrJsqIc=;
- b=qxlKoNOCj8bwEn/unr4ZPcnBCXcdPnwp6/SZBWWeD1f+nNzLQZ17cHnkenX1JoZ+nJ
- l5mhxoz3baMzHRwcGvuZBeAgFsbmfiw5waqPt908NhhIv4tecxmqQPdV0Dhf9IJm8Dt0
- k0NtuvI7zoLtlVsm93UDSI5nvXT8giTAEmr04mTtPEhLQpmnA/bd5jRs34pBIxkPVDZp
- sLD6ufM7RkVvdGhirGvWrEpWffO+PQUzvRoxY2bs+2fNm4Hu8I9+dliDE1l3I0yRMuNK
- qnErbVUK+0FDLBkKVwWv6dWzXNsnSoy7R0nrBCaZxdKQNiCL0RQeH6J78bt+69PPVLrT
- Kytw==
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="ZkzY5ETt"
+Received: by mail-vs1-xe2e.google.com with SMTP id 128so13275181vse.6
+ for <alsa-devel@alsa-project.org>; Tue, 08 Nov 2022 03:04:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=XaBdxRjUZjWiYi/UU6XdULmnAXVS96JTxTikA1au8DU=;
+ b=ZkzY5ETtu0PETYIEUH10nOly3VcuJtkSlDZS4QtrJ3TMoZG09BAH7UKvNhtr6bh4EI
+ KgjB+YXYUVdVddL2B+f84CKvmXVF8qoy/AF5DZ8jppLG+33w9qiiQBCNQkLY2IoGfkiV
+ BkKz2ggOccQfHZpvxNc4nAQm22PLy6uKIt+SA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=F1eU2MNzr9lEfofB/L6YKz5jRjvrNUwGoC1RPrJsqIc=;
- b=ZYcUkXPQAtC38+Gz+rdAlzS/N+77AMe8OECaYOd6PTmeoMpJD9vHr9zbp7WxqjfP8i
- gC3tzBQh75iuY1QIUnZLl2xX+G4qmjh65ooFh4kJ8KmJUs4CDiphrw/CWSliGOmhWlHd
- zD18JW4Tn6Nz8nF3ZCzeUJc9ERgJtlzWVDo2fTIQqZznlBqb4dnDQiOBZGoo7GHTsDwt
- zlQxAz2sWBt4lQV6m+NIymp5ca6aLJM0ke5B02NLB8klHlYIdUU+WwW2IWKTHftjzeHE
- HGqbI7PIs3Z1Gs4YAOGduuGrStgKK3v7AwLusw0MH5JGV+mF70Y0UnG83bGztNL0e+z2
- /b7w==
-X-Gm-Message-State: ACrzQf2T06TLV0veDA/2O8AJuzzRmO6s0dWlqrRWjB46ffwlOb8YrMXi
- IZTyX+7VS2zOTCKbIQ0O5/GbQA==
-X-Google-Smtp-Source: AMsMyM6S9IhbB/K0PCnZCtTSePbIeEuS4EFok4irDdkDhHZDjaoZyjyvFW3wOa0V66uhD+fgmiISkQ==
-X-Received: by 2002:ac2:569c:0:b0:4b1:966f:7a19 with SMTP id
- 28-20020ac2569c000000b004b1966f7a19mr8890286lfr.587.1667903819567; 
- Tue, 08 Nov 2022 02:36:59 -0800 (PST)
-Received: from [192.168.0.20]
- (088156142199.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.199])
- by smtp.gmail.com with ESMTPSA id
- l10-20020a056512110a00b00497b198987bsm1726912lfg.26.2022.11.08.02.36.58
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 08 Nov 2022 02:36:59 -0800 (PST)
-Message-ID: <2ba09d50-229a-25d6-e437-c0b31429eaf0@linaro.org>
-Date: Tue, 8 Nov 2022 11:36:57 +0100
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=XaBdxRjUZjWiYi/UU6XdULmnAXVS96JTxTikA1au8DU=;
+ b=mSJTTg5cfDauehtzLZGdM6baf6gOrtrzNj01UV2+zOxZSVOY7LUtLoVBJ2SyTD+e9+
+ 1rHNUQ7cURmjYKGGVdNo+znMPilV2Mcb42ULFQwnRw+eUhUTr96NLsn8eKHxwurpMpRY
+ clMnbIQSHezMHXWu6FrhDnpcGmh1YTpUysIoHQqoKT9qU21PmwUjS6gD5dfaFnqTsSqO
+ dGkGdH3PDKlOhPTcFPfCghu2FYco4NRTaxZzCbYoigifDXYWvDtw8PXeklv92DGd5mpJ
+ PSzvAiR1tN6Cfr/9gvm8Ra7qLr7wzxcMkTK0QasfrES07dAvb2akvCR2sk0WJEPO2rc8
+ VCtA==
+X-Gm-Message-State: ACrzQf17fvcWV57ArD7s76IzHB1QQNrjkYIFIgVdzNhqoaC/eJKblWsk
+ GM0qtwXRAoIUW+cyY2OsYXK9vOCHPXJmgOMu9FJVPg==
+X-Google-Smtp-Source: AMsMyM6t0mPbG4ToZz5l/tO1gDfCULSYa4MknrJDh9MS6I1IEkQHqfasxxjvZuxONegx0VxazFgJwfSXzMjsEheapQg=
+X-Received: by 2002:a05:6102:3c83:b0:3ac:7ce4:1bc0 with SMTP id
+ c3-20020a0561023c8300b003ac7ce41bc0mr27621104vsv.65.1667905441651; Tue, 08
+ Nov 2022 03:04:01 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH 3/6] dt-bindings: sound: Add sound card bindings for Tesla
- FSD
-To: Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>,
- 'Rob Herring' <robh@kernel.org>
-References: <20221014102151.108539-1-p.rajanbabu@samsung.com>
- <CGME20221014104901epcas5p1a61ea81c3b1640bd8a064633c0b1e40d@epcas5p1.samsung.com>
- <20221014102151.108539-4-p.rajanbabu@samsung.com>
- <20221014151325.GA1940481-robh@kernel.org>
- <04b901d8e529$573b17e0$05b147a0$@samsung.com>
- <253fc459-c3dc-7710-6f34-0466d5301482@linaro.org>
- <01c101d8f333$b3bc8db0$1b35a910$@samsung.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <01c101d8f333$b3bc8db0$1b35a910$@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-samsung-soc@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
- rcsekar@samsung.com, aswani.reddy@samsung.com, pankaj.dubey@samsung.com,
- tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org,
- alim.akhtar@samsung.com, linux-kernel@vger.kernel.org
+References: <20221107160437.740353-1-nfraprado@collabora.com>
+ <20221107160437.740353-9-nfraprado@collabora.com>
+ <b5b61326-298c-9845-eec0-15542f096225@collabora.com>
+In-Reply-To: <b5b61326-298c-9845-eec0-15542f096225@collabora.com>
+From: Chen-Yu Tsai <wenst@chromium.org>
+Date: Tue, 8 Nov 2022 19:03:50 +0800
+Message-ID: <CAGXv+5EwsqE+npF4QYpwWMLb55JMGaXANxo87dyDpYwBxD-E4g@mail.gmail.com>
+Subject: Re: [PATCH 8/9] ASoC: mediatek: mt8192-mt6359: Register to module
+ device table
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: alsa-devel@alsa-project.org, Miaoqian Lin <linmq006@gmail.com>,
+ Tzung-Bi Shih <tzungbi@kernel.org>,
+ =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
+ Akihiko Odaki <akihiko.odaki@gmail.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, kernel@collabora.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,43 +101,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 08/11/2022 06:33, Padmanabhan Rajanbabu wrote:
->>>
->>> The actual reason for having a custom sound card driver lies in the
->>> fact that the Samsung i2s cpu dai requires configuration of some
->>> Samsung specific properties like rfs, bfs, codec clock direction and
->>> root clock source. We do not have flexibility of configuring the same
->>> in simple card driver (sound/soc/generic/simple-card.c) or audio graph
->>> card driver (sound/soc/generic/audio-graph-card.c). The binding has
->>> been added to support the custom sound card driver.
->>>
->>> I understand from your query that the newly added card has device tree
->>> nodes and properties which are used in simple card as well, but having
->>> a different or new prefixes. I believe to address that, we can
->>> restructure the string names to generic ones.
->>
->> You must use generic, existing properties where applicable.
-> 
-> Okay
-> 
->>
->>> But I would like to understand, to reuse the simple card or audio
->>> graph card bindings, can we add secondary compatible strings in the
->>> simple card dt-binding for the custom sound card to probe ?
->>
->> If you see other vendor compatibles there, then yes... But there aren't any,
->> right?
-> 
-> Yes you are right, we don't see other vendor compatibles. But, am I allowed
-> to add such secondary compatibles so that we can extend the simple card
-> and its utilities to a large extent?
-> 
-> If no, then I believe we will need a separate binding to extend the generic
-> properties.
+On Tue, Nov 8, 2022 at 4:44 PM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@collabora.com> wrote:
+>
+> Il 07/11/22 17:04, N=C3=ADcolas F. R. A. Prado ha scritto:
+> > Register the compatibles for this module on the module device table so
+> > it can be automatically loaded when a matching device is found on the
+> > system.
+> >
+> > Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
+>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collab=
+ora.com>
 
-If you have any custom properties, then yes. But you don't have.
-
-
-Best regards,
-Krzysztof
-
+Tested-by: Chen-Yu Tsai <wenst@chromium.org>
