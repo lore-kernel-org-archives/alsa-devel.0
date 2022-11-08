@@ -4,55 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55669C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 11:28:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C6B2C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 11:37:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE0A5210;
-	Tue,  8 Nov 2022 12:27:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE0A5210
+	by alsa0.perex.cz (Postfix) with ESMTPS id C24863E8;
+	Tue,  8 Nov 2022 12:36:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C24863E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667906894;
-	bh=K+mMq3HJ2rHBHdjoaHWAiG4KqshUJ65CFi+b5BeOhU0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ftsE7KuYlKcPWQJMIHUyW6Pa18SH+Ioix1iIAERFtRh/L0chyHwfNxsSSguye3sXw
-	 XGJzPsauV1A/Eu1mSnxQFa23UueU7U9dvvzuR3ZSIvF0CJ4mezNPabE2H3sJloZuZb
-	 gIvI+4gRnxP1boOCutfX4D4g5gFrMM/87kGR5vg8=
+	s=default; t=1667907464;
+	bh=VgqgIoAj2SBmiomdoMM90yhg2jHfgFnU1Eocn1q7GuE=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=nClU4a08zdY6huEjtGwe4kyfnmCuTj+TDway/UpAFgkWHDz7bxftDLfhRA5exuc7/
+	 UWOnUqfxzHdkug/KDTFm12rzFNHtPCal196lGULAJgVIvTLC9qOBP4rxXXk05qFkO3
+	 iPVldSupDrTO6j9QnpqhV2v3VQ66hq7s982879rk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1481F8016E;
-	Tue,  8 Nov 2022 12:27:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3CA3FF8016E;
+	Tue,  8 Nov 2022 12:36:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 707F9F801D8; Tue,  8 Nov 2022 12:27:22 +0100 (CET)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2BF91F800EC
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 12:27:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BF91F800EC
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.57])
- by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4N65R76RhNz15MLj;
- Tue,  8 Nov 2022 19:26:59 +0800 (CST)
-Received: from localhost.localdomain (10.175.103.91) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 8 Nov 2022 19:27:10 +0800
-From: Wei Li <liwei391@huawei.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH] ASoC: Correct the header guard of wm8904.h
-Date: Tue, 8 Nov 2022 19:25:47 +0800
-Message-ID: <20221108112547.3913293-1-liwei391@huawei.com>
-X-Mailer: git-send-email 2.25.1
+ id 46388F801D8; Tue,  8 Nov 2022 12:36:52 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 7C8DFF800F4
+ for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 12:36:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C8DFF800F4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, huawei.libin@huawei.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1667907408658472061-webhooks-bot@alsa-project.org>
+References: <1667907408658472061-webhooks-bot@alsa-project.org>
+Subject: pcm_old.h does not work with LTO
+Message-Id: <20221108113652.46388F801D8@alsa1.perex.cz>
+Date: Tue,  8 Nov 2022 12:36:52 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,30 +55,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Rename the header guard of wm8904.h from __MFD_WM8994_PDATA_H__ to
-__WM8904_PDATA_H__ what corresponding with the file name.
+alsa-project/alsa-lib issue #281 was opened from kkofler:
 
-Fixes: a91eb199e4dc ("ASoC: Initial WM8904 CODEC driver")
-Signed-off-by: Wei Li <liwei391@huawei.com>
----
- include/sound/wm8904.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Applications using `ALSA_PCM_OLD_HW_PARAMS_API` and/or `ALSA_PCM_OLD_SW_PARAMS_API` get miscompiled if they are compiled with `-flto` (GCC link-time optimization (LTO)). See https://bugzilla.redhat.com/show_bug.cgi?id=1910437 and in particular https://bugzilla.redhat.com/show_bug.cgi?id=1910437#c23 .
 
-diff --git a/include/sound/wm8904.h b/include/sound/wm8904.h
-index 88ac1870510e..f74293a83a17 100644
---- a/include/sound/wm8904.h
-+++ b/include/sound/wm8904.h
-@@ -7,8 +7,8 @@
-  * Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
-  */
- 
--#ifndef __MFD_WM8994_PDATA_H__
--#define __MFD_WM8994_PDATA_H__
-+#ifndef __WM8904_PDATA_H__
-+#define __WM8904_PDATA_H__
- 
- /* Used to enable configuration of a GPIO to all zeros */
- #define WM8904_GPIO_NO_CONFIG 0x8000
--- 
-2.25.1
+The issue is that the `pcm_old.h` header uses constructs like:
+```c
+asm(".symver snd_pcm_hw_params_set_rate_near,snd_pcm_hw_params_set_rate_near@ALSA_0.9");
+```
+which do not seem to work with LTO enabled. Maybe this needs to use the `symver` attribute instead?
 
+In any case, what happens is that the caller in the application attempts to call the new function `snd_pcm_hw_params_set_rate_near@ALSA_0.9.0rc4` with the ABI of the old one `snd_pcm_hw_params_set_rate_near@ALSA_0.9`, so an integer is passed where ALSA expects a pointer, leading to a segfault (or worse).
+
+The workaround is to compile the application without LTO enabled (which makes it work fine), but I believe that this is an upstream ALSA issue and should be fixed in the ALSA header files.
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/281
+Repository URL: https://github.com/alsa-project/alsa-lib
