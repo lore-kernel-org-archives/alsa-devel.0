@@ -4,76 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2336C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 06:59:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28BDDC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 08:44:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D76D0852;
-	Tue,  8 Nov 2022 07:59:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D76D0852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5AB7820C;
+	Tue,  8 Nov 2022 09:43:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AB7820C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667890792;
-	bh=UbyN0QjaUxFmLiXbQPgwuBzAzJMu3o6DQUjLmqyOk7E=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=dKlLtIi2kekAqpt60XM0W9FP+T1slXH2DPPB9bY6HQC2MSlmvOLXJiavs551nHqde
-	 cththB3ZAwU0meeTvaIbXchOUgYSnL2cOnhgRSMmOU/LuY7IweKuxxHObFGGdsPXw9
-	 oxpERJBmNdxewJnu6FO9JVxhkLcK+NG13XXX8tVw=
+	s=default; t=1667897059;
+	bh=q6qqpBqwMQgI0Wus+7X9VLIEmROhuwDUjEYSYZTBgvA=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=al3kwhlziZWAojP+ZSJcBoORjNaRcnwCMyozheayqkGCywUINTeWbtzugNyGfXvj6
+	 ESe021R5kn5d28GWID65t3jOHVEX+SxNTske88qLDywK+giurY6U/oa0N8/4VeTwQz
+	 llc1Ko32e2xk3KGyA7GkgW4ZEvXQLV01BNWZ8Dyw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9EF23F8020D;
-	Tue,  8 Nov 2022 07:58:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EDC0EF8016E;
+	Tue,  8 Nov 2022 09:43:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E900F8016A; Tue,  8 Nov 2022 07:58:37 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id A3E1DF8025D; Tue,  8 Nov 2022 09:43:27 +0100 (CET)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5E489F800EC
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 07:58:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E489F800EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6724FF800F4
+ for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 09:43:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6724FF800F4
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="vTSTOFcN"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="OBlTUTd4"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 081661F899;
- Tue,  8 Nov 2022 06:58:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1667890708; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=d96Kojy34GU314t0nzFPf3W0N3ywvoPEB++yr4V4yBM=;
- b=vTSTOFcN6R8ol7JjFEFOCSDuTXcqiygTtia5ynADMfCCXKYUP9GSX/E+jGeJFELQ6cUqJN
- /bY+LTAVeYRlbOQJzIwoT07y/+Y+GNf8cU8wY05YL1zb2ixtIydHA15TRbPnjJobee+NNI
- vd5x2L7GscoQPumA/aGjFrKXxcv+DZc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1667890708;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=d96Kojy34GU314t0nzFPf3W0N3ywvoPEB++yr4V4yBM=;
- b=OBlTUTd4zs82/nmVGsQ3UUPBT/Ezn5iPgOfPMilrhhYljOlCmGr5jl4FrqjCEnSxZiylZG
- sPL2FKgsOQ+9VfBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D550C139F1;
- Tue,  8 Nov 2022 06:58:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id tv8UMxP+aWO0IQAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 08 Nov 2022 06:58:27 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/2] ALSA: usb-audio: Yet more regression for for the delayed
- card registration
-Date: Tue,  8 Nov 2022 07:58:23 +0100
-Message-Id: <20221108065824.14418-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
+ dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
+ header.b="gUJgMQVQ"
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
+ [2.237.20.237])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested) (Authenticated sender: kholk11)
+ by madras.collabora.co.uk (Postfix) with ESMTPSA id A4FA866003EF;
+ Tue,  8 Nov 2022 08:43:19 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1667897000;
+ bh=q6qqpBqwMQgI0Wus+7X9VLIEmROhuwDUjEYSYZTBgvA=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+ b=gUJgMQVQpYG1pd7PUaziZ7ikZwGqQqgjcJOSbcsFNcguoHASU2BKppxtf0LPZKTlb
+ GQG3L+aqEnPzlqgqHL3ck/PiG4dpsvDlEpMt+v8YtMf95W9p0burLvdnSwqe7i++8g
+ /2lyz4ffYZV5mNHDb6f/RAxYlnmimvUDS8df4Rq/mi5iwTboDgvsVuYSMCH1nZxQim
+ v6iPuW9zbwltjXOHztF7mEsnO/NEll8BJyIXO04Q0DCro7gjI0ZM0iLjWsIHdA6qmv
+ xXHIPA17NiljKrqFVnLTB5CCuEorwSaNC2KXISoQ+1rU5Kt5app1zqzaIhcwIn7fUR
+ 40bzcHHBnUZHQ==
+Message-ID: <2f2bdebf-8566-7740-733a-79c6e1938c84@collabora.com>
+Date: Tue, 8 Nov 2022 09:43:16 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.3
+Subject: Re: [PATCH 9/9] ASoC: mediatek: mt8195-mt6359: Register to module
+ device table
+Content-Language: en-US
+To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
+ Mark Brown <broonie@kernel.org>
+References: <20221107160437.740353-1-nfraprado@collabora.com>
+ <20221107160437.740353-10-nfraprado@collabora.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20221107160437.740353-10-nfraprado@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-mediatek@lists.infradead.org, Trevor Wu <trevor.wu@mediatek.com>,
+ Tzung-Bi Shih <tzungbi@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ kernel@collabora.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,80 +88,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Although we tried to fix the regression for the recent changes with
-the delayed card registration, it doesn't seem covering the all
-cases; e.g. on Roland EDIROL M-100FX, where the generic quirk for
-Roland devices is applied, it misses the card registration because the
-detection of the last interface (apparently for MIDI) fails.
+Il 07/11/22 17:04, Nícolas F. R. A. Prado ha scritto:
+> Register the compatibles for this module on the module device table so
+> it can be automatically loaded when a matching device is found on the
+> system.
+> 
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 
-This patch is an attempt to recover from those failures by calling the
-card register also at the error path for the secondary interfaces.
-The card register condition is also extended to match with the old
-check in the previous patch, too (i.e. the simple check of the
-interface number) for catching the probe with errors.
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-Fixes: 39efc9c8a973 ("ALSA: usb-audio: Fix last interface check for registration")
-Cc: <stable@vger.kernel.org>
-Link: https://bugzilla.suse.com/show_bug.cgi?id=1205111
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/card.c | 29 ++++++++++++++++++++---------
- 1 file changed, 20 insertions(+), 9 deletions(-)
-
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index a5ed11ea1145..26268ffb8274 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -742,6 +742,18 @@ get_alias_quirk(struct usb_device *dev, unsigned int id)
- 	return NULL;
- }
- 
-+/* register card if we reach to the last interface or to the specified
-+ * one given via option
-+ */
-+static int try_to_register_card(struct snd_usb_audio *chip, int ifnum)
-+{
-+	if (check_delayed_register_option(chip) == ifnum ||
-+	    chip->last_iface == ifnum ||
-+	    usb_interface_claimed(usb_ifnum_to_if(chip->dev, chip->last_iface)))
-+		return snd_card_register(chip->card);
-+	return 0;
-+}
-+
- /*
-  * probe the active usb device
-  *
-@@ -880,15 +892,9 @@ static int usb_audio_probe(struct usb_interface *intf,
- 		chip->need_delayed_register = false; /* clear again */
- 	}
- 
--	/* register card if we reach to the last interface or to the specified
--	 * one given via option
--	 */
--	if (check_delayed_register_option(chip) == ifnum ||
--	    usb_interface_claimed(usb_ifnum_to_if(dev, chip->last_iface))) {
--		err = snd_card_register(chip->card);
--		if (err < 0)
--			goto __error;
--	}
-+	err = try_to_register_card(chip, ifnum);
-+	if (err < 0)
-+		goto __error_no_register;
- 
- 	if (chip->quirk_flags & QUIRK_FLAG_SHARE_MEDIA_DEVICE) {
- 		/* don't want to fail when snd_media_device_create() fails */
-@@ -907,6 +913,11 @@ static int usb_audio_probe(struct usb_interface *intf,
- 	return 0;
- 
-  __error:
-+	/* in the case of error in secondary interface, still try to register */
-+	if (chip)
-+		try_to_register_card(chip, ifnum);
-+
-+ __error_no_register:
- 	if (chip) {
- 		/* chip->active is inside the chip->card object,
- 		 * decrement before memory is possibly returned.
--- 
-2.35.3
 
