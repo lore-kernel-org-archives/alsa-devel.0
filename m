@@ -4,74 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF6A6C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 14:47:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E251C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 14:47:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D33D6210;
-	Tue,  8 Nov 2022 15:46:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D33D6210
+	by alsa0.perex.cz (Postfix) with ESMTPS id AAEF2847;
+	Tue,  8 Nov 2022 15:46:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAEF2847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667918841;
-	bh=5gwYFOVGF4mpjIAIeDXcm5vGvJBWzCTEf0IjQbFWZEA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=NbluXmeWQ53hPYAnFzcxdO5hAP3C3Bv01rzp90flVz2ykPVtDOvYJZbXc/GFzdBeT
-	 Iaq4+GdZuCpNsa5YZ8f64vEpNcEXEkh8pqas1khsQq2q9BbKn+iPrliQMFO6FG47VK
-	 0z1g+1/YGeKgM0JZkS9mFW5F4bk/ebgkasP/E+2w=
+	s=default; t=1667918865;
+	bh=RMyu/TDNhMiSLZgPEfg4PPfz0KV8hBP6tnFr8sWoXS0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=fp/iWxRmj2JDEaKT1PcmhZj7T3t6aqQ/6rKbrnKtjjhGT52ZGFRV8MM17L4Wxtsrd
+	 V4PMUvEabfsves/rpspVnLvEKg9UabZ4hX9Gaiylj/17VAmXB7B1kGnHoGO1UJeNag
+	 1lZClVCKDXeRE4ORqA1apzoZKam88lwRKEjdY+0w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76835F8016E;
-	Tue,  8 Nov 2022 15:46:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E6C5F8024C;
+	Tue,  8 Nov 2022 15:46:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D06EEF801D8; Tue,  8 Nov 2022 15:46:29 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF940F800EC
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 15:46:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF940F800EC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FzH1qXQn"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id EC403F8025D; Tue,  8 Nov 2022 15:46:50 +0100 (CET)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 0D318B81996;
- Tue,  8 Nov 2022 14:46:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51C24C433D6;
- Tue,  8 Nov 2022 14:46:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1667918784;
- bh=5gwYFOVGF4mpjIAIeDXcm5vGvJBWzCTEf0IjQbFWZEA=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=FzH1qXQnkEGUUP7fss8g1QQ5kV4xMlp3hi8uLJAqbGqMVIbGQpfRok1Oa3ZCYHMa5
- xOqG2T1tnhMVE63yVbz070A2eFC3W4uHMR1nEKHLnL1YRErPi6E6w+Kv8uSBLbTZA6
- 3IdE4fXPgcQhmtsKtcKCG/ZPJpdlmxKhq3hBGckMOx4zg9W9s6q50bwziyQ3iWlfcm
- /T0MqTlJXDe+rGBlgDSdMLKYp32N4+wbFOydfEjoJTBcSrAXiH6e1LqfyMQ09LO7+C
- lc9n37PIKYIUsnmBvViMnQ5W+YG3LRwo9kNM5Hcr1BLLQHxMyq1QXeao/8qTqP2CcB
- M4zgEgR1jVTDw==
-Date: Tue, 8 Nov 2022 14:46:19 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH v2] [RFC] selftests: alsa - add PCM test
-Message-ID: <Y2pru8JLAGSjkDiJ@sirena.org.uk>
-References: <20221108115914.3751090-1-perex@perex.cz>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 22F05F800EC
+ for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 15:46:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22F05F800EC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com
+ header.b="DQThg95g"
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+ by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 2A8E8Cwi021563; Tue, 8 Nov 2022 14:46:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=xY2h5+UrR73hVYHlPLptrNsNGUN3y4EyCh+wOIi6Oy8=;
+ b=DQThg95gIPWRmtEtuwy2yBifaEah0HTt4sORa7P5qMZMQ/oJcBXSLPiUhJyQ9TTqSG8I
+ vCHCAWbQ1Q3nHwvVqwqRZCXYKp0mN/y0eMeGGWzCtho+VYnlRW80OMZhgR5AI6mfrwZV
+ On/ma0u90ctyKPeYj1s9sO3S59/aEL3c6qwiFrC9vrUAOJdQ+/XByp5rCb+rTySMvXHK
+ IxAGkYaxEjH4U9fjSFSEuyDuyREFYi/yTxjoreSpAvJrCq1z9XDruBIg2lG3taINCOYd
+ axmRwnnEy1LxLrhpkgaSRveZg/zJBOcs1/nEAeLILnFPW07DmY7GQM8e/Rvm+QeZQpPz mA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
+ [129.46.96.20])
+ by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3kqht896fs-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 08 Nov 2022 14:46:46 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com
+ [10.47.209.196])
+ by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2A8EkjKR008059
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 8 Nov 2022 14:46:45 GMT
+Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.29; Tue, 8 Nov 2022 06:46:39 -0800
+From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+To: <vkoul@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>,
+ <robh+dt@kernel.org>, <broonie@kernel.org>,
+ <krzysztof.kozlowski+dt@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <quic_rohkumar@quicinc.com>, <srinivas.kandagatla@linaro.org>,
+ <dianders@chromium.org>, <swboyd@chromium.org>,
+ <judyhsiao@chromium.org>, <alsa-devel@alsa-project.org>,
+ <quic_rjendra@quicinc.com>, <konrad.dybcio@somainline.org>,
+ <mka@chromium.org>
+Subject: [PATCH v6 0/4]  Convert soundwire bindings to DT schema
+Date: Tue, 8 Nov 2022 20:15:59 +0530
+Message-ID: <1667918763-32445-1-git-send-email-quic_srivasam@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="xRL3iVwIhEqKXGUP"
-Content-Disposition: inline
-In-Reply-To: <20221108115914.3751090-1-perex@perex.cz>
-X-Cookie: Fortune favors the lucky.
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Jimmy Cheng-Yi Chiang <cychiang@google.com>, Takashi Iwai <tiwai@suse.de>,
- linux-kselftest@vger.kernel.org, Brian Norris <briannorris@chromium.org>,
- Curtis Malainey <cujomalainey@google.com>,
- Liam Girdwood <liam.r.girdwood@intel.com>, Shuah Khan <shuah@kernel.org>,
- Jesse Barnes <jsbarnes@google.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-ORIG-GUID: PMRg16jl0ynzdb_SRsKG26fR5zqlTGyq
+X-Proofpoint-GUID: PMRg16jl0ynzdb_SRsKG26fR5zqlTGyq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-07_11,2022-11-08_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ mlxlogscore=863
+ impostorscore=0 suspectscore=0 clxscore=1015 bulkscore=0 phishscore=0
+ adultscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2211080089
+Cc: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,143 +110,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Convert soundwire bindings text file to DT schema and update
+device tree entries to follow strict dt-bindings.
+Changes since V5:
+  -- Update indentation of few properties description.
+  -- Update minimum and maximum limit for few properties.
+  -- Fix Typo errors in commit message.
+  -- Update commit message with differences from text file.
+Changes Since V4:
+  -- Update interrupt names in example.
+  -- Fix blank lines.
+  -- Remove dependecy patch info.
+  -- Split dtsi patches as per SoC.
+Changes Since V3:
+  -- Remove subnode description and add appropriate pattern properties.
+  -- Add interrput names in example.
+  -- update some properties description.
+  -- Revert minIteams change in previous version.
+  -- Rebase to latest code base.
+  -- Update dtsi node names,
+  -- Remove redundant property in soundwire node.
 
---xRL3iVwIhEqKXGUP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Srinivasa Rao Mandadapu (4):
+  arm64: dts: qcom: Update soundwire secondary node names
+  arm64: dts: qcom: sm8250: Remove redundant soundwire property
+  arm64: dts: qcom: sc7280: Remove redundant soundwire property
+  dt-bindings: soundwire: Convert text bindings to DT Schema
 
-On Tue, Nov 08, 2022 at 12:59:14PM +0100, Jaroslav Kysela wrote:
-> This initial code does a simple sample transfer tests. By default,
-> all PCM devices are detected and tested with short and long
-> buffering parameters for 4 seconds. If the sample transfer timing
-> is not in a +-100ms boundary, the test fails. Only the interleaved
-> buffering scheme is supported in this version.
+ .../devicetree/bindings/soundwire/qcom,sdw.txt     | 215 ----------------
+ .../bindings/soundwire/qcom,soundwire.yaml         | 270 +++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/qrb5165-rb5.dts           |   4 +-
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               |   1 -
+ arch/arm64/boot/dts/qcom/sdm845-db845c.dts         |   4 +-
+ .../boot/dts/qcom/sdm850-lenovo-yoga-c630.dts      |   4 +-
+ arch/arm64/boot/dts/qcom/sdm850-samsung-w737.dts   |   4 +-
+ arch/arm64/boot/dts/qcom/sm8250-mtp.dts            |   4 +-
+ arch/arm64/boot/dts/qcom/sm8250.dtsi               |   1 -
+ 9 files changed, 280 insertions(+), 227 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/soundwire/qcom,sdw.txt
+ create mode 100644 Documentation/devicetree/bindings/soundwire/qcom,soundwire.yaml
 
-Oh, thanks for picking this up - something like this has been on my mind
-for ages!  This should probably be copied to Shuah and the kselftest
-list as well, I've added them.  This looks basically good to me, I've
-got a bunch of comments below but I'm not sure any of them except
-possibly the one about not putting values in the configuration file by
-default should block getting this merged so:
+-- 
+2.7.4
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
-
-> The configuration may be modified with the configuration files.
-> A specific hardware configuration is detected and activated
-> using the sysfs regex matching. This allows to use the DMI string
-> (/sys/class/dmi/id/* tree) or any other system parameters
-> exposed in sysfs for the matching for the CI automation.
-
-> The configuration file may also specify the PCM device list to detect
-> the missing PCM devices.
-
->  create mode 100644 tools/testing/selftests/alsa/alsa-local.h
->  create mode 100644 tools/testing/selftests/alsa/conf.c
->  create mode 100644 tools/testing/selftests/alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf
->  create mode 100644 tools/testing/selftests/alsa/pcm-test.c
-
-This is a bit unusual for kselftest and might create a bit of churn but
-does seem sensible and reasonable to me, it's on the edge of what
-kselftest usually covers but seems close enough in scope.  I worry
-a bit about ending up needing to add a config fragment as a result but
-perhaps we can get away without.
-
-> index 000000000000..0a83f35d43eb
-> --- /dev/null
-> +++ b/tools/testing/selftests/alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf
-
-> +       pcm.0.0 {
-> +               PLAYBACK {
-> +                       test.time1 {
-> +                               access RW_INTERLEAVED   # can be omitted - default
-> +                               format S16_LE           # can be omitted - default
-> +                               rate 48000              # can be omitted - default
-> +                               channels 2              # can be omitted - default
-> +                               period_size 512
-> +                               buffer_size 4096
-
-I think it'd be better to leave these commented by default, especially
-if/once we improve the enumeration.  That way the coverage will default
-to whatever the tool does by default on the system (including any
-checking of constraints for example).  I guess we might want to add a
-way of saying "here's what I expect the constraints to be" but that's
-very much future work.
-
-> +#ifdef SND_LIB_VER
-> +#if SND_LIB_VERSION >= SND_LIB_VER(1, 2, 6)
-> +#define LIB_HAS_LOAD_STRING
-> +#endif
-> +#endif
-> +
-> +#ifndef LIB_HAS_LOAD_STRING
-> +static int snd_config_load_string(snd_config_t **config, const char *s,
-> +				  size_t size)
-> +{
-
-This is also in mixer-test, we should pull it into a helper library too.
-Something that could be done separately/incrementally.
-
-> +	for (i = 0; i < 4; i++) {
-
-> +
-> +	snd_pcm_drain(handle);
-> +	ms = timestamp_diff_ms(&tstamp);
-> +	if (ms < 3900 || ms > 4100) {
-
-It feels like the runtime might be usefully parameterised here - there's
-a tradeoff with detecting inaccurate clocks and runtime that people
-might want to make.
-
-> +	ksft_set_plan(num_missing + num_pcms * TESTS_PER_PCM);
-
-> +	for (pcm = pcm_missing; pcm != NULL; pcm = pcm->next) {
-> +		ksft_test_result(false, "test.missing.%d.%d.%d.%s\n",
-> +				 pcm->card, pcm->device, pcm->subdevice,
-> +				 snd_pcm_stream_name(pcm->stream));
-> +	}
-
-We don't seem to report a successful test.missing anywhere like
-find_pcms() so if we ever hit a test.missing then it'll look like a new
-test, old test runs won't have logged the failure.  That can change how
-people look at any failures that crop up, "it's new and never worked" is
-different to "this used to work" and people are likely to just be
-running kselftest rather than specifically know this test.  It'd be
-better if we counted the cards in the config and used that for our
-expected number of test.missings, logging cards that we find here as
-well.
-
-> +	for (pcm = pcm_list; pcm != NULL; pcm = pcm->next) {
-> +		test_pcm_time1(pcm, "test.time1", "S16_LE", 48000, 2, 512, 4096);
-> +		test_pcm_time1(pcm, "test.time2", "S16_LE", 48000, 2, 24000, 192000);
-> +	}
-
-It does feel like especially in the case where no configuration is
-specified we should be eumerating what the card can do and both
-potentially doing more tests (though there's obviously an execution time
-tradeoff with going overboard there) and skipping configurations that
-the card never claimed to support in the first place.  In particular I'm
-expecting we'll see some cards that only do either 44.1kHz or 48kHz and
-will get spurious fails by default, and I'd like to see coverage of mono
-playback on cards that claim to support it because I suspect there's a
-bunch of them that don't actually do the right thing.
-
-Like I say most of this could be done incrementally if we decide it
-needs to get done at all though, we shouldn't let perfect be the enemy
-of good.
-
---xRL3iVwIhEqKXGUP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNqa7oACgkQJNaLcl1U
-h9BTLgf+OYAlhB9FKMmF6Sa4xThE/JjnVMVg+DPOCzb4ZocUXPCrIEys+nY4RHis
-mOSfiWmqB2jtrg5LBaDpfKCnsIs8zyVgiLlKFh8GU5dAgmipgptX/0DMr0BuhqaT
-6SrF19S8Dm4GJbnIlfBfHYuLJ/H6y7S3lvT4qmD8bN8CTeImvIKBYeiwk2Ge3wSC
-06/QbS3IPs2zTObC3NhHhGl31xQ2RgtPBEncD/CFLvyoUr9BUbu9rxsyAiM0ZwBz
-A8sEmdXBwpO6o32tgmemlN6MBaeEv0ikZFoEEmTLImNCV9ljXwUBp7cooIXahdyy
-NOidsMw6Za1+QSPeS/UKZ3mmRPuLBw==
-=o4V8
------END PGP SIGNATURE-----
-
---xRL3iVwIhEqKXGUP--
