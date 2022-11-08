@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5321AC4332F
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 11:09:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C8CDC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 11:10:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D53FC82E;
-	Tue,  8 Nov 2022 12:08:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D53FC82E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 94616839;
+	Tue,  8 Nov 2022 12:09:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94616839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667905766;
-	bh=x8DK9DM/Joeyp25Jhq2KddrijoW7OgJ/0JO/zDAQJYg=;
+	s=default; t=1667905839;
+	bh=xcl801rNi7Jh6Jo/hu/Jbz9lZkngLXNu9cMkPtXUrh8=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nbLtWSGBtf4IGSUoUgiMVPZtWe+koNUaPe1eioR/bhTJG+xHre0vpyfvE5NbaJqpo
-	 yLGX8dYoEl+8MODGmzJ3k6wHF/7lmww1Tq0Sh+hQiEOFaZXnzstK/b0pBpPDl3omrq
-	 U2tPVO2kgcCpTKq0YBmKgmcidIvBSTwqmkfEvwgM=
+	b=F4g6jXuTsKD8kN3VRWtLiI0AIukkRad0lMghncmSCJjj6XrvqXijIKc4XYVMidWKL
+	 TcQDQhwJ79ODAaIuCnjJAg63AqABoyRj5BZLmPZBHt0pF6bICCfp36pLBYID2c4q0i
+	 rznPEs7PJEYEGK2yQtBmhg6la5HO9j7imPpaPlKA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76FB4F8016E;
-	Tue,  8 Nov 2022 12:08:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4BB81F8016E;
+	Tue,  8 Nov 2022 12:09:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E85EFF801D8; Tue,  8 Nov 2022 12:08:34 +0100 (CET)
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com
- [IPv6:2607:f8b0:4864:20::f31])
+ id 0317AF801D8; Tue,  8 Nov 2022 12:09:48 +0100 (CET)
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com
+ [IPv6:2607:f8b0:4864:20::933])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6544F8016A
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 12:08:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6544F8016A
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5475F800EC
+ for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 12:09:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5475F800EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="TF3AHNNg"
-Received: by mail-qv1-xf31.google.com with SMTP id lf15so9552256qvb.9
- for <alsa-devel@alsa-project.org>; Tue, 08 Nov 2022 03:08:23 -0800 (PST)
+ header.b="ZHUwRUHM"
+Received: by mail-ua1-x933.google.com with SMTP id i16so4691499uak.1
+ for <alsa-devel@alsa-project.org>; Tue, 08 Nov 2022 03:09:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=content-transfer-encoding:cc:to:subject:message-id:date:from
  :in-reply-to:references:mime-version:from:to:cc:subject:date
  :message-id:reply-to;
- bh=x8DK9DM/Joeyp25Jhq2KddrijoW7OgJ/0JO/zDAQJYg=;
- b=TF3AHNNgNmarMWCmKT2AxYiRqmkKw+uexQPQmFLX5fXEDsnWkPR86A+jxYLcTD1Lsa
- MIjNCE8srNStKLl3eDfGlhooKcjNJP2Q8pPuHKMBBLMAhTkYGn/V7O6NediSHfb3erH5
- R5hsTLUAHena8ne63j8sqGMVTwkpNmKgs4OnA=
+ bh=xcl801rNi7Jh6Jo/hu/Jbz9lZkngLXNu9cMkPtXUrh8=;
+ b=ZHUwRUHMlsd+uune7sAXQUqlyoGj17Cph+iZZ0v3cRtb0ZZfwNsfvleGyTzasdKFXI
+ QQ5BmiwQJoxP5/GrJF2+TxE0RkhKKX1mgOBOPP/3neMswl6d8ENmV8rZJebfekhajTuV
+ xhwoyHRDFghPMry1bA8wATRGJyA8JkSuwUaNU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:cc:to:subject:message-id:date:from
  :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=x8DK9DM/Joeyp25Jhq2KddrijoW7OgJ/0JO/zDAQJYg=;
- b=Bqvqa6Pi8yjQeOc6f15eAQ34Ss1m42aJ3Jo1zQEfmg2QoX/g3/PhklcNNAzfsNTpEM
- beby2kUHf33OoB1kvrshodlSxurg1wQZygjTTaE4kwOFIDWhtdw/wgJvf0HcBioVlgBk
- 8nlTJpWiPx7oIG1YNzpb18eOJbOcsUw9diCSEpvXwmXgHQjhyyM5V4TYuOPdiG0unJE5
- 4n4D9VZSJXnVHuCJjHXoWO8FfDsls049vE/STzsFxwDxzloFP8ldGpyXsq9TLLqUUSCa
- +RVB/wia02tlGIuR91tMdTnrOre7wO9FXu+EChZakamtWZwl1jCqoeiGE86jJ/w4/ACr
- ur4A==
-X-Gm-Message-State: ACrzQf38LgDJiV1/ZFQACWMuXijZm3BFZ7vxMeH/mCCDxV1LHqpHAFGL
- w5qPGOU5bvEbi7/4QVMhwj4oERVxMP3E4T2hfT7hAxxwFaE=
-X-Google-Smtp-Source: AMsMyM5djY2N0rMudnF2ERzIwk+3mqJ8PLMEwSyNwM/8eFgA1p1IJVrnAU5RggXbDYPpgI1QKxXoiTWAh6dBFuguGZU=
-X-Received: by 2002:a1f:9116:0:b0:3a2:362b:fea9 with SMTP id
- t22-20020a1f9116000000b003a2362bfea9mr27061022vkd.11.1667905283579; Tue, 08
- Nov 2022 03:01:23 -0800 (PST)
+ bh=xcl801rNi7Jh6Jo/hu/Jbz9lZkngLXNu9cMkPtXUrh8=;
+ b=NvCgAy1Hb5S7UHHcO14ahSTtOfBm/bBh1L+tLUbTTNZneiluDnJOzUmjy9TcmyxxqR
+ YFXizFUe75PhVo0Ft8RxLuKVABcC4gdkB60ToCYLpQIOtQl9p1DZ1c1n6o7SoYe2jqAq
+ 4OPI8tVHu/Ytp0+ihx6iZjPATdImOEHaDMGLxhFqu069+voHWZOrwWGb9wnNIj028I6+
+ ML4Z/q71WEE4jkrZSFgKA6xGrfMk1ySJs6AcX4arCh3N2v7JCrMOzd36vtDbHL6ENHAD
+ 0ddegOGcqY5sWeaLZnxuFVHvZ3HYYDylXVaUP6IHEMm5llel4bw9EPbSOmhKWe7rZlLH
+ DZUw==
+X-Gm-Message-State: ACrzQf0mrfuG7/ZNJJSCa2SxCdGOn+vtBhabjypLux4EB2vk1t7/6iEf
+ Wb3vVKltHpDB73+bNyCAWottCf9kfF6eS8bCO7sP5A==
+X-Google-Smtp-Source: AMsMyM6sjG+3Ik/dtstkJiPnbQ2Nxhh/biLDiEKU7uJHUe6uWGF9l33bHbxbqAeo3fH4zVwtXXQY39IBCfY5SWIe9D0=
+X-Received: by 2002:ab0:a95:0:b0:3ad:bbe7:e134 with SMTP id
+ d21-20020ab00a95000000b003adbbe7e134mr16528144uak.43.1667905779999; Tue, 08
+ Nov 2022 03:09:39 -0800 (PST)
 MIME-Version: 1.0
 References: <20221107160437.740353-1-nfraprado@collabora.com>
- <20221107160437.740353-6-nfraprado@collabora.com>
-In-Reply-To: <20221107160437.740353-6-nfraprado@collabora.com>
+ <20221107160437.740353-10-nfraprado@collabora.com>
+ <2f2bdebf-8566-7740-733a-79c6e1938c84@collabora.com>
+In-Reply-To: <2f2bdebf-8566-7740-733a-79c6e1938c84@collabora.com>
 From: Chen-Yu Tsai <wenst@chromium.org>
-Date: Tue, 8 Nov 2022 19:01:12 +0800
-Message-ID: <CAGXv+5Gyo_VvioV5HWabvQgX3xkM8nj3Ty8AossQgq89qmg00A@mail.gmail.com>
-Subject: Re: [PATCH 5/9] ASoC: mediatek: mt8183-mt6358: Register to module
+Date: Tue, 8 Nov 2022 19:09:29 +0800
+Message-ID: <CAGXv+5EE6OjKcki+40nKLs6wz6iRybpoxD1X4gJ+Z1CDHomtvg@mail.gmail.com>
+Subject: Re: [PATCH 9/9] ASoC: mediatek: mt8195-mt6359: Register to module
  device table
-To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Cc: alsa-devel@alsa-project.org, Tzung-Bi Shih <tzungbi@kernel.org>,
+Cc: alsa-devel@alsa-project.org,
+ =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
  linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>,
- Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
- Akihiko Odaki <akihiko.odaki@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, kernel@collabora.com,
- linux-arm-kernel@lists.infradead.org,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, Trevor Wu <trevor.wu@mediatek.com>,
+ Tzung-Bi Shih <tzungbi@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ kernel@collabora.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,15 +99,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Nov 8, 2022 at 12:06 AM N=C3=ADcolas F. R. A. Prado
-<nfraprado@collabora.com> wrote:
+On Tue, Nov 8, 2022 at 4:43 PM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@collabora.com> wrote:
 >
-> Register the compatibles for this module on the module device table so
-> it can be automatically loaded when a matching device is found on the
-> system.
+> Il 07/11/22 17:04, N=C3=ADcolas F. R. A. Prado ha scritto:
+> > Register the compatibles for this module on the module device table so
+> > it can be automatically loaded when a matching device is found on the
+> > system.
+> >
+> > Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
 >
 > Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collab=
 ora.com>
-> Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
 
 Tested-by: Chen-Yu Tsai <wenst@chromium.org>
+
+The module was automatically loaded.
