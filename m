@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B0FCC4332F
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 11:58:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4978DC4332F
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 12:00:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AEDFD10E;
-	Tue,  8 Nov 2022 12:57:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AEDFD10E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B0BA3E8;
+	Tue,  8 Nov 2022 12:59:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B0BA3E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667908684;
-	bh=GHzB7qQl6Hb1nijNzHTsDJ9L+DMaQ43TYbdl7UnJBZk=;
+	s=default; t=1667908849;
+	bh=ZbQpacfFTu61JJN5mXQej1BhD/WUyancCWYZuTNpseA=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Adv/8Q1zsnlCC7yQ+6r1lehHdZE4oxJKaAzY85MBTIYUhCNMV2ltmf6UZ/yi+A/op
-	 FTVpu/crDM+qYDFBfYAm92SwkTKi8U1prXfqsOwW/cwiIi9FHstkzSgWUmT19NiM1a
-	 A1FhazqYIqGYFvSIgwwq6DcmLchJP/3W7v4EQxMo=
+	b=fwWf3s4ATSDs9Tpl9fEwDPqT93A16ozdVEmhCrFdEO7FyeWF1QRmA2GZS0bvzshFi
+	 RGsarQGPm21YC+PxjMFFG33JBKZFp81mHWnF4h4m8N3p5TQ1JDe/YcYS2wP+CNMvWm
+	 u8SuRbeNY5Q7J0PtplHI7tbKevIsLJbXqPjA/IH4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D336F8016E;
-	Tue,  8 Nov 2022 12:57:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9B8BEF8016E;
+	Tue,  8 Nov 2022 12:59:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E47AF800F4; Tue,  8 Nov 2022 12:57:12 +0100 (CET)
+ id C1153F800EC; Tue,  8 Nov 2022 12:59:56 +0100 (CET)
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0F00FF800F4
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 12:57:04 +0100 (CET)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8AC3F800EC
+ for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 12:59:50 +0100 (CET)
 Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 5475EA003F;
- Tue,  8 Nov 2022 12:57:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 5475EA003F
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 335CDA0040;
+ Tue,  8 Nov 2022 12:59:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 335CDA0040
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1667908624; bh=JtyFhxHbGkz6LrmnBG7wKmEKLQL6cfxvewokhJ4YrMk=;
+ t=1667908790; bh=tkVd+ZpT7xZ0KnuC4BfhOsleFWGipoIDebQ2eCfhRHs=;
  h=From:To:Cc:Subject:Date:From;
- b=yaEGLCtLMWTqUs8YliF+/GwoqyMsf5SemF1dY7XhRabsHL+5/tDn7fqQ38jdODabo
- jKszf5mk1pqHHtqoE1dOHeSjp88pxpg6nuAYRlPZFz9JFDrSI7/ycf8A0EO2q7+oJO
- O3nyl1IcJZ8/GYpZ0PeZlQqoDWxOpET6HgvehZAM=
+ b=XcH86m9sr0zTXH/AtLF8UlZqm7XLqyXtG4VC53Jd+JNHnL5jHBwmc9qKoyoUDjjdN
+ IasY6hFWynD+V72AdWVBSNnOsFwMGDj8a0xV05CZPjxk8NCqlKrmSD8FrQmSh0EJAX
+ iIxBbbAznQqa5qMTa99KhoNwj91eZAAUWQHPNoo0=
 Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: perex)
  by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Tue,  8 Nov 2022 12:56:54 +0100 (CET)
+ Tue,  8 Nov 2022 12:59:40 +0100 (CET)
 From: Jaroslav Kysela <perex@perex.cz>
 To: ALSA development <alsa-devel@alsa-project.org>
-Subject: [PATCH] [RFC] selftests: alsa - add PCM test
-Date: Tue,  8 Nov 2022 12:56:43 +0100
-Message-Id: <20221108115643.3750754-1-perex@perex.cz>
+Subject: [PATCH v2] [RFC] selftests: alsa - add PCM test
+Date: Tue,  8 Nov 2022 12:59:14 +0100
+Message-Id: <20221108115914.3751090-1-perex@perex.cz>
 X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -88,6 +88,9 @@ exposed in sysfs for the matching for the CI automation.
 The configuration file may also specify the PCM device list to detect
 the missing PCM devices.
 
+v1..v2:
+  - added missing alsa-local.h header file
+
 Cc: Mark Brown <broonie@kernel.org>
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
 Cc: Liam Girdwood <liam.r.girdwood@intel.com>
@@ -98,10 +101,12 @@ Cc: Brian Norris <briannorris@chromium.org>
 Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 ---
  tools/testing/selftests/alsa/Makefile         |   4 +-
+ tools/testing/selftests/alsa/alsa-local.h     |  22 +
  tools/testing/selftests/alsa/conf.c           | 379 +++++++++++++
  .../alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf  |  76 +++
  tools/testing/selftests/alsa/pcm-test.c       | 523 ++++++++++++++++++
- 4 files changed, 981 insertions(+), 1 deletion(-)
+ 5 files changed, 1003 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/alsa/alsa-local.h
  create mode 100644 tools/testing/selftests/alsa/conf.c
  create mode 100644 tools/testing/selftests/alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf
  create mode 100644 tools/testing/selftests/alsa/pcm-test.c
@@ -120,6 +125,34 @@ index fd8ddce2b1a6..8ac22d2eb2ba 100644
 +pcm-test: pcm-test.c conf.c
  
  include ../lib.mk
+diff --git a/tools/testing/selftests/alsa/alsa-local.h b/tools/testing/selftests/alsa/alsa-local.h
+new file mode 100644
+index 000000000000..fd0771ac600d
+--- /dev/null
++++ b/tools/testing/selftests/alsa/alsa-local.h
+@@ -0,0 +1,22 @@
++// SPDX-License-Identifier: GPL-2.0
++//
++// kselftest configuration helpers for the hw specific configuration
++//
++// Original author: Jaroslav Kysela <perex@perex.cz>
++// Copyright (c) 2022 Red Hat Inc.
++
++#ifndef __ALSA_LOCAL_H
++#define __ALSA_LOCAL_H
++
++#include <alsa/asoundlib.h>
++
++void conf_load(void);
++void conf_free(void);
++snd_config_t *conf_by_card(int card);
++snd_config_t *conf_get_subtree(snd_config_t *root, const char *key1, const char *key2);
++int conf_get_count(snd_config_t *root, const char *key1, const char *key2);
++const char *conf_get_string(snd_config_t *root, const char *key1, const char *key2, const char *def);
++long conf_get_long(snd_config_t *root, const char *key1, const char *key2, long def);
++int conf_get_bool(snd_config_t *root, const char *key1, const char *key2, int def);
++
++#endif /* __ALSA_LOCAL_H */
 diff --git a/tools/testing/selftests/alsa/conf.c b/tools/testing/selftests/alsa/conf.c
 new file mode 100644
 index 000000000000..dd6aa90deef9
