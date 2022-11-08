@@ -4,92 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0146C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 14:24:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF6A6C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue,  8 Nov 2022 14:47:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F13B5210;
-	Tue,  8 Nov 2022 15:23:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F13B5210
+	by alsa0.perex.cz (Postfix) with ESMTPS id D33D6210;
+	Tue,  8 Nov 2022 15:46:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D33D6210
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1667917440;
-	bh=y5waDTucr8M9senmenVxhrnzP+/dHQm62hUanvGi+9U=;
+	s=default; t=1667918841;
+	bh=5gwYFOVGF4mpjIAIeDXcm5vGvJBWzCTEf0IjQbFWZEA=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mL82yz/HrY81ipGkII91eyG5TNWqfYBl+BzxvjsAyCMgntn3ViiyQmgIxy1k3AOQ+
-	 OTZ5GLjHeo/DqOzfG6VItfGKgo2bJVlwTBtJxmoU1lWbIhFP4oiNBrFK1O5bGglv0p
-	 j1uOjTuETIDrcCZZxj2wyDMhNilvfwab+fmbtsLY=
+	b=NbluXmeWQ53hPYAnFzcxdO5hAP3C3Bv01rzp90flVz2ykPVtDOvYJZbXc/GFzdBeT
+	 Iaq4+GdZuCpNsa5YZ8f64vEpNcEXEkh8pqas1khsQq2q9BbKn+iPrliQMFO6FG47VK
+	 0z1g+1/YGeKgM0JZkS9mFW5F4bk/ebgkasP/E+2w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9CEC4F8016E;
-	Tue,  8 Nov 2022 15:23:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76835F8016E;
+	Tue,  8 Nov 2022 15:46:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C33E7F801D8; Tue,  8 Nov 2022 15:23:08 +0100 (CET)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
- [IPv6:2a00:1450:4864:20::633])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id D06EEF801D8; Tue,  8 Nov 2022 15:46:29 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 81EFBF800EC
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 15:23:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81EFBF800EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id CF940F800EC
+ for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 15:46:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF940F800EC
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="agAlO/bM"
-Received: by mail-ej1-x633.google.com with SMTP id ud5so39050635ejc.4
- for <alsa-devel@alsa-project.org>; Tue, 08 Nov 2022 06:23:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=user-agent:in-reply-to:content-disposition:mime-version:references
- :message-id:subject:cc:to:from:date:from:to:cc:subject:date
- :message-id:reply-to;
- bh=GZnCIJm+9B9Ff3S7OWyd9EMrH+oJEijKOQtTrhJPK+s=;
- b=agAlO/bMjNZS419ehoNlmwo2Y3uNQo3ftrHa5OJ/v85dpmTW2ZHHGQiC/d2IInAH6Q
- bXsfqUjpx6U4PYhKzxvNAGWYqVfyxrpZmgeCp4vXJXchbebK4Z8r9eRU2Lbyh7zP+9zB
- OPgKlTmoMsW0FhFtUQX9eFr+L8Wutp/3Z6x4bOXxO41O/02ThSKw04jJZ9HxbXDgiiaw
- f9LCjvKZ+1HEX5fU9JcsPdqZ1ue6P3KqOfqU4UEb9hhiXtw98Z5puryOztK7QlP/ievA
- NQY3vq9hsbYWxf1oNyy4TwscGpGG4mOTgSH5IJnZxRGOHdRKEkValcr9dgsbQBJoH7SC
- 3dZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=user-agent:in-reply-to:content-disposition:mime-version:references
- :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=GZnCIJm+9B9Ff3S7OWyd9EMrH+oJEijKOQtTrhJPK+s=;
- b=B/KRdvVjkiWYQRAa4bcsgnoZPzR8VpPplaLI5a53CbWRqTAgw8jHsIiSZBNdNCpPWF
- weOHqKV5I9CY6tUProfcIsG9TMYGraR468EAzOSk24hsQPR7zYf39wSy/C9kzCt91lAE
- fUX19f7TOTwdmt1SpnE/7vBR28XPK/ZMZQvYUXehbRmk0OrQGLqmBwq1NXJFTzzUIGd5
- FLlaCblI67Dq8bWmogbsVBAXyP9RaLVE6gxiokg75B9gyTH3cVHJrm75kuXLb4umfuqL
- RPQ/OUvLxVxCbS4VTfgGK0qHV9lKYSzWxH470uEPjSKGDLDPWE+hcgXMoDtD0mWmVpIU
- FTdw==
-X-Gm-Message-State: ACrzQf0+9NuGzXgIucW+zX7wr62A63Vws5iNZ79PVHQWDHDHadzK0bKm
- eigmAggzPTHAf5EQwxREAFo=
-X-Google-Smtp-Source: AMsMyM7a+rXh6egmJgCV4yYsRFUfXuNmozOuHYPfp6VM6AmrwLU5W5iyiq4aYfT7oDW/qdMpn2to/A==
-X-Received: by 2002:a17:907:a46:b0:782:1c1c:8141 with SMTP id
- be6-20020a1709070a4600b007821c1c8141mr54460080ejc.549.1667917380673; 
- Tue, 08 Nov 2022 06:23:00 -0800 (PST)
-Received: from orome (p200300e41f201d00f22f74fffe1f3a53.dip0.t-ipconnect.de.
- [2003:e4:1f20:1d00:f22f:74ff:fe1f:3a53])
- by smtp.gmail.com with ESMTPSA id
- q15-20020a17090676cf00b007ad94422cf6sm4635674ejn.198.2022.11.08.06.22.59
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 08 Nov 2022 06:22:59 -0800 (PST)
-Date: Tue, 8 Nov 2022 15:22:57 +0100
-From: Thierry Reding <thierry.reding@gmail.com>
-To: Colin Ian King <colin.i.king@gmail.com>
-Subject: Re: [PATCH] ASoC: tegra: Fix spelling mistake "fliter" -> "filter"
-Message-ID: <Y2pmQdxMIHl+vgIj@orome>
-References: <20221108111340.115387-1-colin.i.king@gmail.com>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="FzH1qXQn"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 0D318B81996;
+ Tue,  8 Nov 2022 14:46:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51C24C433D6;
+ Tue,  8 Nov 2022 14:46:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1667918784;
+ bh=5gwYFOVGF4mpjIAIeDXcm5vGvJBWzCTEf0IjQbFWZEA=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=FzH1qXQnkEGUUP7fss8g1QQ5kV4xMlp3hi8uLJAqbGqMVIbGQpfRok1Oa3ZCYHMa5
+ xOqG2T1tnhMVE63yVbz070A2eFC3W4uHMR1nEKHLnL1YRErPi6E6w+Kv8uSBLbTZA6
+ 3IdE4fXPgcQhmtsKtcKCG/ZPJpdlmxKhq3hBGckMOx4zg9W9s6q50bwziyQ3iWlfcm
+ /T0MqTlJXDe+rGBlgDSdMLKYp32N4+wbFOydfEjoJTBcSrAXiH6e1LqfyMQ09LO7+C
+ lc9n37PIKYIUsnmBvViMnQ5W+YG3LRwo9kNM5Hcr1BLLQHxMyq1QXeao/8qTqP2CcB
+ M4zgEgR1jVTDw==
+Date: Tue, 8 Nov 2022 14:46:19 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH v2] [RFC] selftests: alsa - add PCM test
+Message-ID: <Y2pru8JLAGSjkDiJ@sirena.org.uk>
+References: <20221108115914.3751090-1-perex@perex.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="pDY6F3p4Kn966Zak"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="xRL3iVwIhEqKXGUP"
 Content-Disposition: inline
-In-Reply-To: <20221108111340.115387-1-colin.i.king@gmail.com>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
- kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Mark Brown <broonie@kernel.org>,
- linux-tegra@vger.kernel.org
+In-Reply-To: <20221108115914.3751090-1-perex@perex.cz>
+X-Cookie: Fortune favors the lucky.
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Jimmy Cheng-Yi Chiang <cychiang@google.com>, Takashi Iwai <tiwai@suse.de>,
+ linux-kselftest@vger.kernel.org, Brian Norris <briannorris@chromium.org>,
+ Curtis Malainey <cujomalainey@google.com>,
+ Liam Girdwood <liam.r.girdwood@intel.com>, Shuah Khan <shuah@kernel.org>,
+ Jesse Barnes <jsbarnes@google.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,45 +88,142 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---pDY6F3p4Kn966Zak
+--xRL3iVwIhEqKXGUP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 08, 2022 at 11:13:40AM +0000, Colin Ian King wrote:
-> There is a spelling mistake in struct member fliter_structure.
-> Fix it.
->=20
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  sound/soc/tegra/tegra210_mbdrc.c | 4 ++--
->  sound/soc/tegra/tegra210_mbdrc.h | 2 +-
->  2 files changed, 3 insertions(+), 3 deletions(-)
+On Tue, Nov 08, 2022 at 12:59:14PM +0100, Jaroslav Kysela wrote:
+> This initial code does a simple sample transfer tests. By default,
+> all PCM devices are detected and tested with short and long
+> buffering parameters for 4 seconds. If the sample transfer timing
+> is not in a +-100ms boundary, the test fails. Only the interleaved
+> buffering scheme is supported in this version.
 
-I sometimes wonder how these come to be since it's an obvious typo yet
-people manage to make them at least twice. Auto-completion I suspect
-might play a role. Anyway, good catch:
+Oh, thanks for picking this up - something like this has been on my mind
+for ages!  This should probably be copied to Shuah and the kselftest
+list as well, I've added them.  This looks basically good to me, I've
+got a bunch of comments below but I'm not sure any of them except
+possibly the one about not putting values in the configuration file by
+default should block getting this merged so:
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+Reviewed-by: Mark Brown <broonie@kernel.org>
 
---pDY6F3p4Kn966Zak
+> The configuration may be modified with the configuration files.
+> A specific hardware configuration is detected and activated
+> using the sysfs regex matching. This allows to use the DMI string
+> (/sys/class/dmi/id/* tree) or any other system parameters
+> exposed in sysfs for the matching for the CI automation.
+
+> The configuration file may also specify the PCM device list to detect
+> the missing PCM devices.
+
+>  create mode 100644 tools/testing/selftests/alsa/alsa-local.h
+>  create mode 100644 tools/testing/selftests/alsa/conf.c
+>  create mode 100644 tools/testing/selftests/alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf
+>  create mode 100644 tools/testing/selftests/alsa/pcm-test.c
+
+This is a bit unusual for kselftest and might create a bit of churn but
+does seem sensible and reasonable to me, it's on the edge of what
+kselftest usually covers but seems close enough in scope.  I worry
+a bit about ending up needing to add a config fragment as a result but
+perhaps we can get away without.
+
+> index 000000000000..0a83f35d43eb
+> --- /dev/null
+> +++ b/tools/testing/selftests/alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf
+
+> +       pcm.0.0 {
+> +               PLAYBACK {
+> +                       test.time1 {
+> +                               access RW_INTERLEAVED   # can be omitted - default
+> +                               format S16_LE           # can be omitted - default
+> +                               rate 48000              # can be omitted - default
+> +                               channels 2              # can be omitted - default
+> +                               period_size 512
+> +                               buffer_size 4096
+
+I think it'd be better to leave these commented by default, especially
+if/once we improve the enumeration.  That way the coverage will default
+to whatever the tool does by default on the system (including any
+checking of constraints for example).  I guess we might want to add a
+way of saying "here's what I expect the constraints to be" but that's
+very much future work.
+
+> +#ifdef SND_LIB_VER
+> +#if SND_LIB_VERSION >= SND_LIB_VER(1, 2, 6)
+> +#define LIB_HAS_LOAD_STRING
+> +#endif
+> +#endif
+> +
+> +#ifndef LIB_HAS_LOAD_STRING
+> +static int snd_config_load_string(snd_config_t **config, const char *s,
+> +				  size_t size)
+> +{
+
+This is also in mixer-test, we should pull it into a helper library too.
+Something that could be done separately/incrementally.
+
+> +	for (i = 0; i < 4; i++) {
+
+> +
+> +	snd_pcm_drain(handle);
+> +	ms = timestamp_diff_ms(&tstamp);
+> +	if (ms < 3900 || ms > 4100) {
+
+It feels like the runtime might be usefully parameterised here - there's
+a tradeoff with detecting inaccurate clocks and runtime that people
+might want to make.
+
+> +	ksft_set_plan(num_missing + num_pcms * TESTS_PER_PCM);
+
+> +	for (pcm = pcm_missing; pcm != NULL; pcm = pcm->next) {
+> +		ksft_test_result(false, "test.missing.%d.%d.%d.%s\n",
+> +				 pcm->card, pcm->device, pcm->subdevice,
+> +				 snd_pcm_stream_name(pcm->stream));
+> +	}
+
+We don't seem to report a successful test.missing anywhere like
+find_pcms() so if we ever hit a test.missing then it'll look like a new
+test, old test runs won't have logged the failure.  That can change how
+people look at any failures that crop up, "it's new and never worked" is
+different to "this used to work" and people are likely to just be
+running kselftest rather than specifically know this test.  It'd be
+better if we counted the cards in the config and used that for our
+expected number of test.missings, logging cards that we find here as
+well.
+
+> +	for (pcm = pcm_list; pcm != NULL; pcm = pcm->next) {
+> +		test_pcm_time1(pcm, "test.time1", "S16_LE", 48000, 2, 512, 4096);
+> +		test_pcm_time1(pcm, "test.time2", "S16_LE", 48000, 2, 24000, 192000);
+> +	}
+
+It does feel like especially in the case where no configuration is
+specified we should be eumerating what the card can do and both
+potentially doing more tests (though there's obviously an execution time
+tradeoff with going overboard there) and skipping configurations that
+the card never claimed to support in the first place.  In particular I'm
+expecting we'll see some cards that only do either 44.1kHz or 48kHz and
+will get spurious fails by default, and I'd like to see coverage of mono
+playback on cards that claim to support it because I suspect there's a
+bunch of them that don't actually do the right thing.
+
+Like I say most of this could be done incrementally if we decide it
+needs to get done at all though, we shouldn't let perfect be the enemy
+of good.
+
+--xRL3iVwIhEqKXGUP
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmNqZj8ACgkQ3SOs138+
-s6FbTw/+L/QE+HdaK/OuuLEzlBM6VWk+gYNy4BeBG5uOqysNd6MzrfjIEG9WS5lE
-SKcmYwhnYhBHcXtfvuDM31AwDkfEFSr+p35hzIRnGbUa/MZLxj3ufZad17adgfng
-xgjH0L7b3zYsX3+z29syehbF524PKApyURWbnQZNnKfLTmC1vagfOvcEvu5Zq7kz
-B4rFKeDjiSkJGcf5JtDh0D1/oFCTkzOgoC03N59AFWt42lHpGHNenZMQghMnvlrw
-t4mF03BhREWdSzB2LWpywH237eqtaG1+Ro2gEik9UR32bEO8V4Yb1occYpwilAxm
-wKO1uVryVoSgh5DLmzcifM5sWh1IS4QrORdGBXXnC4p5CDuS85Or0NQaou+t/TEa
-2Iqyovc8k7+S2CkQXjX7rGROqaG64El59mGDP38IhOuNp3nMcxXLkftOEXxJaxkl
-VSdzPmXysgm4hbPvXd6pdmAI6DOmAVYjy7ZgEt6xjVaHwGbjf96vAqPwA/tZtk2h
-SFTpCQfgqPt6CRQh/aEC4pdJun9RUUkAWw8GSAz+dX5OBkEG2tRKFTOBDVTxoKM9
-0zdxlQfn960VhHeF7Uus6PIgE9rliiN9uPWIHc95UlMkfC8Kqzj2ymAGxbfA90sJ
-BheR4Zp0zo0CNTY3baq03zxEYC5/I1hufNFmUy3HhARuRKF/IIs=
-=bwz6
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNqa7oACgkQJNaLcl1U
+h9BTLgf+OYAlhB9FKMmF6Sa4xThE/JjnVMVg+DPOCzb4ZocUXPCrIEys+nY4RHis
+mOSfiWmqB2jtrg5LBaDpfKCnsIs8zyVgiLlKFh8GU5dAgmipgptX/0DMr0BuhqaT
+6SrF19S8Dm4GJbnIlfBfHYuLJ/H6y7S3lvT4qmD8bN8CTeImvIKBYeiwk2Ge3wSC
+06/QbS3IPs2zTObC3NhHhGl31xQ2RgtPBEncD/CFLvyoUr9BUbu9rxsyAiM0ZwBz
+A8sEmdXBwpO6o32tgmemlN6MBaeEv0ikZFoEEmTLImNCV9ljXwUBp7cooIXahdyy
+NOidsMw6Za1+QSPeS/UKZ3mmRPuLBw==
+=o4V8
 -----END PGP SIGNATURE-----
 
---pDY6F3p4Kn966Zak--
+--xRL3iVwIhEqKXGUP--
