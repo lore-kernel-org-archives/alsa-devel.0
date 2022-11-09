@@ -4,76 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0248EC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 21:10:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3771FC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 21:10:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A54A2164F;
-	Wed,  9 Nov 2022 22:09:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A54A2164F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 617E51660;
+	Wed,  9 Nov 2022 22:09:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 617E51660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668028241;
-	bh=YNM7WwaeawogLz2B6INoqKNV8T7ZO7gltvl8gH4SDxo=;
+	s=default; t=1668028247;
+	bh=IlXhKEpCDbHDliT1x9tL8wjdjlAeOIiFInDRnd5utQA=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eGbxaDe+XkeC3cWF6r1jsUwcE3dmyh/UGOIBqMDRJ/Jhb06roblNdsAQDEV6sy++R
-	 PO4flhmy2AI2kgP67diGhxk5vm97ylRqC21BVLm55k4d0OoL+nHWIqJalc7/U0fWyD
-	 Hj3Qq/VDdUkMIgQsPUzd8hm6FjpCVYOZYB4h6yug=
+	b=DyE2pN1OKs7k3IYs1wEjtg1oVQwd75jK0t0Urt1kYiPOnNtkDYcshdoSiLd5sZgZ1
+	 fePjySxtpTpT8PyhzH5qp4p32aqOVWPqE7GT6tM2Q9600jtOREPJ7vIY61bXr/rSpX
+	 FDkVXHJOICgdyo2Ac9wKYxVFoJMdcvizBzKc2+1o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD0B2F80557;
-	Wed,  9 Nov 2022 22:09:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 941D8F80166;
+	Wed,  9 Nov 2022 22:09:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 429CBF8023B; Wed,  9 Nov 2022 22:09:22 +0100 (CET)
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com
- [209.85.167.178])
+ id 75E51F8055B; Wed,  9 Nov 2022 22:09:26 +0100 (CET)
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com
+ [209.85.160.51])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A891BF800EC
- for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2022 22:09:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A891BF800EC
-Received: by mail-oi1-f178.google.com with SMTP id s206so20205661oie.3
- for <alsa-devel@alsa-project.org>; Wed, 09 Nov 2022 13:09:16 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B5744F80166
+ for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2022 22:09:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5744F80166
+Received: by mail-oa1-f51.google.com with SMTP id
+ 586e51a60fabf-13b6c1c89bdso128034fac.13
+ for <alsa-devel@alsa-project.org>; Wed, 09 Nov 2022 13:09:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=date:subject:message-id:references:in-reply-to:cc:to:from
  :mime-version:content-transfer-encoding:x-gm-message-state:from:to
  :cc:subject:date:message-id:reply-to;
- bh=3JK7iAPYbPLR42yscRzAFOhzDf8fswRFehByP99Ej2k=;
- b=MKhYy1uASX0qX4e6QnNztwZ46yL4f4zr3QiDRW9Qrs6bMo3PJSoGbOUT6qWqNdGRjN
- V8yoaVydol8LUe67jbzF+0mpxATS0tkh3SmwvJ0+5qq0TrPe48j6xf2utP1saqAxMjNl
- QaebTHmokbeSGjp9unZilr3+GVbknE7jZKAwEBBB/ASrFnseFPWIgZDySBA3J3fCnAyU
- y22awxc8H7uO4juMNHxvrOp5tdXo0jmQzBtnd3cV8Yzt+EBHn05EEB/sKGbZVaqM5sNw
- pNX0Yus69jnHywxICpV/RIgA/NCHaJ0VoxQBBSn7dEBsWz4kCEcWfDPpuMEb5GOHWQeH
- tXUw==
-X-Gm-Message-State: ACrzQf30wcxJM9iterbobudaQ7nYJI89NT8ZB5NStYXG2kcJg022ci5B
- qj132V/Q5a/8YeQiNLGfyA==
-X-Google-Smtp-Source: AMsMyM4226V1B9Bim9hiyYeb6rDAaHwH3K5mNu+jN4Zyeeyhhcguqx9bi8mkRs06U2LeKMBT4m+sHA==
-X-Received: by 2002:a05:6808:f8f:b0:35a:6eed:42f with SMTP id
- o15-20020a0568080f8f00b0035a6eed042fmr12756467oiw.192.1668028154584; 
- Wed, 09 Nov 2022 13:09:14 -0800 (PST)
+ bh=69ynaJZ0vfSiU5Z7REHN/yVn0+I4DGU0vC88AAV66eU=;
+ b=v59hLJ/rFVb4gA0wYL0CHnUEQjiuBtZSL8vCklxgh335KHzbI12tnd/2DrN5vq5DFd
+ g+crQff1xXhon8CHMJBZR8ramn+meThXZWpY8RfHFOJ0rJXogdK2FI1ExooQelW1j8JD
+ ogNylK5gX4YBu60JmnHTWWWXoHWbDojLWia1VopT5BJKxPCo2rG14q1uOAFxI/n+65bO
+ BFr3KopxRCDen4ozLDI2P2iWGhfgHCqJxpTv30uRacsW8vbWHgzPiDXlVJ+Om0KN0Zm1
+ K/2UzSrsz09xhgUepq3ikq3892lMELHDY4EI0UADZloMvz3e9f7Xg3JTlYf646IhSD4A
+ bWyQ==
+X-Gm-Message-State: ANoB5pkUdgWEo7HGe0IgCvTzbfl/MoJt39rxyBQfShTdMtT4w+N7fHND
+ oqtSRSwpk3ATt35ml5lGOA==
+X-Google-Smtp-Source: AA0mqf7uijbXxM1V5E4YDTZSWH4fX4tkDBL3BOD5z9wGdyYsxPQIhx2cbf5ym35wl8Y+779wpe7d8g==
+X-Received: by 2002:a05:6870:888c:b0:12c:55d6:968 with SMTP id
+ m12-20020a056870888c00b0012c55d60968mr11226996oam.244.1668028151442; 
+ Wed, 09 Nov 2022 13:09:11 -0800 (PST)
 Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
  [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
- o30-20020a056870911e00b0012779ba00fesm6657392oae.2.2022.11.09.13.09.13
+ r198-20020a4a37cf000000b0049be423151asm4572127oor.34.2022.11.09.13.09.10
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 09 Nov 2022 13:09:14 -0800 (PST)
-Received: (nullmailer pid 2868048 invoked by uid 1000);
+ Wed, 09 Nov 2022 13:09:10 -0800 (PST)
+Received: (nullmailer pid 2868046 invoked by uid 1000);
  Wed, 09 Nov 2022 21:09:10 -0000
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
 From: Rob Herring <robh@kernel.org>
 To: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <20221109165331.29332-5-rf@opensource.cirrus.com>
+In-Reply-To: <20221109165331.29332-2-rf@opensource.cirrus.com>
 References: <20221109165331.29332-1-rf@opensource.cirrus.com>
- <20221109165331.29332-5-rf@opensource.cirrus.com>
-Message-Id: <166802788390.2833223.7991217464686925936.robh@kernel.org>
-Subject: Re: [PATCH 04/12] dt-bindings: pinctrl: Add Cirrus Logic CS48L31/32/33
+ <20221109165331.29332-2-rf@opensource.cirrus.com>
+Message-Id: <166802788268.2833081.8250615552136903141.robh@kernel.org>
+Subject: Re: [PATCH 01/12] dt-bindings: mfd: Add Cirrus Logic CS48L32 audio
+ codec
 Date: Wed, 09 Nov 2022 15:09:10 -0600
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  patches@opensource.cirrus.com, linus.walleij@linaro.org, lee@kernel.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, robh+dt@kernel.org,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org, linux-gpio@vger.kernel.org,
  broonie@kernel.org, krzysztof.kozlowski+dt@linaro.org, maz@kernel.org,
  tglx@linutronix.de
 X-BeenThere: alsa-devel@alsa-project.org
@@ -92,36 +94,52 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-On Wed, 09 Nov 2022 16:53:23 +0000, Richard Fitzgerald wrote:
-> Codecs in this family have multiple digital I/O functions for audio,
-> DSP subsystem, GPIO and various special functions. All muxable pins
-> are selectable as either a GPIO or one of the available alternate
-> functions.
+On Wed, 09 Nov 2022 16:53:20 +0000, Richard Fitzgerald wrote:
+> The CS48L32 has multiple digital and analog audio I/O, a
+> high-performance low-power programmable audio DSP, and a variety of
+> power-efficient fixed-function audio processors, with digital
+> mixing and routing.
 > 
 > Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 > ---
->  .../bindings/pinctrl/cirrus,cs48l32.yaml      | 98 +++++++++++++++++++
->  1 file changed, 98 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/cirrus,cs48l32.yaml
+>  .../bindings/mfd/cirrus,cs48l32.yaml          | 166 ++++++++++++++++++
+>  1 file changed, 166 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/cirrus,cs48l32.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/pinctrl/cirrus,cs48l32.yaml:14:1: [error] syntax error: could not find expected ':' (syntax)
+./Documentation/devicetree/bindings/mfd/cirrus,cs48l32.yaml:107:7: [warning] wrong indentation: expected 4 but found 6 (indentation)
+./Documentation/devicetree/bindings/mfd/cirrus,cs48l32.yaml:108:7: [warning] wrong indentation: expected 8 but found 6 (indentation)
 
 dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/pinctrl/cirrus,cs48l32.example.dts'
-Documentation/devicetree/bindings/pinctrl/cirrus,cs48l32.yaml:14:1: could not find expected ':'
-make[1]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/pinctrl/cirrus,cs48l32.example.dts] Error 1
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mfd/cirrus,cs48l32.yaml: properties:clocks: 'oneOf' conditional failed, one must be fixed:
+	/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mfd/cirrus,cs48l32.yaml: properties:clocks: 'anyOf' conditional failed, one must be fixed:
+		'minItems' is not one of ['maxItems', 'description', 'deprecated']
+			hint: Only "maxItems" is required for a single entry if there are no constraints defined for the values.
+		'minItems' is not one of ['description', 'deprecated', 'const', 'enum', 'minimum', 'maximum', 'multipleOf', 'default', '$ref', 'oneOf']
+		'maxItems' is not one of ['description', 'deprecated', 'const', 'enum', 'minimum', 'maximum', 'multipleOf', 'default', '$ref', 'oneOf']
+		1 is less than the minimum of 2
+			hint: Arrays must be described with a combination of minItems/maxItems/items
+		hint: cell array properties must define how many entries and what the entries are when there is more than one entry.
+		from schema $id: http://devicetree.org/meta-schemas/clocks.yaml#
+	'minItems' is not one of ['type', 'description', 'dependencies', 'dependentRequired', 'dependentSchemas', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'allOf', 'anyOf', 'oneOf', '$ref']
+	'maxItems' is not one of ['type', 'description', 'dependencies', 'dependentRequired', 'dependentSchemas', 'properties', 'patternProperties', 'additionalProperties', 'unevaluatedProperties', 'deprecated', 'required', 'allOf', 'anyOf', 'oneOf', '$ref']
+	'type' is a required property
+		hint: DT nodes ("object" type in schemas) can only use a subset of json-schema keywords
+	from schema $id: http://devicetree.org/meta-schemas/clocks.yaml#
+./Documentation/devicetree/bindings/mfd/cirrus,cs48l32.yaml: Unable to find schema file matching $id: http://devicetree.org/schemas/pinctrl/cirrus,cs48l32.yaml
+Documentation/devicetree/bindings/mfd/cirrus,cs48l32.example.dts:21:18: fatal error: dt-bindings/sound/cs48l32.h: No such file or directory
+   21 |         #include <dt-bindings/sound/cs48l32.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:406: Documentation/devicetree/bindings/mfd/cirrus,cs48l32.example.dtb] Error 1
 make[1]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/pinctrl/cirrus,cs48l32.yaml:14:1: could not find expected ':'
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/pinctrl/cirrus,cs48l32.yaml: ignoring, error parsing file
 make: *** [Makefile:1492: dt_binding_check] Error 2
 
 doc reference errors (make refcheckdocs):
-Documentation/devicetree/bindings/pinctrl/cirrus,cs48l32.yaml: Documentation/devicetree/bindings/mfd/cirrus,cs48l32.yaml
 
 See https://patchwork.ozlabs.org/patch/
 
