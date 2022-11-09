@@ -4,84 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC2FCC4332F
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 20:39:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABCFBC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 21:10:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F2266162F;
-	Wed,  9 Nov 2022 21:38:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2266162F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1352715C3;
+	Wed,  9 Nov 2022 22:09:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1352715C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668026347;
-	bh=6iOgHpEFZn5WEgVBi3tsnArI6YiumK9ShemfJ2sAsUQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1668028214;
+	bh=nHBCjAgrvTFJtXenPKJXaP1G9M1GYxP5OLCBSBydCE0=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=urHnqhFf23HMNQV509MFwIqkbuDuQiKeVVOuupdlilVpv3vahLy+2Gnzo/0WhhHjB
-	 IhS/l5dVObUl91YMa3HQmud9cIRRPtjBuCm1wDYc7w7/G6szWF+qkTpv4Knmk5SZce
-	 YXSzwko4hmAwlMnBjuCFEg/86LK6t2CAx4SoUk7A=
+	b=MyqZCeNgZP+Epdm+kUD9gZD3fCx77+InXnbvl/BEcvgKViEptIwR/8nHASU9KSgMO
+	 1MmoVAoA9cP+fN8E+BvGVVnd1EDO7ZWsAlc91XS26TygyZZLnRhd4GmCXq3YaVpf3p
+	 88CzGAsdIOl+Rfo4OgUNf45S0jodxXYXqKT3X2Yw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 866BDF80166;
-	Wed,  9 Nov 2022 21:38:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60546F80217;
+	Wed,  9 Nov 2022 22:09:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB70DF80217; Wed,  9 Nov 2022 21:38:14 +0100 (CET)
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com
- [IPv6:2607:f8b0:4864:20::112f])
+ id 81845F80121; Wed,  9 Nov 2022 22:09:21 +0100 (CET)
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com
+ [209.85.161.44])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2A1B0F80114
- for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2022 21:38:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A1B0F80114
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="ohufbu7O"
-Received: by mail-yw1-x112f.google.com with SMTP id
- 00721157ae682-36cbcda2157so173086747b3.11
- for <alsa-devel@alsa-project.org>; Wed, 09 Nov 2022 12:38:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=vJZNuhocEbCBWZdP9rPe7tMs7CPsIHiP8ayiKe8jV40=;
- b=ohufbu7ON1cnzEiDyPxM4Jp8XEffJ3TYX3z8T6zkk4rHHMGkQiHsSuY3nOlqkHbCtH
- e5xWKsv2hEsgsnNjYR0D9QoVwBLK7cd2n90O7GxS8vdEr5V05r6zoLpJnbqB1KbFbtKM
- Cnp/U5HL5RZhcepFfFIxQ9P52gL0mMeVnuElCADp8vO/mozRhoe9VFfya/wkLsloOs30
- asye6QMcIxmFfythwm1vjr+xl+AZfjL3UD4P3bQ8goIN9eGManjFNJ8G873+JXAoP9P6
- k2r1GNOM64+O+AdFJwa3WOuzUjlklC70jOiONm3BU22Lx/1XYMwjYjQgR5hb6yXxUkYJ
- mP+Q==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 52B4DF80121
+ for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2022 22:09:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52B4DF80121
+Received: by mail-oo1-f44.google.com with SMTP id
+ o140-20020a4a2c92000000b0049effb01130so567ooo.9
+ for <alsa-devel@alsa-project.org>; Wed, 09 Nov 2022 13:09:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=vJZNuhocEbCBWZdP9rPe7tMs7CPsIHiP8ayiKe8jV40=;
- b=GTKy47DWjLpr4xFLMtRNShxdD6B+Nu0ghEzFpPApoP8yeD5XtecBvRFNYGmZb3CaIs
- Z1Pwgy96bsgJzEVnqPKOEqMxxi/FfiWJzmzJ4KI+RDcDDfDNq9ZaTvVu5oB5PyGI0rE3
- WEqHKqgOTJjd1u1vJCfxVtLMvVL0ITmiY+ahdlIfBQZKVGcpKQ5DQgeP+0jajg5q0Rwz
- yB8D94Mp0P7oRXfIhjk7P7hY/rqccdAmcZu2umOggf4xGfdn/Zd7gmWGGUOaM9+EDZvV
- MB55al6zKAuDTPOmQ0mEBeBTpurL1b2zmMImXQIqOUeduQIwQ0aOghUPyMpj1XccvNbO
- a5yA==
-X-Gm-Message-State: ACrzQf1YgiRAeOORdKOnHWlyzAATmpcsAiwrpgppo+FFLlWS/tJrvO/K
- 1BnoMh5Rw2FxcOrONiCG5C9J2a6CmiyZLVnhG4c=
-X-Google-Smtp-Source: AMsMyM4ymp1hd2NsBtEem9OZ9RfdVTVdaY/1YGgYjKxF0liSHALhMPOoown8oFB9ehUXHmU8hjEY7boRnfCg+iXIgak=
-X-Received: by 2002:a81:9347:0:b0:370:7d99:ccfd with SMTP id
- k68-20020a819347000000b003707d99ccfdmr48660247ywg.98.1668026288615; Wed, 09
- Nov 2022 12:38:08 -0800 (PST)
+ h=date:subject:message-id:references:in-reply-to:cc:to:from
+ :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+ :cc:subject:date:message-id:reply-to;
+ bh=pTx6KXl8drPJ8E5PhGgj7I7ubFV4pBqM5D1m7ayvNZY=;
+ b=DihzTkXOQlUrSnL+dvcAbED5Jsk1bU9tWceYTALIyHiwkncoV9E2B94BLwt6Qwk6lr
+ 1tCu0aakW53JPnTYxnKsTzSFe4vkvso4oCrjBFF0SWwx3egj2n7JW8+YnhbsXH1eHd78
+ uKW38cNQcl9zTkDK6WY0F81IMzR9MvPbfFp4cZTKp79vASMzCzBNtjEkCmIDU97lZRxg
+ Mrx+RsEAhvqoWHYpoDBepGLkYW4Ggdkgbq88D05gzArcLDQbmo9EIlNrEdclyriF2sAx
+ 8+AOB09dqNR48eN9hywOxYjmZPQm2vUny/s9lqUqsPD2jILZ1XGYI0+UdAR0sALaOj1C
+ OCxw==
+X-Gm-Message-State: ACrzQf2sTLud7gQYRqYsi6qWzynYCpxGsg1LSB/aKD00xlsagcgjlU5b
+ Xwgh/APBWK5Mr7opmfNxrN7ydxvp/g==
+X-Google-Smtp-Source: AMsMyM74l5mv/EC48QYKoj/YZepZ9v4bVhOyjqW8nyLfXzz90f1TERxX/QeKPgV/jeuamIsn6OI3iQ==
+X-Received: by 2002:a4a:e810:0:b0:47f:775a:b028 with SMTP id
+ b16-20020a4ae810000000b0047f775ab028mr26271145oob.12.1668028153073; 
+ Wed, 09 Nov 2022 13:09:13 -0800 (PST)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
+ q189-20020acac0c6000000b0035a0c543ad6sm5032033oif.21.2022.11.09.13.09.12
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 09 Nov 2022 13:09:12 -0800 (PST)
+Received: (nullmailer pid 2868050 invoked by uid 1000);
+ Wed, 09 Nov 2022 21:09:10 -0000
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-References: <20221109171732.5417-1-edson.drosdeck@gmail.com>
-In-Reply-To: <20221109171732.5417-1-edson.drosdeck@gmail.com>
-From: edson drosdeck <edson.drosdeck@gmail.com>
-Date: Wed, 9 Nov 2022 16:32:59 -0400
-Message-ID: <CAMSsBRwKX8swbHGxtJQ6bqKO+zvUVJHjnvBSHwBtjoYY5Z-w2A@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Add Positivo C6300 model quirk
-To: perex@perex.cz
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: sbinding@opensource.cirrus.com, tanureal@opensource.cirrus.com,
- tangmeng@uniontech.com, p.jungkamp@gmx.net, tcrawford@system76.com,
- tiwai@suse.com, wse@tuxedocomputers.com, linux-kernel@vger.kernel.org,
- kai.heng.feng@canonical.com, alsa-devel@alsa-project.org
+From: Rob Herring <robh@kernel.org>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <20221109165331.29332-12-rf@opensource.cirrus.com>
+References: <20221109165331.29332-1-rf@opensource.cirrus.com>
+ <20221109165331.29332-12-rf@opensource.cirrus.com>
+Message-Id: <166802788527.2833369.15841700036002494433.robh@kernel.org>
+Subject: Re: [PATCH 11/12] dt-bindings: sound: Add Cirrus Logic CS48L31/32/33
+ codecs
+Date: Wed, 09 Nov 2022 15:09:10 -0600
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, maz@kernel.org,
+ linus.walleij@linaro.org, lee@kernel.org, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org, linux-gpio@vger.kernel.org, broonie@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, patches@opensource.cirrus.com,
+ tglx@linutronix.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,40 +93,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch is working
 
-Em qua., 9 de nov. de 2022 =C3=A0s 13:18, Edson Juliano Drosdeck <
-edson.drosdeck@gmail.com> escreveu:
-
-> Positivo Master C6300 (1849:a233) require quirk for anabling headset-mic
->
-> Signed-off-by: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
+On Wed, 09 Nov 2022 16:53:30 +0000, Richard Fitzgerald wrote:
+> Codecs in this family have multiple digital and analog audio I/O that
+> support a variety of external hardware connections and configurations.
+> 
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 > ---
->  sound/pci/hda/patch_realtek.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.=
-c
-> index 701a72ec5629..7875566d6183 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -9608,6 +9608,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[=
-]
-> =3D {
->         SND_PCI_QUIRK(0x17aa, 0x511f, "Thinkpad",
-> ALC298_FIXUP_TPT470_DOCK),
->         SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB",
-> ALC269_FIXUP_LENOVO_EAPD),
->         SND_PCI_QUIRK(0x1849, 0x1233, "ASRock NUC Box 1100",
-> ALC233_FIXUP_NO_AUDIO_JACK),
-> +       SND_PCI_QUIRK(0x1849, 0xa233, "Positivo Master C6300",
-> ALC269_FIXUP_HEADSET_MIC),
->         SND_PCI_QUIRK(0x19e5, 0x3204, "Huawei MACH-WX9",
-> ALC256_FIXUP_HUAWEI_MACH_WX9_PINS),
->         SND_PCI_QUIRK(0x19e5, 0x320f, "Huawei WRT-WX9 ",
-> ALC256_FIXUP_ASUS_MIC_NO_PRESENCE),
->         SND_PCI_QUIRK(0x1b35, 0x1235, "CZC B20", ALC269_FIXUP_CZC_B20),
-> --
-> 2.37.2
->
->
+>  .../bindings/sound/cirrus,cs48l32.yaml        | 96 +++++++++++++++++++
+>  include/dt-bindings/sound/cs48l32.h           | 25 +++++
+>  2 files changed, 121 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/cirrus,cs48l32.yaml
+>  create mode 100644 include/dt-bindings/sound/cs48l32.h
+> 
+
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/sound/cirrus,cs48l32.yaml:44:20: [error] syntax error: mapping values are not allowed here (syntax)
+
+dtschema/dtc warnings/errors:
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/sound/cirrus,cs48l32.example.dts'
+Documentation/devicetree/bindings/sound/cirrus,cs48l32.yaml:44:20: mapping values are not allowed here
+make[1]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/sound/cirrus,cs48l32.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+./Documentation/devicetree/bindings/sound/cirrus,cs48l32.yaml:44:20: mapping values are not allowed here
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/cirrus,cs48l32.yaml: ignoring, error parsing file
+make: *** [Makefile:1492: dt_binding_check] Error 2
+
+doc reference errors (make refcheckdocs):
+Documentation/devicetree/bindings/sound/cirrus,cs48l32.yaml: Documentation/devicetree/bindings/mfd/cirrus,cs48l32.yaml
+
+See https://patchwork.ozlabs.org/patch/
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
