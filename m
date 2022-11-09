@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CDBBC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 16:57:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71B68C4332F
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 16:57:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F932168B;
-	Wed,  9 Nov 2022 17:56:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F932168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E00A1676;
+	Wed,  9 Nov 2022 17:56:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E00A1676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668013039;
-	bh=2T8L8sYRWzGqrDY2cUOkUx0oiy3tgh6JwaPPHYQDzLU=;
+	s=default; t=1668013056;
+	bh=ZzuCfoCbFPXbzKGq1Rveuf+spLmGUiWABYpdL4yi9Ow=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HYO/D6lU1pd+s9+hwaagNxs8sNBz2jDR6T9FneXPDlXXCRq6vOm5dpBtIsNDJmL0N
-	 rPCourwk7V/TF98AUgtZ2VLtqekdpPMBPkic725FBmqJKAfi/zGgn243oumil141/f
-	 8Zl9OrYEG26qNOCoWpmQQ185b6md6pDP2iOlrrr0=
+	b=YPqg1rpuzvz11fpQGy5s7BALuIsm9pX3+0DUiN+XqdN67wHG1l8f4k4cTZdfwBuDP
+	 Ek8pcA0nsHdvHsK8QV/rhghqlq521AnObS2H4sWaACK3XvEw8pyuw6SVY76HwXhdsp
+	 UYnic9Lw2WGLeEzeQN4+oFDBL6hUckgEIP0fA00g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1D9AF805C3;
-	Wed,  9 Nov 2022 17:54:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B83C2F805C7;
+	Wed,  9 Nov 2022 17:54:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3767DF805B5; Wed,  9 Nov 2022 17:54:02 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 3F0EBF805BB; Wed,  9 Nov 2022 17:54:03 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65B9BF8055C
- for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2022 17:53:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65B9BF8055C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C4FEF80567
+ for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2022 17:53:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C4FEF80567
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="qTstbbsq"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2A9EDNja027347; Wed, 9 Nov 2022 10:53:41 -0600
+ header.b="dUnEOdFD"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 2A9EEsmp027592; Wed, 9 Nov 2022 10:53:37 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=1/iqdbl79p07gdmIWrlfhsD3njth3q+lAyMGYPPce6s=;
- b=qTstbbsq0uaNGrb9U9nPZAfnISIIkYaZ0BRhOBGsG1dhW5/ZKqm6ay9vt7NkDLQCt8Ct
- /lQsropm3vuktG8MdsjJcfjZ8WRYfWA/GL5vSUmuhCQV6PBLwUGcR9/8HcN+MrQiihjE
- p/c6qS8E/ydQ2yjW+uZJL4HPGe/8qhQJk2j6BxTUyIb+CCcUsE3VTXrSLWbN1TZ2el/T
- aPqfheLmFfbA5sWoGJFykNIzgqUoPE+uUxP6H0ZRAf0JH7z3gluaLXtpNJ9yct2GVsF0
- aV962D0xDcrT53mqhKzA3wdwW23D/yZ6uZXkuHI0Ng/SUFllLLJ5Vyr4WOJS8+mcedai SQ== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3knm8pde7v-9
+ bh=J51tDe4n/P70JEywu3N4H/UfOKsxpHMpiGSiyCiQ/4I=;
+ b=dUnEOdFDDkZcRKd5VRb2CjaARxqLtp1Zo1haeVegqgJyjBBch47GKy4D/OsvXqstG1Dl
+ Sfp3BIWo5MgpT46BmRhxVY9CEnIxAaqFLk3SlTI9kzcZtMS4zDkiOGiuOo00ChRUQ7kq
+ 59/ZuIJVISyKZvZ1fFo3Oy/Cn169lBf5k527Hwkc3I5dq7XB5oPnet0tnPKaC8utDjOb
+ 7oCcCH6p2BJrEQ9sFDd0n1l+JZkgw8zkjWHSRG7CxkhTF7eaMKqH2WAiUzifGS/vi7Jl
+ DJxQ36foWjnYNhQWp9LqyUiAPlMGpaFjebocikNxI3IPrElu6fOi0X7oJZziXlvzMXVe TQ== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3knn81nk99-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 09 Nov 2022 10:53:41 -0600
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 09 Nov 2022 10:53:37 -0600
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.15; Wed, 9 Nov
- 2022 10:53:37 -0600
+ 2022 10:53:35 -0600
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.15 via Frontend Transport; Wed, 9 Nov 2022 10:53:37 -0600
+ 15.2.1118.15 via Frontend Transport; Wed, 9 Nov 2022 10:53:35 -0600
 Received: from debianA11184.ad.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
  [198.61.65.92])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2FFE0468;
- Wed,  9 Nov 2022 16:53:37 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0205E468;
+ Wed,  9 Nov 2022 16:53:34 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <lee@kernel.org>, <robh+dt@kernel.org>,
  <krzysztof.kozlowski+dt@linaro.org>, <linus.walleij@linaro.org>,
  <broonie@kernel.org>, <tglx@linutronix.de>, <maz@kernel.org>
-Subject: [PATCH 10/12] ASoC: wm_adsp: Allow client to hook into pre_run
- callback
-Date: Wed, 9 Nov 2022 16:53:29 +0000
-Message-ID: <20221109165331.29332-11-rf@opensource.cirrus.com>
+Subject: [PATCH 06/12] regulator: arizona-micsupp: Don't hardcode use of
+ ARIZONA defines
+Date: Wed, 9 Nov 2022 16:53:25 +0000
+Message-ID: <20221109165331.29332-7-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221109165331.29332-1-rf@opensource.cirrus.com>
 References: <20221109165331.29332-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: d-QuLTs7FgaCQWnVepVFNDjx8Dyo62fV
-X-Proofpoint-GUID: d-QuLTs7FgaCQWnVepVFNDjx8Dyo62fV
+X-Proofpoint-ORIG-GUID: jLRy66NxW7yMTh04myuZ0lqcWa6l1Zol
+X-Proofpoint-GUID: jLRy66NxW7yMTh04myuZ0lqcWa6l1Zol
 X-Proofpoint-Spam-Reason: safe
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
@@ -99,57 +99,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some HALO-based codecs need some additional custom setup in the
-pre_run stage of cs_dsp. Implement the callback in wm_adsp to call
-an optional codec driver callback.
+When Madera support was added to this driver the code was left
+using ARIZONA_* defines. This wasn't causing any problem because
+those defines just happened to have the same value as the
+equivalent MADERA_* defines. But it is not ideal to assume this,
+and future devices that can share this driver do not have the
+same register map.
+
+Fix the code to refer to the register data in struct regulator_desc.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/wm_adsp.c | 11 +++++++++++
- sound/soc/codecs/wm_adsp.h |  1 +
- 2 files changed, 12 insertions(+)
+ drivers/regulator/arizona-micsupp.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 8a2e9771bb50..34a94b011518 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1035,6 +1035,16 @@ int wm_adsp_early_event(struct snd_soc_dapm_widget *w,
- }
- EXPORT_SYMBOL_GPL(wm_adsp_early_event);
+diff --git a/drivers/regulator/arizona-micsupp.c b/drivers/regulator/arizona-micsupp.c
+index f6cfd3f6f0dd..21c36972a8e9 100644
+--- a/drivers/regulator/arizona-micsupp.c
++++ b/drivers/regulator/arizona-micsupp.c
+@@ -34,7 +34,7 @@ struct arizona_micsupp {
+ 	struct regulator_dev *regulator;
+ 	struct regmap *regmap;
+ 	struct snd_soc_dapm_context **dapm;
+-	unsigned int enable_reg;
++	const struct regulator_desc *desc;
+ 	struct device *dev;
  
-+static int wm_adsp_pre_run(struct cs_dsp *cs_dsp)
-+{
-+	struct wm_adsp *dsp = container_of(cs_dsp, struct wm_adsp, cs_dsp);
-+
-+	if (!dsp->pre_run)
-+		return 0;
-+
-+	return (*dsp->pre_run)(dsp);
-+}
-+
- static int wm_adsp_event_post_run(struct cs_dsp *cs_dsp)
- {
- 	struct wm_adsp *dsp = container_of(cs_dsp, struct wm_adsp, cs_dsp);
-@@ -2043,6 +2053,7 @@ static const struct cs_dsp_client_ops wm_adsp1_client_ops = {
- static const struct cs_dsp_client_ops wm_adsp2_client_ops = {
- 	.control_add = wm_adsp_control_add,
- 	.control_remove = wm_adsp_control_remove,
-+	.pre_run = wm_adsp_pre_run,
- 	.post_run = wm_adsp_event_post_run,
- 	.post_stop = wm_adsp_event_post_stop,
- 	.watchdog_expired = wm_adsp_fatal_error,
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 375009a65828..dc2f7a096e26 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -36,6 +36,7 @@ struct wm_adsp {
- 	int fw;
+ 	struct regulator_consumer_supply supply;
+@@ -49,10 +49,11 @@ static void arizona_micsupp_check_cp(struct work_struct *work)
+ 		container_of(work, struct arizona_micsupp, check_cp_work);
+ 	struct snd_soc_dapm_context *dapm = *micsupp->dapm;
+ 	struct snd_soc_component *component;
++	const struct regulator_desc *desc = micsupp->desc;
+ 	unsigned int val;
+ 	int ret;
  
- 	struct work_struct boot_work;
-+	int (*pre_run)(struct wm_adsp *dsp);
+-	ret = regmap_read(micsupp->regmap, micsupp->enable_reg, &val);
++	ret = regmap_read(micsupp->regmap, desc->enable_reg, &val);
+ 	if (ret != 0) {
+ 		dev_err(micsupp->dev,
+ 			"Failed to read CP state: %d\n", ret);
+@@ -62,8 +63,8 @@ static void arizona_micsupp_check_cp(struct work_struct *work)
+ 	if (dapm) {
+ 		component = snd_soc_dapm_to_component(dapm);
  
- 	bool preloaded;
- 	bool fatal_error;
+-		if ((val & (ARIZONA_CPMIC_ENA | ARIZONA_CPMIC_BYPASS)) ==
+-		    ARIZONA_CPMIC_ENA)
++		if ((val & (desc->enable_mask | desc->bypass_mask)) ==
++		    desc->enable_mask)
+ 			snd_soc_component_force_enable_pin(component,
+ 							   "MICSUPP");
+ 		else
+@@ -209,7 +210,6 @@ static const struct regulator_desc madera_micsupp = {
+ 	.type = REGULATOR_VOLTAGE,
+ 	.n_voltages = 40,
+ 	.ops = &arizona_micsupp_ops,
+-
+ 	.vsel_reg = MADERA_LDO2_CONTROL_1,
+ 	.vsel_mask = MADERA_LDO2_VSEL_MASK,
+ 	.enable_reg = MADERA_MIC_CHARGE_PUMP_1,
+@@ -264,7 +264,7 @@ static int arizona_micsupp_common_init(struct platform_device *pdev,
+ 	micsupp->init_data.consumer_supplies = &micsupp->supply;
+ 	micsupp->supply.supply = "MICVDD";
+ 	micsupp->supply.dev_name = dev_name(micsupp->dev);
+-	micsupp->enable_reg = desc->enable_reg;
++	micsupp->desc = desc;
+ 
+ 	config.dev = micsupp->dev;
+ 	config.driver_data = micsupp;
+@@ -285,8 +285,7 @@ static int arizona_micsupp_common_init(struct platform_device *pdev,
+ 		config.init_data = &micsupp->init_data;
+ 
+ 	/* Default to regulated mode */
+-	regmap_update_bits(micsupp->regmap, micsupp->enable_reg,
+-			   ARIZONA_CPMIC_BYPASS, 0);
++	regmap_update_bits(micsupp->regmap, desc->enable_reg, desc->bypass_mask, 0);
+ 
+ 	micsupp->regulator = devm_regulator_register(&pdev->dev,
+ 						     desc,
 -- 
 2.30.2
 
