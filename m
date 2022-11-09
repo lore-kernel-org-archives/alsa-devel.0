@@ -4,77 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71B34C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 17:12:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53CDDC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 17:14:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E9381650;
-	Wed,  9 Nov 2022 18:11:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E9381650
+	by alsa0.perex.cz (Postfix) with ESMTPS id 112861650;
+	Wed,  9 Nov 2022 18:13:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 112861650
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668013962;
-	bh=Ps/tIGBkU9aCXUZw06TAqih6pYj20BqoaRHt+SjDUug=;
+	s=default; t=1668014064;
+	bh=k/mDQ5OTD3MCM0Jb9Kuwaj0vCqcqRqTYf1ofte2SFr8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qh3KrqqvX7KAxHN858MlVcg5xNa8RWABHbWS4WABPqwahax/O+GcVs76wb4SWC76p
-	 Ao3cgFQHrdg0em4/C0DArRmIEgeO4qx1XXyFUu0XfzTBnT+VdUZOKTr9QbdU+2K8w6
-	 W7D0CoPPagFjincrK48evOnVvzk3OdzLe2RocVnc=
+	b=FKtlC++k3+KJ6uFKqtH/AF4p6GukP4y7AzWv/c6ZrdYjaD/WpMo894u53WEZhoK0u
+	 MA7EfR4RsT6v4OasY6gQ02zK2oGZzy8YJYcZ4HI3bjhYkpLay+kg+fwwjEUYJ/0MsI
+	 YrKkjnJMDZZ8SI2tsqpyq+oAv6QezpDgoRzj3PrE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF2ECF80166;
-	Wed,  9 Nov 2022 18:11:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAAD9F80166;
+	Wed,  9 Nov 2022 18:13:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5307FF80217; Wed,  9 Nov 2022 18:11:50 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 7AC90F80166; Wed,  9 Nov 2022 18:13:31 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EA266F800EC
- for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2022 18:11:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA266F800EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0E589F80121
+ for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2022 18:13:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E589F80121
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Wqlt9D3O"; 
+ header.b="SsAB9wlf"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="korKD+NZ"
+ header.b="mWCwsdKD"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4160422BCF;
- Wed,  9 Nov 2022 17:11:47 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 49B7A22BD8;
+ Wed,  9 Nov 2022 17:13:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1668013907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1668014008; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4U/RC0aRQ0RB3i0ipkIRNQ1Dob9J2s3IHgJreWAATPg=;
- b=Wqlt9D3Oryp34M30wwr7miJOa4BxqiNi0e2lBgTYOPfH3MIeT3SsoeeRh1sZVrsiy+uMwH
- KW5oEnrudXwHVjZ1DCzHY23vD+9qGTpsp2RcQ2RXvxKwQJ5Lnje9EN4unC46cmFJb4LgPH
- u2ukc3zwzV+DBWFrwZ27+ZfIDZaOFs0=
+ bh=iyI3Omlj30cZVssRB+37QkumiLtelzvWU2f7Wx0booM=;
+ b=SsAB9wlf5qA7l7usvZyMhpFCdyr9gee8yTKdp22Mu1kWqX9yQaMHkJLaf6CbW11+GIO4l5
+ mQ3sLcHsdBZnWY5M6Yt4D3jA5w/ORrSGB1zkCBAPQfbDC4ILnYhEGn6ia4M0ii49hL5xcl
+ iopaQNvo/gyl3GGXEQvAlGpBigpw7Zg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1668013907;
+ s=susede2_ed25519; t=1668014008;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4U/RC0aRQ0RB3i0ipkIRNQ1Dob9J2s3IHgJreWAATPg=;
- b=korKD+NZr5vno50uH1yk56brXJr7JrlVIsWwNQPujKVUbOjw2DaD9TkGjvVcoX0fWXHD8T
- fVuLJ/8A/VDU8eCQ==
+ bh=iyI3Omlj30cZVssRB+37QkumiLtelzvWU2f7Wx0booM=;
+ b=mWCwsdKD6ocd2+fudJihlZZcY3oK2GmtJiePetiTOLevLI6iPDbMCFJwayS/lky6k/OTRT
+ NmAEcpXLOR2Q4kAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F2E45139F1;
- Wed,  9 Nov 2022 17:11:46 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0E5EE139F1;
+ Wed,  9 Nov 2022 17:13:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id SJZlOVLfa2MUCgAAMHmgww
- (envelope-from <tiwai@suse.de>); Wed, 09 Nov 2022 17:11:46 +0000
-Date: Wed, 09 Nov 2022 18:11:46 +0100
-Message-ID: <87k044xdbh.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 0VY8Arjfa2PdCgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Wed, 09 Nov 2022 17:13:28 +0000
+Date: Wed, 09 Nov 2022 18:13:27 +0100
+Message-ID: <87h6z8xd8o.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
 Subject: Re: [PATCH] ALSA: hda/realtek: Add Positivo C6300 model quirk
-In-Reply-To: <20221109160909.4578-1-edson.drosdeck@gmail.com>
+In-Reply-To: <87k044xdbh.wl-tiwai@suse.de>
 References: <20221109160909.4578-1-edson.drosdeck@gmail.com>
+ <87k044xdbh.wl-tiwai@suse.de>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -97,14 +98,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 09 Nov 2022 17:09:09 +0100,
-Edson Juliano Drosdeck wrote:
+On Wed, 09 Nov 2022 18:11:46 +0100,
+Takashi Iwai wrote:
 > 
-> Positivo Master C6300 (1849:a233) require quirk for anabling headset-mic
+> On Wed, 09 Nov 2022 17:09:09 +0100,
+> Edson Juliano Drosdeck wrote:
+> > 
+> > Positivo Master C6300 (1849:a233) require quirk for anabling headset-mic
+> > 
+> > Signed-off-by: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
 > 
-> Signed-off-by: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
+> Thanks, applied now.
 
-Thanks, applied now.
+Erm, no, as you already wrote, it's incorrect, doesn't build.
+Dropped now.
 
 
 Takashi
