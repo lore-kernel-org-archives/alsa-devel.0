@@ -4,112 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72B65C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 17:26:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1F90C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  9 Nov 2022 17:26:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3DB71698;
-	Wed,  9 Nov 2022 18:25:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3DB71698
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC7C216CC;
+	Wed,  9 Nov 2022 18:25:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC7C216CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668014758;
-	bh=7Q14+BCto8tV2ZMBIypC33bgELhtNI5IFCFp2fEA2vc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=jul3PmUXkUy4RycyG/NJrrtBDHf36vi3VQbP+Ihg7CYmgJp1TC0HDMAfx3plQ2pnB
-	 VSUsQvSDUod10TFqbkNMntVZVIOd6bD4u34j/9ih61IQc/CZjJChgdAZ0XQWa02PBt
-	 kQ7AYSfl7RSaG+j2rBjT9rKh/rdVD6ALfGe5BE50=
+	s=default; t=1668014773;
+	bh=PW2qF4RuIf0U0a03XcDBEqLOhjbayrLb3qGwpve0zj0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=SBnTdeM6nnEQz6Y31FaEjGek/bIBfw4+tpjNi07n1OivaqA8Xsy+aB8qNiPJXXFDH
+	 rE+VfhcuEfOZ28+7+7jJF6InrAWQewDItERwwpr68ROffG6PfqjZSphmUExtn027ZT
+	 gczeeG0R/Y/PZHgSsmUo9+/OTSk9AK2R5RSRZv6Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CAD5FF8061F;
-	Wed,  9 Nov 2022 18:16:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 261BDF80623;
+	Wed,  9 Nov 2022 18:16:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 309DBF801D8; Tue,  8 Nov 2022 09:49:02 +0100 (CET)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam12on2051.outbound.protection.outlook.com [40.107.243.51])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 91B6EF80217; Wed,  9 Nov 2022 03:44:09 +0100 (CET)
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com
+ [IPv6:2a00:1450:4864:20::534])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B199F800EC
- for <alsa-devel@alsa-project.org>; Tue,  8 Nov 2022 09:48:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B199F800EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C96FF80121
+ for <alsa-devel@alsa-project.org>; Wed,  9 Nov 2022 03:44:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C96FF80121
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
- header.b="viSwTWvZ"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZNPcQjNjKDpQ6wnYTs7KXRswn2vS2R1r9Wr+QBkJsbXXc/XVJ53SgODh8jhurC0NDiTkiN+GRpY13e7zlyQSF4x2KUy9SkpJ8OAy6KiWLE4bcf08XlmzEAVwIJjLhtxspXzGIDOqSxj325t/B27RYrHfeVvPBBPi1stu/aFdQjYBF+mUgtZCpsZiNfeVbCyH71XNgS/hWm/O55aDUC1Hz9gig75Lwj8z1DvImbwHYf4ItQoANdt6JAQmH7s3+6FnId1LtmPPhDurpDDZTXD2lCCrZevtyTL6H8uumpmVnt8dOgi/wHr/V5f9BWBSkZDrS4qgHiTR251x5f8LtMQaLA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Iz5eH5HNjy0kglVuxEI5svNoEeZXGQWh8iWr8Rb5naE=;
- b=BMg8khsh1lfLeYRCxGqu4mlrRq6yPhhWU3IJcwsz+1pFVGR+sPFmpjAEj4i/Wz/TkCanDq8z6wSDeE3aHZD/nYBTSMrHZ5fhIVYvbVtNo8bft0+cHa7L6XfnirRVoB7u6T89+J4R0mzHZvuDFdfT9v+tDjykBSH4TRTurXFSv+8eEvbOItcTw7PqfEnUV8zNfzYC9Oe6cKAGCvTMtFM+r+mKgmphkIQJ16sXPj+iP4Jxql64g7OvlbfYE2Ru7BhlhlzwdMb0f6Uv94m3cuRRbytCaGY5UuoUaKXjy/rNttV+ZXvLJkX/sHUYltSjR8kj/vBSNvZKxS+j5+OKEOiBFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=alsa-project.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Iz5eH5HNjy0kglVuxEI5svNoEeZXGQWh8iWr8Rb5naE=;
- b=viSwTWvZLob2lKz3oqJAn/RwgNWZuEoA/zQdJUtscxOzco9sf5egnk+c0zgapQ6nFVIqPiV9dpKpux4fG1G/3svFaPMi3OpH5LTk1JVNOn88S5/TLYh9vKJApKkRHqnhE3Sh34/v38RPJlZB6yFu8KTxepUoe0cPPQn+8G6tQes=
-Received: from MW4PR04CA0275.namprd04.prod.outlook.com (2603:10b6:303:89::10)
- by SA1PR12MB6947.namprd12.prod.outlook.com (2603:10b6:806:24e::12)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.25; Tue, 8 Nov
- 2022 08:48:52 +0000
-Received: from CO1NAM11FT036.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:89:cafe::54) by MW4PR04CA0275.outlook.office365.com
- (2603:10b6:303:89::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5791.27 via Frontend
- Transport; Tue, 8 Nov 2022 08:48:51 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT036.mail.protection.outlook.com (10.13.174.124) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.5791.20 via Frontend Transport; Tue, 8 Nov 2022 08:48:50 +0000
-Received: from equan-buildpc.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 8 Nov
- 2022 02:48:48 -0600
-From: Evan Quan <evan.quan@amd.com>
-To: <alsa-devel@alsa-project.org>, <amd-gfx@lists.freedesktop.org>
-Subject: [PATCH] ALSA: hda/hdmi - enable runtime pm for more AMD display audio
-Date: Tue, 8 Nov 2022 16:47:46 +0800
-Message-ID: <20221108084746.583058-1-evan.quan@amd.com>
-X-Mailer: git-send-email 2.34.1
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="fm3R7eHw"
+Received: by mail-ed1-x534.google.com with SMTP id v17so25285064edc.8
+ for <alsa-devel@alsa-project.org>; Tue, 08 Nov 2022 18:44:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=ZSs9bG/LbFf1fIR0eapTeL6P50DjYrAFt1f1UPagmkc=;
+ b=fm3R7eHwEY7icgp5E36AR1x+G3iJ/B+gTC6qXXcb2VuX8T7PYbpIOMaEAEk+z5gP5C
+ C30KcgR4lm806IYQfNeeuFx0cfGof3DpzdH786/cCDzuWrdeUNc7jFOrL5vMwTo9Vbtm
+ dVxBVDI57pb7BVYvuH3eLaJ4JjrtQb9xL2MZ41TI7RBi2z65S87p9zWDePR0yCVz6VHw
+ JOVSi+JRNqY3PBDz9qa44qLlWzFaPdXGRa4GRcfXuEi5nSYmnCJ6Zyk7dG4zjutSYT5H
+ vN2MmXbmOeI+y4HkZpv6Bi0bN99D9Nar9mmN1KGg/88Sfc9R8fV6gzM/jPxbXATFIa/1
+ F+hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=ZSs9bG/LbFf1fIR0eapTeL6P50DjYrAFt1f1UPagmkc=;
+ b=SeRe8q+pv3RrehgguUE7zheRyTFhdczfi/2rPq1BruwkNg3LNqIiq+gEuCoRvGg+cs
+ 1Md1w7fONoJ+uvc0KmBANEstC/x4WIIGUwA8+rdOF3UEt50ZYpNroDZL2rHjZ1Cbx7zH
+ Uh2U7ZxSoLrpDJhIOrVq5B4o2TVg3grRw2Geul/aPPBTpgRzdJVD9rbeKPgR6bHbVguF
+ 1YstdBXkl5pvM8o+odvlEG4jFdBe46KZb7Jz9lC0ZLYIe0K6GDydtjNSMto5kZIkvOjd
+ WyP6170CUuTEc27pxgZ0TCVdu9TaXDPsAeKFQebMfpJQodt+i6GYAokqWXIBxwcONTqu
+ KO0Q==
+X-Gm-Message-State: ACrzQf0FO/5skDeW/AOQ2Z9wt8D0mB58E3EuH1KlU2QsntYJBLzkri3d
+ +9OHI0crqfWnIhm0Lm6MEDW/S/wfQaMWlqzzAKg=
+X-Google-Smtp-Source: AMsMyM4o96Fp/fgGe8bWp9qyaCLc1d6jcauj7urZdaiQjIItG7q8RJuK4x04Dncd47Xu2Mogx93A97DsfgYY/BWPass=
+X-Received: by 2002:a05:6402:3806:b0:450:bad8:8cd5 with SMTP id
+ es6-20020a056402380600b00450bad88cd5mr59725933edb.305.1667961844484; Tue, 08
+ Nov 2022 18:44:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT036:EE_|SA1PR12MB6947:EE_
-X-MS-Office365-Filtering-Correlation-Id: bf489694-d8f7-4ffc-72e0-08dac1660f05
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TnlNzBLb9nPlIYohbZLFELKXXcm8EKPz1miqSYrQXJgQIrEPFNC4Sxq5KFPCQrAnwOP7LaCRWJix3tVSaL0ZUutgs3La8v4miqyNu8cM4SxspbdNc22zY6j+JfFSEdmjmbeIEV+JWsOGs1j1EKcmHqmt8bmx3zDMgjxeCxt64x4+0GhMmgTU18cGCGxoptAlJp2gb5LCMTs5IfmLnMTxA0roao07OvOmTrMnIpL7oR1nfnSOwjqTqxV01tyqwQ1WKeAxBgfPKdMiByyBA39tWu+xGClJrjeXhICtzihx9/opioG9qG3XPM6Gem3fEvk+1leVJZcVxnzd/7wmWPGg7NfJU3Dgs3tmah2eQe47/H5RrLRL+QkdKV1OCchpcQnG0z+I1/MesnSGQaNydV0l8XDadgvrb2+edO+8IaYm9V07WTY9FyqF+xngpte9cihhorBF/5EugkKCJac7pXfxl/YE/Fzf3Id3t7q5WdUvakpu46v967qbvP6mAABxHBy2GpuIX3MtOnc7p6M2lzll/keSKw5uGHMdzQCjapvPHSw49Wov7kgO7hcvu+45shwDppakvunCx4YbhEdV9qoWNVcfrZXqQz5AN5tRfzx8kIj5ceVt+yDEv/tpHtYlehQLAt/f7GUVdI+fFEZy3y7EDba5GNa8m5YZmyEE0g3QfhcMkW24Lk+R37NHvhIZLxqSn4+ZPnTPLRsXAQ2Ne0WBWs1e3F1IC55Tu45h0haa8euN93tmvUIqTEWjjCPsKeATs1+WyMWiCIdsDTxOMlkZzcfZN6lzeTm8YNGpkxaczEenFbCT59J4osYucr8dKua2d2hcnqKJ/pUAjCMqI6Q0+A==
-X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:CAL; SFV:NSPM; H:SATLEXMB04.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
- SFS:(13230022)(4636009)(346002)(376002)(136003)(39860400002)(396003)(451199015)(36840700001)(46966006)(40470700004)(1076003)(16526019)(336012)(186003)(44832011)(7696005)(316002)(41300700001)(8936002)(2906002)(82310400005)(36756003)(478600001)(47076005)(26005)(86362001)(40480700001)(4744005)(2616005)(426003)(54906003)(5660300002)(36860700001)(70586007)(356005)(40460700003)(81166007)(8676002)(70206006)(4326008)(82740400003)(110136005)(36900700001)(2101003);
- DIR:OUT; SFP:1101; 
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2022 08:48:50.7624 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf489694-d8f7-4ffc-72e0-08dac1660f05
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
- Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT036.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6947
-X-Mailman-Approved-At: Wed, 09 Nov 2022 18:15:50 +0100
-Cc: alexander.deucher@amd.com, Evan Quan <evan.quan@amd.com>, tiwai@suse.com
+References: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
+ <20221018-clk-range-checks-fixes-v2-58-f6736dec138e@cerno.tech>
+In-Reply-To: <20221018-clk-range-checks-fixes-v2-58-f6736dec138e@cerno.tech>
+From: Chunyan Zhang <zhang.lyra@gmail.com>
+Date: Wed, 9 Nov 2022 10:43:26 +0800
+Message-ID: <CAAfSe-t96pttpdLjLYntof5JCNcVHg0fMckk6zC7YHRRceDw+A@mail.gmail.com>
+Subject: Re: [PATCH v2 58/65] clk: sprd: composite: Switch to determine_rate
+To: Maxime Ripard <maxime@cerno.tech>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Wed, 09 Nov 2022 18:15:49 +0100
+Cc: Ulf Hansson <ulf.hansson@linaro.org>,
+ Prashant Gaikwad <pgaikwad@nvidia.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Michael Turquette <mturquette@baylibre.com>, Sekhar Nori <nsekhar@ti.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ dri-devel@lists.freedesktop.org, Paul Cercueil <paul@crapouillou.net>,
+ Max Filippov <jcmvbkbc@gmail.com>, Thierry Reding <thierry.reding@gmail.com>,
+ linux-phy@lists.infradead.org, Fabio Estevam <festevam@gmail.com>,
+ linux-stm32@st-md-mailman.stormreply.com, Abel Vesa <abelvesa@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Samuel Holland <samuel@sholland.org>, David Airlie <airlied@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, linux-tegra@vger.kernel.org,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Chen-Yu Tsai <wens@csie.org>,
+ NXP Linux Team <linux-imx@nxp.com>, Orson Zhai <orsonzhai@gmail.com>,
+ linux-mips@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-rtc@vger.kernel.org,
+ linux-clk@vger.kernel.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Daniel Vetter <daniel@ffwll.ch>, alsa-devel@alsa-project.org,
+ Manivannan Sadhasivam <mani@kernel.org>, linux-kernel@vger.kernel.org,
+ Sascha Hauer <s.hauer@pengutronix.de>, linux-actions@lists.infradead.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ linux-arm-kernel@lists.infradead.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Alessandro Zummo <a.zummo@towertech.it>, linux-sunxi@lists.linux.dev,
+ Stephen Boyd <sboyd@kernel.org>, patches@opensource.cirrus.com,
+ Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>,
+ linux-renesas-soc@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ David Lechner <david@lechnology.com>, Shawn Guo <shawnguo@kernel.org>,
+ =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -125,29 +131,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We are able to power down the GPU and audio via the GPU driver
-so flag these asics as supporting runtime pm.
+On Fri, 4 Nov 2022 at 21:33, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> The Spreadtrum composite clocks implements a mux with a set_parent
+> hook, but doesn't provide a determine_rate implementation.
+>
+> This is a bit odd, since set_parent() is there to, as its name implies,
+> change the parent of a clock. However, the most likely candidate to
+> trigger that parent change is a call to clk_set_rate(), with
+> determine_rate() figuring out which parent is the best suited for a
+> given rate.
+>
+> The other trigger would be a call to clk_set_parent(), but it's far less
+> used, and it doesn't look like there's any obvious user for that clock.
+>
+> So, the set_parent hook is effectively unused, possibly because of an
+> oversight. However, it could also be an explicit decision by the
+> original author to avoid any reparenting but through an explicit call to
+> clk_set_parent().
+>
+> The driver does implement round_rate() though, which means that we can
+> change the rate of the clock, but we will never get to change the
+> parent.
+>
+> However, It's hard to tell whether it's been done on purpose or not.
+>
+> Since we'll start mandating a determine_rate() implementation, let's
+> convert the round_rate() implementation to a determine_rate(), which
+> will also make the current behavior explicit. And if it was an
+> oversight, the clock behaviour can be adjusted later on.
+>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-Signed-off-by: Evan Quan <evan.quan@amd.com>
-Change-Id: Ib7ea9bfe7b62b98afd63f96a2d98795504e7ae04
----
- sound/pci/hda/hda_intel.c | 3 +++
- 1 file changed, 3 insertions(+)
+Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 0a83eb6b88b1..e6a33e34efb9 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2712,6 +2712,9 @@ static const struct pci_device_id azx_ids[] = {
- 	{ PCI_DEVICE(0x1002, 0xab28),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
-+	{ PCI_DEVICE(0x1002, 0xab30),
-+	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
-+	  AZX_DCAPS_PM_RUNTIME },
- 	{ PCI_DEVICE(0x1002, 0xab38),
- 	  .driver_data = AZX_DRIVER_ATIHDMI_NS | AZX_DCAPS_PRESET_ATI_HDMI_NS |
- 	  AZX_DCAPS_PM_RUNTIME },
--- 
-2.34.1
+Thanks,
+Chunyan
 
+> ---
+>  drivers/clk/sprd/composite.c | 16 +++++++++++-----
+>  1 file changed, 11 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/clk/sprd/composite.c b/drivers/clk/sprd/composite.c
+> index ebb644820b1e..d3a852720c07 100644
+> --- a/drivers/clk/sprd/composite.c
+> +++ b/drivers/clk/sprd/composite.c
+> @@ -9,13 +9,19 @@
+>
+>  #include "composite.h"
+>
+> -static long sprd_comp_round_rate(struct clk_hw *hw, unsigned long rate,
+> -                               unsigned long *parent_rate)
+> +static int sprd_comp_determine_rate(struct clk_hw *hw,
+> +                                   struct clk_rate_request *req)
+>  {
+>         struct sprd_comp *cc = hw_to_sprd_comp(hw);
+> +       unsigned long rate;
+>
+> -       return sprd_div_helper_round_rate(&cc->common, &cc->div,
+> -                                        rate, parent_rate);
+> +       rate = sprd_div_helper_round_rate(&cc->common, &cc->div,
+> +                                         req->rate, &req->best_parent_rate);
+> +       if (rate < 0)
+> +               return rate;
+> +
+> +       req->rate = rate;
+> +       return 0;
+>  }
+>
+>  static unsigned long sprd_comp_recalc_rate(struct clk_hw *hw,
+> @@ -53,7 +59,7 @@ const struct clk_ops sprd_comp_ops = {
+>         .get_parent     = sprd_comp_get_parent,
+>         .set_parent     = sprd_comp_set_parent,
+>
+> -       .round_rate     = sprd_comp_round_rate,
+> +       .determine_rate = sprd_comp_determine_rate,
+>         .recalc_rate    = sprd_comp_recalc_rate,
+>         .set_rate       = sprd_comp_set_rate,
+>  };
+>
+> --
+> b4 0.11.0-dev-99e3a
