@@ -4,72 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2D70C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 17:53:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D918C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 17:56:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 01ABB164E;
-	Thu, 10 Nov 2022 18:52:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01ABB164E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3A54164E;
+	Thu, 10 Nov 2022 18:55:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3A54164E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668102821;
-	bh=ZcPykWIpk5s9e2vrwgKLdGAbKNXsc6ph7Iki+uGNScI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1668102983;
+	bh=EEoloO2utirGLLQf4HVfbZvQAidHPzJqkD9TODgJHwI=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=X7v3JgM9yxsGRgBRTrAn7tE6SB5GgL5yRzrOeM3YkT6T55nuhS8pa6CT+meS+Ji7O
-	 kA9hCeogrONBUCpIRAg1TFJ84pfKFE+//eIji5e/BsmBkzjcIYjCraLMbqSiXGQn9r
-	 rJr5zw8kYv7wIpZzX/8Urx6XsNGmGCOoSj0s6Lsc=
+	b=W8JO6F+4QS8FCsYUKJraCE3kTsfBBi58RKA+vgIXmRCxCasudELibS6U4odrgqdRS
+	 LWZJza1iy+Ar0DDKjyPyNBV0jQQCe4Uq0voy1rH2LwthGMFryCiRnRK831A4EfY3a2
+	 PcbrPLILydBpRLAQfgwbsmajKKPJUD9DPJGR2hWE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98067F80163;
-	Thu, 10 Nov 2022 18:52:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 892D5F802E8;
+	Thu, 10 Nov 2022 18:55:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7439F8021D; Thu, 10 Nov 2022 18:52:48 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id 4C45FF802E8; Thu, 10 Nov 2022 18:55:31 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E29D1F80162
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 18:52:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E29D1F80162
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3A98F80114
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 18:55:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3A98F80114
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="eX5VHpfK"
+ header.b="mGyuUfkp"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 7F7D1CE2365;
- Thu, 10 Nov 2022 17:52:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ADDEC433D7;
- Thu, 10 Nov 2022 17:52:34 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 5F4CE61DCA;
+ Thu, 10 Nov 2022 17:55:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D65DC433B5;
+ Thu, 10 Nov 2022 17:55:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1668102756;
- bh=ZcPykWIpk5s9e2vrwgKLdGAbKNXsc6ph7Iki+uGNScI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=eX5VHpfKEkecT9GuAts45R9ncQL9B5R5WATKgbSybrNpCdXfgDTBsI6bpwMa8qVhs
- sOrW2sVJnZQPbMWxs2YEbPQsLKOXBuRHTDneNJWvUH3pKErpwdTSGYQ2KPNzNZ03bK
- XF6dmFjPm+BqNs0jRRdxe9yKZOVKAuYP30s/yHmPYtcN0VJ9kIe9+4BmqCDjd6km12
- H6JAl+T9Led3/vmfvLwOETztJk2hBVE4BBl/zlA+dVEW6Ck1cc+s5ZCqa4OhoOM8g0
- 5j3RhlPwjWKgg3qIKY/eK3l4IY/c7ZHRS3ZOYxrnCH+DjUGhnRynLnb2PS+7r9OG2M
- 6GOLkufX7Ahuw==
-Date: Thu, 10 Nov 2022 17:52:31 +0000
+ s=k20201202; t=1668102925;
+ bh=EEoloO2utirGLLQf4HVfbZvQAidHPzJqkD9TODgJHwI=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=mGyuUfkpfVTOY3Waige6Mv77F2BBRYYtTgvfsTOi9TqYaG3Obi7DA6CyKbCUn9xPJ
+ Eky0sdGLlEWVsymxRhv7URqNDomAD/LLIEl0tPlTPj4PJrrZ4fNa5yqxDJxljqoZZG
+ AyjS8Kgo1gQCIqLkGK5hl4DBmT1P7hjvYci2hAWWI21Z1ZwANUgw3IeuwiYBnq4POs
+ Y/QmxkfbfZdFja7ax6/T/GYZpgK8OSsaz0at2IvBbpgGxhaGY2Kbc70I7w5biS1tUV
+ YhIUpxkQE2TGAKVgXJ0qLoEXhLlecsqbtcEe1CENR58X45uXC4VtoER/PnAtHIcDAK
+ U7Dn2D7ISDuFw==
 From: Mark Brown <broonie@kernel.org>
-To: "yang.yang29@zte.com.cn" <yang.yang29@zte.com.cn>
-Subject: Re: [PATCH v2] ASoC: SOF: remove duplicated included sof-audio.h
-Message-ID: <Y206Xxh6EzMtsjy5@sirena.org.uk>
-References: <202211092130548796460@zte.com.cn>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <875yfz8fuq.wl-kuninori.morimoto.gx@renesas.com>
+References: <875yfz8fuq.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 0/3] ASoC: simpe-card/audio-graph fixups
+Message-Id: <166810292475.959181.3430536250650328696.b4-ty@kernel.org>
+Date: Thu, 10 Nov 2022 17:55:24 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="OHRMaM+i9JxFzi/y"
-Content-Disposition: inline
-In-Reply-To: <202211092130548796460@zte.com.cn>
-X-Cookie: Dieters live life in the fasting lane.
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- lgirdwood@gmail.com, peter.ujfalusi@linux.intel.com,
- ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- xu.panda@zte.com.cn, yung-chuan.liao@linux.intel.com,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.10.0-dev-fc921
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,38 +80,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, 1 Nov 2022 04:21:18 +0000, Kuninori Morimoto wrote:
+> These are simpe-card/audio-graph fixup patches.
+> 
+> Kuninori Morimoto (3):
+>   ASoC: simple-card-utils: remove asoc_simple_convert_fixup()
+>   ASoC: audio-graph-card2-custom-sample.dtsi: add convert-rate for DPCM (MIXer)
+>   ASoC: audio-graph-card2: check also dpcm node for convert-xxx
+> 
+> [...]
 
---OHRMaM+i9JxFzi/y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Wed, Nov 09, 2022 at 09:30:54PM +0800, yang.yang29@zte.com.cn wrote:
-> From: Xu Panda <xu.panda@zte.com.cn>
->=20
-> The sof-audio.h is included more than once.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-This doesn't apply against current code, please check and resend:
+Thanks!
 
-Applying: ASoC: SOF: remove duplicated included sof-audio.h
-error: corrupt patch at line 21
-error: could not build fake ancestor
-Patch failed at 0005 ASoC: SOF: remove duplicated included sof-audio.h
+[1/3] ASoC: simple-card-utils: remove asoc_simple_convert_fixup()
+      commit: 5c065eaf445d14e70cbdb1da75e12567c7ae9b91
+[2/3] ASoC: audio-graph-card2-custom-sample.dtsi: add convert-rate for DPCM (MIXer)
+      commit: 2dc025aba7fbebd6c6f3a05bc3530af31776a6fa
+[3/3] ASoC: audio-graph-card2: check also dpcm node for convert-xxx
+      commit: 8f5979833b45b318d0971f384de3fb17924042f0
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
---OHRMaM+i9JxFzi/y
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNtOl4ACgkQJNaLcl1U
-h9ALFgf9FR0vOAT5WQ7DCtUvqLitOITfGWOYrwq7eWwF9PK4fpF1seAXZHZ+ffMK
-iQbp0DjxvkmVHhZE1KyCOnbbOQlcEcLKH0ogA1xLM78ZMa6kikhl+WtUU+D7wpOJ
-SRC/Ln6au0SLTrnQxCJpm/M+8fb2mRkVAS5EW1PWXORKJZUE1YlPcfHDE/KV1FT9
-tqvYnUJko3psg+uOl2EqIIQok7EB1x5IlgniiyaNz92w5dlJuo0gUBkYGRn1s+LT
-A/CikTl4u5IwmK9Ev7U8+Y8QV9EQKhXi9h3ooIPSNbYMmrJEFh5xBQVmRvr47+v9
-2/Vsd96qer2Wf8xYnsZsQs1DM53DvA==
-=aTqP
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---OHRMaM+i9JxFzi/y--
+Thanks,
+Mark
