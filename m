@@ -4,79 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72EC0C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 16:56:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2D70C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 17:53:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E43DA165E;
-	Thu, 10 Nov 2022 17:55:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E43DA165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 01ABB164E;
+	Thu, 10 Nov 2022 18:52:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01ABB164E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668099371;
-	bh=qGC1ASd6YLdkSOCo/KqD1UYwY3TeafFhoJvfxCxFnCM=;
+	s=default; t=1668102821;
+	bh=ZcPykWIpk5s9e2vrwgKLdGAbKNXsc6ph7Iki+uGNScI=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=egY6Om8bcvYKVkwvJONZdq3Ip3xiiJIFAKcm5KhUpF9CFQPkCx4L/1Rmk6mOuc33I
-	 gDnQ+FogckLQn0BOa14Js6xA/gfcQh6M/wctDyIpF8lhBvZgK7YHyyxCxkCtUtm5g6
-	 APoEruL+TPhyEE2NldjACcVSr49gMi0hvS25r0QQ=
+	b=X7v3JgM9yxsGRgBRTrAn7tE6SB5GgL5yRzrOeM3YkT6T55nuhS8pa6CT+meS+Ji7O
+	 kA9hCeogrONBUCpIRAg1TFJ84pfKFE+//eIji5e/BsmBkzjcIYjCraLMbqSiXGQn9r
+	 rJr5zw8kYv7wIpZzX/8Urx6XsNGmGCOoSj0s6Lsc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F0B2F80163;
-	Thu, 10 Nov 2022 17:55:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98067F80163;
+	Thu, 10 Nov 2022 18:52:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 968B1F80162; Thu, 10 Nov 2022 17:55:19 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id A7439F8021D; Thu, 10 Nov 2022 18:52:48 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF46DF80162
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 17:55:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF46DF80162
+ by alsa1.perex.cz (Postfix) with ESMTPS id E29D1F80162
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 18:52:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E29D1F80162
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dQfDlf5B"
+ header.b="eX5VHpfK"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 0FED361BDF;
- Thu, 10 Nov 2022 16:55:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D424AC433C1;
- Thu, 10 Nov 2022 16:55:09 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 7F7D1CE2365;
+ Thu, 10 Nov 2022 17:52:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ADDEC433D7;
+ Thu, 10 Nov 2022 17:52:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1668099312;
- bh=qGC1ASd6YLdkSOCo/KqD1UYwY3TeafFhoJvfxCxFnCM=;
+ s=k20201202; t=1668102756;
+ bh=ZcPykWIpk5s9e2vrwgKLdGAbKNXsc6ph7Iki+uGNScI=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=dQfDlf5BK4dJHrVFk7IehyY8tj2sKalFuTIQ8MsSJm8HyNTdGinzsLiF+ZNP2OafM
- Bcit/JIOEkqOIWCdSyRlXpJylL/LDBbIv9cBuokUY+24W+uKmh1w2upF3C9i3waZ8L
- 3nFD3Wl6lWqALhoqL8XXbwqEb45+WrkCOxxUUII/Cuwe4luzs2ynwwMD2dL6a6zemQ
- wTKxrwwHnQABWCeRHtBKDECDTmandtAh16d3/l4uditCnXFRu4wvitEIS1/CN1/Qa7
- cw0pvWYlau2dq+CUvxgtQsj356diXO0Vn46GN8P6qUGxXm2h2S4hxSjYiOr+cfzKMh
- o9tXfEdLYOGyA==
-Date: Thu, 10 Nov 2022 16:55:05 +0000
+ b=eX5VHpfKEkecT9GuAts45R9ncQL9B5R5WATKgbSybrNpCdXfgDTBsI6bpwMa8qVhs
+ sOrW2sVJnZQPbMWxs2YEbPQsLKOXBuRHTDneNJWvUH3pKErpwdTSGYQ2KPNzNZ03bK
+ XF6dmFjPm+BqNs0jRRdxe9yKZOVKAuYP30s/yHmPYtcN0VJ9kIe9+4BmqCDjd6km12
+ H6JAl+T9Led3/vmfvLwOETztJk2hBVE4BBl/zlA+dVEW6Ck1cc+s5ZCqa4OhoOM8g0
+ 5j3RhlPwjWKgg3qIKY/eK3l4IY/c7ZHRS3ZOYxrnCH+DjUGhnRynLnb2PS+7r9OG2M
+ 6GOLkufX7Ahuw==
+Date: Thu, 10 Nov 2022 17:52:31 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: Re: [PATCH 09/12] irqchip: cirrus: Add driver for Cirrus Logic
- CS48L31/32/33 codecs
-Message-ID: <Y20s6UCsYyB+/nfK@sirena.org.uk>
-References: <20221109165331.29332-1-rf@opensource.cirrus.com>
- <20221109165331.29332-10-rf@opensource.cirrus.com>
- <87mt8zutib.wl-maz@kernel.org>
- <c0c05799-6424-7edf-01b3-e28a10907b2c@opensource.cirrus.com>
- <86pmdvow5y.wl-maz@kernel.org>
- <ef60cbdb-f506-7bd6-a8e1-c92b6963a0f4@opensource.cirrus.com>
- <86k042q1uc.wl-maz@kernel.org>
- <05ae0e20-b472-f812-1afc-ef8c2a97cdeb@opensource.cirrus.com>
+To: "yang.yang29@zte.com.cn" <yang.yang29@zte.com.cn>
+Subject: Re: [PATCH v2] ASoC: SOF: remove duplicated included sof-audio.h
+Message-ID: <Y206Xxh6EzMtsjy5@sirena.org.uk>
+References: <202211092130548796460@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="IpzSAZ/C+hH7f6Oc"
+ protocol="application/pgp-signature"; boundary="OHRMaM+i9JxFzi/y"
 Content-Disposition: inline
-In-Reply-To: <05ae0e20-b472-f812-1afc-ef8c2a97cdeb@opensource.cirrus.com>
-X-Cookie: Torque is cheap.
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Marc Zyngier <maz@kernel.org>, linus.walleij@linaro.org, lee@kernel.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, patches@opensource.cirrus.com,
- tglx@linutronix.de
+In-Reply-To: <202211092130548796460@zte.com.cn>
+X-Cookie: Dieters live life in the fasting lane.
+Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
+ lgirdwood@gmail.com, peter.ujfalusi@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ xu.panda@zte.com.cn, yung-chuan.liao@linux.intel.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,63 +86,37 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---IpzSAZ/C+hH7f6Oc
+--OHRMaM+i9JxFzi/y
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 10, 2022 at 04:31:06PM +0000, Richard Fitzgerald wrote:
-> On 10/11/2022 15:13, Marc Zyngier wrote:
+On Wed, Nov 09, 2022 at 09:30:54PM +0800, yang.yang29@zte.com.cn wrote:
+> From: Xu Panda <xu.panda@zte.com.cn>
+>=20
+> The sof-audio.h is included more than once.
 
-> > > If we put them in the MFD with DT definitions it would make a
-> > > circular dependency between MFD and its child, which is not a great
-> > > situation. If it's these handlers that are bothering you, we could move
-> > > them to the audio driver.
+This doesn't apply against current code, please check and resend:
 
-> > And what's left? Nothing.
+Applying: ASoC: SOF: remove duplicated included sof-audio.h
+error: corrupt patch at line 21
+error: could not build fake ancestor
+Patch failed at 0005 ASoC: SOF: remove duplicated included sof-audio.h
 
-> Ah, I see. You've missed that the bulk of the implementation re-uses
-> existing library code from regmap. It does say this in the commit
-> message.
 
->   "the generic regmap_irq functionality is used to do most of the work."
-
-> and I've also said this in previous replies.
-
-The thread prompted me to have a look at regmap-irq earlier today and
-see what it's still doing that peers into the regmap core internals and
-it seems it's just getting the register stride which has had an external
-API added already and getting the device for the regmap.  It should be
-straightforward to repaint it and move it into the irqchip subsystem
-which would be a much more sensible home for a library for implementing
-irqchips in this day and age.  I started looking at the code changes for
-that a bit.
-
-> This is no way driver that does nothing. There's over 1000 lines of code
-> handling the PIC and dispatching its interrupts to other drivers that
-> want to bind to them. It's just that it makes no sense to duplicate 1300
-> lines of interrupt handling code from elsewhere when we can re-use that
-> by calling regmap_add_irq_chip(). That gives us all the interrupt-
-> controller-handling code in drivers/base/regmap/regmap-irq.c
-
-TBF that's 1000 lines of overly generic code, a bunch of it is
-conditional stuff and it's unlikely that any individual driver would
-want all of it.  Equally it does mean that all the users are just
-providing data rather than writing any code which generally makes things
-easier to maintain and was the main goal.
-
---IpzSAZ/C+hH7f6Oc
+--OHRMaM+i9JxFzi/y
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNtLOkACgkQJNaLcl1U
-h9Czzgf+MDPNrKaCh6tGeXTVbFjlxx2mex0I6klShYbJTgtJXdJl+8Yqy82h0XI8
-TZOB30riAERaTu61UvhbFFKADZfg6KSSLqRY9F0aloY7KWA+Lo6tCPZ4VrDCKxvs
-yAk5rWlbfN2QUS0Sd0+1N8E/8IQql3OPCUx4/2OXN1h0hnppTwkFsY5Zbres+PJO
-Aw/PhihEP74ddp7mp6W85hTn6+rol8pluzJJCTVBC70myEG2hppTcMKzN0r9cNqR
-z2/+nz3aIO0BE65HI7/yB+fNegixinMAiZRGoiYfHj4ubdrYnbw5O1WBWAVG7gSq
-DZoqpARh4bX8hFAkkjbUsBh9pQP9gA==
-=zQ3R
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNtOl4ACgkQJNaLcl1U
+h9ALFgf9FR0vOAT5WQ7DCtUvqLitOITfGWOYrwq7eWwF9PK4fpF1seAXZHZ+ffMK
+iQbp0DjxvkmVHhZE1KyCOnbbOQlcEcLKH0ogA1xLM78ZMa6kikhl+WtUU+D7wpOJ
+SRC/Ln6au0SLTrnQxCJpm/M+8fb2mRkVAS5EW1PWXORKJZUE1YlPcfHDE/KV1FT9
+tqvYnUJko3psg+uOl2EqIIQok7EB1x5IlgniiyaNz92w5dlJuo0gUBkYGRn1s+LT
+A/CikTl4u5IwmK9Ev7U8+Y8QV9EQKhXi9h3ooIPSNbYMmrJEFh5xBQVmRvr47+v9
+2/Vsd96qer2Wf8xYnsZsQs1DM53DvA==
+=aTqP
 -----END PGP SIGNATURE-----
 
---IpzSAZ/C+hH7f6Oc--
+--OHRMaM+i9JxFzi/y--
