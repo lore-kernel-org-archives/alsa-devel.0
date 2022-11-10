@@ -4,72 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A99D4C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 17:56:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93101C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 17:57:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F04B167B;
-	Thu, 10 Nov 2022 18:55:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F04B167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9AC6F1664;
+	Thu, 10 Nov 2022 18:56:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AC6F1664
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668103006;
-	bh=FxlrOm3k1oryHGS8jTyN1bWoydexZZtx5/ml5Tk8Jt8=;
+	s=default; t=1668103033;
+	bh=uV0gS8Zym8itzBA6jauOP1PQV82pLKsM1MencwuTk4s=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rtBdCh6mTI11X+y0gXB0kACHEJdHzL6pF5bGSr+ITnNv9P8L/5T71DAkMhKE65TYe
-	 dxeBYDvcu6QuD1RUHQixEHr5QQ1xa9Vhz3lAvNyR957snCNFO+e+qaDYxJylxcoIQD
-	 8iKbAlSaDloSX0Yrw6ryWC3p2ULa22iB+kit6lFs=
+	b=Bga7ANw3EY+FETAZIL00FY/nV26vUQCdgTZ1Xi04TgCs0WzRSg1ArAslQy+2z5KXt
+	 j7tU/PA+k4CN2PRo/UOJoW/Zf6vqiGgvfKrBNsI5mVMVaxJzvYu/gwAe1n78IwaySd
+	 vj4NXbQUN87OMiy6dolkJ29k+E5fZ9L7oCXMEjCc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32406F804FF;
+	by alsa1.perex.cz (Postfix) with ESMTP id D3E24F80548;
 	Thu, 10 Nov 2022 18:55:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0517CF80163; Thu, 10 Nov 2022 18:55:30 +0100 (CET)
+ id 54ED6F80163; Thu, 10 Nov 2022 18:55:35 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8560F80162
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 18:55:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8560F80162
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7EA1F80114
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 18:55:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7EA1F80114
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TtjHb72t"
+ header.b="Z7DtR/W6"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id E7CE6B82237;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 54F76B822A4;
+ Thu, 10 Nov 2022 17:55:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FD9BC43470;
  Thu, 10 Nov 2022 17:55:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D35F9C433C1;
- Thu, 10 Nov 2022 17:55:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1668102924;
- bh=FxlrOm3k1oryHGS8jTyN1bWoydexZZtx5/ml5Tk8Jt8=;
+ s=k20201202; t=1668102929;
+ bh=uV0gS8Zym8itzBA6jauOP1PQV82pLKsM1MencwuTk4s=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=TtjHb72tvvGFPq90H3q0waSH9dvEw77XAIcmCKcnUj2jDkVPE84Qx9MFwtKJX3NEN
- oxqrVCkZypwpJkByeVJuf+rqAazMZAEZ6umg3VEsNoqgMVjG9DdbVCCtxaXhVld4cC
- +iXWH9VdIGoxHLdmhAXL5bkaQkMjeCx9BUBZlmimLNoE/Nuo73s26eWa7If3JNo+Lz
- DO6uYHJKYObRMbhZn46MW3lHeFG3pVOvjbVO/EcthTPr7G9VFWFLyrPOsFdUUwL83o
- +aqh5dVe24kwobybD5ZXp58tPB5aj6aVKhMpDIYW0LKV6DgVgm0cUq3AK7IJNSe4Ut
- e4ujx305fK3PA==
+ b=Z7DtR/W642sNyhHLYsGF9t6PWbPia5GkKB4yquzhZFYAvCBEnTcYcisLNDHz9Bm63
+ OTf+hyTDdcTBydtqHGAogg+cRonEAQGpoD4mTzw6wCOXzR0yjB/6ZKcMpZXi42Mbyn
+ rANmyW37gYKhH6RrxflwttID57nm9PwgFtphiXGERDsfT8sxydKAd5r+vP7TTHIy7C
+ Qzo4XmmpN0Ad/ebklnZr0Gng49ivNjEmDGJ0CXENDqgHpgYmnJ8v99neDo7/nihMGZ
+ Soglp8CY1c9ue1w5rdnoosLUs8pL8D++mN2+t8w6PxPD6BzKdOu00cUf0KbyFwR+kn
+ J45ZAFyZv45vA==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <20221031160227.2352630-1-cezary.rojewski@intel.com>
-References: <20221031160227.2352630-1-cezary.rojewski@intel.com>
-Subject: Re: [PATCH 0/7] ASoC: codecs: da7219: Do not export
- da7219_aad_jack_det()
-Message-Id: <166810292154.959181.16010183842881956888.b4-ty@kernel.org>
-Date: Thu, 10 Nov 2022 17:55:21 +0000
+To: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+In-Reply-To: <20221104212409.603970-1-nfraprado@collabora.com>
+References: <20221104212409.603970-1-nfraprado@collabora.com>
+Subject: Re: [PATCH 1/2] ASoC: mediatek: mt8183-da7219: Register to module
+ device table
+Message-Id: <166810292583.959181.9972965736235328683.b4-ty@kernel.org>
+Date: Thu, 10 Nov 2022 17:55:25 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: pierre-louis.bossart@linux.intel.com, heiko@sntech.de,
- AjitKumar.Pandey@amd.com, linux-rockchip@lists.infradead.org,
- Vijendar.Mukunda@amd.com, lgirdwood@gmail.com, jiaxin.yu@mediatek.com,
- tiwai@suse.com, hdegoede@redhat.com, trevor.wu@mediatek.com,
- amadeuszx.slawinski@linux.intel.com, Syed.SabaKareem@amd.com
+Cc: alsa-devel@alsa-project.org, Akihiko Odaki <akihiko.odaki@gmail.com>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Miaoqian Lin <linmq006@gmail.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-mediatek@lists.infradead.org,
+ Tzung-Bi Shih <tzungbi@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ kernel@collabora.com, linux-arm-kernel@lists.infradead.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,17 +87,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 31 Oct 2022 17:02:20 +0100, Cezary Rojewski wrote:
-> Goal of the series is to drop any usage of the internal function.
+On Fri, 4 Nov 2022 17:24:07 -0400, Nícolas F. R. A. Prado wrote:
+> Register the compatibles for this module on the module device table so
+> it can be automatically loaded when a matching device is found on the
+> system.
 > 
-> First, update all users to utilize component->set_jack() and then remove
-> the relevant EXPORT_SYMBOL_GPL.
 > 
-> Amadeusz Sławiński (2):
->   ASoC: codecs: da7219: Introduce set_jack() callback
->   ASoC: codecs: da7219: Do not export internal symbols
-> 
-> [...]
 
 Applied to
 
@@ -103,20 +100,10 @@ Applied to
 
 Thanks!
 
-[1/7] ASoC: codecs: da7219: Introduce set_jack() callback
-      commit: 4366b7ca88f04237ae654846167db993dbe37397
-[2/7] ASoC: Intel: Drop da7219_aad_jack_det() usage
-      commit: 9a1fe79daddbdc57307bd7dd9a29ef06aa7b5f34
-[3/7] ASoC: mediatek: Drop da7219_aad_jack_det() usage
-      commit: 922a5e5a6389da46b51075301440d07e53c600ea
-[4/7] ASoC: rockchip: Drop da7219_aad_jack_det() usage
-      commit: ebe62df7c50e63d11c7fdfbdff701583cd4f1f3a
-[5/7] ASoC: amd: Drop da7219_aad_jack_det() usage
-      commit: ba54da32ec683692ed69ffbed5b4afb414def7d2
-[6/7] ASoC: Intel: avs: Drop da7219_aad_jack_det() usage
-      commit: 7af1ca5bb5e3c2e472a040f8b52382ccc57bb01a
-[7/7] ASoC: codecs: da7219: Do not export internal symbols
-      commit: c05dff38d21556c532032f63330271b96265d448
+[1/2] ASoC: mediatek: mt8183-da7219: Register to module device table
+      commit: b5e004b0e5b57d14ac7804875878cdfdb31c9288
+[2/2] ASoC: mediatek: mt8183-mt6358: Register to module device table
+      commit: bc63a806acdcfca201c68c820731d74185118789
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
