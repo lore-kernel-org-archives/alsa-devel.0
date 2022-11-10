@@ -4,71 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F771C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 06:53:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 522BAC433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 08:04:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D60615CA;
-	Thu, 10 Nov 2022 07:52:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D60615CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 84E501636;
+	Thu, 10 Nov 2022 09:03:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84E501636
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668063225;
-	bh=c/DQyuJrqj3A3rcH2mu7EKu6GdPoG+wZ+dPrb8sqJoU=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=XiyMU1hHuNYq5dKd3m9H9seHhDxL/d1eiuoKTVsxhZP0SZg3dDCuIOA58mXtolDT8
-	 kyLIz8g/VIqETUEb9RWOAhOsB/Pd3nDtD1G+9XYbz5Fg6dAMacfDMJ4Lmu9cpaH5Hj
-	 lu1XyiSF17CIq7khqFX/7KVR+2D5zp/sK5klFm8E=
+	s=default; t=1668067446;
+	bh=Jua4jh6tFhZdia1JqkS7s7YEZmi91PDwi5O5yBKgJ20=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=u40FoXg0DVVauKYESMQhCoOinJLeOv4dKN901ibFq/JHGuNU7t5euQcelAy25Y2Pl
+	 yC9w7elqiCdiiu4IdhNtj9CcajcRTRg2/3wCtx9zM4p/dpBkHSaXl4FC6WPagf6nIs
+	 YJ7m/N1n+g1rSuttTzpWyFRjKu3rID97E67ftwhc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15280F80162;
-	Thu, 10 Nov 2022 07:52:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23EDCF80163;
+	Thu, 10 Nov 2022 09:03:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7DEF5F80217; Thu, 10 Nov 2022 00:49:43 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id 388D9F8021D; Thu, 10 Nov 2022 09:03:14 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 36CDEF80162
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 09:03:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36CDEF80162
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="PcNBx1ii"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9046BF80121
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 00:49:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9046BF80121
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="nQLY707j"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1668037777; x=1699573777;
- h=from:to:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=c/DQyuJrqj3A3rcH2mu7EKu6GdPoG+wZ+dPrb8sqJoU=;
- b=nQLY707jYOmeHySXiAzHeYLxKBMqnFbRAzTl5XDaGR9kO6rBurq39Z53
- 0y84E38k3wbYmmYzSJlHy5tMaKf+yRoAq0A5FYcHLMOR8/DgdhAcwtoEW
- vrC/AeOpPp4cV26Nk6TmWO9JbkmGFYVpxGZWd7+pox0e1uHhIlJS5HxUE
- tzUx2Yfo1Mfk/M9I9UFz2tlO+XIdmrSrQIfOh1AcUayqeuVWTP5whwOxT
- H0yr6nZHia61tHprwu1XQneZQVhxafgeBlVslzz4ezSn1KULRQH7q4Uqv
- y+2smPwP4yVmJdE0N+jGISiSjS682dTrVn/MK3G9y0+m6mnZJ0aD8D5YZ g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="309869208"
-X-IronPort-AV: E=Sophos;i="5.96,152,1665471600"; d="scan'208";a="309869208"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Nov 2022 15:49:21 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10526"; a="700568161"
-X-IronPort-AV: E=Sophos;i="5.96,152,1665471600"; d="scan'208";a="700568161"
-Received: from junxiaochang.bj.intel.com ([10.238.135.52])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Nov 2022 15:49:18 -0800
-From: Junxiao Chang <junxiao.chang@intel.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
- furong.zhou@intel.com, cezary.rojewski@intel.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- junxiao.chang@intel.com
-Subject: [PATCH] ASoC: hdac_hda: fix hda pcm buffer overflow issue
-Date: Thu, 10 Nov 2022 07:40:23 +0800
-Message-Id: <20221109234023.3111035-1-junxiao.chang@intel.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Thu, 10 Nov 2022 07:52:54 +0100
+ by dfw.source.kernel.org (Postfix) with ESMTPS id ABA0061DAF;
+ Thu, 10 Nov 2022 08:03:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13ED8C433C1;
+ Thu, 10 Nov 2022 08:03:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1668067384;
+ bh=Jua4jh6tFhZdia1JqkS7s7YEZmi91PDwi5O5yBKgJ20=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=PcNBx1iieOT0mYIDTRcYzfbIBkS6ty2SVjnNFgEzRzznWBg8ym5JVGFvnGaFMP5AA
+ lDDcZeM5czZCx2pl+Qqqa+rjoexheHVFAMjvSlI3rJSxlXy/gjQmi4Hz6UoZ0SBaW+
+ OkqivncGRB7ndysRBFPgkELWCUq9NF+l2PUrI/7o0JbcL8GfLfepD7RacaV1MNCpS+
+ c+UDDatHnMeWRLa8joFikH5weLbulL7iovNDjtzqzogzlmugwuxbfmBwEK1aCaN1AL
+ YlFcjYjN+MfEoijC1AJTmJaz+qTySIB6ks4LPToG8JooPIYP+TSv83vfVqLOFidpC9
+ ZjUWjTmGrnk+Q==
+Received: from ip-185-104-136-29.ptr.icomera.net ([185.104.136.29]
+ helo=wait-a-minute.misterjones.org)
+ by disco-boy.misterjones.org with esmtpsa (TLS1.3) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.95)
+ (envelope-from <maz@kernel.org>) id 1ot2Wb-00568A-Ig;
+ Thu, 10 Nov 2022 08:03:01 +0000
+Date: Thu, 10 Nov 2022 08:02:36 +0000
+Message-ID: <87mt8zutib.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [PATCH 09/12] irqchip: cirrus: Add driver for Cirrus Logic
+ CS48L31/32/33 codecs
+In-Reply-To: <20221109165331.29332-10-rf@opensource.cirrus.com>
+References: <20221109165331.29332-1-rf@opensource.cirrus.com>
+ <20221109165331.29332-10-rf@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.104.136.29
+X-SA-Exim-Rcpt-To: rf@opensource.cirrus.com, lee@kernel.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, linus.walleij@linaro.org,
+ broonie@kernel.org, tglx@linutronix.de, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org);
+ SAEximRunCond expanded to false
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ patches@opensource.cirrus.com, linus.walleij@linaro.org, lee@kernel.org,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org, linux-gpio@vger.kernel.org,
+ broonie@kernel.org, krzysztof.kozlowski+dt@linaro.org, tglx@linutronix.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,57 +100,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When KASAN is enabled, below log might be dumped with Intel EHL hardware:
-[   48.583597] ==================================================================
-[   48.585921] BUG: KASAN: slab-out-of-bounds in hdac_hda_dai_hw_params+0x20a/0x22b [snd_soc_hdac_hda]
-[   48.587995] Write of size 4 at addr ffff888103489708 by task pulseaudio/759
+On Wed, 09 Nov 2022 16:53:28 +0000,
+Richard Fitzgerald <rf@opensource.cirrus.com> wrote:
+> 
+> The Cirrus Logic CS48L31/32/33 audio codecs contain a programmable
+> interrupt controller with a variety of interrupt sources, including
+> GPIOs that can be used as interrupt inputs.
+> 
+> This driver provides the handling for the interrupt controller. As the
+> codec is accessed via regmap, the generic regmap_irq functionality
+> is used to do most of the work.
+>
 
-[   48.589237] CPU: 2 PID: 759 Comm: pulseaudio Tainted: G     U      E     5.15.71-intel-ese-standard-lts #9
-[   48.591272] Hardware name: Intel Corporation Elkhart Lake Embedded Platform/ElkhartLake LPDDR4x T3 CRB, BIOS EHLSFWI1.R00.4251.A01.2206130432 06/13/2022
-[   48.593010] Call Trace:
-[   48.593648]  <TASK>
-[   48.593852]  dump_stack_lvl+0x34/0x48
-[   48.594404]  print_address_description.constprop.0+0x1f/0x140
-[   48.595174]  ? hdac_hda_dai_hw_params+0x20a/0x22b [snd_soc_hdac_hda]
-[   48.595868]  ? hdac_hda_dai_hw_params+0x20a/0x22b [snd_soc_hdac_hda]
-[   48.596519]  kasan_report.cold+0x7f/0x11b
-[   48.597003]  ? hdac_hda_dai_hw_params+0x20a/0x22b [snd_soc_hdac_hda]
-[   48.597885]  hdac_hda_dai_hw_params+0x20a/0x22b [snd_soc_hdac_hda]
+I cannot spot a shred of interrupt controller code in there. This
+belongs IMO to the MFD code. It is also a direct copy of the existing
+irq-madera.c code, duplicated for no obvious reason.
 
-HDAC_LAST_DAI_ID is last index id, pcm buffer array size should
-be +1 to avoid out of bound access.
+	M.
 
-Fixes: 608b8c36c371 ("ASoC: hdac_hda: add support for HDMI/DP as a HDA codec")
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Junxiao Chang <junxiao.chang@intel.com>
-Signed-off-by: Furong Zhou <furong.zhou@intel.com>
----
- sound/soc/codecs/hdac_hda.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/hdac_hda.h b/sound/soc/codecs/hdac_hda.h
-index fc19c34ca00e5..b65560981abb2 100644
---- a/sound/soc/codecs/hdac_hda.h
-+++ b/sound/soc/codecs/hdac_hda.h
-@@ -14,7 +14,7 @@ enum {
- 	HDAC_HDMI_1_DAI_ID,
- 	HDAC_HDMI_2_DAI_ID,
- 	HDAC_HDMI_3_DAI_ID,
--	HDAC_LAST_DAI_ID = HDAC_HDMI_3_DAI_ID,
-+	HDAC_DAI_ID_NUM
- };
- 
- struct hdac_hda_pcm {
-@@ -24,7 +24,7 @@ struct hdac_hda_pcm {
- 
- struct hdac_hda_priv {
- 	struct hda_codec *codec;
--	struct hdac_hda_pcm pcm[HDAC_LAST_DAI_ID];
-+	struct hdac_hda_pcm pcm[HDAC_DAI_ID_NUM];
- 	bool need_display_power;
- };
- 
 -- 
-2.25.1
-
+Without deviation from the norm, progress is not possible.
