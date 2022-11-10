@@ -4,94 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58BAFC433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 18:48:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 204F4C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 19:05:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B27D162F;
-	Thu, 10 Nov 2022 19:48:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B27D162F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CC6F1651;
+	Thu, 10 Nov 2022 20:04:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CC6F1651
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668106130;
-	bh=Eb8pRz09JxZ+CgnpKwL02Ekng+XHb16ZA97L7PgePj0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1668107125;
+	bh=Fdos3yrig/YXWCfSadWY8NvihYdcZRISicY+GY0Ipcw=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LC7nMflYMzYXYKudStkAnXJuC15LdBbezCM6PWKlcO6vQGAgQ1AZ48CrLIZo2yivJ
-	 3KvqbhI22/+OkUxyXeffNJlcze07UmHTxGGIHfTWbB4fde6HT7lbhnXNDPo/BkjU0E
-	 lcnMbiu4Odhx5Pkq9Z0HpVMlQFyR/0PyoWZdALWY=
+	b=sMTPfT3oblINxVEOu8WnoneOoIYfxTcZJ3Tq/4FYcUHgO/bo/aIvPIc/EhsgmDgHA
+	 80pSHIJgr8FZJIZfoX6A5BZn4nPgnQDGJVCo9pt0DFeqiaXHUb77g53HWr9PUb2Ra0
+	 9NiRZAcm7gZyH9os/IBvebB3dqM7eiw8iE7kKBr8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1C69CF80163;
-	Thu, 10 Nov 2022 19:48:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24EB1F80114;
+	Thu, 10 Nov 2022 20:04:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 71BF1F8021D; Thu, 10 Nov 2022 19:47:58 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 6E228F802E8; Thu, 10 Nov 2022 20:04:33 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42C77F80114
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 19:47:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42C77F80114
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5A7EF80114
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 20:04:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5A7EF80114
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rZrKGXf6"
+ header.b="NXVr4lye"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 578AF61E07;
- Thu, 10 Nov 2022 18:47:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E04DC433C1;
- Thu, 10 Nov 2022 18:47:49 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 2C96C61E0D;
+ Thu, 10 Nov 2022 19:04:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6071C433D7;
+ Thu, 10 Nov 2022 19:04:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1668106069;
- bh=Eb8pRz09JxZ+CgnpKwL02Ekng+XHb16ZA97L7PgePj0=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=rZrKGXf6VQAFdx7pZgdPTpJ7nfnCp6H/aZpbRWLpLqt5XKRMq+2KhxK2jHcyhwKZh
- cX3rlSHWgKYfJLst6ABHXZdnIrIbDEVdUTA42yMXskWLlw0IOGPYcDOevnJzyP0bKI
- f2mdMin+Pcf8JlrbhMJDvc7wWS0tEB5mE8cv7KWTfgBXEen1SyEgx4pI20nenZddTr
- 2BeSAQoZ/60di9DXhB92s2Im1ezzWIUjXSQolYUJP+YwC7pkSWlWafQ6vIQENbqRLk
- llStIQswB7/fR6NtkKfnerHcV8t6uhRRCagQEqxMBOJYZIQ6dR+S9HP90eU6QtbWAv
- D14jR138div4w==
-Received: from ip-185-104-136-29.ptr.icomera.net ([185.104.136.29]
- helo=wait-a-minute.misterjones.org)
- by disco-boy.misterjones.org with esmtpsa (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.95)
- (envelope-from <maz@kernel.org>) id 1otCaY-005EAY-OI;
- Thu, 10 Nov 2022 18:47:46 +0000
-Date: Thu, 10 Nov 2022 18:47:20 +0000
-Message-ID: <87iljmve87.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: Re: [PATCH 09/12] irqchip: cirrus: Add driver for Cirrus Logic
- CS48L31/32/33 codecs
-In-Reply-To: <05ae0e20-b472-f812-1afc-ef8c2a97cdeb@opensource.cirrus.com>
-References: <20221109165331.29332-1-rf@opensource.cirrus.com>
- <20221109165331.29332-10-rf@opensource.cirrus.com>
- <87mt8zutib.wl-maz@kernel.org>
- <c0c05799-6424-7edf-01b3-e28a10907b2c@opensource.cirrus.com>
- <86pmdvow5y.wl-maz@kernel.org>
- <ef60cbdb-f506-7bd6-a8e1-c92b6963a0f4@opensource.cirrus.com>
- <86k042q1uc.wl-maz@kernel.org>
- <05ae0e20-b472-f812-1afc-ef8c2a97cdeb@opensource.cirrus.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.104.136.29
-X-SA-Exim-Rcpt-To: rf@opensource.cirrus.com, lee@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, linus.walleij@linaro.org,
- broonie@kernel.org, tglx@linutronix.de, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org);
- SAEximRunCond expanded to false
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, linus.walleij@linaro.org, lee@kernel.org,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org, linux-gpio@vger.kernel.org,
- broonie@kernel.org, krzysztof.kozlowski+dt@linaro.org, tglx@linutronix.de
+ s=k20201202; t=1668107063;
+ bh=Fdos3yrig/YXWCfSadWY8NvihYdcZRISicY+GY0Ipcw=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=NXVr4lyeQVWvqb4XDgmn7Jfa5mZK9g9CwSwIyT45X1m4FvlPd4ROb+00w98eeXCfF
+ tuoMDsc51DSxTIfPX7KkEZ5HPudWT5mmkVet+C07b8eYl21GAyqGWDbgrN3bO1fHrv
+ AWk40g/Z6iEL7GggYIa3XzOQy8rYvJh5Df3lJGJRBoRrhhbw/FFyn+l80bD6q/Nx2q
+ vmVkiPDgvn3kErJzBkkD1krpiiR9AWpGJ1+esWrksNbRKeAJvT/e+xTssYavxEiLoQ
+ HWTvs0GyQSCywidOPwtNxklgIzEA7F7B0tUn9buV3cisDVslGfMjf0J4LB+UN2vSuY
+ SzYEnel8JVP1g==
+From: Mark Brown <broonie@kernel.org>
+To: pierre-louis.bossart@linux.intel.com,
+ Junxiao Chang <junxiao.chang@intel.com>, alsa-devel@alsa-project.org, 
+ perex@perex.cz, lgirdwood@gmail.com, kai.vehmanen@linux.intel.com,
+ cezary.rojewski@intel.com, 
+ linux-kernel@vger.kernel.org, furong.zhou@intel.com, tiwai@suse.com
+In-Reply-To: <20221109234023.3111035-1-junxiao.chang@intel.com>
+References: <20221109234023.3111035-1-junxiao.chang@intel.com>
+Subject: Re: [PATCH] ASoC: hdac_hda: fix hda pcm buffer overflow issue
+Message-Id: <166810706137.995851.18267350374607278167.b4-ty@kernel.org>
+Date: Thu, 10 Nov 2022 19:04:21 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.10.0-dev-fc921
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,111 +82,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 10 Nov 2022 16:31:06 +0000,
-Richard Fitzgerald <rf@opensource.cirrus.com> wrote:
+On Thu, 10 Nov 2022 07:40:23 +0800, Junxiao Chang wrote:
+> When KASAN is enabled, below log might be dumped with Intel EHL hardware:
+> [   48.583597] ==================================================================
+> [   48.585921] BUG: KASAN: slab-out-of-bounds in hdac_hda_dai_hw_params+0x20a/0x22b [snd_soc_hdac_hda]
+> [   48.587995] Write of size 4 at addr ffff888103489708 by task pulseaudio/759
 > 
-> On 10/11/2022 15:13, Marc Zyngier wrote:
-> > On Thu, 10 Nov 2022 13:00:50 +0000,
-> > Richard Fitzgerald <rf@opensource.cirrus.com> wrote:
-> >> 
-> >> On 10/11/2022 12:01, Marc Zyngier wrote:
-> >>> On Thu, 10 Nov 2022 11:22:26 +0000,
-> >>> Richard Fitzgerald <rf@opensource.cirrus.com> wrote:
-> >>>> 
-> >>>> On 10/11/2022 08:02, Marc Zyngier wrote:
-> >>>>> On Wed, 09 Nov 2022 16:53:28 +0000,
-> >>>>> Richard Fitzgerald <rf@opensource.cirrus.com> wrote:
-> >>>>>> 
-> >>>>>> The Cirrus Logic CS48L31/32/33 audio codecs contain a programmable
-> >>>>>> interrupt controller with a variety of interrupt sources, including
-> >>>>>> GPIOs that can be used as interrupt inputs.
-> >>>>>> 
-> >>>>>> This driver provides the handling for the interrupt controller. As the
-> >>>>>> codec is accessed via regmap, the generic regmap_irq functionality
-> >>>>>> is used to do most of the work.
-> >>>>>> 
-> >>>>> 
-> >>>>> I cannot spot a shred of interrupt controller code in there. This
-> >>>> 
-> >>>> It is providing support for handling an interrupt controller so that
-> >>>> other drivers can bind to those interrupts. It's just that regmap
-> >>>> provides a lot of generic implementation for SPI-connected interrupt
-> >>>> controllers so we don't need to open-code all that in the
-> >>>> irqchip driver.
-> >>> 
-> >>> And thus none of that code needs to live in drivers/irqchip.
-> >>> 
-> >>>> 
-> >>>>> belongs IMO to the MFD code.
-> >>>> 
-> >>>> We did once put interrupt support in MFD for an older product line but
-> >>>> the MFD maintainer doesn't like the MFD being a dumping-ground for
-> >>>> random other functionality that have their own subsystems.
-> >>> 
-> >>> I don't like this stuff either. All this code is a glorified set of
-> >>> interrupt handlers and #defines that only hide the lack of a proper DT
-> >>> binding to express the interrupt routing (it feels like looking at
-> >>> board files from 10 years ago).
-> >>> 
-> >> 
-> >> I didn't understand this. The whole purpose of this is to instantiate
-> >> Linux interrupts for the PIC interrupt sources so that other drivers
-> >> that want to use the interrupts from the CS48L32 PIC can use standard
-> >> kernel APIs or DT to bind against them.
-> > 
-> > There is zero standard APIs in this patch. Does cs48l32_request_irq()
-> > look standard to you? This whole thing makes a mockery of the
-> > interrupt model and of firmware-based interrupt description which we
-> > spent years to build.
-> > 
-> >> 
-> >> The four handlers registered within the driver are done here simply
-> >> because they don't belong to any particular child driver. Since they
-> >> are a fixed feature of the chip that we know we want to handle we may as
-> >> well just register them.
-> > 
-> > Again, they have no purpose in an interrupt controller driver.
-> > 
-> >> If we put them in the MFD with DT definitions it would make a
-> >> circular dependency between MFD and its child, which is not a great
-> >> situation. If it's these handlers that are bothering you, we could move
-> >> them to the audio driver.
-> > 
-> > And what's left? Nothing.
+> [   48.589237] CPU: 2 PID: 759 Comm: pulseaudio Tainted: G     U      E     5.15.71-intel-ese-standard-lts #9
+> [   48.591272] Hardware name: Intel Corporation Elkhart Lake Embedded Platform/ElkhartLake LPDDR4x T3 CRB, BIOS EHLSFWI1.R00.4251.A01.2206130432 06/13/2022
+> [   48.593010] Call Trace:
+> [   48.593648]  <TASK>
+> [   48.593852]  dump_stack_lvl+0x34/0x48
+> [   48.594404]  print_address_description.constprop.0+0x1f/0x140
+> [   48.595174]  ? hdac_hda_dai_hw_params+0x20a/0x22b [snd_soc_hdac_hda]
+> [   48.595868]  ? hdac_hda_dai_hw_params+0x20a/0x22b [snd_soc_hdac_hda]
+> [   48.596519]  kasan_report.cold+0x7f/0x11b
+> [   48.597003]  ? hdac_hda_dai_hw_params+0x20a/0x22b [snd_soc_hdac_hda]
+> [   48.597885]  hdac_hda_dai_hw_params+0x20a/0x22b [snd_soc_hdac_hda]
 > 
-> Ah, I see. You've missed that the bulk of the implementation re-uses
-> existing library code from regmap. It does say this in the commit
-> message.
-> 
->   "the generic regmap_irq functionality is used to do most of the work."
-> 
-> and I've also said this in previous replies.
-> 
-> This is no way driver that does nothing. There's over 1000 lines of code
-> handling the PIC and dispatching its interrupts to other drivers that
-> want to bind to them. It's just that it makes no sense to duplicate 1300
-> lines of interrupt handling code from elsewhere when we can re-use that
-> by calling regmap_add_irq_chip(). That gives us all the interrupt-
-> controller-handling code in drivers/base/regmap/regmap-irq.c
-> 
-> Perhaps you could re-review this taking into account that
-> regmap_add_irq_chip() is significant.
+> [...]
 
-Read again what I have written. Having to expose a device-specific API
-for endpoint drivers to obtain their interrupts, and requiring them to
-know about some magic values that describe the interrupts source are
-not a acceptable constructs.
+Applied to
 
-We have firmware descriptions to expose interrupt linkages, and your
-HW is not special enough to deserve its own top level API. Yes, we
-accepted such drivers in the past, but it has to stop.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Either you describe the internal structure of your device in DT or
-ACPI, and make all client drivers use the standard API, or you make
-this a codec library, purely specific to your device and only used by
-it. But the current shape is not something I'm prepared to accept.
+Thanks!
 
-	M.
+[1/1] ASoC: hdac_hda: fix hda pcm buffer overflow issue
+      commit: 37882100cd0629d830db430a8cee0b724fe1fea3
 
--- 
-Without deviation from the norm, progress is not possible.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
