@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3720C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 22:56:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEAADC4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 22:56:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6EB56164E;
-	Thu, 10 Nov 2022 23:55:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EB56164E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C5621680;
+	Thu, 10 Nov 2022 23:56:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C5621680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668121008;
-	bh=kA0gsUDdNhGyjLzZQWVmWvgQaOpKF1Wxf0AS2wYJLpk=;
+	s=default; t=1668121015;
+	bh=VGlH5GhfLEic8kRjr4021dFEJa7G0hebO9wt5hfWNiI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Nl4e8a0O9y4floPLi+48LY6EHE82f7lQieyqLtU7WX2H0Nb3LZ+GuH9LooA8X86Nr
-	 H3KUrwK76MIyCMbwrxJEMs+cbiENGrFie7Hh2zl8GT2kIJ4/zoSLFmSmHJcJyMgkBX
-	 HXGTKG4Fq06Y6/Q+WNji6b1wITsbvW/fCvfjYy/U=
+	b=bfinO7o+KS94HVomt51DNuQ1gVeLhsalp7DzhlHXlzgDlX9Ipj6DhuUDLjzF0LHtF
+	 qGo34bXJ493ePZ/LBaVKa0NSrQ9kFyDZl8vBtADbvGn6dZq0bq0iaHezfSPnizOmm2
+	 RhqEk8FAmUpKIdcGQBSdnlRmqLttumglfxffI54k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DFE2EF80557;
-	Thu, 10 Nov 2022 23:55:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11B28F80566;
+	Thu, 10 Nov 2022 23:55:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4D224F80104; Thu, 10 Nov 2022 23:55:17 +0100 (CET)
+ id 8F8A9F8055A; Thu, 10 Nov 2022 23:55:19 +0100 (CET)
 Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9202FF80104
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 23:55:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9202FF80104
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D5C5F80548
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 23:55:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D5C5F80548
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Z5Qsc3BP"
+ header.b="nqxqHyw3"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1668120911; x=1699656911;
+ t=1668120914; x=1699656914;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=kA0gsUDdNhGyjLzZQWVmWvgQaOpKF1Wxf0AS2wYJLpk=;
- b=Z5Qsc3BP2VEqJm3Mwq0Ph3Ica0u8mB1Q3/syV3HAWxbH3yx0E7Rx1shx
- QDE+eEjizFIQPnPLtQ7K5Vs9IbxH3Gintlu7jiqIzjqbxGPZW0n4qz4gv
- j8zivm54iRl8Z+l2JsTNi9Dl2eIbjvh2U36ME2CRJrhlsAAn93ciqNyn9
- rd1j1IfB7gKg5OcglGPuKLghTXqWhDZKcBMtq8NTcVcGnSx47OpqsQb+i
- 5lVMcsng/c9wN4hiXEdpMESXu0+J1jvhg5Gc4t86wBitlOfqYbodGXxhv
- ZtSFQCWtaidgmicKVMxnMCL3nocdjJIOr58XY5FJng39K0CoY8QaEDu1k A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="373588029"
-X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="373588029"
+ bh=VGlH5GhfLEic8kRjr4021dFEJa7G0hebO9wt5hfWNiI=;
+ b=nqxqHyw3W5gdEDPHNX+/2rbnoPWkJOKv8IgWLtICe/6R73vfk3Q3H5L1
+ jhhiux1S7mq7lszcF0aEkYkYGdoWycVkGii3bUPXNbHFWx8nADORhrd1N
+ WR2NaA8LdH360vu7nHyJrCS9/4w/8CjiflPTTet33nUnHo4Nii8PGIM96
+ bH0G354uYSnn4dxINe0lD2zhOK9MCsE/HdQjIK/rfC/DJy9gTkUOdMV1C
+ GFIRA18ge2NhygOMYw5r0fADrOCBTOXTDC3XVLTv2BztjdQCeOmYCE4XC
+ Ddu9+IYewnlO6d5AEjwDDA+zyMldP3prwCHQV4RsuNURKlCS1QSCX2CkT g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="373588041"
+X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="373588041"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Nov 2022 14:55:07 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="670533766"
-X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="670533766"
+ 10 Nov 2022 14:55:12 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="670533797"
+X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="670533797"
 Received: from tleibov-mobl.ger.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.214.199.216])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Nov 2022 14:55:03 -0800
+ 10 Nov 2022 14:55:08 -0800
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/5] ASoC: Intel: soc-acpi: add SKU 0C10 SoundWire
- configuration
-Date: Thu, 10 Nov 2022 16:54:29 -0600
-Message-Id: <20221110225432.144184-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/5] ASoC: Intel: sof_sdw: Add support for SKU 0C40 product
+Date: Thu, 10 Nov 2022 16:54:30 -0600
+Message-Id: <20221110225432.144184-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221110225432.144184-1-pierre-louis.bossart@linux.intel.com>
 References: <20221110225432.144184-1-pierre-louis.bossart@linux.intel.com>
@@ -92,8 +91,8 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Gongjun Song <gongjun.song@intel.com>
 
-Audio hardware configuration of SKU 0C10 product is rt714 on link0,
-two rt1316s on link1 and link2
+SKU 0C40 product supports a SoundWire headset codec, SoundWire
+capture from local microphones and two SoundWire amplifiers.
 
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
@@ -101,84 +100,30 @@ Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Signed-off-by: Gongjun Song <gongjun.song@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- .../intel/common/soc-acpi-intel-rpl-match.c   | 43 +++++++++++++++++++
- 1 file changed, 43 insertions(+)
+ sound/soc/intel/boards/sof_sdw.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
-index 9ccf7370157b4..371333ed8c16c 100644
---- a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
-@@ -65,6 +65,15 @@ static const struct snd_soc_acpi_adr_device rt1316_1_group1_adr[] = {
- 	}
- };
- 
-+static const struct snd_soc_acpi_adr_device rt1316_2_group1_adr[] = {
-+	{
-+		.adr = 0x000230025D131601ull,
-+		.num_endpoints = 1,
-+		.endpoints = &spk_r_endpoint,
-+		.name_prefix = "rt1316-2"
-+	}
-+};
-+
- static const struct snd_soc_acpi_adr_device rt1316_3_group1_adr[] = {
- 	{
- 		.adr = 0x000330025D131601ull,
-@@ -74,6 +83,15 @@ static const struct snd_soc_acpi_adr_device rt1316_3_group1_adr[] = {
- 	}
- };
- 
-+static const struct snd_soc_acpi_adr_device rt714_0_adr[] = {
-+	{
-+		.adr = 0x000030025D071401ull,
-+		.num_endpoints = 1,
-+		.endpoints = &single_endpoint,
-+		.name_prefix = "rt714"
-+	}
-+};
-+
- static const struct snd_soc_acpi_adr_device rt714_2_adr[] = {
- 	{
- 		.adr = 0x000230025D071401ull,
-@@ -107,6 +125,25 @@ static const struct snd_soc_acpi_link_adr rpl_sdca_3_in_1[] = {
- 	{}
- };
- 
-+static const struct snd_soc_acpi_link_adr rpl_sdw_rt1316_link12_rt714_link0[] = {
-+	{
-+		.mask = BIT(1),
-+		.num_adr = ARRAY_SIZE(rt1316_1_group1_adr),
-+		.adr_d = rt1316_1_group1_adr,
-+	},
-+	{
-+		.mask = BIT(2),
-+		.num_adr = ARRAY_SIZE(rt1316_2_group1_adr),
-+		.adr_d = rt1316_2_group1_adr,
-+	},
-+	{
-+		.mask = BIT(0),
-+		.num_adr = ARRAY_SIZE(rt714_0_adr),
-+		.adr_d = rt714_0_adr,
-+	},
-+	{}
-+};
-+
- struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_machines[] = {
- 	{},
- };
-@@ -120,6 +157,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_rpl_sdw_machines[] = {
- 		.drv_name = "sof_sdw",
- 		.sof_tplg_filename = "sof-rpl-rt711-l0-rt1316-l13-rt714-l2.tplg",
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index ed4ca10b67104..47f743debc72c 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -366,6 +366,16 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
+ 					SOF_SDW_FOUR_SPK),
  	},
 +	{
-+		.link_mask = 0x7, /* rt714 on link0 & two rt1316s on link1 and link2 */
-+		.links = rpl_sdw_rt1316_link12_rt714_link0,
-+		.drv_name = "sof_sdw",
-+		.sof_tplg_filename = "sof-rpl-rt1316-l12-rt714-l0.tplg",
++		.callback = sof_sdw_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0C40")
++		},
++		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
++					RT711_JD2 |
++					SOF_SDW_FOUR_SPK),
 +	},
+ 	/* MeteorLake devices */
  	{
- 		.link_mask = 0x1, /* link0 required */
- 		.links = rpl_rvp,
+ 		.callback = sof_sdw_quirk_cb,
 -- 
 2.34.1
 
