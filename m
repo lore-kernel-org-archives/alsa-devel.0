@@ -4,74 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93101C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 17:57:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BEFAC4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 17:57:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9AC6F1664;
-	Thu, 10 Nov 2022 18:56:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AC6F1664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 988431684;
+	Thu, 10 Nov 2022 18:56:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 988431684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668103033;
-	bh=uV0gS8Zym8itzBA6jauOP1PQV82pLKsM1MencwuTk4s=;
+	s=default; t=1668103038;
+	bh=1ZiOgcZ5dO+xDxvGJQ7qAMOODxVWHhgW3wMMK0igvTg=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Bga7ANw3EY+FETAZIL00FY/nV26vUQCdgTZ1Xi04TgCs0WzRSg1ArAslQy+2z5KXt
-	 j7tU/PA+k4CN2PRo/UOJoW/Zf6vqiGgvfKrBNsI5mVMVaxJzvYu/gwAe1n78IwaySd
-	 vj4NXbQUN87OMiy6dolkJ29k+E5fZ9L7oCXMEjCc=
+	b=Ddnh7FIc7ozZXYgYLTHOrLtGidI98p6ox/ln1RHge0XXlNvYc+9/X7CHzuG4Vm23J
+	 QlI08sEXGR2ZnYCNCNzUeVQwffP+gW4YzXw/PfQNL8GkCARF8OTvYJuJdMD6S7OJfZ
+	 ndTOuWRWyU13eJjpBE78x+aJlLxXHPX2SfoCcBdA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3E24F80548;
-	Thu, 10 Nov 2022 18:55:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A859DF8055B;
+	Thu, 10 Nov 2022 18:55:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 54ED6F80163; Thu, 10 Nov 2022 18:55:35 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 6BCB7F8055B; Thu, 10 Nov 2022 18:55:37 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7EA1F80114
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 18:55:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7EA1F80114
+ by alsa1.perex.cz (Postfix) with ESMTPS id C475CF80162
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 18:55:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C475CF80162
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Z7DtR/W6"
+ header.b="piBsAvhr"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 54F76B822A4;
- Thu, 10 Nov 2022 17:55:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FD9BC43470;
- Thu, 10 Nov 2022 17:55:25 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 31C1961535;
+ Thu, 10 Nov 2022 17:55:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37196C433D6;
+ Thu, 10 Nov 2022 17:55:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1668102929;
- bh=uV0gS8Zym8itzBA6jauOP1PQV82pLKsM1MencwuTk4s=;
+ s=k20201202; t=1668102932;
+ bh=1ZiOgcZ5dO+xDxvGJQ7qAMOODxVWHhgW3wMMK0igvTg=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Z7DtR/W642sNyhHLYsGF9t6PWbPia5GkKB4yquzhZFYAvCBEnTcYcisLNDHz9Bm63
- OTf+hyTDdcTBydtqHGAogg+cRonEAQGpoD4mTzw6wCOXzR0yjB/6ZKcMpZXi42Mbyn
- rANmyW37gYKhH6RrxflwttID57nm9PwgFtphiXGERDsfT8sxydKAd5r+vP7TTHIy7C
- Qzo4XmmpN0Ad/ebklnZr0Gng49ivNjEmDGJ0CXENDqgHpgYmnJ8v99neDo7/nihMGZ
- Soglp8CY1c9ue1w5rdnoosLUs8pL8D++mN2+t8w6PxPD6BzKdOu00cUf0KbyFwR+kn
- J45ZAFyZv45vA==
+ b=piBsAvhr7ZPfkUropi5FMew6lu5vd0YqIMi3gNrK1Ca66kH0DUc5GtJTF07ca7V2d
+ Gcy+0w/DzEXvxC2F636Jj+T8zn+xf4uXv9wahf5ADPNJ5XKkg9c1nt3J0PDBOdRYJz
+ A+1VdWc+fatmMvzLCkXwngfvzJm5JUw3rWffC2NnrY2yv5qyp+r7AIvFrdcL9/ZYw9
+ Q2EeQxzwiCjdjkEf8gkGq6x3+er4m28JHqXzeG+NokljmVp5MT1Pir8iX8vrgOpQbU
+ mAq7HqNxNDC1Cm21vnDUXVhJKoSYDOhT85cLBqsEwP1zAyYWqTK2HSNglFpaZTjdkf
+ 9/UC9uy0Y4dAA==
 From: Mark Brown <broonie@kernel.org>
-To: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-In-Reply-To: <20221104212409.603970-1-nfraprado@collabora.com>
-References: <20221104212409.603970-1-nfraprado@collabora.com>
-Subject: Re: [PATCH 1/2] ASoC: mediatek: mt8183-da7219: Register to module
- device table
-Message-Id: <166810292583.959181.9972965736235328683.b4-ty@kernel.org>
-Date: Thu, 10 Nov 2022 17:55:25 +0000
+To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, lgirdwood@gmail.com
+In-Reply-To: <20221107084158.26629-1-peter.ujfalusi@linux.intel.com>
+References: <20221107084158.26629-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: ipc4-topology: Implement
+ tear_down_all_pipelines callback
+Message-Id: <166810293094.959181.13707607180841603528.b4-ty@kernel.org>
+Date: Thu, 10 Nov 2022 17:55:30 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: alsa-devel@alsa-project.org, Akihiko Odaki <akihiko.odaki@gmail.com>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Miaoqian Lin <linmq006@gmail.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-mediatek@lists.infradead.org,
- Tzung-Bi Shih <tzungbi@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
- kernel@collabora.com, linux-arm-kernel@lists.infradead.org,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: alsa-devel@alsa-project.org, yung-chuan.liao@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
+ ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,12 +82,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 4 Nov 2022 17:24:07 -0400, Nícolas F. R. A. Prado wrote:
-> Register the compatibles for this module on the module device table so
-> it can be automatically loaded when a matching device is found on the
-> system.
+On Mon, 7 Nov 2022 10:41:58 +0200, Peter Ujfalusi wrote:
+> During system suspend there is a chance that the running stream undergo
+> an xrun and instead of the expected SNDRV_PCM_TRIGGER_SUSPEND trigger
+> we will receive SNDRV_PCM_TRIGGER_STOP.
 > 
+> The handling of SUSPEND and STOP triggers differ that case of the later
+> the sof_pcm_stream_free() will be called with free_widget_list = false.
+> But we must make sure that all active widgets and streams are free before
+> entering suspend in order to be able to resume without error.
 > 
+> [...]
 
 Applied to
 
@@ -100,10 +100,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: mediatek: mt8183-da7219: Register to module device table
-      commit: b5e004b0e5b57d14ac7804875878cdfdb31c9288
-[2/2] ASoC: mediatek: mt8183-mt6358: Register to module device table
-      commit: bc63a806acdcfca201c68c820731d74185118789
+[1/1] ASoC: SOF: ipc4-topology: Implement tear_down_all_pipelines callback
+      commit: 18cd1f3227768f4a76c4f7aa95c1256f07ce8647
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
