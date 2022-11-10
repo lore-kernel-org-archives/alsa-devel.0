@@ -4,92 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24C1CC4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 13:29:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 493C8C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 13:36:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 51B091661;
-	Thu, 10 Nov 2022 14:28:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51B091661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82916165E;
+	Thu, 10 Nov 2022 14:35:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82916165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668086941;
-	bh=sGHPYI7ah52WXFpoDvVQ9cTA5rRPEDNR2BqJ93xrLzA=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1668087387;
+	bh=8PUONxWAjFpmb83TNdl7hLR0baapSlS5jaZvaSDjkSE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nr5IA715XItmkk/P4cCki4aLLf/nxdOGpummx+eLxUygO1hZr76KxVSNkRw46/jHO
-	 xanuBPwGHZDK5ifYCeUfft0S4F2fRIDT1eRKoY7bFawTQgJeGdhm5/1FSwuzd3JzD1
-	 wV4LssibRNFxGrCIseTwUtYrxPzIlqzUAz11/zyE=
+	b=qCP4rTWvDPuVBokggEibugwJHgnWG5tJhPp3hqr5J6hCBUX1XeHaFwJGW2q1i8Yuo
+	 070aip59FxBRl5nzoVhGUAzwZKFoUQQW2faUSSs9x2AppKKFzZ9fR5m2dI8M/y63k6
+	 S5eV/GtlaCfZo808YX28V682N+UjwaMv/Bp6PojI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D28A5F80163;
-	Thu, 10 Nov 2022 14:28:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A7DFF80163;
+	Thu, 10 Nov 2022 14:35:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB17AF8021D; Thu, 10 Nov 2022 14:28:06 +0100 (CET)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
- [IPv6:2a00:1450:4864:20::12b])
+ id 97800F802E8; Thu, 10 Nov 2022 14:35:35 +0100 (CET)
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com
+ [IPv6:2a00:1450:4864:20::22e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8DECF80162
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 14:27:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8DECF80162
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47C29F80162
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 14:35:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47C29F80162
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="b04L+Z+d"
-Received: by mail-lf1-x12b.google.com with SMTP id a29so3194639lfj.9
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 05:27:58 -0800 (PST)
+ header.b="aHLYA+6x"
+Received: by mail-lj1-x22e.google.com with SMTP id h12so1163990ljg.9
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 05:35:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=f5DcG84whpNkZMgdPanLq5gCZ/VBXiFyiq+gALEmIjw=;
- b=b04L+Z+dTjKbIloGzP2Fg1AgBpMzy5kQm0+vPdQfYxFVyATqSkJnlowkLYJNVlQj/k
- qH6GN/F5zz6EODYFHlF5z7kQBroyoo+4QPwqUlrVXsjjYfVGezs1rBbZVwnvSRP5z869
- YFjPbAgSzDMyu68mZba7BA1RWa2SGx2IMoyE7a6SBKo1vVry3Pako+kXuWOiHXn6i5gD
- 1mQ7+UPMDRxwG0KxZa3BRpMFnCyFi/ZIjdETCvodRzQXuxlacDtbvwQMi+PkDyxut3rd
- p7827C7n+2okHeEmQsRBknnY3DfZWKVDS7mvyX7QyOblZF556bg4f1n4XugqygHPv/OJ
- dnMA==
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=BVYq2N7Rct5i92MPe3IgInkaL5zJNoRo/Ju3+MkjpVM=;
+ b=aHLYA+6xo0R01ED2csKLZEyU5drBe0n7gYOHCzxbSi5EqgfZxi2pGxMv+sefXP/L0j
+ VmuRoM+0PKVqaomTrPcj5wBVGNtAhukRrEvIpS1E321pynM+zGJ6ASHPX2KFg4bag4EU
+ ZzE5sZhB7nJaITsz/ddH8ZuAffQp+u4e/jUQVIte4af8F7SOPf8UH7WA/LRh6zcBV7Vr
+ AXxzq8/CbX14HV3L/Q9XmJtNY/LeHFNVAVImJMEKVfOH9vs/k6T6pT9wZtN9MQBmbpFw
+ 66Pquh1lhM1B7Mp0hnscP1TrRIUobtEoUhbcoRhrFKw+MtrDynZmTir+qqjbvuv+Yx0x
+ xPjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=f5DcG84whpNkZMgdPanLq5gCZ/VBXiFyiq+gALEmIjw=;
- b=vgkm9JfeVxhYYR/oYz1sxszXZmm59IeVzGYoW8+rkLvMT734ZHVpj/Q50TvjQ59DiU
- rYLzg/qxfCD8hNfpboqCHHG6DSQfk4SSdJnjxTlBVCVkGTILEUdpUuTTGC2xvxWA0rHa
- eaiuAxch4gsnMdbYQFnJrzkRcVVrg+d5nqXp6ykIwiatLAqnhoYy6us8x8hgqN2Z0lM1
- Wgr/QPAeNJdk/L0dxzZqEC2Ip85vSllV7nJlOTe1x2UQCwwsge8oMJvmL0lovHEPsjCr
- 4mIEp64ztR3ooQj4r4UKGhJpGTUsK9IhVmgjTRIXkVTkjwvKnGu3TXrMVoEJkTVOmxg9
- cApQ==
-X-Gm-Message-State: ACrzQf3reG0vrzcwYxoGMDzMSe8a0F1q6i7ojfcF01iBOYfc+Gw4dRci
- 8kLOdghYiY64e06hDZE+ZryINw==
-X-Google-Smtp-Source: AMsMyM5NwYvLDvN5XweF7hs6r6xhzV8Wnbyva8godKXWoixzDuP64x+tEFiHlDzGwPBXbaJBsh9Abw==
-X-Received: by 2002:a05:6512:3411:b0:4a2:3087:cebd with SMTP id
- i17-20020a056512341100b004a23087cebdmr1347322lfr.66.1668086876977; 
- Thu, 10 Nov 2022 05:27:56 -0800 (PST)
-Received: from [192.168.0.20]
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=BVYq2N7Rct5i92MPe3IgInkaL5zJNoRo/Ju3+MkjpVM=;
+ b=rNXXBJSlgXDgbt7xjD9bsUtrw6zn9IU+g597ea3ZoF/9cOIJiJTPGtH0hzEs1MBvz+
+ LHgwtolBNTSCtbQ3BMAS2+9+ppSQG5rTIqxbUPjhKvMFBpqK7ssCE9/GCNYvYEkGHh/n
+ 2L2A2MdKVlCbGr6MjW1O20sReYZi6kzy9RxpLo1bWJmuLS6ppq5I9Fsw6bWRzzXP8l/z
+ cNPdH5XR1Ka5gVQtXntmVCizTuRNDg4RHi+c6Zlf/njmi6tU+6p/2ng+7Y0OoPXTEX8t
+ pfrq4etEPUOkqouNBk5z80Op8pMlbpHl5jqe/Af6Iy5UaXP+GWRDbWK6u4/cwlbY0R+Z
+ PqfA==
+X-Gm-Message-State: ACrzQf2rkWBCv4FsY3fPnm62lzkPbkipP4jQGLF9fg/lF2Svf1vn4Kbg
+ mx5BXCdmOOXU0QBF8AyAzOc64A==
+X-Google-Smtp-Source: AMsMyM5uuuy6vzbm6Wss8li0CVLMJd7xDK+0FdYwv7VWxMESFwlGkAuH/yOIdWdL1vP4Kcok92FBvg==
+X-Received: by 2002:a2e:8602:0:b0:277:2217:c7e1 with SMTP id
+ a2-20020a2e8602000000b002772217c7e1mr8784168lji.407.1668087327523; 
+ Thu, 10 Nov 2022 05:35:27 -0800 (PST)
+Received: from krzk-bin.NAT.warszawa.vectranet.pl
  (088156142199.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.199])
  by smtp.gmail.com with ESMTPSA id
- d36-20020a0565123d2400b004947555dbc2sm2749406lfv.100.2022.11.10.05.27.55
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 10 Nov 2022 05:27:56 -0800 (PST)
-Message-ID: <c7a4d63e-9a85-93c7-a5a9-435f85740393@linaro.org>
-Date: Thu, 10 Nov 2022 14:27:55 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH] ASoC: codecs: wsa883x: Use proper shutdown GPIO values
-Content-Language: en-US
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-References: <20221109163740.1158785-1-krzysztof.kozlowski@linaro.org>
+ q14-20020a0565123a8e00b004ad5f5c2b28sm2752576lfu.119.2022.11.10.05.35.26
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 10 Nov 2022 05:35:27 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20221109163740.1158785-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 2/2] ASoC: codecs: wsa883x: Use proper shutdown GPIO
+ polarity
+Date: Thu, 10 Nov 2022 14:35:12 +0100
+Message-Id: <20221110133512.478831-2-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20221110133512.478831-1-krzysztof.kozlowski@linaro.org>
+References: <20221110133512.478831-1-krzysztof.kozlowski@linaro.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,20 +109,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 09/11/2022 17:37, Krzysztof Kozlowski wrote:
-> The shutdown GPIO is active_low (sd_n), but this depends on actual board
-> layout.  Linux drivers should only care about logical state, where high
-> (1) means shutdown and low (0) means do not shutdown.
-> 
-> Invert the GPIO to match logical value.
-> 
-> Fixes: 43b8c7dc85a1 ("ASoC: codecs: add wsa883x amplifier support")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
+The shutdown GPIO is active low (SD_N), but this depends on actual board
+layout.  Linux drivers should only care about logical state, where high
+(1) means shutdown and low (0) means do not shutdown.
 
-I will also update the example in bindings. Not a blocker for this
-patch, but better to keep these together, so there will be a v2.
+Invert the GPIO to match logical value.
 
-Best regards,
-Krzysztof
+Fixes: 43b8c7dc85a1 ("ASoC: codecs: add wsa883x amplifier support")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+---
+
+Changes since v1:
+1. None.
+---
+ sound/soc/codecs/wsa883x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/wsa883x.c b/sound/soc/codecs/wsa883x.c
+index c7b10bbfba7e..77a7dd3cf495 100644
+--- a/sound/soc/codecs/wsa883x.c
++++ b/sound/soc/codecs/wsa883x.c
+@@ -1392,7 +1392,7 @@ static int wsa883x_probe(struct sdw_slave *pdev,
+ 	}
+ 
+ 	wsa883x->sd_n = devm_gpiod_get_optional(&pdev->dev, "powerdown",
+-						GPIOD_FLAGS_BIT_NONEXCLUSIVE);
++						GPIOD_FLAGS_BIT_NONEXCLUSIVE | GPIOD_OUT_HIGH);
+ 	if (IS_ERR(wsa883x->sd_n)) {
+ 		dev_err(&pdev->dev, "Shutdown Control GPIO not found\n");
+ 		ret = PTR_ERR(wsa883x->sd_n);
+@@ -1411,7 +1411,7 @@ static int wsa883x_probe(struct sdw_slave *pdev,
+ 	pdev->prop.simple_clk_stop_capable = true;
+ 	pdev->prop.sink_dpn_prop = wsa_sink_dpn_prop;
+ 	pdev->prop.scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
+-	gpiod_direction_output(wsa883x->sd_n, 1);
++	gpiod_direction_output(wsa883x->sd_n, 0);
+ 
+ 	wsa883x->regmap = devm_regmap_init_sdw(pdev, &wsa883x_regmap_config);
+ 	if (IS_ERR(wsa883x->regmap)) {
+-- 
+2.34.1
 
