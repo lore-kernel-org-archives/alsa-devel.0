@@ -4,92 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 897D7C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 13:36:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 138A2C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 13:57:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C30D1670;
-	Thu, 10 Nov 2022 14:36:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C30D1670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D43C1666;
+	Thu, 10 Nov 2022 14:56:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D43C1666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668087411;
-	bh=JO01unIMxYMApyBGVRBxOT3upI6NI+JpIKmZJYe/EoM=;
+	s=default; t=1668088645;
+	bh=QsIiRuCew5ZO1BNvlS86zYl8Nr+uoxGXdCjkU7F6oog=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=UytjyBXFU7F7bzWH5wk7yWpOq8pt8OC89L/HAxYLL3JFw8LW4s6ESGd+BpfUCHcav
-	 /4OJzjuKFYWwyenlFtwH4wJnATDC3AVQu7ZhFU9PPAiUQrCykeUhHe4VvF3BcKeM9q
-	 VESp+rfDxeBHwyfmCSL8HOGGv8ef3LM2KQBTXoFw=
+	b=lyt+4RmSIaCF30KlQoa2nKyfn319+wlWEEhfiau66W8C2NvZoAPEc5Mmv75v4Y5mI
+	 vNHsL3zrWhxnXgbr2Xu44dDRuRxKfpxtYHvKz7ymtDO0utPsRHJNepvKg4lpZpVbQY
+	 2LiKXi2uxnE3yhaoWvXSFpEnbfdIfUwWfeuJy+zQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B25DDF804FB;
-	Thu, 10 Nov 2022 14:35:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A23B5F80163;
+	Thu, 10 Nov 2022 14:56:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2108F8021D; Thu, 10 Nov 2022 14:35:35 +0100 (CET)
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com
- [IPv6:2a00:1450:4864:20::236])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 959DAF8032B; Thu, 10 Nov 2022 14:56:33 +0100 (CET)
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 693DEF80163
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 14:35:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 693DEF80163
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66E71F80162
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 14:56:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66E71F80162
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="hZtgk+Xq"
-Received: by mail-lj1-x236.google.com with SMTP id u2so1177591ljl.3
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 05:35:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=X3pEWPACClIQY3/paQHJjNw2VtpoudfeFxBlbc9fm0M=;
- b=hZtgk+XqtQAv+XWLfm84wxLLD2mPgWzuTTgp8Q0gOl8kIZxpQ9re6jZSm2PXIKKGqx
- c31ha8v+rxkThYcBDq5FWVw4hy6UJyI3akUrMqkCTR2vsXYsbRF8RNm5VJneNYRuicyl
- VsH2HgHOPW6W2Wc58pc70r82T9XnpuHae4jendFqDSRr8eKqniKHDJa21hi1rt3+R0+D
- 0G+AGf5nVyUzXegkHB9zkPSzgunEFp7vQd3e+4xTIJgxSbRq8AgvHoldrA4gtZPbNCqe
- 56XD4jn2HTi4jP9H1TX+bfVYbY9YtNcf4TgJiVhz3viswLTMR+vcaaFLlR62CclV1Y13
- xhQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=X3pEWPACClIQY3/paQHJjNw2VtpoudfeFxBlbc9fm0M=;
- b=g0k/vUbwooIdQK7hiDvUkYjPbcpIhRfvP60Tba16o/QeZC/Pp0XhLZyMVI+NxDl0Oq
- 7YbceTKP1lQWNlM6vRRJpmmLB+lqhszQRmS1x4v5xmB2pRVjRvqVRScyT1LrXzS8KJAB
- a0KXDZpaM3RtZjzvEW7b/YfWif3fw6BsuCqi6qEqiQc7GX3jehmezIASM5RqzOuGfNnV
- 79m+lijlUiGcHKM9QmKuP0jrfDbrE9VQBuwRXekbCAdTYMF7N0OtDU0kpR6YMXHhd2S2
- 09PcfmBOurmaULPKzhZdUMQ8/pgtj5+yX0ph/oK7ku1JiGke9BfIU/HHEgeDM2zp7VLl
- helA==
-X-Gm-Message-State: ACrzQf22924LeTAF9IOes5t6YmUwrJzElonJtCBr7mawYCbOvYm7dwjN
- dxJH7+uQUKLdDL5lGn3w5oR+Rw==
-X-Google-Smtp-Source: AMsMyM7ZsAaCoMRKyH64gFWu9/lw3JKr1YbEwgIWT7QSSmLf+YECbGSbvB+NikQpWYTycsz3LoJzmA==
-X-Received: by 2002:a2e:a0d0:0:b0:261:d86f:3cde with SMTP id
- f16-20020a2ea0d0000000b00261d86f3cdemr9308321ljm.86.1668087326182; 
- Thu, 10 Nov 2022 05:35:26 -0800 (PST)
-Received: from krzk-bin.NAT.warszawa.vectranet.pl
- (088156142199.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.199])
- by smtp.gmail.com with ESMTPSA id
- q14-20020a0565123a8e00b004ad5f5c2b28sm2752576lfu.119.2022.11.10.05.35.24
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 10 Nov 2022 05:35:25 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] ASoC: dt-bindings: qcom,
- wsa883x: Use correct SD_N polarity
-Date: Thu, 10 Nov 2022 14:35:11 +0100
-Message-Id: <20221110133512.478831-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="M6R1TdI8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1668088587; x=1699624587;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=QsIiRuCew5ZO1BNvlS86zYl8Nr+uoxGXdCjkU7F6oog=;
+ b=M6R1TdI8SDP4lCmRsLl3AdHwOiDHq+6PLYOejerVaPci6kr+OWSFb+Vw
+ jL/dJTGk5cUnssFri2saasn/StP6zJ5a5CL5YRM1rvHpc007lBotpLxPb
+ p+fcKqphhabhSsmcvzD1ZYUm8LfQUke3N19Enru5+4MqGewxMq/AnlHDf
+ kOGdvRy7R/vGKjJF/NmJnUKAs9j9VSqIDDarA6WTA97ah8xJZ71Bv/wC0
+ 6d+4ohG474/EQsKucYH5pFqwtRM6K+C/1vVQkxh0V+X9a0+uv1eky3WhB
+ 9TKh5mWyC9MvyoYVc0csM3mmyzLjkieUT/FF3FfZGfsfAASzcBc4ImB/1 Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="373431541"
+X-IronPort-AV: E=Sophos;i="5.96,153,1665471600"; d="scan'208";a="373431541"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Nov 2022 05:56:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="966414992"
+X-IronPort-AV: E=Sophos;i="5.96,153,1665471600"; d="scan'208";a="966414992"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by fmsmga005.fm.intel.com with ESMTP; 10 Nov 2022 05:56:20 -0800
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH 0/2] ASoC: Intel: avs: DSP recovery and resume fixes
+Date: Thu, 10 Nov 2022 15:13:28 +0100
+Message-Id: <20221110141330.740916-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
+ amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,58 +83,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use correct polarity in example and powerdown-gpios description.
+Two fixes that are result of the recent discussions [1][2].
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+First adds missing locking around snd_pcm_stop() while the second fix
+sets substream state to DISCONNECTED if any suspend/resume related
+operation fails so that userspace has means to be aware that something
+went wrong during said operation.
 
----
+[1]: https://lore.kernel.org/alsa-devel/73e6425f-8e51-e26f-ad83-ccc5df517a43@intel.com/
+[2]: https://lore.kernel.org/alsa-devel/20221104131244.3920179-1-cezary.rojewski@intel.com/
 
-Changes since v1:
-1. New patch.
----
- Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+Cezary Rojewski (2):
+  ASoC: Intel: avs: Lock substream before snd_pcm_stop()
+  ASoC: Intel: avs: Disconnect substream if suspend or resume fails
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
-index 6113f65f2990..99f9c10bbc83 100644
---- a/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
-@@ -23,7 +23,7 @@ properties:
-     maxItems: 1
- 
-   powerdown-gpios:
--    description: GPIO spec for Powerdown/Shutdown line to use
-+    description: GPIO spec for Powerdown/Shutdown line to use (pin SD_N)
-     maxItems: 1
- 
-   vdd-supply:
-@@ -47,6 +47,8 @@ additionalProperties: false
- 
- examples:
-   - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-     soundwire-controller@3250000 {
-         #address-cells = <2>;
-         #size-cells = <0>;
-@@ -55,7 +57,7 @@ examples:
-         speaker@0,1 {
-             compatible = "sdw10217020200";
-             reg = <0 1>;
--            powerdown-gpios = <&tlmm 1 0>;
-+            powerdown-gpios = <&tlmm 1 GPIO_ACTIVE_LOW>;
-             vdd-supply = <&vreg_s10b_1p8>;
-             #thermal-sensor-cells = <0>;
-             #sound-dai-cells = <0>;
-@@ -64,7 +66,7 @@ examples:
-         speaker@0,2 {
-             compatible = "sdw10217020200";
-             reg = <0 2>;
--            powerdown-gpios = <&tlmm 89 0>;
-+            powerdown-gpios = <&tlmm 89 GPIO_ACTIVE_LOW>;
-             vdd-supply = <&vreg_s10b_1p8>;
-             #thermal-sensor-cells = <0>;
-             #sound-dai-cells = <0>;
+ sound/soc/intel/avs/ipc.c |  2 ++
+ sound/soc/intel/avs/pcm.c | 10 ++++++++--
+ 2 files changed, 10 insertions(+), 2 deletions(-)
+
 -- 
-2.34.1
+2.25.1
 
