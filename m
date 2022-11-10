@@ -4,70 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 632E5C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 19:08:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8652C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 10 Nov 2022 19:10:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C9D81680;
-	Thu, 10 Nov 2022 20:07:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C9D81680
+	by alsa0.perex.cz (Postfix) with ESMTPS id B34281657;
+	Thu, 10 Nov 2022 20:09:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B34281657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668107287;
-	bh=N4/xfqIv1UX0Rnf4ct7QV9VuAXDVlav3IAAOiUFgb44=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uAEG9Kd6c2vzhqPQLGru0eUzP+3L8f3G4YbWoWAlbH0bKBSD8C4K0mItc1UkHwWT8
-	 Hb09AO/Lb8KqJAa1SadLtGycU40rQBmHkUGQW2srLC0HwRyYGZdkd4crD2JcP69i78
-	 IpvvE5NnlpwYyXW05HS70MrBB8Xhi5i/HGuRqblY=
+	s=default; t=1668107398;
+	bh=G/mBYtyztie+h46PmH/Zk9zR5WE6VE58AciLGHizxbI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JFZGXFM1YdPXzMI9ov8x87negjEI6nncr5ISABjDOdKevS57b+nLEQtCowwhAr2lw
+	 fei8APb/+ULczEPN+0Z40Zjm9iaxUSV5twqutza21FGZE2jbQEo5sUEqBHpfJHK3KK
+	 1nDUDwjMl6hcxSZpDKbdYf+Qyd/Rr1979lxU9ZQc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB839F80549;
-	Thu, 10 Nov 2022 20:06:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F15FF80163;
+	Thu, 10 Nov 2022 20:09:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41341F80162; Thu, 10 Nov 2022 15:24:30 +0100 (CET)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com
- [45.249.212.51])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 57670F80104; Thu, 10 Nov 2022 20:09:07 +0100 (CET)
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com
+ [IPv6:2607:f8b0:4864:20::1035])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE86DF80162
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 15:24:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE86DF80162
-Received: from mail02.huawei.com (unknown [172.30.67.153])
- by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4N7PGd0cTdz4f3w0w
- for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 22:24:09 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.127.227])
- by APP4 (Coremail) with SMTP id gCh0CgD3GtiKCW1jxQ4yAQ--.5594S4;
- Thu, 10 Nov 2022 22:24:12 +0800 (CST)
-From: Ye Bin <yebin@huaweicloud.com>
-To: perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda: fix potential memleak in 'add_widget_node'
-Date: Thu, 10 Nov 2022 22:45:39 +0800
-Message-Id: <20221110144539.2989354-1-yebin@huaweicloud.com>
-X-Mailer: git-send-email 2.31.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id ECEEEF80104
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 20:09:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECEEEF80104
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="SmJlkilE"
+Received: by mail-pj1-x1035.google.com with SMTP id
+ e7-20020a17090a77c700b00216928a3917so5663016pjs.4
+ for <alsa-devel@alsa-project.org>; Thu, 10 Nov 2022 11:09:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=G/mBYtyztie+h46PmH/Zk9zR5WE6VE58AciLGHizxbI=;
+ b=SmJlkilE12HGb2sxMtzADB8mWWLr5U39bQBL/7O1hZWQtMgy3TV0d93aXgTIPejC8Y
+ TyZffY736lWsDPIQDXaXfm7yx202fM43f7/Qi2RvURxY6USUTVgl5gBDL7l7ahZ/BmBA
+ qIs77nlaqzDUKb6k6Mu5ysnXIhzPJAtQDbwmK9BA0xmhubloj1e6lV5uhfuLQnau3sMT
+ rZRLbzdjxdx5I5AoBAdgY8UtJ3C0k4CQukGnLzed8ga+Xa7e1QDTDFqAFZ1ohGoEJ7QT
+ nxBAo6gE0p+3SsTOrVz2D3i/NqabdqYsIY9UvyBfHmJGGLqywLjWc1n5gdtQVqnHjVtM
+ ZFVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=G/mBYtyztie+h46PmH/Zk9zR5WE6VE58AciLGHizxbI=;
+ b=KTBppHVBkf7OLITBWaqE/mVyppdyrOrkZ49e3s2shVISfVlPwo0RzVIFitFlmLUXuR
+ 2AvMS9HEiv+eXfyCXLEHrPXYlNisODz9LRmYUO+AemqTcePw+BVStmSrDgj7Hwb6M/V4
+ WKNzPWb+9bPFx2XR7HUP9u42WTyOWgSSBgW++ODtL63ALr8YySXwOSVuEWcVpGx/iJfD
+ fDKALO5x8MSefLe7tyMVN8YUTzpmyJUOfFLHpWYGYLGzZkrR1/KMYrTdYZp+U6HicUfT
+ jPHFhx/xnXLvJOPIOZt7PkosZjHObnBW/sbT7cETQm+jhUN3Y4ltuEpqc+Y+wAs3pDzk
+ 92rw==
+X-Gm-Message-State: ACrzQf1mtkp+cLAFUPgWGCpanSdJjY6pzfRcpPaOrm7ExKkOc5x8PBma
+ UFgYJpYTyPCNdK1MYZOLWuIY7i//dyzuls5khh4=
+X-Google-Smtp-Source: AMsMyM5TElItKyrxA7BJRgm8tw06WTvSGL7ZM1pFeJNuHzXf512lMP/JotH3KDH26F5g+z7aWEKllgFznuY37dYZPv4=
+X-Received: by 2002:a17:902:cccb:b0:185:4880:91cd with SMTP id
+ z11-20020a170902cccb00b00185488091cdmr1758619ple.130.1668107337925; Thu, 10
+ Nov 2022 11:08:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3GtiKCW1jxQ4yAQ--.5594S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFy5Kw18trW7Kr43XFy7KFg_yoWfArg_GF
- W8X3Z8uw1fGrnrK342yws5ZF4qgw43Aw18CrZayFnrAw47GrZ5trsrW3s0yr1UuFWSgFWU
- uryqq34DtFyIkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
- 9fnUUIcSsGvfJTRUUUbr8YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
- Y4v20xvaj40_JFC_Wr1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
- A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
- 67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
- 0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
- x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
- 0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
- z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
- AF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
- IxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WF
- yUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIY
- CTnIWIevJa73UjIFyTuYvjxUOyCJDUUUU
-X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
-X-Mailman-Approved-At: Thu, 10 Nov 2022 20:06:20 +0100
-Cc: linux-kernel@vger.kernel.org, yebin10@huawei.com
+References: <20221110190612.1341469-1-detlev.casanova@collabora.com>
+In-Reply-To: <20221110190612.1341469-1-detlev.casanova@collabora.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Thu, 10 Nov 2022 16:08:44 -0300
+Message-ID: <CAOMZO5BiFdVJ5tipBKfo6ZGSeGw4m4raoV_x1y1ffOJgBGg2Xw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: Reset the CHIP_CLK_CTRL reg on remove
+To: Detlev Casanova <detlev.casanova@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: "moderated list:NXP SGTL5000 DRIVER" <alsa-devel@alsa-project.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,33 +94,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ye Bin <yebin10@huawei.com>
+On Thu, Nov 10, 2022 at 4:06 PM Detlev Casanova
+<detlev.casanova@collabora.com> wrote:
+>
+> Since commit bf2aebccddef ("ASoC: sgtl5000: Fix noise on shutdown/remove"),
+> the device power control registers are reset when the driver is
+> removed/shutdown.
+>
+> This is an issue when the device is configured to use the PLL clock. The
+> device will stop responding if it is still configured to use the PLL
+> clock but the PLL clock is powered down.
+>
+> When rebooting linux, the probe function will show:
+> sgtl5000 0-000a: Error reading chip id -11
+>
+> Make sure that the CHIP_CLK_CTRL is reset to its default value before
+> powering down the device.
+>
+> Fixes: bf2aebccddef ("ASoC: sgtl5000: Fix noise on shutdown/remove")
+> Signed-off-by: Detlev Casanova <detlev.casanova@collabora.com>
 
-As 'kobject_add' may allocated memory for 'kobject->name' when return error.
-And in this function, if call 'kobject_add' failed didn't free kobject.
-So call 'kobject_put' to recycling resources.
-
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- sound/hda/hdac_sysfs.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/hda/hdac_sysfs.c b/sound/hda/hdac_sysfs.c
-index e47de49a32e3..62a9615dcf52 100644
---- a/sound/hda/hdac_sysfs.c
-+++ b/sound/hda/hdac_sysfs.c
-@@ -346,8 +346,10 @@ static int add_widget_node(struct kobject *parent, hda_nid_t nid,
- 		return -ENOMEM;
- 	kobject_init(kobj, &widget_ktype);
- 	err = kobject_add(kobj, parent, "%02x", nid);
--	if (err < 0)
-+	if (err < 0) {
-+		kobject_put(kobj);
- 		return err;
-+	}
- 	err = sysfs_create_group(kobj, group);
- 	if (err < 0) {
- 		kobject_put(kobj);
--- 
-2.31.1
-
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
