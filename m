@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74673C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Nov 2022 04:28:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BD97C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Nov 2022 04:28:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B983A1664;
-	Fri, 11 Nov 2022 05:27:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B983A1664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66E7A167B;
+	Fri, 11 Nov 2022 05:27:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66E7A167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668140884;
-	bh=0rMVWGRMLBg4bFMV6J3jYFGlZ2aidsgYINzFQt3VnEY=;
+	s=default; t=1668140896;
+	bh=vn9VwOhttQiEitLM6pjgFhOu+byBGsPJxmJqGvKBlLY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bipmRMrKGL9SHdLRpMiWBvQp5a+9tdwhuIrV+POAmYqZvW5ECsnn99AKHKxiITgRD
-	 MQwMi9RKzhC4CLepG8/tlaZ7B5nCREXfH8g6/zfiwn9L5T0KWAlIzgmCfCB4P8vZYL
-	 /fcm/aDJFqwmwJed3h/S6OC6RbHC1QaQR7PbKYZE=
+	b=oldWcO2iKyR8NmIgfg9qbsCxrD9O+ezmfUZuOoUFG85XkoyUFeoMHnnnAU82UIflV
+	 XvM58sUFNaKtwlGIvGc3gehoGmbF3Bi4Jjj8jS8YvFBJ2Qi3viI7s0WrKgZS9R/3BZ
+	 cqVm9jbLL1NM7vMsil/hs48QZpjaHL2SrbYu1QP8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA242F8057B;
-	Fri, 11 Nov 2022 05:25:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7AD38F8059F;
+	Fri, 11 Nov 2022 05:25:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3FD31F80589; Fri, 11 Nov 2022 05:25:27 +0100 (CET)
+ id EB40FF80588; Fri, 11 Nov 2022 05:25:27 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C853F8057E
- for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 05:25:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C853F8057E
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE32FF80536
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 05:25:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE32FF80536
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="mNqVVKoj"
+ header.b="iqv18lH7"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1668140725; x=1699676725;
+ t=1668140722; x=1699676722;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=0rMVWGRMLBg4bFMV6J3jYFGlZ2aidsgYINzFQt3VnEY=;
- b=mNqVVKojUZH0SdHQu7Lth3DrlKMSScGZNFE5dt1cFDzWhqK4TwayjifJ
- UPpgA7EcgudyCxSid+EOdXQ/pXuHZ7pTFfLGG9r7Fu4RAESUi8W4t9Zz7
- BlQZY010TIoGyvclbf6lfFHNifF4hCO2ICxXnkG9qzyVulJ0Gk8sZYN5o
- dTwtw02Zw388A0RRZFTGXTFDPE42p89TmbBsCnPvSAYawdfVnB8ykVSfm
- kuDWE4IXYJ3NpVVoISrav6diMnHASsd9FdjB5np3iK0Fo3j/qEYOoIS4s
- PtOf6gdmHBh0pXqkbD/Q9aDZZvVMsRa3SoCQkoEME6AbiL7gvcUQSTb1q Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="291923775"
-X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="291923775"
+ bh=vn9VwOhttQiEitLM6pjgFhOu+byBGsPJxmJqGvKBlLY=;
+ b=iqv18lH7W+9rbHnFUfzrmQIRPA0SwnOSxRRpba0e8rMYbLuoNUldWXZM
+ JvEVvpvqGLlvbCoqHH2pHv9L5d4H77BtNJupJjs94WX1q9p9QZPQoD+4u
+ 61L6/rIqInyK5j0fGaiWY5fMwcaQ0Q5pxG6OrhwZLRpr0pLyF3DIOi/7U
+ 6OFiK9Ad35z0Y4ZoT/tbx5eI50VhCgUkaa6xrLMeDxcRpJs+zCrV+BkE/
+ U4h/aNGw9ptrMAh8sWwAAsX043zP/pzdouWdeLqBf74ZNvj0337G1JxCe
+ yHz6iNBfZyyXHu36ZvW9flOFz6F9SSviaAAsXjrfvm7tvZTwlh4pdOw4j w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="291923742"
+X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="291923742"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Nov 2022 20:25:23 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="588440803"
-X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="588440803"
+ 10 Nov 2022 20:25:19 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="588440773"
+X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="588440773"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Nov 2022 20:25:21 -0800
+ 10 Nov 2022 20:25:16 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 8/8] ASoC: SOF: Intel: hda: read multi-link capabilities
- earlier
-Date: Fri, 11 Nov 2022 12:26:53 +0800
-Message-Id: <20221111042653.45520-9-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 6/8] soundwire: intel_init: remove sdw_intel_enable_irq()
+Date: Fri, 11 Nov 2022 12:26:51 +0800
+Message-Id: <20221111042653.45520-7-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221111042653.45520-1-yung-chuan.liao@linux.intel.com>
 References: <20221111042653.45520-1-yung-chuan.liao@linux.intel.com>
@@ -89,39 +88,66 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-There's no reason to delay the multi-link parsing, this can be done
-earlier before checking the SoundWire capabilities.
+The functionality is implemented with per-chip callbacks, there are no
+users of this symbol, remove the code.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/intel/hda.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/soundwire/intel_init.c      | 24 ------------------------
+ include/linux/soundwire/sdw_intel.h |  2 --
+ 2 files changed, 26 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 2f9d69e64091..14a2f8701350 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -944,6 +944,8 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
- 		return ret;
- 	}
+diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
+index 8bd95c9cbcaf..0df3cdd85793 100644
+--- a/drivers/soundwire/intel_init.c
++++ b/drivers/soundwire/intel_init.c
+@@ -125,30 +125,6 @@ static int sdw_intel_cleanup(struct sdw_intel_ctx *ctx)
+ 	return 0;
+ }
  
-+	hda_bus_ml_get_capabilities(bus);
-+
- 	/* scan SoundWire capabilities exposed by DSDT */
- 	ret = hda_sdw_acpi_scan(sdev);
- 	if (ret < 0) {
-@@ -972,8 +974,6 @@ static int hda_init_caps(struct snd_sof_dev *sdev)
- 
- skip_soundwire:
- 
--	hda_bus_ml_get_capabilities(bus);
+-#define HDA_DSP_REG_ADSPIC2             (0x10)
+-#define HDA_DSP_REG_ADSPIS2             (0x14)
+-#define HDA_DSP_REG_ADSPIC2_SNDW        BIT(5)
 -
- 	/* create codec instances */
- 	hda_codec_probe_bus(sdev);
+-/**
+- * sdw_intel_enable_irq() - enable/disable Intel SoundWire IRQ
+- * @mmio_base: The mmio base of the control register
+- * @enable: true if enable
+- */
+-void sdw_intel_enable_irq(void __iomem *mmio_base, bool enable)
+-{
+-	u32 val;
+-
+-	val = readl(mmio_base + HDA_DSP_REG_ADSPIC2);
+-
+-	if (enable)
+-		val |= HDA_DSP_REG_ADSPIC2_SNDW;
+-	else
+-		val &= ~HDA_DSP_REG_ADSPIC2_SNDW;
+-
+-	writel(val, mmio_base + HDA_DSP_REG_ADSPIC2);
+-}
+-EXPORT_SYMBOL_NS(sdw_intel_enable_irq, SOUNDWIRE_INTEL_INIT);
+-
+ irqreturn_t sdw_intel_thread(int irq, void *dev_id)
+ {
+ 	struct sdw_intel_ctx *ctx = dev_id;
+diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+index 2e9fd91572d4..d2f581feed67 100644
+--- a/include/linux/soundwire/sdw_intel.h
++++ b/include/linux/soundwire/sdw_intel.h
+@@ -286,8 +286,6 @@ int sdw_intel_startup(struct sdw_intel_ctx *ctx);
  
+ void sdw_intel_exit(struct sdw_intel_ctx *ctx);
+ 
+-void sdw_intel_enable_irq(void __iomem *mmio_base, bool enable);
+-
+ irqreturn_t sdw_intel_thread(int irq, void *dev_id);
+ 
+ #define SDW_INTEL_QUIRK_MASK_BUS_DISABLE      BIT(1)
 -- 
 2.25.1
 
