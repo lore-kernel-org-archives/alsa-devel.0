@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA974C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Nov 2022 11:38:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1B4CC433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Nov 2022 11:38:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1F60168E;
-	Fri, 11 Nov 2022 12:37:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1F60168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE2CC1685;
+	Fri, 11 Nov 2022 12:37:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE2CC1685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668166709;
-	bh=uxHpFAnyQFqcTwCcHzjOTefAgKyXV79W4JOWlgkDooQ=;
+	s=default; t=1668166729;
+	bh=nI2MoSK0qCRexiDfyQiJBaRD1EMj6LD6Sn7yNXr8fIo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VJUAvIEBHHEyOVQ3ocNz7/WH5QNXiHG9l9mvMc4Hac0P6zI26WLamu6J/azPtK3kp
-	 s5s6mUPj5O52fyhAwZHDpjYozR/IXT2ztWs46G5yKyyQaKUmLHiVzR521KJYrVq2bB
-	 K5vYQZD0LRp0jXJW8xd5jcfPlP5/i7QWLkdCciOE=
+	b=bTbDF1fIyNkbQo8YXCNZbIqm0Ya+BiROT8iOvTyGhmxsUpDuBaA/zfYkCd+wA4u88
+	 nNBNxkP1oAY0Hh4L0YJtkIlykUFqwT7YJtCH7rPKDemvX5QnRmCKwJq65zDZvTkR2F
+	 yI0v3NdHRccCx35RT8e0oFBnqKy0yVkZn0z00ovY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D3DEF8056F;
-	Fri, 11 Nov 2022 12:36:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02547F80570;
+	Fri, 11 Nov 2022 12:36:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6095F8055A; Fri, 11 Nov 2022 12:36:24 +0100 (CET)
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com
- [IPv6:2a00:1450:4864:20::136])
+ id 05B16F8055A; Fri, 11 Nov 2022 12:36:26 +0100 (CET)
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com
+ [IPv6:2a00:1450:4864:20::22e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1406EF8028D
- for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 12:36:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1406EF8028D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21A9CF80519
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 12:36:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21A9CF80519
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="DPf9pv4B"
-Received: by mail-lf1-x136.google.com with SMTP id d6so7889263lfs.10
- for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 03:36:12 -0800 (PST)
+ header.b="WFz3Cp9s"
+Received: by mail-lj1-x22e.google.com with SMTP id a15so4216246ljb.7
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 03:36:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=EB4I3WqkMG0ssDPCVcZC0Ysf3XgZOuA6bOA7vE338fY=;
- b=DPf9pv4Blnc4lpQ5nhDMbtzrHDpDPhl3i+pMnLqzqRL5Jz1nglnLY8GehobSi+9D+z
- awTpJAA8Acp0z1pL5cieOf8Bp0ICe2LVVV9l5xwpAhnnrO5k+Ok0CJwSSH13bhltmqNr
- J6MzlKPHfsLn3n3DwFkJX306e5TmfH4cPOxoKY+uQZesUC3mEfvshqzjVZrNUZRa65ud
- 71iFSEhEI08KxAWlErEaul7veH7nGWnVsyCn8lZxtDgCrKWorrRBfZjvrlnfYF0XKAJb
- Ha+Z6G5N9kiqyOGybC26DAyvZocAm29rQD6hpXW0C0NfrGx5apy3JlH5Mm9rjWaxz54H
- GgDw==
+ bh=oEBoGr3X7IB7lANWmyJ0vo8TD49udt1SAuFDZMae92Y=;
+ b=WFz3Cp9sXDJehJxF/+D7tFxIq7jlzy31R2WdUCszgtRsVgRyRjUzckqjFh4mIRrlW6
+ tcs8Me2SpXcBkc4YiiIM+sMTOGQEyXWMmFgvcr1ncAIFNDr8QBwQ94LrnpQrF+KED1Tc
+ NSlMWNiVFTJ/nZz66HKF1bcXMtcvwAZXkJYqaBRqTt2K6gaNiLEiJgadwb1ne6Suv0cQ
+ 8U+WdV6TuX+fbdycyVV1vwfEpfiuynzPeGc6JKpATl8RY2nb8BSYAsJYc/jB0UA1lM8Y
+ c+kUWFWpwcuslThBCVXMAG8okz3wWrX0TnCaeuCXonhyZ5/90i7Ufh2NVxhZuh9locJf
+ spKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=EB4I3WqkMG0ssDPCVcZC0Ysf3XgZOuA6bOA7vE338fY=;
- b=32Sd4LTiP26oatThTIQiUwWp3JOF99DRsX/z/vBV+y/rat7EU6AD27YEg7oGrOdDh1
- 55Q9UYjewHy8MDX1a0sSkBM0UArqJlx5rh3YbH95ciXIt6IQ/l5kGbj6wLlMZlqKCssh
- N77hQQvjyxCNVlRX8lPLYzKjep0d4SJB6KzbeSaweOAZLbVsw5NwHi/5cu4aKZBgSP+d
- QxopJf5yC/3R5qRLZ1CfuD7Sr8KDYSPH1UIjYPcZ7MOYA/hqjb8jcjKcIm1ZzvjE14pn
- se/HQ5AgtqTJjzLAoBLi6oqR2EVFhapl8z8b9kvSc2IEMCjYICFM9zAFNno8RUmEFqRe
- mYRQ==
-X-Gm-Message-State: ANoB5plPparTK3+Daf7A30+3adv+7xXpks2Bu99flUjsg/yhu9GTx1PU
- VyuBb65LzXHRz5BggMye18OrvQ==
-X-Google-Smtp-Source: AA0mqf5oOhPgXEjn9JMms/293AHcWVE0ZsLElWgNb5bUqlb4jW7YvVdCR0Xcl91+irLXEz74dxa4zg==
-X-Received: by 2002:a05:6512:478:b0:4a2:3d2c:34ac with SMTP id
- x24-20020a056512047800b004a23d2c34acmr568409lfd.41.1668166571013; 
- Fri, 11 Nov 2022 03:36:11 -0800 (PST)
+ bh=oEBoGr3X7IB7lANWmyJ0vo8TD49udt1SAuFDZMae92Y=;
+ b=uEhkIW2eUzvy8SuSSKJFaUw+0gjWSWNSCRHryIEEcnPf5Srb0W4KYLhMCz8gfxgnN4
+ cTTULMNS3UrJPxhpKzC/4xXoGDqn4UQRtkde6Oml1vK1h+t8r9FhQGjGpPH1e49FrXvo
+ Uy52O817efKu23xkcOpNdHIa+HTYBVkOO2f7BaKlWNnKrina1hyxd45ilt9blcZbkNYR
+ PqQIh6l+i/P/QAqupheEpadOo4HzBGNLuR0hYDc8zuCjUNrkbjZ1IsILaoxMjmwlChS6
+ dj9x16UeK5CcQ4Jqq2m6pQnZ70ElA+f0H82Wv4Pjr33pseJ8wfJH/XRjtM0aU9Bo9sRT
+ qrPg==
+X-Gm-Message-State: ANoB5plM6rDyKfXcjvqLIP7T1d9VzOzE+l4fhFRUhJg0NYuLeT7bsHrz
+ RploNq6lmQHmr/qMwo6sXGTsLQ==
+X-Google-Smtp-Source: AA0mqf79IMhFGWeei5VfHf+fjaEoxMdTeoHoRdkihJODjwuK6Lm+qK9xpde8XmV2xJ5rMF4kDArDTA==
+X-Received: by 2002:a2e:b056:0:b0:278:a7de:54e6 with SMTP id
+ d22-20020a2eb056000000b00278a7de54e6mr530694ljl.367.1668166577831; 
+ Fri, 11 Nov 2022 03:36:17 -0800 (PST)
 Received: from krzk-bin.NAT.warszawa.vectranet.pl
  (088156142199.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.199])
  by smtp.gmail.com with ESMTPSA id
- bi30-20020a0565120e9e00b004acb2adfa1fsm274970lfb.307.2022.11.11.03.36.09
+ bi30-20020a0565120e9e00b004acb2adfa1fsm274970lfb.307.2022.11.11.03.36.16
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 11 Nov 2022 03:36:10 -0800 (PST)
+ Fri, 11 Nov 2022 03:36:17 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
@@ -82,10 +82,10 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 02/10] ASoC: dt-bindings: qcom,
- apr: Split services to shared schema
-Date: Fri, 11 Nov 2022 12:35:39 +0100
-Message-Id: <20221111113547.100442-3-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 08/10] ASoC: dt-bindings: qcom,
+ q6core: Split to separate schema
+Date: Fri, 11 Nov 2022 12:35:45 +0100
+Message-Id: <20221111113547.100442-9-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221111113547.100442-1-krzysztof.kozlowski@linaro.org>
 References: <20221111113547.100442-1-krzysztof.kozlowski@linaro.org>
@@ -109,232 +109,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The APR/GPR nodes are organized like:
-
-  apr-or-gpr-device-node <- qcom,apr.yaml
-    apr-gpr-service@[0-9] <- qcom,apr.yaml
-      service-specific-components <- /schemas/sound/qcom,q6*.yaml
-
-The schema for services (apr-gpr-service@[0-9]) already grows
-considerably and is still quite not specific.  It allows several
-incorrect combinations, like adding a clock-controller to a APM device.
-Restricting it would complicate the schema even more.  Bringing new
-support for sound on Qualcomm SM8450 and SC8280XP SoC would grow it as
-well.
-
-Simplify the qcom,apr.yaml by splitting the services to a shared file
-which will be:
-1. Referenced by qcom,apr.yaml with additionalProperties:true,
-2. Referenced by specific bindings for services with
-   additionalProperties:false (not yet in this commit).
-
-While moving the code, add also required 'reg' and
-'qcom,protection-domain' to further constrain the bindings.
+The APR/GPR bindings with services got complicated so move out the
+Q6Core service to its own binding.  Previously the compatible was
+documented in qcom,apr.yaml.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../bindings/soc/qcom/qcom,apr-services.yaml  |  54 +++++++++
- .../bindings/soc/qcom/qcom,apr.yaml           | 108 +-----------------
- MAINTAINERS                                   |   2 +-
- 3 files changed, 58 insertions(+), 106 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr-services.yaml
+ .../bindings/sound/qcom,q6core.yaml           | 39 +++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6core.yaml
 
-diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr-services.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,apr-services.yaml
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6core.yaml b/Documentation/devicetree/bindings/sound/qcom,q6core.yaml
 new file mode 100644
-index 000000000000..290555426c39
+index 000000000000..e240712de9ca
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr-services.yaml
-@@ -0,0 +1,54 @@
++++ b/Documentation/devicetree/bindings/sound/qcom,q6core.yaml
+@@ -0,0 +1,39 @@
 +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/soc/qcom/qcom,apr-services.yaml#
++$id: http://devicetree.org/schemas/sound/qcom,q6core.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Qualcomm APR/GPR services shared parts
++title: Qualcomm Audio Core (Q6Core)
 +
 +maintainers:
++  - Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 +
-+description:
-+  Common parts of a static service in Qualcomm APR/GPR (Asynchronous/Generic
-+  Packet Router).
++allOf:
++  - $ref: /schemas/soc/qcom/qcom,apr-services.yaml#
 +
 +properties:
-+  reg:
-+    minimum: 1
-+    maximum: 13
-+    description: |
-+      APR Service ID
-+        3 = DSP Core Service
-+        4 = Audio  Front End Service.
-+        5 = Voice Stream Manager Service.
-+        6 = Voice processing manager.
-+        7 = Audio Stream Manager Service.
-+        8 = Audio Device Manager Service.
-+        9 = Multimode voice manager.
-+        10 = Core voice stream.
-+        11 = Core voice processor.
-+        12 = Ultrasound stream manager.
-+        13 = Listen stream manager.
-+      GPR Service ID
-+        1 = Audio Process Manager Service
-+        2 = Proxy Resource Manager Service.
-+        3 = AMDB Service.
-+        4 = Voice processing manager.
-+
-+  qcom,protection-domain:
-+    $ref: /schemas/types.yaml#/definitions/string-array
-+    description: |
-+      Protection domain service name and path for APR service
-+      possible values are::
-+      "avs/audio", "msm/adsp/audio_pd".
-+      "kernel/elf_loader", "msm/modem/wlan_pd".
-+      "tms/servreg", "msm/adsp/audio_pd".
-+      "tms/servreg", "msm/modem/wlan_pd".
-+      "tms/servreg", "msm/slpi/sensor_pd".
++  compatible:
++    enum:
++      - qcom,q6core
 +
 +required:
-+  - reg
-+  - qcom,protection-domain
++  - compatible
 +
-+additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
-index 0a7a34cb2497..9302ffe567d6 100644
---- a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
-+++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
-@@ -80,115 +80,13 @@ properties:
-   '#size-cells':
-     const: 0
- 
--#APR/GPR Services
- patternProperties:
-   "^service@[1-9a-d]$":
-     type: object
-+    $ref: /schemas/soc/qcom/qcom,apr-services.yaml
-+    additionalProperties: true
-     description:
--      APR/GPR node's client devices use subnodes for desired static port services.
--
--    properties:
--      compatible:
--        enum:
--          - qcom,q6core
--          - qcom,q6asm
--          - qcom,q6afe
--          - qcom,q6adm
--          - qcom,q6apm
--          - qcom,q6prm
--
--      reg:
--        minimum: 1
--        maximum: 13
--        description:
--          APR Service ID
--            3 = DSP Core Service
--            4 = Audio  Front End Service.
--            5 = Voice Stream Manager Service.
--            6 = Voice processing manager.
--            7 = Audio Stream Manager Service.
--            8 = Audio Device Manager Service.
--            9 = Multimode voice manager.
--            10 = Core voice stream.
--            11 = Core voice processor.
--            12 = Ultrasound stream manager.
--            13 = Listen stream manager.
--          GPR Service ID
--            1 = Audio Process Manager Service
--            2 = Proxy Resource Manager Service.
--            3 = AMDB Service.
--            4 = Voice processing manager.
--
--      clock-controller:
--        $ref: /schemas/sound/qcom,q6dsp-lpass-clocks.yaml#
--        description: Qualcomm DSP LPASS clock controller
--        unevaluatedProperties: false
--
--      dais:
--        type: object
--        oneOf:
--          - $ref: /schemas/sound/qcom,q6apm-dai.yaml#
--          - $ref: /schemas/sound/qcom,q6dsp-lpass-ports.yaml#
--          - $ref: /schemas/sound/qcom,q6asm-dais.yaml#
--        unevaluatedProperties: false
--        description: Qualcomm DSP audio ports
--
--      routing:
--        type: object
--        $ref: /schemas/sound/qcom,q6adm-routing.yaml#
--        unevaluatedProperties: false
--        description: Qualcomm DSP LPASS audio routing
--
--      qcom,protection-domain:
--        $ref: /schemas/types.yaml#/definitions/string-array
--        description: protection domain service name and path for apr service
--          possible values are
--          "avs/audio", "msm/adsp/audio_pd".
--          "kernel/elf_loader", "msm/modem/wlan_pd".
--          "tms/servreg", "msm/adsp/audio_pd".
--          "tms/servreg", "msm/modem/wlan_pd".
--          "tms/servreg", "msm/slpi/sensor_pd".
--
--    allOf:
--      - if:
--          properties:
--            compatible:
--              enum:
--                - qcom,q6afe
--        then:
--          properties:
--            dais:
--              properties:
--                compatible:
--                  const: qcom,q6afe-dais
--
--      - if:
--          properties:
--            compatible:
--              enum:
--                - qcom,q6apm
--        then:
--          properties:
--            dais:
--              properties:
--                compatible:
--                  enum:
--                    - qcom,q6apm-dais
--                    - qcom,q6apm-lpass-dais
--
--      - if:
--          properties:
--            compatible:
--              enum:
--                - qcom,q6asm
--        then:
--          properties:
--            dais:
--              properties:
--                compatible:
--                  const: qcom,q6asm-dais
--
--    additionalProperties: false
-+      APR/GPR static port services.
- 
- required:
-   - compatible
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3df7b9a3f5ba..804e4a700477 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16893,7 +16893,7 @@ M:	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
- M:	Banajit Goswami <bgoswami@quicinc.com>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- S:	Supported
--F:	Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
-+F:	Documentation/devicetree/bindings/soc/qcom/qcom,apr*
- F:	Documentation/devicetree/bindings/sound/qcom,*
- F:	drivers/soc/qcom/apr.c
- F:	include/dt-bindings/sound/qcom,wcd9335.h
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/soc/qcom,apr.h>
++
++    apr {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        service@3 {
++            compatible = "qcom,q6core";
++            reg = <APR_SVC_ADSP_CORE>;
++            qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
++        };
++    };
 -- 
 2.34.1
 
