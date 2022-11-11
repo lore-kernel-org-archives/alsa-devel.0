@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B62BC433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Nov 2022 01:31:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FFE1C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Nov 2022 01:31:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07BEC1658;
-	Fri, 11 Nov 2022 02:30:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07BEC1658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 983E11680;
+	Fri, 11 Nov 2022 02:30:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 983E11680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668130298;
-	bh=xYiDQPgjBaCQBv2w5jPoqX2GJ5LdaCHQOFIhXNW5cGk=;
+	s=default; t=1668130304;
+	bh=TfJuVFvlR2o3KJEqap1qG3gwJRndC/YxttEpCE8qBl8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HOAX8PrkzWJfJFLRpsWuEpJEaykeERBnJLeqmQ+9aLbDe3bBoHtZR7VQfCvmmpnYu
-	 ukvGGD1YFoU/j2+Cb/FUBi+cX4agHEjODpM2k2liu/1T8TFB+2qnCsxfF8hmcPVyMp
-	 zYDCRoRKYgmHdNnuBAlnV4n/+DxMwB57aYL2HvE8=
+	b=IgMMNHtJNuS4WuxVuuxgKFOw7OO97eQR60OVktj5hy6yPcPSJNAfy9IKMWvGDnX6a
+	 aaSan7Ro3vX4gHxi46a9BU3AmuJlse9bcd5SiggIrHMu3irOcSUnXyxxLbujcrhz34
+	 BtVA0PQtjktMfWxm9TY7Jy8BWW6QSgZNQJnBuSpE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C226F80557;
-	Fri, 11 Nov 2022 02:30:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76247F80568;
+	Fri, 11 Nov 2022 02:30:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4E6E0F80549; Fri, 11 Nov 2022 02:30:00 +0100 (CET)
+ id 9F845F80568; Fri, 11 Nov 2022 02:30:04 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3D318F80163
- for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 02:29:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D318F80163
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3AB63F80104
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 02:29:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AB63F80104
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="iwZ26vmv"
+ header.b="O2QX6v3C"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1668130194; x=1699666194;
+ t=1668130196; x=1699666196;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=xYiDQPgjBaCQBv2w5jPoqX2GJ5LdaCHQOFIhXNW5cGk=;
- b=iwZ26vmvO9g6Ufw2G4waB8wqH0dBuxMvuRz+7lMAdIl5z/FIJsxGmPEr
- cA9NB65NC6sgmiNBN2Oh8S+XFXsJJUSzfok9mX1W6pv4qQKCwTKvo32EN
- JoAB9oUgi669yaLsnsDuR7WYmAN+L+miA+3O1lgoQyWQ+N1viMaQZYHU6
- vGO2Y/KUUx0hWDKbMV1M3xsA7pHRgBDSaVHUVjVLG6aKMcYVIsC1hJ8Jx
- v8F7CEKicdSq3rXYtOSiAtvm5O0LpIsOscpF0lQ0x3h3W/KIgFjtdkcOG
- j0zJm0ypghdAi/IfAtSQ+Jz6ux50KT9dNvVj9Xupbaz09nA5Cgfe9PVoW g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="397789713"
-X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="397789713"
+ bh=TfJuVFvlR2o3KJEqap1qG3gwJRndC/YxttEpCE8qBl8=;
+ b=O2QX6v3Ci7F6n9KukZ03LAYZy1kHJP0h3lXYlT+LzFj8TL4YKmtOXHOC
+ wnqy4ZltJ26uTkyu71kJ17jVcfJBOIYAjOoVb7CMQFPJ2OpWYpKcYdwAl
+ 2vUYuAWB9AgFcacfdeTnqQi5tSw92tNJdP/1lsfosCjErdQlKTugUD4UB
+ 9UacswHgrIJIzEAWOGf85bvj8chyCDXq6mezcOBE75fOE9RrNSCeo7qly
+ ZgxCsgTKwJ06fQQoBl6LW7ti+gEQV/Q91CkPFZ8ktBO8RxFu/9y3duAl6
+ RKdgcz9D5hG/yl6cjFzuwAeJ0moo6pOF0WlhW63PbYvUJKA0mxLiZvQDT w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="397789730"
+X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="397789730"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Nov 2022 17:29:49 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="780003220"
-X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="780003220"
+ 10 Nov 2022 17:29:54 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="780003244"
+X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="780003244"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Nov 2022 17:29:47 -0800
+ 10 Nov 2022 17:29:52 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 1/7] soundwire: intel: start using hw_ops
-Date: Fri, 11 Nov 2022 09:31:28 +0800
-Message-Id: <20221111013135.38289-2-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 4/7] soundwire: intel: add bus management callbacks in hw_ops
+Date: Fri, 11 Nov 2022 09:31:31 +0800
+Message-Id: <20221111013135.38289-5-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221111013135.38289-1-yung-chuan.liao@linux.intel.com>
 References: <20221111013135.38289-1-yung-chuan.liao@linux.intel.com>
@@ -87,187 +87,187 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Before introducing new hardware with completely different register
-spaces and programming sequences, we need to abstract some of the
-existing routines in hw_ops that will be platform-specific. For now we
-only use the 'cnl' ops - after the first Intel platform with SoundWire
-capabilities.
-
-Rather than one big intrusive patch, hw_ops are introduced in this
-patch so show the dependencies between drivers. Follow-up patches will
-introduce callbacks for debugfs, power and bus management.
+No functionality change, only add indirection for bus management
+helpers.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c           | 38 +++++++++++++++++++++++------
- drivers/soundwire/intel.h           |  3 +++
- drivers/soundwire/intel_init.c      |  1 +
- include/linux/soundwire/sdw_intel.h | 15 ++++++++++++
- sound/soc/sof/intel/hda.c           |  2 ++
- 5 files changed, 51 insertions(+), 8 deletions(-)
+ drivers/soundwire/intel.c           | 24 ++++++++++++--------
+ drivers/soundwire/intel.h           | 34 +++++++++++++++++++++++++++++
+ include/linux/soundwire/sdw_intel.h | 11 ++++++++++
+ 3 files changed, 60 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index b9cb7e31ddb3..f88319f8ded4 100644
+index 0496eb0d6084..6d2fdf3a01fd 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -745,10 +745,10 @@ static int intel_free_stream(struct sdw_intel *sdw,
-  * bank switch routines
-  */
+@@ -1428,6 +1428,12 @@ const struct sdw_intel_hw_ops sdw_intel_cnl_hw_ops = {
  
--static int intel_pre_bank_switch(struct sdw_bus *bus)
-+static int intel_pre_bank_switch(struct sdw_intel *sdw)
- {
--	struct sdw_cdns *cdns = bus_to_cdns(bus);
--	struct sdw_intel *sdw = cdns_to_intel(cdns);
-+	struct sdw_cdns *cdns = &sdw->cdns;
-+	struct sdw_bus *bus = &cdns->bus;
+ 	.register_dai = intel_register_dai,
  
- 	/* Write to register only for multi-link */
- 	if (!bus->multi_link)
-@@ -759,10 +759,10 @@ static int intel_pre_bank_switch(struct sdw_bus *bus)
- 	return 0;
- }
- 
--static int intel_post_bank_switch(struct sdw_bus *bus)
-+static int intel_post_bank_switch(struct sdw_intel *sdw)
- {
--	struct sdw_cdns *cdns = bus_to_cdns(bus);
--	struct sdw_intel *sdw = cdns_to_intel(cdns);
-+	struct sdw_cdns *cdns = &sdw->cdns;
-+	struct sdw_bus *bus = &cdns->bus;
- 	void __iomem *shim = sdw->link_res->shim;
- 	int sync_reg, ret;
- 
-@@ -1422,6 +1422,28 @@ static int intel_stop_bus(struct sdw_intel *sdw, bool clock_stop)
- 	return 0;
- }
- 
-+const struct sdw_intel_hw_ops sdw_intel_cnl_hw_ops = {
-+	.pre_bank_switch = intel_pre_bank_switch,
-+	.post_bank_switch = intel_post_bank_switch,
-+};
-+EXPORT_SYMBOL_NS(sdw_intel_cnl_hw_ops, SOUNDWIRE_INTEL);
++	.check_clock_stop = intel_check_clock_stop,
++	.start_bus = intel_start_bus,
++	.start_bus_after_reset = intel_start_bus_after_reset,
++	.start_bus_after_clock_stop = intel_start_bus_after_clock_stop,
++	.stop_bus = intel_stop_bus,
 +
-+static int generic_pre_bank_switch(struct sdw_bus *bus)
-+{
-+	struct sdw_cdns *cdns = bus_to_cdns(bus);
-+	struct sdw_intel *sdw = cdns_to_intel(cdns);
-+
-+	return sdw->link_res->hw_ops->pre_bank_switch(sdw);
-+}
-+
-+static int generic_post_bank_switch(struct sdw_bus *bus)
-+{
-+	struct sdw_cdns *cdns = bus_to_cdns(bus);
-+	struct sdw_intel *sdw = cdns_to_intel(cdns);
-+
-+	return sdw->link_res->hw_ops->post_bank_switch(sdw);
-+}
-+
- static int sdw_master_read_intel_prop(struct sdw_bus *bus)
- {
- 	struct sdw_master_prop *prop = &bus->prop;
-@@ -1477,8 +1499,8 @@ static struct sdw_master_ops sdw_intel_ops = {
- 	.xfer_msg_defer = cdns_xfer_msg_defer,
- 	.reset_page_addr = cdns_reset_page_addr,
- 	.set_bus_conf = cdns_bus_conf,
--	.pre_bank_switch = intel_pre_bank_switch,
--	.post_bank_switch = intel_post_bank_switch,
-+	.pre_bank_switch = generic_pre_bank_switch,
-+	.post_bank_switch = generic_post_bank_switch,
- 	.read_ping_status = cdns_read_ping_status,
+ 	.pre_bank_switch = intel_pre_bank_switch,
+ 	.post_bank_switch = intel_post_bank_switch,
  };
+@@ -1622,7 +1628,7 @@ int intel_link_startup(struct auxiliary_device *auxdev)
+ 	sdw_intel_debugfs_init(sdw);
  
+ 	/* start bus */
+-	ret = intel_start_bus(sdw);
++	ret = sdw_intel_start_bus(sdw);
+ 	if (ret) {
+ 		dev_err(dev, "bus start failed: %d\n", ret);
+ 		goto err_power_up;
+@@ -1850,7 +1856,7 @@ static int __maybe_unused intel_suspend(struct device *dev)
+ 		return 0;
+ 	}
+ 
+-	ret = intel_stop_bus(sdw, false);
++	ret = sdw_intel_stop_bus(sdw, false);
+ 	if (ret < 0) {
+ 		dev_err(dev, "%s: cannot stop bus: %d\n", __func__, ret);
+ 		return ret;
+@@ -1876,14 +1882,14 @@ static int __maybe_unused intel_suspend_runtime(struct device *dev)
+ 	clock_stop_quirks = sdw->link_res->clock_stop_quirks;
+ 
+ 	if (clock_stop_quirks & SDW_INTEL_CLK_STOP_TEARDOWN) {
+-		ret = intel_stop_bus(sdw, false);
++		ret = sdw_intel_stop_bus(sdw, false);
+ 		if (ret < 0) {
+ 			dev_err(dev, "%s: cannot stop bus during teardown: %d\n",
+ 				__func__, ret);
+ 			return ret;
+ 		}
+ 	} else if (clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET || !clock_stop_quirks) {
+-		ret = intel_stop_bus(sdw, true);
++		ret = sdw_intel_stop_bus(sdw, true);
+ 		if (ret < 0) {
+ 			dev_err(dev, "%s: cannot stop bus during clock_stop: %d\n",
+ 				__func__, ret);
+@@ -1941,7 +1947,7 @@ static int __maybe_unused intel_resume(struct device *dev)
+ 	 */
+ 	sdw_clear_slave_status(bus, SDW_UNATTACH_REQUEST_MASTER_RESET);
+ 
+-	ret = intel_start_bus(sdw);
++	ret = sdw_intel_start_bus(sdw);
+ 	if (ret < 0) {
+ 		dev_err(dev, "cannot start bus during resume\n");
+ 		intel_link_power_down(sdw);
+@@ -1995,7 +2001,7 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
+ 		 */
+ 		sdw_clear_slave_status(bus, SDW_UNATTACH_REQUEST_MASTER_RESET);
+ 
+-		ret = intel_start_bus(sdw);
++		ret = sdw_intel_start_bus(sdw);
+ 		if (ret < 0) {
+ 			dev_err(dev, "%s: cannot start bus after teardown: %d\n", __func__, ret);
+ 			intel_link_power_down(sdw);
+@@ -2010,7 +2016,7 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
+ 			return ret;
+ 		}
+ 
+-		ret = intel_start_bus_after_reset(sdw);
++		ret = sdw_intel_start_bus_after_reset(sdw);
+ 		if (ret < 0) {
+ 			dev_err(dev, "%s: cannot start bus after reset: %d\n", __func__, ret);
+ 			intel_link_power_down(sdw);
+@@ -2018,7 +2024,7 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
+ 		}
+ 	} else if (!clock_stop_quirks) {
+ 
+-		intel_check_clock_stop(sdw);
++		sdw_intel_check_clock_stop(sdw);
+ 
+ 		ret = intel_link_power_up(sdw);
+ 		if (ret) {
+@@ -2026,7 +2032,7 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
+ 			return ret;
+ 		}
+ 
+-		ret = intel_start_bus_after_clock_stop(sdw);
++		ret = sdw_intel_start_bus_after_clock_stop(sdw);
+ 		if (ret < 0) {
+ 			dev_err(dev, "%s: cannot start bus after clock stop: %d\n", __func__, ret);
+ 			intel_link_power_down(sdw);
 diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
-index cd93a44dba9a..3170df76b411 100644
+index 0521cab311a3..99a2d875a331 100644
 --- a/drivers/soundwire/intel.h
 +++ b/drivers/soundwire/intel.h
-@@ -7,6 +7,7 @@
- /**
-  * struct sdw_intel_link_res - Soundwire Intel link resource structure,
-  * typically populated by the controller driver.
-+ * @hw_ops: platform-specific ops
-  * @mmio_base: mmio base of SoundWire registers
-  * @registers: Link IO registers base
-  * @shim: Audio shim pointer
-@@ -22,6 +23,8 @@
-  * @list: used to walk-through all masters exposed by the same controller
-  */
- struct sdw_intel_link_res {
-+	const struct sdw_intel_hw_ops *hw_ops;
-+
- 	void __iomem *mmio_base; /* not strictly needed, useful for debug */
- 	void __iomem *registers;
- 	void __iomem *shim;
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index d091513919df..1e6d74b3e773 100644
---- a/drivers/soundwire/intel_init.c
-+++ b/drivers/soundwire/intel_init.c
-@@ -60,6 +60,7 @@ static struct sdw_intel_link_dev *intel_link_dev_register(struct sdw_intel_res *
+@@ -84,4 +84,38 @@ static inline int sdw_intel_register_dai(struct sdw_intel *sdw)
+ 	return -ENOTSUPP;
+ }
  
- 	/* Add link information used in the driver probe */
- 	link = &ldev->link_res;
-+	link->hw_ops = res->hw_ops;
- 	link->mmio_base = res->mmio_base;
- 	link->registers = res->mmio_base + SDW_LINK_BASE
- 		+ (SDW_LINK_SIZE * link_id);
++static inline void sdw_intel_check_clock_stop(struct sdw_intel *sdw)
++{
++	if (SDW_INTEL_CHECK_OPS(sdw, check_clock_stop))
++		SDW_INTEL_OPS(sdw, check_clock_stop)(sdw);
++}
++
++static inline int sdw_intel_start_bus(struct sdw_intel *sdw)
++{
++	if (SDW_INTEL_CHECK_OPS(sdw, start_bus))
++		return SDW_INTEL_OPS(sdw, start_bus)(sdw);
++	return -ENOTSUPP;
++}
++
++static inline int sdw_intel_start_bus_after_reset(struct sdw_intel *sdw)
++{
++	if (SDW_INTEL_CHECK_OPS(sdw, start_bus_after_reset))
++		return SDW_INTEL_OPS(sdw, start_bus_after_reset)(sdw);
++	return -ENOTSUPP;
++}
++
++static inline int sdw_intel_start_bus_after_clock_stop(struct sdw_intel *sdw)
++{
++	if (SDW_INTEL_CHECK_OPS(sdw, start_bus_after_clock_stop))
++		return SDW_INTEL_OPS(sdw, start_bus_after_clock_stop)(sdw);
++	return -ENOTSUPP;
++}
++
++static inline int sdw_intel_stop_bus(struct sdw_intel *sdw, bool clock_stop)
++{
++	if (SDW_INTEL_CHECK_OPS(sdw, stop_bus))
++		return SDW_INTEL_OPS(sdw, stop_bus)(sdw, clock_stop);
++	return -ENOTSUPP;
++}
++
+ #endif /* __SDW_INTEL_LOCAL_H */
 diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-index 2e9fd91572d4..2dbe34b41ef1 100644
+index 5be63d4fe62e..cee61bc9af8a 100644
 --- a/include/linux/soundwire/sdw_intel.h
 +++ b/include/linux/soundwire/sdw_intel.h
-@@ -233,6 +233,7 @@ struct sdw_intel_ctx {
-  * struct sdw_intel_res - Soundwire Intel global resource structure,
-  * typically populated by the DSP driver
-  *
-+ * @hw_ops: abstraction for platform ops
-  * @count: link count
-  * @mmio_base: mmio base of SoundWire registers
-  * @irq: interrupt number
-@@ -249,6 +250,7 @@ struct sdw_intel_ctx {
-  * @alh_base: sdw alh base.
+@@ -300,6 +300,11 @@ struct sdw_intel;
+  * @debugfs_init: initialize all debugfs capabilities
+  * @debugfs_exit: close and cleanup debugfs capabilities
+  * @register_dai: read all PDI information and register DAIs
++ * @check_clock_stop: throw error message if clock is not stopped.
++ * @start_bus: normal start
++ * @start_bus_after_reset: start after reset
++ * @start_bus_after_clock_stop: start after mode0 clock stop
++ * @stop_bus: stop all bus
+  * @pre_bank_switch: helper for bus management
+  * @post_bank_switch: helper for bus management
   */
- struct sdw_intel_res {
-+	const struct sdw_intel_hw_ops *hw_ops;
- 	int count;
- 	void __iomem *mmio_base;
- 	int irq;
-@@ -292,4 +294,17 @@ irqreturn_t sdw_intel_thread(int irq, void *dev_id);
+@@ -309,6 +314,12 @@ struct sdw_intel_hw_ops {
  
- #define SDW_INTEL_QUIRK_MASK_BUS_DISABLE      BIT(1)
+ 	int (*register_dai)(struct sdw_intel *sdw);
  
-+struct sdw_intel;
++	void (*check_clock_stop)(struct sdw_intel *sdw);
++	int (*start_bus)(struct sdw_intel *sdw);
++	int (*start_bus_after_reset)(struct sdw_intel *sdw);
++	int (*start_bus_after_clock_stop)(struct sdw_intel *sdw);
++	int (*stop_bus)(struct sdw_intel *sdw, bool clock_stop);
 +
-+/* struct intel_sdw_hw_ops - SoundWire ops for Intel platforms.
-+ * @pre_bank_switch: helper for bus management
-+ * @post_bank_switch: helper for bus management
-+ */
-+struct sdw_intel_hw_ops {
-+	int (*pre_bank_switch)(struct sdw_intel *sdw);
-+	int (*post_bank_switch)(struct sdw_intel *sdw);
-+};
-+
-+extern const struct sdw_intel_hw_ops sdw_intel_cnl_hw_ops;
-+
- #endif
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 1188ec51816b..3d6254489056 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -188,6 +188,7 @@ static int hda_sdw_probe(struct snd_sof_dev *sdev)
- 
- 	memset(&res, 0, sizeof(res));
- 
-+	res.hw_ops = &sdw_intel_cnl_hw_ops;
- 	res.mmio_base = sdev->bar[HDA_DSP_BAR];
- 	res.shim_base = hdev->desc->sdw_shim_base;
- 	res.alh_base = hdev->desc->sdw_alh_base;
-@@ -1694,3 +1695,4 @@ MODULE_IMPORT_NS(SND_SOC_SOF_HDA_AUDIO_CODEC_I915);
- MODULE_IMPORT_NS(SND_SOC_SOF_XTENSA);
- MODULE_IMPORT_NS(SND_INTEL_SOUNDWIRE_ACPI);
- MODULE_IMPORT_NS(SOUNDWIRE_INTEL_INIT);
-+MODULE_IMPORT_NS(SOUNDWIRE_INTEL);
+ 	int (*pre_bank_switch)(struct sdw_intel *sdw);
+ 	int (*post_bank_switch)(struct sdw_intel *sdw);
+ };
 -- 
 2.25.1
 
