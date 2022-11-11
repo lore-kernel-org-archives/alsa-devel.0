@@ -4,88 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9965DC4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 12 Nov 2022 14:11:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC653C433FE
+	for <alsa-devel@archiver.kernel.org>; Sat, 12 Nov 2022 14:12:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CBDEF15E0;
-	Sat, 12 Nov 2022 15:10:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBDEF15E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB9581654;
+	Sat, 12 Nov 2022 15:11:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB9581654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668262282;
-	bh=/4JKZtcckJ/2ISECVr45OWmjtgy3O7suUBqc1H/tiZc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=UEmj5doLXtKLQB700u62kGyKqCt3RUrXENZajgIqQo5mfK5j0OFBnMCdN8qUW9HRu
-	 hAk4qWcZByVcE7vdLfNaIVWvtPXNNdqXiod5g1oW9glgdtjxYUvrTP5Ts9y0istLOm
-	 M8/nOz9wMvSr+IAZcr4YulOlK4gj43wAnYM5IRkk=
+	s=default; t=1668262365;
+	bh=FWw2GF4HLLJXUXc/lqJntsC0Snn3Hne/L/wgUOnMD00=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=TNramUuphiK9ERFaSoK/5L6OuwG8fRiO4DQjLfKZsUh0WwgG9Ql9VMnIHkjTPwW8a
+	 vQjKv4Q3frTJgpU3VXrxoKklu9nZdPThFZEC45SZqbVXigF2Dyj5PIhh2EZcud8B4n
+	 nihhdfzxKwos4YN33/FNmkPKV97txkdxOXAu+aAc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A43EF800CC;
-	Sat, 12 Nov 2022 15:10:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7433DF80254;
+	Sat, 12 Nov 2022 15:11:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 109D0F800CC; Sat, 12 Nov 2022 15:10:30 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 88D72F80162; Fri, 11 Nov 2022 09:42:13 +0100 (CET)
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.35])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E0013F800CC;
- Sat, 12 Nov 2022 15:10:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0013F800CC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="FmgSE1Dd"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="wmtJ+VSo"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40F68F80162
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 09:42:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40F68F80162
+Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 246651F88F;
- Sat, 12 Nov 2022 14:10:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1668262222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hca6nGOkQBaZe/UUSAuQCCX33sld7xfAXwjJspBu2ps=;
- b=FmgSE1DdPkgqkbE/WKVEO13epavsK8qIrF74k2iIOFvcYwVSUEjtRlek4n0dbNMNR1Tttq
- Nq1NZ4FBt8q815w9VSZOu1DAG57kDLLesY43jO+b4YfArSHszY7PN53YYIOHZ8ZHGWRpjh
- oOcGm5LXUyA/su6VPDNKHajHry6rxN8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1668262222;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hca6nGOkQBaZe/UUSAuQCCX33sld7xfAXwjJspBu2ps=;
- b=wmtJ+VSoIp7jxdA1W6zxwn4E6Q4gG3BT0/6gBY1iBjW3b1boGU1p6zKy4PvY+BTi6iUICE
- zqxHHAnq4WnJCQDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E1B7313A08;
- Sat, 12 Nov 2022 14:10:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id OaeMNk2pb2PGLAAAMHmgww
- (envelope-from <tiwai@suse.de>); Sat, 12 Nov 2022 14:10:21 +0000
-Date: Sat, 12 Nov 2022 15:10:21 +0100
-Message-ID: <87y1sg1cxe.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [syzbot] WARNING in snd_usbmidi_output_open
-In-Reply-To: <Y2+hCnVYWHuROAEF@sirena.org.uk>
-References: <000000000000734a7305ed3608ba@google.com>
- <00000000000073937205ed45fe5c@google.com>
- <Y2+hCnVYWHuROAEF@sirena.org.uk>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, rafael@kernel.org, gregkh@linuxfoundation.org,
- tiwai@suse.com, clemens@ladisch.de, lgirdwood@gmail.com,
- alsa-devel-owner@alsa-project.org, linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com,
- syzbot <syzbot+9abda841d636d86c41da@syzkaller.appspotmail.com>,
- peda@axentia.se
+ by mxhk.zte.com.cn (FangMail) with ESMTPS id 4N7sdR1xqfz5PkGl;
+ Fri, 11 Nov 2022 16:42:03 +0800 (CST)
+Received: from xaxapp01.zte.com.cn ([10.88.40.50])
+ by mse-fl2.zte.com.cn with SMTP id 2AB8fntW013165;
+ Fri, 11 Nov 2022 16:41:49 +0800 (+08)
+ (envelope-from ye.xingchen@zte.com.cn)
+Received: from mapi (xaxapp02[null]) by mapi (Zmail) with MAPI id mid31;
+ Fri, 11 Nov 2022 16:41:51 +0800 (CST)
+Date: Fri, 11 Nov 2022 16:41:51 +0800 (CST)
+X-Zmail-TransId: 2afa636e0acfffffffffc94e740f
+X-Mailer: Zmail v1.0
+Message-ID: <202211111641514826535@zte.com.cn>
+Mime-Version: 1.0
+From: <ye.xingchen@zte.com.cn>
+To: <fengzheng923@gmail.com>
+Subject: =?UTF-8?B?W1BBVENIXSBBU29DOiBzdW54aTogdXNlIGRldm1fcGxhdGZvcm1fZ2V0X2FuZF9pb3JlbWFwX3Jlc291cmNlKCk=?=
+Content-Type: text/plain;
+	charset="UTF-8"
+X-MAIL: mse-fl2.zte.com.cn 2AB8fntW013165
+X-Fangmail-Gw-Spam-Type: 0
+X-FangMail-Miltered: at cgslv5.04-192.168.250.138.novalocal with ID
+ 636E0ADB.000 by FangMail milter!
+X-FangMail-Envelope: 1668156123/4N7sdR1xqfz5PkGl/636E0ADB.000/10.5.228.133/[10.5.228.133]/mse-fl2.zte.com.cn/<ye.xingchen@zte.com.cn>
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 636E0ADB.000/4N7sdR1xqfz5PkGl
+X-Mailman-Approved-At: Sat, 12 Nov 2022 15:11:54 +0100
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ chi.minghao@zte.com.cn, lgirdwood@gmail.com, broonie@kernel.org,
+ linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,31 +78,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 12 Nov 2022 14:35:06 +0100,
-Mark Brown wrote:
-> 
-> On Sat, Nov 12, 2022 at 05:29:21AM -0800, syzbot wrote:
-> > syzbot has bisected this issue to:
-> > 
-> > commit 4f8ed19593872b710f27bbc3b7a9ce03310efc57
-> > Author: Mark Brown <broonie@kernel.org>
-> > Date:   Thu Jun 2 13:10:58 2022 +0000
-> > 
-> >     ASoC: tfa9879: Use modern ASoC DAI format terminology
-> 
-> This bisection really doesn't seem credible for an issue in a different
-> driver...  The tfa9879 is neither a USB nor MIDI device, and the commit
-> in question is a stylistic update.
+From: Minghao Chi <chi.minghao@zte.com.cn>
 
-Yes, the bisection result is bogus.
+Convert platform_get_resource(), devm_ioremap_resource() to a single
+call to devm_platform_get_and_ioremap_resource(), as this is exactly
+what this function does.
 
-And, the problem here is just a kernel WARNING produced by
-snd_BUG_ON() macro usage, and the check itself is valid.
-We just need to drop snd_BUG_ON() wrapping.
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Minghao Chi <chi.minghao@zte.com.cn>
+---
+ sound/soc/sunxi/sun50i-dmic.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Will submit the fix later.
+diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmic.c
+index 62509cb02995..069c993acb31 100644
+--- a/sound/soc/sunxi/sun50i-dmic.c
++++ b/sound/soc/sunxi/sun50i-dmic.c
+@@ -317,8 +317,7 @@ static int sun50i_dmic_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
 
-
-thanks,
-
-Takashi
+ 	/* Get the addresses */
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	base = devm_ioremap_resource(&pdev->dev, res);
++	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(base))
+ 		return dev_err_probe(&pdev->dev, PTR_ERR(base),
+ 				     "get resource failed.\n");
+-- 
+2.25.1
