@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9820DC433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Nov 2022 01:32:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6C87C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Nov 2022 01:32:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA2CF167E;
-	Fri, 11 Nov 2022 02:31:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA2CF167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E21F61679;
+	Fri, 11 Nov 2022 02:31:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E21F61679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668130335;
-	bh=R36o+T2mIWGk1g7hDAP87b/H+omxQnT6D5n2NJUDimE=;
+	s=default; t=1668130350;
+	bh=9PyiT4xs21Bv2WDv7eYaoCUfVE+lPLCmDaq/TH3rDRo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F1+zCFNGDAqLZZ5izEhHYp/xg7faddCAChfjWz1tgEqu+y4IEzptuMry2U1biR3bX
-	 LyUW3rqZ4WT8v6f/JdHn0/fBifSPZWEKrppvvRScPE6+yTYaJtVjGSUiCng4jTsIrO
-	 jRgkihdQH1esxDUb8q4pDVNPH71eQKOFgJSkES4U=
+	b=ZRxkwWnrUTg19VfgjP638FddfMDUda9G35JjbgFKlgUjrw/3Jgu00JZ0qxuld+2Zy
+	 +I/kQ4eqWWqtfSgcppdh6DB+a2gBFtDoICaAjw7tWP+EHU0AGtCy9O9YYOgPuUiAt+
+	 dZ09TzllHnP0YU5PRd/Wq0P6gNcULGRUKklCYGdU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 565A3F80578;
-	Fri, 11 Nov 2022 02:30:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27918F8057D;
+	Fri, 11 Nov 2022 02:30:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B16D8F8056F; Fri, 11 Nov 2022 02:30:06 +0100 (CET)
+ id 5F103F80570; Fri, 11 Nov 2022 02:30:07 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2C8BF80162
- for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 02:29:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2C8BF80162
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59924F80163
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 02:29:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59924F80163
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="J6vUwCrP"
+ header.b="VogXdEFR"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1668130196; x=1699666196;
+ t=1668130200; x=1699666200;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=R36o+T2mIWGk1g7hDAP87b/H+omxQnT6D5n2NJUDimE=;
- b=J6vUwCrPjaPJdILB9gQ0VrYVWoSOYRMTTITQS/tlDBzBTE5lFqrKj4F1
- neuA/noNdm+hPn6FpQ+JgU0ICBHNtrBa/qolnFWegReALkZa9AJuwQqDj
- P33zx1llUL3RpBcG2GdD4gv1AH3/uHBw9Hpn/pvPINUJuAkOG8KcMLZxM
- 77j5wK22mqv+JDwCIqYKC0tGiuMYfrsn/e5TjrW3qtMJg9b9WEnNuX55U
- 7UQZTpchktC1XPUEO62oIVwptjwb4bZGshkailOkLUgKfouJ7XMF3LIZ+
- Utg+2Qg1dmVFNQtRDGXOR804R5QkIr2I+V9RnRWtUi2jjRqtMKaJsOOs3 Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="397789724"
-X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="397789724"
+ bh=9PyiT4xs21Bv2WDv7eYaoCUfVE+lPLCmDaq/TH3rDRo=;
+ b=VogXdEFRMVmDXoxxTvEUcp4YlTD0Ly541JphCGp0DFqhnXLhfzyjXY9Q
+ 3E5qDejkKRet/5E2J/a5NnfRsXkPA+3qmgnxPKgFsy0cB8bE5wONuEHDW
+ 5p3cTYmo4vmn/yB/aoF5s8PurU2wOonP7AFtNYqKkhN/ylQn35o4GDxWa
+ PDBg5DFEjOIiIHGzQlxQzCXp+HYBDJW48V2PaziarxB/hBvtiGEw/GLvr
+ qdgZoGHRd0rJjGR5fG9Mwisix2cgXeL4U+zfB3R1j3CUXxJLPPOHyhyXG
+ iBZ40WPKQZ4lP7UXg4jT64OKRvK991JkvsHRGbglPObqVcRu9ZtgQv7dL g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="397789745"
+X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="397789745"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Nov 2022 17:29:52 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="780003235"
-X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="780003235"
+ 10 Nov 2022 17:29:58 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="780003268"
+X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="780003268"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Nov 2022 17:29:50 -0800
+ 10 Nov 2022 17:29:56 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 3/7] soundwire: intel: add register_dai callback in hw_ops
-Date: Fri, 11 Nov 2022 09:31:30 +0800
-Message-Id: <20221111013135.38289-4-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 6/7] soundwire: intel: add in-band wake callbacks in hw_ops
+Date: Fri, 11 Nov 2022 09:31:33 +0800
+Message-Id: <20221111013135.38289-7-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221111013135.38289-1-yung-chuan.liao@linux.intel.com>
 References: <20221111013135.38289-1-yung-chuan.liao@linux.intel.com>
@@ -87,73 +87,105 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-No functionality change, only add indirection for DAI registration
-helper.
+No functionality change, only add indirection for in-band wake
+management helpers.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c           | 4 +++-
- drivers/soundwire/intel.h           | 7 +++++++
- include/linux/soundwire/sdw_intel.h | 3 +++
- 3 files changed, 13 insertions(+), 1 deletion(-)
+ drivers/soundwire/intel.c           | 11 +++++++----
+ drivers/soundwire/intel.h           | 13 +++++++++++++
+ include/linux/soundwire/sdw_intel.h |  5 +++++
+ 3 files changed, 25 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 914f2fb43721..0496eb0d6084 100644
+index 2320f1b8a2d1..ea6479b4010d 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -1426,6 +1426,8 @@ const struct sdw_intel_hw_ops sdw_intel_cnl_hw_ops = {
- 	.debugfs_init = intel_debugfs_init,
- 	.debugfs_exit = intel_debugfs_exit,
+@@ -1437,6 +1437,9 @@ const struct sdw_intel_hw_ops sdw_intel_cnl_hw_ops = {
+ 	.link_power_up = intel_link_power_up,
+ 	.link_power_down = intel_link_power_down,
  
-+	.register_dai = intel_register_dai,
++	.shim_check_wake = intel_shim_check_wake,
++	.shim_wake = intel_shim_wake,
 +
  	.pre_bank_switch = intel_pre_bank_switch,
  	.post_bank_switch = intel_post_bank_switch,
  };
-@@ -1611,7 +1613,7 @@ int intel_link_startup(struct auxiliary_device *auxdev)
- 		goto err_init;
+@@ -1720,11 +1723,11 @@ int intel_link_process_wakeen_event(struct auxiliary_device *auxdev)
+ 		return 0;
+ 	}
  
- 	/* Register DAIs */
--	ret = intel_register_dai(sdw);
-+	ret = sdw_intel_register_dai(sdw);
- 	if (ret) {
- 		dev_err(dev, "DAI registration failed: %d\n", ret);
- 		goto err_power_up;
+-	if (!intel_shim_check_wake(sdw))
++	if (!sdw_intel_shim_check_wake(sdw))
+ 		return 0;
+ 
+ 	/* disable WAKEEN interrupt ASAP to prevent interrupt flood */
+-	intel_shim_wake(sdw, false);
++	sdw_intel_shim_wake(sdw, false);
+ 
+ 	/*
+ 	 * resume the Master, which will generate a bus reset and result in
+@@ -1852,7 +1855,7 @@ static int __maybe_unused intel_suspend(struct device *dev)
+ 				 */
+ 				dev_err(dev, "%s: invalid config: parent is suspended\n", __func__);
+ 			} else {
+-				intel_shim_wake(sdw, false);
++				sdw_intel_shim_wake(sdw, false);
+ 			}
+ 		}
+ 
+@@ -1987,7 +1990,7 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
+ 	}
+ 
+ 	/* unconditionally disable WAKEEN interrupt */
+-	intel_shim_wake(sdw, false);
++	sdw_intel_shim_wake(sdw, false);
+ 
+ 	clock_stop_quirks = sdw->link_res->clock_stop_quirks;
+ 
 diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
-index 5548b8451d01..0521cab311a3 100644
+index 0f63e7584132..9ac3397757a0 100644
 --- a/drivers/soundwire/intel.h
 +++ b/drivers/soundwire/intel.h
-@@ -77,4 +77,11 @@ static inline void sdw_intel_debugfs_exit(struct sdw_intel *sdw)
- 		SDW_INTEL_OPS(sdw, debugfs_exit)(sdw);
+@@ -132,4 +132,17 @@ static inline int sdw_intel_link_power_down(struct sdw_intel *sdw)
+ 	return -ENOTSUPP;
  }
  
-+static inline int sdw_intel_register_dai(struct sdw_intel *sdw)
++static inline int sdw_intel_shim_check_wake(struct sdw_intel *sdw)
 +{
-+	if (SDW_INTEL_CHECK_OPS(sdw, register_dai))
-+		return SDW_INTEL_OPS(sdw, register_dai)(sdw);
++	if (SDW_INTEL_CHECK_OPS(sdw, shim_check_wake))
++		return SDW_INTEL_OPS(sdw, shim_check_wake)(sdw);
 +	return -ENOTSUPP;
++}
++
++static inline void sdw_intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
++{
++	if (SDW_INTEL_CHECK_OPS(sdw, shim_wake))
++		SDW_INTEL_OPS(sdw, shim_wake)(sdw, wake_enable);
 +}
 +
  #endif /* __SDW_INTEL_LOCAL_H */
 diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-index 211924e4ebf2..5be63d4fe62e 100644
+index 81430201b8b9..0942cd464095 100644
 --- a/include/linux/soundwire/sdw_intel.h
 +++ b/include/linux/soundwire/sdw_intel.h
-@@ -299,6 +299,7 @@ struct sdw_intel;
- /* struct intel_sdw_hw_ops - SoundWire ops for Intel platforms.
-  * @debugfs_init: initialize all debugfs capabilities
-  * @debugfs_exit: close and cleanup debugfs capabilities
-+ * @register_dai: read all PDI information and register DAIs
+@@ -307,6 +307,8 @@ struct sdw_intel;
+  * @stop_bus: stop all bus
+  * @link_power_up: power-up using chip-specific helpers
+  * @link_power_down: power-down with chip-specific helpers
++ * @shim_check_wake: check if a wake was received
++ * @shim_wake: enable/disable in-band wake management
   * @pre_bank_switch: helper for bus management
   * @post_bank_switch: helper for bus management
   */
-@@ -306,6 +307,8 @@ struct sdw_intel_hw_ops {
- 	void (*debugfs_init)(struct sdw_intel *sdw);
- 	void (*debugfs_exit)(struct sdw_intel *sdw);
+@@ -325,6 +327,9 @@ struct sdw_intel_hw_ops {
+ 	int (*link_power_up)(struct sdw_intel *sdw);
+ 	int (*link_power_down)(struct sdw_intel *sdw);
  
-+	int (*register_dai)(struct sdw_intel *sdw);
++	int  (*shim_check_wake)(struct sdw_intel *sdw);
++	void (*shim_wake)(struct sdw_intel *sdw, bool wake_enable);
 +
  	int (*pre_bank_switch)(struct sdw_intel *sdw);
  	int (*post_bank_switch)(struct sdw_intel *sdw);
