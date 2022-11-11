@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2E56C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Nov 2022 17:16:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 409EDC433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Nov 2022 17:16:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E7AF1688;
-	Fri, 11 Nov 2022 18:15:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E7AF1688
+	by alsa0.perex.cz (Postfix) with ESMTPS id 48641167E;
+	Fri, 11 Nov 2022 18:15:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48641167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668186982;
-	bh=BK/wlyQirHPg/jPftmmgrMeftFTDzLPkC19m/RcmKrw=;
+	s=default; t=1668187009;
+	bh=0J4m8bOsMtAWsnH0ib/AZ1x3QGnREQKMOlfrWvv6pOo=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YpZfP7UOyTlsVeZl9krCphT3XOcCGu5M5wXblE+VrMlH7MPH7MNrAPLjLkBOvnhq+
-	 3V9TxWdIhPxjlfPGwLbW0BZ5GlTK9i2zKoNoJggdwchyfgzgbM85BTpJAE4ODoLvA/
-	 0ELqX/J2CYiUrbxBo1DdBSyQRbLxcNEkUNDT0hJ4=
+	b=NYJHaNFMLLwYSdl3FcXPMA3A1I26Cw2QBXgcye2y5n0fti2d9hTlX3p0BjnKMikx2
+	 obEKEqkTbFsdzKVBslteNGntRUQ46Lt5yOxuwyixinzw5KeXsL3fDjHA+P4trGQtlZ
+	 cS5aQY3DpYqdem5SMXorx4gocjyToxvXqfF4Skts=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F0523F800F8;
-	Fri, 11 Nov 2022 18:15:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 977C9F80549;
+	Fri, 11 Nov 2022 18:15:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B16FDF80548; Fri, 11 Nov 2022 18:15:09 +0100 (CET)
+ id 412A1F80558; Fri, 11 Nov 2022 18:15:11 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7DA81F800CC
- for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 18:15:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DA81F800CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48D4FF8028D
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 18:15:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48D4FF8028D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="II/7ZMYW"
+ header.b="LYVrbzbz"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 0DE576205E;
- Fri, 11 Nov 2022 17:15:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 555CAC433C1;
- Fri, 11 Nov 2022 17:14:58 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 980696206C;
+ Fri, 11 Nov 2022 17:15:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE255C433B5;
+ Fri, 11 Nov 2022 17:15:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1668186900;
- bh=BK/wlyQirHPg/jPftmmgrMeftFTDzLPkC19m/RcmKrw=;
+ s=k20201202; t=1668186903;
+ bh=0J4m8bOsMtAWsnH0ib/AZ1x3QGnREQKMOlfrWvv6pOo=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=II/7ZMYW65BZoTbAUdgF0v68reMfz3flpvZQNmckZEFYwwLY9a/MQ1/GN/PJVZiDg
- GhkBQUSrq4qxEqV0BJHfVMCRySntU25YutqSXCU3JWxM3JlX7yWrnu76TEmUt2MFLB
- cuR++M1jeF1l2FfLcGwV3HlfHl5eJJaHCdfAhanXXS7F1jMZQZsiu1idPVwCAmdDAI
- 5CmpQm7MIb5MRcEcXV9cFYibzYtOU+W/Fzr2IsBK3CdjoQz2hcRD1OPvl0Pqxez4pt
- Km6D4ipBxWRfosU6CNXj/61fixqNubS0BAK4Pkk8oRGk9okZ6oIYTAM834bDrYSEbl
- dasE9F3JEBRvA==
+ b=LYVrbzbzAf6skmtT3nASaJB2SSLNkOervg4ZCGIOXG1aUXX6y+7CKjEjKqM8jw5mT
+ n3zhkwGwCRPmUBFFrU+Igzxz5HbE8TxlE6TRI8yG1bGVL+D901dbwjeNkPeciLoEAB
+ b8c+pHYlpoSFkNsojT9dMcBve1C+HBsfTziEhPM695tQ53bsi4EdQt1geGuoZ7SwE7
+ bivpUNA4GNkEjrQRjPan+Hq7Vgw4mhcrT9Sw6ZDplF/t77W1nTCDwuaTvVN4T5jVKU
+ uHWA50AJjXoOL/797n2u0JuqtmU1o/xhYTY7PT2O91LWAsDrWiOPOigSXxM4PYucnw
+ Xf71SJQDj3TxA==
 From: Mark Brown <broonie@kernel.org>
 To: lgirdwood@gmail.com, shumingf@realtek.com
-In-Reply-To: <20221109091244.17198-1-shumingf@realtek.com>
-References: <20221109091244.17198-1-shumingf@realtek.com>
-Subject: Re: [PATCH 2/4] ASoC: rt1316-sdw: get BQ params property and apply
- them
-Message-Id: <166818689808.487154.4016775094193741676.b4-ty@kernel.org>
-Date: Fri, 11 Nov 2022 17:14:58 +0000
+In-Reply-To: <20221109091306.17221-1-shumingf@realtek.com>
+References: <20221109091306.17221-1-shumingf@realtek.com>
+Subject: Re: [PATCH 3/4] ASoC: Intel: sof_sdw_rt1308: add BQ params for the
+ Dell models
+Message-Id: <166818690064.487154.10398778856292907817.b4-ty@kernel.org>
+Date: Fri, 11 Nov 2022 17:15:00 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -83,11 +83,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 9 Nov 2022 17:12:44 +0800, shumingf@realtek.com wrote:
+On Wed, 9 Nov 2022 17:13:06 +0800, shumingf@realtek.com wrote:
 > From: Shuming Fan <shumingf@realtek.com>
 > 
-> If the machine driver level sets the BQ params into the device property,
-> the codec driver will get the BQ params and apply them.
+> The Dell SKU 0A5D/0A5E/0990/098F model needs the BQ params for the tweeter/woofer.
 > 
 > 
 
@@ -97,8 +96,8 @@ Applied to
 
 Thanks!
 
-[2/4] ASoC: rt1316-sdw: get BQ params property and apply them
-      commit: 3c46b589db83db8a445924d0273005631a056aea
+[3/4] ASoC: Intel: sof_sdw_rt1308: add BQ params for the Dell models
+      commit: 1b435e405d63155d2391c27054cf98237d11d0a4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
