@@ -4,120 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E5AAC4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 12 Nov 2022 14:13:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A192C433FE
+	for <alsa-devel@archiver.kernel.org>; Sat, 12 Nov 2022 14:13:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CD59166F;
-	Sat, 12 Nov 2022 15:12:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CD59166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5FD131677;
+	Sat, 12 Nov 2022 15:12:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FD131677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668262389;
-	bh=7moKjC+dAO9fjfErovFL8kthQMJPAMzgAy4zs5eebs4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ibJdLFS+KXb0Z/xBtV/C+KIyjLdIaU1MSgEli9O6tHbE0IqKuqgCpJ9eUqxhgKzY4
-	 SIobrgtLUz1Ll2hTobaZ/2x7GbJ5VZoZbNSja2IZKvAhianoZY6hDJ850QvxaC1AmR
-	 unkOeeGmrSCwLZEFodd0HvRfnIlkV88KsXy/BPno=
+	s=default; t=1668262416;
+	bh=sZeej48P5lCknE+4bj3dux8H9xacSVO+SVlx8mXHLKM=;
+	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=blbwx5QnMoJ4tNflqr3EuZIBwO5W5ylH0NVr1I+gSBtTdNi2FmhpIM80A4q/Kbq+2
+	 4KQvdxVvs3ti5i0qIJTaEOqtBEhnNIdd3soMzR2HEXVupK00UhmHpH0L/CgxjoSvaC
+	 E3nBPq3riigzyPBkANgw4+1FdtMsSrx2bqX2f5/k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04E22F8047B;
+	by alsa1.perex.cz (Postfix) with ESMTP id 951AFF80549;
 	Sat, 12 Nov 2022 15:11:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E89A7F8028D; Fri, 11 Nov 2022 10:20:54 +0100 (CET)
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com
- [IPv6:2a00:1450:4864:20::533])
+ id 06707F8028D; Fri, 11 Nov 2022 19:27:05 +0100 (CET)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A63DDF800CC
- for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 10:20:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A63DDF800CC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="eRHEStFU"
-Received: by mail-ed1-x533.google.com with SMTP id x2so6838590edd.2
- for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 01:20:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=KQqlnqh61yDEivsgLuzXFgBFvWeIkle9538NvChEgG4=;
- b=eRHEStFUgdZI+TOEkzLgPNAUqr8je9PakORGJBpBvetm722q6+52mzO4PuK6UP2C9B
- y5QKHELjwoL/I5ZveEAoHNQYPUFH2gG9BiO6rNE0Zoi1U/NPdjDb6jXihqpiYnUK7uS7
- SaEgVVAc1rCLsO+PywRf34jY4cKkxjJ5rpb0iLv7Lx6icnPxIKkBSReqSNOAi5AyQqJr
- wfParI72b+nyrA1C6NNwYpO2mYi/F3sK4RXxqU2kGu5IcDipfl9TyQkhA6GnH0/P0zga
- 4Pzu7HawlgloyguZmgsGbfP6pqVHW5N9NgfDTgsFvjn4zWaBEAPihtz4CQ3ui15zn27r
- jJSw==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 79402F800F8
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 19:26:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79402F800F8
+Received: by mail-il1-f199.google.com with SMTP id
+ j7-20020a056e02154700b003007885e7beso4493038ilu.20
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 10:26:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=KQqlnqh61yDEivsgLuzXFgBFvWeIkle9538NvChEgG4=;
- b=rMv7M6GVJZ69wkKehwii48ZxCNssjkC4shUpn20SaxJFfshywxR9hBnJdLx0iTknbJ
- I2NNLmemz2Xuca8bnmqIreQ8yQKd9afAPQHaPkBV5OM3w8FDZRrV4n7t5PuWrK2r/zNw
- eLKrchfiwn00VpY7/BKRR0eI9UCzmMx4w6tJEz85HSzlbcd6VnZnEMncuPSBwnW8P2zM
- Bi9XMA4vMX6e4U8MVMiaxprzGkLOSuwUYztTmT+iRx/jA9w1XmxaPZZCXGUvzzczB5kn
- 0pDn4BBcXQHpNhwR920IylXYs5Msm0hQVXEJ9PTiR/QSGTyuAbFoDaWNA2Vx15egGmvl
- aWHQ==
-X-Gm-Message-State: ANoB5pmTpScfCbYY5lP7qa6ekHpdYNmJ8oBxksTG1KjTyckx7XgCSIWe
- 6C4GdOWnU2j+VC2OaKFq+Y1/TzWdZXyMTDErXZH9qg==
-X-Google-Smtp-Source: AA0mqf53QBR47pUgYWT2xVhbs/Lj4/kZl7NAGXQCY837HnfVAtbLsG6fA3g+X2q4OOQ/b93b11NyQoioTLD4pHwNxXU=
-X-Received: by 2002:a50:ee13:0:b0:463:a83c:e0af with SMTP id
- g19-20020a50ee13000000b00463a83ce0afmr679526eds.158.1668158446767; Fri, 11
- Nov 2022 01:20:46 -0800 (PST)
+ h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=kGTnkFXQuCUMTD7CK+5QZtG8OlzqpMe0ZhXCS8Y5mCA=;
+ b=Ew1O4tr7n9AQwzb6d2JeR1fRd9xG7iA5KgzmQDtpLHGeKEsX7BPPPtxs8+akvX5kkT
+ EKT9f7nN8MYJosG1Y7GzxmErswdRW4O2gCgup9SfUlOQuiv41a3s7eKjFQJNxBKqn8cG
+ TWvhb02de5Z1MUp6l0OqhwrJ/VXYXjF8DpFj174+YFVacCeFlPWDDqYCp0vGXyaPojNU
+ jQ+HMRMHec4ah47AGN5we5ym8OUqLinMPs85hOJIRnt8O9W9WP4lMUQySlflf2u8hmBv
+ WLJuFLBY5R7wm8hNvtR9Il91RRlPm0UEbhvIUHDQoZuJxoYVXQOvZ45n2QBJjUQPTjn6
+ Z22w==
+X-Gm-Message-State: ANoB5pnixhc/RotQP/b4I5JLmcxlr1hmTk70zb5wsGKao/td5K8kmJD1
+ cPC3LoKhlkPDZE9Vkhag3bslhJoZPEcG9L8CTzkrFW38Waw/
+X-Google-Smtp-Source: AA0mqf7tMxRu86J9NN7fa3qvRYALu5Tnq+mvG7iwu/phVekaVvJKCCWx3jP/XYI+6fU/N9u1GUisfejde0w1Mu5Oj0/PWaSVmgT7
 MIME-Version: 1.0
-References: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
- <20221018-clk-range-checks-fixes-v2-35-f6736dec138e@cerno.tech>
- <CAPDyKFoycVedCJMy0=UK+q5SiPQHqje_8bSN-gdkpBa6KhFfkg@mail.gmail.com>
- <CACRpkdYOj8uozJZO4MV-_OAKeOsQHhoEM=PyynVuNY-JkpgTOw@mail.gmail.com>
- <CAPDyKFr6VeF3s47JfzJ9urtMsEem+GiBtHeU=_S8jNaz-D+qnw@mail.gmail.com>
-In-Reply-To: <CAPDyKFr6VeF3s47JfzJ9urtMsEem+GiBtHeU=_S8jNaz-D+qnw@mail.gmail.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 11 Nov 2022 10:20:34 +0100
-Message-ID: <CACRpkdb8uYfs6w99FVjD_t6nZgDhPUx=yB1j=CmpHTHAM2QGQw@mail.gmail.com>
-Subject: Re: [PATCH v2 35/65] clk: ux500: sysctrl: Add a determine_rate hook
-To: Ulf Hansson <ulf.hansson@linaro.org>
+X-Received: by 2002:a02:54ca:0:b0:375:7f39:51d9 with SMTP id
+ t193-20020a0254ca000000b003757f3951d9mr1362528jaa.174.1668191209340; Fri, 11
+ Nov 2022 10:26:49 -0800 (PST)
+Date: Fri, 11 Nov 2022 10:26:49 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000734a7305ed3608ba@google.com>
+Subject: [syzbot] WARNING in snd_usbmidi_output_open
+From: syzbot <syzbot+9abda841d636d86c41da@syzkaller.appspotmail.com>
+To: alsa-devel@alsa-project.org, clemens@ladisch.de, 
+ linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, 
+ tiwai@suse.com
 Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Sat, 12 Nov 2022 15:11:54 +0100
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Prashant Gaikwad <pgaikwad@nvidia.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Michael Turquette <mturquette@baylibre.com>, Sekhar Nori <nsekhar@ti.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- dri-devel@lists.freedesktop.org, Paul Cercueil <paul@crapouillou.net>,
- Max Filippov <jcmvbkbc@gmail.com>, Thierry Reding <thierry.reding@gmail.com>,
- Lee Jones <lee@kernel.org>, linux-phy@lists.infradead.org,
- David Airlie <airlied@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- linux-stm32@st-md-mailman.stormreply.com, Abel Vesa <abelvesa@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>,
- Samuel Holland <samuel@sholland.org>, Chunyan Zhang <zhang.lyra@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, linux-tegra@vger.kernel.org,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Chen-Yu Tsai <wens@csie.org>,
- NXP Linux Team <linux-imx@nxp.com>, Orson Zhai <orsonzhai@gmail.com>,
- linux-mips@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>,
- linux-sunxi@lists.linux.dev, linux-rtc@vger.kernel.org,
- linux-clk@vger.kernel.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
- Daniel Vetter <daniel@ffwll.ch>, alsa-devel@alsa-project.org,
- Manivannan Sadhasivam <mani@kernel.org>, linux-kernel@vger.kernel.org,
- Sascha Hauer <s.hauer@pengutronix.de>, linux-actions@lists.infradead.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
- linux-mediatek@lists.infradead.org, Maxime Ripard <maxime@cerno.tech>,
- Baolin Wang <baolin.wang@linux.alibaba.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- linux-arm-kernel@lists.infradead.org,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Alessandro Zummo <a.zummo@towertech.it>, Stephen Boyd <sboyd@kernel.org>,
- patches@opensource.cirrus.com, Peter De Schrijver <pdeschrijver@nvidia.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
- linux-renesas-soc@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
- Vinod Koul <vkoul@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- David Lechner <david@lechnology.com>, Shawn Guo <shawnguo@kernel.org>,
- Claudiu Beznea <claudiu.beznea@microchip.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -133,56 +79,92 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Nov 10, 2022 at 2:05 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> On Thu, 10 Nov 2022 at 12:39, Linus Walleij <linus.walleij@linaro.org> wrote:
-> >
-> > On Thu, Nov 10, 2022 at 12:29 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > On Fri, 4 Nov 2022 at 14:32, Maxime Ripard <maxime@cerno.tech> wrote:
-> > > >
-> > > > The UX500 sysctrl "set_parent" clocks implement a mux with a set_parent
-> > > > hook, but doesn't provide a determine_rate implementation.
-> > > >
-> > > > This is a bit odd, since set_parent() is there to, as its name implies,
-> > > > change the parent of a clock. However, the most likely candidate to
-> > > > trigger that parent change is a call to clk_set_rate(), with
-> > > > determine_rate() figuring out which parent is the best suited for a
-> > > > given rate.
-> > > >
-> > > > The other trigger would be a call to clk_set_parent(), but it's far less
-> > > > used, and it doesn't look like there's any obvious user for that clock.
-> > >
-> > > If I recall correctly, that is the use case we did target for these
-> > > types of clocks. See sound/soc/ux500/ux500_ab85xx.c, for example.
-> >
-> > Hm I am trying to get that driver to work ... from time to time.
-> > It's just that ALSA SoC DT has changed to much that it turns out
-> > into a complete rewrite :/
-> >
-> > So in sound/soc/ux500/mop500_ab8500.c
-> > I see this:
-> >
-> >         status = clk_set_parent(drvdata->clk_ptr_intclk, clk_ptr);
-> >         if (status)
-> > (...)
-> >
-> > and there is elaborate code to switch between "SYSCLK" and
-> > "ULPCLK" (ulta-low power clock). Just like you say... however
-> > a clock named SYSCLK or ULPCLK does not appear in the
-> > code in drivers/clk/ux500 or any DT bindings so... it seems to
-> > be non-working for the time being.
->
-> It's definitely not working, but the corresponding clocks ("ulpclk",
-> "intclk", "audioclk", etc) are being registered in ab8500_reg_clks().
->
-> What seems to be missing is a DT conversion for these clocks, so they
-> can be consumed properly. Right?
+Hello,
 
-Yeps that and a few more things, I have a scratch rewrite here:
-https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-stericsson.git/log/?h=ux500-audio-rewrite
+syzbot found the following issue on:
 
-I remember Lee said he had audio working with the mainline kernel
-on Snowball at one point, unfortunately I think that was before we
-started with the DT conversions and then we probably broke it.
+HEAD commit:    f8f60f322f06 Add linux-next specific files for 20221111
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=12fe828e880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=85ba52c07cd97289
+dashboard link: https://syzkaller.appspot.com/bug?extid=9abda841d636d86c41da
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=160e91fa880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=161d3e69880000
 
-Yours,
-Linus Walleij
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/6008df424195/disk-f8f60f32.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/394340525f66/vmlinux-f8f60f32.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b13604a3343a/bzImage-f8f60f32.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9abda841d636d86c41da@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+BUG?
+WARNING: CPU: 0 PID: 5267 at sound/usb/midi.c:1137 snd_usbmidi_output_open+0xd8/0x410 sound/usb/midi.c:1137
+Modules linked in:
+CPU: 0 PID: 5267 Comm: syz-executor895 Not tainted 6.1.0-rc4-next-20221111-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+RIP: 0010:snd_usbmidi_output_open+0xd8/0x410 sound/usb/midi.c:1137
+Code: 3c 02 00 0f 85 03 03 00 00 4d 8b be 10 02 00 00 4d 85 ff 0f 85 c8 00 00 00 e8 d4 92 25 fa 48 c7 c7 a0 6e f2 8a e8 02 da 04 02 <0f> 0b 41 bc fa ff ff ff e8 bb 92 25 fa 44 89 e0 48 83 c4 08 5b 5d
+RSP: 0018:ffffc90003b7f3a0 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffff888146c8d000 RCX: 0000000000000000
+RDX: ffff8880245d3a80 RSI: ffffffff81624e68 RDI: fffff5200076fe66
+RBP: ffff88801ed9c900 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000000 R11: 0000000000000000 R12: ffff88814017cc00
+R13: 0000000000000000 R14: ffff88802b1d5000 R15: 0000000000000000
+FS:  00005555574d4300(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6ed57c3670 CR3: 0000000076149000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ open_substream+0x41d/0x8c0 sound/core/rawmidi.c:344
+ rawmidi_open_priv+0x591/0x6f0 sound/core/rawmidi.c:394
+ snd_rawmidi_kernel_open+0x1b5/0x270 sound/core/rawmidi.c:429
+ midisynth_use+0xee/0x270 sound/core/seq/seq_midi.c:215
+ subscribe_port sound/core/seq/seq_ports.c:412 [inline]
+ check_and_subscribe_port+0x89a/0xb80 sound/core/seq/seq_ports.c:495
+ snd_seq_port_connect+0x382/0x540 sound/core/seq/seq_ports.c:581
+ snd_seq_ioctl_subscribe_port+0x1fc/0x400 sound/core/seq/seq_clientmgr.c:1490
+ snd_seq_kernel_client_ctl+0x102/0x1c0 sound/core/seq/seq_clientmgr.c:2367
+ snd_seq_oss_midi_open+0x582/0x6e0 sound/core/seq/oss/seq_oss_midi.c:361
+ snd_seq_oss_synth_setup_midi+0x12d/0x530 sound/core/seq/oss/seq_oss_synth.c:269
+ snd_seq_oss_open+0x8b8/0xa70 sound/core/seq/oss/seq_oss_init.c:260
+ odev_open+0x6c/0x90 sound/core/seq/oss/seq_oss.c:128
+ soundcore_open+0x44e/0x620 sound/sound_core.c:593
+ chrdev_open+0x266/0x770 fs/char_dev.c:414
+ do_dentry_open+0x6cc/0x13f0 fs/open.c:882
+ do_open fs/namei.c:3557 [inline]
+ path_openat+0x1bbc/0x2a50 fs/namei.c:3713
+ do_filp_open+0x1b6/0x400 fs/namei.c:3740
+ do_sys_openat2+0x16d/0x4c0 fs/open.c:1310
+ do_sys_open fs/open.c:1326 [inline]
+ __do_sys_openat fs/open.c:1342 [inline]
+ __se_sys_openat fs/open.c:1337 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1337
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f496367ae39
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc99e01aa8 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00000000000f4240 RCX: 00007f496367ae39
+RDX: 0000000000020983 RSI: 0000000020000080 RDI: ffffffffffffff9c
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000d066
+R13: 00007ffc99e01abc R14: 00007ffc99e01ad0 R15: 00007ffc99e01ac0
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
