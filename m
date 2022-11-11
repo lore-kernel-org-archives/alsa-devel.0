@@ -4,73 +4,125 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BD97C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Nov 2022 04:28:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D34EC4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Nov 2022 04:35:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66E7A167B;
-	Fri, 11 Nov 2022 05:27:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66E7A167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27FFE1634;
+	Fri, 11 Nov 2022 05:35:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27FFE1634
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668140896;
-	bh=vn9VwOhttQiEitLM6pjgFhOu+byBGsPJxmJqGvKBlLY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=oldWcO2iKyR8NmIgfg9qbsCxrD9O+ezmfUZuOoUFG85XkoyUFeoMHnnnAU82UIflV
-	 XvM58sUFNaKtwlGIvGc3gehoGmbF3Bi4Jjj8jS8YvFBJ2Qi3viI7s0WrKgZS9R/3BZ
-	 cqVm9jbLL1NM7vMsil/hs48QZpjaHL2SrbYu1QP8=
+	s=default; t=1668141358;
+	bh=Z2GjF0XMq6TsbsAPfBIUDZ4YShMIDh+IiUqRdOcmB0U=;
+	h=From:Subject:To:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=JabyoOPbHB2qCzOCXeW1k+018bSRwn2rADd112Y1KXi9Iq3IEXqnkbfVi6H6vLKut
+	 dNOkQ1TcZrHgh5xaOLr0kZC5sEi+nPiT+X7r6qIrpRxDZ8HxSDPdN9tZWhyw/JP1uH
+	 hOoojabMeCRQjbDRhRp7u/nSexYUP7n2zYy1kqdo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AD38F8059F;
-	Fri, 11 Nov 2022 05:25:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4FCCF80249;
+	Fri, 11 Nov 2022 05:35:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EB40FF80588; Fri, 11 Nov 2022 05:25:27 +0100 (CET)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id 6EC2DF800F8; Fri, 11 Nov 2022 05:35:06 +0100 (CET)
+Received: from JPN01-OS0-obe.outbound.protection.outlook.com
+ (mail-os0jpn01on2105.outbound.protection.outlook.com [40.107.113.105])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE32FF80536
- for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 05:25:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE32FF80536
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4ACCEF800F8
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 05:34:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4ACCEF800F8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="iqv18lH7"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1668140722; x=1699676722;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=vn9VwOhttQiEitLM6pjgFhOu+byBGsPJxmJqGvKBlLY=;
- b=iqv18lH7W+9rbHnFUfzrmQIRPA0SwnOSxRRpba0e8rMYbLuoNUldWXZM
- JvEVvpvqGLlvbCoqHH2pHv9L5d4H77BtNJupJjs94WX1q9p9QZPQoD+4u
- 61L6/rIqInyK5j0fGaiWY5fMwcaQ0Q5pxG6OrhwZLRpr0pLyF3DIOi/7U
- 6OFiK9Ad35z0Y4ZoT/tbx5eI50VhCgUkaa6xrLMeDxcRpJs+zCrV+BkE/
- U4h/aNGw9ptrMAh8sWwAAsX043zP/pzdouWdeLqBf74ZNvj0337G1JxCe
- yHz6iNBfZyyXHu36ZvW9flOFz6F9SSviaAAsXjrfvm7tvZTwlh4pdOw4j w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="291923742"
-X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="291923742"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Nov 2022 20:25:19 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="588440773"
-X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="588440773"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Nov 2022 20:25:16 -0800
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Subject: [PATCH 6/8] soundwire: intel_init: remove sdw_intel_enable_irq()
-Date: Fri, 11 Nov 2022 12:26:51 +0800
-Message-Id: <20221111042653.45520-7-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221111042653.45520-1-yung-chuan.liao@linux.intel.com>
-References: <20221111042653.45520-1-yung-chuan.liao@linux.intel.com>
+ dkim=pass (1024-bit key) header.d=renesas.com header.i=@renesas.com
+ header.b="ZIBMDNqU"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O2JRru+/S5c2puYGXYwk3fD7nHGT5pa7IuHdgLFXKuIXXan8jGzxz0r5o6k+qeI90x21OqFM/4Xk1OOtTXXKB/DhqQtyXQvzaJHuUOICEfFJsLTLVlSvnwIt+qD24HahgpAWu1EcF/1ebgpGOprMMWtsd/DvGAkqYbELPJypRTGTt4VayCIBsAr1S6jHgh7m9dlGE+Q7avHyHoF/dX/h9CxYsngVZsIsoD52V+gnqfAGv6x7t9s+0kkB+cSiCnqI0NM3AcJNgDchR5wnZVzwQznbsTiKX9/WAih+6LQPZUUvR4kCO1to+/6+ApY8r8CaP25WquaX1hqX1k8jcxn8ZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6KOhZBJDSO0p1ijkCz5Kr6tf/14lKuHhR6Hc62TNi1o=;
+ b=HwxGq3UnXA9p/jWaKq102bZCMFXjy9D60DakfoKx5Ho1rRODOIYnZnNKVReRkssDr3mzP9/QLqf9/eue35P92almPcY3B6DwqCR7ZZZJo5eTIg4Pdq7EGS38oegdQZk+akwCNl7EPnjFldZnG2FtNXaGG0JIHT85nXDFJCSd+4PoeCJYE39XQAf7mae2v8dCivTmz+VOLLUe5O1h+Fnjx8GjEGomn29abNexN8tWqfgrqPMgzHQWkwJtgZ5OyX6RiAwiRwzfWAsYSZOjcyIdQVriN0n5RyoMrjQSn+jDSU9lD6hxNvB0/RmWEMSDgk3C5h5AQi8fQUGovQEwRevYGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6KOhZBJDSO0p1ijkCz5Kr6tf/14lKuHhR6Hc62TNi1o=;
+ b=ZIBMDNqUs/OUzZDoCMvBZ280TS9gRq3Np/oEfMsuWzf/iVAZvsylKPlX3wRcb9k/tsHCeeb2k8kon5JLBrRAdLULix8BGrLZ0uIzkyYQ/5apIQpNt9Yj4Qmvruk9ALCUm1w06WuTF1j2qnIqxCTdS7P7sR9fG7PZVp4M7tBwo5k=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=renesas.com;
+Received: from OS3PR01MB8426.jpnprd01.prod.outlook.com (2603:1096:604:194::10)
+ by OS0PR01MB5762.jpnprd01.prod.outlook.com (2603:1096:604:b8::11)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.13; Fri, 11 Nov
+ 2022 04:34:51 +0000
+Received: from OS3PR01MB8426.jpnprd01.prod.outlook.com
+ ([fe80::a5a6:2344:db9:431]) by OS3PR01MB8426.jpnprd01.prod.outlook.com
+ ([fe80::a5a6:2344:db9:431%6]) with mapi id 15.20.5813.012; Fri, 11 Nov 2022
+ 04:34:51 +0000
+Message-ID: <87k042nm6s.wl-kuninori.morimoto.gx@renesas.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH] ASoC: audio-graph-card2: remove Experimental announce
+User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Date: Fri, 11 Nov 2022 04:34:51 +0000
+X-ClientProxiedBy: TYCP286CA0002.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:26c::6) To OS3PR01MB8426.jpnprd01.prod.outlook.com
+ (2603:1096:604:194::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: vinod.koul@linaro.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com,
- linux-kernel@vger.kernel.org, broonie@kernel.org, bard.liao@intel.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: OS3PR01MB8426:EE_|OS0PR01MB5762:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1b3f75d5-65ef-4015-71e7-08dac39e12ee
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eK5zWJMmDicL3KmO9NaHq0EBWlw48itoCqVHMsAfP+OY4Dzg9jvOQHCedA4EiFMrd8fkrgqK1UzVRY5ksvm+0fCMGFjFPGEdiET30SZ/x+oo4Wkx4AzMzcYvfW19QoQSB7ozHChsuElP1z9bRJ0J4Kim7xXc3qJpSAPvtEcwKfLnwks9x2peSNPXhLhh5+QWUVLk4aW/buSLDGzFI5EPqzrjVV0CENQbREHj/A4GamlMIhhh3tD2I/nqNGXG63oE8+ABfnYResRVDwU9G/fMFYy9A1RGGIR8PnJoIeNB2Q5219I+Wh0QeFSqIPccAq0lgt55sYqiWVn09d3sKpZfzH4qr6OiORu5Pc4TjBpxt775lBh3WDj3l+AIbb7t1B//Q7WZBWMYv1G+CSGsy0eIFc5ZOaVgVOFoDlL/21wMY/eMAhgpvY+lGJbcbZEyMRs2D7MZChI9d4mpOFZHt0tIwqlrw8++JwStyOqAT5wfTHmRdUhkiEcM9bwiVluAB9cPGYsiSjkb7lVRWtHnxLZq0jKr7cEA7tVszHbe2X1WFTF99LcxazO6DoQ2aLX7bUDbwWp9AGDvCJpQ8WdRGuBblkGpy+RVY+yliJHCn2TyZS6dErIzPcCtw8fzb5rvPsqfNeFiZv62KHoOoptLOILBIzk+lkFEE0HHUHObRIapA6DBslbjqrr8OjbluuWBR3nZLnaa8oKMtMIAkRhrXa+98Ayi2LSMDmkf5AHBDkLFkgvtEMXo1vaBG8m2q5tdrvqFVUEpF7VN4mlazUSBpERXxA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:OS3PR01MB8426.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230022)(4636009)(376002)(346002)(39860400002)(396003)(366004)(136003)(451199015)(86362001)(2906002)(6512007)(38100700002)(38350700002)(52116002)(83380400001)(36756003)(26005)(41300700001)(6506007)(8676002)(6486002)(4744005)(66556008)(186003)(66476007)(2616005)(478600001)(4326008)(5660300002)(66946007)(6916009)(8936002)(316002);
+ DIR:OUT; SFP:1102; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mbcdfd6Mk62OieQWnZoZGriLSiHabOvIbTxCxplEqYH/U4BF3ZqtbOg5CGlx?=
+ =?us-ascii?Q?qYzQ6N3RyP1qiZa4QzvFxeHvsTHnm4t2cL3iewO9VL5/sSa4EKB27hc+c9B0?=
+ =?us-ascii?Q?86y8NiZWb1lEtSGAgc2LK2B5Um4/dykgDjNLYh+aKUlhIQziW4qRfxG24Jmt?=
+ =?us-ascii?Q?c8EQDdcx44Xt99YceiaBuUfcJ39hQk5l1kH0ZCeGiWwehI6u52pwTVvtmiaO?=
+ =?us-ascii?Q?dqe80xN4zhTZXYwiGpew0gSpWGby8/178PnUEvn39o+WcsU48Z18c9rhbuet?=
+ =?us-ascii?Q?SB84GCFzl/UCNiI2NOYt8mOr8jAJ+O92zkGUIUn8A088zbsPR1ZRTMs8JT30?=
+ =?us-ascii?Q?BbSZf1FNfoYcuZz4WLdFjjQhbtzn2nkmp19lfkFMX8jl6v4OBf6d6TksgHoK?=
+ =?us-ascii?Q?YkzqdBbwjGeU68koyvjVWwVz01ATWR14KuL0KW4Hn9O8aT6gGPpFkwBSbzSb?=
+ =?us-ascii?Q?Cig2QetT5rulDMWkCx8eyWil/c6vzKAmYIDAEmz1oXcafnxMjcUZei0KZ1KQ?=
+ =?us-ascii?Q?C8ZbtlmUHMVB0kJIV54ZwGBrS5FOedRjosbKEJd3ut4d/12l5Z1Okesfgg+h?=
+ =?us-ascii?Q?88iMmSqOfqwAyBGgRW+Mcy9SFlffEmstsCjhoEYM2jACTDMEcvXSuTx/MzDP?=
+ =?us-ascii?Q?JJZkMgkmWLUW72kqKSiKB8QG90JNQIznIgeldrZH9Cb2TzBO3GX2bQvh9ulh?=
+ =?us-ascii?Q?i5BkK2tfBsDaS20zO7B54TRKj0kGgBSUqRWIuyMrpSyVRvQ0noQnFSUskcyp?=
+ =?us-ascii?Q?YPJm4bDATnXuiDbcY1vpmLmstF6uZd3zCK+ARyAk81k8qoKB7DJN1PU58Myy?=
+ =?us-ascii?Q?1ZEhTjcTZhVxDYWwp84voVtAI7WSRrjnBR/y0yRNxqVxU1E2U+ew58jSsp7J?=
+ =?us-ascii?Q?XuLbrWpVlQ6LDRLkFQWVhK6bp//wOgzgplCGUXWmOdKHsr4XVglaiXoNUeJp?=
+ =?us-ascii?Q?LY+kejaqgMGqAZLYjrS06OlIzn8+tK1SUKuDyJrSGpmxZvu4J2h0RX9+IEaq?=
+ =?us-ascii?Q?iLg1PyE6gpFR/X7EsDcTVnpuQjiVnXfYIIo1ReH5pdMCUHESDD/k+kr230q9?=
+ =?us-ascii?Q?WHh1846BoaFL/BVdttX5hSNKMXokyxhzY1T1A5yplqLOmEoJ2WCGcuo6ViFr?=
+ =?us-ascii?Q?X+QrNHn5uMbhJJeAVt5DHSm4sL2mFoarLUQfsJHNkpqNn01Rnp+BRh0bWLnu?=
+ =?us-ascii?Q?CPNQaSVrYaHQF8HmIxxzAzRfdZZCo6rzno8qwyBtzHoLgzceDqD1JIFtmTnL?=
+ =?us-ascii?Q?R28e5zSx6I51E/fhZ3DWdX2UV4f0nygutMsri7nOlj/VHoKU0Y3w/VTu9n4T?=
+ =?us-ascii?Q?DBvz0ApUnOwN9pakmTJepTowpuqhtjHO26lN0+RKZtZ772rXMaxD4Nj46R2+?=
+ =?us-ascii?Q?fJeLiuUUD/3Z2GithNh147KJyCNMj63Ix2OY89y381d53zm8NLIDpXqwrmW1?=
+ =?us-ascii?Q?zCzY/i+NRT9pof+nA54j6MlOjSmOat2h/nuPmZsmaDPjf8gqNy7NBHPTEXYE?=
+ =?us-ascii?Q?5hKtBjwMsjweHPKYQIzYD8yC9iyeoKGgpHSFEy6yUVZRuVYc/NyIjUusRkQ8?=
+ =?us-ascii?Q?h0R5iSAu1Rh8XL8dGpPSB0CZINQjFD2T50LnPNInOKVgNQ+Poc4U9RHV/crE?=
+ =?us-ascii?Q?X0j3ht4IAoPl+bLOapqyUZU=3D?=
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b3f75d5-65ef-4015-71e7-08dac39e12ee
+X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB8426.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Nov 2022 04:34:51.7149 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hYAYTDOhNP/suPBFj2AmlChLu9x3EBgL23cGqtZAMtI5OVAj3er1C0cJuV23DeiO2bUDMWYIm9SQCoKmEvz2Lel8mozgAc3b78N/kcV06RjV8O5zRc0VlmZRJb4QC8t2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS0PR01MB5762
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,68 +138,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The functionality is implemented with per-chip callbacks, there are no
-users of this symbol, remove the code.
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Audio Graph Card2 has been announcing "Audio Graph Card2 is
+still under Experimental stage", but it is time to remove it.
+This patch removes it.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 ---
- drivers/soundwire/intel_init.c      | 24 ------------------------
- include/linux/soundwire/sdw_intel.h |  2 --
- 2 files changed, 26 deletions(-)
+ sound/soc/generic/audio-graph-card2.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index 8bd95c9cbcaf..0df3cdd85793 100644
---- a/drivers/soundwire/intel_init.c
-+++ b/drivers/soundwire/intel_init.c
-@@ -125,30 +125,6 @@ static int sdw_intel_cleanup(struct sdw_intel_ctx *ctx)
- 	return 0;
+diff --git a/sound/soc/generic/audio-graph-card2.c b/sound/soc/generic/audio-graph-card2.c
+index 8ac6df645ee6..0b0fec9ada51 100644
+--- a/sound/soc/generic/audio-graph-card2.c
++++ b/sound/soc/generic/audio-graph-card2.c
+@@ -1271,9 +1271,6 @@ int audio_graph2_parse_of(struct asoc_simple_priv *priv, struct device *dev,
+ 	if (ret < 0)
+ 		dev_err_probe(dev, ret, "parse error\n");
+ 
+-	if (ret == 0)
+-		dev_warn(dev, "Audio Graph Card2 is still under Experimental stage\n");
+-
+ 	return ret;
  }
- 
--#define HDA_DSP_REG_ADSPIC2             (0x10)
--#define HDA_DSP_REG_ADSPIS2             (0x14)
--#define HDA_DSP_REG_ADSPIC2_SNDW        BIT(5)
--
--/**
-- * sdw_intel_enable_irq() - enable/disable Intel SoundWire IRQ
-- * @mmio_base: The mmio base of the control register
-- * @enable: true if enable
-- */
--void sdw_intel_enable_irq(void __iomem *mmio_base, bool enable)
--{
--	u32 val;
--
--	val = readl(mmio_base + HDA_DSP_REG_ADSPIC2);
--
--	if (enable)
--		val |= HDA_DSP_REG_ADSPIC2_SNDW;
--	else
--		val &= ~HDA_DSP_REG_ADSPIC2_SNDW;
--
--	writel(val, mmio_base + HDA_DSP_REG_ADSPIC2);
--}
--EXPORT_SYMBOL_NS(sdw_intel_enable_irq, SOUNDWIRE_INTEL_INIT);
--
- irqreturn_t sdw_intel_thread(int irq, void *dev_id)
- {
- 	struct sdw_intel_ctx *ctx = dev_id;
-diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-index 2e9fd91572d4..d2f581feed67 100644
---- a/include/linux/soundwire/sdw_intel.h
-+++ b/include/linux/soundwire/sdw_intel.h
-@@ -286,8 +286,6 @@ int sdw_intel_startup(struct sdw_intel_ctx *ctx);
- 
- void sdw_intel_exit(struct sdw_intel_ctx *ctx);
- 
--void sdw_intel_enable_irq(void __iomem *mmio_base, bool enable);
--
- irqreturn_t sdw_intel_thread(int irq, void *dev_id);
- 
- #define SDW_INTEL_QUIRK_MASK_BUS_DISABLE      BIT(1)
+ EXPORT_SYMBOL_GPL(audio_graph2_parse_of);
 -- 
 2.25.1
 
