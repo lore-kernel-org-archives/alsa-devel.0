@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B860C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Nov 2022 04:12:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD393C433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Nov 2022 04:26:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B55215E2;
-	Fri, 11 Nov 2022 05:11:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B55215E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6AFA8164E;
+	Fri, 11 Nov 2022 05:25:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AFA8164E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668139952;
-	bh=cEEs+T9qWk3rROxF8lp+RSEHIzLb14TurbQZNI6Tbl4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=RA2b/7phFUvWlDZJJWRluHrfO4Fa4RB8Z7oJDMA+z2b9Fc8ezUIUhtyDp/5b/PRxU
-	 j1OgeQUqqSxXkXP9eqiIwPrREiJnfNm83Qyyrc1rAHXRR7phmV8SDQQw0wZgZsciZH
-	 nXX5Fr9/80sdQSEyQrjwQaBRNG1io14VsCoxayu4=
+	s=default; t=1668140764;
+	bh=RFpURshL9pTlSR+fmXELrO+573EoTkI2OXbk3OCrDsg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=hGK6CBugDi3wroeNNvzmYgTFwcAMktGEvmD8ybFxCHsBZWmJ5bQItGCVKSYl++6VZ
+	 26J4EI51w1s29GvGbql2Gl0hTlDwk7aCQkdbLadDcBvySqhtdiQMVETu2fvpbWg2UK
+	 D+TAUkcEfQGnsAPMeRVvejI8sKpRiRdlTZWw4OFg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F32C3F80249;
-	Fri, 11 Nov 2022 05:11:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B897F8028D;
+	Fri, 11 Nov 2022 05:25:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB1D0F8028D; Fri, 11 Nov 2022 05:11:39 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2CBBAF800CC
- for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 05:11:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CBBAF800CC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rEDTMvM3"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 9FD99F800CC; Fri, 11 Nov 2022 05:25:10 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 6713DB822ED;
- Fri, 11 Nov 2022 04:11:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88540C433C1;
- Fri, 11 Nov 2022 04:11:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1668139891;
- bh=cEEs+T9qWk3rROxF8lp+RSEHIzLb14TurbQZNI6Tbl4=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=rEDTMvM3UUIKoGN9jTpfqNxfpOkSshWtW/miWmQBJhmXtj9qaQGjTwLIle3BqvZhv
- 79pAuSqmcjX2H8WCyuwoBx0RdC2q8BW6NGkokoiomC+p09cQQnYLq01ry1jbpcfWZy
- p4hmM0HvqBIUMY4OXScLLW0CIuriB6NPzEhywrppfPCS5ZB8fGqqcxCACS30aNZH3N
- z9tcgsptxBFjh3+vyKGJ4lauoztk0q3+JRk9YPOkjRlM3awQyJteeql1jqDlVHVvdK
- t/5tdvS0c3yTQxJvSx3v8sF1T6YepdWGV9NFcFmZ/KJrNcPr6U2tU3mPkEyr3nBnz+
- I+XLn+R7lsf9w==
-Date: Fri, 11 Nov 2022 09:41:25 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] soundwire: intel: Initialize clock stop timeout
-Message-ID: <Y23LbSfwWnVS3ZAo@matsya>
-References: <20221020015624.1703950-1-yung-chuan.liao@linux.intel.com>
- <Y1u855YZ/B3Q+FiI@matsya>
- <e5acf9e3-20b9-00b3-8d5f-687d47ccd49c@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 585FEF800CC
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 05:25:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 585FEF800CC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="ErqFqeUM"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1668140708; x=1699676708;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=RFpURshL9pTlSR+fmXELrO+573EoTkI2OXbk3OCrDsg=;
+ b=ErqFqeUM3lwqsZBgYZULL7CZavaD9BBrX3Op7yiZDVXwcOru/4vMXHKt
+ ek1r7xNTTpNvOVLEIcloOnQCAjQs2/pSGl9kkmxIgdwBILLyOJwZCkbpG
+ kccMFQ2WlDgMv8/RCXR42YwR16j9kbApxM/DQhyLMMMbkEU4cAgxmYQe7
+ TnQOK6/wmK+kOYbdULayiKhY/Na7mj734NLWbw1zEi5aXHYGKGqf6POfl
+ mfcJq3lHg9HCs5Hdop4HM9KWig1qYu05EZqPLe1rw90Yde3qaw8b5d39t
+ Ym7CkR0VoOX1sUPqTgTnWwmreL3ZdmvB6a1XJVOAb46YCSDfCc0hAns7d A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="291923691"
+X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="291923691"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Nov 2022 20:25:04 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="588440633"
+X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="588440633"
+Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Nov 2022 20:25:02 -0800
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	vkoul@kernel.org
+Subject: [PATCH 0/8] ASoC/soundwire: revisit interrupt and lcount handling
+Date: Fri, 11 Nov 2022 12:26:45 +0800
+Message-Id: <20221111042653.45520-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e5acf9e3-20b9-00b3-8d5f-687d47ccd49c@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, bard.liao@intel.com,
- Bard Liao <yung-chuan.liao@linux.intel.com>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: vinod.koul@linaro.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com,
+ linux-kernel@vger.kernel.org, broonie@kernel.org, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,35 +83,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 09-11-22, 10:05, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 10/28/22 06:28, Vinod Koul wrote:
-> > On 20-10-22, 09:56, Bard Liao wrote:
-> >> From: Sjoerd Simons <sjoerd@collabora.com>
-> >>
-> >> The bus->clk_stop_timeout member is only initialized to a non-zero value
-> >> during the codec driver probe. This can lead to corner cases where this
-> >> value remains pegged at zero when the bus suspends, which results in an
-> >> endless loop in sdw_bus_wait_for_clk_prep_deprep().
-> >>
-> >> Corner cases include configurations with no codecs described in the
-> >> firmware, or delays in probing codec drivers.
-> >>
-> >> Initializing the default timeout to the smallest non-zero value avoid this
-> >> problem and allows for the existing logic to be preserved: the
-> >> bus->clk_stop_timeout is set as the maximum required by all codecs
-> >> connected on the bus.
-> > 
-> > Applied to fixes, thanks
-> 
-> Thanks Vinod, was this sent to Greg/Linus? the last pull request I see
-> was for 6.1-rc1.
-> Arch Linux cherry-picked this patch but other distros did not, so quite
-> a few users are left with no audio card.
+The code in drivers/soundwire/intel_init.c is hardware-dependent and the
+code does not apply to new generations starting with MeteorLake. Refactor
+and clean-up the code to make this intel_init.c hardware-agnostic and
+move all hardware-dependencies in the SOF driver using chip descriptors.
 
-https://git.kernel.org/torvalds/c/f014699cca9a9a28fbdc06a9225b54562154fc20
+The ASoC patches are dependent on some patches that are applied to ASoC
+tree recently. So, this series won't apply to SoundWire tree. @Vinod Could
+you Ack if it looks good to you, and lets go through ASoC tree?
 
+Pierre-Louis Bossart (8):
+  soundwire: intel_init: remove useless interrupt enablement in
+    interrupt thread
+  ASoC: SOF: Intel: hda: add per-chip enable_sdw_irq() callback
+  ASoC: SOF: Intel: mtl: factor interrupt enable/disable interrupt
+    functions
+  ASoC: SOF: Intel: mtl: move SoundWire interrupt enabling to callback
+  ASoC: SOF: Intel: hda: add callback to check SoundWire lcount
+    information
+  soundwire: intel_init: remove sdw_intel_enable_irq()
+  soundwire: intel_init: remove check on number of links
+  ASoC: SOF: Intel: hda: read multi-link capabilities earlier
+
+ drivers/soundwire/intel_init.c      |  37 --------
+ include/linux/soundwire/sdw_intel.h |   2 -
+ sound/soc/sof/intel/cnl.c           |   4 +
+ sound/soc/sof/intel/hda.c           |  63 ++++++++++++-
+ sound/soc/sof/intel/hda.h           |  12 +++
+ sound/soc/sof/intel/icl.c           |   2 +
+ sound/soc/sof/intel/mtl.c           | 131 +++++++++++-----------------
+ sound/soc/sof/intel/shim.h          |   2 +
+ sound/soc/sof/intel/tgl.c           |   8 ++
+ 9 files changed, 139 insertions(+), 122 deletions(-)
 
 -- 
-~Vinod
+2.25.1
+
