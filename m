@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D01AC433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 11 Nov 2022 04:26:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11886C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 11 Nov 2022 04:27:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D10F15F9;
-	Fri, 11 Nov 2022 05:26:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D10F15F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4774A1633;
+	Fri, 11 Nov 2022 05:26:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4774A1633
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668140814;
-	bh=depyS39p+nqbjkrSWPNdTKa3bhRfj4+k8n/5TB+rs4I=;
+	s=default; t=1668140819;
+	bh=H3/b94c2awslnDKSnAllz+db/ARNE7nM/0mor8r2krA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EHvZjXQZ+xuMSvq6yHLvYSqjYB3AEFFlDtXcYkwiJL3kupCStfMoL5WKs1xuTkc3x
-	 D74JyOgpPBaztPZGC0rRQLLzvSTdidvo4zK0g81Xt4uv3WBDUevcByncZqVVPOMUxd
-	 iG1lQJx76ksfjJUTnUyt+PC9TpG3BFuPg/ZUuaik=
+	b=WZTzU2ALld6S2s2c6d1eAGm3TlrlJBLvwboPbfG56X/ElEnJOFdoWXmjNIuF/suOh
+	 dzKC0zmtVfbE0IAfkLQpOdlMqCjjL+SGOqTbeNmMe/QP/26pu548t8OR7YRl2anDI3
+	 sxOSz+h9reb58QFYj5VrgbJe2clKmJuU/lSmo3TE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7DD11F80558;
-	Fri, 11 Nov 2022 05:25:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2BFA3F8055B;
+	Fri, 11 Nov 2022 05:25:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93C92F8051B; Fri, 11 Nov 2022 05:25:16 +0100 (CET)
+ id 5708BF804AB; Fri, 11 Nov 2022 05:25:19 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF007F800F8
- for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 05:25:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF007F800F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3FBC2F804AB
+ for <alsa-devel@alsa-project.org>; Fri, 11 Nov 2022 05:25:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FBC2F804AB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Z5z1QhwG"
+ header.b="UF4s7Sda"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1668140711; x=1699676711;
+ t=1668140717; x=1699676717;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=depyS39p+nqbjkrSWPNdTKa3bhRfj4+k8n/5TB+rs4I=;
- b=Z5z1QhwG/Ch3AEwJIAKmAl7/T9j1cRMyRJWO2+R30NKoywJPJyPahuza
- I/hxdBF/+JFwpHsUr9S/Rwkixbxa8UM3S7Ux5fDQscBMuyoSvza5C2xtG
- IVtLSm4AtwaXbDPgaCrv9YmRHEZAfm70vV+3gUanUNMPl0fV0mYho1XdB
- Ihz3WnsJFAfibDiqNEEgfVUZW+THUkXffZcSdfi6Yt3iwM33X5ZMN483h
- qlxoBu5Hu/X6dFLeDB8470fTArLCb8HRPjUohFgrz2jZh6ImQgCGRAMEj
- csulkYqoUwF846ehW7b/CHfxFGtszCjaadPLVEzQTsslGedSeD4r7vdF9 Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="291923710"
-X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="291923710"
+ bh=H3/b94c2awslnDKSnAllz+db/ARNE7nM/0mor8r2krA=;
+ b=UF4s7SdaLt7GjV4J/hIC0TXtdueE1nFvOyo77Qa7Xfz8gs7sDxh8bOqw
+ Vc2RDCooG5hmdGrEcngM7hYR8K7tyM4GSBM6ztfqzc1rayfq0K86tVRon
+ r3Wzn8/SGH/1cL22KUnZN8P5GRUnIc/k6XMVLeNthN5FNAR4JZfd54+xf
+ W40ogMFzspZQ/6Aq1jwKBgIDDSy4pRiCQamTGlsr6C2j1uWL5BtabRA1J
+ Ecq29mn48E5rIfFRyGCjd/ywvjh96/KxYnkWPlwWETQUIOVOQJIFcg1xf
+ 4REXJhgcbOl/7vSEqbBUD9mL9HB5TuvjZ7olXPt4hXChZ6bg49cZ0l+3n w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="291923725"
+X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="291923725"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Nov 2022 20:25:09 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="588440690"
-X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="588440690"
+ 10 Nov 2022 20:25:14 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10527"; a="588440731"
+X-IronPort-AV: E=Sophos;i="5.96,155,1665471600"; d="scan'208";a="588440731"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Nov 2022 20:25:06 -0800
+ 10 Nov 2022 20:25:12 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 2/8] ASoC: SOF: Intel: hda: add per-chip enable_sdw_irq()
- callback
-Date: Fri, 11 Nov 2022 12:26:47 +0800
-Message-Id: <20221111042653.45520-3-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 4/8] ASoC: SOF: Intel: mtl: move SoundWire interrupt enabling
+ to callback
+Date: Fri, 11 Nov 2022 12:26:49 +0800
+Message-Id: <20221111042653.45520-5-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221111042653.45520-1-yung-chuan.liao@linux.intel.com>
 References: <20221111042653.45520-1-yung-chuan.liao@linux.intel.com>
@@ -89,177 +89,93 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Different generations of Intel hardware rely on different programming
-sequences to enable SoundWire IP. In existing hardware, the SoundWire
-interrupt is enabled with a register field in the DSP register
-space. With HDaudio multi-link extensions registers, the SoundWire
-interrupt will be enabled with a generic interrupt enable field in
-LCTL, without any dependency on the DSP being enabled.
-
-Add a per-chip callback following the example of the check_sdw_irq()
-model already upstream.
-
-Note that the callback is not populated yet for MeteorLake (MTL) since
-the interrupts are already enabled in the init. A follow-up patch will
-move the functionality to this callback after a couple of cleanups.
+There's no real rationale for enabling the SoundWire interrupt in the
+init, this can be done from the enable_sdw_irq() callback.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/intel/cnl.c  |  2 ++
- sound/soc/sof/intel/hda.c  | 20 +++++++++++++++++++-
- sound/soc/sof/intel/hda.h  |  6 ++++++
- sound/soc/sof/intel/icl.c  |  1 +
- sound/soc/sof/intel/shim.h |  1 +
- sound/soc/sof/intel/tgl.c  |  4 ++++
- 6 files changed, 33 insertions(+), 1 deletion(-)
+ sound/soc/sof/intel/mtl.c | 44 ++++++++++++++++++++++++---------------
+ 1 file changed, 27 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index 0aaa44bd49eb..cbb6474d5c33 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -457,6 +457,7 @@ const struct sof_intel_dsp_desc cnl_chip_info = {
- 	.sdw_shim_base = SDW_SHIM_BASE,
- 	.sdw_alh_base = SDW_ALH_BASE,
- 	.d0i3_offset = SOF_HDA_VS_D0I3C,
-+	.enable_sdw_irq	= hda_common_enable_sdw_irq,
- 	.check_sdw_irq	= hda_common_check_sdw_irq,
- 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
- 	.cl_init = cl_dsp_init,
-@@ -490,6 +491,7 @@ const struct sof_intel_dsp_desc jsl_chip_info = {
- 	.sdw_shim_base = SDW_SHIM_BASE,
- 	.sdw_alh_base = SDW_ALH_BASE,
- 	.d0i3_offset = SOF_HDA_VS_D0I3C,
-+	.enable_sdw_irq	= hda_common_enable_sdw_irq,
- 	.check_sdw_irq	= hda_common_check_sdw_irq,
- 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
- 	.cl_init = cl_dsp_init,
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 348fbfb6a2c2..2dc828866b5b 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -155,9 +155,27 @@ struct sdw_intel_ops sdw_callback = {
- 	.free_stream = sdw_free_stream,
- };
+diff --git a/sound/soc/sof/intel/mtl.c b/sound/soc/sof/intel/mtl.c
+index 43ffcccec0be..a0839804a6da 100644
+--- a/sound/soc/sof/intel/mtl.c
++++ b/sound/soc/sof/intel/mtl.c
+@@ -134,6 +134,31 @@ static void mtl_disable_ipc_interrupts(struct snd_sof_dev *sdev)
+ 				MTL_DSP_REG_HFIPCXCTL_BUSY | MTL_DSP_REG_HFIPCXCTL_DONE, 0);
+ }
  
-+void hda_common_enable_sdw_irq(struct snd_sof_dev *sdev, bool enable)
++static void mtl_enable_sdw_irq(struct snd_sof_dev *sdev, bool enable)
 +{
-+	struct sof_intel_hda_dev *hdev;
++	u32 hipcie;
++	u32 mask;
++	u32 val;
++	int ret;
 +
-+	hdev = sdev->pdata->hw_pdata;
++	/* Enable/Disable SoundWire interrupt */
++	mask = MTL_DSP_REG_HfSNDWIE_IE_MASK;
++	if (enable)
++		val = mask;
++	else
++		val = 0;
 +
-+	if (!hdev->sdw)
-+		return;
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, MTL_DSP_REG_HfSNDWIE, mask, val);
 +
-+	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPIC2,
-+				HDA_DSP_REG_ADSPIC2_SNDW,
-+				enable ? HDA_DSP_REG_ADSPIC2_SNDW : 0);
++	/* check if operation was successful */
++	ret = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_BAR, MTL_DSP_REG_HfSNDWIE, hipcie,
++					    (hipcie & mask) == val,
++					    HDA_DSP_REG_POLL_INTERVAL_US, HDA_DSP_RESET_TIMEOUT_US);
++	if (ret < 0)
++		dev_err(sdev->dev, "failed to set SoundWire IPC interrupt %s\n",
++			enable ? "enable" : "disable");
 +}
 +
- void hda_sdw_int_enable(struct snd_sof_dev *sdev, bool enable)
+ static int mtl_enable_interrupts(struct snd_sof_dev *sdev, bool enable)
  {
--	sdw_intel_enable_irq(sdev->bar[HDA_DSP_BAR], enable);
-+	const struct sof_intel_dsp_desc *chip;
-+
-+	chip = get_chip_info(sdev->pdata);
-+	if (chip && chip->enable_sdw_irq)
-+		chip->enable_sdw_irq(sdev, enable);
+ 	u32 hfintipptr;
+@@ -184,23 +209,6 @@ static int mtl_enable_interrupts(struct snd_sof_dev *sdev, bool enable)
+ 		return ret;
+ 	}
+ 
+-	/* Enable/Disable SoundWire interrupt */
+-	mask = MTL_DSP_REG_HfSNDWIE_IE_MASK;
+-	if (enable)
+-		val = mask;
+-	else
+-		val = 0;
+-
+-	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, MTL_DSP_REG_HfSNDWIE, mask, val);
+-
+-	/* check if operation was successful */
+-	ret = snd_sof_dsp_read_poll_timeout(sdev, HDA_DSP_BAR, MTL_DSP_REG_HfSNDWIE, hipcie,
+-					    (hipcie & mask) == val,
+-					    HDA_DSP_REG_POLL_INTERVAL_US, HDA_DSP_RESET_TIMEOUT_US);
+-	if (ret < 0)
+-		dev_err(sdev->dev, "failed to set SoundWire IPC interrupt %s\n",
+-			enable ? "enable" : "disable");
+-
+ 	return ret;
  }
  
- static int hda_sdw_acpi_scan(struct snd_sof_dev *sdev)
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index ea73fd17ae28..79fccd7b5bf7 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -294,6 +294,7 @@
- #define HDA_DSP_REG_ADSPIC2		(HDA_DSP_GEN_BASE + 0x10)
- #define HDA_DSP_REG_ADSPIS2		(HDA_DSP_GEN_BASE + 0x14)
+@@ -568,6 +576,7 @@ static void mtl_ipc_dump(struct snd_sof_dev *sdev)
  
-+#define HDA_DSP_REG_ADSPIC2_SNDW	BIT(5)
- #define HDA_DSP_REG_ADSPIS2_SNDW	BIT(5)
- 
- /* Intel HD Audio Inter-Processor Communication Registers */
-@@ -795,6 +796,7 @@ int hda_dsp_trace_trigger(struct snd_sof_dev *sdev, int cmd);
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
- 
- int hda_sdw_startup(struct snd_sof_dev *sdev);
-+void hda_common_enable_sdw_irq(struct snd_sof_dev *sdev, bool enable);
- void hda_sdw_int_enable(struct snd_sof_dev *sdev, bool enable);
- void hda_sdw_process_wakeen(struct snd_sof_dev *sdev);
- bool hda_common_check_sdw_irq(struct snd_sof_dev *sdev);
-@@ -806,6 +808,10 @@ static inline int hda_sdw_startup(struct snd_sof_dev *sdev)
- 	return 0;
- }
- 
-+static inline void hda_common_enable_sdw_irq(struct snd_sof_dev *sdev, bool enable)
-+{
-+}
-+
- static inline void hda_sdw_int_enable(struct snd_sof_dev *sdev, bool enable)
+ static int mtl_dsp_disable_interrupts(struct snd_sof_dev *sdev)
  {
++	mtl_enable_sdw_irq(sdev, false);
+ 	mtl_disable_ipc_interrupts(sdev);
+ 	return mtl_enable_interrupts(sdev, false);
  }
-diff --git a/sound/soc/sof/intel/icl.c b/sound/soc/sof/intel/icl.c
-index 8dd51f489ba1..f3aff23a13d2 100644
---- a/sound/soc/sof/intel/icl.c
-+++ b/sound/soc/sof/intel/icl.c
-@@ -181,6 +181,7 @@ const struct sof_intel_dsp_desc icl_chip_info = {
- 	.sdw_shim_base = SDW_SHIM_BASE,
- 	.sdw_alh_base = SDW_ALH_BASE,
- 	.d0i3_offset = SOF_HDA_VS_D0I3C,
-+	.enable_sdw_irq	= hda_common_enable_sdw_irq,
- 	.check_sdw_irq	= hda_common_check_sdw_irq,
- 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
- 	.cl_init = cl_dsp_init,
-diff --git a/sound/soc/sof/intel/shim.h b/sound/soc/sof/intel/shim.h
-index 3e777c500a56..2e78f27c4207 100644
---- a/sound/soc/sof/intel/shim.h
-+++ b/sound/soc/sof/intel/shim.h
-@@ -185,6 +185,7 @@ struct sof_intel_dsp_desc {
- 	u32 d0i3_offset;
- 	u32 quirks;
- 	enum sof_intel_hw_ip_version hw_ip_version;
-+	void (*enable_sdw_irq)(struct snd_sof_dev *sdev, bool enable);
- 	bool (*check_sdw_irq)(struct snd_sof_dev *sdev);
- 	bool (*check_ipc_irq)(struct snd_sof_dev *sdev);
- 	int (*power_down_dsp)(struct snd_sof_dev *sdev);
-diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
-index 946044f440c9..dda89c8ea820 100644
---- a/sound/soc/sof/intel/tgl.c
-+++ b/sound/soc/sof/intel/tgl.c
-@@ -136,6 +136,7 @@ const struct sof_intel_dsp_desc tgl_chip_info = {
- 	.sdw_shim_base = SDW_SHIM_BASE,
- 	.sdw_alh_base = SDW_ALH_BASE,
- 	.d0i3_offset = SOF_HDA_VS_D0I3C,
-+	.enable_sdw_irq	= hda_common_enable_sdw_irq,
- 	.check_sdw_irq	= hda_common_check_sdw_irq,
- 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
- 	.cl_init = cl_dsp_init,
-@@ -162,6 +163,7 @@ const struct sof_intel_dsp_desc tglh_chip_info = {
- 	.sdw_shim_base = SDW_SHIM_BASE,
- 	.sdw_alh_base = SDW_ALH_BASE,
- 	.d0i3_offset = SOF_HDA_VS_D0I3C,
-+	.enable_sdw_irq	= hda_common_enable_sdw_irq,
- 	.check_sdw_irq	= hda_common_check_sdw_irq,
- 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
- 	.cl_init = cl_dsp_init,
-@@ -188,6 +190,7 @@ const struct sof_intel_dsp_desc ehl_chip_info = {
- 	.sdw_shim_base = SDW_SHIM_BASE,
- 	.sdw_alh_base = SDW_ALH_BASE,
- 	.d0i3_offset = SOF_HDA_VS_D0I3C,
-+	.enable_sdw_irq	= hda_common_enable_sdw_irq,
- 	.check_sdw_irq	= hda_common_check_sdw_irq,
- 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
- 	.cl_init = cl_dsp_init,
-@@ -214,6 +217,7 @@ const struct sof_intel_dsp_desc adls_chip_info = {
- 	.sdw_shim_base = SDW_SHIM_BASE,
- 	.sdw_alh_base = SDW_ALH_BASE,
- 	.d0i3_offset = SOF_HDA_VS_D0I3C,
-+	.enable_sdw_irq	= hda_common_enable_sdw_irq,
- 	.check_sdw_irq	= hda_common_check_sdw_irq,
- 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
- 	.cl_init = cl_dsp_init,
+@@ -645,6 +654,7 @@ const struct sof_intel_dsp_desc mtl_chip_info = {
+ 	.sdw_shim_base = SDW_SHIM_BASE_ACE,
+ 	.sdw_alh_base = SDW_ALH_BASE_ACE,
+ 	.d0i3_offset = MTL_HDA_VS_D0I3C,
++	.enable_sdw_irq = mtl_enable_sdw_irq,
+ 	.check_sdw_irq = mtl_dsp_check_sdw_irq,
+ 	.check_ipc_irq = mtl_dsp_check_ipc_irq,
+ 	.cl_init = mtl_dsp_cl_init,
 -- 
 2.25.1
 
