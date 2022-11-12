@@ -4,71 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A48C4C4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 12 Nov 2022 13:36:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9965DC4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 12 Nov 2022 14:11:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A747D163B;
-	Sat, 12 Nov 2022 14:35:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A747D163B
+	by alsa0.perex.cz (Postfix) with ESMTPS id CBDEF15E0;
+	Sat, 12 Nov 2022 15:10:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBDEF15E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668260173;
-	bh=hVeujgpbsR+OV5+KCHpDO/ek0DALY7aOLmsd6J8rfNQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1668262282;
+	bh=/4JKZtcckJ/2ISECVr45OWmjtgy3O7suUBqc1H/tiZc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cXz9aRLu4sUCR/pgP8VSRP8FoFXHK40d0Udcgt6GScHjdBcsSrbHqWhDsHCIcfMe9
-	 uFFeGoE2AX9f59ezA5XCV/rLStpNEw3zfdyH/1PJLoHlMf4sLDISEdQJJpi5uS3kq3
-	 vOJpxBQ/YovBKIXgqgCwAvfmFJ8sDC2fnlEir4MA=
+	b=UEmj5doLXtKLQB700u62kGyKqCt3RUrXENZajgIqQo5mfK5j0OFBnMCdN8qUW9HRu
+	 hAk4qWcZByVcE7vdLfNaIVWvtPXNNdqXiod5g1oW9glgdtjxYUvrTP5Ts9y0istLOm
+	 M8/nOz9wMvSr+IAZcr4YulOlK4gj43wAnYM5IRkk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51AC8F80254;
-	Sat, 12 Nov 2022 14:35:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A43EF800CC;
+	Sat, 12 Nov 2022 15:10:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55291F800E5; Sat, 12 Nov 2022 14:35:22 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 109D0F800CC; Sat, 12 Nov 2022 15:10:30 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1E130F800E5;
- Sat, 12 Nov 2022 14:35:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E130F800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0013F800CC;
+ Sat, 12 Nov 2022 15:10:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0013F800CC
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qh3OumoF"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="FmgSE1Dd"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="wmtJ+VSo"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id CB1FA601BD;
- Sat, 12 Nov 2022 13:35:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1FA8C433C1;
- Sat, 12 Nov 2022 13:35:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1668260112;
- bh=hVeujgpbsR+OV5+KCHpDO/ek0DALY7aOLmsd6J8rfNQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=qh3OumoFGbOnAzu35kkwGg5ppRqSBWdZzlwJ3s+z6MB7BsUoV8yCg8PhnkgM59sqy
- X54DczvP2IAfvmpSnc92o6a+fmA8/Apntn6TbYeDoV8AKt/J/ysM6/wyfyZ773LVNt
- EA++t0H/RPrttGx/YqdXn/tPlgC915EQckWBBjZk28SDupaCt19pe6pU4NSsqqsakT
- 6hKKJSvLttMxkIxoKKf7ZSLauOUs95MbrugpyQ0Oyquf9wbxBUMG9tTSX8HXr1QAYX
- 4j0uyqTb1xP4NcBdcFfO5ful0CM/QUuBp8qoh4FfGuxQ8JB2w9Hw8KnfvvDbK9sq9i
- TouOJvS704/bA==
-Date: Sat, 12 Nov 2022 13:35:06 +0000
-From: Mark Brown <broonie@kernel.org>
-To: syzbot <syzbot+9abda841d636d86c41da@syzkaller.appspotmail.com>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 246651F88F;
+ Sat, 12 Nov 2022 14:10:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1668262222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hca6nGOkQBaZe/UUSAuQCCX33sld7xfAXwjJspBu2ps=;
+ b=FmgSE1DdPkgqkbE/WKVEO13epavsK8qIrF74k2iIOFvcYwVSUEjtRlek4n0dbNMNR1Tttq
+ Nq1NZ4FBt8q815w9VSZOu1DAG57kDLLesY43jO+b4YfArSHszY7PN53YYIOHZ8ZHGWRpjh
+ oOcGm5LXUyA/su6VPDNKHajHry6rxN8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1668262222;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hca6nGOkQBaZe/UUSAuQCCX33sld7xfAXwjJspBu2ps=;
+ b=wmtJ+VSoIp7jxdA1W6zxwn4E6Q4gG3BT0/6gBY1iBjW3b1boGU1p6zKy4PvY+BTi6iUICE
+ zqxHHAnq4WnJCQDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E1B7313A08;
+ Sat, 12 Nov 2022 14:10:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id OaeMNk2pb2PGLAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Sat, 12 Nov 2022 14:10:21 +0000
+Date: Sat, 12 Nov 2022 15:10:21 +0100
+Message-ID: <87y1sg1cxe.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
 Subject: Re: [syzbot] WARNING in snd_usbmidi_output_open
-Message-ID: <Y2+hCnVYWHuROAEF@sirena.org.uk>
+In-Reply-To: <Y2+hCnVYWHuROAEF@sirena.org.uk>
 References: <000000000000734a7305ed3608ba@google.com>
  <00000000000073937205ed45fe5c@google.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="/RS2WdliLAVa+DOF"
-Content-Disposition: inline
-In-Reply-To: <00000000000073937205ed45fe5c@google.com>
-X-Cookie: Sleep is for the weak and sickly.
+ <Y2+hCnVYWHuROAEF@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org, rafael@kernel.org, gregkh@linuxfoundation.org,
  tiwai@suse.com, clemens@ladisch.de, lgirdwood@gmail.com,
  alsa-devel-owner@alsa-project.org, linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com, peda@axentia.se
+ syzkaller-bugs@googlegroups.com,
+ syzbot <syzbot+9abda841d636d86c41da@syzkaller.appspotmail.com>,
+ peda@axentia.se
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,38 +101,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Sat, 12 Nov 2022 14:35:06 +0100,
+Mark Brown wrote:
+> 
+> On Sat, Nov 12, 2022 at 05:29:21AM -0800, syzbot wrote:
+> > syzbot has bisected this issue to:
+> > 
+> > commit 4f8ed19593872b710f27bbc3b7a9ce03310efc57
+> > Author: Mark Brown <broonie@kernel.org>
+> > Date:   Thu Jun 2 13:10:58 2022 +0000
+> > 
+> >     ASoC: tfa9879: Use modern ASoC DAI format terminology
+> 
+> This bisection really doesn't seem credible for an issue in a different
+> driver...  The tfa9879 is neither a USB nor MIDI device, and the commit
+> in question is a stylistic update.
 
---/RS2WdliLAVa+DOF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, the bisection result is bogus.
 
-On Sat, Nov 12, 2022 at 05:29:21AM -0800, syzbot wrote:
-> syzbot has bisected this issue to:
->=20
-> commit 4f8ed19593872b710f27bbc3b7a9ce03310efc57
-> Author: Mark Brown <broonie@kernel.org>
-> Date:   Thu Jun 2 13:10:58 2022 +0000
->=20
->     ASoC: tfa9879: Use modern ASoC DAI format terminology
+And, the problem here is just a kernel WARNING produced by
+snd_BUG_ON() macro usage, and the check itself is valid.
+We just need to drop snd_BUG_ON() wrapping.
 
-This bisection really doesn't seem credible for an issue in a different
-driver...  The tfa9879 is neither a USB nor MIDI device, and the commit
-in question is a stylistic update.
+Will submit the fix later.
 
---/RS2WdliLAVa+DOF
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+thanks,
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmNvoQkACgkQJNaLcl1U
-h9BMbQf/Tqra5Lp05g+IVNIpqu8jemjvb4459Sw7r0DMv8JsgIgIMOcucoXt0VT0
-pZ9x8JXtgM9t61pG+2I6a3OGDrHHHnZxpuEUTkAuGb0yZlh8s71658kiDAvAgQpm
-iCl5MEYpl0aoia5oy+VoEJQ3//Y7/8xMM0IKst61OKmod/XcjVOB1qmGexW3ZDBq
-e5iy7Hf7M9D6ZzaPmJHOqwUvXEmozUW06G+1wLcqzAQnAxT6Q/HDqMW8HR624KhK
-VuPS2iF8JYCvHPiy9kDYuZyKMb1a71VfRYkgR3sn0Zc2KKbQ7WrfEe9yRFjgo0j+
-E0FuF257SOTFiyVcKnqSFlxn7WTcuQ==
-=7btB
------END PGP SIGNATURE-----
-
---/RS2WdliLAVa+DOF--
+Takashi
