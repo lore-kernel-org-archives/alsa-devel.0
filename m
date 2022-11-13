@@ -4,54 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 772AAC4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 12 Nov 2022 21:13:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6E4AC4332F
+	for <alsa-devel@archiver.kernel.org>; Sun, 13 Nov 2022 16:37:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 280E2163B;
-	Sat, 12 Nov 2022 22:12:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 280E2163B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2FBB3161D;
+	Sun, 13 Nov 2022 17:36:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FBB3161D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668287601;
-	bh=2iAAWO5Y7WxyfujruBap3TgmnqtxP2liK/32VJVnnA0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=WhDSogVD+ByAEXSHczLufPpV/fG0yq5XC2hRbVsLqKMfJYC+hBEX6V+1XK7YE1A9V
-	 MqtiTyvfy6Ub+t+GdzzVoprLaQQ8pBuvmDn84BmOc40GGz7rlS3PUWgTggisQZmONr
-	 zLG3NPJmU7bYPL5O59m40V9AwyN7uqJs3m+qvBE0=
+	s=default; t=1668357421;
+	bh=W5QdC0UYWPKvqMtbg1qg/JoTO7vqhC89hIDd6iN5xQM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=HVdC9txREZO4v+khMXoBbRyKmNLcAeAHF8hUWKC3iBrfUakf+IneELfacGCXnv7gf
+	 1z/i29g0sxWMECQ7NmclG5ykyDrYRoiv22vQzFslvGbPfJ3mqYrnPVdmoWPYBwTuN1
+	 Slfips+XxqsFNuIkoJgPPL5R4pydbmGmvuWh2dno=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2188F80254;
-	Sat, 12 Nov 2022 22:12:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CDB13F8030F;
+	Sun, 13 Nov 2022 17:36:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 39EC1F8026D; Sat, 12 Nov 2022 22:12:29 +0100 (CET)
-Received: from smtp.smtpout.orange.fr (smtp-13.smtpout.orange.fr
- [80.12.242.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1797EF8049C; Sun, 13 Nov 2022 17:36:09 +0100 (CET)
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [IPv6:2607:7c80:54:3::133])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5BC2F800CC
- for <alsa-devel@alsa-project.org>; Sat, 12 Nov 2022 22:12:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5BC2F800CC
-Received: from pop-os.home ([86.243.100.34]) by smtp.orange.fr with ESMTPA
- id txnUo3RPmEkSDtxnUoiQpZ; Sat, 12 Nov 2022 22:12:21 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 12 Nov 2022 22:12:21 +0100
-X-ME-IP: 86.243.100.34
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Lars-Peter Clausen <lars@metafoo.de>,
- =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH] ASoC: codecs: Remove a useless include
-Date: Sat, 12 Nov 2022 22:12:13 +0100
-Message-Id: <875ca433849025edf8c23624cf29b0e2250bba50.1668287523.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id C96F9F80245
+ for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2022 17:36:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C96F9F80245
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="mi1i5xYt"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+ :Reply-To:Content-Type:Content-ID:Content-Description;
+ bh=rczvEohbP4Tuhdub3uBqOVXlkIWc5YOmLPmvA8PuHak=; b=mi1i5xYt2RJoyJDrEBDhZI+XcY
+ a8Cf8kDgenb+pSjOQ0whpICnRG0uph9i16Ml8EV60aZwINhPhEsroDGa6eSGkNZHDAC+BqFND4LJV
+ R/yXCIbc/z5bgxST/jYUBNPmh83FDvn3rEufPr8KXKJQurOVrEqGM7diEbLXQpzM2zRr2fUhCKcVB
+ CoBXdX5M2T/A/IBmgcD2ta5i4AjE/zCEqeG6NxQyJb2lQEHrk74bjgutlpwxa2x4fCHYwIMJdG2qg
+ 9hN75DQ0rOViioGJqAhzT65rDB1G39BT+G1rOCR83F/K1FZbqGxeWtXhmBrdU5sbV6jY7dCp6iv+U
+ lYx9tjxA==;
+Received: from 213-225-8-167.nat.highway.a1.net ([213.225.8.167]
+ helo=localhost)
+ by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1ouFxW-00CLT0-00; Sun, 13 Nov 2022 16:35:50 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Alexandra Winter <wintera@linux.ibm.com>,
+ Wenjia Zhang <wenjia@linux.ibm.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Russell King <linux@armlinux.org.uk>, Robin Murphy <robin.murphy@arm.com>
+Subject: [PATCH 2/7] RDMA/hfi1: don't pass bogus GFP_ flags to
+ dma_alloc_coherent
+Date: Sun, 13 Nov 2022 17:35:30 +0100
+Message-Id: <20221113163535.884299-3-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221113163535.884299-1-hch@lst.de>
+References: <20221113163535.884299-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
+ bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Cc: linux-s390@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-rdma@vger.kernel.org, netdev@vger.kernel.org, iommu@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,52 +87,77 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-<linux/gcd.h> is not needed for these drivers. Remove the corresponding
-#include.
+dma_alloc_coherent is an opaque allocator that only uses the GFP_ flags
+for allocation context control.  Don't pass GFP_USER which doesn't make
+sense for a kernel DMA allocation or __GFP_COMP which makes no sense
+for an allocation that can't in any way be converted to a page pointer.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- sound/soc/codecs/adau1372.c | 1 -
- sound/soc/codecs/adau1373.c | 1 -
- sound/soc/codecs/adau17x1.c | 1 -
- 3 files changed, 3 deletions(-)
+ drivers/infiniband/hw/hfi1/init.c | 21 +++------------------
+ 1 file changed, 3 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/codecs/adau1372.c b/sound/soc/codecs/adau1372.c
-index a9f89e8565ec..fbb6bf6fb3cc 100644
---- a/sound/soc/codecs/adau1372.c
-+++ b/sound/soc/codecs/adau1372.c
-@@ -8,7 +8,6 @@
+diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
+index 436372b314312..24c0f0d257fc9 100644
+--- a/drivers/infiniband/hw/hfi1/init.c
++++ b/drivers/infiniband/hw/hfi1/init.c
+@@ -1761,17 +1761,11 @@ int hfi1_create_rcvhdrq(struct hfi1_devdata *dd, struct hfi1_ctxtdata *rcd)
+ 	unsigned amt;
  
- #include <linux/clk.h>
- #include <linux/delay.h>
--#include <linux/gcd.h>
- #include <linux/gpio/consumer.h>
- #include <linux/init.h>
- #include <linux/module.h>
-diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
-index 7f832d00ab17..37e178e8a1d0 100644
---- a/sound/soc/codecs/adau1373.c
-+++ b/sound/soc/codecs/adau1373.c
-@@ -12,7 +12,6 @@
- #include <linux/pm.h>
- #include <linux/i2c.h>
- #include <linux/slab.h>
--#include <linux/gcd.h>
+ 	if (!rcd->rcvhdrq) {
+-		gfp_t gfp_flags;
+-
+ 		amt = rcvhdrq_size(rcd);
  
- #include <sound/core.h>
- #include <sound/pcm.h>
-diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
-index c0f44ecef606..634d4dbca5ec 100644
---- a/sound/soc/codecs/adau17x1.c
-+++ b/sound/soc/codecs/adau17x1.c
-@@ -16,7 +16,6 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/tlv.h>
--#include <linux/gcd.h>
- #include <linux/i2c.h>
- #include <linux/spi/spi.h>
- #include <linux/regmap.h>
+-		if (rcd->ctxt < dd->first_dyn_alloc_ctxt || rcd->is_vnic)
+-			gfp_flags = GFP_KERNEL;
+-		else
+-			gfp_flags = GFP_USER;
+ 		rcd->rcvhdrq = dma_alloc_coherent(&dd->pcidev->dev, amt,
+ 						  &rcd->rcvhdrq_dma,
+-						  gfp_flags | __GFP_COMP);
++						  GFP_KERNEL);
+ 
+ 		if (!rcd->rcvhdrq) {
+ 			dd_dev_err(dd,
+@@ -1785,7 +1779,7 @@ int hfi1_create_rcvhdrq(struct hfi1_devdata *dd, struct hfi1_ctxtdata *rcd)
+ 			rcd->rcvhdrtail_kvaddr = dma_alloc_coherent(&dd->pcidev->dev,
+ 								    PAGE_SIZE,
+ 								    &rcd->rcvhdrqtailaddr_dma,
+-								    gfp_flags);
++								    GFP_KERNEL);
+ 			if (!rcd->rcvhdrtail_kvaddr)
+ 				goto bail_free;
+ 		}
+@@ -1821,19 +1815,10 @@ int hfi1_setup_eagerbufs(struct hfi1_ctxtdata *rcd)
+ {
+ 	struct hfi1_devdata *dd = rcd->dd;
+ 	u32 max_entries, egrtop, alloced_bytes = 0;
+-	gfp_t gfp_flags;
+ 	u16 order, idx = 0;
+ 	int ret = 0;
+ 	u16 round_mtu = roundup_pow_of_two(hfi1_max_mtu);
+ 
+-	/*
+-	 * GFP_USER, but without GFP_FS, so buffer cache can be
+-	 * coalesced (we hope); otherwise, even at order 4,
+-	 * heavy filesystem activity makes these fail, and we can
+-	 * use compound pages.
+-	 */
+-	gfp_flags = __GFP_RECLAIM | __GFP_IO | __GFP_COMP;
+-
+ 	/*
+ 	 * The minimum size of the eager buffers is a groups of MTU-sized
+ 	 * buffers.
+@@ -1864,7 +1849,7 @@ int hfi1_setup_eagerbufs(struct hfi1_ctxtdata *rcd)
+ 			dma_alloc_coherent(&dd->pcidev->dev,
+ 					   rcd->egrbufs.rcvtid_size,
+ 					   &rcd->egrbufs.buffers[idx].dma,
+-					   gfp_flags);
++					   GFP_KERNEL);
+ 		if (rcd->egrbufs.buffers[idx].addr) {
+ 			rcd->egrbufs.buffers[idx].len =
+ 				rcd->egrbufs.rcvtid_size;
 -- 
-2.34.1
+2.30.2
 
