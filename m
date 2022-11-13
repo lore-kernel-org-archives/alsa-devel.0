@@ -4,51 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 355F1C4332F
-	for <alsa-devel@archiver.kernel.org>; Sun, 13 Nov 2022 16:37:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16563C4332F
+	for <alsa-devel@archiver.kernel.org>; Sun, 13 Nov 2022 16:37:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C6F4D1620;
-	Sun, 13 Nov 2022 17:37:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6F4D1620
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF0121674;
+	Sun, 13 Nov 2022 17:37:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF0121674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668357471;
-	bh=x+EJ+P2iS5XPVVlGza3HbY2GzghhfUZiNaJ0BV+gdis=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=WZ/Kf17qH4NEo4+EXKv3pmtDgrFWS3PFJ8v0jBHt6LQXC9hmlzmbMuXS/hFAxjVlN
-	 HRiZNKgbEbpOXEVVlpgnjQ3b0ld+AaIwDut2GxPUtCpGK+IwYhXJlXYCZgUieR4Eu8
-	 go3bDY7hWfXP6hJB9DedfZn1+NJmFx6ZxZIoV3AU=
+	s=default; t=1668357476;
+	bh=It3KB89UV6GNxTkVS4rPQ/SG/EiFjUHtiBNrshJgRmg=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JDz3zwAtUVW8Y9zdBqf73r+zr4Du49S4kBLDL7SwYYl5CKALLfQieXkITXFbZgDSw
+	 EUi+D8DWYiVwejzYtP+rtBkcb1ICaWS3a/yypGGsGiaQUVWr1pVxe7WyAmMxLjuwMh
+	 7W6rX8jUwhmIMrCyVDO1OC6S0Casmft1noUOqqPU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9D47F80537;
-	Sun, 13 Nov 2022 17:36:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E88FF8055A;
+	Sun, 13 Nov 2022 17:36:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A865EF80557; Sun, 13 Nov 2022 17:36:12 +0100 (CET)
+ id E9D6DF8055A; Sun, 13 Nov 2022 17:36:17 +0100 (CET)
 Received: from bombadil.infradead.org (bombadil.infradead.org
  [IPv6:2607:7c80:54:3::133])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3C735F800B8
- for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2022 17:36:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C735F800B8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 29AF6F80557
+ for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2022 17:36:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29AF6F80557
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="lSs7voTq"
+ header.b="uXVEEcm5"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
- Content-ID:Content-Description:In-Reply-To:References;
- bh=p8fZXFOilxr1b8Vw8YSIZYORkb8OJr3ydr3tjQdLjg4=; b=lSs7voTqaJMI0HO0w/yDtxu1V5
- bFe2oVzPY3oP8bREwzfNwOfWUgcPhllF1FYQEtFuUdqSntgGpVcEKGvjdMdeRZNgtepgsxwzJLiSn
- GvChig1xISPaA22YRe2fmw21MmtcqUGwGi1MQGchbpeaxiOepb97cZQSGxx7iCEz0vLWLoLK0kc3z
- YrVB1crY8jRv7Zr9cNcMJV+zZMfzYNgpLoWblTjEfj+DSomHWeqFcLXkIgabUpr2UAWzxcb1BU95i
- sOERMpomMz96rkOTLwN3fbdaqSgxsjj3g7QlZtlea2h4gsFZH2Nu8pE5vgZOBKQ0vsKohRmYD3rmk
- JdGh1NIA==;
+ MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+ :Reply-To:Content-Type:Content-ID:Content-Description;
+ bh=IZIXQnSGcHYeM4XJWAJat9lbPLpIQMPCw7wwtVshmX8=; b=uXVEEcm5gNDlzy32h/Z90s3u66
+ L9AFXb3lYOW33nsHgdUJhj2drBZbUy/yrtfv5+jlSl16oZ2K0eUrstr4/vkAOMDeK0YRcE0vpuXRB
+ T7yNkNTfybeOTC2ZzcNUHoPpb1Rw7oCMKLnkaHwulVzTV1oEu9GTjmIoI467k0/4Tbae96MmpZNwB
+ Mef6tL8fexZfMSjajxytehZa28hwRmsizcTReO6x0yMiaLaSvOdXG4oRf1DXvTmlV20+2llg3MTZ4
+ aZVZsV9nOXU1Xxo7WUU+Y73zq1wo50jxwwpOh4ju6HzoH6lb8zPu54zWSFeJ1poQ8JWYZNDyayNMI
+ 2cTpXJOQ==;
 Received: from 213-225-8-167.nat.highway.a1.net ([213.225.8.167]
  helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ouFxL-00CLQc-V1; Sun, 13 Nov 2022 16:35:41 +0000
+ id 1ouFxa-00CLUM-DA; Sun, 13 Nov 2022 16:35:55 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
  Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -57,10 +58,13 @@ To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Russell King <linux@armlinux.org.uk>, Robin Murphy <robin.murphy@arm.com>
-Subject: stop drivers from passing GFP_COMP to dma_alloc_coherent
-Date: Sun, 13 Nov 2022 17:35:28 +0100
-Message-Id: <20221113163535.884299-1-hch@lst.de>
+Subject: [PATCH 3/7] RDMA/qib: don't pass bogus GFP_ flags to
+ dma_alloc_coherent
+Date: Sun, 13 Nov 2022 17:35:31 +0100
+Message-Id: <20221113163535.884299-4-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221113163535.884299-1-hch@lst.de>
+References: <20221113163535.884299-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by
@@ -83,23 +87,91 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi all,
+dma_alloc_coherent is an opaque allocator that only uses the GFP_ flags
+for allocation context control.  Don't pass GFP_USER which doesn't make
+sense for a kernel DMA allocation or __GFP_COMP which makes no sense
+for an allocation that can't in any way be converted to a page pointer.
 
-this series fixes up various drivers that either try to get a compound
-page from dma_alloc_coherent or more often just did a bit of cargo
-cult copy and paste, and then warns about this flag passed in the
-DMA layer instead of silently clearing it like done by ARM and dma-iommu
-before.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/infiniband/hw/qib/qib_iba6120.c |  2 +-
+ drivers/infiniband/hw/qib/qib_init.c    | 21 ++++-----------------
+ 2 files changed, 5 insertions(+), 18 deletions(-)
 
-Diffstat:
- arch/arm/mm/dma-mapping.c                     |   17 -----------------
- drivers/infiniband/hw/hfi1/init.c             |   21 +++------------------
- drivers/infiniband/hw/qib/qib_iba6120.c       |    2 +-
- drivers/infiniband/hw/qib/qib_init.c          |   21 ++++-----------------
- drivers/iommu/dma-iommu.c                     |    3 ---
- drivers/media/v4l2-core/videobuf-dma-contig.c |   22 ++++++++--------------
- drivers/net/ethernet/broadcom/cnic.c          |    6 ++----
- drivers/s390/net/ism_drv.c                    |    3 ++-
- kernel/dma/mapping.c                          |    8 ++++++++
- sound/core/memalloc.c                         |    5 ++---
- 10 files changed, 30 insertions(+), 78 deletions(-)
+diff --git a/drivers/infiniband/hw/qib/qib_iba6120.c b/drivers/infiniband/hw/qib/qib_iba6120.c
+index aea571943768b..07386117f21ad 100644
+--- a/drivers/infiniband/hw/qib/qib_iba6120.c
++++ b/drivers/infiniband/hw/qib/qib_iba6120.c
+@@ -2075,7 +2075,7 @@ static void alloc_dummy_hdrq(struct qib_devdata *dd)
+ 	dd->cspec->dummy_hdrq = dma_alloc_coherent(&dd->pcidev->dev,
+ 					dd->rcd[0]->rcvhdrq_size,
+ 					&dd->cspec->dummy_hdrq_phys,
+-					GFP_ATOMIC | __GFP_COMP);
++					GFP_ATOMIC);
+ 	if (!dd->cspec->dummy_hdrq) {
+ 		qib_devinfo(dd->pcidev, "Couldn't allocate dummy hdrq\n");
+ 		/* fallback to just 0'ing */
+diff --git a/drivers/infiniband/hw/qib/qib_init.c b/drivers/infiniband/hw/qib/qib_init.c
+index 45211008449fb..33667becd52b0 100644
+--- a/drivers/infiniband/hw/qib/qib_init.c
++++ b/drivers/infiniband/hw/qib/qib_init.c
+@@ -1546,18 +1546,14 @@ int qib_create_rcvhdrq(struct qib_devdata *dd, struct qib_ctxtdata *rcd)
+ 
+ 	if (!rcd->rcvhdrq) {
+ 		dma_addr_t phys_hdrqtail;
+-		gfp_t gfp_flags;
+ 
+ 		amt = ALIGN(dd->rcvhdrcnt * dd->rcvhdrentsize *
+ 			    sizeof(u32), PAGE_SIZE);
+-		gfp_flags = (rcd->ctxt >= dd->first_user_ctxt) ?
+-			GFP_USER : GFP_KERNEL;
+ 
+ 		old_node_id = dev_to_node(&dd->pcidev->dev);
+ 		set_dev_node(&dd->pcidev->dev, rcd->node_id);
+-		rcd->rcvhdrq = dma_alloc_coherent(
+-			&dd->pcidev->dev, amt, &rcd->rcvhdrq_phys,
+-			gfp_flags | __GFP_COMP);
++		rcd->rcvhdrq = dma_alloc_coherent(&dd->pcidev->dev, amt,
++				&rcd->rcvhdrq_phys, GFP_KERNEL);
+ 		set_dev_node(&dd->pcidev->dev, old_node_id);
+ 
+ 		if (!rcd->rcvhdrq) {
+@@ -1577,7 +1573,7 @@ int qib_create_rcvhdrq(struct qib_devdata *dd, struct qib_ctxtdata *rcd)
+ 			set_dev_node(&dd->pcidev->dev, rcd->node_id);
+ 			rcd->rcvhdrtail_kvaddr = dma_alloc_coherent(
+ 				&dd->pcidev->dev, PAGE_SIZE, &phys_hdrqtail,
+-				gfp_flags);
++				GFP_KERNEL);
+ 			set_dev_node(&dd->pcidev->dev, old_node_id);
+ 			if (!rcd->rcvhdrtail_kvaddr)
+ 				goto bail_free;
+@@ -1621,17 +1617,8 @@ int qib_setup_eagerbufs(struct qib_ctxtdata *rcd)
+ 	struct qib_devdata *dd = rcd->dd;
+ 	unsigned e, egrcnt, egrperchunk, chunk, egrsize, egroff;
+ 	size_t size;
+-	gfp_t gfp_flags;
+ 	int old_node_id;
+ 
+-	/*
+-	 * GFP_USER, but without GFP_FS, so buffer cache can be
+-	 * coalesced (we hope); otherwise, even at order 4,
+-	 * heavy filesystem activity makes these fail, and we can
+-	 * use compound pages.
+-	 */
+-	gfp_flags = __GFP_RECLAIM | __GFP_IO | __GFP_COMP;
+-
+ 	egrcnt = rcd->rcvegrcnt;
+ 	egroff = rcd->rcvegr_tid_base;
+ 	egrsize = dd->rcvegrbufsize;
+@@ -1663,7 +1650,7 @@ int qib_setup_eagerbufs(struct qib_ctxtdata *rcd)
+ 		rcd->rcvegrbuf[e] =
+ 			dma_alloc_coherent(&dd->pcidev->dev, size,
+ 					   &rcd->rcvegrbuf_phys[e],
+-					   gfp_flags);
++					   GFP_KERNEL);
+ 		set_dev_node(&dd->pcidev->dev, old_node_id);
+ 		if (!rcd->rcvegrbuf[e])
+ 			goto bail_rcvegrbuf_phys;
+-- 
+2.30.2
+
