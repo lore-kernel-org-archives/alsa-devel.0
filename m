@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E659C433FE
-	for <alsa-devel@archiver.kernel.org>; Sun, 13 Nov 2022 16:38:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F679C4332F
+	for <alsa-devel@archiver.kernel.org>; Sun, 13 Nov 2022 16:38:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45F371632;
-	Sun, 13 Nov 2022 17:37:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45F371632
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64754167E;
+	Sun, 13 Nov 2022 17:37:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64754167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668357491;
-	bh=BxpMroSsTTpwKJmjHqenGcIbhIWVWuv9yZKVGbBqug8=;
+	s=default; t=1668357502;
+	bh=ngZ/lQtID2iXwsWAK1lVEyNXVNW/nIpZ80ZfFnUkMuM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eP6h6ZKvHJc8H+VlDVuo9uDgmi5B1j0T7QNnMEJHMUDi+tlTP/cYKHdK77e5XhxH1
-	 tGnPolOQsrh1m8GYpaNWlkcZt6Jd2oh91Xwvtchgyr5ViIL/6wkYkMfCRtCOcCcoSy
-	 ZIIx32v49ioeFgBPTEe0Lj/A1aFrHgQ6bfWFq9aE=
+	b=ITmRNjk+uCyola2D0WOlw0IdrTnxtGu2iMTGVPtxFwrvpnWx0OFUBJ120kmbDckzB
+	 Y9F56Y/NmzibB5BUiQVfmMZkBkE8mLKwIbdmruAuAF7yNtaRDSrydRRN/MDLbJ1cn+
+	 Iwvc63eAxfclJW0+CHwDiG5+0sOcwJUoCmxs/ZfU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF5B6F80563;
-	Sun, 13 Nov 2022 17:36:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70116F80570;
+	Sun, 13 Nov 2022 17:36:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3EB0DF8055B; Sun, 13 Nov 2022 17:36:19 +0100 (CET)
+ id 0FA0EF8055C; Sun, 13 Nov 2022 17:36:27 +0100 (CET)
 Received: from bombadil.infradead.org (bombadil.infradead.org
  [IPv6:2607:7c80:54:3::133])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 93428F80559
- for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2022 17:36:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93428F80559
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2C789F8055C
+ for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2022 17:36:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C789F8055C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="hv07boN2"
+ header.b="GU53um0F"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
  MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
  :Reply-To:Content-Type:Content-ID:Content-Description;
- bh=IefdeDDlkkYOKsyBrDSxlcCl/F9GiRc0htDJzBVpGnI=; b=hv07boN2vtppLb4m/Cty6RgoUz
- HPOIdZKc9qzdk5F+f5a/MKoyhbSIuiedp9pV3ydtpYNYnPhbkV0xDbUmC3dYrbIEb6HmAtnEDUMLR
- RtwHuWtm3MiG6uMEQVFreUbETxa+F4jeedT3tys4edoVIFlr1hLjYkt8wr5ewUegYZhQRpYqHvG7W
- Y1A0M3KX9dPAvFWxCwmomHqg+w/H5Q7EYNqzhu5UDSmTbNOqcgy3gZgy23a1h48+apvZ+lulMpcjC
- 1UlA8Gd+BCkuF5rrH65+F9/gCGHZxLolu8xe1v8zOdAbQqPfXHUE9GIIaagl6DTBzrfRHv+FRUC2J
- 8qgiZaBQ==;
+ bh=Apfp3Ntcah1dnmwtlE2hUcJ6OtLUs/yxuytUk8ohreQ=; b=GU53um0FBYaAiJuynSgJeWhHiA
+ rCZFQYQ8j9b9DUMZM9RwUKBc71btd+rroHfHIaPMS/Fxp2UYdMvCRBcgpwRgPcUQEQd/vrOnBq0B9
+ VkOTpncaIWoMw4vZ1/nvSRxONexbg+kPZU6VZLOKO34N7ze0R7J1HBkIq41zCzYpUD7vOWZQnOhbl
+ 30h41fe8KnQioNICCHkD0ajEgHxT8CFM/Vvyh3EbTmvxMBNVUeWmS2DwBDY5QMpN7WPuJbJh/HYdP
+ OdFOdUFo/ZdkkEiVNqed57AtWzOxiHQq8x8FvpMInyG9aYm1ZCb0mk/919YOxWxWaQumasHPqoUgI
+ 0uKHuF/w==;
 Received: from 213-225-8-167.nat.highway.a1.net ([213.225.8.167]
  helo=localhost)
  by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ouFxe-00CLVn-GW; Sun, 13 Nov 2022 16:35:59 +0000
+ id 1ouFxi-00CLX8-TZ; Sun, 13 Nov 2022 16:36:03 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
  Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -58,9 +58,10 @@ To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Russell King <linux@armlinux.org.uk>, Robin Murphy <robin.murphy@arm.com>
-Subject: [PATCH 4/7] cnic: don't pass bogus GFP_ flags to dma_alloc_coherent
-Date: Sun, 13 Nov 2022 17:35:32 +0100
-Message-Id: <20221113163535.884299-5-hch@lst.de>
+Subject: [PATCH 5/7] s390/ism: don't pass bogus GFP_ flags to
+ dma_alloc_coherent
+Date: Sun, 13 Nov 2022 17:35:33 +0100
+Message-Id: <20221113163535.884299-6-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221113163535.884299-1-hch@lst.de>
 References: <20221113163535.884299-1-hch@lst.de>
@@ -93,32 +94,23 @@ pointer.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/net/ethernet/broadcom/cnic.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/s390/net/ism_drv.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/cnic.c b/drivers/net/ethernet/broadcom/cnic.c
-index 2198e35d9e181..ad74b488a80ab 100644
---- a/drivers/net/ethernet/broadcom/cnic.c
-+++ b/drivers/net/ethernet/broadcom/cnic.c
-@@ -1027,16 +1027,14 @@ static int __cnic_alloc_uio_rings(struct cnic_uio_dev *udev, int pages)
+diff --git a/drivers/s390/net/ism_drv.c b/drivers/s390/net/ism_drv.c
+index d34bb6ec1490f..dfd401d9e3623 100644
+--- a/drivers/s390/net/ism_drv.c
++++ b/drivers/s390/net/ism_drv.c
+@@ -243,7 +243,8 @@ static int ism_alloc_dmb(struct ism_dev *ism, struct smcd_dmb *dmb)
  
- 	udev->l2_ring_size = pages * CNIC_PAGE_SIZE;
- 	udev->l2_ring = dma_alloc_coherent(&udev->pdev->dev, udev->l2_ring_size,
--					   &udev->l2_ring_map,
--					   GFP_KERNEL | __GFP_COMP);
-+					   &udev->l2_ring_map, GFP_KERNEL);
- 	if (!udev->l2_ring)
- 		return -ENOMEM;
+ 	dmb->cpu_addr = dma_alloc_coherent(&ism->pdev->dev, dmb->dmb_len,
+ 					   &dmb->dma_addr,
+-					   GFP_KERNEL | __GFP_NOWARN | __GFP_NOMEMALLOC | __GFP_COMP | __GFP_NORETRY);
++					   GFP_KERNEL | __GFP_NOWARN |
++					   __GFP_NOMEMALLOC | __GFP_NORETRY);
+ 	if (!dmb->cpu_addr)
+ 		clear_bit(dmb->sba_idx, ism->sba_bitmap);
  
- 	udev->l2_buf_size = (cp->l2_rx_ring_size + 1) * cp->l2_single_buf_size;
- 	udev->l2_buf_size = CNIC_PAGE_ALIGN(udev->l2_buf_size);
- 	udev->l2_buf = dma_alloc_coherent(&udev->pdev->dev, udev->l2_buf_size,
--					  &udev->l2_buf_map,
--					  GFP_KERNEL | __GFP_COMP);
-+					  &udev->l2_buf_map, GFP_KERNEL);
- 	if (!udev->l2_buf) {
- 		__cnic_free_uio_rings(udev);
- 		return -ENOMEM;
 -- 
 2.30.2
 
