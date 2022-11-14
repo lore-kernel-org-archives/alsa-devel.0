@@ -4,83 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E398BC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Nov 2022 08:56:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D8EBC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Nov 2022 09:00:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C737E161D;
-	Mon, 14 Nov 2022 09:55:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C737E161D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 383491614;
+	Mon, 14 Nov 2022 09:59:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 383491614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668416202;
-	bh=NP14WmdySktpy0hl2GV/AlDCefE33UV4zYy0ThUsLq0=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=YvRrWyXi3hbyR31yfxSJxyxIePMzZHfeYkrOK7APBKHRrBoFbBFjXLHkJ8NF3Ivlw
-	 03/pGk+Wt5tkf1rOIW/jQlwX/CM5uTiYZ6zpYuWRp9LLzh0Ioq+phBObiMA7LI1gIZ
-	 PHBV2glqCBwDxdjEhnhiCjX85axdYA2Y/r+fBJcY=
+	s=default; t=1668416408;
+	bh=6OLld61kCMu0V4QdonYtday9/fM2EXcQuQhh4elUN/w=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=K0xi0D2NcOLFX4M29B3triYlnlCx/lQUzJhacUNisj6o4oiWhC48oLV9p08U5apyT
+	 MciZdZCahXhgQy7UHwTxktgK4+hev7rbEzUX6LPBKu/3+pm9Id//L2VGRUMQ+BHFVe
+	 xE5Ela85T6dxlyQU3Z+3mRT2fPO1fpD6NRmZfN5w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 53E9BF8055B;
-	Mon, 14 Nov 2022 09:55:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D74ACF80245;
+	Mon, 14 Nov 2022 09:59:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DBC5FF800B8; Mon, 14 Nov 2022 09:35:30 +0100 (CET)
-Received: from forwardcorp1b.mail.yandex.net (forwardcorp1b.mail.yandex.net
- [178.154.239.136])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 06CDDF80431; Mon, 14 Nov 2022 09:59:17 +0100 (CET)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D217CF800B8
- for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2022 09:35:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D217CF800B8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=yandex-team.ru header.i=@yandex-team.ru
- header.b="DGOMXti8"
-Received: from iva4-f06c35e68a0a.qloud-c.yandex.net
- (iva4-f06c35e68a0a.qloud-c.yandex.net
- [IPv6:2a02:6b8:c0c:152e:0:640:f06c:35e6])
- by forwardcorp1b.mail.yandex.net (Yandex) with ESMTP id 3C7D05FEF4;
- Mon, 14 Nov 2022 11:35:13 +0300 (MSK)
-Received: from [IPV6:2a02:6b8:b081:7220::1:21] (unknown
- [2a02:6b8:b081:7220::1:21])
- by iva4-f06c35e68a0a.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id
- wpjdqnXUTF-ZBOWTaqP; Mon, 14 Nov 2022 11:35:12 +0300
-Precedence: bulk
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru;
- s=default; 
- t=1668414912; bh=PaWl5kxzPZDLe8sZ1fNM9BbgGs/+I2HQx03eZhHAjWY=;
- h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
- b=DGOMXti8YRdNbkv9ZzO+MKzXBD3SbRceqjCZhr39RVZx0PtW3hATVGQzkgQWbZkOy
- I3i9juH1GgoScvK10LtYvxNGt5kBTBTxEmFca6o+8XFBwtntNEr9E9207D1VIJE/gz
- Cx3eyz/B1ZB936ZA3fihfSZWcby+jrIOmWO3vasM=
-Authentication-Results: iva4-f06c35e68a0a.qloud-c.yandex.net;
- dkim=pass header.i=@yandex-team.ru
-Message-ID: <d3a31735-8f5c-3168-6a0d-2cf1e9005864@yandex-team.ru>
-Date: Mon, 14 Nov 2022 11:35:10 +0300
+ by alsa1.perex.cz (Postfix) with ESMTPS id C76B5F800B6
+ for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2022 09:59:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C76B5F800B6
+Received: from kwepemi500024.china.huawei.com (unknown [172.30.72.54])
+ by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4N9jp91d86zJnhw;
+ Mon, 14 Nov 2022 16:56:01 +0800 (CST)
+Received: from huawei.com (10.175.103.91) by kwepemi500024.china.huawei.com
+ (7.221.188.100) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 14 Nov
+ 2022 16:59:06 +0800
+From: Zeng Heng <zengheng4@huawei.com>
+To: <perex@perex.cz>, <leoy@marvell.com>, <robert.jarzmik@free.fr>,
+ <daniel@zonque.org>, <haojian.zhuang@gmail.com>, <broonie@kernel.org>,
+ <lgirdwood@gmail.com>, <tiwai@suse.com>, <zhangfei.gao@marvell.com>,
+ <zhouqiao@marvell.com>
+Subject: [PATCH] ASoC: pxa: fix null-pointer dereference in filter()
+Date: Mon, 14 Nov 2022 16:56:29 +0800
+Message-ID: <20221114085629.1910435-1-zengheng4@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v1] sound/pci/hda/patch_realtek: don't call
- alc_shutup_pins without a spec
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>
-References: <20221114082048.3477027-1-d-tatianin@yandex-team.ru>
- <87r0y63psf.wl-tiwai@suse.de>
-From: Daniil Tatianin <d-tatianin@yandex-team.ru>
-In-Reply-To: <87r0y63psf.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Mailman-Approved-At: Mon, 14 Nov 2022 09:55:46 +0100
-Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
- lvc-project@linuxtesting.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
- Meng Tang <tangmeng@uniontech.com>, Philipp Jungkamp <p.jungkamp@gmx.net>,
- Tim Crawford <tcrawford@system76.com>, Takashi Iwai <tiwai@suse.com>,
- Werner Sembach <wse@tuxedocomputers.com>,
- Kai-Heng Feng <kai.heng.feng@canonical.com>, yc-core@yandex-team.ru,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemi500024.china.huawei.com (7.221.188.100)
+X-CFilter-Loop: Reflected
+Cc: zengheng4@huawei.com, alsa-devel@alsa-project.org, liwei391@huawei.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
+Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>, 
@@ -93,59 +71,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+kasprintf() would return NULL pointer when kmalloc() fail to allocate.
+Need to check the return pointer before calling strcmp().
 
+Fixes: 7a824e214e25 ("ASoC: mmp: add audio dma support")
+Signed-off-by: Zeng Heng <zengheng4@huawei.com>
+---
+ sound/soc/pxa/mmp-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 11/14/22 11:26 AM, Takashi Iwai wrote:
-> On Mon, 14 Nov 2022 09:20:48 +0100,
-> Daniil Tatianin wrote:
->>
->> alc_shutup_pins always expects the spec to be present, so make sure
->> it is before we call it.
->>
->> Found by Linux Verification Center (linuxtesting.org) with the SVACE
->> static analysis tool.
->>
->> Signed-off-by: Daniil Tatianin <d-tatianin@yandex-team.ru>
-> 
-> In which path can it be without spec assigned?
-> That's the internal callback that is set only by the codec driver
-> where the allocation of codec->spec is mandatory.
+diff --git a/sound/soc/pxa/mmp-pcm.c b/sound/soc/pxa/mmp-pcm.c
+index 5d520e18e512..99b245e3079a 100644
+--- a/sound/soc/pxa/mmp-pcm.c
++++ b/sound/soc/pxa/mmp-pcm.c
+@@ -98,7 +98,7 @@ static bool filter(struct dma_chan *chan, void *param)
+ 
+ 	devname = kasprintf(GFP_KERNEL, "%s.%d", dma_data->dma_res->name,
+ 		dma_data->ssp_id);
+-	if ((strcmp(dev_name(chan->device->dev), devname) == 0) &&
++	if (devname && (strcmp(dev_name(chan->device->dev), devname) == 0) &&
+ 		(chan->chan_id == dma_data->dma_res->start)) {
+ 		found = true;
+ 	}
+-- 
+2.25.1
 
-Would you then say that the "if (spec && ...)" that was there before was 
-redundant? Should we remove it perhaps to avoid further confusion about 
-it being optional? The else branch with alc_shutup_pins would crash if 
-it was null anyway.
-
-Thanks
-
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
->> ---
->>   sound/pci/hda/patch_realtek.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
->> index 60e3bc124836..2cf4b64971d7 100644
->> --- a/sound/pci/hda/patch_realtek.c
->> +++ b/sound/pci/hda/patch_realtek.c
->> @@ -939,10 +939,12 @@ static inline void alc_shutup(struct hda_codec *codec)
->>   {
->>   	struct alc_spec *spec = codec->spec;
->>   
->> +	if (!spec)
->> +		return;
->>   	if (!snd_hda_get_bool_hint(codec, "shutup"))
->>   		return; /* disabled explicitly by hints */
->>   
->> -	if (spec && spec->shutup)
->> +	if (spec->shutup)
->>   		spec->shutup(codec);
->>   	else
->>   		alc_shutup_pins(codec);
->> -- 
->> 2.25.1
->>
