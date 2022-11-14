@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F28E0C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Nov 2022 12:09:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66D42C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Nov 2022 12:10:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C50215DC;
-	Mon, 14 Nov 2022 13:08:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C50215DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B6D51607;
+	Mon, 14 Nov 2022 13:09:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B6D51607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668427754;
-	bh=yd1af80mxxLmKRv4puSPs+aNXCGy01Bu0fwBEO/vXYw=;
+	s=default; t=1668427849;
+	bh=KFg8huWjzIM0YJ198bVcAH/+Qvz2Ea2vxxAUaoXJalA=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UY58g0jZt0VSAxC/PPahUe/S/w6ANv43sNfRA/QTAeUr5jSUhKyztK+jeTOlxWz6R
-	 8Ty9QP6yTi0zSlyvgngEfZRpphILyOT68e6dptf7WgBw1vau19kjZP7opOso08e1nU
-	 KI9q+NcKt1/k9uqrUuMsS6A0cieigeMdzQsXrTuA=
+	b=h0+KUvxRT5VBK1g+KMqR8gQT2PMZVdRgo+z2OLP/TX7J/63343H4iXRc4tVhXosX9
+	 UTLDZ586lwrMMK4gvtd2Uts61jQ66B7/BU/BVaWCAtK2zrIvsK1Yz5fZ6N66n6NuS4
+	 CCS6uqmLRIo2SPZwp4FHy0yjVTEPITOr1zwkp81o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 300A3F80245;
-	Mon, 14 Nov 2022 13:08:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27882F80431;
+	Mon, 14 Nov 2022 13:09:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C52B7F80431; Mon, 14 Nov 2022 13:08:22 +0100 (CET)
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com
- [IPv6:2a00:1450:4864:20::22a])
+ id 773D7F800AA; Mon, 14 Nov 2022 13:09:57 +0100 (CET)
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com
+ [IPv6:2a00:1450:4864:20::136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 79CF4F800B6
- for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2022 13:08:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79CF4F800B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B986F800AA
+ for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2022 13:09:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B986F800AA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Sv/Ijmsw"
-Received: by mail-lj1-x22a.google.com with SMTP id x21so12870003ljg.10
- for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2022 04:08:16 -0800 (PST)
+ header.b="ucvmXj6N"
+Received: by mail-lf1-x136.google.com with SMTP id p8so18899530lfu.11
+ for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2022 04:09:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:in-reply-to:from:references:cc:to
  :content-language:subject:user-agent:mime-version:date:message-id
  :from:to:cc:subject:date:message-id:reply-to;
- bh=UcgVzNNuvApB1tHFUDQ2YdnueyTykrC4lbR1LLNadUo=;
- b=Sv/Ijmsw3p5EPyzH21o4JoCbwhLqukVHHl52JjWYEMbnQCroLkF+xo4RTmyUi0HlV0
- fSTzYPiKy91DjCenKG/CBLbw7crgBOA/qCpn1agh4ACMe2MF92K8ozv1T2j2mhylToEQ
- WGBr3z+VMoThBd8Tal9GnyFkGK9DvIZDogd5GwEO3pd8rHm2aFTJQdz8lRN9n2N7/VDI
- b5isFpkPbjzj0J+uhDD+wmngMQOhdBLhUxIpehPR/jjy2S6e7oJK5035r7a2Bv/gz+eu
- Ga49PnJh+OzTA+4H1Tyf9dT96O8O8WsCKONajeq2Ghyzi4vx/0/rbRiLdrUdAf9MNeG9
- PCrA==
+ bh=FNxCofBcbIeVXQpJg4d6J4pQ3z4dOkx5gsNXPSK+q14=;
+ b=ucvmXj6N6tou5HBUfuCOxKebeYi8+OMPzqC9PPPdYkO0Ok5z9h2wvWqDkMHcTX+poz
+ 3cZNMArXG+vL67Ao8IV6Xd/ZtaL6m2Ip0bWv41vfItDRmZw/AwHIqcUaHPdEAzXhoTTm
+ BzHlS7Pq4cM2jcPGW5SpRQWvWUy8FIfyEJZTUy7BNBK7rJX9L3Vse2KttoQCM4Yc2NCb
+ X3BzOGRe2qWQpzUj0mTOFliat4qlybTkrk8/Qd7WPGMoWuB7OgTItwHKX4w4fC4DcJcV
+ HVaiB1obEicfYCUegeVjwRyj+B8OF3nK87v+Ml0CU3P/htUTD/DPBbFCvE0v9Y+hH7Wl
+ LIPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:in-reply-to:from:references:cc:to
  :content-language:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=UcgVzNNuvApB1tHFUDQ2YdnueyTykrC4lbR1LLNadUo=;
- b=nAJdGBjhoJQOw2VHC1ccnpogD43g1RgGAh6K24q/19dECb7Tj6Cy6gizoyZt1GeQcI
- ikwpA+CQaYyf3wCKQMCZDDt+EssK6h4QXw411TeT2ObjtIp9OGpDPDcdaiQNZcloehT2
- otu4Icrx0OXiDbJEt/adPGlgCRjQm9KzYctZAJe4Lm/wPa6/zwiCN4DjmONFppFS7yA0
- nkCNLTsJ7dEAJp0RuLBK9aLZsfbfhg2uQOZs3E27JTFcY1+oKlHaC8Ysbd8dlSSv0iMy
- IOvOU9shI8V2BU4dpQTdMDpPgMvslFHbmlwrYNpI/B61IVv0sRqES36J3fg+RD4cu6Cv
- uo0A==
-X-Gm-Message-State: ANoB5pnPzkCOEtat3aCT4HfEQycOZvWviCXEfFKnicEpuX84bm3c1/L9
- pZgU19y6Tbs7mBKc4jA85LiIHA==
-X-Google-Smtp-Source: AA0mqf5FiVxTLlfr5dE+/I1zUYvRmbOurrtiYQu+QcrvL066NEuXUGiKTuuxZ62qyDsdFY2dHX6Ung==
-X-Received: by 2002:a2e:3e05:0:b0:277:31c3:ca17 with SMTP id
- l5-20020a2e3e05000000b0027731c3ca17mr3885380lja.523.1668427694295; 
- Mon, 14 Nov 2022 04:08:14 -0800 (PST)
+ bh=FNxCofBcbIeVXQpJg4d6J4pQ3z4dOkx5gsNXPSK+q14=;
+ b=UhnewL72Tt1oDefMBDFXavQ/G8ap0GIh5hDYfUVm6kipDjZOE1i4HSWX1wKd+0DmTz
+ jrEdCr9f/vAOnI3JNm7/udPLv9BT9Jny04uc3Jg+voivlqOM+eov3WDEOkLACNXqNXkm
+ Tu/M+SdFVZhvRhUO69L1HsdJrpDyfx5ensoh1I+s2Na57cil6hNodiZX6rSi5rEdN3yo
+ LPh/+umryKSlZEkNsE+cprGoK7x+jHUydWwMRlrO+4CeGw+exc4jgdvQK/F71WI9Dh10
+ BAQIPQE6ckQtEy6LoWaomi9LSyM5ASqVmsyJirxWRa+5xMcPloQvhFe5QIdRHwEMhwKl
+ C25Q==
+X-Gm-Message-State: ANoB5pk1bQLf8lH0EVUVMxL0/E7N6CaCfqdtl1XVw+VlRmsBwdr/3u2g
+ MYAObMaLI6aSNSHQA9doUyyi/A==
+X-Google-Smtp-Source: AA0mqf5g+dqZa5LypIi6W9GnNoqEZM1/7LsEFGd3SxBYWf8DwN7+1IHCwTh9GQWqAFq/oIL8J4UTXw==
+X-Received: by 2002:ac2:4945:0:b0:4a2:5897:2b44 with SMTP id
+ o5-20020ac24945000000b004a258972b44mr4446724lfi.431.1668427791293; 
+ Mon, 14 Nov 2022 04:09:51 -0800 (PST)
 Received: from [192.168.0.20]
  (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
  by smtp.gmail.com with ESMTPSA id
- l10-20020a056512110a00b004948b667d95sm1800206lfg.265.2022.11.14.04.08.12
+ bi36-20020a05651c232400b002771057e0e5sm1999559ljb.76.2022.11.14.04.09.50
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 14 Nov 2022 04:08:13 -0800 (PST)
-Message-ID: <cf3b8355-a9db-9a4b-e554-43e829e49a4a@linaro.org>
-Date: Mon, 14 Nov 2022 13:08:11 +0100
+ Mon, 14 Nov 2022 04:09:50 -0800 (PST)
+Message-ID: <8179b5f5-5292-692b-15c4-5d83dee85789@linaro.org>
+Date: Mon, 14 Nov 2022 13:09:49 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.4.2
-Subject: Re: [PATCH 10/10] ASoC: dt-bindings: qcom,q6apm: Add SM8450 bedais
- node
+Subject: Re: [PATCH 00/10] ASoC: dt-bindings: Rework Qualcomm APR/GPR Sound
+ nodes for SM8450
 Content-Language: en-US
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
@@ -90,10 +90,11 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20221111113547.100442-1-krzysztof.kozlowski@linaro.org>
- <20221111113547.100442-11-krzysztof.kozlowski@linaro.org>
- <cf66aa8f-4bf7-d9c0-e2ae-b6fced7e4948@linaro.org>
+ <06da072c-8cf0-8181-3c32-4592fe41f9c2@linaro.org>
+ <0ee5db9e-d80c-947d-73d6-6214e9299b23@linaro.org>
+ <48883bd6-217d-f513-316c-2b5caf486e5e@linaro.org>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <cf66aa8f-4bf7-d9c0-e2ae-b6fced7e4948@linaro.org>
+In-Reply-To: <48883bd6-217d-f513-316c-2b5caf486e5e@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: Patrick Lai <plai@qti.qualcomm.com>,
@@ -113,19 +114,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 14/11/2022 12:40, Srinivas Kandagatla wrote:
+On 14/11/2022 12:50, Srinivas Kandagatla wrote:
 > 
 > 
-> On 11/11/2022 11:35, Krzysztof Kozlowski wrote:
->> On SM8450 and SC8280XP, the Q6APM is a bit different:
-> 
-> This is not specific to SM8450 or SC8280XP its part of AudioReach apm 
-> which deals with both backends and pcm.
-> 
-> In old Elite architecture we had a dedicated service AFE to deal with 
-> Backend dais, now APM does all.
+> On 14/11/2022 07:48, Krzysztof Kozlowski wrote:
+>> On 11/11/2022 17:15, Srinivas Kandagatla wrote:
+>>>
+>>>
+>>> On 11/11/2022 11:35, Krzysztof Kozlowski wrote:
+>>>> Adding sound support for Qualcomm SM8450 SoC (and later for SC8280XP) brought
+>>>> some changes to APR/GPR services bindings.  These bindings are part of
+>>>> qcom,apr.yaml:
+>>>>
+>>>>     apr-or-gpr-device-node <- qcom,apr.yaml
+>>>>       apr-gpr-service@[0-9] <- qcom,apr.yaml
+>>>>         service-specific-components <- /schemas/sound/qcom,q6*.yaml
+>>>>
+>>>> The schema for services (apr-gpr-service@[0-9]) already grows considerably and
+>>>> is still quite not specific.  It allows several incorrect combinations, like
+>>>> adding a clock-controller to a APM device.  Restricting it would complicate the
+>>>> schema even more.  Bringing new support for sound on Qualcomm SM8450 and
+>>>> SC8280XP SoC would grow it as well.
+>>>
+>>> Why would this grow? All the dsp services are static and they will not
+>>> change per SoC unless there is a total firmware change in DSP.
+>>
+>> They grow now with SM8450 which requires changes there. Otherwise DTS
+>> does not pass with current bindings. The bindings before my fixing in
+>> 2022 were really incomplete. Now they are complete, but:
+>> 1. Not for SM8450 - this will bring new things,
+>> 2. Very unspecific as they allow multiple invalid configurations.
+>>
+> Okay, I looked at all the patches, they are fine as it is, the confusion 
+> part is the subject and comments which are misleading and trying to say 
+> that these are specific to SM8450 or SC8280XP. Infact this is not true, 
+> none of these changes are specific to any SoC, they are part of AudioReach.
 
-Sure, I'll add it to commit msg.
+They are part of bringing audio on SM8450, at the end we all are SoC
+centric... we do not bring support for AudioReach just for itself,
+right? We bring it because we want to have something working on SM8450
+and further...
 
 Best regards,
 Krzysztof
