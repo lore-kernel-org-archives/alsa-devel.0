@@ -4,127 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DD13C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Nov 2022 08:56:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3C71C43217
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Nov 2022 08:56:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 96E171630;
-	Mon, 14 Nov 2022 09:55:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96E171630
+	by alsa0.perex.cz (Postfix) with ESMTPS id 21264166F;
+	Mon, 14 Nov 2022 09:55:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21264166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668416198;
-	bh=biZhgwn0BDv2SGfl/SETWF0oFZVJvXDkr1FCxZH6sTg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=El3N5qNGhAkvdtYJR+HXLgxci/8XyUWE/X54JwlHkvqA0KOFLOR19tpfeMvrHRfnu
-	 AbaKhI2x58FBJ81OYw7t62WH8nhmMp7OcMXp/zPmCpe9SUt9owv25myk4EnPFHCOql
-	 DLdVK4B5tjxtR/zG5D51SmLmU7MC2ZMmrvQD7F6I=
+	s=default; t=1668416200;
+	bh=HIJbWkS+tWWtWnE/a8+wDKXpyw77gbIpOz9/BJOfd5c=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=iIhpxrJllC6EnETbO2/W7SzTVh6nKfcUxG5TSSWWpwIKAOCrDmmhQsTwkubQnPkPu
+	 EPJ6rObd8ZOLPtpP0/kRurD27szHmjZd0m961WuF0+zKJ9bOZbqf+6gfk0se+fEpSo
+	 ZQRfMfddFojSJhqcY/RpFXORZWcdrpnW21GDMQFc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45E99F80549;
-	Mon, 14 Nov 2022 09:55:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CEA96F80558;
+	Mon, 14 Nov 2022 09:55:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51B18F8030F; Sun, 13 Nov 2022 23:35:59 +0100 (CET)
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com
- [IPv6:2607:f8b0:4864:20::833])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 2D4FEF80431; Mon, 14 Nov 2022 09:21:02 +0100 (CET)
+Received: from forwardcorp1b.mail.yandex.net (forwardcorp1b.mail.yandex.net
+ [178.154.239.136])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2DECEF80085
- for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2022 23:35:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DECEF80085
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39F68F800B8
+ for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2022 09:20:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39F68F800B8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="cxos6M6S"
-Received: by mail-qt1-x833.google.com with SMTP id l15so5919842qtv.4
- for <alsa-devel@alsa-project.org>; Sun, 13 Nov 2022 14:35:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=2UWIwxNMt9Li5DI9V3Ue/+A2ETbpfwK4uJjlNth28Ps=;
- b=cxos6M6SEMWjz70hcYfwJn7Qy9x3ScQZdWjcWHcTUuPDd6QIkxHfs4TdC7er0cgTfw
- Zecl1ammtXTh3CRumNopuCdrO/B9HdufOATVFx7LmHWfcuepu8nGRPAXZimVwU33NdJY
- fSpdh/6V9x/8s+acnZlcPXnCq3SzIgJYAOJ+MdHag7DONXMIur05Qu2T29C+PPj+G5FS
- 51vaHNJTqtvQKEh0MKIsH8wIeeMtk/77Zn6zHSFYDKwwTYJrTvxOcJz1pI56sykta8ez
- ucf+QXApfLU7u3dxQYz1YwJFVAwCWBLrNvZsrMdMSVYHA3yVHW95iD4uAWPO1ebw8AQZ
- l5aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=2UWIwxNMt9Li5DI9V3Ue/+A2ETbpfwK4uJjlNth28Ps=;
- b=KgkodQcyA1T98pOk+PM3Bto81AoioSz61MiiMybHwvd4ugeIY4sWTD/poDVGcMihyI
- kGcEPcvZGs7Wm/O/mC94+t9wbY7HIdA9A6vgwZI3ZFWmxYV5iRLNJhDsW7Q0ucAtPZut
- C74nlKyvDPoftstwwYYyT6S3XzTLNsRVhNis1Baz7LjPYodzSX2UQvdOAXU6X0Gy3oGy
- D44q/sbSaV/vylc2EJxSSCZ+LsmIwIUSpDXXWxaiXJWeFlm4Z4ThhmLffOs8v769N4Pt
- Ttg36L/XUVZVpvMj+ls9x00YtKahxyNmz+XbJf1VCZvAt4DuOVxE3oEA6g1AsQUyC+cu
- DwgA==
-X-Gm-Message-State: ANoB5pkjxqxzTxn241PUWwiu3nhrE8Zm/KjlY0aEd5lMEK7Tae+oqy8F
- +RhU8fm5AayB2ZX+GGTHM6M=
-X-Google-Smtp-Source: AA0mqf6n/LTjELlMgOPAUHKCZj998ajlsJmr6FJtHheLBD4DRKv0w+DZx/+jLTxZzLzeUXXjccj7Rg==
-X-Received: by 2002:a05:622a:4806:b0:3a4:f140:f707 with SMTP id
- fb6-20020a05622a480600b003a4f140f707mr10057169qtb.317.1668378951056; 
- Sun, 13 Nov 2022 14:35:51 -0800 (PST)
-Received: from shaak (modemcable055.92-163-184.mc.videotron.ca.
- [184.163.92.55]) by smtp.gmail.com with ESMTPSA id
- bk8-20020a05620a1a0800b006f9f3c0c63csm5482646qkb.32.2022.11.13.14.35.47
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 13 Nov 2022 14:35:50 -0800 (PST)
-Date: Sun, 13 Nov 2022 17:35:46 -0500
-From: Liam Beguin <liambeguin@gmail.com>
-To: Maxime Ripard <maxime@cerno.tech>
-Subject: Re: [PATCH v2 13/65] clk: lmk04832: clkout: Add a determine_rate hook
-Message-ID: <Y3FxQsT240Wm0G6g@shaak>
-References: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
- <20221018-clk-range-checks-fixes-v2-13-f6736dec138e@cerno.tech>
+ dkim=pass (1024-bit key) header.d=yandex-team.ru header.i=@yandex-team.ru
+ header.b="02ALz6J6"
+Received: from sas1-7470331623bb.qloud-c.yandex.net
+ (sas1-7470331623bb.qloud-c.yandex.net
+ [IPv6:2a02:6b8:c08:bd1e:0:640:7470:3316])
+ by forwardcorp1b.mail.yandex.net (Yandex) with ESMTP id E11E45FDB9;
+ Mon, 14 Nov 2022 11:20:54 +0300 (MSK)
+Received: from d-tatianin-nix.yandex-team.ru (unknown
+ [2a02:6b8:b081:7220::1:21])
+ by sas1-7470331623bb.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id
+ ZGx2Cxmcjr-KrOCHxjm; Mon, 14 Nov 2022 11:20:54 +0300
+Precedence: bulk
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru;
+ s=default; 
+ t=1668414054; bh=L2zM4ynwcrgw1HSI6nofrGxwQPENAqtkdQBfFMezm1w=;
+ h=Message-Id:Date:Cc:Subject:To:From;
+ b=02ALz6J6s5aoVmH1wEoJIL066qf5uHWtFJNca7mf38HAHZ1SlCVXgZwpXBU4woBdc
+ iJ8hpFDRPeZGilgWS5LUW6po9eE5ww3RacftF2GOiVuk7MAyg+LcaOIGEz+QLPP7IG
+ 5NpkXzlCGk5z4v0hiCQmLtq12HNhh6dCO8fKewVY=
+Authentication-Results: sas1-7470331623bb.qloud-c.yandex.net;
+ dkim=pass header.i=@yandex-team.ru
+From: Daniil Tatianin <d-tatianin@yandex-team.ru>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH v1] sound/pci/hda/patch_realtek: don't call alc_shutup_pins
+ without a spec
+Date: Mon, 14 Nov 2022 11:20:48 +0300
+Message-Id: <20221114082048.3477027-1-d-tatianin@yandex-team.ru>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221018-clk-range-checks-fixes-v2-13-f6736dec138e@cerno.tech>
+Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Mon, 14 Nov 2022 09:55:46 +0100
-Cc: Ulf Hansson <ulf.hansson@linaro.org>,
- Prashant Gaikwad <pgaikwad@nvidia.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Michael Turquette <mturquette@baylibre.com>, Sekhar Nori <nsekhar@ti.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- dri-devel@lists.freedesktop.org, Paul Cercueil <paul@crapouillou.net>,
- Max Filippov <jcmvbkbc@gmail.com>, Thierry Reding <thierry.reding@gmail.com>,
- linux-phy@lists.infradead.org, David Airlie <airlied@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, linux-stm32@st-md-mailman.stormreply.com,
- Abel Vesa <abelvesa@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Samuel Holland <samuel@sholland.org>, Chunyan Zhang <zhang.lyra@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, linux-tegra@vger.kernel.org,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Chen-Yu Tsai <wens@csie.org>,
- NXP Linux Team <linux-imx@nxp.com>, Orson Zhai <orsonzhai@gmail.com>,
- linux-mips@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Linus Walleij <linus.walleij@linaro.org>, linux-rtc@vger.kernel.org,
- linux-clk@vger.kernel.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
- Daniel Vetter <daniel@ffwll.ch>, alsa-devel@alsa-project.org,
- Manivannan Sadhasivam <mani@kernel.org>, linux-kernel@vger.kernel.org,
- Sascha Hauer <s.hauer@pengutronix.de>, linux-actions@lists.infradead.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
- linux-mediatek@lists.infradead.org,
- Baolin Wang <baolin.wang@linux.alibaba.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- linux-arm-kernel@lists.infradead.org,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Alessandro Zummo <a.zummo@towertech.it>, linux-sunxi@lists.linux.dev,
- Stephen Boyd <sboyd@kernel.org>, patches@opensource.cirrus.com,
- Peter De Schrijver <pdeschrijver@nvidia.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
- linux-renesas-soc@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
- Vinod Koul <vkoul@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- David Lechner <david@lechnology.com>, Shawn Guo <shawnguo@kernel.org>,
- Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
+ lvc-project@linuxtesting.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Meng Tang <tangmeng@uniontech.com>, Philipp Jungkamp <p.jungkamp@gmx.net>,
+ Tim Crawford <tcrawford@system76.com>, Takashi Iwai <tiwai@suse.com>,
+ Werner Sembach <wse@tuxedocomputers.com>, linux-kernel@vger.kernel.org,
+ Kai-Heng Feng <kai.heng.feng@canonical.com>, yc-core@yandex-team.ru,
+ Daniil Tatianin <d-tatianin@yandex-team.ru>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
-Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 List-Unsubscribe: <https://mailman.alsa-project.org/mailman/options/alsa-devel>, 
@@ -137,74 +86,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Maxime,
+alc_shutup_pins always expects the spec to be present, so make sure
+it is before we call it.
 
-On Fri, Nov 04, 2022 at 02:17:30PM +0100, Maxime Ripard wrote:
-> The LKM04832 "CLKOUT" clock implements a mux with a set_parent hook, but
-> doesn't provide a determine_rate implementation.
-> 
-> This is a bit odd, since set_parent() is there to, as its name implies,
-> change the parent of a clock. However, the most likely candidate to
-> trigger that parent change is a call to clk_set_rate(), with
-> determine_rate() figuring out which parent is the best suited for a
-> given rate.
-> 
-> The other trigger would be a call to clk_set_parent(), but it's far less
-> used, and it doesn't look like there's any obvious user for that clock.
-> 
-> So, the set_parent hook is effectively unused, possibly because of an
-> oversight. However, it could also be an explicit decision by the
-> original author to avoid any reparenting but through an explicit call to
-> clk_set_parent().
+Found by Linux Verification Center (linuxtesting.org) with the SVACE
+static analysis tool.
 
-This is correct, the set_parent hook is effectively unused at the
-moment. It was implemented as a way for consumers to select the parent
-themselves.
+Signed-off-by: Daniil Tatianin <d-tatianin@yandex-team.ru>
+---
+ sound/pci/hda/patch_realtek.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-The LMK04832 is used in JESD204 applications where devices need a device
-clock as well as a sysref clock. Since this is determined by the
-hardware layout, a devicetree option is used to select the inital state
-of the clkout mux. This is set at the end of lmk04832_register_clkout().
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 60e3bc124836..2cf4b64971d7 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -939,10 +939,12 @@ static inline void alc_shutup(struct hda_codec *codec)
+ {
+ 	struct alc_spec *spec = codec->spec;
+ 
++	if (!spec)
++		return;
+ 	if (!snd_hda_get_bool_hint(codec, "shutup"))
+ 		return; /* disabled explicitly by hints */
+ 
+-	if (spec && spec->shutup)
++	if (spec->shutup)
+ 		spec->shutup(codec);
+ 	else
+ 		alc_shutup_pins(codec);
+-- 
+2.25.1
 
-> The latter case would be equivalent to setting the flag
-> CLK_SET_RATE_NO_REPARENT, together with setting our determine_rate hook
-> to __clk_mux_determine_rate(). Indeed, if no determine_rate
-> implementation is provided, clk_round_rate() (through
-> clk_core_round_rate_nolock()) will call itself on the parent if
-> CLK_SET_RATE_PARENT is set, and will not change the clock rate
-> otherwise. __clk_mux_determine_rate() has the exact same behavior when
-> CLK_SET_RATE_NO_REPARENT is set.
-> 
-> And if it was an oversight, then we are at least explicit about our
-> behavior now and it can be further refined down the line.
-> 
-> Since the CLK_SET_RATE_NO_REPARENT flag was already set though, it seems
-> unlikely.
-> 
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-
-Reviewed-by: Liam Beguin <liambeguin@gmail.com>
-
-Cheers,
-Liam
-
-> ---
->  drivers/clk/clk-lmk04832.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/clk/clk-lmk04832.c b/drivers/clk/clk-lmk04832.c
-> index f416f8bc2898..f68bb0affdad 100644
-> --- a/drivers/clk/clk-lmk04832.c
-> +++ b/drivers/clk/clk-lmk04832.c
-> @@ -1281,6 +1281,7 @@ static const struct clk_ops lmk04832_clkout_ops = {
->  	.is_enabled = lmk04832_clkout_is_enabled,
->  	.prepare = lmk04832_clkout_prepare,
->  	.unprepare = lmk04832_clkout_unprepare,
-> +	.determine_rate = __clk_mux_determine_rate,
->  	.set_parent = lmk04832_clkout_set_parent,
->  	.get_parent = lmk04832_clkout_get_parent,
->  };
-> 
-> -- 
-> b4 0.11.0-dev-99e3a
-> 
