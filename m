@@ -4,91 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F34B6C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 14 Nov 2022 09:05:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8720AC433FE
+	for <alsa-devel@archiver.kernel.org>; Mon, 14 Nov 2022 10:31:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 313EB846;
-	Mon, 14 Nov 2022 10:04:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 313EB846
+	by alsa0.perex.cz (Postfix) with ESMTPS id B102283D;
+	Mon, 14 Nov 2022 11:30:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B102283D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668416733;
-	bh=06mnWo/4HV/wIaSI0daIO8J4kFFZajLRWGmHZEXZwkc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1668421858;
+	bh=h0XD2P74O8xqIFSzLGOnKoxQZCDH72gWlPTkx2+CXQ8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WFIJVnXhx6MdYDVXZNtUq9cW+9cepceU+nZXIYCwUzXPuA65BVc+zp1IcqI9TFZ+H
-	 Vleug3q9yPmZTArhGgnh8hVcCU7fNHBRE8E4oNlBM+/VkBSOstYrBipb5FLAUsSLCr
-	 WUu6EjRAZuHqikLdz3JWES5eBdJGmDjVgMH0tlAc=
+	b=CYNnUQ/komcrftBaJMNi9b072LXzBpY87RUDuei+VpKeHx6qe2viEwTggkwk4Myph
+	 fYIT7aLMcRGLodP/FQjQypfs32bl05ZkEycqBZfWhkOzJ9KVrTb/QRlP2cwv4r6apX
+	 NS02uBEGZ8WxtZQux/L+efIxZMKx3ku11yhHmoXw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D37CFF80245;
-	Mon, 14 Nov 2022 10:04:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B22FF8047D;
+	Mon, 14 Nov 2022 11:30:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1662BF80431; Mon, 14 Nov 2022 10:04:41 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 880BBF804E7; Mon, 14 Nov 2022 11:30:06 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BFD86F800B6
- for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2022 10:04:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFD86F800B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0935F800B6
+ for <alsa-devel@alsa-project.org>; Mon, 14 Nov 2022 11:29:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0935F800B6
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="YE8YpyZ1"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Llx/kP6o"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 19B291FD67;
- Mon, 14 Nov 2022 09:04:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1668416678; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=qYeyMGzPpWeJjemOhgQTqv3gXdbN1HV6WuzeSdghX/w=;
- b=YE8YpyZ139VQeNK68TlYpnZ25AsIpwxeaayX1shw2BLDESgrmTvnKy7KsOLoovwmZBfSwj
- feMoKYc76x8HYSZ+pvUN+xmQZPf09XVjndfDwC301JINk5rEiybUHATWKeqGyjEEiBHLXG
- fJHUXRrpHHEd1U3ub5JGJMJKODHR4yM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1668416678;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=qYeyMGzPpWeJjemOhgQTqv3gXdbN1HV6WuzeSdghX/w=;
- b=Llx/kP6o5oi7w9LY9pE3+/vMOmMFKljhPvJvgNrLZwx0lxnO0V03LM2WxQjWChbMOB9Zo+
- 9l/BHoMLUwQN+PBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C727613A8C;
- Mon, 14 Nov 2022 09:04:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id CAa7L6UEcmPcMwAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 14 Nov 2022 09:04:37 +0000
-Date: Mon, 14 Nov 2022 10:04:37 +0100
-Message-ID: <87leod52l6.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 6/7] ALSA: memalloc: don't pass bogus GFP_ flags to
- dma_alloc_*
-In-Reply-To: <20221113163535.884299-7-hch@lst.de>
-References: <20221113163535.884299-1-hch@lst.de>
- <20221113163535.884299-7-hch@lst.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-s390@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-media@vger.kernel.org, Alexandra Winter <wintera@linux.ibm.com>,
- Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
- linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Wenjia Zhang <wenjia@linux.ibm.com>,
- iommu@lists.linux.dev, Russell King <linux@armlinux.org.uk>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Robin Murphy <robin.murphy@arm.com>, linux-arm-kernel@lists.infradead.org,
- Marek Szyprowski <m.szyprowski@samsung.com>
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="e1YAP1ug"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 2AE8Wcib019990; Mon, 14 Nov 2022 04:29:58 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=C8x7Ea1yZLWaFKtwstq1Od1PDFQoikXzXfnEcLWKVII=;
+ b=e1YAP1ugITfHvKDsVwx72xPsI9UncP9PEijRMVBJhZbyJQhBn9iiMhYO/jOkSaOgP2TV
+ BzKqkHUDmgrEm7lZdf8Oy5ckgLeaG2FwNMR0uSpDuKfrdXYJ3yiZ+heunxttNCPlVuQ8
+ Ck7+1xHfBOZNrRNKlRHkIsAeaXiUTk0Vx6LcCCVotI/4sCm0K3DrtuTKErHNxql1BBaW
+ 8ucTmVoD73ARMQtc+YSbjaCW8jVe0gLv5xHc17pRP4ZpRL8W1Q6uGq86tGd/1SaQZP1i
+ /lyM1JjOqkhZpQpwXNmDa61ijYo1Ux2JbAZXLmFiSMyLqSLoNI0AMSWsfEhp3Itj7Gf+ WQ== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kt8sst0ck-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 14 Nov 2022 04:29:57 -0600
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.15; Mon, 14 Nov
+ 2022 04:29:56 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.15 via Frontend Transport; Mon, 14 Nov 2022 04:29:56 -0600
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 46360477;
+ Mon, 14 Nov 2022 10:29:56 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <vkoul@kernel.org>
+Subject: [PATCH 1/4] soundwire: bus: export sdw_nwrite_no_pm and
+ sdw_nread_no_pm functions
+Date: Mon, 14 Nov 2022 10:29:53 +0000
+Message-ID: <20221114102956.914468-2-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221114102956.914468-1-ckeepax@opensource.cirrus.com>
+References: <20221114102956.914468-1-ckeepax@opensource.cirrus.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: q_2AKa7BIDTaXnRa-EPavF79D2krWaPW
+X-Proofpoint-ORIG-GUID: q_2AKa7BIDTaXnRa-EPavF79D2krWaPW
+X-Proofpoint-Spam-Reason: safe
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,29 +96,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 13 Nov 2022 17:35:34 +0100,
-Christoph Hellwig wrote:
-> 
-> dma_alloc_coherent/dma_alloc_wc is an opaque allocator that only uses
-> the GFP_ flags for allocation context control.  Don't pass __GFP_COMP
-> which makes no sense for an allocation that can't in any way be
-> converted to a page pointer.
+From: Simon Trimmer <simont@opensource.cirrus.com>
 
-The addition of __GFP_COMP there was really old, it was Hugh's commit
-f3d48f0373c1 at 2005:
-    [PATCH] unpaged: fix sound Bad page states
+The commit 167790abb90f ("soundwire: export sdw_write/read_no_pm
+functions") exposed the single byte no_pm versions of the IO functions
+that can be used without touching PM, export the multi byte no_pm
+versions for the same reason.
 
-It mentions something about sparc32/64.  I hope this isn't relevant
-any longer (honestly I have no idea about that).
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ drivers/soundwire/bus.c       | 8 ++++----
+ include/linux/soundwire/sdw.h | 2 ++
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-> Note that for dma_alloc_noncoherent and dma_alloc_noncontigous in
-> combination with the DMA mmap helpers __GFP_COMP looks sketchy as well,
-> so I would suggest to drop that as well after a careful audit.
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 76515c33e639e..ef4878258afad 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -414,8 +414,7 @@ int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
+  * all clients need to use the pm versions
+  */
+ 
+-static int
+-sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
++int sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+ {
+ 	struct sdw_msg msg;
+ 	int ret;
+@@ -430,9 +429,9 @@ sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+ 		ret = 0;
+ 	return ret;
+ }
++EXPORT_SYMBOL(sdw_nread_no_pm);
+ 
+-static int
+-sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
++int sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
+ {
+ 	struct sdw_msg msg;
+ 	int ret;
+@@ -447,6 +446,7 @@ sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
+ 		ret = 0;
+ 	return ret;
+ }
++EXPORT_SYMBOL(sdw_nwrite_no_pm);
+ 
+ int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value)
+ {
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index 9e4537f409c29..902ed46f76c80 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -1047,7 +1047,9 @@ int sdw_write(struct sdw_slave *slave, u32 addr, u8 value);
+ int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value);
+ int sdw_read_no_pm(struct sdw_slave *slave, u32 addr);
+ int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
++int sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
+ int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val);
++int sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val);
+ int sdw_update(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
+ int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
+ 
+-- 
+2.30.2
 
-Yeah, that's a cargo-cult copy&paste from the old idiom.
-Should be killed altogether.
-
-
-Thanks!
-
-Takashi
