@@ -4,42 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C508C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Nov 2022 16:47:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13C4AC4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Nov 2022 17:03:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A0E71655;
-	Tue, 15 Nov 2022 17:46:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A0E71655
+	by alsa0.perex.cz (Postfix) with ESMTPS id 707C0164F;
+	Tue, 15 Nov 2022 18:02:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 707C0164F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668530842;
-	bh=M8RSzU3qPg2K0E35aAMCMo+kkoPlsqVjtWAa7z0Ijco=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1668531782;
+	bh=lU66hXRZDDGoyCrPc09f9F9B+uLPytZqbS/bVQ5G7E4=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hnip1ZEObBRG4oPT+pbIkQHKxN21PDAmdmhpCKuF5cUZDOjMpJWclys1KNecAMY7f
-	 9kotSpi4V+NafucBcJXYf5V8F+eHHGbCtvLADhTgCfR0MjwwpupGJuk2OACF99hH1T
-	 lVM5PPYZGnCfYyILDuNwgi6y9Qj5z85F4v34Mc+0=
+	b=YZ5hkO9Eqw0modBMCX+WUqKiu5PpcriRxSDToZMEbz+rXSxp/lvXnzhJiWMPDm6S1
+	 +TPby9NAe59PPruwEkGSkiuQr7J2iWVebQRFTNQhSThqnyqC/J7y4qrLd4BoBcvFMK
+	 yD9q9seacBwZF1Ml/Yzl3cMctt44p8+qUg4KHxTY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02C7CF8016D;
-	Tue, 15 Nov 2022 17:46:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 047EFF8016D;
+	Tue, 15 Nov 2022 18:02:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C627F80171; Tue, 15 Nov 2022 17:46:31 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 8E9D9F800AA
- for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 17:46:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E9D9F800AA
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1668530788114762068-webhooks-bot@alsa-project.org>
-References: <1668530788114762068-webhooks-bot@alsa-project.org>
-Subject: HDA ALC1220 DualCodec no optical out
-Message-Id: <20221115164631.2C627F80171@alsa1.perex.cz>
-Date: Tue, 15 Nov 2022 17:46:31 +0100 (CET)
+ id 2B7ACF80171; Tue, 15 Nov 2022 18:02:11 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F4030F800AA
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 18:02:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F4030F800AA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="V2ePYezY"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="qHZmMLho"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 2B11B1F8D9;
+ Tue, 15 Nov 2022 17:02:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1668531724; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=IOfP5rM6j89waZI2uspstpeBNfuwpkCgbupJ1xGr5hw=;
+ b=V2ePYezYkEMIDM8pNaA5UPXVI262AH4vxtH3zEMehTSjAmwFucUOfeZGyFughoLXUl2mSk
+ 5galtFKV3d/XEryTzLyEkuopICdNzz2oaliqTuZ3sR0QB/qZTNeQF1dumELfAMQlXSwADv
+ TGKDFiUCykXHtxi23vWcRBtjro72doM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1668531724;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=IOfP5rM6j89waZI2uspstpeBNfuwpkCgbupJ1xGr5hw=;
+ b=qHZmMLhobwNejjJVMsEzvdOirzGxShhoMvrsoFLVLhBVxnKJ1ohiG1MIv39aKsqqgTgS4V
+ RcelsLGFO7DNIrCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A97613A91;
+ Tue, 15 Nov 2022 17:02:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id GzCsAQzGc2NsTAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 15 Nov 2022 17:02:04 +0000
+Date: Tue, 15 Nov 2022 18:02:03 +0100
+Message-ID: <875yfg2ltg.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Emil Flink <emil.flink@gmail.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: fix speakers for Samsung Galaxy Book
+ Pro
+In-Reply-To: <20221115144500.7782-1-emil.flink@gmail.com>
+References: <20221115144500.7782-1-emil.flink@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,19 +95,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #239 was edited from Almoped:
+On Tue, 15 Nov 2022 15:45:01 +0100,
+Emil Flink wrote:
+> 
+> The Samsung Galaxy Book Pro seems to have the same issue as a few
+> other Samsung laptops, detailed in kernel bug report 207423. Sound from
+> headphone jack works, but not the built-in speakers.
+> 
+> alsa-info: http://alsa-project.org/db/?f=b40ba609dc6ae28dc84ad404a0d8a4bbcd8bea6d
+> 
+> Signed-off-by: Emil Flink <emil.flink@gmail.com>
 
-With current pipewire and alsa-ucm 1.2.8 I am unable to select profiles which has iec958 output, actually I am unable to select any card profile at all in pavucontrol. This is possibly because all the electrical output jacks are disconnected and optical out does not have jackdetect. Or maybe DualCodecs/HiFi.conf does not configure optical out.
-
-If I remove alsa/ucm2/HDA/DualCodecs/HiFi.conf it uses alsa-card-profile/mixer/profile-sets/default.conf, goes on a probing mission I get a working optical out and the possibility to select an array of other card profiles in pavucontrol.
-Can anyone recommend a better way to solve this?
+Thanks, applied now.
 
 
-
-I've attached pactl list cards output with working and nonworking optical out.
-
-[pactl_no_optical.txt](https://github.com/alsa-project/alsa-ucm-conf/files/9952236/pactl_no_optical.txt)
-[pactl_working_optical.txt](https://github.com/alsa-project/alsa-ucm-conf/files/9952238/pactl_working_optical.txt)
-
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/239
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Takashi
