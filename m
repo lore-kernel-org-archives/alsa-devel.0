@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69E6BC4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Nov 2022 12:06:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9252FC4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Nov 2022 12:06:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F7A4169D;
-	Tue, 15 Nov 2022 13:05:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F7A4169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C47E3167E;
+	Tue, 15 Nov 2022 13:05:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C47E3167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668513977;
-	bh=IX9ULaTupGb+iGD48Q2/MjRzTcT+6jzRb7GK5s2HsYc=;
+	s=default; t=1668513994;
+	bh=CRrvV5x7AnjBjwx3ew0dyYujXVmLbshTzuRKsBUPP5E=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tgNrZbPEXbmcFTuS8qlyb7I9ZfAivTQkdhJ8fAIeZVcIBD9ioNjxk0n3lNrXD0q2Y
-	 WAx1k48sedtiPynVz3KAF/z5QIUu8jKqTg9kHy1ruz5chOn1XRnmDjJb5wt6+8Akqh
-	 cqxVCFHA9uvjWIXczVzZKFe+oOtpzVqsqL5RXYhg=
+	b=AAc2IWAHq7KlfCXrxIcReJ1fRUCCg56NJHkxywGuK5chTD5hlZQ51GFDK80ItM3jk
+	 cuoLkswM11vX9wVodiueCKjRE73zuNZ9jRJord5Hl0HUsKFAPD4CofSS5XKLJbZFkk
+	 hxKOuI/KBJ6r5l9fVxM8xvCuBRkHGu3wDjLaFXpw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E535AF804DA;
-	Tue, 15 Nov 2022 13:03:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7859DF805B6;
+	Tue, 15 Nov 2022 13:03:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8AAAF805B2; Tue, 15 Nov 2022 13:03:22 +0100 (CET)
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com
- [IPv6:2a00:1450:4864:20::135])
+ id B7602F805BA; Tue, 15 Nov 2022 13:03:29 +0100 (CET)
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com
+ [IPv6:2a00:1450:4864:20::22e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E416BF804DA
- for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 13:02:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E416BF804DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 359A3F805B1
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 13:03:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 359A3F805B1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="g+qfShLU"
-Received: by mail-lf1-x135.google.com with SMTP id d6so24041476lfs.10
- for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 04:02:56 -0800 (PST)
+ header.b="anf744Ex"
+Received: by mail-lj1-x22e.google.com with SMTP id d3so17236873ljl.1
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 04:03:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=RcmcIw/aoAY1FZoJ9/HC3cRwB98JOHeI75J1MhSGCew=;
- b=g+qfShLUo2LcjPN37+QJFvvM6HOfjcpebHHs3phTNmQ++jagmE2hVKe059ZJ8eIhJo
- uA1SJ9LaL+Ts/TvM8zdLa4hIU4rtoha67wRcaqNCsUPRiySxf8oYdcDYyxJuxn+HdnYM
- WaIR/Shar2GFUkui1AzEJP+eaNZpSN0S3WQ5R6/0nuyMXydR0sINrbs42DuR0n9W7G7j
- WeId26+kF7e9mX7wqAfpyXIaNzW2d3HRowZRm2nFAhg6kM0wF+go8lTXnxi1ZZx9rHsu
- 3hiEtpHqW2tFGNu6oruAbQemBXPuINDtuCAPSmcRA5yWBI9vSgoy5y5T4/7+o5R6LvqM
- ishA==
+ bh=rkOf/mQUlsAzKnqG9ceUWMbAjAhQi8V3atO61+Os6Co=;
+ b=anf744ExR0fZsJ1I1OyvBXNU1H4MLAI7O2S1l1uefyxIpkbuEbViN251I+wha2NBEu
+ wMXyVd/8/HUQOu8O/wOVe26LDSRCRD4pSiP5/+UICaxguM9E19p4okgTjWRNRj7YJomf
+ vPGYjFLmqGBffiECXKg0kucezF7nWUpNe3VO1nnBBbiGcLEvqRiA9Bzc9SnxzpZvUeNT
+ AkBq/dxBdGOyzFURgAzbYYgfLg1FJbPLyfXtmrfmH380IyYqgISaBZGyAtDIZeOQQALy
+ nNMJtsJURx4mIb1SF8JXmasPAfXnwiSKyk9OCJbBNkpWKGnSa8tk3gcQfIaod0Pb1IUJ
+ /imQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=RcmcIw/aoAY1FZoJ9/HC3cRwB98JOHeI75J1MhSGCew=;
- b=z8nJ39ud0fbbg9z19ovS9d93bbzzluDiYdkMXzuwobz9jNWw27sPc7/h9FmpphmJLW
- HeAG0PXdwujs/7eYGjrBsL1uE+xHEK1whlnLsBxLu9K1nhZp1c7z5jYYPFWGpCtTKHMt
- sPNu0v/ImI/WNJztskexiXu8XPUQGwSbJhOQdr9aw9JPwhFOTG1md5D7qXRTKtrAXUVh
- jvn5QEqBcjK36YGJmKR9MpURLMwge/IzEYPnKE8kLcu5RGj6KkHvEr+lSjuiBjFlElMd
- baaH5QmRf7Sq2nQcZhjtZQPa7ee1fZJPn06wY+fLTag8c94iFrnKdmERHfiTU4mModUE
- 613A==
-X-Gm-Message-State: ANoB5pnBqmeWYDoPkXfIxbly88gpYiEc8C3sQBYwNBHyudVDB7xY9ZIS
- MuZQiBIpHYkxjAnQ3afTSRE8WA==
-X-Google-Smtp-Source: AA0mqf7xRuGkBbvLbDme2sRQQB7T7oFo2vBw1rzAMcKHBMUvDVvvO3WRtyIkW6ZMG5MN6t8MS2NRwQ==
-X-Received: by 2002:a05:6512:313b:b0:4a2:27f0:46a5 with SMTP id
- p27-20020a056512313b00b004a227f046a5mr5943056lfd.611.1668513774167; 
- Tue, 15 Nov 2022 04:02:54 -0800 (PST)
+ bh=rkOf/mQUlsAzKnqG9ceUWMbAjAhQi8V3atO61+Os6Co=;
+ b=HWsgILHSyh0WaYcNFvvknkLZGjQokmAGfA3YChWQ7HhxDQdkcc/bzu4nIiwFRDWFwi
+ g2OB/4xBLRQpYY3SPYZfzmbdlKoDGuvsfG5h8s+5WXwYBBRYu39h9tgTKj8nxFWJRlkX
+ RIgieh85JTB4w7nsiagnv4jdXj8qf9cerW02u3hJ0+3zDU3qwBHDq7/g35frKRmrx8ee
+ rWF9Fvix2mWVxhTIzpgA+3ozVagNT/x+0Sbpf6xgCF0fllXWbLfmA0HIvhbFMHAfCJgz
+ o8++jzClsTkHonxv6y6CW0IcedYActKDe4/OGU0BaTN/7bXEnrdg8BcdJt1pGIpV8UR1
+ CWBA==
+X-Gm-Message-State: ANoB5pl2zJgtkG3do8BlFatCfh2mM17acGOeSZJmeTCiVropZwXD4bXX
+ yeEIcrQsp++iYuAmx+mM9LU9vQ==
+X-Google-Smtp-Source: AA0mqf65mLd6kXKx0FhGMnC9RBT7gtZlpsoxDFQEamw0DjHir+5klbOIYdLhqIrx3mUeZn2XxjklOA==
+X-Received: by 2002:a2e:b706:0:b0:277:d75:f1de with SMTP id
+ j6-20020a2eb706000000b002770d75f1demr6146907ljo.272.1668513778946; 
+ Tue, 15 Nov 2022 04:02:58 -0800 (PST)
 Received: from krzk-bin.NAT.warszawa.vectranet.pl
  (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
  by smtp.gmail.com with ESMTPSA id
- i13-20020ac25d2d000000b004b0b2212315sm2176233lfb.121.2022.11.15.04.02.52
+ i13-20020ac25d2d000000b004b0b2212315sm2176233lfb.121.2022.11.15.04.02.57
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 15 Nov 2022 04:02:53 -0800 (PST)
+ Tue, 15 Nov 2022 04:02:58 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
@@ -82,10 +82,10 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 07/11] ASoC: dt-bindings: qcom,
- q6asm: Split to separate schema
-Date: Tue, 15 Nov 2022 13:02:31 +0100
-Message-Id: <20221115120235.167812-8-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 10/11] ASoC: dt-bindings: qcom,
+ q6apm-lpass-dais: Split to separate schema
+Date: Tue, 15 Nov 2022 13:02:34 +0100
+Message-Id: <20221115120235.167812-11-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221115120235.167812-1-krzysztof.kozlowski@linaro.org>
 References: <20221115120235.167812-1-krzysztof.kozlowski@linaro.org>
@@ -108,10 +108,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The APR/GPR bindings with services got complicated so move out the Q6ASM
-service to its own binding.  Previously the compatible was documented in
-qcom,apr.yaml.  Move most of the examples from its children to this new
-file.
+The Qualcomm DSP LPASS Audio DAIs are a bit different than Qualcomm DSP
+Audio FrontEnd (Q6AFE) DAIs - they do not use children nodes for each
+DAI.  None of other properties from qcom,q6dsp-lpass-ports.yaml apply
+here as well, so move the qcom,q6apm-lpass-dais compatible to its own
+binding.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
@@ -120,146 +121,61 @@ Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Cc: quic_srivasam@quicinc.com
 Cc: quic_plai@quicinc.com
 ---
- .../bindings/sound/qcom,q6asm-dais.yaml       | 48 +++++--------
- .../devicetree/bindings/sound/qcom,q6asm.yaml | 68 +++++++++++++++++++
- 2 files changed, 84 insertions(+), 32 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6asm.yaml
+ .../bindings/sound/qcom,q6apm-lpass-dais.yaml | 32 +++++++++++++++++++
+ .../sound/qcom,q6dsp-lpass-ports.yaml         |  1 -
+ 2 files changed, 32 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6apm-lpass-dais.yaml
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm-dais.yaml b/Documentation/devicetree/bindings/sound/qcom,q6asm-dais.yaml
-index 8deb8ffb143b..0110b38f6de9 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6asm-dais.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6asm-dais.yaml
-@@ -73,40 +73,24 @@ additionalProperties: false
- 
- examples:
-   - |
--    #include <dt-bindings/soc/qcom,apr.h>
--    #include <dt-bindings/sound/qcom,q6asm.h>
--
--    apr {
--        compatible = "qcom,apr-v2";
--        qcom,domain = <APR_DOMAIN_ADSP>;
-+    dais {
-+        compatible = "qcom,q6asm-dais";
-+        iommus = <&apps_smmu 0x1821 0x0>;
-         #address-cells = <1>;
-         #size-cells = <0>;
-+        #sound-dai-cells = <1>;
-+
-+        dai@0 {
-+            reg = <0>;
-+        };
-+
-+        dai@1 {
-+            reg = <1>;
-+        };
- 
--        service@7 {
--            compatible = "qcom,q6asm";
--            reg = <APR_SVC_ASM>;
--            qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
--
--            dais {
--                compatible = "qcom,q6asm-dais";
--                iommus = <&apps_smmu 0x1821 0x0>;
--                #address-cells = <1>;
--                #size-cells = <0>;
--                #sound-dai-cells = <1>;
--
--                dai@0 {
--                    reg = <0>;
--                };
--
--                dai@1 {
--                    reg = <1>;
--                };
--
--                dai@2 {
--                    reg = <2>;
--                    is-compress-dai;
--                    direction = <1>;
--                };
--            };
-+        dai@2 {
-+            reg = <2>;
-+            is-compress-dai;
-+            direction = <1>;
-         };
-     };
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm.yaml b/Documentation/devicetree/bindings/sound/qcom,q6asm.yaml
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6apm-lpass-dais.yaml b/Documentation/devicetree/bindings/sound/qcom,q6apm-lpass-dais.yaml
 new file mode 100644
-index 000000000000..cb49f9667cca
+index 000000000000..4b3ce779206b
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6asm.yaml
-@@ -0,0 +1,68 @@
++++ b/Documentation/devicetree/bindings/sound/qcom,q6apm-lpass-dais.yaml
+@@ -0,0 +1,32 @@
 +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/sound/qcom,q6asm.yaml#
++$id: http://devicetree.org/schemas/sound/qcom,q6apm-lpass-dais.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Qualcomm Audio Stream Manager (Q6ASM)
++title: Qualcomm DSP LPASS (Low Power Audio SubSystem) Audio Ports
 +
 +maintainers:
 +  - Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 +
-+allOf:
-+  - $ref: /schemas/soc/qcom/qcom,apr-services.yaml#
-+
 +properties:
 +  compatible:
 +    enum:
-+      - qcom,q6asm
++      - qcom,q6apm-lpass-dais
 +
-+  dais:
-+    type: object
-+    $ref: /schemas/sound/qcom,q6asm-dais.yaml#
-+    unevaluatedProperties: false
-+    description: Qualcomm DSP audio ports
++  '#sound-dai-cells':
++    const: 1
 +
 +required:
 +  - compatible
-+  - dais
++  - '#sound-dai-cells'
 +
-+unevaluatedProperties: false
++additionalProperties: false
 +
 +examples:
 +  - |
-+    #include <dt-bindings/soc/qcom,apr.h>
-+
-+    apr {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        service@7 {
-+            compatible = "qcom,q6asm";
-+            reg = <APR_SVC_ASM>;
-+            qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
-+
-+            dais {
-+                compatible = "qcom,q6asm-dais";
-+                iommus = <&apps_smmu 0x1821 0x0>;
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+                #sound-dai-cells = <1>;
-+
-+                dai@0 {
-+                    reg = <0>;
-+                };
-+
-+                dai@1 {
-+                    reg = <1>;
-+                };
-+
-+                dai@2 {
-+                    reg = <2>;
-+                    is-compress-dai;
-+                    direction = <1>;
-+                };
-+            };
-+        };
++    dais {
++        compatible = "qcom,q6apm-lpass-dais";
++        #sound-dai-cells = <1>;
 +    };
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
+index b202692f1756..d8ebf2e528d2 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-ports.yaml
+@@ -16,7 +16,6 @@ properties:
+   compatible:
+     enum:
+       - qcom,q6afe-dais
+-      - qcom,q6apm-lpass-dais
+ 
+   '#sound-dai-cells':
+     const: 1
 -- 
 2.34.1
 
