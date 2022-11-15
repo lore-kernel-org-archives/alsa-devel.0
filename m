@@ -4,129 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC09CC4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Nov 2022 07:21:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C8E6C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Nov 2022 09:57:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5F47A1684;
-	Tue, 15 Nov 2022 08:21:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F47A1684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 500A71676;
+	Tue, 15 Nov 2022 10:57:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 500A71676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668496915;
-	bh=dzLpFVmjbfct/WfRieQjfmGiVYVLvDasmbI0CYOXF8Y=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1668506273;
+	bh=OxSSLC5s3zYlfc0BwFA+5cZFGoeym1E5oa0EER2/Ll8=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=irJsHsL1wC2BBajWVw3F+JQeoDxDyVLN9NXIJ1zcavgUt+PyiXO3RpKIBM3D/PdJo
-	 9SJlen5L5wacOa7C0EQtKMxd4yic0EJ7Ar3xs3RtVBeQ6sUN0qzf8LaVACMR9eZYdy
-	 i/T6EJE9l/mY+krFDUyBcRoFVwjJN7AWMQggGGhY=
+	b=JRSHW3Cyq4Ku05Lg0LuTe50c9THgs2MRqmz8uZDCEnWnB10vhytVMVXOVuLcCha1x
+	 x0x1QyTbhwNFG8+qCyVWYkL8N7oKGtYXGy1GpPlgE98/tDxPWH0CJB5WZh4xdeBRNi
+	 C/jla2+bbjPsH7e/QhTS4QLCH3K32ldghfxFsxuw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 260A7F80549;
-	Tue, 15 Nov 2022 08:20:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E7E6DF80171;
+	Tue, 15 Nov 2022 10:57:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BA3DEF804DA; Tue, 15 Nov 2022 08:20:53 +0100 (CET)
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com
- (mail-mw2nam12on20609.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe5a::609])
+ id 5066CF804C2; Tue, 15 Nov 2022 10:57:01 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 414CAF800AA
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 10:56:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 414CAF800AA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="rBr+5SQ/"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A96CBF804C2;
- Tue, 15 Nov 2022 08:20:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A96CBF804C2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
- header.b="S7HOKDw5"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JZr92QU9Gaaz/7i03FOuSPorfk+BR/liKbEHzB/exPj16jxaJYNruPOJ7SKGy2b7NliF3/JxrySNLu3tfUOcv8ozJJlrYXL82PoX4uVkHtX7jZ6iqagoN4CSB0Ajz7ZVmuOZ5zHEG884SyBm/+hE5SJfZt96tzZtuMHlXRz8BwHz3NRqyiOrJvOyAg741XPrMWso+4GSAeb/hm3HTqtUc5Rt8hfH6NtJSKciCydU/5O++7KcKODhXUdC1J86D+XgcuQ2qrOIfp5Ud5yTz3/b5cx3E7mkOyFlCQuuStqbx4OlKuP6wfNfHHtv97/LhFSSoIhf8YyVbBMK4hs01ShcqQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vCXHXG5BtEYgf/+BYK3iyUAIplq/6UzsISAOKgrXkEU=;
- b=PqWZZjPNdOGT1CnqThp+hG+FLy2xG2dN6J+1e+s6MUUjatRYkAqGgd3j0IKY0VkZ438KT3ByEQ5jKzO6Y+sbNRPq1CO+ZZZRmHY73V97CxXQB8tWfSNiKvnm8L1Ef9+npd0XdpejhqrcV5HxmhMce/3VZfdFSwNvTIzpdCL649NOWvplGcnhJYgaaDvmOZnbg5wZnccyWivUnoPnn4NC/O4PdT1/qScMVAEhu2j26E2RJUDk5HEM2MtE8dzX1JRNmIoZ3RpUygWD6pUqZvuYuJtI8m1ufyurQRtOksbJbbCOnFMoCFZJDRGgO7oEzp/uGE6yUJYEbDc958QOBWTOZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vCXHXG5BtEYgf/+BYK3iyUAIplq/6UzsISAOKgrXkEU=;
- b=S7HOKDw5MkhIvP1BxGNyLn1FzuGMdJuO7Znq/OZhC6/SfsxQkPxpvnzb3PpJfM6qOJVLgnXkEPEh/GNFzAOlZc3I2i0hO7yqHty7unSGjwUMRhbus0+9x8tcjtEU30wU6ByxMh+1TCivykGHOkI0Ay5Sqm/Ikvh9BPv/N0MaOxI=
-Received: from BN7PR06CA0062.namprd06.prod.outlook.com (2603:10b6:408:34::39)
- by SJ1PR12MB6266.namprd12.prod.outlook.com (2603:10b6:a03:457::11)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.18; Tue, 15 Nov
- 2022 07:20:34 +0000
-Received: from BL02EPF0000EE3E.namprd05.prod.outlook.com
- (2603:10b6:408:34:cafe::fe) by BN7PR06CA0062.outlook.office365.com
- (2603:10b6:408:34::39) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.17 via Frontend
- Transport; Tue, 15 Nov 2022 07:20:34 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL02EPF0000EE3E.mail.protection.outlook.com (10.167.241.135) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.5813.11 via Frontend Transport; Tue, 15 Nov 2022 07:20:34 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 15 Nov
- 2022 01:20:00 -0600
-Received: from sof-System-Product-Name.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.34
- via Frontend Transport; Tue, 15 Nov 2022 01:19:53 -0600
-From: V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>
-To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH 2/4] ASoC: SOF: amd: Fix for selecting clock source as
- external clock.
-Date: Tue, 15 Nov 2022 12:49:54 +0530
-Message-ID: <20221115072001.1931617-2-Vsujithkumar.Reddy@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221115072001.1931617-1-Vsujithkumar.Reddy@amd.com>
-References: <20221115072001.1931617-1-Vsujithkumar.Reddy@amd.com>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 3BEB9615DB;
+ Tue, 15 Nov 2022 09:56:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3898FC433D7;
+ Tue, 15 Nov 2022 09:56:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1668506211;
+ bh=OxSSLC5s3zYlfc0BwFA+5cZFGoeym1E5oa0EER2/Ll8=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=rBr+5SQ/iwmYPVxhEa/zE/oLpD5/FLlqHcfk2v+v12T8o6+JRAzpGQQ4/RNGMmOxc
+ I9O0uBKbH076JhfhBrQhXP9PFDcye8eYTIB0OTRbR8CuKE9AG4e0E8u+Qkb9GuHvBA
+ 1DNaSdZy8VVUFYIcu3hmqEWl6AmJCLEmC9KegNa+YP4UeUduSlsujmRnCRnvb4W17C
+ kQbTBJZC/uPJbeVzeAQK0oZKOP0xLTnIml/bEDU3hI5hTn6EPtAJlhyU20GOmPg/s9
+ 13ZLxu7k+ei6DKhYi/8XV7/sCvJvBg6SqgD/C2r4iKoPvyf31XcVG1M2iKZd3vxIL8
+ EwcMmovNEeW5A==
+From: Mark Brown <broonie@kernel.org>
+To: fengzheng923@gmail.com, ye.xingchen@zte.com.cn
+In-Reply-To: <202211111641514826535@zte.com.cn>
+References: <202211111641514826535@zte.com.cn>
+Subject: Re: [PATCH] ASoC: sunxi: use devm_platform_get_and_ioremap_resource()
+Message-Id: <166850620892.114707.3764390592141990223.b4-ty@kernel.org>
+Date: Tue, 15 Nov 2022 09:56:48 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0000EE3E:EE_|SJ1PR12MB6266:EE_
-X-MS-Office365-Filtering-Correlation-Id: 15bd6ff4-12fc-4a1e-32e9-08dac6d9e2dc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: v08EEO4kHVKEXndxD3FeTwyFW8puM1jt4NQQQ+NDPItEkrbTLwndMsPzqIArCUFfRXaJjSJGT6UhWdLyi0QeSD4ta079LiOlaeh00tb3acUPbORBZx2M0+0xUMeRw3MDjNqoUDbDKr4ZFOvjBx3IVzdtj2EbE7AV1VxDNLWe/5zYExH3fGFFe8SUBpc5BGArXkCcC3MeKsWFLxF6+QMPgDIETVWPlGSYkkZXXU3tKN5zqGOVYHJD8idEcUQAAUVfFFu/+XX96/zp5xcF3FuW28pJiTaVQG/GN279cP8sqxB/PHpIEK+ccKP6ovkTAGUs/TAKa59XDPmowWsysCw+6poBA8VGTV0H1NHsZRUvlUIxT3uYhQS/4d7WbP6Tgm2eU6FIFeg4oRf3ys9sUdfzokHZq8vlE30E0irw9B4Jd1J0FpUTJrdNSIHZlpAjjPfsgV53IEuMyOxItIsZadb8a5CUAeVEQxKZWkLwInpZNygnSm5EZSg9GcqdBWdZiWxgqVt7zfMFc874wMrCSRRqQ4lheLyYrENhqZ/l/4HdPFj6Q9n9p3Xgok7vw5qSB6w5pThYCG19BtlZq9jDxPrc5Bp1UuATS6NYRCdiL94QtnVl1gd+Ta4Q95+S1BiH2ML++k3M/s+8MEL2LohiOy6fBNdY/B85E3xnS73peVb54jcAlUOo24ldoVXRI21QAPB4iOMu2btBkL1Dv1vhItiVlZv6t3wvBITCAYSPuVNRVK9RxN00rdkjOC4rTeNJz3S8BleJmQbEDjXlxjLxww+Q++rIIWCzqennfUj8wFYVS3rVg0crwlNSdllsJd+frypd
-X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:CAL; SFV:NSPM; H:SATLEXMB04.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
- SFS:(13230022)(4636009)(396003)(376002)(346002)(39860400002)(136003)(451199015)(46966006)(36840700001)(40470700004)(82310400005)(40460700003)(36756003)(40480700001)(86362001)(83380400001)(26005)(7696005)(1076003)(2616005)(47076005)(426003)(336012)(186003)(82740400003)(356005)(81166007)(36860700001)(7416002)(8936002)(4326008)(8676002)(5660300002)(41300700001)(2906002)(70206006)(478600001)(70586007)(316002)(54906003)(110136005)(36900700001);
- DIR:OUT; SFP:1101; 
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2022 07:20:34.2162 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15bd6ff4-12fc-4a1e-32e9-08dac6d9e2dc
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
- Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0000EE3E.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6266
-Cc: Daniel Baluta <daniel.baluta@nxp.com>,
- Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, Sunil-kumar.Dommati@amd.com,
- ssabakar@amd.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- venkataprasad.potturu@amd.com, Bard
- Liao <yung-chuan.liao@linux.intel.com>, Basavaraj.Hiregoudar@amd.com,
- Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Vijendar.Mukunda@amd.com, V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Ajit Kumar
- Pandey <AjitKumar.Pandey@amd.com>, open list <linux-kernel@vger.kernel.org>,
- "moderated list:SOUND - SOUND OPEN
- FIRMWARE \(SOF\) DRIVERS" <sound-open-firmware@alsa-project.org>
+X-Mailer: b4 0.11.0-dev-8af31
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ chi.minghao@zte.com.cn, lgirdwood@gmail.com, linux-sunxi@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -142,65 +81,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-By default clock source is selected as internal clock of 96Mhz
-which is not configurable. Now we select the clock source to
-external clock (ACLK) which can be configurable to different clock
-ranges depending on usecase.
+On Fri, 11 Nov 2022 16:41:51 +0800 (CST), ye.xingchen@zte.com.cn wrote:
+> From: Minghao Chi <chi.minghao@zte.com.cn>
+> 
+> Convert platform_get_resource(), devm_ioremap_resource() to a single
+> call to devm_platform_get_and_ioremap_resource(), as this is exactly
+> what this function does.
+> 
+> 
+> [...]
 
-Signed-off-by: V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>
----
- sound/soc/sof/amd/acp.c | 4 +++-
- sound/soc/sof/amd/acp.h | 8 ++++++++
- 2 files changed, 11 insertions(+), 1 deletion(-)
+Applied to
 
-diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
-index 36966643e36a..47115a77c92c 100644
---- a/sound/soc/sof/amd/acp.c
-+++ b/sound/soc/sof/amd/acp.c
-@@ -390,6 +390,7 @@ static int acp_power_on(struct snd_sof_dev *sdev)
- 
- static int acp_reset(struct snd_sof_dev *sdev)
- {
-+	const struct sof_amd_acp_desc *desc = get_chip_info(sdev->pdata);
- 	unsigned int val;
- 	int ret;
- 
-@@ -410,6 +411,7 @@ static int acp_reset(struct snd_sof_dev *sdev)
- 	if (ret < 0)
- 		dev_err(sdev->dev, "timeout in releasing reset\n");
- 
-+	snd_sof_dsp_write(sdev, ACP_DSP_BAR, desc->acp_clkmux_sel, ACP_CLOCK_ACLK);
- 	return ret;
- }
- 
-@@ -456,7 +458,7 @@ int amd_sof_acp_resume(struct snd_sof_dev *sdev)
- 		return ret;
- 	}
- 
--	snd_sof_dsp_write(sdev, ACP_DSP_BAR, desc->acp_clkmux_sel, 0x03);
-+	snd_sof_dsp_write(sdev, ACP_DSP_BAR, desc->acp_clkmux_sel, ACP_CLOCK_ACLK);
- 
- 	ret = acp_memory_init(sdev);
- 
-diff --git a/sound/soc/sof/amd/acp.h b/sound/soc/sof/amd/acp.h
-index 1529c6d9bf9b..76ad963faec1 100644
---- a/sound/soc/sof/amd/acp.h
-+++ b/sound/soc/sof/amd/acp.h
-@@ -69,6 +69,14 @@
- #define BOX_SIZE_512				0x200
- #define BOX_SIZE_1024				0x400
- 
-+enum clock_source {
-+	ACP_CLOCK_96M = 0,
-+	ACP_CLOCK_48M,
-+	ACP_CLOCK_24M,
-+	ACP_CLOCK_ACLK,
-+	ACP_CLOCK_MCLK,
-+};
-+
- struct  acp_atu_grp_pte {
- 	u32 low;
- 	u32 high;
--- 
-2.25.1
+   broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: sunxi: use devm_platform_get_and_ioremap_resource()
+      commit: f8fd5f4813b6d8bdd003ffe164e98bfa01b1c830
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
