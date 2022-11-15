@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 296B5C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Nov 2022 12:05:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B14DDC4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Nov 2022 12:06:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5171A16B2;
-	Tue, 15 Nov 2022 13:04:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5171A16B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB969168B;
+	Tue, 15 Nov 2022 13:05:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB969168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668513944;
-	bh=Ll0Fjy6X7ePv96NGH+bs1WH2X5+mJInvohgeJXZDyg8=;
+	s=default; t=1668513963;
+	bh=5hgvVJE3YzIAvv1zbBbEFExGYS08RkrShnGYJ/rltSs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cmswAQFGiryxiLRAwSILnUGbhsHIDM6MGr85Z3n8i9sB/eD2SUzUIIYQHmWtsjoSc
-	 fQn56toHS81qLQ55WSvE20wG2djU0CMwuNu0lL7mCEwO4XFeETIHpv5c9mLxECo4iT
-	 Zg3XTUnXyah6ybBcjpkQ5QyNVOTqtKcdGBDwbqBM=
+	b=gy90gdhCrTuLV22ojJ7lCZBOW6hDbWpQyISo2EDngUb3hNSMCMlGwi061wjw/YJGB
+	 IUYCZ54+WMuisT+TUgMW4XRQoR0qLa7GNiRG3RGRIR3sD4tll5FCocSg1l/EYApEgE
+	 LBAYItf2UjOZ0CConytTESEm5TwhfoRn+k81B+fY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D554F80589;
-	Tue, 15 Nov 2022 13:03:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20ACFF805AC;
+	Tue, 15 Nov 2022 13:03:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA711F8057C; Tue, 15 Nov 2022 13:03:02 +0100 (CET)
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com
- [IPv6:2a00:1450:4864:20::22f])
+ id 52750F80578; Tue, 15 Nov 2022 13:03:07 +0100 (CET)
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
+ [IPv6:2a00:1450:4864:20::12d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AC0EAF8047C
- for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 13:02:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC0EAF8047C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4041AF80578
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 13:02:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4041AF80578
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Iu64cV54"
-Received: by mail-lj1-x22f.google.com with SMTP id u11so17152637ljk.6
- for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 04:02:54 -0800 (PST)
+ header.b="eFOxtUSL"
+Received: by mail-lf1-x12d.google.com with SMTP id g12so24121197lfh.3
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 04:02:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=LyyakI8dI31KMumI0zAq/rZxHMG6g0EuWRPy/j4igio=;
- b=Iu64cV54PeAH+y/r9d6d4/HeQob4vBfJ64H84jjELeyS9b5bxUoVuI3BMmpmsaP2cv
- hK0iGmlf4Fm3993w0XqR/eZXs8Fb82A7zdbUNxam+AsKsLM6jPUxWmkSxEvGYTxfgikz
- lTe9KOJKr6UN1p1Z7Sl1T9obWYxc3sENNxGQsSGmwMh9gsE4+h+99wwDjnL1PuhLAqA/
- VEsZjdFSthpo5PgpJ2lePY6O99dsF/PfngqhiWGh7UA6V3bwgrdzc2eYAQxDpLYtVWFl
- 0D0bHKzzMYQK1pkz7I7EGOu4KdIkuXEVtvGvl5h+Upd1vnmUccvodWJt31qEDdK0PLIJ
- PWNA==
+ bh=RjIcwISYizTMd4GfNjSCEyTXmXHAf6CHHATueef/HN8=;
+ b=eFOxtUSLZmpzuZ+rOIG8oQ+VUcQiqQP7CPntwlOX5IfDXrOr27TVUvcIeQJKozFIYu
+ X45MGLLpJe2FJi9RZZjhs4nfoG6PzrFm8Ml+/PbDJMp/PDoh7Axl0PCfZ++vBjRsTVmj
+ CgV3nZtDJ0/rgDCVac5hBKrONLjsXSjjb+nnzB3w+l0rlI3gsJ8cYtwVygTDjYq4XH5D
+ j9KkAZCo04xy8GZ/LNuqQO0IYFu5LqKEazZ5VVnq/N8R7tXJ01lCOfuq0rbOeNh53Lbc
+ WSqIsj6ZgQ3hEfWCqwpUIGA8UvQ1gUvKzwPYJw2J/T77dsRzpZz0wCminqXR2r/GWHJr
+ 1x6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=LyyakI8dI31KMumI0zAq/rZxHMG6g0EuWRPy/j4igio=;
- b=5p5OuKenoIHrkfTlV/n1Gkk6GHe3sRElmUYYYpTnVlFDt61kPvdO1aOhpGvbj1I4nw
- E+HW9Pn08M7mWertMXszA9E+ev15knRtd+LXIC/5YeMuO2Td0hvo9qG5Visgm0h7Xskh
- cRoGfigzf8b0NX81Avzf6uUc/OY3a3NgbfI/pNc8bXiFPShRHeKOA/yxA1h2EDmvGX+m
- 1RxADNYX0jlewnpJ8Efdl55ZrbdA9eXyXsIf4Uyr1URb+iGjvQjonVCiu/09lFRMcr2z
- C9x/xpWt6ye7e20tKellEJ08r5OAHyfa2uCQzGtaMc3P1VchZtzYKjYdU+a+3+imVfn/
- A5Fw==
-X-Gm-Message-State: ANoB5plSgPTW9mVS5flDiP2zKpHftHZdyrXiQ2dSe/6sCnnAsvMJsdV1
- AuzYkHwBJi/dclYTFANynSgdHA==
-X-Google-Smtp-Source: AA0mqf4bsmoyb0QW/dQ4kJp/id0PhHduPtPhyADMrx0mfBRfduq2Y/a6a7oBLkdqlS9/Zfi0lpwYHA==
-X-Received: by 2002:a2e:9ec2:0:b0:26e:768c:11ed with SMTP id
- h2-20020a2e9ec2000000b0026e768c11edmr6117310ljk.436.1668513772696; 
- Tue, 15 Nov 2022 04:02:52 -0800 (PST)
+ bh=RjIcwISYizTMd4GfNjSCEyTXmXHAf6CHHATueef/HN8=;
+ b=7ZBRgyxfk8J1lk/tphWWoI5//OJkZOzGXVJet8+NWto+daeoY7Kjl+uYLUv0qkEmks
+ 0B+p0nbmP9B1J0DJhT0pjOzKdchikowPpXadQyW1DJy+xIlufDHiUnnyBOhc3wPWOUcM
+ Dg+0jrtL9aEql4wgyUEmdHAmkM/q3Z/53pHKn1Et+TjX+GiMABsrYmB+NNm7NgH4zQ7k
+ eyX6m7v9+5j8M5MqiJhPwidB6NK4Wavx8arKtKGiZHrR3QnUmfyccnCdF1g5UvkLyGV+
+ +jty0uveG+pI2SUhRasy6LV40hX/Ai3umWKgbJp1mCGojOh+bgAQK7GXx3y8VugP2Xax
+ qWoQ==
+X-Gm-Message-State: ANoB5pnIyyNJ/5RIrQh9Bvi7HbUXwwxbVy32pRd4je+v9MVKTrMMpSOx
+ UoQpG23AvSYgA+NR1J0N/bxFyA==
+X-Google-Smtp-Source: AA0mqf7zJGKPdafXhGbdYS0VR7Iqoj6lKhMNRCrXLV2on/t88JgLH5dNUEGY8Em3jgBZUTjFhWt4tw==
+X-Received: by 2002:ac2:55a9:0:b0:4aa:da5d:dfd8 with SMTP id
+ y9-20020ac255a9000000b004aada5ddfd8mr6090205lfg.677.1668513777308; 
+ Tue, 15 Nov 2022 04:02:57 -0800 (PST)
 Received: from krzk-bin.NAT.warszawa.vectranet.pl
  (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
  by smtp.gmail.com with ESMTPSA id
- i13-20020ac25d2d000000b004b0b2212315sm2176233lfb.121.2022.11.15.04.02.51
+ i13-20020ac25d2d000000b004b0b2212315sm2176233lfb.121.2022.11.15.04.02.55
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 15 Nov 2022 04:02:52 -0800 (PST)
+ Tue, 15 Nov 2022 04:02:56 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
@@ -82,10 +82,10 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 06/11] ASoC: dt-bindings: qcom,
- q6adm: Split to separate schema
-Date: Tue, 15 Nov 2022 13:02:30 +0100
-Message-Id: <20221115120235.167812-7-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 09/11] ASoC: dt-bindings: qcom,
+ q6core: Split to separate schema
+Date: Tue, 15 Nov 2022 13:02:33 +0100
+Message-Id: <20221115120235.167812-10-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20221115120235.167812-1-krzysztof.kozlowski@linaro.org>
 References: <20221115120235.167812-1-krzysztof.kozlowski@linaro.org>
@@ -108,10 +108,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The APR/GPR bindings with services got complicated so move out the Q6ADM
-service to its own binding.  Previously the compatible was documented in
-qcom,apr.yaml.  Move most of the examples from its children to this new
-file.
+The APR/GPR bindings with services got complicated so move out the
+Q6Core service to its own binding.  Previously the compatible was
+documented in qcom,apr.yaml.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
@@ -120,55 +119,23 @@ Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Cc: quic_srivasam@quicinc.com
 Cc: quic_plai@quicinc.com
 ---
- .../bindings/sound/qcom,q6adm-routing.yaml    | 22 ++------
- .../devicetree/bindings/sound/qcom,q6adm.yaml | 51 +++++++++++++++++++
- 2 files changed, 54 insertions(+), 19 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6adm.yaml
+ .../bindings/sound/qcom,q6core.yaml           | 39 +++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6core.yaml
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6adm-routing.yaml b/Documentation/devicetree/bindings/sound/qcom,q6adm-routing.yaml
-index d0f7a79e240a..b7ed2d3f21f9 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6adm-routing.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6adm-routing.yaml
-@@ -30,23 +30,7 @@ additionalProperties: false
- 
- examples:
-   - |
--    #include <dt-bindings/soc/qcom,apr.h>
--    #include <dt-bindings/sound/qcom,q6asm.h>
--
--    apr {
--        compatible = "qcom,apr-v2";
--        qcom,domain = <APR_DOMAIN_ADSP>;
--        #address-cells = <1>;
--        #size-cells = <0>;
--
--        service@8 {
--            compatible = "qcom,q6adm";
--            reg = <APR_SVC_ADM>;
--            qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
--
--            routing {
--                compatible = "qcom,q6adm-routing";
--                #sound-dai-cells = <0>;
--            };
--        };
-+    routing {
-+        compatible = "qcom,q6adm-routing";
-+        #sound-dai-cells = <0>;
-     };
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6adm.yaml b/Documentation/devicetree/bindings/sound/qcom,q6adm.yaml
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6core.yaml b/Documentation/devicetree/bindings/sound/qcom,q6core.yaml
 new file mode 100644
-index 000000000000..fe14a97ea616
+index 000000000000..e240712de9ca
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6adm.yaml
-@@ -0,0 +1,51 @@
++++ b/Documentation/devicetree/bindings/sound/qcom,q6core.yaml
+@@ -0,0 +1,39 @@
 +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/sound/qcom,q6adm.yaml#
++$id: http://devicetree.org/schemas/sound/qcom,q6core.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Qualcomm Audio Device Manager (Q6ADM)
++title: Qualcomm Audio Core (Q6Core)
 +
 +maintainers:
 +  - Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
@@ -180,17 +147,10 @@ index 000000000000..fe14a97ea616
 +properties:
 +  compatible:
 +    enum:
-+      - qcom,q6adm
-+
-+  routing:
-+    type: object
-+    $ref: /schemas/sound/qcom,q6adm-routing.yaml#
-+    unevaluatedProperties: false
-+    description: Qualcomm DSP LPASS audio routing
++      - qcom,q6core
 +
 +required:
 +  - compatible
-+  - routing
 +
 +unevaluatedProperties: false
 +
@@ -202,15 +162,10 @@ index 000000000000..fe14a97ea616
 +        #address-cells = <1>;
 +        #size-cells = <0>;
 +
-+        service@8 {
-+            compatible = "qcom,q6adm";
-+            reg = <APR_SVC_ADM>;
++        service@3 {
++            compatible = "qcom,q6core";
++            reg = <APR_SVC_ADSP_CORE>;
 +            qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
-+
-+            routing {
-+                compatible = "qcom,q6adm-routing";
-+                #sound-dai-cells = <0>;
-+            };
 +        };
 +    };
 -- 
