@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6593FC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Nov 2022 07:21:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC09CC4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Nov 2022 07:21:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A2301671;
-	Tue, 15 Nov 2022 08:20:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A2301671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F47A1684;
+	Tue, 15 Nov 2022 08:21:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F47A1684
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668496904;
-	bh=8MVwJq2ub1xD1yFZWs2ki3R3z6KSIjItzv5RbULtfxI=;
+	s=default; t=1668496915;
+	bh=dzLpFVmjbfct/WfRieQjfmGiVYVLvDasmbI0CYOXF8Y=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RVRJ9j798AlqSMnj932BExGFEipufqxgloaLBFG9NR4sQmQtviRnQ4coChBXBMKCt
-	 2boaZczBrOJubeRp20VDI0WUgCBCJZi4sa0HP5N6+sOQKGEGW/9eqfsYGErpIAXGdM
-	 lcErlYYzx5VwyScSp3zdP6CmZ6iS728YGZjWVmUU=
+	b=irJsHsL1wC2BBajWVw3F+JQeoDxDyVLN9NXIJ1zcavgUt+PyiXO3RpKIBM3D/PdJo
+	 9SJlen5L5wacOa7C0EQtKMxd4yic0EJ7Ar3xs3RtVBeQ6sUN0qzf8LaVACMR9eZYdy
+	 i/T6EJE9l/mY+krFDUyBcRoFVwjJN7AWMQggGGhY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FC6DF804C2;
-	Tue, 15 Nov 2022 08:20:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 260A7F80549;
+	Tue, 15 Nov 2022 08:20:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF0AEF80542; Tue, 15 Nov 2022 08:20:52 +0100 (CET)
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com
- (mail-bn7nam10on20629.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7e8a::629])
+ id BA3DEF804DA; Tue, 15 Nov 2022 08:20:53 +0100 (CET)
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam12on20609.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:fe5a::609])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BABADF80171;
+ by alsa1.perex.cz (Postfix) with ESMTPS id A96CBF804C2;
  Tue, 15 Nov 2022 08:20:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BABADF80171
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A96CBF804C2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
- header.b="wNYtARA8"
+ header.b="S7HOKDw5"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EiAK1ks0o7jzKEM9e6g/Cu8tA4akdl31xWmn2cZRamJ2TA6PU9ZEtVnvIbt/GavAC8eHy0E01Ku9IVaRCyon3/rXXw4OhUZdRyE/5hxr3Xg4+h9tDpVr8jIy5TQsDXsVbZGzXuLsf/NVnMv49CDoUKD4J7P3uVK1k7SrDrTZ715dCVAXLCXQ9YQFv+GkS4YQ49faCSTo77nStppi7D/SI9q1/A/z2g4vb/5KtfVHiM4DfvFZZhPhHbiCHPRpnhfxfwIQ5hpgB19WnEfk+YhvlC0B/2McJh4Mn9jzDpAp/RM44CklEv+dFK7YXTmXcS/85IhGqtyAq0M5USDQutez0g==
+ b=JZr92QU9Gaaz/7i03FOuSPorfk+BR/liKbEHzB/exPj16jxaJYNruPOJ7SKGy2b7NliF3/JxrySNLu3tfUOcv8ozJJlrYXL82PoX4uVkHtX7jZ6iqagoN4CSB0Ajz7ZVmuOZ5zHEG884SyBm/+hE5SJfZt96tzZtuMHlXRz8BwHz3NRqyiOrJvOyAg741XPrMWso+4GSAeb/hm3HTqtUc5Rt8hfH6NtJSKciCydU/5O++7KcKODhXUdC1J86D+XgcuQ2qrOIfp5Ud5yTz3/b5cx3E7mkOyFlCQuuStqbx4OlKuP6wfNfHHtv97/LhFSSoIhf8YyVbBMK4hs01ShcqQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sktex+Cr+nJJveF0gSzefdLFbimCxVcsgk2n1cK2lWM=;
- b=EHqI+OmeOY35rx4m5SPpyb8Nn97qU+LOVT2R0zFH6ZIHlEuhY692WekRTrE/FcxYIC9MwhCVBtdm/4qPLXdQxeTDp8agZPIWeyFi43lpF1McAuiawnqo0nupO+apJqdnwMMUGeanFgNhpC/746GLWJXRXPlrM8bqLDnaAnyH+NMvIqbce89YQsv9h9fFZyKasHyLkHx40tbmMc6Qvq/3891qL2H9f77jSnh/HDbnok+odOZFOVyH0aThIBn4Se3A89EloSr/BqUCwRrJT26wevNJbvdxlVIzDyHuNo9zzATTTuuD6WRAQaSWW2FxqvEnRMFfOrsgb+cUq9eXO/6vYg==
+ bh=vCXHXG5BtEYgf/+BYK3iyUAIplq/6UzsISAOKgrXkEU=;
+ b=PqWZZjPNdOGT1CnqThp+hG+FLy2xG2dN6J+1e+s6MUUjatRYkAqGgd3j0IKY0VkZ438KT3ByEQ5jKzO6Y+sbNRPq1CO+ZZZRmHY73V97CxXQB8tWfSNiKvnm8L1Ef9+npd0XdpejhqrcV5HxmhMce/3VZfdFSwNvTIzpdCL649NOWvplGcnhJYgaaDvmOZnbg5wZnccyWivUnoPnn4NC/O4PdT1/qScMVAEhu2j26E2RJUDk5HEM2MtE8dzX1JRNmIoZ3RpUygWD6pUqZvuYuJtI8m1ufyurQRtOksbJbbCOnFMoCFZJDRGgO7oEzp/uGE6yUJYEbDc958QOBWTOZg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sktex+Cr+nJJveF0gSzefdLFbimCxVcsgk2n1cK2lWM=;
- b=wNYtARA8l8/G1dpEJvI/2LpDp32ryaeV6Nhrbg5p5TRLyUnvWQM2c+OlrnguuaMnolQPTMwFIlF9gTHvwU1D5DK8TorexmVjFEoEhUCMjKjD8apI2IkA7Okxds6ZBJAQzUR6XxWcpnxARo1Alx0qP9FOCL/qgQ49fvdIU0HBu3M=
-Received: from BL1PR13CA0387.namprd13.prod.outlook.com (2603:10b6:208:2c0::32)
- by DM6PR12MB4878.namprd12.prod.outlook.com (2603:10b6:5:1b8::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.17; Tue, 15 Nov
- 2022 07:20:41 +0000
-Received: from BL02EPF0000EE3F.namprd05.prod.outlook.com
- (2603:10b6:208:2c0:cafe::41) by BL1PR13CA0387.outlook.office365.com
- (2603:10b6:208:2c0::32) with Microsoft SMTP Server (version=TLS1_2,
+ bh=vCXHXG5BtEYgf/+BYK3iyUAIplq/6UzsISAOKgrXkEU=;
+ b=S7HOKDw5MkhIvP1BxGNyLn1FzuGMdJuO7Znq/OZhC6/SfsxQkPxpvnzb3PpJfM6qOJVLgnXkEPEh/GNFzAOlZc3I2i0hO7yqHty7unSGjwUMRhbus0+9x8tcjtEU30wU6ByxMh+1TCivykGHOkI0Ay5Sqm/Ikvh9BPv/N0MaOxI=
+Received: from BN7PR06CA0062.namprd06.prod.outlook.com (2603:10b6:408:34::39)
+ by SJ1PR12MB6266.namprd12.prod.outlook.com (2603:10b6:a03:457::11)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.18; Tue, 15 Nov
+ 2022 07:20:34 +0000
+Received: from BL02EPF0000EE3E.namprd05.prod.outlook.com
+ (2603:10b6:408:34:cafe::fe) by BN7PR06CA0062.outlook.office365.com
+ (2603:10b6:408:34::39) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5813.17 via Frontend
- Transport; Tue, 15 Nov 2022 07:20:40 +0000
+ Transport; Tue, 15 Nov 2022 07:20:34 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -69,26 +69,22 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL02EPF0000EE3F.mail.protection.outlook.com (10.167.241.133) with Microsoft
+ BL02EPF0000EE3E.mail.protection.outlook.com (10.167.241.135) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.5813.11 via Frontend Transport; Tue, 15 Nov 2022 07:20:40 +0000
-Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB04.amd.com
+ 15.20.5813.11 via Frontend Transport; Tue, 15 Nov 2022 07:20:34 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 15 Nov
- 2022 01:20:35 -0600
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB08.amd.com
- (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 14 Nov
- 2022 23:20:17 -0800
+ 2022 01:20:00 -0600
 Received: from sof-System-Product-Name.amd.com (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.34
- via Frontend Transport; Tue, 15 Nov 2022 01:20:11 -0600
+ via Frontend Transport; Tue, 15 Nov 2022 01:19:53 -0600
 From: V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>
 To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH 4/4] ASoC: SOF: Add DAI configuration support for AMD
- platforms.
-Date: Tue, 15 Nov 2022 12:49:56 +0530
-Message-ID: <20221115072001.1931617-4-Vsujithkumar.Reddy@amd.com>
+Subject: [PATCH 2/4] ASoC: SOF: amd: Fix for selecting clock source as
+ external clock.
+Date: Tue, 15 Nov 2022 12:49:54 +0530
+Message-ID: <20221115072001.1931617-2-Vsujithkumar.Reddy@amd.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221115072001.1931617-1-Vsujithkumar.Reddy@amd.com>
 References: <20221115072001.1931617-1-Vsujithkumar.Reddy@amd.com>
@@ -97,27 +93,28 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0000EE3F:EE_|DM6PR12MB4878:EE_
-X-MS-Office365-Filtering-Correlation-Id: b0841cfc-46ba-4da1-3acb-08dac6d9e6ad
+X-MS-TrafficTypeDiagnostic: BL02EPF0000EE3E:EE_|SJ1PR12MB6266:EE_
+X-MS-Office365-Filtering-Correlation-Id: 15bd6ff4-12fc-4a1e-32e9-08dac6d9e2dc
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dilc/juPZxeTHsVFiL/TYAvUCm4YtzkU0cthr2H9FyqbhcNHwsuH/BAYj+lmgZHN49uWNcgDh8yStploN8n/TsPKd0ZzdIF/45PN7Iqhr+kE/iF8yhd7j5HFYBxXdEJc4PB4huO8xQTrXa+oElg8v2ON7DNlaj1JzAncajN3CmUL6BZJ6ytMrxz8+xVO0jO0faN13lvCzRd26iXzrbikKK8eKorknnr2sQLVOHcsePIV8OaYNSDKtH7LX/xUtPlNWLyBpAv8v5qo9FQcopO8NThQ1c18DM86iG1dI2VWKzTqy6hDMWpdblpLVrACGRgkojaYcTMwD1ztLK9qCr/t8+Kj8C372nbtjPG9C3G+kfrWRYAsyFCSDQRxMDE4ZgDJawGZlbxpFa0nAN4adEhoSkpistNaMwc/PsHivdEvqpW7IIg6x54r9ZuLKXlZ8DVtD4ZWpZmqT3Wq+EuejpRXAC1ry699df8ShK4RI8lqfnZgu+zfHLIbCx2ulVO0ZvTZZa+iYMHJqT/rENLQQ6a3akekqH39z9iOtAjXXBxG4/07VnqDTaOqvxfFYMD0Arsisr4PFYPEWxFlwtNN3UOu+xOWzmS2MuIqwBwNmkj+EmmzZPkwOG4IX//JycBQ3hF3EUGklyfa8Hv6N992qdX8v7qVaobzfGQ+0wfYSKv4OOJJDvq1uRtpFWIqKXySymYG67vLfMMeICrEfueOrVrhFAsriMwq6rdJxB0lwJM0oDrT9Bl/5WH9Uv4g2+T5uAJVxjhgisv1JfXQV7RNFVJyyyWO9QbL2AVbAAWoHaABqIM=
+X-Microsoft-Antispam-Message-Info: v08EEO4kHVKEXndxD3FeTwyFW8puM1jt4NQQQ+NDPItEkrbTLwndMsPzqIArCUFfRXaJjSJGT6UhWdLyi0QeSD4ta079LiOlaeh00tb3acUPbORBZx2M0+0xUMeRw3MDjNqoUDbDKr4ZFOvjBx3IVzdtj2EbE7AV1VxDNLWe/5zYExH3fGFFe8SUBpc5BGArXkCcC3MeKsWFLxF6+QMPgDIETVWPlGSYkkZXXU3tKN5zqGOVYHJD8idEcUQAAUVfFFu/+XX96/zp5xcF3FuW28pJiTaVQG/GN279cP8sqxB/PHpIEK+ccKP6ovkTAGUs/TAKa59XDPmowWsysCw+6poBA8VGTV0H1NHsZRUvlUIxT3uYhQS/4d7WbP6Tgm2eU6FIFeg4oRf3ys9sUdfzokHZq8vlE30E0irw9B4Jd1J0FpUTJrdNSIHZlpAjjPfsgV53IEuMyOxItIsZadb8a5CUAeVEQxKZWkLwInpZNygnSm5EZSg9GcqdBWdZiWxgqVt7zfMFc874wMrCSRRqQ4lheLyYrENhqZ/l/4HdPFj6Q9n9p3Xgok7vw5qSB6w5pThYCG19BtlZq9jDxPrc5Bp1UuATS6NYRCdiL94QtnVl1gd+Ta4Q95+S1BiH2ML++k3M/s+8MEL2LohiOy6fBNdY/B85E3xnS73peVb54jcAlUOo24ldoVXRI21QAPB4iOMu2btBkL1Dv1vhItiVlZv6t3wvBITCAYSPuVNRVK9RxN00rdkjOC4rTeNJz3S8BleJmQbEDjXlxjLxww+Q++rIIWCzqennfUj8wFYVS3rVg0crwlNSdllsJd+frypd
 X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
  IPV:CAL; SFV:NSPM; H:SATLEXMB04.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
- SFS:(13230022)(4636009)(396003)(346002)(136003)(376002)(39860400002)(451199015)(46966006)(36840700001)(40470700004)(6666004)(54906003)(7696005)(110136005)(478600001)(70206006)(8936002)(26005)(36756003)(4326008)(8676002)(70586007)(336012)(2616005)(7416002)(41300700001)(1076003)(5660300002)(186003)(83380400001)(82310400005)(40460700003)(81166007)(356005)(47076005)(426003)(36860700001)(2906002)(316002)(82740400003)(40480700001)(86362001)(36900700001);
+ SFS:(13230022)(4636009)(396003)(376002)(346002)(39860400002)(136003)(451199015)(46966006)(36840700001)(40470700004)(82310400005)(40460700003)(36756003)(40480700001)(86362001)(83380400001)(26005)(7696005)(1076003)(2616005)(47076005)(426003)(336012)(186003)(82740400003)(356005)(81166007)(36860700001)(7416002)(8936002)(4326008)(8676002)(5660300002)(41300700001)(2906002)(70206006)(478600001)(70586007)(316002)(54906003)(110136005)(36900700001);
  DIR:OUT; SFP:1101; 
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2022 07:20:40.6193 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b0841cfc-46ba-4da1-3acb-08dac6d9e6ad
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2022 07:20:34.2162 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 15bd6ff4-12fc-4a1e-32e9-08dac6d9e2dc
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
  Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0000EE3F.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0000EE3E.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4878
-Cc: Daniel Baluta <daniel.baluta@nxp.com>, Sunil-kumar.Dommati@amd.com,
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6266
+Cc: Daniel Baluta <daniel.baluta@nxp.com>,
+ Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, Sunil-kumar.Dommati@amd.com,
  ssabakar@amd.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  venkataprasad.potturu@amd.com, Bard
  Liao <yung-chuan.liao@linux.intel.com>, Basavaraj.Hiregoudar@amd.com,
@@ -126,10 +123,10 @@ Cc: Daniel Baluta <daniel.baluta@nxp.com>, Sunil-kumar.Dommati@amd.com,
  Liam Girdwood <lgirdwood@gmail.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Vijendar.Mukunda@amd.com, V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- open list <linux-kernel@vger.kernel.org>, "moderated
- list:SOUND - SOUND OPEN FIRMWARE \(SOF\) DRIVERS"
- <sound-open-firmware@alsa-project.org>
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Ajit Kumar
+ Pandey <AjitKumar.Pandey@amd.com>, open list <linux-kernel@vger.kernel.org>,
+ "moderated list:SOUND - SOUND OPEN
+ FIRMWARE \(SOF\) DRIVERS" <sound-open-firmware@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -145,172 +142,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for configuring sp and hs DAI from topology.
+By default clock source is selected as internal clock of 96Mhz
+which is not configurable. Now we select the clock source to
+external clock (ACLK) which can be configurable to different clock
+ranges depending on usecase.
 
 Signed-off-by: V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>
 ---
- sound/soc/sof/ipc3-pcm.c      |  2 ++
- sound/soc/sof/ipc3-topology.c | 36 +++++++++++++++++++++++++++--------
- sound/soc/sof/sof-audio.h     |  1 +
- sound/soc/sof/topology.c      | 10 ++++++++++
- 4 files changed, 41 insertions(+), 8 deletions(-)
+ sound/soc/sof/amd/acp.c | 4 +++-
+ sound/soc/sof/amd/acp.h | 8 ++++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/ipc3-pcm.c b/sound/soc/sof/ipc3-pcm.c
-index dad57bef38f6..f10bfc9bd5cb 100644
---- a/sound/soc/sof/ipc3-pcm.c
-+++ b/sound/soc/sof/ipc3-pcm.c
-@@ -336,6 +336,7 @@ static int sof_ipc3_pcm_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
- 			channels->min, channels->max);
- 		break;
- 	case SOF_DAI_AMD_SP:
-+	case SOF_DAI_AMD_SP_VIRTUAL:
- 		rate->min = private->dai_config->acpsp.fsync_rate;
- 		rate->max = private->dai_config->acpsp.fsync_rate;
- 		channels->min = private->dai_config->acpsp.tdm_slots;
-@@ -347,6 +348,7 @@ static int sof_ipc3_pcm_dai_link_fixup(struct snd_soc_pcm_runtime *rtd,
- 			channels->min, channels->max);
- 		break;
- 	case SOF_DAI_AMD_HS:
-+	case SOF_DAI_AMD_HS_VIRTUAL:
- 		rate->min = private->dai_config->acphs.fsync_rate;
- 		rate->max = private->dai_config->acphs.fsync_rate;
- 		channels->min = private->dai_config->acphs.tdm_slots;
-diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
-index 0720e1eae084..b94cc40485ed 100644
---- a/sound/soc/sof/ipc3-topology.c
-+++ b/sound/soc/sof/ipc3-topology.c
-@@ -276,6 +276,16 @@ static const struct sof_topology_token acpdmic_tokens[] = {
- 		offsetof(struct sof_ipc_dai_acpdmic_params, pdm_ch)},
- };
+diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
+index 36966643e36a..47115a77c92c 100644
+--- a/sound/soc/sof/amd/acp.c
++++ b/sound/soc/sof/amd/acp.c
+@@ -390,6 +390,7 @@ static int acp_power_on(struct snd_sof_dev *sdev)
  
-+/* ACPI2S */
-+static const struct sof_topology_token acpi2s_tokens[] = {
-+	{SOF_TKN_AMD_ACPI2S_RATE, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
-+		offsetof(struct sof_ipc_dai_acp_params, fsync_rate)},
-+	{SOF_TKN_AMD_ACPI2S_CH, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
-+		offsetof(struct sof_ipc_dai_acp_params, tdm_slots)},
-+	{SOF_TKN_AMD_ACPI2S_TDM_MODE, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
-+		offsetof(struct sof_ipc_dai_acp_params, tdm_mode)},
+ static int acp_reset(struct snd_sof_dev *sdev)
+ {
++	const struct sof_amd_acp_desc *desc = get_chip_info(sdev->pdata);
+ 	unsigned int val;
+ 	int ret;
+ 
+@@ -410,6 +411,7 @@ static int acp_reset(struct snd_sof_dev *sdev)
+ 	if (ret < 0)
+ 		dev_err(sdev->dev, "timeout in releasing reset\n");
+ 
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, desc->acp_clkmux_sel, ACP_CLOCK_ACLK);
+ 	return ret;
+ }
+ 
+@@ -456,7 +458,7 @@ int amd_sof_acp_resume(struct snd_sof_dev *sdev)
+ 		return ret;
+ 	}
+ 
+-	snd_sof_dsp_write(sdev, ACP_DSP_BAR, desc->acp_clkmux_sel, 0x03);
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, desc->acp_clkmux_sel, ACP_CLOCK_ACLK);
+ 
+ 	ret = acp_memory_init(sdev);
+ 
+diff --git a/sound/soc/sof/amd/acp.h b/sound/soc/sof/amd/acp.h
+index 1529c6d9bf9b..76ad963faec1 100644
+--- a/sound/soc/sof/amd/acp.h
++++ b/sound/soc/sof/amd/acp.h
+@@ -69,6 +69,14 @@
+ #define BOX_SIZE_512				0x200
+ #define BOX_SIZE_1024				0x400
+ 
++enum clock_source {
++	ACP_CLOCK_96M = 0,
++	ACP_CLOCK_48M,
++	ACP_CLOCK_24M,
++	ACP_CLOCK_ACLK,
++	ACP_CLOCK_MCLK,
 +};
 +
- /* Core tokens */
- static const struct sof_topology_token core_tokens[] = {
- 	{SOF_TKN_COMP_CORE_ID, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
-@@ -311,6 +321,7 @@ static const struct sof_token_info ipc3_token_list[SOF_TOKEN_COUNT] = {
- 	[SOF_SAI_TOKENS] = {"SAI tokens", sai_tokens, ARRAY_SIZE(sai_tokens)},
- 	[SOF_AFE_TOKENS] = {"AFE tokens", afe_tokens, ARRAY_SIZE(afe_tokens)},
- 	[SOF_ACPDMIC_TOKENS] = {"ACPDMIC tokens", acpdmic_tokens, ARRAY_SIZE(acpdmic_tokens)},
-+	[SOF_ACPI2S_TOKENS]   = {"ACPI2S tokens", acpi2s_tokens, ARRAY_SIZE(acpi2s_tokens)},
- };
- 
- /**
-@@ -1193,6 +1204,7 @@ static int sof_link_acp_sp_load(struct snd_soc_component *scomp, struct snd_sof_
- 	struct snd_soc_tplg_hw_config *hw_config = slink->hw_configs;
- 	struct sof_dai_private_data *private = dai->private;
- 	u32 size = sizeof(*config);
-+	int ret;
- 
- 	/* handle master/slave and inverted clocks */
- 	sof_dai_set_format(hw_config, config);
-@@ -1201,12 +1213,15 @@ static int sof_link_acp_sp_load(struct snd_soc_component *scomp, struct snd_sof_
- 	memset(&config->acpsp, 0, sizeof(config->acpsp));
- 	config->hdr.size = size;
- 
--	config->acpsp.fsync_rate = le32_to_cpu(hw_config->fsync_rate);
--	config->acpsp.tdm_slots = le32_to_cpu(hw_config->tdm_slots);
-+	ret = sof_update_ipc_object(scomp, &config->acpsp, SOF_ACPI2S_TOKENS, slink->tuples,
-+				    slink->num_tuples, size, slink->num_hw_configs);
-+	if (ret < 0)
-+		return ret;
- 
--	dev_info(scomp->dev, "ACP_SP config ACP%d channel %d rate %d\n",
-+
-+	dev_info(scomp->dev, "ACP_SP config ACP%d channel %d rate %d tdm_mode %d\n",
- 		 config->dai_index, config->acpsp.tdm_slots,
--		 config->acpsp.fsync_rate);
-+		 config->acpsp.fsync_rate, config->acpsp.tdm_mode);
- 
- 	dai->number_configs = 1;
- 	dai->current_config = 0;
-@@ -1223,6 +1238,7 @@ static int sof_link_acp_hs_load(struct snd_soc_component *scomp, struct snd_sof_
- 	struct snd_soc_tplg_hw_config *hw_config = slink->hw_configs;
- 	struct sof_dai_private_data *private = dai->private;
- 	u32 size = sizeof(*config);
-+	int ret;
- 
- 	/* Configures the DAI hardware format and inverted clocks */
- 	sof_dai_set_format(hw_config, config);
-@@ -1231,12 +1247,14 @@ static int sof_link_acp_hs_load(struct snd_soc_component *scomp, struct snd_sof_
- 	memset(&config->acphs, 0, sizeof(config->acphs));
- 	config->hdr.size = size;
- 
--	config->acphs.fsync_rate = le32_to_cpu(hw_config->fsync_rate);
--	config->acphs.tdm_slots = le32_to_cpu(hw_config->tdm_slots);
-+	ret = sof_update_ipc_object(scomp, &config->acphs, SOF_ACPI2S_TOKENS, slink->tuples,
-+				    slink->num_tuples, size, slink->num_hw_configs);
-+	if (ret < 0)
-+		return ret;
- 
--	dev_info(scomp->dev, "ACP_HS config ACP%d channel %d rate %d\n",
-+	dev_info(scomp->dev, "ACP_HS config ACP%d channel %d rate %d tdm_mode %d\n",
- 		 config->dai_index, config->acphs.tdm_slots,
--		 config->acphs.fsync_rate);
-+		 config->acphs.fsync_rate, config->acphs.tdm_mode);
- 
- 	dai->number_configs = 1;
- 	dai->current_config = 0;
-@@ -1545,9 +1563,11 @@ static int sof_ipc3_widget_setup_comp_dai(struct snd_sof_widget *swidget)
- 			ret = sof_link_acp_bt_load(scomp, slink, config, dai);
- 			break;
- 		case SOF_DAI_AMD_SP:
-+		case SOF_DAI_AMD_SP_VIRTUAL:
- 			ret = sof_link_acp_sp_load(scomp, slink, config, dai);
- 			break;
- 		case SOF_DAI_AMD_HS:
-+		case SOF_DAI_AMD_HS_VIRTUAL:
- 			ret = sof_link_acp_hs_load(scomp, slink, config, dai);
- 			break;
- 		case SOF_DAI_AMD_DMIC:
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index 1b5b3ea53a6e..29cf951e3526 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -248,6 +248,7 @@ enum sof_tokens {
- 	SOF_COPIER_FORMAT_TOKENS,
- 	SOF_GAIN_TOKENS,
- 	SOF_ACPDMIC_TOKENS,
-+	SOF_ACPI2S_TOKENS,
- 
- 	/* this should be the last */
- 	SOF_TOKEN_COUNT,
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 9d9fcaa2a948..c668bd9d21ec 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -289,6 +289,9 @@ static const struct sof_dai_types sof_dais[] = {
- 	{"ACPDMIC", SOF_DAI_AMD_DMIC},
- 	{"ACPHS", SOF_DAI_AMD_HS},
- 	{"AFE", SOF_DAI_MEDIATEK_AFE},
-+	{"ACPSP_VIRTUAL", SOF_DAI_AMD_SP_VIRTUAL},
-+	{"ACPHS_VIRTUAL", SOF_DAI_AMD_HS_VIRTUAL},
-+
- };
- 
- static enum sof_ipc_dai_type find_dai(const char *name)
-@@ -1895,6 +1898,13 @@ static int sof_link_load(struct snd_soc_component *scomp, int index, struct snd_
- 		token_id = SOF_ACPDMIC_TOKENS;
- 		num_tuples += token_list[SOF_ACPDMIC_TOKENS].count;
- 		break;
-+	case SOF_DAI_AMD_SP:
-+	case SOF_DAI_AMD_HS:
-+	case SOF_DAI_AMD_SP_VIRTUAL:
-+	case SOF_DAI_AMD_HS_VIRTUAL:
-+		token_id = SOF_ACPI2S_TOKENS;
-+		num_tuples += token_list[SOF_ACPI2S_TOKENS].count;
-+		break;
- 	default:
- 		break;
- 	}
+ struct  acp_atu_grp_pte {
+ 	u32 low;
+ 	u32 high;
 -- 
 2.25.1
 
