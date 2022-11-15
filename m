@@ -4,99 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0A38C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 15 Nov 2022 10:23:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 414B9C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 15 Nov 2022 10:56:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F159167B;
-	Tue, 15 Nov 2022 11:22:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F159167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7E581666;
+	Tue, 15 Nov 2022 11:56:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7E581666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668507817;
-	bh=ucRdTTYbLWQYq56mmOaS9jekkaftU9L8G4/qRxay4qk=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=AEHxpr1RXhTv83pTRySQBy4J3ROMItF0WZOtKUp1VcVzx1V+afSKWJQe2d9UL7YyG
-	 Cz4zJv5JJRNMiHxFePgE1/QIVfDePOcDnBdb0yrXcAwmSibU5oKe1sQTvMNLr0PzxE
-	 OyUhsbOr0loR2Etm2FKG6j5Bj5NBCdfTILOFNOHA=
+	s=default; t=1668509812;
+	bh=VDGTdTHjuBpQArbSKrq81C6S2OoPh4Xz11gxM1u7q30=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=bCesNmNkWHNzZBLDVAIw+Vvd+fqRMpAuw/ml2Orzh8iT67yuRXLYYhjpd/lxzoiTX
+	 u8Bx5Hp8BLVrYh+1t8wksJn7tCCQ9MMD02Rs86Q/Ql0+YZhddtoxADLhRCVCpiwlwI
+	 +s71y7yjaCkp8K5XPs51PwhraV9tm+gcyqhhAVGc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1AC13F8016D;
-	Tue, 15 Nov 2022 11:22:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58C10F80171;
+	Tue, 15 Nov 2022 11:56:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9A84AF80171; Tue, 15 Nov 2022 11:22:45 +0100 (CET)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
- [IPv6:2a00:1450:4864:20::12b])
+ id 2643EF80171; Tue, 15 Nov 2022 11:56:01 +0100 (CET)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10C11F800B5
- for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 11:22:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10C11F800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id A567FF800B5
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 11:55:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A567FF800B5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="URWmS52K"
-Received: by mail-lf1-x12b.google.com with SMTP id g7so23733693lfv.5
- for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 02:22:42 -0800 (PST)
+ header.b="JiWctmm2"
+Received: by mail-wr1-x42a.google.com with SMTP id j15so23607807wrq.3
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 02:55:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=3ZbREAzKGWsIEWUQJpy4XElK+ime7W53jXwcpw2dqzo=;
- b=URWmS52KU77TWjmjG6UB4lH6yXLsHtFdFoDjqDZDTqW8s8fgbpukZVncpNKzxXkXiK
- Ig37LGNmjMnu1U2f/1pomq95OJLikyGVyB+4ABQ0POWetHCFlHhL94EXdNn5+7UpOX4Q
- ZhKHee8n+38c/rLKiVvjJQ8SSexQrhnSFzsNoRNLejRYqPK/7mdYwYG5stAufYWtyK+O
- 7jp0YZoE+rK/1zIWDtCV4jMq6ttRkqDgjFxIo/+bG5zNIpxmTe73E5QIux/rYqHA+M0n
- +w4RiGEYZ599h0aPvRTuCJ4evleTgjqQ/pZsMEpOn1E4kCr2nM6UkMljIEeQgqCv7ecL
- Mx8A==
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=7Os696b+9zkVS6lz3wwEWnLE1KxIJPKzpMEH3bahfyE=;
+ b=JiWctmm26IesWn9v52lXd+9stVyKBduqAE3Rig0nnvhzGYTGVluffpEgZmNhNVBSis
+ 26BbjDcWfsAE+kLpccx9VLSB25WJBkVHSRbfL3Z6l2A/65jVgmHiEMpRClwe93CypaTP
+ bUIYzfJ0pU0tUt/lTnGhz/i/OD4VH8Y4qNksN3I+hDJrOEB2BoOQPrzga97s5kzxwMKn
+ f24YpA4ib8405CtdjX9WTrmtNCtqgcpFOzpWGCaB9JNt77fw2LjvUDbBtfMBXjFDaSrX
+ gzW5rnd2gQWdT8Q1HgLJEltr29mfIS3B35/SJeEGcQsE4jBFE9lSFCwTPwvqTGveqpUb
+ dzIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=3ZbREAzKGWsIEWUQJpy4XElK+ime7W53jXwcpw2dqzo=;
- b=V/uC5CuWWdgqnqaG+8RjaDsDNGQy2AnpyS0bkrPGx4QfRbOaNoWQQhK8rOABxoIeax
- dDjLAX7zkw3N/xTzP+q8Gg9rEbXI5EG4as+3OndTwyw4Tgz0TdwlpPF0yi5SF8UNbyRr
- PQRD4lne+2iEicmK2OeGLrZxw+0idmP+h/b509Djl5I+ZnRDfhdHmVtucFDtLDzQ1K6z
- pTqv/oMULuKKolfAXfNucrhUdmsF1ehxwAIDHvB+0gA2x1XJ0+XBc1FP2IVhR/yQgMEI
- +6diCw9n9G2HkUY61pnG0o5WcvYj7TQuqiUK3j9uvf4/r4FnX2IaA1Ub7AElawx0hRT0
- Za8Q==
-X-Gm-Message-State: ANoB5pnvpWmGNsUw0KUYqF6nnHf2lxnnAtfL9f0CD/BJJ+MX5b34R2Xg
- Qi7/sj/RgaQGS4JAMXCoLymaPA==
-X-Google-Smtp-Source: AA0mqf7Eoob8tu5VvSML0bCXRs+5OlrwB4RhRTonYV8TvWwQfLAeC7eqY+781izx5/9lW5imSf++mA==
-X-Received: by 2002:a05:6512:258f:b0:4af:ad16:8a08 with SMTP id
- bf15-20020a056512258f00b004afad168a08mr5231106lfb.664.1668507761001; 
- Tue, 15 Nov 2022 02:22:41 -0800 (PST)
-Received: from [192.168.0.20]
- (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=7Os696b+9zkVS6lz3wwEWnLE1KxIJPKzpMEH3bahfyE=;
+ b=drFYJIXNsXAWa6OAk+ixxeuw4yiIi7ZFKQuYkU9O21eNlvO2CUT0SY98NNSdkJM4qd
+ /OJL2BMxOGKUUnnQNsJoRW8HiDyQcAWBQgonrS6+5g2+rvKbahsov+PclfHN/2M8zMJA
+ Q7ZJtqGrcWSi+vG5sssUycGTkAMae4UjQYjH1JN9NLyF0MybS/XxWnFT6R3f5SftAwgj
+ 5pwHb1Krt+cKQ4yO6vOAd7C9BTWUHPjDGwsHHdrNigJP16Bj725lZvuf4xB2PrV5a7zh
+ nFnRxXQG0L82e6sYmXsn0t1/04ISVzpfcSvZcuhIFQ3JHUxzqER59AV4aepACAKHbMYB
+ oBDA==
+X-Gm-Message-State: ANoB5pkIxRvpyBbd9fwFPyiqhXsBKTFV15dP9tY/NyK5+82MqSf+3/01
+ aacISpoVrT3i1EU7T44hCwR1Uw==
+X-Google-Smtp-Source: AA0mqf5CKMgNkTiCStyQMUE9zELmueYgW4bfgK1N2t93kQ1edF0KYrFc0oZ/oMvfPzr3cBEMDijUmw==
+X-Received: by 2002:a5d:58c3:0:b0:238:8896:7876 with SMTP id
+ o3-20020a5d58c3000000b0023888967876mr10351481wrf.645.1668509755874; 
+ Tue, 15 Nov 2022 02:55:55 -0800 (PST)
+Received: from localhost.localdomain ([185.201.60.217])
  by smtp.gmail.com with ESMTPSA id
- c18-20020ac25f72000000b00492dc29be7bsm2148197lfc.227.2022.11.15.02.22.39
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 15 Nov 2022 02:22:40 -0800 (PST)
-Message-ID: <5dae76ba-bd48-233d-4d4a-14111ff1b2ec@linaro.org>
-Date: Tue, 15 Nov 2022 11:22:39 +0100
+ r18-20020adfe692000000b00238df11940fsm12185046wrm.16.2022.11.15.02.55.53
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 15 Nov 2022 02:55:55 -0800 (PST)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Subject: [PATCH 0/2] ASoC: codec: lpass-va: add npl clock support
+Date: Tue, 15 Nov 2022 10:55:39 +0000
+Message-Id: <20221115105541.16322-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH 02/10] ASoC: dt-bindings: qcom,apr: Split services to
- shared schema
-Content-Language: en-US
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20221111113547.100442-1-krzysztof.kozlowski@linaro.org>
- <20221111113547.100442-3-krzysztof.kozlowski@linaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20221111113547.100442-3-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: Patrick Lai <plai@qti.qualcomm.com>,
- Srinivasa Rao Mandadapu <srivasam@qti.qualcomm.com>
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ robh+dt@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ krzysztof.kozlowski+dt@linaro.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,48 +97,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 11/11/2022 12:35, Krzysztof Kozlowski wrote:
-> The APR/GPR nodes are organized like:
-> 
->   apr-or-gpr-device-node <- qcom,apr.yaml
->     apr-gpr-service@[0-9] <- qcom,apr.yaml
->       service-specific-components <- /schemas/sound/qcom,q6*.yaml
-> 
+New versions of VA Macro has soundwire integrated, so handle the soundwire npl
+clock correctly in the codec driver and add related bindings.
 
-(...)
+Srinivas Kandagatla (2):
+  ASoC: dt-bindings: lpass-va: add npl clock for new VA macro
+  ASoC: codecs: va-macro: add npl clk
 
-> +additionalProperties: true
-> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
-> index 0a7a34cb2497..9302ffe567d6 100644
-> --- a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
-> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
-> @@ -80,115 +80,13 @@ properties:
->    '#size-cells':
->      const: 0
->  
-> -#APR/GPR Services
->  patternProperties:
->    "^service@[1-9a-d]$":
->      type: object
-> +    $ref: /schemas/soc/qcom/qcom,apr-services.yaml
-> +    additionalProperties: true
->      description:
-> -      APR/GPR node's client devices use subnodes for desired static port services.
-> -
-> -    properties:
-> -      compatible:
-> -        enum:
-> -          - qcom,q6core
-> -          - qcom,q6asm
-> -          - qcom,q6afe
-> -          - qcom,q6adm
-> -          - qcom,q6apm
-> -          - qcom,q6prm
+ .../bindings/sound/qcom,lpass-va-macro.yaml   | 72 ++++++++++++++++---
+ sound/soc/codecs/lpass-va-macro.c             | 41 +++++++++++
+ 2 files changed, 105 insertions(+), 8 deletions(-)
 
-I think that this piece could stay here. Otherwise we allow any
-compatible which matches the qcom,apr-services.yaml binding, but that's
-easy to achieve.
-
-Best regards,
-Krzysztof
+-- 
+2.25.1
 
