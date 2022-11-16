@@ -4,87 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C8BDC4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 19 Nov 2022 08:21:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB0E1C433FE
+	for <alsa-devel@archiver.kernel.org>; Sat, 19 Nov 2022 08:41:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC7EC1633;
-	Sat, 19 Nov 2022 09:21:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC7EC1633
+	by alsa0.perex.cz (Postfix) with ESMTPS id 305F2163E;
+	Sat, 19 Nov 2022 09:40:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 305F2163E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668846110;
-	bh=NuunGRPqVARWm4sh5Xhp3zUOb8nwAMhXqgpdwj5oIQI=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1668847284;
+	bh=xwROaTzGKNxdo+RwPJ+M02tH8KMtSYg1hTOrH/6F3VI=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fExvafBgSNiz8GoRhFyPLuU0hibjuc6t2u12dkRDiJiE0ymuUF7LPD9VygQXjCzIq
-	 hHmuHHZ3ylP7iic5WZct6qOHsaGzr6iD3VLm/sBJ7FIgt80VLMq/yPKRLuCg050UKZ
-	 /P+/hZ8jXIOjmU6UfD8n3oNfxDvZjWvxpL0Wvdrc=
+	b=sT9Y+mzlKCBiCw3h2zbInZ0D5LvOFbAjvkx6gzhUcfo7RjTFV7ze3+4gvik2eO34r
+	 aXc300LvL+ja5+f+zEnm1tWzWGhJF5Zn3p8efYdKk9eK4T6ZDZI2aCH3aJdzI4OCU0
+	 llwGaQalekZDqdYIjcrxLC1yJrTKo/AVWMPm+6ck=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8212EF8016A;
-	Sat, 19 Nov 2022 09:21:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8272F800B8;
+	Sat, 19 Nov 2022 09:40:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A3AC3F80217; Sat, 19 Nov 2022 09:20:59 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id EC195F80169; Wed, 16 Nov 2022 13:39:23 +0100 (CET)
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com
+ [148.163.156.1])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A2240F8016A
- for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2022 09:20:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2240F8016A
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0939F800B8
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2022 13:39:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0939F800B8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="H/Ryjm1N"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="CTLCvID1"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DDF5B1F383;
- Sat, 19 Nov 2022 08:20:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1668846052; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=QEDCwVW6uuuHbiiKcc9DBnvWg+TJfsJ2v3EhFL0XN9o=;
- b=H/Ryjm1NMX2N+WZ3ckhenCooygFEg9Yfn77aE0Hsrl/e2jTVUqUKBgY/4R7swkNah6+M9R
- PmnDKkTTpFAoXi4Bt56ucl0dEidCF+itn9cvEQekhnSbpfBvSOBEEgtJwHUhxfxIGXiI0u
- C515FCgXPmknejVhuntrIlRbBzQ0H2o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1668846052;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=QEDCwVW6uuuHbiiKcc9DBnvWg+TJfsJ2v3EhFL0XN9o=;
- b=CTLCvID1yyQQODN5uIjEn4sdakmHfW057PiOsxEIkb8i+993/7daQouoSNWKhS/GUmqS0G
- saXmX594nhhnsWCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9856D1377F;
- Sat, 19 Nov 2022 08:20:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 6oogJOSReGNafQAAMHmgww
- (envelope-from <tiwai@suse.de>); Sat, 19 Nov 2022 08:20:52 +0000
-Date: Sat, 19 Nov 2022 09:20:53 +0100
-Message-ID: <87a64nxsm2.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] ALSA: seq: Fix function prototype mismatch in
- snd_seq_expand_var_event
-In-Reply-To: <20221118232346.never.380-kees@kernel.org>
-References: <20221118232346.never.380-kees@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>,
- Tom Rix <trix@redhat.com>, llvm@lists.linux.dev,
- Nick Desaulniers <ndesaulniers@google.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Nathan Chancellor <nathan@kernel.org>, linux-hardening@vger.kernel.org,
- linux-kernel@vger.kernel.org
+ dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com
+ header.b="L0A9Edju"
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+ by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 2AGBqDqg003782; Wed, 16 Nov 2022 12:39:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com;
+ h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=sVd/c0WnzKKlxFndTgFHpEQ6SdR1MS3OqNaMGVWAB3Q=;
+ b=L0A9Edju7qrc1wChvgY30UZwAZL9bQWvwXJDE0a5Ybh/iwfPRECWKFLEYyx3P3EdbR8x
+ T9rj0KAPMELqBihA2v8Z3Mu/SMF9Ct3rzDNS5tOWll3cOT9HHzVSdXDXn6ZyaeGWVmv9
+ NqyBP1GS6CESc5l/n5VcKDT76heBZ4akGofc0bcg3lSnLUBee0VOAFqqwyGUcFVfGKhC
+ YPQ727XpviCrsJTE96IsfQPhm32aFX2L8ewzcHjv59eLbfj+S0/7XHg4L5KLG5njFJ7v
+ lgG2Kd3qHFkvKhWj2LszjwNCDBfzDNwlqq20Q8iIX5+8vrkM/EPApc/GC1C5CZ9/kUXW vg== 
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com
+ [169.53.41.122])
+ by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3kvyc9h3p3-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 16 Nov 2022 12:39:14 +0000
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+ by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2AGCZPF2023726;
+ Wed, 16 Nov 2022 12:39:13 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com
+ [9.57.198.26]) by ppma04dal.us.ibm.com with ESMTP id 3kt34a13a9-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 16 Nov 2022 12:39:13 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com ([9.208.128.113])
+ by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+ 2AGCdBob21627396
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+ Wed, 16 Nov 2022 12:39:12 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 867EF58067;
+ Wed, 16 Nov 2022 12:39:11 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id 9863E58055;
+ Wed, 16 Nov 2022 12:39:08 +0000 (GMT)
+Received: from [9.211.85.81] (unknown [9.211.85.81])
+ by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+ Wed, 16 Nov 2022 12:39:08 +0000 (GMT)
+Message-ID: <62786a02-3647-485e-a5c1-92b3008e34b1@linux.ibm.com>
+Date: Wed, 16 Nov 2022 13:39:07 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.4.2
+Subject: Re: [PATCH 5/7] s390/ism: don't pass bogus GFP_ flags to
+ dma_alloc_coherent
+To: Christoph Hellwig <hch@lst.de>,
+ Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Alexandra Winter <wintera@linux.ibm.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Jaroslav Kysela
+ <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Russell King <linux@armlinux.org.uk>, Robin Murphy <robin.murphy@arm.com>
+References: <20221113163535.884299-1-hch@lst.de>
+ <20221113163535.884299-6-hch@lst.de>
+From: Wenjia Zhang <wenjia@linux.ibm.com>
+In-Reply-To: <20221113163535.884299-6-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: yfN9kWLbQneuTBIV0jE6gRqijVr8R_IG
+X-Proofpoint-ORIG-GUID: yfN9kWLbQneuTBIV0jE6gRqijVr8R_IG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-11-16_03,2022-11-16_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ spamscore=0
+ priorityscore=1501 mlxscore=0 impostorscore=0 malwarescore=0 bulkscore=0
+ clxscore=1011 suspectscore=0 adultscore=0 phishscore=0 lowpriorityscore=0
+ mlxlogscore=746 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2210170000 definitions=main-2211160087
+X-Mailman-Approved-At: Sat, 19 Nov 2022 09:40:31 +0100
+Cc: linux-s390@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-rdma@vger.kernel.org, netdev@vger.kernel.org, iommu@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,32 +126,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 19 Nov 2022 00:23:50 +0100,
-Kees Cook wrote:
-> 
-> With clang's kernel control flow integrity (kCFI, CONFIG_CFI_CLANG),
-> indirect call targets are validated against the expected function
-> pointer prototype to make sure the call target is valid to help mitigate
-> ROP attacks. If they are not identical, there is a failure at run time,
-> which manifests as either a kernel panic or thread getting killed.
-> 
-> seq_copy_in_user() and seq_copy_in_kernel() did not have prototypes
-> matching snd_seq_dump_func_t. Adjust this and remove the casts. There
-> are not resulting binary output differences.
-> 
-> This was found as a result of Clang's new -Wcast-function-type-strict
-> flag, which is more sensitive than the simpler -Wcast-function-type,
-> which only checks for type width mismatches.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/lkml/202211041527.HD8TLSE1-lkp@intel.com
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: alsa-devel@alsa-project.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-Thanks, applied.
 
 
-Takashi
+On 13.11.22 17:35, Christoph Hellwig wrote:
+> dma_alloc_coherent is an opaque allocator that only uses the GFP_ flags
+> for allocation context control.  Don't pass __GFP_COMP which makes no
+> sense for an allocation that can't in any way be converted to a page
+> pointer.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   drivers/s390/net/ism_drv.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+I'm fine with that.
+
+Acked-by: Wenjia Zhang <wenjia@linux.ibm.com>
