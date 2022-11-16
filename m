@@ -4,84 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9730DC4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Nov 2022 14:34:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C38FC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Nov 2022 14:38:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F7751690;
-	Wed, 16 Nov 2022 15:33:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F7751690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 553881634;
+	Wed, 16 Nov 2022 15:37:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 553881634
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668609240;
-	bh=UDbu42vYiNTJVAVkByGz6XC8tKAdvwQzOC4kPQEt/ic=;
+	s=default; t=1668609490;
+	bh=n/lyo7LQUpOieRf65X/Ms+D8GbJr3DSbfJJcVACowOI=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dqUrdBk5ZQX/Kst+pCddJO7HAppD5BYXWVobFEusVXw7/G1oCPMnjnb79h0luxtId
-	 IvQM13JpW3qSTzMxbcmPNtBaj/VgvjkbI90TA89RxEg5XsmENIoAgfrcytAXSn6ePK
-	 IBcc7ie0YyxkCjdLNqXr/gdH61VLXrVHkCNSBN9Y=
+	b=fMVpAcQFYTERomlKQsDZ/PS9ETBfvEs6Jr8+IztFjHcw64LDT6Cq8i32gMuknQRO5
+	 ecJx+wb7xdCrQMPv52R9Ws4ROo7OoFBFiVhffsox2Ne/hOlBHJ+T1deF6fHhg7m3fl
+	 QLcjng/s0LXRKtDRepgPKF5UK4dfdHvy8tsGmcxE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F0F26F80163;
-	Wed, 16 Nov 2022 15:33:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC7BEF80163;
+	Wed, 16 Nov 2022 15:37:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22302F800B8; Wed, 16 Nov 2022 15:33:09 +0100 (CET)
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com
- [209.85.160.50])
+ id D5C65F80169; Wed, 16 Nov 2022 15:37:18 +0100 (CET)
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com
+ [209.85.167.179])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 426FFF800B8
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2022 15:33:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 426FFF800B8
-Received: by mail-oa1-f50.google.com with SMTP id
- 586e51a60fabf-13bd19c3b68so20257900fac.7
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2022 06:33:02 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E6A00F800B8
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2022 15:37:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6A00F800B8
+Received: by mail-oi1-f179.google.com with SMTP id q83so18650202oib.10
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2022 06:37:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=Xqn+VpkyaVOXbC/hpj4uzzFiJO18ERrQThzp4BwoimE=;
- b=BRwSI51nmL289iwC7n+xNMGRgwjBd38KRWLbXSXL1x/B6Xv/NKkL7HE7dhUQI5uyK5
- r3Ybc3xQWiXmxlhRgFX2n7XMWLMPccUZIwBR3aAdRkzOSbAoM/pfP9CV3NLSJI+dZiPp
- sQbZ2zyd5GbrLYQngrruAm9639ijlV6kE87bbrdsMNMm2h4xbgn9EIWBoPlo6hNCuZqH
- gPQQ1KFolsWIv7IDJONUkomgnWSzWglFVbQhCUS9qI/RkWZlhVzMM5rUdpiZ40lY7S4m
- dHLPV1xTkbngpIPdF++n/j3p49/+lk3CqMfzq+DPkf2ZQ6i1Jy1e24JFoltTuPcNUSZX
- dbtQ==
-X-Gm-Message-State: ANoB5pmHh61A0vRUScQlvQWP7dGM+OGMzHr4n266BNSAOr8MbARjHp85
- FQpIKfw0htWN6XwN8wSptg==
-X-Google-Smtp-Source: AA0mqf5NVHnziasxHfj1GRbI3eGEGLdHD1pPC8kYFKj0a6d/3z5N2SnKoAZ8ZP7XBjj9cphDIrTRJA==
-X-Received: by 2002:a05:6870:b94:b0:131:842a:110c with SMTP id
- lg20-20020a0568700b9400b00131842a110cmr1864268oab.201.1668609180804; 
- Wed, 16 Nov 2022 06:33:00 -0800 (PST)
+ bh=IFqEVeiOGdmdH2PP7fid7uM73jsm1VRTwjrkKfa7rbQ=;
+ b=8LXS1vAj88dZ5pcR9gty3oItALqx1Wpr+QhXsNdkAofEjDhcq4inlGyB7sfl6XrelG
+ WDDf7K/zU15YE0RoAMVb4X8Oq9txdb7aMl/9HgA+pAxrcRIarVd0/WPkGAzVxqS+32eU
+ MfP1GHChGqr21fzY5avvr6SU6eTSpBoU7UYBE3r2W0uCdo21qIKRKK3OCwTSfu5AJ2w5
+ VQWAj8skpcWl9jiRAxWIsD0/lwgvOfwS4qoVxFPpOUT4CEZ1WCR8p5gOY7Rk6gSPBOEa
+ VCScDK3Ih/dbj95St6Fw7xc+3bpvIIsKXLJlpqa7ZwbsWOVoBP1LgAVjqo9nt/bapxTl
+ 7VRA==
+X-Gm-Message-State: ANoB5pl1e9lhrvwZb73iIsGycqfsjqI3I2FkmwihwVsmFhUZK8kXGZZJ
+ QPe0w849RvOt+qyEGJU2cFd+9Fz4Vw==
+X-Google-Smtp-Source: AA0mqf6xFdK5qLXwDeKCyPu+fMM2QIrZuIBwEkqqZio1DIOYzfGje42p2s8TKZrMX+gIgDSiB4jcCw==
+X-Received: by 2002:a05:6808:1486:b0:35a:3662:c693 with SMTP id
+ e6-20020a056808148600b0035a3662c693mr1630798oiw.192.1668609430601; 
+ Wed, 16 Nov 2022 06:37:10 -0800 (PST)
 Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
  [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
- a26-20020a056830101a00b00667ff6b7e9esm6781696otp.40.2022.11.16.06.32.59
+ w6-20020a056830110600b0066d12f2441esm6633468otq.27.2022.11.16.06.37.09
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 16 Nov 2022 06:33:00 -0800 (PST)
-Received: (nullmailer pid 3809684 invoked by uid 1000);
- Wed, 16 Nov 2022 14:33:02 -0000
-Date: Wed, 16 Nov 2022 08:33:02 -0600
+ Wed, 16 Nov 2022 06:37:09 -0800 (PST)
+Received: (nullmailer pid 3814691 invoked by uid 1000);
+ Wed, 16 Nov 2022 14:37:12 -0000
+Date: Wed, 16 Nov 2022 08:37:11 -0600
 From: Rob Herring <robh@kernel.org>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v2 02/11] ASoC: dt-bindings: qcom,apr: Split services to
- shared schema
-Message-ID: <166860918054.3809609.16135727023403702366.robh@kernel.org>
+Subject: Re: [PATCH v2 03/11] ASoC: dt-bindings: qcom, apr: Correct and extend
+ example
+Message-ID: <166860939523.3813949.14489034056819986470.robh@kernel.org>
 References: <20221115120235.167812-1-krzysztof.kozlowski@linaro.org>
- <20221115120235.167812-3-krzysztof.kozlowski@linaro.org>
+ <20221115120235.167812-4-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221115120235.167812-3-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20221115120235.167812-4-krzysztof.kozlowski@linaro.org>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Banajit Goswami <bgoswami@quicinc.com>, linux-arm-msm@vger.kernel.org,
- Bjorn Andersson <andersson@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Mark Brown <broonie@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-arm-msm@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Konrad Dybcio <konrad.dybcio@linaro.org>,
  Andy Gross <agross@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, quic_plai@quicinc.com,
- quic_srivasam@quicinc.com
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, quic_plai@quicinc.com,
+ Bjorn Andersson <andersson@kernel.org>, quic_srivasam@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,44 +97,27 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-On Tue, 15 Nov 2022 13:02:26 +0100, Krzysztof Kozlowski wrote:
-> The APR/GPR nodes are organized like:
-> 
->   apr-or-gpr-device-node <- qcom,apr.yaml
->     apr-gpr-service@[0-9] <- qcom,apr.yaml
->       service-specific-components <- /schemas/sound/qcom,q6*.yaml
-> 
-> The schema for services (apr-gpr-service@[0-9]) already grows
-> considerably and is still quite not specific.  It allows several
-> incorrect combinations, like adding a clock-controller to a APM device.
-> Restricting it would complicate the schema even more.  Bringing new
-> support for sound on Qualcomm SM8450 and SC8280XP SoC would grow it as
-> well.
-> 
-> Simplify the qcom,apr.yaml by splitting the services to a shared file
-> which will be:
-> 1. Referenced by qcom,apr.yaml with additionalProperties:true,
-> 2. Referenced by specific bindings for services with
->    additionalProperties:false (not yet in this commit).
-> 
-> While moving the code, add also required 'reg' and
-> 'qcom,protection-domain' to further constrain the bindings.
+On Tue, 15 Nov 2022 13:02:27 +0100, Krzysztof Kozlowski wrote:
+> Correct the APR/GPR example:
+> 1. Use consistent 4-space indentation,
+> 2. Add required properties to services nodes, so the binding check
+>    passes once schema for these services is improved,
+> 3. Add few other properties as APR/GPR is part of a GLINK edge:
+>    qcom,glink-channels and qcom,intents.
+> 4. Drop unnecessary services, to make the example compact.
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > 
 > ---
 > 
 > Changes since v1:
-> 1. Keep compatibles in qcom,apr.yaml
+> 1. New patch.
 > 
 > Cc: quic_srivasam@quicinc.com
 > Cc: quic_plai@quicinc.com
 > ---
->  .../bindings/soc/qcom/qcom,apr-services.yaml  | 54 ++++++++++
->  .../bindings/soc/qcom/qcom,apr.yaml           | 98 +------------------
->  MAINTAINERS                                   |  2 +-
->  3 files changed, 58 insertions(+), 96 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr-services.yaml
+>  .../bindings/soc/qcom/qcom,apr.yaml           | 61 ++++++++++++-------
+>  1 file changed, 39 insertions(+), 22 deletions(-)
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
