@@ -4,82 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B2F6C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Nov 2022 11:43:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E3F6C4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Nov 2022 13:15:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4ACF4167F;
-	Wed, 16 Nov 2022 12:42:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4ACF4167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E99E16A2;
+	Wed, 16 Nov 2022 14:14:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E99E16A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668599008;
-	bh=PkgxKwnnvkJSmtvhNIAN59XAoPiw4BWsgzA6oG9kpPc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1668604499;
+	bh=TMop0E7cDzLpxQZWWEdBbOBwZYi0t6s7bS46e8wbaOc=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VscBw4pDpv7HAX2OoX6bRrxsW8xxns8VKpPT+LlEX0EHo4BfwP9nDoMxo1QGTHeoe
-	 5uiNjLafltGRI9o0lr9eYhPXTDcSnLoJs+lnmQrgm82hOY9WyGhcEP+aoJh9KSESmK
-	 +Oeices9X7uSIIZRQbB0+Y5Zj5QS3yq1mypwcDAs=
+	b=D4WSM94eZ3estV5JLHsteUoanrUmnMyT7jlx1iWf12trQORTvcNHYmf1NDJ4CQd+K
+	 8xIlC9Sh57bRo9AwtZLaK+SPwoAyFNs9pTZxyGf3mgbhAjXOBujEGp4Sy04X7XwDLb
+	 DGde1wcmyxwIcjAs3JG1VJDYXn+j0w8CzHBwV3oU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F01D0F80163;
-	Wed, 16 Nov 2022 12:42:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2508AF80163;
+	Wed, 16 Nov 2022 14:14:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D301F80169; Wed, 16 Nov 2022 12:42:36 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E15F2F80238; Wed, 16 Nov 2022 14:14:07 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5CC7EF800B8
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2022 12:42:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CC7EF800B8
+ by alsa1.perex.cz (Postfix) with ESMTPS id EDA42F800B5
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2022 14:14:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDA42F800B5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="YFS8GeqU"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="W/vJJMHv"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="TNTdoac/"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B35A71F920;
- Wed, 16 Nov 2022 11:42:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1668598949; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=e5HffTtHhrbwkdEQj4qg4QLxj2EGNHbnhiHDdz7//VQ=;
- b=YFS8GeqUNWJiaHPp60D/DcGSrfdM/auRBLuwoQ5QNGeBnI+/jxD/Yod9hX48Wt8VvhVuvE
- eyNRf1FraqAwEhJ+9V8vlAjOWAO/PrtzrUmDzYMOoCSqJ7mhpQCyCY9MHlgY5EJ1p2eZca
- wI7SLCXPz5oOvIEMUv16F9cfd8sZSl4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1668598949;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=e5HffTtHhrbwkdEQj4qg4QLxj2EGNHbnhiHDdz7//VQ=;
- b=W/vJJMHviYijG+0z0PhexKhL07ktI5GSon78daD3D7T2KyJviOwa10JulqXS5Bb/QUDXeg
- 6AeDAHpcvD5IW+CA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A445B134CE;
- Wed, 16 Nov 2022 11:42:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 2VO0J6XMdGNicwAAMHmgww
- (envelope-from <tiwai@suse.de>); Wed, 16 Nov 2022 11:42:29 +0000
-Date: Wed, 16 Nov 2022 12:42:29 +0100
-Message-ID: <87h6yznn16.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ALSA: pcm: avoid nused-but-set-variable warning
-In-Reply-To: <874juzg3kd.wl-kuninori.morimoto.gx@renesas.com>
-References: <874juzg3kd.wl-kuninori.morimoto.gx@renesas.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 39AB461DCD;
+ Wed, 16 Nov 2022 13:14:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5955C433D6;
+ Wed, 16 Nov 2022 13:13:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1668604440;
+ bh=TMop0E7cDzLpxQZWWEdBbOBwZYi0t6s7bS46e8wbaOc=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=TNTdoac/GLjnZVSunzWXi21xEL+p3a/XH6GucDkCgYr3tS3iVhInnZn1JCV3r79Ev
+ 8OwhhWGQlyaie0g15UruZiP6VoBBwZd5o31qZeo+E0cuPSSMt+W+dbVjIYi3Ic6cvs
+ 7lwGU999MQyXkZliLTJ48cBfapYQvEbr5mXLm1AeYDDA0Ar3wKG4DfKuG1Lye71bxg
+ V7Xy/NUNjFQmpgS68PpYVHnnnvIf4nw7lP+PZHPQ4xuKf1FEMSmoIwRd6ydXIEefss
+ 640tR9JE7XP/AiuZrvbco3aiFrr6PHB2dpSU1cVbMEBOc1QB8OjkzOY2lQsHIGcgYg
+ CEIjt3hHmxIjQ==
+From: Mark Brown <broonie@kernel.org>
+To: Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20221108042716.2930255-1-ajye_huang@compal.corp-partner.google.com>
+References: <20221108042716.2930255-1-ajye_huang@compal.corp-partner.google.com>
+Subject: Re: [PATCH v1 0/2] Adds the combination of headset codec ALC5682I-VD
+ + amp rt1019p
+Message-Id: <166860443597.370630.8092094089019337733.b4-ty@kernel.org>
+Date: Wed, 16 Nov 2022 13:13:55 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.11.0-dev-8af31
+Cc: Libin Yang <libin.yang@intel.com>, alsa-devel@alsa-project.org,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ ye xingchen <ye.xingchen@zte.com.cn>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mac Chiang <mac.chiang@intel.com>, David Lin <CTLIN0@nuvoton.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Muralidhar Reddy <muralidhar.reddy@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Brent Lu <brent.lu@intel.com>,
+ Vamshi Krishna <vamshi.krishna.gopal@intel.com>, Yong Zhi <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,43 +93,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 16 Nov 2022 01:12:39 +0100,
-Kuninori Morimoto wrote:
+On Tue, 8 Nov 2022 12:27:14 +0800, Ajye Huang wrote:
+> v1:
+> - machine driver:
+>   - Adds the combination of headset codec ALC5682I-VD + amp rt1019p.
+>   - Remove the duplicate code in machine driver.
 > 
+> Ajye Huang (2):
+>   ASoC: Intel: sof_rt5682: add support for ALC5682I-VD with amp rt1019p
+>   ASoC: Intel: sof rt5682: remove the duplicate codes
 > 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> It will indicate below warning if W=1 was added and CONFIG_SND_DEBUG
-> was not set. This patch adds __maybe_unused and avoid it.
-> 
-> 	${LINUX}/sound/core/pcm_native.c: In function 'constrain_mask_params':
-> 	${LINUX}/sound/core/pcm_native.c:291:25: error: variable 'old_mask' set but not used [-Werror=unused-but-set-variable]
-> 	  291 |         struct snd_mask old_mask;
-> 	      |                         ^~~~~~~~
-> 	${LINUX}/sound/core/pcm_native.c: In function 'constrain_interval_params':
-> 	${LINUX}/sound/core/pcm_native.c:327:29: error: variable 'old_interval' set but not used [-Werror=unused-but-set-variable]
-> 	  327 |         struct snd_interval old_interval;
-> 	      |                             ^~~~~~~~~~~~
-> 	${LINUX}/sound/core/pcm_native.c: In function 'constrain_params_by_rules':
-> 	${LINUX}/sound/core/pcm_native.c:368:29: error: variable 'old_interval' set but not used [-Werror=unused-but-set-variable]
-> 	  368 |         struct snd_interval old_interval;
-> 	      |                             ^~~~~~~~~~~~
-> 	${LINUX}/sound/core/pcm_native.c:367:25: error: variable 'old_mask' set but not used [-Werror=unused-but-set-variable]
-> 	  367 |         struct snd_mask old_mask;
-> 	      |                         ^~~~~~~~
-> 	${LINUX}/sound/core/pcm_native.c: In function 'snd_pcm_hw_params_choose':
-> 	${LINUX}/sound/core/pcm_native.c:652:29: error: variable 'old_interval' set but not used [-Werror=unused-but-set-variable]
-> 	  652 |         struct snd_interval old_interval;
-> 	      |                             ^~~~~~~~~~~~
-> 	${LINUX}/sound/core/pcm_native.c:651:25: error: variable 'old_mask' set but not used [-Werror=unused-but-set-variable]
-> 	  651 |         struct snd_mask old_mask;
-> 	      |                         ^~~~~~~~
-> 	cc1: all warnings being treated as errors
-> 	make[3]: *** [${LINUX}/scripts/Makefile.build:250: sound/core/pcm_native.o] error 1
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> [...]
 
-Thanks, applied now.
+Applied to
 
+   broonie/sound.git for-next
 
-Takashi
+Thanks!
+
+[1/2] ASoC: Intel: sof_rt5682: add support for ALC5682I-VD with amp rt1019p
+      commit: 1a9a5ebe1175537dc817531fe74c5949c3a823c1
+[2/2] ASoC: Intel: sof rt5682: remove the duplicate codes
+      commit: c7a79f546100300d18585506f8fd0460a874df4a
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
