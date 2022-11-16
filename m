@@ -4,74 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1982C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Nov 2022 11:40:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B2F6C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Nov 2022 11:43:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7285C15CC;
-	Wed, 16 Nov 2022 12:39:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7285C15CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4ACF4167F;
+	Wed, 16 Nov 2022 12:42:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4ACF4167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668598830;
-	bh=Yr/0qBmCgbdb7d38WF85pkRxdBnyu9qE35POEXUdPMk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1668599008;
+	bh=PkgxKwnnvkJSmtvhNIAN59XAoPiw4BWsgzA6oG9kpPc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VBSh1/uG2/rRij700bR06N4EZBCcaF0CSAF6vUrJotifEKCVOe/EkCFv2YmK34JmB
-	 4du0RF4OADs6LKOTMI+YLwPERuRg8vdVAZ1Hx6FQWXh8daVGNxlrkjuHJ3VM+dLPRc
-	 ErB0OyeocR3993P60ctytQ9KwSIXgpY4Nnx9A7Ww=
+	b=VscBw4pDpv7HAX2OoX6bRrxsW8xxns8VKpPT+LlEX0EHo4BfwP9nDoMxo1QGTHeoe
+	 5uiNjLafltGRI9o0lr9eYhPXTDcSnLoJs+lnmQrgm82hOY9WyGhcEP+aoJh9KSESmK
+	 +Oeices9X7uSIIZRQbB0+Y5Zj5QS3yq1mypwcDAs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC348F80549;
-	Wed, 16 Nov 2022 12:38:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F01D0F80163;
+	Wed, 16 Nov 2022 12:42:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 314B7F804BC; Wed, 16 Nov 2022 12:38:54 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 7D301F80169; Wed, 16 Nov 2022 12:42:36 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4023CF80163
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2022 12:38:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4023CF80163
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5CC7EF800B8
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2022 12:42:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CC7EF800B8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="J7ZBuTgt"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1668598728; x=1700134728;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=Yr/0qBmCgbdb7d38WF85pkRxdBnyu9qE35POEXUdPMk=;
- b=J7ZBuTgtueH+NhOtINvAMo9pQumpTQHZ/tyCxnc495roh/kZu7QjzFwn
- MPUXrlkxwAy+DM7wEscp0SdMJIzsTSvCrzI/4sEsjS69avcws3ph9DH9K
- YXJ0HQq2A/ryfwqMQ9qMYMDGKKckBYjWWGKHe8xYSHBE6+TbhIssb8ZDQ
- MnPELD5vx4DIknpQ8+mzHj03I24TRz4TuY71GPiTzBu3QAHOmpJgAcUdY
- QXossySgqgULkJf7N5vMVoO+VtR2Hd+fYWtUvrJnEorLeh5gVoMzsm3rk
- YnHNTE4Ba6jQVLmALGNfhkdsj6PXr6BSsCr52xGxzcuM1g3E/3EQIUr0G Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10532"; a="314336795"
-X-IronPort-AV: E=Sophos;i="5.96,167,1665471600"; d="scan'208";a="314336795"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Nov 2022 03:38:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10532"; a="764304477"
-X-IronPort-AV: E=Sophos;i="5.96,167,1665471600"; d="scan'208";a="764304477"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga004.jf.intel.com with ESMTP; 16 Nov 2022 03:38:42 -0800
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH v3 2/2] ASoC: Intel: avs: Disconnect substream if suspend or
- resume fails
-Date: Wed, 16 Nov 2022 12:55:50 +0100
-Message-Id: <20221116115550.1100398-3-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221116115550.1100398-1-cezary.rojewski@intel.com>
-References: <20221116115550.1100398-1-cezary.rojewski@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- amadeuszx.slawinski@linux.intel.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="YFS8GeqU"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="W/vJJMHv"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B35A71F920;
+ Wed, 16 Nov 2022 11:42:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1668598949; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=e5HffTtHhrbwkdEQj4qg4QLxj2EGNHbnhiHDdz7//VQ=;
+ b=YFS8GeqUNWJiaHPp60D/DcGSrfdM/auRBLuwoQ5QNGeBnI+/jxD/Yod9hX48Wt8VvhVuvE
+ eyNRf1FraqAwEhJ+9V8vlAjOWAO/PrtzrUmDzYMOoCSqJ7mhpQCyCY9MHlgY5EJ1p2eZca
+ wI7SLCXPz5oOvIEMUv16F9cfd8sZSl4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1668598949;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=e5HffTtHhrbwkdEQj4qg4QLxj2EGNHbnhiHDdz7//VQ=;
+ b=W/vJJMHviYijG+0z0PhexKhL07ktI5GSon78daD3D7T2KyJviOwa10JulqXS5Bb/QUDXeg
+ 6AeDAHpcvD5IW+CA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A445B134CE;
+ Wed, 16 Nov 2022 11:42:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 2VO0J6XMdGNicwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Wed, 16 Nov 2022 11:42:29 +0000
+Date: Wed, 16 Nov 2022 12:42:29 +0100
+Message-ID: <87h6yznn16.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ALSA: pcm: avoid nused-but-set-variable warning
+In-Reply-To: <874juzg3kd.wl-kuninori.morimoto.gx@renesas.com>
+References: <874juzg3kd.wl-kuninori.morimoto.gx@renesas.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,54 +95,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-To improve performance and overall system stability, suspend/resume
-operations for ASoC cards always return success status and defer the
-actual work.
+On Wed, 16 Nov 2022 01:12:39 +0100,
+Kuninori Morimoto wrote:
+> 
+> 
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> It will indicate below warning if W=1 was added and CONFIG_SND_DEBUG
+> was not set. This patch adds __maybe_unused and avoid it.
+> 
+> 	${LINUX}/sound/core/pcm_native.c: In function 'constrain_mask_params':
+> 	${LINUX}/sound/core/pcm_native.c:291:25: error: variable 'old_mask' set but not used [-Werror=unused-but-set-variable]
+> 	  291 |         struct snd_mask old_mask;
+> 	      |                         ^~~~~~~~
+> 	${LINUX}/sound/core/pcm_native.c: In function 'constrain_interval_params':
+> 	${LINUX}/sound/core/pcm_native.c:327:29: error: variable 'old_interval' set but not used [-Werror=unused-but-set-variable]
+> 	  327 |         struct snd_interval old_interval;
+> 	      |                             ^~~~~~~~~~~~
+> 	${LINUX}/sound/core/pcm_native.c: In function 'constrain_params_by_rules':
+> 	${LINUX}/sound/core/pcm_native.c:368:29: error: variable 'old_interval' set but not used [-Werror=unused-but-set-variable]
+> 	  368 |         struct snd_interval old_interval;
+> 	      |                             ^~~~~~~~~~~~
+> 	${LINUX}/sound/core/pcm_native.c:367:25: error: variable 'old_mask' set but not used [-Werror=unused-but-set-variable]
+> 	  367 |         struct snd_mask old_mask;
+> 	      |                         ^~~~~~~~
+> 	${LINUX}/sound/core/pcm_native.c: In function 'snd_pcm_hw_params_choose':
+> 	${LINUX}/sound/core/pcm_native.c:652:29: error: variable 'old_interval' set but not used [-Werror=unused-but-set-variable]
+> 	  652 |         struct snd_interval old_interval;
+> 	      |                             ^~~~~~~~~~~~
+> 	${LINUX}/sound/core/pcm_native.c:651:25: error: variable 'old_mask' set but not used [-Werror=unused-but-set-variable]
+> 	  651 |         struct snd_mask old_mask;
+> 	      |                         ^~~~~~~~
+> 	cc1: all warnings being treated as errors
+> 	make[3]: *** [${LINUX}/scripts/Makefile.build:250: sound/core/pcm_native.o] error 1
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Because of that, if a substream fails to resume, userspace may still
-attempt to invoke commands on it as from their perspective the operation
-completed successfully. Set substream's state to DISCONNECTED to ensure
-no further commands are attempted.
+Thanks, applied now.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
 
-Changes in v2:
-- __snd_pcm_set_state() replaced direct assignments of PCM state
-
- sound/soc/intel/avs/pcm.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
-index ca624fbb5c0d..70442b5212c2 100644
---- a/sound/soc/intel/avs/pcm.c
-+++ b/sound/soc/intel/avs/pcm.c
-@@ -934,8 +934,11 @@ static int avs_component_pm_op(struct snd_soc_component *component, bool be,
- 			rtd = snd_pcm_substream_chip(data->substream);
- 			if (rtd->dai_link->no_pcm == be && !rtd->dai_link->ignore_suspend) {
- 				ret = op(dai, data);
--				if (ret < 0)
-+				if (ret < 0) {
-+					__snd_pcm_set_state(data->substream->runtime,
-+							    SNDRV_PCM_STATE_DISCONNECTED);
- 					return ret;
-+				}
- 			}
- 		}
- 
-@@ -944,8 +947,11 @@ static int avs_component_pm_op(struct snd_soc_component *component, bool be,
- 			rtd = snd_pcm_substream_chip(data->substream);
- 			if (rtd->dai_link->no_pcm == be && !rtd->dai_link->ignore_suspend) {
- 				ret = op(dai, data);
--				if (ret < 0)
-+				if (ret < 0) {
-+					__snd_pcm_set_state(data->substream->runtime,
-+							    SNDRV_PCM_STATE_DISCONNECTED);
- 					return ret;
-+				}
- 			}
- 		}
- 	}
--- 
-2.25.1
-
+Takashi
