@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F180C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Nov 2022 05:40:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2031BC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Nov 2022 05:41:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E8A2168E;
-	Wed, 16 Nov 2022 06:40:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E8A2168E
+	by alsa0.perex.cz (Postfix) with ESMTPS id DAEDF1685;
+	Wed, 16 Nov 2022 06:40:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DAEDF1685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668577253;
-	bh=+Q9Xzr8d+Q5o7WfWBABntNrAm1nr1P+gl5vcsD8Cobc=;
+	s=default; t=1668577268;
+	bh=zsVkFNjGPofi3QgzxxaffFfxPw2sD6i15hzRnkkW3xQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E4Pix4AZTU2XlINdA7yxk/hLsDph4vuXdlALSm424rkfKxebeYhQ1WbzSkwpTFzm+
-	 ZTwyZzf6dSbk0cbGgCVghRTYGLRX9UMlrPrYE+BPUr3GiD13gFqAbS/+pbj7Wuukyc
-	 4ryNnBjbz7lwBIA0jFl4Ukslp0BLNx57tdaD8oT4=
+	b=FJ8J6XeytodfM5LV0JJiJ51HNvZiP+ESphFF/GidITZv0au0/5No3IwvFdqNrAy59
+	 hHqPt1urp+gfZueCfaUrfrl9RW1vDcfoa2mYoqUwg+GT9YZBXM6dXnMxKp9JZpw0V1
+	 zCVGFpzg1jMswpDrFUjDjFYrKJOGaSJ0ZfjtKARY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F02FF8057D;
-	Wed, 16 Nov 2022 06:38:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CFC9DF80587;
+	Wed, 16 Nov 2022 06:38:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8AAFCF800B5; Wed, 16 Nov 2022 06:38:41 +0100 (CET)
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com
- [IPv6:2607:f8b0:4864:20::1034])
+ id CDD33F8057E; Wed, 16 Nov 2022 06:38:44 +0100 (CET)
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com
+ [IPv6:2607:f8b0:4864:20::1029])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7507AF80163
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2022 06:38:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7507AF80163
+ by alsa1.perex.cz (Postfix) with ESMTPS id C3F82F80163
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2022 06:38:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3F82F80163
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="WKM+2PzQ"
-Received: by mail-pj1-x1034.google.com with SMTP id
- d13-20020a17090a3b0d00b00213519dfe4aso1354386pjc.2
- for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 21:38:35 -0800 (PST)
+ header.b="isKr2CHW"
+Received: by mail-pj1-x1029.google.com with SMTP id
+ d59-20020a17090a6f4100b00213202d77e1so1293728pjk.2
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 21:38:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=ULkwCXln6lxM8XLag0GHNaSgcab1VgWTlrPLPEn1RmQ=;
- b=WKM+2PzQbhMeOBeGQywY/g11Pnn37fKCeJCt+lwYnk221uHqyJTf2HoAQyuSvu64nO
- brBFlwq5l+XR8hlqRvjKYtb9hsQtQmyeupF7wTqWtL6ovpyDzxx/CR0TmRmccJ2ENp74
- CaRfmDhGkLcsG47C1XDf0+LG1i7+nUTJ7M0IGG6NHTDmvdZkDR6nOuvsxyWw3wQRixzZ
- RTozclXB95iYqCQaPK/PRoE/OFUcDNDDjP2hsVbYgO6qd2lNNa9sn8F+2m/qnwnUqk5v
- cVcH1Cd7m/3QTkeUpRFRxDU9njOzlNy9rJr5La6m0Ai2k5T9OlZ29M5h1k8XhfV0GMUi
- Em+w==
+ bh=hTyuvgruJxkGjK2lPmWOPAqXK8rk+Mma5cjclFSB/P4=;
+ b=isKr2CHWgMPKfi62JRy35GEXHE5fa0vHOmDyfUegLY1FC8fuXQTi14lkZ/Gr1JWyqp
+ apNloEjjEmXw7M4yebsCw0DkxcZtGuUQvYT2z6GJNsEQbKbPJSGLTrWt0gZgauQ5RSyS
+ pZS/0BrY0+rd8pRdk2lxCxsOUIUm53iOeRTpgulfwpPvgT9xrh6s6AJpOyc2K8e47dod
+ jkAzUlTVwKflYnao+eZWJ0bxf7nxTWI9ACCIsO7G4YT/6sC7K9P4byJCz+nePkePvYB+
+ Izq9DLBzzVD55oEnvQjvHDMuvtMVfDHAjHk3yJmrvjBuXtw/X4dqqN2ORECgAbfL5xYE
+ Nj/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=ULkwCXln6lxM8XLag0GHNaSgcab1VgWTlrPLPEn1RmQ=;
- b=Z/aoqh0SGlgi8Ew+103+iTQSTZfKeHagK+x4D/XXnNgUguv02Ulhg6hGOVjSNAYT1v
- 6vQR2GBXIxzpD7RXip6HCc5l0fzD0Khllnf6c3YY/Gtp0CWylv20G5sTowGaHjcOPDcR
- C36B8ZVHv7mSVQ8QkT6BEVtwkp5prRlhdvd7BVocbS+egX2NVXetm8avV8wmQ7lVs1Kg
- qjPQunzkDV3RHFnynwypejAa6GEVB9TmSWkWlYwo4ulN71wp4X6sIX/PUhJ0F15tGRez
- hyQdFWrnY2iyr0HU1mlh+6xyAuVEnQmj8tyPVpmD4c0TmjjlK9FmQN4aThJy3G9nl+Em
- bOyg==
-X-Gm-Message-State: ANoB5plqxqc/f3734ks6YXuqIZOlM8HMSrIeHJAAW2F+xlZETIfo5TDw
- y2j4yziWmbsYpRP1RnYvJU5f7dRjQWM=
-X-Google-Smtp-Source: AA0mqf5uVWst6sre4JVfG7hacQt648w/wagbo1T0Ve8WMKn0tELymV4vaRkGXceh0dDwV+YXo9CPkg==
-X-Received: by 2002:a17:903:3311:b0:188:4ea8:a687 with SMTP id
- jk17-20020a170903331100b001884ea8a687mr7401524plb.120.1668577113192; 
- Tue, 15 Nov 2022 21:38:33 -0800 (PST)
+ bh=hTyuvgruJxkGjK2lPmWOPAqXK8rk+Mma5cjclFSB/P4=;
+ b=M6nvg16Vr4YNcTrMXV4T1mfBjwsNQr4xXyPW/TbX3LfnCchroDdiO9gNWyTE1qHyMW
+ irj9lXN2idVlbFrZM3ukpMq3C41Ur2dZJUpPjc5iBhjnVOUwEd4GGr3LzL0nVIwFL6Hn
+ TRdN3yXTiUlX0tcB8Wytji+D0sxqW9DRZrf3lTK5+y5LIN9kL1Bv90Z0gkXPh4Vd2msP
+ dIE2kquvCHemBbD/kbR8+GDXWpBXHz0TvtMTQveRZZvgxEmyMy4duNb+/ukTwyK2kayY
+ 4Q0cket8Dyo2GtJj0VX4x/UnlGcnirlXKpD2nUuzzvck/dlShJY22cB6Y9NudWLk6w3Z
+ f5nw==
+X-Gm-Message-State: ANoB5pl934ndjH5cMbu3mcYqkvl1MDSZcoldLwdlPEnTjlbAqQDL4+5F
+ ursohyAhdWioYmRaVCtvEKU=
+X-Google-Smtp-Source: AA0mqf7T9R9bl1VF3b67lvjkzgbb0ZPUNJ3DTdNrfya/g9dsluA4pZrfvDVx2bshz7znLR5EfemOyg==
+X-Received: by 2002:a17:902:b781:b0:186:8a1e:5055 with SMTP id
+ e1-20020a170902b78100b001868a1e5055mr7368084pls.116.1668577117200; 
+ Tue, 15 Nov 2022 21:38:37 -0800 (PST)
 Received: from dtor-ws.mtv.corp.google.com
  ([2620:15c:9d:2:2d36:e9a0:170b:669f])
  by smtp.gmail.com with ESMTPSA id
- ik13-20020a170902ab0d00b0017834a6966csm10881038plb.176.2022.11.15.21.38.31
+ ik13-20020a170902ab0d00b0017834a6966csm10881038plb.176.2022.11.15.21.38.35
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 15 Nov 2022 21:38:32 -0800 (PST)
+ Tue, 15 Nov 2022 21:38:36 -0800 (PST)
 From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 To: Mark Brown <broonie@kernel.org>,
 	Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 07/11] ASoC: tlv320aic32x4: switch to using gpiod API
-Date: Tue, 15 Nov 2022 21:38:13 -0800
-Message-Id: <20221116053817.2929810-7-dmitry.torokhov@gmail.com>
+Subject: [PATCH 09/11] ASoC: wcd9335: switch to using gpiod API
+Date: Tue, 15 Nov 2022 21:38:15 -0800
+Message-Id: <20221116053817.2929810-9-dmitry.torokhov@gmail.com>
 X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
 In-Reply-To: <20221116053817.2929810-1-dmitry.torokhov@gmail.com>
 References: <20221116053817.2929810-1-dmitry.torokhov@gmail.com>
@@ -104,80 +104,93 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 Switch the driver from legacy gpio API that is deprecated to the newer
 gpiod API that respects line polarities described in ACPI/DT.
 
+Also the old code did not actually request the reset line, but was
+toggling it directly; this has been fixed.
+
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+ sound/soc/codecs/wcd9335.c | 33 ++++++++++++++++++---------------
+ 1 file changed, 18 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index 2dd0fe255ee6..36a3b3eb4d56 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -13,9 +13,9 @@
- #include <linux/moduleparam.h>
- #include <linux/init.h>
+diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
+index d2548fdf9ae5..27cbec3e6763 100644
+--- a/sound/soc/codecs/wcd9335.c
++++ b/sound/soc/codecs/wcd9335.c
+@@ -11,12 +11,13 @@
+ #include <linux/regulator/consumer.h>
+ #include <linux/clk.h>
  #include <linux/delay.h>
 +#include <linux/err.h>
- #include <linux/pm.h>
--#include <linux/gpio.h>
--#include <linux/of_gpio.h>
 +#include <linux/gpio/consumer.h>
- #include <linux/cdev.h>
- #include <linux/slab.h>
- #include <linux/clk.h>
-@@ -41,7 +41,7 @@ struct aic32x4_priv {
- 	u32 power_cfg;
- 	u32 micpga_routing;
- 	bool swapdacs;
--	int rstn_gpio;
+ #include <linux/kernel.h>
+ #include <linux/slimbus.h>
+ #include <sound/soc.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc-dapm.h>
+-#include <linux/of_gpio.h>
+ #include <linux/of.h>
+ #include <linux/of_irq.h>
+ #include <sound/tlv.h>
+@@ -329,7 +330,7 @@ struct wcd9335_codec {
+ 	int comp_enabled[COMPANDER_MAX];
+ 
+ 	int intr1;
+-	int reset_gpio;
 +	struct gpio_desc *reset_gpio;
- 	const char *mclk_name;
+ 	struct regulator_bulk_data supplies[WCD9335_MAX_SUPPLY];
  
- 	struct regulator *supply_ldo;
-@@ -1230,7 +1230,6 @@ static int aic32x4_parse_dt(struct aic32x4_priv *aic32x4,
+ 	unsigned int rx_port_value[WCD9335_RX_MAX];
+@@ -5032,25 +5033,27 @@ static const struct regmap_irq_chip wcd9335_regmap_irq1_chip = {
+ static int wcd9335_parse_dt(struct wcd9335_codec *wcd)
+ {
+ 	struct device *dev = wcd->dev;
+-	struct device_node *np = dev->of_node;
+ 	int ret;
  
- 	aic32x4->swapdacs = false;
- 	aic32x4->micpga_routing = 0;
--	aic32x4->rstn_gpio = of_get_named_gpio(np, "reset-gpios", 0);
- 
- 	if (of_property_read_u32_array(np, "aic32x4-gpio-func",
- 				aic32x4_setup->gpio_func, 5) >= 0)
-@@ -1365,16 +1364,16 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
- 		aic32x4->power_cfg = 0;
- 		aic32x4->swapdacs = false;
- 		aic32x4->micpga_routing = 0;
--		aic32x4->rstn_gpio = -1;
- 		aic32x4->mclk_name = "mclk";
- 	}
- 
--	if (gpio_is_valid(aic32x4->rstn_gpio)) {
--		ret = devm_gpio_request_one(dev, aic32x4->rstn_gpio,
--				GPIOF_OUT_INIT_LOW, "tlv320aic32x4 rstn");
--		if (ret != 0)
--			return ret;
--	}
-+	aic32x4->reset_gpio = devm_gpiod_get_optional(dev, "reset",
-+						      GPIOD_OUT_HIGH);
-+	ret = PTR_ERR_OR_ZERO(aic32x4->reset_gpio);
-+	if (ret)
+-	wcd->reset_gpio = of_get_named_gpio(np,	"reset-gpios", 0);
+-	if (wcd->reset_gpio < 0) {
+-		dev_err(dev, "Reset GPIO missing from DT\n");
+-		return wcd->reset_gpio;
++	wcd->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
++	ret = PTR_ERR_OR_ZERO(wcd->reset_gpio);
++	if (ret) {
++		dev_err(dev, "failed to request reset GPIO: %d\n", ret);
 +		return ret;
-+
-+	gpiod_set_consumer_name(aic32x4->reset_gpio, "tlv320aic32x4 rstn");
- 
- 	ret = aic32x4_setup_regulators(dev, aic32x4);
- 	if (ret) {
-@@ -1382,9 +1381,9 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
- 		return ret;
  	}
  
--	if (gpio_is_valid(aic32x4->rstn_gpio)) {
-+	if (aic32x4->reset_gpio) {
- 		ndelay(10);
--		gpio_set_value_cansleep(aic32x4->rstn_gpio, 1);
-+		gpiod_set_value_cansleep(aic32x4->reset_gpio, 0);
- 		mdelay(1);
+ 	wcd->mclk = devm_clk_get(dev, "mclk");
+-	if (IS_ERR(wcd->mclk)) {
+-		dev_err(dev, "mclk not found\n");
+-		return PTR_ERR(wcd->mclk);
++	ret = PTR_ERR_OR_ZERO(wcd->mclk);
++	if (ret) {
++		dev_err(dev, "mclk not found: %d\n", ret);
++		return ret;
  	}
  
+ 	wcd->native_clk = devm_clk_get(dev, "slimbus");
+-	if (IS_ERR(wcd->native_clk)) {
+-		dev_err(dev, "slimbus clock not found\n");
+-		return PTR_ERR(wcd->native_clk);
++	ret = PTR_ERR_OR_ZERO(wcd->native_clk);
++	if (ret) {
++		dev_err(dev, "slimbus clock not found: %d\n", ret);
++		return ret;
+ 	}
+ 
+ 	wcd->supplies[0].supply = "vdd-buck";
+@@ -5088,9 +5091,9 @@ static int wcd9335_power_on_reset(struct wcd9335_codec *wcd)
+ 	 */
+ 	usleep_range(600, 650);
+ 
+-	gpio_direction_output(wcd->reset_gpio, 0);
++	gpiod_set_value_cansleep(wcd->reset_gpio, 1);
+ 	msleep(20);
+-	gpio_set_value(wcd->reset_gpio, 1);
++	gpiod_set_value_cansleep(wcd->reset_gpio, 0);
+ 	msleep(20);
+ 
+ 	return 0;
 -- 
 2.38.1.431.g37b22c650d-goog
 
