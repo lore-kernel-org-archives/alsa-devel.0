@@ -4,91 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6ACC6C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Nov 2022 05:41:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC9CBC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Nov 2022 05:41:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93DB116A1;
-	Wed, 16 Nov 2022 06:40:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93DB116A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2113D16CC;
+	Wed, 16 Nov 2022 06:41:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2113D16CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668577305;
-	bh=Xcr7yWXexdOaX1ye8F4zIjxTF6OwDP6ADzVojvAMJvo=;
+	s=default; t=1668577318;
+	bh=kOVeXAGDxXuk8SXxyFL9iBG/LS1QzockFAjJIiioGKk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dWO3xFgiKc4uCjNRhBaIOb9mOmUHnuntGyEfu4LslDd2MCzyCqurYt/KgWAYfak6n
-	 rnDJVmM1QH+Mj2hRtTw6H6riXHoJcxZGKPJg9y8eQ+39Nuzh4ZGl08HEicdqaOSk+h
-	 LXGIncAhfr6ewVeqEVRttcQ+xvYbbQwmvMWjoeMY=
+	b=S4/LMGAY1QV4MSgfrc9izto7wxRbb0e9c7quXIdRRcqzpVDPrE8dT6OhuPJmypl+g
+	 sq4UxHFDaHAjQikK/ZxcEcpw0cq3GSAgNwc+Xg79V/JmbMMAlW94T9i0UAdiAUDC85
+	 iJR90T3WfWGcjnoxu7BBiADPCfiDwz9QHrngS6pw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8F89F805AE;
-	Wed, 16 Nov 2022 06:38:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63E03F805AF;
+	Wed, 16 Nov 2022 06:38:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 21DBAF8059F; Wed, 16 Nov 2022 06:38:51 +0100 (CET)
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com
- [IPv6:2607:f8b0:4864:20::435])
+ id 5038AF805B4; Wed, 16 Nov 2022 06:38:55 +0100 (CET)
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com
+ [IPv6:2607:f8b0:4864:20::1036])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83566F80571
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2022 06:38:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83566F80571
+ by alsa1.perex.cz (Postfix) with ESMTPS id 155C5F80549
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2022 06:38:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 155C5F80549
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="ZRenwPio"
-Received: by mail-pf1-x435.google.com with SMTP id y13so16486829pfp.7
- for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 21:38:42 -0800 (PST)
+ header.b="Rz/H6Ys2"
+Received: by mail-pj1-x1036.google.com with SMTP id
+ v4-20020a17090a088400b00212cb0ed97eso1335086pjc.5
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 21:38:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=4MEFKtk2jr+pIrd01Y8QsB7lxnOrOB6iK6YPYP1nPMA=;
- b=ZRenwPioW9g8p00PEamyGH8jzVZok76Ys2CSw60kjNNdSavkAdfHlfoLivu3CxFHJs
- A8oJU7Cd0PUGcEYCpbZmnuUfoF+/2mJE7q9IFfVdJEOkIx9H/rrf3tWqnxpFy+ibOpw+
- hKAHZZh68owi/D985vbBZkzUYBsNW5EySLu9t/fW/TPXI/KRtNoqfdugUHrGqOy2A5cz
- X296GIv47gk0p29rBQ8rsjNbe9Iuq0DF69sugsWyXAiO+WWAZhQw/nT/MawRF4yfiofC
- xZpEb0ZxygrvpdDQBmMFf/d4gC/1eoW1GW5/X8+uNFS31b7DdyxDChWAIrvnn+D/SR5+
- LXXQ==
+ bh=xwwwsx9jfrJYamHfIH6HX3vvIu1imMZZ+4VMVekHngI=;
+ b=Rz/H6Ys2b4kWwW4r+rY3Jxp4B3laBIYMyVHy+ATKWcjmUG6PH8ujJdN8Fi/r9jAO6M
+ zXmJUNicma4dyKgKg7LASOVGFUZ5nuYwk3YNKQ3yqEGHLcAVDb5FF8XBSdfWOeqIf+qP
+ MxutMrZhNcpgQLhQNUK4Ds57v2FY6T/uFnq8r0RpFNN35QPG4adlGJo2hlyKRwYVwkd6
+ aFiVWAkUxmHqw//S4QM9JYBRZGwP9/DiToLBd1477MPMIzzW4QhM5CU+Z7djk/4DobR2
+ 9PHSXED1uBKmfG91qTCVmZljBbLQ6NZMdE/Fr8ILkV3lB2ecEmECyatxEo1kbcwvwdrh
+ Q6hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=4MEFKtk2jr+pIrd01Y8QsB7lxnOrOB6iK6YPYP1nPMA=;
- b=cL1ySCaX5ywzpDixO0J3N2ZKN8NrzAR1vDfdFjRCwWXcrp+D9dKLTcylTUJzr/v4i8
- X3WWNs+R9nYMxZjDaeBBR030lIifYqj1hXWom92fRo0bs8D0YqKLtHjSaAt2oF96HVX+
- /YTHUqWVlU0dxiptabwX4jBMLiHtYDCbI7VSZRdv5WwMc8/iTM4X4PSNSXKVNEfH0BVp
- B7CXVabukIakmtsNae3CNDam5zLBzrCzfs+4rpJV/dESMlILCrAjOFkeN46rcAp5Hi6k
- RxvLM2Ykh9RtBx2wjUE2YfoUaVblmYHJgFZfUFl3PS2bvrfG+0NwRDTdHP0ay3av/ccC
- SUVw==
-X-Gm-Message-State: ANoB5plET2e+1xy/uhPjTriBNO0EFT0lKwL5MxmSiVNfJ5/JvudreYmG
- Y4Dg40Ru3ALHsS3XXGLWWO8=
-X-Google-Smtp-Source: AA0mqf6ex8aOz3bvEsY002H/DOqXJxnAt++xm328WBIajR1/qG4sKD8ytPpIYYxQvfoosCQyWL52YQ==
-X-Received: by 2002:a62:6001:0:b0:52f:db84:81cf with SMTP id
- u1-20020a626001000000b0052fdb8481cfmr22052595pfb.26.1668577119040; 
- Tue, 15 Nov 2022 21:38:39 -0800 (PST)
+ bh=xwwwsx9jfrJYamHfIH6HX3vvIu1imMZZ+4VMVekHngI=;
+ b=ZZjpyRRn9LnX3hvXMECQxwUGSO0wZQaYwj6nh69vE/M6ikUBka5UeMqq1G9nU8F/in
+ AB488em4dS2Y4mrhBlALfIQykaPeczuQmfh38qg1NMX9zbCONXgASUbK469O+HobEtNb
+ V+IFdLJsYwdS+x3SbbhEY2v8DegcstJi2Xsq2rYlYtxQ4wLN2SME7CjkrCfXFr65yW6z
+ TbL7Rwr2eH6AzLz5hHiNZ4sgZz96GQ8RRXwggQUtQ+OvNLn7NH6Kyz949TphHQQ3+q/X
+ 4pvQb4mfA3fOsta0ZLJziRCZMx5+Lcnd4HmSe8cZ8/d1TG+vf696oMunmkXgZUo1pat9
+ idKA==
+X-Gm-Message-State: ANoB5pmqnKz980z2jGri735dW8HXViwansQI6vwdZdTKasbK578HjS3B
+ 3lEvkbtM34bB7u36VT4PhnI=
+X-Google-Smtp-Source: AA0mqf5l1i6JvOL677NV16OYZ271oU6KdmQuaLgLz6SgdGOyQljKX6FdQNZvo2/6XxEUOK0zI/8Aqg==
+X-Received: by 2002:a17:902:900b:b0:17f:8544:e0dd with SMTP id
+ a11-20020a170902900b00b0017f8544e0ddmr7619256plp.34.1668577111537; 
+ Tue, 15 Nov 2022 21:38:31 -0800 (PST)
 Received: from dtor-ws.mtv.corp.google.com
  ([2620:15c:9d:2:2d36:e9a0:170b:669f])
  by smtp.gmail.com with ESMTPSA id
- ik13-20020a170902ab0d00b0017834a6966csm10881038plb.176.2022.11.15.21.38.37
+ ik13-20020a170902ab0d00b0017834a6966csm10881038plb.176.2022.11.15.21.38.29
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 15 Nov 2022 21:38:38 -0800 (PST)
+ Tue, 15 Nov 2022 21:38:30 -0800 (PST)
 From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 To: Mark Brown <broonie@kernel.org>,
 	Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 10/11] ASoC: dt-bindings: wcd938x: fix codec reset line
- polarity in example
-Date: Tue, 15 Nov 2022 21:38:16 -0800
-Message-Id: <20221116053817.2929810-10-dmitry.torokhov@gmail.com>
+Subject: [PATCH 06/11] ASoC: tlv320aic32x4: remove support for platform data
+Date: Tue, 15 Nov 2022 21:38:12 -0800
+Message-Id: <20221116053817.2929810-6-dmitry.torokhov@gmail.com>
 X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
 In-Reply-To: <20221116053817.2929810-1-dmitry.torokhov@gmail.com>
 References: <20221116053817.2929810-1-dmitry.torokhov@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>,
- linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,36 +101,156 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The driver for the codec, when resetting the chip, first drives the line
-low, and then high. This means that the line is active low. Change the
-annotation in the example DTS accordingly.
+There are no users of aic32x4_pdata in the mainline kernel, remove it.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
+ include/sound/tlv320aic32x4.h    | 52 --------------------------------
+ sound/soc/codecs/tlv320aic32x4.c | 14 +++------
+ sound/soc/codecs/tlv320aic32x4.h | 27 +++++++++++++++++
+ 3 files changed, 32 insertions(+), 61 deletions(-)
+ delete mode 100644 include/sound/tlv320aic32x4.h
 
-This was sent out previously as part of other series. Collected
-Krzysztof's ack and added missing include per Rob's feedback.
-
- Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml b/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
-index 51547190f709..3cb542d559c6 100644
---- a/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
-@@ -110,9 +110,10 @@ additionalProperties: false
+diff --git a/include/sound/tlv320aic32x4.h b/include/sound/tlv320aic32x4.h
+deleted file mode 100644
+index 0abf74d7edbd..000000000000
+--- a/include/sound/tlv320aic32x4.h
++++ /dev/null
+@@ -1,52 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * tlv320aic32x4.h  --  TLV320AIC32X4 Soc Audio driver platform data
+- *
+- * Copyright 2011 Vista Silicon S.L.
+- *
+- * Author: Javier Martin <javier.martin@vista-silicon.com>
+- */
+-
+-#ifndef _AIC32X4_PDATA_H
+-#define _AIC32X4_PDATA_H
+-
+-#define AIC32X4_PWR_MICBIAS_2075_LDOIN		0x00000001
+-#define AIC32X4_PWR_AVDD_DVDD_WEAK_DISABLE	0x00000002
+-#define AIC32X4_PWR_AIC32X4_LDO_ENABLE		0x00000004
+-#define AIC32X4_PWR_CMMODE_LDOIN_RANGE_18_36	0x00000008
+-#define AIC32X4_PWR_CMMODE_HP_LDOIN_POWERED	0x00000010
+-
+-#define AIC32X4_MICPGA_ROUTE_LMIC_IN2R_10K	0x00000001
+-#define AIC32X4_MICPGA_ROUTE_RMIC_IN1L_10K	0x00000002
+-
+-/* GPIO API */
+-#define AIC32X4_MFPX_DEFAULT_VALUE	0xff
+-
+-#define AIC32X4_MFP1_DIN_DISABLED	0
+-#define AIC32X4_MFP1_DIN_ENABLED	0x2
+-#define AIC32X4_MFP1_GPIO_IN		0x4
+-
+-#define AIC32X4_MFP2_GPIO_OUT_LOW	0x0
+-#define AIC32X4_MFP2_GPIO_OUT_HIGH	0x1
+-
+-#define AIC32X4_MFP_GPIO_ENABLED	0x4
+-
+-#define AIC32X4_MFP5_GPIO_DISABLED	0x0
+-#define AIC32X4_MFP5_GPIO_INPUT		0x8
+-#define AIC32X4_MFP5_GPIO_OUTPUT	0xc
+-#define AIC32X4_MFP5_GPIO_OUT_LOW	0x0
+-#define AIC32X4_MFP5_GPIO_OUT_HIGH	0x1
+-
+-struct aic32x4_setup_data {
+-	unsigned int gpio_func[5];
+-};
+-
+-struct aic32x4_pdata {
+-	struct aic32x4_setup_data *setup;
+-	u32 power_cfg;
+-	u32 micpga_routing;
+-	bool swapdacs;
+-	int rstn_gpio;
+-};
+-
+-#endif
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index ffe1828a4b7e..2dd0fe255ee6 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -22,7 +22,6 @@
+ #include <linux/of_clk.h>
+ #include <linux/regulator/consumer.h>
  
- examples:
-   - |
-+    #include <dt-bindings/gpio/gpio.h>
-     codec {
-         compatible = "qcom,wcd9380-codec";
--        reset-gpios = <&tlmm 32 0>;
-+        reset-gpios = <&tlmm 32 GPIO_ACTIVE_LOW>;
-         #sound-dai-cells = <1>;
-         qcom,tx-device = <&wcd938x_tx>;
-         qcom,rx-device = <&wcd938x_rx>;
+-#include <sound/tlv320aic32x4.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -33,6 +32,10 @@
+ 
+ #include "tlv320aic32x4.h"
+ 
++struct aic32x4_setup_data {
++	unsigned int gpio_func[5];
++};
++
+ struct aic32x4_priv {
+ 	struct regmap *regmap;
+ 	u32 power_cfg;
+@@ -1336,7 +1339,6 @@ static int aic32x4_setup_regulators(struct device *dev,
+ int aic32x4_probe(struct device *dev, struct regmap *regmap)
+ {
+ 	struct aic32x4_priv *aic32x4;
+-	struct aic32x4_pdata *pdata = dev->platform_data;
+ 	struct device_node *np = dev->of_node;
+ 	int ret;
+ 
+@@ -1353,13 +1355,7 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
+ 
+ 	dev_set_drvdata(dev, aic32x4);
+ 
+-	if (pdata) {
+-		aic32x4->power_cfg = pdata->power_cfg;
+-		aic32x4->swapdacs = pdata->swapdacs;
+-		aic32x4->micpga_routing = pdata->micpga_routing;
+-		aic32x4->rstn_gpio = pdata->rstn_gpio;
+-		aic32x4->mclk_name = "mclk";
+-	} else if (np) {
++	if (np) {
+ 		ret = aic32x4_parse_dt(aic32x4, np);
+ 		if (ret) {
+ 			dev_err(dev, "Failed to parse DT node\n");
+diff --git a/sound/soc/codecs/tlv320aic32x4.h b/sound/soc/codecs/tlv320aic32x4.h
+index 4de5bd9e8cc5..f0724b6b17ee 100644
+--- a/sound/soc/codecs/tlv320aic32x4.h
++++ b/sound/soc/codecs/tlv320aic32x4.h
+@@ -232,4 +232,31 @@ int aic32x4_register_clocks(struct device *dev, const char *mclk_name);
+ #define AIC32X4_MAX_CODEC_CLKIN_FREQ    110000000
+ #define AIC32X4_MAX_PLL_CLKIN		20000000
+ 
++#define AIC32X4_PWR_MICBIAS_2075_LDOIN		0x00000001
++#define AIC32X4_PWR_AVDD_DVDD_WEAK_DISABLE	0x00000002
++#define AIC32X4_PWR_AIC32X4_LDO_ENABLE		0x00000004
++#define AIC32X4_PWR_CMMODE_LDOIN_RANGE_18_36	0x00000008
++#define AIC32X4_PWR_CMMODE_HP_LDOIN_POWERED	0x00000010
++
++#define AIC32X4_MICPGA_ROUTE_LMIC_IN2R_10K	0x00000001
++#define AIC32X4_MICPGA_ROUTE_RMIC_IN1L_10K	0x00000002
++
++/* GPIO API */
++#define AIC32X4_MFPX_DEFAULT_VALUE	0xff
++
++#define AIC32X4_MFP1_DIN_DISABLED	0
++#define AIC32X4_MFP1_DIN_ENABLED	0x2
++#define AIC32X4_MFP1_GPIO_IN		0x4
++
++#define AIC32X4_MFP2_GPIO_OUT_LOW	0x0
++#define AIC32X4_MFP2_GPIO_OUT_HIGH	0x1
++
++#define AIC32X4_MFP_GPIO_ENABLED	0x4
++
++#define AIC32X4_MFP5_GPIO_DISABLED	0x0
++#define AIC32X4_MFP5_GPIO_INPUT		0x8
++#define AIC32X4_MFP5_GPIO_OUTPUT	0xc
++#define AIC32X4_MFP5_GPIO_OUT_LOW	0x0
++#define AIC32X4_MFP5_GPIO_OUT_HIGH	0x1
++
+ #endif				/* _TLV320AIC32X4_H */
 -- 
 2.38.1.431.g37b22c650d-goog
 
