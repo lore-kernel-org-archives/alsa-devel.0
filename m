@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D6D2C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 16 Nov 2022 05:40:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F180C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 16 Nov 2022 05:40:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C326216AF;
-	Wed, 16 Nov 2022 06:39:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C326216AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E8A2168E;
+	Wed, 16 Nov 2022 06:40:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E8A2168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668577236;
-	bh=S+3QMg1zp6RJ4AzIHlEwYbPMHEDZj/gL2wPHOc7O1d0=;
+	s=default; t=1668577253;
+	bh=+Q9Xzr8d+Q5o7WfWBABntNrAm1nr1P+gl5vcsD8Cobc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Qkx0zjqNglLfODQ0cUaU77wxCRxiSaOYW3bnejaXAfqkApZVX8QuzUFjBt3BV9vpr
-	 /u+097HBnz2kzly5ip3iuafNDWgF9fqwXgnCcB2J+X17CW/DW68gFKCzoff1a290Gw
-	 KhWmNUf8UqpcXR/mN5FcWiDVjh4LAfhExOS89mz4=
+	b=E4Pix4AZTU2XlINdA7yxk/hLsDph4vuXdlALSm424rkfKxebeYhQ1WbzSkwpTFzm+
+	 ZTwyZzf6dSbk0cbGgCVghRTYGLRX9UMlrPrYE+BPUr3GiD13gFqAbS/+pbj7Wuukyc
+	 4ryNnBjbz7lwBIA0jFl4Ukslp0BLNx57tdaD8oT4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16D75F8057A;
-	Wed, 16 Nov 2022 06:38:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F02FF8057D;
+	Wed, 16 Nov 2022 06:38:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 86EE9F80571; Wed, 16 Nov 2022 06:38:41 +0100 (CET)
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com
- [IPv6:2607:f8b0:4864:20::632])
+ id 8AAFCF800B5; Wed, 16 Nov 2022 06:38:41 +0100 (CET)
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com
+ [IPv6:2607:f8b0:4864:20::1034])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A2164F800B5
- for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2022 06:38:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2164F800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7507AF80163
+ for <alsa-devel@alsa-project.org>; Wed, 16 Nov 2022 06:38:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7507AF80163
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="naf7hHO3"
-Received: by mail-pl1-x632.google.com with SMTP id io19so15441697plb.8
- for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 21:38:32 -0800 (PST)
+ header.b="WKM+2PzQ"
+Received: by mail-pj1-x1034.google.com with SMTP id
+ d13-20020a17090a3b0d00b00213519dfe4aso1354386pjc.2
+ for <alsa-devel@alsa-project.org>; Tue, 15 Nov 2022 21:38:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=sFQW6v1diH1VyW+sL8lBdAoomh7zxMpXfwnkxl/32zA=;
- b=naf7hHO3UWHjpNpfDT7zWp+/pfz24/zpiVMv5vvpOmtsjD71TdXVOQuWTrXQlGW3DT
- k6OQyzXbC33xTJ4vWRBVu9j4bmDx6F7NtWWOnhPf1MyyzqTcFrH8M3c7v3m1bpJmKh15
- gL9KA6gm3URmDKumwfAsxlyem/35OjO3zoRfYkjUdt1JcHyccj00Eyx9Bi9uSIWdF7ZT
- +Wr5OWMJKXnCwh7W+QWb/80dPzmO5u+N6SqhYvU0Q3tpeaFNhACn2zodPNtlWRQxqwEk
- vdXf+yZqTNcpyU304fRnPyvbpukwqcaJt1vFvtUYIM7XdVNYYbPvJ1oGfq6acSrI+9hU
- 43MQ==
+ bh=ULkwCXln6lxM8XLag0GHNaSgcab1VgWTlrPLPEn1RmQ=;
+ b=WKM+2PzQbhMeOBeGQywY/g11Pnn37fKCeJCt+lwYnk221uHqyJTf2HoAQyuSvu64nO
+ brBFlwq5l+XR8hlqRvjKYtb9hsQtQmyeupF7wTqWtL6ovpyDzxx/CR0TmRmccJ2ENp74
+ CaRfmDhGkLcsG47C1XDf0+LG1i7+nUTJ7M0IGG6NHTDmvdZkDR6nOuvsxyWw3wQRixzZ
+ RTozclXB95iYqCQaPK/PRoE/OFUcDNDDjP2hsVbYgO6qd2lNNa9sn8F+2m/qnwnUqk5v
+ cVcH1Cd7m/3QTkeUpRFRxDU9njOzlNy9rJr5La6m0Ai2k5T9OlZ29M5h1k8XhfV0GMUi
+ Em+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=sFQW6v1diH1VyW+sL8lBdAoomh7zxMpXfwnkxl/32zA=;
- b=k8PKe3f8bX5q9ejauv/p3Wae/zXtjV3vdOKKkuhCwHIv0zEzpo1Ymsr5qsU1fnQExF
- c4Dy0E8o8975RXrhAf4aWFYVi7AMA6Bp3trbf8vV9Z4mn9BrnyzYTLRXoTUIQWnSKgjq
- qIXGyRMoLL9hfUo/MXnO0T/Jawfug+UoubJGtjSOdjru3XxeOV5GyHJVCSNGkyfH0oGz
- JfDQ84XsmZ8S+qibxPMXrhTW6ORXW0x1FciDkozcrpif9PtNLzmWY9ZMutP/bvWisffR
- AXi64ypT2xk1Z3h0gs01UbpGsDPmx73xT51OR2/lsyz/lawbVzcWeYGnaP0n72SuyJq6
- gWmg==
-X-Gm-Message-State: ANoB5pk34KkmHHzEdz9GnnmabxkOKSNlPnXCuK1bY09CGQvz5O1+QDl5
- 5rRL90PKOb80FQ6qNSPSHUgEl8bC+Xo=
-X-Google-Smtp-Source: AA0mqf4eBMXcBzdwJ5mtVoL0fxjZ7psKH+U4U0xM8+RXDkiJthcyDXK7qNiV0gPyIWmCuY6dETT4gA==
-X-Received: by 2002:a17:902:e546:b0:188:4ea8:a685 with SMTP id
- n6-20020a170902e54600b001884ea8a685mr7509296plf.71.1668577107897; 
- Tue, 15 Nov 2022 21:38:27 -0800 (PST)
+ bh=ULkwCXln6lxM8XLag0GHNaSgcab1VgWTlrPLPEn1RmQ=;
+ b=Z/aoqh0SGlgi8Ew+103+iTQSTZfKeHagK+x4D/XXnNgUguv02Ulhg6hGOVjSNAYT1v
+ 6vQR2GBXIxzpD7RXip6HCc5l0fzD0Khllnf6c3YY/Gtp0CWylv20G5sTowGaHjcOPDcR
+ C36B8ZVHv7mSVQ8QkT6BEVtwkp5prRlhdvd7BVocbS+egX2NVXetm8avV8wmQ7lVs1Kg
+ qjPQunzkDV3RHFnynwypejAa6GEVB9TmSWkWlYwo4ulN71wp4X6sIX/PUhJ0F15tGRez
+ hyQdFWrnY2iyr0HU1mlh+6xyAuVEnQmj8tyPVpmD4c0TmjjlK9FmQN4aThJy3G9nl+Em
+ bOyg==
+X-Gm-Message-State: ANoB5plqxqc/f3734ks6YXuqIZOlM8HMSrIeHJAAW2F+xlZETIfo5TDw
+ y2j4yziWmbsYpRP1RnYvJU5f7dRjQWM=
+X-Google-Smtp-Source: AA0mqf5uVWst6sre4JVfG7hacQt648w/wagbo1T0Ve8WMKn0tELymV4vaRkGXceh0dDwV+YXo9CPkg==
+X-Received: by 2002:a17:903:3311:b0:188:4ea8:a687 with SMTP id
+ jk17-20020a170903331100b001884ea8a687mr7401524plb.120.1668577113192; 
+ Tue, 15 Nov 2022 21:38:33 -0800 (PST)
 Received: from dtor-ws.mtv.corp.google.com
  ([2620:15c:9d:2:2d36:e9a0:170b:669f])
  by smtp.gmail.com with ESMTPSA id
- ik13-20020a170902ab0d00b0017834a6966csm10881038plb.176.2022.11.15.21.38.26
+ ik13-20020a170902ab0d00b0017834a6966csm10881038plb.176.2022.11.15.21.38.31
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 15 Nov 2022 21:38:27 -0800 (PST)
+ Tue, 15 Nov 2022 21:38:32 -0800 (PST)
 From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 To: Mark Brown <broonie@kernel.org>,
 	Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 04/11] ASoC: tpa6130a2: remove support for platform data
-Date: Tue, 15 Nov 2022 21:38:10 -0800
-Message-Id: <20221116053817.2929810-4-dmitry.torokhov@gmail.com>
+Subject: [PATCH 07/11] ASoC: tlv320aic32x4: switch to using gpiod API
+Date: Tue, 15 Nov 2022 21:38:13 -0800
+Message-Id: <20221116053817.2929810-7-dmitry.torokhov@gmail.com>
 X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
 In-Reply-To: <20221116053817.2929810-1-dmitry.torokhov@gmail.com>
 References: <20221116053817.2929810-1-dmitry.torokhov@gmail.com>
@@ -100,87 +101,82 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There are no users of tpa6130a2_platform_data in the mainline kernel,
-remove it.
+Switch the driver from legacy gpio API that is deprecated to the newer
+gpiod API that respects line polarities described in ACPI/DT.
 
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
- include/sound/tpa6130a2-plat.h | 17 -----------------
- sound/soc/codecs/tpa6130a2.c   | 18 ++++--------------
- 2 files changed, 4 insertions(+), 31 deletions(-)
- delete mode 100644 include/sound/tpa6130a2-plat.h
+ sound/soc/codecs/tlv320aic32x4.c | 25 ++++++++++++-------------
+ 1 file changed, 12 insertions(+), 13 deletions(-)
 
-diff --git a/include/sound/tpa6130a2-plat.h b/include/sound/tpa6130a2-plat.h
-deleted file mode 100644
-index a60930e36e93..000000000000
---- a/include/sound/tpa6130a2-plat.h
-+++ /dev/null
-@@ -1,17 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * TPA6130A2 driver platform header
-- *
-- * Copyright (C) Nokia Corporation
-- *
-- * Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
-- */
--
--#ifndef TPA6130A2_PLAT_H
--#define TPA6130A2_PLAT_H
--
--struct tpa6130a2_platform_data {
--	int power_gpio;
--};
--
--#endif
-diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
-index 8c00db32996b..5f00bfc32917 100644
---- a/sound/soc/codecs/tpa6130a2.c
-+++ b/sound/soc/codecs/tpa6130a2.c
-@@ -14,7 +14,6 @@
- #include <linux/gpio.h>
- #include <linux/regulator/consumer.h>
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index 2dd0fe255ee6..36a3b3eb4d56 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -13,9 +13,9 @@
+ #include <linux/moduleparam.h>
+ #include <linux/init.h>
+ #include <linux/delay.h>
++#include <linux/err.h>
+ #include <linux/pm.h>
+-#include <linux/gpio.h>
+-#include <linux/of_gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/cdev.h>
  #include <linux/slab.h>
--#include <sound/tpa6130a2-plat.h>
- #include <sound/soc.h>
- #include <sound/tlv.h>
- #include <linux/of.h>
-@@ -218,16 +217,15 @@ MODULE_DEVICE_TABLE(i2c, tpa6130a2_id);
+ #include <linux/clk.h>
+@@ -41,7 +41,7 @@ struct aic32x4_priv {
+ 	u32 power_cfg;
+ 	u32 micpga_routing;
+ 	bool swapdacs;
+-	int rstn_gpio;
++	struct gpio_desc *reset_gpio;
+ 	const char *mclk_name;
  
- static int tpa6130a2_probe(struct i2c_client *client)
- {
--	struct device *dev;
-+	struct device *dev = &client->dev;
- 	struct tpa6130a2_data *data;
--	struct tpa6130a2_platform_data *pdata = client->dev.platform_data;
--	struct device_node *np = client->dev.of_node;
- 	const struct i2c_device_id *id;
- 	const char *regulator;
- 	unsigned int version;
- 	int ret;
+ 	struct regulator *supply_ldo;
+@@ -1230,7 +1230,6 @@ static int aic32x4_parse_dt(struct aic32x4_priv *aic32x4,
  
--	dev = &client->dev;
-+	if (!dev->of_node)
-+		return -ENODEV;
+ 	aic32x4->swapdacs = false;
+ 	aic32x4->micpga_routing = 0;
+-	aic32x4->rstn_gpio = of_get_named_gpio(np, "reset-gpios", 0);
  
- 	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
- 	if (!data)
-@@ -239,15 +237,7 @@ static int tpa6130a2_probe(struct i2c_client *client)
- 	if (IS_ERR(data->regmap))
- 		return PTR_ERR(data->regmap);
+ 	if (of_property_read_u32_array(np, "aic32x4-gpio-func",
+ 				aic32x4_setup->gpio_func, 5) >= 0)
+@@ -1365,16 +1364,16 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
+ 		aic32x4->power_cfg = 0;
+ 		aic32x4->swapdacs = false;
+ 		aic32x4->micpga_routing = 0;
+-		aic32x4->rstn_gpio = -1;
+ 		aic32x4->mclk_name = "mclk";
+ 	}
  
--	if (pdata) {
--		data->power_gpio = pdata->power_gpio;
--	} else if (np) {
--		data->power_gpio = of_get_named_gpio(np, "power-gpio", 0);
--	} else {
--		dev_err(dev, "Platform data not set\n");
--		dump_stack();
--		return -ENODEV;
+-	if (gpio_is_valid(aic32x4->rstn_gpio)) {
+-		ret = devm_gpio_request_one(dev, aic32x4->rstn_gpio,
+-				GPIOF_OUT_INIT_LOW, "tlv320aic32x4 rstn");
+-		if (ret != 0)
+-			return ret;
 -	}
-+	data->power_gpio = of_get_named_gpio(dev->of_node, "power-gpio", 0);
++	aic32x4->reset_gpio = devm_gpiod_get_optional(dev, "reset",
++						      GPIOD_OUT_HIGH);
++	ret = PTR_ERR_OR_ZERO(aic32x4->reset_gpio);
++	if (ret)
++		return ret;
++
++	gpiod_set_consumer_name(aic32x4->reset_gpio, "tlv320aic32x4 rstn");
  
- 	i2c_set_clientdata(client, data);
+ 	ret = aic32x4_setup_regulators(dev, aic32x4);
+ 	if (ret) {
+@@ -1382,9 +1381,9 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
+ 		return ret;
+ 	}
+ 
+-	if (gpio_is_valid(aic32x4->rstn_gpio)) {
++	if (aic32x4->reset_gpio) {
+ 		ndelay(10);
+-		gpio_set_value_cansleep(aic32x4->rstn_gpio, 1);
++		gpiod_set_value_cansleep(aic32x4->reset_gpio, 0);
+ 		mdelay(1);
+ 	}
  
 -- 
 2.38.1.431.g37b22c650d-goog
