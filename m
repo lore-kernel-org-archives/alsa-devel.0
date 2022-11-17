@@ -4,82 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C179AC433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Nov 2022 14:19:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6326BC4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Nov 2022 14:22:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E7D816E2;
-	Thu, 17 Nov 2022 15:18:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E7D816E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C5FC16D2;
+	Thu, 17 Nov 2022 15:21:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C5FC16D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668694784;
-	bh=RKEBfYxdfxtjl51wvziJhvFCY/6oeBWPLXykc58TznA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1668694935;
+	bh=bRFiV0IK68T+8Bj4KbrLd1uR8KkVjRCTlcM1BvYjx5w=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CnWax06gln1/xlELpty8xrk3yebKS8MoCdOSi9/l6cPoUKtIV7GMTaFYmpCs2leqK
-	 kJHSiwoEFxC2hRMZK8D5JW5qTSsJQPIN9wOM0afSge+s8qwlQgXIHCPDnt2gY1Xj4x
-	 EeMAKSDX/xNybbVOxpkLqJvkGGvk1td1/JvM2Bfo=
+	b=c6dsVwQ/E/aGm62boJORSRKCghjGN+0nlX7yPn224lA+S/rBUaevISxBZElYhgWTG
+	 5ZEdQEwxpK4SHtbFkPk7w1cIjXlTKbSsEAu7Diu4rYbNaeM+//QEgq6MNJeHRTgmW8
+	 5KRYilAdLlVUqWlPcgXTR04k52ec3iEmp6ChoWFU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2AF1CF80567;
-	Thu, 17 Nov 2022 15:17:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46CDFF8015B;
+	Thu, 17 Nov 2022 15:21:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 02E3CF80564; Thu, 17 Nov 2022 15:17:42 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 3B599F8025A; Thu, 17 Nov 2022 15:21:23 +0100 (CET)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0D0FF804BD
- for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2022 15:17:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0D0FF804BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03734F800B5
+ for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2022 15:21:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03734F800B5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="Y0XtxTj0"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2AHEHLJY006137; Thu, 17 Nov 2022 08:17:30 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=pP6wCC1D3dPgTnwLAkiyGtXDogheormoOvmiKB907/o=;
- b=Y0XtxTj0SKU0gH/sQreUOy/OesrY3vtNK7YTwzfro16EaQUuY5Icz1KDLde1wns8WrM9
- /x9jncJdbEeK5bDT3U/a/f3QlpAzIv1sRFKCcwZGvtCVz+MLbxh8qgKujZLbomaFwBXc
- /NxXVG/5HIhOKK2RY7KSo86CZbFvdNnAQzlJiIsKjRpJ06yjrhvp3qp+wBw++Uaw34l0
- p1CW3zGReggUKavakkVlHa2ncKBRYLJH7Bpb12eHnW4GdMCoh8Arn4R67zfr5lCtc439
- RhnxPg45gBg4xXSy2hpr3qYiw/QSHRcorB0cdpuFmHcDuAnAexixb+HyRQ/7o11rSpSk fg== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kv73yk9j9-3
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 17 Nov 2022 08:17:30 -0600
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.20; Thu, 17 Nov
- 2022 08:17:28 -0600
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.20 via
- Frontend Transport; Thu, 17 Nov 2022 08:17:28 -0600
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E963EB38;
- Thu, 17 Nov 2022 14:17:27 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <vkoul@kernel.org>
-Subject: [PATCH v2 3/4] soundwire: debugfs: Switch to sdw_read_no_pm
-Date: Thu, 17 Nov 2022 14:17:26 +0000
-Message-ID: <20221117141727.3031503-4-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221117141727.3031503-1-ckeepax@opensource.cirrus.com>
-References: <20221117141727.3031503-1-ckeepax@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="ON5nxt/9"
+Received: by mail-wr1-x434.google.com with SMTP id cl5so4079717wrb.9
+ for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2022 06:21:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=5h6cyxnhZrFtGL17RTtLsvznlRHQrl1XvENpkP8t5+8=;
+ b=ON5nxt/9DSGmDjVpheXx8uIXtWLoJ0qe79AGL4GY8TepcX7T3ORokLb/PrGPuH/ot8
+ f9vxlpRxZJtHR5tkvj5wFV3r3hOBGytpvrjFcZ6+eI91exu4lg85RCXaBOPDm/TRoqMd
+ 65SOAAEJULYT4q10kVAB7COUYpnY6EEMzKGEz4sqKp+xrb0Bm07I0dT4D6bJuE4WjeN4
+ ac6XWqR3GjKzJx6P8jxI4bWZYfTo5u/ahJ1Obeu+z3ibCrsN1+K5zoc59vP+J2jd7A6x
+ O5VVIXGWNLM/CdlexDxTkH3wwj9e2ZNgPb7P+nrU/JTcWTINTbM+oUgey9Gac6Y24JY6
+ D0mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=5h6cyxnhZrFtGL17RTtLsvznlRHQrl1XvENpkP8t5+8=;
+ b=Oe5LDSdiK4R0y3OL2+ppWneZGbpocL4iTwoOSTJJWJyKUoKY1g1FmVW6GX4Pl4mhhZ
+ Vbi/jE5dayJQZH20rNbbYIcFhmu8pkHhpjbXK0UBu8Ov/R9L3WNhZRY9ikrTUQ7MozuT
+ wjk/tWrzjLgSnivLik9+o0fnmtjJz44140DfFsPV5gh1CghpCxZGxlGSOki92UI8MH+x
+ K/uAHskmIjtjQVLfCG555PT+1gyoLW+eOHBelglavExMjtIpCUGNLxtECWgFn6TgtOfQ
+ FLVV+bwRAxEsnrI0fGbflTdv61qdPlRCGi449R01mVsa9fe6eVDReaiNImZVmjIgfQ+S
+ R0Dw==
+X-Gm-Message-State: ANoB5pmszQHJJ4yTJ63MlPVegorh8bUNAKl5xV9NdCn+EZUWJaI3R7z0
+ 0hntkPFV8IgiwP0t9q78rEiGUKaNld4tgSMxpQ==
+X-Google-Smtp-Source: AA0mqf4vxBPBN7wpmGjafFD6bYv2PxvDbcmxZTPz5qlrqg/MXv201oB8f/7ReI6mFJYRZuuiZdy9np/UKUAtNdaPze4=
+X-Received: by 2002:a5d:68ce:0:b0:236:518d:f2b4 with SMTP id
+ p14-20020a5d68ce000000b00236518df2b4mr1669981wrw.397.1668694874391; Thu, 17
+ Nov 2022 06:21:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 90XPt4ZgU0_lq0NS129dKCUUaPjTRiok
-X-Proofpoint-GUID: 90XPt4ZgU0_lq0NS129dKCUUaPjTRiok
-X-Proofpoint-Spam-Reason: safe
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
- sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
+References: <20221116034621.37762-1-samuel@sholland.org>
+In-Reply-To: <20221116034621.37762-1-samuel@sholland.org>
+From: =?UTF-8?B?54+t5rab?= <fengzheng923@gmail.com>
+Date: Thu, 17 Nov 2022 22:21:03 +0800
+Message-ID: <CAE=m61-UuexpSx_VTvkEcU-mDOgjqon-2_Ndx4viaZ8Z_a-OHg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: dt-bindings: sun50i-dmic: Add D1 compatible string
+To: Samuel Holland <samuel@sholland.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>, linux-kernel@vger.kernel.org,
+ Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,62 +98,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It is rather inefficient to be constantly playing with the runtime
-PM reference for each individual register, switch to holding a PM
-runtime reference across the whole register output.
+Samuel Holland <samuel@sholland.org> =E4=BA=8E2022=E5=B9=B411=E6=9C=8816=E6=
+=97=A5=E5=91=A8=E4=B8=89 11:46=E5=86=99=E9=81=93=EF=BC=9A
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
-
-Changes since v1:
- - Reworded commit message
-
- drivers/soundwire/debugfs.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/soundwire/debugfs.c b/drivers/soundwire/debugfs.c
-index 49900cd207bc7..0718e9cda138a 100644
---- a/drivers/soundwire/debugfs.c
-+++ b/drivers/soundwire/debugfs.c
-@@ -4,6 +4,7 @@
- #include <linux/device.h>
- #include <linux/debugfs.h>
- #include <linux/mod_devicetable.h>
-+#include <linux/pm_runtime.h>
- #include <linux/slab.h>
- #include <linux/soundwire/sdw.h>
- #include <linux/soundwire/sdw_registers.h>
-@@ -35,7 +36,7 @@ static ssize_t sdw_sprintf(struct sdw_slave *slave,
- {
- 	int value;
- 
--	value = sdw_read(slave, reg);
-+	value = sdw_read_no_pm(slave, reg);
- 
- 	if (value < 0)
- 		return scnprintf(buf + pos, RD_BUF - pos, "%3x\tXX\n", reg);
-@@ -55,6 +56,10 @@ static int sdw_slave_reg_show(struct seq_file *s_file, void *data)
- 	if (!buf)
- 		return -ENOMEM;
- 
-+	ret = pm_runtime_resume_and_get(&slave->dev);
-+	if (ret < 0 && ret != -EACCES)
-+		return ret;
-+
- 	ret = scnprintf(buf, RD_BUF, "Register  Value\n");
- 
- 	/* DP0 non-banked registers */
-@@ -112,6 +117,10 @@ static int sdw_slave_reg_show(struct seq_file *s_file, void *data)
- 	}
- 
- 	seq_printf(s_file, "%s", buf);
-+
-+	pm_runtime_mark_last_busy(&slave->dev);
-+	pm_runtime_put(&slave->dev);
-+
- 	kfree(buf);
- 
- 	return 0;
--- 
-2.30.2
-
+> The Allwinner D1 SoC has a DMIC codec like the one in the H6. It appears
+> to be register-compatible with the H6 variant, and the existing Linux
+> driver has been tested on a D1-based board, the Lichee RV 86 Panel.
+>
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+>
+>  .../bindings/sound/allwinner,sun50i-h6-dmic.yaml           | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git
+> a/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml
+> b/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml
+> index 2f12cabe4c71..0920f2f81a1c 100644
+> --- a/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.ya=
+ml
+> +++ b/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.ya=
+ml
+> @@ -11,7 +11,12 @@ maintainers:
+>
+>  properties:
+>    compatible:
+> -    const: allwinner,sun50i-h6-dmic
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - allwinner,sun20i-d1-dmic
+> +          - const: allwinner,sun50i-h6-dmic
+> +      - const: allwinner,sun50i-h6-dmic
+>
+>    "#sound-dai-cells":
+>      const: 0
+> --
+> 2.37.3
+>
+>
+Acked-by: Ban Tao <fengzheng923@gmail.com>
