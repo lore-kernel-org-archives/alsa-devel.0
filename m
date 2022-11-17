@@ -4,85 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6326BC4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Nov 2022 14:22:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58BDDC433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Nov 2022 14:59:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C5FC16D2;
-	Thu, 17 Nov 2022 15:21:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C5FC16D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8BC6916D2;
+	Thu, 17 Nov 2022 15:58:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BC6916D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668694935;
-	bh=bRFiV0IK68T+8Bj4KbrLd1uR8KkVjRCTlcM1BvYjx5w=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1668697188;
+	bh=7zQFpy/FThvyoS2Oh8s5pADJRem9WWaeRrr4Ft0S/MI=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=c6dsVwQ/E/aGm62boJORSRKCghjGN+0nlX7yPn224lA+S/rBUaevISxBZElYhgWTG
-	 5ZEdQEwxpK4SHtbFkPk7w1cIjXlTKbSsEAu7Diu4rYbNaeM+//QEgq6MNJeHRTgmW8
-	 5KRYilAdLlVUqWlPcgXTR04k52ec3iEmp6ChoWFU=
+	b=D7JBY+uX4RyHjP/bdm+TeEIdSJIsv0IAEs5aQ0MPq+CKcnVh1zE5MOTouWuH8hyPz
+	 ubJaoaNvcu9qvlHyBmtKzzIZkci/IFRviwbyzHi2zUPZCSYxwjuxMkmI9CyXH3UG/O
+	 OlmWskE+bKEuHQ1LW59K+GWHhj6LXH8gALd0TotA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46CDFF8015B;
-	Thu, 17 Nov 2022 15:21:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31B51F800B8;
+	Thu, 17 Nov 2022 15:58:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B599F8025A; Thu, 17 Nov 2022 15:21:23 +0100 (CET)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
+ id 46A5FF8025A; Thu, 17 Nov 2022 15:58:56 +0100 (CET)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
+ [IPv6:2a00:1450:4864:20::130])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03734F800B5
- for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2022 15:21:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03734F800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id A6E37F800B8
+ for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2022 15:58:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6E37F800B8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="ON5nxt/9"
-Received: by mail-wr1-x434.google.com with SMTP id cl5so4079717wrb.9
- for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2022 06:21:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=5h6cyxnhZrFtGL17RTtLsvznlRHQrl1XvENpkP8t5+8=;
- b=ON5nxt/9DSGmDjVpheXx8uIXtWLoJ0qe79AGL4GY8TepcX7T3ORokLb/PrGPuH/ot8
- f9vxlpRxZJtHR5tkvj5wFV3r3hOBGytpvrjFcZ6+eI91exu4lg85RCXaBOPDm/TRoqMd
- 65SOAAEJULYT4q10kVAB7COUYpnY6EEMzKGEz4sqKp+xrb0Bm07I0dT4D6bJuE4WjeN4
- ac6XWqR3GjKzJx6P8jxI4bWZYfTo5u/ahJ1Obeu+z3ibCrsN1+K5zoc59vP+J2jd7A6x
- O5VVIXGWNLM/CdlexDxTkH3wwj9e2ZNgPb7P+nrU/JTcWTINTbM+oUgey9Gac6Y24JY6
- D0mg==
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="Ur9szg1D"
+Received: by mail-lf1-x130.google.com with SMTP id bp15so3166724lfb.13
+ for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2022 06:58:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=VSnIdJlrSu1RqwxbrwymcRNJoSgT34DNNQH025cvo20=;
+ b=Ur9szg1DKJvl3ubQjvlChH09oAO12tYaDGESWoJRFs5nbTcgL70iq6Rk6jcbyh2eSV
+ 5sIr6XHiZbOMcG5vg6LYzpKXTZagjOTTXivxVfplX5GAD0O1/9QIYKFbd0XkOcolglVT
+ VrJu0CgFgUecUmcpa3we0bBiZQmSB6sCWxEucrm8wK9mxNNpZRyq2THIgu40f2wTK8zo
+ 2iE5ibWayllqwdjGN++kkVQdW9OgLgRj0+rBH5OvzcLsoNEByi9LNspb+2B+W5wqkM41
+ Rwzp9Tu2wWCQ3oQ9fSXsHYYSxRuw8yfwAEchPTid10LtcwGqSDyeXQdG7IyHwjOChaWM
+ 86bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=5h6cyxnhZrFtGL17RTtLsvznlRHQrl1XvENpkP8t5+8=;
- b=Oe5LDSdiK4R0y3OL2+ppWneZGbpocL4iTwoOSTJJWJyKUoKY1g1FmVW6GX4Pl4mhhZ
- Vbi/jE5dayJQZH20rNbbYIcFhmu8pkHhpjbXK0UBu8Ov/R9L3WNhZRY9ikrTUQ7MozuT
- wjk/tWrzjLgSnivLik9+o0fnmtjJz44140DfFsPV5gh1CghpCxZGxlGSOki92UI8MH+x
- K/uAHskmIjtjQVLfCG555PT+1gyoLW+eOHBelglavExMjtIpCUGNLxtECWgFn6TgtOfQ
- FLVV+bwRAxEsnrI0fGbflTdv61qdPlRCGi449R01mVsa9fe6eVDReaiNImZVmjIgfQ+S
- R0Dw==
-X-Gm-Message-State: ANoB5pmszQHJJ4yTJ63MlPVegorh8bUNAKl5xV9NdCn+EZUWJaI3R7z0
- 0hntkPFV8IgiwP0t9q78rEiGUKaNld4tgSMxpQ==
-X-Google-Smtp-Source: AA0mqf4vxBPBN7wpmGjafFD6bYv2PxvDbcmxZTPz5qlrqg/MXv201oB8f/7ReI6mFJYRZuuiZdy9np/UKUAtNdaPze4=
-X-Received: by 2002:a5d:68ce:0:b0:236:518d:f2b4 with SMTP id
- p14-20020a5d68ce000000b00236518df2b4mr1669981wrw.397.1668694874391; Thu, 17
- Nov 2022 06:21:14 -0800 (PST)
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=VSnIdJlrSu1RqwxbrwymcRNJoSgT34DNNQH025cvo20=;
+ b=E/V8GBgPqwWSjcOeCe4de0G+ZvOxsCIU0J1BgcuXKC+jViPakKgI0De2e4gWRik0tT
+ J4UB4N0AX6/5FQ9+laRBVboYVH/MulobxJN0hG4C49fmZ6yGGEgPC8v1FP11tbgATgao
+ BrP7BWmdYFSaxgsS2S+6jWb14lzBIikSbtAEc5YnKIpcdKrgodvbDKTngXNgtl5BsvIa
+ /NiBQkKSI0mntWozWjFu86T4UrvtnP/hW+peitbNcu9WwqZstVyRBzujtYAxD8Q/WPs9
+ bQLusRJtnUWFV1gPysojFh5/VKqXSDHg9HjteWc4HdLGvRcr7QWzvzq9NPyibzy3/cBn
+ HUmQ==
+X-Gm-Message-State: ANoB5pkBcIpztOJZoaIIIeTB+gxEevh5dKO9TRJeG8XNaT/w1lEdlizJ
+ /EWSC3j+E8EKXlazFCmoUtM1VA==
+X-Google-Smtp-Source: AA0mqf4/hs47bXqsUk4ZLu/jQ1Wna1nuVovn6G3NWi6j/M3148XUWs2V/ZZa76pyYbEsKXo3MQAsvg==
+X-Received: by 2002:ac2:4a69:0:b0:4ac:d080:e1bd with SMTP id
+ q9-20020ac24a69000000b004acd080e1bdmr1120397lfp.318.1668697131665; 
+ Thu, 17 Nov 2022 06:58:51 -0800 (PST)
+Received: from [192.168.0.20]
+ (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
+ by smtp.gmail.com with ESMTPSA id
+ r8-20020ac24d08000000b00492dfcc0e58sm186892lfi.53.2022.11.17.06.58.50
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 17 Nov 2022 06:58:51 -0800 (PST)
+Message-ID: <2f35b9aa-1385-9c2b-ed60-721a835645dc@linaro.org>
+Date: Thu, 17 Nov 2022 15:58:49 +0100
 MIME-Version: 1.0
-References: <20221116034621.37762-1-samuel@sholland.org>
-In-Reply-To: <20221116034621.37762-1-samuel@sholland.org>
-From: =?UTF-8?B?54+t5rab?= <fengzheng923@gmail.com>
-Date: Thu, 17 Nov 2022 22:21:03 +0800
-Message-ID: <CAE=m61-UuexpSx_VTvkEcU-mDOgjqon-2_Ndx4viaZ8Z_a-OHg@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: dt-bindings: sun50i-dmic: Add D1 compatible string
-To: Samuel Holland <samuel@sholland.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Jernej Skrabec <jernej.skrabec@gmail.com>, linux-kernel@vger.kernel.org,
- Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [RFC PATCH 1/9] dt-bindings: drop redundant part of title of
+ shared bindings
+Content-Language: en-US
+To: Andrew Lunn <andrew@lunn.ch>
+References: <20221117123850.368213-1-krzysztof.kozlowski@linaro.org>
+ <20221117123850.368213-2-krzysztof.kozlowski@linaro.org>
+ <Y3Y1xjOjijBsQLZA@lunn.ch>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <Y3Y1xjOjijBsQLZA@lunn.ch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, linux-pwm@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-pci@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+ linux-riscv@lists.infradead.org, linux-clk@vger.kernel.org,
+ linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-can@vger.kernel.org,
+ linux-gpio@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ virtualization@lists.linux-foundation.org,
+ linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,43 +119,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Samuel Holland <samuel@sholland.org> =E4=BA=8E2022=E5=B9=B411=E6=9C=8816=E6=
-=97=A5=E5=91=A8=E4=B8=89 11:46=E5=86=99=E9=81=93=EF=BC=9A
+On 17/11/2022 14:23, Andrew Lunn wrote:
+>>  allOf:
+>> -  - $ref: "dma-common.yaml#"
+>> +  - $ref: dma-common.yaml#
+>>  
+>>  
+>>  allOf:
+>> -  - $ref: "dma-common.yaml#"
+>> +  - $ref: dma-common.yaml#
+> 
+> Looks like some other automated change made its way into this patch.
 
-> The Allwinner D1 SoC has a DMIC codec like the one in the H6. It appears
-> to be register-compatible with the H6 variant, and the existing Linux
-> driver has been tested on a D1-based board, the Lichee RV 86 Panel.
->
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->
->  .../bindings/sound/allwinner,sun50i-h6-dmic.yaml           | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git
-> a/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml
-> b/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml
-> index 2f12cabe4c71..0920f2f81a1c 100644
-> --- a/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.ya=
-ml
-> +++ b/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.ya=
-ml
-> @@ -11,7 +11,12 @@ maintainers:
->
->  properties:
->    compatible:
-> -    const: allwinner,sun50i-h6-dmic
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - allwinner,sun20i-d1-dmic
-> +          - const: allwinner,sun50i-h6-dmic
-> +      - const: allwinner,sun50i-h6-dmic
->
->    "#sound-dai-cells":
->      const: 0
-> --
-> 2.37.3
->
->
-Acked-by: Ban Tao <fengzheng923@gmail.com>
+I forgot to mention in commit msg, but maybe better to drop it to reduce
+noise.
+
+Best regards,
+Krzysztof
+
