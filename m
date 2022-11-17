@@ -4,85 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B27CFC433FE
-	for <alsa-devel@archiver.kernel.org>; Sat, 19 Nov 2022 08:46:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22680C433FE
+	for <alsa-devel@archiver.kernel.org>; Sat, 19 Nov 2022 08:46:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7BC316E3;
-	Sat, 19 Nov 2022 09:45:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7BC316E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 560621673;
+	Sat, 19 Nov 2022 09:45:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 560621673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668847567;
-	bh=z9LpXD1Z0474LWIB8j3EeILLpZVfBx7s7UE+RqLg+Cw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1668847584;
+	bh=ap3Yepnmz1ej9lRU7fXGZI5Vw44VE2yp4UB7EQjKtA4=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HodHzhzyVqIW1isMFfUonI4A1BLz3e6uFujF10mIh/qlDbgNK5I4hFaTTE8GzAx+g
-	 fOeTNMNI0UYuPqsmlzYt5Yop8rqJtxXTqtEOTFEWNfiWoPl5eKx48boTW9CMJg1U2R
-	 aNg3Cj2ouxi0zJuPpZghsaV0+bay/Bp42MOA2/Xo=
+	b=Rmu9TL2z/8qr7sJaox3UjeniM0znuDWgyo8iL406xNFko3SjCt4Eb5aN5b845Rdad
+	 BlYnp+hYxAoHDVpNUzVXvoipPTWf5gT7s1A8A3xFtL/bg65NmiuXHh+QtD5H5wZVDE
+	 5Ls9ctckDfW2t09duphkrpmtVHHn4TWHclQSpqlM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06B5CF805D5;
+	by alsa1.perex.cz (Postfix) with ESMTP id 781BAF805D6;
 	Sat, 19 Nov 2022 09:40:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5F151F8025A; Thu, 17 Nov 2022 15:33:16 +0100 (CET)
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com
- [IPv6:2607:f8b0:4864:20::52f])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 62168F8025A; Thu, 17 Nov 2022 16:17:14 +0100 (CET)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com
+ [185.176.79.56])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B2EDF800B5
- for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2022 15:33:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B2EDF800B5
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="mMbOTdEj"
-Received: by mail-pg1-x52f.google.com with SMTP id r18so2082037pgr.12
- for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2022 06:33:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
- :reply-to; bh=PbFDs+3SDAki55RJjrrFRD3jZK40Qi40k+nyqVzyofw=;
- b=mMbOTdEjO/WsYpudFX4YM2CluSHhPm2wREMWr0zsJPGtIdOgI0+AtmqA7QePmXiSzf
- 05n4QXjvyv2y8ZSHzsx2SFH83nbl6zXi0ZrNXHOv+20rvMHBXr8maJYD38QTgh9eYVxV
- sBusroZDjB1Adn7CFxrmighHn5CYv51/OL278swURZqeiy04D/4t48cUiyFErh3pd3He
- eiX+Mi6pVmg22uI3JKTgtBWdkmRIyhe/gsGVpGwP9K4xjrJgBO6hzryY3b2TNpMzWRo+
- xlSgMCgNT3v/iN5wt1JpmS/CruOzr/qkGgoPvAMxoW/YFh8yomslvg+qZl3HXtSlTCUp
- is+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=PbFDs+3SDAki55RJjrrFRD3jZK40Qi40k+nyqVzyofw=;
- b=g7mmxc0d65OtHHfcitAIGSEHQDLlZx3hH9ttSf3y2ZVxumcoIbU+Fcci3yDTYB8dLZ
- UZEA70RH8p1dfZGUO5i7ISUBfe8iH1hykF8sfFdwIiHBSxzhYBA+hnM7SVr8egehvLdL
- 0OSj7fxarMAxMNSyR/raifPqqqnXHkIBxnjrH8oh3R/wfpdBi1ETo5mmxhGmf0VPOBqg
- xjOEnXtZdfQaEI3bfgKBMjwxgjkiGoRRGYU5oRJ4omwlnYetUWwMgVMxf1bcaj3yKMOh
- WV662c4iuuJkKI4mbz+LHlT6OjibbN7kf88bkpeiEN6bI57zZ7Awtx5NbiERKScB6Hiz
- whRA==
-X-Gm-Message-State: ANoB5pkzxRiN9Qo2OQXPDSZ2fsJ7aokYDheMegM4xu3qcLKHtDyKOWeO
- id/Ol+Wf9UvOXWQt1iOeLYo=
-X-Google-Smtp-Source: AA0mqf5dJ7wlexrp0AKne+xBVwPRPn2VKPcEdcgpAZKn7ulkPPW5dlCGCHXy/YxM9FejM3LwQqvA/Q==
-X-Received: by 2002:a62:1cd4:0:b0:56b:deea:72e9 with SMTP id
- c203-20020a621cd4000000b0056bdeea72e9mr3188734pfc.47.1668695587265; 
- Thu, 17 Nov 2022 06:33:07 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
- by smtp.gmail.com with ESMTPSA id
- o65-20020a625a44000000b00562664d5027sm1217491pfb.61.2022.11.17.06.33.05
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 17 Nov 2022 06:33:06 -0800 (PST)
-Date: Thu, 17 Nov 2022 06:33:05 -0800
-From: Guenter Roeck <linux@roeck-us.net>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4F28F80087
+ for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2022 16:17:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4F28F80087
+Received: from frapeml500004.china.huawei.com (unknown [172.18.147.206])
+ by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4NCk3g38XBz688Z4;
+ Thu, 17 Nov 2022 23:14:39 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (7.191.163.240) by
+ frapeml500004.china.huawei.com (7.182.85.22) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 17 Nov 2022 16:17:05 +0100
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Thu, 17 Nov
+ 2022 15:17:04 +0000
+Date: Thu, 17 Nov 2022 15:17:03 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Subject: Re: [RFC PATCH 1/9] dt-bindings: drop redundant part of title of
  shared bindings
-Message-ID: <20221117143305.GC664755@roeck-us.net>
+Message-ID: <20221117151703.00006bf8@Huawei.com>
+In-Reply-To: <20221117123850.368213-2-krzysztof.kozlowski@linaro.org>
 References: <20221117123850.368213-1-krzysztof.kozlowski@linaro.org>
  <20221117123850.368213-2-krzysztof.kozlowski@linaro.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221117123850.368213-2-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
 X-Mailman-Approved-At: Sat, 19 Nov 2022 09:40:31 +0100
 Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org,
  linux-pwm@vger.kernel.org, linux-iio@vger.kernel.org,
@@ -115,12 +94,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Nov 17, 2022 at 01:38:42PM +0100, Krzysztof Kozlowski wrote:
+On Thu, 17 Nov 2022 13:38:42 +0100
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+
 > The Devicetree bindings document does not have to say in the title that
 > it is a "binding", but instead just describe the hardware.  For shared
 > (re-usable) schemas, name them all as "common properties".
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com> #for IIO.
+
+Looked briefly at the rest and only found the issue Andrew Lunn pointed out.
+Otherwise all seem fine to me.
+
+Jonathan
+
+
 > ---
 >  Documentation/devicetree/bindings/clock/qcom,gcc.yaml         | 2 +-
 >  Documentation/devicetree/bindings/dma/dma-common.yaml         | 2 +-
@@ -143,11 +132,6 @@ On Thu, Nov 17, 2022 at 01:38:42PM +0100, Krzysztof Kozlowski wrote:
 >  .../devicetree/bindings/soundwire/soundwire-controller.yaml   | 2 +-
 >  Documentation/devicetree/bindings/spi/spi-controller.yaml     | 2 +-
 >  Documentation/devicetree/bindings/watchdog/watchdog.yaml      | 2 +-
-
-For watchdog:
-
-Acked-by: Guenter Roeck <linux@roeck-us.net>
-
 >  21 files changed, 23 insertions(+), 23 deletions(-)
 > 
 > diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc.yaml
@@ -437,6 +421,4 @@ Acked-by: Guenter Roeck <linux@roeck-us.net>
 >  
 >  maintainers:
 >    - Guenter Roeck <linux@roeck-us.net>
-> -- 
-> 2.34.1
-> 
+
