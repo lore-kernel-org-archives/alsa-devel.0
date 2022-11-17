@@ -4,106 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58BDDC433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 17 Nov 2022 14:59:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0870C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 17 Nov 2022 15:01:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8BC6916D2;
-	Thu, 17 Nov 2022 15:58:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BC6916D2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95AEC16DA;
+	Thu, 17 Nov 2022 16:00:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95AEC16DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668697188;
-	bh=7zQFpy/FThvyoS2Oh8s5pADJRem9WWaeRrr4Ft0S/MI=;
+	s=default; t=1668697272;
+	bh=SCUs7E0Hmpx45Jes1TPeWxVvcw4uUY3HMsnLGxpo4aw=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=D7JBY+uX4RyHjP/bdm+TeEIdSJIsv0IAEs5aQ0MPq+CKcnVh1zE5MOTouWuH8hyPz
-	 ubJaoaNvcu9qvlHyBmtKzzIZkci/IFRviwbyzHi2zUPZCSYxwjuxMkmI9CyXH3UG/O
-	 OlmWskE+bKEuHQ1LW59K+GWHhj6LXH8gALd0TotA=
+	b=YhQynK/TgNpWUbwHJdJyTDheTToude+/jicnpHApc9AnyHyrqsWzsBaj92HHXJZ2s
+	 AGLhUvDBoz3RBe5g0NMSZdzBOVL0ycD0fujHhP1I6YaFTwUg2bfN356EY8im9ahzIT
+	 2w2+9wSuCo+8/xxps+SHEiNTS6TeBsNceM+ZQeJ0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31B51F800B8;
-	Thu, 17 Nov 2022 15:58:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 557B1F8025A;
+	Thu, 17 Nov 2022 16:00:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 46A5FF8025A; Thu, 17 Nov 2022 15:58:56 +0100 (CET)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
- [IPv6:2a00:1450:4864:20::130])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B477AF804BD; Thu, 17 Nov 2022 16:00:20 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6E37F800B8
- for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2022 15:58:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6E37F800B8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 097C9F80087
+ for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2022 16:00:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 097C9F80087
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Ur9szg1D"
-Received: by mail-lf1-x130.google.com with SMTP id bp15so3166724lfb.13
- for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2022 06:58:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=VSnIdJlrSu1RqwxbrwymcRNJoSgT34DNNQH025cvo20=;
- b=Ur9szg1DKJvl3ubQjvlChH09oAO12tYaDGESWoJRFs5nbTcgL70iq6Rk6jcbyh2eSV
- 5sIr6XHiZbOMcG5vg6LYzpKXTZagjOTTXivxVfplX5GAD0O1/9QIYKFbd0XkOcolglVT
- VrJu0CgFgUecUmcpa3we0bBiZQmSB6sCWxEucrm8wK9mxNNpZRyq2THIgu40f2wTK8zo
- 2iE5ibWayllqwdjGN++kkVQdW9OgLgRj0+rBH5OvzcLsoNEByi9LNspb+2B+W5wqkM41
- Rwzp9Tu2wWCQ3oQ9fSXsHYYSxRuw8yfwAEchPTid10LtcwGqSDyeXQdG7IyHwjOChaWM
- 86bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=VSnIdJlrSu1RqwxbrwymcRNJoSgT34DNNQH025cvo20=;
- b=E/V8GBgPqwWSjcOeCe4de0G+ZvOxsCIU0J1BgcuXKC+jViPakKgI0De2e4gWRik0tT
- J4UB4N0AX6/5FQ9+laRBVboYVH/MulobxJN0hG4C49fmZ6yGGEgPC8v1FP11tbgATgao
- BrP7BWmdYFSaxgsS2S+6jWb14lzBIikSbtAEc5YnKIpcdKrgodvbDKTngXNgtl5BsvIa
- /NiBQkKSI0mntWozWjFu86T4UrvtnP/hW+peitbNcu9WwqZstVyRBzujtYAxD8Q/WPs9
- bQLusRJtnUWFV1gPysojFh5/VKqXSDHg9HjteWc4HdLGvRcr7QWzvzq9NPyibzy3/cBn
- HUmQ==
-X-Gm-Message-State: ANoB5pkBcIpztOJZoaIIIeTB+gxEevh5dKO9TRJeG8XNaT/w1lEdlizJ
- /EWSC3j+E8EKXlazFCmoUtM1VA==
-X-Google-Smtp-Source: AA0mqf4/hs47bXqsUk4ZLu/jQ1Wna1nuVovn6G3NWi6j/M3148XUWs2V/ZZa76pyYbEsKXo3MQAsvg==
-X-Received: by 2002:ac2:4a69:0:b0:4ac:d080:e1bd with SMTP id
- q9-20020ac24a69000000b004acd080e1bdmr1120397lfp.318.1668697131665; 
- Thu, 17 Nov 2022 06:58:51 -0800 (PST)
-Received: from [192.168.0.20]
- (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
- by smtp.gmail.com with ESMTPSA id
- r8-20020ac24d08000000b00492dfcc0e58sm186892lfi.53.2022.11.17.06.58.50
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 17 Nov 2022 06:58:51 -0800 (PST)
-Message-ID: <2f35b9aa-1385-9c2b-ed60-721a835645dc@linaro.org>
-Date: Thu, 17 Nov 2022 15:58:49 +0100
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="juJAMxF4"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1668697215; x=1700233215;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=SCUs7E0Hmpx45Jes1TPeWxVvcw4uUY3HMsnLGxpo4aw=;
+ b=juJAMxF4us64Tp7pVTgxadh3FPPosaoHGbuL/wM8i+SgN+1KuFeYy32S
+ uJ1GXvuzmhC46R2OEQ1j8MbO8BdeDYkev7dCHu3kVNuRDTNRyj3HLBTiU
+ MucwDD0RdLPFo0jXP6xdWrE7GDzqznuU4EB0R/ENcG8nNAJm458ASYjKe
+ olYYwQ4068+7EQ4v+4RsguBxApN0bwDP/RCPLM4tHNjqs8Nv6SoRqBRvS
+ H0no8A/2hlcLbFjd61uxTwqYEmH6m9SBJHiAEkru5U2YF1zqKFSV9eC0H
+ bdQ7DpTXCPwQs6w6ztdZXJmv4bk/k0KbUvE7ONb3ygdNEyF4hM3E4C2MD w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10534"; a="314685214"
+X-IronPort-AV: E=Sophos;i="5.96,171,1665471600"; d="scan'208";a="314685214"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Nov 2022 07:00:06 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10534"; a="617636506"
+X-IronPort-AV: E=Sophos;i="5.96,171,1665471600"; d="scan'208";a="617636506"
+Received: from kristi4x-mobl1.amr.corp.intel.com (HELO [10.213.177.122])
+ ([10.213.177.122])
+ by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Nov 2022 07:00:05 -0800
+Message-ID: <0cff6870-8de1-1c93-208b-9b57c328486e@linux.intel.com>
+Date: Thu, 17 Nov 2022 08:35:34 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [RFC PATCH 1/9] dt-bindings: drop redundant part of title of
- shared bindings
+ Firefox/102.0 Thunderbird/102.4.2
+Subject: Re: [PATCH v2 1/4] soundwire: bus: export sdw_nwrite_no_pm and
+ sdw_nread_no_pm functions
+To: Charles Keepax <ckeepax@opensource.cirrus.com>, vkoul@kernel.org
+References: <20221117141727.3031503-1-ckeepax@opensource.cirrus.com>
+ <20221117141727.3031503-2-ckeepax@opensource.cirrus.com>
 Content-Language: en-US
-To: Andrew Lunn <andrew@lunn.ch>
-References: <20221117123850.368213-1-krzysztof.kozlowski@linaro.org>
- <20221117123850.368213-2-krzysztof.kozlowski@linaro.org>
- <Y3Y1xjOjijBsQLZA@lunn.ch>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <Y3Y1xjOjijBsQLZA@lunn.ch>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20221117141727.3031503-2-ckeepax@opensource.cirrus.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, linux-pwm@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-pci@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-riscv@lists.infradead.org, linux-clk@vger.kernel.org,
- linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- linux-media@vger.kernel.org, devicetree@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-can@vger.kernel.org,
- linux-gpio@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- virtualization@lists.linux-foundation.org,
- linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+Cc: patches@opensource.cirrus.com, sanyog.r.kale@intel.com,
+ yung-chuan.liao@linux.intel.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -119,21 +91,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 17/11/2022 14:23, Andrew Lunn wrote:
->>  allOf:
->> -  - $ref: "dma-common.yaml#"
->> +  - $ref: dma-common.yaml#
->>  
->>  
->>  allOf:
->> -  - $ref: "dma-common.yaml#"
->> +  - $ref: dma-common.yaml#
+
+
+On 11/17/22 08:17, Charles Keepax wrote:
+> From: Simon Trimmer <simont@opensource.cirrus.com>
 > 
-> Looks like some other automated change made its way into this patch.
+> The commit 167790abb90f ("soundwire: export sdw_write/read_no_pm
+> functions") exposed the single byte no_pm versions of the IO functions
+> that can be used without touching PM, export the multi byte no_pm
+> versions for the same reason.
+> 
+> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-I forgot to mention in commit msg, but maybe better to drop it to reduce
-noise.
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Best regards,
-Krzysztof
-
+> ---
+> 
+> No change since v1.
+> 
+>  drivers/soundwire/bus.c       | 8 ++++----
+>  include/linux/soundwire/sdw.h | 2 ++
+>  2 files changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+> index 76515c33e639e..ef4878258afad 100644
+> --- a/drivers/soundwire/bus.c
+> +++ b/drivers/soundwire/bus.c
+> @@ -414,8 +414,7 @@ int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
+>   * all clients need to use the pm versions
+>   */
+>  
+> -static int
+> -sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+> +int sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+>  {
+>  	struct sdw_msg msg;
+>  	int ret;
+> @@ -430,9 +429,9 @@ sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+>  		ret = 0;
+>  	return ret;
+>  }
+> +EXPORT_SYMBOL(sdw_nread_no_pm);
+>  
+> -static int
+> -sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
+> +int sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
+>  {
+>  	struct sdw_msg msg;
+>  	int ret;
+> @@ -447,6 +446,7 @@ sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
+>  		ret = 0;
+>  	return ret;
+>  }
+> +EXPORT_SYMBOL(sdw_nwrite_no_pm);
+>  
+>  int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value)
+>  {
+> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+> index 9e4537f409c29..902ed46f76c80 100644
+> --- a/include/linux/soundwire/sdw.h
+> +++ b/include/linux/soundwire/sdw.h
+> @@ -1047,7 +1047,9 @@ int sdw_write(struct sdw_slave *slave, u32 addr, u8 value);
+>  int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value);
+>  int sdw_read_no_pm(struct sdw_slave *slave, u32 addr);
+>  int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
+> +int sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
+>  int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val);
+> +int sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val);
+>  int sdw_update(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
+>  int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
+>  
