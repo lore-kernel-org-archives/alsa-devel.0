@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3E07C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Nov 2022 15:26:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77632C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Nov 2022 15:27:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A38E416A2;
-	Fri, 18 Nov 2022 16:25:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A38E416A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98E6C1692;
+	Fri, 18 Nov 2022 16:26:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98E6C1692
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668785201;
-	bh=/XzbCsA/7MpvokWg1tz3z62uDOQXn3+sAi9aw/PhfKc=;
+	s=default; t=1668785229;
+	bh=BSCXlPVmpY0FoDKqa/ajgiBBO/IcH6tYlQ0+lVrw+z8=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=plKsETB6Mhcdin4Iua9raYThQR5/GhaHxjTKVJsMrUnCp8lDL5ywDvr/ntwX+jVEO
-	 41m1ErbLLeVT+v1EYIf4+F0aNBYcb7Y8CFYGVZvrBISF3i0kqA3Fe+/EqrGBNmuBnk
-	 bpuCTm6WqLnpUUOk0YdGlrbhGHnSsp6bGZhZRdYY=
+	b=RI5kow28tjmOdSak/eOBmzmNj9gBAeWLa8uH40BVeHew0IXcWUGWKhe8jWjm4mUPx
+	 Wc5xrPhF27H6kV08e8uVHp7QxR0Dw7macRfZmrlGSndhW5LJsQe4uIYCWMoc5kSS81
+	 HRiMI7Zce+qJTa6zuH3uG8ge2xmGslA01ZuS4raI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45BB7F8020D;
-	Fri, 18 Nov 2022 16:25:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E375F80549;
+	Fri, 18 Nov 2022 16:25:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 03CF6F8020D; Fri, 18 Nov 2022 16:25:28 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 39D75F8016E; Fri, 18 Nov 2022 16:25:28 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A2535F801D8
- for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2022 16:25:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2535F801D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5174FF800B5
+ for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2022 16:25:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5174FF800B5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dbBUKYLv"
+ header.b="AKZAuC64"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 358B4B82434;
- Fri, 18 Nov 2022 15:25:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59C41C433D6;
- Fri, 18 Nov 2022 15:25:20 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 0072DB8243A;
+ Fri, 18 Nov 2022 15:25:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 034C3C433C1;
+ Fri, 18 Nov 2022 15:25:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1668785122;
- bh=/XzbCsA/7MpvokWg1tz3z62uDOQXn3+sAi9aw/PhfKc=;
+ s=k20201202; t=1668785119;
+ bh=BSCXlPVmpY0FoDKqa/ajgiBBO/IcH6tYlQ0+lVrw+z8=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=dbBUKYLv4Y4eooasqNx1u0FhrLnsEPKatambdbtxQC+2TDsNQjY+5EZG+4h3vD4BU
- 70URA/sTXSSq912Qc751zv6Uu3WDc0JFqighqK1aUn7k5/EuDe8YjUZ09t0ReqDNgT
- nrw5kVVw5nVa+m1DhpYW6gS+IoQRBAk16HERAts3d6TMEkduWCmcyODAfBhDSQyhGY
- TC6FbyPmoFjxXEKQCkZC3nriPGU8laMWu0uV/qDg2anzpeqGkwIQXJlB6bi10cwH4F
- GMlR7y/L9R3v7Hpg4kxCIXNg/5TyIdzWZo9tKPDL+ZS9NRVoQE9TMTd2llWcWcQqxr
- ZwrQZ9YxYDDdA==
+ b=AKZAuC64uZtYcPtUfXAgtpGOks7Cm49yM9UaJCc2T3cLoNKiGgOlLZAzd7Zb9znKY
+ tXP0/jpS2LCaRAcwxUTuQ99NZhd2UpWCfXVZpciePUx+HkR9UqKKj+YSz4ckFtLqZX
+ I8wF2RR+6wIvwdRIH7+1aCVb95K9l1OaN9YYGp3+8mWZbn8FnozFRbOhjN6AJhhTVX
+ Z87+Cw/yO66lmTPZ58mXfjVBrTEPX+RmCtcXd34b5JoMegXAw5sST3j+Kf2pb2tWMc
+ vW+ZGQOSf1cvOogYvrkSAIH0EkAsrITox/lJrkxWJGr/dmtgP+j+0QYVw2suIfA/q2
+ VIYSwNIeuYpnQ==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <20221118113052.1340593-1-cezary.rojewski@intel.com>
-References: <20221118113052.1340593-1-cezary.rojewski@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: avs: Initialize private data for subsequent
- HDA FEs
-Message-Id: <166878512000.955590.4095144613199197260.b4-ty@kernel.org>
-Date: Fri, 18 Nov 2022 15:25:20 +0000
+To: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20221118015106.532302-1-yung-chuan.liao@linux.intel.com>
+References: <20221118015106.532302-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: sof_sdw_amp: mark coeff tables with
+ __maybe_unused
+Message-Id: <166878511768.955590.200081679629244191.b4-ty@kernel.org>
+Date: Fri, 18 Nov 2022 15:25:17 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.11.0-dev-8af31
-Cc: hdegoede@redhat.com, tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
- amadeuszx.slawinski@linux.intel.com
+Cc: alsa-devel@alsa-project.org, peter.ujfalusi@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, bard.liao@intel.com,
+ ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,17 +82,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 18 Nov 2022 12:30:52 +0100, Cezary Rojewski wrote:
-> HDAudio implementation found in sound/pci/hda expects a valid stream
-> pointer in substream->runtime->private_data location. For ASoC users,
-> that should point to a valid link stream which is assigned when BE
-> opens.
+On Fri, 18 Nov 2022 09:51:06 +0800, Bard Liao wrote:
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 > 
-> As BE borrows its runtime from FE, the information may be lost when
-> reparenting comes into picture - see dpcm_be_reparent(). To support the
-> DPCM reparenting functionality for HDAudio scenarios while still
-> fulfilling expectations of HDAudio common code, have all FEs point to
-> the same private data.
+> The same file provides two tables used in separate drivers, make them
+> as __maybe_unused to avoid errors:
+> 
+> sound/soc/intel/boards/sof_sdw_amp_coeff_tables.h:163:17: error:
+> ‘dell_0b00_bq_params’ defined but not used
+> [-Werror=unused-const-variable=]
+>   163 | static const u8 dell_0b00_bq_params[] = {
 > 
 > [...]
 
@@ -102,8 +101,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: avs: Initialize private data for subsequent HDA FEs
-      commit: f38d4c72cb2d68e73d3e54feb68febd6b7c4bfd2
+[1/1] ASoC: Intel: sof_sdw_amp: mark coeff tables with __maybe_unused
+      commit: 041fe8858475a0337b28404ec5136f4fc583b3aa
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
