@@ -4,62 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F2EAC4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Nov 2022 03:43:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 593B1C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Nov 2022 06:32:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1FA91697;
-	Fri, 18 Nov 2022 04:42:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1FA91697
+	by alsa0.perex.cz (Postfix) with ESMTPS id 51C8F1655;
+	Fri, 18 Nov 2022 07:32:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51C8F1655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668742998;
-	bh=7PBcqk2ClhQYoKBS8Ds44tRRYAvQ1MqcJdEyoMYD760=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1668753173;
+	bh=bTFq1oiqjVgyZgKLLJ1pevo/xpEoI2RvSWdY+1HTHgM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=U6X2NmzaUKDMKxAgJs47FtxOV/mopvuxr6Zkw7+PcAAKSUwfP/TEFpMtvL7QRfpUC
-	 utEVSI3zxT0FS3Re8XmvkaS8hx8+/fbRYjJiulKmpSfaQHCpuqHa3fpG5OLC8xzxt8
-	 PF7yTs+hL5p2Ke8F8oD8e6kuw4o9M8GBcKJAEwJE=
+	b=cdo3ucr6BH/Z9zGdNzJVMn4Zy4KKHNvBMeI1tF1ayKmI9rtTrYZO+nKpDanzwVAfR
+	 hQWoBQFMIhVRnRrKlqyPwLrufFERLBzI7Yk7EghOo+Wavf/PJ00ZkOpeGaCcrPZ827
+	 u3L3HSQcRuVpOEQTqJ1DwE6gxo79N3h4LGFtpIB8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9CF36F8016E;
-	Fri, 18 Nov 2022 04:42:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE6D6F800B8;
+	Fri, 18 Nov 2022 07:32:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF544F801D8; Fri, 18 Nov 2022 04:42:25 +0100 (CET)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id CC7B6F801D8; Fri, 18 Nov 2022 07:32:00 +0100 (CET)
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com
+ [IPv6:2607:f8b0:4864:20::52b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D90B5F800B8
- for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2022 04:42:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D90B5F800B8
-Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.55])
- by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4ND2Zg0NrSzJnjl;
- Fri, 18 Nov 2022 11:39:07 +0800 (CST)
-Received: from [10.67.110.176] (10.67.110.176) by
- kwepemi500012.china.huawei.com (7.221.188.12) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 18 Nov 2022 11:42:17 +0800
-Subject: Re: [PATCH] ASoC: amd: acp: Fix possible UAF in acp_dma_open
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10B46F800B8
+ for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2022 07:31:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10B46F800B8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="cDvyxai/"
+Received: by mail-pg1-x52b.google.com with SMTP id o13so4195576pgu.7
+ for <alsa-devel@alsa-project.org>; Thu, 17 Nov 2022 22:31:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=2NYDcOh5n1h0+3JmFt6OBHp8y607KAymyMlNfD86cHQ=;
+ b=cDvyxai/no61jb0OqF0aMtz6WqFdoA6s+9a4NZgMCjxROG/jJZSE/hHUeLHWTKGAZF
+ U1niJ0U/5ezYtDmASd0UvyFkxpX15Y3t0Wy5bj75gbHdMU4ZrMwzEGf4pVXoVXUUzImM
+ KrmQy6ZtItcY1Q9Mx1JljRcT5q/Y1Na7yqgaPFGX6QotwvKs2HyyoVEk8/jjhyi6NsPQ
+ GKNFi81b/z8RzK5EafYt3Hy2jCWd7+sW/PVsCdsqvsZ706/SQZmqvO7CHCl9n6bK/FaM
+ dRw3+P8FOauBcnwMknptIMnnZ4GjOzoO4fmvBvg5HTOCYPDccnm0G8PHo9E14BN2rvp0
+ vMCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=2NYDcOh5n1h0+3JmFt6OBHp8y607KAymyMlNfD86cHQ=;
+ b=vpPh4WhiJrX1q0PrXwW0Dy0HIWC8F0mzMdJp12TrD8m2eK8enkp0X4k+btmj/51CZz
+ h5LPKzgQQ5N1s07e85E2GslQPsBrz6bi6Tm/mZWiFVZWdmYJFWK7FDgV+IoxcoMWHl61
+ N6sB1+4zkYhejr19LzIefQEdsPZEHavKEENSqVQ7OT5xOGszzih8yQ8PQh9QWmTNeJk5
+ s5XotPX37Hd84OL7xxXQkX472zyk6lrS0fgxNGarqOdvdodVyq88zbBuvQAobnfH10vM
+ aS6MS5lv65GssOW/m+v/6x97zobI0Uj8pJmk4L0fKyzB3WMQC0O3z5nRRub53hYSm2ig
+ L96A==
+X-Gm-Message-State: ANoB5pmo0tzQ1sKJaJeLB61PdrUmAvBh3Bab3KFPpcBmxQSf1x7IFVQH
+ b2BGk5mPejBmCbEhGF57Bco=
+X-Google-Smtp-Source: AA0mqf5DR/Q9FiW5k+t7mdG5PItHqfyZV5K8uA3eiba29lpUhIJc47LTBFEz1d+DDTWuFtxQvpzDSA==
+X-Received: by 2002:a63:5c1e:0:b0:46e:96ba:494d with SMTP id
+ q30-20020a635c1e000000b0046e96ba494dmr5365390pgb.404.1668753113281; 
+ Thu, 17 Nov 2022 22:31:53 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:e4c5:c31d:4c68:97a0])
+ by smtp.gmail.com with ESMTPSA id
+ nd13-20020a17090b4ccd00b0020de216d0f7sm1981661pjb.18.2022.11.17.22.31.52
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 17 Nov 2022 22:31:52 -0800 (PST)
+Date: Thu, 17 Nov 2022 22:31:49 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 To: Mark Brown <broonie@kernel.org>
-References: <20221117061248.3018292-1-cuigaosheng1@huawei.com>
- <Y3YX/LsLzSU+jQ7A@sirena.org.uk>
-From: cuigaosheng <cuigaosheng1@huawei.com>
-Message-ID: <2e8cfa9c-ed53-a218-69cb-b45c8c156de4@huawei.com>
-Date: Fri, 18 Nov 2022 11:42:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+Subject: Re: [PATCH 01/11] ASoC: ak5386: switch to using gpiod API
+Message-ID: <Y3cm1eeDN+n3tbpG@google.com>
+References: <20221116053817.2929810-1-dmitry.torokhov@gmail.com>
+ <Y3S9KzTE1/UQDmJl@sirena.org.uk> <Y3U1BJAPOJTLw/Zb@google.com>
+ <Y3YcLulaebidYYsg@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <Y3YX/LsLzSU+jQ7A@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.110.176]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemi500012.china.huawei.com (7.221.188.12)
-X-CFilter-Loop: Reflected
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
- error27@gmail.com, AjitKumar.Pandey@amd.com, venkataprasad.potturu@amd.com,
- tiwai@suse.com, lgirdwood@gmail.com, nathan@kernel.org,
- Vijendar.Mukunda@amd.com, Vsujithkumar.Reddy@amd.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y3YcLulaebidYYsg@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,25 +100,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-> Is it not better to only add the newly allocated stream to the
-> list once it's fully initialised?  Otherwise something could be
-> using a partially initialised item from the list.
+On Thu, Nov 17, 2022 at 11:34:06AM +0000, Mark Brown wrote:
+> On Wed, Nov 16, 2022 at 11:07:48AM -0800, Dmitry Torokhov wrote:
+> > On Wed, Nov 16, 2022 at 10:36:27AM +0000, Mark Brown wrote:
+> 
+> > > How are we ensuring that people have described signals as active
+> > > low/high in existing DTs, and are we positive that the signal is
+> > > described as active low for all devices?  In particular if the
+> > > signal is described as a reset signal then it's active high even
+> > > if we want it low while the device is actually in use.
+> 
+> > I have been going through in-kernel DTSes and adjusting ones that are
+> > incorrect. For external ones I think we should take a pragmatic approach
+> > and say that if driver has last non-mechanical update in 2014 and there
+> > are no users submitted to mainline since then (as this one), then it is
+> > highly unlikely that devices currently using this component/codec will
+> > be updated to the 6.2+ kernel even if they are still in service. And if
+> > this does happen the breakage will be immediately obvious as we'll keep
+> > the codec in reset state.
+> 
+> > But if you really want to I can add quirk(s) to gpiolib forcing this
+> > line to be treated as active-low regardless of what specified in DTS.
+> > This kind of negates benefit of going to gpiod though.
+> 
+> That doesn't address the bit about checking that the device
+> describes the signal as active low in hardware - it's assuming
+> that the signal is described by the device as an active low
+> reset and not for example as a shutdown signal.
 
-Thanks for taking time to review this patch.
+Huh? If we add a quirk to gpiolib to treat the signal as active low
+(i.e. preserve current driver behavior - I am talking about this
+particular peripheral here, not treating everything as active low of
+course).
 
-I have made a patch v2 and submit it, fix it by adding the newly allocated stream to the
-list once it's fully initialised.
+> 
+> TBH I'm not thrilled about just randomly breaking ABI
+> compatibility for neatness reasons, it's really not helping
+> people take device tree ABI compatibility seriously.
 
-On 2022/11/17 19:16, Mark Brown wrote:
-> On Thu, Nov 17, 2022 at 02:12:48PM +0800, Gaosheng Cui wrote:
->> Smatch report warning as follows:
->>
->> sound/soc/amd/acp/acp-platform.c:199 acp_dma_open() warn:
->>    '&stream->list' not removed from list
->>
->> If snd_pcm_hw_constraint_integer() fails in acp_dma_open(),
->> stream will be freed, but stream->list will not be removed from
->> adata->stream_list, then list traversal may cause UAF.
-> Is it not better to only add the newly allocated stream to the
-> list once it's fully initialised?  Otherwise something could be
-> using a partially initialised item from the list.
+Yes, I freely admit I do not take device tree ABI compatibility
+seriously. IMO, with the exception of a few peripherals, it is a
+solution in search of a problem, and we declared stability of it too
+early, before we came up with reasonable rules for how resources should
+be described. I strongly believe that in vast majority of cases devices
+with out-of-tree DTs will not be updated to upstream kernels as this
+requires significant engineering effort and vendors usually not
+interested in doing that.
+
+Thanks.
+
+-- 
+Dmitry
