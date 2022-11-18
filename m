@@ -4,108 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40E94C433FE
-	for <alsa-devel@archiver.kernel.org>; Sat, 19 Nov 2022 08:48:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E80B0C4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 19 Nov 2022 08:49:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75B2A1701;
-	Sat, 19 Nov 2022 09:48:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75B2A1701
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2544B171B;
+	Sat, 19 Nov 2022 09:48:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2544B171B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668847736;
-	bh=XWcRUV744AyFTur3H2/PtkitoTY2jrnu2d7R7y3/obI=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ni55DwaibNrpnB5EIVisOCq4ru6TiChsvzGsAXccsFPZS8IKT4/V+3qcs586H3V6m
-	 hKf3ehgoSwIQ/F7x8Xr8tr+XnhhC4m6kmr63+66Q2UTvDFaZOrQ24EwVkcHwMcMTKI
-	 JnuVgMvJqL/70wlHpYUWdkJ0yx6BElNfhl9pEll0=
+	s=default; t=1668847751;
+	bh=+KP4KPDplSXS5beEV5TrsIwBP8ZVtWojvZIAOFm1OGY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=TubJpA50A92hOFc4ZxhEPrg+UlAdBWwH4UJUz4s9HIxh3niKDmCxrfALs2iVaenst
+	 B6gvT17z4CBVrDRisXp6L3JwtntYIkJPn8tPM8PdJZyDzaJ4pLb+eWnJYZfQ6XVmva
+	 plx6GhZNC1fsdW8OzQCW1bCJ1nt7TBhLMM9JlM8M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99EADF80603;
-	Sat, 19 Nov 2022 09:40:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2DEF5F80609;
+	Sat, 19 Nov 2022 09:40:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BCC1DF801D8; Fri, 18 Nov 2022 09:28:40 +0100 (CET)
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com
- [IPv6:2a00:1450:4864:20::231])
+ id 565B7F8020D; Fri, 18 Nov 2022 23:38:06 +0100 (CET)
+Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com
+ [209.85.160.49])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B6FC3F800FD
- for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2022 09:28:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6FC3F800FD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="c0DwlSGG"
-Received: by mail-lj1-x231.google.com with SMTP id u11so5885588ljk.6
- for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2022 00:28:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=DZabo7ibEwOOw8J7VwUfivpQWJQQOqpTQOP6qmrwcFs=;
- b=c0DwlSGGZnpMt70g7cvHCqqLtClo+HqnYC/KDMQT/2C4Kgme2ED6Ajko4OIXpmbeXS
- m5SIke4QdtVszOu65Cv1AnF200xxc1a/iy1cj+W/4WPUi1idnzCq3jL3rOCyXQ/Sy7Xo
- FhxYYZmL7CP0ofdSTlNio6J4qvL4Gb4QE7SbMbyvGwdcz0q2lnaiEphLSDGuz3cWY979
- gQT9VdBtzdRs59dL/dUgCq5BV84WRT+Q7ok8jIBAq5G8XWvjz6kIifP/efd7/+/UMkZu
- +qzJPaRvsSeqy/GGhmsAycmFzituYnYzJUATh2BkazIz98eeuD3Eq9fkv2cSDtBNQpLB
- eqpQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7CD5AF8020D
+ for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2022 23:38:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CD5AF8020D
+Received: by mail-oa1-f49.google.com with SMTP id
+ 586e51a60fabf-13c2cfd1126so7587692fac.10
+ for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2022 14:38:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=DZabo7ibEwOOw8J7VwUfivpQWJQQOqpTQOP6qmrwcFs=;
- b=jvIdnJINJL5Dzb5C3j/QI3Wfizgdq0Gq/XAe5bGet0d8uKw5d+x6MPsqy+76l4BOIl
- YQmuEefrqcOW/Xrkluhhk6voVP0JLiiqbnTXbsfoZpQ9aaLBKvD3qM8UIVjja636kB8/
- qsproVIECFCjqN9eKKUti4hINWo7ZpKNdRGS1PZKyvzquWqXuV03N5fi8CDWT1orZ5/b
- 1CRJFdwphDuaxcUXmVJh028VNRlgiP5AAGe1ArmcK1Hn3UuINkIUdM5Hkm4J0R70lxJ8
- TCSVzEFDvcm1uggw0n9YGSIdAmuTzeA7dImpRoTSqm4f/JSRKR8+WtNs1yuSbmqg1jgX
- 1qpA==
-X-Gm-Message-State: ANoB5pkV31NK5/Cqmtc+YqjqyjpVQYR1nHj911xVwSAz91jU/Q5V220k
- sJmYnrTcRqbLNQJqv/OeJnbW/g==
-X-Google-Smtp-Source: AA0mqf5FUU/an0yPckwGnu0iJ8FLtTfHewcyaiyp5w+c6ymGf8LMkNj5Lkw1yXdUuHVX3l3x9IvIFA==
-X-Received: by 2002:a2e:a5c7:0:b0:277:8d48:27dd with SMTP id
- n7-20020a2ea5c7000000b002778d4827ddmr2207144ljp.192.1668760111721; 
- Fri, 18 Nov 2022 00:28:31 -0800 (PST)
-Received: from [192.168.0.20]
- (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
- by smtp.gmail.com with ESMTPSA id
- d24-20020a056512369800b0049b8c0571e5sm564273lfs.113.2022.11.18.00.28.30
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 18 Nov 2022 00:28:31 -0800 (PST)
-Message-ID: <578b686e-8461-a959-86c5-83a8be1dc981@linaro.org>
-Date: Fri, 18 Nov 2022 09:28:29 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [RFC PATCH 1/9] dt-bindings: drop redundant part of title of
- shared bindings
-Content-Language: en-US
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-References: <20221117123850.368213-1-krzysztof.kozlowski@linaro.org>
- <20221117123850.368213-2-krzysztof.kozlowski@linaro.org>
- <20221117220756.7a1bf734@xps-13>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20221117220756.7a1bf734@xps-13>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailman-Approved-At: Sat, 19 Nov 2022 09:40:30 +0100
-Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org,
- linux-pwm@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-pci@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-mtd@lists.infradead.org,
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=m0raBjAqYekKQWPt8CeBL05C5sEHyP1ZPYbyFvxhkC0=;
+ b=KUkjlH4nz8W7ymKiftkYVSZb2S0IEITaEMgA/HSqtVLrOk+9mYmN3kjW+lNzBlDhNa
+ IqVUjLzpF9FqwWoItuxgNRlFp7Ndf9SRjoBLtmGBa2gCWwPu99Hbu72TpECrkuD6bWWe
+ zZJiNl6UdhJGimmdgHqwenWyX7zd7Fsoplr8xsUkme5HpaqtLVEF9MXlRoH6G4GZB3V9
+ YOtLZKQHJY7HT1KDJPfuWcR94bc0UQXQvJqXOurDDO39zjfuK7NcdYmvVpC/99h0pL4B
+ Mm+rrFSDzkj7cXgzKaI9ixkG1rZ/f+gYio2m+9FtWF6bbHM4O8GNGMXfzL+pVuBBHz/N
+ xDTQ==
+X-Gm-Message-State: ANoB5plsSxigDNphP5tnDMiP+DJkPQ4yiYcHbZcw8YMMtzxptMjnbuga
+ KpYrUNhFkLEuG1fPqdRjWA==
+X-Google-Smtp-Source: AA0mqf4uC828wW0XMFRcw+1h9kzuiTCYIXYE5a9yh+nlTeD+x6xGbslmOI8E3ZIqUy+Kwbf6RoH4Ow==
+X-Received: by 2002:a05:6870:ac0b:b0:13a:e051:7c68 with SMTP id
+ kw11-20020a056870ac0b00b0013ae0517c68mr5202453oab.150.1668811081476; 
+ Fri, 18 Nov 2022 14:38:01 -0800 (PST)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
+ t19-20020a9d7753000000b0066cf6a14d1asm2061199otl.23.2022.11.18.14.37.59
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 18 Nov 2022 14:38:00 -0800 (PST)
+Received: (nullmailer pid 1722360 invoked by uid 1000);
+ Fri, 18 Nov 2022 22:38:02 -0000
+From: Rob Herring <robh@kernel.org>
+To: Ilia Lin <ilia.lin@kernel.org>, Andy Gross <agross@kernel.org>, 
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@somainline.org>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-riscv@lists.infradead.org, linux-clk@vger.kernel.org,
- linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- linux-media@vger.kernel.org, devicetree@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-can@vger.kernel.org,
- linux-gpio@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- virtualization@lists.linux-foundation.org,
- linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+ Jean Delvare <jdelvare@suse.com>, 
+ Guenter Roeck <linux@roeck-us.net>, Yangtao Li <tiny.windzz@gmail.com>,
+ Nishanth Menon <nm@ti.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+ Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>,
+ Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+ Ryder Lee <ryder.lee@mediatek.com>, 
+ Jianjun Wang <jianjun.wang@mediatek.com>, Bjorn Helgaas <bhelgaas@google.com>, 
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Marek Vasut <marek.vasut+renesas@gmail.com>, 
+ Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, 
+ Mark Brown <broonie@kernel.org>, Javier Martinez Canillas <javier@dowhile0.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, 
+ Maxime Ripard <mripard@kernel.org>, Daniel Mack <zonque@gmail.com>, 
+ Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>, 
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH] dt-bindings: Add missing start and/or end of line regex
+ anchors
+Date: Fri, 18 Nov 2022 16:37:27 -0600
+Message-Id: <20221118223728.1721589-1-robh@kernel.org>
+X-Mailer: git-send-email 2.35.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Sat, 19 Nov 2022 09:40:30 +0100
+Cc: linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-pm@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzk@kernel.org>, linux-spi@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, linux-mediatek@lists.infradead.org,
+ linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
+ linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -121,86 +114,186 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 17/11/2022 22:07, Miquel Raynal wrote:
-> Hi Krzysztof,
-> 
-> krzysztof.kozlowski@linaro.org wrote on Thu, 17 Nov 2022 13:38:42 +0100:
-> 
->> The Devicetree bindings document does not have to say in the title that
->> it is a "binding", but instead just describe the hardware.  For shared
->> (re-usable) schemas, name them all as "common properties".
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> ---
->>  Documentation/devicetree/bindings/clock/qcom,gcc.yaml         | 2 +-
->>  Documentation/devicetree/bindings/dma/dma-common.yaml         | 2 +-
->>  Documentation/devicetree/bindings/dma/dma-controller.yaml     | 4 ++--
->>  Documentation/devicetree/bindings/dma/dma-router.yaml         | 4 ++--
->>  Documentation/devicetree/bindings/iio/adc/adc.yaml            | 2 +-
->>  .../devicetree/bindings/media/video-interface-devices.yaml    | 2 +-
->>  Documentation/devicetree/bindings/media/video-interfaces.yaml | 2 +-
->>  Documentation/devicetree/bindings/mmc/mmc-controller.yaml     | 2 +-
->>  Documentation/devicetree/bindings/mtd/nand-chip.yaml          | 2 +-
->>  Documentation/devicetree/bindings/mtd/nand-controller.yaml    | 2 +-
->>  .../bindings/net/bluetooth/bluetooth-controller.yaml          | 2 +-
->>  Documentation/devicetree/bindings/net/can/can-controller.yaml | 2 +-
->>  .../devicetree/bindings/net/ethernet-controller.yaml          | 2 +-
->>  Documentation/devicetree/bindings/net/ethernet-phy.yaml       | 2 +-
->>  Documentation/devicetree/bindings/net/mdio.yaml               | 2 +-
->>  Documentation/devicetree/bindings/opp/opp-v2-base.yaml        | 2 +-
->>  .../devicetree/bindings/power/reset/restart-handler.yaml      | 2 +-
->>  Documentation/devicetree/bindings/rtc/rtc.yaml                | 2 +-
->>  .../devicetree/bindings/soundwire/soundwire-controller.yaml   | 2 +-
->>  Documentation/devicetree/bindings/spi/spi-controller.yaml     | 2 +-
->>  Documentation/devicetree/bindings/watchdog/watchdog.yaml      | 2 +-
->>  21 files changed, 23 insertions(+), 23 deletions(-)
->>
-> 
-> [...]
-> 
->> diff --git a/Documentation/devicetree/bindings/mtd/nand-chip.yaml b/Documentation/devicetree/bindings/mtd/nand-chip.yaml
->> index 97ac3a3fbb52..20b195ef9b70 100644
->> --- a/Documentation/devicetree/bindings/mtd/nand-chip.yaml
->> +++ b/Documentation/devicetree/bindings/mtd/nand-chip.yaml
->> @@ -4,7 +4,7 @@
->>  $id: http://devicetree.org/schemas/mtd/nand-chip.yaml#
->>  $schema: http://devicetree.org/meta-schemas/core.yaml#
->>  
->> -title: NAND Chip and NAND Controller Generic Binding
->> +title: NAND Chip and NAND Controller common properties
-> 
-> I only see this now but the title should be
-> 
-> 	"NAND chip common properties"
-> 
->>  
->>  maintainers:
->>    - Miquel Raynal <miquel.raynal@bootlin.com>
->> diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
->> index 359a015d4e5a..a004efc42842 100644
->> --- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
->> +++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
->> @@ -4,7 +4,7 @@
->>  $id: http://devicetree.org/schemas/mtd/nand-controller.yaml#
->>  $schema: http://devicetree.org/meta-schemas/core.yaml#
->>  
->> -title: NAND Chip and NAND Controller Generic Binding
->> +title: NAND Chip and NAND Controller common properties
-> 
-> And here just "NAND controller..."
-> 
-> Of course the original purpose of your series is more to clean those
-> titles rather than fixing them and if you disagree I am fine doing it
-> myself aside, but if you could at the same time make the title more
-> accurate that would be perfect.
-> 
-> Either ways:
-> 
-> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+json-schema patterns by default will match anywhere in a string, so
+typically we want at least the start or end anchored. Fix the obvious
+cases where the anchors were forgotten.
 
-Thanks, I update these manually, so I can correct the names to ones you
-mentioned. Thanks.
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../devicetree/bindings/cpufreq/qcom-cpufreq-nvmem.yaml       | 2 +-
+ Documentation/devicetree/bindings/hwmon/adt7475.yaml          | 4 ++--
+ .../bindings/opp/allwinner,sun50i-h6-operating-points.yaml    | 4 ++--
+ .../devicetree/bindings/pci/mediatek,mt7621-pcie.yaml         | 2 +-
+ .../devicetree/bindings/pci/renesas,pci-rcar-gen2.yaml        | 2 +-
+ Documentation/devicetree/bindings/regulator/max8660.yaml      | 2 +-
+ .../devicetree/bindings/regulator/maxim,max77802.yaml         | 2 +-
+ Documentation/devicetree/bindings/regulator/regulator.yaml    | 2 +-
+ .../devicetree/bindings/regulator/rohm,bd9576-regulator.yaml  | 2 +-
+ Documentation/devicetree/bindings/sound/renesas,rsnd.yaml     | 2 +-
+ .../devicetree/bindings/spi/nvidia,tegra210-quad.yaml         | 2 +-
+ 11 files changed, 13 insertions(+), 13 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/Documentation/devicetree/bindings/cpufreq/qcom-cpufreq-nvmem.yaml b/Documentation/devicetree/bindings/cpufreq/qcom-cpufreq-nvmem.yaml
+index a11e1b867379..3c00ad09eeaa 100644
+--- a/Documentation/devicetree/bindings/cpufreq/qcom-cpufreq-nvmem.yaml
++++ b/Documentation/devicetree/bindings/cpufreq/qcom-cpufreq-nvmem.yaml
+@@ -38,7 +38,7 @@ properties:
+     type: object
+ 
+     patternProperties:
+-      'cpu@[0-9a-f]+':
++      '^cpu@[0-9a-f]+$':
+         type: object
+ 
+         properties:
+diff --git a/Documentation/devicetree/bindings/hwmon/adt7475.yaml b/Documentation/devicetree/bindings/hwmon/adt7475.yaml
+index ea595102a86e..051c976ab711 100644
+--- a/Documentation/devicetree/bindings/hwmon/adt7475.yaml
++++ b/Documentation/devicetree/bindings/hwmon/adt7475.yaml
+@@ -61,7 +61,7 @@ patternProperties:
+     $ref: /schemas/types.yaml#/definitions/uint32
+     enum: [0, 1]
+ 
+-  "adi,pin(5|10)-function":
++  "^adi,pin(5|10)-function$":
+     description: |
+       Configures the function for pin 5 on the adi,adt7473 and adi,adt7475. Or
+       pin 10 on the adi,adt7476 and adi,adt7490.
+@@ -70,7 +70,7 @@ patternProperties:
+       - pwm2
+       - smbalert#
+ 
+-  "adi,pin(9|14)-function":
++  "^adi,pin(9|14)-function$":
+     description: |
+       Configures the function for pin 9 on the adi,adt7473 and adi,adt7475. Or
+       pin 14 on the adi,adt7476 and adi,adt7490
+diff --git a/Documentation/devicetree/bindings/opp/allwinner,sun50i-h6-operating-points.yaml b/Documentation/devicetree/bindings/opp/allwinner,sun50i-h6-operating-points.yaml
+index 385b0692261c..51f62c3ae194 100644
+--- a/Documentation/devicetree/bindings/opp/allwinner,sun50i-h6-operating-points.yaml
++++ b/Documentation/devicetree/bindings/opp/allwinner,sun50i-h6-operating-points.yaml
+@@ -41,7 +41,7 @@ required:
+   - nvmem-cells
+ 
+ patternProperties:
+-  "opp-[0-9]+":
++  "^opp-[0-9]+$":
+     type: object
+ 
+     properties:
+@@ -49,7 +49,7 @@ patternProperties:
+       clock-latency-ns: true
+ 
+     patternProperties:
+-      "opp-microvolt-.*": true
++      "^opp-microvolt-speed[0-9]$": true
+ 
+     required:
+       - opp-hz
+diff --git a/Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
+index d60f43fd9c5a..e63e6458cea8 100644
+--- a/Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
++++ b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
+@@ -31,7 +31,7 @@ properties:
+     maxItems: 2
+ 
+ patternProperties:
+-  'pcie@[0-2],0':
++  '^pcie@[0-2],0$':
+     type: object
+     $ref: /schemas/pci/pci-bus.yaml#
+ 
+diff --git a/Documentation/devicetree/bindings/pci/renesas,pci-rcar-gen2.yaml b/Documentation/devicetree/bindings/pci/renesas,pci-rcar-gen2.yaml
+index 0f18cceba3d5..5a0d64d3ae6b 100644
+--- a/Documentation/devicetree/bindings/pci/renesas,pci-rcar-gen2.yaml
++++ b/Documentation/devicetree/bindings/pci/renesas,pci-rcar-gen2.yaml
+@@ -65,7 +65,7 @@ properties:
+     maxItems: 1
+ 
+ patternProperties:
+-  'usb@[0-1],0':
++  '^usb@[0-1],0$':
+     type: object
+ 
+     description:
+diff --git a/Documentation/devicetree/bindings/regulator/max8660.yaml b/Documentation/devicetree/bindings/regulator/max8660.yaml
+index 9c038698f880..4d550ca396eb 100644
+--- a/Documentation/devicetree/bindings/regulator/max8660.yaml
++++ b/Documentation/devicetree/bindings/regulator/max8660.yaml
+@@ -24,7 +24,7 @@ properties:
+     type: object
+ 
+     patternProperties:
+-      "regulator-.+":
++      "^regulator-.+$":
+         $ref: "regulator.yaml#"
+ 
+     additionalProperties: false
+diff --git a/Documentation/devicetree/bindings/regulator/maxim,max77802.yaml b/Documentation/devicetree/bindings/regulator/maxim,max77802.yaml
+index 71138c611b6c..b704f05ea454 100644
+--- a/Documentation/devicetree/bindings/regulator/maxim,max77802.yaml
++++ b/Documentation/devicetree/bindings/regulator/maxim,max77802.yaml
+@@ -77,7 +77,7 @@ patternProperties:
+       regulator-initial-mode: false
+ 
+     patternProperties:
+-      regulator-state-(standby|mem|disk):
++      "^regulator-state-(standby|mem|disk)$":
+         type: object
+         additionalProperties: true
+         properties:
+diff --git a/Documentation/devicetree/bindings/regulator/regulator.yaml b/Documentation/devicetree/bindings/regulator/regulator.yaml
+index 6e8aa9eed3aa..53b81d8a2d41 100644
+--- a/Documentation/devicetree/bindings/regulator/regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/regulator.yaml
+@@ -231,7 +231,7 @@ patternProperties:
+   ".*-supply$":
+     description: Input supply phandle(s) for this node
+ 
+-  regulator-state-(standby|mem|disk):
++  "^regulator-state-(standby|mem|disk)$":
+     type: object
+     description:
+       sub-nodes for regulator state in Standby, Suspend-to-RAM, and
+diff --git a/Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml b/Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml
+index 7cb74cc8c5d9..54be194bb244 100644
+--- a/Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/rohm,bd9576-regulator.yaml
+@@ -21,7 +21,7 @@ description: |
+   regulator-voutl1, regulator-vouts1
+ 
+ patternProperties:
+-  "regulator-.+":
++  "^regulator-.+$":
+     type: object
+     description:
+       Properties for single regulator.
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+index 679a246dd666..7df40c38e865 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+@@ -115,7 +115,7 @@ properties:
+   ports:
+     $ref: /schemas/graph.yaml#/properties/ports
+     patternProperties:
+-      port(@[0-9a-f]+)?:
++      '^port(@[0-9a-f]+)?$':
+         $ref: audio-graph-port.yaml#
+         unevaluatedProperties: false
+ 
+diff --git a/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml b/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+index 6b733e5c1163..899100e783c9 100644
+--- a/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
++++ b/Documentation/devicetree/bindings/spi/nvidia,tegra210-quad.yaml
+@@ -48,7 +48,7 @@ properties:
+       - const: tx
+ 
+ patternProperties:
+-  "@[0-9a-f]+":
++  "@[0-9a-f]+$":
+     type: object
+ 
+     properties:
+-- 
+2.35.1
 
