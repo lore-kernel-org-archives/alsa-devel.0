@@ -4,57 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86C97C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Nov 2022 22:49:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F27B4C43219
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Nov 2022 22:49:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D60216A5;
-	Fri, 18 Nov 2022 23:48:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D60216A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1D7516A4;
+	Fri, 18 Nov 2022 23:48:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1D7516A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668811779;
-	bh=TszLQfDQqibZspZkYwbI4ynVv8NCIIwefuZQtqz5PR4=;
+	s=default; t=1668811783;
+	bh=PwIO93QnQ+zTyhW1oh0yRBMrKr0/ERadQ100jLidn7g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mUAuqDcDUH1DCqSBu0yNKbcsWZwPctKbO+Q8z8KOjMsxgZ5SoWr7R7S8PJYpHkNa1
-	 jsYPyur8csfpFc5CgNtClEy1zmAvIrzBSyuSLXZ8TcFBPMy5xAot4jRe8Q0iPrBI1t
-	 v760K92EzDs08a6Yj41XbR00usX6ZVEAUd6gFXVE=
+	b=hgurQmcEFWd2gr6htxj6CzyDS4wUygI+Dw/1a+Q0N8QO/zoqrvnu5N1VK7ujX0rqh
+	 8HWCsEyeuTd0IRETUZTMAeqM/Tvq3qdxiDx8FnAtio3tYfp2BOt+pYDFqHreBChb36
+	 sGlSMVxZDZzgFae/ctyYWYoIN9+CQjaHYFiLXBZY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE77EF80549;
-	Fri, 18 Nov 2022 23:48:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 03992F8055C;
+	Fri, 18 Nov 2022 23:48:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D46FAF800FD; Fri, 18 Nov 2022 23:48:33 +0100 (CET)
+ id 10BDAF804AC; Fri, 18 Nov 2022 23:48:35 +0100 (CET)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11A48F800FD
- for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2022 23:48:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11A48F800FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE951F8024C
+ for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2022 23:48:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE951F8024C
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <ukl@pengutronix.de>)
- id 1owA9n-0005X2-23; Fri, 18 Nov 2022 23:48:23 +0100
+ id 1owA9o-0005Y3-5v; Fri, 18 Nov 2022 23:48:24 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <ukl@pengutronix.de>)
- id 1owA9k-0058tz-Id; Fri, 18 Nov 2022 23:48:21 +0100
+ id 1owA9l-0058uE-50; Fri, 18 Nov 2022 23:48:22 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <ukl@pengutronix.de>)
- id 1owA9j-0000Vq-CG; Fri, 18 Nov 2022 23:48:19 +0100
+ id 1owA9j-0000Vm-40; Fri, 18 Nov 2022 23:48:19 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
 To: Angel Iglesias <ang.iglesiasg@gmail.com>, Lee Jones <lee.jones@linaro.org>,
  Grant Likely <grant.likely@linaro.org>, Wolfram Sang <wsa@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- =?utf-8?q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>,
- Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
- Crt Mori <cmo@melexis.com>, =?utf-8?q?Marek_Beh=C3=BAn?= <kabel@kernel.org>
-Subject: [PATCH 600/606] ALSA: ppc: keywest: Convert to i2c's .probe_new()
-Date: Fri, 18 Nov 2022 23:45:34 +0100
-Message-Id: <20221118224540.619276-601-uwe@kleine-koenig.org>
+ James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH 599/606] ALSA: hda: cs35l41: Convert to i2c's .probe_new()
+Date: Fri, 18 Nov 2022 23:45:33 +0100
+Message-Id: <20221118224540.619276-600-uwe@kleine-koenig.org>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221118224540.619276-1-uwe@kleine-koenig.org>
 References: <20221118224540.619276-1-uwe@kleine-koenig.org>
@@ -66,8 +67,8 @@ X-SA-Exim-Mail-From: ukl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-i2c@vger.kernel.org, kernel@pengutronix.de,
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, kernel@pengutronix.de,
  =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -91,32 +92,31 @@ can be trivially converted.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- sound/ppc/keywest.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/pci/hda/cs35l41_hda_i2c.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/ppc/keywest.c b/sound/ppc/keywest.c
-index 80e5108157ef..0c4f43963c75 100644
---- a/sound/ppc/keywest.c
-+++ b/sound/ppc/keywest.c
-@@ -16,8 +16,7 @@
- static struct pmac_keywest *keywest_ctx;
- static bool keywest_probed;
+diff --git a/sound/pci/hda/cs35l41_hda_i2c.c b/sound/pci/hda/cs35l41_hda_i2c.c
+index 5a6252d9b9e1..7826b1a12d7d 100644
+--- a/sound/pci/hda/cs35l41_hda_i2c.c
++++ b/sound/pci/hda/cs35l41_hda_i2c.c
+@@ -12,7 +12,7 @@
  
--static int keywest_probe(struct i2c_client *client,
--			 const struct i2c_device_id *id)
-+static int keywest_probe(struct i2c_client *client)
+ #include "cs35l41_hda.h"
+ 
+-static int cs35l41_hda_i2c_probe(struct i2c_client *clt, const struct i2c_device_id *id)
++static int cs35l41_hda_i2c_probe(struct i2c_client *clt)
  {
- 	keywest_probed = true;
- 	/* If instantiated via i2c-powermac, we still need to set the client */
-@@ -91,7 +90,7 @@ static struct i2c_driver keywest_driver = {
- 	.driver = {
- 		.name = "PMac Keywest Audio",
+ 	const char *device_name;
+ 
+@@ -58,7 +58,7 @@ static struct i2c_driver cs35l41_i2c_driver = {
+ 		.pm		= &cs35l41_hda_pm_ops,
  	},
--	.probe = keywest_probe,
-+	.probe_new = keywest_probe,
- 	.remove = keywest_remove,
- 	.id_table = keywest_i2c_id,
+ 	.id_table	= cs35l41_hda_i2c_id,
+-	.probe		= cs35l41_hda_i2c_probe,
++	.probe_new	= cs35l41_hda_i2c_probe,
+ 	.remove		= cs35l41_hda_i2c_remove,
  };
+ module_i2c_driver(cs35l41_i2c_driver);
 -- 
 2.38.1
 
