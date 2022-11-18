@@ -4,72 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDF91C43219
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Nov 2022 22:51:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8810CC4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Nov 2022 23:02:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E46C316E3;
-	Fri, 18 Nov 2022 23:50:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E46C316E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95580F3;
+	Sat, 19 Nov 2022 00:01:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95580F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668811867;
-	bh=7VIuDn8jEKeVJlqFRporT8y8VJti7u4psdgi7TD1pAg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1668812532;
+	bh=aVnOcZRo/lKq18VoXGyYbZctL9KKp/KChMjlIzFf+v0=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C9W4IGyFakJ7OAY9B0mS6ucS3NRWGhtgsnY3z2+gIkOyyJU0z8kh6O/Sam1KRjZMA
-	 EZPGrtBOct1UUk2BnEvyrYb3IcEpDk7jTsHmlG+xF3o5w2i6jA9fbG+OGyGa31PEXe
-	 aH6UNxEciCYsLnY4mDGmSw+GmHeyfy1YaNKFvtBE=
+	b=IUbK7lNDwpVybTaosMvPV6Pw9eFO7nsWHHVpVfPxw0cDwN1/PFUvrhs1umbm0FJHW
+	 N6cc3vx4i2Z3bvmUd1et30GF8+Nh0TycuE/bWrvkqP+cZYJSoci830FfTX/DqSr1gC
+	 yf1f+PrFZKBqbSrhjCBWmPQ3fCIuwpUpWUqEE0Q0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 629C6F8059F;
-	Fri, 18 Nov 2022 23:48:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 301D9F8016E;
+	Sat, 19 Nov 2022 00:01:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B517F80570; Fri, 18 Nov 2022 23:48:41 +0100 (CET)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B5CC9F801D8; Sat, 19 Nov 2022 00:01:20 +0100 (CET)
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com
+ [IPv6:2607:f8b0:4864:20::102d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C667F80558
- for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2022 23:48:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C667F80558
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1owA9n-0005Vr-Ci; Fri, 18 Nov 2022 23:48:23 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1owA9k-0058ts-1s; Fri, 18 Nov 2022 23:48:21 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1owA9j-0000Vu-Hh; Fri, 18 Nov 2022 23:48:19 +0100
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
-To: Angel Iglesias <ang.iglesiasg@gmail.com>, Lee Jones <lee.jones@linaro.org>,
- Grant Likely <grant.likely@linaro.org>, Wolfram Sang <wsa@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Zhu Ning <zhuning0077@gmail.com>,
- David Yang <yangxiaohua@everest-semi.com>,
- Yang Yingliang <yangyingliang@huawei.com>
-Subject: [PATCH 601/606] ASoC: codecs: es8326: Convert to i2c's .probe_new()
-Date: Fri, 18 Nov 2022 23:45:35 +0100
-Message-Id: <20221118224540.619276-602-uwe@kleine-koenig.org>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221118224540.619276-1-uwe@kleine-koenig.org>
-References: <20221118224540.619276-1-uwe@kleine-koenig.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A1EC7F800FD
+ for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2022 00:01:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1EC7F800FD
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=flatmax-com.20210112.gappssmtp.com
+ header.i=@flatmax-com.20210112.gappssmtp.com header.b="jCNJD4bx"
+Received: by mail-pj1-x102d.google.com with SMTP id o7so5738425pjj.1
+ for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2022 15:01:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=flatmax-com.20210112.gappssmtp.com; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=Jeg5OPbcU8Um2n3zzZ8ZeF9Qwca653OFnBoiSDNreoU=;
+ b=jCNJD4bxBXoCXfG8DydsvITI5IlXvVpTpnrkGNFZawmCwvS2ZrwWB4Wf6zb+WDzMeX
+ xcvnxHhjYt/XM0EvmLuFLhsQ4wJCuEQwA3QkYC4uCLRBWz6Yn0VakY0fSUUEu42Roovz
+ FztGlZfDJjISJmGtoaknWeACdznB9bKZeNbo3W0+7eQmxPmSQszj+p9rVR1uuqamXj7x
+ L2I6/5A8WKwo4LXOFXskapC6KygVCKGe7jLeANfnLKlTksH6JCmkuan0R3MHH9bJfTUE
+ MHwl0hXqnvg0MetsN2GRsff/sQBkup8vsN3dGmx6oszthoWzPqi59uf6vvp1nvb5Rhw1
+ tgPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=Jeg5OPbcU8Um2n3zzZ8ZeF9Qwca653OFnBoiSDNreoU=;
+ b=AH5LsBsv9gIVEsR+hl2yvwkjwOE56yl0nQTDxsU5/TlzjChgTkjDeVw/tSW89M0Q38
+ j+wZpvch5iamZIMG0MWKsLVyam1tQ/KG5Gg9lJjlvhM//wB07YaUMPWPGt+weec+d8pu
+ Ku/AqVavqKDy1UYOfWZtKRCgCan2y+9PPJxBoGBGt0mm5OhS2dkW+Jqi/mUnZs0FXsTg
+ I0vF4SFzMiIO06O/dJLCqtm6qh8Y1i+mwBgtG4tTdQ7ztWIwPl+8DsdldS2pXDVq0YC5
+ br5FYeCTL8MSgParM5p0mDEPNeawYN+dbKa5ayBmakHJYfT7LH/PMEB7vR9tpEQ7TYQr
+ DEKw==
+X-Gm-Message-State: ANoB5pmgqaiPbwtPkqAQ0E66PiwuZbuCi6gg4dem6d6yYQvdeJOX3mDr
+ FGTgXPfgJOugfaW2VMtBlmOuUA==
+X-Google-Smtp-Source: AA0mqf7ynBarcnD4LPeA+XPoRO3UNn4nstk3Sm2a7p0+99ICAzmWZ1OZ9laAvn2SyrvJ4EOFWN101g==
+X-Received: by 2002:a17:90b:4d0b:b0:214:1329:dec7 with SMTP id
+ mw11-20020a17090b4d0b00b002141329dec7mr15978573pjb.91.1668812472181; 
+ Fri, 18 Nov 2022 15:01:12 -0800 (PST)
+Received: from ?IPV6:2406:3400:213:70c0:9df6:7e57:88ce:1bea?
+ ([2406:3400:213:70c0:9df6:7e57:88ce:1bea])
+ by smtp.gmail.com with ESMTPSA id
+ u71-20020a62794a000000b00562019b961asm3696850pfc.188.2022.11.18.15.01.09
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 18 Nov 2022 15:01:11 -0800 (PST)
+Message-ID: <6f431abb-356c-b057-2784-6b5f165a2a2d@flatmax.com>
+Date: Sat, 19 Nov 2022 10:01:07 +1100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH 603/606] ASoC: codecs: src4xxx-i2c: Convert to i2c's
+ .probe_new()
+To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>,
+ Mark Brown <broonie@kernel.org>
+References: <20221118224540.619276-1-uwe@kleine-koenig.org>
+ <20221118224540.619276-604-uwe@kleine-koenig.org>
+Content-Language: en-AU
+From: Matt Flax <flatmax@flatmax.com>
+In-Reply-To: <20221118224540.619276-604-uwe@kleine-koenig.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-i2c@vger.kernel.org, kernel@pengutronix.de,
- =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, linux-i2c@vger.kernel.org,
+ kernel@pengutronix.de, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,39 +107,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Reviewed-by: Matt Flax <flatmax@flatmax.com>
 
-The probe function doesn't make use of the i2c_device_id * parameter so it
-can be trivially converted.
-
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- sound/soc/codecs/es8326.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/es8326.c b/sound/soc/codecs/es8326.c
-index 87c1cc16592b..9ddf6a35e91c 100755
---- a/sound/soc/codecs/es8326.c
-+++ b/sound/soc/codecs/es8326.c
-@@ -814,8 +814,7 @@ static const struct snd_soc_component_driver soc_component_dev_es8326 = {
- 	.endianness		= 1,
- };
- 
--static int es8326_i2c_probe(struct i2c_client *i2c,
--			    const struct i2c_device_id *id)
-+static int es8326_i2c_probe(struct i2c_client *i2c)
- {
- 	struct es8326_priv *es8326;
- 	int ret;
-@@ -895,7 +894,7 @@ static struct i2c_driver es8326_i2c_driver = {
- 		.acpi_match_table = ACPI_PTR(es8326_acpi_match),
- 		.of_match_table = of_match_ptr(es8326_of_match),
- 	},
--	.probe = es8326_i2c_probe,
-+	.probe_new = es8326_i2c_probe,
- 	.id_table = es8326_i2c_id,
- };
- module_i2c_driver(es8326_i2c_driver);
--- 
-2.38.1
-
+On 19/11/22 09:45, Uwe Kleine-König wrote:
+> From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+>
+> The probe function doesn't make use of the i2c_device_id * parameter so it
+> can be trivially converted.
+>
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> ---
+>   sound/soc/codecs/src4xxx-i2c.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/sound/soc/codecs/src4xxx-i2c.c b/sound/soc/codecs/src4xxx-i2c.c
+> index 43daa9dc8ab5..27026030704a 100644
+> --- a/sound/soc/codecs/src4xxx-i2c.c
+> +++ b/sound/soc/codecs/src4xxx-i2c.c
+> @@ -12,8 +12,7 @@
+>   
+>   #include "src4xxx.h"
+>   
+> -static int src4xxx_i2c_probe(struct i2c_client *i2c,
+> -			const struct i2c_device_id *id)
+> +static int src4xxx_i2c_probe(struct i2c_client *i2c)
+>   {
+>   	return src4xxx_probe(&i2c->dev,
+>   		devm_regmap_init_i2c(i2c, &src4xxx_regmap_config), NULL);
+> @@ -37,7 +36,7 @@ static struct i2c_driver src4xxx_i2c_driver = {
+>   		.name = "src4xxx",
+>   		.of_match_table = of_match_ptr(src4xxx_of_match),
+>   	},
+> -	.probe = src4xxx_i2c_probe,
+> +	.probe_new = src4xxx_i2c_probe,
+>   	.id_table = src4xxx_i2c_ids,
+>   };
+>   module_i2c_driver(src4xxx_i2c_driver);
