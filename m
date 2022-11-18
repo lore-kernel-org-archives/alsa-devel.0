@@ -4,69 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77632C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 18 Nov 2022 15:27:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B01CCC433FE
+	for <alsa-devel@archiver.kernel.org>; Fri, 18 Nov 2022 15:40:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 98E6C1692;
-	Fri, 18 Nov 2022 16:26:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98E6C1692
+	by alsa0.perex.cz (Postfix) with ESMTPS id C910F168D;
+	Fri, 18 Nov 2022 16:39:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C910F168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668785229;
-	bh=BSCXlPVmpY0FoDKqa/ajgiBBO/IcH6tYlQ0+lVrw+z8=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1668786017;
+	bh=iz4McvZM/E2o496nT649orB1f9ZWyItmYXL8nqRS8Ok=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RI5kow28tjmOdSak/eOBmzmNj9gBAeWLa8uH40BVeHew0IXcWUGWKhe8jWjm4mUPx
-	 Wc5xrPhF27H6kV08e8uVHp7QxR0Dw7macRfZmrlGSndhW5LJsQe4uIYCWMoc5kSS81
-	 HRiMI7Zce+qJTa6zuH3uG8ge2xmGslA01ZuS4raI=
+	b=j31QPcOQhiCdCG+gtXvoGwXtrt2OA8TCfcuddjzh4uRLAjczcRENZmm0xFvi9Y36k
+	 M/zZlGs4HiatylcaqD4NtThIA+t/hapepcc5D03lZmbIMcw9tGue14JV48yDvcS1Np
+	 UNJsy/pkgVEBKJGlo0b/UYo3jIpY9+yilCc1HSNY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E375F80549;
-	Fri, 18 Nov 2022 16:25:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55FC2F8016E;
+	Fri, 18 Nov 2022 16:39:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 39D75F8016E; Fri, 18 Nov 2022 16:25:28 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 0E14AF801D8; Fri, 18 Nov 2022 16:39:25 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5174FF800B5
- for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2022 16:25:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5174FF800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4A396F800B5
+ for <alsa-devel@alsa-project.org>; Fri, 18 Nov 2022 16:39:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A396F800B5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="AKZAuC64"
+ header.b="s0ioyr4/"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 0072DB8243A;
- Fri, 18 Nov 2022 15:25:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 034C3C433C1;
- Fri, 18 Nov 2022 15:25:17 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 76291625E4;
+ Fri, 18 Nov 2022 15:39:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A944C433D6;
+ Fri, 18 Nov 2022 15:39:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1668785119;
- bh=BSCXlPVmpY0FoDKqa/ajgiBBO/IcH6tYlQ0+lVrw+z8=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=AKZAuC64uZtYcPtUfXAgtpGOks7Cm49yM9UaJCc2T3cLoNKiGgOlLZAzd7Zb9znKY
- tXP0/jpS2LCaRAcwxUTuQ99NZhd2UpWCfXVZpciePUx+HkR9UqKKj+YSz4ckFtLqZX
- I8wF2RR+6wIvwdRIH7+1aCVb95K9l1OaN9YYGp3+8mWZbn8FnozFRbOhjN6AJhhTVX
- Z87+Cw/yO66lmTPZ58mXfjVBrTEPX+RmCtcXd34b5JoMegXAw5sST3j+Kf2pb2tWMc
- vW+ZGQOSf1cvOogYvrkSAIH0EkAsrITox/lJrkxWJGr/dmtgP+j+0QYVw2suIfA/q2
- VIYSwNIeuYpnQ==
+ s=k20201202; t=1668785954;
+ bh=iz4McvZM/E2o496nT649orB1f9ZWyItmYXL8nqRS8Ok=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=s0ioyr4/BLSd6K9vPXPkioUu+r6OHx2WyltYbPuQuV9D3I5ajp32xVnU0/JBAi4ak
+ SgOgmftikuBKUn2fBPm6Vsx1LnnUBEeU7iy8GkwO1OqFTtt70zO0sm4pQslPloC+jV
+ FZvVTvUbFTvL5zmT6Vcl9fkT99j9gFzzsRvA/ZW5nZANycq1ugvTqv2K5OyuQjbBBS
+ jC5xtElKQuoPoyx9OyO8zCfcqx6zvX4cbZcjS0KKuCvIyUTz/aKp1fhsyMo1PB/OPx
+ lpp9W+KSTY/Ib6q83/EFHlxDvucyftbP8YB01C+Zr2qyzcZ6fX8nWlrZJ72KV4Ku4s
+ 8ywbeBckn8+nA==
+Date: Fri, 18 Nov 2022 15:39:11 +0000
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>
-In-Reply-To: <20221118015106.532302-1-yung-chuan.liao@linux.intel.com>
-References: <20221118015106.532302-1-yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: sof_sdw_amp: mark coeff tables with
- __maybe_unused
-Message-Id: <166878511768.955590.200081679629244191.b4-ty@kernel.org>
-Date: Fri, 18 Nov 2022 15:25:17 +0000
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH v2 1/2] ASoC/soundwire: remove is_sdca boolean property
+Message-ID: <Y3enHzY8XY70/nWR@sirena.org.uk>
+References: <20221118025807.534863-1-yung-chuan.liao@linux.intel.com>
+ <20221118025807.534863-2-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.11.0-dev-8af31
-Cc: alsa-devel@alsa-project.org, peter.ujfalusi@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, bard.liao@intel.com,
- ranjani.sridharan@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="pRbbpnwvQFI8Ig1m"
+Content-Disposition: inline
+In-Reply-To: <20221118025807.534863-2-yung-chuan.liao@linux.intel.com>
+X-Cookie: Ego sum ens omnipotens.
+Cc: alsa-devel@alsa-project.org, vinod.koul@linaro.org, tiwai@suse.de,
+ linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, vkoul@kernel.org,
+ peter.ujfalusi@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,43 +85,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 18 Nov 2022 09:51:06 +0800, Bard Liao wrote:
+
+--pRbbpnwvQFI8Ig1m
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Nov 18, 2022 at 10:58:06AM +0800, Bard Liao wrote:
 > From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> The same file provides two tables used in separate drivers, make them
-> as __maybe_unused to avoid errors:
-> 
-> sound/soc/intel/boards/sof_sdw_amp_coeff_tables.h:163:17: error:
-> ‘dell_0b00_bq_params’ defined but not used
-> [-Werror=unused-const-variable=]
->   163 | static const u8 dell_0b00_bq_params[] = {
-> 
-> [...]
+>=20
+> The Device_ID registers already tell us if a device supports the SDCA
+> specification or not, in hindsight we never needed a property when the
+> information is reported by both hardware and ACPI.
 
-Applied to
+Acked-by: Mark Brown <broonie@kernel.org>
 
-   broonie/sound.git for-next
+--pRbbpnwvQFI8Ig1m
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks!
+-----BEGIN PGP SIGNATURE-----
 
-[1/1] ASoC: Intel: sof_sdw_amp: mark coeff tables with __maybe_unused
-      commit: 041fe8858475a0337b28404ec5136f4fc583b3aa
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmN3px4ACgkQJNaLcl1U
+h9DxmAf/QATOeg5EyZ8P2MRRRpwyKOCKZGE0zoOp9QpnYXH+xHm+Fy44UW4Mpfqe
+OEjHDEJQmZkmKRwyGbgnlDLMkqnfuseZAIVCwHQZRzLeQqVEM0DnU8rek2A2wbO/
+8q6uDOpvImNxZuRhcSkKMYO8rPzZv2dZFxEJWjts7I/xi1unEwZkFBPH4itmjySA
+QWndOIgtq01WIyJz2mYWS0velHGrQrGqDqRg7kwzjMekPzJSE4rJU/WBiXOg+F14
+c+sxbz0HptCue1jpogtRcjDpYa/zqZt8ZfJsZHtAtOiF9d1NvhXhIO2SPNREArMF
+/AF7QIIKIwW8Bu0P8kKI+IRjPM+53Q==
+=Laz3
+-----END PGP SIGNATURE-----
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+--pRbbpnwvQFI8Ig1m--
