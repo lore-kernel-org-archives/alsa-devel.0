@@ -4,94 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7213C433FE
-	for <alsa-devel@archiver.kernel.org>; Sat, 19 Nov 2022 08:51:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F3ADC4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 19 Nov 2022 08:51:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE2D21657;
-	Sat, 19 Nov 2022 09:50:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE2D21657
+	by alsa0.perex.cz (Postfix) with ESMTPS id A26D1172A;
+	Sat, 19 Nov 2022 09:50:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A26D1172A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668847875;
-	bh=E8I3BGSNUC5lzl6Q9tVvq/t0YpwYKhrOFFKujdt1uZI=;
+	s=default; t=1668847892;
+	bh=go8oXhhn2+5gLhLchZEUVjI3+3hp6JBlCWYgaCxD77E=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nLnQsOrt45Bhc6s910NITMWnNoCkrEbymwuYgHJP2Wb0BBNjNhzmedT4ljVhPdR3T
-	 Ctwi33lcGHmsIR1Y0FHkxDsF722wwInBIrz+quzeqv6Fcv0K76zH+L5lRrAmFSuDU8
-	 2S0+UGmNQI3X5lj91uDiA3T9cxUse3Xjy+GwW+Ek=
+	b=cUavAvI7xrTV2aEC+qdViidpRw3gFBE8kCeT62YhXsVhTMP0pV+PBxYJGWMiQILQK
+	 d1suPCfhPzQhfXvJNCgwU0QEQx/QLtKCvgFNbPhdG/lXOI/q5JicBcewsxxsHxU5n+
+	 3es7rl5ftTsbc2Wl3hQlxvaVtcPvfbzt9S2IEx/o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10939F80557;
-	Sat, 19 Nov 2022 09:45:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F406F80567;
+	Sat, 19 Nov 2022 09:45:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2ADBFF80557; Sat, 19 Nov 2022 09:45:39 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 299E2F80567; Sat, 19 Nov 2022 09:45:56 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0DEB0F80557
- for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2022 09:45:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DEB0F80557
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1CBCEF80567
+ for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2022 09:45:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CBCEF80567
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="jYaf11VN"; 
+ header.b="xFAoVpIg"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="ZpV59Oc4"
+ header.b="AdV9tRNv"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A28672280C;
- Sat, 19 Nov 2022 08:45:32 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 96A631F385;
+ Sat, 19 Nov 2022 08:45:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1668847532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1668847549; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ALiwmxUnKsm9DruBUZitjjcR3t/mZ/TDFueEIrLsOYU=;
- b=jYaf11VN90rUTu9EwAej7YQhoiazuulivIpB5w05qau8FnuOPaqHDGFogznFdQGhP4xqwo
- CuXNIvMAvZvHk392w4wIsLhKx2WMGrZzuRRrqNxsSiFvQNpAhRJF59lZYf4nF/8mOm/SMh
- Rb9WEBOLUpSooUAPLp6XMCRO9hEKPg4=
+ bh=LNtjSZXk8yDaRbSujr6NrDdW/ddAmIit+1l80oppO8A=;
+ b=xFAoVpIgvnfWgdkBWNxNA/+KL0ydAuOKCuVg/1KlLX99nkY1Rjv63MZGXULUgdj3R0UMax
+ vtYV7qCwkXRvlFF43vb/bso0HFAhI0qRBCVkgH5fJA9OftbduBzxh9xk8xbaMq0Zxq17KE
+ 7rJlZ6slLK1WrMBjzfeHUnwqRqzsW2A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1668847532;
+ s=susede2_ed25519; t=1668847549;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ALiwmxUnKsm9DruBUZitjjcR3t/mZ/TDFueEIrLsOYU=;
- b=ZpV59Oc4HS5fKVBDSP8wvvksFwJpANNvEvZg2jZjTKirPkhlXmbO4OimSxBumK6UYMy8B7
- 4qxD2bGXT6xj6vDA==
+ bh=LNtjSZXk8yDaRbSujr6NrDdW/ddAmIit+1l80oppO8A=;
+ b=AdV9tRNvjTEY98IPRv5Y7FaE32o051fpFPzaadTZtLxUR/CBWCWltZG0ocRrFdNs0LRd0B
+ E8r0cUHJ4azNX5AQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 48A801377F;
- Sat, 19 Nov 2022 08:45:32 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4ABA91377F;
+ Sat, 19 Nov 2022 08:45:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Fh+sEKyXeGM5CAAAMHmgww
- (envelope-from <tiwai@suse.de>); Sat, 19 Nov 2022 08:45:32 +0000
-Date: Sat, 19 Nov 2022 09:45:31 +0100
-Message-ID: <874juvxrh0.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id MCt8Eb2XeGNiCAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Sat, 19 Nov 2022 08:45:49 +0000
+Date: Sat, 19 Nov 2022 09:45:48 +0100
+Message-ID: <8735afxrgj.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>
-Subject: Re: [PATCH 599/606] ALSA: hda: cs35l41: Convert to i2c's .probe_new()
-In-Reply-To: <20221118224540.619276-600-uwe@kleine-koenig.org>
+Subject: Re: [PATCH 600/606] ALSA: ppc: keywest: Convert to i2c's .probe_new()
+In-Reply-To: <20221118224540.619276-601-uwe@kleine-koenig.org>
 References: <20221118224540.619276-1-uwe@kleine-koenig.org>
- <20221118224540.619276-600-uwe@kleine-koenig.org>
+ <20221118224540.619276-601-uwe@kleine-koenig.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
- patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>, Wolfram Sang <wsa@kernel.org>,
- Angel Iglesias <ang.iglesiasg@gmail.com>, linux-i2c@vger.kernel.org,
- kernel@pengutronix.de,
- Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
- Grant Likely <grant.likely@linaro.org>,
- James Schulman <james.schulman@cirrus.com>, Lee Jones <lee.jones@linaro.org>,
- linux-kernel@vger.kernel.org
+Cc: Marek =?ISO-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+ Benjamin Mugnier <benjamin.mugnier@foss.st.com>, Crt Mori <cmo@melexis.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Wolfram Sang <wsa@kernel.org>,
+ Angel Iglesias <ang.iglesiasg@gmail.com>,
+ Krzysztof =?ISO-8859-2?Q?Ha=B3asa?= <khalasa@piap.pl>,
+ linux-i2c@vger.kernel.org, kernel@pengutronix.de,
+ Uwe =?ISO-8859-1?Q?Klei?= =?ISO-8859-1?Q?ne-K=F6nig?=
+ <u.kleine-koenig@pengutronix.de>, Grant Likely <grant.likely@linaro.org>,
+ Lee Jones <lee.jones@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,7 +107,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 18 Nov 2022 23:45:33 +0100,
+On Fri, 18 Nov 2022 23:45:34 +0100,
 Uwe Kleine-König wrote:
 > 
 > From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
