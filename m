@@ -4,74 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01469C433FE
-	for <alsa-devel@archiver.kernel.org>; Sat, 19 Nov 2022 02:15:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C8BDC4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 19 Nov 2022 08:21:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1CD1816BC;
-	Sat, 19 Nov 2022 03:14:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CD1816BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC7EC1633;
+	Sat, 19 Nov 2022 09:21:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC7EC1633
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668824149;
-	bh=OSKBnjS0CLNwFCl54XfBSFAtollL0k1rDe7M1vayXpA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1668846110;
+	bh=NuunGRPqVARWm4sh5Xhp3zUOb8nwAMhXqgpdwj5oIQI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fHQyhGxzqit2W7ZrOCyHV7kfLaPaALmS3wkH9Y3PGvBI2xGl9XwMt2GSbuzrSeJv7
-	 WjMhe91gieWq+daoWBxgjC1dQtJ9SZFo2tDZ54qElHv1nZk2JDnv5mc9/cnXnQv7iK
-	 IXvsYbbb6Lq2NDwSlvG0ERpATzaOkjJHVWS5pso0=
+	b=fExvafBgSNiz8GoRhFyPLuU0hibjuc6t2u12dkRDiJiE0ymuUF7LPD9VygQXjCzIq
+	 hHmuHHZ3ylP7iic5WZct6qOHsaGzr6iD3VLm/sBJ7FIgt80VLMq/yPKRLuCg050UKZ
+	 /P+/hZ8jXIOjmU6UfD8n3oNfxDvZjWvxpL0Wvdrc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1F23F800FD;
-	Sat, 19 Nov 2022 03:14:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8212EF8016A;
+	Sat, 19 Nov 2022 09:21:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ED78CF801D8; Sat, 19 Nov 2022 03:14:56 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id A3AC3F80217; Sat, 19 Nov 2022 09:20:59 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE3D1F8016E
- for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2022 03:14:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE3D1F8016E
+ by alsa1.perex.cz (Postfix) with ESMTPS id A2240F8016A
+ for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2022 09:20:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2240F8016A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bV2R90QR"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="H/Ryjm1N"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="CTLCvID1"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 4D5D362831;
- Sat, 19 Nov 2022 02:14:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F54FC433D6;
- Sat, 19 Nov 2022 02:14:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1668824087;
- bh=OSKBnjS0CLNwFCl54XfBSFAtollL0k1rDe7M1vayXpA=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=bV2R90QR7lWuiQx88SZ2vVzJxx/m3EkloZJESC5OGkASocjUS8mBqtSPVuB59aiNw
- NrgoFBBrzvBbzeHwfQccxqvSrUmGXo76kqhgZd/6eOaCdeLwl2yBizKBCaz4R74im0
- JlevvOlJ3ZXJfBt0iMdB7YhODWKCHFTiMN1g6JNwHGJtPCsWjNMlqu8XhHFZwkBxqn
- dQt53hjv1BQK/m1q6iIJHq7yITd4/11Yx7IJXULgsDm0dbdXltxfi6jiLCMjQzP3iz
- v/WX+0AUQu9aK4V8wD59F9v/NH2TYfkazjSRAWmaJmjK5ZWt6WL1KwyyNv3ICvhKq5
- lEOPHDtrKPNvA==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 25/27] ALSA: usb-audio: add quirk to fix Hamedal
- C20 disconnect issue
-Date: Fri, 18 Nov 2022 21:13:50 -0500
-Message-Id: <20221119021352.1774592-25-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221119021352.1774592-1-sashal@kernel.org>
-References: <20221119021352.1774592-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, jussi@sonarnerd.net, wanjiabing@vivo.com,
- john-linux@pelago.org.uk, connerknoxpublic@gmail.com,
- Takashi Iwai <tiwai@suse.de>, Ai Chao <aichao@kylinos.cn>, sdoregor@sdore.me,
- ubizjak@gmail.com, tiwai@suse.com, alsa-devel@alsa-project.org,
- cyrozap@gmail.com, bp@suse.de
+ by smtp-out2.suse.de (Postfix) with ESMTPS id DDF5B1F383;
+ Sat, 19 Nov 2022 08:20:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1668846052; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=QEDCwVW6uuuHbiiKcc9DBnvWg+TJfsJ2v3EhFL0XN9o=;
+ b=H/Ryjm1NMX2N+WZ3ckhenCooygFEg9Yfn77aE0Hsrl/e2jTVUqUKBgY/4R7swkNah6+M9R
+ PmnDKkTTpFAoXi4Bt56ucl0dEidCF+itn9cvEQekhnSbpfBvSOBEEgtJwHUhxfxIGXiI0u
+ C515FCgXPmknejVhuntrIlRbBzQ0H2o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1668846052;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=QEDCwVW6uuuHbiiKcc9DBnvWg+TJfsJ2v3EhFL0XN9o=;
+ b=CTLCvID1yyQQODN5uIjEn4sdakmHfW057PiOsxEIkb8i+993/7daQouoSNWKhS/GUmqS0G
+ saXmX594nhhnsWCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9856D1377F;
+ Sat, 19 Nov 2022 08:20:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 6oogJOSReGNafQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Sat, 19 Nov 2022 08:20:52 +0000
+Date: Sat, 19 Nov 2022 09:20:53 +0100
+Message-ID: <87a64nxsm2.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] ALSA: seq: Fix function prototype mismatch in
+ snd_seq_expand_var_event
+In-Reply-To: <20221118232346.never.380-kees@kernel.org>
+References: <20221118232346.never.380-kees@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>,
+ Tom Rix <trix@redhat.com>, llvm@lists.linux.dev,
+ Nick Desaulniers <ndesaulniers@google.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Nathan Chancellor <nathan@kernel.org>, linux-hardening@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,72 +100,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ai Chao <aichao@kylinos.cn>
+On Sat, 19 Nov 2022 00:23:50 +0100,
+Kees Cook wrote:
+> 
+> With clang's kernel control flow integrity (kCFI, CONFIG_CFI_CLANG),
+> indirect call targets are validated against the expected function
+> pointer prototype to make sure the call target is valid to help mitigate
+> ROP attacks. If they are not identical, there is a failure at run time,
+> which manifests as either a kernel panic or thread getting killed.
+> 
+> seq_copy_in_user() and seq_copy_in_kernel() did not have prototypes
+> matching snd_seq_dump_func_t. Adjust this and remove the casts. There
+> are not resulting binary output differences.
+> 
+> This was found as a result of Clang's new -Wcast-function-type-strict
+> flag, which is more sensitive than the simpler -Wcast-function-type,
+> which only checks for type width mismatches.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/lkml/202211041527.HD8TLSE1-lkp@intel.com
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit bf990c10231937c0f51e5da5558e08cf5adc6a78 ]
+Thanks, applied.
 
-For Hamedal C20, the current rate is different from the runtime rate,
-snd_usb_endpoint stop and close endpoint to resetting rate.
-if snd_usb_endpoint close the endpoint, sometimes usb will
-disconnect the device.
 
-Signed-off-by: Ai Chao <aichao@kylinos.cn>
-Link: https://lore.kernel.org/r/20221110063452.295110-1-aichao@kylinos.cn
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/usb/endpoint.c | 3 ++-
- sound/usb/quirks.c   | 2 ++
- sound/usb/usbaudio.h | 3 +++
- 3 files changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 3bbc227769d0..092350eb5f4e 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -887,7 +887,8 @@ void snd_usb_endpoint_close(struct snd_usb_audio *chip,
- 	usb_audio_dbg(chip, "Closing EP 0x%x (count %d)\n",
- 		      ep->ep_num, ep->opened);
- 
--	if (!--ep->iface_ref->opened)
-+	if (!--ep->iface_ref->opened &&
-+		!(chip->quirk_flags & QUIRK_FLAG_IFACE_SKIP_CLOSE))
- 		endpoint_set_interface(chip, ep, false);
- 
- 	if (!--ep->opened) {
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 879d8b1f301c..2ae9ad993ff4 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1884,6 +1884,8 @@ static const struct usb_audio_quirk_flags_table quirk_flags_table[] = {
- 		   QUIRK_FLAG_GENERIC_IMPLICIT_FB),
- 	DEVICE_FLG(0x2b53, 0x0031, /* Fiero SC-01 (firmware v1.1.0) */
- 		   QUIRK_FLAG_GENERIC_IMPLICIT_FB),
-+	DEVICE_FLG(0x0525, 0xa4ad, /* Hamedal C20 usb camero */
-+		   QUIRK_FLAG_IFACE_SKIP_CLOSE),
- 
- 	/* Vendor matches */
- 	VENDOR_FLG(0x045e, /* MS Lifecam */
-diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index 39c3c61a7e49..ec06f441e890 100644
---- a/sound/usb/usbaudio.h
-+++ b/sound/usb/usbaudio.h
-@@ -169,6 +169,8 @@ extern bool snd_usb_skip_validation;
-  *  Apply the generic implicit feedback sync mode (same as implicit_fb=1 option)
-  * QUIRK_FLAG_SKIP_IMPLICIT_FB
-  *  Don't apply implicit feedback sync mode
-+ * QUIRK_FLAG_IFACE_SKIP_CLOSE
-+ *  Don't closed interface during setting sample rate
-  */
- 
- #define QUIRK_FLAG_GET_SAMPLE_RATE	(1U << 0)
-@@ -190,5 +192,6 @@ extern bool snd_usb_skip_validation;
- #define QUIRK_FLAG_SET_IFACE_FIRST	(1U << 16)
- #define QUIRK_FLAG_GENERIC_IMPLICIT_FB	(1U << 17)
- #define QUIRK_FLAG_SKIP_IMPLICIT_FB	(1U << 18)
-+#define QUIRK_FLAG_IFACE_SKIP_CLOSE	(1U << 19)
- 
- #endif /* __USBAUDIO_H */
--- 
-2.35.1
-
+Takashi
