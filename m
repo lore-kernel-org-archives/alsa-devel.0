@@ -4,92 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C9CDC433FE
-	for <alsa-devel@archiver.kernel.org>; Sat, 19 Nov 2022 08:50:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EB0BC433FE
+	for <alsa-devel@archiver.kernel.org>; Sat, 19 Nov 2022 08:50:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C8C591717;
-	Sat, 19 Nov 2022 09:49:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8C591717
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8B3EA1719;
+	Sat, 19 Nov 2022 09:50:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B3EA1719
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668847847;
-	bh=q/45zxSTYEjbTfTnPiPYEfpoaCIJEwfoZXVH5SUI57Y=;
+	s=default; t=1668847853;
+	bh=keJ9o9q8uodhwYkt6vgkNrG+Cwx0eZpKCfXr/U+28Bc=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=maF5cDh3f2VH5zsPfi+jRYEdOvP807igxRjSA3TyhwzOhPvtcRxY4FKuGtLS3VlzW
-	 HFI6y90hKjTbgTz/veUoyJqCFHiEztxCqRAw8tObztqZlyXgeW1Fyte1aOmLaOkt5Z
-	 fkf+7muUnyPSWJQxuJdcQs/5IyU4BmyVhGrn5jl4=
+	b=C85a48v2OumTZMKBh9Gg045U9OEoP/N7yG+Eg24s3fEaaN0NxGF9CPBph6uNYrv+2
+	 fPWrNuQ+ueMI2UQE83beiZ2YqW8K6509SRBc5DM02LUp/E8xkofIFYhJcmudTW7KEd
+	 gKktntyTKXELaI7pXf5s868v2vnQupWBLhdIUfgI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B19C6F8050F;
-	Sat, 19 Nov 2022 09:45:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 620E5F80558;
+	Sat, 19 Nov 2022 09:45:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2884BF8050F; Sat, 19 Nov 2022 09:45:00 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ id 57C3BF8055A; Sat, 19 Nov 2022 09:45:20 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21C6DF800B5
- for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2022 09:44:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21C6DF800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62965F80557
+ for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2022 09:45:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62965F80557
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="zRCGf8PP"; 
+ header.b="WqTTkMmE"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="szug//Yo"
+ header.b="evQkYEWm"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 8A4022280C;
- Sat, 19 Nov 2022 08:44:53 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 089961F385;
+ Sat, 19 Nov 2022 08:45:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1668847493; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1668847514; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cR5+IowdLCueIjDja6+/ZLYtaoh3XXTc+Rcy+jt3efg=;
- b=zRCGf8PPDXTNJUNeX+9PO2iIrEwWgK4rIlIMiKjyEDRlN1HF0QcOqafTnw3PO6r4sLD0S8
- z0CqTnc0/HsDhbBi1JKb993V8ru5sPPrPbTdMrXQtqKiIJ5ncj3+SxkhnH4PGCtyvt28mA
- cHf3NGSJP5TmS778jENH9uZ04G69++A=
+ bh=ixPb2GGjwwq2iLOxiGrX/cgH3fMPF/w/gj5qbX1xtJc=;
+ b=WqTTkMmENVMsQYw7EfCsOYNdf2Jq9ZL+3GJcFJ92cq/ZFKPV3DH98X8uN/0CAXHh4wmmYU
+ BCnjxwP3Oe23dL9nskhJVXodN1xjfFdHz9TkIJzXT6NXfa8edRmOedbRJy2v0/ABBemlly
+ uQbLMt1HlxfaOlQCeosioN3aq3mqn0w=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1668847493;
+ s=susede2_ed25519; t=1668847514;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cR5+IowdLCueIjDja6+/ZLYtaoh3XXTc+Rcy+jt3efg=;
- b=szug//YopXjKvSkeOJvMxoQrQ6BWDnP0vmPE4UUXlFqKjiXipXhw+vQO/bKoRtQvXKuq2z
- Ab+FBS8gkCt/cyAg==
+ bh=ixPb2GGjwwq2iLOxiGrX/cgH3fMPF/w/gj5qbX1xtJc=;
+ b=evQkYEWmvafYek4lenRDBVtcDALvbBbXnVUfuQbqYlsEPcmjmVQiOsBew5fxN8mFTxB0iX
+ ej7AeA8PYZD4nlAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4D8471377F;
- Sat, 19 Nov 2022 08:44:53 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BBF731377F;
+ Sat, 19 Nov 2022 08:45:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id h8wdEoWXeGPGBwAAMHmgww
- (envelope-from <tiwai@suse.de>); Sat, 19 Nov 2022 08:44:53 +0000
-Date: Sat, 19 Nov 2022 09:44:52 +0100
-Message-ID: <877czrxri3.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 1VI8LZmXeGP+BwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Sat, 19 Nov 2022 08:45:13 +0000
+Date: Sat, 19 Nov 2022 09:45:13 +0100
+Message-ID: <875yfbxrhi.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>
-Subject: Re: [PATCH 597/606] ALSA: aoa: onyx: Convert to i2c's .probe_new()
-In-Reply-To: <20221118224540.619276-598-uwe@kleine-koenig.org>
+Subject: Re: [PATCH 598/606] ALSA: aoa: tas: Convert to i2c's .probe_new()
+In-Reply-To: <20221118224540.619276-599-uwe@kleine-koenig.org>
 References: <20221118224540.619276-1-uwe@kleine-koenig.org>
- <20221118224540.619276-598-uwe@kleine-koenig.org>
+ <20221118224540.619276-599-uwe@kleine-koenig.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8bit
-Cc: Marek =?ISO-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
- alsa-devel@alsa-project.org, Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+Cc: alsa-devel@alsa-project.org,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>,
  linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
  Wolfram Sang <wsa@kernel.org>, Angel Iglesias <ang.iglesiasg@gmail.com>,
+ Krzysztof =?ISO-8859-2?Q?Ha=B3asa?= <khalasa@piap.pl>,
  linux-i2c@vger.kernel.org, kernel@pengutronix.de,
- Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
- Grant Likely <grant.likely@linaro.org>, Jeremy Kerr <jk@codeconstruct.com.au>,
- Johannes Berg <johannes@sipsolutions.net>, Lee Jones <lee.jones@linaro.org>,
+ Uwe =?ISO-8859-1?Q?Klei?= =?ISO-8859-1?Q?ne-K=F6nig?=
+ <u.kleine-koenig@pengutronix.de>, Grant Likely <grant.likely@linaro.org>,
+ Johannes Berg <johannes@sipsolutions.net>, Vladimir Oltean <olteanv@gmail.com>,
+ Lee Jones <lee.jones@linaro.org>,
+ Sebastian Reichel <sebastian.reichel@collabora.com>,
  linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -106,7 +109,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 18 Nov 2022 23:45:31 +0100,
+On Fri, 18 Nov 2022 23:45:32 +0100,
 Uwe Kleine-König wrote:
 > 
 > From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
@@ -116,7 +119,7 @@ Uwe Kleine-König wrote:
 > 
 > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-Applied now to for-next branch.
+Applied to for-next branch.
 
 
 thanks,
