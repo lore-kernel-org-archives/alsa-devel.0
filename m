@@ -4,42 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8430BC4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 19 Nov 2022 16:46:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E97BEC433FE
+	for <alsa-devel@archiver.kernel.org>; Sun, 20 Nov 2022 11:57:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD28F15DC;
-	Sat, 19 Nov 2022 17:45:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD28F15DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88C43822;
+	Sun, 20 Nov 2022 12:56:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88C43822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1668876387;
-	bh=6K6Rz9lsVPufN3jNM3UyJcF20Zvx4oUh5ol+x7x5NFc=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1668945468;
+	bh=6PrMjAgXFFONXRSGpI9VYmKCG+NV0tx1lK5NBBg2bzc=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=syYmxIJjaocmHvE4pkFhszgLNh1D1DHSh96oE4GViYuG2d0P4Dq8eIB5+jMP7TkYb
-	 30ZvHAO2Gw79nThu4xK+mb6XQRhTygOiG9P0dan614L7vywIS9RAnfaIy1QbOPUsy3
-	 jeOqyOxAL+0TgIRB8YCgLHoj3XoJyUoanTsbhlnU=
+	b=dM8H2zjfUkViT4XL7a9OuhZHsg6bPmY8aCn2IjLGGTKssbqafMEsuVxKM4bIEitmX
+	 hERqlSeQLHvPMUvm1rl8q/KM0rJG++bcRscPQP1o9xMWDtcKOC1/W1ixfcq7TD7/Ax
+	 +LQpqCHGIfFQi8zerdEc05mFrb0dCGMRs3QiU53o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A5E8F8016A;
-	Sat, 19 Nov 2022 17:45:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E302F800B5;
+	Sun, 20 Nov 2022 12:56:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83A20F80217; Sat, 19 Nov 2022 17:45:35 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 84C5FF800B5
- for <alsa-devel@alsa-project.org>; Sat, 19 Nov 2022 17:45:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84C5FF800B5
+ id 39FEBF8026A; Sun, 20 Nov 2022 12:56:56 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8799EF80155
+ for <alsa-devel@alsa-project.org>; Sun, 20 Nov 2022 12:56:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8799EF80155
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="tNF2c+H9"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 1518DB80975;
+ Sun, 20 Nov 2022 11:56:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E75AC433D6;
+ Sun, 20 Nov 2022 11:56:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1668945405;
+ bh=6PrMjAgXFFONXRSGpI9VYmKCG+NV0tx1lK5NBBg2bzc=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=tNF2c+H9oQY9YcMVY7eRu8PuwiIyhT5/gWQaiV0vDeifjlob4BiKHh/C++6G/2pCr
+ 4s2frsuo0UKYHe3u0MiFOfFn8vD+fDKQFE5Y7CNYw+d101v0RhGL9FuBZ/S1nOi5l9
+ 9aSumQzeyHlA40r1AgoisthhMZ+z2g0fwHa4ZWnAatIluycjXHkMMC1xNGwc10JQkj
+ DWPE/SW77NYLkLg7XCg7CTSMzNx2meCuvWgBscIArlDPtIIKUR9ecoohyrMpAwgwZO
+ SXDrt0Qo1TQaXoMg8AEHvnye6adIhCblseogQZ0gGYZKNzyRndrbJVReA4Tm4U0/c7
+ QmXCshBTqFBwg==
+From: Mark Brown <broonie@kernel.org>
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+In-Reply-To: <20221027085840.1562698-1-cezary.rojewski@intel.com>
+References: <20221027085840.1562698-1-cezary.rojewski@intel.com>
+Subject: Re: [RESEND PATCH] ASoC: core: Exit all links before removing their
+ components
+Message-Id: <166894540585.1075876.9923695190281693260.b4-ty@kernel.org>
+Date: Sun, 20 Nov 2022 11:56:45 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1668876331896210909-webhooks-bot@alsa-project.org>
-References: <1668876331896210909-webhooks-bot@alsa-project.org>
-Subject: es8336 HiFi.conf
-Message-Id: <20221119164535.83A20F80217@alsa1.perex.cz>
-Date: Sat, 19 Nov 2022 17:45:35 +0100 (CET)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.11.0-dev-8af31
+Cc: hdegoede@redhat.com, amadeuszx.slawinski@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,100 +82,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #244 was opened from junocomp:
+On Thu, 27 Oct 2022 10:58:40 +0200, Cezary Rojewski wrote:
+> Flows leading to link->init() and link->exit() are not symmetric.
+> Currently the relevant part of card probe sequence goes as:
+> 
+> 	for_each_card_rtds(card, rtd)
+> 		for_each_rtd_components(rtd, i, component)
+> 			component->probe()
+> 	for_each_card_rtds(card, rtd)
+> 		for_each_rtd_dais(rtd, i, dai)
+> 			dai->probe()
+> 	for_each_card_rtds(card, rtd)
+> 		rtd->init()
+> 
+> [...]
 
-I believe the current HiFi.conf for es8336 is incorrect and does not enable the require volumes for the speakers. 
+Applied to
 
-I have attached my conf file, this enables the speakers from startup, detects the HDMI audio and enables the internal microphone. I have tested this on 3 devices with Debian now and it seems to work. Can other people test it too please. If it works, it will be worth pushing it upstream.
+   broonie/sound.git for-next
 
-Make sure you backup your /usr/share/alsa/ucm2/Intel/sof-essx8336/HiFi.conf and replace it with the configuration below. Restart your machine to take effect.
+Thanks!
 
-```
-SectionVerb {
-	EnableSequence [
-		#disdevall ""
-		# Disable all inputs / outputs
-		#   (may be duplicated with disdevall)
-		cset "name='Left Headphone Mixer Left DAC Switch' on"
-		cset "name='Right Headphone Mixer Right DAC Switch' on"
-	]
-}
+[1/1] ASoC: core: Exit all links before removing their components
+      commit: c7eb967d70446971413061effca3226578cb4dab
 
-SectionDevice."Mic" {
-		Comment "Analog Microphone"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-		EnableSequence [
-			cset "name='Internal Mic Switch' on"
-			cset "name='Headset Mic Switch' on"
-		]
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-		DisableSequence [
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-				]
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-		Value {
-			CapturePriority 100
-			CapturePCM "hw:${CardId}"
-			CaptureMixerElem "ADC PGA Gain"
-			CaptureMasterElem "ADC"
-		}
-}
-
-SectionDevice."Speaker" {
-	Comment "Speakers"
-
-	ConflictingDevice [
-		"Headphones"
-	]
-
-	EnableSequence [
-		cset "name='Speaker Switch' on"
-		cset "name='Differential Mux' lin1-rin1"
-	]
-
-	DisableSequence [
-		cset "name='Speaker Switch' off"
-		cset "name='Differential Mux' lin2-rin2"
-	]
-	Value {
-		PlaybackPriority 100
-		PlaybackPCM "hw:${CardId}"
-		# The es8316 only has a HP-amp which is muxed to the speaker
-		# or to the headpones output
-		PlaybackMixerElem "Headphone Mixer"
-		PlaybackMasterElem "DAC"
-	}
-}
-
-SectionDevice."Headphones" {
-	Comment "Headphones"
-
-	ConflictingDevice [
-		"Speaker"
-	]
-	
-	EnableSequence [
-                cset "name='Headset Mic Switch' on"
-                cset "name='Speaker Switch' off"
-                cset "name='Differential Mux' lin2-rin2"
-        ]
-        
-        DisableSequence [
-		cset "name='Differential Mux' lin1-rin1"
-	]
-
-	Value {
-		PlaybackPriority 300
-		PlaybackPCM "hw:${CardId}"
-		PlaybackMixerElem "Headphone Mixer"
-		PlaybackMasterElem "DAC"
-		JackControl "Headphone Jack"
-		JackHWMute "Speaker"
-	}
-}
-
-Include.hdmi.File "/Intel/sof-essx8336/Hdmi.conf"
-```
-
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/244
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Thanks,
+Mark
