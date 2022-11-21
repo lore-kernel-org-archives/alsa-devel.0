@@ -4,82 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE2FDC43219
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Nov 2022 13:49:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FB75C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Nov 2022 14:15:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D43E7164F;
-	Mon, 21 Nov 2022 14:48:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D43E7164F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C66FB15F2;
+	Mon, 21 Nov 2022 15:14:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C66FB15F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669038560;
-	bh=6XUBSfqA/AYQJH+lqOy7CqiKFUESx/kcE+KE1N5qCN0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=SGNANLOKji3Cj5V93kjhS9+8/PK6t5sBxKkwNg/9hnk7dxk3/NeUFgTERaNbssPC0
-	 lQxT4Eknwlr/H8y68PRF3J9RgsYfunObLwrRZo98bXZYo7vpM1a5f3CXFJN7W3eR6a
-	 NYGjHjxBkLkJ3QSPu0y1TLvLe0lz9ya/iusZuFgA=
+	s=default; t=1669040104;
+	bh=2/smtpaMxutBP29lDAqMjaR6gCDC8Gy+WBZ38ZjMhD0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=QBSVC0pKzyMnkL9j1BXbj95p5DdSyfYWrysLo33KNMdkJIgvrUPRl2oHR30rYGQ05
+	 fAYAx1MbBtNtaUUt43LPh05k7ICiw3i6qfTN/JuyCWwrgiLrUf+MzKrUZ6nLV2LlFg
+	 sHxQoeu5mx6eL8udL5Nn/e/n0pwdng8GCK2M5as0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D179F8057F;
-	Mon, 21 Nov 2022 14:46:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A844F804AB;
+	Mon, 21 Nov 2022 15:14:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9EF0BF8057D; Mon, 21 Nov 2022 14:46:31 +0100 (CET)
+ id 7F993F80149; Mon, 21 Nov 2022 15:14:12 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 220D2F80519
- for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2022 14:46:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 220D2F80519
+ by alsa1.perex.cz (Postfix) with ESMTPS id D653BF800F3
+ for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2022 15:14:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D653BF800F3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="mqk7bO2g"
+ header.b="Px2yehW0"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
  by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2AL502xK029046; Mon, 21 Nov 2022 07:46:13 -0600
+ 2ALCr4Bv002700; Mon, 21 Nov 2022 08:14:08 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=rU8D4IIGgYuq3+CJd6vO8qhlUC6r6iU2cG2WHbN6SkE=;
- b=mqk7bO2g3CYxw4HSM7cvLKu2+gJAaMBwLXI47V4kd20tVgI/R6/QaClTpaOC969xxCN/
- NaFm2hatBFUECKlhwyD+DV3GEASdZ8timbQQjk8uML9yKJWrdN9z0rONo8KUYcPFO2zq
- ZE1YhxMUTtApzw4ayNvyV44//FwiWKptozTUKTxcACbMQzUCbu1Bh8snZHcU/zWOZswm
- nFss00LVV8TtGvUjHZs10BgSABYsOzWbTDMDlUcbczjyAumuiVHqYDBiXoAYdS8JJWtI
- jvrOc6EBQhrHnBxeex7+H4uICVatsEA+YlHf0wnTGTuePzCQek4Vddjua4QkAKsXcWud Hw== 
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=drhTEQe31yycsjARalMi8wiw6eVsmgrhMdEVBIej5ao=;
+ b=Px2yehW0pb3Dxk9Et+O5SgtdGsZeG+kXGc3p3QjGWDkub5qGbuUdeMLag+VO6SOBOCsF
+ DNhb0ERqw9FNiXBSncGlgzb1bhPdcTsc32h1PAsyLAOgqmCZuv87SGkgceIxjzpuzYI/
+ bA4ClYvtTf/SFc5nekF5lMnen1xv22ul6JcXvBI5t6W/z1Iti9QUXGqviPGNnjxlIIVl
+ Ddb8wKqJPvI7XIV4cRQcBEh7+7IxdycptQ7xP19MQBJSk3xQBcqYNwbGJzbPM4QzsXBC
+ ZQ2tmXfDTs4b04QdmW+k9rUbRsEZII2oWSmJWnBANv4PARNVrJbcxjYZQX+YV7FBKE1l DQ== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kxvet271t-6
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kxvet283r-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 21 Nov 2022 07:46:13 -0600
+ Mon, 21 Nov 2022 08:14:07 -0600
 Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.20; Mon, 21 Nov
- 2022 07:46:09 -0600
+ 2022 08:14:06 -0600
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.20 via
- Frontend Transport; Mon, 21 Nov 2022 07:46:09 -0600
+ Frontend Transport; Mon, 21 Nov 2022 08:14:06 -0600
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id F16AFB2F;
- Mon, 21 Nov 2022 13:46:08 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5DF06468;
+ Mon, 21 Nov 2022 14:14:06 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <tiwai@suse.com>, <broonie@kernel.org>
-Subject: [PATCH 7/9] ASoC: rt711: Switch to new snd_sdw_params_to_config helper
-Date: Mon, 21 Nov 2022 13:46:06 +0000
-Message-ID: <20221121134608.3713033-7-ckeepax@opensource.cirrus.com>
+To: <vkoul@kernel.org>
+Subject: [PATCH v3 0/4] Minor SoundWire clean ups
+Date: Mon, 21 Nov 2022 14:14:02 +0000
+Message-ID: <20221121141406.3840561-1-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221121134608.3713033-1-ckeepax@opensource.cirrus.com>
-References: <20221121134608.3713033-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: eS9KVEaOggY7Nq8qjtYpYBQLViVK7LRU
-X-Proofpoint-GUID: eS9KVEaOggY7Nq8qjtYpYBQLViVK7LRU
+X-Proofpoint-ORIG-GUID: JZF-RXjQwTMQmNfQXDXWTohWiOHZXD5q
+X-Proofpoint-GUID: JZF-RXjQwTMQmNfQXDXWTohWiOHZXD5q
 X-Proofpoint-Spam-Reason: safe
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, pierre-louis.bossart@linux.intel.com,
- lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,138 +92,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The conversation from hw_params to SoundWire config is pretty
-standard as such most of the conversation can be handled by the new
-snd_sdw_params_to_config helper function.
+Just some minor tidy ups and preparation for starting to upstream some
+Cirrus SoundWire devices. The first three patches are pretty trivial,
+the last patch which moves the remaining core over to using the no_pm
+functions could probably use some careful review.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- sound/soc/codecs/rt711-sdca.c | 27 +++++++++------------------
- sound/soc/codecs/rt711.c      | 27 +++++++++------------------
- 2 files changed, 18 insertions(+), 36 deletions(-)
+Changes since v2:
+ - Fix up a memory leak of a buffer on the error path
+ - Added some reviewed by's
 
-diff --git a/sound/soc/codecs/rt711-sdca.c b/sound/soc/codecs/rt711-sdca.c
-index 9252681219017..b78dd5994edbf 100644
---- a/sound/soc/codecs/rt711-sdca.c
-+++ b/sound/soc/codecs/rt711-sdca.c
-@@ -18,6 +18,7 @@
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-+#include <sound/sdw.h>
- #include <sound/soc-dapm.h>
- #include <sound/initval.h>
- #include <sound/tlv.h>
-@@ -1257,11 +1258,10 @@ static int rt711_sdca_pcm_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct rt711_sdca_priv *rt711 = snd_soc_component_get_drvdata(component);
--	struct sdw_stream_config stream_config;
--	struct sdw_port_config port_config;
--	enum sdw_data_direction direction;
-+	struct sdw_stream_config stream_config = {0};
-+	struct sdw_port_config port_config = {0};
- 	struct sdw_stream_data *stream;
--	int retval, port, num_channels;
-+	int retval;
- 	unsigned int sampling_rate;
- 
- 	dev_dbg(dai->dev, "%s %s", __func__, dai->name);
-@@ -1274,28 +1274,19 @@ static int rt711_sdca_pcm_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 
- 	/* SoundWire specific configuration */
-+	snd_sdw_params_to_config(substream, params, &stream_config, &port_config);
-+
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		direction = SDW_DATA_DIR_RX;
--		port = 3;
-+		port_config.num = 3;
- 	} else {
--		direction = SDW_DATA_DIR_TX;
- 		if (dai->id == RT711_AIF1)
--			port = 2;
-+			port_config.num = 2;
- 		else if (dai->id == RT711_AIF2)
--			port = 4;
-+			port_config.num = 4;
- 		else
- 			return -EINVAL;
- 	}
- 
--	stream_config.frame_rate = params_rate(params);
--	stream_config.ch_count = params_channels(params);
--	stream_config.bps = snd_pcm_format_width(params_format(params));
--	stream_config.direction = direction;
--
--	num_channels = params_channels(params);
--	port_config.ch_mask = GENMASK(num_channels - 1, 0);
--	port_config.num = port;
--
- 	retval = sdw_stream_add_slave(rt711->slave, &stream_config,
- 					&port_config, 1, stream->sdw_stream);
- 	if (retval) {
-diff --git a/sound/soc/codecs/rt711.c b/sound/soc/codecs/rt711.c
-index 1bf6180891942..78e1da9b07388 100644
---- a/sound/soc/codecs/rt711.c
-+++ b/sound/soc/codecs/rt711.c
-@@ -19,6 +19,7 @@
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-+#include <sound/sdw.h>
- #include <sound/soc.h>
- #include <sound/soc-dapm.h>
- #include <sound/initval.h>
-@@ -999,11 +1000,10 @@ static int rt711_pcm_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct rt711_priv *rt711 = snd_soc_component_get_drvdata(component);
--	struct sdw_stream_config stream_config;
--	struct sdw_port_config port_config;
--	enum sdw_data_direction direction;
-+	struct sdw_stream_config stream_config = {0};
-+	struct sdw_port_config port_config = {0};
- 	struct sdw_stream_data *stream;
--	int retval, port, num_channels;
-+	int retval;
- 	unsigned int val = 0;
- 
- 	dev_dbg(dai->dev, "%s %s", __func__, dai->name);
-@@ -1016,28 +1016,19 @@ static int rt711_pcm_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 
- 	/* SoundWire specific configuration */
-+	snd_sdw_params_to_config(substream, params, &stream_config, &port_config);
-+
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		direction = SDW_DATA_DIR_RX;
--		port = 3;
-+		port_config.num = 3;
- 	} else {
--		direction = SDW_DATA_DIR_TX;
- 		if (dai->id == RT711_AIF1)
--			port = 4;
-+			port_config.num = 4;
- 		else if (dai->id == RT711_AIF2)
--			port = 2;
-+			port_config.num = 2;
- 		else
- 			return -EINVAL;
- 	}
- 
--	stream_config.frame_rate = params_rate(params);
--	stream_config.ch_count = params_channels(params);
--	stream_config.bps = snd_pcm_format_width(params_format(params));
--	stream_config.direction = direction;
--
--	num_channels = params_channels(params);
--	port_config.ch_mask = (1 << (num_channels)) - 1;
--	port_config.num = port;
--
- 	retval = sdw_stream_add_slave(rt711->slave, &stream_config,
- 					&port_config, 1, stream->sdw_stream);
- 	if (retval) {
+Thanks,
+Charles
+
+
+Charles Keepax (3):
+  soundwire: Provide build stubs for common functions
+  soundwire: debugfs: Switch to sdw_read_no_pm
+  soundwire: stream: Move remaining register accesses over to no_pm
+
+Simon Trimmer (1):
+  soundwire: bus: export sdw_nwrite_no_pm and sdw_nread_no_pm functions
+
+ drivers/soundwire/bus.c       | 10 ++--
+ drivers/soundwire/debugfs.c   | 13 ++++-
+ drivers/soundwire/stream.c    | 30 +++++------
+ include/linux/soundwire/sdw.h | 94 +++++++++++++++++++++++++++++++----
+ 4 files changed, 116 insertions(+), 31 deletions(-)
+
 -- 
 2.30.2
 
