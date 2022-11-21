@@ -4,118 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3447C433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Nov 2022 09:30:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F3EDC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Nov 2022 09:30:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA2EA1658;
-	Tue, 22 Nov 2022 10:29:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA2EA1658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 783C9168E;
+	Tue, 22 Nov 2022 10:30:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 783C9168E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669109444;
-	bh=seSQC6SqlEqebN8nlAvurHoHM/q4v6iR/e2pC83lUxE=;
-	h=Date:From:Subject:To:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=p+S49LJRsI79XQCgA5fbDdrE7gnsmU7TquoIKR+obujuqNwI0T+/NZIMpbShZif2T
-	 ZPpJxTsRKHrqBA8+RDy/45s32ga5UvdLTtC/oSuucVwa0cEcB98F/wnDGKQmErGCwj
-	 uQmd+m9cCa93fcqOYZFDt/a1LYipMcI5EmH6/NcQ=
+	s=default; t=1669109453;
+	bh=CYBGgKZa3V7R4jeaL1Zz2bLgJGSPjHevyvScslfBpTs=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=kziVtVYvJNCn0/HMRE7rsQx0EYobPemke8Ca2eNl69wrKSvj5/Z6FvxKrK9vSAL4j
+	 cyJziBTNIlqfyRsWJfGWPHPz+0O3gDwCpZZAEaF9BJeWNaI5DiasfsQfJ+T8A3pXUu
+	 Cvg8POZz4qQ8RUFWJpgy3Y7xH5FqK9T7gQw4uoFk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ED6F5F8059F;
-	Tue, 22 Nov 2022 10:27:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 868B2F805A0;
+	Tue, 22 Nov 2022 10:27:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AD095F8028D; Mon, 21 Nov 2022 11:16:42 +0100 (CET)
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com
- [IPv6:2a00:1450:4864:20::129])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 37E26F8028D; Mon, 21 Nov 2022 11:46:57 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 246D6F80115
- for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2022 11:16:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 246D6F80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id C4205F800F3
+ for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2022 11:46:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4205F800F3
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="HMQtLNQC"
-Received: by mail-lf1-x129.google.com with SMTP id j4so18160573lfk.0
- for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2022 02:16:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:in-reply-to:content-language:references
- :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
- :cc:subject:date:message-id:reply-to;
- bh=phJFVLoc9/POc6nbD0liFwrgYsKAiaNUs+VrsQZny0U=;
- b=HMQtLNQC6JHUcpQnXKaMPeLJYNEXESjWqW9Jm9fxHdDsyxq3fD2y+gUbum8cazGLlS
- 0Nzot0o7wlI3aHmX0JtEp59ASN04zoUP5cBLwhJUS8UWXS1vrDPK5s0nm6MtNyPRkAXr
- i9HRjhzMXJwfcX+oinAm/OP6xU5bC2NyVL00djub62igijCsqVS/+Gs3g8Ob67GV62e5
- lbpACEGBVz+P7gegvEedJPLtYc/UAuXuZCP3D6YMe70yXUQfK1oo2OuCbl17wDJsWOWJ
- juioZPmih2Q2tDZ+3ZlWsJUEwqpG6mEfuUGwVkFA5iKPxQNEPbzHK7gtA/8R8W2wDMdd
- a+Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:content-language:references
- :cc:to:subject:from:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=phJFVLoc9/POc6nbD0liFwrgYsKAiaNUs+VrsQZny0U=;
- b=gNni4+prrerE8fdp8MR7+G6h4tEP2ZaupOgzJWATzp1or5iccimBa8aVC0LtsRG/ld
- Xs4/1u0zlPF8xAQPcaMsPz8lV7hnBqzxmxuIhx7mIycTHlEwWcX9JFrVm/xt+jO3TuMR
- rK9eqQHkbaAwNxpf2s9mjLUduP1U5xrhaG32BbGoj0qZHVGrK/+XmcOY85VdWJOSilkW
- rhj2DYTwf3ImzoUDdx75eeddr+oH/uQU9X5M7ZFkWIlYHDiTJt7F6m2QEw7Q1LdccuBa
- J+aB2lD0I8p2ZTFSHCYpGXnn2HBHBtIsb9W8G19fZlXYw9B3s30FHOWq4gwZUKBR3qG0
- 4mTw==
-X-Gm-Message-State: ANoB5pn0tw9tZM5hzqHjbHxWuCrjkUScttbs5vq/fMZDD+u7emjuPibc
- 2tm+AJ5GHI1DzGmedM3VpWE=
-X-Google-Smtp-Source: AA0mqf4ot1dRfz4XcQJOzbIEVDNmvoy9FxZf/F3Gx+j1WTmSwhOpMtvOjIltFzq0/t2LrM51x6qHTA==
-X-Received: by 2002:a05:6512:2521:b0:4a4:5e83:e07d with SMTP id
- be33-20020a056512252100b004a45e83e07dmr1937785lfb.409.1669025797870; 
- Mon, 21 Nov 2022 02:16:37 -0800 (PST)
-Received: from [172.16.196.95] ([213.255.186.46])
- by smtp.gmail.com with ESMTPSA id
- e8-20020a05651236c800b004a03d5c2140sm1957388lfs.136.2022.11.21.02.16.28
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 21 Nov 2022 02:16:36 -0800 (PST)
-Message-ID: <20825b50-c2ef-7efb-efbf-ac00cc4ab9f4@gmail.com>
-Date: Mon, 21 Nov 2022 12:16:24 +0200
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="cz3hKvJz"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1669027611; x=1700563611;
+ h=from:to:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=CYBGgKZa3V7R4jeaL1Zz2bLgJGSPjHevyvScslfBpTs=;
+ b=cz3hKvJzuljBWKYNyN51Aggv6GGdGDsxm+/ximXOcANrx6wIDrQy0RyG
+ GK5lV0hOej1e1WSAcnBEyQ/SxrrAALqtiT7uS/WMGmRBWRZUmOd5vBYrn
+ chRkLL4xasKVVX2E4r47Vzyk5nYLJEuOTFkGDerk2GdcJvqCAu8NVfPxk
+ FFRlo1K8spN9n//HsMWKwEPPnmEaNCKVGEXca1qOPaH9pEcAkoJPRL6j4
+ T6wI8m+/cwYhxFg1SKpBuIGU9R7tq2CKXNgr32WtueEWZY/uxa859+jQk
+ YjB+QyyAqslxChSW0hThJFNnFyhM4DzNYAIs99BKh54mVS2FXiY8jVdTL w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10537"; a="312231236"
+X-IronPort-AV: E=Sophos;i="5.96,181,1665471600"; d="scan'208";a="312231236"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Nov 2022 02:46:42 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10537"; a="729964350"
+X-IronPort-AV: E=Sophos;i="5.96,181,1665471600"; d="scan'208";a="729964350"
+Received: from lili-desktop.bj.intel.com ([10.238.144.122])
+ by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Nov 2022 02:46:40 -0800
+From: lili.li@intel.com
+To: tiwai@suse.com, perex@perex.cz, broonie@kernel.org,
+ cezary.rojewski@intel.com, kai.vehmanen@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: Intel: Skylake: Fix Kconfig dependency
+Date: Mon, 21 Nov 2022 18:47:42 +0800
+Message-Id: <20221121104742.1007486-1-lili.li@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.1
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-Subject: Re: [PATCH] dt-bindings: Add missing start and/or end of line regex
- anchors
-To: Rob Herring <robh@kernel.org>, Ilia Lin <ilia.lin@kernel.org>,
- Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@somainline.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Viresh Kumar <viresh.kumar@linaro.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
- Yangtao Li <tiny.windzz@gmail.com>, Nishanth Menon <nm@ti.com>,
- Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>,
- Sergio Paracuellos <sergio.paracuellos@gmail.com>,
- Ryder Lee <ryder.lee@mediatek.com>, Jianjun Wang
- <jianjun.wang@mediatek.com>, Bjorn Helgaas <bhelgaas@google.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Marek Vasut <marek.vasut+renesas@gmail.com>,
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Javier Martinez Canillas <javier@dowhile0.org>,
- Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Maxime Ripard <mripard@kernel.org>,
- Daniel Mack <zonque@gmail.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-References: <20221118223728.1721589-1-robh@kernel.org>
-Content-Language: en-US
-In-Reply-To: <20221118223728.1721589-1-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Mailman-Approved-At: Tue, 22 Nov 2022 10:27:19 +0100
-Cc: linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-pm@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzk@kernel.org>, linux-spi@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-mediatek@lists.infradead.org,
- linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
- linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Tue, 22 Nov 2022 10:27:20 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -131,24 +83,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 11/19/22 00:37, Rob Herring wrote:
-> json-schema patterns by default will match anywhere in a string, so
-> typically we want at least the start or end anchored. Fix the obvious
-> cases where the anchors were forgotten.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
+From: Lili Li <lili.li@intel.com>
 
->   .../devicetree/bindings/regulator/rohm,bd9576-regulator.yaml  | 2 +-
+Commit e4746d94d00c ("ASoC: Intel: Skylake: Introduce HDA codec init and
+exit routines") introduced HDA codec init routine which depends on SND_HDA.
+Select SND_SOC_HDAC_HDA unconditionally to fix following compile error:
+ERROR: modpost: "snd_hda_codec_device_init" [sound/soc/intel/skylake/snd-soc-skl.ko] undefined!
 
-Acked-by: Matti Vaittinen <mazziesaccount@gmail.com>
+Fixes: e4746d94d00c ("ASoC: Intel: Skylake: Introduce HDA codec init and exit routines")
+Reviewed-by: Junxiao Chang <junxiao.chang@intel.com>
+Suggested-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Signed-off-by: Lili Li <lili.li@intel.com>
+---
+ sound/soc/intel/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index d2ca710ac3fa..ac799de4f7fd 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -177,7 +177,7 @@ config SND_SOC_INTEL_SKYLAKE_COMMON
+ 	select SND_HDA_DSP_LOADER
+ 	select SND_SOC_TOPOLOGY
+ 	select SND_SOC_INTEL_SST
+-	select SND_SOC_HDAC_HDA if SND_SOC_INTEL_SKYLAKE_HDAUDIO_CODEC
++	select SND_SOC_HDAC_HDA
+ 	select SND_SOC_ACPI_INTEL_MATCH
+ 	select SND_INTEL_DSP_CONFIG
+ 	help
 -- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+2.25.1
 
