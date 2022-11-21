@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 252C7C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Nov 2022 14:15:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 559B2C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Nov 2022 14:15:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A366C15F9;
-	Mon, 21 Nov 2022 15:14:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A366C15F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C3611632;
+	Mon, 21 Nov 2022 15:15:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C3611632
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669040127;
-	bh=uWozjaJurGH01Qg0wTCznv5NFoZ03iZatBlER1l4rdc=;
+	s=default; t=1669040155;
+	bh=BUozttMdPuKTyzZxQhQnHoH7JqDj7+oQ0XVXs4lexSI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e8MiiaqEzDFW+1HfRB25dIrraSu/6D3iCc85jjXVuQRkDV7hJgKg0Izpld2mtgJxm
-	 da1usXLh6eLkr6pSYHDPCvs3W9E0/Y6tl+Bqo6MBWF9oEoF/lAl5o9m68fXDEcRl2k
-	 cPvxW7rt+7d7SNegqVmpFCdOZHoH9vIMctWn6Jo0=
+	b=Xk7Sba/fqFGmTKabGQmgnU9CyFw2R0SRkDvalhrl0dQcv3ohN4SlsmlBuRNXNwswW
+	 l8UQTvv/ohU9ej1FqkJYrNSWL4kpVOkpvzJb1SUAhZke6Ocx6w90Ejfavz80Q1L6Kz
+	 TId3eYkwMi2rdZCbNbKIaunBbF1XvvnGqsqaVy3Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13615F80542;
-	Mon, 21 Nov 2022 15:14:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ACEEEF80149;
+	Mon, 21 Nov 2022 15:14:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1359F804B1; Mon, 21 Nov 2022 15:14:12 +0100 (CET)
+ id A1A26F80559; Mon, 21 Nov 2022 15:14:17 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33216F800EC
- for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2022 15:14:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33216F800EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 79399F8028D
+ for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2022 15:14:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79399F8028D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="fhdUnVpv"
+ header.b="DOxSu/Im"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
  by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2ALCr4Bw002700; Mon, 21 Nov 2022 08:14:08 -0600
+ 2ALCr4Bx002700; Mon, 21 Nov 2022 08:14:09 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=mupvctPGaU35812hSFyzhP2oIlKUT9wSBkdlvNT0TOY=;
- b=fhdUnVpvFgC6uNd31tOaYBBij5GsErHtB33C7CfbOXonSxNigG1jL2kzeWEYuCManEa1
- 1ZXRZUpE8EQNRoFUZNCTC23BTlYzQyR06qS2KPt9V7xzRCbo5T+Ee8rpmupi6+jFSZX7
- Q3+4l5poSXhi4Q0R7iNaYp67HdXc+RZYHQmvMHuh+MmnDaU8oae2zW5mSkx4XsjD4spk
- y+hIEcPnw5vFfvNOiJNtcP36SzgI6xrlRe1CIECzW+bCGC3aSHZPSXu/L7T+DWU9zRNt
- e5Ze7ws2kjTC+YM5nLG9xMdqHVCLscqvPFIyQubTGHIfjBivOmQRhFsUlel43T9oeSfz IA== 
+ bh=1PeK3bms+IaPxcTW0cokINfe1642tn7T3FwGji4GBoA=;
+ b=DOxSu/ImhjUT7GBsfIKcw4ZyPmFnObyOJrLWPJx8huTjgT24Dl3yv8+wAInG8YeZ0HDG
+ wKXnkBnX13u7MliSf1Ry/yc2kA/aezf9XFM/Es2le4cag+BqZPR4IiemaWCCmFMUf1JV
+ QMKPsgMO3/hfzGcZ+vlKttznU/vE0AVkQxFMe0bsPz6veBXal1GCzutLrdfe0xk06Xzy
+ HMEKvM51KoJPhRU++S8iL6mmMALBghgu7cdHDVwCBYIiy2XYpjCTXedu0TLgmSIHLiXv
+ t4LwgrGdLQVu5pRnDGNoY2NevrAf6Kc+yLgfixwl9EdnLlzkU/e/MCQu1lnGVci7BbsW MA== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kxvet283r-2
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kxvet283r-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 21 Nov 2022 08:14:08 -0600
+ Mon, 21 Nov 2022 08:14:09 -0600
 Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.20; Mon, 21 Nov
@@ -61,21 +61,22 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
  15.2.1118.20 via Frontend Transport; Mon, 21 Nov 2022 08:14:06 -0600
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7B636B38;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9DF85468;
  Mon, 21 Nov 2022 14:14:06 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <vkoul@kernel.org>
-Subject: [PATCH v3 2/4] soundwire: Provide build stubs for common functions
-Date: Mon, 21 Nov 2022 14:14:04 +0000
-Message-ID: <20221121141406.3840561-3-ckeepax@opensource.cirrus.com>
+Subject: [PATCH v3 4/4] soundwire: stream: Move remaining register accesses
+ over to no_pm
+Date: Mon, 21 Nov 2022 14:14:06 +0000
+Message-ID: <20221121141406.3840561-5-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221121141406.3840561-1-ckeepax@opensource.cirrus.com>
 References: <20221121141406.3840561-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 1Nmg1w26ts7BVPKEM0TeCsXlxQg-kj73
-X-Proofpoint-GUID: 1Nmg1w26ts7BVPKEM0TeCsXlxQg-kj73
+X-Proofpoint-ORIG-GUID: Yj30PiP-VfJoLzeufnmghbBgSdGbfJl4
+X-Proofpoint-GUID: Yj30PiP-VfJoLzeufnmghbBgSdGbfJl4
 X-Proofpoint-Spam-Reason: safe
 Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
  pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
@@ -95,9 +96,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Provide stub functions when CONFIG_SOUNDWIRE is not set for functions
-that are quite likely to be used from common code on devices supporting
-multiple control buses.
+There is no need to play with the runtime reference everytime a register
+is accessed. All the remaining "pm" style register accesses trace back
+to 4 functions:
+
+sdw_prepare_stream
+sdw_deprepare_stream
+sdw_enable_stream
+sdw_disable_stream
+
+Any sensible implementation will need to hold a runtime reference
+across all those functions, it makes no sense to be allowing the
+device/bus to suspend whilst streams are being prepared/enabled. And
+certainly in the case of the all existing users, they all call these
+functions from hw_params/prepare/trigger/hw_free callbacks in ALSA,
+which will have already runtime resumed all the audio devices
+associated during the open callback.
 
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
@@ -105,128 +119,149 @@ Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
 No changes since v2.
 
- include/linux/soundwire/sdw.h | 92 +++++++++++++++++++++++++++++++----
- 1 file changed, 82 insertions(+), 10 deletions(-)
+ drivers/soundwire/bus.c    |  2 +-
+ drivers/soundwire/stream.c | 30 +++++++++++++++---------------
+ 2 files changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 902ed46f76c80..4f80cba898f11 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -1021,15 +1021,8 @@ int sdw_stream_add_master(struct sdw_bus *bus,
- 		struct sdw_port_config *port_config,
- 		unsigned int num_ports,
- 		struct sdw_stream_runtime *stream);
--int sdw_stream_add_slave(struct sdw_slave *slave,
--		struct sdw_stream_config *stream_config,
--		struct sdw_port_config *port_config,
--		unsigned int num_ports,
--		struct sdw_stream_runtime *stream);
- int sdw_stream_remove_master(struct sdw_bus *bus,
- 		struct sdw_stream_runtime *stream);
--int sdw_stream_remove_slave(struct sdw_slave *slave,
--		struct sdw_stream_runtime *stream);
- int sdw_startup_stream(void *sdw_substream);
- int sdw_prepare_stream(struct sdw_stream_runtime *stream);
- int sdw_enable_stream(struct sdw_stream_runtime *stream);
-@@ -1040,8 +1033,20 @@ int sdw_bus_prep_clk_stop(struct sdw_bus *bus);
- int sdw_bus_clk_stop(struct sdw_bus *bus);
- int sdw_bus_exit_clk_stop(struct sdw_bus *bus);
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index ef4878258afad..d87a188fcce1e 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -1214,7 +1214,7 @@ int sdw_configure_dpn_intr(struct sdw_slave *slave,
+ 		val &= ~SDW_DPN_INT_PORT_READY;
+ 	}
  
--/* messaging and data APIs */
-+int sdw_compare_devid(struct sdw_slave *slave, struct sdw_slave_id id);
-+void sdw_extract_slave_id(struct sdw_bus *bus, u64 addr, struct sdw_slave_id *id);
-+
-+#if IS_ENABLED(CONFIG_SOUNDWIRE)
+-	ret = sdw_update(slave, addr, (mask | SDW_DPN_INT_PORT_READY), val);
++	ret = sdw_update_no_pm(slave, addr, (mask | SDW_DPN_INT_PORT_READY), val);
+ 	if (ret < 0)
+ 		dev_err(&slave->dev,
+ 			"SDW_DPN_INTMASK write failed:%d\n", val);
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index bd502368339e5..df3b36670df4c 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -81,14 +81,14 @@ static int _sdw_program_slave_port_params(struct sdw_bus *bus,
+ 	}
  
-+int sdw_stream_add_slave(struct sdw_slave *slave,
-+			 struct sdw_stream_config *stream_config,
-+			 struct sdw_port_config *port_config,
-+			 unsigned int num_ports,
-+			 struct sdw_stream_runtime *stream);
-+int sdw_stream_remove_slave(struct sdw_slave *slave,
-+			    struct sdw_stream_runtime *stream);
-+
-+/* messaging and data APIs */
- int sdw_read(struct sdw_slave *slave, u32 addr);
- int sdw_write(struct sdw_slave *slave, u32 addr, u8 value);
- int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value);
-@@ -1053,7 +1058,74 @@ int sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *
- int sdw_update(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
- int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
+ 	/* Program DPN_OffsetCtrl2 registers */
+-	ret = sdw_write(slave, addr1, t_params->offset2);
++	ret = sdw_write_no_pm(slave, addr1, t_params->offset2);
+ 	if (ret < 0) {
+ 		dev_err(bus->dev, "DPN_OffsetCtrl2 register write failed\n");
+ 		return ret;
+ 	}
  
--int sdw_compare_devid(struct sdw_slave *slave, struct sdw_slave_id id);
--void sdw_extract_slave_id(struct sdw_bus *bus, u64 addr, struct sdw_slave_id *id);
-+#else
-+
-+static inline int sdw_stream_add_slave(struct sdw_slave *slave,
-+				       struct sdw_stream_config *stream_config,
-+				       struct sdw_port_config *port_config,
-+				       unsigned int num_ports,
-+				       struct sdw_stream_runtime *stream)
-+{
-+	return 0;
-+}
-+
-+static inline int sdw_stream_remove_slave(struct sdw_slave *slave,
-+					  struct sdw_stream_runtime *stream)
-+{
-+	return 0;
-+}
-+
-+/* messaging and data APIs */
-+static inline int sdw_read(struct sdw_slave *slave, u32 addr)
-+{
-+	return 0;
-+}
-+
-+static inline int sdw_write(struct sdw_slave *slave, u32 addr, u8 value)
-+{
-+	return 0;
-+}
-+
-+static inline int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value)
-+{
-+	return 0;
-+}
-+
-+static inline int sdw_read_no_pm(struct sdw_slave *slave, u32 addr)
-+{
-+	return 0;
-+}
-+
-+static inline int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
-+{
-+	return 0;
-+}
-+
-+static inline int sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
-+{
-+	return 0;
-+}
-+
-+static inline int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
-+{
-+	return 0;
-+}
-+
-+static inline int sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
-+{
-+	return 0;
-+}
-+
-+static inline int sdw_update(struct sdw_slave *slave, u32 addr, u8 mask, u8 val)
-+{
-+	return 0;
-+}
-+
-+static inline int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val)
-+{
-+	return 0;
-+}
-+
-+#endif /* CONFIG_SOUNDWIRE */
+ 	/* Program DPN_BlockCtrl3 register */
+-	ret = sdw_write(slave, addr2, t_params->blk_pkg_mode);
++	ret = sdw_write_no_pm(slave, addr2, t_params->blk_pkg_mode);
+ 	if (ret < 0) {
+ 		dev_err(bus->dev, "DPN_BlockCtrl3 register write failed\n");
+ 		return ret;
+@@ -105,7 +105,7 @@ static int _sdw_program_slave_port_params(struct sdw_bus *bus,
+ 	/* Program DPN_SampleCtrl2 register */
+ 	wbuf = FIELD_GET(SDW_DPN_SAMPLECTRL_HIGH, t_params->sample_interval - 1);
  
- #endif /* __SOUNDWIRE_H */
+-	ret = sdw_write(slave, addr3, wbuf);
++	ret = sdw_write_no_pm(slave, addr3, wbuf);
+ 	if (ret < 0) {
+ 		dev_err(bus->dev, "DPN_SampleCtrl2 register write failed\n");
+ 		return ret;
+@@ -115,7 +115,7 @@ static int _sdw_program_slave_port_params(struct sdw_bus *bus,
+ 	wbuf = FIELD_PREP(SDW_DPN_HCTRL_HSTART, t_params->hstart);
+ 	wbuf |= FIELD_PREP(SDW_DPN_HCTRL_HSTOP, t_params->hstop);
+ 
+-	ret = sdw_write(slave, addr4, wbuf);
++	ret = sdw_write_no_pm(slave, addr4, wbuf);
+ 	if (ret < 0)
+ 		dev_err(bus->dev, "DPN_HCtrl register write failed\n");
+ 
+@@ -163,7 +163,7 @@ static int sdw_program_slave_port_params(struct sdw_bus *bus,
+ 	wbuf = FIELD_PREP(SDW_DPN_PORTCTRL_DATAMODE, p_params->data_mode);
+ 	wbuf |= FIELD_PREP(SDW_DPN_PORTCTRL_FLOWMODE, p_params->flow_mode);
+ 
+-	ret = sdw_update(s_rt->slave, addr1, 0xF, wbuf);
++	ret = sdw_update_no_pm(s_rt->slave, addr1, 0xF, wbuf);
+ 	if (ret < 0) {
+ 		dev_err(&s_rt->slave->dev,
+ 			"DPN_PortCtrl register write failed for port %d\n",
+@@ -173,7 +173,7 @@ static int sdw_program_slave_port_params(struct sdw_bus *bus,
+ 
+ 	if (!dpn_prop->read_only_wordlength) {
+ 		/* Program DPN_BlockCtrl1 register */
+-		ret = sdw_write(s_rt->slave, addr2, (p_params->bps - 1));
++		ret = sdw_write_no_pm(s_rt->slave, addr2, (p_params->bps - 1));
+ 		if (ret < 0) {
+ 			dev_err(&s_rt->slave->dev,
+ 				"DPN_BlockCtrl1 register write failed for port %d\n",
+@@ -184,7 +184,7 @@ static int sdw_program_slave_port_params(struct sdw_bus *bus,
+ 
+ 	/* Program DPN_SampleCtrl1 register */
+ 	wbuf = (t_params->sample_interval - 1) & SDW_DPN_SAMPLECTRL_LOW;
+-	ret = sdw_write(s_rt->slave, addr3, wbuf);
++	ret = sdw_write_no_pm(s_rt->slave, addr3, wbuf);
+ 	if (ret < 0) {
+ 		dev_err(&s_rt->slave->dev,
+ 			"DPN_SampleCtrl1 register write failed for port %d\n",
+@@ -193,7 +193,7 @@ static int sdw_program_slave_port_params(struct sdw_bus *bus,
+ 	}
+ 
+ 	/* Program DPN_OffsetCtrl1 registers */
+-	ret = sdw_write(s_rt->slave, addr4, t_params->offset1);
++	ret = sdw_write_no_pm(s_rt->slave, addr4, t_params->offset1);
+ 	if (ret < 0) {
+ 		dev_err(&s_rt->slave->dev,
+ 			"DPN_OffsetCtrl1 register write failed for port %d\n",
+@@ -203,7 +203,7 @@ static int sdw_program_slave_port_params(struct sdw_bus *bus,
+ 
+ 	/* Program DPN_BlockCtrl2 register*/
+ 	if (t_params->blk_grp_ctrl_valid) {
+-		ret = sdw_write(s_rt->slave, addr5, t_params->blk_grp_ctrl);
++		ret = sdw_write_no_pm(s_rt->slave, addr5, t_params->blk_grp_ctrl);
+ 		if (ret < 0) {
+ 			dev_err(&s_rt->slave->dev,
+ 				"DPN_BlockCtrl2 reg write failed for port %d\n",
+@@ -214,7 +214,7 @@ static int sdw_program_slave_port_params(struct sdw_bus *bus,
+ 
+ 	/* program DPN_LaneCtrl register */
+ 	if (slave_prop->lane_control_support) {
+-		ret = sdw_write(s_rt->slave, addr6, t_params->lane_ctrl);
++		ret = sdw_write_no_pm(s_rt->slave, addr6, t_params->lane_ctrl);
+ 		if (ret < 0) {
+ 			dev_err(&s_rt->slave->dev,
+ 				"DPN_LaneCtrl register write failed for port %d\n",
+@@ -319,9 +319,9 @@ static int sdw_enable_disable_slave_ports(struct sdw_bus *bus,
+ 	 * it is safe to reset this register
+ 	 */
+ 	if (en)
+-		ret = sdw_write(s_rt->slave, addr, p_rt->ch_mask);
++		ret = sdw_write_no_pm(s_rt->slave, addr, p_rt->ch_mask);
+ 	else
+-		ret = sdw_write(s_rt->slave, addr, 0x0);
++		ret = sdw_write_no_pm(s_rt->slave, addr, 0x0);
+ 
+ 	if (ret < 0)
+ 		dev_err(&s_rt->slave->dev,
+@@ -476,9 +476,9 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
+ 		addr = SDW_DPN_PREPARECTRL(p_rt->num);
+ 
+ 		if (prep)
+-			ret = sdw_write(s_rt->slave, addr, p_rt->ch_mask);
++			ret = sdw_write_no_pm(s_rt->slave, addr, p_rt->ch_mask);
+ 		else
+-			ret = sdw_write(s_rt->slave, addr, 0x0);
++			ret = sdw_write_no_pm(s_rt->slave, addr, 0x0);
+ 
+ 		if (ret < 0) {
+ 			dev_err(&s_rt->slave->dev,
+@@ -491,7 +491,7 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
+ 		wait_for_completion_timeout(port_ready,
+ 			msecs_to_jiffies(dpn_prop->ch_prep_timeout));
+ 
+-		val = sdw_read(s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
++		val = sdw_read_no_pm(s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
+ 		if ((val < 0) || (val & p_rt->ch_mask)) {
+ 			ret = (val < 0) ? val : -ETIMEDOUT;
+ 			dev_err(&s_rt->slave->dev,
 -- 
 2.30.2
 
