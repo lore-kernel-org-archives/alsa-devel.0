@@ -4,85 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EA33C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Nov 2022 09:32:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8509EC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Nov 2022 09:32:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 451D31683;
-	Tue, 22 Nov 2022 10:31:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 451D31683
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8FF616A2;
+	Tue, 22 Nov 2022 10:31:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8FF616A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669109518;
-	bh=Kf1GS3fL5gmsS0p20QnjqKmUNkv40AfXmkFjIvy0hsU=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uwIdVKKjcsT0g7Rq79J2ntzxEgbOAB38VlWs+HFWWE4eopv/VtWAVGICzkzY7D3aw
-	 mpoPLvG5PJSuJRS54v9ctMwiVKCROez+gdCj3W6894zsuewdnDAtfbVCMCmo5BV4HS
-	 vyWCjaiSMEzpQvdMWIR6G1L4PtToig65j19upesk=
+	s=default; t=1669109531;
+	bh=OFsNWOp6SSIJoWXtOXzn2TrPEnoCQRam21CnyFiGTiA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=YWJj7bjx5hamohd092w0XoRjJ+ZrzbzDfDHkHAymlRfQUD8b2P1suI3RvwKdUyoyl
+	 jnUooO0FVsBudwnTf61sVZCfjTlKAW8IVxkoJtGOr4cyZNV53RPWV32nArQTsdrEWp
+	 8xSQt21I1Qee1aDbk8UBjqS/FHFOoDgmEbwhe2Lo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C83DF805BB;
+	by alsa1.perex.cz (Postfix) with ESMTP id B8DF7F805C3;
 	Tue, 22 Nov 2022 10:27:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E791F80149; Tue, 22 Nov 2022 00:20:47 +0100 (CET)
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
- [IPv6:2a00:1450:4864:20::32f])
+ id 01ECAF80519; Mon, 21 Nov 2022 12:06:34 +0100 (CET)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
+ [IPv6:2a00:1450:4864:20::131])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02C08F80115
- for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2022 00:20:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02C08F80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5FEBBF80149
+ for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2022 12:06:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FEBBF80149
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="qHqyHxrZ"
-Received: by mail-wm1-x32f.google.com with SMTP id
- l39-20020a05600c1d2700b003cf93c8156dso10132037wms.4
- for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2022 15:20:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-disposition:mime-version:message-id:subject:cc:to:from:date
- :from:to:cc:subject:date:message-id:reply-to;
- bh=RHygxpssuDUiJzjzp0xH0KskztklwzppGLqlfrRansE=;
- b=qHqyHxrZxdbu053aP7anuXXTu+O+eBHo8HbT/vfgbsooaqpyMeU1NUPqwCa4buuoCr
- srEfqQQfgYaM/iRwMMQzW/x8NbT45XTBkOjvPGWOU8So/btX3++AVAtZ7a8aMnlad8g3
- Z8ZIHUOneZokf9JLVSWO5zNQq7c4sEtjOPu5IvW8/cqqIG0lA9HpPQK9DHV5MQQCvhMB
- EtAcFnn8WgUNCvJvOSYQ+pqdfjhJPNtKvpyctyaIEt+PBca0HOG780KMwNKhxvMzVIbM
- 2X3XWQOZlSf22yszQtkSNolVqQv/vyZycuolIJN/nrTBvNiaVHR+qCy6kgowRm6Oe8dl
- MHvw==
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="r7hKUlGF"
+Received: by mail-lf1-x131.google.com with SMTP id b3so18301443lfv.2
+ for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2022 03:06:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=UFWc0lyVlH95oooJGcIUPfd8EfwgVQvFO8qkEV+ffsc=;
+ b=r7hKUlGFZHSmUo8e9T5ttNSJVAtUIkxa+sycNhz6yjMvfgsi4BsfKebzRywymxymx0
+ 5u8F1YiUTZQCXcqMn0sfhionqeBApbXWdupVJzyFaxfv5GrU+U3eV6uFF8Uc+bn9QYY9
+ Lms8Y8Dy0jualOb6Q3esqic3f7gurcqjMFZcZ+d9NzQOJ86H32u/XDiWQ2YkDuliRZvv
+ nRAaqsKnXNUtg68nfvEmkjWN8H79Sk3dDjy/u/sisLO3c+s0yeylT32uwz3f7gvWfFaj
+ gF7udl05HElld877JkEGkfP5OdFi8KqGkr7SLX3btVOqu0mHwPCN9Sin0XvK+TjDxtSD
+ nJpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-disposition:mime-version:message-id:subject:cc:to:from:date
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=RHygxpssuDUiJzjzp0xH0KskztklwzppGLqlfrRansE=;
- b=loqzcVT26vs+dqjI08zR5ziuIZvSM4RYc+m/NIyVmkL7Yp2pGag4UNtJ3h3FJk1Z5E
- OLe1AGK6uTTePXzPf63evQCvwB/+ShPJc5l3kMdMtEhO50Antb+UkJ+DUOsgXZSguu1b
- N/NqNJug3rp8EENSpkk0g/flM4YIqWUfkie009bsLmhWv2K0y5ZdZjrfFm+1gz95tXFZ
- fcHsl2R5EKkOvqD/FZp8q6s0SHiXM1DvdHUrUI49tP4qXEuoZQ6DaIukQj/DFHF3EL3K
- i2FfKTu+ineBU/2bMXuJRE+A4nN4b0eRcScJVP62743E+1UVwUYu7hAO0HmBpuq715Ug
- wvbQ==
-X-Gm-Message-State: ANoB5pl7p6H5mg3C6fRNkYBhtGEaVdzzOyZN14LkM1d+iavPBFY+k9IW
- UBI9EaVHxGff5F0JQTpHdVG1KjKBUMWXO4rn
-X-Google-Smtp-Source: AA0mqf6x9wGrYv44LmSXYNRtK3ag+XTC0Bf8MEBAkPZSCGvgfOhuAiC7XSSVUxXK7Gh1gpdnnhpS+w==
-X-Received: by 2002:a05:600c:4f93:b0:3cf:a616:ccc0 with SMTP id
- n19-20020a05600c4f9300b003cfa616ccc0mr18319130wmq.73.1669072842988; 
- Mon, 21 Nov 2022 15:20:42 -0800 (PST)
-Received: from tora (80.49.50.209.ipv4.supernova.orange.pl. [80.49.50.209])
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=UFWc0lyVlH95oooJGcIUPfd8EfwgVQvFO8qkEV+ffsc=;
+ b=hdFGUCdZe8l+1jXKzS3i2vYzTr3Eukf1BFlYvBGoR3N8qMIIMpGH4wZz5gw3fKqdYc
+ 9+FHMz7IsGlq7y3f/ZZawB6zhW+oeq2czJofQ7HyPtwxGTJGR9QQy43ph0hekGpE28nO
+ bcJPUD7BXPzw/cof/rLnX+ncv4LkIh2vzYjCKIzU/lDijCSWwqw7xS/DRmQwxA0LySz+
+ b/9+2LQWy+xZAPOGtdn2sV/qM/RuqHGwwhAkowA+rqlEkxPov2gbXkhkFsLSOgxPYomg
+ RDMjNjtL792on0oxAmBy5oxs0T/ST7xj5wW5gX1VRze8G2MFrhinH2+erV1elV/IhExZ
+ jC7g==
+X-Gm-Message-State: ANoB5pkIun1+8TbxjHD2Xrt47FS6ak+Hr4jP0XB0SMFAniHad74HxmKS
+ hayGbrSXYUdQFF3kaDliywT2dA==
+X-Google-Smtp-Source: AA0mqf636Kajsl/vCtaPitrxYhf2ypiEKfsGbHJhGytuU/U+YWfw7NKkZ181BWLvvcggxq6Qzec5vw==
+X-Received: by 2002:a19:dc08:0:b0:4b4:6460:24d with SMTP id
+ t8-20020a19dc08000000b004b46460024dmr5540013lfg.386.1669028786293; 
+ Mon, 21 Nov 2022 03:06:26 -0800 (PST)
+Received: from krzk-bin.NAT.warszawa.vectranet.pl
+ (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
  by smtp.gmail.com with ESMTPSA id
- l8-20020a5d4bc8000000b002238ea5750csm12583174wrt.72.2022.11.21.15.20.41
+ n1-20020a05651203e100b0049313f77755sm1991521lfq.213.2022.11.21.03.06.24
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 21 Nov 2022 15:20:42 -0800 (PST)
-Date: Tue, 22 Nov 2022 00:20:40 +0100
-From: Alicja Michalska <ahplka19@gmail.com>
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Subject: [PATCH] ASoC: Intel: avs: Add missing audio amplifier for KBL
-Message-ID: <Y3wHyJ/EcsLRHGr3@tora>
+ Mon, 21 Nov 2022 03:06:25 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Andrew Lunn <andrew@lunn.ch>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+ netdev@vger.kernel.org, linux-can@vger.kernel.org,
+ linux-pci@vger.kernel.org, linux-pwm@vger.kernel.org,
+ linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
+ linux-usb@vger.kernel.org, virtualization@lists.linux-foundation.org,
+ linux-watchdog@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Jonathan Cameron <jic23@kernel.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Viresh Kumar <vireshk@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+ Mark Brown <broonie@kernel.org>, Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH v2 3/9] dt-bindings: clock: st,stm32mp1-rcc: add proper title
+Date: Mon, 21 Nov 2022 12:06:09 +0100
+Message-Id: <20221121110615.97962-4-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
+References: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailman-Approved-At: Tue, 22 Nov 2022 10:27:18 +0100
-Cc: cezary.rojewski@intel.com, upstream@semihalf.com, rad@semihalf.com,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- amadeuszx.slawinski@linux.intel.com, cujomalainey@chromium.org,
- lma@semihalf.com
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Tue, 22 Nov 2022 10:27:19 +0100
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,55 +122,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-KBL platform is missing the definition of 'max98357a' audio amplifier.
-This amplifier is used on many KBL Chromebooks, for instance variant
-'nami' of 'Google/poppy' baseboard.
+Add device name in the title, because "Reset Clock Controller" sounds
+too generic.
 
-Reported-by: CoolStar <coolstarorganization@gmail.com>
-Signed-off-by: Alicja Michalska <ahplka19@gmail.com>
-
-diff --git a/sound/soc/intel/avs/board_selection.c b/sound/soc/intel/avs/board_selection.c
-index 87f9c18be238..650faebb33ef 100644
---- a/sound/soc/intel/avs/board_selection.c
-+++ b/sound/soc/intel/avs/board_selection.c
-@@ -129,6 +129,14 @@ static struct snd_soc_acpi_mach avs_kbl_i2s_machines[] = {
- 		},
- 		.tplg_filename = "max98373-tplg.bin",
- 	},
-+	{
-+		.id = "MX98357A",
-+		.drv_name = "avs_max98357a",
-+		.mach_params = {
-+			.i2s_link_mask = AVS_SSP(0),
-+		},
-+		.tplg_filename = "max98357a-tplg.bin",
-+	},
- 	{
- 		.id = "DLGS7219",
- 		.drv_name = "avs_da7219",
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 ---
- sound/soc/intel/avs/board_selection.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/avs/board_selection.c b/sound/soc/intel/avs/board_selection.c
-index 87f9c18be238..650faebb33ef 100644
---- a/sound/soc/intel/avs/board_selection.c
-+++ b/sound/soc/intel/avs/board_selection.c
-@@ -129,6 +129,14 @@ static struct snd_soc_acpi_mach avs_kbl_i2s_machines[] = {
- 		},
- 		.tplg_filename = "max98373-tplg.bin",
- 	},
-+	{
-+		.id = "MX98357A",
-+		.drv_name = "avs_max98357a",
-+		.mach_params = {
-+			.i2s_link_mask = AVS_SSP(0),
-+		},
-+		.tplg_filename = "max98357a-tplg.bin",
-+	},
- 	{
- 		.id = "DLGS7219",
- 		.drv_name = "avs_da7219",
+diff --git a/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml b/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml
+index 242fe922b035..5194be0b410e 100644
+--- a/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml
++++ b/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/clock/st,stm32mp1-rcc.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Reset Clock Controller Binding
++title: STMicroelectronics STM32MP1 Reset Clock Controller
+ 
+ maintainers:
+   - Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 -- 
-2.38.1
+2.34.1
 
