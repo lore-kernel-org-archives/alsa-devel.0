@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF95FC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 21 Nov 2022 14:16:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD71FC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 21 Nov 2022 14:16:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ACE991655;
-	Mon, 21 Nov 2022 15:15:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACE991655
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0AB11622;
+	Mon, 21 Nov 2022 15:15:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0AB11622
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669040159;
-	bh=GCHlWhSc/Rr451Yld20fvBkjPbjtwLMhr0L53tuPqw4=;
+	s=default; t=1669040174;
+	bh=O6vVvWh444zhFC14z+/sZaDEByH+7xxzgcMXcz4I9/o=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=P1yKCnDzs8907uxVyhAkGLkv4LU8hyBY6t+I7/HbHrTrm6GXoh7/yBli7PNOWwq/I
-	 TXcM1CcwGTKG8cUj3lCLbE97WCqkmunOxnN6zFPELVZ096yOT8iGjao8tW3kxppyqX
-	 mN7ap3Oq/s7y0l+i2EMcMTOf74wh3JZSr1lfXcZk=
+	b=nLes96Uei5DC/zkXx5ArVqhefgHvMdXy8KLscDNF3/4WpU40jqes8u1AXcffEiTYB
+	 fXY0zdeezoSkF6LnQ1xkFyzorayAfRSjnOwmNgQjLgh+yslzZsp5LzcZ7u/ewV2wSB
+	 3aXrHCEeCEXG4OeV+rb5oygSbYyVADA3UB7X/fTc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51E2FF80559;
+	by alsa1.perex.cz (Postfix) with ESMTP id CFFA1F80564;
 	Mon, 21 Nov 2022 15:14:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7F80AF8051B; Mon, 21 Nov 2022 15:14:18 +0100 (CET)
+ id 0F0C8F800F3; Mon, 21 Nov 2022 15:14:19 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D2E95F800F3
- for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2022 15:14:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2E95F800F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B1AEF800EC
+ for <alsa-devel@alsa-project.org>; Mon, 21 Nov 2022 15:14:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B1AEF800EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="b9/wyJYV"
+ header.b="ioerokhu"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
  by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2ALCtMm8002614; Mon, 21 Nov 2022 08:14:09 -0600
+ 2ALCtMm7002614; Mon, 21 Nov 2022 08:14:08 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=HOjHRSQXtgdhVwHZ+HgWlY2gRn1pGVLV5kYH7Y3cWP4=;
- b=b9/wyJYVR6zKDn7TmOWEyZp7y2CGDoT4s1dh4aL9ulfPmV6CkboCudhC1Pws0wYdp/ft
- lW/rlzCsPPkHWWks2Xn6dOv2pfmNB7xFiVI29vVwYyQl2LnLw0OCvfFN3CYLguEXOct1
- ltQCKz//iPx4ntYBHjf6p0RMYI7tL6YhRXgLoQQCc8F7ykT3PkN5x813h4W9q5KjHmJN
- ZM5a19acfKNEJQTp5TxULRNaEA91BbCzLe6/OoTdskVYih2SoQ6fZ8Kn8inbHdG398JE
- VU4tDfY11ZMBxupqdp2vs4BGIZesYtIYlFSGS9tO1oZCQfz5lroE5n79R3tqHMowbSn1 cw== 
+ bh=WILxXOGhVNe0I1FxujLIVVqB4+tPaZ++Vr7hhtDWbqs=;
+ b=ioerokhuKZoqvR3K7pix02NpMfGyL5qqW/rEMGyoyPYhLNNWG8p5v0sUuylsvXhA3TGM
+ WFLXnRTT/bEWsWraN17qyfuxjACGpxfJBH0Lv/85J3/viX27+UU7Oft2m/A12NsHkhHG
+ lP3pVekYOm12/9iguPtag9SIMSU99db7quQThGvaTbh5uq6MYgVrv7WmWT0g+r6d5Gyv
+ cD3jnkx2PfNtg0dB18yU+14vUZ1z1Sa2w2f6JxnCwkqKHuCRC4pQaEFTxBECh1l3AzWJ
+ E8P/9fISQXJDtL+Ytrvtoa5FGqYeZAhGzhKrnZXItGlp0K4jmjBGU9LYtfqcbBzJzNSn NQ== 
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3kxwe6t7hc-2
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3kxwe6t7hc-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 21 Nov 2022 08:14:09 -0600
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ Mon, 21 Nov 2022 08:14:08 -0600
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.20; Mon, 21 Nov
  2022 08:14:06 -0600
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.20 via
- Frontend Transport; Mon, 21 Nov 2022 08:14:06 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.20 via Frontend Transport; Mon, 21 Nov 2022 08:14:06 -0600
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8D8DCB2F;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6CB70B12;
  Mon, 21 Nov 2022 14:14:06 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <vkoul@kernel.org>
-Subject: [PATCH v3 3/4] soundwire: debugfs: Switch to sdw_read_no_pm
-Date: Mon, 21 Nov 2022 14:14:05 +0000
-Message-ID: <20221121141406.3840561-4-ckeepax@opensource.cirrus.com>
+Subject: [PATCH v3 1/4] soundwire: bus: export sdw_nwrite_no_pm and
+ sdw_nread_no_pm functions
+Date: Mon, 21 Nov 2022 14:14:03 +0000
+Message-ID: <20221121141406.3840561-2-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221121141406.3840561-1-ckeepax@opensource.cirrus.com>
 References: <20221121141406.3840561-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: qPXzth3N1MEWtS2ZGVhcfBvE3yho6Y1O
-X-Proofpoint-GUID: qPXzth3N1MEWtS2ZGVhcfBvE3yho6Y1O
+X-Proofpoint-ORIG-GUID: T_-eze7Qsgl43ayYLL3p2fVkp_rWd3ob
+X-Proofpoint-GUID: T_-eze7Qsgl43ayYLL3p2fVkp_rWd3ob
 X-Proofpoint-Spam-Reason: safe
 Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
  pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
@@ -95,66 +96,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It is rather inefficient to be constantly playing with the runtime
-PM reference for each individual register, switch to holding a PM
-runtime reference across the whole register output.
+From: Simon Trimmer <simont@opensource.cirrus.com>
+
+The commit 167790abb90f ("soundwire: export sdw_write/read_no_pm
+functions") exposed the single byte no_pm versions of the IO functions
+that can be used without touching PM, export the multi byte no_pm
+versions for the same reason.
 
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
 
 Changes since v2:
  - Added Pierre's reviewed-by.
- - Fixed memory leak of buf on error path.
 
- drivers/soundwire/debugfs.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/soundwire/bus.c       | 8 ++++----
+ include/linux/soundwire/sdw.h | 2 ++
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/soundwire/debugfs.c b/drivers/soundwire/debugfs.c
-index 49900cd207bc7..dea782e0edc4b 100644
---- a/drivers/soundwire/debugfs.c
-+++ b/drivers/soundwire/debugfs.c
-@@ -4,6 +4,7 @@
- #include <linux/device.h>
- #include <linux/debugfs.h>
- #include <linux/mod_devicetable.h>
-+#include <linux/pm_runtime.h>
- #include <linux/slab.h>
- #include <linux/soundwire/sdw.h>
- #include <linux/soundwire/sdw_registers.h>
-@@ -35,7 +36,7 @@ static ssize_t sdw_sprintf(struct sdw_slave *slave,
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 76515c33e639e..ef4878258afad 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -414,8 +414,7 @@ int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
+  * all clients need to use the pm versions
+  */
+ 
+-static int
+-sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
++int sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
  {
- 	int value;
+ 	struct sdw_msg msg;
+ 	int ret;
+@@ -430,9 +429,9 @@ sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+ 		ret = 0;
+ 	return ret;
+ }
++EXPORT_SYMBOL(sdw_nread_no_pm);
  
--	value = sdw_read(slave, reg);
-+	value = sdw_read_no_pm(slave, reg);
+-static int
+-sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
++int sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
+ {
+ 	struct sdw_msg msg;
+ 	int ret;
+@@ -447,6 +446,7 @@ sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
+ 		ret = 0;
+ 	return ret;
+ }
++EXPORT_SYMBOL(sdw_nwrite_no_pm);
  
- 	if (value < 0)
- 		return scnprintf(buf + pos, RD_BUF - pos, "%3x\tXX\n", reg);
-@@ -55,6 +56,12 @@ static int sdw_slave_reg_show(struct seq_file *s_file, void *data)
- 	if (!buf)
- 		return -ENOMEM;
+ int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value)
+ {
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index 9e4537f409c29..902ed46f76c80 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -1047,7 +1047,9 @@ int sdw_write(struct sdw_slave *slave, u32 addr, u8 value);
+ int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value);
+ int sdw_read_no_pm(struct sdw_slave *slave, u32 addr);
+ int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
++int sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
+ int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val);
++int sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val);
+ int sdw_update(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
+ int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
  
-+	ret = pm_runtime_resume_and_get(&slave->dev);
-+	if (ret < 0 && ret != -EACCES) {
-+		kfree(buf);
-+		return ret;
-+	}
-+
- 	ret = scnprintf(buf, RD_BUF, "Register  Value\n");
- 
- 	/* DP0 non-banked registers */
-@@ -112,6 +119,10 @@ static int sdw_slave_reg_show(struct seq_file *s_file, void *data)
- 	}
- 
- 	seq_printf(s_file, "%s", buf);
-+
-+	pm_runtime_mark_last_busy(&slave->dev);
-+	pm_runtime_put(&slave->dev);
-+
- 	kfree(buf);
- 
- 	return 0;
 -- 
 2.30.2
 
