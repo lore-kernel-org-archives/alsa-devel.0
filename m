@@ -4,67 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D308C43217
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Nov 2022 14:50:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 154A9C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Nov 2022 14:50:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E0D21633;
-	Tue, 22 Nov 2022 15:49:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E0D21633
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C2E11640;
+	Tue, 22 Nov 2022 15:49:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C2E11640
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669128615;
-	bh=bKeRPVjJrncT4C0fmvTZ2poFrpNaAGtHQW4ySLc8gUU=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1669128639;
+	bh=7I+XfN2BqN+3qSHAiW8cY4CrcfH+M3SNN/fQl1vN61k=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tG24jgASzNieRmdnBV/pVdD4ZkZv2VRvGWGmIHJ8HIMYEx3uJEzvM9R5D7u45aeyf
-	 nZjM/5cOiiWnMS/eT6nWsG8daxS3acZJt1HFsmRa27shWdB7u1/BYYEwQuYWj3fn9e
-	 dyye9sq0OsKQigzXXXd3F1DmqnhqqmQ0zGqG9xTg=
+	b=QS7nTtmIKftRHIw+IULJD5DPOccq+/gJWhDniMx6mOddli6I0gq3/kc6E7u5Ve4hY
+	 oPht0PdGtjLNk1jMHHzrcAPPABYN49P2rJwZrh/Tgy6UyGLp2wAqi1SsLeZcNKSaha
+	 h0hRS1hrw92LZhVzoEXXgqDT2nMI7KZSCxAhoEjQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F178F8026A;
-	Tue, 22 Nov 2022 15:49:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EBA6DF804D6;
+	Tue, 22 Nov 2022 15:49:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2547F804B3; Tue, 22 Nov 2022 15:49:22 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 0B60EF80310; Tue, 22 Nov 2022 15:49:23 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7359F80149
- for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2022 15:49:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7359F80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96549F80272
+ for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2022 15:49:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96549F80272
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qkp7G5LC"
+ header.b="CMjqpk3e"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id DE74FB81B99;
- Tue, 22 Nov 2022 14:49:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E94FC433C1;
- Tue, 22 Nov 2022 14:49:12 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 2032C61741;
+ Tue, 22 Nov 2022 14:49:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00AE9C433C1;
+ Tue, 22 Nov 2022 14:49:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669128554;
- bh=bKeRPVjJrncT4C0fmvTZ2poFrpNaAGtHQW4ySLc8gUU=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=qkp7G5LChqlxCNxZPCZ1TRGAmlU997CYbuhQJ6cK0YdwjVtpogmfc5eQQJynKzW0i
- oMS2Z2U60Iq//AlYuXhDULaSNjOex0oguGYP0o/FUDoXcW39hLcUNCASOyIA1aaznT
- 0sjpZ3trjAeurfgYg9oyNZedjBW58vHXuQIjQ2dGwOSNvEBm+WGZSbe0GqNqgeZYRa
- qkXTPX0vCkcHrALdAVqVgzz44ot0AEIYWNqmjWNkKS4FsET3+LjFBb1kIGBjLHx9hS
- Ka8E20/E3cO+E4Gh3tU7WCW16CH2eterIC3nY2jha90K8DO+XteuDwIK/ySSCEXaYK
- iDYM+a+o9CPgg==
+ s=k20201202; t=1669128558;
+ bh=7I+XfN2BqN+3qSHAiW8cY4CrcfH+M3SNN/fQl1vN61k=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=CMjqpk3ef/QIwZaxZgvdWruI4meOabC/g7djRMmOD82kBGPnkFxrADW2GYm9CG1dr
+ JWXMms2kZIDFiChyXTnjI1PI/cBfosJDt2aZs5YJcLSen7oRiSh9+hU3lDQ354v8lk
+ 2vfak8JvjicSQPhJ5Tdp6mH9TXCQdpl57zog82ESLfRkcT6KYE5hLpxcjgBhbR9C5i
+ PY+9gZ0PQIN4PJ+2hjIXnXu12+DEH+L+ePm20okL+0PiuCgOEpAFUVN4TSxX3Qk2wI
+ muzXFjyM+NO+sNkFle0YTZ22x/oX8BZVjlEktQ4paayGQS9dcRSZ/64hr6+lLccd4p
+ Drgo83FbannYQ==
 From: Mark Brown <broonie@kernel.org>
-To: cezary.rojewski@intel.com, linux-kernel@vger.kernel.org, perex@perex.cz,
- kai.vehmanen@linux.intel.com, tiwai@suse.com, alsa-devel@alsa-project.org,
- pierre-louis.bossart@linux.intel.com, lili.li@intel.com
-In-Reply-To: <20221121104742.1007486-1-lili.li@intel.com>
-References: <20221121104742.1007486-1-lili.li@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: Fix Kconfig dependency
-Message-Id: <166912855277.213382.2191182990253588501.b4-ty@kernel.org>
-Date: Tue, 22 Nov 2022 14:49:12 +0000
+To: David Lin <CTLIN0@nuvoton.com>
+In-Reply-To: <20221122073855.43024-1-CTLIN0@nuvoton.com>
+References: <20221122073855.43024-1-CTLIN0@nuvoton.com>
+Subject: Re: [PATCH 1/2] ASoC: nau8825: Adjust internal clock during jack
+ detection
+Message-Id: <166912855672.213382.4904038142642015999.b4-ty@kernel.org>
+Date: Tue, 22 Nov 2022 14:49:16 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
+Cc: alsa-devel@alsa-project.org, ctlin0.linux@gmail.com, WTLI@nuvoton.com,
+ SJLIN0@nuvoton.com, KCHSU0@nuvoton.com, lgirdwood@gmail.com,
+ YHCHuang@nuvoton.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,15 +83,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 21 Nov 2022 18:47:42 +0800, lili.li@intel.com wrote:
-> From: Lili Li <lili.li@intel.com>
+On Tue, 22 Nov 2022 15:38:55 +0800, David Lin wrote:
+> This patch is to rasie up internal clock during jack detection.
+> The fast clock will accelerate charge and discharge effect.
+> So this mechanism will make jack detection more robust.
 > 
-> Commit e4746d94d00c ("ASoC: Intel: Skylake: Introduce HDA codec init and
-> exit routines") introduced HDA codec init routine which depends on SND_HDA.
-> Select SND_SOC_HDAC_HDA unconditionally to fix following compile error:
-> ERROR: modpost: "snd_hda_codec_device_init" [sound/soc/intel/skylake/snd-soc-skl.ko] undefined!
 > 
-> [...]
 
 Applied to
 
@@ -96,8 +96,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: Skylake: Fix Kconfig dependency
-      commit: e5d4d2b23aed20a7815d1b500dbcd50af1da0023
+[1/2] ASoC: nau8825: Adjust internal clock during jack detection
+      commit: fa0fb0738e9c412d3c4a9fe655948ac9a87c6274
+[2/2] ASoC: nau8825: Add a manually mechanism for detection failure
+      commit: 7a37265046618b890adf7d7a1f9f1f5fbae908a7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
