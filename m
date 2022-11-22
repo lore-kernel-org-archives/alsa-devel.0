@@ -4,53 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28DBCC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Nov 2022 07:40:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24298C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Nov 2022 08:47:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D73F1672;
-	Tue, 22 Nov 2022 08:39:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D73F1672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 76FAE1614;
+	Tue, 22 Nov 2022 09:46:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76FAE1614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669102831;
-	bh=X09SC8k+2WgD+AGmXz80AAOUv4obC9xudYWfW471Hhw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=QR/vAxFvtRss0h5xVOL05w1mD34jXqKQ2uVQrohXWA6IJt1OKNOGc6GhKm+iIY0Xf
-	 1UUqyi9KCBmCKPIUrtsIlnPiU9pFtguBvq7vRLvsS1o1O6jiDW1BaMqhC10Sb+bzom
-	 ew04cS4R2rYQGW4Gm9ATMX6RPyqbMSMHFr55xtiA=
+	s=default; t=1669106839;
+	bh=4m5iGelGiyO17ITA9wzWjgZpqArhb3vr2tARRLjkmKw=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=h3v36Mh62/aiel+KIahxTRn8sIFUjEBRPQMSMy5JHz4WPfsRKHHUEzP1tkcHM5zhH
+	 cu/953xz2K0B5vY92Pau7cg6QnJRDPVy4v0r3piyocJzUdtroBaWDd3+ixiH0lnvlx
+	 A+dNttsce4HcKkYV4UgGWnY/rk2iDDLwEIDcwVjo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 906AEF8026A;
-	Tue, 22 Nov 2022 08:39:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1922AF80115;
+	Tue, 22 Nov 2022 09:46:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3978F804E2; Tue, 22 Nov 2022 08:39:17 +0100 (CET)
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa1.perex.cz (Postfix) with ESMTP id 18C55F8026A
- for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2022 08:39:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18C55F8026A
-Received: from NTHCCAS04.nuvoton.com (NTHCCAS04.nuvoton.com [10.1.8.29])
- by maillog.nuvoton.com (Postfix) with ESMTP id EB36E1C80FD3;
- Tue, 22 Nov 2022 15:39:04 +0800 (CST)
-Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCCAS04.nuvoton.com
- (10.1.8.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 22
- Nov 2022 15:39:04 +0800
-Received: from localhost.localdomain (10.11.36.27) by NTHCCAS01.nuvoton.com
- (10.1.12.25) with Microsoft SMTP Server id 15.1.2375.7 via Frontend
- Transport; Tue, 22 Nov 2022 15:39:04 +0800
-From: David Lin <CTLIN0@nuvoton.com>
-To: <broonie@kernel.org>
-Subject: [PATCH 1/2] ASoC: nau8825: Adjust internal clock during jack detection
-Date: Tue, 22 Nov 2022 15:38:55 +0800
-Message-ID: <20221122073855.43024-1-CTLIN0@nuvoton.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Cc: alsa-devel@alsa-project.org, ctlin0.linux@gmail.com, WTLI@nuvoton.com,
- SJLIN0@nuvoton.com, KCHSU0@nuvoton.com, lgirdwood@gmail.com,
- YHCHuang@nuvoton.com, David Lin <CTLIN0@nuvoton.com>
+ id 06A3DF80272; Tue, 22 Nov 2022 09:46:28 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA3FFF80115
+ for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2022 09:46:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA3FFF80115
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="XeVfiBP9"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="hB/jCjDJ"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BF2331F86C;
+ Tue, 22 Nov 2022 08:46:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1669106780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=dXel8N1xdWLbkJWBa3cPHmwpPDZdmAoVd+uJGgsXh4A=;
+ b=XeVfiBP9oK2YcOJON2fbP20TLQCkdS1CpOlcmLSDbN+w8OK3PvZSauF9KZTVYqxemH2xI+
+ n/Tl0WUAN1Sq1ifXz6rQjj2uWlhEEjiJo2H9v+QnEfUVafoV5EgosHU5GbC1LeJPjSyfEX
+ aOomPsUzHypUqpuj0hpb2ucRAdFXF6k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1669106780;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=dXel8N1xdWLbkJWBa3cPHmwpPDZdmAoVd+uJGgsXh4A=;
+ b=hB/jCjDJEXLoJ1JadX6vM2lN/Kb+ltO0/n2a70XTNU1meIXRXp/n/LU7X6S5jAdebFtwUp
+ IXr9wLlR/JN7yODw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9929113B01;
+ Tue, 22 Nov 2022 08:46:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id iefMJFyMfGNHJAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 22 Nov 2022 08:46:20 +0000
+Date: Tue, 22 Nov 2022 09:46:20 +0100
+Message-ID: <87tu2rv0kj.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Michael Wu <michael@allwinnertech.com>
+Subject: Re: [PATCH] ALSA: usb-audio: fix urb timeout with URB_ISO_ASAP flag
+In-Reply-To: <20221122082040.48591-1-michael@allwinnertech.com>
+References: <20221122082040.48591-1-michael@allwinnertech.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, wanjiabing@vivo.com, aichao@kylinos.cn,
+ ubizjak@gmail.com, tiwai@suse.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,40 +95,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch is to rasie up internal clock during jack detection.
-The fast clock will accelerate charge and discharge effect.
-So this mechanism will make jack detection more robust.
+On Tue, 22 Nov 2022 09:20:40 +0100,
+Michael Wu wrote:
+> 
+> When the loglevel is greater than 4, with a long messages printed on the
+> console while playing or recording audios, the usb controller may become
+> abnormal.
+> `usb 1-2: timeout: still 1 active urbs on EP #1`
+> 
+> Fix it by configuring the transfer_flags URB_ISO_ASAP flag.
+> 
+> Signed-off-by: Michael Wu <michael@allwinnertech.com>
 
-Signed-off-by: David Lin <CTLIN0@nuvoton.com>
----
- sound/soc/codecs/nau8825.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Hrm, that's somewhat backward action to the change we've done years
+ago, commit c75c5ab575af7db707689cdbb5a5c458e9a034bb:
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 3eac7c92df88..ba7f5ec28609 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -1686,6 +1686,9 @@ static void nau8825_setup_auto_irq(struct nau8825 *nau8825)
- 
- 	/* Enable internal VCO needed for interruptions */
- 	nau8825_configure_sysclk(nau8825, NAU8825_CLK_INTERNAL, 0);
-+	/* Raise up the internal clock for jack detection */
-+	regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
-+			   NAU8825_CLK_MCLK_SRC_MASK, 0);
- 
- 	/* Enable ADC needed for interruptions */
- 	regmap_update_bits(regmap, NAU8825_REG_ENA_CTRL,
-@@ -1800,6 +1803,10 @@ static int nau8825_jack_insert(struct nau8825 *nau8825)
- 		break;
- 	}
- 
-+	/* Update to the default divider of internal clock for power saving */
-+	regmap_update_bits(regmap, NAU8825_REG_CLK_DIVIDER,
-+			   NAU8825_CLK_MCLK_SRC_MASK, 0xf);
-+
- 	/* Leaving HPOL/R grounded after jack insert by default. They will be
- 	 * ungrounded as part of the widget power up sequence at the beginning
- 	 * of playback to reduce pop.
--- 
-2.25.1
+    ALSA: USB: adjust for changed 3.8 USB API
+    
+    The recent changes in the USB API ("implement new semantics for
+    URB_ISO_ASAP") made the former meaning of the URB_ISO_ASAP flag the
+    default, and changed this flag to mean that URBs can be delayed.
+    This is not the behaviour wanted by any of the audio drivers because
+    it leads to discontinuous playback with very small period sizes.
+    Therefore, our URBs need to be submitted without this flag.
 
+I rather suspect that your problem is in the USB controller side.
+
+
+thanks,
+
+Takashi
+
+> ---
+>  sound/usb/endpoint.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+> index 310cd6fb0038..df9a91c2fc7d 100644
+> --- a/sound/usb/endpoint.c
+> +++ b/sound/usb/endpoint.c
+> @@ -1245,7 +1245,7 @@ static int data_ep_set_params(struct snd_usb_endpoint *ep)
+>  		if (!u->urb->transfer_buffer)
+>  			goto out_of_memory;
+>  		u->urb->pipe = ep->pipe;
+> -		u->urb->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
+> +		u->urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
+>  		u->urb->interval = 1 << ep->datainterval;
+>  		u->urb->context = u;
+>  		u->urb->complete = snd_complete_urb;
+> @@ -1288,7 +1288,7 @@ static int sync_ep_set_params(struct snd_usb_endpoint *ep)
+>  		u->urb->transfer_dma = ep->sync_dma + i * 4;
+>  		u->urb->transfer_buffer_length = 4;
+>  		u->urb->pipe = ep->pipe;
+> -		u->urb->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
+> +		u->urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
+>  		u->urb->number_of_packets = 1;
+>  		u->urb->interval = 1 << ep->syncinterval;
+>  		u->urb->context = u;
+> -- 
+> 2.29.0
+> 
