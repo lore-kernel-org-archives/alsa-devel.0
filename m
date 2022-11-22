@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 154A9C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Nov 2022 14:50:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EFF9C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Nov 2022 14:51:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C2E11640;
-	Tue, 22 Nov 2022 15:49:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C2E11640
+	by alsa0.perex.cz (Postfix) with ESMTPS id 831BB1634;
+	Tue, 22 Nov 2022 15:50:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 831BB1634
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669128639;
-	bh=7I+XfN2BqN+3qSHAiW8cY4CrcfH+M3SNN/fQl1vN61k=;
+	s=default; t=1669128665;
+	bh=MlQTh6em931scU0vFPD06TgB0Jz9yaEqIUgZxlL+sz4=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QS7nTtmIKftRHIw+IULJD5DPOccq+/gJWhDniMx6mOddli6I0gq3/kc6E7u5Ve4hY
-	 oPht0PdGtjLNk1jMHHzrcAPPABYN49P2rJwZrh/Tgy6UyGLp2wAqi1SsLeZcNKSaha
-	 h0hRS1hrw92LZhVzoEXXgqDT2nMI7KZSCxAhoEjQ=
+	b=DRaG+ongjzXfUPkA7uGbpCbtWaoESlDJh80z4LZjo37YxDsWhTtgOD16XpgU8cy2T
+	 fLhLR/b5VEi8K48lQtodtM97mHA3B/rgMZgqYYul1L7UWisujeLmSeq5SGthQyp7kg
+	 sWsocLJrioooK0bhqBnzQ7em6terKW2xLc2ahdZ8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EBA6DF804D6;
-	Tue, 22 Nov 2022 15:49:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6952AF80272;
+	Tue, 22 Nov 2022 15:49:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B60EF80310; Tue, 22 Nov 2022 15:49:23 +0100 (CET)
+ id 15C25F804E2; Tue, 22 Nov 2022 15:49:25 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 96549F80272
- for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2022 15:49:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96549F80272
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1DB5EF80154
+ for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2022 15:49:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DB5EF80154
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="CMjqpk3e"
+ header.b="a7qNJGuo"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 2032C61741;
- Tue, 22 Nov 2022 14:49:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00AE9C433C1;
- Tue, 22 Nov 2022 14:49:16 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 1852261738;
+ Tue, 22 Nov 2022 14:49:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C0E1C433D7;
+ Tue, 22 Nov 2022 14:49:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669128558;
- bh=7I+XfN2BqN+3qSHAiW8cY4CrcfH+M3SNN/fQl1vN61k=;
+ s=k20201202; t=1669128556;
+ bh=MlQTh6em931scU0vFPD06TgB0Jz9yaEqIUgZxlL+sz4=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=CMjqpk3ef/QIwZaxZgvdWruI4meOabC/g7djRMmOD82kBGPnkFxrADW2GYm9CG1dr
- JWXMms2kZIDFiChyXTnjI1PI/cBfosJDt2aZs5YJcLSen7oRiSh9+hU3lDQ354v8lk
- 2vfak8JvjicSQPhJ5Tdp6mH9TXCQdpl57zog82ESLfRkcT6KYE5hLpxcjgBhbR9C5i
- PY+9gZ0PQIN4PJ+2hjIXnXu12+DEH+L+ePm20okL+0PiuCgOEpAFUVN4TSxX3Qk2wI
- muzXFjyM+NO+sNkFle0YTZ22x/oX8BZVjlEktQ4paayGQS9dcRSZ/64hr6+lLccd4p
- Drgo83FbannYQ==
+ b=a7qNJGuoTrEFvEMymDtEahkAHd9eUtS2u8IgITQgG7Yy/CcLO/N28qgvuf4gAtAV+
+ 5ecE+P9usprqibwgKXzL5Jc1P1CQBnIIa+6LgkKsgJT4yoxMydYk/XpEQb0Sl9ctYa
+ aoF3XWUcIEdL5Qfw9wDHMLjNiXKYWLZtVfArzJQDwxrwPDfNCj0saiIelG1psctn7h
+ vR8PQoi5u7//lpoOld8CnZM22L0MVDwcx1Qhf5hTj3X7bTtr0/uMIGBDu2FlTW38YC
+ o6DLxiEno0JaUIA7yhDf5ySj5/pAk7gxezWQZKGKR8bYsASbfOlRB2yQoNmaeuXAld
+ 3WdBVas9hYBow==
 From: Mark Brown <broonie@kernel.org>
-To: David Lin <CTLIN0@nuvoton.com>
-In-Reply-To: <20221122073855.43024-1-CTLIN0@nuvoton.com>
-References: <20221122073855.43024-1-CTLIN0@nuvoton.com>
-Subject: Re: [PATCH 1/2] ASoC: nau8825: Adjust internal clock during jack
- detection
-Message-Id: <166912855672.213382.4904038142642015999.b4-ty@kernel.org>
-Date: Tue, 22 Nov 2022 14:49:16 +0000
+To: Bard Liao <yung-chuan.liao@linux.intel.com>, tiwai@suse.de
+In-Reply-To: <20221122052052.687281-1-yung-chuan.liao@linux.intel.com>
+References: <20221122052052.687281-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: sof_sdw: Add support for SKU 0C4F product
+Message-Id: <166912855482.213382.5851344342031222379.b4-ty@kernel.org>
+Date: Tue, 22 Nov 2022 14:49:14 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: alsa-devel@alsa-project.org, ctlin0.linux@gmail.com, WTLI@nuvoton.com,
- SJLIN0@nuvoton.com, KCHSU0@nuvoton.com, lgirdwood@gmail.com,
- YHCHuang@nuvoton.com
+Cc: alsa-devel@alsa-project.org, peter.ujfalusi@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, bard.liao@intel.com,
+ pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,10 +82,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 22 Nov 2022 15:38:55 +0800, David Lin wrote:
-> This patch is to rasie up internal clock during jack detection.
-> The fast clock will accelerate charge and discharge effect.
-> So this mechanism will make jack detection more robust.
+On Tue, 22 Nov 2022 13:20:52 +0800, Bard Liao wrote:
+> From: Gongjun Song <gongjun.song@intel.com>
+> 
+> SKU 0C4F product supports a SoundWire headset codec, SoundWire
+> capture from local microphones and two SoundWire amplifiers.
 > 
 > 
 
@@ -96,10 +96,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: nau8825: Adjust internal clock during jack detection
-      commit: fa0fb0738e9c412d3c4a9fe655948ac9a87c6274
-[2/2] ASoC: nau8825: Add a manually mechanism for detection failure
-      commit: 7a37265046618b890adf7d7a1f9f1f5fbae908a7
+[1/1] ASoC: Intel: sof_sdw: Add support for SKU 0C4F product
+      commit: a9248c868c39440369c614598b2465d1a1b1cf62
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
