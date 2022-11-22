@@ -4,96 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2211C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Nov 2022 06:32:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09FDFC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Nov 2022 07:18:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3760165D;
-	Tue, 22 Nov 2022 07:31:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3760165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 436B51662;
+	Tue, 22 Nov 2022 08:17:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 436B51662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669098757;
-	bh=xa2kZm6dQ7U48KpGz+dVTWzn94ksAa0TNWBZlwW/75c=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=GwO9vp0ATbGunpPnx/hQpQ/HNL09QQLZTnH7ySZFrPZeJY3LoZbRR5e8t+W81enE7
-	 Et9A4YSiTfXRsXjF61YAYMFQGHmdTfFgztJTeZtqJmGO8YpdiXBrhl17n5A6qt+ey7
-	 FgNi9hCgVAeNJ6xo7yVleAnqWs+CJiZMvLAt7Nio=
+	s=default; t=1669101479;
+	bh=nRvXcbnAAelOIt7W/5rY4QQnU8my/2kjGFvOcYKFKLI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=KegWlrBUpFIuv/f7YeutwseIvU8WrVNiZ4HViKYzn8n7FzJh/p1V0ZcJbsq75QIT5
+	 oGxKYBo/TlgNvNDhfpFQhmui2LXL8HWVBuZ/kMybk/ZOul7SDnuaDXBOQEdWcbB6U9
+	 1oVDQuzRGhm/jsTILtks7ib4VvISuxMpu5Q1PUq4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7EB82F8026A;
-	Tue, 22 Nov 2022 07:31:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2DC4F8026A;
+	Tue, 22 Nov 2022 08:17:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BEAAAF80272; Tue, 22 Nov 2022 07:31:44 +0100 (CET)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 86050F80272; Tue, 22 Nov 2022 08:17:07 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE238F80154
- for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2022 07:31:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE238F80154
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E1D5F80149
+ for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2022 08:17:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E1D5F80149
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="FXhhwdJT"
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
- by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2AM64hxZ011778; Tue, 22 Nov 2022 06:31:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=G6al7EgrFATCgp+KRSpg6rYdfJ14L7+oK1pxlH/1xPM=;
- b=FXhhwdJTxaPQFymKD/yRr2FSxLG6maIXss6h64W1jKPk2vV17490r82UXtWyDKljmE9s
- cyAKZIQtR25+FK68uVYVP4IA2TxSlT9EgICGNgpUa+IQnguEJaUC3dFV0u3VL0HEPVcp
- xRT3xQb+PfNKmQngNmJHTGmUN0kDG4QWX8IoOgPxv4Lhesy8a+bsBOXxgJCEo7CKflyG
- j9uO+zWaGrio7xuQywWHrbpeY3QEugfExXMEOFw9fge+qfRVyvDhM1JUrgJgAtGRi0wG
- eydy9eMMoxMYYUtrsxGc7lSP/EVltdBONEvHuOhqjiA8tOBvGEQ9lSnz2l5bjqHUekRI ZQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
- [129.46.96.20])
- by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3m0q6x86me-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 22 Nov 2022 06:31:35 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com
- [10.47.209.196])
- by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2AM6VYOu025299
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 22 Nov 2022 06:31:34 GMT
-Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.36; Mon, 21 Nov 2022 22:31:28 -0800
-From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-To: <agross@kernel.org>, <andersson@kernel.org>, <lgirdwood@gmail.com>,
- <broonie@kernel.org>, <robh+dt@kernel.org>, <quic_plai@quicinc.com>,
- <bgoswami@quicinc.com>, <perex@perex.cz>, <tiwai@suse.com>,
- <srinivas.kandagatla@linaro.org>, <quic_rohkumar@quicinc.com>,
- <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
- <linux-kernel@vger.kernel.org>, <swboyd@chromium.org>,
- <judyhsiao@chromium.org>, <devicetree@vger.kernel.org>,
- <lgirdwood@gmail.co>
-Subject: [PATCH v2] ASoC: soc-pcm: Add NULL check in BE reparenting
-Date: Tue, 22 Nov 2022 12:01:13 +0530
-Message-ID: <1669098673-29703-1-git-send-email-quic_srivasam@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
- signatures=585085
-X-Proofpoint-GUID: 6Vcx3HIsNJoroU2495sFmzlrYThHOoL5
-X-Proofpoint-ORIG-GUID: 6Vcx3HIsNJoroU2495sFmzlrYThHOoL5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-11-22_03,2022-11-18_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0
- lowpriorityscore=0 adultscore=0 clxscore=1015 spamscore=0 impostorscore=0
- priorityscore=1501 bulkscore=0 mlxscore=0 phishscore=0 malwarescore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2210170000 definitions=main-2211220047
-Cc: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Ysqr2B5Z"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="3WUYspX1"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 5310621EF3;
+ Tue, 22 Nov 2022 07:17:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1669101422; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+UhD1ad2veeikmHqCQC9DmPwNtUNk0xYfG3WvlpNyfw=;
+ b=Ysqr2B5ZbGK4ZdKXEGWWnLIvDw0eql019Dm7VjT0fBV2vyFM6LaChw7UOX8BXXd3PAX0aF
+ 43vHOF5uhT7lTbhnEMNPD+1i749XRJZBeqogH3BGOEXC+kTYefz1BNQoNxXzNpjiblaZOd
+ jqOwYk5Wmalzgo/MVysGt4gW6OHJ60E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1669101422;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=+UhD1ad2veeikmHqCQC9DmPwNtUNk0xYfG3WvlpNyfw=;
+ b=3WUYspX1R79gkd3+bofJqVzvdo/b26GV24pytG25R5jhm3oRL2SH6GCpb/Ls+4/9vvGuvl
+ gFWy4faH4uJEvRCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 379E113AA1;
+ Tue, 22 Nov 2022 07:17:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id fbK4DG53fGM1dAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 22 Nov 2022 07:17:02 +0000
+Date: Tue, 22 Nov 2022 08:17:01 +0100
+Message-ID: <87zgcjv4pe.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jiao Zhou <jiaozhou@google.com>
+Subject: Re: [PATCH] kernel: Add HP Device 0x8711 to force connect list
+In-Reply-To: <20221116194550.705566-1-jiaozhou@google.com>
+References: <20221116194550.705566-1-jiaozhou@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: ALSA development <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,31 +94,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add NULL check in dpcm_be_reparent API, to handle
-kernel NULL pointer dereference error.
-The issue occurred in fuzzing test.
+On Wed, 16 Nov 2022 20:45:50 +0100,
+Jiao Zhou wrote:
+> 
+> Signed-off-by: Jiao Zhou <jiaozhou@google.com>
+> ---
+> HDMI audio is not working on the HP EliteDesk 800 G6 because the pin is
+> unconnected. This issue can be resolved by using the 'hdajackretask'
+> tool to override the unconnected pin to force it to connect.
+> 
+> Change-Id: If7ffc0691466078e59240f9eab89de562b3f119d
 
-Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
----
-Changes Since V1:
-    -- Update commit title.
+Please reformat your patch and resubmit.  As of this submission, the
+comment about "HDMI audio is not working..." won't be taken as the
+patch description since you've put after the line "---".  The comment
+there will be discarded.
 
- sound/soc/soc-pcm.c | 2 ++
- 1 file changed, 2 insertions(+)
+Also please drop the useless Change-Id tag.
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 493f003..a7810c7 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1247,6 +1247,8 @@ static void dpcm_be_reparent(struct snd_soc_pcm_runtime *fe,
- 		return;
- 
- 	be_substream = snd_soc_dpcm_get_substream(be, stream);
-+	if (!be_substream)
-+		return;
- 
- 	for_each_dpcm_fe(be, stream, dpcm) {
- 		if (dpcm->fe == fe)
--- 
-2.7.4
+And, align the patch subject line with others.  In this case, use
+"ALSA:" prefix, at best, "ALSA: hda/hdmi:" instead of "kernel:".
 
+Last but not least, put the subsystem maintainers (me in this case) to
+Cc at submission.
+
+
+thanks,
+
+Takashi
+
+> ---
+>  sound/pci/hda/patch_hdmi.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+> index 21edf7a619f0..7a40ddfd695a 100644
+> --- a/sound/pci/hda/patch_hdmi.c
+> +++ b/sound/pci/hda/patch_hdmi.c
+> @@ -1975,6 +1975,7 @@ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
+>  static const struct snd_pci_quirk force_connect_list[] = {
+>  	SND_PCI_QUIRK(0x103c, 0x870f, "HP", 1),
+>  	SND_PCI_QUIRK(0x103c, 0x871a, "HP", 1),
+> +	SND_PCI_QUIRK(0x103c, 0x8711, "HP", 1),
+>  	SND_PCI_QUIRK(0x1462, 0xec94, "MS-7C94", 1),
+>  	SND_PCI_QUIRK(0x8086, 0x2081, "Intel NUC 10", 1),
+>  	{}
+> -- 
+> 2.38.1.431.g37b22c650d-goog
+> 
