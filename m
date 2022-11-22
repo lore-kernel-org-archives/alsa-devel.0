@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EFF9C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Nov 2022 14:51:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52825C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Nov 2022 15:22:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 831BB1634;
-	Tue, 22 Nov 2022 15:50:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 831BB1634
+	by alsa0.perex.cz (Postfix) with ESMTPS id A9E5C15E2;
+	Tue, 22 Nov 2022 16:21:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9E5C15E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669128665;
-	bh=MlQTh6em931scU0vFPD06TgB0Jz9yaEqIUgZxlL+sz4=;
+	s=default; t=1669130552;
+	bh=pv6DHXbCL6yXysk9sSNTTSvzWcnaP+5o92VqM7YT5x0=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DRaG+ongjzXfUPkA7uGbpCbtWaoESlDJh80z4LZjo37YxDsWhTtgOD16XpgU8cy2T
-	 fLhLR/b5VEi8K48lQtodtM97mHA3B/rgMZgqYYul1L7UWisujeLmSeq5SGthQyp7kg
-	 sWsocLJrioooK0bhqBnzQ7em6terKW2xLc2ahdZ8=
+	b=ka+xwcG55BJPeIFVbg+8AanVu8y2Gx6e9xByjZ4ABV/3WwVrIeMqLrRsVKeRqSvmE
+	 Pb621amRJnK5HKAWjlqMkFgguhJB2BMQ/xqM78aYtnPOexKtQeijLVJP+ayjWMr7qE
+	 velMvLOpSgdHFzpKbehgoD/OQQuGtaME+yRZyaqk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6952AF80272;
-	Tue, 22 Nov 2022 15:49:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48887F80149;
+	Tue, 22 Nov 2022 16:21:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 15C25F804E2; Tue, 22 Nov 2022 15:49:25 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id BCCA4F8026A; Tue, 22 Nov 2022 16:21:41 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DB5EF80154
- for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2022 15:49:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DB5EF80154
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6EC6DF80149
+ for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2022 16:21:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EC6DF80149
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="a7qNJGuo"
+ header.b="C8WiWx0e"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 1852261738;
- Tue, 22 Nov 2022 14:49:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C0E1C433D7;
- Tue, 22 Nov 2022 14:49:14 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 773ADB81BE0;
+ Tue, 22 Nov 2022 15:21:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7E19C43470;
+ Tue, 22 Nov 2022 15:21:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669128556;
- bh=MlQTh6em931scU0vFPD06TgB0Jz9yaEqIUgZxlL+sz4=;
+ s=k20201202; t=1669130497;
+ bh=pv6DHXbCL6yXysk9sSNTTSvzWcnaP+5o92VqM7YT5x0=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=a7qNJGuoTrEFvEMymDtEahkAHd9eUtS2u8IgITQgG7Yy/CcLO/N28qgvuf4gAtAV+
- 5ecE+P9usprqibwgKXzL5Jc1P1CQBnIIa+6LgkKsgJT4yoxMydYk/XpEQb0Sl9ctYa
- aoF3XWUcIEdL5Qfw9wDHMLjNiXKYWLZtVfArzJQDwxrwPDfNCj0saiIelG1psctn7h
- vR8PQoi5u7//lpoOld8CnZM22L0MVDwcx1Qhf5hTj3X7bTtr0/uMIGBDu2FlTW38YC
- o6DLxiEno0JaUIA7yhDf5ySj5/pAk7gxezWQZKGKR8bYsASbfOlRB2yQoNmaeuXAld
- 3WdBVas9hYBow==
+ b=C8WiWx0eXTtq5HcfFIVWcq5XEBuExn7zVfzOr/ttXArBcLCqCX6NS1cvsQjgYNzUV
+ 53E+s2sMfqHp4+eoVCgu2bh/WEWS5MFaD/axGnafvIlGce2tdj2kOX9p73zCGvrShn
+ pxIuvBQx+sfPsHj44SaU3LycplUwXuz+iS/eS0Y5TLInQzcxAEXLQOme260LSEiqj/
+ wzOsW+SdcO91XtHCK0AA/5oeo0jdCxn96QtOmwcGLJ+ndZdkdAe2NH4xtZIQiyQRwq
+ CutMv4DPalPxZemMeQrg8K1MXhZnbauG4Pk/rcP7wzoPlvafSpv0ax3RL1trL4CPvL
+ zaOfNZxRdNjXw==
 From: Mark Brown <broonie@kernel.org>
 To: Bard Liao <yung-chuan.liao@linux.intel.com>, tiwai@suse.de
-In-Reply-To: <20221122052052.687281-1-yung-chuan.liao@linux.intel.com>
-References: <20221122052052.687281-1-yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: sof_sdw: Add support for SKU 0C4F product
-Message-Id: <166912855482.213382.5851344342031222379.b4-ty@kernel.org>
-Date: Tue, 22 Nov 2022 14:49:14 +0000
+In-Reply-To: <20221117002758.496211-1-yung-chuan.liao@linux.intel.com>
+References: <20221117002758.496211-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH 0/3] ASoC: Intel: add Dell SKU 0C11 support
+Message-Id: <166913049539.240207.17364087478344074974.b4-ty@kernel.org>
+Date: Tue, 22 Nov 2022 15:21:35 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: alsa-devel@alsa-project.org, peter.ujfalusi@linux.intel.com,
- ranjani.sridharan@linux.intel.com, bard.liao@intel.com,
- pierre-louis.bossart@linux.intel.com
+Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, vkoul@kernel.org,
+ peter.ujfalusi@linux.intel.com, bard.liao@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,13 +82,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 22 Nov 2022 13:20:52 +0800, Bard Liao wrote:
-> From: Gongjun Song <gongjun.song@intel.com>
+On Thu, 17 Nov 2022 08:27:55 +0800, Bard Liao wrote:
+> Add Dell SKU 0C11 support with rt1318 codec.
 > 
-> SKU 0C4F product supports a SoundWire headset codec, SoundWire
-> capture from local microphones and two SoundWire amplifiers.
+> Gongjun Song (3):
+>   ASoC: intel: sof_sdw: add rt1318 codec support.
+>   ASoC: Intel: sof_sdw: Add support for SKU 0C11 product
+>   ASoC: Intel: soc-acpi: add SKU 0C11 SoundWire configuration
 > 
-> 
+> [...]
 
 Applied to
 
@@ -96,8 +98,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: sof_sdw: Add support for SKU 0C4F product
-      commit: a9248c868c39440369c614598b2465d1a1b1cf62
+[1/3] ASoC: intel: sof_sdw: add rt1318 codec support.
+      commit: 8c4b3a8ea2c04d7979f378165e5c3dfa270659b6
+[2/3] ASoC: Intel: sof_sdw: Add support for SKU 0C11 product
+      commit: d84e10da17e7fc07e758a8b8f1fd6150bcd8ba08
+[3/3] ASoC: Intel: soc-acpi: add SKU 0C11 SoundWire configuration
+      commit: 0050e3d3d43db6a60b96eb8cbd2b9bcb0cd5db17
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
