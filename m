@@ -4,42 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C29EC4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 22 Nov 2022 11:43:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2678C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 22 Nov 2022 12:12:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CDD1D1620;
-	Tue, 22 Nov 2022 12:42:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDD1D1620
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45D7F1637;
+	Tue, 22 Nov 2022 13:12:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45D7F1637
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669117411;
-	bh=kSOikPgTSgHOSIFikamKbkAMyGpM3Ots9YHLMKgPbHs=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1669119175;
+	bh=/z2qc1uI3NebpB+3mdpORi9OgnUkruCxcihYdbzhGfo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YxbgcZGtA29J2H/8ajmAG8e4wCdXstvVD2KnyMcKHprqi6ORy/RML2nVJ62f+Fk1f
-	 a5m3RVXKs6Rx3DeUAlnQxFUmki1AUvaod9KIXB8Sgt16a4lRjNxDHE/MxueC/U3iUN
-	 DnFaa1aXvGMbn+dfQBrQJvmqZ1PGfltv1z1D3uDs=
+	b=FtFegTza0cxTk3/JDHSwNzLdU19PZhWu27baVTfyVT19FO672fUwhiC5wGsGkR4s3
+	 rzv68OlpOoxpvvzO4NMWf01wHj8H82eW1oFuKh2+KxvjaoKCldwy+fhIsZfQzWWP6h
+	 NCBqjQQk14WblKfCVxZuWqjOROarSz5tn/hTMMck=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 743BEF8026A;
-	Tue, 22 Nov 2022 12:42:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D219AF8026A;
+	Tue, 22 Nov 2022 13:12:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09CF0F80272; Tue, 22 Nov 2022 12:42:40 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 677CBF80154
- for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2022 12:42:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 677CBF80154
+ id E91BCF80272; Tue, 22 Nov 2022 13:12:02 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1051F80115
+ for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2022 13:11:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1051F80115
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="LCSLPsPV"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id E352261698;
+ Tue, 22 Nov 2022 12:11:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C0CAC433D6;
+ Tue, 22 Nov 2022 12:11:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1669119115;
+ bh=/z2qc1uI3NebpB+3mdpORi9OgnUkruCxcihYdbzhGfo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=LCSLPsPV1TsmwjswLnlBTU41wJkwd41DU8kdtiaYBnVJv634uH9MOk0NoA76eC+oi
+ U+46gP8aiYGvbh662QqZpD3JKN5vslPYicfa2JdHCc/Xe8+8i1xExPBi4+D5PL+Qgg
+ r/aatccaQB9XqeQ7zIcWRIifspD1wk2xkDbdia71FlCG5GB2F6tAQwnvATm/Wqp6Ix
+ Uju7+L5Ei4rvBK0k4elikJeTwLpDrPNV96uxJnkKYuDLgh6f+UDLNLivieY6GYG+7W
+ +MmQylF8N2Rhbhm8KAeOcBCyqtzNcKtvF4XX56z0p7ktYsk67LO1Y3uyJZG7Z8uAFI
+ PCCM3MfhUGTjQ==
+Date: Tue, 22 Nov 2022 12:11:49 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: Move fixed string node names under
+ 'properties'
+Message-ID: <Y3y8hTosK8UNTL7K@sirena.org.uk>
+References: <20221118223708.1721134-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1669117356971123934-webhooks-bot@alsa-project.org>
-References: <1669117356971123934-webhooks-bot@alsa-project.org>
-Subject: (E)AC3, DTS, MPEG-H support in tinycompress and the kernel uapi?
-Message-Id: <20221122114240.09CF0F80272@alsa1.perex.cz>
-Date: Tue, 22 Nov 2022 12:42:40 +0100 (CET)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="lDjTxj1SUPsxEEKH"
+Content-Disposition: inline
+In-Reply-To: <20221118223708.1721134-1-robh@kernel.org>
+X-Cookie: That's what she said.
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Jerome Neanne <jerome.neanne@baylibre.com>, linux-kernel@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Andrew Davis <afd@ti.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-tegra@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,9 +86,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/tinycompress issue #20 was opened from dv1:
 
-Have there been discussions about adding support for (E)AC3, DTS, and MPEG-H? These days, 3D Audio is a use case where the Compress-Offload API is useful. It therefore would make sense to add support for these formats. I'm talking about direct support, not through IEC958 / IEC61937 payloading. I know that some HW vendors add their own custom changes to tinycompress to support these formats, so why not add these to upstream?
+--lDjTxj1SUPsxEEKH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Issue URL     : https://github.com/alsa-project/tinycompress/issues/20
-Repository URL: https://github.com/alsa-project/tinycompress
+On Fri, Nov 18, 2022 at 04:37:07PM -0600, Rob Herring wrote:
+> Fixed string node names should be under 'properties' rather than
+> 'patternProperties'. Additionally, without beginning and end of line
+> anchors, any prefix or suffix is allowed on the specified node name.
+> These cases don't appear to want a prefix or suffix, so move them under
+> 'properties'.
+
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--lDjTxj1SUPsxEEKH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmN8vIQACgkQJNaLcl1U
+h9Ae0Qf/emE9/oA+dPnGHlis/IeySfRJD4RM1Am+LSJBAqwrpx85Z6Q2H2bURwJQ
+ZWw+Q234RANSgC5arbh8/luVB0Z0UYs21FfnyBefSZvA5FlW1JHt+jpHcM6f9fdS
+vB8r+afbJpNRpfQG3OUg9uIcugKdi3uie/TGzzILDNa9OvJ+FHZG6m5RrPO31xMQ
+S4CYuu/MJFRq92V7Ra2SOxHjAn+p3kjXzCizHBdcia0DQRdRGORVZPzBqVpSGxhb
+QEaiE7P+yYW9oQy8sVIb/ChjUMjY4w3SJr/+IAIhrpxV4DtueO7Gc+rP47PsHDoA
+I13D2nJht2ZuzW11fCfbkTnuYTY0HA==
+=4gKN
+-----END PGP SIGNATURE-----
+
+--lDjTxj1SUPsxEEKH--
