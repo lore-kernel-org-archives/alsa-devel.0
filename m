@@ -4,80 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67658C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 07:07:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA4B5C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 07:18:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 80B4315CC;
-	Wed, 23 Nov 2022 08:06:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80B4315CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 576311620;
+	Wed, 23 Nov 2022 08:17:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 576311620
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669187250;
-	bh=VyvhTF65oY14CGXtnidRvhPjLbYqscXiPaqmvNVdUHc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1669187882;
+	bh=vQ3u1rP4Yo5UQx/c3aZRPJFQrnGQXUlWhp2Tk2w1ZYk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mbbSFi3b8HvSrSTxmF3N7x1CZiGJRkPee5/rGuUjkVt2YI3szG9ieIVeAR9nSC8Cr
-	 mrEYEyUdYP7OS+0rPZJqfim4LqErhmGhEC61YSpkzpTCTK5bkQNtENQao0jfM0gzXh
-	 4URe4G0MAXb76Rfbv452SJDc/rHKlLbqZi9rH+cU=
+	b=KDkk43HP2LLduFIS8/ViAXUGE6ehGINRlsL1l6vw18uY3ArbFCLZGSVQEZrA9D5Zx
+	 1od5nIqbREFpCIXCdkpFkMb5q95F5GsNSOsfyb1HYZP8Vhii2C5m94lE8rV50AEYNT
+	 +1CxisNuHMusrWDeFktFdbaaGaC3HhvsVs7ApnHk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14BDBF80249;
-	Wed, 23 Nov 2022 08:06:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BDF0AF80249;
+	Wed, 23 Nov 2022 08:17:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0B9AF8025D; Wed, 23 Nov 2022 08:06:36 +0100 (CET)
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com
- [IPv6:2607:f8b0:4864:20::1129])
+ id 167C0F8025D; Wed, 23 Nov 2022 08:17:10 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 790BDF80149
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 08:06:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 790BDF80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id B5F9EF800BB
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 08:17:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5F9EF800BB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="k0ZKc4rl"
-Received: by mail-yw1-x1129.google.com with SMTP id
- 00721157ae682-3704852322fso166058637b3.8
- for <alsa-devel@alsa-project.org>; Tue, 22 Nov 2022 23:06:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=y5UDO+CDsn9tFw1qu+1aLuYY9kc6ZmG6caszAYHBPIs=;
- b=k0ZKc4rlcJ8vbgPMnoksZY0Tqbn8uXGIdhZIDZTu3FonEUgSXrgweYVDesztwfngPG
- loXDpZjKXnzm1r7L//rA0y7smBeXNRHvlS7XQtT3CrMcwe8O8U+cKhPTtXUcA7z9wfoH
- jn+Smm8EhgP61pS6Y6FOFFHzAAUvpA9YD1iskAnq3picfKhw39wVhRoN8HlXrqMf9vtQ
- J5SywyMdFw2KM3zT00i4NdwHIXoXrPQN7h+5i7XMXBfuvBeTG8tizPSHVl4m/H3MkwXs
- SfsLN0j21okXWpn0ciXx+orWLWV6uUURITAS3L79tcKBb8cnPXR0btP4FRMU6G/ExUNV
- xHQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=y5UDO+CDsn9tFw1qu+1aLuYY9kc6ZmG6caszAYHBPIs=;
- b=M8N+nHfFiBHYdOhzbv4SAz4vfD4CLdqGGQSatxSduQ24OoJ0+NknsVUwpMZ/St4W6B
- Ix/ZXExigLu5lcJIzoXQbFYFxALi6c5VVFZVjGksNh5M9rggfpNgTbKn6DG5TE32VXZP
- x2vZbnO71zGfCf1fRz8hXDVo4LcyU3nvBBd7Ws+8zUXse+fUDNsD0FSliEbYCIRWSDSz
- 9fCKbIWoJ+SmgI/tz79dKnFN7VBpqiYqzsTNTe3MB/o9dvE24ODAGaBQrZChjKFcx5QD
- cLjvpPn3f0lWg/Z/Vwgviir7gy20KcRzblT3Lq41J7SfeWthlsZByNvM1PLWDQNhpCN2
- Kzqg==
-X-Gm-Message-State: ANoB5pm28iFxX9dZe1ZKU1408eTnXFO3EcjhDWtIbHueq/mFf0v7P4h8
- aXCHyEP3He+bbuYn8QIhgwEzrcciGgrrPf7kHXM=
-X-Google-Smtp-Source: AA0mqf68y7B7EVuw4un0nSXxSEHbUoayj/EwX1/tdjpicF+MeZYb/u8jBCEz9F+Q1yMrChT7SyVDPs4nfev0Hw65ZUY=
-X-Received: by 2002:a81:a18e:0:b0:368:b923:b500 with SMTP id
- y136-20020a81a18e000000b00368b923b500mr9453740ywg.10.1669187187069; Tue, 22
- Nov 2022 23:06:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20221123050911.1045190-1-butterflyhuangxx@gmail.com>
- <87mt8i5fcz.wl-tiwai@suse.de>
-In-Reply-To: <87mt8i5fcz.wl-tiwai@suse.de>
-From: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Date: Wed, 23 Nov 2022 15:06:16 +0800
-Message-ID: <CAFcO6XPoNnM+VzY+bj5sPfJ-tCLQQ_pb8yb90KifWTwVpdENKA@mail.gmail.com>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="ygCYA+01"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="5IhFYKDF"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B93A6220D7;
+ Wed, 23 Nov 2022 07:17:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1669187822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qoVSvB0KJ1pA3zQh2W2ESlJGILDsMMP8nb+gJVT4lCQ=;
+ b=ygCYA+01JE4GASflQeWe0R/6OgIzb3da3m3lrzkBtlj8/CreGe48dEv4He6hXHoErrxOp9
+ YYiuypwv3OblM9Nc0ErcR5F/dcCszPY1UGqrvtlPfv0c5Fg0iqVfw5ynCwT+uUuuzflsK0
+ kFEI4AAeYvf5j0yEyKXbS1guMW5LjDs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1669187822;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=qoVSvB0KJ1pA3zQh2W2ESlJGILDsMMP8nb+gJVT4lCQ=;
+ b=5IhFYKDF0THPEwEd8+xT+s+kuASgvoIHLvKMahDxuqW7URJWNBI1hlnRFishpj6JXGIb+a
+ LSSC8DjuUw6VLqBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 90CC413A37;
+ Wed, 23 Nov 2022 07:17:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id YRJnIu7IfWMFTwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Wed, 23 Nov 2022 07:17:02 +0000
+Date: Wed, 23 Nov 2022 08:17:02 +0100
+Message-ID: <87ilj65edt.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: butt3rflyh4ck <butterflyhuangxx@gmail.com>
 Subject: Re: [RESEND PATCH] ALSA: rawmidi: fix infoleak in
  snd_rawmidi_ioctl_status_compat64
-To: Takashi Iwai <tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAFcO6XPoNnM+VzY+bj5sPfJ-tCLQQ_pb8yb90KifWTwVpdENKA@mail.gmail.com>
+References: <20221123050911.1045190-1-butterflyhuangxx@gmail.com>
+ <87mt8i5fcz.wl-tiwai@suse.de>
+ <CAFcO6XPoNnM+VzY+bj5sPfJ-tCLQQ_pb8yb90KifWTwVpdENKA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
  baolin.wang@linux.alibaba.com
 X-BeenThere: alsa-devel@alsa-project.org
@@ -95,65 +98,76 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi, the compat_status structure is struct compat_snd_rawmidi_status64 {
-s32 stream;
-u8 rsvd[4]; /* alignment */
-s64 tstamp_sec;
-s64 tstamp_nsec;
-u32 avail;
-u32 xruns;
-unsigned char reserved[16];
-} __attribute__((packed));
-The rsvd[4] and reserved[16] are not  initialized.
+On Wed, 23 Nov 2022 08:06:16 +0100,
+butt3rflyh4ck wrote:
+> 
+> Hi, the compat_status structure is struct compat_snd_rawmidi_status64 {
+> s32 stream;
+> u8 rsvd[4]; /* alignment */
+> s64 tstamp_sec;
+> s64 tstamp_nsec;
+> u32 avail;
+> u32 xruns;
+> unsigned char reserved[16];
+> } __attribute__((packed));
+> The rsvd[4] and reserved[16] are not  initialized.
+
+Other members are initialized with zero.
+  https://gcc.gnu.org/onlinedocs/gcc/Designated-Inits.html
 
 
-Regards,
- butt3rflyh4ck.
+Takashi
 
-On Wed, Nov 23, 2022 at 2:55 PM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Wed, 23 Nov 2022 06:09:11 +0100,
-> Xiaolong Huang wrote:
+> 
+> 
+> Regards,
+>  butt3rflyh4ck.
+> 
+> On Wed, Nov 23, 2022 at 2:55 PM Takashi Iwai <tiwai@suse.de> wrote:
 > >
-> > The compat_status is declared off of the stack, so it needs to
-> > be zeroed out before copied back to userspace to prevent any
-> > unintentional data leakage.
+> > On Wed, 23 Nov 2022 06:09:11 +0100,
+> > Xiaolong Huang wrote:
+> > >
+> > > The compat_status is declared off of the stack, so it needs to
+> > > be zeroed out before copied back to userspace to prevent any
+> > > unintentional data leakage.
+> > >
+> > > Fixes: d9e5582c4bb2 ("ALSA: Avoid using timespec for struct snd_rawmidi_status")
+> > > Signed-off-by: Xiaolong Huang <butterflyhuangxx@gmail.com>
+> > >
+> > > ---
+> > >
+> > > Reason for resend:
+> > > 1. add Fixes line.
+> > > ---
+> > >  sound/core/rawmidi_compat.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/sound/core/rawmidi_compat.c b/sound/core/rawmidi_compat.c
+> > > index 68a93443583c..6afa68165b17 100644
+> > > --- a/sound/core/rawmidi_compat.c
+> > > +++ b/sound/core/rawmidi_compat.c
+> > > @@ -80,6 +80,7 @@ static int snd_rawmidi_ioctl_status_compat64(struct snd_rawmidi_file *rfile,
+> > >       if (err < 0)
+> > >               return err;
+> > >
+> > > +     memset(&compat_status, 0, sizeof(compat_status));
+> > >       compat_status = (struct compat_snd_rawmidi_status64) {
+> > >               .stream = status.stream,
+> > >               .tstamp_sec = status.tstamp_sec,
 > >
-> > Fixes: d9e5582c4bb2 ("ALSA: Avoid using timespec for struct snd_rawmidi_status")
-> > Signed-off-by: Xiaolong Huang <butterflyhuangxx@gmail.com>
+> > Here at the line just after your addition, compat_status is fully
+> > initialized by substitution, so I believe the memset is superfluous.
 > >
-> > ---
+> > Or have you verified that it really leaks the uninitialized memory?
 > >
-> > Reason for resend:
-> > 1. add Fixes line.
-> > ---
-> >  sound/core/rawmidi_compat.c | 1 +
-> >  1 file changed, 1 insertion(+)
 > >
-> > diff --git a/sound/core/rawmidi_compat.c b/sound/core/rawmidi_compat.c
-> > index 68a93443583c..6afa68165b17 100644
-> > --- a/sound/core/rawmidi_compat.c
-> > +++ b/sound/core/rawmidi_compat.c
-> > @@ -80,6 +80,7 @@ static int snd_rawmidi_ioctl_status_compat64(struct snd_rawmidi_file *rfile,
-> >       if (err < 0)
-> >               return err;
+> > thanks,
 > >
-> > +     memset(&compat_status, 0, sizeof(compat_status));
-> >       compat_status = (struct compat_snd_rawmidi_status64) {
-> >               .stream = status.stream,
-> >               .tstamp_sec = status.tstamp_sec,
->
-> Here at the line just after your addition, compat_status is fully
-> initialized by substitution, so I believe the memset is superfluous.
->
-> Or have you verified that it really leaks the uninitialized memory?
->
->
-> thanks,
->
-> Takashi
-
-
-
--- 
-Active Defense Lab of Venustech
+> > Takashi
+> 
+> 
+> 
+> -- 
+> Active Defense Lab of Venustech
+> 
