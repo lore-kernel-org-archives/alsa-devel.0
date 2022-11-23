@@ -4,108 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 210A8C4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:00:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B81C7C4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:00:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E81E817C9;
-	Sat, 26 Nov 2022 08:59:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E81E817C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC2E517BF;
+	Sat, 26 Nov 2022 08:59:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC2E517BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669449610;
-	bh=0dPBcIou1yq73/ShQ5ge15FFqP86cP4E6nEb250ZlWo=;
+	s=default; t=1669449636;
+	bh=qWzZYH9hobYJ9k4ccqf32LxYbS7Tr5JzjoLAU1AtyM8=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RFKTZE1V9L7488AjH5Zntyhu2O/Y7MSitIsgz/b0FoEA8A9gMS+m5KwClIa3ZcWVW
-	 CThlAUoGAijbpLMyCehZJFhOLpDdH5Pe6e7WOo/6lwD9JXnvFgE6WoFM/ERpEg2sKl
-	 Nz3JIo+7toF2MvpvokRbMNsPGN8bjM4N+dF8hmYo=
+	b=qM87mu6DgnEeR8AtV1lhsN0IzNrGlIaKQBjM/pylUieDU+0+4TLQ3FovR2i9oZ0mn
+	 VHk5fbv+deSdCQy+uh5COjNPaFYq3Czykw+1ewLpD6nYUqR1QosvjFHxAqrikmQnYF
+	 MH2vKQH1NvQdAayRlqWYEijwIxEsghA43ZkllgVE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69124F80238;
+	by alsa1.perex.cz (Postfix) with ESMTP id D09B4F80557;
 	Sat, 26 Nov 2022 08:58:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CFC4DF8025D; Wed, 23 Nov 2022 14:35:16 +0100 (CET)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D9405F80115; Wed, 23 Nov 2022 17:25:38 +0100 (CET)
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com
+ [IPv6:2607:f8b0:4864:20::836])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 31236F80115
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 14:35:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31236F80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3107EF80115
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 17:25:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3107EF80115
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="MdlsoDD+"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1669210514; x=1700746514;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=0dPBcIou1yq73/ShQ5ge15FFqP86cP4E6nEb250ZlWo=;
- b=MdlsoDD+g5aYaafCzytjg85ZZZe6YPgBDTPEsAlecCFvKz7rTimiamYd
- 3Z+uUA4gmD6xi+GqVXapvajJcF6ZBiiNT1EzweEj1R/24kFt1pAqEoGmL
- X03QYh2L+3TFK5BfcTrAtZzhU7pi00tt+ji6wCoTkUoIBz1eGNDMFoUNl
- yqYcErtLhkbU36QGHyEeGtZspKQRXuazyIwJ+qYRLe9BQ/07IpRQStcvs
- qE7n6tp18P9jUBA4HHJT7BslWWX2gM8JmkaKM4We9EFyqblM7pry3zVIh
- yDn/KGINluiqBhj20MqslPgVghpbs996BOrkN1IIAGADVnIkzdF8rj1L5 A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10539"; a="301624491"
-X-IronPort-AV: E=Sophos;i="5.96,187,1665471600"; d="scan'208";a="301624491"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Nov 2022 05:35:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10539"; a="970863671"
-X-IronPort-AV: E=Sophos;i="5.96,187,1665471600"; d="scan'208";a="970863671"
-Received: from smile.fi.intel.com ([10.237.72.54])
- by fmsmga005.fm.intel.com with ESMTP; 23 Nov 2022 05:35:00 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
- (envelope-from <andriy.shevchenko@linux.intel.com>)
- id 1oxptw-00GImp-12; Wed, 23 Nov 2022 15:34:56 +0200
-Date: Wed, 23 Nov 2022 15:34:56 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Maximilian Luz <luzmaximilian@gmail.com>
+ dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca
+ header.b="ebGDyq+q"
+Received: by mail-qt1-x836.google.com with SMTP id a27so11512305qtw.10
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 08:25:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ziepe.ca; s=google;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=PhJSJnLVsP1vBula4KCFSx5kBTht7CuZrspFHU0N884=;
+ b=ebGDyq+q12UGY7Qk5Tupc9qhDLGyIcTZVkm5UZYo/563kMYJJqyAeOt5CzUtM4J8DZ
+ 3trFHny8FIDylUgXR9JjN8PS72NcWsvrDfr1Nd1Q7FDnTR43onbW+jw1+Ctw0cwtwrCd
+ T18F6CTTWbwHWY6WrhS9prZWxtXaTjwzs7IQnIsjaZTmFdCmKdzeecD0BbnuyMQqVQVg
+ z0s4POzfjTxMQ62r8mCHZM0rSmjmaRN4hzlYV7zdZbP1xMXxym5gxZ3SKz4kt6tgYYum
+ EfCUt6/g2D4WDco0MNWeSPD0NJ6lencxZ7NqZJCJlD8ikZ4WiUl7N0yJnMd2Q4wIPSG2
+ 7pnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=PhJSJnLVsP1vBula4KCFSx5kBTht7CuZrspFHU0N884=;
+ b=maY/hv2ca1Sb5uUmjm4snF20Gf3tHbs3Sx26OcHcGrxroLeBgTHLizLUfCbX4TSLEB
+ T4IUnbg9CDpr01pfJpMg3opQZLgs9xoSr82l/OoMR51UdtlIvAFbwCS9xOUDWj1uuXh7
+ zwl34Orlexfxf9NZ6su8yyoNG9HvENjfdiw7V8AgLTgHSSj+qZT2etQAunXci/IuYPmc
+ fGa0Ve27TNhDUonj6BIshHjCQDtrcdhQHHMwmNeIHLqsADPWcEqTPJdKHU8B63lp1bR1
+ pRifNFO3LFRUB0ScuzeZPBcN4UXuT+F9tfQn8MJdl3q/+FOGQOiSxWFT4lBqPqze7+2y
+ 7+cA==
+X-Gm-Message-State: ANoB5pk4n/JG4b9E6NMdVUobCRV/6O9LNHdLBOjM9WCoVR/dbXuvVxUP
+ W8kyZ+RwtYxk5nmwUU161OEZuA==
+X-Google-Smtp-Source: AA0mqf7URgWK3LZKBiCOJvrYX2BcRTBThzd2VlaYXoILbXTQHzjAWJMWnGzlcI0wVuCFvjEWzX6GjA==
+X-Received: by 2002:ac8:60c:0:b0:3a6:37bd:ace5 with SMTP id
+ d12-20020ac8060c000000b003a637bdace5mr14127789qth.426.1669220734011; 
+ Wed, 23 Nov 2022 08:25:34 -0800 (PST)
+Received: from ziepe.ca
+ (hlfxns017vw-47-55-122-23.dhcp-dynamic.fibreop.ns.bellaliant.net.
+ [47.55.122.23]) by smtp.gmail.com with ESMTPSA id
+ q7-20020a05620a0d8700b006f8665f483fsm12561497qkl.85.2022.11.23.08.25.33
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 23 Nov 2022 08:25:33 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+ (envelope-from <jgg@ziepe.ca>) id 1oxsZ2-00AOLL-MZ;
+ Wed, 23 Nov 2022 12:25:32 -0400
+Date: Wed, 23 Nov 2022 12:25:32 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Subject: Re: [PATCH 3/5] driver core: make struct device_type.uevent() take a
  const *
-Message-ID: <Y34hgIW8p1RlQTBB@smile.fi.intel.com>
+Message-ID: <Y35JfNJDppRp5bLX@ziepe.ca>
 References: <20221123122523.1332370-1-gregkh@linuxfoundation.org>
  <20221123122523.1332370-3-gregkh@linuxfoundation.org>
  <711d5275-7e80-c00d-0cdc-0f3d52175361@gmail.com>
+ <Y34hgIW8p1RlQTBB@smile.fi.intel.com>
+ <97be39ed-3cea-d55a-caa6-c2652baef399@gmail.com>
+ <Y34zyzdbRUdyOSkA@casper.infradead.org>
+ <Y34+V2bCDdqujBDk@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <711d5275-7e80-c00d-0cdc-0f3d52175361@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Mailman-Approved-At: Sat, 26 Nov 2022 08:58:51 +0100
+In-Reply-To: <Y34+V2bCDdqujBDk@kroah.com>
+X-Mailman-Approved-At: Sat, 26 Nov 2022 08:58:52 +0100
 Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
  Heikki Krogerus <heikki.krogerus@linux.intel.com>, Sean Young <sean@mess.org>,
  "Rafael J. Wysocki" <rafael@kernel.org>, alsa-devel@alsa-project.org,
  platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
  Andreas Noever <andreas.noever@gmail.com>, linux-i3c@lists.infradead.org,
- linux1394-devel@lists.sourceforge.net,
+ linux1394-devel@lists.sourceforge.net, Frank Rowand <frowand.list@gmail.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Bard Liao <yung-chuan.liao@linux.intel.com>,
- Dan Williams <dan.j.williams@intel.com>, linux-acpi@vger.kernel.org,
- Frank Rowand <frowand.list@gmail.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
- Jason Gunthorpe <jgg@ziepe.ca>, Alan Stern <stern@rowland.harvard.edu>,
- linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- Won Chung <wonchung@google.com>, Len Brown <lenb@kernel.org>,
- devicetree@vger.kernel.org, Chaitanya Kulkarni <kch@nvidia.com>,
- Ira Weiny <ira.weiny@intel.com>, Michael Jamet <michael.jamet@intel.com>,
- Ming Lei <ming.lei@redhat.com>, Mark Gross <markgross@kernel.org>,
- Hans de Goede <hdegoede@redhat.com>, Rob Herring <robh+dt@kernel.org>,
- Jiri Slaby <jirislaby@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Matthew Wilcox <willy@infradead.org>, linux-acpi@vger.kernel.org,
+ Alan Stern <stern@rowland.harvard.edu>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, Won Chung <wonchung@google.com>,
+ Len Brown <lenb@kernel.org>, devicetree@vger.kernel.org,
+ Chaitanya Kulkarni <kch@nvidia.com>, Ira Weiny <ira.weiny@intel.com>,
+ Michael Jamet <michael.jamet@intel.com>, Ming Lei <ming.lei@redhat.com>,
+ Mark Gross <markgross@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+ Rob Herring <robh+dt@kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
  Mauro Carvalho Chehab <mchehab@kernel.org>,
  Mika Westerberg <mika.westerberg@linux.intel.com>,
  Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
  Jilin Yuan <yuanjilin@cdjrlc.com>,
  "Martin K. Petersen" <martin.petersen@oracle.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org,
  Wolfram Sang <wsa@kernel.org>, Vinod Koul <vkoul@kernel.org>,
  Stefan Richter <stefanr@s5r6.in-berlin.de>,
  Sakari Ailus <sakari.ailus@linux.intel.com>,
  Yehezkel Bernat <YehezkelShB@gmail.com>, Sanyog Kale <sanyog.r.kale@intel.com>,
- linux-media@vger.kernel.org, linux-usb@vger.kernel.org
+ linux-media@vger.kernel.org, Maximilian Luz <luzmaximilian@gmail.com>,
+ linux-usb@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -121,36 +139,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Nov 23, 2022 at 02:14:31PM +0100, Maximilian Luz wrote:
-> On 11/23/22 13:25, Greg Kroah-Hartman wrote:
-> > The uevent() callback in struct device_type should not be modifying the
-> > device that is passed into it, so mark it as a const * and propagate the
-> > function signature changes out into all relevant subsystems that use
-> > this callback.
-
-[...]
-
-> > -static inline struct ssam_device *to_ssam_device(struct device *d)
-> > +static inline struct ssam_device *to_ssam_device(const struct device *d)
-> >   {
-> >   	return container_of(d, struct ssam_device, dev);
-> >   }
+On Wed, Nov 23, 2022 at 04:37:59PM +0100, Greg Kroah-Hartman wrote:
+> static inline struct device *__kobj_to_dev(struct kobject *kobj)
+> {
+>         return container_of(kobj, struct device, kobj);
+> }
 > 
-> I am slightly conflicted about this change as that now more or less
-> implicitly drops the const. So I'm wondering if it wouldn't be better to
-> either create a function specifically for const pointers or to just
-> open-code it in the instance above.
+> static inline const struct device *__kobj_to_dev_const(const struct kobject *kobj)
+> {
+>         return container_of(kobj, const struct device, kobj);
+> }
 > 
-> I guess we could also convert this to a macro. Then at least there
-> wouldn't be an explicit and potentially misleading const-conversion
-> indicated in the function signature.
+> /*
+>  * container_of() will happily take a const * and spit back a non-const * as it
+>  * is just doing pointer math.  But we want to be a bit more careful in the
+>  * driver code, so manually force any const * of a kobject to also be a const *
+>  * to a device.
+>  */
+> #define kobj_to_dev(kobj)                                       \
+>         _Generic((kobj),                                        \
+>                  const struct kobject *: __kobj_to_dev_const,   \
+>                  struct kobject *: __kobj_to_dev)(kobj)
+> 
+> 
+> Want me to do the same thing here as well?
 
-This is an intermediate step as far as I know since moving container_of to
-recognize const is a bit noisy right now. I guess you can find a discussion
-on the topic between Greg and Sakari.
+It would be nice to have a shared macro code gen all of the above
+instead of copy and pasting it. Then maybe other cases beyond struct
+device could adopt const too..
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Jason
