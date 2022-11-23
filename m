@@ -4,121 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01947C3A59F
-	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:08:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A356C4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:08:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31F9517ED;
-	Sat, 26 Nov 2022 09:07:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31F9517ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 80E11184C;
+	Sat, 26 Nov 2022 09:07:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80E11184C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669450084;
-	bh=5PRsd7HrjCqRvBnMgI+VLqKx3MQdupYeelhvkIpaOto=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1669450099;
+	bh=yn6IQg9xUUV9CgWL40Zq6y52rg1mn5sa8oD03o5v7Xs=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=G62mVW01atKdkDnPIiDGF4J7HVU4t1uCuC3P80kBfjKSVK9JWQ3mgsa7fR3xfe+fw
-	 9EdRmdHr6z7EeWdM747+NSNoKzVRpkhufIwz7NEWRJlxl2MiW6+prl6XSEjHp5SuNY
-	 MawRuL7FVIyyF3AuYFkYmvhJWfzkOPf5wkya52j0=
+	b=u7IusfZtRf7/PlDJhaOCf2Lj/mCWb7NysQzz/HTwlipTd4iIKVE9WHcsfXNvkvV+v
+	 ZOpjyNHUyaViGE907atUvtDb4hUvFZsVhfoMCiADt1U+7WlwNOX9aUhMUGV9JAuHYD
+	 aYGb+vkGkqTht300l6SeMPwJegHhHRcqEeBWSCVY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0248FF8060E;
+	by alsa1.perex.cz (Postfix) with ESMTP id 967F5F80612;
 	Sat, 26 Nov 2022 08:59:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9D64F8025D; Wed, 23 Nov 2022 14:14:40 +0100 (CET)
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
- [IPv6:2a00:1450:4864:20::529])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1F244F8025D; Wed, 23 Nov 2022 14:51:49 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C870DF800BB
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 14:14:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C870DF800BB
+ by alsa1.perex.cz (Postfix) with ESMTPS id CA09FF800BB
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 14:51:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA09FF800BB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="JrgCjNHp"
-Received: by mail-ed1-x529.google.com with SMTP id z63so5756454ede.1
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 05:14:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=sauF/j+i6mkS8I5Asm3wkjg9rAoolnMVFFABQhVn7ts=;
- b=JrgCjNHpmpS+UFD/hJxkEdxsDcmk00K9l1zgw4rjJ6QL5LFgR9cDjNY17XgiVyuKWT
- GVX3FjNvQF532OmACfplDQxa0ET6vUF3+AwWkzCoQgdvk8wm/vwi5bqEPhjgds3tvHVk
- qcn3+9bWbQ09f6O6mbQXTHtJZBCGwc8Lfjz7fIehiorZZ8oPg8dRKYCne/QKG+ZgQ3Z5
- zzGAl10ChcVHD+8+Mhy+mnFO2Ek6zUiOt22qnko9TArrSnnj1eidLr1A138vvA9aLTcz
- ZwMNfHN3QT6GpL5rAIMHY7Io5oO/gphYT8wcDC9vjb4hS9xYXmqoE4cy5//Ks0/sJomc
- X3OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=sauF/j+i6mkS8I5Asm3wkjg9rAoolnMVFFABQhVn7ts=;
- b=ep3aWiJRflwtWuT7Ps5mD70eWZTQQlzbp6E9rOUR0Ps4mAlbBTZRUJbpcpSNAIjVyG
- jB0lp/uaoWtM7ikEwgSYhUx8BPmT9fJrHKYOiTFx0ffoZsJ7n7xoJCgOaUPB0exNB8U4
- uF/pyS/aCKhdaxiyErT9AhDwwqatshihX6NP6skoNfIx4AvFrVBeIHi0rBn/7FefodeJ
- V/FsSy2fxBNxtzr7pTj2cWbPkgSjxAwrMSNn4HlgRel7PrgJXflnomO4KZrR/y6l/Tp0
- DS2dXKKphQwh3V8TIH6va1EcilP6bDmyynrnBAQ4zn8BVZwS3BRyvAmNet+NwJYVBQuj
- ZWGA==
-X-Gm-Message-State: ANoB5pm2zS/o7/bFugQPvYkjaI9y7R8hJ1hZCciUVrYth4F9gyzMRe0u
- i//b3k4pQgE7kHD5OHQL7tY=
-X-Google-Smtp-Source: AA0mqf4EMwcpsdY1UQ9nMh8FYiw8FldQtuxFrB6UO57Z4G73kQazssLgzz4HdFhaHz+MfDNKhbLKUA==
-X-Received: by 2002:a05:6402:181:b0:461:ea0c:e151 with SMTP id
- r1-20020a056402018100b00461ea0ce151mr11327924edv.376.1669209274614; 
- Wed, 23 Nov 2022 05:14:34 -0800 (PST)
-Received: from [10.20.0.7] ([37.120.217.162]) by smtp.gmail.com with ESMTPSA id
- oz36-20020a1709077da400b00734bfab4d59sm958602ejc.170.2022.11.23.05.14.31
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 23 Nov 2022 05:14:34 -0800 (PST)
-Message-ID: <711d5275-7e80-c00d-0cdc-0f3d52175361@gmail.com>
-Date: Wed, 23 Nov 2022 14:14:31 +0100
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="UKfpNKKU"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 8D4C061CB0;
+ Wed, 23 Nov 2022 13:51:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B70F3C433D6;
+ Wed, 23 Nov 2022 13:51:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1669211504;
+ bh=yn6IQg9xUUV9CgWL40Zq6y52rg1mn5sa8oD03o5v7Xs=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=UKfpNKKUztgIyNLf4JyG/Wh9x1SnC70ZZ6CMkTeLD14mkOzGlAm4+qghDz9TTaJEY
+ oavU1DO373ElaIHQhIEpVZi9OKHf+AB7y5AZ3a0QM4K6Mda5mlxZI6uj77Y+34o3+z
+ tC1+zaqNCkF1IRGWjNnvY9xTloZLlUjIwvwDNzzHVs6iAjJgjo18LVCElB+Z+suDGy
+ RWQBO44v5C47KQUPl5LJXsrQ6VqWTj1W9The96h2CM4sfIP1b0DOy3ZhTq1Wp6bXDL
+ C50DRWElKcd6PEaRVrgU5hEWY/A3MmvIZ+aqD+I2bHVUKaydHWSJ+FVF1rDhM8vyJp
+ Av8NqbWSqNyRA==
+Date: Wed, 23 Nov 2022 13:51:32 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2 1/9] dt-bindings: drop redundant part of title of
+ shared bindings
+Message-ID: <Y34lZFSBEwuI6G+a@sirena.org.uk>
+References: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
+ <20221121110615.97962-2-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH 3/5] driver core: make struct device_type.uevent() take a
- const *
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org
-References: <20221123122523.1332370-1-gregkh@linuxfoundation.org>
- <20221123122523.1332370-3-gregkh@linuxfoundation.org>
-From: Maximilian Luz <luzmaximilian@gmail.com>
-In-Reply-To: <20221123122523.1332370-3-gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Mailman-Approved-At: Sat, 26 Nov 2022 08:58:53 +0100
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Heikki Krogerus <heikki.krogerus@linux.intel.com>, Sean Young <sean@mess.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, alsa-devel@alsa-project.org,
- platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
- Andreas Noever <andreas.noever@gmail.com>, linux-i3c@lists.infradead.org,
- linux1394-devel@lists.sourceforge.net,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Dan Williams <dan.j.williams@intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Frank Rowand <frowand.list@gmail.com>, linux-acpi@vger.kernel.org,
- Jiri Slaby <jirislaby@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
- Jason Gunthorpe <jgg@ziepe.ca>, Alan Stern <stern@rowland.harvard.edu>,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="sez8m7aAndejrS5d"
+Content-Disposition: inline
+In-Reply-To: <20221121110615.97962-2-krzysztof.kozlowski@linaro.org>
+X-Cookie: I'm rated PG-34!!
+X-Mailman-Approved-At: Sat, 26 Nov 2022 08:58:52 +0100
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, linux-pwm@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-pci@vger.kernel.org,
+ Ulf Hansson <ulf.hansson@linaro.org>, linux-mips@vger.kernel.org,
+ linux-mtd@lists.infradead.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-riscv@lists.infradead.org,
+ linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
+ linux-rtc@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
  linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- Won Chung <wonchung@google.com>, Len Brown <lenb@kernel.org>,
- devicetree@vger.kernel.org, Chaitanya Kulkarni <kch@nvidia.com>,
- Ira Weiny <ira.weiny@intel.com>, Michael Jamet <michael.jamet@intel.com>,
- Ming Lei <ming.lei@redhat.com>, Mark Gross <markgross@kernel.org>,
- Hans de Goede <hdegoede@redhat.com>, Rob Herring <robh+dt@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
- Jilin Yuan <yuanjilin@cdjrlc.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Wolfram Sang <wsa@kernel.org>,
- Vinod Koul <vkoul@kernel.org>, Stefan Richter <stefanr@s5r6.in-berlin.de>,
- Sakari Ailus <sakari.ailus@linux.intel.com>,
- Yehezkel Bernat <YehezkelShB@gmail.com>, Sanyog Kale <sanyog.r.kale@intel.com>,
- linux-media@vger.kernel.org, linux-usb@vger.kernel.org
+ Guenter Roeck <linux@roeck-us.net>, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-can@vger.kernel.org, linux-gpio@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ virtualization@lists.linux-foundation.org,
+ linux-arm-kernel@lists.infradead.org, Stephen Boyd <sboyd@kernel.org>,
+ netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ Vinod Koul <vkoul@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+ Jonathan Cameron <jic23@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -134,55 +106,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
 
-On 11/23/22 13:25, Greg Kroah-Hartman wrote:
-> The uevent() callback in struct device_type should not be modifying the
-> device that is passed into it, so mark it as a const * and propagate the
-> function signature changes out into all relevant subsystems that use
-> this callback.
+--sez8m7aAndejrS5d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-[...]
+On Mon, Nov 21, 2022 at 12:06:07PM +0100, Krzysztof Kozlowski wrote:
+> The Devicetree bindings document does not have to say in the title that
+> it is a "binding", but instead just describe the hardware.  For shared
+> (re-usable) schemas, name them all as "common properties".
 
-> diff --git a/drivers/platform/surface/aggregator/bus.c b/drivers/platform/surface/aggregator/bus.c
-> index de539938896e..407eb55050a6 100644
-> --- a/drivers/platform/surface/aggregator/bus.c
-> +++ b/drivers/platform/surface/aggregator/bus.c
-> @@ -35,9 +35,9 @@ static struct attribute *ssam_device_attrs[] = {
->   };
->   ATTRIBUTE_GROUPS(ssam_device);
->   
-> -static int ssam_device_uevent(struct device *dev, struct kobj_uevent_env *env)
-> +static int ssam_device_uevent(const struct device *dev, struct kobj_uevent_env *env)
->   {
-> -	struct ssam_device *sdev = to_ssam_device(dev);
-> +	const struct ssam_device *sdev = to_ssam_device(dev);
->   
->   	return add_uevent_var(env, "MODALIAS=ssam:d%02Xc%02Xt%02Xi%02Xf%02X",
->   			      sdev->uid.domain, sdev->uid.category,
+Acked-by: Mark Brown <broonie@kernel.org>
 
-[...]
+--sez8m7aAndejrS5d
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> --- a/include/linux/surface_aggregator/device.h
-> +++ b/include/linux/surface_aggregator/device.h
-> @@ -229,7 +229,7 @@ static inline bool is_ssam_device(struct device *d)
->    * Return: Returns a pointer to the &struct ssam_device wrapping the given
->    * device @d.
->    */
-> -static inline struct ssam_device *to_ssam_device(struct device *d)
-> +static inline struct ssam_device *to_ssam_device(const struct device *d)
->   {
->   	return container_of(d, struct ssam_device, dev);
->   }
+-----BEGIN PGP SIGNATURE-----
 
-I am slightly conflicted about this change as that now more or less
-implicitly drops the const. So I'm wondering if it wouldn't be better to
-either create a function specifically for const pointers or to just
-open-code it in the instance above.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmN+JWMACgkQJNaLcl1U
+h9CJ0gf/ajSRpLgN3RoHR7wLxFr99y5vWRywVoOaKU+lLq3UY2O6a9ssY8wOblzx
+J9LbUP4Acep2fofTZCX1Ks2sTUHXNBB95SaeCwpSD/MX2HltHr0QvTGh8Lc9EfRf
+f4l/ayjov4DbVsOJ019O7MKSgyuKezLb6Rj/5S38OrqdREbbzDoFe2ah8rSxpA8m
+OQPEsY4eAbVfELEo/JQ86QYXN8gT6p3qA0+8IxDb0D+iLi3JCIz3GTrn+ZCudWRS
+DkbD00vhGbeEaAbI/ufYp/KUWT0wfIoONENSAdGhmGMd+deqbmOt1Ryt+YoEt49j
+pRMeSDCxuBZIpBjQfw7H+5ofOT8jsg==
+=hoZL
+-----END PGP SIGNATURE-----
 
-I guess we could also convert this to a macro. Then at least there
-wouldn't be an explicit and potentially misleading const-conversion
-indicated in the function signature.
-
-Regards,
-Max
+--sez8m7aAndejrS5d--
