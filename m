@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D66F5C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 07:50:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60768C4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 07:52:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 28F821620;
-	Wed, 23 Nov 2022 08:49:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28F821620
+	by alsa0.perex.cz (Postfix) with ESMTPS id D8B411637;
+	Wed, 23 Nov 2022 08:51:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8B411637
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669189827;
-	bh=u0TLPlBNBaImKSDL9+MTf00WrEESQZk29rzc7bFSMaM=;
+	s=default; t=1669189949;
+	bh=1QiDbR1GpSZ9f0pG+69iQBDZk1EQn9FhAca7B+TV6zo=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=amriHdAhX67+IpLSHegfZCDdP862gQNAC5v/omnCccd05Fv/pPiJ7QnAgaITED333
-	 l+YBxkTGcve6wH3P2ymS1puH86S5urWfxKX62a/Q/c5b0RGHF0+LHLDaw8FFjlKKN1
-	 t9ekqiC5TghF2UvHhlINnx56Drjhdsi1Cvgg0oVA=
+	b=JnsH0g+Uiu96y92o3a/MTUrh9wOgGMSyKQ9Tjw4ZxKX1tLjvpnKGyYZAkob+wo18g
+	 VDpyp1b2UWP2niROxv1xDCtQWy0DVd3Wg/QYIRNeHzlFDVOQS9qR7L/WxWe+nECM2g
+	 /VyoJFtcvedXjWtBtyIBoBs5yOdMNG6vSAI+HEI0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C31CAF80149;
-	Wed, 23 Nov 2022 08:49:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B55CF80149;
+	Wed, 23 Nov 2022 08:51:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23E4BF80249; Wed, 23 Nov 2022 08:49:35 +0100 (CET)
+ id 9EB36F80249; Wed, 23 Nov 2022 08:51:37 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 5203BF800BB
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 08:49:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5203BF800BB
+ by alsa1.perex.cz (Postfix) with ESMTP id 0E259F800BB
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 08:51:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E259F800BB
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1669189771902358055-webhooks-bot@alsa-project.org>
-References: <1669189771902358055-webhooks-bot@alsa-project.org>
+In-Reply-To: <1669189894881098986-webhooks-bot@alsa-project.org>
+References: <1669189894881098986-webhooks-bot@alsa-project.org>
 Subject: starting from kernel 5.10.x latency test fails systematically on
  multiple platforms
-Message-Id: <20221123074935.23E4BF80249@alsa1.perex.cz>
-Date: Wed, 23 Nov 2022 08:49:35 +0100 (CET)
+Message-Id: <20221123075137.9EB36F80249@alsa1.perex.cz>
+Date: Wed, 23 Nov 2022 08:51:37 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -56,7 +56,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #285 was opened from bondagit:
+alsa-project/alsa-lib issue #285 was edited from bondagit:
 
 If I try the latency test application ([test/latency.c](https://github.com/alsa-project/alsa-lib/blob/master/test/latency.c)) using a **Linux Kernel 5.9.x** with alsa-lib v1.2.4 on the following audio card:
 _PCH [HDA Intel PCH], device 1: ALC269VC Analog [ALC269VC Analog]_ (for example)
@@ -234,6 +234,7 @@ I can reproduce the same error on multiple boards for multiple audio cards and o
 The problem was originally reported at:
 [AES67 Linux daemon: Latency test fails with Linux kernel starting from 5.10.0x](https://github.com/bondagit/aes67-linux-daemon/issues/79)
 
+I am interested in testing a with low latency (-m 128 -M 128).
 My guess is that something changed in the Linux audio core and the latency application has to be adapted.
 Any idea ?
 
