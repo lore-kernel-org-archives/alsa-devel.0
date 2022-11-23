@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E473C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 14:53:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A13FBC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 14:53:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 366011676;
-	Wed, 23 Nov 2022 15:52:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 366011676
+	by alsa0.perex.cz (Postfix) with ESMTPS id D5A20167B;
+	Wed, 23 Nov 2022 15:52:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5A20167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669215185;
-	bh=8iI2qLXCjg+O0nmV8IaJ1LBkZNXdhB20vMpSomLEuI4=;
+	s=default; t=1669215211;
+	bh=3bwt6dvXF/V1G8FOhCZElZ58leuQE5hIF8buAzz/D5g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BkRC/6RovYnoIFtO6EKSqhQ7zLvOG6XIzebSBeEBDrYSUN2jNgB5NFoDwBnF8PXwF
-	 mZXZtL5b10bKMgvx52gg7bbo07ISiP12G7DeNxkx96+oB9/IJ6AU1Q+Tv72qOHpMxd
-	 FNRdP5xV+z5RmRmFH8gm9BX8Cc2/TmBcYOL4XICs=
+	b=eL0O7R+lLNN5V8SpnoRv3KCu+7XRJAjvdpWY1EwGq/IWWvsZhv59jmKSa6U3Hm7kt
+	 Dq/AFwlw5Cn6hHADzJI3+O2qlpuQYBG1z3XAyDy6YCFAhO96Ds1sYh/MSgdhFuFKTl
+	 ID/ajyOsEwuy5Oemzh81Nr8kXiGc5zWXB60ZfEz4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A3D7F804D2;
-	Wed, 23 Nov 2022 15:51:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 153A8F8052E;
+	Wed, 23 Nov 2022 15:51:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 532EDF8030F; Wed, 23 Nov 2022 15:51:50 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 58F39F80557; Wed, 23 Nov 2022 15:51:54 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3D054F80149
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 15:51:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D054F80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 92AB1F80249
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 15:51:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92AB1F80249
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="C6sKHQ//"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2ANCx7LG007136; Wed, 23 Nov 2022 08:51:42 -0600
+ header.b="KDRQK8/+"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 2AN7beZl029400; Wed, 23 Nov 2022 08:51:43 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=undvmwFEvRPQUPi2f8r9jtjOCibt7dyqMNuLYGsabHA=;
- b=C6sKHQ//QyVxbzFLvfXk1hUnq9S+nLYMJOfg7WiBLunL/PUng3EtgZJtl8O5YQuJYq3y
- HMGjbI033aSLdkJlsReJp5HcZZDReRvo7W0uUZRAJ/JEGy9hzlk7PwYlSIgylpddrkB2
- jo+maXOKAksWr18q3dMtKVbvZ3gmLnWeym7ibh+eDp4W8lgmKQ18GdQTRpIB1HeHCIsK
- 0G7JrT/ifYekjF9h465NbOEejQJTDEsuQ4edBBsK1ms+7bKEPNV6TBV2KrklJ5CClVgd
- hns8VPlqtDOcWpyNK31CGyNpreLvPH8LrRHWl08Bjj2Jy0MblIhN4UYIjWc9ZqJYdTcz PA== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kxvet50xm-1
+ bh=bIfpAGBt40UBSTkshq1rt/7yCo42+WIeyjdXEHc6Y2A=;
+ b=KDRQK8/+NEMLoE3/2etiJuhgA0bYTz2SmUXGb4ut+rXBrvcpGKqS1t4XxzAAdZaiY4Hz
+ 4OPlpj8aGiewKk/BcODXAm3pwKq2V+1m4ahHlWzzY911gpeHk023nOnArr8wYZz2YUXg
+ qRoNgqczPje+aSG6NBbonf4rAo763m3IXY5g7J2mqgEX/XNtoAyxsOmW4/OPjY5dJ063
+ /Zs9H/oxnNWLvqV4VB26jl+UqDi9bygYvV1ba73LVY3nXShIXKKM1+lOC4OsBGqXLfbL
+ 8LRMElRSgIaIS9An29+N/p4X3mfqTywl0WOFotd98/o+KjcnidQkboAY+/HVbuGUm0Dz Ng== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3kxwe6w04h-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 23 Nov 2022 08:51:41 -0600
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 23 Nov 2022 08:51:43 -0600
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.20; Wed, 23 Nov
  2022 08:51:40 -0600
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
@@ -62,22 +62,22 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  Frontend Transport; Wed, 23 Nov 2022 08:51:40 -0600
 Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
  [198.90.251.111])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4C315477;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5F56EB10;
  Wed, 23 Nov 2022 14:51:40 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 1/2] firmware: cs_dsp: cs_dsp_coeff_write_ctrl() should report
- changed
-Date: Wed, 23 Nov 2022 14:51:39 +0000
-Message-ID: <20221123145140.2784030-2-rf@opensource.cirrus.com>
+Subject: [PATCH 2/2] ASoC: wm_adsp: Return whether changed when writing
+ controls
+Date: Wed, 23 Nov 2022 14:51:40 +0000
+Message-ID: <20221123145140.2784030-3-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221123145140.2784030-1-rf@opensource.cirrus.com>
 References: <20221123145140.2784030-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 44NsEcHOr4WNNh2kdIeq-NZ5zx1vXxrk
-X-Proofpoint-GUID: 44NsEcHOr4WNNh2kdIeq-NZ5zx1vXxrk
+X-Proofpoint-ORIG-GUID: JqgZWqMS2z8PdX-yZIPHyvOFJaxoVDVa
+X-Proofpoint-GUID: JqgZWqMS2z8PdX-yZIPHyvOFJaxoVDVa
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  Richard Fitzgerald <rf@opensource.cirrus.com>,
@@ -99,47 +99,55 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Simon Trimmer <simont@opensource.cirrus.com>
 
-ALSA callers need to know whether there was a change to the value so
-that they can report a control write change correctly.
+Functions that update cs_dsp controls need to handle return codes that
+indicate whether the control value changed. A return code of 1 indicates
+a change, 0 indicates no-change and a negative value is an error
+condition.
+
+Acked controls implicitly change value when written so a successful
+write shall always report that the value changed.
 
 Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- drivers/firmware/cirrus/cs_dsp.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
-index 81cc3d0f6eec..17b7198b87dc 100644
---- a/drivers/firmware/cirrus/cs_dsp.c
-+++ b/drivers/firmware/cirrus/cs_dsp.c
-@@ -752,7 +752,7 @@ static int cs_dsp_coeff_write_ctrl_raw(struct cs_dsp_coeff_ctl *ctl,
-  *
-  * Must be called with pwr_lock held.
-  *
-- * Return: Zero for success, a negative number on error.
-+ * Return: < 0 on error, 1 when the control value changed and 0 when it has not.
-  */
- int cs_dsp_coeff_write_ctrl(struct cs_dsp_coeff_ctl *ctl,
- 			    unsigned int off, const void *buf, size_t len)
-@@ -767,16 +767,23 @@ int cs_dsp_coeff_write_ctrl(struct cs_dsp_coeff_ctl *ctl,
- 	if (len + off * sizeof(u32) > ctl->len)
- 		return -EINVAL;
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 34a94b011518..9b1b522c9350 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -419,16 +419,21 @@ static int wm_coeff_tlv_put(struct snd_kcontrol *kctl,
+ 		(struct soc_bytes_ext *)kctl->private_value;
+ 	struct wm_coeff_ctl *ctl = bytes_ext_to_ctl(bytes_ext);
+ 	struct cs_dsp_coeff_ctl *cs_ctl = ctl->cs_ctl;
++	void *scratch;
+ 	int ret = 0;
  
--	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
-+	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE) {
- 		ret = -EPERM;
--	else if (buf != ctl->cache)
--		memcpy(ctl->cache + off * sizeof(u32), buf, len);
-+	} else if (buf != ctl->cache) {
-+		if (memcmp(ctl->cache + off * sizeof(u32), buf, len))
-+			memcpy(ctl->cache + off * sizeof(u32), buf, len);
-+		else
-+			return 0;
+-	mutex_lock(&cs_ctl->dsp->pwr_lock);
++	scratch = vmalloc(size);
++	if (!scratch)
++		return -ENOMEM;
+ 
+-	if (copy_from_user(cs_ctl->cache, bytes, size))
++	if (copy_from_user(scratch, bytes, size)) {
+ 		ret = -EFAULT;
+-	else
+-		ret = cs_dsp_coeff_write_ctrl(cs_ctl, 0, cs_ctl->cache, size);
+-
+-	mutex_unlock(&cs_ctl->dsp->pwr_lock);
++	} else {
++		mutex_lock(&cs_ctl->dsp->pwr_lock);
++		ret = cs_dsp_coeff_write_ctrl(cs_ctl, 0, scratch, size);
++		mutex_unlock(&cs_ctl->dsp->pwr_lock);
 +	}
++	vfree(scratch);
  
- 	ctl->set = 1;
- 	if (ctl->enabled && ctl->dsp->running)
- 		ret = cs_dsp_coeff_write_ctrl_raw(ctl, off, buf, len);
+ 	return ret;
+ }
+@@ -455,7 +460,10 @@ static int wm_coeff_put_acked(struct snd_kcontrol *kctl,
+ 
+ 	mutex_unlock(&cs_ctl->dsp->pwr_lock);
  
 -	return ret;
 +	if (ret < 0)
@@ -147,8 +155,21 @@ index 81cc3d0f6eec..17b7198b87dc 100644
 +
 +	return 1;
  }
- EXPORT_SYMBOL_GPL(cs_dsp_coeff_write_ctrl);
  
+ static int wm_coeff_get(struct snd_kcontrol *kctl,
+@@ -682,10 +690,10 @@ int wm_adsp_write_ctl(struct wm_adsp *dsp, const char *name, int type,
+ 	int ret;
+ 
+ 	ret = cs_dsp_coeff_write_ctrl(cs_ctl, 0, buf, len);
+-	if (ret)
++	if (ret < 0)
+ 		return ret;
+ 
+-	if (cs_ctl->flags & WMFW_CTL_FLAG_SYS)
++	if (ret == 0 || (cs_ctl->flags & WMFW_CTL_FLAG_SYS))
+ 		return 0;
+ 
+ 	ctl = cs_ctl->priv;
 -- 
 2.30.2
 
