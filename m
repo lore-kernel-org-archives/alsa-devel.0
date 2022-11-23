@@ -4,96 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B562C4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:14:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 380E6C4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:14:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8FBC318C4;
-	Sat, 26 Nov 2022 09:13:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FBC318C4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63BC518D4;
+	Sat, 26 Nov 2022 09:13:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63BC518D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669450466;
-	bh=CjhGw4nh9GoOoZ04Ov8WJW3MDmP00LzPqIoi+akjv3Q=;
+	s=default; t=1669450481;
+	bh=imibZHjJL9cpBpAGiGFcUllw5xFRNIsDuHu6Y+fwag4=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=umGOb0K1fui7Iqf33024BV8iiqeI3vIBKt6PThrGTEiBzspG+rBb2AopGL011o4Da
-	 xtPgn/UvacQ4b3W9gi/fN9BTxzsCYW0DoJJkpJdRWC6jPSL7z/YLAmzvQ8z8uwPZ1k
-	 KfbnUXzewOKph9OYdQDb7YGizBMMgPp33ECDQkGk=
+	b=JK+lYxZGSvNgSB/6qM6Z63q2CS+PHILXJTADr0EJju3Iouap/Y3K4RG+knpAngdfr
+	 sSVaFdH+I0FNRaG9r0y5sqM2GwUsec0+68++D4Q6PrErHxpvTiWaayazct9b7sUbSR
+	 +BV6ySMIMzMiogJAeU2zYF9A+XZSYltjt6n1oEUo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7F80F80710;
-	Sat, 26 Nov 2022 08:59:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9128F80718;
+	Sat, 26 Nov 2022 08:59:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E847F8025D; Wed, 23 Nov 2022 19:26:05 +0100 (CET)
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com
- [IPv6:2607:f8b0:4864:20::835])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8D6AFF8025D; Wed, 23 Nov 2022 20:06:27 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0037FF80249
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 19:26:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0037FF80249
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4042EF800BB
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 20:06:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4042EF800BB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca
- header.b="cedo7ZWS"
-Received: by mail-qt1-x835.google.com with SMTP id l15so11783219qtv.4
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 10:26:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ziepe.ca; s=google;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=Wor3YG1VA6P7o8c/O7L7eJMI/pZ9HPWWwXQft3hmCP0=;
- b=cedo7ZWSmsuH0XJ4ubpV07F12j6QbWjVQ5/8pLuMpcToghtBSuk56S6MXMX6Qm7WjS
- 1NChO+moKmrDNMneamIggSvWWzwr/T//kN/Kwcj6tkr42ZlPhD/UrODWK93fqzNGGGwJ
- iaes3XW9eYna/Bw5lL+n4z8tFP5LtgS2cmv98rZ7AlPx3XDSdaiaMvzcA8+djvnqI1Jm
- kByuaQkEy2IUN0jEoJWE9aJxjegXkz/nFnBqeS7bAW8o6PzzHwTSega1vNzAX6eGe++Z
- VrL1e2yxkd6Af/0OPW4nuezYyEJvxr1zGiOqJwebNXGUK6ij0o7CaXNXzEmp7wpIRmex
- 6uNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=Wor3YG1VA6P7o8c/O7L7eJMI/pZ9HPWWwXQft3hmCP0=;
- b=YJ4EvCouHpmf2bGlR2IrhrNPV/RFEp2eCG+Pdzb02yH79DMJgmK9I1FK9ecG95vNOP
- Qy+PTSshnfkSBV6q/wwej4hjNUZkxgw3N4FDqs0a80v7P6gJNmJSI0YQnkNXHYJXYKiL
- /bTZcJ72wdZVZnQ/weouEHfxzfghhmryyPg0WpHHymTpjwEFE8TbyvCr3FDrbcsVZi27
- s4rB+TdEFoGuxMniGj8Nog+lnIk6NI7fCWcwoIWRxmXBpsJ5huz9dn8UEiX2kYS3ggJy
- 8u+xHcJfbE5OygeAxfVVkRPo8T9s8JaLQYKlBGOT07Othz4h/GUNAbg/alSLYTf57lHu
- 9tyw==
-X-Gm-Message-State: ANoB5pmQBLppYQfz09wIBAc8eu6erzJgAXhDLURIz+1rWXyXSFw9IMvn
- FJqTso1gbMCK2Gw82dXKQZPVRg==
-X-Google-Smtp-Source: AA0mqf7b8dECsNl10eMwxdSE/ntYRY0ZHq3jcx6smQ+WjEjXUXHAE2sWPKfXnqS1wuH6GWMgna/H+Q==
-X-Received: by 2002:a05:622a:1f97:b0:3a6:39c4:dc6 with SMTP id
- cb23-20020a05622a1f9700b003a639c40dc6mr19492448qtb.515.1669227960618; 
- Wed, 23 Nov 2022 10:26:00 -0800 (PST)
-Received: from ziepe.ca
- (hlfxns017vw-47-55-122-23.dhcp-dynamic.fibreop.ns.bellaliant.net.
- [47.55.122.23]) by smtp.gmail.com with ESMTPSA id
- e9-20020ac81309000000b003a56796a764sm10034417qtj.25.2022.11.23.10.25.59
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 23 Nov 2022 10:25:59 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
- (envelope-from <jgg@ziepe.ca>) id 1oxuRb-00AgEQ-7R;
- Wed, 23 Nov 2022 14:25:59 -0400
-Date: Wed, 23 Nov 2022 14:25:59 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+ dkim=pass (1024-bit key) header.d=linuxfoundation.org
+ header.i=@linuxfoundation.org header.b="V2GZdWHP"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 16BBFB82405;
+ Wed, 23 Nov 2022 19:06:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7968C433D6;
+ Wed, 23 Nov 2022 19:06:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1669230382;
+ bh=imibZHjJL9cpBpAGiGFcUllw5xFRNIsDuHu6Y+fwag4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=V2GZdWHPvr+u9NV42kW3apisS1jk4Cp6h19MZ6qfaWIUGIVJV5gV2ha39zpYgwqP7
+ WIt60wd9b8FvKniDUGYZZUiLCvZQFxPf+YdmrcSFnI46/b/EWX33zlFDz2TQxA125f
+ 2aOS9p5Y/Iiz28acyMaujccSu8U/Ol2yQw6Symkw=
+Date: Wed, 23 Nov 2022 20:06:20 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>
 Subject: Re: [PATCH 3/5] driver core: make struct device_type.uevent() take a
  const *
-Message-ID: <Y35lt+0jXrOKynL5@ziepe.ca>
-References: <711d5275-7e80-c00d-0cdc-0f3d52175361@gmail.com>
- <Y34hgIW8p1RlQTBB@smile.fi.intel.com>
+Message-ID: <Y35vLAWWfezPvGSm@kroah.com>
+References: <Y34hgIW8p1RlQTBB@smile.fi.intel.com>
  <97be39ed-3cea-d55a-caa6-c2652baef399@gmail.com>
  <Y34zyzdbRUdyOSkA@casper.infradead.org>
  <Y34+V2bCDdqujBDk@kroah.com> <Y35JfNJDppRp5bLX@ziepe.ca>
  <Y35R+/eQJYI7VaDS@kroah.com> <Y35YlI93UBuTfgYy@ziepe.ca>
  <Y35dMIaNYSE0Cykd@casper.infradead.org>
- <Y35iKfYf3ThdVvaR@kroah.com>
+ <Y35iKfYf3ThdVvaR@kroah.com> <Y35lt+0jXrOKynL5@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y35iKfYf3ThdVvaR@kroah.com>
-X-Mailman-Approved-At: Sat, 26 Nov 2022 08:58:52 +0100
+In-Reply-To: <Y35lt+0jXrOKynL5@ziepe.ca>
+X-Mailman-Approved-At: Sat, 26 Nov 2022 08:58:53 +0100
 Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
  Heikki Krogerus <heikki.krogerus@linux.intel.com>, Sean Young <sean@mess.org>,
  "Rafael J. Wysocki" <rafael@kernel.org>, alsa-devel@alsa-project.org,
@@ -140,42 +114,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Nov 23, 2022 at 07:10:49PM +0100, Greg Kroah-Hartman wrote:
-> On Wed, Nov 23, 2022 at 05:49:36PM +0000, Matthew Wilcox wrote:
-> > On Wed, Nov 23, 2022 at 01:29:56PM -0400, Jason Gunthorpe wrote:
-> > > #define generic_container_of(in_type, in, out_type, out_member) \
-> > > 	_Generic(in,                                        \
-> > >                   const in_type *: ((const out_type *)container_of(in, out_type, out_member)),   \
-> > >                   in_type *: ((out_type *)container_of(in, out_type, out_member)) \
-> > > 		  )
+On Wed, Nov 23, 2022 at 02:25:59PM -0400, Jason Gunthorpe wrote:
+> On Wed, Nov 23, 2022 at 07:10:49PM +0100, Greg Kroah-Hartman wrote:
+> > On Wed, Nov 23, 2022 at 05:49:36PM +0000, Matthew Wilcox wrote:
+> > > On Wed, Nov 23, 2022 at 01:29:56PM -0400, Jason Gunthorpe wrote:
+> > > > #define generic_container_of(in_type, in, out_type, out_member) \
+> > > > 	_Generic(in,                                        \
+> > > >                   const in_type *: ((const out_type *)container_of(in, out_type, out_member)),   \
+> > > >                   in_type *: ((out_type *)container_of(in, out_type, out_member)) \
+> > > > 		  )
+> > > 
+> > > There's a neat trick I found in seqlock.h:
+> > > 
+> > > #define generic_container_of(in_t, in, out_t, m)			\
+> > > 	_Generic(*(in),							\
+> > > 		const in_t: ((const out_t *)container_of(in, out_t, m)), \
+> > > 		in_t: ((out_t *)container_of(in, out_type, m))	\
+> > > 	)
+> > > 
+> > > and now it fits in 80 columns ;-)
 > > 
-> > There's a neat trick I found in seqlock.h:
-> > 
-> > #define generic_container_of(in_t, in, out_t, m)			\
-> > 	_Generic(*(in),							\
-> > 		const in_t: ((const out_t *)container_of(in, out_t, m)), \
-> > 		in_t: ((out_t *)container_of(in, out_type, m))	\
-> > 	)
-> > 
-> > and now it fits in 80 columns ;-)
+> > Nice trick!  Dropping the inline functions is a bit different, let me
+> > see if that still gives a sane error if we pass an incorrect type or
+> > mess with the const * the wrong way.  I'll run some tests tomorrow
+> > afternoon...
 > 
-> Nice trick!  Dropping the inline functions is a bit different, let me
-> see if that still gives a sane error if we pass an incorrect type or
-> mess with the const * the wrong way.  I'll run some tests tomorrow
-> afternoon...
+> The errors in some cases are very verbose, but it is somewhat
+> understandable - the worst is when _Generic fails to match anything,
+> but also at least clang partially expanded container_of and it throws
+> other assertions too.
+> 
+> I also wonder if this could just be rolled into the normal
+> container_of.
 
-The errors in some cases are very verbose, but it is somewhat
-understandable - the worst is when _Generic fails to match anything,
-but also at least clang partially expanded container_of and it throws
-other assertions too.
+I think we might be able to now, my previous attempts with inline
+functions prevented that.  I'll beat on that tomorrow...
 
-I also wonder if this could just be rolled into the normal
-container_of.
+> in_type would have to be derived like:
+> 
+>   in_type = typeof((out_type *)NULL)->out_member)
+> 
+> But I don't know if you can use typeof in a generic type matching expression..
 
-in_type would have to be derived like:
+Maybe that is what threw me before, I can't remember.  I do know we
+tried a number of different attempts, can't recall the failed ones...
 
-  in_type = typeof((out_type *)NULL)->out_member)
+thanks,
 
-But I don't know if you can use typeof in a generic type matching expression..
-
-Jason
+greg k-h
