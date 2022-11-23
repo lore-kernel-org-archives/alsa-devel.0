@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B7F8C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 16:51:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95867C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 16:51:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 095B7166F;
-	Wed, 23 Nov 2022 17:50:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 095B7166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id CA9B71695;
+	Wed, 23 Nov 2022 17:50:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA9B71695
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669222291;
-	bh=R8hKxvbFwbO8K+I0tOoBompJ/ct8BtEw9crXWnHi5Jc=;
+	s=default; t=1669222297;
+	bh=3n27SOiF10TYL0OsicIukX05gA1731AdEyOm19XOI/I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BeJzGepwrtxU9hNaeAfTSj5VtzhwkNOBiVHBjIKA2AaPRnOG9wTiZzvcz9P4f2nnd
-	 gzmxIBs8Hg6ddXH0TVjNsEVxjOtnppndmf3i/MngNeiimOkRP7uYUO6581/Gji6Ppj
-	 TNixV3VSACJd+lUpn0nR4NRoevEvJOzd9/96Se10=
+	b=bn3gvCqMnwl9PDrHlgRuKbDWTknCOXPPT4DWvgvjZfprpmrWgiLxr8ZvqhtodZjw9
+	 m21n7E4R6aQCHPkXl/K6cjdkPdwRY0zo+T7Ae4z9qR4tILqiIUbWVy9N7Ew2H/Rc2q
+	 zWSBar3ezWrTnxesBlPSh60OcupfbugViKq3ryjA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 006BFF80425;
-	Wed, 23 Nov 2022 17:49:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81254F80567;
+	Wed, 23 Nov 2022 17:49:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 080E3F80563; Wed, 23 Nov 2022 17:49:55 +0100 (CET)
+ id F1D7AF8049C; Wed, 23 Nov 2022 17:49:55 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C0A7F8049C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9CDB3F800BB
  for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 17:49:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C0A7F8049C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CDB3F800BB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="EkQn5HTL"
+ header.b="rH8uneV5"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
  by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2ANFYpmV019647; Wed, 23 Nov 2022 10:49:41 -0600
+ 2ANFYpmT019647; Wed, 23 Nov 2022 10:49:41 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=EApklSmqPhhLJIhj6MYIOuaAHVY85/LPhJvzOGH0DK4=;
- b=EkQn5HTLLmC9WGOMENL/2u1Xiw1fMkI/VWzp1O05OoVnJLAw1V5NebF2sx2FLna9Rinu
- j810rFBiTf/BPQ9AhUKl765d+L+qFVtRhWlweDVI5MapVXQvM9tvjjhO3Iozr0sG9nPv
- hNN6yIHeKv36XlwQ6lnVDPIz46BEdW+LY6PMrnsTNPy6UXA4yC/ZB21n0P4PO0o+e3P2
- dw8A+00e3fDwXvwLd1iI1JwpXgNA/twSaVIFTZ+3oio6DyZ/hsqI/pk0tBPxv11KbZzI
- 3TfYcIWk0YsCdg+pnrQ1AfvNpSf2hPLa0SSD6rST9xh9DL5e3p9JEuf+pSCaes96nKVo ng== 
+ bh=Pw18gJz4MmyGaleE1M9QRK0cfmlTPfyeaAtEqWOvtjU=;
+ b=rH8uneV5TG0M+p/g/Z8mwfZVcnAJHVLXOdxhDitpd3XHA+UT/pSJTJaccvw0B0muHALH
+ JAPJ9o2NUavXwOnURRLnez6mvtO7wzxQPQRYcvrhCvzqtcCKWkSNNmST9YWfMlVVpHBt
+ OXeVSX3vSRlSXkyG6bNbopEyyNirIgGhdb2hx9rdZjTsby7NawochPrm8uYMLImzKWSy
+ xACu5qmI0I+fEAjo62SBS+A/mxgy3r+k9oVsjUWnCf5YiI0INkCOVqMnPzy1pSe4OvQC
+ f7w3YxfZxV2lgWn8YeSub5HtO495qCZFOm7kTf4bbfFP9daj9fqF0EE6TqC/ZAgyVXVX Rg== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kxvet55fe-3
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kxvet55fe-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 23 Nov 2022 10:49:41 -0600
+ Wed, 23 Nov 2022 10:49:40 -0600
 Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.20; Wed, 23 Nov
@@ -61,22 +61,22 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.20 via
  Frontend Transport; Wed, 23 Nov 2022 10:49:38 -0600
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6107D2BA;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 77338B2F;
  Wed, 23 Nov 2022 16:49:38 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <tiwai@suse.com>, <broonie@kernel.org>
-Subject: [PATCH v2 4/9] ASoC: rt1316-sdw: Switch to new
+Subject: [PATCH v2 5/9] ASoC: rt5682-sdw: Switch to new
  snd_sdw_params_to_config helper
-Date: Wed, 23 Nov 2022 16:49:32 +0000
-Message-ID: <20221123164937.594837-4-ckeepax@opensource.cirrus.com>
+Date: Wed, 23 Nov 2022 16:49:33 +0000
+Message-ID: <20221123164937.594837-5-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221123164937.594837-1-ckeepax@opensource.cirrus.com>
 References: <20221123164937.594837-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: LBgvKDbpk04TS8cKGEasTKQFOt6qxoLi
-X-Proofpoint-GUID: LBgvKDbpk04TS8cKGEasTKQFOt6qxoLi
+X-Proofpoint-ORIG-GUID: jViDGnds-3v3ag0DCr2fGDgKl7lnN99a
+X-Proofpoint-GUID: jViDGnds-3v3ag0DCr2fGDgKl7lnN99a
 X-Proofpoint-Spam-Reason: safe
 Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org,
  patches@opensource.cirrus.com, pierre-louis.bossart@linux.intel.com,
@@ -106,41 +106,40 @@ Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Changes since v1:
  - Correct spelling error in commit message
 
- sound/soc/codecs/rt1316-sdw.c | 32 ++++++++++----------------------
- 1 file changed, 10 insertions(+), 22 deletions(-)
+ sound/soc/codecs/rt5682-sdw.c | 28 +++++++++-------------------
+ 1 file changed, 9 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/codecs/rt1316-sdw.c b/sound/soc/codecs/rt1316-sdw.c
-index 2db7ee6c6d334..e6294cc7a9954 100644
---- a/sound/soc/codecs/rt1316-sdw.c
-+++ b/sound/soc/codecs/rt1316-sdw.c
-@@ -14,6 +14,7 @@
- #include <sound/core.h>
+diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
+index c1a94229dc7e3..d8a573dcb771b 100644
+--- a/sound/soc/codecs/rt5682-sdw.c
++++ b/sound/soc/codecs/rt5682-sdw.c
+@@ -24,6 +24,7 @@
  #include <sound/pcm.h>
  #include <sound/pcm_params.h>
+ #include <sound/jack.h>
 +#include <sound/sdw.h>
+ #include <sound/soc.h>
  #include <sound/soc-dapm.h>
  #include <sound/initval.h>
- #include "rt1316-sdw.h"
-@@ -530,11 +531,10 @@ static int rt1316_sdw_hw_params(struct snd_pcm_substream *substream,
+@@ -130,11 +131,10 @@ static int rt5682_sdw_hw_params(struct snd_pcm_substream *substream,
+ {
  	struct snd_soc_component *component = dai->component;
- 	struct rt1316_sdw_priv *rt1316 =
- 		snd_soc_component_get_drvdata(component);
+ 	struct rt5682_priv *rt5682 = snd_soc_component_get_drvdata(component);
 -	struct sdw_stream_config stream_config;
 -	struct sdw_port_config port_config;
 -	enum sdw_data_direction direction;
 +	struct sdw_stream_config stream_config = {0};
 +	struct sdw_port_config port_config = {0};
  	struct sdw_stream_data *stream;
--	int retval, port, num_channels, ch_mask;
+-	int retval, port, num_channels;
 +	int retval;
+ 	unsigned int val_p = 0, val_c = 0, osr_p = 0, osr_c = 0;
  
  	dev_dbg(dai->dev, "%s %s", __func__, dai->name);
- 	stream = snd_soc_dai_get_dma_data(dai, substream);
-@@ -546,25 +546,13 @@ static int rt1316_sdw_hw_params(struct snd_pcm_substream *substream,
+@@ -147,22 +147,12 @@ static int rt5682_sdw_hw_params(struct snd_pcm_substream *substream,
  		return -EINVAL;
  
  	/* SoundWire specific configuration */
--	/* port 1 for playback */
 -	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 -		direction = SDW_DATA_DIR_RX;
 -		port = 1;
@@ -148,26 +147,23 @@ index 2db7ee6c6d334..e6294cc7a9954 100644
 -		direction = SDW_DATA_DIR_TX;
 -		port = 2;
 -	}
--
--	num_channels = params_channels(params);
--	ch_mask = (1 << num_channels) - 1;
 +	snd_sdw_params_to_config(substream, params, &stream_config, &port_config);
  
 -	stream_config.frame_rate = params_rate(params);
--	stream_config.ch_count = num_channels;
+-	stream_config.ch_count = params_channels(params);
 -	stream_config.bps = snd_pcm_format_width(params_format(params));
 -	stream_config.direction = direction;
 -
--	port_config.ch_mask = ch_mask;
+-	num_channels = params_channels(params);
+-	port_config.ch_mask = (1 << (num_channels)) - 1;
 -	port_config.num = port;
-+	/* port 1 for playback */
 +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
 +		port_config.num = 1;
 +	else
 +		port_config.num = 2;
  
- 	retval = sdw_stream_add_slave(rt1316->sdw_slave, &stream_config,
- 				&port_config, 1, stream->sdw_stream);
+ 	retval = sdw_stream_add_slave(rt5682->slave, &stream_config,
+ 				      &port_config, 1, stream->sdw_stream);
 -- 
 2.30.2
 
