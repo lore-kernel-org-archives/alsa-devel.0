@@ -4,88 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A243EC4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:13:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42DC3C4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:13:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CDAD018BF;
-	Sat, 26 Nov 2022 09:12:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDAD018BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77C9C18AA;
+	Sat, 26 Nov 2022 09:12:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77C9C18AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669450404;
-	bh=NklP56tySe3Xv444ZHt52vRJGyzaYy1R0Ex9JoaAzOM=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1669450421;
+	bh=6dLCPjw2lnU1xHWrj+O+ys8c07lCxZyAadm3Tpe1dhI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KLyvja00vwv/JTcjG8g4/s0PJTPGzP+ET2BfAmiHSDk6GyXCqQJzyOkp4PbTg6lzM
-	 lWsMhKNEct+RstDAgx3UYzp74NCib7bdouv/HjeVoKxWRu07K1gcSLLWClywsdqY3G
-	 9dt5YEHNpRY4mYJKgEwREpwMg7eyc5FELEjfLSBo=
+	b=fI+f5IgqoHWrhzceo2AGwiC/U6xql4pqQ8aHsVojdaj6UqiVHGHlQ8epKAp/E1d7g
+	 HRS6P/pPjV2yQmpV+KHvesqBRVMSDdkHipQiR7ezFqS9ser9707vr7gEXVTewAS/sf
+	 2QWmSOn3zjTxaxGomVLVuIctkedQmxw9bU8IHIX8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75F93F806E8;
-	Sat, 26 Nov 2022 08:59:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18679F806F5;
+	Sat, 26 Nov 2022 08:59:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA93EF8025D; Wed, 23 Nov 2022 18:24:02 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F567F800BB
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 18:24:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F567F800BB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cM7LkUwn"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 36BC0F8025D; Wed, 23 Nov 2022 18:50:21 +0100 (CET)
+Received: from casper.infradead.org (casper.infradead.org
+ [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 83C1461E01;
- Wed, 23 Nov 2022 17:23:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06998C433C1;
- Wed, 23 Nov 2022 17:23:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669224236;
- bh=NklP56tySe3Xv444ZHt52vRJGyzaYy1R0Ex9JoaAzOM=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=cM7LkUwn/UGY9APeo61IFLdLFugI/mycScX1L27zLnBFWztWOvsY2/pXAQvU8BtqA
- zN2grVWU907Puoa1962eNoEzm7M0GyfMXDTyo0m/fYESjcYYfLenMyR420GN0LPle7
- fHre3CZnC438ac14FaQ0ftW3eoi7y+NqR03dNnG17mNGguUXELDqAXtYw+kabasJh/
- GdE3AFFOilgHHG2SfRFJ7XFkovjxBFA4x69koAbNo4eANtlUFZ7DlagmzghcWyagzN
- hB+OrPBoifu3z+M9f10yfPgcQGlZSqkBCHUx9fpHFf/LyumxpmD68OdmhxG3k3+QWy
- NRxBKM7JX5qXQ==
-From: Mark Brown <broonie@kernel.org>
-To: Wolfram Sang <wsa@kernel.org>, Lee Jones <lee.jones@linaro.org>, Uwe Kleine-König <uwe@kleine-koenig.org>,
- Angel Iglesias <ang.iglesiasg@gmail.com>, Grant Likely <grant.likely@linaro.org>
-In-Reply-To: <20221118224540.619276-1-uwe@kleine-koenig.org>
-References: <20221118224540.619276-1-uwe@kleine-koenig.org>
-Subject: Re: (subset) [PATCH 000/606] i2c: Complete conversion to i2c_probe_new
-Message-Id: <166922422872.540277.7243893319002961181.b4-ty@kernel.org>
-Date: Wed, 23 Nov 2022 17:23:48 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id DF6D1F800BB
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 18:50:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF6D1F800BB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="PsGxbrOA"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+ References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=3fTJtAhCYVf4T6+HaU0lUlvFevgLRUqxFHqxF0+M6mQ=; b=PsGxbrOAWhmOQwY2+t8gUj0lt8
+ YgJWe0wCbRmKhkaNMxQrEv6bl/KfCT3fTToiLGDu7OHzaxHKam06wEd44l0yMXWihhru3JN5dbOz+
+ z7yp7UE/E/I/YneKKLNgOcj5+nccs/cC3guuN8LzGUby6Doiinv0fCWvvxMlXivAGj6u6PF+riLi2
+ LeA79P9G/yt6pxvybg6aQ4YZkhos9sIpY/uuOe1/sV+1gr3feJnCNyFNIxwprdY1Hq9cLd3Ygp5jJ
+ f9FYMdZAoZHQ1ovdLLTBLm/NC7Jcs4zIddL8Sm83AguCkSkYweKgbyn70U1T/J5pD3EC9oSGcxcc2
+ L9pWqQRQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red
+ Hat Linux)) id 1oxtsO-007sVm-GW; Wed, 23 Nov 2022 17:49:36 +0000
+Date: Wed, 23 Nov 2022 17:49:36 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH 3/5] driver core: make struct device_type.uevent() take a
+ const *
+Message-ID: <Y35dMIaNYSE0Cykd@casper.infradead.org>
+References: <20221123122523.1332370-1-gregkh@linuxfoundation.org>
+ <20221123122523.1332370-3-gregkh@linuxfoundation.org>
+ <711d5275-7e80-c00d-0cdc-0f3d52175361@gmail.com>
+ <Y34hgIW8p1RlQTBB@smile.fi.intel.com>
+ <97be39ed-3cea-d55a-caa6-c2652baef399@gmail.com>
+ <Y34zyzdbRUdyOSkA@casper.infradead.org>
+ <Y34+V2bCDdqujBDk@kroah.com> <Y35JfNJDppRp5bLX@ziepe.ca>
+ <Y35R+/eQJYI7VaDS@kroah.com> <Y35YlI93UBuTfgYy@ziepe.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-fc921
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y35YlI93UBuTfgYy@ziepe.ca>
 X-Mailman-Approved-At: Sat, 26 Nov 2022 08:58:52 +0100
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-fbdev@vger.kernel.org,
- platform-driver-x86@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-i2c@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org,
- chrome-platform@lists.linux.dev, linux-samsung-soc@vger.kernel.org,
- linux-staging@lists.linux.dev,
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>, Sean Young <sean@mess.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, alsa-devel@alsa-project.org,
+ platform-driver-x86@vger.kernel.org, linux-i2c@vger.kernel.org,
+ Andreas Noever <andreas.noever@gmail.com>, linux-i3c@lists.infradead.org,
+ linux1394-devel@lists.sourceforge.net,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Frank Rowand <frowand.list@gmail.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ linux-acpi@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
  linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-actions@lists.infradead.org, linux-gpio@vger.kernel.org,
- linux-rpi-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
- openipmi-developer@lists.sourceforge.net, linux-omap@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, Purism Kernel Team <kernel@puri.sm>,
- patches@opensource.cirrus.com, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-crypto@vger.kernel.org,
- kernel@pengutronix.de, netdev@vger.kernel.org, linux-integrity@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org
+ Won Chung <wonchung@google.com>, Len Brown <lenb@kernel.org>,
+ devicetree@vger.kernel.org, Chaitanya Kulkarni <kch@nvidia.com>,
+ Ira Weiny <ira.weiny@intel.com>, Michael Jamet <michael.jamet@intel.com>,
+ Ming Lei <ming.lei@redhat.com>, Mark Gross <markgross@kernel.org>,
+ Hans de Goede <hdegoede@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Jiri Slaby <jirislaby@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+ Jilin Yuan <yuanjilin@cdjrlc.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org,
+ Wolfram Sang <wsa@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Yehezkel Bernat <YehezkelShB@gmail.com>, Sanyog Kale <sanyog.r.kale@intel.com>,
+ linux-media@vger.kernel.org, Maximilian Luz <luzmaximilian@gmail.com>,
+ linux-usb@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,55 +114,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 18 Nov 2022 23:35:34 +0100, Uwe Kleine-König wrote:
-> since commit b8a1a4cd5a98 ("i2c: Provide a temporary .probe_new()
-> call-back type") from 2016 there is a "temporary" alternative probe
-> callback for i2c drivers.
+On Wed, Nov 23, 2022 at 01:29:56PM -0400, Jason Gunthorpe wrote:
+> #define generic_container_of(in_type, in, out_type, out_member) \
+> 	_Generic(in,                                        \
+>                   const in_type *: ((const out_type *)container_of(in, out_type, out_member)),   \
+>                   in_type *: ((out_type *)container_of(in, out_type, out_member)) \
+> 		  )
+
+There's a neat trick I found in seqlock.h:
+
+#define generic_container_of(in_t, in, out_t, m)			\
+	_Generic(*(in),							\
+		const in_t: ((const out_t *)container_of(in, out_t, m)), \
+		in_t: ((out_t *)container_of(in, out_type, m))	\
+	)
+
+and now it fits in 80 columns ;-)
+
+> #define kobj_to_dev(__kobj) \
+> 	generic_container_of(struct kobject, __kobj, struct device, kobj)
 > 
-> This series completes all drivers to this new callback (unless I missed
-> something). It's based on current next/master.
-> A part of the patches depend on commit 662233731d66 ("i2c: core:
-> Introduce i2c_client_get_device_id helper function"), there is a branch that
-> you can pull into your tree to get it:
-> 
-> [...]
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
-
-Thanks!
-
-[539/606] regulator: ad5398: Convert to i2c's .probe_new()
-          commit: 7f69edba960bbdcbc829d8d0995b1117ce29e8b1
-[544/606] regulator: lp872x: Convert to i2c's .probe_new()
-          commit: 87feccb347b25f5dc6ff451123b832c9ad5dddfe
-[546/606] regulator: ltc3589: Convert to i2c's .probe_new()
-          commit: 78c8f6cdb51d471928d481ed3b2c82dbc110a1ed
-[549/606] regulator: max8660: Convert to i2c's .probe_new()
-          commit: dbf31dac703009174226bb87b3914bd092040327
-[551/606] regulator: max8973-regulator: Convert to i2c's .probe_new()
-          commit: 4e85e5d64f66ac5e4b0286ee4b6f8e8ce1044d42
-[557/606] regulator: tps62360-regulator: Convert to i2c's .probe_new()
-          commit: 18804160277ec2ab992373385f86c6af2322b28b
-[559/606] regulator: tps65023-regulator: Convert to i2c's .probe_new()
-          commit: 3b5b07dde998f6ade7433a8db019cf816c7e35af
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+> Jason
