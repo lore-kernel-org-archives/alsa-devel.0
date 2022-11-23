@@ -4,76 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CCAEC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 12:42:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A1CAC4167D
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 12:43:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5034C1676;
-	Wed, 23 Nov 2022 13:42:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5034C1676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 76C751681;
+	Wed, 23 Nov 2022 13:42:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76C751681
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669207375;
-	bh=i62pXkbM8jq3FwMIp1Yu4olWnfxvvXuVJj5DLFQdd78=;
+	s=default; t=1669207379;
+	bh=cQLk4V11on8FnoiHKTYdZUObu8yqBcscey+wbTRzR78=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XmI+V/h7wbkbO2GJSMS4SzwzKAM8Q9mvfSFgtqEweeJ4BVdmItwxgUwSdcSEPtBjh
-	 geRzALOoEb4BoetMg15D3rodYe3U8aYWJ9+JTN+QrB4ZXyAQ9/f1Gj+QPaT0ZZ5hU4
-	 QueAaqQVTSFFi1rCnd4HhNaAWYC1CJ4g4DqX31qk=
+	b=kjfbsxfT/9sa2zmdb2ARPWm8udGo+92nlPP5svppfbtb7z2LzWoSLuTIjA+FJxcSw
+	 BEfhrzTfQJ1gqIKNXIPoc5217gNe4xXNy/PfaypmvMRY9lijtNrfE3IdlACVahfiTG
+	 sBRlH/QbVovYla5qka6FvraRIZD36OPJ1GkJmkjc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 792FCF8049C;
-	Wed, 23 Nov 2022 13:41:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0177F80557;
+	Wed, 23 Nov 2022 13:41:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65B05F80558; Wed, 23 Nov 2022 13:41:20 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 3EA04F80557; Wed, 23 Nov 2022 13:41:25 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D675F8049C
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 13:41:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D675F8049C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 78DDEF80557;
+ Wed, 23 Nov 2022 13:41:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78DDEF80557
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="VupwQjb9"
+ header.b="RAu4GXfO"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 5226F61C61;
- Wed, 23 Nov 2022 12:41:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB783C433D6;
- Wed, 23 Nov 2022 12:41:10 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 465A961C50;
+ Wed, 23 Nov 2022 12:41:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8240EC433D6;
+ Wed, 23 Nov 2022 12:41:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669207272;
- bh=i62pXkbM8jq3FwMIp1Yu4olWnfxvvXuVJj5DLFQdd78=;
+ s=k20201202; t=1669207280;
+ bh=cQLk4V11on8FnoiHKTYdZUObu8yqBcscey+wbTRzR78=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=VupwQjb9xzzZudenrkEC9vy/R1QoxZGhiYunjvcJ/+Nvc1my0ByDK6aoCPigKgFoR
- +4LyD5m/XI2PH3/x2Y8FLPMZC9ZXikQ0XArLyZBWAV0+ukjRGfkjEXte9KQL2aIJzq
- q0V6n8fUmg/UbRbs7bDYPWVek+ZAtWGTkSxMe0roADBrAI7fDjEdr0eIexOfnyDeUm
- FKD80re9gNt1WHnQcbtkjkwHSjxu6HIA24mBT3PzCNYpA+AWe6qoT0OCZjkUhKDOM2
- Xyp/G4oIlWpv03JrK3GOfxbTCXP5iicmITwWrkIqxa08kMwTkbD91PbyreIGfdERl9
- TF7+MfDSBFZtQ==
+ b=RAu4GXfOI4yNa8Y/eAXE4SJcNusCYGWUC7/BBhQs9H0SvaCCKzt/sGIK088wd0G5F
+ mwYgzYBid8DWPj4Y3REIVOD1J04cNU7qynOp/Jp4FQS2uP+aSI57ztDYgC19Eo62/Z
+ p5c+jgpn0eZsq6h0XcdmmikT+q2ptfNgMWiEtYBGzq8k9Wd8wU8qY+bM6NXLIsnd5o
+ 2/YsY1KbO0Q4MN5FlJxfYD+NJtHev3fCxYtme3ljlTK7ASLLYbegcLuxx7kro2U0XP
+ Uso5+/C5PDUIg+m5xS5aqOnioqO2rs10zI/kznHBrQEMLjuGwYn0GNKyjnUgnU6gTX
+ Yam5EVGKl8cUQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.0 05/44] ASoC: Intel: soc-acpi: add ES83x6 support
- to IceLake
-Date: Wed, 23 Nov 2022 07:40:14 -0500
-Message-Id: <20221123124057.264822-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.0 08/44] ASoC: SOF: ipc3-topology: use old pipeline
+ teardown flow with SOF2.1 and older
+Date: Wed, 23 Nov 2022 07:40:17 -0500
+Message-Id: <20221123124057.264822-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221123124057.264822-1-sashal@kernel.org>
 References: <20221123124057.264822-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, cezary.rojewski@intel.com,
- kai.vehmanen@linux.intel.com, rander.wang@intel.com,
- peter.ujfalusi@linux.intel.com, tiwai@suse.com,
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, lgirdwood@gmail.com,
+ yung-chuan.liao@linux.intel.com, tiwai@suse.com, yang.jie@linux.intel.com,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- ranjani.sridharan@linux.intel.com, liam.r.girdwood@linux.intel.com,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+ daniel.baluta@nxp.com, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,53 +90,109 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 
-[ Upstream commit 9a1d248bb4beaf1b43d17ba12481ee0629fa29b9 ]
+[ Upstream commit 003b786b678919e072c2b12ffa73901ef840963e ]
 
-Missing entry to find a machine driver for ES83x6-based platforms.
+Originally in commit b2ebcf42a48f ("ASoC: SOF: free widgets in
+sof_tear_down_pipelines() for static pipelines"), freeing of pipeline
+components at suspend was only done with recent FW as there were known
+limitations in older firmware versions.
 
-Link: https://github.com/thesofproject/linux/issues/3873
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Link: https://lore.kernel.org/r/20221031195836.250193-1-pierre-louis.bossart@linux.intel.com
+Tests show that if static pipelines are used, i.e. all pipelines are
+setup whenever firmware is powered up, the reverse action of freeing all
+components at power down, leads to firmware failures with also SOF2.0
+and SOF2.1 based firmware.
+
+The problems can be specific to certain topologies with e.g. components
+not prepared to be freed at suspend (as this did not happen with older
+SOF kernels).
+
+To avoid hitting these problems when kernel is upgraded and used with an
+older firmware, bump the firmware requirement to SOF2.2 or newer. If an
+older firmware is used, and pipeline is a static one, do not free the
+components at suspend. This ensures the suspend flow remains backwards
+compatible with older firmware versions. This limitation does not apply
+if the product configuration is updated to dynamic pipelines.
+
+The limitation is not linked to firmware ABI, as the interface to free
+pipeline components has been available already before ABI3.19. The
+problem is in the implementation, so firmware version should be used to
+decide whether it is safe to use the newer flow or not. This patch adds
+a new SOF_FW_VER() macro to compare SOF firmware release versions.
+
+Link: https://github.com/thesofproject/sof/issues/6475
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Link: https://lore.kernel.org/r/20221101114913.1292671-1-kai.vehmanen@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/common/soc-acpi-intel-icl-match.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ include/sound/sof/info.h      |  4 ++++
+ sound/soc/sof/ipc3-topology.c | 15 ++++++++++-----
+ 2 files changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-index b032bc07de8b..d0062f2cd256 100644
---- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
-@@ -10,6 +10,11 @@
- #include <sound/soc-acpi-intel-match.h>
- #include "../skylake/skl.h"
+diff --git a/include/sound/sof/info.h b/include/sound/sof/info.h
+index 65e86e4e9fd8..75193850ead0 100644
+--- a/include/sound/sof/info.h
++++ b/include/sound/sof/info.h
+@@ -36,6 +36,10 @@ enum sof_ipc_ext_data {
+ 	SOF_IPC_EXT_USER_ABI_INFO	= 4,
+ };
  
-+static const struct snd_soc_acpi_codecs essx_83x6 = {
-+	.num_codecs = 3,
-+	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
-+};
++/* Build u32 number in format MMmmmppp */
++#define SOF_FW_VER(MAJOR, MINOR, PATCH) ((uint32_t)( \
++	((MAJOR) << 24) | ((MINOR) << 12) | (PATCH)))
 +
- static struct skl_machine_pdata icl_pdata = {
- 	.use_tplg_pcm = true,
- };
-@@ -27,6 +32,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[] = {
- 		.drv_name = "sof_rt5682",
- 		.sof_tplg_filename = "sof-icl-rt5682.tplg",
- 	},
-+	{
-+		.comp_ids = &essx_83x6,
-+		.drv_name = "sof-essx8336",
-+		.sof_tplg_filename = "sof-icl-es8336", /* the tplg suffix is added at run time */
-+		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER |
-+					SND_SOC_ACPI_TPLG_INTEL_SSP_MSB |
-+					SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER,
-+	},
- 	{},
- };
- EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_icl_machines);
+ /* FW version - SOF_IPC_GLB_VERSION */
+ struct sof_ipc_fw_version {
+ 	struct sof_ipc_hdr hdr;
+diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
+index a39b43850f0e..bf8a46463cec 100644
+--- a/sound/soc/sof/ipc3-topology.c
++++ b/sound/soc/sof/ipc3-topology.c
+@@ -2242,6 +2242,7 @@ static int sof_ipc3_tear_down_all_pipelines(struct snd_sof_dev *sdev, bool verif
+ 	struct sof_ipc_fw_version *v = &sdev->fw_ready.version;
+ 	struct snd_sof_widget *swidget;
+ 	struct snd_sof_route *sroute;
++	bool dyn_widgets = false;
+ 	int ret;
+ 
+ 	/*
+@@ -2251,12 +2252,14 @@ static int sof_ipc3_tear_down_all_pipelines(struct snd_sof_dev *sdev, bool verif
+ 	 * topology loading the sound card unavailable to open PCMs.
+ 	 */
+ 	list_for_each_entry(swidget, &sdev->widget_list, list) {
+-		if (swidget->dynamic_pipeline_widget)
++		if (swidget->dynamic_pipeline_widget) {
++			dyn_widgets = true;
+ 			continue;
++		}
+ 
+-		/* Do not free widgets for static pipelines with FW ABI older than 3.19 */
++		/* Do not free widgets for static pipelines with FW older than SOF2.2 */
+ 		if (!verify && !swidget->dynamic_pipeline_widget &&
+-		    v->abi_version < SOF_ABI_VER(3, 19, 0)) {
++		    SOF_FW_VER(v->major, v->minor, v->micro) < SOF_FW_VER(2, 2, 0)) {
+ 			swidget->use_count = 0;
+ 			swidget->complete = 0;
+ 			continue;
+@@ -2270,9 +2273,11 @@ static int sof_ipc3_tear_down_all_pipelines(struct snd_sof_dev *sdev, bool verif
+ 	/*
+ 	 * Tear down all pipelines associated with PCMs that did not get suspended
+ 	 * and unset the prepare flag so that they can be set up again during resume.
+-	 * Skip this step for older firmware.
++	 * Skip this step for older firmware unless topology has any
++	 * dynamic pipeline (in which case the step is mandatory).
+ 	 */
+-	if (!verify && v->abi_version >= SOF_ABI_VER(3, 19, 0)) {
++	if (!verify && (dyn_widgets || SOF_FW_VER(v->major, v->minor, v->micro) >=
++	    SOF_FW_VER(2, 2, 0))) {
+ 		ret = sof_tear_down_left_over_pipelines(sdev);
+ 		if (ret < 0) {
+ 			dev_err(sdev->dev, "failed to tear down paused pipelines\n");
 -- 
 2.35.1
 
