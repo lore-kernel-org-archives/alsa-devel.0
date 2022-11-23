@@ -4,94 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B81C7C4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:00:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6C6FC4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:00:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC2E517BF;
-	Sat, 26 Nov 2022 08:59:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC2E517BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13E6817DE;
+	Sat, 26 Nov 2022 08:59:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13E6817DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669449636;
-	bh=qWzZYH9hobYJ9k4ccqf32LxYbS7Tr5JzjoLAU1AtyM8=;
+	s=default; t=1669449642;
+	bh=YD6oYTEEfrn1R4WlO3CL7w3f/WyZIdk+JOEJs3hWlUw=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qM87mu6DgnEeR8AtV1lhsN0IzNrGlIaKQBjM/pylUieDU+0+4TLQ3FovR2i9oZ0mn
-	 VHk5fbv+deSdCQy+uh5COjNPaFYq3Czykw+1ewLpD6nYUqR1QosvjFHxAqrikmQnYF
-	 MH2vKQH1NvQdAayRlqWYEijwIxEsghA43ZkllgVE=
+	b=lMldU6WfQKE1a1ZGLkwLBI+fvdkCS3I8J+ITB2j4YfHG5c+pSGyNqpxZWTZqKvjyf
+	 aX0ZeyElb2Ngir4oaQ7f9GoDCNIhqSoKVp0Zrf3nsEmQ3sHeMhcNy05QtVo135w+Qc
+	 Ax+G80cSmr4ZqGWXOe8YkYYDBL1Gz+kZnn3XDly4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D09B4F80557;
-	Sat, 26 Nov 2022 08:58:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5CDCDF8055A;
+	Sat, 26 Nov 2022 08:58:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9405F80115; Wed, 23 Nov 2022 17:25:38 +0100 (CET)
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com
- [IPv6:2607:f8b0:4864:20::836])
+ id 52C91F8025D; Wed, 23 Nov 2022 18:30:07 +0100 (CET)
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com
+ [IPv6:2607:f8b0:4864:20::834])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3107EF80115
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 17:25:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3107EF80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B605F800BB
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 18:29:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B605F800BB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca
- header.b="ebGDyq+q"
-Received: by mail-qt1-x836.google.com with SMTP id a27so11512305qtw.10
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 08:25:35 -0800 (PST)
+ header.b="QdimsGNf"
+Received: by mail-qt1-x834.google.com with SMTP id cg5so11644556qtb.12
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 09:29:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ziepe.ca; s=google;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=PhJSJnLVsP1vBula4KCFSx5kBTht7CuZrspFHU0N884=;
- b=ebGDyq+q12UGY7Qk5Tupc9qhDLGyIcTZVkm5UZYo/563kMYJJqyAeOt5CzUtM4J8DZ
- 3trFHny8FIDylUgXR9JjN8PS72NcWsvrDfr1Nd1Q7FDnTR43onbW+jw1+Ctw0cwtwrCd
- T18F6CTTWbwHWY6WrhS9prZWxtXaTjwzs7IQnIsjaZTmFdCmKdzeecD0BbnuyMQqVQVg
- z0s4POzfjTxMQ62r8mCHZM0rSmjmaRN4hzlYV7zdZbP1xMXxym5gxZ3SKz4kt6tgYYum
- EfCUt6/g2D4WDco0MNWeSPD0NJ6lencxZ7NqZJCJlD8ikZ4WiUl7N0yJnMd2Q4wIPSG2
- 7pnw==
+ bh=6abR5j0hlMc008eliuHFOuiB/x1h/HoL7zgQ4kEGBMg=;
+ b=QdimsGNfTzv5cy4RlQtfTKKDVSVgL8yuEuK366wzZaMiRqxQeXrAmjllaGNMyScpdc
+ MsNj5mbl3pLDNd2BV325hkTwPL9BYOzi+kSwJtllQ0DULWANmidzNeIUXiQk3VoNfo/E
+ 4ptv6rfZ5hd4J7x9tjAwSNGafLibrKF4EVw5LGSe1ZZy6+s8bRLN4jhguOSkiDMu6QPi
+ wPTI6VMOMjq510vQvLMtGptkpvLXdJgY7O2FNJzlSZh8JHnJa/Z4WKXEodaMMk2QwC7K
+ RiiKOKWHUqu9/c7mJwob6VF0WfIK7heBoUcwO8au92H5yk7bWPYSDK9PEgWhaqz377vC
+ k3ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=PhJSJnLVsP1vBula4KCFSx5kBTht7CuZrspFHU0N884=;
- b=maY/hv2ca1Sb5uUmjm4snF20Gf3tHbs3Sx26OcHcGrxroLeBgTHLizLUfCbX4TSLEB
- T4IUnbg9CDpr01pfJpMg3opQZLgs9xoSr82l/OoMR51UdtlIvAFbwCS9xOUDWj1uuXh7
- zwl34Orlexfxf9NZ6su8yyoNG9HvENjfdiw7V8AgLTgHSSj+qZT2etQAunXci/IuYPmc
- fGa0Ve27TNhDUonj6BIshHjCQDtrcdhQHHMwmNeIHLqsADPWcEqTPJdKHU8B63lp1bR1
- pRifNFO3LFRUB0ScuzeZPBcN4UXuT+F9tfQn8MJdl3q/+FOGQOiSxWFT4lBqPqze7+2y
- 7+cA==
-X-Gm-Message-State: ANoB5pk4n/JG4b9E6NMdVUobCRV/6O9LNHdLBOjM9WCoVR/dbXuvVxUP
- W8kyZ+RwtYxk5nmwUU161OEZuA==
-X-Google-Smtp-Source: AA0mqf7URgWK3LZKBiCOJvrYX2BcRTBThzd2VlaYXoILbXTQHzjAWJMWnGzlcI0wVuCFvjEWzX6GjA==
-X-Received: by 2002:ac8:60c:0:b0:3a6:37bd:ace5 with SMTP id
- d12-20020ac8060c000000b003a637bdace5mr14127789qth.426.1669220734011; 
- Wed, 23 Nov 2022 08:25:34 -0800 (PST)
+ bh=6abR5j0hlMc008eliuHFOuiB/x1h/HoL7zgQ4kEGBMg=;
+ b=PttCp7f72gmTPleZmIMjro81uJ4/5MBN6/BY7nPeUBY1p/pxKahfTKwKhVqIqt/vO8
+ h6Xt4nRKpcftqVhXPIntT5EU6Pm2+kNvj3uHlZJApSU9Z8vY83zexjW7xu0RtLfTU5wZ
+ mdeP0FGNecJXXPqqEsgdP5YYwo3MVLCCH0x8NBfg0GBnKqSwbo3tGeSUWIVrj82BuC9g
+ Vd27mBCW3gRyGeTdM3f29m8iNrzhGhzO5UEyTImHIxXS+Nvs71uy+yaowoKBPEYFv4a3
+ 2O1suyyc4bsO9J5jq9Jg6/a/ROgfqJuXm9WM0TLANNK+pCqNw9jQvgH9+wXExD5I4UwT
+ RsOg==
+X-Gm-Message-State: ANoB5pnZ1GEdDavLN4PItFI+JbCJuyXaHW22qr/nIIrFAPRHSI4kVY5V
+ m3DkG94nJuCaYvDQst+L+kqAiQ==
+X-Google-Smtp-Source: AA0mqf6VK9T3mvV/iEAQivkf3Os9vtgvXBxWtvIIq8G+B7LGY/huw6PyHSkg/FXOahM3VUH5qsITeg==
+X-Received: by 2002:a05:622a:5819:b0:3a5:5d34:66a9 with SMTP id
+ fg25-20020a05622a581900b003a55d3466a9mr11256824qtb.623.1669224598066; 
+ Wed, 23 Nov 2022 09:29:58 -0800 (PST)
 Received: from ziepe.ca
  (hlfxns017vw-47-55-122-23.dhcp-dynamic.fibreop.ns.bellaliant.net.
  [47.55.122.23]) by smtp.gmail.com with ESMTPSA id
- q7-20020a05620a0d8700b006f8665f483fsm12561497qkl.85.2022.11.23.08.25.33
+ bq30-20020a05620a469e00b006ef1a8f1b81sm12581219qkb.5.2022.11.23.09.29.56
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 23 Nov 2022 08:25:33 -0800 (PST)
+ Wed, 23 Nov 2022 09:29:56 -0800 (PST)
 Received: from jgg by wakko with local (Exim 4.95)
- (envelope-from <jgg@ziepe.ca>) id 1oxsZ2-00AOLL-MZ;
- Wed, 23 Nov 2022 12:25:32 -0400
-Date: Wed, 23 Nov 2022 12:25:32 -0400
+ (envelope-from <jgg@ziepe.ca>) id 1oxtZM-00ATfh-9i;
+ Wed, 23 Nov 2022 13:29:56 -0400
+Date: Wed, 23 Nov 2022 13:29:56 -0400
 From: Jason Gunthorpe <jgg@ziepe.ca>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Subject: Re: [PATCH 3/5] driver core: make struct device_type.uevent() take a
  const *
-Message-ID: <Y35JfNJDppRp5bLX@ziepe.ca>
+Message-ID: <Y35YlI93UBuTfgYy@ziepe.ca>
 References: <20221123122523.1332370-1-gregkh@linuxfoundation.org>
  <20221123122523.1332370-3-gregkh@linuxfoundation.org>
  <711d5275-7e80-c00d-0cdc-0f3d52175361@gmail.com>
  <Y34hgIW8p1RlQTBB@smile.fi.intel.com>
  <97be39ed-3cea-d55a-caa6-c2652baef399@gmail.com>
  <Y34zyzdbRUdyOSkA@casper.infradead.org>
- <Y34+V2bCDdqujBDk@kroah.com>
+ <Y34+V2bCDdqujBDk@kroah.com> <Y35JfNJDppRp5bLX@ziepe.ca>
+ <Y35R+/eQJYI7VaDS@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y34+V2bCDdqujBDk@kroah.com>
+In-Reply-To: <Y35R+/eQJYI7VaDS@kroah.com>
 X-Mailman-Approved-At: Sat, 26 Nov 2022 08:58:52 +0100
 Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
  Heikki Krogerus <heikki.krogerus@linux.intel.com>, Sean Young <sean@mess.org>,
@@ -139,33 +140,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Nov 23, 2022 at 04:37:59PM +0100, Greg Kroah-Hartman wrote:
-> static inline struct device *__kobj_to_dev(struct kobject *kobj)
-> {
->         return container_of(kobj, struct device, kobj);
-> }
+On Wed, Nov 23, 2022 at 06:01:47PM +0100, Greg Kroah-Hartman wrote:
+> On Wed, Nov 23, 2022 at 12:25:32PM -0400, Jason Gunthorpe wrote:
+> > On Wed, Nov 23, 2022 at 04:37:59PM +0100, Greg Kroah-Hartman wrote:
+> > > static inline struct device *__kobj_to_dev(struct kobject *kobj)
+> > > {
+> > >         return container_of(kobj, struct device, kobj);
+> > > }
+> > > 
+> > > static inline const struct device *__kobj_to_dev_const(const struct kobject *kobj)
+> > > {
+> > >         return container_of(kobj, const struct device, kobj);
+> > > }
+> > > 
+> > > /*
+> > >  * container_of() will happily take a const * and spit back a non-const * as it
+> > >  * is just doing pointer math.  But we want to be a bit more careful in the
+> > >  * driver code, so manually force any const * of a kobject to also be a const *
+> > >  * to a device.
+> > >  */
+> > > #define kobj_to_dev(kobj)                                       \
+> > >         _Generic((kobj),                                        \
+> > >                  const struct kobject *: __kobj_to_dev_const,   \
+> > >                  struct kobject *: __kobj_to_dev)(kobj)
+> > > 
+> > > 
+> > > Want me to do the same thing here as well?
+> > 
+> > It would be nice to have a shared macro code gen all of the above
+> > instead of copy and pasting it. Then maybe other cases beyond struct
+> > device could adopt const too..
 > 
-> static inline const struct device *__kobj_to_dev_const(const struct kobject *kobj)
-> {
->         return container_of(kobj, const struct device, kobj);
-> }
-> 
-> /*
->  * container_of() will happily take a const * and spit back a non-const * as it
->  * is just doing pointer math.  But we want to be a bit more careful in the
->  * driver code, so manually force any const * of a kobject to also be a const *
->  * to a device.
->  */
-> #define kobj_to_dev(kobj)                                       \
->         _Generic((kobj),                                        \
->                  const struct kobject *: __kobj_to_dev_const,   \
->                  struct kobject *: __kobj_to_dev)(kobj)
-> 
-> 
-> Want me to do the same thing here as well?
+> I think I tried to create such a beast, but failed, so ended up
+> open-coding it in a few places in the USB headers already.  I can try it
+> again, but the redirection gets tricky (defines creating defines...)
 
-It would be nice to have a shared macro code gen all of the above
-instead of copy and pasting it. Then maybe other cases beyond struct
-device could adopt const too..
+This seems OK:
+
+#define generic_container_of(in_type, in, out_type, out_member) \
+	_Generic(in,                                        \
+                  const in_type *: ((const out_type *)container_of(in, out_type, out_member)),   \
+                  in_type *: ((out_type *)container_of(in, out_type, out_member)) \
+		  )
+
+#define kobj_to_dev(__kobj) \
+	generic_container_of(struct kobject, __kobj, struct device, kobj)
 
 Jason
