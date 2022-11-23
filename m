@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9DA3C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 12:44:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1119FC3A59F
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 12:44:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0710F1662;
-	Wed, 23 Nov 2022 13:43:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0710F1662
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50F811685;
+	Wed, 23 Nov 2022 13:43:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50F811685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669207463;
-	bh=vI2XmKZgqatvP3vfjv7XrJc4fMBw3Ck3tGlFPEqEFUU=;
+	s=default; t=1669207480;
+	bh=O8zwh85ohZxN4Q7/f/IMqeHdHzDByjDvVgEw5fDhrLY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kM1ecCDHxl5X54A/m36VzLP/qodvgP8MrTtPxX8fAQNTw1bzjU/U4Keh7/gq8OtS3
-	 WV47sK2axVHgZbs1CLENmrpH6CoKAjgG1jXOBNIpKdugoGBhVpT/Rz/ferbxmuzYaY
-	 k65ViR3z6aKRFueTLrLVQCYi6MA98gnMCujeKmE0=
+	b=QbMJqWrSq8GYkuZFw3aCGvzdN8XfIx9L+r/RsHMIIDOyn18FAmH5CMErAlNNldfQh
+	 PRg5MDH10DvvLhk/JDCUQZwPNbrmTxVQmUv2hO29nDg9ScXqZrCH2TxTjfRa6SbMCC
+	 mCr5+QqKKxPXuupfBKxllBf558DcWsCpwkLemtRQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3BBBF8052E;
-	Wed, 23 Nov 2022 13:42:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB312F8049C;
+	Wed, 23 Nov 2022 13:42:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 05A9EF800BB; Wed, 23 Nov 2022 13:42:51 +0100 (CET)
+ id 23B5BF80558; Wed, 23 Nov 2022 13:42:58 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D9EEF800BB
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 13:42:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D9EEF800BB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3433FF804D2
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 13:42:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3433FF804D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QQ4qNA0H"
+ header.b="q5VJMTUE"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id EE0A961C50;
- Wed, 23 Nov 2022 12:42:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A8BAC433C1;
- Wed, 23 Nov 2022 12:42:41 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 2307061C64;
+ Wed, 23 Nov 2022 12:42:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35BFAC433D6;
+ Wed, 23 Nov 2022 12:42:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669207362;
- bh=vI2XmKZgqatvP3vfjv7XrJc4fMBw3Ck3tGlFPEqEFUU=;
+ s=k20201202; t=1669207370;
+ bh=O8zwh85ohZxN4Q7/f/IMqeHdHzDByjDvVgEw5fDhrLY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=QQ4qNA0Hyo+i2lRSwfo7ljsb8Eim3fLc0d9THY3VrBosC65izCSlOSq9VwCb2kW2d
- OUowiZn/+k/nF7/BPsjL/pn5iLTxO7pBVze8F4sqbHN5yXUTGeQppZ3NZIIx/+AACw
- rnh2urYYSGvnHEHDSiHFYQ1vplkc+5iE0PD2keKp9JJv/ExhbkjItBfBlS7KSXo2+r
- zpGJt3ykWuN0s/Bfmi2FNUaad/Rek82Bgqsu/QJ1WudSmUmzjOXxK3SzV/w5lqoS6L
- LXZEDg3S51pG27EnB4HwPxqJXcA0MFNkYTltmIbc/LxFzAp4ohMUGRUXOrvkhYFSzZ
- UfqfSmXSZNFtQ==
+ b=q5VJMTUEP9Cgx8rjatgAJ4nchwKHnLiLtfj4Jd+wi19cI3rEs54H59H15OrHHyeFL
+ HFpWjSl/iiVVkU2Jbso8TwRgvb/U7KwsPTn/KM+mFD0oaLNzEsD/tRhmaSW1Jpm0sD
+ SuewlgeaJoerQGSV9+oKauLYTqVkbO+u+N7LBEGX+I0Dp+qpD5uZJnz9p7u6cn3sVE
+ wpzbiFWzShORVzdOsJmXHoXmz7oaQomDT/7L1TIoy+jbzszoJ6yGdjNVi2yvRbAhmM
+ MMt9FtZ2s40HdQ9dF3PMWlfJCMfXhskVXfbDw1Pk5OuyWejtewGxNrhubqZUfikeOB
+ 7WKVqNpG8vpbA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 03/31] ASoC: Intel: bytcht_es8316: Add quirk for
- the Nanote UMPC-01
-Date: Wed, 23 Nov 2022 07:42:04 -0500
-Message-Id: <20221123124234.265396-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 06/31] ASoC: hda: intel-dsp-config: add ES83x6
+ quirk for IceLake
+Date: Wed, 23 Nov 2022 07:42:07 -0500
+Message-Id: <20221123124234.265396-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221123124234.265396-1-sashal@kernel.org>
 References: <20221123124234.265396-1-sashal@kernel.org>
@@ -66,13 +66,13 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, cezary.rojewski@intel.com,
- ckeepax@opensource.cirrus.com, kai.vehmanen@linux.intel.com,
- yung-chuan.liao@linux.intel.com, tiwai@suse.com, alsa-devel@alsa-project.org,
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ kai.vehmanen@linux.intel.com, Takashi Iwai <tiwai@suse.de>,
+ gongjun.song@intel.com, tiwai@suse.com,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- ranjani.sridharan@linux.intel.com, liam.r.girdwood@linux.intel.com,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
- akihiko.odaki@gmail.com, peter.ujfalusi@linux.intel.com
+ Mark Brown <broonie@kernel.org>, muralidhar.reddy@intel.com,
+ amadeuszx.slawinski@linux.intel.com,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, brent.lu@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,40 +88,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 8bb0ac0e6f64ebdf15d963c26b028de391c9bcf9 ]
+[ Upstream commit 5d73263f9e7c54ccb20814dc50809b9deb9e2bc7 ]
 
-The Nanote UMPC-01 mini laptop has stereo speakers, while the default
-bytcht_es8316 settings assume a mono speaker setup. Add a quirk for this.
+Yet another hardware variant we need to handle.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20221025140942.509066-1-hdegoede@redhat.com
+Link: https://github.com/thesofproject/linux/issues/3873
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20221031195639.250062-1-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcht_es8316.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/hda/intel-dsp-config.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index 4d313d0d0f23..950457bcc28f 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -443,6 +443,13 @@ static const struct dmi_system_id byt_cht_es8316_quirk_table[] = {
- 					| BYT_CHT_ES8316_INTMIC_IN2_MAP
- 					| BYT_CHT_ES8316_JD_INVERTED),
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index 4208fa8a4db5..05af409f1a83 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -303,6 +303,11 @@ static const struct config_entry config_table[] = {
+ 			{}
+ 		}
  	},
-+	{	/* Nanote UMPC-01 */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "RWC CO.,LTD"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "UMPC-01"),
-+		},
-+		.driver_data = (void *)BYT_CHT_ES8316_INTMIC_IN1_MAP,
++	{
++		.flags = FLAG_SOF,
++		.device = 0x34c8,
++		.codec_hid =  &essx_83x6,
 +	},
- 	{	/* Teclast X98 Plus II */
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "TECLAST"),
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0x34c8,
 -- 
 2.35.1
 
