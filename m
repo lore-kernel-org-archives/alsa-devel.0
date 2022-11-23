@@ -4,60 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A296C4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:10:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8031C4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:11:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75B8B1891;
-	Sat, 26 Nov 2022 09:09:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75B8B1891
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08E45185C;
+	Sat, 26 Nov 2022 09:10:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08E45185C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669450247;
-	bh=bQEHs0ksyDCEztSr+RSr7r/9PhT5NIpLSvUlR/6Mg1M=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=fRzdNyN2H01JH4udEVkjBP28nhYi2AAMvKYy27JrdahdIxBPS272/iCaAKV8DAWCd
-	 79JtdnkQW3yo2UauE1JAxgkkh2O6zsDvFBm0QX6Zz5pzSPXXXGKgbR0XgjWkvlEQih
-	 92MjAH4KtN72gWtWYMEETJ+k5CiuxbH9+n4j/GGo=
+	s=default; t=1669450269;
+	bh=UanCtzyfyh7s6GC+lB/BgGuUYEuJMVRrxquRNUED7QE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fEiNdm3dL3jEqRJW3kEXn6D3hvHMV8UUZXgk4yxOsfwIP4QEUyY/yCNzsFv0UowkH
+	 QsAEKOZsOx5PyOjShwSB+5P+oamrtIeJjqrWWn3/0TLqZGkVymnJpfjjgZFLFsGqWJ
+	 UaR8Z/BqFUR2/jdD5x3UeCvImyc8PLG6PIsFBcsM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77F93F80659;
-	Sat, 26 Nov 2022 08:59:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78615F8065D;
+	Sat, 26 Nov 2022 08:59:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83028F80236; Sat, 26 Nov 2022 02:27:24 +0100 (CET)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+ id 4D4F1F8025D; Wed, 23 Nov 2022 16:37:31 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 14941F800F4
- for <alsa-devel@alsa-project.org>; Sat, 26 Nov 2022 02:27:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14941F800F4
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.56])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NJvG51fGyzmW9k;
- Sat, 26 Nov 2022 09:26:37 +0800 (CST)
-Received: from dggpemm100009.china.huawei.com (7.185.36.113) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 26 Nov 2022 09:27:12 +0800
-Received: from huawei.com (10.175.113.32) by dggpemm100009.china.huawei.com
- (7.185.36.113) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Sat, 26 Nov
- 2022 09:27:11 +0800
-From: Liu Shixin <liushixin2@huawei.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH] ALSA: asihpi: fix missing pci_disable_device()
-Date: Sat, 26 Nov 2022 10:14:29 +0800
-Message-ID: <20221126021429.3029562-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4D160F80115
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 16:37:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D160F80115
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="m6P+8V1/"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B618861DA6;
+ Wed, 23 Nov 2022 15:37:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47180C433D6;
+ Wed, 23 Nov 2022 15:37:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1669217845;
+ bh=UanCtzyfyh7s6GC+lB/BgGuUYEuJMVRrxquRNUED7QE=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=m6P+8V1/dZMe1Sdy38Jer2Kq0kWOQcWPpch/6FCsgX7mogbRiZx+nRYmaqo4cOT5c
+ 2VBhRCgyAp1QZeQHA3EETx8HSmmQjCOuPPa172HaY1MAN9akX9CNVq37lxVTz8BMr8
+ BBLccHPaIU6D7mYb41M582jELquyQZxntjmwvKYXyotA//5tW/2MbJATyer9nFW/f0
+ ufcjB46KzIThaQo20IBXLl20DeebxUayijZK5CPRM4y+7O6LBfTdsu4RRUcLHP5KOK
+ b4r/lHFcNKfmA5EJjEfSCvbMR52QJimK5ICXr91dLn0KonGcS4j6q3bU+aNI+8DhYx
+ YzSjHFJvVHfAg==
+Date: Wed, 23 Nov 2022 15:37:13 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2 4/9] dt-bindings: drop redundant part of title (end)
+Message-ID: <Y34+KaMMI5H/qBlI@sirena.org.uk>
+References: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
+ <20221121110615.97962-5-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm100009.china.huawei.com (7.185.36.113)
-X-CFilter-Loop: Reflected
-X-Mailman-Approved-At: Sat, 26 Nov 2022 08:58:51 +0100
-Cc: Liu Shixin <liushixin2@huawei.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="c3/TYdFfqHAXL0OZ"
+Content-Disposition: inline
+In-Reply-To: <20221121110615.97962-5-krzysztof.kozlowski@linaro.org>
+X-Cookie: I'm rated PG-34!!
+X-Mailman-Approved-At: Sat, 26 Nov 2022 08:58:52 +0100
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, linux-pwm@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-pci@vger.kernel.org,
+ Ulf Hansson <ulf.hansson@linaro.org>, linux-mips@vger.kernel.org,
+ linux-mtd@lists.infradead.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-riscv@lists.infradead.org,
+ linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
+ linux-rtc@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
+ linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+ Guenter Roeck <linux@roeck-us.net>, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-can@vger.kernel.org, linux-gpio@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ virtualization@lists.linux-foundation.org,
+ linux-arm-kernel@lists.infradead.org, Stephen Boyd <sboyd@kernel.org>,
+ netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ Vinod Koul <vkoul@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+ Jonathan Cameron <jic23@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,28 +105,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-pci_disable_device() need be called while module exiting, switch to use
-pcim_enable(), pci_disable_device() will be called in pcim_release().
 
-Fixes: 3285ea10e9b0 ("ALSA: asihpi - Interrelated HPI tidy up.")
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
----
- sound/pci/asihpi/hpioctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--c3/TYdFfqHAXL0OZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
-index bb31b7fe867d..477a5b4b50bc 100644
---- a/sound/pci/asihpi/hpioctl.c
-+++ b/sound/pci/asihpi/hpioctl.c
-@@ -361,7 +361,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
- 		pci_dev->device, pci_dev->subsystem_vendor,
- 		pci_dev->subsystem_device, pci_dev->devfn);
- 
--	if (pci_enable_device(pci_dev) < 0) {
-+	if (pcim_enable_device(pci_dev) < 0) {
- 		dev_err(&pci_dev->dev,
- 			"pci_enable_device failed, disabling device\n");
- 		return -EIO;
--- 
-2.25.1
+On Mon, Nov 21, 2022 at 12:06:10PM +0100, Krzysztof Kozlowski wrote:
+> The Devicetree bindings document does not have to say in the title that
+> it is a "Devicetree binding", but instead just describe the hardware.
 
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--c3/TYdFfqHAXL0OZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmN+PikACgkQJNaLcl1U
+h9Axvwf9HW9i1/TYYTLxyy8fUtu5a3P9a9v1aqZ5Vk5GOoY4gLBJ+Nn6TQz4e3WA
+B/mLs0ELXPm3nJVTGPQfpqgCN3STLaUwDcVJIskltCSFn08YUWFcyfkQWyBkAWym
+cNTiF+sk8z6Aw5orSNcjJFWhpEZejA/1yQ+eBJbfm3d44vR/G2D5tMGJXmbE3rEA
+bRa98QZef1l34JDi6+gadC0w7LX4jj8Q41K/mjRuLqdmV6BUstQvCsKC/8YIeoua
+G3jLmit5vd8KXG2eEiqK2lY2t5FBYlNLXqLoaE2yjZFcmvABd6Vh/2JDcOOFeBpK
+sPr6SAIesrsLQzCHS/nuT/saF9E/UA==
+=p0qY
+-----END PGP SIGNATURE-----
+
+--c3/TYdFfqHAXL0OZ--
