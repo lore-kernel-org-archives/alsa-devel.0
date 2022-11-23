@@ -4,73 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 260EAC4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 12:43:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26C6AC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 12:44:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39ACE1690;
-	Wed, 23 Nov 2022 13:43:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39ACE1690
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4EB40164F;
+	Wed, 23 Nov 2022 13:43:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EB40164F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669207431;
-	bh=9eK/YfM8SsXmkglH0WxqzhlfaZd4V7b6t66rSlpQoZ4=;
+	s=default; t=1669207448;
+	bh=BRBt2o9DrYJstjhh/7mpbXXBWvSI6VS9AIrcb9ecNZs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YSscaPFmOAIbkX9IyABQUTbA2TX5e4nqdylJtV5dyj0QkeFLHs4RxQ78dOZ20G3Ap
-	 gn2DNLllSkuDg4DaFqIPGy1sR45Z1Mqxb+Xr0jhy1IeNIKN54aNbO3YI4XzgErz9wG
-	 /+iAuL3mBW8DDQxcgMtlYoD2ujIusNqhTVChpmvM=
+	b=jHhLTWJx6nt4PcLY7AxdShMOkTx2WyEKyO+kVYV/RGFxZwuv1YgjvvhANY+m1FMTc
+	 1TyZaJbY7RCrD+A2MxtvYPm/fnJUYk93dMsNfmZWC6+zQTyLc+NC2LZS7U3dL8oJ0I
+	 py4WQOhUAczrSvTcqTsKi5d9sZ9IuH5/o36T4A54=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC551F80587;
-	Wed, 23 Nov 2022 13:41:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 38426F800BB;
+	Wed, 23 Nov 2022 13:42:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3ADFDF80588; Wed, 23 Nov 2022 13:41:53 +0100 (CET)
+ id 0617DF80425; Wed, 23 Nov 2022 13:42:50 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A6ECF8057E
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 13:41:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A6ECF8057E
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4ADBF80149
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 13:42:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4ADBF80149
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ek8ZpV+p"
+ header.b="MmCQEBoJ"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 1AADC61CB1;
- Wed, 23 Nov 2022 12:41:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DD2FC4347C;
- Wed, 23 Nov 2022 12:41:44 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 5572261C67;
+ Wed, 23 Nov 2022 12:42:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B562BC433C1;
+ Wed, 23 Nov 2022 12:42:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669207305;
- bh=9eK/YfM8SsXmkglH0WxqzhlfaZd4V7b6t66rSlpQoZ4=;
+ s=k20201202; t=1669207366;
+ bh=BRBt2o9DrYJstjhh/7mpbXXBWvSI6VS9AIrcb9ecNZs=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ek8ZpV+pNfmu3anjult1dt3yk4NRgA50qZr2oHN5EFOdr58OJPuSYQKtNBs2gBwUp
- n5kwNc+9B5hcXmtJGnkwHbGAmgx/DNuamkVV7h97nfbzjovI0zGkt6IXd9x07aAK7A
- 53NBBttYJw6l7wfvP7IAqXjaJku8bvR1Fg9fI/X3pfjZrhYHl2BEg36QgLlMh9U1rM
- +gsGeGcHKAZw2G5scOou8Se5/xC8wnhFgxswaA99oE8Nlyhh/qDAyNxJ/KgIvSdjV1
- pG8G1NgnJSYewAFLUwKfBrlX5kA94+lLQyRH3zCPx7VNEr2zYAnxbJ9tUDVfU60RAP
- yyx59Y/hO53ag==
+ b=MmCQEBoJoIYz9jLh1uTqLcyGTS5g4a2U3FfGnCIZAJmubMZXvEnc9dbU7w958CRW2
+ bG6SuYFlPhCt3q2dHtMrioBp2UMylKb0uZ8ruMurUU3Fx6dDjw5UO9IiB3wP/azkw9
+ XBfGwn+o2qRGinwfqv6E1h3h5nAB4nKzICP9SBqLRT/TvJ1lc8GILidIrLUTJghN7r
+ ctH4n86DSAF1B3/f9WFAe41tLXfr0TVjgN6lGxtWhfOmEuqgAMQwRmEXp8OkIynyEG
+ N1AXXd/JrC9Dhk6TCIvyJns5LMoK16Y4vsYhKyW28iE+E/B+xvRHDSK4NlVqrmQAZf
+ y7QQZC6sAT9gw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.0 19/44] ASoC: stm32: dfsdm: manage cb buffers
- cleanup
-Date: Wed, 23 Nov 2022 07:40:28 -0500
-Message-Id: <20221123124057.264822-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 04/31] ASoC: Intel: soc-acpi: add ES83x6 support
+ to IceLake
+Date: Wed, 23 Nov 2022 07:42:05 -0500
+Message-Id: <20221123124234.265396-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221123124057.264822-1-sashal@kernel.org>
-References: <20221123124057.264822-1-sashal@kernel.org>
+In-Reply-To: <20221123124234.265396-1-sashal@kernel.org>
+References: <20221123124234.265396-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com, tiwai@suse.com,
- lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
- Olivier Moysan <olivier.moysan@foss.st.com>, arnaud.pouliquen@foss.st.com,
- linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
+Cc: Sasha Levin <sashal@kernel.org>, cezary.rojewski@intel.com,
+ kai.vehmanen@linux.intel.com, rander.wang@intel.com,
+ peter.ujfalusi@linux.intel.com, tiwai@suse.com,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ ranjani.sridharan@linux.intel.com, liam.r.girdwood@linux.intel.com,
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,50 +88,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Olivier Moysan <olivier.moysan@foss.st.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 7d945b046be3d2605dbb1806e73095aadd7ae129 ]
+[ Upstream commit 9a1d248bb4beaf1b43d17ba12481ee0629fa29b9 ]
 
-Ensure that resources allocated by iio_channel_get_all_cb()
-are released on driver unbind.
+Missing entry to find a machine driver for ES83x6-based platforms.
 
-Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
-Link: https://lore.kernel.org/r/20221109170849.273719-1-olivier.moysan@foss.st.com
+Link: https://github.com/thesofproject/linux/issues/3873
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Link: https://lore.kernel.org/r/20221031195836.250193-1-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/stm/stm32_adfsdm.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/intel/common/soc-acpi-intel-icl-match.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
-index 643fc8a17018..837c1848d9bf 100644
---- a/sound/soc/stm/stm32_adfsdm.c
-+++ b/sound/soc/stm/stm32_adfsdm.c
-@@ -304,6 +304,11 @@ static int stm32_adfsdm_dummy_cb(const void *data, void *private)
- 	return 0;
- }
+diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+index 768ed538c4ea..bc49295bcfe2 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+@@ -10,6 +10,11 @@
+ #include <sound/soc-acpi-intel-match.h>
+ #include "../skylake/skl.h"
  
-+static void stm32_adfsdm_cleanup(void *data)
-+{
-+	iio_channel_release_all_cb(data);
-+}
++static const struct snd_soc_acpi_codecs essx_83x6 = {
++	.num_codecs = 3,
++	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
++};
 +
- static struct snd_soc_component_driver stm32_adfsdm_soc_platform = {
- 	.open		= stm32_adfsdm_pcm_open,
- 	.close		= stm32_adfsdm_pcm_close,
-@@ -350,6 +355,12 @@ static int stm32_adfsdm_probe(struct platform_device *pdev)
- 	if (IS_ERR(priv->iio_cb))
- 		return PTR_ERR(priv->iio_cb);
- 
-+	ret = devm_add_action_or_reset(&pdev->dev, stm32_adfsdm_cleanup, priv->iio_cb);
-+	if (ret < 0)  {
-+		dev_err(&pdev->dev, "Unable to add action\n");
-+		return ret;
-+	}
-+
- 	component = devm_kzalloc(&pdev->dev, sizeof(*component), GFP_KERNEL);
- 	if (!component)
- 		return -ENOMEM;
+ static struct skl_machine_pdata icl_pdata = {
+ 	.use_tplg_pcm = true,
+ };
+@@ -29,6 +34,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[] = {
+ 		.sof_fw_filename = "sof-icl.ri",
+ 		.sof_tplg_filename = "sof-icl-rt5682.tplg",
+ 	},
++	{
++		.comp_ids = &essx_83x6,
++		.drv_name = "sof-essx8336",
++		.sof_tplg_filename = "sof-icl-es8336", /* the tplg suffix is added at run time */
++		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER |
++					SND_SOC_ACPI_TPLG_INTEL_SSP_MSB |
++					SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER,
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_icl_machines);
 -- 
 2.35.1
 
