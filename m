@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE719C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 12:45:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8113C4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 12:46:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F9DD1658;
-	Wed, 23 Nov 2022 13:45:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F9DD1658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1AC1D1680;
+	Wed, 23 Nov 2022 13:45:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AC1D1680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669207556;
-	bh=bmkuTam4/eCjQTwar69n3SQbEsGd/IeoaR1YFjfpgrM=;
+	s=default; t=1669207573;
+	bh=ZrKRPU9q94od2dlVnuGKRBUEQxi8KNWdgov7/0ffFBc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tjynafUDU32KyfulqgFtHdyslfFHgN8N8Mu9bKeha6lskh3urVylT9xorx73Eh58z
-	 VHg1FA6IhbURwmecSp897jo8zNvsWKTeMcO8AjYuzmSr7Q6RAj24bwXHGTqftIkKaU
-	 9Hodcz3ChbuQyEsuuH2os9mN8dMPK5FZI+uQg6qU=
+	b=f7Zc8h7hSUqF0OwMwvNWXNt82T35CxCY0ejZ03uHhAZKs6J5MVvmho3V8CA3IUhRE
+	 W6UlLG6Ws9IiAnPaK8d8te3I4W2y+1mss+qogonO4tK8L53XdcPE44QEXmEuCFwOr8
+	 KL20FXWy2leS5O1noqUN2qB/7/rWTf7sVqOqtIjg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 854E2F80425;
-	Wed, 23 Nov 2022 13:44:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C06DF8055A;
+	Wed, 23 Nov 2022 13:44:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9FA0EF8052E; Wed, 23 Nov 2022 13:44:38 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 95EEBF80563; Wed, 23 Nov 2022 13:44:41 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5C1E1F80149
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 13:44:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C1E1F80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B28EF8055A
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 13:44:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B28EF8055A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="nunV72uz"
+ header.b="sQr9eAVP"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 1F99C61CB4;
- Wed, 23 Nov 2022 12:44:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CF59C433D6;
- Wed, 23 Nov 2022 12:44:33 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id BA51EB81F3E;
+ Wed, 23 Nov 2022 12:44:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10865C433C1;
+ Wed, 23 Nov 2022 12:44:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669207474;
- bh=bmkuTam4/eCjQTwar69n3SQbEsGd/IeoaR1YFjfpgrM=;
+ s=k20201202; t=1669207478;
+ bh=ZrKRPU9q94od2dlVnuGKRBUEQxi8KNWdgov7/0ffFBc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=nunV72uzXVnkS5jRI+nCWVaUc31gNWz0BNpvdWsV448Dv5hlj8LKoOgGb3OeYeHD1
- 5CnZl/aiSANij9G/cssfRkERS1/U0cRK9+C7z0ecYKeyBgdWFBYdwzA1jHLQoap3+y
- E4P+WxduJizofnfoyK3DHcTJ7NslQvg1xrvaFQzE3bINd3uwzRN/Y7hiJ85dE4laGM
- cbht6r+nkxXFvZ6mi1mYfLm/WdsmiWLmnH3rlGprTYCPWNvE1BSY/ZYAdTP4CxLpsa
- bbaC8SssI6orq06p0qyMDMnJZyvN5149jDPtTmuT31gvoeTapuH8X/X2U0ly6XdDbA
- 3Ny7SDVkt6TtA==
+ b=sQr9eAVPNH9FMSArqcTOTVTCAAKI76/LsmnPZ/HPcviPzssX/737nHuxtWO+6zrwi
+ ZQ6icc/tOD/PgJn6mHslTNImvS/Udacl2lBqLMVEyi/2rDAS62zMHRIijwbZDyuzjB
+ 74d8d1S919sFUUevpvUNDGDJAKhMpx/mQsGUO3ELLJGL/lFTFAdYJCzBDp/BMDlFSo
+ iy9PEedT148/dDGfxdnGGXYW66y1FGDhnnP7Uouti1oS7q+hQNr2EOkDQ+XwgRfchu
+ 2F5vWXhJmzmhPOi7I/N2vT9XdEhw00MJGOTVdNa+5BvwrCtycJ3k9MJnOvcEett9bT
+ 2BMJ4CgRNjGfw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 02/15] ASoC: Intel: bytcht_es8316: Add quirk for
- the Nanote UMPC-01
-Date: Wed, 23 Nov 2022 07:44:12 -0500
-Message-Id: <20221123124427.266286-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 03/15] ASoC: Intel: soc-acpi: add ES83x6 support
+ to IceLake
+Date: Wed, 23 Nov 2022 07:44:13 -0500
+Message-Id: <20221123124427.266286-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221123124427.266286-1-sashal@kernel.org>
 References: <20221123124427.266286-1-sashal@kernel.org>
@@ -67,14 +67,13 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, fred.oh@linux.intel.com,
- cezary.rojewski@intel.com, ckeepax@opensource.cirrus.com,
- kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com, tiwai@suse.com,
- alsa-devel@alsa-project.org,
+Cc: Sasha Levin <sashal@kernel.org>, cezary.rojewski@intel.com,
+ kai.vehmanen@linux.intel.com, rander.wang@intel.com,
+ peter.ujfalusi@linux.intel.com, tiwai@suse.com,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  ranjani.sridharan@linux.intel.com, liam.r.girdwood@linux.intel.com,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
- akihiko.odaki@gmail.com, peter.ujfalusi@linux.intel.com
+ alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,40 +89,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 8bb0ac0e6f64ebdf15d963c26b028de391c9bcf9 ]
+[ Upstream commit 9a1d248bb4beaf1b43d17ba12481ee0629fa29b9 ]
 
-The Nanote UMPC-01 mini laptop has stereo speakers, while the default
-bytcht_es8316 settings assume a mono speaker setup. Add a quirk for this.
+Missing entry to find a machine driver for ES83x6-based platforms.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20221025140942.509066-1-hdegoede@redhat.com
+Link: https://github.com/thesofproject/linux/issues/3873
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Link: https://lore.kernel.org/r/20221031195836.250193-1-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcht_es8316.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/intel/common/soc-acpi-intel-icl-match.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
-index ed332177b0f9..57d6d0b48068 100644
---- a/sound/soc/intel/boards/bytcht_es8316.c
-+++ b/sound/soc/intel/boards/bytcht_es8316.c
-@@ -446,6 +446,13 @@ static const struct dmi_system_id byt_cht_es8316_quirk_table[] = {
- 					| BYT_CHT_ES8316_INTMIC_IN2_MAP
- 					| BYT_CHT_ES8316_JD_INVERTED),
+diff --git a/sound/soc/intel/common/soc-acpi-intel-icl-match.c b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+index 38977669b576..4f5229b196ec 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-icl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-icl-match.c
+@@ -10,6 +10,11 @@
+ #include <sound/soc-acpi-intel-match.h>
+ #include "../skylake/skl.h"
+ 
++static const struct snd_soc_acpi_codecs essx_83x6 = {
++	.num_codecs = 3,
++	.codecs = { "ESSX8316", "ESSX8326", "ESSX8336"},
++};
++
+ static struct skl_machine_pdata icl_pdata = {
+ 	.use_tplg_pcm = true,
+ };
+@@ -29,6 +34,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_icl_machines[] = {
+ 		.sof_fw_filename = "sof-icl.ri",
+ 		.sof_tplg_filename = "sof-icl-rt5682.tplg",
  	},
-+	{	/* Nanote UMPC-01 */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "RWC CO.,LTD"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "UMPC-01"),
-+		},
-+		.driver_data = (void *)BYT_CHT_ES8316_INTMIC_IN1_MAP,
++	{
++		.comp_ids = &essx_83x6,
++		.drv_name = "sof-essx8336",
++		.sof_tplg_filename = "sof-icl-es8336", /* the tplg suffix is added at run time */
++		.tplg_quirk_mask = SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER |
++					SND_SOC_ACPI_TPLG_INTEL_SSP_MSB |
++					SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER,
 +	},
- 	{	/* Teclast X98 Plus II */
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "TECLAST"),
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_icl_machines);
 -- 
 2.35.1
 
