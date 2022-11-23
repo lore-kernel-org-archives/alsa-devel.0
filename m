@@ -4,68 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BE9DC4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 14:47:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27938C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 14:52:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3ABFD1682;
-	Wed, 23 Nov 2022 15:46:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ABFD1682
+	by alsa0.perex.cz (Postfix) with ESMTPS id 593EC1637;
+	Wed, 23 Nov 2022 15:51:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 593EC1637
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669214828;
-	bh=yaH550cdeNMLNbXJl+DEdZNkNMeJwd/85Dz+Y32n6LI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Ca/zfCHCfANcAx2FOCk4Or39dB5ZsH6Q5I6pU9kK1M8wem7M+/ecbgUhomi1QAR66
-	 k8sJVpPgtAfANokzZ/eRYSrA3l3Jkw9ZfU1KWrHGLlfPIGa7ARZBTEdJC3i4tX6bQI
-	 nV+Aa1z9+mcHIgpUyznvHG+C+QAtIRE+p2pjUgk4=
+	s=default; t=1669215161;
+	bh=EvkRHg25UEaVOEfcwh8BGip3jJoIEC+Vzd10MQwqg+4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=m6wQKO66m3Qdj5I/bvl6efNF+7gcqHtAGPJgKvgg8hQQPr+w/PH7Gb8NdnVQHNPuO
+	 SFoBA1cIkSquO1KtKz2Jxvvc005EfT3mrSu2DTGoDzqWYy6213UFk3Wt01cu6Ultl1
+	 lYCydWgJEYTcEINsWJU08NXPl8oqQy8qopv0ngmU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A814CF80557;
-	Wed, 23 Nov 2022 15:46:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F283BF8025D;
+	Wed, 23 Nov 2022 15:51:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0B98F80557; Wed, 23 Nov 2022 15:46:15 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9BB8FF80557
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 15:46:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BB8FF80557
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="CxN1IEEz"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 7BE80F80425; Wed, 23 Nov 2022 15:51:49 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 82501B8202D;
- Wed, 23 Nov 2022 14:46:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B133EC433C1;
- Wed, 23 Nov 2022 14:46:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669214771;
- bh=yaH550cdeNMLNbXJl+DEdZNkNMeJwd/85Dz+Y32n6LI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=CxN1IEEzW35m0QAQc+KOd1OreLmacMFoy8EFfAjlmHKj/ei5Gg6xuqkfA7SXP30QL
- EY44Od0F6eAI0mgNm21PY8gG8VaAAxPCv/i9/EFWEPTHvT+KrwG6tQuB8jYMlZDbkc
- UWuSV+irVLFmhBHB0NU8Zg+VW/vKKzQS1Ej1t9MQ09srt0Hd64Y2CvOCSsy+SJwbs2
- e9ZtFo0bnX8kieQ/7whau3vAapRTqVR9HNgbn1ZtZspvvDPvpd8cF2NPLEWQIPZEFa
- QK9MxFOZWrJVMtmt2BauBS3s34VSqn0hBuDGrkW+09Z8ge3a9gCo+6Cv4pp7YKf26k
- Ild0AGseXTwjQ==
-Date: Wed, 23 Nov 2022 20:16:07 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH 6/8] soundwire: intel_init: remove sdw_intel_enable_irq()
-Message-ID: <Y34yL5DbEpkBLU1x@matsya>
-References: <20221111042653.45520-1-yung-chuan.liao@linux.intel.com>
- <20221111042653.45520-7-yung-chuan.liao@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2D842F800BB
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 15:51:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D842F800BB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="beXFQAd3"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 2AN7beZk029400; Wed, 23 Nov 2022 08:51:42 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=qe6yOLyzcAKHqVQpOkwHYqeGrPMUo74EcMOG9gZaWR0=;
+ b=beXFQAd30FxgYmCmZE+Xiv/2RpV1GRtj2ZZgYnRtd0rYpWEk+gK0zux9x/i0nUoQfGQ+
+ V2b37NGqI4tRQtNq+Zn+bI8S80/a+BZHVoL6hlcSM5zKLwrlcRnk6wOB9dpIJhGjjX7G
+ lbxIAX/Srxkc6vGFPB2uDbvf43XXW2e/vDz7NbdIh+/16rIcneIn44/whbT4Iq8uTsVy
+ 6/8mmHZE1QtpMRWCo7sXxVfTxmSpi4m8857PIBdqgDBftez3LOVYoAoYecrDDWrL9ns3
+ TRTQ2z5ssYW7/00QD30WfyQpsZxwWGggLxcJ7bzH1W3n85tLfaZiXS8XQyO0ozfMHWU/ cw== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3kxwe6w04h-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 23 Nov 2022 08:51:42 -0600
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.20; Wed, 23 Nov
+ 2022 08:51:40 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.20 via
+ Frontend Transport; Wed, 23 Nov 2022 08:51:40 -0600
+Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
+ [198.90.251.111])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3CDD02BA;
+ Wed, 23 Nov 2022 14:51:40 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>
+Subject: [PATCH 0/2] ASoC: wm_adsp: Report when a control write changes the
+ value
+Date: Wed, 23 Nov 2022 14:51:38 +0000
+Message-ID: <20221123145140.2784030-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221111042653.45520-7-yung-chuan.liao@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, linux-kernel@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, broonie@kernel.org, bard.liao@intel.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: ipsUCo0gMhqHLEonVZx2W_usC8CPmOUz
+X-Proofpoint-GUID: ipsUCo0gMhqHLEonVZx2W_usC8CPmOUz
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,13 +93,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 11-11-22, 12:26, Bard Liao wrote:
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> The functionality is implemented with per-chip callbacks, there are no
-> users of this symbol, remove the code.
+Writing a firmware control should be returning 1 if the control value
+changed, so these two patches add that.
 
-Acked-By: Vinod Koul <vkoul@kernel.org>
+Though this is an ALSA requirement it is also useful for non-ALSA clients
+of cs_dsp to know if the control value changed, so the main handling is
+implemented in cs_dsp. TLV controls are specifically an ALSA thing so they
+are handled specially in wm_adsp.
+
+Simon Trimmer (2):
+  firmware: cs_dsp: cs_dsp_coeff_write_ctrl() should report changed
+  ASoC: wm_adsp: Return whether changed when writing controls
+
+ drivers/firmware/cirrus/cs_dsp.c | 17 ++++++++++++-----
+ sound/soc/codecs/wm_adsp.c       | 26 +++++++++++++++++---------
+ 2 files changed, 29 insertions(+), 14 deletions(-)
 
 -- 
-~Vinod
+2.30.2
+
