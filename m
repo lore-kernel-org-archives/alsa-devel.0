@@ -4,72 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6957BC4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 13:12:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C469C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 23 Nov 2022 13:13:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE7D91636;
-	Wed, 23 Nov 2022 14:11:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE7D91636
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D4B9166F;
+	Wed, 23 Nov 2022 14:12:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D4B9166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669209150;
-	bh=Pmimk6P6al4IzF3uS/yD4sA/hKmZqcQ3viaO89EoanQ=;
+	s=default; t=1669209178;
+	bh=LaoTGqkB+GKUadn1ZJ7EQs/qD6N97BQiJaYuwdx3noQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eS2ZSIDcTIfB2g2wxtlpew3hjni+BYL6iRVLZ77jXDmyTfXBnzPEZtjWU8Uu69OZI
-	 iuyw8issW00kizatEVSGYv+brdaKgAKUL8wDD1FYNOKoxTZIhqDFiu9bFA089wg2m0
-	 4HxnkWFP9TYXBcBf7vNnijQpml0N/jCbD4COD928=
+	b=lMpr+liVXMhiQYpIQA8lSiI35FT0IIHhwmL/2ZIWZ74XTacQE1aZLuG2wPhXDFdZs
+	 RtjPTrGkvx0lfm8vRc5XQhSP4iLgXdbkWCASUkNkCidTZjtaocyFTU7F+8h/SyGWxz
+	 vJsdH8/dCe4E4j9wtPOCk2YgMAOQmRn2vVm9qRuU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75CB2F80249;
-	Wed, 23 Nov 2022 14:11:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FFCAF80557;
+	Wed, 23 Nov 2022 14:11:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06254F8025D; Wed, 23 Nov 2022 14:11:39 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 332E1F8025D; Wed, 23 Nov 2022 14:11:40 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE81FF800BB
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 14:11:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE81FF800BB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97F27F80115
+ for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 14:11:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97F27F80115
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZrUI/t5m"
+ header.b="U78glnAK"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id E2A81B81FDE;
- Wed, 23 Nov 2022 13:11:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6F3FC433D6;
- Wed, 23 Nov 2022 13:11:27 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 88EFE61CA4;
+ Wed, 23 Nov 2022 13:11:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3AD5C433D6;
+ Wed, 23 Nov 2022 13:11:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669209090;
- bh=Pmimk6P6al4IzF3uS/yD4sA/hKmZqcQ3viaO89EoanQ=;
+ s=k20201202; t=1669209094;
+ bh=LaoTGqkB+GKUadn1ZJ7EQs/qD6N97BQiJaYuwdx3noQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ZrUI/t5mVj7g/IwF947jY7DEP46UTmCGwZm1yrfeZj8sJpE/0UsmGkHz1oufRXJJT
- VOoyod3pAfIt0tEPQ6mCEfbNTvdMImsLCgXoOXxN93nxZ3VQ9vEkBWU8/oaCgNo4+W
- k4KDT+73KAx2I71qfX7xPMecXaE1GHnkrllRaM2dbqwB0souBB3OxSpKGHeHAVB5U+
- WxRLzI4nKX6m4gcIwcosJQ5DhFHeZpPB7hyiwa3yGPbQIxb+Y+y430e8cbuxJ/Sysh
- Zd+HS13Y8PBubLg5c1lya7GG/ae0Y6SAnCLQmUcQjytq+uokYlVfTowmBOtEXYDroi
- iuz03vebUOwIg==
+ b=U78glnAKUSnq02eamUEqD0Ota38Vyrd/63Co3Zo3JosB3/mukrBFdKXisOJyQWIur
+ cyD9xQzcPTN6ug7XTNBqmgpQBdfDOAOJ+HCDHpHp4ia0WEDK+xqeAM9SqxGLr+GrsN
+ bqt1Q63sP1+h0kW0YE/3w0ee1RZvl07DqQdxFLvwtNjZ9LPVIwfcY/b8L+dpooLUQ5
+ jSdytx7pEcV0pyCHqFv1UxwFW/Us7rPqioNepDShU0C1WgWfYCGlMKy+EWsQheeMYe
+ gzbh2w3FbI8DKpD2RGtAWCEF14758h616Gzt7LsPPOY87/TH9Ho+z1jOS4LM4BNI47
+ 13VRPOVjjqCHA==
 From: Mark Brown <broonie@kernel.org>
-To: krzysztof.kozlowski+dt@linaro.org, lee@kernel.org, linus.walleij@linaro.org,
- maz@kernel.org, tglx@linutronix.de, 
- Richard Fitzgerald <rf@opensource.cirrus.com>, robh+dt@kernel.org
-In-Reply-To: <20221109165331.29332-1-rf@opensource.cirrus.com>
-References: <20221109165331.29332-1-rf@opensource.cirrus.com>
-Subject: Re: (subset) [PATCH 00/12] Add support for the Cirrus Logic CS48L32
- audio codecs
-Message-Id: <166920908765.125457.5735851922084989509.b4-ty@kernel.org>
-Date: Wed, 23 Nov 2022 13:11:27 +0000
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org
+In-Reply-To: <20221116115550.1100398-1-cezary.rojewski@intel.com>
+References: <20221116115550.1100398-1-cezary.rojewski@intel.com>
+Subject: Re: [PATCH v3 0/2] ASoC: Intel: avs: DSP recovery and resume fixes
+Message-Id: <166920909245.125457.6662894344380421615.b4-ty@kernel.org>
+Date: Wed, 23 Nov 2022 13:11:32 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-gpio@vger.kernel.org
+Cc: hdegoede@redhat.com, amadeuszx.slawinski@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,13 +81,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 9 Nov 2022 16:53:19 +0000, Richard Fitzgerald wrote:
-> The CS48L32 is a high-performance low-power audio DSP for smartphones
-> and other portable audio devices. It has various digital audio I/O,
-> a programmable Halo Core DSP, fixed-function audio processors,
-> configurable GPIO and microphone bias regulators.
+On Wed, 16 Nov 2022 12:55:48 +0100, Cezary Rojewski wrote:
+> Two fixes that are result of the recent discussions [1][2].
 > 
-> The CS48L31 and CS48L33 were derivatives of the CS48L32.
+> First adds missing locking around snd_pcm_stop() while the second fix
+> sets substream state to DISCONNECTED if any suspend/resume related
+> operation fails so that userspace has means to be aware that something
+> went wrong during said operation.
 > 
 > [...]
 
@@ -101,8 +97,10 @@ Applied to
 
 Thanks!
 
-[10/12] ASoC: wm_adsp: Allow client to hook into pre_run callback
-        commit: fe07130870c8540bc0cddbaa8d4521ecdba6b560
+[1/2] ASoC: Intel: avs: Lock substream before snd_pcm_stop()
+      commit: c30c8f9d51ec24b36e2c65a6307a5c8cbc5a0ebc
+[2/2] ASoC: Intel: avs: Disconnect substream if suspend or resume fails
+      commit: f3fbb553f98563f692e356aca87d656baba910a0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
