@@ -4,84 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A6F4C4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:01:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23C7CC4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:01:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5192217D3;
-	Sat, 26 Nov 2022 09:00:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5192217D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A5FD1817;
+	Sat, 26 Nov 2022 09:00:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A5FD1817
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669449688;
-	bh=7vY1oRHvWX2z8ha1+wPrjMKMWdl008t36kDC82qVHIg=;
-	h=From:Date:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qIb5ik3cZku4h/Dx8oL+dNRID7HMzUHERk4fy7FwJkCWYrHV0tW+B0NxgjidNDBzw
-	 z75Mg7jI5TamBHExaWXMUFZZBhhf33UPVP7ziu1Mx+GQNQxHc/FfiINuCO1phg2qJj
-	 rZEvFtToJxTEKjetv0Z2p8/2vb/Rz2dEmgO6/FVs=
+	s=default; t=1669449699;
+	bh=JAKjHQbrbgWjXmWLM6KyU0/yiZsP4kWuZCJ9xg4o02I=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=f1cfl7EL2hC3+WaywEnr+G/wyFBp5FooUIoGRgquuGQmelqohiZDrMP7T5g/wWyPQ
+	 ZQFhrNNOGofTxLYQyMVLjfRWQjmf7RZtHSKskYC65U21Q1iRh+w7/AZ4egY0/3OdHg
+	 spEx9P0Id55dtFGCkU0hWirzBchfghXJXMbBw95U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6B4BF80579;
-	Sat, 26 Nov 2022 08:58:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BA2DF8057A;
+	Sat, 26 Nov 2022 08:58:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0D8EF80431; Thu, 24 Nov 2022 10:57:49 +0100 (CET)
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com
- [IPv6:2607:f8b0:4864:20::b2a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id F2572F80448; Thu, 24 Nov 2022 14:48:16 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1FAD4F8014E
- for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 10:57:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FAD4F8014E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="FsQyigU5"
-Received: by mail-yb1-xb2a.google.com with SMTP id z192so1316197yba.0
- for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 01:57:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=r/inbI+y1fhrxyLW9sS+q/7x6KkspXDB7h9KT6wBhFI=;
- b=FsQyigU5X9Bj9xZiNwYg2vk1ek0GVhZG+zbSZ3vYiapFPlAQUN1xt3rSqtvzfV2J0o
- xn34AJ262EZYn2nnGIyRHGnlUbJL/Ecj+cE9/nguY3T/aDuwKpTUmTkCIShYtgNJoqJ6
- S+oSflzGcP2f6TMQwdf/Uqc3W+iufoDZ5qIrmRnn+wEJIxLZcDcvcGWYSRe8V3BNRzgl
- X5pfGd6YRxRlZWJBqxbiE5b9oBOh4m/QQneZJjN5a90umabI+6XNKCBALBGTsy86LiFl
- yhS7VqlNE1bn/uB9f0sMRct+oHhUAme3rh1NsgpPJVtF+ukY/BxuBNM+1XHkuRQJo8J9
- n07A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=r/inbI+y1fhrxyLW9sS+q/7x6KkspXDB7h9KT6wBhFI=;
- b=L3aBx1iydN9xYILSHuyJGwqfjefyBVKHH+YitWihbIRzHLxhI7vUcvdpi44Bu8nk6G
- aPyNFOZASizaHCCd8p27XHzAegIbykZOClqcqE+LkQCJHkFccvfTuQXrOt0BCucO06PJ
- PtWDFbQRbKsHiauX8qDZN7j6XOQUQGrRSP4F2TrufZWgCL9ZNXKkE60AOG0Y2Sf0mZl0
- jV5E6lQh1vuKpiJ+1L3jEwedak0C8uPjRix5aKtmCvBvVlV63vUNppzJW6QA9qD92ifC
- tUFjUZLtPevhETulL6q+AGUVETT+QwVw+th5tH6X0z11m8UnXWdLvdEK40x2jrZEV4Zj
- zacw==
-X-Gm-Message-State: ANoB5pnxRdmJy5O63uMDz5KyoxFHcqEl9snl0uJtwnoR+DNDKOe1fjkb
- T5AVd90FiH/yhm4RHzIl4DiKMGDPEAVNC3QM7+Y=
-X-Google-Smtp-Source: AA0mqf4qkrdY9iSNek494zZjiqDs6tUrY9sSvGelHCP42eGUIvgdfUL9wM1QFB3i6woY0JwsbG4QB5ulMunhWiUYhGg=
-X-Received: by 2002:a25:f302:0:b0:6dd:4825:ba8f with SMTP id
- c2-20020a25f302000000b006dd4825ba8fmr30016399ybs.103.1669283865119; Thu, 24
- Nov 2022 01:57:45 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6E4DBF8014E
+ for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 14:48:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E4DBF8014E
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 0CDD7B827F1;
+ Thu, 24 Nov 2022 13:48:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88102C433D6;
+ Thu, 24 Nov 2022 13:48:01 +0000 (UTC)
+Message-ID: <94d9789d-017c-5f56-3d6e-90f7e9cc8c70@xs4all.nl>
+Date: Thu, 24 Nov 2022 14:47:59 +0100
 MIME-Version: 1.0
-From: Guillermo Rodriguez Garcia <guille.rodriguez@gmail.com>
-Date: Thu, 24 Nov 2022 10:57:34 +0100
-Message-ID: <CABDcavYdsk-O4x3oPX4i4+T5wsoZV26_kpEq6JvpD8A_cAGHxg@mail.gmail.com>
-Subject: SOC_DOUBLE_R_SX_TLV controls broken in cs24l51 driver
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.1
+Subject: Re: [PATCH v2 1/9] dt-bindings: drop redundant part of title of
+ shared bindings
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Andrew Lunn <andrew@lunn.ch>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+ netdev@vger.kernel.org, linux-can@vger.kernel.org,
+ linux-pci@vger.kernel.org, linux-pwm@vger.kernel.org,
+ linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
+ linux-usb@vger.kernel.org, virtualization@lists.linux-foundation.org,
+ linux-watchdog@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Jonathan Cameron <jic23@kernel.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Viresh Kumar
+ <vireshk@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+ Mark Brown <broonie@kernel.org>, Guenter Roeck <linux@roeck-us.net>
+References: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
+ <20221121110615.97962-2-krzysztof.kozlowski@linaro.org>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+In-Reply-To: <20221121110615.97962-2-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Mailman-Approved-At: Sat, 26 Nov 2022 08:58:51 +0100
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Lucas Tanure <tanureal@opensource.cirrus.com>, patches@opensource.cirrus.com,
- David Rhodes <david.rhodes@cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- James Schulman <james.schulman@cirrus.com>,
- =?UTF-8?Q?Tan_Nay=C4=B1r?= <tannayir@gmail.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,79 +94,334 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi all,
+On 21/11/2022 12:06, Krzysztof Kozlowski wrote:
+> The Devicetree bindings document does not have to say in the title that
+> it is a "binding", but instead just describe the hardware.  For shared
+> (re-usable) schemas, name them all as "common properties".
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Acked-by: Guenter Roeck <linux@roeck-us.net> # watchdog
+> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com> # IIO
+> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  Documentation/devicetree/bindings/clock/qcom,gcc.yaml           | 2 +-
+>  Documentation/devicetree/bindings/dma/dma-common.yaml           | 2 +-
+>  Documentation/devicetree/bindings/dma/dma-controller.yaml       | 2 +-
+>  Documentation/devicetree/bindings/dma/dma-router.yaml           | 2 +-
+>  Documentation/devicetree/bindings/iio/adc/adc.yaml              | 2 +-
+>  Documentation/devicetree/bindings/input/input.yaml              | 2 +-
+>  .../devicetree/bindings/media/video-interface-devices.yaml      | 2 +-
+>  Documentation/devicetree/bindings/media/video-interfaces.yaml   | 2 +-
 
-I am using a dev board with a Cirrus Logic cs24l51 codec.
+For these media files:
 
-This used to work fine prior to kernel version 5.x, however after 5.x
-it is not possible to set certain values for ALSA controls from
-userspace.
+Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-I believe this is related to the input validation that is mentioned in
-this thread: https://lore.kernel.org/all/Yph8C3bRxcr6ogW7@sirena.org.uk/T/,
-and possibly in this commit: 4f1e50d6a9cf9c1b8c859d449b5031cacfa8404e
-("ASoC: ops: Reject out of bounds values in snd_soc_put_volsw_sx()")
+Regards,
 
-For the cs24l51, all the controls that fail are using the
-SOC_DOUBLE_R_SX_TLV macro.
+	Hans
 
-I have traced this to the checks in snd_soc_put_volsw_sx, specifically
-the (val > max - min) check:
+>  Documentation/devicetree/bindings/mmc/mmc-controller.yaml       | 2 +-
+>  Documentation/devicetree/bindings/mtd/nand-chip.yaml            | 2 +-
+>  Documentation/devicetree/bindings/mtd/nand-controller.yaml      | 2 +-
+>  .../devicetree/bindings/net/bluetooth/bluetooth-controller.yaml | 2 +-
+>  Documentation/devicetree/bindings/net/can/can-controller.yaml   | 2 +-
+>  Documentation/devicetree/bindings/net/ethernet-controller.yaml  | 2 +-
+>  Documentation/devicetree/bindings/net/ethernet-phy.yaml         | 2 +-
+>  Documentation/devicetree/bindings/net/mdio.yaml                 | 2 +-
+>  Documentation/devicetree/bindings/opp/opp-v2-base.yaml          | 2 +-
+>  .../devicetree/bindings/power/reset/restart-handler.yaml        | 2 +-
+>  Documentation/devicetree/bindings/rtc/rtc.yaml                  | 2 +-
+>  .../devicetree/bindings/soundwire/soundwire-controller.yaml     | 2 +-
+>  Documentation/devicetree/bindings/spi/spi-controller.yaml       | 2 +-
+>  Documentation/devicetree/bindings/watchdog/watchdog.yaml        | 2 +-
+>  22 files changed, 22 insertions(+), 22 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc.yaml
+> index 1ab416c83c8d..7129fbcf2b6c 100644
+> --- a/Documentation/devicetree/bindings/clock/qcom,gcc.yaml
+> +++ b/Documentation/devicetree/bindings/clock/qcom,gcc.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/clock/qcom,gcc.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: Qualcomm Global Clock & Reset Controller Common Bindings
+> +title: Qualcomm Global Clock & Reset Controller Common Properties
+>  
+>  maintainers:
+>    - Stephen Boyd <sboyd@kernel.org>
+> diff --git a/Documentation/devicetree/bindings/dma/dma-common.yaml b/Documentation/devicetree/bindings/dma/dma-common.yaml
+> index ad06d36af208..ea700f8ee6c6 100644
+> --- a/Documentation/devicetree/bindings/dma/dma-common.yaml
+> +++ b/Documentation/devicetree/bindings/dma/dma-common.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/dma/dma-common.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: DMA Engine Generic Binding
+> +title: DMA Engine Common Properties
+>  
+>  maintainers:
+>    - Vinod Koul <vkoul@kernel.org>
+> diff --git a/Documentation/devicetree/bindings/dma/dma-controller.yaml b/Documentation/devicetree/bindings/dma/dma-controller.yaml
+> index 6d3727267fa8..538ebadff652 100644
+> --- a/Documentation/devicetree/bindings/dma/dma-controller.yaml
+> +++ b/Documentation/devicetree/bindings/dma/dma-controller.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/dma/dma-controller.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: DMA Controller Generic Binding
+> +title: DMA Controller Common Properties
+>  
+>  maintainers:
+>    - Vinod Koul <vkoul@kernel.org>
+> diff --git a/Documentation/devicetree/bindings/dma/dma-router.yaml b/Documentation/devicetree/bindings/dma/dma-router.yaml
+> index 4b817f5dc30e..f8d8c3c88bcc 100644
+> --- a/Documentation/devicetree/bindings/dma/dma-router.yaml
+> +++ b/Documentation/devicetree/bindings/dma/dma-router.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/dma/dma-router.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: DMA Router Generic Binding
+> +title: DMA Router Common Properties
+>  
+>  maintainers:
+>    - Vinod Koul <vkoul@kernel.org>
+> diff --git a/Documentation/devicetree/bindings/iio/adc/adc.yaml b/Documentation/devicetree/bindings/iio/adc/adc.yaml
+> index db348fcbb52c..261601729745 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/adc.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/adc.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/iio/adc/adc.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: Generic IIO bindings for ADC channels
+> +title: IIO Common Properties for ADC Channels
+>  
+>  maintainers:
+>    - Jonathan Cameron <jic23@kernel.org>
+> diff --git a/Documentation/devicetree/bindings/input/input.yaml b/Documentation/devicetree/bindings/input/input.yaml
+> index 17512f4347fd..94f7942189e8 100644
+> --- a/Documentation/devicetree/bindings/input/input.yaml
+> +++ b/Documentation/devicetree/bindings/input/input.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/input/input.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: Common input schema binding
+> +title: Input Devices Common Properties
+>  
+>  maintainers:
+>    - Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> diff --git a/Documentation/devicetree/bindings/media/video-interface-devices.yaml b/Documentation/devicetree/bindings/media/video-interface-devices.yaml
+> index 4527f56a5a6e..cf7712ad297c 100644
+> --- a/Documentation/devicetree/bindings/media/video-interface-devices.yaml
+> +++ b/Documentation/devicetree/bindings/media/video-interface-devices.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/media/video-interface-devices.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: Common bindings for video receiver and transmitter devices
+> +title: Common Properties for Video Receiver and Transmitter Devices
+>  
+>  maintainers:
+>    - Jacopo Mondi <jacopo@jmondi.org>
+> diff --git a/Documentation/devicetree/bindings/media/video-interfaces.yaml b/Documentation/devicetree/bindings/media/video-interfaces.yaml
+> index 68c3b9871cf3..8a7162ce34f6 100644
+> --- a/Documentation/devicetree/bindings/media/video-interfaces.yaml
+> +++ b/Documentation/devicetree/bindings/media/video-interfaces.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/media/video-interfaces.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: Common bindings for video receiver and transmitter interface endpoints
+> +title: Common Properties for Video Receiver and Transmitter Interface Endpoints
+>  
+>  maintainers:
+>    - Sakari Ailus <sakari.ailus@linux.intel.com>
+> diff --git a/Documentation/devicetree/bindings/mmc/mmc-controller.yaml b/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
+> index 802e3ca8be4d..613095a3d19d 100644
+> --- a/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/mmc/mmc-controller.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: MMC Controller Generic Binding
+> +title: MMC Controller Common Properties
+>  
+>  maintainers:
+>    - Ulf Hansson <ulf.hansson@linaro.org>
+> diff --git a/Documentation/devicetree/bindings/mtd/nand-chip.yaml b/Documentation/devicetree/bindings/mtd/nand-chip.yaml
+> index 6e2dc025d694..33d079f76c05 100644
+> --- a/Documentation/devicetree/bindings/mtd/nand-chip.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/nand-chip.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/mtd/nand-chip.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: NAND Chip and NAND Controller Generic Binding
+> +title: NAND Chip Common Properties
+>  
+>  maintainers:
+>    - Miquel Raynal <miquel.raynal@bootlin.com>
+> diff --git a/Documentation/devicetree/bindings/mtd/nand-controller.yaml b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+> index 220aa2c8c0b5..efcd415f8641 100644
+> --- a/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/nand-controller.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/mtd/nand-controller.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: NAND Chip and NAND Controller Generic Binding
+> +title: NAND Controller Common Properties
+>  
+>  maintainers:
+>    - Miquel Raynal <miquel.raynal@bootlin.com>
+> diff --git a/Documentation/devicetree/bindings/net/bluetooth/bluetooth-controller.yaml b/Documentation/devicetree/bindings/net/bluetooth/bluetooth-controller.yaml
+> index 9309dc40f54f..59bb0d7e8ab3 100644
+> --- a/Documentation/devicetree/bindings/net/bluetooth/bluetooth-controller.yaml
+> +++ b/Documentation/devicetree/bindings/net/bluetooth/bluetooth-controller.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/net/bluetooth/bluetooth-controller.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: Bluetooth Controller Generic Binding
+> +title: Bluetooth Controller Common Properties
+>  
+>  maintainers:
+>    - Marcel Holtmann <marcel@holtmann.org>
+> diff --git a/Documentation/devicetree/bindings/net/can/can-controller.yaml b/Documentation/devicetree/bindings/net/can/can-controller.yaml
+> index 1f0e98051074..217be90960e8 100644
+> --- a/Documentation/devicetree/bindings/net/can/can-controller.yaml
+> +++ b/Documentation/devicetree/bindings/net/can/can-controller.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/net/can/can-controller.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: CAN Controller Generic Binding
+> +title: CAN Controller Common Properties
+>  
+>  maintainers:
+>    - Marc Kleine-Budde <mkl@pengutronix.de>
+> diff --git a/Documentation/devicetree/bindings/net/ethernet-controller.yaml b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
+> index 3aef506fa158..00be387984ac 100644
+> --- a/Documentation/devicetree/bindings/net/ethernet-controller.yaml
+> +++ b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/net/ethernet-controller.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: Ethernet Controller Generic Binding
+> +title: Ethernet Controller Common Properties
+>  
+>  maintainers:
+>    - David S. Miller <davem@davemloft.net>
+> diff --git a/Documentation/devicetree/bindings/net/ethernet-phy.yaml b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
+> index ad808e9ce5b9..1327b81f15a2 100644
+> --- a/Documentation/devicetree/bindings/net/ethernet-phy.yaml
+> +++ b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/net/ethernet-phy.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: Ethernet PHY Generic Binding
+> +title: Ethernet PHY Common Properties
+>  
+>  maintainers:
+>    - Andrew Lunn <andrew@lunn.ch>
+> diff --git a/Documentation/devicetree/bindings/net/mdio.yaml b/Documentation/devicetree/bindings/net/mdio.yaml
+> index b5706d4e7e38..a266ade918ca 100644
+> --- a/Documentation/devicetree/bindings/net/mdio.yaml
+> +++ b/Documentation/devicetree/bindings/net/mdio.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/net/mdio.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: MDIO Bus Generic Binding
+> +title: MDIO Bus Common Properties
+>  
+>  maintainers:
+>    - Andrew Lunn <andrew@lunn.ch>
+> diff --git a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+> index cf9c2f7bddc2..47e6f36b7637 100644
+> --- a/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+> +++ b/Documentation/devicetree/bindings/opp/opp-v2-base.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/opp/opp-v2-base.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: Generic OPP (Operating Performance Points) Common Binding
+> +title: Generic OPP (Operating Performance Points) Common Properties
+>  
+>  maintainers:
+>    - Viresh Kumar <viresh.kumar@linaro.org>
+> diff --git a/Documentation/devicetree/bindings/power/reset/restart-handler.yaml b/Documentation/devicetree/bindings/power/reset/restart-handler.yaml
+> index 1f9a2aac53c0..378b404af7fd 100644
+> --- a/Documentation/devicetree/bindings/power/reset/restart-handler.yaml
+> +++ b/Documentation/devicetree/bindings/power/reset/restart-handler.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/power/reset/restart-handler.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: Restart and shutdown handler generic binding
+> +title: Restart and Shutdown Handler Common Properties
+>  
+>  maintainers:
+>    - Sebastian Reichel <sre@kernel.org>
+> diff --git a/Documentation/devicetree/bindings/rtc/rtc.yaml b/Documentation/devicetree/bindings/rtc/rtc.yaml
+> index 0ec3551f12dd..c6fff5486fe6 100644
+> --- a/Documentation/devicetree/bindings/rtc/rtc.yaml
+> +++ b/Documentation/devicetree/bindings/rtc/rtc.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/rtc/rtc.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: RTC Generic Binding
+> +title: Real Time Clock Common Properties
+>  
+>  maintainers:
+>    - Alexandre Belloni <alexandre.belloni@bootlin.com>
+> diff --git a/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml b/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+> index 4aad121eff3f..fdeb8af417d7 100644
+> --- a/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+> +++ b/Documentation/devicetree/bindings/soundwire/soundwire-controller.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/soundwire/soundwire-controller.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: SoundWire Controller Generic Binding
+> +title: SoundWire Controller Common Properties
+>  
+>  maintainers:
+>    - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> diff --git a/Documentation/devicetree/bindings/spi/spi-controller.yaml b/Documentation/devicetree/bindings/spi/spi-controller.yaml
+> index 01042a7f382e..5a7c72cadf76 100644
+> --- a/Documentation/devicetree/bindings/spi/spi-controller.yaml
+> +++ b/Documentation/devicetree/bindings/spi/spi-controller.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/spi/spi-controller.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: SPI Controller Generic Binding
+> +title: SPI Controller Common Properties
+>  
+>  maintainers:
+>    - Mark Brown <broonie@kernel.org>
+> diff --git a/Documentation/devicetree/bindings/watchdog/watchdog.yaml b/Documentation/devicetree/bindings/watchdog/watchdog.yaml
+> index e3dfb02f0ca5..fccae0d00110 100644
+> --- a/Documentation/devicetree/bindings/watchdog/watchdog.yaml
+> +++ b/Documentation/devicetree/bindings/watchdog/watchdog.yaml
+> @@ -4,7 +4,7 @@
+>  $id: http://devicetree.org/schemas/watchdog/watchdog.yaml#
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+> -title: Watchdog Generic Bindings
+> +title: Watchdog Common Properties
+>  
+>  maintainers:
+>    - Guenter Roeck <linux@roeck-us.net>
 
-pr_warn("Max: %d, Min: %d, Value: %d", max, min, val);
-pr_warn("platform_max: %d", mc->platform_max);
-if (mc->platform_max && val > mc->platform_max)
-{
-    return -EINVAL;
-}
-if (val > max - min){
-    pr_warn("(val > max - min) check failed");
-    return -EINVAL;
-}
-if (val < 0)
-    return -EINVAL;
-
-According to the datasheet of the CS24L51, section 6.13, page 61, the
-PCMMIXX_VOL registers accept the following range of values:
-
-Binary Code / Volume Setting
-001 1000 / +12.0 dB
-=C2=B7=C2=B7=C2=B7 =C2=B7=C2=B7=C2=B7
-000 0000 / 0 dB
-111 1111 / -0.5 dB
-111 1110 / -1.0 dB
-=C2=B7=C2=B7=C2=B7 =C2=B7=C2=B7=C2=B7
-001 1001 / -51.5 dB
-
-Minimum value is 0x19 (001 1001) corresponding to -51.5 dB, then there
-are 127 possible gain settings from -51.5 dB to +12.0 dB, in 0.5 dB
-steps.
-
-This is declared in the driver as follows:
-
-SOC_DOUBLE_R_SX_TLV("PCM Playback Volume",
-CS42L51_PCMA_VOL, CS42L51_PCMB_VOL,
-0, 0x19, 0x7F, adc_pcm_tlv),
-
-0x19 =3D min value
-0x7F =3D number of gain settings
-
-This seems to be correct according to the semantics of the
-SOC_DOUBLE_R_SX_TLV macro as described in commit
-34198710f55b5f359f43e67d9a08fe5aadfbca1b ("ASoC: Add info callback for
-SX_TLV controls").
-
-However, the (val > max - min) check in snd_soc_put_volsw_sx fails in
-the above example because val =3D 127, max - min =3D 127 - 25 =3D 102.
-
-So I am not sure how this should be fixed. Is the SX_TLV macro being
-used incorrectly here? Is the check in snd_soc_put_volsw_sx wrong?
-
-Any pointers are welcome.
-
-Thanks,
-
-(If possible, please CC me in any replies)
-
-Guillermo Rodriguez Garcia
-guille.rodriguez@gmail.com
