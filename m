@@ -4,103 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29CE6C4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:01:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A6F4C4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:01:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 28DAE17F6;
-	Sat, 26 Nov 2022 09:00:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28DAE17F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5192217D3;
+	Sat, 26 Nov 2022 09:00:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5192217D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669449667;
-	bh=soPk7+0knuPzBaEhNRtkIK6MUD3POhg/rBKJrCyVkmA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=BuCpFw9KeREz1CmSJ9acEAj84DGfxfaSzNq3ko9TakNYCAiZibBYKmRih5IO6nuUs
-	 nRzkksk0kgFqTvejnrpDYVHLnjYd7FUyKpTQYvv18S6VtDz6MiKroi6+mTmUPNr4sC
-	 1TWQFcqtbb6lyQ15Hsp+lpWGZvcVGCXzbuReak4U=
+	s=default; t=1669449688;
+	bh=7vY1oRHvWX2z8ha1+wPrjMKMWdl008t36kDC82qVHIg=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=qIb5ik3cZku4h/Dx8oL+dNRID7HMzUHERk4fy7FwJkCWYrHV0tW+B0NxgjidNDBzw
+	 z75Mg7jI5TamBHExaWXMUFZZBhhf33UPVP7ziu1Mx+GQNQxHc/FfiINuCO1phg2qJj
+	 rZEvFtToJxTEKjetv0Z2p8/2vb/Rz2dEmgO6/FVs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D755F80567;
+	by alsa1.perex.cz (Postfix) with ESMTP id D6B4BF80579;
 	Sat, 26 Nov 2022 08:58:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD134F80431; Thu, 24 Nov 2022 08:16:44 +0100 (CET)
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com
- [IPv6:2607:f8b0:4864:20::533])
+ id A0D8EF80431; Thu, 24 Nov 2022 10:57:49 +0100 (CET)
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com
+ [IPv6:2607:f8b0:4864:20::b2a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25B9BF80149
- for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 08:16:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25B9BF80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FAD4F8014E
+ for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 10:57:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FAD4F8014E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="jN9Iu2JG"
-Received: by mail-pg1-x533.google.com with SMTP id f3so889515pgc.2
- for <alsa-devel@alsa-project.org>; Wed, 23 Nov 2022 23:16:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=9beI1qbDaBEZGBMzOodYXezAJNnkCn943LXJypsps08=;
- b=jN9Iu2JG6Jbf9f/Vtx6/x8W99mbfvmkmA5JpUTuuOhHuX9hE65G+zwT360z98Yxh2l
- i6PqDF91yJmzwCKNYEVFuLVfqGCqoHx9I7wNV8pa819eMDoiMR27SZF1GHdGnGDHcMWz
- pqI4i03rsZDpQ60ONyvQHuYR+N3femATVqrSC4hLc3ih0MmJpf23tjAqEmigk+Q4lN5p
- TjriD73VK+kqD8Wil5LA1NXQ4waHtGM3IZBFIczk95hCWTGki63dLVXFv0wvyqKSahPp
- nd3iHhwTtHF7fG/CtXcp1E5PNjqsgHvp71L23Lt4pdmYQDMtQS6xnA3gM9hUIGynee9E
- kaMQ==
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="FsQyigU5"
+Received: by mail-yb1-xb2a.google.com with SMTP id z192so1316197yba.0
+ for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 01:57:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=r/inbI+y1fhrxyLW9sS+q/7x6KkspXDB7h9KT6wBhFI=;
+ b=FsQyigU5X9Bj9xZiNwYg2vk1ek0GVhZG+zbSZ3vYiapFPlAQUN1xt3rSqtvzfV2J0o
+ xn34AJ262EZYn2nnGIyRHGnlUbJL/Ecj+cE9/nguY3T/aDuwKpTUmTkCIShYtgNJoqJ6
+ S+oSflzGcP2f6TMQwdf/Uqc3W+iufoDZ5qIrmRnn+wEJIxLZcDcvcGWYSRe8V3BNRzgl
+ X5pfGd6YRxRlZWJBqxbiE5b9oBOh4m/QQneZJjN5a90umabI+6XNKCBALBGTsy86LiFl
+ yhS7VqlNE1bn/uB9f0sMRct+oHhUAme3rh1NsgpPJVtF+ukY/BxuBNM+1XHkuRQJo8J9
+ n07A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=9beI1qbDaBEZGBMzOodYXezAJNnkCn943LXJypsps08=;
- b=W0IKT3DwwZ23DsqfSrRFoLABiDdK87X5pd8o4tXLkEKAsMjo5JdcRYrrMwrEIJWBue
- 3sYEbNJlXK1sQVrcxlZuHtaf2CCmOb/9BzZLCC63r5c/arzjJUcSybKGvdPnW0E4EmRF
- YjIdmE9+l/HADbkGp++RzkHq39cX9/u472JKhlcM2a8y8EVmc2t3ZJ0Zx1UlLqt4XTpy
- jHCNxRsIVPlHTgrtmU+m4dfFNGrHtycbakrOTDdE3QNEXD3A65c5soMxd4WlB8+cw38l
- TtGdD4V3OKUlBxPJLCpePJqU4sS0vsZuKTQmnf539QTgKAtLQo8TSS++IfI1XfxtPdBf
- h11A==
-X-Gm-Message-State: ANoB5plka7dec0J1INbzw7l4fWoJeGMONt7WCSoaRLfqnVxhBqTEY+HK
- yuPMN/p9olcwJg5B2M1g15SZ+w==
-X-Google-Smtp-Source: AA0mqf539xW7yp+XmSaeh7QyKEx/uI4+Px0TRaTKiiPa7cXAYmK2DoSN46/6FwkQRO+vECyNwcPwTg==
-X-Received: by 2002:aa7:8c19:0:b0:573:620a:3b1c with SMTP id
- c25-20020aa78c19000000b00573620a3b1cmr13160104pfd.50.1669274195379; 
- Wed, 23 Nov 2022 23:16:35 -0800 (PST)
-Received: from localhost ([122.172.85.60]) by smtp.gmail.com with ESMTPSA id
- k4-20020a170902c40400b001867fdec154sm414181plk.224.2022.11.23.23.16.34
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 23 Nov 2022 23:16:34 -0800 (PST)
-Date: Thu, 24 Nov 2022 12:46:32 +0530
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v2 0/9] dt-bindings: cleanup titles
-Message-ID: <20221124071632.5cadtc6pbdvdv3xb@vireshk-i7>
-References: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=r/inbI+y1fhrxyLW9sS+q/7x6KkspXDB7h9KT6wBhFI=;
+ b=L3aBx1iydN9xYILSHuyJGwqfjefyBVKHH+YitWihbIRzHLxhI7vUcvdpi44Bu8nk6G
+ aPyNFOZASizaHCCd8p27XHzAegIbykZOClqcqE+LkQCJHkFccvfTuQXrOt0BCucO06PJ
+ PtWDFbQRbKsHiauX8qDZN7j6XOQUQGrRSP4F2TrufZWgCL9ZNXKkE60AOG0Y2Sf0mZl0
+ jV5E6lQh1vuKpiJ+1L3jEwedak0C8uPjRix5aKtmCvBvVlV63vUNppzJW6QA9qD92ifC
+ tUFjUZLtPevhETulL6q+AGUVETT+QwVw+th5tH6X0z11m8UnXWdLvdEK40x2jrZEV4Zj
+ zacw==
+X-Gm-Message-State: ANoB5pnxRdmJy5O63uMDz5KyoxFHcqEl9snl0uJtwnoR+DNDKOe1fjkb
+ T5AVd90FiH/yhm4RHzIl4DiKMGDPEAVNC3QM7+Y=
+X-Google-Smtp-Source: AA0mqf4qkrdY9iSNek494zZjiqDs6tUrY9sSvGelHCP42eGUIvgdfUL9wM1QFB3i6woY0JwsbG4QB5ulMunhWiUYhGg=
+X-Received: by 2002:a25:f302:0:b0:6dd:4825:ba8f with SMTP id
+ c2-20020a25f302000000b006dd4825ba8fmr30016399ybs.103.1669283865119; Thu, 24
+ Nov 2022 01:57:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
+From: Guillermo Rodriguez Garcia <guille.rodriguez@gmail.com>
+Date: Thu, 24 Nov 2022 10:57:34 +0100
+Message-ID: <CABDcavYdsk-O4x3oPX4i4+T5wsoZV26_kpEq6JvpD8A_cAGHxg@mail.gmail.com>
+Subject: SOC_DOUBLE_R_SX_TLV controls broken in cs24l51 driver
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Mailman-Approved-At: Sat, 26 Nov 2022 08:58:51 +0100
-Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-pwm@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-pci@vger.kernel.org,
- Ulf Hansson <ulf.hansson@linaro.org>, linux-mips@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-riscv@lists.infradead.org,
- linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
- linux-rtc@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
- linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- Guenter Roeck <linux@roeck-us.net>, linux-media@vger.kernel.org,
- devicetree@vger.kernel.org, linux-watchdog@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-can@vger.kernel.org, linux-gpio@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, virtualization@lists.linux-foundation.org,
- linux-arm-kernel@lists.infradead.org, Stephen Boyd <sboyd@kernel.org>,
- netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
- Sebastian Reichel <sre@kernel.org>, Jonathan Cameron <jic23@kernel.org>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>, patches@opensource.cirrus.com,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ James Schulman <james.schulman@cirrus.com>,
+ =?UTF-8?Q?Tan_Nay=C4=B1r?= <tannayir@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,16 +97,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 21-11-22, 12:06, Krzysztof Kozlowski wrote:
->  .../devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml        | 2 +-
->  .../devicetree/bindings/cpufreq/qcom-cpufreq-nvmem.yaml         | 2 +-
->  Documentation/devicetree/bindings/opp/opp-v1.yaml               | 2 +-
->  Documentation/devicetree/bindings/opp/opp-v2-base.yaml          | 2 +-
->  Documentation/devicetree/bindings/opp/opp-v2-kryo-cpu.yaml      | 2 +-
->  Documentation/devicetree/bindings/opp/opp-v2-qcom-level.yaml    | 2 +-
->  Documentation/devicetree/bindings/opp/opp-v2.yaml               | 2 +-
+Hi all,
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+I am using a dev board with a Cirrus Logic cs24l51 codec.
 
--- 
-viresh
+This used to work fine prior to kernel version 5.x, however after 5.x
+it is not possible to set certain values for ALSA controls from
+userspace.
+
+I believe this is related to the input validation that is mentioned in
+this thread: https://lore.kernel.org/all/Yph8C3bRxcr6ogW7@sirena.org.uk/T/,
+and possibly in this commit: 4f1e50d6a9cf9c1b8c859d449b5031cacfa8404e
+("ASoC: ops: Reject out of bounds values in snd_soc_put_volsw_sx()")
+
+For the cs24l51, all the controls that fail are using the
+SOC_DOUBLE_R_SX_TLV macro.
+
+I have traced this to the checks in snd_soc_put_volsw_sx, specifically
+the (val > max - min) check:
+
+pr_warn("Max: %d, Min: %d, Value: %d", max, min, val);
+pr_warn("platform_max: %d", mc->platform_max);
+if (mc->platform_max && val > mc->platform_max)
+{
+    return -EINVAL;
+}
+if (val > max - min){
+    pr_warn("(val > max - min) check failed");
+    return -EINVAL;
+}
+if (val < 0)
+    return -EINVAL;
+
+According to the datasheet of the CS24L51, section 6.13, page 61, the
+PCMMIXX_VOL registers accept the following range of values:
+
+Binary Code / Volume Setting
+001 1000 / +12.0 dB
+=C2=B7=C2=B7=C2=B7 =C2=B7=C2=B7=C2=B7
+000 0000 / 0 dB
+111 1111 / -0.5 dB
+111 1110 / -1.0 dB
+=C2=B7=C2=B7=C2=B7 =C2=B7=C2=B7=C2=B7
+001 1001 / -51.5 dB
+
+Minimum value is 0x19 (001 1001) corresponding to -51.5 dB, then there
+are 127 possible gain settings from -51.5 dB to +12.0 dB, in 0.5 dB
+steps.
+
+This is declared in the driver as follows:
+
+SOC_DOUBLE_R_SX_TLV("PCM Playback Volume",
+CS42L51_PCMA_VOL, CS42L51_PCMB_VOL,
+0, 0x19, 0x7F, adc_pcm_tlv),
+
+0x19 =3D min value
+0x7F =3D number of gain settings
+
+This seems to be correct according to the semantics of the
+SOC_DOUBLE_R_SX_TLV macro as described in commit
+34198710f55b5f359f43e67d9a08fe5aadfbca1b ("ASoC: Add info callback for
+SX_TLV controls").
+
+However, the (val > max - min) check in snd_soc_put_volsw_sx fails in
+the above example because val =3D 127, max - min =3D 127 - 25 =3D 102.
+
+So I am not sure how this should be fixed. Is the SX_TLV macro being
+used incorrectly here? Is the check in snd_soc_put_volsw_sx wrong?
+
+Any pointers are welcome.
+
+Thanks,
+
+(If possible, please CC me in any replies)
+
+Guillermo Rodriguez Garcia
+guille.rodriguez@gmail.com
