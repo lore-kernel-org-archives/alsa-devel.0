@@ -4,86 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F129BC43219
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Nov 2022 11:14:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCB76C43219
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Nov 2022 11:37:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 048B416DE;
-	Thu, 24 Nov 2022 12:13:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 048B416DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B3FE16EA;
+	Thu, 24 Nov 2022 12:36:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B3FE16EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669288478;
-	bh=EMZfw34a95hucjihNdRYXMHgKxqSZJZM7O/TQPcfAqI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1669289827;
+	bh=b/jJ/b2IcDjdu3R7FGNacN4TNVecYpdcFNvFPYff80U=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bNuCocnYwE0pUUudL7hktihEmxkgwRhKbzRG0hU0axASjSFUqHskx4IzUbgpZfVIU
-	 FUNXtF5HjrbeLzYfNSESsBYaf+8FBDtPcDsAx7h5NNbmZRL5PO/V+5NN0M+ZoOpb3m
-	 NBeBDDWadAymbSnLoltV+Zb9e4WAbzrlyPapn8/Y=
+	b=Segrk72hFUBLu08cZR/rPEA7puD1dmdvxUUjlalsIeXAlHILGTxGdaZ4QHoBtbvbw
+	 HDN2b6OLlui+7mvPPUTd99o/3zvwXIfdqJqU1b0F6CXzAVVHCGdS3IWZOtDi5tKO17
+	 OAR4kZM3HejDkwPFzkq5xgsHIdMulHR1JOnUWPdA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AD8FF80245;
-	Thu, 24 Nov 2022 12:13:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3EF3F8014E;
+	Thu, 24 Nov 2022 12:36:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41DF8F8014E; Thu, 24 Nov 2022 12:13:45 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 1EF6CF80115; Thu, 24 Nov 2022 12:36:15 +0100 (CET)
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com
+ [IPv6:2607:f8b0:4864:20::82c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0903BF80115
- for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 12:13:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0903BF80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4DE1F80115
+ for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 12:36:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4DE1F80115
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="pkukmm3c"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2AO7cYDD023037; Thu, 24 Nov 2022 05:13:38 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=KzIVxiaUzFmwVmBqr6IdozjqkXgomj00FNdz4ozpdfc=;
- b=pkukmm3cD4KghaY8vpf6MnEx8wFqu1SRJxVpU5spAVt/aRGhnd1JdWf6JoCuWFliCWoE
- aLzqg2BVVki88jQAtDV4pRHr1CWp85xplq/MW4db87SSRWkZrtTvG5kh0mVkUrgxl3l+
- il5+7Zu1tq/W7b8TSLUzTlIzdGXb1RwBU1eZWqDRHtDxdDyhfELL3yWF1OXkuhVpo/dF
- 52SR6CEbrR2rkG/qIMwAb9ApQY58E/LS1DCS5KKWvrm4C2iHp0QxLthG0fU743jEMroN
- lyo0XC3l2nhIjpEXyR+diR9DX6TV731DTLeTxLji7ibwx0W5KXsW1/5v4BNexF13bUUm HA== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kxvet621g-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 24 Nov 2022 05:13:38 -0600
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.20; Thu, 24 Nov
- 2022 05:13:36 -0600
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.20 via
- Frontend Transport; Thu, 24 Nov 2022 05:13:36 -0600
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 88ED1477;
- Thu, 24 Nov 2022 11:13:36 +0000 (UTC)
-Date: Thu, 24 Nov 2022 11:13:36 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Guillermo Rodriguez Garcia <guille.rodriguez@gmail.com>
-Subject: Re: SOC_DOUBLE_R_SX_TLV controls broken in cs24l51 driver
-Message-ID: <20221124111336.GE105268@ediswmail.ad.cirrus.com>
-References: <CABDcavYdsk-O4x3oPX4i4+T5wsoZV26_kpEq6JvpD8A_cAGHxg@mail.gmail.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="LbypaNLt"
+Received: by mail-qt1-x82c.google.com with SMTP id h24so869309qta.9
+ for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 03:36:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=R8BPplO7UlHzk5yo9FOzqotniwR7y6QrBugM8+AwrSQ=;
+ b=LbypaNLt3I8EKendSm8Ba65FJIvtubs5gAuW3xGDHqOAfoeX1Hmk9OZI2F/7FEDdYx
+ Qcc3c6HfKuCzbn6ji+HsvkUbLRLMpB5hP3nnKRBNPuUdJtrc28TJ6MLZH9f7o06NUlbi
+ Hvl9kK7N9VGCdb5n6/VNxsXgF6XcfTmWZ3IMf0s4umGt194DCudkY16GlJeUmIXtrfqA
+ lyvZ6pkAVWUXrom3u+RuIxme0er08h5UyHGiawIAMx1ydF7++Jz/R9JPMQINCUbBaKkP
+ hD28P+tFhj5TfQr5dzL7iDwFXG9htX+S/N/B2n2nwUBKNMWJ4sdsMdeA7iGZakXSlKaJ
+ jcgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=R8BPplO7UlHzk5yo9FOzqotniwR7y6QrBugM8+AwrSQ=;
+ b=HZ9Qu8VHbOxPghiC2ICvfxdT8tiPqcG7tooTVHAcEZh4jv5aY12isuRaN1fw1BPGlA
+ 9jssI/1vDk260lKn1ndZVOtet0NvTlRrS0zY8SpWU8yXK5TWDcDVhCFwZeUBs5xFnMDQ
+ WDUkuCwTFtbpCJ2+PPORmcONtlSVicrIqEqlZM4AUSQVEELJAvQ/+kAmE+y5dK3nMbLG
+ DEfzey1yRd9bygUfWTA5uwTpFWkJ8EU1ge3xZguvfFLd29yu0oNxiqt/SddQl2+Vh4ny
+ tIRvkwRAMhfQz7oPhBu2kkOf6PN7RPHphYqbmXKnhFmwfi3cVhtVWpUCKVnPJxWleJGU
+ L8xA==
+X-Gm-Message-State: ANoB5pmB7gSvx/VcX5V6umaUyK7Kt1GwFMjn1KQizfu4+WmxOdHx63uj
+ MFgbKp3bIWdWp2aLYhJmNCRfdIoALJGhnvThZKI=
+X-Google-Smtp-Source: AA0mqf7M/JAbmhM35ZrYv+M8CxU6vmyIv6WkHYgF71vj9U14wRfDHw8RbyhLhPBoGOyOO7XlkK+mIf89b1QuhD8s71c=
+X-Received: by 2002:ac8:4cd1:0:b0:3a5:1940:a027 with SMTP id
+ l17-20020ac84cd1000000b003a51940a027mr29417932qtv.195.1669289766424; Thu, 24
+ Nov 2022 03:36:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CABDcavYdsk-O4x3oPX4i4+T5wsoZV26_kpEq6JvpD8A_cAGHxg@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: mCedHBN3rX4G6ParltJ3gVv_xnRlraUI
-X-Proofpoint-GUID: mCedHBN3rX4G6ParltJ3gVv_xnRlraUI
-X-Proofpoint-Spam-Reason: safe
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- Lucas Tanure <tanureal@opensource.cirrus.com>, patches@opensource.cirrus.com,
- linux-kernel@vger.kernel.org, David Rhodes <david.rhodes@cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- James Schulman <james.schulman@cirrus.com>,
- Tan =?utf-8?B?TmF5xLFy?= <tannayir@gmail.com>
+References: <20221124110718.3925934-1-sbinding@opensource.cirrus.com>
+ <20221124110718.3925934-2-sbinding@opensource.cirrus.com>
+In-Reply-To: <20221124110718.3925934-2-sbinding@opensource.cirrus.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Thu, 24 Nov 2022 13:35:30 +0200
+Message-ID: <CAHp75VfUqkxyB7J8fbfQKCMaSa55q4zqt7btNb_n5E3-NWhQyg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] platform/x86: serial-multi-instantiate: Set fwnode
+ for i2c
+To: Stefan Binding <sbinding@opensource.cirrus.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: alsa-devel@alsa-project.org, "Rafael J . Wysocki" <rafael@kernel.org>,
+ linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Mark Gross <markgross@kernel.org>,
+ Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
+ platform-driver-x86@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,33 +97,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Nov 24, 2022 at 10:57:34AM +0100, Guillermo Rodriguez Garcia wrote:
-> Hi all,
-> 
-> I am using a dev board with a Cirrus Logic cs24l51 codec.
-> 
-> This used to work fine prior to kernel version 5.x, however after 5.x
-> it is not possible to set certain values for ALSA controls from
-> userspace.
-> 
-> I believe this is related to the input validation that is mentioned in
-> this thread: https://lore.kernel.org/all/Yph8C3bRxcr6ogW7@sirena.org.uk/T/,
-> and possibly in this commit: 4f1e50d6a9cf9c1b8c859d449b5031cacfa8404e
-> ("ASoC: ops: Reject out of bounds values in snd_soc_put_volsw_sx()")
-> 
-> For the cs24l51, all the controls that fail are using the
-> SOC_DOUBLE_R_SX_TLV macro.
-> 
-> I have traced this to the checks in snd_soc_put_volsw_sx, specifically
-> the (val > max - min) check:
-> 
+On Thu, Nov 24, 2022 at 1:07 PM Stefan Binding
+<sbinding@opensource.cirrus.com> wrote:
+>
+> This allows the i2c driver to obtain the ACPI_COMPANION.
 
-Can you try these two patches:
+As far as I get how it's done in the SPI case the real fix should lie
+among i2c_acpi_new_device_by_fwnode(), right?
 
-https://lore.kernel.org/all/165236477046.1016627.15470197691244479154.b4-ty@kernel.org/
-
-It looks like they somehow got lost around 5.18, I have been
-meaning to chase up what happened to them.
-
-Thanks,
-Charles
+-- 
+With Best Regards,
+Andy Shevchenko
