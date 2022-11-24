@@ -4,74 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D16F2C43219
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Nov 2022 10:24:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC93AC433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Nov 2022 11:08:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C7F616CB;
-	Thu, 24 Nov 2022 11:23:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C7F616CB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E9BB16A6;
+	Thu, 24 Nov 2022 12:07:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E9BB16A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669285450;
-	bh=ep0/8WFmmF1DLAjStgRC+286Uemc17K0xldJybIShBc=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1669288106;
+	bh=63+SlLP93G2zJ2WK5kqIQXiRE9iea/sIdcs5SGBZaB4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GX1p0Whe0zKdQt8kTjp741D+Z+V43kBsTPs8eVr5k2eP9Ss3MBX47z2iMtBW0t7Pp
-	 RysIMG1uQcbT19pptZECCUosSOCZ6n3PshA2TVvjyiHVjFpCFVmuPmbr1cQ1SBVPIK
-	 qoxiZSjxqo+uOStnEbbRdw/Xx6iHz7aPOoHCwElY=
+	b=Y2evTIM7LEGDdOPzXc3fotxTS3AiWrPah9RT4v6GoFW2qKtlZ+o6hIAH09RqAgm83
+	 vPkV0CVN1ry9eNf6MAKjnBfx6Zm8NxOGPPp70bTJ9/kjsMU8oAu0enFPW+4TNVetTG
+	 54ynB7BLfT1vT26aBDj1MY/8lsgMfs5vQHhp1+SA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B98FFF80245;
-	Thu, 24 Nov 2022 11:23:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66765F80431;
+	Thu, 24 Nov 2022 12:07:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D6212F8014E; Thu, 24 Nov 2022 11:23:18 +0100 (CET)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+ id 90977F80448; Thu, 24 Nov 2022 12:07:33 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 144F8F8014E
- for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 11:23:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 144F8F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7DDACF80115
+ for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 12:07:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DDACF80115
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
- header.b="awkyrvSe"
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
- [2.237.20.237])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits))
- (No client certificate requested) (Authenticated sender: kholk11)
- by madras.collabora.co.uk (Postfix) with ESMTPSA id 18D596602B19;
- Thu, 24 Nov 2022 10:23:11 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1669285391;
- bh=ep0/8WFmmF1DLAjStgRC+286Uemc17K0xldJybIShBc=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=awkyrvSeqIxToj4LbnERqzihnB06rBYL1VQ8mappgQrBM8rxkeA7GHzEVFAoTZ44g
- YaYyRFSzIJ1E6UsjmG5dKkPujzeDcPfNqMcU/gsIlCReMvv9nsANFPvM4+MiwnkY3H
- nX8PUc55Kmw2f+BdY78sCZag5dQPJWLOOY0Xu3ZTtUK+nnjnHmOl2uVre+ek9sBBIF
- 9o3/SgLy5Qk9mUrg5Uv8RDfclM7ABCfpAxFWRY3MbRUANNVYsXm5/4F6/6v0erU23D
- I3Er7mbzYdneoDgn12Rp1whvWCCG86C3pjqi9XhlaUcGeXAwPktI6txYKno1sQzb+M
- SAAMrTM8s07Hg==
-Message-ID: <38ac71ce-b38a-4fb1-ba21-aa5c91283bd9@collabora.com>
-Date: Thu, 24 Nov 2022 11:23:08 +0100
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="MeHXoUqI"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 2AO7LNJS015819; Thu, 24 Nov 2022 05:07:25 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=MUgtFemw9mzys2LF+P1154GAYh2HscnFbiU7ai50jsM=;
+ b=MeHXoUqIMuOg3cycTuD4gsB053mgOXXamO21I+tA0MZNyBU3obed1qZE/NHgy1vk0Qh7
+ ZlAU12ynGS1uEl1APXMElucwMK2jggKYZ2ftDzGsh6N5M4ovZ+ZcOxqQGDtFBfGHFIWb
+ EmcrJwMsmlX5rbA9HvCz/3x8mq3U0AloaQeQ/kXjPtbnXzM7eWg7CZC3ndFAu2rE8LXp
+ btOTZv1RJj303n+qdZZG8JqLFuV6eoJe07wk7aREN5Yw1AzZjY94xBVkJpUIx75AhUol
+ z8PZCLfrrHJ3yDa+s/vo7vz9K7oRHSxiSwep8T5P0QVU2ZIXfc7dRuROm/PyT0o7g26S iA== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3kxwe6x2du-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 24 Nov 2022 05:07:24 -0600
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.20; Thu, 24 Nov
+ 2022 05:07:22 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.20 via
+ Frontend Transport; Thu, 24 Nov 2022 05:07:22 -0600
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.202.160])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 85BD7B10;
+ Thu, 24 Nov 2022 11:07:22 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>, Dmitry Torokhov
+ <dmitry.torokhov@gmail.com>, "Rafael J . Wysocki" <rafael@kernel.org>, Hans
+ de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Jaroslav
+ Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v1 1/2] platform/x86: serial-multi-instantiate: Set fwnode for
+ i2c
+Date: Thu, 24 Nov 2022 11:07:17 +0000
+Message-ID: <20221124110718.3925934-2-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20221124110718.3925934-1-sbinding@opensource.cirrus.com>
+References: <20221124110718.3925934-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH v2] ASoC: mediatek: mt8186: Correct I2S shared clocks
-Content-Language: en-US
-To: Jiaxin Yu <jiaxin.yu@mediatek.com>, broonie@kernel.org,
- nfraprado@collabora.com
-References: <20221124023050.4470-1-jiaxin.yu@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20221124023050.4470-1-jiaxin.yu@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, chunxu.li@mediatek.com,
- linux-kernel@vger.kernel.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- linux-mediatek@lists.infradead.org, ajye_huang@compal.corp-partner.google.com,
- linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: oibzOdWpY9mctqOdzlYetaHUXXSPowin
+X-Proofpoint-GUID: oibzOdWpY9mctqOdzlYetaHUXXSPowin
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Stefan Binding <sbinding@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,16 +99,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Il 24/11/22 03:30, Jiaxin Yu ha scritto:
-> In mt8186 platform, I2S2 should be the main I2S port that provide
-> the clock, on the contrary I2S3 should be the second I2S port that
-> use this clock.
-> 
-> Fixes: 9986bdaee477 ("ASoC: mediatek: mt8186: Configure shared clocks")
-> Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
+This allows the i2c driver to obtain the ACPI_COMPANION.
 
-Sorry, had both versions open and I've sent the R-b tag to the wrong one.
-I meant to send that only to v2.
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ drivers/platform/x86/serial-multi-instantiate.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/platform/x86/serial-multi-instantiate.c
+index 5362f1a7b77c..15ef2f3c442e 100644
+--- a/drivers/platform/x86/serial-multi-instantiate.c
++++ b/drivers/platform/x86/serial-multi-instantiate.c
+@@ -194,6 +194,7 @@ static int smi_i2c_probe(struct platform_device *pdev, struct smi *smi,
+ 		strscpy(board_info.type, inst_array[i].type, I2C_NAME_SIZE);
+ 		snprintf(name, sizeof(name), "%s-%s.%d", dev_name(dev), inst_array[i].type, i);
+ 		board_info.dev_name = name;
++		board_info.fwnode = acpi_fwnode_handle(adev);
+ 
+ 		ret = smi_get_irq(pdev, adev, &inst_array[i]);
+ 		if (ret < 0)
+-- 
+2.34.1
 
