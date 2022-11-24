@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BB95C43217
-	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:15:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 635C5C4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:16:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 97A8D18D1;
-	Sat, 26 Nov 2022 09:14:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 97A8D18D1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D5DC190D;
+	Sat, 26 Nov 2022 09:15:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D5DC190D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669450527;
+	s=default; t=1669450585;
 	bh=vSDY92xmrOtkiq1FJrC4dGUzlqSkjlYU9twgxHBDx1E=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OF+XL4MCJkhdc1SV6jKrHOR1GtKEfib0tT+qANf7i9O9mZhoka7wJkYLjnHy2oiJ/
-	 lQCeoxt4acuAZemn4q80G5KkR/JiCA4X67+w/rfxsI7efWT2Kgu57osTyNP2AY/ZkQ
-	 qrCZmqV5/6VAs64FQbezICi6UDGbm5eXifp6bXis=
+	b=ZLM6EAniTQWxX6qUO/7p52auPw7l1tPTtXTOOB1dh5Gi0sVuqRxeBh/HvKAic+zNW
+	 +znGLWDS3bKMoXDKETDU/L8hUAMOXOW1MiLFDrqPpmaALXDB2WeY7C37t4zzFB7y8g
+	 GDso9dFblFrvuZdmPeuX5B7lJAMlDaSQosuJTf5I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1BD9F80730;
-	Sat, 26 Nov 2022 08:59:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49028F80799;
+	Sat, 26 Nov 2022 09:00:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33B7CF8014E; Thu, 24 Nov 2022 14:27:09 +0100 (CET)
+ id D1B41F80431; Thu, 24 Nov 2022 14:50:51 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CDBE1F8014E
- for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 14:27:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDBE1F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC4B5F8014E
+ for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 14:50:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC4B5F8014E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GlKThzKx"
+ header.b="Hi20oGxz"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 6032362111;
- Thu, 24 Nov 2022 13:27:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A1A6C433D6;
- Thu, 24 Nov 2022 13:26:51 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 028D6620F4;
+ Thu, 24 Nov 2022 13:50:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6776AC4347C;
+ Thu, 24 Nov 2022 13:50:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669296419;
+ s=k20201202; t=1669297846;
  bh=vSDY92xmrOtkiq1FJrC4dGUzlqSkjlYU9twgxHBDx1E=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=GlKThzKxKhC23cCCs9TD97Ki98PxWTZ4U4GGNHqAoquE+4kuWhNWaxPoQPCk0uei7
- BUiWWVufvjzHt4eQdZ0dB1rSsyQjbML0Cn/dInof/naaueWAZTGNi3ydktLTn01Yre
- nrQUAFadEiDlG5Gb5HYUtYcJ1SCy0yLrUgl9VIwOinY1E7NKMfUcrX6vjw3P8Q8E/B
- un9634LBLLJ5J6ezGVmN6LpFOeGn/P/G48OhN/1LBFYEid/vLzu3Z32i8PLScUqbyT
- N8IaQb0IVk8pv/1Hw+r+9EZgECdRflNPxFYPo32woXedfNjvc/2TBZgKAPl3GQgzF2
- iJvkdjZ9IgJ1w==
+ b=Hi20oGxzkmEg74j6qRD7Lfpoa1kcTrQCKK089dVyyzd4Ms62GyYEcriKLOdYnSnIB
+ BaTy90c7xln7bVVdzp+tZfTor2YCDJ4PfhCFqr+4U1blkF+BSGk+wqWNbDs1GjRxEP
+ 5zngiMi62+XsaI5cdT+5MW5QXkwvuvZTdh1mYSgYk++n5bXwjsiaFEUQhZ7smrgwyJ
+ TLSH8t2DGrVJraC9jirkwbs0YSutluzSGLevyrPQzPM1RecM+sjiSCNDXdUbmWoX0j
+ UbEkRvn5n0p6b+FOMJ6yy/o81uO1xyfZHDSqUS0YA3une+k6GKCtZ+YH0Sav4kxmgU
+ 3opwvJAPSvwcQ==
 From: Mark Brown <broonie@kernel.org>
-To: Angel Iglesias <ang.iglesiasg@gmail.com>, Lee Jones <lee.jones@linaro.org>, Grant Likely <grant.likely@linaro.org>,
- Wolfram Sang <wsa@kernel.org>, Uwe Kleine-König <uwe@kleine-koenig.org>
+To: Wolfram Sang <wsa@kernel.org>, Angel Iglesias <ang.iglesiasg@gmail.com>, Lee Jones <lee.jones@linaro.org>,
+ Grant Likely <grant.likely@linaro.org>, Uwe Kleine-König <uwe@kleine-koenig.org>
 In-Reply-To: <20221118224540.619276-1-uwe@kleine-koenig.org>
 References: <20221118224540.619276-1-uwe@kleine-koenig.org>
 Subject: Re: (subset) [PATCH 000/606] i2c: Complete conversion to i2c_probe_new
-Message-Id: <166929641104.251383.2794823399583000124.b4-ty@kernel.org>
-Date: Thu, 24 Nov 2022 13:26:51 +0000
+Message-Id: <166929783812.276133.16916757100694771073.b4-ty@kernel.org>
+Date: Thu, 24 Nov 2022 13:50:38 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
 X-Mailman-Approved-At: Sat, 26 Nov 2022 08:58:52 +0100
-Cc: linux-fbdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-iio@vger.kernel.org, alsa-devel@alsa-project.org,
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-fbdev@vger.kernel.org,
  platform-driver-x86@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-i2c@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
  linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org,
