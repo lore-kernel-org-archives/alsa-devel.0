@@ -4,56 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3245EC4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Nov 2022 05:58:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AE0DC433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Nov 2022 08:55:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31E4E16E8;
-	Thu, 24 Nov 2022 06:57:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31E4E16E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9FD8C16DA;
+	Thu, 24 Nov 2022 09:54:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FD8C16DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669269512;
-	bh=PkaX/hCGwuAwSuBQQJYYpwL96/ix3QXdgk5qRBflZcc=;
+	s=default; t=1669280148;
+	bh=7QTlydbdY9YeoWqx0L6YSjXNbh14hzV6W3tcDVBkMNM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CMr1vg5H7X3/eHTSgNQhAM+piFLoQOBwRqcvpTap1eTdnxkGIfwTk0pOLa8QkCMVc
-	 YbIO+WbQ7YbY7IruubzOkqdaxg+gh/kHewMWlaKbq3a5r3SlEVwMrvr0uH4tVPYwqz
-	 rSjxWIjIQpedBJSU5coaaeLDVSzbdAG3G4hI4y3A=
+	b=LTzQV8VCQ81RuY5b4hDRw8F/AhjYHkJ/d/ruA3FgAu328j+4igbgmHWbHIWpbHTGX
+	 PoZje8aJpdNfsZEoFZPGysaUNrVRWK5mquTwtwiD6MBcprLoItOCgQbgSkgpnGxUJE
+	 Pk3OP4tiZXWtf/EHyP6yCTlMuIfdjOXV1RQ/IOhg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9BCFF80448;
-	Thu, 24 Nov 2022 06:57:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53083F80245;
+	Thu, 24 Nov 2022 09:54:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D6D25F80431; Thu, 24 Nov 2022 06:57:17 +0100 (CET)
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa1.perex.cz (Postfix) with ESMTP id 8144EF80149
- for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 06:57:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8144EF80149
-Received: from NTHCCAS01.nuvoton.com (NTHCCAS01.nuvoton.com [10.1.8.28])
- by maillog.nuvoton.com (Postfix) with ESMTP id 7F7101C80FF5;
- Thu, 24 Nov 2022 13:57:05 +0800 (CST)
-Received: from NTHCCAS04.nuvoton.com (10.1.8.29) by NTHCCAS01.nuvoton.com
- (10.1.8.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2375.7; Thu, 24 Nov
- 2022 13:57:05 +0800
-Received: from localhost.localdomain (10.11.36.27) by NTHCCAS04.nuvoton.com
- (10.1.12.25) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Thu, 24 Nov 2022 13:57:05 +0800
-From: David Lin <CTLIN0@nuvoton.com>
-To: <broonie@kernel.org>
-Subject: [PATCH 2/2] ASoC: dt-bindings: add compatible string for NAU8318
-Date: Thu, 24 Nov 2022 13:56:58 +0800
-Message-ID: <20221124055658.53828-2-CTLIN0@nuvoton.com>
+ id 5ED58F80431; Thu, 24 Nov 2022 09:54:57 +0100 (CET)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 155D5F80149
+ for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 09:54:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 155D5F80149
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
+ header.b="kaE5lrXd"
+X-UUID: 4eec1624fe3e4ac1bd1052dd37f46a9b-20221124
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
+ s=dk; 
+ h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
+ bh=Se93twhCnANzbyfAp19LflQ7H378k9rkCrI1fa1AgUY=; 
+ b=kaE5lrXdlSx/NNQjmuyyQJ7mZv2iZcS635v/rxTauMCA/80UDzSNnVpPucgo7AJXsPuck7eaWhnC9RhND4RbsIwvwLuHawXEmuEEYSOfy1a0708AunRnAL0+tmHnMEcRl8P1wRajLKZn7k/8YbZQ8joNfIdgAwmhrItkXahRLWg=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.14, REQID:016c2cf5-489e-4d9c-939f-472d708d3b4a, IP:0,
+ U
+ RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+ release,TS:0
+X-CID-META: VersionHash:dcaaed0, CLOUDID:7bc4b52f-2938-482e-aafd-98d66723b8a9,
+ B
+ ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+ RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+X-UUID: 4eec1624fe3e4ac1bd1052dd37f46a9b-20221124
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
+ mailgw01.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 177122599; Thu, 24 Nov 2022 16:54:41 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.792.15; Thu, 24 Nov 2022 16:54:39 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkmbs11n2.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.792.15 via
+ Frontend Transport; Thu, 24 Nov 2022 16:54:38 +0800
+From: Jiaxin Yu <jiaxin.yu@mediatek.com>
+To: <broonie@kernel.org>, <andrzej.hajda@intel.com>,
+ <neil.armstrong@linaro.org>, <robert.foss@linaro.org>,
+ <Laurent.pinchart@ideasonboard.com>, <kuninori.morimoto.gx@renesas.com>,
+ <angelogioacchino.delregno@collabora.com>, <nfraprado@collabora.com>
+Subject: [PATCH 1/3] drm: bridge: it6505: bridge to hdmi-codec
+Date: Thu, 24 Nov 2022 16:54:34 +0800
+Message-ID: <20221124085436.24900-2-jiaxin.yu@mediatek.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221124055658.53828-1-CTLIN0@nuvoton.com>
-References: <20221124055658.53828-1-CTLIN0@nuvoton.com>
+In-Reply-To: <20221124085436.24900-1-jiaxin.yu@mediatek.com>
+References: <20221124085436.24900-1-jiaxin.yu@mediatek.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-Cc: alsa-devel@alsa-project.org, ctlin0.linux@gmail.com, WTLI@nuvoton.com,
- SJLIN0@nuvoton.com, KCHSU0@nuvoton.com, lgirdwood@gmail.com,
- YHCHuang@nuvoton.com, David Lin <CTLIN0@nuvoton.com>
+X-MTK: N
+Cc: alsa-devel@alsa-project.org, chunxu.li@mediatek.com,
+ allen-kh.cheng@mediatek.com, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ linux-mediatek@lists.infradead.org, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ ajye_huang@compal.corp-partner.google.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,35 +99,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The audio amplifier NAU8318 is almost functionally identical to NAU8315.
-Adds compatible string "nuvoton,nau8318" for driver reuse.
+1. Bridge to hdmi-codec to support audio feature. At the same time,
+   the function of automatically detecting audio is removed.
+2. It is observed that some DP-to-HDMI dongles will get into bad
+   states if sending InfoFrame without audio data. Defer to enable
+   it6505's audio feature when PCM triggers START or RESUME.
 
-Signed-off-by: David Lin <CTLIN0@nuvoton.com>
+Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
 ---
- Documentation/devicetree/bindings/sound/nau8315.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/gpu/drm/bridge/ite-it6505.c | 36 ++++++++++++++++++++++++-----
+ 1 file changed, 30 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/nau8315.txt b/Documentation/devicetree/bindings/sound/nau8315.txt
-index 6eaec46f384c..1cd94517d45e 100644
---- a/Documentation/devicetree/bindings/sound/nau8315.txt
-+++ b/Documentation/devicetree/bindings/sound/nau8315.txt
-@@ -2,6 +2,7 @@ Nuvoton NAU8315 Mono Class-D Amplifier
+diff --git a/drivers/gpu/drm/bridge/ite-it6505.c b/drivers/gpu/drm/bridge/ite-it6505.c
+index dfe4351c9bdd..f4e1a1d94ed8 100644
+--- a/drivers/gpu/drm/bridge/ite-it6505.c
++++ b/drivers/gpu/drm/bridge/ite-it6505.c
+@@ -2159,7 +2159,6 @@ static void it6505_stop_link_train(struct it6505 *it6505)
  
- Required properties:
- - compatible   : "nuvoton,nau8315"
-+                 "nuvoton,nau8318"
+ static void it6505_link_train_ok(struct it6505 *it6505)
+ {
+-	struct device *dev = &it6505->client->dev;
  
- Optional properties:
- - enable-gpios : GPIO specifier for the chip's device enable input(EN) pin.
-@@ -16,3 +17,8 @@ nau8315 {
- 	compatible = "nuvoton,nau8315";
- 	enable-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>;
- };
+ 	it6505->link_state = LINK_OK;
+ 	/* disalbe mute enable avi info frame */
+@@ -2167,11 +2166,6 @@ static void it6505_link_train_ok(struct it6505 *it6505)
+ 	it6505_set_bits(it6505, REG_INFOFRAME_CTRL,
+ 			EN_VID_CTRL_PKT, EN_VID_CTRL_PKT);
+ 
+-	if (it6505_audio_input(it6505)) {
+-		DRM_DEV_DEBUG_DRIVER(dev, "Enable audio!");
+-		it6505_enable_audio(it6505);
+-	}
+-
+ 	if (it6505->hdcp_desired)
+ 		it6505_start_hdcp(it6505);
+ }
+@@ -2823,6 +2817,36 @@ static void __maybe_unused it6505_audio_shutdown(struct device *dev, void *data)
+ 		it6505_disable_audio(it6505);
+ }
+ 
++static int __maybe_unused it6505_audio_setup_trigger(struct it6505 *it6505, int cmd)
++{
++	struct device *dev = &it6505->client->dev;
 +
-+nau8318 {
-+	compatible = "nuvoton,nau8318";
-+	enable-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>;
-+};
++	DRM_DEV_DEBUG_DRIVER(dev, "event: %d", cmd);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++		queue_delayed_work(system_wq, &it6505->delayed_audio,
++				   msecs_to_jiffies(180));
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		cancel_delayed_work(&it6505->delayed_audio);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int __maybe_unused it6505_audio_trigger(struct device *dev, int cmd)
++{
++	struct it6505 *it6505 = dev_get_drvdata(dev);
++
++	return it6505_audio_setup_trigger(it6505, cmd);
++}
++
+ static int __maybe_unused it6505_audio_hook_plugged_cb(struct device *dev,
+ 						       void *data,
+ 						       hdmi_codec_plugged_cb fn,
 -- 
-2.25.1
+2.18.0
 
