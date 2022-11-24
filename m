@@ -4,84 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D7C0C43219
-	for <alsa-devel@archiver.kernel.org>; Thu, 24 Nov 2022 11:41:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B173AC433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 24 Nov 2022 11:43:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9637E16DC;
-	Thu, 24 Nov 2022 12:41:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9637E16DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id A028516EE;
+	Thu, 24 Nov 2022 12:43:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A028516EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669290115;
-	bh=M0KP9sLmJ6HzLMjJHhGJaOXbaXuCHnFl/Sgp94OMHJo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1669290237;
+	bh=exRxZHGfCDjuz9/neSi+Z7GQERrKswxnZDhNm6sFeQ0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cvdriUBTHyyyqOZDTmcCeuv2lffFhgkopfH8DWEIITW+8XkMLwUxkhNrHnV1tau/V
-	 XlNEyqR6K81FRG9ThOC7pAC4oVXbQ02650Y1aBQn7o5/+j2qpy09E0jxWPH8Im3bV6
-	 v1s+mZxqoWMjDvLNB7nFVs1khGb4frWK3FIst/po=
+	b=mNl1F+xzOf7OFOLkBF4rWdhfQD4pDrEqvFGQ3S/KbsWCmlhk8NgiIlKAhBmUJPjyg
+	 SMvhXrdSFA2FJSoojwSnGI5IjrQhVNmMHQPD82GUr2veEVGg5RHuLBIbcnwWPhV2Xx
+	 MraQ0uCTQX/92RcFtkPctlEjS42KtCM2RnnYQ7UE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 39FD9F80245;
-	Thu, 24 Nov 2022 12:41:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2083CF80245;
+	Thu, 24 Nov 2022 12:43:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2E3B3F80431; Thu, 24 Nov 2022 12:41:04 +0100 (CET)
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com
- [IPv6:2607:f8b0:4864:20::836])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E0B4CF80431; Thu, 24 Nov 2022 12:43:05 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2DE4F80115
- for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 12:40:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2DE4F80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7AD39F8014E
+ for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 12:43:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7AD39F8014E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Ra/oS7fF"
-Received: by mail-qt1-x836.google.com with SMTP id w9so863439qtv.13
- for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 03:40:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=YW65nmzWJiseN5RQVR2kexQ255Synbbi/eoozzZAKxc=;
- b=Ra/oS7fF6qlZuXNzVzunYzTLirz+kr69JHws8QXEJsPwZwbyD5bvSK7ieoB941wU0z
- Qj974L4ZCsJBzJl1h+VGmvXhQILXEuV/X/E0MTxvOx36e/39eWTRIjMgeej6aRCT1gNK
- 3ftjZvw11jicQ1m+7IkwKPd17Tv00SgOljtJbbRefIVcE8Vj3wsOVdDnaxCojx74I1m9
- HkpgUNrO06C1O9htZlWlwIpuswNmcyAa+RcxE8bkiJ2t/jsQ72Y3VaErkalzIkbywFQQ
- rExSEkaUMdIE1ZPPKM/9vW68xo/d1Y2L11yNrAr5p9w5FVgfBBfS/dbILXob/Ia9cF0P
- A30Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=YW65nmzWJiseN5RQVR2kexQ255Synbbi/eoozzZAKxc=;
- b=p+JIxEhovaMsa7tXJh5vsUVE8d5pTYvad+wY/f703GpMAp1DGf1MAEM7M2kiIcDB4u
- ij5nBm2/s27rJ78M8xy0i2VdS+M2t7AEYg7Cw0RpbMguagIgQgjt44ZqkclUMxgIslY3
- co1Gc8HoPvWfbz6mVNnqJZy1ZQavUU91HdIy68iye71N1jgOqLKmjBxI+n+k68X4rDoi
- +zywO/VjXVMgbOKLlu7cRU2qwB0JebHn48bXt3QfoMkJ+Q90sdpx3RCPOMZK1GsLm8pb
- A1FjiFSxtc2jXaPLDuBofJapjIaFBi5jJeXPEIPylMDG25u+mez5W/G36ltxpNaN71WL
- juNw==
-X-Gm-Message-State: ANoB5pkuXEFlDKxs2xtKGdivOxzsPtIp5kHansY4EQWB2YMAoo+2vxdu
- 9WBgeBbOTMOzxeSjEZJCTVs2GTobmh/cmrxx0eU=
-X-Google-Smtp-Source: AA0mqf6EVMaKyGsT8Yf0GvAO/D+kqDDFYaS6AiQ46hc9hnelIYsTl23j70SLgM9m6BIWF9jcltR9rJgMp7U0DwE5tkE=
-X-Received: by 2002:ac8:7eeb:0:b0:3a5:2615:5694 with SMTP id
- r11-20020ac87eeb000000b003a526155694mr15003828qtc.429.1669290055940; Thu, 24
- Nov 2022 03:40:55 -0800 (PST)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="gD71TT1Q"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 824D1B826E2;
+ Thu, 24 Nov 2022 11:43:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61EEAC433D6;
+ Thu, 24 Nov 2022 11:42:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1669290181;
+ bh=exRxZHGfCDjuz9/neSi+Z7GQERrKswxnZDhNm6sFeQ0=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=gD71TT1QVY5ydZ6KGOyFBLx71GXaD4GhICG6LPHnQSDMv1qZUn4YEcqxqDTZyfMBY
+ KhtKlNYYlT5rRY+LFCgIY0+ogGf6YHgHaai8zQiLrAU/kvDjm+O0jaYz0nn2LvzbUA
+ gSntnJHM8Q2O32KWWuBhD4pMsFXXDKZ/DmzH/60NXrchyHtyN/sWZwFb1xx2F2UBTp
+ 5EKACIoTrCUYVedm5e4BMF2xe3zwvNOCdNM3Pocn+MWAdptFftk/kUY2Weuz8fC50A
+ CJvg7SeQjiuPc9Y7GGCp6WIhzFVjy0Z72WMdSSIJGC7RwG+DsxI9JQWV0P1zeumCLV
+ wfphqgRymFqfw==
+Date: Thu, 24 Nov 2022 11:42:55 +0000
+From: Mark Brown <broonie@kernel.org>
+To: David Lin <CTLIN0@nuvoton.com>
+Subject: Re: [PATCH 1/2] ASoC: nau8315: add new acpi id and compatible id
+Message-ID: <Y39YvzFUZ0ZNvjPO@sirena.org.uk>
+References: <20221124055658.53828-1-CTLIN0@nuvoton.com>
 MIME-Version: 1.0
-References: <20221124110718.3925934-1-sbinding@opensource.cirrus.com>
- <20221124110718.3925934-3-sbinding@opensource.cirrus.com>
-In-Reply-To: <20221124110718.3925934-3-sbinding@opensource.cirrus.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Thu, 24 Nov 2022 13:40:19 +0200
-Message-ID: <CAHp75VcCfCxfEJKcKpu18tJZHjVBPMScrE8ADmaMYvmjkUZokQ@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] ALSA: hda: cs35l41: Use ACPI_COMPANION to read
- acpi properties
-To: Stefan Binding <sbinding@opensource.cirrus.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org, "Rafael J . Wysocki" <rafael@kernel.org>,
- linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Mark Gross <markgross@kernel.org>,
- Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
- platform-driver-x86@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="p74LfaqrY1m5KaaW"
+Content-Disposition: inline
+In-Reply-To: <20221124055658.53828-1-CTLIN0@nuvoton.com>
+X-Cookie: Apply only to affected area.
+Cc: alsa-devel@alsa-project.org, ctlin0.linux@gmail.com, WTLI@nuvoton.com,
+ SJLIN0@nuvoton.com, KCHSU0@nuvoton.com, lgirdwood@gmail.com,
+ YHCHuang@nuvoton.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,31 +82,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Nov 24, 2022 at 1:07 PM Stefan Binding
-<sbinding@opensource.cirrus.com> wrote:
->
-> Currently the driver finds the acpi_device used to read certain
-> properties using the HID, however, this is not necessary, as the
-> acpi_device can be obtained from the device itself.
->
-> With the ACPI_COMPANION correctly set, we can also simplify how
 
-ACPI companion device
+--p74LfaqrY1m5KaaW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> we obtain the reset gpio.
+On Thu, Nov 24, 2022 at 01:56:57PM +0800, David Lin wrote:
+> Add new acpi id and compatible id for nau8315.
 
-GPIO
+>  #ifdef CONFIG_OF
+>  static const struct of_device_id nau8315_device_id[] = {
+>  	{ .compatible = "nuvoton,nau8315" },
+> +	{ .compatible = "nuvoton,nau8318" },
+>  	{}
 
-...
+The new compatible needs to be added to the binding document (any update
+to anything in the DT binding parsing should have a corresponding update
+to the document).
 
-The idea seems to be an improvement to me. Thanks.
+--p74LfaqrY1m5KaaW
+Content-Type: application/pgp-signature; name="signature.asc"
 
-But I have side question, are you going to address the
-https://bugzilla.kernel.org/show_bug.cgi?id=215993
+-----BEGIN PGP SIGNATURE-----
 
-P.S. It would be nice if you have an account there, so I can reassign
-that to you.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmN/WL8ACgkQJNaLcl1U
+h9B7Iwf9HhoZ3F1nvrMTZ3ygws95cIY72n3FGZbp7DHcOKsKKxtKFRYgRbwW3aSR
+bViax9d+dEvk5IqqW5dhoU5FIVw4SC/yTcNwEH25VHSOdBuq12QXDY7lWjT1mPZB
+tWuydVpFvSdIJlHxSjuXH24gp+S8K+GSbANxMog1IMeY/gzvu2pPI+Syq4BkK9zY
+Zi7D7qqmYPeGAj+3k/RaQb4KyGn+a6DU8jRpQZd04w7BYLUiX4EZTwhASH7jnaMs
+8tcQ+fS3rel8XFkaI8O4h/8QDrN/ijeC8t+Yt+4QikV7+Gy+gHwmOsfxNOYtc6EB
+yspErhksFofAIOHtLjXhD/t9vKpn1w==
+=MjaT
+-----END PGP SIGNATURE-----
 
--- 
-With Best Regards,
-Andy Shevchenko
+--p74LfaqrY1m5KaaW--
