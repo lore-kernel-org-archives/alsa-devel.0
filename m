@@ -4,75 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C88ACC4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Nov 2022 14:22:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD669C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Nov 2022 14:22:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4F1F1621;
-	Fri, 25 Nov 2022 15:21:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4F1F1621
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3EFC173C;
+	Fri, 25 Nov 2022 15:21:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3EFC173C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669386141;
-	bh=DlIikT6FuCK/nkJwV6a0WupNcwgFsBF3r1LnaGy1yic=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=RF5Ajq0BO55JxX1cLzkJkQJ/WEBb7mWd84lXOmJf6ZwVa1x0SaZN1Yzj75rcyUMAu
-	 pomBNxoI4HBx/OhIWlToS3kGeg3j5EnxVfXcRt4/BzeXJyJo5hPzuGFrewRw1jA8s/
-	 rpnii7Fc5RRCGy/WCHic+NksSKz4z/zme+oNJeCg=
+	s=default; t=1669386147;
+	bh=RMCz5oPSxtzYRm1iYgdJSYHjJHyDymVlDKQdQujZ6BU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=aIGGewgWpkNBw+UdsQjEfJuoJ4xubIgMidAbvMgSIxEsuVa7V7C4DDWpF6emxMTz4
+	 K26Yae9187STZISq4EYCNIkD9WHDJYy3JBe+gaWK6xE/ZUq5Dx7AFQw3gOLPE3lMwX
+	 v+PD2gscz1d+WB9gck/cYR5B3t+g1UlAo7rHXlcY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA448F80171;
-	Fri, 25 Nov 2022 15:20:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 636E8F8055A;
+	Fri, 25 Nov 2022 15:20:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4FF2F80559; Fri, 25 Nov 2022 15:20:45 +0100 (CET)
+ id 414E1F80558; Fri, 25 Nov 2022 15:20:46 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92DFBF8047C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B4E7F80236
  for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2022 15:20:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92DFBF8047C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B4E7F80236
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="VoixvH6U"
+ header.b="JNbcaxIq"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
  by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2APCp6w7007040; Fri, 25 Nov 2022 08:20:31 -0600
+ 2AP8g14d009072; Fri, 25 Nov 2022 08:20:31 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=mDzk+uY23FTNoUUYh8QvKniEEsfAMyybDRWMvyjLv68=;
- b=VoixvH6UYkJWptdkGMR6/AM5bk/uA0XnzVaWxNtJ6St+da8PP5ya0WxWEZGtauc32vN7
- tNj2GQKHjIC0zTnu2bpSuIHZycp1aAXcoL2O2hlwH5NUbTK3Ss0wvG8Iy1OKchiWIn+S
- 0k/ewBvo4y3UjOXKQe3FFUJtJorK/65opcs9+Ot3rdzFbG7cQZ7zzmWdnM/ru2Gfoue5
- WrejCfKvOpj2y9XBWXd2xlrexhDJZftdNCun/YKjE0c2Smu+sfFMUXFtU7TD/DgZpV72
- d89Smo9EHLdM2qT+jk2Dv0BQ1o81n7iKjp9JLd77x6CKieFiVX+3n9PpuKX4K3/brGZw jg== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kxvet7ccn-2
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=Hf+p2XLDxtDu0bixw/WcTYV02K3jKz11jQ4Wh7jZWhs=;
+ b=JNbcaxIq890baQYfRP7F1/m0qJBfIKzCHx/iWaXRDWaEJ3gEKV6fmFydkme2QwFY4abH
+ FW16PxoQGsQvUurmsm+2KoVD5L7DhiY1VJWYGcAdeCU/2G5UjeI7EwFIazH4CdpNlbab
+ AzvNxf1ycQjR6nrQhdTMSbtQgnwCHAOeEz0SsjJCvWSZxDYCtZG8YkyaLDW37HdqaLdV
+ uGLYfuPojsKQAOpOAi1pOKrNzWdaKB63KSWQa2AR+URNqNzmvRhTTsqPXskKHkjDr7ZA
+ WUgTc89qYhsP6Sc7d24fLqrGup5nQZTR9mizO/0uixx2WwraqcP4ejeEU2KcaAqHlDe3 DQ== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kxvet7ccp-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 25 Nov 2022 08:20:31 -0600
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 25 Nov 2022 08:20:30 -0600
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.20; Fri, 25 Nov
  2022 08:20:29 -0600
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.20 via Frontend Transport; Fri, 25 Nov 2022 08:20:29 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.20 via
+ Frontend Transport; Fri, 25 Nov 2022 08:20:29 -0600
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 005522BA;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1F523B10;
  Fri, 25 Nov 2022 14:20:29 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <vkoul@kernel.org>
-Subject: [PATCH v4 0/4] Minor SoundWire clean ups
-Date: Fri, 25 Nov 2022 14:20:24 +0000
-Message-ID: <20221125142028.1118618-1-ckeepax@opensource.cirrus.com>
+Subject: [PATCH v4 2/4] soundwire: Provide build stubs for common functions
+Date: Fri, 25 Nov 2022 14:20:26 +0000
+Message-ID: <20221125142028.1118618-3-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221125142028.1118618-1-ckeepax@opensource.cirrus.com>
+References: <20221125142028.1118618-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 2JtisvnBNqiy_et9YRgZfhIVEesJvxzi
-X-Proofpoint-GUID: 2JtisvnBNqiy_et9YRgZfhIVEesJvxzi
+X-Proofpoint-ORIG-GUID: -RykCZ5n6tuVbhrgytsuMh0k7okAmOu6
+X-Proofpoint-GUID: -RykCZ5n6tuVbhrgytsuMh0k7okAmOu6
 X-Proofpoint-Spam-Reason: safe
 Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
  pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
@@ -92,37 +95,164 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Just some minor tidy ups and preparation for starting to upstream some
-Cirrus SoundWire devices. The first three patches are pretty trivial,
-the last patch which moves the remaining core over to using the no_pm
-functions could probably use some careful review.
+Provide stub functions when CONFIG_SOUNDWIRE is not set for functions
+that are quite likely to be used from common code on devices supporting
+multiple control buses.
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
 
 Changes since v3:
- - Return an error and add a WARN_ONCE if the build stubs are used.
-
-Changes since v2:
- - Fix up a memory leak of a buffer on the error path
- - Added some reviewed by's
+ - Return error code and add WARN_ONCE in build stubs. Note I returned
+   EINVAL rather than the discussed ENOSYS since it turns out checkpatch
+   informs me I really shouldn't be returning ENOSYS :-)
 
 Thanks,
 Charles
 
-*** BLURB HERE ***
+ include/linux/soundwire/sdw.h | 105 ++++++++++++++++++++++++++++++----
+ 1 file changed, 95 insertions(+), 10 deletions(-)
 
-Charles Keepax (3):
-  soundwire: Provide build stubs for common functions
-  soundwire: debugfs: Switch to sdw_read_no_pm
-  soundwire: stream: Move remaining register accesses over to no_pm
-
-Simon Trimmer (1):
-  soundwire: bus: export sdw_nwrite_no_pm and sdw_nread_no_pm functions
-
- drivers/soundwire/bus.c       |  10 ++--
- drivers/soundwire/debugfs.c   |  13 ++++-
- drivers/soundwire/stream.c    |  30 +++++-----
- include/linux/soundwire/sdw.h | 107 ++++++++++++++++++++++++++++++----
- 4 files changed, 129 insertions(+), 31 deletions(-)
-
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index 902ed46f76c80..132a0ee97b804 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -4,6 +4,7 @@
+ #ifndef __SOUNDWIRE_H
+ #define __SOUNDWIRE_H
+ 
++#include <linux/bug.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/bitfield.h>
+ 
+@@ -1021,15 +1022,8 @@ int sdw_stream_add_master(struct sdw_bus *bus,
+ 		struct sdw_port_config *port_config,
+ 		unsigned int num_ports,
+ 		struct sdw_stream_runtime *stream);
+-int sdw_stream_add_slave(struct sdw_slave *slave,
+-		struct sdw_stream_config *stream_config,
+-		struct sdw_port_config *port_config,
+-		unsigned int num_ports,
+-		struct sdw_stream_runtime *stream);
+ int sdw_stream_remove_master(struct sdw_bus *bus,
+ 		struct sdw_stream_runtime *stream);
+-int sdw_stream_remove_slave(struct sdw_slave *slave,
+-		struct sdw_stream_runtime *stream);
+ int sdw_startup_stream(void *sdw_substream);
+ int sdw_prepare_stream(struct sdw_stream_runtime *stream);
+ int sdw_enable_stream(struct sdw_stream_runtime *stream);
+@@ -1040,8 +1034,20 @@ int sdw_bus_prep_clk_stop(struct sdw_bus *bus);
+ int sdw_bus_clk_stop(struct sdw_bus *bus);
+ int sdw_bus_exit_clk_stop(struct sdw_bus *bus);
+ 
+-/* messaging and data APIs */
++int sdw_compare_devid(struct sdw_slave *slave, struct sdw_slave_id id);
++void sdw_extract_slave_id(struct sdw_bus *bus, u64 addr, struct sdw_slave_id *id);
+ 
++#if IS_ENABLED(CONFIG_SOUNDWIRE)
++
++int sdw_stream_add_slave(struct sdw_slave *slave,
++			 struct sdw_stream_config *stream_config,
++			 struct sdw_port_config *port_config,
++			 unsigned int num_ports,
++			 struct sdw_stream_runtime *stream);
++int sdw_stream_remove_slave(struct sdw_slave *slave,
++			    struct sdw_stream_runtime *stream);
++
++/* messaging and data APIs */
+ int sdw_read(struct sdw_slave *slave, u32 addr);
+ int sdw_write(struct sdw_slave *slave, u32 addr, u8 value);
+ int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value);
+@@ -1053,7 +1059,86 @@ int sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *
+ int sdw_update(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
+ int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
+ 
+-int sdw_compare_devid(struct sdw_slave *slave, struct sdw_slave_id id);
+-void sdw_extract_slave_id(struct sdw_bus *bus, u64 addr, struct sdw_slave_id *id);
++#else
++
++static inline int sdw_stream_add_slave(struct sdw_slave *slave,
++				       struct sdw_stream_config *stream_config,
++				       struct sdw_port_config *port_config,
++				       unsigned int num_ports,
++				       struct sdw_stream_runtime *stream)
++{
++	WARN_ONCE(1, "SoundWire API is disabled");
++	return -EINVAL;
++}
++
++static inline int sdw_stream_remove_slave(struct sdw_slave *slave,
++					  struct sdw_stream_runtime *stream)
++{
++	WARN_ONCE(1, "SoundWire API is disabled");
++	return -EINVAL;
++}
++
++/* messaging and data APIs */
++static inline int sdw_read(struct sdw_slave *slave, u32 addr)
++{
++	WARN_ONCE(1, "SoundWire API is disabled");
++	return -EINVAL;
++}
++
++static inline int sdw_write(struct sdw_slave *slave, u32 addr, u8 value)
++{
++	WARN_ONCE(1, "SoundWire API is disabled");
++	return -EINVAL;
++}
++
++static inline int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value)
++{
++	WARN_ONCE(1, "SoundWire API is disabled");
++	return -EINVAL;
++}
++
++static inline int sdw_read_no_pm(struct sdw_slave *slave, u32 addr)
++{
++	WARN_ONCE(1, "SoundWire API is disabled");
++	return -EINVAL;
++}
++
++static inline int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
++{
++	WARN_ONCE(1, "SoundWire API is disabled");
++	return -EINVAL;
++}
++
++static inline int sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
++{
++	WARN_ONCE(1, "SoundWire API is disabled");
++	return -EINVAL;
++}
++
++static inline int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
++{
++	WARN_ONCE(1, "SoundWire API is disabled");
++	return -EINVAL;
++}
++
++static inline int sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
++{
++	WARN_ONCE(1, "SoundWire API is disabled");
++	return -EINVAL;
++}
++
++static inline int sdw_update(struct sdw_slave *slave, u32 addr, u8 mask, u8 val)
++{
++	WARN_ONCE(1, "SoundWire API is disabled");
++	return -EINVAL;
++}
++
++static inline int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val)
++{
++	WARN_ONCE(1, "SoundWire API is disabled");
++	return -EINVAL;
++}
++
++#endif /* CONFIG_SOUNDWIRE */
+ 
+ #endif /* __SOUNDWIRE_H */
 -- 
 2.30.2
 
