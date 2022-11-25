@@ -4,77 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB2B7C43217
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Nov 2022 12:20:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16694C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Nov 2022 14:21:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D1B3172C;
-	Fri, 25 Nov 2022 13:19:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D1B3172C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0918216D2;
+	Fri, 25 Nov 2022 15:20:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0918216D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669378804;
-	bh=mZOp0vsvzRrNngwKyz7HgmROJmugzd6BQQN4kzDGk24=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1669386091;
+	bh=CFf86Ts2n+2D5ib9Hynqtu1iTI/tWIn5+oHxRBEqXUM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ru207TW0JuAQunBsy023bTzPAsagdHJReg3Zt78Be0gI/ixRIeIo/kr5ZbrYbmb5J
-	 W4DyWeRiS48ZEBIe8/KbBKYVdckdtEmjgI6dDvN9mR+o4cAOLQykWO44xRYXhyboEP
-	 fdx3KXn037G0G0ntXuDAxAw2u9SeXqtzjlOXFfEs=
+	b=MryBMpqwhopD4aZ09GYarR2SyFkBfiZdxRW1cb8qjPZpZLgZr4ZDDEeuHBcXaesQw
+	 V10bYtJkoU424uY7RoaQEVw9qWOeapPXGUBo3VoIrs00t9poZParWFOfRntlyU1VhN
+	 0OQlau6H4n7jIVCtpP1t9/ufznn/k4I9gyza1KEA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB521F80171;
-	Fri, 25 Nov 2022 13:19:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7738CF8014E;
+	Fri, 25 Nov 2022 15:20:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4E79EF80236; Fri, 25 Nov 2022 13:19:12 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2091AF800F4
- for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2022 13:19:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2091AF800F4
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="G5wlKNyl"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 830DFF800B6; Fri, 25 Nov 2022 15:20:39 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 3D647B82985;
- Fri, 25 Nov 2022 12:19:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59DE8C433B5;
- Fri, 25 Nov 2022 12:19:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669378748;
- bh=mZOp0vsvzRrNngwKyz7HgmROJmugzd6BQQN4kzDGk24=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=G5wlKNylGWwR6ccZnV/INSMAmpV0EY9BkrXiiJe/AQR0G5sNqfMBGGACQyjqJUA91
- WQQJpKRH91kDEgfcIP8P1MnpMeDgzSLbZ1m3fc/5nqmVx0NrTQw0WCIm2PQPLCG26Z
- bsYrl4UMvlHkFGB41Lqgs2Z/Dy9okY7qAotKMH1vvBDGSx2LTUaF3I0ieN7VTwWHx2
- i1Nw+hxV+2g6R0dw44LxzAs+X8zw2uppIAi+zggmEC4W8zMX8dt1Qc7ZcrQtiuCYSw
- zqJ6lKysbpar/wNHQoF2+hoBADLgTFJe/JEu5P+dHV8n+OwVcGTsc48biZoyqRl6tM
- P8Cq6ZRKhRidA==
-Date: Fri, 25 Nov 2022 12:18:58 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Jiaxin Yu <jiaxin.yu@mediatek.com>
-Subject: Re: [PATCH v2 1/3] ASoC: hdmi-codec: Add event handler for hdmi TX
-Message-ID: <Y4Cysgk5Gic5ae9B@sirena.org.uk>
-References: <20221125094413.4940-1-jiaxin.yu@mediatek.com>
- <20221125094413.4940-2-jiaxin.yu@mediatek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01046F800B6
+ for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2022 15:20:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01046F800B6
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="OPgylOLy"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 2APCp6w6007040; Fri, 25 Nov 2022 08:20:30 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=6ZdYEsC3Rusgx6qcuK949ZOovE2XqeUbSDG2Tg6BizI=;
+ b=OPgylOLyxVEug+hOYtYw8PcTm0JmbWLOC3gNB7iXUpLvSu5aJG8OffAxeCdTsF1WNpv2
+ PzFtGv4+REbcwUzeSy8PGeDFgwSPhtCLEZ0MOuCVbr93LZxEV+ywOh4eZqNjoIkZ9TjB
+ CoZWARNx0DgroGWM6f3tY52hknmwueuzPoSIgQShKRuTsjjsn1/kqTYItXroE0YuIL1I
+ n74FJFDY6QdKJr1XaMNFWPgkfTe4aTJHUMnO5ufsbQyqsyKbyjzGR4xCRoxKp5nVFieO
+ kWNSt2WLSxREonL8D0vFeJXU6LiyDPBRoEw2ZSAAayA+iJTg8Fa75PPXn+HCxnR8+IIB SQ== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kxvet7ccn-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 25 Nov 2022 08:20:30 -0600
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.20; Fri, 25 Nov
+ 2022 08:20:29 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.20 via
+ Frontend Transport; Fri, 25 Nov 2022 08:20:29 -0600
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0F3C6B0E;
+ Fri, 25 Nov 2022 14:20:29 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <vkoul@kernel.org>
+Subject: [PATCH v4 1/4] soundwire: bus: export sdw_nwrite_no_pm and
+ sdw_nread_no_pm functions
+Date: Fri, 25 Nov 2022 14:20:25 +0000
+Message-ID: <20221125142028.1118618-2-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221125142028.1118618-1-ckeepax@opensource.cirrus.com>
+References: <20221125142028.1118618-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="kNT+QONpsQiODP63"
-Content-Disposition: inline
-In-Reply-To: <20221125094413.4940-2-jiaxin.yu@mediatek.com>
-X-Cookie: Time and tide wait for no man.
-Cc: neil.armstrong@linaro.org, alsa-devel@alsa-project.org,
- chunxu.li@mediatek.com, nfraprado@collabora.com,
- kuninori.morimoto.gx@renesas.com, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, robert.foss@linaro.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- linux-mediatek@lists.infradead.org, Laurent.pinchart@ideasonboard.com,
- andrzej.hajda@intel.com, allen-kh.cheng@mediatek.com,
- ajye_huang@compal.corp-partner.google.com,
- linux-arm-kernel@lists.infradead.org, angelogioacchino.delregno@collabora.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: soKBxbUKxvrBKVP9mPo-Oi0hf_urzVzL
+X-Proofpoint-GUID: soKBxbUKxvrBKVP9mPo-Oi0hf_urzVzL
+X-Proofpoint-Spam-Reason: safe
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,50 +96,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Simon Trimmer <simont@opensource.cirrus.com>
 
---kNT+QONpsQiODP63
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The commit 167790abb90f ("soundwire: export sdw_write/read_no_pm
+functions") exposed the single byte no_pm versions of the IO functions
+that can be used without touching PM, export the multi byte no_pm
+versions for the same reason.
 
-On Fri, Nov 25, 2022 at 05:44:11PM +0800, Jiaxin Yu wrote:
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
 
-> +	/*
-> +	 * PCM trigger callback.
-> +	 * Mandatory
-> +	 */
-> +	int (*trigger)(struct device *dev, int cmd);
-> +
+No change since v3.
 
-Making this mandatory would break all existing users, though...
+ drivers/soundwire/bus.c       | 8 ++++----
+ include/linux/soundwire/sdw.h | 2 ++
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-> +	switch (event) {
-> +	case SND_SOC_DAPM_PRE_PMU:
-> +		if (hcp->hcd.ops->trigger)
-> +			hcp->hcd.ops->trigger(component->dev->parent, SNDRV_PCM_TRIGGER_START);
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 76515c33e639e..ef4878258afad 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -414,8 +414,7 @@ int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
+  * all clients need to use the pm versions
+  */
+ 
+-static int
+-sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
++int sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+ {
+ 	struct sdw_msg msg;
+ 	int ret;
+@@ -430,9 +429,9 @@ sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+ 		ret = 0;
+ 	return ret;
+ }
++EXPORT_SYMBOL(sdw_nread_no_pm);
+ 
+-static int
+-sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
++int sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
+ {
+ 	struct sdw_msg msg;
+ 	int ret;
+@@ -447,6 +446,7 @@ sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
+ 		ret = 0;
+ 	return ret;
+ }
++EXPORT_SYMBOL(sdw_nwrite_no_pm);
+ 
+ int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value)
+ {
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index 9e4537f409c29..902ed46f76c80 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -1047,7 +1047,9 @@ int sdw_write(struct sdw_slave *slave, u32 addr, u8 value);
+ int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value);
+ int sdw_read_no_pm(struct sdw_slave *slave, u32 addr);
+ int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
++int sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
+ int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val);
++int sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val);
+ int sdw_update(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
+ int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
+ 
+-- 
+2.30.2
 
-...it's not actually mandatory so it's just the comment that's wrong.
-I'm a little unclear why this is being implemented as a DAPM operation
-rather than having the driver forward the PCM trigger op if it's needed?
-Or alternatively if a DAPM callback is needed why not provide one
-directly rather than hooking into the trigger function - that's going to
-be called out of sequence with the rest of DAPM and be potentially
-confusing given the very different environments that trigger and DAPM
-operations run in.  A quick glance at the it6505 driver suggests it'd be
-happier with a DAPM callback.
-
---kNT+QONpsQiODP63
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmOAsrEACgkQJNaLcl1U
-h9CCdgf+JzEvQcOa+cudwzO1Ok98aky4qGZCuKQnnWtkrCayv8eiu7wd7w5G9dpU
-VciYfLQ8bgQ3UOImbANerH2+FJhMtldcF8Vn5FJCG1eXpJGMRbWrjguA15/n88uT
-bQ2wEInMii6ecKtSyULg3ie9tuLseZfS3jJHOwJeYFANRmaef0UUAQyPkHnnVsj8
-luaShk6424tDgSWY1es5RVtOOzPH/JpBXK1DKuCEBI7DFYuAJtmqgXXIZvfwNPHe
-sCV/N6DVZNU152PRSiyAX3Y8/x3NzYiSs6BXexv10OlCq44sCPYZ+HdbgY7qQL4y
-w7JwiNOcmvN0sbAhK0jjSKmJ3/spKw==
-=ReC2
------END PGP SIGNATURE-----
-
---kNT+QONpsQiODP63--
