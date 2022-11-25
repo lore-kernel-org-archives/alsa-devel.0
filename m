@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 727AFC4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Nov 2022 18:27:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54ABBC4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Nov 2022 18:27:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 87FC71760;
-	Fri, 25 Nov 2022 19:26:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87FC71760
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F4061754;
+	Fri, 25 Nov 2022 19:26:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F4061754
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669400819;
-	bh=Ysy69L8HM0YbGGAtnOYqJuWV/TUhDas/7vRkQNHYZnw=;
+	s=default; t=1669400831;
+	bh=0zPRXWRwu7JchuRpBJMq6fTr5PW1H/S8d4GUlZY6Jo8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XbugadoNIq02H2SD95Yuhf5Ks0kNuuXKhXPyziHiwtkHJYHp15CJr8yBRU3HLgbIW
-	 336Ru9xaPyLHo/ZVWWlT6cF9uVGfifNUTyxkRkkLkIrJDZajhSFPbEYDyrfWH3zuPe
-	 gZoM9YPcj1QRwM6EhcEhizgF8sOqHXLjRU3qzg4Q=
+	b=r8wKkEMFRKIYQzOpegVE7t28D8eGKlDhVUxFzfU6HFcYec4EX1RaKdBaztO5jJNcR
+	 8LBUIs31mjKqRcCETX9al/aCPqWTW+AKtw+HAquz/0B1g8k36a2GLPIo0Vxx/lluDd
+	 KYNxRaoBzL4pKYJ/sDZXBEoTCwa4EPHCJi2PaKj4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06041F805AA;
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E8B3F805AF;
 	Fri, 25 Nov 2022 19:23:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E696F80579; Fri, 25 Nov 2022 19:23:52 +0100 (CET)
+ id A4F4CF80589; Fri, 25 Nov 2022 19:23:52 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0F9CF80579
- for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2022 19:23:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0F9CF80579
+ by alsa1.perex.cz (Postfix) with ESMTPS id CFEF2F80563
+ for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2022 19:23:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFEF2F80563
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="UD6MUTyo"
+ header.b="mxv/p92F"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1669400629; x=1700936629;
+ t=1669400626; x=1700936626;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=Ysy69L8HM0YbGGAtnOYqJuWV/TUhDas/7vRkQNHYZnw=;
- b=UD6MUTyo4ttbaTZowa0sE5WipOG3r6bMVpT8J8oAtWbPosi/QinLeT/S
- Im9ykaX6IyDFU6LFAQLGQrawK56HQs7yEVYmT+E5fZ8g9CzKPRQuZOjXR
- wcdJov7WOIQNUU7ln1NPoQzo/NFEF1l95rgSP2xH7wtYCnjHDyaJnZh3K
- 23Ituxx6ldEXiKs7PWZA9evdzZyk0zOL2uqjBR0KdUlm21sQOd5vQ6uxM
- 80TWn13AoMJ4J2kfoh6rsHu0m+I954w8Tz9ossazH93hnbi+fOA/N55lz
- oUhvKZXlTeX5v4PrGMRYZAv887qmroMH9RnrlP6U0Xjt4QpqlAu76QDli Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10542"; a="294909231"
-X-IronPort-AV: E=Sophos;i="5.96,194,1665471600"; d="scan'208";a="294909231"
+ bh=0zPRXWRwu7JchuRpBJMq6fTr5PW1H/S8d4GUlZY6Jo8=;
+ b=mxv/p92FGgp8KzIZbMa4Knm3IF5Hp8bGPQQ+65rHADx130z2gfRqCGoD
+ owHicVT33nT2ahF6bPV1I8b3Jh7BsG1sVBz9M0s6RZOPgOYKaCCZjhG7J
+ Uv1TRMiVoCVFpZCL7a/DXEbkHLXJHkSnyxvyu9DZ5NsRYzTu1d1mycyZa
+ I8avWhOZLYpi/jyIezyvSjYh4V1TJ8g9t2Ih4qrZIbKRCY+XllZWyv2me
+ rfl3Xnc+fGl571ONInK6oSjT+eFyKF1VugV6D+sKXWX035AolylTziX/D
+ h+4Av/1FRHNvHSO/T+0YZzWEIU6oFMZiux44PptjRcUI+SirNjSB+hieb g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10542"; a="294909226"
+X-IronPort-AV: E=Sophos;i="5.96,194,1665471600"; d="scan'208";a="294909226"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Nov 2022 10:23:48 -0800
+ 25 Nov 2022 10:23:44 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10542"; a="785005579"
-X-IronPort-AV: E=Sophos;i="5.96,194,1665471600"; d="scan'208";a="785005579"
+X-IronPort-AV: E=McAfee;i="6500,9779,10542"; a="785005563"
+X-IronPort-AV: E=Sophos;i="5.96,194,1665471600"; d="scan'208";a="785005563"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga001.fm.intel.com with ESMTP; 25 Nov 2022 10:23:46 -0800
+ by fmsmga001.fm.intel.com with ESMTP; 25 Nov 2022 10:23:42 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 10/11] ASoC: Intel: avs: rt5682: Add define for codec DAI name
-Date: Fri, 25 Nov 2022 19:40:31 +0100
-Message-Id: <20221125184032.2565979-11-cezary.rojewski@intel.com>
+Subject: [PATCH 08/11] ASoC: Intel: avs: rt298: Add define for codec DAI name
+Date: Fri, 25 Nov 2022 19:40:29 +0100
+Message-Id: <20221125184032.2565979-9-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221125184032.2565979-1-cezary.rojewski@intel.com>
 References: <20221125184032.2565979-1-cezary.rojewski@intel.com>
@@ -95,38 +95,31 @@ first.
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/boards/rt5682.c | 4 +++-
+ sound/soc/intel/avs/boards/rt298.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/avs/boards/rt5682.c b/sound/soc/intel/avs/boards/rt5682.c
-index 01f9b9f0c12b..7f9edf4cbd04 100644
---- a/sound/soc/intel/avs/boards/rt5682.c
-+++ b/sound/soc/intel/avs/boards/rt5682.c
-@@ -26,6 +26,7 @@
- #define AVS_RT5682_SSP_CODEC_MASK	(GENMASK(2, 0))
- #define AVS_RT5682_MCLK_EN		BIT(3)
- #define AVS_RT5682_MCLK_24MHZ		BIT(4)
-+#define AVS_RT5682_CODEC_DAI_NAME	"rt5682-aif1"
+diff --git a/sound/soc/intel/avs/boards/rt298.c b/sound/soc/intel/avs/boards/rt298.c
+index 58c9d9edecf0..5570949bad8a 100644
+--- a/sound/soc/intel/avs/boards/rt298.c
++++ b/sound/soc/intel/avs/boards/rt298.c
+@@ -15,6 +15,8 @@
+ #include <sound/soc-acpi.h>
+ #include "../../../codecs/rt298.h"
  
- /* Default: MCLK on, MCLK 19.2M, SSP0 */
- static unsigned long avs_rt5682_quirk = AVS_RT5682_MCLK_EN | AVS_RT5682_SSP_CODEC(0);
-@@ -184,7 +185,7 @@ static int avs_create_dai_link(struct device *dev, const char *platform_name, in
++#define RT298_CODEC_DAI		"rt298-aif1"
++
+ static const struct dmi_system_id kblr_dmi_table[] = {
+ 	{
+ 		.matches = {
+@@ -147,7 +149,7 @@ static int avs_create_dai_link(struct device *dev, const char *platform_name, in
  
  	dl->cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d Pin", ssp_port);
- 	dl->codecs->name = devm_kasprintf(dev, GFP_KERNEL, "i2c-10EC5682:00");
--	dl->codecs->dai_name = devm_kasprintf(dev, GFP_KERNEL, "rt5682-aif1");
-+	dl->codecs->dai_name = devm_kasprintf(dev, GFP_KERNEL, AVS_RT5682_CODEC_DAI_NAME);
+ 	dl->codecs->name = devm_kasprintf(dev, GFP_KERNEL, "i2c-INT343A:00");
+-	dl->codecs->dai_name = devm_kasprintf(dev, GFP_KERNEL, "rt298-aif1");
++	dl->codecs->dai_name = devm_kasprintf(dev, GFP_KERNEL, RT298_CODEC_DAI);
  	if (!dl->cpus->dai_name || !dl->codecs->name || !dl->codecs->dai_name)
  		return -ENOMEM;
  
-@@ -194,6 +195,7 @@ static int avs_create_dai_link(struct device *dev, const char *platform_name, in
- 	dl->num_platforms = 1;
- 	dl->id = 0;
- 	dl->init = avs_rt5682_codec_init;
-+	dl->exit = avs_rt5682_codec_exit;
- 	dl->ops = &avs_rt5682_ops;
- 	dl->nonatomic = 1;
- 	dl->no_pcm = 1;
 -- 
 2.25.1
 
