@@ -4,60 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 725ABC4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Nov 2022 10:37:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB2B7C43217
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Nov 2022 12:20:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F13A81736;
-	Fri, 25 Nov 2022 11:37:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F13A81736
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D1B3172C;
+	Fri, 25 Nov 2022 13:19:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D1B3172C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669372676;
-	bh=HlYnv3ZOITcGGDBm3S/T+zO7qFX73GK1CBSoQXq2yE8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1669378804;
+	bh=mZOp0vsvzRrNngwKyz7HgmROJmugzd6BQQN4kzDGk24=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WSSisnmRNkW+KdejxJPijLSL+NbAf2hhfiJUBg4BjB8vP5LEaZ+6oLtWCDisuMpeh
-	 JWuA1XM4nCEes/urU9383uWPpo1Kw5JsGSMXuyZN2BwTNcZup3aAYEEmzZYFYrL0Zk
-	 J+wI7WcUI0T/2saj1RNVjidCwEkFCIX5XAkjAvio=
+	b=ru207TW0JuAQunBsy023bTzPAsagdHJReg3Zt78Be0gI/ixRIeIo/kr5ZbrYbmb5J
+	 W4DyWeRiS48ZEBIe8/KbBKYVdckdtEmjgI6dDvN9mR+o4cAOLQykWO44xRYXhyboEP
+	 fdx3KXn037G0G0ntXuDAxAw2u9SeXqtzjlOXFfEs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8662FF80171;
-	Fri, 25 Nov 2022 11:37:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB521F80171;
+	Fri, 25 Nov 2022 13:19:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1E2F7F80236; Fri, 25 Nov 2022 11:37:04 +0100 (CET)
-Received: from out28-149.mail.aliyun.com (out28-149.mail.aliyun.com
- [115.124.28.149])
+ id 4E79EF80236; Fri, 25 Nov 2022 13:19:12 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2091AF800F4
+ for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2022 13:19:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2091AF800F4
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="G5wlKNyl"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43D90F800B6
- for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2022 11:36:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43D90F800B6
-X-Alimail-AntiSpam: AC=CONTINUE; BC=0.1285414|-1; CH=green; DM=|CONTINUE|false|;
- DS=CONTINUE|ham_regular_dialog|0.0107192-0.00252616-0.986755;
- FP=0|0|0|0|0|-1|-1|-1; HT=ay29a033018047192; MF=wangweidong.a@awinic.com; NM=1;
- PH=DS; RN=18; RT=18; SR=0; TI=SMTPD_---.QGghMTz_1669372601; 
-Received: from shaoer-VirtualBox.mshome.net(mailfrom:wangweidong.a@awinic.com
- fp:SMTPD_---.QGghMTz_1669372601) by smtp.aliyun-inc.com;
- Fri, 25 Nov 2022 18:36:49 +0800
-From: wangweidong.a@awinic.com
-To: krzysztof.kozlowski@linaro.org
-Subject: Re [patch v5 0/5] ASoC: codecs: Add Awinic AW883XX audio amplifier
- driver
-Date: Fri, 25 Nov 2022 18:36:40 +0800
-Message-Id: <20221125103640.17934-1-wangweidong.a@awinic.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <9cf9170a-bb01-ce61-2295-998fdf3b0909@linaro.org>
-References: <9cf9170a-bb01-ce61-2295-998fdf3b0909@linaro.org>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 3D647B82985;
+ Fri, 25 Nov 2022 12:19:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59DE8C433B5;
+ Fri, 25 Nov 2022 12:19:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1669378748;
+ bh=mZOp0vsvzRrNngwKyz7HgmROJmugzd6BQQN4kzDGk24=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=G5wlKNylGWwR6ccZnV/INSMAmpV0EY9BkrXiiJe/AQR0G5sNqfMBGGACQyjqJUA91
+ WQQJpKRH91kDEgfcIP8P1MnpMeDgzSLbZ1m3fc/5nqmVx0NrTQw0WCIm2PQPLCG26Z
+ bsYrl4UMvlHkFGB41Lqgs2Z/Dy9okY7qAotKMH1vvBDGSx2LTUaF3I0ieN7VTwWHx2
+ i1Nw+hxV+2g6R0dw44LxzAs+X8zw2uppIAi+zggmEC4W8zMX8dt1Qc7ZcrQtiuCYSw
+ zqJ6lKysbpar/wNHQoF2+hoBADLgTFJe/JEu5P+dHV8n+OwVcGTsc48biZoyqRl6tM
+ P8Cq6ZRKhRidA==
+Date: Fri, 25 Nov 2022 12:18:58 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Jiaxin Yu <jiaxin.yu@mediatek.com>
+Subject: Re: [PATCH v2 1/3] ASoC: hdmi-codec: Add event handler for hdmi TX
+Message-ID: <Y4Cysgk5Gic5ae9B@sirena.org.uk>
+References: <20221125094413.4940-1-jiaxin.yu@mediatek.com>
+ <20221125094413.4940-2-jiaxin.yu@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: zhaolei@awinic.com, pierre-louis.bossart@linux.intel.com,
- alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
- tanureal@opensource.cirrus.com, quic_potturu@quicinc.com,
- wangweidong.a@awinic.com, tiwai@suse.com, duanyibo@awinic.com,
- robh+dt@kernel.org, liweilei@awinic.com, cy_huang@richtek.com,
- yijiangtao@awinic.com, broonie@kernel.org, zhangjianming@awinic.com,
- krzysztof.kozlowski+dt@linaro.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="kNT+QONpsQiODP63"
+Content-Disposition: inline
+In-Reply-To: <20221125094413.4940-2-jiaxin.yu@mediatek.com>
+X-Cookie: Time and tide wait for no man.
+Cc: neil.armstrong@linaro.org, alsa-devel@alsa-project.org,
+ chunxu.li@mediatek.com, nfraprado@collabora.com,
+ kuninori.morimoto.gx@renesas.com, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, robert.foss@linaro.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ linux-mediatek@lists.infradead.org, Laurent.pinchart@ideasonboard.com,
+ andrzej.hajda@intel.com, allen-kh.cheng@mediatek.com,
+ ajye_huang@compal.corp-partner.google.com,
+ linux-arm-kernel@lists.infradead.org, angelogioacchino.delregno@collabora.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,22 +90,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 25/11/2022 10:27, wangweidong.a@awinic.com wrote:
-> From: Weidong Wang <wangweidong.a@awinic.com>
-> 
-> The Awinic AW883XX is an I2S/TDM input, high efficiency
-> digital Smart K audio amplifier with an integrated 10.25V
-> smart boost convert
-> 
-> Add a DT schema for describing Awinic AW883xx audio amplifiers. They are
-> controlled using I2C.
 
-> Do not attach your patchsets to some other patchsets. Each patchset is a
-> separate email thread. The 5th patch is missing from the set - I don't
-> know if because some sending/threading/spam problems....
+--kNT+QONpsQiODP63
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thank you very much for your advice. It was my mistake.
-I will correct this error on patch v6
+On Fri, Nov 25, 2022 at 05:44:11PM +0800, Jiaxin Yu wrote:
 
-Best regards,
-Weidong Wang
+> +	/*
+> +	 * PCM trigger callback.
+> +	 * Mandatory
+> +	 */
+> +	int (*trigger)(struct device *dev, int cmd);
+> +
+
+Making this mandatory would break all existing users, though...
+
+> +	switch (event) {
+> +	case SND_SOC_DAPM_PRE_PMU:
+> +		if (hcp->hcd.ops->trigger)
+> +			hcp->hcd.ops->trigger(component->dev->parent, SNDRV_PCM_TRIGGER_START);
+
+...it's not actually mandatory so it's just the comment that's wrong.
+I'm a little unclear why this is being implemented as a DAPM operation
+rather than having the driver forward the PCM trigger op if it's needed?
+Or alternatively if a DAPM callback is needed why not provide one
+directly rather than hooking into the trigger function - that's going to
+be called out of sequence with the rest of DAPM and be potentially
+confusing given the very different environments that trigger and DAPM
+operations run in.  A quick glance at the it6505 driver suggests it'd be
+happier with a DAPM callback.
+
+--kNT+QONpsQiODP63
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmOAsrEACgkQJNaLcl1U
+h9CCdgf+JzEvQcOa+cudwzO1Ok98aky4qGZCuKQnnWtkrCayv8eiu7wd7w5G9dpU
+VciYfLQ8bgQ3UOImbANerH2+FJhMtldcF8Vn5FJCG1eXpJGMRbWrjguA15/n88uT
+bQ2wEInMii6ecKtSyULg3ie9tuLseZfS3jJHOwJeYFANRmaef0UUAQyPkHnnVsj8
+luaShk6424tDgSWY1es5RVtOOzPH/JpBXK1DKuCEBI7DFYuAJtmqgXXIZvfwNPHe
+sCV/N6DVZNU152PRSiyAX3Y8/x3NzYiSs6BXexv10OlCq44sCPYZ+HdbgY7qQL4y
+w7JwiNOcmvN0sbAhK0jjSKmJ3/spKw==
+=ReC2
+-----END PGP SIGNATURE-----
+
+--kNT+QONpsQiODP63--
