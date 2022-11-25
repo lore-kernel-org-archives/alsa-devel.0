@@ -4,88 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8192BC4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:10:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0E0BC4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:10:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B0EB5187B;
-	Sat, 26 Nov 2022 09:09:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0EB5187B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3558F1888;
+	Sat, 26 Nov 2022 09:09:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3558F1888
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669450206;
-	bh=juyso/HpoYSWkLmKLmGTH4pUybPN5U49mx40hL898E4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Fcla9JE9XEqaSV/8ufc9M8pfccaYy5fqI/qz0NCEWVt7mIrHhmFvYzo4iRVKBgJjm
-	 aM9B3hwj92Bowmu/QjPNO/BhThEMjRcPZtkZL6Q5NWM3zpUuYbyVNEBBSiG3kPcDXx
-	 zuZnz6geK5T7MrXMkDW58mU7NbpmXtO15ULIlzVs=
+	s=default; t=1669450222;
+	bh=fp6XqQpL9EV6MCaRRytTNHroBgmTNRjgfEMJDkvpH/4=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Reply-To:From;
+	b=aKYjd1o2BlcxxRSKYQlLawZLyRiXpu0yuM5fEe7y7LOtbo7ueZfVwJfhh3jFP2Scv
+	 9XZl5Z/rIVfbnXSnrgu3afmkrekcoBfdW3gMaI5ske3UpQ6JNrjup0H3ICp09y2lKI
+	 KAq1ELWOLKWw8BM6VZDDpzj+fYg2TBhHvm6NKkC4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1555F80639;
-	Sat, 26 Nov 2022 08:59:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57EE2F8063D;
+	Sat, 26 Nov 2022 08:59:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 240D9F80431; Thu, 24 Nov 2022 14:54:35 +0100 (CET)
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com
- [IPv6:2607:f8b0:4864:20::b2c])
+ id 18C5BF80236; Fri, 25 Nov 2022 09:52:13 +0100 (CET)
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com
+ [IPv6:2607:f8b0:4864:20::129])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0FACF80115
- for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 14:54:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0FACF80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id DBC9DF800B6
+ for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2022 09:52:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBC9DF800B6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="iHQdDPV0"
-Received: by mail-yb1-xb2c.google.com with SMTP id 1so1880151ybl.7
- for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 05:54:28 -0800 (PST)
+ header.b="U25EnEfO"
+Received: by mail-il1-x129.google.com with SMTP id bp12so1716669ilb.9
+ for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2022 00:52:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=d19VZe73RsPQWbRMrRH216S4FHkhXapc6P3i52jmtAc=;
- b=iHQdDPV0ac4BN0lr3UIcdo0l9o8IvC/T2aKWTM3N//are1c4pniWRMI9Wq7uw6zp35
- irIz6Dzc+GGvWaUfq63UjjORdGQMOPbPvKsIBzQXhokJiz7rA9TLFYovwQh2ZvYN6cFz
- 7wYilt3BDqwAQn0wfaBdOGxLeI1vYWC/g8awjJgO1jaHNVtaZ9iiUNL8GHloaCxl7EMO
- zAu9uDM0LZfTkBSoKPOiI+tzfrH77UwF0n8b2JYeupK3X/ULL7TkvPtylxXSuaj8Zq5S
- bLlFJaQoXVctBwxN5UcG1t/Pnjtyj5GUv7fj8Z11a2xiM1qhukgu2smV3qeOQEWbw5QS
- ltLw==
+ h=cc:to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=isTCofvVL7P9dcD3ZjO24cUl7DxiMDU3I93o15gZ/9c=;
+ b=U25EnEfOZZVYs8FjvGI5gQhqb6IT6wAuDc14dIyaxkrl4QHUKrSLJJU+tKy0AZv65E
+ /5Ex3VbBz3u34znyupN2qhvzV/GGLiYuQ1bYyDdKAP3CgEa1JzzYf3FMPYmz4Rukchnz
+ HWWBzdJRpcxm7j20tFM/YEX87lgv183221h3LMNHGoNSW7IZGnmQn0VzjLorn3iWOxa3
+ I84u4oK0duAL0TCfAFSZCaOAmRXKQuCh9KjIbzWifgQmaxVJRm73ow35hAn5gf3Vw6Cy
+ yZdvy4YrZD06IjjiBuBgjEJbWBqGafSKpwdD7mBunyfTAyMYL3dhqZnKsr+tsz7BDjdo
+ SUFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=d19VZe73RsPQWbRMrRH216S4FHkhXapc6P3i52jmtAc=;
- b=M88pQ0FUkwtBFCKcjgRazpAJ7Dd3c5L6A7/pK0PRaMIyPmS8H8DOOlZLQEStA/8Xk5
- 1NXv8DiJjNRPDSVDMzqV7lQzEcktHznZh0FhAGV5/uP6ssY5sz0E+X56nK0l9ZCNWlvi
- GGossmhSah+30EmYLGoV9NFDx/gbiu0Gv8KrL259cHHJ3YyOiV5mzxptmX5DyKiNwbXJ
- GMUo50WWm4XFlF/K4hhJYQSSSVR0xxaKqsxheo9cZ7L2rHP5daptUMOG6Dfvt8WOqB7P
- /dlZ9tZpJ8Wc/OWDQF6vWZhw4tpZ1iCJ+SvIjAHTmR2oai6TNeaX0ZXpWMXfyYdctTcV
- hFbw==
-X-Gm-Message-State: ANoB5pneiwtpGy681hS4AFIYRvxmXoloieiJgN73T6EVPwtvHoED0GWT
- 7FepaitbF5oNA5GrwGkZKdcldykbiD4acttnizY=
-X-Google-Smtp-Source: AA0mqf5IrmZnahNNIPS3/hpEG3PMIsp17Y7diXsqE373VqHNhMRguSHtQK56lGixA59/Fp9Gj76W5OPPLgNBPQ+WnpI=
-X-Received: by 2002:a05:6902:192:b0:6ef:3e1d:9054 with SMTP id
- t18-20020a056902019200b006ef3e1d9054mr9549191ybh.48.1669298066226; Thu, 24
- Nov 2022 05:54:26 -0800 (PST)
+ h=cc:to:subject:message-id:date:from:reply-to:mime-version
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=isTCofvVL7P9dcD3ZjO24cUl7DxiMDU3I93o15gZ/9c=;
+ b=LY/HZKXTrg7j8HKyHMts3Vqff4LtiOOgUf3EXspGEqDWpxZ4+9MMrCZEwR157gEaly
+ Qkj1v+tC/ZiDhQXrQ2pStdDS+fFkECUOwpQ02va1MZvxN0yuoVwqW8W2//k4JbWGQBNL
+ Tv5QhsfRPfkmjl3uU3frzJZiR9t3fR+sGrLivGum8MNDBYoCGO+Q1VSMRa3Q+OcxiDqk
+ 6Uc3969TX1B1QGH661jRB/WYmJ1PZTP4alMZIkkp69jBOXOs+MzL8JwyQakoLecMgr5n
+ nWdJWazbLmrVC6+j4rg0rjWwt4qD371sEC6VT8XjpdI4GL4uyVl/DKt8t5m6hCLFoOTa
+ x/qA==
+X-Gm-Message-State: ANoB5pmTZPSE6CFFdo1KiXPRa9HOH7hjB9SklW8esPSSZJta8SsUxYtR
+ Wsmz28HGMAR6kchovKBcNucX5PLcH+JhaYr0vhA=
+X-Google-Smtp-Source: AA0mqf5H9G3SzpdncpPet9d//MPYqe5QUDuNoMnk8hLUsTV6TJ3wQJd+HzFTKQm/xY00bwcElLibzoa2erdtv5S9b+k=
+X-Received: by 2002:a92:6e12:0:b0:302:abfb:51d5 with SMTP id
+ j18-20020a926e12000000b00302abfb51d5mr8856626ilc.196.1669366327251; Fri, 25
+ Nov 2022 00:52:07 -0800 (PST)
 MIME-Version: 1.0
-References: <CABDcavYdsk-O4x3oPX4i4+T5wsoZV26_kpEq6JvpD8A_cAGHxg@mail.gmail.com>
- <20221124111336.GE105268@ediswmail.ad.cirrus.com>
-In-Reply-To: <20221124111336.GE105268@ediswmail.ad.cirrus.com>
-From: Guillermo Rodriguez Garcia <guille.rodriguez@gmail.com>
-Date: Thu, 24 Nov 2022 14:54:15 +0100
-Message-ID: <CABDcavbRryENG58LO7+gbJeKbBBPP1uG1Xc00yXUBNzspWpWoA@mail.gmail.com>
-Subject: Re: SOC_DOUBLE_R_SX_TLV controls broken in cs24l51 driver
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From: Ivan Mrva <ivanmrva@gmail.com>
+Date: Fri, 25 Nov 2022 09:51:56 +0100
+Message-ID: <CACVs=vJpoCp2jfFof62HbQFtk75azbGCdWgRW0n12sVsdxQo-g@mail.gmail.com>
+Subject: PROBLEM: No sound on HP Firefly 14 G9 laptop
+To: tiwai@suse.com
 X-Mailman-Approved-At: Sat, 26 Nov 2022 08:58:51 +0100
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>,
- Lucas Tanure <tanureal@opensource.cirrus.com>, patches@opensource.cirrus.com,
- linux-kernel@vger.kernel.org, David Rhodes <david.rhodes@cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- James Schulman <james.schulman@cirrus.com>,
- =?UTF-8?Q?Tan_Nay=C4=B1r?= <tannayir@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,74 +86,66 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Reply-To: ivan.mrva@gmail.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-El jue, 24 nov 2022 a las 12:13, Charles Keepax
-(<ckeepax@opensource.cirrus.com>) escribi=C3=B3:
->
-> On Thu, Nov 24, 2022 at 10:57:34AM +0100, Guillermo Rodriguez Garcia wrot=
-e:
-> > Hi all,
-> >
-> > I am using a dev board with a Cirrus Logic cs24l51 codec.
-> >
-> > This used to work fine prior to kernel version 5.x, however after 5.x
-> > it is not possible to set certain values for ALSA controls from
-> > userspace.
-> >
-> > I believe this is related to the input validation that is mentioned in
-> > this thread: https://lore.kernel.org/all/Yph8C3bRxcr6ogW7@sirena.org.uk=
-/T/,
-> > and possibly in this commit: 4f1e50d6a9cf9c1b8c859d449b5031cacfa8404e
-> > ("ASoC: ops: Reject out of bounds values in snd_soc_put_volsw_sx()")
-> >
-> > For the cs24l51, all the controls that fail are using the
-> > SOC_DOUBLE_R_SX_TLV macro.
-> >
-> > I have traced this to the checks in snd_soc_put_volsw_sx, specifically
-> > the (val > max - min) check:
-> >
->
-> Can you try these two patches:
->
-> https://lore.kernel.org/all/165236477046.1016627.15470197691244479154.b4-=
-ty@kernel.org/
+[1.] One line summary of the problem:
+No sound on HP Firefly 14 G9
 
-Thanks.
-In my tests, these patches seem to fix the problem for some values,
-but not for all of them:
+[2.] Full description of the problem/report:
+Although the corresponding kernel module is loaded successfully and I can
+also see a sound output being produced on the software level (in
+gnome-control-center), physically there is still no sound coming out of the
+speakers. My HW card was identified with the code "0x103c" "0x896d", for
+which a patch was already submitted in the following commit:
+https://github.com/torvalds/linux/commit/f86bfeb689f2c4ebe12782ef0578ef778fb1a050.
+Unfortunately not working in my case. Also the patch identified the model
+as "HP Zbook Firefly 16 G9", however in my case the model is used "HP Zbook
+Firefly 14 G6" (14 not 16).
 
-$ amixer cset name=3D'Analog Playback Volume' '208','208'
-numid=3D3,iface=3DMIXER,name=3D'Analog Playback Volume'
-  ; type=3DINTEGER,access=3Drw---R--,values=3D2,min=3D0,max=3D228,step=3D0
-  : values=3D208,208
-  | dBscale-min=3D-102.00dB,step=3D0.50dB,mute=3D0
+[4.1.] Kernel version:
+6.1-rc6
 
-$ amixer cset name=3D'Analog Playback Volume' '180','180'
-amixer: Control default element write error: Invalid argument
+[8.3.] Module information:
+snd_hda_scodec_cs35l41_i2c
 
-Looking at the code I'd say that patch 1/2 is correct however I have
-doubts about patch 2/2:
+[8.4.] Loaded driver and hardware information (/proc/ioports, /proc/iomem):
+Here some relevant output from systemd's journalctl:
 
-        val_mask =3D mask << rshift;
-        val2 =3D (ucontrol->value.integer.value[1] + min) & mask;
-+
-+       if (mc->platform_max && val2 > mc->platform_max)
-+           return -EINVAL;
-+       if (val2 > max)
-+           return -EINVAL;
-+
-        val2 =3D val2 << rshift;
+Nov 24 20:52:43 laptop-brn alsactl[2916]: Found hardware: "HDA-Intel"
+"Realtek ALC245" "HDA:10ec0245,103c8972,00100001
+HDA:8086281c,80860101,00100000" "0x103c" "0x896d"
+Nov 24 21:07:26 laptop-brn alsactl[2937]: Found hardware: "HDA-Intel"
+"Realtek ALC245" "HDA:10ec0245,103c8972,00100001
+HDA:8086281c,80860101,00100000" "0x103c" "0x896d"
 
-        err =3D snd_soc_component_update_bits(component, reg2, val_mask,
+Nov 25 07:34:11 laptop-brn kernel: snd_hda_intel 0000:00:1f.3: DSP detected
+with PCI class/subclass/prog-if info 0x040100
+Nov 25 07:34:11 laptop-brn kernel: snd_hda_intel 0000:00:1f.3: Digital mics
+found on Skylake+ platform, using SOF driver
+Nov 25 07:34:15 laptop-brn kernel: snd_hda_codec_realtek ehdaudio0D0:
+autoconfig for ALC245: line_outs=1 (0x17/0x0/0x0/0x0/0x0) type:speaker
+Nov 25 07:34:15 laptop-brn kernel: snd_hda_codec_realtek ehdaudio0D0:
+ speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+Nov 25 07:34:15 laptop-brn kernel: snd_hda_codec_realtek ehdaudio0D0:
+ hp_outs=1 (0x21/0x0/0x0/0x0/0x0)
+Nov 25 07:34:15 laptop-brn kernel: snd_hda_codec_realtek ehdaudio0D0:
+ mono: mono_out=0x0
+Nov 25 07:34:15 laptop-brn kernel: snd_hda_codec_realtek ehdaudio0D0:
+ inputs:
+Nov 25 07:34:15 laptop-brn kernel: snd_hda_codec_realtek ehdaudio0D0:
+ Mic=0x19
+Nov 25 07:34:15 laptop-brn kernel: snd_hda_codec_realtek ehdaudio0D0: ASoC:
+sink widget AIF1TX overwritten
+Nov 25 07:34:15 laptop-brn kernel: snd_hda_codec_realtek ehdaudio0D0: ASoC:
+source widget AIF1RX overwritten
 
-The checks for max and platform_max are done on val2, but val2 is
-already the result of adding the minimum value ('min') and applying
-the mask.
-Shouldn't the checks be done on ucontrol->value.integer.value[1] instead?
+[X.] Other notes, patches, fixes, workarounds:
+I don't know by myself how to fix it - not sure what exactly is relevant on
+the HW side to be checked and how to patch it in the patch_realtek.c
+exactly. Would be glad if you could help me navigate here (what HW
+information should I look for) and would be happy to try to patch it and
+test by myself on my machine.
 
-Thanks,
-
-Guillermo Rodriguez Garcia
-guille.rodriguez@gmail.com
+Thank you.
