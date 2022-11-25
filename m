@@ -4,87 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E28B5C4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:17:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02E9CC4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:17:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A2E01836;
-	Sat, 26 Nov 2022 09:16:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A2E01836
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2BFD41887;
+	Sat, 26 Nov 2022 09:17:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BFD41887
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669450658;
-	bh=IvHYWDLn1DgR8LH4t7rSubz36Ju+jzSqmPmYrOhNPlo=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1669450674;
+	bh=1w7DlFxD3WCX2blZmMM059sDBEdCeLcVaS46TaDQB2k=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dy8Iu8kNVJoLfpW5W0wbmLBAI834jYWDIRVQx5MEgDEG8PB5V1pv37EL1XnAWOF+8
-	 6Qnxp69+OJzyz8irZ94gkrdX6gPl+BQRmZkJXbyImpCZWtw4D1LdXaNHg3KV2Mq7eD
-	 3G2dvVzTs6CvqIkLEOBkNBejrdx8Jo+V7QRImwGc=
+	b=BvKkC8AwQarKBvWfrIDwdPrWc38w+8Ln5MN4WGVCK8bmoEOJkPQ9sOETRbdHeyWFA
+	 niCTgP/tcv9CIuGT09eL3F2U7xKpkWCW+HPjkKRwKPLEkJo8GM7aUO87prh777neg1
+	 2Akjxds+wZ45xH6Y1Vo2MTKOzKBQ4emJgo7qAgsE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B11FF8080A;
-	Sat, 26 Nov 2022 09:00:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16938F8080C;
+	Sat, 26 Nov 2022 09:00:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 85A76F80431; Thu, 24 Nov 2022 17:04:19 +0100 (CET)
+ id 4522CF80236; Fri, 25 Nov 2022 12:55:54 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2FE6EF80115
- for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 17:04:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FE6EF80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0D9BF800F4
+ for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2022 12:55:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0D9BF800F4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="WlxvzM22"
+ header.b="h3uPBlKc"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 382A7B82874;
- Thu, 24 Nov 2022 16:04:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4356C433D6;
- Thu, 24 Nov 2022 16:04:04 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id DF5CCB82A8B;
+ Fri, 25 Nov 2022 11:55:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 479F7C433C1;
+ Fri, 25 Nov 2022 11:55:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669305852;
- bh=IvHYWDLn1DgR8LH4t7rSubz36Ju+jzSqmPmYrOhNPlo=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=WlxvzM22NwMDCoQChrQhXcrqFDVCZNvtWkzovYYg2PyBCYEXL4YaJuKbp1dQByKcF
- FmlwRuCiw0oQRKp2ZSDzDV/aqXNW4V8kWhrIBPIdh+/S7edLrqRPFuSS4MdSBm7BLH
- IDnPtjktIvP1hka5/d8VaQhqX7Yn6GZ5Hx+IOBEDhJbY4qMOFPtHIuaB8I1wIuGdL6
- g1de0tQjk0TcZc+A64jFItQC3XsxmvpZZRqGF7esQ3Lb9AgP1rdwW/lFgi93zL+mqf
- sGYMjME4SGIBJuwf4qC9yYSwep3N56gpSQJ5vy76O58xNPbhd+xJcjeFicKz9acOhD
- lG4G9UHzWi0mA==
-From: Mark Brown <broonie@kernel.org>
-To: Uwe Kleine-König <uwe@kleine-koenig.org>, Lee Jones <lee.jones@linaro.org>, Wolfram Sang <wsa@kernel.org>,
- Angel Iglesias <ang.iglesiasg@gmail.com>, Grant Likely <grant.likely@linaro.org>
-In-Reply-To: <20221118224540.619276-1-uwe@kleine-koenig.org>
-References: <20221118224540.619276-1-uwe@kleine-koenig.org>
-Subject: Re: (subset) [PATCH 000/606] i2c: Complete conversion to i2c_probe_new
-Message-Id: <166930584463.436148.7438729312416805991.b4-ty@kernel.org>
-Date: Thu, 24 Nov 2022 16:04:04 +0000
+ s=k20201202; t=1669377346;
+ bh=1w7DlFxD3WCX2blZmMM059sDBEdCeLcVaS46TaDQB2k=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=h3uPBlKcpDiYp9ziolAxWVZdUguFj5hvAwv74KIXFQy6vksbPTdUmi8viJGNuP5wm
+ LcjzdwO7traA0ZjPUDk1wvjh9j3H/M91Ck6g6IAbLUbaTjAblkZPQztsppsCx/HX+n
+ ndVblE0PSz9rHBQw3ou59l8thvFk8P/o7yamtjmA3EDfpwMtvK1AV7a541iG/wnVUg
+ PMpgkuv7zSQZVQAN07VsH3zeWiBeoO2wPbRrAL3L35DbSunM9X5JUNxLW3hvJKypKj
+ kNO4K/jWzEyNouVUP2uCnDdv97ImxYhNg+K4JCF3vBLYVa2/RbWK4KqKAGdnEFsJnK
+ pPcLXwb1y+4EQ==
+Date: Fri, 25 Nov 2022 11:55:29 +0000
+From: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 2/5] driver core: make struct class.devnode() take a
+ const *
+Message-ID: <20221125115529.05af1513@sal.lan>
+In-Reply-To: <20221123122523.1332370-2-gregkh@linuxfoundation.org>
+References: <20221123122523.1332370-1-gregkh@linuxfoundation.org>
+ <20221123122523.1332370-2-gregkh@linuxfoundation.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-fc921
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 X-Mailman-Approved-At: Sat, 26 Nov 2022 08:58:52 +0100
-Cc: linux-fbdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-iio@vger.kernel.org, alsa-devel@alsa-project.org,
- platform-driver-x86@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-i2c@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org,
- chrome-platform@lists.linux.dev, linux-samsung-soc@vger.kernel.org,
- linux-staging@lists.linux.dev,
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
- linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-actions@lists.infradead.org, linux-gpio@vger.kernel.org,
- linux-rpi-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
- openipmi-developer@lists.sourceforge.net, linux-omap@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, Purism Kernel Team <kernel@puri.sm>,
- patches@opensource.cirrus.com, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-crypto@vger.kernel.org,
- kernel@pengutronix.de, netdev@vger.kernel.org, linux-integrity@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org
+Cc: alsa-devel@alsa-project.org, Justin Sanders <justin@coraid.com>,
+ Anton Vorontsov <anton@enomsg.org>, Sean Young <sean@mess.org>, "Michael S.
+ Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, dri-devel@lists.freedesktop.org,
+ John Stultz <jstultz@google.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Eli Cohen <elic@nvidia.com>, David Airlie <airlied@gmail.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>, Kees Cook <keescook@chromium.org>,
+ Parav Pandit <parav@nvidia.com>,
+ Benjamin Gaignard <benjamin.gaignard@collabora.com>, kvm@vger.kernel.org,
+ Leon Romanovsky <leon@kernel.org>,
+ Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+ linux-rdma@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>, x86@kernel.org,
+ Frank Haverkamp <haver@linux.ibm.com>, Dan Carpenter <error27@gmail.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Ingo Molnar <mingo@redhat.com>,
+ linux-input@vger.kernel.org, Laura Abbott <labbott@redhat.com>,
+ virtualization@lists.linux-foundation.org, linux-media@vger.kernel.org,
+ Fenghua Yu <fenghua.yu@intel.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Arnd Bergmann <arnd@arndb.de>, Colin Cross <ccross@android.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, linaro-mm-sig@lists.linaro.org,
+ Gautam Dawar <gautam.dawar@xilinx.com>,
+ Alex Williamson <alex.williamson@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Takashi Iwai <tiwai@suse.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Reinette Chatre <reinette.chatre@intel.com>, Jens Axboe <axboe@kernel.dk>,
+ linux-block@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
+ linux-scsi@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ linux-kernel@vger.kernel.org, Liam Mark <lmark@codeaurora.org>,
+ Brian Starkey <Brian.Starkey@arm.com>,
+ FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>,
+ Xie Yongji <xieyongji@bytedance.com>,
+ Maxime Coquelin <maxime.coquelin@redhat.com>, linux-usb@vger.kernel.org,
+ Thomas Zimmermann <tzimmermann@suse.de>, Cornelia Huck <cohuck@redhat.com>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,85 +116,452 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 18 Nov 2022 23:35:34 +0100, Uwe Kleine-König wrote:
-> since commit b8a1a4cd5a98 ("i2c: Provide a temporary .probe_new()
-> call-back type") from 2016 there is a "temporary" alternative probe
-> callback for i2c drivers.
-> 
-> This series completes all drivers to this new callback (unless I missed
-> something). It's based on current next/master.
-> A part of the patches depend on commit 662233731d66 ("i2c: core:
-> Introduce i2c_client_get_device_id helper function"), there is a branch that
-> you can pull into your tree to get it:
-> 
-> [...]
+Em Wed, 23 Nov 2022 13:25:20 +0100
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
 
-Applied to
+> The devnode() in struct class should not be modifying the device that is
+> passed into it, so mark it as a const * and propagate the function
+> signature changes out into all relevant subsystems that use this
+> callback.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
-
-Thanks!
-
-[538/606] regulator: act8865-regulator: Convert to i2c's .probe_new()
-          commit: 3d2a78ae5df5d7f48c002e5f73d18d8c7628d266
-[539/606] regulator: ad5398: Convert to i2c's .probe_new()
-          commit: 7f69edba960bbdcbc829d8d0995b1117ce29e8b1
-[540/606] regulator: da9121-regulator: Convert to i2c's .probe_new()
-          commit: 020cf73b47414a84b666d3e6736a6ae957e27840
-[541/606] regulator: fan53555: Convert to i2c's .probe_new()
-          commit: 655425650f5e361224a86aa11bf3c044bf04df2a
-[542/606] regulator: isl6271a-regulator: Convert to i2c's .probe_new()
-          commit: 69518d21deaa448be65b7c0be67aab230e88eaa7
-[543/606] regulator: lp3972: Convert to i2c's .probe_new()
-          commit: 2532d5f8d5c20d5a0a8a0d57a311bc5df00dea04
-[544/606] regulator: lp872x: Convert to i2c's .probe_new()
-          commit: 87feccb347b25f5dc6ff451123b832c9ad5dddfe
-[545/606] regulator: lp8755: Convert to i2c's .probe_new()
-          commit: cb28f74b4809a00b40fdf0c44ccf51ab950581d3
-[546/606] regulator: ltc3589: Convert to i2c's .probe_new()
-          commit: 78c8f6cdb51d471928d481ed3b2c82dbc110a1ed
-[547/606] regulator: max1586: Convert to i2c's .probe_new()
-          commit: 3d54f7ba248b0ad1791bc356e9ad3d9020a1c472
-[548/606] regulator: max8649: Convert to i2c's .probe_new()
-          commit: 3cf4417385d0ac8f02f22888e12a6d21d97d89fc
-[549/606] regulator: max8660: Convert to i2c's .probe_new()
-          commit: dbf31dac703009174226bb87b3914bd092040327
-[550/606] regulator: max8952: Convert to i2c's .probe_new()
-          commit: c20c36735949b3b7984692fbab3d92b0e8a845ec
-[551/606] regulator: max8973-regulator: Convert to i2c's .probe_new()
-          commit: 4e85e5d64f66ac5e4b0286ee4b6f8e8ce1044d42
-[552/606] regulator: pca9450-regulator: Convert to i2c's .probe_new()
-          commit: ed56fa6e804cb13bbe29e9214792308817f6e553
-[553/606] regulator: pfuze100-regulator: Convert to i2c's .probe_new()
-          commit: 8348c710b51bac713a6fd2e07d64eb71d5680e2e
-[554/606] regulator: pv88080-regulator: Convert to i2c's .probe_new()
-          commit: c9f9ef15b84222f4cc686b1013ee3fd192b0bab8
-[555/606] regulator: rpi-panel-attiny-regulator: Convert to i2c's .probe_new()
-          commit: d85d02d17a608b558d44510e9824668c5d4fe5d8
-[556/606] regulator: tps51632-regulator: Convert to i2c's .probe_new()
-          commit: d4885f306304ff29eec06b9ad5f526a1099e0418
-[557/606] regulator: tps62360-regulator: Convert to i2c's .probe_new()
-          commit: 18804160277ec2ab992373385f86c6af2322b28b
-[558/606] regulator: tps6286x-regulator: Convert to i2c's .probe_new()
-          commit: e34782316281c78c5911f86d4699d4f35a607c9d
-[559/606] regulator: tps65023-regulator: Convert to i2c's .probe_new()
-          commit: 3b5b07dde998f6ade7433a8db019cf816c7e35af
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Acked-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+>=20
+> Cc: Fenghua Yu <fenghua.yu@intel.com>
+> Cc: Reinette Chatre <reinette.chatre@intel.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: x86@kernel.org
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Justin Sanders <justin@coraid.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> Cc: Liam Mark <lmark@codeaurora.org>
+> Cc: Laura Abbott <labbott@redhat.com>
+> Cc: Brian Starkey <Brian.Starkey@arm.com>
+> Cc: John Stultz <jstultz@google.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: David Airlie <airlied@gmail.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Leon Romanovsky <leon@kernel.org>
+> Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Sean Young <sean@mess.org>
+> Cc: Frank Haverkamp <haver@linux.ibm.com>
+> Cc: Jiri Slaby <jirislaby@kernel.org>
+> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Cornelia Huck <cohuck@redhat.com>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Anton Vorontsov <anton@enomsg.org>
+> Cc: Colin Cross <ccross@android.com>
+> Cc: Tony Luck <tony.luck@intel.com>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Cc: Xie Yongji <xieyongji@bytedance.com>
+> Cc: Gautam Dawar <gautam.dawar@xilinx.com>
+> Cc: Dan Carpenter <error27@gmail.com>
+> Cc: Eli Cohen <elic@nvidia.com>
+> Cc: Parav Pandit <parav@nvidia.com>
+> Cc: Maxime Coquelin <maxime.coquelin@redhat.com>
+> Cc: alsa-devel@alsa-project.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: kvm@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Cc: linux-block@vger.kernel.org
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linux-rdma@vger.kernel.org
+> Cc: linux-scsi@vger.kernel.org
+> Cc: linux-usb@vger.kernel.org
+> Cc: virtualization@lists.linux-foundation.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  arch/x86/kernel/cpu/resctrl/pseudo_lock.c  | 4 ++--
+>  arch/x86/kernel/cpuid.c                    | 2 +-
+>  arch/x86/kernel/msr.c                      | 2 +-
+>  block/bsg.c                                | 2 +-
+>  drivers/block/aoe/aoechr.c                 | 2 +-
+>  drivers/char/mem.c                         | 2 +-
+>  drivers/char/misc.c                        | 4 ++--
+>  drivers/dma-buf/dma-heap.c                 | 2 +-
+>  drivers/gpu/drm/drm_sysfs.c                | 2 +-
+>  drivers/infiniband/core/user_mad.c         | 2 +-
+>  drivers/infiniband/core/uverbs_main.c      | 2 +-
+>  drivers/infiniband/hw/hfi1/device.c        | 4 ++--
+>  drivers/input/input.c                      | 2 +-
+>  drivers/media/dvb-core/dvbdev.c            | 4 ++--
+>  drivers/media/pci/ddbridge/ddbridge-core.c | 4 ++--
+>  drivers/media/rc/rc-main.c                 | 2 +-
+>  drivers/misc/genwqe/card_base.c            | 2 +-
+>  drivers/tty/tty_io.c                       | 2 +-
+>  drivers/usb/core/file.c                    | 2 +-
+>  drivers/vdpa/vdpa_user/vduse_dev.c         | 2 +-
+>  drivers/vfio/vfio_main.c                   | 2 +-
+>  fs/pstore/pmsg.c                           | 2 +-
+>  include/linux/device/class.h               | 2 +-
+>  sound/sound_core.c                         | 2 +-
+>  24 files changed, 29 insertions(+), 29 deletions(-)
+>=20
+> diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/=
+cpu/resctrl/pseudo_lock.c
+> index d961ae3ed96e..4e4231a58f38 100644
+> --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> @@ -1560,9 +1560,9 @@ static const struct file_operations pseudo_lock_dev=
+_fops =3D {
+>  	.mmap =3D		pseudo_lock_dev_mmap,
+>  };
+> =20
+> -static char *pseudo_lock_devnode(struct device *dev, umode_t *mode)
+> +static char *pseudo_lock_devnode(const struct device *dev, umode_t *mode)
+>  {
+> -	struct rdtgroup *rdtgrp;
+> +	const struct rdtgroup *rdtgrp;
+> =20
+>  	rdtgrp =3D dev_get_drvdata(dev);
+>  	if (mode)
+> diff --git a/arch/x86/kernel/cpuid.c b/arch/x86/kernel/cpuid.c
+> index 6f7b8cc1bc9f..621ba9c0f17a 100644
+> --- a/arch/x86/kernel/cpuid.c
+> +++ b/arch/x86/kernel/cpuid.c
+> @@ -139,7 +139,7 @@ static int cpuid_device_destroy(unsigned int cpu)
+>  	return 0;
+>  }
+> =20
+> -static char *cpuid_devnode(struct device *dev, umode_t *mode)
+> +static char *cpuid_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	return kasprintf(GFP_KERNEL, "cpu/%u/cpuid", MINOR(dev->devt));
+>  }
+> diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
+> index ed8ac6bcbafb..708751311786 100644
+> --- a/arch/x86/kernel/msr.c
+> +++ b/arch/x86/kernel/msr.c
+> @@ -250,7 +250,7 @@ static int msr_device_destroy(unsigned int cpu)
+>  	return 0;
+>  }
+> =20
+> -static char *msr_devnode(struct device *dev, umode_t *mode)
+> +static char *msr_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	return kasprintf(GFP_KERNEL, "cpu/%u/msr", MINOR(dev->devt));
+>  }
+> diff --git a/block/bsg.c b/block/bsg.c
+> index 2ab1351eb082..08046bd9207d 100644
+> --- a/block/bsg.c
+> +++ b/block/bsg.c
+> @@ -232,7 +232,7 @@ struct bsg_device *bsg_register_queue(struct request_=
+queue *q,
+>  }
+>  EXPORT_SYMBOL_GPL(bsg_register_queue);
+> =20
+> -static char *bsg_devnode(struct device *dev, umode_t *mode)
+> +static char *bsg_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	return kasprintf(GFP_KERNEL, "bsg/%s", dev_name(dev));
+>  }
+> diff --git a/drivers/block/aoe/aoechr.c b/drivers/block/aoe/aoechr.c
+> index 8eea2529da20..7a368c90467d 100644
+> --- a/drivers/block/aoe/aoechr.c
+> +++ b/drivers/block/aoe/aoechr.c
+> @@ -273,7 +273,7 @@ static const struct file_operations aoe_fops =3D {
+>  	.llseek =3D noop_llseek,
+>  };
+> =20
+> -static char *aoe_devnode(struct device *dev, umode_t *mode)
+> +static char *aoe_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	return kasprintf(GFP_KERNEL, "etherd/%s", dev_name(dev));
+>  }
+> diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+> index 5611d127363e..83bf2a4dcb57 100644
+> --- a/drivers/char/mem.c
+> +++ b/drivers/char/mem.c
+> @@ -746,7 +746,7 @@ static const struct file_operations memory_fops =3D {
+>  	.llseek =3D noop_llseek,
+>  };
+> =20
+> -static char *mem_devnode(struct device *dev, umode_t *mode)
+> +static char *mem_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	if (mode && devlist[MINOR(dev->devt)].mode)
+>  		*mode =3D devlist[MINOR(dev->devt)].mode;
+> diff --git a/drivers/char/misc.c b/drivers/char/misc.c
+> index cba19bfdc44d..88c6995b9a3d 100644
+> --- a/drivers/char/misc.c
+> +++ b/drivers/char/misc.c
+> @@ -254,9 +254,9 @@ void misc_deregister(struct miscdevice *misc)
+>  }
+>  EXPORT_SYMBOL(misc_deregister);
+> =20
+> -static char *misc_devnode(struct device *dev, umode_t *mode)
+> +static char *misc_devnode(const struct device *dev, umode_t *mode)
+>  {
+> -	struct miscdevice *c =3D dev_get_drvdata(dev);
+> +	const struct miscdevice *c =3D dev_get_drvdata(dev);
+> =20
+>  	if (mode && c->mode)
+>  		*mode =3D c->mode;
+> diff --git a/drivers/dma-buf/dma-heap.c b/drivers/dma-buf/dma-heap.c
+> index 8f5848aa144f..4d7150791315 100644
+> --- a/drivers/dma-buf/dma-heap.c
+> +++ b/drivers/dma-buf/dma-heap.c
+> @@ -299,7 +299,7 @@ struct dma_heap *dma_heap_add(const struct dma_heap_e=
+xport_info *exp_info)
+>  	return err_ret;
+>  }
+> =20
+> -static char *dma_heap_devnode(struct device *dev, umode_t *mode)
+> +static char *dma_heap_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	return kasprintf(GFP_KERNEL, "dma_heap/%s", dev_name(dev));
+>  }
+> diff --git a/drivers/gpu/drm/drm_sysfs.c b/drivers/gpu/drm/drm_sysfs.c
+> index 430e00b16eec..14bf156b3f1b 100644
+> --- a/drivers/gpu/drm/drm_sysfs.c
+> +++ b/drivers/gpu/drm/drm_sysfs.c
+> @@ -90,7 +90,7 @@ static void drm_sysfs_acpi_register(void) { }
+>  static void drm_sysfs_acpi_unregister(void) { }
+>  #endif
+> =20
+> -static char *drm_devnode(struct device *dev, umode_t *mode)
+> +static char *drm_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	return kasprintf(GFP_KERNEL, "dri/%s", dev_name(dev));
+>  }
+> diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core=
+/user_mad.c
+> index 98cb594cd9a6..f83954180a33 100644
+> --- a/drivers/infiniband/core/user_mad.c
+> +++ b/drivers/infiniband/core/user_mad.c
+> @@ -1224,7 +1224,7 @@ static struct attribute *umad_class_dev_attrs[] =3D=
+ {
+>  };
+>  ATTRIBUTE_GROUPS(umad_class_dev);
+> =20
+> -static char *umad_devnode(struct device *dev, umode_t *mode)
+> +static char *umad_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	return kasprintf(GFP_KERNEL, "infiniband/%s", dev_name(dev));
+>  }
+> diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/c=
+ore/uverbs_main.c
+> index d54434088727..bdb179a09d77 100644
+> --- a/drivers/infiniband/core/uverbs_main.c
+> +++ b/drivers/infiniband/core/uverbs_main.c
+> @@ -1237,7 +1237,7 @@ static void ib_uverbs_remove_one(struct ib_device *=
+device, void *client_data)
+>  	put_device(&uverbs_dev->dev);
+>  }
+> =20
+> -static char *uverbs_devnode(struct device *dev, umode_t *mode)
+> +static char *uverbs_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	if (mode)
+>  		*mode =3D 0666;
+> diff --git a/drivers/infiniband/hw/hfi1/device.c b/drivers/infiniband/hw/=
+hfi1/device.c
+> index 8ceff7141baf..1f4496032170 100644
+> --- a/drivers/infiniband/hw/hfi1/device.c
+> +++ b/drivers/infiniband/hw/hfi1/device.c
+> @@ -72,7 +72,7 @@ const char *class_name(void)
+>  	return hfi1_class_name;
+>  }
+> =20
+> -static char *hfi1_devnode(struct device *dev, umode_t *mode)
+> +static char *hfi1_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	if (mode)
+>  		*mode =3D 0600;
+> @@ -85,7 +85,7 @@ static const char *class_name_user(void)
+>  	return hfi1_class_name_user;
+>  }
+> =20
+> -static char *hfi1_user_devnode(struct device *dev, umode_t *mode)
+> +static char *hfi1_user_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	if (mode)
+>  		*mode =3D 0666;
+> diff --git a/drivers/input/input.c b/drivers/input/input.c
+> index ebb2b7f0f8ff..50597165dc54 100644
+> --- a/drivers/input/input.c
+> +++ b/drivers/input/input.c
+> @@ -1913,7 +1913,7 @@ static const struct device_type input_dev_type =3D {
+>  #endif
+>  };
+> =20
+> -static char *input_devnode(struct device *dev, umode_t *mode)
+> +static char *input_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	return kasprintf(GFP_KERNEL, "input/%s", dev_name(dev));
+>  }
+> diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvb=
+dev.c
+> index 6ef18bab9648..e73f5240cc2c 100644
+> --- a/drivers/media/dvb-core/dvbdev.c
+> +++ b/drivers/media/dvb-core/dvbdev.c
+> @@ -1018,9 +1018,9 @@ static int dvb_uevent(const struct device *dev, str=
+uct kobj_uevent_env *env)
+>  	return 0;
+>  }
+> =20
+> -static char *dvb_devnode(struct device *dev, umode_t *mode)
+> +static char *dvb_devnode(const struct device *dev, umode_t *mode)
+>  {
+> -	struct dvb_device *dvbdev =3D dev_get_drvdata(dev);
+> +	const struct dvb_device *dvbdev =3D dev_get_drvdata(dev);
+> =20
+>  	return kasprintf(GFP_KERNEL, "dvb/adapter%d/%s%d",
+>  		dvbdev->adapter->num, dnames[dvbdev->type], dvbdev->id);
+> diff --git a/drivers/media/pci/ddbridge/ddbridge-core.c b/drivers/media/p=
+ci/ddbridge/ddbridge-core.c
+> index fe833f39698a..ee8087f29b2c 100644
+> --- a/drivers/media/pci/ddbridge/ddbridge-core.c
+> +++ b/drivers/media/pci/ddbridge/ddbridge-core.c
+> @@ -2716,9 +2716,9 @@ static const struct file_operations ddb_fops =3D {
+>  	.release        =3D ddb_release,
+>  };
+> =20
+> -static char *ddb_devnode(struct device *device, umode_t *mode)
+> +static char *ddb_devnode(const struct device *device, umode_t *mode)
+>  {
+> -	struct ddb *dev =3D dev_get_drvdata(device);
+> +	const struct ddb *dev =3D dev_get_drvdata(device);
+> =20
+>  	return kasprintf(GFP_KERNEL, "ddbridge/card%d", dev->nr);
+>  }
+> diff --git a/drivers/media/rc/rc-main.c b/drivers/media/rc/rc-main.c
+> index eba0cd30e314..527d9324742b 100644
+> --- a/drivers/media/rc/rc-main.c
+> +++ b/drivers/media/rc/rc-main.c
+> @@ -1017,7 +1017,7 @@ static void ir_close(struct input_dev *idev)
+>  }
+> =20
+>  /* class for /sys/class/rc */
+> -static char *rc_devnode(struct device *dev, umode_t *mode)
+> +static char *rc_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	return kasprintf(GFP_KERNEL, "rc/%s", dev_name(dev));
+>  }
+> diff --git a/drivers/misc/genwqe/card_base.c b/drivers/misc/genwqe/card_b=
+ase.c
+> index 693981891870..0f00687f72d4 100644
+> --- a/drivers/misc/genwqe/card_base.c
+> +++ b/drivers/misc/genwqe/card_base.c
+> @@ -1349,7 +1349,7 @@ static struct pci_driver genwqe_driver =3D {
+>   * Default mode should be rw for everybody. Do not change default
+>   * device name.
+>   */
+> -static char *genwqe_devnode(struct device *dev, umode_t *mode)
+> +static char *genwqe_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	if (mode)
+>  		*mode =3D 0666;
+> diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+> index de06c3c2ff70..aad8171f6c21 100644
+> --- a/drivers/tty/tty_io.c
+> +++ b/drivers/tty/tty_io.c
+> @@ -3494,7 +3494,7 @@ void tty_default_fops(struct file_operations *fops)
+>  	*fops =3D tty_fops;
+>  }
+> =20
+> -static char *tty_devnode(struct device *dev, umode_t *mode)
+> +static char *tty_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	if (!mode)
+>  		return NULL;
+> diff --git a/drivers/usb/core/file.c b/drivers/usb/core/file.c
+> index 558890ada0e5..da7d88e069e6 100644
+> --- a/drivers/usb/core/file.c
+> +++ b/drivers/usb/core/file.c
+> @@ -62,7 +62,7 @@ static struct usb_class {
+>  	struct class *class;
+>  } *usb_class;
+> =20
+> -static char *usb_devnode(struct device *dev, umode_t *mode)
+> +static char *usb_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	struct usb_class_driver *drv;
+> =20
+> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/=
+vduse_dev.c
+> index 35dceee3ed56..0dd3c1f291da 100644
+> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
+> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+> @@ -1656,7 +1656,7 @@ static const struct file_operations vduse_ctrl_fops=
+ =3D {
+>  	.llseek		=3D noop_llseek,
+>  };
+> =20
+> -static char *vduse_devnode(struct device *dev, umode_t *mode)
+> +static char *vduse_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	return kasprintf(GFP_KERNEL, "vduse/%s", dev_name(dev));
+>  }
+> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
+> index 6e8804fe0095..5bf4b3454918 100644
+> --- a/drivers/vfio/vfio_main.c
+> +++ b/drivers/vfio/vfio_main.c
+> @@ -1812,7 +1812,7 @@ EXPORT_SYMBOL(vfio_set_irqs_validate_and_prepare);
+>  /*
+>   * Module/class support
+>   */
+> -static char *vfio_devnode(struct device *dev, umode_t *mode)
+> +static char *vfio_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	return kasprintf(GFP_KERNEL, "vfio/%s", dev_name(dev));
+>  }
+> diff --git a/fs/pstore/pmsg.c b/fs/pstore/pmsg.c
+> index d8542ec2f38c..b31c9c72d90b 100644
+> --- a/fs/pstore/pmsg.c
+> +++ b/fs/pstore/pmsg.c
+> @@ -46,7 +46,7 @@ static int pmsg_major;
+>  #undef pr_fmt
+>  #define pr_fmt(fmt) PMSG_NAME ": " fmt
+> =20
+> -static char *pmsg_devnode(struct device *dev, umode_t *mode)
+> +static char *pmsg_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	if (mode)
+>  		*mode =3D 0220;
+> diff --git a/include/linux/device/class.h b/include/linux/device/class.h
+> index 94b1107258e5..42cc3fb44a84 100644
+> --- a/include/linux/device/class.h
+> +++ b/include/linux/device/class.h
+> @@ -60,7 +60,7 @@ struct class {
+>  	struct kobject			*dev_kobj;
+> =20
+>  	int (*dev_uevent)(const struct device *dev, struct kobj_uevent_env *env=
+);
+> -	char *(*devnode)(struct device *dev, umode_t *mode);
+> +	char *(*devnode)(const struct device *dev, umode_t *mode);
+> =20
+>  	void (*class_release)(struct class *class);
+>  	void (*dev_release)(struct device *dev);
+> diff --git a/sound/sound_core.c b/sound/sound_core.c
+> index 3332fe321737..3e7dd6fcb7cf 100644
+> --- a/sound/sound_core.c
+> +++ b/sound/sound_core.c
+> @@ -30,7 +30,7 @@ MODULE_DESCRIPTION("Core sound module");
+>  MODULE_AUTHOR("Alan Cox");
+>  MODULE_LICENSE("GPL");
+> =20
+> -static char *sound_devnode(struct device *dev, umode_t *mode)
+> +static char *sound_devnode(const struct device *dev, umode_t *mode)
+>  {
+>  	if (MAJOR(dev->devt) =3D=3D SOUND_MAJOR)
+>  		return NULL;
