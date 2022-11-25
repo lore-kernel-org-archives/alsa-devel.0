@@ -4,82 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49880C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Nov 2022 14:22:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47CDEC43217
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Nov 2022 14:27:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D9711744;
-	Fri, 25 Nov 2022 15:21:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D9711744
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C61B170F;
+	Fri, 25 Nov 2022 15:26:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C61B170F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669386161;
-	bh=lEhZVYNKRRmf7hoT5EM+6+7i672ZtrYB36Kz4bHA2NM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1669386466;
+	bh=38JwjD/C5FNo0jUKuncqYVo+CgiXbFz+7+2U9Lj5sa4=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aFOegDCjJfYNZCs7J0pO4VD5YZoLOfXU7U6YTV3H8LW9wAbJDgKv7UL+tLsHD/C00
-	 MCZkvL08YmhcnK2HIAnKvdwqPHiY98L0UDiC6xxijvYkd0I6uRLiCafz2vc+UaU0ay
-	 z5NOJuQDW5fz8xieTm7p3P2y1HZ/+96Fe8L6gNBA=
+	b=s7EUtKLH+kCbANAtrgQCFGu1NYGhPadfzcDlpXkKc4BnB60t5Rlrbh7a89R8PADyH
+	 Zj5WcH1XiBTY+PWVwhkv/4ZlCq8BzHUY6hRoppEO/aTR1Pwuu9jP/dXwlsRywli0L3
+	 NP1XG+7mmeNQ8F5KDvcKUXrqJNQ6SVmQ46pVPEuA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23817F8055B;
-	Fri, 25 Nov 2022 15:20:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0E15F80171;
+	Fri, 25 Nov 2022 15:26:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 533CBF8047C; Fri, 25 Nov 2022 15:20:46 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id D6F16F8047C; Fri, 25 Nov 2022 15:26:53 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 95CBEF800B6
+ for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2022 15:26:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95CBEF800B6
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Xa8swSKh"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 09DD0F80171
- for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2022 15:20:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09DD0F80171
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="LhZNHUmH"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2APCp6w8007040; Fri, 25 Nov 2022 08:20:32 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=fmtjNKPzLbqjNIqHltuZn0oCtwpbo1qpHKVTmVc8jZc=;
- b=LhZNHUmHWJLT2pQ9s4mQSKQ19X7WWiWy4sncMf3o6LmGyzTZeCKR8gmy91JjLXxkZIRu
- KpaZK20spzt7id3XxM2Lo2A4044JDGlVVxo3oU4oD3VWaR6P2PkmMhjpsI9dYjZosZpw
- 8kdZ+4sOi2MKRU5/n9oo0PYCPbYO6+1GVo9MiNtvwRoOxtvZAwtIiyug6KGYBlHuV6lY
- e7u3rowcl+L4uns42OPO7kic7rr6IPRucSECJSWFWs6QjDEs5mlj5S89a+RY89w/4uzz
- 9EuUEyDmOwj86Egmskc+MzJIsDE3snGlmdq+Nv0FsaiJ5hPSpH1p5wS6CkXnNUujM7Gb ew== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kxvet7ccn-3
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 25 Nov 2022 08:20:32 -0600
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.20; Fri, 25 Nov
- 2022 08:20:29 -0600
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.20 via
- Frontend Transport; Fri, 25 Nov 2022 08:20:29 -0600
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 27DF2B2F;
- Fri, 25 Nov 2022 14:20:29 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <vkoul@kernel.org>
-Subject: [PATCH v4 3/4] soundwire: debugfs: Switch to sdw_read_no_pm
-Date: Fri, 25 Nov 2022 14:20:27 +0000
-Message-ID: <20221125142028.1118618-4-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221125142028.1118618-1-ckeepax@opensource.cirrus.com>
-References: <20221125142028.1118618-1-ckeepax@opensource.cirrus.com>
+ by ams.source.kernel.org (Postfix) with ESMTPS id E7EFEB82AFF;
+ Fri, 25 Nov 2022 14:26:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01C81C433D6;
+ Fri, 25 Nov 2022 14:26:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1669386409;
+ bh=38JwjD/C5FNo0jUKuncqYVo+CgiXbFz+7+2U9Lj5sa4=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=Xa8swSKhI1sjhFeLV3MxqvjKnzkLGEoTWEDX7WDLZ42UwSOzPNhzCL1fZsH7lAou/
+ r3yr5Z8gMilOYTZQV5cHat9I3pYVQ87alsmztG6Fy873EaSB/zwhqqn3HMnoRy+QQp
+ vvRvyCgGSVK8q8eMFNQMwd57gTn1SjPzzaXzgsvAH43gHgyqXP6MzRmjaFW3cFoDy/
+ Dw7mbvCZUtQLExDlK2+hDi2QqcPCY49cTMBk5MbNZhwLaOUXFWlFmRrW6TwVgGfRuF
+ tubDFlOQZXKOUqWciKsvsm8XVvRUMb0GmI3+8Cu36OjyZQmW0UUTr+VjCJMh5+U6B0
+ GwCV5s1LCI67Q==
+From: Mark Brown <broonie@kernel.org>
+To: vkoul@kernel.org, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20221111042653.45520-1-yung-chuan.liao@linux.intel.com>
+References: <20221111042653.45520-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH 0/8] ASoC/soundwire: revisit interrupt and lcount handling
+Message-Id: <166938640772.506633.6957070884814610112.b4-ty@kernel.org>
+Date: Fri, 25 Nov 2022 14:26:47 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: tbFnoGi_Ad1V39P-G-zMdKzR9s9Ew5e6
-X-Proofpoint-GUID: tbFnoGi_Ad1V39P-G-zMdKzR9s9Ew5e6
-X-Proofpoint-Spam-Reason: safe
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
- sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
+X-Mailer: b4 0.10.0-dev-fc921
+Cc: tiwai@suse.de, pierre-louis.bossart@linux.intel.com,
+ linux-kernel@vger.kernel.org, bard.liao@intel.com, vinod.koul@linaro.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,64 +81,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It is rather inefficient to be constantly playing with the runtime
-PM reference for each individual register, switch to holding a PM
-runtime reference across the whole register output.
+On Fri, 11 Nov 2022 12:26:45 +0800, Bard Liao wrote:
+> The code in drivers/soundwire/intel_init.c is hardware-dependent and the
+> code does not apply to new generations starting with MeteorLake. Refactor
+> and clean-up the code to make this intel_init.c hardware-agnostic and
+> move all hardware-dependencies in the SOF driver using chip descriptors.
+> 
+> The ASoC patches are dependent on some patches that are applied to ASoC
+> tree recently. So, this series won't apply to SoundWire tree. @Vinod Could
+> you Ack if it looks good to you, and lets go through ASoC tree?
+> 
+> [...]
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
+Applied to
 
-No change since v3.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
- drivers/soundwire/debugfs.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+Thanks!
 
-diff --git a/drivers/soundwire/debugfs.c b/drivers/soundwire/debugfs.c
-index 49900cd207bc7..dea782e0edc4b 100644
---- a/drivers/soundwire/debugfs.c
-+++ b/drivers/soundwire/debugfs.c
-@@ -4,6 +4,7 @@
- #include <linux/device.h>
- #include <linux/debugfs.h>
- #include <linux/mod_devicetable.h>
-+#include <linux/pm_runtime.h>
- #include <linux/slab.h>
- #include <linux/soundwire/sdw.h>
- #include <linux/soundwire/sdw_registers.h>
-@@ -35,7 +36,7 @@ static ssize_t sdw_sprintf(struct sdw_slave *slave,
- {
- 	int value;
- 
--	value = sdw_read(slave, reg);
-+	value = sdw_read_no_pm(slave, reg);
- 
- 	if (value < 0)
- 		return scnprintf(buf + pos, RD_BUF - pos, "%3x\tXX\n", reg);
-@@ -55,6 +56,12 @@ static int sdw_slave_reg_show(struct seq_file *s_file, void *data)
- 	if (!buf)
- 		return -ENOMEM;
- 
-+	ret = pm_runtime_resume_and_get(&slave->dev);
-+	if (ret < 0 && ret != -EACCES) {
-+		kfree(buf);
-+		return ret;
-+	}
-+
- 	ret = scnprintf(buf, RD_BUF, "Register  Value\n");
- 
- 	/* DP0 non-banked registers */
-@@ -112,6 +119,10 @@ static int sdw_slave_reg_show(struct seq_file *s_file, void *data)
- 	}
- 
- 	seq_printf(s_file, "%s", buf);
-+
-+	pm_runtime_mark_last_busy(&slave->dev);
-+	pm_runtime_put(&slave->dev);
-+
- 	kfree(buf);
- 
- 	return 0;
--- 
-2.30.2
+[1/8] soundwire: intel_init: remove useless interrupt enablement in interrupt thread
+      commit: c5e5da1eb3d3009ed861f1514b41bec323c191d1
+[2/8] ASoC: SOF: Intel: hda: add per-chip enable_sdw_irq() callback
+      commit: 8ebc90741e96646af7320336ac4433eea175390a
+[3/8] ASoC: SOF: Intel: mtl: factor interrupt enable/disable interrupt functions
+      commit: 00f4f3380745da4950de2bf65f15af767d54dfe1
+[4/8] ASoC: SOF: Intel: mtl: move SoundWire interrupt enabling to callback
+      commit: aa70a580930a42781f57ac0d8b281ed2f6b0d8ec
+[5/8] ASoC: SOF: Intel: hda: add callback to check SoundWire lcount information
+      commit: 625339caaea15c0e69d833227652d2f5b6e365cc
+[6/8] soundwire: intel_init: remove sdw_intel_enable_irq()
+      commit: 562bb228cebea475cc967c4a53df97ca62aa90b5
+[7/8] soundwire: intel_init: remove check on number of links
+      commit: 2cd24c318cc943b54cbd2d855cee798314619c4e
+[8/8] ASoC: SOF: Intel: hda: read multi-link capabilities earlier
+      commit: 5e2cbc4a813e866885f812f1b64fdf33a9a16700
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
