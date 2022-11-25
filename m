@@ -4,79 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E853C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 25 Nov 2022 14:21:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C88ACC4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 25 Nov 2022 14:22:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F41051732;
-	Fri, 25 Nov 2022 15:21:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F41051732
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4F1F1621;
+	Fri, 25 Nov 2022 15:21:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4F1F1621
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669386115;
-	bh=GKZNKCrkGcuwosE6f+PfHr92QU/SeBc0uGA44hgffuw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=vi5B+y0RlsD8TZQDN8z8D9YkEMEFr97CNcw8Ym9Yv63k26oHQbgrdLNcHBu+4/2/h
-	 KFsIN3arD1DB7L6MsyU8mg5vRvH4bmExCdHRnYm1xqQEe2Kwni3EnYzTO4vrnBmF5e
-	 0uQit6MR7fScvdUdKuqBls2nZAyH5v+FeWcFTSHg=
+	s=default; t=1669386141;
+	bh=DlIikT6FuCK/nkJwV6a0WupNcwgFsBF3r1LnaGy1yic=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=RF5Ajq0BO55JxX1cLzkJkQJ/WEBb7mWd84lXOmJf6ZwVa1x0SaZN1Yzj75rcyUMAu
+	 pomBNxoI4HBx/OhIWlToS3kGeg3j5EnxVfXcRt4/BzeXJyJo5hPzuGFrewRw1jA8s/
+	 rpnii7Fc5RRCGy/WCHic+NksSKz4z/zme+oNJeCg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4BD08F804C2;
-	Fri, 25 Nov 2022 15:20:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA448F80171;
+	Fri, 25 Nov 2022 15:20:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1A97EF804DA; Fri, 25 Nov 2022 15:20:40 +0100 (CET)
+ id C4FF2F80559; Fri, 25 Nov 2022 15:20:45 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24152F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 92DFBF8047C
  for <alsa-devel@alsa-project.org>; Fri, 25 Nov 2022 15:20:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24152F8014E
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92DFBF8047C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="LTL9sCj6"
+ header.b="VoixvH6U"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
  by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2AP8g14e009072; Fri, 25 Nov 2022 08:20:31 -0600
+ 2APCp6w7007040; Fri, 25 Nov 2022 08:20:31 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=Klfy/J6HbCzr6VIo5CahWHKVbg4TpoR63IGt+03O3ZU=;
- b=LTL9sCj6d7N4D6jvhUAIa2KJA7sb3yJX6jGoocgthZdZcv2pWW7y/vMZownk5IEOsCAp
- lLsZFFPUS4f9Ih/Ttt1ulv6qVt8ba6TuosOe7jsR8hRRUZTeatSTQBgmFdwThLKm4YMR
- rcnwIWNE4doqdgB4qfad22FYiEZl2Ujt96dSOjSd3Fg0t2L/boCRqB0QazSDwWKWWG3u
- r0FInFF5xgUXBB70RYINpwRPeeLpLqQ9LN07xAGPLuUNrqrw9KyQqMWzq6blvwYW/wdg
- cjtedgU2sWoBqAYXLdqcGEp0bmt63WLNDEXNuE0045uzWBxgunWffCOciU2U7jQRRBn2 ng== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kxvet7ccp-2
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=mDzk+uY23FTNoUUYh8QvKniEEsfAMyybDRWMvyjLv68=;
+ b=VoixvH6UYkJWptdkGMR6/AM5bk/uA0XnzVaWxNtJ6St+da8PP5ya0WxWEZGtauc32vN7
+ tNj2GQKHjIC0zTnu2bpSuIHZycp1aAXcoL2O2hlwH5NUbTK3Ss0wvG8Iy1OKchiWIn+S
+ 0k/ewBvo4y3UjOXKQe3FFUJtJorK/65opcs9+Ot3rdzFbG7cQZ7zzmWdnM/ru2Gfoue5
+ WrejCfKvOpj2y9XBWXd2xlrexhDJZftdNCun/YKjE0c2Smu+sfFMUXFtU7TD/DgZpV72
+ d89Smo9EHLdM2qT+jk2Dv0BQ1o81n7iKjp9JLd77x6CKieFiVX+3n9PpuKX4K3/brGZw jg== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3kxvet7ccn-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
  Fri, 25 Nov 2022 08:20:31 -0600
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.20; Fri, 25 Nov
  2022 08:20:29 -0600
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.20 via
- Frontend Transport; Fri, 25 Nov 2022 08:20:29 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.20 via Frontend Transport; Fri, 25 Nov 2022 08:20:29 -0600
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 37CA5B38;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 005522BA;
  Fri, 25 Nov 2022 14:20:29 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <vkoul@kernel.org>
-Subject: [PATCH v4 4/4] soundwire: stream: Move remaining register accesses
- over to no_pm
-Date: Fri, 25 Nov 2022 14:20:28 +0000
-Message-ID: <20221125142028.1118618-5-ckeepax@opensource.cirrus.com>
+Subject: [PATCH v4 0/4] Minor SoundWire clean ups
+Date: Fri, 25 Nov 2022 14:20:24 +0000
+Message-ID: <20221125142028.1118618-1-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221125142028.1118618-1-ckeepax@opensource.cirrus.com>
-References: <20221125142028.1118618-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: LooFxkxWoUaNREqwQAfMgxTxqeMC4YcB
-X-Proofpoint-GUID: LooFxkxWoUaNREqwQAfMgxTxqeMC4YcB
+X-Proofpoint-ORIG-GUID: 2JtisvnBNqiy_et9YRgZfhIVEesJvxzi
+X-Proofpoint-GUID: 2JtisvnBNqiy_et9YRgZfhIVEesJvxzi
 X-Proofpoint-Spam-Reason: safe
 Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
  pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
@@ -96,172 +92,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There is no need to play with the runtime reference everytime a register
-is accessed. All the remaining "pm" style register accesses trace back
-to 4 functions:
+Just some minor tidy ups and preparation for starting to upstream some
+Cirrus SoundWire devices. The first three patches are pretty trivial,
+the last patch which moves the remaining core over to using the no_pm
+functions could probably use some careful review.
 
-sdw_prepare_stream
-sdw_deprepare_stream
-sdw_enable_stream
-sdw_disable_stream
+Changes since v3:
+ - Return an error and add a WARN_ONCE if the build stubs are used.
 
-Any sensible implementation will need to hold a runtime reference
-across all those functions, it makes no sense to be allowing the
-device/bus to suspend whilst streams are being prepared/enabled. And
-certainly in the case of the all existing users, they all call these
-functions from hw_params/prepare/trigger/hw_free callbacks in ALSA,
-which will have already runtime resumed all the audio devices
-associated during the open callback.
+Changes since v2:
+ - Fix up a memory leak of a buffer on the error path
+ - Added some reviewed by's
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
+Thanks,
+Charles
 
-No change since v3.
+*** BLURB HERE ***
 
- drivers/soundwire/bus.c    |  2 +-
- drivers/soundwire/stream.c | 30 +++++++++++++++---------------
- 2 files changed, 16 insertions(+), 16 deletions(-)
+Charles Keepax (3):
+  soundwire: Provide build stubs for common functions
+  soundwire: debugfs: Switch to sdw_read_no_pm
+  soundwire: stream: Move remaining register accesses over to no_pm
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index ef4878258afad..d87a188fcce1e 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -1214,7 +1214,7 @@ int sdw_configure_dpn_intr(struct sdw_slave *slave,
- 		val &= ~SDW_DPN_INT_PORT_READY;
- 	}
- 
--	ret = sdw_update(slave, addr, (mask | SDW_DPN_INT_PORT_READY), val);
-+	ret = sdw_update_no_pm(slave, addr, (mask | SDW_DPN_INT_PORT_READY), val);
- 	if (ret < 0)
- 		dev_err(&slave->dev,
- 			"SDW_DPN_INTMASK write failed:%d\n", val);
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index bd502368339e5..df3b36670df4c 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -81,14 +81,14 @@ static int _sdw_program_slave_port_params(struct sdw_bus *bus,
- 	}
- 
- 	/* Program DPN_OffsetCtrl2 registers */
--	ret = sdw_write(slave, addr1, t_params->offset2);
-+	ret = sdw_write_no_pm(slave, addr1, t_params->offset2);
- 	if (ret < 0) {
- 		dev_err(bus->dev, "DPN_OffsetCtrl2 register write failed\n");
- 		return ret;
- 	}
- 
- 	/* Program DPN_BlockCtrl3 register */
--	ret = sdw_write(slave, addr2, t_params->blk_pkg_mode);
-+	ret = sdw_write_no_pm(slave, addr2, t_params->blk_pkg_mode);
- 	if (ret < 0) {
- 		dev_err(bus->dev, "DPN_BlockCtrl3 register write failed\n");
- 		return ret;
-@@ -105,7 +105,7 @@ static int _sdw_program_slave_port_params(struct sdw_bus *bus,
- 	/* Program DPN_SampleCtrl2 register */
- 	wbuf = FIELD_GET(SDW_DPN_SAMPLECTRL_HIGH, t_params->sample_interval - 1);
- 
--	ret = sdw_write(slave, addr3, wbuf);
-+	ret = sdw_write_no_pm(slave, addr3, wbuf);
- 	if (ret < 0) {
- 		dev_err(bus->dev, "DPN_SampleCtrl2 register write failed\n");
- 		return ret;
-@@ -115,7 +115,7 @@ static int _sdw_program_slave_port_params(struct sdw_bus *bus,
- 	wbuf = FIELD_PREP(SDW_DPN_HCTRL_HSTART, t_params->hstart);
- 	wbuf |= FIELD_PREP(SDW_DPN_HCTRL_HSTOP, t_params->hstop);
- 
--	ret = sdw_write(slave, addr4, wbuf);
-+	ret = sdw_write_no_pm(slave, addr4, wbuf);
- 	if (ret < 0)
- 		dev_err(bus->dev, "DPN_HCtrl register write failed\n");
- 
-@@ -163,7 +163,7 @@ static int sdw_program_slave_port_params(struct sdw_bus *bus,
- 	wbuf = FIELD_PREP(SDW_DPN_PORTCTRL_DATAMODE, p_params->data_mode);
- 	wbuf |= FIELD_PREP(SDW_DPN_PORTCTRL_FLOWMODE, p_params->flow_mode);
- 
--	ret = sdw_update(s_rt->slave, addr1, 0xF, wbuf);
-+	ret = sdw_update_no_pm(s_rt->slave, addr1, 0xF, wbuf);
- 	if (ret < 0) {
- 		dev_err(&s_rt->slave->dev,
- 			"DPN_PortCtrl register write failed for port %d\n",
-@@ -173,7 +173,7 @@ static int sdw_program_slave_port_params(struct sdw_bus *bus,
- 
- 	if (!dpn_prop->read_only_wordlength) {
- 		/* Program DPN_BlockCtrl1 register */
--		ret = sdw_write(s_rt->slave, addr2, (p_params->bps - 1));
-+		ret = sdw_write_no_pm(s_rt->slave, addr2, (p_params->bps - 1));
- 		if (ret < 0) {
- 			dev_err(&s_rt->slave->dev,
- 				"DPN_BlockCtrl1 register write failed for port %d\n",
-@@ -184,7 +184,7 @@ static int sdw_program_slave_port_params(struct sdw_bus *bus,
- 
- 	/* Program DPN_SampleCtrl1 register */
- 	wbuf = (t_params->sample_interval - 1) & SDW_DPN_SAMPLECTRL_LOW;
--	ret = sdw_write(s_rt->slave, addr3, wbuf);
-+	ret = sdw_write_no_pm(s_rt->slave, addr3, wbuf);
- 	if (ret < 0) {
- 		dev_err(&s_rt->slave->dev,
- 			"DPN_SampleCtrl1 register write failed for port %d\n",
-@@ -193,7 +193,7 @@ static int sdw_program_slave_port_params(struct sdw_bus *bus,
- 	}
- 
- 	/* Program DPN_OffsetCtrl1 registers */
--	ret = sdw_write(s_rt->slave, addr4, t_params->offset1);
-+	ret = sdw_write_no_pm(s_rt->slave, addr4, t_params->offset1);
- 	if (ret < 0) {
- 		dev_err(&s_rt->slave->dev,
- 			"DPN_OffsetCtrl1 register write failed for port %d\n",
-@@ -203,7 +203,7 @@ static int sdw_program_slave_port_params(struct sdw_bus *bus,
- 
- 	/* Program DPN_BlockCtrl2 register*/
- 	if (t_params->blk_grp_ctrl_valid) {
--		ret = sdw_write(s_rt->slave, addr5, t_params->blk_grp_ctrl);
-+		ret = sdw_write_no_pm(s_rt->slave, addr5, t_params->blk_grp_ctrl);
- 		if (ret < 0) {
- 			dev_err(&s_rt->slave->dev,
- 				"DPN_BlockCtrl2 reg write failed for port %d\n",
-@@ -214,7 +214,7 @@ static int sdw_program_slave_port_params(struct sdw_bus *bus,
- 
- 	/* program DPN_LaneCtrl register */
- 	if (slave_prop->lane_control_support) {
--		ret = sdw_write(s_rt->slave, addr6, t_params->lane_ctrl);
-+		ret = sdw_write_no_pm(s_rt->slave, addr6, t_params->lane_ctrl);
- 		if (ret < 0) {
- 			dev_err(&s_rt->slave->dev,
- 				"DPN_LaneCtrl register write failed for port %d\n",
-@@ -319,9 +319,9 @@ static int sdw_enable_disable_slave_ports(struct sdw_bus *bus,
- 	 * it is safe to reset this register
- 	 */
- 	if (en)
--		ret = sdw_write(s_rt->slave, addr, p_rt->ch_mask);
-+		ret = sdw_write_no_pm(s_rt->slave, addr, p_rt->ch_mask);
- 	else
--		ret = sdw_write(s_rt->slave, addr, 0x0);
-+		ret = sdw_write_no_pm(s_rt->slave, addr, 0x0);
- 
- 	if (ret < 0)
- 		dev_err(&s_rt->slave->dev,
-@@ -476,9 +476,9 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
- 		addr = SDW_DPN_PREPARECTRL(p_rt->num);
- 
- 		if (prep)
--			ret = sdw_write(s_rt->slave, addr, p_rt->ch_mask);
-+			ret = sdw_write_no_pm(s_rt->slave, addr, p_rt->ch_mask);
- 		else
--			ret = sdw_write(s_rt->slave, addr, 0x0);
-+			ret = sdw_write_no_pm(s_rt->slave, addr, 0x0);
- 
- 		if (ret < 0) {
- 			dev_err(&s_rt->slave->dev,
-@@ -491,7 +491,7 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
- 		wait_for_completion_timeout(port_ready,
- 			msecs_to_jiffies(dpn_prop->ch_prep_timeout));
- 
--		val = sdw_read(s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
-+		val = sdw_read_no_pm(s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
- 		if ((val < 0) || (val & p_rt->ch_mask)) {
- 			ret = (val < 0) ? val : -ETIMEDOUT;
- 			dev_err(&s_rt->slave->dev,
+Simon Trimmer (1):
+  soundwire: bus: export sdw_nwrite_no_pm and sdw_nread_no_pm functions
+
+ drivers/soundwire/bus.c       |  10 ++--
+ drivers/soundwire/debugfs.c   |  13 ++++-
+ drivers/soundwire/stream.c    |  30 +++++-----
+ include/linux/soundwire/sdw.h | 107 ++++++++++++++++++++++++++++++----
+ 4 files changed, 129 insertions(+), 31 deletions(-)
+
 -- 
 2.30.2
 
