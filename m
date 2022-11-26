@@ -4,87 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D42B6C4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 08:20:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F0E2C4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 26 Nov 2022 11:16:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F21081930;
-	Sat, 26 Nov 2022 09:19:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F21081930
+	by alsa0.perex.cz (Postfix) with ESMTPS id BFBBB1832;
+	Sat, 26 Nov 2022 12:15:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFBBB1832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669450828;
-	bh=vSDY92xmrOtkiq1FJrC4dGUzlqSkjlYU9twgxHBDx1E=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1669461381;
+	bh=HSS26Kd6P6NkD8Fa0MKPiGlxuPe/2qgWcKacStDRcOY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Vgu4A/ivwqrdvoQgwD5qZi628U08ksnqfNuxL/iBaBGFv1LxUOdZwDyTCIZoM+kpf
-	 Ed0VoINbsAVeJBIBl6cUPE7Q907SkVuSSZMrEDmgzxOvAzCOkV7aISQDq8tLov8kuv
-	 FbCcllsWVB/pvk5JswJPI0mat8JbPYQe+2FzMS1k=
+	b=BWrXAHDwVZtPuOwSlEfOTBbrTt/AZ6KHv7n7B1JLTA/9xR5nTo3DywFlpBa1Fo8hX
+	 nnNSTMvGQ6xybWT1pAH8/I4EQpm9Djjf+F1Jc+EsKfjj5MjrMbuufI8zN5Ii5pmEQs
+	 aRLK73IMIknZ+G1vDvz5ijGKHeLCq4AHGk80y8Zw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2C13F80C43;
-	Sat, 26 Nov 2022 09:01:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71DFDF80163;
+	Sat, 26 Nov 2022 12:15:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 537B2F80431; Thu, 24 Nov 2022 16:15:54 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 50348F8016D; Sat, 26 Nov 2022 12:15:30 +0100 (CET)
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com
+ [IPv6:2607:f8b0:4864:20::b2d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E08AEF8014E
- for <alsa-devel@alsa-project.org>; Thu, 24 Nov 2022 16:15:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E08AEF8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0174F800F4
+ for <alsa-devel@alsa-project.org>; Sat, 26 Nov 2022 12:15:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0174F800F4
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Hj/R3teu"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 168F2B827FF;
- Thu, 24 Nov 2022 15:15:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7997C433B5;
- Thu, 24 Nov 2022 15:15:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669302948;
- bh=vSDY92xmrOtkiq1FJrC4dGUzlqSkjlYU9twgxHBDx1E=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Hj/R3teuOXbJhLjEIKPLLmxWhHXMEkNOCI4I9RXPi/XTt4vMZrFGydSQJM0ezsZF9
- Nxj+vqwZHpMqzpD2iag7xptGV4JRAHMc3ZH46iKcSjFd7EfWld1E2A9XinKZQkAjiB
- QqfvAJ8suINRFJhVSqMgvd01DMQV66gS+F12NkyYtQlVkYidZWz6L6Y9MLHeRoBnXC
- 0f9bBJyncxgdLEszUPwu0zrPWZKDQgHePX69owXUuSUyznysSXXCezmfLBD7isQVS8
- B0cy0JQcjKfLTsmclzYm/qT8INcIwd++GHyXkr6Jq9Z0HNE7iwTaoPmYUN3CJBx0mw
- eW6ADSX0FfZ2w==
-From: Mark Brown <broonie@kernel.org>
-To: Angel Iglesias <ang.iglesiasg@gmail.com>, Grant Likely <grant.likely@linaro.org>, Lee Jones <lee.jones@linaro.org>,
- Uwe Kleine-König <uwe@kleine-koenig.org>, Wolfram Sang <wsa@kernel.org>
-In-Reply-To: <20221118224540.619276-1-uwe@kleine-koenig.org>
-References: <20221118224540.619276-1-uwe@kleine-koenig.org>
-Subject: Re: (subset) [PATCH 000/606] i2c: Complete conversion to i2c_probe_new
-Message-Id: <166930294048.380009.2445779534079023591.b4-ty@kernel.org>
-Date: Thu, 24 Nov 2022 15:15:40 +0000
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="WOAxPBjE"
+Received: by mail-yb1-xb2d.google.com with SMTP id 189so7183023ybe.8
+ for <alsa-devel@alsa-project.org>; Sat, 26 Nov 2022 03:15:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=wNvvfY3upbBmV0ptvHyU/qt1R1ycCGcdEMDVGZt+Mcs=;
+ b=WOAxPBjEFyN70qqlJyRYGKiEvHln4SnJjiFsbRas55MZztRzY6H8nqQFoWD9WAc0sv
+ KHSI+rUsTeosqxLyn2LKwE6gwGtTniGxhnF0CaDyAP/NqQhsTwJC9cc4lWYyCqzMIxxm
+ vLqx0G78ryhpoSGQ5EiAg8BEdLj80X3qsJzz8MTXymyK2ZLYL1xdGHgCR//8CeIT5YTk
+ vzgoU02F0grQAXmRBeicBs8rHClX8gTnIjd3cnk1Ax+MyKZuRLjmsb8zFd79QpI7zRp9
+ 0V4+xownJ1hUXLY4ARJi/MHvmJovVrVbIvea5XgmcehXyPiPqt0kRMnARf3wyeR9DssQ
+ tt4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=wNvvfY3upbBmV0ptvHyU/qt1R1ycCGcdEMDVGZt+Mcs=;
+ b=e7Yq4KQ+/mFkrTM4uzKOE/Cup0xZuho652W7uVrU1Nbfi9R/idfLnqvV1YIHH+JvMe
+ eJ3fVGyqJPo1MKXrpBQd/n3tmueN0avE/kOZIWROsPpmfkbZS4AkXfTReOUNZQ1DK/op
+ ih78XGjwJ7jKfxL3EeAFPwZCB7c8E2G4n8pLeUgD3EIt2UtpS/TDxy9iQBlG8/5IVuV0
+ CfaOsFlOkHiRLmFBr3IabMYkM5LKbE4THpdTfp70B8GpKnwjVDS7JKNfJL93qcZa05DE
+ gYuFqUf/oly4bAZRdPu5bspPMBBm1rCosQkjJ8MQITdtfMvY2cmZ9KGF2Q4nws9+GHm6
+ LPaA==
+X-Gm-Message-State: ANoB5pn2TdUbR962zH9EKbw+gbYUe2a+L6ZAVc9X+vLDV8CLZn/xOnHS
+ hNsgt4isohqe1VwifgVMgfeu5lVOH1hlzCZKZ4Y=
+X-Google-Smtp-Source: AA0mqf5MzyQBiDYOhE5qoEImvBdIvM3IIW8dW0xlyRwAjjGj3TpqprgLzmJD8+Y7l0vQgwtzSidnjzMt9QG3fTal45A=
+X-Received: by 2002:a25:4185:0:b0:6f1:d2a9:126f with SMTP id
+ o127-20020a254185000000b006f1d2a9126fmr10494268yba.26.1669461321700; Sat, 26
+ Nov 2022 03:15:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-fc921
-X-Mailman-Approved-At: Sat, 26 Nov 2022 08:58:52 +0100
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-fbdev@vger.kernel.org,
- platform-driver-x86@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-i2c@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org,
- chrome-platform@lists.linux.dev, linux-samsung-soc@vger.kernel.org,
- linux-staging@lists.linux.dev,
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
- linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-actions@lists.infradead.org, linux-gpio@vger.kernel.org,
- linux-rpi-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
- openipmi-developer@lists.sourceforge.net, linux-omap@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, Purism Kernel Team <kernel@puri.sm>,
- patches@opensource.cirrus.com, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-crypto@vger.kernel.org,
- kernel@pengutronix.de, netdev@vger.kernel.org, linux-integrity@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org
+References: <20221125163748.1288942-1-ckeepax@opensource.cirrus.com>
+ <20221125163748.1288942-2-ckeepax@opensource.cirrus.com>
+In-Reply-To: <20221125163748.1288942-2-ckeepax@opensource.cirrus.com>
+From: Guillermo Rodriguez Garcia <guille.rodriguez@gmail.com>
+Date: Sat, 26 Nov 2022 12:15:10 +0100
+Message-ID: <CABDcavbtBBU7ySPK32104nZB5RHf2=LFuOOYOF-Ze1EDoM+etw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] ASoC: cs42l51: Correct PGA Volume minimum value
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ lgirdwood@gmail.com, david.rhodes@cirrus.com, broonie@kernel.org,
+ james.schulman@cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,85 +96,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 18 Nov 2022 23:35:34 +0100, Uwe Kleine-König wrote:
-> since commit b8a1a4cd5a98 ("i2c: Provide a temporary .probe_new()
-> call-back type") from 2016 there is a "temporary" alternative probe
-> callback for i2c drivers.
-> 
-> This series completes all drivers to this new callback (unless I missed
-> something). It's based on current next/master.
-> A part of the patches depend on commit 662233731d66 ("i2c: core:
-> Introduce i2c_client_get_device_id helper function"), there is a branch that
-> you can pull into your tree to get it:
-> 
-> [...]
+El vie, 25 nov 2022 a las 17:37, Charles Keepax
+(<ckeepax@opensource.cirrus.com>) escribi=C3=B3:
+>
+> The table in the datasheet actually shows the volume values in the wrong
+> order, with the two -3dB values being reversed. This appears to have
+> caused the lower of the two values to be used in the driver when the
+> higher should have been, correct this mixup.
+>
+> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> ---
+>
+> No changes since v1.
+>
+>  sound/soc/codecs/cs42l51.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+> index 51721edd8f53c..e88d9ff95cdfc 100644
+> --- a/sound/soc/codecs/cs42l51.c
+> +++ b/sound/soc/codecs/cs42l51.c
+> @@ -143,7 +143,7 @@ static const struct snd_kcontrol_new cs42l51_snd_cont=
+rols[] =3D {
+>                         0, 0xA0, 96, adc_att_tlv),
+>         SOC_DOUBLE_R_SX_TLV("PGA Volume",
+>                         CS42L51_ALC_PGA_CTL, CS42L51_ALC_PGB_CTL,
+> -                       0, 0x19, 30, pga_tlv),
+> +                       0, 0x1A, 30, pga_tlv),
 
-Applied to
+The original patch where this control was added [1] already used 0x1A,
+however this was later changed to 0x19 in [2]. Your patch now reverts
+that change. Does this mean [2] was incorrect? If that is the case,
+shouldn't the commit message for this patch mention that it fixes [2]
+?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+ [1]: https://lore.kernel.org/all/20200918134317.22574-1-guille.rodriguez@g=
+mail.com/
+ [2]: https://lore.kernel.org/all/20220602162119.3393857-7-ckeepax@opensour=
+ce.cirrus.com/
 
-Thanks!
+Best regards,
 
-[538/606] regulator: act8865-regulator: Convert to i2c's .probe_new()
-          (no commit info)
-[539/606] regulator: ad5398: Convert to i2c's .probe_new()
-          commit: 7f69edba960bbdcbc829d8d0995b1117ce29e8b1
-[540/606] regulator: da9121-regulator: Convert to i2c's .probe_new()
-          commit: 020cf73b47414a84b666d3e6736a6ae957e27840
-[541/606] regulator: fan53555: Convert to i2c's .probe_new()
-          (no commit info)
-[542/606] regulator: isl6271a-regulator: Convert to i2c's .probe_new()
-          (no commit info)
-[543/606] regulator: lp3972: Convert to i2c's .probe_new()
-          commit: 2532d5f8d5c20d5a0a8a0d57a311bc5df00dea04
-[544/606] regulator: lp872x: Convert to i2c's .probe_new()
-          commit: 87feccb347b25f5dc6ff451123b832c9ad5dddfe
-[545/606] regulator: lp8755: Convert to i2c's .probe_new()
-          commit: cb28f74b4809a00b40fdf0c44ccf51ab950581d3
-[546/606] regulator: ltc3589: Convert to i2c's .probe_new()
-          commit: 78c8f6cdb51d471928d481ed3b2c82dbc110a1ed
-[547/606] regulator: max1586: Convert to i2c's .probe_new()
-          commit: 3d54f7ba248b0ad1791bc356e9ad3d9020a1c472
-[548/606] regulator: max8649: Convert to i2c's .probe_new()
-          commit: 3cf4417385d0ac8f02f22888e12a6d21d97d89fc
-[549/606] regulator: max8660: Convert to i2c's .probe_new()
-          commit: dbf31dac703009174226bb87b3914bd092040327
-[550/606] regulator: max8952: Convert to i2c's .probe_new()
-          commit: c20c36735949b3b7984692fbab3d92b0e8a845ec
-[551/606] regulator: max8973-regulator: Convert to i2c's .probe_new()
-          commit: 4e85e5d64f66ac5e4b0286ee4b6f8e8ce1044d42
-[552/606] regulator: pca9450-regulator: Convert to i2c's .probe_new()
-          commit: ed56fa6e804cb13bbe29e9214792308817f6e553
-[553/606] regulator: pfuze100-regulator: Convert to i2c's .probe_new()
-          (no commit info)
-[554/606] regulator: pv88080-regulator: Convert to i2c's .probe_new()
-          (no commit info)
-[555/606] regulator: rpi-panel-attiny-regulator: Convert to i2c's .probe_new()
-          commit: d85d02d17a608b558d44510e9824668c5d4fe5d8
-[556/606] regulator: tps51632-regulator: Convert to i2c's .probe_new()
-          commit: d4885f306304ff29eec06b9ad5f526a1099e0418
-[557/606] regulator: tps62360-regulator: Convert to i2c's .probe_new()
-          commit: 18804160277ec2ab992373385f86c6af2322b28b
-[558/606] regulator: tps6286x-regulator: Convert to i2c's .probe_new()
-          commit: e34782316281c78c5911f86d4699d4f35a607c9d
-[559/606] regulator: tps65023-regulator: Convert to i2c's .probe_new()
-          commit: 3b5b07dde998f6ade7433a8db019cf816c7e35af
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Guillermo Rodriguez Garcia
+guille.rodriguez@gmail.com
