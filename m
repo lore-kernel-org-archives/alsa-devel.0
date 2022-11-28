@@ -4,69 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4E6CC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Nov 2022 16:41:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FEEAC433FE
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Nov 2022 16:41:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AABDC1710;
-	Mon, 28 Nov 2022 17:40:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AABDC1710
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C013171B;
+	Mon, 28 Nov 2022 17:40:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C013171B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669653672;
-	bh=WmYYjhxlsQcGW3uwtWuilUGz7l2MIsTn1DgqBZXF4Vg=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1669653689;
+	bh=YgLMfdUQGT5lCNVStZjrAhw/JJQl8Py7iBEVi6NQUWU=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BL8gvDlykwXHzOyrr5FXlewiNl8pc1/5ClNnAjZV8AcGZXZVj/9uEpLNy8i/RqGa7
-	 ZJjH6D2L2l0GICYsurUabxJDJGbgilNy0nGwhOFx8TlVnGRafnS+z3NSOITMa9DFzX
-	 t3rJiPnuFeEzQl6X0LR2QvhPfSzLSD85xSMe2Aqg=
+	b=dhXsK5Dgi3mIW9S/2MLrO1I9UZGVree4lMrwB1TEXfBY6UwL3PA8r4vdGPKL8sL5X
+	 AQPW+ITNmjlMV4QgIR2CrWZJuza+DjYyK3U+52VWYwA5Za5VeixpgCgOYXhQ1urnhT
+	 Pgkhsn2qTu8HGvgZEQrqv5HdcH+yOQW+BYAHcmTk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A109F8056F;
-	Mon, 28 Nov 2022 17:39:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 131BDF80578;
+	Mon, 28 Nov 2022 17:39:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F247AF804D8; Mon, 28 Nov 2022 17:39:21 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 00BC4F80570; Mon, 28 Nov 2022 17:39:27 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 80724F804D8
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 17:39:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80724F804D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4535EF80567
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 17:39:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4535EF80567
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="pODu1ESi"
+ header.b="GCaiCE/R"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 7609761262;
- Mon, 28 Nov 2022 16:39:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D24A6C43141;
- Mon, 28 Nov 2022 16:39:10 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 54908B80E1D;
+ Mon, 28 Nov 2022 16:39:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E98AC433C1;
+ Mon, 28 Nov 2022 16:39:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669653552;
- bh=WmYYjhxlsQcGW3uwtWuilUGz7l2MIsTn1DgqBZXF4Vg=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=pODu1ESizPBlTfxJdILfqwvVD/Wr8fKfHCWezGpznlsFaTJIvSdBFY7N+G5s6DRr3
- ksOGuV8myWAYeH7PGV7iFmZxsHnmXEEbSv4LuIWO7GjId/V2xmqt4iL0OQFUTan73w
- mhhvYfFzCWtcrYLDtpg2y7vCmCNrkTaVzQTty3S4uFE5G0+dZTievDr2OC7u2Hz6wr
- d311CN/pPA5hqMF/Lyr9qNqL5iqsHwNnN+t02/ur+aLOZ+Ntj2IBqxgfG+ok/Ye5Ol
- 29iJVCgYNaXYXF9i5dsBRIBWrlrQaxvecK+xfn1ARELg/RflRzXTZPraJMy5JXG2UP
- uJH37b/wajMzg==
+ s=k20201202; t=1669653562;
+ bh=YgLMfdUQGT5lCNVStZjrAhw/JJQl8Py7iBEVi6NQUWU=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=GCaiCE/RId707JCrW1iO/GbCIZHMIChWSU4fpgaV+8FwWX0amz55f/k8hXTgLO0rX
+ P4q+VYSVHZhIetlY+5IbKJGA5hAyL1znsNzSdylfaRZ14lGexG8SMgrOhlXxEnglct
+ fUIIzm+EpSPAlpXet+h+M3HDMASkisxqc72gXdL1DVZLe9hp3M/RAKhKEQrLa1rgc5
+ G4Y2rA5XRqHW5d9rZSnw0kDgt8iTdaeQonLwUIP8rlNWcgZbEUD6nYfm8dyKMVigd3
+ VhC1ow+9y03ee2P++zJCeud/fPBNvEevmcndgTy3b+nDVc/pMVa+2lqdPt43BfEGyg
+ 6JwgyPhgERAgQ==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, Charles Keepax <ckeepax@opensource.cirrus.com>
-In-Reply-To: <20221123165432.594972-1-ckeepax@opensource.cirrus.com>
-References: <20221123165432.594972-1-ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v3 1/9] sound: sdw: Add hw_params to SoundWire config
- helper function
-Message-Id: <166965355053.629583.1054316530369550178.b4-ty@kernel.org>
-Date: Mon, 28 Nov 2022 16:39:10 +0000
+To: lgirdwood@gmail.com, quic_rohkumar@quicinc.com,
+ linux-arm-msm@vger.kernel.org, judyhsiao@chromium.org, 
+ devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, quic_plai@quicinc.com, 
+ perex@perex.cz, agross@kernel.org,
+ Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>,
+ srinivas.kandagatla@linaro.org, 
+ swboyd@chromium.org, tiwai@suse.com, bgoswami@quicinc.com, robh+dt@kernel.org,
+ andersson@kernel.org
+In-Reply-To: <1669621742-28524-1-git-send-email-quic_srivasam@quicinc.com>
+References: <1669621742-28524-1-git-send-email-quic_srivasam@quicinc.com>
+Subject: Re: [PATCH] ASoC: qcom: lpass-sc7180: Add system suspend/resume PM ops
+Message-Id: <166965355923.629583.3946711311315912094.b4-ty@kernel.org>
+Date: Mon, 28 Nov 2022 16:39:19 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: oder_chiou@realtek.com, patches@opensource.cirrus.com,
- alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,15 +86,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 23 Nov 2022 16:54:24 +0000, Charles Keepax wrote:
-> The vast majority of the current users of the SoundWire framework
-> have almost identical code for converting from hw_params to SoundWire
-> configuration. Whilst complex devices might require more, it is very
-> likely that most new devices will follow the same pattern. Save a
-> little code by factoring this out into a helper function.
+On Mon, 28 Nov 2022 13:19:02 +0530, Srinivasa Rao Mandadapu wrote:
+> Update lpass sc7180 platform driver with PM ops, such as
+> system supend and resume callbacks.
+> This update is required to disable clocks during supend and
+> avoid XO shutdown issue.
 > 
 > 
-> [...]
 
 Applied to
 
@@ -98,24 +100,8 @@ Applied to
 
 Thanks!
 
-[1/9] sound: sdw: Add hw_params to SoundWire config helper function
-      commit: e45875168d19051ebf0fc4b091da6256f3ea3669
-[2/9] ASoC: max98373-sdw: Switch to new snd_sdw_params_to_config helper
-      commit: d12f106177288a65b58b236304b6ceea4370f65d
-[3/9] ASoC: rt1308-sdw: Switch to new snd_sdw_params_to_config helper
-      commit: 896c59edcdafc4e213761184294cbccf47126a23
-[4/9] ASoC: rt1316-sdw: Switch to new snd_sdw_params_to_config helper
-      commit: 0725dd0461fc682e9c1bcf9f436e60160dba65a5
-[5/9] ASoC: rt5682-sdw: Switch to new snd_sdw_params_to_config helper
-      commit: 5b75bc7fc28af62622c57d80f607536b19796d8f
-[6/9] ASoC: rt700: Switch to new snd_sdw_params_to_config helper
-      commit: ae7ad90e7cf29f3337ac1fe4e60162c51782c2b5
-[7/9] ASoC: rt711: Switch to new snd_sdw_params_to_config helper
-      commit: 754bef6752259ce5633814a0333f96fa06f6e3e8
-[8/9] ASoC: rt715: Switch to new snd_sdw_params_to_config helper
-      commit: 99ae8cf0a06b7911ec1d9c6d9190dcb3384255c9
-[9/9] ASoC: sdw-mockup: Switch to new snd_sdw_params_to_config helper
-      commit: c5f81301d06898080c9a59eda91f6b8605f98a2a
+[1/1] ASoC: qcom: lpass-sc7180: Add system suspend/resume PM ops
+      commit: 2d68148f8f85ca5a4bf5e80c821b56167cfc0f8b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
