@@ -4,72 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEDACC4321E
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Nov 2022 19:56:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0995CC4321E
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Nov 2022 22:13:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 314DE165D;
-	Mon, 28 Nov 2022 20:55:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 314DE165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F4A01662;
+	Mon, 28 Nov 2022 23:12:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F4A01662
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669665408;
-	bh=qZ1IQ3U4ZCrq5eEf41uqkt6GYyTSdxfsBahp+Jz89kQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1669673580;
+	bh=P8/VpZkKG9CCB/Otb8xzBAvztqFP4hUqCHH12NyTPuA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FcRYA1KGyJAhQILhjDkSP+nlIjaW2HAhOgwJFnTu2yHERfKJA6sbMsa95ux8g5qrL
-	 I26Bp3E66sloaS8OdUFjwe712Lw61uSWjcmM9D3FMjDUfCQQLB+nVKyciKbg1Ceaom
-	 umF1KZuRa/jU0XMNh8wpo1/3JIpYrD5FmNTBh2Dw=
+	b=Y3IHZ8zRPBF0Dy/kJaV6zl6zNHWVfJNG3ITJN8b1DI7UPpLZ8lNY97ftwc+L0Ttyp
+	 cnOFAWzB69mnImki67I6oB7jQQVyMbUdEeuFknt8uJefgJdIFgw42xD33uVF/7J3oz
+	 4+iyUwSL7mfqbN9b+3OBAr59QV8dE2CIGHXRaJig=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B625BF801D8;
-	Mon, 28 Nov 2022 20:55:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C65C1F801D8;
+	Mon, 28 Nov 2022 23:12:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F6D3F8016E; Mon, 28 Nov 2022 20:55:56 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 1E9DEF8027D; Mon, 28 Nov 2022 23:12:08 +0100 (CET)
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com
+ [IPv6:2607:f8b0:4864:20::d2b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F0DD8F8016E
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 20:55:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0DD8F8016E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B18AF801D8
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 23:12:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B18AF801D8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HsUvfMby"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 45053613E9;
- Mon, 28 Nov 2022 19:55:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD3DCC433D6;
- Mon, 28 Nov 2022 19:55:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669665346;
- bh=qZ1IQ3U4ZCrq5eEf41uqkt6GYyTSdxfsBahp+Jz89kQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=HsUvfMby5m7bZ3qjq+pWTA8Mkh+VFXbSoe022GLeNFbdOmvMyMEgJlR7owyoZ3e+o
- AtB1d5EImNizo30LkvHPP569gw7EFJY8TAAVR0ckSGT9q9AsIltFq+YH6LBvH6KrMJ
- r9976Rjq24afGDEtPi/W+JICmKLbSlpSsVrjA3LISFdVrH69O0Tma9Y2F9xDBhplkK
- SGO+xYQOoFhXRaKgFMNmDyfRUDjnc0bWiKU4WW0OjEPE2f/81tP+7oX3L9xirRz8+Y
- icAcLW3zgSiYTQCx89tOQLoLW8l4tpkJJW5/74MM4DmGFUEN5Dw/laAUboKiQNGRi+
- XK6ioRhfcaaEg==
-Date: Mon, 28 Nov 2022 19:55:41 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH v2] [RFC] selftests: alsa - add PCM test
-Message-ID: <Y4USPRrDqIfu50hh@sirena.org.uk>
-References: <20221108115914.3751090-1-perex@perex.cz>
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="LX1I5X2T"
+Received: by mail-io1-xd2b.google.com with SMTP id q21so8734620iod.4
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 14:12:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=Sqj31xD4hPaFJyMRspnZtLV/GdibyQshhKJftkXPTVY=;
+ b=LX1I5X2Tqi3H4osOssCuWhQxDxiOSlkZYdf+xSNNQ5ROewNwQQhCSV6qRABxIV2Bks
+ oYRqoJPX71/O7LWeXlCZXMdXOJYPsyjuD4LOYDUmiqHaJXS34kSPYV3r0aSd22RTBcvD
+ HpGsQZUSAGnCIdx7iCLmqGl1ZVN/RS78RxSwQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=Sqj31xD4hPaFJyMRspnZtLV/GdibyQshhKJftkXPTVY=;
+ b=luA2PDZuXks1blK53TnQJAIJaWGCcMscbaGGdXdgW/qvjQjxD3hX2+zF6bS/jPQjE5
+ EPC1GRVE0MVex6ND3VOTgRR6myoYXUPBywvmAwRdoZJou/LkOt1VkzjlNZoL3RYoATyc
+ cqKZRJsx64h1EIn0+1gSkvzD05n/umM8+WUR+PABEFebM+XPWp+mDodd0SQ/N/Pvy73J
+ 2IxMNp1Wxd6lzpHboh+X5bSDDmAml3dJog2q4DWjBtMVqWNNzxn1mPsgX6uYCBG4i3Yg
+ DtCB2SB0Z2GXMBie0T69n/3abyKKaUVRJp7uuc53Pu3bvly0GEQwXx0BWelEENw5EorA
+ nPQQ==
+X-Gm-Message-State: ANoB5pnMcAWdMD4cWKRaZ5LIQ5GX/3XxnNoY/E/FLHgu555sO/KVenqR
+ aTMQF4q9m6NOxDfdF8mhLvABlg==
+X-Google-Smtp-Source: AA0mqf77dcDF5VbAESm+8p/Wms6Z+hD0jVYwI2+aCwtztLs7FD6Hhnbu5FCGv+vyB+kuFVJq+DEo4A==
+X-Received: by 2002:a05:6602:21c2:b0:6c3:168a:a25e with SMTP id
+ c2-20020a05660221c200b006c3168aa25emr17433231ioc.174.1669673518761; 
+ Mon, 28 Nov 2022 14:11:58 -0800 (PST)
+Received: from localhost (30.23.70.34.bc.googleusercontent.com. [34.70.23.30])
+ by smtp.gmail.com with UTF8SMTPSA id
+ a15-20020a92ce4f000000b00302bcbad239sm3827937ilr.77.2022.11.28.14.11.58
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 28 Nov 2022 14:11:58 -0800 (PST)
+From: Matthias Kaehlcke <mka@chromium.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH 2/2] ASoC: qcom: lpass-sc7180: Return 0 instead of 'ret' at
+ the end of _resume()
+Date: Mon, 28 Nov 2022 22:11:55 +0000
+Message-Id: <20221128221152.2.I8d1993f41f0da1eac0ecba321678ac489f9c0b9b@changeid>
+X-Mailer: git-send-email 2.38.1.584.g0f3c55d4c2-goog
+In-Reply-To: <20221128221152.1.Ia805c688ee968fbbec7b93dc10742876fdef8024@changeid>
+References: <20221128221152.1.Ia805c688ee968fbbec7b93dc10742876fdef8024@changeid>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="YnK9Z0wiixaw+rvK"
-Content-Disposition: inline
-In-Reply-To: <20221108115914.3751090-1-perex@perex.cz>
-X-Cookie: In the next world, you're on your own.
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Jimmy Cheng-Yi Chiang <cychiang@google.com>, Takashi Iwai <tiwai@suse.de>,
- Brian Norris <briannorris@chromium.org>,
- Curtis Malainey <cujomalainey@google.com>,
- Liam Girdwood <liam.r.girdwood@intel.com>, Jesse Barnes <jsbarnes@google.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
+Content-Transfer-Encoding: 8bit
+Cc: Judy Hsiao <judyhsiao@google.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+ Matthias Kaehlcke <mka@chromium.org>,
+ Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,60 +102,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+sc7180_lpass_dev_resume() returns 'ret' at the end of the function,
+where 'ret' is always 0. Just return 0 to make it plain obvious that
+this is always the success path.
 
---YnK9Z0wiixaw+rvK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Also add an empty line between the error handling path and the
+return.
 
-On Tue, Nov 08, 2022 at 12:59:14PM +0100, Jaroslav Kysela wrote:
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+---
 
-> --- a/tools/testing/selftests/alsa/Makefile
-> +++ b/tools/testing/selftests/alsa/Makefile
-> @@ -7,6 +7,8 @@ ifeq ($(LDLIBS),)
->  LDLIBS +=3D -lasound
->  endif
-> =20
-> -TEST_GEN_PROGS :=3D mixer-test
-> +TEST_GEN_PROGS :=3D mixer-test pcm-test
-> +
-> +pcm-test: pcm-test.c conf.c
-> =20
->  include ../lib.mk
+ sound/soc/qcom/lpass-sc7180.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-This breaks out of tree kselftest builds - if you specify an output
-directory with O=3D (as all the main automated test systems do) then any
-target specific rules need to prepend $(OUTPUT)/ to specify the right
-location for the output (this also works fine with in tree builds, a
-default OUTPUT is generated).  Unfortunately looking at this just now
-simply fixing that is causing only pcm-test to be built and not the
-existing mixer-test, and explicitly specifying commands for mixer-test
-causes that to be built and not pcm-test even explicitly asking to build
-"all" as the target for reasons I'm not yet clear on.
+diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
+index 7a81e609727c..30a28e3152cb 100644
+--- a/sound/soc/qcom/lpass-sc7180.c
++++ b/sound/soc/qcom/lpass-sc7180.c
+@@ -173,7 +173,8 @@ static int sc7180_lpass_dev_resume(struct device *dev)
+ 		dev_err(dev, "sc7180 clk prepare and enable failed\n");
+ 		return ret;
+ 	}
+-	return ret;
++
++	return 0;
+ }
+ 
+ static int sc7180_lpass_dev_suspend(struct device *dev)
+-- 
+2.38.1.584.g0f3c55d4c2-goog
 
-You can see an example failure in:
-
-   https://storage.kernelci.org/next/master/next-20221128/arm64/defconfig/g=
-cc-10/logs/kselftest.log
-
-The whole kselftest build setup is rather fragile and frustrating to
-work with unfortunately, especially with tests built from multiple
-objects.  The only fix I've come up with thus far is to inline conf.c
-into pcm-test.c (a #include will do the trick) which isn't great.
-
---YnK9Z0wiixaw+rvK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmOFEjwACgkQJNaLcl1U
-h9DHcwf/ZD7Yk5dhFIIIYqvCOLV7K8mc1DAI2RcnVM7hF4lx7iR+Tv5UhoUeP/ZW
-DD59t3PzXmxxC1b2NfEvb1GiWg5Tulk4leQS/fhGCSUU9e772jf76i7jhHCyMn2u
-ofecvdCVpYDR+0ABk7jyH2Du+Gq5QZYMlD3dnZzAiKYkG7NDlP1tVh/992m4ZLMS
-AvEDOR2uqcfinxKtZ9vZNY9UJnS0EqE6f1QNpBeTy6i6QctGUY4VlQBatgxZHdD7
-DijleAyMbyRJ/PvBXvtigGFl/4QWUvrVKpKCgJKHk1bHq+BN7i3pog1XZNHOXZ8u
-pzi99bplrsBcEfB0h8QI1t1U5JWJ7Q==
-=FcIY
------END PGP SIGNATURE-----
-
---YnK9Z0wiixaw+rvK--
