@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2609C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Nov 2022 17:43:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B56F5C433FE
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Nov 2022 17:43:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E51331725;
-	Mon, 28 Nov 2022 18:42:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E51331725
+	by alsa0.perex.cz (Postfix) with ESMTPS id 94868170F;
+	Mon, 28 Nov 2022 18:42:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94868170F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669657392;
+	s=default; t=1669657415;
 	bh=2nnZXA8RaZrSVvCN6ByjHxeIL4WuKWU/gteG+urh8OQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ja94zgHrNIq/v5tHv7P5JyDnbH7HvFiLq9teZ539F0TEebq0l57sRXLkEpDdsv9Nf
-	 qM2M48ElhYS0jFcPdE1ohO7Io1VBhSAZxlD6IN/niZ4rLBk58k4uLjgIHBoDhOv6ST
-	 0O5lCgycMV23gnK5TiIKEIuhzfFY0xqkYVJHpric=
+	b=qv9SPojCuXRfFsNqNt7w8LHx5Din6PchC9jtc6wsOSi5ElqGQeQ38FUORc3jJ+v4X
+	 gNjTD57LYNZkbLiz3oKnia9Scu9xE4JXjKLwWYnlqfFQ3bSAV5YJKmxHel2NlVsXFl
+	 dTEdDRp6e167HFIqYxXRojboAQT9R2q/U+qcdekw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D19B3F80571;
-	Mon, 28 Nov 2022 18:41:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55AEBF804D8;
+	Mon, 28 Nov 2022 18:42:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7F1B8F80570; Mon, 28 Nov 2022 18:41:54 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id E20E5F80558; Mon, 28 Nov 2022 18:42:31 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6ECBDF80570
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 18:41:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6ECBDF80570
+ by alsa1.perex.cz (Postfix) with ESMTPS id F4036F8027D
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 18:42:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F4036F8027D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="KtJOrQph"
+ header.b="Y/rzmGaz"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 5BC8561301;
- Mon, 28 Nov 2022 17:41:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E35D4C433C1;
- Mon, 28 Nov 2022 17:41:45 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 23FAAB80E9C;
+ Mon, 28 Nov 2022 17:42:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C5A1C433C1;
+ Mon, 28 Nov 2022 17:42:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669657307;
+ s=k20201202; t=1669657343;
  bh=2nnZXA8RaZrSVvCN6ByjHxeIL4WuKWU/gteG+urh8OQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=KtJOrQphtQe+rCBXzJ9fBWElwGLJy0EFEKzyfO8msa2UBLiNSirD095+J/eul6qnh
- nOiNbSMtd8lhTjAgABQ1MIPGJH6aiEN8EF3aBdGPQSqMRyDJFwcZYSDFbo4bgCmwvl
- X9+J2gLaH2spgApl06dUGUHn1xSULGBJdGBozQi0FFl6mdMh8S7z52kpN0DX6sOYqw
- lCWTKrlpIdeBHQj4qLXmh8om5ZBPAK8jVnnVDbsRRytk2R3Rv9HVtukMh3ZgLV7wD3
- xjuKlgDp7SlO3dtmpo/BNEnassv85Ijh3SHk16olEhrGem0oyFrTxr3410uIzGOJMh
- kqPx6+I4ZLu0w==
+ b=Y/rzmGazxMkZ6y0TJ15hZpedP8r1u7t2cGGeteqBp5ptgAp57Wmzd81BxNQWwJ4n/
+ BVzhl1U+5N2qtgYHuuahECI2MpWCvCiu4WHmvsoUZxUDbJfSUK6z8qSjIc3jztqioo
+ PyE7iUrlqTgsFSmkNR2HvsD/elZE21gfqRnnQt8jv0X4Cckp+njwFgB/K77qZZhdk/
+ oaNcHu9aE+9dc20DzdY2v4rv7zEQRQ6z5QwBPF9C7ijUb2LSuAh++p8+GmkVLZnovO
+ /aLcLjAg9r11S0a8bz92Q7H2ja+1OMOcoQwAtfmhIOoaFBnKp7nlmH4gTmUO8xdOu4
+ TqgIRN6jt69fA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 12/19] ALSA: seq: Fix function prototype mismatch
+Subject: [PATCH AUTOSEL 5.4 10/16] ALSA: seq: Fix function prototype mismatch
  in snd_seq_expand_var_event
-Date: Mon, 28 Nov 2022 12:41:12 -0500
-Message-Id: <20221128174120.1442235-12-sashal@kernel.org>
+Date: Mon, 28 Nov 2022 12:41:53 -0500
+Message-Id: <20221128174201.1442499-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221128174120.1442235-1-sashal@kernel.org>
-References: <20221128174120.1442235-1-sashal@kernel.org>
+In-Reply-To: <20221128174201.1442499-1-sashal@kernel.org>
+References: <20221128174201.1442499-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
