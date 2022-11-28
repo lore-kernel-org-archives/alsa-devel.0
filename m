@@ -4,67 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F358AC433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Nov 2022 16:40:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0595C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Nov 2022 16:40:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C29416D0;
-	Mon, 28 Nov 2022 17:39:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C29416D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC77916F7;
+	Mon, 28 Nov 2022 17:39:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC77916F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669653600;
-	bh=c//u/goEy2+6CBwrRyPBaqKCYYXMEw7JVHoHN1qUyhs=;
+	s=default; t=1669653625;
+	bh=NAGBW7jVQtQ3XhXFNz8vKgIt9eWnUGvhfyXZ1qUgZnE=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u3s3/STqdOFlEeWeMNsFZHWAgmDVjp/56PmP3xgrWLuFQwUy83cWIkiyVZyJMTGFD
-	 4mew0OhFu0yMhIn272TLJ9efTENvdcTnUVSMY2WwAGVWQCFiNjSswDYdXYC3r+323B
-	 QjH5nAuZcZJ2UtxxeUBgTyMkusgfvp3MeML+O3A0=
+	b=sEHYxC+FbvHJzSG/sJpGR4GBWha7z9gi2bOAwDZiRzAj+grb/93gnTXQkQUpYrcBY
+	 YRrf+YRq4CHL8+fxWosMSm7yavuBe4MkOKH6lsatEwSca0/7JSA95vizp/xTiGyBjg
+	 PbdRTtBO9ZNJlnHvVH9FI4Yf/TnuOzO6d8TqCHgU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D08FBF8016E;
-	Mon, 28 Nov 2022 17:39:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C061F8027D;
+	Mon, 28 Nov 2022 17:39:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1CC77F800B6; Mon, 28 Nov 2022 17:39:07 +0100 (CET)
+ id EC79AF804AC; Mon, 28 Nov 2022 17:39:14 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92105F800B6
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 17:39:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92105F800B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 63540F8027D
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 17:39:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63540F8027D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qgknX0V6"
+ header.b="ccc1tr19"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id D3E5161053;
- Mon, 28 Nov 2022 16:39:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BB08C433D6;
- Mon, 28 Nov 2022 16:39:00 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id D745061262;
+ Mon, 28 Nov 2022 16:39:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECD5DC433D6;
+ Mon, 28 Nov 2022 16:39:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669653541;
- bh=c//u/goEy2+6CBwrRyPBaqKCYYXMEw7JVHoHN1qUyhs=;
+ s=k20201202; t=1669653550;
+ bh=NAGBW7jVQtQ3XhXFNz8vKgIt9eWnUGvhfyXZ1qUgZnE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=qgknX0V6B3AAGc+vD6AHAWUV9spUz3GcAQXvw8x6IJuH7HtwQ+hWQyqozMBtNH6l1
- VVbNaFWWw19kH4I0QjZjAOYmeUnkAqu+M8PoZeKYKj5B+BB8wTvgstikpwzB3d7tr7
- uSGC6ZT8E2kk10n0pPTM1xFsXTzTPIacERkRQbHFA5dlBdmbfUPBhv0s1XtRCGgiCe
- 6zCKY+zDdN9N6qLgDwHTvCc0Knb6aM9qqyy7QJNKHrs4UBAGMrlgKybWEtbU33Prky
- GiK7/os4L30uJqhznB/qvVG05XOw/hJNGISAZxuMJ8vd/KQD9aJcyvfDdgDvrJv7Iu
- SZnlt+uHKoXBQ==
+ b=ccc1tr191aYCv4ZgyhVSrKD1blmbGU6ZtK0HpoY++V/fovAJ3SIxnZtpIYvumwjeo
+ +dJPMxmL+6BNVvwMnwx+pLJbUTuPiRVGoTudnOXhHYfhfP2JJ/Rd3l6KJqIuy4ulgO
+ qq7ULwboAKe/MkUx47L0IcIo2/Ug+vjb5/RMQIutzlfoajZrsKtPEJEeBzpWq0hjwx
+ 0gRJ/3N2jJwDKqyri3mmlIK0K/FSv5ectpmXZs1TgNBn40JbXn2ccf4LnRmX3Sds0W
+ e9XewrNdHEhJUFsbWgoUUAq8fhdBDT08Ld29I/0cwcR1xzFiOQCdjpZwW1H7Fz168P
+ I0wtHr3BabEng==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Pavel Dobias <dobias@2n.com>
-In-Reply-To: <20221123153818.24650-1-dobias@2n.com>
-References: <20221123153818.24650-1-dobias@2n.com>
-Subject: Re: [PATCH] ASoC: max9867: Implement exact integer mode
-Message-Id: <166965354016.629583.751028886711064959.b4-ty@kernel.org>
-Date: Mon, 28 Nov 2022 16:39:00 +0000
+To: linux-arm-msm@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>,
+ linux-kernel@vger.kernel.org, 
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ Andy Gross <agross@kernel.org>, 
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Liam Girdwood <lgirdwood@gmail.com>, Banajit Goswami <bgoswami@quicinc.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+In-Reply-To: <20221115120235.167812-1-krzysztof.kozlowski@linaro.org>
+References: <20221115120235.167812-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2 00/11] ASoC: dt-bindings: Rework Qualcomm APR/GPR Sound
+ nodes for SM8450
+Message-Id: <166965354669.629583.1450673554092513884.b4-ty@kernel.org>
+Date: Mon, 28 Nov 2022 16:39:06 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: alsa-devel@alsa-project.org, kernel@axis.com
+Cc: quic_plai@quicinc.com, quic_srivasam@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,12 +89,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 23 Nov 2022 16:38:18 +0100, Pavel Dobias wrote:
-> For 8kHz and 16kHz sample rates and certain PCLK values
-> the codec can be programmed to operate in exact integer
-> mode. If available, use it to achieve the exact sample rate.
+On Tue, 15 Nov 2022 13:02:24 +0100, Krzysztof Kozlowski wrote:
+> Changes since v1
+> ================
+> 1. Patch 2: Keep compatibles in qcom,apr.yaml.
+> 2. Patch 3: New patch.
 > 
+> Description
+> ===========
+> Adding sound support for Qualcomm SM8450 SoC (and later for SC8280XP) brought
+> some changes to APR/GPR services bindings.  These bindings are part of
+> qcom,apr.yaml:
 > 
+> [...]
 
 Applied to
 
@@ -93,8 +109,28 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: max9867: Implement exact integer mode
-      commit: 082d3c998c7b5ee91472c12d2d7dc59d4d1ddec6
+[01/11] ASoC: dt-bindings: qcom,apr: Add GLINK channel name for SM8450
+        commit: 0dd3618e06f86bbdacad3a40b25bf79b8917000c
+[02/11] ASoC: dt-bindings: qcom,apr: Split services to shared schema
+        commit: 41288c30583646e2b4158c75ccdbddc62597e1fa
+[03/11] ASoC: dt-bindings: qcom,apr: Correct and extend example
+        commit: cd9ba3d065bb94f3c20e36ed400269a285bfa46d
+[04/11] ASoC: dt-bindings: qcom,q6afe: Split to separate schema
+        commit: 3e9c0c86267377f1404bc55051f476a0456dcced
+[05/11] ASoC: dt-bindings: qcom,q6apm: Split to separate schema
+        commit: 6180b3252010f7cccdef896faf305456df4c45cf
+[06/11] ASoC: dt-bindings: qcom,q6adm: Split to separate schema
+        commit: f26a776ea5ea22b5a92b0619af54d202e4027524
+[07/11] ASoC: dt-bindings: qcom,q6asm: Split to separate schema
+        commit: 83c8fa5e85e556e6aa3e95e7070ef738964ebd17
+[08/11] ASoC: dt-bindings: qcom,q6prm: Split to separate schema
+        commit: 8009abe0f14052bbfadcdaba7887226b40dfdb51
+[09/11] ASoC: dt-bindings: qcom,q6core: Split to separate schema
+        commit: 7eea2bed3602a2b2e71146e0110d42f6edf917f5
+[10/11] ASoC: dt-bindings: qcom,q6apm-lpass-dais: Split to separate schema
+        commit: 8c7ac825481602e356d96db9424b4d4e23a6a1d3
+[11/11] ASoC: dt-bindings: qcom,q6apm: Add SM8450 bedais node
+        commit: b386acc043f44a730d5117b71b75e818cede21cc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
