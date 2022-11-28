@@ -4,84 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42F43C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Nov 2022 22:13:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D761C43217
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Nov 2022 22:38:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3563E1657;
-	Mon, 28 Nov 2022 23:12:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3563E1657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DF461679;
+	Mon, 28 Nov 2022 23:37:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DF461679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669673604;
-	bh=2AQvgU8kXDFUJdr3B6ILvQwJW8mT099+cRO8KpuAd0o=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=NV0QAibqXtQqxs+/JIEKlw5Mq9tS8wMHC5daqdwrWdM6cVUBpLn4FH+SG0G4cpq/H
-	 ewhF/kmtccnaTXmquYGr9WOTRs9WmBRFbAO5djj/ZEWdeNgQr2Fd6CHJMoGEPwd9Wx
-	 PgXH1Ont9zLOjWH+NFY4V/24G7Hol7VFmW/Duls4=
+	s=default; t=1669675119;
+	bh=nb7jki64PmnJxNyPdriw0SqyRXRWrcPIp7Qgbz3pi6Y=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=VaJ5seDIzMslSkyLvmk3lgw1ZK7wsBRYxXsYeD2ASR4RZJHstqjRZM3m5sYXR0iJe
+	 81FCIAn4/rK9QRK1oyYdJ48uyPeHWdLYzwQJyXAbGK3O331Pmmx6r2dpS8f6eB2T4B
+	 b2d92HxaKW2nfR2GQhDYcnC0jfMfO+8Cd5PDCU+M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A148F8024C;
-	Mon, 28 Nov 2022 23:12:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19FAAF801D8;
+	Mon, 28 Nov 2022 23:37:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 39305F8016E; Mon, 28 Nov 2022 23:12:08 +0100 (CET)
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com
- [IPv6:2607:f8b0:4864:20::133])
+ id 5820DF8020D; Mon, 28 Nov 2022 23:37:48 +0100 (CET)
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com
+ [IPv6:2a00:1450:4864:20::632])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18C6DF8016E
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 23:11:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18C6DF8016E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 760CDF8016E
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 23:37:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 760CDF8016E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="Aq1EGgv7"
-Received: by mail-il1-x133.google.com with SMTP id x12so2825643ilg.1
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 14:11:59 -0800 (PST)
+ header.b="UsjK72Vp"
+Received: by mail-ej1-x632.google.com with SMTP id bj12so29459646ejb.13
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 14:37:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=+K0jgOSLksPF0t4oO6z2n4LjWuWuN8YIQgfQeuzMRF0=;
- b=Aq1EGgv7Yfv518jIs78L4d+GGgWaxs8TyWPdQf0qndrhr8yITjDwgaLKNfQFqQXrZx
- nnPeeSK6X5QcqXNK373SSmHPhq1+zsmZHL9YGSNNtsNpYs5i0Xdpw3alKtVy+Px1De0P
- ZFCNwvc5caUtGJSl+ljr6Hew1e4WTUMRKAaFg=
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=I9zgwrwiRRupONYrnokcwSugSkhgWBhW5gmMgQKjQcE=;
+ b=UsjK72VpwTJ9kAjQFKmVLZiTW90apmuKHlQoEdLarfAWLcu4S3UGNA3SYQGshbWjvX
+ ReWL12m8/TafA3IMLneHat42cQc+xvDSpucvcTHUBBTcP1tXMQdoaGtirZF7nTRJgoLt
+ WhdZ1cdfIJs+iTVmdQt3XTPXQHNBd6gUWxjxY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=+K0jgOSLksPF0t4oO6z2n4LjWuWuN8YIQgfQeuzMRF0=;
- b=aLckwrnu/tWzY9y3Eo25SDCQ4FS+pll0SuAmpk70t3/SNXYtgVh4awXXkWg5biFtUl
- PIAF/oroS+qprfp/3FL5A3MlGhX6STR3uj3UET730/fvkDxJLl9PYOnrRtYPc8d1B2bc
- w8n2Q9Em5Fg7JsjS2bTytal7F7zI/INjBVg98hRW25MmonQbRhUr+Dvnzb72E3ELvsPk
- dViLCbywAFf2wV52CWb+UTRiHCh5FCRZMk9VIdb2RCT7svm0vREuIO2oUaQSb3Ns2Cns
- 7+M4IQJki8R1uibek7G+47cnCE+drxuXeBsSKmTlwTd6tQZyaNwUX4Lsge2ZoX2/7GHa
- vV1g==
-X-Gm-Message-State: ANoB5plewpVlIDC/tZgQ12nCDBdMmlJRL4mAt1z2a11/mj9pTes0Dl6f
- SWOYAQh8jiiRg6CBpYRuBs3SqQ==
-X-Google-Smtp-Source: AA0mqf6Fo8Uf5/CsFnfNGuV1ojrI2ZNykhxAz1ZxrUuYeIfuTr1RKHtapDjLrNo7xXOLi496j/GAgw==
-X-Received: by 2002:a05:6e02:dc1:b0:302:ecb2:179b with SMTP id
- l1-20020a056e020dc100b00302ecb2179bmr10840765ilj.223.1669673518004; 
- Mon, 28 Nov 2022 14:11:58 -0800 (PST)
-Received: from localhost (30.23.70.34.bc.googleusercontent.com. [34.70.23.30])
- by smtp.gmail.com with UTF8SMTPSA id
- i14-20020a056e02054e00b003030e36d9bfsm1480355ils.46.2022.11.28.14.11.57
+ bh=I9zgwrwiRRupONYrnokcwSugSkhgWBhW5gmMgQKjQcE=;
+ b=LWmDb9W2Qmg5gcVJWm58IximfUprfENbjoa2Wshcw3DvgniqAR22N83G9IG5MtFK+Y
+ aa5cRdMKeF2k/wt4Az6b9Rw4XlmeGNrS6Y6nGJQXFDGS+CLM2OUxzBYXVnL3ECGzMPlL
+ W+y0/gGkSsRCq4uzUhSR9R60IGRPjfyqa9qHALAXjesgesSJLqV9pKIm+nI0AQpiSU+e
+ PesZ262Wwm1D4i7JbIvvcCSyNOZrhluHCeVLklhatHF/arKx3T53cDb5doWWXSapVsdf
+ 4bV4XPGCDS5fwu74asUp8LX0mG+aC88xoEjhldHVmKOqTbXNQt/wqNUhcOdxWQAD727N
+ v/5w==
+X-Gm-Message-State: ANoB5pkqz+UWYdLL+htXQ0JZs2fVZhRT/YEzyUSKs6UOrgbXdCaNZd+S
+ H9swln9e7PmdxMFgIbk7/rOgSOepT43I2E+j
+X-Google-Smtp-Source: AA0mqf6V5X4wSRHIKtAxubXICLPbS55I2UuwZU4tMQaV/em/TGa2GGbTwy5MlyLyDgWW6Pg9wbj3TA==
+X-Received: by 2002:a17:906:ad8a:b0:7bc:e5ac:c96f with SMTP id
+ la10-20020a170906ad8a00b007bce5acc96fmr15176087ejb.433.1669675059188; 
+ Mon, 28 Nov 2022 14:37:39 -0800 (PST)
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com.
+ [209.85.221.48]) by smtp.gmail.com with ESMTPSA id
+ q25-20020a17090676d900b007bf24b8f80csm2369255ejn.63.2022.11.28.14.37.37
+ for <alsa-devel@alsa-project.org>
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 28 Nov 2022 14:11:57 -0800 (PST)
-From: Matthias Kaehlcke <mka@chromium.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 1/2] ASoC: qcom: lpass-sc7180: Drop unnecessary initialization
- in _resume()
-Date: Mon, 28 Nov 2022 22:11:54 +0000
-Message-Id: <20221128221152.1.Ia805c688ee968fbbec7b93dc10742876fdef8024@changeid>
-X-Mailer: git-send-email 2.38.1.584.g0f3c55d4c2-goog
+ Mon, 28 Nov 2022 14:37:37 -0800 (PST)
+Received: by mail-wr1-f48.google.com with SMTP id d1so19316487wrs.12
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 14:37:37 -0800 (PST)
+X-Received: by 2002:a5d:4950:0:b0:242:1f80:6cd9 with SMTP id
+ r16-20020a5d4950000000b002421f806cd9mr1152821wrs.405.1669675056628; Mon, 28
+ Nov 2022 14:37:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20221128221152.1.Ia805c688ee968fbbec7b93dc10742876fdef8024@changeid>
+In-Reply-To: <20221128221152.1.Ia805c688ee968fbbec7b93dc10742876fdef8024@changeid>
+From: Doug Anderson <dianders@chromium.org>
+Date: Mon, 28 Nov 2022 14:37:24 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=Wi3Oy9kdFfP6WE1wbtSrGxsr_VC8KZQAyTMgW-uMTOWA@mail.gmail.com>
+Message-ID: <CAD=FV=Wi3Oy9kdFfP6WE1wbtSrGxsr_VC8KZQAyTMgW-uMTOWA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: qcom: lpass-sc7180: Drop unnecessary
+ initialization in _resume()
+To: Matthias Kaehlcke <mka@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Cc: Judy Hsiao <judyhsiao@google.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
- Matthias Kaehlcke <mka@chromium.org>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>,
  Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -98,29 +106,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The initialization of the variable 'ret' in sc7180_lpass_dev_resume()
-is unnecessary, as it is always assigned a few lines below. Drop the
-initialization.
+Hi,
 
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
----
+On Mon, Nov 28, 2022 at 2:12 PM Matthias Kaehlcke <mka@chromium.org> wrote:
+>
+> The initialization of the variable 'ret' in sc7180_lpass_dev_resume()
+> is unnecessary, as it is always assigned a few lines below. Drop the
+> initialization.
+>
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
+>
+>  sound/soc/qcom/lpass-sc7180.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
- sound/soc/qcom/lpass-sc7180.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Not that this needs review, but FWIW:
 
-diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
-index 9c3365ddc274..7a81e609727c 100644
---- a/sound/soc/qcom/lpass-sc7180.c
-+++ b/sound/soc/qcom/lpass-sc7180.c
-@@ -165,7 +165,7 @@ static int sc7180_lpass_exit(struct platform_device *pdev)
- 
- static int sc7180_lpass_dev_resume(struct device *dev)
- {
--	int ret = 0;
-+	int ret;
- 	struct lpass_data *drvdata = dev_get_drvdata(dev);
- 
- 	ret = clk_bulk_prepare_enable(drvdata->num_clks, drvdata->clks);
--- 
-2.38.1.584.g0f3c55d4c2-goog
-
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
