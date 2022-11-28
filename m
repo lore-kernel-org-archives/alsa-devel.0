@@ -4,76 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0595C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 28 Nov 2022 16:40:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA537C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 28 Nov 2022 16:40:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC77916F7;
-	Mon, 28 Nov 2022 17:39:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC77916F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6275E16F4;
+	Mon, 28 Nov 2022 17:40:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6275E16F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669653625;
-	bh=NAGBW7jVQtQ3XhXFNz8vKgIt9eWnUGvhfyXZ1qUgZnE=;
+	s=default; t=1669653651;
+	bh=IvUx3MjLUTJK+tueA8CSBKHbylvoSs0bmHFekQHcz2g=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sEHYxC+FbvHJzSG/sJpGR4GBWha7z9gi2bOAwDZiRzAj+grb/93gnTXQkQUpYrcBY
-	 YRrf+YRq4CHL8+fxWosMSm7yavuBe4MkOKH6lsatEwSca0/7JSA95vizp/xTiGyBjg
-	 PbdRTtBO9ZNJlnHvVH9FI4Yf/TnuOzO6d8TqCHgU=
+	b=cHeswesSTn1orVy2T8XHHRSeAgfvESoDiYjF/9kGpNKTlnhqfgAfbXhRhNmW1U/Fg
+	 Iw7T80vQn/mfzCUfC34QhdohKY1TTQSdPQi+2PDkK0k3v1e82PCbZo2/WctmDV7j79
+	 vYIQ9lkyqg3bIBuGIF157tVxPqVw62THRIwoJzQA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C061F8027D;
-	Mon, 28 Nov 2022 17:39:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B25FF8028B;
+	Mon, 28 Nov 2022 17:39:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EC79AF804AC; Mon, 28 Nov 2022 17:39:14 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 1CE3EF8028B; Mon, 28 Nov 2022 17:39:16 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63540F8027D
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 17:39:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63540F8027D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3BC91F801D8;
+ Mon, 28 Nov 2022 17:39:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BC91F801D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ccc1tr19"
+ header.b="p0Fp2G2P"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id D745061262;
- Mon, 28 Nov 2022 16:39:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECD5DC433D6;
- Mon, 28 Nov 2022 16:39:06 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id BD516B80E18;
+ Mon, 28 Nov 2022 16:39:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0200C433D7;
+ Mon, 28 Nov 2022 16:39:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669653550;
- bh=NAGBW7jVQtQ3XhXFNz8vKgIt9eWnUGvhfyXZ1qUgZnE=;
+ s=k20201202; t=1669653546;
+ bh=IvUx3MjLUTJK+tueA8CSBKHbylvoSs0bmHFekQHcz2g=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ccc1tr191aYCv4ZgyhVSrKD1blmbGU6ZtK0HpoY++V/fovAJ3SIxnZtpIYvumwjeo
- +dJPMxmL+6BNVvwMnwx+pLJbUTuPiRVGoTudnOXhHYfhfP2JJ/Rd3l6KJqIuy4ulgO
- qq7ULwboAKe/MkUx47L0IcIo2/Ug+vjb5/RMQIutzlfoajZrsKtPEJEeBzpWq0hjwx
- 0gRJ/3N2jJwDKqyri3mmlIK0K/FSv5ectpmXZs1TgNBn40JbXn2ccf4LnRmX3Sds0W
- e9XewrNdHEhJUFsbWgoUUAq8fhdBDT08Ld29I/0cwcR1xzFiOQCdjpZwW1H7Fz168P
- I0wtHr3BabEng==
+ b=p0Fp2G2PiK83DL3iiUMU16TObTHnjPtg1FBNyNPVCfRTHYzjP0BVR0lNRfzHYBT9J
+ G0zDLaTJJf/Wn7tmnuUg2YM9mn8dXYDFK6QmRpmG447XvIxFHYVvXVpE/csXLd/bdg
+ WQ3hk3UJiOI13tpiuaYKnAFWQ4fhzd7AH7OHo9Beuntesqb6dv9OUmmK27zDRK0tOq
+ EPOLWSkbCu/Jt+gIwIxoRu2+STffzfLBjrHilCH5+zDdr/lvcqb0G15kq5DrDHCb/m
+ w7qIHP33bJJjjcU9ChB7WnfJl5bBpJVwSHOfxUlVBNvo6W9Vu05C4WaWz3LPDcWRPe
+ 24DH/S1PdRaRQ==
 From: Mark Brown <broonie@kernel.org>
-To: linux-arm-msm@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>,
- linux-kernel@vger.kernel.org, 
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- Andy Gross <agross@kernel.org>, 
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- Liam Girdwood <lgirdwood@gmail.com>, Banajit Goswami <bgoswami@quicinc.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-In-Reply-To: <20221115120235.167812-1-krzysztof.kozlowski@linaro.org>
-References: <20221115120235.167812-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v2 00/11] ASoC: dt-bindings: Rework Qualcomm APR/GPR Sound
- nodes for SM8450
-Message-Id: <166965354669.629583.1450673554092513884.b4-ty@kernel.org>
-Date: Mon, 28 Nov 2022 16:39:06 +0000
+To: V sujith kumar Reddy <vsujithkumar.reddy@amd.corp-partner.google.com>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20221123121911.3446224-2-vsujithkumar.reddy@amd.corp-partner.google.com>
+References: <20221123121911.3446224-1-vsujithkumar.reddy@amd.corp-partner.google.com>
+ <20221123121911.3446224-2-vsujithkumar.reddy@amd.corp-partner.google.com>
+Subject: Re: [PATCH v1 1/4] ASoC: SOF: amd: Fix for reading position updates
+ from stream box.
+Message-Id: <166965354163.629583.9195064953643860302.b4-ty@kernel.org>
+Date: Mon, 28 Nov 2022 16:39:01 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: quic_plai@quicinc.com, quic_srivasam@quicinc.com
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>, Sunil-kumar.Dommati@amd.com,
+ ssabakar@amd.com, Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+ Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, venkataprasad.potturu@amd.com,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Basavaraj.Hiregoudar@amd.com,
+ Takashi Iwai <tiwai@suse.com>, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>, Vijendar.Mukunda@amd.com,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ "moderated list:SOUND - SOUND OPEN FIRMWARE \(SOF\) DRIVERS"
+ <sound-open-firmware@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,17 +95,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 15 Nov 2022 13:02:24 +0100, Krzysztof Kozlowski wrote:
-> Changes since v1
-> ================
-> 1. Patch 2: Keep compatibles in qcom,apr.yaml.
-> 2. Patch 3: New patch.
+On Wed, 23 Nov 2022 17:49:08 +0530, V sujith kumar Reddy wrote:
+> From: V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>
 > 
-> Description
-> ===========
-> Adding sound support for Qualcomm SM8450 SoC (and later for SC8280XP) brought
-> some changes to APR/GPR services bindings.  These bindings are part of
-> qcom,apr.yaml:
+> By default the position updates are read from dsp box when streambox
+> size is not defined.if the streambox size is defined to some value
+> then position updates can be read from the streambox.
+> 
 > 
 > [...]
 
@@ -109,28 +111,14 @@ Applied to
 
 Thanks!
 
-[01/11] ASoC: dt-bindings: qcom,apr: Add GLINK channel name for SM8450
-        commit: 0dd3618e06f86bbdacad3a40b25bf79b8917000c
-[02/11] ASoC: dt-bindings: qcom,apr: Split services to shared schema
-        commit: 41288c30583646e2b4158c75ccdbddc62597e1fa
-[03/11] ASoC: dt-bindings: qcom,apr: Correct and extend example
-        commit: cd9ba3d065bb94f3c20e36ed400269a285bfa46d
-[04/11] ASoC: dt-bindings: qcom,q6afe: Split to separate schema
-        commit: 3e9c0c86267377f1404bc55051f476a0456dcced
-[05/11] ASoC: dt-bindings: qcom,q6apm: Split to separate schema
-        commit: 6180b3252010f7cccdef896faf305456df4c45cf
-[06/11] ASoC: dt-bindings: qcom,q6adm: Split to separate schema
-        commit: f26a776ea5ea22b5a92b0619af54d202e4027524
-[07/11] ASoC: dt-bindings: qcom,q6asm: Split to separate schema
-        commit: 83c8fa5e85e556e6aa3e95e7070ef738964ebd17
-[08/11] ASoC: dt-bindings: qcom,q6prm: Split to separate schema
-        commit: 8009abe0f14052bbfadcdaba7887226b40dfdb51
-[09/11] ASoC: dt-bindings: qcom,q6core: Split to separate schema
-        commit: 7eea2bed3602a2b2e71146e0110d42f6edf917f5
-[10/11] ASoC: dt-bindings: qcom,q6apm-lpass-dais: Split to separate schema
-        commit: 8c7ac825481602e356d96db9424b4d4e23a6a1d3
-[11/11] ASoC: dt-bindings: qcom,q6apm: Add SM8450 bedais node
-        commit: b386acc043f44a730d5117b71b75e818cede21cc
+[1/4] ASoC: SOF: amd: Fix for reading position updates from stream box.
+      commit: aae7e412b0ec0378e392b18c50b612dae09cdb74
+[2/4] ASoC: SOF: amd: Fix for selecting clock source as external clock.
+      commit: f9ced7dbbb551885c63632f1594997bdaf2177ee
+[3/4] ASoC: SOF: amd: ADD HS and SP virtual DAI.
+      commit: 9fd3b5b11db2fbbf0438324696de8233c0a78dad
+[4/4] ASoC: SOF: Add DAI configuration support for AMD platforms.
+      (no commit info)
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
