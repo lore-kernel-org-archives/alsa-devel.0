@@ -4,82 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F2AEC4167B
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Nov 2022 14:05:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B59FBC4321E
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Nov 2022 14:07:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 174E7169E;
-	Tue, 29 Nov 2022 15:05:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 174E7169E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E49AE16B3;
+	Tue, 29 Nov 2022 15:06:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E49AE16B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669730754;
-	bh=bKBl/NQDEeGXHW5gRVL1ozbv+evF2wPxyCw6iaQRaCg=;
+	s=default; t=1669730830;
+	bh=sGgLOgjAgwximAEzWGZnJ4j4MMYG9wRZpjiOq59jOM8=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UQNcromAxaiHNOkNuSBo+j4U4rYJ0YCLPpMpePZUDTlRKHdIYwD03pMaLDG1f1o9l
-	 IrdH8aRb+ZJ+RLaZNOMU7rWXCYJjU1rpViEo2mOjX+6SJfP+jiAeHZ8NJjd6gJltVv
-	 q8M3GgUbL3DryaRgg5JzgEc4o55I5rmLai5A8oJY=
+	b=IZz11Oy/O/g/0UzPyYhGQ8tt2gCHpo6JZeaLwlA9vqcGAKhwHXzuxRR3w2l4SppCy
+	 LOWgYQ9Smxq/zU/aeJtaIijqJWJCEio/TwfNNGkYSDrmI6Jku1JrUs6BDR/dwa9wNy
+	 AMM6hBwPbwN/lpjeJKybKmd0XW0myY15WqI8chD8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A75DAF801F5;
-	Tue, 29 Nov 2022 15:05:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1213F801F5;
+	Tue, 29 Nov 2022 15:06:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0154F801F7; Tue, 29 Nov 2022 15:05:01 +0100 (CET)
+ id A161BF801F7; Tue, 29 Nov 2022 15:06:19 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8D42CF800B6
- for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2022 15:04:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D42CF800B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9426AF801F5
+ for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2022 15:06:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9426AF801F5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="rWQX87Xc"; 
+ header.b="aowAWYF+"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="uZ2Ako6m"
+ header.b="SNZUYOCM"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5292421B0E;
- Tue, 29 Nov 2022 14:04:52 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 30C2621B30;
+ Tue, 29 Nov 2022 14:06:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1669730692; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1669730773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=irwTfed7jhUDL3QvqQKxnlDd5lsqKyydbwPabpuneq4=;
- b=rWQX87XckFJaw45/QxzqE6D2vCVsuKQFrb1c/ApufLafZ08Gj6K8KccnaOWA8/Ju4T9hi0
- VEd81EZzBahIzXV1xXGD2nRUfuZkY4G0AYkb6/LdZBwR50ChbTCBOC7oILKp/up8zp9Eiq
- U72GuuOmVUoHSmUFYn46uJAuDks/56Y=
+ bh=cTdgtCUXVOpYNOCl7WgkwkarX2ZzQ/+LGpnDx/ObHCE=;
+ b=aowAWYF+RhzZdrBSarz4wTsIer/0TOoSs+up5VNnkXyl46LD7TG2Q6c1sYMOUmohBNRlu3
+ I/TL9b2ipvcpztPABHhgTjGFswBoPZPRHMOBLsx3Vng8IeT9x/lgjIRnnVZx0lgSE9aXKu
+ jxtNwX0EZw4QJDtCfz5HQxcXXdVzc2U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1669730692;
+ s=susede2_ed25519; t=1669730773;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=irwTfed7jhUDL3QvqQKxnlDd5lsqKyydbwPabpuneq4=;
- b=uZ2Ako6mj0YyNmMN0H3+5bzv+X1Xvbc3/loYP7THajbB+fqOj9FcHP/Vfa8DQ9GvEHiiKE
- xDLxjE7tlvV6/sCw==
+ bh=cTdgtCUXVOpYNOCl7WgkwkarX2ZzQ/+LGpnDx/ObHCE=;
+ b=SNZUYOCMh3stCN7rCfgPp0skHn4GGF/4dHqtjr3S5OTx+Dsw/LpyGV8iTGe6wpIn8tCdW0
+ 4ErFeF9FAiFeasBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 18A1A13428;
- Tue, 29 Nov 2022 14:04:52 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F321613428;
+ Tue, 29 Nov 2022 14:06:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 3+X4BIQRhmPFRAAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 29 Nov 2022 14:04:52 +0000
-Date: Tue, 29 Nov 2022 15:04:51 +0100
-Message-ID: <87sfi1q2kc.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id IdVeOtQRhmOXRQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 29 Nov 2022 14:06:12 +0000
+Date: Tue, 29 Nov 2022 15:06:12 +0100
+Message-ID: <87r0xlq2i3.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: John Keeping <john@metanate.com>
-Subject: Re: [PATCH v2] ALSA: usb-audio: Add quirk for Tascam Model 12
-In-Reply-To: <20221129130100.1257904-1-john@metanate.com>
-References: <20221129130100.1257904-1-john@metanate.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] selftests: alsa - move shared library configuration code
+ to conf.c
+In-Reply-To: <20221129085306.2345763-1-perex@perex.cz>
+References: <20221129085306.2345763-1-perex@perex.cz>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ linux-kselftest@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,46 +97,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 29 Nov 2022 14:00:59 +0100,
-John Keeping wrote:
+On Tue, 29 Nov 2022 09:53:06 +0100,
+Jaroslav Kysela wrote:
 > 
-> Tascam's Model 12 is a mixer which can also operate as a USB audio
-> interface.  The audio interface uses explicit feedback but it seems that
-> it does not correctly handle missing isochronous frames.
+> The minimal alsa-lib configuration code is similar in both mixer
+> and pcm tests. Move this code to the shared conf.c source file.
 > 
-> When injecting an xrun (or doing anything else that pauses the playback
-> stream) the feedback rate climbs (for example, at 44,100Hz nominal, I
-> see a stable rate around 44,099 but xrun injection sees this peak at
-> around 44,135 in most cases) and glitches are heard in the audio stream
-> for several seconds - this is significantly worse than the single glitch
-> expected for an underrun.
+> Also, fix the build rules inspired by rseq tests. Build libatest.so
+> which is linked to the both test utilities dynamically.
 > 
-> While the stream does normally recover and the feedback rate returns to
-> a stable value, I have seen some occurrences where this does not happen
-> and the rate continues to increase while no audio is heard from the
-> output.  I have not found a solid reproduction for this.
+> Also, set the TEST_FILES variable for lib.mk.
 > 
-> This misbehaviour can be avoided by totally resetting the stream state
-> by switching the interface to alt 0 and back before restarting the
-> playback stream.
-> 
-> Add a new quirk flag which forces the endpoint and interface to be
-> reconfigured whenever the stream is stopped, and use this for the Tascam
-> Model 12.
-> 
-> Separate interfaces are used for the playback and capture endpoints, so
-> resetting the playback interface here will not affect the capture stream
-> if it is running.  While there are two endpoints on the interface,
-> these are the OUT data endpoint and the IN explicit feedback endpoint
-> corresponding to it and these are always stopped and started together.
-> 
-> Signed-off-by: John Keeping <john@metanate.com>
-> ---
-> v2:
-> - Set ep->need_prepare not ep->need_setup; this was missed when forward
->   porting the patch as need_prepare is new in 6.1
-> - Add more details to the commit message about why it is safe to reset
->   the interface here
+> Cc: linux-kselftest@vger.kernel.org
+> Cc: Shuah Khan <shuah@kernel.org>
+> Reported-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 
 Thanks, applied now.
 
