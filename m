@@ -4,85 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CCC4C4321E
-	for <alsa-devel@archiver.kernel.org>; Tue, 29 Nov 2022 00:18:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C17BC43217
+	for <alsa-devel@archiver.kernel.org>; Tue, 29 Nov 2022 00:21:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D9DE1682;
-	Tue, 29 Nov 2022 01:17:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D9DE1682
+	by alsa0.perex.cz (Postfix) with ESMTPS id E265D1692;
+	Tue, 29 Nov 2022 01:20:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E265D1692
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669681078;
-	bh=x5J8+kLqLXIzYjvfw1LhMuIeGhJTWDs2YXkaYMfwO6U=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Ok0pd6GxXVTlTAAumPNqKe8tnH3xj4wTLXy0aHcfPX7AXHZq5jCdJ6qQ4hbpHbVZp
-	 FC/VArRs9szVcEWibV5vl9wRRchIGPmdnxyoLd0NWL4yHsZjCjz5XLNGls2J0Ku8On
-	 F6mPuJYu8vog92OZORBLgJ2G51+X8CEqhOVz95PM=
+	s=default; t=1669681271;
+	bh=KN4KFRJKc7BwiaEo3YLwbqXlnEJe445Mhn0Kiwjex1k=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=UzCMKxH0Kuh9p7mlEEUu3x6yqYpbUYepSTllr7k2XJKFPl5RESCMSn3P4YtaO7usB
+	 0XvelzpDnslqnLObV+k+Vf0oSKo7xAEBkD1gGZq4scT5omNJa3NGlgs4YmsR/nsS+V
+	 ZSxpkT3ApysdzVOy5WyBsp4HbgtdlzLJiaaC1PME=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8B34F80166;
-	Tue, 29 Nov 2022 01:17:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D720F801D8;
+	Tue, 29 Nov 2022 01:20:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17861F8020D; Tue, 29 Nov 2022 01:17:06 +0100 (CET)
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com
- [IPv6:2607:f8b0:4864:20::d29])
+ id 50BB2F8020D; Tue, 29 Nov 2022 01:20:18 +0100 (CET)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
+ [IPv6:2a00:1450:4864:20::630])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E198EF80166
- for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2022 01:16:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E198EF80166
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0AE5FF800B6
+ for <alsa-devel@alsa-project.org>; Tue, 29 Nov 2022 01:20:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AE5FF800B6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="DQs1Hqu7"
-Received: by mail-io1-xd29.google.com with SMTP id h206so8935373iof.10
- for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 16:16:59 -0800 (PST)
+ header.b="YyohEtJ6"
+Received: by mail-ej1-x630.google.com with SMTP id b2so13703169eja.7
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 16:20:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=gA7jpYl6yV6P4juXicdMOmof7r1j/N5hUrukqrPzGdk=;
- b=DQs1Hqu73bNAJW0k4CHMP/GFzfmwIUvzkUhQZaJ16ASZJ+TVA84Uz1ZP4lfZD1yEpm
- KGFsQvcP4ne79puTyiCDAu2YusMevht3J9nQCgk5pWCogA/prSxN+g1dt8YrLpRHll0O
- 8D3SjMY5yHIP9U9huqa3c15zkiE1NJbD9ihwE=
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=afOr2fmIQC6dBJfLAFZ1lEeNOcz8tKXWZ8GJTXwEGZg=;
+ b=YyohEtJ6qLap4dyHJjxB9q2A69k7/SoCS0qeZMEZLc1ZFBUVRVGlQ33xoNkciPPQ56
+ x5DP20xjts37dK6LNApMJpL4S8D49y38crgVO+gt38n7cXyWChhanVz4BFjZkpVFGVP6
+ OiwfsSQKDsFq3Bxwfk0h8k9bAO9hOq4Ues8Rg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=gA7jpYl6yV6P4juXicdMOmof7r1j/N5hUrukqrPzGdk=;
- b=LMYXIa1PJ93f7ddE0OW+lt9HRea0wvvrTkEXEtNVIbn3WUchRhDy3GBAGF7A0tt0pK
- 9LkMZ7or20nH88BJtB802YPHVm2Bg7c/MPQFN+2Cuao3iKT8piCdD+EvqTfpIu2J6hsX
- eLXfJPDus1MDT140dY7SoyCHZLJaV9sMTmgwTmwmOAZZR5uH6dtTQDelQF0XHWbC962u
- 6EXlnp1e/FMDRc2lIYx8z9XXC7oTcXYIw2bLQxjk4uz1yGv9E0DSxWekD60RK5eDhlY5
- ZD7JDxdfiRtTX6hSWcAmh0k1/cCyhaZNkBRPiY5qGg4qQZR4SMjwgVWKpyV43AJDYz1L
- DXhQ==
-X-Gm-Message-State: ANoB5pn6JPw3QgkH3iIze8gUhMokepRi2MP6AnhHvgtL12ZVuWhT8YII
- ekimUrvCEh3au74PcIzpQBmbSw==
-X-Google-Smtp-Source: AA0mqf5O/zpf9bI5X01LNRcc5En7D9DRQc+o4PEsnb6Zkk3bOUWAm6FvBfwZDdw+4jQexdhSlJqa/Q==
-X-Received: by 2002:a05:6638:535:b0:375:b7f:daec with SMTP id
- j21-20020a056638053500b003750b7fdaecmr6888722jar.154.1669681017666; 
- Mon, 28 Nov 2022 16:16:57 -0800 (PST)
-Received: from localhost (30.23.70.34.bc.googleusercontent.com. [34.70.23.30])
- by smtp.gmail.com with UTF8SMTPSA id
- m12-20020a02a14c000000b003636cb862d0sm4884318jah.42.2022.11.28.16.16.57
+ bh=afOr2fmIQC6dBJfLAFZ1lEeNOcz8tKXWZ8GJTXwEGZg=;
+ b=oqENcogM5LYpXDHYj7EaWwkNndfxYxzVuCYu7K8wygk4/uiJWVphaHXUwG7b7gllPt
+ x0iTit58npzaQmCu4JnG/a3+LcjB6chUNnJEO2+jxZNySNcG7gx4S2Jb7R1xsgXeqDya
+ /oSTaY42o0kgxIX4tCgRVqMhIhPTDLynXKxYVrYcnrVXocxiEqlZlJeKpPjN6Nh9mM/H
+ kJ/1yhv+zm98escqxrOGkRuKkTtP/f64Xr9r9pqySPcb42RgyUucBi7AdvJoiMmo/ucO
+ XMmT9Y5xSjubdqq0ao1a5KqYmG5LZRQy0iMvmoLKYS/s7rsxapgDOJNnQxyB9Ozp1XTh
+ gSAQ==
+X-Gm-Message-State: ANoB5pmJbXcz7MmZ1dO3WtxaYjzwCv+on3gR9pDdUml/DImwAoIHs8iX
+ DFtttp2XV1UUwg+WbfjZU2ar3TS6oJAjhOWR
+X-Google-Smtp-Source: AA0mqf7hsibEd+02MdA2zeh4Ww+cOIItl0lqQ+EKB5SVWYqcEEPN/iGPL/oLXznsTdvmVFeqCms54g==
+X-Received: by 2002:a17:906:43d0:b0:78d:a01b:b474 with SMTP id
+ j16-20020a17090643d000b0078da01bb474mr32957040ejn.8.1669681208834; 
+ Mon, 28 Nov 2022 16:20:08 -0800 (PST)
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com.
+ [209.85.128.53]) by smtp.gmail.com with ESMTPSA id
+ ez15-20020a056402450f00b00463c5c32c6esm5603864edb.89.2022.11.28.16.20.07
+ for <alsa-devel@alsa-project.org>
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 28 Nov 2022 16:16:57 -0800 (PST)
-From: Matthias Kaehlcke <mka@chromium.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2] ASoC: qcom: lpass-sc7180: Delete redundant error log from
- _resume()
-Date: Tue, 29 Nov 2022 00:16:54 +0000
-Message-Id: <20221129001633.v2.1.I8d1993f41f0da1eac0ecba321678ac489f9c0b9b@changeid>
-X-Mailer: git-send-email 2.38.1.584.g0f3c55d4c2-goog
+ Mon, 28 Nov 2022 16:20:08 -0800 (PST)
+Received: by mail-wm1-f53.google.com with SMTP id
+ p13-20020a05600c468d00b003cf8859ed1bso9639041wmo.1
+ for <alsa-devel@alsa-project.org>; Mon, 28 Nov 2022 16:20:07 -0800 (PST)
+X-Received: by 2002:a05:600c:3109:b0:3cf:5731:53db with SMTP id
+ g9-20020a05600c310900b003cf573153dbmr43823918wmo.85.1669681207310; Mon, 28
+ Nov 2022 16:20:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Judy Hsiao <judyhsiao@google.com>,
+References: <20221129001633.v2.1.I8d1993f41f0da1eac0ecba321678ac489f9c0b9b@changeid>
+In-Reply-To: <20221129001633.v2.1.I8d1993f41f0da1eac0ecba321678ac489f9c0b9b@changeid>
+From: Doug Anderson <dianders@chromium.org>
+Date: Mon, 28 Nov 2022 16:19:55 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=W3yB8ZGQ6QmBy7wxRSE4TdqOuM5LzM6wtiF9wtenNyXw@mail.gmail.com>
+Message-ID: <CAD=FV=W3yB8ZGQ6QmBy7wxRSE4TdqOuM5LzM6wtiF9wtenNyXw@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: qcom: lpass-sc7180: Delete redundant error log
+ from _resume()
+To: Matthias Kaehlcke <mka@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Judy Hsiao <judyhsiao@google.com>, alsa-devel@alsa-project.org,
  Banajit Goswami <bgoswami@codeaurora.org>, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, Douglas Anderson <dianders@chromium.org>,
- Matthias Kaehlcke <mka@chromium.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>,
  Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -99,42 +108,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-sc7180_lpass_dev_resume() logs an error if clk_bulk_prepare_enable()
-fails. The clock framework already generates error logs if anything
-goes wrong, so the logging in _resume() is redundant, drop it.
+Hi,
 
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
----
+On Mon, Nov 28, 2022 at 4:16 PM Matthias Kaehlcke <mka@chromium.org> wrote:
+>
+> sc7180_lpass_dev_resume() logs an error if clk_bulk_prepare_enable()
+> fails. The clock framework already generates error logs if anything
+> goes wrong, so the logging in _resume() is redundant, drop it.
+>
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
+>
+> Changes in v2:
+> - removed the log in the error path (requested by Doug)
+> - updated subject (was "ASoC: qcom: lpass-sc7180: Return 0 instead
+>   of 'ret' at the end of _resume()") and commit message
+>
+>  sound/soc/qcom/lpass-sc7180.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
 
-Changes in v2:
-- removed the log in the error path (requested by Doug)
-- updated subject (was "ASoC: qcom: lpass-sc7180: Return 0 instead
-  of 'ret' at the end of _resume()") and commit message
-
- sound/soc/qcom/lpass-sc7180.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
-
-diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
-index 6ad1c5b5f2de..db3be15cf14c 100644
---- a/sound/soc/qcom/lpass-sc7180.c
-+++ b/sound/soc/qcom/lpass-sc7180.c
-@@ -162,15 +162,9 @@ static int sc7180_lpass_exit(struct platform_device *pdev)
- 
- static int sc7180_lpass_dev_resume(struct device *dev)
- {
--	int ret = 0;
- 	struct lpass_data *drvdata = dev_get_drvdata(dev);
- 
--	ret = clk_bulk_prepare_enable(drvdata->num_clks, drvdata->clks);
--	if (ret) {
--		dev_err(dev, "sc7180 clk prepare and enable failed\n");
--		return ret;
--	}
--	return ret;
-+	return clk_bulk_prepare_enable(drvdata->num_clks, drvdata->clks);
- }
- 
- static int sc7180_lpass_dev_suspend(struct device *dev)
--- 
-2.38.1.584.g0f3c55d4c2-goog
-
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
