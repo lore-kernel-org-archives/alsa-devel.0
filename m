@@ -4,42 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CD03C4167B
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Nov 2022 03:09:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EECFC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Nov 2022 08:53:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6546B16B6;
-	Wed, 30 Nov 2022 04:08:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6546B16B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3AD7C1691;
+	Wed, 30 Nov 2022 09:52:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AD7C1691
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669777787;
-	bh=oJ6qi+90CP4rsZcsTwj3G0ilr2l/9/ianmkaLMks9fw=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=hFxVYn7bR4r9U5F2ex5bHsZdNzXR9IG94N48gCBX+1qadZkLL3He1w0tyOEBPakiu
-	 +Z8wtYXu+omJhJqfAxa6tatbK9VOD5BJXyeA3D1ewDdHZHU9VZHYiC9WhU+RraHnJU
-	 H72+Ogd6ORltHKxkAt/MpCsY71XXQ9CEK2nbcMXU=
+	s=default; t=1669798427;
+	bh=ZD05dzViZ2VqYhGHNxe/ZWN/ep90TQYNVCEphYqGbJg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=m3PCWPUIICkF+XSEG7pucQNBO0qm02/MfpuqpefU55ih+lVlbvQT/DeUcXN6GGfmW
+	 UZ38r26YyqVkY3EaASbOFpa/4HJMBtfjVHF6pnSTEYisPjHFvdrkOZa6xwRV/P/Z8R
+	 kra4KdUiNUEMmIHvATZ6XghMWCmzwGHCGernxfbE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 085CCF8016B;
-	Wed, 30 Nov 2022 04:08:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF639F8016B;
+	Wed, 30 Nov 2022 09:52:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 91893F8023A; Wed, 30 Nov 2022 04:08:55 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 48532F80118
- for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 04:08:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48532F80118
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
+ id 8E37DF8023A; Wed, 30 Nov 2022 09:52:55 +0100 (CET)
+Received: from forward107o.mail.yandex.net (forward107o.mail.yandex.net
+ [IPv6:2a02:6b8:0:1a2d::205])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7BF7BF800B6
+ for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 09:52:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BF7BF800B6
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=ya.ru header.i=@ya.ru header.b="Gn9NKWz9"
+Received: from iva6-2d18925256a6.qloud-c.yandex.net
+ (iva6-2d18925256a6.qloud-c.yandex.net
+ [IPv6:2a02:6b8:c0c:7594:0:640:2d18:9252])
+ by forward107o.mail.yandex.net (Yandex) with ESMTP id D51B86AFDA53;
+ Wed, 30 Nov 2022 11:52:47 +0300 (MSK)
+Received: by iva6-2d18925256a6.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA
+ id lqMj3XNYOOs1-6dFSEKm8; Wed, 30 Nov 2022 11:52:47 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ya.ru; s=mail;
+ t=1669798367; bh=bZCTLXtQFo+GaP8dZv+seLgjwFmrfIcVegfPYvQtsqk=;
+ h=Message-Id:Date:Cc:Subject:To:From;
+ b=Gn9NKWz90ml+E9uvSL9IU2xYcXIuYxqiiwI5l5hTn5GjmIyMG8PVJMenUN/Fcy3cc
+ vOW3oAi7/IcprqRlALyH0QxqIwuFW++H+JWn0v9MY1gTMKPmXPOjMrC4ruOpTO6Nnf
+ 09EgCmU5wREsU5I1fQmWlUTKRZXy7jVf1l0g5CHQ=
+Authentication-Results: iva6-2d18925256a6.qloud-c.yandex.net;
+ dkim=pass header.i=@ya.ru
+From: Artem Lukyanov <dukzcry@ya.ru>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1669777729029186964-webhooks-bot@alsa-project.org>
-References: <1669777729029186964-webhooks-bot@alsa-project.org>
-Subject: arecord leaves doubled audio at end after a SIGTERM
-Message-Id: <20221130030855.91893F8023A@alsa1.perex.cz>
-Date: Wed, 30 Nov 2022 04:08:55 +0100 (CET)
+Subject: [RESEND PATCH -next] ASoC: amd: yc: Add Xiaomi Redmi Book Pro 14 2022
+ into DMI table
+Date: Wed, 30 Nov 2022 11:52:47 +0300
+Message-Id: <20221130085247.85126-1-dukzcry@ya.ru>
+X-Mailer: git-send-email 2.36.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,22 +75,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #179 was edited from chconnor:
+This model requires an additional detection quirk to enable the
+internal microphone - BIOS doesn't seem to support AcpDmicConnected
+(nothing in acpidump output).
 
-Hello: I issue a command like this:
+Signed-off-by: Artem Lukyanov <dukzcry@ya.ru>
+---
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-`arecord -t wav -c 1 -f S16_LE -r44100 -D hw:2,0 test.wav
-`
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index d9715bea965e..1f0b5527c594 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -213,6 +213,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Alienware m17 R5 AMD"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "TIMI"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Redmi Book Pro 14 2022"),
++		}
++	},
+ 	{}
+ };
+ 
+-- 
+2.36.2
 
-It works fine, but then I hit ctrl-C to terminate. This works, but the file has "junk" at the end that repeats the last fraction of a second. E.g. in this demo file I ctrl-C when I say the word "one", and the recording is like "three, two, on-on":
-
-https://caseyconnor.org/pub/audio/arecord_bug.wav
-
-It's as if it is mistakenly writing a buffer an extra time?
-
-(In my total ignorance and total lack of qualifications, I traced the code to [here](https://github.com/alsa-project/alsa-lib/blob/d28e8cb29485cc93f741b01dc65893c798359963/src/pcm/pcm.c#L7544), but I get lost and can't see if anything is awry...)
-
-(Edit: version 1.2.6 on Lubuntu 22.04 with a Shure X2U interface)
-
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/179
-Repository URL: https://github.com/alsa-project/alsa-utils
