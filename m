@@ -4,67 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70782C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Nov 2022 12:49:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EE07C4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Nov 2022 12:49:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 61E5E16DE;
-	Wed, 30 Nov 2022 13:48:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61E5E16DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 718D716D5;
+	Wed, 30 Nov 2022 13:48:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 718D716D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669812547;
-	bh=BLAKdb4dnsjbP0lYTaCvKJAcBM9q6yWu8b6MFiBT2UA=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1669812575;
+	bh=Ayte6uLLIrPFdwUeST0p7W4NcAcyN4PTRnbwPLLszyk=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YG5C6zFbZzOekKQcloBLMW2D1DyvRJorKoALwQkFeS2+5o+Q4QIO7DLuoM/EzupPl
-	 1nhlnmWgNL6Ori2+IAGbwfDSMXWDelGoB4aBNoGvB3NUGqt2VIShWNcRr660z+8Hqu
-	 6IrXQ6c525dmMbbmWAWP8V/eSLOoPhqPuTY+PeDE=
+	b=gUlniTi7FDO+upYhilb+rN9G8bb0xQSE5v3VRHbPETUkJMlNS6uix19rwIQy/Zf24
+	 wGqywTzjephoWMsRpA5Rx9/jNJdi7fgtOKkwmw02FVx7OnTeEZcmF+bpM/u6hOiS1a
+	 merJdaCIK1KM0sXI706kfd6KEKA6MAmqk4xCZItY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10071F8016B;
+	by alsa1.perex.cz (Postfix) with ESMTP id B982EF8053D;
 	Wed, 30 Nov 2022 13:48:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D70EF80507; Wed, 30 Nov 2022 13:47:57 +0100 (CET)
+ id 13948F804FF; Wed, 30 Nov 2022 13:47:58 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB95CF80118
- for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 13:47:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB95CF80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11A2FF80166;
+ Wed, 30 Nov 2022 13:47:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11A2FF80166
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="X+olPv4y"
+ header.b="rKPBhpNm"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 439EDB81B34;
- Wed, 30 Nov 2022 12:47:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A058C433D6;
- Wed, 30 Nov 2022 12:47:50 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 58633B81B33;
+ Wed, 30 Nov 2022 12:47:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBDFDC433C1;
+ Wed, 30 Nov 2022 12:47:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669812471;
- bh=BLAKdb4dnsjbP0lYTaCvKJAcBM9q6yWu8b6MFiBT2UA=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=X+olPv4y6WYjDc7MSsAE/qe6J3xjPn0IorKeeom46CFZG8X8lcAvYai4f/4BmmIah
- VSUD31DnzKkt7oxcophN17qTSZI4Op/mtR6uDGPFWveZ836efRKrDxcP8GlHtUQ553
- Qmj7akMObBY2JOM1uCJlxDTkEncbDwHZ2svNtJC8n14J83VA16+cQ5DlJjn2igGOCs
- hSKfmycOsxMtFZyBVPA6oRYJIJXUBzHPtocFopaZce6U8FSb/bNu1sptU6hyjLm3Ki
- cpDibtSoamRw8XFSzVSyps1k6WhhL/1ldUKkusprUgV2pGvifGGfgiWboYtEvxKHuQ
- UH4mFxsezhlJA==
+ s=k20201202; t=1669812470;
+ bh=Ayte6uLLIrPFdwUeST0p7W4NcAcyN4PTRnbwPLLszyk=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=rKPBhpNmJFVwU6Q/QOYtguDZuwRJfnPJxGuEMuF+J+xEO/Po4HA1Vqh50YYr2Egal
+ ekIv6SSF+kw6TIdhwHwxQ1i0S1jA5wqLrZ7rQuQcjzWNtz/ipjMRCDI/wiBJAOAm+Q
+ 3FCu5H4cpe3GMKtg2bKh9aXFXcL14yhCEJFD0cil+YXo34OE6P5BhVGW8KEZujganO
+ r9lQBnZSzxGeNUXpPpKMGufZxUjgmafP3phq4mgDYGEtaL94n+a6Ratv16YF3ccp82
+ 6Evtk/1f4LTR7GE+7zgkMFKF8CC+gDv+keIaapWgkeNE4anTMjPsBjmM50JL8wiZGf
+ 90rGj8H/QsD0w==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Artem Lukyanov <dukzcry@ya.ru>
-In-Reply-To: <20221130085247.85126-1-dukzcry@ya.ru>
-References: <20221130085247.85126-1-dukzcry@ya.ru>
-Subject: Re: [RESEND PATCH -next] ASoC: amd: yc: Add Xiaomi Redmi Book Pro 14
- 2022 into DMI table
-Message-Id: <166981247022.67172.14005315296527818647.b4-ty@kernel.org>
-Date: Wed, 30 Nov 2022 12:47:50 +0000
+To: Daniel Baluta <daniel.baluta@nxp.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, 
+ Liam Girdwood <lgirdwood@gmail.com>, Ricardo Ribalda <ribalda@chromium.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, 
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Jaroslav Kysela <perex@perex.cz>, 
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Bard Liao <yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20221127-mtk-snd-v1-0-b7886faa612b@chromium.org>
+References: <20221127-mtk-snd-v1-0-b7886faa612b@chromium.org>
+Subject: Re: [PATCH] ASoC: SOF: mediatek: add shutdown callback
+Message-Id: <166981246666.67172.3822012000949184770.b4-ty@kernel.org>
+Date: Wed, 30 Nov 2022 12:47:46 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
+Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,10 +90,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 30 Nov 2022 11:52:47 +0300, Artem Lukyanov wrote:
-> This model requires an additional detection quirk to enable the
-> internal microphone - BIOS doesn't seem to support AcpDmicConnected
-> (nothing in acpidump output).
+On Sun, 27 Nov 2022 21:04:15 +0100, Ricardo Ribalda wrote:
+> If we do not shutdown the peripheral properly at shutdown, the whole system
+> crashes after kexec() on the first io access.
+> 
+> Let's implement the appropriate callback.
 > 
 > 
 
@@ -93,8 +104,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: yc: Add Xiaomi Redmi Book Pro 14 2022 into DMI table
-      commit: c1dd6bf6199752890d8c59d895dd45094da51d1f
+[1/1] ASoC: SOF: mediatek: add shutdown callback
+      commit: e063330a77edbdc57a142a27a82e51dc1361ab9d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
