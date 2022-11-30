@@ -4,108 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3BA2C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Nov 2022 15:49:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1FD5C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Nov 2022 15:50:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED83016FD;
-	Wed, 30 Nov 2022 16:48:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED83016FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C9ED16C2;
+	Wed, 30 Nov 2022 16:49:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C9ED16C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669823356;
-	bh=8KNJHp4bIWX3457t5aVwfPrimmRsszM5ZU7XjdRn1bo=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:List-Id:
+	s=default; t=1669823440;
+	bh=TLhDwCYHauzbEk81/8qacu+Jf+6XR6zvd8lM/a1CvHM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Myhjwt+JHaUDEVYQ/6MGF9wJ0RMT9de+iVN0YEOYwHvlGGLTCLIjD2ol3lde0MwLe
-	 ofkSvdlRqDnPZ0gnBOCR2TStQUnFY/IjOfeFGdiEHB3IYlj+JSAp8vu7zx2XVfF1vj
-	 vqV711kKUM24z7rCSRtP+NDeJglWEkxm8rFag8NA=
+	b=njgt5VlE+B7pUNP9Hk4J8VgXE8fOf9g6e2GXGtModRoXxLPJBGlcpNH5dCxZFdhyx
+	 isEpMOMWrhHewKBi8KU0vHD0gwoJtjIOfzHVFrB38G7+Rvet1ViysRN1gmgc7AdkBO
+	 0kBO1UEts+iDvP8KdBfe8U4vtFNMnRS1RUUOHHcQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C013CF804E6;
-	Wed, 30 Nov 2022 16:48:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B2D49F803DD;
+	Wed, 30 Nov 2022 16:49:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3AC9F80557; Wed, 30 Nov 2022 16:47:58 +0100 (CET)
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com
- [IPv6:2a00:1450:4864:20::633])
+ id C7543F803DD; Wed, 30 Nov 2022 16:49:47 +0100 (CET)
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com
+ [IPv6:2607:f8b0:4864:20::132])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5C7AF803DD
- for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 16:47:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5C7AF803DD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4651FF80118
+ for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 16:49:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4651FF80118
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="f6hF3vFs"
-Received: by mail-ej1-x633.google.com with SMTP id td2so28228270ejc.5
- for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 07:47:46 -0800 (PST)
+ header.b="Uy+DDhU4"
+Received: by mail-il1-x132.google.com with SMTP id s16so5610231iln.4
+ for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 07:49:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
- :mime-version:subject:date:from:from:to:cc:subject:date:message-id
- :reply-to; bh=PpwU6lO07Wd5+RTLzDaFrlMeJKtxn3n7JzQ4dKSGqkc=;
- b=f6hF3vFsxSnGCy9wCKWuHFT0WJZyRYdEltOsfQYOfxdVzNYA56H5+kI6SDsG8Jv8iP
- xpMthqB2d9L+tvEU+8mmi4lIjO4ZSwm3TkU6BjYGKxkfEgyV/Y1KWwmQJzZXLLRuOccr
- jLgTTdIqz4gsM+g+psj9xMSLrrxOY19iAPPkc=
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=cITkc4ydx3t5/WaE8B5C64mzt1Dr4iTKfrMxsULtWPc=;
+ b=Uy+DDhU4KWNCz4MeUi8ThR7KIclQ1LieLw0rWkPEBf4NX8Ph3SIGeBRdZGkwVg5BsC
+ dfxDBeN3+ZPXROGSwwCjAOZVCHechH+KMEJcMGuBIsNdgi1fazzNt9MCXQpXaHrhEYqJ
+ Bcq1QY0JVJr737F9dJ0qI9L6814xZjqjUJSNc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
- :mime-version:subject:date:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=PpwU6lO07Wd5+RTLzDaFrlMeJKtxn3n7JzQ4dKSGqkc=;
- b=EXlAdictSSp80L5FYp4712KFRHMurQZpAV+klcL6UtNajK5nFUIIA+0S72/T5eZP0m
- EhIgZVw3j3RVfEbvmUA+wEwYiLe5h7f6O+zIFuOIX+6nDYSZKAXv37N3VqxmQ6v6Dys1
- TVlqnwmWoP59c9VJAzI1wS706aglqSqKhsJiKATnnXa/RSMySa+6L/x4nyQKL1BK1AhA
- Bf6FPcFba/I3Qg6ZJK8vx0JvNzUAB3N9KPNVjdesYh689rC4iGVr7Ic5ksnv6KJpt4nl
- EKcjlb7lutCgksgdRa2qyGJB5xYF2s6tTEmjZ2oka9/0ujRBaqljZHSVE5GqTu5UQe6L
- EVow==
-X-Gm-Message-State: ANoB5pl48bgOpGXFwCRKMV7hfcGLeQi1jH4BeONbOT12vY26PM8o0d4m
- LAO0/DH6BtYIaTNN42rHElfFrA==
-X-Google-Smtp-Source: AA0mqf7DwqNEHgiWsouxEwORa56y6/ebKwumRyswcDnFFZOeUNCe+tAd3MtXuHm+kPXx5zdP5k9qsg==
-X-Received: by 2002:a17:906:7d50:b0:79e:4880:dd83 with SMTP id
- l16-20020a1709067d5000b0079e4880dd83mr42393283ejp.166.1669823264990; 
- Wed, 30 Nov 2022 07:47:44 -0800 (PST)
-Received: from alco.roam.corp.google.com ([2620:0:1059:10:5b33:e3f2:6a0b:dcdd])
- by smtp.gmail.com with ESMTPSA id
- j9-20020a17090623e900b007bf24b8f80csm775075ejg.63.2022.11.30.07.47.43
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 30 Nov 2022 07:47:44 -0800 (PST)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Wed, 30 Nov 2022 16:47:15 +0100
-Subject: [PATCH v6 1/2] kexec: Introduce kexec_with_frozen_processes
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=cITkc4ydx3t5/WaE8B5C64mzt1Dr4iTKfrMxsULtWPc=;
+ b=AnfoaW7DZy5DNHKtnF0FxJpjkG9/BuvCx6PIlzerNiAlY4F83yQi/ULZfPEBxHW8OX
+ 8KHq5c4dv6nU2owE4jWyIN9XhPj4m9DPMisUnqJQo7yA/pm5FI3IFnAGhE+b4C/JETUf
+ KpryHWye3NqtIuw33X2v5sBMUAF+B3FEh59zW3Mfaz10O8NKhHRLG4zLjedLuzV9t35j
+ eTMG3EyIw9sq8ltmu9ikHQxfhWuMkwFNAVulhfMPQvB5ZoQ01l8Pw8GQsNAgMkpaFjzx
+ r2afaFbAKeRHsHru9pH01FpvXf6a7fWHxYRfNgVndMmv86gmUofcS4C8LdIOq6jb/bUW
+ O2Lw==
+X-Gm-Message-State: ANoB5plRt7fhfVnHt0NYitH1ZXN6lStNz0JAc4+sbOLzxKmiZfYqltRE
+ 28IQ3aUcvap8ilLFgeNuUgAIP0BdIxKZydnT
+X-Google-Smtp-Source: AA0mqf7r4X7MIt4LGk3j4/xSXTHlHnSy+xVdd59D0RgZXjcdnMBR70bqwRD6HRPtHtI+jkK0KZT+lA==
+X-Received: by 2002:a92:6a11:0:b0:300:ece2:e3b8 with SMTP id
+ f17-20020a926a11000000b00300ece2e3b8mr20104590ilc.255.1669823378626; 
+ Wed, 30 Nov 2022 07:49:38 -0800 (PST)
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com.
+ [209.85.166.172]) by smtp.gmail.com with ESMTPSA id
+ g13-20020a05663810ed00b0036c8a246f54sm687891jae.142.2022.11.30.07.49.37
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 30 Nov 2022 07:49:37 -0800 (PST)
+Received: by mail-il1-f172.google.com with SMTP id x12so5354189ilg.1
+ for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 07:49:37 -0800 (PST)
+X-Received: by 2002:a92:ca8b:0:b0:303:19d2:9def with SMTP id
+ t11-20020a92ca8b000000b0030319d29defmr6089993ilo.21.1669823377096; Wed, 30
+ Nov 2022 07:49:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20221127-snd-freeze-v6-1-3e90553f64a5@chromium.org>
-References: <20221127-snd-freeze-v6-0-3e90553f64a5@chromium.org>
-In-Reply-To: <20221127-snd-freeze-v6-0-3e90553f64a5@chromium.org>
-To: Chromeos Kdump <chromeos-kdump@google.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
+References: <20221127-snd-freeze-v4-0-51ca64b7f2ab@chromium.org>
+ <5171929e-b750-d2f1-fec9-b34d76c18dcb@linux.intel.com>
+ <87mt8bqaca.wl-tiwai@suse.de>
+ <16ddcbb9-8afa-ff18-05f9-2e9e01baf3ea@linux.intel.com>
+ <87edtmqjtd.wl-tiwai@suse.de>
+ <alpine.DEB.2.22.394.2211291355350.3532114@eliteleevi.tm.intel.com>
+In-Reply-To: <alpine.DEB.2.22.394.2211291355350.3532114@eliteleevi.tm.intel.com>
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Wed, 30 Nov 2022 16:49:26 +0100
+X-Gmail-Original-Message-ID: <CANiDSCsGZBo=C+Bep8TQp15mA+-4ZRCPwSJzyndFuwokt7Byyw@mail.gmail.com>
+Message-ID: <CANiDSCsGZBo=C+Bep8TQp15mA+-4ZRCPwSJzyndFuwokt7Byyw@mail.gmail.com>
+Subject: Re: [PATCH v4] ALSA: core: Fix deadlock when shutdown a frozen
+ userspace
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Daniel Baluta <daniel.baluta@nxp.com>, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.de>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ stable@vger.kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Eric Biederman <ebiederm@xmission.com>, Daniel Baluta <daniel.baluta@nxp.com>, 
- Mark Brown <broonie@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>, 
- Jaroslav Kysela <perex@perex.cz>, Kai Vehmanen <kai.vehmanen@linux.intel.com>, 
+ Mark Brown <broonie@kernel.org>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Steven Rostedt <rostedt@goodmis.org>
-X-Mailer: b4 0.11.0-dev-696ae
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1871; i=ribalda@chromium.org; 
- h=from:subject:message-id;
- bh=8KNJHp4bIWX3457t5aVwfPrimmRsszM5ZU7XjdRn1bo=; 
- b=owEBbQKS/ZANAwAKAdE30T7POsSIAcsmYgBjh3sY6zR75vurA7LbZ/y+DlMy3+LOHJvYsQBT5ZNe
- OrXrGryJAjMEAAEKAB0WIQREDzjr+/4oCDLSsx7RN9E+zzrEiAUCY4d7GAAKCRDRN9E+zzrEiGE7D/
- 42IsMvDeI6JrkcVeMw7Hlfq60ybXBrbBYP6z6lfI2McsZDckIPRHulAy1YaBGvwleMujpo8QR/zGrv
- mQVQYgRmSc/2j1YZq+QAOeY3qRY0FBGqtTaoHMfhOUkHVWWxYzK1oltg2HO43+cIyylRYtSCfOLY5Y
- w53p26AsgVTDQ4fxK/O8jrjIkW13Jbt5WH3L37A+QIIs+kYAXvmpPtzhP9EHsAb6rSD641jnBqRWBN
- gbRcoyer/rWDxvP3MvKiV4I9ZNjo3aikeI+quK7XKCDXM1cQrDeDfqCfASH4iKEcwlNvutYUARz8Cn
- T6Cz2A8fhHfYiC2zgz9H7jkg6DbSnFtm2Qug08WDdUHpVlsEuv/RjNNNkVM3OZ2IucOUqqCnIgXyxv
- t0Q1FJf6kMOV7Ro0xS3QAYlKrKX/3qKHTvhHpzzJjTl3dGv+MDaTKiJ1gS2SEQlpTNiyMoZ9GPlHMK
- CQ/VXwvDyESv6ppBKX/2vD5RkxySkE9xFNbVCW8EhvZPTgBpROM1bBm0AMhea5nSN5WlHi43N35JXE
- JWQV0jbgACSFhMdc1LxqiQhXKKpZNV2M7draG29cUlIVxJ5ofMLzLBFWk4AykI+eXVMeXzrY515t8R
- 5B0mNX5S0bm/nLJ9+PeTGx6CTZ2XUspcyg7KtBfwXj1O/SeVQeoo5rmGgVEg==
-X-Developer-Key: i=ribalda@chromium.org; a=openpgp;
- fpr=9EC3BB66E2FC129A6F90B39556A0D81F9F782DA9
-Cc: alsa-devel@alsa-project.org, kexec@lists.infradead.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org,
- Ricardo Ribalda <ribalda@chromium.org>, sound-open-firmware@alsa-project.org
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, linux-kernel@vger.kernel.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -121,58 +114,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Drivers running .shutdown() might want to wait for userspace to complete
-before exiting.
+Hi
 
-If userspace is frozen and we are running kexec they will stall the
-computer.
+I just sent a v6 that only avoids unregistering the clients during
+kexec... let me know if that works for you
 
-Add a way for them to figure out if they should just skip waiting for
-userspace.
+Thanks!
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- include/linux/kexec.h | 3 +++
- kernel/kexec_core.c   | 5 +++++
- 2 files changed, 8 insertions(+)
+On Tue, 29 Nov 2022 at 13:12, Kai Vehmanen <kai.vehmanen@linux.intel.com> wrote:
+>
+> Hi
+>
+> On Tue, 29 Nov 2022, Takashi Iwai wrote:
+>
+> > On Mon, 28 Nov 2022 18:26:03 +0100, Pierre-Louis Bossart wrote:
+> > > As Kai mentioned it, this step helped with a S5 issue earlier in 2022.
+> > > Removing this will mechanically bring the issue back and break other
+> > > Chromebooks.
+> >
+> > Yeah I don't mean that this fix is right, either.  But the earlier fix
+> > has apparently a problem and needs another fix.
+> >
+> > Though, it's not clear why the full unregister of clients is needed at
+> > the first place; judging only from the patch description of commit
+> > 83bfc7e793b5, what we want is only to shut up the further user space
+> > action?  If so, just call snd_card_disconnect() would suffice?
+>
+> I think the snd_card_disconnect() is what we are looking after here, but
+> it's just easiest to do via unregister in SOF as that will trigger will
+> look up the platform device, unregister it, and it eventually the driver
+> owning the card will do the disconnect. Possibility for sure to do a more
+> direct implementation and not run the full unregister.
+>
+> On the other end of the solution spectrum, we had this alternative to let
+> user-space stay connected and just have the DSP implementations handle
+> any pending work in their respective shutdown handlers. I.e. we had
+> "ASoC: SOF: Intel: pci-tgl: unblock S5 entry if DMA stop has failed"
+> https://github.com/thesofproject/linux/pull/3388
+>
+> This was eventually dropped (and never sent upstream) as 83bfc7e793b5 got
+> the same result, and covered all SOF platforms with a single code path.
+> Bringing this back is of course one option, but then this might suprise
+> other platforms (which might have got used to user-space getting
+> disconnected at shutdown via 83bfc7e793b5).
+>
+> Br, Kai
 
-diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-index 41a686996aaa..c22711e0f7b5 100644
---- a/include/linux/kexec.h
-+++ b/include/linux/kexec.h
-@@ -426,6 +426,8 @@ extern int kexec_load_disabled;
- /* flag to track if kexec reboot is in progress */
- extern bool kexec_in_progress;
- 
-+bool kexec_with_frozen_processes(void);
-+
- int crash_shrink_memory(unsigned long new_size);
- ssize_t crash_get_memory_size(void);
- 
-@@ -507,6 +509,7 @@ static inline void __crash_kexec(struct pt_regs *regs) { }
- static inline void crash_kexec(struct pt_regs *regs) { }
- static inline int kexec_should_crash(struct task_struct *p) { return 0; }
- static inline int kexec_crash_loaded(void) { return 0; }
-+static inline bool kexec_with_frozen_processes(void) { return false; }
- #define kexec_in_progress false
- #endif /* CONFIG_KEXEC_CORE */
- 
-diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-index ca2743f9c634..8bc8257ee7ca 100644
---- a/kernel/kexec_core.c
-+++ b/kernel/kexec_core.c
-@@ -54,6 +54,11 @@ note_buf_t __percpu *crash_notes;
- /* Flag to indicate we are going to kexec a new kernel */
- bool kexec_in_progress = false;
- 
-+bool kexec_with_frozen_processes(void)
-+{
-+	return kexec_in_progress && pm_freezing;
-+}
-+EXPORT_SYMBOL(kexec_with_frozen_processes);
- 
- /* Location of the reserved area for the crash kernel */
- struct resource crashk_res = {
+
 
 -- 
-2.38.1.584.g0f3c55d4c2-goog-b4-0.11.0-dev-696ae
+Ricardo Ribalda
