@@ -4,62 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EECFC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Nov 2022 08:53:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13407C46467
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Nov 2022 11:07:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3AD7C1691;
-	Wed, 30 Nov 2022 09:52:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AD7C1691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 351E916F9;
+	Wed, 30 Nov 2022 12:06:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 351E916F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669798427;
-	bh=ZD05dzViZ2VqYhGHNxe/ZWN/ep90TQYNVCEphYqGbJg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=m3PCWPUIICkF+XSEG7pucQNBO0qm02/MfpuqpefU55ih+lVlbvQT/DeUcXN6GGfmW
-	 UZ38r26YyqVkY3EaASbOFpa/4HJMBtfjVHF6pnSTEYisPjHFvdrkOZa6xwRV/P/Z8R
-	 kra4KdUiNUEMmIHvATZ6XghMWCmzwGHCGernxfbE=
+	s=default; t=1669806435;
+	bh=Vjz1D7fPn+LzVWFAgAbnGfbzxs0NBWSFhZrWPMUaMg4=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Fnv62qiejua+Cp2V5zI8yX24gcF/U4aCiq+/1uy43eID8TNWC+qbOSQAbT1Q2jcpU
+	 PTt7IURphfuu3aCGIoHBKA3i5M+oUBDxVJmEK/5f8015Hxdllu2ehBnDHOZPmC4mv3
+	 V8Mo183/Srn3MtwqWPxxwVZpWb5AZRosSUSBcAbI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF639F8016B;
-	Wed, 30 Nov 2022 09:52:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9A84F8016B;
+	Wed, 30 Nov 2022 12:06:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E37DF8023A; Wed, 30 Nov 2022 09:52:55 +0100 (CET)
-Received: from forward107o.mail.yandex.net (forward107o.mail.yandex.net
- [IPv6:2a02:6b8:0:1a2d::205])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 56CE5F8023A; Wed, 30 Nov 2022 12:06:21 +0100 (CET)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7BF7BF800B6
- for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 09:52:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BF7BF800B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2AAD8F800B6;
+ Wed, 30 Nov 2022 12:06:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AAD8F800B6
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=ya.ru header.i=@ya.ru header.b="Gn9NKWz9"
-Received: from iva6-2d18925256a6.qloud-c.yandex.net
- (iva6-2d18925256a6.qloud-c.yandex.net
- [IPv6:2a02:6b8:c0c:7594:0:640:2d18:9252])
- by forward107o.mail.yandex.net (Yandex) with ESMTP id D51B86AFDA53;
- Wed, 30 Nov 2022 11:52:47 +0300 (MSK)
-Received: by iva6-2d18925256a6.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA
- id lqMj3XNYOOs1-6dFSEKm8; Wed, 30 Nov 2022 11:52:47 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ya.ru; s=mail;
- t=1669798367; bh=bZCTLXtQFo+GaP8dZv+seLgjwFmrfIcVegfPYvQtsqk=;
- h=Message-Id:Date:Cc:Subject:To:From;
- b=Gn9NKWz90ml+E9uvSL9IU2xYcXIuYxqiiwI5l5hTn5GjmIyMG8PVJMenUN/Fcy3cc
- vOW3oAi7/IcprqRlALyH0QxqIwuFW++H+JWn0v9MY1gTMKPmXPOjMrC4ruOpTO6Nnf
- 09EgCmU5wREsU5I1fQmWlUTKRZXy7jVf1l0g5CHQ=
-Authentication-Results: iva6-2d18925256a6.qloud-c.yandex.net;
- dkim=pass header.i=@ya.ru
-From: Artem Lukyanov <dukzcry@ya.ru>
-To: alsa-devel@alsa-project.org
-Subject: [RESEND PATCH -next] ASoC: amd: yc: Add Xiaomi Redmi Book Pro 14 2022
- into DMI table
-Date: Wed, 30 Nov 2022 11:52:47 +0300
-Message-Id: <20221130085247.85126-1-dukzcry@ya.ru>
-X-Mailer: git-send-email 2.36.2
+ dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
+ header.b="hzb39mNu"
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
+ [2.237.20.237])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits))
+ (No client certificate requested) (Authenticated sender: kholk11)
+ by madras.collabora.co.uk (Postfix) with ESMTPSA id EC84F6602B30;
+ Wed, 30 Nov 2022 11:06:11 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1669806372;
+ bh=Vjz1D7fPn+LzVWFAgAbnGfbzxs0NBWSFhZrWPMUaMg4=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+ b=hzb39mNuGctzT/7k70YPp1QxYuB+wbssfrnCGJrdEACeyOXdM7cr0I6i+M4tpCkhu
+ 3wpsWoiq2PBwE4XqBX6eM9kkrvZwY/FWTogxWcShwDX7TPwPw9LCkHbahD9V60p+4H
+ nUKw7F8JLfz8jSdqtxVOgfYHjVxOv090WgVtrl1cqYEDx4aGFYUCiKeNyIzbirR6o9
+ KKH/ovphqjoPyng3IQRPm+SwMW8qLqDfDsFIWlMMf62LSf1YCK4U/IQulKE2u8AQsU
+ 7m3KVhrNO4/7kdmmbLMoBkd+LlHVmrhdAnyU8+gcqBhiHUqWkHK5cB1/2149/tTn00
+ 1cgJwO13MMoSg==
+Message-ID: <90661309-5947-38f2-e4c7-67066658f448@collabora.com>
+Date: Wed, 30 Nov 2022 12:06:09 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: broonie@kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH] ASoC: SOF: mediatek: add shutdown callback
+Content-Language: en-US
+To: Ricardo Ribalda <ribalda@chromium.org>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Jaroslav Kysela <perex@perex.cz>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
+References: <20221127-mtk-snd-v1-0-b7886faa612b@chromium.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20221127-mtk-snd-v1-0-b7886faa612b@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,33 +93,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This model requires an additional detection quirk to enable the
-internal microphone - BIOS doesn't seem to support AcpDmicConnected
-(nothing in acpidump output).
+Il 27/11/22 21:04, Ricardo Ribalda ha scritto:
+> If we do not shutdown the peripheral properly at shutdown, the whole system
+> crashes after kexec() on the first io access.
+> 
+> Let's implement the appropriate callback.
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 
-Signed-off-by: Artem Lukyanov <dukzcry@ya.ru>
----
- sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-index d9715bea965e..1f0b5527c594 100644
---- a/sound/soc/amd/yc/acp6x-mach.c
-+++ b/sound/soc/amd/yc/acp6x-mach.c
-@@ -213,6 +213,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Alienware m17 R5 AMD"),
- 		}
- 	},
-+	{
-+		.driver_data = &acp6x_card,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "TIMI"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Redmi Book Pro 14 2022"),
-+		}
-+	},
- 	{}
- };
- 
--- 
-2.36.2
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
