@@ -4,68 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 970D4C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Nov 2022 16:39:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86388C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Nov 2022 16:44:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C8EE316D6;
-	Wed, 30 Nov 2022 17:38:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8EE316D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 46B4416F6;
+	Wed, 30 Nov 2022 17:43:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46B4416F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669826367;
-	bh=ziAezTC/XJaHP6qbnCJoSnoYjw7ChhFLmDQu0bpkmYs=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1669826689;
+	bh=UsfBgzqq5vTNuu4UqoUklqe6HSYQC/8cmCLJS9o/Y5U=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oYU0mYmw6xTkzdqC6XR/NpqxGhcDEa8XtiFhe2I6Mq9W3sbbYvFoN0YJs5TJKSZ36
-	 jjTfIIAlXN3R558W8nHjdtoiQC1NjOmqOYieRjD0ssZZb+UzVM8zuddkFt+N0LDxMP
-	 oWEJfYeGcfM6e+1aWpHMkHBgdaA7xzMwIqybUWjc=
+	b=PleCpGkvqqkYAlwBOKmUqJ1cJ+MAqhPWfy4KygUwliJ7ATODoHFsjRR/fsB+J3m3Y
+	 i5C7MvMZxp1/rOMnBwhoHiAZ/uLUMsLcEyMuvbPO5YkY9kXSmDsVCyN9T5OkNBpXso
+	 DyTdZ0hw8umDPphaDWnSHornh36yHW3ejTAoZtX0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6CAEFF8016B;
-	Wed, 30 Nov 2022 17:38:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2362F80166;
+	Wed, 30 Nov 2022 17:43:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E305F8023A; Wed, 30 Nov 2022 17:38:35 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id D6832F8023A; Wed, 30 Nov 2022 17:43:57 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77176F800B6
- for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 17:38:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77176F800B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F94EF80166
+ for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 17:43:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F94EF80166
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DJCKyBmV"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="jRqc9NLo"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Q9jfnHdk"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 58A75B81A79;
- Wed, 30 Nov 2022 16:38:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21F53C433D6;
- Wed, 30 Nov 2022 16:38:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669826306;
- bh=ziAezTC/XJaHP6qbnCJoSnoYjw7ChhFLmDQu0bpkmYs=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=DJCKyBmVcO1A/uh/4j2HQD22TEQfqy3k2ekP8t9F8cAXEHtYcylzMbl4KG/g//wz+
- gvQzghw58Z6RjWDgdOSbS9v8vitslsbJhJ9MpcO0AsqSd91GKBAmVu308rIpsTvMw6
- 0Vq46/0qZ9BDNStivxL3vaJgatJmoABa7ZTlBtPLFwjq6g1LAPjwYpjSHlDW0FIxH0
- RSJgex7C3GkG5XUbv2gjkR8Buyb3qNRNmjcTaJD1RQQFPcRhfsw8ksbNaddzupZ11w
- 8yb+c9CUcmDgeKyrVOIT7Hw24SJ3/coLpKBhw32js36+XB64Wuj+kpd6dUSwTVt7Ve
- GJQXfrSqL7zQw==
-Date: Wed, 30 Nov 2022 16:38:20 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BF1581F37C;
+ Wed, 30 Nov 2022 16:43:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1669826634; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hD0MwEzey7YUTOEEcIK4s4n4S2qKAy52V+gQQvu5S5s=;
+ b=jRqc9NLoojVp/tv/Q5eVuspdTt84WxhEXpdLhWTAi+qXNawFy98bhUcJU5bWGxs1DJHioR
+ vr/+UjRqN1EBAxlsg/AMPdEtropSu7rZ72z4sSMrqnKW9bifNBnHAsmnY6fzw9OIhJruIw
+ mZhYFTrPzHZIdIw7dl8X4aa89fFMbN4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1669826634;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=hD0MwEzey7YUTOEEcIK4s4n4S2qKAy52V+gQQvu5S5s=;
+ b=Q9jfnHdk8guP+elmmyDzpKrN8EjgvRANiG6r9Wi8sSGiUvOIXPh7MSirmDGWZZ6WU9uB/x
+ b8Px/KWIFOj6JQBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9BA6B13A70;
+ Wed, 30 Nov 2022 16:43:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id twBBJEqIh2MKRgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Wed, 30 Nov 2022 16:43:54 +0000
+Date: Wed, 30 Nov 2022 17:43:54 +0100
+Message-ID: <87sfi0o0j9.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
 Subject: Re: [GIT PULL] ASoC fixes for v6.1-rc7
-Message-ID: <Y4eG/F/ZjHxOGL2S@sirena.org.uk>
+In-Reply-To: <Y4eG/F/ZjHxOGL2S@sirena.org.uk>
 References: <20221130162338.BF2F5C433D6@smtp.kernel.org>
- <87v8mwo178.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="Ce3jzlpf9l1yd+16"
-Content-Disposition: inline
-In-Reply-To: <87v8mwo178.wl-tiwai@suse.de>
-X-Cookie: Jesus is my POSTMASTER GENERAL ...
+ <87v8mwo178.wl-tiwai@suse.de> <Y4eG/F/ZjHxOGL2S@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -82,32 +95,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, 30 Nov 2022 17:38:20 +0100,
+Mark Brown wrote:
+> 
+> On Wed, Nov 30, 2022 at 05:29:31PM +0100, Takashi Iwai wrote:
+> 
+> > I'm not sure whether I'll send a next PR for 6.1-rc8, though, as those
+> > changes don't look urgently necessary.  Let's see.
+> 
+> The ones for soc-ops are the main ones if you were to pick some changes
+> out for a smaller pull.
 
---Ce3jzlpf9l1yd+16
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+OK, then it's convincing enough to bother Linus :)
+Other changes look reasonable, so it's fine to take all those.
 
-On Wed, Nov 30, 2022 at 05:29:31PM +0100, Takashi Iwai wrote:
 
-> I'm not sure whether I'll send a next PR for 6.1-rc8, though, as those
-> changes don't look urgently necessary.  Let's see.
+thanks,
 
-The ones for soc-ops are the main ones if you were to pick some changes
-out for a smaller pull.
-
---Ce3jzlpf9l1yd+16
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmOHhvwACgkQJNaLcl1U
-h9D9UQf8C03C8OktAHfQdixNFTh3Fs1vgF5F2SMLLnES+DnjeYLefqFkUAJWZQEZ
-Y/gOnjTiiKbjijhZUncpkwUviH0GaRiWvHCyEuHdrlgJSfIsVVBSmn8+jJGGKzGh
-jBAPEBxx2g23zb6/738fmLGmdOr+dlv8UI7gRbbsTkVn+2TXUokoAXVyqLyeq7uq
-31SWKg7nxh8H49HA0gC9MfTddCaN73gcNaRH5JUtyQ3sA6lMpmkbm6oGJfuFKUlR
-6mauL4BDzZUNB4dupF4o2KLu6DN9p5MDhicBRG1X9mGtRLkdeYjrPhrS0d1lOt+S
-jrkKZg12KYd6KO3jN08BMwcDZZKI5g==
-=KkJ5
------END PGP SIGNATURE-----
-
---Ce3jzlpf9l1yd+16--
+Takashi
