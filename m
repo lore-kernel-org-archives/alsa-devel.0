@@ -4,72 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBE50C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Nov 2022 18:51:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAD18C4321E
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Nov 2022 18:52:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3E7A1680;
-	Wed, 30 Nov 2022 19:50:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3E7A1680
+	by alsa0.perex.cz (Postfix) with ESMTPS id 974DC16D2;
+	Wed, 30 Nov 2022 19:51:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 974DC16D2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669834309;
-	bh=c72pU0lKPTDb1AMjAGwTPTIrii47UQAxQfe/Y1RNvus=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=DzQ6Inyy2pnynvSlw+QEmvtBXCBpUK4O69Ce2XMmg2ZfexPYiH753WVP3dCcCATGv
-	 cv8rOW3le0hFrmOxCYeeUM7pkqNAaNt/5htU+n5JwncRWxkbdlDMdOYDuwy/9ZX9Hs
-	 WlKjINZ/tQMKA7qp7UPISnvBgDhmPhVSxRAwzyJ4=
+	s=default; t=1669834331;
+	bh=7rchmQwwpf0qyHWnrfpjZ55imPhKUM7g/iOAEeSrAZY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qiaURyH+m5l6E8Pn3p7HrfU15GCx/94gt4tb66LFfpXFbULVtgdL3pO9pwgJSLWzk
+	 v/0PU/gxfvaKNpN5an5EJnFIwwc9RD8K2OaSCZDFVwnLBITyoi6MbuROOOKdpD5+D/
+	 z2vL1IE3N2kt9tzcqp21B1ZljQs8DDHFT7JOfZtM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DFCC6F8023A;
-	Wed, 30 Nov 2022 19:50:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 52281F8016B;
+	Wed, 30 Nov 2022 19:51:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4702CF8023A; Wed, 30 Nov 2022 19:50:57 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 8731FF80507; Wed, 30 Nov 2022 19:51:00 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 84F9DF800B6
- for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 19:50:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84F9DF800B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id E3E45F8016B
+ for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 19:50:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3E45F8016B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="acG3dsqb"
+ header.b="SGWXV98z"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id DB5A061D89;
- Wed, 30 Nov 2022 18:50:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD9EAC433D6;
- Wed, 30 Nov 2022 18:50:49 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 43F32B81CB3;
+ Wed, 30 Nov 2022 18:50:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23760C43144;
+ Wed, 30 Nov 2022 18:50:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669834251;
- bh=c72pU0lKPTDb1AMjAGwTPTIrii47UQAxQfe/Y1RNvus=;
- h=From:To:Cc:Subject:Date:From;
- b=acG3dsqbzFygpyxz0MLy/vdFb6tXI+7FIg2cdd1tdrQoIsYOne4gMBf6nsf10gt/V
- WjZ649rDzsNORKReyKi8FJAhqES8q5PItl8+zfiz9IQi5tVfbwX0dRHpninBaFh72d
- /B7uOgaUg8Xt6R9ep7eICDg1V18jUB5KdWsgKGkEkZq+IIPrDa7UngWKysa6H4N2Ls
- xsKT3+8sshE1/NjRc43HnNBlMWKysaIJ2YV9SCJVUT8MsInte/SsFvEqPvF0AOMhGU
- oNhXfNBbWssM2m7l+jY5UV1CNVVw6m10qCgRTXta5w+ZMt4fmu8EwGRGrE2coVC1eP
- fXPhBHNhhXFpg==
+ s=k20201202; t=1669834255;
+ bh=7rchmQwwpf0qyHWnrfpjZ55imPhKUM7g/iOAEeSrAZY=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=SGWXV98zY7hb6M2PfO82HH5l/bJFjmNx97q7L9XtTtr4/PTvg9AKJWsVkIm7JJJlm
+ +4ZOWjxJqopTH9DJaqplGyGpfkBtW9e5gdjshMCBc0jyL+Pa4AGKCx8d1IgkvpVGAd
+ H6m1Ti55DJEGnfmh98KtUszTPBdFWFhzEs1ygDj2VgitynaV3BG8A2w1iTdSWNX/a9
+ AgfwZkiupO/npHVgsoL1ImM4hgUgngAKgZyTZkC2CdWlhcAEpv4ndYNlj4F9eQ8m5p
+ HDp8KsdPJFp5JQxdjloimKhYhY4HLMe2HOdM0+IjtSGIcWktmgL40BPtTBw8/oGoeK
+ kVxkeFL7T2xLg==
 From: Mark Brown <broonie@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
  Russell King <linux@armlinux.org.uk>
-Subject: [PATCH v1 0/2] ASoC/tda998x: Fix reporting of nonexistent capture
- streams
-Date: Wed, 30 Nov 2022 18:46:42 +0000
-Message-Id: <20221130184644.464820-1-broonie@kernel.org>
+Subject: [PATCH v1 2/2] drm: tda99x: Don't advertise non-existent capture
+ support
+Date: Wed, 30 Nov 2022 18:46:44 +0000
+Message-Id: <20221130184644.464820-3-broonie@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221130184644.464820-1-broonie@kernel.org>
+References: <20221130184644.464820-1-broonie@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1330; i=broonie@kernel.org;
- h=from:subject; bh=c72pU0lKPTDb1AMjAGwTPTIrii47UQAxQfe/Y1RNvus=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBjh6URwieLkg3d1z/EF8yTG1kMzpNwmuasEiCneHS2
- dFUs/mOJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCY4elEQAKCRAk1otyXVSH0FS1B/
- 4qjSdbeKeIxtIavIDYyo0CyyqV6314GSsYC/hDutdDkLGfeCSaoI9W3teV1Wh9pS+mxwmRZ+xMsuXD
- tF2luZKpv+eTwYimD7ig5X97OskX44/0aEI2gm1VAWnSdGv4sMSH20Bnxu0fEGl0sOTnMAbRtZhji+
- vNzKIjhuDxSH5zDi72uU9Z6JFWMhoxKtEyoPqyOcie6dkzpAnAqTeXzG8a7nAIY9lgeDJr7rUP5eDC
- EWkYjkZg1x5sqBShHnXsl5l7FtBixr/+klQUFtXYs3TzZHCM+mabmq+HOHzcN681bAFkhcDSA1rGpP
- yrOGd2Kb0/ZBpzOIKhCiQzKHwYp/BR
+X-Developer-Signature: v=1; a=openpgp-sha256; l=798; i=broonie@kernel.org;
+ h=from:subject; bh=7rchmQwwpf0qyHWnrfpjZ55imPhKUM7g/iOAEeSrAZY=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBjh6UTedNv0xVqTR7Dw1xzmjfKdGNa9K5/CBent9LN
+ wMp7dAKJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCY4elEwAKCRAk1otyXVSH0AYqB/
+ 46oFKO98t1TlWfUOCgLyoWn4Cvg8+vjFQwPlheEw48l55Du9rYCeD2gp9R9KFle+DjuvrSNQzfXx3k
+ sQYSLWy471HwAMVtpiyNdBy9WyDlve/KJmP9motnF8gk0y0Tpsjo9DkNrc1ib1iy6y3/Ji8TRDjova
+ GzpVz0DYBCEsC7tSW9yWUdBkNJ1GEg2hqllztZvO+SBZ3gq4bGKr7b0SJ7KD2dsgXkUYRz8qT0wJLY
+ 4vwumBp+nPwaP9bOX65TjCc9QW1bhjwEsbqtaMRQ4Dh5IA1lPGb8B57wODdnHaJ3YU9vdav1X4vj7+
+ +IIRUmfdRSs0Bugt51pOlis80t9Ydt
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
@@ -90,32 +92,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The recently added pcm-test selftest has pointed out that systems with
-the tda998x driver end up advertising that they support capture when in
-reality as far as I can see the tda998x devices are transmit only.  The
-DAIs registered through hdmi-codec are bidirectional, meaning that for
-I2S systems when combined with a typical bidrectional CPU DAI the
-overall capability of the PCM is bidirectional.  In most cases the I2S
-links will clock OK but no useful audio will be returned which isn't so
-bad but we should still not advertise the useless capability, and some
-systems may notice problems for example due to pinmux management.
+As far as I can tell none of the tda998x devices support audio capture so
+don't advertise support for it, ensuring that we don't confuse userspace.
 
-This is happening due to the hdmi-codec helpers not providing any
-mechanism for indicating unidirectional audio so add one and use it in
-the tda998x driver.  It is likely other hdmi-codec users are also
-affected but I don't have those systems to hand.
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ drivers/gpu/drm/i2c/tda998x_drv.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Mark Brown (2):
-  ASoC: hdmi-codec: Allow playback and capture to be disabled
-  drm: tda99x: Don't advertise non-existent capture support
-
- drivers/gpu/drm/i2c/tda998x_drv.c |  2 ++
- include/sound/hdmi-codec.h        |  4 ++++
- sound/soc/codecs/hdmi-codec.c     | 30 +++++++++++++++++++++++++-----
- 3 files changed, 31 insertions(+), 5 deletions(-)
-
-
-base-commit: f0c4d9fc9cc9462659728d168387191387e903cc
+diff --git a/drivers/gpu/drm/i2c/tda998x_drv.c b/drivers/gpu/drm/i2c/tda998x_drv.c
+index d444e7fffb54..a14d2896aebb 100644
+--- a/drivers/gpu/drm/i2c/tda998x_drv.c
++++ b/drivers/gpu/drm/i2c/tda998x_drv.c
+@@ -1174,6 +1174,8 @@ static int tda998x_audio_codec_init(struct tda998x_priv *priv,
+ 	struct hdmi_codec_pdata codec_data = {
+ 		.ops = &audio_codec_ops,
+ 		.max_i2s_channels = 2,
++		.no_i2s_capture = 1,
++		.no_spdif_capture = 1,
+ 	};
+ 
+ 	if (priv->audio_port_enable[AUDIO_ROUTE_I2S])
 -- 
 2.30.2
 
