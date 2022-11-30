@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CD16C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Nov 2022 03:06:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1C3FC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Nov 2022 03:08:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86945169C;
-	Wed, 30 Nov 2022 04:05:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86945169C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 942AB169C;
+	Wed, 30 Nov 2022 04:07:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 942AB169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669777573;
-	bh=LhIJOnN2A+ztFovKeJmfL+h9F5KGQMiA3EJ9JDk23kg=;
+	s=default; t=1669777715;
+	bh=BI3Z9dPBmCk5iVYsRyfiot/s8BguXHflyKX05PO4JeY=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PustQ/sB7p/i3Bc+ZEAFt4Zi+VMTUgYCW9a1eddzavqIsll/D5s0ww1ZnBd7vTqIB
-	 XYL/hnqcYJ+218rRVj0Sgby3TYzXGPKMmIjS9phtSBQ6Is1pF2dQKjLY/vuM9fGwpz
-	 o/SoMcgrPc2nRfd0Eu75t31FlE1fqi2SGOGLfFLg=
+	b=fvr4Ngbf/89la998jFQn0kdT5p9YXNjofNZcBCl1vHxWXwrFdfoWbRX0lOpJsczPu
+	 ZYdbdUj6PCQWoZabnbpd0GX2ePye4IdaDSE9XfgDWxYY2poEKwq4nOYCfsoUkf8y5Q
+	 FtXlzedQm40H4kruuMpCl+X8r0kJus5iy6xLWciM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 035E9F80118;
-	Wed, 30 Nov 2022 04:05:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30E4FF8016B;
+	Wed, 30 Nov 2022 04:07:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2DB5AF8023A; Wed, 30 Nov 2022 04:05:20 +0100 (CET)
+ id 7E3F2F80166; Wed, 30 Nov 2022 04:07:43 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id D93EDF80118
- for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 04:05:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D93EDF80118
+ by alsa1.perex.cz (Postfix) with ESMTP id 64BF8F80166
+ for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 04:07:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64BF8F80166
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1669777511716803074-webhooks-bot@alsa-project.org>
-References: <1669777511716803074-webhooks-bot@alsa-project.org>
+In-Reply-To: <1669777657172286034-webhooks-bot@alsa-project.org>
+References: <1669777657172286034-webhooks-bot@alsa-project.org>
 Subject: arecord leaves doubled audio at end after a SIGTERM
-Message-Id: <20221130030520.2DB5AF8023A@alsa1.perex.cz>
-Date: Wed, 30 Nov 2022 04:05:20 +0100 (CET)
+Message-Id: <20221130030743.7E3F2F80166@alsa1.perex.cz>
+Date: Wed, 30 Nov 2022 04:07:43 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,7 +55,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #179 was opened from chconnor:
+alsa-project/alsa-utils issue #179 was edited from chconnor:
 
 Hello: I issue a command like this:
 
@@ -64,7 +64,7 @@ Hello: I issue a command like this:
 
 It works fine, but then I hit ctrl-C to terminate. This works, but the file has "junk" at the end that repeats the last fraction of a second. E.g. in this demo file I ctrl-C when I say the word "one", and the recording is like "three, two, on-on":
 
-http://caseyconnor.org/pub/audio/arecord_bug.wav
+https://caseyconnor.org/pub/audio/arecord_bug.wav
 
 It's as if it is mistakenly writing a buffer an extra time?
 
