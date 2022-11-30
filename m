@@ -4,61 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98E63C4321E
-	for <alsa-devel@archiver.kernel.org>; Wed, 30 Nov 2022 16:24:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70588C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 30 Nov 2022 16:30:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0DDC16B3;
-	Wed, 30 Nov 2022 17:23:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0DDC16B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B17116C5;
+	Wed, 30 Nov 2022 17:29:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B17116C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669825476;
-	bh=nR09+1Jiztd4hrVWlTtIVUoWH6bkPr6c7Jpk5j5BvKw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=qXJya7yEdmKzz/qbQo7kpEZGr4Q6hDUXBX1CvBd4AXEWVSGiTmWCmYzts3qxX5Qv7
-	 CVFwEvL6sDVQ+4V6q82bHKeVrH9fIzYko2yHRywrznpMR/czjle8ZER+2O9DxJrU7M
-	 NOun7tSiDpiUKVcgPul4Eydf7xraI53Mkm0K3AAg=
+	s=default; t=1669825833;
+	bh=0pjrw7VKVZEt5G4jvTH60YOLjJmf6otue3GTn8sPzpQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=YV4f42OHUW/ZvmaAkvwg+yoFYr3F5I36LqWFQVL1NwCNbaPKGeA8alT2MdXsfnYNF
+	 mIjbeltbGBxnamEuXORIbLk5eTJjHRuaBh6a11pynts4CEd0LbSwKH95fvJOk3VNFt
+	 F0escIwBYgSfOGfBo5pcomAPAa14oxV/N/0wil7s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 661C1F8016B;
-	Wed, 30 Nov 2022 17:23:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12B1EF8016B;
+	Wed, 30 Nov 2022 17:29:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0105FF8023A; Wed, 30 Nov 2022 17:23:44 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 06285F8023A; Wed, 30 Nov 2022 17:29:41 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 75CA7F800B6
- for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 17:23:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75CA7F800B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA51CF800B6
+ for <alsa-devel@alsa-project.org>; Wed, 30 Nov 2022 17:29:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA51CF800B6
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="CkMiTM/T"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="q3oBnYig"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="X/ZwKRej"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id BA32561CE6;
- Wed, 30 Nov 2022 16:23:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF2F5C433D6;
- Wed, 30 Nov 2022 16:23:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669825419;
- bh=nR09+1Jiztd4hrVWlTtIVUoWH6bkPr6c7Jpk5j5BvKw=;
- h=From:To:Cc:Subject:Date:From;
- b=CkMiTM/TMn+A7MKV2AbRLSBASEuxCYcEEIF98QPyv5Y84zFgqDR7YGNKTr1KVDxnf
- jXb44ApgNIVC3KN61TCnvBG5gYFBB1sRIXIC55JxzHihmiLYFOaANQ3ArtLd9MmVug
- TcQFx1Ys/7Ta0bIKUgam9ef3qRCyq6DKIgEdGjD1GD1UYDVQd3Ykjw/njkZ49ePKXf
- u8SqnfflAcHfzj1tEINyZ3ewGRHVA2gdy6V93RWwyqClsnZwlm4SzxuXnGdJ/8SUO+
- IeHb1WYVf0x/BBjo9SFIRzcjafyQP2zlU0MBTYXhjqIHs95RwdyY7kDgsJjPrTZWkI
- 3AzoKTD8ZQ1yg==
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: [GIT PULL] ASoC fixes for v6.1-rc7
-Date: Wed, 30 Nov 2022 16:23:26 +0000
-Message-Id: <20221130162338.BF2F5C433D6@smtp.kernel.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3D51721AF7;
+ Wed, 30 Nov 2022 16:29:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1669825772; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xDBbMPeVGdYHE6PY9ptnsaUP71dm456Ymkv7oeIgyO0=;
+ b=q3oBnYigxpnrl/phY2bAGGvK/oSfQsVaTwHF+3mvwRLayuTPuKiIaqViheSfhgZmCz/NyM
+ 822XJJXDJQ72nqRlWt87i+rR19pPigayBWMLaityThc6cW1mdLs0uRMUi+qQY4HFdGiKmz
+ vlpezxaA76SIBA8AS+PI9I8ucvX1Bdc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1669825772;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xDBbMPeVGdYHE6PY9ptnsaUP71dm456Ymkv7oeIgyO0=;
+ b=X/ZwKRejIEJKIBQ7hy3rGT374NrtWQBAtA1w+I2HpEBKeUb9Y927MKy6e3WxTksRF8OOF3
+ TSqHB4xwevVfwKBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1E71313A70;
+ Wed, 30 Nov 2022 16:29:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id ks1uBuyEh2MuPwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Wed, 30 Nov 2022 16:29:32 +0000
+Date: Wed, 30 Nov 2022 17:29:31 +0100
+Message-ID: <87v8mwo178.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC fixes for v6.1-rc7
+In-Reply-To: <20221130162338.BF2F5C433D6@smtp.kernel.org>
+References: <20221130162338.BF2F5C433D6@smtp.kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,46 +94,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The following changes since commit db8f91d424fe0ea6db337aca8bc05908bbce1498:
+On Wed, 30 Nov 2022 17:23:26 +0100,
+Mark Brown wrote:
+> 
+> The following changes since commit db8f91d424fe0ea6db337aca8bc05908bbce1498:
+> 
+>   ASoC: soc-pcm: Add NULL check in BE reparenting (2022-11-22 12:23:00 +0000)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.1-rc7
+> 
+> for you to fetch changes up to 3d1bb6cc1a654c8693a85b1d262e610196edec8b:
+> 
+>   ASoC: cs42l51: Correct PGA Volume minimum value (2022-11-25 16:29:52 +0000)
+> 
+> ----------------------------------------------------------------
+> ASoC: Fixes for v6.1
+> 
+> Some more fixes for v6.1, some of these are very old and were originally
+> intended to get sent for v5.18 but got lost in the shuffle when there
+> was an issue with Linus not liking my branching strategy and I rebuilt
+> bits of my workflow.  The ops changes have been validated by people
+> looking at real hardware and are how things getting dropped got noticed.
 
-  ASoC: soc-pcm: Add NULL check in BE reparenting (2022-11-22 12:23:00 +0000)
+Thanks, pulled now.
 
-are available in the Git repository at:
+I'm not sure whether I'll send a next PR for 6.1-rc8, though, as those
+changes don't look urgently necessary.  Let's see.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.1-rc7
 
-for you to fetch changes up to 3d1bb6cc1a654c8693a85b1d262e610196edec8b:
-
-  ASoC: cs42l51: Correct PGA Volume minimum value (2022-11-25 16:29:52 +0000)
-
-----------------------------------------------------------------
-ASoC: Fixes for v6.1
-
-Some more fixes for v6.1, some of these are very old and were originally
-intended to get sent for v5.18 but got lost in the shuffle when there
-was an issue with Linus not liking my branching strategy and I rebuilt
-bits of my workflow.  The ops changes have been validated by people
-looking at real hardware and are how things getting dropped got noticed.
-
-----------------------------------------------------------------
-Charles Keepax (2):
-      ASoC: ops: Correct bounds check for second channel on SX controls
-      ASoC: cs42l51: Correct PGA Volume minimum value
-
-Hui Tang (1):
-      ASoC: tlv320adc3xxx: Fix build error for implicit function declaration
-
-Mark Brown (3):
-      ASoC: ops: Fix bounds check for _sx controls
-      ASoC: ops: Check bounds for second channel in snd_soc_put_volsw_sx()
-      ASoC: Merge dropped fixes from v5.18
-
-Shengjiu Wang (2):
-      ASoC: fsl_micfil: explicitly clear software reset bit
-      ASoC: fsl_micfil: explicitly clear CHnF flags
-
- sound/soc/codecs/cs42l51.c       |  2 +-
- sound/soc/codecs/tlv320adc3xxx.c |  3 +++
- sound/soc/fsl/fsl_micfil.c       | 19 +++++++++++++++++++
- sound/soc/soc-ops.c              | 11 ++++++++---
- 4 files changed, 31 insertions(+), 4 deletions(-)
+Takashi
