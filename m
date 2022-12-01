@@ -4,70 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFFF9C43217
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Dec 2022 17:11:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8DD4C43217
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Dec 2022 17:12:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D5101757;
-	Thu,  1 Dec 2022 18:10:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D5101757
+	by alsa0.perex.cz (Postfix) with ESMTPS id 801361775;
+	Thu,  1 Dec 2022 18:11:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 801361775
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669914707;
-	bh=4P1OLKqn7MEyXJREvUvZOjiyLHEARCRdaDxzVt3dJw0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=R+qY/Kb4t1XnwKHdtmWWIlF15+vkdLhyYgdajwGF7D61m1+TK0Ig5j+nDK09njiXS
-	 x2qgDPyKqaMsunEUrSkbLLdIOBN/5GrkV4FqxQ/oQhJtQqtiA9yw8WKtcCuVczcj4z
-	 rAbVnOneQgPMyBZFWzuH8Gqx+4r9iKGxZZfukpoI=
+	s=default; t=1669914729;
+	bh=pnwhTaL4cklkLrb4nD4efWonXmmY0uhDdK7dG34JuoY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=re240Td2XvubN9jaTCHmCZrBil1j7FRKLnkDEjYssY1H764kCq6zDUAx+MRPiYWqo
+	 h5Rb/CSQV1DwJ4Famr2TXgG+0zhIuazPRRPU6GIo1/EfdyGLOj5cV9j3M6O31rhkJm
+	 fz/w/DonnbNMMBePNzmBuFrSW/wPugVEhXlV/PoU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55067F80116;
-	Thu,  1 Dec 2022 18:10:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D891DF804ED;
+	Thu,  1 Dec 2022 18:11:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D3F5DF8028D; Thu,  1 Dec 2022 18:10:55 +0100 (CET)
+ id DC9E4F8053D; Thu,  1 Dec 2022 18:11:04 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2629DF80116
- for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2022 18:10:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2629DF80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B6F4F80166
+ for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2022 18:11:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B6F4F80166
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZjHG9JnE"
+ header.b="HuyGnrfE"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 0478D6208C;
- Thu,  1 Dec 2022 17:10:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07A77C433D6;
- Thu,  1 Dec 2022 17:10:48 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4A3EE62096;
+ Thu,  1 Dec 2022 17:10:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FD28C433D6;
+ Thu,  1 Dec 2022 17:10:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669914650;
- bh=4P1OLKqn7MEyXJREvUvZOjiyLHEARCRdaDxzVt3dJw0=;
- h=From:To:Cc:Subject:Date:From;
- b=ZjHG9JnEdHwUAntAgA1QQcfj/qXN2VzzTvK4oOifait2ONvOQTnI2peiRxpVb8BUE
- +ZCw6lh7sd9b+ypHaKKZtIfmLlLK1A+3y1Vkmo9SYbrXf+62NjQQW/BVVSRTkVZ7DO
- IU8AGddDxTw+RLJ84Ae7JRjiqIzeDWyCRM55IE26QcpsubOWTJEYPmM9d/Sdj766pp
- MaqndX0JhyVECWdP3XAqulbveA7qAqwtTn9UiIqRRx5CEzaciY2JfR89QYB8qA3hRc
- HWUlPCw9pgUnp2gwJucEaiFX4jEwzbDdvM2iusRfGXDTn7PrJr+NyKRm9dCsav9R6C
- Zn7jDyJJikF6g==
+ s=k20201202; t=1669914658;
+ bh=pnwhTaL4cklkLrb4nD4efWonXmmY0uhDdK7dG34JuoY=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=HuyGnrfESgnWeThOwodXT6+gB97jtrTzxfMgqTyGAUL+8f5hUa7y5ksGNZRfNzn9x
+ o682f0c8S6FauPCkdNNAeye3HYwI8kLzZId/sfOpVTydTSxbCAHlveZBbvfC7rYUv5
+ IwzWkD8hrzrgayzb/6L7I8AvZKB6wb4UYSubRS+UUdE9LQtITmMiTUYvXOy+79ZZsl
+ rzeYPs7niBLtAa+kPqi4+smfIeVIdy0erKwWrJec/rWZxD2+6dJjPqUcyxj5exbO5X
+ M7QJYp8c40tQYeh38CQoMW7Fa2XpQ72qv7SJt0mDjDmbr5bcj+Iez63wlBMWMHysRJ
+ kCv4ZoFxIDjXw==
 From: Mark Brown <broonie@kernel.org>
 To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
  Shuah Khan <shuah@kernel.org>
-Subject: [PATCH v2 0/6] kselftest/alsa: pcm-test improvements
-Date: Thu,  1 Dec 2022 17:07:39 +0000
-Message-Id: <20221201170745.1111236-1-broonie@kernel.org>
+Subject: [PATCH v2 2/6] kselftest/alsa: Report failures to set the requested
+ sample rate as skips
+Date: Thu,  1 Dec 2022 17:07:41 +0000
+Message-Id: <20221201170745.1111236-3-broonie@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221201170745.1111236-1-broonie@kernel.org>
+References: <20221201170745.1111236-1-broonie@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1578; i=broonie@kernel.org;
- h=from:subject; bh=4P1OLKqn7MEyXJREvUvZOjiyLHEARCRdaDxzVt3dJw0=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBjiN9bww8um6NZydnGG5sorVUm7m+rnEclQ+vSFJr6
- lbAYyfaJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCY4jfWwAKCRAk1otyXVSH0FxUB/
- 9Euf2H6ndJuq2UJUTOJ31PfZ/zMDyjrSbntrThjHfj/F84K/FPcC+SgXXZnFeC9C4MtO59ThtK0yte
- E/Yz+EtaioW+Uvrwy968Ir6nGWaSBh4AdNvy3fijse6wtJEp4oI1Tw3nx0Ux1sozQD2rBEn/qseBYT
- QuOt+FhYLE+RyFUfkxhKVvKtshIv8PY7x81opuiZwEF6M4AJjHK9N4nSl6dxRGjE1LVkKaYVfTLtww
- ekX2hu5DlzNWBjO2WQ8Gzi6DD8LeOvjxfdx/fEtDmm6KYxSlJ19EUKMPwQoCafEAAgKSINpKaVxZeL
- +fV0N5S21HtNNd1iWGq5RyNUvrIWTa
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2201; i=broonie@kernel.org;
+ h=from:subject; bh=pnwhTaL4cklkLrb4nD4efWonXmmY0uhDdK7dG34JuoY=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBjiN9d+nbh+A0A7qkli2I8bk2WGKpIqwgz2FKcpvFJ
+ iTWyxCWJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCY4jfXQAKCRAk1otyXVSH0EBiB/
+ 0ZMRMnkhJIG249GtRBPM1Z+78KAI8+3h6ezqBLuHtuOfrtRBPMuZ9E2+sLUJ92jigMHNx2ykJqZBef
+ bqOZkGgx9mxPR3hO0iYW2chNmnp5zgiSLtMRChhCocrEVsEYzeCvRFwB5Q1axb6Zz9l01PWv/nGhhd
+ raik7W/e+BcfnA/luI28EZ0xaoxK41+PNtrfRvrA/t4ySDKeicUxnpY3JdvGDo/LS/yq1aOZP6xRvZ
+ dihe8tZdtQyyQ1Omz9jXEw25NNYiHoEdEhWD31wDM0e2tTSHUKTcCk5VNDvvK1CI8kBeaJ4uZNHCLS
+ B1eDLXgni833r2EZPg2WbHWk05DqWZ
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
@@ -88,37 +92,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series provides a bunch of quick updates which should make the
-coverage from pcm-test a bit more useful, it adds some support for
-skipping tests when the hardware/driver is unable to support the
-requested configuration and then expands the set of cases we cover to
-include more sample rates and channel counts.  This should exercise
-switching between 8kHz and 44.1kHz based rates and ensure that clocking
-doesn't get confused by non-stereo channel counts, both of which are I
-expect common real world errors, at least for embedded cards.
+If constraint selection gives us a sample rate other than the one that we
+asked for that isn't a failure, that is the device implementing sample
+rate constraints and advertising that it can't support whatever we asked
+for. Report such cases as a test skip rather than failure so we don't have
+false positives.
 
-v2:
- - Rebase onto Takashi's current tree.
- - Tweak the buffer sizes for the newly added cases, don't be quite
-   so ambitious in how big a buffer we request for 96kHz and don't
-   go quite so small for 8kHz since some devices start hitting lower
-   limits on period size and struggle to deliver accurate timing.
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ tools/testing/selftests/alsa/pcm-test.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
-Mark Brown (6):
-  kselftest/alsa: Refactor pcm-test to list the tests to run in a struct
-  kselftest/alsa: Report failures to set the requested sample rate as
-    skips
-  kselftest/alsa: Report failures to set the requested channels as skips
-  kselftest/alsa: Don't any configuration in the sample config
-  kselftest/alsa: Provide more meaningful names for tests
-  kselftest/alsa: Add more coverage of sample rates and channel counts
-
- .../alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf  | 35 ++++----
- tools/testing/selftests/alsa/pcm-test.c       | 88 +++++++++++++------
- 2 files changed, 81 insertions(+), 42 deletions(-)
-
-
-base-commit: 2133dc91d6658242009177b564ac47c49e08668a
+diff --git a/tools/testing/selftests/alsa/pcm-test.c b/tools/testing/selftests/alsa/pcm-test.c
+index dc36f4099954..edb820fe2ee6 100644
+--- a/tools/testing/selftests/alsa/pcm-test.c
++++ b/tools/testing/selftests/alsa/pcm-test.c
+@@ -247,6 +247,7 @@ static void test_pcm_time1(struct pcm_data *data,
+ 	bool pass = false, automatic = true;
+ 	snd_pcm_hw_params_t *hw_params;
+ 	snd_pcm_sw_params_t *sw_params;
++	bool skip = false;
+ 
+ 	snd_pcm_hw_params_alloca(&hw_params);
+ 	snd_pcm_sw_params_alloca(&sw_params);
+@@ -321,7 +322,8 @@ static void test_pcm_time1(struct pcm_data *data,
+ 		goto __close;
+ 	}
+ 	if (rrate != rate) {
+-		snprintf(msg, sizeof(msg), "rate mismatch %ld != %ld", rate, rrate);
++		snprintf(msg, sizeof(msg), "rate unsupported %ld != %ld", rate, rrate);
++		skip = true;
+ 		goto __close;
+ 	}
+ 	rperiod_size = period_size;
+@@ -417,11 +419,20 @@ static void test_pcm_time1(struct pcm_data *data,
+ 	msg[0] = '\0';
+ 	pass = true;
+ __close:
+-	ksft_test_result(pass, "%s.%d.%d.%d.%s%s%s\n",
+-			 test->cfg_prefix,
+-			 data->card, data->device, data->subdevice,
+-			 snd_pcm_stream_name(data->stream),
+-			 msg[0] ? " " : "", msg);
++	if (!skip) {
++		ksft_test_result(pass, "%s.%d.%d.%d.%s%s%s\n",
++				 test->cfg_prefix,
++				 data->card, data->device, data->subdevice,
++				 snd_pcm_stream_name(data->stream),
++				 msg[0] ? " " : "", msg);
++	} else {
++		ksft_test_result_skip("%s.%d.%d.%d.%s%s%s\n",
++				      test->cfg_prefix,
++				      data->card, data->device,
++				      data->subdevice,
++				      snd_pcm_stream_name(data->stream),
++				      msg[0] ? " " : "", msg);
++	}
+ 	free(samples);
+ 	if (handle)
+ 		snd_pcm_close(handle);
 -- 
 2.30.2
 
