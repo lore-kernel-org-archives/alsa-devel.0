@@ -4,86 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40EDBC43217
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Dec 2022 09:43:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4763CC43217
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Dec 2022 13:25:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5273516D3;
-	Thu,  1 Dec 2022 10:42:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5273516D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 883C61685;
+	Thu,  1 Dec 2022 14:24:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 883C61685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669887791;
-	bh=VdGBaS0XWeFJmcCrunXO7sc+tv9eoriihu4qmG553GA=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1669901119;
+	bh=amVP+1P0dNrlbJaDPRNEsD4wfnCL+4/BW2bhTC4Kicg=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qHVYU4ql2MJUKlCNRIqMPlkskAOMEO2sPWEbvzBSdLK2OKty3odtvsiKwv0BJ0y9I
-	 94LvxmAvwDl0bqdZKYHWGamCeYjd915jlXcVclEGiRWC+cJXo24E2lNDi6styTH27C
-	 smdVfW8Zi9HMV9klTbNzfglAFgONFa+Bme1wK3WE=
+	b=oUjWDKA3dw0DibhTu7T6X+zqEYrrpaTUYBM10CHXBDO2plMTs6beFfOKjmK/dUTUk
+	 GDHt0WQ+PyPaceOyOpU8rPAKxXyRDwpr6crYHotR5L7PXv5umJUNUoHwNp4UcgKQg6
+	 4EzX9b5xnPwoST6vqcNxVvaR0ysOgHv8FmMbbsUg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB6F6F80162;
-	Thu,  1 Dec 2022 10:42:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 375BEF80116;
+	Thu,  1 Dec 2022 14:24:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63C96F8028D; Thu,  1 Dec 2022 10:42:19 +0100 (CET)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+ id 835D5F8028D; Thu,  1 Dec 2022 14:24:27 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F0CAF80116
+ for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2022 14:24:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F0CAF80116
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="UU/En7Ro"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24298F80116
- for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2022 10:42:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24298F80116
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
- header.b="NSZBzHBU"
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
- [2.237.20.237])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits))
- (No client certificate requested) (Authenticated sender: kholk11)
- by madras.collabora.co.uk (Postfix) with ESMTPSA id DA94D66025DF;
- Thu,  1 Dec 2022 09:42:10 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1669887731;
- bh=VdGBaS0XWeFJmcCrunXO7sc+tv9eoriihu4qmG553GA=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=NSZBzHBUHkeY2OuO+h2pNjHg/Ubz8w5zyptGtmmW3HASRCOA42oynDVSQVo17MNCD
- q2iF4uFpLXRhPRW8FTQLVr5VkrdMzGnXuXswiZFFsnqcF+1SX2Ctiu9AsphaJJ7eDy
- QSR52YDp3Hvy55/9AAI/lIviHHxrFoX9xSGYbsyUbIvvJgIElR9E4A/xAhPem2w1Hn
- LGqEwhkb+AMaJmfEHXbwfvUTJe0rIC6At1+MSgkM5DrB0fYCKZKjxjMdshAAhVYJ7Q
- zLq1djNofBb3WKjH7DaUaBivb50xgjZg7lydi3X2SLo5jSYC9R0NMubNuiDlHyM6n6
- 5foWAcXBfpV5A==
-Message-ID: <6c8343c4-a8ed-1a4c-a518-1c49a9d6b056@collabora.com>
-Date: Thu, 1 Dec 2022 10:42:08 +0100
+ by dfw.source.kernel.org (Postfix) with ESMTPS id C9B0861FEA;
+ Thu,  1 Dec 2022 13:24:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1B53C433D6;
+ Thu,  1 Dec 2022 13:24:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1669901061;
+ bh=amVP+1P0dNrlbJaDPRNEsD4wfnCL+4/BW2bhTC4Kicg=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=UU/En7RogwdtofVGswPptV6smospR4VEfq2JflWcFFeeL+nFISH8/5wc+2h5nmczU
+ lcmuJGPyW7MFSi9jE1csIdlpYgy9T0wZuFG4Ee63qCBtRTXXvNvcQQznP9MHznFX0+
+ qjsGvCQLSk5Tth35g++TM6W/9VEBTJas3r3kjfQkoyNoNyDwAk9MBb8GJxGeLcu/8C
+ zQbwzE11vEU7K6l7VhywLLPpRlujstLmrsOAj+gS75xlZFzBeebHQbRwfYCG8y6i1G
+ brb0q4O6vNlDEC7xXt12DM+mAEi3OknNtYB+CGAMru8esNc8i7SQaWI3yNlgT5Srs6
+ n/i4Kxl0SYgjQ==
+From: Mark Brown <broonie@kernel.org>
+To: David Rau <we730128@gmail.com>, perex@perex.cz
+In-Reply-To: <20221121050744.2278-1-david.rau.zg@renesas.com>
+References: <20221121050744.2278-1-david.rau.zg@renesas.com>
+Subject: Re: [PATCH] ASoC: da7219: Fix pole orientation detection on OMTP
+ headsets when playing music
+Message-Id: <166990105936.78632.9195345334708461451.b4-ty@kernel.org>
+Date: Thu, 01 Dec 2022 13:24:19 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH v2 03/12] ASoC: mediatek: mt8188: support audsys clock
-Content-Language: en-US
-To: =?UTF-8?B?VHJldm9yIFd1ICjlkLPmlofoia8p?= <Trevor.Wu@mediatek.com>,
- "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>, "tiwai@suse.com"
- <tiwai@suse.com>, "broonie@kernel.org" <broonie@kernel.org>
-References: <20221021082719.18325-1-trevor.wu@mediatek.com>
- <20221021082719.18325-4-trevor.wu@mediatek.com>
- <de66f0e3-7694-7315-c896-9211259a1a17@collabora.com>
- <776557c0fda5a538549ee0d4f4b7f482b0d69934.camel@mediatek.com>
- <473d67ed-198f-82c6-9f32-5827c1f8c852@collabora.com>
- <500f80b1ac84101af482bdfcb46671d523d51068.camel@mediatek.com>
- <360a5f27-8abc-938c-04c7-13ea65b5a89f@collabora.com>
- <7dfdb4866ccf7356c2a8beb0359e5b62df4f245f.camel@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <7dfdb4866ccf7356c2a8beb0359e5b62df4f245f.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Project_Global_Chrome_Upstream_Group
- <Project_Global_Chrome_Upstream_Group@mediatek.com>,
- "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+X-Mailer: b4 0.10.0-dev-fc921
+Cc: alsa-devel@alsa-project.org, support.opensource@diasemi.com,
+ linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com,
+ David Rau <david.rau.zg@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,211 +82,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Il 01/12/22 09:43, Trevor Wu (吳文良) ha scritto:
-> On Wed, 2022-10-26 at 10:18 +0200, AngeloGioacchino Del Regno wrote:
->> Il 26/10/22 06:10, Trevor Wu (吳文良) ha scritto:
->>> On Tue, 2022-10-25 at 12:18 +0200, AngeloGioacchino Del Regno
->>> wrote:
->>>> Il 21/10/22 11:58, Trevor Wu (吳文良) ha scritto:
->>>>> On Fri, 2022-10-21 at 10:41 +0200, AngeloGioacchino Del Regno
->>>>> wrote:
->>>>>> Il 21/10/22 10:27, Trevor Wu ha scritto:
->>>>>>> Add mt8188 audio cg clock control. Audio clock gates are
->>>>>>> registered
->>>>>>> to CCF
->>>>>>> for reference count and clock parent management.
->>>>>>>
->>>>>>> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
->>>>>>> ---
->>>>>>>      sound/soc/mediatek/mt8188/mt8188-audsys-clk.c | 206
->>>>>>> ++++++++++++++++++
->>>>>>>      sound/soc/mediatek/mt8188/mt8188-audsys-clk.h |  15 ++
->>>>>>>      .../soc/mediatek/mt8188/mt8188-audsys-clkid.h |  83
->>>>>>> +++++++
->>>>>>>      3 files changed, 304 insertions(+)
->>>>>>>      create mode 100644 sound/soc/mediatek/mt8188/mt8188-
->>>>>>> audsys-
->>>>>>> clk.c
->>>>>>>      create mode 100644 sound/soc/mediatek/mt8188/mt8188-
->>>>>>> audsys-
->>>>>>> clk.h
->>>>>>>      create mode 100644 sound/soc/mediatek/mt8188/mt8188-
->>>>>>> audsys-
->>>>>>> clkid.h
->>>>>>>
->>>>>>> diff --git a/sound/soc/mediatek/mt8188/mt8188-audsys-clk.c
->>>>>>> b/sound/soc/mediatek/mt8188/mt8188-audsys-clk.c
->>>>>>> new file mode 100644
->>>>>>> index 000000000000..1f294231d4c2
->>>>>>> --- /dev/null
->>>>>>> +++ b/sound/soc/mediatek/mt8188/mt8188-audsys-clk.c
->>>>>>> @@ -0,0 +1,206 @@
->>>>>>> +// SPDX-License-Identifier: GPL-2.0
->>>>>>> +/*
->>>>>>> + * mt8188-audsys-clk.c  --  MediaTek 8188 audsys clock
->>>>>>> control
->>>>>>> + *
->>>>>>> + * Copyright (c) 2022 MediaTek Inc.
->>>>>>> + * Author: Chun-Chia Chiu <chun-chia.chiu@mediatek.com>
->>>>>>> + */
->>>>>>> +
->>>>>>> +#include <linux/clk.h>
->>>>>>> +#include <linux/clk-provider.h>
->>>>>>> +#include <linux/clkdev.h>
->>>>>>> +#include "mt8188-afe-common.h"
->>>>>>> +#include "mt8188-audsys-clk.h"
->>>>>>> +#include "mt8188-audsys-clkid.h"
->>>>>>> +#include "mt8188-reg.h"
->>>>>>> +
->>>>>>> +struct afe_gate {
->>>>>>> +	int id;
->>>>>>> +	const char *name;
->>>>>>> +	const char *parent_name;
->>>>>>> +	int reg;
->>>>>>> +	u8 bit;
->>>>>>> +	const struct clk_ops *ops;
->>>>>>> +	unsigned long flags;
->>>>>>> +	u8 cg_flags;
->>>>>>> +};
->>>>>>> +
->>>>>>> +#define GATE_AFE_FLAGS(_id, _name, _parent, _reg, _bit,
->>>>>>> _flags,
->>>>>>> _cgflags) {\
->>>>>>> +		.id = _id,					
->>>>>>> \
->>>>>>> +		.name = _name,					
->>>>>>> \
->>>>>>> +		.parent_name = _parent,				
->>>>>>> \
->>>>>>> +		.reg = _reg,					
->>>>>>> \
->>>>>>> +		.bit = _bit,					
->>>>>>> \
->>>>>>> +		.flags = _flags,				
->>>>>>> \
->>>>>>> +		.cg_flags = _cgflags,				
->>>>>>> \
->>>>>>> +	}
->>>>>>> +
->>>>>>> +#define GATE_AFE(_id, _name, _parent, _reg, _bit)		
->>>>>>> \
->>>>>>> +	GATE_AFE_FLAGS(_id, _name, _parent, _reg, _bit,		
->>>>>>> \
->>>>>>> +		       CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
->>>>>>> CLK_GATE_SET_TO_DISABLE)
->>>>>>
->>>>>> Can you please explain what's the reason for
->>>>>> CLK_IGNORE_UNUSED
->>>>>> here?
->>>>>> Maybe we can solve some issue that you're facing in a cleaner
->>>>>> way.
->>>>>>
->>>>>> Regards,
->>>>>> Angelo
->>>>>
->>>>> Hi Angelo,
->>>>>
->>>>> Because clk_disable_unused() calls clk_core_is_enabled(),
->>>>> register
->>>>> access happens in is_enabled() ops.
->>>>> At the moment, the power for register access is not enabled, so
->>>>> the
->>>>> register read results in CPU hang.
->>>>>
->>>>> That's why I added CLK_IGNORE_UNUSED here, but it can't resolve
->>>>> all
->>>>> issues. Actually, we met same problem when "cat
->>>>> /sys/kernel/debug/clk/clk_summary" is used. We are still
->>>>> suffering
->>>>> the
->>>>> problem.
->>>>>
->>>>> I'm not sure if I can implement clk ops by myself, and exclude
->>>>> the
->>>>> registration of is_enabled() ops.
->>>>>
->>>>
->>>> Is the power for register access enabled with a power domain?
->>>>
->>>> Check drivers/clk/clk.c, grep for core->rpm_enabled.
->>>>
->>>> If you enable runtime PM before registering the clocks, and you
->>>> register them
->>>> with the right struct device, the clock API will enable power for
->>>> you
->>>> before
->>>> trying to read the clock enable status.
->>>>
->>>> Regards,
->>>> Angelo
->>>>
->>>
->>> Hi Angelo,
->>>
->>> I tried the way in MT8195, but it caused circular lock problem.
->>>
->>> Because mtcmos depends on some clocks, clk_bulk_prepare_enable is
->>> also
->>> used in scpsys_power_on()[1].
->>> If the clock also depends on the power domain, this results in the
->>> circular lock problem.
->>> That's why I don't bind the power domain with these clocks.
->>>
->>
->> This is not supposed to happen... can you please give me a (MT8195)
->> patch to
->> reproduce the issue that you're seeing?
->>
->> I would like to investigate that to check if I can come up with a
->> good solution.
->>
->> Thanks,
->> Angelo
+On Mon, 21 Nov 2022 05:07:44 +0000, David Rau wrote:
+> The OMTP pin define headsets can be mis-detected as line out
+> instead of OMTP, causing obvious issues with audio quality.
+> This patch is to put increased resistances within
+> the device at a suitable point.
 > 
+> To solve this issue better, the new mechanism setup
+> ground switches with conditional delay control
+> and these allow for more stabile detection process
+> to operate as intended. This conditional delay control
+> will not impact the hardware process
+> but use extra system resource.
 > 
-> Hi Angelo,
-> 
-> Sorry for replying late.
-> The original implementation about clock depending on power domain was a
-> cusotomized request, and it's not based on upstream code base. So I
-> can't apply the implementation directly. I tried to implement the
-> suggested solution in upstream code, but I can't reproduce the problem
-> successfully.
-> 
-> At the same time, we reviewed the difference between MT8195 and MT8188.
-> It's found that ADSP_INFRA should be kept ON to resolve the register
-> r/w access limitation in MT8188, so we can match the hardware design in
-> MT8195.
-> 
-> After discussing internally, we decided in favour of ADSP_INFRA
-> soloution. Althought the lock problem can't be seen, the new lock
-> relationship(prepare_lock -> genpd lock) is actually created.
-> 
-> In conclusion, ADSP_INFRA will be kept always on and I will remove
-> CLK_IGNORE_UNUSED flag in V3.
-> 
+> [...]
 
-As far as the power consumption increase is ignorable (so, power consumption
-is very little more), that's a good decision and I support that.
+Applied to
 
-Regards,
-Angelo
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> Thanks,
-> Trevor
-> 
->>
->>> [1]
->>>
-> https://urldefense.com/v3/__https://elixir.bootlin.com/linux/v6.1-rc2/source/drivers/soc/mediatek/mtk-pm-domains.c__;!!CTRNKA9wMg0ARbw!yVFCD-B4VZOxDXTGgDtpB0mJbVoY9tHODeICxthAC33lXMq6LRVTGS-4V-Dj129_cA$
->>>   
->>>
->>> Thanks,
->>> Trevor
->>>
->>>
->>
->>
->>
+Thanks!
 
+[1/1] ASoC: da7219: Fix pole orientation detection on OMTP headsets when playing music
+      commit: 969357ec94e670571d6593f2a93aba25e4577d4f
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
