@@ -4,89 +4,128 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE6D8C43217
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Dec 2022 13:37:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 457A4C4321E
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Dec 2022 13:48:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C6B8169B;
-	Thu,  1 Dec 2022 14:36:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C6B8169B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 247F0167D;
+	Thu,  1 Dec 2022 14:48:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 247F0167D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669901861;
-	bh=jkKH0zKxtvPkOiFyx6rlRNavemjJohBqKlY8Y93Elgw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1669902537;
+	bh=Rud9IUdbPKIRkkkE6G4uaTZbcmuiccX+lZS5manvrHM=;
+	h=Subject:From:Date:To:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=akQqnLV3ADtNvudc/g0PQbcel30HSiiltKBVks1b9IZKR/yjO/sgZE33fQocvvyGL
-	 4meILdwJcHBMNkBHLukcSMDNlH4tZwboK8qT/Q7Dj4YjeD5fKzoviXvRthVXR5eJV9
-	 iKHAvVhW7e3x3Io4hnBQZSc2WKfcXMvK0U/s5Jpg=
+	b=fvqMzhr/4azLuLcvpYopXHhH0oSkUiIP2d7I/8BXPij0z6QeXlXO4bKmtctreaOwz
+	 GoHsqBbtFLLuiam7HU1Jv4agmIvE5lPDV7SI4ckBA10rdbXS9gyW7Z9I+sfXTxEnkU
+	 ufsObNznxoFLn1n2b7dUD4/UDMsRd7eUn2hCZBPU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D70EDF80166;
-	Thu,  1 Dec 2022 14:36:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA36EF80166;
+	Thu,  1 Dec 2022 14:48:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC96FF8028D; Thu,  1 Dec 2022 14:36:49 +0100 (CET)
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com
- [IPv6:2a00:1450:4864:20::233])
+ id 6CCBCF80166; Thu,  1 Dec 2022 12:08:53 +0100 (CET)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com
+ [IPv6:2a00:1450:4864:20::52f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 90D15F80116
- for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2022 14:36:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90D15F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id DB29FF80166
+ for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2022 12:08:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB29FF80166
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="SHrlDQdE"
-Received: by mail-lj1-x233.google.com with SMTP id b9so1897136ljr.5
- for <alsa-devel@alsa-project.org>; Thu, 01 Dec 2022 05:36:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=EPqBNbI09YU2LloFC0dcS/pG8X7Q2MR4/7GlUmzvCcQ=;
- b=SHrlDQdE0KI2hz/+YPtMuVfc61pA79BaYszXXuNDdiNYHbd9jCYtty9SlGOP7E8MmM
- 4jT55q8S5zsmQPNenf4iML9wCTTx8/itvlLyVkIg+lIrD4JBx2ohQNyJ3b0G4WiKwNvs
- Kzf7fzYT9RWmR345o9X/LbxWFFkPwkfiSV87Wod55JrXzSv0u+mkOPmyjYeKgZqnrPNw
- UQp/9ozmCjaSUHVIx3/sFwudkuXQLZY8o2Zbcso2x/nW3kyAYS4FViowfh34Y+AXKvOz
- bzmsPLvIpr4c4x+qekLldEfXspx5pduU+lw+pNwqWwZ1Dw1UrXyn/5xVt3ta164iiNns
- JdXw==
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="ZRHyoajE"
+Received: by mail-ed1-x52f.google.com with SMTP id f7so1861734edc.6
+ for <alsa-devel@alsa-project.org>; Thu, 01 Dec 2022 03:08:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=cc:to:message-id:date:from:content-transfer-encoding:mime-version
+ :subject:from:to:cc:subject:date:message-id:reply-to;
+ bh=lGm4cyBDbhcC+E+E+8rSuqE3igb1lprN1pN6/M3QLys=;
+ b=ZRHyoajEwFC4By5LI1rVbOp/xLGzBq//9Xi/KMCz0lo8z9Pc1kxGrZQGSfdmpQmaMd
+ 1GnniREAshZoCU4tyHuy1piJbRVEDqwJVixje9ZJzJ77PtUXKFFljT/b8/IV0BWReOGd
+ SqBdcc0wshVkJyGCE+uvwuRmeLcgRNVAq9pdQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ h=cc:to:message-id:date:from:content-transfer-encoding:mime-version
+ :subject:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=EPqBNbI09YU2LloFC0dcS/pG8X7Q2MR4/7GlUmzvCcQ=;
- b=E+WwHQD4fpVHJrgy0l4LvumovSp4FkGCN6adZzk2U9KCLG6TAmB8qsuysUEWBHO4+5
- QonswGeyjYYmGuxRE0t6kZDHcdpmJdcBum6IzK+j7ZNaMsVfjSbURwttBmbIZnAKLEci
- Yts0XrcsWQ3to0cF1veq7y4v8kpKlD+q5x2+2uQmKogVLNmsDxSgQqT5fTPCmlSuv+Ku
- UOeCCpwFX60renFrxBfv3tREwsDO4Tx1l2tEyF784pQft3dAgzaf0eDbulmfezKs6PiI
- CHg+9Ql7INKqJ/7xLCa3lYAWgRu4h4y2kqpvRAqk3kwMHP3e9h6N6Vm6XuGaNcmwFFxw
- JF6w==
-X-Gm-Message-State: ANoB5pl/JIQuowfom/FBmuTDz3HOlaYWGRpqh8jcWBDmZ2lDpx7+WIMK
- MNX+A04wNwHYEvY7MDdTNuJdBg==
-X-Google-Smtp-Source: AA0mqf6iiQ5r3ydsCnjqQwKGheq2WsT2A75+y8RjMsycMyFRdssEX8qqHJP95PJ58rHz2mPDfV3sTA==
-X-Received: by 2002:a2e:b4b7:0:b0:277:f86:ddc6 with SMTP id
- q23-20020a2eb4b7000000b002770f86ddc6mr21717691ljm.131.1669901801150; 
- Thu, 01 Dec 2022 05:36:41 -0800 (PST)
-Received: from krzk-bin.NAT.warszawa.vectranet.pl
- (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
+ bh=lGm4cyBDbhcC+E+E+8rSuqE3igb1lprN1pN6/M3QLys=;
+ b=MId5f4+pXKLnLxeM9hu6+c4kyORVvsMNJSjrUAlubh4LLnF4ZZRWwtPQR23ytaNkDM
+ wkCwNOXG/3chPBw8VMFEH0DbG15P9b16LHXvH0GKqeNLcdaE9D0qm/27UXsa8oxUp6R6
+ 5C2NXE6SvH8NqWsm99n02ZBYKgja9ZHuNrP9kIE4SHciYS47pBJjCJ3uOL75U5Z0MLnD
+ vCiHeqEHEXib+GjiL9GEg9sswbVYtpmglwsQWjmEThpGgXcph7Wse0YpTzQIOJmjH0O2
+ kri1cDs/eO2hjnhOhzu/KZtQpAPJR0shM0a4ewvFRmIhxk0M/8NLG8ZcxBka7w8wstNR
+ KRiQ==
+X-Gm-Message-State: ANoB5pmqC/cxdS0s6HGAymfHUczMMsxiUf3Im0W1UVo2nnIKgDo3W+MA
+ 5AcF5OUhgq3ZPpBIlWtADCAUEg==
+X-Google-Smtp-Source: AA0mqf5zzNn9de5BfFPh0J6RLCpw0dw9HFYWDLvw7kVxPfSHwhQH5HyYQ8cKCqwRv03JB5G51Q4CsA==
+X-Received: by 2002:a05:6402:4516:b0:467:b88c:f3af with SMTP id
+ ez22-20020a056402451600b00467b88cf3afmr43151776edb.24.1669892925587; 
+ Thu, 01 Dec 2022 03:08:45 -0800 (PST)
+Received: from alco.roam.corp.google.com ([2620:0:1059:10:f554:724a:f89a:73db])
  by smtp.gmail.com with ESMTPSA id
- q15-20020a2e914f000000b0027706d22878sm387209ljg.94.2022.12.01.05.36.40
+ v17-20020a170906293100b0078e0973d1f5sm1663824ejd.0.2022.12.01.03.08.43
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 01 Dec 2022 05:36:40 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: soc: qcom: apr: document generic qcom,
- apr compatible
-Date: Thu,  1 Dec 2022 14:36:37 +0100
-Message-Id: <20221201133637.46146-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+ Thu, 01 Dec 2022 03:08:44 -0800 (PST)
+Subject: [PATCH v8 0/3] ASoC: SOF: Fix deadlock when shutdown a frozen
+ userspace
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACSLiGMC/3XPzWrDMAwA4FcpPs8jln/b095j7CA7SmNoHbDXwF
+ by7tN2HDY6CAk+/TxFo5qpicvpKSrtueWtcBFeTiKtWK4k88y1gAlAKfCylVkuleibpCJSRgMEDU
+ 4wiNhIxoolrUzK43bj5prb51a//hbsitN7d9au5CStN06hdo4SvKW1bvf8uL9u9So+eNIOYw2s54
+ AGLOHZOd3Reqw1awSa0WuVUJmONmNtfi9n50z0C2DsaDvWlrWhmSNOIeLU0W6sHWtN58lavTiDtq
+ P9WHvW3Es2wMIP/P/7OI4f/KJYEyACAAA=
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Thu, 01 Dec 2022 12:08:20 +0100
+Message-Id: <20221127-snd-freeze-v8-0-3bc02d09f2ce@chromium.org>
+To: Juergen Gross <jgross@suse.com>, Mark Brown <broonie@kernel.org>,
+ Chromeos Kdump <chromeos-kdump@google.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Len Brown <len.brown@intel.com>, Ard Biesheuvel <ardb@kernel.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Nicholas Piggin <npiggin@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Eric Biederman <ebiederm@xmission.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>,
+ Joel Fernandes <joel@joelfernandes.org>, Liam Girdwood <lgirdwood@gmail.com>, 
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Pavel Machek <pavel@ucw.cz>, 
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Steven Rostedt <rostedt@goodmis.org>, "K. Y. Srinivasan" <kys@microsoft.com>, 
+ Ingo Molnar <mingo@redhat.com>, Bjorn Helgaas <bhelgaas@google.com>,
+ Dexuan Cui <decui@microsoft.com>, Takashi Iwai <tiwai@suse.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Bard Liao <yung-chuan.liao@linux.intel.com>, 
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>,
+ x86@kernel.org
+X-Mailer: b4 0.11.0-dev-696ae
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4368; i=ribalda@chromium.org; 
+ h=from:subject:message-id;
+ bh=Rud9IUdbPKIRkkkE6G4uaTZbcmuiccX+lZS5manvrHM=; 
+ b=owEBbQKS/ZANAwAKAdE30T7POsSIAcsmYgBjiIsuiQZl7CGQiKdplkqC0gHCzURIkJXoavQjeFfS
+ sEPmEE6JAjMEAAEKAB0WIQREDzjr+/4oCDLSsx7RN9E+zzrEiAUCY4iLLgAKCRDRN9E+zzrEiIaWD/
+ 9SLVqH6ELG3Nj4DmzbcOc+YbsFvyvs/zS4DGTKOm4a1dsJ6EojOhIs9fpuGLT8o3p3+9VsWHC0In/y
+ k6Iuhsi7YI2K91jtIDrxVIf4dUlmsglcYsc4qe5s+tqH0tWT7y7OlpaNM4+W605lNX2FMTKjGgKfHe
+ jHVMfBfB0ebLbt7OhLXieR55yYucbmtChn3v49MHNc8u6oY5Zy9bC4bNkMJDJtd+ce/qqb8Bp4QeMA
+ rOQjtJMeieO5qtXaDb8EfsUc4gu1PYL42HfoTN2sr18FL9SKNzVejr4Jq0RhUCNg/rf+Oqoqn7EEmV
+ sjud45VDHbBcOD8OQJa/GQAuRwLJQYje6ycI76nIB/gnEiR08+uB3nK3tlAkKMMWbb4wS5vuWnCX2U
+ 3YF/ZK8xWASICm+G0JmfVBdajYCKUxaboXr7DPbP7oCUFU3bLEQqtBpNgeyfU46D4Q0gnTD8/frbVt
+ UgY++3lpoKK+Pxg3zbTIKOvN4fumazPJdSB+a586EbWiw7LhOtWns3EsiPZqFybXoW0BptbVq0Aqan
+ TLmIsVZkJSOl85YER762XGxsWyl9LeYioTLO/h4ozDLEbfseFlKxfz67nGgS7NBgsHBJDuc7Pu2/XP
+ dfaTOEkimDz87TdwqvVEa5v67H9Ve4p2lif6Z3g7ymf71PA6yB0dtq2z/ZqQ==
+X-Developer-Key: i=ribalda@chromium.org; a=openpgp;
+ fpr=9EC3BB66E2FC129A6F90B39556A0D81F9F782DA9
+X-Mailman-Approved-At: Thu, 01 Dec 2022 14:48:05 +0100
+Cc: alsa-devel@alsa-project.org, linux-efi@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-pci@vger.kernel.org, kexec@lists.infradead.org,
+ linux-hyperv@vger.kernel.org, stable@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>,
+ xen-devel@lists.xenproject.org, linuxppc-dev@lists.ozlabs.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,30 +141,111 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Document the qcom,apr compatible, used by Qualcomm Asynchronous Packet
-Router driver.  There are no upstream DTSes using this compatible -
-instead we have ones with APRv2 (qcom,apr-v2).  The driver does not make
-distinction between both compatibles, which raises the question whether
-the compatible is really needed.  Document it (as compatible with v2)
-for completeness.
+Since: 83bfc7e793b5 ("ASoC: SOF: core: unregister clients and machine drivers in .shutdown")
+we wait for all the workloads to be completed during shutdown. This was done to 
+avoid a stall once the device is started again.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Unfortunately this has the side effect of stalling kexec(), if the userspace
+is frozen. Let's handle that case.
+
+To: Joel Fernandes <joel@joelfernandes.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Liam Girdwood <lgirdwood@gmail.com>
+To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+To: Daniel Baluta <daniel.baluta@nxp.com>
+To: Mark Brown <broonie@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>
+To: Takashi Iwai <tiwai@suse.com>
+To: Eric Biederman <ebiederm@xmission.com>
+To: Chromeos Kdump <chromeos-kdump@google.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+To: Michael Ellerman <mpe@ellerman.id.au>
+To: Nicholas Piggin <npiggin@gmail.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: "K. Y. Srinivasan" <kys@microsoft.com>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+To: Wei Liu <wei.liu@kernel.org>
+To: Dexuan Cui <decui@microsoft.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+To: Ingo Molnar <mingo@redhat.com>
+To: Borislav Petkov <bp@alien8.de>
+To: Dave Hansen <dave.hansen@linux.intel.com>
+To: x86@kernel.org
+To: "H. Peter Anvin" <hpa@zytor.com>
+To: Juergen Gross <jgross@suse.com>
+To: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+To: Ard Biesheuvel <ardb@kernel.org>
+To: Bjorn Helgaas <bhelgaas@google.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+To: Pavel Machek <pavel@ucw.cz>
+To: Len Brown <len.brown@intel.com>
+Cc: stable@vger.kernel.org
+Cc: sound-open-firmware@alsa-project.org
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
+Cc: kexec@lists.infradead.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-hyperv@vger.kernel.org
+Cc: xen-devel@lists.xenproject.org
+Cc: linux-efi@vger.kernel.org
+Cc: linux-pci@vger.kernel.org
+Cc: linux-pm@vger.kernel.org
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml | 1 +
- 1 file changed, 1 insertion(+)
+Changes in v8:
+- Wrap pm_freezing and kexec_inprogress in functions.
+- Do not run snd_sof_machine_unregister(sdev, pdata) during kexec (Thanks Kai).
+- Link to v7: https://lore.kernel.org/r/20221127-snd-freeze-v7-0-127c582f1ca4@chromium.org
 
-diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
-index 4209c6314996..a6bc3197d5dd 100644
---- a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
-+++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
-@@ -17,6 +17,7 @@ description: |
- properties:
-   compatible:
-     enum:
-+      - qcom,apr
-       - qcom,apr-v2
-       - qcom,gpr
- 
+Changes in v7:
+- Fix commit message (Thanks Pierre-Louis).
+- Link to v6: https://lore.kernel.org/r/20221127-snd-freeze-v6-0-3e90553f64a5@chromium.org
+
+Changes in v6:
+- Check if we are in kexec with the userspace frozen.
+- Link to v5: https://lore.kernel.org/r/20221127-snd-freeze-v5-0-4ededeb08ba0@chromium.org
+
+Changes in v5:
+- Edit subject prefix.
+- Link to v4: https://lore.kernel.org/r/20221127-snd-freeze-v4-0-51ca64b7f2ab@chromium.org
+
+Changes in v4:
+- Do not call snd_sof_machine_unregister from shutdown.
+- Link to v3: https://lore.kernel.org/r/20221127-snd-freeze-v3-0-a2eda731ca14@chromium.org
+
+Changes in v3:
+- Wrap pm_freezing in a function.
+- Link to v2: https://lore.kernel.org/r/20221127-snd-freeze-v2-0-d8a425ea9663@chromium.org
+
+Changes in v2:
+- Only use pm_freezing if CONFIG_FREEZER .
+- Link to v1: https://lore.kernel.org/r/20221127-snd-freeze-v1-0-57461a366ec2@chromium.org
+
+---
+Ricardo Ribalda (3):
+      kexec: Refactor kexec_in_progress into a function
+      freezer: refactor pm_freezing into a function.
+      ASoC: SOF: Fix deadlock when shutdown a frozen userspace
+
+ arch/powerpc/platforms/pseries/vio.c |  2 +-
+ arch/x86/kernel/cpu/mshyperv.c       |  6 +++---
+ arch/x86/xen/enlighten_hvm.c         |  2 +-
+ drivers/firmware/efi/efi.c           |  2 +-
+ drivers/pci/pci-driver.c             |  2 +-
+ include/linux/freezer.h              |  3 ++-
+ include/linux/kexec.h                |  5 ++---
+ kernel/freezer.c                     |  3 +--
+ kernel/kexec_core.c                  | 12 ++++++++++--
+ kernel/power/process.c               | 24 ++++++++++++++++++++----
+ sound/soc/sof/core.c                 |  9 ++++++---
+ 11 files changed, 48 insertions(+), 22 deletions(-)
+---
+base-commit: 4312098baf37ee17a8350725e6e0d0e8590252d4
+change-id: 20221127-snd-freeze-1ee143228326
+
+Best regards,
 -- 
-2.34.1
-
+Ricardo Ribalda <ribalda@chromium.org>
