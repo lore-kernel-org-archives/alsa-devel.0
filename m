@@ -4,78 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6FA33C43217
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Dec 2022 20:40:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4733EC43217
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Dec 2022 20:43:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 728C916DA;
-	Thu,  1 Dec 2022 21:39:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 728C916DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6DB5D177C;
+	Thu,  1 Dec 2022 21:43:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DB5D177C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669927226;
-	bh=38oa5iNj8+pu7Dm8hMinaLo5Pj+hXioLhzHtZupPIes=;
+	s=default; t=1669927436;
+	bh=lL8wisGzwlXl5w4uyQ0RgBAQaHhJE6VdWGPgcOj1Sls=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qUTGKQCELIgHYkYEvewiODRLfjWmOOCU3q2rkw9tDFoK8II8o3FB0Y1pa5VuJfV3D
-	 UZ+oYC6HJgWUoxT/nkcaDHIez8WUOsM+PG/mPGPAYcFVbDYwAlHUTNST0Z+iH2s2s8
-	 cMgTh/1anpK1bZpbfEurrrr4Y3zrx8x6vWOkKesM=
+	b=shEc4hocCQuKnh3/DPjp4DuFN1HY/vkqQYO6KjxmAV1Kb7NdQN+P+9GMQzT9ajNFa
+	 MK7CQ58N49f/I9aBzeFUoZ3MNL+x2D8Nw0aPfJeR1htvKyPbRNf7Ke+NSPzuH1Vv0N
+	 QNVSmKT5WxYLLY3Dq0YtKHBI3AoQai6HDDG8fc7I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1694EF8055B;
-	Thu,  1 Dec 2022 21:38:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 241FDF80166;
+	Thu,  1 Dec 2022 21:43:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2DB11F8055C; Thu,  1 Dec 2022 21:38:43 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 2B94CF8028D; Thu,  1 Dec 2022 21:43:04 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 56C77F804B1
- for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2022 21:38:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56C77F804B1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="B+EiFnyV"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1669927116; x=1701463116;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=38oa5iNj8+pu7Dm8hMinaLo5Pj+hXioLhzHtZupPIes=;
- b=B+EiFnyVGifwIdiNRZM8FVPA5k67LBfamrBpTwvrQ/RIXK/WGihUf9MB
- T7b1pFvEauDmrcP0q895C5I4BKfoVx8MbgKULRDI4O7HShJbYLFs7bSZV
- CG+VZOz2JjfS4BPUfV6+k9uubRiboHDDQv/79QKvCBQItI1asMxgEEU0s
- WGrUzwg7yS3bThey1vz1MgpTvt2hW2g1bcSNdydHmrTtmyNeyViOyymlx
- Y1bMxl+JnGRZs601NbxbyO2LScHzyLsimwBdjEAXi5sdX+x9PiDx00nwp
- CmE/VGzs8iRZs/26h/zXcedC0GWXsEG083vjSdr1qEvTbO6YEKteyC263 A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="314498378"
-X-IronPort-AV: E=Sophos;i="5.96,210,1665471600"; d="scan'208";a="314498378"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Dec 2022 12:38:05 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="644781661"
-X-IronPort-AV: E=Sophos;i="5.96,210,1665471600"; d="scan'208";a="644781661"
-Received: from twcarol-mobl.amr.corp.intel.com (HELO [10.212.10.40])
- ([10.212.10.40])
- by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Dec 2022 12:38:04 -0800
-Message-ID: <cdc6b2ea-d20d-0e2e-0791-faf8f0994c78@linux.intel.com>
-Date: Thu, 1 Dec 2022 12:12:48 -0600
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2A3DAF80118
+ for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2022 21:42:57 +0100 (CET)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 78974A003F;
+ Thu,  1 Dec 2022 21:42:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 78974A003F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1669927377; bh=DEwP8nMLHnDBOZ3c8IS79m9bPpNTDwSbomxfT0giryY=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+ b=5l8K3rxlYqo7uWuBTMHOUCKXSg5iCAFy3Vz4WlOPpfpSbxhRDe1YnrWRLcLidQ2np
+ R3G6wm6mFAFGyMpb8gJWB05ucFYq3PUL7CfRl6KfVgj9WeMD8QF0cuW8CDt3owOxhy
+ tC9lik1vNAQ9KZg3HxwtL3b2+3/BtuNyLVqiYLBk=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Thu,  1 Dec 2022 21:42:52 +0100 (CET)
+Message-ID: <92abef25-2cbc-eb10-bb4d-e9cae06d7383@perex.cz>
+Date: Thu, 1 Dec 2022 21:42:52 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH 2/3] soundwire: cadence: Remove wasted space in
- response_buf
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] kselftests/alsa: pcm - move more configuration to
+ configuration files
 Content-Language: en-US
-To: Richard Fitzgerald <rf@opensource.cirrus.com>, vkoul@kernel.org
-References: <20221201134845.4055907-1-rf@opensource.cirrus.com>
- <20221201134845.4055907-3-rf@opensource.cirrus.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20221201134845.4055907-3-rf@opensource.cirrus.com>
-Content-Type: text/plain; charset=UTF-8
+To: Mark Brown <broonie@kernel.org>
+References: <20221201173333.2494019-1-perex@perex.cz>
+ <Y4kF7fG70EySxDQn@sirena.org.uk>
+From: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <Y4kF7fG70EySxDQn@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: patches@opensource.cirrus.com, sanyog.r.kale@intel.com,
- yung-chuan.liao@linux.intel.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: Takashi Iwai <tiwai@suse.de>,
+ ALSA development <alsa-devel@alsa-project.org>, Shuah Khan <shuah@kernel.org>,
+ linux-kselftest@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,73 +79,133 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 12/1/22 07:48, Richard Fitzgerald wrote:
-> The response_buf was declared much larger (128 entries) than the number
-> of responses that could ever be written into it (maximum 8).
-
-Indeed I don't know why we used 128 entries. This is a magic value that
-doesn't appear in any specs I've looked at.
-
-Note that there's 'sniffer' mode when each response takes two
-consecutive 32-words in the FIFO. we've never used this mode though so
-it's not really an issue.
-
-It's also possible that this is related to the automatic command retry,
-where a failed command can be re-issued 15 times. However in that case
-the worst case would be 32 commands * 15 = 480. The value of 128 makes
-no sense at all, unless it was an upper bound for 8 * 15. We don't use
-this hardware retry btw.
-
-See more below...
-
-> Reduce response_buf to 8 entries and add checking in cdns_read_response()
-> to prevent overflowing reponse_buf if CDNS_MCP_RX_FIFO_AVAIL contains
-> an unexpectedly large number.
+On 01. 12. 22 20:52, Mark Brown wrote:
+> On Thu, Dec 01, 2022 at 06:33:33PM +0100, Jaroslav Kysela wrote:
 > 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> ---
->  drivers/soundwire/cadence_master.c | 6 ++++++
->  drivers/soundwire/cadence_master.h | 2 +-
->  2 files changed, 7 insertions(+), 1 deletion(-)
+>> Obtain all test parameters from the configuration files. The defaults
+>> are defined in the pcm-test.conf file. The test count and parameters
+>> may be variable per specific hardware.
 > 
-> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-> index 27699f341f2c..95c84d9f0775 100644
-> --- a/drivers/soundwire/cadence_master.c
-> +++ b/drivers/soundwire/cadence_master.c
-> @@ -774,8 +774,14 @@ static void cdns_read_response(struct sdw_cdns *cdns)
->  	u32 num_resp, cmd_base;
->  	int i;
->  
-> +	BUILD_BUG_ON(ARRAY_SIZE(cdns->response_buf) < CDNS_MCP_CMD_LEN);
-> +
->  	num_resp = cdns_readl(cdns, CDNS_MCP_FIFOSTAT);
->  	num_resp &= CDNS_MCP_RX_FIFO_AVAIL;
-> +	if (num_resp > ARRAY_SIZE(cdns->response_buf)) {
-> +		dev_warn(cdns->dev, "RX AVAIL %d too long\n", num_resp);
-> +		num_resp = CDNS_MCP_CMD_LEN;
+>> Also, handle alt_formats field now (with the fixes in the format loop).
+>> It replaces the original "automatic" logic which is not so universal.
+> 
+>> The code may be further extended to skip various tests based
+>> on the configuration hints, if the exact PCM hardware parameters
+>> are not available for the given hardware.
+> 
+>> --- a/tools/testing/selftests/alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf
+>> +++ b/tools/testing/selftests/alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf
+>> @@ -55,6 +55,14 @@ card.hda {
+>>   				period_size 24000
+>>   				buffer_size 192000
+>>   			}
+>> +			test.time3 {
+>> +				access RW_INTERLEAVED
+>> +				format S16_LE
+>> +				rate 44100
+>> +				channels 2
+>> +				period_size 24000
+>> +				buffer_size 192000
+>> +			}
+> 
+> I really do think we should be giving these names which help people
+> understand what the tests are intending to cover, it'll make it easier
+> to both understand the results and maintian the configurations going
+> forward.  Or at least commenting things, but names is probably better.
+> Since the timeN is also used to figure out what type of test we're doing
+> that'd mean either adding an explicit test_type field
 
-.... this is different from what the hardware documentation tells me.
-The range of values to RX_FIFO_AVAIL is 0..RX_FIFO_DEPTH + 2.
+I'm fine with the new / more descriptive / names. I just concentrated to the 
+functionality.
 
-I don't understand the +2, but we should maybe be more cautious and use
-u32 response_buf[CDNS_MCP_CMD_LEN + 2];
+>>   	for (pcm = pcm_list; pcm != NULL; pcm = pcm->next) {
+>> -		test_pcm_time1(pcm, "test.time1", "S16_LE", 48000, 2, 512, 4096);
+>> -		test_pcm_time1(pcm, "test.time2", "S16_LE", 48000, 2, 24000, 192000);
+>> +		cfg = pcm->pcm_config;
+>> +		if (cfg == NULL)
+>> +			cfg = default_pcm_config;
+>> +		cfg = conf_get_subtree(cfg, "test", NULL);
+>> +		if (cfg == NULL)
+>> +			continue;
+>> +		snd_config_for_each(i, next, cfg) {
+> 
+> I can see the benefit in moving the defaults to a configuration file
+> instead of code but rather than having it be an either/or it seems much
+> better to have the board specific configuration file extend the
+> defaults, resulting in us looping over both files if we've got both.
+> We'd need to have something that avoided collisions, perhaps the
+> simplest thing would be to just add an element into the printed test
+> name for the source of the config so we get output like:
+> 
+> 	ok 1 test.default.time1.0.0.0.PLAYBACK
+> 	ok 2 test.system.time1.0.0.0.PLAYBACK
+> 
+> That does mean that the system test list can't replace the generic test
+> list but like I said elsewhere I think that would be a good thing for
+> clarity anyway ("X works on system A but not the very similar system B,
+> what's broken about system B...").
 
-> +	}
->  
->  	cmd_base = CDNS_MCP_CMD_BASE;
->  
-> diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
-> index 0434d70d4b1f..c2d817e8e22a 100644
-> --- a/drivers/soundwire/cadence_master.h
-> +++ b/drivers/soundwire/cadence_master.h
-> @@ -117,7 +117,7 @@ struct sdw_cdns {
->  	struct sdw_bus bus;
->  	unsigned int instance;
->  
-> -	u32 response_buf[0x80];
-> +	u32 response_buf[8];
->  	struct completion tx_complete;
->  	struct sdw_defer *defer;
->  
+As for the generic tool, I would like to have an option to control all mechanisms:
+
+1) only default config
+2) only hw specific config
+3) default + hw specific configs (merged)
+
+A new field in the pcm configuration may be added for this to build the 
+per-device-stream configuration. If we merge those two configs, I think that 
+only a field which will skip the default config is sufficient to cover all 
+possibilities. The test names are a good identification, what was executed.
+
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/alsa/pcm-test.conf
+>> @@ -0,0 +1,16 @@
+>> +pcm.test.time1 {
+>> +	format S16_LE
+>> +	alt_formats [ S32_LE ]
+>> +	rate 48000
+>> +	channels 2
+>> +	period_size 512
+>> +	buffer_size 4096
+>> +}
+>> +pcm.test.time2 {
+>> +	format S16_LE
+>> +	alt_formats [ S32_LE ]
+>> +	rate 48000
+>> +	channels 2
+>> +	period_size 24000
+>> +	buffer_size 192000
+>> +}
+> 
+> It's probably especially important that anything in a default
+> configuration should skip on the constraints not being satisfied since
+> we've no idea what the hardware we're running on is.  Rather than
+> requiring skipping to be explicitly configured perhaps we could just set
+> a flag based on if we're reading the default tests or a system specific
+> file, I'm not sure I see a sensible use case for system specific tests
+> specifying a configuration that can't be satisfied.  Doing things that
+> way the flag could either mean we add skipping or that we report two
+> results for each configured test:
+> 
+> 	not ok 1 test.system.time1.0.0.0.PLAYBACK.constraints
+> 	ok 2 test.system.time1.0.0.0.PLAYBACK # SKIP
+> 
+> which is perhaps marginally simpler to implement and makes it clearer in
+> the results if it was a straight up logic failure rather than a timing
+> failure.
+> 
+> I would also like to see 44.1kHz, 96kHz and at least one mono and one 6
+> channel configuration adding (in my patches I added 8kHz mono since it's
+> the most common practical mono format and 8kHz stereo so if 8kHz mono
+> doesn't work it's a bit more obvious if it's mono or 8kHz that's broken).
+> That could definitely be done incrementally though.
+
+I've not really have any objections about this.
+
+As Takashi already applied your set, I'll try to merge my code with yours and 
+keep the added functionality.
+
+				Thanks,
+					Jaroslav
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
