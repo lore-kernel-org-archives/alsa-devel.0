@@ -4,58 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30CE2C4321E
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Dec 2022 17:35:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7D52C43217
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Dec 2022 17:40:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B6DD0179F;
-	Thu,  1 Dec 2022 18:34:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6DD0179F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 393A7178D;
+	Thu,  1 Dec 2022 18:39:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 393A7178D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669916140;
-	bh=OpYNyokjdduKD3zh9yNqElmhUN9pbYSyiFC2yEmzUUE=;
+	s=default; t=1669916419;
+	bh=MmQwQE7hcEXECQySfRHy5jF9fo7rBkiTbbovbD1zMM8=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=ORE2V+ckoBvNXjV2k9HEF6G/DUuJ2pA0KsK/bjUdLxb2kQk6OuklpFQDqOmvFZTDA
-	 dHIn2Mpe1BkpJwCYTJfSj4TjDtw6V5zG5uQli0cswW/g7jrkXZQo86PK3uA9SEDpKp
-	 q+hr5LpFI71n4gvI82cz+DdRosqF95X8MEiIBfgI=
+	b=POKrIfnbWwyOMKKIM5h+btGob+itaouKzkJtSa+N7u1VKNvxCAwTbOlQ+Hj/NwHHd
+	 27st17SBtcnktJuMAmybHyAzS+oRDzn73ezwkaVtDCPqtFIy9GIgOIs3acFf7Q/ptj
+	 3WSiw4Z9udV7R8o6N+x2koqgfhl3Zn/Jfj42pM/0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C9E0F80166;
-	Thu,  1 Dec 2022 18:34:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC794F80166;
+	Thu,  1 Dec 2022 18:39:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D3EAFF8028D; Thu,  1 Dec 2022 18:34:48 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8316F80116
- for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2022 18:34:42 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id D085EA0040;
- Thu,  1 Dec 2022 18:34:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz D085EA0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1669916081; bh=Hwuz4wxZK1RP+U78tCB5N3SrsNQBS9JvR2LEJcq8dRc=;
- h=From:To:Cc:Subject:Date:From;
- b=4wsNmeAbD8w5D8NE70MWf2tmrztvYfczSWyI3EsLyxmUnnVqiD8Bg7lKN74tbgCSX
- t1Q/D4a0myRLPKOyfbMZBR3Tkh+kZaRPcZrKPRwZvVANPuYzPNG6/e78HEEwkfnhsf
- BiCUgPnndLF8XPZuzbUkV1XL2omYcKhgjP8BxYqM=
-Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+ id CE03DF804ED; Thu,  1 Dec 2022 18:39:27 +0100 (CET)
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Thu,  1 Dec 2022 18:34:35 +0100 (CET)
-From: Jaroslav Kysela <perex@perex.cz>
-To: ALSA development <alsa-devel@alsa-project.org>
-Subject: [PATCH] kselftests/alsa: pcm - move more configuration to
- configuration files
-Date: Thu,  1 Dec 2022 18:33:33 +0100
-Message-Id: <20221201173333.2494019-1-perex@perex.cz>
-X-Mailer: git-send-email 2.35.3
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49A18F80116
+ for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2022 18:39:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49A18F80116
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="Dt52fL9p"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1669916362; x=1701452362;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=MmQwQE7hcEXECQySfRHy5jF9fo7rBkiTbbovbD1zMM8=;
+ b=Dt52fL9pDKFpQijHwF2MKPY7gLmsdriN6HNnpg/NFM+mrRefmPQCLi+1
+ 7cocPo7eQuzmFXSw+4aOR1BBIE4kUndtUFWcDDot90uitFW07rx9CIy29
+ 6ryjaxa8gYhrTLOkRf0+071I9TkWKwhtLCmIodLQhMVj5ZCO3GSHHr+1a
+ t8oDx11UkyzzYEdkxwHXeIL6TbEuzWj+kgrkA4jA/cr/OHoT7KHV2DW2m
+ ofkLDEsL32SRK0MfJd9pQHZ1EkqCwTVMRV/91OonosQ4P53JKKtUyWnTA
+ 03yb5X+WmST6a4HM5Tdqn9SWq6pihpBboQamQyVk4DTKGhCHpscQdkHxg g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="377908288"
+X-IronPort-AV: E=Sophos;i="5.96,209,1665471600"; d="scan'208";a="377908288"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Dec 2022 09:39:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="889823896"
+X-IronPort-AV: E=Sophos;i="5.96,209,1665471600"; d="scan'208";a="889823896"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by fmsmga006.fm.intel.com with ESMTP; 01 Dec 2022 09:39:14 -0800
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH 00/16] ASoC: Intel: avs: Data probing and fw logging
+Date: Thu,  1 Dec 2022 18:56:03 +0100
+Message-Id: <20221201175619.504758-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>,
- Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
+ amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,351 +83,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Obtain all test parameters from the configuration files. The defaults
-are defined in the pcm-test.conf file. The test count and parameters
-may be variable per specific hardware.
+The patchset focuses on debug functionality for the avs-driver.
+Two major blocks are covered here: data probing and AudioDSP firmware
+logging. Both are configured and controlled through debugfs.
 
-Also, handle alt_formats field now (with the fixes in the format loop).
-It replaces the original "automatic" logic which is not so universal.
+Data probing is a AudioDSP debug functionality which allows for
+gathering the actual data that is being routed to or from a module.
+Helps in debugging its processing capabilities - navigate to a specific
+module which may have caused a glitch within a pipeline (set of modules
+bound together).
 
-The code may be further extended to skip various tests based
-on the configuration hints, if the exact PCM hardware parameters
-are not available for the given hardware.
+First few allow for assigning compress stream to a HDAudio stream, what
+is currently limited to pcm substreams only. These patches were already
+present on this list and reviewed in the past [1].
 
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: linux-kselftest@vger.kernel.org
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
----
- tools/testing/selftests/alsa/Makefile         |   2 +-
- tools/testing/selftests/alsa/alsa-local.h     |   3 +
- tools/testing/selftests/alsa/conf.c           |  26 ++++-
- .../alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf  |   8 ++
- tools/testing/selftests/alsa/pcm-test.c       | 102 ++++++++++++------
- tools/testing/selftests/alsa/pcm-test.conf    |  16 +++
- 6 files changed, 121 insertions(+), 36 deletions(-)
- create mode 100644 tools/testing/selftests/alsa/pcm-test.conf
+The next few tidy existing debug-related code up so it's ready for
+addition of new functionalities and make it clear which part of the avs
+is debug related and which is not. These also simplify the existing
+locking around the trace fifo.
 
-diff --git a/tools/testing/selftests/alsa/Makefile b/tools/testing/selftests/alsa/Makefile
-index a8c0383878d3..77fba3e498cc 100644
---- a/tools/testing/selftests/alsa/Makefile
-+++ b/tools/testing/selftests/alsa/Makefile
-@@ -14,7 +14,7 @@ TEST_GEN_PROGS := mixer-test pcm-test
- 
- TEST_GEN_PROGS_EXTENDED := libatest.so
- 
--TEST_FILES := conf.d
-+TEST_FILES := conf.d pcm-test.conf
- 
- include ../lib.mk
- 
-diff --git a/tools/testing/selftests/alsa/alsa-local.h b/tools/testing/selftests/alsa/alsa-local.h
-index 65f197ea9773..de030dc23bd1 100644
---- a/tools/testing/selftests/alsa/alsa-local.h
-+++ b/tools/testing/selftests/alsa/alsa-local.h
-@@ -12,6 +12,7 @@
- 
- snd_config_t *get_alsalib_config(void);
- 
-+snd_config_t *conf_load_from_file(const char *filename);
- void conf_load(void);
- void conf_free(void);
- snd_config_t *conf_by_card(int card);
-@@ -20,5 +21,7 @@ int conf_get_count(snd_config_t *root, const char *key1, const char *key2);
- const char *conf_get_string(snd_config_t *root, const char *key1, const char *key2, const char *def);
- long conf_get_long(snd_config_t *root, const char *key1, const char *key2, long def);
- int conf_get_bool(snd_config_t *root, const char *key1, const char *key2, int def);
-+void conf_get_string_array(snd_config_t *root, const char *key1, const char *key2,
-+			   const char **array, int array_size, const char *def);
- 
- #endif /* __ALSA_LOCAL_H */
-diff --git a/tools/testing/selftests/alsa/conf.c b/tools/testing/selftests/alsa/conf.c
-index c7ffc8f04195..d7aafe5a1993 100644
---- a/tools/testing/selftests/alsa/conf.c
-+++ b/tools/testing/selftests/alsa/conf.c
-@@ -125,7 +125,7 @@ static int dump_config_tree(snd_config_t *top)
- 	snd_output_close(out);
- }
- 
--static snd_config_t *load(const char *filename)
-+snd_config_t *conf_load_from_file(const char *filename)
- {
- 	snd_config_t *dst;
- 	snd_input_t *input;
-@@ -235,7 +235,7 @@ static bool test_filename1(int card, const char *filename, const char *sysfs_car
- 	snd_config_t *config, *sysfs_config, *card_config, *sysfs_card_config, *node;
- 	snd_config_iterator_t i, next;
- 
--	config = load(filename);
-+	config = conf_load_from_file(filename);
- 	if (snd_config_search(config, "sysfs", &sysfs_config) ||
- 	    snd_config_get_type(sysfs_config) != SND_CONFIG_TYPE_COMPOUND)
- 		ksft_exit_fail_msg("Missing global sysfs block in filename %s\n", filename);
-@@ -446,3 +446,25 @@ int conf_get_bool(snd_config_t *root, const char *key1, const char *key2, int de
- 		ksft_exit_fail_msg("key '%s'.'%s' is not an bool\n", key1, key2);
- 	return !!ret;
- }
-+
-+void conf_get_string_array(snd_config_t *root, const char *key1, const char *key2,
-+			   const char **array, int array_size, const char *def)
-+{
-+	snd_config_t *cfg;
-+	char buf[16];
-+	int ret, index;
-+
-+	ret = conf_get_by_keys(root, key1, key2, &cfg);
-+	if (ret == -ENOENT)
-+		cfg = NULL;
-+	else if (ret < 0)
-+		ksft_exit_fail_msg("key '%s'.'%s' search error: %s\n", key1, key2, snd_strerror(ret));
-+	for (index = 0; index < array_size; index++) {
-+		if (cfg == NULL) {
-+			array[index] = def;
-+		} else {
-+			sprintf(buf, "%i", index);
-+			array[index] = conf_get_string(cfg, buf, NULL, def);
-+		}
-+	}
-+}
-diff --git a/tools/testing/selftests/alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf b/tools/testing/selftests/alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf
-index 0a83f35d43eb..5b40a916295d 100644
---- a/tools/testing/selftests/alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf
-+++ b/tools/testing/selftests/alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf
-@@ -55,6 +55,14 @@ card.hda {
- 				period_size 24000
- 				buffer_size 192000
- 			}
-+			test.time3 {
-+				access RW_INTERLEAVED
-+				format S16_LE
-+				rate 44100
-+				channels 2
-+				period_size 24000
-+				buffer_size 192000
-+			}
- 		}
- 		CAPTURE {
- 			# use default tests, check for the presence
-diff --git a/tools/testing/selftests/alsa/pcm-test.c b/tools/testing/selftests/alsa/pcm-test.c
-index 6e7dfc395b98..e973b03ae1fd 100644
---- a/tools/testing/selftests/alsa/pcm-test.c
-+++ b/tools/testing/selftests/alsa/pcm-test.c
-@@ -31,7 +31,6 @@ struct pcm_data {
- 	struct pcm_data *next;
- };
- 
--int num_pcms = 0;
- struct pcm_data *pcm_list = NULL;
- 
- int num_missing = 0;
-@@ -200,7 +199,6 @@ static void find_pcms(void)
- 					pcm_data->pcm_config = conf_get_subtree(card_config, key, NULL);
- 					pcm_data->next = pcm_list;
- 					pcm_list = pcm_data;
--					num_pcms++;
- 				}
- 			}
- 		}
-@@ -219,17 +217,15 @@ static void find_pcms(void)
- 	snd_config_delete(config);
- }
- 
--static void test_pcm_time1(struct pcm_data *data,
--			   const char *cfg_prefix, const char *sformat,
--			   long srate, long schannels,
--			   long speriod_size, long sbuffer_size)
-+static void test_pcm_time(struct pcm_data *data, const char *test_name, snd_config_t *pcm_cfg)
- {
- 	char name[64], key[128], msg[256];
- 	const char *cs;
- 	int i, err;
- 	snd_pcm_t *handle = NULL;
- 	snd_pcm_access_t access = SND_PCM_ACCESS_RW_INTERLEAVED;
--	snd_pcm_format_t format;
-+	snd_pcm_format_t format, old_format;
-+	const char *alt_formats[8];
- 	unsigned char *samples = NULL;
- 	snd_pcm_sframes_t frames;
- 	long long ms;
-@@ -237,27 +233,23 @@ static void test_pcm_time1(struct pcm_data *data,
- 	unsigned int rrate;
- 	snd_pcm_uframes_t rperiod_size, rbuffer_size, start_threshold;
- 	timestamp_t tstamp;
--	bool pass = false, automatic = true;
-+	bool pass = false;
- 	snd_pcm_hw_params_t *hw_params;
- 	snd_pcm_sw_params_t *sw_params;
- 
- 	snd_pcm_hw_params_alloca(&hw_params);
- 	snd_pcm_sw_params_alloca(&sw_params);
- 
--	cs = conf_get_string(data->pcm_config, cfg_prefix, "format", sformat);
-+	cs = conf_get_string(pcm_cfg, "format", NULL, "S16_LE");
- 	format = snd_pcm_format_value(cs);
- 	if (format == SND_PCM_FORMAT_UNKNOWN)
- 		ksft_exit_fail_msg("Wrong format '%s'\n", cs);
--	rate = conf_get_long(data->pcm_config, cfg_prefix, "rate", srate);
--	channels = conf_get_long(data->pcm_config, cfg_prefix, "channels", schannels);
--	period_size = conf_get_long(data->pcm_config, cfg_prefix, "period_size", speriod_size);
--	buffer_size = conf_get_long(data->pcm_config, cfg_prefix, "buffer_size", sbuffer_size);
--
--	automatic = strcmp(sformat, snd_pcm_format_name(format)) == 0 &&
--			srate == rate &&
--			schannels == channels &&
--			speriod_size == period_size &&
--			sbuffer_size == buffer_size;
-+	conf_get_string_array(pcm_cfg, "alt_formats", NULL,
-+				alt_formats, ARRAY_SIZE(alt_formats), NULL);
-+	rate = conf_get_long(pcm_cfg, "rate", NULL, 48000);
-+	channels = conf_get_long(pcm_cfg, "channels", NULL, 2);
-+	period_size = conf_get_long(pcm_cfg, "period_size", NULL, 4096);
-+	buffer_size = conf_get_long(pcm_cfg, "buffer_size", NULL, 16384);
- 
- 	samples = malloc((rate * channels * snd_pcm_format_physical_width(format)) / 8);
- 	if (!samples)
-@@ -287,16 +279,29 @@ static void test_pcm_time1(struct pcm_data *data,
- 					   snd_pcm_access_name(access), snd_strerror(err));
- 		goto __close;
- 	}
-+	i = -1;
- __format:
- 	err = snd_pcm_hw_params_set_format(handle, hw_params, format);
- 	if (err < 0) {
--		if (automatic && format == SND_PCM_FORMAT_S16_LE) {
--			format = SND_PCM_FORMAT_S32_LE;
--			ksft_print_msg("%s.%d.%d.%d.%s.%s format S16_LE -> S32_LE\n",
--					 cfg_prefix,
--					 data->card, data->device, data->subdevice,
--					 snd_pcm_stream_name(data->stream),
--					 snd_pcm_access_name(access));
-+		i++;
-+		if (i < ARRAY_SIZE(alt_formats) && alt_formats[i]) {
-+			old_format = format;
-+			format = snd_pcm_format_value(alt_formats[i]);
-+			if (format != SND_PCM_FORMAT_UNKNOWN) {
-+				ksft_print_msg("%s.%d.%d.%d.%s.%s format %s -> %s\n",
-+						 test_name,
-+						 data->card, data->device, data->subdevice,
-+						 snd_pcm_stream_name(data->stream),
-+						 snd_pcm_access_name(access),
-+						 snd_pcm_format_name(old_format),
-+						 snd_pcm_format_name(format));
-+				samples = realloc(samples, (rate * channels *
-+							    snd_pcm_format_physical_width(format)) / 8);
-+				if (!samples)
-+					ksft_exit_fail_msg("Out of memory\n");
-+				snd_pcm_format_set_silence(format, samples, rate * channels);
-+				goto __format;
-+			}
- 		}
- 		snprintf(msg, sizeof(msg), "snd_pcm_hw_params_set_format %s: %s",
- 					   snd_pcm_format_name(format), snd_strerror(err));
-@@ -362,7 +367,7 @@ static void test_pcm_time1(struct pcm_data *data,
- 	}
- 
- 	ksft_print_msg("%s.%d.%d.%d.%s hw_params.%s.%s.%ld.%ld.%ld.%ld sw_params.%ld\n",
--			 cfg_prefix,
-+			 test_name,
- 			 data->card, data->device, data->subdevice,
- 			 snd_pcm_stream_name(data->stream),
- 			 snd_pcm_access_name(access),
-@@ -411,7 +416,7 @@ static void test_pcm_time1(struct pcm_data *data,
- 	pass = true;
- __close:
- 	ksft_test_result(pass, "%s.%d.%d.%d.%s%s%s\n",
--			 cfg_prefix,
-+			 test_name,
- 			 data->card, data->device, data->subdevice,
- 			 snd_pcm_stream_name(data->stream),
- 			 msg[0] ? " " : "", msg);
-@@ -420,19 +425,35 @@ static void test_pcm_time1(struct pcm_data *data,
- 		snd_pcm_close(handle);
- }
- 
--#define TESTS_PER_PCM 2
--
- int main(void)
- {
- 	struct pcm_data *pcm;
-+	snd_config_t *global_config, *default_pcm_config, *cfg, *pcm_cfg;
-+	snd_config_iterator_t i, next;
-+	int num_pcm_tests = 0, num_tests;
-+	const char *test_name, *test_type;
- 
- 	ksft_print_header();
- 
-+	global_config = conf_load_from_file("pcm-test.conf");
-+	default_pcm_config = conf_get_subtree(global_config, "pcm", NULL);
-+	if (default_pcm_config == NULL)
-+		ksft_exit_fail_msg("default pcm test configuration (pcm compound) is missing\n");
-+
- 	conf_load();
- 
- 	find_pcms();
- 
--	ksft_set_plan(num_missing + num_pcms * TESTS_PER_PCM);
-+	for (pcm = pcm_list; pcm != NULL; pcm = pcm->next) {
-+		cfg = pcm->pcm_config;
-+		if (cfg == NULL)
-+			cfg = default_pcm_config;
-+		num_tests = conf_get_count(cfg, "test", NULL);
-+		if (num_tests > 0)
-+			num_pcm_tests += num_tests;
-+	}
-+
-+	ksft_set_plan(num_missing + num_pcm_tests);
- 
- 	for (pcm = pcm_missing; pcm != NULL; pcm = pcm->next) {
- 		ksft_test_result(false, "test.missing.%d.%d.%d.%s\n",
-@@ -441,10 +462,25 @@ int main(void)
- 	}
- 
- 	for (pcm = pcm_list; pcm != NULL; pcm = pcm->next) {
--		test_pcm_time1(pcm, "test.time1", "S16_LE", 48000, 2, 512, 4096);
--		test_pcm_time1(pcm, "test.time2", "S16_LE", 48000, 2, 24000, 192000);
-+		cfg = pcm->pcm_config;
-+		if (cfg == NULL)
-+			cfg = default_pcm_config;
-+		cfg = conf_get_subtree(cfg, "test", NULL);
-+		if (cfg == NULL)
-+			continue;
-+		snd_config_for_each(i, next, cfg) {
-+			pcm_cfg = snd_config_iterator_entry(i);
-+			if (snd_config_get_id(pcm_cfg, &test_name) < 0)
-+				ksft_exit_fail_msg("snd_config_get_id\n");
-+			test_type = conf_get_string(pcm_cfg, "type", NULL, "time");
-+			if (strcmp(test_type, "time") == 0)
-+				test_pcm_time(pcm, test_name, pcm_cfg);
-+			else
-+				ksft_exit_fail_msg("unknown test type '%s'\n", test_type);
-+		}
- 	}
- 
-+	snd_config_delete(global_config);
- 	conf_free();
- 
- 	ksft_exit_pass();
-diff --git a/tools/testing/selftests/alsa/pcm-test.conf b/tools/testing/selftests/alsa/pcm-test.conf
-new file mode 100644
-index 000000000000..473a19251b49
---- /dev/null
-+++ b/tools/testing/selftests/alsa/pcm-test.conf
-@@ -0,0 +1,16 @@
-+pcm.test.time1 {
-+	format S16_LE
-+	alt_formats [ S32_LE ]
-+	rate 48000
-+	channels 2
-+	period_size 512
-+	buffer_size 4096
-+}
-+pcm.test.time2 {
-+	format S16_LE
-+	alt_formats [ S32_LE ]
-+	rate 48000
-+	channels 2
-+	period_size 24000
-+	buffer_size 192000
-+}
+Afterward, debug-related IPCs are defined along with stub soc-component
+and compress DAI operations. Not much is done there as it's not a
+standard PCM streaming scenario. Most code found in compress operations
+is inherited from the HOST side of HDAudio streaming found in pcm.c
+file of the driver.
+
+Finally, a debugfs file operations are defined. These facilitate
+connecting to DSP modules from which the data shall be gathered as well
+as control and configuration of firmware logging. Additionally, entries
+are added to allow for dumping snapshots of key memory windows.
+
+
+[1]: https://lore.kernel.org/alsa-devel/20200124190413.18154-1-cezary.rojewski@intel.com/
+
+Cezary Rojewski (16):
+  ALSA: hda: Allow for compress stream to hdac_ext_stream assignment
+  ALSA: hda: Prepare for compress stream support
+  ALSA: hda: Interrupt servicing and BDL setup for compress streams
+  ASoC: Intel: avs: Introduce avs_log_buffer_status_locked()
+  ASoC: Intel: avs: Drop fifo_lock
+  ASoC: Intel: avs: Introduce debug-context aware helpers
+  ASoC: Intel: avs: Make enable_logs() dependent on DEBUG_FS
+  ASoC: Intel: avs: Drop usage of debug members in non-debug code
+  ASoC: Intel: avs: Add data probing requests
+  ASoC: Intel: avs: Probe compress operations
+  ASoC: Intel: avs: Data probing soc-component
+  ASoC: Intel: avs: Add probe machine board
+  ASoC: Intel: avs: Probing and firmware tracing over debugfs
+  ASoC: Intel: avs: Gather remaining logs on strace_release()
+  ASoC: Intel: avs: Allow for dumping FW_REGS area
+  ASoC: Intel: avs: Allow for dumping debug window snapshot
+
+ include/sound/hdaudio_ext.h           |   2 +
+ sound/hda/ext/hdac_ext_stream.c       |  41 +++
+ sound/hda/hdac_controller.c           |   4 +-
+ sound/hda/hdac_stream.c               |  52 +--
+ sound/soc/intel/Kconfig               |   1 +
+ sound/soc/intel/avs/Makefile          |   4 +
+ sound/soc/intel/avs/apl.c             |  24 +-
+ sound/soc/intel/avs/avs.h             |  80 ++++-
+ sound/soc/intel/avs/board_selection.c |  33 ++
+ sound/soc/intel/avs/boards/Kconfig    |   8 +
+ sound/soc/intel/avs/boards/Makefile   |   2 +
+ sound/soc/intel/avs/boards/probe.c    |  64 ++++
+ sound/soc/intel/avs/core.c            |   2 +
+ sound/soc/intel/avs/debugfs.c         | 436 ++++++++++++++++++++++++++
+ sound/soc/intel/avs/ipc.c             |   2 +-
+ sound/soc/intel/avs/messages.c        | 104 +++++-
+ sound/soc/intel/avs/messages.h        |  53 ++++
+ sound/soc/intel/avs/pcm.c             |   6 +-
+ sound/soc/intel/avs/probes.c          | 312 ++++++++++++++++++
+ sound/soc/intel/avs/registers.h       |   3 +-
+ sound/soc/intel/avs/skl.c             |  17 +-
+ sound/soc/intel/avs/utils.c           |  22 --
+ 22 files changed, 1172 insertions(+), 100 deletions(-)
+ create mode 100644 sound/soc/intel/avs/boards/probe.c
+ create mode 100644 sound/soc/intel/avs/debugfs.c
+ create mode 100644 sound/soc/intel/avs/probes.c
+
 -- 
-2.35.3
+2.25.1
+
