@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3C44C43217
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Dec 2022 19:07:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05BDFC43217
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Dec 2022 19:07:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C0AA175A;
-	Thu,  1 Dec 2022 20:06:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C0AA175A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 099671777;
+	Thu,  1 Dec 2022 20:06:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 099671777
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669921640;
-	bh=f9oNITUrClfBe730SWYMaIqy1Q3isSFSFi3kuf8RQ90=;
+	s=default; t=1669921662;
+	bh=N9TJySIU7DevwbuyRkBvbmEkNkEpAlFeMB8KXxIYODA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iYhAc+eS+pG0tVD7xMWg+GbvrRQDuYUo3E8jFnDOV8sen2WrqnuWjY6wlZwv3K6i4
-	 1b9UZlQcyFIyYbQVxJm4xBX89D3JPSBo32o3e+SbJpQLDnL5RvTtgwu0i3uSNUvFir
-	 zeAy6TNlIwQupjeA0XxNE7Ccfg5W7YpETH4rz/kw=
+	b=Z8z+c28uzhxNisERppifpUbH3UaRvfWo2j7Bpi7xXf6mroPrQdu00BP5OtpCLzI9p
+	 P1MgoM4k080tRdvMjHfXV2orWyksvpm+sAHpkmGp2+WHNldB2c1IHDQnQ4xWENcPI7
+	 3K63hkfneRUL2e6AADx//SEQ50n5eJXR4smacWew=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF785F80116;
-	Thu,  1 Dec 2022 20:06:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56DF2F804D0;
+	Thu,  1 Dec 2022 20:06:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 12487F8028D; Thu,  1 Dec 2022 20:06:27 +0100 (CET)
+ id E2773F804ED; Thu,  1 Dec 2022 20:06:48 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4593F80116
- for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2022 20:06:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4593F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F4BDF80166
+ for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2022 20:06:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F4BDF80166
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="l1IRQ6tw"; 
+ header.b="T1m1syjd"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="geudLZ7w"
+ header.b="bB8NQv2S"
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 18F2521BF4;
- Thu,  1 Dec 2022 19:06:23 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 06D8C21BFF;
+ Thu,  1 Dec 2022 19:06:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1669921583; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1669921606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=QtD9PQv9I1gu+bfKZIbAtCKPictMwsec19evQxJwEKI=;
- b=l1IRQ6twuUX0q72OTVKnMYe7bakwFM1iW/0v4liApnWObNCWSBNXUmZ0si9BEePwR9hz5D
- 6EtKn73skjA6AiHZjD5imDwc1RXrUxOpKE6lk4/gkQLufODFtsujXiLAUb8kVEayQ+jmWX
- +VJznpatwrFRGwzjPnRG8hHggUyGckw=
+ bh=zuqewNI7Y4IpAWz52JMnmqjq+qD+9w3xPRRjPt/q054=;
+ b=T1m1syjdlb3ne3pueAkw9dEI/KCDiCM1ezKqG2PyaBRE5UMmX/N+0KdS1c4Jmn8RhFchID
+ TYvXvOHLjKu7+IKyPzKZNDALnzbhqNr+NnETmg9TyKKZDF2cgP8lqw7ZtAwfGAOixJi99h
+ vVzLzwTe61o/O+qq9XcjMRex7QLNLcg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1669921583;
+ s=susede2_ed25519; t=1669921606;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=QtD9PQv9I1gu+bfKZIbAtCKPictMwsec19evQxJwEKI=;
- b=geudLZ7wRS2RwAujOZo2py2cRRC61S0iH4HL+HL/H7Deis4bFbyAhLoCOjio86wscOrPhy
- CXezslUGbTBX71Ag==
+ bh=zuqewNI7Y4IpAWz52JMnmqjq+qD+9w3xPRRjPt/q054=;
+ b=bB8NQv2SJuOyC7yPMHvNJNRZRjpAoDx086N/NnnK+E9i8Me4TryUd/K3Mh6VMiHL18ogkL
+ oN69rQblxSeAk0Dg==
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id E644713503;
- Thu,  1 Dec 2022 19:06:22 +0000 (UTC)
+ by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id CEDCC13503;
+ Thu,  1 Dec 2022 19:06:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap1.suse-dmz.suse.de with ESMTPSA id ScBYNy77iGOVPQAAGKfGzw
- (envelope-from <tiwai@suse.de>); Thu, 01 Dec 2022 19:06:22 +0000
-Date: Thu, 01 Dec 2022 20:06:22 +0100
-Message-ID: <87359zlz9t.wl-tiwai@suse.de>
+ by imap1.suse-dmz.suse.de with ESMTPSA id zncHMUX7iGPEPQAAGKfGzw
+ (envelope-from <tiwai@suse.de>); Thu, 01 Dec 2022 19:06:45 +0000
+Date: Thu, 01 Dec 2022 20:06:45 +0100
+Message-ID: <871qpjlz96.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH v1 0/6] kselftest/alsa: pcm-test improvements
-In-Reply-To: <a55212fc-a676-2335-b861-94ba8d10f207@perex.cz>
-References: <20221130000608.519574-1-broonie@kernel.org>
- <a55212fc-a676-2335-b861-94ba8d10f207@perex.cz>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 0/6] kselftest/alsa: pcm-test improvements
+In-Reply-To: <20221201170745.1111236-1-broonie@kernel.org>
+References: <20221201170745.1111236-1-broonie@kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Shuah Khan <shuah@kernel.org>,
+ linux-kselftest@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,16 +95,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 01 Dec 2022 18:42:22 +0100,
-Jaroslav Kysela wrote:
+On Thu, 01 Dec 2022 18:07:39 +0100,
+Mark Brown wrote:
 > 
-> Let me know, if I can stack your changes on top, or perhaps, you may
-> be willing to adapt them.
+> This series provides a bunch of quick updates which should make the
+> coverage from pcm-test a bit more useful, it adds some support for
+> skipping tests when the hardware/driver is unable to support the
+> requested configuration and then expands the set of cases we cover to
+> include more sample rates and channel counts.  This should exercise
+> switching between 8kHz and 44.1kHz based rates and ensure that clocking
+> doesn't get confused by non-stereo channel counts, both of which are I
+> expect common real world errors, at least for embedded cards.
+> 
+> v2:
+>  - Rebase onto Takashi's current tree.
+>  - Tweak the buffer sizes for the newly added cases, don't be quite
+>    so ambitious in how big a buffer we request for 96kHz and don't
+>    go quite so small for 8kHz since some devices start hitting lower
+>    limits on period size and struggle to deliver accurate timing.
 
-As Mark has already sent a v2 series, I applied his v2 at first.
-Could you rebase and resubmit on top of my for-next branch?
+Applied now.  Thanks.
 
-
-thanks,
 
 Takashi
