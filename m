@@ -4,75 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53EB2C43217
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Dec 2022 17:13:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6815C4321E
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Dec 2022 17:13:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F194176C;
-	Thu,  1 Dec 2022 18:12:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F194176C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E391177E;
+	Thu,  1 Dec 2022 18:12:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E391177E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669914782;
-	bh=Kn+BswH7rAycY9VeynvDcjRtACgC1wb2IYiNOSjS+Q8=;
+	s=default; t=1669914792;
+	bh=Vx9X4XLGV+87QBonlTDAWmJxr2iTnW/AMH1GHUB2CgI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bzFH9a6XX18//cAFX6SUR0JLC+V9IewLaZ4L0r1ZJ6WhnwfzckLilP8S9TNdsh0mh
-	 NHDYXLQS1tyCamVNeoB+Y6mQJdimvVR5i/JEWVSivh7YhRcQ2+ZTBR0AkgbF4pjudF
-	 rgVzzYr5iYav9NHUaFU33jtSRsm5jw1ZpYTHhEkw=
+	b=gHwmT9UdRxQAppkET1bLFQAlOEq8YtVctpwlrJIbLlofhh1sZ8Ha2wox7RYLwrS5l
+	 oAorqrgAKv3xsBdRTqFzaJ/aoGwXpzqELE6qU73gtbDonXEQpK0ZRqeXAP47rxQJbI
+	 QLoZaM/LqIQzsk6LW3WIFDjtZ33hSD8foj/IOfXk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59B72F80578;
-	Thu,  1 Dec 2022 18:11:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0BC38F8057B;
+	Thu,  1 Dec 2022 18:11:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F151DF80558; Thu,  1 Dec 2022 18:11:07 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 655B4F8057B; Thu,  1 Dec 2022 18:11:10 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E800F80557
- for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2022 18:11:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E800F80557
+ by alsa1.perex.cz (Postfix) with ESMTPS id C35D5F80567
+ for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2022 18:11:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C35D5F80567
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="CkRtaRQp"
+ header.b="J6LIrwS8"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 9EEB5B81FAF;
- Thu,  1 Dec 2022 17:11:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 028FAC433C1;
- Thu,  1 Dec 2022 17:11:00 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id CA31162095;
+ Thu,  1 Dec 2022 17:11:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0407C433D6;
+ Thu,  1 Dec 2022 17:11:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669914662;
- bh=Kn+BswH7rAycY9VeynvDcjRtACgC1wb2IYiNOSjS+Q8=;
+ s=k20201202; t=1669914664;
+ bh=Vx9X4XLGV+87QBonlTDAWmJxr2iTnW/AMH1GHUB2CgI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=CkRtaRQp6x7iwTvF6XjTffEjvgtpwLH/Se4dvQttOtl6J4dv5C99vVHBYoYYNTSDQ
- 92iI4DDI1OPIJU2mTOqNcJ6K+4HMdGLROxTbDCFqj6TkiOh5/jHVCVI1MBSwv/MRN+
- A1nWEq9Bm9sC3zhgHywWgPEpTle6Wt/DvvhRLPlIc8+70iORa3UCY+XGasu5hT2ynT
- AIOSC5CqZDxTNdrKCO+tdYMnuxan7Flc5wt6F8qYkl5bOovsj7geYBhYApjr+ePlMw
- 0curbL4zE5cMwEfxhMPs0JExBqU8q5aXp8TRFZ955RAVWfDrEH5vEr0sbNagVLHzNy
- FA9z3iPOYH7jA==
+ b=J6LIrwS80f3HWFnPn+E8TAsDfOpXiqIaFhngKHjGIgteI+OnVs86nf9jRq8+8jGOB
+ RHvkYT2RKpp9MGg61f3J995kRHXZD6M7VUEwOeiDc0w0Fu7YclF0jhGRV8WBAdFwL4
+ Iqk0gWRoM5zw5IsDY9VzNU0XizDg95UyPoAKNHokcBOzkOqtcz99pq1aeOjGdwqXJ6
+ hWvZ+9cgGTrGebyIqOyn9ZWg1QUsSGbZqacRSARvqMUs9nXmoLsQSfxMWNUOa5SHbL
+ HmHLcHI0Sc862ACC6Gom9XA3l44NyIWZOGPUHAL3ZT1SWbEk/MH+3wVSJCUrcxHzeg
+ UEnwKlv65hqPQ==
 From: Mark Brown <broonie@kernel.org>
 To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
  Shuah Khan <shuah@kernel.org>
-Subject: [PATCH v2 4/6] kselftest/alsa: Don't any configuration in the sample
- config
-Date: Thu,  1 Dec 2022 17:07:43 +0000
-Message-Id: <20221201170745.1111236-5-broonie@kernel.org>
+Subject: [PATCH v2 5/6] kselftest/alsa: Provide more meaningful names for tests
+Date: Thu,  1 Dec 2022 17:07:44 +0000
+Message-Id: <20221201170745.1111236-6-broonie@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221201170745.1111236-1-broonie@kernel.org>
 References: <20221201170745.1111236-1-broonie@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1748; i=broonie@kernel.org;
- h=from:subject; bh=Kn+BswH7rAycY9VeynvDcjRtACgC1wb2IYiNOSjS+Q8=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBjiN9fa5wTLCtYT9notHr7El4eyPGnYoYICD8o+gE3
- 8SBIShiJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCY4jfXwAKCRAk1otyXVSH0K+vB/
- 4jhJBvtqbxPvVCaIt3Nmv4O/SMt/nFZjEiK40mVWdP6p6cZtuMufcWu0yElXfkHqdlM5GfHlK0JKY4
- YjcbKzMos2akkn1OQFWcZOkg2Qy6FAnuqgzz9wZ7gT7SNmjLfr/r8o5xXbzqWpRX3b2XWyAwTNPezF
- DRgrajELlpmgJ7IbNK44+8vV2+bjQhMuFD38xNbHiWeuDSbLt0pt9dFbPVva9lFqX14eYIY0q693Py
- 3t7l9r4BtGrbDiw5PQnFmeJ4+Gx8ZkLe7dkSI4rGaoOPIkKxbSqXinOTswgolGhjV+mxX+P6TABT8G
- /Gx2Uv8VblE2QYnzx5jx98HXDnbFXG
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1263; i=broonie@kernel.org;
+ h=from:subject; bh=Vx9X4XLGV+87QBonlTDAWmJxr2iTnW/AMH1GHUB2CgI=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBjiN9fpUWCP6bQYPg5IEoJ+soMA16r5YPqydc2hWsY
+ EF2z3w2JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCY4jfXwAKCRAk1otyXVSH0AZdB/
+ 0T7EDVqIvPaJ4DTpkUCVnYqTDAZcIVPsGXS7XYxGHohRda7U+pQQEvwrP5Xy0h16kSBSAbdNCwn/Fd
+ tZVNqz3ppc3wgPsh5dqWpkd7hF6PUHD9vDLULrpKKZCRL4WQzD0pIsGfAdDt2sgk78p0IOfRii+xi1
+ T4kP8k9DwxDJCkvZFQa8Ysn4VyUXwi30/5qCryJ06gzZGpCqM+Vx2+I0Op+X/X7P+ADJmFqpsApOJ9
+ Y4oaU2ipxfaZIy08SezKPMrg+I88qyE0k4XdhLSNQTd3TxLsR0pl5ZSvsot81b/4lA5VvJu10SP7yV
+ cCkIopHccpUw6jX/eOvuOLr/+9Vdjh
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
@@ -93,62 +92,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The values in the one example configuration file we currently have are the
-default values for the two tests we have so there's no need to actually set
-them. Comment them out as examples, with a rename for the tests so that we
-can update the tests in the code more easily.
+Rather than just numbering the tests try to provide semi descriptive names
+for what the tests are trying to cover. This also has the advantage of
+meaning we can add more tests without having to keep the list of tests
+ordered by existing number which should make it easier to understand what
+we're testing and why.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf  | 35 ++++++++++---------
- 1 file changed, 19 insertions(+), 16 deletions(-)
+ tools/testing/selftests/alsa/pcm-test.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf b/tools/testing/selftests/alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf
-index 0a83f35d43eb..9eca985e0c08 100644
---- a/tools/testing/selftests/alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf
-+++ b/tools/testing/selftests/alsa/conf.d/Lenovo_ThinkPad_P1_Gen2.conf
-@@ -39,22 +39,25 @@ card.hda {
- 	#
- 	pcm.0.0 {
- 		PLAYBACK {
--			test.time1 {
--				access RW_INTERLEAVED	# can be omitted - default
--				format S16_LE		# can be omitted - default
--				rate 48000		# can be omitted - default
--				channels 2		# can be omitted - default
--				period_size 512
--				buffer_size 4096
--			}
--			test.time2 {
--				access RW_INTERLEAVED
--				format S16_LE
--				rate 48000
--				channels 2
--				period_size 24000
--				buffer_size 192000
--			}
-+			#
-+			# Uncomment to override values for specific tests
-+			#
-+			#test_name1 {
-+			#	access RW_INTERLEAVED
-+			#	format S16_LE
-+			#	rate 48000
-+			#	channels 2
-+			#	period_size 512
-+			#	buffer_size 4096
-+			#}
-+			#test_name2 {
-+			#	access RW_INTERLEAVED
-+			#	format S16_LE
-+			#	rate 48000
-+			#	channels 2
-+			#	period_size 24000
-+			#	buffer_size 192000
-+			#}
- 		}
- 		CAPTURE {
- 			# use default tests, check for the presence
+diff --git a/tools/testing/selftests/alsa/pcm-test.c b/tools/testing/selftests/alsa/pcm-test.c
+index c701cf507a95..afa13377481d 100644
+--- a/tools/testing/selftests/alsa/pcm-test.c
++++ b/tools/testing/selftests/alsa/pcm-test.c
+@@ -446,9 +446,9 @@ static void test_pcm_time1(struct pcm_data *data,
+ }
+ 
+ static const struct time_test_def time_tests[] = {
+-	/* name          format     rate   chan  period  buffer */
+-	{ "test.time1",  "S16_LE",  48000, 2,      512,    4096 },
+-	{ "test.time2",  "S16_LE",  48000, 2,    24000,  192000 },
++	/* name              format     rate   chan  period  buffer */
++	{ "S16.48k.2.small", "S16_LE",  48000, 2,      512,    4096 },
++	{ "S16.48k.2.big",   "S16_LE",  48000, 2,    24000,  192000 },
+ };
+ 
+ int main(void)
 -- 
 2.30.2
 
