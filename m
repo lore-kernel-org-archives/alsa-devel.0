@@ -4,71 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 035D4C43217
-	for <alsa-devel@archiver.kernel.org>; Thu,  1 Dec 2022 20:30:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A8FCC47088
+	for <alsa-devel@archiver.kernel.org>; Thu,  1 Dec 2022 20:39:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1EF98176C;
-	Thu,  1 Dec 2022 21:30:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EF98176C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B4A51779;
+	Thu,  1 Dec 2022 21:38:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B4A51779
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669926657;
-	bh=Od0AD5DBVzEiXrFV85VI5bd5miG2W796RKeGwL2sr/Y=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1669927170;
+	bh=FTyZ93Sc1W4VIQsNHMxgJlH0sdHFINQo9kc6bxOlM0w=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BNq/aNlfn7Q6A7NLc3WkGZbKuF2FFnEVeigBR76NUEUB7KQdBe4+/ysPaPI2ixq3O
-	 DkEabG83uM3p9GfGi6wGejAc/RcBXgQaE/vdDh5hY0LpHtUPLtS+vf7F6zjNjvXWlA
-	 t5FXWNWXOw4irqPrdeYU2sUd02dzoRghs8L97VWc=
+	b=FQYIfWIQlL9iQYIFD6I1FvoW7kprPAZcSN1JEjH/EAGYNdVfNvSLMr6AWZETBx5lZ
+	 cpdXfkAZek9h5OPiuch0khml0Cz0GPcau0f9l6txYMUp2ba1f1zAIrQQIza59sfTSM
+	 IYKbrDzY5wyQFWaHq4dZgvS/JaZ218G2Qk0WeDS4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA2AEF80166;
-	Thu,  1 Dec 2022 21:30:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A76FF80166;
+	Thu,  1 Dec 2022 21:38:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0275DF8028D; Thu,  1 Dec 2022 21:30:02 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 351F5F80118
- for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2022 21:29:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 351F5F80118
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mOEws95x"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id BB4F8F804ED; Thu,  1 Dec 2022 21:38:37 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 873BE62080;
- Thu,  1 Dec 2022 20:29:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1FA4C433C1;
- Thu,  1 Dec 2022 20:29:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669926592;
- bh=Od0AD5DBVzEiXrFV85VI5bd5miG2W796RKeGwL2sr/Y=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=mOEws95xl5zLJaZb6aIAVA2mfdtDGM4Ib/f7wD/4DO0SiseRZQQSJ4nKQbO3N1+2c
- Vwjzm/beXXkoikLJdNN6szSogF7JSYX5pmJOhMUzWQGXZ55okTJrHT046XiaU63zn0
- 21wEl9j4NLXYdHF7DsPzob28jBCqcSl6mlsluvztvS3zgUPTElAcIk/jDHVPqVQnUy
- ZrFTPSAWlmjNbJSkaUjIl50DHSBTQ1y74Kz6mw77+pusQFvQwo+PofYZCZnagrODxl
- TgU0yWG2yA1xlHhlho58lQiHEoYs1lKF/uZf1Ob+LxoZizVB5fjPx2oc24xxqxTgxa
- J5NAit4zKf8Lw==
-Date: Thu, 1 Dec 2022 20:29:48 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH v1 0/6] kselftest/alsa: pcm-test improvements
-Message-ID: <Y4kOvNi5I8/GK1yU@sirena.org.uk>
-References: <20221130000608.519574-1-broonie@kernel.org>
- <a55212fc-a676-2335-b861-94ba8d10f207@perex.cz>
- <87359zlz9t.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3AB8BF80118
+ for <alsa-devel@alsa-project.org>; Thu,  1 Dec 2022 21:38:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AB8BF80118
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="PQRs0yuo"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1669927112; x=1701463112;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=FTyZ93Sc1W4VIQsNHMxgJlH0sdHFINQo9kc6bxOlM0w=;
+ b=PQRs0yuo/JUfmjWzUUEzURvczE3cFcJKBE3TZSSZ6HhhZeYD+hgb+hq4
+ yViJJZ6ozICEnHNh7cyGJhlMthseWbIXzs5TV4lNZ9gL/EDStZVn1YWxg
+ 1JBTsi18ix/KgemGg0D3dUIC6G7YykFurCFTWqg8fd7O247pS+XphN92E
+ MJ3qKqW57thhNcrQGS1aie1+VQUOjjwa5T5+rlbt1aBv7biViHQYdYoB3
+ /Y/fQWp7O0PN/EFgO5qN/EVG4wAfLG7x9/dLmuviF6/QaN+dit1CVJz+O
+ guB1nihfWsyH3GWgzcR3/nM16SvIcTVmUIhI2B8wu5jhxdTo0QiQuWMii g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="314498387"
+X-IronPort-AV: E=Sophos;i="5.96,210,1665471600"; d="scan'208";a="314498387"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Dec 2022 12:38:06 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="644781664"
+X-IronPort-AV: E=Sophos;i="5.96,210,1665471600"; d="scan'208";a="644781664"
+Received: from twcarol-mobl.amr.corp.intel.com (HELO [10.212.10.40])
+ ([10.212.10.40])
+ by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Dec 2022 12:38:06 -0800
+Message-ID: <0f0fa03a-b7aa-6cdb-38b8-a09bf03f9efd@linux.intel.com>
+Date: Thu, 1 Dec 2022 12:20:06 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="YYXR5ynsa7QqFwTf"
-Content-Disposition: inline
-In-Reply-To: <87359zlz9t.wl-tiwai@suse.de>
-X-Cookie: Leveraging always beats prototyping.
-Cc: alsa-devel@alsa-project.org, Shuah Khan <shuah@kernel.org>,
- linux-kselftest@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.4.2
+Subject: Re: [PATCH 3/3] soundwire: cadence: Drain the RX FIFO after an IO
+ timeout
+Content-Language: en-US
+To: Richard Fitzgerald <rf@opensource.cirrus.com>, vkoul@kernel.org
+References: <20221201134845.4055907-1-rf@opensource.cirrus.com>
+ <20221201134845.4055907-4-rf@opensource.cirrus.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20221201134845.4055907-4-rf@opensource.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ yung-chuan.liao@linux.intel.com, linux-kernel@vger.kernel.org,
+ sanyog.r.kale@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,39 +92,112 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---YYXR5ynsa7QqFwTf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 01, 2022 at 08:06:22PM +0100, Takashi Iwai wrote:
-> On Thu, 01 Dec 2022 18:42:22 +0100,
-> Jaroslav Kysela wrote:
-> >=20
-> > Let me know, if I can stack your changes on top, or perhaps, you may
-> > be willing to adapt them.
->=20
-> As Mark has already sent a v2 series, I applied his v2 at first.
-> Could you rebase and resubmit on top of my for-next branch?
+On 12/1/22 07:48, Richard Fitzgerald wrote:
+> If wait_for_completion_timeout() times-out in _cdns_xfer_msg() it
+> is possible that something could have been written to the RX FIFO.
+> In this case, we should drain the RX FIFO so that anything in it
+> doesn't carry over and mess up the next transfer.
+> 
+> Obviously, if we got to this state something went wrong, and we
+> don't really know the state of everything. The cleanup in this
+> situation cannot be bullet-proof but we should attempt to avoid
+> breaking future transaction, if only to reduce the amount of
+> error noise when debugging the failure from a kernel log.
+> 
+> Note that this patch only implements the draining for blocking
+> (non-deferred) transfers. The deferred API doesn't have any proper
+> handling of error conditions and would need some re-design before
+> implementing cleanup. That is a task for a separate patch...
 
-Oh, this is getting a little confusing - I'd just picked Jaroslav's
-patch into my tree and was in the middle redoing my ideas on top of his
-code!  I might have something more later this evening...  I think we can
-converge here, let me continue taking a look.
+It's nearly impossible to deal with error conditions with deferred
+transfers, specifically in the case where deferred transfers deal with
+bank switches to synchronize changes across multiple links. The NAK is
+visible only in the scope of a link, and it could happen that a bank
+switch happens on one link and not the other. We don't have any means to
+recover at this point.
 
---YYXR5ynsa7QqFwTf
-Content-Type: application/pgp-signature; name="signature.asc"
+That said, draining the FIFO on timeouts for regular commands is a good
+idea - or it cannot hurt, so
 
------BEGIN PGP SIGNATURE-----
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmOJDrsACgkQJNaLcl1U
-h9C/WAf8CLgm6NcrQknYcMIw1V3IqwqHTcxlDhTiq4NYafIjUOMXWaNSJVtPgu1V
-TbroqPWv5McRKkXzB87ZKcwX6ITGMpDHbUjKqIBgt9Q9TrJF77GVYomDGPoQpHuz
-btGf+zLCPowAeW6X2PUeRkP43VFOvDNbnzePJULqc4YJCt4+0dNwy32y+gRQeu+1
-feYBc/B8GnmdzqKDZkFqtZfZN530GBDWJBAALk9E4OCrxGd/U4ZAk8Xk5rb+a5SM
-4nUx3ypoUWVA6QXvVTMmytD956ic5bYtbX/FqRpYs+Wmc9RBe6O40TAdhvMuw4D2
-z6UttiUWsHorXMYSBUhQvBCQX9kQYQ==
-=3940
------END PGP SIGNATURE-----
-
---YYXR5ynsa7QqFwTf--
+> 
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> ---
+>  drivers/soundwire/cadence_master.c | 48 ++++++++++++++++--------------
+>  1 file changed, 26 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+> index 95c84d9f0775..6bffecf3d61a 100644
+> --- a/drivers/soundwire/cadence_master.c
+> +++ b/drivers/soundwire/cadence_master.c
+> @@ -555,6 +555,28 @@ cdns_fill_msg_resp(struct sdw_cdns *cdns,
+>  	return SDW_CMD_OK;
+>  }
+>  
+> +static void cdns_read_response(struct sdw_cdns *cdns)
+> +{
+> +	u32 num_resp, cmd_base;
+> +	int i;
+> +
+> +	BUILD_BUG_ON(ARRAY_SIZE(cdns->response_buf) < CDNS_MCP_CMD_LEN);
+> +
+> +	num_resp = cdns_readl(cdns, CDNS_MCP_FIFOSTAT);
+> +	num_resp &= CDNS_MCP_RX_FIFO_AVAIL;
+> +	if (num_resp > ARRAY_SIZE(cdns->response_buf)) {
+> +		dev_warn(cdns->dev, "RX AVAIL %d too long\n", num_resp);
+> +		num_resp = CDNS_MCP_CMD_LEN;
+> +	}
+> +
+> +	cmd_base = CDNS_MCP_CMD_BASE;
+> +
+> +	for (i = 0; i < num_resp; i++) {
+> +		cdns->response_buf[i] = cdns_readl(cdns, cmd_base);
+> +		cmd_base += CDNS_MCP_CMD_WORD_LEN;
+> +	}
+> +}
+> +
+>  static enum sdw_command_response
+>  _cdns_xfer_msg(struct sdw_cdns *cdns, struct sdw_msg *msg, int cmd,
+>  	       int offset, int count, bool defer)
+> @@ -596,6 +618,10 @@ _cdns_xfer_msg(struct sdw_cdns *cdns, struct sdw_msg *msg, int cmd,
+>  		dev_err(cdns->dev, "IO transfer timed out, cmd %d device %d addr %x len %d\n",
+>  			cmd, msg->dev_num, msg->addr, msg->len);
+>  		msg->len = 0;
+> +
+> +		/* Drain anything in the RX_FIFO */
+> +		cdns_read_response(cdns);
+> +
+>  		return SDW_CMD_TIMEOUT;
+>  	}
+>  
+> @@ -769,28 +795,6 @@ EXPORT_SYMBOL(cdns_read_ping_status);
+>   * IRQ handling
+>   */
+>  
+> -static void cdns_read_response(struct sdw_cdns *cdns)
+> -{
+> -	u32 num_resp, cmd_base;
+> -	int i;
+> -
+> -	BUILD_BUG_ON(ARRAY_SIZE(cdns->response_buf) < CDNS_MCP_CMD_LEN);
+> -
+> -	num_resp = cdns_readl(cdns, CDNS_MCP_FIFOSTAT);
+> -	num_resp &= CDNS_MCP_RX_FIFO_AVAIL;
+> -	if (num_resp > ARRAY_SIZE(cdns->response_buf)) {
+> -		dev_warn(cdns->dev, "RX AVAIL %d too long\n", num_resp);
+> -		num_resp = CDNS_MCP_CMD_LEN;
+> -	}
+> -
+> -	cmd_base = CDNS_MCP_CMD_BASE;
+> -
+> -	for (i = 0; i < num_resp; i++) {
+> -		cdns->response_buf[i] = cdns_readl(cdns, cmd_base);
+> -		cmd_base += CDNS_MCP_CMD_WORD_LEN;
+> -	}
+> -}
+> -
+>  static int cdns_update_slave_status(struct sdw_cdns *cdns,
+>  				    u64 slave_intstat)
+>  {
