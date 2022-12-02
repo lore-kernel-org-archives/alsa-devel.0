@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13BC2C4321E
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Dec 2022 15:15:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 073EEC4321E
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Dec 2022 15:15:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40BB51836;
-	Fri,  2 Dec 2022 16:14:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40BB51836
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E9D81848;
+	Fri,  2 Dec 2022 16:14:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E9D81848
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669994106;
-	bh=h9gcwFwo0WsEgG4cCHo/H2blt9yFolIlibTnwho3juw=;
+	s=default; t=1669994122;
+	bh=SYmMvv2QSpD8R3ylgRF7oDI7zKg81poDaVjC09Xb7Xk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JZNIJf7UDgAe6P5SCHZG6TSwWV+rKg7LLEUja0xUvx1kCy1uvqoX2jw0RCxabWEUk
-	 QnyESnOgEfDYPW/ZjfDf6rGviJKAF9UqCzvXYoIWtnhvXrIf01Ird+hCuTJCvyWcoe
-	 7DKktJWRzeDEJ61G0/t6zwLdvPzj63jOfew+DQoQ=
+	b=rB7eZt7FhpowIdk8w5oykYB4Ckf/TOvNibjNEQlw0gnK3aDPC6ku8m2QS4qjJh7LR
+	 4d9bSYe6S0xbqNTkEqapO6hijjrjRIjefMs4d07TCx00uOeSiI1Mnh9lVrUIsoaJM/
+	 T9GFp6wXxcL+r1hlXz8emnIhKGSwQFv2O1gwL0RY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C5CCF805BB;
-	Fri,  2 Dec 2022 16:12:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C41CFF805BF;
+	Fri,  2 Dec 2022 16:12:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F5C3F805BD; Fri,  2 Dec 2022 16:12:06 +0100 (CET)
+ id 0F82DF805C0; Fri,  2 Dec 2022 16:12:09 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B863F805A9
- for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2022 16:11:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B863F805A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54EDBF805B3
+ for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2022 16:12:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54EDBF805B3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="LiHRYN8B"
+ header.b="A02xpUE1"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1669993920; x=1701529920;
+ t=1669993923; x=1701529923;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=h9gcwFwo0WsEgG4cCHo/H2blt9yFolIlibTnwho3juw=;
- b=LiHRYN8B48jXQSMXSZPUQvP+ZBLYGryaZpWyDsPX5GEJt+AcVsbhOp8o
- rXWxxe9aA9cGlyqv+0v1I+VCnKPcgPi5c09eXMpt4GzxdUpJqnHzUnhjx
- R66Kw2v6DOjOUv0N6qzt3hO5G74VHc4JWgwYalVJrvhZcZToD50wIE8yp
- jEYKfdBYXMLviyUaEwAuHH21rFrbtC6/AkmKkPlPiKtVKvuP/xb/oKuQq
- LP9VcfruIawts45/WSDWz7Xt0FGehCtA8Ao/Lbi/gAWZPPEO/5gEq0qmU
- s344a2360cZlr+Fpa+coKziHVQTQUkhex0vVjv1Me9Bzx4l9tN7LsOAwq Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="402251808"
-X-IronPort-AV: E=Sophos;i="5.96,212,1665471600"; d="scan'208";a="402251808"
+ bh=SYmMvv2QSpD8R3ylgRF7oDI7zKg81poDaVjC09Xb7Xk=;
+ b=A02xpUE1zV5f/Md4xO1b0HEbkDWOJ8y1FgDHXM6fEs5BmRKrdmmdly3m
+ 6HjFfL5lD3SNUH+Zr5Hcfy+oClDpBn0vR42nPBXTozd04oS9Sn2hrpmb+
+ UsCaihtK4CBDhzQ3b7GCwnvXzDp4RChSHi5jIIG3OMh6KcQkXPiLDFY2O
+ MyvHjSdUVLoE/ljt1bkHAfJbBZavk2lJ4ebhac5KTXypr0DhUgBTOG78Y
+ qsQCL5EYwPpBjG4S8eEeQmNMfPTfu7R+DsUHa8kaBFFS+FLpUCofFmhpx
+ t2/qkbJgLO1ZERqbNxv77sGURq6Q9C6X41XZvMkfxjUW/YYSlRUwOSm76 A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="402251833"
+X-IronPort-AV: E=Sophos;i="5.96,212,1665471600"; d="scan'208";a="402251833"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Dec 2022 07:11:57 -0800
+ 02 Dec 2022 07:12:01 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="708504752"
-X-IronPort-AV: E=Sophos;i="5.96,212,1665471600"; d="scan'208";a="708504752"
+X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="708504759"
+X-IronPort-AV: E=Sophos;i="5.96,212,1665471600"; d="scan'208";a="708504759"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga008.fm.intel.com with ESMTP; 02 Dec 2022 07:11:55 -0800
+ by fmsmga008.fm.intel.com with ESMTP; 02 Dec 2022 07:11:59 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v2 11/16] ASoC: Intel: avs: Data probing soc-component
-Date: Fri,  2 Dec 2022 16:28:36 +0100
-Message-Id: <20221202152841.672536-12-cezary.rojewski@intel.com>
+Subject: [PATCH v2 13/16] ASoC: Intel: avs: Probing and firmware tracing over
+ debugfs
+Date: Fri,  2 Dec 2022 16:28:38 +0100
+Message-Id: <20221202152841.672536-14-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221202152841.672536-1-cezary.rojewski@intel.com>
 References: <20221202152841.672536-1-cezary.rojewski@intel.com>
@@ -86,140 +87,416 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Define stub component for data probing. Stub as most operations from
-standard PCM case do not apply here. Specific bits are CPU DAIs and
-compress_ops. FE DAIs can link against these new CPU DAI to create new
-compress devices.
+Define debugfs subdirectory delegated for IPC communication with DSP.
+Input format: uint,uint,(...) which are later translated into DWORDS
+sequence and further into instances of struct of interest given the IPC
+type.
+
+For Extractor probes, following have been enabled:
+- PROBE_POINT_ADD (echo <..> probe_points)
+- PROBE_POINT_REMOVE (echo <..> probe_points_remove)
+- PROBE_POINT_INFO (cat probe_points)
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/avs.h    | 10 +++++++
- sound/soc/intel/avs/pcm.c    |  6 ++--
- sound/soc/intel/avs/probes.c | 53 ++++++++++++++++++++++++++++++++++--
- 3 files changed, 64 insertions(+), 5 deletions(-)
+ sound/soc/intel/avs/avs.h     |   7 +
+ sound/soc/intel/avs/core.c    |   2 +
+ sound/soc/intel/avs/debugfs.c | 326 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 335 insertions(+)
 
 diff --git a/sound/soc/intel/avs/avs.h b/sound/soc/intel/avs/avs.h
-index e5e7c72eb511..e19d8d89455d 100644
+index e19d8d89455d..d7fccdcb9c16 100644
 --- a/sound/soc/intel/avs/avs.h
 +++ b/sound/soc/intel/avs/avs.h
-@@ -322,6 +322,9 @@ struct avs_soc_component {
- 
- extern const struct snd_soc_dai_ops avs_dai_fe_ops;
- 
-+int avs_soc_component_register(struct device *dev, const char *name,
-+			       const struct snd_soc_component_driver *drv,
-+			       struct snd_soc_dai_driver *cpu_dais, int num_cpu_dais);
- int avs_dmic_platform_register(struct avs_dev *adev, const char *name);
- int avs_i2s_platform_register(struct avs_dev *adev, const char *name, unsigned long port_mask,
- 			      unsigned long *tdms);
-@@ -373,6 +376,8 @@ struct apl_log_buffer_layout {
- bool avs_logging_fw(struct avs_dev *adev);
- void avs_dump_fw_log(struct avs_dev *adev, const void __iomem *src, unsigned int len);
+@@ -144,6 +144,7 @@ struct avs_dev {
+ 	u32 aging_timer_period;
+ 	u32 fifo_full_timer_period;
+ 	u32 logged_resources;	/* context dependent: core or library */
++	struct dentry *debugfs_root;
+ 	/* probes */
+ 	struct hdac_ext_stream *extractor;
+ 	unsigned int num_probe_streams;
+@@ -378,6 +379,9 @@ void avs_dump_fw_log(struct avs_dev *adev, const void __iomem *src, unsigned int
  void avs_dump_fw_log_wakeup(struct avs_dev *adev, const void __iomem *src, unsigned int len);
+ 
+ int avs_probe_platform_register(struct avs_dev *adev, const char *name);
 +
-+int avs_probe_platform_register(struct avs_dev *adev, const char *name);
++void avs_debugfs_init(struct avs_dev *adev);
++void avs_debugfs_exit(struct avs_dev *adev);
  #else
  #define AVS_SET_ENABLE_LOGS_OP(name)
  
-@@ -389,6 +394,11 @@ static inline void
- avs_dump_fw_log_wakeup(struct avs_dev *adev, const void __iomem *src, unsigned int len)
+@@ -399,6 +403,9 @@ static inline int avs_probe_platform_register(struct avs_dev *adev, const char *
  {
+ 	return 0;
  }
 +
-+static inline int avs_probe_platform_register(struct avs_dev *adev, const char *name)
-+{
-+	return 0;
-+}
++static inline void avs_debugfs_init(struct avs_dev *adev) { }
++static inline void avs_debugfs_exit(struct avs_dev *adev) { }
  #endif
  
  #endif /* __SOUND_SOC_INTEL_AVS_H */
-diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
-index 70d687fa9923..f930c5e86a84 100644
---- a/sound/soc/intel/avs/pcm.c
-+++ b/sound/soc/intel/avs/pcm.c
-@@ -1126,9 +1126,9 @@ static const struct snd_soc_component_driver avs_component_driver = {
- 	.topology_name_prefix	= "intel/avs",
- };
+diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
+index f7bc06404dbc..2ca24273c491 100644
+--- a/sound/soc/intel/avs/core.c
++++ b/sound/soc/intel/avs/core.c
+@@ -214,6 +214,7 @@ static void avs_hda_probe_work(struct work_struct *work)
+ 	adev->nhlt = intel_nhlt_init(adev->dev);
+ 	if (!adev->nhlt)
+ 		dev_info(bus->dev, "platform has no NHLT\n");
++	avs_debugfs_init(adev);
  
--static int avs_soc_component_register(struct device *dev, const char *name,
--				      const struct snd_soc_component_driver *drv,
--				      struct snd_soc_dai_driver *cpu_dais, int num_cpu_dais)
-+int avs_soc_component_register(struct device *dev, const char *name,
-+			       const struct snd_soc_component_driver *drv,
-+			       struct snd_soc_dai_driver *cpu_dais, int num_cpu_dais)
+ 	avs_register_all_boards(adev);
+ 
+@@ -491,6 +492,7 @@ static void avs_pci_remove(struct pci_dev *pci)
+ 
+ 	avs_unregister_all_boards(adev);
+ 
++	avs_debugfs_exit(adev);
+ 	if (adev->nhlt)
+ 		intel_nhlt_free(adev->nhlt);
+ 
+diff --git a/sound/soc/intel/avs/debugfs.c b/sound/soc/intel/avs/debugfs.c
+index 78705bcb09fb..678572ee6b9d 100644
+--- a/sound/soc/intel/avs/debugfs.c
++++ b/sound/soc/intel/avs/debugfs.c
+@@ -9,7 +9,10 @@
+ #include <linux/debugfs.h>
+ #include <linux/kfifo.h>
+ #include <linux/wait.h>
++#include <linux/sched/signal.h>
++#include <sound/soc.h>
+ #include "avs.h"
++#include "messages.h"
+ 
+ static unsigned int __kfifo_fromio(struct kfifo *fifo, const void __iomem *src, unsigned int len)
  {
- 	struct avs_soc_component *acomp;
- 	int ret;
-diff --git a/sound/soc/intel/avs/probes.c b/sound/soc/intel/avs/probes.c
-index e90284ec8500..29d63f2a9616 100644
---- a/sound/soc/intel/avs/probes.c
-+++ b/sound/soc/intel/avs/probes.c
-@@ -249,7 +249,6 @@ static int avs_probe_compr_copy(struct snd_soc_component *comp, struct snd_compr
- 	return count;
+@@ -44,3 +47,326 @@ void avs_dump_fw_log_wakeup(struct avs_dev *adev, const void __iomem *src, unsig
+ 	avs_dump_fw_log(adev, src, len);
+ 	wake_up(&adev->trace_waitq);
  }
- 
--__maybe_unused
- static const struct snd_soc_cdai_ops avs_probe_dai_ops = {
- 	.startup = avs_probe_compr_open,
- 	.shutdown = avs_probe_compr_free,
-@@ -258,7 +257,57 @@ static const struct snd_soc_cdai_ops avs_probe_dai_ops = {
- 	.pointer = avs_probe_compr_pointer,
- };
- 
--__maybe_unused
- static const struct snd_compress_ops avs_probe_compress_ops = {
- 	.copy = avs_probe_compr_copy,
- };
 +
-+static struct snd_soc_dai_driver probe_cpu_dais[] = {
++static ssize_t probe_points_read(struct file *file, char __user *to, size_t count, loff_t *ppos)
 +{
-+	.name = "Probe Extraction CPU DAI",
-+	.compress_new = snd_soc_new_compress,
-+	.cops = &avs_probe_dai_ops,
-+	.capture = {
-+		.stream_name = "Probe Extraction",
-+		.channels_min = 1,
-+		.channels_max = 8,
-+		.rates = SNDRV_PCM_RATE_48000,
-+		.rate_min = 48000,
-+		.rate_max = 48000,
-+	},
-+},
++	struct avs_dev *adev = file->private_data;
++	struct avs_probe_point_desc *desc;
++	size_t num_desc, len = 0;
++	char *buf;
++	int i, ret;
++
++	/* Prevent chaining, send and dump IPC value just once. */
++	if (*ppos)
++		return 0;
++
++	buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	ret = avs_ipc_probe_get_points(adev, &desc, &num_desc);
++	if (ret) {
++		ret = AVS_IPC_RET(ret);
++		goto exit;
++	}
++
++	for (i = 0; i < num_desc; i++) {
++		ret = snprintf(buf + len, PAGE_SIZE - len,
++			       "Id: %#010x  Purpose: %d  Node id: %#x\n",
++			       desc[i].id.value, desc[i].purpose, desc[i].node_id.val);
++		if (ret < 0)
++			goto free_desc;
++		len += ret;
++	}
++
++	ret = simple_read_from_buffer(to, count, ppos, buf, len);
++free_desc:
++	kfree(desc);
++exit:
++	kfree(buf);
++	return ret;
++}
++
++static ssize_t probe_points_write(struct file *file, const char __user *from, size_t count,
++				  loff_t *ppos)
++{
++	struct avs_dev *adev = file->private_data;
++	struct avs_probe_point_desc *desc;
++	u32 *array, num_elems;
++	size_t bytes;
++	int ret;
++
++	ret = parse_int_array_user(from, count, (int **)&array);
++	if (ret < 0)
++		return ret;
++
++	num_elems = *array;
++	bytes = sizeof(*array) * num_elems;
++	if (bytes % sizeof(*desc)) {
++		ret = -EINVAL;
++		goto exit;
++	}
++
++	desc = (struct avs_probe_point_desc *)&array[1];
++	ret = avs_ipc_probe_connect_points(adev, desc, bytes / sizeof(*desc));
++	if (ret)
++		ret = AVS_IPC_RET(ret);
++	else
++		ret = count;
++exit:
++	kfree(array);
++	return ret;
++}
++
++static const struct file_operations probe_points_fops = {
++	.open = simple_open,
++	.read = probe_points_read,
++	.write = probe_points_write,
++	.llseek = no_llseek,
 +};
 +
-+static int avs_probe_component_probe(struct snd_soc_component *component)
++static ssize_t probe_points_disconnect_write(struct file *file, const char __user *from,
++					     size_t count, loff_t *ppos)
 +{
-+	struct avs_soc_component *acomp = to_avs_soc_component(component);
-+	struct avs_dev *adev = to_avs_dev(component->dev);
++	struct avs_dev *adev = file->private_data;
++	union avs_probe_point_id *id;
++	u32 *array, num_elems;
++	size_t bytes;
++	int ret;
 +
-+	mutex_lock(&adev->comp_list_mutex);
-+	list_add_tail(&acomp->node, &adev->comp_list);
-+	mutex_unlock(&adev->comp_list_mutex);
++	ret = parse_int_array_user(from, count, (int **)&array);
++	if (ret < 0)
++		return ret;
++
++	num_elems = *array;
++	bytes = sizeof(*array) * num_elems;
++	if (bytes % sizeof(*id)) {
++		ret = -EINVAL;
++		goto exit;
++	}
++
++	id = (union avs_probe_point_id *)&array[1];
++	ret = avs_ipc_probe_disconnect_points(adev, id, bytes / sizeof(*id));
++	if (ret)
++		ret = AVS_IPC_RET(ret);
++	else
++		ret = count;
++exit:
++	kfree(array);
++	return ret;
++}
++
++static const struct file_operations probe_points_disconnect_fops = {
++	.open = simple_open,
++	.write = probe_points_disconnect_write,
++	.llseek = default_llseek,
++};
++
++static ssize_t strace_read(struct file *file, char __user *to, size_t count, loff_t *ppos)
++{
++	struct avs_dev *adev = file->private_data;
++	struct kfifo *fifo = &adev->trace_fifo;
++	unsigned int copied;
++
++	if (kfifo_is_empty(fifo)) {
++		DEFINE_WAIT(wait);
++
++		prepare_to_wait(&adev->trace_waitq, &wait, TASK_INTERRUPTIBLE);
++		if (!signal_pending(current))
++			schedule();
++		finish_wait(&adev->trace_waitq, &wait);
++	}
++
++	if (kfifo_to_user(fifo, to, count, &copied))
++		return -EFAULT;
++	*ppos += copied;
++	return copied;
++}
++
++static int strace_open(struct inode *inode, struct file *file)
++{
++	struct avs_dev *adev = inode->i_private;
++	int ret;
++
++	if (kfifo_initialized(&adev->trace_fifo))
++		return -EBUSY;
++
++	ret = kfifo_alloc(&adev->trace_fifo, PAGE_SIZE, GFP_KERNEL);
++	if (ret < 0)
++		return ret;
++
++	file->private_data = adev;
 +	return 0;
 +}
 +
-+static void avs_probe_component_remove(struct snd_soc_component *component)
++static int strace_release(struct inode *inode, struct file *file)
 +{
-+	struct avs_soc_component *acomp = to_avs_soc_component(component);
-+	struct avs_dev *adev = to_avs_dev(component->dev);
++	struct avs_dev *adev = file->private_data;
++	unsigned long flags;
 +
-+	mutex_lock(&adev->comp_list_mutex);
-+	list_del(&acomp->node);
-+	mutex_unlock(&adev->comp_list_mutex);
++	spin_lock_irqsave(&adev->trace_lock, flags);
++	kfifo_free(&adev->trace_fifo);
++	spin_unlock_irqrestore(&adev->trace_lock, flags);
++
++	return 0;
 +}
 +
-+static const struct snd_soc_component_driver avs_probe_component_driver = {
-+	.name			= "avs-probe-compr",
-+	.probe			= avs_probe_component_probe,
-+	.remove			= avs_probe_component_remove,
-+	.compress_ops		= &avs_probe_compress_ops,
-+	.module_get_upon_open	= 1, /* increment refcount when a stream is opened */
++static const struct file_operations strace_fops = {
++	.llseek = default_llseek,
++	.read = strace_read,
++	.open = strace_open,
++	.release = strace_release,
 +};
 +
-+int avs_probe_platform_register(struct avs_dev *adev, const char *name)
++#define DISABLE_TIMERS	UINT_MAX
++
++static int enable_logs(struct avs_dev *adev, u32 resource_mask, u32 *priorities)
 +{
-+	return avs_soc_component_register(adev->dev, name, &avs_probe_component_driver,
-+					  probe_cpu_dais, ARRAY_SIZE(probe_cpu_dais));
++	int ret;
++
++	/* Logging demands D0i0 state from DSP. */
++	if (!adev->logged_resources) {
++		pm_runtime_get_sync(adev->dev);
++
++		ret = avs_dsp_disable_d0ix(adev);
++		if (ret)
++			goto err_d0ix;
++	}
++
++	ret = avs_ipc_set_system_time(adev);
++	if (ret && ret != AVS_IPC_NOT_SUPPORTED) {
++		ret = AVS_IPC_RET(ret);
++		goto err_ipc;
++	}
++
++	ret = avs_dsp_op(adev, enable_logs, AVS_LOG_ENABLE, adev->aging_timer_period,
++			 adev->fifo_full_timer_period, resource_mask, priorities);
++	if (ret)
++		goto err_ipc;
++
++	adev->logged_resources |= resource_mask;
++	return 0;
++
++err_ipc:
++	if (!adev->logged_resources) {
++		avs_dsp_enable_d0ix(adev);
++err_d0ix:
++		pm_runtime_mark_last_busy(adev->dev);
++		pm_runtime_put_autosuspend(adev->dev);
++	}
++
++	return ret;
++}
++
++static int disable_logs(struct avs_dev *adev, u32 resource_mask)
++{
++	int ret;
++
++	/* Check if there's anything to do. */
++	if (!adev->logged_resources)
++		return 0;
++
++	ret = avs_dsp_op(adev, enable_logs, AVS_LOG_DISABLE, DISABLE_TIMERS, DISABLE_TIMERS,
++			 resource_mask, NULL);
++
++	/*
++	 * If IPC fails causing recovery, logged_resources is already zero
++	 * so unsetting bits is still safe.
++	 */
++	adev->logged_resources &= ~resource_mask;
++
++	/* If that's the last resource, allow for D3. */
++	if (!adev->logged_resources) {
++		avs_dsp_enable_d0ix(adev);
++		pm_runtime_mark_last_busy(adev->dev);
++		pm_runtime_put_autosuspend(adev->dev);
++	}
++
++	return ret;
++}
++
++static ssize_t trace_control_read(struct file *file, char __user *to, size_t count, loff_t *ppos)
++{
++	struct avs_dev *adev = file->private_data;
++	char buf[64];
++	int len;
++
++	len = snprintf(buf, sizeof(buf), "0x%08x\n", adev->logged_resources);
++
++	return simple_read_from_buffer(to, count, ppos, buf, len);
++}
++
++static ssize_t trace_control_write(struct file *file, const char __user *from, size_t count,
++				   loff_t *ppos)
++{
++	struct avs_dev *adev = file->private_data;
++	u32 *array, num_elems;
++	u32 resource_mask;
++	int ret;
++
++	ret = parse_int_array_user(from, count, (int **)&array);
++	if (ret < 0)
++		return ret;
++
++	num_elems = *array;
++	resource_mask = array[1];
++
++	/*
++	 * Disable if just resource mask is provided - no log priority flags.
++	 *
++	 * Enable input format:   mask, prio1, .., prioN
++	 * Where 'N' equals number of bits set in the 'mask'.
++	 */
++	if (num_elems == 1) {
++		ret = disable_logs(adev, resource_mask);
++	} else {
++		if (num_elems != (hweight_long(resource_mask) + 1)) {
++			ret = -EINVAL;
++			goto free_array;
++		}
++
++		ret = enable_logs(adev, resource_mask, &array[2]);
++	}
++
++	if (!ret)
++		ret = count;
++free_array:
++	kfree(array);
++	return ret;
++}
++
++static const struct file_operations trace_control_fops = {
++	.llseek = default_llseek,
++	.read = trace_control_read,
++	.write = trace_control_write,
++	.open = simple_open,
++};
++
++void avs_debugfs_init(struct avs_dev *adev)
++{
++	init_waitqueue_head(&adev->trace_waitq);
++	spin_lock_init(&adev->trace_lock);
++
++	adev->debugfs_root = debugfs_create_dir("avs", snd_soc_debugfs_root);
++
++	/* Initialize timer periods with recommended defaults. */
++	adev->aging_timer_period = 10;
++	adev->fifo_full_timer_period = 10;
++
++	debugfs_create_file("strace", 0444, adev->debugfs_root, adev, &strace_fops);
++	debugfs_create_file("trace_control", 0644, adev->debugfs_root, adev, &trace_control_fops);
++
++	debugfs_create_u32("trace_aging_period", 0644, adev->debugfs_root,
++			   &adev->aging_timer_period);
++	debugfs_create_u32("trace_fifo_full_period", 0644, adev->debugfs_root,
++			   &adev->fifo_full_timer_period);
++
++	debugfs_create_file("probe_points", 0644, adev->debugfs_root, adev, &probe_points_fops);
++	debugfs_create_file("probe_points_disconnect", 0200, adev->debugfs_root, adev,
++			    &probe_points_disconnect_fops);
++}
++
++void avs_debugfs_exit(struct avs_dev *adev)
++{
++	debugfs_remove_recursive(adev->debugfs_root);
 +}
 -- 
 2.25.1
