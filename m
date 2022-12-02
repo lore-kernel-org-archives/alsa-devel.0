@@ -4,75 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8A6FC4332F
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Dec 2022 00:24:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70DEBC4332F
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Dec 2022 00:24:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3E4517EB;
-	Fri,  2 Dec 2022 01:23:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3E4517EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A2EF17F2;
+	Fri,  2 Dec 2022 01:23:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A2EF17F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669940640;
-	bh=dBD1V0ORWBj1gViOrTy7ZqLawnuQQJYymah38QyRU4M=;
+	s=default; t=1669940661;
+	bh=IS7rd7rcz6gVpwRJ0tJXC7rhdgZaY2/fgyU9ObJPI5Q=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jH5qcxUJ4jDCKMUdu2VtrLRq9SY5qd4BW/eCVItJ9Oo8fl/IIq6jIkKYgU1wXESma
-	 YPylFjDWhGfZc9pryd4GOeamV0cL/JLxrxyTEcjnahlaYUsYUsvmEDsXHr7SBiCvjp
-	 3IM01AwB+qsiBp3pZJi8Rgtskz8qMc1nM6qafx0U=
+	b=krdY36aC7Kg6I80CI8gwPA+uaobYG9ldAf+W8Zfw6+MAt61+qBaK2BADj4S+tnkxr
+	 ffGbIEKoYigHnVkm4VfFxmh+OtuwiEknMYRhb9BUwCpg2+yceWRmANqnF1ggiPw79I
+	 ScQB1E1UuoU93MsoJi9WtXUb3yT6FJFIkN47SWPY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 990C5F8057F;
-	Fri,  2 Dec 2022 01:21:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B358F805A8;
+	Fri,  2 Dec 2022 01:21:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AC014F80568; Fri,  2 Dec 2022 01:21:35 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 593BAF80118; Fri,  2 Dec 2022 01:21:38 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CACCBF80564
- for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2022 01:21:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CACCBF80564
+ by alsa1.perex.cz (Postfix) with ESMTPS id A73FCF80118
+ for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2022 01:21:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A73FCF80118
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JEEjVcEo"
+ header.b="KWdLTbyZ"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 835A8621D7;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 5706B621DF;
+ Fri,  2 Dec 2022 00:21:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6066EC433B5;
  Fri,  2 Dec 2022 00:21:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A315C433C1;
- Fri,  2 Dec 2022 00:21:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1669940491;
- bh=dBD1V0ORWBj1gViOrTy7ZqLawnuQQJYymah38QyRU4M=;
+ s=k20201202; t=1669940493;
+ bh=IS7rd7rcz6gVpwRJ0tJXC7rhdgZaY2/fgyU9ObJPI5Q=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=JEEjVcEoCdDe2vydJgo6Fds44sBe4nGYVFs5kwlOOgY83hP0iaUWBGDlCA1+kjnRR
- 2WDdmVsnGlz8Mo7C6Zv4CaB51etgn7ku9gHIlMI/PsxqrrlCFKZ1M/yvmuOjkZdFop
- 20Sd6tfdBLXMjF9vhVNCxPiRC+ANdTVR8J9/as7ZI8UQGtMNGkRiFxVTCeyyCMXfD3
- PslMnWKxud72BUGBaM2esWXY/MKGAEp2bf053D3cOf17KmKAQ0NYhIjLpa4fbcQwRN
- dP4vihSqKnl/NdbIxxCuqyADDrDw870puxZ9SbzDaCETpzP9iHuc7V/f9bv6yXMd0a
- n2YH6/YV5qTWw==
+ b=KWdLTbyZw6FD2y1dEc0h4hUfAw8464ePoanpcVIdyrak4PprQq8PxsPn1UUcrc8Sc
+ Q9f7PApwg5oS/44kZo9xNhUVZoDfig2BV4mrEPgycamJTz/5j4w/LYT4qzv1pva5T4
+ XuWyJZ53ebqkEQxhV2nN57oezbGJuNAQFjjZlMQorXzZJQ/52TLOuW+869yh+6m3dT
+ gRYBUu5WpdXEzcK+1/2MtjQXNypRcirjhPZwpSfL1Ut+oIC8M5mrDla9oS49UAjVvG
+ 7XXEnhr88ICj6O8Gdxle+wE7l9Vh/8J6B30mAwPDYrVLZqdepUGHEDyzfHFVfwUz6S
+ dFo7TwUUqXJgg==
 From: Mark Brown <broonie@kernel.org>
 To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
  Shuah Khan <shuah@kernel.org>
-Subject: [PATCH v3 6/7] kselftest/alsa: pcm - Provide descriptions for the
- default tests
-Date: Fri,  2 Dec 2022 00:17:48 +0000
-Message-Id: <20221202001749.3321187-7-broonie@kernel.org>
+Subject: [PATCH v3 7/7] kselftest/alsa: pcm - Add more coverage by default
+Date: Fri,  2 Dec 2022 00:17:49 +0000
+Message-Id: <20221202001749.3321187-8-broonie@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20221202001749.3321187-1-broonie@kernel.org>
 References: <20221202001749.3321187-1-broonie@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=893; i=broonie@kernel.org;
- h=from:subject; bh=dBD1V0ORWBj1gViOrTy7ZqLawnuQQJYymah38QyRU4M=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBjiUQrsTUC11H3brnOPFclzE/I346UGT29tb6iInrE
- QC+kHEGJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCY4lEKwAKCRAk1otyXVSH0IyhB/
- 9hUsUOCb9wqCoPiH7AgPo3TXcnBHp9zypli7WnEc/yqw2ZtuO96CZbFDFz72DqFIqDqiHZDzjYeKn+
- SRKMGmc+ttgXbm8dMJlkSDfMr+35fzOH7AKVV7hzQsHIYAbvpr/8oxWucxvONDuDJTim+Ol3xCrOxs
- CTWI1zv05zYvqq5PCRvjaeo2GxinTGCfXQ94J/sb6o24SOVjqZNtQ7b0XJUeDwJHgrJmv4piKNLy73
- saRRuYwjX65h6IE+ECKM4lZiajYbxLu+bk1i2loBoFG1BYVVvn0FTGZqknw6OK63PkQfTt6Cr48DKr
- w+oYe/TAjIHrD+4dHxi5WWhbrwBx5Z
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2103; i=broonie@kernel.org;
+ h=from:subject; bh=IS7rd7rcz6gVpwRJ0tJXC7rhdgZaY2/fgyU9ObJPI5Q=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBjiUQsmgfNGHKOyR2nQQ0g8wGVV9lgyN9d+BfKhoRB
+ DB3xuZaJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCY4lELAAKCRAk1otyXVSH0PtDB/
+ 4gY8OkdnwpR37jPZrDF0R/dLp0g3ttzwQz0tuLDVznS8yA3Mo4Mf82os5jYW27sKRp6h0m6Ok25Q4R
+ z4EV0mSsg9TVhikFfGZ46cDGtIY255Lx5sTxymEBPxXWn8NqoGpNrCkKVf7ek2dAnPnHuor8wJsm3S
+ r8kRHRgnxoiypLVvapPXg20t8WoO93oFixEC/wTiX6wnhyVmjp6zdSaWYMGLA9oVVDNh4Q68rwlgwA
+ KpigtY/fdow0SZOsJ06ZTrehq6XH5yzHSFhPnk/r9/R508sEZKYU9vllaswIrQLPf3wcM5OgXFGBtP
+ RcNDRE8WHC4H9dvJdtUJ5VvQFe1VcZ
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
@@ -93,33 +91,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Help people understand what the standard tests are trying to cover by
-providing descriptions which both serve as comments in the file and log
-messages in the program's output.
+Add more coverage to our standard test cases:
+
+ - 8kHz mono and stereo to verify that the most common mono format is
+   clocked correctly.
+ - 44.1kHz stereo to verify that this different clock base is generated
+   accurately.
+ - 48kHz 6 channel to verify that 6 channel is clocked correctly.
+ - 96kHz stereo since that is a common audiophile rate.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- tools/testing/selftests/alsa/pcm-test.conf | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/testing/selftests/alsa/pcm-test.conf | 47 +++++++++++++++++++++-
+ 1 file changed, 46 insertions(+), 1 deletion(-)
 
 diff --git a/tools/testing/selftests/alsa/pcm-test.conf b/tools/testing/selftests/alsa/pcm-test.conf
-index 473a19251b49..1662a8c7073e 100644
+index 1662a8c7073e..71bd3f78a6f2 100644
 --- a/tools/testing/selftests/alsa/pcm-test.conf
 +++ b/tools/testing/selftests/alsa/pcm-test.conf
-@@ -1,4 +1,5 @@
+@@ -1,4 +1,31 @@
  pcm.test.time1 {
-+	description "48kHz stereo small periods"
++	description "8kHz mono large periods"
++	format S16_LE
++	alt_formats [ S32_LE ]
++	rate 8000
++	channels 1
++	period_size 8000
++	buffer_size 32000
++}
++pcm.test.time2 {
++	description "8kHz stereo large periods"
++	format S16_LE
++	alt_formats [ S32_LE ]
++	rate 8000
++	channels 2
++	period_size 8000
++	buffer_size 32000
++}
++pcm.test.time3 {
++	description "44.1kHz stereo large periods"
++	format S16_LE
++	alt_formats [ S32_LE ]
++	rate 44100
++	channels 2
++	period_size 22500
++	buffer_size 192000
++}
++pcm.test.time4 {
+ 	description "48kHz stereo small periods"
  	format S16_LE
  	alt_formats [ S32_LE ]
- 	rate 48000
-@@ -7,6 +8,7 @@ pcm.test.time1 {
+@@ -7,7 +34,7 @@ pcm.test.time1 {
+ 	period_size 512
  	buffer_size 4096
  }
- pcm.test.time2 {
-+	description "48kHz stereo large periods"
+-pcm.test.time2 {
++pcm.test.time5 {
+ 	description "48kHz stereo large periods"
  	format S16_LE
  	alt_formats [ S32_LE ]
- 	rate 48000
+@@ -16,3 +43,21 @@ pcm.test.time2 {
+ 	period_size 24000
+ 	buffer_size 192000
+ }
++pcm.test.time6 {
++	description "48kHz 6 channel large periods"
++	format S16_LE
++	alt_formats [ S32_LE ]
++	rate 48000
++	channels 2
++	period_size 48000
++	buffer_size 576000
++}
++pcm.test.time7 {
++	description "96kHz stereo large periods"
++	format S16_LE
++	alt_formats [ S32_LE ]
++	rate 96000
++	channels 2
++	period_size 48000
++	buffer_size 192000
++}
 -- 
 2.30.2
 
