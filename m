@@ -4,82 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99656C4321E
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Dec 2022 16:42:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FA49C4321E
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Dec 2022 17:07:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 03FDF17C9;
-	Fri,  2 Dec 2022 17:42:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03FDF17C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8AAC417DC;
+	Fri,  2 Dec 2022 18:06:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AAC417DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669999375;
-	bh=tAA/RyVMDfXjeNH66fqwxb8ZxW9yc6ih8Xec8T0fxXM=;
+	s=default; t=1670000863;
+	bh=AHzdPB9dRs3eR2tuIgd/3OpEJi2TgqIcYuU5Fv5Kk6Y=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=TSNAFN2cbnwBayrwnCxfwe0r3heXUF+apDRwlfqBvye+Mzct2GX2dyvbAWUY0I+ZS
-	 upkW+eKUWGgy/PJDm9bQBAmbciR8lHJnzcay0mWfMlqk/gsK7ukSEPgxE4mPcn9r4p
-	 u63n1Wec8d6IklZRZs2Icjg84tjSV7omDPhV6NsY=
+	b=aAJxF1wVpC/VtF4E9TM3jfuKBsDNpuRZhwlU/QDSk6ZPLlfDtA21mjpOF6TZ/KW1n
+	 aTzkXYvUpe6Mkaj3hZMjhBskDyWPj7UdBRvLkT4UgpJ/5qYrPEGRbzoevbgGkd6eqr
+	 wikerDUwkGTg96CzY/5jeNuxJzVNzO5Ku3KUsdc4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7D5AF80162;
-	Fri,  2 Dec 2022 17:42:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D0D2F80272;
+	Fri,  2 Dec 2022 18:06:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42716F80310; Fri,  2 Dec 2022 17:42:03 +0100 (CET)
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
- [IPv6:2a00:1450:4864:20::431])
+ id 5F83CF80310; Fri,  2 Dec 2022 18:06:51 +0100 (CET)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 74AE0F80162
- for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2022 17:42:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74AE0F80162
+ by alsa1.perex.cz (Postfix) with ESMTPS id D7CCAF800BD
+ for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2022 18:06:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7CCAF800BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="W3qrvxNW"
-Received: by mail-wr1-x431.google.com with SMTP id m14so8626469wrh.7
- for <alsa-devel@alsa-project.org>; Fri, 02 Dec 2022 08:42:00 -0800 (PST)
+ header.b="HGiMw5fS"
+Received: by mail-wr1-x42d.google.com with SMTP id m14so8729567wrh.7
+ for <alsa-devel@alsa-project.org>; Fri, 02 Dec 2022 09:06:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=NBhUhPdweZ3fTupviVjoDkaZ/Bzxjb/TM6/+Uzw6tYM=;
- b=W3qrvxNWQG18OXMSTFZQkIOrmn9ZkqxlS3C/C5VDGgmacy8F6t4GEmPN7+nIzI3R1W
- UQjqIBsFhs2EmDiU4IouSTnNwPv6jUb97Il4+HByArzo6uADGnPWEGKJLJ0rOnvWxX1Q
- f7y6wk9Q+rYhTodh2rXoXvfytFFWNLtzU0x8mLSiy9Oj/a0izKbpcO//QAVdGSHCTEQg
- x7K8L8ymNYZvoApuerQTVuOL6ysZ97HpDjOG0FG8GgNNUBbRBrKcD2VJFGysU5557HPv
- 5o7o9qy8DYTXJzniz5BXdgMtT2ot4J5sVDErgRFSi7f57gVONYVkQTVbHGLr6WJsqv3J
- dNOA==
+ bh=DuvKie3Dx2KIgWNRcmW0oxZHrl+MI0NaSKfULcEr3I8=;
+ b=HGiMw5fSSEK86bo28QTWOXXexS72VOF3eIa05RufmYXooCYpg+Vsf6Vh8X2wyN4Bs6
+ MwzYUA2h49FXlk/FBIwVypsBzk6Zmg+sNlhKc6uCTC2bkeLHIy7Q13Su77LuR+7oHXf7
+ 3Bnl4CAcYGyEZHQRDd45DPzuJL/x6EUMFWfvUZ3SRz568gLzMWSPBCN7LreLVFM9S9TH
+ cYW33nSiIdXolIbHhVax7b9LExJ7PLp64lG9vTWX7Sum5tbUdpCFmYOGXMRQgDJU4iPA
+ AKEEt+DBoQTm0mBOIwr388Yr+hLAHiJCG87lAc1leji7PDLlTZXwBKKkm4ENGU6vFZrK
+ xv3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=NBhUhPdweZ3fTupviVjoDkaZ/Bzxjb/TM6/+Uzw6tYM=;
- b=NbVlZeSeV888udvMMkszKsqbUBTJJsc/rd/kJFxa7M3BIBFZeq60V/yUZrSVNy/QN6
- baOgQt974uGswk9Z1CDQcG6tGCOSGhTWw6qADXXvTArSdYtsZUHKN12CmpIcFMzU3hNA
- gVxX5dPhDd7q8ULaIDZm9itnRe7Zs7CkxkKtdNM8qQlaNpr4eVFZZy6sCHwG/kW6tHi1
- DaOJGLMx+WPCHk/uouxg93UafdwzoS/GSgoi2Gl4rGvSUYSdYgxJqkBq07I9lIKpiLrW
- YjMXW4/79G+XmIpVyjX2AHXEBnReUbxhXND4QTQI3LN8WogGsOy0JFijvZpPNjnBCr0+
- MCbQ==
-X-Gm-Message-State: ANoB5pn5L/GeczCi4JAtSt/QLBlEt+bpmHXuLISGolg0lOmH6FZ2cX9b
- VvxZ2wTp0hB4EjEJX2VpDPw=
-X-Google-Smtp-Source: AA0mqf684oIN5gBFoOCtGHGhakQpJrnScN39W14mgEhGfEioE0MUho6Hs0PFLef9eXd4F5q208iQ/A==
-X-Received: by 2002:a5d:46d1:0:b0:242:4698:f0a7 with SMTP id
- g17-20020a5d46d1000000b002424698f0a7mr2151557wrs.77.1669999318410; 
- Fri, 02 Dec 2022 08:41:58 -0800 (PST)
+ bh=DuvKie3Dx2KIgWNRcmW0oxZHrl+MI0NaSKfULcEr3I8=;
+ b=otFMfz3CibBdOEhv15VnRNGK9ZgrUxypRvkcksEoS/FxejwdkaG6OIcnAy0lumbETC
+ KIDIxk+K0tHXV+jws1vtNXz6b82puia2IVlqCwm5WKrV0JBQpjknbHufKCG5baRkRnVJ
+ cIEpdrbEB4KskF/nWcX7Z+AxAltDWJnO31vzfAkbZM+MYrk2rFxmbeVD2ZBS/weOlbEX
+ ORlcDOVgRzM1r5qKn8mssePNMNw1bxpYSum/6twRc+blApLF5xqFTwvj84Ma5O+18uGI
+ nuv+Kf1mSAhvaAq5OB9MJ+7TyzhXcjylaHBSPNUHjf+H5aaEL0S9OALDrOAH/Gu0oneF
+ LETA==
+X-Gm-Message-State: ANoB5pnNHmEZuuoFb/wnjfGULqYtaV7TcitSusCptDG/UaYNySXjFuWq
+ Q+cUcOxj5TbdK3ZDwlCNVM0=
+X-Google-Smtp-Source: AA0mqf70wTOVwdJGdTTAZ0nkrF5y+kMmAztOCT121fxYREi9ws+qOBLZYyWqLUG5xCbHTrUzVmuz7w==
+X-Received: by 2002:adf:a319:0:b0:242:45fe:740 with SMTP id
+ c25-20020adfa319000000b0024245fe0740mr2219428wrb.408.1670000806808; 
+ Fri, 02 Dec 2022 09:06:46 -0800 (PST)
 Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net.
  [80.193.200.194]) by smtp.gmail.com with ESMTPSA id
- q17-20020a05600000d100b0024207ed4ce0sm7491149wrx.58.2022.12.02.08.41.57
+ q1-20020a05600000c100b002422fddcc94sm6849665wrx.96.2022.12.02.09.06.45
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 02 Dec 2022 08:41:57 -0800 (PST)
+ Fri, 02 Dec 2022 09:06:45 -0800 (PST)
 From: Colin Ian King <colin.i.king@gmail.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
- Masami Hiramatsu <mhiramat@kernel.org>, alsa-devel@alsa-project.org,
- linux-arm-kernel@lists.infradead.org
-Subject: [PATCH][next] ASoC: uniphier: aio-core: Make some read-only arrays
+ alsa-devel@alsa-project.org
+Subject: [PATCH][next] ASoC: wcd938x: Make read-only array minCode_param
  static const
-Date: Fri,  2 Dec 2022 16:41:56 +0000
-Message-Id: <20221202164156.1812971-1-colin.i.king@gmail.com>
+Date: Fri,  2 Dec 2022 17:06:44 +0000
+Message-Id: <20221202170644.1814720-1-colin.i.king@gmail.com>
 X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -100,57 +98,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Don't populate the read-only arrays slotsel_2ch, slotsel_multi, v_pll
-and v_div on the stack but instead make them static const. Also makes
-the object code a little smaller.
+Don't populate the read-only array minCode_param on the stack but
+instead make it static const. Also makes the object code a little
+smaller.
 
 Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
- sound/soc/uniphier/aio-core.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ sound/soc/codecs/wcd938x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/uniphier/aio-core.c b/sound/soc/uniphier/aio-core.c
-index b8195778953e..0eba60758134 100644
---- a/sound/soc/uniphier/aio-core.c
-+++ b/sound/soc/uniphier/aio-core.c
-@@ -277,17 +277,18 @@ void aio_port_reset(struct uniphier_aio_sub *sub)
- static int aio_port_set_ch(struct uniphier_aio_sub *sub)
- {
- 	struct regmap *r = sub->aio->chip->regmap;
--	u32 slotsel_2ch[] = {
-+	static const u32 slotsel_2ch[] = {
- 		0, 0, 0, 0, 0,
+diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
+index aca06a4026f3..fcac763b04d1 100644
+--- a/sound/soc/codecs/wcd938x.c
++++ b/sound/soc/codecs/wcd938x.c
+@@ -3128,8 +3128,8 @@ static inline void wcd938x_mbhc_get_result_params(struct wcd938x_priv *wcd938x,
+ 	s16 c1;
+ 	s32 x1, d1;
+ 	int32_t denom;
+-	int minCode_param[] = {
+-			3277, 1639, 820, 410, 205, 103, 52, 26
++	static const int minCode_param[] = {
++		3277, 1639, 820, 410, 205, 103, 52, 26
  	};
--	u32 slotsel_multi[] = {
-+	static const u32 slotsel_multi[] = {
- 		OPORTMXTYSLOTCTR_SLOTSEL_SLOT0,
- 		OPORTMXTYSLOTCTR_SLOTSEL_SLOT1,
- 		OPORTMXTYSLOTCTR_SLOTSEL_SLOT2,
- 		OPORTMXTYSLOTCTR_SLOTSEL_SLOT3,
- 		OPORTMXTYSLOTCTR_SLOTSEL_SLOT4,
- 	};
--	u32 mode, *slotsel;
-+	u32 mode;
-+	const u32 *slotsel;
- 	int i;
  
- 	switch (params_channels(&sub->params)) {
-@@ -515,13 +516,13 @@ static int aio_port_set_clk(struct uniphier_aio_sub *sub)
- 	struct uniphier_aio_chip *chip = sub->aio->chip;
- 	struct device *dev = &sub->aio->chip->pdev->dev;
- 	struct regmap *r = sub->aio->chip->regmap;
--	u32 v_pll[] = {
-+	static const u32 v_pll[] = {
- 		OPORTMXCTR2_ACLKSEL_A1, OPORTMXCTR2_ACLKSEL_F1,
- 		OPORTMXCTR2_ACLKSEL_A2, OPORTMXCTR2_ACLKSEL_F2,
- 		OPORTMXCTR2_ACLKSEL_A2PLL,
- 		OPORTMXCTR2_ACLKSEL_RX1,
- 	};
--	u32 v_div[] = {
-+	static const u32 v_div[] = {
- 		OPORTMXCTR2_DACCKSEL_1_2, OPORTMXCTR2_DACCKSEL_1_3,
- 		OPORTMXCTR2_DACCKSEL_1_1, OPORTMXCTR2_DACCKSEL_2_3,
- 	};
+ 	regmap_update_bits(wcd938x->regmap, WCD938X_ANA_MBHC_ZDET, 0x20, 0x20);
 -- 
 2.38.1
 
