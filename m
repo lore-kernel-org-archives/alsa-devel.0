@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9BA9C4321E
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Dec 2022 15:14:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01930C4321E
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Dec 2022 15:14:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 855A117C9;
-	Fri,  2 Dec 2022 16:13:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 855A117C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2CACC184D;
+	Fri,  2 Dec 2022 16:13:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CACC184D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1669994078;
-	bh=g/xYhaaSrqDNg685TxmOzMH9uogfuXFyRbpfHxE1fGs=;
+	s=default; t=1669994086;
+	bh=FqpfiovHF+2KcxXkLOOP+nWMHHV3gxU5jNKKz4Px7qw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dPwZf+ZCK2V3d4itoO1XyXTZZvRHBk/dI3oi0w8Dn0SaIlVCnQQHyMqOUA/z1RDbR
-	 ytuhuO1SCCmrBKyVMPUC61wt7dAMBX6YPONvjMf80ZnhMTU49pbFpR52+I2fUPvLNa
-	 YrFNTrtqL1uGrX5rDTsPZ9eF6bWZFS/httcz5zZY=
+	b=diXDh33q4m4Z8A3wupLqt5sDQD0qm2sT8rqHajeN5CodrZGOokD4wyhdrGvE5sZGi
+	 lCm2y6xzRv86Vv2dDei00Hl4lsxFv2hNbWxCRorbN/EC34XGqjPuYb4HpG5QX3OKPl
+	 fFtN0wN5r9b/iJOQ0kMaHwBOHOPP2Qn0hm3R10tY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3705F805AF;
-	Fri,  2 Dec 2022 16:12:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86E92F805B5;
+	Fri,  2 Dec 2022 16:12:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92EC1F805B1; Fri,  2 Dec 2022 16:12:01 +0100 (CET)
+ id BBA06F805B5; Fri,  2 Dec 2022 16:12:03 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB21AF80589
- for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2022 16:11:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB21AF80589
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FC66F805AE
+ for <alsa-devel@alsa-project.org>; Fri,  2 Dec 2022 16:11:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FC66F805AE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="J6xYNTni"
+ header.b="frw5rQCe"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1669993919; x=1701529919;
+ t=1669993921; x=1701529921;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=g/xYhaaSrqDNg685TxmOzMH9uogfuXFyRbpfHxE1fGs=;
- b=J6xYNTniM30XwKpfyUqxUtwaZIQ64t4nVuCOLr4XRwnDWpt1AxLBqQoW
- UPyUc7vR0bJtwybX8AtcH3BRnc6BssJgZytiIqIpQ1XRxff0QhjuviDG9
- v/qnUtV31zGPJ/kP3Z8/0fY/hRtIJxvWZLP6vRG1HMupMYrs1HIiSc+b7
- xZdzcGgMbDyuWA02YoaFztqhafznxAMSVLSIZgQDL9zGbEcQkQ17Obwnq
- LjjogsvEH4Glrg8NB+HMkBrW2wUHm6JMNjWkeYWL0EPFg88h9Rmc2cQ6X
- 4vALrs3VqcvbjyK7yhcTZGUjUn84nvBX+LJ/u9CgxyZZfxpOhPO/+TIqp g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="402251798"
-X-IronPort-AV: E=Sophos;i="5.96,212,1665471600"; d="scan'208";a="402251798"
+ bh=FqpfiovHF+2KcxXkLOOP+nWMHHV3gxU5jNKKz4Px7qw=;
+ b=frw5rQCekUDF+C/Ic4xVeYYbwfONiuvq6txf9T4KuhHLwacsmBNRbN1T
+ ZXG1/7o0QSHjfJZ/yCC5qH75B8xPDZpuwslbpOxOf1J1ZkNA1gvNsp+Ua
+ ftn8kfgG5aLs1U/mfmSGfuPcAFrQR8FI90g1DGg3GTemqOvC0tc2jelt6
+ /NrX4EMcsvxobjnuevMZY2pdrPMJ+jRoJWNMJO8B+283lV/B5ZGvrwTdB
+ 1YBU5bnZKUuNke1tjPkZE2Gj3YOZpgF7zmp1eJ/2t/yyt4HVGqp1Xh+oK
+ zG8h1aZs8qSMSbu6ClEHVISUeK4lB/jIgcofMraZZEQhC5sb78QvuNL5i w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="402251818"
+X-IronPort-AV: E=Sophos;i="5.96,212,1665471600"; d="scan'208";a="402251818"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Dec 2022 07:11:56 -0800
+ 02 Dec 2022 07:11:59 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="708504738"
-X-IronPort-AV: E=Sophos;i="5.96,212,1665471600"; d="scan'208";a="708504738"
+X-IronPort-AV: E=McAfee;i="6500,9779,10548"; a="708504755"
+X-IronPort-AV: E=Sophos;i="5.96,212,1665471600"; d="scan'208";a="708504755"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga008.fm.intel.com with ESMTP; 02 Dec 2022 07:11:52 -0800
+ by fmsmga008.fm.intel.com with ESMTP; 02 Dec 2022 07:11:57 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v2 10/16] ASoC: Intel: avs: Probe compress operations
-Date: Fri,  2 Dec 2022 16:28:35 +0100
-Message-Id: <20221202152841.672536-11-cezary.rojewski@intel.com>
+Subject: [PATCH v2 12/16] ASoC: Intel: avs: Add probe machine board
+Date: Fri,  2 Dec 2022 16:28:37 +0100
+Message-Id: <20221202152841.672536-13-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221202152841.672536-1-cezary.rojewski@intel.com>
 References: <20221202152841.672536-1-cezary.rojewski@intel.com>
@@ -86,294 +86,178 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add compress operations handlers for data extraction through probes. A
-single HDAudio stream is enlisted for said purpose. Operations follow
-same protocol as for standard PCM streaming on HOST side.
+Stub machine board driver with no custom DAPM routes and single FE DAI
+link for userspace to interact with.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/Kconfig      |   1 +
- sound/soc/intel/avs/avs.h    |   3 +
- sound/soc/intel/avs/probes.c | 224 ++++++++++++++++++++++++++++++++++-
- 3 files changed, 225 insertions(+), 3 deletions(-)
+ sound/soc/intel/avs/board_selection.c | 33 ++++++++++++++
+ sound/soc/intel/avs/boards/Kconfig    |  8 ++++
+ sound/soc/intel/avs/boards/Makefile   |  2 +
+ sound/soc/intel/avs/boards/probe.c    | 64 +++++++++++++++++++++++++++
+ 4 files changed, 107 insertions(+)
+ create mode 100644 sound/soc/intel/avs/boards/probe.c
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index ac799de4f7fd..4b9e498e3303 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -217,6 +217,7 @@ config SND_SOC_INTEL_AVS
- 	select SND_SOC_ACPI if ACPI
- 	select SND_SOC_TOPOLOGY
- 	select SND_SOC_HDA
-+	select SND_SOC_COMPRESS if DEBUG_FS
- 	select SND_HDA_EXT_CORE
- 	select SND_HDA_DSP_LOADER
- 	select SND_INTEL_DSP_CONFIG
-diff --git a/sound/soc/intel/avs/avs.h b/sound/soc/intel/avs/avs.h
-index 7a9fb27d3845..e5e7c72eb511 100644
---- a/sound/soc/intel/avs/avs.h
-+++ b/sound/soc/intel/avs/avs.h
-@@ -144,6 +144,9 @@ struct avs_dev {
- 	u32 aging_timer_period;
- 	u32 fifo_full_timer_period;
- 	u32 logged_resources;	/* context dependent: core or library */
-+	/* probes */
-+	struct hdac_ext_stream *extractor;
-+	unsigned int num_probe_streams;
- #endif
- };
- 
-diff --git a/sound/soc/intel/avs/probes.c b/sound/soc/intel/avs/probes.c
-index 339bad6fec22..e90284ec8500 100644
---- a/sound/soc/intel/avs/probes.c
-+++ b/sound/soc/intel/avs/probes.c
-@@ -6,13 +6,15 @@
- //          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
- //
- 
-+#include <sound/compress_driver.h>
-+#include <sound/hdaudio_ext.h>
-+#include <sound/hdaudio.h>
-+#include <sound/soc.h>
- #include "avs.h"
- #include "messages.h"
- 
--__maybe_unused
- static int avs_dsp_init_probe(struct avs_dev *adev, union avs_connector_node_id node_id,
- 			      size_t buffer_size)
--
- {
- 	struct avs_probe_cfg cfg = {{0}};
- 	struct avs_module_entry mentry;
-@@ -34,7 +36,6 @@ static int avs_dsp_init_probe(struct avs_dev *adev, union avs_connector_node_id
- 				   sizeof(cfg), &dummy);
+diff --git a/sound/soc/intel/avs/board_selection.c b/sound/soc/intel/avs/board_selection.c
+index 02cc1ce8f5f5..b2823c2107f7 100644
+--- a/sound/soc/intel/avs/board_selection.c
++++ b/sound/soc/intel/avs/board_selection.c
+@@ -291,6 +291,33 @@ static void board_pdev_unregister(void *data)
+ 	platform_device_unregister(data);
  }
  
--__maybe_unused
- static void avs_dsp_delete_probe(struct avs_dev *adev)
- {
- 	struct avs_module_entry mentry;
-@@ -44,3 +45,220 @@ static void avs_dsp_delete_probe(struct avs_dev *adev)
- 	/* There is only ever one probe module instance. */
- 	avs_dsp_delete_module(adev, mentry.module_id, 0, INVALID_PIPELINE_ID, 0);
- }
-+
-+static inline struct hdac_ext_stream *avs_compr_get_host_stream(struct snd_compr_stream *cstream)
++static int __maybe_unused avs_register_probe_board(struct avs_dev *adev)
 +{
-+	return cstream->runtime->private_data;
-+}
-+
-+static int avs_probe_compr_open(struct snd_compr_stream *cstream, struct snd_soc_dai *dai)
-+{
-+	struct avs_dev *adev = to_avs_dev(dai->dev);
-+	struct hdac_bus *bus = &adev->base.core;
-+	struct hdac_ext_stream *host_stream;
-+
-+	if (adev->extractor) {
-+		dev_err(dai->dev, "Cannot open more than one extractor stream\n");
-+		return -EEXIST;
-+	}
-+
-+	host_stream = snd_hdac_ext_cstream_assign(bus, cstream);
-+	if (!host_stream) {
-+		dev_err(dai->dev, "Failed to assign HDAudio stream for extraction\n");
-+		return -EBUSY;
-+	}
-+
-+	adev->extractor = host_stream;
-+	hdac_stream(host_stream)->curr_pos = 0;
-+	cstream->runtime->private_data = host_stream;
-+
-+	return 0;
-+}
-+
-+static int avs_probe_compr_free(struct snd_compr_stream *cstream, struct snd_soc_dai *dai)
-+{
-+	struct hdac_ext_stream *host_stream = avs_compr_get_host_stream(cstream);
-+	struct avs_dev *adev = to_avs_dev(dai->dev);
-+	struct avs_probe_point_desc *desc;
-+	/* Extractor node identifier. */
-+	unsigned int vindex = INVALID_NODE_ID.vindex;
-+	size_t num_desc;
-+	int i, ret;
-+
-+	/* Disconnect all probe points. */
-+	ret = avs_ipc_probe_get_points(adev, &desc, &num_desc);
-+	if (ret) {
-+		dev_err(dai->dev, "get probe points failed: %d\n", ret);
-+		ret = AVS_IPC_RET(ret);
-+		goto exit;
-+	}
-+
-+	for (i = 0; i < num_desc; i++)
-+		if (desc[i].node_id.vindex == vindex)
-+			avs_ipc_probe_disconnect_points(adev, &desc[i].id, 1);
-+	kfree(desc);
-+
-+exit:
-+	if (adev->num_probe_streams) {
-+		adev->num_probe_streams--;
-+		if (!adev->num_probe_streams) {
-+			avs_dsp_delete_probe(adev);
-+			avs_dsp_enable_d0ix(adev);
-+		}
-+	}
-+
-+	snd_hdac_stream_cleanup(hdac_stream(host_stream));
-+	hdac_stream(host_stream)->prepared = 0;
-+	snd_hdac_ext_stream_release(host_stream, HDAC_EXT_STREAM_TYPE_HOST);
-+
-+	snd_compr_free_pages(cstream);
-+	adev->extractor = NULL;
-+
-+	return ret;
-+}
-+
-+static int avs_probe_compr_set_params(struct snd_compr_stream *cstream,
-+				      struct snd_compr_params *params, struct snd_soc_dai *dai)
-+{
-+	struct hdac_ext_stream *host_stream = avs_compr_get_host_stream(cstream);
-+	struct snd_compr_runtime *rtd = cstream->runtime;
-+	struct avs_dev *adev = to_avs_dev(dai->dev);
-+	/* compr params do not store bit depth, default to S32_LE. */
-+	snd_pcm_format_t format = SNDRV_PCM_FORMAT_S32_LE;
-+	unsigned int format_val;
-+	int bps, ret;
-+
-+	hdac_stream(host_stream)->bufsize = 0;
-+	hdac_stream(host_stream)->period_bytes = 0;
-+	hdac_stream(host_stream)->format_val = 0;
-+	cstream->dma_buffer.dev.type = SNDRV_DMA_TYPE_DEV_SG;
-+	cstream->dma_buffer.dev.dev = adev->dev;
-+
-+	ret = snd_compr_malloc_pages(cstream, rtd->buffer_size);
-+	if (ret < 0)
-+		return ret;
-+	bps = snd_pcm_format_physical_width(format);
-+	if (bps < 0)
-+		return bps;
-+	format_val = snd_hdac_calc_stream_format(params->codec.sample_rate, params->codec.ch_out,
-+						 format, bps, 0);
-+	ret = snd_hdac_stream_set_params(hdac_stream(host_stream), format_val);
-+	if (ret < 0)
-+		return ret;
-+	ret = snd_hdac_stream_setup(hdac_stream(host_stream));
-+	if (ret < 0)
-+		return ret;
-+
-+	hdac_stream(host_stream)->prepared = 1;
-+
-+	if (!adev->num_probe_streams) {
-+		union avs_connector_node_id node_id;
-+
-+		/* D0ix not allowed during probing. */
-+		ret = avs_dsp_disable_d0ix(adev);
-+		if (ret)
-+			return ret;
-+
-+		node_id.vindex = hdac_stream(host_stream)->stream_tag - 1;
-+		node_id.dma_type = AVS_DMA_HDA_HOST_INPUT;
-+
-+		ret = avs_dsp_init_probe(adev, node_id, rtd->dma_bytes);
-+		if (ret < 0) {
-+			dev_err(dai->dev, "probe init failed: %d\n", ret);
-+			avs_dsp_enable_d0ix(adev);
-+			return ret;
-+		}
-+	}
-+
-+	adev->num_probe_streams++;
-+	return 0;
-+}
-+
-+static int avs_probe_compr_trigger(struct snd_compr_stream *cstream, int cmd,
-+				   struct snd_soc_dai *dai)
-+{
-+	struct hdac_ext_stream *host_stream = avs_compr_get_host_stream(cstream);
-+	struct avs_dev *adev = to_avs_dev(dai->dev);
-+	struct hdac_bus *bus = &adev->base.core;
-+	unsigned long cookie;
-+
-+	if (!hdac_stream(host_stream)->prepared)
-+		return -EPIPE;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		spin_lock_irqsave(&bus->reg_lock, cookie);
-+		snd_hdac_stream_start(hdac_stream(host_stream), true);
-+		spin_unlock_irqrestore(&bus->reg_lock, cookie);
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		spin_lock_irqsave(&bus->reg_lock, cookie);
-+		snd_hdac_stream_stop(hdac_stream(host_stream));
-+		spin_unlock_irqrestore(&bus->reg_lock, cookie);
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int avs_probe_compr_pointer(struct snd_compr_stream *cstream,
-+				   struct snd_compr_tstamp *tstamp, struct snd_soc_dai *dai)
-+{
-+	struct hdac_ext_stream *host_stream = avs_compr_get_host_stream(cstream);
-+	struct snd_soc_pcm_stream *pstream;
-+
-+	pstream = &dai->driver->capture;
-+	tstamp->copied_total = hdac_stream(host_stream)->curr_pos;
-+	tstamp->sampling_rate = snd_pcm_rate_bit_to_rate(pstream->rates);
-+
-+	return 0;
-+}
-+
-+static int avs_probe_compr_copy(struct snd_soc_component *comp, struct snd_compr_stream *cstream,
-+				char __user *buf, size_t count)
-+{
-+	struct snd_compr_runtime *rtd = cstream->runtime;
-+	unsigned int offset, n;
-+	void *ptr;
++	struct platform_device *board;
++	struct snd_soc_acpi_mach mach = {{0}};
 +	int ret;
 +
-+	if (count > rtd->buffer_size)
-+		count = rtd->buffer_size;
++	ret = avs_probe_platform_register(adev, "probe-platform");
++	if (ret < 0)
++		return ret;
 +
-+	div_u64_rem(rtd->total_bytes_transferred, rtd->buffer_size, &offset);
-+	ptr = rtd->dma_area + offset;
-+	n = rtd->buffer_size - offset;
++	mach.mach_params.platform = "probe-platform";
 +
-+	if (count < n) {
-+		ret = copy_to_user(buf, ptr, count);
-+	} else {
-+		ret = copy_to_user(buf, ptr, n);
-+		ret += copy_to_user(buf + n, rtd->dma_area, count - n);
++	board = platform_device_register_data(NULL, "avs_probe_mb", PLATFORM_DEVID_NONE,
++					      (const void *)&mach, sizeof(mach));
++	if (IS_ERR(board)) {
++		dev_err(adev->dev, "probe board register failed\n");
++		return PTR_ERR(board);
 +	}
 +
-+	if (ret)
-+		return count - ret;
-+	return count;
++	ret = devm_add_action(adev->dev, board_pdev_unregister, board);
++	if (ret < 0) {
++		platform_device_unregister(board);
++		return ret;
++	}
++	return 0;
 +}
 +
-+__maybe_unused
-+static const struct snd_soc_cdai_ops avs_probe_dai_ops = {
-+	.startup = avs_probe_compr_open,
-+	.shutdown = avs_probe_compr_free,
-+	.set_params = avs_probe_compr_set_params,
-+	.trigger = avs_probe_compr_trigger,
-+	.pointer = avs_probe_compr_pointer,
+ static int avs_register_dmic_board(struct avs_dev *adev)
+ {
+ 	struct platform_device *codec, *board;
+@@ -500,6 +527,12 @@ int avs_register_all_boards(struct avs_dev *adev)
+ {
+ 	int ret;
+ 
++#ifdef CONFIG_DEBUG_FS
++	ret = avs_register_probe_board(adev);
++	if (ret < 0)
++		dev_warn(adev->dev, "enumerate PROBE endpoints failed: %d\n", ret);
++#endif
++
+ 	ret = avs_register_dmic_board(adev);
+ 	if (ret < 0)
+ 		dev_warn(adev->dev, "enumerate DMIC endpoints failed: %d\n",
+diff --git a/sound/soc/intel/avs/boards/Kconfig b/sound/soc/intel/avs/boards/Kconfig
+index 9bd40fdd9028..e4c230efe8d7 100644
+--- a/sound/soc/intel/avs/boards/Kconfig
++++ b/sound/soc/intel/avs/boards/Kconfig
+@@ -77,6 +77,14 @@ config SND_SOC_INTEL_AVS_MACH_NAU8825
+ 	   Say Y or m if you have such a device. This is a recommended option.
+ 	   If unsure select "N".
+ 
++config SND_SOC_INTEL_AVS_MACH_PROBE
++	tristate "Probing (data) board"
++	depends on DEBUG_FS
++	select SND_HWDEP
++	help
++	   This adds support for data probing board which can be used to
++	   gather data from runtime stream over compress operations.
++
+ config SND_SOC_INTEL_AVS_MACH_RT274
+ 	tristate "rt274 in I2S mode"
+ 	depends on I2C
+diff --git a/sound/soc/intel/avs/boards/Makefile b/sound/soc/intel/avs/boards/Makefile
+index 4d70b8d09ce5..b81343420370 100644
+--- a/sound/soc/intel/avs/boards/Makefile
++++ b/sound/soc/intel/avs/boards/Makefile
+@@ -8,6 +8,7 @@ snd-soc-avs-max98927-objs := max98927.o
+ snd-soc-avs-max98357a-objs := max98357a.o
+ snd-soc-avs-max98373-objs := max98373.o
+ snd-soc-avs-nau8825-objs := nau8825.o
++snd-soc-avs-probe-objs := probe.o
+ snd-soc-avs-rt274-objs := rt274.o
+ snd-soc-avs-rt286-objs := rt286.o
+ snd-soc-avs-rt298-objs := rt298.o
+@@ -22,6 +23,7 @@ obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_MAX98927) += snd-soc-avs-max98927.o
+ obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_MAX98357A) += snd-soc-avs-max98357a.o
+ obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_MAX98373) += snd-soc-avs-max98373.o
+ obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_NAU8825) += snd-soc-avs-nau8825.o
++obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_PROBE) += snd-soc-avs-probe.o
+ obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_RT274) += snd-soc-avs-rt274.o
+ obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_RT286) += snd-soc-avs-rt286.o
+ obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_RT298) += snd-soc-avs-rt298.o
+diff --git a/sound/soc/intel/avs/boards/probe.c b/sound/soc/intel/avs/boards/probe.c
+new file mode 100644
+index 000000000000..411acaee74f9
+--- /dev/null
++++ b/sound/soc/intel/avs/boards/probe.c
+@@ -0,0 +1,64 @@
++// SPDX-License-Identifier: GPL-2.0-only
++//
++// Copyright(c) 2021-2022 Intel Corporation. All rights reserved.
++//
++// Authors: Cezary Rojewski <cezary.rojewski@intel.com>
++//          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
++//
++
++#include <linux/device.h>
++#include <linux/module.h>
++#include <sound/soc.h>
++#include <sound/soc-acpi.h>
++
++SND_SOC_DAILINK_DEF(dummy, DAILINK_COMP_ARRAY(COMP_DUMMY()));
++SND_SOC_DAILINK_DEF(probe_cp, DAILINK_COMP_ARRAY(COMP_CPU("Probe Extraction CPU DAI")));
++SND_SOC_DAILINK_DEF(platform, DAILINK_COMP_ARRAY(COMP_PLATFORM("probe-platform")));
++
++static struct snd_soc_dai_link probe_mb_dai_links[] = {
++	{
++		.name = "Compress Probe Capture",
++		.nonatomic = 1,
++		SND_SOC_DAILINK_REG(probe_cp, dummy, platform),
++	},
 +};
 +
-+__maybe_unused
-+static const struct snd_compress_ops avs_probe_compress_ops = {
-+	.copy = avs_probe_compr_copy,
++static int avs_probe_mb_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct snd_soc_acpi_mach *mach;
++	struct snd_soc_card *card;
++	int ret;
++
++	mach = dev_get_platdata(dev);
++
++	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
++	if (!card)
++		return -ENOMEM;
++
++	card->name = "avs_probe_mb";
++	card->dev = dev;
++	card->owner = THIS_MODULE;
++	card->dai_link = probe_mb_dai_links;
++	card->num_links = ARRAY_SIZE(probe_mb_dai_links);
++	card->fully_routed = true;
++
++	ret = snd_soc_fixup_dai_links_platform_name(card, mach->mach_params.platform);
++	if (ret)
++		return ret;
++
++	return devm_snd_soc_register_card(dev, card);
++}
++
++static struct platform_driver avs_probe_mb_driver = {
++	.probe = avs_probe_mb_probe,
++	.driver = {
++		.name = "avs_probe_mb",
++		.pm = &snd_soc_pm_ops,
++	},
 +};
++
++module_platform_driver(avs_probe_mb_driver);
++
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:avs_probe_mb");
 -- 
 2.25.1
 
