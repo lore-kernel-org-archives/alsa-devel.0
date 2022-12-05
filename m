@@ -4,57 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E128C4321E
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Dec 2022 09:57:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69C0AC4321E
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Dec 2022 10:05:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 73C0D177C;
-	Mon,  5 Dec 2022 10:56:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73C0D177C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 732DE17BC;
+	Mon,  5 Dec 2022 11:04:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 732DE17BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670234258;
-	bh=O13cbi2con+h/dgq0HkOXhsYLLpPi2IPFfK5HtKx3a0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=iVXau5IH6gCXQzdW1F/pQP/6jHmo4iciKRXjMSnjN7x7X5vkIRMK0qjW5GrzcNdio
-	 ipky5Ag4Hfr8xn/spJLWS4I/12H1jh/8Qz0lLfRcM4sH5MvLi7lmESsWExA+2BPZU2
-	 EKqERUPMr17lFPzBv04P6+ypFhwHZB1sbn3oOtmM=
+	s=default; t=1670234729;
+	bh=FOV45z4oKxE+0DwTuyjNo0Qr2okH1UPBfU08ZHVkN8M=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=oljPmnHfHR8JfMxPDZnhfJsXzMEGAAWp8Fea7gJgMzkOX91MLJL38HGYINtSuwV7I
+	 w7KxpY4SBqz15g89QvK7/KSXRGUiV2e7ItaXtnIa1RoFBaf/bhdRHAqnLMm5x4ZDy/
+	 u7z1jEdG0zTYvCAxlV320SSoG+XjvxAG7CaFL85s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E5DFF80171;
-	Mon,  5 Dec 2022 10:56:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D0337F80171;
+	Mon,  5 Dec 2022 11:04:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 90677F80236; Mon,  5 Dec 2022 10:56:46 +0100 (CET)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48B28F80155
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 10:56:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48B28F80155
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
- by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4NQf7V1kFRz15N5V;
- Mon,  5 Dec 2022 17:55:50 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.70) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 5 Dec 2022 17:56:36 +0800
-From: Wang Yufen <wangyufen@huawei.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>, <matthias.bgg@gmail.com>
-Subject: [PATCH] ASoC: mediatek: mt8183: fix refcount leak in
- mt8183_mt6358_ts3a227_max98357_dev_probe()
-Date: Mon, 5 Dec 2022 17:56:28 +0800
-Message-ID: <1670234188-23596-1-git-send-email-wangyufen@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+ id 34DABF80236; Mon,  5 Dec 2022 11:04:36 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 27332F800BD
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 11:04:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27332F800BD
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-Cc: Wang Yufen <wangyufen@huawei.com>, alsa-devel@alsa-project.org,
- linux-mediatek@lists.infradead.org, shunli.wang@mediatek.com,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1670234669404473066-webhooks-bot@alsa-project.org>
+References: <1670234669404473066-webhooks-bot@alsa-project.org>
+Subject: clangd friendly headers
+Message-Id: <20221205100436.34DABF80236@alsa1.perex.cz>
+Date: Mon,  5 Dec 2022 11:04:36 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,63 +55,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The node returned by of_parse_phandle() with refcount incremented,
-of_node_put() needs be called when finish using it. So add it in the
-error path in mt8183_mt6358_ts3a227_max98357_dev_probe().
+alsa-project/alsa-lib pull request #286 was opened from timblechmann:
 
-Fixes: 11c0269017b2 ("ASoC: Mediatek: MT8183: Add machine driver with TS3A227")
-Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+quality of life improvements when working with clangd enabled IDEs. these two patches fix issues when clangd parses the headers in isolation in a c++ compile context
+
 ---
- sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-index a860852..48c14be 100644
---- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-@@ -677,8 +677,10 @@ static int mt8183_i2s2_init(struct snd_soc_pcm_runtime *rtd)
- 	}
- 
- 	card = (struct snd_soc_card *)of_device_get_match_data(&pdev->dev);
--	if (!card)
-+	if (!card) {
-+		of_node_put(platform_node);
- 		return -EINVAL;
-+	}
- 	card->dev = &pdev->dev;
- 
- 	ec_codec = of_parse_phandle(pdev->dev.of_node, "mediatek,ec-codec", 0);
-@@ -767,8 +769,10 @@ static int mt8183_i2s2_init(struct snd_soc_pcm_runtime *rtd)
- 	}
- 
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
--	if (!priv)
--		return -ENOMEM;
-+	if (!priv) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
- 
- 	snd_soc_card_set_drvdata(card, priv);
- 
-@@ -776,7 +780,8 @@ static int mt8183_i2s2_init(struct snd_soc_pcm_runtime *rtd)
- 	if (IS_ERR(priv->pinctrl)) {
- 		dev_err(&pdev->dev, "%s devm_pinctrl_get failed\n",
- 			__func__);
--		return PTR_ERR(priv->pinctrl);
-+		ret = PTR_ERR(priv->pinctrl);
-+		goto out;
- 	}
- 
- 	for (i = 0; i < PIN_STATE_MAX; i++) {
-@@ -809,6 +814,7 @@ static int mt8183_i2s2_init(struct snd_soc_pcm_runtime *rtd)
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 
-+out:
- 	of_node_put(platform_node);
- 	of_node_put(ec_codec);
- 	of_node_put(hdmi_codec);
--- 
-1.8.3.1
+* make headers self-contained
+* avoid c++ keyword
 
+Request URL   : https://github.com/alsa-project/alsa-lib/pull/286
+Patch URL     : https://github.com/alsa-project/alsa-lib/pull/286.patch
+Repository URL: https://github.com/alsa-project/alsa-lib
