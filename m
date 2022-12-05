@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 601B5C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Dec 2022 08:38:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73AACC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Dec 2022 08:38:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2CC471754;
-	Mon,  5 Dec 2022 09:37:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CC471754
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A61D1775;
+	Mon,  5 Dec 2022 09:37:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A61D1775
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670229501;
-	bh=Dkk3vruKcuTKAa07QIz7BbG/O+nO0F12C0SGGoHh5f0=;
+	s=default; t=1670229521;
+	bh=gXfSGnPfL+Q635d2cehZtogy9MtbXl2+EV/nOLXsI2g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=slA8s1o1aV9EaSfHFAOu8a3PA49D9gR4BCAT8Zq0pl0IFyOYKIxsFJ8IUzjqM4/dp
-	 GJ41Wf9bGdQjPk9d3PoH9t+Yegl4LO33BOzF1lZEr3t9g+b5b3s4Xvm0vG6TJFNMG3
-	 hwMN/Ud+LcZtYT0QvZBFuMX+Qy4zssLBfegCTcDg=
+	b=cFgP9oToNdMfXAKv3fCAmtxg56SbmqiTqTGPxC6u+vay+eYSFVo7fgEYhURRX1+SC
+	 fDyWLIwsFSfboRIGHmGvYBnkSt0zSZUIwgCbbdXsmPX3JXwmzSz+2QBsBdalOq3OOe
+	 zoSO45ue/Y1FrBr1CS/8pVYrzEJzwZhwd6uER/T0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97031F8052E;
-	Mon,  5 Dec 2022 09:36:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3EB2AF8057A;
+	Mon,  5 Dec 2022 09:36:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B13EF8052E; Mon,  5 Dec 2022 09:36:40 +0100 (CET)
+ id 2B651F8054A; Mon,  5 Dec 2022 09:36:43 +0100 (CET)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 56B63F8047C
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 09:36:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56B63F8047C
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC3A3F8054A
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 09:36:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC3A3F8054A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="CSMCbr6l"
+ header.b="VE7aVVT7"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1670229395; x=1701765395;
+ t=1670229401; x=1701765401;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=Dkk3vruKcuTKAa07QIz7BbG/O+nO0F12C0SGGoHh5f0=;
- b=CSMCbr6lswNj3+PVU3KNyoxj62kJ2mWUOt6ZckqbROTWBblT3I3+x7+p
- KVwgHO0UllbTR30KmIvZbGfWUjCYaQ/JdF7xh+KOq3cdAEhCTtjoeCkre
- cvlgL+sAPwDaSfFWsA7ECB1XuFpf9pmweSIHTIsji6w4U9Gwvp+5IuGZI
- peOtcJmpF6DC9Qcv5oG3NCHMYIzaUjAuBtXhU4kkcgtT4Tu+zJJf8ox3P
- 14KvESTpWogaAMpwqIi9CEmt5k51zzwLOeeo/LunV2dfvAf++BQ9ym8ZH
- iKFVHAy/KF2BdKMMKM7T/LfOkUyirKG+49jjM1BeAGWUvJofp/iagOezP Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10551"; a="343288322"
-X-IronPort-AV: E=Sophos;i="5.96,218,1665471600"; d="scan'208";a="343288322"
+ bh=gXfSGnPfL+Q635d2cehZtogy9MtbXl2+EV/nOLXsI2g=;
+ b=VE7aVVT7Iry7oHaJOTtv5ZZtfqRt7HDphggev3pU3ojdgYLqSdkoAnNU
+ sdUbQDuHOCyZhrbRRCJ7BtO/Dw+AIUgl8xbIWQ8DznzK3dH/nxgR/FJlQ
+ VFXydWi+6X63JUs5uvwqNlUUEpCSjB7vD4xO0RA9A7reS6lkGe5dkWZLD
+ IRInLcMcoOBXq6Ou/HAcaUaJpo5P3YIn2fl2fCcCrm3x/6TkJvsJgqeBO
+ GJKStIss3KDi1ui0uzaXFZWdFu2cM732qmr/PaMkM/GNsq3YinMXK91J7
+ liL1xjaRJFc1N9Huendgfny8b7zj57lZcjlD+LWML4Ie7ju418H/2XUP2 g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10551"; a="343288365"
+X-IronPort-AV: E=Sophos;i="5.96,218,1665471600"; d="scan'208";a="343288365"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Dec 2022 00:36:33 -0800
+ 05 Dec 2022 00:36:38 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10551"; a="647866191"
-X-IronPort-AV: E=Sophos;i="5.96,218,1665471600"; d="scan'208";a="647866191"
+X-IronPort-AV: E=McAfee;i="6500,9779,10551"; a="647866237"
+X-IronPort-AV: E=Sophos;i="5.96,218,1665471600"; d="scan'208";a="647866237"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga007.fm.intel.com with ESMTP; 05 Dec 2022 00:36:30 -0800
+ by fmsmga007.fm.intel.com with ESMTP; 05 Dec 2022 00:36:36 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v2 3/6] ASoC: Intel: Skylake: Drop pipe_config_idx
-Date: Mon,  5 Dec 2022 09:53:27 +0100
-Message-Id: <20221205085330.857665-4-cezary.rojewski@intel.com>
+Subject: [PATCH v2 5/6] ASoC: Intel: Skylake: Fix driver hang during shutdown
+Date: Mon,  5 Dec 2022 09:53:29 +0100
+Message-Id: <20221205085330.857665-6-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221205085330.857665-1-cezary.rojewski@intel.com>
 References: <20221205085330.857665-1-cezary.rojewski@intel.com>
@@ -88,58 +88,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Field ->pipe_config_idx duplicates the job of ->cur_config_idx so
-remove it.
+AudioDSP cores and HDAudio links need to be turned off on shutdown to
+ensure no communication or data transfer occurs during the procedure.
 
+Fixes: c5a76a246989 ("ASoC: Intel: Skylake: Add shutdown callback")
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/skylake/skl-topology.c | 10 +++++-----
- sound/soc/intel/skylake/skl-topology.h |  1 -
- 2 files changed, 5 insertions(+), 6 deletions(-)
+ sound/soc/intel/skylake/skl.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index f144acae1b44..567a3b661ce4 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1351,9 +1351,9 @@ static int skl_tplg_multi_config_set_get(struct snd_kcontrol *kcontrol,
- 		return -EIO;
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 9bd9f9866898..998bd0232cf1 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -1107,7 +1107,10 @@ static void skl_shutdown(struct pci_dev *pci)
+ 	if (!skl->init_done)
+ 		return;
  
- 	if (is_set)
--		pipe->pipe_config_idx = ucontrol->value.enumerated.item[0];
-+		pipe->cur_config_idx = ucontrol->value.enumerated.item[0];
- 	else
--		ucontrol->value.enumerated.item[0]  =  pipe->pipe_config_idx;
-+		ucontrol->value.enumerated.item[0] = pipe->cur_config_idx;
- 
- 	return 0;
- }
-@@ -1814,11 +1814,11 @@ static int skl_tplg_be_fill_pipe_params(struct snd_soc_dai *dai,
- 	if (ret)
- 		goto err;
- 
--	dev_dbg(skl->dev, "%s using pipe config: %d\n", __func__, pipe->pipe_config_idx);
-+	dev_dbg(skl->dev, "%s using pipe config: %d\n", __func__, pipe->cur_config_idx);
- 	if (pipe->direction == SNDRV_PCM_STREAM_PLAYBACK)
--		pipe_fmt = &pipe->configs[pipe->pipe_config_idx].out_fmt;
-+		pipe_fmt = &pipe->configs[pipe->cur_config_idx].out_fmt;
- 	else
--		pipe_fmt = &pipe->configs[pipe->pipe_config_idx].in_fmt;
-+		pipe_fmt = &pipe->configs[pipe->cur_config_idx].in_fmt;
- 
- 	/* update the blob based on virtual bus_id*/
- 	cfg = intel_nhlt_get_endpoint_blob(dai->dev, skl->nhlt,
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index 017ac0ef324d..6db0fd7bad49 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -324,7 +324,6 @@ struct skl_pipe {
- 	struct skl_path_config configs[SKL_MAX_PATH_CONFIGS];
- 	struct list_head w_list;
- 	bool passthru;
--	u32 pipe_config_idx;
- };
- 
- enum skl_module_state {
+-	snd_hdac_stop_streams_and_chip(bus);
++	snd_hdac_stop_streams(bus);
++	snd_hdac_ext_bus_link_power_down_all(bus);
++	skl_dsp_sleep(skl->dsp);
++
+ 	list_for_each_entry(s, &bus->stream_list, list) {
+ 		stream = stream_to_hdac_ext_stream(s);
+ 		snd_hdac_ext_stream_decouple(bus, stream, false);
 -- 
 2.25.1
 
