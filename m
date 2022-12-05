@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E941DC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Dec 2022 17:30:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F094FC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Dec 2022 17:30:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C5F7B185C;
-	Mon,  5 Dec 2022 18:29:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5F7B185C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 610FA187A;
+	Mon,  5 Dec 2022 18:30:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 610FA187A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670261423;
-	bh=qEvLyHNV7Ss9WZ2ubeO4+eopAKpla3iPV1553qghz4o=;
+	s=default; t=1670261452;
+	bh=9o+sSMrq9KvnPjqoO20e62XLRYjEsVjPF5T8c8sl2AI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Uxl3BK8WmndwAZea0a6PxkBY6G/C8qTNZrqy3iKXxTu0yNSwG/BXpVjaMxJ1U1omL
-	 sH5rxo4W+9xRQGr0Pfp9nxADgLnPGFWCzlwSMKRqf5SX42Q8bag/UvSGCS4ZN4Z3+a
-	 rooAz5ahqbQV6VLen1kcE/Y9fskos6dFrH4QUyEE=
+	b=ITSj56o/4dkANBtwHezeCDYiKqnURAkTDqtx8bfhQA8UoGp6u8+1+bCQ/7Rho5M2S
+	 Ma5aPO56pPzgfWieAZjFxAnjXpmQhDFbCiXe6zE6Ugd1O0CUAoG5GMKOKqeMuClPnE
+	 dsqhWE1xV9uqWYTUXrd1w1bB6n+FoyOCORU9Somw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65C40F8052E;
-	Mon,  5 Dec 2022 18:29:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F02DF8055B;
+	Mon,  5 Dec 2022 18:29:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 19EC3F8047C; Mon,  5 Dec 2022 18:29:07 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 516B2F804C2; Mon,  5 Dec 2022 18:29:11 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C87C5F800BD
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 18:29:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C87C5F800BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 25A91F80155
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 18:29:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25A91F80155
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BWL/d3p+"
+ header.b="egNrSPlA"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 0D53CB8118F;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 5C12C6125F;
+ Mon,  5 Dec 2022 17:29:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24E8AC433C1;
  Mon,  5 Dec 2022 17:29:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBBF0C433D6;
- Mon,  5 Dec 2022 17:28:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1670261339;
- bh=qEvLyHNV7Ss9WZ2ubeO4+eopAKpla3iPV1553qghz4o=;
+ s=k20201202; t=1670261343;
+ bh=9o+sSMrq9KvnPjqoO20e62XLRYjEsVjPF5T8c8sl2AI=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=BWL/d3p+lHPnnOOSGwKOFAExfqjSlNsa7uTFSPirBXhEJTLWWQSD5zOjMJAIU4P23
- RSVYC41HWAiFZQn0DmPL1F8Vjt7yQqI08QAnSO3smdw5qRSyHNTbQw+aLxDx4P5leb
- Rfj0JMnRvsqGx75rDutGrq58CIpTcL8oWAj2nv/IPehUau4SbXawi2msOdq1Rhojw3
- EWhAZ+bhByjQqcFAxk9sBbM+fSvCiyI/A9FMsP+zcj4MolizM2CeVDt6faXhYXZUEZ
- r1T60gwbI1ofv+rStgaj6SAWyAEcp43Hc3GEhmcGWpiarRtFoVnqJ6sWWd8Vh1J8Ad
- veVGVYvLDi/9Q==
+ b=egNrSPlAOL93I5JG/09Vuxnvw/YqWVYDq/oPwabaIgp8v+aTD1IqwlYTLtPZMzne2
+ Nz4Xg82e6fiCIDhnCRhW01AVV3+gFdLB6z6FmKanPng7yMX794lup0NKNGVpUWOjnG
+ l4zB8nYBmiNSzui2ZaMkE93Uw2FPmhFIb9tDVMNw7DrQh7lmtJBvHrSdF3X0ZfCOtE
+ Z7ou2C57xHlPaspol+EeeAqaH1huH46yIOH6E7VQPq3AwYp67Y0Oza6TdTnNX667WK
+ Lim3mOueKiIrh1mzRIk6i5U92ROURHdrob/POMNcYROTlgCE5qeXnh6ziJSAaA9X6w
+ +CvREZ0dKxe4g==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Kunihiko Hayashi <hayashi.kunihiko@socionext.com>, 
- linux-arm-kernel@lists.infradead.org, Takashi Iwai <tiwai@suse.com>,
+To: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
  Colin Ian King <colin.i.king@gmail.com>, 
  Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
- Masami Hiramatsu <mhiramat@kernel.org>
-In-Reply-To: <20221202164156.1812971-1-colin.i.king@gmail.com>
-References: <20221202164156.1812971-1-colin.i.king@gmail.com>
-Subject: Re: [PATCH][next] ASoC: uniphier: aio-core: Make some read-only
- arrays static const
-Message-Id: <167026133758.536379.12650121708842082067.b4-ty@kernel.org>
-Date: Mon, 05 Dec 2022 17:28:57 +0000
+ Oder Chiou <oder_chiou@realtek.com>
+In-Reply-To: <20221202171450.1815346-1-colin.i.king@gmail.com>
+References: <20221202171450.1815346-1-colin.i.king@gmail.com>
+Subject: Re: [PATCH][next] ASoC: rt715: Make read-only arrays capture_reg_H
+ and capture_reg_L static const
+Message-Id: <167026134182.536379.4326237833077091583.b4-ty@kernel.org>
+Date: Mon, 05 Dec 2022 17:29:01 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -86,10 +84,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 2 Dec 2022 16:41:56 +0000, Colin Ian King wrote:
-> Don't populate the read-only arrays slotsel_2ch, slotsel_multi, v_pll
-> and v_div on the stack but instead make them static const. Also makes
-> the object code a little smaller.
+On Fri, 2 Dec 2022 17:14:50 +0000, Colin Ian King wrote:
+> Don't populate the read-only arrays capture_reg_H and capture_reg_L
+> on the stack but instead make them static const. Also makes the
+> object code a little smaller.
 > 
 > 
 
@@ -99,8 +97,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: uniphier: aio-core: Make some read-only arrays static const
-      commit: cb870fdcf1332ee791d7de6bbf350f15fc19c989
+[1/1] ASoC: rt715: Make read-only arrays capture_reg_H and capture_reg_L static const
+      commit: b5d5051971b44c9952b62f261509cf837b9d21ba
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
