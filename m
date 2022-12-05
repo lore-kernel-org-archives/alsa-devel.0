@@ -4,133 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C069C4321E
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Dec 2022 12:08:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 135B0C4708D
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Dec 2022 12:08:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F7EE17A2;
-	Mon,  5 Dec 2022 13:07:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F7EE17A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id B727A17EF;
+	Mon,  5 Dec 2022 13:07:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B727A17EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670242095;
-	bh=370FvnMUs6gMTBcpS4OIrn1M9NStu1KS0byTD+s+rWQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1670242119;
+	bh=K+Dd7xGXTDkGOUmFSn+Tmrppo1MrzYY2Lk+azYRrNIg=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T3npTl3OEzMc+3lZld1M7HA7gGu9zyc5gdxit5DnSCtTu1mE4jI2Nu/uo+oyt+Y3Q
-	 nwZbWW9hx4DB1aKggLfdzmiG6EIFLK+hCOnCL/a+hJnjXw2y8atnllpFu8MA6pkKQM
-	 LztSRJHRiUhikog4Uv7YzjUgTcw3i2nKIValg98g=
+	b=bukG8k55vGgLzvHwkxNsLXHE9NBbYpzRYuxFzabq0cX3pfiRUHEnDnatFLuq6xpFC
+	 JIqz/zniTdTpu2eGJ9hbAHUBh1nO9qWncavnFPwWf438ivR0FMY2iyC6FWTy/JdaZT
+	 h02qqagoVMMPPt5sUI4ll4hTb0OcNJAlflcmdAaw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DDD4F8049E;
-	Mon,  5 Dec 2022 13:07:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A1A1F8055A;
+	Mon,  5 Dec 2022 13:07:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B319F804C2; Mon,  5 Dec 2022 13:07:23 +0100 (CET)
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com
- (mail-mw2nam04on20616.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7e8c::616])
+ id 6E2C7F8055B; Mon,  5 Dec 2022 13:07:36 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B9DBF80155
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 13:07:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B9DBF80155
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="m1gkj524"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5BE47F80171;
- Mon,  5 Dec 2022 13:07:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BE47F80171
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
- header.b="MivUhBi/"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PRAOcUca+ER+7YC1M83kpeE7NJNvYULRKz8pX1pLqXIvT/H1+EHiB87RM87PFSAfKEnyZqW7OfKnZRr85hBvwgrtuvTefyEyJcx7UeLl+6bkjST673VMITg22b1+Jy1h6oslyJ7WLKYkaDC8680410kOq6mTpGDxgm6qE7rCwTUuwqKQDAm2Ld/rlI8YPhAbahY1XyjSQCGx+Y5Q0D9aJLFd6GtwbOl8Lz7p8VSEU3nIpvU2L+bT3i4vafyxYOq981ZthLStMdtoOkdtASntHATZayFECyXSgeDuuH3AlHOSX08WJfu2pZvJvpay3apL+mQyXAzKTvQRdB/TEPR8Tw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vF/MdoHxIs/dNMRujRZ1nZS3C4cCmscams5Llrr0zHs=;
- b=bGc79BXOuxhf9xR7k/1aQyeMxeSXaJ8LkuG7MYFa1jW3IPHdtpuCFJBiHF+EpC64fXjNwqtn9OQSSjKAGbJccGIrzD4rl1ypu60a/6joJlrgYelU/2g9UaQ+KqRGrnSQHUJxzLSXuU8ul9VxMC2A0N8tAo69ZMYqX1GJ0POl4moJfTcaTNm9uPEIbPO85qEUeduCPZQJ1tuOCN/Ti+oxwBqK3bKvP130RlEoRPYSn/YBeckF+FP2LAhAQedwUvpu7qSPUplDUq2eK0CPgcRkgwqOl1/WmGveTB3LlGEVab87JyeIlqGWPlrZ1zkSs4U6KNs1wHbLNOIqAmgqYTfJmw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vF/MdoHxIs/dNMRujRZ1nZS3C4cCmscams5Llrr0zHs=;
- b=MivUhBi/2dbvloIonxKTymLC+SgxhVEWwctEij/iVYsvmIQhnjpiyA0ZKnAxLQzoW3/KEM0qtBJZV9bDs04f5EGK84Qp5Av5tjM16lrWdtOmsR9lIFF2JA1tdRgNBuvONqwcWSRQSZnrgM5UIdU0jcbD9nmwFM9EshCqXxtlwc8=
-Received: from BN7PR06CA0052.namprd06.prod.outlook.com (2603:10b6:408:34::29)
- by DS0PR12MB6533.namprd12.prod.outlook.com (2603:10b6:8:c2::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.14; Mon, 5 Dec
- 2022 12:07:10 +0000
-Received: from BN8NAM11FT048.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:34:cafe::ba) by BN7PR06CA0052.outlook.office365.com
- (2603:10b6:408:34::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.14 via Frontend
- Transport; Mon, 5 Dec 2022 12:07:10 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BN8NAM11FT048.mail.protection.outlook.com (10.13.177.117) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.5880.8 via Frontend Transport; Mon, 5 Dec 2022 12:07:09 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 5 Dec
- 2022 06:06:52 -0600
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 5 Dec
- 2022 06:06:52 -0600
-Received: from sof-System-Product-Name.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.34
- via Frontend Transport; Mon, 5 Dec 2022 06:06:46 -0600
-From: V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>
-To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH 1/2] ASoC: SOF: amd: Use poll function instead to read
- ACP_SHA_DSP_FW_QUALIFIER
-Date: Mon, 5 Dec 2022 17:36:48 +0530
-Message-ID: <20221205120649.1950576-2-Vsujithkumar.Reddy@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221205120649.1950576-1-Vsujithkumar.Reddy@amd.com>
-References: <20221205120649.1950576-1-Vsujithkumar.Reddy@amd.com>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 95371B80F91;
+ Mon,  5 Dec 2022 12:07:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E08C2C433C1;
+ Mon,  5 Dec 2022 12:07:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1670242050;
+ bh=K+Dd7xGXTDkGOUmFSn+Tmrppo1MrzYY2Lk+azYRrNIg=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=m1gkj5247+U4OLnyaCx2lbX33R9pdpFcyuxaNcBbQzKrA1hlMuZw7xpg76kPEO27x
+ kUm7v+2SXEaVcuxFuOz86wLmKDzu8jfpk5jdqtYWWkq/1y7iJm+ITBsy+uOXINE5gg
+ D/IlOVOJUaYUQqS9NqMbjywD7kVo4V0mpp0VNEChvkZSJhIffAXsFnv/ZjJ1haKzM9
+ xB9L/3UcEy78yD/SaFiHTyYNCWOhT+r1FIFXZsC54p7ttrL5HoYvAjVP1FUBxLIid3
+ K9TQjW0zvBmMidab5XPUhSr1LVM/uw0Gh5Vounv45TXpabRWy0RSWfyiqpbjOyX1cI
+ LMBCv/rdqg6ww==
+Date: Mon, 5 Dec 2022 12:07:20 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Jiaxin Yu =?utf-8?B?KOS/nuWutumRqyk=?= <Jiaxin.Yu@mediatek.com>
+Subject: Re: [PATCH v2 1/3] ASoC: hdmi-codec: Add event handler for hdmi TX
+Message-ID: <Y43e+EsNCrCpZSIH@sirena.org.uk>
+References: <20221125094413.4940-1-jiaxin.yu@mediatek.com>
+ <20221125094413.4940-2-jiaxin.yu@mediatek.com>
+ <Y4Cysgk5Gic5ae9B@sirena.org.uk>
+ <18c82f6f723cd97a9d6b9a7ff16c6ed62fd005d6.camel@mediatek.com>
+ <Y4Y/vEWe3dw0FPQH@sirena.org.uk>
+ <cf9ea98a3263ffb8fc8b542888ad0ad680facfc7.camel@mediatek.com>
+ <Y4jHAJgmz/P58Q/C@sirena.org.uk>
+ <7023a2c7b471d6888d9079563a6c01f22599201f.camel@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT048:EE_|DS0PR12MB6533:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3685515d-02cc-46da-76cd-08dad6b93c93
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SXOCcG8NgnTSUSnG5j9Czl/TFlZAi7XnRZFw7kvHT02cfjhHHNMotfsPlDnLzaLGYzyPmldaI0Sf78DYeEFcVzxeC4cbt8+RuXnBuTml7cFUa43zOQhXgXBgF9J49PQVuJED612MKKcY5O0mV+8STk+rrVnkyTpZcaBsb/OS38n1+zXFD3dQXZ3Tt6NHij3aUq+p+OGeHpiSwTQ/TX5vON9ZUk2dluWC7VoBenoTwgpDL6Ex2Txc4VfWxi64QcYOuQoooD/u8ZLgaErXnHvHLygRb85CCnJPRyjcG3KbWBw2wtt/8F5++oJPDjYDnqqena7sJTG1qkrv2aSTmz5SrinTtkWfYxZjjdJJwIEEIxjD3lm7e/5SHaKjnqd2t2E3dFCslbTKOCNsAwRpb/IBHnCYLRTfSoxBfCe73B3P4g5G7z5qFLw15y/ZQMEi9CdRequ1quRVZ5Tegn711iDBgT7ntZh5oK+OHP0wdbSROB8e0CiRcaBwR89+GAnDYjMzd65K1kGsbgL7PlBeaPiCSWt5uy99g8S1GLZwpHMsJLlz1GZooy4fLfXa5M8HslgF4epGIg3MYhTik2fhaYgtIRzSzv8c6+T9BHnJkj9BUqqESp9jV3eKjM2ScppbWG4R6BEXnGEpJosObdzTsT2tA1Tpa+GzVGFuHG9edTSlqDIfOd6pvkrjKR2heTVLWSl9yeoAyXYNSIJHPvqxDfCrX7VpQDlXC5oSZg57pE7evt0=
-X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
- IPV:CAL; SFV:NSPM; H:SATLEXMB03.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
- SFS:(13230022)(4636009)(396003)(376002)(346002)(39860400002)(136003)(451199015)(40470700004)(36840700001)(46966006)(2906002)(1076003)(41300700001)(7416002)(83380400001)(5660300002)(336012)(8936002)(47076005)(426003)(36860700001)(82310400005)(86362001)(40480700001)(36756003)(40460700003)(82740400003)(356005)(81166007)(26005)(316002)(110136005)(54906003)(7696005)(2616005)(186003)(4326008)(70206006)(70586007)(8676002)(478600001)(36900700001);
- DIR:OUT; SFP:1101; 
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2022 12:07:09.9468 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3685515d-02cc-46da-76cd-08dad6b93c93
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
- Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT048.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6533
-Cc: Daniel Baluta <daniel.baluta@nxp.com>,
- Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, Sunil-kumar.Dommati@amd.com,
- ssabakar@amd.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- venkataprasad.potturu@amd.com, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Ajit Kumar
- Pandey <AjitKumar.Pandey@amd.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Vijendar.Mukunda@amd.com, V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
- Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- open list <linux-kernel@vger.kernel.org>, "moderated list:SOUND - SOUND OPEN
- FIRMWARE \(SOF\) DRIVERS" <sound-open-firmware@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="2Zxw/Hvoq9IhDAxu"
+Content-Disposition: inline
+In-Reply-To: <7023a2c7b471d6888d9079563a6c01f22599201f.camel@mediatek.com>
+X-Cookie: If it ain't broke, don't fix it.
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+ "nfraprado@collabora.com" <nfraprado@collabora.com>,
+ Chunxu Li =?utf-8?B?KOadjuaYpeaXrSk=?= <Chunxu.Li@mediatek.com>,
+ Allen-KH Cheng =?utf-8?B?KOeoi+WGoOWLsyk=?= <Allen-KH.Cheng@mediatek.com>,
+ "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ Project_Global_Chrome_Upstream_Group
+ <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ "robert.foss@linaro.org" <robert.foss@linaro.org>,
+ "andrzej.hajda@intel.com" <andrzej.hajda@intel.com>,
+ "angelogioacchino.delregno@collabora.com"
+ <angelogioacchino.delregno@collabora.com>,
+ "ajye_huang@compal.corp-partner.google.com"
+ <ajye_huang@compal.corp-partner.google.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "Laurent.pinchart@ideasonboard.com" <Laurent.pinchart@ideasonboard.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -146,43 +106,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
 
-The Skyrim project and Whiterun met error when DSP
-loading during device boot.
-Ex, error in kernel log,
-ERR kernel: [   16.124537] snd_sof_amd_rembrandt
-0000:04:00.5: PSP validation failed.
+--2Zxw/Hvoq9IhDAxu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Use the snd_sof_dsp_read_poll_timeout function to successfully
-read the FW_QUALIFIER register
+On Mon, Dec 05, 2022 at 09:34:17AM +0000, Jiaxin Yu (=E4=BF=9E=E5=AE=B6=E9=
+=91=AB) wrote:
 
-Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Signed-off-by: V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>
----
- sound/soc/sof/amd/acp.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+> 1. I have added a DAPM widget that is "SDB", when we open or close HDMI
+> PIN_SWITCH, the callback 'hdmi_tx_event' registered in the widget will
+> be triggered. Maybe you mean I shouldn't use SNDRV_PCM_TRIGGER_START
+> and SNDRV_PCM_TRIGGER_STOP?
 
-diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
-index 47115a77c92c..6bd2888fbb66 100644
---- a/sound/soc/sof/amd/acp.c
-+++ b/sound/soc/sof/amd/acp.c
-@@ -255,10 +255,12 @@ int configure_and_run_sha_dma(struct acp_dev_data *adata, void *image_addr,
- 	if (ret)
- 		return ret;
- 
--	fw_qualifier = snd_sof_dsp_read(sdev, ACP_DSP_BAR, ACP_SHA_DSP_FW_QUALIFIER);
--	if (!(fw_qualifier & DSP_FW_RUN_ENABLE)) {
-+	ret = snd_sof_dsp_read_poll_timeout(sdev, ACP_DSP_BAR, ACP_SHA_DSP_FW_QUALIFIER,
-+					    fw_qualifier, fw_qualifier & DSP_FW_RUN_ENABLE,
-+					    ACP_REG_POLL_INTERVAL, ACP_DMA_COMPLETE_TIMEOUT_US);
-+	if (ret < 0) {
- 		dev_err(sdev->dev, "PSP validation failed\n");
--		return -EINVAL;
-+		return ret;
- 	}
- 
- 	return 0;
--- 
-2.25.1
+No, I mean that if you want to control the enable and disable of the
+output path you should implement a DAPM widget.
 
+> 2. If I don't use hcd.ops->trigger notifies the bridge ic driver to
+> switch the audio, which ops should I use?
+> I actually want to know hdmi-codec.c and it6505.c except
+> hdmi_codec_ops, is there any other way to communicate?
+
+Like I said you should use the event on the DAPM widget.  This will
+require providing operations for the events to the drivers.
+
+--2Zxw/Hvoq9IhDAxu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmON3vcACgkQJNaLcl1U
+h9Cbhgf+LMvcJgTpZwsDot1swl9dxC4R5KoASnnVtW3qUnTy6RJishGkt+FKlLX8
+aw/XM5uZSMX1WA040KY4LRSrz/jSPdW2esD5PxtNo7+z87LmRi/AL9539cd8zu89
+jNhbtBAQDyiNp1Y5mNKjEoL6wCbFS7Zt8XMnXHxddRKZClHNgn1q5/ZbfkbNP++Y
+zsXuNSRUT4lzbBlfe2tRMJ1mPdz2R1Is+7sbNZIPIU4t741icrKukcCYPOuYfQeb
+38OZ3gVyERI/AIfp7P0X5SLklXuTFFxAhbg617Bp254suyarICucIyvSvp7iTNxq
+hg3akba+kzI36lZ6YuhE4NvJC589kQ==
+=lrjL
+-----END PGP SIGNATURE-----
+
+--2Zxw/Hvoq9IhDAxu--
