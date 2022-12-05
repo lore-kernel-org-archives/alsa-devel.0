@@ -4,84 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07DEDC4321E
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Dec 2022 13:23:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E110FC47089
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Dec 2022 13:39:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 30A701872;
-	Mon,  5 Dec 2022 14:22:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30A701872
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D84F17F9;
+	Mon,  5 Dec 2022 14:38:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D84F17F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670246602;
-	bh=MaNqeEkhD6uFBQiZvZCRdckHPwLavdJwvT3+JYV4DYA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1670247557;
+	bh=bekCWIrDwJwNJDJTYD0aY310Agll7BI3ZChFgpmI5KY=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mPgcIVhC2ykF0gUBmCq6NXGnM6B9sBGM7o42MGvtsGEImQT+lU4/5IsTL806V5Una
-	 4WYYCMkji/LklQbV+yzNJ9Pzpg7pzdiK0VSx4myi+SY+cFUz+RJ0eIOtneVJazaZT8
-	 PUhorDgLB0qW/xVGy8urXi16LEQ1PhwzUPE+Deq0=
+	b=rKHG+0EWVVT90SDF8jrprCdJQ7xiqWXOmK0jIRtZk1ycv3LAJAc52JV776ZQLK02d
+	 2NtHuN2n05xtiWJOhu5jm5GeESQhPVkjFbvFXGt1n8naZmlloE7GiqSYgkNQmwMBve
+	 AKjtOFmOz8bOKedhgOftdm2DsrT/NLsIiMTXPXkc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59DD2F80568;
-	Mon,  5 Dec 2022 14:21:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6713F80155;
+	Mon,  5 Dec 2022 14:38:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37928F80236; Mon,  5 Dec 2022 14:21:39 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 7AF7EF80236; Mon,  5 Dec 2022 14:38:25 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A92A3F80236
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 14:21:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A92A3F80236
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4EDDCF8014C
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 14:38:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EDDCF8014C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="JGd2wW5U"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="QA0xh0Hx"
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="S45yVKvt"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5B528225C0;
- Mon,  5 Dec 2022 13:21:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1670246487; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=kqBVOyE88h6z4FJ0V7WQNfew9pfDbQ4nz1o5y0mrLF8=;
- b=JGd2wW5UGbqdqXX4fKXriT3MNBRHxPRoz9KOeZq3X3Q8pO9Xz+VLCsBXDuZ99L7aO+VTH1
- O35vZf2ViU/9p/qXim70bkHeEH0slTa4gKU65F3EZAYTeUZ/WVg0uks08flULs3mhX5+0v
- OS4DL33pR/Rso8FFds30rOJ594uuUjA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1670246487;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=kqBVOyE88h6z4FJ0V7WQNfew9pfDbQ4nz1o5y0mrLF8=;
- b=QA0xh0HxJsNeUX4qRVqC6M9fk+8ZW/R2EAaIhOeetiVOCvLFhc4pcuOKSxHxMvcAKmT5rM
- QiTrkEV+nvdrUgDg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 37E601369C;
- Mon,  5 Dec 2022 13:21:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap1.suse-dmz.suse.de with ESMTPSA id gAI/DFfwjWOZagAAGKfGzw
- (envelope-from <tiwai@suse.de>); Mon, 05 Dec 2022 13:21:27 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/3] ALSA: pcm: Set missing stop_operating flag at undoing
- trigger start
-Date: Mon,  5 Dec 2022 14:21:22 +0100
-Message-Id: <20221205132124.11585-2-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20221205132124.11585-1-tiwai@suse.de>
-References: <20221205132124.11585-1-tiwai@suse.de>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 7C5A5B810A5;
+ Mon,  5 Dec 2022 13:38:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 264DCC433D6;
+ Mon,  5 Dec 2022 13:38:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1670247501;
+ bh=bekCWIrDwJwNJDJTYD0aY310Agll7BI3ZChFgpmI5KY=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=S45yVKvtI/1zr/G9DWLq+IHfh4MZvFeMUCqgxFSwqnWZNgzNtaE1rI8b8Mh8OdENc
+ z9MeXaFGGtwDEcHo/O9MLAMbpfjV4b4wn0hiXcFDV3n35kdoECHNfXox5u5RYH4hk4
+ qcgCe0uBUdS409fcbqWC3XbEw+oTg6VGjvNeQf0T05sdFNWnqReh2wvO+mgQkhUMG9
+ kx/6FlCoM1+OLixBCiFAonzpFMnMbq9RtzyrcS7cws0VBKdiHBuke651RyQvX3aRkc
+ HCSUJr/R90X3T3+LGUzSnFAoihWR2EN2j3OR0/d9BpSZpUssWZ8A58ue/FIOxuGQ7d
+ K1ca4EHdLvKkg==
+Date: Mon, 5 Dec 2022 13:38:14 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/2] dt-bindings: Drop Jee Heng Sia
+Message-ID: <Y430RlENo2cjtl2r@sirena.org.uk>
+References: <20221203162144.99225-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Carl Hetherington <lists@carlh.net>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="XKB8a64cbKHYLz9M"
+Content-Disposition: inline
+In-Reply-To: <20221203162144.99225-1-krzysztof.kozlowski@linaro.org>
+X-Cookie: If it ain't broke, don't fix it.
+Cc: devicetree@vger.kernel.org,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ dmaengine@vger.kernel.org, "Paul J. Murphy" <paul.j.murphy@intel.com>,
+ Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+ Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,38 +88,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When a PCM trigger-start fails at snd_pcm_do_start(), PCM core tries
-to undo the action at snd_pcm_undo_start() by issuing the trigger STOP
-manually.  At that point, we forgot to set the stop_operating flag,
-hence the sync-stop won't be issued at the next prepare or other
-calls.
 
-This patch adds the missing stop_operating flag at
-snd_pcm_undo_start().
+--XKB8a64cbKHYLz9M
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: 1e850beea278 ("ALSA: pcm: Add the support for sync-stop operation")
-Link: https://lore.kernel.org/r/b4e71631-4a94-613-27b2-fb595792630@carlh.net
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/pcm_native.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On Sat, Dec 03, 2022 at 05:21:43PM +0100, Krzysztof Kozlowski wrote:
+> Emails to Jee Heng Sia bounce ("550 #5.1.0 Address rejected.").  Add
+> Keembay platform maintainers as Keembay I2S maintainers.
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index ba6e44d02faa..e3deec62b9a1 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -1432,8 +1432,10 @@ static int snd_pcm_do_start(struct snd_pcm_substream *substream,
- static void snd_pcm_undo_start(struct snd_pcm_substream *substream,
- 			       snd_pcm_state_t state)
- {
--	if (substream->runtime->trigger_master == substream)
-+	if (substream->runtime->trigger_master == substream) {
- 		substream->ops->trigger(substream, SNDRV_PCM_TRIGGER_STOP);
-+		substream->runtime->stop_operating = true;
-+	}
- }
- 
- static void snd_pcm_post_start(struct snd_pcm_substream *substream,
--- 
-2.35.3
+Acked-by: Mark Brown <broonie@kernel.org>
 
+--XKB8a64cbKHYLz9M
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmON9EUACgkQJNaLcl1U
+h9A33gf/b2Cog2bcg/VPxxlK5WyJaOySjZs31TN8cqPq2zwUIu7qOCxgsixtw4s8
+/W6JP2IZC6GOKJay/Pq+EDrhFqkXghjYx7jI4K8JnL/EYb2J+VBAZ1d6GG2ixSd5
+j911bMTNDkVFwV2rgCOyIrJBJ24jcy0E8SFuE97IjZBmgDYGtNyEWCouUVvpGcgM
+0eCmv8Hmr4nWnj5Jz9TLsBpiRsH7GewlOHsJgpQJP21yPOKT1IDjWqslSZrVu1dY
+8Fid5N2IX7DnmGOnhaEr4cCCAUWjmgp/sUQvPnjpPNbPWSbx2d8hIKi8DVDobfkR
+a9Dls3HHAM0nh7/HWkaQq4j0gW6/NA==
+=+Wfw
+-----END PGP SIGNATURE-----
+
+--XKB8a64cbKHYLz9M--
