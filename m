@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C268C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Dec 2022 08:38:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEC69C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Dec 2022 08:39:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 401EA175C;
-	Mon,  5 Dec 2022 09:38:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 401EA175C
+	by alsa0.perex.cz (Postfix) with ESMTPS id D2B75176C;
+	Mon,  5 Dec 2022 09:38:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2B75176C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670229532;
-	bh=cghulDz9lzLKc3N6pm9sxANchOK0gH9CRgJeMT3rKrc=;
+	s=default; t=1670229550;
+	bh=gjGSVlKOBmP4//103vV1Se01lrQ00rii4KNWv7jXxbw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ca9lAbFxQVMV/f1WuFxJJSoZ5MA29n1rHAlNFyTIwEO6qJzVfX/NXMZY6fE49PKvs
-	 FvqYCC01a/YuxrvMrEwCx5Dsp5hzz8HNgL7EW0dbCSQbIkpdfkD34uSwNyGIlHS7BV
-	 z8pMwsHwZEnvlDRIQojkEqFhK0R0E+9fsRWbcB5c=
+	b=l89pxtJ/AveHPH1Eq9wqTN5KqD8d2ajb1qv5fO50XRiJ6Nxs9zoMDdegLZP8M9vqr
+	 j/pZNmtCsgpBjHIGWxLjFKVPh/R76GK+x4YZl0JTSNbg8wbftfToVUaX6JsaKdH+HT
+	 FjiBBNklj6PP45AIKnr17ZTnUNpboolCA/nD/8j4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC359F8057D;
-	Mon,  5 Dec 2022 09:37:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61743F8049E;
+	Mon,  5 Dec 2022 09:37:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 44C0EF80155; Mon,  5 Dec 2022 09:37:06 +0100 (CET)
+ id 4AB52F804C2; Mon,  5 Dec 2022 09:37:37 +0100 (CET)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B031CF80155
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 09:36:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B031CF80155
+ by alsa1.perex.cz (Postfix) with ESMTPS id 052EAF80171
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 09:36:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 052EAF80171
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="cE+lAwDk"
+ header.b="eSZNjUYU"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1670229420; x=1701765420;
+ t=1670229399; x=1701765399;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=cghulDz9lzLKc3N6pm9sxANchOK0gH9CRgJeMT3rKrc=;
- b=cE+lAwDkVgCqDKnmdUzLBbxxn2/0bbRDq0xxUzYr6Ui2i5rsAWqWGr2g
- BKm8H3EfYewjNm2sLAZt5N/MPbuoZWLzKaBOfB+aj/8bMVCcxCpc00S4s
- TzqB61YiZfyQQqSB6rfB9KtDxoocqY5o0ssaHru5D3yrUtHg4B61Unu+2
- IN8vaq6uen9O5IpezdEjnqfsZg197CVSb6i/RlATY6HsK4VRVYcsUgWQT
- wWx6Snm95Jt5W1rDmatFcxvIv15GTkBEZKpqA8nqJv9Ns02pgbnW2sEcJ
- LUKjFHoPYgKECig6hhRxvOUGGAMj0EXcAD4rlIY8b5R7dzmwAXv4sSzXF A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10551"; a="343288458"
-X-IronPort-AV: E=Sophos;i="5.96,218,1665471600"; d="scan'208";a="343288458"
+ bh=gjGSVlKOBmP4//103vV1Se01lrQ00rii4KNWv7jXxbw=;
+ b=eSZNjUYUz9BJXr+sdRdt3eB65Psb/T5oCafdRtQQMh5O7DXPHWLDBUqm
+ buaBD+yvGWY0HYFqeC+sk/JhtYr89Ubp18dlLOMeAboBfYosmbCni3tj5
+ EciRq+MA8VcOKoyhVJPAUSnMLcEhgei71KtsUX46YibnRRiHffkYSalLz
+ gzassUC9ftjL2CySXQHLnVjFAnjKL3XY1hnVfj0xC3taMEUAo5NfBfojP
+ eQ5EpwSLrBjz6M3aFLGSw1pqlzW1Md1yqzsg0Tyc/amhdeYkBMw/DBByQ
+ RUlbjw+O1e2DtdFmizuF4xx26cK7GlwN1r8eDYovT0KmSc0NpSYRCHDrI Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10551"; a="343288342"
+X-IronPort-AV: E=Sophos;i="5.96,218,1665471600"; d="scan'208";a="343288342"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Dec 2022 00:36:57 -0800
+ 05 Dec 2022 00:36:36 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10551"; a="647866255"
-X-IronPort-AV: E=Sophos;i="5.96,218,1665471600"; d="scan'208";a="647866255"
+X-IronPort-AV: E=McAfee;i="6500,9779,10551"; a="647866220"
+X-IronPort-AV: E=Sophos;i="5.96,218,1665471600"; d="scan'208";a="647866220"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga007.fm.intel.com with ESMTP; 05 Dec 2022 00:36:38 -0800
+ by fmsmga007.fm.intel.com with ESMTP; 05 Dec 2022 00:36:33 -0800
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v2 6/6] ASoC: Intel: Skylake: Use SG allocation for SKL-based
- firmware load
-Date: Mon,  5 Dec 2022 09:53:30 +0100
-Message-Id: <20221205085330.857665-7-cezary.rojewski@intel.com>
+Subject: [PATCH v2 4/6] ASoC: Intel: Skylake: Introduce single place for
+ pipe-config selection
+Date: Mon,  5 Dec 2022 09:53:28 +0100
+Message-Id: <20221205085330.857665-5-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221205085330.857665-1-cezary.rojewski@intel.com>
 References: <20221205085330.857665-1-cezary.rojewski@intel.com>
@@ -89,81 +89,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Resign from ->alloc_dma_buf() and use snd_dma_alloc_pages() directly.
-For data i.e.: base firmware binary transfer, make use of SG allocation
-to better adapt to memory-limited environment. For BDL descriptor, given
-its small size this is not required.
+Provide a single location for pipe config selection where all fields
+that have to be updated whenever ->pipe_config_idx changes can be
+updated accordingly.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/skylake/skl-sst-cldma.c | 27 +++++++++++++++----------
- 1 file changed, 16 insertions(+), 11 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
-index b91f7a652a2b..b0204ea00f07 100644
---- a/sound/soc/intel/skylake/skl-sst-cldma.c
-+++ b/sound/soc/intel/skylake/skl-sst-cldma.c
-@@ -11,6 +11,7 @@
- #include <linux/io.h>
- #include <linux/mm.h>
- #include <linux/delay.h>
-+#include <sound/hda_register.h>
- #include "../common/sst-dsp.h"
- #include "../common/sst-dsp-priv.h"
- 
-@@ -79,21 +80,25 @@ static void skl_cldma_setup_bdle(struct sst_dsp *ctx,
- 		__le32 **bdlp, int size, int with_ioc)
- {
- 	__le32 *bdl = *bdlp;
-+	int remaining = ctx->cl_dev.bufsize;
-+	int offset = 0;
- 
- 	ctx->cl_dev.frags = 0;
--	while (size > 0) {
--		phys_addr_t addr = virt_to_phys(dmab_data->area +
--				(ctx->cl_dev.frags * ctx->cl_dev.bufsize));
-+	while (remaining > 0) {
-+		phys_addr_t addr;
-+		int chunk;
- 
-+		addr = snd_sgbuf_get_addr(dmab_data, offset);
- 		bdl[0] = cpu_to_le32(lower_32_bits(addr));
- 		bdl[1] = cpu_to_le32(upper_32_bits(addr));
-+		chunk = snd_sgbuf_get_chunk_size(dmab_data, offset, size);
-+		bdl[2] = cpu_to_le32(chunk);
- 
--		bdl[2] = cpu_to_le32(ctx->cl_dev.bufsize);
--
--		size -= ctx->cl_dev.bufsize;
--		bdl[3] = (size || !with_ioc) ? 0 : cpu_to_le32(0x01);
-+		remaining -= chunk;
-+		bdl[3] = (remaining > 0) ? 0 : cpu_to_le32(0x01);
- 
- 		bdl += 4;
-+		offset += chunk;
- 		ctx->cl_dev.frags++;
- 	}
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 567a3b661ce4..b20643b83401 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -582,6 +582,12 @@ static int skl_tplg_unload_pipe_modules(struct skl_dev *skl,
+ 	return ret;
  }
-@@ -338,15 +343,15 @@ int skl_cldma_prepare(struct sst_dsp *ctx)
- 	ctx->cl_dev.ops.cl_stop_dma = skl_cldma_stop;
  
- 	/* Allocate buffer*/
--	ret = ctx->dsp_ops.alloc_dma_buf(ctx->dev,
--			&ctx->cl_dev.dmab_data, ctx->cl_dev.bufsize);
-+	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV_SG, ctx->dev, ctx->cl_dev.bufsize,
-+				  &ctx->cl_dev.dmab_data);
- 	if (ret < 0) {
- 		dev_err(ctx->dev, "Alloc buffer for base fw failed: %x\n", ret);
- 		return ret;
- 	}
++static void skl_tplg_set_pipe_config_idx(struct skl_pipe *pipe, int idx)
++{
++	pipe->cur_config_idx = idx;
++	pipe->memory_pages = pipe->configs[idx].mem_pages;
++}
 +
- 	/* Setup Code loader BDL */
--	ret = ctx->dsp_ops.alloc_dma_buf(ctx->dev,
--			&ctx->cl_dev.dmab_bdl, PAGE_SIZE);
-+	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, ctx->dev, BDL_SIZE, &ctx->cl_dev.dmab_bdl);
- 	if (ret < 0) {
- 		dev_err(ctx->dev, "Alloc buffer for blde failed: %x\n", ret);
- 		ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
+ /*
+  * Here, we select pipe format based on the pipe type and pipe
+  * direction to determine the current config index for the pipeline.
+@@ -600,16 +606,14 @@ skl_tplg_get_pipe_config(struct skl_dev *skl, struct skl_module_cfg *mconfig)
+ 	int i;
+ 
+ 	if (pipe->nr_cfgs == 0) {
+-		pipe->cur_config_idx = 0;
++		skl_tplg_set_pipe_config_idx(pipe, 0);
+ 		return 0;
+ 	}
+ 
+ 	if (pipe->conn_type == SKL_PIPE_CONN_TYPE_NONE || pipe->nr_cfgs == 1) {
+ 		dev_dbg(skl->dev, "No conn_type or just 1 pathcfg, taking 0th for %d\n",
+ 			pipe->ppl_id);
+-		pipe->cur_config_idx = 0;
+-		pipe->memory_pages = pconfig->mem_pages;
+-
++		skl_tplg_set_pipe_config_idx(pipe, 0);
+ 		return 0;
+ 	}
+ 
+@@ -628,10 +632,8 @@ skl_tplg_get_pipe_config(struct skl_dev *skl, struct skl_module_cfg *mconfig)
+ 
+ 		if (CHECK_HW_PARAMS(params->ch, params->s_freq, params->s_fmt,
+ 				    fmt->channels, fmt->freq, fmt->bps)) {
+-			pipe->cur_config_idx = i;
+-			pipe->memory_pages = pconfig->mem_pages;
++			skl_tplg_set_pipe_config_idx(pipe, i);
+ 			dev_dbg(skl->dev, "Using pipe config: %d\n", i);
+-
+ 			return 0;
+ 		}
+ 	}
+@@ -1351,7 +1353,7 @@ static int skl_tplg_multi_config_set_get(struct snd_kcontrol *kcontrol,
+ 		return -EIO;
+ 
+ 	if (is_set)
+-		pipe->cur_config_idx = ucontrol->value.enumerated.item[0];
++		skl_tplg_set_pipe_config_idx(pipe, ucontrol->value.enumerated.item[0]);
+ 	else
+ 		ucontrol->value.enumerated.item[0] = pipe->cur_config_idx;
+ 
 -- 
 2.25.1
 
