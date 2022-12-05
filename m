@@ -4,113 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9605C352A1
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Dec 2022 13:58:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F070EC352A1
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Dec 2022 13:58:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 317AD18BC;
-	Tue,  6 Dec 2022 14:57:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 317AD18BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25CFA18E1;
+	Tue,  6 Dec 2022 14:57:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25CFA18E1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670335083;
-	bh=H8bp1qcLDKC8z3fbzr3WPVSz3zTqvYWwKef0PoPIWSM=;
+	s=default; t=1670335105;
+	bh=DyKXQqqu5E+oEETu7XorMBd80kpSeOsyNi5PPNZug1U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SOTtj0ZA3WkMY6vHQ6RQ62+RaBOCNhJ8CsjXaX3FtJEL//wgKWtcG6e5QyjgH4y2G
-	 4VDN/xFDbTKSELVG7K6wxV/w0A2Vp8q1QgA9QeD+LaVgusI6YNtSp1j7ytyHGpu3cK
-	 1JYRquUKN6YOIeNLE2RDrpoWdxGgF+CkdaKKqQ3o=
+	b=QgPItv6UV0Es8UoAMDGlrgNZZDSAwD34wQAamq/1lVJmL5vDpFpU/rOhGQDT3hPbK
+	 +UzY7ZeEmt/AcA1f+0Moso1FaYXjHb1riq3bz1FGISArU69Ems2A0A+T4ZNEylxWCH
+	 uNYfxlDnOXQBo1T3vA9iTByGwqC1HCYjgXZGy4B8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37C6BF805D3;
-	Tue,  6 Dec 2022 14:53:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49F2BF805DA;
+	Tue,  6 Dec 2022 14:53:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A1C89F8049E; Mon,  5 Dec 2022 16:37:26 +0100 (CET)
+ id B1C71F80171; Mon,  5 Dec 2022 16:37:26 +0100 (CET)
 Received: from JPN01-OS0-obe.outbound.protection.outlook.com
  (mail-os0jpn01acsn20804.outbound.protection.outlook.com
  [IPv6:2a01:111:f403:700c::804])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4EDAFF800BD
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 16:37:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EDAFF800BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 81D44F80236
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 16:37:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81D44F80236
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com
- header.b="ZFVihfly"
+ header.b="XIb65QYp"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IfU52xENsK/eGoxr26Dl7mVnudaTTOEbzczINgjQSLby8bJrEamE12FZRQXoWN4wmujJ9CUdorHT4/IMc3A2XgtgRWaYEZ4ftq6wz7aaibdvXGUuM9qd61eF/YIeM+3UWzoVu+OoLQSeJtmtROMG4v2rN8l8pUds0wET3rjBgkgI0tOK8IQylOpGGc4zeILtlF4nDLl6wWw0EsMMthhkIOor/auJHgNUpvmfAcbJuk7furgTGnn+rBUTr0EqWvqVuPkF6uXqdAg8owqMeAVfhImkM9BqLaoVJQn/de6yIvDPOBanJMiTw6RoFedT1SKrtpScuzEObz3P/HRmy0ds/A==
+ b=fVFuG8KEV06Q9/bUKNS94klVApzADe8K2amMONTpCNpCEKlpHBoHWO8ufYHoiiUw4iugyXFYztUUApnnkqJkfdx9o02X4enaaGGg4ebmM5kZ7rSz8lB0vqv5o9/HcBv/ku3JmplzlSpSr9t1DVesPdIkwOnMsPfeMH4fKBzivJEkbX6Bc88Ip8920xCd9NwrstUCl7zp7z67l1k+3gec8FdnSl3dckU5xGrdk4YGvcN0s1zBVb8VU0rbMPzTrk4cBIeS/7ajwkvRJ0bKvY88wPITxQJiAm1Bf40jhhjW9yXbp2fzJZ1J69WKTsZyN3GsbUF9Vh3B1wYil4MQUvWK/A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0iPM31kHRQF4aOShKwTu6rsQv7lE4UX1YT/WZYMS6xw=;
- b=WptfS67OFK97N/z+zyMVWsq0Co8va/7GFod+fn2Aemw2hBOzjVpbGH/LpJg8v8bFsgJN6hO6IhOiNwrr8Fiz+89PEL6yMRNqEZDYHgtUbbwF/w+esDOgfXb1BrmCv6IXjrz2sZhpFVUeJuLzVILxYB1fyMaWeFHT4mt3p6bVhJ7ADvjV0Wl+tPBRNJKGSR0Neoj4lxAZFvLyMdrJHP3NJjNhhKdUqm32GLxMD+elrTkBmph1I4Eq0a/wxUGczNx8zVZzuzyJqf+r324ukPzL5HNhhxf/EJ3qRxfg3bswxsFKSJ+NmUskpR7TMeXrNO06QN5nxoTr4pDFdkr7Kdij6w==
+ bh=Ef9m7v0KqeWEipkEBUhacHcNHd3dIeyAM4W2j/cgC88=;
+ b=BO+VBkEHU4K/JhS1QBgqQ+vKgeINVwd//PlsVt2pSd0rMNxDeH44NbuMmHD3dA6ql5feyDNeDTxks9fq6eSu6qPgWymUoYKS9GHaPm9T6/1x9qYXkrSBesUvg4yCXPr/Hb6VTIg1RhhVnhBnFR6A9w5umzM972s1Z0mutQaoXL5OYPAoWwz12WOGmyhaCMuPGxYEDcjIkFhgTDMh8R7VnTu4ho58WVPafeWuWTFdpTVX1GH3g47UcAUoGvjwy+Mu61wowC6c5365GLxvmfifLKPFpJpss7jVzf1NEL2sSUc5wy0Iz92Edbe9vnrAFmhjgO7ZUWnlFCyXBCmquIddEg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0iPM31kHRQF4aOShKwTu6rsQv7lE4UX1YT/WZYMS6xw=;
- b=ZFVihflyqyex2iZV58qrHhHts7l/bPLYgMSYjNy2RX6GDC12YZCkNA1nPXREKaKmMk3T+pZC74k4aR8vd+sKU32afXtAiAippD/6ikvqAKnHBHsPt25AqPa00VLj5EjEomJUqFnYGEtQ+YC2DKFmZ9/SFqdutL1QXGKdZ997o3hII6Snp2+UWd2rl3spFtib58lPM2J9GOfvuUMb5zhVxCeSweVaymIQVzMbS2hcTLw2AlFQsV4h8VSAbqu6ESjBUKtW9ya/NJcwVBZ9hFmO0dkENO9FIA/MDHbiVAC5gOdIlQnQAspDEASfTQvqDFsgTN3wK5qhO11gxPfz2gaHBQ==
+ bh=Ef9m7v0KqeWEipkEBUhacHcNHd3dIeyAM4W2j/cgC88=;
+ b=XIb65QYpPUxtuHrWdAaTVsmisxE7ZK66EtaL7DFQu7WQYYx12FCL8PlustnwXQXvJDC8oAl/vhcHRnBxbX+luFKcUTh6SwokpWwttmfCMHL7XFmX93ck/u3BFf7OL26gPp2qoijVPmVUczzUEzGojxH00DAv1p2KpXAjTEt0PDHhYZm6JAjmaRJH1IwA71owid2EHu+P+cAs8FgdQsxxzbag/l41abXPke8dhEwjEeTMGxDI4ypM2BfUUhbyBX65/nBvPm0y1B3hy4E6sLUosuLr4JSuNLBeWR2jaoeXh3trnLs0QI0fckXLBhYMBI32wFwAsuDIXzv/ePfIyWMSvw==
 Received: from TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:152::9)
  by TYYP286MB1787.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:f9::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.14; Mon, 5 Dec
- 2022 15:37:11 +0000
+ 2022 15:37:19 +0000
 Received: from TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM
  ([fe80::ff96:9cb6:e047:c605]) by TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM
  ([fe80::ff96:9cb6:e047:c605%5]) with mapi id 15.20.5880.014; Mon, 5 Dec 2022
- 15:37:11 +0000
+ 15:37:19 +0000
 From: Dawei Li <set_pte_at@outlook.com>
 To: gregkh@linuxfoundation.org
-Subject: [PATCH 3/6] apr: make remove callback of apr driver void returned
-Date: Mon,  5 Dec 2022 23:36:41 +0800
-Message-ID: <TYCP286MB2323DBD1F01BF918ADD0ABCECA189@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
+Subject: [PATCH 5/6] ac97: make remove callback of ac97 driver void returned
+Date: Mon,  5 Dec 2022 23:36:43 +0800
+Message-ID: <TYCP286MB2323207367F2D39D0D725828CA189@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221205153644.60909-1-set_pte_at@outlook.com>
 References: <20221205153644.60909-1-set_pte_at@outlook.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN: [KQ6Iu1DlV9BM4en0T0h6pGIzaDkslhnW]
+X-TMN: [eT6UZtVbikemNKsMQYsxpGdTloi1/Wuv]
 X-ClientProxiedBy: SG2PR02CA0046.apcprd02.prod.outlook.com
  (2603:1096:3:18::34) To TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM
  (2603:1096:400:152::9)
-X-Microsoft-Original-Message-ID: <20221205153644.60909-4-set_pte_at@outlook.com>
+X-Microsoft-Original-Message-ID: <20221205153644.60909-6-set_pte_at@outlook.com>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: TYCP286MB2323:EE_|TYYP286MB1787:EE_
-X-MS-Office365-Filtering-Correlation-Id: a13fb080-54be-4566-c675-08dad6d69389
-X-MS-Exchange-SLBlob-MailProps: i0w2f8qhTbr6OkeYxPWJvHH8J+DLRu5yohmcQaqGGfrlnPL7m1GYjqVxL/OSoNG54e076UYL2JyWZ2Vpknv4nFCLMqkYeCQTNbN3S+hlFgJXUSF9yLcaSmFOUA1lRwrbTJzQz6CEIotKtgEqK58h9JVdbYO5v4+JKS/PkI/Bs17Uxw6pNfe8DC8xu0iZT7mssf0DyzIgIue/e4S10Il7X3vhphF7VtOztTk+avMRv38LKuDRDj5/iIcqUspAb9BUcpRWImWYeAFsuYdJ5EalX73HrQioL7F/KkNlQjM4UVr1MOHjqgJhefFCKa6iwptu1eZClaCgAwkQ3m6bYDE4jIxfb3wEUaGIE6tmroepaCC9DeyuWmv3ILXPg+1dC6mHm+sxTO7eAkH28hbfHa13/bIy8+u9WjJL1aVNOvEJL+6m+FrQavQwAnSqPPLq6t/YrgEAqgwyafL7BuZybUfTMRUCvp+MSEulKJOuX67kx7VGMaL2rWcrgRMN3TcFnSGl7avmAV2hiJBu0IyqoDfp6BO9ZG/xu2+0QdUo4M4Y0nn1d9muamGnxwhM4Pony0rit9/DEhFQQMAXSPs3UN79d5sKkWCrsw3V2NMQTgqY18gVOw41buDAhRquTE1saYy+Hkip5XO+EvpxCynAPeUtZtguAgyNdGdTOVxMyh6//LfFv0xDKRZwuJXKwGNXPQ4L/bOSe9QK21ZfJS4ZROykObndS5JNuZR4
+X-MS-Office365-Filtering-Correlation-Id: f06a4cf5-cbb3-4a5a-a430-08dad6d69804
+X-MS-Exchange-SLBlob-MailProps: /OoUGmN/RpVKD6y7RJd2fRTadJ6Pq1ot2iys40AI0qYlu8Rnx0ofoD/I1pH32T+1L2pz3NVWO8fqqVhxKi6WLWu7Gs1R5ep4Fa4CkDLgQtUQyojJERaA+Z7VKh0ucvIaG2AjU2H+tSfil3cpIYJbFulYrzkUNmBaq8jaE0fgqPPgL9YwRyoP3T59IQ3p78fVfgbOVturEdduTvl5Ri4a7ZmQ7DQnt41p5cjJwyx1/sgrEYTFG+gIdXr39UXlv7+oe4NSDeC9inv5fWM+8mCvUHAvJ+Y4Pg83Q9q0KGDdI93n3JP7KSVBcGKipBzvotUCFMHX9NVrjzZMBAsN2VtqxqbF3zJ4akpts+Se6kob278WfeogJYpVsVllGF12eGQj2nzF5ejV+Xc6rmuedy5zgPsbLBzhRP/gsVEaNVpoch9Xjyw2bmTHDrQx+D9JXbHwRROpUjI56/IUlg63HXguM8c+/gWONMvV4Gi9tzEXdVAA9/s8aAVXvQYEYDp0RV8SK1FzdLiNdVSL0A6fairCJ+LhWJ2uID5sKrmtho9EjTLgeWZ10lGfHpAzGaOpyXiuLQPOv+9OQ9bYXoyHmbcYLT0SCRAR7r1qkhi13sWtrdizljs5bL6ZFWIzKFnZ7vN1st2AEGW6++H0iSdQ4IdcsMgDlRzj2wWeyV5Qsz1os92D/FpXhYBPtiq5o6xLsP1KeOQtAquZK0jRzMfvUaAjEvboyc82I3OccWaoW7HslQcNPnZGZQtZThTkmw9mjfEX
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UNIHCTi5RWgBmG1UV4+mnMKCqTf51IU2TVW/+uu0Ma9yTQfsclgqnV+C2IFoJcDpfhRTWexoftXw1O4Rvsagc0qjYix2kFU37Fr2Jtgjy7bLc8fMD3EE4UJ0KLuNCKw1ituoOpKYUJR4X5/UEyjtgR/Ieaoss9vjpr5EjBpeKzAk9rgqy41vhsUIwXEGsROsc/RSWbvUjJltm+1176mjEDMJoibixKYxSaPxIPFu4OJKWHFCNoQzibUpM8BkF4Vsxin+2Ex8o0ubdGDTk6JCRm6bahUejb3qjyMqCkl7qK3Gw5nXbZdCbClb+Jr+5+6Gt5EZedvlDN1ER9V5ePWMV0rmXIscH+nyHViW2OeFOAUo23z09uNAj6SyFmMuKXyTvYelR3wl2l5ctmngemG+z+D3yVylGyYLI7UJJS7iV7Pmi4CFEGKfLuZXhorngRkOwkORCrA4AvExXKyYlsIo2nzzwvDy6twBLITWGsdwlCTgSHg7QeOJv+UJb+ye3A3XTU//L1yT1ZXfbIzZJQ2d7LmANp0q7RCUDMKAbl6uuRl+m1hKgiSJ5ZLFkFArmPMWj4YCUVYOxmlKYMJGDr0ZnQVFsKkFA0tTn0QNSPWbsf8tBdOQQXbf7un+qatdukYr/SbJGSR2xZ4URFhdXyf+Dw==
+X-Microsoft-Antispam-Message-Info: LLM0c2GdH9795iyGzY8p4Y7Z1S89NsFMRFuBznQNFarpu8WG34BF/uAFjXow4c0NluqYVo1AyVT/2gdDnzKKNtDYMGKl031XHR0CpetAONYmC/TJ8qhGamE5OZ7fyFJuXXBmA7UFVwQyPa3u8wBAVFR6w4dFqsHLcbgPkjD23Ejo99ZfB8/MdaZ9zKjZdUWAYVd5O0rmuV5xEuDGqFvkHk65EBd3+wgI2mgB9hf5sV550ofIGsw3KTgd6ZVJhkblZ8QZG4o/eOXoD6PM3O5wSsfV3bLpCk47a2GxtbxuUWUaiKrFw65P/8OH+f2uEZhi5UDiTaCrskFAUQ5p5eSjiOZFuWuKP6Y5z9aXB7L4IN1vT1rev0QRcIOHWJMdMzI/yAXTUrSpNxZY5iXkMDLmbvn4Yl2ejdkaSRgBIkjSB4Co8Kssn4P1WOCnCeSmiW9nrpeWZZ+mJWtUGyEwnK3ZmZLtzDjJ5BvOn6vf8fC4ZdLd+C+mQxhXRicatj7697tlRwtLa/OfN01dS+xewf719YqZxSboJj8LJmI9mPgak067AdfHPKWR9BUOhTv61i84L/68i6US9Bibb1TCjdexP8wGoJ6S22MPP+bOKgx169di72AdjcUUBTCIm9WM4+i+pnk7KSn77P22Xs0ffhKeJA==
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VsDQdBNLVK4HqSt7FcmTP3iCA2bNSYg3VVF9MmJupP1n7AS+ZJVGtHXOgJFg?=
- =?us-ascii?Q?8jmm0NzZEPrN1IxHB62fW1mUabz3A2paF/vGIEZSpznVwwQYgtArOmtjGTU0?=
- =?us-ascii?Q?ewL80f3710YPIbfKgEwTsXPx8wyKkJHnHk5a2mJOocmkjntZwKfW1BAM09Yb?=
- =?us-ascii?Q?JzlgqzYwmsP2jIqrTS+hoTJIYq9KbSaSV/6/ujkMVN4h7O16ltTxdtHc0Drj?=
- =?us-ascii?Q?mykLw5818nZok4PvJMmo3WO6Mq6YqAGThD+qd7jppFiltsYWsNXCshGifzWz?=
- =?us-ascii?Q?0w945JkyZ0CMMn1NKftr0eSO82ZXaezW+dN7YIE2kQgpMEY3W4cSZhReBsJs?=
- =?us-ascii?Q?SrMMQEJDxEXFHz5k0n+23cYXU2XZpozOyMEbdYhAXocrZv6GLgwd/v/bCGE7?=
- =?us-ascii?Q?N5NeltvTCegkZlpFqR8IFLQLtVKkRw9P0gqkRIGAV0DBHjO4ilpO49gH/0na?=
- =?us-ascii?Q?VWnO3tUuCQl4Ih5lA/to5RPXop+ScDpcdrBdjzyRIRd6jZn8T2x6GBvwNUAU?=
- =?us-ascii?Q?U+IhCmobNLQP+bjPu5mC0Mza0lqjhzmk+Z2Q4ufndkjRqTPNqsiAGnOsqw38?=
- =?us-ascii?Q?x08OSwVx/UG3Ty25XeapBLU4p4G7czx8hlnGU+tknUCKxzAU+RrpjCaNMhaZ?=
- =?us-ascii?Q?Qd0HvXFqgPUDJBnYi2i+BzaaZiAdDt+yBsydwXi0aE88S01xnR7BCvGLs5s2?=
- =?us-ascii?Q?pJKKdpTzTLuz8/nOYWjbKBnY8i9i1JKo+m4RcwUSxfI9iOEePYz9KaFT3Bnq?=
- =?us-ascii?Q?d7lzoKmIqHLgbKdy5c9q8QxLXtvtDicnEQKgJjjIdRFZKQUYE511nvHz3wls?=
- =?us-ascii?Q?AVpLDzXBV3ZG4qj0Xwg5GBJy4J6qoSxFW9a/wMROOSPv+KUM0GmeVpV1MfHl?=
- =?us-ascii?Q?VGv0bsIn2TbB4171iFaTVcx+OW9Ji07rhg+fRxSFnL3/F4nSo+xKUgM3ZuDi?=
- =?us-ascii?Q?C8+AjcqLT5hfi/t9/eS6Ge6tGMygqfMfPXn3NnUkt8qc0be2Mfb8x99powNj?=
- =?us-ascii?Q?UwYvZUAQA/UlzWl2in36lObaesXu1KiszvE3caMC56idC5fOHXcs0gP1/tri?=
- =?us-ascii?Q?SNaxffKtlSfit/PfKxvcVK7YFh4LlLEPs3xyo3xrOrbzoAuKAWSOnsqeAtwE?=
- =?us-ascii?Q?Av6nBVKE974LnWX98B1U1BCXImx2nyGJkQOoxnvgdmQKI0o3Sw7METDfvPYo?=
- =?us-ascii?Q?3WurRpsV70GYVN6fflOZuKOJewHBL4aSj0FkJhR3rHuTweXvGs6L7s2OC21O?=
- =?us-ascii?Q?FpeZhiZdFma5/Bx2HidWX9AA/86WohISOiqfYRA58g=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lGl4IuJDRspmKFHRAn8iLOG31lJGKLL4YbiN7fKudj2wU6GXpZnw9jttp1jM?=
+ =?us-ascii?Q?P/tpWgYq7EGMmyIhgfGEMzs1D4tHkzFt6dOF+pvZ0saQJLJFBV0e5zTOxtRR?=
+ =?us-ascii?Q?fj51okDUX1Z8wbYZSM0Za0GQu2qa6Yl3oNGHUwdgZxw/MaFpPpA6b2OiKc8H?=
+ =?us-ascii?Q?sqddYY6aEFDuKHk/0sN9w3cMUWUyXk+rSCos/W4eXdCKSytjmEMHpmyXnYL5?=
+ =?us-ascii?Q?ejDsvhvd5p6XnRgi9LtVRMx1UdwqDE1g6PUhJi6E2vossfVgTEh/5VpTzb0s?=
+ =?us-ascii?Q?MYF2PHhJWl906/umGfPBdMIegsdoG8mnkNhJW9h9cfUpYOa9kUDHYujLqS6g?=
+ =?us-ascii?Q?dyRJK7sN7KISqCdkjiISjt70xPLEIASW24VAmsv1aIXfo5P20R/04co7MM7G?=
+ =?us-ascii?Q?QzrjcNl1I7PxNvsT0iYSf9eKv4rozBQP+3RoMvKnwbalZFDcBqsOdMiCodBe?=
+ =?us-ascii?Q?ADNjnQxq/m6ducojQiqLRERQFf7EY2qQUFh+XMg5Fwy2l7N8SmFVV0PztKXK?=
+ =?us-ascii?Q?BhzW5iP3SfYudi+mY8hSz1W2hGbPvmyw8ntAXXaZo42A2tuRf1FET0OvCFnn?=
+ =?us-ascii?Q?CJ6C2O+SchlgadyGtgxiEqdf4pMcMaTIIUOn6NF70/prylaJ2CHUYaTVFMp9?=
+ =?us-ascii?Q?xVeP/ouWdE+nw33ZH9580na3GbAtw2x/HfxJLVBqggOYnNqHGPG5CSFh9G4o?=
+ =?us-ascii?Q?QCAwl0K/GrMKvyp/nr3owjybNAwVMhMFnUb5z64UIXikXROd6WB8Ggz1TABs?=
+ =?us-ascii?Q?gynPhRFgDX+zWmwFc5giR1wCXFOz4cXwuxJcuo9090aljaYunIocLplvjIBW?=
+ =?us-ascii?Q?JVzLNxlVODP+QHTa6Oo6GjBp3DYccsIR7LV1M/btNpln2q9W1Ih9w+f3osyA?=
+ =?us-ascii?Q?0nVSDpZVatbXHxxO1aYSj936yX0Hp6esKHGlYIXvQInHFI91yKYGwZdD+vTt?=
+ =?us-ascii?Q?bdMp9z8xJnOgeKr/YGHGio7MFABNwQjIx/iNg5Wpzkxh9OsGh0TpJsyGwlLK?=
+ =?us-ascii?Q?Q7HQbwuq60i8D7E9BcgwPkvUnvAAF9z7EfoA4jgpiJzN7gAXRTnXe2DtwJPC?=
+ =?us-ascii?Q?pWTyu+0REV2b6YQnvuQSb8Lebgcz8YYGJVDe8GmRglN62qZJL5ufXuS423k4?=
+ =?us-ascii?Q?kOdmd0uAL1zlY8CXOgNeMCYALRL4HQYprhSHr/J5ikG/PF5JpJm6aceuAu40?=
+ =?us-ascii?Q?NbKuzzVNAcz23wRQioK+Lc/Xf16hyUFZyHs8QZCrJvahN6dsilHOCyaP4YBh?=
+ =?us-ascii?Q?KLZ6665BFkc/Sn7pbPZ+GyjRnVRlckDiZ9p1hvh06g=3D=3D?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a13fb080-54be-4566-c675-08dad6d69389
+X-MS-Exchange-CrossTenant-Network-Message-Id: f06a4cf5-cbb3-4a5a-a430-08dad6d69804
 X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2022 15:37:11.5471 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2022 15:37:19.0632 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
@@ -145,49 +145,68 @@ void") forces bus_type::remove be void-returned, it doesn't
 make much sense for any bus based driver implementing remove
 callbalk to return non-void to its caller.
 
-This change is for apr bus based drivers.
+This change is for ac97 bus based drivers.
 
 Signed-off-by: Dawei Li <set_pte_at@outlook.com>
 ---
- include/linux/soc/qcom/apr.h  | 2 +-
- sound/soc/qcom/qdsp6/q6core.c | 4 +---
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ drivers/mfd/wm97xx-core.c  | 4 +---
+ include/sound/ac97/codec.h | 6 +++---
+ sound/ac97/bus.c           | 5 ++---
+ 3 files changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/soc/qcom/apr.h b/include/linux/soc/qcom/apr.h
-index 23c5b30f3511..be98aebcb3e1 100644
---- a/include/linux/soc/qcom/apr.h
-+++ b/include/linux/soc/qcom/apr.h
-@@ -153,7 +153,7 @@ typedef struct apr_device gpr_device_t;
- 
- struct apr_driver {
- 	int	(*probe)(struct apr_device *sl);
--	int	(*remove)(struct apr_device *sl);
-+	void	(*remove)(struct apr_device *sl);
- 	int	(*callback)(struct apr_device *a,
- 			    struct apr_resp_pkt *d);
- 	int	(*gpr_callback)(struct gpr_resp_pkt *d, void *data, int op);
-diff --git a/sound/soc/qcom/qdsp6/q6core.c b/sound/soc/qcom/qdsp6/q6core.c
-index 5358fefd4210..49cfb32cd209 100644
---- a/sound/soc/qcom/qdsp6/q6core.c
-+++ b/sound/soc/qcom/qdsp6/q6core.c
-@@ -339,7 +339,7 @@ static int q6core_probe(struct apr_device *adev)
- 	return 0;
+diff --git a/drivers/mfd/wm97xx-core.c b/drivers/mfd/wm97xx-core.c
+index 9a2331eb1bfa..663acbb1854c 100644
+--- a/drivers/mfd/wm97xx-core.c
++++ b/drivers/mfd/wm97xx-core.c
+@@ -319,13 +319,11 @@ static int wm97xx_ac97_probe(struct ac97_codec_device *adev)
+ 	return ret;
  }
  
--static int q6core_exit(struct apr_device *adev)
-+static void q6core_exit(struct apr_device *adev)
+-static int wm97xx_ac97_remove(struct ac97_codec_device *adev)
++static void wm97xx_ac97_remove(struct ac97_codec_device *adev)
  {
- 	struct q6core *core = dev_get_drvdata(&adev->dev);
+ 	struct wm97xx_priv *wm97xx = ac97_get_drvdata(adev);
  
-@@ -350,8 +350,6 @@ static int q6core_exit(struct apr_device *adev)
- 
- 	g_core = NULL;
- 	kfree(core);
+ 	snd_ac97_compat_release(wm97xx->ac97);
 -
 -	return 0;
  }
  
- #ifdef CONFIG_OF
+ static const struct ac97_id wm97xx_ac97_ids[] = {
+diff --git a/include/sound/ac97/codec.h b/include/sound/ac97/codec.h
+index 9792d25fa369..a26e9e0082f6 100644
+--- a/include/sound/ac97/codec.h
++++ b/include/sound/ac97/codec.h
+@@ -62,9 +62,9 @@ struct ac97_codec_device {
+  */
+ struct ac97_codec_driver {
+ 	struct device_driver	driver;
+-	int			(*probe)(struct ac97_codec_device *);
+-	int			(*remove)(struct ac97_codec_device *);
+-	void			(*shutdown)(struct ac97_codec_device *);
++	int			(*probe)(struct ac97_codec_device *dev);
++	void			(*remove)(struct ac97_codec_device *dev);
++	void			(*shutdown)(struct ac97_codec_device *dev);
+ 	const struct ac97_id	*id_table;
+ };
+ 
+diff --git a/sound/ac97/bus.c b/sound/ac97/bus.c
+index 045330883a96..6067c04ce4c0 100644
+--- a/sound/ac97/bus.c
++++ b/sound/ac97/bus.c
+@@ -524,10 +524,9 @@ static void ac97_bus_remove(struct device *dev)
+ 	if (ret < 0)
+ 		return;
+ 
+-	ret = adrv->remove(adev);
++	adrv->remove(adev);
+ 	pm_runtime_put_noidle(dev);
+-	if (ret == 0)
+-		ac97_put_disable_clk(adev);
++	ac97_put_disable_clk(adev);
+ 
+ 	pm_runtime_disable(dev);
+ }
 -- 
 2.25.1
 
