@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E0ADC352A1
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Dec 2022 13:56:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58CC1C352A1
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Dec 2022 13:56:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 744AA18AD;
-	Tue,  6 Dec 2022 14:55:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 744AA18AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DC0918C9;
+	Tue,  6 Dec 2022 14:55:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DC0918C9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670334981;
+	s=default; t=1670334996;
 	bh=842QCpsTxGXPZfAW5OBCkqtVxLhgLWi4RC+FIW7vuvM=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=gkfPA/PLfWzx4hcKnmMwQpX2TKzImGGcg2OiRfCDGQzDzPK9Ofe28eb7juIB608wU
-	 B9TAv5mEKt+860wrqadCLH0mHbU8zJvy5uI1ipPz5dCFI7iLr7lxRmxBDyr4a3zqNT
-	 VlXw9GNMAXOsfgkN0SG66h7EJtiKBA5zljCsA7HA=
+	b=L9KZd3tfSPzu9HZhWhvL+rkpU0tqAfmORkZQGAOfX2VTjHSEnnYxSdT6mOJ4+B3d8
+	 XonrvNvDlsb/OAjIFv77zN/K0OZgkCBCKXo6C3dGPXXovBcx8xjI8VsITXezFFK1Vp
+	 eSDHA4XsCAxeBGoG+TKrhGfdTk1WbdFkBe6xrisI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A304F805AC;
+	by alsa1.perex.cz (Postfix) with ESMTP id CAFBAF805B4;
 	Tue,  6 Dec 2022 14:53:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14077F80155; Mon,  5 Dec 2022 03:22:52 +0100 (CET)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ id A377BF80236; Mon,  5 Dec 2022 04:07:25 +0100 (CET)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7376F800BD
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 03:22:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7376F800BD
-Received: from kwepemm600017.china.huawei.com (unknown [172.30.72.56])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NQS3j1s7BzRpj3;
- Mon,  5 Dec 2022 10:21:53 +0800 (CST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 82ED4F8014C
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 04:07:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82ED4F8014C
+Received: from kwepemm600017.china.huawei.com (unknown [172.30.72.54])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NQSzD5n1WzqStT;
+ Mon,  5 Dec 2022 11:03:04 +0800 (CST)
 Received: from zelda.huawei.com (10.175.103.14) by
  kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 5 Dec 2022 10:22:39 +0800
+ 15.1.2375.31; Mon, 5 Dec 2022 11:07:11 +0800
 From: Wang Jingjin <wangjingjin1@huawei.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>, <heiko@sntech.de>, <sugar.zhang@rock-chips.com>,
  <alsa-devel@alsa-project.org>, <linux-arm-kernel@lists.infradead.org>,
  <linux-rockchip@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ASoC: rockchip: spdif: Add missing clk_disable_unprepare() in
+Subject: [PATCH] ASoC: rockchip: pdm: Add missing clk_disable_unprepare() in
  rockchip_pdm_runtime_resume()
-Date: Mon, 5 Dec 2022 10:43:17 +0800
-Message-ID: <20221205024317.2422223-1-wangjingjin1@huawei.com>
+Date: Mon, 5 Dec 2022 11:28:02 +0800
+Message-ID: <20221205032802.2422983-1-wangjingjin1@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-Originating-IP: [10.175.103.14]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm600017.china.huawei.com (7.193.23.234)
 X-CFilter-Loop: Reflected
 X-Mailman-Approved-At: Tue, 06 Dec 2022 14:53:23 +0100
