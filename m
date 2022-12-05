@@ -4,113 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DEA4C352A1
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Dec 2022 13:57:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27922C352A1
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Dec 2022 13:57:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74C5918D6;
-	Tue,  6 Dec 2022 14:56:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74C5918D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5E5C6170D;
+	Tue,  6 Dec 2022 14:57:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E5C6170D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670335055;
-	bh=SWV0tdA5gMR7CyXewYkkj3Pr7UUAIh2ZDPwWfewOmgQ=;
+	s=default; t=1670335074;
+	bh=BH+b+DxbfN8fpFCxArakKmIlB3qwEQF21+5ZUQVzH8I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=P1kNY3YmlNraQ9GSurZmxftjp11f6g/5i9kxVPS2dSp3wpqWBTwJmHkmY36bSrkqz
-	 r4Kyn49cEFeV5GMF2ElXUPQi+gGepFpM9Nony7/ig0gZ5bOYo5GFa1o7aKnzefxUMn
-	 qKdpKlBOaIzK4SlNt2pvc9luMMZ06+6CSDJ/bbEU=
+	b=dZX5N1dGB9HXQ2OIp384chJAJbNcZd/mfbXaD9g3L0aQPYvX1mQWXTqk8xQ9hwC2i
+	 nsFCroUELTzuwanJjsWkYhc+27FdKGPKG463yE2w32O6xlqSPECr7FtyrEDzumGPUL
+	 gHNPskRn098E6W53S43iHTsn0RH5riIG0va0hc1s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A802F805C6;
+	by alsa1.perex.cz (Postfix) with ESMTP id AE682F805D2;
 	Tue,  6 Dec 2022 14:53:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CFAC1F8047C; Mon,  5 Dec 2022 16:37:15 +0100 (CET)
+ id 046E9F80155; Mon,  5 Dec 2022 16:37:25 +0100 (CET)
 Received: from JPN01-OS0-obe.outbound.protection.outlook.com
- (mail-os0jpn01acsn20805.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:700c::805])
+ (mail-os0jpn01acsn20804.outbound.protection.outlook.com
+ [IPv6:2a01:111:f403:700c::804])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5BF7F80171
- for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 16:37:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5BF7F80171
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1E90F80155
+ for <alsa-devel@alsa-project.org>; Mon,  5 Dec 2022 16:37:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1E90F80155
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com
- header.b="dx3eJWRa"
+ header.b="TuOHIawJ"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lG8uj8NBjE5PUuzn6Ic/I2wJdxn5/mJzy48ndim6z1trD8Lmi4GBfKgXXDLmxuIs/4g1fCKUSa2ZuqeQU4jHE1Xinpr3CwIlEHiihlpmErHywIrvyFCBIlFohjSjNSd3nGmEUGwm9Ou5pygtvweNiQQ9aFl2hBudTdnoYtPbAI/Ec6dkNQDW4dpRABX+zhrb6zygJQJJU/QDdtZGcHbXzBiKQPkH6C6oaTsYvB6DzVg7qsraTIWISBfl01hKdq8w108YjJKpwgiAWLeWuMFxZ0oZwgHSIQbVMiTpdsW0bo/e7/v/bQCZJVFUQjGmeaubgUUJYhNEq1QUct6VMRNprA==
+ b=Q7jTjDzWGZuJWXp2Xf0AG8HahNOVOKnoEVsFB2rutv88BZM2c3xaXsz5C4fRwEFYb0Y0l8I3/v09pOe7xGheEc+3XKBDokUtRYf4d6TIAl1FBAXFQIp97ZKvkwM4XpG0cRI141tZw27/1glLmBRfRZlBadlg6b76Yt+gkNp36zEk3KRfdtezordshJbabUPS7m+x/U9DMblzEdnlyyBXNURfPkmvaAky5OW8OGVdHR4RaBQRmgaX8CXHPBJQ/0TYH5lhyeRMu0VYtq94jNEQbiQ3SKS4EApVilfLHuEzkCJJuPNSMdcn0VjWCfB0q9K9yHVPX9J2mqnnR3w/VyL58w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wE0/eQ+6q+25iqD5ZenU2/gHmtgukmMINoE3za9MCQE=;
- b=JD9x2ZO7WGaw9uDcFTbKoNqcSNJbIMdCHH1TMgTgpnyYslO345m8Fjutjy2Zn1DKFpjUTZ9wioL2uATH7+F6oMEuDkzEcDvOCkqDxhsbGfW1urFOQZMppq7lTdu/jBK6HDq7gobGAp3HFSQ/8/DSj6I9Spmh7bthg5a55BUapM2RKjv+YPgJ2wbV2L+bnQM2tkTiZtDMmj4bc590+GoOA5l3ZPzklGsghyzIsXmKor2QDZej9YE/yFCw35AePw4nK+qcz2/5dhw6Ff6Q6+WPIUaK6uqA4mCWtS8X60fr0oNvgsu8A1SEbR+Pw/hfAVPfCgqJ33wNfNljG/d/WLhAwQ==
+ bh=PUFfM58njfsAKB3lQ0oHWT+h/J46/EawXHZuEUQQcI8=;
+ b=n+MVvpy1u7yw4FJFeLq6wmbp8Aiikb+XmfFP4Un4v43+NaTH6P6AGD8bff+tNXus4QBKR8KlsP6pHHquOzR661db/kTuhd7ODd5OfP98hSRqt3fkrMsyTF1FvfHaKCyzfWnxaOPeUe9YNAS9RP9gG2CLs2tQARU5yAQW3aUntwuy1qbVML3RoKw0EveyIxoAHAoStS73r6uTIKAOK9ItbA8lMrM4jIMi7PxZMADt6YZ9YYu8YRf97J8quAn9PTtRYjuXXXGQ2V4WrpXltnNp2YVvJnfKWiXwxX3xwz+gqt2rFmRIEci2Mrnz96NWlOT4JZjb271n3laTVc1i05eQUw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wE0/eQ+6q+25iqD5ZenU2/gHmtgukmMINoE3za9MCQE=;
- b=dx3eJWRaBTBpNwCoHkYi2RXXcegnG2VYD8lU60lzx5bw1EOyNycZqgb/9eatsqH8hdTlupt1L0Et3uB4zfm87Dm8tZPMAFSluMDbDeQip6DWY6laPJSHk61AmrNy0yvc9uC5YtjmZWULZf4Igy2+48D1A9bjK+e4soZ2AV8if1GyuP++c4uDx+0GNhgCcTsif/w1z3gtKkPoeOUGEGCdZxxxSc8QkETrTgeyBosfKu686VbZsjccfjoLNd32GJC1BvvwkxwxyXcSpTCS4R5r5Ll4DEIuA8v4uS9Blf44Lx+/+iwKf2MHcmydM5VyBa16rXTMJOK5z0nK6PP/aglmMg==
+ bh=PUFfM58njfsAKB3lQ0oHWT+h/J46/EawXHZuEUQQcI8=;
+ b=TuOHIawJY1syipkEbNxq7xdl7eJkeRS4C2XwjghtApYQnL+OyWh3N13djfiAvpTblddOpb/RGECDEFcq/OMT6RkoEy7RhelxSRM9yMfGcSFrZWVR+o9DDP3+FavJWDDyH/5UsYJTP+dfgHmOWrO9nUxXmbwU2Y1hyeK0k/uS6qXKWvStLatYuS3me5fVW2zI/UhcUgm4WorpQ1GBeUki2k8MY2Gz3et9JpVYlMPPqrmoqCxX+keIKFOpIjL+T1pp0v7fu1mQ3xlSWZkjb/YhEs1bh3YCbhuFRGmu4hcqTQ9FBUAdY+t1bOPsVrIfdN6MF5ev5gGfJFCtrd1slydJiw==
 Received: from TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:152::9)
  by TYYP286MB1787.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:f9::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5880.14; Mon, 5 Dec
- 2022 15:37:07 +0000
+ 2022 15:37:15 +0000
 Received: from TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM
  ([fe80::ff96:9cb6:e047:c605]) by TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM
  ([fe80::ff96:9cb6:e047:c605%5]) with mapi id 15.20.5880.014; Mon, 5 Dec 2022
- 15:37:07 +0000
+ 15:37:15 +0000
 From: Dawei Li <set_pte_at@outlook.com>
 To: gregkh@linuxfoundation.org
-Subject: [PATCH 2/6] macio: Make remove callback of macio driver void returned
-Date: Mon,  5 Dec 2022 23:36:40 +0800
-Message-ID: <TYCP286MB2323FCDC7ECD87F8D97CB74BCA189@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
+Subject: [PATCH 4/6] xen: make remove callback of xen driver void returned
+Date: Mon,  5 Dec 2022 23:36:42 +0800
+Message-ID: <TYCP286MB232333CB411691110A8B9D96CA189@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20221205153644.60909-1-set_pte_at@outlook.com>
 References: <20221205153644.60909-1-set_pte_at@outlook.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN: [xkiGoP8CYtlHfMaNN+v2tHJgza4DLRGN]
+X-TMN: [pYL2ZN+CnnrmRvnvOClobKI4LpYOn9kj]
 X-ClientProxiedBy: SG2PR02CA0046.apcprd02.prod.outlook.com
  (2603:1096:3:18::34) To TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM
  (2603:1096:400:152::9)
-X-Microsoft-Original-Message-ID: <20221205153644.60909-3-set_pte_at@outlook.com>
+X-Microsoft-Original-Message-ID: <20221205153644.60909-5-set_pte_at@outlook.com>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: TYCP286MB2323:EE_|TYYP286MB1787:EE_
-X-MS-Office365-Filtering-Correlation-Id: 192953c7-e272-4eaf-ac9c-08dad6d69148
-X-MS-Exchange-SLBlob-MailProps: /OoUGmN/RpVKD6y7RJd2fRTadJ6Pq1otARSEbI97kVRmQMivREdx/fj4xvoyz2Zq9680D287XvcJfvbpYLWgzmmRjngDq0kGxb/k5K6aOfp2gz1qD+4htLUHYy4q0uG6RtozbuMbhaPV54ULJjuqx0X/uqMnZEyOUq1/s2fYGDtf/3uVSMEisii35FvUzi12oL4x/WSREC0moS45NWFGeif8HLP0FMgivzl1phxJQV6Xiy54UqsasQPza7cAhpw0Yi45OnLh7EtTtBo4qfqktDg4rpH++FaEBWI+mKxMZYziAiASW4Rqx6JlQE+0qKNuF/cODHfxLAYMTR/arsAlFcUKKjVyC6szIaq6q5TF+06W9CT5D2y9G6DcypuHbgq8KenMt7CIqt7y1NH20Rhg0wDQh/ULFvd487BWo1st6EUra7IyKKRRga+Gf226dSPsmwl7yyXLWfkHR6hsqgE+4II6VnVGnJ3bhXisgVHKWOPC296OcJipkalvfT7ulyR6M1YObXLAGxGROXlc02+XLIUAYZTA1zNPlQnFN1zSAY9kPcLd4YOx1Pzx2nU7obCOarZJikcBhVBRby2lLi0eWnEeTa0rt047HMEzgbwsn905UGRUJKyiIg/PEn8Cfh3/raGhf11h3VadG4Oe6+I+e6i/YY6bXFgRdCtJyDXIVZ4TzYE2lm7vRgyPl/2HyLDZtF+xKwZyn+R7hfCiRcNlqsTsjr5zCWw5VrwxxiV6Op9OjJkFj/CrZBzoJ+z/E251
+X-MS-Office365-Filtering-Correlation-Id: 98a76953-4a83-48a8-80d2-08dad6d695c8
+X-MS-Exchange-SLBlob-MailProps: /OoUGmN/RpVKD6y7RJd2fRTadJ6Pq1otO0hXGE1Fkgli6QWdSXYMunSFX5pBjBN7ezKQeOV8KmNDGlFsM9QYDTvrVubKOUSRgjPFSd7fgVUt+R6alylE3Bq8Rzwp73dqfBU4V5uRSQqV/EucAcyogXSo97nG24RKNZYSZALSqTJRJmmeulUIBj6PfyTXQQo8z+I+PLm28x4LwHw2+SgbhGXZ1j+VviI2U/9lh9tYCeK/Odhk9DjR/lLUr0ZkqTsDQ/LYHZBz4i1homzrzwv9DPRQs8WPswEjAt25J86Hi1eQ1+UKeNBrCbjM6Vxey2UQ7WpPXdKHO45/RG5Wi1nn1tuQ3JwKrsJaz/OfKQQCzm96CIYpyDZcpupHWKvUHu2d5ztELB61IFxF+VHN91M0J2/a/MPW1piQs7x+xLxM+S5ClZ4IJJO1vqFE3z/oYymjBKDWgUmsD5DsPCZK7kjBOJMOakQN79HkVMHPRjbXfVYhp6N6qQnajV0D18cNm8dSQmzcU4TV9W3zHDe46LnW3ob/LRb/zYL1lu+DusPi6heXq9KIkR4SzW0KDVIPDP3Xkn8VKUc70RdDiMVEqFWAqdHKadztU19RkEAJuQGKF77Z9cxeOicaCCkXhtQLEDa0vuoqU0oHAAphIr7XJ8wshNQN9OZxdhTNhnQSojNki2EvFDyfLeuKkOYhJc+8/e2Culd4DHWXuzMqbK/pmzpPhu26Ik4SW4RIi33eRK2/73hcACfDYCLLQyQJ1EMS2GYp
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mBT40HvRhGQ0coBwCX43Ch3gb9SuzktfgyO0+BO0iqhKuEqM7S+gZlMSg51OAZiGMv5x7EbrqhtDJZUhP8fgVj6BBSW2UcSvpwwTnBo4E59dw9dgPHb8G0dzDRzCA55U177yvnf6BuHb9wyHIigIkNMn2bei193EVo15Gi7DbCYfdHaztrI3OyqThhvDWV75dPuLmdHjZWu2xjiR5wvNF48pv7uNJgxwlgZXsCPKqqpmMWHcUYp+AGZ8B9K/vX5vsERqC9QQOUfud8YFUHmYaoMwgIA4awKCBrtTzR/MzbJLuOWkTRcCgBCV7Cn5+OA2qPCeDXFfalVpuEYT6BH4bYofviJolpe1X9O/iyix6sz2G1nprpxQbiruGyDXAWSlK591weGFhsdUH5a+iINRjAPBFwV1L6a8E+zm2Vj9WggBQz1Bqdpb9Y7h/M1mao1njsrTjK5VuBHVEy9lMEXn4wYxawE1E1LEzqEm11mD6sZgPAlPJ9dUhx/n8PFH2SqYuAFzU+rgRkVcQnI1xdIyOXaHajS7wQ4aU24mmrnsGmfQL4vSKCLgyYO9VLJqgtLXTBbQN5YgszMIU692viVQ4AVlbXD+qA4UM2vvqrWLOLHMaAvr7DnNi1GUwXZbJQiAsURY9XMAyR/FeJnAf1ftYQ==
+X-Microsoft-Antispam-Message-Info: MDy9nSYZ5SidjtlSfxVwaH49UfrCtlA6Hp+5YkHMXi7a5Qbh70gNbqz/04MqTs0V0mDBN0cH6jFdHbOnYbTfHn6eYD1vXwKocP56wKrfiW+VJ4GC7y+nQU0KuiSmCJslPnii1E8EI34P+ZaaXhOv0Q1cepu3llbRHYHThj6yPG+VRib0JTEsgfQ33q5CtiznXQT4L984ilEkdNeIEutKJFpwjPxJAmLScCWzOBaa4N0GsnZLw8LukhGLRWPNr6tXpqvxCSDf5Oq884kSap9G9w8gX6h7rqEXsZoL7d+LHVxVfNq/0kBVGAld0VI98qyG3xMd/n5KSH0OHF4FxTMTLh+PjcLQekdaQ3UU/kYOxFxEpoYa9uhfIHgiz9DnCIMOOXmp/0BYG67fou17Gtw3leVDaMjxVvu992hiObXWRKzWir8HQcba+St0T7AnN4yFfsg162vMM1SYitV3j3AKU1gHKSSQJ4K9oWayKzaS8DjE3DIOchYA5t/8liH48hP+OZhk0+Ax9qN+OvTAkb4Y9KJKY+HxjACEooS0QBC6tZwyRhQ4IASyvh3J0TdBCcuW9CAM4gvYm1eMWwpn9X0i/Z+pBtNtBqjLQCNkEucpOl0JAycTsxCraShZfAhY/GyASqAphl7UbstovpOcjPnqJg==
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rQg4ccoCdqEz63snTfCGUwVdDcppMyb7YVU/lhVPvlUYjOatj8zx6LwhbfxY?=
- =?us-ascii?Q?QSSmemqqzUUJfeR8YUjNVVDyr42vgAa67IBg1iALDNIvIPLgEL9lC9wvyCiC?=
- =?us-ascii?Q?oTb4DREah1ZjSCbm3j7HeVj+4jLa4lmHtFEvMMvzP7n0xWyN5fzGRd4I0hfF?=
- =?us-ascii?Q?vsd33pcMNrPYRQTB0YR8WENQtsDNtP45sLEgcEcnkfssvwuYfI7fHYAFEb6R?=
- =?us-ascii?Q?j9gy3tOn40nBr6zZDby8P5jiszu4OABXuXpb0l/lt8CDgxMtN2l9KfAbuEUK?=
- =?us-ascii?Q?nhC0AD9Callt7p6K9FItkSzkNmk6C/zJCFdCCJ8QRYub8n4lq92X/o7drubk?=
- =?us-ascii?Q?XyrQTrZ+5Nk8bVTzQc2qa9jOxMzPUyhEGSQQB6D/J5FfjC5Fcufk1mMBdDtP?=
- =?us-ascii?Q?5Drk56dqpzW3fVvm+flwBEvNzQcc8EN5cdt4X3ePhBdj/YALGj+gY+Y1ifUy?=
- =?us-ascii?Q?PE+aEEgUwscI6C689R1Gz9MKeadBC/7zGhP8a8vlpedhIaZ0zPABqkgbVXQ0?=
- =?us-ascii?Q?p2i2h8tVEWSusu30p4FOuCpuOyQfdI7icct6WvWMcLDwLX+1hEP8Vj6L7G+J?=
- =?us-ascii?Q?/LvZuuIoy9sOAIVcMhp7708o2TqSyBlHdQceaNljjHRpQh3Jp97zdubsaqsf?=
- =?us-ascii?Q?PfMk14HHPvqfuMmee+5WOvkemrCjABalSTPPBLiFPxyasdJBLMtyaqQxtWSn?=
- =?us-ascii?Q?+drueudJ7twriHfwaH2gX7iNYtLdCg/iOLvwvhIYn/FHMDG+eIWZsOmDdw3z?=
- =?us-ascii?Q?926DsSq1VeneXGBZCSrbVuq3lR6EfY5AsPVdTmxkjKe0F4SZNgNBeUNBbWur?=
- =?us-ascii?Q?yVAcUh0nMr6Jzw9O/rF3PHTs1L2q/JsdGZQv/Uom+wRInssmOKjS42SJExr+?=
- =?us-ascii?Q?Rf2QDTd8LMmecI/zwu9By4Uuxl2Yvenkct6xfpW7kIcXZmWrXfJzGhlPvJaH?=
- =?us-ascii?Q?/tjmRlmWhkyH7qaZpADJEq9Sp/6veieJYR0To5t3+79m9xAgzPjvesrdGqB8?=
- =?us-ascii?Q?sQD7I9GK9zAA5cQaYt5DaUy3f/rV/CxICWHOR8MzwYO6hpqzaM7tP3cHkJ8/?=
- =?us-ascii?Q?UAGvkxnr4g7w9qF2wovwJ3FzVjfWMwVN5JI2rSZAJZtHdtHnl6kR5V9tTqsF?=
- =?us-ascii?Q?SA4K5iwHBqtj+uBhMpXgXRVBFgWVoHgL5ZjMJ8rM11XhkHfsit4293mcBfYm?=
- =?us-ascii?Q?x7nvAh7dF79tMGy97eIgn3rgJuQuyxYhTxcxx2xwp2qFYuVKomuKD4GMxkcE?=
- =?us-ascii?Q?8D4NT8vvglovbn0srcEcODNX8raPQbdK42TzCKEErQ=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?41yWUbTb+6oMhLkvyBM6Vf9d8NgDMAqc1TiVPJzUIyaQse0kv2xpc4+NqCKC?=
+ =?us-ascii?Q?zkr26/pVNLH/S1tEpXo4MJ4EIz0cKfwWFmdTC6ws6IJMwb19S15N01dY9WyE?=
+ =?us-ascii?Q?AJPgv6XUdd8lCR9a9446mrDepICxxzGJzNdUKchhnddoqMIyzonQw3LQ/zle?=
+ =?us-ascii?Q?y6qqxaHsqN8iiNda48ik56V7kI6t5K+k08hPDtmKwpEaXETwSyoL0qN3R83z?=
+ =?us-ascii?Q?w18zbuhT8KUOhlTI9aFn35qf2x/DjNYbJ+samuje9guHxYyPjBKAm0hdqcgs?=
+ =?us-ascii?Q?jlTblwZxqfHNjKXUlhXbFkvMFx6XD63yyUFbvwVJPA6MESUvv0lyjgwS2fET?=
+ =?us-ascii?Q?Tff3mMlmiqf8FIyKrfYHU55Qk9LXLCPok4WdmTapBE3DFjLkBguVLM7AkSqx?=
+ =?us-ascii?Q?4QeUjQh5F4GyLgrhLMPgKq50MJvieuaFpuptMslWKweDMeR8MEemQLnqlWBX?=
+ =?us-ascii?Q?E+WmuhESJBM4dfnE0hRHoznPiba7qAEMvJwDIbZ+qP1ZWT9xAagGaCzWDm5L?=
+ =?us-ascii?Q?OrZS7R+RBqWh5sInMXZ13WmJAYHMWCb0y5tlOYefhNxSO2Lo0I8uPAjue18V?=
+ =?us-ascii?Q?46o38n4lJmy3ej9gyqeTKsKfb4QVJvW4hcV6TZ/T2tI2DrCns6kDBJLiFilY?=
+ =?us-ascii?Q?kD2RCDR0ZTCDeGFgCSRQ7gUzpscRa5GHZwv2qqIRIgpBi2jWtiXwVYs6IuxA?=
+ =?us-ascii?Q?pxpqWCPgQQOfrp16I1VvPFEvcGinPK80ucHtPrlPmtwlvdMm/uRZRjKSv6xz?=
+ =?us-ascii?Q?NPX2+0aaO2mFlH4Eb1OgQ3JynyKV7bHAiz5eLehYfSw4XcqFyqKOhT+WTM7x?=
+ =?us-ascii?Q?/U/jxrVEWvrlq91ihPG1fpCzF98fmiyUwmDGIV2Bj5BfP8n8DBVN2wf5jSNM?=
+ =?us-ascii?Q?cztrvuEYZt+PoD4vch5PxS+k14Q/RD6FcWYLCN/r8f8ZUzxPP730k693m9tT?=
+ =?us-ascii?Q?pxDAyBsGZjGsd9LnOYXvs93OOjhe3Vbh/L9XQcpOT/JCkt8OIl5ERMih81pP?=
+ =?us-ascii?Q?1w36wmq1Tj7xYA0mRnOK8UqdLXKy7A7vRiAJXJi9LxEJKLGUapLAe4PkB2ib?=
+ =?us-ascii?Q?knGeA+UIjiOadNLK156qXu3MXL5vmnLE5lBqVfh673hhJzCH/jm0izob5fzj?=
+ =?us-ascii?Q?PLE9KNW4jgZowdeC0HILR6tEGGClaAJI5GsEM9sVdDj1bF2vOB2xpsv/sJYQ?=
+ =?us-ascii?Q?bYpTrkVrdwM448/ohgDX+zqSDqng+0B1yJPm+yXPQBlDtkORoG1t3qZyQqIE?=
+ =?us-ascii?Q?ig4kJ3cy1zQJ5Lec6JNGc3c9zTwqSxFY7rEu6F1Azw=3D=3D?=
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 192953c7-e272-4eaf-ac9c-08dad6d69148
+X-MS-Exchange-CrossTenant-Network-Message-Id: 98a76953-4a83-48a8-80d2-08dad6d695c8
 X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2022 15:37:07.7806 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2022 15:37:15.2981 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
@@ -140,265 +140,434 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Commit fc7a6209d571 ("bus: Make remove callback return
+Since commit fc7a6209d571 ("bus: Make remove callback return
 void") forces bus_type::remove be void-returned, it doesn't
 make much sense for any bus based driver implementing remove
 callbalk to return non-void to its caller.
 
-This change is for macio bus based drivers.
+This change is for xen bus based drivers.
 
 Signed-off-by: Dawei Li <set_pte_at@outlook.com>
 ---
- arch/powerpc/include/asm/macio.h                | 12 ++++++------
- drivers/ata/pata_macio.c                        |  4 +---
- drivers/macintosh/rack-meter.c                  |  4 +---
- drivers/net/ethernet/apple/bmac.c               |  4 +---
- drivers/net/ethernet/apple/mace.c               |  4 +---
- drivers/net/wireless/intersil/orinoco/airport.c |  4 +---
- drivers/scsi/mac53c94.c                         |  5 +----
- drivers/scsi/mesh.c                             |  5 +----
- drivers/tty/serial/pmac_zilog.c                 |  7 ++-----
- sound/aoa/soundbus/i2sbus/core.c                |  4 +---
- 10 files changed, 16 insertions(+), 37 deletions(-)
+ drivers/block/xen-blkback/xenbus.c  | 4 +---
+ drivers/block/xen-blkfront.c        | 3 +--
+ drivers/char/tpm/xen-tpmfront.c     | 3 +--
+ drivers/gpu/drm/xen/xen_drm_front.c | 3 +--
+ drivers/input/misc/xen-kbdfront.c   | 5 ++---
+ drivers/net/xen-netback/xenbus.c    | 3 +--
+ drivers/net/xen-netfront.c          | 4 +---
+ drivers/pci/xen-pcifront.c          | 4 +---
+ drivers/scsi/xen-scsifront.c        | 4 +---
+ drivers/tty/hvc/hvc_xen.c           | 4 ++--
+ drivers/usb/host/xen-hcd.c          | 4 +---
+ drivers/video/fbdev/xen-fbfront.c   | 6 ++----
+ drivers/xen/pvcalls-back.c          | 3 +--
+ drivers/xen/pvcalls-front.c         | 3 +--
+ drivers/xen/xen-pciback/xenbus.c    | 4 +---
+ drivers/xen/xen-scsiback.c          | 4 +---
+ include/xen/xenbus.h                | 2 +-
+ net/9p/trans_xen.c                  | 3 +--
+ sound/xen/xen_snd_front.c           | 3 +--
+ 19 files changed, 22 insertions(+), 47 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/macio.h b/arch/powerpc/include/asm/macio.h
-index ff5fd82d9ff0..f641c730c3b7 100644
---- a/arch/powerpc/include/asm/macio.h
-+++ b/arch/powerpc/include/asm/macio.h
-@@ -124,15 +124,15 @@ static inline struct pci_dev *macio_get_pci_dev(struct macio_dev *mdev)
-  */
- struct macio_driver
- {
--	int	(*probe)(struct macio_dev* dev, const struct of_device_id *match);
--	int	(*remove)(struct macio_dev* dev);
-+	int	(*probe)(struct macio_dev *dev, const struct of_device_id *match);
-+	void	(*remove)(struct macio_dev *dev);
- 
--	int	(*suspend)(struct macio_dev* dev, pm_message_t state);
--	int	(*resume)(struct macio_dev* dev);
--	int	(*shutdown)(struct macio_dev* dev);
-+	int	(*suspend)(struct macio_dev *dev, pm_message_t state);
-+	int	(*resume)(struct macio_dev *dev);
-+	int	(*shutdown)(struct macio_dev *dev);
- 
- #ifdef CONFIG_PMAC_MEDIABAY
--	void	(*mediabay_event)(struct macio_dev* dev, int mb_state);
-+	void	(*mediabay_event)(struct macio_dev *dev, int mb_state);
- #endif
- 	struct device_driver	driver;
- };
-diff --git a/drivers/ata/pata_macio.c b/drivers/ata/pata_macio.c
-index 9ccaac9e2bc3..653106716a4b 100644
---- a/drivers/ata/pata_macio.c
-+++ b/drivers/ata/pata_macio.c
-@@ -1187,7 +1187,7 @@ static int pata_macio_attach(struct macio_dev *mdev,
- 	return rc;
- }
- 
--static int pata_macio_detach(struct macio_dev *mdev)
-+static void pata_macio_detach(struct macio_dev *mdev)
- {
- 	struct ata_host *host = macio_get_drvdata(mdev);
- 	struct pata_macio_priv *priv = host->private_data;
-@@ -1202,8 +1202,6 @@ static int pata_macio_detach(struct macio_dev *mdev)
- 	ata_host_detach(host);
- 
- 	unlock_media_bay(priv->mdev->media_bay);
--
--	return 0;
- }
- 
- #ifdef CONFIG_PM_SLEEP
-diff --git a/drivers/macintosh/rack-meter.c b/drivers/macintosh/rack-meter.c
-index c28893e41a8b..f2f83c4f3af5 100644
---- a/drivers/macintosh/rack-meter.c
-+++ b/drivers/macintosh/rack-meter.c
-@@ -523,7 +523,7 @@ static int rackmeter_probe(struct macio_dev* mdev,
- 	return rc;
- }
- 
--static int rackmeter_remove(struct macio_dev* mdev)
-+static void rackmeter_remove(struct macio_dev *mdev)
- {
- 	struct rackmeter *rm = dev_get_drvdata(&mdev->ofdev.dev);
- 
-@@ -558,8 +558,6 @@ static int rackmeter_remove(struct macio_dev* mdev)
- 
- 	/* Get rid of me */
- 	kfree(rm);
--
--	return 0;
- }
- 
- static int rackmeter_shutdown(struct macio_dev* mdev)
-diff --git a/drivers/net/ethernet/apple/bmac.c b/drivers/net/ethernet/apple/bmac.c
-index 334de0d93c89..8b37ac1cc3d1 100644
---- a/drivers/net/ethernet/apple/bmac.c
-+++ b/drivers/net/ethernet/apple/bmac.c
-@@ -1591,7 +1591,7 @@ bmac_proc_info(char *buffer, char **start, off_t offset, int length)
- }
- #endif
- 
--static int bmac_remove(struct macio_dev *mdev)
-+static void bmac_remove(struct macio_dev *mdev)
- {
- 	struct net_device *dev = macio_get_drvdata(mdev);
- 	struct bmac_data *bp = netdev_priv(dev);
-@@ -1609,8 +1609,6 @@ static int bmac_remove(struct macio_dev *mdev)
- 	macio_release_resources(mdev);
- 
- 	free_netdev(dev);
--
--	return 0;
- }
- 
- static const struct of_device_id bmac_match[] =
-diff --git a/drivers/net/ethernet/apple/mace.c b/drivers/net/ethernet/apple/mace.c
-index d0a771b65e88..b214524a5964 100644
---- a/drivers/net/ethernet/apple/mace.c
-+++ b/drivers/net/ethernet/apple/mace.c
-@@ -272,7 +272,7 @@ static int mace_probe(struct macio_dev *mdev, const struct of_device_id *match)
- 	return rc;
- }
- 
--static int mace_remove(struct macio_dev *mdev)
-+static void mace_remove(struct macio_dev *mdev)
- {
- 	struct net_device *dev = macio_get_drvdata(mdev);
- 	struct mace_data *mp;
-@@ -296,8 +296,6 @@ static int mace_remove(struct macio_dev *mdev)
- 	free_netdev(dev);
- 
- 	macio_release_resources(mdev);
--
--	return 0;
- }
- 
- static void dbdma_reset(volatile struct dbdma_regs __iomem *dma)
-diff --git a/drivers/net/wireless/intersil/orinoco/airport.c b/drivers/net/wireless/intersil/orinoco/airport.c
-index a890bfa0d5cc..276a06cdd1f5 100644
---- a/drivers/net/wireless/intersil/orinoco/airport.c
-+++ b/drivers/net/wireless/intersil/orinoco/airport.c
-@@ -85,7 +85,7 @@ airport_resume(struct macio_dev *mdev)
- 	return err;
- }
- 
--static int
-+static void
- airport_detach(struct macio_dev *mdev)
- {
- 	struct orinoco_private *priv = dev_get_drvdata(&mdev->ofdev.dev);
-@@ -111,8 +111,6 @@ airport_detach(struct macio_dev *mdev)
- 
- 	macio_set_drvdata(mdev, NULL);
- 	free_orinocodev(priv);
--
--	return 0;
- }
- 
- static int airport_hard_reset(struct orinoco_private *priv)
-diff --git a/drivers/scsi/mac53c94.c b/drivers/scsi/mac53c94.c
-index f75928f7773e..42648ca9b8ed 100644
---- a/drivers/scsi/mac53c94.c
-+++ b/drivers/scsi/mac53c94.c
-@@ -508,7 +508,7 @@ static int mac53c94_probe(struct macio_dev *mdev, const struct of_device_id *mat
- 	return rc;
- }
- 
--static int mac53c94_remove(struct macio_dev *mdev)
-+static void mac53c94_remove(struct macio_dev *mdev)
- {
- 	struct fsc_state *fp = (struct fsc_state *)macio_get_drvdata(mdev);
- 	struct Scsi_Host *host = fp->host;
-@@ -526,11 +526,8 @@ static int mac53c94_remove(struct macio_dev *mdev)
- 	scsi_host_put(host);
- 
- 	macio_release_resources(mdev);
--
--	return 0;
- }
- 
--
- static struct of_device_id mac53c94_match[] = 
- {
- 	{
-diff --git a/drivers/scsi/mesh.c b/drivers/scsi/mesh.c
-index 84b541a57b7b..cd2575b88c85 100644
---- a/drivers/scsi/mesh.c
-+++ b/drivers/scsi/mesh.c
-@@ -1986,7 +1986,7 @@ static int mesh_probe(struct macio_dev *mdev, const struct of_device_id *match)
- 	return -ENODEV;
- }
- 
--static int mesh_remove(struct macio_dev *mdev)
-+static void mesh_remove(struct macio_dev *mdev)
- {
- 	struct mesh_state *ms = (struct mesh_state *)macio_get_drvdata(mdev);
- 	struct Scsi_Host *mesh_host = ms->host;
-@@ -2013,11 +2013,8 @@ static int mesh_remove(struct macio_dev *mdev)
- 	macio_release_resources(mdev);
- 
- 	scsi_host_put(mesh_host);
--
--	return 0;
- }
- 
--
- static struct of_device_id mesh_match[] = 
- {
- 	{
-diff --git a/drivers/tty/serial/pmac_zilog.c b/drivers/tty/serial/pmac_zilog.c
-index fe2e4ec423f7..b8e2279cf60c 100644
---- a/drivers/tty/serial/pmac_zilog.c
-+++ b/drivers/tty/serial/pmac_zilog.c
-@@ -1509,12 +1509,12 @@ static int pmz_attach(struct macio_dev *mdev, const struct of_device_id *match)
-  * That one should not be called, macio isn't really a hotswap device,
-  * we don't expect one of those serial ports to go away...
-  */
--static int pmz_detach(struct macio_dev *mdev)
-+static void pmz_detach(struct macio_dev *mdev)
- {
- 	struct uart_pmac_port	*uap = dev_get_drvdata(&mdev->ofdev.dev);
- 	
- 	if (!uap)
--		return -ENODEV;
-+		return;
- 
- 	uart_remove_one_port(&pmz_uart_reg, &uap->port);
- 
-@@ -1525,11 +1525,8 @@ static int pmz_detach(struct macio_dev *mdev)
- 	dev_set_drvdata(&mdev->ofdev.dev, NULL);
- 	uap->dev = NULL;
- 	uap->port.dev = NULL;
--	
--	return 0;
- }
- 
--
- static int pmz_suspend(struct macio_dev *mdev, pm_message_t pm_state)
- {
- 	struct uart_pmac_port *uap = dev_get_drvdata(&mdev->ofdev.dev);
-diff --git a/sound/aoa/soundbus/i2sbus/core.c b/sound/aoa/soundbus/i2sbus/core.c
-index 51ed2f34b276..35f39727994d 100644
---- a/sound/aoa/soundbus/i2sbus/core.c
-+++ b/sound/aoa/soundbus/i2sbus/core.c
-@@ -364,15 +364,13 @@ static int i2sbus_probe(struct macio_dev* dev, const struct of_device_id *match)
+diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
+index c0227dfa4688..4807af1d5805 100644
+--- a/drivers/block/xen-blkback/xenbus.c
++++ b/drivers/block/xen-blkback/xenbus.c
+@@ -524,7 +524,7 @@ static int xen_vbd_create(struct xen_blkif *blkif, blkif_vdev_t handle,
  	return 0;
  }
  
--static int i2sbus_remove(struct macio_dev* dev)
-+static void i2sbus_remove(struct macio_dev *dev)
+-static int xen_blkbk_remove(struct xenbus_device *dev)
++static void xen_blkbk_remove(struct xenbus_device *dev)
  {
- 	struct i2sbus_control *control = dev_get_drvdata(&dev->ofdev.dev);
- 	struct i2sbus_dev *i2sdev, *tmp;
+ 	struct backend_info *be = dev_get_drvdata(&dev->dev);
  
- 	list_for_each_entry_safe(i2sdev, tmp, &control->list, item)
- 		soundbus_remove_one(&i2sdev->sound);
+@@ -547,8 +547,6 @@ static int xen_blkbk_remove(struct xenbus_device *dev)
+ 		/* Put the reference we set in xen_blkif_alloc(). */
+ 		xen_blkif_put(be->blkif);
+ 	}
 -
 -	return 0;
  }
  
- #ifdef CONFIG_PM
+ int xen_blkbk_flush_diskcache(struct xenbus_transaction xbt,
+diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
+index 35b9bcad9db9..e68576ded7cb 100644
+--- a/drivers/block/xen-blkfront.c
++++ b/drivers/block/xen-blkfront.c
+@@ -2468,7 +2468,7 @@ static void blkback_changed(struct xenbus_device *dev,
+ 	}
+ }
+ 
+-static int blkfront_remove(struct xenbus_device *xbdev)
++static void blkfront_remove(struct xenbus_device *xbdev)
+ {
+ 	struct blkfront_info *info = dev_get_drvdata(&xbdev->dev);
+ 
+@@ -2489,7 +2489,6 @@ static int blkfront_remove(struct xenbus_device *xbdev)
+ 	}
+ 
+ 	kfree(info);
+-	return 0;
+ }
+ 
+ static int blkfront_is_ready(struct xenbus_device *dev)
+diff --git a/drivers/char/tpm/xen-tpmfront.c b/drivers/char/tpm/xen-tpmfront.c
+index 379291826261..80cca3b83b22 100644
+--- a/drivers/char/tpm/xen-tpmfront.c
++++ b/drivers/char/tpm/xen-tpmfront.c
+@@ -360,14 +360,13 @@ static int tpmfront_probe(struct xenbus_device *dev,
+ 	return tpm_chip_register(priv->chip);
+ }
+ 
+-static int tpmfront_remove(struct xenbus_device *dev)
++static void tpmfront_remove(struct xenbus_device *dev)
+ {
+ 	struct tpm_chip *chip = dev_get_drvdata(&dev->dev);
+ 	struct tpm_private *priv = dev_get_drvdata(&chip->dev);
+ 	tpm_chip_unregister(chip);
+ 	ring_free(priv);
+ 	dev_set_drvdata(&chip->dev, NULL);
+-	return 0;
+ }
+ 
+ static int tpmfront_resume(struct xenbus_device *dev)
+diff --git a/drivers/gpu/drm/xen/xen_drm_front.c b/drivers/gpu/drm/xen/xen_drm_front.c
+index 0d8e6bd1ccbf..90996c108146 100644
+--- a/drivers/gpu/drm/xen/xen_drm_front.c
++++ b/drivers/gpu/drm/xen/xen_drm_front.c
+@@ -717,7 +717,7 @@ static int xen_drv_probe(struct xenbus_device *xb_dev,
+ 	return xenbus_switch_state(xb_dev, XenbusStateInitialising);
+ }
+ 
+-static int xen_drv_remove(struct xenbus_device *dev)
++static void xen_drv_remove(struct xenbus_device *dev)
+ {
+ 	struct xen_drm_front_info *front_info = dev_get_drvdata(&dev->dev);
+ 	int to = 100;
+@@ -751,7 +751,6 @@ static int xen_drv_remove(struct xenbus_device *dev)
+ 
+ 	xen_drm_drv_fini(front_info);
+ 	xenbus_frontend_closed(dev);
+-	return 0;
+ }
+ 
+ static const struct xenbus_device_id xen_driver_ids[] = {
+diff --git a/drivers/input/misc/xen-kbdfront.c b/drivers/input/misc/xen-kbdfront.c
+index 8d8ebdc2039b..67f1c7364c95 100644
+--- a/drivers/input/misc/xen-kbdfront.c
++++ b/drivers/input/misc/xen-kbdfront.c
+@@ -51,7 +51,7 @@ module_param_array(ptr_size, int, NULL, 0444);
+ MODULE_PARM_DESC(ptr_size,
+ 	"Pointing device width, height in pixels (default 800,600)");
+ 
+-static int xenkbd_remove(struct xenbus_device *);
++static void xenkbd_remove(struct xenbus_device *);
+ static int xenkbd_connect_backend(struct xenbus_device *, struct xenkbd_info *);
+ static void xenkbd_disconnect_backend(struct xenkbd_info *);
+ 
+@@ -404,7 +404,7 @@ static int xenkbd_resume(struct xenbus_device *dev)
+ 	return xenkbd_connect_backend(dev, info);
+ }
+ 
+-static int xenkbd_remove(struct xenbus_device *dev)
++static void xenkbd_remove(struct xenbus_device *dev)
+ {
+ 	struct xenkbd_info *info = dev_get_drvdata(&dev->dev);
+ 
+@@ -417,7 +417,6 @@ static int xenkbd_remove(struct xenbus_device *dev)
+ 		input_unregister_device(info->mtouch);
+ 	free_page((unsigned long)info->page);
+ 	kfree(info);
+-	return 0;
+ }
+ 
+ static int xenkbd_connect_backend(struct xenbus_device *dev,
+diff --git a/drivers/net/xen-netback/xenbus.c b/drivers/net/xen-netback/xenbus.c
+index c1ba4294f364..001636901dda 100644
+--- a/drivers/net/xen-netback/xenbus.c
++++ b/drivers/net/xen-netback/xenbus.c
+@@ -977,7 +977,7 @@ static int read_xenbus_vif_flags(struct backend_info *be)
+ 	return 0;
+ }
+ 
+-static int netback_remove(struct xenbus_device *dev)
++static void netback_remove(struct xenbus_device *dev)
+ {
+ 	struct backend_info *be = dev_get_drvdata(&dev->dev);
+ 
+@@ -992,7 +992,6 @@ static int netback_remove(struct xenbus_device *dev)
+ 	kfree(be->hotplug_script);
+ 	kfree(be);
+ 	dev_set_drvdata(&dev->dev, NULL);
+-	return 0;
+ }
+ 
+ /*
+diff --git a/drivers/net/xen-netfront.c b/drivers/net/xen-netfront.c
+index 9af2b027c19c..bc17f5391b1a 100644
+--- a/drivers/net/xen-netfront.c
++++ b/drivers/net/xen-netfront.c
+@@ -2640,7 +2640,7 @@ static void xennet_bus_close(struct xenbus_device *dev)
+ 	} while (!ret);
+ }
+ 
+-static int xennet_remove(struct xenbus_device *dev)
++static void xennet_remove(struct xenbus_device *dev)
+ {
+ 	struct netfront_info *info = dev_get_drvdata(&dev->dev);
+ 
+@@ -2656,8 +2656,6 @@ static int xennet_remove(struct xenbus_device *dev)
+ 		rtnl_unlock();
+ 	}
+ 	xennet_free_netdev(info->netdev);
+-
+-	return 0;
+ }
+ 
+ static const struct xenbus_device_id netfront_ids[] = {
+diff --git a/drivers/pci/xen-pcifront.c b/drivers/pci/xen-pcifront.c
+index 7378e2f3e525..fcd029ca2eb1 100644
+--- a/drivers/pci/xen-pcifront.c
++++ b/drivers/pci/xen-pcifront.c
+@@ -1055,14 +1055,12 @@ static int pcifront_xenbus_probe(struct xenbus_device *xdev,
+ 	return err;
+ }
+ 
+-static int pcifront_xenbus_remove(struct xenbus_device *xdev)
++static void pcifront_xenbus_remove(struct xenbus_device *xdev)
+ {
+ 	struct pcifront_device *pdev = dev_get_drvdata(&xdev->dev);
+ 
+ 	if (pdev)
+ 		free_pdev(pdev);
+-
+-	return 0;
+ }
+ 
+ static const struct xenbus_device_id xenpci_ids[] = {
+diff --git a/drivers/scsi/xen-scsifront.c b/drivers/scsi/xen-scsifront.c
+index 66b316d173b0..71a3bb83984c 100644
+--- a/drivers/scsi/xen-scsifront.c
++++ b/drivers/scsi/xen-scsifront.c
+@@ -995,7 +995,7 @@ static int scsifront_suspend(struct xenbus_device *dev)
+ 	return err;
+ }
+ 
+-static int scsifront_remove(struct xenbus_device *dev)
++static void scsifront_remove(struct xenbus_device *dev)
+ {
+ 	struct vscsifrnt_info *info = dev_get_drvdata(&dev->dev);
+ 
+@@ -1011,8 +1011,6 @@ static int scsifront_remove(struct xenbus_device *dev)
+ 
+ 	scsifront_free_ring(info);
+ 	scsi_host_put(info->host);
+-
+-	return 0;
+ }
+ 
+ static void scsifront_disconnect(struct vscsifrnt_info *info)
+diff --git a/drivers/tty/hvc/hvc_xen.c b/drivers/tty/hvc/hvc_xen.c
+index 7c23112dc923..c879f922c716 100644
+--- a/drivers/tty/hvc/hvc_xen.c
++++ b/drivers/tty/hvc/hvc_xen.c
+@@ -394,9 +394,9 @@ static int xen_console_remove(struct xencons_info *info)
+ 	return 0;
+ }
+ 
+-static int xencons_remove(struct xenbus_device *dev)
++static void xencons_remove(struct xenbus_device *dev)
+ {
+-	return xen_console_remove(dev_get_drvdata(&dev->dev));
++	xen_console_remove(dev_get_drvdata(&dev->dev));
+ }
+ 
+ static int xencons_connect_backend(struct xenbus_device *dev,
+diff --git a/drivers/usb/host/xen-hcd.c b/drivers/usb/host/xen-hcd.c
+index de1b09158318..46fdab940092 100644
+--- a/drivers/usb/host/xen-hcd.c
++++ b/drivers/usb/host/xen-hcd.c
+@@ -1530,15 +1530,13 @@ static void xenhcd_backend_changed(struct xenbus_device *dev,
+ 	}
+ }
+ 
+-static int xenhcd_remove(struct xenbus_device *dev)
++static void xenhcd_remove(struct xenbus_device *dev)
+ {
+ 	struct xenhcd_info *info = dev_get_drvdata(&dev->dev);
+ 	struct usb_hcd *hcd = xenhcd_info_to_hcd(info);
+ 
+ 	xenhcd_destroy_rings(info);
+ 	usb_put_hcd(hcd);
+-
+-	return 0;
+ }
+ 
+ static int xenhcd_probe(struct xenbus_device *dev,
+diff --git a/drivers/video/fbdev/xen-fbfront.c b/drivers/video/fbdev/xen-fbfront.c
+index 4d2694d904aa..ae8a50ecdbd3 100644
+--- a/drivers/video/fbdev/xen-fbfront.c
++++ b/drivers/video/fbdev/xen-fbfront.c
+@@ -67,7 +67,7 @@ MODULE_PARM_DESC(video,
+ 	"Video memory size in MB, width, height in pixels (default 2,800,600)");
+ 
+ static void xenfb_make_preferred_console(void);
+-static int xenfb_remove(struct xenbus_device *);
++static void xenfb_remove(struct xenbus_device *);
+ static void xenfb_init_shared_page(struct xenfb_info *, struct fb_info *);
+ static int xenfb_connect_backend(struct xenbus_device *, struct xenfb_info *);
+ static void xenfb_disconnect_backend(struct xenfb_info *);
+@@ -527,7 +527,7 @@ static int xenfb_resume(struct xenbus_device *dev)
+ 	return xenfb_connect_backend(dev, info);
+ }
+ 
+-static int xenfb_remove(struct xenbus_device *dev)
++static void xenfb_remove(struct xenbus_device *dev)
+ {
+ 	struct xenfb_info *info = dev_get_drvdata(&dev->dev);
+ 
+@@ -542,8 +542,6 @@ static int xenfb_remove(struct xenbus_device *dev)
+ 	vfree(info->gfns);
+ 	vfree(info->fb);
+ 	kfree(info);
+-
+-	return 0;
+ }
+ 
+ static unsigned long vmalloc_to_gfn(void *address)
+diff --git a/drivers/xen/pvcalls-back.c b/drivers/xen/pvcalls-back.c
+index d6f945fd4147..ea52a2092bb8 100644
+--- a/drivers/xen/pvcalls-back.c
++++ b/drivers/xen/pvcalls-back.c
+@@ -1181,9 +1181,8 @@ static void pvcalls_back_changed(struct xenbus_device *dev,
+ 	}
+ }
+ 
+-static int pvcalls_back_remove(struct xenbus_device *dev)
++static void pvcalls_back_remove(struct xenbus_device *dev)
+ {
+-	return 0;
+ }
+ 
+ static int pvcalls_back_uevent(struct xenbus_device *xdev,
+diff --git a/drivers/xen/pvcalls-front.c b/drivers/xen/pvcalls-front.c
+index 1826e8e67125..5328f4d35f25 100644
+--- a/drivers/xen/pvcalls-front.c
++++ b/drivers/xen/pvcalls-front.c
+@@ -1085,7 +1085,7 @@ static const struct xenbus_device_id pvcalls_front_ids[] = {
+ 	{ "" }
+ };
+ 
+-static int pvcalls_front_remove(struct xenbus_device *dev)
++static void pvcalls_front_remove(struct xenbus_device *dev)
+ {
+ 	struct pvcalls_bedata *bedata;
+ 	struct sock_mapping *map = NULL, *n;
+@@ -1121,7 +1121,6 @@ static int pvcalls_front_remove(struct xenbus_device *dev)
+ 	kfree(bedata->ring.sring);
+ 	kfree(bedata);
+ 	xenbus_switch_state(dev, XenbusStateClosed);
+-	return 0;
+ }
+ 
+ static int pvcalls_front_probe(struct xenbus_device *dev,
+diff --git a/drivers/xen/xen-pciback/xenbus.c b/drivers/xen/xen-pciback/xenbus.c
+index d171091eec12..b11e401f1b1e 100644
+--- a/drivers/xen/xen-pciback/xenbus.c
++++ b/drivers/xen/xen-pciback/xenbus.c
+@@ -716,14 +716,12 @@ static int xen_pcibk_xenbus_probe(struct xenbus_device *dev,
+ 	return err;
+ }
+ 
+-static int xen_pcibk_xenbus_remove(struct xenbus_device *dev)
++static void xen_pcibk_xenbus_remove(struct xenbus_device *dev)
+ {
+ 	struct xen_pcibk_device *pdev = dev_get_drvdata(&dev->dev);
+ 
+ 	if (pdev != NULL)
+ 		free_pdev(pdev);
+-
+-	return 0;
+ }
+ 
+ static const struct xenbus_device_id xen_pcibk_ids[] = {
+diff --git a/drivers/xen/xen-scsiback.c b/drivers/xen/xen-scsiback.c
+index 6106ed93817d..954188b0b858 100644
+--- a/drivers/xen/xen-scsiback.c
++++ b/drivers/xen/xen-scsiback.c
+@@ -1249,7 +1249,7 @@ static void scsiback_release_translation_entry(struct vscsibk_info *info)
+ 	spin_unlock_irqrestore(&info->v2p_lock, flags);
+ }
+ 
+-static int scsiback_remove(struct xenbus_device *dev)
++static void scsiback_remove(struct xenbus_device *dev)
+ {
+ 	struct vscsibk_info *info = dev_get_drvdata(&dev->dev);
+ 
+@@ -1261,8 +1261,6 @@ static int scsiback_remove(struct xenbus_device *dev)
+ 	gnttab_page_cache_shrink(&info->free_pages, 0);
+ 
+ 	dev_set_drvdata(&dev->dev, NULL);
+-
+-	return 0;
+ }
+ 
+ static int scsiback_probe(struct xenbus_device *dev,
+diff --git a/include/xen/xenbus.h b/include/xen/xenbus.h
+index eaa932b99d8a..ad4fb4eab753 100644
+--- a/include/xen/xenbus.h
++++ b/include/xen/xenbus.h
+@@ -117,7 +117,7 @@ struct xenbus_driver {
+ 		     const struct xenbus_device_id *id);
+ 	void (*otherend_changed)(struct xenbus_device *dev,
+ 				 enum xenbus_state backend_state);
+-	int (*remove)(struct xenbus_device *dev);
++	void (*remove)(struct xenbus_device *dev);
+ 	int (*suspend)(struct xenbus_device *dev);
+ 	int (*resume)(struct xenbus_device *dev);
+ 	int (*uevent)(struct xenbus_device *, struct kobj_uevent_env *);
+diff --git a/net/9p/trans_xen.c b/net/9p/trans_xen.c
+index b15c64128c3e..4387990b9b41 100644
+--- a/net/9p/trans_xen.c
++++ b/net/9p/trans_xen.c
+@@ -294,13 +294,12 @@ static void xen_9pfs_front_free(struct xen_9pfs_front_priv *priv)
+ 	kfree(priv);
+ }
+ 
+-static int xen_9pfs_front_remove(struct xenbus_device *dev)
++static void xen_9pfs_front_remove(struct xenbus_device *dev)
+ {
+ 	struct xen_9pfs_front_priv *priv = dev_get_drvdata(&dev->dev);
+ 
+ 	dev_set_drvdata(&dev->dev, NULL);
+ 	xen_9pfs_front_free(priv);
+-	return 0;
+ }
+ 
+ static int xen_9pfs_front_alloc_dataring(struct xenbus_device *dev,
+diff --git a/sound/xen/xen_snd_front.c b/sound/xen/xen_snd_front.c
+index 4041748c12e5..b66e037710d0 100644
+--- a/sound/xen/xen_snd_front.c
++++ b/sound/xen/xen_snd_front.c
+@@ -311,7 +311,7 @@ static int xen_drv_probe(struct xenbus_device *xb_dev,
+ 	return xenbus_switch_state(xb_dev, XenbusStateInitialising);
+ }
+ 
+-static int xen_drv_remove(struct xenbus_device *dev)
++static void xen_drv_remove(struct xenbus_device *dev)
+ {
+ 	struct xen_snd_front_info *front_info = dev_get_drvdata(&dev->dev);
+ 	int to = 100;
+@@ -345,7 +345,6 @@ static int xen_drv_remove(struct xenbus_device *dev)
+ 
+ 	xen_snd_drv_fini(front_info);
+ 	xenbus_frontend_closed(dev);
+-	return 0;
+ }
+ 
+ static const struct xenbus_device_id xen_drv_ids[] = {
 -- 
 2.25.1
 
