@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E49E2C352A1
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Dec 2022 09:53:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1769C3A5A7
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Dec 2022 09:53:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0679F18AF;
-	Tue,  6 Dec 2022 10:52:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0679F18AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 18162187D;
+	Tue,  6 Dec 2022 10:53:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18162187D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670320424;
+	s=default; t=1670320437;
 	bh=7hHdQtpeJgUhhlVrjaF3QqUWI/qXbxg2b5hWeRvhBPo=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=kdZq4hv89nl5FWs3PV4DLsLjtdhWeyvs6xz812sGWfgV7/EnbDLYcW/cv7v6JPkG3
-	 6kZ74825iP4X87hN5TDBFV3uFU0gVjy2f6CflGcDC7rIVRHbH0E4f5hCLAVMgD472r
-	 KjGruqMlbJAqIqYjhih7RlrpThEOew8atMvXf3W8=
+	b=ui1ajYWo+0DIKFHROVhjtXIC8TbIglASm44kpPIoB4i5liYBREr+hbS3eUHUDzfYN
+	 S3x6Qufxx5awDM+rffCijLD8GR4w7C9EQfXD7pSFYcUWoEH96e5uOXhhKeWoxxPKNi
+	 mhSO8QZYR+zeMQZmMJoK8HFMjKGImcuSr90xLY6w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B05EF805AF;
-	Tue,  6 Dec 2022 10:51:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8576F8055A;
+	Tue,  6 Dec 2022 10:51:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EB485F805B2; Tue,  6 Dec 2022 10:51:03 +0100 (CET)
+ id CEA11F805B4; Tue,  6 Dec 2022 10:51:19 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A9EB7F804B0
- for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2022 10:51:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9EB7F804B0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 734C6F802DB
+ for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2022 10:51:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 734C6F802DB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="EPGu40n3"
+ header.b="VEj0dAFc"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 5DB04615FE;
- Tue,  6 Dec 2022 09:51:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E2C7C433D7;
- Tue,  6 Dec 2022 09:50:58 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 0F24D61602;
+ Tue,  6 Dec 2022 09:51:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 613E2C433C1;
+ Tue,  6 Dec 2022 09:51:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1670320259;
+ s=k20201202; t=1670320275;
  bh=7hHdQtpeJgUhhlVrjaF3QqUWI/qXbxg2b5hWeRvhBPo=;
  h=From:To:Cc:Subject:Date:From;
- b=EPGu40n3As8TBxrYOJSOPyZ9fIXVNpqVvBNIQGxVsJpmuK4qMD2cPQjEojUaoUU34
- wugXU6ZF0rJhVN+Xv6yvWqVe2tXok7QqLuceZQYAWvDlM1RL6LlzEernFi/LEgvoAA
- JB6KPvoQfl9Pq4ePM/pO/lOtzC4OnGfDhK8BAjqBvulEVt5mzw966Bjs1i+8tGt8Xd
- la0owBHy92M+h9DDELv++ZNnS2v7p2T3X26gNerwKZnZZLDoA2+EcRGVW2LOAEp5aI
- OAMw0x55R9yR8oWiVeQqKJHtFV5G2xmoyRflw8zUapVv//2x6wWy46ie3HolxNJ+NI
- u/0I75DCWY86g==
+ b=VEj0dAFcq4EbNd/9ZH2NN4K3RG6X0C+QAkEBjxu/g2c4M5hE9Ks+/jToLIH7o9P5H
+ dtUM1wE+iA/NaOVooB8RohVVKChf+18eLwsulZpfqrIdZInaOurjAQE5kkKWDeF2o7
+ WzFTGDxWeXsUvLwm7JCj4cBBbZ/tWXk4xm3WLu9cqMyhjQOPE6i6BI7wUF1AJgMexQ
+ +oWWPY4cnrZ+3T/UB9thaQIOJQvF2opc3hO53CWRuBS4/BmgFNTinYfkNIrwB7sqs0
+ jY2qZ9EfN4l46SA7JAmLj9xx69cEqw4QOGfepxC5vMY/eNI0ZDxwrW0WLG7DG/lSLT
+ JBsKFXShzCzNQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 1/5] ASoC: ops: Check bounds for second channel in
- snd_soc_put_volsw_sx()
-Date: Tue,  6 Dec 2022 04:50:51 -0500
-Message-Id: <20221206095055.987728-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 1/5] ASoC: ops: Check bounds for second channel
+ in snd_soc_put_volsw_sx()
+Date: Tue,  6 Dec 2022 04:51:07 -0500
+Message-Id: <20221206095112.987799-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 X-stable: review
