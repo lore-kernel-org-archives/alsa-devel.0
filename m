@@ -4,87 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7EB0C352A1
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Dec 2022 12:42:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DEB9C4708E
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Dec 2022 12:55:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3042D1909;
-	Wed,  7 Dec 2022 13:41:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3042D1909
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39A15190D;
+	Wed,  7 Dec 2022 13:54:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39A15190D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670416942;
-	bh=XNylr1o2GriNA7XeJhBZk3A4urfgkIqU0Dde4ocPrSU=;
-	h=From:Date:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1670417699;
+	bh=oEEcSsLXBMalNMOMBVVh1LlRpBTeMcF4TkaEJmroifQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Q7XT0gM1BFAMIF4WZOgOnq2SAcN2KLuav1E/DaZkq070OzokhNq273ZQJw92iGiDw
-	 3a8fn7an3AyOUJbsZD7aqsXfE205JUb3qr0G+mczmDRB6YkBG5ruSwuoO3SzmTk5FV
-	 99Gqq4O1Oe01L20s64P/z+vtGFCIYZ9Pf6alD6gw=
+	b=cesTKqeTUcE/xXItyJWqwydB0US4TDmOyM5sc59uXTtyav/wxF48H7+a+IcWwB5T2
+	 nCU8yk446/5Ey9r4JMGOM846jRfGhEGtLPkwPAAT4uWhFtgohUS0l7374gQU0N2Pri
+	 ZtU+rHaNixW5HLNOVUNI5GRQp/XjU89TvzMiuUws=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7BCCF80169;
-	Wed,  7 Dec 2022 13:41:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC910F8021D;
+	Wed,  7 Dec 2022 13:54:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F17A5F80169; Wed,  7 Dec 2022 13:41:29 +0100 (CET)
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com
- [IPv6:2a00:1450:4864:20::634])
+ id 91A95F80246; Tue,  6 Dec 2022 19:06:47 +0100 (CET)
+Received: from mail.edward-p.xyz (unknown [IPv6:2403:ac80:cc:7::13f:adc5])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 828DFF80169
- for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2022 13:41:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 828DFF80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id 09392F8014E
+ for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2022 19:06:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09392F8014E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="NeUOUUL7"
-Received: by mail-ej1-x634.google.com with SMTP id fc4so13608485ejc.12
- for <alsa-devel@alsa-project.org>; Wed, 07 Dec 2022 04:41:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:subject:cc:to:content-language:user-agent
- :mime-version:date:message-id:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=dCfP62VAKi29Q/mNaSjgpzkzI8eKKwmeJu38jpN11i4=;
- b=NeUOUUL7CVKlB428X6YqM3Cz9J7q+f9nUmBcjURFlMtlTlGuAJfv6bAQTQgoYyNA+p
- vbE+TC+kvaqyIp6AEMA4VKJmf3NAK4Jd2gZUKE+Z94YJefh4a0KTgOJayTF2iSNLHWCE
- 2w7fpmCMq5Ba6WvDctRUekL6zWQd8wfyui1OjeG1+MsULCezqFjNcKzpcUKtZ9fLCFRG
- aIk2/m9Du54BTtr6h8CWeu1S94bqwdZTtYuQhuTDNd/8Q42LAkU8TbaYiR/6rvzsNsrH
- O5NuqwwkbaRj1WAImuTuzT5CqPsVcXpM6LB+Eew9E2UCScx+SwBZI700JdXR98/45tx1
- gCGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:subject:cc:to:content-language:user-agent
- :mime-version:date:message-id:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=dCfP62VAKi29Q/mNaSjgpzkzI8eKKwmeJu38jpN11i4=;
- b=P5esjqrDpKd634LsTigRCwQ++VkkEY7Zh1s3K1bAUaunLKjP+PcmdioVPWsDWuup/Z
- z0Pg9ZnRZ6vKujX7vg5CbQ5X29j0wdIS1bNp4HZ2oyfA/eBMYadOOKaxXJEzUoQAFc1J
- Fz1ss43RAzDyvIGo1zMq/Vpdl3moCFGA/mC89Ia1KGOZKQkoV/Qasn3wy2dJH4RiGfsV
- Z7Ypstr6RID0NRn0J5zwZ74tqpSl436Tdt9Th67pxgThldXJ6ecmyB1SzZkWXyZKVeip
- lyk88ymqq/zIvUD3Ynf28z3CgfvRNk5lPHOdTs2DEI3pXq3nmDddxfB542IwToWnptrq
- BU4w==
-X-Gm-Message-State: ANoB5pn8BvdC//+jje+lmxW2YgcxM3Bh1w+Cw9p8Htk8L23B9PjQIdYX
- ycEa9LZrT0FhENvUjAm9287miZMfcHwvwWx1nsA=
-X-Google-Smtp-Source: AA0mqf47y832dI+r3uycWTlcf8qAmaVU31q6+NbbnYtTJABYegg2VXkFGQwCWT2fBIJViOSM1ONaGQ==
-X-Received: by 2002:a17:906:f281:b0:7ae:3b9e:1d8a with SMTP id
- gu1-20020a170906f28100b007ae3b9e1d8amr73276816ejb.581.1670416885215; 
- Wed, 07 Dec 2022 04:41:25 -0800 (PST)
-Received: from [10.0.0.182] (31-10-206-125.static.upc.ch. [31.10.206.125])
- by smtp.gmail.com with ESMTPSA id
- la9-20020a170907780900b007c0baedc9d0sm6526415ejc.95.2022.12.07.04.41.24
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 07 Dec 2022 04:41:24 -0800 (PST)
-From: Emanuele Ghidoli <ghidoliemanuele@gmail.com>
-X-Google-Original-From: Emanuele Ghidoli <ghidoli.emanuele@gmail.com>
-Message-ID: <4172f4b2-9198-dfc8-a2b0-d75a95265e14@gmail.com>
-Date: Wed, 7 Dec 2022 13:41:24 +0100
+ dkim=pass (2048-bit key) header.d=edward-p.xyz header.i=@edward-p.xyz
+ header.b="ndbeQvwn"
+DKIM-Signature: a=rsa-sha256; bh=T+en6e3AXE3m/+a/1SsKJ6NeYBJ+M/f4BlVdIYx79zE=; 
+ c=relaxed/relaxed; d=edward-p.xyz;
+ h=Subject:Subject:Sender:To:To:Cc:Cc:From:From:Date:Date:MIME-Version:MIME-Version:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Reply-To:In-Reply-To:Message-Id:Message-Id:References:Autocrypt:Openpgp;
+ i=@edward-p.xyz; s=default; t=1670349916; v=1; x=1670781916;
+ b=ndbeQvwnsDAhdzCWhwNUER4mARyMBxiCwfnnRQprNcrBoyovwnQVkJnhne5rucfE7tUosjr/
+ 7YWvjF0fBzxtlk3YK9+wNjb3SvjRjDk+7h+yc8VecceIWYT1JO9jLHOQFrgNulhyyrg6BGBCQbI
+ T8dHv5S98lGnlAO0hhdkCaYjcjt8QPB9sNO9sbC7wXZCGp19AhGgFh+Ga8nThZhoiGnHz8ua7ne
+ eACrA+Enst4+49GCRTaylQT5x31Zo/olmZVXgnEVEwRloenEVIFSHUnDFcVgRvC6rRLAAcgaQVb
+ mhO/eeNidPSDXle1XfhzSlxB1FtP/lr+zVcQbHezK0zQA==
+Received: by mail.edward-p.xyz (envelope-sender <edward@edward-p.xyz>) with
+ ESMTPS id 62a3ecde; Wed, 07 Dec 2022 02:05:16 +0800
+From: edward-p <edward@edward-p.xyz>
+To: 
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for Lenovo TianYi510Pro-14IOB
+Date: Wed,  7 Dec 2022 02:04:58 +0800
+Message-Id: <20221206180459.44260-1-edward@edward-p.xyz>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Content-Language: en-US
-To: alsa-devel@alsa-project.org
-Subject: Simple card and PLL/FLL
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- emanuele.ghidoli@toradex.com, Liam Girdwood <lgirdwood@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Wed, 07 Dec 2022 13:54:08 +0100
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ Stefan Binding <sbinding@opensource.cirrus.com>,
+ Kailang Yang <kailang@realtek.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Meng Tang <tangmeng@uniontech.com>, Philipp Jungkamp <p.jungkamp@gmx.net>,
+ Takashi Iwai <tiwai@suse.com>, edward-p <edward@edward-p.xyz>,
+ alsa-devel@alsa-project.org, Tim Crawford <tcrawford@system76.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,28 +77,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
-I want to understand what is the right way to implement PLL/FLL usage on 
-audio codec when using simple-card.
-In wm8904 driver I found that FLL is used if set_sysclk is called (that 
-means mclk-fs property is set, otherwise it is not called).
-In this case the frequency passed to set_sysclk is assumed to be the 
-"desired" frequency, the codec read the currently clkrate coming from 
-"cpu" ("clk_get_rate(priv->mclk)") and use these information to program FLL.
-In other codec drives I do not find a similar approach.
-In general codec register the set_pll function but it is never called by 
-simple-card driver.
-I guess what is the "right/better" implementation? Have we to add the 
-set_pll call in simple-card? Or have we to add it to e.g. fsl_sai 
-driver? Or, in some way, the wm8904 codec driver is approaching in the 
-right way?
+Lenovo TianYi510Pro-14IOB (17aa:3742)
+require quirk for enabling headset-mic
 
-Is there any documentation that explain all of that (I have already 
-looked at Documentation/sound)? Any driver that is considered well 
-written and complete I should use as a reference?
+Signed-off-by: edward-p <edward@edward-p.xyz>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=216756
+---
+ sound/pci/hda/patch_realtek.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index e5c036385666..a2e1bdc06468 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -10960,6 +10960,17 @@ static void alc897_fixup_lenovo_headset_mic(struct hda_codec *codec,
+ 	}
+ }
+ 
++static void alc897_fixup_lenovo_headset_mode(struct hda_codec *codec,
++				     const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		spec->parse_flags |= HDA_PINCFG_HEADSET_MIC;
++		spec->gen.hp_automute_hook = alc897_hp_automute_hook;
++	}
++}
++
+ static const struct coef_fw alc668_coefs[] = {
+ 	WRITE_COEF(0x01, 0xbebe), WRITE_COEF(0x02, 0xaaaa), WRITE_COEF(0x03,    0x0),
+ 	WRITE_COEF(0x04, 0x0180), WRITE_COEF(0x06,    0x0), WRITE_COEF(0x07, 0x0f80),
+@@ -11043,6 +11054,8 @@ enum {
+ 	ALC897_FIXUP_LENOVO_HEADSET_MIC,
+ 	ALC897_FIXUP_HEADSET_MIC_PIN,
+ 	ALC897_FIXUP_HP_HSMIC_VERB,
++	ALC897_FIXUP_LENOVO_HEADSET_MODE,
++	ALC897_FIXUP_HEADSET_MIC_PIN2,
+ };
+ 
+ static const struct hda_fixup alc662_fixups[] = {
+@@ -11469,6 +11482,19 @@ static const struct hda_fixup alc662_fixups[] = {
+ 			{ }
+ 		},
+ 	},
++	[ALC897_FIXUP_LENOVO_HEADSET_MODE] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc897_fixup_lenovo_headset_mode,
++	},
++	[ALC897_FIXUP_HEADSET_MIC_PIN2] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x1a, 0x01a11140 }, /* use as headset mic, without its own jack detect */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC897_FIXUP_LENOVO_HEADSET_MODE
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+@@ -11521,6 +11547,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x32cb, "Lenovo ThinkCentre M70", ALC897_FIXUP_HEADSET_MIC_PIN),
+ 	SND_PCI_QUIRK(0x17aa, 0x32cf, "Lenovo ThinkCentre M950", ALC897_FIXUP_HEADSET_MIC_PIN),
+ 	SND_PCI_QUIRK(0x17aa, 0x32f7, "Lenovo ThinkCentre M90", ALC897_FIXUP_HEADSET_MIC_PIN),
++	SND_PCI_QUIRK(0x17aa, 0x3742, "Lenovo TianYi510Pro-14IOB", ALC897_FIXUP_HEADSET_MIC_PIN2),
+ 	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo Ideapad Y550P", ALC662_FIXUP_IDEAPAD),
+ 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Ideapad Y550", ALC662_FIXUP_IDEAPAD),
+ 	SND_PCI_QUIRK(0x1849, 0x5892, "ASRock B150M", ALC892_FIXUP_ASROCK_MOBO),
+-- 
+2.38.1
 
-Thanks a lot for your help
-Best regards,
-
-Emanuele
