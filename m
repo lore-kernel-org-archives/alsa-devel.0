@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EED60C4708E
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Dec 2022 09:50:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61B22C352A1
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Dec 2022 09:50:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA1E51720;
-	Tue,  6 Dec 2022 10:49:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA1E51720
+	by alsa0.perex.cz (Postfix) with ESMTPS id 96E4417D6;
+	Tue,  6 Dec 2022 10:49:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96E4417D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670320222;
-	bh=6n4Bm0ycM73dP38b0rr7ZAIppKs6PXLxvgCOtqGB2aM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Z/ivXlmhW3wyYpFioyvWpwFMvZV3Q1CO3xKLVLezIlEThkyiXByyREnY9/vquCNDH
-	 UC+hbbnqJTyeuT/0fUVOK05INFETTW7qJVOEE8PKNxSH9M7mf91Yxcqm0h4ab9WWhD
-	 nPIbfmBHEoGTszdIblnsr4zdfeoO2OOsvOvopzsc=
+	s=default; t=1670320246;
+	bh=TWVtd5Xlv29gmWlD4fReROUrOCxCcJM8mDacyHw+iiM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=jLeWY8WYFIj6zyxWskZlCMaYOw8VqCikLXKpvY4YUidiwdObvMa/XehcNAHHZ93b4
+	 MB74Lb8sIT4Sbm6eGh+ie32Mx6hoh81jzP7AiDb7/NmzT8GATuNs1hnw0jw0QNeD7R
+	 BijTxtP3P4f7u61Ou2VXqwZixgfbapMl3bBy+y/E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48CC7F80290;
-	Tue,  6 Dec 2022 10:49:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2E51F804B0;
+	Tue,  6 Dec 2022 10:49:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7507FF80121; Tue,  6 Dec 2022 10:49:30 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id AE825F80246; Tue,  6 Dec 2022 10:49:31 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7DE0AF80121
- for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2022 10:49:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DE0AF80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id E3F54F8014C
+ for <alsa-devel@alsa-project.org>; Tue,  6 Dec 2022 10:49:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3F54F8014C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BJIfuLmM"
+ header.b="Y3udiVLD"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 16221615FD;
- Tue,  6 Dec 2022 09:49:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71067C433C1;
- Tue,  6 Dec 2022 09:49:19 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 2C8CBB818ED;
+ Tue,  6 Dec 2022 09:49:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EF29C43155;
+ Tue,  6 Dec 2022 09:49:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1670320161;
- bh=6n4Bm0ycM73dP38b0rr7ZAIppKs6PXLxvgCOtqGB2aM=;
- h=From:To:Cc:Subject:Date:From;
- b=BJIfuLmMfExlNA6Sg919/ovJ4fcp5ydVxdt2kWIizE9plXBPiRX6kjCw8yNapiHW9
- yOl3tVR34lBkT4KmABxsDHfPNpuVLNvF0o8fghU0MNw5YndL75beK3siRtDQnywrtF
- ScYjfWQPWI+moEDBTUsjHFKUocpyfphyjSbh+jpsqTYcdPO8bGInk6WN3ug38cRpmc
- GCu9rX2H1PHFvQPGHeb+3Ji0IWVOW0iyGsJNAiHrjniiHJyE64IkmN+YBtbYR4VWlX
- J4CvrMJG6Zo44U4rTvhPGSJD7MHAo8YZ/Z3jPOvbNWcAF/aCP5y1uqfFNbLUbT/418
- YbiWKo4hacOdw==
+ s=k20201202; t=1670320165;
+ bh=TWVtd5Xlv29gmWlD4fReROUrOCxCcJM8mDacyHw+iiM=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=Y3udiVLDL4wy/5fsoonucZGj2FBYP/w0dAiT2mAZfgLtxyCM+HY/3MoTVVnvzFaDk
+ dUL4qNAjbMKSMGrS21ZXm49frfXgantYyl58/ZbtNdBjdpuwkUCqcgke8vtOxg1Baa
+ LFiAfdgqksesslIVDQAhID/rteQIMgfk2xdr42N0/QDrqk6FFjyCNGI0tRPArjy9Ti
+ Q+yOIeDceIqKPMQCFWAz6AjJKgBY/aWVHf1cYvp13aBt/Om8NzByZUAB2Nl87CMoR7
+ YhYjMRxpLNqmM2JuD+8opZ/5iCTaGfg+jgNQgXviEsQwsPjNmIV7yZ8xPSy+q97X95
+ dwXZa5JXJy3LA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.0 01/13] ASoC: fsl_micfil: explicitly clear software
- reset bit
-Date: Tue,  6 Dec 2022 04:49:04 -0500
-Message-Id: <20221206094916.987259-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.0 03/13] ASoC: ops: Check bounds for second channel
+ in snd_soc_put_volsw_sx()
+Date: Tue,  6 Dec 2022 04:49:06 -0500
+Message-Id: <20221206094916.987259-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221206094916.987259-1-sashal@kernel.org>
+References: <20221206094916.987259-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Xiubo.Lee@gmail.com, linuxppc-dev@lists.ozlabs.org,
- Shengjiu Wang <shengjiu.wang@nxp.com>, tiwai@suse.com, lgirdwood@gmail.com,
- Mark Brown <broonie@kernel.org>, shengjiu.wang@gmail.com
+ tiwai@suse.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,45 +83,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
+From: Mark Brown <broonie@kernel.org>
 
-[ Upstream commit 292709b9cf3ba470af94b62c9bb60284cc581b79 ]
+[ Upstream commit 97eea946b93961fffd29448dcda7398d0d51c4b2 ]
 
-SRES is self-cleared bit, but REG_MICFIL_CTRL1 is defined as
-non volatile register, it still remain in regmap cache after set,
-then every update of REG_MICFIL_CTRL1, software reset happens.
-to avoid this, clear it explicitly.
+The bounds checks in snd_soc_put_volsw_sx() are only being applied to the
+first channel, meaning it is possible to write out of bounds values to the
+second channel in stereo controls. Add appropriate checks.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Link: https://lore.kernel.org/r/1651925654-32060-1-git-send-email-shengjiu.wang@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20220511134137.169575-2-broonie@kernel.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/fsl/fsl_micfil.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/soc-ops.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index 79ef4e269bc9..8aa6871e0d42 100644
---- a/sound/soc/fsl/fsl_micfil.c
-+++ b/sound/soc/fsl/fsl_micfil.c
-@@ -194,6 +194,17 @@ static int fsl_micfil_reset(struct device *dev)
- 	if (ret)
- 		return ret;
+diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
+index bd88de056358..35dd645d57c9 100644
+--- a/sound/soc/soc-ops.c
++++ b/sound/soc/soc-ops.c
+@@ -468,6 +468,12 @@ int snd_soc_put_volsw_sx(struct snd_kcontrol *kcontrol,
  
-+	/*
-+	 * SRES is self-cleared bit, but REG_MICFIL_CTRL1 is defined
-+	 * as non-volatile register, so SRES still remain in regmap
-+	 * cache after set, that every update of REG_MICFIL_CTRL1,
-+	 * software reset happens. so clear it explicitly.
-+	 */
-+	ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
-+				MICFIL_CTRL1_SRES);
-+	if (ret)
-+		return ret;
+ 		val_mask = mask << rshift;
+ 		val2 = (ucontrol->value.integer.value[1] + min) & mask;
 +
- 	return 0;
- }
++		if (mc->platform_max && val2 > mc->platform_max)
++			return -EINVAL;
++		if (val2 > max)
++			return -EINVAL;
++
+ 		val2 = val2 << rshift;
  
+ 		err = snd_soc_component_update_bits(component, reg2, val_mask,
 -- 
 2.35.1
 
