@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DD2CC47089
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Dec 2022 17:39:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09A01C352A1
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Dec 2022 17:39:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F5F9182F;
-	Wed,  7 Dec 2022 18:38:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F5F9182F
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1DED17E7;
+	Wed,  7 Dec 2022 18:38:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1DED17E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670434761;
-	bh=ln8UbPMcYS/65vm5+MnMPgt6R+k41vnkbbKxMxHspAg=;
+	s=default; t=1670434779;
+	bh=qSza4H82mdMpbCFfcyf6/rY8vJ/rlTzfwv8qc4wJ898=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SfXem8fPeb4F4F8PYvUeggvvW8/k9cykwaUhaJjQxj6wyKv8+LcJoQcHheEsfBX68
-	 D3hoZRAizfIQs/wyg36imyGi+EeSgn3LUrgLOWB5BSPUZoozwkKUR0yaBCup+Nrukj
-	 OhpxP/0KSUirfPxn/V++Wwfs011nkr1m5gzXlGYU=
+	b=YuQ/VGRoDQ4A1ePLz8kRKk6P5/CQI+aJfPshN8P4k+lGWpgeAqGr23OzkOEqVC6WZ
+	 i8GQrNnv1DOF8bfQL0VFcPpMYS+r2sCclvgW8A8mVf3A8dn+PVioSe+NILD+iiR78J
+	 AP8tkaVFfWVxnO1FCAIH5JVdwsDH0DpyAn8MN6Mg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3EEBF8054A;
-	Wed,  7 Dec 2022 18:37:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9A32F8056F;
+	Wed,  7 Dec 2022 18:37:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F2587F8055A; Wed,  7 Dec 2022 18:37:46 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 2C5FEF80567; Wed,  7 Dec 2022 18:37:54 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6FFE0F8054A
- for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2022 18:37:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FFE0F8054A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 603CCF80567
+ for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2022 18:37:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 603CCF80567
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="fVY8eGIz"
+ header.b="VMNINyvg"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 0004D61B45;
- Wed,  7 Dec 2022 17:37:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59532C433C1;
- Wed,  7 Dec 2022 17:37:39 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id F2981B81FE9;
+ Wed,  7 Dec 2022 17:37:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E89FC433D6;
+ Wed,  7 Dec 2022 17:37:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1670434662;
- bh=ln8UbPMcYS/65vm5+MnMPgt6R+k41vnkbbKxMxHspAg=;
+ s=k20201202; t=1670434669;
+ bh=qSza4H82mdMpbCFfcyf6/rY8vJ/rlTzfwv8qc4wJ898=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=fVY8eGIz+EmmQCXMu5c/K9Rs+wsOoATgVdZm5jCSCo3mI9s/boRz79OC7TMDQvtfl
- yEOrX/8ZXFJwBVoeMhHZPTJ9gDjHlo80J+IJacOqiv+occTtb7vKNSF3db4Ktp9u0q
- 3LXchymIY4sa/zZK3DYZlOyPjNOO/pBO1ZlCLIZtDxqpiCr7HTPEUCcOX6E55kq1lg
- zdtfW6Ao1Kh/Vvq4u8oA4G6S9HwfITVwBUbtBJy0ov7WGVMYhTRyDMSQ7gdJz2LKw8
- 8c64qtRhVWPZWAJI9yc+HYPtHAJAcZdapEn1pmTzTuAKgLKeVoaULLGg6CYRsVDH3u
- Yr04EloZtLGRw==
+ b=VMNINyvgSLOgWcwHRpomCG5dTh6aVNzHk0GL8UolqwWzW0Eilb/1IKwDhPlsFLJcH
+ E3sAb2RDsCRKg5QKU0nP6Doiw8JPBRgwAUA/7+VDJfCHq2RHzyVzGTFYk+NI6zSAaA
+ 0tgSu/Ts6qbKQOi8/gpN/5mE6O97+MkEpQ8AJCf4xilpmYALC4Gom+RXDn5sLZ/I9A
+ faxx+rio4a9aLoac+o1bW2DIsoxBV2tJQczyzv1eHfLjbxcxe4uXa1plKihXnBFCwd
+ 71wpsWCZookvWCZemhhRxvcbACc5MX+vtIOiS+lWrUSrQwqPf1IWjxAQh5OTc0UnED
+ aVObzXKTvh4DQ==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
- matthias.bgg@gmail.com, Wang Yufen <wangyufen@huawei.com>
-In-Reply-To: <1670234664-24246-1-git-send-email-wangyufen@huawei.com>
-References: <1670234664-24246-1-git-send-email-wangyufen@huawei.com>
-Subject: Re: [PATCH] ASoC: mediatek: mt8173-rt5650-rt5514: fix refcount leak
- in mt8173_rt5650_rt5514_dev_probe()
-Message-Id: <167043465894.393374.8060472153388836896.b4-ty@kernel.org>
-Date: Wed, 07 Dec 2022 17:37:38 +0000
+To: alsa-devel@alsa-project.org, Cezary Rojewski <cezary.rojewski@intel.com>
+In-Reply-To: <20221205085330.857665-1-cezary.rojewski@intel.com>
+References: <20221205085330.857665-1-cezary.rojewski@intel.com>
+Subject: Re: [PATCH v2 0/6] ASoC: Intel: Skylake: Topology and shutdown fixes
+Message-Id: <167043466737.393374.2015082133648997354.b4-ty@kernel.org>
+Date: Wed, 07 Dec 2022 17:37:47 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.11.0-dev-b77ec
-Cc: alsa-devel@alsa-project.org, garlic.tseng@mediatek.com,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: upstream@semihalf.com, rad@semihalf.com,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
+ amadeuszx.slawinski@linux.intel.com, cujomalainey@chromium.org,
+ lma@semihalf.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,12 +82,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 05 Dec 2022 18:04:24 +0800, Wang Yufen wrote:
-> The node returned by of_parse_phandle() with refcount incremented,
-> of_node_put() needs be called when finish using it. So add it in the
-> error path in mt8173_rt5650_rt5514_dev_probe().
+On Mon, 05 Dec 2022 09:53:24 +0100, Cezary Rojewski wrote:
+> Even though skylake-driver is going to be replaced by the avs-driver,
+> the goal is to keep it functional on all the configurations it supports
+> until its EOL. When comparing chrome trees against upstream
+> skylake-driver, couple fixes pop up that are not part of upstream
+> repository. These fixes are backed up by real bugs (issue trackers),
+> address real problems. There is no reason for them to stay in the
+> internal tree.
 > 
-> 
+> [...]
 
 Applied to
 
@@ -96,8 +99,18 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: mt8173-rt5650-rt5514: fix refcount leak in mt8173_rt5650_rt5514_dev_probe()
-      commit: 3327d721114c109ba0575f86f8fda3b525404054
+[1/6] ASoC: Intel: Skylake: Update pipe_config_idx before filling BE params
+      commit: 72d9a541d7f186f0ec97c71ba7e477dd9bf4155f
+[2/6] ASoC: Intel: Skylake: Remove skl_tplg_is_multi_fmt()
+      commit: b0d16e54e7559f2055123ea7b1d9ff1bb808ebad
+[3/6] ASoC: Intel: Skylake: Drop pipe_config_idx
+      commit: 75ab3c00769009e32e5cf51c8b503de4f73114e4
+[4/6] ASoC: Intel: Skylake: Introduce single place for pipe-config selection
+      commit: 4ac587f3578c5ca490e4df55af6403f5474eb2f0
+[5/6] ASoC: Intel: Skylake: Fix driver hang during shutdown
+      commit: 171107237246d66bce04f3769d33648f896b4ce3
+[6/6] ASoC: Intel: Skylake: Use SG allocation for SKL-based firmware load
+      commit: 451d85c46cf719a09a052510d4d4cd920103163a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
