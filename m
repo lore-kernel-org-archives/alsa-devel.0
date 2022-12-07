@@ -4,83 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A564C352A1
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Dec 2022 16:56:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93762C352A1
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Dec 2022 17:38:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5CC0617B7;
-	Wed,  7 Dec 2022 17:55:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CC0617B7
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3D23173F;
+	Wed,  7 Dec 2022 18:37:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3D23173F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670432164;
-	bh=FoYXqvf/RGO8HnAjboAtBChf8PSxV22TRx7xbkHaZ/Y=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1670434710;
+	bh=7B5VsOljHqgBrU+kRYb2/nbcsr33LBoV691ew3Srrig=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Nok/Tw+KwFsiOToEzAwIfAbTI8hTLt3ZozNxhRHqz1694TQEV0s+vXWXUuUJX3rFq
-	 4OlG8yedoj0w0JlZ0s+HFB13cXB5kun7d050C054yo/T1YQGRyETZ/6pNhbjCYQ0Ia
-	 nN14CXqui20BKqbjMaHi4UXgkXzcr+A04xA/fEkE=
+	b=XfNrQo7KD5sjf1LcofsqfgQlnAhlx7tP1TcoTV6f72c32oyL1Xg1mP5ZcYJMXwX+H
+	 1ZnbZD2RZ6+FddDcaR6JY2e/cRVIBvwyMyJYAeS8MgkoS3izSmOWsOUNoDtVSrRZSf
+	 w8TnIHIm+5lUFXUIcHnaN0RfQt73TR+M2AYtqXRo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07690F8021D;
-	Wed,  7 Dec 2022 17:55:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C2A5F80121;
+	Wed,  7 Dec 2022 18:37:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D74A2F802BE; Wed,  7 Dec 2022 17:55:12 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 88B37F80121; Wed,  7 Dec 2022 18:37:38 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 93A23F800EE
- for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2022 17:55:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93A23F800EE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4D5E7F80121
+ for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2022 18:37:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D5E7F80121
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="v5+ooeK/"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Pnd0/mln"
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="kP8NZq3j"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 084332002E;
- Wed,  7 Dec 2022 16:55:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1670432109; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=oU82cZadfNpNjRFYyusw41ToDIXH3/2n/Y3r6CDEA/c=;
- b=v5+ooeK/VRIOlTkCIw6frGmn3/d1kyd2abLmqD4ILJ2oTvX92670mkq8hmnoXZati0J8vW
- FXVn9hQIOBabVuPEzGj8PpXDn3AMthwgG0Tbp7CeISg2A4gfaIQV0NVTZ6tpm6hkhHZ7bt
- 4oOGEuZBlXp/M1rRduuIQfhEVmpIwoE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1670432109;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=oU82cZadfNpNjRFYyusw41ToDIXH3/2n/Y3r6CDEA/c=;
- b=Pnd0/mlnC/qCtF+u5STZ1BKCZAUNO3hfvGQcbUlZt4hrpAVKJaSAP/y/PFMLwHh5jHdD1H
- OOJ4/fLD5QGglCBA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id E1306134CD;
- Wed,  7 Dec 2022 16:55:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap1.suse-dmz.suse.de with ESMTPSA id t585NmzFkGOwYAAAGKfGzw
- (envelope-from <tiwai@suse.de>); Wed, 07 Dec 2022 16:55:08 +0000
-Date: Wed, 07 Dec 2022 17:55:08 +0100
-Message-ID: <875yen9ms3.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [bug report] ALSA: hda: Interrupt servicing and BDL setup for
- compress streams
-In-Reply-To: <8868a1c7-8bfc-5576-09f6-52af96dd26ee@intel.com>
-References: <Y5CjDmg5B/8J5Yim@kili>
- <8868a1c7-8bfc-5576-09f6-52af96dd26ee@intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Dan Carpenter <error27@gmail.com>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 57A51B81FE9;
+ Wed,  7 Dec 2022 17:37:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9F34C433C1;
+ Wed,  7 Dec 2022 17:37:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1670434655;
+ bh=7B5VsOljHqgBrU+kRYb2/nbcsr33LBoV691ew3Srrig=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=kP8NZq3jnfFlu70ltKgK0+SUnZx9e7o4md0RdVFfjIcGtFTf4BdlZDuvI7kKNvs7F
+ T5GphVDbaykYOjggEE/y4MV5kZu/SIWhz7xGTFjUOovAS2+Lwz4hXZCqTKOacjXL5l
+ yJHAHvYBh9Dd74l76tJRIuzvqnxZVlb5JR58p2danKYUh5fqotUx9KoJvAMiZoCbN0
+ EmBf6vvAikJJiR4Yw/s0uNtA1QlEl6YwzRqHctzRE2naO7BdctaZFiDSKlk/b3WxyU
+ 0mS55uGqTlhhcstoHtai7F+Rx63IVLcuSjyKpDwYa8LmbYB0c7ZLIn5Hyh8b76nV28
+ eCulRNyJGlNXg==
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20221206212507.359993-1-pierre-louis.bossart@linux.intel.com>
+References: <20221206212507.359993-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/3] ASoC: Intel: boards: updates for SOF boards
+Message-Id: <167043465356.393374.5451642549404876215.b4-ty@kernel.org>
+Date: Wed, 07 Dec 2022 17:37:33 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.11.0-dev-b77ec
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,60 +80,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 07 Dec 2022 15:35:12 +0100,
-Cezary Rojewski wrote:
+On Tue, 06 Dec 2022 15:25:04 -0600, Pierre-Louis Bossart wrote:
+> One new JasperLake configuration, core refactoring between RT1316 and
+> RT1318 and a minor uninitialized variable corner case.
 > 
-> On 2022-12-07 3:28 PM, Dan Carpenter wrote:
-> > Hello Cezary Rojewski,
-> > 
-> > The patch 3e9582267e3a: "ALSA: hda: Interrupt servicing and BDL setup
-> > for compress streams" from Dec 2, 2022, leads to the following Smatch
-> > static checker warning:
-> > 
-> > 	sound/hda/hdac_stream.c:544 snd_hdac_stream_setup_periods()
-> > 	error: uninitialized symbol 'dmab'.
-> > 
-> > sound/hda/hdac_stream.c
-> >     487  int snd_hdac_stream_setup_periods(struct hdac_stream *azx_dev)
-> >     488  {
-> >     489          struct hdac_bus *bus = azx_dev->bus;
-> >     490          struct snd_pcm_substream *substream = azx_dev->substream;
-> >     491          struct snd_compr_stream *cstream = azx_dev->cstream;
-> >     492          struct snd_pcm_runtime *runtime = NULL;
-> >     493          struct snd_dma_buffer *dmab;
-> >     494          __le32 *bdl;
-> >     495          int i, ofs, periods, period_bytes;
-> >     496          int pos_adj, pos_align;
-> >     497
-> >     498          if (substream) {
-> >     499                  runtime = substream->runtime;
-> >     500                  dmab = snd_pcm_get_dma_buf(substream);
-> >     501          } else if (cstream) {
-> >     502                  dmab = snd_pcm_get_dma_buf(cstream);
-> >     503          }
-> > 
-> > dmab is not initialized on else path.
+> Bard Liao (1):
+>   ASoC: Intel: sof_realtek_common: set ret = 0 as initial value
 > 
-> Hello,
+> Brent Lu (1):
+>   ASoC: Intel: sof_rt5682: add jsl_rt5682 board config
 > 
-> Thanks for the report. Perhaps I should just do: s/else if/else/ as
-> the situation with ->substream AND ->cstream being uninitialized is
-> invalid.
-> 
-> Before support for compress stream was added in this part of the code,
-> it was always assumed ->substream is valid.
-> 
-> So, either s/else if/else or append:
-> 	} else {
-> 		return -EINVAL;
-> 	}
-> 
-> Takashi, what do you think?
+> [...]
 
-The return -EINVAL would be OK.  As this must not happen, it can be
-even with WARN_ON().
+Applied to
 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-thanks,
+Thanks!
 
-Takashi
+[1/3] ASoC: Intel: sof_rt5682: add jsl_rt5682 board config
+      commit: c0660fce5e0672b9fcffaae02184d58c8ed2aec1
+[2/3] ASoC: Intel: sof_sdw: use common helpers for all Realtek amps
+      commit: 5c10da436ebd93f9bfa244ea933773d14b566499
+[3/3] ASoC: Intel: sof_realtek_common: set ret = 0 as initial value
+      commit: 47d2b66fec133cb27da3a551334686e465d19469
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
