@@ -4,82 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A759AC352A1
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Dec 2022 12:25:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1A72C352A1
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Dec 2022 12:27:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B22C91904;
-	Wed,  7 Dec 2022 13:24:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B22C91904
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF9D71903;
+	Wed,  7 Dec 2022 13:26:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF9D71903
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670415946;
-	bh=u6qhqPmqk/mjWTifh7QOebUtyhItPYYidBnbECSRRz8=;
+	s=default; t=1670416047;
+	bh=Myqo1W5qOcYFvzzTaBH1P66Gg/lvMRRfp5/Ah5jYW8s=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oylu64GwmQQcnqSmCNJfjhSJRu8NLodiupjsj4l9AzLha6am1IA5iDL7VQd9OwS15
-	 4Y34cFEnSeca9bO7PfjsBQpeDQFgS4Gpiz/F0iJI9W2jrapme4SlI+ZQnHPKjVn/Qr
-	 N0XG27+EMKHsuu7tt4r1jgTfAnhMJ2MD7ArOsPIc=
+	b=UzOQj9OLzj/dnk6kvyFEa1ptMHTlNwtscb0rhclIR9kD9FIsr40Jp8EgWxTjY0LlT
+	 NF0RMSfNCNDKqzDquoesaFVo+xX20O/njXPaQJW0uXj133FLMSsHkYsfy/Bg2M9clf
+	 AM40uzs6pWikts5uDpgEA7OQqIGRMnEsP1whmnZA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 567E6F80169;
-	Wed,  7 Dec 2022 13:24:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81E40F8021D;
+	Wed,  7 Dec 2022 13:26:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CECA0F802BE; Wed,  7 Dec 2022 13:24:54 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id B7837F802BE; Wed,  7 Dec 2022 13:26:36 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9A5C3F800EE
- for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2022 13:24:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A5C3F800EE
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9322F800EE
+ for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2022 13:26:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9322F800EE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Z6m7OEHD"; 
+ header.b="HzUbJI6U"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="XtSMxOfv"
+ header.b="iUrJ6mKL"
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3D05D21C79;
- Wed,  7 Dec 2022 12:24:52 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 173CD21C79;
+ Wed,  7 Dec 2022 12:26:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1670415892; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1670415990; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=YI+/lXKw6a9FENGBAbfBokcwRp68k8AO3BMIR8iGLr4=;
- b=Z6m7OEHDI3Fe6NFxMJLgxgG9KsD111s82x0xz2KMFvbuKTtRisgGAc5LhqVS/mLy8hof2Q
- KbZQKPoNdp0FwvkB1B7oHhUlDy4V5I0B2qL4k85w3eRPHx7R5+0WzYnFZ2K2dAl9Xm/BFO
- kAINSXhNIeCEMQhhLOnN9g2ym2WmPJ0=
+ bh=Xa8j4E31x747xiesSc6EIyTcTmQlMk70iEcQVp8pRqk=;
+ b=HzUbJI6UfDEIfqA/qWrGEjYjsfdpCTyNcadQSUBHQQKVo1rtb5fTf8ZVflIV6WKpcBFwJp
+ 4g8hkKuaQZGD3qMu0yBQ3BeUxapmJ9LerkVkYzutkv/vJ4XVEIC6kVbunBHT/HxC/bz5BH
+ htnB8ZsnYog3e7JiycVP4qXHOR39YiI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1670415892;
+ s=susede2_ed25519; t=1670415990;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=YI+/lXKw6a9FENGBAbfBokcwRp68k8AO3BMIR8iGLr4=;
- b=XtSMxOfvK03mJfZg3AtXjuMKGOQAGp126+tq+pNrRSTjChEw56qaASqkqrLhzp0cD0JVsa
- IGGImmMx+0KS/eDw==
+ bh=Xa8j4E31x747xiesSc6EIyTcTmQlMk70iEcQVp8pRqk=;
+ b=iUrJ6mKLWqEWYaGI/rZVqaOEKflun2bk24Kpmq6rKUjmuewwEPfvqRr/Vjy7yHwdbDTX1r
+ M+mPo4hZjmRtSOCw==
 Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 2FF1C134CD;
- Wed,  7 Dec 2022 12:24:52 +0000 (UTC)
+ by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id F0F09134CD;
+ Wed,  7 Dec 2022 12:26:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap1.suse-dmz.suse.de with ESMTPSA id H/UhCxSGkGMESwAAGKfGzw
- (envelope-from <tiwai@suse.de>); Wed, 07 Dec 2022 12:24:52 +0000
-Date: Wed, 07 Dec 2022 13:24:51 +0100
-Message-ID: <87cz8v8kq4.wl-tiwai@suse.de>
+ by imap1.suse-dmz.suse.de with ESMTPSA id XX1LOnWGkGPFSwAAGKfGzw
+ (envelope-from <tiwai@suse.de>); Wed, 07 Dec 2022 12:26:29 +0000
+Date: Wed, 07 Dec 2022 13:26:29 +0100
+Message-ID: <87bkof8kne.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Jiao Zhou <jiaozhou@google.com>
-Subject: Re: [PATCH v2] ALSA: hda/hdmi: Add HP Device 0x8711 to force connect
- list
-In-Reply-To: <20221206185311.3669950-1-jiaozhou@google.com>
-References: <20221206185311.3669950-1-jiaozhou@google.com>
+To: Dicheng Wang <wangdicheng123@hotmail.com>
+Subject: Re: [PATCH v3 -next] ALSA:usb-audio:add the information of KT0206
+ device driven by USB audio
+In-Reply-To: <SG2PR02MB587849631CB96809CF90DBED8A1A9@SG2PR02MB5878.apcprd02.prod.outlook.com>
+References: <SG2PR02MB587849631CB96809CF90DBED8A1A9@SG2PR02MB5878.apcprd02.prod.outlook.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: ALSA development <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, wangdicheng@kylinos.cn,
+ linux-kernel@vger.kernel.org, sdoregor@sdore.me, tiwai@suse.com,
+ hahnjo@hahnjo.de, connerknoxpublic@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,14 +97,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 06 Dec 2022 19:53:11 +0100,
-Jiao Zhou wrote:
+On Wed, 07 Dec 2022 09:20:36 +0100,
+Dicheng Wang wrote:
 > 
-> HDMI audio is not working on the HP EliteDesk 800 G6 because the pin is
-> unconnected. This issue can be resolved by using the 'hdajackretask'
-> tool to override the unconnected pin to force it to connect.
+> From: wangdicheng <wangdicheng@kylinos.cn>
 > 
-> Signed-off-by: Jiao Zhou <jiaozhou@google.com>
+> Add relevant information to the quirks-table.h file.
+> The test passes and the sound source file plays normally.
+> 
+> Signed-off-by: wangdicheng <wangdicheng@kylinos.cn>
 
 Thanks, applied now.
 
