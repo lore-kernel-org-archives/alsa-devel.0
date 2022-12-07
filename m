@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93762C352A1
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Dec 2022 17:38:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95183C4708E
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Dec 2022 17:38:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3D23173F;
-	Wed,  7 Dec 2022 18:37:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3D23173F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E9A0180D;
+	Wed,  7 Dec 2022 18:38:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E9A0180D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670434710;
-	bh=7B5VsOljHqgBrU+kRYb2/nbcsr33LBoV691ew3Srrig=;
+	s=default; t=1670434735;
+	bh=+TAgcM6IIYThNuWu5Z8xJ21gWH+pc54KBLLLvEE45RA=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XfNrQo7KD5sjf1LcofsqfgQlnAhlx7tP1TcoTV6f72c32oyL1Xg1mP5ZcYJMXwX+H
-	 1ZnbZD2RZ6+FddDcaR6JY2e/cRVIBvwyMyJYAeS8MgkoS3izSmOWsOUNoDtVSrRZSf
-	 w8TnIHIm+5lUFXUIcHnaN0RfQt73TR+M2AYtqXRo=
+	b=dprSWJfpdVLFHRN6PsA6uLJ4qgShi/gBNwD51PHaoQJy6AZ62vPHxXIRYWMzrb+0n
+	 Uwc/DVFFMTF9D0eH/0h8cSW8pgNGQ8OMH37VIB/Jev8QDbCGPvRFVVQengAHn+60HY
+	 J4nJS43mF86C+YGWPQQUS1S1r3xUwu8LiUTyP5C8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C2A5F80121;
-	Wed,  7 Dec 2022 18:37:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E1F9F804F2;
+	Wed,  7 Dec 2022 18:37:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88B37F80121; Wed,  7 Dec 2022 18:37:38 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 595D5F8021D; Wed,  7 Dec 2022 18:37:42 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4D5E7F80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F3FAF800EE
  for <alsa-devel@alsa-project.org>; Wed,  7 Dec 2022 18:37:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D5E7F80121
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F3FAF800EE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kP8NZq3j"
+ header.b="isPBUwl2"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 57A51B81FE9;
- Wed,  7 Dec 2022 17:37:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9F34C433C1;
- Wed,  7 Dec 2022 17:37:33 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id A0D1BB81FE8;
+ Wed,  7 Dec 2022 17:37:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4E70C433D6;
+ Wed,  7 Dec 2022 17:37:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1670434655;
- bh=7B5VsOljHqgBrU+kRYb2/nbcsr33LBoV691ew3Srrig=;
+ s=k20201202; t=1670434653;
+ bh=+TAgcM6IIYThNuWu5Z8xJ21gWH+pc54KBLLLvEE45RA=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=kP8NZq3jnfFlu70ltKgK0+SUnZx9e7o4md0RdVFfjIcGtFTf4BdlZDuvI7kKNvs7F
- T5GphVDbaykYOjggEE/y4MV5kZu/SIWhz7xGTFjUOovAS2+Lwz4hXZCqTKOacjXL5l
- yJHAHvYBh9Dd74l76tJRIuzvqnxZVlb5JR58p2danKYUh5fqotUx9KoJvAMiZoCbN0
- EmBf6vvAikJJiR4Yw/s0uNtA1QlEl6YwzRqHctzRE2naO7BdctaZFiDSKlk/b3WxyU
- 0mS55uGqTlhhcstoHtai7F+Rx63IVLcuSjyKpDwYa8LmbYB0c7ZLIn5Hyh8b76nV28
- eCulRNyJGlNXg==
+ b=isPBUwl2Ju/UVzfGtYAKkxwNPPwFpmJE3oCHrA26OsUcqIkciWVz8PH9K3MSY44Wq
+ ZkqfK4jONyvmo/ZOc9mPdzuTLB6HkTvs3wiRUyn5wbOWQnlbs358SeVeXQVuPzghoa
+ jytxQK4pEMnB2IZyEH/bBFyb2OAvZ5lp5rmtMkNuz4BUHqbcT+YLXchNy4jk1+HPjB
+ 2Voekic0yQdH4S5RQYA+R5rlzSmPI4hkRPT6Gk/8KmCBUEyXPXBB8aSjdP6pHcgpkc
+ LOUyhbQJDtypzTq5n77+GkWW/ZcSadz++57N79sF0IZpNPzRxDIjZ+Fd7fDG0VYQoz
+ FrP3WPYlvDLvQ==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20221206212507.359993-1-pierre-louis.bossart@linux.intel.com>
-References: <20221206212507.359993-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/3] ASoC: Intel: boards: updates for SOF boards
-Message-Id: <167043465356.393374.5451642549404876215.b4-ty@kernel.org>
-Date: Wed, 07 Dec 2022 17:37:33 +0000
+To: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+ Wang Yufen <wangyufen@huawei.com>
+In-Reply-To: <1670228127-13835-1-git-send-email-wangyufen@huawei.com>
+References: <1670228127-13835-1-git-send-email-wangyufen@huawei.com>
+Subject: Re: [PATCH] ASoC: audio-graph-card: fix refcount leak of cpu_ep in
+ __graph_for_each_link()
+Message-Id: <167043465144.393374.778239377734908576.b4-ty@kernel.org>
+Date: Wed, 07 Dec 2022 17:37:31 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.11.0-dev-b77ec
-Cc: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,17 +82,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 06 Dec 2022 15:25:04 -0600, Pierre-Louis Bossart wrote:
-> One new JasperLake configuration, core refactoring between RT1316 and
-> RT1318 and a minor uninitialized variable corner case.
+On Mon, 05 Dec 2022 16:15:27 +0800, Wang Yufen wrote:
+> The of_get_next_child() returns a node with refcount incremented, and
+> decrements the refcount of prev. So in the error path of the while loop,
+> of_node_put() needs be called for cpu_ep.
 > 
-> Bard Liao (1):
->   ASoC: Intel: sof_realtek_common: set ret = 0 as initial value
 > 
-> Brent Lu (1):
->   ASoC: Intel: sof_rt5682: add jsl_rt5682 board config
-> 
-> [...]
 
 Applied to
 
@@ -98,12 +95,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: Intel: sof_rt5682: add jsl_rt5682 board config
-      commit: c0660fce5e0672b9fcffaae02184d58c8ed2aec1
-[2/3] ASoC: Intel: sof_sdw: use common helpers for all Realtek amps
-      commit: 5c10da436ebd93f9bfa244ea933773d14b566499
-[3/3] ASoC: Intel: sof_realtek_common: set ret = 0 as initial value
-      commit: 47d2b66fec133cb27da3a551334686e465d19469
+[1/1] ASoC: audio-graph-card: fix refcount leak of cpu_ep in __graph_for_each_link()
+      commit: 8ab2d12c726f0fde0692fa5d81d8019b3dcd62d0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
