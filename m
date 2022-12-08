@@ -4,62 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3017C3A5A7
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Dec 2022 06:12:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88669C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Dec 2022 06:19:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 48C5C18D8;
-	Thu,  8 Dec 2022 07:11:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 48C5C18D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id B612E18D8;
+	Thu,  8 Dec 2022 07:18:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B612E18D8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670479924;
-	bh=rCzAUyg60+PXKT5Cc2WKvf2NTlg6c6AwejMMDSQ80dE=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=g4OiQNbCneTD0zyV8pEzwDfDQ4geh3rog9CA5JLNJh3lAwtkoI7eqtMimJWeSDmHc
-	 veSVMeFdy+8+NyX2U00mdYcLCKlQFUihIomb0qaBwCPM/ZAPdbVUaEchNyEdm0gsJ8
-	 BQ+ElFgWoW7AUWvWOT4kri4Omf0RRBCwTbZVbteY=
+	s=default; t=1670480356;
+	bh=ms+iOAgZDiTVwU+jUNoWGKvyNDC7VaQQ7uhECsvQdBU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=l33c2UeMekz9yg93Y/T03OR6fooVmEf4coI501Dl1jOuYF53RQF47SKZ7no8w6Sve
+	 lxmyFUJ6rZ7/q2XzZIAoerChHYiBz4hKHw6y1XZWY3R9dZlxwi8A4q2mlyzZfmePW5
+	 S5ZtqUZlRVonLisP50EFh8FI3j68bxgUQtA3Wz2Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E92A3F801D8;
-	Thu,  8 Dec 2022 07:11:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64B93F801D8;
+	Thu,  8 Dec 2022 07:18:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8EACDF8020D; Thu,  8 Dec 2022 07:11:08 +0100 (CET)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+ id D2CEEF8024C; Thu,  8 Dec 2022 07:18:23 +0100 (CET)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0010EF80121
- for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2022 07:11:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0010EF80121
-Received: from kwepemm600017.china.huawei.com (unknown [172.30.72.56])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4NSNzg4g81zmWLC;
- Thu,  8 Dec 2022 14:10:07 +0800 (CST)
-Received: from [10.174.176.131] (10.174.176.131) by
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6FDECF80089
+ for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2022 07:18:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FDECF80089
+Received: from kwepemm600017.china.huawei.com (unknown [172.30.72.57])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4NSP821v15zRpdL;
+ Thu,  8 Dec 2022 14:17:22 +0800 (CST)
+Received: from zelda.huawei.com (10.175.103.14) by
  kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 8 Dec 2022 14:10:57 +0800
-Message-ID: <803c31e1-5e33-2a96-835c-420815a6e7a5@huawei.com>
-Date: Thu, 8 Dec 2022 14:10:57 +0800
+ 15.1.2375.31; Thu, 8 Dec 2022 14:18:13 +0800
+From: Wang Jingjin <wangjingjin1@huawei.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>, <heiko@sntech.de>, <sugar.zhang@rock-chips.com>,
+ <alsa-devel@alsa-project.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-rockchip@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] ASoC: rockchip: spdif: Add missing clk_disable_unprepare()
+ in rk_spdif_runtime_resume()
+Date: Thu, 8 Dec 2022 14:39:00 +0800
+Message-ID: <20221208063900.4180790-1-wangjingjin1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH] ASoC: rockchip: spdif: Add missing
- clk_disable_unprepare() in rockchip_pdm_runtime_resume()
-To: Mark Brown <broonie@kernel.org>
-References: <20221205024317.2422223-1-wangjingjin1@huawei.com>
- <Y5Cb/1kRQVOrOT0Q@sirena.org.uk>
-From: "Wangjingjin(KERNEL)" <wangjingjin1@huawei.com>
-In-Reply-To: <Y5Cb/1kRQVOrOT0Q@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.131]
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.14]
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemm600017.china.huawei.com (7.193.23.234)
 X-CFilter-Loop: Reflected
-Cc: alsa-devel@alsa-project.org, heiko@sntech.de, linux-kernel@vger.kernel.org,
- tiwai@suse.com, lgirdwood@gmail.com, sugar.zhang@rock-chips.com,
- linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: wangjingjin1@huawei.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,20 +71,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Right，will fix in v2
-Thanks for review.
+rk_spdif_runtime_resume() may have called clk_prepare_enable() before return
+from failed branches, add missing clk_disable_unprepare() in this case.
 
-在 2022/12/7 21:58, Mark Brown 写道:
-> On Mon, Dec 05, 2022 at 10:43:17AM +0800, Wang Jingjin wrote:
->> The clk_disable_unprepare() should be called in the error handling of
->> rockchip_pdm_runtime_resume().
->>
->> Fixes: fc05a5b22253 ("ASoC: rockchip: add support for pdm controller")
->> Signed-off-by: Wang Jingjin <wangjingjin1@huawei.com>
->> ---
->>   sound/soc/rockchip/rockchip_pdm.c | 1 +
->>   1 file changed, 1 insertion(+)
-> 
-> The subject line says this is a fix for the S/PDIF driver but the patch
-> is for the PDM driver and I see you sent a separate fix for the PDM
-> driver.
+Fixes: f874b80e1571 ("ASoC: rockchip: Add rockchip SPDIF transceiver driver")
+Signed-off-by: Wang Jingjin <wangjingjin1@huawei.com>
+---
+changes in v2:
+- Match the subject to the content
+---
+ sound/soc/rockchip/rockchip_spdif.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/rockchip/rockchip_spdif.c b/sound/soc/rockchip/rockchip_spdif.c
+index 8bef572d3cbc..5b4f00457587 100644
+--- a/sound/soc/rockchip/rockchip_spdif.c
++++ b/sound/soc/rockchip/rockchip_spdif.c
+@@ -88,6 +88,7 @@ static int __maybe_unused rk_spdif_runtime_resume(struct device *dev)
+
+ 	ret = clk_prepare_enable(spdif->hclk);
+ 	if (ret) {
++		clk_disable_unprepare(spdif->mclk);
+ 		dev_err(spdif->dev, "hclk clock enable failed %d\n", ret);
+ 		return ret;
+ 	}
+--
+2.25.1
+
