@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6326C4708D
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Dec 2022 03:34:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8033FC4708E
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Dec 2022 03:34:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D1D818A2;
-	Thu,  8 Dec 2022 04:33:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D1D818A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD70E17F2;
+	Thu,  8 Dec 2022 04:33:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD70E17F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670470458;
-	bh=Exyva1fZTcJP54rHM80MSQ/H7cPziBd+aZP702y38Gs=;
+	s=default; t=1670470475;
+	bh=4ysBmumpx0O0U4/G+Iw8dZYEoE7Qxh8QZsJ0AAiWaxw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bpPhhvYpUKJ7zYnvd+eziYV0J7Clto1ZdjUdGdqtZr2KWwO1xn3NUXg+ToxBthUqo
-	 FnJYNg+Gx9ICJKM8iD8P2AOFeiJVI282glapeDULxxkf02Bwr7Rlepe86FLKGd2Duq
-	 Q80IAFWL5Xlglau2DzXqN2N/6ObRehONara0MJJM=
+	b=TElqp3WD3qTvtamBvjJMRn5AR+xzYW4aIB/xYDz1vuaVbbNIpVhPm5W5/zSLy5p74
+	 JCL3Ywk7afDuSt77A6jgf3q1r/o6DYp7VtDSTNcPyiAjXIr22ANnWX5R6jHQi51xiU
+	 ud+cciHLKQKqhoTZmod13qbVgvKg0zfYV4aalZDE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75605F8057C;
-	Thu,  8 Dec 2022 04:32:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7EE1BF8057F;
+	Thu,  8 Dec 2022 04:32:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2084F8057B; Thu,  8 Dec 2022 04:32:39 +0100 (CET)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ id B39B0F8057A; Thu,  8 Dec 2022 04:32:39 +0100 (CET)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 514F0F804FA
- for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2022 04:32:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 514F0F804FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id B2E9EF801D8
+ for <alsa-devel@alsa-project.org>; Thu,  8 Dec 2022 04:32:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2E9EF801D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
- header.b="Jp1T3FAc"
-X-UUID: 442afca1619549f8a561e4a65624635e-20221208
+ header.b="DZDti5N1"
+X-UUID: e0aef8f266c540e9b733fac37c9d6aa8-20221208
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
  s=dk; 
  h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=mYPcs1IOe6NtCzuGcnog0KWdUa2jDExn9rUhH4BHCfo=; 
- b=Jp1T3FAcfKZaRoKHgWScT7pRnfwDYO7KP7CxX+fCWYDUVGShj+KeYijrR8iSdUDC52Cu5t/QQbSgPTSq9q7PtSfmoCy9Mj0jljLz6x2faQ0ILe3wmsDDZoRMF0vczHcf92TRzte3dax9gJDzBJZjoo8y/K8KnEOZI4sQhVjd+74=;
+ bh=1VG9jT5xqCzn1Y81lS+7BNjOae3DIvbVuRsqbf3joSs=; 
+ b=DZDti5N1ou44/FJQLD5HuZjTEauNCjKgtalJGrLgV57rDvavCONYfSB2EeYJ3uEHymPzmgEof7tjCZhjkOVK2SO6srTmONS4cNd6LvIflWvMxeMN1L60jZm48j6EC302VPs4cEbDciDHxwmlcL8xA8B1gHgxcfPm2orgy/Kk5R0=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.14, REQID:74291e03-1288-4167-99cc-8aacba38f429, IP:0,
+X-CID-O-INFO: VERSION:1.1.14, REQID:af612854-cfd8-40eb-96ef-1c6ed31a4f9c, IP:0,
  U
- RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
- N:release,TS:90
-X-CID-INFO: VERSION:1.1.14, REQID:74291e03-1288-4167-99cc-8aacba38f429, IP:0,
+ RL:25,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACT
+ ION:release,TS:95
+X-CID-INFO: VERSION:1.1.14, REQID:af612854-cfd8-40eb-96ef-1c6ed31a4f9c, IP:0,
  URL
- :0,TC:0,Content:-5,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTIO
- N:quarantine,TS:90
-X-CID-META: VersionHash:dcaaed0, CLOUDID:b0d5f9d1-652d-43fd-a13a-a5dd3c69a43d,
+ :25,TC:0,Content:-25,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACT
+ ION:quarantine,TS:95
+X-CID-META: VersionHash:dcaaed0, CLOUDID:7318e016-b863-49f8-8228-cbdfeedd1fa4,
  B
- ulkID:221208113217ZQY7T4FJ,BulkQuantity:0,Recheck:0,SF:38|28|17|19|48,TC:n
- il,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-X-UUID: 442afca1619549f8a561e4a65624635e-20221208
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
- (envelope-from <trevor.wu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 2028549348; Thu, 08 Dec 2022 11:32:14 +0800
+ ulkID:221208113218CBYB5TLY,BulkQuantity:0,Recheck:0,SF:38|28|17|19|48,TC:n
+ il,Content:0,EDM:-3,IP:nil,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+X-UUID: e0aef8f266c540e9b733fac37c9d6aa8-20221208
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by
+ mailgw01.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+ with ESMTP id 163598170; Thu, 08 Dec 2022 11:32:16 +0800
 Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Thu, 8 Dec 2022 11:32:12 +0800
+ 15.2.792.15; Thu, 8 Dec 2022 11:32:14 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.792.15 via Frontend Transport; Thu, 8 Dec 2022 11:32:12 +0800
+ 15.2.792.15 via Frontend Transport; Thu, 8 Dec 2022 11:32:14 +0800
 From: Trevor Wu <trevor.wu@mediatek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
  <perex@perex.cz>, <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
  <matthias.bgg@gmail.com>, <p.zabel@pengutronix.de>
-Subject: [PATCH v3 01/12] ASoC: mediatek: common: add SMC ops and SMC CMD
-Date: Thu, 8 Dec 2022 11:31:37 +0800
-Message-ID: <20221208033148.21866-2-trevor.wu@mediatek.com>
+Subject: [PATCH v3 10/12] dt-bindings: mediatek: mt8188: add audio afe document
+Date: Thu, 8 Dec 2022 11:31:46 +0800
+Message-ID: <20221208033148.21866-11-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20221208033148.21866-1-trevor.wu@mediatek.com>
 References: <20221208033148.21866-1-trevor.wu@mediatek.com>
@@ -99,45 +99,216 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SMC call is required to communicate with ATF for some secure operations,
-so we add SMC ops IDs and SMC CMD ID to common header.
+Add mt8188 audio afe document.
 
 Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
 ---
- sound/soc/mediatek/common/mtk-base-afe.h | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ .../devicetree/bindings/sound/mt8188-afe.yaml | 196 ++++++++++++++++++
+ 1 file changed, 196 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8188-afe.yaml
 
-diff --git a/sound/soc/mediatek/common/mtk-base-afe.h b/sound/soc/mediatek/common/mtk-base-afe.h
-index ef83e78c22a8..f51578b6c50a 100644
---- a/sound/soc/mediatek/common/mtk-base-afe.h
-+++ b/sound/soc/mediatek/common/mtk-base-afe.h
-@@ -9,7 +9,26 @@
- #ifndef _MTK_BASE_AFE_H_
- #define _MTK_BASE_AFE_H_
- 
-+#include <linux/soc/mediatek/mtk_sip_svc.h>
+diff --git a/Documentation/devicetree/bindings/sound/mt8188-afe.yaml b/Documentation/devicetree/bindings/sound/mt8188-afe.yaml
+new file mode 100644
+index 000000000000..6ab26494d924
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mt8188-afe.yaml
+@@ -0,0 +1,196 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/mt8188-afe.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- #define MTK_STREAM_NUM (SNDRV_PCM_STREAM_LAST + 1)
-+#define MTK_SIP_AUDIO_CONTROL MTK_SIP_SMC_CMD(0x517)
++title: MediaTek AFE PCM controller for mt8188
 +
-+/* SMC CALL Operations */
-+enum mtk_audio_smc_call_op {
-+	MTK_AUDIO_SMC_OP_INIT = 0,
-+	MTK_AUDIO_SMC_OP_DRAM_REQUEST,
-+	MTK_AUDIO_SMC_OP_DRAM_RELEASE,
-+	MTK_AUDIO_SMC_OP_SRAM_REQUEST,
-+	MTK_AUDIO_SMC_OP_SRAM_RELEASE,
-+	MTK_AUDIO_SMC_OP_ADSP_REQUEST,
-+	MTK_AUDIO_SMC_OP_ADSP_RELEASE,
-+	MTK_AUDIO_SMC_OP_DOMAIN_SIDEBANDS,
-+	MTK_AUDIO_SMC_OP_BTCVSD_WRITE,
-+	MTK_AUDIO_SMC_OP_BTCVSD_UPDATE_CTRL_CLEAR,
-+	MTK_AUDIO_SMC_OP_BTCVSD_UPDATE_CTRL_UNDERFLOW,
-+	MTK_AUDIO_SMC_OP_NUM
-+};
- 
- struct mtk_base_memif_data {
- 	int id;
++maintainers:
++  - Trevor Wu <trevor.wu@mediatek.com>
++
++properties:
++  compatible:
++    const: mediatek,mt8188-afe
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  reset-names:
++    const: audiosys
++
++  mediatek,topckgen:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: The phandle of the mediatek topckgen controller
++
++  power-domains:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: 26M clock
++      - description: audio pll1 clock
++      - description: audio pll2 clock
++      - description: clock divider for i2si1_mck
++      - description: clock divider for i2si2_mck
++      - description: clock divider for i2so1_mck
++      - description: clock divider for i2so2_mck
++      - description: clock divider for dptx_mck
++      - description: a1sys hoping clock
++      - description: audio intbus clock
++      - description: audio hires clock
++      - description: audio local bus clock
++      - description: mux for dptx_mck
++      - description: mux for i2so1_mck
++      - description: mux for i2so2_mck
++      - description: mux for i2si1_mck
++      - description: mux for i2si2_mck
++      - description: audio 26m clock
++
++  clock-names:
++    items:
++      - const: clk26m
++      - const: apll1_ck
++      - const: apll2_ck
++      - const: apll12_div0
++      - const: apll12_div1
++      - const: apll12_div2
++      - const: apll12_div3
++      - const: apll12_div9
++      - const: a1sys_hp_sel
++      - const: aud_intbus_sel
++      - const: audio_h_sel
++      - const: audio_local_bus_sel
++      - const: dptx_m_sel
++      - const: i2so1_m_sel
++      - const: i2so2_m_sel
++      - const: i2si1_m_sel
++      - const: i2si2_m_sel
++      - const: adsp_audio_26m
++
++patternProperties:
++  "^mediatek,etdm-in[1-2]-chn-disabled$":
++    $ref: /schemas/types.yaml#/definitions/uint8-array
++    minItems: 1
++    maxItems: 16
++    description:
++      By default, all data received from ETDM pins will be outputed to
++      memory. etdm in supports disable_out in direct mode(w/o interconn).
++      User can specify the channel ID which they hope dropping and then
++      the specified channel won't be seen on memory.
++    uniqueItems: true
++    items:
++      minimum: 0
++      maximum: 15
++
++  "^mediatek,etdm-in[1-2]-mclk-always-on-rate-hz$":
++    description: Specify etdm in mclk output rate for always on case.
++
++  "^mediatek,etdm-out[1-3]-mclk-always-on-rate-hz$":
++    description: Specify etdm out mclk output rate for always on case.
++
++  "^mediatek,etdm-in[1-2]-multi-pin-mode$":
++    type: boolean
++    description: if present, the etdm data mode is I2S.
++
++  "^mediatek,etdm-out[1-3]-multi-pin-mode$":
++    type: boolean
++    description: if present, the etdm data mode is I2S.
++
++  "^mediatek,etdm-in[1-2]-cowork-source$":
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      etdm modules can share the same external clock pin. Specify
++      which etdm clock source is required by this etdm in moudule.
++    enum:
++      - 0 # etdm1_in
++      - 1 # etdm2_in
++      - 2 # etdm1_out
++      - 3 # etdm2_out
++
++  "^mediatek,etdm-out[1-2]-cowork-source$":
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      etdm modules can share the same external clock pin. Specify
++      which etdm clock source is required by this etdm out moudule.
++    enum:
++      - 0 # etdm1_in
++      - 1 # etdm2_in
++      - 2 # etdm1_out
++      - 3 # etdm2_out
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - resets
++  - reset-names
++  - mediatek,topckgen
++  - power-domains
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    afe: afe@10b10000 {
++        compatible = "mediatek,mt8188-afe";
++        reg = <0x10b10000 0x10000>;
++        interrupts = <GIC_SPI 822 IRQ_TYPE_LEVEL_HIGH 0>;
++        resets = <&watchdog 14>;
++        reset-names = "audiosys";
++        mediatek,topckgen = <&topckgen>;
++        power-domains = <&spm 13>; //MT8188_POWER_DOMAIN_AUDIO
++        mediatek,etdm-in2-cowork-source = <2>;
++        mediatek,etdm-out2-cowork-source = <0>;
++        mediatek,etdm-in1-multi-pin-mode;
++        mediatek,etdm-in1-chn-disabled = /bits/ 8 <0x0 0x2>;
++        clocks = <&clk26m>,
++                 <&topckgen 72>, //CLK_TOP_APLL1
++                 <&topckgen 73>, //CLK_TOP_APLL2
++                 <&topckgen 186>, //CLK_TOP_APLL12_CK_DIV0
++                 <&topckgen 187>, //CLK_TOP_APLL12_CK_DIV1
++                 <&topckgen 188>, //CLK_TOP_APLL12_CK_DIV2
++                 <&topckgen 189>, //CLK_TOP_APLL12_CK_DIV3
++                 <&topckgen 191>, //CLK_TOP_APLL12_CK_DIV9
++                 <&topckgen 83>, //CLK_TOP_A1SYS_HP
++                 <&topckgen 31>, //CLK_TOP_AUD_INTBUS
++                 <&topckgen 32>, //CLK_TOP_AUDIO_H
++                 <&topckgen 69>, //CLK_TOP_AUDIO_LOCAL_BUS
++                 <&topckgen 81>, //CLK_TOP_DPTX
++                 <&topckgen 77>, //CLK_TOP_I2SO1
++                 <&topckgen 78>, //CLK_TOP_I2SO2
++                 <&topckgen 79>, //CLK_TOP_I2SI1
++                 <&topckgen 80>, //CLK_TOP_I2SI2
++                 <&adsp_audio26m 0>; //CLK_AUDIODSP_AUDIO26M
++        clock-names = "clk26m",
++                      "apll1_ck",
++                      "apll2_ck",
++                      "apll12_div0",
++                      "apll12_div1",
++                      "apll12_div2",
++                      "apll12_div3",
++                      "apll12_div9",
++                      "a1sys_hp_sel",
++                      "aud_intbus_sel",
++                      "audio_h_sel",
++                      "audio_local_bus_sel",
++                      "dptx_m_sel",
++                      "i2so1_m_sel",
++                      "i2so2_m_sel",
++                      "i2si1_m_sel",
++                      "i2si2_m_sel",
++                      "adsp_audio_26m";
++    };
++
++...
 -- 
 2.18.0
 
