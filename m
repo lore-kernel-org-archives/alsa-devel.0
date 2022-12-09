@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEFA6C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Dec 2022 00:26:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42BFFC4332F
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Dec 2022 00:30:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB0AA179B;
-	Fri,  9 Dec 2022 01:25:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB0AA179B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 685B91899;
+	Fri,  9 Dec 2022 01:29:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 685B91899
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670545594;
-	bh=X1P+lfRntA5/rVdcQ23KL1DPJK0huaxSfDmNDLiRnZU=;
+	s=default; t=1670545836;
+	bh=h4HjZbi2mBL60a/3QsQm6WeUWyU9VIVA3kGmPQB0UPQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q24G0g3YyC7e03ohpT75tUJJBBr131SRiG0LT23w/9A3RxC5VDwV+DVzN/Y5Q+fau
-	 HlYLJk5utNvbBzUED+kz/EwKAqC/aOm8/14ZJiDJAbsWIDybEVOtJo4s/mdUokiwrN
-	 xzCMXQs2pVAkoLZUi/yEsgvGsq/tZwzsIKb8vXWM=
+	b=fdzI/+SlpUeXH5zFTs2ioJRxBDKKcMQBlRalRNHAgohNo6d0qaGIjqqbA5r/aiIA0
+	 hgm4/TNVMfjgEMSNUGbrpLRwMnmjFDdwcd7kNJp+iNcfqLl59+AbEGDMXMRUB+U+fh
+	 DZgd10l2ASRET0YDA77BySsToIrA7PIR4h24HwUM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7DCE8F8010D;
-	Fri,  9 Dec 2022 01:25:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C39AF8010D;
+	Fri,  9 Dec 2022 01:29:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7505EF80124; Fri,  9 Dec 2022 01:25:43 +0100 (CET)
+ id 6E1D4F80124; Fri,  9 Dec 2022 01:29:45 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id EED78F800F8
- for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2022 01:25:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EED78F800F8
+ by alsa1.perex.cz (Postfix) with ESMTP id EFA54F80007
+ for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2022 01:29:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFA54F80007
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1670545541376754999-webhooks-bot@alsa-project.org>
-References: <1670545541376754999-webhooks-bot@alsa-project.org>
+In-Reply-To: <1670545783642249107-webhooks-bot@alsa-project.org>
+References: <1670545783642249107-webhooks-bot@alsa-project.org>
 Subject: Build Fails with AUTOMAKE v1.16.5 on Ubuntu - Solution Provided
-Message-Id: <20221209002543.7505EF80124@alsa1.perex.cz>
-Date: Fri,  9 Dec 2022 01:25:43 +0100 (CET)
+Message-Id: <20221209002945.6E1D4F80124@alsa1.perex.cz>
+Date: Fri,  9 Dec 2022 01:29:45 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -121,13 +121,21 @@ make
 Despite lots of warnings as follows:-
 
 libtoolize: Consider adding 'AC_CONFIG_MACRO_DIRS([m4])' to configure.ac,
+
 configure.ac:22: warning: The macro `AM_PROG_LIBTOOL' is obsolete.
+
 configure.ac:26: warning: The macro `AC_ERROR' is obsolete.
+
 configure.ac:223: warning: The macro `AC_HEADER_STDC' is obsolete.
+
 configure.ac:313: warning: The macro `AC_TRY_LINK' is obsolete.
+
 configure.ac:397: warning: The macro `AC_HEADER_TIME' is obsolete.
+
 configure.ac:466: warning: AC_OUTPUT should be used without arguments.
+
 alsactl/Makefile.am:69: warning: '%'-style pattern rules are a GNU make extension
+
 gettextize: *** po/Makefile.in.in exists: use option -f if you really want to delete it.
 
 and ones regarding the .po files e.g.
