@@ -4,65 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 256E6C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Dec 2022 10:20:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0C59C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Dec 2022 10:20:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F254F2197;
-	Fri,  9 Dec 2022 11:19:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F254F2197
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA20120F8;
+	Fri,  9 Dec 2022 11:19:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA20120F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670581208;
-	bh=DEPp7qk7GtOL5rnZusjDN4mo4wl+W+Ir8XnO3Rq567w=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=nDB06vnA+fivFj3fY533az+oli/pHtf1tCXokVQBY7Pp4QVML4vYAWv22cx44Rbf2
-	 +61HupyHoMxSABMa6WL2gr8yicF3A3v/abVkvjwFWPYGSTCFKxeTh88Jlsx+gyTPKj
-	 Pd1DbwaBZaIZOeTmsKzX+PDVX6hSnbGs8zFJtyoo=
+	s=default; t=1670581233;
+	bh=ADEYj8kskGbNmo00w5Sm0GFF91EaWE2imwSisI+6PQk=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=svET50SMc5hiKm6/vAJ1drQaU04zGVZPnx4I1RYHMbcdPsntWO+2sCYE2XcOnnK32
+	 VKNDjEjdFG5kWOHrzSqvu8akmf84jz1py8djJkWGWBMd8B+caScRsXLqcDzd5b1iBc
+	 LIm0SwmvbJJdPslzbA7upuTYFsY5QjczrlNz/h9A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89BB3F8025F;
-	Fri,  9 Dec 2022 11:18:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B3E1F804D7;
+	Fri,  9 Dec 2022 11:18:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F4AAF8022B; Fri,  9 Dec 2022 11:18:52 +0100 (CET)
+ id 15DB1F8025F; Fri,  9 Dec 2022 11:18:54 +0100 (CET)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4848F8022B
- for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2022 11:18:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4848F8022B
+ by alsa1.perex.cz (Postfix) with ESMTPS id F15BFF8016E
+ for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2022 11:18:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F15BFF8016E
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=lGKnfr6o
+ header.s=Intel header.b=gjrBbdfg
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1670581130; x=1702117130;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=DEPp7qk7GtOL5rnZusjDN4mo4wl+W+Ir8XnO3Rq567w=;
- b=lGKnfr6oYN8ryZfrj4qvV2Z19jMZI/havXiEKxwJa0rhdprUADmlfYOv
- HUOtgOEWcG+AuTdNiAekVKFdcyjg0uuPw+A0JPlLQSY0RMMNiOv9vmWNZ
- KhzzrxvDAoS8g6a0h8KP2/oQO0K8AA+m0HopT9qMrFQyL/meTuQJWyNMT
- NQ7wm/BbKIS8yj/HCr43JF4H/b30BrYf60OkXwP4YcQ7fVmf9ZTNT9WMD
- TWFw1uYbMHk/bZfp9i6rBRIYEZdLrgyJTnoz4Psj7IsDnJRiI9JU1CsZi
- CSQRTE5R3SNLcfeTlhgmBZmfwJ3YyiyXcpYrOyH+Xx6zJaRg46VsIcZIk g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10555"; a="316135179"
-X-IronPort-AV: E=Sophos;i="5.96,230,1665471600"; d="scan'208";a="316135179"
+ t=1670581133; x=1702117133;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=ADEYj8kskGbNmo00w5Sm0GFF91EaWE2imwSisI+6PQk=;
+ b=gjrBbdfgtxGmpG5qamKwU5aNGKGKfbpFoTPdgrMswIGIETiAnb3ZK2J6
+ /+SPvVg3P3B1Gi3Ur07mMCFW8rj/dnaazqaawr3YdI0A6RGApB54kAKPJ
+ 8UWEvOBfIMMIMs9572YewKRJk2njw47oiTpsuQ4b4yScQovUyIoky3xF/
+ nVgvD1IT4UVv6EXj6TA/rJZga6/DYHD0eRnC4/bGrdurZ+MTCiJYjC5K4
+ 20zZ8yTH3/k0z6jw8HJ9dBLk70FQEc7KaZBB7imGS7BLU0fsOChRdYINm
+ qOJDMyGVPUL+A/YTxXkiF2rxHTFDOGmCsDYkWGlI/PhiDSCfWg0LtUR+8 Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10555"; a="316135190"
+X-IronPort-AV: E=Sophos;i="5.96,230,1665471600"; d="scan'208";a="316135190"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Dec 2022 02:18:45 -0800
+ 09 Dec 2022 02:18:48 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10555"; a="649510758"
-X-IronPort-AV: E=Sophos;i="5.96,230,1665471600"; d="scan'208";a="649510758"
+X-IronPort-AV: E=McAfee;i="6500,9779,10555"; a="649510766"
+X-IronPort-AV: E=Sophos;i="5.96,230,1665471600"; d="scan'208";a="649510766"
 Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga007.fm.intel.com with ESMTP; 09 Dec 2022 02:18:44 -0800
+ by fmsmga007.fm.intel.com with ESMTP; 09 Dec 2022 02:18:46 -0800
 From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	tiwai@suse.de
-Subject: [PATCH v2 0/3] ALSA: hda/hdmi: i915 keepalive fixes
-Date: Fri,  9 Dec 2022 12:18:19 +0200
-Message-Id: <20221209101822.3893675-1-kai.vehmanen@linux.intel.com>
+Subject: [PATCH v2 1/3] ALSA: hda/hdmi: fix i915 silent stream programming flow
+Date: Fri,  9 Dec 2022 12:18:20 +0200
+Message-Id: <20221209101822.3893675-2-kai.vehmanen@linux.intel.com>
 X-Mailer: git-send-email 2.38.1
+In-Reply-To: <20221209101822.3893675-1-kai.vehmanen@linux.intel.com>
+References: <20221209101822.3893675-1-kai.vehmanen@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -77,33 +80,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: intel-gfx@lists.freedesktop.org, kai.vehmanen@linux.intel.com,
- Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc: intel-gfx@lists.freedesktop.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ kai.vehmanen@linux.intel.com, Rodrigo Vivi <rodrigo.vivi@intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A series with multiple fixes to i915 keepalive (KAE)
-functionality. First patch fixes issue that is hit on
-some A750/770 cards:
-https://gitlab.freedesktop.org/drm/intel/-/issues/7353
+The i915 display codec may not successfully transition to
+normal audio streaming mode, if the stream id is programmed
+while codec is actively transmitting data. This can happen
+when silent stream is enabled in KAE mode.
 
-The two other improve behaviour especially with certain
-USB-C docks.
+Fix the issue by implementing a i915 specific programming
+flow, where the silent streaming is temporarily stopped,
+a small delay is applied to ensure display codec becomes
+idle, and then proceed with reprogramming the stream ID.
 
-Changes in v2:
- - check for errors from pin_id_to_pin_index()
+Fixes: 15175a4f2bbb ("ALSA: hda/hdmi: add keep-alive support for ADL-P and DG2")
+Link: https://gitlab.freedesktop.org/drm/intel/-/issues/7353
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Tested-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+---
+ sound/pci/hda/patch_hdmi.c | 28 ++++++++++++++++++++++++++--
+ 1 file changed, 26 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 7a40ddfd695a..48bb23745ed3 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2879,9 +2879,33 @@ static int i915_hsw_setup_stream(struct hda_codec *codec, hda_nid_t cvt_nid,
+ 				 hda_nid_t pin_nid, int dev_id, u32 stream_tag,
+ 				 int format)
+ {
++	struct hdmi_spec *spec = codec->spec;
++	int pin_idx = pin_id_to_pin_index(codec, pin_nid, dev_id);
++	struct hdmi_spec_per_pin *per_pin;
++	int res;
++
++	if (pin_idx < 0)
++		per_pin = NULL;
++	else
++		per_pin = get_pin(spec, pin_idx);
++
+ 	haswell_verify_D0(codec, cvt_nid, pin_nid);
+-	return hdmi_setup_stream(codec, cvt_nid, pin_nid, dev_id,
+-				 stream_tag, format);
++
++	if (spec->silent_stream_type == SILENT_STREAM_KAE && per_pin && per_pin->silent_stream) {
++		silent_stream_set_kae(codec, per_pin, false);
++		/* wait for pending transfers in codec to clear */
++		usleep_range(100, 200);
++	}
++
++	res = hdmi_setup_stream(codec, cvt_nid, pin_nid, dev_id,
++				stream_tag, format);
++
++	if (spec->silent_stream_type == SILENT_STREAM_KAE && per_pin && per_pin->silent_stream) {
++		usleep_range(100, 200);
++		silent_stream_set_kae(codec, per_pin, true);
++	}
++
++	return res;
+ }
  
-Kai Vehmanen (3):
-  ALSA: hda/hdmi: fix i915 silent stream programming flow
-  ALSA: hda/hdmi: set default audio parameters for KAE silent-stream
-  ALSA: hda/hdmi: fix stream-id config keep-alive for rt suspend
-
- include/sound/hda_codec.h  |   1 +
- sound/pci/hda/hda_codec.c  |   3 +-
- sound/pci/hda/patch_hdmi.c | 119 ++++++++++++++++++++++++++++++++++++-
- 3 files changed, 119 insertions(+), 4 deletions(-)
-
-
-base-commit: 81a2da5a10a6eaa6ae16108eed4e74651cc296bf
+ /* pin_cvt_fixup ops override for HSW+ and VLV+ */
 -- 
 2.38.1
+
