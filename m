@@ -4,76 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCC39C04FDE
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Dec 2022 17:32:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1BACC4332F
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Dec 2022 17:52:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2DFD221FB;
-	Fri,  9 Dec 2022 18:31:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DFD221FB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31E9117E7;
+	Fri,  9 Dec 2022 18:51:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31E9117E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670607144;
-	bh=6gaByd85Ir5jpC5TjpFdxoKpv9W8N2P7lwLZnGk0xEw=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1670608337;
+	bh=fB/VNCYffmzHZxGdo7js0W5KTDDb84plw+kdg5svHiI=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=ZKUbCGXmO5VdIPR/j71UMnLUpGsgFjTN78gMxdzyP0HvrCvFkohtqNGJibMRcAtbS
-	 wI0GhGmDOWHUn8LDasmmnjaXnTHE/GSGAhqIFnYjl4/KGntHdkKYKGa9D6DeEmpWM3
-	 bSis5A9CFRQaaDeEkrW7Q3NKnDo6YBPQefPWtC0o=
+	b=fNdooIIsA6P7XuRz9GYk0s9pXrZVCZmURa61PdAF26/T2mD4+4vRwsG/KnaAHJpdz
+	 cRJpK52UPM9XfHM+eyk0e1Z1N0huTv4pd4PwSN/m1PjCKoC6UPSdI363Jyq9rGAvao
+	 1dRgMUQfXh+tNUVmKlAWCN/Mg+lxbHL4KRgRsHPs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8E67F80115;
-	Fri,  9 Dec 2022 18:31:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF0F1F80115;
+	Fri,  9 Dec 2022 18:51:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31204F800F8; Fri,  9 Dec 2022 18:31:33 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9BB05F80007; Fri,  9 Dec 2022 18:51:25 +0100 (CET)
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com
+ [IPv6:2607:f8b0:4864:20::b2a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18E0EF800F8
- for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2022 18:31:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18E0EF800F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id E801CF80007
+ for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2022 18:51:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E801CF80007
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=F9lb5mf+
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1670607092; x=1702143092;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=6gaByd85Ir5jpC5TjpFdxoKpv9W8N2P7lwLZnGk0xEw=;
- b=F9lb5mf+nIz6SVU9R4KchFlOKjf7SKcnV+zuYKE+Pm/qWEbfHehIhZ2M
- 8ZO3XcEae5kseK3wheV4l1iHJV0taAXPdHLpHqCtnGp+MKfqQgQtKi2J/
- TxHcB92Ec9OJmNVKX0Rucbgtb8iPvvyJjkNnE15OJOjnRopmyDplNQE29
- 0WG/U990yEDAjP0EjMmqISEO5Qecs72fXktjyZCjTuIzP23UNpBTQQbVA
- +fE+pjiTUsMJ/DlBbwAKGH4FRek0VfU4IJHYderclYSYuPkEFK25ZrjaU
- tcGzdhBnEuqzH2pey4sW1LZ/OpZMjaedLc0W5q+Y/CNj0VPJO6xSuHjZJ A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10556"; a="316213602"
-X-IronPort-AV: E=Sophos;i="5.96,230,1665471600"; d="scan'208";a="316213602"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Dec 2022 09:31:26 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10556"; a="625180439"
-X-IronPort-AV: E=Sophos;i="5.96,230,1665471600"; d="scan'208";a="625180439"
-Received: from bdmeredi-mobl2.amr.corp.intel.com (HELO [10.212.15.195])
- ([10.212.15.195])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Dec 2022 09:31:25 -0800
-Message-ID: <22043956-e18c-9ed6-5091-188ae40f3cd9@linux.intel.com>
-Date: Fri, 9 Dec 2022 11:31:24 -0600
+ unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
+ header.s=20210112 header.b=Dvxrl5ZO
+Received: by mail-yb1-xb2a.google.com with SMTP id d128so6376020ybf.10
+ for <alsa-devel@alsa-project.org>; Fri, 09 Dec 2022 09:51:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=fB/VNCYffmzHZxGdo7js0W5KTDDb84plw+kdg5svHiI=;
+ b=Dvxrl5ZOSl8QHV19bowOaitVtpvtOZG3MCaawkrqS6zON7VEX2ibTONalB1BaXJDs7
+ IOkOt/d1o+1vvxqrF/Is9DyNixKtprb3PVn6zFfdwkiAb75Sxx+sbDFeA3Yw2ad4518S
+ 7GX+eXTUIhi4LEQPDLBpr0b8AG09KQglK3hQHUmMtcMqDXE3pv3Z9sKkkYH5O+dqGQrW
+ x97n73QVDO3VI89KR2fKQ9BIYtlzf/RIs6ziUTYWS0eT5KX45Wj4CKWXjXs7SbyWWUDg
+ SxeUuXL4QZGWs5PKKdjB4AC/7ccpXRs5Iq8BcQx5Z5o0pxKXpeWkDYaH0KgL1HfzDs+d
+ aNbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=fB/VNCYffmzHZxGdo7js0W5KTDDb84plw+kdg5svHiI=;
+ b=BKOR7nO80yaEz6dKn/GTcspO7AkulgAEXHBd7xSLl3/R4Mbx1LFg4aeoa2VOqNddcG
+ RPLiPE2zRrj4eNiJTpoQKOIluXoTYpXGmcVS1Odnyc1OTdzchcg7+pm2HvTP6S9mR2eP
+ EFusveXoW2aFOTlnKqiVklOV4IZORC/gv9AXuCWQHZsHGUlgvViQyVFFdA05f+z79n+S
+ jgSfeqESvxdS96rKVWF3K9JQ3+iPS3Fygl0vcu4eEdS1LmCIR+y8CKwWapG7/4YFMxbX
+ Z3TVNjpX7U/59tmzHab6qi8jG/6dfO4N4YNYy7HXBbjaRs+MK5g5ooYXjLweZKbQK3P1
+ 480w==
+X-Gm-Message-State: ANoB5pmkX3QHK/B/iVQOfEJpFaYz8r+wkvigp3oxGzRCncIyXN0w9Mq6
+ /s06KSDSO6wV5XQEeEVcQzCk/hRChmRxxUudwwfuJw==
+X-Google-Smtp-Source: AA0mqf5GiGSEzfbvXCkKj2ph10ZyVtLGYlWo2eaF6hnhYo7Gi6YWnfbQ4IDbJRw9BDaw6i3LiBQQXUTtRjhvNVqkYDE=
+X-Received: by 2002:a25:d4d5:0:b0:70d:f50c:29ad with SMTP id
+ m204-20020a25d4d5000000b0070df50c29admr2866471ybf.265.1670608281652; Fri, 09
+ Dec 2022 09:51:21 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH v1] ASoC: Intel: sof_nau8825: add support for nau8825 with
- amp nau8318
-To: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
 References: <20221209150503.11875-1-ajye_huang@compal.corp-partner.google.com>
  <eca17001-93ff-d379-1ab2-2927f1831e78@linux.intel.com>
  <CALprXBayJtWRe9J+q7EahgpXrRy_B-tMAf0KXbDtWa+=4RKyHA@mail.gmail.com>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <CALprXBayJtWRe9J+q7EahgpXrRy_B-tMAf0KXbDtWa+=4RKyHA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <22043956-e18c-9ed6-5091-188ae40f3cd9@linux.intel.com>
+In-Reply-To: <22043956-e18c-9ed6-5091-188ae40f3cd9@linux.intel.com>
+From: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Date: Sat, 10 Dec 2022 01:51:10 +0800
+Message-ID: <CALprXBbxb_m_ieAi9VohZE+yUpyJ51rGE2VuskJpgNabB-gRCQ@mail.gmail.com>
+Subject: Re: [PATCH v1] ASoC: Intel: sof_nau8825: add support for nau8825 with
+ amp nau8318
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,48 +107,28 @@ Cc: Libin Yang <libin.yang@intel.com>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+HI Pierre,
 
+On Sat, Dec 10, 2022 at 1:31 AM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
 
+> Suggested edit:
+>
+> ASoC: Intel: sof_nau8825: add variant with nau8318 amplifier.
+>
 
->> This looks inconsistent with the commit message. There are separate
->> Kconfigs for different codecs.
->>
->> SND_SOC_NAU8315
->> SND_SOC_NAU8825
->>
->> Which is it?
->>
-> 
-> Sorry about confusing you, I think it is better to change the title as
-> ASoC: Intel: sof_nau8825: add combination of nau8825 headset codec
-> with nau8318 Amp.
+> That should be added in the commit message please.
+>
 
-Suggested edit:
+Thank you for the suggestion title and I will add those explanations
+in the comment message.
 
-ASoC: Intel: sof_nau8825: add variant with nau8318 amplifier.
+> Ok, makes sense now. Please do include the explanations on 8315/8318
+> variants, I couldn't figure out what chips were used.
+>
+> I would also not use the same topology name as a different platform with
+> another amplifier. I appreciate you trying to reuse when possible, but
+> it's just better to create a new topology file. That way if you want any
+> update down the road you can do so, it's more maintainable and risk-free.
 
-> 
-> And add some information about Nuvoton chips in the comment message.
-> ***
-> The nau8315 and nau8318 are both Nuvoton Amp chips. They use the same
-> Amp driver nau8315.c. The acpi_device_id for nau8315 is "NVTN2010",
-> for nau8318 is "NVTN2012".
-
-That should be added in the commit message please.
-
->> NAK for this v1. Please clarify which codec you are using and make sure
->> all references are consistent.
->>
->>
-> 
-> I apologize for the unclear comment message, please give me any
-> suggestions if needed, and I will send v2 for review.
-> thanks.
-
-Ok, makes sense now. Please do include the explanations on 8315/8318
-variants, I couldn't figure out what chips were used.
-
-I would also not use the same topology name as a different platform with
-another amplifier. I appreciate you trying to reuse when possible, but
-it's just better to create a new topology file. That way if you want any
-update down the road you can do so, it's more maintainable and risk-free.
+OK, The v2 patch will be sent after the new topology file is created. Thank you.
