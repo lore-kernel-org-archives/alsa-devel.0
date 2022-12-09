@@ -4,94 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72B7BC04FDE
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Dec 2022 10:19:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 256E6C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Dec 2022 10:20:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50F4A2128;
-	Fri,  9 Dec 2022 11:18:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50F4A2128
+	by alsa0.perex.cz (Postfix) with ESMTPS id F254F2197;
+	Fri,  9 Dec 2022 11:19:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F254F2197
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670581183;
-	bh=yeD/mr65IDz77j7/yP+XpHTcICMFlHLL0tlwfCE+1NU=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=Sw7yr4qVTIJ7JGPg6VJWJZ80ijZ789HtchqyPdaPSm7xoQMC0j5T60Icyi/jG9kkb
-	 kee2umTwsznAWOjYqBH5gJZS/E6gWHhGaGU5uGblYqR3T1jGrPcC5r08dqNdF8RJjf
-	 fpY6qSHAaY167jnTsIqybuiybniScTbSoE9vPaaM=
+	s=default; t=1670581208;
+	bh=DEPp7qk7GtOL5rnZusjDN4mo4wl+W+Ir8XnO3Rq567w=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=nDB06vnA+fivFj3fY533az+oli/pHtf1tCXokVQBY7Pp4QVML4vYAWv22cx44Rbf2
+	 +61HupyHoMxSABMa6WL2gr8yicF3A3v/abVkvjwFWPYGSTCFKxeTh88Jlsx+gyTPKj
+	 Pd1DbwaBZaIZOeTmsKzX+PDVX6hSnbGs8zFJtyoo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0FFD8F8022D;
-	Fri,  9 Dec 2022 11:18:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89BB3F8025F;
+	Fri,  9 Dec 2022 11:18:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66B04F8024C; Fri,  9 Dec 2022 11:18:51 +0100 (CET)
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com
- [IPv6:2a00:1450:4864:20::133])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 3F4AAF8022B; Fri,  9 Dec 2022 11:18:52 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6EE5CF800F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4848F8022B
  for <alsa-devel@alsa-project.org>; Fri,  9 Dec 2022 11:18:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EE5CF800F8
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4848F8022B
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=i3pJ5Zl8
-Received: by mail-lf1-x133.google.com with SMTP id d6so6280088lfs.10
- for <alsa-devel@alsa-project.org>; Fri, 09 Dec 2022 02:18:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=x00HNX5290w6ocB8BzuOCSV57L/qluq8fXghF2f6Urk=;
- b=i3pJ5Zl8a1/s05t+pot30xPJdKFR8X7DbUHQqO2fWpR3NS7IV9xMH7yPs/PvXLeXj1
- YsliKZrWIZ9SHauCdh+2/SMnHGrvhA6Hes4DZesF9nM5hAR3JjyoWQlRX8l8H7Sctiza
- H1oS0rJMvlteo49XLIaiR+pCt8scMj7srITdJDpVyfITifbrTK/gvqpGZoMa9JOVTJvE
- MsYhaoNDvxe/O57eIcZV6GorlescZblOMkiDtCa3cyhCOs4UtA8DdGlxSwT2RDuKcO5v
- 0ovORGCdPRLBmwJFViw5nZ6TLWcO5gaoTmR6EfdW22S2Y2UJ0Siww/THZdiuFh72msGx
- Hl/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=x00HNX5290w6ocB8BzuOCSV57L/qluq8fXghF2f6Urk=;
- b=i0ed74CUeSuraglPBJVk2gwhUOFqMZwxiPnm9WRXU5ubnpwwtlJSFEWZrJbEvzhPDu
- sQbBlWM+I5XjisyU5rF++Sf4eYUmX2Euteprz8uSX5CU1JTo+/b1uYkOSri/K8SM59iz
- snRIAiW70ghBJ/n05KK65FJTdG697aVGbXQ2V/q0toIMxirsgB0d7EfOK3HD0WAC0ka/
- 4Z/DWyIkyG0eyovoYsCm89OB/JoMhLYNiuBZU6Fx8ehfC+95X7MIaL/lku5hmajTRrKC
- NdQBMoIukf5CWOy3kBuWBOjl0eHOOefUhSBtvvFjH6jVgTk1WdLQ+/Ub6T0FI2VfG6SZ
- g+Hg==
-X-Gm-Message-State: ANoB5plsejH8hnMMUN+p7gQJ1LbYji2kzoTqhtro80bngd3fP0I8gpfU
- gl4PXSURYbVcqoStuklHsZYb6A==
-X-Google-Smtp-Source: AA0mqf57GDeyjbTzizTDvwgHZIWKGjktE97SxwOAvab3vKYoBljLv+Jv7y6GOFoRNsx0ysHmTjUQTA==
-X-Received: by 2002:a05:6512:224e:b0:4a4:68b8:c2de with SMTP id
- i14-20020a056512224e00b004a468b8c2demr1789569lfu.53.1670581127329; 
- Fri, 09 Dec 2022 02:18:47 -0800 (PST)
-Received: from [192.168.0.20]
- (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
- by smtp.gmail.com with ESMTPSA id
- a26-20020a056512201a00b004b5aa1c4d10sm197829lfb.118.2022.12.09.02.18.46
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 09 Dec 2022 02:18:46 -0800 (PST)
-Message-ID: <6350def8-bb1f-8aeb-4c98-4d02a4c59aed@linaro.org>
-Date: Fri, 9 Dec 2022 11:18:45 +0100
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=lGKnfr6o
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1670581130; x=1702117130;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=DEPp7qk7GtOL5rnZusjDN4mo4wl+W+Ir8XnO3Rq567w=;
+ b=lGKnfr6oYN8ryZfrj4qvV2Z19jMZI/havXiEKxwJa0rhdprUADmlfYOv
+ HUOtgOEWcG+AuTdNiAekVKFdcyjg0uuPw+A0JPlLQSY0RMMNiOv9vmWNZ
+ KhzzrxvDAoS8g6a0h8KP2/oQO0K8AA+m0HopT9qMrFQyL/meTuQJWyNMT
+ NQ7wm/BbKIS8yj/HCr43JF4H/b30BrYf60OkXwP4YcQ7fVmf9ZTNT9WMD
+ TWFw1uYbMHk/bZfp9i6rBRIYEZdLrgyJTnoz4Psj7IsDnJRiI9JU1CsZi
+ CSQRTE5R3SNLcfeTlhgmBZmfwJ3YyiyXcpYrOyH+Xx6zJaRg46VsIcZIk g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10555"; a="316135179"
+X-IronPort-AV: E=Sophos;i="5.96,230,1665471600"; d="scan'208";a="316135179"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 Dec 2022 02:18:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10555"; a="649510758"
+X-IronPort-AV: E=Sophos;i="5.96,230,1665471600"; d="scan'208";a="649510758"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by fmsmga007.fm.intel.com with ESMTP; 09 Dec 2022 02:18:44 -0800
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	tiwai@suse.de
+Subject: [PATCH v2 0/3] ALSA: hda/hdmi: i915 keepalive fixes
+Date: Fri,  9 Dec 2022 12:18:19 +0200
+Message-Id: <20221209101822.3893675-1-kai.vehmanen@linux.intel.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH v3 12/12] dt-bindings: mediatek: mt8188: add mt8188-mt6359
- document
-Content-Language: en-US
-To: Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
- lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, matthias.bgg@gmail.com,
- p.zabel@pengutronix.de
-References: <20221208033148.21866-1-trevor.wu@mediatek.com>
- <20221208033148.21866-13-trevor.wu@mediatek.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20221208033148.21866-13-trevor.wu@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -104,92 +77,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- angelogioacchino.delregno@collabora.com
+Cc: intel-gfx@lists.freedesktop.org, kai.vehmanen@linux.intel.com,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 08/12/2022 04:31, Trevor Wu wrote:
-> Add document for mt8188 board with mt6359.
-> 
-> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
-> ---
->  .../bindings/sound/mt8188-mt6359.yaml         | 60 +++++++++++++++++++
->  1 file changed, 60 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/mt8188-mt6359.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/mt8188-mt6359.yaml b/Documentation/devicetree/bindings/sound/mt8188-mt6359.yaml
-> new file mode 100644
-> index 000000000000..eac1c87b693a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/mt8188-mt6359.yaml
+A series with multiple fixes to i915 keepalive (KAE)
+functionality. First patch fixes issue that is hit on
+some A750/770 cards:
+https://gitlab.freedesktop.org/drm/intel/-/issues/7353
 
-Missing vendor prefix. You got comments for it already.
+The two other improve behaviour especially with certain
+USB-C docks.
 
-> @@ -0,0 +1,60 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/mt8188-mt6359.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MediaTek MT8188 ASoC sound card
-> +
-> +maintainers:
-> +  - Trevor Wu <trevor.wu@mediatek.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: mediatek,mt8188-mt6359-evb
-> +
-> +  model:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description: User specified audio sound card name
-> +
-> +  audio-routing:
-> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-> +    description:
-> +      A list of the connections between audio components. Each entry is a
-> +      sink/source pair of strings. Valid names could be the input or output
-> +      widgets of audio components, power supplies, MicBias of codec and the
-> +      software switch.
-> +
-> +  mediatek,platform:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: The phandle of MT8188 ASoC platform.
-> +
-> +  mediatek,dptx-codec:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: The phandle of MT8188 Display Port Tx codec node.
-> +
-> +  mediatek,hdmi-codec:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: The phandle of MT8188 HDMI codec node.
+Changes in v2:
+ - check for errors from pin_id_to_pin_index()
+ 
+Kai Vehmanen (3):
+  ALSA: hda/hdmi: fix i915 silent stream programming flow
+  ALSA: hda/hdmi: set default audio parameters for KAE silent-stream
+  ALSA: hda/hdmi: fix stream-id config keep-alive for rt suspend
 
-Why you do not use DAI links for all these?
+ include/sound/hda_codec.h  |   1 +
+ sound/pci/hda/hda_codec.c  |   3 +-
+ sound/pci/hda/patch_hdmi.c | 119 ++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 119 insertions(+), 4 deletions(-)
 
-> +
-> +additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - mediatek,platform
-> +
-> +examples:
-> +  - |
-> +
 
-Drop blank line.
-
-> +    sound: mt8188-sound {
-
-Drop label, not used. Use generic node names, so just "sound".
-
-> +        compatible = "mediatek,mt8188-mt6359-evb";
-
-Best regards,
-Krzysztof
-
+base-commit: 81a2da5a10a6eaa6ae16108eed4e74651cc296bf
+-- 
+2.38.1
