@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8581C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Dec 2022 20:58:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA370C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Dec 2022 20:59:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF30629C1;
-	Mon, 12 Dec 2022 21:57:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF30629C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id E397229FD;
+	Mon, 12 Dec 2022 21:58:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E397229FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670878723;
-	bh=Lag8ABddGgo8Y+6xYVrV2ZWO5fJEd1lgDe+EeGNdmec=;
+	s=default; t=1670878748;
+	bh=FQwHTF3hYRhq5XmNiFdDqGE836fxN7GA4Erq1Ivhv3E=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=geuDIEjA5wEs6yP3wJ7NDRCU3ohTwwLxMRDNcejmG8LJy2Qua+GGNyAx7xP/bYICg
-	 pnh9BwQ6hegaheW+Di3yxa5Qec6gsFPPucZ+FTq6L7JjmvBJfylXo6Cc56R5UzFuN9
-	 qhplr5ryAzrkHXu4MR9l8Bim41MZCtW7svYTgL+o=
+	b=ZWCT+sVf25jbJYOPVN4+coqwSAq6BNS+ndsfq8bfvdlKO1aF7ZYRqkaSkeNlMvz/f
+	 SRWmsfEN+EMuKnurrfR6SE3sSpOWSPhhrBRVhKkjBNLQ4jK6mR6in0DCOOHWfLFiiq
+	 nIHJOP4nsjn0Yp69xgSA0/E8MFxxu3DybNkVtyhs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CBEFF805AF;
-	Mon, 12 Dec 2022 21:54:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B458F805BB;
+	Mon, 12 Dec 2022 21:54:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33133F80580; Mon, 12 Dec 2022 21:54:35 +0100 (CET)
+ id 79492F805B1; Mon, 12 Dec 2022 21:54:36 +0100 (CET)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
  SHA256) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C648BF80580
- for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 21:54:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C648BF80580
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0365AF805AC
+ for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 21:54:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0365AF805AC
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <ukl@pengutronix.de>)
- id 1p4poX-0001HK-Tx; Mon, 12 Dec 2022 21:54:17 +0100
+ id 1p4poT-00015u-CT; Mon, 12 Dec 2022 21:54:13 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <ukl@pengutronix.de>)
- id 1p4poW-00464y-9C; Mon, 12 Dec 2022 21:54:17 +0100
+ id 1p4poQ-00463z-Py; Mon, 12 Dec 2022 21:54:11 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <ukl@pengutronix.de>)
- id 1p4poV-004aiM-TK; Mon, 12 Dec 2022 21:54:15 +0100
+ id 1p4poQ-004aha-Ph; Mon, 12 Dec 2022 21:54:10 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>
-Subject: [PATCH 15/15] ASoC: SOF: nocodec: Drop empty platform remove function
-Date: Mon, 12 Dec 2022 21:54:06 +0100
-Message-Id: <20221212205406.3771071-16-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 03/15] ASoC: atmel-classd: Drop empty platform remove function
+Date: Mon, 12 Dec 2022 21:53:54 +0100
+Message-Id: <20221212205406.3771071-4-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221212205406.3771071-1-u.kleine-koenig@pengutronix.de>
 References: <20221212205406.3771071-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=854;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=993;
  i=u.kleine-koenig@pengutronix.de; h=from:subject;
- bh=Lag8ABddGgo8Y+6xYVrV2ZWO5fJEd1lgDe+EeGNdmec=;
- b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBjl5To8oKR6rIGc08Iu8IDd+MNXehb0Bz1bIzJvSe2
- Kk1Rs9CJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCY5eU6AAKCRDB/BR4rcrsCY5IB/
- 9R5d4jZLHvw0d7hHrazEhuiYAjekQTB8wscCD/1uoFS9WLUVboIwAgq8+NVH5LMK9FhLgeaBGSD7pg
- HDpQi6obq5AKGleaFUV2novDO1qrwqzW0UbqUvHXeopAggx2EM9bWvbGDea/WgF9v1qFN+EeCSy6or
- MpyAgzRInAry0xV5ll1tgf9WvUAVZrTeTBXs1aiDTsYZi7GeNeC2jKL5DEikZ2UB2KzNbn+0uX2F8d
- 39dx6JUDQEhZ/N7dvgGwQfWMtbYenat4jJB0VDogArYac0Xt+TpF4ihyTL3Cd1ygf2icOHwPrlm1eU
- sH7g4skFC3ffpR1u5effdrYdlaE9f/
+ bh=FQwHTF3hYRhq5XmNiFdDqGE836fxN7GA4Erq1Ivhv3E=;
+ b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBjl5TBSiNsSSYIVTDUnwRJn1pXEj4x2GNOw6P69Y3d
+ L3Dt6DWJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCY5eUwQAKCRDB/BR4rcrsCSySB/
+ 9Egie4JJjgCG4ULHFjiQxT8lKQ54g/RMSK2bH/DSjxUNEHi5IrF+h2g5ihnvHVK731ePBCkjo/eNCg
+ bSCrvevD7EI5pXwaL81MUzX1Sh/ZltxNjUFEPuMdYLeGwBsFl0WDdYLUzfhRRmhY1CDFN4H+rM8570
+ rpSH1nRql3El3sTsS7faeson2RFMln02f3uBb4Qvxajph9zuQysfPD/s1GVrv/J2OZYz4VuEgP4yew
+ DOH/6CyuAxoNNNNkGxfMPkFiCruHryEqjq7uC1POI+HGjLBuXdSdBObsgvER1MujlzS9g976QBJoQz
+ z1039xv9gIs6TZlnC0qDk0vhqkma31
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp;
  fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
@@ -87,12 +87,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, kernel@pengutronix.de,
- Daniel Baluta <daniel.baluta@nxp.com>, sound-open-firmware@alsa-project.org
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Takashi Iwai <tiwai@suse.com>, kernel@pengutronix.de,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>,
+ linux-arm-kernel@lists.infradead.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
@@ -101,28 +101,33 @@ at all. So drop the useless function.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- sound/soc/sof/nocodec.c | 6 ------
+ sound/soc/atmel/atmel-classd.c | 6 ------
  1 file changed, 6 deletions(-)
 
-diff --git a/sound/soc/sof/nocodec.c b/sound/soc/sof/nocodec.c
-index 3537805070ad..b13bfdeb2b70 100644
---- a/sound/soc/sof/nocodec.c
-+++ b/sound/soc/sof/nocodec.c
-@@ -103,14 +103,8 @@ static int sof_nocodec_probe(struct platform_device *pdev)
- 	return devm_snd_soc_register_card(&pdev->dev, card);
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index 87d6d6ed026b..9883e6867fd1 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -616,11 +616,6 @@ static int atmel_classd_probe(struct platform_device *pdev)
+ 	return ret;
  }
  
--static int sof_nocodec_remove(struct platform_device *pdev)
+-static int atmel_classd_remove(struct platform_device *pdev)
 -{
 -	return 0;
 -}
 -
- static struct platform_driver sof_nocodec_audio = {
- 	.probe = sof_nocodec_probe,
--	.remove = sof_nocodec_remove,
- 	.driver = {
- 		.name = "sof-nocodec",
- 		.pm = &snd_soc_pm_ops,
+ static struct platform_driver atmel_classd_driver = {
+ 	.driver	= {
+ 		.name		= "atmel-classd",
+@@ -628,7 +623,6 @@ static struct platform_driver atmel_classd_driver = {
+ 		.pm		= &snd_soc_pm_ops,
+ 	},
+ 	.probe	= atmel_classd_probe,
+-	.remove	= atmel_classd_remove,
+ };
+ module_platform_driver(atmel_classd_driver);
+ 
 -- 
 2.38.1
 
