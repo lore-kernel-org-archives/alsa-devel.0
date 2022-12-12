@@ -4,102 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8865DC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Dec 2022 08:41:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA5BFC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Dec 2022 08:51:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B494417E7;
-	Mon, 12 Dec 2022 09:40:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B494417E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9059C1890;
+	Mon, 12 Dec 2022 09:50:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9059C1890
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670834508;
-	bh=jR7Ae8xdiRmIVrJh5BfnSb+BFWETAFG4d5TGzha19IA=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=uLLkH3v8xE3BKJl+glRSHB5sD5L9qsb1n5Cc+IAhv+hmTy8qt0mkmcT6MQRyYYoFO
-	 1+SODVoMAJyO0yu0A7yxItwIo4uU0nDRHVNfwxO7Bhz3XSmRjDbBl1fctpw8D0FOHI
-	 Yd1iyqh8wPiEig7vHfx5dZ0vlsUotJHLLZ0Wxa74=
+	s=default; t=1670835087;
+	bh=F9zq1yrr8sAp03e3KEwHeY8qevfvAAdWWCtEIuNte2c=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=iKAPbq+wpfN8xiBzZB8P3LvAAVQjJ8VsMCJTOON+3toEzcEhQl3UfKhGkn60rTqb/
+	 DPnpA+yUkz4Z+maBkzb7Ca5WlurQp0KpJpdRRv6XLWJkBCU8V2kNQYz0BjbB0VWtgm
+	 vE+CwOJxGS/iYxIkhiK/wmuO5qwudrcKZk2BOqus=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6841DF8042F;
-	Mon, 12 Dec 2022 09:40:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42F49F8042F;
+	Mon, 12 Dec 2022 09:50:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B92A4F80494; Mon, 12 Dec 2022 09:40:52 +0100 (CET)
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com
- [IPv6:2a00:1450:4864:20::22f])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 1BE7CF80115; Mon, 12 Dec 2022 09:50:36 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF836F80141
- for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 09:40:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF836F80141
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06914F80115
+ for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 09:50:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06914F80115
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=H1Jk1RLO
-Received: by mail-lj1-x22f.google.com with SMTP id f16so11734207ljc.8
- for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 00:40:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=K+6fEYSz7m/CPUV4/+SEcQDFawyZfISqhe/v9Owp5pU=;
- b=H1Jk1RLOPg9VYMLvqyNaJw3wTLfyV51sNzM1xYb7d+lzkrEB6mVox9o567x5glUjH6
- fJ/lRVNJHtjhU2peVl8ruNNeZv94g+K5g4gMw5qQAXps/5ykovYIfR7SLwO/jU5ISYyR
- w6mIEpSlc3AK8WJR0/AVHxDt4WXy6vxLIBvvDuPaCLlT0CT4IzU+yn0Zi+idc1uSsfjQ
- sm2eMXJ9KSyEKlUpbbi0s7jZK8pNORQjbU3jP5MnoxY4rgpwUy9GMDzymnne27k02M4k
- qwGCTdIPoInshL+nQplRmu5UIdJ5Ijz54cXFCwG0Z+D1XFpFFeYZ84APYHHFfKRWLGqV
- XP7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=K+6fEYSz7m/CPUV4/+SEcQDFawyZfISqhe/v9Owp5pU=;
- b=Y1qWliG7qgCKA0aiga58giI5dAjeu6MkfmA/LYtYdgtmR9bH4q4NSNJ6XO0uBOnosO
- rpr9NEvveiEhR6cOj+PbT00yttanRruCSdF73Qxfc5qmxPlIOS4aY1epjHKBaTVWDGU4
- phnWXTS2zHU7dYwAVHaaVxXP24uKDPzo9QPXN6u2va65/jCxIxXA3JokfgxuJf3EDuWV
- sTl4R6RsDh84M72gdUasr7xFcFWfbKFGUuBzgxo792aZu4flZKG8BPplZqN3TveTN1w6
- stJDzRJ0xP+EtwsPiurq6XSCjGvmwo43Al6NPEXiHT4QZxRWlUvwlimqGvARc8XjB73+
- L4gw==
-X-Gm-Message-State: ANoB5pm3LiIUU2mEBzr9p3ThpQCD7vy0o8oJDfMqJ35pHWqBSwAEFDoi
- rhg6UsOoWTQWYTXqpeIJgBW6PA==
-X-Google-Smtp-Source: AA0mqf5SXiv1Zkg7HMMVCWRXZmcBBmj3rggFfCSnSxwz4n0RrQilNwopPTQTwh39iLbyyURas6wTZQ==
-X-Received: by 2002:a05:651c:905:b0:277:155c:f4a3 with SMTP id
- e5-20020a05651c090500b00277155cf4a3mr3625178ljq.38.1670834448153; 
- Mon, 12 Dec 2022 00:40:48 -0800 (PST)
-Received: from [192.168.0.20]
- (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
- by smtp.gmail.com with ESMTPSA id
- p9-20020a2eb989000000b0027a197d8247sm1153836ljp.16.2022.12.12.00.40.46
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 12 Dec 2022 00:40:47 -0800 (PST)
-Message-ID: <e20884d2-5d30-9519-d070-8e2ac07f2171@linaro.org>
-Date: Mon, 12 Dec 2022 09:40:46 +0100
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=lMWvPa5Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1670835035; x=1702371035;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=F9zq1yrr8sAp03e3KEwHeY8qevfvAAdWWCtEIuNte2c=;
+ b=lMWvPa5YFRVbKBbk8O9fDr3Vy0f3b3aLdyZyOnI9TvzuIcYfO+JdEsvd
+ C/0uaOuZ/1eX5qQUWtPQK1ECjq+L+7e207LdCkFwwbNDrzLeqTXk5zLbU
+ H5RDvTJoX/gUJdwI07uJh9IMwkLp6EvaAZ4HsLRhezIJN6/KFcUXarfbW
+ yIiS4m9d45yJIwgsxU9lAhsiE++rrLNSKRkT3gvT8AqRpz01zwoEDKFM9
+ UN9LBWIRsCLO5uqEqW7yTZRFsS3P0TVHKaWWxO3obPh/J5lfk+EK//968
+ 79J6d84dIk69iuBD7DdXfzHipClXxGSDV2Rw8uJYmKareZrEjobEFZlAd A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10558"; a="318945177"
+X-IronPort-AV: E=Sophos;i="5.96,237,1665471600"; d="scan'208";a="318945177"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Dec 2022 00:50:31 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10558"; a="772520853"
+X-IronPort-AV: E=Sophos;i="5.96,237,1665471600"; d="scan'208";a="772520853"
+Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Dec 2022 00:50:29 -0800
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: broonie@kernel.org,
+	tiwai@suse.de
+Subject: [PATCH] ASoC: Intel: soc-acpi: update codec addr on 0C11/0C4F product
+Date: Mon, 12 Dec 2022 16:55:27 +0800
+Message-Id: <20221212085527.1886168-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH v3 10/12] dt-bindings: mediatek: mt8188: add audio afe
- document
-To: =?UTF-8?B?VHJldm9yIFd1ICjlkLPmlofoia8p?= <Trevor.Wu@mediatek.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
- "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com"
- <lgirdwood@gmail.com>,
- "krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
- "perex@perex.cz" <perex@perex.cz>
-References: <20221208033148.21866-1-trevor.wu@mediatek.com>
- <20221208033148.21866-11-trevor.wu@mediatek.com>
- <d7d9f3c7-b3e3-1e13-a80f-c7bf7b38a5b1@linaro.org>
- <45b4b287dfd57b99e0ba5675bf99194f6d84d9da.camel@mediatek.com>
- <fb34e446-2904-a357-e54b-3e82a2b0745c@linaro.org>
- <e08fab2a694313abc12e0f8303de3e2e704b388c.camel@mediatek.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <e08fab2a694313abc12e0f8303de3e2e704b388c.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -113,55 +77,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Project_Global_Chrome_Upstream_Group
- <Project_Global_Chrome_Upstream_Group@mediatek.com>,
- "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "angelogioacchino.delregno@collabora.com"
- <angelogioacchino.delregno@collabora.com>
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ bard.liao@intel.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 12/12/2022 03:43, Trevor Wu (吳文良) wrote:
->>>
->>>>> +    uniqueItems: true
->>>>> +    items:
->>>>> +      minimum: 0
->>>>> +      maximum: 15
->>>>> +
->>>>> +  "^mediatek,etdm-in[1-2]-mclk-always-on-rate-hz$":
->>>>> +    description: Specify etdm in mclk output rate for always
->>>>> on
->>>>> case.
->>>>
->>>> How is it different than assigned-clock-rates?
->>>>
->>>
->>> This includes clock enabling at init stage.
->>
->> assigned-clock-rates are also at init stage. I asked what is
->> different.
->>
-> 
-> If the property is used, there are three parts included in dai driver
-> probe function.
-> 
-> 1. set clock parent (which APLL)
-> 2. set clock rate (MCLK rate)
-> 3. enable clock (MCLK On)
-> 
-> The first two parts can be done by existing dts clock properties, but
-> the last one can't.
-> When MCLK should be enabled at boot time and kept on, this property is used. That's why I say the property is designed for always-on case.
+From: Gongjun Song <gongjun.song@intel.com>
 
-Heh, so the "always on case" means this property enables clock? How is
-this even DT property? That's not how clocks should be kept enabled. You
-need proper clock provider and consumer.
+The unique ID is determined by the ADR pin level of rt1318.
+ODM changed design, update codec addr to match new design.
 
+Fixes: 0050e3d3d43d ("ASoC: Intel: soc-acpi: add SKU 0C11 SoundWire configuration")
+Signed-off-by: Gongjun Song <gongjun.song@intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ sound/soc/intel/common/soc-acpi-intel-rpl-match.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best regards,
-Krzysztof
+diff --git a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
+index 3c5229f41bb0..31b43116e3d8 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-rpl-match.c
+@@ -112,7 +112,7 @@ static const struct snd_soc_acpi_adr_device rt1316_1_group2_adr[] = {
+ 
+ static const struct snd_soc_acpi_adr_device rt1318_1_group1_adr[] = {
+ 	{
+-		.adr = 0x000131025D131801ull,
++		.adr = 0x000132025D131801ull,
+ 		.num_endpoints = 1,
+ 		.endpoints = &spk_l_endpoint,
+ 		.name_prefix = "rt1318-1"
+-- 
+2.25.1
 
