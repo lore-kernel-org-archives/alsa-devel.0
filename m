@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 276BDC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Dec 2022 20:58:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5D73C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Dec 2022 20:58:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B1E217E6;
-	Mon, 12 Dec 2022 21:57:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B1E217E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id ECD741890;
+	Mon, 12 Dec 2022 21:57:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECD741890
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670878682;
-	bh=uJLtbFtHBBMQCLXRPUzbdo6bPxcrQVso0t3nAmy1gcU=;
+	s=default; t=1670878692;
+	bh=OSm9Xm56nyenrSMuk0D0fepZdveAL2uCsSsQlUfmTR0=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=HJKKZPeiaiuJPJcp8tOHzAiTEda3kh2QH9cQyWxKZPwxlgVCA19kKBkTIxdcttV2h
-	 tHMcbhazZOE8MQtrpdZwk041+3mvp6iWthUhHBRqPFjVxR6Vo0fBK7QcM2yOi2cd8F
-	 jm5rlvStpbwLaGs17qc3AzLGcfg2y9Xi5NOEe9UY=
+	b=TLmsKv79keSS5djhRd+XuLONW46rGO8zyXWRFQWfq3si9F+lY8n7A0WyoX2vQi/pq
+	 tCaW4AiblJcvSX477YIbtdLrl9BFmcBBiDhLarM/12B8u9dv6JjJ6WAzYoKhguRhjG
+	 nl3Sl1fVjKVwC/3uep7IKRk8Lhp+BhnNNOH7R2mA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03ABEF80588;
+	by alsa1.perex.cz (Postfix) with ESMTP id D346EF80587;
 	Mon, 12 Dec 2022 21:54:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0980CF80570; Mon, 12 Dec 2022 21:54:29 +0100 (CET)
+ id 1C109F8057B; Mon, 12 Dec 2022 21:54:31 +0100 (CET)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
  SHA256) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 213BDF804B4
- for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 21:54:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 213BDF804B4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6353DF8056F
+ for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 21:54:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6353DF8056F
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <ukl@pengutronix.de>)
- id 1p4poT-00015s-CY; Mon, 12 Dec 2022 21:54:13 +0100
+ id 1p4poT-00015v-CW; Mon, 12 Dec 2022 21:54:13 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <ukl@pengutronix.de>)
- id 1p4poQ-00463s-4i; Mon, 12 Dec 2022 21:54:10 +0100
+ id 1p4poR-004645-P2; Mon, 12 Dec 2022 21:54:12 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <ukl@pengutronix.de>)
- id 1p4poP-004ahT-Vr; Mon, 12 Dec 2022 21:54:10 +0100
+ id 1p4poR-004ahf-GK; Mon, 12 Dec 2022 21:54:11 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>
-Subject: [PATCH 01/15] ASoC: pxa: Drop empty platform remove function
-Date: Mon, 12 Dec 2022 21:53:52 +0100
-Message-Id: <20221212205406.3771071-2-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 04/15] ASoC: atmel-pdmic: Drop empty platform remove function
+Date: Mon, 12 Dec 2022 21:53:55 +0100
+Message-Id: <20221212205406.3771071-5-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221212205406.3771071-1-u.kleine-koenig@pengutronix.de>
 References: <20221212205406.3771071-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=836;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=980;
  i=u.kleine-koenig@pengutronix.de; h=from:subject;
- bh=uJLtbFtHBBMQCLXRPUzbdo6bPxcrQVso0t3nAmy1gcU=;
- b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBjl5S6Djlqr9YwFf4OJ37Rm/0aX1BVR5eUBaZzIMOw
- V3KZiyeJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCY5eUugAKCRDB/BR4rcrsCdd4B/
- 9Gbny/SVr6+K1yUh4PHboLtfmc6HGIE7iCeMJpx2PZd/pZyCcJTW7PfOTaT9JmOUOCJXkrOceRJl1z
- SL/SzeS9/BHmoQCez+Dd+asaxlK5eXgQbyQ++fCTzMjgiAZXD8c74bNdF3PGv1gX1kRTXwkIAIN5kq
- ZTqUXfm6FjrXWDaidgrhUSVAtumwCF4BjfnErXMaEB1bR731W3oF3nEUBqu4GENbL3zrdbJJr9010i
- CjGg68LnXJSSz87673zxB/BKRuQpVwMteMKoPlFbJ4xjTTpxM6fDo2UPnuruhpfi6crMH9xKSJceoq
- sIxT6SepbLRbs9qe+MCSUEovQTHkJ2
+ bh=OSm9Xm56nyenrSMuk0D0fepZdveAL2uCsSsQlUfmTR0=;
+ b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBjl5TEf4G4Lr2vEB3HV8YF/vjSlfIRCDrVnNKWe1Sc
+ uj4IjjGJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCY5eUxAAKCRDB/BR4rcrsCa9lB/
+ 4gT0O3EjH73UT9ZblEhGpXN5yoPiGMpsblgebbinDs1pBAN0wr16chNuXbY0ZFQFfr/K8NlVAVmPD7
+ CFgGvOh/2TmBUiW6DaV8CJMGkbizj/aAyyCLdmiV7VENE3UrgP61MDUWpHSuT3dp160UhoSsUdTisO
+ wd5nySFSo1EY8eDiHxkNMsTs+/350CfNq0HvyL6WFhcYwi5A0tCCy7lbB92Cv2a/dQS7Vdh5gkvVD5
+ V2RTRH2zECD2iXf7aNwdJvBhJkSt7bqQy18OkjZdx8vhUvGMIir3cN94IehWb7bvpc/cGcx0a8HSbZ
+ V6nMSxyKfNL/zCVheL+u3pEWpd9LWo
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp;
  fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
@@ -87,9 +87,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- Haojian Zhuang <haojian.zhuang@gmail.com>, Daniel Mack <daniel@zonque.org>,
- kernel@pengutronix.de, Robert Jarzmik <robert.jarzmik@free.fr>,
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Takashi Iwai <tiwai@suse.com>, kernel@pengutronix.de,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>,
  linux-arm-kernel@lists.infradead.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
@@ -99,32 +101,33 @@ at all. So drop the useless function.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- sound/soc/pxa/spitz.c | 6 ------
+ sound/soc/atmel/atmel-pdmic.c | 6 ------
  1 file changed, 6 deletions(-)
 
-diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
-index 44303b6eb228..70442315f5c5 100644
---- a/sound/soc/pxa/spitz.c
-+++ b/sound/soc/pxa/spitz.c
-@@ -306,18 +306,12 @@ static int spitz_probe(struct platform_device *pdev)
+diff --git a/sound/soc/atmel/atmel-pdmic.c b/sound/soc/atmel/atmel-pdmic.c
+index 77ff12baead5..12cd40b15644 100644
+--- a/sound/soc/atmel/atmel-pdmic.c
++++ b/sound/soc/atmel/atmel-pdmic.c
+@@ -692,11 +692,6 @@ static int atmel_pdmic_probe(struct platform_device *pdev)
  	return ret;
  }
  
--static int spitz_remove(struct platform_device *pdev)
+-static int atmel_pdmic_remove(struct platform_device *pdev)
 -{
 -	return 0;
 -}
 -
- static struct platform_driver spitz_driver = {
- 	.driver		= {
- 		.name	= "spitz-audio",
- 		.pm     = &snd_soc_pm_ops,
+ static struct platform_driver atmel_pdmic_driver = {
+ 	.driver	= {
+ 		.name		= "atmel-pdmic",
+@@ -704,7 +699,6 @@ static struct platform_driver atmel_pdmic_driver = {
+ 		.pm		= &snd_soc_pm_ops,
  	},
- 	.probe		= spitz_probe,
--	.remove		= spitz_remove,
+ 	.probe	= atmel_pdmic_probe,
+-	.remove	= atmel_pdmic_remove,
  };
+ module_platform_driver(atmel_pdmic_driver);
  
- module_platform_driver(spitz_driver);
 -- 
 2.38.1
 
