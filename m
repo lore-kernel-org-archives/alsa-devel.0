@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 930C1C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Dec 2022 13:23:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75C68C00145
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Dec 2022 13:26:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B619D2423;
-	Mon, 12 Dec 2022 14:22:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B619D2423
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4BBE12423;
+	Mon, 12 Dec 2022 14:25:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BBE12423
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670851382;
-	bh=2nnZXA8RaZrSVvCN6ByjHxeIL4WuKWU/gteG+urh8OQ=;
+	s=default; t=1670851594;
+	bh=GRR9jBZFyWAtOBROCtryACD0FFkQK7yiBk7+JNb9llA=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=aNq5Q1GaG6A7VpRDkz5CmOwMpqORa/2sRwUlyBFxwaR6vGqOJ2di+H/kCM8UYtBhh
-	 bDa96VJffIb6iAtMBTW3vYpEG9Rq4uXvATkErJ1fi0XuOcfkX+qURwefL12NKOzgvJ
-	 ClGJigPDg00+++ZASIvlYem4Rah1Tqc/8vHuMIZU=
+	b=mfIOGkCTVkpY5pBaFrN0J7HWzo4nmV7mfBKJ/WxElZzoFBxtF0rTAbhBgft1qVxgQ
+	 NjYr2dkk5jSlUFZer7hTtb8uJiJCwsZjEHIl1yQ+G6ipsH84RybMGEm9hPfkmhcqSz
+	 4L8LKeVIAJNHjZzcpUQOc1ZHem9835t1SpdVjpfo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5FB0EF8042F;
-	Mon, 12 Dec 2022 14:22:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 039EBF8042F;
+	Mon, 12 Dec 2022 14:25:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42377F800F8; Mon, 12 Dec 2022 14:22:11 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 9E9A4F804B4; Mon, 12 Dec 2022 14:25:42 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F04AF800F8
- for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 14:22:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F04AF800F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id C10FBF80115
+ for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 14:25:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C10FBF80115
 Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
  unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=MrNWAnaZ
+ header.a=rsa-sha256 header.s=korg header.b=PZuKmV9v
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A942261046;
- Mon, 12 Dec 2022 13:22:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A363C433EF;
- Mon, 12 Dec 2022 13:22:05 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 9F06BB80D52;
+ Mon, 12 Dec 2022 13:25:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BE2EC433D2;
+ Mon, 12 Dec 2022 13:25:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1670851326;
- bh=2nnZXA8RaZrSVvCN6ByjHxeIL4WuKWU/gteG+urh8OQ=;
+ s=korg; t=1670851538;
+ bh=GRR9jBZFyWAtOBROCtryACD0FFkQK7yiBk7+JNb9llA=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=MrNWAnaZcLx5Bz4YdmEFRdI9Ar8AqD+MhxE9lCfRUmWCx0VNY3Z3HoEZ8iB53BkzJ
- DDcNrc+HoxDdsqr1Pn6Ev8EFvHDVs1G1k7ZYOKnKEZ/EnvVoyhLZcB/gSCe9WEHria
- U9CX00B03Sg8neDZSZN/IdV45FXhQaAtxq/oc6+s=
+ b=PZuKmV9vWTITeMaAU+Bgzdic2zm5R4+ip/iqEwZs5Od9vHkIbonHZXz0qE5/uLova
+ mUW6mktCPsfA+v+79hHkPlg9o4XrlL04uaTAmMWCedTfeo5iUUJs8pYnSm9vPH9g+e
+ UqZKHEie45q/J5mbWBjeWx7iAoHxhAuriF35PWIQ=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
-Subject: [PATCH 5.4 10/67] ALSA: seq: Fix function prototype mismatch in
+Subject: [PATCH 5.15 019/123] ALSA: seq: Fix function prototype mismatch in
  snd_seq_expand_var_event
-Date: Mon, 12 Dec 2022 14:16:45 +0100
-Message-Id: <20221212130918.121139101@linuxfoundation.org>
+Date: Mon, 12 Dec 2022 14:16:25 +0100
+Message-Id: <20221212130927.693899738@linuxfoundation.org>
 X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20221212130917.599345531@linuxfoundation.org>
-References: <20221212130917.599345531@linuxfoundation.org>
+In-Reply-To: <20221212130926.811961601@linuxfoundation.org>
+References: <20221212130926.811961601@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -115,10 +116,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/sound/core/seq/seq_memory.c b/sound/core/seq/seq_memory.c
-index 65db1a7c77b7..bb76a2dd0a2f 100644
+index b7aee23fc387..47ef6bc30c0e 100644
 --- a/sound/core/seq/seq_memory.c
 +++ b/sound/core/seq/seq_memory.c
-@@ -112,15 +112,19 @@ EXPORT_SYMBOL(snd_seq_dump_var_event);
+@@ -113,15 +113,19 @@ EXPORT_SYMBOL(snd_seq_dump_var_event);
   * expand the variable length event to linear buffer space.
   */
  
@@ -140,7 +141,7 @@ index 65db1a7c77b7..bb76a2dd0a2f 100644
  	if (copy_to_user(*bufptr, src, size))
  		return -EFAULT;
  	*bufptr += size;
-@@ -149,8 +153,7 @@ int snd_seq_expand_var_event(const struct snd_seq_event *event, int count, char
+@@ -151,8 +155,7 @@ int snd_seq_expand_var_event(const struct snd_seq_event *event, int count, char
  		return newlen;
  	}
  	err = snd_seq_dump_var_event(event,
