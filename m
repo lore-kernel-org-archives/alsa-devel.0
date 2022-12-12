@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B9BFC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Dec 2022 20:56:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06971C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Dec 2022 20:56:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2545622D7;
-	Mon, 12 Dec 2022 21:55:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2545622D7
+	by alsa0.perex.cz (Postfix) with ESMTPS id E877A23D9;
+	Mon, 12 Dec 2022 21:55:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E877A23D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670878580;
-	bh=FRqA7RHqZvB/o5CRPzfLhwxQuBgBYrCUo/OSeSsNzgk=;
+	s=default; t=1670878595;
+	bh=Y0kjMd8NuteJJ3+VzZHpJcRWhbk4mCFMu+bNANGeCsM=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=eUzbRLW8Lqk3jC43eczZW7CdgVpjfPk5IzTF9VYzbUdyUe7TEjaxIow2/mDOtyT2O
-	 hAr/FmjMo5lkzprfQhPNvctaXbyPYksqs8iWYUk4fSDt4TKuOXvD1gOcyrOvIn/w/p
-	 Nt0J5XLH2rNL6ufIYS2lgVJekJnjNihkhQjjBh9U=
+	b=bdBhtwu++kLoleHaZz0bxd+NkXaN9VJiZf4R4XQrDFGpU2hTO/94kOOhWg6BlyhL6
+	 WMseVj7K25NTFcQ8m4AJJ/tZKa+RbGB4atCJG6Sg0/qGaPNJHttDCKhIg4PHykdSal
+	 ziytT0J0jWl+IpOY8gRRuQH+1gj2LXMfLBuzrcfs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94805F80537;
-	Mon, 12 Dec 2022 21:54:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1CADFF8053C;
+	Mon, 12 Dec 2022 21:54:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5C4BFF800F8; Mon, 12 Dec 2022 21:54:24 +0100 (CET)
+ id 0815DF80518; Mon, 12 Dec 2022 21:54:24 +0100 (CET)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
  SHA256) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D0E29F800F8
- for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 21:54:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0E29F800F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4DEDCF804B4
+ for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 21:54:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DEDCF804B4
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <ukl@pengutronix.de>)
- id 1p4poU-000163-31; Mon, 12 Dec 2022 21:54:14 +0100
+ id 1p4poW-00019X-2U; Mon, 12 Dec 2022 21:54:16 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <ukl@pengutronix.de>)
- id 1p4poS-00464D-Aa; Mon, 12 Dec 2022 21:54:13 +0100
+ id 1p4poU-00464h-Hy; Mon, 12 Dec 2022 21:54:15 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <ukl@pengutronix.de>)
- id 1p4poS-004ahp-Dz; Mon, 12 Dec 2022 21:54:12 +0100
+ id 1p4poU-004aiA-HC; Mon, 12 Dec 2022 21:54:14 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>
-Subject: [PATCH 07/15] ASoC: adau7002: Drop empty platform remove function
-Date: Mon, 12 Dec 2022 21:53:58 +0100
-Message-Id: <20221212205406.3771071-8-u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 12/15] ASoC: pxa: e740_wm9705: Drop empty platform remove
+ function
+Date: Mon, 12 Dec 2022 21:54:03 +0100
+Message-Id: <20221212205406.3771071-13-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221212205406.3771071-1-u.kleine-koenig@pengutronix.de>
 References: <20221212205406.3771071-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1004;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=859;
  i=u.kleine-koenig@pengutronix.de; h=from:subject;
- bh=FRqA7RHqZvB/o5CRPzfLhwxQuBgBYrCUo/OSeSsNzgk=;
- b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBjl5TOIdMPxbICx7vTi3jQ5Ux2daH8NLPgOvnJw1TY
- hm+D4RKJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCY5eUzgAKCRDB/BR4rcrsCdGmB/
- 9i7X7dJbnzC9ZrpISnPWYXQeo6QRzPOV4Rlyg9f7xuOU3o2ZRcbKN1v8FLfOeaN7N3F5UwBp/jDW+U
- oH7DGRcSUedmll4vRVo5RkGLPUtCR2T8fof7GcoHX/A5t3CtPxkMGUtDinwUq1WnrnzMu2JP7OO/lX
- 03CFDJSdnSClh6JWjHr1C4jzez/qrdGx8tJqUFyHjM5Yw22+a/JamrUeojSaOVoFl4jNBHsspsX/AI
- 3vnO6mb6dIfEnMbYSjy1wWJ2IHN+qmjf0Y7xmmodAF9471tW0pmHinrme/bmrlXopmBW2UfJ6+Dbc2
- aliogRHorqStGo83eIY9/mIjtGtMR5
+ bh=Y0kjMd8NuteJJ3+VzZHpJcRWhbk4mCFMu+bNANGeCsM=;
+ b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBjl5Te1L1m6LwWzc+byfnA4/UOV8ATd2uewDXCXfoT
+ b77XSemJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCY5eU3gAKCRDB/BR4rcrsCUCqB/
+ 9klyaqlMYzfDk3Q4+4yhM5Dj1RmsaFSOXwGpDeIGM78ObNtdxWFheVjfwwBRLTju7pqpAMcgYnFo16
+ 8afkQKT7yAv+mh+x2F1t4vb2IZ+55oeiGgGF2jF5BK/GN0KDwc6Tub5nDjJZL6nEFUvcS224r2xWfY
+ rK6p11W6TIpkt1Mpj57XKOnbOo8OITbWL7yBvGeR/jF5W7O/1W3gbE64Yov4lacP2MfWC4sO3bTTWe
+ eBKZ//duSZAe9uEM0dIYXQmEH3I4NZ9JXxQ7yUQlDRz4t3DdumU8iqWWZGmqZXweaHkLiPY9vaWCjO
+ nacnI94S1mRRR9GQthlEcBo+yq6qLx
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp;
  fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
@@ -87,9 +88,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
- Takashi Iwai <tiwai@suse.com>, kernel@pengutronix.de,
- =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Daniel Mack <daniel@zonque.org>,
+ kernel@pengutronix.de, Robert Jarzmik <robert.jarzmik@free.fr>,
+ linux-arm-kernel@lists.infradead.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
@@ -98,33 +100,32 @@ at all. So drop the useless function.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- sound/soc/codecs/adau7002.c | 6 ------
+ sound/soc/pxa/e740_wm9705.c | 6 ------
  1 file changed, 6 deletions(-)
 
-diff --git a/sound/soc/codecs/adau7002.c b/sound/soc/codecs/adau7002.c
-index 401bafabc8eb..c9134e1de0b2 100644
---- a/sound/soc/codecs/adau7002.c
-+++ b/sound/soc/codecs/adau7002.c
-@@ -100,11 +100,6 @@ static int adau7002_probe(struct platform_device *pdev)
- 			&adau7002_dai, 1);
+diff --git a/sound/soc/pxa/e740_wm9705.c b/sound/soc/pxa/e740_wm9705.c
+index 4e0e9b778d4c..ec37da331a91 100644
+--- a/sound/soc/pxa/e740_wm9705.c
++++ b/sound/soc/pxa/e740_wm9705.c
+@@ -145,18 +145,12 @@ static int e740_probe(struct platform_device *pdev)
+ 	return ret;
  }
  
--static int adau7002_remove(struct platform_device *pdev)
+-static int e740_remove(struct platform_device *pdev)
 -{
 -	return 0;
 -}
 -
- #ifdef CONFIG_OF
- static const struct of_device_id adau7002_dt_ids[] = {
- 	{ .compatible = "adi,adau7002", },
-@@ -128,7 +123,6 @@ static struct platform_driver adau7002_driver = {
- 		.acpi_match_table = ACPI_PTR(adau7002_acpi_match),
+ static struct platform_driver e740_driver = {
+ 	.driver		= {
+ 		.name	= "e740-audio",
+ 		.pm     = &snd_soc_pm_ops,
  	},
- 	.probe = adau7002_probe,
--	.remove = adau7002_remove,
+ 	.probe		= e740_probe,
+-	.remove		= e740_remove,
  };
- module_platform_driver(adau7002_driver);
  
+ module_platform_driver(e740_driver);
 -- 
 2.38.1
 
