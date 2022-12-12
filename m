@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85166C00145
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Dec 2022 16:38:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1927C4167B
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Dec 2022 16:38:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2798219D;
-	Mon, 12 Dec 2022 17:37:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2798219D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 807A229E4;
+	Mon, 12 Dec 2022 17:37:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 807A229E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670863104;
-	bh=pAKxK37YXhqrsUkc+3DMZ5ZEleN2hTTXdA9Gs5kqlbU=;
+	s=default; t=1670863108;
+	bh=5xjzRZVtRE1cVlsbZZS0eIcjhBI2JgzIzQmwqEVYM3I=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=LTtrxF7cCo4bRu/wMssp4eWwbe8zR8DfwyRa3wJ8Sy+h4Dk9xQCfoR8tjy+W+xxQK
-	 Mb4WFsDPBzrCIrqAbA/oQBIsktkTDkaV0pWZgq02CINBRhVa6OT56TbUU19PQ1/v2/
-	 N5ki4A/T0g7kEmUzzJ6NdOy3mqHSli0HXGwSmThc=
+	b=Wi42yU19mzDhQHcC45jwizqM0ATy4FKa5grZV17ZeZYOkAwhUJm85jG75yoLfKBRD
+	 cxcYw7W6BxclhpWjPsJvF2Tdmky/7Gy0sI3GAy9XWrBjBM+11rvOT3ePrZHImuPyLc
+	 QwTxfoqjzBjRBscm1m8CP8OAz2Z/QU1U9+HWLESk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7DE7BF80510;
-	Mon, 12 Dec 2022 17:36:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1175AF80533;
+	Mon, 12 Dec 2022 17:36:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5B8F6F804FF; Mon, 12 Dec 2022 17:36:48 +0100 (CET)
+ id 923BFF80533; Mon, 12 Dec 2022 17:36:53 +0100 (CET)
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
- [68.232.154.123])
+ [68.232.153.233])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8188F802E0
- for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 17:36:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8188F802E0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E3CFF80518
+ for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 17:36:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E3CFF80518
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=microchip.com header.i=@microchip.com
- header.a=rsa-sha256 header.s=mchp header.b=BPUDlXKW
+ header.a=rsa-sha256 header.s=mchp header.b=J/nhqMfo
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1670863007; x=1702399007;
+ t=1670863012; x=1702399012;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=pAKxK37YXhqrsUkc+3DMZ5ZEleN2hTTXdA9Gs5kqlbU=;
- b=BPUDlXKWsO1zlmfZ6c/25xJ8za8/wwB1EB7AGNs4WszDhQmcX4/NfoVm
- y27N0cF3ca+/6sBbvaDF19rjCCgLrCu9zfZO86rzXB9lpKHETEFMzakIf
- s558zbp+oD1NdhFkLz7fBKm6zIm3QDxPQ2I/SbNC5Mm8a4f/uBbZ7Mebd
- p1bXS/MX7JMxYXJ2G+VEvjKLERkOeQQ/E91u4bv6yKG+b0yzS/aduMm97
- Oue804JCn067EH+aWIwikqhypizNvUpdc8GIXRCir9GLt/B9U5F0+WtDl
- rSshXm1UFRzfJjQG2CsxUFAxUnlsL1RFJELPFCI3YZ2Szys5/jVM1tke8 Q==;
-X-IronPort-AV: E=Sophos;i="5.96,238,1665471600"; d="scan'208";a="127727121"
+ bh=5xjzRZVtRE1cVlsbZZS0eIcjhBI2JgzIzQmwqEVYM3I=;
+ b=J/nhqMfoX0sD/03JR4YbBPbPjLdrcZehDqN9gDBewGovABQyHgQQsizB
+ fY03VVs5QtZ5WuljWA82Ly8Gi2hVJu+6p+DdjEafvIcsh1G2a6KcgU3VU
+ 3LZpyee2qA+2RtzsfGB3xds5pHbgRFRGunS1cJjLRXSJwyR14K83d7ASU
+ D2cLMAIqIu/tvXoUwpqDiP66yB5yEDc+7jDAa/LuXIVQZtXgcLWTzq6eK
+ uI9RMlbY0+aYx4/vCdyH5CykuUUeuYlBVUiKy7yGKaJp7jUklsJU1QVox
+ 3r2UC4N2fxuY+l9mqm/T+P9lrAs9sWckey80s6ESLYiGZoN2bBYBymtVk g==;
+X-IronPort-AV: E=Sophos;i="5.96,238,1665471600"; d="scan'208";a="192721522"
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
- by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 12 Dec 2022 09:36:37 -0700
+ by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 12 Dec 2022 09:36:47 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Mon, 12 Dec 2022 09:36:36 -0700
+ 15.1.2507.16; Mon, 12 Dec 2022 09:36:46 -0700
 Received: from localhost.localdomain (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.16 via Frontend Transport; Mon, 12 Dec 2022 09:36:34 -0700
+ 15.1.2507.16 via Frontend Transport; Mon, 12 Dec 2022 09:36:43 -0700
 From: Claudiu Beznea <claudiu.beznea@microchip.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
  <krzysztof.kozlowski+dt@linaro.org>, <perex@perex.cz>, <tiwai@suse.com>,
  <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>
-Subject: [PATCH v2 1/4] ASoC: dt-bindings: microchip: use proper naming syntax
-Date: Mon, 12 Dec 2022 18:41:50 +0200
-Message-ID: <20221212164153.78677-2-claudiu.beznea@microchip.com>
+Subject: [PATCH v2 4/4] ASoC: mchp-spdiftx: use FIELD_PREP() where possible
+Date: Mon, 12 Dec 2022 18:41:53 +0200
+Message-ID: <20221212164153.78677-5-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20221212164153.78677-1-claudiu.beznea@microchip.com>
 References: <20221212164153.78677-1-claudiu.beznea@microchip.com>
@@ -90,147 +90,49 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use the following syntax for Microchip ASoC YAML files:
-vendor,device.yaml
+Use FIELD_PREP() in macro definitions.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- .../bindings/sound/mchp,i2s-mcc.yaml          | 108 ------------------
- ...,pdmc.yaml => microchip,sama7g5-pdmc.yaml} |   0
- ...rx.yaml => microchip,sama7g5-spdifrx.yaml} |   0
- ...tx.yaml => microchip,sama7g5-spdiftx.yaml} |   0
- 4 files changed, 108 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml
- rename Documentation/devicetree/bindings/sound/{microchip,pdmc.yaml => microchip,sama7g5-pdmc.yaml} (100%)
- rename Documentation/devicetree/bindings/sound/{mchp,spdifrx.yaml => microchip,sama7g5-spdifrx.yaml} (100%)
- rename Documentation/devicetree/bindings/sound/{mchp,spdiftx.yaml => microchip,sama7g5-spdiftx.yaml} (100%)
+ sound/soc/atmel/mchp-spdiftx.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml b/Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml
-deleted file mode 100644
-index 0481315cb5f2..000000000000
---- a/Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml
-+++ /dev/null
-@@ -1,108 +0,0 @@
--# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
--%YAML 1.2
-----
--$id: http://devicetree.org/schemas/sound/mchp,i2s-mcc.yaml#
--$schema: http://devicetree.org/meta-schemas/core.yaml#
--
--title: Microchip I2S Multi-Channel Controller
--
--maintainers:
--  - Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
--
--description:
--  The I2SMCC complies with the Inter-IC Sound (I2S) bus specification and
--  supports a Time Division Multiplexed (TDM) interface with external
--  multi-channel audio codecs. It consists of a receiver, a transmitter and a
--  common clock generator that can be enabled separately to provide Adapter,
--  Client or Controller modes with receiver and/or transmitter active.
--  On later I2SMCC versions (starting with Microchip's SAMA7G5) I2S
--  multi-channel is supported by using multiple data pins, output and
--  input, without TDM.
--
--properties:
--  "#sound-dai-cells":
--    const: 0
--
--  compatible:
--    enum:
--      - microchip,sam9x60-i2smcc
--      - microchip,sama7g5-i2smcc
--
--  reg:
--    maxItems: 1
--
--  interrupts:
--    maxItems: 1
--
--  clocks:
--    items:
--      - description: Peripheral Bus Clock
--      - description: Generic Clock (Optional). Should be set mostly when Master
--          Mode is required.
--    minItems: 1
--
--  clock-names:
--    items:
--      - const: pclk
--      - const: gclk
--    minItems: 1
--
--  dmas:
--    items:
--      - description: TX DMA Channel
--      - description: RX DMA Channel
--
--  dma-names:
--    items:
--      - const: tx
--      - const: rx
--
--  microchip,tdm-data-pair:
--    description:
--      Represents the DIN/DOUT pair pins that are used to receive/send
--      TDM data. It is optional and it is only needed if the controller
--      uses the TDM mode.
--    $ref: /schemas/types.yaml#/definitions/uint8
--    enum: [0, 1, 2, 3]
--    default: 0
--
--if:
--  properties:
--    compatible:
--      const: microchip,sam9x60-i2smcc
--then:
--  properties:
--    microchip,tdm-data-pair: false
--
--required:
--  - "#sound-dai-cells"
--  - compatible
--  - reg
--  - interrupts
--  - clocks
--  - clock-names
--  - dmas
--  - dma-names
--
--additionalProperties: false
--
--examples:
--  - |
--    #include <dt-bindings/dma/at91.h>
--    #include <dt-bindings/interrupt-controller/arm-gic.h>
--
--    i2s@f001c000 {
--        #sound-dai-cells = <0>;
--        compatible = "microchip,sam9x60-i2smcc";
--        reg = <0xf001c000 0x100>;
--        interrupts = <34 IRQ_TYPE_LEVEL_HIGH 7>;
--        dmas = <&dma0 (AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
--                       AT91_XDMAC_DT_PERID(36))>,
--               <&dma0 (AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
--                       AT91_XDMAC_DT_PERID(37))>;
--        dma-names = "tx", "rx";
--        clocks = <&i2s_clk>, <&i2s_gclk>;
--        clock-names = "pclk", "gclk";
--        pinctrl-names = "default";
--        pinctrl-0 = <&pinctrl_i2s_default>;
--    };
-diff --git a/Documentation/devicetree/bindings/sound/microchip,pdmc.yaml b/Documentation/devicetree/bindings/sound/microchip,sama7g5-pdmc.yaml
-similarity index 100%
-rename from Documentation/devicetree/bindings/sound/microchip,pdmc.yaml
-rename to Documentation/devicetree/bindings/sound/microchip,sama7g5-pdmc.yaml
-diff --git a/Documentation/devicetree/bindings/sound/mchp,spdifrx.yaml b/Documentation/devicetree/bindings/sound/microchip,sama7g5-spdifrx.yaml
-similarity index 100%
-rename from Documentation/devicetree/bindings/sound/mchp,spdifrx.yaml
-rename to Documentation/devicetree/bindings/sound/microchip,sama7g5-spdifrx.yaml
-diff --git a/Documentation/devicetree/bindings/sound/mchp,spdiftx.yaml b/Documentation/devicetree/bindings/sound/microchip,sama7g5-spdiftx.yaml
-similarity index 100%
-rename from Documentation/devicetree/bindings/sound/mchp,spdiftx.yaml
-rename to Documentation/devicetree/bindings/sound/microchip,sama7g5-spdiftx.yaml
+diff --git a/sound/soc/atmel/mchp-spdiftx.c b/sound/soc/atmel/mchp-spdiftx.c
+index dc96a6fbf514..20d135c718b0 100644
+--- a/sound/soc/atmel/mchp-spdiftx.c
++++ b/sound/soc/atmel/mchp-spdiftx.c
+@@ -6,6 +6,7 @@
+ //
+ // Author: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+ 
++#include <linux/bitfield.h>
+ #include <linux/clk.h>
+ #include <linux/io.h>
+ #include <linux/module.h>
+@@ -71,11 +72,11 @@
+ 
+ /* Valid Bits per Sample */
+ #define SPDIFTX_MR_VBPS_MASK		GENMASK(13, 8)
+-#define SPDIFTX_MR_VBPS(bps)		(((bps) << 8) & SPDIFTX_MR_VBPS_MASK)
++#define SPDIFTX_MR_VBPS(bps)		FIELD_PREP(SPDIFTX_MR_VBPS_MASK, bps)
+ 
+ /* Chunk Size */
+ #define SPDIFTX_MR_CHUNK_MASK		GENMASK(19, 16)
+-#define SPDIFTX_MR_CHUNK(size)		(((size) << 16) & SPDIFTX_MR_CHUNK_MASK)
++#define SPDIFTX_MR_CHUNK(size)		FIELD_PREP(SPDIFTX_MR_CHUNK_MASK, size)
+ 
+ /* Validity Bits for Channels 1 and 2 */
+ #define SPDIFTX_MR_VALID1			BIT(24)
+@@ -88,8 +89,7 @@
+ 
+ /* Bytes per Sample */
+ #define SPDIFTX_MR_BPS_MASK		GENMASK(29, 28)
+-#define SPDIFTX_MR_BPS(bytes) \
+-	((((bytes) - 1) << 28) & SPDIFTX_MR_BPS_MASK)
++#define SPDIFTX_MR_BPS(bytes)		FIELD_PREP(SPDIFTX_MR_BPS_MASK, (bytes - 1))
+ 
+ /*
+  * ---- Interrupt Enable/Disable/Mask/Status Register (Write/Read-only) ----
 -- 
 2.34.1
 
