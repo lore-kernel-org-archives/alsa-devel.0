@@ -4,74 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0177C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Dec 2022 16:38:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 165E4C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Dec 2022 17:33:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CDFC82A31;
-	Mon, 12 Dec 2022 17:37:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDFC82A31
+	by alsa0.perex.cz (Postfix) with ESMTPS id 56C942421;
+	Mon, 12 Dec 2022 18:32:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56C942421
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670863124;
-	bh=skGTs2WvA6zYDm87dHeVl8kymrVloAz2yV13MCgFbvY=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1670866422;
+	bh=JSpsPaWjY3eudbST0PRmDeg8KHtXvxdVDtalyWk5bF4=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=Z9ANNjZnu9FSjs/CdB+bifeivuqbRsZREtN46kWjoaaKHKLGmCkvhpMTSeNA2Vn29
-	 WCR4dVQTnlakohYjlWg4SyHWGLTvrFeoGMQyUX20+RNOnpy6qOLTHoY7/gSxJQ2NPi
-	 6PCfD3y2xKG6gUV2Hb8nugYg4+ORRPok8r4OpIIo=
+	b=oVCRj7jPgJbci1K7J2wD88hjtm8mYKoYjefrtN7CNSAo4EHpgy4po5NmmQdqR/UaT
+	 N2fGjFATScNuWFAy9hH9RQI3RC6XfMGCZibCib0C4OZ1bk149I0GnkvnWkv0rW+Rtc
+	 GYiBOA8jd9rgA3gZJIONUcUaZvZ9FUIXM4bqdK8w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E544BF80536;
-	Mon, 12 Dec 2022 17:36:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DFA8DF802E0;
+	Mon, 12 Dec 2022 18:32:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E38F8F8053D; Mon, 12 Dec 2022 17:36:55 +0100 (CET)
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
- [68.232.154.123])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 1168EF8042F; Mon, 12 Dec 2022 18:32:51 +0100 (CET)
+Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com
+ [209.85.160.42])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94EDBF8051A
- for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 17:36:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94EDBF8051A
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=microchip.com header.i=@microchip.com
- header.a=rsa-sha256 header.s=mchp header.b=KR9mrwgv
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1670863014; x=1702399014;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=skGTs2WvA6zYDm87dHeVl8kymrVloAz2yV13MCgFbvY=;
- b=KR9mrwgvLU3Skc40si8gEK02lAt+g4wfC2m2WlKd4t32H8ycTUn38mIy
- HPYDlteo2EdblWW39oJyVt6V00UzT9Y36kgQXPH39ZV2/H5URqwVacxzI
- ak14cT0vgUWhO88LyUbetrQXOhlcZK4N2JzJi2qxFAMNs4URwxIhUE8Or
- k0I8/jUff9IWmcdusU5WhjJQpJu4inZWlZYxtd3JKdBBwllo7Nb0EPuSF
- h6WX4uvrSEaPZcQ/x15jsO8EIUXcdAWrdlfQmwx7fdFb0CoY414o2T415
- U3zoeySjAvsoJ1VFTp9t6Ma9T0GXFmbHtjwtik3RBuOaPtCY40fUjApLl g==;
-X-IronPort-AV: E=Sophos;i="5.96,238,1665471600"; d="scan'208";a="191263893"
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
- by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 12 Dec 2022 09:36:46 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Mon, 12 Dec 2022 09:36:43 -0700
-Received: from localhost.localdomain (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.16 via Frontend Transport; Mon, 12 Dec 2022 09:36:40 -0700
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
- <krzysztof.kozlowski+dt@linaro.org>, <perex@perex.cz>, <tiwai@suse.com>,
- <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>
-Subject: [PATCH v2 3/4] ASoC: mchp-pdmc: add support for suspend to RAM
-Date: Mon, 12 Dec 2022 18:41:52 +0200
-Message-ID: <20221212164153.78677-4-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20221212164153.78677-1-claudiu.beznea@microchip.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8B9BF800F8
+ for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 18:32:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8B9BF800F8
+Received: by mail-oa1-f42.google.com with SMTP id
+ 586e51a60fabf-144b21f5e5fso9218910fac.12
+ for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 09:32:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=4c0Q/vD5iPPOpm9+SZu8G9CtEcI/+Ys6P4p1qjE2xVw=;
+ b=4Hab7JgaoDabWEiBc9tYayjARpaZifpOcK5w5B2pl0w09ZrZwGnEUIizLwoTZuXoWm
+ vKyeHB3qSlTjvPcsLiUF+XJw9lJ8Bj4NXWDkOGCBdYfdWkQ5qapQqn1VY/CWrLKtpZZp
+ iv3aZFbVWi0NCaFeQwgJe4D73W16nEy67LWmqrnJEyk+e7h4w7P/de0/WoUdyIfxuFuz
+ oMKiUW3Ip25Y6sSX07RBPAxkJEvHgRlm+ZzxDRMh61iC8wC7F682jFwk/7kWGuEVIquC
+ 2V5A3Kj187jn1cJmd8BeSNC0upmyKAXpUVBLd+VgYoQeizNzvwRdqOauXv8F2xle/yGU
+ Y+XQ==
+X-Gm-Message-State: ANoB5pmGPhKtSuHI3CJ1UZRVf1S9lH1M+MJT4MLXtvaqM4BGGbvn7i+i
+ oBW1L8wa/X5r46w7JFk7bg==
+X-Google-Smtp-Source: AA0mqf5PsnRpjqPKGdBWGgDCZdAgNhbyqlTcPwwBpTvVw9k5vDQwoMoTIyNNqsRM0T5EzRgviQXaIQ==
+X-Received: by 2002:a05:6870:7985:b0:143:ffca:a9de with SMTP id
+ he5-20020a056870798500b00143ffcaa9demr7920858oab.9.1670866367008; 
+ Mon, 12 Dec 2022 09:32:47 -0800 (PST)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
+ a22-20020a4ab796000000b004a0a7b08d9asm156388oop.19.2022.12.12.09.32.46
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 12 Dec 2022 09:32:46 -0800 (PST)
+Received: (nullmailer pid 1173504 invoked by uid 1000);
+ Mon, 12 Dec 2022 17:32:45 -0000
+Date: Mon, 12 Dec 2022 11:32:45 -0600
+From: Rob Herring <robh@kernel.org>
+To: Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: Re: [PATCH v2 1/4] ASoC: dt-bindings: microchip: use proper naming
+ syntax
+Message-ID: <20221212173245.GA1171311-robh@kernel.org>
 References: <20221212164153.78677-1-claudiu.beznea@microchip.com>
+ <20221212164153.78677-2-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221212164153.78677-2-claudiu.beznea@microchip.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,77 +86,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc: devicetree@vger.kernel.org, alexandre.belloni@bootlin.com,
+ alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+ nicolas.ferre@microchip.com, tiwai@suse.com, broonie@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for suspend to RAM by re-aranging the lines in switch..case
-from mchp_pdmc_trigger() and saving/restoring the enabled interrupts. These
-are necessary as AT91 devices has a special power saving mode (called
-backup and self-refresh) where most of the SoC parts are powered off
-and thus we need to reconfigure the PDMC on resume.
+On Mon, Dec 12, 2022 at 06:41:50PM +0200, Claudiu Beznea wrote:
+> Use the following syntax for Microchip ASoC YAML files:
+> vendor,device.yaml
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> ---
+>  .../bindings/sound/mchp,i2s-mcc.yaml          | 108 ------------------
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- sound/soc/atmel/mchp-pdmc.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+Deleting? Why? That's not what the commit message says.
 
-diff --git a/sound/soc/atmel/mchp-pdmc.c b/sound/soc/atmel/mchp-pdmc.c
-index f184404e74e5..cf4084dcbd5e 100644
---- a/sound/soc/atmel/mchp-pdmc.c
-+++ b/sound/soc/atmel/mchp-pdmc.c
-@@ -113,6 +113,7 @@ struct mchp_pdmc {
- 	struct clk *pclk;
- 	struct clk *gclk;
- 	u32 pdmcen;
-+	u32 suspend_irq;
- 	int mic_no;
- 	int sinc_order;
- 	bool audio_filter_en;
-@@ -641,22 +642,27 @@ static int mchp_pdmc_trigger(struct snd_pcm_substream *substream,
- #endif
- 
- 	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
--	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+	case SNDRV_PCM_TRIGGER_START:
- 		/* Enable overrun and underrun error interrupts */
--		regmap_write(dd->regmap, MCHP_PDMC_IER,
-+		regmap_write(dd->regmap, MCHP_PDMC_IER, dd->suspend_irq |
- 			     MCHP_PDMC_IR_RXOVR | MCHP_PDMC_IR_RXUDR);
-+		dd->suspend_irq = 0;
-+		fallthrough;
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		snd_soc_component_update_bits(cpu, MCHP_PDMC_MR,
- 					      MCHP_PDMC_MR_PDMCEN_MASK,
- 					      dd->pdmcen);
- 		break;
--	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
--	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		regmap_read(dd->regmap, MCHP_PDMC_IMR, &dd->suspend_irq);
-+		fallthrough;
-+	case SNDRV_PCM_TRIGGER_STOP:
- 		/* Disable overrun and underrun error interrupts */
--		regmap_write(dd->regmap, MCHP_PDMC_IDR,
-+		regmap_write(dd->regmap, MCHP_PDMC_IDR, dd->suspend_irq |
- 			     MCHP_PDMC_IR_RXOVR | MCHP_PDMC_IR_RXUDR);
-+		fallthrough;
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		snd_soc_component_update_bits(cpu, MCHP_PDMC_MR,
- 					      MCHP_PDMC_MR_PDMCEN_MASK, 0);
- 		break;
-@@ -1107,6 +1113,7 @@ static const struct of_device_id mchp_pdmc_of_match[] = {
- MODULE_DEVICE_TABLE(of, mchp_pdmc_of_match);
- 
- static const struct dev_pm_ops mchp_pdmc_pm_ops = {
-+	SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
- 	RUNTIME_PM_OPS(mchp_pdmc_runtime_suspend, mchp_pdmc_runtime_resume,
- 		       NULL)
- };
--- 
-2.34.1
+>  ...,pdmc.yaml => microchip,sama7g5-pdmc.yaml} |   0
+>  ...rx.yaml => microchip,sama7g5-spdifrx.yaml} |   0
+>  ...tx.yaml => microchip,sama7g5-spdiftx.yaml} |   0
+>  4 files changed, 108 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml
+>  rename Documentation/devicetree/bindings/sound/{microchip,pdmc.yaml => microchip,sama7g5-pdmc.yaml} (100%)
+>  rename Documentation/devicetree/bindings/sound/{mchp,spdifrx.yaml => microchip,sama7g5-spdifrx.yaml} (100%)
+>  rename Documentation/devicetree/bindings/sound/{mchp,spdiftx.yaml => microchip,sama7g5-spdiftx.yaml} (100%)
 
+These will all fail binding checks. You need to update the $id values.
+
+Rob
