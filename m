@@ -4,68 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25D30C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Dec 2022 12:42:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BF2EC00145
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Dec 2022 13:11:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1219B2132;
-	Mon, 12 Dec 2022 13:41:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1219B2132
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA85917B5;
+	Mon, 12 Dec 2022 14:10:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA85917B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670848956;
-	bh=sLDrp4sU9u2owq3/YwAXp4AxlPAdm9r9oftZ9MI+oaU=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=RGI1PF1nzKLCPtiOTWG8DcmW9blhmZOBmRhsnzFa0QtatbLuPnMXOHl2JHJemvk7f
-	 whbWU91bcJkjWhxlreTs8OwJd1H+YiR1vMytDcinfUTXLcNl4IwJsY/kACNH+QHCwU
-	 oh+Arxw+32lkb3qih6EiS4OgaON59K4lLVIRsyBs=
+	s=default; t=1670850678;
+	bh=e//N1Ul0zdozGL+xk16ZGECF6oEtAqvvXdxDSJ4w5mg=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=HphytgOnBMP3U1OsoyvxcckvnH7NZz3QCGA4HkfsGLFrz7yRHcRjc17/3hHuoDysL
+	 pCJy3YPCq2kSSg9tqRnyEOhTXHO8e5hOITo7AysWrA7U8g+l3rTrkl945wuCPfDZUw
+	 uXapsB5i4iHDPxa/zIOlG49dh5rli20DKvWA1OEQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7372F80494;
-	Mon, 12 Dec 2022 13:41:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 80B82F804B4;
+	Mon, 12 Dec 2022 14:10:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42B27F804B4; Mon, 12 Dec 2022 13:41:43 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 409F9F804B4; Mon, 12 Dec 2022 14:10:26 +0100 (CET)
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
+ [68.232.154.123])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 82719F80141
- for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 13:41:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82719F80141
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- secure) header.d=perex.cz header.i=@perex.cz header.a=rsa-sha256
- header.s=default header.b=le85da02
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id E4214A0040;
- Mon, 12 Dec 2022 13:41:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz E4214A0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1670848900; bh=zE5QnlRXrIKq2RAIWSGzg6ApMcQCwZBI4S3Oezjc3Cc=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=le85da028aQDSVRtFX7i43nvWVs9oSoMZetM8hDxG9BHR9mTdg0p0sVzssyF458JI
- mKXyn26W4fhvupCwCkA61Xc5+lsXqtK+0KiN7LlGIpbEzaC5LrD1Wtz90U4xZVwcX2
- xOOIrXn406+mH9g/4U8C+eoYPy/uKNIk651u7uac=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Mon, 12 Dec 2022 13:41:35 +0100 (CET)
-Message-ID: <1ad74b4b-4252-4bcb-b8a3-211ca7528989@perex.cz>
-Date: Mon, 12 Dec 2022 13:41:35 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4C056F80115
+ for <alsa-devel@alsa-project.org>; Mon, 12 Dec 2022 14:10:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C056F80115
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=microchip.com header.i=@microchip.com
+ header.a=rsa-sha256 header.s=mchp header.b=cBL9I4Nf
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1670850624; x=1702386624;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=e//N1Ul0zdozGL+xk16ZGECF6oEtAqvvXdxDSJ4w5mg=;
+ b=cBL9I4NfEHlzTiggRin9/DY4qJVBm5c7nmjgLOa1yQid2s2COL3VkWUw
+ 1QDiOjpQXq3yekHW58pBSzevEgxPCWbJooWbcMWvXeqWejwlOyqTV2XF9
+ ZmBP0YpAZEf9tiyUOHTPCwgJ4ONagrzmOUbiNY+WgKdeSgcKtkWqjJswe
+ K3QkKcQRHGA6FW+/TWziMF5h+lpojM3qvZiK1px4bmAGzdTiE6aUj8p4U
+ 5pVBqU/Yv2XeB7NgK11lgBJ8vpOCrZBbvNnqutyD03Ba7YO/ZUuddtH+4
+ P+iuvPBK3fet8Mea4anphK3FpKrQIaj4W1HPPUrVeoVqOU1lzWOsWAUh9 Q==;
+X-IronPort-AV: E=Sophos;i="5.96,238,1665471600"; d="scan'208";a="187716827"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+ by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 12 Dec 2022 06:10:15 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Mon, 12 Dec 2022 06:10:15 -0700
+Received: from localhost.localdomain (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2507.16 via Frontend Transport; Mon, 12 Dec 2022 06:10:12 -0700
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
+ <krzysztof.kozlowski+dt@linaro.org>, <perex@perex.cz>, <tiwai@suse.com>,
+ <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>
+Subject: [PATCH 0/4] ASoC: microchip: power saving features and cleanups
+Date: Mon, 12 Dec 2022 15:15:31 +0200
+Message-ID: <20221212131535.76111-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: Regression playing 24bit/96kHz audio on USB audio interface
- between 5.10.94 and 5.15.21
-Content-Language: en-US
-To: Ruud van Asseldonk <ruud@veniogames.com>
-References: <4e509aea-e563-e592-e652-ba44af6733fe@veniogames.com>
- <9da2f631-4b45-9c5e-4349-488eea9436aa@veniogames.com>
- <Y5ZGw/3GHXSUduEc@geday> <99245e87-f970-5660-d2af-82180e7a98d3@leemhuis.info>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <99245e87-f970-5660-d2af-82180e7a98d3@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,95 +81,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Thorsten Leemhuis <regressions@leemhuis.info>,
- Takashi Iwai <tiwai@suse.com>, Geraldo Nascimento <geraldogabriel@gmail.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Claudiu Beznea <claudiu.beznea@microchip.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 12. 12. 22 10:48, Thorsten Leemhuis wrote:
-> Hi, this is your Linux kernel regression tracker.
-> 
-> On 11.12.22 22:08, Geraldo Nascimento wrote:
->> On Sun, Dec 11, 2022 at 04:30:11PM +0100, Ruud van Asseldonk wrote:
->>> Hi all,
->>>
->>> This issue is still present in 5.15.82, is there anything I can do to
->>> diagnose this further?
->>
->> Hi Ruud,
->>
->> Sorry for your troubles. You could use "git bisect" to try to pinpoint
->> the exact commit that introduces failure for you.
-> 
-> Yeah, that would be helpful. But 5.15 is quite old by now. Before going
-> down that route you might want to try the latest kernel (e.g. Linux
-> 6.1), as the problem might have been fixed in between, without the fix
-> being backported.
+Hi,
 
-It seems like a problem in the hw_params constraints / refining. There are lot of changes in the USB audio driver between 5.10/5.15. There is also HW_CONST_DEBUG define in sound/usb/pcm.c which enables the debug output for the refining.
+The following series adds runtime PM and suspend to RAM features for
+mchp-pdmc driver.
 
-Just curious: What's behind the value 513 (period size)? It does not match the time (5.34ms for 96kHz) nor a binary value. I would use 480 (5ms) or so.
+Along with it 2 cleanup patches were added:
+- patch 1/4: use vendor,device.yaml file format for Microchip AT91 ASoC
+  bindings
+- patch 4/4: use FIELD_PREP() in mchp-spdiftx.c
 
-And the final note: I gave a quick test with UMC204HD with the 6.0.9 kernel and it appears that this problem is not present in the recent kernel:
+Thank you,
+Claudiu Beznea
 
-# aplay -Dhw:U192k --period-size=513 --buffer-size=2052 -c 4 -r 96000 -f S16_LE --dump-hw-params /dev/zero
-Playing raw data '/dev/zero' : Signed 16 bit Little Endian, Rate 96000 Hz, Channels 4
-HW Params of device "hw:U192k":
---------------------
-ACCESS:  MMAP_INTERLEAVED RW_INTERLEAVED
-FORMAT:  S16_LE S32_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: [16 32]
-FRAME_BITS: [64 128]
-CHANNELS: 4
-RATE: [44100 192000]
-PERIOD_TIME: [125 1000000]
-PERIOD_SIZE: [6 192000]
-PERIOD_BYTES: [64 3072000]
-PERIODS: [2 1024]
-BUFFER_TIME: (62 2000000]
-BUFFER_SIZE: [12 384000]
-BUFFER_BYTES: [96 6144000]
-TICK_TIME: ALL
---------------------
-# cat /proc/asound/card2/pcm0p/sub0/hw_params
-access: RW_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 4
-rate: 96000 (96000/1)
-period_size: 513
-buffer_size: 2052
+Claudiu Beznea (4):
+  ASoC: dt-bindings: microchip: use proper naming syntax
+  ASoC: mchp-pdmc: use runtime pm for clock power saving
+  ASoC: mchp-pdmc: add support for suspend to RAM
+  ASoC: mchp-spdiftx: use FIELD_PREP() where possible
 
-# aplay -Dplughw:U192k --period-size=513 --buffer-size=2052 -c 2 -r 96000 -f S24_3LE --dump-hw-params /dev/zero
-ACCESS:  MMAP_INTERLEAVED MMAP_NONINTERLEAVED MMAP_COMPLEX RW_INTERLEAVED RW_NONINTERLEAVED
-FORMAT:  S8 U8 S16_LE S16_BE U16_LE U16_BE S24_LE S24_BE U24_LE U24_BE S32_LE S32_BE U32_LE U32_BE FLOAT_LE FLOAT_BE FLOAT64_LE FLOAT64_BE MU_LAW A_LAW IMA_ADPCM S20_LE S20_BE U20_LE U20_BE S24_3LE S24_3BE U24_3LE U24_3BE S20_3LE S20_3BE U20_3LE U20_3BE S18_3LE S18_3BE U18_3LE U18_3BE
-SUBFORMAT:  STD
-SAMPLE_BITS: [4 64]
-FRAME_BITS: [4 640000]
-CHANNELS: [1 10000]
-RATE: [4000 4294967295]
-PERIOD_TIME: [125 1000000]
-PERIOD_SIZE: (0 4294967295]
-PERIOD_BYTES: (0 4294967295]
-PERIODS: (0 4294967295]
-BUFFER_TIME: [1 4294967295]
-BUFFER_SIZE: [1 4294967295]
-BUFFER_BYTES: [1 4294967295]
-TICK_TIME: ALL
-# cat /proc/asound/card2/pcm0p/sub0/hw_params
-access: MMAP_INTERLEAVED
-format: S32_LE
-subformat: STD
-channels: 4
-rate: 96000 (96000/1)
-period_size: 513
-buffer_size: 2052
-
-I would also use S32_LE native format in your app, the S24_3LE is not supported with your hw directly. The alsa-lib does conversion.
-
-					Jaroslav
+ ...cc.yaml => microchip,sama7g5-i2s-mcc.yaml} |   0
+ ...,pdmc.yaml => microchip,sama7g5-pdmc.yaml} |   0
+ ...rx.yaml => microchip,sama7g5-spdifrx.yaml} |   0
+ ...tx.yaml => microchip,sama7g5-spdiftx.yaml} |   0
+ sound/soc/atmel/mchp-pdmc.c                   | 145 ++++++++++++------
+ sound/soc/atmel/mchp-spdiftx.c                |   8 +-
+ 6 files changed, 101 insertions(+), 52 deletions(-)
+ rename Documentation/devicetree/bindings/sound/{mchp,i2s-mcc.yaml => microchip,sama7g5-i2s-mcc.yaml} (100%)
+ rename Documentation/devicetree/bindings/sound/{microchip,pdmc.yaml => microchip,sama7g5-pdmc.yaml} (100%)
+ rename Documentation/devicetree/bindings/sound/{mchp,spdifrx.yaml => microchip,sama7g5-spdifrx.yaml} (100%)
+ rename Documentation/devicetree/bindings/sound/{mchp,spdiftx.yaml => microchip,sama7g5-spdiftx.yaml} (100%)
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.34.1
+
