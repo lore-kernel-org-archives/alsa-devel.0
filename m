@@ -4,67 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C68FCC001B2
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Dec 2022 13:57:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23B10C4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Dec 2022 14:07:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B03B17B6;
-	Wed, 14 Dec 2022 14:56:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B03B17B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5E5DF2A21;
+	Wed, 14 Dec 2022 15:06:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E5DF2A21
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671026254;
-	bh=LzhN4TtSvv+yIi8w0Twtj6V6GvnC+pvyAq9VUqFWruE=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1671026862;
+	bh=kRnzKDaifLMzk91f4ryWfcXJa4yv7M4AXVG0yIWndXw=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=bGF7BxUx+l33c7sfnIwStjwoR43VCzlsNoMNhNobcRCo2bi5L8SqgU9KIy4xbqWuO
-	 tXqq3kKHB2xwzt4Wq84Sl3bFW0rgAOa5e8LIT3b9sTLRmw4EgJtJhEQ7CMPWNDyRNa
-	 5mya6xABW7ScZHYJCdRBby+9W/U4qxKVnsfEtTsk=
+	b=hguY4Hc4nyWDI5s6oOI52oLLuMMUdeEF7GUPUGerHTXGiv9iRPLSJ3B+lNm9VskoR
+	 wG61KJUJHjif0PoZcJe+F7tME44AQVq5TdqRuKG1apUJFRQanb0ruPlji64ojfIDO8
+	 llkon4WiaDGZp6Ne0ex/HJecaWhA+I+P9iRLjF/g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4772F804D0;
-	Wed, 14 Dec 2022 14:56:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F534F804D0;
+	Wed, 14 Dec 2022 15:06:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5AAC3F80310; Wed, 14 Dec 2022 14:56:42 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6A82F80310
- for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2022 14:56:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6A82F80310
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=SGjewCpg
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id D8B37F804E0; Wed, 14 Dec 2022 15:06:50 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id ACE5161AA2;
- Wed, 14 Dec 2022 13:56:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EA53C433D2;
- Wed, 14 Dec 2022 13:56:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1671026197;
- bh=LzhN4TtSvv+yIi8w0Twtj6V6GvnC+pvyAq9VUqFWruE=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=SGjewCpgFFFe0NdjJ+OSY4+MZ3d+arj1EoHeoXEu3fG+EUVYvfBvTVojkOstI3oXc
- ygeMvNT2JH8IucUeuI+1b6D26AE/wqt5H5167BBt9FSFdR5dKL0XUV4uW/r0seaD+f
- O6Kn7jIKsP1/viUjlyFmocbAlSLa4vCt1P0rku+O2KVITIG3KRsphv4OwpXvJc+Jx/
- BskfwmOIs47ye+PXJbQnx9b2k939zVawzx7H/jTkzx5McTn+nkW4Epe4LjgzDFswq4
- NbYfGCienskl/Gf5bAIDWzxGHYkOt5HYC1yY5t29rhiy1OL7yDRtxHwFSqoqPtPEmM
- ba/iN5enWqolA==
-Date: Wed, 14 Dec 2022 13:56:32 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Lukasz Majewski <lukma@denx.de>
-Subject: Re: [PATCH 2/4] ASoC: wm8940: Rewrite code to set proper clocks
-Message-ID: <Y5nWEPTDenOIrXFY@sirena.org.uk>
-References: <20221214123743.3713843-1-lukma@denx.de>
- <20221214123743.3713843-3-lukma@denx.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BBF14F80141
+ for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2022 15:06:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBF14F80141
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=QyDhqFDs
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1671026810; x=1702562810;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=kRnzKDaifLMzk91f4ryWfcXJa4yv7M4AXVG0yIWndXw=;
+ b=QyDhqFDsU16Cr8eFZElAVMkD9P/SPo4IlU24o28Nmq9tR0/AlS86XDbn
+ ZPqGalkYNaZ7D59Ep2CjuodW/wubDTwvPiTOt9lEtSZUPthtdna2BFNKd
+ MCiPzMHNUo6wwX7hGAT5lH9JTm2/aWuOJ3hjQpeCVlWdEij3y2NYE22Gn
+ xeNnr05EYIXcubd8iDfO6hn17msDEITtRkcvGuDUM6QKetVG9WzVSm58h
+ ZeFsAc5ScB1Zne49Zk9Zr7LyBFVrwdnwNbdUAXWHtbGqzxVqD0C7nBIVr
+ inV/NiybKEsPswttLhziYIxtob13rd/UHMb4pJDuEwwokQqt3/Ma96hB5 Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10560"; a="318452720"
+X-IronPort-AV: E=Sophos;i="5.96,244,1665471600"; d="scan'208";a="318452720"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Dec 2022 06:06:30 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10560"; a="681517232"
+X-IronPort-AV: E=Sophos;i="5.96,244,1665471600"; d="scan'208";a="681517232"
+Received: from gajular-mobl1.amr.corp.intel.com (HELO [10.213.160.14])
+ ([10.213.160.14])
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Dec 2022 06:06:28 -0800
+Message-ID: <08403fff-359b-b5f4-d039-18eeef660637@linux.intel.com>
+Date: Tue, 13 Dec 2022 13:04:41 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="jG61M0kgxKMPOPeT"
-Content-Disposition: inline
-In-Reply-To: <20221214123743.3713843-3-lukma@denx.de>
-X-Cookie: I disagree with unanimity.
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.4.2
+Subject: Re: [PATCH] Add HP Stream 8 to bytcr_rt5640.c
+Content-Language: en-US
+To: Moises Cardona <moisesmcardona@gmail.com>, cezary.rojewski@intel.com
+References: <20221213173550.1567875-1-moisesmcardona@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20221213173550.1567875-1-moisesmcardona@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,67 +83,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Stephen Kitt <steve@sk2.org>,
- patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org,
+ kai.vehmanen@linux.intel.com, peter.ujfalusi@linux.intel.com, tiwai@suse.com,
+ ranjani.sridharan@linux.intel.com, liam.r.girdwood@linux.intel.com,
+ hdegoede@redhat.com, broonie@kernel.org, akihiko.odaki@gmail.com,
+ yung-chuan.liao@linux.intel.com, linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---jG61M0kgxKMPOPeT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, Dec 14, 2022 at 01:37:41PM +0100, Lukasz Majewski wrote:
+On 12/13/22 11:35, Moises Cardona wrote:
+> The HP Stream 8 tablet is identical to the HP Stream 7 in terms of the PCB,
+> with the exception of the added SIM Card Slot. 
+> Therefore, I'm submitting this patch which properly initializes the audio 
+> and enables the headphone jack to work, just like it does in the 
+> HP Stream 7.
+> 
+> Signed-off-by: Moises Cardona <moisesmcardona@gmail.com>
 
-> Without this change, the wm8940 driver is not working when
-> set_sysclk callback (wm8940_set_dai_sysclk) is called with
-> frequency not listed in the switch clause.
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Your commit log doesn't actually describe what this change is...
-
-> This change adjusts this driver to allow non-standard frequency
-> set (just after the boot) being adjusted afterwards by the sound
-> system core code.
-
-This doesn't appear to correspond to the commit.  The change will result
-in the driver automatically configuring it's PLL.
-
-> Code in this commit is based on previous change done for wm8974
-> (SHA1: 51b2bb3f2568e6d9d81a001d38b8d70c2ba4af99).
-
-Please include human readable descriptions of things like commits and
-issues being discussed in e-mail in your mails, this makes them much
-easier for humans to read especially when they have no internet access.
-I do frequently catch up on my mail on flights or while otherwise
-travelling so this is even more pressing for me than just being about
-making things a bit easier to read.
-
-> @@ -496,7 +505,6 @@ static int wm8940_set_bias_level(struct snd_soc_component *component,
->  				return ret;
->  			}
->  		}
-> -
->  		/* ensure bufioen and biasen */
->  		pwr_reg |= (1 << 2) | (1 << 3);
->  		/* set vmid to 300k for standby */
-
-Unrelated (and questionable) whitespace change.
-
---jG61M0kgxKMPOPeT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmOZ1g8ACgkQJNaLcl1U
-h9Ce1Af+IKHbY/SQFRzzAd6DFcX9yl+IMOoST7fw2IeXWj/eRDoQY3nhY/8favk/
-wC7QDqpbI+HhLtCC8AwTAPfQLwRetyDF4DT4Ns8E/uzt7jfJJYaawrTIxgwJRWtI
-sL5cBTCAzXKB/Xn4SvmdUY3rnf5BzVd+snzaU5s6L5QKoBYQQacDZMtbkS8mFiVM
-aZuIPbkgTyVzIQJTnD8Hl2cQylU+EOMxKeoj48qEqu2z++nT01FUK1dPSWR4eZg9
-X9OH7T7VGiweLhhV6YcrzFu4pEq9viG5Bukelx8/8vXI/OCbJWkrcRzvRPt87Dkg
-9xaEv6DPaTM5JInzPTMoQaWrMb4qHw==
-=YvQ2
------END PGP SIGNATURE-----
-
---jG61M0kgxKMPOPeT--
+> ---
+>  sound/soc/intel/boards/bytcr_rt5640.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+> index fb9d9e271845..1d964b1ceff4 100644
+> --- a/sound/soc/intel/boards/bytcr_rt5640.c
+> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
+> @@ -796,6 +796,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+>  					BYT_RT5640_SSP0_AIF1 |
+>  					BYT_RT5640_MCLK_EN),
+>  	},
+> +	{	/* HP Stream 8 */
+> +		.matches = {
+> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HP Stream 8 Tablet"),
+> +		},
+> +		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
+> +					BYT_RT5640_MONO_SPEAKER |
+> +					BYT_RT5640_JD_NOT_INV |
+> +					BYT_RT5640_SSP0_AIF1 |
+> +					BYT_RT5640_MCLK_EN),
+> +	},
+>  	{	/* I.T.Works TW891 */
+>  		.matches = {
+>  			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "To be filled by O.E.M."),
