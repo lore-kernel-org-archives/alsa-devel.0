@@ -4,74 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D7FAC4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Dec 2022 10:52:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DB0DC4167B
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Dec 2022 11:14:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9D951FA0;
-	Tue, 13 Dec 2022 11:51:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9D951FA0
+	by alsa0.perex.cz (Postfix) with ESMTPS id ADD392141;
+	Tue, 13 Dec 2022 12:13:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADD392141
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670928737;
-	bh=CPtGI1Gm3EBQgjAgidWD2nOZuLxuahaQPZx80t2p9Aw=;
+	s=default; t=1670930045;
+	bh=4dC4F1FastXdLtcL5ggnOaIcl6BcFinQjr4tizOFTRY=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=XyjDWtD2bjkkcS10So09iTh926dxgE61QDp4vNCXCndWfcOSGOfMAW3+SQ6Lk5qK3
-	 OIdxWBxjjdIUT7DKTDfo2AJFFgR9odWVi9hiNyKjnROD3I5pEFDyRn2viC5bFwT1Zd
-	 lcZDYRdfgwIqLeBPq07Fg0gZ0FyykhgATP0VW8Kc=
+	b=b93hZPDRZ3174X3ydzBlTx/Mwgp9J+7yjulIkQCARj64uX37ZWjqHC2dCLYvLmu9e
+	 lt7BO2yYA25WCu7PZ8GW2QaqMhZyAa3wRP37MCRp+TCxP03tKooXhZ9k99VtGNyRus
+	 R5AmDRv9oV9MHGmeMTJhvJozqSwVJm1HdkQ6t3d8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 609B8F8047D;
-	Tue, 13 Dec 2022 11:51:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64C11F8047D;
+	Tue, 13 Dec 2022 12:13:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB761F804D6; Tue, 13 Dec 2022 11:51:26 +0100 (CET)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits))
+ id D7CF0F804D6; Tue, 13 Dec 2022 12:13:13 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A6B9F80272
- for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2022 11:51:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A6B9F80272
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=FnrvvckK
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
- [2.237.20.237])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits))
- (No client certificate requested) (Authenticated sender: kholk11)
- by madras.collabora.co.uk (Postfix) with ESMTPSA id 24C536602AB2;
- Tue, 13 Dec 2022 10:51:23 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1670928683;
- bh=CPtGI1Gm3EBQgjAgidWD2nOZuLxuahaQPZx80t2p9Aw=;
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91EDAF8047D
+ for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2022 12:12:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91EDAF8047D
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ secure) header.d=perex.cz header.i=@perex.cz header.a=rsa-sha256
+ header.s=default header.b=JpFuv7XM
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id C3DD3A0040;
+ Tue, 13 Dec 2022 12:12:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz C3DD3A0040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1670929972; bh=tM1oIZq60W0w1hW1Y2s3JiYZXpmWGqjPoeJHGpULZcc=;
  h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=FnrvvckKqFm5f5w5WSHzXga8eY2j1Zlh+4OwBbS2cgSCLJZItOxhwN6OTwKpdOuUM
- 6dfWe2dg+1EtWVaY94pImHhAp3wxFnp69+M7DmeeRY3Vw/KJoC6Rq8rBOJXr/gdFY3
- njevkjoaQIVXuCnREJvnm6lYKgA/p4UsgCFp549Wj1YkyS+XQ2KLYUsqR1/jFBmyJ8
- /n1RMpwIPFB2qjrsY1ZwOeWR8l5VgJqdUXx55E9N159VDIwfpsUdmx3fx0Z3uNtsp9
- biJlY4u1kt/MNr8u6vqslcs/7U3R7mQTWBX6GgIEZLPU1dIv3cEGfWTHMfzEG/IY4L
- dA5rg/9pfxfQg==
-Message-ID: <2383be6d-8ddd-f12f-5083-cf837f9f9478@collabora.com>
-Date: Tue, 13 Dec 2022 11:51:20 +0100
+ b=JpFuv7XMSB1d7R0A6YxgIkKST3QoswpzS42rltECWdBHbe4VbeUqJKkWwgtsHo7KP
+ zIRNr2gUYRHAlumKKJcaBgcQSGSfukhjoFTUjFg+79dCp6EpFCdOd2lTM0q9noNxwT
+ ol+HEmqDFMky6IiVYdkSN3L2jagcnMlbZk3gc5e4=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Tue, 13 Dec 2022 12:12:49 +0100 (CET)
+Message-ID: <2d2ff30b-4156-1aaa-464a-8f36601ad5aa@perex.cz>
+Date: Tue, 13 Dec 2022 12:12:49 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH v3 07/12] ASoC: mediatek: mt8188: support audio clock
- control
+ Thunderbird/102.5.0
+Subject: Re: [PATCH] ALSA: conf: Save SND_CONFIG_TYPE_REAL with at least one
+ decimal
 Content-Language: en-US
-To: Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
- lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, matthias.bgg@gmail.com,
- p.zabel@pengutronix.de
-References: <20221208033148.21866-1-trevor.wu@mediatek.com>
- <20221208033148.21866-8-trevor.wu@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20221208033148.21866-8-trevor.wu@mediatek.com>
+To: Simon Svanbom <Simon.Svanbom@axis.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+References: <f9a7ad6a256d4ad7a31642dcf875d436@axis.com>
+From: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <f9a7ad6a256d4ad7a31642dcf875d436@axis.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,18 +77,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: "tiwai@suse.de" <tiwai@suse.de>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Il 08/12/22 04:31, Trevor Wu ha scritto:
-> Add audio clock wrapper and audio tuner control.
-> 
-> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+On 13. 12. 22 8:55, Simon Svanbom wrote:
+> Hi,
+> patch for saving SND_CONFIG_TYPE_REAL with at least one decimal as to not 
+> misinterpret the value as an integer in snd_config_get_real. Example would be 
+> the sofvol configuration property min_dB and max_dB, that are required to have 
+> at least one decimal.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Thanks. I pushed this fix to repo using the snd_config_get_ireal() function in the configuration parsing code:
 
+https://github.com/alsa-project/alsa-lib/commit/9f2c68cef716aa45942b502a42d94b84289f23bc
 
+					Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
