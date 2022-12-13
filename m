@@ -4,67 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DB0DC4167B
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Dec 2022 11:14:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 433D5C4167B
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Dec 2022 11:24:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ADD392141;
-	Tue, 13 Dec 2022 12:13:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADD392141
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F42A192F;
+	Tue, 13 Dec 2022 12:23:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F42A192F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670930045;
-	bh=4dC4F1FastXdLtcL5ggnOaIcl6BcFinQjr4tizOFTRY=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1670930674;
+	bh=O6Yhf97L/pahv9g9FCa7RxbB9udp6xC8MQ4GIoD13oM=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=b93hZPDRZ3174X3ydzBlTx/Mwgp9J+7yjulIkQCARj64uX37ZWjqHC2dCLYvLmu9e
-	 lt7BO2yYA25WCu7PZ8GW2QaqMhZyAa3wRP37MCRp+TCxP03tKooXhZ9k99VtGNyRus
-	 R5AmDRv9oV9MHGmeMTJhvJozqSwVJm1HdkQ6t3d8=
+	b=ufHQElWLKpLME4mesjyVfMysBIbczVtyGBeQszwlgOo8Y6e+kQD+fBOgM4H6MQaB5
+	 MVguLoqf8W838wtSdK2iv9V6MDf1l2O8OyXS+RsLHMv9JKA+MqUA9juMZ+8llfgBgm
+	 L05UNN/uBWJvHSMwGTqCXq4CNr8owPS+dqc501cQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64C11F8047D;
-	Tue, 13 Dec 2022 12:13:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BD1CFF8047D;
+	Tue, 13 Dec 2022 12:23:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D7CF0F804D6; Tue, 13 Dec 2022 12:13:13 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2020FF804E2; Tue, 13 Dec 2022 12:23:42 +0100 (CET)
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
+ [68.232.153.233])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 91EDAF8047D
- for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2022 12:12:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91EDAF8047D
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- secure) header.d=perex.cz header.i=@perex.cz header.a=rsa-sha256
- header.s=default header.b=JpFuv7XM
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id C3DD3A0040;
- Tue, 13 Dec 2022 12:12:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz C3DD3A0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1670929972; bh=tM1oIZq60W0w1hW1Y2s3JiYZXpmWGqjPoeJHGpULZcc=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=JpFuv7XMSB1d7R0A6YxgIkKST3QoswpzS42rltECWdBHbe4VbeUqJKkWwgtsHo7KP
- zIRNr2gUYRHAlumKKJcaBgcQSGSfukhjoFTUjFg+79dCp6EpFCdOd2lTM0q9noNxwT
- ol+HEmqDFMky6IiVYdkSN3L2jagcnMlbZk3gc5e4=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Tue, 13 Dec 2022 12:12:49 +0100 (CET)
-Message-ID: <2d2ff30b-4156-1aaa-464a-8f36601ad5aa@perex.cz>
-Date: Tue, 13 Dec 2022 12:12:49 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49D06F80272
+ for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2022 12:23:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49D06F80272
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=microchip.com header.i=@microchip.com
+ header.a=rsa-sha256 header.s=mchp header.b=FwxIP6/f
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1670930620; x=1702466620;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=O6Yhf97L/pahv9g9FCa7RxbB9udp6xC8MQ4GIoD13oM=;
+ b=FwxIP6/fn2cTvvCAWDE7l7da9P/dj5VX8Qh5Tf3rZI4sN5JEbXqhtOJM
+ B8ZMUxPr6a5m/HYKaxTPs66StLYj2g1ul/nKUeXY2Llr/ufVK9PYUzgt1
+ HLjiwKvTc1SgRFE9mEXpQH5JbbaIBNKdJ82yZEisgbX1LJdp/LBUMhUmD
+ 01fgInO69m4FbpVOSikwCyugqkGOWlg3Ml7QM7tuC85Fezt7edKY00gAc
+ P6ZNdNp7oR/0aGnsFKd9zB9pMxchby6ISoe9zegxHgg6btJEIIkQholPz
+ 9yDdmJy/lrhSbH5guHS7j+cRt2kk3G6YLDtoj3EG9Y6thTKHMknmzTXuY g==;
+X-IronPort-AV: E=Sophos;i="5.96,241,1665471600"; d="scan'208";a="192862226"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 13 Dec 2022 04:23:36 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Tue, 13 Dec 2022 04:23:35 -0700
+Received: from localhost.localdomain (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2507.16 via Frontend Transport; Tue, 13 Dec 2022 04:23:32 -0700
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
+ <krzysztof.kozlowski+dt@linaro.org>, <perex@perex.cz>, <tiwai@suse.com>,
+ <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>
+Subject: [PATCH v3 1/4] ASoC: dt-bindings: microchip: use proper naming syntax
+Date: Tue, 13 Dec 2022 13:28:48 +0200
+Message-ID: <20221213112851.89212-2-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20221213112851.89212-1-claudiu.beznea@microchip.com>
+References: <20221213112851.89212-1-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH] ALSA: conf: Save SND_CONFIG_TYPE_REAL with at least one
- decimal
-Content-Language: en-US
-To: Simon Svanbom <Simon.Svanbom@axis.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-References: <f9a7ad6a256d4ad7a31642dcf875d436@axis.com>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <f9a7ad6a256d4ad7a31642dcf875d436@axis.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,23 +84,91 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: "tiwai@suse.de" <tiwai@suse.de>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Claudiu Beznea <claudiu.beznea@microchip.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 13. 12. 22 8:55, Simon Svanbom wrote:
-> Hi,
-> patch for saving SND_CONFIG_TYPE_REAL with at least one decimal as to not 
-> misinterpret the value as an integer in snd_config_get_real. Example would be 
-> the sofvol configuration property min_dB and max_dB, that are required to have 
-> at least one decimal.
+Use the following syntax for Microchip ASoC YAML files:
+vendor,device.yaml
 
-Thanks. I pushed this fix to repo using the snd_config_get_ireal() function in the configuration parsing code:
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ .../sound/{mchp,i2s-mcc.yaml => microchip,sama7g5-i2smcc.yaml}  | 2 +-
+ .../sound/{microchip,pdmc.yaml => microchip,sama7g5-pdmc.yaml}  | 2 +-
+ .../sound/{mchp,spdifrx.yaml => microchip,sama7g5-spdifrx.yaml} | 2 +-
+ .../sound/{mchp,spdiftx.yaml => microchip,sama7g5-spdiftx.yaml} | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+ rename Documentation/devicetree/bindings/sound/{mchp,i2s-mcc.yaml => microchip,sama7g5-i2smcc.yaml} (97%)
+ rename Documentation/devicetree/bindings/sound/{microchip,pdmc.yaml => microchip,sama7g5-pdmc.yaml} (97%)
+ rename Documentation/devicetree/bindings/sound/{mchp,spdifrx.yaml => microchip,sama7g5-spdifrx.yaml} (95%)
+ rename Documentation/devicetree/bindings/sound/{mchp,spdiftx.yaml => microchip,sama7g5-spdiftx.yaml} (95%)
 
-https://github.com/alsa-project/alsa-lib/commit/9f2c68cef716aa45942b502a42d94b84289f23bc
-
-					Jaroslav
-
+diff --git a/Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml b/Documentation/devicetree/bindings/sound/microchip,sama7g5-i2smcc.yaml
+similarity index 97%
+rename from Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml
+rename to Documentation/devicetree/bindings/sound/microchip,sama7g5-i2smcc.yaml
+index 0481315cb5f2..68423f43ac3a 100644
+--- a/Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml
++++ b/Documentation/devicetree/bindings/sound/microchip,sama7g5-i2smcc.yaml
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/sound/mchp,i2s-mcc.yaml#
++$id: http://devicetree.org/schemas/sound/microchip,sama7g5-i2smcc.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: Microchip I2S Multi-Channel Controller
+diff --git a/Documentation/devicetree/bindings/sound/microchip,pdmc.yaml b/Documentation/devicetree/bindings/sound/microchip,sama7g5-pdmc.yaml
+similarity index 97%
+rename from Documentation/devicetree/bindings/sound/microchip,pdmc.yaml
+rename to Documentation/devicetree/bindings/sound/microchip,sama7g5-pdmc.yaml
+index 04414eb4ada9..7cc80dac980c 100644
+--- a/Documentation/devicetree/bindings/sound/microchip,pdmc.yaml
++++ b/Documentation/devicetree/bindings/sound/microchip,sama7g5-pdmc.yaml
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/sound/microchip,pdmc.yaml#
++$id: http://devicetree.org/schemas/sound/microchip,sama7g5-pdmc.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: Microchip Pulse Density Microphone Controller
+diff --git a/Documentation/devicetree/bindings/sound/mchp,spdifrx.yaml b/Documentation/devicetree/bindings/sound/microchip,sama7g5-spdifrx.yaml
+similarity index 95%
+rename from Documentation/devicetree/bindings/sound/mchp,spdifrx.yaml
+rename to Documentation/devicetree/bindings/sound/microchip,sama7g5-spdifrx.yaml
+index 970311143253..5121ea1600ae 100644
+--- a/Documentation/devicetree/bindings/sound/mchp,spdifrx.yaml
++++ b/Documentation/devicetree/bindings/sound/microchip,sama7g5-spdifrx.yaml
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/sound/mchp,spdifrx.yaml#
++$id: http://devicetree.org/schemas/sound/microchip,sama7g5-spdifrx.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: Microchip S/PDIF Rx Controller Device Tree Bindings
+diff --git a/Documentation/devicetree/bindings/sound/mchp,spdiftx.yaml b/Documentation/devicetree/bindings/sound/microchip,sama7g5-spdiftx.yaml
+similarity index 95%
+rename from Documentation/devicetree/bindings/sound/mchp,spdiftx.yaml
+rename to Documentation/devicetree/bindings/sound/microchip,sama7g5-spdiftx.yaml
+index d5c022e49526..d13e76269250 100644
+--- a/Documentation/devicetree/bindings/sound/mchp,spdiftx.yaml
++++ b/Documentation/devicetree/bindings/sound/microchip,sama7g5-spdiftx.yaml
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/sound/mchp,spdiftx.yaml#
++$id: http://devicetree.org/schemas/sound/microchip,sama7g5-spdiftx.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+ title: Microchip S/PDIF Tx Controller Device Tree Bindings
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.34.1
+
