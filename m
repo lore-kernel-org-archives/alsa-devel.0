@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CC44C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Dec 2022 10:46:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 372E9C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Dec 2022 10:46:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 88E5B1906;
-	Tue, 13 Dec 2022 11:45:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88E5B1906
+	by alsa0.perex.cz (Postfix) with ESMTPS id 47BB61895;
+	Tue, 13 Dec 2022 11:45:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47BB61895
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670928381;
-	bh=uplpfhEN6RmyAtuxsuSug50gkJOXSHec1yz8xB64QX4=;
+	s=default; t=1670928405;
+	bh=kPUu8IwRTuGJDrDeOx64y30lNL72eXvhm3FsQSMrbh0=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=ARn8MrSbeC3TgRnO+E+MX5sAYIop4HYuVU6MByPUiGoRI4smTSW6tzkjkB0+hgKWP
-	 CA5yBDLmhq0KA78UkvndP/2oxrWchajI4GBHoD25lFXqvegBl0daXqi0hwJe3xxYwR
-	 2iY55J2lXEUQyf4+Fq1XLP6DTagpAjGhpa0UsJGg=
+	b=KEV1vbZhK+zh0H4bPa8z6Nzr/bo5+rl21B5fzzmdv3EDyGml5n/hFL47rvXJmzu4l
+	 16ljJVuqSWsptnce2rgk+Mc5ugSLZOlgPwnP0fcQ2E0/Q5s+ohkNDP9pQb/5wnHbaS
+	 aWLXQl7IdtxBYP0pioCOkGSjq8d7U4N26PQJU4RM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30E3BF8047D;
-	Tue, 13 Dec 2022 11:45:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0753F80141;
+	Tue, 13 Dec 2022 11:45:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D3F8F804D6; Tue, 13 Dec 2022 11:45:29 +0100 (CET)
+ id 54D89F804D6; Tue, 13 Dec 2022 11:45:30 +0100 (CET)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B362F80272
- for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2022 11:45:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B362F80272
+ by alsa1.perex.cz (Postfix) with ESMTPS id C7B18F80272
+ for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2022 11:45:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7B18F80272
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=OSPTw/wy
+ header.a=rsa-sha256 header.s=mail header.b=hd3HEzVn
 Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
  [2.237.20.237])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits))
  (No client certificate requested) (Authenticated sender: kholk11)
- by madras.collabora.co.uk (Postfix) with ESMTPSA id BA77E6602AB2;
- Tue, 13 Dec 2022 10:45:25 +0000 (GMT)
+ by madras.collabora.co.uk (Postfix) with ESMTPSA id E58FC6602C34;
+ Tue, 13 Dec 2022 10:45:26 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1670928326;
- bh=uplpfhEN6RmyAtuxsuSug50gkJOXSHec1yz8xB64QX4=;
+ s=mail; t=1670928327;
+ bh=kPUu8IwRTuGJDrDeOx64y30lNL72eXvhm3FsQSMrbh0=;
  h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=OSPTw/wyqkLD69Ap07pXFqSSC0XEq7gF01g+KFB9E+NXHRWa4YAlsJWuD/xTNM8Z0
- JwOL6FFumMHMmBEL/867Z0F0S4ggG3H3euRxkOc52f3ngcYSHS4uxH+f8XcsiyFMgv
- n86GuWECw39I2xKqSq8qTyalhtMk2VW9lTBe62DR21xnPF2MDg6RAVeoda/wB5Ae/W
- jz/adww5OPm5DKI3//39M+MSbQBXnst5kk59N3Zn8N1/GplaTYF0U9VLdJqZ9G9Nrq
- /BUSMSRMc1hiNKQaO2BglRWZZNL88eZ4PeNejBsZDKUvsfE6lMbXn6JErDRnd/J7ic
- imHFADLcqxEYw==
-Message-ID: <ff9ba731-8d17-b98c-5b24-4ff831f6aba0@collabora.com>
-Date: Tue, 13 Dec 2022 11:45:22 +0100
+ b=hd3HEzVn/gunEkf1MMI8W6WxOOQ1Cqh/bHSwa160E8osDabsDYUpWpia11qmeL+Yv
+ gRxJ2dvu8zEd3NQIQKrcV3DBOlPhcPFtgizxRQbic65Y4nqMgA6idqCYa0Cv/eSyXf
+ riopASQ+JvpHbFOT9aY21+9MtS41Kqynf5AJ5AtTaVCEy6Px7JAFpzc0VFwCVdNTMi
+ 3KblawJwxQ01eMP3lPno0R+8wDJOhRxqfziiOCnNXjIYcCu3WRfuYYXiOrRqhYz5JG
+ 9TJrwhWwschAZJ+nuxW6FA6iTwLRE9W6UW/aJSYm0XohwQ1MuXv+Xlr1jDqyZ1/PbW
+ VF1UWV4XEi3yg==
+Message-ID: <4c26f044-de7d-26dd-65c0-7db484e4df49@collabora.com>
+Date: Tue, 13 Dec 2022 11:45:24 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.5.1
-Subject: Re: [PATCH v3 04/12] ASoC: mediatek: mt8188: support adda in platform
- driver
+Subject: Re: [PATCH v3 03/12] ASoC: mediatek: mt8188: support audsys clock
 Content-Language: en-US
 To: Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
  lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, robh+dt@kernel.org,
  krzysztof.kozlowski+dt@linaro.org, matthias.bgg@gmail.com,
  p.zabel@pengutronix.de
 References: <20221208033148.21866-1-trevor.wu@mediatek.com>
- <20221208033148.21866-5-trevor.wu@mediatek.com>
+ <20221208033148.21866-4-trevor.wu@mediatek.com>
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20221208033148.21866-5-trevor.wu@mediatek.com>
+In-Reply-To: <20221208033148.21866-4-trevor.wu@mediatek.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -91,17 +90,11 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Il 08/12/22 04:31, Trevor Wu ha scritto:
-> Add mt8188 adda dai driver support.
+> Add mt8188 audio cg clock control. Audio clock gates are registered to CCF
+> for reference count and clock parent management.
 > 
 > Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
 
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-> ---
-> I don't add Reviewed-by tag because one new header file is included
-> in the patch to resolve compiling issue found by kernel test robot.
-> ---
->   sound/soc/mediatek/mt8188/mt8188-dai-adda.c | 632 ++++++++++++++++++++
->   1 file changed, 632 insertions(+)
->   create mode 100644 sound/soc/mediatek/mt8188/mt8188-dai-adda.c
 
