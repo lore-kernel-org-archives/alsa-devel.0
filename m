@@ -4,72 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED8A9C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Dec 2022 11:57:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91E12C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Dec 2022 12:02:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D8A418A6;
-	Tue, 13 Dec 2022 12:56:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D8A418A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 676BD1884;
+	Tue, 13 Dec 2022 13:01:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 676BD1884
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1670932660;
-	bh=Z40V6qYbjgmWwgSyOY5Byr4d5zU2FGyLZIJeEadktBE=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=r7YfY539INUGc5VYR6w/Tfb+CEi4EAtdBrQnOrZ5WCJBwMZQaMRwEu3ioQgHWkrVv
-	 Dv2PppJBgcUvRe3WsVELWhXPs8kLni0b+YUspCbnUrWYg04GC9c3tOnYYmhDo/Qa6v
-	 28uOJTceAlxEjvub/vHrY9cIH1RlgSiQx/kM4xhs=
+	s=default; t=1670932968;
+	bh=0tjz21vWlpIXp3TLdb4r9CVVlQoLyWocCkbF9DIyBoI=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=iTWK9KNoxNNdocuYQkh69+dlDY2Rdsg1yM2g/XBNbwvdqH/92iQAOKM5DPUvjZQjE
+	 UjPgca7ZDWRdoxG4xmnSXS5JZYoR/bFlLOtIlWwlQCLUg99/6x+SRkDjyYEUFPSyCd
+	 rsiAYza+8YnchT2q1sdQk/atcDXyAisuseDJYRYI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9E2EF80272;
-	Tue, 13 Dec 2022 12:56:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10737F80272;
+	Tue, 13 Dec 2022 13:01:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BDCEEF80431; Tue, 13 Dec 2022 12:56:47 +0100 (CET)
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ id E482AF80431; Tue, 13 Dec 2022 13:01:56 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 79C44F80073
+ for <alsa-devel@alsa-project.org>; Tue, 13 Dec 2022 13:01:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79C44F80073
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=GWaA8Bt2
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3ACBF8007C;
- Tue, 13 Dec 2022 12:56:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3ACBF8007C
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=AC/eYJJD
-X-UUID: 404d105a61444cb8b4346359e0895279-20221213
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
- s=dk; 
- h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From;
- bh=GXGUYTA+wgaQLy7LF8FJNG0zt/E6jYH6kYl06M/+yds=; 
- b=AC/eYJJDigDIITMsbmTCyjznVHwcZnorNha/dXVI48K6qv4lPxoj2zOcGno0cQnn1A9T56Av35538Fp9YNpKmvXZKK66Yw/yFyqUBQPIJ/+C1SD4PJymbgiagnROZiv/632mfpHEplf3OENmrV1vDFZgsLxne4vJdi6ptnarrkA=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.14, REQID:abc06d65-2bb9-4782-8d78-95c2886f06bf, IP:0,
- U
- RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
- :release,TS:-5
-X-CID-META: VersionHash:dcaaed0, CLOUDID:05736317-b863-49f8-8228-cbdfeedd1fa4,
- B
- ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
- RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-X-UUID: 404d105a61444cb8b4346359e0895279-20221213
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
- mailgw01.mediatek.com (envelope-from <yc.hung@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 489273608; Tue, 13 Dec 2022 19:56:33 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Tue, 13 Dec 2022 19:56:32 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
- Frontend Transport; Tue, 13 Dec 2022 19:56:31 +0800
-From: YC Hung <yc.hung@mediatek.com>
-To: 
-Subject: [PATCH] ASoC: SOF: mediatek: initialize panic_info to zero
-Date: Tue, 13 Dec 2022 19:56:17 +0800
-Message-ID: <20221213115617.25086-1-yc.hung@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+ by ams.source.kernel.org (Postfix) with ESMTPS id A14A9B810CB;
+ Tue, 13 Dec 2022 12:01:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3EB6C433EF;
+ Tue, 13 Dec 2022 12:01:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1670932910;
+ bh=0tjz21vWlpIXp3TLdb4r9CVVlQoLyWocCkbF9DIyBoI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=GWaA8Bt2KWdyyLNuJo0KV4ecEDglbT6ZxML4yxNkBGu7J/PemO63bNYzZe0TY7+Dh
+ GEAdfgtoxvY2HM2azMMwpxNrTJaW7pv9gj0X4dHc8pPFA+nisMWfJdxiUz9dEzFc5C
+ JZmSeO2ZnSO9s2OGuZls1ltdNBXuGtYTN3nwGt8sQRljfvYXLHmSvSL4qDPOevg3+a
+ 3h1+knjJTaw1P8nnbX2r3wbvInw7VYNZpoxhSnGcrFNLRNQh34ukUxT14QQZN2PYq5
+ SHVRMxOT3d2vNHI/+TQ0ZbekqWyQhpw0gwhNneokfqEgZLGCLEeiI60f4TiIHpCRkA
+ u1QW1LMe57vCw==
+Date: Tue, 13 Dec 2022 12:01:45 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Rouven Czerwinski <r.czerwinski@pengutronix.de>
+Subject: Re: [PATCH 2/2] ASoC: max98088: fix initial dai mute state
+Message-ID: <Y5hpqWH2WuSIUHil@sirena.org.uk>
+References: <20221213095328.122309-1-r.czerwinski@pengutronix.de>
+ <20221213095328.122309-2-r.czerwinski@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="Ahb+Hr5djRLqjeHT"
+Content-Disposition: inline
+In-Reply-To: <20221213095328.122309-2-r.czerwinski@pengutronix.de>
+X-Cookie: Edwin Meese made me wear CORDOVANS!!
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,46 +77,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>, alsa-devel@alsa-project.org,
- chunxu.li@mediatek.com, linux-kernel@vger.kernel.org,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Chao Song <chao.song@intel.com>, Mark
- Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
- Trevor Wu <trevor.wu@mediatek.com>, YC Hung <yc.hung@mediatek.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Curtis Malainey <cujomalainey@chromium.org>, Bard
- Liao <yung-chuan.liao@linux.intel.com>, linux-arm-kernel@lists.infradead.org,
- sound-open-firmware@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
+ Takashi Iwai <tiwai@suse.com>, kernel@pengutronix.de
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Coverity spotted that panic_info is not initialized to zero in
-mtk_adsp_dump. Using uninitialized value panic_info.linenum when
-calling snd_sof_get_status. Fix this coverity by initializing
-panic_info struct as zero.
 
-Signed-off-by: YC Hung <yc.hung@mediatek.com>
----
- sound/soc/sof/mediatek/mtk-adsp-common.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--Ahb+Hr5djRLqjeHT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/sof/mediatek/mtk-adsp-common.c b/sound/soc/sof/mediatek/mtk-adsp-common.c
-index 1e0769c668a7..de8dbe27cd0d 100644
---- a/sound/soc/sof/mediatek/mtk-adsp-common.c
-+++ b/sound/soc/sof/mediatek/mtk-adsp-common.c
-@@ -60,7 +60,7 @@ void mtk_adsp_dump(struct snd_sof_dev *sdev, u32 flags)
- {
- 	char *level = (flags & SOF_DBG_DUMP_OPTIONAL) ? KERN_DEBUG : KERN_ERR;
- 	struct sof_ipc_dsp_oops_xtensa xoops;
--	struct sof_ipc_panic_info panic_info;
-+	struct sof_ipc_panic_info panic_info = {};
- 	u32 stack[MTK_ADSP_STACK_DUMP_SIZE];
- 	u32 status;
- 
--- 
-2.18.0
+On Tue, Dec 13, 2022 at 10:53:28AM +0100, Rouven Czerwinski wrote:
 
+> To fix that we need to explicit set the mute state. Now the first
+> playback request gets played correctly.
+
+> +++ b/sound/soc/codecs/max98088.c
+> @@ -1710,6 +1710,11 @@ static int max98088_probe(struct snd_soc_component=
+ *component)
+>         snd_soc_component_write(component, M98088_REG_1E_DAI2_IOCFG,
+>                 M98088_S2NORMAL|M98088_SDATA);
+> =20
+> +       snd_soc_component_update_bits(component, M98088_REG_2F_LVL_DAI1_P=
+LAY,
+> +               M98088_DAI_MUTE_MASK, M98088_DAI_MUTE);
+> +       snd_soc_component_update_bits(component, M98088_REG_31_LVL_DAI2_P=
+LAY,
+> +               M98088_DAI_MUTE_MASK, M98088_DAI_MUTE);
+> +
+
+Won't this be broken again after suspend?  The device gets powered off
+over suspend, then when it powers on again with the output unmuted
+nothing will do another write since the register is already in the state
+in the cache.
+
+--Ahb+Hr5djRLqjeHT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmOYaagACgkQJNaLcl1U
+h9DExgf+PM0QBKDQrbq0B1g9m3LgtHCePmmk+o7alaV9i82GcY9PpXzb7FxJp3lS
+Ux4Y+QIfzyxhItX8da2NiV/ETmAASVgZm+aclYTVXfIQfnBl1kaq+0B9BQ2ix73B
+EVRx0Q5L4SYp0m+4iAPE6rfG/yfXWkm0Vq827pRdIohN6yLfBBl4uVaSbBbHdlMV
+vTA8Cp8R/1dACDa5MFpE1GzcNt5SHoyMdHJkAopC8jHQCTSqhAxe5fekmYayFjK4
+KHN5tEoX7cMVFLpYYC6j1HG5FgXY6oPkGeQHFc2XB5LyAEHHkygpqzJQeOhF9Mrx
+p7FBXm5/8ZZeatGoVdtkcbCuxBD17w==
+=NVO8
+-----END PGP SIGNATURE-----
+
+--Ahb+Hr5djRLqjeHT--
