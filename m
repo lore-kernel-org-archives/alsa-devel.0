@@ -4,71 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E26CC4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Dec 2022 12:40:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 197B9C4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Dec 2022 13:05:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70A602A16;
-	Wed, 14 Dec 2022 13:39:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70A602A16
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89237236B;
+	Wed, 14 Dec 2022 14:04:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89237236B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671021607;
-	bh=iIloGlatMDmAuaPNVuQmwCH9/jqZP4MlSm3Z9y2hlaQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=I3XF9fGKAZjqF96t6tZoTWtGbEeougxMqyNk7YKMnDKd0dIv3X4MahevIRHH87tXi
-	 Y7ozAAkGgSGvF/aBPiAIuQfWrSCCcRLV4wQL2oiYefLKJHaNl29RG8fBs7Jp6bTg9X
-	 IJ3IejJAcfeMCkARHhhSaj3vAumPXBTIdhf5bXYo=
+	s=default; t=1671023098;
+	bh=GZEykBLRY6xcsFpVXkvhdUKjKSjymjAXbtZtme1Q4E8=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=EnOkIYOsxPvTwNxWnFBo+sLbvnwSZdSJrXlsSBP5fp6acInHm6PiBR7WH93tU5FeN
+	 TJGqpyqvoolFy3bQLdDDmzSe7PJwo4sjToMv6AYxCW7KLvYrfgfzxIEmPWwDo9SROn
+	 VwogLTWsdPRLwTmc3ryBNERDhZ63LX9hXuQZCCMk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B61C8F80538;
-	Wed, 14 Dec 2022 13:38:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2DA9BF80310;
+	Wed, 14 Dec 2022 14:04:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9E7DCF80310; Wed, 14 Dec 2022 13:38:10 +0100 (CET)
-Received: from phobos.denx.de (phobos.denx.de
- [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+ id 61CF7F804D0; Wed, 14 Dec 2022 14:04:07 +0100 (CET)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 59CF1F804D0
- for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2022 13:38:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59CF1F804D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99BBDF801D5
+ for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2022 14:04:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99BBDF801D5
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=denx.de header.i=@denx.de header.a=rsa-sha256
- header.s=phobos-20191101 header.b=o5UgHlc7
-Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl
- [85.222.111.42])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
- (No client certificate requested)
- (Authenticated sender: lukma@denx.de)
- by phobos.denx.de (Postfix) with ESMTPSA id 28B5E85165;
- Wed, 14 Dec 2022 13:38:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
- s=phobos-20191101; t=1671021486;
- bh=6Jupxi3YTw8zb2A9Zvbmvr72UlqBukNaZRCAsj7GqjU=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=o5UgHlc7BdfCg9o2XR7gT44W6Ksgs3OtjVtv8ynu0m10B2QzPRU+PC/kEWRkvFPfP
- acl5roqWq/GsUSGan5B3XwKx/OYt2Pt7chpee0qctOneZIh2EKdT+8t3H0H3cIIbfj
- 25DbmW865Sa3PAJ0S+ZrifUDk0UBtKfpQpMuY6+Dw277FYYfsYVpyqohBIR2f9CNsY
- MGUkEtxm5m/RVsyl4t9dyespT3Zmwpcur3weMXvUgq9H6DbcZs0hwVb/zKcYtK+WdD
- JEob0lISivpColvXh/iz+g3tB/r/AOcxp82bZgDE+fL9AJQsqO0bQe6xNT3fMlgCd1
- p0QRaC44qiFAA==
-From: Lukasz Majewski <lukma@denx.de>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Stephen Kitt <steve@sk2.org>
-Subject: [PATCH 3/4] ASoC: wm8940: Mute also the speaker output
-Date: Wed, 14 Dec 2022 13:37:42 +0100
-Message-Id: <20221214123743.3713843-4-lukma@denx.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221214123743.3713843-1-lukma@denx.de>
-References: <20221214123743.3713843-1-lukma@denx.de>
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=L3MWub+8
+Received: from localhost.localdomain (zone.collabora.co.uk [167.235.23.81])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested) (Authenticated sender: nfraprado)
+ by madras.collabora.co.uk (Postfix) with ESMTPSA id A54B76602C4E;
+ Wed, 14 Dec 2022 13:04:00 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1671023043;
+ bh=GZEykBLRY6xcsFpVXkvhdUKjKSjymjAXbtZtme1Q4E8=;
+ h=From:To:Cc:Subject:Date:From;
+ b=L3MWub+8UXzsNySJvlrzmj27f8o4iAeJkAW/wJr1oroFMO3CU1WQ3qUge9+bbPzNe
+ Ae11AYDf73jO3Gaw8m2dafrgJJYi71g03hapgtNhMmQ64q3bP+nR26mcykZWFbaQwT
+ mZ79vee70XXhrT34BpQKMxvtvzYLnZ7BOU81Go0bGBQV2H16WcrwAkMSrfodIG7m5V
+ xJD0cjymPN3rfA3qla4hullm7nSo3XLnLj/ODU4zsHsnnCQq90mQ18pSlKAQM714kx
+ 28FQ+y+AV/F3TJ/L0Q6zGi9BBMeJM0GKKSSX5X8A8+5BUIQm4qZVJPYgSXL6DZg9Mw
+ FqXop6nFTqcEA==
+From: =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?=
+ <nfraprado@collabora.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH v2] kselftest/alsa: Increase kselftest timeout
+Date: Wed, 14 Dec 2022 10:03:53 -0300
+Message-Id: <20221214130353.1989075-1-nfraprado@collabora.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.6 at phobos.denx.de
-X-Virus-Status: Clean
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,63 +73,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Lukasz Majewski <lukma@denx.de>
+Cc: alsa-devel@alsa-project.org,
+ =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?=
+ <nfraprado@collabora.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, linux-kselftest@vger.kernel.org,
+ kernel@collabora.com, Shuah Khan <shuah@kernel.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Without this change the BTL speaker produces some
-"distortion" noise when test program
-(speaker-test -t waw) is ended with ctrl+c.
+The default timeout for kselftests is 45 seconds, but that isn't enough
+time to run pcm-test when there are many PCMs on the device, nor for
+mixer-test when slower control buses and fancier CODECs are present.
 
-As our design uses speaker outputs to drive BTL speaker,
-it was necessary to also mute the speaker via the codec
-internal WM8940_SPKVOL register with setting
-WM8940_SPKMUTE bit.
+As data points, running pcm-test on mt8192-asurada-spherion takes about
+1m15s, and mixer-test on rk3399-gru-kevin takes about 2m.
 
-Signed-off-by: Lukasz Majewski <lukma@denx.de>
+Set the timeout to 4 minutes to allow both pcm-test and mixer-test to
+run to completion with some slack.
+
+Reviewed-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+
 ---
- sound/soc/codecs/wm8940.c | 11 ++++++++++-
- sound/soc/codecs/wm8940.h |  3 +++
- 2 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
-index 094e74905df9..13cb57210b4b 100644
---- a/sound/soc/codecs/wm8940.c
-+++ b/sound/soc/codecs/wm8940.c
-@@ -465,9 +465,18 @@ static int wm8940_mute(struct snd_soc_dai *dai, int mute, int direction)
- {
- 	struct snd_soc_component *component = dai->component;
- 	u16 mute_reg = snd_soc_component_read(component, WM8940_DAC) & 0xffbf;
-+	u16 spkvol_reg = snd_soc_component_read(component, WM8940_SPKVOL);
-+	int ret;
- 
--	if (mute)
-+	spkvol_reg &= ~WM8940_SPKMUTE;
-+	if (mute) {
- 		mute_reg |= 0x40;
-+		spkvol_reg |= WM8940_SPKMUTE;
-+	}
-+
-+	ret = snd_soc_component_write(component, WM8940_SPKVOL, spkvol_reg);
-+	if (ret)
-+		return ret;
- 
- 	return snd_soc_component_write(component, WM8940_DAC, mute_reg);
- }
-diff --git a/sound/soc/codecs/wm8940.h b/sound/soc/codecs/wm8940.h
-index 0d4f53ada2e6..eb051ed29bb8 100644
---- a/sound/soc/codecs/wm8940.h
-+++ b/sound/soc/codecs/wm8940.h
-@@ -95,5 +95,8 @@ struct wm8940_setup_data {
- #define WM8940_OPCLKDIV_3 2
- #define WM8940_OPCLKDIV_4 3
- 
-+/* Bit definitions */
-+#define WM8940_SPKMUTE BIT(6)
-+
- #endif /* _WM8940_H */
- 
+Changes in v2:
+- Reduced timeout from 10 to 4 minutes
+- Tweaked commit message to also mention mixer-test and run time for
+  mixer-test on rk3399-gru-kevin
+
+ tools/testing/selftests/alsa/settings | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 tools/testing/selftests/alsa/settings
+
+diff --git a/tools/testing/selftests/alsa/settings b/tools/testing/selftests/alsa/settings
+new file mode 100644
+index 000000000000..b478e684846a
+--- /dev/null
++++ b/tools/testing/selftests/alsa/settings
+@@ -0,0 +1 @@
++timeout=240
 -- 
-2.20.1
+2.39.0
 
