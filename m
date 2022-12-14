@@ -4,64 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3E8AC46467
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Dec 2022 12:39:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E25EC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Dec 2022 12:39:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 682081924;
-	Wed, 14 Dec 2022 13:38:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 682081924
+	by alsa0.perex.cz (Postfix) with ESMTPS id 320122422;
+	Wed, 14 Dec 2022 13:38:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 320122422
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671021539;
-	bh=fbFXGz79MCEo2V9LMATGuO+NTZZ3WufEy7jSR3uq9oE=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=QGgY5Avq7TFQPuimf0Wdzx5KMt0kBCZaOmhQ6QlhFkhzMPHq8TUYBvrYUWI0Hntcv
-	 29AYi6Ue2gosf/J6YucdgImK0/kL8zmhwFDYLE6/pKd8vqhislTVGHcnQovZ7E3qCL
-	 FrnCP5pMijuVBsIESklkx9gdSnN24mlRlVGiFUyM=
+	s=default; t=1671021563;
+	bh=6UKyqhoE+104iGmuRgMEEkd+q+3dSfhpuzs6x2u26lY=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=Xe4wbP9rKgr1kQkJ1QwcjJhNeDM1YtXs9oxR5qb4b02XpRZHYdH+G4B5mZ474utoU
+	 BJ2DR+92VwTOEd4Q3A++CShTR0JCdl2GPQ6OyJ4m+zyxQqg3oRCLgq/+Gm8bH6gBzT
+	 3woemFu6ZLfnLqLBVW4d/cpRKF1k20pQhgD9Bat4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E481F804F1;
-	Wed, 14 Dec 2022 13:38:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EC48BF804D0;
+	Wed, 14 Dec 2022 13:38:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB8F8F804F1; Wed, 14 Dec 2022 13:38:07 +0100 (CET)
+ id 828C5F804F1; Wed, 14 Dec 2022 13:38:08 +0100 (CET)
 Received: from phobos.denx.de (phobos.denx.de
  [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4504EF80141
- for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2022 13:38:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4504EF80141
+ by alsa1.perex.cz (Postfix) with ESMTPS id 672C4F80310
+ for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2022 13:38:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 672C4F80310
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=denx.de header.i=@denx.de header.a=rsa-sha256
- header.s=phobos-20191101 header.b=jdIEWdti
+ header.s=phobos-20191101 header.b=y1lyj8rz
 Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl
  [85.222.111.42])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
  (No client certificate requested)
  (Authenticated sender: lukma@denx.de)
- by phobos.denx.de (Postfix) with ESMTPSA id A2FE385163;
- Wed, 14 Dec 2022 13:38:04 +0100 (CET)
+ by phobos.denx.de (Postfix) with ESMTPSA id 3F7BC85104;
+ Wed, 14 Dec 2022 13:38:05 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
  s=phobos-20191101; t=1671021485;
- bh=aZYpr7PdIIEjRHAo8aMLeYDllEQgPdCTCsRbDEX5RrE=;
- h=From:To:Cc:Subject:Date:From;
- b=jdIEWdtiQi/UuZ1yVszQKCK5h9Qg9GUZVF38U3I9a3Y2XQtr8QLlbCLiWSm3BV7nP
- oCLOl76rJzoC4jAo2eiOWGonPPRp/+u4cRqYV6D/Zj8+4BAcz+bdkaNYEMFfw7mL3M
- 0B9UT3uoY7CNfS4fVcYe2xl1UIQuBmNxgtj8taM5JVLyfLCFqsDt0Ion9Lv5KdtttP
- nXkuWEjl7o1znyRvKvE99vnqL1qkcGKW8rtIVloAsqlb+/GeWTRggWME2od6R3dWwh
- V3jPF1jmnWAk9c5oKacT8lBUA6i/TvotzFP+kVuzWidgA8Kzk3DQy7EA/coXcsumdH
- X0xb4RA0rrVpg==
+ bh=/73in4YIE8G8CYnWx0Er3I9VVvTCTYIHLYd83My0KlQ=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=y1lyj8rztDUuWEwQvfddAazUNzjyPhv/ZgvWDuX5GQCWDOp3PCgGI1rbRYGxFtsu3
+ QFYHzd4roZ/kNz6LwXfmJv6YvE9wvRQEaiFKwoyJSfyU+3zN1s2YEbUWAt+KOYvhuc
+ p2mLHdtMOFJm+vKFyvwyosBmLApcxNNTYfdJXbq27gvmh28aKAAC9xvLAxQu1R4lOa
+ KwtLykZhJc4yy4EkrM5J7pJhwy3eajOTRDufW6MFXFyXy8mydRkMRjWvPLc2jvIa7Y
+ TXL9iGNDHv3M1/z9mz7N11xQIAYC/aqtuDglNmpI74DZ5bR2ySJ0qMeT14c2euyYcu
+ 147ezol8DSALQ==
 From: Lukasz Majewski <lukma@denx.de>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Charles Keepax <ckeepax@opensource.cirrus.com>,
  Stephen Kitt <steve@sk2.org>
-Subject: [PATCH 0/4] ASoC: Fixes for WM8940 codec
-Date: Wed, 14 Dec 2022 13:37:39 +0100
-Message-Id: <20221214123743.3713843-1-lukma@denx.de>
+Subject: [PATCH 1/4] ASoC: wm8940: Remove warning when no plat data present
+Date: Wed, 14 Dec 2022 13:37:40 +0100
+Message-Id: <20221214123743.3713843-2-lukma@denx.de>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221214123743.3713843-1-lukma@denx.de>
+References: <20221214123743.3713843-1-lukma@denx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Virus-Scanned: clamav-milter 0.103.6 at phobos.denx.de
@@ -83,22 +86,30 @@ Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch series provides fixes for WM8940 codec.
+The lack of platform data in the contemporary Linux
+shall not be the reason to display warnings to the
+kernel logs.
 
-The most notable change is the clock rewrite, so this driver now
-can either generate proper clock frequency by itself or use one
-provided from the clock subsystem of the SoC.
+Signed-off-by: Lukasz Majewski <lukma@denx.de>
+---
+ sound/soc/codecs/wm8940.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Lukasz Majewski (4):
-  ASoC: wm8940: Remove warning when no plat data present
-  ASoC: wm8940: Rewrite code to set proper clocks
-  ASoC: wm8940: Mute also the speaker output
-  ASoC: wm8940: Read chip ID when wm8940 codec probing
-
- sound/soc/codecs/wm8940.c | 129 +++++++++++++++++++++++++++++++-------
- sound/soc/codecs/wm8940.h |   6 ++
- 2 files changed, 111 insertions(+), 24 deletions(-)
-
+diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
+index 8dac9fd88547..0b59020d747f 100644
+--- a/sound/soc/codecs/wm8940.c
++++ b/sound/soc/codecs/wm8940.c
+@@ -709,9 +709,7 @@ static int wm8940_probe(struct snd_soc_component *component)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	if (!pdata)
+-		dev_warn(component->dev, "No platform data supplied\n");
+-	else {
++	if (pdata) {
+ 		reg = snd_soc_component_read(component, WM8940_OUTPUTCTL);
+ 		ret = snd_soc_component_write(component, WM8940_OUTPUTCTL, reg | pdata->vroi);
+ 		if (ret < 0)
 -- 
 2.20.1
 
