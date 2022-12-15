@@ -4,71 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A9B8C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Dec 2022 17:40:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CC5BC4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Dec 2022 18:25:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 74480191B;
-	Thu, 15 Dec 2022 18:39:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74480191B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F00E18D8;
+	Thu, 15 Dec 2022 19:24:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F00E18D8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671126020;
-	bh=B3Y5fOQUoSGt0TYtxeTcs4ZxQAgDEMdgJClAQNYc+Ig=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1671128725;
+	bh=bdCtT+5ElJmr9KjTrYdZQTFR2w3Tb5egfy2oVKPmxjI=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=JpWQf6+MX72py1mCojvTKglh1O4K191mcPDLONdI4shRVwyl0ibm58N/a8cPdoA5i
-	 0Y9J/+mzBEBTDSMbDRarOI/PxVAMp2U/Z3uqIX9nx1X9My9HKj4Pwmv5KCz8Rk8bK4
-	 c7QavRS5Ch3cGUAQl/SWuVec9EKc/VGoX58WDMzI=
+	b=mDXZiij2K7QWWMOB7wauj9LTR4Ep3QCKoKjuHZZRGWHwVuXFdGsWM9Nhl7AMZu+70
+	 5QowU9meAFm+VJ+bh6UHprraIjDh73ftxOWnvhjRZPkfn5KLlHaLjobQ/IxiKycrdu
+	 6KpSmPBQUILNERyPrKiIiCMJ3rHhzw9SHIP9bJXM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22C64F804E7;
-	Thu, 15 Dec 2022 18:39:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22D9AF804E7;
+	Thu, 15 Dec 2022 19:24:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4BDACF804ED; Thu, 15 Dec 2022 18:39:28 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7BF71F801D5
- for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2022 18:39:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BF71F801D5
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=pMltQMFl
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 8576DF804ED; Thu, 15 Dec 2022 19:24:33 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id B39E1B81C21;
- Thu, 15 Dec 2022 17:39:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 786A1C433EF;
- Thu, 15 Dec 2022 17:39:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1671125964;
- bh=B3Y5fOQUoSGt0TYtxeTcs4ZxQAgDEMdgJClAQNYc+Ig=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=pMltQMFl74JuDyivFi/bQAsQNn2ojAqrLNwxkADl0inuLpsLCCzIG6Gf6iVZucVwW
- XSCzXD0qMl6kyZ6ipLgtQD6mfvF3gdXo+U0HFxv+Y1Vum9NK4SbUk8NyoDdw6eBMDC
- DMjwSMM4zn9tx9CKnHCq3ywg0X7XAWKZSuiA1xYhMXEd9qc1AjP9RZe1/o7iG3KmyJ
- b/3XHLJqo9+i3Q+V00NV+fRs9QE5BnfpQJgCAy0peRY5pcLw8ClnZoBin4YVDT4UJg
- Dge/devvBtZYyPITovZlWZxEPlz5RgwhEbKOYbqNU8cJVCCn92pYDjHfA7pH32b/Vq
- cyrE1XSHXsIng==
-From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, patches@opensource.cirrus.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20221215134337.77944-1-krzysztof.kozlowski@linaro.org>
-References: <20221215134337.77944-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] ASoC: lochnagar: Fix unused lochnagar_of_match warning
-Message-Id: <167112596219.3721867.784009844476079097.b4-ty@kernel.org>
-Date: Thu, 15 Dec 2022 17:39:22 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4610FF80141
+ for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2022 19:24:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4610FF80141
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=mGYvkiNG
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1671128672; x=1702664672;
+ h=date:from:to:cc:subject:in-reply-to:message-id:
+ references:mime-version;
+ bh=bdCtT+5ElJmr9KjTrYdZQTFR2w3Tb5egfy2oVKPmxjI=;
+ b=mGYvkiNGny6mN/KyPhPH3TSZYaSu8uZnYv/KOwGERsgnOInSOx9XTCZk
+ me7VONxeRkaBRVNog7MVZz8T4BylyxdjbXlJKwJvDxm13rgP7n9gjKxZg
+ hM7w+9rOHOi3ce7yimSfPHD/hfAIv46vsbG86kxrvfsRzoGdy+sHpHZrY
+ bhgGcA4XL3/cHcpDX0AS8wXPo3RmB3/PfEJI6GNBwjdEt2LqTeKiCEJ1S
+ z1ULq1wIlPtk4j5xliVhGUmdnDpoIBdgN3PkxqcpavDfYviYKtLp3+5LI
+ CLiocQSnmzVyXvtIr57pEcGQf+NZrTYjHD2V+FCil6S8IPsNtm95j/x69 A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10562"; a="316408393"
+X-IronPort-AV: E=Sophos;i="5.96,248,1665471600"; d="scan'208";a="316408393"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Dec 2022 10:24:26 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10562"; a="978287239"
+X-IronPort-AV: E=Sophos;i="5.96,248,1665471600"; d="scan'208";a="978287239"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Dec 2022 10:24:23 -0800
+Date: Thu, 15 Dec 2022 20:23:59 +0200 (EET)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Subject: Re: [6.2][regression] after commit
+ ffcb754584603adf7039d7972564fbf6febdc542
+ all sound devices disappeared (due BUG at mm/page_alloc.c:3592!)
+In-Reply-To: <CABXGCsPnpu0TGHnvXM1we7q1t3tJAOYW2rA=AMvf7ZahcYvpRQ@mail.gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2212152017110.3532114@eliteleevi.tm.intel.com>
+References: <CABXGCsPnpu0TGHnvXM1we7q1t3tJAOYW2rA=AMvf7ZahcYvpRQ@mail.gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.11.0-dev-7e003
+Content-Type: text/plain; charset=US-ASCII
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,42 +83,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: kernel test robot <lkp@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>,
+ Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+ alsa-devel@alsa-project.org, hch@lst.de, m.szyprowski@samsung.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 15 Dec 2022 14:43:37 +0100, Krzysztof Kozlowski wrote:
-> lochnagar_of_match is used unconditionally, so COMPILE_TEST builds
-> without OF warn:
-> 
->   sound/soc/codecs/lochnagar-sc.c:247:34: error: ‘lochnagar_of_match’ defined but not used [-Werror=unused-const-variable=]
-> 
-> 
+Hi,
 
-Applied to
+On Thu, 15 Dec 2022, Mikhail Gavrilov wrote:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> The kernel 6.2 preparation cycle has begun and yesterday after the
+> kernel was updated on my Fedora Rawhide all audio devices disappeared.
 
-Thanks!
+I can confirm this breaks audio in our SOF tests if I cherry-pick the 
+identified patch ffcb754584603a to sound tree. This affects audio on a 
+very large number of x86 systems.
 
-[1/1] ASoC: lochnagar: Fix unused lochnagar_of_match warning
-      commit: a12a383e59ce486abd719b6bda33c353a3b385e7
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Br, Kai
