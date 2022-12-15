@@ -4,71 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59AABC4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Dec 2022 18:56:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A81CC4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Dec 2022 22:13:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86E3E224C;
-	Thu, 15 Dec 2022 19:55:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86E3E224C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CA87184E;
+	Thu, 15 Dec 2022 23:12:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CA87184E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671130562;
-	bh=YZXWFk12BqEf8sAsdvJ+ZpEfpctLDZin4pz6bzZL6g4=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1671142398;
+	bh=WK7DVlkK/PXsM12yLvrb4rPdwLMUSOHyTrTvHqnlG6M=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=hmIbK0zeB06cinu763SvUpWA8tIPkQRivf3iQQGt28zERHkFIomAEhW26uuELDTw5
-	 aHwyrKidVxIJgsXGCKrkggHMA91z5/MLSHomEUnEDGMeywWEZzV6h0w55mu+fgNkYZ
-	 im5sx88SfQWLOh7bOV1BcDTBI5/JSuNxm/4+eC48=
+	 From;
+	b=h/F8Xz8xapkpSymNsK52Oh4GhN4FcXK1IeZm08L0YZcsrGfPCwUK7VM54W5ZHSzIT
+	 oNH6iXwG4LMJ/eB0P0Sr7y/9ScLEIiEkLrpH5lhix9E0UtVwi7lVvT00Ze73gJedse
+	 Uw0JRfqra978Qv/eystBBon47VPWO9G3rNS4cYeE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F33AF80534;
-	Thu, 15 Dec 2022 19:54:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15A09F804E7;
+	Thu, 15 Dec 2022 23:12:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42034F80515; Thu, 15 Dec 2022 19:54:17 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0AEECF804FC
- for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2022 19:54:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AEECF804FC
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Hl0WTl6m
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1671130456; x=1702666456;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=YZXWFk12BqEf8sAsdvJ+ZpEfpctLDZin4pz6bzZL6g4=;
- b=Hl0WTl6md1r9+WWUD2MLRg2ZZsHwgQbxCPxIW4RAEEA4TSeE1M3JmEPS
- OC+KhgFS8Rr1pwWv6k7Jm1duGl+2HAtxWQGtN5pGJUk0O5miPb9sV29mL
- xOWkp9SnJIgeJEZYiQ1Fq0LodwJLhf3ufZS4gVpcm0HoD12m5HVlekcXS
- ebNzto7DEFutKAhWSC8rnEa8/SzoZRNTRGahQrxMvht4m3giQ6Z0mbj41
- CmCwSbVJWvyzI2NesJqs8QH/l9k0q5+rRyqSYgU6fPgTDXUCYskfmIYgr
- x5MRd2TxOZX2Jkf3XlfNDP7ja/uI1tQYTCII3IqPuw7ycv+jbpSN3/Cfx w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10562"; a="318819932"
-X-IronPort-AV: E=Sophos;i="5.96,248,1665471600"; d="scan'208";a="318819932"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Dec 2022 10:54:05 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10562"; a="738260654"
-X-IronPort-AV: E=Sophos;i="5.96,248,1665471600"; d="scan'208";a="738260654"
-Received: from mayurarx-mobl.amr.corp.intel.com (HELO
- rsridh2-mobl1.localdomain) ([10.254.35.200])
- by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Dec 2022 10:54:05 -0800
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/3] ASoC: SOF: Add FW state to debugfs
-Date: Thu, 15 Dec 2022 10:53:47 -0800
-Message-Id: <20221215185347.1457541-4-ranjani.sridharan@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221215185347.1457541-1-ranjani.sridharan@linux.intel.com>
-References: <20221215185347.1457541-1-ranjani.sridharan@linux.intel.com>
+ id A17E9F804ED; Thu, 15 Dec 2022 23:12:26 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 2B383F801D5
+ for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2022 23:12:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B383F801D5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1671142344513089895-webhooks-bot@alsa-project.org>
+References: <1671142344513089895-webhooks-bot@alsa-project.org>
+Subject: aplay,axfer: Replace off64_t with off_t
+Message-Id: <20221215221226.A17E9F804ED@alsa1.perex.cz>
+Date: Thu, 15 Dec 2022 23:12:26 +0100 (CET)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,42 +52,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- Curtis Malainey <cujomalainey@chromium.org>,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Curtis Malainey <cujomalainey@chromium.org>
+alsa-project/alsa-utils pull request #183 was opened from kraj:
 
-Allow system health detection mechanisms to check the FW state, this
-will allow them to check if the FW is in its "crashed" state going
-forward to help automatically diagnose driver state.
+Also replace lseek64 with lseek.
 
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
----
- sound/soc/sof/debug.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+_FILE_OFFSET_BITS=64 is passed to needed platforms since configure uses AC_SYS_LARGEFILE macro. Therefore off_t is already 64-bit and lseek is same as lseek64.
 
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index d9a3ce7b69e1..ade0507328af 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -353,7 +353,9 @@ int snd_sof_dbg_init(struct snd_sof_dev *sdev)
- 			return err;
- 	}
- 
--	return 0;
-+	return snd_sof_debugfs_buf_item(sdev, &sdev->fw_state,
-+					sizeof(sdev->fw_state),
-+					"fw_state", 0444);
- }
- EXPORT_SYMBOL_GPL(snd_sof_dbg_init);
- 
--- 
-2.25.1
+Additionally this fixes buils with latest musl where these lfs64 functions are moved out from _GNU_SOURCE and under _LARGEFILE64_SOURCE macro alone. This makes the builds fail on 32-bit platforms even though default off_t on musl is 64-bit always.
 
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+
+Request URL   : https://github.com/alsa-project/alsa-utils/pull/183
+Patch URL     : https://github.com/alsa-project/alsa-utils/pull/183.patch
+Repository URL: https://github.com/alsa-project/alsa-utils
