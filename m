@@ -4,73 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 774E0C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Dec 2022 06:12:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23DB3C00145
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Dec 2022 08:50:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1F18821ED;
-	Thu, 15 Dec 2022 07:11:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F18821ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4CAD522B8;
+	Thu, 15 Dec 2022 09:49:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CAD522B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671084739;
-	bh=Om2I4mAA9zzyGxYbl/jKpm4txNZ/k6waFNXDRSsTHFg=;
+	s=default; t=1671094222;
+	bh=Xb6HAMTOE8XGB+he/8crvLmIoKFamiSOnJ54h1Bx0Vg=;
 	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=VVSwy+oupPgvZs6qUs7EpPXHeEquenPUAIcFs4Bj1kX7huzmWNREho3kutOw9JHyz
-	 +7KZs7Q5EE/Ut66ievJL6ALJW2f5cKGc9nJHWo5nkEeRsudV2AmpiN2UdsnhKXNJpV
-	 HRdPgPkNSsAGv38U5TX57Hz5K0iU7PybzqRYKiC8=
+	b=dl5j8D22gGAL5BgyiKXYmjpXxDu/V97lUErXq4A3ngU8lUA5C2XHFGwjkTO09yNwz
+	 a1uoEfBORMTUcy1TxlEs8Y0S1NE55QJAlrWQTNTbZB/H1ryWpnOH7NUacXj+CT24xT
+	 lhHnRl857gLTnu5Kn4GDRP7HeD3TTFf8i8rEKIqE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD5F8F804F3;
-	Thu, 15 Dec 2022 07:11:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8CE2F804E7;
+	Thu, 15 Dec 2022 09:49:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59E09F804ED; Thu, 15 Dec 2022 07:11:22 +0100 (CET)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ id C1470F804ED; Thu, 15 Dec 2022 09:49:29 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0E893F804CB;
- Thu, 15 Dec 2022 07:11:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E893F804CB
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=pzWs8r94
-X-UUID: 902477fd707542469273d357e6f800f1-20221215
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
- s=dk; 
- h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From;
- bh=mzkH0/QhnNUKthB0EOesphpVmgsLNcxmI7NqMZkJnhE=; 
- b=pzWs8r94mRD5UUOhx3C5NTXdpT+8Y1Q6/+HZvyMYcObi0HfOmjL9uPlsho4yrFmpA47fJBKpwWZqxTYUhC/R2AYjoRfT+iUicpj7cX3ndsdMRIF3X6jt3x9EPCsucmA0RTpd31Vb/a3fTNPUUyiDkRheuRy8LxDQvUYhdGmZV8M=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.14, REQID:b4938af0-d4a3-41d7-b2cf-d12514b1edb8, IP:0,
- U
- RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
- :release,TS:-5
-X-CID-META: VersionHash:dcaaed0, CLOUDID:2ef6a6b4-d2e2-434d-b6d3-aeae88dfcc78,
- B
- ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
- RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
-X-UUID: 902477fd707542469273d357e6f800f1-20221215
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by
- mailgw02.mediatek.com (envelope-from <yc.hung@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
- with ESMTP id 842347800; Thu, 15 Dec 2022 14:10:49 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Thu, 15 Dec 2022 14:10:48 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.792.15 via Frontend Transport; Thu, 15 Dec 2022 14:10:48 +0800
-From: YC Hung <yc.hung@mediatek.com>
-To: 
-Subject: [PATCH] ASoC: SOF: mediatek: mt8195: remove a redundant comparison of
- sram
-Date: Thu, 15 Dec 2022 14:10:46 +0800
-Message-ID: <20221215061046.16934-1-yc.hung@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0DF7BF801D5
+ for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2022 09:49:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DF7BF801D5
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=UndBVJcB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1671094168; x=1702630168;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=Xb6HAMTOE8XGB+he/8crvLmIoKFamiSOnJ54h1Bx0Vg=;
+ b=UndBVJcBeNNT3jZcQBCJmpJfqhBrqRgEejaxYwREurkOS8y61zWQamto
+ m0n1vQJHY01t8J7BZh+rtpAw1sJT/RC+/pK2JiidFY1VQpE2+SAN0W29Z
+ tAp+rqylBRtQcf5/jX9jII1zl3FlyAsmw4dHSLLZ6yRtDFraw2aDviIbG
+ HKdZmXpfPs+ZSV0XEGahH8xdrJZKiBttBm5kZYbvh7OZD5g3dxW61gljH
+ LiuSx3jOdHALbSiceHM2gSlg9fdwwYz5NWomZ3voAeo6ZtVhdEzBT5f1m
+ eCXT01zFx01A9rxLtLfwn09rDUZ56d9zFYr/hRItXtID/cC4I9E6qOOU7 Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10561"; a="345712036"
+X-IronPort-AV: E=Sophos;i="5.96,246,1665471600"; d="scan'208";a="345712036"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Dec 2022 00:49:21 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10561"; a="627091306"
+X-IronPort-AV: E=Sophos;i="5.96,246,1665471600"; d="scan'208";a="627091306"
+Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
+ by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Dec 2022 00:49:18 -0800
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	vkoul@kernel.org
+Subject: [PATCH] soundwire: intel: remove DAI startup/shutdown
+Date: Thu, 15 Dec 2022 16:54:36 +0800
+Message-Id: <20221215085436.2001568-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,63 +78,96 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>, alsa-devel@alsa-project.org,
- Chunxu Li <chunxu.li@mediatek.com>, linux-kernel@vger.kernel.org,
- Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- sound-open-firmware@alsa-project.org, Mark Brown <broonie@kernel.org>,
- linux-mediatek@lists.infradead.org, YC Hung <yc.hung@mediatek.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Curtis Malainey <cujomalainey@chromium.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- linux-arm-kernel@lists.infradead.org,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org,
+ bard.liao@intel.com, linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-DSP SRAM is not used for audio shared buffer between host and DSP so
-TOTAL_SIZE_SHARED_SRAM_FROM_TAIL is zero. Remove the definition and
-redundant comparison to fix coverity "unsigned compared against 0".
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Signed-off-by: YC Hung <yc.hung@mediatek.com>
+The only thing these DAI startup/shutdown callbacks do is play with
+pm_runtime reference counts.
+
+This is not wrong, but it's not necessary at all. At the ASoC core level,
+only the component matters for pm_runtime. The ASoC core already calls
+pm_runtime_get_sync() in snd_soc_pcm_component_pm_runtime_get(),
+before the DAI startup callback is invoked.
+
+None of the SoundWire codec drivers rely on pm_runtime helpers in
+their DAI startup/shutdown either. This adds to the evidence that only
+the component, or more precisely the device specified when registering
+a component, should deal with pm_runtime transitions.
+
+Beyond the code cleanup, this move prepares for the addition of link
+power management in the auxiliary device startup/resume/suspend
+callbacks. The DAI callbacks can by-design assume that the device is
+already pm_runtime active.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/mediatek/mt8195/mt8195.c | 5 -----
- sound/soc/sof/mediatek/mt8195/mt8195.h | 2 --
- 2 files changed, 7 deletions(-)
+ drivers/soundwire/intel.c | 27 ---------------------------
+ 1 file changed, 27 deletions(-)
 
-diff --git a/sound/soc/sof/mediatek/mt8195/mt8195.c b/sound/soc/sof/mediatek/mt8195/mt8195.c
-index 3c81e84fcecf..7c831e18483c 100644
---- a/sound/soc/sof/mediatek/mt8195/mt8195.c
-+++ b/sound/soc/sof/mediatek/mt8195/mt8195.c
-@@ -215,11 +215,6 @@ static int platform_parse_resource(struct platform_device *pdev, void *data)
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index bc9c50bacc49..2651767272c7 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -778,22 +778,6 @@ static int intel_post_bank_switch(struct sdw_intel *sdw)
+  * DAI routines
+  */
  
- 	adsp->pa_sram = (phys_addr_t)mmio->start;
- 	adsp->sramsize = resource_size(mmio);
--	if (adsp->sramsize < TOTAL_SIZE_SHARED_SRAM_FROM_TAIL) {
--		dev_err(dev, "adsp SRAM(%#x) is not enough for share\n",
--			adsp->sramsize);
--		return -EINVAL;
--	}
- 
- 	dev_dbg(dev, "sram pbase=%pa,%#x\n", &adsp->pa_sram, adsp->sramsize);
- 
-diff --git a/sound/soc/sof/mediatek/mt8195/mt8195.h b/sound/soc/sof/mediatek/mt8195/mt8195.h
-index 7ffd523f936c..b4229170049f 100644
---- a/sound/soc/sof/mediatek/mt8195/mt8195.h
-+++ b/sound/soc/sof/mediatek/mt8195/mt8195.h
-@@ -139,8 +139,6 @@ struct snd_sof_dev;
- #define DSP_MBOX1_BAR	6
- #define DSP_MBOX2_BAR	7
- 
--#define TOTAL_SIZE_SHARED_SRAM_FROM_TAIL  0x0
+-static int intel_startup(struct snd_pcm_substream *substream,
+-			 struct snd_soc_dai *dai)
+-{
+-	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
+-	int ret;
 -
- #define SIZE_SHARED_DRAM_DL 0x40000 /*Shared buffer for Downlink*/
- #define SIZE_SHARED_DRAM_UL 0x40000 /*Shared buffer for Uplink*/
+-	ret = pm_runtime_resume_and_get(cdns->dev);
+-	if (ret < 0 && ret != -EACCES) {
+-		dev_err_ratelimited(cdns->dev,
+-				    "pm_runtime_resume_and_get failed in %s, ret %d\n",
+-				    __func__, ret);
+-		return ret;
+-	}
+-	return 0;
+-}
+-
+ static int intel_hw_params(struct snd_pcm_substream *substream,
+ 			   struct snd_pcm_hw_params *params,
+ 			   struct snd_soc_dai *dai)
+@@ -954,15 +938,6 @@ intel_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
+ 	return 0;
+ }
  
+-static void intel_shutdown(struct snd_pcm_substream *substream,
+-			   struct snd_soc_dai *dai)
+-{
+-	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
+-
+-	pm_runtime_mark_last_busy(cdns->dev);
+-	pm_runtime_put_autosuspend(cdns->dev);
+-}
+-
+ static int intel_pcm_set_sdw_stream(struct snd_soc_dai *dai,
+ 				    void *stream, int direction)
+ {
+@@ -1088,12 +1063,10 @@ static int intel_component_dais_suspend(struct snd_soc_component *component)
+ }
+ 
+ static const struct snd_soc_dai_ops intel_pcm_dai_ops = {
+-	.startup = intel_startup,
+ 	.hw_params = intel_hw_params,
+ 	.prepare = intel_prepare,
+ 	.hw_free = intel_hw_free,
+ 	.trigger = intel_trigger,
+-	.shutdown = intel_shutdown,
+ 	.set_stream = intel_pcm_set_sdw_stream,
+ 	.get_stream = intel_get_sdw_stream,
+ };
 -- 
-2.18.0
+2.25.1
 
