@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5DB3C3DA71
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Dec 2022 16:21:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6F27C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Dec 2022 16:34:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63B0B823;
-	Fri, 16 Dec 2022 17:20:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63B0B823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 498B116B3;
+	Fri, 16 Dec 2022 17:33:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 498B116B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671207671;
-	bh=N2p5+YGgH883CBSBsIyKYSwIzxU4UMX+2Nx9Xto5il4=;
+	s=default; t=1671208474;
+	bh=3U9MijwPMjs7Tfj5Ham7kzzyRfehVPhXuYVYSqNirvA=;
 	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=bW7nA4L7B5yIsX6YTMeHWkPSaBJd0GVztRwtHRIO6fFbiyi2nD+BCFhlDST+KYot4
-	 tVfpy+6dYGeDZTDJH6cRNa7q4JILQLQhtZ0QqfCFzTRy3+Qr0942+bIEj8+4OzaLey
-	 /pqvg4uWHYFemFhU5HCh9YanlL0CvAzIcRjZ2UzI=
+	b=n7FxyaYxNh3xbPRBsVVV/116JxUtvvD9weIi+YhrI8YxCaxLiHQAnqkGNXgFC5xDL
+	 MfdsjHsp21TH90U5SPS+LUZiHiudVrXcMo1lmWub16Ola1gdgOHkzVtAOYPTNBJK1m
+	 U5Qgoa+jgs5jpLm1lNRqxliV/jUUqfFs/ljO19kw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1ACA8F804E2;
-	Fri, 16 Dec 2022 17:20:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04A14F804E0;
+	Fri, 16 Dec 2022 17:33:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4D5CDF804D7; Fri, 16 Dec 2022 17:20:20 +0100 (CET)
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com
- [209.85.167.173])
+ id 58294F804E2; Fri, 16 Dec 2022 17:33:43 +0100 (CET)
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com
+ [209.85.167.179])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8A9EEF804D7
- for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2022 17:20:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A9EEF804D7
-Received: by mail-oi1-f173.google.com with SMTP id e205so2318898oif.11
- for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2022 08:20:17 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3ADEDF804D0
+ for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2022 17:33:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3ADEDF804D0
+Received: by mail-oi1-f179.google.com with SMTP id r130so2395329oih.2
+ for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2022 08:33:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=ZelV8/IrwGDd9k5t5InTYqYUs7Q48WynB8woEn0oJbw=;
- b=TyidhLFCdhPpACXePfaHhnczMXjTR8/bNu+EzN5XMKJbJOXv+Co4ez/THeVpkSeATP
- 9PMh3Py3fMgUCyuavbiDM2k0NXsJ3GBzJkbtMI4Lie+JZn3pYXdf65mDE4ANVZWM+BQB
- jKsAChVnvU/vzPjEAVMZvpnLnGmqfopg+g1s1oKa4TKpWB1MqzY4o3o3poyzt+Q7te+W
- EPejIujhEgx3O4p/zxuoyRxVpeikvamV+gluWqXUl/Bc25JZA6+0+mKrz/f0DLuo7bkq
- CPW3i0S36gf/5OQJbllN4tvMHrWcdyQXp/N0Z1d3C4BSAtHcXDi2SHsXKBA2Mutea9WP
- H3nw==
-X-Gm-Message-State: ANoB5plohPYYRD+yiIX8NlubgbVCT7jOWmoyXnXr5ff8pkV8BgeAJgKD
- qAywb4ewRncADCOODHz6sQ==
-X-Google-Smtp-Source: AA0mqf7/bJA8XzYOPRoLT/re0sj7s/XaFvo72Gw5DfZ+W/H4jYfYtNf6U+9cU7vBUoHMjStMVeQYcw==
-X-Received: by 2002:a05:6808:170b:b0:357:7558:d7c6 with SMTP id
- bc11-20020a056808170b00b003577558d7c6mr23318917oib.20.1671207615955; 
- Fri, 16 Dec 2022 08:20:15 -0800 (PST)
+ bh=WdpQJXPwUnb7fStkLNmeiXBz/MV3q7NoGJn3vpIa2Uk=;
+ b=nPzoiliNrZsWEGUzotK5TweBVMMxSDj791c7O0XTjjeD3cx7YJgJj28UQTLJQaH8gg
+ qwjK4ljjJDQ7A2ol5S0zpGG/TY4twn4J4gOFWgB3gSwX7yKduUOaNcn3tF3d+kbG/UXG
+ EL/J65pVc4l5FCbhGRs6/4uIYxnGspgoXkWAlE6PgO4oCcdyeQxuQDvO/BCnHsGqCXRl
+ EyUas51ltLC1YKCxAe9Xs6fVitXQfbEWBFWltfQ9jlL5XVfC6S8ORlQElptv+KAQzGAB
+ Cn6BULSa77klvPv927Y/ePFL/fSrmsvplHz7W0qg/2/RJTvAoklgI+mbc1oFfVDQW1x/
+ p2dQ==
+X-Gm-Message-State: ANoB5pmwnB2CPryIYi9SyPVJuJaq4cAszSG6md7FH0p50q7r0Uy2I4gs
+ HhOqgrOKWTT0uxateJUxCg==
+X-Google-Smtp-Source: AA0mqf4tDeiIyYogKgvG5t14pw04hopCs2LWM+XFiXAzuvkeZRnDzAD8mzS7NAAAMyY6h/jtcy/Eaw==
+X-Received: by 2002:a54:4e99:0:b0:35a:1e78:dbe5 with SMTP id
+ c25-20020a544e99000000b0035a1e78dbe5mr14379242oiy.55.1671208415753; 
+ Fri, 16 Dec 2022 08:33:35 -0800 (PST)
 Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
  [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
- 11-20020aca090b000000b00360bf540072sm798033oij.0.2022.12.16.08.20.14
+ n206-20020aca59d7000000b00354932bae03sm895871oib.10.2022.12.16.08.33.34
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 16 Dec 2022 08:20:15 -0800 (PST)
-Received: (nullmailer pid 2848741 invoked by uid 1000);
- Fri, 16 Dec 2022 16:20:14 -0000
-Date: Fri, 16 Dec 2022 10:20:14 -0600
+ Fri, 16 Dec 2022 08:33:35 -0800 (PST)
+Received: (nullmailer pid 2862892 invoked by uid 1000);
+ Fri, 16 Dec 2022 16:33:34 -0000
+Date: Fri, 16 Dec 2022 10:33:34 -0600
 From: Rob Herring <robh@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 04/11] ASoC: dt-bindings: audio-graph-port: add clocks on
- endpoint
-Message-ID: <20221216162014.GA2839409-robh@kernel.org>
+Subject: Re: [PATCH 02/11] ASoC: dt-bindings: audio-graph-port: add
+ definitions/ports
+Message-ID: <20221216163334.GB2839409-robh@kernel.org>
 References: <87v8mepyoy.wl-kuninori.morimoto.gx@renesas.com>
- <87pmcmpyml.wl-kuninori.morimoto.gx@renesas.com>
+ <87sfhipynv.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87pmcmpyml.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87sfhipynv.wl-kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,56 +94,40 @@ Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Dec 14, 2022 at 01:22:58AM +0000, Kuninori Morimoto wrote:
+On Wed, Dec 14, 2022 at 01:22:13AM +0000, Kuninori Morimoto wrote:
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> Audio Graph endpoint is possible to have clock, but it is
-> missing its releated properties on audio-graph-port.
-> It is already defined on simple-card.
-> This patch adds it. Without this patch, we will get below warning
-> 
-> ${LINUX}/arch/arm64/boot/dts/renesas/r8a77950-ulcb-kf.dtb: audio-codec@44: ports:port@0:endpoint: Unevaluated properties are not allowed ('clocks' was unexpected)
-> 	From schema: ${LINUX}/Documentation/devicetree/bindings/sound/ti,pcm3168a.yaml
+> Audio Graph user needs "ports" not only "port".
+> This patch adds new "ports" on audio-graph-port to use it easily.
 > 
 > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > ---
->  .../devicetree/bindings/sound/audio-graph-port.yaml      | 9 +++++++++
->  1 file changed, 9 insertions(+)
+>  .../devicetree/bindings/sound/audio-graph-port.yaml  | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 > 
 > diff --git a/Documentation/devicetree/bindings/sound/audio-graph-port.yaml b/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
-> index 25f7204c7c4a..37c20cc8dc36 100644
+> index 56d47dcab490..273da5a76b8a 100644
 > --- a/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
 > +++ b/Documentation/devicetree/bindings/sound/audio-graph-port.yaml
-> @@ -48,6 +48,15 @@ definitions:
->          oneOf:
->            - $ref: /schemas/types.yaml#/definitions/flag
->            - $ref: /schemas/types.yaml#/definitions/phandle
-> +      clocks:
-> +        description: Indicates system clock
-> +        $ref: /schemas/types.yaml#/definitions/phandle
-
-Is this the standard 'clocks' or you defined your own. Because 'clocks' 
-is not a 'phandle'. It's a phandle+args.
-
-I don't think we should have 'clocks' in endpoint nodes. Or at least we 
-don't want to endorse more cases of it. The graph describes data 
-connections. The only properties on endpoints are properties of that 
-connection. An endpoint can't really consume a clock.
-
-> +      system-clock-frequency:
-> +        $ref: "simple-card.yaml#/definitions/system-clock-frequency"
-> +      system-clock-direction-out:
-> +        $ref: "simple-card.yaml#/definitions/system-clock-direction-out"
-> +      system-clock-fixed:
-> +        $ref: "simple-card.yaml#/definitions/system-clock-fixed"
-
-We have standard clock bindings. Whatever you need here should use that 
-instead.
-
+> @@ -97,6 +97,18 @@ definitions:
+>                minimum: 1
+>                maximum: 64
 >  
->        dai-format:
->          description: audio format.
-> -- 
-> 2.25.1
-> 
-> 
+> +  ports:
+> +    $ref: "#/definitions/port-base"
+> +    unevaluatedProperties: false
+> +    patternProperties:
+> +      "^port(@[0-9a-f]+)?$":
+> +        $ref: "#/definitions/port-base"
+> +        unevaluatedProperties: false
+> +        patternProperties:
+> +          "^endpoint(@[0-9a-f]+)?":
+> +            $ref: "#/definitions/endpoint-base"
+> +            unevaluatedProperties: false
+> +
+
+This won't work because any user that uses 'ports' here cannot add any 
+properties to port or endpoint nodes which I thought was the point of 
+this series.
+
+Rob
