@@ -4,77 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E56F7C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Dec 2022 09:08:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 714C1C4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Dec 2022 09:47:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4806B1688;
-	Fri, 16 Dec 2022 10:07:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4806B1688
+	by alsa0.perex.cz (Postfix) with ESMTPS id A35101711;
+	Fri, 16 Dec 2022 10:46:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A35101711
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671181701;
-	bh=wuF1t6zWxO1u8aEWfWc2EQqFWHXs/FCOZq2UrnUhyK4=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1671184053;
+	bh=IeD0B8wrVHUUYf30Gdom7+YGLGN0G/Z2xIwMgcFoYgk=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=FHRXhu0mq2F7mvmf4Wa+C2+C7s4q3AuubVlm9zrrkjxt6QS8o9qsDVQs94kV1StUV
-	 LMty1Narjw5JuiT2HHy8VCilKNl9LXjXEB6yw2vLOjRYmSPve+l2IG76GEBlNklRVc
-	 T32M8J7MwfWDIxKmVA9p6+/SCn3VzYZyfdUrc6AY=
+	b=rM+hphO1bKLY5AwqmIMfue+w2CiRl9EX5L2DAI3iPHV9taf7dKuaPtsA+uaMr2Td2
+	 uwqF/H3TD0vo6fh4uwfv3oK/Q7QK8l2DHg8MlyS2G2yTw7vs6gZA/nfS7eCSSGAaof
+	 jbDL7NbbJsw/iMEtlRLxA2/o1140GRM3PA1TJ+c0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1D85F804E0;
-	Fri, 16 Dec 2022 10:07:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C7B5F804E0;
+	Fri, 16 Dec 2022 10:46:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 86F1DF804E2; Fri, 16 Dec 2022 10:07:28 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id DDA21F804E0; Fri, 16 Dec 2022 10:46:41 +0100 (CET)
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A37B1F804D0
- for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2022 10:07:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A37B1F804D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 31D02F804E0
+ for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2022 10:46:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31D02F804E0
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=fR4ume06
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1671181643; x=1702717643;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=wuF1t6zWxO1u8aEWfWc2EQqFWHXs/FCOZq2UrnUhyK4=;
- b=fR4ume06I1MI1NvGbNnrjH2BB+wf4J4Y+Ys4v5ICq2Ed+Nun4cwQBWvL
- 4CzR8pGKzSfSAqsmaVT0nrJtaxEFNj4WIyHVu43XsRTynbu4NXxSnLviM
- hdHRg2lal5VrCBDbLBSmalC6X1+FhszVz9MnwbJxq72w+oWhwrBumilqs
- 3do+x7MJCuV9JYkJS5MW0bCIXSTKOeNzzVq4UA/Qnd0WSCa7JXIPKsH0v
- dhoTNOMzzoswwT9hDWkG2pdL8k+a2eK8B5hw9rQU558pvpR/uTz4mATZk
- KSWtXkAufHL3ByvIQ7uhehxVvCSDXkXyVSWrqim6gX+9b06bl7Rm0HvG3 g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10562"; a="320808165"
-X-IronPort-AV: E=Sophos;i="5.96,249,1665471600"; d="scan'208";a="320808165"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Dec 2022 01:07:02 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10562"; a="599879898"
-X-IronPort-AV: E=Sophos;i="5.96,249,1665471600"; d="scan'208";a="599879898"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.16.144])
- ([10.99.16.144])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Dec 2022 01:06:59 -0800
-Message-ID: <f062be0f-0022-b77f-b13a-3e722baaa446@linux.intel.com>
-Date: Fri, 16 Dec 2022 10:06:56 +0100
+ unprotected) header.d=denx.de header.i=@denx.de header.a=rsa-sha256
+ header.s=phobos-20191101 header.b=fNAU4cYJ
+Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl
+ [85.222.111.42])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+ (No client certificate requested)
+ (Authenticated sender: lukma@denx.de)
+ by phobos.denx.de (Postfix) with ESMTPSA id 48ECD85205;
+ Fri, 16 Dec 2022 10:46:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+ s=phobos-20191101; t=1671183999;
+ bh=/H6fBZQRWEmDLxoUqkA4ISnIrcRGBzcSkN81MSyyxEM=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=fNAU4cYJpyQEcY4v4lZZsysJ4r16bYRseOWLGq0HSYwdeMNCAyO5EUouJzYFPioMU
+ hMkozV+HklaqCTbdk3M23L20P6nBwrnCiJ6OBWxtrmjWVU27GcvsELssJeqCQzAFGh
+ 9Lr9w8sLCj8fHEK0WPbbHAiIS42BcXtYCjjcbQBhLXzZeg8OzABuccZB8E8jf/ZGWq
+ 2qgk/dbQlWo/LoTNm6LTkyxNPCmiZMsjNhV1JmPIRtAHSC3I+x0fSeqMgnsYpimBmP
+ cWjhGUjkH/DDNO5zLx/FqTcf5iQdfpedBgVjf7txkeOvXB28+W3fPt+M4vk5/UWwQ7
+ zqoXWfkOko0sA==
+From: Lukasz Majewski <lukma@denx.de>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH v3 3/3] ASoC: wm8940: Read chip ID when wm8940 codec probing
+Date: Fri, 16 Dec 2022 10:46:24 +0100
+Message-Id: <20221216094624.3849278-3-lukma@denx.de>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20221216094624.3849278-1-lukma@denx.de>
+References: <20221216094624.3849278-1-lukma@denx.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH 2/3] ASoC: SOF: pm: Always tear down pipelines before DSP
- suspend
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- alsa-devel@alsa-project.org
-References: <20221215185347.1457541-1-ranjani.sridharan@linux.intel.com>
- <20221215185347.1457541-3-ranjani.sridharan@linux.intel.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <20221215185347.1457541-3-ranjani.sridharan@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.6 at phobos.denx.de
+X-Virus-Status: Clean
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,48 +78,66 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: tiwai@suse.de,
- =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Curtis Malainey <cujomalainey@chromium.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Stephen Kitt <steve@sk2.org>,
+ patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, Lukasz Majewski <lukma@denx.de>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 12/15/2022 7:53 PM, Ranjani Sridharan wrote:
-> When the DSP is suspended while the firmware is in the crashed state, we
-> skip tearing down the pipelines. This means that the widget reference
-> counts will not get to reset to 0 before suspend. This will lead to
-> errors with resuming audio after system resume. To fix this, invoke the
-> tear_down_all_pipelines op before skipping to DSP suspend.
-> 
-> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Reviewed-by: Curtis Malainey <cujomalainey@chromium.org>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-> ---
->   sound/soc/sof/pm.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
-> index 5f88c4a01fa3..f153881db189 100644
-> --- a/sound/soc/sof/pm.c
-> +++ b/sound/soc/sof/pm.c
-> @@ -192,6 +192,9 @@ static int sof_suspend(struct device *dev, bool runtime_suspend)
->   	if (runtime_suspend && !sof_ops(sdev)->runtime_suspend)
->   		return 0;
->   
-> +	if (tplg_ops && tplg_ops->tear_down_all_pipelines)
-> +		tplg_ops->tear_down_all_pipelines(sdev, false);
-> +
->   	if (sdev->fw_state != SOF_FW_BOOT_COMPLETE)
->   		goto suspend;
->   
+The wm8940 provides the chip ID information via I2C. In this
+patch this information is read and if not matching expected
+value, the probe function is aborted.
 
-Can tplg_ops even be null? Rest of SOF code seems to skip this check and 
-only check for callback presence.
+This prevents from using (i.e. inserting) other wm89* modules
+which use the same I2C bus address.
 
-Also won't tearing down pipelines few lines later become unnecessary then?
-https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/tree/sound/soc/sof/pm.c?id=a12a383e59ce486abd719b6bda33c353a3b385e7#n220
+Signed-off-by: Lukasz Majewski <lukma@denx.de>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+Changes for v2:
+- None
+Changes for v3:
+- None
+---
+ sound/soc/codecs/wm8940.c | 11 +++++++++++
+ sound/soc/codecs/wm8940.h |  3 +++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
+index 1b02d5e8a007..8eb4782c9232 100644
+--- a/sound/soc/codecs/wm8940.c
++++ b/sound/soc/codecs/wm8940.c
+@@ -760,6 +760,17 @@ static int wm8940_probe(struct snd_soc_component *component)
+ 	int ret;
+ 	u16 reg;
+ 
++	/*
++	 * Check chip ID for wm8940 - value of 0x00 offset
++	 * SOFTWARE_RESET on write
++	 * CHIP_ID on read
++	 */
++	reg = snd_soc_component_read(component, WM8940_SOFTRESET);
++	if (reg != WM8940_CHIP_ID) {
++		dev_err(component->dev, "Wrong wm8940 chip ID: 0x%x\n", reg);
++		return -ENODEV;
++	}
++
+ 	ret = wm8940_reset(component);
+ 	if (ret < 0) {
+ 		dev_err(component->dev, "Failed to issue reset\n");
+diff --git a/sound/soc/codecs/wm8940.h b/sound/soc/codecs/wm8940.h
+index 0d4f53ada2e6..86bbf902ef5a 100644
+--- a/sound/soc/codecs/wm8940.h
++++ b/sound/soc/codecs/wm8940.h
+@@ -95,5 +95,8 @@ struct wm8940_setup_data {
+ #define WM8940_OPCLKDIV_3 2
+ #define WM8940_OPCLKDIV_4 3
+ 
++/* Chip ID */
++#define WM8940_CHIP_ID 0x8940
++
+ #endif /* _WM8940_H */
+ 
+-- 
+2.20.1
 
