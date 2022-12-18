@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 709F3C4332F
-	for <alsa-devel@archiver.kernel.org>; Sun, 18 Dec 2022 16:14:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80472C4332F
+	for <alsa-devel@archiver.kernel.org>; Sun, 18 Dec 2022 16:17:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99AE327BA;
-	Sun, 18 Dec 2022 17:13:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99AE327BA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8CCCF27BB;
+	Sun, 18 Dec 2022 17:16:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CCCF27BB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671380041;
-	bh=vhqsa+bycHaM4cXUwdi2UxCgJld51aK+QR9hRvM3B04=;
+	s=default; t=1671380232;
+	bh=l1wuZT8MGIVYYTFKEkjyAeCihuBJ63AUnrtE5WvRH04=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=neLSMKmRO+H49i326MpO3z48g0SjEQ+aDlfP95grroaE9C773r+pswzFrEuQxHhyj
-	 pNFbKD/+3F4zVSNNy2isOyNiWZFTrlAuWFbC8yGr4tMNutF3eQtqXb7Q0FmTBL0jd7
-	 EzBGGJQ43XTctSZZ5enULJc3qVQZLZMlbdWQo5SI=
+	b=eRpZYpVJ8N5BbzAQ3v/NpkC2O2L3aie+ZtpW4sQ6HL2sYrfCPZ8tBjgkSl2O+qsDU
+	 VA7tMjAXx9X1O0FUqSyHWjUA67XSxjNkHceDgTJntvimL/RiOTz70/0EJE3U74a66X
+	 YzPmerOP7lQxqtQdKk9osnHk+GBz5OBWh4juHgSA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F4FCF8032B;
-	Sun, 18 Dec 2022 17:13:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27055F8032B;
+	Sun, 18 Dec 2022 17:16:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CCE11F8010B; Sun, 18 Dec 2022 17:13:09 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 5BE51F80496; Sun, 18 Dec 2022 17:16:20 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 354B1F8010B
- for <alsa-devel@alsa-project.org>; Sun, 18 Dec 2022 17:13:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 354B1F8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id E955BF8025E
+ for <alsa-devel@alsa-project.org>; Sun, 18 Dec 2022 17:16:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E955BF8025E
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=S3h2HQJe
+ header.s=k20201202 header.b=Q3OzhUYf
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 2458060DDA;
- Sun, 18 Dec 2022 16:13:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62C6DC433F0;
- Sun, 18 Dec 2022 16:13:05 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 22553B80BAA;
+ Sun, 18 Dec 2022 16:16:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C658CC433EF;
+ Sun, 18 Dec 2022 16:16:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1671379986;
- bh=vhqsa+bycHaM4cXUwdi2UxCgJld51aK+QR9hRvM3B04=;
+ s=k20201202; t=1671380176;
+ bh=l1wuZT8MGIVYYTFKEkjyAeCihuBJ63AUnrtE5WvRH04=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=S3h2HQJei6fcbYLcceBxVfwEwCU15pbithykygP8TJb+uuWkVUsfloZlhR91ypu3d
- afejaxSH/aTmteGYC1WOfavmtTUg8IKVoDAMIN81c1fFYtgs/5ms/DohkC7NE+xx6H
- tBuVtxr5n9/cbicdSHy8xUgcboiKrMYLL3jXaj3+2IN451ml7ZDOjwykmU+A71Lp/+
- MJ5LVcmgWRwphKZl4jhsUY9j20iroZZ+kmedTSxKnWf3oC6lNcX3m/9IpblWDQ1q7Q
- GYf1D4U72sHQJs/eUmv1ezat2dc5UZzz7IDhsJjDlpqudXrLbQma9vgWhWhkgimCwW
- oiYWHpIgmjIIQ==
+ b=Q3OzhUYfIvh6cM3uDLaN4f0ko+Du5ZTR1nL4Dad+DiIfQWwc0U/XTD5cKoYOuowhf
+ QeJqzUyE7hybOseZQTcY5oRwUUTORAx5fdYMFnUC+mwSMkbirb4AMaY+Vq0LI/bJys
+ T9hKoyoa4n4Z5WjMsfdnfVaq9Xec7ClODZfIQbA4pxFfSAGOwpRoNWeTMKZQkVf5Z6
+ duYojDs9SDNWCKCDwD8vd6zk236McbFuTk/lZ16rc/QMRw/ERIHIYh+xX5IgCVEpy6
+ 5qnNoi1/3/BeWTw0skhofTW/U5W6IOiqnN3d6wFtXgSanK4pO6ITZvnqlZ3eWvLI50
+ /1OTOvW0waOQA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 06/46] ASoC: codecs: rt298: Add quirk for KBL-R
+Subject: [PATCH AUTOSEL 5.10 05/39] ASoC: codecs: rt298: Add quirk for KBL-R
  RVP platform
-Date: Sun, 18 Dec 2022 11:12:04 -0500
-Message-Id: <20221218161244.930785-6-sashal@kernel.org>
+Date: Sun, 18 Dec 2022 11:15:25 -0500
+Message-Id: <20221218161559.932604-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221218161244.930785-1-sashal@kernel.org>
-References: <20221218161244.930785-1-sashal@kernel.org>
+In-Reply-To: <20221218161559.932604-1-sashal@kernel.org>
+References: <20221218161559.932604-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
@@ -104,10 +105,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 7 insertions(+)
 
 diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index c592c40a7ab3..604754e4b29f 100644
+index dc0273a5a11f..1ca06213e3a3 100644
 --- a/sound/soc/codecs/rt298.c
 +++ b/sound/soc/codecs/rt298.c
-@@ -1173,6 +1173,13 @@ static const struct dmi_system_id force_combo_jack_table[] = {
+@@ -1168,6 +1168,13 @@ static const struct dmi_system_id force_combo_jack_table[] = {
  			DMI_MATCH(DMI_PRODUCT_NAME, "Geminilake")
  		}
  	},
