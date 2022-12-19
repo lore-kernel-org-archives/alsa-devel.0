@@ -4,70 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2D04C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Dec 2022 17:02:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44049C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Dec 2022 18:13:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 02A552CD6;
-	Mon, 19 Dec 2022 18:01:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02A552CD6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 828612CEE;
+	Mon, 19 Dec 2022 19:12:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 828612CEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671469334;
-	bh=zK8yY6m/nv1S4Yl1iKn8Nvp4eampett4aI6s3dRExu4=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1671473629;
+	bh=GH25RH87mNKdioHeKsAH73kmYF5wHMloV7KqH1oW71g=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=N8pngnveXxrH+eFzfxvJmGZ1u/HQaidJo2zTp3X+LtU7/lktVeFX8PVPuGNKwxJda
-	 zk8aAuLfVFq3+WkG0trl2mHRljm7QqqmUoZq/d/n49bQJLzpnT59QEthf8oqePqP9k
-	 CIg8C5/+NPs7xJReyRermcC1BvKHY9U8o+EOQ32M=
+	b=RL52kDA5G6lP24ApUtTK7vp0BZqU5mIBsf2a+hVNcHbR+URI9VljycN/F2osrK7RF
+	 DCIFjSdWAqxlTol2mdsqdX/R/t30QyN/fnkITZFlCQmtZKdUPNqnmIPus+OM+PkNuF
+	 5S19j77CHCJ7hycSBIqYxSH4bfKMK+rvGZ4Kr56A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4462F8026D;
-	Mon, 19 Dec 2022 18:01:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 41A38F8026D;
+	Mon, 19 Dec 2022 19:12:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C0F0F80423; Mon, 19 Dec 2022 18:01:22 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id 23971F800DF; Mon, 19 Dec 2022 19:12:58 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7EB41F801C0
- for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2022 18:01:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EB41F801C0
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- secure) header.d=perex.cz header.i=@perex.cz header.a=rsa-sha256
- header.s=default header.b=QYhB8taC
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id B3F23A0047;
- Mon, 19 Dec 2022 18:01:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz B3F23A0047
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1671469279; bh=gOcbNBGz+ANluLxaB4+FuyF+gaxrZE+jftjvvZfCJWA=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=QYhB8taCi8E+kQKiQhN+21vd98T5h+UvNvyTbkbE3m9TU2+PKE+UJSa7r4R7VgLyj
- bc3bQKXYrh30oQE/yzJKYm+Qg5e8mjB2DCGEOX5knDwYTo7Wv1AxWwuJguKgHamesi
- n46IxOq3P3Urk19OvefKnezPXFV0J3vt3TiOpiBo=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Mon, 19 Dec 2022 18:01:10 +0100 (CET)
-Message-ID: <7ab2be50-11c6-f79f-e3f5-a5dc5ec41708@perex.cz>
-Date: Mon, 19 Dec 2022 18:01:10 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F258F800DF
+ for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2022 19:12:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F258F800DF
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=cCRV6/wb
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 590BBB80E28;
+ Mon, 19 Dec 2022 18:12:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 600EDC433D2;
+ Mon, 19 Dec 2022 18:12:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1671473574;
+ bh=GH25RH87mNKdioHeKsAH73kmYF5wHMloV7KqH1oW71g=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=cCRV6/wbIv9njTbzRpEx6DeJtbobFAfPw5PzAK0mllq97NeuOylnpQIjNlUiu8BIl
+ suax3uk5BGGxxv5vovpGZuGjFTPL7LhQgMyzGqvis+XOwCfUOw9jYA8Bhmns2jUFcz
+ shsinH4b0q2ahy+pMf0oPgRrqnFnUk/IJn5kmIW1Umko3hH2Ox4TrTPv90UmrYcCOG
+ IWHvSzbw4HuIJzI4N/oV130NSh7vG6mC9gvz2vqZBXl6Q56tcQbyyzxsiTlaGJFOtk
+ RUtzJ5rfQu+e7EeL/hMy83JKRhzWTrezsSXVSpMfIts+FA1Rvj2yAC77kemXHGgY52
+ 90+DCqrWy5VxA==
+Date: Mon, 19 Dec 2022 18:12:49 +0000
+From: Mark Brown <broonie@kernel.org>
+To: "David.Rau.opensource" <David.Rau.opensource@dm.renesas.com>
+Subject: Re: [PATCH 2/2] ASoC: da7213: Add support for mono, set frame width
+ to 32 when possible
+Message-ID: <Y6CpoYfr6PPAH3j6@sirena.org.uk>
+References: <20221214044058.6289-1-David.Rau.opensource@dm.renesas.com>
+ <Y5nb7ik1cCKo+FlR@sirena.org.uk>
+ <CAG+cZ07erTzV8Re-xo8GixpsEhK28Q6wHxQeE0co+sWgQAFgGA@mail.gmail.com>
+ <Y5nkDEcgbZ2vNEsK@sirena.org.uk>
+ <CAG+cZ06PHgrLebLESbitdkupYcyZ6twr4uv6iczNxp5ztox-EA@mail.gmail.com>
+ <OS3PR01MB66410E087BED80930430F72FCDE59@OS3PR01MB6641.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: =?UTF-8?Q?Re=3a_=5bregression=5d_Bug=c2=a0216818_-_The_microphone_m?=
- =?UTF-8?Q?ute_led_not_working_after_linux_6?=
-Content-Language: en-US
-To: Thorsten Leemhuis <regressions@leemhuis.info>,
- Hans de Goede <hdegoede@redhat.com>, Takashi Iwai <tiwai@suse.com>,
- Pierre-louis Bossart <pierre-louis.bossart@linux.intel.com>
-References: <bf52f4c5-5cca-26d7-7fb2-ac8ecb5b24c5@leemhuis.info>
- <572159b3-a1a4-8735-d435-ea574c07851f@redhat.com>
- <9f0e95d1-5057-93f0-ad9e-985eaeed0226@leemhuis.info>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <9f0e95d1-5057-93f0-ad9e-985eaeed0226@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="KGYErxMmt0sA/TWp"
+Content-Disposition: inline
+In-Reply-To: <OS3PR01MB66410E087BED80930430F72FCDE59@OS3PR01MB6641.jpnprd01.prod.outlook.com>
+X-Cookie: Pay toll ahead.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,86 +82,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org,
- plum <plumerlis@gmail.com>, sonic82003@gmail.com,
- "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "support.opensource@diasemi.com" <support.opensource@diasemi.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ Piotr Wojtaszczyk <piotr.wojtaszczyk@timesys.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 19. 12. 22 11:27, Thorsten Leemhuis wrote:
-> On 19.12.22 11:00, Hans de Goede wrote:
->> On 12/19/22 10:17, Thorsten Leemhuis wrote:
->>> I noticed a regression report in bugzilla.kernel.org. As many (most?)
->>> kernel developer don't keep an eye on it, I decided to forward it by
->>> mail. Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=216818 :
->>>
->>>>   sonic82003@gmail.com 2022-12-18 08:52:32 UTC
->>>>
->>>> The mic mute led of my ThinkPad X1 Carbon Gen 9 doesn't work anymore after updating linux to version 6.
->>>> I can still turn it on by  running
->>>>
->>>> echo 1 > /sys/class/leds/platform::micmute/brightness
->>>>
->>>> With linux-lts it still works fine.
->>>
->>> See the ticket for more details.
->>>
->>> Note, I found a similar report that (despite my attempts to prevent
->>> things like this from happening) fell through the cracks here:
->>> https://bugzilla.kernel.org/show_bug.cgi?id=216355
->>>
->>>>   plum 2022-08-13 02:11:01 UTC
->>>>
->>>> I upgrade to kernel 5.19.1 but found my thinkpad x1 carbon 2021's mute led stop working.
->>>>
->>>> Function is okay but LED won't light up.
->>>>
->>>> Back to kernel 5.18 and it's normal and working again.
->>>>
->>>> Fedora 36 64 bit
->>>> Gnome-shell 42
->>>
->>>  From a quick research it looks to me like this is an issue for the
->>> sounds maintainers, as the LED itself apparently works. If that is
->>> something for the platform people instead please speak up.
->>
->> Thanks for bringing this up, we recently hit this in Fedora too
->> and we have a fix/workaround there. Let me copy and paste what
->> I just added to bko216355 :
-> 
-> Many thx for sharing these details, really helpful.
-> 
->> This is caused by a behavior change of the kernel code controlling the LED to only turn on the LED when all inputs, including e.g. the jack mic input are turned off in the alsa-mixer settings.
->>
->> But most userspace code only turns the mic which it is actually using on/off when you hit the mic-mute hotkey.
->>
->> Also see: https://bugzilla.redhat.com/show_bug.cgi?id=2134824
-> 
-> Ahh, lot's of helpful information and even a bisect there. :-D
-> 
-> #regzbot introduced: 9b014266ef8ad0159
 
-It's not a regression from my view.
+--KGYErxMmt0sA/TWp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->> Which is the same bug.
->>
->> There is a set of fixes available in the form of an alsa-ucm update which tells the kernel to ignore the state of the jack mic input restoring the old behavior:
->>
->> https://git.alsa-project.org/?p=alsa-ucm-conf.git;a=commitdiff;h=79a8ec44d3dcf097f4a4492c506cbcf338324175
->> https://git.alsa-project.org/?p=alsa-ucm-conf.git;a=commitdiff;h=9ce9ddb4a84fb467602b716575ea1d8f2bab0c39
-> 
-> Hmmm, that's nice, but well, by Linux' "no regressions rule" the issue
-> is caused by kernel change and thus must be fixed in the kernel, e.g.
-> without forcing users to update anything in userspace.
-> 
-> Jaroslav, are there any plans to do that?
+On Mon, Dec 19, 2022 at 03:52:52AM +0000, David.Rau.opensource wrote:
 
-I wrote all relevant information to https://bugzilla.redhat.com/show_bug.cgi?id=2134824 . The problem exists from the initial microphone LED support in the SOF HDA driver, because two drivers control the microphone LED simultaneously (sof-hda-dsp + hda-intel). My recent update just made this thing more visible - the LED state may be updated wrongly in all previous kernels. Original behavior: last write wins. New behavior: all off = LED ON. The UCM fix (update the default kernel runtime configuration from the user space) is sufficient in my eyes for now because even the use case when the microphone LED follows the state when all internal inputs are turned off makes sense.
+> Is there anything I should modify or correct to make this commit move forward?
 
-I think that the sof-hda-dsp driver maintainer may decide to change the default settings in the HDA driver when the digital microphone is detected. Adding Pierre-Louis to the chain.
+This is a new feature and we're in the merge window so no new features
+will be applied at the minute.  Please wait till after the merge window.
 
-					Jaroslav
+Please don't top post, reply in line with needed context.  This allows
+readers to readily follow the flow of conversation and understand what
+you are talking about and also helps ensure that everything in the
+discussion is being addressed.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+--KGYErxMmt0sA/TWp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmOgqaAACgkQJNaLcl1U
+h9C04Af/elgB0NrS7iobGRds3fx/bh99V4jJtSwBOIJbyzkBeGnCXli7ajwfDzLm
+HlOlFZym/N6VK8I6QQ1OGugu+4Ll5g0ujXsZP+mab9/FYHl4k4bu3BW1wmWUDtrE
+vfbMmNxxmTbfzhYf4xhWiieUM2o3XXw6zxDoNC092+eKANYL7I1fWN3ii6uw7Zq0
+jWZLyiBcxxpsyL4FojJippFCuEsOrP5HZrL53pQdpTW1o6plTLqdkkVC33nrgYtN
+toBdY3OsHaUa+VHCV1/Ld27qYGaGwNE0Rbly88oQuI1BkmWi7wYmU0asDNnfAi3b
+IZ2Tx5C89ZKVn7Pf5CQvQUpgNeXkZQ==
+=u0u7
+-----END PGP SIGNATURE-----
+
+--KGYErxMmt0sA/TWp--
