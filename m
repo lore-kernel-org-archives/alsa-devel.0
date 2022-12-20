@@ -4,72 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C02AC4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Dec 2022 12:58:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 662AAC4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Dec 2022 14:07:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C74FF1F9B;
-	Tue, 20 Dec 2022 13:57:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C74FF1F9B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6294B17EA;
+	Tue, 20 Dec 2022 15:06:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6294B17EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671541096;
-	bh=5BI/6+kTZ4fuF2ycWHghLM+X5bYBZ3gOLwrTcMmfyII=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1671545237;
+	bh=yVRXp9HWSut0MqMLMIW4lN1+1yLdsL4S9FACC69XIO4=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=vVG0bPiuKALBbRhCQYo59DWNIMSyrqtv02/OdSZddUV/3pFO8EpNE5+EYs3yXtl5N
-	 l/rnCiFPUjNm7iDaCOzohRi/8k4kwXr5abJUHyxQk+Jmi7voEDUv0CVRtZAv30FnT3
-	 oPOJm2tKiDm3H810Cav+br3P5Eg2iA09ycqPfzSM=
+	b=Q0+L6lo6PdvuBTk8s0VPWCct/UcUDZO1Rkpm1GJswVln6K0GzDQ3uDs0q/pVMw2pX
+	 sY16qR19dTbmPTOUJ3piFa1GVOtBPVlcJTIWmVeHZXpk3bUfs28wf943QUbQk/2zu4
+	 c70Vk0aT6IsKFWPlGoHD8FmjN0CpTu6KQCNtkTAE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31BB3F80544;
-	Tue, 20 Dec 2022 13:56:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0ACC9F801C0;
+	Tue, 20 Dec 2022 15:06:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1517F8032B; Tue, 20 Dec 2022 13:56:55 +0100 (CET)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 8DE0BF8025E; Tue, 20 Dec 2022 15:06:25 +0100 (CET)
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com
+ [IPv6:2607:f8b0:4864:20::112c])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 380F9F8032B
- for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2022 13:56:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 380F9F8032B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 722BCF8018A
+ for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2022 15:06:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 722BCF8018A
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=fMyh4z9Q
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1671541014; x=1703077014;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=5BI/6+kTZ4fuF2ycWHghLM+X5bYBZ3gOLwrTcMmfyII=;
- b=fMyh4z9Q33gNWURIaOFzUlVnjpqOhTRh+9DHbNwwdtfkx1h3w9zbJXvU
- LQ3re1H1tP8iKsK1wHHs7ab63ng59VkkjIurSbME7YiJ5VUOyukcP43vz
- kAIq47VE3gz6r9KKNF8Nlu21ot5RfF5GtnpVDsE4pqR5PyOmWpafTpq6u
- nDQmIkZurM8WGOPpNf5cS4bRMtOMgbbpGiR/nw2E2xCDU8hb2b+SNjlLI
- I1YNCKHI6IK9MRFSONG6z3x3odV5WuESDzEZkQOSVHEh7yRtSqmJJOSN3
- akeo2mKGBpNj/Jptu6Oz1QbJepSlXwLDFFHHg5zpHOCEZwRAUyJdAj8IM Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10566"; a="299280504"
-X-IronPort-AV: E=Sophos;i="5.96,259,1665471600"; d="scan'208";a="299280504"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Dec 2022 04:56:32 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10566"; a="825222255"
-X-IronPort-AV: E=Sophos;i="5.96,259,1665471600"; d="scan'208";a="825222255"
-Received: from vadimbel-mobl2.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.20.205])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Dec 2022 04:56:29 -0800
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org
-Subject: [PATCH v2 3/3] ASoC: SOF: Add FW state to debugfs
-Date: Tue, 20 Dec 2022 14:56:29 +0200
-Message-Id: <20221220125629.8469-4-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20221220125629.8469-1-peter.ujfalusi@linux.intel.com>
-References: <20221220125629.8469-1-peter.ujfalusi@linux.intel.com>
+ unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
+ header.s=20210112 header.b=CCoYhv92
+Received: by mail-yw1-x112c.google.com with SMTP id
+ 00721157ae682-381662c78a9so170040387b3.7
+ for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2022 06:06:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=yVRXp9HWSut0MqMLMIW4lN1+1yLdsL4S9FACC69XIO4=;
+ b=CCoYhv92Vl2muPxLcXtYX6rodjS1ytyNvv9t0mMUu2eVCrcwH9JHGxIApstv50fHtj
+ itYJR/PyIPe9jsLox4jXqbZrBJV6alw1JZ1o9TJudDuhht/VGIy4rAMyDAc2zh8kFlPB
+ XVIBflim1ou1oDUvdHHUU8LplKKkbCjb/0nqwMgD+QFmR0j0syeu2bSjzvjz+3MilYKn
+ 8emu8yi5+u1yxMY9qS4tSHyoTFbTrhG9dojyUV4EpAJ0xzCxVfnY6B0pOPoWzsHkxE9d
+ r+EKM/Ji1RT0u7npJpYPQ7KbZU6U6gBg/1ShiMcwwbKEzwFWx3XdrlpmQTkG5BB99xmk
+ CwVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=yVRXp9HWSut0MqMLMIW4lN1+1yLdsL4S9FACC69XIO4=;
+ b=oEgPiLITF0ATZzitHEeU7i34kttTqUg6t23neYN+GLJndIycoPfEgcUKkhAVo4WJlC
+ U5XiyVh/mivcQvTQOJnFQJvYP9t4Z+K4csv5uXL3zJKOKqra4yieTreuU7biz5DqFJP7
+ njKo5oWXTFpVjvsDn/AO7oCtl5PvK4hfjdFwvPW2eWKohSDI10erFeMNHmB2WP8lTCco
+ rxNKT8f4TCGoDNOgC+rl3VLi9Nt2LrWtXOWItQ6ru6SKjxIQpiRz2xiXqZkMQnxLN3KJ
+ baAzsfegPOUiJ4QY4E5Gy6G5xOnBXMmin/GouYAvk2YolYRRLgzjQ/il80vaz/i0UiV1
+ uWwQ==
+X-Gm-Message-State: ANoB5pnyZTlo8/51j441CjEFj3Lnb+8q4QRtjaQxTyKOYRTcPtFAxKD8
+ mA56QwqtBf7KmLtbQ6xR21AdVHzoTZamUJdVn+IOTw==
+X-Google-Smtp-Source: AA0mqf4oJ8+ioIHfs77wMEDfrixzL/lH7cThEPZQcNaJKW4kU+NH4sDF4PekNHZfJ13KSEeOcZJpiG+thGcnlc5sKpg=
+X-Received: by 2002:a81:d543:0:b0:3ba:29f1:1ddc with SMTP id
+ l3-20020a81d543000000b003ba29f11ddcmr4496842ywj.311.1671545180928; Tue, 20
+ Dec 2022 06:06:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20221216154938.9426-1-ajye_huang@compal.corp-partner.google.com>
+ <b0612bbd-2eba-36cf-9c29-7542cf32adfd@linux.intel.com>
+ <CALprXBYy9_ax8-xfh0paB59Pn=TB7yVLwtY8vnT_-y5vWd867w@mail.gmail.com>
+ <9aa4bffd-bc7e-0e40-3063-5ce80b5fbe9a@linux.intel.com>
+In-Reply-To: <9aa4bffd-bc7e-0e40-3063-5ce80b5fbe9a@linux.intel.com>
+From: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Date: Tue, 20 Dec 2022 22:06:10 +0800
+Message-ID: <CALprXBaw7biz6V5j0YGtbR7CJF6ZWZf3ZO_t4hZBOHx_5zLS8g@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: Intel: sof_nau8825: add variant with nau8318
+ amplifier.
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,43 +93,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com,
- amadeuszx.slawinski@linux.intel.com, cujomalainey@chromium.org,
- yung-chuan.liao@linux.intel.com
+Cc: Libin Yang <libin.yang@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ ye xingchen <ye.xingchen@zte.com.cn>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, "balamurugan . c" <balamurugan.c@intel.com>,
+ Mark Brown <broonie@kernel.org>, Muralidhar Reddy <muralidhar.reddy@intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Akihiko Odaki <akihiko.odaki@gmail.com>, David Lin <CTLIN0@nuvoton.com>,
+ alsa-devel@alsa-project.org, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Brent Lu <brent.lu@intel.com>, Yong Zhi <yong.zhi@intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Curtis Malainey <cujomalainey@chromium.org>
+Dear Mark,
 
-Allow system health detection mechanisms to check the FW state, this
-will allow them to check if the FW is in its "crashed" state going
-forward to help automatically diagnose driver state.
+On Sat, Dec 17, 2022 at 1:37 AM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+>
+> Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Signed-off-by: Curtis Malainey <cujomalainey@chromium.org>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
- sound/soc/sof/debug.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index d9a3ce7b69e1..ade0507328af 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -353,7 +353,9 @@ int snd_sof_dbg_init(struct snd_sof_dev *sdev)
- 			return err;
- 	}
- 
--	return 0;
-+	return snd_sof_debugfs_buf_item(sdev, &sdev->fw_state,
-+					sizeof(sdev->fw_state),
-+					"fw_state", 0444);
- }
- EXPORT_SYMBOL_GPL(snd_sof_dbg_init);
- 
--- 
-2.39.0
-
+First of all, I apologize for this letter of inquiry.
+I got "Acked-by" from Pierre .
+Please kindly check this when you are free, thank you so much.
