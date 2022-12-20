@@ -4,48 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4CC46C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Dec 2022 07:53:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD330C4167B
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Dec 2022 07:54:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3EC9734BF;
-	Thu, 22 Dec 2022 08:53:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EC9734BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id D1F7B34CB;
+	Thu, 22 Dec 2022 08:53:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1F7B34CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671695631;
+	s=default; t=1671695639;
 	bh=N0IJTOXB9GKuZk3ybguYW1J2XkXdPNPUvm0w2UkipRY=;
 	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=j/DXTC/Y6WcMXG1Gt9vVpC2qXTx2d08cy+mJK7yBIw4KxYSoM36eDhdy2UpEcv0/e
-	 vjxDRaK53wNlTx8UTi+YNwW1cZHZQtX8ZFAyYzj5Al7UUOwDzVaoFT0CCN+/gVpe+W
-	 Ih1DTtnGgVVs/OzAMD7QqETv41XBXXm3OF2lXGXI=
+	b=AiqgSRgSAVJ+7qSFMyaMXLBVF3MVEj97gIh7jwMtSVTX3v7rAuo9MTU180rseqRwO
+	 nE0xSMVrQt5knwl8fg0bLm25DA8ri6w2doFjZelu+xSbJHmbwvSegAG7sdW4bk+DRt
+	 s142FpsHQxUwUMPiBefljGtwz3gtnlSbq7Q2m5pw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A827F80496;
+	by alsa1.perex.cz (Postfix) with ESMTP id CC591F80534;
 	Thu, 22 Dec 2022 08:52:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B9989F8026D; Tue, 20 Dec 2022 15:42:20 +0100 (CET)
-Received: from n169-110.mail.139.com (n169-110.mail.139.com [120.232.169.110])
+ id D36DCF8018A; Tue, 20 Dec 2022 16:22:21 +0100 (CET)
+Received: from n169-113.mail.139.com (n169-113.mail.139.com [120.232.169.113])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EA465F80027
- for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2022 15:42:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA465F80027
+ by alsa1.perex.cz (Postfix) with ESMTPS id AD511F801C0
+ for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2022 16:22:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD511F801C0
 X-RM-TagInfo: emlType=0                                       
 X-RM-SPAM: 
 X-RM-SPAM-FLAG: 00000000
 Received: from localhost.localdomain (unknown[61.152.193.32])
- by rmsmtp-lg-appmail-06-12084 (RichMail) with SMTP id 2f3463a1c9c00b2-87199;
- Tue, 20 Dec 2022 22:42:09 +0800 (CST)
-X-RM-TRANSID: 2f3463a1c9c00b2-87199
+ by rmsmtp-lg-appmail-33-12047 (RichMail) with SMTP id 2f0f63a1d0bf48f-87583;
+ Tue, 20 Dec 2022 23:12:02 +0800 (CST)
+X-RM-TRANSID: 2f0f63a1d0bf48f-87583
 From: Kevin Lu <luminlong@139.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org
-Subject: [PATCH] ALSA SoC: Texas Instruments TAS2781 Audio Smart Amp
-Date: Tue, 20 Dec 2022 22:42:03 +0800
-Message-Id: <20221220144203.2194-1-luminlong@139.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Subject: [PATCH v1] ALSA SoC: Texas Instruments TAS2781 Audio Smart Amp
+Date: Tue, 20 Dec 2022 23:11:57 +0800
+Message-Id: <20221220151157.2247-1-luminlong@139.com>
 X-Mailer: git-send-email 2.17.1
-X-Mailman-Approved-At: Thu, 22 Dec 2022 08:52:08 +0100
+X-Mailman-Approved-At: Thu, 22 Dec 2022 08:52:09 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -58,9 +57,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Kevin Lu <luminlong@139.com>, linux-kernel@vger.kernel.org, navada@ti.com,
- kevin-lu@ti.com, shenghao-ding@ti.com, peeyush@ti.com
+Cc: alsa-devel@alsa-project.org, Kevin Lu <luminlong@139.com>,
+ linux-kernel@vger.kernel.org, navada@ti.com, kevin-lu@ti.com,
+ shenghao-ding@ti.com, peeyush@ti.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
