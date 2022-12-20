@@ -4,81 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C3B2C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Dec 2022 10:01:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D24CC4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Dec 2022 11:14:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 37DB918C9;
-	Tue, 20 Dec 2022 11:00:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37DB918C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7655918EA;
+	Tue, 20 Dec 2022 12:13:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7655918EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671530465;
-	bh=n5IFlgo9IHypQr+PiaQQUwzHLlvcEhMCxmA99NwmPqc=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1671534877;
+	bh=MGLIoFBZ/iURgA2MYAqeN653sQ3hicilRZiZI9g1H2E=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=TKY9gbLbkYlLleMBu/Gn+q+2F1XUAkLLptdebQ31UB44cMU65BOPXMCMHpJpDgGu5
-	 sC0k+LeUaOqhCspbwbqEzPuJAQwiCrKuV6lwaU3UW1ramkjEuPBNirSC2qLf4B13oi
-	 h60mKPPPKkWEZ4F8MsJDSPAuuxv+r8yzRQ+Bizdw=
+	 From;
+	b=WoadGIWpE0uBLqDSHcJfFAX1/O2e4uJeMkWZTLWkbufyhEmjmSD11DV4bFaD06iZL
+	 NXHV7eu3077ZppjboX18fF0K3pwfj8HSjQi/19H+UMlAXtGFqdumsuzbzbxjqw/b5m
+	 Bcl1Fdb84Gi18XU6+NYVpHtypwRy8RDKA3hXC4PY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7EF6F8026D;
-	Tue, 20 Dec 2022 11:00:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22E61F801C0;
+	Tue, 20 Dec 2022 12:13:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0BB7EF8032B; Tue, 20 Dec 2022 11:00:13 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 992E2F8032B; Tue, 20 Dec 2022 12:13:45 +0100 (CET)
+Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F6CBF8018A
- for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2022 11:00:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F6CBF8018A
+ by alsa1.perex.cz (Postfix) with ESMTPS id C094AF801C0
+ for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2022 12:13:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C094AF801C0
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=HmVG4H0r
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2BK4QkuE007237; Tue, 20 Dec 2022 04:00:07 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=iggrNUfF05o5Q7CliLq5INlfo7UUeAxRWMQHIQ8SDAw=;
- b=HmVG4H0r5v6M9yhJqCXlFiNUQrirbZQLhMszQoeui7pzalxb9LqD0+fk1EVOz5OgB8RQ
- STWqbRgZk+5gS2JhABBMkg4HDB78qNdBQWZPJOVE1hXRM+FDnISLdsSrOIB0zRxr9FZy
- oXxRWL6HwKXhbyqA0036vUS3odn3liazPOBjLOSCwK04O0geS+mL3D5XVgUbLSIliMbM
- UEoie6G4muZGAbH/HQyfd/YnJIH7ZbH9Xy44Esjacj6VpFKNy+vKL9cRXURDxlwHC4vv
- TFI6eYrk9jWDBMlKMUaOOCfwEKIw08zhM2+IFXE2fQqAMQiqNjsvlVEKREWwUk1pQdgV MA== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3mhc27bmxb-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 20 Dec 2022 04:00:07 -0600
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.20; Tue, 20 Dec
- 2022 04:00:05 -0600
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.20 via
- Frontend Transport; Tue, 20 Dec 2022 04:00:05 -0600
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 11E0311C6;
- Tue, 20 Dec 2022 10:00:05 +0000 (UTC)
-Date: Tue, 20 Dec 2022 10:00:05 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Emanuele Ghidoli <ghidoliemanuele@gmail.com>
-Subject: Re: wm8904 and output volume control
-Message-ID: <20221220100005.GD36097@ediswmail.ad.cirrus.com>
-References: <c7864c35-738c-a867-a6a6-ddf9f98df7e7@gmail.com>
- <20221219095846.GC36097@ediswmail.ad.cirrus.com>
- <a8770d51-86f8-2a68-dd38-9b380f9c355a@gmail.com>
+ unprotected) header.d=axis.com header.i=@axis.com header.a=rsa-sha256
+ header.s=axis-central1 header.b=iIHhvIP5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=axis.com; q=dns/txt; s=axis-central1; t=1671534825;
+ x=1703070825;
+ h=message-id:date:mime-version:subject:to:references:from:
+ in-reply-to:content-transfer-encoding;
+ bh=KhmEjt73m0ueToJQBxXGSodm6fZTMjgUskYZOk86X8s=;
+ b=iIHhvIP5Fy2gqfUEungyaVj8SyEC7Dmle1S6V7xKsJtvoUVV20xbxwqm
+ MCDbMKi1Gk535wgAWnQRoJ22TGTQon8U3Js/gktBN1Q6d5DF6ypyYAdPn
+ 8UMH27gwvmTgaOg/o/P6QzHY7TlZeJj0Gc7jfA4Jt04P7x3FZ/yWPzCl7
+ IJU5cb4LGE7jEPaJu7L8BE/cnbhkPsxwPEfOTRLPDKTlYZeb3nJUYHX93
+ Pis0iNWY/KI6+suVCSqNqw50I/fvx/m5xlwys0lcUCU+6Ey/RJx8Fb8K+
+ lZXqqs0Zudq21303hsAiSVUWHSqXDk5R/g1ck+t2ej7cyV6wMwAEAhivu g==;
+Message-ID: <bd963935-f5ef-1e05-b91d-256e1fb74e26@axis.com>
+Date: Tue, 20 Dec 2022 12:13:41 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <a8770d51-86f8-2a68-dd38-9b380f9c355a@gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: UUgGXCofy_yDYVAjxvRCHhcXAFnpnR3-
-X-Proofpoint-GUID: UUgGXCofy_yDYVAjxvRCHhcXAFnpnR3-
-X-Proofpoint-Spam-Reason: safe
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH] pcm: hw: Do not return error unless there is one
+ (regression)
+Content-Language: en-US
+To: <alsa-devel@alsa-project.org>, <perex@perex.cz>, <tiwai@suse.de>
+References: <20221216082613.2439067-1-jonashg@axis.com>
+From: Jonas Holmberg <jonashg@axis.com>
+In-Reply-To: <20221216082613.2439067-1-jonashg@axis.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,96 +73,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Michael Walle <michael@walle.cc>,
- Mark Brown <broonie@kernel.org>,
- Francesco Dolcini <francesco.dolcini@toradex.com>,
- emanuele.ghidoli@toradex.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Dec 19, 2022 at 04:20:10PM +0100, Emanuele Ghidoli wrote:
-> On 19/12/2022 10:58, Charles Keepax wrote:
-> >On Sat, Dec 17, 2022 at 12:47:14AM +0100, Emanuele Ghidoli wrote:
-> With this patch (draft) seem the "bug" is fixed: (bug that is
-> present, for sure, also with an effective regulator)
-> 
-> diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-> index ca6a01a230af..33452daf1ae8 100644
-> --- a/sound/soc/codecs/wm8904.c
-> +++ b/sound/soc/codecs/wm8904.c
-> @@ -1903,6 +1903,7 @@ static int wm8904_set_bias_level(struct
-> snd_soc_component *component,
->                         }
-> 
->                         regcache_cache_only(wm8904->regmap, false);
-> +                       regcache_sync_region(wm8904->regmap,
-> WM8904_CLASS_W_0, WM8904_CLASS_W_0);
->                         regcache_sync(wm8904->regmap);
-> 
->                         /* Enable bias */
-> 
+On 2022-12-16 09:26, Jonas Holmberg wrote:
+> Add a line that was removed by mistake in commit
+> 7f2d6c3aac3505ceee4b0d3e8b3ca423ce29b070.
 
-That is some good detective work.
+Note that this is a regression in rate-handling in hw_refine since 
+v1.2.6.1, which for example breaks a hw pcm with rate set in config 
+slaved to dmix.
 
-> I infer, from datasheet, that volume update is applied in different
-> way based on charge pump dynamic vs register control (CP_DYN_PWR bit
-> in CLASS_W register):
-> "Under Register control, the HPOUTL_VOL, HPOUTR_VOL, LINEOUTL_VOL
-> and LINEOUTR_VOL register settings are used to control the charge
-> pump mode of operation.
-> Under Dynamic control, the audio signal level in the DAC is used to
-> control the charge pump mode of operation."
+BR
+Jonas
+
 > 
-> The second sentence do not explain that volume register is still
-> considered by the component but likely in a different way.
+> Signed-off-by: Jonas Holmberg <jonashg@axis.com>
+> ---
+>   src/pcm/pcm_hw.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> It is important to note that I trace I2C transactions and, without
-> the patch, the CLASS_W register is written JUST after volume update
-> registers (with the patch is written before and after).
+> diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
+> index 0588ce5e..daa3e1ff 100644
+> --- a/src/pcm/pcm_hw.c
+> +++ b/src/pcm/pcm_hw.c
+> @@ -356,7 +356,7 @@ static int snd_pcm_hw_hw_refine(snd_pcm_t *pcm, 
+> snd_pcm_hw_params_t *params)
+>           if (hw->rates.min > 0) {
+>                   err = _snd_pcm_hw_param_set_minmax(params, 
+> SND_PCM_HW_PARAM_RATE,
+>                                                      hw->rates.min, 0, 
+> hw->rates.max + 1, -1);
+> -
+> +               if (err < 0)
+>                           return err;
+>           }
 > 
-> At this point I have no doubt that we have to update that register
-> before writing volume.
+> -- 
+> 2.37.4
 > 
 
-Hmm... I think my only concern here is this feels a bit counter
-intuitive, the default value is described as "controlled by
-volume register settings" and we are saying in that situation the
-volume registers don't seem to update properly. That is far from
-impossible but I think we should perhaps poke a little more to
-make sure we understand the bounds here.
-
-I see that that CP_DYN_PWR bit is disabled when audio is going
-through one of the bypass paths. Would you be able to enable one
-of the bypass paths and see if you can manually adjust the volume
-on the headphone output, with a bypass path active?
-
-Would also perhaps be interesting as a test to completely remove
-the write to CP_DYN_PWR from probe and leave things set to manual
-and see how the volume behaves then?
-
-I guess the interests here are to find out if the SYSCLK is
-involved at all. And if the issue is changing CP_DYN_PWR after a
-volume update is what causes the problem. I could perhaps see a
-situation where the volume update data is sent to a different
-place depending on the value of CP_DYN_PWR, meaning that changing
-that bit after doing a volume update causes the volume data to be
-lost, but that implies we might need a fix for the Class G widget
-as well.
-
-> I guess: is there another way to do same/similar thing (in a better
-> way, like just force write to that register a little bit before of
-> volume update. I walk around regmap/regcache but I do not find a
-> different solution)?
-> 
-> We must pay attention that cached value of this register can be
-> changed by widget "Class G" (my patch should work also if you toggle
-> this widget).
-
-I think assuming we get a point that the requirement is
-simply that CLASS_W needs written before the volume, the change
-as you propose it looks good. But I suspect there is a little
-more going on here.
-
-Thanks,
-Charles
