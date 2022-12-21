@@ -4,42 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB620C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Dec 2022 07:25:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CE5EC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Dec 2022 07:47:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 197B21696;
-	Wed, 21 Dec 2022 08:24:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 197B21696
+	by alsa0.perex.cz (Postfix) with ESMTPS id E09A3167E;
+	Wed, 21 Dec 2022 08:46:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E09A3167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671607525;
-	bh=ivksccXxVxudZyh9nTBsQsATWi1j+axSRVWNj64lycw=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1671608831;
+	bh=EC+HHWgZfwjxyKfk0hSkmNCvs+H+mSiBeJpG+FBR1nE=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=XO50c9OBWy7LU/HJSTeJbhsV8MArwbUxfJfCNqBNMECCrUBBewdYlH2ZGhMeIbO+s
-	 mnC3DDO6hkEIjBALJgYYv9ARmqLDR3jZpCd6zMo57qHT+2pBzHrE8WAB70cNn2yVEJ
-	 y2jsWHZJPIpBd9MHPGkPxugFnj89Iv5cwV6Hz2EE=
+	 Cc:From;
+	b=BKnr5XjPwOgW3RlsLH/H9Tz7ionOmIqXFEFyOU+iqVjgCSmaYSU34o+U1cwxrZnun
+	 CqTYBtHUG3OIzRmm6oFnSckKOVWvAxSnG0I5RoOgMiTCJe2BcNSbraShzRJl02S7du
+	 HqhLaN5LJh2MQsqzEl0R/7nYRd/8cD7j8QBtaZbQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB499F804AD;
-	Wed, 21 Dec 2022 08:24:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 520ADF8024D;
+	Wed, 21 Dec 2022 08:46:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8C25FF8047B; Wed, 21 Dec 2022 08:24:17 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id C8F8EF8024D
- for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2022 08:24:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8F8EF8024D
+ id 56A49F8047B; Wed, 21 Dec 2022 08:46:20 +0100 (CET)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2C06DF8024D
+ for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2022 08:46:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C06DF8024D
+Received: by verein.lst.de (Postfix, from userid 2407)
+ id A5D1867373; Wed, 21 Dec 2022 08:46:15 +0100 (CET)
+Date: Wed, 21 Dec 2022 08:46:15 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Subject: Re: [PATCH 2/2] dma-mapping: reject GFP_COMP for noncohernt allocaions
+Message-ID: <20221221074615.GA22974@lst.de>
+References: <20221220082009.569785-1-hch@lst.de>
+ <20221220082009.569785-3-hch@lst.de>
+ <alpine.DEB.2.22.394.2212201653520.3532114@eliteleevi.tm.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1671607453083547115-webhooks-bot@alsa-project.org>
-References: <1671607453083547115-webhooks-bot@alsa-project.org>
-Subject: rt715-sdca soundwire micphone record no sound
-Message-Id: <20221221072417.8C25FF8047B@alsa1.perex.cz>
-Date: Wed, 21 Dec 2022 08:24:17 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2212201653520.3532114@eliteleevi.tm.intel.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -52,19 +59,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ iommu@lists.linux.dev, Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+ Robin Murphy <robin.murphy@arm.com>, Christoph Hellwig <hch@lst.de>,
+ Marek Szyprowski <m.szyprowski@samsung.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #255 was edited from KaiChuan-Hsieh:
+On Tue, Dec 20, 2022 at 04:57:25PM +0200, Kai Vehmanen wrote:
+> Minor nit, typo "noncohernt allocaions" in subject of this second patch.
 
-On linux kernel 6.0, with rt715-sdca codec on Dell platform.
+Thanks,
 
-The internal mic can't record sound after boot.
-Try $ amixer cset name='PGA5.0 5 Master Capture' 1
-
-Then the internal mic can record sound successfully.
-
-Upload alsa-info for reference, [alsa-info.txt.G6EnxHQlnM.zip](https://github.com/alsa-project/alsa-ucm-conf/files/10275425/alsa-info.txt.G6EnxHQlnM.zip)
-
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/255
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+I've fixed this and queued up the series.
