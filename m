@@ -4,83 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3B49C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Dec 2022 16:57:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71E0BC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Dec 2022 17:11:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC53216AB;
-	Wed, 21 Dec 2022 17:56:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC53216AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1EFE116C7;
+	Wed, 21 Dec 2022 18:10:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EFE116C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671641821;
-	bh=j5F05MU2JwoH1KEd3zm5Ts3u7xR5wXz/w9GyCwK/Yfs=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1671642693;
+	bh=qLAXeL3HhqFbAsfoXNwMUX1DkaYJt2fY2Wes9uDuZW4=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=EkOCCGqo5xFsB5K7C5C+q1NYanzxLyrzOruqc18k87jScGKgFa8z9XCOYUN9hW+Lu
-	 6gqRhkACRzX8tKwHofIFMWp9/FnNX05u4H001NXJ6r5cDk944vg9SLIH96H/7oWH8E
-	 Tx2hw3uYFDDCJ41GXxYmn11/WSQ2caSTRlZaQJ/I=
+	b=A1SERQ0/14nCXoELPgJk/Sb0z6ku3LSo5eMaVR0c1HTrzEKIo3tuGxISNGecW6GI6
+	 l+R7xqdyre9r2FDG1KKRq7pGufHOeTGdBozrsxvLR1xOxCRGcDvlrqFdr5EgiN1QZ4
+	 2SFIjRHePs5KE2YzEp7K5PnsmbWlVCZffDXBq21o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5AAC0F80423;
-	Wed, 21 Dec 2022 17:56:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F65AF80423;
+	Wed, 21 Dec 2022 18:10:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0A11F801C1; Wed, 21 Dec 2022 17:56:09 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 1C02FF8047B; Wed, 21 Dec 2022 18:10:42 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5579F801C1
- for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2022 17:56:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5579F801C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74DCBF8024D
+ for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2022 18:10:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74DCBF8024D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=TCg8RvPw
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2BLENU5Q013959; Wed, 21 Dec 2022 10:56:04 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=sEG6PTrFaBgIIekSodPUS27VEBNgDRTsmQA6Y4VtPmg=;
- b=TCg8RvPw9wT+7dV2pa93Pcez1mHfe+UGR++ndaj1psuOCSWitv10z3c0P3dqIWCG1OQM
- 2MbXDwQ8iF07fxkxhYwrnYqkusFJ1B7dq6Yvn9PLUvToJP6cuJms3pFrjHs6DD/oIVao
- SsxDXyTGb8dViDKmPfC2chrHjV7lBIL9Kq0yXAxjAHAieanW2sjZv93eEs1WAn4pFjqu
- MVG801E5TkXMqggD5OFMkBYFUWhAULSPoY9MjEj0fD/hIz6YEe0ngR/FuUSVcjc/Xjzi
- /fVKkBF4LWVmX/FjFt/hPO6BzvHgF3hG4W5jk/fwb1w/3SoaSvu6Ag88ddlMWJi24w/p Qg== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3mhc27dt11-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 21 Dec 2022 10:56:03 -0600
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.20; Wed, 21 Dec
- 2022 10:56:01 -0600
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.20 via
- Frontend Transport; Wed, 21 Dec 2022 10:56:01 -0600
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C8C9111CC;
- Wed, 21 Dec 2022 16:56:01 +0000 (UTC)
-Date: Wed, 21 Dec 2022 16:56:01 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Emanuele Ghidoli <ghidoliemanuele@gmail.com>
-Subject: Re: wm8904 and output volume control
-Message-ID: <20221221165601.GE36097@ediswmail.ad.cirrus.com>
-References: <c7864c35-738c-a867-a6a6-ddf9f98df7e7@gmail.com>
- <20221219095846.GC36097@ediswmail.ad.cirrus.com>
- <a8770d51-86f8-2a68-dd38-9b380f9c355a@gmail.com>
- <20221220100005.GD36097@ediswmail.ad.cirrus.com>
- <9657ab8d-0c60-7c81-b1cb-8a5b43d07c40@gmail.com>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=X5DrdHRX
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1671642641; x=1703178641;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=qLAXeL3HhqFbAsfoXNwMUX1DkaYJt2fY2Wes9uDuZW4=;
+ b=X5DrdHRXry3gXkWvXTeebMI9kG/yUA1eH1H6LM4935VWfXnJ6FyHvAEc
+ fRtLgkEnLIrZWQnChbVqkRiH4NRE2jicQtUiswZIN4iORYi719oWlnqZv
+ EQXfQUtoEejG0JUJkudw/0FFVPsp9RGrrreSfmTKDaOa0ujqC1EJv2M5a
+ eOTBLPH0a6koLVeXEHrZk+a4evLpV3cSPYD8n5+s2ShrsLPv89EiooT0W
+ zxK3Mv2IyKMYoHRVylIj1OitxMWRlFTF0iB3pspntrdmAgHMiBAIklZfk
+ rryhpRG0d2jgO0pX01KV9iUQutKuMK8p95pYlsP9X62eK86UmTCBiymid w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10568"; a="317562101"
+X-IronPort-AV: E=Sophos;i="5.96,263,1665471600"; d="scan'208";a="317562101"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Dec 2022 09:08:39 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10568"; a="720009111"
+X-IronPort-AV: E=Sophos;i="5.96,263,1665471600"; d="scan'208";a="720009111"
+Received: from sgeiser-mobl.amr.corp.intel.com (HELO [10.212.42.29])
+ ([10.212.42.29])
+ by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Dec 2022 09:08:37 -0800
+Message-ID: <9c9c5739-ee6b-a66e-481b-9032d4a52568@linux.intel.com>
+Date: Wed, 21 Dec 2022 09:41:47 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <9657ab8d-0c60-7c81-b1cb-8a5b43d07c40@gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: VOtW_Gg8Ys4rLWuxzv-4iQtWcKXJOmZB
-X-Proofpoint-GUID: VOtW_Gg8Ys4rLWuxzv-4iQtWcKXJOmZB
-X-Proofpoint-Spam-Reason: safe
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.4.2
+Subject: Re: [PATCH] ASoC: Intel: sof-nau8825: fix module alias overflow
+Content-Language: en-US
+To: Arnd Bergmann <arnd@kernel.org>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
+References: <20221221132515.2363276-1-arnd@kernel.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20221221132515.2363276-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,68 +89,129 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Michael Walle <michael@walle.cc>,
- Mark Brown <broonie@kernel.org>,
- Francesco Dolcini <francesco.dolcini@toradex.com>,
- emanuele.ghidoli@toradex.com
+Cc: Libin Yang <libin.yang@intel.com>, alsa-devel@alsa-project.org,
+ Arnd Bergmann <arnd@arndb.de>, ye xingchen <ye.xingchen@zte.com.cn>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ Mac Chiang <mac.chiang@intel.com>, Mark Brown <broonie@kernel.org>,
+ Muralidhar Reddy <muralidhar.reddy@intel.com>,
+ Akihiko Odaki <akihiko.odaki@gmail.com>, David Lin <CTLIN0@nuvoton.com>,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+ Brent Lu <brent.lu@intel.com>, Yong Zhi <yong.zhi@intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Dec 20, 2022 at 08:12:23PM +0100, Emanuele Ghidoli wrote:
-> On 20/12/2022 11:00, Charles Keepax wrote:
-> >On Mon, Dec 19, 2022 at 04:20:10PM +0100, Emanuele Ghidoli wrote:
-> >>On 19/12/2022 10:58, Charles Keepax wrote:
-> >>>On Sat, Dec 17, 2022 at 12:47:14AM +0100, Emanuele Ghidoli wrote:
-> >I see that that CP_DYN_PWR bit is disabled when audio is going
-> >through one of the bypass paths. Would you be able to enable one
-> >of the bypass paths and see if you can manually adjust the volume
-> >on the headphone output, with a bypass path active?
-> With the previous change, I tested all the possible combination with
-> one channel from the DAC and the other toggling from DAC to Bypass
-> changing the volume and it's always correct.
-> 
-> >Would also perhaps be interesting as a test to completely remove
-> >the write to CP_DYN_PWR from probe and leave things set to manual
-> >and see how the volume behaves then?
-> When I tried to remove any write to this register my modification
-> stopped working.
-> 
 
-Apologies just to be totally clear here, you are saying that
-whilst a bypass path is active (ie. the class G widget has
-cleared CP_DYN_PWR), you can still control the volume? But if you
-remove the set of CP_DYN_PWR from probe, the volume doesn't
-update at all, audio playing or not?
 
-> >I guess the interests here are to find out if the SYSCLK is
-> >involved at all.
-> I tested keep the clock always enabled, removing
-> clk_disable_unprepare when going into SND_SOC_BIAS_OFF and it has
-> zero effects.
-> Or did you mean something else?
+On 12/21/22 07:24, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
+> The maximum name length for a platform_device_id entry is 20 characters
+> including the trailing NUL byte. The sof_nau8825.c file exceeds that,
+> which causes an obscure error message:
+> 
+> sound/soc/intel/boards/snd-soc-sof_nau8825.mod.c:35:45: error: illegal character encoding in string literal [-Werror,-Winvalid-source-encoding]
+> MODULE_ALIAS("platform:adl_max98373_nau8825<U+0018><AA>");
+>                                                    ^~~~
+> include/linux/module.h:168:49: note: expanded from macro 'MODULE_ALIAS'
+>                                                 ^~~~~~
+> include/linux/module.h:165:56: note: expanded from macro 'MODULE_INFO'
+>                                                        ^~~~
+> include/linux/moduleparam.h:26:47: note: expanded from macro '__MODULE_INFO'
+>                 = __MODULE_INFO_PREFIX __stringify(tag) "=" info
+> 
+> I could not figure out how to make the module handling robust enough
+> to handle this better, but as a quick fix, using slightly shorter
+> names that are still unique avoids the build issue.
+> 
+> Fixes: 8d0872f6239f ("ASoC: Intel: add sof-nau8825 machine driver")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Yeah that is not quite what I was getting at. I am wondering if
-volume updates work whilst CP_DYN_PWR==0 and CLK_SYS_ENA==1.
+Thanks Arnd, yes unfortunately that keeps on happening. We cleaned-up a
+bunch of Chromebook platforms but newer ones have the same long name
+issue obviously.
 
-> Said all of that, I did one last test, forcing a volume update on
-> the charge pump enable callback, cp_event(), with this and only this
-> modification in everything is working fine.
-> 
-> Could it just be as easy as that the volume is applied only when the
-> charge pump is already active?
-> 
-> From the datasheet this seems a good explanation:
-> 
->  The Charge Pump is enabled by setting the CP_ENA bit. When enabled, the
->  charge pump adjusts the output voltages (CPVOUTP and CPVOUTN).
-> 
-> What do you think?
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-I think we are getting pretty close, but we need to try and
-narrow down what the requirement is here, is it the charge pump,
-or the sysclk? That needs to be on for the volume update to work.
-
-Thanks,
-Charles
+> ---
+>  sound/soc/intel/boards/sof_nau8825.c              | 8 ++++----
+>  sound/soc/intel/common/soc-acpi-intel-adl-match.c | 8 ++++----
+>  2 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/sound/soc/intel/boards/sof_nau8825.c b/sound/soc/intel/boards/sof_nau8825.c
+> index 27880224359d..009a41fbefa1 100644
+> --- a/sound/soc/intel/boards/sof_nau8825.c
+> +++ b/sound/soc/intel/boards/sof_nau8825.c
+> @@ -618,7 +618,7 @@ static const struct platform_device_id board_ids[] = {
+>  
+>  	},
+>  	{
+> -		.name = "adl_rt1019p_nau8825",
+> +		.name = "adl_rt1019p_8825",
+>  		.driver_data = (kernel_ulong_t)(SOF_NAU8825_SSP_CODEC(0) |
+>  					SOF_SPEAKER_AMP_PRESENT |
+>  					SOF_RT1019P_SPEAKER_AMP_PRESENT |
+> @@ -626,7 +626,7 @@ static const struct platform_device_id board_ids[] = {
+>  					SOF_NAU8825_NUM_HDMIDEV(4)),
+>  	},
+>  	{
+> -		.name = "adl_max98373_nau8825",
+> +		.name = "adl_max98373_8825",
+>  		.driver_data = (kernel_ulong_t)(SOF_NAU8825_SSP_CODEC(0) |
+>  					SOF_SPEAKER_AMP_PRESENT |
+>  					SOF_MAX98373_SPEAKER_AMP_PRESENT |
+> @@ -637,7 +637,7 @@ static const struct platform_device_id board_ids[] = {
+>  	},
+>  	{
+>  		/* The limitation of length of char array, shorten the name */
+> -		.name = "adl_mx98360a_nau8825",
+> +		.name = "adl_mx98360a_8825",
+>  		.driver_data = (kernel_ulong_t)(SOF_NAU8825_SSP_CODEC(0) |
+>  					SOF_SPEAKER_AMP_PRESENT |
+>  					SOF_MAX98360A_SPEAKER_AMP_PRESENT |
+> @@ -648,7 +648,7 @@ static const struct platform_device_id board_ids[] = {
+>  
+>  	},
+>  	{
+> -		.name = "adl_rt1015p_nau8825",
+> +		.name = "adl_rt1015p_8825",
+>  		.driver_data = (kernel_ulong_t)(SOF_NAU8825_SSP_CODEC(0) |
+>  					SOF_SPEAKER_AMP_PRESENT |
+>  					SOF_RT1015P_SPEAKER_AMP_PRESENT |
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+> index 60aee56f94bd..1f79fef600ac 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
+> @@ -474,21 +474,21 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+>  	},
+>  	{
+>  		.id = "10508825",
+> -		.drv_name = "adl_rt1019p_nau8825",
+> +		.drv_name = "adl_rt1019p_8825",
+>  		.machine_quirk = snd_soc_acpi_codec_list,
+>  		.quirk_data = &adl_rt1019p_amp,
+>  		.sof_tplg_filename = "sof-adl-rt1019-nau8825.tplg",
+>  	},
+>  	{
+>  		.id = "10508825",
+> -		.drv_name = "adl_max98373_nau8825",
+> +		.drv_name = "adl_max98373_8825",
+>  		.machine_quirk = snd_soc_acpi_codec_list,
+>  		.quirk_data = &adl_max98373_amp,
+>  		.sof_tplg_filename = "sof-adl-max98373-nau8825.tplg",
+>  	},
+>  	{
+>  		.id = "10508825",
+> -		.drv_name = "adl_mx98360a_nau8825",
+> +		.drv_name = "adl_mx98360a_8825",
+>  		.machine_quirk = snd_soc_acpi_codec_list,
+>  		.quirk_data = &adl_max98360a_amp,
+>  		.sof_tplg_filename = "sof-adl-max98360a-nau8825.tplg",
+> @@ -502,7 +502,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
+>  	},
+>  	{
+>  		.id = "10508825",
+> -		.drv_name = "adl_rt1015p_nau8825",
+> +		.drv_name = "adl_rt1015p_8825",
+>  		.machine_quirk = snd_soc_acpi_codec_list,
+>  		.quirk_data = &adl_rt1015p_amp,
+>  		.sof_tplg_filename = "sof-adl-rt1015-nau8825.tplg",
