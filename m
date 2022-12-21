@@ -4,66 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 097A8C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Dec 2022 10:24:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1E60C4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Dec 2022 10:25:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33E4416BE;
-	Wed, 21 Dec 2022 11:24:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33E4416BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5FB1016CC;
+	Wed, 21 Dec 2022 11:24:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FB1016CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671618293;
-	bh=0HKF5kFFAWbKZ+YlKgDkRtlCYbPqq/TgtBsScZmB4pc=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=WLlwXQBRANGQrc5x7zb+d4RxZJGwqbaGm/t5cNKr77MXc+2PGHg/UpKSCRkggLj+m
-	 PHhEgY74Ikflg+hjH79tsseMDkG/kGTDses582ACHeLv0xu6XQ/k58zD6hVPh4YO9T
-	 U91VfGfai9uV0OMz/mT3rfb1vZCh6kDXLFmYIh5k=
+	s=default; t=1671618317;
+	bh=j75+GQMfZzd93kQa99FoNldTV6DKPzwFwdFw+LvtnBk=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=MC2eGLMgvZM1Tgor4/nnnyPiZQE23OEbgYHfDHb2ePIeLKGV2EmKr0H0WV86yrsQ3
+	 XhLVEDS8fFigXwln3JUtoyoIcnxxg9PQs86Uq117VnCWi+DENTksRcYf01MXlSpxmm
+	 9JAhBxtm0fJ7XTg0hKdiehl4cjgho6LOqBhAlyfM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D054CF8024D;
-	Wed, 21 Dec 2022 11:24:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 829A2F804B2;
+	Wed, 21 Dec 2022 11:24:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ACDCDF804B0; Wed, 21 Dec 2022 11:23:31 +0100 (CET)
+ id A6644F804B0; Wed, 21 Dec 2022 11:23:32 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B150FF80022
- for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2022 11:23:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B150FF80022
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3755DF8024D
+ for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2022 11:23:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3755DF8024D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=j60Opbjo
+ header.s=Intel header.b=JaG04Jat
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1671618208; x=1703154208;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=0HKF5kFFAWbKZ+YlKgDkRtlCYbPqq/TgtBsScZmB4pc=;
- b=j60OpbjoWTgJek/HoKCStuel8hP7EmR/ZQURuedIbFZuZ2Vjh5Gx+ctv
- OTFqnNVAYPJunnh7oXXJnepJ3i3eN4xyNs2JICdVqKpOQh5X0GrPUj6Bc
- 7LWRIYBoIZcPWk7Gg/UTEzvxO3VboNAuBlw2iL+W5t4cvXu4D/o2cH3HG
- hAROyvgKFGrGzdT5Mfn9RHY0HCBWOk+HiouE/7kOMMSpqKx0OUMVF23a6
- dlEdzIiSkhBq1PEuBaRT0z/ENoVqrhe15evCXgqQAAi55rcHOqeYL7g3K
- b6ZmiDA2seotwFzTZqHcEusLy1Bypv38xtO4NfJ61Bb0e3XirhVdBe58P g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10567"; a="406078606"
-X-IronPort-AV: E=Sophos;i="5.96,262,1665471600"; d="scan'208";a="406078606"
+ t=1671618211; x=1703154211;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=j75+GQMfZzd93kQa99FoNldTV6DKPzwFwdFw+LvtnBk=;
+ b=JaG04JathCzumQT17IaPb/uZL9gWrfh2uzzECc80arQCORfWIgTWKWeq
+ gsqJysqLuNIGyRVWWtoDa/SkcWuSimG/nv7jY6u33qMXS93meHo/WU6LK
+ 0WNHos1twag5oyBg/IUKPBy01sppG9AU50AdHV1AHnOw+CT1hjlbTnzmw
+ 3wbiVfJqjsFoyoBVtC/pGROnqCfKdMvWkfBNL8YMg4CUWzPd6Yh9ebwwy
+ UmSAaqkxUO1+uUaREmPASLh88PBxRlsf/0xHG9tYjeijmaSZeTKkYMwds
+ UZCKRy3jdoYw7beYmSi0NyzgIdriTHGed+x2oq13FbvC8NM7A5wNX4i3N g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10567"; a="406078617"
+X-IronPort-AV: E=Sophos;i="5.96,262,1665471600"; d="scan'208";a="406078617"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Dec 2022 02:23:23 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10567"; a="681984271"
-X-IronPort-AV: E=Sophos;i="5.96,262,1665471600"; d="scan'208";a="681984271"
+ 21 Dec 2022 02:23:28 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10567"; a="681984288"
+X-IronPort-AV: E=Sophos;i="5.96,262,1665471600"; d="scan'208";a="681984288"
 Received: from cofearra-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.20.202])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Dec 2022 02:23:20 -0800
+ 21 Dec 2022 02:23:25 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 00/11] ASoC: SOF: Extend the IPC ops optionality
-Date: Wed, 21 Dec 2022 12:23:17 +0200
-Message-Id: <20221221102328.9635-1-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 02/11] ASoC: SOF: sof-audio: Update documentation for
+ sof_ipc_tplg_ops
+Date: Wed, 21 Dec 2022 12:23:19 +0200
+Message-Id: <20221221102328.9635-3-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20221221102328.9635-1-peter.ujfalusi@linux.intel.com>
+References: <20221221102328.9635-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -84,57 +88,42 @@ Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+The core treats all function pointer in sof_ipc_tplg_ops as optional.
+Update the documentation to reflect this.
 
-This series will extend the IPC ops optionality to cover it up to the existence
-of the top level ipc pointer itself. There is no functionality change.
-
-The reason for the extended optionality is that we have "DSPless"
-debug/development support coming up (currently it is in SOF's topic/sof-dev
-stable branch) initially supporting Intel's HDA platforms.
-
-As the name suggests, in this mode the DSP is completely ignored by the linux
-driver stack (no firmware loaded, only using HDA directly).
-
-The DSPless mode is aimed to help us to verify our Linux stack on new platforms
-where the firmware is not yet in the state that we can reliably use it, but the
-hardware and programming flows can be tested already.
-There is no plan to make DSPless a production target for SOF Linux stack.
-
-While this is preparatory series aimed to unblock the DSPless support, it has
-been integrated into sof-dev separately and we have lots of new features
-depending on it (went in between this set and the DSPless support).
-
-I still have some minor tasks to complete for the DSPless to make it a bit more
-versatile, but I don't want to block other, stable features for upstreaming.
-
-Regards,
-Peter
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
 ---
-Peter Ujfalusi (11):
-  ASoC: SOF: sof-audio: Treat tplg_ops->route_setup() as optional
-  ASoC: SOF: sof-audio: Update documentation for sof_ipc_tplg_ops
-  ASoC: SOF: Add helper macro to be used to get an IPC ops
-  ASoC: SOF: pcm: Extend the optionality of IPC ops to IPC as well
-  ASoC: SOF: control: Extend the optionality of IPC ops to IPC as well
-  ASoC: SOF: sof-audio: Extend the optionality of IPC ops to IPC as well
-  ASoC: SOF: topology: Extend the optionality of IPC ops to IPC as well
-  ASoC: SOF: pm: Extend the optionality of IPC ops to IPC as well
-  ASoC: SOF: sof-priv: Mark fw_tracing ops optional in documentation
-  ASoC: SOF: trace: Use sof_ipc_get_ops() in sof_fw_trace_init
-  ASoC: SOF: trace: No need to check for op pointer in
-    sof_fw_trace_free()
+ sound/soc/sof/sof-audio.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
- sound/soc/sof/control.c   | 44 +++++++++----------
- sound/soc/sof/pcm.c       | 18 ++++----
- sound/soc/sof/pm.c        | 12 +++---
- sound/soc/sof/sof-audio.c | 57 +++++++++++++-----------
- sound/soc/sof/sof-audio.h |  6 ++-
- sound/soc/sof/sof-priv.h  |  6 ++-
- sound/soc/sof/topology.c  | 91 +++++++++++++++++++++++----------------
- sound/soc/sof/trace.c     |  8 ++--
- 8 files changed, 138 insertions(+), 104 deletions(-)
-
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index 29cf951e3526..8e4abb1f5f73 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -166,7 +166,7 @@ struct sof_ipc_tplg_widget_ops {
+  *	    initialized to 0.
+  * @control: Pointer to the IPC-specific ops for topology kcontrol IO
+  * @route_setup: Function pointer for setting up pipeline connections
+- * @route_free: Optional op for freeing pipeline connections.
++ * @route_free: Function pointer for freeing pipeline connections.
+  * @token_list: List of all tokens supported by the IPC version. The size of the token_list
+  *		array should be SOF_TOKEN_COUNT. The unused elements in the array will be
+  *		initialized to 0.
+@@ -179,7 +179,9 @@ struct sof_ipc_tplg_widget_ops {
+  * @dai_get_clk: Function pointer for getting the DAI clock setting
+  * @set_up_all_pipelines: Function pointer for setting up all topology pipelines
+  * @tear_down_all_pipelines: Function pointer for tearing down all topology pipelines
+- * @parse_manifest: Optional function pointer for ipc4 specific parsing of topology manifest
++ * @parse_manifest: Function pointer for ipc4 specific parsing of topology manifest
++ *
++ * Note: function pointers (ops) are optional
+  */
+ struct sof_ipc_tplg_ops {
+ 	const struct sof_ipc_tplg_widget_ops *widget;
 -- 
 2.39.0
 
