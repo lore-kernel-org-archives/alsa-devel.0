@@ -4,66 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58860C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Dec 2022 11:41:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B56AAC4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Dec 2022 12:04:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C61C43F4D;
-	Thu, 22 Dec 2022 12:40:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C61C43F4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7AE15407E;
+	Thu, 22 Dec 2022 13:04:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7AE15407E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671709298;
-	bh=zTuzNUymVvHbTroTjuOONLQMG4wasPHUEH1HnLC8izg=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1671710693;
+	bh=gQZ1dC9nx+nmnFhlvnvj0LbMyg89ca2pOey9JSEGERA=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=lk65zuAjvQjsyNDC16gfWXfB1jgHXvFEYePTVKLrYUJVvDp+bxhF005buXTjj9kRG
-	 rC5l3STXNTnEzQ4d7kTqFRGriArZALXNVePjAesturScblSaV6ej3PLsNsg08R3TcR
-	 lOz7ngrJIKXNTnlNma946PGqTr/Q1bIUqhRgPQOU=
+	 From;
+	b=H8dDol20TYpME9NUeePS6j4/MjR0fkjG5fShrU/4QuxSACHS4j1Y5HH0HXtgKLLS/
+	 z0u4FGtN7sSHn2p342W7a+R64Bnd/2Bl1hIGuTV/SBBlZM7kSXUqlh/Gm+jjqPfvaR
+	 aWKYjBkJtXKdVQ6Qza4FNYbhhLfHvjlawGpgW79g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76283F8025F;
-	Thu, 22 Dec 2022 12:40:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B7A6F8025F;
+	Thu, 22 Dec 2022 13:04:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 08C4BF8026D; Thu, 22 Dec 2022 12:40:48 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id EC2F3F8026D; Thu, 22 Dec 2022 13:04:01 +0100 (CET)
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com
+ [IPv6:2a00:1450:4864:20::22f])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83D50F80158
- for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2022 12:40:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83D50F80158
+ by alsa1.perex.cz (Postfix) with ESMTPS id C60A8F80022
+ for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2022 13:03:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C60A8F80022
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=L8/4QfGY
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 8993EB81CFA;
- Thu, 22 Dec 2022 11:40:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2099C433D2;
- Thu, 22 Dec 2022 11:40:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1671709244;
- bh=zTuzNUymVvHbTroTjuOONLQMG4wasPHUEH1HnLC8izg=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=L8/4QfGY9ooe0KCepvqowVKfZIBurfxQlI0XjwGvItYyR3ZTymRtfLaZ6zVd/Jzhv
- MJ2XTakxQ+Mdp2Mfd2/zIW/MVVpgVvAaO/baBK0jcY7z5S5zP4zdxwv+7wCPxiM1Vx
- Vj8ngJDgR6mV9D28ii8BCl6s6R8Buika0jGxkWBB03dXn/LWOe68pi7z3PZ+6rfzUs
- rSMAvuLyXzg8GJYRMFSmUTlFKjid++tDjwMSxleBmDMJ7SejxJ7yvI69rn9/0TEfop
- LkFtHz+QADarQcgtIZHvC7yq2qqGc+h5z1haF2t79Utt+gjnYzBOrbMwjeicGyDGT7
- uMoPpoc69O26A==
-Date: Thu, 22 Dec 2022 11:40:39 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Jai Luthra <j-luthra@ti.com>
-Subject: Re: [PATCH v4] dt-bindings: sound: tlv320aic3x: Convert to dtschema
-Message-ID: <Y6RCN9DxeW7WacPD@sirena.org.uk>
-References: <20221221145216.11400-1-j-luthra@ti.com>
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=iSvMnFwR
+Received: by mail-lj1-x22f.google.com with SMTP id n6so1651563ljj.11
+ for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2022 04:03:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=pv6qX3My3iKgcKC8fPRcBAdihPFD1OTlyTjs81HEvPg=;
+ b=iSvMnFwRprHPbsiw/+zJY7fRsKjPP39B4vJ1CWjNOtgZXsGZINTugC1mS4nTX3NItT
+ CyOmkAaudh4K3XTCSUR4POKmQAfAPwFw8A+/JYNsMfWwMZJdw+ak+LkKybk5a64X8C2q
+ sQXuxwC5Y0TpZKkN9Irtj4FZv+V1lBthzlUopFMsoLU914ISCQ9ticD1YqELYen4pDGp
+ d5hIQs9ow1An/h7tzAjm5ok8Z2DTtjQ9TeQVQz/AzES/ThNrh7SqfmLHxd5rsPzUJfAi
+ S8+SIIhDZ5BXTKr4p6bERM+16BC1yKCS90OaUWggM72x7kN1FB9q5ZTHx5nc040e28Ng
+ 1wKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=pv6qX3My3iKgcKC8fPRcBAdihPFD1OTlyTjs81HEvPg=;
+ b=qU9AKPhFfhFmfdzJ7M6sW9ZH5SpEHJT+jmimyAlUvMyT2EyYNZ39J5xN9ihu1VgECy
+ GDLwIjLI3lfRws/xv6dLOYfmC3l9h+TXvyOnnT+wDEXpYpzsRX/llnLB3W9zdo5CmbSj
+ wF/e+5//n1jMO25pyK3TqG1HYtlQVicrRQFn9W2rh+FnENBcBtIqIklk0KGiHS3wCP5P
+ 12VCvHBmZoZMbcZ76PsdgdMWhpEHD3XAyjbxuVUxiSLWtVgQaEvZe6tFpg/Mm0QB061d
+ X+Ts+wBVYG9rSkLaOJa0Ttn9Qgx8vdA8IB03sn9MEU0XwGQDuJ2BP1y2s8wE02QYh/9P
+ Npaw==
+X-Gm-Message-State: AFqh2kpJHIKW1sbiV0LGu7lRNwAC6ZrfVJfyh09thvMmCeflyeT+Dsv7
+ GuCgGj2rkw5u/Wr/RGcu20GUdA==
+X-Google-Smtp-Source: AMrXdXu24YdIUD1vSYqT1ow8qSxi/9t+oQUU4FKC7B9OlC6lUR2ntlD5a51LMAcbwZ2kQTKs1mwtNQ==
+X-Received: by 2002:a05:651c:2321:b0:279:c27a:1335 with SMTP id
+ bi33-20020a05651c232100b00279c27a1335mr1503443ljb.33.1671710637125; 
+ Thu, 22 Dec 2022 04:03:57 -0800 (PST)
+Received: from [192.168.0.20]
+ (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
+ by smtp.gmail.com with ESMTPSA id
+ a1-20020a2e88c1000000b0027f93fd606esm28977ljk.58.2022.12.22.04.03.56
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 22 Dec 2022 04:03:56 -0800 (PST)
+Message-ID: <e039f89c-41ca-8c7e-b755-9701a4571c39@linaro.org>
+Date: Thu, 22 Dec 2022 13:03:55 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="/E1hF2BNu7Rsk/hm"
-Content-Disposition: inline
-In-Reply-To: <20221221145216.11400-1-j-luthra@ti.com>
-X-Cookie: Yes, but which self do you want to be?
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH 1/3] ASoC: dt-bindings: fsl,xcvr: Add compatible string
+ for i.MX93 platform
+Content-Language: en-US
+To: Chancel Liu <chancel.liu@nxp.com>, lgirdwood@gmail.com,
+ broonie@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ nicoleotsuka@gmail.com, perex@perex.cz, tiwai@suse.com,
+ devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+References: <20221222073618.1064415-1-chancel.liu@nxp.com>
+ <20221222073618.1064415-2-chancel.liu@nxp.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20221222073618.1064415-2-chancel.liu@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,42 +106,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 22/12/2022 08:36, Chancel Liu wrote:
+> Add compatible string "fsl,imx93-xcvr" for i.MX93 platform.
+> 
+> Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
 
---/E1hF2BNu7Rsk/hm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 21, 2022 at 08:22:16PM +0530, Jai Luthra wrote:
-> Convert bindings for TI's TLV320AIC3x audio codecs to dtschema.
->=20
-> The following properties are still found in some old dts files, but will
-> be ignored by the driver:
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> - assigned-clock-parents, assigned-clock-rates, assigned-clocks
+Best regards,
+Krzysztof
 
-These are from the common clock binding and will be handled by the clock
-code.
-
---/E1hF2BNu7Rsk/hm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmOkQjYACgkQJNaLcl1U
-h9Dgmgf/XEFtbzLCL1wn65FWzVlIblV4e8LdP/CH3v8S08vCVtPKOyJpxl/v2eow
-32rjN4DNjDcxhbJ22zMEJ815ogSZ/1TE+8zpzOKiWMjKAjWwZiARqcq4CvioXeZQ
-qJBmVx+ra4RHqerpUrnHVQ1tjzFz7iPoJvAQ/n2omgg7ZG0u1jnpRUati6j21o+Z
-wzW7ebtQaiFLejLZDlZjQb0OfMwUvasAR/JC1RPFJNX96/N7OITvGvoeEmuGydf8
-AKwLzkZg3RAjcI2MBQ4liz1aNeeP0y538ZPnQdrir00AMb9SgciJM6CgLJPZXkIf
-tVDNcd6gelXr47v/ZpFevq5gVJLcSw==
-=ivai
------END PGP SIGNATURE-----
-
---/E1hF2BNu7Rsk/hm--
