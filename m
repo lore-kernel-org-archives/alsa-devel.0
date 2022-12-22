@@ -4,67 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBDB6C4167B
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Dec 2022 07:55:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E9B3C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Dec 2022 08:10:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1745F34E0;
-	Thu, 22 Dec 2022 08:54:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1745F34E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B7C73582;
+	Thu, 22 Dec 2022 09:09:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B7C73582
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671695730;
-	bh=hTuIjHBHd+Tec1DAOqqIPFW5jFXlpQ7ZWnftXs2hg6Q=;
-	h=From:To:Subject:References:Date:In-Reply-To:List-Id:
+	s=default; t=1671696610;
+	bh=BvT//OklVxLUPM5gjabyujQ3o6l7IdYY7Xy9ZhNGnKM=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=pQj9IcXlVx+U1jmpK0433qVYZKUATskzAisEcQ1cHKy6CXB5tAu4LVVo+9lPIqGLv
-	 fzIUW4/6CiE3AW9AUViNvS5JBhLy2G9fuOLrTpjWD3SzPvitfb4wEoAJncauAPBpxp
-	 sBp/7ApKX1j6HjOqyXhi6fqffLSA1vbI75UjH9mo=
+	b=n094rv1aURWypEnDznTmWAvwsOelkYLE3eB8WabkYFLcllvieR/U/qvtWfrvZ/mk1
+	 NpX+MjqHdE0qzf7L/reNDc+8TVQvaRed/ag/vGIcF34LI/xL4+/PnHCZbUEgFfNdD9
+	 lOvopjFIti8QM5Ld/24zeytvPeiwmaWle72AGJ9U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6605CF8056F;
-	Thu, 22 Dec 2022 08:52:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22BFFF8024D;
+	Thu, 22 Dec 2022 09:09:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07B39F8047B; Wed, 21 Dec 2022 19:48:04 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 95E50F80158; Thu, 22 Dec 2022 09:09:18 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4AC11F801C1
- for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2022 19:48:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AC11F801C1
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=XiS53svt
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ by alsa1.perex.cz (Postfix) with ESMTPS id C19ECF80158
+ for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2022 09:09:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C19ECF80158
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=TMDktZjE; 
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=5bP4IkqX
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id E71FD618E5;
- Wed, 21 Dec 2022 18:47:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F6C4C433EF;
- Wed, 21 Dec 2022 18:47:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1671648479;
- bh=hTuIjHBHd+Tec1DAOqqIPFW5jFXlpQ7ZWnftXs2hg6Q=;
- h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
- b=XiS53svtnGlZKUpJLWpjIb00pvlTavkGyE/yhXeS7hKFYS8V/5Xav/+mlpRGezW6h
- BljUFnHKQWw/igsJKn42+z68Zwy3Z5sPZrjhFME/Kwqkbwjx7njFSsJY/zjJWCYIs2
- hg7VB/Upxxl01DViL7TGCOLjNQW9ZDg1YFt1aai4iFOc2yVu8ujua8wy7VEyZXvui4
- /1bJ/zTi5VZkqa0c9me5b9nyIRR+8AGM7a6aXGScjL7jgysNOOGh6mrX4vs3UGAGXF
- 1s0aX5L7Ze9A8zWY2oezGwBJF7QaIiwiLIJLyqjhe4qpPeepExO7oc4XqzOCONcDBc
- /pYLvZHxEpyuQ==
-From: Kalle Valo <kvalo@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH] treewide: Convert del_timer*() to timer_shutdown*()
-References: <20221220134519.3dd1318b@gandalf.local.home>
-Date: Wed, 21 Dec 2022 20:47:50 +0200
-In-Reply-To: <20221220134519.3dd1318b@gandalf.local.home> (Steven Rostedt's
- message of "Tue, 20 Dec 2022 13:45:19 -0500")
-Message-ID: <87mt7gk2zt.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Mailman-Approved-At: Thu, 22 Dec 2022 08:52:08 +0100
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0AD5A8D003;
+ Thu, 22 Dec 2022 08:09:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1671696556; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=L2YQ9u9aJ+TCF0r2Rpus0zacLYqArkp8KKVLHD+ehmQ=;
+ b=TMDktZjEGOek4q5uu1ulFh4C7HJqNDetoNyKCofVds2Qin4SFXGWJwluloy4HuGC3j2LF2
+ NaPSLV7zyJV8mlp/nZaYechGyhAy5U7INvrFRauBdJTATN1+K9cDIQXteWsUs83G1h37vK
+ RknPt7o1AZS3Vmu3DnQyjmhn78q5tNM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1671696556;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=L2YQ9u9aJ+TCF0r2Rpus0zacLYqArkp8KKVLHD+ehmQ=;
+ b=5bP4IkqXmElXkIOuPrNN1xGK/S54orlns4ttDjaTv9uvRhF8CjzGgRzpeBUX50w7WBw8yG
+ tGHlG4YkgLTyTXCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D16F213918;
+ Thu, 22 Dec 2022 08:09:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id wYsUMqsQpGOBJgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Thu, 22 Dec 2022 08:09:15 +0000
+Date: Thu, 22 Dec 2022 09:09:15 +0100
+Message-ID: <87o7rv507o.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Marek =?ISO-8859-1?Q?Marczykowski-G=F3recki?=
+ <marmarek@invisiblethingslab.com>
+Subject: Re: Intel HD Audio: sound stops working in Xen PV dom0 in >=5.17
+In-Reply-To: <Y5SxJ3IkhHSC/Psu@mail-itl>
+References: <Y5KPAs6f7S2dEoxR@mail-itl> <87tu256lqs.wl-tiwai@suse.de>
+ <Y5MssNfvE+mUyyZR@mail-itl> <Y5PaF4LhQGIrKthy@mail-itl>
+ <Y5SxJ3IkhHSC/Psu@mail-itl>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,103 +97,81 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, linux-staging@lists.linux.dev,
- linux-sh@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-leds@vger.kernel.org, drbd-dev@lists.linbit.com,
- linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-atm-general@lists.sourceforge.net, lvs-devel@vger.kernel.org,
- linux-acpi@vger.kernel.org, SHA-cyfmac-dev-list@infineon.com,
- coreteam@netfilter.org, intel-wired-lan@lists.osuosl.org,
- linux-input@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
- linux-ext4@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
- linux-media@vger.kernel.org, bridge@lists.linux-foundation.org,
- intel-gfx@lists.freedesktop.org, linux-nfs@vger.kernel.org,
- linux-block@vger.kernel.org, cgroups@vger.kernel.org,
- Thomas Gleixner <tglx@linutronix.de>,
- Anna-Maria Gleixner <anna-maria@linutronix.de>,
- brcm80211-dev-list.pdl@broadcom.com, Stephen Boyd <sboyd@kernel.org>,
- netdev@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-wireless@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Julia Lawall <Julia.Lawall@inria.fr>, linux-bluetooth@vger.kernel.org,
- netfilter-devel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>
+Cc: alsa-devel@alsa-project.org, Harald Arnesen <harald@skogtun.org>,
+ Alex Xu <alex_y_xu@yahoo.ca>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Steven Rostedt <rostedt@goodmis.org> writes:
+On Sat, 10 Dec 2022 17:17:42 +0100,
+Marek Marczykowski-Górecki wrote:
+> 
+> On Sat, Dec 10, 2022 at 02:00:06AM +0100, Marek Marczykowski-Górecki wrote:
+> > On Fri, Dec 09, 2022 at 01:40:15PM +0100, Marek Marczykowski-Górecki wrote:
+> > > On Fri, Dec 09, 2022 at 09:10:19AM +0100, Takashi Iwai wrote:
+> > > > On Fri, 09 Dec 2022 02:27:30 +0100,
+> > > > Marek Marczykowski-Górecki wrote:
+> > > > > 
+> > > > > Hi,
+> > > > > 
+> > > > > Under Xen PV dom0, with Linux >= 5.17, sound stops working after few
+> > > > > hours. pavucontrol still shows meter bars moving, but the speakers
+> > > > > remain silent. At least on some occasions I see the following message in
+> > > > > dmesg:
+> > > > > 
+> > > > >   [ 2142.484553] snd_hda_intel 0000:00:1f.3: Unstable LPIB (18144 >= 6396); disabling LPIB delay counting
+> > 
+> > Hit the issue again, this message did not appear in the log (or at least
+> > not yet).
+> > 
+> > (...)
+> > 
+> > > > In anyway, please check the behavior with 6.1-rc8 + the commit
+> > > > cc26516374065a34e10c9a8bf3e940e42cd96e2a
+> > > >     ALSA: memalloc: Allocate more contiguous pages for fallback case
+> > > > from for-next of my sound git tree (which will be in 6.2-rc1).
+> > 
+> > This did not helped.
+> > 
+> > > Looking at the mentioned commits, there is one specific aspect of Xen PV
+> > > that may be relevant. It configures PAT differently than native Linux.
+> > > Theoretically Linux adapts automatically and using proper API (like
+> > > set_memory_wc()) should just work, but at least for i915 driver it
+> > > causes issues (not fully tracked down yet). Details about that bug
+> > > report include some more background:
+> > > https://lore.kernel.org/intel-gfx/Y5Hst0bCxQDTN7lK@mail-itl/
+> > > 
+> > > Anyway, I have tested it on a Xen modified to setup PAT the same way as
+> > > native Linux and the audio issue is still there.
+> > > 
+> > > > If the problem persists, another thing to check is the hack below
+> > > > works.
+> > 
+> > Trying this one now.
+> 
+> And this one didn't either :/
 
-> [
->   Linus,
->
->     I ran the script against your latest master branch:
->     commit b6bb9676f2165d518b35ba3bea5f1fcfc0d969bf
->
->     As the timer_shutdown*() code is now in your tree, I figured
->     we can start doing the conversions. At least add the trivial ones
->     now as Thomas suggested that this gets applied at the end of the
->     merge window, to avoid conflicts with linux-next during the
->     development cycle. I can wait to Friday to run it again, and
->     resubmit.
->
->     What is the best way to handle this?
-> ]
->
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
->
-> Due to several bugs caused by timers being re-armed after they are
-> shutdown and just before they are freed, a new state of timers was added
-> called "shutdown". After a timer is set to this state, then it can no
-> longer be re-armed.
->
-> The following script was run to find all the trivial locations where
-> del_timer() or del_timer_sync() is called in the same function that the
-> object holding the timer is freed. It also ignores any locations where the
-> timer->function is modified between the del_timer*() and the free(), as
-> that is not considered a "trivial" case.
->
-> This was created by using a coccinelle script and the following commands:
->
->  $ cat timer.cocci
-> @@
-> expression ptr, slab;
-> identifier timer, rfield;
-> @@
-> (
-> -       del_timer(&ptr->timer);
-> +       timer_shutdown(&ptr->timer);
-> |
-> -       del_timer_sync(&ptr->timer);
-> +       timer_shutdown_sync(&ptr->timer);
-> )
->   ... when strict
->       when != ptr->timer
-> (
->         kfree_rcu(ptr, rfield);
-> |
->         kmem_cache_free(slab, ptr);
-> |
->         kfree(ptr);
-> )
->
->  $ spatch timer.cocci . > /tmp/t.patch
->  $ patch -p1 < /tmp/t.patch
->
-> Link: https://lore.kernel.org/lkml/20221123201306.823305113@linutronix.de/
->
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+(Sorry for the late reply, as I've been off in the last weeks.)
 
-For wireless:
+I think the hack doesn't influence on the PCM buffer pages, but only
+about BDL pages.  Could you check the patch below instead?
+It'll disable the SG-buffer handling on x86 completely. 
 
->  .../broadcom/brcm80211/brcmfmac/btcoex.c         |  2 +-
->  drivers/net/wireless/intel/iwlwifi/iwl-dbg-tlv.c |  2 +-
->  drivers/net/wireless/intel/iwlwifi/mvm/sta.c     |  2 +-
->  drivers/net/wireless/intersil/hostap/hostap_ap.c |  2 +-
->  drivers/net/wireless/marvell/mwifiex/main.c      |  2 +-
->  drivers/net/wireless/microchip/wilc1000/hif.c    |  6 +++---
 
-Acked-by: Kalle Valo <kvalo@kernel.org>
+thanks,
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Takashi
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+-- 8< --
+--- a/sound/core/Kconfig
++++ b/sound/core/Kconfig
+@@ -225,8 +225,8 @@ config SND_VMASTER
+ 	bool
+ 
+ config SND_DMA_SGBUF
+-	def_bool y
+-	depends on X86
++	def_bool n
++#	depends on X86
+ 
+ config SND_CTL_LED
+ 	tristate
