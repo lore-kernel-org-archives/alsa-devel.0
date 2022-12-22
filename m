@@ -4,87 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E9B3C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Dec 2022 08:10:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FC20C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Dec 2022 08:13:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B7C73582;
-	Thu, 22 Dec 2022 09:09:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B7C73582
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3514B3577;
+	Thu, 22 Dec 2022 09:13:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3514B3577
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671696610;
-	bh=BvT//OklVxLUPM5gjabyujQ3o6l7IdYY7Xy9ZhNGnKM=;
+	s=default; t=1671696834;
+	bh=Gfpdudtg56WnprtLQzHg/Zlgwgkcm5SjmY2+X3/WL4M=;
 	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=n094rv1aURWypEnDznTmWAvwsOelkYLE3eB8WabkYFLcllvieR/U/qvtWfrvZ/mk1
-	 NpX+MjqHdE0qzf7L/reNDc+8TVQvaRed/ag/vGIcF34LI/xL4+/PnHCZbUEgFfNdD9
-	 lOvopjFIti8QM5Ld/24zeytvPeiwmaWle72AGJ9U=
+	b=lgtcb36zxo9q+28NKs1Ew9WiPwd0Ad/SARwhRwsboY249MWRv8fuG2t6oB7tnv9D8
+	 vnxjiVnIi37jh6A6YKZlQ+OyN1jUFXxrzhJigK7Yc8+MAGwjClZoAPrOlHEYf8/6Cc
+	 fNlrh/KQm9bQ9j6ALF+KdaKEe499Emuu+DyXQ3EI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22BFFF8024D;
-	Thu, 22 Dec 2022 09:09:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2BBCF8024D;
+	Thu, 22 Dec 2022 09:13:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 95E50F80158; Thu, 22 Dec 2022 09:09:18 +0100 (CET)
+ id 8C620F8025F; Thu, 22 Dec 2022 09:13:02 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C19ECF80158
- for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2022 09:09:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C19ECF80158
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99AFAF80158
+ for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2022 09:12:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99AFAF80158
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=TMDktZjE; 
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=f933IMEn; 
  dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=5bP4IkqX
+ header.s=susede2_ed25519 header.b=xdNC8qHu
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 0AD5A8D003;
- Thu, 22 Dec 2022 08:09:16 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A7BEA8B974;
+ Thu, 22 Dec 2022 08:12:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1671696556; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1671696779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=L2YQ9u9aJ+TCF0r2Rpus0zacLYqArkp8KKVLHD+ehmQ=;
- b=TMDktZjEGOek4q5uu1ulFh4C7HJqNDetoNyKCofVds2Qin4SFXGWJwluloy4HuGC3j2LF2
- NaPSLV7zyJV8mlp/nZaYechGyhAy5U7INvrFRauBdJTATN1+K9cDIQXteWsUs83G1h37vK
- RknPt7o1AZS3Vmu3DnQyjmhn78q5tNM=
+ bh=m8IUxg30q2xnjYZkNJzonGNyqoNi6J288MMHc7Biy2c=;
+ b=f933IMEnO+OJTjhUUmmn4TtY3e37vycgyufITc+pGwDrE0EE2HGiLxsQR1XfzcexwnQe8r
+ hsCy5OUGZFapdKq27q1g2eQWFJ9V6rSpwxcUPlkTO4o8kcaHrdww22ctNCUqISMOOU/MJl
+ LAENi+Jm36fcUEUI2nESsHW5rxEhLD4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1671696556;
+ s=susede2_ed25519; t=1671696779;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=L2YQ9u9aJ+TCF0r2Rpus0zacLYqArkp8KKVLHD+ehmQ=;
- b=5bP4IkqXmElXkIOuPrNN1xGK/S54orlns4ttDjaTv9uvRhF8CjzGgRzpeBUX50w7WBw8yG
- tGHlG4YkgLTyTXCA==
+ bh=m8IUxg30q2xnjYZkNJzonGNyqoNi6J288MMHc7Biy2c=;
+ b=xdNC8qHuDuhF6o71Cy66+sukejlf73g1pN9TQX6UiMBzfgDs40yfvBs6r5TIWOx3vJrbOO
+ +ILbzhUbhYomsBDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D16F213918;
- Thu, 22 Dec 2022 08:09:15 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7EFC613918;
+ Thu, 22 Dec 2022 08:12:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id wYsUMqsQpGOBJgAAMHmgww
- (envelope-from <tiwai@suse.de>); Thu, 22 Dec 2022 08:09:15 +0000
-Date: Thu, 22 Dec 2022 09:09:15 +0100
-Message-ID: <87o7rv507o.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id IFMFHosRpGMLKAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Thu, 22 Dec 2022 08:12:59 +0000
+Date: Thu, 22 Dec 2022 09:12:58 +0100
+Message-ID: <87mt7f501h.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Marek =?ISO-8859-1?Q?Marczykowski-G=F3recki?=
- <marmarek@invisiblethingslab.com>
-Subject: Re: Intel HD Audio: sound stops working in Xen PV dom0 in >=5.17
-In-Reply-To: <Y5SxJ3IkhHSC/Psu@mail-itl>
-References: <Y5KPAs6f7S2dEoxR@mail-itl> <87tu256lqs.wl-tiwai@suse.de>
- <Y5MssNfvE+mUyyZR@mail-itl> <Y5PaF4LhQGIrKthy@mail-itl>
- <Y5SxJ3IkhHSC/Psu@mail-itl>
+To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: Re: [PATCH] ALSA: azt3328: Remove the unused function
+ snd_azf3328_codec_outl()
+In-Reply-To: <20221213061355.62856-1-jiapeng.chong@linux.alibaba.com>
+References: <20221213061355.62856-1-jiapeng.chong@linux.alibaba.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,81 +92,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Harald Arnesen <harald@skogtun.org>,
- Alex Xu <alex_y_xu@yahoo.ca>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Abaci Robot <abaci@linux.alibaba.com>, tiwai@suse.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 10 Dec 2022 17:17:42 +0100,
-Marek Marczykowski-Górecki wrote:
+On Tue, 13 Dec 2022 07:13:55 +0100,
+Jiapeng Chong wrote:
 > 
-> On Sat, Dec 10, 2022 at 02:00:06AM +0100, Marek Marczykowski-Górecki wrote:
-> > On Fri, Dec 09, 2022 at 01:40:15PM +0100, Marek Marczykowski-Górecki wrote:
-> > > On Fri, Dec 09, 2022 at 09:10:19AM +0100, Takashi Iwai wrote:
-> > > > On Fri, 09 Dec 2022 02:27:30 +0100,
-> > > > Marek Marczykowski-Górecki wrote:
-> > > > > 
-> > > > > Hi,
-> > > > > 
-> > > > > Under Xen PV dom0, with Linux >= 5.17, sound stops working after few
-> > > > > hours. pavucontrol still shows meter bars moving, but the speakers
-> > > > > remain silent. At least on some occasions I see the following message in
-> > > > > dmesg:
-> > > > > 
-> > > > >   [ 2142.484553] snd_hda_intel 0000:00:1f.3: Unstable LPIB (18144 >= 6396); disabling LPIB delay counting
-> > 
-> > Hit the issue again, this message did not appear in the log (or at least
-> > not yet).
-> > 
-> > (...)
-> > 
-> > > > In anyway, please check the behavior with 6.1-rc8 + the commit
-> > > > cc26516374065a34e10c9a8bf3e940e42cd96e2a
-> > > >     ALSA: memalloc: Allocate more contiguous pages for fallback case
-> > > > from for-next of my sound git tree (which will be in 6.2-rc1).
-> > 
-> > This did not helped.
-> > 
-> > > Looking at the mentioned commits, there is one specific aspect of Xen PV
-> > > that may be relevant. It configures PAT differently than native Linux.
-> > > Theoretically Linux adapts automatically and using proper API (like
-> > > set_memory_wc()) should just work, but at least for i915 driver it
-> > > causes issues (not fully tracked down yet). Details about that bug
-> > > report include some more background:
-> > > https://lore.kernel.org/intel-gfx/Y5Hst0bCxQDTN7lK@mail-itl/
-> > > 
-> > > Anyway, I have tested it on a Xen modified to setup PAT the same way as
-> > > native Linux and the audio issue is still there.
-> > > 
-> > > > If the problem persists, another thing to check is the hack below
-> > > > works.
-> > 
-> > Trying this one now.
+> The function snd_azf3328_codec_outl is defined in the azt3328.c file, but
+> not called elsewhere, so remove this unused function.
 > 
-> And this one didn't either :/
+> sound/pci/azt3328.c:367:1: warning: unused function 'snd_azf3328_codec_outl'.
+> 
+> Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=3432
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-(Sorry for the late reply, as I've been off in the last weeks.)
+Thanks, applied now.
 
-I think the hack doesn't influence on the PCM buffer pages, but only
-about BDL pages.  Could you check the patch below instead?
-It'll disable the SG-buffer handling on x86 completely. 
-
-
-thanks,
 
 Takashi
-
--- 8< --
---- a/sound/core/Kconfig
-+++ b/sound/core/Kconfig
-@@ -225,8 +225,8 @@ config SND_VMASTER
- 	bool
- 
- config SND_DMA_SGBUF
--	def_bool y
--	depends on X86
-+	def_bool n
-+#	depends on X86
- 
- config SND_CTL_LED
- 	tristate
