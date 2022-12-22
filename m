@@ -4,85 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB154C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Dec 2022 04:27:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 442CDC4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Dec 2022 07:32:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 225722A9F;
-	Thu, 22 Dec 2022 05:26:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 225722A9F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 478EE3336;
+	Thu, 22 Dec 2022 08:32:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 478EE3336
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671683265;
-	bh=6DXcp2Jn846GvBLj5Avpx0KgutEoZFfJvX0RgVOyzy8=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=lng6rLsQiyHJjhul897IZ+AAISTDrHDeUPq2J4t3S6cIwhS7OIMBeAPnopCb9W7l7
-	 WyCafvbxwnX0KrO8WWhjlwLCqr2eV408G++cIE+hNVcuBFwSl40RtwDarfebQWFUPB
-	 DIOgvk/Jn1l78LxGO6vMIos8fcommovIaFHKPCpM=
+	s=default; t=1671694374;
+	bh=atySqZd5yUDDbu5cvVYu7H06r0Z3kyev06WR8gSVc8M=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=XFO2JNgeXJf6se58tNim/g0gIKfkvJInKjcoAFGYxSdKJ8lOBRKucq6YUIkYj1EEJ
+	 KZzh4j76w9JA0GgQbinWfz1AiTnvHeC8rKMW1oe9FgVKJeTXb06DG/Po1jY9rv5eCv
+	 kypEgJDvhfx+B4EmVGCGAqXKQzvZW0Vf+T6lopIw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BEB2FF8025F;
-	Thu, 22 Dec 2022 05:26:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 159EDF8069C;
+	Thu, 22 Dec 2022 08:23:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7152F8024D; Thu, 22 Dec 2022 05:26:52 +0100 (CET)
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com
- [IPv6:2607:f8b0:4864:20::1032])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 4DBBCF80686; Thu, 22 Dec 2022 08:23:21 +0100 (CET)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 511C0F8026D
- for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2022 05:26:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 511C0F8026D
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=compal-corp-partner-google-com.20210112.gappssmtp.com
- header.i=@compal-corp-partner-google-com.20210112.gappssmtp.com
- header.a=rsa-sha256 header.s=20210112 header.b=GUVigi1S
-Received: by mail-pj1-x1032.google.com with SMTP id
- u15-20020a17090a3fcf00b002191825cf02so701207pjm.2
- for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2022 20:26:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=compal-corp-partner-google-com.20210112.gappssmtp.com; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=83IiZKKqeyFIPbt60kx1s4S33RFQeqF/INn7EFkiJWE=;
- b=GUVigi1Sp2FNxfUmEOdGyWZf6iA44V655PYUi0Un0GFD69bZQlUYaKNrBrP2bVLzuO
- 7gNkN6AcFluR2IVssNsgJtWwWYdorDOcUj/FYEmaRZc9el/7gqtI7F3CI2dbKuXoicFx
- Kb8RgfYmy7ri1Qam18pe/J0cVzhR5MxVetJPk63DtFBrs3xF/PCear9Hji1HqfwbqDN1
- dhqDLr8VSSBZiQz+xsQ1Ai9GEEMI8/oNEFAxsLHXstPAsRTq08iADZKsytScsQtL2DKz
- jqI7LlUN5+ITkNloFHEukMk4fXHHZE9KOTRCKg+KBdTFef5vAP3rTOEXiKYS/s4eV0WV
- u2WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=83IiZKKqeyFIPbt60kx1s4S33RFQeqF/INn7EFkiJWE=;
- b=tTZmpm6t13PP7vxk2pHa8mdtDAyMpNLxt9uFts3g2YKP/aRk669pvLO8xEQi9EEPDV
- sFLEYO7CQj24I7Tv+CHQ2dy1CUug6zwoIjW1qpsJeqXmS2E44DvdpOdalTgNVo9WOfc0
- 833pvNEBzEnLeloyCszAWxeHDgba4SIVfeF0++xg3eSoNNkgNvJu3QtcEjW8EEMieV+D
- bpbird1V+xfSQ4v4zw/EDVb0Mz/KQ6k4FspCpLNXvDh4xLtEugQJ1oezvUFuk4xGAavD
- VZ2XNTN1Cb0teBvOwjdj6LNhMPdN5b6RH9i0qzbyXMt5qs6gWqn1t6L5xf0HKp3Pyipi
- Eqmg==
-X-Gm-Message-State: AFqh2koDPPeUAiNqfmhpQk0XBrnSOV5lWQ6o3YmaYkec2NkVswirqVoP
- FBq+z7gvTvBXmtvt+EctxrN9WA==
-X-Google-Smtp-Source: AMrXdXtAcLvhmdXv3zALbUM+xSxaidfY2tI4Q/XslneGGdyo2VnpEEJlFzBBZlm2davf3bX6cTTaNw==
-X-Received: by 2002:a17:902:d34a:b0:188:5256:bf60 with SMTP id
- l10-20020a170902d34a00b001885256bf60mr4401845plk.25.1671683206613; 
- Wed, 21 Dec 2022 20:26:46 -0800 (PST)
-Received: from localhost.localdomain ([2402:7500:56a:a93e:d2b2:b38a:f4a1:ecec])
- by smtp.gmail.com with ESMTPSA id
- t11-20020a170902e84b00b00183e2a96414sm12250691plg.121.2022.12.21.20.26.41
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 21 Dec 2022 20:26:46 -0800 (PST)
-From: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH v3] ASoC: Intel: sof_nau8825: add variant with nau8318
- amplifier.
-Date: Thu, 22 Dec 2022 12:26:24 +0800
-Message-Id: <20221222042624.557869-1-ajye_huang@compal.corp-partner.google.com>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18BA5F80679;
+ Thu, 22 Dec 2022 08:23:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18BA5F80679
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
+ header.s=dk header.b=XTWknGrG
+X-UUID: 49622567df244388a32a9f6fa5a40f9d-20221222
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
+ s=dk; 
+ h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
+ bh=lFz2Y/xxwkpdqewHbikoBaP7PZtSmri9F7IdaOcr4HM=; 
+ b=XTWknGrGY6bbMOG3xa8TyJCsNStFEkPAdWbeXxIIpBQS0kIrGyubqL90yTWjt5LEvBH0HP35zWXb/311rXHMTIE3RqmhDnqqP8DK5bHchfEQ8j9rHWqMOtgY5d/DA/YfHJrMZklL/HoZaOLifRtYlKtzRAg0cKY248/4MiVvU5w=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.14, REQID:2988d6c3-78cd-4a1f-8ee2-76b254b5e81b, IP:0,
+ U
+ RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+ N:release,TS:-25
+X-CID-META: VersionHash:dcaaed0, CLOUDID:ca6e7c52-dd49-462e-a4be-2143a3ddc739,
+ B
+ ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+ RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+X-UUID: 49622567df244388a32a9f6fa5a40f9d-20221222
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by
+ mailgw01.mediatek.com (envelope-from <tinghan.shen@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+ with ESMTP id 788890386; Thu, 22 Dec 2022 15:23:06 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.792.15; Thu, 22 Dec 2022 15:23:05 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.792.15 via Frontend Transport; Thu, 22 Dec 2022 15:23:05 +0800
+From: Tinghan Shen <tinghan.shen@mediatek.com>
+To: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>, Pierre-Louis Bossart
+ <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Bard Liao
+ <yung-chuan.liao@linux.intel.com>, Ranjani Sridharan
+ <ranjani.sridharan@linux.intel.com>, Kai Vehmanen
+ <kai.vehmanen@linux.intel.com>, Daniel Baluta <daniel.baluta@nxp.com>, Mark
+ Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
+ <tiwai@suse.com>, Tinghan Shen <tinghan.shen@mediatek.com>, Chunxu Li
+ <chunxu.li@mediatek.com>, Dan Carpenter <error27@gmail.com>, YC Hung
+ <yc.hung@mediatek.com>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, Allen-KH Cheng
+ <Allen-KH.Cheng@mediatek.com>
+Subject: [PATCH v1 2/3] ASoC: SOF: mediatek: Support mt8188 platform
+Date: Thu, 22 Dec 2022 15:21:49 +0800
+Message-ID: <20221222072150.10627-3-tinghan.shen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20221222072150.10627-1-tinghan.shen@mediatek.com>
+References: <20221222072150.10627-1-tinghan.shen@mediatek.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-MTK: N
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -95,142 +99,81 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Libin Yang <libin.yang@intel.com>,
- "balamurugan . c" <balamurugan.c@intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, David Lin <CTLIN0@nuvoton.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Akihiko Odaki <akihiko.odaki@gmail.com>, ye xingchen <ye.xingchen@zte.com.cn>,
- Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Brent Lu <brent.lu@intel.com>,
- Yong Zhi <yong.zhi@intel.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ sound-open-firmware@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds the driver data for two nau8318 speaker amplifiers on
-SSP1 and nau8825 on SSP0 for ADL platform.
+Add support of SOF on MediaTek MT8188 SoC.
+MT8188 ADSP integrates with a single core Cadence HiFi-5 DSP.
+The IPC communication between AP and DSP is based on shared DRAM and
+mailbox interrupt.
 
-The nau8315 and nau8318 are both Nuvoton Amp chips. They use the same
-Amp driver nau8315.c. The acpi_device_id for nau8315 is "NVTN2010",
-for nau8318 is "NVTN2012".
-The nau8825 is one of Nuvoton headset codec, and its acpi_device_id is
-"10508825".
+The change in the mt8186.h is compatible on both mt8186 and
+mt8188. The register controls booting the DSP core with the
+default address or the user specified address. Both mt8186
+and mt8188 should boot with the user specified boot in the driver.
+The usage of the register is the same on both SoC, but the
+control bit is different on mt8186 and mt8188, which is bit 1 on mt8186
+and bit 0 on mt8188. Configure the redundant bit has noside effect
+on both SoCs.
 
-Signed-off-by: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- changes from v1->v2:
- * Modify title and add explanations in commit messages .
- * Use new topology file "sof-adl-nau8318-nau8825.tplg" instead of sof-adl-max98360a-nau8825.tplg.
- changes from v2-v3:
- * Modify drv_name string from "adl_nau8318_nau8825" to "adl_nau8318_8825".
+ sound/soc/sof/mediatek/mt8186/mt8186.c | 17 +++++++++++++++++
+ sound/soc/sof/mediatek/mt8186/mt8186.h |  3 ++-
+ 2 files changed, 19 insertions(+), 1 deletion(-)
 
- sound/soc/intel/boards/Kconfig                |  1 +
- sound/soc/intel/boards/sof_nau8825.c          | 23 +++++++++++++++++++
- .../intel/common/soc-acpi-intel-adl-match.c   | 12 ++++++++++
- 3 files changed, 36 insertions(+)
-
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index a472de1909f4..3f68e9edd853 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -554,6 +554,7 @@ config SND_SOC_INTEL_SOF_NAU8825_MACH
- 	select SND_SOC_RT1015P
- 	select SND_SOC_MAX98373_I2C
- 	select SND_SOC_MAX98357A
-+	select SND_SOC_NAU8315
- 	select SND_SOC_DMIC
- 	select SND_SOC_HDAC_HDMI
- 	select SND_SOC_INTEL_HDA_DSP_COMMON
-diff --git a/sound/soc/intel/boards/sof_nau8825.c b/sound/soc/intel/boards/sof_nau8825.c
-index 27880224359d..78d84527081a 100644
---- a/sound/soc/intel/boards/sof_nau8825.c
-+++ b/sound/soc/intel/boards/sof_nau8825.c
-@@ -48,6 +48,7 @@
- #define SOF_MAX98373_SPEAKER_AMP_PRESENT	BIT(15)
- #define SOF_MAX98360A_SPEAKER_AMP_PRESENT	BIT(16)
- #define SOF_RT1015P_SPEAKER_AMP_PRESENT	BIT(17)
-+#define SOF_NAU8318_SPEAKER_AMP_PRESENT	BIT(18)
- 
- static unsigned long sof_nau8825_quirk = SOF_NAU8825_SSP_CODEC(0);
- 
-@@ -338,6 +339,13 @@ static struct snd_soc_dai_link_component rt1019p_component[] = {
- 	}
+diff --git a/sound/soc/sof/mediatek/mt8186/mt8186.c b/sound/soc/sof/mediatek/mt8186/mt8186.c
+index 79da25725987..af0dfc2fc4cc 100644
+--- a/sound/soc/sof/mediatek/mt8186/mt8186.c
++++ b/sound/soc/sof/mediatek/mt8186/mt8186.c
+@@ -625,8 +625,25 @@ static const struct sof_dev_desc sof_of_mt8186_desc = {
+ 	.ops = &sof_mt8186_ops,
  };
  
-+static struct snd_soc_dai_link_component nau8318_components[] = {
-+	{
-+		.name = "NVTN2012:00",
-+		.dai_name = "nau8315-hifi",
-+	}
++static const struct sof_dev_desc sof_of_mt8188_desc = {
++	.ipc_supported_mask	= BIT(SOF_IPC),
++	.ipc_default		= SOF_IPC,
++	.default_fw_path = {
++		[SOF_IPC] = "mediatek/sof",
++	},
++	.default_tplg_path = {
++		[SOF_IPC] = "mediatek/sof-tplg",
++	},
++	.default_fw_filename = {
++		[SOF_IPC] = "sof-mt8188.ri",
++	},
++	.nocodec_tplg_filename = "sof-mt8188-nocodec.tplg",
++	.ops = &sof_mt8186_ops,
 +};
 +
- static struct snd_soc_dai_link_component dummy_component[] = {
- 	{
- 		.name = "snd-soc-dummy",
-@@ -486,6 +494,11 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
- 			max_98360a_dai_link(&links[id]);
- 		} else if (sof_nau8825_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT) {
- 			sof_rt1015p_dai_link(&links[id]);
-+		} else if (sof_nau8825_quirk &
-+				SOF_NAU8318_SPEAKER_AMP_PRESENT) {
-+			links[id].codecs = nau8318_components;
-+			links[id].num_codecs = ARRAY_SIZE(nau8318_components);
-+			links[id].init = speaker_codec_init;
- 		} else {
- 			goto devm_err;
- 		}
-@@ -657,6 +670,16 @@ static const struct platform_device_id board_ids[] = {
- 					SOF_BT_OFFLOAD_SSP(2) |
- 					SOF_SSP_BT_OFFLOAD_PRESENT),
- 	},
-+	{
-+		.name = "adl_nau8318_8825",
-+		.driver_data = (kernel_ulong_t)(SOF_NAU8825_SSP_CODEC(0) |
-+					SOF_SPEAKER_AMP_PRESENT |
-+					SOF_NAU8318_SPEAKER_AMP_PRESENT |
-+					SOF_NAU8825_SSP_AMP(1) |
-+					SOF_NAU8825_NUM_HDMIDEV(4) |
-+					SOF_BT_OFFLOAD_SSP(2) |
-+					SOF_SSP_BT_OFFLOAD_PRESENT),
-+	},
+ static const struct of_device_id sof_of_mt8186_ids[] = {
+ 	{ .compatible = "mediatek,mt8186-dsp", .data = &sof_of_mt8186_desc},
++	{ .compatible = "mediatek,mt8188-dsp", .data = &sof_of_mt8188_desc},
  	{ }
  };
- MODULE_DEVICE_TABLE(platform, board_ids);
-diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-index 60aee56f94bd..b1c0a89a8787 100644
---- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-@@ -450,6 +450,11 @@ static const struct snd_soc_acpi_codecs adl_lt6911_hdmi = {
- 	.codecs = {"INTC10B0"}
- };
+ MODULE_DEVICE_TABLE(of, sof_of_mt8186_ids);
+diff --git a/sound/soc/sof/mediatek/mt8186/mt8186.h b/sound/soc/sof/mediatek/mt8186/mt8186.h
+index 98b2965e5ba6..886d687449e3 100644
+--- a/sound/soc/sof/mediatek/mt8186/mt8186.h
++++ b/sound/soc/sof/mediatek/mt8186/mt8186.h
+@@ -52,7 +52,8 @@ struct snd_sof_dev;
+ #define ADSP_PRID			0x0
+ #define ADSP_ALTVEC_C0			0x04
+ #define ADSP_ALTVECSEL			0x0C
+-#define ADSP_ALTVECSEL_C0		BIT(1)
++/* BIT(1) for mt8186. BIT(0) for mt8188 */
++#define ADSP_ALTVECSEL_C0		(BIT(0) | BIT(1))
  
-+static const struct snd_soc_acpi_codecs adl_nau8318_amp = {
-+	.num_codecs = 1,
-+	.codecs = {"NVTN2012"}
-+};
-+
- struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
- 	{
- 		.comp_ids = &adl_rt5682_rt5682s_hp,
-@@ -507,6 +512,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
- 		.quirk_data = &adl_rt1015p_amp,
- 		.sof_tplg_filename = "sof-adl-rt1015-nau8825.tplg",
- 	},
-+	{
-+		.id = "10508825",
-+		.drv_name = "adl_nau8318_8825",
-+		.machine_quirk = snd_soc_acpi_codec_list,
-+		.quirk_data = &adl_nau8318_amp,
-+		.sof_tplg_filename = "sof-adl-nau8318-nau8825.tplg",
-+	},
- 	{
- 		.id = "10508825",
- 		.drv_name = "sof_nau8825",
+ /* dsp bus */
+ #define ADSP_SRAM_POOL_CON		0x190
 -- 
-2.25.1
+2.18.0
 
