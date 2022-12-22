@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7FC20C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Dec 2022 08:13:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9735CC4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Dec 2022 08:17:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3514B3577;
-	Thu, 22 Dec 2022 09:13:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3514B3577
+	by alsa0.perex.cz (Postfix) with ESMTPS id F38AA35E0;
+	Thu, 22 Dec 2022 09:16:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F38AA35E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671696834;
-	bh=Gfpdudtg56WnprtLQzHg/Zlgwgkcm5SjmY2+X3/WL4M=;
+	s=default; t=1671697032;
+	bh=HISogsCs2w0Z9uyV5p6XTPy1i/cWJM8Yv8QR47lF6mw=;
 	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=lgtcb36zxo9q+28NKs1Ew9WiPwd0Ad/SARwhRwsboY249MWRv8fuG2t6oB7tnv9D8
-	 vnxjiVnIi37jh6A6YKZlQ+OyN1jUFXxrzhJigK7Yc8+MAGwjClZoAPrOlHEYf8/6Cc
-	 fNlrh/KQm9bQ9j6ALF+KdaKEe499Emuu+DyXQ3EI=
+	b=esPd/vBvp4Tm1nvcxnuPNLM8HaijB+NncmnCwnwpP9noKFd+9tyf6vtpUnBWgac/2
+	 NOcwBhdo+CCsAFb9qVZd/YGM0F0m3YaABu33c2cfoANuXTx3Q4VbUufZ9HXotuu2cH
+	 dqmGbUw1pfR2cbUDBwq9gjumaaR9TRomts/n0Xa0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2BBCF8024D;
-	Thu, 22 Dec 2022 09:13:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71055F8024D;
+	Thu, 22 Dec 2022 09:16:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8C620F8025F; Thu, 22 Dec 2022 09:13:02 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 53DA9F80022; Thu, 22 Dec 2022 09:16:19 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99AFAF80158
- for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2022 09:12:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99AFAF80158
+ by alsa1.perex.cz (Postfix) with ESMTPS id C54E6F80022
+ for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2022 09:16:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C54E6F80022
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=f933IMEn; 
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=EMeXd4N7; 
  dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=xdNC8qHu
+ header.s=susede2_ed25519 header.b=bUoBiJPW
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A7BEA8B974;
- Thu, 22 Dec 2022 08:12:59 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 45DEC3EBC;
+ Thu, 22 Dec 2022 08:16:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1671696779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1671696977; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=m8IUxg30q2xnjYZkNJzonGNyqoNi6J288MMHc7Biy2c=;
- b=f933IMEnO+OJTjhUUmmn4TtY3e37vycgyufITc+pGwDrE0EE2HGiLxsQR1XfzcexwnQe8r
- hsCy5OUGZFapdKq27q1g2eQWFJ9V6rSpwxcUPlkTO4o8kcaHrdww22ctNCUqISMOOU/MJl
- LAENi+Jm36fcUEUI2nESsHW5rxEhLD4=
+ bh=lleIbNlY24T3AGLdmA0xOyz1OOxie1ydRxU/M0+n6OM=;
+ b=EMeXd4N7mZ1K+QNvRHxYLhMR/I9UlZzxtd5LxftUDAyVga1jwVArvSjWhGNtKiPRoOpCTQ
+ aPfxI7g2SRIkpV52T7d5CvWWgZJK71wgb77dZoG42X8v9r68MZ/qH/OKaXael2BeOYusyg
+ hQIFgsSvh6nLkKYdEnRt3Ot0cQonvHQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1671696779;
+ s=susede2_ed25519; t=1671696977;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=m8IUxg30q2xnjYZkNJzonGNyqoNi6J288MMHc7Biy2c=;
- b=xdNC8qHuDuhF6o71Cy66+sukejlf73g1pN9TQX6UiMBzfgDs40yfvBs6r5TIWOx3vJrbOO
- +ILbzhUbhYomsBDg==
+ bh=lleIbNlY24T3AGLdmA0xOyz1OOxie1ydRxU/M0+n6OM=;
+ b=bUoBiJPWxq7vdsyo4cxbKHso7jePYKFNgT160U1HQCFelhEf5Td+Gj8Ibh47vvlQmZiCpm
+ ViMQVIgf/VCog1DQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7EFC613918;
- Thu, 22 Dec 2022 08:12:59 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 274B113918;
+ Thu, 22 Dec 2022 08:16:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id IFMFHosRpGMLKAAAMHmgww
- (envelope-from <tiwai@suse.de>); Thu, 22 Dec 2022 08:12:59 +0000
-Date: Thu, 22 Dec 2022 09:12:58 +0100
-Message-ID: <87mt7f501h.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id dGbECFESpGMgKQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Thu, 22 Dec 2022 08:16:17 +0000
+Date: Thu, 22 Dec 2022 09:16:16 +0100
+Message-ID: <87lemz4zvz.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: Re: [PATCH] ALSA: azt3328: Remove the unused function
- snd_azf3328_codec_outl()
-In-Reply-To: <20221213061355.62856-1-jiapeng.chong@linux.alibaba.com>
-References: <20221213061355.62856-1-jiapeng.chong@linux.alibaba.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: usb-audio: Add new quirk FIXED_RATE for JBL
+ Quantum810 Wireless
+In-Reply-To: <20221215153037.1163786-1-perex@perex.cz>
+References: <20221215153037.1163786-1-perex@perex.cz>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -92,24 +92,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Abaci Robot <abaci@linux.alibaba.com>, tiwai@suse.com
+Cc: ALSA development <alsa-devel@alsa-project.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 13 Dec 2022 07:13:55 +0100,
-Jiapeng Chong wrote:
+On Thu, 15 Dec 2022 16:30:37 +0100,
+Jaroslav Kysela wrote:
 > 
-> The function snd_azf3328_codec_outl is defined in the azt3328.c file, but
-> not called elsewhere, so remove this unused function.
+> It seems that the firmware is broken and does not accept
+> the UAC_EP_CS_ATTR_SAMPLE_RATE URB. There is only one rate (48000Hz)
+> available in the descriptors for the output endpoint.
 > 
-> sound/pci/azt3328.c:367:1: warning: unused function 'snd_azf3328_codec_outl'.
+> Create a new quirk QUIRK_FLAG_FIXED_RATE to skip the rate setup
+> when only one rate is available (fixed).
 > 
-> Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=3432
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=216798
+> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 
 Thanks, applied now.
+
+My gut feeling tells that this might be generically applicable, but we
+are never sure about the firmware bugs, so let's try to apply
+conditionally with a quirk flag.
 
 
 Takashi
