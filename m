@@ -4,68 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4611C4167B
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Dec 2022 19:25:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59ED4C3DA79
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Dec 2022 22:36:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 67DAE5E64;
-	Mon, 26 Dec 2022 20:24:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67DAE5E64
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1100363C9;
+	Mon, 26 Dec 2022 23:35:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1100363C9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672082727;
-	bh=h1+l2fsOqjiY39qLICXGAAKDlFVfeCgz9S8OrNIWA1s=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1672094207;
+	bh=btT00mhezy9HTF1lIp7RKA+PUTUm+XbEB3t4kOpzlXE=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=VyGiPRnGNWvcoP8me6FGmV1nCPAkYqSSJRUothF4eCPUh7d6JY/yiYHmVjZvwiyGU
-	 l8kcX9SVIUgXW5IQAsKXFqsBq6NQh1drxp6XO2PqpUdVnFtputw78Ba0tXhtq42ElI
-	 lS5vPA+OTLleRZxF4zou/MYbsgOCDV0Znw+rWqgs=
+	b=tVgJD4wlwFNUHKmA08219eB6sXevKEUcclcua/Mb29LXax1vLcqBttWUByP388kJO
+	 XYK7oSPyLiSdyVhtT9+c3jpGZMC/uu/wt32b+sWk6MXrufsVt2/vfLTNofPfINy1zr
+	 LBI0166u6Ol4GuQpLrGfgIEXYChn8ZYVtFx7nyFE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E721DF802A0;
-	Mon, 26 Dec 2022 20:24:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AACFAF802A0;
+	Mon, 26 Dec 2022 23:35:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 671A2F80310; Mon, 26 Dec 2022 20:24:35 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id CBB1BF800F0; Mon, 26 Dec 2022 23:35:55 +0100 (CET)
+Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com
+ [209.85.160.48])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 13A0AF80134
- for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2022 20:24:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13A0AF80134
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- secure) header.d=perex.cz header.i=@perex.cz header.a=rsa-sha256
- header.s=default header.b=2P9cw4xV
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 89DACA003F;
- Mon, 26 Dec 2022 20:24:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 89DACA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1672082656; bh=G+feGOdiLCP3tiUA/WiebYF7xmjX4QgATt6Yoy3yzMc=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=2P9cw4xV0sfTsmKCNRmPtGqCR4N78rkcFlOheLZnSLaJMlidFWyJZigNKefI8Pegq
- UF2iWY1e9EaXE04wKOfHY4wo8wnjuYtDI/ivgaD6eDWto8SAEWNcYZtPviWlh18Iak
- syN0AN6eAEC//Q7FHfbwzeDrczoAKaNHeAGAeFUU=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Mon, 26 Dec 2022 20:24:11 +0100 (CET)
-Message-ID: <47f3590c-f371-c997-374f-0a2a3dde86dc@perex.cz>
-Date: Mon, 26 Dec 2022 20:24:11 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH] ALSA: hda/hdmi: Use only dynamic PCM device allocation
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>, =?UTF-8?Q?Michael_La=c3=9f?=
- <bevan@bi-co.net>
-References: <20220922084017.25925-1-perex@perex.cz>
- <1c9c00dec72c241a399b3b7c0a305382a5712529.camel@bi-co.net>
- <87edsnxqmo.wl-tiwai@suse.de>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <87edsnxqmo.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E11FF800F0
+ for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2022 23:35:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E11FF800F0
+Received: by mail-oa1-f48.google.com with SMTP id
+ 586e51a60fabf-1433ef3b61fso13785920fac.10
+ for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2022 14:35:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=date:subject:message-id:references:in-reply-to:cc:to:from
+ :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+ :cc:subject:date:message-id:reply-to;
+ bh=lt+gzNImgwQhawSy/zX0NqMABwqGJ4OMHwRZPC2+ROw=;
+ b=HC28hdmjer7AZGvNcTS1WZT086q23ifxJULGSB6KXJu9TqyyXxlAGwhlJttYmI3AvM
+ cNCuwN55vGipaos+CF1vb4u1YRS/OE5KzgRB5qjKfnVPhouPHGfnNSV6A5fxXosGjcjw
+ nMmpjcpOpvV+hc/dwjDJ86IW4RxhedgQvjthu5ax680zKI+H4zQ6Eku5rm09+g6qokqk
+ FbB1kornV+/7T6Gbf7j0Z5mcw4qb2iraekGElv8+kAnWZnNuzCmTpRYa+qaSmMrxcfJL
+ q/2V8oBPmqpL5cMbIGG0x/3MYRufIyexFYa5BHBSfQlt+5WkMLIznywj1SuDIjrS7xm/
+ Kquw==
+X-Gm-Message-State: AFqh2krjEQn8tlOwrfkXNOeT6zN3KcUDpw/UUL6OPVrF+bXUlx2m1lOe
+ 4qYrdLN8e9Fr/r/QtWxq3g==
+X-Google-Smtp-Source: AMrXdXtoyYNVc/HfF7b8ZQ6awqmxZtHIAJA8GEEc6ASnXnLJU/vSgfPTQp95w57GfWXniFD8o9Moww==
+X-Received: by 2002:a05:6871:4595:b0:143:95b0:26e7 with SMTP id
+ nl21-20020a056871459500b0014395b026e7mr8961672oab.54.1672094146950; 
+ Mon, 26 Dec 2022 14:35:46 -0800 (PST)
+Received: from robh_at_kernel.org ([2605:ef80:80e8:2792:eb0e:539f:f657:547b])
+ by smtp.gmail.com with ESMTPSA id
+ z12-20020a056870738c00b00143065d3e99sm5461116oam.5.2022.12.26.14.35.45
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 26 Dec 2022 14:35:46 -0800 (PST)
+Received: (nullmailer pid 375419 invoked by uid 1000);
+ Fri, 23 Dec 2022 19:26:02 -0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+From: Rob Herring <robh@kernel.org>
+To: Francesco Dolcini <francesco@dolcini.it>
+In-Reply-To: <20221223170404.210603-2-francesco@dolcini.it>
+References: <20221223170404.210603-1-francesco@dolcini.it>
+ <20221223170404.210603-2-francesco@dolcini.it>
+Message-Id: <167182349408.373865.10339766752503211557.robh@kernel.org>
+Subject: Re: [PATCH v1 1/3] ASoC: dt-bindings: nau8822: convert to the dtschema
+Date: Fri, 23 Dec 2022 13:26:02 -0600
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,57 +85,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- amd-gfx@lists.freedesktop.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, wtli@nuvoton.com,
+ Takashi Iwai <tiwai@suse.com>, kchsu0@nuvoton.com,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Benjamin Marty <info@benjaminmarty.ch>, Mark Brown <broonie@kernel.org>,
+ David Lin <CTLIN0@nuvoton.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Francesco Dolcini <francesco.dolcini@toradex.com>,
+ Emanuele Ghidoli <emanuele.ghidoli@toradex.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 25. 12. 22 19:52, Takashi Iwai wrote:
-> On Sun, 25 Dec 2022 13:14:28 +0100,
-> Michael Laß wrote:
->>
->> CC'ing amd-gfx as this might be an issue in the amd driver.
->>
->> This change causes a regression in Linux 6.1 at least on some AMD APUs.
->> There are reports from users with Ryzen 4750U, 5800U and 5850U chips
->> where the HDMI sound devices don't show up anymore. I'm affected by
->> this as well.
->>
->> Reverting this commit (ef6f5494) makes the HDMI audio devices show up
->> again. I verified that this is still an issue in current Linux git
->> (72a85e2b).
->>
->> Am Donnerstag, dem 22.09.2022 um 10:40 +0200 schrieb Jaroslav Kysela:
->>>> Per discussion on the alsa-devel mailing list [1], the legacy PIN to PCM
->>>> device mapping is obsolete nowadays. The maximum number of the simultaneously
->>>> usable PCM devices is equal to the HDMI codec converters.
->>>>
->>>> Remove the extra PCM devices (beyond the detected converters) and force
->>>> the use of the dynamic PCM device allocation. The legacy code is removed.
->>>>
->>>> I believe that all HDMI codecs have the jack sensing feature. Move the check
->>>> to the codec probe function and print a warning, if a codec without this
->>>> feature is detected.
->>
->> The corresponding message ("jack not detectable") is not shown on the
->> affected system.
->>
->>>> [1] https://lore.kernel.org/alsa-devel/2f37e0b2-1e82-8c0b-2bbd-1e5038d6ecc6@perex.cz/
->>
->> Links to some reports of this issue:
->> https://bugzilla.kernel.org/show_bug.cgi?id=216836
->> https://bbs.archlinux.org/viewtopic.php?pid=2075700
->> https://bugs.archlinux.org/task/76917
->> https://www.reddit.com/r/archlinux/comments/zsqq7i/hdmi_audio_is_broken_after_updating_kernel_to_611
+
+On Fri, 23 Dec 2022 18:04:02 +0100, Francesco Dolcini wrote:
+> From: Emanuele Ghidoli <emanuele.ghidoli@toradex.com>
 > 
-> Could you give alsa-info.sh outputs from both working and non-working
-> cases?  Run the script with --no-upload option during the playback of
-> HDMI stream, and attach the outputs.
+> Convert nau8822 devicetree binding to dtschema.
+> Change file name to match dtschema naming.
+> 
+> Cc: David Lin <CTLIN0@nuvoton.com>
+> Signed-off-by: Emanuele Ghidoli <emanuele.ghidoli@toradex.com>
+> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+> ---
+>  .../devicetree/bindings/sound/nau8822.txt     | 16 --------
+>  .../bindings/sound/nuvoton,nau8822.yaml       | 40 +++++++++++++++++++
+>  2 files changed, 40 insertions(+), 16 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/nau8822.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/nuvoton,nau8822.yaml
+> 
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=216836
+Running 'make dtbs_check' with the schema in this patch gives the
+following warnings. Consider if they are expected or the schema is
+incorrect. These may not be new warnings.
 
-				Jaroslav
+Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+This will change in the future.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Full log is available here: https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20221223170404.210603-2-francesco@dolcini.it
+
+
+audio-codec@1a: '#sound-dai-cells', 'AVDD-supply', 'CPVDD-supply', 'DBVDD-supply', 'DCVDD-supply', 'MICVDD-supply', 'clock-names', 'clocks' do not match any of the regexes: 'pinctrl-[0-9]+'
+	arch/arm64/boot/dts/freescale/imx8mm-verdin-nonwifi-dev.dtb
+	arch/arm64/boot/dts/freescale/imx8mm-verdin-wifi-dev.dtb
+
