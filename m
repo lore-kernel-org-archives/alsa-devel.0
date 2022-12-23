@@ -4,63 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 577AAC3DA7A
-	for <alsa-devel@archiver.kernel.org>; Sun, 25 Dec 2022 18:51:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4FDAC3DA7A
+	for <alsa-devel@archiver.kernel.org>; Sun, 25 Dec 2022 18:51:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1CA8E4B40;
-	Sun, 25 Dec 2022 19:50:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CA8E4B40
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F8894B48;
+	Sun, 25 Dec 2022 19:50:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F8894B48
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671994288;
-	bh=A6GkOMyt59yburjfPFN09HuLa3T3x8WstlwRIi0qMH8=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=OBpuD1l2NrDSMzvE7Zt4ROFpX9qlsXziFMJnVWSla6lL5R8Mf4PkbqsrCkJUjmRA5
-	 Oo7jCLxnRkrAvOjPYe5AuEGNydggU6D7dj2LR3IEvOerncvMbTCqSva6HcRW1gK2VK
-	 4KEVcxXGbhwXw+nHOGL2gBAdsDZa34Kn663H8Ej0=
+	s=default; t=1671994295;
+	bh=dKJTgOWLALwm4aGCCVUU1mlUebuUrlbpy/zjaADVcxc=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=IEo7ysUdYrV+vAAg5jwWH7Zv3PtcSLSAcMk+G6guhC8/yH00EiiRwDKke5kP9m1Me
+	 IfYtHCvKM+oAvt9md/tLvqZMRV9ILRe0+XtTW8nlTAOx8/qpZXwXmUdJ+o1aT/5SHq
+	 uaAtSOjBr6Hi/hgdPjNARJ+AtuV39s3ioEPcUUo8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1DE36F80534;
+	by alsa1.perex.cz (Postfix) with ESMTP id 90713F80537;
 	Sun, 25 Dec 2022 19:49:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C97C0F8047B; Sat, 24 Dec 2022 00:32:56 +0100 (CET)
+ id 922FAF80537; Sat, 24 Dec 2022 00:32:57 +0100 (CET)
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
  [205.220.180.131])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 39889F8047B
- for <alsa-devel@alsa-project.org>; Sat, 24 Dec 2022 00:32:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39889F8047B
+ by alsa1.perex.cz (Postfix) with ESMTPS id C18D7F803DC
+ for <alsa-devel@alsa-project.org>; Sat, 24 Dec 2022 00:32:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C18D7F803DC
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=NOv863ML
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=kly7uSxn
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
  by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 2BNNW42H011577; Fri, 23 Dec 2022 23:32:45 GMT
+ 2BNNVeMA006265; Fri, 23 Dec 2022 23:32:46 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=fxj+9QS8+FgVES+CkOHzD/eZuPkfiygDQZRXSYewnCA=;
- b=NOv863MLKCgh+9THC7nFiTV1JBFAJuslFzyJfz/drL122SeN6tZx4OPVzLvviNWPLWhM
- +HCr/Xj2AoN7Rpd9ehzUgSBiIOj26mGGffyUr5f2435iB912Kq2kFpuoWyFFrqjQEZD6
- OclrF6YTNW+vOp8MPvlQ/rSnvwCKch1VthRS0vKKBXxcURSKVF5dy4C91bKH4nB/LC6W
- kJdqV8XZkNcPAoX1jOC6AstZgtcpBX+4ITF+O88KkDS23RLLzB5X8hgBhqa74IKbbuFZ
- zMuDrTl3P2HdLw2rxaoO/tblz48w2lkT8Es9Lbj5/qTbO2CWuIJCZ88u9Bn1ZjcN4b0x XQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=fkNAURL5gttqswe5kK5CQ4y4LJGceGJEIBEg9TOK9Gg=;
+ b=kly7uSxnaWatqqC/1AdLckQHMBdWUfA67P+qCNK1u1coCyrZ9Z/gDJLV2gKX2Mz9YC4Q
+ T/LOiwMEcOpjyntnRvcS8P9i60d2HBmxuvmOIXts1PrGRGvD7DeU+TS68c5xEU/NgGdZ
+ DxUqgqFsIKFQy2Wd5D6g0q+ji2MquD10OVPi7vMlz1jdEpj2eZ2DQubW6zqF1x+SL/69
+ iX7VSn/4R4chGRSz7G6lWy8MIwYM7fR/KQGL0Bp0C5mvZLsonmK9V5wEsS6S/pY7NrdW
+ hxEjQmns5XJ3Z45bwemnpHutOdIrFwtF0z0U0dyEM6nx5gHTcr1OSlpqqSK4skmPMzqf IQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
- by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3mn2pga502-1
+ by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3mm3cjx2m4-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 23 Dec 2022 23:32:44 +0000
+ Fri, 23 Dec 2022 23:32:46 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
- by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2BNNWhi0000810
+ by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 2BNNWjsh009844
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 23 Dec 2022 23:32:43 GMT
+ Fri, 23 Dec 2022 23:32:45 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.36; Fri, 23 Dec 2022 15:32:42 -0800
+ 15.2.986.36; Fri, 23 Dec 2022 15:32:44 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
  <perex@perex.cz>, <broonie@kernel.org>, <lgirdwood@gmail.com>,
@@ -68,10 +70,13 @@ To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
  <gregkh@linuxfoundation.org>, <Thinh.Nguyen@synopsys.com>,
  <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
  <agross@kernel.org>
-Subject: [RFC PATCH 00/14] Introduce QC USB SND audio offloading support
-Date: Fri, 23 Dec 2022 15:31:46 -0800
-Message-ID: <20221223233200.26089-1-quic_wcheng@quicinc.com>
+Subject: [RFC PATCH 06/14] usb: core: hcd: Introduce USB HCD APIs for
+ interrupter management
+Date: Fri, 23 Dec 2022 15:31:52 -0800
+Message-ID: <20221223233200.26089-7-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20221223233200.26089-1-quic_wcheng@quicinc.com>
+References: <20221223233200.26089-1-quic_wcheng@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.49.16.6]
@@ -80,17 +85,17 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-ORIG-GUID: YpZvkf7XIB1RcrCiLxeUXy3CoWpNkExn
-X-Proofpoint-GUID: YpZvkf7XIB1RcrCiLxeUXy3CoWpNkExn
+X-Proofpoint-GUID: Tn96v1UrYOBAhISXPCFgbKG2XHIA2fSb
+X-Proofpoint-ORIG-GUID: Tn96v1UrYOBAhISXPCFgbKG2XHIA2fSb
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.923,Hydra:6.0.545,FMLib:17.11.122.1
  definitions=2022-12-23_08,2022-12-23_01,2022-06-22_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0
- priorityscore=1501 bulkscore=0 adultscore=0 impostorscore=0
- mlxlogscore=926 lowpriorityscore=0 suspectscore=0 mlxscore=0 phishscore=0
- clxscore=1011 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2212070000 definitions=main-2212230197
+ mlxscore=0 mlxlogscore=906
+ impostorscore=0 spamscore=0 phishscore=0 clxscore=1015 priorityscore=1501
+ suspectscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2212230197
 X-Mailman-Approved-At: Sun, 25 Dec 2022 19:49:45 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -111,137 +116,157 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Several Qualcomm based chipsets can support USB audio offloading to a
-dedicated audio DSP, which can take over issuing transfers to the USB
-host controller.  The intention is to reduce the load on the main
-processors in the SoC, and allow them to be placed into lower power modes.
-There are several parts to this design:
-  1. Adding ASoC binding layer
-  2. Create a USB backend for Q6DSP
-  3. Introduce XHCI interrupter support
-  4. Create vendor ops for the USB SND driver
+For USB HCDs that can support multiple USB interrupters, expose functions
+that class drivers can utilize for setting up secondary interrupters.
+Class drivers can pass this information to its respective clients, i.e.
+a dedicated DSP.
 
-Adding ASoC binding layer:
-soc-usb: Intention is to treat a USB port similar to a headphone jack.
-The port is always present on the device, but cable/pin status can be
-enabled/disabled.  Expose mechanisms for USB backend ASoC drivers to
-communicate with USB SND.
+Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+---
+ drivers/usb/core/hcd.c  | 86 +++++++++++++++++++++++++++++++++++++++++
+ include/linux/usb.h     |  7 ++++
+ include/linux/usb/hcd.h | 16 +++++++-
+ 3 files changed, 108 insertions(+), 1 deletion(-)
 
-Create a USB backend for Q6DSP:
-q6usb: Basic backend driver that will be responsible for maintaining the
-resources needed to initiate a playback stream using the Q6DSP.  Will
-be the entity that checks to make sure the connected USB audio device
-supports the requested PCM format.  If it does not, the PCM open call will
-fail, and userpsace ALSA can take action accordingly.
-
-Introduce XHCI interrupter support:
-XHCI HCD supports multiple interrupters, which allows for events to be routed
-to different event rings.  This is determined by "Interrupter Target" field
-specified in Section "6.4.1.1 Normal TRB" of the XHCI specification.
-
-Events in the offloading case will be routed to an event ring that is assigned
-to the audio DSP.
-
-Create vendor ops for the USB SND driver:
-qc_audio_offload: This particular driver has several components associated
-with it:
-- QMI stream request handler
-- XHCI interrupter and resource management
-- audio DSP memory management
-
-When the audio DSP wants to enable a playback stream, the request is first
-received by the ASoC platform sound card.  Depending on the selected route,
-ASoC will bring up the individual DAIs in the path.  The Q6USB backend DAI
-will send an AFE port start command (with enabling the USB playback path), and
-the audio DSP will handle the request accordingly.
-
-Part of the AFE USB port start handling will have an exchange of control
-messages using the QMI protocol.  The qc_audio_offload driver will populate the
-buffer information:
-- Event ring base address
-- EP transfer ring base address
-
-and pass it along to the audio DSP.  All endpoint management will now be handed
-over to the DSP, and the main processor is not involved in transfers.
-
-Overall, implementing this feature will still expose separate sound card and PCM
-devices for both the platorm card and USB audio device:
- 0 [SM8250MTPWCD938]: sm8250 - SM8250-MTP-WCD9380-WSA8810-VA-D
-                      SM8250-MTP-WCD9380-WSA8810-VA-DMIC
- 1 [Audio          ]: USB-Audio - USB Audio
-                      Generic USB Audio at usb-xhci-hcd.1.auto-1.4, high speed
-
-This is to ensure that userspace ALSA entities can decide which route to take
-when executing the audio playback.  In the above, if card#1 is selected, then
-USB audio data will take the legacy path over the USB PCM drivers, etc...
-
-This feature was validated using:
-- tinymix: set/enable the multimedia path to route to USB backend
-- tinyplay: issue playback on platform card
-
-Wesley Cheng (14):
-  ASoC: Add SOC USB APIs for adding an USB backend
-  ASoC: qcom: qdsp6: Introduce USB AFE port to q6dsp
-  ASoC: qcom: Add USB backend ASoC driver for Q6
-  sound: usb: card: Introduce USB SND vendor op callbacks
-  sound: usb: Export USB SND APIs for modules
-  usb: core: hcd: Introduce USB HCD APIs for interrupter management
-  usb: host: xhci: Add XHCI secondary interrupter support
-  usb: dwc3: Add DT parameter to specify maximum number of interrupters
-  sound: usb: Introduce QC USB SND offloading support
-  sound: usb: card: Check for support for requested audio format
-  sound: soc: soc-usb: Add PCM format check API for USB backend
-  sound: soc: qcom: qusb6: Ensure PCM format is supported by USB audio
-    device
-  ASoC: dt-bindings: Add Q6USB backend bindings
-  ASoC: dt-bindings: Update example for enabling USB offload on SM8250
-
- .../bindings/sound/qcom,q6usb-dais.yaml       |   55 +
- .../bindings/sound/qcom,sm8250.yaml           |   13 +
- drivers/usb/core/hcd.c                        |   86 +
- drivers/usb/dwc3/core.c                       |   12 +
- drivers/usb/dwc3/core.h                       |    2 +
- drivers/usb/dwc3/host.c                       |    5 +-
- drivers/usb/host/xhci-mem.c                   |  219 ++-
- drivers/usb/host/xhci-plat.c                  |    2 +
- drivers/usb/host/xhci.c                       |  169 +-
- drivers/usb/host/xhci.h                       |   15 +
- .../sound/qcom,q6dsp-lpass-ports.h            |    1 +
- include/linux/usb.h                           |    7 +
- include/linux/usb/hcd.h                       |   16 +-
- include/sound/q6usboffload.h                  |   20 +
- include/sound/soc-usb.h                       |   34 +
- sound/soc/Makefile                            |    2 +-
- sound/soc/qcom/Kconfig                        |    4 +
- sound/soc/qcom/qdsp6/Makefile                 |    1 +
- sound/soc/qcom/qdsp6/q6afe-dai.c              |   47 +
- sound/soc/qcom/qdsp6/q6afe.c                  |  183 ++
- sound/soc/qcom/qdsp6/q6afe.h                  |   46 +-
- sound/soc/qcom/qdsp6/q6dsp-lpass-ports.c      |   23 +
- sound/soc/qcom/qdsp6/q6dsp-lpass-ports.h      |    1 +
- sound/soc/qcom/qdsp6/q6routing.c              |    8 +
- sound/soc/qcom/qdsp6/q6usb.c                  |  239 +++
- sound/soc/soc-usb.c                           |   79 +
- sound/usb/Kconfig                             |   14 +
- sound/usb/Makefile                            |    2 +-
- sound/usb/card.c                              |   43 +
- sound/usb/card.h                              |   10 +
- sound/usb/endpoint.c                          |    2 +
- sound/usb/helper.c                            |    1 +
- sound/usb/pcm.c                               |    9 +-
- sound/usb/pcm.h                               |   12 +
- sound/usb/qcom/Makefile                       |    2 +
- sound/usb/qcom/qc_audio_offload.c             | 1610 +++++++++++++++++
- sound/usb/qcom/usb_audio_qmi_v01.c            |  892 +++++++++
- sound/usb/qcom/usb_audio_qmi_v01.h            |  162 ++
- 38 files changed, 3998 insertions(+), 50 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6usb-dais.yaml
- create mode 100644 include/sound/q6usboffload.h
- create mode 100644 include/sound/soc-usb.h
- create mode 100644 sound/soc/qcom/qdsp6/q6usb.c
- create mode 100644 sound/soc/soc-usb.c
- create mode 100644 sound/usb/qcom/Makefile
- create mode 100644 sound/usb/qcom/qc_audio_offload.c
- create mode 100644 sound/usb/qcom/usb_audio_qmi_v01.c
- create mode 100644 sound/usb/qcom/usb_audio_qmi_v01.h
-
+diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
+index 8300baedafd2..90ead90faf1d 100644
+--- a/drivers/usb/core/hcd.c
++++ b/drivers/usb/core/hcd.c
+@@ -1579,6 +1579,92 @@ int usb_hcd_submit_urb (struct urb *urb, gfp_t mem_flags)
+ 	return status;
+ }
+ 
++/**
++ * usb_free_interrupter - free an interrupter
++ * @udev: usb device which requested the interrupter
++ * @intr_num: interrupter number to free
++ *
++ * Release the USB HCD interrupter that was reserved by a USB class driver.
++ **/
++int usb_free_interrupter(struct usb_device *udev, int intr_num)
++{
++	struct usb_hcd *hcd = bus_to_hcd(udev->bus);
++	int ret = 0;
++
++	if (hcd->driver->free_interrupter)
++		ret = hcd->driver->free_interrupter(hcd, intr_num);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(usb_free_interrupter);
++
++/**
++ * usb_set_interruper - Reserve an interrupter
++ * @udev: usb device which requested the interrupter
++ * @intr_num: interrupter number to reserve
++ * @dma: iova address to event ring
++ *
++ * Request for a specific interrupter to be reserved for a USB class driver.
++ * This will return the base address to the event ring that was allocated to
++ * the specific interrupter.
++ **/
++phys_addr_t usb_set_interruper(struct usb_device *udev, int intr_num,
++							dma_addr_t *dma)
++{
++	struct usb_hcd *hcd;
++	phys_addr_t pa = 0;
++
++	hcd = bus_to_hcd(udev->bus);
++	if (hcd->driver->update_interrupter)
++		pa = hcd->driver->update_interrupter(hcd, intr_num, dma);
++
++	return pa;
++}
++EXPORT_SYMBOL_GPL(usb_set_interruper);
++
++/**
++ * usb_hcd_get_transfer_resource - Retrieve USB EP resource information
++ * @udev: usb device
++ * @ep: usb ep to retrieve resource information
++ * @dma: iova address to transfer resource
++ *
++ * Request for USB EP transfer resource which is used for submitting
++ * transfers to the USB HCD.
++ **/
++phys_addr_t usb_hcd_get_transfer_resource(struct usb_device *udev,
++				struct usb_host_endpoint *ep, dma_addr_t *dma)
++{
++	struct usb_hcd *hcd;
++	phys_addr_t pa = 0;
++
++	hcd = bus_to_hcd(udev->bus);
++	if (hcd->driver->get_transfer_resource)
++		pa = hcd->driver->get_transfer_resource(udev, ep, dma);
++
++	return pa;
++}
++EXPORT_SYMBOL_GPL(usb_hcd_get_transfer_resource);
++
++/**
++ * usb_hcd_stop_endpoint - Halt USB EP transfers
++ * @udev: usb device
++ * @ep: usb ep to stop
++ *
++ * Stop pending transfers on a specific USB endpoint.
++ **/
++int usb_hcd_stop_endpoint(struct usb_device *udev,
++					struct usb_host_endpoint *ep)
++{
++	struct usb_hcd *hcd = bus_to_hcd(udev->bus);
++	int ret = 0;
++
++	if (hcd->driver->stop_endpoint)
++		ret = hcd->driver->stop_endpoint(hcd, udev, ep);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(usb_hcd_stop_endpoint);
++
+ /*-------------------------------------------------------------------------*/
+ 
+ /* this makes the hcd giveback() the urb more quickly, by kicking it
+diff --git a/include/linux/usb.h b/include/linux/usb.h
+index d4afeeec1e1a..2f71cd4fb6e0 100644
+--- a/include/linux/usb.h
++++ b/include/linux/usb.h
+@@ -1724,6 +1724,13 @@ static inline void usb_fill_int_urb(struct urb *urb,
+ 	urb->start_frame = -1;
+ }
+ 
++extern int usb_free_interrupter(struct usb_device *udev, int intr_num);
++extern phys_addr_t usb_set_interruper(struct usb_device *udev,
++						int intr_num, dma_addr_t *dma);
++extern int usb_hcd_stop_endpoint(struct usb_device *udev,
++						struct usb_host_endpoint *ep);
++extern phys_addr_t usb_hcd_get_transfer_resource(struct usb_device *udev,
++						struct usb_host_endpoint *ep, dma_addr_t *dma);
+ extern void usb_init_urb(struct urb *urb);
+ extern struct urb *usb_alloc_urb(int iso_packets, gfp_t mem_flags);
+ extern void usb_free_urb(struct urb *urb);
+diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
+index b51c07111729..f5bce80b2e40 100644
+--- a/include/linux/usb/hcd.h
++++ b/include/linux/usb/hcd.h
+@@ -343,7 +343,21 @@ struct hc_driver {
+ 	int	(*free_streams)(struct usb_hcd *hcd, struct usb_device *udev,
+ 		struct usb_host_endpoint **eps, unsigned int num_eps,
+ 		gfp_t mem_flags);
+-
++	/* Frees an interrupter from the current client, and makes it available
++	 * for use.
++	 */
++	int (*free_interrupter)(struct usb_hcd *hcd, int intr_num);
++	/* Request an interrupter from the current allocated pool.  Will provide
++	 * the address to the allocated ring.
++	 */
++	phys_addr_t (*update_interrupter)(struct usb_hcd *hcd, int intr_num,
++		dma_addr_t *dma);
++	/* Fetch transfer/ep ring address */
++	phys_addr_t (*get_transfer_resource)(struct usb_device *udev,
++		struct usb_host_endpoint *ep, dma_addr_t *dma);
++	/* Stop transfers on a particular endpoint */
++	int	(*stop_endpoint)(struct usb_hcd *hcd, struct usb_device *udev,
++		struct usb_host_endpoint *ep);
+ 	/* Bandwidth computation functions */
+ 	/* Note that add_endpoint() can only be called once per endpoint before
+ 	 * check_bandwidth() or reset_bandwidth() must be called.
