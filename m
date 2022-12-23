@@ -4,95 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46E82C4332F
-	for <alsa-devel@archiver.kernel.org>; Sun, 25 Dec 2022 12:00:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52DE5C3DA7A
+	for <alsa-devel@archiver.kernel.org>; Sun, 25 Dec 2022 18:50:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E99FFD67D;
-	Sun, 25 Dec 2022 12:59:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E99FFD67D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5AC7D4B33;
+	Sun, 25 Dec 2022 19:49:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AC7D4B33
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671969632;
-	bh=CxfcHYS9gwZjj6fDbQH0CTM/pvsqnMcJ6eK+yjrQDJ0=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1671994237;
+	bh=5Po0SYWMBcXGswEzQldRaYP8OrNYaxtEAMfr/QviJEE=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=mbHD6+MD3qbazDhwq525N5enCsqTUQSVLNR2NugxC+A8N4WGXvdaBDYE4zqAff4D/
-	 Ioh4NfYNhsuoIDOoDuiR7fdIArpVXMM4/givheccYdCNPtbqTiHYHcr57Hs7uxryh1
-	 Z7Hj1XGdifzBj/9Ue0JAkRVzOS9s29W0Bux3GK1E=
+	b=uKXCzih9LORXbjcjPVHK8vYKwtHM3QXUhCseKTGDcom3pM0dUALzO295rkT5pqFJC
+	 ZL9/HjeuIVpxhYjM2YWtFf87nfR9SpljN0J5l9OzqfvqnUPh0ls9wXSz0ve0+RlFVZ
+	 eOj3VNaXCSN+zTwI5ARCI0WPHpnhD9y1rJn/BL18=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19D2AF804E7;
-	Sun, 25 Dec 2022 12:59:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED865F80245;
+	Sun, 25 Dec 2022 19:49:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3D91FF804B0; Sun, 25 Dec 2022 12:59:16 +0100 (CET)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
- [IPv6:2a00:1450:4864:20::12b])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 80838F8047B; Fri, 23 Dec 2022 16:41:25 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 13938F804E4
- for <alsa-devel@alsa-project.org>; Sun, 25 Dec 2022 12:59:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13938F804E4
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=zmGNYtMf
-Received: by mail-lf1-x12b.google.com with SMTP id bq39so5076929lfb.0
- for <alsa-devel@alsa-project.org>; Sun, 25 Dec 2022 03:59:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=FAptk8rLRuc++EiVR2BhzhCRqBC2cNP+rXcT62Z3QGY=;
- b=zmGNYtMf+5LhzdwQftQDvVNNA+RobLBX7wcSRBRTkkHfTsvmtclRPocgH99ckU6EEf
- /FNaC0s/R6TrtcQwNhwLNn/Rki4cxAp0Yw0rl4Vx9vzLWOqjlExQM3fxMIq5hksaBH0h
- tE5yriELlFD4ok3T7NDt+I9ET4DSYmNg1wfcFwHovXFtoyiG32sSaHlvYZmO06A3rWyt
- 6Iqh7CGU4I2TP0G/jAxsyUS4/JeHga/Be8UcfftZYmKyS+Pbmjl5mxrvY/5lA6TBn2IS
- t/dFTyAqNMZi/Yr++hRXj2w5gVcUm7SbzdmQNpHWChxxg6UzhIfXZ+9ryY6aWiqJeUt7
- YeEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=FAptk8rLRuc++EiVR2BhzhCRqBC2cNP+rXcT62Z3QGY=;
- b=Qpj4fVw7fC3E6Wns6l1UVw24BbhHxzvLqm2N3W5HB4/9sPfcsCRrhokz0WVQhjsmmo
- DoAYqNb2X/re+CD/JbCqsauyaIzKv4fQLM1i2fWD3w3rdJrs31tEjOiJjPYqKxoTDxK5
- FXXACNyMqDOEFVe1LuqGqgimKEw9s1YTIRwBKuf2UHLDZSfiPNjqLDjFf02SBTIaPY+6
- ZQS4J22CxiOYYCBFAnnmQDnfuODKLn47nhOhmSD5Zv6niNohk6A9fr86fgr8wiumQaLc
- qXj59CM1Qtta2xMfZQiUkRWPnncB6yJmusWAA2igRz9QTXctXTgjGHprRfeqzSEjIq/+
- /B1A==
-X-Gm-Message-State: AFqh2kqDI92PqwCo0v5FsKKx9wc+qEgSnImbos8zrLMX2S7qscrkjaew
- MqvrwqJCo4EG4UkVS4m645W19g==
-X-Google-Smtp-Source: AMrXdXvKd6pNRzuYv6mW/WnS7/IrdvhA/uDP7T3G8ajivWpzKMEAQFkTnJiW5WQJvksyCUsiPMMYLg==
-X-Received: by 2002:ac2:562d:0:b0:4b5:670e:b708 with SMTP id
- b13-20020ac2562d000000b004b5670eb708mr3708603lff.14.1671969552074; 
- Sun, 25 Dec 2022 03:59:12 -0800 (PST)
-Received: from krzk-bin.NAT.warszawa.vectranet.pl
- (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
- by smtp.gmail.com with ESMTPSA id
- b17-20020ac25e91000000b004cb061887b5sm128819lfq.126.2022.12.25.03.59.10
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 25 Dec 2022 03:59:11 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ASoC: dt-bindings: qcom,
- lpass-tx-macro: correct clocks on SC7280
-Date: Sun, 25 Dec 2022 12:59:07 +0100
-Message-Id: <20221225115907.55250-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221225115907.55250-1-krzysztof.kozlowski@linaro.org>
-References: <20221225115907.55250-1-krzysztof.kozlowski@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 07BC7F8024E
+ for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2022 16:41:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07BC7F8024E
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A75496150D;
+ Fri, 23 Dec 2022 15:41:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55F15C433D2;
+ Fri, 23 Dec 2022 15:41:15 +0000 (UTC)
+Date: Fri, 23 Dec 2022 10:41:13 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>, Thomas Gleixner
+ <tglx@linutronix.de>
+Subject: Re: [PATCH] treewide: Convert del_timer*() to timer_shutdown*()
+Message-ID: <20221223104113.0bc8d37f@gandalf.local.home>
+In-Reply-To: <20221220134519.3dd1318b@gandalf.local.home>
+References: <20221220134519.3dd1318b@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Mailman-Approved-At: Sun, 25 Dec 2022 19:49:45 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -105,36 +65,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: alsa-devel@alsa-project.org, linux-staging@lists.linux.dev,
+ linux-sh@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-leds@vger.kernel.org, drbd-dev@lists.linbit.com,
+ linux-nilfs@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-atm-general@lists.sourceforge.net, lvs-devel@vger.kernel.org,
+ linux-acpi@vger.kernel.org, SHA-cyfmac-dev-list@infineon.com,
+ coreteam@netfilter.org, intel-wired-lan@lists.osuosl.org,
+ linux-input@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+ linux-ext4@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+ linux-media@vger.kernel.org, bridge@lists.linux-foundation.org,
+ intel-gfx@lists.freedesktop.org, linux-nfs@vger.kernel.org,
+ linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+ Anna-Maria Gleixner <anna-maria@linutronix.de>,
+ brcm80211-dev-list.pdl@broadcom.com, Stephen Boyd <sboyd@kernel.org>,
+ netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-wireless@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Julia Lawall <Julia.Lawall@inria.fr>, linux-bluetooth@vger.kernel.org,
+ netfilter-devel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On SC7280 ADSP bypassed platform, there are only three clocks for TX
-macro.  This is already reflected in "clock-names" but not in "clocks"
-property:
+On Tue, 20 Dec 2022 13:45:19 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-  sc7280-herobrine-zombie-lte.dtb: codec@3220000: clocks: [[219, 8], [219, 7], [220]] is too short
+> [
+>   Linus,
+> 
+>     I ran the script against your latest master branch:
+>     commit b6bb9676f2165d518b35ba3bea5f1fcfc0d969bf
+> 
+>     As the timer_shutdown*() code is now in your tree, I figured
+>     we can start doing the conversions. At least add the trivial ones
+>     now as Thomas suggested that this gets applied at the end of the
+>     merge window, to avoid conflicts with linux-next during the
+>     development cycle. I can wait to Friday to run it again, and
+>     resubmit.
+> 
+>     What is the best way to handle this?
+> ]
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- .../devicetree/bindings/sound/qcom,lpass-tx-macro.yaml        | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Note, I just did a git remote update, checked out the latest, re-ran the
+script, and this patch hasn't changed.
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
-index 66431aade3b7..da5f70910da5 100644
---- a/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
-@@ -30,7 +30,9 @@ properties:
-     const: 0
- 
-   clocks:
--    maxItems: 5
-+    oneOf:
-+      - maxItems: 3
-+      - maxItems: 5
- 
-   clock-names:
-     oneOf:
--- 
-2.34.1
-
+-- Steve
