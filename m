@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F489C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Dec 2022 17:06:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9812BC4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Dec 2022 21:02:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3FFB184F6;
-	Fri, 23 Dec 2022 18:05:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FFB184F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id D57E88F65;
+	Fri, 23 Dec 2022 22:01:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D57E88F65
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671815186;
-	bh=fFMm4Z9Jn9GmTLFlEO5rpMTYF/7g0DE4+G2N/Ha2nEs=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1671829320;
+	bh=q5K0mHrhshnLXGGdlmtcpVhvRppbgORwXLwni8whZHA=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=k8E2Si/bWpJANSeDAhUoT/1VYpiIeA7SOvVAc6EPw89+rSTi4IR0nrC67uEC5PR63
-	 lYHtCEtatvamcW5ogCfFjAMdF3zeCHUuK9LA0cdLyNiEWL+C6OJH404/7nuHuOhcbj
-	 S6B1P6MJVB8gXtr8OdV1gn1p8qghHNsnrtKYbwhw=
+	b=NmZiQzR4kf2XCReDWsWXz0RPiAFUkvyO0B74Xpr0Jeezn/HghqX283/cyz+bGNm5B
+	 T44tFoD2xRdptVPAFHSlbkdmzgYAHtXhLYmXKM2pZLxYSZoWTOSsRXV4zZ5E+vqRSe
+	 o/TWklB8vxzznrLcej/UtkFWXQY+0vu/ui1fmLhE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3930EF80534;
-	Fri, 23 Dec 2022 18:05:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C307F8047B;
+	Fri, 23 Dec 2022 22:01:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AEF11F80423; Fri, 23 Dec 2022 18:05:15 +0100 (CET)
-Received: from smtp-out-12.comm2000.it (smtp-out-12.comm2000.it [212.97.32.82])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 0E0E4F804B0; Fri, 23 Dec 2022 22:01:09 +0100 (CET)
+Received: from disco.pogo.org.uk (disco.pogo.org.uk [93.93.128.62])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E1CCF80423
- for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2022 18:05:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E1CCF80423
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=mailserver.it header.i=@mailserver.it
- header.a=rsa-sha256 header.s=mailsrv header.b=eBNdMukw
-Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it
- [93.49.2.63])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- (Authenticated sender: francesco@dolcini.it)
- by smtp-out-12.comm2000.it (Postfix) with ESMTPSA id 8A379BA3234;
- Fri, 23 Dec 2022 18:04:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailserver.it;
- s=mailsrv; t=1671815107;
- bh=fFMm4Z9Jn9GmTLFlEO5rpMTYF/7g0DE4+G2N/Ha2nEs=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=eBNdMukwTGGCj16Ui9T+1ZhPjGYqMZQ8BNhmbhAi5q3cqwZyCSwTEnxk3DMf01blG
- XCeoYNgrsC3QAHEFNA+N2CNkQf4a0E5SL/uPkJjG90++c1dHohvrnoFjCrT5zP7r7n
- F+F7QLcefFpz9W3CKo1LEhOwdMg/cNdaApmbU6nWdJEIOn1ziLxbEiKkABVNwBZ1I1
- 9pAVR4zEdNzqov4ndrJ6+CwORd90zfzSbNO1ezs0u4AuOez3fCeRhhS6hJ8p//HYZK
- 6NablPAqb15DaqnXSRoycU1sRrZ+VLYpzXLbQHpKnWhrayJTb/8hZBbq73EbxeFLA9
- fohBhg9+G59ww==
-From: Francesco Dolcini <francesco@dolcini.it>
-To: alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org
-Subject: [PATCH v1 3/3] ASoC: nau8822: add speaker Bridge Tied Output
- configuration
-Date: Fri, 23 Dec 2022 18:04:04 +0100
-Message-Id: <20221223170404.210603-4-francesco@dolcini.it>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20221223170404.210603-1-francesco@dolcini.it>
-References: <20221223170404.210603-1-francesco@dolcini.it>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9E887F8024D
+ for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2022 22:01:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E887F8024D
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ unprotected) header.d=xwax.org header.i=@xwax.org header.a=rsa-sha256
+ header.s=swing header.b=bYimCWOF
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xwax.org;
+ s=swing; h=Content-Type:MIME-Version:References:Message-ID:In-Reply-To:
+ Subject:cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+ Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+ :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+ List-Post:List-Owner:List-Archive;
+ bh=FXqZMTadCVW374CKFjghDnXy8gVlUK8LZPDpO0a8FEc=; b=bYimCWOF4Pdlg3meDHAH8SDUIN
+ 3b7tof7oJ84a/gVGxPKHBogMmFcJavb1VhEqAzd649JTOGX0lrurmxM7cm/hkqjx1OQsvY0iAC7PG
+ UP8qqSbI521YKlIvzdXrFOnWt5xUQbtiZWIqI7EkhAP0c6EZ2FAU6eEyTppGg9BMK6zs=;
+Received: from cpc93788-hari17-2-0-cust1237.20-2.cable.virginm.net
+ ([82.39.100.214] helo=stax)
+ by disco.pogo.org.uk with esmtps  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+ (Exim 4.95 (FreeBSD)) (envelope-from <mark@xwax.org>)
+ id 1p8pA6-0000Wu-Cs; Fri, 23 Dec 2022 21:01:02 +0000
+Received: from localhost (stax.localdomain [local])
+ by stax.localdomain (OpenSMTPD) with ESMTPA id a6b4ca07;
+ Fri, 23 Dec 2022 21:00:59 +0000 (UTC)
+Date: Fri, 23 Dec 2022 21:00:59 +0000 (GMT)
+From: Mark Hills <mark@xwax.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: rt5650 on HP Chromebook G5 Setzer faults
+In-Reply-To: <06af4d22-1032-bc2e-b9da-ebfd966d144d@linux.intel.com>
+Message-ID: <2212232048170.25609@stax.localdomain>
+References: <2212181230200.24243@stax.localdomain>
+ <06af4d22-1032-bc2e-b9da-ebfd966d144d@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,74 +75,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: wtli@nuvoton.com, Takashi Iwai <tiwai@suse.com>, kchsu0@nuvoton.com,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Benjamin Marty <info@benjaminmarty.ch>, Mark Brown <broonie@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Francesco Dolcini <francesco.dolcini@toradex.com>,
- Emanuele Ghidoli <emanuele.ghidoli@toradex.com>
+Cc: alsa-devel@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Emanuele Ghidoli <emanuele.ghidoli@toradex.com>
+On Mon, 19 Dec 2022, Pierre-Louis Bossart wrote:
 
-Allow configuring the two loudspeaker outputs as a
-single Bridge Tied Load output getting higher output power.
+> On 12/18/22 7:02 AM, Mark Hills wrote:
+> > HP Chromebook (11a, G5 "Setzer") uses snd_soc_sst_cht_bsw_rt5645 module
+> > and presents a device "rt5650".
+> 
+> can you share the result of 'aplay -l', wondering which platform driver you
+> are using.
 
-Signed-off-by: Emanuele Ghidoli <emanuele.ghidoli@toradex.com>
-Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
----
- sound/soc/codecs/nau8822.c | 9 +++++++++
- sound/soc/codecs/nau8822.h | 9 +++++++++
- 2 files changed, 18 insertions(+)
+I've pasted below; "rt5650 [sof-bytcht rt5650]" is in the output.
 
-diff --git a/sound/soc/codecs/nau8822.c b/sound/soc/codecs/nau8822.c
-index 1aef281a9972..d5006d8de639 100644
---- a/sound/soc/codecs/nau8822.c
-+++ b/sound/soc/codecs/nau8822.c
-@@ -1056,6 +1056,7 @@ static const int update_reg[] = {
- static int nau8822_probe(struct snd_soc_component *component)
- {
- 	int i;
-+	struct device_node *of_node = component->dev->of_node;
- 
- 	/*
- 	 * Set the update bit in all registers, that have one. This way all
-@@ -1066,6 +1067,14 @@ static int nau8822_probe(struct snd_soc_component *component)
- 		snd_soc_component_update_bits(component,
- 			update_reg[i], 0x100, 0x100);
- 
-+	/* Check property to configure the two loudspeaker outputs as
-+	 * a single Bridge Tied Load output
-+	 */
-+	if (of_property_read_bool(of_node, "nuvoton,spk-btl"))
-+		snd_soc_component_update_bits(component,
-+					      NAU8822_REG_RIGHT_SPEAKER_CONTROL,
-+					      NAU8822_RSUBBYP, NAU8822_RSUBBYP);
-+
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/nau8822.h b/sound/soc/codecs/nau8822.h
-index 547ec057f853..646f6bb64bc5 100644
---- a/sound/soc/codecs/nau8822.h
-+++ b/sound/soc/codecs/nau8822.h
-@@ -187,6 +187,15 @@
- /* NAU8822_REG_PLL_K3 (0x27) */
- #define NAU8822_PLLK3_MASK			0x1FF
- 
-+/* NAU8822_REG_RIGHT_SPEAKER_CONTROL (0x2B) */
-+#define NAU8822_RMIXMUT				0x20
-+#define NAU8822_RSUBBYP				0x10
-+
-+#define NAU8822_RAUXRSUBG_SFT			1
-+#define NAU8822_RAUXRSUBG_MASK			0x0E
-+
-+#define NAU8822_RAUXSMUT			0x01
-+
- /* System Clock Source */
- enum {
- 	NAU8822_CLK_MCLK,
+> > Audio works briefly, until after about 30 seconds it's interrupted by a
+> > square wave or short buffer cycling.
+> 
+> If this is with the SOF driver, there's a known issue and a known workaround,
+> please add this to /etc/modprobe.d/alsa-base.conf
+> 
+> options snd_sof sof_debug=1
+
+Thanks. It does indeed appear to be a workaround. I didn't notice any 
+additional debug in dmesg.
+
+For my own interest, do you have a URL or link to the origin of this 
+workaround?
+
+I did however manage to trigger the same sound when Firefox opened the 
+audio input device in another tab while playing a YouTube video. I didn't 
+see a bug report in dmesg. This isn't a use case I'm too worried about 
+yet.
+
+But this has certainly improved stability to the point that it's usable! 
+Thank you.
+
 -- 
-2.25.1
+Mark
+
+
+
+$ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: PCH [HDA Intel PCH], device 3: HDMI 0 [HDMI 0]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: PCH [HDA Intel PCH], device 7: HDMI 1 [HDMI 1]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: PCH [HDA Intel PCH], device 8: HDMI 2 [HDMI 2]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: rt5650 [sof-bytcht rt5650], device 0: PCM (*) []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 1: rt5650 [sof-bytcht rt5650], device 1: PCM Deep Buffer (*) []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
