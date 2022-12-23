@@ -4,43 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C25A2C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Dec 2022 10:11:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38E5DC4332F
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Dec 2022 17:05:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D31771C4;
-	Fri, 23 Dec 2022 11:10:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D31771C4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 011A884DE;
+	Fri, 23 Dec 2022 18:04:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 011A884DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671790285;
-	bh=MvokDkjhsF+ltraCTSnyoeB09ZGgGHFXSzkgyBZ5LS8=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=nM+ks9uxpmNg+aHq6H6a5A2xgjI/K47HaoEHnpMUSSqslZWLRoUQavAGfCJbEb9sH
-	 e/409erWSROjoDjQ0loltWbimkfxi5XsB6JmpjOfX9fJERL6rGaSADaxDiunfUecOq
-	 CLOco9JEeT46+zKTITfnTZiyddV07U4+T5Dvq/UI=
+	s=default; t=1671815138;
+	bh=NM3F3sd7jOCU0rHoNZ85XBi3gw6ZFcp1SuzgUdM5WCQ=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=vUo0myubp5ANFxIoVvrOfEskxLbwAHH4pbkDYA31OiBz6hlJwrNg60aVMLyXREOFG
+	 NaNPhAlx7PaX9qObGG0Ay0Qbqw23TXWLNqdPa97j/O0Bvx59/WV1HfycBYvRdY/4qn
+	 ReJTknzfIe5dhK/qhl+TdL6dV+sO2GwqoHMvIPv0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96F06F804B0;
-	Fri, 23 Dec 2022 11:10:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9DE8CF8024E;
+	Fri, 23 Dec 2022 18:04:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C8BF6F804AD; Fri, 23 Dec 2022 11:10:31 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 4AF19F8047B
- for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2022 11:10:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AF19F8047B
+ id 5DFC2F8047B; Fri, 23 Dec 2022 18:04:46 +0100 (CET)
+Received: from smtp-out-12.comm2000.it (smtp-out-12.comm2000.it [212.97.32.82])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A2C60F803DC
+ for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2022 18:04:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2C60F803DC
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=mailserver.it header.i=@mailserver.it
+ header.a=rsa-sha256 header.s=mailsrv header.b=Eaa6mKCB
+Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it
+ [93.49.2.63])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ (Authenticated sender: francesco@dolcini.it)
+ by smtp-out-12.comm2000.it (Postfix) with ESMTPSA id E4759BA283E;
+ Fri, 23 Dec 2022 18:04:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailserver.it;
+ s=mailsrv; t=1671815080;
+ bh=NM3F3sd7jOCU0rHoNZ85XBi3gw6ZFcp1SuzgUdM5WCQ=;
+ h=From:To:Cc:Subject:Date;
+ b=Eaa6mKCB12eMeXXpn5G/VYmqb/KdjgWdzvh7BdZ5wX/8tGgbRLb7+o1dJsSWqgKRl
+ vXlP/Jirn9Lbwn1fmv9eRkOBMGJ6CdwoMTgEirluZZ+uFhK9K0OuvRTUtTgD160GOb
+ dtxdHBIEdBS0VAxdCml8cGjmqlyluGdMU2e5JOeGFuSMZd8iHmXe+IVkRbvhojMtit
+ 65muFdbUH+d3n+88j6bYLHh/dMcF9mDEOrM+AFu4OjVJJjKFkk65epKKAYIzowRRdy
+ ZhpRO0EhFub1xK8tKQSj1OjTcIsiCxle4tv4pJzCxKIPFCig1pH9C6in8FaR7s6suv
+ OqJ7rCEaytE0Q==
+From: Francesco Dolcini <francesco@dolcini.it>
+To: alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH v1 0/3] ASoC: nau8822: add speaker Bridge Tied Output
+Date: Fri, 23 Dec 2022 18:04:01 +0100
+Message-Id: <20221223170404.210603-1-francesco@dolcini.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1671790229371182919-webhooks-bot@alsa-project.org>
-References: <1671790229371182919-webhooks-bot@alsa-project.org>
-Subject: alsaloop: confusing line of code and easier example of the use of
- snd_pcm_poll_descriptors API
-Message-Id: <20221223101031.C8BF6F804AD@alsa1.perex.cz>
-Date: Fri, 23 Dec 2022 11:10:31 +0100 (CET)
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -53,35 +72,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: wtli@nuvoton.com, Takashi Iwai <tiwai@suse.com>, kchsu0@nuvoton.com,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Benjamin Marty <info@benjaminmarty.ch>, Mark Brown <broonie@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Francesco Dolcini <francesco.dolcini@toradex.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #185 was edited from anthonio9:
+From: Francesco Dolcini <francesco.dolcini@toradex.com>
 
-Hi! Recently I've been studying the `alsaloop` software, I'm trying to understand how should the `snd_pcm_poll_descriptors` api be used reliably. Reading through the `pcmjob.c` file I've noticed that in the `pcmjob_pollfds_handle` function in line 1964 there's a condition that does not exactly make sense to me. What's the purpose of variable `loopcount`? If the code is more or less
+Add support for BTL (Bridge Tied Load) configuration to NAU8822 audio codec,
+since this requires adding a new property to the binding convert it from
+txt to yaml first.
 
-```cpp
-int loopcount = 0;
+Emanuele Ghidoli (3):
+  ASoC: dt-bindings: nau8822: convert to the dtschema
+  ASoC: dt-bindings: nau8822: add nuvoton,spk-btl property to dtschema
+  ASoC: nau8822: add speaker Bridge Tied Output configuration
 
-do
-{
-// instructions
-loopcount++;
-} while ((ccount > 0 || pcount > 0) && loopcount > 10); // line 1964
-```
-isn't it equal to running the loop just once without any loops? After all, the `loopcount` will never reach 10 and the conditional statement will always turn false finishing the loop after one iteration. Correct me if I'm wrong.
+ .../devicetree/bindings/sound/nau8822.txt     | 16 -------
+ .../bindings/sound/nuvoton,nau8822.yaml       | 46 +++++++++++++++++++
+ sound/soc/codecs/nau8822.c                    |  9 ++++
+ sound/soc/codecs/nau8822.h                    |  9 ++++
+ 4 files changed, 64 insertions(+), 16 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/nau8822.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/nuvoton,nau8822.yaml
 
-I suppose that condition would make more sense if it was as below:
+-- 
+2.25.1
 
-```cpp
-} while ((ccount > 0 || pcount > 0) && loopcount < 10); // line 1964
-```
-
-then the loop would be stop for iterating too many times, assuming that 10 is "too many". With the part `loopcount < 10` deleted, the loop usually runs twice.
-
-I'd also appreciate a simpler example than `alsaloop` focusing just on the audio parts, on transferring audio  from input to output reliably with the use of `snd_pcm_poll_descriptors`.
-
-Thanks
-
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/185
-Repository URL: https://github.com/alsa-project/alsa-utils
