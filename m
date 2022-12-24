@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01833C4332F
-	for <alsa-devel@archiver.kernel.org>; Sat, 24 Dec 2022 06:49:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0172C4332F
+	for <alsa-devel@archiver.kernel.org>; Sat, 24 Dec 2022 06:50:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A8F2E9D15;
-	Sat, 24 Dec 2022 07:48:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8F2E9D15
+	by alsa0.perex.cz (Postfix) with ESMTPS id D6B55A4A7;
+	Sat, 24 Dec 2022 07:49:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6B55A4A7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1671864541;
-	bh=cHfFHGYVOkCPbYTiLNY3UlB2WhZQ8+IgSDnIYQQYy/w=;
+	s=default; t=1671864599;
+	bh=TDbwSX+RZR85hFNOXP679l8Ts/uVY1WswfG1Rm5eWpU=;
 	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=IPpT4mq71lOApYbx1xfcBoHs0pAvlmrNN7ofPjeV8kNBDbBCHeIYHOWGSIEizy+/j
-	 4s8yb0d9ImFFQih1m6SWDLdqyJYk+8ifjUxhnv4QnGll7M1DP7PwU69t0KjGNrOjg6
-	 YUc1Y10Q/PH5rW7PbnKiRuL8Hqg/mVHh9VzqBP4Y=
+	b=BlrNmZNQCAxMn1Cdnr0ZxHpWPXNXgpcAGsDA+iB/uGSsWrLIpfUf1JiXGdbIsm30Q
+	 iApD047mEplh31rFLi1occwkP2zPDTy13Eu3s6hbh7G6dHH38dJBPzKrxwRIE2OvYf
+	 pLVPyTty8XgZfE8m/W2SVN5XF/ddrJqnkZ/wa1O8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4CF60F80423;
-	Sat, 24 Dec 2022 07:48:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C764F802E0;
+	Sat, 24 Dec 2022 07:49:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2308CF80245; Sat, 24 Dec 2022 07:48:10 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id B1626F80249; Sat, 24 Dec 2022 07:49:07 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 31993F80245
- for <alsa-devel@alsa-project.org>; Sat, 24 Dec 2022 07:48:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31993F80245
+ by alsa1.perex.cz (Postfix) with ESMTPS id E73F5F80249
+ for <alsa-devel@alsa-project.org>; Sat, 24 Dec 2022 07:49:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E73F5F80249
 Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
  unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=rkirL3mc
+ header.a=rsa-sha256 header.s=korg header.b=NILFU/aF
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id CD74B60010;
- Sat, 24 Dec 2022 06:48:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C32BC433D2;
- Sat, 24 Dec 2022 06:48:04 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 9F92260010;
+ Sat, 24 Dec 2022 06:49:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 734A0C433D2;
+ Sat, 24 Dec 2022 06:49:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1671864485;
- bh=cHfFHGYVOkCPbYTiLNY3UlB2WhZQ8+IgSDnIYQQYy/w=;
+ s=korg; t=1671864544;
+ bh=TDbwSX+RZR85hFNOXP679l8Ts/uVY1WswfG1Rm5eWpU=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=rkirL3mc1MlPIOEQj5li9Hu+bfviYBV8N+V2TdQB1+x57LROXcFYoNisgkItvzfKW
- r23AmF75j2zuCebeKDCtX0MsP+H/JGWtdm9Z7jUC7QzjTY6wRT7sAoFtUugWqjc3NE
- GiADDFS/mL0Tps1dSLfhCyKdzafBQ0/Gmr4WNgPc=
-Date: Sat, 24 Dec 2022 07:48:01 +0100
+ b=NILFU/aF5VNT1SOEMGiPNn1U/V5SmGstafo839scVcFjKX+SLxbR3Pgy3usDkVyM+
+ w3bHMlHzM4YnhAL0fQXqUoDIMLQ/i2+OO7scNTfxlyShzATTa/xgvFBDgkqQN2cwa4
+ O04xzRtAMjFVVDbLrmJD7ShDnnRA2t1TPbVWl4Oo=
+Date: Sat, 24 Dec 2022 07:48:59 +0100
 From: Greg KH <gregkh@linuxfoundation.org>
 To: Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: Re: [RFC PATCH 01/14] ASoC: Add SOC USB APIs for adding an USB backend
-Message-ID: <Y6agoe9fFMy3PQz4@kroah.com>
+Subject: Re: [RFC PATCH 05/14] sound: usb: Export USB SND APIs for modules
+Message-ID: <Y6ag20C20gVFGE5F@kroah.com>
 References: <20221223233200.26089-1-quic_wcheng@quicinc.com>
- <20221223233200.26089-2-quic_wcheng@quicinc.com>
+ <20221223233200.26089-6-quic_wcheng@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221223233200.26089-2-quic_wcheng@quicinc.com>
+In-Reply-To: <20221223233200.26089-6-quic_wcheng@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,32 +82,17 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Dec 23, 2022 at 03:31:47PM -0800, Wesley Cheng wrote:
-> diff --git a/sound/soc/soc-usb.c b/sound/soc/soc-usb.c
-> new file mode 100644
-> index 000000000000..c6c376960e4d
-> --- /dev/null
-> +++ b/sound/soc/soc-usb.c
-> @@ -0,0 +1,66 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +#include <linux/usb.h>
-> +#include <sound/soc.h>
-> +#include <sound/soc-usb.h>
-> +#include "../usb/card.h"
-> +
-> +struct snd_soc_usb *ctx;
+On Fri, Dec 23, 2022 at 03:31:51PM -0800, Wesley Cheng wrote:
+> +EXPORT_SYMBOL(snd_usb_autoresume);
 
-Note, this will not work.  You can not only have "one" state for a
-system like this.  That just broke any system with more than one
-controller, of which we have millions.
+EXPORT_SYMBOL_GPL()?  I have to ask...
 
-This has to be dynamic for any number of controllers in the system, like
-the sound and USB core can handle.  Any requirement of "there can be
-only one!" will obviously never be acceptable as that is not how Linux
-works.
+Same for the other ones here.
+
+> +EXPORT_SYMBOL(find_format);
+
+That is not a valid global symbol name to use, you know better than
+this...
 
 thanks,
 
