@@ -4,42 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8B8FC4167B
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Dec 2022 02:30:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F12BC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Dec 2022 08:10:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6598257D0;
-	Mon, 26 Dec 2022 03:30:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6598257D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F26F6001;
+	Mon, 26 Dec 2022 09:09:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F26F6001
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672021854;
-	bh=smyNeioRH+6xG9Mj+q3v/unHdsbrW4UvKb1ptBK2R/o=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1672042234;
+	bh=+hJ4I0IWNy6HSG+nQd/CJwLM1xohcZgmIA6n+xX9UeU=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Sm+j9hr6m7qMmKzrUHD8sbCrlpIAe4ZLGEfCBtMQFv2lbwwCIUeTZDwH0jtfdXlE3
-	 9u6LwBuN7FMEJSCEpn65R15BiOPumjI2ua5nr/UY9BN7QB8UzohibIVH6GkvjK+2k4
-	 DFBe9KOSnpo0noIGTskQwgaQhbeZepW0c1/oKGqk=
+	 Cc:From;
+	b=IKm1MBp2c890HmpgGmzg7hRLXPKfSJHiMwLshgXcZIYfYJ9McLAhiLdkQfXC2IwXD
+	 MlSbX/RYPKXsiClXq3JwGfYWRjan5BBwYpHxzWfiaN+5Q15EUxZzLmv3JwDGPCJ5A0
+	 VbzU+N7s8PTC16WvSOwnAyrnBYImCUaC9olbxJPg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13CEEF802A0;
-	Mon, 26 Dec 2022 03:30:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E23B4F802A0;
+	Mon, 26 Dec 2022 09:09:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1E9D2F80310; Mon, 26 Dec 2022 03:30:03 +0100 (CET)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 1F334F80134
- for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2022 03:29:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F334F80134
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1672021799100692034-webhooks-bot@alsa-project.org>
-References: <1672021799100692034-webhooks-bot@alsa-project.org>
-Subject: sof-hda-dsp: Set Dmic0 Capture Switch on
-Message-Id: <20221226023003.1E9D2F80310@alsa1.perex.cz>
-Date: Mon, 26 Dec 2022 03:30:03 +0100 (CET)
+ id 8EE4CF80310; Mon, 26 Dec 2022 09:09:36 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 19801F80134
+ for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2022 09:09:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19801F80134
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=TubNC310; 
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=ZSpxnfzZ
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0979F33FCD;
+ Mon, 26 Dec 2022 08:09:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1672042169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=P8ft7F/KT+lvr+2pYmbIZYoFyftWJwwWXEH04QR9uy8=;
+ b=TubNC310Gz/8DEdxSO6HQfOEPGNEMFZMTI0WRoenCcFnDm1FIIs/Ix7T1ZFNZPznVVF710
+ w1/itmVZu6Cd+2p0nDk7Y1ST/tkP6gL0SN9WaLlEnR4G12100KVJAanma0xaPK8D2zsdBF
+ KZaieoEutR5wzHHGEHLDNUHsF2ddUOs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1672042169;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=P8ft7F/KT+lvr+2pYmbIZYoFyftWJwwWXEH04QR9uy8=;
+ b=ZSpxnfzZ1CFuemMmRT2eirreCCGaxTjBiXeCrSfCZRETH3YKvqWcn5TnhYoDZFKXDr+Aed
+ Ti9FUW1CbbcFnfBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D2D9813456;
+ Mon, 26 Dec 2022 08:09:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id JKqKMrhWqWMvcwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 26 Dec 2022 08:09:28 +0000
+Date: Mon, 26 Dec 2022 09:09:28 +0100
+Message-ID: <878riuy4av.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Artem Egorkine <arteme@gmail.com>
+Subject: Re: [PATCH 1/2] ALSA: line6: correct midi status byte when receiving
+ data from podxt
+In-Reply-To: <20221225105728.1153989-1-arteme@gmail.com>
+References: <20221225105728.1153989-1-arteme@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -52,13 +92,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #259 was opened from KaiChuan-Hsieh:
+On Sun, 25 Dec 2022 11:57:27 +0100,
+Artem Egorkine wrote:
+> 
+> A PODxt device sends 0xb2, 0xc2 or 0xf2 as a status byte for MIDI
+> messages over USB that should otherwise have a 0xb0, 0xc0 or 0xf0
+> status byte. This is usually corrected by the driver on other OSes.
+> 
+> This fixes MIDI sysex messages sent by PODxt.
+> 
+> Signed-off-by: Artem Egorkine <arteme@gmail.com>
 
-Internal microphone default is off after fresh installation. Add operation to set the control on to align with other sound architecture.
+Applied both patches now.  Thanks!
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/259
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/259.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+
+Takashi
