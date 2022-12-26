@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 055C8C4167B
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Dec 2022 12:52:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E5CFC4167B
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Dec 2022 12:52:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4923A5654;
-	Wed, 28 Dec 2022 13:51:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4923A5654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57EEF74AB;
+	Wed, 28 Dec 2022 13:52:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57EEF74AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672231937;
-	bh=s3Txn3CCYMAINuVdaMFj5eS3c7GT6CDWa/bWGWX49pc=;
+	s=default; t=1672231973;
+	bh=zmtqhXQv7hiPZDJGmROKlujPmTGm2oRNxnDcUz2K1XA=;
 	h=Subject:From:Date:References:In-Reply-To:To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=ObOv2F/uH0vHYnb2npN5RVshBnhJ+lUBytZSp3kXeiD8cnYX/y039oSzXPdnPuuYC
-	 OxVhKWonCFEAwEz5hHdioasgTv+fiC4cPD+uwJp8iwh2AG1wlrJzEuY2kjmxmxaaIb
-	 OG/fqPzdSu8mwSqbBgwfLRGmh561xtdh/mr8rkX0=
+	b=AOK6b3OaJnr52ngnzCe2/ZkNoEjzo+sze2KE3CrORourbid6heqbCiI4VWefwlSYZ
+	 U6XuTc+swB/dxUV97ttPVejQlgYEGgawb2JW/g3MgmtjsuZ2klBWOolqjhwaUm27n2
+	 JHRT5Atg1uZgd1sJ6OtcgJWyK3c1uyup+JFThM/0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DFBDDF80424;
-	Wed, 28 Dec 2022 13:51:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93AB5F804D6;
+	Wed, 28 Dec 2022 13:51:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECA6DF80310; Mon, 26 Dec 2022 04:32:38 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 2FEF6F80310; Mon, 26 Dec 2022 04:41:36 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8EB75F8027B
- for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2022 04:32:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EB75F8027B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 80772F800F0
+ for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2022 04:41:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80772F800F0
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ZXx064i5
+ header.s=k20201202 header.b=aFP63n6a
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 5169360C61;
- Mon, 26 Dec 2022 03:32:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8EFC9C433D2;
- Mon, 26 Dec 2022 03:32:29 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id BD5FDB80BE7;
+ Mon, 26 Dec 2022 03:41:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 725BFC433D2;
+ Mon, 26 Dec 2022 03:41:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1672025549;
- bh=s3Txn3CCYMAINuVdaMFj5eS3c7GT6CDWa/bWGWX49pc=;
+ s=k20201202; t=1672026091;
+ bh=zmtqhXQv7hiPZDJGmROKlujPmTGm2oRNxnDcUz2K1XA=;
  h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
- b=ZXx064i5rzq++NFOg11/wWaYl1fWBWbUUVMfNobuX1gR6W+hSC5ZaIT6xMvUkTbzq
- uKsKmPlP0Osoqt3ugX6Jfs12ItSnAT2NYH7dk2L+o+0+q2TEXpuxPP+n517ttUD3B5
- qERgwZvw07+bg0wqawChHt9pmtSu0jNWxxTY4ZiIJYITZEI0pf/eE3E2hOO32H/1pi
- kRFc6KGtABB/2V9Bn76V1EKJYHbpXbJgtJ4cicnkkjfmrqdOYoYYZdUWhIIjno3hJF
- AKMqe2WqeZ/Z/UT0sDmee/HfVbq9AKYnEqjtJVTpIEQ4+UAzbfm79swmY7Zbv+nhP1
- /yZj5hZlsSzMg==
+ b=aFP63n6aR/0rsvyekq2AImCT+Ltsl9Jl7dPzbNYHhoyZYHDH6lK2bZrhlcgunmhld
+ RgMVPID00zacoRWh6/2WcYeqqfuXii7bfwtJk5lxNcH9sYhs6uYZ65sHxjCjvHVJGC
+ jU2sooTMKGRe+SFmEQSyRrM2Z5Ebr4Jv8ipoN7FtPVN5x7rUbCF4ahlzEUcQHuzwgS
+ dPZnfjIrxijvQKXa4OnPsL5xX8faKU1LhwAeeoNrFyIvTCF3+ednhZDVur/h1/X3jD
+ E41cCnOUXtPEk1kFVfqyh2f9D9ufm9IlqPIid1pjLmSc0vc0NcK4CEzAwGC3ktCoTG
+ JD3TuvTuDV3ew==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org
  (localhost.localdomain [127.0.0.1])
  by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id
- 69A72E5250A; Mon, 26 Dec 2022 03:32:29 +0000 (UTC)
+ 4CBF2E50D66; Mon, 26 Dec 2022 03:41:31 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Subject: Re: [PATCH 1/3] ASoC: dt-bindings: Extend name-prefix.yaml into common
  DAI properties
 From: patchwork-bot+chrome-platform@kernel.org
-Message-Id: <167202554942.9518.4179971549708682531.git-patchwork-notify@kernel.org>
-Date: Mon, 26 Dec 2022 03:32:29 +0000
+Message-Id: <167202609130.9518.10337988666912704066.git-patchwork-notify@kernel.org>
+Date: Mon, 26 Dec 2022 03:41:31 +0000
 References: <20221203160442.69594-1-krzysztof.kozlowski@linaro.org>
 In-Reply-To: <20221203160442.69594-1-krzysztof.kozlowski@linaro.org>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
@@ -118,7 +118,7 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hello:
 
-This series was applied to chrome-platform/linux.git (for-kernelci)
+This series was applied to chrome-platform/linux.git (for-next)
 by Mark Brown <broonie@kernel.org>:
 
 On Sat,  3 Dec 2022 17:04:40 +0100 you wrote:
