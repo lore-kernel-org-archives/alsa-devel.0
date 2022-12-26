@@ -4,68 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BF8EC4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Dec 2022 23:35:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87B20C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Dec 2022 23:35:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2CD0565A8;
-	Tue, 27 Dec 2022 00:34:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CD0565A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1034F6598;
+	Tue, 27 Dec 2022 00:34:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1034F6598
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672097722;
-	bh=U8xN5fqN2RpLO0+0uf2AAte4B5MTp6owYgnVxY3XP9g=;
+	s=default; t=1672097748;
+	bh=cx2UV/XZSUwl0u2PvYhFJExdluhmE61BWnOpv7ZABhE=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=M6Y7ifo7TIJdgyDFBguTPSA8z1MApz3JpIhWNjDIvVzvwAKb0B1+ZqCDipOk47788
-	 h5UEhIBRGzzts3uP0rCy7PqOyrpcQjHmroEV4jh4RTeU+rcvqr1qGaD5Nkoiv1qsVK
-	 VTwyPx845gFf/zVw1fxghDgn/TPvY42ttTSzZqXQ=
+	b=CgFZ/c1oB2rTM0u/nuZ9wNl9U7Nj00+LgT8jPaES+kuIbUo1/PRWBfmC/Bvp+ElCj
+	 XrEMdhn+GKzUpCrZF0YWIBzyb+8r5QrGE92qzDj6hpaG9n2Lr1aZPHXWVLvcnB1kZh
+	 dYebaKTeA389iCa6+HEu2pzkUICnUL1Jj99qHhOo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88784F804CF;
-	Tue, 27 Dec 2022 00:34:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 178BDF804FE;
+	Tue, 27 Dec 2022 00:34:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 623ADF804CF; Tue, 27 Dec 2022 00:34:10 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 1C08DF804D6; Tue, 27 Dec 2022 00:34:11 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B45A2F804CF
- for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 00:34:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B45A2F804CF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8CBA0F8042F
+ for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 00:34:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CBA0F8042F
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Dz7mQxD0
+ header.s=k20201202 header.b=mLy/XBMy
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 7BA2860F58;
- Mon, 26 Dec 2022 23:34:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2235BC433EF;
- Mon, 26 Dec 2022 23:33:59 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 1BB7CCE0EDA;
+ Mon, 26 Dec 2022 23:34:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83DE1C433F0;
+ Mon, 26 Dec 2022 23:33:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1672097644;
- bh=U8xN5fqN2RpLO0+0uf2AAte4B5MTp6owYgnVxY3XP9g=;
+ s=k20201202; t=1672097639;
+ bh=cx2UV/XZSUwl0u2PvYhFJExdluhmE61BWnOpv7ZABhE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Dz7mQxD08oUWwRqgseibhWjRzBHJWwOSTl1xIGj4Gs3hOeW5GOpqKB7AvpR9l7ui5
- cJRqxucj+FQucllQVISjYq+TdykyKwmDpKGOzerZw2X/73v3rvwFJ7v1R0F5NfOZTN
- y+3szaN7bhpPwau8BI9Y7znhfWnFYBGMbO7hzyLfu1V6Sl+7H1o41ZrUO4NHHTmO3y
- 0wZ9soWrSaL08cVgckBgPlQvTGy9gJ+wG8rjOqlEE03Fp3V7vXd0SsE+lWHppdFJjD
- nqE9op8jP46vczOSBsqDMewy2Bd/LdsIdfOwHtCU8hIAfLRKgKUmmuq+wJEHcCwhLc
- nu5qpLQyheU0g==
+ b=mLy/XBMywYSr9ZHF43thfnROkic5Ai7ApzlfYn6YChs6ih7Gl2U1QfJQ1+tVO9Rkc
+ zaWIhjUItUBzL17RJvrYwqn1xTBXVSWd/Y1FN2rJbfN0xUvGhHdyF0QVqoMK4ImlBj
+ 0/DMirhlVpG9gEBXBLz3nQ+OxW0kqcw1jaqXDUrpBPlx8Cnz25dl3Ad9WdieWBnFQ6
+ CH/bLvksgG49ubvwIVzuU7c9gq2OCoiVA5fsHE58T6HeFA1KcVE5A8O4hwTLkhgc1r
+ Z0u4xfS77iMEpAxduEtAsiAGRC4gV3Rto/Wu5TOOOdGY+7Gyg2yF1VhUE4ISVFQEt3
+ duIWgTEvkz82g==
 From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Arnd Bergmann <arnd@kernel.org>
-In-Reply-To: <20221221132515.2363276-1-arnd@kernel.org>
-References: <20221221132515.2363276-1-arnd@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: sof-nau8825: fix module alias overflow
-Message-Id: <167209763984.330820.8290497539067890342.b4-ty@kernel.org>
-Date: Mon, 26 Dec 2022 23:33:59 +0000
+To: linux-kernel@vger.kernel.org,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+In-Reply-To: <20221216154938.9426-1-ajye_huang@compal.corp-partner.google.com>
+References: <20221216154938.9426-1-ajye_huang@compal.corp-partner.google.com>
+Subject: Re: [PATCH v2] ASoC: Intel: sof_nau8825: add variant with nau8318
+ amplifier.
+Message-Id: <167209763526.330820.3472409126479136319.b4-ty@kernel.org>
+Date: Mon, 26 Dec 2022 23:33:55 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -82,31 +77,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Libin Yang <libin.yang@intel.com>, alsa-devel@alsa-project.org,
- Arnd Bergmann <arnd@arndb.de>, ye xingchen <ye.xingchen@zte.com.cn>,
- Takashi Iwai <tiwai@suse.com>, Mac Chiang <mac.chiang@intel.com>,
+Cc: Libin Yang <libin.yang@intel.com>,
+ "balamurugan . c" <balamurugan.c@intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
  Muralidhar Reddy <muralidhar.reddy@intel.com>,
- Akihiko Odaki <akihiko.odaki@gmail.com>, David Lin <CTLIN0@nuvoton.com>,
- Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
- Brent Lu <brent.lu@intel.com>, linux-kernel@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Akihiko Odaki <akihiko.odaki@gmail.com>, ye xingchen <ye.xingchen@zte.com.cn>,
+ David Lin <CTLIN0@nuvoton.com>, alsa-devel@alsa-project.org,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Brent Lu <brent.lu@intel.com>,
  Yong Zhi <yong.zhi@intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 21 Dec 2022 14:24:56 +0100, Arnd Bergmann wrote:
-> The maximum name length for a platform_device_id entry is 20 characters
-> including the trailing NUL byte. The sof_nau8825.c file exceeds that,
-> which causes an obscure error message:
+On Fri, 16 Dec 2022 23:49:38 +0800, Ajye Huang wrote:
+> This patch adds the driver data for two nau8318 speaker amplifiers on
+> SSP1 and nau8825 on SSP0 for ADL platform.
 > 
-> sound/soc/intel/boards/snd-soc-sof_nau8825.mod.c:35:45: error: illegal character encoding in string literal [-Werror,-Winvalid-source-encoding]
-> MODULE_ALIAS("platform:adl_max98373_nau8825<U+0018><AA>");
->                                                    ^~~~
-> include/linux/module.h:168:49: note: expanded from macro 'MODULE_ALIAS'
->                                                 ^~~~~~
-> include/linux/module.h:165:56: note: expanded from macro 'MODULE_INFO'
->                                                        ^~~~
-> include/linux/moduleparam.h:26:47: note: expanded from macro '__MODULE_INFO'
->                 = __MODULE_INFO_PREFIX __stringify(tag) "=" info
+> The nau8315 and nau8318 are both Nuvoton Amp chips. They use the same
+> Amp driver nau8315.c. The acpi_device_id for nau8315 is "NVTN2010",
+> for nau8318 is "NVTN2012".
+> The nau8825 is one of Nuvoton headset codec, and its acpi_device_id is
+> "10508825".
 > 
 > [...]
 
@@ -116,8 +111,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: sof-nau8825: fix module alias overflow
-      commit: 3e78986a840d59dd27e636eae3f52dc11125c835
+[1/1] ASoC: Intel: sof_nau8825: add variant with nau8318 amplifier.
+      commit: ba7523bb0f494fc440d3a9bb0b665cfcaa192d0c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
