@@ -4,67 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 978A5C4332F
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Dec 2022 23:36:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 964D9C4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Dec 2022 23:36:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4FEDA65AE;
-	Tue, 27 Dec 2022 00:35:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FEDA65AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4FD7B659A;
+	Tue, 27 Dec 2022 00:35:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FD7B659A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672097759;
-	bh=cDwu4kM8l3cgFD8Zxb1eDDB1DVSOVJ1DhZGICqs0pmQ=;
+	s=default; t=1672097774;
+	bh=hI0abZTfZBfmL7iS41Sw/Kw7JuoSmWB5bH2uy6CIx0Q=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=s615/YLXJESchk9/9G+WoOBdsngCNuFrhUeioFy5MUxoUp+l3sGrKiM0niIIeJIUQ
-	 6c2BzNVa3ptvfcyG15xA61NNuvH4jvyYhMVMoQkdF0RB0BTHiNUyoRg93cdJRVp4u8
-	 JlyyFLCM0IH0EcmLgzOgrctC+gr/eT0J+WkScJeo=
+	b=pap9DwoGRD5D3RELAP/1PZ3QzTFC3geHqSIh7v/WUodzm2QO8PCzTt6zyDbqkdcZE
+	 0bEKn3811Pj/lYqs38P5QQSNZ7nmEShFG0m/DFxckVRR1WT/y09ptvJfMKb8OYyEMZ
+	 mofCxIJeo144tM8AUK2CcODeC4CAPwZqHrSfiMzg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0A01BF8053D;
+	by alsa1.perex.cz (Postfix) with ESMTP id B5215F80552;
 	Tue, 27 Dec 2022 00:34:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 375C1F804D6; Tue, 27 Dec 2022 00:34:12 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 13B39F80538; Tue, 27 Dec 2022 00:34:16 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7253DF80134
- for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 00:34:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7253DF80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id 22E58F8052F
+ for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 00:34:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22E58F8052F
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=C95e+8c6
+ header.s=k20201202 header.b=SO5NI+Q8
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C39D760E9D;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id D158A60F5A;
+ Mon, 26 Dec 2022 23:34:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5C2AC433F1;
  Mon, 26 Dec 2022 23:34:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C29EBC433D2;
- Mon, 26 Dec 2022 23:34:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1672097648;
- bh=cDwu4kM8l3cgFD8Zxb1eDDB1DVSOVJ1DhZGICqs0pmQ=;
+ s=k20201202; t=1672097652;
+ bh=hI0abZTfZBfmL7iS41Sw/Kw7JuoSmWB5bH2uy6CIx0Q=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=C95e+8c64hIE8JKGxitFFNlla73ZMlVfdmZmc6486jHMzIb0CDVVAhLSMU/Si6mub
- lGmDJb3PAhehUUUIQkky8A88xGqxuwDPf4aQrOwsu71+rhWjGLp29JdlHB+KXVtzj1
- 0ZaQlYAsR8nngpwZTi3KfO8Cz91Dj9bzr6KPxYxP2e7/f51QPz3HocGKEXd39n+yqO
- 5T6LicKw/SfJiuUxbUEkg5Wl6kvzPpg5hIgOng85CxUjtJV8kElsGRxul1PwR+hQ83
- 66p6aMMX5PEibVS+t5Q7X6Th6d6gMwlse2PJKTAddoI/sOXM8YU2jLBJdxyqUpJ9jW
- wbx84QRIG5vlg==
+ b=SO5NI+Q8paXlF7tZMy3yL1VvIsR8LUFy1NOHEw7fxL2wJT08iQDN+HPe7hAd8wQhi
+ S3KaqrRQ9EbvAvIbrCXgjuvBrzpBjnaYGlHkb6RCYX//PeRwmmlnjW//sVi9eJ8CDm
+ JTvetu5X0ghrAQRcJFc5j1PIHsxC7cir5nh7NAVE3vgWgdaKzarPSvYph/n+ERPmpe
+ NDO562ouyEeJdZ94jfLHSy3WHyvWL0F5Af5oEQAakm3QdzWWyT53XdiSh6VkYN6qdH
+ 0GzKgFEt6e7ljg7Fe+dWG2cG+M6GVwfC6GZbD+hNygvg/6WZ1KOdu+7unjIn5E7OqJ
+ G/mDKqY4Yb45w==
 From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Arnd Bergmann <arnd@kernel.org>
-In-Reply-To: <20221221132559.2402341-1-arnd@kernel.org>
-References: <20221221132559.2402341-1-arnd@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: fix sof-nau8825 link failure
-Message-Id: <167209764451.330820.11826897991352846067.b4-ty@kernel.org>
-Date: Mon, 26 Dec 2022 23:34:04 +0000
+To: linux-kernel@vger.kernel.org,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+In-Reply-To: <20221222042624.557869-1-ajye_huang@compal.corp-partner.google.com>
+References: <20221222042624.557869-1-ajye_huang@compal.corp-partner.google.com>
+Subject: Re: [PATCH v3] ASoC: Intel: sof_nau8825: add variant with nau8318
+ amplifier.
+Message-Id: <167209764839.330820.10080062555953013632.b4-ty@kernel.org>
+Date: Mon, 26 Dec 2022 23:34:08 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -81,21 +78,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- "balamurugan.c" <balamurugan.c@intel.com>, Mac Chiang <mac.chiang@intel.com>,
- David Lin <CTLIN0@nuvoton.com>, Gongjun Song <gongjun.song@intel.com>,
- Brent Lu <brent.lu@intel.com>
+Cc: Libin Yang <libin.yang@intel.com>,
+ "balamurugan . c" <balamurugan.c@intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ David Lin <CTLIN0@nuvoton.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Akihiko Odaki <akihiko.odaki@gmail.com>, ye xingchen <ye.xingchen@zte.com.cn>,
+ alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Brent Lu <brent.lu@intel.com>, Yong Zhi <yong.zhi@intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 21 Dec 2022 14:25:48 +0100, Arnd Bergmann wrote:
-> The snd-soc-sof_nau8825.ko module fails to link unless the
-> sof_realtek_common support is also enabled:
+On Thu, 22 Dec 2022 12:26:24 +0800, Ajye Huang wrote:
+> This patch adds the driver data for two nau8318 speaker amplifiers on
+> SSP1 and nau8825 on SSP0 for ADL platform.
 > 
-> ERROR: modpost: "sof_rt1015p_codec_conf" [sound/soc/intel/boards/snd-soc-sof_nau8825.ko] undefined!
-> ERROR: modpost: "sof_rt1015p_dai_link" [sound/soc/intel/boards/snd-soc-sof_nau8825.ko] undefined!
-> 
+> The nau8315 and nau8318 are both Nuvoton Amp chips. They use the same
+> Amp driver nau8315.c. The acpi_device_id for nau8315 is "NVTN2010",
+> for nau8318 is "NVTN2012".
+> The nau8825 is one of Nuvoton headset codec, and its acpi_device_id is
+> "10508825".
 > 
 > [...]
 
@@ -105,8 +111,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: fix sof-nau8825 link failure
-      commit: 63f3d99b7efe4c5404a9388c05780917099cecf4
+[1/1] ASoC: Intel: sof_nau8825: add variant with nau8318 amplifier.
+      commit: ba7523bb0f494fc440d3a9bb0b665cfcaa192d0c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
