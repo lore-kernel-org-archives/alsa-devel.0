@@ -4,75 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59ED4C3DA79
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Dec 2022 22:36:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5556C3DA79
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Dec 2022 22:58:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1100363C9;
-	Mon, 26 Dec 2022 23:35:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1100363C9
+	by alsa0.perex.cz (Postfix) with ESMTPS id E7CDB6455;
+	Mon, 26 Dec 2022 23:57:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7CDB6455
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672094207;
-	bh=btT00mhezy9HTF1lIp7RKA+PUTUm+XbEB3t4kOpzlXE=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1672095497;
+	bh=Wti5O+00kVoBmzkKswTPUDc+8JKLmMqF4b5CHt77e60=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=tVgJD4wlwFNUHKmA08219eB6sXevKEUcclcua/Mb29LXax1vLcqBttWUByP388kJO
-	 XYK7oSPyLiSdyVhtT9+c3jpGZMC/uu/wt32b+sWk6MXrufsVt2/vfLTNofPfINy1zr
-	 LBI0166u6Ol4GuQpLrGfgIEXYChn8ZYVtFx7nyFE=
+	b=oO+UCFIYy0rmw9njTCG2+J+msHu/lG/5yEUVBoC8vGlEzTy+BTE8lw3L5eOVBoeTy
+	 Hb+gmQhjdmQGLiqa+tMZ4vy4/xhFEZuhEhO83LXUNNFJRnHZRMsAzN/mj73ob7av2q
+	 a9bxMAsMH3LoRlWFiPcoFFxmfSTZjieHAua05H1Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AACFAF802A0;
-	Mon, 26 Dec 2022 23:35:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FDA1F80310;
+	Mon, 26 Dec 2022 23:57:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CBB1BF800F0; Mon, 26 Dec 2022 23:35:55 +0100 (CET)
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com
- [209.85.160.48])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id DB28EF8042F; Mon, 26 Dec 2022 23:57:24 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E11FF800F0
- for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2022 23:35:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E11FF800F0
-Received: by mail-oa1-f48.google.com with SMTP id
- 586e51a60fabf-1433ef3b61fso13785920fac.10
- for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2022 14:35:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=date:subject:message-id:references:in-reply-to:cc:to:from
- :mime-version:content-transfer-encoding:x-gm-message-state:from:to
- :cc:subject:date:message-id:reply-to;
- bh=lt+gzNImgwQhawSy/zX0NqMABwqGJ4OMHwRZPC2+ROw=;
- b=HC28hdmjer7AZGvNcTS1WZT086q23ifxJULGSB6KXJu9TqyyXxlAGwhlJttYmI3AvM
- cNCuwN55vGipaos+CF1vb4u1YRS/OE5KzgRB5qjKfnVPhouPHGfnNSV6A5fxXosGjcjw
- nMmpjcpOpvV+hc/dwjDJ86IW4RxhedgQvjthu5ax680zKI+H4zQ6Eku5rm09+g6qokqk
- FbB1kornV+/7T6Gbf7j0Z5mcw4qb2iraekGElv8+kAnWZnNuzCmTpRYa+qaSmMrxcfJL
- q/2V8oBPmqpL5cMbIGG0x/3MYRufIyexFYa5BHBSfQlt+5WkMLIznywj1SuDIjrS7xm/
- Kquw==
-X-Gm-Message-State: AFqh2krjEQn8tlOwrfkXNOeT6zN3KcUDpw/UUL6OPVrF+bXUlx2m1lOe
- 4qYrdLN8e9Fr/r/QtWxq3g==
-X-Google-Smtp-Source: AMrXdXtoyYNVc/HfF7b8ZQ6awqmxZtHIAJA8GEEc6ASnXnLJU/vSgfPTQp95w57GfWXniFD8o9Moww==
-X-Received: by 2002:a05:6871:4595:b0:143:95b0:26e7 with SMTP id
- nl21-20020a056871459500b0014395b026e7mr8961672oab.54.1672094146950; 
- Mon, 26 Dec 2022 14:35:46 -0800 (PST)
-Received: from robh_at_kernel.org ([2605:ef80:80e8:2792:eb0e:539f:f657:547b])
- by smtp.gmail.com with ESMTPSA id
- z12-20020a056870738c00b00143065d3e99sm5461116oam.5.2022.12.26.14.35.45
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 26 Dec 2022 14:35:46 -0800 (PST)
-Received: (nullmailer pid 375419 invoked by uid 1000);
- Fri, 23 Dec 2022 19:26:02 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+ by alsa1.perex.cz (Postfix) with ESMTPS id 628E1F800F0
+ for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2022 23:57:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 628E1F800F0
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=mM5WMwZZ
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 409FD60EE0;
+ Mon, 26 Dec 2022 22:57:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EAA8C433D2;
+ Mon, 26 Dec 2022 22:57:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1672095438;
+ bh=Wti5O+00kVoBmzkKswTPUDc+8JKLmMqF4b5CHt77e60=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=mM5WMwZZSj4y5reqpjVqwaFFLgUdoLXqlSI/D9TJfClLz9ZQo5/wnnnqUVNc8Y25o
+ M0gvOqg3oSboFXCnk7e5VnuFC+29uVViQ6cK/KBXc5BNirjRvcSu2SprbyRkqz4dll
+ 9x7B0LNEXFtTLfI16iX/MWQKFY8dDWViSrfCVSEfH9cQ5GYYFPn7FAL7YIwrAkVRpC
+ N33F6qNE4NV8pjgHQmraElbqgI5P3uLRmqtj+J140r24NriBV8xWK4kHRbuPHOVI6X
+ tntGhtlByw2YUl6rw2o7E8lIn3CdQwZF9oUMTi7hhrDGZTkOTk+QB7SshiT33tXtA5
+ bu3bd2YHvDggA==
+Date: Mon, 26 Dec 2022 22:57:12 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+Subject: Re: [PATCH 3/5] ASoC: amd: acp: Refactor dai format implementation
+Message-ID: <Y6omyPeaZIaGL/EW@sirena.org.uk>
+References: <20221220072705.1456908-1-venkataprasad.potturu@amd.com>
+ <20221220072705.1456908-4-venkataprasad.potturu@amd.com>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Francesco Dolcini <francesco@dolcini.it>
-In-Reply-To: <20221223170404.210603-2-francesco@dolcini.it>
-References: <20221223170404.210603-1-francesco@dolcini.it>
- <20221223170404.210603-2-francesco@dolcini.it>
-Message-Id: <167182349408.373865.10339766752503211557.robh@kernel.org>
-Subject: Re: [PATCH v1 1/3] ASoC: dt-bindings: nau8822: convert to the dtschema
-Date: Fri, 23 Dec 2022 13:26:02 -0600
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="h5fGREPqKqgMueed"
+Content-Disposition: inline
+In-Reply-To: <20221220072705.1456908-4-venkataprasad.potturu@amd.com>
+X-Cookie: Noone ever built a statue to a critic.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,46 +78,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, wtli@nuvoton.com,
- Takashi Iwai <tiwai@suse.com>, kchsu0@nuvoton.com,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Benjamin Marty <info@benjaminmarty.ch>, Mark Brown <broonie@kernel.org>,
- David Lin <CTLIN0@nuvoton.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Francesco Dolcini <francesco.dolcini@toradex.com>,
- Emanuele Ghidoli <emanuele.ghidoli@toradex.com>
+Cc: alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com, ssabakar@amd.com,
+ Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+ ye xingchen <ye.xingchen@zte.com.cn>, Basavaraj.Hiregoudar@amd.com,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jia-Ju Bai <baijiaju1990@gmail.com>, Akihiko Odaki <akihiko.odaki@gmail.com>,
+ Vijendar.Mukunda@amd.com, vsujithkumar.reddy@amd.com,
+ open list <linux-kernel@vger.kernel.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-On Fri, 23 Dec 2022 18:04:02 +0100, Francesco Dolcini wrote:
-> From: Emanuele Ghidoli <emanuele.ghidoli@toradex.com>
-> 
-> Convert nau8822 devicetree binding to dtschema.
-> Change file name to match dtschema naming.
-> 
-> Cc: David Lin <CTLIN0@nuvoton.com>
-> Signed-off-by: Emanuele Ghidoli <emanuele.ghidoli@toradex.com>
-> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-> ---
->  .../devicetree/bindings/sound/nau8822.txt     | 16 --------
->  .../bindings/sound/nuvoton,nau8822.yaml       | 40 +++++++++++++++++++
->  2 files changed, 40 insertions(+), 16 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/nau8822.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/nuvoton,nau8822.yaml
-> 
+--h5fGREPqKqgMueed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Running 'make dtbs_check' with the schema in this patch gives the
-following warnings. Consider if they are expected or the schema is
-incorrect. These may not be new warnings.
+On Tue, Dec 20, 2022 at 12:57:03PM +0530, Venkata Prasad Potturu wrote:
+> Refactor dai format implementation in dai_link specific
+> snd_soc_ops.
 
-Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-This will change in the future.
+This breaks an x86 allmodconfig build:
 
-Full log is available here: https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20221223170404.210603-2-francesco@dolcini.it
+/build/stage/linux/sound/soc/amd/acp/acp-mach-common.c: In function =E2=80=
+=98acp_card_maxim_hw_params=E2=80=99:
+/build/stage/linux/sound/soc/amd/acp/acp-mach-common.c:454:13: error: =E2=
+=80=98drvdata=E2=80=99 undeclared (first use in this function)
+  454 |         if (drvdata->soc_mclk)
+      |             ^~~~~~~
+/build/stage/linux/sound/soc/amd/acp/acp-mach-common.c:454:13: note: each u=
+ndeclared identifier is reported only once for each function it appears in
 
+--h5fGREPqKqgMueed
+Content-Type: application/pgp-signature; name="signature.asc"
 
-audio-codec@1a: '#sound-dai-cells', 'AVDD-supply', 'CPVDD-supply', 'DBVDD-supply', 'DCVDD-supply', 'MICVDD-supply', 'clock-names', 'clocks' do not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/freescale/imx8mm-verdin-nonwifi-dev.dtb
-	arch/arm64/boot/dts/freescale/imx8mm-verdin-wifi-dev.dtb
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmOqJscACgkQJNaLcl1U
+h9A9WAf7BvZ7QNfzBCPPyXGxrXWwjIKX83E0fKopQpPw+AAwbjjH4TCk8gx1hTC6
+GGmNtlgTGDgsSUE6+3/CdvcNBJUw0joK+mjaCZBC3oeAwr4Ku/KlQjRqW82S1Hxd
+oRT0JlJ/dglR2WhZvgMUlPBbZNLlL0rHuM4ghe8AAfTLBhhigOBQpyFbiYhb2MH8
+P2bHd+IQ9U1jVZ8Ejuw5a9XrSHCnbYkpuH9YdaF6HIDGlnTO2f5hT84kbyFBDmtp
+/7kva/qQzRGLKOec5sF16sizwnNhK6rb7BY9ByiipGR4RHrWmsdi5Q5bDHyz3RTz
+vZj0Wy8cDERGIrsQlX3hnGc5l77Eiw==
+=3Fz1
+-----END PGP SIGNATURE-----
+
+--h5fGREPqKqgMueed--
