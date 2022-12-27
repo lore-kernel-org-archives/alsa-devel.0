@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8864C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Dec 2022 11:57:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E8E8C4167B
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Dec 2022 11:58:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4FCA07396;
-	Tue, 27 Dec 2022 12:56:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FCA07396
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1ADC26A81;
+	Tue, 27 Dec 2022 12:57:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1ADC26A81
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672142268;
-	bh=MVhpv8rXzR6Te24jCkntBS3xe22aOWW6rhIHAEiEsTI=;
+	s=default; t=1672142294;
+	bh=6kHgo+9AsYVpxsedFFseY69MhbSiHTijIuaxAeqBGgM=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=iQwFLiibzhjjbAeKnR8h57v6vk/TU8WFmpwfzAGREOX4m0Vc1bal9EJxUkJ+fk/Ay
-	 fOxmFyaDBaUskF0JH3WoONkh7QmAGkrVXXMBu9Pn5hXz0imrKzXk2BEZSfeetEIviW
-	 fyVTaprTf1FrCsc3I1omUD7yfL+MzCq8hvhfNYUw=
+	b=DTtltqsSXzuiFbUKMJdXr70UDwloddlDtUeVB5VBzy2NbiQl3UmvSCARo484MYLvm
+	 l6HtSuHWfFmPOg6q8RFpgrXck4DGjUM2DanP/OtCeJyG/HYwVZxgawUR8EO/MeV/d4
+	 lTENhq2Q4nUt6xOlYUnocfYKSmCFG/aaQMmPdMjM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E67D5F804B0;
-	Tue, 27 Dec 2022 12:56:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8978FF804E4;
+	Tue, 27 Dec 2022 12:57:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B56ACF804B4; Tue, 27 Dec 2022 12:56:56 +0100 (CET)
+ id 4D7EEF80524; Tue, 27 Dec 2022 12:56:59 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C6ECBF800F0
- for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 12:56:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6ECBF800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89365F804E4
+ for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 12:56:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89365F804E4
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=PSUPvLMA
+ header.s=k20201202 header.b=rgYcsS7j
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 1EA99B80ED9;
- Tue, 27 Dec 2022 11:56:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3C59C433D2;
- Tue, 27 Dec 2022 11:56:49 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 292A4B80F96;
+ Tue, 27 Dec 2022 11:56:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49920C433D2;
+ Tue, 27 Dec 2022 11:56:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1672142211;
- bh=MVhpv8rXzR6Te24jCkntBS3xe22aOWW6rhIHAEiEsTI=;
+ s=k20201202; t=1672142215;
+ bh=6kHgo+9AsYVpxsedFFseY69MhbSiHTijIuaxAeqBGgM=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=PSUPvLMAwFNazUcuumTkeUgtQFmpg2Vw/cgqNm7UwT4p+V6Any1e1GpEiBrUGc63I
- jpqUEuEjJyUZM3fBL8N/QA7A/d5CwFQTWQUrqabnWeCUFaYnJ46ZDjNbTu4fcIDVOk
- zvGW2TXYdD+BeXEtF8qzXP45KEJS3NSDcaFiEIOOAtU/oNPAZd/h9rfu2LNjp5pM2D
- 3exLfJN9KJP2Sz9vWXFJ0WfnJCZa3CqT5r7q8BFevoF87UKmAmkeRzIEPusaT7wmp6
- VM4HsNIHDwpr4wmAWYz9Jp9V7Z7dvOTlJi+hFG4y728CFRfC/CMbWKO/Cw4Nh9KX0I
- vQXmATWtnoltw==
+ b=rgYcsS7j4nWqThRSfu3wsgFZWH65PL2CkTzRfQQmd2zS/fZTKJ/Ly8m46WBuXRCzj
+ juda2Hch7BeuwB+GVmDE8bezQYPWZZXkAFylBC0k0E7SaNEIH8/yYqqoU2u0nOIirW
+ 3PVf4WJH1vyYWzvHqbb7TjSbbBk8ctHo2od0Bp1WJZe/8GBIPkg9SciPO3V47B06Sd
+ EkJUIHn7ohwtL5ZWgyNvXwXxjAsiyPLtxhwDVSOsP6913TGkSbFiHOoIhg+HAljnsB
+ 2dH/JPyl7F0GVpi4puGZd3uduFw+7nbMPVVknr8zCihQ8KNmqVRwriVqEWtmxGV77O
+ jQcZDEXFlvvcw==
 From: Mark Brown <broonie@kernel.org>
-To: Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Jarrah Gosbell <kernel@undef.tools>
-In-Reply-To: <20221209105621.39237-1-kernel@undef.tools>
-References: <20221209105621.39237-1-kernel@undef.tools>
-Subject: Re: [PATCH 1/2] ASoC: rt5640: Allow configuration of LOUT to mono
- differential mode
-Message-Id: <167214220970.82924.10318641625938014586.b4-ty@kernel.org>
-Date: Tue, 27 Dec 2022 11:56:49 +0000
+To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>
+ =?utf-8?q?=2C?= Robert Jarzmik <robert.jarzmik@free.fr>,
+ Uwe =?utf-8?q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20221212174737.3740223-1-u.kleine-koenig@pengutronix.de>
+References: <20221212174737.3740223-1-u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH] ASoC: pxa: Drop empty platform remove function
+Message-Id: <167214221401.82924.5239278488590645383.b4-ty@kernel.org>
+Date: Tue, 27 Dec 2022 11:56:54 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.12-dev-7ab1d
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -79,14 +77,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: phone-devel@vger.kernel.org, Ondrej Jirman <megi@xff.cz>
+Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 09 Dec 2022 10:56:20 +0000, Jarrah Gosbell wrote:
-> LOUT output can produce either single-ended stereo signals, or mono
-> differential signal. Some applications are wired to use LOUT in mono
-> differential mode. Allow to configure it via device property.
+On Mon, 12 Dec 2022 18:47:37 +0100, Uwe Kleine-König wrote:
+> A remove callback just returning 0 is equivalent to no remove callback
+> at all. So drop the useless function.
 > 
 > 
 
@@ -96,10 +94,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: rt5640: Allow configuration of LOUT to mono differential mode
-      commit: 44b54f54b41d36e8a2302a2c18a65268751c9067
-[2/2] dt-bindings: sound: rt5640: Allow to describe how LOUT is wired
-      commit: d8510532ccf3bc12e2b1c0c285d4b61d4b713e1a
+[1/1] ASoC: pxa: Drop empty platform remove function
+      commit: e812aa458acf7c47f9f5d8e6c62177317a998263
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
