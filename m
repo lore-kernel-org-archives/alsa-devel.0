@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87AE0C4167B
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Dec 2022 20:34:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D4ECC4167B
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Dec 2022 20:35:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5B277C8A;
-	Tue, 27 Dec 2022 21:33:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5B277C8A
+	by alsa0.perex.cz (Postfix) with ESMTPS id CDD747CDA;
+	Tue, 27 Dec 2022 21:34:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDD747CDA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672173247;
+	s=default; t=1672173295;
 	bh=/BbpzhDYMphEHBAQuZT/NpHTPQH7dEvj3hXsXcq8IaE=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=Q58mGDG2LEvYIqftgP8haYgVVsG16soUuP8CiEd6E62pe9aHaRFfMFFb4pOLmkNcW
-	 aU8HM/oODSkK53uB4z9tM0zp6jQc8/TimP4SXhZ0RcvT7kDUS7J2HNdVrAvyJiNN2V
-	 UL6pm04ly894EpStrh4oJj3qlZulJTFtrF5tAAWA=
+	b=J5EDbQwZDVu8DUHwqVcit+eXFqDzopMjrWNUI0o2xAxDxhKrzZCJgdn+u6/F0TqWn
+	 ux8P/DnubFhRUm+7wFSf2V872+QvGP4Yaa/L79GS0wEf2R7YQs0HXxRvhSapGG1QZx
+	 fS/eLtpxqyuqxTWVkI0N4P7jXRcwvDzMnyi+Q3qc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64559F804B0;
-	Tue, 27 Dec 2022 21:33:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77268F804E7;
+	Tue, 27 Dec 2022 21:34:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1028F804E4; Tue, 27 Dec 2022 21:33:15 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 9CB0CF804E7; Tue, 27 Dec 2022 21:34:04 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7D7D8F8023B
- for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 21:33:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D7D8F8023B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0B941F804E4
+ for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 21:33:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B941F804E4
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=jt4vwiuF
+ header.s=k20201202 header.b=SwqfRM9K
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id AB8DC61035;
- Tue, 27 Dec 2022 20:33:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A5DAC433EF;
- Tue, 27 Dec 2022 20:33:03 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 0551CB811FB;
+ Tue, 27 Dec 2022 20:33:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8184C43392;
+ Tue, 27 Dec 2022 20:33:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1672173184;
+ s=k20201202; t=1672173236;
  bh=/BbpzhDYMphEHBAQuZT/NpHTPQH7dEvj3hXsXcq8IaE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=jt4vwiuFISED2mXeeRkSOo477EhdHUg+x2GH0FrOJQPVw34a07bTIhycv5w4IbBHV
- mDk5/4ueAt1y2D7PjKK/0dAgsHMMfxbfGhkILZZXEBiiES/TwdnLw3q86ehTPxvkLe
- tsODM+7+MruOnNbKOSHvD5bhnkNlawTXpOVc05Hegn84RQuCViUz6ADgioo0B718ed
- bUKxUb1EFDBhg4jdk9anI9cQ2MR9M+IoPZOlxZW3SzNsARmIk8RdmdgARcaNbBidhU
- ZS7m3buDXxqJQaftGKaC86mqpevKhJYL1zYsSLDAAYBhm0t/zYlTAHyWAm4jDbaOml
- 81D0pdgml3I6g==
+ b=SwqfRM9KIG9KCggvtZCd7hlQ15TprECuyAbzY3YaJ+Z8pEMk1kFU4ccQGQCq2/Rom
+ JtpiYRM5dAbrvOd3XzQfI446iBX3D9o3h0ZjX/thujyj26ndEC2bjbwjvD+is1zNFP
+ vBBixls73nqCzUpr0MM1HN8i5lxmOUPve8Nyt/nifa7oBnaNn5TZ7mpZ4hEXqyGcmW
+ HqA59Goht+m/iTLOKWlhxI+k799MfpuEfy2fc9SNfAEHHjRCENSpAdgooHEnmNpUb8
+ ZamRf0FxM4B+zQd8sy/FsykX/xn6UfoiaHvbWIgxwoVWG1sLF8ulr+3UkkYCTmWQ4x
+ Rlmf1YVQDJ6OA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 11/28] soundwire: dmi-quirks: add quirk variant
+Subject: [PATCH AUTOSEL 6.0 11/27] soundwire: dmi-quirks: add quirk variant
  for LAPBC710 NUC15
-Date: Tue, 27 Dec 2022 15:32:32 -0500
-Message-Id: <20221227203249.1213526-11-sashal@kernel.org>
+Date: Tue, 27 Dec 2022 15:33:26 -0500
+Message-Id: <20221227203342.1213918-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221227203249.1213526-1-sashal@kernel.org>
-References: <20221227203249.1213526-1-sashal@kernel.org>
+In-Reply-To: <20221227203342.1213918-1-sashal@kernel.org>
+References: <20221227203342.1213918-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
