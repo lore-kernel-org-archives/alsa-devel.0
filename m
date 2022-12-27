@@ -4,62 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C553DC4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Dec 2022 12:01:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF7A8C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Dec 2022 12:01:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8144C228A;
-	Tue, 27 Dec 2022 13:00:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8144C228A
+	by alsa0.perex.cz (Postfix) with ESMTPS id B13C873AA;
+	Tue, 27 Dec 2022 13:00:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B13C873AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672142469;
-	bh=gE09O9kPmzTMcuuOFpc0l3Yqr1IL/aEE8PLijWmVyd0=;
+	s=default; t=1672142483;
+	bh=P9cGgPldoX0pKJdwimYnFHuijiaMuAVnzGmLIPbyRKQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=PgODDy0NmxTfPbu7QfgFmw1ktJozz0nvESjAKDWYuYYep4meyEUHKQV2x6hZ6ur7H
-	 xcMWWu4ZeXXDeE5f/kdFurUq/AnXLbSTRvaZZBN/q3oBNuq6pCsTvggpgx1AumnXMz
-	 5DvujfjQLJ3nNRppDk/0m2Hzr1YXVz6kWXQMVsso=
+	b=U72mDZ6Gvsb+wgMRXCtlqoRJa47ApvHMP1CbVOM0JlRT9d8tvsVHbtECxMMoeETAQ
+	 1WdgxKX+oIAyqQxEaSjT4JCWQPYv+BCUP/0eMb2Ro8l4Uen/rb7nAMMa32ZCY1zR0g
+	 0JgJlOFj9ayeztJwZ7/yOiZjzIAyHuY8Dt/5TXk0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 473DBF805AE;
+	by alsa1.perex.cz (Postfix) with ESMTP id E1CB0F805B3;
 	Tue, 27 Dec 2022 12:57:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17660F805AA; Tue, 27 Dec 2022 12:57:30 +0100 (CET)
+ id DB36BF805AD; Tue, 27 Dec 2022 12:57:30 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 567DDF8059F
- for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 12:57:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 567DDF8059F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5A897F805A9
+ for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 12:57:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A897F805A9
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=F7bFKeeS
+ header.s=k20201202 header.b=YyQ70LO1
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id EBDB96106C;
- Tue, 27 Dec 2022 11:57:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED32DC433D2;
- Tue, 27 Dec 2022 11:57:24 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 0380F6105C;
+ Tue, 27 Dec 2022 11:57:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D2AEC433F0;
+ Tue, 27 Dec 2022 11:57:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1672142246;
- bh=gE09O9kPmzTMcuuOFpc0l3Yqr1IL/aEE8PLijWmVyd0=;
+ s=k20201202; t=1672142242;
+ bh=P9cGgPldoX0pKJdwimYnFHuijiaMuAVnzGmLIPbyRKQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=F7bFKeeSsjwKyYLWc4pgKKe27V3dnvNnr1yd/uQkrp6HX8XsftMG7KDwW7guHM91f
- NII/9+tZf6ZMa+yo6RhP2Dou4QD4ElpmfurgrcZUswPp1aBAMJMpZ4i/aoObkEktCo
- s5mni2fSvrDYWxa9jwhUHekqU2WdhDe6o3vQrSeVqEYdy7Sct5c5sbxPQ8LlnaqURY
- y3Nko7GT3LHoocSFSKVRaoDiLP0rlExEnGxl7xg0mJa6Ucs7Lr3cRVBBSBhwKNH/Ue
- eGeZuBAURYETLc28vj0qTAHMqeh1vuR9/qYy0jRRIthwZZyDkKYi9U51T29IjFGZDN
- +fNSkCgOJOGZA==
+ b=YyQ70LO1QSikjgMzZEofO/xeL4is9Z754c2VXq+nY1a7ouq+Upah0Ox7ZPDkwkKaC
+ BB9FvDTouHJrNruQc5+FBJVMwfDtNprXTz26BhvQmQr5TEAfE3rJ3SOchY+p44ZtWj
+ H9/LAKS+b5WbheMzfQptKUh7MaDJ8StxjPo60/PlkAFHhnr0VlL3S76+J7GKU19aj0
+ 3XCj/HvpL2wxxRQgt/UdIrjV0LIZNHQ0bvuVRDo8nTmBS74ZBlWTP3BhBITSOOAfz8
+ VUUddrT2NoY5GNGfTziox40tN1ZXB07WgQGH9hBnN+zOo7x/yn63b4YHE5R1ZXg1bN
+ y2mVLNuAXAr1A==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20221216115435.28427-1-peter.ujfalusi@linux.intel.com>
-References: <20221216115435.28427-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: core: Print out the value of sof_debug if it
- is set
-Message-Id: <167214224468.82924.12765753486904968879.b4-ty@kernel.org>
-Date: Tue, 27 Dec 2022 11:57:24 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Lukasz Majewski <lukma@denx.de>
+In-Reply-To: <20221216094624.3849278-1-lukma@denx.de>
+References: <20221216094624.3849278-1-lukma@denx.de>
+Subject: Re: [PATCH v3 1/3] ASoC: wm8940: Remove warning when no plat data
+ present
+Message-Id: <167214224036.82924.7087854643611679926.b4-ty@kernel.org>
+Date: Tue, 27 Dec 2022 11:57:20 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -76,16 +78,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, daniel.baluta@nxp.com,
- pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
- ranjani.sridharan@linux.intel.com
+Cc: alsa-devel@alsa-project.org, Stephen Kitt <steve@sk2.org>,
+ patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 16 Dec 2022 13:54:35 +0200, Peter Ujfalusi wrote:
-> The sof_debug value is set by the user, developer intentionally.
-> To save time on figuring out what value has been passed to the kernel by
-> the user, developer, print it out if it is not 0.
+On Fri, 16 Dec 2022 10:46:22 +0100, Lukasz Majewski wrote:
+> The lack of platform data in the contemporary Linux
+> shall not be the reason to display warnings to the
+> kernel logs.
 > 
 > 
 
@@ -95,8 +97,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: core: Print out the value of sof_debug if it is set
-      commit: b2f7b9320537affe44efbb0a1e0aaff05974ad8b
+[1/3] ASoC: wm8940: Remove warning when no plat data present
+      commit: 5dc5e76b4c41fc8cdd9ed77653b2ce453974fb30
+[2/3] ASoC: wm8940: Rewrite code to set proper clocks
+      commit: 294833fc9eb4e9d6c69f8d158cd991d641e59908
+[3/3] ASoC: wm8940: Read chip ID when wm8940 codec probing
+      commit: a5c26ee572d94337baf9c944b7b4881a2db62d37
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
