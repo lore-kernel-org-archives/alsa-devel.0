@@ -4,63 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5D38C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Dec 2022 00:15:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F89AC4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Dec 2022 00:16:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FA4866E7;
-	Tue, 27 Dec 2022 01:15:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FA4866E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA0B766F0;
+	Tue, 27 Dec 2022 01:15:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA0B766F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672100151;
-	bh=E8xcs/VT6+9pRsaFzSWc18bwtFt/o+JHlqz77G0mbGE=;
+	s=default; t=1672100176;
+	bh=DIg/odKp2/GsvUG9uXZmNZJHmI/8dBE3E1rswz+7Tyk=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=dgUjCuXXyGEFfV8wZ1zoiyWKiMYil1Tvt2idFmcURcBp/mNGR617A/BAvFTI1da0U
-	 ccqMVIYJ02/lzRQCYNOSLuaYRBo+LP4fgh+AquWsnHhyHj3jzidfe67AjZNI4FEM4y
-	 wqFos5xx8U+adauNxe6RCLcu9v/TSuFQVvbzexkA=
+	b=Bkejys6Sgek0PBc1s5pSBjAzANy0Qa81e5Z87qp3TXch2dupMKqLoOt1sTq6FD2mw
+	 ZxcTvxl1u6yyMaRw2aZ95j9Vc3O1GKshzwhb9anfMY9JF6oh225hJ78cihJhVQTM1i
+	 rWx1v82qwxiv/hWtxxIlSKuZW7VIsIlwEEsSzPA4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B17E9F802A0;
-	Tue, 27 Dec 2022 01:15:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63B77F8042F;
+	Tue, 27 Dec 2022 01:15:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2356F80310; Tue, 27 Dec 2022 01:14:59 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 8E793F804FE; Tue, 27 Dec 2022 01:15:01 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42933F8027B
- for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 01:14:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42933F8027B
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9BFEF8042F
+ for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 01:14:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9BFEF8042F
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=P4cBpcuW
+ header.s=k20201202 header.b=adHxV0oz
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C482B60F06;
+ by ams.source.kernel.org (Postfix) with ESMTPS id CEC1EB80E0D;
+ Tue, 27 Dec 2022 00:14:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B12A4C433F0;
  Tue, 27 Dec 2022 00:14:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80DB5C433D2;
- Tue, 27 Dec 2022 00:14:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1672100095;
- bh=E8xcs/VT6+9pRsaFzSWc18bwtFt/o+JHlqz77G0mbGE=;
+ s=k20201202; t=1672100097;
+ bh=DIg/odKp2/GsvUG9uXZmNZJHmI/8dBE3E1rswz+7Tyk=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=P4cBpcuWeyqoi77x97CIb1ss2bFVMKhY73/GUySNGwKUWqH8lONnLd2UZcJBxrbzC
- 1eyu0Le3BYSbbcJKKeSpLgL5woqwNFK0GNvp48S83AcPOTss8DPi+2kjK8az78dotE
- oOCEx/zG/KX8XulCQBkoqvg+skeIZAcvLRWR1bTUCLN5a5Q1baoghR4jZlkKVqIZub
- c2UiVtME9j9rfQTUDkARvdzBX3g3czC89SzaMSKDcL5yVPKcZAADqr6HPcRrZwKbuK
- W/NgHFTCbtZvigg/05pZEEbBU7BPZDTW6ULQ11HAfTGXh16SXgz+Qn0ZLp40v/TI9c
- VRjD7cSKFYSJA==
+ b=adHxV0ozZYYWlL030bfLJGOsiPe/eNeexNMRZocUQljH1oPjk0543dDUTvvBuQEBJ
+ lsHsqyuE+akOlLxgKxGoOHr9wnt5NpuGxYb8tfb1RNnPa729Xbbrn/GoIYGK66uYVH
+ YZNociIMJHtsQEUqedEnyScQUpaGOvxxRBrQ56K9O2KBZ8l2iq4mG7YJlcXyv4FP9d
+ wfkQARgBkwMRZaz0JEK8KmAC3HqxGuVUVjITcA2/SYY6lQkQyG9rB7f9yYcvUtngJq
+ AR7ly1iuhsNhUFhX8qx4GG9p1C79rJ94aSPLiW9Y1YFtMqEkuNt3pLcL8qsCb4RTko
+ wgnOhtUTDuD0Q==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-In-Reply-To: <20221215185347.1457541-1-ranjani.sridharan@linux.intel.com>
-References: <20221215185347.1457541-1-ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 0/3] ASoC: SOF: Fixes for suspend after firmware crash
-Message-Id: <167210009423.553759.17739795224754159406.b4-ty@kernel.org>
-Date: Tue, 27 Dec 2022 00:14:54 +0000
+To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20221220125629.8469-1-peter.ujfalusi@linux.intel.com>
+References: <20221220125629.8469-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH v2 0/3] ASoC: SOF: Fixes for suspend after firmware crash
+Message-Id: <167210009543.553759.6276339953213630705.b4-ty@kernel.org>
+Date: Tue, 27 Dec 2022 00:14:55 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -77,20 +75,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ amadeuszx.slawinski@linux.intel.com, cujomalainey@chromium.org,
+ yung-chuan.liao@linux.intel.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 15 Dec 2022 10:53:44 -0800, Ranjani Sridharan wrote:
-> This series contains 2 patches to fix device suspend after a firmware
-> crash and another patch to allow reading the FW state from debugfs.
+On Tue, 20 Dec 2022 14:56:26 +0200, Peter Ujfalusi wrote:
+> This is the followup series for the v1 sent out by Ranjani [1]. Unfortunately
+> Ranjani was dragged away to another issue and could not send the update herself.
 > 
-> Curtis Malainey (1):
->   ASoC: SOF: Add FW state to debugfs
+> Changes since v1:
+> - In patch 2, move the tear_down_all_pipelines call instead of duplicating it
 > 
-> Ranjani Sridharan (2):
->   ASoC: SOF: pm: Set target state earlier
->   ASoC: SOF: pm: Always tear down pipelines before DSP suspend
+> Amadeusz: I have kept the check as it is:
+> if (tplg_ops && tplg_ops->tear_down_all_pipelines)
+> I'm preparing the ops optionality change series which would require this change.
 > 
 > [...]
 
