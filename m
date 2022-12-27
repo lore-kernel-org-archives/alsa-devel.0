@@ -4,76 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC806C10F1B
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Dec 2022 08:29:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8171C10F1B
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Dec 2022 08:55:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 749157097;
-	Tue, 27 Dec 2022 09:28:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 749157097
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DB686980;
+	Tue, 27 Dec 2022 09:54:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DB686980
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672129776;
-	bh=g8i31QJOt7maRA42zoQ1xufh5/MjSgMZd+De23wm6Vg=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1672131301;
+	bh=EX785Wd/r9a+DHlDqFkfj7I9VH9UsxzoedVLmdg/GqQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=RejxdDWfPYRgTN6Ek8+FO1RSTR8RhhcolYrqcuw5uucUhg/b2DEG4uU8TGRjoi/6Y
-	 Cic7mPFtx3uy3AVfy4BtChEz1zV+6u5TyQiLjG6K6+DCdyXFMoCJHB64BAZkCacGL5
-	 oJbYmurZ8+i+w+ldbiRaWua68YzDPr3xPLQXYMJA=
+	b=WLB9glUSlLc5CsW25irxR0uBRwfKF9LLIw0nWeDzsPRgqqaFmUc8usRefYR2gA1Q0
+	 1MwEaUdb9smWCT/fHUOsJx03L7zwncd74l943WdyScqPa/ExOWw4xDTgrZnRyGAFLS
+	 SrzI8M3L5LqzNK2Kad4VbuUWGxVjflVITTSLrNyo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F10B8F80534;
-	Tue, 27 Dec 2022 09:27:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F246CF804B0;
+	Tue, 27 Dec 2022 09:54:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 965A5F804B4; Tue, 27 Dec 2022 09:27:52 +0100 (CET)
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id BFFFEF804B4; Tue, 27 Dec 2022 09:54:09 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C4A3F800F0
- for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 09:27:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C4A3F800F0
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256
- header.s=ti-com-17Q1 header.b=rRrb+mfa
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
- by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 2BR8Rmti017638;
- Tue, 27 Dec 2022 02:27:48 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
- s=ti-com-17Q1; t=1672129668;
- bh=oMJ4FPeMkZnO6YuQT5Qyr7UmQmMUx1pUdxiAyBoQDfQ=;
- h=From:To:CC:Subject:Date:In-Reply-To:References;
- b=rRrb+mfafPGIxrDgux44h1sRO+J/KluWspMM+xkOGt+16E6nia87GfNVcdIZvJ5U3
- wZcaFvB9svy9vgwK+/rQn1YNZqrpiRDbN+/hplaytS+7HSPanb2QgiFl/aWnlU8+Sj
- thhcSUjp4V1A307m7M7vvqedSnRBNdFXELwt2cmA=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
- by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 2BR8RlM5049793
- (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
- Tue, 27 Dec 2022 02:27:47 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16; Tue, 27
- Dec 2022 02:27:47 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.16 via
- Frontend Transport; Tue, 27 Dec 2022 02:27:47 -0600
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
- by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 2BR8RkUA037782;
- Tue, 27 Dec 2022 02:27:47 -0600
-From: Jai Luthra <j-luthra@ti.com>
-To: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH v5 2/2] dt-bindings: sound: tlv320aic3x: Add optional clock
- and port properties
-Date: Tue, 27 Dec 2022 13:57:17 +0530
-Message-ID: <20221227082717.29561-3-j-luthra@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20221227082717.29561-1-j-luthra@ti.com>
-References: <20221227082717.29561-1-j-luthra@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E905F800F0
+ for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 09:54:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E905F800F0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=KsPqrNdD; 
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=H4+tzfRo
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 3FCBC6032A;
+ Tue, 27 Dec 2022 08:54:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1672131247; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5JP7NlsjxZPXUXT4QtzWwyBIF6ntDtZWKZSUZGf8DaI=;
+ b=KsPqrNdDU6Kr7Kpq/03+n290KuyffHVVVBtUG8+Ci3z8nmdQZ80EW7XECETcbnNB/u/xYV
+ 66aJLzUIi/3IQI+QoX/NfJZuCS34wfL49TCvP+Q/A6g6LkJkN0AMW+llFJ0Uzd5sXjRMni
+ ReQ9BwY6nvEKrEvv1OHvuFDYq4RUE4Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1672131247;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5JP7NlsjxZPXUXT4QtzWwyBIF6ntDtZWKZSUZGf8DaI=;
+ b=H4+tzfRo1wRI4CLMEwEd/EdCcggWhNwCG2XlUzatsZHmYo3o1cOa89KuRgq10QWuJJj+RS
+ eSYYpYdcMH0eeaDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1CBBF13913;
+ Tue, 27 Dec 2022 08:54:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id Om1BBq+yqmPkfAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 27 Dec 2022 08:54:07 +0000
+Date: Tue, 27 Dec 2022 09:54:06 +0100
+Message-ID: <87wn6d1b2p.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Chris Chiu <chris.chiu@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Apply dual codec fixup for Dell
+ Latitude laptops
+In-Reply-To: <20221226114303.4027500-1-chris.chiu@canonical.com>
+References: <20221226114303.4027500-1-chris.chiu@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,48 +92,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Jai Luthra <j-luthra@ti.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Describe optional properties for clocks and ports that were missing in
-the original txt binding, to fix warnings like:
+On Mon, 26 Dec 2022 12:43:03 +0100,
+Chris Chiu wrote:
+> 
+> The Dell Latiture 3340/3440/3540 laptops with Realtek ALC3204 have
+> dual codecs and need the ALC1220_FIXUP_GB_DUAL_CODECS to fix the
+> conflicts of Master controls. The existing headset mic fixup for
+> Dell is also required to enable the jack sense and the headset mic.
+> 
+> Introduce a new fixup to fix the dual codec and headset mic issues
+> for particular Dell laptops since other old Dell laptops with the
+> same codec configuration are already well handled by the fixup in
+> alc269_fallback_pin_fixup_tbl[].
+> 
+> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
 
-aic33@18: 'assigned-clock-parents', 'assigned-clock-rates',
-	'assigned-clocks' do not match any of the regexes:
-	'pinctrl-[0-9]+'
-	arch/arm/boot/dts/omap2420-n810.dtb
+Thanks, applied.
 
-tlv320aic3106@1b: 'port' does not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm/boot/dts/am335x-sl50.dtb
 
-codec@18: 'clocks' does not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm/boot/dts/imx6dl-gw5903.dtb
-	arch/arm/boot/dts/imx6q-gw5903.dtb
-
-Signed-off-by: Jai Luthra <j-luthra@ti.com>
----
- Documentation/devicetree/bindings/sound/ti,tlv320aic3x.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/ti,tlv320aic3x.yaml b/Documentation/devicetree/bindings/sound/ti,tlv320aic3x.yaml
-index f0375bbf4c40..2f9fc76bba55 100644
---- a/Documentation/devicetree/bindings/sound/ti,tlv320aic3x.yaml
-+++ b/Documentation/devicetree/bindings/sound/ti,tlv320aic3x.yaml
-@@ -110,6 +110,12 @@ properties:
-   '#sound-dai-cells':
-     const: 0
- 
-+  clocks: true
-+
-+  port:
-+    description: For DAI connection when the codec is used via graph card
-+    type: object
-+
- required:
-   - compatible
-   - reg
--- 
-2.17.1
-
+Takashi
