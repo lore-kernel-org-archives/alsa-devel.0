@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 054CCC4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Dec 2022 12:00:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13A31C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Dec 2022 12:01:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4131173C1;
-	Tue, 27 Dec 2022 12:59:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4131173C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3FFFD7398;
+	Tue, 27 Dec 2022 13:00:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FFFD7398
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672142432;
-	bh=Tp797qKymqBv9WjfLeXEP16pI60mkQzwoax0c7aWd4w=;
+	s=default; t=1672142459;
+	bh=9UO0u0YE/X0JRi2NrzH12RftroDggzBoi0U4dy+j8Z4=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=GlPE1t+/ccGwjWuGF9csawXYHscDn0+t0UR2AuUE4vF7CQLwDmmIZcJbjEYxX0HhJ
-	 jm7R6KSGuV4ARPjhIy7EHd4rBtnqzJvBDrz4w9j+bK27sruAdxOgLIi2Dl2rQQnkwj
-	 9ql1Uo6RxgXaKlZrwBtHoQakB5R2iav9gMaPkyAk=
+	b=qe+awTPw/urGYeNBl5uoZi0q6vg0wJBEBtikn/uaznXNNF/mrL1RpUMzjM1AJoC9/
+	 H+f23qQJ5sEKKxsHMYqtZYtrMTae7zM2pGYsrjk3cn7LCjrXZ4C7Kb69O92hB/rm+8
+	 3YqxR8ZHgiuS/NptZwh21Nc/ks8woOJ6BCwF9ai8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 174D9F80589;
-	Tue, 27 Dec 2022 12:57:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5EE4CF805AC;
+	Tue, 27 Dec 2022 12:57:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 813F3F8059F; Tue, 27 Dec 2022 12:57:24 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 9B720F8058C; Tue, 27 Dec 2022 12:57:28 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F3E19F80587;
- Tue, 27 Dec 2022 12:57:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3E19F80587
+ by alsa1.perex.cz (Postfix) with ESMTPS id F2FFBF80587
+ for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 12:57:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2FFBF80587
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=h5PqXQt+
+ header.s=k20201202 header.b=ahGyD+G0
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id BC85061013;
- Tue, 27 Dec 2022 11:57:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33125C433EF;
- Tue, 27 Dec 2022 11:57:15 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 165986105A;
+ Tue, 27 Dec 2022 11:57:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDE26C433EF;
+ Tue, 27 Dec 2022 11:57:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1672142240;
- bh=Tp797qKymqBv9WjfLeXEP16pI60mkQzwoax0c7aWd4w=;
+ s=k20201202; t=1672142244;
+ bh=9UO0u0YE/X0JRi2NrzH12RftroDggzBoi0U4dy+j8Z4=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=h5PqXQt+1dOSdfqT0sUbOR6JLvDmP4bByJjBGkaFm75wKOFpxrJzF7nc4Dr7JAWFI
- fKusaXiCtsWq9WS3gWWr7EmLaiCyxKc7Vc5DfdIc6qpaA8go4rtlaDLFU5CuCuin9h
- QjqH0PWpSB+zbTNrLS/Nwz0fs+0A6cu1+qWfm1fvc1vnWl/VYchGh5/NIxVC50Euyp
- elnh+wER6z/eexITr9fGXBat1jYnR9XPc51xhHRdXD9JjmVjMIsBMl8oxAk9PtRiHV
- FjQO9BNm7Iu1jygJKsKUBbHI9IpqmfjEfQojTW7Yo9qHCprSxZ7dWlkjDEBZ9PuMny
- YYWell7aWyiTA==
+ b=ahGyD+G0oq24GFRQJsUurbEgmB698wUJQLf46I5UATmFotHyB7xQaXgsUAxcjEuzz
+ dzMXBg/yqjHyzbD0XwMV07GRThqV4zJKzR+W2R5sUU7QOiGnyUMwV9FS/JH0MuLXUw
+ TNAjTDo2qw6bQDwqXYKHFmxW6BRRAoYU4pYcjZg/0xesqQd/intshER2OhSgGX5jsw
+ rYX2H/VUM2khfPIccYrjbjkT9h/osYXMN/wxnYUOUCU9pHwFTNSbgrVP40kWoYrm8k
+ JtfmoLDvd4eKWthnHE0M1paymbs2In4rdY+rB13y+DhLttHtnlBe8H+o9BxjvsjLHm
+ b1frMm9AahY4Q==
 From: Mark Brown <broonie@kernel.org>
-To: YC Hung <yc.hung@mediatek.com>
-In-Reply-To: <20221215061046.16934-1-yc.hung@mediatek.com>
-References: <20221215061046.16934-1-yc.hung@mediatek.com>
-Subject: Re: [PATCH] ASoC: SOF: mediatek: mt8195: remove a redundant
- comparison of sram
-Message-Id: <167214223584.82924.11453521857555977092.b4-ty@kernel.org>
-Date: Tue, 27 Dec 2022 11:57:15 +0000
+To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20221216115350.28260-1-peter.ujfalusi@linux.intel.com>
+References: <20221216115350.28260-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: IPC3 topology: Print the conflicting bytes
+ sizes
+Message-Id: <167214224262.82924.4835724530620803921.b4-ty@kernel.org>
+Date: Tue, 27 Dec 2022 11:57:22 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -77,27 +76,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>, alsa-devel@alsa-project.org,
- Chunxu Li <chunxu.li@mediatek.com>, linux-kernel@vger.kernel.org,
- Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- sound-open-firmware@alsa-project.org, linux-mediatek@lists.infradead.org,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Curtis Malainey <cujomalainey@chromium.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- linux-arm-kernel@lists.infradead.org,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
+ seppo.ingalsuo@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, daniel.baluta@nxp.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 15 Dec 2022 14:10:46 +0800, YC Hung wrote:
-> DSP SRAM is not used for audio shared buffer between host and DSP so
-> TOTAL_SIZE_SHARED_SRAM_FROM_TAIL is zero. Remove the definition and
-> redundant comparison to fix coverity "unsigned compared against 0".
+On Fri, 16 Dec 2022 13:53:50 +0200, Peter Ujfalusi wrote:
+> The error "Conflict in bytes vs. priv size." is too brief. With
+> the printed sizes it's a lot easier to find the size issue in
+> for binary control if such happens.
 > 
 > 
 
@@ -107,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: mediatek: mt8195: remove a redundant comparison of sram
-      commit: 3f58ff6b53c11773b1bd564082fae37d48e0cc40
+[1/1] ASoC: SOF: IPC3 topology: Print the conflicting bytes sizes
+      commit: 8a0eb06e0c9a613fce989e9d94de3f290b81e356
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
