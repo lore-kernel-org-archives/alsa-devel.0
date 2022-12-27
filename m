@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53E77C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Dec 2022 12:02:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02474C4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Dec 2022 12:02:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A55373AD;
-	Tue, 27 Dec 2022 13:01:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A55373AD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6289A6A81;
+	Tue, 27 Dec 2022 13:01:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6289A6A81
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672142524;
-	bh=upmhgxT55eJIknAlC9223pccAU73zhkRG/nn53TEe1g=;
+	s=default; t=1672142543;
+	bh=AC5FnV+us56kX2g+J2arHCm2TIeoiHguvwSTxqc9Vr0=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=hCd/vNZlX+KJoSSjtnqaJOQdnOTPboBh92871BjKthPzWbQ3xNgtTD/yi/pYfDUpL
-	 DFlxo1euWV8qKmLdbGdKK0u0W8tMbC0vzX2bs4Vz9AKfrR5wIyblgCndXn5CclskTJ
-	 GS75Xigi4KDFU+VDk+/sUNcYs5a3kt5H/c8jAwbM=
+	b=ZU1eP1JQbGDPy5OlFiupVmBAVf/686entcAuwGGoLyPGd3nQDr4rnNBN8CZPM3Meq
+	 IYpXnZwpp1PnRYn7Nwab2VLRO0X2hViEwIMYyphz2aY/Vns0drA1NwX6FGF/fOYS2K
+	 oHuJItNUUG79jLp5PplrSTbIgv+yeswQh68sHTjk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61E00F805C4;
+	by alsa1.perex.cz (Postfix) with ESMTP id D9704F805BD;
 	Tue, 27 Dec 2022 12:57:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6B33F805AF; Tue, 27 Dec 2022 12:57:32 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 38C05F805C0; Tue, 27 Dec 2022 12:57:36 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E45B9F805A9
- for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 12:57:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E45B9F805A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5D9DF805BD
+ for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2022 12:57:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5D9DF805BD
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=lr3vDoK+
+ header.s=k20201202 header.b=rGOEDUYt
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 7E5C961057;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 0061AB80F9D;
+ Tue, 27 Dec 2022 11:57:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C41A6C433D2;
  Tue, 27 Dec 2022 11:57:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2529C433F2;
- Tue, 27 Dec 2022 11:57:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1672142250;
- bh=upmhgxT55eJIknAlC9223pccAU73zhkRG/nn53TEe1g=;
+ s=k20201202; t=1672142252;
+ bh=AC5FnV+us56kX2g+J2arHCm2TIeoiHguvwSTxqc9Vr0=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=lr3vDoK+X0EH6BT0oXBO6Zuv89jDC5/98K6dH1ztsPEdkk96lU4eibX7d1ym43BP7
- dqD0ZQP7hz/GsYQNLKYAsuaVXo7Coa2csYSn09OpRbuU2gMiWiP1J0dhcpqe6G9/O8
- 0SI59ZQMroK6nCsk9mBr7ltsaONHs175BRRix0QGGF5yStWufBDH76lmOteoA7OJr2
- 7Wu1ssq+pNP9ktZrjS9NWMqiSf/6QV1JlrCzy5vst6PE0eijCL1dfMvCFUlvRrgAQa
- kqnHX7yUcI8uvvfYpbgamDNn7NIp41ufnitYvxKDSMLy1R1sFb54Jqb9d2vCWX2WT1
- 3pHdr+lrj+iHw==
+ b=rGOEDUYtzgB1k2pa8t6TaBvOPnKjFzXecnh32jRu46OKU6kpcfyFjVXOo9aooVaSz
+ NthmSNLKpCYNb+Hyk6hyTaNpA88x5wilSD34rcbpJSbT+chUTT9kckzSYdrv92Kygi
+ sQW2Np86FkO3abvijBO+69aZro7eIDqcvMbTUDZuTFKtuk8EHzAtDYb5NaoXSr0cOP
+ lPbR+Mb6RSpd862KXBgCWj8F2j1EHTWnRUHwbmFn7wE7ie5xLsrNGUxTb4bbQ6SPLt
+ c7GUJNbYs070yGOM429wK6UgtBQun82/5PrW/Uty0pewwBnRZgh/6e78iriI+px5Ng
+ txO6nJpAOWxqg==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20221221102328.9635-1-peter.ujfalusi@linux.intel.com>
-References: <20221221102328.9635-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH 00/11] ASoC: SOF: Extend the IPC ops optionality
-Message-Id: <167214224844.82924.12642881601312879071.b4-ty@kernel.org>
-Date: Tue, 27 Dec 2022 11:57:28 +0000
+To: alsa-devel@alsa-project.org, Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+In-Reply-To: <20221221172855.1618766-1-Vijendar.Mukunda@amd.com>
+References: <20221221172855.1618766-1-Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH V2 1/4] ASoC: amd: ps: implement api to retrieve acp
+ device config
+Message-Id: <167214225052.82924.1961233191499199699.b4-ty@kernel.org>
+Date: Tue, 27 Dec 2022 11:57:30 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -75,19 +76,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- rander.wang@intel.com, yung-chuan.liao@linux.intel.com
+Cc: Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+ open list <linux-kernel@vger.kernel.org>, Basavaraj.Hiregoudar@amd.com,
+ Takashi Iwai <tiwai@suse.com>, Mario.Limonciello@amd.com,
+ Syed Saba Kareem <Syed.SabaKareem@amd.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 21 Dec 2022 12:23:17 +0200, Peter Ujfalusi wrote:
-> This series will extend the IPC ops optionality to cover it up to the existence
-> of the top level ipc pointer itself. There is no functionality change.
+On Wed, 21 Dec 2022 22:58:48 +0530, Vijendar Mukunda wrote:
+> Implement API to retrieve acp device config and calculate platform
+> device count and dev mask for platform device node creation.
 > 
-> The reason for the extended optionality is that we have "DSPless"
-> debug/development support coming up (currently it is in SOF's topic/sof-dev
-> stable branch) initially supporting Intel's HDA platforms.
+> Currently for DMIC configuration, mask and dev count are calculated.
+> Same api will be used to extend support for different ACP device
+> configurations.
 > 
 > [...]
 
@@ -97,28 +99,14 @@ Applied to
 
 Thanks!
 
-[01/11] ASoC: SOF: sof-audio: Treat tplg_ops->route_setup() as optional
-        commit: 5315411729b188a8d39252a8c4b9bbdbc3ba6d92
-[02/11] ASoC: SOF: sof-audio: Update documentation for sof_ipc_tplg_ops
-        commit: 7cbb15593223e1fa56717fd33222c9a804162d70
-[03/11] ASoC: SOF: Add helper macro to be used to get an IPC ops
-        commit: caf0f4662e07fcc721d1c85af82aa8a7d57621f3
-[04/11] ASoC: SOF: pcm: Extend the optionality of IPC ops to IPC as well
-        commit: 148dd6a264900fe12c2b3d96efc40511dba177fc
-[05/11] ASoC: SOF: control: Extend the optionality of IPC ops to IPC as well
-        commit: cfa12c3679b49d8758b94c778afa6a71abf19989
-[06/11] ASoC: SOF: sof-audio: Extend the optionality of IPC ops to IPC as well
-        commit: cd6afb060c5a3cfad7582d5e09d43fd16a5202e5
-[07/11] ASoC: SOF: topology: Extend the optionality of IPC ops to IPC as well
-        commit: dbdbf88bdd4f29b391041ef887f89f7ae0809971
-[08/11] ASoC: SOF: pm: Extend the optionality of IPC ops to IPC as well
-        commit: 510758ee926a30b09b0692d1d42501847ab8b058
-[09/11] ASoC: SOF: sof-priv: Mark fw_tracing ops optional in documentation
-        commit: 1cf79c3484250d67180525662a247f8fecab3cea
-[10/11] ASoC: SOF: trace: Use sof_ipc_get_ops() in sof_fw_trace_init
-        commit: 8419fd90ee5c9038cb2776fad71fcc9b93f78e11
-[11/11] ASoC: SOF: trace: No need to check for op pointer in sof_fw_trace_free()
-        commit: 8a33863a0e287b17a5c637f231f31ff631348f8f
+[1/4] ASoC: amd: ps: implement api to retrieve acp device config
+      commit: 2cdabbde0c24bb76978d57856cba958b85584c32
+[2/4] ASoC: amd: ps: refactor platform device creation logic
+      commit: 1d325cdaf7a2747df42b43eed8b3de2e2d6c69bb
+[3/4] ASoC: amd: ps: update dev index value in irq handler
+      commit: 9d327a4443bffe8d48acc6a31c0198f251fca08b
+[4/4] ASoC: amd: ps: move irq handler registration
+      commit: 966ef755d3b66853be4f15c698f5210115c15d23
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
