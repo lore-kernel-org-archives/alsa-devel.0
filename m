@@ -4,76 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37E39C4167B
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Dec 2022 12:58:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED2A7C46467
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Dec 2022 15:06:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4CB82141;
-	Wed, 28 Dec 2022 13:57:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4CB82141
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7329A7F4B;
+	Wed, 28 Dec 2022 16:06:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7329A7F4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672232292;
-	bh=UJO0xIzLwvFjkQ62GxKPAs0F7siOxaXbsK5YIEv4gUE=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=AeCQg/l7xsSu23VmPaxoA+lkWR/C+uwWIUJUblbudmIz2ohuvh2Jp2ZVOvNGcirhz
-	 oNBdV0ahdkr+2QbtZm9QjKNlLTXCXYSy9sVXnEruJU+PnF8IIFbKlZ92w4Y8oo55fu
-	 P/6EFczXD5aDWM2DYegB/bE+w2y+L9PMME8tNjP4=
+	s=default; t=1672240011;
+	bh=1lGr1SVuK/8F6ymkwiXCoKCWuYE6I5glKsW+hZnzsbg=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=WpdgcKkoGsriPaxFFaGVOC/L/JTP0+8IRfgmWfYkYoszCpGapNrxwA+4wHC1lGeOR
+	 zg/+wFmUthsExtOv6HbSf/iUaH6oL+YgLEXybzeRJAvocnDdvDBgzljO4Ik0xhvIl2
+	 eQNOU8UPfFhpBImxLrTQq1M+iNM/w9z9zfOrzgLI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F431F80424;
-	Wed, 28 Dec 2022 13:57:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0D664F80424;
+	Wed, 28 Dec 2022 16:06:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E74E0F8042F; Wed, 28 Dec 2022 13:57:20 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ id 9F56CF8042F; Wed, 28 Dec 2022 16:05:59 +0100 (CET)
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com
+ [IPv6:2a00:1450:4864:20::22a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 44A77F800F0
- for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2022 13:57:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44A77F800F0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=kq1nDEB4; 
- dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=PPhtKi8w
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D88FF21A6E;
- Wed, 28 Dec 2022 12:57:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1672232237; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=7qznrTg00mW6ZYOrA04xLF3W7FPWHrvzWf9c2GFQGSI=;
- b=kq1nDEB4stdrg0KoF+TV+OJ8XUIifvpBB8hiuWlIXCEYkckLaEP4IA/y6PNr9lrKy+smnI
- yjCM/MXDfFYL0+NErTs2obA6oCxxZWiwvcwfSOjw6TSUYSNCFn1VXBzpTO9fogeW9f+S/j
- 4Td3ZONfQkah4qvjt5w03HnEBQOfD3U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1672232237;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=7qznrTg00mW6ZYOrA04xLF3W7FPWHrvzWf9c2GFQGSI=;
- b=PPhtKi8w/ljDpDG03FJpTifbDmxykiSJUHjqAZsWVNOA135mzdL+ICbs2SHAnSd1gmWq7U
- NC2gNuhdECYl4ECQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BE0DE134F5;
- Wed, 28 Dec 2022 12:57:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id QRrILS09rGNMIgAAMHmgww
- (envelope-from <tiwai@suse.de>); Wed, 28 Dec 2022 12:57:17 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda/hdmi: Static PCM mapping again with AMD HDMI codecs
-Date: Wed, 28 Dec 2022 13:57:14 +0100
-Message-Id: <20221228125714.16329-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4BFCF800F0
+ for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2022 16:05:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4BFCF800F0
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=Ucg0KAua
+Received: by mail-lj1-x22a.google.com with SMTP id bn6so6874772ljb.13
+ for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2022 07:05:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=OzSUnApml1On80n7HfJBsepysNXlW5SfzG3qgcD+3YY=;
+ b=Ucg0KAuaFVS6RZhtg5VTMBCnV8AWw20pioDwN5l2+3ea5pB1VTawBz7sU7JbpUJMRU
+ OsLL1hSe0TSHNria3+/uvqD6fMw/S3IUonC1avKPjUAwJ4OEz4GPaSPJeACewXdojU+o
+ kzJPCeLHUOoCMHfybTAOV9SfUQQkIoKBZy0lalfRvTcNk77uAnkWLYcWzbA6tvvfZo0I
+ AwTko5xOjuXhUHdDTbA/FBl3M4Xo7Qn4GQhPL0UiqbFhCUBwn0C+h7fTGgOp1zQET9Vu
+ JLe3Rku/Jmotjq9ZgqR8p/3LCqocnBI5jBsmk5xCTqJmS2KlF5w1uo90KNcgckRT8Bmy
+ xUgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=OzSUnApml1On80n7HfJBsepysNXlW5SfzG3qgcD+3YY=;
+ b=4EX+BR8Aiw/DobU4C1A/TsSjcqLjJ7FOn5HzItIxNSZgNij4Vs/5D0J9k9zdjJOCsU
+ oOANQraghB97hzE5kVIvMed9Y2u4sMlfzt2fcv6k4Z69o8pTUL1YoJu2+0YVdASAjtaR
+ a1kdNF6NGzD3DW7Aarfl/oyDWrMbsNnckJVAl4Emxc9kuSeHHz2rLpWFgHIxzmiVQJs1
+ KGOd0qV5M6MwXPtHDEPnugOr1XOgw9Vv6dvOO1csY4z+IdtReuiVKyW/XvF35iffC6ai
+ 9ryhS9O9jF9cdCsXpHasdrcA3RFvYO9Plj5qjW2x37efRFJhCeCLcpk+UJmfYKEdjo3o
+ oqig==
+X-Gm-Message-State: AFqh2kr1mxD8aUX5dy4SoSR3gsPrJ9tREoNYpwy/DWrEwT0csBTUnCfz
+ xbuVwzNfhBkg1hOEd4KN8TTMhg==
+X-Google-Smtp-Source: AMrXdXvd6Ndb66kaIUVSlnQox53Xq+xs+gRtFV8y4vpR06yi1LfOu1OELbHFZzyDArQ4TxSObNmpng==
+X-Received: by 2002:a2e:a604:0:b0:279:c230:a6fb with SMTP id
+ v4-20020a2ea604000000b00279c230a6fbmr9620137ljp.9.1672239955439; 
+ Wed, 28 Dec 2022 07:05:55 -0800 (PST)
+Received: from [192.168.0.20]
+ (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
+ by smtp.gmail.com with ESMTPSA id
+ b3-20020a2eb903000000b0027fb672d5fesm1532318ljb.59.2022.12.28.07.05.54
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 28 Dec 2022 07:05:54 -0800 (PST)
+Message-ID: <513807db-4cf8-5123-fa07-8d4d1feb84db@linaro.org>
+Date: Wed, 28 Dec 2022 16:05:54 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v5 2/2] dt-bindings: sound: tlv320aic3x: Add optional
+ clock and port properties
+Content-Language: en-US
+To: Jai Luthra <j-luthra@ti.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+References: <20221227082717.29561-1-j-luthra@ti.com>
+ <20221227082717.29561-3-j-luthra@ti.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20221227082717.29561-3-j-luthra@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,114 +103,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The recent code refactoring for HD-audio HDMI codec driver caused a
-regression on AMD/ATI HDMI codecs; namely, PulseAudioand pipewire
-don't recognize HDMI outputs any longer while the direct output via
-ALSA raw access still works.
+On 27/12/2022 09:27, Jai Luthra wrote:
+> Describe optional properties for clocks and ports that were missing in
+> the original txt binding, to fix warnings like:
+> 
+> aic33@18: 'assigned-clock-parents', 'assigned-clock-rates',
+> 	'assigned-clocks' do not match any of the regexes:
+> 	'pinctrl-[0-9]+'
+> 	arch/arm/boot/dts/omap2420-n810.dtb
+> 
+> tlv320aic3106@1b: 'port' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 	arch/arm/boot/dts/am335x-sl50.dtb
+> 
+> codec@18: 'clocks' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 	arch/arm/boot/dts/imx6dl-gw5903.dtb
+> 	arch/arm/boot/dts/imx6q-gw5903.dtb
+> 
+> Signed-off-by: Jai Luthra <j-luthra@ti.com>
+> ---
+>  Documentation/devicetree/bindings/sound/ti,tlv320aic3x.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/ti,tlv320aic3x.yaml b/Documentation/devicetree/bindings/sound/ti,tlv320aic3x.yaml
+> index f0375bbf4c40..2f9fc76bba55 100644
+> --- a/Documentation/devicetree/bindings/sound/ti,tlv320aic3x.yaml
+> +++ b/Documentation/devicetree/bindings/sound/ti,tlv320aic3x.yaml
+> @@ -110,6 +110,12 @@ properties:
+>    '#sound-dai-cells':
+>      const: 0
+>  
+> +  clocks: true
 
-The problem turned out that, after the code refactoring, the driver
-assumes only the dynamic PCM assignment, and when a PCM stream that
-still isn't assigned to any pin gets opened, the driver tries to
-assign any free converter to the PCM stream.  This behavior is OK for
-Intel and other codecs, as they have arbitrary connections between
-pins and converters.  OTOH, on AMD chips that have a 1:1 mapping
-between pins and converters, this may end up with blocking the open of
-the next PCM stream for the pin that is tied with the formerly taken
-converter.
+maxItems
 
-Also, with the code refactoring, more PCM streams are exposed than
-necessary as we assume all converters can be used, while this isn't
-true for AMD case.  This may change the PCM stream assignment and
-confuse users as well.
+> +
+> +  port:
+> +    description: For DAI connection when the codec is used via graph card
+> +    type: object
 
-This patch fixes those problems by:
+Instead this should be $ref to graph port
 
-- Introducing a flag spec->static_pcm_mapping, and if it's set, the
-  driver applies the static mapping between pins and converters at the
-  probe time
-- Limiting the number of PCM streams per pins, too; this avoids the
-  superfluous PCM streams
+> +
+>  required:
+>    - compatible
+>    - reg
 
-Fixes: ef6f5494faf6 ("ALSA: hda/hdmi: Use only dynamic PCM device allocation")
-Cc: <stable@vger.kernel.org>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=216836
-Co-developed-by: Jaroslav Kysela <perex@perex.cz>
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_hdmi.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
-
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 8015e4471267..386dd9d9143f 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -167,6 +167,7 @@ struct hdmi_spec {
- 	struct hdmi_ops ops;
- 
- 	bool dyn_pin_out;
-+	bool static_pcm_mapping;
- 	/* hdmi interrupt trigger control flag for Nvidia codec */
- 	bool hdmi_intr_trig_ctrl;
- 	bool nv_dp_workaround; /* workaround DP audio infoframe for Nvidia */
-@@ -1525,13 +1526,16 @@ static void update_eld(struct hda_codec *codec,
- 	 */
- 	pcm_jack = pin_idx_to_pcm_jack(codec, per_pin);
- 
--	if (eld->eld_valid) {
--		hdmi_attach_hda_pcm(spec, per_pin);
--		hdmi_pcm_setup_pin(spec, per_pin);
--	} else {
--		hdmi_pcm_reset_pin(spec, per_pin);
--		hdmi_detach_hda_pcm(spec, per_pin);
-+	if (!spec->static_pcm_mapping) {
-+		if (eld->eld_valid) {
-+			hdmi_attach_hda_pcm(spec, per_pin);
-+			hdmi_pcm_setup_pin(spec, per_pin);
-+		} else {
-+			hdmi_pcm_reset_pin(spec, per_pin);
-+			hdmi_detach_hda_pcm(spec, per_pin);
-+		}
- 	}
-+
- 	/* if pcm_idx == -1, it means this is in monitor connection event
- 	 * we can get the correct pcm_idx now.
- 	 */
-@@ -2281,8 +2285,8 @@ static int generic_hdmi_build_pcms(struct hda_codec *codec)
- 	struct hdmi_spec *spec = codec->spec;
- 	int idx, pcm_num;
- 
--	/* limit the PCM devices to the codec converters */
--	pcm_num = spec->num_cvts;
-+	/* limit the PCM devices to the codec converters or available PINs */
-+	pcm_num = min(spec->num_cvts, spec->num_pins);
- 	codec_dbg(codec, "hdmi: pcm_num set to %d\n", pcm_num);
- 
- 	for (idx = 0; idx < pcm_num; idx++) {
-@@ -2379,6 +2383,11 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
- 		struct hdmi_spec_per_pin *per_pin = get_pin(spec, pin_idx);
- 		struct hdmi_eld *pin_eld = &per_pin->sink_eld;
- 
-+		if (spec->static_pcm_mapping) {
-+			hdmi_attach_hda_pcm(spec, per_pin);
-+			hdmi_pcm_setup_pin(spec, per_pin);
-+		}
-+
- 		pin_eld->eld_valid = false;
- 		hdmi_present_sense(per_pin, 0);
- 	}
-@@ -4419,6 +4428,8 @@ static int patch_atihdmi(struct hda_codec *codec)
- 
- 	spec = codec->spec;
- 
-+	spec->static_pcm_mapping = true;
-+
- 	spec->ops.pin_get_eld = atihdmi_pin_get_eld;
- 	spec->ops.pin_setup_infoframe = atihdmi_pin_setup_infoframe;
- 	spec->ops.pin_hbr_setup = atihdmi_pin_hbr_setup;
--- 
-2.35.3
+Best regards,
+Krzysztof
 
