@@ -4,60 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2D44C4708E
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Dec 2022 15:36:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA35AC4167B
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Dec 2022 15:43:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D7495871;
-	Wed, 28 Dec 2022 16:35:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D7495871
+	by alsa0.perex.cz (Postfix) with ESMTPS id C42002C86;
+	Wed, 28 Dec 2022 16:42:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C42002C86
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672241757;
-	bh=8zcx4+pxIdKZazB7sAWPppJwslZcmz8YqF8Kw51lHCc=;
+	s=default; t=1672242227;
+	bh=fjveYy0HzL4cWL3BJgD9V92un3bkGr7t4ANtnb3YhX0=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=rzVwIv5JaAC9K8RkuLtQhOhsJfdk6lmHjo3ARgk77nL4ed8EeM60kwMYS7Ck5+4SR
-	 2SyPPNayWLsxstrpMuabADiQbLy//ySoDsoAQnq9axM8YrKupYGwR+ULEmoFJP8pbC
-	 NzZyou+EGOhmMmqOhy77gy7Mp7Zj5cyE4pxcC4NA=
+	b=oLbcBwg0FQDg72Tqy90vLj855dxdz8DRU4ou/J7F/ou+CwLN20BOnvkz6auIfvpjr
+	 OW1lT7D8M+cdeCFxWTEbpJiiZGRAHe3MklpD2X797ACgUE5wOZkzOlTPCVhWx6+fWb
+	 7sFUVBYh6iNUvwmk5GyZvrCPDpIXDKN+gdWXRngs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB5CBF80424;
-	Wed, 28 Dec 2022 16:35:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 592F1F8042F;
+	Wed, 28 Dec 2022 16:42:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D15DF8042F; Wed, 28 Dec 2022 16:35:05 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 3BD8BF8049E; Wed, 28 Dec 2022 16:42:56 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DA3F2F8023B
- for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2022 16:35:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA3F2F8023B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6FE19F800F0
+ for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2022 16:42:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FE19F800F0
 Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
  unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=dCDtQt1s
+ header.a=rsa-sha256 header.s=korg header.b=DLb+qjI5
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 2CFDDB8171C;
- Wed, 28 Dec 2022 15:34:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D904C433D2;
- Wed, 28 Dec 2022 15:34:57 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id B8CB7B8171C;
+ Wed, 28 Dec 2022 15:42:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 096D1C433D2;
+ Wed, 28 Dec 2022 15:42:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1672241698;
- bh=8zcx4+pxIdKZazB7sAWPppJwslZcmz8YqF8Kw51lHCc=;
+ s=korg; t=1672242172;
+ bh=fjveYy0HzL4cWL3BJgD9V92un3bkGr7t4ANtnb3YhX0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=dCDtQt1s862dQMnKjUlW0PnFJ/8RueLELBYQbBHka3MeCV7jTYkXRUyCxWHoDyGFF
- gE64N7qJ59sYnVgTZBPyzimUNfYhsa/ICyNjcgij2TDyhEn1tnHJWY3ncDmQKMSNgd
- TD6+tAxZONBlZaX6LVRthPqsZxwrGJJb6Ituw4BI=
+ b=DLb+qjI5P/mD6y8i9dtbIehxgspkpvTJSNue9jasKESF0u5AltYe4UtFmNm6a6rTd
+ mLrUBw6sqdZm+ebwqaxhpcW4jIMoXi9R64KyLmQ6065RF4tGqbzUO8VB0rHdW0H0im
+ LPafnPqfVbFKP/JO1kKgL5l1J5GTD7kybOu62joI=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
-Subject: [PATCH 6.0 0317/1073] ASoC: codecs: wsa883x: use correct header file
-Date: Wed, 28 Dec 2022 15:31:45 +0100
-Message-Id: <20221228144336.619048474@linuxfoundation.org>
+Subject: [PATCH 6.1 0325/1146] ASoC: codecs: wsa883x: use correct header file
+Date: Wed, 28 Dec 2022 15:31:04 +0100
+Message-Id: <20221228144338.986155231@linuxfoundation.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20221228144328.162723588@linuxfoundation.org>
-References: <20221228144328.162723588@linuxfoundation.org>
+In-Reply-To: <20221228144330.180012208@linuxfoundation.org>
+References: <20221228144330.180012208@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -117,7 +116,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/wsa883x.c b/sound/soc/codecs/wsa883x.c
-index cb1d0a3e90e6..9dfa0ac08e6f 100644
+index 77a7dd3cf495..0ddb6362fcc5 100644
 --- a/sound/soc/codecs/wsa883x.c
 +++ b/sound/soc/codecs/wsa883x.c
 @@ -7,7 +7,7 @@
