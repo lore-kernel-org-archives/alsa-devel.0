@@ -4,49 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F0E9C3DA7A
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Dec 2022 15:17:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2D44C4708E
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Dec 2022 15:36:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 037CC83CE;
-	Wed, 28 Dec 2022 16:16:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 037CC83CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D7495871;
+	Wed, 28 Dec 2022 16:35:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D7495871
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672240654;
-	bh=awp8kAcxNZmB8S4ethbaDktNSkEsCCFBE0EANkVyN+k=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1672241757;
+	bh=8zcx4+pxIdKZazB7sAWPppJwslZcmz8YqF8Kw51lHCc=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=UO+gb02b+pcUr+463Y8eR8CMHY2IxSd5mvaVjVq0b25hHhN1mfm6WZZlEeoS5SddT
-	 yKExs1yzPlgjf0fcZx6uSMK+7OUw7qVwhAUTZ8VMrwFKmHmVG2O47jLpEzeCkuGSrU
-	 Fx3tGWvFkZojlXBvB4wlTCfqrjZLfKaGUWRoEBnI=
+	b=rzVwIv5JaAC9K8RkuLtQhOhsJfdk6lmHjo3ARgk77nL4ed8EeM60kwMYS7Ck5+4SR
+	 2SyPPNayWLsxstrpMuabADiQbLy//ySoDsoAQnq9axM8YrKupYGwR+ULEmoFJP8pbC
+	 NzZyou+EGOhmMmqOhy77gy7Mp7Zj5cyE4pxcC4NA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99DD3F80424;
-	Wed, 28 Dec 2022 16:16:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB5CBF80424;
+	Wed, 28 Dec 2022 16:35:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D57E2F8042F; Wed, 28 Dec 2022 16:16:41 +0100 (CET)
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
- by alsa1.perex.cz (Postfix) with SMTP id ADE11F800F0
- for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2022 16:16:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADE11F800F0
-Received: (qmail 279415 invoked by uid 1000); 28 Dec 2022 10:16:37 -0500
-Date: Wed, 28 Dec 2022 10:16:37 -0500
-From: Alan Stern <stern@rowland.harvard.edu>
-To: Oliver Neukum <oneukum@suse.com>
-Subject: Re: [RFC PATCH 06/14] usb: core: hcd: Introduce USB HCD APIs for
- interrupter management
-Message-ID: <Y6xd1c3s2XPpOqfi@rowland.harvard.edu>
-References: <20221223233200.26089-1-quic_wcheng@quicinc.com>
- <20221223233200.26089-7-quic_wcheng@quicinc.com>
- <Y6ca8IKLK9g497Qv@rowland.harvard.edu>
- <e1203849-01b4-b196-36f3-76d58dd7c724@quicinc.com>
- <bf1011a8-c746-c465-f161-f0293409d922@suse.com>
+ id 8D15DF8042F; Wed, 28 Dec 2022 16:35:05 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA3F2F8023B
+ for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2022 16:35:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA3F2F8023B
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=dCDtQt1s
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 2CFDDB8171C;
+ Wed, 28 Dec 2022 15:34:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D904C433D2;
+ Wed, 28 Dec 2022 15:34:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1672241698;
+ bh=8zcx4+pxIdKZazB7sAWPppJwslZcmz8YqF8Kw51lHCc=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=dCDtQt1s862dQMnKjUlW0PnFJ/8RueLELBYQbBHka3MeCV7jTYkXRUyCxWHoDyGFF
+ gE64N7qJ59sYnVgTZBPyzimUNfYhsa/ICyNjcgij2TDyhEn1tnHJWY3ncDmQKMSNgd
+ TD6+tAxZONBlZaX6LVRthPqsZxwrGJJb6Ituw4BI=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Subject: [PATCH 6.0 0317/1073] ASoC: codecs: wsa883x: use correct header file
+Date: Wed, 28 Dec 2022 15:31:45 +0100
+Message-Id: <20221228144336.619048474@linuxfoundation.org>
+X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20221228144328.162723588@linuxfoundation.org>
+References: <20221228144328.162723588@linuxfoundation.org>
+User-Agent: quilt/0.67
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <bf1011a8-c746-c465-f161-f0293409d922@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -59,31 +74,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, bgoswami@quicinc.com,
- mathias.nyman@intel.com, gregkh@linuxfoundation.org, andersson@kernel.org,
- tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, agross@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, Thinh.Nguyen@synopsys.com,
- quic_plai@quicinc.com, Wesley Cheng <quic_wcheng@quicinc.com>,
- linux-kernel@vger.kernel.org, quic_jackp@quicinc.com
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ kernel test robot <lkp@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Randy Dunlap <rdunlap@infradead.org>, patches@lists.linux.dev,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Takashi Iwai <tiwai@suse.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Dec 28, 2022 at 09:59:03AM +0100, Oliver Neukum wrote:
-> 
-> 
-> On 27.12.22 22:07, Wesley Cheng wrote:
-> 
-> > 
-> > Hmmm...maybe I should change the name of the API then to avoid the confusion.  Yes, usb_hcd_flush_endpoint() does ensure that URBs submitted to the EP are stopped.  However, with this offloading concept, we aren't actually submitting URBs from the main processor, so the ep->urb_list will be empty.
-> > 
-> > This means the usb_hcd_flush_endpoint() API won't actually do anything.  What we need is to ensure that we send a XHCI stop ep command to the controller.
-> 
-> That is a concept specific to XHCI, yet you are adding a generic
-> API. The namin should reflect that. usb_quiesce_endpoint() ?
+From: Randy Dunlap <rdunlap@infradead.org>
 
-Or even xhci_send_stop_ep_cmd(), which is what the routine is intended 
-to do.
+[ Upstream commit 5f52ceddc40cd61b1dd2ecf735624deaf05f779f ]
 
-Alan Stern
+Fix build errors when GPIOLIB is not set/enabled:
+
+../sound/soc/codecs/wsa883x.c: In function 'wsa883x_probe':
+../sound/soc/codecs/wsa883x.c:1394:25: error: implicit declaration of function 'devm_gpiod_get_optional'; did you mean 'devm_regulator_get_optional'? [-Werror=implicit-function-declaration]
+         wsa883x->sd_n = devm_gpiod_get_optional(&pdev->dev, "powerdown",
+../sound/soc/codecs/wsa883x.c:1395:49: error: 'GPIOD_FLAGS_BIT_NONEXCLUSIVE' undeclared (first use in this function)
+         GPIOD_FLAGS_BIT_NONEXCLUSIVE);
+../sound/soc/codecs/wsa883x.c:1414:9: error: implicit declaration of function 'gpiod_direction_output'; did you mean 'gpio_direction_output'? [-Werror=implicit-function-declaration]
+         gpiod_direction_output(wsa883x->sd_n, 1);
+
+Fixes: 43b8c7dc85a1 ("ASoC: codecs: add wsa883x amplifier support")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Banajit Goswami <bgoswami@quicinc.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20221108001829.5100-1-rdunlap@infradead.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/codecs/wsa883x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/wsa883x.c b/sound/soc/codecs/wsa883x.c
+index cb1d0a3e90e6..9dfa0ac08e6f 100644
+--- a/sound/soc/codecs/wsa883x.c
++++ b/sound/soc/codecs/wsa883x.c
+@@ -7,7 +7,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/delay.h>
+ #include <linux/device.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+-- 
+2.35.1
+
+
+
