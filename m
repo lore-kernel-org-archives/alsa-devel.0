@@ -4,70 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E5CFC4167B
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Dec 2022 12:52:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EE94C4167B
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Dec 2022 12:53:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57EEF74AB;
-	Wed, 28 Dec 2022 13:52:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57EEF74AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id A409922FD;
+	Wed, 28 Dec 2022 13:52:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A409922FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672231973;
-	bh=zmtqhXQv7hiPZDJGmROKlujPmTGm2oRNxnDcUz2K1XA=;
-	h=Subject:From:Date:References:In-Reply-To:To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=AOK6b3OaJnr52ngnzCe2/ZkNoEjzo+sze2KE3CrORourbid6heqbCiI4VWefwlSYZ
-	 U6XuTc+swB/dxUV97ttPVejQlgYEGgawb2JW/g3MgmtjsuZ2klBWOolqjhwaUm27n2
-	 JHRT5Atg1uZgd1sJ6OtcgJWyK3c1uyup+JFThM/0=
+	s=default; t=1672231992;
+	bh=AdsGPR2sqNF0LJSbIdnzh20MDtuPwhud5eDf5T/SVEY=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=kpf6PXdOeD89OAhLPO9SoruOJGr2lgcK4g3LefiHd5zIkYY5oDLglPEw43oOvLxgw
+	 /QGkRFasTEgnpvYfnsN0BvyqhCfZU9Z3INKDRNUgNJGFdtdZBh4JRFo8c9lSeZpUPV
+	 6rCMY7R1e6PmDC3gXn6Sera9GlJSGyEFLZSxR2iU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93AB5F804D6;
-	Wed, 28 Dec 2022 13:51:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C118F80534;
+	Wed, 28 Dec 2022 13:51:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2FEF6F80310; Mon, 26 Dec 2022 04:41:36 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id D49EFF8042F; Wed, 28 Dec 2022 13:22:43 +0100 (CET)
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com
+ [IPv6:2607:f8b0:4864:20::535])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 80772F800F0
- for <alsa-devel@alsa-project.org>; Mon, 26 Dec 2022 04:41:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80772F800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id DDE45F80310
+ for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2022 13:22:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDE45F80310
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=aFP63n6a
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id BD5FDB80BE7;
- Mon, 26 Dec 2022 03:41:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 725BFC433D2;
- Mon, 26 Dec 2022 03:41:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1672026091;
- bh=zmtqhXQv7hiPZDJGmROKlujPmTGm2oRNxnDcUz2K1XA=;
- h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
- b=aFP63n6aR/0rsvyekq2AImCT+Ltsl9Jl7dPzbNYHhoyZYHDH6lK2bZrhlcgunmhld
- RgMVPID00zacoRWh6/2WcYeqqfuXii7bfwtJk5lxNcH9sYhs6uYZ65sHxjCjvHVJGC
- jU2sooTMKGRe+SFmEQSyRrM2Z5Ebr4Jv8ipoN7FtPVN5x7rUbCF4ahlzEUcQHuzwgS
- dPZnfjIrxijvQKXa4OnPsL5xX8faKU1LhwAeeoNrFyIvTCF3+ednhZDVur/h1/X3jD
- E41cCnOUXtPEk1kFVfqyh2f9D9ufm9IlqPIid1pjLmSc0vc0NcK4CEzAwGC3ktCoTG
- JD3TuvTuDV3ew==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org
- (localhost.localdomain [127.0.0.1])
- by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id
- 4CBF2E50D66; Mon, 26 Dec 2022 03:41:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+ unprotected) header.d=huaqin-corp-partner-google-com.20210112.gappssmtp.com
+ header.i=@huaqin-corp-partner-google-com.20210112.gappssmtp.com
+ header.a=rsa-sha256 header.s=20210112 header.b=6XK8iaEv
+Received: by mail-pg1-x535.google.com with SMTP id 79so10458305pgf.11
+ for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2022 04:22:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=huaqin-corp-partner-google-com.20210112.gappssmtp.com; s=20210112;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=LFvhTcaRZjgL74aw0ImWpDb76fTfKVSz3niY5jO7t2U=;
+ b=6XK8iaEvevvXqDOBb77pn2jRDoRsZbUa51M+NyT8XpjYcuaxY7TVVgDTdJX44JzIT1
+ 6vItea01ki1fvLX8FOid6Mfm9aEGnD+ivk7GAVyKN2EyZYFut5kuce2/vz/6lLVPJ7Ji
+ e4xFy50sBPkC4c6aKDAgIkSv/9g69rOW5gS+8WsG1MZuW2riLAdU+2YDVbWqtWo4WB9p
+ tEw3/eL6f8YWvVdn8uAJdzrITvinPwmvvPLcGpjHCY6bO8rA0ZSgLdSIbQQLkrXpPxNT
+ bNWYeh3H5gY47F0u6MG4axq5XEIRinEAlW4ZjsoNZR8nQ5z4iB+aO22ksTFhdgC8Gr3a
+ p3oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=LFvhTcaRZjgL74aw0ImWpDb76fTfKVSz3niY5jO7t2U=;
+ b=cI4adTiYDJKtm9AIu0PMBudZV+lYdbHaEm6NXduUsr+0QlBF5e2vJICl3X6KfAQeTi
+ bJDEEmweIGtjCkKushuTQQ7tb2IDIr9/Wvb3BQUoazAqA6ok04CohS33S/XHpqZVSIfV
+ G1aNnH2RSKCj8Qi/E5afrHXPCyojXClx+RuUlDEz+ayqziGBHm1IaIa0Ux7XdVJz4Z7j
+ Kxq5lee8PCTR2ohG6yjOkqel2uGG82sROOLLmZdusA8n0Gx8NQVOwQ0a1Fqvso0WO3oq
+ rPibJV5x4Je/jUIMAsVIvnNr645EFWDt1SdV3HTLURyuewF46vBquqDaQaHCEvXlXNRd
+ bgEQ==
+X-Gm-Message-State: AFqh2koSEDNEzWs5iULqOUL4+hgadHqIfIdlF224aKgsM3Ifq83+fnIQ
+ 5OtrsnBSz5/w8kRtLQbhzpGcLA==
+X-Google-Smtp-Source: AMrXdXuPM0D6h33ggS86tdoKbX4wsqChC1KyEbKeUzk2LWBE9WFxvgTxRvaU/KF9H7dMQzvrnz2Ctg==
+X-Received: by 2002:a62:6102:0:b0:578:3bc0:57d7 with SMTP id
+ v2-20020a626102000000b005783bc057d7mr24847846pfb.13.1672230159291; 
+ Wed, 28 Dec 2022 04:22:39 -0800 (PST)
+Received: from localhost.localdomain (202.60.225.077.static.cyberec.com.
+ [202.60.225.77]) by smtp.gmail.com with ESMTPSA id
+ h1-20020a056a00000100b0058124f92399sm5236074pfk.219.2022.12.28.04.22.35
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 28 Dec 2022 04:22:39 -0800 (PST)
+From: tongjian <tongjian@huaqin.corp-partner.google.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, matthias.bgg@gmail.com, perex@perex.cz,
+ tiwai@suse.com, angelogioacchino.delregno@collabora.com,
+ nfraprado@collabora.com, jiaxin.yu@mediatek.com, chunxu.li@mediatek.com,
+ ajye_huang@compal.corp-partner.google.com,
+ tongjian@huaqin.corp-partner.google.com
+Subject: [PATCH 0/2] Add new AMP MAX98360A for RT5682S
+Date: Wed, 28 Dec 2022 20:22:28 +0800
+Message-Id: <20221228122230.3818533-1-tongjian@huaqin.corp-partner.google.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 1/3] ASoC: dt-bindings: Extend name-prefix.yaml into common
- DAI properties
-From: patchwork-bot+chrome-platform@kernel.org
-Message-Id: <167202609130.9518.10337988666912704066.git-patchwork-notify@kernel.org>
-Date: Mon, 26 Dec 2022 03:41:31 +0000
-References: <20221203160442.69594-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20221203160442.69594-1-krzysztof.kozlowski@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailman-Approved-At: Wed, 28 Dec 2022 13:51:26 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -81,67 +99,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: heiko@sntech.de, dri-devel@lists.freedesktop.org, jonathanh@nvidia.com,
- peter.ujfalusi@gmail.com, linux-stm32@st-md-mailman.stormreply.com,
- cychiang@chromium.org, samuel@sholland.org, katsuhiro@katsuster.net,
- khilman@baylibre.com, joabreu@synopsys.com, derek.fang@realtek.com,
- olivier.moysan@foss.st.com, povik+lin@cutebit.org, linux-sunxi@lists.linux.dev,
- flatmax@flatmax.com, james.schulman@cirrus.com, vincent.knecht@mailoo.org,
- linux-kernel@vger.kernel.org, mhiramat@kernel.org, alsa-devel@alsa-project.org,
- tanureal@opensource.cirrus.com, david.rhodes@cirrus.com, cy_huang@richtek.com,
- thierry.reding@gmail.com, srinivas.kandagatla@linaro.org, groeck@chromium.org,
- chrome-platform@lists.linux.dev, lars@metafoo.de, fengzheng923@gmail.com,
- alexandre.belloni@bootlin.om, drake@endlessm.com,
- linux-rockchip@lists.infradead.org, jbrunet@baylibre.com,
- ckeepax@opensource.cirrus.com, martin.blumenstingl@googlemail.com,
- linux-arm-msm@vger.kernel.org, mripard@kernel.org, biju.das.jz@bp.renesas.com,
- linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- neil.armstrong@linaro.org, mcoquelin.stm32@gmail.com,
- rriveram@opensource.cirrus.com, kuninori.morimoto.gx@renesas.com,
- spujar@nvidia.com, nuno.sa@analog.com, festevam@gmail.com,
- hayashi.kunihiko@socionext.com, jernej.skrabec@gmail.com, wens@csie.org,
- bogdan.togorean@analog.com, arnaud.pouliquen@foss.st.com, stephan@gerhold.net,
- rf@opensource.cirrus.com, broonie@kernel.org, bleung@chromium.org,
- mkumard@nvidia.com, j-choudhary@ti.com, lgirdwood@gmail.com,
- konrad.dybcio@linaro.org, asahi@lists.linux.dev, rohitkr@codeaurora.org,
- shengjiu.wang@nxp.com, codrin.ciubotariu@microchip.com,
- alexandre.torgue@foss.st.com, paul@crapouillou.net, ricardw@axis.com,
- shifu0704@thundersoft.com, krzysztof.kozlowski+dt@linaro.org,
- airlied@gmail.com, frattaroli.nicolas@gmail.com, agross@kernel.org,
- devicetree@vger.kernel.org, bgoswami@quicinc.com, shenghao-ding@ti.com,
- lkundrak@v3.sk, robh+dt@kernel.org, tzungbi@kernel.org,
- linux-tegra@vger.kernel.org, patches@opensource.cirrus.com,
- andersson@kernel.org, tiwai@suse.com, jee.heng.sia@intel.com, afd@ti.com,
- daniel@ffwll.ch
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello:
+Add MAX98360A for RT5682S, MAX98360A works same as rt1019. So, it can
+be supported.
 
-This series was applied to chrome-platform/linux.git (for-next)
-by Mark Brown <broonie@kernel.org>:
+tongjian (2):
+  ASoC: mediatek: mt8186: support rt5682s_max98360
+  ASoC: dt-bindings: mt8186-mt6366: add new compatible for max98360a
 
-On Sat,  3 Dec 2022 17:04:40 +0100 you wrote:
-> Rename name-prefix.yaml into common DAI schema and document
-> '#sound-dai-cells' for completeness.  The '#sound-dai-cells' cannot be
-> really constrained, as there are users with value of 0, 1 and 2, but at
-> least it brings definition to one common place.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> [...]
+ .../sound/mt8186-mt6366-rt1019-rt5682s.yaml   |  1 +
+ .../mt8186/mt8186-mt6366-rt1019-rt5682s.c     | 22 ++++++++++++++++++-
+ 2 files changed, 22 insertions(+), 1 deletion(-)
 
-Here is the summary with links:
-  - [1/3] ASoC: dt-bindings: Extend name-prefix.yaml into common DAI properties
-    https://git.kernel.org/chrome-platform/c/3fda85324b8d
-  - [2/3] ASoC: dt-bindings: Reference common DAI properties
-    https://git.kernel.org/chrome-platform/c/58ae9a2aca6f
-  - [3/3] ASoC: dt-bindings: maxim,max98357a: Convert to DT schema
-    https://git.kernel.org/chrome-platform/c/8a5a05583a04
-
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
