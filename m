@@ -4,70 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4D9DC4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Dec 2022 19:25:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CCF6C3DA79
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Dec 2022 20:25:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D7C084B;
-	Thu, 29 Dec 2022 20:24:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D7C084B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13B51209;
+	Thu, 29 Dec 2022 21:25:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13B51209
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672341903;
-	bh=QfEfCXuB3KnMw1xvHWaFThHQXYDT3cNkR3iYoi0JilI=;
+	s=default; t=1672345551;
+	bh=ETuogk7ACYxYQV9uzj4PmKQpxDQ3mxpqHb49NYgVa5U=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=R02tMfo2ia8+26b3ZXUqoNgTY6kGklJkz+z+BGD3f5MovvRA77+EDfnMNVm/9raoL
-	 2rCg7j1+vuU1LHx3A/Zj9LA76mNNa8tJ6MvMN6fnndZwkrWhLRVQJ67guZF5rHTD39
-	 n9GdO4CIZPw2cuZFeh5NWijl1Hix80IcOMA/zr7w=
+	 Cc:From;
+	b=ptOS6hpNTr+Livih89Y8dnvkbmMBY93QlLJIgxS1i9NWhxiCbbymflc8Hxu76KOaX
+	 KRXb+rZhGkTHNhDXjy7WFhoEzAxrzI0PgGQaSiDP4yxbit+BMxmSMHeQxk+mUHvToj
+	 4v0sCW9Hg3glPRq0pE+0pV29UrHdJ1izXi2SsR1I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D72E9F804E4;
-	Thu, 29 Dec 2022 20:24:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9AA1F802A0;
+	Thu, 29 Dec 2022 21:25:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E060F804E4; Thu, 29 Dec 2022 20:24:11 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 22E0FF802A0; Thu, 29 Dec 2022 21:24:59 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02894F802A0
- for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2022 20:24:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02894F802A0
+ by alsa1.perex.cz (Postfix) with ESMTPS id B57F9F802A0
+ for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2022 21:24:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B57F9F802A0
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=SYAi5U2n
+ header.s=k20201202 header.b=jDjpE5mI
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A1FB7618C4;
- Thu, 29 Dec 2022 19:24:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42338C433EF;
- Thu, 29 Dec 2022 19:24:04 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 16D51617E3;
+ Thu, 29 Dec 2022 20:24:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9475FC433D2;
+ Thu, 29 Dec 2022 20:24:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1672341847;
- bh=QfEfCXuB3KnMw1xvHWaFThHQXYDT3cNkR3iYoi0JilI=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=SYAi5U2nAYUqRLRbDWTxgSBv1EBNXajIW3Je8zYc8NUwBmCIT9kPyu8Ku7EayImIm
- sPcidnghjju/wb0cWS51lXSRr4a0aWEz4n1sJH4mG9olD18AwOHGKI4IQLoOMuqZln
- 07efZuVqvlOl3QTe61JdrZ95O3Wgvy8jIMuX5TTNToLxwHv+7bwYVlPDES6UJZLqPl
- +KDgWwA81V3MI7JzoWFcytkUNnOS7GIzKD04ssT73+ybbpjVo6exlrZbQt9S+FVnoo
- knGv1BrSG7zWeJ2vsbAS1IhZ2UHERBOhHwAWQ12GUG0ICL30tMk/CcgKHxS/w/vDKe
- yA0UWZR7OcI3w==
+ s=k20201202; t=1672345492;
+ bh=ETuogk7ACYxYQV9uzj4PmKQpxDQ3mxpqHb49NYgVa5U=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=jDjpE5mIfycRAMFRF5PXuWGu+Wm+D4yjbQRpRtMnYPV5iP75n6NeyrDgtwgXs4Xvj
+ KwKuW5/TL6hk0hYJDPzkWnbkYb5A4oFEUmmjGpsyL/Ay4jVEnJUHieya8e9cF6D0F7
+ BgSlvWjR0uEeisdRgvsWSjjqfgHf8qC/Ds2AoHjPEXSLMgmFtdrNHEhyT6NLUSZd8l
+ QjoFB6b6UnyDSOJnDYbmUCv7ueQp4nDx+rNqr3Y9megkYbZp+Nqa4i127kPnUhOxl/
+ pdgtLuW9/jygdy71PSh2O9Xczuz3z0YVo1A53D/KLob5sRVMUYvsHhxYbKW5HIaknm
+ ABHqiXd2rOZzQ==
 From: Mark Brown <broonie@kernel.org>
-To: James Schulman <james.schulman@cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>,
- Lucas Tanure <tanureal@opensource.cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20221224154210.43356-1-krzysztof.kozlowski@linaro.org>
-References: <20221224154210.43356-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: cirrus,cs35l41: add interrupts
-Message-Id: <167234184391.14869.3164540842887983898.b4-ty@kernel.org>
-Date: Thu, 29 Dec 2022 19:24:03 +0000
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Jiaxin Yu <jiaxin.yu@mediatek.com>, Tzung-Bi Shih <tzungbi@kernel.org>,
+ Allen-KH Cheng <allen-kh.cheng@mediatek.com>
+In-Reply-To: <20221228115756.28014-1-allen-kh.cheng@mediatek.com>
+References: <20221228115756.28014-1-allen-kh.cheng@mediatek.com>
+Subject: Re: [PATCH] ASoC: mediatek: mt8186: Add machine support for max98357a
+Message-Id: <167234548928.88546.3169179138497536747.b4-ty@kernel.org>
+Date: Thu, 29 Dec 2022 20:24:49 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -84,14 +80,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: Project_Global_Chrome_Upstream_Group@mediatek.com,
+ alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 24 Dec 2022 16:42:09 +0100, Krzysztof Kozlowski wrote:
-> Both DTS (SM8250 and SM8350 based Sony Xperia boards) and Linux driver
-> mention interrupt, so allow it to fix:
-> 
->   sm8350-sony-xperia-sagami-pdx215.dtb: cs35l41@41: Unevaluated properties are not allowed ('interrupt-parent', 'interrupts' were unexpected)
+On Wed, 28 Dec 2022 19:57:56 +0800, Allen-KH Cheng wrote:
+> Add support for mt8186 with mt6366 and max98357a.
 > 
 > 
 
@@ -101,10 +97,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: cirrus,cs35l41: add interrupts
-      commit: 642e4f9bdac8d42d5047312e76bab7ceaf4c131e
-[2/2] ASoC: dt-bindings: cirrus,cs35l41: cleanup $ref and example
-      commit: c1b9c2f02ed796a6cbbfceacb14f7c5f5c7ac94f
+[1/1] ASoC: mediatek: mt8186: Add machine support for max98357a
+      commit: 8a54f666db581bbf07494cca44a0124acbced581
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
