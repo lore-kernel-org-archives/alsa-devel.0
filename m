@@ -4,84 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CC5AC4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Dec 2022 14:21:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F83BC4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Dec 2022 15:19:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45F8285D4;
-	Thu, 29 Dec 2022 15:20:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45F8285D4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 78206724D;
+	Thu, 29 Dec 2022 16:18:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78206724D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672323666;
-	bh=d68hC20589Ctcis4IfSbCF+uNdhJbKhVIIf7umjLP70=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1672327137;
+	bh=4a5U7BEL+rGYJRlVkx14BPuEsGpf8PZ5w5juP6cL40U=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=g+a+9fOkDctUHokY4+KDPYDjzBMfuxYwz+A2ITn14rUZUHwx3TKG6Z+UG+C9+7peC
-	 cPnwKmWr8mKNugS83XJWhkulKmp9QrwmbRQW39hZG+LG3uSxqLDK+nx9qePq6OGmSR
-	 jZrgeEEr3gUwHmaY3hWMiHNfZzyRqTxCJkdvQWO0=
+	b=Xrae7l8YLEN/HaNGob1pMGEesfF3hQpXx1D4hmCN3a2VUgiNmQP23iZ+FX5Qpe508
+	 XMZI/aE7pyp8wwlQjDW+Ys285VcETzsCjHpi7oFeRt9b+JUVJg7Iu07mispzDKDEl5
+	 nMEuTJ/Gpwmdlv3p1Yw6aw+XWJn7VSjj919nzx78=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9DDEF804E7;
-	Thu, 29 Dec 2022 15:20:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C825F804E4;
+	Thu, 29 Dec 2022 16:18:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35399F804F1; Thu, 29 Dec 2022 15:20:14 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ id C9657F8023B; Thu, 29 Dec 2022 16:18:04 +0100 (CET)
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de
+ [81.169.146.169])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97F76F804E4
- for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2022 15:20:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97F76F804E4
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=IagYAO9K; 
- dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=h9m3zYuQ
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A1A7F21C16;
- Thu, 29 Dec 2022 14:20:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1672323611; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=6S/5dUuk93/quxJDXW8zPtubkuqAP+2SRjZ0dzR6/K0=;
- b=IagYAO9Ke7u0hhsyuKd6Fx8s/lHiA1HQlem/YX675oLgpHOuzvlVF7DzdZs/xvamON9oxP
- HiR1VrukdpjKTgvJb/bpl/sHvZr3n5QP6gjt20fp28a7oZZ7T+qX3FoShMf9I38nzfGdW5
- stIlnOsK61/J+STImJeRxnLobuJoWTg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1672323611;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=6S/5dUuk93/quxJDXW8zPtubkuqAP+2SRjZ0dzR6/K0=;
- b=h9m3zYuQenkof35tDdAvbDSA9frScOvdOw/6TJSrwTvQmMkK6oB8ZT3vboUDe7lR5jKv1+
- PCFmsbNvlNRNQ7DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4174313913;
- Thu, 29 Dec 2022 14:20:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id IroEDxuirWNXOQAAMHmgww
- (envelope-from <tiwai@suse.de>); Thu, 29 Dec 2022 14:20:11 +0000
-Date: Thu, 29 Dec 2022 15:20:10 +0100
-Message-ID: <87lemqxpet.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Oliver Neukum <oneukum@suse.com>
-Subject: Re: [RFC PATCH 04/14] sound: usb: card: Introduce USB SND vendor op
- callbacks
-In-Reply-To: <80f92635-6d14-8ff3-17ac-de2e5b977947@suse.com>
-References: <20221223233200.26089-1-quic_wcheng@quicinc.com>
- <20221223233200.26089-5-quic_wcheng@quicinc.com>
- <80f92635-6d14-8ff3-17ac-de2e5b977947@suse.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91961F8023B
+ for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2022 16:17:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91961F8023B
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=gerhold.net header.i=@gerhold.net header.a=rsa-sha256
+ header.s=strato-dkim-0002 header.b=TK3tY/pO
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1672327076;
+ s=strato-dkim-0002; d=gerhold.net;
+ h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
+ From:Subject:Sender;
+ bh=ufovkPO+jNddBOfj2hrolKoU/q+utp3DmWQhPWZpjlQ=;
+ b=TK3tY/pO+q0ZpT65UHNC57hTiYfKr8aSV72LkddUx+WAMKp00yFCrdI5UdTaLi/tAc
+ wdkwhxzV+w6vbmrSfFe7FnOjSwjpx6gBQtmBqI6Io6dLA78GYWySeKpGH9WVbTl+o8ou
+ gNS36WuTk2u9vqB+1NFUxEXtWxgTAEdth08vdOQugMszLaeVzthUIIaVea2XqyAM+gw3
+ eeNMUnxbioNbSw+N8fVsdASOjAquH7oQdMIYwjVbwZSV9mxjTw6/uh6Z/19asfozwJYY
+ xj5UgMzP8stU0WrIy6LpQI5IM3weXuXEfazBmbUxP/oK6QHYZZGFi5Zrhhs5yKre3VAO
+ IPkw==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXTbAOHjRHIRvweF+KLA=="
+X-RZG-CLASS-ID: mo01
+Received: from droid.. by smtp.strato.de (RZmta 48.2.1 DYNA|AUTH)
+ with ESMTPSA id Yce349yBTFHuXT3
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+ (Client did not present a certificate);
+ Thu, 29 Dec 2022 16:17:56 +0100 (CET)
+From: Stephan Gerhold <stephan@gerhold.net>
+To: Bjorn Andersson <andersson@kernel.org>,
+	Andy Gross <agross@kernel.org>
+Subject: [PATCH 1/2] dt-bindings: soc: qcom: apr: Make qcom,
+ protection-domain optional again
+Date: Thu, 29 Dec 2022 16:16:47 +0100
+Message-Id: <20221229151648.19839-2-stephan@gerhold.net>
+X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20221229151648.19839-1-stephan@gerhold.net>
+References: <20221229151648.19839-1-stephan@gerhold.net>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,37 +81,59 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, bgoswami@quicinc.com,
- mathias.nyman@intel.com, gregkh@linuxfoundation.org, andersson@kernel.org,
- tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, agross@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, Thinh.Nguyen@synopsys.com,
- quic_plai@quicinc.com, Wesley Cheng <quic_wcheng@quicinc.com>,
- linux-kernel@vger.kernel.org, quic_jackp@quicinc.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Banajit Goswami <bgoswami@quicinc.com>, Stephan Gerhold <stephan@gerhold.net>,
+ linux-arm-msm@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>,
+ Rob Herring <robh+dt@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ ~postmarketos/upstreaming@lists.sr.ht,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 29 Dec 2022 14:49:21 +0100,
-Oliver Neukum wrote:
-> 
-> 
-> 
-> On 24.12.22 00:31, Wesley Cheng wrote:
-> > Allow for different vendors to be notified on USB SND connect/disconnect
-> > seqeunces.  This allows for vendor USB SND modules to properly initialize
-> > and populate internal structures with references to the USB SND chip
-> > device.
-> 
-> Hi,
-> 
-> this raises a design question. If the system is suspending or, worse,
-> hibernating, how do you make sure the offloader and the device are
-> suspended in the correct order?
-> And what happens if you need to go into reset_resume() when resuming?
+The protection domain functionality exists only in SoCs starting from
+MSM8998 [1], while the APR bindings are also used on older platforms.
 
-I guess we'd need to establish a device link when the binding from the
-offload driver is done.  Then the PM order will be assured.
+Commit 41288c305836 ("ASoC: dt-bindings: qcom,apr: Split services to
+shared schema") made the "qcom,protection-domain" required but it
+should remain optional to avoid dtbs_check warnings on older platforms,
+e.g.:
 
+arch/arm64/boot/dts/qcom/apq8096-db820c.dtb:
+  apr: service@3: 'qcom,protection-domain' is a required property
+  From schema: Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
 
-Takashi
+[1]: https://lore.kernel.org/all/20200312120842.21991-1-sibis@codeaurora.org/
+
+Fixes: 41288c305836 ("ASoC: dt-bindings: qcom,apr: Split services to shared schema")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+---
+ .../devicetree/bindings/soc/qcom/qcom,apr-services.yaml      | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr-services.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,apr-services.yaml
+index 290555426c39..bdf482db32aa 100644
+--- a/Documentation/devicetree/bindings/soc/qcom/qcom,apr-services.yaml
++++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr-services.yaml
+@@ -39,8 +39,8 @@ properties:
+   qcom,protection-domain:
+     $ref: /schemas/types.yaml#/definitions/string-array
+     description: |
+-      Protection domain service name and path for APR service
+-      possible values are::
++      Protection domain service name and path for APR service (if supported).
++      Possible values are::
+       "avs/audio", "msm/adsp/audio_pd".
+       "kernel/elf_loader", "msm/modem/wlan_pd".
+       "tms/servreg", "msm/adsp/audio_pd".
+@@ -49,6 +49,5 @@ properties:
+ 
+ required:
+   - reg
+-  - qcom,protection-domain
+ 
+ additionalProperties: true
+-- 
+2.39.0
+
