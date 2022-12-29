@@ -4,69 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA896C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Dec 2022 15:19:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16108C4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Dec 2022 15:19:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C15FA8F4B;
-	Thu, 29 Dec 2022 16:18:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C15FA8F4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B63299CD5;
+	Thu, 29 Dec 2022 16:19:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B63299CD5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672327172;
-	bh=eT3ABVCFvGesWuCHYEt5BJlwWRBnBg0zulRiJXRDfXw=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=PuCNbdPod5bspKqJqqfmI+L2EvDdWMCAdNQ0yUpyq6OKE3iTuyHY/KrW5sf+QSVzd
-	 iUB3gTjhq4Z4RgcDOSseIoNo6n0QYWM+hVZxw3fC+RLdSrwVLf2K7eeXOlna5zuDOM
-	 QJaqIWJdwHnxoECp4QwTXs00m9mw8tuPioGKs/N0=
+	s=default; t=1672327190;
+	bh=QRsoloeh5yoDsVfFAz62YFeWxqU1uyZTVQKLC8vGCcs=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=Cm/2v21OaAP0JiM1toEmUae876nMLIGSjzhlXqrj+P7sfV95csWZ5FFNGd/w5ftjY
+	 6LAE/9AyTnuYn9GDxKn2qZqOzaBziC92j1MFRNFnLuHrBo33OEnPJ8ad11PZ8R4Ov8
+	 rkojVngqAm+DKDseDdxdjSL7pqXPlfmsZMPrqSeY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1903F804FB;
-	Thu, 29 Dec 2022 16:18:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5F4FF804E7;
+	Thu, 29 Dec 2022 16:18:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28FDAF804E7; Thu, 29 Dec 2022 16:18:06 +0100 (CET)
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de
- [85.215.255.84])
+ id A42D3F802A0; Thu, 29 Dec 2022 16:18:07 +0100 (CET)
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
+ [85.215.255.53])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 977CCF8023B
+ by alsa1.perex.cz (Postfix) with ESMTPS id D7A2AF802A0
  for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2022 16:17:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 977CCF8023B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7A2AF802A0
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=gerhold.net header.i=@gerhold.net header.a=rsa-sha256
- header.s=strato-dkim-0002 header.b=F+eYRHNU
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1672327077;
+ header.s=strato-dkim-0002 header.b=f41wZQ8Q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1672327076;
  s=strato-dkim-0002; d=gerhold.net;
- h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
- From:Subject:Sender;
- bh=o9yw6kwnyVHqftafsTZRSK4tSSkPBL8db2BOCD1EwNk=;
- b=F+eYRHNUH3aMOrCmUY+iyyqyw39IdWu3vV7TBGa1gKcA8oju/dl4M/JQe/+WCDO2vF
- tQbOoK3dpIu8Jc+fuvrOoujcRCyKFZwjAYGgb38phMO20rIYTx0ybF7F46A9Ot1rvTN9
- 9D4RLvkXonYr8UsLxN/9tmhFoCxbb03NBXT2EDzBWasSeqgoJ7fP4BakGJRb5yeomxYl
- v1DW9CNRQSDsAf1qFK0P0dfxdzRwrTtn9hUejHgW6hP39fDHuEKh6DV9CiuFOqHkqTWZ
- nAe7PKuu8MY/Yo7PMLNEUsBP6KcfVSuSforI1Koh7syclJHmSiu8iK0Ij6M5U4FbE+Xw
- vhRQ==
+ h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+ bh=NhDVal3cY5RtflAGfuXYwWRxbBcys6vmGS1S3kTpu58=;
+ b=f41wZQ8Qo2p5DjOKrnomUd4pigBHedDdR1p0/2XTzWfZ1eN+Jv6m88JRbmhLr394lB
+ +DkT755r4yFoZKar1SZiIJlNkuph+GF1ElZxCsDIG16zFth/CYTcgrBjJNQSsUJfIaS9
+ 0n4Er9YU8VyNiJrfFb33N34jC5aO5nl4mZZaTp7E/yNJOlz/h3GNsJIfs0uscyRAr7RI
+ ZzxMcFTo/t1C4/SGbRungnLfsVBPpJBDVCvSvRGLbidWHN5dACyAsoN51b2nxDqgmiWQ
+ ukINmxETOvAOhAXNYLbj5JfecGucA9VikUDNX4NbbLmZiGIaxExUtk1hMdmQDV90HR7h
+ yEFw==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXTbAOHjRHIRvweF+KLA=="
-X-RZG-CLASS-ID: mo02
+X-RZG-CLASS-ID: mo00
 Received: from droid.. by smtp.strato.de (RZmta 48.2.1 DYNA|AUTH)
- with ESMTPSA id Yce349yBTFHuXT4
+ with ESMTPSA id Yce349yBTFHtXT2
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
  (Client did not present a certificate);
- Thu, 29 Dec 2022 16:17:56 +0100 (CET)
+ Thu, 29 Dec 2022 16:17:55 +0100 (CET)
 From: Stephan Gerhold <stephan@gerhold.net>
 To: Bjorn Andersson <andersson@kernel.org>,
 	Andy Gross <agross@kernel.org>
-Subject: [PATCH 2/2] soc: qcom: apr: Make qcom,
- protection-domain optional again
-Date: Thu, 29 Dec 2022 16:16:48 +0100
-Message-Id: <20221229151648.19839-3-stephan@gerhold.net>
+Subject: [PATCH 0/2] Fix APR audio regression on 6.2-rc1
+Date: Thu, 29 Dec 2022 16:16:46 +0100
+Message-Id: <20221229151648.19839-1-stephan@gerhold.net>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20221229151648.19839-1-stephan@gerhold.net>
-References: <20221229151648.19839-1-stephan@gerhold.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -92,40 +87,26 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-APR should not fail if the service device tree node does not have
-the qcom,protection-domain property, since this functionality does
-not exist on older platforms such as MSM8916 and MSM8996.
+These two patches fix regressions in the Qualcomm APR driver that 
+prevent audio from working on MSM8916 (and likely MSM8996). In previous 
+kernel releases the "qcom,protection-domain" property was optional, in 
+6.2-rc1 it is now required. It should remain optional because the 
+protection domain functionality is only supported starting with MSM8998
+and is not present on older SoCs [1].
 
-Ignore -EINVAL (returned when the property does not exist) to fix
-a regression on 6.2-rc1 that prevents audio from working:
+These patches should go as fixes into 6.2 to fix the regression.
 
-  qcom,apr remoteproc0:smd-edge.apr_audio_svc.-1.-1:
-    Failed to read second value of qcom,protection-domain
-  qcom,apr remoteproc0:smd-edge.apr_audio_svc.-1.-1:
-    Failed to add apr 3 svc
+[1]: https://lore.kernel.org/all/20200312120842.21991-1-sibis@codeaurora.org/
 
-Fixes: 6d7860f5750d ("soc: qcom: apr: Add check for idr_alloc and of_property_read_string_index")
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
----
- drivers/soc/qcom/apr.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Stephan Gerhold (2):
+  dt-bindings: soc: qcom: apr: Make qcom,protection-domain optional
+    again
+  soc: qcom: apr: Make qcom,protection-domain optional again
 
-diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
-index cd44f17dad3d..d51abb462ae5 100644
---- a/drivers/soc/qcom/apr.c
-+++ b/drivers/soc/qcom/apr.c
-@@ -461,9 +461,10 @@ static int apr_add_device(struct device *dev, struct device_node *np,
- 		goto out;
- 	}
- 
-+	/* Protection domain is optional, it does not exist on older platforms */
- 	ret = of_property_read_string_index(np, "qcom,protection-domain",
- 					    1, &adev->service_path);
--	if (ret < 0) {
-+	if (ret < 0 && ret != -EINVAL) {
- 		dev_err(dev, "Failed to read second value of qcom,protection-domain\n");
- 		goto out;
- 	}
+ .../devicetree/bindings/soc/qcom/qcom,apr-services.yaml      | 5 ++---
+ drivers/soc/qcom/apr.c                                       | 3 ++-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
 -- 
 2.39.0
 
