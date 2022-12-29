@@ -4,66 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6681AC4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Dec 2022 18:30:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4D9DC4332F
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Dec 2022 19:25:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE6DEA4B;
-	Thu, 29 Dec 2022 19:29:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE6DEA4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D7C084B;
+	Thu, 29 Dec 2022 20:24:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D7C084B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672338619;
-	bh=zpSbcCNK25rUjje8uqqFcgexRmkYeOWXvSLNq8K+unk=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1672341903;
+	bh=QfEfCXuB3KnMw1xvHWaFThHQXYDT3cNkR3iYoi0JilI=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=def4VpKlbl7sRFRnde/FsqYepSJxTQwH9O7QluHPDzrZX7lVrxMxstW3nHm6yCb9J
-	 kPpota/Tw3PlTfVBI73SHUrtOVhm+c3h8a5AmHibdZKrydsYtZshqh/yhAsHi7j4Fo
-	 GNUMuZ6xPYW5+6vQvpEz81fBn5gt7rrynhnr6v8I=
+	 From;
+	b=R02tMfo2ia8+26b3ZXUqoNgTY6kGklJkz+z+BGD3f5MovvRA77+EDfnMNVm/9raoL
+	 2rCg7j1+vuU1LHx3A/Zj9LA76mNNa8tJ6MvMN6fnndZwkrWhLRVQJ67guZF5rHTD39
+	 n9GdO4CIZPw2cuZFeh5NWijl1Hix80IcOMA/zr7w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75A52F8023B;
-	Thu, 29 Dec 2022 19:29:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D72E9F804E4;
+	Thu, 29 Dec 2022 20:24:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8E795F804E7; Thu, 29 Dec 2022 19:29:28 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 8E060F804E4; Thu, 29 Dec 2022 20:24:11 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 736AEF80246
- for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2022 19:29:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 736AEF80246
+ by alsa1.perex.cz (Postfix) with ESMTPS id 02894F802A0
+ for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2022 20:24:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02894F802A0
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=lCbmrJSG
+ header.s=k20201202 header.b=SYAi5U2n
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 48B4A61862;
- Thu, 29 Dec 2022 18:29:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B37D6C433D2;
- Thu, 29 Dec 2022 18:29:19 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A1FB7618C4;
+ Thu, 29 Dec 2022 19:24:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42338C433EF;
+ Thu, 29 Dec 2022 19:24:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1672338560;
- bh=zpSbcCNK25rUjje8uqqFcgexRmkYeOWXvSLNq8K+unk=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=lCbmrJSG+11bT6Xk4w5ANPk6tJ9lXJCg/jnPVRQI6Iz5cqMi3EOu6GzdMdJKptvtK
- Fzg/3KfQKl1ncyFvBTFf7lZjxtFrvrQggVe9TKVLyq3Q1PPbrFWMreKzfMMx2IfopG
- kbBcYl4vKRR0ktb+qXv+TIsOr6tEySd+3Q0Ivukg641GnUdsFOp9ZAArZc5wd1FzYK
- KlBjW8+U4EPZCk4B2UiNa7bMHJFzoZo+oZmtbTGNvGNl/P0jqjiIuzP5tca3MNob0Y
- So24ukmCHqhqKNizbasfC9PX+ZZG0j59ygUBo+0WV5O/+VSEPMyXy8EGj3/8IG5p+G
- y9lBkTRhszorg==
-Date: Thu, 29 Dec 2022 12:29:17 -0600
-From: Bjorn Andersson <andersson@kernel.org>
-To: Stephan Gerhold <stephan@gerhold.net>
-Subject: Re: [PATCH 1/2] dt-bindings: soc: qcom: apr: Make
- qcom,protection-domain optional again
-Message-ID: <20221229182917.j6wrerqufom3hfx7@builder.lan>
-References: <20221229151648.19839-1-stephan@gerhold.net>
- <20221229151648.19839-2-stephan@gerhold.net>
+ s=k20201202; t=1672341847;
+ bh=QfEfCXuB3KnMw1xvHWaFThHQXYDT3cNkR3iYoi0JilI=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=SYAi5U2nAYUqRLRbDWTxgSBv1EBNXajIW3Je8zYc8NUwBmCIT9kPyu8Ku7EayImIm
+ sPcidnghjju/wb0cWS51lXSRr4a0aWEz4n1sJH4mG9olD18AwOHGKI4IQLoOMuqZln
+ 07efZuVqvlOl3QTe61JdrZ95O3Wgvy8jIMuX5TTNToLxwHv+7bwYVlPDES6UJZLqPl
+ +KDgWwA81V3MI7JzoWFcytkUNnOS7GIzKD04ssT73+ybbpjVo6exlrZbQt9S+FVnoo
+ knGv1BrSG7zWeJ2vsbAS1IhZ2UHERBOhHwAWQ12GUG0ICL30tMk/CcgKHxS/w/vDKe
+ yA0UWZR7OcI3w==
+From: Mark Brown <broonie@kernel.org>
+To: James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20221224154210.43356-1-krzysztof.kozlowski@linaro.org>
+References: <20221224154210.43356-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: cirrus,cs35l41: add interrupts
+Message-Id: <167234184391.14869.3164540842887983898.b4-ty@kernel.org>
+Date: Thu, 29 Dec 2022 19:24:03 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221229151648.19839-2-stephan@gerhold.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12-dev-69c4d
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,66 +84,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Banajit Goswami <bgoswami@quicinc.com>, linux-arm-msm@vger.kernel.org,
- Jiasheng Jiang <jiasheng@iscas.ac.cn>, Andy Gross <agross@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
- Mark Brown <broonie@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- ~postmarketos/upstreaming@lists.sr.ht,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Dec 29, 2022 at 04:16:47PM +0100, Stephan Gerhold wrote:
-> The protection domain functionality exists only in SoCs starting from
-> MSM8998 [1], while the APR bindings are also used on older platforms.
+On Sat, 24 Dec 2022 16:42:09 +0100, Krzysztof Kozlowski wrote:
+> Both DTS (SM8250 and SM8350 based Sony Xperia boards) and Linux driver
+> mention interrupt, so allow it to fix:
 > 
-> Commit 41288c305836 ("ASoC: dt-bindings: qcom,apr: Split services to
-> shared schema") made the "qcom,protection-domain" required but it
-> should remain optional to avoid dtbs_check warnings on older platforms,
-> e.g.:
+>   sm8350-sony-xperia-sagami-pdx215.dtb: cs35l41@41: Unevaluated properties are not allowed ('interrupt-parent', 'interrupts' were unexpected)
 > 
-> arch/arm64/boot/dts/qcom/apq8096-db820c.dtb:
->   apr: service@3: 'qcom,protection-domain' is a required property
->   From schema: Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
 > 
-> [1]: https://lore.kernel.org/all/20200312120842.21991-1-sibis@codeaurora.org/
-> 
-> Fixes: 41288c305836 ("ASoC: dt-bindings: qcom,apr: Split services to shared schema")
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 
-Reviewed-by: Bjorn Andersson <andersson@kernel.org>
+Applied to
 
-Regards,
-Bjorn
+   broonie/sound.git for-next
 
-> ---
->  .../devicetree/bindings/soc/qcom/qcom,apr-services.yaml      | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr-services.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,apr-services.yaml
-> index 290555426c39..bdf482db32aa 100644
-> --- a/Documentation/devicetree/bindings/soc/qcom/qcom,apr-services.yaml
-> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr-services.yaml
-> @@ -39,8 +39,8 @@ properties:
->    qcom,protection-domain:
->      $ref: /schemas/types.yaml#/definitions/string-array
->      description: |
-> -      Protection domain service name and path for APR service
-> -      possible values are::
-> +      Protection domain service name and path for APR service (if supported).
-> +      Possible values are::
->        "avs/audio", "msm/adsp/audio_pd".
->        "kernel/elf_loader", "msm/modem/wlan_pd".
->        "tms/servreg", "msm/adsp/audio_pd".
-> @@ -49,6 +49,5 @@ properties:
->  
->  required:
->    - reg
-> -  - qcom,protection-domain
->  
->  additionalProperties: true
-> -- 
-> 2.39.0
-> 
+Thanks!
+
+[1/2] ASoC: dt-bindings: cirrus,cs35l41: add interrupts
+      commit: 642e4f9bdac8d42d5047312e76bab7ceaf4c131e
+[2/2] ASoC: dt-bindings: cirrus,cs35l41: cleanup $ref and example
+      commit: c1b9c2f02ed796a6cbbfceacb14f7c5f5c7ac94f
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
