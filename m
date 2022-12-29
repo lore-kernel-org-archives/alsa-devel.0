@@ -4,66 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B60DC3DA7A
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Dec 2022 22:51:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CA35C3DA7A
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Dec 2022 22:51:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C34D161D;
-	Thu, 29 Dec 2022 23:50:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C34D161D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 601E91633;
+	Thu, 29 Dec 2022 23:50:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 601E91633
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672354278;
-	bh=I93/1mRsdn1k7zesrQeJJdmqUVW8X7j/6JylnPTDMak=;
+	s=default; t=1672354306;
+	bh=FZkVvYP0hRgawowsbzU9qFlXAar+AEXGrqNOdGX38lc=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=CHqfb9mDEcW+on2j1+jdBX+DuASmQXdps4knMM0uBWF0mRU+4/q6dp+HlZt4fWQ7n
-	 cI/9ms1iEZwUSk+E/ZO96dCnmwF4Q0CD+Loo0NMoPocKY3XurpCeUrkbhcYn81elsq
-	 OxxGbOvROW/jqCOXt4uZkfd/1fh8778Yz04LK+l0=
+	b=bcry2Jk6+sKWHBvxW+xu4bjrLy4Oa1qZdMVDWYThGq8DE93FYC7bdtJVM9B3anwk2
+	 89ONxhVQsanOPqlSokjZShNjtxPBcYeo4/8WmILdqyijf1PveAawkAYTfIB6RiNj4X
+	 vY8k1r430hx/xQ/YECIOcSBUjjYSvKJFIpT4r43A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B59BEF804E4;
-	Thu, 29 Dec 2022 23:50:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 72C5EF804FB;
+	Thu, 29 Dec 2022 23:50:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9BA4FF804E4; Thu, 29 Dec 2022 23:50:26 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 1BF3CF802A0; Thu, 29 Dec 2022 23:50:28 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 45DE0F8023B
- for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2022 23:50:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45DE0F8023B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 37573F802A0
+ for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2022 23:50:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37573F802A0
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=A3zMnWxQ
+ header.s=k20201202 header.b=a281IrsU
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 4DC65618D3;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 869A1B81A7C;
+ Thu, 29 Dec 2022 22:50:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 421C1C433F0;
  Thu, 29 Dec 2022 22:50:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8331C433D2;
- Thu, 29 Dec 2022 22:50:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1672354220;
- bh=I93/1mRsdn1k7zesrQeJJdmqUVW8X7j/6JylnPTDMak=;
+ s=k20201202; t=1672354223;
+ bh=FZkVvYP0hRgawowsbzU9qFlXAar+AEXGrqNOdGX38lc=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=A3zMnWxQ2QRSKe/ukjH1wIb2KGk644x0HuxTVfQL213iMNb5bCyXlVpClZkFU7Jol
- w93hBVwJb7wwY8isey1tapUOsZ87dy/eXYlr3mjOgLVcKn3SWCHJuy/QOqPe09bx+d
- D9ikBGbeCQPbHNdAk2NpZkM95LVy3tGt9yaKzDPR82ECnBiZlJxWowZFhsquIHSwrG
- hHzYcCwAsl0B9EUaHh1A4wAlYv6Ts9J7ItcUGdUh1O70b/qIm7nvMnTondcYznu5b4
- +XXDR1BcyOohQEWXUrpczci6xMWcgUAgWcgURtWSSUPRMLVXsArKHyCehzdgAWw/+b
- F2RP8XVneaqSA==
+ b=a281IrsUMyyItlA1r0OC2wji1Ju7YgSOkvOBrZkNV9IrHny2hLKRvbksNTuYFw9KC
+ LknlQJplG0f/R4Ddq6WsDQ3OpPsVbly85xQSbO1moxkHyIvRZiDU/NkDZWT+mb2ZZ9
+ 9U08kxxsOlcYkvU7JF/HGSK4QsfYpzGHvK7TnahynxyPrYj2Y/ub5/tSs0W9AN/WOZ
+ s2D8HxizA7aV3iehUhcpb48n3g2yCFa1uEx2DS5k03J6KI93GCk2clFxUd9ZybpNb8
+ jKXkLb3iQDfaMr0vdNjcYKH7aW92FC/jdOe+FFHBqDNI7tfSDppcRiL4adS7JIevDZ
+ FngarhJQLGwhw==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com,
- angelogioacchino.delregno@collabora.com, nfraprado@collabora.com,
- jiaxin.yu@mediatek.com, chunxu.li@mediatek.com,
- ajye_huang@compal.corp-partner.google.com,
- tongjian <tongjian@huaqin.corp-partner.google.com>
-In-Reply-To: <20221228122230.3818533-1-tongjian@huaqin.corp-partner.google.com>
-References: <20221228122230.3818533-1-tongjian@huaqin.corp-partner.google.com>
-Subject: Re: [PATCH 0/2] Add new AMP MAX98360A for RT5682S
-Message-Id: <167235421493.130379.3520267907504978837.b4-ty@kernel.org>
-Date: Thu, 29 Dec 2022 22:50:14 +0000
+To: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Francesco Dolcini <francesco@dolcini.it>
+In-Reply-To: <20221223080247.7258-1-francesco@dolcini.it>
+References: <20221223080247.7258-1-francesco@dolcini.it>
+Subject: Re: [PATCH v1] ASoC: wm8904: fix wrong outputs volume after power
+ reactivation
+Message-Id: <167235421935.130379.14139804640942970883.b4-ty@kernel.org>
+Date: Thu, 29 Dec 2022 22:50:19 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -80,19 +78,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
+Cc: Francesco Dolcini <francesco.dolcini@toradex.com>,
+ Emanuele Ghidoli <emanuele.ghidoli@toradex.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 28 Dec 2022 20:22:28 +0800, tongjian wrote:
-> Add MAX98360A for RT5682S, MAX98360A works same as rt1019. So, it can
-> be supported.
+On Fri, 23 Dec 2022 09:02:47 +0100, Francesco Dolcini wrote:
+> Restore volume after charge pump and PGA activation to ensure
+> that volume settings are correctly applied when re-enabling codec
+> from SND_SOC_BIAS_OFF state.
+> CLASS_W, CHARGE_PUMP and POWER_MANAGEMENT_2 register configuration
+> affect how the volume register are applied and must be configured first.
 > 
-> tongjian (2):
->   ASoC: mediatek: mt8186: support rt5682s_max98360
->   ASoC: dt-bindings: mt8186-mt6366: add new compatible for max98360a
 > 
 > [...]
 
@@ -102,10 +100,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: mediatek: mt8186: support rt5682s_max98360
-      commit: 6e1dbf694d7cd1737ee14866e9e05016ccc9ac40
-[2/2] ASoC: dt-bindings: mt8186-mt6366: add new compatible for max98360a
-      commit: 2d3dd559751ce19ba84f9690c6c7c5a4b39129df
+[1/1] ASoC: wm8904: fix wrong outputs volume after power reactivation
+      commit: 472a6309c6467af89dbf660a8310369cc9cb041f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
