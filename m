@@ -4,84 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5C44C3DA7D
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Jan 2023 13:39:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C4C6C3DA7D
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Jan 2023 14:10:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 16528DE2C;
-	Tue,  3 Jan 2023 14:38:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16528DE2C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E07DE019;
+	Tue,  3 Jan 2023 15:09:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E07DE019
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672753157;
-	bh=+ZTbO2gNCUDo8bdN+1oynmMU9ycMis5cqXjsj62Daxo=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=c7zDRO7PCAvvP0r5FREWsTuZ3u9OS7Jfzm9WlxHXZiPbFML8bV44NmTnBYRLJV8c/
-	 OJkbKXxibYcl0+8SHHWl8iEp83bjvfQiyPDixvGJSPpORL6CrRaJtKSYknfZJXk4wu
-	 GokIz0Kp6o7NXRJRaiJMsOpI78BZ+b4QJuZR9XbE=
+	s=default; t=1672754999;
+	bh=MO3PF6p+afXm5zn13bWM83e/wB85pg2FekVhsPuYcGs=;
+	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=VAML1Qt8WlXakdccqR8IRJHB/p4E96la5210753w7nZEintVXe5lvTgZJ13bZPNLh
+	 dwSMJRgbjYTLXuYOGLyxgyjDMGBEKySG9lINsvXCFiq7zykui5EB4H6B5isZ8R7Gy4
+	 WHqNcSHn2xR11TN3xK56bMSJxUjtdFrTIGhb/srA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0B5FF803DC;
-	Tue,  3 Jan 2023 14:38:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16E61F804AD;
+	Tue,  3 Jan 2023 15:09:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2867F8047B; Tue,  3 Jan 2023 14:38:25 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ id B04F7F8023A; Mon,  2 Jan 2023 18:29:56 +0100 (CET)
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com
+ [IPv6:2001:4860:4864:20::29])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F5BDF800F8
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2023 14:38:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F5BDF800F8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=p7FURL7X; 
- dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=A+i8VDhh
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B8E123E8D6;
- Tue,  3 Jan 2023 13:38:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1672753100; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=JsZuJuQCWL7ajqM1JqulymYp3Fvr9UXaBrzfd/UU2cs=;
- b=p7FURL7X6W22X1hO2uWoBObuCdXdp+8KbMthSMBObCPtTdg9ByEMYGIlYyx0NWightmhsq
- AqAOp0r1g8TeCNFFnoJXvI7WXSksCnFOP7TMTFvBz2+ckELoNWR3XMUSX74EqOIiAu3lhE
- eCnxKsMjYQ3Rg3Z6bXBofe59g0s8T78=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1672753100;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=JsZuJuQCWL7ajqM1JqulymYp3Fvr9UXaBrzfd/UU2cs=;
- b=A+i8VDhhDceE6MnkGVkUxmPRRHFwLzmk4JwmSwO2A26xSMH4J1FjtZ56OeWo7MG3UliQnW
- YPeLyx3nOoF4OoBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9548C1390C;
- Tue,  3 Jan 2023 13:38:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id V2DOI8wvtGOMLAAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 03 Jan 2023 13:38:20 +0000
-Date: Tue, 03 Jan 2023 14:38:20 +0100
-Message-ID: <87sfgrrb5f.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Michael Ralston <michael@ralston.id.au>
-Subject: Re: USB-Audio regression on behringer UMC404HD
-In-Reply-To: <CAC2975K24Gt3rGieAToHjb7FEHv84aqiRSQx7EOuR2Q7KByUXw@mail.gmail.com>
-References: <CAC2975JXkS1A5Tj9b02G_sy25ZWN-ys+tc9wmkoS=qPgKCogSg@mail.gmail.com>
- <bf646395-1231-92f6-7c5a-5b7765596358@leemhuis.info>
- <87zgb0q7x4.wl-tiwai@suse.de>
- <CAC2975K24Gt3rGieAToHjb7FEHv84aqiRSQx7EOuR2Q7KByUXw@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+ by alsa1.perex.cz (Postfix) with ESMTPS id E021AF800D0
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2023 18:29:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E021AF800D0
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ unprotected) header.d=ralston.id.au header.i=@ralston.id.au
+ header.a=rsa-sha256 header.s=google header.b=pkJ6DHVo
+Received: by mail-oa1-x29.google.com with SMTP id
+ 586e51a60fabf-15027746720so19202399fac.13
+ for <alsa-devel@alsa-project.org>; Mon, 02 Jan 2023 09:29:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=ralston.id.au; s=google;
+ h=content-transfer-encoding:to:subject:message-id:date:from
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=MO3PF6p+afXm5zn13bWM83e/wB85pg2FekVhsPuYcGs=;
+ b=pkJ6DHVo7HHwKQEtGFFNvfZ9sHymqGr4Bj+Gz8KCtTeq280xzPfMNzP0OevL3ZUcJ/
+ pJePiusWU12+zVf8ThBOP8EyZcrB5A6kryr+iE1DHm53vL5jZ8cRvOcCB0QaZWrySe91
+ DX0C2/NkNieipZxOw0AfWPZHuCLqAFxT9oK5w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:to:subject:message-id:date:from
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=MO3PF6p+afXm5zn13bWM83e/wB85pg2FekVhsPuYcGs=;
+ b=qblCRgTuWu2mZO1CVAQ+nSdNkE0v++gOiyWiTpKVgJRd1x9M6CRSJvJMhx7AOo/DGI
+ ppj3RtR8SO1sztrW0hCNpkwZYHagxMfI7SAJSGEyqex6o9ShK6RDFjGY8Ufk0jIj7Bay
+ ATUMlqVDBImWpggMkjlb9WX2pUJA/Wunfbt3YAzwdxqq5kS5fAdUBhPVvztTscvJuX+5
+ s4qA0f2oGsRE9OegWa0gWBuRj24uY5vwvlvSo7gvNLgWlyjA8dWuF0/4sTGfsIgv1xYW
+ 643Ian0lNIrxEpFOXayBguW+9VxM/QNqW7//Thyafwo4QRZZoyJEjzYJgQZc8BkAtJsk
+ p/tQ==
+X-Gm-Message-State: AFqh2kq8DCIW4sEr2xPcZXDqxJ1ZwAqviPRl8mPIkBceYSDxYKGPGB9Y
+ BZ0FMj7W9g6FY6WGy1RwAUJy4nXqWmBUDhPqkkNv2jD9Oi6mYyxp/nU=
+X-Google-Smtp-Source: AMrXdXvyO8uVbMPjy4iw+DDTHcdUfmkOnyofYofSpArK6026+iSlt2535pEyIlkwhrLzSC/0boyvrHeOm2rfLYU88QY=
+X-Received: by 2002:a05:6870:8dcf:b0:150:a904:9f9a with SMTP id
+ lq15-20020a0568708dcf00b00150a9049f9amr414910oab.235.1672680589778; Mon, 02
+ Jan 2023 09:29:49 -0800 (PST)
+MIME-Version: 1.0
+From: Michael Ralston <michael@ralston.id.au>
+Date: Tue, 3 Jan 2023 04:29:13 +1100
+Message-ID: <CAC2975JXkS1A5Tj9b02G_sy25ZWN-ys+tc9wmkoS=qPgKCogSg@mail.gmail.com>
+Subject: USB-Audio regression on behringer UMC404HD
+To: alsa-devel@alsa-project.org, regressions@lists.linux.dev, 
+ stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailman-Approved-At: Tue, 03 Jan 2023 15:09:07 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,35 +87,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, regressions@lists.linux.dev,
- Takashi Iwai <tiwai@suse.com>, stable@vger.kernel.org,
- Thorsten Leemhuis <regressions@leemhuis.info>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 03 Jan 2023 14:10:46 +0100,
-Michael Ralston wrote:
-> 
-> Working, 6.0.16-lqx1
-> https://hastebin.com/omoqasiqek.apache
-> 
-> Not working, 6.1.1-arch1-1.1
-> https://hastebin.com/itasefinaz.apache
-> 
-> I built the working kernel myself with patched sources. Let me know if
-> you'd like me to run a test with any particular kernel build or
-> version.
+I'm currently experiencing a regression with the audio on my Behringer
+U-Phoria UMC404HD.
 
-Thanks, that's helpful.
+Alsa info is at:
+http://alsa-project.org/db/?f=3Df453b8cd0248fb5fdfa38e1b770e774102f66135
 
-Could you try to revert the commit
-9902b303b5ade208b58f0dd38a09831813582211
-    ALSA: usb-audio: Avoid unnecessary interface change at EP close
-as a blind shot?
+I get no audio in or out for this device with kernel versions 6.1.1 and 6.1=
+.2.
 
-Also, there has been a series of fixes for other issues, and it might
-be worth to try as well:
-  https://lore.kernel.org/r/20230102170759.29610-1-tiwai@suse.de
+The versions I have tried that work correctly include 5.15.86 LTS,
+5.19.12, and 6.0.13=E2=80=9316.
 
+When I run this on 6.1.1, it will just hang until I ctrl+c:
+aplay -D plughw:1,0 /usr/share/sounds/alsa/Front_Center.wav
 
-Takashi
+I've run strace on that command, and its output is at:
+https://pastebin.com/WaxJpTMe
+
+Nothing out of the ordinary occurs when aplay is run, according to the
+kernel logs.
+
+Please let me know how I can provide additional debugging information
+if necessary.
+
+Thanks
+Michael
