@@ -4,84 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29062C3DA7A
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Jan 2023 17:10:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F067C3DA7A
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Jan 2023 17:10:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41110A331;
-	Mon,  2 Jan 2023 18:09:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41110A331
+	by alsa0.perex.cz (Postfix) with ESMTPS id 579D5A322;
+	Mon,  2 Jan 2023 18:10:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 579D5A322
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672679401;
-	bh=YJCtI4ZSEmr9+LK//D8NWDALLm1+s3M3cIYSjl5IwJk=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1672679452;
+	bh=SPEUJJ7gFPuXiT9y7ZKN7fqkZrdtbCd8+o/wYNI1T+I=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=LZQEw95IPorjLSN6vSZbFu7jLgxYyhn3D33XIv+0+1+4zSxvKcbNG33dCu/p1OULk
-	 6KgK4hd4C16jLGUUgYKMuGUDvZ/QsRbL1AMxCZkbXn/Wfc1aOOEkoDKKux2tLWcuqZ
-	 /w7xqc9i/1nBSenwaNXNQ9ag19V4WKbWIpt7Jdzw=
+	 Cc:From;
+	b=hFaJVuQKLGiiDK62sMkiWiu+LRUm9jivIvXdwT9mTIUKxt5RntxyrG7uNtobh0K2G
+	 Z9YTsDzHPWT/h2AkU0+VserImOrYCFw97NT1E7on0I5Ov/r/NbGDU+XVC+P6+DddSI
+	 mkRqnYlKZK9H/p9Dfbb3Y7N81N6qGmFquK1nrn3A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4D7C0F80542;
-	Mon,  2 Jan 2023 18:08:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5292F8023A;
+	Mon,  2 Jan 2023 18:10:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 08C34F80543; Mon,  2 Jan 2023 18:08:14 +0100 (CET)
+ id 70171F8023B; Mon,  2 Jan 2023 18:10:00 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 73F85F800C0
- for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2023 18:08:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73F85F800C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id C55AAF80238
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2023 18:09:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C55AAF80238
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=cANLTvui; 
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=Hzz84Ekl; 
  dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=qhLWtjBC
+ header.s=susede2_ed25519 header.b=Bw1ssHDi
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id DB1B934284;
- Mon,  2 Jan 2023 17:08:06 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 64CA134286;
+ Mon,  2 Jan 2023 17:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1672679286; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ t=1672679396; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gBho6uBNIZXwYIeeEbm+io1U/M7K9GbwJKCZ443DdEk=;
- b=cANLTvuiKnM1xDG/joGhcaer5VCyOqbykiD21zTL8WjoZWl5sgU1vzJoPzRamkp0y7iFqu
- rOLL0ReTQG7Wd/5dlZ30L8KfSP741iFDmKfuI3jnfWdS1eoNwgeA6N9pRmACq3jZB6HjBl
- E1O8zmZstvP1S6PaIaRJ5A1pMUKLeJY=
+ bh=m2I0mFQsAvG5cnZtSOHxAjYoRYDejE1QvaIlbPZUZ6U=;
+ b=Hzz84EklxAb+ScUqIEL5aeA5msCJx5wmZOnb66KHuBv3L3D29RO6K4+8r9MRfb1Za5Jmw4
+ TlYC5IOPtB2ne+JbSj1tyTwxHTxyH+daJQNOAOzqtNA52Y/cZq1uN21bU0+GoFEfPMLpAS
+ E8ogRnV1BOB/HR74ihc6OFrmWL1Z7sM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1672679286;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
+ s=susede2_ed25519; t=1672679396;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=gBho6uBNIZXwYIeeEbm+io1U/M7K9GbwJKCZ443DdEk=;
- b=qhLWtjBC7PEmpS8vq0iIjUaxJJn1EFs9sxmt6RCSMMz+0vkFYvAVNP3MWyqLiwgbWSZCSi
- W4+lvOXsZBYHdzDQ==
+ bh=m2I0mFQsAvG5cnZtSOHxAjYoRYDejE1QvaIlbPZUZ6U=;
+ b=Bw1ssHDiGN0cFTbhfKZg42jeunofHxACdvILaL0KlUyFYTb/hHyXJANFhvE9h+pVudAKr8
+ QovEROdnTAh8j7DQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C35D1139ED;
- Mon,  2 Jan 2023 17:08:06 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3872D13427;
+ Mon,  2 Jan 2023 17:09:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id CIsVL3YPs2ODGAAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 02 Jan 2023 17:08:06 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id hjb+C+QPs2NKGQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 02 Jan 2023 17:09:56 +0000
+Date: Mon, 02 Jan 2023 18:09:55 +0100
+Message-ID: <87fscssw0s.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/3] ALSA: usb-audio: Make sure to stop endpoints before
- closing EPs
-Date: Mon,  2 Jan 2023 18:07:57 +0100
-Message-Id: <20230102170759.29610-2-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230102170759.29610-1-tiwai@suse.de>
-References: <20230102170759.29610-1-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 0/7] kselftest/alsa: pcm-test improvements
+In-Reply-To: <20221208-alsa-pcm-test-hacks-v4-0-5a152e65b1e1@kernel.org>
+References: <20221208-alsa-pcm-test-hacks-v4-0-5a152e65b1e1@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,40 +91,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, linux-kselftest@vger.kernel.org,
+ Shuah Khan <shuah@kernel.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-At the PCM hw params, we may re-configure the endpoints and it's done
-by a temporary EP close followed by re-open.  A potential problem
-there is that the EP might be already running internally at the PCM
-prepare stage; it's seen typically in the playback stream with the
-implicit feedback sync.  As this stream start isn't tracked by the
-core PCM layer, we'd need to stop it explicitly, and that's the
-missing piece.
+On Tue, 27 Dec 2022 18:06:46 +0100,
+Mark Brown wrote:
+> 
+> This series provides a bunch of quick updates which should make the
+> coverage from pcm-test a bit more useful, it adds some support for
+> skipping tests when the hardware/driver is unable to support the
+> requested configuration, support for providing user visible descriptions
+> and then expands the set of cases we cover to include more sample rates
+> and channel counts.  This should exercise switching between 8kHz and
+> 44.1kHz based rates and ensure that clocking doesn't get confused by
+> non-stereo channel counts, both of which are I expect common real world
+> errors, at least for embedded cards.
+> 
+> v4:
+>  - Rebase onto v6.2-rc1.
+> v3:
+>  - "Rebase" onto Takashi's current tree (with a revert).
+>  - Include Jaroslav's changes to specify all tests in the configuration
+>    file parsing.
+>  - Add a new "description" field to the configuration instead of trying
+>    to name the tests.
+>  - Always run both default and per-system tests, logging our success at
+>    setting the per-system configurations as a separate test since they
+>    shouldn't fail.
+> v2:
+>  - Rebase onto Takashi's current tree.
+>  - Tweak the buffer sizes for the newly added cases, don't be quite
+>    so ambitious in how big a buffer we request for 96kHz and don't
+>    go quite so small for 8kHz since some devices start hitting lower
+>    limits on period size and struggle to deliver accurate timing.
+> 
+> To: Takashi Iwai <tiwai@suse.com>
+> To: Jaroslav Kysela <perex@perex.cz>
+> To: Shuah Khan <shuah@kernel.org>
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-kselftest@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 
-This patch adds the stop_endpoints() call at snd_usb_hw_params() to
-assure the stream stop before closing the EPs.
+Applied all patches now to for-next branch.
 
-Fixes: bf6313a0ff76 ("ALSA: usb-audio: Refactor endpoint management")
-Link: https://lore.kernel.org/r/4e509aea-e563-e592-e652-ba44af6733fe@veniogames.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/pcm.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 99a66d0ef5b2..7fc95ae9b2f0 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -525,6 +525,8 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
- 		if (snd_usb_endpoint_compatible(chip, subs->data_endpoint,
- 						fmt, hw_params))
- 			goto unlock;
-+		if (stop_endpoints(subs, false))
-+			sync_pending_stops(subs);
- 		close_endpoints(chip, subs);
- 	}
- 
--- 
-2.35.3
+thanks,
 
+Takashi
