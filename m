@@ -4,74 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1448C3DA7A
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Jan 2023 20:31:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E33B7C3DA7A
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Jan 2023 20:31:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CDEEA8BC;
-	Mon,  2 Jan 2023 21:30:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CDEEA8BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 83C7EA8C3;
+	Mon,  2 Jan 2023 21:30:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83C7EA8C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672691477;
-	bh=7rKbo4AdxYG+GzOO5clxIrqEj+fvxpX/EkpIQCJnFrg=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=JoM1zNlTfUYz49JqPxLU/P/f4gTWYVfQRASNqkx4gKZrfA6X4O2sod7REQJBtCFeV
-	 rwakIuFO6ER7x5WF5puUxnjDJIOdAmXfnS6Nq1aQj0bTryOcrc3lhyAbq2smPr/0Sn
-	 UX0NabbvwlDjzd5/2HjLkZUNMt9Pn54prDioj4rk=
+	s=default; t=1672691501;
+	bh=Tuh2SSmJnpDPTtlBWbyywMESzagl6YRuFPwYuCTfJEU=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=StADf+tfdu9ySx7yA1MocWjY6tqORYa9YaclnlBFsvJQJ3cvLazua8CA3dci56t/+
+	 oPJoVfeY7a2RET87JjMrlcyl03MoG3vzfDAh1ebtNJZQeDhZPSejx4s8uCIGg2/wui
+	 lVuBm1JReONrTZn+SSv/7qnuF4LI7/JNES1oihu0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4E64F80539;
-	Mon,  2 Jan 2023 21:30:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C738F8032D;
+	Mon,  2 Jan 2023 21:30:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63FBFF804A9; Mon,  2 Jan 2023 21:29:59 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 9B74BF80542; Mon,  2 Jan 2023 21:30:01 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AD4D2F80240
- for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2023 21:29:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD4D2F80240
+ by alsa1.perex.cz (Postfix) with ESMTPS id AA9C1F80238
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2023 21:29:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA9C1F80238
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=bT0uquRk
+ header.s=Intel header.b=YIMbhNSa
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1672691395; x=1704227395;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=7rKbo4AdxYG+GzOO5clxIrqEj+fvxpX/EkpIQCJnFrg=;
- b=bT0uquRk0G7CW4mFH6PFeUAgj0m2vHVvnB4jCeOs9350i3VlRJYvmIkc
- EUgjLRGwI6YcgtJCjRb+ZtUnqDdq+nqIY7MqkrT8MrDjswyuMrV3EHHu+
- tr2f7f/k5pzIQd/csBI1eEkZkJXMN6QRnDuoxdmHEvRZlWMyRSitKz679
- uWwVb3GqEIWsEHLeQvwg1MCHSWGt4NT5hAmUNbQiLvT3JIhzYaBnRqjBL
- PVuGp9+38618rPiuM5Ug8xTD837a4MsFp1YAEwxjrASC19rV/r8ODWW2G
- Natjqlrm3gJiDqWvj6LHIspM/auqmibRGCQ+xSpNI7soac5EXENkmNCph g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10578"; a="321602415"
-X-IronPort-AV: E=Sophos;i="5.96,295,1665471600"; d="scan'208";a="321602415"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=Tuh2SSmJnpDPTtlBWbyywMESzagl6YRuFPwYuCTfJEU=;
+ b=YIMbhNSawYVPDiM9zPcVcZ1NwEJNAhmESfA56amU5LPMjm7PBqgrjYCu
+ G4m3yQVE8emX1CqJUGbq0/I1cTwnRBbbCQmNLtampmVHx58FLGb1P0H/2
+ eXF8DwgXoVDNOIEwyHBcVF73U+Ymw/Oh+hreFVO9VLpuT+VkZKKeleg5L
+ +usfZrS2Ttyzsjm+GdrwqgObuuZF4iqRArOqpRktoocg3mZQEqq8RBxWJ
+ zUClpRHHfvyghrVgagSgFgcQRvrK6RlheSzODAwRxcm1AE+RmGjozWzRn
+ OIhOq+I6Z3MtCOUCa7LysTg5qXNlktIx06uprNzXLiOOVQ5c5Xhv/6sQ6 A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10578"; a="320252183"
+X-IronPort-AV: E=Sophos;i="5.96,295,1665471600"; d="scan'208";a="320252183"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  02 Jan 2023 12:29:48 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10578"; a="717889964"
-X-IronPort-AV: E=Sophos;i="5.96,295,1665471600"; d="scan'208";a="717889964"
+X-IronPort-AV: E=McAfee;i="6500,9779,10578"; a="685170309"
+X-IronPort-AV: E=Sophos;i="5.96,295,1665471600"; d="scan'208";a="685170309"
 Received: from black.fi.intel.com ([10.237.72.28])
- by fmsmga008.fm.intel.com with ESMTP; 02 Jan 2023 12:29:44 -0800
+ by orsmga008.jf.intel.com with ESMTP; 02 Jan 2023 12:29:44 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id CC47B162; Mon,  2 Jan 2023 22:30:16 +0200 (EET)
+ id A66E3F4; Mon,  2 Jan 2023 22:30:16 +0200 (EET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>,
  Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
  Hans de Goede <hdegoede@redhat.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 4/6] ASoC: Intel: bytcr_rt5640: Drop reference count of
- ACPI device after use
-Date: Mon,  2 Jan 2023 22:30:12 +0200
-Message-Id: <20230102203014.16041-4-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/6] ASoC: amd: acp-es8336: Drop reference count of ACPI
+ device after use
+Date: Mon,  2 Jan 2023 22:30:09 +0200
+Message-Id: <20230102203014.16041-1-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20230102203014.16041-1-andriy.shevchenko@linux.intel.com>
-References: <20230102203014.16041-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -105,48 +102,30 @@ count at the correct place.
 While at it, move to acpi_dev_put() as symmetrical call to the
 acpi_dev_get_first_match_dev().
 
-Fixes: a232b96dcece ("ASoC: Intel: bytcr_rt5640: use HID translation util")
+Fixes: 02527c3f2300 ("ASoC: amd: add Machine driver for Jadeite platform")
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/amd/acp-es8336.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 4699ca79f3ea..79e0039c79a3 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -1636,13 +1636,18 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	if (adev) {
- 		snprintf(byt_rt5640_codec_name, sizeof(byt_rt5640_codec_name),
- 			 "i2c-%s", acpi_dev_name(adev));
+diff --git a/sound/soc/amd/acp-es8336.c b/sound/soc/amd/acp-es8336.c
+index 2fe8df86053a..89499542c803 100644
+--- a/sound/soc/amd/acp-es8336.c
++++ b/sound/soc/amd/acp-es8336.c
+@@ -198,9 +198,11 @@ static int st_es8336_late_probe(struct snd_soc_card *card)
+ 	int ret;
+ 
+ 	adev = acpi_dev_get_first_match_dev("ESSX8336", NULL, -1);
+-	if (adev)
 -		put_device(&adev->dev);
- 		byt_rt5640_dais[dai_index].codecs->name = byt_rt5640_codec_name;
- 	} else {
- 		dev_err(dev, "Error cannot find '%s' dev\n", mach->id);
- 		return -ENXIO;
- 	}
- 
-+	codec_dev = acpi_get_first_physical_node(adev);
-+	acpi_dev_put(adev);
-+	if (!codec_dev)
-+		return -EPROBE_DEFER;
-+	priv->codec_dev = get_device(codec_dev);
++	if (!adev)
++		return -ENODEV;
 +
- 	/*
- 	 * swap SSP0 if bytcr is detected
- 	 * (will be overridden if DMI quirk is detected)
-@@ -1717,11 +1722,6 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 		byt_rt5640_quirk = quirk_override;
- 	}
+ 	codec_dev = acpi_get_first_physical_node(adev);
++	acpi_dev_put(adev);
+ 	if (!codec_dev)
+ 		dev_err(card->dev, "can not find codec dev\n");
  
--	codec_dev = acpi_get_first_physical_node(adev);
--	if (!codec_dev)
--		return -EPROBE_DEFER;
--	priv->codec_dev = get_device(codec_dev);
--
- 	if (byt_rt5640_quirk & BYT_RT5640_JD_HP_ELITEP_1000G2) {
- 		acpi_dev_add_driver_gpios(ACPI_COMPANION(priv->codec_dev),
- 					  byt_rt5640_hp_elitepad_1000g2_gpios);
 -- 
 2.35.1
 
