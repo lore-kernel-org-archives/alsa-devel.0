@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57D67C3DA7A
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Jan 2023 20:31:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 458F4C3DA7A
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Jan 2023 20:32:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8FEF3A8CF;
-	Mon,  2 Jan 2023 21:31:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FEF3A8CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 795A9A8D5;
+	Mon,  2 Jan 2023 21:31:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 795A9A8D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672691513;
-	bh=LwgfX1nuvuxjaGMvY2eRkuLAJY23wtVpSS451UENzDA=;
+	s=default; t=1672691524;
+	bh=jaaT5T3K18xgkyMdPptdmWzbRbrNy2o8GnbiBUb2YQg=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=gJqW7j8OGR/0Fz3Y0uuygrObXv0MheuB9hPS+W/6I8zBi7LEdn7K3uRo4s2tdJEUh
-	 HRTi4R1dby6+a1mQPtIhdvPCKk4UUAzE/E5G3FQ09I5rmXPllhhVGv+Kc8C0J8nG3N
-	 6etKoPv7G3ri5Z4ctOsSccHBcc9uvleh6Vtqz7n0=
+	b=bvPQQike/fSFss0Kvr0ypVNEE/ZqUjMP77JQg9f2jQIlY4GUdEItUBlBRu2umIkHn
+	 fUT5ogPq+l7k7dNbN2zlevTiiaxB1nFCOW2C+o48r4KzD/RwAzuXnJIFc+pOZFmcb1
+	 lZ1FXJ00o39PfPF5G2IHmZiaC/PpcE8pfddfO4Zk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ABC12F80551;
-	Mon,  2 Jan 2023 21:30:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3607EF80553;
+	Mon,  2 Jan 2023 21:30:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E090EF8053C; Mon,  2 Jan 2023 21:30:02 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id D5733F80543; Mon,  2 Jan 2023 21:30:03 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 972DFF8032D
- for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2023 21:29:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 972DFF8032D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 859AFF8023B
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2023 21:29:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 859AFF8023B
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=JR1K/6m5
+ header.s=Intel header.b=ENurfOcr
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1672691397; x=1704227397;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=LwgfX1nuvuxjaGMvY2eRkuLAJY23wtVpSS451UENzDA=;
- b=JR1K/6m5dN94BjsSbxOEiHpPwcywEGA5gpeBNEXfwKFB/zGgnRIZWVh3
- KqGvGuF/WJz4wnuoiOYvwfS3fZz7DDPC4mtHJi2giA1EZJ0ghfThNIfew
- INu+HSxCzseFLfzsPc5Yz0zWWZJqJARyhcvXZOoWfucSXaT+oDWV2N0Nq
- QSH95f09PsM9iCsufAHFgV2KCFkZS9+/NCJwwBE+V9pysO3qgGBDjnYOA
- K55He6UZipQGwDgqg3/fraO5t8RbbLiiTEjUn4dBJkkMnhHj7dTniA9Tn
- 0WPSnsY0DkmrzKvVpmI3t4dy+8GYQ2HQrbR4PKMSZdsWoZymR59v0dzZ2 Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10578"; a="320252201"
-X-IronPort-AV: E=Sophos;i="5.96,295,1665471600"; d="scan'208";a="320252201"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Jan 2023 12:29:52 -0800
+ bh=jaaT5T3K18xgkyMdPptdmWzbRbrNy2o8GnbiBUb2YQg=;
+ b=ENurfOcru7dBruveAHCI8/pgrE20QnXAWJ7+lTGVuTIkpMSgaCIEA1Mp
+ yDguvU9ge4MuroQR9MsjFmXC0R63R+2H3wlteZoLSiygqAG98k2H7qpFB
+ vhHdAuKGgAR2WXl/t2xz7vSgL/kyIlM8p09c4g/G4056h3ZOUq7h6PyGw
+ awuHBN+6zf7nVguYPUYvEND+NX+QAf1eCyHw2aLSDuEP5lqPG3/CtPaO3
+ FM05FcPAJJvQTmV5IEhzd8mrROIzXApsLrw0oNmLl7gnfxnN3UFTMRwsR
+ wSGFcYEEsBUebA/fm934PWSUNYE1E/TCb35wAzl/B6pSkc8tfA4DgOnmX Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10578"; a="321602423"
+X-IronPort-AV: E=Sophos;i="5.96,295,1665471600"; d="scan'208";a="321602423"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Jan 2023 12:29:48 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10578"; a="685170321"
-X-IronPort-AV: E=Sophos;i="5.96,295,1665471600"; d="scan'208";a="685170321"
+X-IronPort-AV: E=McAfee;i="6500,9779,10578"; a="717889962"
+X-IronPort-AV: E=Sophos;i="5.96,295,1665471600"; d="scan'208";a="717889962"
 Received: from black.fi.intel.com ([10.237.72.28])
- by orsmga008.jf.intel.com with ESMTP; 02 Jan 2023 12:29:49 -0800
+ by fmsmga008.fm.intel.com with ESMTP; 02 Jan 2023 12:29:44 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id E10DD220; Mon,  2 Jan 2023 22:30:16 +0200 (EET)
+ id D6DAF1CA; Mon,  2 Jan 2023 22:30:16 +0200 (EET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>,
  Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
  Hans de Goede <hdegoede@redhat.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 6/6] ASoC: Intel: sof_es8336: Drop reference count of ACPI
- device after use
-Date: Mon,  2 Jan 2023 22:30:14 +0200
-Message-Id: <20230102203014.16041-6-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 5/6] ASoC: Intel: bytcr_wm5102: Drop reference count of
+ ACPI device after use
+Date: Mon,  2 Jan 2023 22:30:13 +0200
+Message-Id: <20230102203014.16041-5-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20230102203014.16041-1-andriy.shevchenko@linux.intel.com>
 References: <20230102203014.16041-1-andriy.shevchenko@linux.intel.com>
@@ -105,48 +105,26 @@ count at the correct place.
 While at it, move to acpi_dev_put() as symmetrical call to the
 acpi_dev_get_first_match_dev().
 
-Fixes: a164137ce91a ("ASoC: Intel: add machine driver for SOF+ES8336")
+Fixes: 9a87fc1e0619 ("ASoC: Intel: bytcr_wm5102: Add machine driver for BYT/WM5102")
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_es8336.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/intel/boards/bytcr_wm5102.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
-index 773e5d1d87d4..894b6610b9e2 100644
---- a/sound/soc/intel/boards/sof_es8336.c
-+++ b/sound/soc/intel/boards/sof_es8336.c
-@@ -681,7 +681,6 @@ static int sof_es8336_probe(struct platform_device *pdev)
- 	if (adev) {
- 		snprintf(codec_name, sizeof(codec_name),
- 			 "i2c-%s", acpi_dev_name(adev));
--		put_device(&adev->dev);
- 		dai_links[0].codecs->name = codec_name;
- 
- 		/* also fixup codec dai name if relevant */
-@@ -692,16 +691,19 @@ static int sof_es8336_probe(struct platform_device *pdev)
- 		return -ENXIO;
+diff --git a/sound/soc/intel/boards/bytcr_wm5102.c b/sound/soc/intel/boards/bytcr_wm5102.c
+index 1669eb3bd80f..c0706537f673 100644
+--- a/sound/soc/intel/boards/bytcr_wm5102.c
++++ b/sound/soc/intel/boards/bytcr_wm5102.c
+@@ -411,9 +411,9 @@ static int snd_byt_wm5102_mc_probe(struct platform_device *pdev)
+ 		return -ENOENT;
  	}
+ 	snprintf(codec_name, sizeof(codec_name), "spi-%s", acpi_dev_name(adev));
+-	put_device(&adev->dev);
  
--	ret = snd_soc_fixup_dai_links_platform_name(&sof_es8336_card,
--						    mach->mach_params.platform);
--	if (ret)
--		return ret;
--
- 	codec_dev = acpi_get_first_physical_node(adev);
+ 	codec_dev = bus_find_device_by_name(&spi_bus_type, NULL, codec_name);
 +	acpi_dev_put(adev);
  	if (!codec_dev)
  		return -EPROBE_DEFER;
- 	priv->codec_dev = get_device(codec_dev);
- 
-+	ret = snd_soc_fixup_dai_links_platform_name(&sof_es8336_card,
-+						    mach->mach_params.platform);
-+	if (ret) {
-+		put_device(codec_dev);
-+		return ret;
-+	}
-+
- 	if (quirk & SOF_ES8336_JD_INVERTED)
- 		props[cnt++] = PROPERTY_ENTRY_BOOL("everest,jack-detect-inverted");
  
 -- 
 2.35.1
