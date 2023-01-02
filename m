@@ -4,89 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B57FC3DA7A
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Jan 2023 16:58:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96743C3DA7A
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Jan 2023 17:09:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D798BA272;
-	Mon,  2 Jan 2023 17:58:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D798BA272
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03225A318;
+	Mon,  2 Jan 2023 18:08:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03225A318
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672678731;
-	bh=TS8wucvuOA6PMuC3amtDhr8CEznJvGT3XsTfFJevJOU=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=WYtKaS8MDqH0qZ1B5Ky/wZUnpbr9E++eHqG7Wuo6iM2Nu8OimEZmK9qUlIYVAp7yE
-	 mHZmrTs9jvFUuPK5wbP8V3WiwtjNtCssJd8KgOCRLYlTfrC1MtdpYIiJYcoQQGk7YC
-	 IiYJLp7+oW0lPFJQiLkSp8xHeceuSKhyFmioR9E0=
+	s=default; t=1672679341;
+	bh=psyMVYItYUzp8y/djPNK+pe4pHP1hy42Uy8/1v6WnRM=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=uGeqJuxQLwW/dI3mNO1nA2Bn0zq9z6TeajXiDDszf7U2sgNzaEQZwz0m9X8VIBFE+
+	 1omYC8Fiax5qkjqOl+rDnUDEVCGKZErzO+88J7uPNHJRAqtJ+8B3eIydAu/cq57wXy
+	 UdT3nNDvsvyg0WbmPY3a/SZt4ICFjgh8LYfuYiHQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8207CF80238;
-	Mon,  2 Jan 2023 17:58:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 757A1F8023A;
+	Mon,  2 Jan 2023 18:08:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D5284F8023A; Mon,  2 Jan 2023 17:57:59 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ id 45674F8032D; Mon,  2 Jan 2023 18:08:09 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2688F800D0
- for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2023 17:57:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2688F800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7DD2FF80238
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2023 18:08:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DD2FF80238
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=iivcGNyO; 
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=QpcbhNak; 
  dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=tsubDpmu
+ header.s=susede2_ed25519 header.b=XWTIImqv
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id F127C22AF9;
- Mon,  2 Jan 2023 16:57:56 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C21FA5C77D;
+ Mon,  2 Jan 2023 17:08:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1672678676; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0VCW7WEglsT1ABMAkatgZnshfT0S6Zhh+nZW33FqOuE=;
- b=iivcGNyOoD3pZGrluOxdlsDme3LHrTVmCi23nZRCqc0CCAZKQ3/KfhMfHnTLAQlgjRB9JK
- yHOsM9q+aTF5vqORk3tHcN7inQ8AN4HvfjQ3pBTRorsbzb94N3Pu3fKqZ9k9rPsVJmJnkW
- zZb+kcGM07i0OYMADq7MxhPiVp8hsQY=
+ t=1672679286; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=mvhngejJzfexVLKA02m1eN9cGyfwiikmnB6xGwVydzo=;
+ b=QpcbhNakOd9OWPDtvcGPgCG3qmmYLwBFqOwwKLxXC2+66rZZu/HptxyGURn4Rc23FnDN5+
+ KrM9qK+nqVSNjuo5j28Sp0spltoeE5+1ryaWv+PznzKNMDqbcnx2yk+LkcFhKlfcloDPeN
+ iD22vo6f4d4IDbOz4czvrDp0sTu5AmI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1672678676;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=0VCW7WEglsT1ABMAkatgZnshfT0S6Zhh+nZW33FqOuE=;
- b=tsubDpmu+otG9iJm9qL1WacaZrHEV9scMDwYXtulC59gOpfDApvG8Pc3LBYhYmv5ku/uMj
- 4bPlZwf9J2AqpYDQ==
+ s=susede2_ed25519; t=1672679286;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=mvhngejJzfexVLKA02m1eN9cGyfwiikmnB6xGwVydzo=;
+ b=XWTIImqv3lKbxMydZb3xd0h0bZwN7Ox3LKvY7se8/FwGGMdz2zxUea+R15g6z32mIARHm7
+ lBoxIli6tC/9ssDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C259D139C8;
- Mon,  2 Jan 2023 16:57:56 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A381813427;
+ Mon,  2 Jan 2023 17:08:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id cLYcLhQNs2P/EwAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 02 Jan 2023 16:57:56 +0000
-Date: Mon, 02 Jan 2023 17:57:56 +0100
-Message-ID: <87lemkswkr.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id Oyg6J3YPs2ODGAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 02 Jan 2023 17:08:06 +0000
 From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Regression playing 24bit/96kHz audio on USB audio interface
- between 5.10.94 and 5.15.21
-In-Reply-To: <87wn67wvyf.wl-tiwai@suse.de>
-References: <4e509aea-e563-e592-e652-ba44af6733fe@veniogames.com>
- <9da2f631-4b45-9c5e-4349-488eea9436aa@veniogames.com>
- <Y5ZGw/3GHXSUduEc@geday>
- <99245e87-f970-5660-d2af-82180e7a98d3@leemhuis.info>
- <9d663e28-88fb-aa96-574b-e92d6214aefe@veniogames.com>
- <5ba7868c-5ffd-81fc-778c-a7b5f8db50f7@veniogames.com>
- <47ec3cbb-19d1-ead1-46e8-3558ee7a8bcb@perex.cz>
- <87wn67wvyf.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 0/3] ALSA: usb-audio: Fix a few implicit fb sync issues
+Date: Mon,  2 Jan 2023 18:07:56 +0100
+Message-Id: <20230102170759.29610-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,98 +86,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Thorsten Leemhuis <regressions@leemhuis.info>,
- Takashi Iwai <tiwai@suse.com>, Ruud van Asseldonk <ruud@veniogames.com>,
- Geraldo Nascimento <geraldogabriel@gmail.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 31 Dec 2022 14:20:56 +0100,
-Takashi Iwai wrote:
-> 
-> On Sat, 31 Dec 2022 13:10:18 +0100,
-> Jaroslav Kysela wrote:
-> > 
-> > On 31. 12. 22 12:38, Ruud van Asseldonk wrote:
-> > > Hi all,
-> > > 
-> > > I bisected this and identified e4ea77f8e53f9accb9371fba34c189d0447ecce0
-> > > (ALSA: usb-audio: Always apply the hw constraints for implicit fb sync)
-> > > as the first commit where it is no longer possible to change the sample
-> > > rate. On the parent commit, my sample program successfully changes the
-> > > sample rate from 44100 Hz to 96000 Hz, but on e4ea77f8e53f9, the second
-> > > call to snd_pcm_hw_params fails.
-> > 
-> > There is an easy workaround - call snd_pcm_hw_free() between the
-> > params setup. This call ensure that the sync ep is freed. I can just
-> > confirm that this
-> > problem is only for USB hw with the implicit feedback (tested with 6.0.11 kernel).
-> > 
-> > I will try to debug this when I find a little free time. Perhaps,
-> > Takashi may have a straight idea, what's wrong. When only one stream
-> > is used, this hw_params call should succeed, too.
-> 
-> The patch like below might help (note: totally untested).
-> 
-> My wild guess is that it's an internal stream start for the implicit
-> fb case at prepare without actually starting a PCM stream, and it
-> wasn't stopped properly before the second hw_params call.
+Hi,
 
-Looking at the problem again, I think this is a different problem from
-the patch I've sent.  This is rather the hw_params that becomes too
-restrictive once after the implicit sync is set up.  A workaround
-patch is below.
-
-The previous patch is still valid, though.  I'm going to submit a
-series of fixes.
+this is a series of patches for addressing the remaining problem with
+the implicit fb sync.  The first one is to cover the left over EP run
+state at re-configuring PCM.  The second one is a workaround for a
+regression with the hw constraints, and the last one is the
+refactoring and fix for the multiple EPs assigned in the format list.
 
 
 Takashi
 
--- 8< --
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Relax hw constraints for implicit fb sync
+===
 
-The fix commit the commit e4ea77f8e53f ("ALSA: usb-audio: Always apply
-the hw constraints for implicit fb sync") tried to address the bug
-where an incorrect PCM parameter is chosen when two (implicit fb)
-streams are set up at the same time.  This change had, however, some
-side effect: once when the sync endpoint is chosen and set up, this
-restriction is applied at the next hw params unless it's freed via hw
-free explicitly.
+Takashi Iwai (3):
+  ALSA: usb-audio: Make sure to stop endpoints before closing EPs
+  ALSA: usb-audio: Relax hw constraints for implicit fb sync
+  ALSA: usb-audio: More refactoring of hw constraint rules
 
-This patch is a workaround for the problem by relaxing the hw
-constraints a bit for the implicit fb sync.  We still keep applying
-the hw constraints for implicit fb sync, but only when the matching
-sync EP is being used by other streams.
+ sound/usb/pcm.c | 217 ++++++++++++++++++++++++++++++------------------
+ 1 file changed, 134 insertions(+), 83 deletions(-)
 
-Fixes: e4ea77f8e53f ("ALSA: usb-audio: Always apply the hw constraints for implicit fb sync")
-Link: https://lore.kernel.org/r/4e509aea-e563-e592-e652-ba44af6733fe@veniogames.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/pcm.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 7fc95ae9b2f0..2fd4ecc1b25a 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -937,8 +937,13 @@ get_sync_ep_from_substream(struct snd_usb_substream *subs)
- 			continue;
- 		/* for the implicit fb, check the sync ep as well */
- 		ep = snd_usb_get_endpoint(chip, fp->sync_ep);
--		if (ep && ep->cur_audiofmt)
--			return ep;
-+		if (ep && ep->cur_audiofmt) {
-+			/* ditto, if the sync (data) ep is used by others,
-+			 * this stream is restricted by the sync ep
-+			 */
-+			if (ep != subs->sync_endpoint || ep->opened > 1)
-+				return ep;
-+		}
- 	}
- 	return NULL;
- }
 -- 
 2.35.3
 
