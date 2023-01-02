@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B67BC3DA7A
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 Jan 2023 11:44:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9DC8C3DA7A
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 Jan 2023 11:44:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4BE0594C1;
-	Mon,  2 Jan 2023 12:43:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BE0594C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B774948C;
+	Mon,  2 Jan 2023 12:43:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B774948C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672659843;
-	bh=d6wy+DLXm/oBYF0ABKbi6hXm0Pyz/2ch1ldCXyNNY9g=;
+	s=default; t=1672659862;
+	bh=8Zhx6l+qF/fWOqGhxfTMp+MsBvcZpLVs/f2y2lBwBbA=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=t68QryCl27n1aO22l9/F9cHPtL3LyegJ3p2HHRgOT3vIohcWTZIoBqZ41agc/OWLR
-	 RxBC5lyCjjRmgfXYvZymx0moELolRqE9tUvTKDP0SPOMLzXtO4JgaJTL2y00uC61bG
-	 l+LbaHo9dF5S6sZFKv5BCfuv8OSN1+KJ/W5lGWJk=
+	b=Qfkqfl9C0L251un3JBSCD1k97xeefJZeIi4NpPximWRevb4Jve+lzBBAYtnrbgm8m
+	 0lkZgVkS+H1eBU2EvdLKJXjZSKYIVI6xhIexDM3+bzPph621fDYW3y10+Zi86avwak
+	 YfmOkb+Y5KAP3j1xvp0JpR89ol26y9zip0ukYHxw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E85EF8055B;
+	by alsa1.perex.cz (Postfix) with ESMTP id E73E2F80553;
 	Mon,  2 Jan 2023 12:42:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3E5B9F80508; Mon,  2 Jan 2023 12:42:08 +0100 (CET)
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com
- [IPv6:2a00:1450:4864:20::134])
+ id 162ADF80551; Mon,  2 Jan 2023 12:42:09 +0100 (CET)
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com
+ [IPv6:2a00:1450:4864:20::12e])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B180F80508
+ by alsa1.perex.cz (Postfix) with ESMTPS id 09972F8032D
  for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2023 12:42:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B180F80508
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09972F8032D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=pAESxmZq
-Received: by mail-lf1-x134.google.com with SMTP id b3so41260379lfv.2
- for <alsa-devel@alsa-project.org>; Mon, 02 Jan 2023 03:42:05 -0800 (PST)
+ header.s=google header.b=zqwcpag5
+Received: by mail-lf1-x12e.google.com with SMTP id g13so41223153lfv.7
+ for <alsa-devel@alsa-project.org>; Mon, 02 Jan 2023 03:42:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=M7DFtOEQGDvLwuUrCQkDtvWR1xrXOtoaEkWgZ64uacE=;
- b=pAESxmZqzAulg8x3sh2OZEaZmiaXyD7bnR4gfS0oPCHgWp7B9PaNXpAl2QtI4rLYjB
- 2CavhcZ5REDROwzAIu0bJwpx60tFdY6w+H1KNuXe418nv5U7R7ZBGe68tsBJjzQJpOTA
- c9y5j3H9QzHDJkuIcdKK0wCB7+xONDKBiqa7btuO41Vw+stxTM7gtUMo+yuyMidqm5c1
- dg7cycmzXZJTHUfmFqCmXHlnY4U2BVO23JVM6Phd/N8DBhEEK56DL1Xv+Jj1GOaVujoq
- Q4IUTCWRrp0yv+Y+bQMpU7AvL8Kg+vOe85MwXs0l0vIXf04nRstEVdb2aHUNJyfHVMzy
- IAfg==
+ bh=s0DGttLpYO77MEtgPKeJIho/3p0G8MvI4IyRdGCB7vI=;
+ b=zqwcpag510R0I1O97o6VuVZ7eDegAgifXOQ6W3qLAzENOo8o5qW4rN02gCLAL6dCsu
+ 2up8OZSLUB52nq77A6YT/Cn8+3bwlzh65dK0BuXJ/yf9BbkmocISqvy3/YFOz5PN0ms3
+ LNBJAao0LkVySQAdAqQTKxYPoz8Bti1VKoKKN691D6hEVgX5JHjhncSMwWmYt41eueFp
+ Bkr+iuNDg1KfXAjvSJem4BQmHAiTMKQEMofOWgGFfvukDZKK2efqVXZcDzHPq1C+bjIC
+ 9ou629mojNGDu9SLn1cOVK3U5kv/bx2gUXOSMvBHnPfs6F385ErLc81fHO7dR8ezmH+3
+ 16ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=M7DFtOEQGDvLwuUrCQkDtvWR1xrXOtoaEkWgZ64uacE=;
- b=k0g83G+5Q0IIXoNXaGYdlSbIxgKHbSKCXOcMwbSuOiAwx9QMCxcTE5bwRhdYEMUv55
- YFwtD1wVACniNKLUrFL/YNI1IWAx+xVRG3cP97viPE+bsRf2pO45Yc+mmqAlFbvSsy2I
- KV8U2O9mXhKQvl4rmSsKw69sEkTybDonxNhGkcaDOxccuSlqn8juuEyUFmYJX3EZi5Cd
- nDFQHUhsbiuEGG+GrrXd6f3D9mBtp0A0LqElRC4trdjUJYidYoKQSPIGMGZHWV3mPepo
- hA62+Z+5eTEgEqyhOh1aKj/klsDbU6ncJdAwJPbZMx/Am90Dj9qK/BZjlm3Y7rlNb5zS
- KZlg==
-X-Gm-Message-State: AFqh2kop81rtuYi6KCmCg6cEtFUGR7UBlqrO0PO+yVNiuuNNBDe28DiP
- P2HYoA+G9UpeyU4/g5VZqpCZiQ==
-X-Google-Smtp-Source: AMrXdXslY2koB25fyMJHnXJFmB+megTwdgyGhMXZZ7fR0vwUCEuuWNE0R9xXrSbXYX+L5ifophOJwg==
-X-Received: by 2002:a05:6512:3d0a:b0:4a4:68b7:d65c with SMTP id
- d10-20020a0565123d0a00b004a468b7d65cmr12398011lfv.67.1672659723363; 
- Mon, 02 Jan 2023 03:42:03 -0800 (PST)
+ bh=s0DGttLpYO77MEtgPKeJIho/3p0G8MvI4IyRdGCB7vI=;
+ b=28g3kyvNK/h+OWbPDdVgjUJr7/9v0HDG4vrh02oSvJ2JlkB9BBpxS3tRR+qWbnla+C
+ yQ73aSVKa7yxHG/uHD1ySB7eb+OON2bizLbhNHz75GCcvp1fEQQ+AbcLI66ZEMtnDTq/
+ 52X8mzSSVZjRlQefBpTmlrKb0U6B1GWanDajHyZ0A5QB2EFA8AyfnHG7BBGBsKrQq+xr
+ RZ1aveY3xpDNK1PY3VZEJf21M6yZnog8AVnpTO7uXP7zsduLzUKhzj2RPpV+uXj+gFMf
+ DHvfBvs1FIRzxx+sXaqmhKqvToS3VcXB4uBy4G0Rvc+g6bt9bKkKrqUnrKv73eyCn2c3
+ 3tgg==
+X-Gm-Message-State: AFqh2kpUk2MzSWeo65omn+Vo1GhdMl3xPDyE1zn4sIPe3kH/VLD5gEfb
+ yyl3+MhaveAeKv3/Di1C81oY9A==
+X-Google-Smtp-Source: AMrXdXvQ4GlhI7AwL8ZBSeQBpJlW54TbgMV0HW6QzbLTFQGu4if90hQWSqplHqqN7UVJYKnBOJGYzQ==
+X-Received: by 2002:a05:6512:3f19:b0:4cb:780:813a with SMTP id
+ y25-20020a0565123f1900b004cb0780813amr8558425lfa.13.1672659724660; 
+ Mon, 02 Jan 2023 03:42:04 -0800 (PST)
 Received: from krzk-bin.NAT.warszawa.vectranet.pl
  (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
  by smtp.gmail.com with ESMTPSA id
- c20-20020ac24154000000b0048a8c907fe9sm4356397lfi.167.2023.01.02.03.42.02
+ c20-20020ac24154000000b0048a8c907fe9sm4356397lfi.167.2023.01.02.03.42.03
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 02 Jan 2023 03:42:02 -0800 (PST)
+ Mon, 02 Jan 2023 03:42:04 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
  Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
@@ -84,10 +84,10 @@ To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH 6/8] arm64: dts: qcom: sdm850-samsung-w737: Use proper WSA881x
- shutdown GPIO polarity
-Date: Mon,  2 Jan 2023 12:41:50 +0100
-Message-Id: <20230102114152.297305-6-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 7/8] arm64: dts: qcom: sm8250-mtp: Use proper WSA881x shutdown
+ GPIO polarity
+Date: Mon,  2 Jan 2023 12:41:51 +0100
+Message-Id: <20230102114152.297305-7-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230102114152.297305-1-krzysztof.kozlowski@linaro.org>
 References: <20230102114152.297305-1-krzysztof.kozlowski@linaro.org>
@@ -117,31 +117,31 @@ The change is not backwards compatible with older Linux kernel.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/sdm850-samsung-w737.dts | 4 ++--
+ arch/arm64/boot/dts/qcom/sm8250-mtp.dts | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm850-samsung-w737.dts b/arch/arm64/boot/dts/qcom/sdm850-samsung-w737.dts
-index daca1e0ad62a..1980080fffa7 100644
---- a/arch/arm64/boot/dts/qcom/sdm850-samsung-w737.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm850-samsung-w737.dts
-@@ -720,7 +720,7 @@ swm: swm@c85 {
- 		left_spkr: speaker@0,3 {
- 			compatible = "sdw10217211000";
- 			reg = <0 3>;
--			powerdown-gpios = <&wcdgpio 1 GPIO_ACTIVE_HIGH>;
-+			powerdown-gpios = <&wcdgpio 1 GPIO_ACTIVE_LOW>;
- 			#thermal-sensor-cells = <0>;
- 			sound-name-prefix = "SpkrLeft";
- 			#sound-dai-cells = <0>;
-@@ -728,7 +728,7 @@ left_spkr: speaker@0,3 {
- 
- 		right_spkr: speaker@0,4 {
- 			compatible = "sdw10217211000";
--			powerdown-gpios = <&wcdgpio 2 GPIO_ACTIVE_HIGH>;
-+			powerdown-gpios = <&wcdgpio 2 GPIO_ACTIVE_LOW>;
- 			reg = <0 4>;
- 			#thermal-sensor-cells = <0>;
- 			sound-name-prefix = "SpkrRight";
+diff --git a/arch/arm64/boot/dts/qcom/sm8250-mtp.dts b/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
+index 3ed8c84e25b8..f3669c1a311e 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
++++ b/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
+@@ -760,7 +760,7 @@ &swr0 {
+ 	left_spkr: speaker@0,3 {
+ 		compatible = "sdw10217211000";
+ 		reg = <0 3>;
+-		powerdown-gpios = <&tlmm 26 GPIO_ACTIVE_HIGH>;
++		powerdown-gpios = <&tlmm 26 GPIO_ACTIVE_LOW>;
+ 		#thermal-sensor-cells = <0>;
+ 		sound-name-prefix = "SpkrLeft";
+ 		#sound-dai-cells = <0>;
+@@ -769,7 +769,7 @@ left_spkr: speaker@0,3 {
+ 	right_spkr: speaker@0,4 {
+ 		compatible = "sdw10217211000";
+ 		reg = <0 4>;
+-		powerdown-gpios = <&tlmm 127 GPIO_ACTIVE_HIGH>;
++		powerdown-gpios = <&tlmm 127 GPIO_ACTIVE_LOW>;
+ 		#thermal-sensor-cells = <0>;
+ 		sound-name-prefix = "SpkrRight";
+ 		#sound-dai-cells = <0>;
 -- 
 2.34.1
 
