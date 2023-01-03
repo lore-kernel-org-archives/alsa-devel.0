@@ -4,57 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B050C46467
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Jan 2023 09:08:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18DF5C3DA7D
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Jan 2023 09:34:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5EC977BA7;
-	Tue,  3 Jan 2023 10:07:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EC977BA7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 68885D0CE;
+	Tue,  3 Jan 2023 10:33:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68885D0CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672736918;
-	bh=q00U9RqLgpUCNmnt+oXctgDHb9Mzc53/vjzLslYvqZY=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1672738465;
+	bh=8bspymwFz4K6h88uElBHnC6FHia361sYJWta5RdARiQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=HSk7rFTK655NIvurOKUbHRwqKDUoVv2+yeu578zts/Fz+WP2oAPZLB6JHx9hO7RtY
-	 kiGmA5Iibf2oj42QgMI3foorUmdAiBhTOYCphL3CUE9naPDMAfniqAIPvDg4dzvQBH
-	 urHMLacC5OARpvJYuh7PmJ/kpklcmv8gtLJiJCCI=
+	b=AmaaeltlwFtmvKN8iUWa4GRMgqo/FYnoEe3nUYcSEaFhQ3CV4Dj6lpBdCsEuUTU1c
+	 jjWuK5PUjInB+JQ7rUDViN7PzFWrAd4ciiyV0A+IWkZuYFVncvRR1xAPJzKPKWm4Yi
+	 KBBXH0nWotGTzvfAyDZDYjLQVTsVCWuAHmg4O2Z8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EDEA7F803DC;
-	Tue,  3 Jan 2023 10:07:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0AC2EF803DC;
+	Tue,  3 Jan 2023 10:33:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55B72F804CB; Tue,  3 Jan 2023 10:07:46 +0100 (CET)
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de
- [80.237.130.52])
+ id 52671F803DC; Tue,  3 Jan 2023 10:33:33 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
- SHA256) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B6EF4F800C0
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2023 10:07:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6EF4F800C0
-Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
- by wp530.webpack.hosteurope.de running ExIM with esmtpsa
- (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
- id 1pCdGo-0004iD-ON; Tue, 03 Jan 2023 10:07:42 +0100
-Message-ID: <bf646395-1231-92f6-7c5a-5b7765596358@leemhuis.info>
-Date: Tue, 3 Jan 2023 10:07:42 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 627C3F800C0
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2023 10:33:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 627C3F800C0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=IA1C64Fa; 
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=UZzIvPGQ
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C34B760F56;
+ Tue,  3 Jan 2023 09:33:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1672738407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=6yqHygOBtDqWMItRY+FSy0nX0VsH+d3P35oXnAvjZ7E=;
+ b=IA1C64FauG4/sdNiSHR9tN5t46VJIutI36ph6lgytUA0fJGqA/lRq7EqYEXRT8MAQhLXVf
+ GK/MC62k0dulmFUhU6vMVZcBxDyECIwQb6OShTUWDYxExn0ZAcjpHnaIiWUkj03f0VgkdA
+ d8OYj/DbwKRRGqa1VQtJucAmrhaxXC4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1672738407;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=6yqHygOBtDqWMItRY+FSy0nX0VsH+d3P35oXnAvjZ7E=;
+ b=UZzIvPGQSXjrLeko0VWBsL6OphqKA435gcDRHnIPlRVFApHL1ZFb7zqUHfi5U+GrowkFDM
+ z/ZIUUBNyCukewAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 984831390C;
+ Tue,  3 Jan 2023 09:33:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id lTxbJGf2s2OgJwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 03 Jan 2023 09:33:27 +0000
+Date: Tue, 03 Jan 2023 10:33:27 +0100
+Message-ID: <87zgb0q7x4.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Michael Ralston <michael@ralston.id.au>
 Subject: Re: USB-Audio regression on behringer UMC404HD
-Content-Language: en-US, de-DE
-To: Michael Ralston <michael@ralston.id.au>, alsa-devel@alsa-project.org,
- regressions@lists.linux.dev, stable@vger.kernel.org
+In-Reply-To: <bf646395-1231-92f6-7c5a-5b7765596358@leemhuis.info>
 References: <CAC2975JXkS1A5Tj9b02G_sy25ZWN-ys+tc9wmkoS=qPgKCogSg@mail.gmail.com>
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <CAC2975JXkS1A5Tj9b02G_sy25ZWN-ys+tc9wmkoS=qPgKCogSg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+ <bf646395-1231-92f6-7c5a-5b7765596358@leemhuis.info>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=BIG5
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de; regressions@leemhuis.info; 1672736865;
- d4298c71; 
-X-HE-SMSGID: 1pCdGo-0004iD-ON
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,61 +95,53 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, regressions@lists.linux.dev,
+ Takashi Iwai <tiwai@suse.com>, stable@vger.kernel.org,
+ Thorsten Leemhuis <regressions@leemhuis.info>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-[TLDR: I'm adding this report to the list of tracked Linux kernel
-regressions; all text you find below is based on a few templates
-paragraphs you might have encountered already already in similar form.
-See link in footer if these mails annoy you.]
-
-[CCing alsa maintainers]
-
-On 02.01.23 18:29, Michael Ralston wrote:
-> I'm currently experiencing a regression with the audio on my Behringer
-> U-Phoria UMC404HD.
+On Tue, 03 Jan 2023 10:07:42 +0100,
+Thorsten Leemhuis wrote:
 > 
-> Alsa info is at:
-> http://alsa-project.org/db/?f=f453b8cd0248fb5fdfa38e1b770e774102f66135
+> [TLDR: I'm adding this report to the list of tracked Linux kernel
+> regressions; all text you find below is based on a few templates
+> paragraphs you might have encountered already already in similar form.
+> See link in footer if these mails annoy you.]
 > 
-> I get no audio in or out for this device with kernel versions 6.1.1 and 6.1.2.
+> [CCing alsa maintainers]
 > 
-> The versions I have tried that work correctly include 5.15.86 LTS,
-> 5.19.12, and 6.0.13â€“16.
-> 
-> When I run this on 6.1.1, it will just hang until I ctrl+c:
-> aplay -D plughw:1,0 /usr/share/sounds/alsa/Front_Center.wav
-> 
-> I've run strace on that command, and its output is at:
-> https://pastebin.com/WaxJpTMe
-> 
-> Nothing out of the ordinary occurs when aplay is run, according to the
-> kernel logs.
-> 
-> Please let me know how I can provide additional debugging information
-> if necessary.
+> On 02.01.23 18:29, Michael Ralston wrote:
+> > I'm currently experiencing a regression with the audio on my Behringer
+> > U-Phoria UMC404HD.
+> > 
+> > Alsa info is at:
+> > http://alsa-project.org/db/?f=f453b8cd0248fb5fdfa38e1b770e774102f66135
+> > 
+> > I get no audio in or out for this device with kernel versions 6.1.1 and 6.1.2.
+> > 
+> > The versions I have tried that work correctly include 5.15.86 LTS,
+> > 5.19.12, and 6.0.13¡V16.
+> > 
+> > When I run this on 6.1.1, it will just hang until I ctrl+c:
+> > aplay -D plughw:1,0 /usr/share/sounds/alsa/Front_Center.wav
+> > 
+> > I've run strace on that command, and its output is at:
+> > https://pastebin.com/WaxJpTMe
+> > 
+> > Nothing out of the ordinary occurs when aplay is run, according to the
+> > kernel logs.
+> > 
+> > Please let me know how I can provide additional debugging information
+> > if necessary.
 
-Thanks for the report. To be sure the issue doesn't fall through the
-cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
-tracking bot:
+Please boot with snd_usb_audio.dyndbg=+p option, and get the kernel
+logs in both working and non-working cases.
 
-#regzbot ^introduced v6.0..v6.1
-#regzbot title alsa: usb: audio stopped working
-#regzbot ignore-activity
+I guess it's a regression due to the hw_params/prepare split, but need
+to check more details.
 
-This isn't a regression? This issue or a fix for it are already
-discussed somewhere else? It was fixed already? You want to clarify when
-the regression started to happen? Or point out I got the title or
-something else totally wrong? Then just reply and tell me -- ideally
-while also telling regzbot about it, as explained by the page listed in
-the footer of this mail.
 
-Reminder for developers: When fixing the issue, add 'Link:' tags
-pointing to the report (see page linked in footer for details).
+thanks,
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+Takashi
