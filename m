@@ -4,53 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4D1EC3DA7D
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Jan 2023 11:28:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91C92C3DA7D
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Jan 2023 12:04:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 505F7D686;
-	Tue,  3 Jan 2023 12:27:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 505F7D686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9173AD8E8;
+	Tue,  3 Jan 2023 13:03:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9173AD8E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672745323;
-	bh=tr1mK9A8nVNJ6yZwPcx9+WhvVvm/NuilBnIrYLrfOrk=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1672747475;
+	bh=f6jo3zRQ4YqE9xK0YE8fx1mhfA8qEZ7IOkwiujgUTsY=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=QH15wEOvLikccITUd44XgqE2vJgG9sL0zzZuHvAcpbSMXEW6w5nlRfBD24rXqQZy0
-	 QybdtjKKHzOW7cVo+Yd+dBJVu67bJk2P92Ln1kadHgGocDm3gofDRbYOUMsRrXLs1P
-	 0zPqWYjh45MyCJxKqrkviGCMkAJobIeIvnh/FNLc=
+	b=qvjRvoB+Fqq09rFfYnjFXVSG1an+LVvni38ikRKlkn6kIQ9oV/lnRnn1TCeVAeIlk
+	 3K8adEELhlxOrDCXqVD1xha0o0HWk6mvcOt/plf0XmEOOSCW1eWmjU1DMS1CXfO9VX
+	 /t2I1bgEIyB/7gAuJAIkAqs/6ArG3BfK1shygiik=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E17AAF8047B;
-	Tue,  3 Jan 2023 12:27:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 352BDF800C0;
+	Tue,  3 Jan 2023 13:03:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9EB60F8047B; Tue,  3 Jan 2023 12:27:51 +0100 (CET)
-Received: from out29-177.mail.aliyun.com (out29-177.mail.aliyun.com
- [115.124.29.177])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ id 8DD87F804AA; Tue,  3 Jan 2023 13:03:43 +0100 (CET)
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com
+ [IPv6:2a00:1450:4864:20::232])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9D7DF800C0
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2023 12:27:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9D7DF800C0
-X-Alimail-AntiSpam: AC=CONTINUE; BC=0.1034973|-1; CH=green; DM=|CONTINUE|false|;
- DS=CONTINUE|ham_system_inform|0.265725-0.00146619-0.732809;
- FP=0|0|0|0|0|-1|-1|-1; HT=ay29a033018047199; MF=wangweidong.a@awinic.com; NM=1;
- PH=DS; RN=28; RT=28; SR=0; TI=SMTPD_---.QjR9KV8_1672745223; 
-Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com
- fp:SMTPD_---.QjR9KV8_1672745223) by smtp.aliyun-inc.com;
- Tue, 03 Jan 2023 19:27:10 +0800
-From: wangweidong.a@awinic.com
-To: krzysztof.kozlowski@linaro.org
-Subject: Re: [PATCH V8 5/5] ASoC: dt-bindings: Add schema for "awinic, aw883xx"
-Date: Tue,  3 Jan 2023 19:27:03 +0800
-Message-Id: <20230103112703.382153-1-wangweidong.a@awinic.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <aa0de3c8-d783-f8cc-42a9-7988acd6ab87@linaro.org>
-References: <aa0de3c8-d783-f8cc-42a9-7988acd6ab87@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B275AF800C0
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2023 13:03:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B275AF800C0
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=N0wtRI5A
+Received: by mail-lj1-x232.google.com with SMTP id u12so27882744ljj.11
+ for <alsa-devel@alsa-project.org>; Tue, 03 Jan 2023 04:03:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=9rT7p/vx+MXGNP4uFxVvfXIdM9LVnEjrbHlhST8QvhU=;
+ b=N0wtRI5Af5ePJfvRaOrcvvyHACrD4YZ6FvGAj8BuwC4id3dynTiTiI5xwV3j/S2mwu
+ ehTCrfe/PsNhzwTwcfiggOhAe9+bfgWBbTGWkPn63pYQPnHU0GivxYQYt3H22uJHhlp0
+ 2JtxmsKpO+5egl8bF4oj7Oqg72MwxmYW4RqD7gpcILEopkmWHoHlUA9UlPrCklqqv7LW
+ jJgJTYstYpvBdZJVnDClMySH2f4HDhJThSqScDRC3zPcXrvS3BLRua1KWRhe5BDKxJRe
+ vt2uDUWgJwKvX1BFFnv308GDP8htr0vX4GDSR2DkBWe0WH10MhFuXCJR1sWttksPABqZ
+ 3aKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=9rT7p/vx+MXGNP4uFxVvfXIdM9LVnEjrbHlhST8QvhU=;
+ b=H02UZacDFq27nGd/iv9tDdki5Bb5L8omb3pV2xeVz2oLPUNQty65a6tQou4dEBzNep
+ yoZSU5GGGriuWMd25fnvWU0B8DzYLPYX6OwXcKen1VeTQftEyKBryUQGN2OVj0uzOzWS
+ 6BLcSk5vFJJRjERz9U2K3G16sDI69RqgjIRwd5TNHgjqI/shC9BgEO1MshLZ19SPUUV2
+ qh3cyef/hLqW1kM5bcNBcKOvhUizdByCplQm8jbEHueXKicCj0yvccGYY/cTeyf/WxhF
+ xBSP+XCeveIVGI80GyBagXvZRyVzRxGiBuFB649PPYNxIV7oryjfpT3IB6aouli8Rpm/
+ 96eQ==
+X-Gm-Message-State: AFqh2kpHvxqFvbJcuYmFF6Q+OG9H+tC+RuHgTrM+UZUWip+xWyRsRk81
+ 1MWbzcTypHBho8BgqsgOp8gCeg==
+X-Google-Smtp-Source: AMrXdXvpRXhCDQG9SS+pfrdZSp+RSL+QX1mijkuFUF7kNQnHYnUKDBWnrTvxl0eqe1twf/9gjkOngA==
+X-Received: by 2002:a2e:80d7:0:b0:27f:d11c:3c78 with SMTP id
+ r23-20020a2e80d7000000b0027fd11c3c78mr5538873ljg.36.1672747417478; 
+ Tue, 03 Jan 2023 04:03:37 -0800 (PST)
+Received: from [192.168.0.20]
+ (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
+ by smtp.gmail.com with ESMTPSA id
+ p10-20020a2eb98a000000b0027fecbaf044sm575294ljp.84.2023.01.03.04.03.35
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 03 Jan 2023 04:03:37 -0800 (PST)
+Message-ID: <abfddd5f-1491-0696-548d-2faec4568302@linaro.org>
+Date: Tue, 3 Jan 2023 13:03:35 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH V8 5/5] ASoC: dt-bindings: Add schema for "awinic, aw883xx"
+Content-Language: en-US
+To: wangweidong.a@awinic.com
+References: <aa0de3c8-d783-f8cc-42a9-7988acd6ab87@linaro.org>
+ <20230103112703.382153-1-wangweidong.a@awinic.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230103112703.382153-1-wangweidong.a@awinic.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -71,111 +108,69 @@ Cc: alsa-devel@alsa-project.org, steve@sk2.org, tanureal@opensource.cirrus.com,
  flatmax@flatmax.com, devicetree@vger.kernel.org, ckeepax@opensource.cirrus.com,
  stephan@gerhold.net, zhaolei@awinic.com, james.schulman@cirrus.com,
  rf@opensource.cirrus.com, robh+dt@kernel.org, shumingf@realtek.com,
- tiwai@suse.com, duanyibo@awinic.com, wangweidong.a@awinic.com,
- lgirdwood@gmail.com, yijiangtao@awinic.com, broonie@kernel.org
+ tiwai@suse.com, duanyibo@awinic.com, lgirdwood@gmail.com,
+ yijiangtao@awinic.com, broonie@kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Krzysztof
+On 03/01/2023 12:27, wangweidong.a@awinic.com wrote:
+> Hi Krzysztof
+> 
+> On 30/12/2022 10:34, wangweidong.a@awinic.com wrote:
+>>> From: Weidong Wang <wangweidong.a@awinic.com>
+>>>
+>>> Add a DT schema for describing Awinic AW883xx audio amplifiers. They are
+>>> controlled using I2C.
+>>>
+>>> Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
+>>> ---
+>>>  .../bindings/sound/awinic,aw883xx.yaml        | 49 +++++++++++++++++++
+>>>  1 file changed, 49 insertions(+)
+>>>  create mode 100644 Documentation/devicetree/bindings/sound/awinic,aw883xx.yaml
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/sound/awinic,aw883xx.yaml b/Documentation/devicetree/bindings/sound/awinic,aw883xx.yaml
+>>> new file mode 100644
+>>> index 000000000000..b677427ebcd1
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/sound/awinic,aw883xx.yaml
+>>> @@ -0,0 +1,49 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/sound/awinic,aw883xx.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Awinic AW883xx Smart Audio Amplifier
+>>> +
+>>> +maintainers:
+>>> +  - Stephan Weidong Wang <wangweidong.a@awinic.com>
+>>> +
+>>> +description:
+>>> +  The Awinic AW883XX is an I2S/TDM input, high efficiency
+>>> +  digital Smart K audio amplifier with an integrated 10.25V
+>>> +  smart boost convert.
+>>> +
+>>> +allOf:
+>>> +  - $ref: dai-common.yaml#
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    const: awinic,aw883xx
+> 
+>> Now the question what does "xx" stand for? I cannot find such product on
+>> awinic website:
+>> https://www.awinic.com/En/Index/queryAll/wd/aw883xx.html
+> 
+> xx represents our company's aw88394 and aw88395 chips,Aw88395 chips can be found on 
+> https://www.awinic.com/cn/detail/index/catid/229/id/48/title/AW88395CSR.html
+> The aw88394 chip will be available on the website in the near future.
 
-On 30/12/2022 10:34, wangweidong.a@awinic.com wrote:
->> From: Weidong Wang <wangweidong.a@awinic.com>
->> 
->> Add a DT schema for describing Awinic AW883xx audio amplifiers. They are
->> controlled using I2C.
->> 
->> Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
->> ---
->>  .../bindings/sound/awinic,aw883xx.yaml        | 49 +++++++++++++++++++
->>  1 file changed, 49 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/sound/awinic,aw883xx.yaml
->> 
->> diff --git a/Documentation/devicetree/bindings/sound/awinic,aw883xx.yaml b/Documentation/devicetree/bindings/sound/awinic,aw883xx.yaml
->> new file mode 100644
->> index 000000000000..b677427ebcd1
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/awinic,aw883xx.yaml
->> @@ -0,0 +1,49 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/sound/awinic,aw883xx.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Awinic AW883xx Smart Audio Amplifier
->> +
->> +maintainers:
->> +  - Stephan Weidong Wang <wangweidong.a@awinic.com>
->> +
->> +description:
->> +  The Awinic AW883XX is an I2S/TDM input, high efficiency
->> +  digital Smart K audio amplifier with an integrated 10.25V
->> +  smart boost convert.
->> +
->> +allOf:
->> +  - $ref: dai-common.yaml#
->> +
->> +properties:
->> +  compatible:
->> +    const: awinic,aw883xx
+OK, then it has to be changed. Wildcards are not allowed in compatibles,
+so please use a specific compatible (oneOf for a case specific
+compatible alone and for a case of two compatibles with fallback;
+assuming the fallback is applicable to others).
 
-> Now the question what does "xx" stand for? I cannot find such product on
-> awinic website:
-> https://www.awinic.com/En/Index/queryAll/wd/aw883xx.html
-
-xx represents our company's aw88394 and aw88395 chips,Aw88395 chips can be found on 
-https://www.awinic.com/cn/detail/index/catid/229/id/48/title/AW88395CSR.html
-The aw88394 chip will be available on the website in the near future.
-
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  reset-gpios:
->> +    maxItems: 1
->> +
-
-> Why there is no sound-dai-cells?
-
-I'll add sound-dai-cells in patch v8
-
->> +  sound-name-prefix: true
-
-> Drop it.
-
-I will modify it on patch v8
-
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - reset-gpios
->> +
->> +additionalProperties: false
-
-> Instead:
-> unevaluatedProperties: false
-
-> unless this is not a codec and sound-dai-cells cannot be used?
-
-I will modify it on patch v8
-
->> +
->> +examples:
->> +  - |
->> +    i2c {
->> +        #address-cells = <1>;
->> +        #size-cells = <0>;
->> +        audio-codec@34 {
->> +            compatible = "awinic,aw883xx";
->> +            reg = <0x34>;
->> +            reset-gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
-
-> Does not look like you tested the bindings. Please run `make
-> dt_binding_check` (see
-> Documentation/devicetree/bindings/writing-schema.rst for instructions).
-
-I will modify it on patch v8
 
 Best regards,
-Weidong Wang
+Krzysztof
+
