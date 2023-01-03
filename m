@@ -4,73 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3AA5C46467
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Jan 2023 16:08:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 078B4C3DA7D
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Jan 2023 16:17:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 679EE2D2B;
-	Tue,  3 Jan 2023 17:07:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 679EE2D2B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9CCA02B08;
+	Tue,  3 Jan 2023 17:16:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CCA02B08
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672762116;
-	bh=10rPs+q/6GprahqHx1aTzXOGUTqi4tY+HjtFhoTQcd8=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1672762621;
+	bh=fRnV6HJZy0l413BAw85MVar89rZtdB7QolzvCeFzCGk=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=FsvlksC4llmnDOwNy7tiJatoa1KF4lS7ocfkVBFIpQOswbqb5bYS/dpUjtvI90W+/
-	 4Y0X15GHyrAcA0EIJOjDovcRcHgXea6eIsIe1PexMBCgYLSFalLshgiTXet6UlIO2G
-	 81ntZTQkcFQrRlzF4CAJlh2KSZcEH365/dXg4iTc=
+	b=GRqhI75f+JvtChyk1W9FuuZyeArKBqP85CCvIWVNKlgSxDX/5zlGNTH7idIkcUsau
+	 kuh+N4ThUymu/44yGRSem/bgPD4cH3m9UcHOFQteEn6jac3jnP9goX63O7svRhXBqg
+	 jR6xwH2xW4YY9luJe3TQLmoaKuMMmN+NgfSE+thk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A054EF80507;
-	Tue,  3 Jan 2023 17:07:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16654F8047B;
+	Tue,  3 Jan 2023 17:16:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D89E5F804CB; Tue,  3 Jan 2023 17:07:28 +0100 (CET)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 1F02EF803DC; Tue,  3 Jan 2023 17:16:09 +0100 (CET)
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com
+ [64.147.123.24])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C543F803DC
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2023 17:07:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C543F803DC
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=QNy+9LN7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1672762048; x=1704298048;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=10rPs+q/6GprahqHx1aTzXOGUTqi4tY+HjtFhoTQcd8=;
- b=QNy+9LN7otTb394l5TnYnXgPDbhU75nGM9u8thXW9mC2o/m5Uf/mvdwS
- nV6WRETgXh9Mvic3DYqdKnaUqfc1P3sj2rg3RAkfLKW0c3AoxfTAPnDCy
- 2gWW/tRYS7QyAWsDVbvoSHMJWYaErN5j0hMPTv9nQpWRDo10EgzsY/gM3
- R+M82jg4FT6TlDFMoP/NiVb2zwjWaSHEiwUW/nPclLfpDCe1n/GsgYUH3
- J3jiJTRMiubGAmuD6+lNXyHd1hYfflXhSUw/eNe7IyA/D21LT/xK+j7kB
- 9naHrizYjj3StHEsq3Aqy8dOa1vXYFuWPDxiEwPEPe2/FdNaMOESyBZon Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10579"; a="305196336"
-X-IronPort-AV: E=Sophos;i="5.96,297,1665471600"; d="scan'208";a="305196336"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Jan 2023 08:07:22 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10579"; a="743546034"
-X-IronPort-AV: E=Sophos;i="5.96,297,1665471600"; d="scan'208";a="743546034"
-Received: from nkpuppal-mobl2.amr.corp.intel.com (HELO [10.209.178.199])
- ([10.209.178.199])
- by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Jan 2023 08:07:21 -0800
-Message-ID: <393a6418-0963-4859-3212-2f959be4f14f@linux.intel.com>
-Date: Tue, 3 Jan 2023 09:13:33 -0600
+ by alsa1.perex.cz (Postfix) with ESMTPS id 82BABF804AD
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2023 17:16:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82BABF804AD
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key, unprotected) header.d=cerno.tech header.i=@cerno.tech
+ header.a=rsa-sha256 header.s=fm3 header.b=pjCYKo7g; 
+ dkim=pass (2048-bit key,
+ unprotected) header.d=messagingengine.com header.i=@messagingengine.com
+ header.a=rsa-sha256 header.s=fm2 header.b=j531BDLW
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailout.west.internal (Postfix) with ESMTP id 2C3583200902;
+ Tue,  3 Jan 2023 11:15:55 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute5.internal (MEProxy); Tue, 03 Jan 2023 11:15:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
+ :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+ :message-id:mime-version:references:reply-to:sender:subject
+ :subject:to:to; s=fm3; t=1672762554; x=1672848954; bh=wNHGYeVYFI
+ zxBf24jgwJU2T/wl2hD0aiCUszvE1r6qc=; b=pjCYKo7gkCK5f2pIymt6QPnLBC
+ 1DAk7msGDlygQAQNqEVyCIpFaOyMgaHSi40KVwP+w+L6RrW2p5XYYI1VqB3rG7dx
+ KEjGnr8HJwsjwZoQRvabZE5YxL8qXbJz8wRykSz3ERcPZx7n7E/OG+hl11/vLkbg
+ a06mvms0SGOqlyX0iMJ83oydOETkNwpTTu7grzSiLToon31tLFhkz4o7eh5iBou4
+ MxVnC/ZDnvM9P94hvHrcDURJq58ZYxwA3SlT3lGqJlK0eSF0GPHMddpVHO2ldnjB
+ uhG30YyVqwEtr/cCfgAAU1RUwWaiMmfwyBP76iCkiVBIeOBs/K8Nobgq0IpQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+ :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+ :mime-version:references:reply-to:sender:subject:subject:to:to
+ :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+ fm2; t=1672762554; x=1672848954; bh=wNHGYeVYFIzxBf24jgwJU2T/wl2h
+ D0aiCUszvE1r6qc=; b=j531BDLWxm/ohYQJ7nDDhf9HZ38aqVzvC/s9TGxSWFOF
+ iiYyCfot5ViuJBPsApS5/UR9lIF4taTuAL4+nbDvqMjQkZGhHU9h03T8aaJaQjHJ
+ KTOMF2W1onoAb/5nUCjwe3LJeMQJeuG9q89F1Y0ozgV/zdROkYA9crYI+U05Jvmt
+ nCvLmp92lk26OKxFnXrgHeSFA3iVvwxkR69pcDKumWR3J0EWWdDUkd0mLpuBi97M
+ l/88gmqhLrZQCuPWRLEuc553zwBBHOTY2e+B+OrNT8lgoICwo/vmtj+9+DkWcXSd
+ NotMN9hkOPXxvXxGe/ixjYNbxBvbmJ+YFvUJxxpuLg==
+X-ME-Sender: <xms:uVS0YzB0JXSRVIAi_tGC1otQM2RzPjHpcflhIgdzCVRZrzgRfROJDQ>
+ <xme:uVS0Y5i0ix6UjpUCqv-WU3J8FLgiHnuLKXZKjl9oCftIjeoxe8ZhAZLuUMwa_4PBv
+ ytZfM0HWcvHe6enzsA>
+X-ME-Received: <xmr:uVS0Y-nMPMm_4ZZv6rRdHATK2kWWJIZJ8TVVp4gOFFT1RGkmP6Q_UDvLqCmbfQ35RACyLiq4fB9tjz0QGBKP9nEVd7kPF1FHT_4s6tSM4oeIJA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrjeeggdekiecutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+ fjughrpeffhffvvefukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+ vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+ htvghrnheptdelkeejiedufedvhfeiffetlefhiedvleeigfeiuefghfdvleeiffejieeg
+ teejnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+ dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:uVS0Y1wBrIhxHWXikal4guApjH66SvtY4OcZSpj9b1-KrvPGX-uI8g>
+ <xmx:uVS0Y4QAif-qqBka94NRhYpDVTtWsMhf5sxJwNSqoyhZC3swXYhcog>
+ <xmx:uVS0Y4ZsYlbpnrqbDSwACwmC-fzNNOsr_D788yWirfW-kANxEbry5g>
+ <xmx:ulS0Y7YS89FzmTs6M_WxvTPd4EyTSa5Y4NKV3wydY-ZSTc8dmhi46g>
+Feedback-ID: i8771445c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 3 Jan 2023 11:15:53 -0500 (EST)
+Date: Tue, 3 Jan 2023 17:15:50 +0100
+From: Maxime Ripard <maxime@cerno.tech>
+To: Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH v2 2/3] iommu/sound: Use component_match_add_of helper
+Message-ID: <20230103161550.4tui3ihl65olvkd7@houat>
+References: <20221222233759.1934852-1-sean.anderson@seco.com>
+ <20221222233759.1934852-3-sean.anderson@seco.com>
+ <7897d4a6-bf43-becd-3437-7a254f38f6be@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH] ASoC: Intel: sof_ssp_amp: remove unused variable
-Content-Language: en-US
-To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
-References: <20230103073704.722027-1-brent.lu@intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230103073704.722027-1-brent.lu@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="7v4zidzdfmuud6o5"
+Content-Disposition: inline
+In-Reply-To: <7897d4a6-bf43-becd-3437-7a254f38f6be@arm.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,57 +111,84 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Akihiko Odaki <akihiko.odaki@gmail.com>,
- ye xingchen <ye.xingchen@zte.com.cn>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Daniel Vetter <daniel@ffwll.ch>,
+ Liam Girdwood <lgirdwood@gmail.com>, Sean Anderson <sean.anderson@seco.com>,
+ Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+ Takashi Iwai <tiwai@suse.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ iommu@lists.linux.dev, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Thomas Zimmermann <tzimmermann@suse.de>,
+ Matthias Brugger <matthias.bgg@gmail.com>, David Airlie <airlied@gmail.com>,
+ Yong Wu <yong.wu@mediatek.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--7v4zidzdfmuud6o5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 1/3/23 01:37, Brent Lu wrote:
-> The variable becomes useless since we moved the snd_soc_jack
-> structure from a static array to sof_hdmi_pcm structure.
-> 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
+Hi Robin,
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Tue, Jan 03, 2023 at 01:01:07PM +0000, Robin Murphy wrote:
+> Hi Sean,
+>=20
+> On 22/12/2022 11:37 pm, Sean Anderson wrote:
+> > Convert users of component_match_add_release with component_release_of
+> > and component_compare_of to component_match_add_of.
+> >=20
+> > Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+> > Acked-by: Mark Brown <broonie@kernel.org>
+> > ---
+> >=20
+> > Changes in v2:
+> > - Split off from helper addition
+> >=20
+> >   drivers/iommu/mtk_iommu.c    | 3 +--
+> >   drivers/iommu/mtk_iommu_v1.c | 3 +--
+> >   sound/soc/codecs/wcd938x.c   | 6 ++----
+> >   3 files changed, 4 insertions(+), 8 deletions(-)
+> >=20
+> > diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+> > index 2ab2ecfe01f8..483b7a9e4410 100644
+> > --- a/drivers/iommu/mtk_iommu.c
+> > +++ b/drivers/iommu/mtk_iommu.c
+> > @@ -1079,8 +1079,7 @@ static int mtk_iommu_mm_dts_parse(struct device *=
+dev, struct component_match **m
+> >   		}
+> >   		data->larb_imu[id].dev =3D &plarbdev->dev;
+> > -		component_match_add_release(dev, match, component_release_of,
+> > -					    component_compare_of, larbnode);
+> > +		component_match_add_of(dev, match, larbnode);
+>=20
+> I've long since given up trying to make sense of how the DRM tree works, =
+but
+> the conflicting change is definitely already in mainline:
+>=20
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
+?id=3Db5765a1b44bea9dfcae69c53ffeb4c689d0922a7
 
-> ---
->  sound/soc/intel/boards/sof_ssp_amp.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/sound/soc/intel/boards/sof_ssp_amp.c b/sound/soc/intel/boards/sof_ssp_amp.c
-> index 94d25aeb6e7c..f75800d9d6de 100644
-> --- a/sound/soc/intel/boards/sof_ssp_amp.c
-> +++ b/sound/soc/intel/boards/sof_ssp_amp.c
-> @@ -105,7 +105,6 @@ static int sof_card_late_probe(struct snd_soc_card *card)
->  	char jack_name[NAME_SIZE];
->  	struct sof_hdmi_pcm *pcm;
->  	int err;
-> -	int i;
->  
->  	if (!(sof_ssp_amp_quirk & SOF_HDMI_PLAYBACK_PRESENT))
->  		return 0;
-> @@ -124,7 +123,6 @@ static int sof_card_late_probe(struct snd_soc_card *card)
->  		return hda_dsp_hdmi_build_controls(card, component);
->  	}
->  
-> -	i = 0;
->  	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
->  		component = pcm->codec_dai->component;
->  		snprintf(jack_name, sizeof(jack_name),
-> @@ -139,8 +137,6 @@ static int sof_card_late_probe(struct snd_soc_card *card)
->  					  &pcm->sof_hdmi);
->  		if (err < 0)
->  			return err;
-> -
-> -		i++;
->  	}
->  
->  	return hdac_hdmi_jack_port_init(component, &card->dapm);
+As far as I can see, that patch doesn't affect DRM at all, and the
+commit you pointed to doesn't either, nor has it been merged through the
+DRM tree.
+
+Can you expand a bit on how we're involved in this, what we should
+clarify or help with?
+
+Maxime
+
+--7v4zidzdfmuud6o5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCY7RUtgAKCRDj7w1vZxhR
+xdWgAQCl2SxPgHcEj92AdlH7Y2VvK6G5Bczcu2wrB4ZrHXVpawEAsJlD4MKrpINP
+IZalK2KlJTqUilPQudOtqmCeQzWQqAo=
+=cdeC
+-----END PGP SIGNATURE-----
+
+--7v4zidzdfmuud6o5--
