@@ -4,56 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2180DC46467
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Jan 2023 13:02:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5C44C3DA7D
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Jan 2023 13:39:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3352DBF8;
-	Tue,  3 Jan 2023 14:01:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3352DBF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 16528DE2C;
+	Tue,  3 Jan 2023 14:38:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16528DE2C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672750930;
-	bh=NuosO/prXr2xQGkChWRAzT79ixrbSzxM4h9TTXCjPFI=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1672753157;
+	bh=+ZTbO2gNCUDo8bdN+1oynmMU9ycMis5cqXjsj62Daxo=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=MdI6ZN+H+XS73ZuUn8r8NGpmxkTXe0DYzmrC2xz4JaphSIfX1NqfP/0NeKWHDjZNg
-	 hvJDHBndpbF+wiqBELigqflrrJiH52b2AoO2+JMChwF7WICeVEJkkrMAAjvp+6j5q2
-	 UY/hCDD+7uzbj7Iyr73MrKjOM5vbPotyzJugAMDA=
+	b=c7zDRO7PCAvvP0r5FREWsTuZ3u9OS7Jfzm9WlxHXZiPbFML8bV44NmTnBYRLJV8c/
+	 OJkbKXxibYcl0+8SHHWl8iEp83bjvfQiyPDixvGJSPpORL6CrRaJtKSYknfZJXk4wu
+	 GokIz0Kp6o7NXRJRaiJMsOpI78BZ+b4QJuZR9XbE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44CCAF8047B;
-	Tue,  3 Jan 2023 14:01:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0B5FF803DC;
+	Tue,  3 Jan 2023 14:38:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DFF2FF800C0; Tue,  3 Jan 2023 14:01:18 +0100 (CET)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id 672D7F800C0
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2023 14:01:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 672D7F800C0
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6C8471516;
- Tue,  3 Jan 2023 05:01:55 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6E6EC3F587;
- Tue,  3 Jan 2023 05:01:11 -0800 (PST)
-Message-ID: <7897d4a6-bf43-becd-3437-7a254f38f6be@arm.com>
-Date: Tue, 3 Jan 2023 13:01:07 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH v2 2/3] iommu/sound: Use component_match_add_of helper
-To: Sean Anderson <sean.anderson@seco.com>, David Airlie <airlied@gmail.com>, 
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org
-References: <20221222233759.1934852-1-sean.anderson@seco.com>
- <20221222233759.1934852-3-sean.anderson@seco.com>
-Content-Language: en-GB
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20221222233759.1934852-3-sean.anderson@seco.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ id B2867F8047B; Tue,  3 Jan 2023 14:38:25 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4F5BDF800F8
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2023 14:38:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F5BDF800F8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=p7FURL7X; 
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=A+i8VDhh
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B8E123E8D6;
+ Tue,  3 Jan 2023 13:38:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1672753100; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=JsZuJuQCWL7ajqM1JqulymYp3Fvr9UXaBrzfd/UU2cs=;
+ b=p7FURL7X6W22X1hO2uWoBObuCdXdp+8KbMthSMBObCPtTdg9ByEMYGIlYyx0NWightmhsq
+ AqAOp0r1g8TeCNFFnoJXvI7WXSksCnFOP7TMTFvBz2+ckELoNWR3XMUSX74EqOIiAu3lhE
+ eCnxKsMjYQ3Rg3Z6bXBofe59g0s8T78=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1672753100;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=JsZuJuQCWL7ajqM1JqulymYp3Fvr9UXaBrzfd/UU2cs=;
+ b=A+i8VDhhDceE6MnkGVkUxmPRRHFwLzmk4JwmSwO2A26xSMH4J1FjtZ56OeWo7MG3UliQnW
+ YPeLyx3nOoF4OoBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9548C1390C;
+ Tue,  3 Jan 2023 13:38:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id V2DOI8wvtGOMLAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 03 Jan 2023 13:38:20 +0000
+Date: Tue, 03 Jan 2023 14:38:20 +0100
+Message-ID: <87sfgrrb5f.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Michael Ralston <michael@ralston.id.au>
+Subject: Re: USB-Audio regression on behringer UMC404HD
+In-Reply-To: <CAC2975K24Gt3rGieAToHjb7FEHv84aqiRSQx7EOuR2Q7KByUXw@mail.gmail.com>
+References: <CAC2975JXkS1A5Tj9b02G_sy25ZWN-ys+tc9wmkoS=qPgKCogSg@mail.gmail.com>
+ <bf646395-1231-92f6-7c5a-5b7765596358@leemhuis.info>
+ <87zgb0q7x4.wl-tiwai@suse.de>
+ <CAC2975K24Gt3rGieAToHjb7FEHv84aqiRSQx7EOuR2Q7KByUXw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -66,92 +94,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Joerg Roedel <joro@8bytes.org>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
- Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org,
- Matthias Brugger <matthias.bgg@gmail.com>, Will Deacon <will@kernel.org>,
- Yong Wu <yong.wu@mediatek.com>
+Cc: alsa-devel@alsa-project.org, regressions@lists.linux.dev,
+ Takashi Iwai <tiwai@suse.com>, stable@vger.kernel.org,
+ Thorsten Leemhuis <regressions@leemhuis.info>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Sean,
-
-On 22/12/2022 11:37 pm, Sean Anderson wrote:
-> Convert users of component_match_add_release with component_release_of
-> and component_compare_of to component_match_add_of.
+On Tue, 03 Jan 2023 14:10:46 +0100,
+Michael Ralston wrote:
 > 
-> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-> Acked-by: Mark Brown <broonie@kernel.org>
-> ---
+> Working, 6.0.16-lqx1
+> https://hastebin.com/omoqasiqek.apache
 > 
-> Changes in v2:
-> - Split off from helper addition
+> Not working, 6.1.1-arch1-1.1
+> https://hastebin.com/itasefinaz.apache
 > 
->   drivers/iommu/mtk_iommu.c    | 3 +--
->   drivers/iommu/mtk_iommu_v1.c | 3 +--
->   sound/soc/codecs/wcd938x.c   | 6 ++----
->   3 files changed, 4 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-> index 2ab2ecfe01f8..483b7a9e4410 100644
-> --- a/drivers/iommu/mtk_iommu.c
-> +++ b/drivers/iommu/mtk_iommu.c
-> @@ -1079,8 +1079,7 @@ static int mtk_iommu_mm_dts_parse(struct device *dev, struct component_match **m
->   		}
->   		data->larb_imu[id].dev = &plarbdev->dev;
->   
-> -		component_match_add_release(dev, match, component_release_of,
-> -					    component_compare_of, larbnode);
-> +		component_match_add_of(dev, match, larbnode);
+> I built the working kernel myself with patched sources. Let me know if
+> you'd like me to run a test with any particular kernel build or
+> version.
 
-I've long since given up trying to make sense of how the DRM tree works, 
-but the conflicting change is definitely already in mainline:
+Thanks, that's helpful.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=b5765a1b44bea9dfcae69c53ffeb4c689d0922a7
+Could you try to revert the commit
+9902b303b5ade208b58f0dd38a09831813582211
+    ALSA: usb-audio: Avoid unnecessary interface change at EP close
+as a blind shot?
 
-Thanks,
-Robin.
+Also, there has been a series of fixes for other issues, and it might
+be worth to try as well:
+  https://lore.kernel.org/r/20230102170759.29610-1-tiwai@suse.de
 
->   	}
->   
->   	/* Get smi-(sub)-common dev from the last larb. */
-> diff --git a/drivers/iommu/mtk_iommu_v1.c b/drivers/iommu/mtk_iommu_v1.c
-> index 6e0e65831eb7..fb09ed6bf550 100644
-> --- a/drivers/iommu/mtk_iommu_v1.c
-> +++ b/drivers/iommu/mtk_iommu_v1.c
-> @@ -672,8 +672,7 @@ static int mtk_iommu_v1_probe(struct platform_device *pdev)
->   		}
->   		data->larb_imu[i].dev = &plarbdev->dev;
->   
-> -		component_match_add_release(dev, &match, component_release_of,
-> -					    component_compare_of, larbnode);
-> +		component_match_add_of(dev, &match, larbnode);
->   	}
->   
->   	platform_set_drvdata(pdev, data);
-> diff --git a/sound/soc/codecs/wcd938x.c b/sound/soc/codecs/wcd938x.c
-> index aca06a4026f3..2f8444e54083 100644
-> --- a/sound/soc/codecs/wcd938x.c
-> +++ b/sound/soc/codecs/wcd938x.c
-> @@ -4474,8 +4474,7 @@ static int wcd938x_add_slave_components(struct wcd938x_priv *wcd938x,
->   	}
->   
->   	of_node_get(wcd938x->rxnode);
-> -	component_match_add_release(dev, matchptr, component_release_of,
-> -				    component_compare_of, wcd938x->rxnode);
-> +	component_match_add_of(dev, matchptr, wcd938x->rxnode);
->   
->   	wcd938x->txnode = of_parse_phandle(np, "qcom,tx-device", 0);
->   	if (!wcd938x->txnode) {
-> @@ -4483,8 +4482,7 @@ static int wcd938x_add_slave_components(struct wcd938x_priv *wcd938x,
->   		return -ENODEV;
->   	}
->   	of_node_get(wcd938x->txnode);
-> -	component_match_add_release(dev, matchptr, component_release_of,
-> -				    component_compare_of, wcd938x->txnode);
-> +	component_match_add_of(dev, matchptr, wcd938x->txnode);
->   	return 0;
->   }
->   
+
+Takashi
