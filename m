@@ -4,82 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4781CC46467
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Jan 2023 14:11:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8C04C3DA7D
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Jan 2023 14:49:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 46494E039;
-	Tue,  3 Jan 2023 15:10:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46494E039
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF745E20F;
+	Tue,  3 Jan 2023 15:48:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF745E20F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672755073;
-	bh=ZBT8QGBM4TylsNBdJUfJE0UpwiJkpbSc92XFfa/BZbw=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
+	s=default; t=1672757378;
+	bh=85fTOh4wKjhRal9Bzo/2k5gylHL6/jvDCJzAuiR4gLI=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=YNTPEzcOcibcCoe665N2CoDpqN5OJJzT6YBfwHZGEhN6yLMskWnQiz657y0ofhclc
-	 XKVeV/E24xgGg1RxOY4ZdCNU3NNWz69Yy1Sp90z67dKfyv4hHh3Bu7ljSiQ9tnkx/3
-	 hDpELXZYgJJ0o+UUEZ5XW3bVCDCFuEEgTKUJAmaE=
+	b=YyBe6bG1DBAN2R6OyJaBIl90h6A3XHWq5NcjlwDW3nMmq/jrorSIIqpC1OfzmrJFI
+	 XyvnxeBtm24lFZZhUpa72xhHXYb1ayuw1opMhpQWamVj+b7Wx5IKYoQdSGKTLS5y4j
+	 0NTF3HD70qpFA9pTdkXeV2CVr2pW6QDnAhPWKfRM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4FD30F80544;
-	Tue,  3 Jan 2023 15:09:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B806F803DC;
+	Tue,  3 Jan 2023 15:48:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C2EAF8047B; Tue,  3 Jan 2023 14:11:28 +0100 (CET)
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com
- [IPv6:2607:f8b0:4864:20::329])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ id 4B2F7F803DC; Tue,  3 Jan 2023 15:48:47 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A5FF4F800F8
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2023 14:11:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5FF4F800F8
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- unprotected) header.d=ralston.id.au header.i=@ralston.id.au
- header.a=rsa-sha256 header.s=google header.b=S5uXlrqZ
-Received: by mail-ot1-x329.google.com with SMTP id
- x25-20020a056830115900b00670932eff32so19062353otq.3
- for <alsa-devel@alsa-project.org>; Tue, 03 Jan 2023 05:11:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=ralston.id.au; s=google;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=ZBT8QGBM4TylsNBdJUfJE0UpwiJkpbSc92XFfa/BZbw=;
- b=S5uXlrqZ1UTZOKh9S0VWa+TJrjnr1xX00qWX1oZ2G/Qso/AUeU2XdRV8CuzJBn19RQ
- S8PUpZYTfTpZjW5xlrzgJepE/CwPmjpgb7b0RI+6PMUX7MlYhNbOqun0jKHnfOBil9Si
- 9YqCLTcZiCzldnSbMlV8u/x1yZ9kAq3vTh0OY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=ZBT8QGBM4TylsNBdJUfJE0UpwiJkpbSc92XFfa/BZbw=;
- b=zgguircbIMNB4xtKynaNcRqCMKpdHhamr//ebSYprlxdci9YG8WTGVacfVwT3rJGin
- /icFY1Ake6EhElAR1hZRQd+GbxQbh6Ghg6MQXhFyaFBArdlbMNTla2aeQ6xKSEs3ECIb
- mHPqg16llOWJRXsjzgj2PV0ojkPP6CDehw1TeEtLlvg7TqQj5+lPMNmeyiVNTm3Jpl75
- 9JgPRyj/AcP58bsJ65bcsJ69pDMnaWtpGNJn+j2yTUaOXFxS7vrfoustJ1zam4A4kk4O
- G8cOWUU22tmOHAJXR9GZZ+JyR2itPzw4huaJvoHop9+i+3BPCwVwTbLgy0mUYDP4W/18
- t4Bw==
-X-Gm-Message-State: AFqh2koTwSs+NNyaKPtBXw+r8DI492AZxfwx2buvS6jceq6+Dh3L+ZoM
- IJeVzPz6oDYC+tgSnohcEGGOOhSOjvis23Y8baa1OCOzoKWa0wLvO9k=
-X-Google-Smtp-Source: AMrXdXvMiRhkPudrVcodk+MiSXC0+Q1QXxeRXc6jXFUYRSTGQ3XazpqjMW5uF+w3LzN5kMlewpTk+W0So2OurVCx894=
-X-Received: by 2002:a05:6830:1c8:b0:66e:b992:749f with SMTP id
- r8-20020a05683001c800b0066eb992749fmr2372045ota.52.1672751482203; Tue, 03 Jan
- 2023 05:11:22 -0800 (PST)
-MIME-Version: 1.0
-References: <CAC2975JXkS1A5Tj9b02G_sy25ZWN-ys+tc9wmkoS=qPgKCogSg@mail.gmail.com>
- <bf646395-1231-92f6-7c5a-5b7765596358@leemhuis.info>
- <87zgb0q7x4.wl-tiwai@suse.de>
-In-Reply-To: <87zgb0q7x4.wl-tiwai@suse.de>
-From: Michael Ralston <michael@ralston.id.au>
-Date: Wed, 4 Jan 2023 00:10:46 +1100
-Message-ID: <CAC2975K24Gt3rGieAToHjb7FEHv84aqiRSQx7EOuR2Q7KByUXw@mail.gmail.com>
-Subject: Re: USB-Audio regression on behringer UMC404HD
-To: Takashi Iwai <tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailman-Approved-At: Tue, 03 Jan 2023 15:09:07 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E2D2F800F8
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2023 15:48:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E2D2F800F8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=eO2lEeh8; 
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=APm+f0c6
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A92AC38016;
+ Tue,  3 Jan 2023 14:48:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1672757321; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=sovwqjCX/Lg3b4xYU7Si4jSQmDxNGHWrdnUaNJ8QV1s=;
+ b=eO2lEeh8+wGU7EzyxQ1Z6iW/B9QuT+OBYsDZ6juGOZlPyatfEEzbjLPJrXcS6kURpe1GMn
+ MWYNMJSE9SX0C6g3sWnwv35OIq6iAbmCUvoU3MlgHr4bI8LByuNHEXVN8MIT1tjTouXTV+
+ YwvWa1dvDm3mF2MLIk9PKvwpDpPU9as=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1672757321;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=sovwqjCX/Lg3b4xYU7Si4jSQmDxNGHWrdnUaNJ8QV1s=;
+ b=APm+f0c6x/vOsb4ZWCkTCRH5RVl46PyTYdFtH8iw0zC80stWXQVjId4RS4kGi9J+7gcKfw
+ UaSC48JRsOfQBvAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 746FF1392B;
+ Tue,  3 Jan 2023 14:48:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 0u6zG0lAtGO3UwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 03 Jan 2023 14:48:41 +0000
+Date: Tue, 03 Jan 2023 15:48:41 +0100
+Message-ID: <87h6x7r7w6.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: =?ISO-8859-1?Q?P=C1LFFY_D=E1niel?= <dpalffy@gmail.com>
+Subject: Re: [regression,
+ 5.10.y] Bug 216861 - sound disappearance on Acer Swift 3
+ SF314-59-78UR after update to 5.10.157
+In-Reply-To: <CALp6mk+rdqGXySUowxZv3kEEVWrh96m_x-h8xcFNQ9YZPkbc5w@mail.gmail.com>
+References: <bebd692d-7d21-6648-6b7a-c91063bb51c2@leemhuis.info>
+ <Y7K1WDmPYi3EMOn1@eldamar.lan> <87wn65umye.wl-tiwai@suse.de>
+ <CALp6mkJhM1zDcNr9X_7WL09+uqcaAhNFFMhrjme0r7584O+Lgw@mail.gmail.com>
+ <CALp6mk+rdqGXySUowxZv3kEEVWrh96m_x-h8xcFNQ9YZPkbc5w@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,72 +99,120 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, regressions@lists.linux.dev,
- Takashi Iwai <tiwai@suse.com>, stable@vger.kernel.org,
- Thorsten Leemhuis <regressions@leemhuis.info>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>,
+ "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+ Thorsten Leemhuis <regressions@leemhuis.info>, Takashi Iwai <tiwai@suse.com>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
+ Salvatore Bonaccorso <carnil@debian.org>, Sergey <zagagyka@basealt.ru>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Working, 6.0.16-lqx1
-https://hastebin.com/omoqasiqek.apache
+On Tue, 03 Jan 2023 14:04:50 +0100,
+PÁLFFY Dániel wrote:
+> 
+> And confirming, 5.10.161 with e8444560b4d9302a511f0996f4cfdf85b628f4ca
+> and 636110411ca726f19ef8e87b0be51bb9a4cdef06 cherry-picked works for
+> me.
 
-Not working, 6.1.1-arch1-1.1
-https://hastebin.com/itasefinaz.apache
+That's a good news.  Then we can ask stable people to pick up those
+commits for 5.10.y and 5.15.y.
 
-I built the working kernel myself with patched sources. Let me know if
-you'd like me to run a test with any particular kernel build or
-version.
 
---
-Michael
+Takashi
 
-On Tue, 3 Jan 2023 at 20:33, Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Tue, 03 Jan 2023 10:07:42 +0100,
-> Thorsten Leemhuis wrote:
+> 
+> On Tue, Jan 3, 2023 at 1:05 PM PÁLFFY Dániel <dpalffy@gmail.com> wrote:
 > >
-> > [TLDR: I'm adding this report to the list of tracked Linux kernel
-> > regressions; all text you find below is based on a few templates
-> > paragraphs you might have encountered already already in similar form.
-> > See link in footer if these mails annoy you.]
+> > Another report: https://bugs.archlinux.org/task/76795
+> > Apparently, folks at alsa-devel traced down the dependencies of that patch, see the mail thread at https://lore.kernel.org/all/dc65501c-c2fd-5608-c3d9-7cea184c3989%40opensource.cirrus.com/
 > >
-> > [CCing alsa maintainers]
-> >
-> > On 02.01.23 18:29, Michael Ralston wrote:
-> > > I'm currently experiencing a regression with the audio on my Behringe=
-r
-> > > U-Phoria UMC404HD.
-> > >
-> > > Alsa info is at:
-> > > http://alsa-project.org/db/?f=3Df453b8cd0248fb5fdfa38e1b770e774102f66=
-135
-> > >
-> > > I get no audio in or out for this device with kernel versions 6.1.1 a=
-nd 6.1.2.
-> > >
-> > > The versions I have tried that work correctly include 5.15.86 LTS,
-> > > 5.19.12, and 6.0.13=E2=80=9316.
-> > >
-> > > When I run this on 6.1.1, it will just hang until I ctrl+c:
-> > > aplay -D plughw:1,0 /usr/share/sounds/alsa/Front_Center.wav
-> > >
-> > > I've run strace on that command, and its output is at:
-> > > https://pastebin.com/WaxJpTMe
-> > >
-> > > Nothing out of the ordinary occurs when aplay is run, according to th=
-e
-> > > kernel logs.
-> > >
-> > > Please let me know how I can provide additional debugging information
-> > > if necessary.
->
-> Please boot with snd_usb_audio.dyndbg=3D+p option, and get the kernel
-> logs in both working and non-working cases.
->
-> I guess it's a regression due to the hw_params/prepare split, but need
-> to check more details.
->
->
-> thanks,
->
-> Takashi
+> > On Mon, Jan 2, 2023 at 1:42 PM Takashi Iwai <tiwai@suse.de> wrote:
+> >>
+> >> On Mon, 02 Jan 2023 11:43:36 +0100,
+> >> Salvatore Bonaccorso wrote:
+> >> >
+> >> > Hi,
+> >> >
+> >> > [Adding as well Richard Fitzgerald and PÁLFFY Dániel to recipients]
+> >> >
+> >> > On Fri, Dec 30, 2022 at 09:08:57AM +0100, Thorsten Leemhuis wrote:
+> >> > > Hi, this is your Linux kernel regression tracker speaking.
+> >> > >
+> >> > > I noticed a regression report in bugzilla.kernel.org. As many (most?)
+> >> > > kernel developer don't keep an eye on it, I decided to forward it by
+> >> > > mail. Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=216861 :
+> >> > >
+> >> > > >  Sergey 2022-12-29 10:07:51 UTC
+> >> > > >
+> >> > > > Created attachment 303497 [details]
+> >> > > > pulseaudio.log
+> >> > > >
+> >> > > > Sudden sound disappearance was reported for some laptops, e.g.
+> >> > > >
+> >> > > > Acer Swift 3 SF314-59-78UR 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz
+> >> > > >
+> >> > > > # lspci
+> >> > > > 0000:00:1f.3 Multimedia audio controller: Intel Corporation Tiger Lake-LP Smart Sound Technology Audio Controller (rev 20)
+> >> > > >         Subsystem: Acer Incorporated [ALI] Device 148c
+> >> > > >         Flags: bus master, fast devsel, latency 32, IRQ 197, IOMMU group 12
+> >> > > >         Memory at 601f270000 (64-bit, non-prefetchable) [size=16K]
+> >> > > >         Memory at 601f000000 (64-bit, non-prefetchable) [size=1M]
+> >> > > >         Capabilities: [50] Power Management version 3
+> >> > > >         Capabilities: [80] Vendor Specific Information: Len=14 <?>
+> >> > > >         Capabilities: [60] MSI: Enable+ Count=1/1 Maskable- 64bit+
+> >> > > >         Kernel driver in use: sof-audio-pci
+> >> > > >
+> >> > > > I am attaching the pulseaudio and dmesg logs
+> >> > > >
+> >> > > > This bug started reproducing after updating the kernel from 5.10.156 to 5.10.157
+> >> > > >
+> >> > > > Bisection revealed the commit being reverted:
+> >> > > >
+> >> > > > c34db0d6b88b1da95e7ab3353e674f4f574cccee is the first bad commit
+> >> > > > commit c34db0d6b88b1da95e7ab3353e674f4f574cccee
+> >> > > > Author: Richard Fitzgerald <rf@opensource.cirrus.com>
+> >> > > > Date:   Fri Nov 4 13:22:13 2022 +0000
+> >> > > >
+> >> > > >     ASoC: soc-pcm: Don't zero TDM masks in __soc_pcm_open()
+> >> > > >
+> >> > > >     [ Upstream commit 39bd801d6908900e9ab0cdc2655150f95ddd4f1a ]
+> >> > > >
+> >> > > >     The DAI tx_mask and rx_mask are set by snd_soc_dai_set_tdm_slot()
+> >> > > >     and used by later code that depends on the TDM settings. So
+> >> > > >     __soc_pcm_open() should not be obliterating those mask values.
+> >> > > >
+> >> > > > [...]
+> >> > > > Original bug report: https://bugzilla.altlinux.org/44690
+> >> > >
+> >> > > See the ticket for more details.
+> >> > >
+> >> > > BTW, let me use this mail to also add the report to the list of tracked
+> >> > > regressions to ensure it's doesn't fall through the cracks:
+> >> > >
+> >> > > #regzbot introduced: c34db0d6b88b1d
+> >> > > https://bugzilla.kernel.org/show_bug.cgi?id=216861
+> >> > > #regzbot title: sound: asoc: sudden sound disappearance
+> >> > > #regzbot ignore-activity
+> >> >
+> >> > FWIW, we had as well reports in Debian after having updated the kernel
+> >> > from 5.10.149 based one to 5.10.158 based one in the last point
+> >> > releases, they are at least:
+> >> >
+> >> > https://bugs.debian.org/1027483
+> >> > https://bugs.debian.org/1027430
+> >>
+> >> I got another report while the commit was backported to 5.14-based
+> >> openSUSE Leap kernel, and I ended up with dropping it.
+> >>
+> >> So, IMO, it's safer to drop this patch from the older stable trees.
+> >> As far as I see, 5.15.y and 5.10.y got this.
+> >>
+> >> Unless anyone gives a better fix, I'm going to submit a revert patch
+> >> for those trees.
+> >>
+> >>
+> >> thanks,
+> >>
+> >> Takashi
+> 
