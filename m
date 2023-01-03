@@ -4,66 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A47EDC4708D
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Jan 2023 19:18:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 021F9C3DA7D
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Jan 2023 19:25:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6FD5D6365;
-	Tue,  3 Jan 2023 20:17:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FD5D6365
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8ACAB63CD;
+	Tue,  3 Jan 2023 20:24:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8ACAB63CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672773516;
-	bh=rHCesJ+cl5D0m6koH1aTaI1S1JP4QlOBXoCX2LsSXr4=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1672773948;
+	bh=8w38A456EJ8/JXZjMxFiqjPCYGJQzYB1kqHOPdTgpUE=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=XQtUjvVrKzLcuAe6Nxc3uZaKxlXJPUcJsKWKQC1cWsv3h8sZse9bZdKZOu6b3WQvV
-	 +TeNqLwXNhGFOfZg5YUGHxJ/XOiyqPMVhPuD5YGmHiCS0ruq+t65GK1a3ojfjWQQc+
-	 d75/fT/IDwdUS7NBpTYrZyqkqN4UHEQL2jtwawIU=
+	b=YcKdYOQZ4gdqCOGA3HH6wtEVni5q3t7dxgj5ZwY8XuzzIAX2WbMK0Dra337LgSW7o
+	 ciBiPuvrVVucqJiJRlwOVex0lPAZx/KvFYndI+ZQtLUWiutzFQ8SAe7u+D7g8urhwL
+	 v6Ylb9UOIxEmhoVcVEq/ErZJUmATQRpCbyfNTM5s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09B6FF89630;
-	Tue,  3 Jan 2023 20:00:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30313F8047B;
+	Tue,  3 Jan 2023 20:24:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14314F89630; Tue,  3 Jan 2023 20:00:47 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 03368F804AA; Tue,  3 Jan 2023 20:24:57 +0100 (CET)
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com
+ [IPv6:2607:f8b0:4864:20::22a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 790F4F8962C
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2023 20:00:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 790F4F8962C
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=cTnXHpSy
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 9E915CE12B2;
- Tue,  3 Jan 2023 19:00:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E434C433D2;
- Tue,  3 Jan 2023 19:00:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1672772436;
- bh=rHCesJ+cl5D0m6koH1aTaI1S1JP4QlOBXoCX2LsSXr4=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=cTnXHpSyIEdGcRaodXG6vuQlwK3BlDoYkOCL5PJ7r+AEH6Q0vwEHT9gryvePz0b6W
- ndlum+j8MaFUZzyTsyjTfupr8k+C1eXaJxOfpGWqIF/s9evyoh8/a8Y4ansZQ9ak9d
- zq93zRzzTEtj+ZWL7d8mii3sQIDN2AakkxqmGaJ8yBhJz094Je+jznLVShktIUgwvN
- CrN7n2nQkgVKb8ST8se1YZRroEJYcvFwVIDoPkbt5Xxqz+gnZSRwKSSAuFIF5nndIs
- gi1e7eGxa2nv4ASv9HKBukSZ7BxNLGmx4nny7xedxpqxE8m4/wJeav5PSl98fxSjBQ
- ZJ/X8NiL5W1gw==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Brent Lu <brent.lu@intel.com>
-In-Reply-To: <20230103073704.722027-1-brent.lu@intel.com>
-References: <20230103073704.722027-1-brent.lu@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: sof_ssp_amp: remove unused variable
-Message-Id: <167277243396.325583.15307745179196438624.b4-ty@kernel.org>
-Date: Tue, 03 Jan 2023 19:00:33 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10D82F800C0
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2023 20:24:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10D82F800C0
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ unprotected) header.d=ralston.id.au header.i=@ralston.id.au
+ header.a=rsa-sha256 header.s=google header.b=A3iZHMq1
+Received: by mail-oi1-x22a.google.com with SMTP id h185so5377071oif.5
+ for <alsa-devel@alsa-project.org>; Tue, 03 Jan 2023 11:24:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=ralston.id.au; s=google;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=a1Pvovz6KD/rGdi5Cr+RhhTptgsnk7UiVcQNAM8+eBU=;
+ b=A3iZHMq1qX7BLuv8LOjD2/WgSAjRCflHSb5ljgUjZXfI8UO7kxCSKjMML05dAGROBq
+ Brk9fkjqudbKAi0IhPSRvRw8xF/XcmKn2bWbYCmQCa+KKDylcfx7e0By5aHaOZYzMbB/
+ Q3T4Oeed30ocfaOtl6ejPaxlyYYpEkjoNQ5Hk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=a1Pvovz6KD/rGdi5Cr+RhhTptgsnk7UiVcQNAM8+eBU=;
+ b=PyOYdb50D5XKz+Wngzc5fAKrsrF4k1k9KpYaDrXwjHvCFlR9nzaH85cgoIX4jyi9g/
+ fK1KT7RIn5cNTyqHKkt7/Zf+cfZN+rbyndlWMQPXTYmAwTDwSk4dWgQjySjhWisLFt3P
+ 40KnTQw5qdLbOH7c/VrBJRFYzCCVkpzW3LfqKEdPEkDWadrVAP40tEE6XSX3aZNYOIr7
+ n1NaC9bw7SkPS6nUp/tJyCndDPITleE5DIC/kWBTSzf3AExk/h+MPjaYiH1oBRSY94vW
+ FdcTLmwJhvGsp//WxRTlzj70XXJXI6zMcUMGGFGPuLjmd/P2n/Hhir6GNZWQxasaRSs1
+ Yyzg==
+X-Gm-Message-State: AFqh2kqni7SPIafvoYHsVjMojt/LXM/Rqv3esJOHbmufPQTfkhXesUT8
+ ORu0juaFDPK4DtXbYDdIUu/qEYkg4LhQ0DyIUFsigA==
+X-Google-Smtp-Source: AMrXdXsSrUBgeuZr11V5MVDq1ahDjM3YnzlwexugjDHVzjW3s/niOCBfKCmmzgVetZXBqZkQUi4GfRfYldJc0F2Ls1w=
+X-Received: by 2002:a05:6808:48d:b0:35c:3327:ecf0 with SMTP id
+ z13-20020a056808048d00b0035c3327ecf0mr2314709oid.220.1672773892807; Tue, 03
+ Jan 2023 11:24:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-7ab1d
+References: <CAC2975JXkS1A5Tj9b02G_sy25ZWN-ys+tc9wmkoS=qPgKCogSg@mail.gmail.com>
+ <bf646395-1231-92f6-7c5a-5b7765596358@leemhuis.info>
+ <87zgb0q7x4.wl-tiwai@suse.de>
+ <CAC2975K24Gt3rGieAToHjb7FEHv84aqiRSQx7EOuR2Q7KByUXw@mail.gmail.com>
+ <87sfgrrb5f.wl-tiwai@suse.de>
+ <CAC2975+cUqiFC0LO-D-fi0swH+x=_FMuG+==mhg6HH4pc_YDRA@mail.gmail.com>
+ <87bknfr6rd.wl-tiwai@suse.de>
+ <CAC2975+CP0WKmXouX_8TffT1+VpU3EuOzyGHMv+VsAOBjCyhnA@mail.gmail.com>
+ <878rijr6dz.wl-tiwai@suse.de>
+ <CAC2975+Ybz2-jyJAwAUEu5S1XKfp0B-p4s-gAsMPfZdD61uNfQ@mail.gmail.com>
+ <87zgazppuc.wl-tiwai@suse.de>
+ <CAC2975+476CHDL3YM=uExHu96UB2rodAng9PVYHX+vGnSCppGA@mail.gmail.com>
+In-Reply-To: <CAC2975+476CHDL3YM=uExHu96UB2rodAng9PVYHX+vGnSCppGA@mail.gmail.com>
+From: Michael Ralston <michael@ralston.id.au>
+Date: Wed, 4 Jan 2023 06:24:16 +1100
+Message-ID: <CAC2975Ja-o6-qCWv2bUkt3ps7BcKvb96rao_De4SGVW1v8uE=A@mail.gmail.com>
+Subject: Re: USB-Audio regression on behringer UMC404HD
+To: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,47 +97,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Akihiko Odaki <akihiko.odaki@gmail.com>, ye xingchen <ye.xingchen@zte.com.cn>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, regressions@lists.linux.dev,
+ Takashi Iwai <tiwai@suse.com>, stable@vger.kernel.org,
+ Thorsten Leemhuis <regressions@leemhuis.info>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 03 Jan 2023 15:37:04 +0800, Brent Lu wrote:
-> The variable becomes useless since we moved the snd_soc_jack
-> structure from a static array to sof_hdmi_pcm structure.
-> 
-> 
+On Wed, 4 Jan 2023 at 06:09, Michael Ralston <michael@ralston.id.au> wrote:
+>
+> On Wed, 4 Jan 2023 at 03:03, Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > OK, thanks.  Then it's not about the USB interface reset.
+> > It must be subtle and nasty difference.
+> >
+> > Could you apply the change below on the top?
+> > It essentially reverts the hw_params/prepare split again.
+> >
+>
+> Very sorry to say this still hasn't fixed the problem :(
+>
 
-Applied to
+I did a diff between the sound/usb directory for 6.0.16 and 6.1.2 and
+reverted that entire directory.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+It is working with that change, so there must be something else.
 
-Thanks!
-
-[1/1] ASoC: Intel: sof_ssp_amp: remove unused variable
-      commit: 03178b4f7e2c59ead102e5ab5acb82ce1eaefe46
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Michael
