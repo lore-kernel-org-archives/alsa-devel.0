@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DED07C3DA7D
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 Jan 2023 15:14:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5B00C46467
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 Jan 2023 15:14:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 951EDE3A4;
-	Tue,  3 Jan 2023 16:13:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 951EDE3A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0EC8E3B6;
+	Tue,  3 Jan 2023 16:13:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0EC8E3B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672758845;
-	bh=9CZWUS+HjTC+oBDN9DfEIpAdO0eLZN1UZHIMobFpLzs=;
+	s=default; t=1672758876;
+	bh=5SrCQRI+/vBlcqgMu0UblrUEzW+wIvjoDIVnRmKMN7U=;
 	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=iXZvpEhGJWpJhCKcKv48KhSehot7joymaAIb6grGPCRi72E0yWCY/p6gjt2dYUpvB
-	 ElOrhvi2typOtStnT4TwpAky2ckfllt/PJbG1D9JYvdQWK6Lg9dQv8CpSrYKvm8Rnq
-	 WBguMc3cilgOk7wYjnY3rUZR6rqKsL7q7pOkOhWI=
+	b=LHCtcVD6iXZ9gZhJ6poqTcGLLgSYFkS2olLnJc+HqC4bQfcQaeJutYtILq0iE/JGv
+	 6g2tNcwN3pUOlgswHJXjAoJiuk7ZG1LtguZaR/wTFxBWsxzxQIEsQuQYo5hVmTu6Kq
+	 43XgARBM2/YOVd3PC6fkBOtGArJ7RX+peU1GTPLA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42DE6F803DC;
-	Tue,  3 Jan 2023 16:13:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69126F804AD;
+	Tue,  3 Jan 2023 16:13:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 86692F804AA; Tue,  3 Jan 2023 16:13:13 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ id BD749F804AE; Tue,  3 Jan 2023 16:13:44 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B6B66F803DC
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2023 16:13:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6B66F803DC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1BD01F80508
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2023 16:13:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BD01F80508
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=hQs+sGmQ; 
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=2P+DjpS9; 
  dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=l6pZyvdC
+ header.s=susede2_ed25519 header.b=YNKYzDmi
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id B422867A50;
- Tue,  3 Jan 2023 15:13:10 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7B5D167A4F;
+ Tue,  3 Jan 2023 15:13:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1672758790; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1672758822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=J/q0XYjWdcHcGHvf2zvFOmE/CmItt9EEwaXdou/KhH8=;
- b=hQs+sGmQcm2RbaGaJhnN3eAUr3OuguTcxtUHSRFK+7nKTWQuuT8RXeHFYTxgEPOe30Ei70
- E+mY8bDqjtis2cmOjHL9dKJNsonV/fne2f33UU6fSz7hky6TQNH/WO1kYQ4CW0wnijA6O0
- e3KbnAZUNQko0kL5w+qAu4EYpDoiPpc=
+ bh=a9NbNDNy/FC4jAPiMV2TjuYW2RG4E7zzdyyeNDELxU8=;
+ b=2P+DjpS92NOlCGBaGnJtjTzCFgayghfrJRmZnR1mps1shvIhatXcjkqC0xnUVOGNcdwzRI
+ gkuEb/WvpJ77twydVrEueC15v9HZQO9VBIZ9zxRLe9cS1arm7ePOySkscRfng1CJJw0FSL
+ Q9eUVxvCt+I3szJscyWFp+OIL69pt7M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1672758790;
+ s=susede2_ed25519; t=1672758822;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=J/q0XYjWdcHcGHvf2zvFOmE/CmItt9EEwaXdou/KhH8=;
- b=l6pZyvdCpCtizyaWnlXpWTmbm4Trzo4KW0IcjXXhCcHRsc3yvlRtRly9dkaEwmI/jei2w0
- 9a44YgN+q3MZRNAQ==
+ bh=a9NbNDNy/FC4jAPiMV2TjuYW2RG4E7zzdyyeNDELxU8=;
+ b=YNKYzDmi/Px2/YnSd+ReomkHLrOMUWcZK6Ar0jv+R/d4ZKhyy/zACgxhTrhCGqkfDAyF/g
+ k4rwV+ix4oPUjbCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 898B41390C;
- Tue,  3 Jan 2023 15:13:10 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 65BB11390C;
+ Tue,  3 Jan 2023 15:13:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id iibJIAZGtGPwYgAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 03 Jan 2023 15:13:10 +0000
-Date: Tue, 03 Jan 2023 16:13:10 +0100
-Message-ID: <87bknfr6rd.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id ctPCFyZGtGM0YwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 03 Jan 2023 15:13:42 +0000
+Date: Tue, 03 Jan 2023 16:13:41 +0100
+Message-ID: <87a62zr6qi.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Michael Ralston <michael@ralston.id.au>
-Subject: Re: USB-Audio regression on behringer UMC404HD
-In-Reply-To: <CAC2975+cUqiFC0LO-D-fi0swH+x=_FMuG+==mhg6HH4pc_YDRA@mail.gmail.com>
-References: <CAC2975JXkS1A5Tj9b02G_sy25ZWN-ys+tc9wmkoS=qPgKCogSg@mail.gmail.com>
- <bf646395-1231-92f6-7c5a-5b7765596358@leemhuis.info>
- <87zgb0q7x4.wl-tiwai@suse.de>
- <CAC2975K24Gt3rGieAToHjb7FEHv84aqiRSQx7EOuR2Q7KByUXw@mail.gmail.com>
- <87sfgrrb5f.wl-tiwai@suse.de>
- <CAC2975+cUqiFC0LO-D-fi0swH+x=_FMuG+==mhg6HH4pc_YDRA@mail.gmail.com>
+To: Kailang <kailang@realtek.com>
+Subject: Re: Turn on power early to avoid something
+In-Reply-To: <e35d8f4fa18f4448a2315cc7d4a3715f@realtek.com>
+References: <3dcfbaf4ccb34be7a9c4af0202cdcdd4@realtek.com>
+ <87fscxxqp0.wl-tiwai@suse.de>
+ <af64a2d5e55448dbadef4d0efd96bea5@realtek.com>
+ <87cz81xnen.wl-tiwai@suse.de>
+ <e35d8f4fa18f4448a2315cc7d4a3715f@realtek.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -96,38 +95,72 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, regressions@lists.linux.dev,
- Takashi Iwai <tiwai@suse.com>, stable@vger.kernel.org,
- Thorsten Leemhuis <regressions@leemhuis.info>
+Cc: " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 03 Jan 2023 16:05:18 +0100,
-Michael Ralston wrote:
+On Tue, 03 Jan 2023 07:51:34 +0100,
+Kailang wrote:
 > 
-> On Wed, 4 Jan 2023 at 00:38, Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> > Thanks; that's helpful.
-> >
-> > Could you try to revert the commit
-> > 9902b303b5ade208b58f0dd38a09831813582211
-> >     ALSA: usb-audio: Avoid unnecessary interface change at EP close
-> as a blind shot?
-> >
-> > Also, there has been a series of fixes for other issues, and it might
-> > be worth to try as well:
-> >   https://lore.kernel.org/r/20230102170759.29610-1-tiwai@suse.de
-> >
-> 
-> I built 3 kernels: one with the reverted commit, one with the patches
-> you linked, and one with both. These builds were based on 6.1.2.
-> 
-> None of them worked. Also, even though I continued to boot with
-> snd_usb_audio.dyndbg=+p, none of the kernel logs showed the debug
-> messages that the other versions did. I'm baffled why this is.
+> Add more description.
 
-That's weird.  Is snd_usb_audio driver bound with the device at all?
-That is, does it appear in /proc/asound/cards?
+OK, applied now.  Thanks.
 
 
 Takashi
+
+> 
+> > -----Original Message-----
+> > From: Takashi Iwai <tiwai@suse.de>
+> > Sent: Friday, December 30, 2022 5:16 PM
+> > To: Kailang <kailang@realtek.com>
+> > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+> > Subject: Re: Turn on power early to avoid something
+> > 
+> > On Fri, 30 Dec 2022 09:14:16 +0100,
+> > Kailang wrote:
+> > >
+> > >
+> > >
+> > > > -----Original Message-----
+> > > > From: Takashi Iwai <tiwai@suse.de>
+> > > > Sent: Friday, December 30, 2022 4:05 PM
+> > > > To: Kailang <kailang@realtek.com>
+> > > > Cc: (alsa-devel@alsa-project.org) <alsa-devel@alsa-project.org>
+> > > > Subject: Re: Turn on power early to avoid something
+> > > >
+> > > > On Fri, 30 Dec 2022 08:54:01 +0100,
+> > > > Kailang wrote:
+> > > > >
+> > > > > Hi Takashi,
+> > > > >
+> > > > > It maybe can avoid something for early power up.
+> > > > >
+> > > > > Many Thanks.
+> > > > > Kailang.
+> > > >
+> > > > Hmm, what is "something"?  The description is way too ambiguous to
+> > > > judge whether the change is OK or not, unfortunately.
+> > > > Could you elaborate what exactly the change will fix?
+> > > >
+> > > > Also, when you submit a patch from another person, please put your
+> > > > own Signed-off-by line.  It's a legal requirement.
+> > > yangyuchi66@gmail.com was my personal account.
+> > > Could I use this account?
+> > 
+> > Ah OK, then it's fine.
+> > 
+> > > Or I need use this account to mail patch to you.
+> > 
+> > It's not necessary, the sign-off is fine as long as it matches with the From
+> > address in the patch and it's yourself.
+> > 
+> > But we still need a better description of the patch text.
+> > 
+> > 
+> > thanks,
+> > 
+> > Takashi
+> > 
+> > ------Please consider the environment before printing this e-mail.
+> 
