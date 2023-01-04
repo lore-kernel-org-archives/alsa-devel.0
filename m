@@ -4,76 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36DCEC53210
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Jan 2023 16:13:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DFC1C46467
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Jan 2023 16:43:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C109BAB3;
-	Wed,  4 Jan 2023 17:13:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C109BAB3
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD0CDBCD6;
+	Wed,  4 Jan 2023 17:42:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD0CDBCD6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672848831;
-	bh=5u1MnWbPdDkdU0lePvDGFz3o3hj2dJI39QEDkTF/5Ww=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1672850617;
+	bh=tawCq5rDNts+pHcVIk1xFpMG4ptIp8MdqNAWL9sUCKk=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=irxzY9ujE9/u49HV+P6o2TMHKsrwWNFz51o9Q7WbtQrqu6nTJ1RAOe98Q6lhrdjhX
-	 m+gQKDrqQaJUrzZs150KiU/9xdEzLYseOZ0Q8HdLhm4RRHc/v/O40ladvea9vpYUwO
-	 vPXxz4pj5iaoudfvDCLDc447/t8hmG9i4d5Lb2Kg=
+	b=L23xMTsbrGS5G6JuLbP9iX6T8PanZ1AKo1DodDd/Oua0ysTBxrsG9fGupBP623Y1y
+	 J4AhsQ/pWuJXD+1DRpc7LQwA16Szox8bxECHUAIz2X5Rgyn4EQuVAJIXl8OLVo/a+w
+	 NgHd4c1qVj3KbkiLUYV9tH+ILI2lN0O6fNTM9gts=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7994F8023B;
-	Wed,  4 Jan 2023 17:13:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9B55FF8023B;
+	Wed,  4 Jan 2023 17:42:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5BAB9F80240; Wed,  4 Jan 2023 17:12:59 +0100 (CET)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 825B8F80240; Wed,  4 Jan 2023 17:42:46 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11223F800C0
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2023 17:42:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11223F800C0
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=TpxET4oV
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8FB6AF8023A
- for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2023 17:12:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FB6AF8023A
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=TxQLV85C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1672848777; x=1704384777;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=5u1MnWbPdDkdU0lePvDGFz3o3hj2dJI39QEDkTF/5Ww=;
- b=TxQLV85CG4Y8ETvAd6JzluoBPihls0NVryprun1AbsLy7DNWdAhD1Cjg
- sHbmQTQs/yofWCrBjnv/iDVJKCM9/aZmLDhrshBb6OIZiFJp6/AFdZHT3
- iqhoELXVmx/wiYGUJDDBa421MEw5+06yGM9IHvb/aMF53bDhrRq7FH1kb
- hmxpGY4oWpMgd9tt7s5TscKVJ+1TZNPD0APdA5VH+xeU0/FB7WjkoDNr1
- hpz+HWjSk4dVP0ZjjQpT7bnP/5LP9iJfsu8NMNU5tuoXCSB0Nyx2yYzVr
- gyQANFgy0+9IB48utpUOdhE+HctbCKBK32IJHqIbGO/J6fubmGz7tuHFT w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10580"; a="386402225"
-X-IronPort-AV: E=Sophos;i="5.96,300,1665471600"; d="scan'208";a="386402225"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Jan 2023 08:12:45 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10580"; a="762722855"
-X-IronPort-AV: E=Sophos;i="5.96,300,1665471600"; d="scan'208";a="762722855"
-Received: from hlgentry-mobl2.amr.corp.intel.com (HELO [10.212.74.62])
- ([10.212.74.62])
- by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Jan 2023 08:12:44 -0800
-Message-ID: <151a05a5-fc56-e005-e572-d031e6de0bb1@linux.intel.com>
-Date: Wed, 4 Jan 2023 08:15:27 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.4.2
+ by dfw.source.kernel.org (Postfix) with ESMTPS id DE43E617A8;
+ Wed,  4 Jan 2023 16:42:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F00FC433EF;
+ Wed,  4 Jan 2023 16:42:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1672850561;
+ bh=tawCq5rDNts+pHcVIk1xFpMG4ptIp8MdqNAWL9sUCKk=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=TpxET4oVPdaev6BWt/DzVoqIPC7DPZGDZ2jVQkbiTKqqCPIqA9jkcJRcgK+Et5n1Q
+ 9zVJQpC+v+Jh6kTrLqnGWXOUXATlsVrh/ajomkJUCo2TAUJWfmiCyfGSN/ib7GskH/
+ HV197Q1A6Zx9wqvkWsuFLb02UcWhJCZcft413EjTzjA1S979VviYyAvrcb3joC3bwr
+ QC8dCbgWt01L6T9jC1N4uW6lERAD+XAQkW6tvSmzhCRloOK1HxgRrn+tx7KMdT+mZV
+ Tyg+M2tHesqSaoEafgDVQz4If7CN5Q1ZoKqjZjdRhuOw/cIRedhAgelLGGmFxqc+Vl
+ sEIqAdfJ3HgbA==
+Date: Wed, 4 Jan 2023 16:42:28 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [PATCH v1 1/5] ASoC: Intel: bytcht_cx2072x: Replace open coded
  acpi_dev_put()
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Message-ID: <Y7WsdF1rK/JmS01W@sirena.org.uk>
 References: <20230102203037.16120-1-andriy.shevchenko@linux.intel.com>
  <731b2d59-22f1-a456-bcfc-040a1adccce0@linux.intel.com>
  <Y7VVCc7TjY3YsJoV@smile.fi.intel.com>
-Content-Language: en-US
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <Y7VVCc7TjY3YsJoV@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <151a05a5-fc56-e005-e572-d031e6de0bb1@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="600BhCXh/yAphDa9"
+Content-Disposition: inline
+In-Reply-To: <151a05a5-fc56-e005-e572-d031e6de0bb1@linux.intel.com>
+X-Cookie: Stay away from hurricanes for a while.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,43 +85,39 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
  Bard Liao <yung-chuan.liao@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--600BhCXh/yAphDa9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 1/4/23 04:29, Andy Shevchenko wrote:
-> On Tue, Jan 03, 2023 at 09:08:20AM -0600, Pierre-Louis Bossart wrote:
->> On 1/2/23 14:30, Andy Shevchenko wrote:
->>> Instead of calling put_device(&adev->dev) where adev is a pointer
->>> to an ACPI device, use specific call, i.e. acpi_dev_put().
->>>
->>> Also move it out of the conditional to make it more visible in case
->>> some other code will be added which may use that pointer. We need
->>> to keep a reference as long as we use the pointer.
->>>
->>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>
->> Answering for the series: we should make the change across all Intel
->> machine drivers. I see at least four cases that were missed
->>
->> bytcr_rt5640.c:         put_device(&adev->dev);
->> bytcr_rt5651.c:         put_device(&adev->dev);
->> bytcr_wm5102.c: put_device(&adev->dev);
->> sof_es8336.c:           put_device(&adev->dev);
-> 
-> Aren't they (they all problematic, btw) covered by the fixes series
-> https://lore.kernel.org/r/20230102203014.16041-1-andriy.shevchenko@linux.intel.com?
+On Wed, Jan 04, 2023 at 08:15:27AM -0600, Pierre-Louis Bossart wrote:
 
-They are indeed, but if you group AMD-related patches with Intel ones,
-it's only human for reviewers to skip the thread entirely, even more so
-when catching up with email on January 3 :-)
+> For this series
 
-For this series
+> Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+According to b4 you've only acked the first patch here because Andy
+doesn't send cover letters :/
 
+--600BhCXh/yAphDa9
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmO1rHMACgkQJNaLcl1U
+h9ABhQf/XFeIxOWyHgbkfokMWdWoAi7UA8p0E70CSx2GVz+PkIITj4yDCJ1eVvE2
+ZkGD4qu7K8mTd7VqHIuv6GDsaoU9ombbBEpr+uAIhx3Gu8frwPrbvJLH5/QaKfDa
+hZ8zsW9r4AoxrzJi9e0b0VKWQIb0IOYRCs19QBnCxe6w2/mU/cvcSSeumIaT2KD+
+f8Zr+MpOq3w7XfoITNPnpjkyJ3eVmWTDFB9OiqbzQrysi5yAOlnap28n7NJTt+da
+eflpwmr9HAStbMbzURV2JWlrcioumyfgsPp7GUTfh1U7JWomSRvUk0dK3x9sWou0
+iz4/5dGRm/DGOgbd44tPvbf/asPV4w==
+=fAp8
+-----END PGP SIGNATURE-----
+
+--600BhCXh/yAphDa9--
