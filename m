@@ -4,65 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACEC0C4708E
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Jan 2023 14:58:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F85EC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Jan 2023 15:10:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 861BEB567;
-	Wed,  4 Jan 2023 15:57:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 861BEB567
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1754CB61D;
+	Wed,  4 Jan 2023 16:09:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1754CB61D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672844298;
-	bh=pSQgydIRS+f+56yNB/Po7JfuLpD+BulyAa6IY66Pdkw=;
+	s=default; t=1672845042;
+	bh=asD75WQ1JZ05Bqj+PZcO+Mr7ThZw7d4DsFTf94chIVQ=;
 	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=nhPPuBWEyouOLCYzDQWbWN6eqvhQevQA9RHxejG9pXjnqbGzYS/CUqnJVHaomymTE
-	 wfnzaXS20JXLoRFbHI+TpFxZQMRzg9kdaIDJr2ttXOwQmiHf0mlsDVm6k39xQhYlNi
-	 /Z9vQE9TQ6yaOtm1GPnGF2h+vtbFdtzglwLI6DkA=
+	b=CpGn9qCynuLWCsgymJlCA4nosGZ+LOlI4tgp4SkJ0RmEg58huvM1zEHP2ZAapKjwz
+	 Ms5pjR6sWjmGrwAvl6dQGgUiGMAk/zcrX1l8Re5jJKCb4adp42/9stLR+wp46Kp1ru
+	 yge7+KReOwMeRajs5LuQO60v6yzlAxZVUAobUypY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41BA7F8053A;
-	Wed,  4 Jan 2023 15:57:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB082F8023A;
+	Wed,  4 Jan 2023 16:09:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47265F80542; Wed,  4 Jan 2023 15:57:26 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 93B9FF8024D; Wed,  4 Jan 2023 16:09:50 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 43BBBF8053C
- for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2023 15:57:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43BBBF8053C
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Ya5WJi8z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1672844244; x=1704380244;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=pSQgydIRS+f+56yNB/Po7JfuLpD+BulyAa6IY66Pdkw=;
- b=Ya5WJi8zBXLmTdbrNsy/VfeIy9b9ushdNm1ZUflSkwx25Jhm4Wzv2DVo
- ib4qam6PMOAI9WUoQ1kU6m7eDb63P7UFr6oCvr5UD5GnYZE8aHIci0AkX
- In3kYjm7U4cH+1WOuyDtpyjfJRMO5qNzuoSUKY+S3sfqRWgMvVmKadWkp
- JxnZgd7g978j0KNyxfZOjNQx5NuIRj7CT85nbRJfnM9+sGzmkXxOqqlrW
- Reh5ixBxQsZwCnCrtjmQE6q/5zFv3R6s+OxN424i0c/NtzFo4UIwLq/gd
- WRF2UKJ5m0BBKON+oEMaIb2h7Aq1VW9a/esWYZLiP77l0BgPilEn09F9H A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10580"; a="323950465"
-X-IronPort-AV: E=Sophos;i="5.96,300,1665471600"; d="scan'208";a="323950465"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Jan 2023 06:57:20 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10580"; a="687556600"
-X-IronPort-AV: E=Sophos;i="5.96,300,1665471600"; d="scan'208";a="687556600"
-Received: from hlgentry-mobl2.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.74.62])
- by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Jan 2023 06:57:19 -0800
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9664F8023A
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2023 16:09:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9664F8023A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=A68eHuwQ; 
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=IWEP3vG/
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 195F13F2BC;
+ Wed,  4 Jan 2023 15:09:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1672844988; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Eyx2VCXv/44IIaceO31IA3mmOKXzAkZ91aCVdNo7eVw=;
+ b=A68eHuwQOT5cKA4uDWUYniwmRrH7m26tkTf4wp2D258+7tnhExjn0oO3gDSvlF5lG0v+YI
+ vXsJyWV+EvKx0sB+bFBfgi/2MXfvQlGaFJyRCR7ZVfB/8/WqeyJxSpsfL/xmyTNf5wtYIf
+ Ja2Ax7VOhxXfaD3aP86O0jaGSiq5G+w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1672844988;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Eyx2VCXv/44IIaceO31IA3mmOKXzAkZ91aCVdNo7eVw=;
+ b=IWEP3vG/D8++RzBZX5RaqaSwecZ3qDL8EZDxYxsDYdtt5VyASeK36hdG0z/ljCevcMaRUC
+ Btx1WRhthiTx9IBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ED4BC1342C;
+ Wed,  4 Jan 2023 15:09:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id oSE0ObuWtWM/aAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Wed, 04 Jan 2023 15:09:47 +0000
+From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: amd: ps: use static function
-Date: Wed,  4 Jan 2023 08:57:08 -0600
-Message-Id: <20230104145708.25051-1-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.37.2
+Subject: [PATCH] Revert "ALSA: usb-audio: Drop superfluous interface setup at
+ parsing"
+Date: Wed,  4 Jan 2023 16:09:44 +0100
+Message-Id: <20230104150944.24918-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -77,47 +87,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: Michael Ralston <michael@ralston.id.au>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Sparse warning:
+This reverts commit ac5e2fb425e1121ceef2b9d1b3ffccc195d55707.
 
-error: symbol 'acp63_fill_platform_dev_info' was not declared. Should
-it be static?
+The commit caused a regression on Behringer UMC404HD (and likely
+others).  As the change was meant only as a minor optimization, it's
+better to revert it to address the regression.
 
-Also reduce line lines below 100 characters.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reported-and-tested-by: Michael Ralston <michael@ralston.id.au>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/CAC2975JXkS1A5Tj9b02G_sy25ZWN-ys+tc9wmkoS=qPgKCogSg@mail.gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/amd/ps/pci-ps.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ sound/usb/stream.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/amd/ps/pci-ps.c b/sound/soc/amd/ps/pci-ps.c
-index 401cfd0036bed..02bb48b62afc9 100644
---- a/sound/soc/amd/ps/pci-ps.c
-+++ b/sound/soc/amd/ps/pci-ps.c
-@@ -167,10 +167,14 @@ static void get_acp63_device_config(u32 config, struct pci_dev *pci,
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index f75601ca2d52..f10f4e6d3fb8 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -1222,6 +1222,12 @@ static int __snd_usb_parse_audio_interface(struct snd_usb_audio *chip,
+ 			if (err < 0)
+ 				return err;
+ 		}
++
++		/* try to set the interface... */
++		usb_set_interface(chip->dev, iface_no, 0);
++		snd_usb_init_pitch(chip, fp);
++		snd_usb_init_sample_rate(chip, fp, fp->rate_max);
++		usb_set_interface(chip->dev, iface_no, altno);
  	}
+ 	return 0;
  }
- 
--void acp63_fill_platform_dev_info(struct platform_device_info *pdevinfo, struct device *parent,
--				  struct fwnode_handle *fw_node, char *name, unsigned int id,
--				  const struct resource *res, unsigned int num_res,
--				  const void *data, size_t size_data)
-+static void acp63_fill_platform_dev_info(struct platform_device_info *pdevinfo,
-+					 struct device *parent,
-+					 struct fwnode_handle *fw_node,
-+					 char *name, unsigned int id,
-+					 const struct resource *res,
-+					 unsigned int num_res,
-+					 const void *data,
-+					 size_t size_data)
- {
- 	pdevinfo->name = name;
- 	pdevinfo->id = id;
 -- 
-2.37.2
+2.35.3
 
