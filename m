@@ -4,67 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2779C4332F
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 Jan 2023 11:32:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14E8DC4332F
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 Jan 2023 12:36:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E57B38EA;
-	Wed,  4 Jan 2023 12:31:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E57B38EA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0676CABA1;
+	Wed,  4 Jan 2023 13:35:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0676CABA1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672831962;
-	bh=v+0G+kQjDPZcgzyLAonltcocpIDs/oeo0yIa+WxMioo=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1672835804;
+	bh=rkt4l1r96Awe0yuVnI/8AUblpAdT+5P6KOwt66+7u6c=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=ba9VfUFdj3tL2zgrPvw2UGQXQG5W73drnfOvf12iAoCH6Xe1tdykW6QoU3jle8G+M
-	 qMtraYIlYsHU2DYWWySOH8aRXTaIINoAN9MPCHE2D7TBGwb50UCBMbIYwWqYvXSwX/
-	 rXw4pTG2u9iGCtNrelFpZgz3SEBCIR3pwm/Wsuy0=
+	b=ST1M/tyzZ6ucv2V3K9f7RhZmjoJNQScEtVfJvEgS0AeciZ95gg63y4+3cDgHgvlDX
+	 eyanK2PKXXlq+b96lK2jMxQJbotcbMfkUkTENwaU9Lhqh3e78W9tFGntueaa7WzR/N
+	 3v+zrmA1IQwO7D/uRo219shnqb8Pi8dCL39+CugU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0D14DF8023A;
-	Wed,  4 Jan 2023 12:31:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2D55F8024E;
+	Wed,  4 Jan 2023 13:35:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24947F8024E; Wed,  4 Jan 2023 12:31:50 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 887E7F8023B
- for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2023 12:31:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 887E7F8023B
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=jaW9/2IE
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 28DA0F80240; Wed,  4 Jan 2023 13:35:51 +0100 (CET)
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id B0C6FB8162A;
- Wed,  4 Jan 2023 11:31:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C24DCC433EF;
- Wed,  4 Jan 2023 11:31:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1672831901;
- bh=v+0G+kQjDPZcgzyLAonltcocpIDs/oeo0yIa+WxMioo=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=jaW9/2IEM6Wvyg0dBgFkIqCUmk40O7invRLZNi5z3G6eRQS0M/I8BJCxXeDt6jZu2
- itU3Ge1LXKNw1pubUjO1rVPjB3O81IxgjffO85Ushs/3Fno6PE4MU1lJTTrBeHlu29
- SvE+gXqm/dD+yOdwidUi09q+SuhjN5JJK/qDuIGU=
-Date: Wed, 4 Jan 2023 12:31:38 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: Request for cherry-picks for sound (Re: [regression, 5.10.y] Bug
- 216861)
-Message-ID: <Y7Vjmod9m/Zmp4v2@kroah.com>
-References: <bebd692d-7d21-6648-6b7a-c91063bb51c2@leemhuis.info>
- <Y7K1WDmPYi3EMOn1@eldamar.lan> <87wn65umye.wl-tiwai@suse.de>
- <CALp6mkJhM1zDcNr9X_7WL09+uqcaAhNFFMhrjme0r7584O+Lgw@mail.gmail.com>
- <CALp6mk+rdqGXySUowxZv3kEEVWrh96m_x-h8xcFNQ9YZPkbc5w@mail.gmail.com>
- <87h6x7r7w6.wl-tiwai@suse.de> <87sfgrpos6.wl-tiwai@suse.de>
- <87wn62obhm.wl-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FB26F800C0;
+ Wed,  4 Jan 2023 13:35:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FB26F800C0
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=ON9WlE1K
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1672835747; x=1704371747;
+ h=date:from:to:cc:subject:in-reply-to:message-id:
+ references:mime-version;
+ bh=rkt4l1r96Awe0yuVnI/8AUblpAdT+5P6KOwt66+7u6c=;
+ b=ON9WlE1KC8dppV3VtXf2RgYCK8R4fZwIGidX0SIpAmtL1WmbP3Ovwjsh
+ 0/jUsnaxA0hK+0HgKNFX8Kk9Ztm752dwLskkXE6iVO5IxTjOJmzFPCHJZ
+ sZRm5wz6K5Cq3rFXmCFu7r0WYL6+dFQvKU/Z+n5dKrMlhgST9myhFscQo
+ lmLO2f4shRov/S5hO+iI8hpx1GXMj1pdnxz0XzTLChB6sfDhELKYkPnzy
+ IUIj/iQ2MQHNIW2x0bW5XlEyLkYDKNsZA0jaHacZ+iPP466Ftf7cVtVQ2
+ dizfgZH0/ow/6pkyxqzhlCd1Lm4iT3/yEQMCFyLLZQE/sG1c5xG+KUEh+ g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10579"; a="384214961"
+X-IronPort-AV: E=Sophos;i="5.96,299,1665471600"; d="scan'208";a="384214961"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Jan 2023 04:35:41 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10579"; a="779195620"
+X-IronPort-AV: E=Sophos;i="5.96,299,1665471600"; d="scan'208";a="779195620"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 04 Jan 2023 04:35:37 -0800
+Date: Wed, 4 Jan 2023 14:34:55 +0200 (EET)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH AUTOSEL 6.1 1/7] ASoC: SOF: Revert: "core: unregister
+ clients and machine drivers in .shutdown"
+In-Reply-To: <20221231200439.1748686-1-sashal@kernel.org>
+Message-ID: <alpine.DEB.2.22.394.2301041427580.3532114@eliteleevi.tm.intel.com>
+References: <20221231200439.1748686-1-sashal@kernel.org>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wn62obhm.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=US-ASCII
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,29 +82,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>,
- "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
- Thorsten Leemhuis <regressions@leemhuis.info>,
- LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Richard Fitzgerald <rf@opensource.cirrus.com>,
+Cc: daniel.baluta@nxp.com, Alsa-devel <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, lgirdwood@gmail.com,
+ yung-chuan.liao@linux.intel.com, tiwai@suse.com,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ stable@vger.kernel.org, linux-kernel@vger.kernel.org,
  Mark Brown <broonie@kernel.org>,
- =?iso-8859-1?Q?P=C1LFFY_D=E1niel?= <dpalffy@gmail.com>,
- Salvatore Bonaccorso <carnil@debian.org>, Sergey <zagagyka@basealt.ru>
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Ricardo Ribalda <ribalda@chromium.org>,
+ =?ISO-8859-15?Q?P=E9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ sound-open-firmware@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jan 04, 2023 at 11:11:33AM +0100, Takashi Iwai wrote:
-> Greg, just in case you missed my previous post.
-> 
-> Could you cherry-pick the following two commits to 5.10.y and 5.15.y
-> stable trees?
-> 
-> e8444560b4d9302a511f0996f4cfdf85b628f4ca
->     ASoC/SoundWire: dai: expand 'stream' concept beyond SoundWire
->  
-> 636110411ca726f19ef8e87b0be51bb9a4cdef06
->     ASoC: Intel/SOF: use set_stream() instead of set_tdm_slots() for HDAudio
+Hi,
 
-Took a bit of work, but both now queued up, thanks.
+On Sat, 31 Dec 2022, Sasha Levin wrote:
 
-greg k-h
+> From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> 
+> [ Upstream commit 44fda61d2bcfb74a942df93959e083a4e8eff75f ]
+> 
+> The unregister machine drivers call is not safe to do when
+> kexec is used. Kexec-lite gets blocked with following backtrace:
+
+this should be picked together with commit 2aa2a5ead0e ("ASoC: SOF: Intel: 
+pci-tgl: unblock S5 entry if DMA stop has failed"), to not bring back old 
+bugs (system failures to enter S5 on shutdown). The revert patch 
+unfortunately fails to mention this dependency.
+
+If I'm too late with my reply, I can send the second patch separately to 
+stable.
+
+Br, Kai
