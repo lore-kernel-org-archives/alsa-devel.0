@@ -4,80 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 111E5C53210
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Jan 2023 00:01:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29E45C3DA7A
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Jan 2023 04:43:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF108DC84;
-	Thu,  5 Jan 2023 01:00:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF108DC84
+	by alsa0.perex.cz (Postfix) with ESMTPS id C12C6F018;
+	Thu,  5 Jan 2023 05:42:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C12C6F018
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672876863;
-	bh=DZgBOwyaksYR8rOqarCeAE7wIzcUZnoEzEaWzuWNeE8=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=g7BqEOp6Fj5KHTHW58sVKAnmmqToqVfSorDML2aZiBkpyMwhDJYTKXeVc4krulKqb
-	 mHPwKr/0cfWdyreg6UeFYaXuvJShWU8x/19rAG0wDjmkhJZnO6052IQt0r3DBpTJCc
-	 WDo0oCeDM+ihqHYAD8s9R7P3H9xsvF9/h7wsABKc=
+	s=default; t=1672893823;
+	bh=YgUFcd87x8BlxCu0A4w3GII4GIObo9pYYeev1HobmhI=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=PdifRytcBSI6q/WM6kn9rTHasdU1WhuGF9shXqNkgQtmf/HsZY91TDw/f5waOCW0e
+	 eKTL6vRbSKYXobccV2js1duoJYzByJIv0IaC5kvJ4CiFMKHOSGUa9zlJhBzTKuFXhi
+	 m8nwj9RnEQk3qzbgX7IoE/wZFLs1+OAosqkLYYPA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F0C81F80238;
-	Thu,  5 Jan 2023 00:59:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B6AAF8047B;
+	Thu,  5 Jan 2023 05:42:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 425C2F8024D; Thu,  5 Jan 2023 00:59:27 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id B53F1F804AA; Thu,  5 Jan 2023 05:42:48 +0100 (CET)
+Received: from smtp-relay-canonical-1.canonical.com
+ (smtp-relay-canonical-1.canonical.com [185.125.188.121])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 85451F80238
- for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2023 00:59:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85451F80238
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8DC6BF80238
+ for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2023 05:42:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DC6BF80238
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=dUSBD2sN
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1672876761; x=1704412761;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=DZgBOwyaksYR8rOqarCeAE7wIzcUZnoEzEaWzuWNeE8=;
- b=dUSBD2sNVwUX0EK7QUn9j6pIIt7wn94BTEY+uJB3H3HdL2Utof5HIriX
- D10fsEI2Ed52m7i2EHmCpLx8kicxQQ7gp60bZLcbqGbcB+9vGlepEjjWD
- JmcMMbM+htpYF28+4FaPmr0gDbU/P0ZG0mHqaZ0BvipMaihutkrSheRGI
- c/oeODBHrmKTujj5+ipnJ0P9xDzG2/l6Z7SRzr/jXjp8UpF4b6Sg2Nb3G
- KK1GUXpi1sCvr0GfYneVcSqtXD7EnA5siIE8mPHfk+13zDt755O2AkD8X
- urU+5MAPymNZnVLOAajGrqG8PamTxXrP9RD82jpNr9HViID9EBDnYnYNj g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10580"; a="323306069"
-X-IronPort-AV: E=Sophos;i="5.96,301,1665471600"; d="scan'208";a="323306069"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Jan 2023 15:58:48 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10580"; a="900745331"
-X-IronPort-AV: E=Sophos;i="5.96,301,1665471600"; d="scan'208";a="900745331"
-Received: from kvthalli-mobl1.amr.corp.intel.com (HELO [10.212.102.90])
- ([10.212.102.90])
- by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Jan 2023 15:58:47 -0800
-Message-ID: <5babccd6-9796-7613-cf82-cc859f338448@linux.intel.com>
-Date: Wed, 4 Jan 2023 17:33:53 -0600
+ unprotected) header.d=canonical.com header.i=@canonical.com
+ header.a=rsa-sha256 header.s=20210705 header.b=SPCZg9iC
+Received: from localhost (36-226-179-107.dynamic-ip.hinet.net [36.226.179.107])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 7F4C743586; 
+ Thu,  5 Jan 2023 04:42:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1672893757;
+ bh=tuX7FpbuFjmLFyhbHFuS7lFvYiGSSpdrXN3U+7iok5A=;
+ h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+ b=SPCZg9iCFDGxIP6lBzZS5J5+xaHIooUiz07XlAAaURlticpeCnSKFFneKLcvlTHer
+ ZGt33Kpkv2mRJ/xQjjotseVkjGl/6Mh7s2qGiaUU32pxOGdtFdAy8N0FOCRXhfmfYg
+ OWW5QINQN9YrJ1R2q6xOjUSeFwuFUeJQWqsniamfRL36fmbgh1JqekENLQj7u9yLE5
+ yu3jR83/J9vMKfkbB3afaW+wVzvXn2XgCGZ+WAURG9nFuX8JJOxhrGU0eOtq0BzTkZ
+ f0M5p7uV4XzG4UtAJVc3bYUyLqDXXoeOfyZS81Lwh19bDMMZDPN/VZ4NTuQ6jUw4Zf
+ iAdKql2lZ5Gtg==
+From: Jeremy Szu <jeremy.szu@canonical.com>
+To: tiwai@suse.com
+Subject: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs don't work for a HP
+ platform
+Date: Thu,  5 Jan 2023 12:41:53 +0800
+Message-Id: <20230105044154.8242-1-jeremy.szu@canonical.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [RFC PATCH 02/14] ASoC: qcom: qdsp6: Introduce USB AFE port to
- q6dsp
-Content-Language: en-US
-To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
- mathias.nyman@intel.com, perex@perex.cz, broonie@kernel.org,
- lgirdwood@gmail.com, andersson@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, gregkh@linuxfoundation.org,
- Thinh.Nguyen@synopsys.com, bgoswami@quicinc.com, tiwai@suse.com,
- robh+dt@kernel.org, agross@kernel.org
-References: <20221223233200.26089-1-quic_wcheng@quicinc.com>
- <20221223233200.26089-3-quic_wcheng@quicinc.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20221223233200.26089-3-quic_wcheng@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,173 +73,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, quic_jackp@quicinc.com, quic_plai@quicinc.com
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ Stefan Binding <sbinding@opensource.cirrus.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Jeremy Szu <jeremy.szu@canonical.com>, Meng Tang <tangmeng@uniontech.com>,
+ Philipp Jungkamp <p.jungkamp@gmx.net>, Yuchi Yang <yangyuchi66@gmail.com>,
+ "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Tim Crawford <tcrawford@system76.com>,
+ =?UTF-8?q?Kacper=20Michaj=C5=82ow?= <kasper93@gmail.com>,
+ open list <linux-kernel@vger.kernel.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+There is a HP platform uses ALC236 codec which using GPIO2 to control
+mute LED and GPIO1 to control micmute LED.
+Thus, add a quirk to make them work.
 
+Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 12/23/22 17:31, Wesley Cheng wrote:
-> The QC ADSP is able to support USB playback and capture, so that the
-> main application processor can be placed into lower CPU power modes.  This
-> adds the required AFE port configurations and port start command to start
-> an audio session.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index eda4914b8aeb..8362eb4642d8 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9409,6 +9409,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8ad2, "HP EliteBook 860 16 inch G9 Notebook PC", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8b5d, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ 	SND_PCI_QUIRK(0x103c, 0x8b5e, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
++	SND_PCI_QUIRK(0x103c, 0x8bf0, "HP", ALC236_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
+ 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+-- 
+2.38.1
 
-It would be good to clarify what sort of endpoints can be supported. I
-presume the SOF-synchronous case is handled, but how would you deal with
-async endpoints with feedback (be it explicit or implicit)?
-
-Note that it's very hard to make the decision not to support async
-endpoints, there are quite a few devices that are exposed as async to
-work around an obscure legacy issue on Windows but are really
-sof-synchronous endpoints that never ask for any change of pace.
-
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
->  .../sound/qcom,q6dsp-lpass-ports.h            |   1 +
->  sound/soc/qcom/qdsp6/q6afe-dai.c              |  47 +++++
->  sound/soc/qcom/qdsp6/q6afe.c                  | 183 ++++++++++++++++++
->  sound/soc/qcom/qdsp6/q6afe.h                  |  46 ++++-
->  sound/soc/qcom/qdsp6/q6dsp-lpass-ports.c      |  23 +++
->  sound/soc/qcom/qdsp6/q6dsp-lpass-ports.h      |   1 +
->  sound/soc/qcom/qdsp6/q6routing.c              |   8 +
->  7 files changed, 308 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h b/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
-> index 9f7c5103bc82..746bc462bb2e 100644
-> --- a/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
-> +++ b/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
-> @@ -131,6 +131,7 @@
->  #define RX_CODEC_DMA_RX_7	126
->  #define QUINARY_MI2S_RX		127
->  #define QUINARY_MI2S_TX		128
-> +#define USB_RX				129
-
-the commit message says the DSP can support Playback and capture, but
-here there's capture only ...
-
-
->  
->  static const struct snd_soc_dapm_route q6afe_dapm_routes[] = {
-> +	{"USB Playback", NULL, "USB_RX"},
-
-... but here RX means playback?
-
-I am not sure I get the convention on directions and what is actually
-supported?
-
-> +struct afe_param_id_usb_cfg {
-> +/* Minor version used for tracking USB audio device configuration.
-> + * Supported values: AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG
-> + */
-> +	u32                  cfg_minor_version;
-> +/* Sampling rate of the port.
-> + * Supported values:
-> + * - AFE_PORT_SAMPLE_RATE_8K
-> + * - AFE_PORT_SAMPLE_RATE_11025
-> + * - AFE_PORT_SAMPLE_RATE_12K
-> + * - AFE_PORT_SAMPLE_RATE_16K
-> + * - AFE_PORT_SAMPLE_RATE_22050
-> + * - AFE_PORT_SAMPLE_RATE_24K
-> + * - AFE_PORT_SAMPLE_RATE_32K
-> + * - AFE_PORT_SAMPLE_RATE_44P1K
-> + * - AFE_PORT_SAMPLE_RATE_48K
-> + * - AFE_PORT_SAMPLE_RATE_96K
-> + * - AFE_PORT_SAMPLE_RATE_192K
-> + */
-> +	u32                  sample_rate;
-> +/* Bit width of the sample.
-> + * Supported values: 16, 24
-> + */
-> +	u16                  bit_width;
-> +/* Number of channels.
-> + * Supported values: 1 and 2
-
-that aligns with my feedback on the cover letter, if you connect a
-device that can support from than 2 channels should the DSP even expose
-this DSP-optimized path?
-
-Oh and I forgot, what happens if there are multiple audio devices
-connected, can the DSP deal with all of them? If not, how is this handled?
-
-> + */
-> +	u16                  num_channels;
-> +/* Data format supported by the USB. The supported value is
-> + * 0 (#AFE_USB_AUDIO_DATA_FORMAT_LINEAR_PCM).
-> + */
-> +	u16                  data_format;
-> +/* this field must be 0 */
-> +	u16                  reserved;
-> +/* device token of actual end USB aduio device */
-
-typo: audio
-
-> +	u32                  dev_token;
-> +/* endianness of this interface */
-> +	u32                   endian;
-
-Is this a USB concept? I can't recall having seen any parts of the USB
-audio class spec that the data can be big or little endian?
-
-> +/* service interval */
-> +	u32                  service_interval;
-> +} __packed;
-
-> +int afe_port_send_usb_dev_param(struct q6afe_port *port, struct q6afe_usb_cfg *cfg)
-> +{
-> +	union afe_port_config *pcfg = &port->port_cfg;
-> +	struct afe_param_id_usb_audio_dev_params usb_dev;
-> +	struct afe_param_id_usb_audio_dev_lpcm_fmt lpcm_fmt;
-> +	struct afe_param_id_usb_audio_svc_interval svc_int;
-> +	int ret = 0;
-> +
-> +	if (!pcfg) {
-> +		pr_err("%s: Error, no configuration data\n", __func__);
-
-can you use a dev_err() here and the rest of the code?
-
-> +		ret = -EINVAL;
-> +		goto exit;
-> +	}
-> +
-> +	memset(&usb_dev, 0, sizeof(usb_dev));
-> +	memset(&lpcm_fmt, 0, sizeof(lpcm_fmt));
-> +
-> +	usb_dev.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
-> +	q6afe_port_set_param_v2(port, &usb_dev,
-> +					AFE_PARAM_ID_USB_AUDIO_DEV_PARAMS,
-> +					AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(usb_dev));
-> +	if (ret) {
-> +		pr_err("%s: AFE device param cmd failed %d\n",
-> +			__func__, ret);
-> +		goto exit;
-> +	}
-> +
-> +	lpcm_fmt.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
-> +	lpcm_fmt.endian = pcfg->usb_cfg.endian;
-> +	ret = q6afe_port_set_param_v2(port, &lpcm_fmt,
-> +					AFE_PARAM_ID_USB_AUDIO_DEV_LPCM_FMT,
-> +					AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(lpcm_fmt));
-> +	if (ret) {
-> +		pr_err("%s: AFE device param cmd LPCM_FMT failed %d\n",
-> +			__func__, ret);
-> +		goto exit;
-> +	}
-> +
-> +	svc_int.cfg_minor_version =
-> +		AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
-> +	svc_int.svc_interval = pcfg->usb_cfg.service_interval;
-> +	ret = q6afe_port_set_param_v2(port, &svc_int,
-> +					AFE_PARAM_ID_USB_AUDIO_SVC_INTERVAL,
-> +					AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(svc_int));
-> +	if (ret) {
-> +		pr_err("%s: AFE device param cmd svc_interval failed %d\n",
-> +			__func__, ret);
-> +		ret = -EINVAL;
-> +		goto exit;
-> +	}
-> +exit:
-> +	return ret;
-> +}
