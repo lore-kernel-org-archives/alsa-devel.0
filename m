@@ -4,89 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBAA3C54EBD
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Jan 2023 09:38:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4826C3DA7A
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Jan 2023 09:50:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C6951031F;
-	Thu,  5 Jan 2023 10:37:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C6951031F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08707F176;
+	Thu,  5 Jan 2023 10:49:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08707F176
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672911483;
-	bh=W605Ikt438qTQTS18Jo5VEY+2iBlMws5ZmRxygJhNxc=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=n+MkNgtfoGFrB2oTV2/b44XW/ZtDhbAnNozATUe8NO9BqpnECjwWtRdoCgqvnjaKI
-	 qbjVK9bWlDbTeZeAAcv0oPc2HlBClMpf4CWrAGLqBIgzhpYTHhEWHE28OswecadPci
-	 LdMoAFWbrMEEncEDKLM/S3AABBeEi1TcPRjdxoGc=
+	s=default; t=1672912245;
+	bh=W66804O1QC/XCTRejBKDHivJ3DaUSCYSSX1+FfX+Lko=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=NqKqjxfXSqgdOqWhKq0LcE1IGz72RlNO5JYturJHI8zZsjH5eA54fBVfJq9r2Dt0q
+	 +q4q54szE693qgG0isAEW/zAwFjpmqBoLYA8emH3lpUZMooc6a301czmfwR95F+RK4
+	 GxZVM0gmsXzH7m+rtBxtYSo55njYSKaIdHiL3rMY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12BECF8053C;
-	Thu,  5 Jan 2023 10:37:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB621F80238;
+	Thu,  5 Jan 2023 10:49:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 87458F80240; Wed,  4 Jan 2023 23:12:54 +0100 (CET)
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
- [IPv6:2a00:1450:4864:20::32c])
+ id 82D7CF804AD; Thu,  5 Jan 2023 10:49:53 +0100 (CET)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BBCB9F8023A
- for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2023 23:12:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBCB9F8023A
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4381F8022B
+ for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2023 10:49:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4381F8022B
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=Egcm8LR+
-Received: by mail-wm1-x32c.google.com with SMTP id
- z8-20020a05600c220800b003d33b0bda11so1505456wml.0
- for <alsa-devel@alsa-project.org>; Wed, 04 Jan 2023 14:12:50 -0800 (PST)
+ header.s=20210112 header.b=TfD9Tl7A
+Received: by mail-wm1-x333.google.com with SMTP id
+ ay2-20020a05600c1e0200b003d22e3e796dso913275wmb.0
+ for <alsa-devel@alsa-project.org>; Thu, 05 Jan 2023 01:49:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=qyxWpwZrLC0D/z1TOjudaUZ9Mh7byi3hhDukVq1HkVU=;
- b=Egcm8LR+wxVfNvHjtn0fZUQphH9szo/KzOeAEKN5vZ/g39b305WhxRlb0pHFFKPzVr
- UJFvVfPwsOLuwohy4yZ/WDy2xDbbCYOYD8czWjpBLcqoIi2wrJnGTqZDwp5auYZEe+K1
- DLMuDwIysgj74J7gb+D+0RRPrOeJgdKZxXMPAU+nMxNNLxdhVi6E/Ac1rXIGte9Azbe4
- pdw0yfHsS3FaDDfVyDab/JeMJBdf33ykmwc+dm01dei4LDCJH3uBnk8xpjUBsa9gxAeX
- 0bwmsiwmIaxQJ0BTbCVDoaiqvlL/y9cjXET/FrPRLJKfEg1xs6lqvY4rt39plejEQEr2
- 3aAQ==
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=paARRJIFHIsVX4dtu4ZLJZE/XHiRymnBzrwux6NQcSI=;
+ b=TfD9Tl7A4ZNOXf/np9wdrY4h25B4/4+S27TByz89hpIwQVT5QubrZ+w5ObaB4V6WS9
+ 4QCrQyZ/kV/5p7xakU4aaBLDeKPYJNXuSCvlAGKFsEVJSOCZI7Os92BwG2YhC1I2dmtb
+ OYKN/1ALMzLnSc4CW1IUs38Xwn/sGp+uZEJM73FSLoYhajuXtmG8TBXML03CmI8IPGG8
+ 38z8sJqPpknRkGVNj7KsJIe+kpP79qnhp0zDdpyIPLu22mM1YPpoAbyEuNmv5dt0bnti
+ 6duYuXJUQDjrkyHa45PkG3Xkwx+4Iq+aczpwhaSTqmjtL4f4SyQl+TfC28Ooe1RVq/hD
+ 46uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=qyxWpwZrLC0D/z1TOjudaUZ9Mh7byi3hhDukVq1HkVU=;
- b=S7ZJWnO7Ny2tmZKOdO0S9W1NcnyuSIxSCPi6i6OS2FDi2JyXYZZ+x94JMUJPMjz9Sy
- fkk6jBTRYNT2e6YHUz1ZORVgmFBUXb88TRYb8KjxG9Atpr7XfQOAM9fL68jD3OPf/4El
- +ygQR9bhEez0QWyUz4MfNyBBN2Il72YPxOQz4f8ZUexGB06ZPbiwxhLb2Dw+hjZkIUnZ
- FdPd7wqa3BISyATC4CN6PA6Dlq2YyehS8SuJxsUCUFnnkS1XWWKk7qEiIEGDWt5W1UkQ
- zpjbsN+XxApziZnDPBX2Az2CAnckl2OO65F17o1HPTGZ5/SqIN2p717oVxhP3sB9Id6g
- sCSA==
-X-Gm-Message-State: AFqh2krkTI8BfWHD40TwqAb9dnH0D0gnKHsszbL49PGtvkoQO1qZUyju
- vCk521xomnd4q9jg6ZZ+TcQ=
-X-Google-Smtp-Source: AMrXdXvVRHX6G5nROCXAc/gfZf1AAG7SnrFtp2cDaVixa07sqCFDBUnOm6sL2JLBRzHIv+N19hTwZQ==
-X-Received: by 2002:a05:600c:a10:b0:3d2:2904:dfe9 with SMTP id
- z16-20020a05600c0a1000b003d22904dfe9mr38999565wmp.21.1672870369472; 
- Wed, 04 Jan 2023 14:12:49 -0800 (PST)
-Received: from arch-laptop.. (host31-53-119-24.range31-53.btcentralplus.com.
- [31.53.119.24]) by smtp.gmail.com with ESMTPSA id
- l24-20020a1ced18000000b003d99da8d30asm57164wmh.46.2023.01.04.14.12.47
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 04 Jan 2023 14:12:48 -0800 (PST)
-From: Ben Carter <craterrender@gmail.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, Mark Brown <broonie@kernel.org>,
- Divya Prakash <divya1.prakash@intel.com>,
- Ben Carter <craterrender@gmail.com>
-Subject: [PATCH] sound: hda: increase timeouts to stop crash on resume with
- ALC3204 and others
-Date: Wed,  4 Jan 2023 22:10:24 +0000
-Message-Id: <20230104221024.23524-1-craterrender@gmail.com>
-X-Mailer: git-send-email 2.39.0
+ bh=paARRJIFHIsVX4dtu4ZLJZE/XHiRymnBzrwux6NQcSI=;
+ b=zJeX4W13Y+ub7yr/JV08cMA3ca7HZ6G39qXjHEF2QZej6e1sXNjUOdMkrVSh8LuVir
+ gfSQKAwUYztogdzAe1yQh9Q8TTcgDaMqYpSbhOyFmtdoT5g1fpabxATeAABJuXa8PQCy
+ usCEC+ezrPO1vr8BMkl/f8C7Wom2emY7XSeBGltn1erIW8dp4pLcewmbpMdBIzkVmYX6
+ KyOWkIGoglgb4a5j8atXAXCkP2rYGwV6Jao5h3CZwET1inie6akNgfWx47PniN4Ls9VY
+ aEZc1iYLJOmaRZhqJq5ajoAiVHUyrPJmZkeVummI72nLedsxpOAZmuK0XQQvOpWZuTEw
+ tMSw==
+X-Gm-Message-State: AFqh2ko7/YWt8W5Evb10awYjidYki63IKu1LcQfJztRnAwq5VxhzJvp4
+ z1i9V3j4wUnbJmrT+evebm+NR3HmEgabPJB3c3I=
+X-Google-Smtp-Source: AMrXdXtlmxDg/o8Vf0/42UoL40MYP402jKJXPX3nFjs1O/tiK+hPd8h5neSgCEHYznNmo1SWhmeIhjbEqJHaJfH+tNA=
+X-Received: by 2002:a05:600c:b42:b0:3cf:a851:d2ef with SMTP id
+ k2-20020a05600c0b4200b003cfa851d2efmr2046752wmr.88.1672912189014; Thu, 05 Jan
+ 2023 01:49:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Thu, 05 Jan 2023 10:37:01 +0100
+References: <20230104025754.3019235-1-chancel.liu@nxp.com>
+In-Reply-To: <20230104025754.3019235-1-chancel.liu@nxp.com>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Thu, 5 Jan 2023 17:49:37 +0800
+Message-ID: <CAA+D8AO-_MFop-WS=XQa2L83aajibkY4DeJek-3khN5p_1rwig@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_micfil: Correct the number of steps on SX
+ controls
+To: Chancel Liu <chancel.liu@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -99,46 +91,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Xiubo.Lee@gmail.com,
+ linuxppc-dev@lists.ozlabs.org, tiwai@suse.com, lgirdwood@gmail.com,
+ nicoleotsuka@gmail.com, broonie@kernel.org, festevam@gmail.com,
+ linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Upon waking after system suspend, ALSA often crashed with:
-  snd_hda_intel 0000:00:1f.3: CORB reset timeout#2, CORBRP = 65535
-  snd_hda_codec_hdmi hdaudioC1D2: Unable to sync register 0x2f8100. -5
-  snd_hda_codec_realtek hdaudioC1D0: Unable to sync register 0x2b8000. -5
-A temporary fix was established by reloading snd_hda_intel, but increasing
-the rather strict timeout of 1ms to 100ms has remedied the issue on my
-device. Although this is a much larger delay, most hardware took less than
-1ms anyway and it's preferable to the whole audio system crashing.
+On Wed, Jan 4, 2023 at 10:58 AM Chancel Liu <chancel.liu@nxp.com> wrote:
 
-Signed-off-by: Ben Carter <craterrender@gmail.com>
----
- sound/hda/hdac_controller.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> The parameter "max" of SOC_SINGLE_SX_TLV() means the number of steps
+> rather than maximum value. This patch corrects the minimum value to -8
+> and the number of steps to 15.
+>
+> Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
+>
 
-diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-index 3c7af6558249..1ab573248452 100644
---- a/sound/hda/hdac_controller.c
-+++ b/sound/hda/hdac_controller.c
-@@ -16,7 +16,7 @@ static void azx_clear_corbrp(struct hdac_bus *bus)
- {
- 	int timeout;
- 
--	for (timeout = 1000; timeout > 0; timeout--) {
-+	for (timeout = 100000; timeout > 0; timeout--) {
- 		if (snd_hdac_chip_readw(bus, CORBRP) & AZX_CORBRP_RST)
- 			break;
- 		udelay(1);
-@@ -26,7 +26,7 @@ static void azx_clear_corbrp(struct hdac_bus *bus)
- 			snd_hdac_chip_readw(bus, CORBRP));
- 
- 	snd_hdac_chip_writew(bus, CORBRP, 0);
--	for (timeout = 1000; timeout > 0; timeout--) {
-+	for (timeout = 100000; timeout > 0; timeout--) {
- 		if (snd_hdac_chip_readw(bus, CORBRP) == 0)
- 			break;
- 		udelay(1);
--- 
-2.39.0
+Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
 
+Best regards
+Wang Shengjiu
+
+> ---
+>  sound/soc/fsl/fsl_micfil.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
+> index d7e6fc996166..d4d3bc7ca87c 100644
+> --- a/sound/soc/fsl/fsl_micfil.c
+> +++ b/sound/soc/fsl/fsl_micfil.c
+> @@ -325,21 +325,21 @@ static int hwvad_detected(struct snd_kcontrol
+> *kcontrol,
+>
+>  static const struct snd_kcontrol_new fsl_micfil_snd_controls[] = {
+>         SOC_SINGLE_SX_TLV("CH0 Volume", REG_MICFIL_OUT_CTRL,
+> -                         MICFIL_OUTGAIN_CHX_SHIFT(0), 0xF, 0x7, gain_tlv),
+> +                         MICFIL_OUTGAIN_CHX_SHIFT(0), 0x8, 0xF, gain_tlv),
+>         SOC_SINGLE_SX_TLV("CH1 Volume", REG_MICFIL_OUT_CTRL,
+> -                         MICFIL_OUTGAIN_CHX_SHIFT(1), 0xF, 0x7, gain_tlv),
+> +                         MICFIL_OUTGAIN_CHX_SHIFT(1), 0x8, 0xF, gain_tlv),
+>         SOC_SINGLE_SX_TLV("CH2 Volume", REG_MICFIL_OUT_CTRL,
+> -                         MICFIL_OUTGAIN_CHX_SHIFT(2), 0xF, 0x7, gain_tlv),
+> +                         MICFIL_OUTGAIN_CHX_SHIFT(2), 0x8, 0xF, gain_tlv),
+>         SOC_SINGLE_SX_TLV("CH3 Volume", REG_MICFIL_OUT_CTRL,
+> -                         MICFIL_OUTGAIN_CHX_SHIFT(3), 0xF, 0x7, gain_tlv),
+> +                         MICFIL_OUTGAIN_CHX_SHIFT(3), 0x8, 0xF, gain_tlv),
+>         SOC_SINGLE_SX_TLV("CH4 Volume", REG_MICFIL_OUT_CTRL,
+> -                         MICFIL_OUTGAIN_CHX_SHIFT(4), 0xF, 0x7, gain_tlv),
+> +                         MICFIL_OUTGAIN_CHX_SHIFT(4), 0x8, 0xF, gain_tlv),
+>         SOC_SINGLE_SX_TLV("CH5 Volume", REG_MICFIL_OUT_CTRL,
+> -                         MICFIL_OUTGAIN_CHX_SHIFT(5), 0xF, 0x7, gain_tlv),
+> +                         MICFIL_OUTGAIN_CHX_SHIFT(5), 0x8, 0xF, gain_tlv),
+>         SOC_SINGLE_SX_TLV("CH6 Volume", REG_MICFIL_OUT_CTRL,
+> -                         MICFIL_OUTGAIN_CHX_SHIFT(6), 0xF, 0x7, gain_tlv),
+> +                         MICFIL_OUTGAIN_CHX_SHIFT(6), 0x8, 0xF, gain_tlv),
+>         SOC_SINGLE_SX_TLV("CH7 Volume", REG_MICFIL_OUT_CTRL,
+> -                         MICFIL_OUTGAIN_CHX_SHIFT(7), 0xF, 0x7, gain_tlv),
+> +                         MICFIL_OUTGAIN_CHX_SHIFT(7), 0x8, 0xF, gain_tlv),
+>         SOC_ENUM_EXT("MICFIL Quality Select",
+>                      fsl_micfil_quality_enum,
+>                      micfil_quality_get, micfil_quality_set),
+> --
+> 2.25.1
+>
+>
