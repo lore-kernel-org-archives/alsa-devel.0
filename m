@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E001C3DA7A
-	for <alsa-devel@archiver.kernel.org>; Thu,  5 Jan 2023 17:12:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3E95C3DA7A
+	for <alsa-devel@archiver.kernel.org>; Thu,  5 Jan 2023 17:35:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 192FCB201;
-	Thu,  5 Jan 2023 18:11:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 192FCB201
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70A2011ADA;
+	Thu,  5 Jan 2023 18:34:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70A2011ADA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672938728;
-	bh=YCkBz/LcU3XqF8GgtKhZ4v9M3TOT8Icg3YT69+Usu5s=;
+	s=default; t=1672940128;
+	bh=1fJkf23oCC2RJXN3Sa96FKGl2kzGrLdl82SeNdIED3E=;
 	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=riidWQ/SdYBn8oKM/GAqOVHYF9LP9+AsBgdarUU5c3zxXtj9H9zSgdg3wBNoO+D1l
-	 s6Sf87GrE8p5O/DWLkysOySCVeAHAYqI5ryWDTE1pR95q2khfNvnPGNRXBmz9xwD41
-	 LErql6zi/jsmO8lYJbGKu4SKKhOZV+YWCwJCOtGk=
+	b=oPxR6ne3uHdgxhW71WNagYhap4XdJnBRsGmSmQAkOnXacDxRNMrKDgd6HYl4i2tFU
+	 Vef3MbtK694zCTWTQB5izyJx4+1j4uMs8jPKLLr4YBw4ZXD48ZJhLRgNXf2HWGp4gP
+	 GsEEggRMSeEDpYdSs6G923mnxaEHUqNQf9FAN2yY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C74F2F8047B;
-	Thu,  5 Jan 2023 18:11:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24FE7F80238;
+	Thu,  5 Jan 2023 18:34:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF15DF8022B; Thu,  5 Jan 2023 18:11:15 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 44198F804AD; Thu,  5 Jan 2023 18:34:37 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3445BF8022B
- for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2023 18:11:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3445BF8022B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1C9A9F8022B
+ for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2023 18:34:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C9A9F8022B
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=hrXrmVhv
+ header.s=k20201202 header.b=c9POn9Ky
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id D7222B81B2C;
- Thu,  5 Jan 2023 17:11:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34FA5C433EF;
- Thu,  5 Jan 2023 17:11:11 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 7A35B61B7F;
+ Thu,  5 Jan 2023 17:34:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C901C433EF;
+ Thu,  5 Jan 2023 17:34:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1672938671;
- bh=YCkBz/LcU3XqF8GgtKhZ4v9M3TOT8Icg3YT69+Usu5s=;
+ s=k20201202; t=1672940063;
+ bh=1fJkf23oCC2RJXN3Sa96FKGl2kzGrLdl82SeNdIED3E=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=hrXrmVhvBctP8f2ev+hLIcpXRTT10ZWgClvlWXmwHLMyYwbVg6RVSAqq2yFyqu76m
- i4U8/zAfBAc1BlPg8H+lO5CUev5Ej8QxqAvmPTw54sPAw+BSiZMDwElt64Nin4IXvG
- covHTQv1EfuVJE3VG1ZBHul9gt1GhAvSzVKO+O27scRoDlzOfFGHhjS7K1n1IH2M8j
- z8jnj/HJO8zEZHuhTS2c6M4yW4GPoM7C3CI8H36pZ6jEj4uQKn3nxvFaZaRqk2rv7H
- jTPXN7o2JqhiKiEBrlPLdN8v4MrZxjgPEv/zzYQ6als0rpcKw1BS34wynr+eXnM+Xs
- HCy7fg5haimyA==
-Date: Thu, 5 Jan 2023 10:11:09 -0700
+ b=c9POn9KyAvZpA8TrcSCtD9gQCcT8BJmznj4R/0Dq8zNzyRJC9/oPeGCUIhNK1InCE
+ 4VadieJ0ZyQMxdXDv52cJDDaOPyrASMFMt6tPOCIAk1i5qN2udI0Twn1ZZQ1c145V3
+ /qGYeNM0qmvRgx/KZgeh24ZYoBhgsf3q0flkSdMhKA//aSByerLUTFjMt17Am1X/wl
+ sZT5gkh6EpgPr6xM/9HGpmtsLvTh0K4qO4mYcAZ0Tr4MwH/fMKvovK8mrbhJo/EkZY
+ hYR+RCzdFcPc0pFgXpYxyngvdFf2epPAEZ5I8AUzYOh6UglVUu5FM1ZHyRFsJ+M0BR
+ 5bMnYXqvTLjEA==
+Date: Thu, 5 Jan 2023 10:34:21 -0700
 From: Nathan Chancellor <nathan@kernel.org>
 To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
 Subject: Re: [PATCH] ASoC: amd: ps: Fix uninitialized ret in
- create_acp64_platform_devs()m
-Message-ID: <Y7cEra00F9PeFFcx@dev-arch.thelio-3990X>
+ create_acp64_platform_devs()
+Message-ID: <Y7cKHZL8e+rfR66a@dev-arch.thelio-3990X>
 References: <20230105-wsometimes-uninitialized-pci-ps-c-v1-1-4022fd077959@kernel.org>
  <6bb126b7-1cb4-0c4c-d357-fadc3ffdd3f9@amd.com>
+ <Y7cEra00F9PeFFcx@dev-arch.thelio-3990X>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <6bb126b7-1cb4-0c4c-d357-fadc3ffdd3f9@amd.com>
+In-Reply-To: <Y7cEra00F9PeFFcx@dev-arch.thelio-3990X>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,56 +84,67 @@ Cc: alsa-devel@alsa-project.org, llvm@lists.linux.dev,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jan 05, 2023 at 10:34:10PM +0530, Mukunda,Vijendar wrote:
-> On 05/01/23 21:23, Nathan Chancellor wrote:
-> > Clang warns:
-> >
-> >   sound/soc/amd/ps/pci-ps.c:218:2: error: variable 'ret' is used uninitialized whenever switch default is taken [-Werror,-Wsometimes-uninitialized]
-> >           default:
-> >           ^~~~~~~
-> >   sound/soc/amd/ps/pci-ps.c:239:9: note: uninitialized use occurs here
-> >           return ret;
-> >                  ^~~
-> >   sound/soc/amd/ps/pci-ps.c:190:9: note: initialize the variable 'ret' to silence this warning
-> >           int ret;
-> >                  ^
-> >                   = 0
-> >   1 error generated.
-> >
-> > Return -ENODEV, which matches the debug message's description of this block.
-> >
-> > Fixes: 1d325cdaf7a2 ("ASoC: amd: ps: refactor platform device creation logic")
-> > Link: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2FClangBuiltLinux%2Flinux%2Fissues%2F1779&data=05%7C01%7CVijendar.Mukunda%40amd.com%7Cad26656c3d2f4c75d00208daef350528%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C638085308267581104%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=eeHVStOIOcy%2FdDISOKlGNeyEwx4i5AtJZmQ5dcNB7XQ%3D&reserved=0
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> > ---
-> >  sound/soc/amd/ps/pci-ps.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/sound/soc/amd/ps/pci-ps.c b/sound/soc/amd/ps/pci-ps.c
-> > index 401cfd0036be..f54b9fd9c3ce 100644
-> > --- a/sound/soc/amd/ps/pci-ps.c
-> > +++ b/sound/soc/amd/ps/pci-ps.c
-> > @@ -217,6 +217,7 @@ static int create_acp63_platform_devs(struct pci_dev *pci, struct acp63_dev_data
-> >  		break;
-> >  	default:
-> >  		dev_dbg(&pci->dev, "No PDM devices found\n");
-> > +		ret = -ENODEV;
-> ACP PCI driver supports different configurations. As per design , even  when no child dev
-> nodes are created , ACP driver probe should be successful. ACP PCI driver probe failure
-> causes power state transition failures when no child device nodes are created.
-> We should not return -ENODEV in this case.
-> return 0 is enough in this case. No need to de-init the ACP.
+On Thu, Jan 05, 2023 at 10:11:09AM -0700, Nathan Chancellor wrote:
+> On Thu, Jan 05, 2023 at 10:34:10PM +0530, Mukunda,Vijendar wrote:
+> > On 05/01/23 21:23, Nathan Chancellor wrote:
+> > > Clang warns:
+> > >
+> > >   sound/soc/amd/ps/pci-ps.c:218:2: error: variable 'ret' is used uninitialized whenever switch default is taken [-Werror,-Wsometimes-uninitialized]
+> > >           default:
+> > >           ^~~~~~~
+> > >   sound/soc/amd/ps/pci-ps.c:239:9: note: uninitialized use occurs here
+> > >           return ret;
+> > >                  ^~~
+> > >   sound/soc/amd/ps/pci-ps.c:190:9: note: initialize the variable 'ret' to silence this warning
+> > >           int ret;
+> > >                  ^
+> > >                   = 0
+> > >   1 error generated.
+> > >
+> > > Return -ENODEV, which matches the debug message's description of this block.
+> > >
+> > > Fixes: 1d325cdaf7a2 ("ASoC: amd: ps: refactor platform device creation logic")
+> > > Link: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2FClangBuiltLinux%2Flinux%2Fissues%2F1779&data=05%7C01%7CVijendar.Mukunda%40amd.com%7Cad26656c3d2f4c75d00208daef350528%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C638085308267581104%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=eeHVStOIOcy%2FdDISOKlGNeyEwx4i5AtJZmQ5dcNB7XQ%3D&reserved=0
+> > > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> > > ---
+> > >  sound/soc/amd/ps/pci-ps.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/sound/soc/amd/ps/pci-ps.c b/sound/soc/amd/ps/pci-ps.c
+> > > index 401cfd0036be..f54b9fd9c3ce 100644
+> > > --- a/sound/soc/amd/ps/pci-ps.c
+> > > +++ b/sound/soc/amd/ps/pci-ps.c
+> > > @@ -217,6 +217,7 @@ static int create_acp63_platform_devs(struct pci_dev *pci, struct acp63_dev_data
+> > >  		break;
+> > >  	default:
+> > >  		dev_dbg(&pci->dev, "No PDM devices found\n");
+> > > +		ret = -ENODEV;
+> > ACP PCI driver supports different configurations. As per design , even  when no child dev
+> > nodes are created , ACP driver probe should be successful. ACP PCI driver probe failure
+> > causes power state transition failures when no child device nodes are created.
+> > We should not return -ENODEV in this case.
+> > return 0 is enough in this case. No need to de-init the ACP.
+> 
+> Thank you for the review and input and sorry for getting it wrong! I
+> will send a v2 replacing 'break;' with 'return 0;' shortly.
 
-Thank you for the review and input and sorry for getting it wrong! I
-will send a v2 replacing 'break;' with 'return 0;' shortly.
+Actually, I re-read your message and looked at the code now that I am
+back in front of my keyboard and I am a little confused by your message.
+Should 'goto de_init' be replaced with 'return 0' to avoid the call to
+acp63_deinit() or should ret just be initialized to 0 in this block so
+that the call to acp63_deinit() still happens?
 
-> >  		goto de_init;
-> >  	}
-> >  
-> >
-> > ---
-> > base-commit: 03178b4f7e2c59ead102e5ab5acb82ce1eaefe46
-> > change-id: 20230105-wsometimes-uninitialized-pci-ps-c-3b5725c6ed31
-> >
-> > Best regards,
+Thanks again for your input!
+Nathan
+
+> > >  		goto de_init;
+> > >  	}
+> > >  
+> > >
+> > > ---
+> > > base-commit: 03178b4f7e2c59ead102e5ab5acb82ce1eaefe46
+> > > change-id: 20230105-wsometimes-uninitialized-pci-ps-c-3b5725c6ed31
+> > >
+> > > Best regards,
+> > 
 > 
