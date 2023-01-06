@@ -4,52 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35CA5C3DA7A
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Jan 2023 16:39:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2B98C5479D
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Jan 2023 16:40:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0434C14834;
-	Fri,  6 Jan 2023 17:39:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0434C14834
+	by alsa0.perex.cz (Postfix) with ESMTPS id C2306147FC;
+	Fri,  6 Jan 2023 17:39:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2306147FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673023190;
-	bh=EkGv2fAe4IZVtbYTynD17ofPqbrfLMHTNC1/01j67Zc=;
+	s=default; t=1673023206;
+	bh=lls84LM371cdh4FygjaCFDa2m9y3IXSEiWXwDtlbpXo=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=htFG25KQM1OqA2p/rUPG4x/YzOAy/pZTs4o5LYXMiYYd7p7yu23WzlJDlrWyZe8Q7
-	 dsXwFAbNwostGQ3SuLLnUGO0oysIgOmcG4XZ5bRyMWq6bVoVYD1iBDDEKdx4zq5Nx6
-	 cYwyxhKcll1FJGaYxJWaX/8OXuVepCLap4tmLaFc=
+	b=I9GVHX1gOHhGUmMOn9zKg6fnbDM+x1F0dH4274VWXjEqt3OPt9bmxdozxuyj3eUl3
+	 9DJOYlfVnQvVJFPayrgnju8cJqH4lMUN60muh4FHMHilZPw+Xm9tLYdtzqkUj6riEy
+	 oURUJeolIeTUBrZrwPYL60U/Dltt5wn37LVolF1U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B6AFF80544;
+	by alsa1.perex.cz (Postfix) with ESMTP id C26F6F80553;
 	Fri,  6 Jan 2023 17:38:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B0DBCF8053D; Fri,  6 Jan 2023 17:38:11 +0100 (CET)
-Received: from relay11.mail.gandi.net (relay11.mail.gandi.net [217.70.178.231])
+ id 6E4F5F80549; Fri,  6 Jan 2023 17:38:12 +0100 (CET)
+Received: from relay11.mail.gandi.net (relay11.mail.gandi.net
+ [IPv6:2001:4b98:dc4:8::231])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57DD1F8053D
- for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2023 17:38:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57DD1F8053D
+ by alsa1.perex.cz (Postfix) with ESMTPS id EAFD3F8047B
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2023 17:38:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAFD3F8047B
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=bWdAElX6
+ header.s=gm1 header.b=e08kFeuO
 Received: (Authenticated sender: herve.codina@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPA id 5FC2910000B;
- Fri,  6 Jan 2023 16:38:05 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPA id 305D6100010;
+ Fri,  6 Jan 2023 16:38:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1673023088;
+ t=1673023085;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=zHdG5dWGsORYS6XG1CcUMN1p2tcFBkBpXeEXIVWBo8Q=;
- b=bWdAElX63nV5KAJ3lRli5wH/z0GpLUVccEehfCFnrwsSnOjFjpJrHYugerQBdc7xuNRDeg
- e/gRypGCodVzNgI/7yw+pEHQY2fB4hE20o9otuqohv0QxUG2+IdbRPnS6DsrexRdu4aorm
- PfSxcZpAqaIiVw9gJoEJYamqYN46Hw2Rp4VCDj3iT7qpnQulPL4vskv7xFGh0c8/WUVDrz
- vy7IVWjynd8eqxYxbdg/n0ZDSfJflU45u3idxmMIK8Hw+aygdcEkOaG8dQaxtt9lC9VYwd
- WXteZg5jAX5U7B7+z7mm+aPcXe2Et/F9xwPgKqXKhAAmQRdsrW9essLYrvr6Cg==
+ bh=nc6bvDcTrl1Ymn4a/GwwKE3r38ifE4VzNy4POuRlNdA=;
+ b=e08kFeuOoIrfa8pp03v2ZP17nI3GQGrokJ2WQC/1gfLVSllkJQDBuhkih2i67AOctByui+
+ NorAiKRbtp9uo/ynpOUhKhk8+8Ko/deVj4+qFCV9G7+azGR+SkmFjt+/gHrnHKOQRYFRkD
+ qpRr7LVPf4oKHJfOgUBRnly1O94o4Q9eSBGDp/PH9WlwQRsuI4ePc6RKq6oHUUbsH6sm1x
+ 1C3ejG6kzNw9IYM/dH/jc+E89ZpdTnbcF8LCBVjKj6aegeJhU4fUM0I0CDM+egTUQiS1XI
+ L2Ji9nI2SLIZDQwDEGKvpa9ZRTm3zjlwj9C7CAU5CiiRAzZzzZe5OCNHdpxiXA==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>, Li Yang <leoyang.li@nxp.com>,
  Rob Herring <robh+dt@kernel.org>,
@@ -61,9 +62,9 @@ To: Herve Codina <herve.codina@bootlin.com>, Li Yang <leoyang.li@nxp.com>,
  Takashi Iwai <tiwai@suse.com>, Shengjiu Wang <shengjiu.wang@gmail.com>,
  Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
  Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v2 04/10] powerpc/8xx: Use a larger CPM1 command check mask
-Date: Fri,  6 Jan 2023 17:37:40 +0100
-Message-Id: <20230106163746.439717-5-herve.codina@bootlin.com>
+Subject: [PATCH v2 03/10] MAINTAINERS: add the Freescale TSA controller entry
+Date: Fri,  6 Jan 2023 17:37:39 +0100
+Message-Id: <20230106163746.439717-4-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20230106163746.439717-1-herve.codina@bootlin.com>
 References: <20230106163746.439717-1-herve.codina@bootlin.com>
@@ -87,38 +88,34 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The CPM1 command mask is defined for use with the standard
-CPM1 command register as described in the user's manual:
-  0  |1        3|4    7|8   11|12      14| 15|
-  RST|    -     |OPCODE|CH_NUM|     -    |FLG|
-
-In the QMC extension the CPM1 command register is redefined
-(QMC supplement user's manuel) with the following mapping:
-  0  |1        3|4    7|8           13|14| 15|
-  RST|QMC OPCODE|  1110|CHANNEL_NUMBER| -|FLG|
-
-Extend the check command mask in order to support both the
-standard CH_NUM field and the QMC extension CHANNEL_NUMBER
-field.
+After contributing the driver, add myself as the maintainer
+for the Freescale TSA controller.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- arch/powerpc/platforms/8xx/cpm1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ MAINTAINERS | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/arch/powerpc/platforms/8xx/cpm1.c b/arch/powerpc/platforms/8xx/cpm1.c
-index 8ef1f4392086..6b828b9f90d9 100644
---- a/arch/powerpc/platforms/8xx/cpm1.c
-+++ b/arch/powerpc/platforms/8xx/cpm1.c
-@@ -100,7 +100,7 @@ int cpm_command(u32 command, u8 opcode)
- 	int i, ret;
- 	unsigned long flags;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7f86d02cb427..2b4f5fe7ebad 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8372,6 +8372,15 @@ S:	Maintained
+ F:	drivers/soc/fsl/qe/
+ F:	include/soc/fsl/qe/
  
--	if (command & 0xffffff0f)
-+	if (command & 0xffffff03)
- 		return -EINVAL;
- 
- 	spin_lock_irqsave(&cmd_lock, flags);
++FREESCALE QUICC ENGINE TSA DRIVER
++M:	Herve Codina <herve.codina@bootlin.com>
++L:	linuxppc-dev@lists.ozlabs.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,tsa.yaml
++F:	drivers/soc/fsl/qe/tsa.c
++F:	drivers/soc/fsl/qe/tsa.h
++F:	include/dt-bindings/soc/fsl-tsa.h
++
+ FREESCALE QUICC ENGINE UCC ETHERNET DRIVER
+ M:	Li Yang <leoyang.li@nxp.com>
+ L:	netdev@vger.kernel.org
 -- 
 2.38.1
 
