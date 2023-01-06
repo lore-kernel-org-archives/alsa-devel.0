@@ -4,163 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45212C46467
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Jan 2023 08:25:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91220C54EBE
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Jan 2023 08:33:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9E107E21;
-	Tue, 10 Jan 2023 09:24:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9E107E21
+	by alsa0.perex.cz (Postfix) with ESMTPS id 948EC8F8C;
+	Tue, 10 Jan 2023 09:32:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 948EC8F8C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673339092;
-	bh=W7Aw5HoRa4NO1Me4yMOT0HuXSGEKd7gncBZ2No5EhSs=;
-	h=Date:From:Subject:To:References:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=Fnervk2mBDiclW+bkMl/SchJ/gCKPwl5EvjN0D6t/cEOdVy4wdt6ndo+vf8YBMxk6
-	 xco1cjb/uK7FyG0tY12NXxCA+uamsXuOREbc3POEfj8TsfxMQ6Fat6eU1kN/co7Krv
-	 qw7YxnchBX6ZkmqLE7YLA1r1u8jUViC5aJyQUZqQ=
+	s=default; t=1673339608;
+	bh=RdeaoKuT59ZIOLwLEObCeiCSic51srbAgVqBFik0skk=;
+	h=Date:From:To:Subject:In-Reply-To:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:Cc:From;
+	b=OUk3elvq75IvoFpvkLsv1rq3bvDSgR2TlXWWSpHI0cbjQBPkI+nF83yYUN7jiK4sH
+	 pIP2+xX+jras2f7x2OcaAT9eoyA5mcz/+2/4FT3mdeFX+Fr8b2Xw7N4NPXIj9pm3Vd
+	 dY+4AdQJ8z96skmUsrCrS5njGWuMqHb7zAkDMxWQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 877FDF804C1;
-	Tue, 10 Jan 2023 09:24:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4CBA1F804C1;
+	Tue, 10 Jan 2023 09:32:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AD698F804CA; Tue, 10 Jan 2023 09:24:00 +0100 (CET)
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur01on2078.outbound.protection.outlook.com [40.107.13.78])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 7F61AF8024D; Fri,  6 Jan 2023 08:09:55 +0100 (CET)
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
+ [IPv6:2a00:1450:4864:20::431])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 93DC7F804BD
- for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2023 09:23:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93DC7F804BD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key, unprotected) header.d=armh.onmicrosoft.com
- header.i=@armh.onmicrosoft.com header.a=rsa-sha256
- header.s=selector2-armh-onmicrosoft-com header.b=1D0SzwHw; 
- dkim=pass (1024-bit key) header.d=armh.onmicrosoft.com
- header.i=@armh.onmicrosoft.com header.a=rsa-sha256
- header.s=selector2-armh-onmicrosoft-com header.b=1D0SzwHw
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com; 
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jWH1FwEl6B920TMBQVgKQxhNnJNAGX8bD6JlYAmbVIo=;
- b=1D0SzwHwbVWyt+rVkdRNHeTVhufk8TlYz1CuSMV/MDyZnyqpwe9f44scFxubdP1KAmoPC5MKIiyuxgbHlgqWCtqwm7rXBVcmfONoqDIaQW0tIkCEgA4hTyMxKuN5UpfJAelm9RO6klOsWY8f6EvyxM+XXaIgVjAOBAYHWohMQtA=
-Received: from AS9PR06CA0484.eurprd06.prod.outlook.com (2603:10a6:20b:49b::10)
- by AS1PR08MB7636.eurprd08.prod.outlook.com (2603:10a6:20b:478::11)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.18; Tue, 10 Jan
- 2023 08:23:55 +0000
-Received: from AM7EUR03FT013.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:20b:49b:cafe::5d) by AS9PR06CA0484.outlook.office365.com
- (2603:10a6:20b:49b::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.18 via Frontend
- Transport; Tue, 10 Jan 2023 08:23:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
- smtp.mailfrom=arm.com; dkim=pass (signature was verified)
- header.d=armh.onmicrosoft.com;dmarc=pass action=none header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
- client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
- pr=C
-Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
- AM7EUR03FT013.mail.protection.outlook.com (100.127.140.191) with
- Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5986.18 via Frontend Transport; Tue, 10 Jan 2023 08:23:55 +0000
-Received: ("Tessian outbound 333ca28169fa:v132");
- Tue, 10 Jan 2023 08:23:55 +0000
-X-CheckRecipientChecked: true
-X-CR-MTA-CID: 8754c4674e03bb30
-X-CR-MTA-TID: 64aa7808
-Received: from eff62df32ded.2
- by 64aa7808-outbound-1.mta.getcheckrecipient.com id
- F36BA62D-EBA5-41D8-A6F5-216F1239B093.1; 
- Tue, 10 Jan 2023 08:23:43 +0000
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com
- by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id eff62df32ded.2
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
- Tue, 10 Jan 2023 08:23:43 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dXWzLSw4wYjQPpTWmJkUzxeo9Uhu95BedpTydXbCJcefx6O9fBqHCH6/IhlT+bEk+IsinehYEO3GSEHra722+0QU5x4d4WbOKIjw1CgR5T+JjDY/W76ofqQpL2FpN2fMQJSc0sjh+rxwpl64Ke/QtDlMOnclwtWCas1qE388f6aevKXilOY6vR7Xc9FhfmWrTyxgYsOWBW9Sd4VLyeUgCVLZEhSi3a+lHXBIqiw4yAxa3WzcJkARpvmr/+WiA4Bu51aaPtbqg3wgeT+5v8EAbjYG24AJkE5yMgHzisEZwULtyVSAtKW9ND7gOEfpKjAVK/ZLj1SntC63vxM17PMAfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jWH1FwEl6B920TMBQVgKQxhNnJNAGX8bD6JlYAmbVIo=;
- b=jPqd89MUFdz3+pgowE6cd7bSTy7qqSR3m/qH3JS6/nzYnRMZWNv1ouXxy1h/wotklt/7g6s/g5qy50tJCIi5ME14qlPsBYUjjWTKR4S6CpqPf2kTvppaRcEHQC6S3gA2fwJKpgdLeDjC6w7U+YThuRjEikW+zSg5y7V3F7dg6D7iaj6ZZpTX/kFag7kmms+x5co4hcxV95MU/Mm2qAfYiYszqfaTI+pELRQbVrR6ixjv6ByjgyAIOZ7Y2BBx1LOG8lJGIwOspsJYADhNd5dESkgL/42Cmcn42NiQ9FHD37yosK8TyPe+6QVxXoNCF5Wq6EVTZ1sTCHjweNkIf2lv5Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com; 
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jWH1FwEl6B920TMBQVgKQxhNnJNAGX8bD6JlYAmbVIo=;
- b=1D0SzwHwbVWyt+rVkdRNHeTVhufk8TlYz1CuSMV/MDyZnyqpwe9f44scFxubdP1KAmoPC5MKIiyuxgbHlgqWCtqwm7rXBVcmfONoqDIaQW0tIkCEgA4hTyMxKuN5UpfJAelm9RO6klOsWY8f6EvyxM+XXaIgVjAOBAYHWohMQtA=
-Authentication-Results-Original: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=arm.com;
-Received: from DU0PR08MB8954.eurprd08.prod.outlook.com (2603:10a6:10:465::21)
- by DB4PR08MB7933.eurprd08.prod.outlook.com (2603:10a6:10:37b::19)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.18; Tue, 10 Jan
- 2023 08:23:40 +0000
-Received: from DU0PR08MB8954.eurprd08.prod.outlook.com
- ([fe80::f778:5177:a2d3:ace1]) by DU0PR08MB8954.eurprd08.prod.outlook.com
- ([fe80::f778:5177:a2d3:ace1%3]) with mapi id 15.20.5986.018; Tue, 10 Jan 2023
- 08:23:38 +0000
-Message-ID: <f0ad7a4e-a8af-77d4-09e4-3717041677e7@arm.com>
-Date: Tue, 10 Jan 2023 13:53:29 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-From: Mohammad Faiz Abbas Rizvi <faiz.abbas@arm.com>
-Subject: Re: [PATCH] ASoC: dt-bindings: simple-card: Document
- simple-audio-card,plat
-To: Rob Herring <robh@kernel.org>
-References: <20230105160346.29018-1-faiz.abbas@arm.com>
- <20230108163741.GA30997-robh@kernel.org>
-Content-Language: en-US
-In-Reply-To: <20230108163741.GA30997-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: PN3PR01CA0149.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:c8::22) To DU0PR08MB8954.eurprd08.prod.outlook.com
- (2603:10a6:10:465::21)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 65880F8022B
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2023 08:09:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65880F8022B
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20210112 header.b=Sr5vX4x4
+Received: by mail-wr1-x431.google.com with SMTP id bn26so522133wrb.0
+ for <alsa-devel@alsa-project.org>; Thu, 05 Jan 2023 23:09:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+ :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=jmWi9bZDXN3pglHijKPhWD+j3tS8sqOh1DGtRprnSX8=;
+ b=Sr5vX4x4lGH7sGoHrVj3IrDQ907YCnNl0L2+e8bjCFUYPo7Wpby7tYb7KTOtVPvyNt
+ AF895hQj3pDWd4saXgyIYTww2EBvHyZ4q4HUP20FnCpkht7iGbqVsQvOUfydH6BYkF+9
+ gY+vMNH8upGbO6fQFK/1cpnuhy2ymvaHU+v8uhpqjcPZtYieU/ZMaBSe2CBBx+fkMDpj
+ 0M2VdeEIP/Szjx7naNgt/1P5GkV/+dia+BMmpiJA1JEG8n6JyT+GMCNSeycPntqp9zqO
+ lKkTcWXiEmMr3Q7ZV+nEP9TORWAQFMamxJbhRjaue9FsFJ51Qpxx9SjI5wY+CT1cG2rm
+ YS4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+ :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=jmWi9bZDXN3pglHijKPhWD+j3tS8sqOh1DGtRprnSX8=;
+ b=kf9IYZwghOvbfz6/ljW+R8VSy4Cb/AXM2gB2WJtAYEZ2VDCKR/s/h88egOlTRq3RnK
+ dwBvVODr4jaUG9u+OmjS/Yycb9vxGdAeok+PoDu7UMrpgrVyfzChgSnQzJZevaY6BoU9
+ 9WrUBM6G9piz5ubNIaLvgv9wZhiURnid+UqjGWvLYe4s1vss4iSuYo23xHb7KBWv3MJ7
+ 3bV3z8SZ0aozXbu74Q1YQcL2x8kmuQSVmiLL5NTYnx9de0Uo0lUx9/9xYqU8c5rErjX4
+ XIUqtCtQ35VggAo6yNp5LE7Pw3sFEDv7wHxYw4cL/KOHMzL246zhQ1aJgEnLtd9Ye1EI
+ oUlw==
+X-Gm-Message-State: AFqh2kpVikWukSOq9xAM+HGmERB65WdKAYUWGlzcRmiT37otHPPzCplk
+ dQMQjgerswf9zVy91dM7Bek=
+X-Google-Smtp-Source: AMrXdXtCoigAjPtfKm6LQOETmhjvNWiGuXj6cDl6NwJ3sWrWJaA2zC6kdCGaITgCi6z8/QO/J8QVBA==
+X-Received: by 2002:a5d:4884:0:b0:242:3812:f948 with SMTP id
+ g4-20020a5d4884000000b002423812f948mr34184657wrq.24.1672988990387; 
+ Thu, 05 Jan 2023 23:09:50 -0800 (PST)
+Received: from localhost ([102.36.222.112]) by smtp.gmail.com with ESMTPSA id
+ z8-20020a5d6548000000b0028df2d57204sm351528wrv.81.2023.01.05.23.09.48
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 05 Jan 2023 23:09:49 -0800 (PST)
+Date: Fri, 6 Jan 2023 10:09:45 +0300
+From: Dan Carpenter <error27@gmail.com>
+To: oe-kbuild@lists.linux.dev, wangweidong.a@awinic.com,
+ lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, perex@perex.cz, tiwai@suse.com,
+ ckeepax@opensource.cirrus.com, rf@opensource.cirrus.com,
+ povik+lin@cutebit.org, pierre-louis.bossart@linux.intel.com,
+ james.schulman@cirrus.com, flatmax@flatmax.com,
+ cezary.rojewski@intel.com, srinivas.kandagatla@linaro.org,
+ tanureal@opensource.cirrus.com, steve@sk2.org, stephan@gerhold.net,
+ zhuning0077@gmail.com, shumingf@realtek.com,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V8 4/5] ASoC: codecs: Aw883xx chip register file, data
+ type file and Kconfig Makefile
+Message-ID: <202301060009.FsE8n8nW-lkp@intel.com>
 MIME-Version: 1.0
-X-MS-TrafficTypeDiagnostic: DU0PR08MB8954:EE_|DB4PR08MB7933:EE_|AM7EUR03FT013:EE_|AS1PR08MB7636:EE_
-X-MS-Office365-Filtering-Correlation-Id: 200229c0-a35b-47e3-be30-08daf2e4039b
-x-checkrecipientrouted: true
-NoDisclaimer: true
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: D7HhoVfmg2EDc8lEMMwZrT+mwlrYVXcp6dYp/H+Y9y8DlJj61+K9gjnHYfQUFYk24KHeCgDXOSckxiBt7QLAaBReYSBHu/+vswa2jy4aru+Gy2HR4jT5eLsv28ioKiBiuMyyUfbAz2TKmkUa9SysMM1LeDEZlzp0kCanP0DkSyvIO51zsI8bMBy+ybrWC1WpIXLtHL4FDf5Jw+s0UvOt1nuE2I6BcwhIaKEXnIGVBVzHBNmWwRUWhoXSYFBHALkXq4S4Omozo0+4XKch7JfjE8CXgWMWWphikOd8RYG2d8aNJWbSNpEWcipu1OeZnhTMV2ivkRsul92fUQej6O5URXT81MWULiX5E/YnxBTeeLUUGKgC1AqHsGd/bd7cPvo2d2wycQ3NCki/+CHytCwsFGu/OpTc1R7fGFB8nd6bqbLOspz/9xv9eI2hX2gFZSYsAilimVNTXjuzs+VDDHcaB2FsDw44Gd9mgUvNl2KnrBxhnPYZwRPDWFl18UVq5SUfe5Kgt5j2rPrT6oFX2qxjKH8Z/gTqf6xe6VOQlMi4LYbeIE2+Ivgan37d9Xcgb5tJLPxYaNNfrZONV/mo0xWcM15hduk0j0wggo17IRijkjoFUlakrwPnIoTC6PGbPPxZQFHJHH2Kk7KDk53aVdfG2DAsX8PV+hj4sQ4AC7zngOv8vKxvQr2pBDEgoeXGVdvWHJAyDitTF1Rd9ZOWvgRw85QzHo52NQEWygHfJIEKAvc=
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255; CTRY:; LANG:en;
- SCL:1; SRV:; IPV:NLI; SFV:NSPM; H:DU0PR08MB8954.eurprd08.prod.outlook.com;
- PTR:; CAT:NONE;
- SFS:(13230022)(4636009)(396003)(136003)(39860400002)(346002)(366004)(376002)(451199015)(31686004)(36756003)(2906002)(31696002)(38100700002)(5660300002)(8936002)(41300700001)(83380400001)(86362001)(6916009)(6486002)(55236004)(6506007)(53546011)(2616005)(8676002)(186003)(26005)(66946007)(478600001)(66556008)(66476007)(316002)(4326008)(6512007)(6666004)(45980500001)(43740500002);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB4PR08MB7933
-Original-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=arm.com;
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: AM7EUR03FT013.eop-EUR03.prod.protection.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs: 5f53d1f0-341a-407b-425b-08daf2e3f8d6
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1UBZz9d/OLQI9u6fnUAdpjCjSk+h+hixh+PT1mz9fnKXPFDfXhov+THyRg9iYzDjJ09lLYWJoKRaGIJMOXnoH4M1Fa9HPl6NHQJoCytFu/sbXrdUdwHfw22eId//PN6H5N7EhsuxH9H5L1CS5vIZVwqZ+6O7DFUrO6lIC+s/hsj57FojO24qTWiWABypXmYC5nsP6n3ncR0pqM8Wz+tSOqiqV2Dfh8xeZ6G0OiQbkFewWLsPPGPOEibe09YsUwq3bKx2TYENhxteX+DPTxyw6VtCMnsqIxQBtZD1Uq3D0R52aGQGTPC9j3dvi7MpojwEQp7bGGAi+qISsLNR1jhSIjuJJJ55LTGKulDBU1XbLGEiwq1GxP7ri2mrrGBRgjvFGVlwC+QX2JwE8vRuxdJNBel1+E+B8tfb9Oe+fUpmLigatngNcg1j+FlFbRwWnJl8gBmvyxyTLs+mYVfs2ODHNBlWQ04qWqEsBRd5QaJEyKVKAvAfjGBGR1K7wJfQujd+NpxhTVNmELAeW6L4wnzc29z6Iud0at2/fC9lLmKhECoTsYLaWcEiexfd9kQUURoiRCDUlvIkOqaPZeDGOst4CBEeIjv1vwlLl1dsEP/6aON6KEPKYW5AWeAJeoLxAHw8iauKJhUGq1jePAT+EjDb5H8bA13n9W6htjU6lCPDa1/Ipu9ujqIbYqHZbgBJlel4KE/rMWXkxN8d+IsfVJUqvTQiv2oTyE+gRHWXXuTWC3o=
-X-Forefront-Antispam-Report: CIP:63.35.35.123; CTRY:IE; LANG:en; SCL:1; SRV:;
- IPV:CAL; SFV:NSPM; H:64aa7808-outbound-1.mta.getcheckrecipient.com;
- PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com; CAT:NONE;
- SFS:(13230022)(4636009)(396003)(136003)(39860400002)(376002)(346002)(451199015)(46966006)(40470700004)(36840700001)(356005)(82740400003)(81166007)(36860700001)(31696002)(8676002)(4326008)(40460700003)(86362001)(41300700001)(70586007)(70206006)(316002)(6862004)(8936002)(40480700001)(5660300002)(2906002)(2616005)(336012)(83380400001)(6512007)(47076005)(6486002)(82310400005)(53546011)(186003)(478600001)(6666004)(26005)(6506007)(31686004)(36756003)(43740500002);
- DIR:OUT; SFP:1101; 
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2023 08:23:55.2725 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 200229c0-a35b-47e3-be30-08daf2e4039b
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d; Ip=[63.35.35.123];
- Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
-X-MS-Exchange-CrossTenant-AuthSource: AM7EUR03FT013.eop-EUR03.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR08MB7636
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221230093454.190579-5-wangweidong.a@awinic.com>
+X-Mailman-Approved-At: Tue, 10 Jan 2023 09:32:35 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -173,71 +103,276 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- kuninori.morimoto.gx@renesas.com, Deepak.Pandey@arm.com,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, Anurag.Koul@arm.com
+Cc: duanyibo@awinic.com, lkp@intel.com, zhaolei@awinic.com, liweilei@awinic.com,
+ yijiangtao@awinic.com, oe-kbuild-all@lists.linux.dev
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Rob,
+Hi,
 
-On 1/8/2023 10:07 PM, Rob Herring wrote:
-> On Thu, Jan 05, 2023 at 09:33:46PM +0530, Faiz Abbas wrote:
->> The simple card driver has support for adding cpu, codec and platform
->> nodes with the simple-audio-card prefix. Add documentation for the plat
->> binding.
-> Another node, is it still 'simple card'?
+url:    https://github.com/intel-lab-lkp/linux/commits/wangweidong-a-awinic-com/ASoC-codecs-Add-i2c-and-codec-registration-for-aw883xx-and-their-associated-operation-functions/20221230-173723
+base:   bff687b3dad6e0e56b27f4d3ed8a9695f35c7b1a
+patch link:    https://lore.kernel.org/r/20221230093454.190579-5-wangweidong.a%40awinic.com
+patch subject: [PATCH V8 4/5] ASoC: codecs: Aw883xx chip register file, data type file and Kconfig Makefile
+config: loongarch-randconfig-m031-20230103
+compiler: loongarch64-linux-gcc (GCC) 12.1.0
 
-This behavior already exists in the driver. I am just documenting what alre=
-ady exists.
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <error27@gmail.com>
 
->> Signed-off-by: Faiz Abbas <faiz.abbas@arm.com>
->> ---
->>  .../bindings/sound/simple-card.yaml           | 23 +++++++++++++++++++
->>  1 file changed, 23 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/simple-card.yaml b/=
-Documentation/devicetree/bindings/sound/simple-card.yaml
->> index ed19899bc94b..fa67c76d4dbb 100644
->> --- a/Documentation/devicetree/bindings/sound/simple-card.yaml
->> +++ b/Documentation/devicetree/bindings/sound/simple-card.yaml
->> @@ -205,6 +205,8 @@ patternProperties:
->>      $ref: "#/definitions/dai"
->>    "^simple-audio-card,codec(@[0-9a-f]+)?$":
->>      $ref: "#/definitions/dai"
->> +  "^simple-audio-card,plat(@[0-9a-f]+)?$":
-> What does 'plat' mean?
+New smatch warnings:
+sound/soc/codecs/aw883xx/aw883xx_device.c:1163 aw_dev_dsp_update_container() warn: inconsistent returns '&aw_dev->dsp_lock'.
+sound/soc/codecs/aw883xx/aw883xx_device.c:1303 aw_dev_check_sram() warn: inconsistent returns '&aw_dev->dsp_lock'.
 
-plat means platform. I'll make that clear in the patch description in v2.
+Old smatch warnings:
+sound/soc/codecs/aw883xx/aw883xx_device.c:1078 aw_dev_update_reg_container() error: uninitialized symbol 'ret'.
+sound/soc/codecs/aw883xx/aw883xx_device.c:1271 aw_dev_check_sram() warn: missing unwind goto?
 
+vim +1163 sound/soc/codecs/aw883xx/aw883xx_device.c
 
-> Don't continue the 'simple-audio-card,' prefix.
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1120  static int aw_dev_dsp_update_container(struct aw_device *aw_dev,
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1121  			unsigned char *data, unsigned int len, unsigned short base)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1122  {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1123  #ifdef AW_DSP_I2C_WRITES
 
-The implementation already exists. Its just not documented here.
+These ifdefs are not ideal.
 
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1124  	u32 tmp_len;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1125  #else
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1126  	u16 reg_val;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1127  #endif
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1128  	int i, ret;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1129  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1130  	mutex_lock(&aw_dev->dsp_lock);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1131  #ifdef AW_DSP_I2C_WRITES
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1132  	ret = regmap_write(aw_dev->regmap, AW_PID_2049_DSPMADD_REG, base);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1133  	if (ret)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1134  		return ret;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1135  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1136  	for (i = 0; i < len; i += AW_MAX_RAM_WRITE_BYTE_SIZE) {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1137  		if ((len - i) < AW_MAX_RAM_WRITE_BYTE_SIZE)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1138  			tmp_len = len - i;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1139  		else
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1140  			tmp_len = AW_MAX_RAM_WRITE_BYTE_SIZE;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1141  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1142  		ret = regmap_raw_write(aw_dev->regmap, AW_PID_2049_DSPMDAT_REG,
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1143  					&data[i], tmp_len);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1144  		if (ret)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1145  			return ret;
 
->> +    $ref: "#/definitions/dai"
->>
->>    "^simple-audio-card,dai-link(@[0-9a-f]+)?$":
->>      description: |
->> @@ -285,6 +287,27 @@ examples:
->>          };
->>      };
->>
->> +#-------------------------------
->> +# single DAI link with platform
->> +#-------------------------------
-> Really need another example for 1 simple node?
+Needs unlock before returning.
 
-I'll remove the example if that makes it easier.
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1146  	}
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1147  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1148  #else
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1149  	/* i2c write */
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1150  	ret = regmap_write(aw_dev->regmap, AW_PID_2049_DSPMADD_REG, base);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1151  	if (ret)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1152  		return ret;
 
-Thanks,
+Here too
 
-Faiz
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1153  	for (i = 0; i < len; i += 2) {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1154  		reg_val = (data[i] << 8) + data[i + 1];
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1155  		ret = regmap_write(aw_dev->regmap, AW_PID_2049_DSPMDAT_REG,
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1156  					reg_val);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1157  		if (ret)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1158  			return ret;
 
-IMPORTANT NOTICE: The contents of this email and any attachments are confid=
-ential and may also be privileged. If you are not the intended recipient, p=
-lease notify the sender immediately and do not disclose the contents to any=
- other person, use it for any purpose, or store or copy the information in =
-any medium. Thank you.
+Here.
+
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1159  	}
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1160  #endif
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1161  	mutex_unlock(&aw_dev->dsp_lock);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1162  
+acf2ebfd20ae60 Weidong Wang 2022-12-30 @1163  	return 0;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1164  }
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1165  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1166  static int aw_dev_dsp_update_fw(struct aw_device *aw_dev,
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1167  			unsigned char *data, unsigned int len)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1168  {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1169  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1170  	dev_dbg(aw_dev->dev, "dsp firmware len:%d", len);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1171  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1172  	if (len && (data != NULL)) {
+
+Flip this around.
+
+	if (!len || !data)
+		return -EINVAL;
+
+Always do error handling, not success handling.
+
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1173  		aw_dev_dsp_update_container(aw_dev,
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1174  			data, len, AW_PID_2049_DSP_FW_ADDR);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1175  		aw_dev->dsp_fw_len = len;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1176  	} else {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1177  		dev_err(aw_dev->dev, "dsp firmware data is null or len is 0");
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1178  		return -EINVAL;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1179  	}
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1180  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1181  	return 0;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1182  }
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1183  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1184  static int aw_dev_copy_to_crc_dsp_cfg(struct aw_device *aw_dev,
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1185  			unsigned char *data, unsigned int size)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1186  {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1187  	struct aw_sec_data_desc *crc_dsp_cfg = &aw_dev->crc_dsp_cfg;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1188  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1189  	if (!crc_dsp_cfg->data) {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1190  		crc_dsp_cfg->data = devm_kzalloc(aw_dev->dev, size, GFP_KERNEL);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1191  		if (!crc_dsp_cfg->data)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1192  			return -ENOMEM;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1193  		crc_dsp_cfg->len = size;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1194  	} else if (crc_dsp_cfg->len < size) {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1195  		devm_kfree(aw_dev->dev, crc_dsp_cfg->data);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1196  		crc_dsp_cfg->data = devm_kzalloc(aw_dev->dev, size, GFP_KERNEL);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1197  		if (!crc_dsp_cfg->data) {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1198  			dev_err(aw_dev->dev, "error allocating memory");
+
+I am surprised this error message does not generate a checkpatch
+warning.  kmalloc() has its own better warnings.  Delete this one.
+
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1199  			return -ENOMEM;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1200  		}
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1201  		crc_dsp_cfg->len = size;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1202  	}
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1203  	memcpy(crc_dsp_cfg->data, data, size);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1204  	swab16_array((u16 *)crc_dsp_cfg->data, size >> 1);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1205  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1206  	return 0;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1207  }
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1208  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1209  static int aw_dev_dsp_update_cfg(struct aw_device *aw_dev,
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1210  			unsigned char *data, unsigned int len)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1211  {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1212  	int ret;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1213  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1214  	dev_dbg(aw_dev->dev, "dsp config len:%d", len);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1215  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1216  	if (len && (data != NULL)) {
+
+Flip this around.
+
+	if (!len || !data)
+		return -EINVAL;
+
+	aw_dev_dsp_update_container(aw_dev, data, len,
+				    AW_PID_2049_DSP_CFG_ADDR);
+
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1217  		aw_dev_dsp_update_container(aw_dev,
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1218  			data, len, AW_PID_2049_DSP_CFG_ADDR);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1219  		aw_dev->dsp_cfg_len = len;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1220  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1221  		ret = aw_dev_copy_to_crc_dsp_cfg(aw_dev, data, len);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1222  		if (ret)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1223  			return ret;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1224  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1225  		ret = aw_dev_set_vcalb(aw_dev);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1226  		if (ret)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1227  			return ret;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1228  		ret = aw_dev_get_ra(&aw_dev->cali_desc);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1229  		if (ret)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1230  			return ret;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1231  		ret = aw_dev_get_cali_f0_delay(aw_dev);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1232  		if (ret)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1233  			return ret;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1234  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1235  		ret = aw_dev_get_vmax(aw_dev, &aw_dev->vmax_desc.init_vmax);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1236  		if (ret) {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1237  			dev_err(aw_dev->dev, "get vmax failed");
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1238  			return ret;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1239  		}
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1240  		dev_dbg(aw_dev->dev, "get init vmax:0x%x",
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1241  						aw_dev->vmax_desc.init_vmax);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1242  		aw_dev->dsp_crc_st = AW_DSP_CRC_NA;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1243  	} else {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1244  		dev_err(aw_dev->dev, "dsp config data is null or len is 0");
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1245  		return -EINVAL;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1246  	}
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1247  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1248  	return 0;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1249  }
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1250  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1251  static int aw_dev_check_sram(struct aw_device *aw_dev)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1252  {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1253  	unsigned int reg_val;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1254  	int ret;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1255  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1256  	mutex_lock(&aw_dev->dsp_lock);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1257  	/* check the odd bits of reg 0x40 */
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1258  	ret = regmap_write(aw_dev->regmap, AW_PID_2049_DSPMADD_REG, AW_DSP_ODD_NUM_BIT_TEST);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1259  	if (ret)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1260  		return ret;
+
+goto error;
+
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1261  	ret = regmap_read(aw_dev->regmap, AW_PID_2049_DSPMADD_REG, &reg_val);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1262  	if (reg_val != AW_DSP_ODD_NUM_BIT_TEST || ret) {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1263  		dev_err(aw_dev->dev, "check reg 0x40 odd bit failed, read[0x%x] != write[0x%x]",
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1264  				reg_val, AW_DSP_ODD_NUM_BIT_TEST);
+
+This does not set the error code correctly.  Technically, it reg_val is
+unintialized if ret is negative so it's an uninitialized variable bug
+as well.  Write it like so:
+
+	ret = regmap_read(aw_dev->regmap, AW_PID_2049_DSPMADD_REG, &reg_val);
+	if (ret)
+		goto error;
+	if (reg_val != AW_DSP_ODD_NUM_BIT_TEST) {
+		ret = -EINVAL;
+		goto error;
+	}
+
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1265  		goto error;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1266  	}
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1267  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1268  	/* check the even bits of reg 0x40 */
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1269  	ret = regmap_write(aw_dev->regmap, AW_PID_2049_DSPMADD_REG, AW_DSP_EVEN_NUM_BIT_TEST);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1270  	if (ret)
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1271  		return ret;
+
+goto error;
+
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1272  	ret = regmap_read(aw_dev->regmap, AW_PID_2049_DSPMADD_REG, &reg_val);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1273  	if (reg_val != AW_DSP_EVEN_NUM_BIT_TEST || ret) {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1274  		dev_err(aw_dev->dev, "check reg 0x40 even bit failed, read[0x%x] != write[0x%x]",
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1275  				reg_val, AW_DSP_EVEN_NUM_BIT_TEST);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1276  		goto error;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1277  	}
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1278  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1279  	/* check dsp_fw_base_addr */
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1280  	aw_dev_dsp_write_16bit(aw_dev, AW_PID_2049_DSP_FW_ADDR,	AW_DSP_EVEN_NUM_BIT_TEST);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1281  	aw_dev_dsp_read_16bit(aw_dev, AW_PID_2049_DSP_FW_ADDR, &reg_val);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1282  	if (reg_val != AW_DSP_EVEN_NUM_BIT_TEST) {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1283  		dev_err(aw_dev->dev, "check dsp fw addr failed, read[0x%x] != write[0x%x]",
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1284  						reg_val, AW_DSP_EVEN_NUM_BIT_TEST);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1285  		goto error;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1286  	}
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1287  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1288  	/* check dsp_cfg_base_addr */
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1289  	aw_dev_dsp_write_16bit(aw_dev, AW_PID_2049_DSP_CFG_ADDR, AW_DSP_ODD_NUM_BIT_TEST);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1290  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1291  	aw_dev_dsp_read_16bit(aw_dev, AW_PID_2049_DSP_CFG_ADDR, &reg_val);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1292  	if (reg_val != AW_DSP_ODD_NUM_BIT_TEST) {
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1293  		dev_err(aw_dev->dev, "check dsp cfg failed, read[0x%x] != write[0x%x]",
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1294  						reg_val, AW_DSP_ODD_NUM_BIT_TEST);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1295  		goto error;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1296  	}
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1297  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1298  	mutex_unlock(&aw_dev->dsp_lock);
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1299  	return 0;
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1300  
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1301  error:
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1302  	mutex_unlock(&aw_dev->dsp_lock);
+acf2ebfd20ae60 Weidong Wang 2022-12-30 @1303  	return -EPERM;
+
+Oh.  Huh.  Change this to "return ret;"
+
+acf2ebfd20ae60 Weidong Wang 2022-12-30  1304  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
+
