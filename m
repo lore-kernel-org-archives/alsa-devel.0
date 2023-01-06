@@ -4,68 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 895ACC3DA7A
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Jan 2023 20:25:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BB1FC5479D
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Jan 2023 23:14:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DD8901427F;
-	Fri,  6 Jan 2023 21:24:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD8901427F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 91948FCA5;
+	Sat,  7 Jan 2023 00:13:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91948FCA5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673036731;
-	bh=+AtIr4tkDXhCceor64nJXGDuX/DDFyU6LzAmD7IDWhE=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=bT+mL08hPZ7eJAW32Sn4P1CehZq6gTfJhHJXSEeAGTZDV+y9NctOK+69JHaFIKS1y
-	 4Ga0ACP3HrG27VaMlwdBXRY2Q75gmwBj00vPES+y0us9MJzqNpMI0fziQI6FdRt1v6
-	 5oZkLiO2kOvvJHazS3aXhCbdGPQpW0rZ4+IobO1I=
+	s=default; t=1673046883;
+	bh=9QuuyD08K7AM++1vpIeF0GhtGMMNya1f8XKBBSWk3gI=;
+	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=u0JufunsZTCzErHfLcMbS09YvSK6QFcqbrCBdiRanWivTl40nVh7XpkN6szPIhWDu
+	 uCDX3NEPpe58b0O3zP1F7E7eNoqeLcd40pHTh3TmTdCnPnKuyO9H6MaRwbKMgeWiQf
+	 Rxwz7GX/Kd06uihRy1oFJgE0WNqT8Lfan/M6hkZ0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 984D1F8024D;
-	Fri,  6 Jan 2023 21:24:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51642F8024D;
+	Sat,  7 Jan 2023 00:13:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69E9AF8022B; Fri,  6 Jan 2023 21:24:32 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+ id 84607F800C0; Sat,  7 Jan 2023 00:13:52 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28188F80217
- for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2023 21:24:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28188F80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF8ABF800C0
+ for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2023 00:13:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF8ABF800C0
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=pgGP1CHv
+ header.s=k20201202 header.b=IrzUhFGn
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 8B644CE1E21;
- Fri,  6 Jan 2023 20:24:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55460C43392;
- Fri,  6 Jan 2023 20:24:21 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 9CBABB81DD7;
+ Fri,  6 Jan 2023 23:13:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7B29C433D2;
+ Fri,  6 Jan 2023 23:13:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1673036661;
- bh=+AtIr4tkDXhCceor64nJXGDuX/DDFyU6LzAmD7IDWhE=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=pgGP1CHvYam7/NYiXpKZY1EGzyZZzTD2i/y0diozAU4aMhv0Oa7DJyFr6VeETj4R3
- jcVGryikHlwtWOC2Jjr9tuYqasFZ7K0R4A2zBm+nmr0ZfvR5YSRUe6yv6QSiktItII
- MHGPPGLnWjd4Oc0jV5VY9enZ7Hpsq1OgDBnX74XGJGBTUhwpyJUUjeEP8ZS7pPVhn0
- qrsEJ/GDUgu0F+ABMnLT6DOwSunUnNRYkTzdYWnIN896iXXFbwIN+gLH8bhdII8r8g
- Yfj6AnT4HAGlXbdhMvKmPz5sfmRLpNR1OZxloip08yUqBENZrYWKPkdN2/CeXwZRts
- kQDU5NX+PaL9g==
-From: Bjorn Andersson <andersson@kernel.org>
-To: broonie@kernel.org,
-	lgirdwood@gmail.com,
-	set_pte_at@outlook.com
-Subject: Re: [PATCH v2] soc: qcom: apr: make remove callback of apr driver
- void returned
-Date: Fri,  6 Jan 2023 14:24:17 -0600
-Message-Id: <167303665351.1802272.14996643528670691763.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <TYCP286MB23232B7968D34DB8323B0F16CAFB9@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
-References: <TYCP286MB23232B7968D34DB8323B0F16CAFB9@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
+ s=k20201202; t=1673046828;
+ bh=9QuuyD08K7AM++1vpIeF0GhtGMMNya1f8XKBBSWk3gI=;
+ h=From:Date:Subject:To:Cc:From;
+ b=IrzUhFGnBS2THLiY8q3qzSU1Z8XU53slg4fTTdklU0dsTXGjwoUxHZfVr60t1waqU
+ QT0M002tDAIGl4jmq7uCFDRuE6JDNlPePr4BEJL4bkXXmpnHupM1XuBVPQ42O08en9
+ NUYbWRlaajZALxpaGiURajVxuc3SHtK80eeXxq0dM3HUsukII1499fAGsHhzKfK0kK
+ WEiZVjwWjixdd11GgzRdIu4U1fnp+FhfMZAKTrh7uC57fR2jiVYcVsqcwJms5wEGH+
+ gkx2Noew5FOXxE2xJcAHAXG/akt8vhjWs8NxfRRsdXwj4l59f+O/cv+Fdi9L2VQkbK
+ JSUgxKzwY7myg==
+From: Mark Brown <broonie@kernel.org>
+Date: Fri, 06 Jan 2023 23:13:37 +0000
+Subject: [PATCH] ASoC: fsl-asoc-card: Log error code when we fail to register
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230106-asoc-fsl-err-log-v1-1-49d845c99434@kernel.org>
+X-B4-Tracking: v=1; b=H4sIACGruGMC/x2N0QrCMAwAf2Xk2UC7zYH+iviQxnQLjlYSUGHs3
+ +18vIPjNnAxFYdrt4HJW11raRBPHfBCZRbUR2PoQz+EGCYkr4zZVxQzXOuM4yWeEw2ZJx6hZYlc
+ MBkVXo7wU+156JdJ1u//dLvv+w9FhqhteQAAAA==
+To: Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
+X-Mailer: b4 0.12-dev-8b3d1
+X-Developer-Signature: v=1; a=openpgp-sha256; l=954; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=9QuuyD08K7AM++1vpIeF0GhtGMMNya1f8XKBBSWk3gI=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBjuKspaaObCWe8J+qEwUnrz1fm3UEPH90SCr0Mx92e
+ iCuVd2WJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCY7irKQAKCRAk1otyXVSH0EReB/
+ 4gSdZxhmyVKd7vuXzWNqXr5WSKCbC7PvnGA/dZY1Q28SmudSE4lMaH7MHto1u8I212ASDS9qrzWQtN
+ Zb7EA9XygGvHLLvbIRXAmNmZ8pUT3HI7McDgPvy+oSpVFyETSpTREf9kLMeUqUcmhFYfq//LmWSXMj
+ jHgybfKgL0xXvVAMZO4Ks++bj+kZHQt8lMCXuSbz+Os4hiwetnexhU7kEm815iQbCD2xRJ69M7kmDl
+ MtwPdpMRAjiU3agtlQIcGZI4AP3Ypmq2XZu1wDOlRUpK5eVw76OYQml6EXjZL4qJZGFxZVE0dp2Qca
+ 3kWbLJ+vQC0hIX+a6fBmuiC6aTbest
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,27 +89,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 6 Jan 2023 23:28:03 +0800, Dawei Li wrote:
-> Since commit fc7a6209d571 ("bus: Make remove callback return void")
-> forces bus_type::remove be void-returned, it doesn't make much sense
-> for any bus based driver implementing remove callbalk to return
-> non-void to its caller.
-> 
-> As such, change the remove function for apr bus based drivers to
-> return void.
-> 
-> [...]
+The chances are that any error we see here will be EPROBE_DEFER but let's
+actually tell the user so they know.
 
-Applied, thanks!
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/fsl-asoc-card.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[1/1] soc: qcom: apr: make remove callback of apr driver void returned
-      commit: 33ae3d0955943ac5bacfcb6911cf7cb74822bf8c
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index c836848ef0a6..58834e56a278 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -855,7 +855,7 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, &priv->card);
+ 	if (ret) {
+-		dev_err_probe(&pdev->dev, ret, "snd_soc_register_card failed\n");
++		dev_err_probe(&pdev->dev, ret, "snd_soc_register_card failed: %d\n", ret);
+ 		goto asrc_fail;
+ 	}
+ 
+
+---
+base-commit: 1b929c02afd37871d5afb9d498426f83432e71c2
+change-id: 20230106-asoc-fsl-err-log-4915ba3fc6c4
 
 Best regards,
 -- 
-Bjorn Andersson <andersson@kernel.org>
+Mark Brown <broonie@kernel.org>
