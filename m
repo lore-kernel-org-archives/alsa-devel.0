@@ -4,57 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E5DFC3DA7A
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Jan 2023 18:48:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3186C3DA7A
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Jan 2023 20:25:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FD3712776;
-	Fri,  6 Jan 2023 19:48:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FD3712776
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F6DF1425D;
+	Fri,  6 Jan 2023 21:24:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F6DF1425D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673030932;
-	bh=tp1wwYL+dWnG3JQw8MZJx330UNMQf42TIrG39TK3gRY=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=qSDyEoq4azCgEi8zbWg7T7UV7djhKftsjGhPiYa30U9KdOF2RP7UAUf6vcTS1fWsW
-	 keLPIfgyI4J/bLue/ojP4vMWdezP1hkN5ZnEaTfv9rGGN8ym3KeXwRmYylXs5/0yDt
-	 Dd8U6MAXF8Fo/OLHWLjt1wcXjZ9h3W1BQc00vsIE=
+	s=default; t=1673036722;
+	bh=62nxf5aNBYDvGdXhyDdjTj6yHB6Fp13Om6wUB5lwOZw=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=SivnLqcVIOnWDgRX86ROEaN7W9fRu2b1z5fXizSOuIAoGPaZW9ahJBUfI+RiN7jSb
+	 mIK8Vk8Sf+ZYlpR+ytqixK8ZLcIxjoaCS0DZWuqDFCyCe9kELTRuHYPWv7lEBiMncw
+	 YGUaTgH0/rAVqeZmEMa9B3L80u5sUZ64K8zrHi9Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B20E1F80238;
-	Fri,  6 Jan 2023 19:48:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE1FAF8024E;
+	Fri,  6 Jan 2023 21:24:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D365DF8024D; Fri,  6 Jan 2023 19:47:59 +0100 (CET)
-Received: from mail.mutex.one (mail.mutex.one [62.77.152.124])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 6AC01F8022B; Fri,  6 Jan 2023 21:24:30 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65A56F8022B
- for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2023 19:47:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65A56F8022B
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- unprotected) header.d=mutex.one header.i=@mutex.one header.a=rsa-sha256
- header.s=default header.b=Z+SIrCO/
-Received: from localhost (localhost.localdomain [127.0.0.1])
- by mail.mutex.one (Postfix) with ESMTP id AEF6616C000A;
- Fri,  6 Jan 2023 20:47:56 +0200 (EET)
-X-Virus-Scanned: Debian amavisd-new at mail.mutex.one
-Received: from mail.mutex.one ([127.0.0.1])
- by localhost (mail.mutex.one [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id OFXBDppdFQVh; Fri,  6 Jan 2023 20:47:55 +0200 (EET)
-From: Marian Postevca <posteuca@mutex.one>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mutex.one; s=default;
- t=1673030875; bh=tp1wwYL+dWnG3JQw8MZJx330UNMQf42TIrG39TK3gRY=;
- h=From:To:Cc:Subject:Date:From;
- b=Z+SIrCO/3K7QzEBb7e7mbglitdz5lX24ZKP69dZkhD7kSbZNVKh02LLdqwrh13HB+
- 3nf+Pn7OKidjwyS+4HMHJH29WXwKvJcjIbbIKLDvgZBrUiyv8KO14Rip5xsUeB8wea
- kSO95Cws6tKYlwAuL6n2coxch1vvjS3faOdnNaGQ=
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [RFC] Sound support for Huawei line of AMD laptops using ACP and
- ES8336 codec
-Date: Fri, 06 Jan 2023 20:47:54 +0200
-Message-ID: <871qo7fqjp.fsf@mutex.one>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88742F8024D
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2023 21:24:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88742F8024D
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=lY1mco5A
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 51ED8B81E5C;
+ Fri,  6 Jan 2023 20:24:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EB8DC433F0;
+ Fri,  6 Jan 2023 20:24:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1673036663;
+ bh=62nxf5aNBYDvGdXhyDdjTj6yHB6Fp13Om6wUB5lwOZw=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=lY1mco5A1QWWjL2vwwUkyFzMKZ1pRLhUDUDaPQeOiFxOOkjAjKdu9QQuhxOphRVJP
+ YU2aSyEQW35dWt4hOBa1vlFhEp9nmJ+FzSruVQteZXMjObaEKDyNVj31mMz+RYxXEE
+ 08bVAp9dgNAmAkuySkJslUXwkWp9k0De8ESdQVQyX/fvwwxBXcjtDnp4Ny4aFQIXOt
+ Of3FfwOBBQDNfmbBE/1xti47Ym/wAGx4UrA49CP1UUc2I9zTLqiKez2Yhn66kr2kQi
+ 2Jttz58DDl+J2N3O5wJ2Ayk4EKs//paFKROKfRFUdzTkga6FnO3B3raVIYrSx9f/yn
+ QME2akopsw29A==
+From: Bjorn Andersson <andersson@kernel.org>
+To: stephan@gerhold.net,
+	Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH 0/2] Fix APR audio regression on 6.2-rc1
+Date: Fri,  6 Jan 2023 14:24:18 -0600
+Message-Id: <167303665353.1802272.239146565837187502.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.37.1
+In-Reply-To: <20221229151648.19839-1-stephan@gerhold.net>
+References: <20221229151648.19839-1-stephan@gerhold.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -67,82 +76,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Mario Limonciello <mario.limonciello@amd.com>,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
- V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
- syed sabakareem <Syed.SabaKareem@amd.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, jiasheng@iscas.ac.cn,
+ konrad.dybcio@linaro.org, robh+dt@kernel.org, srinivas.kandagatla@linaro.org,
+ ~postmarketos/upstreaming@lists.sr.ht, bgoswami@quicinc.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, 29 Dec 2022 16:16:46 +0100, Stephan Gerhold wrote:
+> These two patches fix regressions in the Qualcomm APR driver that
+> prevent audio from working on MSM8916 (and likely MSM8996). In previous
+> kernel releases the "qcom,protection-domain" property was optional, in
+> 6.2-rc1 it is now required. It should remain optional because the
+> protection domain functionality is only supported starting with MSM8998
+> and is not present on older SoCs [1].
+> 
+> [...]
 
-I have a Huawei Matebook 14 AMD 2021 laptop for which the sound isn't
-supported on Linux. On further investigation in Windows and ACPI tables
-I could determine that this particular SKU has an ES8336 codec connected
-to the CPU ACP module.
-The CPU of my laptop is an AMD Ryzen 5 5500U which seems to be codenamed
-Lucienne and is a derivation of the Renoir family.
-Acording to lspci the ACP is revision 1:
+Applied, thanks!
 
-03:00.5 Multimedia controller [0480]: Advanced Micro Devices, Inc. [AMD] Raven/Raven2/FireFlight/Renoir Audio Processor [1022:15e2] (rev 01)
-	Subsystem: Device [1e83:3e4d]
-	Kernel driver in use: snd_rn_pci_acp3x
-	Kernel modules: snd_pci_acp3x, snd_rn_pci_acp3x, snd_pci_acp5x,
-	snd_pci_acp6x, snd_acp_pci, snd_rpl_pci_acp6x,
-	snd_sof_amd_renoir
+[1/2] dt-bindings: soc: qcom: apr: Make qcom,protection-domain optional again
+      commit: 26658868354963afbff672ad6f7a85c44c311975
+[2/2] soc: qcom: apr: Make qcom,protection-domain optional again
+      commit: 599d41fb8ea8bd2a99ca9525dd69405020e43dda
 
-I have written a machine driver for this platform and managed to make
-the sound and internal microphone work. I am looking to integrate this
-support but there are some issues with the current implementation of ACP
-support.
-
-As far as I can tell there are 4 directions I could take to add support:
-
-1. A standalone machine driver in sound/soc/amd that uses the platform
-  drivers from sound/soc/amd/raven/
-
-2. An embedded driver in sound/soc/amd/acp/acp-legacy-mach.c
-
-3. A standalone machine driver in sound/soc/amd that uses the platform
-  drivers from sound/soc/amd/renoir
-
-4. Use the SOF infrastructure
-
-Now as far as I can tell, all of these directions have issues:
-
-1. The pci driver from sound/soc/amd/raven/pci-acp3x.c doesn't support Lucienne
-   since it blocks rev 1 devices in :
-
-   /* Raven device detection */
-   if (pci->revision != 0x00)
-       return -ENODEV;
-
-   This is the approach I took and just changed the check to add support
-   for rev 1.
-   The sound and internal microphone worked ok and I didn't encounter any
-   issues with it. Of course I don't know the internals of ACP and
-   don't know what are the differences between rev 0 and rev 1.
-
-2. This approach could work but I would need to change the structure
-   acp_card_drvdata and struct snd_soc_dapm_widget acp_widgets,
-   to add proper support for jack handling (and maybe some other
-   modifications).
-   This driver seems to support rev 1 (in sound/soc/amd/acp/acp-pci.c):
-
-   switch (pci->revision) {
-	case 0x01:
-		chip->name = "acp_asoc_renoir";
-		chip->acp_rev = ACP3X_DEV;
-		break;
-
-   Also from the module description it seems that these drivers are
-   meant only for chromebook support.
-
-3. This seems like it would the best approach in theory, but the problem
-   is that the drivers inside only seem to add support for DMIC.
-
-4. I tried to use SOF early when I started tinkering, but I always got a
-   timeout during init phase when loading the renoir firmware.
-
-So the reason for this email is to get some idea, on how to best add
-support for these laptops.
+Best regards,
+-- 
+Bjorn Andersson <andersson@kernel.org>
