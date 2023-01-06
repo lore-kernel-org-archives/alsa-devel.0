@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9929BC46467
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Jan 2023 08:35:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82B76C61DB3
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Jan 2023 08:36:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 96D7B9061;
-	Tue, 10 Jan 2023 09:34:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96D7B9061
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB1599101;
+	Tue, 10 Jan 2023 09:35:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB1599101
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673339746;
-	bh=GYaUhXsPb0SuJnvYcWVomdLjFr9K1hWqWlMPv0IsRCE=;
+	s=default; t=1673339762;
+	bh=3mXvG6mUcAAdD4oUmzIdmWBu0Oq6g+DemhrrzNU50dg=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=tIFiLs+87hzyW7Zj+gWXHOBoTM6URuJRrqgTJBewa9iiPZfKuzfQjlNGnQdvIZml4
-	 FFt3kJMZNKT3E7o0MWwdFB0QedrnIRBaTgcREQ/W5vEDOmkhu73jcYjju9mW8Scn2z
-	 HY9zjBnzVrhN3UvRbE0jSQy6G9mxcdSOXA8cDwhI=
+	b=DY7yl5NhRgr/P3uQ1+TEE5cp8k/gw6jLNT9HtSEdHgdGC5DDj+zB7hbanD5pdatWK
+	 tiNKq5kSFZwjLZ9BbLlGHlrPpZJqbCmQhNA0buIKUpkc+8OUjr2L4IbVPj4Y2bjIoh
+	 OVxRmD1Qy9ymU6MrXmTH+ecDJepMOscRxy6ORjYo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22B0EF80578;
+	by alsa1.perex.cz (Postfix) with ESMTP id ACA46F8057A;
 	Tue, 10 Jan 2023 09:32:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 54F24F80217; Fri,  6 Jan 2023 14:30:33 +0100 (CET)
+ id 2ED02F8024E; Fri,  6 Jan 2023 14:30:34 +0100 (CET)
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
- [217.70.183.194])
+ [IPv6:2001:4b98:dc4:8::222])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3B7FDF804AA
- for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2023 14:30:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B7FDF804AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id D70BFF8025A
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2023 14:30:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D70BFF8025A
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=B832sqgA
+ header.s=gm1 header.b=b0dHQa8b
 Received: (Authenticated sender: herve.codina@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPA id D0C214000B;
- Fri,  6 Jan 2023 13:30:21 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPA id 0B7FA40013;
+ Fri,  6 Jan 2023 13:30:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1673011824;
+ t=1673011821;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=fwN9f1Uf9OnuRKb5i5JlqxFqzREU6PwCAerriE9fsNU=;
- b=B832sqgAaoSwHkU07+7/0+oJEu8BXJTq9OItkXRSgTypGSyfXDgbQH4GmAKHmr1N85oQB6
- NH+vmxoj6O4urHmiQvwyQfy+pjwxjZDt9bdf+pJPP0aboYNr2BGR+cWL94QTFY4OhYMaml
- NgXr2s+tjaELZLpaLOSfaHpG7RF17nG3kCD4utFNG5nLh+fLt+JPQIN2n6w6oRxu4YC5sA
- tWEsoTKJuQTk5Ux52HmWGdKnt921yBjwk9j8i/gO4jAdDwhD0hM4cbWbkOPgDuOo3qsfzu
- E8oF1yXrFhXq4p6l9CUUIJ8z3dG1XOoptM21oXtsLzjqGKyVq63S7Xx08BaWEA==
+ bh=5eK6oGrS+FDqpNet/evYs5HPdbphuxm6/AcWmEWOiZU=;
+ b=b0dHQa8bN2xD7KZzE+ZqmqXh8zGUDunlqyEPXYuvDiAoKKIQwe52yyzTH5mwv5zIKxpsou
+ 9arT+3e6kKoXMfpFT/yroH4nOba5iRrwJ7iTWF5Jg6OXoKHDAfUstnZ7x9uqTlrtDOBECI
+ kSBXdMMyuH9Hv2zji/cWlIUDvtH7wU9ulegr1mImRg8wOLuFA4vRtNI7GjluL1aBkZSA2o
+ 4nFSvYVr37qZmzz2x+CuUw8hgHZ/pupyI66PIsf0m2Q9bgQpuBE1Ay4lV/8vHjAXccOzIE
+ 7bh58d9n5JnKPjZnUWxn73Csls0Q8dLg3gchxcLOLLueBJJ6lFomKeSXzbofBA==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>, Li Yang <leoyang.li@nxp.com>,
  Rob Herring <robh+dt@kernel.org>,
@@ -62,9 +62,9 @@ To: Herve Codina <herve.codina@bootlin.com>, Li Yang <leoyang.li@nxp.com>,
  Takashi Iwai <tiwai@suse.com>, Shengjiu Wang <shengjiu.wang@gmail.com>,
  Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
  Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH 08/10] dt-bindings: sound: Add support for QMC audio
-Date: Fri,  6 Jan 2023 14:29:49 +0100
-Message-Id: <20230106132951.392271-9-herve.codina@bootlin.com>
+Subject: [PATCH 07/10] MAINTAINERS: add the Freescale QMC controller entry
+Date: Fri,  6 Jan 2023 14:29:48 +0100
+Message-Id: <20230106132951.392271-8-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20230106132951.392271-1-herve.codina@bootlin.com>
 References: <20230106132951.392271-1-herve.codina@bootlin.com>
@@ -89,133 +89,33 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The QMC (QUICC mutichannel controller) is a controller
-present in some PowerQUICC SoC such as MPC885.
-The QMC audio is an ASoC component that uses the QMC
-controller to transfer the audio data.
+After contributing the driver, add myself as the maintainer
+for the Freescale QMC controller.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- .../bindings/sound/fsl,qmc-audio.yaml         | 110 ++++++++++++++++++
- 1 file changed, 110 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/fsl,qmc-audio.yaml
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,qmc-audio.yaml b/Documentation/devicetree/bindings/sound/fsl,qmc-audio.yaml
-new file mode 100644
-index 000000000000..b3774be36c19
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/fsl,qmc-audio.yaml
-@@ -0,0 +1,110 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/fsl,qmc-audio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2b4f5fe7ebad..480f90db699d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8372,6 +8372,14 @@ S:	Maintained
+ F:	drivers/soc/fsl/qe/
+ F:	include/soc/fsl/qe/
+ 
++FREESCALE QUICC ENGINE QMC DRIVER
++M:	Herve Codina <herve.codina@bootlin.com>
++L:	linuxppc-dev@lists.ozlabs.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,qmc.yaml
++F:	drivers/soc/fsl/qe/qmc.c
++F:	include/soc/fsl/qe/qmc.h
 +
-+title: QMC audio
-+
-+maintainers:
-+  - Herve Codina <herve.codina@bootlin.com>
-+
-+description: |
-+  The QMC audio is an ASoC component which uses QMC (QUICC Multichannel
-+  Controller) channels to transfer the audio data.
-+  It provides as many DAI as the number of QMC channel used.
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: fsl,qmc-audio
-+
-+  '#address-cells':
-+    const: 1
-+  '#size-cells':
-+    const: 0
-+  '#sound-dai-cells':
-+    const: 1
-+
-+patternProperties:
-+  "^dai@([0-9]|[1-5][0-9]|6[0-3])$":
-+    description:
-+      A DAI managed by this controller
-+    type: object
-+
-+    properties:
-+      reg:
-+        minimum: 0
-+        maximum: 63
-+        description:
-+          The DAI number
-+
-+      qmc-chan:
-+        $ref: /schemas/types.yaml#/definitions/phandle-array
-+        description: phandle to the QMC channel
-+        maxItems: 1
-+
-+    required:
-+      - reg
-+      - qmc-chan
-+
-+required:
-+  - compatible
-+  - '#address-cells'
-+  - '#size-cells'
-+  - '#sound-dai-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    qmc_audio: qmc_audio {
-+        compatible = "fsl,qmc-audio";
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        #sound-dai-cells = <1>;
-+        dai@16 {
-+            reg = <16>;
-+            qmc-chan = <&scc_qmc 16>;
-+        };
-+        dai@17 {
-+            reg = <17>;
-+            qmc-chan = <&scc_qmc 17>;
-+        };
-+    };
-+
-+    sound {
-+        compatible = "simple-audio-card";
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        simple-audio-card,dai-link@0 {
-+            reg = <0>;
-+            format = "dsp_b";
-+            cpu {
-+                sound-dai = <&qmc_audio 16>;
-+            };
-+            codec {
-+                sound-dai = <&codec1>;
-+                dai-tdm-slot-num = <4>;
-+                dai-tdm-slot-width = <8>;
-+                /* TS 3, 5, 7, 9 */
-+                dai-tdm-slot-tx-mask = <0 0 0 1 0 1 0 1 0 1>;
-+                dai-tdm-slot-rx-mask = <0 0 0 1 0 1 0 1 0 1>;
-+            };
-+        };
-+        simple-audio-card,dai-link@1 {
-+            reg = <1>;
-+            format = "dsp_b";
-+            cpu {
-+                sound-dai = <&qmc_audio 17>;
-+            };
-+            codec {
-+                sound-dai = <&codec2>;
-+                dai-tdm-slot-num = <4>;
-+                dai-tdm-slot-width = <8>;
-+                /* TS 2, 4, 6, 8 */
-+                dai-tdm-slot-tx-mask = <0 0 1 0 1 0 1 0 1>;
-+                dai-tdm-slot-rx-mask = <0 0 1 0 1 0 1 0 1>;
-+            };
-+        };
-+    };
+ FREESCALE QUICC ENGINE TSA DRIVER
+ M:	Herve Codina <herve.codina@bootlin.com>
+ L:	linuxppc-dev@lists.ozlabs.org
 -- 
 2.38.1
 
