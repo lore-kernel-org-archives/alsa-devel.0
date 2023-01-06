@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 299F0C54E76
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Jan 2023 09:17:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBD89C5479D
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Jan 2023 09:17:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE3A1F38C;
-	Fri,  6 Jan 2023 10:16:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE3A1F38C
+	by alsa0.perex.cz (Postfix) with ESMTPS id A171184D3;
+	Fri,  6 Jan 2023 10:16:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A171184D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672996650;
-	bh=Uixe9OdB48jor3pV5yP4khlJ1UERWXyO5SWOsYMnLZE=;
+	s=default; t=1672996665;
+	bh=1Qa3+2GkBbW9EfG6aEy7ULobdXNWd+HsJlqr3jL2HcY=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=N+Z3SBAUPwJMqjeZ1abhny49chObD19EuSPFyYlBRZXiQoWzwjAz1A3W66MSKxVD4
-	 2iYrZYI0zprZASTHSkw7MK8L/KWuh4T5cBBAyUTHFQuOb53o56rgzJ7yleii3x1Sa5
-	 sbY5bT5fV/vg0xOV/TLieLjSah7m+xR5jHmrqQn8=
+	b=Ds80SaBs8cwesWkBAZO9+8Z8g4X0jpsVZNXD/I9QFoIvcqprEg+97fYOlLFZo7Y1d
+	 vgycAyqtN+Qa/+ODOQUpqUMKAX/BfVrQTo7E+vIEExDNKcKD4MjOkG0vzjfT8JMJhR
+	 mgQvL8HV4u2UbwiYexU1modF4e3L2Oq2GuPDxIlE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9D5AF80543;
-	Fri,  6 Jan 2023 10:16:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74A2CF80520;
+	Fri,  6 Jan 2023 10:16:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F88FF80520; Fri,  6 Jan 2023 10:16:07 +0100 (CET)
+ id 2F422F8053D; Fri,  6 Jan 2023 10:16:08 +0100 (CET)
 Received: from KOR01-SL2-obe.outbound.protection.outlook.com
- (mail-sl2kor01on2059.outbound.protection.outlook.com [40.107.129.59])
+ (mail-sl2kor01on2040.outbound.protection.outlook.com [40.107.129.40])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6FC5AF80238
+ by alsa1.perex.cz (Postfix) with ESMTPS id 121EFF8025A
  for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2023 10:16:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FC5AF80238
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 121EFF8025A
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IUI3oT3vunw/Ob2nKjSQk1nt7bxdIKI/IAjDw0PWpghlqR1g0cJnIp20Xs5SeL3/99HOA6IS1x3fE2YAw/Uuiza/ra+qhwVNYDVexjZ+UN6TVcUwC/+BruNa6/7sz5oMQ0TMKZCeNcdHeqICrfAohw/mqxUFFvRX2NxNDfoXREq2IWg8ArKKGhb6VOYhesBVLw1eH/oIdp1PECtvNMC85dF5SacigSa6DisLo3v1Ak8brUeYthfFUJkB347NhrzPl6OgwFL5lcgiqo0HC6+osNXGCCjPLqPPeMsxYiPLFNiBaoYw3bzqLwp9/hiWbUG4yRRkvOCy50F9Zr9Y20fJRw==
+ b=FS2s8quwAwPLNoxSuprpFigsF6PqTwBT9EO/QOrYUFYQmUqd1pHkCtGiUQ9dVF90mPKF+Cdp6VKV6F6ZwXCJJ4yNw2tJ1ZFCNiRGiKVayF0bzs/+gCffsoKyv2clD3Y3TnVDDaD71ZyYL+gxNLzmuSqdN2MRoFx2nrpyIaOLjnC7NUhQ1bPCg1ZSlXZA3NU2Td5aaOM5jSLhuNSU21RKU5vH3ePYUeA9B7KHeMAlnHrynvwPreG1Z7t6QyIXkf8n46/Skp7PA884gWbv8fgSLlTR0F7hfmShkcazArT1yVerC+X6FVnL7DY7B2lL5/x3mDBADNc65M8cTAPpyE6NaA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=A2ktlz7U4or0UFT99RBslw1vl1GOrk3t25gcHIXATMM=;
- b=bShh81Zw/rL6Cau6bqd1MB/XD7BJP1s530pdueYJ5NHwsPYU5t+yC9GdyAx9RpBaX5TFQka1DcDes411C4pQstPw/9F5wLZ7IyblxRTCZu0stqt7ZPSNfZn4uv+H/fHRyKangIABqEWGb8BazIEUIjE/n9lXRfSm04thMHPMNORuAppLWay7KFP5w3Y96HFdxEZ/86wjm681N2Ju6HK7jm/4icAq4kXKRsC3fEvku2ep7URK5ZVMWCfbc/oaiexkHCQXrCbQ9pJgeGyq/ujh8GixHhio/mzx7n0OR5Q7nhYASTzZWd7ls3FbenY/MlBslSAMi5C4r5vnRlSztFRNjQ==
+ bh=LYbvXoJ2XmLdIJqD74b7ZIzghKUJ3PhvxbyYUmdgF2g=;
+ b=K8srrcbNYOd451rM25bzY0/ifogdums7Rg43a6Ep+gKDlmXOoQuidVGzcsmjaKNRxcWZiZO3m5K4+tYz8qGK4FBWPf3Q51mGtJchQdxUWRlxzisICvzpQr535FFKNkVOt9ZoJmF02aIZzYIEuneYLY5fgTluoZDrBZ4032MZNMzwgqtyp0+pzdlqP+9XY6BEF1PuIw9sMb5/NU5kDFPzrSu51nS1O+Qns4vJqODeNooNuV6PNJq3gsN179Hhk49D92e9EEHBt+ng9irdu4mgfZ8bVuk5Z0r6/LVZFccVQuDcGNnM0hlyy9Rxc+8WgkjXRcXM/u8On7dKwMXbsSVMTQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=irondevice.com; dmarc=pass action=none
  header.from=irondevice.com; dkim=pass header.d=irondevice.com; arc=none
@@ -49,21 +49,20 @@ Received: from SLXP216MB0077.KORP216.PROD.OUTLOOK.COM (2603:1096:100:7::23) by
  PS2P216MB1300.KORP216.PROD.OUTLOOK.COM (2603:1096:301:98::11) with
  Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5944.19; Fri, 6 Jan 2023 09:15:57 +0000
+ 15.20.5944.19; Fri, 6 Jan 2023 09:15:56 +0000
 Received: from SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
  ([fe80::3d9:7f82:fa73:e727]) by SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
  ([fe80::3d9:7f82:fa73:e727%7]) with mapi id 15.20.5944.019; Fri, 6 Jan 2023
- 09:15:57 +0000
+ 09:15:56 +0000
 From: Kiseok Jo <kiseok.jo@irondevice.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 04/14] Removed the usage control and add the power switch on
- DAPM route.
-Date: Fri,  6 Jan 2023 18:15:33 +0900
-Message-Id: <20230106091543.2440-5-kiseok.jo@irondevice.com>
+Subject: [PATCH 02/14] ASoC: dt-bindings: sma1303: Iron Device SMA1303 Amp
+Date: Fri,  6 Jan 2023 18:15:31 +0900
+Message-Id: <20230106091543.2440-3-kiseok.jo@irondevice.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230106091543.2440-1-kiseok.jo@irondevice.com>
 References: <20230106091543.2440-1-kiseok.jo@irondevice.com>
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
 X-ClientProxiedBy: SL2PR01CA0017.apcprd01.prod.exchangelabs.com
  (2603:1096:100:41::29) To SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
@@ -71,52 +70,52 @@ X-ClientProxiedBy: SL2PR01CA0017.apcprd01.prod.exchangelabs.com
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SLXP216MB0077:EE_|PS2P216MB1300:EE_
-X-MS-Office365-Filtering-Correlation-Id: d4276e91-9c9f-451d-cdd5-08daefc69e66
+X-MS-Office365-Filtering-Correlation-Id: adb73e3a-773e-4bca-4c80-08daefc69de1
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UB9a/qMCtEXKIr2Jm2aNE5ksJ3AI1St+PpwrTCgBqhSl0XarINbZbFmc6Cb1H2jgfHH3nJPTGPPsybHa0jCejSvdMyIOs0gzwnSzDojK1rbMXww7G9cic0z5MqPRReq2LDVPAv1HhEUO42d1l1p+GRB6H15o5uDcU+khuypw217DkQgO8EkSmU9WTZmyzGnkiiBvpK0zfET4+A9HU3eJNuRt31WPvyUFtJCwYc4kYayXsCxMMEIsWFTM2vQB0Obc/xlrMzyDdKWhixQH/xGZdyAzb+Ol4IM3xbseOi3zlOxZejRby9UmCBkuLdjXlNaAfZH/13k/Ut+vGwVzx+SqPTEDsLpg7grqZ+pTcjlBPDf4Xgs47/n/YJmU2Q+Cqq5hkAbCcOWPfAWCUVfZYYK+wz8T2jRmsKTgvO9G9Q5c8ts/jLjawrYPRgN3kMZjlhyBuKOtSRqISZBXplAYVt7l0POojyDofTIJsbSCIIt7THtv3ytOoEarJD3iqY7fQYCIZoEcLRjXPISl88a4nJ6l+4izhZNV4x+evkTLaUTMjlYLXtmpvjHsdpjqI1aEbnL9lRgA/7hwidCFvzH0ji8k7wnQAFpOJRiwSTqxYoPjPT03eQzuCMTEeFTgN98rTXz/z6/sudwKBLieLcgaEkGw9t9zfRGVnRYMgmWeQgyaQ8vUhRAf1QyOHW/8CwSMj9d3
+X-Microsoft-Antispam-Message-Info: HEUgHib0W8IIYDTEAmxgwY1ko4TkYjbKMyUy3vgu95TEdttDKI7dUk/PZ4Fm8ONhj4UCzd2CTwiPGZLzK2oLTb6/1TUKs1Ef3OHSx4AajVVKYUa3QSYpSRnIlrm9YQ0wa84wbeuY76Kimxxa/IJ9aq126kb3fnhlAW0sBXSy/2b9WhQr5cboJAk7w4PEB3NqXcbhaLKNz+dUwEoEAquHv31azY1flUQTQuH2G9dHVZ/haQTIhkgPisTvEuyZ1p3lGIWu/8OjXQwtZR4jE0slZyxpHfer3uGkOYNNGO/ULjg3/Sh6coLEIy4OH5kG1b65HH2tcEJ343ph96NP2r5LPUkhk4aekF/Bcq0LFIQufpuuGB0QJ04fePRvhYnKfcaGS0BqL72yh8YXdlt7z4Rh7RUEaGnDNi4f05P2f/YsP4Em531JPYwiQ7H7g3kzuNhn+TyVKHdJ+SOd4WdXwkrGMU0bpj2Qa6kGqfPIWJRsc7Ow4a5Xhx8V6AGLSbD20/xCAo5tm55Mmpa5nV/XSeFY95HsiVfRd2nRf43q6WUSjQ3doWPB0g4iU4M+W0lK4isUUMWCCiYTdkMKSQgP8yfsydh+a4j2yXG16RRPAZeqxiz50qV++ig1oLTjmi1cgMDxOb6cAIb4gikfLFIZT5y+8xEoMRn4k3wZZ06WRFUOBu7XHfzllRYdVVzqDnz20/bwrmwSzdnZdR1QS2T9IKFKlyx5loeyIxscLWFnhuMcyjc=
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:SLXP216MB0077.KORP216.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
- SFS:(13230022)(366004)(39840400004)(396003)(376002)(136003)(346002)(451199015)(8936002)(2906002)(5660300002)(44832011)(8676002)(41300700001)(4326008)(6916009)(66476007)(66946007)(52116002)(66556008)(316002)(6486002)(478600001)(83380400001)(26005)(186003)(6512007)(107886003)(6666004)(6506007)(2616005)(38350700002)(1076003)(38100700002)(86362001)(36756003);
+ SFS:(13230022)(366004)(39840400004)(396003)(376002)(136003)(346002)(451199015)(8936002)(2906002)(5660300002)(44832011)(8676002)(41300700001)(4326008)(6916009)(66476007)(66946007)(52116002)(966005)(66556008)(316002)(6486002)(478600001)(26005)(186003)(6512007)(107886003)(6666004)(6506007)(2616005)(38350700002)(1076003)(38100700002)(86362001)(36756003);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aiYbnOKx3NF1P1hmu1WjMlFwsABp0tEXAorfaU11wkXE4o+8gWlFzqJn/XtY?=
- =?us-ascii?Q?AnIBg4MezhxKcdpwuru0fcs88I+ajbGW6zI0RmDUwegI2cNvb6+ox6N+YXZc?=
- =?us-ascii?Q?4mGOCR+hv92lCyjJLPOj7bVHiwqzPq4GEO5F2gBOLG+Vbe8WT7MJFvmvD8E1?=
- =?us-ascii?Q?Lx+XGH/CNVLQX/5Ub9VySntb4cTdwQUx7V20E33hywc1NYBXp7ccR7KrrmKu?=
- =?us-ascii?Q?70t22Y15MKz1iDm1Bea5X7MioCJxAP8jUPuUB1Ij8gO6qj2I/2UuKsCXVMiC?=
- =?us-ascii?Q?Hq0TeyTxHLGfj2a5x1jKA56/+St6+1GZtoxXeReHtKe3bObLz4YhmIpsYEwd?=
- =?us-ascii?Q?OR324g6xp+2Z9ejsHvs5nOGz5E33noBBPWvwMqnpFxnSyst0EYERdHcQedW+?=
- =?us-ascii?Q?z9mOwXfB1lTc3U9hqHABaYKtSV0XdD5Rvv8Fh3XulB+/5zEquupMgip+vvTd?=
- =?us-ascii?Q?5i8AMx8qyo1gYWkNvtHx0WF0HxdFbklRecJpXvl67URKlzOtOlrTDAgr0hnv?=
- =?us-ascii?Q?6ZOarCj5ngRTTabJnQLI2x6trKP2G6IJ5DxtPp+hhBUdnrvAwE8tQxB+fk34?=
- =?us-ascii?Q?ilGKv68fOqozSzO7jTZ9rGV3H19QS7RJnKxGl1LklRJ5L1MPItYGCyuFHR/c?=
- =?us-ascii?Q?S9vSJ8Oyw0EQA5UTJ34a7LTwhzRPp1mLgNVp6pGcUub+gAJCeYe52E4bIie/?=
- =?us-ascii?Q?6gZ6iubYfSJD09yUVNbxsC5lzp0MI2v2mhV25mmhWmPOYjlH6hDTs4hyFOWX?=
- =?us-ascii?Q?fX2vqjC2mP+csXheBsPsAthqKnj6zUBMBXLgHnPnmqYb+kJIpQJzF0CITdiI?=
- =?us-ascii?Q?j9lQ6qBuZ6D+iOKQSczDaeBVb6hoE2oopThOY+OHOil3iWg3xXr2aHhjcNIN?=
- =?us-ascii?Q?fze2jpLTrhg8xUsbLSCrKiNtx7wZfu7fH1+0Cyww+kTnn/pm/pNqYE1PuyK/?=
- =?us-ascii?Q?1H/EJvPmcdCVATr0Tp062DUjby6yWbm9s0/BmxUgNXiFmzmmYGeL9x/ub6Cs?=
- =?us-ascii?Q?XqSE+Ic1xddnvJbn87Rg6ap0nXTa7r8ZPwiSTn5KMptJtMPB5zNx7D7BA9Y+?=
- =?us-ascii?Q?MbIguiSl1gnHGpiUoyt/X9+AVjZF9Fgs1kGLGpI9OcxHSHH1ZRZU1iLVnvt7?=
- =?us-ascii?Q?zA2JV32kBB8bqKY+XIMdEbwMkPPYAf3UeRfdfPeblRhVF2XwOs+T2pYbaiEW?=
- =?us-ascii?Q?4KYFxl2c1yaLLtPfOec2/4ajsOunPsWDSuwqGoakQgjggXpgIXh3sIuEW4K8?=
- =?us-ascii?Q?YAioPLIlCP7PutU5mGoyx3pNOJeV28N+4fe6afV0hGfOHqgfzUUIDnB8QYkB?=
- =?us-ascii?Q?BZ6rNsgOPsBvV4HFWPEMZtjbYWGnukk02EaFztrN4ukyugySJ2kY9lhwNYCu?=
- =?us-ascii?Q?rMwZrq2QhZ2+GMDf2lhmCIfR1UXXnFxGza360QiFGufGQCwuR9rPYJn3eeiR?=
- =?us-ascii?Q?6fsZ6vQPrJNXQf+F9y7nrZqZNupZ4ao4q9dfn8djvIUU/i0jQlCpqrIyBWrj?=
- =?us-ascii?Q?vtjqb1Kl3kIhTtuzBzipXs8pWY0SvAHahWe/iikgTVlX0AQWUVJsOvZLOE0N?=
- =?us-ascii?Q?wdB7R6YAsnQEb20B8R5Gl3HYcMJZrez2i71VvcRj?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UXIDmOHbYGVsLNLut4Gtce6wujdPBVhMUjX0KGpFBeRjgrcgeqOC/PJJaNMD?=
+ =?us-ascii?Q?J2YDMmY5sqee6YIrTCE2yb+6mSHcAMSYCF6yTR6pw2kgV5+nX/IBs+xK+TOJ?=
+ =?us-ascii?Q?aw3PnHIIT7RfF3Drvhjdf+i1h3UN+8o2tCtRMll2+Xn3KbI1u+k3wAjoswm+?=
+ =?us-ascii?Q?/TvPXs93+eRGEgC71F7e0rv3c6uPO8uwzMQyhHpKZrRI/wZEKKwxTtxc2cuX?=
+ =?us-ascii?Q?9LTgWu904YnHp/cXo8E5R58/GLVpDZxLb7ZsNTd3KAlt3HYC6YcyYw7iEhho?=
+ =?us-ascii?Q?WxZRmnSxgdnz4PSe05WoFcneydcqNjmkf9nVUmDxlkUvtGGHU0EXTQ32NX4X?=
+ =?us-ascii?Q?8wdxBrfbpTU9R+tWzmijL5EXFo2kdfoB4+KRkHP7bvZHv/0I1iPGTE3wxxEf?=
+ =?us-ascii?Q?xo5/i8l9Q/q1BPDuGIB/UM6Ou8dAXHr8f8DueT3ppLohXLQTklRnrlpBjK/j?=
+ =?us-ascii?Q?P3iMdikzsi71r/o+S524F9c15+gUTqIc9wdh4EuyfOjidlaA4nx1CsT/UlPc?=
+ =?us-ascii?Q?kSvS2YtwS6ZRF9QrmG9yeQi1lIAxohWT6I6Z26/RHDlJppE3O8vWBxGT04cF?=
+ =?us-ascii?Q?95MK9DpSnskij2vaFzRQVcLvi8NmzZutqm9kXRaMi7UqPoaSs4GF7BSWcnN7?=
+ =?us-ascii?Q?jXw/EJYAi7W5i8aBC+vpUWmjgVwDEHXrAEtyX5m5SZKzaRv+oUc3bxuNGuOk?=
+ =?us-ascii?Q?H95TOiX/36LmWVCczQBQhOvpaMp5ZeuZ9QtvF08sueMNwbBtPAitYblIOjfz?=
+ =?us-ascii?Q?gzeR2s3gr9u2qPSKrfWkJ2aCAl57h83q0CcNCo4Jwv8H5q6WkTEvcQtSnWZh?=
+ =?us-ascii?Q?cwt5Z5jrKlYQ0wj8vrKMF3j7XGgIHMB0ye4XG0uBzzFIer9rm2fvRHxqtPIt?=
+ =?us-ascii?Q?OMte3xSRSSIgox1z+pcLUs0UYHaJ7yZji10iv/bz04+tTbZGYoDDKYs10siH?=
+ =?us-ascii?Q?KNkdbIKJVmdp7meq/ndSly25X8JlF6ho69YUcRq60DJVQnVETZ1QjK5PEnK3?=
+ =?us-ascii?Q?7QwMYnI0wNvjpfHxhrF7FjOx46w7ukqBEHMlXw1Is+rZzst1ydhvNaq/I7wr?=
+ =?us-ascii?Q?Sy7rZPr3SkzJiAtustzdpezP8r08fuQB8BlSKzsrhoku6EKsy0sRdAA67uzv?=
+ =?us-ascii?Q?TdaB0A9IFuNwywniVl/R6N7yps+oXSg0sxCxtEulzO21fF0Nd4re5vyUgYQT?=
+ =?us-ascii?Q?wUUfl1nOqkR0ArPtX8EvQF+ndMKXjwzfawAA7vixY83CvWoiYAYQ9u20Ch7h?=
+ =?us-ascii?Q?27QOmI86g8BoPaM+ns3j8cBIdNVw2z73EJBplmI5AZyA5dOGsNQuYB38lEZD?=
+ =?us-ascii?Q?OkIKNlHU58VKWmNP8ykTvLQL5yulNl/+OW0F/yWE3E75l6IOU422fq3MJKqX?=
+ =?us-ascii?Q?DJ6kyw/3a6HBOcQOWzj5JXrdtNKg9MWX1QpfnnYxXxgxsu+v8sHiZY7ONow0?=
+ =?us-ascii?Q?lu3xIdFHN550ITGyjq4T+WT7nV18os7K63uSeIC7h0FwdDRG0rAotdIfX5vu?=
+ =?us-ascii?Q?WAeb6wtA4L1RdW7ndO43ME4zENZOeY+fetjQy5kjV7fXwLR0/HrSupDGB8t+?=
+ =?us-ascii?Q?zwRSv4z+hQ6EwvqUXA6Y10lDFJflIE1s5GFq74yH?=
 X-OriginatorOrg: irondevice.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4276e91-9c9f-451d-cdd5-08daefc69e66
+X-MS-Exchange-CrossTenant-Network-Message-Id: adb73e3a-773e-4bca-4c80-08daefc69de1
 X-MS-Exchange-CrossTenant-AuthSource: SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2023 09:15:56.9728 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2023 09:15:55.9885 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: b4849faa-3337-494e-a76a-cb25a3b3d7d1
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WtU67FK9xMOtgUW3XfQ9ChdALygNgwFLqwucIadEecEIztRA6p2uRwAwtti4OCexpFh4BgsXrOQ6D7QyshCpi3naahoLfrnPZaWtMMSwuVY=
+X-MS-Exchange-CrossTenant-UserPrincipalName: UyHvKKNnBrBNrzSaz4Dex5Dr3tjubO10eMmss0a3NMb/kZCkqYT9nppiaNeUZ2FwFJ8MlKO/O3PD1Yq4dmbWgzxiICxLFSB8wsWnZK9tnZ0=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PS2P216MB1300
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -135,155 +134,80 @@ Cc: alsa-devel@alsa-project.org, application@irondevice.com,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Signed-off-by: Kiseok Jo <kiseok.jo@irondevice.com>
-Reported-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/sma1303.c | 79 ++++----------------------------------
- 1 file changed, 8 insertions(+), 71 deletions(-)
+Modified the schema binding and added the vendor prefixes.
 
-diff --git a/sound/soc/codecs/sma1303.c b/sound/soc/codecs/sma1303.c
-index 8bd59a481f2d..f78cd2daad61 100644
---- a/sound/soc/codecs/sma1303.c
-+++ b/sound/soc/codecs/sma1303.c
-@@ -69,7 +69,6 @@ struct sma1303_priv {
- 	struct mutex lock;
- 	struct delayed_work check_fault_work;
- 	bool amp_power_status;
--	bool usage_status;
- 	int num_of_pll_matches;
- 	int retry_cnt;
- 	unsigned int sys_clk_id;
-@@ -375,66 +374,6 @@ static int bytes_ext_put(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
--static int amp_usage_status_get(struct snd_kcontrol *kcontrol,
--		struct snd_ctl_elem_value *ucontrol)
--{
--	struct snd_soc_component *component =
--		snd_soc_kcontrol_component(kcontrol);
--	struct sma1303_priv *sma1303 = snd_soc_component_get_drvdata(component);
--	int ret = -1;
--
--	if (component == NULL) {
--		pr_err("%s:component is NULL\n", __func__);
--		return ret;
--	}
--	if (sma1303 == NULL) {
--		pr_err("%s:sma1303 is NULL\n", __func__);
--		return ret;
--	}
--	ucontrol->value.integer.value[0] = sma1303->usage_status;
--
--	if (sma1303->usage_status)
--		dev_info(component->dev, "Amplifier Power Control Enabled\n");
--	else
--		dev_info(component->dev, "Amplifier Power Control Disabled\n");
--
--	return 0;
--}
--
--static int amp_usage_status_put(struct snd_kcontrol *kcontrol,
--		struct snd_ctl_elem_value *ucontrol)
--{
--	struct snd_soc_component *component =
--		snd_soc_kcontrol_component(kcontrol);
--	struct sma1303_priv *sma1303 = snd_soc_component_get_drvdata(component);
--	int ret = -1;
--
--	if (component == NULL) {
--		pr_err("%s:component is NULL\n", __func__);
--		return ret;
--	}
--	if (sma1303 == NULL) {
--		pr_err("%s:sma1303 is NULL\n", __func__);
--		return ret;
--	}
--
--	if ((sma1303->usage_status
--			!= ucontrol->value.integer.value[0])
--			&& (!ucontrol->value.integer.value[0])) {
--		dev_info(component->dev, "%s\n", "Force AMP Power Down");
--		ret = sma1303_shutdown(component);
--		if (ret < 0) {
--			ucontrol->value.integer.value[0]
--			       = sma1303->usage_status;
--			return ret;
--		}
--
--	}
--	sma1303->usage_status = ucontrol->value.integer.value[0];
--
--	return 0;
--}
--
- static const char * const sma1303_amp_mode_text[] = {
- 	"1 Chip", "Mono on 2 chips", "Left in 2 chips", "Right in 2chips"};
- 
-@@ -928,10 +867,10 @@ static SOC_VALUE_ENUM_SINGLE_DECL(sma1303_sdo_source_enum,
- 		sma1303_sdo_source_values);
- static const struct snd_kcontrol_new sma1303_sdo_source_mux =
- 	SOC_DAPM_ENUM("SDO Source", sma1303_sdo_source_enum);
-+static const struct snd_kcontrol_new sma1303_enable_control =
-+	SOC_DAPM_SINGLE_VIRT("Switch", 1);
- 
- static const struct snd_kcontrol_new sma1303_snd_controls[] = {
--SOC_SINGLE_EXT("Amplifier Usage", SND_SOC_NOPM, 0, 1, 0,
--	amp_usage_status_get, amp_usage_status_put),
- SOC_ENUM_EXT("Amplifier Mode", sma1303_amp_mode_enum,
- 	sma1303_amp_mode_get, sma1303_amp_mode_put),
- SOC_ENUM_EXT("Outport config", sma1303_outport_config_enum,
-@@ -1048,14 +987,12 @@ static int sma1303_dac_event(struct snd_soc_dapm_widget *w,
- {
- 	struct snd_soc_component *component =
- 		snd_soc_dapm_to_component(w->dapm);
--	struct sma1303_priv *sma1303 = snd_soc_component_get_drvdata(component);
- 
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
- 		dev_info(component->dev, "%s : PRE_PMU\n", __func__);
- 
--		if (sma1303->usage_status)
--			sma1303_startup(component);
-+		sma1303_startup(component);
- 
- 		break;
- 
-@@ -1130,11 +1067,13 @@ SND_SOC_DAPM_ADC_E("DAC_FEEDBACK", "Capture", SND_SOC_NOPM, 0, 0,
- SND_SOC_DAPM_OUTPUT("SPK"),
- SND_SOC_DAPM_INPUT("SDO"),
- SND_SOC_DAPM_MUX("SDO Source", SND_SOC_NOPM, 0, 0, &sma1303_sdo_source_mux),
-+SND_SOC_DAPM_SWITCH("AMP Enable", SND_SOC_NOPM, 0, 1, &sma1303_enable_control),
- };
- 
- static const struct snd_soc_dapm_route sma1303_audio_map[] = {
- {"DAC", NULL, "CLK_SUPPLY"},
--{"SPK", NULL, "DAC"},
-+{"AMP Enable", "Switch", "DAC"},
-+{"SPK", NULL, "AMP Enable"},
- {"SDO Source", "Disable", "SDO"},
- {"SDO Source", "Format_C", "SDO"},
- {"SDO Source", "Mixer_Out", "SDO"},
-@@ -1214,9 +1153,8 @@ static int sma1303_dai_hw_params_amp(struct snd_pcm_substream *substream,
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 
--		if (sma1303->usage_status &&
--			(sma1303->sys_clk_id == SMA1303_PLL_CLKIN_MCLK
--			|| sma1303->sys_clk_id == SMA1303_PLL_CLKIN_BCLK)) {
-+		if (sma1303->sys_clk_id == SMA1303_PLL_CLKIN_MCLK
-+			|| sma1303->sys_clk_id == SMA1303_PLL_CLKIN_BCLK) {
- 
- 			if (sma1303->last_bclk != bclk) {
- 				if (sma1303->amp_power_status) {
-@@ -2039,7 +1977,6 @@ static int sma1303_i2c_probe(struct i2c_client *client,
- 	i2c_set_clientdata(client, sma1303);
- 
- 	sma1303->amp_mode = ONE_CHIP_SOLUTION;
--	sma1303->usage_status = true;
- 	sma1303->amp_power_status = false;
- 	sma1303->check_fault_status = true;
- 	sma1303->pll_matches = sma1303_pll_matches;
--- 
+Signed-off-by: Kiseok Jo <kiseok.jo@irondevice.com>
+---
+ .../bindings/sound/irondevice,sma1303.yaml    | 40 +++++++++++++++++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+ 2 files changed, 42 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/irondevice,sma1=
+303.yaml
+
+diff --git a/Documentation/devicetree/bindings/sound/irondevice,sma1303.yam=
+l b/Documentation/devicetree/bindings/sound/irondevice,sma1303.yaml
+new file mode 100644
+index 000000000000..8c3b85f962ff
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/irondevice,sma1303.yaml
+@@ -0,0 +1,40 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)=0D
++%YAML 1.2=0D
++---=0D
++$id: http://devicetree.org/schemas/sound/irondevice,sma1303.yaml#=0D
++$schema: http://devicetree.org/meta-schemas/core.yaml#=0D
++=0D
++title: Iron Device SMA1303 Audio Amplifier=0D
++=0D
++maintainers:=0D
++  - Kiseok Jo <kiseok.jo@irondevice.com>=0D
++=0D
++description:=0D
++  SMA1303 digital class-D audio amplifier with an integrated boost convert=
+er.=0D
++=0D
++allOf:=0D
++  - $ref: name-prefix.yaml#=0D
++=0D
++properties:=0D
++  compatible:=0D
++    const: irondevice,sma1303=0D
++=0D
++  reg:=0D
++    description:=0D
++      I2C address of the amplifier. See the datasheet for possible values.=
+=0D
++=0D
++required:=0D
++  - compatible=0D
++  - reg=0D
++=0D
++additionalProperties: true=0D
++=0D
++examples:=0D
++  - |=0D
++    #include <dt-bindings/gpio/gpio.h>=0D
++    i2c_bus {=0D
++		sma1303_amp: sma1303@1e {=0D
++			compatible =3D "irondevice,sma1303";=0D
++			reg =3D <0x1e>;=0D
++		};=0D
++	};
+\ No newline at end of file
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Docum=
+entation/devicetree/bindings/vendor-prefixes.yaml
+index 70ffb3780621..271ff119764a 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -635,6 +635,8 @@ patternProperties:
+     description: Inverse Path
+   "^iom,.*":
+     description: Iomega Corporation
++  "^irondevice,.*":
++    description: Iron Device Corporation
+   "^isee,.*":
+     description: ISEE 2007 S.L.
+   "^isil,.*":
+--=20
 2.30.2
 
