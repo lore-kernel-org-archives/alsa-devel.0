@@ -4,51 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4AC9C54EBE
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Jan 2023 08:33:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6152FC54EBE
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Jan 2023 08:34:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C40058FE0;
-	Tue, 10 Jan 2023 09:33:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C40058FE0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19D5D8FF3;
+	Tue, 10 Jan 2023 09:33:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19D5D8FF3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673339635;
-	bh=uQdQ1DLhqNKChfVz2ptGvnWI8R5V2duUUCB2xxQI6FA=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=S95AonwnKaeOSBwolv0LtdiwZUj0BWigCiC82EHBrMEDSck3zvEIhyLX8TRruVcCH
-	 h4sfMIgi54ioDZJ+vGMzJ6jx/6QONTSHo0pX8JarSxJfDqo1ZbmfB1RnNoUEu8KJhJ
-	 BlX/Sjq5SwWyoa1ynNL11oM2GYJhLZwSJy4yh6ZQ=
+	s=default; t=1673339660;
+	bh=lls84LM371cdh4FygjaCFDa2m9y3IXSEiWXwDtlbpXo=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=DK+EwzfYjC62lw7IM5EDbZDYQ+oY7PQmAhdghpBRKBU7ij1P3a4oIcinp16DeYg/O
+	 MO1MEWNlCCXP6DoIpcm3mSjvTV19z/SBsJuBmGIjnzVEVNuP58ADA877dbHd7uFgEI
+	 KoNkNfedbzftruQ/Hm2usJ+NVWtytrQq+o3AJ4LA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB6C0F804DD;
-	Tue, 10 Jan 2023 09:32:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8885FF80539;
+	Tue, 10 Jan 2023 09:32:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECC80F8032D; Fri,  6 Jan 2023 14:30:18 +0100 (CET)
+ id 3562DF803DC; Fri,  6 Jan 2023 14:30:21 +0100 (CET)
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::222])
+ [217.70.183.194])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4AF2CF80217
- for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2023 14:30:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AF2CF80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id C6ED5F8024E
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2023 14:30:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6ED5F8024E
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=hUoSVjYU
+ header.s=gm1 header.b=i0z6ch2Y
 Received: (Authenticated sender: herve.codina@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPA id A86484000B;
- Fri,  6 Jan 2023 13:30:04 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPA id 0F9E840011;
+ Fri,  6 Jan 2023 13:30:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1673011808;
+ t=1673011814;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=do8D1ieZ8Ex+QzAnOj/wZJAzfbzECTa0eMXQ+8CsY4I=;
- b=hUoSVjYUOiV747REn8chyMICtoSn6TltjXrXaz0OpgkDKAol2Eehwpxmnf6ijlo/J5FL1h
- vaNS706fVF8fuyBGnIDoy4YCePuZbYx3EDj4iDQOxzcumHyW0Y95Yj0v162GxsEsY24wNg
- JO9a6lfzkPc5GqQTfpnRlm1cmAUg4BRdkiafP+KhmEI4+zJRKadzwPpF1AS2EwyLZcjP1k
- JeFWL4JK0qGXH8RPJznej+jr9PItBgWTZoFT7lKuIALbT0idtaJlm2hLi4B/4gySa2NpN/
- AkAWH1RLNXQEdoapftYdU6rl2PsOjVI6Xgd407XBVnlj2irSRcsx1xoGOVZzHA==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=nc6bvDcTrl1Ymn4a/GwwKE3r38ifE4VzNy4POuRlNdA=;
+ b=i0z6ch2YRTEow4Nh52qlH9tsP3VNdYmwUzkKmGYDOynJRz2A2oAHCtG2oMiihHHpJGN6u6
+ zbxqRSLAFFcDWMTe3BoLasDwsEtQ9R/eZz2xw7oPxAyc1GRjfErbmJPp8IiUTMPuqWtPEl
+ n8PYrNRKGfH8qVyb+r2imJhYaSM7vfoOitrPVZWSRjCAq97JEYhvJhL0AGYRUbgTO3fmvJ
+ uIWeP3ozA3HbPNCxiDe9JoQCJ0pVA96pF77MQiX+kWbn13CGuLHPa/DqFfSt4fVpdi10Yt
+ C96Gp1KXVZC5Oh7Muiw/z+xmnJbsayAL5YCgvjHCE0Z/JixuVEfCiYGiGxb+LQ==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>, Li Yang <leoyang.li@nxp.com>,
  Rob Herring <robh+dt@kernel.org>,
@@ -60,10 +62,12 @@ To: Herve Codina <herve.codina@bootlin.com>, Li Yang <leoyang.li@nxp.com>,
  Takashi Iwai <tiwai@suse.com>, Shengjiu Wang <shengjiu.wang@gmail.com>,
  Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
  Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH 00/10] Add the PowerQUICC audio support using the QMC
-Date: Fri,  6 Jan 2023 14:29:41 +0100
-Message-Id: <20230106132951.392271-1-herve.codina@bootlin.com>
+Subject: [PATCH 03/10] MAINTAINERS: add the Freescale TSA controller entry
+Date: Fri,  6 Jan 2023 14:29:44 +0100
+Message-Id: <20230106132951.392271-4-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.38.1
+In-Reply-To: <20230106132951.392271-1-herve.codina@bootlin.com>
+References: <20230106132951.392271-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Tue, 10 Jan 2023 09:32:35 +0100
@@ -85,69 +89,34 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+After contributing the driver, add myself as the maintainer
+for the Freescale TSA controller.
 
-This series adds support for audio using the QMC controller
-available in some Freescale PowerQUICC SoCs.
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+---
+ MAINTAINERS | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-This series contains three parts in order to show the different
-blocks hierarchy and their usage in this support.
-
-The first one is related to TSA (Time Slot Assigner).
-The TSA handles the data present at the pin level (TDM with up
-to 64 time slots) and dispatchs them to one or more serial
-controller (SCC).
-
-The second is related to QMC (QUICC Multichannel Controller).
-The QMC handles the data at the serial controller (SCC) level
-and splits again the data to creates some virtual channels.
-
-The last one is related to the audio component (QMC audio).
-It is the glue between the QMC controller and the ASoC
-component. It handles one or more QMC virtual channels and
-creates one DAI per QMC virtual channels handled.
-
-Best regards,
-Herve Codina
-
-Herve Codina (10):
-  dt-bindings: soc: fsl: cpm_qe: Add TSA controller
-  soc: fsl: qe: Add support for TSA
-  MAINTAINERS: add the Freescale TSA controller entry
-  powerpc/8xx: Use a larger CPM1 command check mask
-  dt-bindings: soc: fsl: cpm_qe: Add QMC controller
-  soc: fsl: qe: Add support for QMC
-  MAINTAINERS: add the Freescale QMC controller entry
-  dt-bindings: sound: Add support for QMC audio
-  ASoC: fsl: Add support for QMC audio
-  MAINTAINERS: add the Freescale QMC audio entry
-
- .../bindings/soc/fsl/cpm_qe/fsl,qmc.yaml      |  167 ++
- .../bindings/soc/fsl/cpm_qe/fsl,tsa.yaml      |  262 +++
- .../bindings/sound/fsl,qmc-audio.yaml         |  110 ++
- MAINTAINERS                                   |   25 +
- arch/powerpc/platforms/8xx/cpm1.c             |    2 +-
- drivers/soc/fsl/qe/Kconfig                    |   23 +
- drivers/soc/fsl/qe/Makefile                   |    2 +
- drivers/soc/fsl/qe/qmc.c                      | 1493 +++++++++++++++++
- drivers/soc/fsl/qe/tsa.c                      |  783 +++++++++
- drivers/soc/fsl/qe/tsa.h                      |   43 +
- include/dt-bindings/soc/fsl-tsa.h             |   15 +
- include/soc/fsl/qe/qmc.h                      |   71 +
- sound/soc/fsl/Kconfig                         |    9 +
- sound/soc/fsl/Makefile                        |    2 +
- sound/soc/fsl/fsl_qmc_audio.c                 |  731 ++++++++
- 15 files changed, 3737 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,qmc.yaml
- create mode 100644 Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,tsa.yaml
- create mode 100644 Documentation/devicetree/bindings/sound/fsl,qmc-audio.yaml
- create mode 100644 drivers/soc/fsl/qe/qmc.c
- create mode 100644 drivers/soc/fsl/qe/tsa.c
- create mode 100644 drivers/soc/fsl/qe/tsa.h
- create mode 100644 include/dt-bindings/soc/fsl-tsa.h
- create mode 100644 include/soc/fsl/qe/qmc.h
- create mode 100644 sound/soc/fsl/fsl_qmc_audio.c
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7f86d02cb427..2b4f5fe7ebad 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8372,6 +8372,15 @@ S:	Maintained
+ F:	drivers/soc/fsl/qe/
+ F:	include/soc/fsl/qe/
+ 
++FREESCALE QUICC ENGINE TSA DRIVER
++M:	Herve Codina <herve.codina@bootlin.com>
++L:	linuxppc-dev@lists.ozlabs.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,tsa.yaml
++F:	drivers/soc/fsl/qe/tsa.c
++F:	drivers/soc/fsl/qe/tsa.h
++F:	include/dt-bindings/soc/fsl-tsa.h
++
+ FREESCALE QUICC ENGINE UCC ETHERNET DRIVER
+ M:	Li Yang <leoyang.li@nxp.com>
+ L:	netdev@vger.kernel.org
 -- 
 2.38.1
 
