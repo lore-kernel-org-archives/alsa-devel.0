@@ -4,76 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A184C5479D
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Jan 2023 23:17:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EF3EC5479D
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Jan 2023 23:17:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD74211FAB;
-	Sat,  7 Jan 2023 00:16:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD74211FAB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 15E2279BD;
+	Sat,  7 Jan 2023 00:17:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15E2279BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673047052;
-	bh=rD3rMpRr6Vwh5MAIJxJWqDE46f7CDiE9s2HcbItURUo=;
+	s=default; t=1673047075;
+	bh=JgASkVc5I3/yBQcN0l7OgrF+H1szN210UEEK8rEOvQ4=;
 	h=From:Date:Subject:References:In-Reply-To:To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=e51HMWgJve3bgGe3EuZoqHIWCFWCLT/mKUePrXskbIU66ZSIbP+qLE6lN08iN6u3C
-	 DVLi5ae1KULHKfDIir4H8lXEnYGpeiQ5Rm0T3YhamIaUgVVqV1fCl3OJuU7mRCf7Vl
-	 LXX8k8i2kQd+OdVEddQjGhEje9QwylCwgPI+kqH8=
+	b=Jp3NJ27aR8XcymY80r7PtQmFGnEyz1BrXbiYNmkcqwITi/B1XLoX8fiI2Wl5DLrri
+	 ZFm37978q290PYtjJBOZHkhpibPoExW9OYCyd7098+ppKO2o792XowUay/1WCaImkd
+	 o2bupPjB8zd0LlNmFbHXCB7IxdaMvzZLFSbOsQu4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AE48F802DB;
-	Sat,  7 Jan 2023 00:16:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14ED1F804AA;
+	Sat,  7 Jan 2023 00:16:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2F62F8024E; Sat,  7 Jan 2023 00:16:15 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 2D30FF804AD; Sat,  7 Jan 2023 00:16:18 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5A347F8024E
- for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2023 00:16:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A347F8024E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57646F803DC
+ for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2023 00:16:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57646F803DC
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Xg9JTNiT
+ header.s=k20201202 header.b=b3xVfxnD
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 4C35FB81EFE;
- Fri,  6 Jan 2023 23:16:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58A24C433D2;
- Fri,  6 Jan 2023 23:16:10 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id A354CCE1E89;
+ Fri,  6 Jan 2023 23:16:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F43EC433F0;
+ Fri,  6 Jan 2023 23:16:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1673046972;
- bh=rD3rMpRr6Vwh5MAIJxJWqDE46f7CDiE9s2HcbItURUo=;
+ s=k20201202; t=1673046969;
+ bh=JgASkVc5I3/yBQcN0l7OgrF+H1szN210UEEK8rEOvQ4=;
  h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
- b=Xg9JTNiTsjyqPtnFIRPa46TnyjsEQc3iLVkKXz959LHbRRGZ9iUCfsAWO9CZIch7R
- A+yY4UqcC5DZkYASwdhZB9U3vwBtOYBZCOYEvz/hjK9L7SlZElAUHM/mpWRivHEKH5
- dnYbdqmL23sUbl2kfVp+ITzk9DiEyAeGN8363wz+xWbaRjdtQzA1N4q71sFdlDA2v6
- gQlqaL5zsd0mFwNOELMN2IsUbHcYGvrqk4eiL8vVyGsYfW+LYtmu3fyO9pWiGlkvHK
- XW0jbXE2qOvB8aO90qOA4FiUcMgTSJRcBOEQ6RzrFHlP0SFkREw5jxqxKOYwWjPYJh
- W45o4mieEgFtA==
+ b=b3xVfxnDWkTlRtsHY1A99l4mmA/t2WC5mLsi2482SyJ6WIdJkoGvLY0+umrYo0e+7
+ fJ9BXwxDzyCc624RrjZh/6EqJWj+t2057+3eZs3oSQvfLke515lb8usSwpnD8hpVor
+ 9A4wTmxkmjI+2kQO+w8TftuO1fFfT6C4p3mf1JQkBS/hwMKl1y+SOMYfHRQ1whJ/Wr
+ DyMG6v2YW5wkyoZikRI7pCBqtD5bl9Xmvzcy3l3zhsc4GirAiXYU1es69PuK0539T1
+ d3x0+QvqB7LV/CylmyGb0em3FwqpKyisw+1WRCl2iwVyvWxPWKC9UWEkD0bd5217FY
+ TkOxOIvF/Y8rg==
 From: Mark Brown <broonie@kernel.org>
-Date: Fri, 06 Jan 2023 23:15:07 +0000
-Subject: [PATCH 2/2] ASoC: fsl-asoc-card: Fix naming of AC'97 CODEC widgets
+Date: Fri, 06 Jan 2023 23:15:06 +0000
+Subject: [PATCH 1/2] ASoC: fsl_ssi: Rename AC'97 streams to avoid collisions
+ with AC'97 CODEC
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230106-asoc-udoo-probe-v1-2-a5d7469d4f67@kernel.org>
+Message-Id: <20230106-asoc-udoo-probe-v1-1-a5d7469d4f67@kernel.org>
 References: <20230106-asoc-udoo-probe-v1-0-a5d7469d4f67@kernel.org>
 In-Reply-To: <20230106-asoc-udoo-probe-v1-0-a5d7469d4f67@kernel.org>
 To: Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
  Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
  Liam Girdwood <lgirdwood@gmail.com>
 X-Mailer: b4 0.12-dev-8b3d1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1181; i=broonie@kernel.org;
- h=from:subject:message-id; bh=rD3rMpRr6Vwh5MAIJxJWqDE46f7CDiE9s2HcbItURUo=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBjuKu11kzt+q4bWdfpGfR8Aa2GMJb+x8/lUeR4S08E
- X0QivNSJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCY7irtQAKCRAk1otyXVSH0HBOB/
- sFAPUtAfpFtfFKs4U8IpCJFN7JZELVyRQeX2Vlm18zFpPyOd67W6RRKgzKsJMzpxauk4Z77SE/udDR
- zGKSjPABh8/BEt4S1XO4u/wgw6YuncgxFDghSiu6MqQNaYq5h+AdHKxF0LTHL3rKULlEwDxtAb+xzT
- ssaPIXtRMcA2OkqvtOEw+KrwOY2qGEBhiac6lgY2Fgcn7quiQRKHj1Hw3WdeNt/lIbaw6DlHqJs6d4
- dA6q4i5iYfRhIb3NwKhCWMvzHIW1wZY8WChsf70hNmI9uV9ZqNKcNeGAV9xHfNZwgeovP6YdSN64AI
- mQh98LojP1yFAOvc2eV2ezdtFH1yVU
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2136; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=JgASkVc5I3/yBQcN0l7OgrF+H1szN210UEEK8rEOvQ4=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBjuKu0iBwz+1yeKm+mH85AdLfgQaLAEalxsxvX8I7W
+ 5UVhe7+JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCY7irtAAKCRAk1otyXVSH0H29B/
+ wIzLXOL3FvIr6Wb+Nazwj/H6jNKK/VYjcGX8KC1O74Xic+WLO/xobMGTRtcvfEEvx+IwcuC/w1OXWf
+ pFyCeB3wk4Nrkz+HrWikWIjpiyJskbfpki6Ff6/WK4j5tUmtjqXinn2Oq5yG70Tu+DwI96Lbn8DHgY
+ wADU4Sn0NG6t/UZQTAQsDhwOQGvquULM9hA/xyySajq0dWACWjLC2aIhYXU9jTU5R2158lvdqVQvWB
+ FYAc7xufjyJ6tyr9HhaPyiGh5AIGlX/2ixK/Ksuqch0bEAXot+QIpBIZuqkxR2QDYtHgrFjha25x93
+ vtA0QOxkB33Q4Ks2zjONfb00VQy+4P
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-BeenThere: alsa-devel@alsa-project.org
@@ -93,32 +94,59 @@ Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The fsl-asoc-card AC'97 support currently tries to route to Playback and
-Capture widgets provided by the AC'97 CODEC. This doesn't work since the
-generic AC'97 driver registers with an "AC97" at the front of the stream
-and hence widget names, update to reflect reality. It's not clear to me
-if or how this ever worked.
+The SSI driver calls the AC'97 playback and transmit streams "AC97 Playback"
+and "AC97 Capture" respectively. This is the same name used by the generic
+AC'97 CODEC driver in ASoC, creating confusion for the Freescale ASoC card
+when it attempts to use these widgets in routing. Add a "CPU" in the name
+like the regular DAIs registered by the driver to disambiguate.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl-asoc-card.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl-asoc-card.c | 8 ++++----
+ sound/soc/fsl/fsl_ssi.c       | 4 ++--
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 1dfd0341e487..8d14b5593658 100644
+index c836848ef0a6..1dfd0341e487 100644
 --- a/sound/soc/fsl/fsl-asoc-card.c
 +++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -121,8 +121,8 @@ static const struct snd_soc_dapm_route audio_map[] = {
+@@ -121,11 +121,11 @@ static const struct snd_soc_dapm_route audio_map[] = {
  
  static const struct snd_soc_dapm_route audio_map_ac97[] = {
  	/* 1st half -- Normal DAPM routes */
--	{"Playback",  NULL, "CPU AC97 Playback"},
--	{"CPU AC97 Capture",  NULL, "Capture"},
-+	{"AC97 Playback",  NULL, "CPU AC97 Playback"},
-+	{"CPU AC97 Capture",  NULL, "AC97 Capture"},
+-	{"Playback",  NULL, "AC97 Playback"},
+-	{"AC97 Capture",  NULL, "Capture"},
++	{"Playback",  NULL, "CPU AC97 Playback"},
++	{"CPU AC97 Capture",  NULL, "Capture"},
  	/* 2nd half -- ASRC DAPM routes */
- 	{"CPU AC97 Playback",  NULL, "ASRC-Playback"},
- 	{"ASRC-Capture",  NULL, "CPU AC97 Capture"},
+-	{"AC97 Playback",  NULL, "ASRC-Playback"},
+-	{"ASRC-Capture",  NULL, "AC97 Capture"},
++	{"CPU AC97 Playback",  NULL, "ASRC-Playback"},
++	{"ASRC-Capture",  NULL, "CPU AC97 Capture"},
+ };
+ 
+ static const struct snd_soc_dapm_route audio_map_tx[] = {
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index c9e0e31d5b34..46a53551b955 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1189,14 +1189,14 @@ static struct snd_soc_dai_driver fsl_ssi_ac97_dai = {
+ 	.symmetric_channels = 1,
+ 	.probe = fsl_ssi_dai_probe,
+ 	.playback = {
+-		.stream_name = "AC97 Playback",
++		.stream_name = "CPU AC97 Playback",
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+ 		.rates = SNDRV_PCM_RATE_8000_48000,
+ 		.formats = SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_S20,
+ 	},
+ 	.capture = {
+-		.stream_name = "AC97 Capture",
++		.stream_name = "CPU AC97 Capture",
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+ 		.rates = SNDRV_PCM_RATE_48000,
 
 -- 
 2.30.2
