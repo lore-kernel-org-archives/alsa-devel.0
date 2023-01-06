@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4167CC54EBE
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Jan 2023 08:35:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61FAAC54EBE
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Jan 2023 08:35:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 360269081;
-	Tue, 10 Jan 2023 09:34:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 360269081
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D37B90C4;
+	Tue, 10 Jan 2023 09:34:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D37B90C4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673339712;
-	bh=75GzOEXdywWbw2oQFlgVU5mj5gvCOvNMNl3YHrhu9dY=;
+	s=default; t=1673339729;
+	bh=tN/yAKroE2uyDeF5mO5xbR/w9PJBDhLaqNnTnYXbOxo=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=tl1dXFFo0KO8heTgzErXAuJHX6SFAOdNPtHvAQSGOMuyA2MLml80yfpqHCkWmm16f
-	 J6Lk4Xze3jmCN4RllpHMULSGb6KwNph8jQ8HH5R5NUB8oxy8N0OWlGY9oj65t7i/fB
-	 EFxK52g4KI6eDlyVG9KBDRTccgVLKtei3IoJAasI=
+	b=hD/ovMUFFpdEzLIzJkhzSEvcj10lKwgjyaA86H53rn3Sdu3BOxRHqXVGNO4KZULy0
+	 mZ2vaztV7AodON/H4DNT33oz+xyKlAl4nbNXjbUfAjoCH4d3dMczk4vLw1xdqZA+8M
+	 4Wa6Ierm7j3sGW/z1LrQFFamoFrDXg22frCr9ezc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1532F8055C;
-	Tue, 10 Jan 2023 09:32:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7EEB9F80564;
+	Tue, 10 Jan 2023 09:32:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 81AFDF803DC; Fri,  6 Jan 2023 14:30:31 +0100 (CET)
+ id 1192AF803DC; Fri,  6 Jan 2023 14:30:32 +0100 (CET)
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
  [IPv6:2001:4b98:dc4:8::222])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AD707F800C0
- for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2023 14:30:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD707F800C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC892F8024D
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2023 14:30:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC892F8024D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=NVxEGP4k
+ header.s=gm1 header.b=f69Iy+nt
 Received: (Authenticated sender: herve.codina@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPA id 579A74000E;
- Fri,  6 Jan 2023 13:30:18 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPA id C287740007;
+ Fri,  6 Jan 2023 13:30:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1673011819;
+ t=1673011812;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=TfPC05B6qkrlkRnno/Kc/2MoHz4OxI6Nap9na4QS90I=;
- b=NVxEGP4k8E9YvaXgKitU7LXQ76EGltqkJdpCsRtT6eE/nQTtOCkYgV2KNlrBMA77u9GGsv
- hPoY98HIZlmKF2/SAumT0NYEp2iPK/ORrTB/7KS2oipKV5h0qvP3EUL4dZYvVZ567Wxy1k
- hfd7tJQxx2V6ADbxrUuiGrJWOVLdCuvjIiRmjKHPLsY4xXI+vEvwqRnQhGOqn17L3pMxs6
- WUmoMer5TCKDTP0R1KbKx4bSkKkr0F+RVRSh1ZcmnYXjsLz16f+YL3/3YTbuPKSAdv3K1r
- 7JvdgvNBGKlgaEClrMnCXMOslmcpC9/WXjh8eTZWg3AWkf2lmN048nAJFlgS9g==
+ bh=IWRKMjRcfuFIUwl+NvWBk7sgj/7d4BVV3xEn/iKhZM8=;
+ b=f69Iy+ntOxEVlvHPAzXaZ0vEkckgrlgiu7oloxom8fYIw1RDuaPEtqvHjBOnb1aSk6ChtZ
+ X0IznhGy2CODAhRKfHT92ptEZOiEy7wcuk6pcH0YR6yzt17stZ5hD8SY+6PH7SjAHrTbRZ
+ JC+UCGNgRuBd/Y6yDVyX85Y+ItO3Pm7LfbEYKKyEQmnpYBtFIM+fdWaifZCgKw5nPjxvFt
+ FmP/SB6OIUVPag9l+8Hhyzv8ba5EshX1YP811hUiJPjsqUvbrgonOPO/j10JmXYn8v+ODO
+ 9L4CA56r5ZiL+Nt3Pfv/LZ98EIa1G1qtbM/B7NsKBYHc3dk25bTkmuJL6JDMuw==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>, Li Yang <leoyang.li@nxp.com>,
  Rob Herring <robh+dt@kernel.org>,
@@ -62,14 +62,13 @@ To: Herve Codina <herve.codina@bootlin.com>, Li Yang <leoyang.li@nxp.com>,
  Takashi Iwai <tiwai@suse.com>, Shengjiu Wang <shengjiu.wang@gmail.com>,
  Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
  Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH 06/10] soc: fsl: qe: Add support for QMC
-Date: Fri,  6 Jan 2023 14:29:47 +0100
-Message-Id: <20230106132951.392271-7-herve.codina@bootlin.com>
+Subject: [PATCH 02/10] soc: fsl: qe: Add support for TSA
+Date: Fri,  6 Jan 2023 14:29:43 +0100
+Message-Id: <20230106132951.392271-3-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20230106132951.392271-1-herve.codina@bootlin.com>
 References: <20230106132951.392271-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Tue, 10 Jan 2023 09:32:35 +0100
 X-BeenThere: alsa-devel@alsa-project.org
@@ -90,38 +89,37 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The QMC (QUICC Multichannel Controller) is available on some
+The TSA (Time Slot Assigner) is available in some
 PowerQUICC SoC such as the MPC885 or MPC866.
 
-It emulates up to 64 channels within one serial controller
-using the same TDM physical interface routed from the TSA.
+Its purpose is to route some TDM time-slots to other
+internal serial controllers.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- drivers/soc/fsl/qe/Kconfig  |   12 +
- drivers/soc/fsl/qe/Makefile |    1 +
- drivers/soc/fsl/qe/qmc.c    | 1493 +++++++++++++++++++++++++++++++++++
- include/soc/fsl/qe/qmc.h    |   71 ++
- 4 files changed, 1577 insertions(+)
- create mode 100644 drivers/soc/fsl/qe/qmc.c
- create mode 100644 include/soc/fsl/qe/qmc.h
+ drivers/soc/fsl/qe/Kconfig  |  11 +
+ drivers/soc/fsl/qe/Makefile |   1 +
+ drivers/soc/fsl/qe/tsa.c    | 783 ++++++++++++++++++++++++++++++++++++
+ drivers/soc/fsl/qe/tsa.h    |  43 ++
+ 4 files changed, 838 insertions(+)
+ create mode 100644 drivers/soc/fsl/qe/tsa.c
+ create mode 100644 drivers/soc/fsl/qe/tsa.h
 
 diff --git a/drivers/soc/fsl/qe/Kconfig b/drivers/soc/fsl/qe/Kconfig
-index b0088495c323..34c7a9d65507 100644
+index 357c5800b112..b0088495c323 100644
 --- a/drivers/soc/fsl/qe/Kconfig
 +++ b/drivers/soc/fsl/qe/Kconfig
-@@ -44,6 +44,18 @@ config CPM_TSA
- 	  This option enables support for this
- 	  controller
+@@ -33,6 +33,17 @@ config UCC
+ 	bool
+ 	default y if UCC_FAST || UCC_SLOW
  
-+config CPM_QMC
-+	tristate "CPM QMC support"
++config CPM_TSA
++	tristate "CPM TSA support"
 +	depends on OF && HAS_IOMEM
 +	depends on CPM1 || COMPILE_TEST
-+	depends on CPM_TSA
 +	help
-+	  Freescale CPM QUICC Multichannel Controller
-+	  (QMC)
++	  Freescale CPM Time Slot Assigner (TSA)
++	  controller.
 +
 +	  This option enables support for this
 +	  controller
@@ -130,1551 +128,843 @@ index b0088495c323..34c7a9d65507 100644
  	bool
  	default y if FSL_UCC_HDLC
 diff --git a/drivers/soc/fsl/qe/Makefile b/drivers/soc/fsl/qe/Makefile
-index 45c961acc81b..ec8506e13113 100644
+index 55a555304f3a..45c961acc81b 100644
 --- a/drivers/soc/fsl/qe/Makefile
 +++ b/drivers/soc/fsl/qe/Makefile
-@@ -5,6 +5,7 @@
+@@ -4,6 +4,7 @@
+ #
  obj-$(CONFIG_QUICC_ENGINE)+= qe.o qe_common.o qe_ic.o qe_io.o
  obj-$(CONFIG_CPM)	+= qe_common.o
- obj-$(CONFIG_CPM_TSA)	+= tsa.o
-+obj-$(CONFIG_CPM_QMC)	+= qmc.o
++obj-$(CONFIG_CPM_TSA)	+= tsa.o
  obj-$(CONFIG_UCC)	+= ucc.o
  obj-$(CONFIG_UCC_SLOW)	+= ucc_slow.o
  obj-$(CONFIG_UCC_FAST)	+= ucc_fast.o
-diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
+diff --git a/drivers/soc/fsl/qe/tsa.c b/drivers/soc/fsl/qe/tsa.c
 new file mode 100644
-index 000000000000..87e788e2a8ce
+index 000000000000..ed4a92e82fa1
 --- /dev/null
-+++ b/drivers/soc/fsl/qe/qmc.c
-@@ -0,0 +1,1493 @@
++++ b/drivers/soc/fsl/qe/tsa.c
+@@ -0,0 +1,783 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * QMC driver
++ * TSA driver
 + *
 + * Copyright 2022 CS GROUP France
 + *
 + * Author: Herve Codina <herve.codina@bootlin.com>
 + */
 +
-+#include <soc/fsl/qe/qmc.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/hdlc.h>
-+#include <linux/interrupt.h>
++#include "tsa.h"
++#include <linux/clk.h>
 +#include <linux/io.h>
 +#include <linux/module.h>
 +#include <linux/of.h>
 +#include <linux/of_platform.h>
 +#include <linux/platform_device.h>
 +#include <linux/slab.h>
-+#include <soc/fsl/cpm.h>
-+#include <sysdev/fsl_soc.h>
-+#include "tsa.h"
 +
-+/* SCC general mode register high (32 bits) */
-+#define SCC_GSMRL	0x00
-+#define SCC_GSMRL_ENR		(1 << 5)
-+#define SCC_GSMRL_ENT		(1 << 4)
-+#define SCC_GSMRL_MODE_QMC	(0x0A << 0)
++/* TSA SI RAM routing tables entry */
++#define TSA_SIRAM_ENTRY_LAST		(1 << 16)
++#define TSA_SIRAM_ENTRY_BYTE		(1 << 17)
++#define TSA_SIRAM_ENTRY_CNT(x)		(((x) & 0x0f) << 18)
++#define TSA_SIRAM_ENTRY_CSEL_MASK	(0x7 << 22)
++#define TSA_SIRAM_ENTRY_CSEL_NU		(0x0 << 22)
++#define TSA_SIRAM_ENTRY_CSEL_SCC2	(0x2 << 22)
++#define TSA_SIRAM_ENTRY_CSEL_SCC3	(0x3 << 22)
++#define TSA_SIRAM_ENTRY_CSEL_SCC4	(0x4 << 22)
++#define TSA_SIRAM_ENTRY_CSEL_SMC1	(0x5 << 22)
++#define TSA_SIRAM_ENTRY_CSEL_SMC2	(0x6 << 22)
 +
-+/* SCC general mode register low (32 bits) */
-+#define SCC_GSMRH	0x04
-+#define   SCC_GSMRH_CTSS	(1 << 7)
-+#define   SCC_GSMRH_CDS		(1 << 8)
-+#define   SCC_GSMRH_CTSP	(1 << 9)
-+#define   SCC_GSMRH_CDP		(1 << 10)
++/* SI mode register (32 bits) */
++#define TSA_SIMODE	0x00
++#define   TSA_SIMODE_SMC2			0x80000000
++#define   TSA_SIMODE_SMC1			0x00008000
++#define   TSA_SIMODE_TDMA(x)			((x) << 0)
++#define   TSA_SIMODE_TDMB(x)			((x) << 16)
++#define     TSA_SIMODE_TDM_MASK			0x0fff
++#define     TSA_SIMODE_TDM_SDM_MASK		0x0c00
++#define       TSA_SIMODE_TDM_SDM_NORM		0x0000
++#define       TSA_SIMODE_TDM_SDM_ECHO		0x0400
++#define       TSA_SIMODE_TDM_SDM_INTL_LOOP	0x0800
++#define       TSA_SIMODE_TDM_SDM_LOOP_CTRL	0x0c00
++#define     TSA_SIMODE_TDM_RFSD(x)		((x) << 8)
++#define     TSA_SIMODE_TDM_DSC			0x0080
++#define     TSA_SIMODE_TDM_CRT			0x0040
++#define     TSA_SIMODE_TDM_STZ			0x0020
++#define     TSA_SIMODE_TDM_CE			0x0010
++#define     TSA_SIMODE_TDM_FE			0x0008
++#define     TSA_SIMODE_TDM_GM			0x0004
++#define     TSA_SIMODE_TDM_TFSD(x)		((x) << 0)
 +
-+/* SCC event register (16 bits) */
-+#define SCC_SCCE	0x10
-+#define   SCC_SCCE_IQOV		(1 << 3)
-+#define   SCC_SCCE_GINT		(1 << 2)
-+#define   SCC_SCCE_GUN		(1 << 1)
-+#define   SCC_SCCE_GOV		(1 << 0)
++/* SI global mode register (8 bits) */
++#define TSA_SIGMR	0x04
++#define TSA_SIGMR_ENB			(1<<3)
++#define TSA_SIGMR_ENA			(1<<2)
++#define TSA_SIGMR_RDM_MASK		0x03
++#define   TSA_SIGMR_RDM_STATIC_TDMA	0x00
++#define   TSA_SIGMR_RDM_DYN_TDMA	0x01
++#define   TSA_SIGMR_RDM_STATIC_TDMAB	0x02
++#define   TSA_SIGMR_RDM_DYN_TDMAB	0x03
 +
-+/* SCC mask register (16 bits) */
-+#define SCC_SCCM	0x14
-+/* Multichannel base pointer (32 bits) */
-+#define QMC_GBL_MCBASE		0x00
-+/* Multichannel controller state (16 bits) */
-+#define QMC_GBL_QMCSTATE	0x04
-+/* Maximum receive buffer length (16 bits) */
-+#define QMC_GBL_MRBLR		0x06
-+/* Tx time-slot assignment table pointer (16 bits) */
-+#define QMC_GBL_TX_S_PTR	0x08
-+/* Rx pointer (16 bits) */
-+#define QMC_GBL_RXPTR		0x0A
-+/* Global receive frame threshold (16 bits) */
-+#define QMC_GBL_GRFTHR		0x0C
-+/* Global receive frame count (16 bits) */
-+#define QMC_GBL_GRFCNT		0x0E
-+/* Multichannel interrupt base address (32 bits) */
-+#define QMC_GBL_INTBASE		0x10
-+/* Multichannel interrupt pointer (32 bits) */
-+#define QMC_GBL_INTPTR		0x14
-+/* Rx time-slot assignment table pointer (16 bits) */
-+#define QMC_GBL_RX_S_PTR	0x18
-+/* Tx pointer (16 bits) */
-+#define QMC_GBL_TXPTR		0x1A
-+/* CRC constant (32 bits) */
-+#define QMC_GBL_C_MASK32	0x1C
-+/* Time slot assignment table Rx (32 x 16 bits) */
-+#define QMC_GBL_TSATRX		0x20
-+/* Time slot assignment table Tx (32 x 16 bits) */
-+#define QMC_GBL_TSATTX		0x60
-+/* CRC constant (16 bits) */
-+#define QMC_GBL_C_MASK16	0xA0
++/* SI status register (8 bits) */
++#define TSA_SISTR	0x06
 +
-+/* TSA entry (16bit entry in TSATRX and TSATTX) */
-+#define QMC_TSA_VALID		(1 << 15)
-+#define QMC_TSA_WRAP		(1 << 14)
-+#define QMC_TSA_MASK		(0x303F)
-+#define QMC_TSA_CHANNEL(x)	((x) << 6)
++/* SI command register (8 bits) */
++#define TSA_SICMR	0x07
 +
-+/* Tx buffer descriptor base address (16 bits, offset from MCBASE) */
-+#define QMC_SPE_TBASE	0x00
++/* SI clock route register (32 bits) */
++#define TSA_SICR	0x0C
++#define   TSA_SICR_SCC2(x)		((x) << 8)
++#define   TSA_SICR_SCC3(x)		((x) << 16)
++#define   TSA_SICR_SCC4(x)		((x) << 24)
++#define     TSA_SICR_SCC_MASK		0x0ff
++#define     TSA_SICR_SCC_GRX		(1 << 7)
++#define     TSA_SICR_SCC_SCX_TSA	(1 << 6)
++#define     TSA_SICR_SCC_RXCS_MASK	(0x7 << 3)
++#define       TSA_SICR_SCC_RXCS_BRG1	(0x0 << 3)
++#define       TSA_SICR_SCC_RXCS_BRG2	(0x1 << 3)
++#define       TSA_SICR_SCC_RXCS_BRG3	(0x2 << 3)
++#define       TSA_SICR_SCC_RXCS_BRG4	(0x3 << 3)
++#define       TSA_SICR_SCC_RXCS_CLK15	(0x4 << 3)
++#define       TSA_SICR_SCC_RXCS_CLK26	(0x5 << 3)
++#define       TSA_SICR_SCC_RXCS_CLK37	(0x6 << 3)
++#define       TSA_SICR_SCC_RXCS_CLK48	(0x7 << 3)
++#define     TSA_SICR_SCC_TXCS_MASK	(0x7 << 0)
++#define       TSA_SICR_SCC_TXCS_BRG1	(0x0 << 0)
++#define       TSA_SICR_SCC_TXCS_BRG2	(0x1 << 0)
++#define       TSA_SICR_SCC_TXCS_BRG3	(0x2 << 0)
++#define       TSA_SICR_SCC_TXCS_BRG4	(0x3 << 0)
++#define       TSA_SICR_SCC_TXCS_CLK15	(0x4 << 0)
++#define       TSA_SICR_SCC_TXCS_CLK26	(0x5 << 0)
++#define       TSA_SICR_SCC_TXCS_CLK37	(0x6 << 0)
++#define       TSA_SICR_SCC_TXCS_CLK48	(0x7 << 0)
 +
-+/* Channel mode register (16 bits) */
-+#define QMC_SPE_CHAMR	0x02
-+#define   QMC_SPE_CHAMR_MODE_HDLC	(1 << 15)
-+#define   QMC_SPE_CHAMR_MODE_TRANSP	((0 << 15) | (1 << 13))
-+#define   QMC_SPE_CHAMR_ENT		(1 << 12)
-+#define   QMC_SPE_CHAMR_POL		(1 << 8)
-+#define   QMC_SPE_CHAMR_HDLC_IDLM	(1 << 13)
-+#define   QMC_SPE_CHAMR_HDLC_CRC	(1 << 7)
-+#define   QMC_SPE_CHAMR_HDLC_NOF	(0x0f << 0)
-+#define   QMC_SPE_CHAMR_TRANSP_RD	(1 << 14)
-+#define   QMC_SPE_CHAMR_TRANSP_SYNC	(1 << 10)
++/* Serial interface RAM pointer register (32 bits) */
++#define TSA_SIRP	0x10
 +
-+/* Tx internal state (32 bits) */
-+#define QMC_SPE_TSTATE	0x04
-+/* Tx buffer descriptor pointer (16 bits) */
-+#define QMC_SPE_TBPTR	0x0C
-+/* Zero-insertion state (32 bits) */
-+#define QMC_SPE_ZISTATE	0x14
-+/* Channel’s interrupt mask flags (16 bits) */
-+#define QMC_SPE_INTMSK	0x1C
-+/* Rx buffer descriptor base address (16 bits, offset from MCBASE) */
-+#define QMC_SPE_RBASE	0x20
-+/* HDLC: Maximum frame length register (16 bits) */
-+#define QMC_SPE_MFLR	0x22
-+/* TRANSPARENT: Transparent maximum receive length (16 bits) */
-+#define QMC_SPE_TMRBLR	0x22
-+/* Rx internal state (32 bits) */
-+#define QMC_SPE_RSTATE	0x24
-+/* Rx buffer descriptor pointer (16 bits) */
-+#define QMC_SPE_RBPTR	0x2C
-+/* Packs 4 bytes to 1 long word before writing to buffer (32 bits) */
-+#define QMC_SPE_RPACK	0x30
-+/* Zero deletion state (32 bits) */
-+#define QMC_SPE_ZDSTATE	0x34
-+
-+/* Transparent synchronization (16 bits) */
-+#define QMC_SPE_TRNSYNC 0x3C
-+#define   QMC_SPE_TRNSYNC_RX(x)	((x) << 8)
-+#define   QMC_SPE_TRNSYNC_TX(x)	((x) << 0)
-+
-+/* Interrupt related registers bits */
-+#define QMC_INT_V		(1 << 15)
-+#define QMC_INT_W		(1 << 14)
-+#define QMC_INT_NID		(1 << 13)
-+#define QMC_INT_IDL		(1 << 12)
-+#define QMC_INT_GET_CHANNEL(x)	(((x) & 0x0FC0) >> 6)
-+#define QMC_INT_MRF		(1 << 5)
-+#define QMC_INT_UN		(1 << 4)
-+#define QMC_INT_RXF		(1 << 3)
-+#define QMC_INT_BSY		(1 << 2)
-+#define QMC_INT_TXB		(1 << 1)
-+#define QMC_INT_RXB		(1 << 0)
-+
-+/* BD related registers bits */
-+#define QMC_BD_RX_E	(1 << 15)
-+#define QMC_BD_RX_W	(1 << 13)
-+#define QMC_BD_RX_I	(1 << 12)
-+#define QMC_BD_RX_L	(1 << 11)
-+#define QMC_BD_RX_F	(1 << 10)
-+#define QMC_BD_RX_CM	(1 << 9)
-+#define QMC_BD_RX_UB	(1 << 7)
-+#define QMC_BD_RX_LG	(1 << 5)
-+#define QMC_BD_RX_NO	(1 << 4)
-+#define QMC_BD_RX_AB	(1 << 3)
-+#define QMC_BD_RX_CR	(1 << 2)
-+
-+#define QMC_BD_TX_R	(1 << 15)
-+#define QMC_BD_TX_W	(1 << 13)
-+#define QMC_BD_TX_I	(1 << 12)
-+#define QMC_BD_TX_L	(1 << 11)
-+#define QMC_BD_TX_TC	(1 << 10)
-+#define QMC_BD_TX_CM	(1 << 9)
-+#define QMC_BD_TX_UB	(1 << 7)
-+#define QMC_BD_TX_PAD	(0x0f << 0)
-+
-+/* Numbers of BDs and interrupt items */
-+#define QMC_NB_TXBDS	8
-+#define QMC_NB_RXBDS	8
-+#define QMC_NB_INTS	128
-+
-+struct qmc_xfer_desc {
-+	union {
-+		void (*tx_complete)(void *context);
-+		void (*rx_complete)(void *context, size_t length);
-+	};
-+	void *context;
++struct tsa_entries_area {
++	void *__iomem entries_start;
++	void *__iomem entries_next;
++	void *__iomem last_entry;
 +};
 +
-+struct qmc_chan {
-+	struct list_head list;
-+	unsigned int id;
-+	struct qmc *qmc;
-+	void *__iomem s_param;
-+	enum qmc_mode mode;
-+	u64	tx_ts_mask;
-+	u64	rx_ts_mask;
-+	bool is_reverse_data;
-+
-+	spinlock_t	tx_lock;
-+	cbd_t __iomem *txbds;
-+	cbd_t __iomem *txbd_free;
-+	cbd_t __iomem *txbd_done;
-+	struct qmc_xfer_desc tx_desc[QMC_NB_TXBDS];
-+	u64	nb_tx_underrun;
-+	bool	is_tx_stopped;
-+
-+	spinlock_t	rx_lock;
-+	cbd_t __iomem *rxbds;
-+	cbd_t __iomem *rxbd_free;
-+	cbd_t __iomem *rxbd_done;
-+	struct qmc_xfer_desc rx_desc[QMC_NB_RXBDS];
-+	u64	nb_rx_busy;
-+	int	rx_pending;
-+	bool	is_rx_halted;
-+	bool	is_rx_stopped;
++struct tsa_tdm {
++	bool is_enable;
++	struct clk *l1rclk_clk;
++	struct clk *l1rsync_clk;
++	struct clk *l1tclk_clk;
++	struct clk *l1tsync_clk;
++	u32 simode_tdm;
 +};
 +
-+struct qmc {
++#define TSA_TDMA	0
++#define TSA_TDMB	1
++
++struct tsa {
 +	struct device *dev;
-+	struct tsa *tsa;
-+	void *__iomem scc_regs;
-+	void *__iomem scc_pram;
-+	void *__iomem dpram;
-+	u16 scc_pram_offset;
-+	unsigned int tsa_cell_id;
-+	cbd_t __iomem *bd_table;
-+	dma_addr_t bd_dma_addr;
-+	size_t bd_size;
-+	u16 __iomem *int_table;
-+	u16 __iomem *int_curr;
-+	dma_addr_t int_dma_addr;
-+	size_t int_size;
-+	struct list_head chan_head;
-+	struct qmc_chan *chans[64];
++	void *__iomem si_regs;
++	void *__iomem si_ram;
++	resource_size_t si_ram_sz;
++	int tdms; /* TSA_TDMx ORed */
++	struct tsa_tdm tdm[2]; /* TDMa and TDMb */
++	struct tsa_cell_info cell_infos[FSL_CPM_TSA_NBCELL];
 +};
 +
-+int qmc_chan_get_info(struct qmc_chan *chan, struct qmc_chan_info *info)
++int tsa_connect(struct tsa *tsa, unsigned int cell_index)
 +{
-+	struct tsa_cell_info tsa_info;
-+	int ret;
++	u32 clear;
++	u32 set;
 +
-+	/* Retrieve info from TSA related cell */
-+	ret = tsa_get_info(chan->qmc->tsa, chan->qmc->tsa_cell_id, &tsa_info);
-+	if (ret)
-+		return ret;
-+
-+	info->mode = chan->mode;
-+	info->rx_fs_rate = tsa_info.rx_fs_rate;
-+	info->rx_bit_rate = tsa_info.rx_bit_rate;
-+	info->nb_tx_ts = hweight64(chan->tx_ts_mask);
-+	info->tx_fs_rate = tsa_info.tx_fs_rate;
-+	info->tx_bit_rate = tsa_info.tx_bit_rate;
-+	info->nb_rx_ts = hweight64(chan->rx_ts_mask);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(qmc_chan_get_info);
-+
-+int qmc_chan_set_param(struct qmc_chan *chan, const struct qmc_chan_param *param)
-+{
-+	if (param->mode != chan->mode)
-+		return -EINVAL;
-+
-+	switch (param->mode) {
-+	case QMC_HDLC:
-+		if ((param->hdlc.max_rx_buf_size % 4) ||
-+		    (param->hdlc.max_rx_buf_size < 8))
-+			return -EINVAL;
-+
-+		out_be16(chan->qmc->scc_pram + QMC_GBL_MRBLR,
-+			 param->hdlc.max_rx_buf_size - 8);
-+		out_be16(chan->s_param + QMC_SPE_MFLR,
-+			 param->hdlc.max_rx_frame_size);
-+		if (param->hdlc.is_crc32) {
-+			setbits16(chan->s_param + QMC_SPE_CHAMR,
-+				  QMC_SPE_CHAMR_HDLC_CRC);
-+		} else {
-+			clrbits16(chan->s_param + QMC_SPE_CHAMR,
-+				  QMC_SPE_CHAMR_HDLC_CRC);
-+		}
++	switch (cell_index) {
++	case FSL_CPM_TSA_SCC2:
++		clear = TSA_SICR_SCC2(TSA_SICR_SCC_MASK);
++		set = TSA_SICR_SCC2(TSA_SICR_SCC_SCX_TSA);
 +		break;
-+
-+	case QMC_TRANSPARENT:
-+		out_be16(chan->s_param + QMC_SPE_TMRBLR,
-+			  param->transp.max_rx_buf_size);
++	case FSL_CPM_TSA_SCC3:
++		clear = TSA_SICR_SCC3(TSA_SICR_SCC_MASK);
++		set = TSA_SICR_SCC3(TSA_SICR_SCC_SCX_TSA);
 +		break;
-+
++	case FSL_CPM_TSA_SCC4:
++		clear = TSA_SICR_SCC4(TSA_SICR_SCC_MASK);
++		set = TSA_SICR_SCC4(TSA_SICR_SCC_SCX_TSA);
++		break;
 +	default:
++		dev_err(tsa->dev, "Unsupported cell-index %u\n", cell_index);
 +		return -EINVAL;
 +	}
 +
++	clrsetbits_be32(tsa->si_regs + TSA_SICR, clear, set);
 +	return 0;
 +}
-+EXPORT_SYMBOL(qmc_chan_set_param);
++EXPORT_SYMBOL(tsa_connect);
 +
-+int qmc_chan_write_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
-+			  void (*complete)(void *context), void *context)
++int tsa_disconnect(struct tsa *tsa, unsigned int cell_index)
 +{
-+	struct qmc_xfer_desc *xfer_desc;
-+	unsigned long flags;
-+	cbd_t *__iomem bd;
-+	u16 ctrl;
-+	int ret;
++	u32 clear;
 +
-+	/*  R bit  UB bit
-+	 *     0       0  : The BD is free
-+	 *     1       1  : The BD is in used, waiting for transfer
-+	 *     0       1  : The BD is in used, waiting for completion
-+	 *     1       0  : Should not append
-+	 */
-+
-+	spin_lock_irqsave(&chan->tx_lock, flags);
-+	bd = chan->txbd_free;
-+
-+	ctrl = in_be16(&bd->cbd_sc);
-+	if (ctrl & (QMC_BD_TX_R | QMC_BD_TX_UB)) {
-+		/* We are full ... */
-+		ret = -EBUSY;
-+		goto end;
++	switch (cell_index) {
++	case 2:
++		clear = TSA_SICR_SCC2(TSA_SICR_SCC_MASK);
++		break;
++	case 3:
++		clear = TSA_SICR_SCC3(TSA_SICR_SCC_MASK);
++		break;
++	case 4:
++		clear = TSA_SICR_SCC4(TSA_SICR_SCC_MASK);
++		break;
++	default:
++		dev_err(tsa->dev, "Unsupported cell-index %u\n", cell_index);
++		return -EINVAL;
 +	}
 +
-+	out_be16(&bd->cbd_datlen, length);
-+	out_be32(&bd->cbd_bufaddr, addr);
-+
-+	xfer_desc = &chan->tx_desc[bd - chan->txbds];
-+	xfer_desc->tx_complete = complete;
-+	xfer_desc->context = context;
-+
-+	/* Activate the descriptor */
-+	ctrl |= (QMC_BD_TX_R | QMC_BD_TX_UB);
-+	wmb(); /* Be sure to flush the descriptor before control update */
-+	out_be16(&bd->cbd_sc, ctrl);
-+
-+	if (!chan->is_tx_stopped)
-+		setbits16(chan->s_param + QMC_SPE_CHAMR, QMC_SPE_CHAMR_POL);
-+
-+	if (ctrl & QMC_BD_TX_W)
-+		chan->txbd_free = chan->txbds;
-+	else
-+		chan->txbd_free++;
-+
-+	ret = 0;
-+
-+end:
-+	spin_unlock_irqrestore(&chan->tx_lock, flags);
-+	return ret;
-+}
-+EXPORT_SYMBOL(qmc_chan_write_submit);
-+
-+static void qmc_chan_write_done(struct qmc_chan *chan)
-+{
-+	struct qmc_xfer_desc *xfer_desc;
-+	void (*complete)(void *context);
-+	unsigned long flags;
-+	void *context;
-+	cbd_t *__iomem bd;
-+	u16 ctrl;
-+
-+	/*  R bit  UB bit
-+	 *     0       0  : The BD is free
-+	 *     1       1  : The BD is in used, waiting for transfer
-+	 *     0       1  : The BD is in used, waiting for completion
-+	 *     1       0  : Should not append
-+	 */
-+
-+	spin_lock_irqsave(&chan->tx_lock, flags);
-+	bd = chan->txbd_done;
-+
-+	ctrl = in_be16(&bd->cbd_sc);
-+	while (!(ctrl & QMC_BD_TX_R)) {
-+		if (!(ctrl & QMC_BD_TX_UB))
-+			goto end;
-+
-+		xfer_desc = &chan->tx_desc[bd - chan->txbds];
-+		complete = xfer_desc->tx_complete;
-+		context = xfer_desc->context;
-+		xfer_desc->tx_complete = NULL;
-+		xfer_desc->context = NULL;
-+
-+		out_be16(&bd->cbd_sc, ctrl & ~QMC_BD_TX_UB);
-+
-+		if (ctrl & QMC_BD_TX_W)
-+			chan->txbd_done = chan->txbds;
-+		else
-+			chan->txbd_done++;
-+
-+		if (complete) {
-+			spin_unlock_irqrestore(&chan->tx_lock, flags);
-+			complete(context);
-+			spin_lock_irqsave(&chan->tx_lock, flags);
-+		}
-+
-+		bd = chan->txbd_done;
-+		ctrl = in_be16(&bd->cbd_sc);
-+	}
-+
-+end:
-+	spin_unlock_irqrestore(&chan->tx_lock, flags);
-+}
-+
-+int qmc_chan_read_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
-+			 void (*complete)(void *context, size_t length), void *context)
-+{
-+	struct qmc_xfer_desc *xfer_desc;
-+	unsigned long flags;
-+	cbd_t *__iomem bd;
-+	u16 ctrl;
-+	int ret;
-+
-+	/*  E bit  UB bit
-+	 *     0       0  : The BD is free
-+	 *     1       1  : The BD is in used, waiting for transfer
-+	 *     0       1  : The BD is in used, waiting for completion
-+	 *     1       0  : Should not append
-+	 */
-+
-+	spin_lock_irqsave(&chan->rx_lock, flags);
-+	bd = chan->rxbd_free;
-+
-+	ctrl = in_be16(&bd->cbd_sc);
-+	if (ctrl & (QMC_BD_RX_E | QMC_BD_RX_UB)) {
-+		/* We are full ... */
-+		ret = -EBUSY;
-+		goto end;
-+	}
-+
-+	out_be16(&bd->cbd_datlen, 0); /* data length is updated by the QMC */
-+	out_be32(&bd->cbd_bufaddr, addr);
-+
-+	xfer_desc = &chan->rx_desc[bd - chan->rxbds];
-+	xfer_desc->rx_complete = complete;
-+	xfer_desc->context = context;
-+
-+	/* Activate the descriptor */
-+	ctrl |= (QMC_BD_RX_E | QMC_BD_RX_UB);
-+	wmb(); /* Be sure to flush data before descriptor activation */
-+	out_be16(&bd->cbd_sc, ctrl);
-+
-+	/* Restart receiver if needed */
-+	if (chan->is_rx_halted && !chan->is_rx_stopped) {
-+		/* Restart receiver */
-+		if (chan->mode == QMC_TRANSPARENT)
-+			out_be32(chan->s_param + QMC_SPE_ZDSTATE, 0x18000080);
-+		else
-+			out_be32(chan->s_param + QMC_SPE_ZDSTATE, 0x00000080);
-+		out_be32(chan->s_param + QMC_SPE_RSTATE, 0x31000000);
-+		chan->is_rx_halted = false;
-+	}
-+	chan->rx_pending++;
-+
-+	if (ctrl & QMC_BD_RX_W)
-+		chan->rxbd_free = chan->rxbds;
-+	else
-+		chan->rxbd_free++;
-+
-+	ret = 0;
-+end:
-+	spin_unlock_irqrestore(&chan->rx_lock, flags);
-+	return ret;
-+}
-+EXPORT_SYMBOL(qmc_chan_read_submit);
-+
-+static void qmc_chan_read_done(struct qmc_chan *chan)
-+{
-+	void (*complete)(void *context, size_t size);
-+	struct qmc_xfer_desc *xfer_desc;
-+	unsigned long flags;
-+	cbd_t *__iomem bd;
-+	void *context;
-+	u16 datalen;
-+	u16 ctrl;
-+
-+	/*  E bit  UB bit
-+	 *     0       0  : The BD is free
-+	 *     1       1  : The BD is in used, waiting for transfer
-+	 *     0       1  : The BD is in used, waiting for completion
-+	 *     1       0  : Should not append
-+	 */
-+
-+	spin_lock_irqsave(&chan->rx_lock, flags);
-+	bd = chan->rxbd_done;
-+
-+	ctrl = in_be16(&bd->cbd_sc);
-+	while (!(ctrl & QMC_BD_RX_E)) {
-+		if (!(ctrl & QMC_BD_RX_UB))
-+			goto end;
-+
-+		xfer_desc = &chan->rx_desc[bd - chan->rxbds];
-+		complete = xfer_desc->rx_complete;
-+		context = xfer_desc->context;
-+		xfer_desc->rx_complete = NULL;
-+		xfer_desc->context = NULL;
-+
-+		datalen = in_be16(&bd->cbd_datlen);
-+		out_be16(&bd->cbd_sc, ctrl & ~QMC_BD_RX_UB);
-+
-+		if (ctrl & QMC_BD_RX_W)
-+			chan->rxbd_done = chan->rxbds;
-+		else
-+			chan->rxbd_done++;
-+
-+		chan->rx_pending--;
-+
-+		if (complete) {
-+			spin_unlock_irqrestore(&chan->rx_lock, flags);
-+			complete(context, datalen);
-+			spin_lock_irqsave(&chan->rx_lock, flags);
-+		}
-+
-+		bd = chan->rxbd_done;
-+		ctrl = in_be16(&bd->cbd_sc);
-+	}
-+
-+end:
-+	spin_unlock_irqrestore(&chan->rx_lock, flags);
-+}
-+
-+static int qmc_chan_command(struct qmc_chan *chan, u8 qmc_opcode)
-+{
-+	return cpm_command(chan->id << 2, (qmc_opcode << 4) | 0x0E);
-+}
-+
-+static int qmc_chan_stop_rx(struct qmc_chan *chan)
-+{
-+	unsigned long flags;
-+	int ret;
-+
-+	spin_lock_irqsave(&chan->rx_lock, flags);
-+
-+	/* Send STOP RECEIVE command */
-+	ret = qmc_chan_command(chan, 0x0);
-+	if (ret) {
-+		dev_err(chan->qmc->dev, "chan %u: Send STOP RECEIVE failed (%d)\n",
-+			chan->id, ret);
-+		goto end;
-+	}
-+
-+	chan->is_rx_stopped = true;
-+
-+end:
-+	spin_unlock_irqrestore(&chan->rx_lock, flags);
-+	return ret;
-+}
-+
-+static int qmc_chan_stop_tx(struct qmc_chan *chan)
-+{
-+	unsigned long flags;
-+	int ret;
-+
-+	spin_lock_irqsave(&chan->tx_lock, flags);
-+
-+	/* Send STOP TRANSMIT command */
-+	ret = qmc_chan_command(chan, 0x1);
-+	if (ret) {
-+		dev_err(chan->qmc->dev, "chan %u: Send STOP TRANSMIT failed (%d)\n",
-+			chan->id, ret);
-+		goto end;
-+	}
-+
-+	chan->is_tx_stopped = true;
-+
-+end:
-+	spin_unlock_irqrestore(&chan->tx_lock, flags);
-+	return ret;
-+}
-+
-+int qmc_chan_stop(struct qmc_chan *chan, int direction)
-+{
-+	int ret;
-+
-+	if (direction & QMC_CHAN_READ) {
-+		ret = qmc_chan_stop_rx(chan);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	if (direction & QMC_CHAN_WRITE) {
-+		ret = qmc_chan_stop_tx(chan);
-+		if (ret)
-+			return ret;
-+	}
-+
++	clrsetbits_be32(tsa->si_regs + TSA_SICR, clear, 0);
 +	return 0;
 +}
-+EXPORT_SYMBOL(qmc_chan_stop);
++EXPORT_SYMBOL(tsa_disconnect);
 +
-+static void qmc_chan_start_rx(struct qmc_chan *chan)
++int tsa_get_info(struct tsa *tsa, unsigned int cell_id, struct tsa_cell_info *info)
 +{
-+	unsigned long flags;
++	if (cell_id >= FSL_CPM_TSA_NBCELL)
++		return -EINVAL;
 +
-+	spin_lock_irqsave(&chan->rx_lock, flags);
-+
-+	/* Restart the receiver */
-+	if (chan->mode == QMC_TRANSPARENT)
-+		out_be32(chan->s_param + QMC_SPE_ZDSTATE, 0x18000080);
-+	else
-+		out_be32(chan->s_param + QMC_SPE_ZDSTATE, 0x00000080);
-+	out_be32(chan->s_param + QMC_SPE_RSTATE, 0x31000000);
-+	chan->is_rx_halted = false;
-+
-+	chan->is_rx_stopped = false;
-+
-+	spin_unlock_irqrestore(&chan->rx_lock, flags);
-+}
-+
-+static void qmc_chan_start_tx(struct qmc_chan *chan)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&chan->tx_lock, flags);
-+
-+	/* Enable channel transmitter as it could be disabled if
-+	 * qmc_chan_reset() was called
-+	 */
-+	setbits16(chan->s_param + QMC_SPE_CHAMR, QMC_SPE_CHAMR_ENT);
-+
-+	/* Set the POL bit in the channel mode register */
-+	setbits16(chan->s_param + QMC_SPE_CHAMR, QMC_SPE_CHAMR_POL);
-+
-+	chan->is_tx_stopped = false;
-+
-+	spin_unlock_irqrestore(&chan->tx_lock, flags);
-+}
-+
-+int qmc_chan_start(struct qmc_chan *chan, int direction)
-+{
-+	if (direction & QMC_CHAN_READ)
-+		qmc_chan_start_rx(chan);
-+
-+	if (direction & QMC_CHAN_WRITE)
-+		qmc_chan_start_tx(chan);
-+
++	memcpy(info, &tsa->cell_infos[cell_id], sizeof(*info));
 +	return 0;
 +}
-+EXPORT_SYMBOL(qmc_chan_start);
++EXPORT_SYMBOL(tsa_get_info);
 +
-+static void qmc_chan_reset_rx(struct qmc_chan *chan)
++static void tsa_init_entries_area(struct tsa *tsa, struct tsa_entries_area *area,
++				  u32 tdms, u32 tdm_id, bool is_rx)
 +{
-+	struct qmc_xfer_desc *xfer_desc;
-+	unsigned long flags;
-+	cbd_t *__iomem bd;
-+	u16 ctrl;
++	resource_size_t quarter;
++	resource_size_t half;
 +
-+	spin_lock_irqsave(&chan->rx_lock, flags);
-+	bd = chan->rxbds;
-+	do {
-+		ctrl = in_be16(&bd->cbd_sc);
-+		out_be16(&bd->cbd_sc, ctrl & ~(QMC_BD_RX_UB | QMC_BD_RX_E));
++	quarter = tsa->si_ram_sz/4;
++	half = tsa->si_ram_sz/2;
 +
-+		xfer_desc = &chan->rx_desc[bd - chan->rxbds];
-+		xfer_desc->rx_complete = NULL;
-+		xfer_desc->context = NULL;
-+
-+		bd++;
-+	} while (!(ctrl & QMC_BD_RX_W));
-+
-+	chan->rxbd_free = chan->rxbds;
-+	chan->rxbd_done = chan->rxbds;
-+	out_be16(chan->s_param + QMC_SPE_RBPTR,
-+		 in_be16(chan->s_param + QMC_SPE_RBASE));
-+
-+	chan->rx_pending = 0;
-+	chan->is_rx_stopped = false;
-+
-+	spin_unlock_irqrestore(&chan->rx_lock, flags);
-+}
-+
-+static void qmc_chan_reset_tx(struct qmc_chan *chan)
-+{
-+	struct qmc_xfer_desc *xfer_desc;
-+	unsigned long flags;
-+	cbd_t *__iomem bd;
-+	u16 ctrl;
-+
-+	spin_lock_irqsave(&chan->tx_lock, flags);
-+
-+	/* Disable transmitter. It will be re-enable on qmc_chan_start() */
-+	clrbits16(chan->s_param + QMC_SPE_CHAMR, QMC_SPE_CHAMR_ENT);
-+
-+	bd = chan->txbds;
-+	do {
-+		ctrl = in_be16(&bd->cbd_sc);
-+		out_be16(&bd->cbd_sc, ctrl & ~(QMC_BD_TX_UB | QMC_BD_TX_R));
-+
-+		xfer_desc = &chan->tx_desc[bd - chan->txbds];
-+		xfer_desc->tx_complete = NULL;
-+		xfer_desc->context = NULL;
-+
-+		bd++;
-+	} while (!(ctrl & QMC_BD_TX_W));
-+
-+	chan->txbd_free = chan->txbds;
-+	chan->txbd_done = chan->txbds;
-+	out_be16(chan->s_param + QMC_SPE_TBPTR,
-+		 in_be16(chan->s_param + QMC_SPE_TBASE));
-+
-+	/* Reset TSTATE and ZISTATE to their initial value */
-+	out_be32(chan->s_param + QMC_SPE_TSTATE, 0x30000000);
-+	out_be32(chan->s_param + QMC_SPE_ZISTATE, 0x00000100);
-+
-+	spin_unlock_irqrestore(&chan->tx_lock, flags);
-+}
-+
-+int qmc_chan_reset(struct qmc_chan *chan, int direction)
-+{
-+	if (direction & QMC_CHAN_READ)
-+		qmc_chan_reset_rx(chan);
-+
-+	if (direction & QMC_CHAN_WRITE)
-+		qmc_chan_reset_tx(chan);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(qmc_chan_reset);
-+
-+static int qmc_check_chans(struct qmc *qmc)
-+{
-+	struct tsa_cell_info info;
-+	bool is_one_table = false;
-+	struct qmc_chan *chan;
-+	u64 tx_ts_mask = 0;
-+	u64 rx_ts_mask = 0;
-+	u64 tx_ts_assigned_mask;
-+	u64 rx_ts_assigned_mask;
-+	int ret;
-+
-+	/* Retrieve info from TSA related cell */
-+	ret = tsa_get_info(qmc->tsa, qmc->tsa_cell_id, &info);
-+	if (ret)
-+		return ret;
-+
-+	/* If more than 32 TS are assigned to this cell, one common table
-+	 * is used for Tx and Rx and so masks must be equal for all channels.
-+	 */
-+	if ((info.nb_tx_ts > 32) || (info.nb_rx_ts > 32)) {
-+		if (info.nb_tx_ts != info.nb_rx_ts) {
-+			dev_err(qmc->dev, "Number of TSA Tx/Rx TS assigned are not equal\n");
-+			return -EINVAL;
-+		}
-+		is_one_table = true;
-+	}
-+
-+
-+	tx_ts_assigned_mask = (((u64)1) << info.nb_tx_ts) - 1;
-+	rx_ts_assigned_mask = (((u64)1) << info.nb_rx_ts) - 1;
-+
-+	list_for_each_entry(chan, &qmc->chan_head, list) {
-+		if (chan->tx_ts_mask > tx_ts_assigned_mask) {
-+			dev_err(qmc->dev, "chan %u uses TSA unassigned Tx TS\n", chan->id);
-+			return -EINVAL;
-+		}
-+		if (tx_ts_mask & chan->tx_ts_mask) {
-+			dev_err(qmc->dev, "chan %u uses an already used Tx TS\n", chan->id);
-+			return -EINVAL;
-+		}
-+
-+		if (chan->rx_ts_mask > rx_ts_assigned_mask) {
-+			dev_err(qmc->dev, "chan %u uses TSA unassigned Rx TS\n", chan->id);
-+			return -EINVAL;
-+		}
-+		if (rx_ts_mask & chan->rx_ts_mask) {
-+			dev_err(qmc->dev, "chan %u uses an already used Rx TS\n", chan->id);
-+			return -EINVAL;
-+		}
-+
-+		if (is_one_table && (chan->tx_ts_mask != chan->rx_ts_mask)) {
-+			dev_err(qmc->dev, "chan %u uses different Rx and Tx TS\n", chan->id);
-+			return -EINVAL;
-+		}
-+
-+		tx_ts_mask |= chan->tx_ts_mask;
-+		rx_ts_mask |= chan->rx_ts_mask;
-+	}
-+
-+	return 0;
-+}
-+
-+static unsigned int qmc_nb_chans(struct qmc *qmc)
-+{
-+	unsigned int count = 0;
-+	struct qmc_chan *chan;
-+
-+	list_for_each_entry(chan, &qmc->chan_head, list)
-+		count++;
-+
-+	return count;
-+}
-+
-+static int qmc_of_parse_chans(struct qmc *qmc, struct device_node *np)
-+{
-+	struct device_node *chan_np;
-+	struct qmc_chan *chan;
-+	const char *mode;
-+	u32 chan_id;
-+	u64 ts_mask;
-+	int ret;
-+
-+	for_each_available_child_of_node(np, chan_np) {
-+		ret = of_property_read_u32(chan_np, "reg", &chan_id);
-+		if (ret) {
-+			dev_err(qmc->dev, "%pOF: failed to read reg\n", chan_np);
-+			of_node_put(chan_np);
-+			return ret;
-+		}
-+		if (chan_id > 63) {
-+			dev_err(qmc->dev, "%pOF: Invalid chan_id\n", chan_np);
-+			of_node_put(chan_np);
-+			return -EINVAL;
-+		}
-+
-+		chan = devm_kzalloc(qmc->dev, sizeof(*chan), GFP_KERNEL);
-+		if (!chan) {
-+			of_node_put(chan_np);
-+			return -ENOMEM;
-+		}
-+
-+		chan->id = chan_id;
-+		spin_lock_init(&chan->rx_lock);
-+		spin_lock_init(&chan->tx_lock);
-+
-+		ret = of_property_read_u64(chan_np, "tx-ts-mask", &ts_mask);
-+		if (ret) {
-+			dev_err(qmc->dev, "%pOF: failed to read tx-ts-mask\n", chan_np);
-+			of_node_put(chan_np);
-+			return ret;
-+		}
-+		chan->tx_ts_mask = ts_mask;
-+
-+		ret = of_property_read_u64(chan_np, "rx-ts-mask", &ts_mask);
-+		if (ret) {
-+			dev_err(qmc->dev, "%pOF: failed to read rx-ts-mask\n", chan_np);
-+			of_node_put(chan_np);
-+			return ret;
-+		}
-+		chan->rx_ts_mask = ts_mask;
-+
-+		mode = "transparent";
-+		ret = of_property_read_string(chan_np, "fsl,mode", &mode);
-+		if (ret && ret != -EINVAL) {
-+			dev_err(qmc->dev, "%pOF: failed to read fsl,mode\n", chan_np);
-+			of_node_put(chan_np);
-+			return ret;
-+		}
-+		if (!strcmp(mode, "transparent")) {
-+			chan->mode = QMC_TRANSPARENT;
-+		} else if (!strcmp(mode, "hdlc")) {
-+			chan->mode = QMC_HDLC;
++	if (tdms == BIT(TSA_TDMA)) {
++		/* Only TDMA */
++		if (is_rx) {
++			/* First half of si_ram */
++			area->entries_start = tsa->si_ram;
++			area->entries_next = area->entries_start + half;
++			area->last_entry = NULL;
 +		} else {
-+			dev_err(qmc->dev, "%pOF: Invalid fsl,mode (%s)\n", chan_np,
-+				mode);
-+			of_node_put(chan_np);
-+			return -EINVAL;
++			/* Second half of si_ram */
++			area->entries_start = tsa->si_ram + half;
++			area->entries_next = area->entries_start + half;
++			area->last_entry = NULL;
 +		}
-+
-+		chan->is_reverse_data = of_property_read_bool(chan_np,
-+							      "fsl,reverse-data");
-+
-+		list_add_tail(&chan->list, &qmc->chan_head);
-+		qmc->chans[chan->id] = chan;
-+	}
-+
-+	return qmc_check_chans(qmc);
-+}
-+
-+static int qmc_setup_tsa_64rxtx(struct qmc *qmc, const struct tsa_cell_info *info)
-+{
-+	struct qmc_chan *chan;
-+	unsigned int i;
-+	u16 val;
-+
-+	/* Use a common Tx/Rx 64 entries table
-+	 * Everything was previously checked, Tx and Rx related stuffs are
-+	 * identical -> Used Rx related stuff to build the table
-+	 */
-+
-+	/* Invalidate all entries */
-+	for (i = 0; i < 64; i++)
-+		out_be16(qmc->scc_pram + QMC_GBL_TSATRX + (i * 2), 0x0000);
-+
-+	/* Set entries based on Rx stuff*/
-+	list_for_each_entry(chan, &qmc->chan_head, list) {
-+		for (i = 0; i < info->nb_rx_ts; i++) {
-+			if (!(chan->rx_ts_mask & (((u64)1) << i)))
-+				continue;
-+
-+			val = QMC_TSA_VALID | QMC_TSA_MASK |
-+			      QMC_TSA_CHANNEL(chan->id);
-+			out_be16(qmc->scc_pram + QMC_GBL_TSATRX + (i * 2), val);
-+		}
-+	}
-+
-+	/* Set Wrap bit on last entry */
-+	setbits16(qmc->scc_pram + QMC_GBL_TSATRX + ((info->nb_rx_ts - 1) * 2),
-+		QMC_TSA_WRAP);
-+
-+	/* Init pointers to the table */
-+	val = qmc->scc_pram_offset + QMC_GBL_TSATRX;
-+	out_be16(qmc->scc_pram + QMC_GBL_RX_S_PTR, val);
-+	out_be16(qmc->scc_pram + QMC_GBL_RXPTR, val);
-+	out_be16(qmc->scc_pram + QMC_GBL_TX_S_PTR, val);
-+	out_be16(qmc->scc_pram + QMC_GBL_TXPTR, val);
-+
-+	return 0;
-+}
-+
-+static int qmc_setup_tsa_32rx_32tx(struct qmc *qmc, const struct tsa_cell_info *info)
-+{
-+	struct qmc_chan *chan;
-+	unsigned int i;
-+	u16 val;
-+
-+	/* Use a Tx 32 entries table and a Rx 32 entries table.
-+	 * Everything was previously checked.
-+	 */
-+
-+	/* Invalidate all entries */
-+	for (i = 0; i < 32; i++) {
-+		out_be16(qmc->scc_pram + QMC_GBL_TSATRX + (i * 2), 0x0000);
-+		out_be16(qmc->scc_pram + QMC_GBL_TSATTX + (i * 2), 0x0000);
-+	}
-+
-+	/* Set entries based on Rx and Tx stuff*/
-+	list_for_each_entry(chan, &qmc->chan_head, list) {
-+		/* Rx part */
-+		for (i = 0; i < info->nb_rx_ts; i++) {
-+			if (!(chan->rx_ts_mask & (((u64)1) << i)))
-+				continue;
-+
-+			val = QMC_TSA_VALID | QMC_TSA_MASK |
-+			      QMC_TSA_CHANNEL(chan->id);
-+			out_be16(qmc->scc_pram + QMC_GBL_TSATRX + (i * 2), val);
-+		}
-+		/* Tx part */
-+		for (i = 0; i < info->nb_tx_ts; i++) {
-+			if (!(chan->tx_ts_mask & (((u64)1) << i)))
-+				continue;
-+
-+			val = QMC_TSA_VALID | QMC_TSA_MASK |
-+			      QMC_TSA_CHANNEL(chan->id);
-+			out_be16(qmc->scc_pram + QMC_GBL_TSATTX + (i * 2), val);
-+		}
-+	}
-+
-+	/* Set Wrap bit on last entries */
-+	setbits16(qmc->scc_pram + QMC_GBL_TSATRX + ((info->nb_rx_ts - 1) * 2),
-+		QMC_TSA_WRAP);
-+	setbits16(qmc->scc_pram + QMC_GBL_TSATTX + ((info->nb_tx_ts - 1) * 2),
-+		QMC_TSA_WRAP);
-+
-+	/* Init Rx pointers ...*/
-+	val = qmc->scc_pram_offset + QMC_GBL_TSATRX;
-+	out_be16(qmc->scc_pram + QMC_GBL_RX_S_PTR, val);
-+	out_be16(qmc->scc_pram + QMC_GBL_RXPTR, val);
-+
-+	/* ... and Tx pointers */
-+	val = qmc->scc_pram_offset + QMC_GBL_TSATTX;
-+	out_be16(qmc->scc_pram + QMC_GBL_TX_S_PTR, val);
-+	out_be16(qmc->scc_pram + QMC_GBL_TXPTR, val);
-+
-+	return 0;
-+}
-+
-+static int qmc_setup_tsa(struct qmc *qmc)
-+{
-+	struct tsa_cell_info info;
-+	int ret;
-+
-+	/* Retrieve info from TSA related cell */
-+	ret = tsa_get_info(qmc->tsa, qmc->tsa_cell_id, &info);
-+	if (ret)
-+		return ret;
-+
-+	/* Setup one common 64 entries table or two 32 entries (one for Tx and
-+	 * one for Tx) according to assigned TS numbers.
-+	 */
-+	return ((info.nb_tx_ts > 32) || (info.nb_rx_ts > 32)) ?
-+		qmc_setup_tsa_64rxtx(qmc, &info) :
-+		qmc_setup_tsa_32rx_32tx(qmc, &info);
-+}
-+
-+static int qmc_setup_chan_trnsync(struct qmc *qmc, struct qmc_chan *chan)
-+{
-+	struct tsa_cell_info info;
-+	u16 first_rx, last_tx;
-+	u16 trnsync;
-+	int ret;
-+
-+	/* Retrieve info from TSA related cell */
-+	ret = tsa_get_info(qmc->tsa, qmc->tsa_cell_id, &info);
-+	if (ret)
-+		return ret;
-+
-+	/* Find the first Rx TS allocated to the channel */
-+	first_rx = chan->rx_ts_mask ? __ffs64(chan->rx_ts_mask) + 1 : 0;
-+
-+	/* Find the last Tx TS allocated to the channel */
-+	last_tx = fls64(chan->tx_ts_mask);
-+
-+	trnsync = 0;
-+	if (info.nb_rx_ts)
-+		trnsync |= QMC_SPE_TRNSYNC_RX((first_rx % info.nb_rx_ts) * 2);
-+	if (info.nb_tx_ts)
-+		trnsync |= QMC_SPE_TRNSYNC_TX((last_tx % info.nb_tx_ts) * 2);
-+
-+	out_be16(chan->s_param + QMC_SPE_TRNSYNC, trnsync);
-+
-+	dev_dbg(qmc->dev, "chan %u: trnsync=0x%04x, rx %u/%u 0x%llx, tx %u/%u 0x%llx\n",
-+		chan->id, trnsync,
-+		first_rx, info.nb_rx_ts, chan->rx_ts_mask,
-+		last_tx, info.nb_tx_ts, chan->tx_ts_mask);
-+
-+	return 0;
-+}
-+
-+static int qmc_setup_chan(struct qmc *qmc, struct qmc_chan *chan)
-+{
-+	unsigned int i;
-+	cbd_t __iomem *bd;
-+	int ret;
-+	u16 val;
-+
-+	chan->qmc = qmc;
-+
-+	/* Set channel specific parameter base address */
-+	chan->s_param = qmc->dpram + (chan->id * 64);
-+	/* 16 bd per channel (8 rx and 8 tx) */
-+	chan->txbds = qmc->bd_table + (chan->id * (QMC_NB_TXBDS + QMC_NB_RXBDS));
-+	chan->rxbds = qmc->bd_table + (chan->id * (QMC_NB_TXBDS + QMC_NB_RXBDS)) + QMC_NB_TXBDS;
-+
-+	chan->txbd_free = chan->txbds;
-+	chan->txbd_done = chan->txbds;
-+	chan->rxbd_free = chan->rxbds;
-+	chan->rxbd_done = chan->rxbds;
-+
-+	/* TBASE and TBPTR*/
-+	val = chan->id * (QMC_NB_TXBDS + QMC_NB_RXBDS) * sizeof(cbd_t);
-+	out_be16(chan->s_param + QMC_SPE_TBASE, val);
-+	out_be16(chan->s_param + QMC_SPE_TBPTR, val);
-+
-+	/* RBASE and RBPTR*/
-+	val = ((chan->id * (QMC_NB_TXBDS + QMC_NB_RXBDS)) + QMC_NB_TXBDS) * sizeof(cbd_t);
-+	out_be16(chan->s_param + QMC_SPE_RBASE, val);
-+	out_be16(chan->s_param + QMC_SPE_RBPTR, val);
-+	out_be32(chan->s_param + QMC_SPE_TSTATE, 0x30000000);
-+	out_be32(chan->s_param + QMC_SPE_RSTATE, 0x31000000);
-+	out_be32(chan->s_param + QMC_SPE_ZISTATE, 0x00000100);
-+	if (chan->mode == QMC_TRANSPARENT) {
-+		out_be32(chan->s_param + QMC_SPE_ZDSTATE, 0x18000080);
-+		out_be16(chan->s_param + QMC_SPE_TMRBLR, 60);
-+		val = QMC_SPE_CHAMR_MODE_TRANSP | QMC_SPE_CHAMR_TRANSP_SYNC;
-+		if (chan->is_reverse_data)
-+			val |= QMC_SPE_CHAMR_TRANSP_RD;
-+		out_be16(chan->s_param + QMC_SPE_CHAMR, val);
-+		ret = qmc_setup_chan_trnsync(qmc, chan);
-+		if (ret)
-+			return ret;
 +	} else {
-+		out_be32(chan->s_param + QMC_SPE_ZDSTATE, 0x00000080);
-+		out_be16(chan->s_param + QMC_SPE_MFLR, 60);
-+		out_be16(chan->s_param + QMC_SPE_CHAMR,
-+			QMC_SPE_CHAMR_MODE_HDLC | QMC_SPE_CHAMR_HDLC_IDLM);
-+	}
-+
-+	/* Do not enable interrupts now. They will be enabled later */
-+	out_be16(chan->s_param + QMC_SPE_INTMSK, 0x0000);
-+
-+	/* Init Rx BDs and set Wrap bit on last descriptor */
-+	BUILD_BUG_ON(QMC_NB_RXBDS == 0);
-+	val = QMC_BD_RX_I;
-+	for (i = 0; i < QMC_NB_RXBDS; i++) {
-+		bd = chan->rxbds + i;
-+		out_be16(&bd->cbd_sc, val);
-+	}
-+	bd = chan->rxbds + QMC_NB_RXBDS - 1;
-+	out_be16(&bd->cbd_sc, val | QMC_BD_RX_W);
-+
-+	/* Init Tx BDs and set Wrap bit on last descriptor */
-+	BUILD_BUG_ON(QMC_NB_TXBDS == 0);
-+	val = QMC_BD_TX_I;
-+	if (chan->mode == QMC_HDLC)
-+		val |= QMC_BD_TX_L | QMC_BD_TX_TC;
-+	for (i = 0; i < QMC_NB_TXBDS; i++) {
-+		bd = chan->txbds + i;
-+		out_be16(&bd->cbd_sc, val);
-+	}
-+	bd = chan->txbds + QMC_NB_TXBDS - 1;
-+	out_be16(&bd->cbd_sc, val | QMC_BD_TX_W);
-+
-+	return 0;
-+}
-+
-+static int qmc_setup_chans(struct qmc *qmc)
-+{
-+	struct qmc_chan *chan;
-+	int ret;
-+
-+	list_for_each_entry(chan, &qmc->chan_head, list) {
-+		ret = qmc_setup_chan(qmc, chan);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int qmc_finalize_chans(struct qmc *qmc)
-+{
-+	struct qmc_chan *chan;
-+	int ret;
-+
-+	list_for_each_entry(chan, &qmc->chan_head, list) {
-+		/* Unmask channel interrupts */
-+		if (chan->mode == QMC_HDLC) {
-+			out_be16(chan->s_param + QMC_SPE_INTMSK,
-+				QMC_INT_NID | QMC_INT_IDL | QMC_INT_MRF |
-+				QMC_INT_UN | QMC_INT_RXF | QMC_INT_BSY |
-+				QMC_INT_TXB | QMC_INT_RXB);
-+		} else {
-+			out_be16(chan->s_param + QMC_SPE_INTMSK,
-+				QMC_INT_UN | QMC_INT_BSY |
-+				QMC_INT_TXB | QMC_INT_RXB);
-+		}
-+
-+		/* Forced stop the channel */
-+		ret = qmc_chan_stop(chan, QMC_CHAN_ALL);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int qmc_setup_ints(struct qmc *qmc)
-+{
-+	unsigned int i;
-+	u16 __iomem *last;
-+
-+	/* Raz all entries */
-+	for (i = 0; i < (qmc->int_size / sizeof(u16)); i++)
-+		out_be16(qmc->int_table + i, 0x0000);
-+
-+	/* Set Wrap bit on last entry */
-+	if (qmc->int_size >= sizeof(u16)) {
-+		last = qmc->int_table + (qmc->int_size / sizeof(u16)) - 1;
-+		out_be16(last, QMC_INT_W);
-+	}
-+
-+	return 0;
-+}
-+
-+static void qmc_irq_gint(struct qmc *qmc)
-+{
-+	struct qmc_chan *chan;
-+	unsigned int chan_id;
-+	unsigned long flags;
-+	u16 int_entry;
-+
-+	int_entry = in_be16(qmc->int_curr);
-+	while (int_entry & QMC_INT_V) {
-+		/* Clear all but the Wrap bit */
-+		out_be16(qmc->int_curr, int_entry & QMC_INT_W);
-+
-+		chan_id = QMC_INT_GET_CHANNEL(int_entry);
-+		chan = qmc->chans[chan_id];
-+		if (!chan) {
-+			dev_err(qmc->dev, "interrupt on invalid chan %u\n", chan_id);
-+			goto int_next;
-+		}
-+
-+		if (int_entry & QMC_INT_TXB)
-+			qmc_chan_write_done(chan);
-+
-+		if (int_entry & QMC_INT_UN) {
-+			dev_info(qmc->dev, "intr chan %u, 0x%04x (UN)\n", chan_id,
-+				 int_entry);
-+			chan->nb_tx_underrun++;
-+		}
-+
-+		if (int_entry & QMC_INT_BSY) {
-+			dev_info(qmc->dev, "intr chan %u, 0x%04x (BSY)\n", chan_id,
-+				 int_entry);
-+			chan->nb_rx_busy++;
-+			/* Restart the receiver if needed */
-+			spin_lock_irqsave(&chan->rx_lock, flags);
-+			if (chan->rx_pending && !chan->is_rx_stopped) {
-+				if (chan->mode == QMC_TRANSPARENT)
-+					out_be32(chan->s_param + QMC_SPE_ZDSTATE, 0x18000080);
-+				else
-+					out_be32(chan->s_param + QMC_SPE_ZDSTATE, 0x00000080);
-+				out_be32(chan->s_param + QMC_SPE_RSTATE, 0x31000000);
-+				chan->is_rx_halted = false;
++		/* Only TDMB or both TDMs */
++		if (tdm_id == TSA_TDMA) {
++			if (is_rx) {
++				/* First half of first half of si_ram */
++				area->entries_start = tsa->si_ram;
++				area->entries_next = area->entries_start + quarter;
++				area->last_entry = NULL;
 +			} else {
-+				chan->is_rx_halted = true;
++				/* First half of second half of si_ram */
++				area->entries_start = tsa->si_ram + (2 * quarter);
++				area->entries_next = area->entries_start + quarter;
++				area->last_entry = NULL;
 +			}
-+			spin_unlock_irqrestore(&chan->rx_lock, flags);
++		} else {
++			if (is_rx) {
++				/* Second half of first half of si_ram */
++				area->entries_start = tsa->si_ram + quarter;
++				area->entries_next = area->entries_start + quarter;
++				area->last_entry = NULL;
++			} else {
++				/* Second half of second half of si_ram */
++				area->entries_start = tsa->si_ram + (3 * quarter);
++				area->entries_next = area->entries_start + quarter;
++				area->last_entry = NULL;
++			}
 +		}
-+
-+		if (int_entry & QMC_INT_RXB)
-+			qmc_chan_read_done(chan);
-+
-+int_next:
-+		if (int_entry & QMC_INT_W)
-+			qmc->int_curr = qmc->int_table;
-+		else
-+			qmc->int_curr++;
-+		int_entry = in_be16(qmc->int_curr);
 +	}
 +}
 +
-+static irqreturn_t qmc_irq_handler(int irq, void *priv)
++static const char *tsa_cell_id2name(struct tsa *tsa, u32 cell_id)
 +{
-+	struct qmc *qmc = (struct qmc *)priv;
-+	u16 scce;
-+
-+	scce = in_be16(qmc->scc_regs + SCC_SCCE);
-+	out_be16(qmc->scc_regs + SCC_SCCE, scce);
-+
-+	if (unlikely(scce & SCC_SCCE_IQOV))
-+		dev_info(qmc->dev, "IRQ queue overflow\n");
-+
-+	if (unlikely(scce & SCC_SCCE_GUN))
-+		dev_err(qmc->dev, "Global transmitter underrun\n");
-+
-+	if (unlikely(scce & SCC_SCCE_GOV))
-+		dev_err(qmc->dev, "Global receiver overrun\n");
-+
-+	/* normal interrupt */
-+	if (likely(scce & SCC_SCCE_GINT))
-+		qmc_irq_gint(qmc);
-+
-+	return IRQ_HANDLED;
++	switch (cell_id) {
++	case FSL_CPM_TSA_NU:	return "Not used";
++	case FSL_CPM_TSA_SCC2:	return "SCC2";
++	case FSL_CPM_TSA_SCC3:	return "SCC3";
++	case FSL_CPM_TSA_SCC4:	return "SCC4";
++	case FSL_CPM_TSA_SMC1:	return "SMC1";
++	case FSL_CPM_TSA_SMC2:	return "SMC2";
++	default:
++		break;
++	}
++	return NULL;
 +}
 +
-+static int qmc_probe(struct platform_device *pdev)
++static u32 tsa_cell_id2csel(struct tsa *tsa, u32 cell_id)
++{
++	switch (cell_id) {
++	case FSL_CPM_TSA_SCC2:	return TSA_SIRAM_ENTRY_CSEL_SCC2;
++	case FSL_CPM_TSA_SCC3:	return TSA_SIRAM_ENTRY_CSEL_SCC3;
++	case FSL_CPM_TSA_SCC4:	return TSA_SIRAM_ENTRY_CSEL_SCC4;
++	case FSL_CPM_TSA_SMC1:	return TSA_SIRAM_ENTRY_CSEL_SMC1;
++	case FSL_CPM_TSA_SMC2:	return TSA_SIRAM_ENTRY_CSEL_SMC2;
++	default:
++		break;
++	}
++	return TSA_SIRAM_ENTRY_CSEL_NU;
++}
++
++static int tsa_add_entry(struct tsa *tsa, struct tsa_entries_area *area,
++			 u32 count, u32 cell_id, u32 flags)
++{
++	void *__iomem addr;
++	u32 left;
++	u32 val;
++	u32 cnt;
++	u32 nb;
++
++	addr = area->last_entry ? area->last_entry + 4 : area->entries_start;
++
++	nb = DIV_ROUND_UP(count, 8);
++	if ((addr + (nb * 4)) > area->entries_next) {
++		dev_err(tsa->dev, "si ram area full\n");
++		return -ENOSPC;
++	}
++
++	if (area->last_entry) {
++		/* Clear last flag */
++		clrbits32(area->last_entry, TSA_SIRAM_ENTRY_LAST);
++	}
++
++	left = count;
++	while (left) {
++		val = TSA_SIRAM_ENTRY_BYTE | tsa_cell_id2csel(tsa, cell_id);
++
++		if (left > 16) {
++			cnt = 16;
++		} else {
++			cnt = left;
++			val |= TSA_SIRAM_ENTRY_LAST;
++			area->last_entry = addr;
++		}
++		val |= TSA_SIRAM_ENTRY_CNT(cnt - 1);
++
++		out_be32(addr, val);
++		addr += 4;
++		left -= cnt;
++	}
++
++	return 0;
++}
++
++static int tsa_of_parse_tdm_route(struct tsa *tsa, struct device_node *tdm_np,
++				  u32 tdms, u32 tdm_id, bool is_rx)
++{
++	struct tsa_entries_area area;
++	const char *route_name;
++	int len, i;
++	u32 count;
++	u32 cell_id;
++	const char *cell_name;
++	struct tsa_cell_info *cell_info;
++	struct tsa_tdm *tdm;
++	u32 flags;
++	int ret;
++	u32 ts;
++
++	route_name = is_rx ? "rx_ts_routes" : "tx_ts_routes";
++
++	len = of_property_count_u32_elems(tdm_np,  route_name);
++	if (len < 0) {
++		dev_err(tsa->dev, "%pOF: failed to read %s\n", tdm_np, route_name);
++		return len;
++	}
++	if (len % 3 != 0) {
++		dev_err(tsa->dev, "%pOF: wrong %s format\n", tdm_np, route_name);
++		return -EINVAL;
++	}
++
++	tsa_init_entries_area(tsa, &area, tdms, tdm_id, is_rx);
++	ts = 0;
++	for (i = 0; i < len; i += 3) {
++		of_property_read_u32_index(tdm_np, route_name, i, &count);
++		of_property_read_u32_index(tdm_np, route_name, i + 1, &cell_id);
++		of_property_read_u32_index(tdm_np, route_name, i + 2, &flags);
++
++		cell_name = tsa_cell_id2name(tsa, cell_id);
++		if (!cell_name) {
++			dev_err(tsa->dev, "%pOF: invalid cell id (%u)\n", tdm_np,
++				cell_id);
++			return -EINVAL;
++		}
++
++		dev_dbg(tsa->dev, "tdm_id=%u, %s ts %u..%u -> %s (0x%x)\n",
++			tdm_id, route_name, ts, ts+count-1, cell_name, flags);
++		ts += count;
++
++		ret = tsa_add_entry(tsa, &area, count, cell_id, flags);
++		if (ret)
++			return ret;
++
++		cell_info = &tsa->cell_infos[cell_id];
++		tdm = &tsa->tdm[tdm_id];
++		if (is_rx) {
++			cell_info->rx_fs_rate = clk_get_rate(tdm->l1rsync_clk);
++			cell_info->rx_bit_rate = clk_get_rate(tdm->l1rclk_clk);
++			cell_info->nb_rx_ts += count;
++		} else {
++			cell_info->tx_fs_rate = tdm->l1tsync_clk ?
++				clk_get_rate(tdm->l1tsync_clk) :
++				clk_get_rate(tdm->l1rsync_clk);
++			cell_info->tx_bit_rate = tdm->l1tclk_clk ?
++				clk_get_rate(tdm->l1tclk_clk) :
++				clk_get_rate(tdm->l1rclk_clk);
++			cell_info->nb_tx_ts += count;
++		}
++	}
++	return 0;
++}
++
++static inline int tsa_of_parse_tdm_rx_route(struct tsa *tsa,
++					    struct device_node *tdm_np,
++					    u32 tdms, u32 tdm_id)
++{
++	return tsa_of_parse_tdm_route(tsa, tdm_np, tdms, tdm_id, true);
++}
++
++static inline int tsa_of_parse_tdm_tx_route(struct tsa *tsa,
++					    struct device_node *tdm_np,
++					    u32 tdms, u32 tdm_id)
++{
++	return tsa_of_parse_tdm_route(tsa, tdm_np, tdms, tdm_id, false);
++}
++
++static int tsa_of_parse_tdms(struct tsa *tsa, struct device_node *np)
++{
++	struct device_node *tdm_np;
++	struct tsa_tdm *tdm;
++	struct clk *clk;
++	const char *mode;
++	u32 tdm_id, val;
++	int ret;
++	int i;
++
++	tsa->tdms = 0;
++	tsa->tdm[0].is_enable = false;
++	tsa->tdm[1].is_enable = false;
++
++	for_each_available_child_of_node(np, tdm_np) {
++		ret = of_property_read_u32(tdm_np, "reg", &tdm_id);
++		if (ret) {
++			dev_err(tsa->dev, "%pOF: failed to read reg\n", tdm_np);
++			of_node_put(tdm_np);
++			return ret;
++		}
++		switch (tdm_id) {
++		case 0:
++			tsa->tdms |= BIT(TSA_TDMA);
++			break;
++		case 1:
++			tsa->tdms |= BIT(TSA_TDMB);
++			break;
++		default:
++			dev_err(tsa->dev, "%pOF: Invalid tdm_id (%u)\n", tdm_np,
++				tdm_id);
++			of_node_put(tdm_np);
++			return -EINVAL;
++		}
++	}
++
++	for_each_available_child_of_node(np, tdm_np) {
++		ret = of_property_read_u32(tdm_np, "reg", &tdm_id);
++		if (ret) {
++			dev_err(tsa->dev, "%pOF: failed to read reg\n", tdm_np);
++			of_node_put(tdm_np);
++			return ret;
++		}
++
++		tdm = &tsa->tdm[tdm_id];
++
++		mode = "normal";
++		ret = of_property_read_string(tdm_np, "fsl,mode", &mode);
++		if (ret && ret != -EINVAL) {
++			dev_err(tsa->dev, "%pOF: failed to read fsl,mode\n", tdm_np);
++			of_node_put(tdm_np);
++			return ret;
++		}
++		if (!strcmp(mode, "normal")) {
++			tdm->simode_tdm |= TSA_SIMODE_TDM_SDM_NORM;
++		} else if (!strcmp(mode, "echo")) {
++			tdm->simode_tdm |= TSA_SIMODE_TDM_SDM_ECHO;
++		} else if (!strcmp(mode, "internal-loopback")) {
++			tdm->simode_tdm |= TSA_SIMODE_TDM_SDM_INTL_LOOP;
++		} else if (!strcmp(mode, "control-loopback")) {
++			tdm->simode_tdm |= TSA_SIMODE_TDM_SDM_LOOP_CTRL;
++		} else {
++			dev_err(tsa->dev, "%pOF: Invalid fsl,mode (%s)\n", tdm_np,
++				mode);
++			of_node_put(tdm_np);
++			return -EINVAL;
++		}
++
++		val = 0;
++		ret = of_property_read_u32(tdm_np, "fsl,rx-frame-sync-delay", &val);
++		if (ret && ret != -EINVAL) {
++			dev_err(tsa->dev, "%pOF: failed to read fsl,rx-frame-sync-delay\n",
++				tdm_np);
++			of_node_put(tdm_np);
++			return ret;
++		}
++		if (val > 3) {
++			dev_err(tsa->dev, "%pOF: Invalid fsl,rx-frame-sync-delay (%u)\n",
++				tdm_np, val);
++			of_node_put(tdm_np);
++			return -EINVAL;
++		}
++		tdm->simode_tdm |= TSA_SIMODE_TDM_RFSD(val);
++
++		val = 0;
++		ret = of_property_read_u32(tdm_np, "fsl,tx-frame-sync-delay", &val);
++		if (ret && ret != -EINVAL) {
++			dev_err(tsa->dev, "%pOF: failed to read fsl,tx-frame-sync-delay\n",
++				tdm_np);
++			of_node_put(tdm_np);
++			return ret;
++		}
++		if (val > 3) {
++			dev_err(tsa->dev, "%pOF: Invalid fsl,tx-frame-sync-delay (%u)\n",
++				tdm_np, val);
++			of_node_put(tdm_np);
++			return -EINVAL;
++		}
++		tdm->simode_tdm |= TSA_SIMODE_TDM_TFSD(val);
++
++		if (of_property_read_bool(tdm_np, "fsl,common-rxtx-pins"))
++			tdm->simode_tdm |= TSA_SIMODE_TDM_CRT;
++
++		if (of_property_read_bool(tdm_np, "fsl,clock-falling-edge"))
++			tdm->simode_tdm |= TSA_SIMODE_TDM_CE;
++
++		if (of_property_read_bool(tdm_np, "fsl,fsync-rising-edge"))
++			tdm->simode_tdm |= TSA_SIMODE_TDM_FE;
++
++		if (of_property_read_bool(tdm_np, "fsl,double-speed-clock"))
++			tdm->simode_tdm |= TSA_SIMODE_TDM_DSC;
++
++		if (of_property_read_bool(tdm_np, "fsl,grant-mode"))
++			tdm->simode_tdm |= TSA_SIMODE_TDM_GM;
++
++		clk = of_clk_get_by_name(tdm_np, "l1rsync");
++		if (IS_ERR(clk)) {
++			ret = PTR_ERR(clk);
++			of_node_put(tdm_np);
++			goto err;
++		}
++		ret = clk_prepare_enable(clk);
++		if (ret) {
++			clk_put(clk);
++			of_node_put(tdm_np);
++			goto err;
++		}
++		tdm->l1rsync_clk = clk;
++
++		clk = of_clk_get_by_name(tdm_np, "l1rclk");
++		if (IS_ERR(clk)) {
++			ret = PTR_ERR(clk);
++			of_node_put(tdm_np);
++			goto err;
++		}
++		ret = clk_prepare_enable(clk);
++		if (ret) {
++			clk_put(clk);
++			of_node_put(tdm_np);
++			goto err;
++		}
++		tdm->l1rclk_clk = clk;
++
++		if (!(tdm->simode_tdm & TSA_SIMODE_TDM_CRT)) {
++			clk = of_clk_get_by_name(tdm_np, "l1tsync");
++			if (IS_ERR(clk)) {
++				ret = PTR_ERR(clk);
++				of_node_put(tdm_np);
++				goto err;
++			}
++			ret = clk_prepare_enable(clk);
++			if (ret) {
++				clk_put(clk);
++				of_node_put(tdm_np);
++				goto err;
++			}
++			tdm->l1tsync_clk = clk;
++
++			clk = of_clk_get_by_name(tdm_np, "l1tclk");
++			if (IS_ERR(clk)) {
++				ret = PTR_ERR(clk);
++				of_node_put(tdm_np);
++				goto err;
++			}
++			ret = clk_prepare_enable(clk);
++			if (ret) {
++				clk_put(clk);
++				of_node_put(tdm_np);
++				goto err;
++			}
++			tdm->l1tclk_clk = clk;
++		}
++
++		ret = tsa_of_parse_tdm_rx_route(tsa, tdm_np, tsa->tdms, tdm_id);
++		if (ret) {
++			of_node_put(tdm_np);
++			goto err;
++		}
++
++		ret = tsa_of_parse_tdm_tx_route(tsa, tdm_np, tsa->tdms, tdm_id);
++		if (ret) {
++			of_node_put(tdm_np);
++			goto err;
++		}
++
++		tdm->is_enable = true;
++	}
++	return 0;
++
++err:
++	for (i = 0; i < 2; i++) {
++		if (tsa->tdm[i].l1rsync_clk) {
++			clk_disable_unprepare(tsa->tdm[i].l1rsync_clk);
++			clk_put(tsa->tdm[i].l1rsync_clk);
++		}
++		if (tsa->tdm[i].l1rclk_clk) {
++			clk_disable_unprepare(tsa->tdm[i].l1rclk_clk);
++			clk_put(tsa->tdm[i].l1rclk_clk);
++		}
++		if (tsa->tdm[i].l1tsync_clk) {
++			clk_disable_unprepare(tsa->tdm[i].l1rsync_clk);
++			clk_put(tsa->tdm[i].l1rsync_clk);
++		}
++		if (tsa->tdm[i].l1tclk_clk) {
++			clk_disable_unprepare(tsa->tdm[i].l1rclk_clk);
++			clk_put(tsa->tdm[i].l1rclk_clk);
++		}
++	}
++	return ret;
++}
++
++static void tsa_init_si_ram(struct tsa *tsa)
++{
++	resource_size_t i;
++
++	/* Fill all entries as the last one */
++	for (i = 0; i < tsa->si_ram_sz; i += 4)
++		out_be32(tsa->si_ram + i, TSA_SIRAM_ENTRY_LAST);
++}
++
++static int tsa_probe(struct platform_device *pdev)
 +{
 +	struct device_node *np = pdev->dev.of_node;
-+	unsigned int nb_chans;
 +	struct resource *res;
-+	struct qmc *qmc;
++	struct tsa *tsa;
 +	u32 val;
-+	int irq;
 +	int ret;
 +
-+	qmc = devm_kzalloc(&pdev->dev, sizeof(*qmc), GFP_KERNEL);
-+	if (!qmc)
++	tsa = devm_kzalloc(&pdev->dev, sizeof(*tsa), GFP_KERNEL);
++	if (!tsa)
 +		return -ENOMEM;
 +
-+	qmc->dev = &pdev->dev;
-+	INIT_LIST_HEAD(&qmc->chan_head);
++	tsa->dev = &pdev->dev;
 +
-+	qmc->scc_regs = devm_platform_ioremap_resource_byname(pdev, "scc_regs");
-+	if (IS_ERR(qmc->scc_regs))
-+		return PTR_ERR(qmc->scc_regs);
++	tsa->si_regs = devm_platform_ioremap_resource_byname(pdev, "si_regs");
++	if (IS_ERR(tsa->si_regs))
++		return PTR_ERR(tsa->si_regs);
 +
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "scc_pram");
-+	if (!res)
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "si_ram");
++	if (!res) {
++		dev_err(tsa->dev, "si_ram resource missing\n");
 +		return -EINVAL;
-+	qmc->scc_pram_offset = res->start - get_immrbase();
-+	qmc->scc_pram = devm_ioremap_resource(qmc->dev, res);
-+	if (IS_ERR(qmc->scc_pram))
-+		return PTR_ERR(qmc->scc_pram);
++	}
++	tsa->si_ram_sz = resource_size(res);
++	tsa->si_ram = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(tsa->si_ram))
++		return PTR_ERR(tsa->si_ram);
 +
-+	qmc->dpram  = devm_platform_ioremap_resource_byname(pdev, "dpram");
-+	if (IS_ERR(qmc->dpram))
-+		return PTR_ERR(qmc->dpram);
++	tsa_init_si_ram(tsa);
 +
-+	ret = of_property_read_u32(np, "tsa-cell-id", &val);
-+	if (ret) {
-+		dev_err(qmc->dev, "%pOF: failed to read tsa-cell-id\n", np);
++	ret = tsa_of_parse_tdms(tsa, np);
++	if (ret)
 +		return ret;
-+	}
-+	qmc->tsa_cell_id = val;
 +
-+	qmc->tsa = devm_tsa_get_byphandle(qmc->dev, np, "tsa");
-+	if (IS_ERR(qmc->tsa)) {
-+		return dev_err_probe(qmc->dev, PTR_ERR(qmc->tsa),
-+				     "Failed to get TSA\n");
-+	}
++	/* Set SIMODE */
++	val = 0;
++	if (tsa->tdm[0].is_enable)
++		val |= TSA_SIMODE_TDMA(tsa->tdm[0].simode_tdm);
++	if (tsa->tdm[1].is_enable)
++		val |= TSA_SIMODE_TDMB(tsa->tdm[1].simode_tdm);
 +
-+	/* Connect the SCC to TSA */
-+	ret = tsa_connect(qmc->tsa, qmc->tsa_cell_id);
-+	if (ret) {
-+		dev_err(qmc->dev, "Failed to connect TSA\n");
-+		return ret;
-+	}
++	clrsetbits_be32(tsa->si_regs + TSA_SIMODE,
++		TSA_SIMODE_TDMA(TSA_SIMODE_TDM_MASK) |
++		TSA_SIMODE_TDMB(TSA_SIMODE_TDM_MASK),
++		val);
 +
-+	/* Parse channels informationss */
-+	ret = qmc_of_parse_chans(qmc, np);
-+	if (ret)
-+		goto err_tsa_disconnect;
++	/* Set SIGMR */
++	val = (tsa->tdms == BIT(TSA_TDMA)) ?
++		TSA_SIGMR_RDM_STATIC_TDMA : TSA_SIGMR_RDM_STATIC_TDMAB;
++	if (tsa->tdms & BIT(TSA_TDMA))
++		val |= TSA_SIGMR_ENA;
++	if (tsa->tdms & BIT(TSA_TDMB))
++		val |= TSA_SIGMR_ENB;
++	out_8(tsa->si_regs + TSA_SIGMR, val);
 +
-+	nb_chans = qmc_nb_chans(qmc);
-+
-+	/* Init GMSR_H and GMSR_L registers */
-+	out_be32(qmc->scc_regs + SCC_GSMRH,
-+		SCC_GSMRH_CDS | SCC_GSMRH_CTSS | SCC_GSMRH_CDP | SCC_GSMRH_CTSP);
-+
-+	/* enable QMC mode */
-+	out_be32(qmc->scc_regs + SCC_GSMRL, SCC_GSMRL_MODE_QMC);
-+
-+	/* Allocate the buffer descriptor table
-+	 * 8 rx and 8 tx descriptors per channel
-+	 */
-+	qmc->bd_size = (nb_chans * (QMC_NB_TXBDS + QMC_NB_RXBDS)) * sizeof(cbd_t);
-+	qmc->bd_table = dmam_alloc_coherent(qmc->dev, qmc->bd_size,
-+		&qmc->bd_dma_addr, GFP_KERNEL);
-+	if (!qmc->bd_table) {
-+		dev_err(qmc->dev, "Failed to allocate bd table\n");
-+		ret = -ENOMEM;
-+		goto err_tsa_disconnect;
-+	}
-+	memset(qmc->bd_table, 0, qmc->bd_size);
-+
-+	out_be32(qmc->scc_pram + QMC_GBL_MCBASE, qmc->bd_dma_addr);
-+
-+	/* Allocate the interrupt table */
-+	qmc->int_size = QMC_NB_INTS * sizeof(u16);
-+	qmc->int_table = dmam_alloc_coherent(qmc->dev, qmc->int_size,
-+		&qmc->int_dma_addr, GFP_KERNEL);
-+	if (!qmc->int_table) {
-+		dev_err(qmc->dev, "Failed to allocate interrupt table\n");
-+		ret = -ENOMEM;
-+		goto err_tsa_disconnect;
-+	}
-+	memset(qmc->int_table, 0, qmc->int_size);
-+
-+	qmc->int_curr = qmc->int_table;
-+	out_be32(qmc->scc_pram + QMC_GBL_INTBASE, qmc->int_dma_addr);
-+	out_be32(qmc->scc_pram + QMC_GBL_INTPTR, qmc->int_dma_addr);
-+
-+	/* Set MRBLR (valid for HDLC only) max MRU + max CRC */
-+	out_be16(qmc->scc_pram + QMC_GBL_MRBLR, HDLC_MAX_MRU + 4);
-+
-+	out_be16(qmc->scc_pram + QMC_GBL_GRFTHR, 1);
-+	out_be16(qmc->scc_pram + QMC_GBL_GRFCNT, 1);
-+
-+	out_be32(qmc->scc_pram + QMC_GBL_C_MASK32, 0xDEBB20E3);
-+	out_be16(qmc->scc_pram + QMC_GBL_C_MASK16, 0xF0B8);
-+
-+	ret = qmc_setup_tsa(qmc);
-+	if (ret)
-+		goto err_tsa_disconnect;
-+
-+	out_be16(qmc->scc_pram + QMC_GBL_QMCSTATE, 0x8000);
-+
-+	ret = qmc_setup_chans(qmc);
-+	if (ret)
-+		goto err_tsa_disconnect;
-+
-+	/* Init interrupts table */
-+	ret = qmc_setup_ints(qmc);
-+	if (ret)
-+		goto err_tsa_disconnect;
-+
-+	/* Disable and clear interrupts,  set the irq handler */
-+	out_be16(qmc->scc_regs + SCC_SCCM, 0x0000);
-+	out_be16(qmc->scc_regs + SCC_SCCE, 0x000F);
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq < 0)
-+		goto err_tsa_disconnect;
-+	ret = devm_request_irq(qmc->dev, irq, qmc_irq_handler, 0, "qmc", qmc);
-+	if (ret < 0)
-+		goto err_tsa_disconnect;
-+
-+	/* Enable interrupts */
-+	out_be16(qmc->scc_regs + SCC_SCCM,
-+		SCC_SCCE_IQOV | SCC_SCCE_GINT | SCC_SCCE_GUN | SCC_SCCE_GOV);
-+
-+	ret = qmc_finalize_chans(qmc);
-+	if (ret < 0)
-+		goto err_disable_intr;
-+
-+	/* Enable transmiter and receiver */
-+	setbits32(qmc->scc_regs + SCC_GSMRL, SCC_GSMRL_ENR | SCC_GSMRL_ENT);
-+
-+	platform_set_drvdata(pdev, qmc);
++	platform_set_drvdata(pdev, tsa);
 +
 +	return 0;
-+
-+err_disable_intr:
-+	out_be16(qmc->scc_regs + SCC_SCCM, 0);
-+
-+err_tsa_disconnect:
-+	tsa_disconnect(qmc->tsa, qmc->tsa_cell_id);
-+	return ret;
 +}
 +
-+static int qmc_remove(struct platform_device *pdev)
++static int tsa_remove(struct platform_device *pdev)
 +{
-+	struct qmc *qmc = platform_get_drvdata(pdev);
++	struct tsa *tsa = platform_get_drvdata(pdev);
++	int i;
 +
-+	/* Disable transmiter and receiver */
-+	setbits32(qmc->scc_regs + SCC_GSMRL, 0);
-+
-+	/* Disable interrupts */
-+	out_be16(qmc->scc_regs + SCC_SCCM, 0);
-+
-+	/* Disconnect from tsa */
-+	tsa_disconnect(qmc->tsa, qmc->tsa_cell_id);
-+
++	for (i = 0; i < 2; i++) {
++		if (tsa->tdm[i].l1rsync_clk) {
++			clk_disable_unprepare(tsa->tdm[i].l1rsync_clk);
++			clk_put(tsa->tdm[i].l1rsync_clk);
++		}
++		if (tsa->tdm[i].l1rclk_clk) {
++			clk_disable_unprepare(tsa->tdm[i].l1rclk_clk);
++			clk_put(tsa->tdm[i].l1rclk_clk);
++		}
++		if (tsa->tdm[i].l1tsync_clk) {
++			clk_disable_unprepare(tsa->tdm[i].l1rsync_clk);
++			clk_put(tsa->tdm[i].l1rsync_clk);
++		}
++		if (tsa->tdm[i].l1tclk_clk) {
++			clk_disable_unprepare(tsa->tdm[i].l1rclk_clk);
++			clk_put(tsa->tdm[i].l1rclk_clk);
++		}
++	}
 +	return 0;
 +}
 +
-+static const struct of_device_id qmc_id_table[] = {
-+	{ .compatible = "fsl,cpm1-scc-qmc" },
++static const struct of_device_id tsa_id_table[] = {
++	{ .compatible = "fsl,cpm1-tsa" },
 +	{} /* sentinel */
 +};
-+MODULE_DEVICE_TABLE(of, qmc_id_table);
++MODULE_DEVICE_TABLE(of, tsa_id_table);
 +
-+static struct platform_driver qmc_driver = {
++static struct platform_driver tsa_driver = {
 +	.driver = {
-+		.name = "fsl-qmc",
-+		.of_match_table = of_match_ptr(qmc_id_table),
++		.name = "fsl-tsa",
++		.of_match_table = of_match_ptr(tsa_id_table),
 +	},
-+	.probe = qmc_probe,
-+	.remove = qmc_remove,
++	.probe = tsa_probe,
++	.remove = tsa_remove,
 +};
-+module_platform_driver(qmc_driver);
++module_platform_driver(tsa_driver);
 +
-+struct qmc_chan *qmc_chan_get_byphandle(struct device_node *np, const char *phandle_name)
++struct tsa *tsa_get_byphandle(struct device_node *np, const char *phandle_name)
 +{
-+	struct of_phandle_args out_args;
 +	struct platform_device *pdev;
-+	struct qmc_chan *qmc_chan;
-+	struct qmc *qmc;
-+	int ret;
++	struct device_node *tsa_np;
++	struct tsa *tsa;
 +
-+	ret = of_parse_phandle_with_fixed_args(np, phandle_name, 1, 0,
-+					       &out_args);
-+	if (ret < 0)
-+		return ERR_PTR(ret);
++	tsa_np = of_parse_phandle(np, phandle_name, 0);
++	if (!tsa_np)
++		return ERR_PTR(-EINVAL);
 +
-+	if (!of_match_node(qmc_driver.driver.of_match_table, out_args.np)) {
-+		of_node_put(out_args.np);
++	if (!of_match_node(tsa_driver.driver.of_match_table, tsa_np)) {
++		of_node_put(tsa_np);
 +		return ERR_PTR(-EINVAL);
 +	}
 +
-+	pdev = of_find_device_by_node(out_args.np);
-+	of_node_put(out_args.np);
++	pdev = of_find_device_by_node(tsa_np);
++	of_node_put(tsa_np);
 +	if (!pdev)
 +		return ERR_PTR(-ENODEV);
 +
-+	qmc = platform_get_drvdata(pdev);
-+	if (!qmc) {
++	tsa = platform_get_drvdata(pdev);
++	if (!tsa) {
 +		platform_device_put(pdev);
 +		return ERR_PTR(-EPROBE_DEFER);
 +	}
 +
-+	if (out_args.args_count != 1) {
-+		platform_device_put(pdev);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	if (out_args.args[0] >= ARRAY_SIZE(qmc->chans)) {
-+		platform_device_put(pdev);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	qmc_chan = qmc->chans[out_args.args[0]];
-+	if (!qmc_chan) {
-+		platform_device_put(pdev);
-+		return ERR_PTR(-ENOENT);
-+	}
-+
-+	return qmc_chan;
++	return tsa;
 +}
-+EXPORT_SYMBOL(qmc_chan_get_byphandle);
++EXPORT_SYMBOL(tsa_get_byphandle);
 +
-+void qmc_chan_put(struct qmc_chan *chan)
++void tsa_put(struct tsa *tsa)
 +{
-+	put_device(chan->qmc->dev);
++	put_device(tsa->dev);
 +}
-+EXPORT_SYMBOL(qmc_chan_put);
++EXPORT_SYMBOL(tsa_put);
 +
-+static void devm_qmc_chan_release(struct device *dev, void *res)
++static void devm_tsa_release(struct device *dev, void *res)
 +{
-+	struct qmc_chan **qmc_chan = res;
++	struct tsa **tsa = res;
 +
-+	qmc_chan_put(*qmc_chan);
++	tsa_put(*tsa);
 +}
 +
-+struct qmc_chan *devm_qmc_chan_get_byphandle(struct device *dev,
-+					     struct device_node *np,
-+					     const char *phandle_name)
++struct tsa *devm_tsa_get_byphandle(struct device *dev, struct device_node *np,
++				   const char *phandle_name)
 +{
-+	struct qmc_chan *qmc_chan;
-+	struct qmc_chan **dr;
++	struct tsa *tsa;
++	struct tsa **dr;
 +
-+	dr = devres_alloc(devm_qmc_chan_release, sizeof(*dr), GFP_KERNEL);
++	dr = devres_alloc(devm_tsa_release, sizeof(*dr), GFP_KERNEL);
 +	if (!dr)
 +		return ERR_PTR(-ENOMEM);
 +
-+	qmc_chan = qmc_chan_get_byphandle(np, phandle_name);
-+	if (!IS_ERR(qmc_chan)) {
-+		*dr = qmc_chan;
++	tsa = tsa_get_byphandle(np, phandle_name);
++	if (!IS_ERR(tsa)) {
++		*dr = tsa;
 +		devres_add(dev, dr);
 +	} else {
 +		devres_free(dr);
 +	}
 +
-+	return qmc_chan;
++	return tsa;
 +}
-+EXPORT_SYMBOL(devm_qmc_chan_get_byphandle);
++EXPORT_SYMBOL(devm_tsa_get_byphandle);
 +
 +MODULE_AUTHOR("Herve Codina <herve.codina@bootlin.com>");
-+MODULE_DESCRIPTION("CPM QMC driver");
++MODULE_DESCRIPTION("CPM TSA driver");
 +MODULE_LICENSE("GPL");
-diff --git a/include/soc/fsl/qe/qmc.h b/include/soc/fsl/qe/qmc.h
+diff --git a/drivers/soc/fsl/qe/tsa.h b/drivers/soc/fsl/qe/tsa.h
 new file mode 100644
-index 000000000000..3c61a50d2ae2
+index 000000000000..ab1ed7a8a1a9
 --- /dev/null
-+++ b/include/soc/fsl/qe/qmc.h
-@@ -0,0 +1,71 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
++++ b/drivers/soc/fsl/qe/tsa.h
+@@ -0,0 +1,43 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * QMC management
++ * TSA management
 + *
 + * Copyright 2022 CS GROUP France
 + *
 + * Author: Herve Codina <herve.codina@bootlin.com>
 + */
-+#ifndef __SOC_FSL_QMC_H__
-+#define __SOC_FSL_QMC_H__
++#ifndef __SOC_FSL_TSA_H__
++#define __SOC_FSL_TSA_H__
 +
++#include <dt-bindings/soc/fsl-tsa.h>
 +#include <linux/types.h>
 +
 +struct device_node;
 +struct device;
-+struct qmc_chan;
++struct tsa;
 +
-+struct qmc_chan *qmc_chan_get_byphandle(struct device_node *np, const char *phandle_name);
-+void qmc_chan_put(struct qmc_chan *chan);
-+struct qmc_chan *devm_qmc_chan_get_byphandle(struct device *dev, struct device_node *np,
-+					     const char *phandle_name);
++struct tsa *tsa_get_byphandle(struct device_node *np, const char *phandle_name);
++void tsa_put(struct tsa *tsa);
++struct tsa *devm_tsa_get_byphandle(struct device *dev, struct device_node *np,
++				   const char *phandle_name);
 +
-+enum qmc_mode {
-+	QMC_TRANSPARENT,
-+	QMC_HDLC,
-+};
++/* Connect and disconnect. cell_id is one of FSL_CPM_TSA_* available in
++ * dt-bindings/soc/fsl-fsa.h
++ */
++int tsa_connect(struct tsa *tsa, unsigned int cell_id);
++int tsa_disconnect(struct tsa *tsa, unsigned int cell_id);
 +
-+struct qmc_chan_info {
-+	enum qmc_mode mode;
++/* Cell information */
++struct tsa_cell_info {
 +	unsigned long rx_fs_rate;
 +	unsigned long rx_bit_rate;
 +	u8 nb_rx_ts;
@@ -1683,40 +973,10 @@ index 000000000000..3c61a50d2ae2
 +	u8 nb_tx_ts;
 +};
 +
-+int qmc_chan_get_info(struct qmc_chan *chan, struct qmc_chan_info *info);
++/* Get information */
++int tsa_get_info(struct tsa *tsa, unsigned int cell_id, struct tsa_cell_info *info);
 +
-+struct qmc_chan_param {
-+	enum qmc_mode mode;
-+	union {
-+		struct {
-+			u16 max_rx_buf_size;
-+			u16 max_rx_frame_size;
-+			bool is_crc32;
-+		} hdlc;
-+		struct {
-+			u16 max_rx_buf_size;
-+		} transp;
-+	};
-+};
-+
-+int qmc_chan_set_param(struct qmc_chan *chan, const struct qmc_chan_param *param);
-+
-+int qmc_chan_write_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
-+			  void (*complete)(void *context), void *context);
-+
-+int qmc_chan_read_submit(struct qmc_chan *chan, dma_addr_t addr, size_t length,
-+			 void (*complete)(void *context, size_t length),
-+			 void *context);
-+
-+#define QMC_CHAN_READ  (1<<0)
-+#define QMC_CHAN_WRITE (1<<1)
-+#define QMC_CHAN_ALL   (QMC_CHAN_READ | QMC_CHAN_WRITE)
-+
-+int qmc_chan_start(struct qmc_chan *chan, int direction);
-+int qmc_chan_stop(struct qmc_chan *chan, int direction);
-+int qmc_chan_reset(struct qmc_chan *chan, int direction);
-+
-+#endif /* __SOC_FSL_QMC_H__ */
++#endif /* __SOC_FSL_TSA_H__ */
 -- 
 2.38.1
 
