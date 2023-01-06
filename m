@@ -4,43 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D26D4C3DA7A
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 Jan 2023 03:30:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D1BBC4708E
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 Jan 2023 03:31:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F05C113134;
-	Fri,  6 Jan 2023 04:29:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F05C113134
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04DB613146;
+	Fri,  6 Jan 2023 04:30:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04DB613146
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1672975845;
-	bh=RbIbAxIm9Onh9gPBsH3tRpinPTZzWPKrM55kliARJLg=;
+	s=default; t=1672975859;
+	bh=ckeHjQon5VWhPhO7O3/Rz8RFTFZ+8EYn0EX+an1NO1c=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=CECjOCq2LXdBSTCTCUWpWT3UU+lEqTzDl4mAWKODn57rK6rpf0smNndrBTIcUy/Zi
-	 7hyfRsKUmHcjR+u2SYwhIrbifJYn9JDU2A4BGTiBDbnNPKLJtsQc6ERWomkhZnoQpd
-	 tOb9bV3kYXbIrqm3qfd1gW75f8EraoQojY3ItoVM=
+	b=IMjle7cll6pv+Pxycvvo7vwEDRWcQFtO06TsecTXCs43Jl9i9NTBoXFZyU5qKEPgP
+	 RMoVI1EbqkgXcctjRzYBbCU+Y9WoaPE3g1BBS4ziNsaapwdKPe3GliSlxF4Jn+K3Ip
+	 jUYq4N0Sp2ulomJ7CgQj0j3PnS8Y0W/v0XCwst+0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB087F80543;
-	Fri,  6 Jan 2023 04:29:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39EEAF80549;
+	Fri,  6 Jan 2023 04:29:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D1355F8022B; Fri,  6 Jan 2023 04:29:17 +0100 (CET)
-Received: from out29-9.mail.aliyun.com (out29-9.mail.aliyun.com [115.124.29.9])
+ id 949FEF80551; Fri,  6 Jan 2023 04:29:21 +0100 (CET)
+Received: from out29-177.mail.aliyun.com (out29-177.mail.aliyun.com
+ [115.124.29.177])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3DBF0F8025A
- for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2023 04:29:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3DBF0F8025A
-X-Alimail-AntiSpam: AC=CONTINUE; BC=0.06712914|-1; CH=green;
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3A8A8F800C0
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2023 04:29:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A8A8F800C0
+X-Alimail-AntiSpam: AC=CONTINUE; BC=0.06712911|-1; CH=green;
  DM=|CONTINUE|false|;
- DS=CONTINUE|ham_system_inform|0.00658004-0.0028205-0.990599;
- FP=0|0|0|0|0|-1|-1|-1; HT=ay29a033018047193; MF=wangweidong.a@awinic.com; NM=1;
- PH=DS; RN=26; RT=26; SR=0; TI=SMTPD_---.QlbrpNb_1672975737; 
+ DS=CONTINUE|ham_system_inform|0.0154738-0.00144593-0.98308;
+ FP=0|0|0|0|0|-1|-1|-1; HT=ay29a033018047203; MF=wangweidong.a@awinic.com; NM=1;
+ PH=DS; RN=26; RT=26; SR=0; TI=SMTPD_---.Qlbrp6d_1672975727; 
 Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com
- fp:SMTPD_---.QlbrpNb_1672975737) by smtp.aliyun-inc.com;
- Fri, 06 Jan 2023 11:29:00 +0800
+ fp:SMTPD_---.Qlbrp6d_1672975727) by smtp.aliyun-inc.com;
+ Fri, 06 Jan 2023 11:28:49 +0800
 From: wangweidong.a@awinic.com
 To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
  krzysztof.kozlowski+dt@linaro.org, perex@perex.cz, tiwai@suse.com,
@@ -52,10 +53,10 @@ To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
  srinivas.kandagatla@linaro.org, jonathan.albrieux@gmail.com, steve@sk2.org,
  alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH V9 4/5] ASoC: codecs: Aw883xx chip register file,
- data type file and Kconfig Makefile
-Date: Fri,  6 Jan 2023 11:28:34 +0800
-Message-Id: <20230106032835.141918-5-wangweidong.a@awinic.com>
+Subject: [PATCH V9 1/5] ASoC: codecs: Add i2c and codec registration for
+ aw883xx and their associated operation functions
+Date: Fri,  6 Jan 2023 11:28:31 +0800
+Message-Id: <20230106032835.141918-2-wangweidong.a@awinic.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230106032835.141918-1-wangweidong.a@awinic.com>
 References: <20230106032835.141918-1-wangweidong.a@awinic.com>
@@ -87,596 +88,659 @@ Signed-off-by: Nick Li <liweilei@awinic.com>
 Signed-off-by: Bruce zhao <zhaolei@awinic.com>
 Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
 ---
- sound/soc/codecs/Kconfig                      |  10 +
- sound/soc/codecs/Makefile                     |   6 +
- sound/soc/codecs/aw883xx/aw883xx_data_type.h  | 142 +++++++
- .../soc/codecs/aw883xx/aw883xx_pid_2049_reg.h | 383 ++++++++++++++++++
- 4 files changed, 541 insertions(+)
- create mode 100644 sound/soc/codecs/aw883xx/aw883xx_data_type.h
- create mode 100644 sound/soc/codecs/aw883xx/aw883xx_pid_2049_reg.h
+ sound/soc/codecs/aw883xx/aw883xx.c | 579 +++++++++++++++++++++++++++++
+ sound/soc/codecs/aw883xx/aw883xx.h |  58 +++
+ 2 files changed, 637 insertions(+)
+ create mode 100644 sound/soc/codecs/aw883xx/aw883xx.c
+ create mode 100644 sound/soc/codecs/aw883xx/aw883xx.h
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 0f9d71490075..ea1dd48c642b 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -54,6 +54,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_ALC5623
- 	imply SND_SOC_ALC5632
- 	imply SND_SOC_AW8738
-+	imply SND_SOC_AW883XX
- 	imply SND_SOC_BT_SCO
- 	imply SND_SOC_BD28623
- 	imply SND_SOC_CQ0093VC
-@@ -2167,4 +2168,13 @@ config SND_SOC_LPASS_TX_MACRO
- 	select SND_SOC_LPASS_MACRO_COMMON
- 	tristate "Qualcomm TX Macro in LPASS(Low Power Audio SubSystem)"
- 
-+config SND_SOC_AW883XX
-+	tristate "Soc Audio for awinic aw883xx series"
-+	depends on I2C
-+	help
-+	  this option enables support for aw883xx series Smart PA.
-+	  The Awinic AW883XX is an I2S/TDM input, high efficiency
-+	  digital Smart K audio amplifier with an integrated 10V
-+	  smart boost convert.
-+
- endmenu
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 71d3ce5867e4..afcac34e4d78 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -358,6 +358,10 @@ snd-soc-tas2780-objs := tas2780.o
- # Mux
- snd-soc-simple-mux-objs := simple-mux.o
- 
-+snd_soc_aw883xx-objs := aw883xx/aw883xx.o \
-+						aw883xx/aw883xx_device.o \
-+						aw883xx/aw883xx_bin_parse.o \
-+
- obj-$(CONFIG_SND_SOC_88PM860X)	+= snd-soc-88pm860x.o
- obj-$(CONFIG_SND_SOC_AB8500_CODEC)	+= snd-soc-ab8500-codec.o
- obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
-@@ -721,3 +725,5 @@ obj-$(CONFIG_SND_SOC_LPASS_TX_MACRO)	+= snd-soc-lpass-tx-macro.o
- 
- # Mux
- obj-$(CONFIG_SND_SOC_SIMPLE_MUX)	+= snd-soc-simple-mux.o
-+
-+obj-$(CONFIG_SND_SOC_AW883XX) +=snd_soc_aw883xx.o
-diff --git a/sound/soc/codecs/aw883xx/aw883xx_data_type.h b/sound/soc/codecs/aw883xx/aw883xx_data_type.h
+diff --git a/sound/soc/codecs/aw883xx/aw883xx.c b/sound/soc/codecs/aw883xx/aw883xx.c
 new file mode 100644
-index 000000000000..080728bfdfac
+index 000000000000..b75efb3be1e2
 --- /dev/null
-+++ b/sound/soc/codecs/aw883xx/aw883xx_data_type.h
-@@ -0,0 +1,142 @@
++++ b/sound/soc/codecs/aw883xx/aw883xx.c
+@@ -0,0 +1,579 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +//
-+// aw883_data_type.h --  The data type of the AW883XX chip
++// aw883xx.c --  ALSA SoC AW883XX codec support
 +//
 +// Copyright (c) 2022 AWINIC Technology CO., LTD
 +//
 +// Author: Bruce zhao <zhaolei@awinic.com>
++// Author: Weidong Wang <wangweidong.a@awinic.com>
 +//
 +
-+#ifndef __AW883XX_DATA_TYPE_H__
-+#define __AW883XX_DATA_TYPE_H__
++#include <linux/i2c.h>
++#include <linux/firmware.h>
++#include <linux/of_gpio.h>
++#include <linux/regmap.h>
++#include <sound/soc.h>
++#include "aw883xx.h"
++#include "aw883xx_device.h"
++#include "aw883xx_pid_2049_reg.h"
 +
-+#define PROJECT_NAME_MAX		(24)
-+#define CUSTOMER_NAME_MAX		(16)
-+#define CFG_VERSION_MAX		(4)
-+#define DEV_NAME_MAX			(16)
-+#define PROFILE_STR_MAX		(32)
-+
-+#define ACF_FILE_ID			(0xa15f908)
-+
-+enum aw_cfg_hdr_version {
-+	AW_CFG_HDR_VER		= 0x00000001,
-+	AW_CFG_HDR_VER_V1	= 0x01000000,
++static const struct regmap_config aw883xx_remap_config = {
++	.val_bits = 16,
++	.reg_bits = 8,
++	.max_register = AW_PID_2049_REG_MAX - 1,
++	.reg_format_endian = REGMAP_ENDIAN_LITTLE,
++	.val_format_endian = REGMAP_ENDIAN_BIG,
 +};
 +
-+enum aw_cfg_dde_type {
-+	AW_DEV_NONE_TYPE_ID	= 0xFFFFFFFF,
-+	AW_DEV_TYPE_ID		= 0x00000000,
-+	AW_SKT_TYPE_ID		= 0x00000001,
-+	AW_DEV_DEFAULT_TYPE_ID	= 0x00000002,
++static void aw883xx_start_pa(struct aw883xx *aw883xx)
++{
++	int ret, i;
++
++	for (i = 0; i < AW_START_RETRIES; i++) {
++		ret = aw883xx_dev_start(aw883xx->aw_pa);
++		if (ret) {
++			dev_err(aw883xx->aw_pa->dev, "aw883xx device start failed. retry = %d", i);
++			ret = aw883xx_dev_fw_update(aw883xx->aw_pa, AW_DSP_FW_UPDATE_ON, true);
++			if (ret < 0) {
++				dev_err(aw883xx->aw_pa->dev, "fw update failed");
++				continue;
++			}
++		} else {
++			dev_info(aw883xx->aw_pa->dev, "start success\n");
++			break;
++		}
++	}
++}
++
++static void aw883xx_startup_work(struct work_struct *work)
++{
++	struct aw883xx *aw883xx =
++		container_of(work, struct aw883xx, start_work.work);
++
++	mutex_lock(&aw883xx->lock);
++	aw883xx_start_pa(aw883xx);
++	mutex_unlock(&aw883xx->lock);
++}
++
++static void aw883xx_start(struct aw883xx *aw883xx, bool sync_start)
++{
++	int ret;
++
++	if (aw883xx->aw_pa->fw_status != AW_DEV_FW_OK)
++		return;
++
++	if (aw883xx->aw_pa->status == AW_DEV_PW_ON)
++		return;
++
++	ret = aw883xx_dev_fw_update(aw883xx->aw_pa, AW_DSP_FW_UPDATE_OFF, true);
++	if (ret < 0) {
++		dev_err(aw883xx->aw_pa->dev, "fw update failed.");
++		return;
++	}
++
++	if (sync_start == AW_SYNC_START)
++		aw883xx_start_pa(aw883xx);
++	else
++		queue_delayed_work(system_wq,
++			&aw883xx->start_work,
++			AW_START_WORK_DELAY_MS);
++}
++
++static struct snd_soc_dai_driver aw883xx_dai[] = {
++	{
++		.name = "aw883xx-aif",
++		.id = 1,
++		.playback = {
++			.stream_name = "Speaker_Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = AW_RATES,
++			.formats = AW_FORMATS,
++		},
++		.capture = {
++			.stream_name = "Speaker_Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = AW_RATES,
++			.formats = AW_FORMATS,
++		},
++	},
 +};
 +
-+enum aw_sec_type {
-+	ACF_SEC_TYPE_REG = 0,
-+	ACF_SEC_TYPE_DSP,
-+	ACF_SEC_TYPE_DSP_CFG,
-+	ACF_SEC_TYPE_DSP_FW,
-+	ACF_SEC_TYPE_HDR_REG,
-+	ACF_SEC_TYPE_HDR_DSP_CFG,
-+	ACF_SEC_TYPE_HDR_DSP_FW,
-+	ACF_SEC_TYPE_MULTIPLE_BIN,
-+	ACF_SEC_TYPE_SKT_PROJECT,
-+	ACF_SEC_TYPE_DSP_PROJECT,
-+	ACF_SEC_TYPE_MONITOR,
-+	ACF_SEC_TYPE_MAX,
-+};
++static int aw883xx_get_fade_in_time(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct aw883xx *aw883xx = snd_soc_component_get_drvdata(component);
++	struct aw_device *aw_dev = aw883xx->aw_pa;
 +
-+enum profile_data_type {
-+	AW_DATA_TYPE_REG = 0,
-+	AW_DATA_TYPE_DSP_CFG,
-+	AW_DATA_TYPE_DSP_FW,
-+	AW_DATA_TYPE_MAX,
-+};
++	ucontrol->value.integer.value[0] = aw_dev->fade_in_time;
 +
-+enum aw_prof_type {
-+	AW_PROFILE_MUSIC = 0,
-+	AW_PROFILE_VOICE,
-+	AW_PROFILE_VOIP,
-+	AW_PROFILE_RINGTONE,
-+	AW_PROFILE_RINGTONE_HS,
-+	AW_PROFILE_LOWPOWER,
-+	AW_PROFILE_BYPASS,
-+	AW_PROFILE_MMI,
-+	AW_PROFILE_FM,
-+	AW_PROFILE_NOTIFICATION,
-+	AW_PROFILE_RECEIVER,
-+	AW_PROFILE_MAX,
-+};
++	return 0;
++}
 +
-+enum aw_profile_status {
-+	AW_PROFILE_WAIT = 0,
-+	AW_PROFILE_OK,
-+};
++static int aw883xx_set_fade_in_time(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct aw883xx *aw883xx = snd_soc_component_get_drvdata(component);
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	struct aw_device *aw_dev = aw883xx->aw_pa;
++	int time;
 +
-+struct aw_cfg_hdr {
-+	u32 id;
-+	char project[PROJECT_NAME_MAX];
-+	char custom[CUSTOMER_NAME_MAX];
-+	char version[CFG_VERSION_MAX];
-+	u32 author_id;
-+	u32 ddt_size;
-+	u32 ddt_num;
-+	u32 hdr_offset;
-+	u32 hdr_version;
-+	u32 reserved[3];
-+};
++	time = ucontrol->value.integer.value[0];
 +
-+struct aw_cfg_dde {
-+	u32 type;
-+	char dev_name[DEV_NAME_MAX];
-+	u16 dev_index;
-+	u16 dev_bus;
-+	u16 dev_addr;
-+	u16 dev_profile;
-+	u32 data_type;
-+	u32 data_size;
-+	u32 data_offset;
-+	u32 data_crc;
-+	u32 reserved[5];
-+};
++	if (time < mc->min || time > mc->max)
++		return -EINVAL;
 +
-+struct aw_cfg_dde_v1 {
-+	u32 type;
-+	char dev_name[DEV_NAME_MAX];
-+	u16 dev_index;
-+	u16 dev_bus;
-+	u16 dev_addr;
-+	u16 dev_profile;
-+	u32 data_type;
-+	u32 data_size;
-+	u32 data_offset;
-+	u32 data_crc;
-+	char dev_profile_str[PROFILE_STR_MAX];
-+	u32 chip_id;
-+	u32 reserved[4];
-+};
++	if (time != aw_dev->fade_in_time) {
++		aw_dev->fade_in_time = time;
++		return 1;
++	}
 +
-+struct aw_sec_data_desc {
-+	u32 len;
-+	u8 *data;
-+};
++	return 0;
++}
 +
-+struct aw_prof_desc {
-+	u32 id;
-+	u32 prof_st;
-+	char *prf_str;
-+	u32 fw_ver;
-+	struct aw_sec_data_desc sec_desc[AW_DATA_TYPE_MAX];
-+};
++static int aw883xx_get_fade_out_time(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct aw883xx *aw883xx = snd_soc_component_get_drvdata(component);
++	struct aw_device *aw_dev = aw883xx->aw_pa;
 +
-+struct aw_all_prof_info {
-+	struct aw_prof_desc prof_desc[AW_PROFILE_MAX];
-+};
++	ucontrol->value.integer.value[0] = aw_dev->fade_out_time;
 +
-+struct aw_prof_info {
++	return 0;
++}
++
++static int aw883xx_set_fade_out_time(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct aw883xx *aw883xx = snd_soc_component_get_drvdata(component);
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	struct aw_device *aw_dev = aw883xx->aw_pa;
++	int time;
++
++	time = ucontrol->value.integer.value[0];
++	if (time < mc->min || time > mc->max)
++		return -EINVAL;
++
++	if (time != aw_dev->fade_out_time) {
++		aw_dev->fade_out_time = time;
++		return 1;
++	}
++
++	return 0;
++}
++
++static int aw883xx_profile_info(struct snd_kcontrol *kcontrol,
++			 struct snd_ctl_elem_info *uinfo)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct aw883xx *aw883xx = snd_soc_component_get_drvdata(codec);
++	const char *prof_name;
++	char *name;
 +	int count;
-+	int prof_type;
-+	char **prof_name_list;
-+	struct aw_prof_desc *prof_desc;
++
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
++	uinfo->count = 1;
++
++	count = aw883xx_dev_get_profile_count(aw883xx->aw_pa);
++	if (count <= 0) {
++		uinfo->value.enumerated.items = 0;
++		return 0;
++	}
++
++	uinfo->value.enumerated.items = count;
++
++	if (uinfo->value.enumerated.item >= count)
++		uinfo->value.enumerated.item = count - 1;
++
++	name = uinfo->value.enumerated.name;
++	count = uinfo->value.enumerated.item;
++
++	prof_name = aw883xx_dev_get_prof_name(aw883xx->aw_pa, count);
++	if (!prof_name) {
++		strscpy(uinfo->value.enumerated.name, "null",
++						strlen("null") + 1);
++		return 0;
++	}
++
++	strscpy(name, prof_name, sizeof(uinfo->value.enumerated.name));
++
++	return 0;
++}
++
++static int aw883xx_profile_get(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct aw883xx *aw883xx = snd_soc_component_get_drvdata(codec);
++
++	ucontrol->value.integer.value[0] = aw883xx_dev_get_profile_index(aw883xx->aw_pa);
++
++	return 0;
++}
++
++static int aw883xx_profile_set(struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct aw883xx *aw883xx = snd_soc_component_get_drvdata(codec);
++	int ret;
++
++	/* pa stop or stopping just set profile */
++	mutex_lock(&aw883xx->lock);
++	ret = aw883xx_dev_set_profile_index(aw883xx->aw_pa, ucontrol->value.integer.value[0]);
++	if (ret < 0) {
++		dev_dbg(codec->dev, "profile index does not change");
++		mutex_unlock(&aw883xx->lock);
++		return 0;
++	}
++
++	if (aw883xx->aw_pa->status) {
++		aw883xx_dev_stop(aw883xx->aw_pa);
++		aw883xx_start(aw883xx, AW_SYNC_START);
++	}
++
++	mutex_unlock(&aw883xx->lock);
++
++	return 1;
++}
++
++static int aw883xx_volume_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct aw883xx *aw883xx = snd_soc_component_get_drvdata(codec);
++	struct aw_volume_desc *vol_desc = &aw883xx->aw_pa->volume_desc;
++
++	ucontrol->value.integer.value[0] = vol_desc->ctl_volume;
++
++	return 0;
++}
++
++static int aw883xx_volume_set(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct aw883xx *aw883xx = snd_soc_component_get_drvdata(codec);
++	struct aw_volume_desc *vol_desc = &aw883xx->aw_pa->volume_desc;
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	int value;
++
++	value = ucontrol->value.integer.value[0];
++	if (value < mc->min || value > mc->max)
++		return -EINVAL;
++
++	if (vol_desc->ctl_volume != value) {
++		vol_desc->ctl_volume = value;
++		aw883xx_dev_set_volume(aw883xx->aw_pa, vol_desc->ctl_volume);
++
++		return 1;
++	}
++
++	return 0;
++}
++
++static int aw883xx_get_fade_step(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct aw883xx *aw883xx = snd_soc_component_get_drvdata(codec);
++
++	ucontrol->value.integer.value[0] = aw883xx->aw_pa->fade_step;
++
++	return 0;
++}
++
++static int aw883xx_set_fade_step(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct aw883xx *aw883xx = snd_soc_component_get_drvdata(codec);
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	int value;
++
++	value = ucontrol->value.integer.value[0];
++	if (value < mc->min || value > mc->max)
++		return -EINVAL;
++
++	if (aw883xx->aw_pa->fade_step != value) {
++		aw883xx->aw_pa->fade_step = value;
++		return 1;
++	}
++
++	return 0;
++}
++
++static int aw883xx_re_get(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct aw883xx *aw883xx = snd_soc_component_get_drvdata(codec);
++	struct aw_device *aw_dev = aw883xx->aw_pa;
++
++	ucontrol->value.integer.value[0] = aw_dev->cali_desc.cali_re;
++
++	return 0;
++}
++
++static int aw883xx_re_set(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec = snd_soc_kcontrol_component(kcontrol);
++	struct aw883xx *aw883xx = snd_soc_component_get_drvdata(codec);
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	struct aw_device *aw_dev = aw883xx->aw_pa;
++	int value;
++
++	value = ucontrol->value.integer.value[0];
++	if (value < mc->min || value > mc->max)
++		return -EINVAL;
++
++	if (aw_dev->cali_desc.cali_re != value) {
++		aw_dev->cali_desc.cali_re = value;
++		return 1;
++	}
++
++	return 0;
++}
++
++static const struct snd_kcontrol_new aw883xx_controls[] = {
++	SOC_SINGLE_EXT("PCM Playback Volume", AW_PID_2049_SYSCTRL2_REG,
++		6, AW_PID_2049_MUTE_VOL, 0, aw883xx_volume_get,
++		aw883xx_volume_set),
++	SOC_SINGLE_EXT("Fade Step", 0, 0, AW_PID_2049_MUTE_VOL, 0,
++		aw883xx_get_fade_step, aw883xx_set_fade_step),
++	SOC_SINGLE_EXT("Volume Ramp Up Step", 0, 0, FADE_TIME_MAX, FADE_TIME_MIN,
++		aw883xx_get_fade_in_time, aw883xx_set_fade_in_time),
++	SOC_SINGLE_EXT("Volume Ramp Down Step", 0, 0, FADE_TIME_MAX, FADE_TIME_MIN,
++		aw883xx_get_fade_out_time, aw883xx_set_fade_out_time),
++	SOC_SINGLE_EXT("Calib", 0, 0, 100, 0,
++		aw883xx_re_get, aw883xx_re_set),
++	AW_PROFILE_EXT("Profile Set", aw883xx_profile_info,
++		aw883xx_profile_get, aw883xx_profile_set),
 +};
 +
-+#endif
-diff --git a/sound/soc/codecs/aw883xx/aw883xx_pid_2049_reg.h b/sound/soc/codecs/aw883xx/aw883xx_pid_2049_reg.h
++static int aw883xx_plack_event(struct snd_soc_dapm_widget *w,
++				struct snd_kcontrol *k, int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct aw883xx *aw883xx = snd_soc_component_get_drvdata(component);
++
++	mutex_lock(&aw883xx->lock);
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		aw883xx_start(aw883xx, AW_ASYNC_START);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		aw883xx_dev_stop(aw883xx->aw_pa);
++		break;
++	default:
++		break;
++	}
++	mutex_unlock(&aw883xx->lock);
++
++	return 0;
++}
++
++static const struct snd_soc_dapm_widget aw883xx_dapm_widgets[] = {
++	 /* playback */
++	SND_SOC_DAPM_AIF_IN_E("AIF_RX", "Speaker_Playback", 0, 0, 0, 0,
++					aw883xx_plack_event,
++					SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_OUTPUT("DAC Output"),
++
++	/* capture */
++	SND_SOC_DAPM_AIF_OUT("AIF_TX", "Speaker_Capture", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_INPUT("ADC Input"),
++};
++
++static const struct snd_soc_dapm_route aw883xx_audio_map[] = {
++	{"DAC Output", NULL, "AIF_RX"},
++	{"AIF_TX", NULL, "ADC Input"},
++};
++
++static int aw883xx_codec_probe(struct snd_soc_component *component)
++{
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
++	struct aw883xx *aw883xx = snd_soc_component_get_drvdata(component);
++	int ret;
++
++	INIT_DELAYED_WORK(&aw883xx->start_work, aw883xx_startup_work);
++
++	/* add widgets */
++	ret = snd_soc_dapm_new_controls(dapm, aw883xx_dapm_widgets,
++							ARRAY_SIZE(aw883xx_dapm_widgets));
++	if (ret < 0)
++		return ret;
++
++	/* add route */
++	ret = snd_soc_dapm_add_routes(dapm, aw883xx_audio_map,
++							ARRAY_SIZE(aw883xx_audio_map));
++	if (ret < 0)
++		return ret;
++
++	ret = snd_soc_add_component_controls(component, aw883xx_controls,
++							ARRAY_SIZE(aw883xx_controls));
++
++	return ret;
++}
++
++static void aw883xx_codec_remove(struct snd_soc_component *aw_codec)
++{
++	struct aw883xx *aw883xx = snd_soc_component_get_drvdata(aw_codec);
++
++	cancel_delayed_work_sync(&aw883xx->start_work);
++}
++
++static const struct snd_soc_component_driver soc_codec_dev_aw883xx = {
++	.probe = aw883xx_codec_probe,
++	.remove = aw883xx_codec_remove,
++};
++
++static struct aw883xx *aw883xx_malloc_init(struct i2c_client *i2c)
++{
++	struct aw883xx *aw883xx = devm_kzalloc(&i2c->dev,
++			sizeof(struct aw883xx), GFP_KERNEL);
++	if (!aw883xx)
++		return NULL;
++
++	mutex_init(&aw883xx->lock);
++
++	return aw883xx;
++}
++
++static void aw883xx_hw_reset(struct aw883xx *aw883xx)
++{
++	if (aw883xx->reset_gpio) {
++		gpiod_set_value_cansleep(aw883xx->reset_gpio, 0);
++		usleep_range(AW_1000_US, AW_1000_US + 10);
++		gpiod_set_value_cansleep(aw883xx->reset_gpio, 1);
++		usleep_range(AW_1000_US, AW_1000_US + 10);
++	} else {
++		dev_err(aw883xx->aw_pa->dev, "%s failed", __func__);
++	}
++}
++
++static int aw883xx_request_firmware_file(struct aw883xx *aw883xx)
++{
++	const struct firmware *cont = NULL;
++	int ret;
++
++	aw883xx->aw_pa->fw_status = AW_DEV_FW_FAILED;
++
++	ret = request_firmware(&cont, AW_ACF_FILE, aw883xx->aw_pa->dev);
++	if ((ret < 0) || (!cont)) {
++		dev_err(aw883xx->aw_pa->dev, "load [%s] failed!", AW_ACF_FILE);
++		return ret;
++	}
++
++	dev_info(aw883xx->aw_pa->dev, "loaded %s - size: %zu\n",
++			AW_ACF_FILE, cont ? cont->size : 0);
++
++	aw883xx->aw_cfg = devm_kzalloc(aw883xx->aw_pa->dev, cont->size + sizeof(int), GFP_KERNEL);
++	if (!aw883xx->aw_cfg) {
++		release_firmware(cont);
++		return -ENOMEM;
++	}
++	aw883xx->aw_cfg->len = (int)cont->size;
++	memcpy(aw883xx->aw_cfg->data, cont->data, cont->size);
++	release_firmware(cont);
++
++	ret = aw883xx_dev_load_acf_check(aw883xx->aw_pa, aw883xx->aw_cfg);
++	if (ret < 0) {
++		dev_err(aw883xx->aw_pa->dev, "Load [%s] failed ....!", AW_ACF_FILE);
++		return ret;
++	}
++
++	dev_dbg(aw883xx->aw_pa->dev, "%s : bin load success\n", __func__);
++
++	mutex_lock(&aw883xx->lock);
++	/* aw device init */
++	ret = aw883xx_dev_init(aw883xx->aw_pa, aw883xx->aw_cfg);
++	if (ret < 0)
++		dev_err(aw883xx->aw_pa->dev, "dev init failed");
++	mutex_unlock(&aw883xx->lock);
++
++	return ret;
++}
++
++static int aw883xx_i2c_probe(struct i2c_client *i2c)
++{
++	struct aw883xx *aw883xx;
++	int ret;
++
++	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_I2C)) {
++		dev_err(&i2c->dev, "check_functionality failed");
++		return -EIO;
++	}
++
++	aw883xx = aw883xx_malloc_init(i2c);
++	if (!aw883xx) {
++		dev_err(&i2c->dev, "malloc aw883xx failed");
++		return -ENOMEM;
++	}
++	i2c_set_clientdata(i2c, aw883xx);
++
++	aw883xx->reset_gpio = devm_gpiod_get_optional(&i2c->dev, "reset", GPIOD_OUT_LOW);
++	if (IS_ERR(aw883xx->reset_gpio))
++		dev_info(&i2c->dev, "reset gpio not defined\n");
++
++	/* hardware reset */
++	aw883xx_hw_reset(aw883xx);
++
++	aw883xx->regmap = devm_regmap_init_i2c(i2c, &aw883xx_remap_config);
++	if (IS_ERR(aw883xx->regmap)) {
++		ret = PTR_ERR(aw883xx->regmap);
++		dev_err(&i2c->dev, "Failed to init regmap: %d\n", ret);
++		return ret;
++	}
++
++	/* aw pa init */
++	ret = aw883xx_init(&aw883xx->aw_pa, i2c, aw883xx->regmap);
++	if (ret < 0)
++		return ret;
++
++	ret = aw883xx_request_firmware_file(aw883xx);
++	if (ret < 0) {
++		dev_err(&i2c->dev, "%s failed\n", __func__);
++		return ret;
++	}
++
++	ret = devm_snd_soc_register_component(&i2c->dev,
++			&soc_codec_dev_aw883xx,
++			aw883xx_dai, ARRAY_SIZE(aw883xx_dai));
++	if (ret < 0) {
++		dev_err(&i2c->dev, "failed to register aw883xx: %d", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static const struct i2c_device_id aw883xx_i2c_id[] = {
++	{ AW_I2C_NAME, 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, aw883xx_i2c_id);
++
++static struct i2c_driver aw883xx_i2c_driver = {
++	.driver = {
++		.name = AW_I2C_NAME,
++		.owner = THIS_MODULE,
++	},
++	.probe_new = aw883xx_i2c_probe,
++	.id_table = aw883xx_i2c_id,
++};
++module_i2c_driver(aw883xx_i2c_driver);
++
++MODULE_DESCRIPTION("ASoC AW883XX Smart PA Driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/codecs/aw883xx/aw883xx.h b/sound/soc/codecs/aw883xx/aw883xx.h
 new file mode 100644
-index 000000000000..bebedc54fce3
+index 000000000000..657b790502cb
 --- /dev/null
-+++ b/sound/soc/codecs/aw883xx/aw883xx_pid_2049_reg.h
-@@ -0,0 +1,383 @@
++++ b/sound/soc/codecs/aw883xx/aw883xx.h
+@@ -0,0 +1,58 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +//
-+// aw883xx_pid_2049_reg.h --  AW883XX chip register file
++// aw883xx.h --  ALSA SoC AW883XX codec support
 +//
 +// Copyright (c) 2022 AWINIC Technology CO., LTD
 +//
 +// Author: Bruce zhao <zhaolei@awinic.com>
 +//
 +
-+#ifndef __AW883XX_PID_2049_REG_H__
-+#define __AW883XX_PID_2049_REG_H__
++#ifndef __AW883XX_H__
++#define __AW883XX_H__
 +
-+#define AW_PID_2049_ID_REG			(0x00)
-+#define AW_PID_2049_SYSST_REG			(0x01)
-+#define AW_PID_2049_SYSINT_REG			(0x02)
-+#define AW_PID_2049_SYSINTM_REG		(0x03)
-+#define AW_PID_2049_SYSCTRL_REG		(0x04)
-+#define AW_PID_2049_SYSCTRL2_REG		(0x05)
-+#define AW_PID_2049_I2SCTRL_REG		(0x06)
-+#define AW_PID_2049_I2SCFG1_REG		(0x07)
-+#define AW_PID_2049_I2SCFG2_REG		(0x08)
-+#define AW_PID_2049_HAGCCFG1_REG		(0x09)
-+#define AW_PID_2049_HAGCCFG2_REG		(0x0A)
-+#define AW_PID_2049_HAGCCFG3_REG		(0x0B)
-+#define AW_PID_2049_HAGCCFG4_REG		(0x0C)
-+#define AW_PID_2049_HAGCCFG5_REG		(0x0D)
-+#define AW_PID_2049_HAGCCFG6_REG		(0x0E)
-+#define AW_PID_2049_HAGCCFG7_REG		(0x0F)
-+#define AW_PID_2049_MPDCFG_REG			(0x10)
-+#define AW_PID_2049_PWMCTRL_REG		(0x11)
-+#define AW_PID_2049_I2SCFG3_REG		(0x12)
-+#define AW_PID_2049_DBGCTRL_REG		(0x13)
-+#define AW_PID_2049_HAGCST_REG			(0x20)
-+#define AW_PID_2049_VBAT_REG			(0x21)
-+#define AW_PID_2049_TEMP_REG			(0x22)
-+#define AW_PID_2049_PVDD_REG			(0x23)
-+#define AW_PID_2049_ISNDAT_REG			(0x24)
-+#define AW_PID_2049_VSNDAT_REG			(0x25)
-+#define AW_PID_2049_I2SINT_REG			(0x26)
-+#define AW_PID_2049_I2SCAPCNT_REG		(0x27)
-+#define AW_PID_2049_ANASTA1_REG		(0x28)
-+#define AW_PID_2049_ANASTA2_REG		(0x29)
-+#define AW_PID_2049_ANASTA3_REG		(0x2A)
-+#define AW_PID_2049_ANASTA4_REG		(0x2B)
-+#define AW_PID_2049_TESTDET_REG		(0x2C)
-+#define AW_PID_2049_TESTIN_REG			(0x38)
-+#define AW_PID_2049_TESTOUT_REG		(0x39)
-+#define AW_PID_2049_DSPMADD_REG		(0x40)
-+#define AW_PID_2049_DSPMDAT_REG		(0x41)
-+#define AW_PID_2049_WDT_REG			(0x42)
-+#define AW_PID_2049_ACR1_REG			(0x43)
-+#define AW_PID_2049_ACR2_REG			(0x44)
-+#define AW_PID_2049_ASR1_REG			(0x45)
-+#define AW_PID_2049_ASR2_REG			(0x46)
-+#define AW_PID_2049_DSPCFG_REG			(0x47)
-+#define AW_PID_2049_ASR3_REG			(0x48)
-+#define AW_PID_2049_ASR4_REG			(0x49)
-+#define AW_PID_2049_VSNCTRL1_REG		(0x50)
-+#define AW_PID_2049_ISNCTRL1_REG		(0x51)
-+#define AW_PID_2049_PLLCTRL1_REG		(0x52)
-+#define AW_PID_2049_PLLCTRL2_REG		(0x53)
-+#define AW_PID_2049_PLLCTRL3_REG		(0x54)
-+#define AW_PID_2049_CDACTRL1_REG		(0x55)
-+#define AW_PID_2049_CDACTRL2_REG		(0x56)
-+#define AW_PID_2049_SADCCTRL1_REG		(0x57)
-+#define AW_PID_2049_SADCCTRL2_REG		(0x58)
-+#define AW_PID_2049_CPCTRL1_REG		(0x59)
-+#define AW_PID_2049_BSTCTRL1_REG		(0x60)
-+#define AW_PID_2049_BSTCTRL2_REG		(0x61)
-+#define AW_PID_2049_BSTCTRL3_REG		(0x62)
-+#define AW_PID_2049_BSTCTRL4_REG		(0x63)
-+#define AW_PID_2049_BSTCTRL5_REG		(0x64)
-+#define AW_PID_2049_BSTCTRL6_REG		(0x65)
-+#define AW_PID_2049_BSTCTRL7_REG		(0x66)
-+#define AW_PID_2049_DSMCFG1_REG		(0x67)
-+#define AW_PID_2049_DSMCFG2_REG		(0x68)
-+#define AW_PID_2049_DSMCFG3_REG		(0x69)
-+#define AW_PID_2049_DSMCFG4_REG		(0x6A)
-+#define AW_PID_2049_DSMCFG5_REG		(0x6B)
-+#define AW_PID_2049_DSMCFG6_REG		(0x6C)
-+#define AW_PID_2049_DSMCFG7_REG		(0x6D)
-+#define AW_PID_2049_DSMCFG8_REG		(0x6E)
-+#define AW_PID_2049_TESTCTRL1_REG		(0x70)
-+#define AW_PID_2049_TESTCTRL2_REG		(0x71)
-+#define AW_PID_2049_EFCTRL1_REG		(0x72)
-+#define AW_PID_2049_EFCTRL2_REG		(0x73)
-+#define AW_PID_2049_EFWH_REG			(0x74)
-+#define AW_PID_2049_EFWM2_REG			(0x75)
-+#define AW_PID_2049_EFWM1_REG			(0x76)
-+#define AW_PID_2049_EFWL_REG			(0x77)
-+#define AW_PID_2049_EFRH_REG			(0x78)
-+#define AW_PID_2049_EFRM2_REG			(0x79)
-+#define AW_PID_2049_EFRM1_REG			(0x7A)
-+#define AW_PID_2049_EFRL_REG			(0x7B)
-+#define AW_PID_2049_TM_REG			(0x7C)
++#define AW_CHIP_ID_REG			(0x00)
++#define AW_START_RETRIES		(5)
++#define AW_START_WORK_DELAY_MS		(0)
 +
-+enum aw883xx_id {
-+	AW883XX_PID_2049 = 0x2049,
++#define AW_DSP_16_DATA_MASK		(0x0000ffff)
++
++#define AW_I2C_NAME			"aw883xx_smartpa"
++
++#define AW_RATES (SNDRV_PCM_RATE_8000_48000 | \
++			SNDRV_PCM_RATE_96000)
++#define AW_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
++			SNDRV_PCM_FMTBIT_S24_LE | \
++			SNDRV_PCM_FMTBIT_S32_LE)
++
++#define FADE_TIME_MAX			100000
++#define FADE_TIME_MIN			0
++
++#define AW_PROFILE_EXT(xname, profile_info, profile_get, profile_set) \
++{ \
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++	.name = xname, \
++	.info = profile_info, \
++	.get = profile_get, \
++	.put = profile_set, \
++}
++
++enum {
++	AW_SYNC_START = 0,
++	AW_ASYNC_START,
 +};
 +
-+#define AW_PID_2049_REG_MAX			(0x7D)
++enum {
++	AW883XX_STREAM_CLOSE = 0,
++	AW883XX_STREAM_OPEN,
++};
 +
-+#define AW_PID_2049_VOLUME_STEP_DB		(6 * 8)
-+
-+#define AW_PID_2049_UVLS_START_BIT		(14)
-+#define AW_PID_2049_UVLS_NORMAL		(0)
-+#define AW_PID_2049_UVLS_NORMAL_VALUE		\
-+	(AW_PID_2049_UVLS_NORMAL << AW_PID_2049_UVLS_START_BIT)
-+
-+#define AW_PID_2049_DSPS_START_BIT		(12)
-+#define AW_PID_2049_DSPS_BITS_LEN		(1)
-+#define AW_PID_2049_DSPS_MASK			\
-+	(~(((1<<AW_PID_2049_DSPS_BITS_LEN)-1) << AW_PID_2049_DSPS_START_BIT))
-+
-+#define AW_PID_2049_DSPS_NORMAL		(0)
-+#define AW_PID_2049_DSPS_NORMAL_VALUE		\
-+	(AW_PID_2049_DSPS_NORMAL << AW_PID_2049_DSPS_START_BIT)
-+
-+#define AW_PID_2049_BSTOCS_START_BIT		(11)
-+#define AW_PID_2049_BSTOCS_OVER_CURRENT	(1)
-+#define AW_PID_2049_BSTOCS_OVER_CURRENT_VALUE	\
-+	(AW_PID_2049_BSTOCS_OVER_CURRENT << AW_PID_2049_BSTOCS_START_BIT)
-+
-+#define AW_PID_2049_BSTS_START_BIT		(9)
-+#define AW_PID_2049_BSTS_FINISHED		(1)
-+#define AW_PID_2049_BSTS_FINISHED_VALUE	\
-+	(AW_PID_2049_BSTS_FINISHED << AW_PID_2049_BSTS_START_BIT)
-+
-+#define AW_PID_2049_SWS_START_BIT		(8)
-+#define AW_PID_2049_SWS_SWITCHING		(1)
-+#define AW_PID_2049_SWS_SWITCHING_VALUE	\
-+	(AW_PID_2049_SWS_SWITCHING << AW_PID_2049_SWS_START_BIT)
-+
-+#define AW_PID_2049_NOCLKS_START_BIT		(5)
-+#define AW_PID_2049_NOCLKS_NO_CLOCK		(1)
-+#define AW_PID_2049_NOCLKS_NO_CLOCK_VALUE	\
-+	(AW_PID_2049_NOCLKS_NO_CLOCK << AW_PID_2049_NOCLKS_START_BIT)
-+
-+#define AW_PID_2049_CLKS_START_BIT		(4)
-+#define AW_PID_2049_CLKS_STABLE		(1)
-+#define AW_PID_2049_CLKS_STABLE_VALUE		\
-+	(AW_PID_2049_CLKS_STABLE << AW_PID_2049_CLKS_START_BIT)
-+
-+#define AW_PID_2049_OCDS_START_BIT		(3)
-+#define AW_PID_2049_OCDS_OC			(1)
-+#define AW_PID_2049_OCDS_OC_VALUE		\
-+	(AW_PID_2049_OCDS_OC << AW_PID_2049_OCDS_START_BIT)
-+
-+#define AW_PID_2049_OTHS_START_BIT		(1)
-+#define AW_PID_2049_OTHS_OT			(1)
-+#define AW_PID_2049_OTHS_OT_VALUE		\
-+	(AW_PID_2049_OTHS_OT << AW_PID_2049_OTHS_START_BIT)
-+
-+#define AW_PID_2049_PLLS_START_BIT		(0)
-+#define AW_PID_2049_PLLS_LOCKED		(1)
-+#define AW_PID_2049_PLLS_LOCKED_VALUE	\
-+	(AW_PID_2049_PLLS_LOCKED << AW_PID_2049_PLLS_START_BIT)
-+
-+#define AW_PID_2049_BIT_PLL_CHECK \
-+		(AW_PID_2049_CLKS_STABLE_VALUE | \
-+		AW_PID_2049_PLLS_LOCKED_VALUE)
-+
-+#define AW_PID_2049_BIT_SYSST_CHECK_MASK \
-+		(~(AW_PID_2049_UVLS_NORMAL_VALUE | \
-+		AW_PID_2049_BSTOCS_OVER_CURRENT_VALUE | \
-+		AW_PID_2049_BSTS_FINISHED_VALUE | \
-+		AW_PID_2049_SWS_SWITCHING_VALUE | \
-+		AW_PID_2049_NOCLKS_NO_CLOCK_VALUE | \
-+		AW_PID_2049_CLKS_STABLE_VALUE | \
-+		AW_PID_2049_OCDS_OC_VALUE | \
-+		AW_PID_2049_OTHS_OT_VALUE | \
-+		AW_PID_2049_PLLS_LOCKED_VALUE))
-+
-+#define AW_PID_2049_BIT_SYSST_CHECK \
-+		(AW_PID_2049_BSTS_FINISHED_VALUE | \
-+		AW_PID_2049_SWS_SWITCHING_VALUE | \
-+		AW_PID_2049_CLKS_STABLE_VALUE | \
-+		AW_PID_2049_PLLS_LOCKED_VALUE)
-+
-+#define AW_PID_2049_WDI_START_BIT		(6)
-+#define AW_PID_2049_WDI_INT_VALUE		(1)
-+#define AW_PID_2049_WDI_INTERRUPT		\
-+	(AW_PID_2049_WDI_INT_VALUE << AW_PID_2049_WDI_START_BIT)
-+
-+#define AW_PID_2049_NOCLKI_START_BIT		(5)
-+#define AW_PID_2049_NOCLKI_INT_VALUE		(1)
-+#define AW_PID_2049_NOCLKI_INTERRUPT		\
-+	(AW_PID_2049_NOCLKI_INT_VALUE << AW_PID_2049_NOCLKI_START_BIT)
-+
-+#define AW_PID_2049_CLKI_START_BIT		(4)
-+#define AW_PID_2049_CLKI_INT_VALUE		(1)
-+#define AW_PID_2049_CLKI_INTERRUPT		\
-+	(AW_PID_2049_CLKI_INT_VALUE << AW_PID_2049_CLKI_START_BIT)
-+
-+#define AW_PID_2049_PLLI_START_BIT		(0)
-+#define AW_PID_2049_PLLI_INT_VALUE		(1)
-+#define AW_PID_2049_PLLI_INTERRUPT		\
-+	(AW_PID_2049_PLLI_INT_VALUE << AW_PID_2049_PLLI_START_BIT)
-+
-+#define AW_PID_2049_BIT_SYSINT_CHECK \
-+		(AW_PID_2049_WDI_INTERRUPT | \
-+		AW_PID_2049_CLKI_INTERRUPT | \
-+		AW_PID_2049_NOCLKI_INTERRUPT | \
-+		AW_PID_2049_PLLI_INTERRUPT)
-+
-+#define AW_PID_2049_HMUTE_START_BIT		(8)
-+#define AW_PID_2049_HMUTE_BITS_LEN		(1)
-+#define AW_PID_2049_HMUTE_MASK			\
-+	(~(((1<<AW_PID_2049_HMUTE_BITS_LEN)-1) << AW_PID_2049_HMUTE_START_BIT))
-+
-+#define AW_PID_2049_HMUTE_DISABLE		(0)
-+#define AW_PID_2049_HMUTE_DISABLE_VALUE		\
-+	(AW_PID_2049_HMUTE_DISABLE << AW_PID_2049_HMUTE_START_BIT)
-+
-+#define AW_PID_2049_HMUTE_ENABLE		(1)
-+#define AW_PID_2049_HMUTE_ENABLE_VALUE		\
-+	(AW_PID_2049_HMUTE_ENABLE << AW_PID_2049_HMUTE_START_BIT)
-+
-+#define AW_PID_2049_RCV_MODE_START_BIT		(7)
-+#define AW_PID_2049_RCV_MODE_BITS_LEN		(1)
-+#define AW_PID_2049_RCV_MODE_MASK		\
-+	(~(((1<<AW_PID_2049_RCV_MODE_BITS_LEN)-1) << AW_PID_2049_RCV_MODE_START_BIT))
-+
-+#define AW_PID_2049_RCV_MODE_RECEIVER		(1)
-+#define AW_PID_2049_RCV_MODE_RECEIVER_VALUE	\
-+	(AW_PID_2049_RCV_MODE_RECEIVER << AW_PID_2049_RCV_MODE_START_BIT)
-+
-+#define AW_PID_2049_DSPBY_START_BIT		(2)
-+#define AW_PID_2049_DSPBY_BITS_LEN		(1)
-+#define AW_PID_2049_DSPBY_MASK			\
-+	(~(((1<<AW_PID_2049_DSPBY_BITS_LEN)-1) << AW_PID_2049_DSPBY_START_BIT))
-+
-+#define AW_PID_2049_DSPBY_WORKING		(0)
-+#define AW_PID_2049_DSPBY_WORKING_VALUE		\
-+	(AW_PID_2049_DSPBY_WORKING << AW_PID_2049_DSPBY_START_BIT)
-+
-+#define AW_PID_2049_DSPBY_BYPASS		(1)
-+#define AW_PID_2049_DSPBY_BYPASS_VALUE		\
-+	(AW_PID_2049_DSPBY_BYPASS << AW_PID_2049_DSPBY_START_BIT)
-+
-+#define AW_PID_2049_AMPPD_START_BIT		(1)
-+#define AW_PID_2049_AMPPD_BITS_LEN		(1)
-+#define AW_PID_2049_AMPPD_MASK			\
-+	(~(((1<<AW_PID_2049_AMPPD_BITS_LEN)-1) << AW_PID_2049_AMPPD_START_BIT))
-+
-+#define AW_PID_2049_AMPPD_WORKING		(0)
-+#define AW_PID_2049_AMPPD_WORKING_VALUE		\
-+	(AW_PID_2049_AMPPD_WORKING << AW_PID_2049_AMPPD_START_BIT)
-+
-+#define AW_PID_2049_AMPPD_POWER_DOWN		(1)
-+#define AW_PID_2049_AMPPD_POWER_DOWN_VALUE	\
-+	(AW_PID_2049_AMPPD_POWER_DOWN << AW_PID_2049_AMPPD_START_BIT)
-+
-+#define AW_PID_2049_PWDN_START_BIT		(0)
-+#define AW_PID_2049_PWDN_BITS_LEN		(1)
-+#define AW_PID_2049_PWDN_MASK			\
-+	(~(((1<<AW_PID_2049_PWDN_BITS_LEN)-1) << AW_PID_2049_PWDN_START_BIT))
-+
-+#define AW_PID_2049_PWDN_WORKING		(0)
-+#define AW_PID_2049_PWDN_WORKING_VALUE		\
-+	(AW_PID_2049_PWDN_WORKING << AW_PID_2049_PWDN_START_BIT)
-+
-+#define AW_PID_2049_PWDN_POWER_DOWN		(1)
-+#define AW_PID_2049_PWDN_POWER_DOWN_VALUE	\
-+	(AW_PID_2049_PWDN_POWER_DOWN << AW_PID_2049_PWDN_START_BIT)
-+
-+#define AW_PID_2049_MUTE_VOL			(90 * 8)
-+#define AW_PID_2049_VOLUME_STEP_DB		(6 * 8)
-+
-+#define AW_PID_2049_VOL_6DB_START		(6)
-+#define AW_PID_2049_VOL_START_BIT		(6)
-+#define AW_PID_2049_VOL_BITS_LEN		(10)
-+#define AW_PID_2049_VOL_MASK			\
-+	(~(((1<<AW_PID_2049_VOL_BITS_LEN)-1) << AW_PID_2049_VOL_START_BIT))
-+
-+#define AW_PID_2049_VOL_DEFAULT_VALUE		(0)
-+
-+#define AW_PID_2049_I2STXEN_START_BIT		(0)
-+#define AW_PID_2049_I2STXEN_BITS_LEN		(1)
-+#define AW_PID_2049_I2STXEN_MASK		\
-+	(~(((1<<AW_PID_2049_I2STXEN_BITS_LEN)-1) << AW_PID_2049_I2STXEN_START_BIT))
-+
-+#define AW_PID_2049_I2STXEN_DISABLE		(0)
-+#define AW_PID_2049_I2STXEN_DISABLE_VALUE	\
-+	(AW_PID_2049_I2STXEN_DISABLE << AW_PID_2049_I2STXEN_START_BIT)
-+
-+#define AW_PID_2049_I2STXEN_ENABLE		(1)
-+#define AW_PID_2049_I2STXEN_ENABLE_VALUE	\
-+	(AW_PID_2049_I2STXEN_ENABLE << AW_PID_2049_I2STXEN_START_BIT)
-+
-+#define AW_PID_2049_AGC_DSP_CTL_START_BIT	(15)
-+#define AW_PID_2049_AGC_DSP_CTL_BITS_LEN	(1)
-+#define AW_PID_2049_AGC_DSP_CTL_MASK	\
-+	(~(((1<<AW_PID_2049_AGC_DSP_CTL_BITS_LEN)-1) << AW_PID_2049_AGC_DSP_CTL_START_BIT))
-+
-+#define AW_PID_2049_AGC_DSP_CTL_DISABLE	(0)
-+#define AW_PID_2049_AGC_DSP_CTL_DISABLE_VALUE	\
-+	(AW_PID_2049_AGC_DSP_CTL_DISABLE << AW_PID_2049_AGC_DSP_CTL_START_BIT)
-+
-+#define AW_PID_2049_AGC_DSP_CTL_ENABLE		(1)
-+#define AW_PID_2049_AGC_DSP_CTL_ENABLE_VALUE	\
-+	(AW_PID_2049_AGC_DSP_CTL_ENABLE << AW_PID_2049_AGC_DSP_CTL_START_BIT)
-+
-+#define AW_PID_2049_VDSEL_START_BIT		(0)
-+#define AW_PID_2049_VDSEL_BITS_LEN		(1)
-+#define AW_PID_2049_VDSEL_MASK			\
-+	(~(((1<<AW_PID_2049_VDSEL_BITS_LEN)-1) << AW_PID_2049_VDSEL_START_BIT))
-+
-+#define AW_PID_2049_MEM_CLKSEL_START_BIT	(3)
-+#define AW_PID_2049_MEM_CLKSEL_BITS_LEN	(1)
-+#define AW_PID_2049_MEM_CLKSEL_MASK		\
-+	(~(((1<<AW_PID_2049_MEM_CLKSEL_BITS_LEN)-1) << AW_PID_2049_MEM_CLKSEL_START_BIT))
-+
-+#define AW_PID_2049_MEM_CLKSEL_OSC_CLK		(0)
-+#define AW_PID_2049_MEM_CLKSEL_OSC_CLK_VALUE	\
-+	(AW_PID_2049_MEM_CLKSEL_OSC_CLK << AW_PID_2049_MEM_CLKSEL_START_BIT)
-+
-+#define AW_PID_2049_MEM_CLKSEL_DAP_HCLK	(1)
-+#define AW_PID_2049_MEM_CLKSEL_DAP_HCLK_VALUE	\
-+	(AW_PID_2049_MEM_CLKSEL_DAP_HCLK << AW_PID_2049_MEM_CLKSEL_START_BIT)
-+
-+#define AW_PID_2049_CCO_MUX_START_BIT		(14)
-+#define AW_PID_2049_CCO_MUX_BITS_LEN		(1)
-+#define AW_PID_2049_CCO_MUX_MASK		\
-+	(~(((1<<AW_PID_2049_CCO_MUX_BITS_LEN)-1) << AW_PID_2049_CCO_MUX_START_BIT))
-+
-+#define AW_PID_2049_CCO_MUX_DIVIDED		(0)
-+#define AW_PID_2049_CCO_MUX_DIVIDED_VALUE	\
-+	(AW_PID_2049_CCO_MUX_DIVIDED << AW_PID_2049_CCO_MUX_START_BIT)
-+
-+#define AW_PID_2049_CCO_MUX_BYPASS		(1)
-+#define AW_PID_2049_CCO_MUX_BYPASS_VALUE	\
-+	(AW_PID_2049_CCO_MUX_BYPASS << AW_PID_2049_CCO_MUX_START_BIT)
-+
-+#define AW_PID_2049_EF_VSN_GESLP_START_BIT	(0)
-+#define AW_PID_2049_EF_VSN_GESLP_BITS_LEN	(10)
-+#define AW_PID_2049_EF_VSN_GESLP_MASK		\
-+	(~(((1<<AW_PID_2049_EF_VSN_GESLP_BITS_LEN)-1) << AW_PID_2049_EF_VSN_GESLP_START_BIT))
-+
-+#define AW_PID_2049_EF_VSN_GESLP_SIGN_MASK	(~(1 << 9))
-+#define AW_PID_2049_EF_VSN_GESLP_SIGN_NEG	(0xfe00)
-+
-+#define AW_PID_2049_EF_ISN_GESLP_START_BIT	(0)
-+#define AW_PID_2049_EF_ISN_GESLP_BITS_LEN	(10)
-+#define AW_PID_2049_EF_ISN_GESLP_MASK	\
-+	(~(((1<<AW_PID_2049_EF_ISN_GESLP_BITS_LEN)-1) << AW_PID_2049_EF_ISN_GESLP_START_BIT))
-+
-+#define AW_PID_2049_EF_ISN_GESLP_SIGN_MASK	(~(1 << 9))
-+#define AW_PID_2049_EF_ISN_GESLP_SIGN_NEG	(0xfe00)
-+
-+#define AW_PID_2049_CABL_BASE_VALUE		(1000)
-+#define AW_PID_2049_ICABLK_FACTOR		(1)
-+#define AW_PID_2049_VCABLK_FACTOR		(1)
-+#define AW_PID_2049_VCAL_FACTOR		(1 << 12)
-+#define AW_PID_2049_VSCAL_FACTOR		(16500)
-+#define AW_PID_2049_ISCAL_FACTOR		(3667)
-+#define AW_PID_2049_EF_VSENSE_GAIN_SHIFT	(0)
-+
-+#define AW_PID_2049_VCABLK_FACTOR_DAC		(2)
-+#define AW_PID_2049_VSCAL_FACTOR_DAC		(11790)
-+#define AW_PID_2049_EF_DAC_GESLP_SHIFT		(10)
-+#define AW_PID_2049_EF_DAC_GESLP_SIGN_MASK	(1 << 5)
-+#define AW_PID_2049_EF_DAC_GESLP_SIGN_NEG	(0xffc0)
-+
-+#define AW_PID_2049_VCALB_ADJ_FACTOR		(12)
-+
-+#define AW_PID_2049_WDT_CNT_START_BIT		(0)
-+#define AW_PID_2049_WDT_CNT_BITS_LEN		(8)
-+#define AW_PID_2049_WDT_CNT_MASK		\
-+	(~(((1<<AW_PID_2049_WDT_CNT_BITS_LEN)-1) << AW_PID_2049_WDT_CNT_START_BIT))
-+
-+#define AW_PID_2049_DSP_CFG_ADDR		(0x9C80)
-+#define AW_PID_2049_DSP_FW_ADDR		(0x8C00)
-+#define AW_PID_2049_DSP_REG_VMAX		(0x9C94)
-+#define AW_PID_2049_DSP_REG_CFG_ADPZ_RE	(0x9D00)
-+#define AW_PID_2049_DSP_REG_VCALB		(0x9CF7)
-+#define AW_PID_2049_DSP_RE_SHIFT		(12)
-+
-+#define AW_PID_2049_DSP_REG_CFG_ADPZ_RA	(0x9D02)
-+#define AW_PID_2049_DSP_REG_CRC_ADDR		(0x9F42)
-+#define AW_PID_2049_DSP_CALI_F0_DELAY		(0x9CFD)
++struct aw883xx {
++	struct aw_device *aw_pa;
++	struct mutex lock;
++	struct gpio_desc *reset_gpio;
++	struct delayed_work start_work;
++	struct regmap *regmap;
++	struct aw_container *aw_cfg;
++};
 +
 +#endif
 -- 
