@@ -4,94 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F272AC5479D
-	for <alsa-devel@archiver.kernel.org>; Sat,  7 Jan 2023 02:33:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9388C5479D
+	for <alsa-devel@archiver.kernel.org>; Sat,  7 Jan 2023 02:33:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3060740AF;
-	Sat,  7 Jan 2023 03:32:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3060740AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A8187A01;
+	Sat,  7 Jan 2023 03:32:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A8187A01
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673058802;
-	bh=baMWX7Ra11kIUpdqSsQTmQDxwSr5+oalYorS9hL1xB4=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=BzHK0bX04fvRD6Ifm6abvO1Wo+5VCNZrNwCiKQgbZuYmqny8sYIEw3tT4YXtDUNkP
-	 RBS0Mmn8r6zRchGIXcuuJjX9Cv8QFgQXFBZI8z3qJHTLpmwLucP4n+pph9PEhNv4l8
-	 m+c62QhJkIENyI5THtDLPmhtsLSQOmhujE30V68s=
+	s=default; t=1673058828;
+	bh=YeMFqrTfMqSiGsCbfPs2TsmfNMEegM97cc3OQAdO8Gc=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=ckWzFskVd+4LXlSmmBEZVppgXbtDyInAMS4oRMJUaYYxWfsZhpMD9LPi61OlVfrPA
+	 eqrE4xpdbCW0hsPtZTcS3scz75hhvFbMlOMtEnw/FpWvvTQOxjnanJRLRPo9qGRuuL
+	 P6zh3FTNikJgXncKR4Q8yQs6hFOWWWbqg19WbcRI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D06FEF8024E;
-	Sat,  7 Jan 2023 03:32:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D2E2F80238;
+	Sat,  7 Jan 2023 03:32:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5B886F8024E; Sat,  7 Jan 2023 03:32:30 +0100 (CET)
+ id 4AFB7F804AA; Sat,  7 Jan 2023 03:32:33 +0100 (CET)
 Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com
  [64.147.123.21])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3CC4F80217
- for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2023 03:32:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3CC4F80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B478F8025A
+ for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2023 03:32:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B478F8025A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key, unprotected) header.d=sakamocchi.jp
- header.i=@sakamocchi.jp header.a=rsa-sha256 header.s=fm2 header.b=TQhYIYT+; 
+ header.i=@sakamocchi.jp header.a=rsa-sha256 header.s=fm2 header.b=c57oWQ5c; 
  dkim=pass (2048-bit key,
  unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm2 header.b=bkPWbfXq
+ header.a=rsa-sha256 header.s=fm2 header.b=SgoJcJrZ
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.west.internal (Postfix) with ESMTP id 229033200657;
- Fri,  6 Jan 2023 21:32:20 -0500 (EST)
+ by mailout.west.internal (Postfix) with ESMTP id C7724320025E;
+ Fri,  6 Jan 2023 21:32:24 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Fri, 06 Jan 2023 21:32:20 -0500
+ by compute3.internal (MEProxy); Fri, 06 Jan 2023 21:32:25 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=cc:cc:content-transfer-encoding:date:date:from:from
- :in-reply-to:message-id:mime-version:reply-to:sender:subject
- :subject:to:to; s=fm2; t=1673058739; x=1673145139; bh=3THfYLHyjZ
- vI+FOrje600ocCUiDwxCXkVEdAyH8CAiQ=; b=TQhYIYT+cBMPFWHivAzkS63WPn
- wzmSh0FpPDXTquKpzcgK54Ag1TxLg4t4S8eCvijBQXnESONs5IIbPPoa+V9zN9+i
- B/02oLPoPbf6zs48HGSzop2n1nB/oDEIKYSqukk2UwcTJQBCacrOO8IhHt5STMuG
- +Z+70lBAgc8nWh8Zjx9iq5uofVkrpTyX9O9+9Pz4RUMiwwhUIG5N0VgvAgYELDcb
- iM8FNTvKdzZuFly44X3KWqpzrsghERdjOcyZpXrWtE8enK3JTiLgy7RvI0wXNOOu
- bNfFMeNjrtbP9TXdrPmHHRznYrkovCKea3+jGphL32i+b3vJk1LGN8e4zJGw==
+ :in-reply-to:in-reply-to:message-id:mime-version:references
+ :reply-to:sender:subject:subject:to:to; s=fm2; t=1673058744; x=
+ 1673145144; bh=i+1onnelWhky5OjFKWD5ibqwB8NGysvFsqMJFJmFKBw=; b=c
+ 57oWQ5cdDW3eEw3PwMsGceGiGaIobvpkZVerxZdkl4sa3oAvQXeAzhynrTxB/eaQ
+ 8p3Q0XhQ4P1CstNjaEWLjrVPtQIc4FAQb6z5Z5N4ICdzG+Bzpv15fs5BF64+YctE
+ nn2nrh57gU6AA6/ro0MNbWiIAqtEVtrs5MnaN4ibPkt9rQQljnty7wW+VQsr6AyO
+ VLAB2Yg3bA7d6swD36nMptTYXWzvY4iozDcU8i5nDnp+o0btb3zeZtXTHFwKbbjh
+ hshxh0jeZOfmNGcb80JPJbhJyuEedAWn5gRx4zx9TgeP32QJE2ApQa8eb0KeaTLd
+ JTH8oGzSZhOuNiHpaZwSg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
- :feedback-id:feedback-id:from:from:in-reply-to:message-id
- :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
- 1673058739; x=1673145139; bh=3THfYLHyjZvI+FOrje600ocCUiDwxCXkVEd
- AyH8CAiQ=; b=bkPWbfXqEkx2PSALgFXuomF9Tv9EFRLXV3Be+rjlNumTHLMxbg/
- fLAkUd49MzXcar33sLFSWgrrE+gxNOK8oozF0CrGxTXtqk1HpiUprTCBiRcZTTCX
- ZMiUFVS0dB/iKbURdrW/C94+wKo7XG3anAlwrAufueC2gZzwvXmXkofc/nuWPzze
- PGxGqllPzMRuTnQZwpuzSoBlgzGPTYFO+QoF4zB1mAr81N8iXyluQWt7Ad4uGGwk
- AYETLImH6nMrO8aHLPr9WefpCC/O6f+ayZeUPDwZx01lmNyIXhzHI/H3leY9fBLm
- EDrZbzw3z6WkpDVrQqnaykY5kCmbzzeDhLQ==
-X-ME-Sender: <xms:s9m4Y3KnJCUUFE2GccSC17BOVLXMx7r4gYwW5_lgFZmll-UaRSN9dg>
- <xme:s9m4Y7LTGUBVG7JV4JBCTgagkBrJ957q6ryouGMMFu-LZgz4DFbbjiw6ED6OGfYtm
- 2cJtmIG8Ay2aF-n36k>
-X-ME-Received: <xmr:s9m4Y_tmqfqHG2A80KFQiFxth21xNP3Ryvckhyf19whUX5HC7-5iHNmJvSNiXlPvGMt78cm6degDMpVlTmpwkTbBRa4W_ScJJ6ZXVrvJurmgA89yfY3XwJI>
+ :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+ :message-id:mime-version:references:reply-to:sender:subject
+ :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+ :x-sasl-enc; s=fm2; t=1673058744; x=1673145144; bh=i+1onnelWhky5
+ OjFKWD5ibqwB8NGysvFsqMJFJmFKBw=; b=SgoJcJrZr/HEDTYRdFJYdiDu3ElsI
+ YwFC9cfIgliRlwFUPlaDq4wDfvJwHAs/ShxOOl+lJpo1gbW8h+f0/LBVR93NLVuZ
+ QmF3PZ3jXcWQcG4TSwFy9OG1qDqyEF9+1d0LkwPvJAtN5uMglfpK6hDq6g317ENu
+ 6IBAtcQwD8kgUPY7cMLEU0B+6L+rBIIPu9/wPar9km0RxjC387T6pBqitzLrwdca
+ FLZeR0o63quijMlMZp9Ybfh9LFhAWeXb7R9QL03r70X/oPovIYnQGvwVFMmPyPK7
+ mMys67H6eCyDvMlReWg1cEE6wqo/PDnSu1FWUw+BKHmSdTLu1LzArtA1Q==
+X-ME-Sender: <xms:uNm4YzSY2Vwvu0vOjGM9lSJUt5_-zcCfSMpAuhH_eRBXBC7F2HVEXg>
+ <xme:uNm4Y0yiSrcLV6uxgTK0txuMsI57G4txtr6VK56ptQ78bIbZHW7D9gALhxYYvvo1H
+ iuUxsW4wUpQbimkHsc>
+X-ME-Received: <xmr:uNm4Y426B5bnsutfwLXgb_fmuUVCckxO74cizTOJEl64ThUKhYRO1mVCuNNveYHZ3YUWk0XEGPfLlMuCPFkFwbvYt0lOyL19yEHviZHp3YHl2jbUk8YXQWY>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrkedugdegkecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
- dttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhh
- ihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepffdvueelffevke
- duhfetjeduffeghfettdfguedtgfdvgfeufeduheevheevkeeknecuvehluhhsthgvrhfu
- ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkh
- grmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:s9m4YwbH7crhfcGjNhCUtUYsRGrIVl-_8nNAkflciba4pKtLwvjfDg>
- <xmx:s9m4Y-bl2PEMTRa9wubUZErSBFcN_9zNrOMdDZvvU5UqhJZhLxE1Zg>
- <xmx:s9m4Y0Aj1byXZMsYS882lm0gVUCbovkrWDjBCmMsSJxf_TtqV67Hpw>
- <xmx:s9m4YxxteHAXTFugP_K8Gz7bR3zlVq2OC59RR7OmL9uEptnzCynRkg>
+ uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestdekre
+ dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
+ shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepieffjeefle
+ ekteefvdduvdelleetvdeuveeiieetudffuefgieeigfdvgedvtdegnecuffhomhgrihhn
+ pehrgidruggrthgrnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+ hfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:uNm4YzCIxFfFHR6bqw51IAxu298yEs5BMK1Dyma8Rh6TT3JCi9AeZQ>
+ <xmx:uNm4Y8jgjFlJ7Vpt2wtdG9jlBX2JfEuVF4WAtmeS83Z-sD7cQpBW_w>
+ <xmx:uNm4Y3oBNtzGK3PNt05JMCzu-_zGZnSZZF1FuqqYbgqGBy4ZWl_qlA>
+ <xmx:uNm4Y4ZpMvv8UX6WtXT9_bkSXEYnfSwdQeyMNNets7SiMMA46rHE0w>
 Feedback-ID: ie8e14432:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 6 Jan 2023 21:32:18 -0500 (EST)
+ 6 Jan 2023 21:32:23 -0500 (EST)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH 0/4] ALSA: firewire-lib: code refactoring for position of
- entry in queue
-Date: Sat,  7 Jan 2023 11:32:10 +0900
-Message-Id: <20230107023214.29132-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/4] ALSA: firewire-lib: code refactoring for pool position in
+ rx packets
+Date: Sat,  7 Jan 2023 11:32:12 +0900
+Message-Id: <20230107023214.29132-3-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20230107023214.29132-1-o-takashi@sakamocchi.jp>
+References: <20230107023214.29132-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -110,23 +114,125 @@ Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+When scheduling transmission of rx packets, current implementation
+fulfils packet descriptors after pooling sequence descriptors. It is for
+packet queueing. Besides the implementations do not necessarily have
+good readability.
 
-This patchset is to refactor current implementation for position of
-entry in queue as preparation for future work.
+This commit refactors them by adding function local variables and
+function arguments.
 
-Takashi Sakamoto (4):
-  ALSA: firewire-lib: code refactoring for helper functions to pool
-    sequence in rx packets
-  ALSA: firewire-lib: code refactoring for pool position in rx packets
-  ALSA: firewire-lib: code refactoring for cache position in tx packets
-  ALSA: firewire-lib: code refactoring for cache position in sequence
-    replay
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp-stream.c | 33 ++++++++++++++-------------------
+ sound/firewire/amdtp-stream.h |  1 -
+ 2 files changed, 14 insertions(+), 20 deletions(-)
 
- sound/firewire/amdtp-stream.c | 132 ++++++++++++++++------------------
- sound/firewire/amdtp-stream.h |   7 +-
- 2 files changed, 66 insertions(+), 73 deletions(-)
-
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 881e30c049fc..172addba7aab 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -558,12 +558,10 @@ static void pool_replayed_seq(struct amdtp_stream *s, struct seq_desc *descs, un
+ 	s->ctx_data.rx.cache_head = cache_head;
+ }
+ 
+-static void pool_seq_descs(struct amdtp_stream *s, unsigned int count)
++static void pool_seq_descs(struct amdtp_stream *s, struct seq_desc *descs, unsigned int size,
++			   unsigned int pos, unsigned int count)
+ {
+ 	struct amdtp_domain *d = s->domain;
+-	struct seq_desc *descs = s->ctx_data.rx.seq.descs;
+-	const unsigned int size = s->ctx_data.rx.seq.size;
+-	unsigned int pos = s->ctx_data.rx.seq.pos;
+ 	void (*pool_seq_descs)(struct amdtp_stream *s, struct seq_desc *descs, unsigned int size,
+ 			       unsigned int pos, unsigned int count);
+ 
+@@ -586,8 +584,6 @@ static void pool_seq_descs(struct amdtp_stream *s, unsigned int count)
+ 	}
+ 
+ 	pool_seq_descs(s, descs, size, pos, count);
+-
+-	s->ctx_data.rx.seq.pos = (pos + count) % size;
+ }
+ 
+ static void update_pcm_pointers(struct amdtp_stream *s,
+@@ -979,20 +975,22 @@ static unsigned int compute_syt(unsigned int syt_offset, unsigned int cycle,
+ 	return syt & CIP_SYT_MASK;
+ }
+ 
+-static void generate_pkt_descs(struct amdtp_stream *s, const __be32 *ctx_header, unsigned int packets)
++static void generate_rx_packet_descs(struct amdtp_stream *s, struct pkt_desc *descs,
++				     const __be32 *ctx_header, unsigned int packet_count)
+ {
+-	struct pkt_desc *descs = s->pkt_descs;
+-	const struct seq_desc *seq_descs = s->ctx_data.rx.seq.descs;
+-	const unsigned int seq_size = s->ctx_data.rx.seq.size;
++	struct seq_desc *seq_descs = s->ctx_data.rx.seq.descs;
++	unsigned int seq_size = s->ctx_data.rx.seq.size;
++	unsigned int seq_pos = s->ctx_data.rx.seq.pos;
+ 	unsigned int dbc = s->data_block_counter;
+-	unsigned int seq_head = s->ctx_data.rx.seq.head;
+ 	bool aware_syt = !(s->flags & CIP_UNAWARE_SYT);
+ 	int i;
+ 
+-	for (i = 0; i < packets; ++i) {
++	pool_seq_descs(s, seq_descs, seq_size, seq_pos, packet_count);
++
++	for (i = 0; i < packet_count; ++i) {
+ 		struct pkt_desc *desc = descs + i;
+ 		unsigned int index = (s->packet_index + i) % s->queue_size;
+-		const struct seq_desc *seq = seq_descs + seq_head;
++		const struct seq_desc *seq = seq_descs + seq_pos;
+ 
+ 		desc->cycle = compute_ohci_it_cycle(*ctx_header, s->queue_size);
+ 
+@@ -1013,13 +1011,13 @@ static void generate_pkt_descs(struct amdtp_stream *s, const __be32 *ctx_header,
+ 
+ 		desc->ctx_payload = s->buffer.packets[index].buffer;
+ 
+-		seq_head = (seq_head + 1) % seq_size;
++		seq_pos = (seq_pos + 1) % seq_size;
+ 
+ 		++ctx_header;
+ 	}
+ 
+ 	s->data_block_counter = dbc;
+-	s->ctx_data.rx.seq.head = seq_head;
++	s->ctx_data.rx.seq.pos = seq_pos;
+ }
+ 
+ static inline void cancel_stream(struct amdtp_stream *s)
+@@ -1062,9 +1060,7 @@ static void process_rx_packets(struct fw_iso_context *context, u32 tstamp, size_
+ 	// Calculate the number of packets in buffer and check XRUN.
+ 	packets = header_length / sizeof(*ctx_header);
+ 
+-	pool_seq_descs(s, packets);
+-
+-	generate_pkt_descs(s, ctx_header, packets);
++	generate_rx_packet_descs(s, s->pkt_descs, ctx_header, packets);
+ 
+ 	process_ctx_payloads(s, s->pkt_descs, packets);
+ 
+@@ -1644,7 +1640,6 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
+ 		}
+ 		s->ctx_data.rx.seq.size = queue_size;
+ 		s->ctx_data.rx.seq.pos = 0;
+-		s->ctx_data.rx.seq.head = 0;
+ 
+ 		entry = &initial_state[s->sfc];
+ 		s->ctx_data.rx.data_block_state = entry->data_block;
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index baab63d31ddd..dbe6d4bcbb8a 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -160,7 +160,6 @@ struct amdtp_stream {
+ 				struct seq_desc *descs;
+ 				unsigned int size;
+ 				unsigned int pos;
+-				unsigned int head;
+ 			} seq;
+ 
+ 			unsigned int data_block_state;
 -- 
 2.37.2
 
