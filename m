@@ -4,75 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF63DC54EBD
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 Jan 2023 18:32:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42195C54EBE
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 Jan 2023 18:59:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E65E1BB9C;
-	Sun,  8 Jan 2023 19:31:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E65E1BB9C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95CEFD244;
+	Sun,  8 Jan 2023 19:58:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95CEFD244
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673202728;
-	bh=zGCTIc/usMz1ib2ckuvqIGmkqMHyqYhijXJbiIML8WE=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1673204378;
+	bh=gVjeQKWBf58rdIwFBvG3/dJ42OhSS22cLSt4VsTUnEM=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=M/6kesiYxndXzhT8xjrwX3O/UNXUo5W34tHCasgjDwXqAacA7rsTgGXAG0imAgSol
-	 raIuI9zb7WzatmjhxTw9HhYKQKUDAohReZ2gO3IiorAwP5ywv8owi4wMZkBqbyg/M0
-	 4ZFqPJv8zm4j3zdMDJR9AtaUH8+YP7DzCeM9pTB0=
+	b=ZvOjngRRBRAnGyBrf8Fqd26WvW7ZfR5EJV4kkyIFfT0YJt8BHJBpxprjH2+7SI+Sc
+	 VDBDWDv9SunYJGTmagK7NsImCGEEFGv21/sEqPLwxKJ/DO+9h3eFDlr/1XqzRpP6lq
+	 aL/hlCRKMDL9IeZfaRJSn456/qMeL9780WAsUpwc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C986F804BD;
-	Sun,  8 Jan 2023 19:31:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4CC02F804BD;
+	Sun,  8 Jan 2023 19:58:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B445FF804CA; Sun,  8 Jan 2023 19:31:15 +0100 (CET)
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com
- [209.85.166.176])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ id AEB55F804C1; Sun,  8 Jan 2023 19:58:46 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 29D9DF804BD
- for <alsa-devel@alsa-project.org>; Sun,  8 Jan 2023 19:31:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29D9DF804BD
-Received: by mail-il1-f176.google.com with SMTP id u8so3879462ilg.0
- for <alsa-devel@alsa-project.org>; Sun, 08 Jan 2023 10:31:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=nXBbO2P+g4sf54JRtHUcYoNVdaz5jhylNXMvr/njs6o=;
- b=68PnvSJl0Lsi1q1FwWe48IwzM1QZ897wlbOKPdgUZPAVfdgbeMjWsmEgp0Yd17WloK
- 83LUdz4YsnFS6djt7Mv+jdmihEhr07NNkQmy9CRxFNDfMDoWj3uvSFkjB7ZprbxbteCX
- SoXq14pGpe6hTji1MRavUG/7VDbw9+GYRaXQDOjePYv37H4KTCBjQS1/DGKxesnIFv/F
- cGt4HpjAh/dNyVwvcUhxHrAwGMSZ6Gc5N9M6gflf8XR35E9YaYqcBizcdr4y5MKwsO7d
- poFezkhSHpTSlYHTR4jK/7bhdSmbmp55T6fJH6Bf0GBBv17lossBxp3Xfj00kjtz8z63
- JZ1A==
-X-Gm-Message-State: AFqh2ko62Q/nFWFYywF2o3fql7nuKR//NeRrWtQ+oe5u8PPUeYgOcidg
- aYntK7nHszv90QXOSf+h/A==
-X-Google-Smtp-Source: AMrXdXugH3E0ejS19Wkv/PJBMkYM23FfNcI74V9Fr5FWS9x0/SUgUUs+79aDicB6uQD5q0iMLDMMbA==
-X-Received: by 2002:a92:ce48:0:b0:30c:6616:6fb with SMTP id
- a8-20020a92ce48000000b0030c661606fbmr13768343ilr.2.1673202672349; 
- Sun, 08 Jan 2023 10:31:12 -0800 (PST)
-Received: from robh_at_kernel.org ([2605:ef80:8069:516a:f2b0:691e:4315:7c0f])
- by smtp.gmail.com with ESMTPSA id
- 3-20020a056e020ca300b00304ae88ebebsm2104584ilg.88.2023.01.08.10.31.10
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 08 Jan 2023 10:31:11 -0800 (PST)
-Received: (nullmailer pid 177585 invoked by uid 1000);
- Sun, 08 Jan 2023 18:31:09 -0000
-Date: Sun, 8 Jan 2023 12:31:09 -0600
-From: Rob Herring <robh@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 3/3] ASoC: dt-bindings: qcom,lpass-cpu: Correct and
- constrain clocks, interrupts, reg
-Message-ID: <167320266826.177510.14546851275083337747.robh@kernel.org>
-References: <20221227163135.102559-1-krzysztof.kozlowski@linaro.org>
- <20221227163135.102559-3-krzysztof.kozlowski@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221227163135.102559-3-krzysztof.kozlowski@linaro.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 78489F80236
+ for <alsa-devel@alsa-project.org>; Sun,  8 Jan 2023 19:58:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78489F80236
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=IjUnm0+T; 
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=qKutC/n5
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7103E67302;
+ Sun,  8 Jan 2023 18:58:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1673204322; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9U1iDECMwKaV3ReKorMaSvV7BDaM+VPFJzqOsCtEzO8=;
+ b=IjUnm0+TowA9lIK+9vfNu0hEMxt4wLGzG9SV7drNl4s2+Y6Fpp+sdw5c3jmFMNvoDGgYsZ
+ /+v5gp0xHMqGCAUqLZlSoh5MXxFFXSfZeTl44BZyxdfbNXtaNYN/ahtW/Ln6wUbhSCKaSB
+ y/1v35B00Sq0Jqb+QQupYO+x854pDN4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1673204322;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9U1iDECMwKaV3ReKorMaSvV7BDaM+VPFJzqOsCtEzO8=;
+ b=qKutC/n5HwVu8nUKfHI81StMD4xb/q5BpzdW0bE7pQ548N1zal/VH5mw6d6y2edouUm1Sj
+ 4t9xsP3n81qpdhDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5543B13583;
+ Sun,  8 Jan 2023 18:58:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id mYEQFGISu2MaIgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Sun, 08 Jan 2023 18:58:42 +0000
+Date: Sun, 08 Jan 2023 19:58:42 +0100
+Message-ID: <87zgasetul.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 0/4] ALSA: firewire-lib: code refactoring for position of
+ entry in queue
+In-Reply-To: <20230107023214.29132-1-o-takashi@sakamocchi.jp>
+References: <20230107023214.29132-1-o-takashi@sakamocchi.jp>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,44 +92,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-arm-msm@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>,
- Andy Gross <agross@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Rohit kumar <rohitkr@codeaurora.org>,
- Bjorn Andersson <andersson@kernel.org>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Sat, 07 Jan 2023 03:32:10 +0100,
+Takashi Sakamoto wrote:
+> 
+> Hi,
+> 
+> This patchset is to refactor current implementation for position of
+> entry in queue as preparation for future work.
+> 
+> Takashi Sakamoto (4):
+>   ALSA: firewire-lib: code refactoring for helper functions to pool
+>     sequence in rx packets
+>   ALSA: firewire-lib: code refactoring for pool position in rx packets
+>   ALSA: firewire-lib: code refactoring for cache position in tx packets
+>   ALSA: firewire-lib: code refactoring for cache position in sequence
+>     replay
 
-On Tue, 27 Dec 2022 17:31:35 +0100, Krzysztof Kozlowski wrote:
-> The binding allowed multiple variations and number of
-> reg/interrupts/clocks properties for SC7180 and SC7280.  Maybe this was
-> done for different use-cases of LPASS CPU audio node, but DTS is
-> supposed to be a complete picture of the hardware.  The upstreamed
-> SC7180 and SC7280 DTSes contain the widest set of these
-> reg/interrupts/clocks, sometimes being even sum of these different
-> variations.
-> 
-> Correct and narrow the reg, interrupts and clocks to match existing DTS:
-> 
->   sc7280-herobrine-evoker-lte.dtb: audio@3987000: clock-names: 'oneOf' conditional failed, one must be fixed:
->     ['aon_cc_audio_hm_h', 'audio_cc_ext_mclk0', 'core_cc_sysnoc_mport_core', 'core_cc_ext_if0_ibit', 'core_cc_ext_if1_ibit',
->      'audio_cc_codec_mem', 'audio_cc_codec_mem0', 'audio_cc_codec_mem1', 'audio_cc_codec_mem2', 'aon_cc_va_mem0'] is too long
->     'core_cc_sysnoc_mport_core' was expected
->     'audio_cc_codec_mem' was expected
->     'audio_cc_codec_mem0' was expected
->     'audio_cc_codec_mem1' was expected
->     'audio_cc_codec_mem2' was expected
->     'aon_cc_va_mem0' was expected
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  .../bindings/sound/qcom,lpass-cpu.yaml        | 131 +++++++++---------
->  1 file changed, 62 insertions(+), 69 deletions(-)
-> 
+Thanks, applied now.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+
+Takashi
