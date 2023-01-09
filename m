@@ -4,82 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6657CC5479D
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Jan 2023 16:06:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26006C54EBD
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Jan 2023 16:07:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A66A5E0D;
-	Mon,  9 Jan 2023 17:05:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A66A5E0D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E00873D6;
+	Mon,  9 Jan 2023 17:06:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E00873D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673280389;
-	bh=2zy7LQyKhNRKmrWfAJAeRW4nEcuZrNAohGchSSTPYpY=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1673280438;
+	bh=0AchH1x0f1OvcHS9WNHJGjFwXU2i6hh2/u1j9Soj5oU=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=QNMsa+iSYNDOkGLjGsmn2vKvupMZGdWToJssP5W5Sx/b10BHBlX2nG2HWKJ8DReVI
-	 koow4frFeGVghNsupgtOd/eBfKYMP+TVaei4f6qwcBP4blKUCLdFJD4+f8lbPwNvPg
-	 0iXrjy3jq410/L/HjWe8eQDBHoyfl5Hzx/uDmWTQ=
+	b=iAaa30hkCMUD00YlsXhoVcqOXhEOgftCqSQEwM0iIqUnsh88dGZrbgS6uMMH3Qszh
+	 M+uEKZEvXJmK+nZtHUbquxw4hAf+dEg2hvMiLeRy8Di4t20x+86/HpPbLAGOqgDFE1
+	 GiAOnNDpLZjGEI0VPXU3PLUEKhaDHauElEjEpmO4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30375F802BE;
-	Mon,  9 Jan 2023 17:05:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C09E3F804D2;
+	Mon,  9 Jan 2023 17:06:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5AB39F803DC; Mon,  9 Jan 2023 17:05:37 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 217EBF804D2; Mon,  9 Jan 2023 17:06:27 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B394CF8026A
- for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2023 17:05:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B394CF8026A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=Rrj0sI24; 
- dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=q3Yl12YJ
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6DD39F8026A
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2023 17:06:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DD39F8026A
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ECf7exAt
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1B3311FFEE;
- Mon,  9 Jan 2023 16:05:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1673280335; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=rUSZNTu15y0chJt/E8aylV1+1Ebsa2Do1Q/5WVQPefs=;
- b=Rrj0sI24HRTiWaYeXzWBG7eZO8aJmIRinh59xCwfitROZsbp3qu5WpolLNg0qBQsnBqx/J
- hAxqxZqb0p/xI6ly8mFpbWPUF8ACDodHuQCvWzIBpAa7THTXuO4uiBolMq8Bm9oIoTpZZJ
- vx//6AdSw8y0SeaIIKTwTLfDwQ0I2og=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1673280335;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=rUSZNTu15y0chJt/E8aylV1+1Ebsa2Do1Q/5WVQPefs=;
- b=q3Yl12YJrr935Ezn1LaRX+Fhdn5k8HNah+BYa8+ppO0kZRkSXUmmrEvRjkCWcwY7hqUveQ
- YD50SLQbQObL0mBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 053AE13583;
- Mon,  9 Jan 2023 16:05:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id nECEAE87vGN0ZwAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 09 Jan 2023 16:05:35 +0000
-Date: Mon, 09 Jan 2023 17:05:34 +0100
-Message-ID: <874jszg0c1.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/3] ALSA: firewire-lib: keep history to process
- isochronous packet
-In-Reply-To: <20230109021738.75543-1-o-takashi@sakamocchi.jp>
-References: <20230109021738.75543-1-o-takashi@sakamocchi.jp>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+ by dfw.source.kernel.org (Postfix) with ESMTPS id DC1A1611BD;
+ Mon,  9 Jan 2023 16:06:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC540C433D2;
+ Mon,  9 Jan 2023 16:06:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1673280383;
+ bh=0AchH1x0f1OvcHS9WNHJGjFwXU2i6hh2/u1j9Soj5oU=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=ECf7exAtfn/G07XAVlAPqATorHAJ7bSVuiceiebmNIh2ZfNuJlb1DV+jkdJBramFl
+ fbz98uRYzhbBNO73i6EMs2YF0Xj2l71QUe6tlB+GTnSENEPU9KXhzgUktT0RRVQgyX
+ w8WQOY0wcKlGp8WkXA1JDaA6RnLdk7xCxSk45EmLkfR40/9oth/cqwIW5aAXcUyRsU
+ pDerYvlMoUItRUYcl2dW8ied4nkw3zXr8AjaDmuPsOOfzRNIDzygix6Haq6+L9bJIB
+ tgzxMwy1QOYpvaRY/prSqlTM9cnl6HB1DxjkXhdk6/VxdpxKn4Zs472noQ1TPj7mcH
+ KPEqHj5rb1B5A==
+Date: Mon, 9 Jan 2023 21:36:19 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [PATCH v2 0/3] soundwire: cadence: Fix oversized FIFO size define
+Message-ID: <Y7w7ex/r1Z95gyt/@matsya>
+References: <20221202161812.4186897-1-rf@opensource.cirrus.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221202161812.4186897-1-rf@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,38 +74,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 09 Jan 2023 03:17:35 +0100,
-Takashi Sakamoto wrote:
+On 02-12-22, 16:18, Richard Fitzgerald wrote:
+> As determined by experimentation and asking a hardware person, the FIFO
+> in the Cadence IP is actually only 8 entries long, not 32. This is fixed
+> in patch #1.
 > 
-> Hi,
-> 
-> This patchset is preparation for computation of extra delay in runtime of
-> PCM substream.
-> 
-> Current implementation uses list of packet descriptor to process
-> isochronous packets. The packet descriptors are overwritten every time to
-> process packets, while the history of packet descriptors is useful when
-> computing gap between current isochronous cycle and the latest isochronous
-> cycle in which isochronous packet is processed or scheduled.
-> 
-> Conveniently, circular linked list was added to Linux kernel v5.19 at a
-> commit 2fbdf45d7d26 ("list: Add list_next_entry_circular() and
-> list_prev_entry_circular()"). This patchset changes data structure from
-> list to the circular linked list for the packet descriptors.
-> 
-> 
-> Takashi Sakamoto (3):
->   ALSA: firewire-lib: use circular linked list to enumerate packet
->     descriptors
->   ALSA: firewire-lib: use circular linked list for context payload
->     processing layer
->   ALSA: firewire-lib: store history to process isochronous packet
+> As a bonus, patches #2 and #3 fix two other things I noticed while
+> debugging this.
 
-Applied now to for-next branch.  Thanks.
+Applied, thanks
 
-
-Takashi
+-- 
+~Vinod
