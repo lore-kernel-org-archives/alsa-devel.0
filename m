@@ -4,98 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAECBC54EBD
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Jan 2023 02:18:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B653C54EBC
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Jan 2023 02:19:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4317F8A35;
-	Mon,  9 Jan 2023 03:18:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4317F8A35
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A7EA8A3B;
+	Mon,  9 Jan 2023 03:18:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A7EA8A3B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673230733;
-	bh=x6wpKG7SiuKXbPgbOV8uFGRKMWza+3OGT5Qklvwr1LI=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=XBr2En1f3dJUVlLjNwM2zn8DRhJKaqJV9pTrfPWsFnV5vdIrptqXD0abO4mGbzRpA
-	 1uilKC1WAW+oYTiXZp8YkSZVOCgK14mVWXIlLTbWc7ysywvvmrLjeFuJgekBfNBx0o
-	 DaskLlQU+YSAT4THOyjwIbweMzFW6RaBjN+zTVjg=
+	s=default; t=1673230774;
+	bh=aIPosQpbiBKx/DgjiR6WxyfzQzSR1HDC3661NNNZSfM=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=jA7qM9guZJQct4YWK2BG5PYwUPJm+QNbH/At9W+ZOUmT1aO70A3FE30+7dc1nWURP
+	 5Sz8eGDowwU052DKLD0rz6e8o5+f8TdjIyAtxjx4yIxPzcjkGYanjGvHtmYUvge2lL
+	 2IBa+csuSAWM9xEDFLnpLiJf84/fFL1lGRCPiET4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14FD0F804DD;
-	Mon,  9 Jan 2023 03:17:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0BE0EF80543;
+	Mon,  9 Jan 2023 03:17:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7AC7BF804DC; Mon,  9 Jan 2023 03:17:52 +0100 (CET)
+ id C39DFF804FE; Mon,  9 Jan 2023 03:17:53 +0100 (CET)
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
  [66.111.4.26])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits))
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4CC09F804D9
- for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2023 03:17:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CC09F804D9
+ by alsa1.perex.cz (Postfix) with ESMTPS id ECDD2F803DC
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2023 03:17:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECDD2F803DC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key, unprotected) header.d=sakamocchi.jp
- header.i=@sakamocchi.jp header.a=rsa-sha256 header.s=fm3 header.b=b3yfLs5j; 
+ header.i=@sakamocchi.jp header.a=rsa-sha256 header.s=fm3 header.b=QvdrBMrl; 
  dkim=pass (2048-bit key,
  unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm3 header.b=skekFnYa
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
- by mailout.nyi.internal (Postfix) with ESMTP id 2A9125C00B0;
- Sun,  8 Jan 2023 21:17:48 -0500 (EST)
+ header.a=rsa-sha256 header.s=fm3 header.b=FwHRSBUc
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailout.nyi.internal (Postfix) with ESMTP id 0A2985C0079;
+ Sun,  8 Jan 2023 21:17:44 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute2.internal (MEProxy); Sun, 08 Jan 2023 21:17:48 -0500
+ by compute3.internal (MEProxy); Sun, 08 Jan 2023 21:17:44 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=cc:cc:content-transfer-encoding:date:date:from:from
- :in-reply-to:in-reply-to:message-id:mime-version:references
- :reply-to:sender:subject:subject:to:to; s=fm3; t=1673230668; x=
- 1673317068; bh=Lb0qaaltjygtBi1wp4EQ+VP3kcbzQrUE+0aGW8KUv78=; b=b
- 3yfLs5jQQfc12I6CQIbgdqUCfshftMmVaI6oiW67yjsJCEFuQomHGu44SKUzOL9X
- btd0o+LhhAjavoDIHdFCM1I0xU00TP7iQoUYtSdeIbNVzQTyhoWGdx1Grs80QarP
- i1UsWuqOHNvk1OkiYUja/c/cAWuQz8aQo0oUt80bxl3aS2kX6L58QPNIKU/GZfUl
- iAz/DjYGwz9TNYbSUYoA46jQISwSV16cd9q7hi6RbHIhTtv18kcDHrhRuZFO/+n4
- eumbq5V0SJZejJMCilHzigeLaxwirFfVvq+8c0yU1jZjfg7zHqYAzVXzxOsdpptH
- lSZUIVp12JiKz14dh03NQ==
+ :in-reply-to:message-id:mime-version:reply-to:sender:subject
+ :subject:to:to; s=fm3; t=1673230664; x=1673317064; bh=9c52CVRT4u
+ H4RCla61gFHCbl/kSN2X3os5JQDrMAfaA=; b=QvdrBMrlaRAr7LQhZz2wyqFvpp
+ of5ty+c65UMQU3M8AaeltScpVbyL5XPxjwB8exrI8ayasCA9zpOYYrizPoS+FGdN
+ hbkDboWpJ2dwh1dLHW0SC3CaFvA44I0RnkjSykVDQz/GWcwrS4w0siT7nsVVjSHD
+ 5xQeymecvaqZH7hQ9m13lGmC3mOo3cSycwVoSXWGo8YNuk7vDvaxi99aargyUJJ0
+ cyG7q7PUqlOsK8hefDYzMCKmtSzvxu07/cC1wp3OJV+IoG0lpgFIwDDtM066D7Az
+ uJBtgJUA9sDfqeFoTqJ7JhtPiY+TCVorsaCxTiVpxZFWHKLUXY7GaTHn33VQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
- :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
- :message-id:mime-version:references:reply-to:sender:subject
- :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
- :x-sasl-enc; s=fm3; t=1673230668; x=1673317068; bh=Lb0qaaltjygtB
- i1wp4EQ+VP3kcbzQrUE+0aGW8KUv78=; b=skekFnYa4DR3ova+8PrLAhBOTEQnC
- rsP6FAnpAUZ3Jk+zbLHKoGNdyjtgWc0PFiCd4d68//ZP7xpijCNUbZXStSUOgxEn
- MPZRxvSNjUBN4R+oKAv6m6v/nBT5T+rQFnuOJOUI1sCrz0gLtcB0x7BaTYJQTNIW
- TIXq7UBOiM3/FUvgwTlV1UKVgLa6BTIE9Wno8u5ERfVEq76jAmu60+2TggbXJL30
- V0DfXZHRlFUS0lppFjDjZEbZE3JWCewOOSDG7m48j7glvut/oG65J507KojG96H3
- 9vup0kNc2DXGB3PJeLjx+wH9BetnJvBuae8ZqxsO+6X4lKk16FLprhilA==
-X-ME-Sender: <xms:THm7YzJ4eV2P3OPb9G8UE4d4ph8c0-pIN8reLKOgS-8_kzYQ0mxmGg>
- <xme:THm7Y3I1w2DS5ILmS01n4LgqRFwlzCptgAqv5P7TPu2xN4eW3nfm8qoC-ETtPQM0-
- s_yN9vrF5AtpkQj7Vk>
-X-ME-Received: <xmr:THm7Y7uFmq0evnSJoem6BLKLVrS7t5K79FARi8wCXaTJtHrXTCXw7-DwZGl9fQX5jLdeLTGQFtSB_U5YLizc20CCYmo1dzlOuZbvzqx2EJa0hcR2ud3F10k>
+ :feedback-id:feedback-id:from:from:in-reply-to:message-id
+ :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+ 1673230664; x=1673317064; bh=9c52CVRT4uH4RCla61gFHCbl/kSN2X3os5J
+ QDrMAfaA=; b=FwHRSBUcwWkIOpIT40h96VKfeyo8u3kHPBhBYqYKJZZWXx2rys3
+ lNHIvm/leVyoB4arp1baFqmo11UTF8xWzB+mgVpUsq/nNwN8gmWhERLvzZrn6Ewc
+ pKVwxpUIsp5xAqbEYm1AdgqADOuzlCJxtQk5OrawGZVCmRwdBI2FNdLXsvWGaz4v
+ uVWfQoQI448XCkeC3mR80PEPRepCjmp+sDqYTKDztX+sDdFTg44Qn2HWGd68SplY
+ JqM5OEpOXAfH/FDkT2YGzK1sEzBWymMtxlHPBDvwoYGd3DKpMnU+bJOQD2H5KAG/
+ F0NHMaGV5+hKY7yDvBLRH3vidHxcN5dNkuQ==
+X-ME-Sender: <xms:R3m7Y3_kXHt3paJBRl-uv8FyL-p-U33TIwCldEA6llyQQ1cp_ilUVg>
+ <xme:R3m7YzuA4Qpgi7oYCcSUTbt9avqKIMepturIfKimtga39JV7eNxcKgXzeYhT06K2r
+ 41fmvBfX4b-KGi6-SE>
+X-ME-Received: <xmr:R3m7Y1Dz_JIr6S2oRufexw-x64LJ5UcMs3eiOlfvcyxsVakyfX6Lb81wMDTV3EGP4yyIjpyt67gAMV3e6j-SHfu1DjOWHxQd4eOTNFdA9CTCjE8bd2homxM>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrkeehgdegiecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestdekre
- dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
- shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepvdejgfejue
- dvgfduudekleevtefgtdevhfdtffefiefgveeuteffiedvffekvddtnecuvehluhhsthgv
- rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihessh
- grkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:THm7Y8ZeOHaRDjYepdk2EMUNCN1kWZk_aZXrTXsZVJk-kWGi9uAY7Q>
- <xmx:THm7Y6YC8kmKR_cANdRXVLY_WNV6qMz6eGlAMg2ClnYDADeDWwAVgQ>
- <xmx:THm7YwDhWtDEJr6cj1qKGs39uhVZ7c90RNm28WXQJDp6KquJoRK86w>
- <xmx:THm7Y9w8Fgg6Z8bnCSD_ZxC677OGEOa-L_zKmaLhUhtHuWK3AUAObQ>
+ uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
+ dttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhh
+ ihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepffdvueelffevke
+ duhfetjeduffeghfettdfguedtgfdvgfeufeduheevheevkeeknecuvehluhhsthgvrhfu
+ ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkh
+ grmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:R3m7Yzfl8Mq0siXdmcLcKoi3gzbMXw4z1HdA-1vYIWtJXkfW8v-6_w>
+ <xmx:R3m7Y8PGeBNEr_AxQjtMp4Mbtt39xqF50qRmFZmuPLCn0TmXeEJWDQ>
+ <xmx:R3m7Y1lvqqM43biqUXliRfCzQknb30zVwysaaWtOGcCL2DsBiy0MtQ>
+ <xmx:SHm7Y23AtCxWvOJTudkTnH0GH-lCK9BHNnkhVPRgrZxTxewSY7S5sg>
 Feedback-ID: ie8e14432:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 8 Jan 2023 21:17:47 -0500 (EST)
+ 8 Jan 2023 21:17:42 -0500 (EST)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH 3/3] ALSA: firewire-lib: keep history to process isochronous
+Subject: [PATCH 0/3] ALSA: firewire-lib: keep history to process isochronous
  packet
-Date: Mon,  9 Jan 2023 11:17:38 +0900
-Message-Id: <20230109021738.75543-4-o-takashi@sakamocchi.jp>
+Date: Mon,  9 Jan 2023 11:17:35 +0900
+Message-Id: <20230109021738.75543-1-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230109021738.75543-1-o-takashi@sakamocchi.jp>
-References: <20230109021738.75543-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -114,113 +110,42 @@ Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The history to process isochronous packets is useful when computing gap
-between current isochronous cycle and the latest isochronous cycle in
-which packet is processed (in IR context) and scheduled (in IT context).
+Hi,
 
-This commit stores the most recent packet descriptors to keep the history.
+This patchset is preparation for computation of extra delay in runtime of
+PCM substream.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp-stream.c | 20 +++++++++++++-------
- sound/firewire/amdtp-stream.h |  3 ++-
- 2 files changed, 15 insertions(+), 8 deletions(-)
+Current implementation uses list of packet descriptor to process
+isochronous packets. The packet descriptors are overwritten every time to
+process packets, while the history of packet descriptors is useful when
+computing gap between current isochronous cycle and the latest isochronous
+cycle in which isochronous packet is processed or scheduled.
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 006dc939065f..430b33dc60b3 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -1047,7 +1047,7 @@ static void process_rx_packets(struct fw_iso_context *context, u32 tstamp, size_
- 	const __be32 *ctx_header = header;
- 	const unsigned int events_per_period = d->events_per_period;
- 	unsigned int event_count = s->ctx_data.rx.event_count;
--	struct pkt_desc *desc = s->pkt_descs;
-+	struct pkt_desc *desc = s->packet_descs_cursor;
- 	unsigned int pkt_header_length;
- 	unsigned int packets;
- 	bool need_hw_irq;
-@@ -1106,6 +1106,7 @@ static void process_rx_packets(struct fw_iso_context *context, u32 tstamp, size_
- 	}
- 
- 	s->ctx_data.rx.event_count = event_count;
-+	s->packet_descs_cursor = desc;
- }
- 
- static void skip_rx_packets(struct fw_iso_context *context, u32 tstamp, size_t header_length,
-@@ -1202,7 +1203,7 @@ static void process_tx_packets(struct fw_iso_context *context, u32 tstamp, size_
- {
- 	struct amdtp_stream *s = private_data;
- 	__be32 *ctx_header = header;
--	struct pkt_desc *desc = s->pkt_descs;
-+	struct pkt_desc *desc = s->packet_descs_cursor;
- 	unsigned int packet_count;
- 	unsigned int desc_count;
- 	int i;
-@@ -1228,6 +1229,10 @@ static void process_tx_packets(struct fw_iso_context *context, u32 tstamp, size_
- 
- 		if (d->replay.enable)
- 			cache_seq(s, desc, desc_count);
-+
-+		for (i = 0; i < desc_count; ++i)
-+			desc = amdtp_stream_next_packet_desc(s, desc);
-+		s->packet_descs_cursor = desc;
- 	}
- 
- 	for (i = 0; i < packet_count; ++i) {
-@@ -1664,7 +1669,7 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
- 		err = -ENOMEM;
- 		goto err_context;
- 	}
--	s->pkt_descs = descs;
-+	s->packet_descs = descs;
- 
- 	INIT_LIST_HEAD(&s->packet_descs_list);
- 	for (i = 0; i < s->queue_size; ++i) {
-@@ -1672,6 +1677,7 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
- 		list_add_tail(&descs->link, &s->packet_descs_list);
- 		++descs;
- 	}
-+	s->packet_descs_cursor = list_first_entry(&s->packet_descs_list, struct pkt_desc, link);
- 
- 	s->packet_index = 0;
- 	do {
-@@ -1710,8 +1716,8 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
- 
- 	return 0;
- err_pkt_descs:
--	kfree(s->pkt_descs);
--	s->pkt_descs = NULL;
-+	kfree(s->packet_descs);
-+	s->packet_descs = NULL;
- err_context:
- 	if (s->direction == AMDTP_OUT_STREAM) {
- 		kfree(s->ctx_data.rx.seq.descs);
-@@ -1805,8 +1811,8 @@ static void amdtp_stream_stop(struct amdtp_stream *s)
- 	fw_iso_context_destroy(s->context);
- 	s->context = ERR_PTR(-1);
- 	iso_packets_buffer_destroy(&s->buffer, s->unit);
--	kfree(s->pkt_descs);
--	s->pkt_descs = NULL;
-+	kfree(s->packet_descs);
-+	s->packet_descs = NULL;
- 
- 	if (s->direction == AMDTP_OUT_STREAM) {
- 		kfree(s->ctx_data.rx.seq.descs);
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index 84156d0d57b8..a8dd1c3ec8d9 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -126,8 +126,9 @@ struct amdtp_stream {
- 	struct iso_packets_buffer buffer;
- 	unsigned int queue_size;
- 	int packet_index;
--	struct pkt_desc *pkt_descs;
-+	struct pkt_desc *packet_descs;
- 	struct list_head packet_descs_list;
-+	struct pkt_desc *packet_descs_cursor;
- 	int tag;
- 	union {
- 		struct {
+Conveniently, circular linked list was added to Linux kernel v5.19 at a
+commit 2fbdf45d7d26 ("list: Add list_next_entry_circular() and
+list_prev_entry_circular()"). This patchset changes data structure from
+list to the circular linked list for the packet descriptors.
+
+
+Takashi Sakamoto (3):
+  ALSA: firewire-lib: use circular linked list to enumerate packet
+    descriptors
+  ALSA: firewire-lib: use circular linked list for context payload
+    processing layer
+  ALSA: firewire-lib: store history to process isochronous packet
+
+ sound/firewire/amdtp-am824.c                  | 18 +++---
+ sound/firewire/amdtp-stream.c                 | 61 ++++++++++++-------
+ sound/firewire/amdtp-stream.h                 | 17 +++++-
+ sound/firewire/digi00x/amdtp-dot.c            | 18 +++---
+ sound/firewire/fireface/amdtp-ff.c            | 18 +++---
+ sound/firewire/motu/amdtp-motu.c              | 48 ++++++++-------
+ .../motu/motu-command-dsp-message-parser.c    | 11 ++--
+ .../motu/motu-register-dsp-message-parser.c   | 11 ++--
+ sound/firewire/motu/motu.h                    |  8 +--
+ sound/firewire/tascam/amdtp-tascam.c          | 18 +++---
+ 10 files changed, 139 insertions(+), 89 deletions(-)
+
 -- 
 2.37.2
 
