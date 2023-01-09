@@ -4,70 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC6D1C5479D
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Jan 2023 16:51:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78F0AC5479D
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Jan 2023 16:51:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 332A7C73B;
-	Mon,  9 Jan 2023 17:50:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 332A7C73B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5C32EC93D;
+	Mon,  9 Jan 2023 17:51:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C32EC93D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673283088;
-	bh=Zs1I9hWh8DgJCvcIXxrzn5p90o5lzJJFhhZ5y5LaxTE=;
+	s=default; t=1673283113;
+	bh=crfH3DNuxnnnEgBLc4QnnpaR6XIAnGQOnWmoA6qkFFo=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=bRDhCPhfErwXXci5dxosCyxWB8LcPwB7anmXk85nnNgNaiDR7up3WHboSu1WaU4bN
-	 oVXTlAkeB173zlw1w4BdvxLJ7dZiNAt0Ihxr6ROnw7KWv6o6JsSx5JTAMRuZbaaZ3i
-	 4cu+zEc7zg0tkrLUp2PiieruRkDIpQVeyvYfumYU=
+	 Cc:From;
+	b=pDTwrOLaiTLRmbhPgx139gceRyE4f8Sg88omKsZIVrARUtlRUplYapc7j7oOXupB+
+	 EIcT7JAFPPiaMJJ3L0SGdgb2b2SZXRI0bqN/xfS7GNjNboTjBBukYij77RBWFzQHU3
+	 s8JOeSDL6+HpwLSoVRULXrVxAanMGDPaA3ULKznA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C311BF80552;
-	Mon,  9 Jan 2023 17:49:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D59B0F80571;
+	Mon,  9 Jan 2023 17:49:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BFAECF80553; Mon,  9 Jan 2023 17:49:21 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+ id 64DCBF80568; Mon,  9 Jan 2023 17:49:23 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE3FAF80551
- for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2023 17:49:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE3FAF80551
+ by alsa1.perex.cz (Postfix) with ESMTPS id B6E0DF8055A
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2023 17:49:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6E0DF8055A
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=p61IZ6WT
+ header.s=k20201202 header.b=i7nz99UU
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 39B3BCE10B3;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 73791611EC;
+ Mon,  9 Jan 2023 16:49:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ECA7C433F1;
  Mon,  9 Jan 2023 16:49:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E475C433F1;
- Mon,  9 Jan 2023 16:49:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1673282955;
- bh=Zs1I9hWh8DgJCvcIXxrzn5p90o5lzJJFhhZ5y5LaxTE=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=p61IZ6WTpB8e8+dn4v8BtFUc7JGNi54Vd0i6Nvicq07pr7S8PtUqGbFAchDC4orhu
- E8mmU3g9MlDmT42YSWtDkT2bgoAt/wOr5pcaVkv9fd9z8LD4eOeFq+YCjxWJ8AQ17s
- X9L7TphpQvMvYmOI9IB/fYn6OfKL1hOefx0Ds2YRqw6mQ5iztpskoLD9O4XS+5vATP
- 7a4/2RWTsOGxGXiGBCLRJxZ368/JLx3Lx3+UyRRD+nnL9xttarHeO4CM/3heR70UyK
- Lx1/H/m5hIKlN9Nc5hGCUXDT9YajYDeDJCf29kzkt2F/AITEBIi5NhAPvgP5G2+JAQ
- gKfRUTUlAJerw==
+ s=k20201202; t=1673282959;
+ bh=crfH3DNuxnnnEgBLc4QnnpaR6XIAnGQOnWmoA6qkFFo=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=i7nz99UUUB6mq8L6gizntMmjWgzo0ggwV1fA/GkVuSeGE/DYjSDy4egfwgjFO7lkn
+ n3E1W93PxQVkOojQkLMT9IvVzW3BQ8k91d9Zvnssn4pVzbzmAejw923qZani6LdgTe
+ U2vuEB6YPEa57xrjp/pae4pMRCKio68lLDZ9yjcySuwPOYJ6wBQtbK3Im7i0hwz3KC
+ bKsTMg5FDAMq0S/Fsmth7TzthwKfInp33J8GtUk4/xxzgS6EqkWtBGeQL4fxx1P1u7
+ Kwk3yxKCGB+O/FcjS0A8hQFmP2MP+RB4/0+pGU5XZ2MyANpiYZejzq899YftK02PGc
+ xJ+PbTWkjkulA==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, 
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20221227163135.102559-1-krzysztof.kozlowski@linaro.org>
-References: <20221227163135.102559-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 1/3] ASoC: dt-bindings: qcom,
- lpass-cpu: Document required-opps
-Message-Id: <167328295277.323147.12695338235961954458.b4-ty@kernel.org>
-Date: Mon, 09 Jan 2023 16:49:12 +0000
+To: lgirdwood@gmail.com, Nathan Chancellor <nathan@kernel.org>
+In-Reply-To: <20230105-wsometimes-uninitialized-pci-ps-c-v2-1-c50321676325@kernel.org>
+References: <20230105-wsometimes-uninitialized-pci-ps-c-v2-1-c50321676325@kernel.org>
+Subject: Re: [PATCH v2] ASoC: amd: ps: Fix uninitialized ret in
+ create_acp64_platform_devs()
+Message-Id: <167328295784.323147.10320883556735377893.b4-ty@kernel.org>
+Date: Mon, 09 Jan 2023 16:49:17 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -84,15 +77,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: alsa-devel@alsa-project.org, trix@redhat.com, llvm@lists.linux.dev,
+ ndesaulniers@google.com, linux-kernel@vger.kernel.org, Syed.SabaKareem@amd.com,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 27 Dec 2022 17:31:33 +0100, Krzysztof Kozlowski wrote:
-> SC7280 LPASS CPU device node comes with required-opps:
+On Thu, 05 Jan 2023 17:43:39 -0700, Nathan Chancellor wrote:
+> Clang warns:
 > 
->   sc7280-herobrine-crd.dtb: audio@3987000: Unevaluated properties are not allowed ('required-opps' was unexpected)
+>   sound/soc/amd/ps/pci-ps.c:218:2: error: variable 'ret' is used uninitialized whenever switch default is taken [-Werror,-Wsometimes-uninitialized]
+>           default:
+>           ^~~~~~~
+>   sound/soc/amd/ps/pci-ps.c:239:9: note: uninitialized use occurs here
+>           return ret;
+>                  ^~~
+>   sound/soc/amd/ps/pci-ps.c:190:9: note: initialize the variable 'ret' to silence this warning
+>           int ret;
+>                  ^
+>                   = 0
+>   1 error generated.
 > 
-> 
+> [...]
 
 Applied to
 
@@ -100,12 +106,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: dt-bindings: qcom,lpass-cpu: Document required-opps
-      commit: a1df78540da20b9ce30a5b24b395d2b4a0f4319e
-[2/3] ASoC: dt-bindings: qcom,lpass-cpu: Fix DAI children pattern
-      commit: 5f9cd0f7c1499174b099a1bda67693df268e711e
-[3/3] ASoC: dt-bindings: qcom,lpass-cpu: Correct and constrain clocks, interrupts, reg
-      commit: ffb2bbdf79d7e712782fd5f44fc250f3e07b3b92
+[1/1] ASoC: amd: ps: Fix uninitialized ret in create_acp64_platform_devs()
+      commit: de1cae22898cf10aacc735a21d799b5bbce4496c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
