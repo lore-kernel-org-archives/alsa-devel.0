@@ -4,66 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8463AC54EBE
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Jan 2023 13:37:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50C62C5479D
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Jan 2023 13:48:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 680CAC74C;
-	Mon,  9 Jan 2023 14:36:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 680CAC74C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 01AECAEFA;
+	Mon,  9 Jan 2023 14:47:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01AECAEFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673271422;
-	bh=WxFELKqJTymY3MOenvm2x2pcCjd9fVrkAPqGPjcqJ9s=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=qGUNOewh4u3N1sGYV6UnajuKBBRmrD3L9dy6w0i/UXfipqevf6b4lY8Cu7+8fVMCW
-	 5fVxAazGzyAyasrG0bmzflwSKW+C0G0WvJjnSOc3ELMjS9c8edRxPE9fJiJDMW0s9F
-	 Qy/HKYPjhS+1sADSUPGq874KAAzIu7EA7G4jIwmo=
+	s=default; t=1673272116;
+	bh=Jd+4u+vQpcZxC+XzxFysjp3HoPdFA9H0rhDwzicPZ+0=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=iym97ID7PhPH2fdavZ4oydEi1bxV6S00QA4L6RQd4MBAd3PaBV3DrMLj8IurFv65L
+	 aGjqHVM0MVCRTKpu4eqDpiocfenXTd2aEGPazfwQtIyxdFN3E/wM6Rew07xAmPEWlY
+	 vs/01w5k86+1mIvA9oyf6eL4ceWRBA96Z6j7Zqm0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 25FB6F80245;
-	Mon,  9 Jan 2023 14:36:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8269DF8026A;
+	Mon,  9 Jan 2023 14:47:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 246B9F8026A; Mon,  9 Jan 2023 14:36:11 +0100 (CET)
+ id A0482F803DC; Mon,  9 Jan 2023 14:47:43 +0100 (CET)
 Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42BA7F8026A
- for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2023 14:36:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42BA7F8026A
+ by alsa1.perex.cz (Postfix) with ESMTPS id E4D07F800C7
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2023 14:47:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4D07F800C7
 Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
  secure) header.d=perex.cz header.i=@perex.cz header.a=rsa-sha256
- header.s=default header.b=zYnxmFdY
+ header.s=default header.b=l9fcbuld
 Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id AA9A5A0040;
- Mon,  9 Jan 2023 14:36:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz AA9A5A0040
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 8B2FEA0047;
+ Mon,  9 Jan 2023 14:47:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 8B2FEA0047
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1673271366; bh=f2GqUf1cW2FRwVBF1cKFnGll2JhGmKIGzLlt2Uudu+s=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=zYnxmFdY+pnNgl2bfkA4Lid2Ih+melJfNu4K1+x5uvxpl6qVkSpQ6hahXmEWy7nWL
- PZmRYaD5Y6PJzRz4fVdjLKZaP4xdd7JzHY878j20WKzZu7TZYU3a8G7u7/D+SO+XBo
- mIuDG5OubgSuIioB0bp0zAnFNMSx80QZSQjY2Tv8=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ t=1673272061; bh=tadL4Xyx4wSfJPL9BsL3pVlwT9nrk52x1+B6CFo7qRI=;
+ h=From:To:Cc:Subject:Date:From;
+ b=l9fcbuldR4Wjnu/KmddjM0yJ6TcfaEwH1Pcl6OxKeviC61OctE3bS/qFvlJYQgufR
+ kLJ+Ifh0ePZZ8OZVK4WtGiwd8QOUicpPsp48gnXwA2WyawxpGECNhHb+6XAbYrfBA4
+ 7CV0wMTrYcWqTAhlKR43mSORTt3RJY4I1oRDusGU=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested) (Authenticated sender: perex)
  by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Mon,  9 Jan 2023 14:36:00 +0100 (CET)
-Message-ID: <ef91d500-60e8-fdfd-b661-161e7f2b12a3@perex.cz>
-Date: Mon, 9 Jan 2023 14:36:00 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH linux-next] ALSA: control-led: use strscpy() to instead of
- strncpy()
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>, yang.yang29@zte.com.cn
-References: <202301091945513559977@zte.com.cn> <87zgarg9ul.wl-tiwai@suse.de>
+ Mon,  9 Jan 2023 14:47:36 +0100 (CET)
 From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <87zgarg9ul.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: ALSA development <alsa-devel@alsa-project.org>
+Subject: [PATCH] ALSA: control-led: use strscpy in set_led_id()
+Date: Mon,  9 Jan 2023 14:47:24 +0100
+Message-Id: <20230109134724.332868-1-perex@perex.cz>
+X-Mailer: git-send-email 2.39.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,83 +69,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: xu.panda@zte.com.cn, alsa-devel@alsa-project.org, tiwai@suse.com,
- linux-kernel@vger.kernel.org
+Cc: Takashi Iwai <tiwai@suse.de>, yang.yang29@zte.com.cn,
+ stable@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 09. 01. 23 13:40, Takashi Iwai wrote:
-> On Mon, 09 Jan 2023 12:45:51 +0100,
-> <yang.yang29@zte.com.cn> wrote:
->>
->> From: Xu Panda <xu.panda@zte.com.cn>
->>
->> The implementation of strscpy() is more robust and safer.
->> That's now the recommended way to copy NUL-terminated strings.
->>
->> Signed-off-by: Xu Panda <xu.panda@zte.com.cn>
->> Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
->> ---
->>   sound/core/control_led.c | 3 +--
->>   1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/sound/core/control_led.c b/sound/core/control_led.c
->> index f975cc85772b..c88653c205eb 100644
->> --- a/sound/core/control_led.c
->> +++ b/sound/core/control_led.c
->> @@ -534,8 +534,7 @@ static ssize_t set_led_id(struct snd_ctl_led_card *led_card, const char *buf, si
->>   	struct snd_ctl_elem_id id;
->>   	int err;
->>
->> -	strncpy(buf2, buf, len);
->> -	buf2[len] = '\0';
->> +	strncpy(buf2, buf, len + 1);
-> 
-> Still using strncpy()...?
+The use of strncpy() in the set_led_id() was incorrect.
+The len variable should use 'min(sizeof(buf2) - 1, count)'
+expression.
 
-The original code should be:
+Use strscpy() function to simplify things and handle the error gracefully.
+
+Reported-by: yang.yang29@zte.com.cn
+BugLink: https://lore.kernel.org/alsa-devel/202301091945513559977@zte.com.cn/
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+---
+ sound/core/control_led.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-index f975cc85772b..b44abefcb593 100644
+index f975cc85772b..45c8eb5700c1 100644
 --- a/sound/core/control_led.c
 +++ b/sound/core/control_led.c
-@@ -530,7 +530,7 @@ static ssize_t set_led_id(struct snd_ctl_led_card 
-*led_card, const char *buf, si
-                           bool attach)
-  {
-         char buf2[256], *s, *os;
--       size_t len = max(sizeof(s) - 1, count);
-+       size_t len = min(sizeof(buf2) - 1, count);
-         struct snd_ctl_elem_id id;
-         int err;
-
-But it can be replaced with:
-
-diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-index f975cc85772b..41d4e898d34c 100644
---- a/sound/core/control_led.c
-+++ b/sound/core/control_led.c
-@@ -530,12 +530,11 @@ static ssize_t set_led_id(struct snd_ctl_led_card 
-*led_card, const char *buf, si
-                           bool attach)
-  {
-         char buf2[256], *s, *os;
--       size_t len = max(sizeof(s) - 1, count);
-         struct snd_ctl_elem_id id;
-         int err;
-
--       strncpy(buf2, buf, len);
--       buf2[len] = '\0';
-+       if (strscpy(buf2, buf, count) < 0)
-+               return -E2BIG;
-         memset(&id, 0, sizeof(id));
-         id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-         s = buf2;
-
-I'll send a patch ASAP.
-
-				Jaroslav
-
---
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+@@ -530,12 +530,11 @@ static ssize_t set_led_id(struct snd_ctl_led_card *led_card, const char *buf, si
+ 			  bool attach)
+ {
+ 	char buf2[256], *s, *os;
+-	size_t len = max(sizeof(s) - 1, count);
+ 	struct snd_ctl_elem_id id;
+ 	int err;
+ 
+-	strncpy(buf2, buf, len);
+-	buf2[len] = '\0';
++	if (strscpy(buf2, buf, min(sizeof(buf2), count)) < 0)
++		return -E2BIG;
+ 	memset(&id, 0, sizeof(id));
+ 	id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+ 	s = buf2;
+-- 
+2.39.0
