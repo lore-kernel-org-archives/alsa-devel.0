@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E1FBC5479D
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Jan 2023 16:51:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0738C54EBD
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Jan 2023 16:51:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EDD8AC384;
-	Mon,  9 Jan 2023 17:50:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDD8AC384
+	by alsa0.perex.cz (Postfix) with ESMTPS id F28C63130;
+	Mon,  9 Jan 2023 17:50:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F28C63130
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673283061;
-	bh=DXzx4CNv2chUEU2incZa90cyOE5Pn9XEg8JMTsYyue8=;
+	s=default; t=1673283074;
+	bh=YwSP2w9wGKi2ttakQ9Xz42YL9cH5sw+0e4H+bY+2QYE=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oqjDKKLYYOiUs668vN2A7hU4j0F8Enm+XQ4vIUOnqPaziP4VR2j1Q3OMkXEB4kxh0
-	 m+dLdaax5D+THjKmjNMy8bpnLjzdlSk/CtCZ2kcCEcKE2Yb93W2/j7yVjsF04GrPrF
-	 MiCkAowtpdqg0suAevTyp7AejvO2E0Qr47/pPvdo=
+	b=KjmmMYhzxPNQHoK1QccydEUSK1KNkl8qCXEWVq3MmUFoqWAYP+WlzRMMouByWYiXr
+	 DHe6D7xj41N34egRWQy2Pzq/0HSCduw7QgqC5pFMZuwPXph0mc5Q7KyfpQ41KkufqA
+	 0S7Bd+KowJkssxwJBuvQkJbTdPACU5pRjMiqXlfU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60F2AF8053D;
-	Mon,  9 Jan 2023 17:49:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35268F80551;
+	Mon,  9 Jan 2023 17:49:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4D2CEF80524; Mon,  9 Jan 2023 17:49:18 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 47548F80557; Mon,  9 Jan 2023 17:49:21 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E3F2BF80524
- for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2023 17:49:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3F2BF80524
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74AC9F80549
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2023 17:49:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74AC9F80549
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ttnkkIco
+ header.s=k20201202 header.b=bR5oClSE
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id CB1EAB80E7F;
- Mon,  9 Jan 2023 16:49:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B1B8C433F0;
- Mon,  9 Jan 2023 16:49:09 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 38251611CF;
+ Mon,  9 Jan 2023 16:49:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06D96C43396;
+ Mon,  9 Jan 2023 16:49:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1673282952;
- bh=DXzx4CNv2chUEU2incZa90cyOE5Pn9XEg8JMTsYyue8=;
+ s=k20201202; t=1673282957;
+ bh=YwSP2w9wGKi2ttakQ9Xz42YL9cH5sw+0e4H+bY+2QYE=;
  h=From:To:In-Reply-To:References:Subject:Date:From;
- b=ttnkkIco2rzsDwWwQXYUHdG+C57D1AHwmz2k0DtimzBcY/47pQiMlhSB9BORq5Bgl
- NyiqSXw+Le4yi9UhN/gVP3p0j2Fo0xskUxu+zcbBTCR3IudGZHEILw8ioI4bwsojhU
- ywpvrymd4x4oQu8BMePUA23Fxt0PtKF42ZxsKLqMngdui/N4YXCQOe7C5ByxfJj/hH
- c4++K3I4fV4FHrNg61UZsdmd9cYvqXIK6sc+UxstP1KQdqZxen8ha8qnykb8qmEXhx
- raQHeaYqITGoEOcOrrTICOKCH7Lpo+3nAtntAeJwP0EHSaD5m1IE3ntjeaCa8B/cct
- 3nw/XDPltrS7Q==
+ b=bR5oClSEGTvqSQyskWB8vv5rBgYftECC/PY3hreKOGdwTGX0zkiJnGMoHRss8kqrM
+ lRE7aJoVKx7Infq+IqJkWPxjFXfRkRg5Opc8R4SGK4hlK9emXTCCCmlacOWmPhAB0h
+ /a4dzJ1OkU2qQZhYD6CaNNUaJW1ROFyUxe+wOnjjTns+qJe7GNrzyl+PJtn6gdN8m5
+ Kq1t0WCa4Hs/2YJXgprroIDgSoPUrX8DuBY69ZgkfO4TTt5RZDaHHDWwer+3NG9pvX
+ v85z0lslfUv9F8ovsyR2DGr3MkFbfKHHHHc721cg33w7WNgY7601y2tGX7On0R3jx4
+ TiUtYT8NwW7Kw==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- nicoleotsuka@gmail.com, perex@perex.cz, tiwai@suse.com,
- devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Chancel Liu <chancel.liu@nxp.com>
-In-Reply-To: <20230104023953.2973362-1-chancel.liu@nxp.com>
-References: <20230104023953.2973362-1-chancel.liu@nxp.com>
-Subject: Re: [RESEND v2 0/3] Add support for XCVR on i.MX93 platform
-Message-Id: <167328294977.323147.11170247431537947432.b4-ty@kernel.org>
-Date: Mon, 09 Jan 2023 16:49:09 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230109083301.76282-1-krzysztof.kozlowski@linaro.org>
+References: <20230109083301.76282-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] ASoC: dt-bindings: simple-card: correct DAI subnodes
+ pattern
+Message-Id: <167328295575.323147.8150537822946345432.b4-ty@kernel.org>
+Date: Mon, 09 Jan 2023 16:49:15 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -83,16 +85,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 04 Jan 2023 10:39:50 +0800, Chancel Liu wrote:
-> This patchset supports XCVR on i.MX93 platform.
+On Mon, 09 Jan 2023 09:33:01 +0100, Krzysztof Kozlowski wrote:
+> The simple-audio-card,dai-link node does not allow address/size-cells
+> thus children (cpu, codec) should come without unit addresses.  For
+> cases with multiple nodes of same type, require a dash before index
+> (e.g. cpu-x) and add trailing $ to the pattern to disallow other
+> characters.
 > 
-> changes in v2:
-> - remove unnecessary code which causes kernel test robot reporting error
-> 
-> Chancel Liu (3):
->   ASoC: dt-bindings: fsl,xcvr: Add compatible string for i.MX93 platform
->   ASoC: fsl_xcvr: Add support for i.MX93 platform
->   ASoC: fsl_xcvr: Add constraints of period size while using eDMA
 > 
 > [...]
 
@@ -102,12 +101,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: dt-bindings: fsl,xcvr: Add compatible string for i.MX93 platform
-      commit: 0a22003c637b71a1dbd8bb521c09736b52349256
-[2/3] ASoC: fsl_xcvr: Add support for i.MX93 platform
-      commit: e240b9329a300af7b7c1eba2ce0abbf19e6c540b
-[3/3] ASoC: fsl_xcvr: Add constraints of period size while using eDMA
-      commit: 1760df5b7ee6a0bfc8ad47f4db490c36c5546be8
+[1/1] ASoC: dt-bindings: simple-card: correct DAI subnodes pattern
+      commit: cbf74baf02219978bfa9c2959eac6bf1d98c32cd
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
