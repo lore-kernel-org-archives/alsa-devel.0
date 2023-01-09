@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C4AAC5479D
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Jan 2023 16:50:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E80D9C5479D
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Jan 2023 16:50:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DA8ABC51;
-	Mon,  9 Jan 2023 17:49:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DA8ABC51
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6BA15BB35;
+	Mon,  9 Jan 2023 17:50:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BA15BB35
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673283027;
-	bh=nomMKMBq5vqYlYBkVcfPgR908mTaHI9M2brVdnM5JRU=;
+	s=default; t=1673283052;
+	bh=vfToooFvqG7PPIh4+IgqDfsebCiWzTMy8pkLwP+eTLE=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=CUj+O2Y/MSajSzYPBchApc6PYAN63i6+tMg+IRNgpThdxk7LU6YXEP2z5XWNZeKkr
-	 6kl6Kgkg5ZgNPcvsOVBBh0V7ARd+skU1CWvxSfNB0wvS7497ei/w3JXA7Wzz82vtPL
-	 mGZ/j2BrVPZW88RMlb+XY5DnEUgzpIK/nDPd4ShU=
+	b=O8MbCKQCdCaWfzUNte7oqcMJBPxeD9O+lYeT9WTYnhQCmyvm3WgfNyiv4kJ09g/Z2
+	 oq31kF47+Hmdrm0ngtlIfirps/h3RUKD3kglKU4otKf8MWuItKSztIKDLO7rsVlRvT
+	 tDFpf46lEpQw4/hRZ6AstZEhDFY4fBH3Fj4DCxAc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2DD7F804D2;
-	Mon,  9 Jan 2023 17:49:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90268F80539;
+	Mon,  9 Jan 2023 17:49:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4AD7BF8051B; Mon,  9 Jan 2023 17:49:12 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 9EB8AF8051B; Mon,  9 Jan 2023 17:49:13 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A760EF80245
- for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2023 17:49:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A760EF80245
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6C296F80425
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2023 17:49:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C296F80425
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qFFxaR/Z
+ header.s=k20201202 header.b=dTZ4S4m0
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 3B9CB611DB;
- Mon,  9 Jan 2023 16:49:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E93AC433D2;
- Mon,  9 Jan 2023 16:49:05 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 1D08B611E9;
+ Mon,  9 Jan 2023 16:49:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 241C3C433F2;
+ Mon,  9 Jan 2023 16:49:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1673282947;
- bh=nomMKMBq5vqYlYBkVcfPgR908mTaHI9M2brVdnM5JRU=;
+ s=k20201202; t=1673282949;
+ bh=vfToooFvqG7PPIh4+IgqDfsebCiWzTMy8pkLwP+eTLE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=qFFxaR/Zchf5+vt6x+1Rl3oSOSbcFlWH62nhYxmHqSsTrEAdbI9QIeHZND3nVt8RJ
- nRzrurq6JV8Fq0qrSvvgudwzOVSq/Qflwi4Y/3tTA3+/fFtXXxWjdkwEXCjoU//muO
- XtATpsnPXVYzABiPPput65fRKOEDn+uZFOds06zMVa3t4jSwikqZVGb8VsEGvwIaud
- pJVj2/f3J3o6+PMQ1wIrQ2wH4PJM7UFA01vxE9MilxAKPUfeTuUsdU/we9dLb/RSJo
- Io1YqBCYE3MvKG9//G7+XoncCFz3YY+yFZpZRgwwmxpiXER20VFcL9ayevk6hScAHE
- cALvfCncA2cgg==
+ b=dTZ4S4m0Kixw+/ADbnK/a9lxMmzQ94LmS1Z0eEq/i7EruP1hlAt81aajr5fwcRNL5
+ pOe/qFU5fQrbC3YDNIrtf8kwCZ2gRziMWn/OJXEed2A8OQOSFNcQ2ees5Li5P207ee
+ K/OpgSs6fJRl/z5g7grnlJDAoCwaNoSPN9ngl+DIeGdT6RUWHbcWA8wpufWGHVf/TH
+ +d7hDCYszE6gHjpqBwAPwHzMeyi9Gmv1H0gxd8GztsrKkI2/+rjCgDjOy0bV/mrpVA
+ z03ZwJ58N6JEuKglO24N5iDEZPXIOvhDD/sqliSpfEjtxoV12W8/ATmgS3Y9AXsPA0
+ CU2OT9vfCG6LQ==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- Francesco Dolcini <francesco@dolcini.it>
-In-Reply-To: <20230104140412.35575-1-francesco@dolcini.it>
-References: <20230104140412.35575-1-francesco@dolcini.it>
-Subject: Re: [PATCH v2 0/3] ASoC: nau8822: add speaker Bridge Tied Output
-Message-Id: <167328294504.323147.3197941344180988086.b4-ty@kernel.org>
-Date: Mon, 09 Jan 2023 16:49:05 +0000
+To: lgirdwood@gmail.com, Nathan Chancellor <nathan@kernel.org>
+In-Reply-To: <20230105-wsometimes-uninitialized-pci-ps-c-v1-1-4022fd077959@kernel.org>
+References: <20230105-wsometimes-uninitialized-pci-ps-c-v1-1-4022fd077959@kernel.org>
+Subject: Re: [PATCH] ASoC: amd: ps: Fix uninitialized ret in
+ create_acp64_platform_devs()
+Message-Id: <167328294786.323147.5948330744390772644.b4-ty@kernel.org>
+Date: Mon, 09 Jan 2023 16:49:07 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -77,22 +76,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: wtli@nuvoton.com, kchsu0@nuvoton.com, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Benjamin Marty <info@benjaminmarty.ch>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Francesco Dolcini <francesco.dolcini@toradex.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ llvm@lists.linux.dev, Syed.SabaKareem@amd.com, Vijendar.Mukunda@amd.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 04 Jan 2023 15:04:09 +0100, Francesco Dolcini wrote:
-> Add support for BTL (Bridge Tied Load) configuration to NAU8822 audio codec,
-> since this requires adding a new property to the binding convert it from
-> txt to yaml first.
+On Thu, 05 Jan 2023 08:53:32 -0700, Nathan Chancellor wrote:
+> Clang warns:
 > 
-> v2:
->  - added Krzysztof reviewed-by and acked-by
->  - removed non-relevant information about SPI not being supported from binding document
+>   sound/soc/amd/ps/pci-ps.c:218:2: error: variable 'ret' is used uninitialized whenever switch default is taken [-Werror,-Wsometimes-uninitialized]
+>           default:
+>           ^~~~~~~
+>   sound/soc/amd/ps/pci-ps.c:239:9: note: uninitialized use occurs here
+>           return ret;
+>                  ^~~
+>   sound/soc/amd/ps/pci-ps.c:190:9: note: initialize the variable 'ret' to silence this warning
+>           int ret;
+>                  ^
+>                   = 0
+>   1 error generated.
 > 
 > [...]
 
@@ -102,10 +104,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: dt-bindings: nau8822: convert to the dtschema
-      commit: 76fa6279eff931b43482f0bef5d65cdcf325de87
-[3/3] ASoC: nau8822: add speaker Bridge Tied Output configuration
-      commit: 968b42069fe5dab362b623c6b8a1565709a12f5b
+[1/1] ASoC: amd: ps: Fix uninitialized ret in create_acp64_platform_devs()
+      commit: de1cae22898cf10aacc735a21d799b5bbce4496c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
