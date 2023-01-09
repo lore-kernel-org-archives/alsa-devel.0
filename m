@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52609C54EBD
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 Jan 2023 13:19:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3222BC54EBD
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 Jan 2023 13:19:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3DFBFBD6F;
-	Mon,  9 Jan 2023 14:18:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DFBFBD6F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88BB7BD19;
+	Mon,  9 Jan 2023 14:18:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88BB7BD19
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673270344;
-	bh=/qyuB9h/txqW9SdJPmuVlscxST7aJjsc0wnb+CJUZQw=;
+	s=default; t=1673270381;
+	bh=njB6Zh8YfzxvkvRmtJW3irI4YzuffDNXG9ydlH90iTs=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=eYm+oDsXGC1y64Jqpr/JJ4NNtWpZ+rtvze1aK11rA/ZwxDrLVV1lVGLKjY21dKTTx
-	 IAgb28baxALq1vbvd7IvJitCaMxspN2O/5ggRPrOQRGEfXLEabxUaiP/RD5BVtcBNQ
-	 ZgQp/7aN1lhwhJQ2GQBru/AGsg4zmxl+g4R1Wc98=
+	b=hgMlTCXJBc9gFDttrbCB80At2zYCR7uI3s/Y+4ZOh26wIyTChnrifwzZEwYOHEw5+
+	 CKEkiYCF8DVjFXgoG6fh6HyXllmKUlpakK19kPxg7vY37XZOyoqW2UoxCCu6UsNR9E
+	 qReYQt1IMAlZ2zYtu3lXfprgJbcYnMdd66EqDVKo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 300C2F80552;
-	Mon,  9 Jan 2023 14:17:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E47CF8051B;
+	Mon,  9 Jan 2023 14:18:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AFB98F80542; Mon,  9 Jan 2023 14:17:33 +0100 (CET)
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com
- (mail-co1nam11on2085.outbound.protection.outlook.com [40.107.220.85])
+ id 6C7F4F8052F; Mon,  9 Jan 2023 14:18:00 +0100 (CET)
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam10on2045.outbound.protection.outlook.com [40.107.94.45])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46E74F80542
- for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2023 14:17:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46E74F80542
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96CB4F803DC
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2023 14:17:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96CB4F803DC
 Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
  unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=AkXBUwgW
+ header.s=selector1 header.b=2RNIPUrB
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U/kf0DxFdguPmHIWJJ8f7BwrjcToHapHXB0vUMgax44e0NJZaQmEU4smhJbf+DRakWF/7odRp2hX9Wv8D57K1wVNJyCYhI8pu+BgTA6udzHME292Xo4kRCe2ppfMwHENE7pOAIdc7RTMYCc0lMEuzhAd3JEqHozGTVBsQqyh7iIp/7isOQbNcCvtBtHPIykQQVWR8DZHfrDsUNxOdOaXft8V7Cy31AhGQPyoy0v6LmVgd178If5dIEr5EWoq3SV86U+9Q+asioF5Jg0VtUUZAlgFtU5Nmo4xV3WErtORuRLWP6XwjbV+lpo0KbM3UK03g2DNPnT5E3lfiUtEy4IgSQ==
+ b=Sqo1W0aWkY8xbKhztQgw/DiD98z57JgLfkXFQv5Rk0OKKD5HLYIIN5Krsh/PviReRUIPqMIziDN8ZZdhjYFK3jcPxaYgFAeILBXgsKCjyAeuRgmNzsliD/80aHDuQQ44gSmGGmYmIh2Xj5pw/kkUpOcR5ZWzO5Aole+KLOrzvMdMh38m9JJTEwuim8IfmUEQGOfAaD3F27Ri1+nuhXRM0wnrY+wyEulciQygbOAj4LB/diGNbvJ+/u/nILxK4orgDsJfZvrIxcNWq0i6iGQFBp4p2QOM6t5YhcYHr6OreGxJK3JqlZAt31g0spBiMQxq5R8GvyEXEvbmp6x4+N3EFw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZFJJv7o355mKu4mAMJbAgFIqJG+NRGxHnZ0Vm69X1wM=;
- b=K6itUB3VbQLJkNKMlTm0isfNf83ksGrNGSU0tomFQRAbMEEkpm791ItoBOJJ38f6crp8Swi020E7L2NaxFdzjEyiQaj5ZJgTs0zMtV4bQY2acrLqp5qxldLaUF4yr9oTNtjg08tTHggeuGs0uvpKAPMls5ZfGrzsJIjXNaveHyz6ZuZfwsomrWE5DTdlNJ2LKlLg/4Ao2VqDPdIRhNq2uj2hza0Ldq+GVen/Sp5wvs/or9CA4SFvlOAVjC/vARJNzKiyIjBoBiJYN34O5y3CDPiyZRXeDBtrR116POVBTaTar+lmPTX8PsghjFDppZIsSuW7QxlrP2zjLlR8zIcDrQ==
+ bh=Ri/h6paH/3Qy6PA6nANoA2FSo6zPjGIKEUPaduyvixU=;
+ b=MNL8J/coN5ckZ9yEb+BsW2pyJ0O4m+U1fDGeUrozgLbCXzuOxxtZXOsvJdzWfGnT7NgbK36w3GLXYmsFqafCrRYNj3+37w8kgc5MO3t9Y2EE+FEqHNaQdNSusfTTK0rKyy/S3D9S4iPAywBtmAqQiy4hZwAfPEae31125IKRN5Wk8yPEkMJiX7gKgxkxRK1geLOAASvocsPDvGJehc3X2CoUA27qTD/COqs0uhN8ZmhIkhvUxZpGol916thZQZPItTx1gVJZkYeGkcJ2Foj3dAhsSWZKIBU6GsjvNKxk9Qcg0qHNv7+OFo0u0B9t7JnB/GOXXWtrxcGhM0rneIMwjw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZFJJv7o355mKu4mAMJbAgFIqJG+NRGxHnZ0Vm69X1wM=;
- b=AkXBUwgW6lwdGbIocicersJrsB154kk/qRIAVDxbUVDFBYwYzQgPoGXNH1KA6pwnie/KxrjSvCdC0nDdaFXgfFRY5MIHcrKZgIpi2R/O8W2hmbHXDe2IZDCFBRZuPFn4PXwRcXdlIjSyBjiwODTbmSPwiRHDg9nMiup5NWPGyKI=
-Received: from DS7PR03CA0185.namprd03.prod.outlook.com (2603:10b6:5:3b6::10)
- by DS7PR12MB8202.namprd12.prod.outlook.com (2603:10b6:8:e1::13) with
+ bh=Ri/h6paH/3Qy6PA6nANoA2FSo6zPjGIKEUPaduyvixU=;
+ b=2RNIPUrBJFgS0CK407tMgvwX6DF4DWl4GVAxcUznc8XA/1BRoUlSTNOxTsXvmUvmYnecQybjSbw+aRrqHqAwXIdnnjsOETVWeUjo7/CfKEjFpEYhAx7Atn1y656GOIBPvOiCTDjGE/r2tA7rfN+2V76tLATEtQPXA7H6GY5RK7s=
+Received: from DM6PR07CA0075.namprd07.prod.outlook.com (2603:10b6:5:337::8) by
+ BL1PR12MB5142.namprd12.prod.outlook.com (2603:10b6:208:312::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.18; Mon, 9 Jan
- 2023 13:17:24 +0000
-Received: from DM6NAM11FT111.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:3b6:cafe::dc) by DS7PR03CA0185.outlook.office365.com
- (2603:10b6:5:3b6::10) with Microsoft SMTP Server (version=TLS1_2,
+ 2023 13:17:52 +0000
+Received: from DM6NAM11FT004.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:337:cafe::43) by DM6PR07CA0075.outlook.office365.com
+ (2603:10b6:5:337::8) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.18 via Frontend
- Transport; Mon, 9 Jan 2023 13:17:24 +0000
+ Transport; Mon, 9 Jan 2023 13:17:52 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -68,26 +68,26 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
 Received: from SATLEXMB03.amd.com (165.204.84.17) by
- DM6NAM11FT111.mail.protection.outlook.com (10.13.173.26) with Microsoft SMTP
+ DM6NAM11FT004.mail.protection.outlook.com (10.13.172.217) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.5986.18 via Frontend Transport; Mon, 9 Jan 2023 13:17:24 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB03.amd.com
+ 15.20.5986.18 via Frontend Transport; Mon, 9 Jan 2023 13:17:52 +0000
+Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB03.amd.com
  (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 9 Jan
- 2023 07:17:24 -0600
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
+ 2023 07:17:51 -0600
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB07.amd.com
+ (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 9 Jan
- 2023 07:17:23 -0600
+ 2023 05:17:51 -0800
 Received: from amd-System-Product-Name.amd.com (10.180.168.240) by
  SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2375.34
- via Frontend Transport; Mon, 9 Jan 2023 07:17:14 -0600
+ via Frontend Transport; Mon, 9 Jan 2023 07:17:42 -0600
 From: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
 To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH v2 3/5] ASoC: amd: acp: Refactor i2s clocks programming
- sequence
-Date: Mon, 9 Jan 2023 18:51:02 +0530
-Message-ID: <20230109132104.1259479-4-venkataprasad.potturu@amd.com>
+Subject: [PATCH v2 5/5] ASoC: amd: acp: Enable i2s tdm support for skyrim
+ platforms
+Date: Mon, 9 Jan 2023 18:51:04 +0530
+Message-ID: <20230109132104.1259479-6-venkataprasad.potturu@amd.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230109132104.1259479-1-venkataprasad.potturu@amd.com>
 References: <20230109132104.1259479-1-venkataprasad.potturu@amd.com>
@@ -96,26 +96,26 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT111:EE_|DS7PR12MB8202:EE_
-X-MS-Office365-Filtering-Correlation-Id: 297f1a71-26a1-42d9-f48c-08daf243d939
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT004:EE_|BL1PR12MB5142:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1e6d7a84-16af-4c25-89e7-08daf243e9b6
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 23H0CkNC/3hSfVb8okQmxAtiNEZdkxTDQTQgE/P9aJ8ErogqPGeoRrO77kne9qXpqkrKTdAim1qmoNaQOGf3SEQTpbeIeyMBFhcTvTtMVnNnrCt2y/qgRUJYCo7Ar3szX5bAcZWeLfZH893eZvb4UVw7cgA/dZhQeKIzQWU3Uv4xdjWIyOeHW93CRjQd7lI80pzuYCsRICBqWCmjaTH6Zb+/vXZkDnFcRUPDJ97Z7PN5g9WIo83kCjJJRxCvuN2DotyYKBiwD60hc7K/PEaGn1tIaIazCmR+zt4ekmhXSDnazqsjJzTtC9rc2xk7uEliULnPCQfXLLjaUW+ji5JT5zp9HEWKqJdkcfi5pp2Efz0lYYon45YohkBtJ/a8ueegFnzSruey595IzTJcFXDAjxT7bHpeWJC/iVOjPE6Zl24ekKbwx/fO7HAIawBqoPVVdIc8FDrapuliY0izSfuEnAPp5p8JKKEQerko7q//HpUiPxfO+eMB1ibZUtcl3QNZRtnn2bN5m6jVMt5brN+jdeAxDODucbBX2dy1EE2ubzucwHxtg/Pb0bG0f2JJOsnMRKiD0RJwo6sKGFP9pJMcI/Cs9B0DsmJjAaTpqtUVjQqSf6gng5DxOajxl5jRFtzuTWf1FQhQmxq1LkIZHIyahMsNjHqkWHg+fXYFCFov4HWyH15Bpb738jRe4KAlUzE3W8vmgepUOiVHEiiu4w6srQrYxCLEPkPA9Zf/qYuoc2A=
+X-Microsoft-Antispam-Message-Info: Bhr/8eh519SVX0GYkRCr1XI+fxW8bcxPtxkl0B8pOSDBUi57sp2ek8qumjkOMs9SA78td0DjRJKc3RIGNnjnB1luqZT+148pd5z2cxO7jkvk/otqgDU7qWeUb/YZnJNOEsWoilyB9NHkitktZhYVMgWaUky3ZKDL/UdCXrB8u5xued0upK779EAWHxVIfV0Q8NlopyObFIu93oHdTO/VskDvZGSZiQ7ey7xRqKiEc+bbk0/xjePtrmDjr8AuSU2JjgxRzJZ01dIJxLxWAxGNAwG+KMF7dWmEfBbL6r/7p1avP4Q6q52TceJPnv5m8q2Ze1xgdJwlmA8ITcBAwIRsuu0DsRXGicbZnMNgexXo7pxA2+WGT9o0a76E2XqlyAqX3LqqQmCNYmhEO9wMyTGi/dME/ei0qXMRDV04xwTxcZ2+7VZmO4JRHsNPcgR7Ow9Y2PQdEfLhlepkBgi7khn9ofKNKW439PEG/XZtfBO9zngzFDrHVJOj5b4P1pEEHsoZ+bXpdo2ZDCuAFqB86/pTRQG6rl0ROt1ydUu0L1Pq6mcdgeo6WAuvI29oHBOUOy2qt5EXlsUM7j0R7JYuuzvG36q4JaFFtIESMktUm+peghjoagcpqWvz288sqv08EBQyQvWvG2qwmfTaNoWgxpttwsLVgpg0i7OATeMhgYQwd68Kj+/B/Z/zdQYvAkq2DUvoUl29XUJzY7sy4NnbnhTJR5i65vQX2gkWTipVZy9+9kM=
 X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
  IPV:CAL; SFV:NSPM; H:SATLEXMB03.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
- SFS:(13230022)(4636009)(136003)(346002)(39860400002)(396003)(376002)(451199015)(36840700001)(46966006)(40470700004)(82310400005)(2906002)(8936002)(5660300002)(36756003)(41300700001)(6666004)(70586007)(70206006)(8676002)(316002)(7696005)(110136005)(54906003)(4326008)(40480700001)(26005)(478600001)(186003)(336012)(2616005)(1076003)(426003)(86362001)(47076005)(36860700001)(83380400001)(40460700003)(356005)(81166007)(82740400003)(36900700001);
+ SFS:(13230022)(4636009)(346002)(39860400002)(396003)(376002)(136003)(451199015)(40470700004)(46966006)(36840700001)(82310400005)(8936002)(40460700003)(2906002)(5660300002)(426003)(47076005)(41300700001)(81166007)(7696005)(4326008)(70586007)(8676002)(70206006)(316002)(356005)(110136005)(54906003)(186003)(26005)(82740400003)(40480700001)(2616005)(1076003)(336012)(36860700001)(86362001)(36756003)(478600001)(6666004)(36900700001);
  DIR:OUT; SFP:1101; 
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2023 13:17:24.6749 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 297f1a71-26a1-42d9-f48c-08daf243d939
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2023 13:17:52.3350 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e6d7a84-16af-4c25-89e7-08daf243e9b6
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
  Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT111.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT004.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8202
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5142
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -138,303 +138,118 @@ Cc: Sunil-kumar.Dommati@amd.com, ssabakar@amd.com,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Refactor i2s clock values based on hw_params and use srate and
-bclk_ratio variables in clock enable API instead hard-code values.
+Enable i2s tdm support for skyrim platform using dmi quirks.
 
 Signed-off-by: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
 ---
- sound/soc/amd/acp/acp-mach-common.c | 169 ++++++++++++++++------------
- 1 file changed, 94 insertions(+), 75 deletions(-)
+ sound/soc/amd/acp/acp-legacy-mach.c |  8 ++++++++
+ sound/soc/amd/acp/acp-mach-common.c | 14 ++++++++++++++
+ sound/soc/amd/acp/acp-mach.h        |  1 +
+ sound/soc/amd/acp/acp-sof-mach.c    |  8 ++++++++
+ 4 files changed, 31 insertions(+)
 
+diff --git a/sound/soc/amd/acp/acp-legacy-mach.c b/sound/soc/amd/acp/acp-legacy-mach.c
+index d508792dba4f..676ad50638d0 100644
+--- a/sound/soc/amd/acp/acp-legacy-mach.c
++++ b/sound/soc/amd/acp/acp-legacy-mach.c
+@@ -16,6 +16,7 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-dapm.h>
++#include <linux/dmi.h>
+ #include <linux/module.h>
+ 
+ #include "acp-mach.h"
+@@ -95,6 +96,8 @@ static int acp_asoc_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = NULL;
+ 	struct device *dev = &pdev->dev;
++	const struct dmi_system_id *dmi_id;
++	struct acp_card_drvdata *acp_card_drvdata;
+ 	int ret;
+ 
+ 	if (!pdev->id_entry)
+@@ -113,6 +116,11 @@ static int acp_asoc_probe(struct platform_device *pdev)
+ 	card->num_controls = ARRAY_SIZE(acp_controls);
+ 	card->drvdata = (struct acp_card_drvdata *)pdev->id_entry->driver_data;
+ 
++	acp_card_drvdata = card->drvdata;
++	dmi_id = dmi_first_match(acp_quirk_table);
++	if (dmi_id && dmi_id->driver_data)
++		acp_card_drvdata->tdm_mode = dmi_id->driver_data;
++
+ 	acp_legacy_dai_links_create(card);
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
 diff --git a/sound/soc/amd/acp/acp-mach-common.c b/sound/soc/amd/acp/acp-mach-common.c
-index 75beb6e41e99..88c194902157 100644
+index ffab6328baf0..b83ae946b3e4 100644
 --- a/sound/soc/amd/acp/acp-mach-common.c
 +++ b/sound/soc/amd/acp/acp-mach-common.c
-@@ -54,10 +54,11 @@ static const struct snd_pcm_hw_constraint_list constraints_channels = {
- 	.mask = 0,
- };
+@@ -32,6 +32,20 @@
+ #define DUAL_CHANNEL	2
+ #define FOUR_CHANNEL	4
  
--static int acp_clk_enable(struct acp_card_drvdata *drvdata)
-+static int acp_clk_enable(struct acp_card_drvdata *drvdata,
-+			  unsigned int srate, unsigned int bclk_ratio)
++#define TDM_MODE_ENABLE 1
++
++const struct dmi_system_id acp_quirk_table[] = {
++	{
++		/* Google skyrim proto-0 */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_PRODUCT_FAMILY, "Google_Skyrim"),
++		},
++		.driver_data = (void *)TDM_MODE_ENABLE,
++	},
++	{}
++};
++EXPORT_SYMBOL_GPL(acp_quirk_table);
++
+ static struct snd_soc_jack pco_jack;
+ 
+ static const unsigned int channels[] = {
+diff --git a/sound/soc/amd/acp/acp-mach.h b/sound/soc/amd/acp/acp-mach.h
+index 9f87439b3cfd..165f407697c0 100644
+--- a/sound/soc/amd/acp/acp-mach.h
++++ b/sound/soc/amd/acp/acp-mach.h
+@@ -65,5 +65,6 @@ struct acp_card_drvdata {
+ 
+ int acp_sofdsp_dai_links_create(struct snd_soc_card *card);
+ int acp_legacy_dai_links_create(struct snd_soc_card *card);
++extern const struct dmi_system_id acp_quirk_table[];
+ 
+ #endif
+diff --git a/sound/soc/amd/acp/acp-sof-mach.c b/sound/soc/amd/acp/acp-sof-mach.c
+index f3ba22a25962..99a7d3879340 100644
+--- a/sound/soc/amd/acp/acp-sof-mach.c
++++ b/sound/soc/amd/acp/acp-sof-mach.c
+@@ -16,6 +16,7 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-dapm.h>
++#include <linux/dmi.h>
+ #include <linux/module.h>
+ 
+ #include "acp-mach.h"
+@@ -102,6 +103,8 @@ static int acp_sof_probe(struct platform_device *pdev)
  {
--	clk_set_rate(drvdata->wclk, 48000);
--	clk_set_rate(drvdata->bclk, 48000 * 64);
-+	clk_set_rate(drvdata->wclk, srate);
-+	clk_set_rate(drvdata->bclk, srate * bclk_ratio);
- 
- 	return clk_prepare_enable(drvdata->wclk);
- }
-@@ -86,27 +87,6 @@ static int acp_card_rt5682_init(struct snd_soc_pcm_runtime *rtd)
- 	if (drvdata->hs_codec_id != RT5682)
- 		return -EINVAL;
- 
--	ret = snd_soc_dai_set_pll(codec_dai, RT5682_PLL2, RT5682_PLL2_S_MCLK,
--				  PCO_PLAT_CLK, RT5682_PLL_FREQ);
--	if (ret < 0) {
--		dev_err(rtd->dev, "Failed to set codec PLL: %d\n", ret);
--		return ret;
--	}
--
--	ret = snd_soc_dai_set_sysclk(codec_dai, RT5682_SCLK_S_PLL2,
--				     RT5682_PLL_FREQ, SND_SOC_CLOCK_IN);
--	if (ret < 0) {
--		dev_err(rtd->dev, "Failed to set codec SYSCLK: %d\n", ret);
--		return ret;
--	}
--
--	/* Set tdm/i2s1 master bclk ratio */
--	ret = snd_soc_dai_set_bclk_ratio(codec_dai, 64);
--	if (ret < 0) {
--		dev_err(rtd->dev, "Failed to set rt5682 tdm bclk ratio: %d\n", ret);
--		return ret;
--	}
--
- 	drvdata->wclk = clk_get(component->dev, "rt5682-dai-wclk");
- 	drvdata->bclk = clk_get(component->dev, "rt5682-dai-bclk");
- 
-@@ -161,16 +141,6 @@ static int acp_card_hs_startup(struct snd_pcm_substream *substream)
- 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
- 				      &constraints_rates);
- 
--	if (strcmp(codec_dai->name, "rt5682s-aif1") && strcmp(codec_dai->name, "rt5682s-aif2")) {
--		if (!drvdata->soc_mclk) {
--			ret = acp_clk_enable(drvdata);
--			if (ret < 0) {
--				dev_err(rtd->card->dev, "Failed to enable HS clk: %d\n", ret);
--				return ret;
--			}
--		}
--	}
--
- 	return ret;
- }
- 
-@@ -193,7 +163,11 @@ static int acp_card_rt5682_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	int ret;
--	unsigned int fmt;
-+	unsigned int fmt, srate, ch, format;
-+
-+	srate = params_rate(params);
-+	ch = params_channels(params);
-+	format = 8 * params_format(params);
- 
- 	if (drvdata->soc_mclk)
- 		fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBC_CFC;
-@@ -212,6 +186,35 @@ static int acp_card_rt5682_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
-+	ret = snd_soc_dai_set_pll(codec_dai, RT5682_PLL2, RT5682_PLL2_S_MCLK,
-+				  PCO_PLAT_CLK, RT5682_PLL_FREQ);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "Failed to set codec PLL: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, RT5682_SCLK_S_PLL2,
-+				     RT5682_PLL_FREQ, SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "Failed to set codec SYSCLK: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Set tdm/i2s1 master bclk ratio */
-+	ret = snd_soc_dai_set_bclk_ratio(codec_dai, ch * format);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "Failed to set rt5682 tdm bclk ratio: %d\n", ret);
-+		return ret;
-+	}
-+
-+	if (!drvdata->soc_mclk) {
-+		ret = acp_clk_enable(drvdata, srate, ch * format);
-+		if (ret < 0) {
-+			dev_err(rtd->card->dev, "Failed to enable HS clk: %d\n", ret);
-+			return ret;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -244,27 +247,6 @@ static int acp_card_rt5682s_init(struct snd_soc_pcm_runtime *rtd)
- 	if (drvdata->hs_codec_id != RT5682S)
- 		return -EINVAL;
- 
--	ret = snd_soc_dai_set_pll(codec_dai, RT5682S_PLL2, RT5682S_PLL_S_MCLK,
--				  PCO_PLAT_CLK, RT5682_PLL_FREQ);
--	if (ret < 0) {
--		dev_err(rtd->dev, "Failed to set codec PLL: %d\n", ret);
--		return ret;
--	}
--
--	ret = snd_soc_dai_set_sysclk(codec_dai, RT5682S_SCLK_S_PLL2,
--				     RT5682_PLL_FREQ, SND_SOC_CLOCK_IN);
--	if (ret < 0) {
--		dev_err(rtd->dev, "Failed to set codec SYSCLK: %d\n", ret);
--		return ret;
--	}
--
--	/* Set tdm/i2s1 master bclk ratio */
--	ret = snd_soc_dai_set_bclk_ratio(codec_dai, 64);
--	if (ret < 0) {
--		dev_err(rtd->dev, "Failed to set rt5682 tdm bclk ratio: %d\n", ret);
--		return ret;
--	}
--
- 	if (!drvdata->soc_mclk) {
- 		drvdata->wclk = clk_get(component->dev, "rt5682-dai-wclk");
- 		drvdata->bclk = clk_get(component->dev, "rt5682-dai-bclk");
-@@ -303,7 +285,11 @@ static int acp_card_rt5682s_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	int ret;
--	unsigned int fmt;
-+	unsigned int fmt, srate, ch, format;
-+
-+	srate = params_rate(params);
-+	ch = params_channels(params);
-+	format = 8 * params_format(params);
- 
- 	if (drvdata->soc_mclk)
- 		fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBC_CFC;
-@@ -322,6 +308,30 @@ static int acp_card_rt5682s_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
-+	ret = snd_soc_dai_set_pll(codec_dai, RT5682S_PLL2, RT5682S_PLL_S_MCLK,
-+				  PCO_PLAT_CLK, RT5682_PLL_FREQ);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "Failed to set codec PLL: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, RT5682S_SCLK_S_PLL2,
-+				     RT5682_PLL_FREQ, SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "Failed to set codec SYSCLK: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Set tdm/i2s1 master bclk ratio */
-+	ret = snd_soc_dai_set_bclk_ratio(codec_dai, ch * format);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "Failed to set rt5682 tdm bclk ratio: %d\n", ret);
-+		return ret;
-+	}
-+
-+	clk_set_rate(drvdata->wclk, srate);
-+	clk_set_rate(drvdata->bclk, srate * ch * format);
-+
- 	return 0;
- }
- 
-@@ -397,10 +407,12 @@ static int acp_card_rt1019_hw_params(struct snd_pcm_substream *substream,
- 	struct acp_card_drvdata *drvdata = card->drvdata;
- 	struct snd_soc_dai *codec_dai;
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
--	int srate, i, ret = 0;
--	unsigned int fmt;
-+	int i, ret = 0;
-+	unsigned int fmt, srate, ch, format;
- 
- 	srate = params_rate(params);
-+	ch = params_channels(params);
-+	format = 8 * params_format(params);
- 
- 	if (drvdata->amp_codec_id != RT1019)
- 		return -EINVAL;
-@@ -421,7 +433,7 @@ static int acp_card_rt1019_hw_params(struct snd_pcm_substream *substream,
- 			continue;
- 
- 		ret = snd_soc_dai_set_pll(codec_dai, 0, RT1019_PLL_S_BCLK,
--					  64 * srate, 256 * srate);
-+					  ch * format * srate, 256 * srate);
- 		if (ret < 0)
- 			return ret;
- 
-@@ -431,16 +443,20 @@ static int acp_card_rt1019_hw_params(struct snd_pcm_substream *substream,
- 			return ret;
- 	}
- 
-+	if (!drvdata->soc_mclk) {
-+		ret = acp_clk_enable(drvdata, srate, ch * format);
-+		if (ret < 0) {
-+			dev_err(rtd->card->dev, "Failed to enable AMP clk: %d\n", ret);
-+			return ret;
-+		}
-+	}
-+
- 	return 0;
- }
- 
- static int acp_card_amp_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
--	struct snd_soc_card *card = rtd->card;
--	struct acp_card_drvdata *drvdata = card->drvdata;
--	int ret = 0;
- 
- 	runtime->hw.channels_max = DUAL_CHANNEL;
- 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-@@ -448,14 +464,7 @@ static int acp_card_amp_startup(struct snd_pcm_substream *substream)
- 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
- 				      &constraints_rates);
- 
--	if (!drvdata->soc_mclk) {
--		ret = acp_clk_enable(drvdata);
--		if (ret < 0) {
--			dev_err(rtd->card->dev, "Failed to enable AMP clk: %d\n", ret);
--			return ret;
--		}
--	}
--	return ret;
-+	return 0;
- }
- 
- static const struct snd_soc_ops acp_card_rt1019_ops = {
-@@ -491,9 +500,13 @@ static int acp_card_maxim_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_card *card = rtd->card;
- 	struct acp_card_drvdata *drvdata = card->drvdata;
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
--	unsigned int fmt;
-+	unsigned int fmt, srate, ch, format;
+ 	struct snd_soc_card *card = NULL;
+ 	struct device *dev = &pdev->dev;
++	const struct dmi_system_id *dmi_id;
++	struct acp_card_drvdata *acp_card_drvdata;
  	int ret;
  
-+	srate = params_rate(params);
-+	ch = params_channels(params);
-+	format = 8 * params_format(params);
-+
- 	if (drvdata->soc_mclk)
- 		fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBC_CFC;
- 	else
-@@ -504,6 +517,14 @@ static int acp_card_maxim_hw_params(struct snd_pcm_substream *substream,
- 		dev_err(rtd->dev, "Failed to set dai fmt: %d\n", ret);
- 		return ret;
- 	}
-+
-+	if (!drvdata->soc_mclk) {
-+		ret = acp_clk_enable(drvdata, srate, ch * format);
-+		if (ret < 0) {
-+			dev_err(rtd->card->dev, "Failed to enable AMP clk: %d\n", ret);
-+			return ret;
-+		}
-+	}
- 	return 0;
- }
+ 	if (!pdev->id_entry)
+@@ -120,6 +123,11 @@ static int acp_sof_probe(struct platform_device *pdev)
+ 	card->num_controls = ARRAY_SIZE(acp_controls);
+ 	card->drvdata = (struct acp_card_drvdata *)pdev->id_entry->driver_data;
  
-@@ -692,8 +713,6 @@ static int acp_rtk_set_bias_level(struct snd_soc_card *card,
- 	switch (level) {
- 	case SND_SOC_BIAS_STANDBY:
- 		if (snd_soc_dapm_get_bias_level(dapm) == SND_SOC_BIAS_OFF) {
--			clk_set_rate(drvdata->wclk, 48000);
--			clk_set_rate(drvdata->bclk, 48000 * 64);
++	acp_card_drvdata = card->drvdata;
++	dmi_id = dmi_first_match(acp_quirk_table);
++	if (dmi_id && dmi_id->driver_data)
++		acp_card_drvdata->tdm_mode = dmi_id->driver_data;
++
+ 	acp_sofdsp_dai_links_create(card);
  
- 			/* Increase bclk's enable_count */
- 			ret = clk_prepare_enable(drvdata->bclk);
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
 -- 
 2.25.1
 
