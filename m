@@ -4,100 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73683C46467
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Jan 2023 13:51:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A89DC54EBC
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Jan 2023 13:59:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D7E4A724;
-	Tue, 10 Jan 2023 14:50:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D7E4A724
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7300BC08E;
+	Tue, 10 Jan 2023 14:58:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7300BC08E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673358690;
-	bh=4oGSJ6FbnspCAIUmDXE7cKoixn7zT1eynXgj/tg+wmY=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1673359168;
+	bh=lF/saPJXboEiKAom+2j+crI83CaqhVkfm0qrNigQRTs=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=Jdrb6IIiJyjM4J3uPHiWRlUCwYeYI3LgobBHhMdvmHGPaBk9wht8ySXqeCHQ7V0DG
-	 I/HSPhT1FvHMf1IJ3+fAPhzyfSVHt0/zFAZvZk6c3P3olrRztWqiI3gBhjx/9pE7G/
-	 gTBITf9IiCaUIZQlLXsnxSjgmXi8ETfrei3SGl2U=
+	b=mUnBSb48+fQmZ77g1z35ZUMUyXEmN/aqTamMFSI5a2VVKLOkVHwxCSoPsU3P8tPQr
+	 WPl5H+PAKTe1znb4HfSBde1Gh0F0LWUhsUh7lwPd4XTndvN249wRUSzOetvgxLa3bc
+	 umYlURjFOGuMlSjwHNJGM6RVBenSINY6qB8muIK4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D305F80557;
-	Tue, 10 Jan 2023 14:49:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A4B1F8026A;
+	Tue, 10 Jan 2023 14:58:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD535F80558; Tue, 10 Jan 2023 14:49:55 +0100 (CET)
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
- [66.111.4.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits))
+ id 32594F800C7; Tue, 10 Jan 2023 14:58:36 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 037BDF8019B
- for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2023 14:49:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 037BDF8019B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key, unprotected) header.d=sakamocchi.jp
- header.i=@sakamocchi.jp header.a=rsa-sha256 header.s=fm3 header.b=sXDWI1R3; 
- dkim=pass (2048-bit key,
- unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm3 header.b=oJSsyslU
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
- by mailout.nyi.internal (Postfix) with ESMTP id 1B8FB5C0145;
- Tue, 10 Jan 2023 08:49:39 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute6.internal (MEProxy); Tue, 10 Jan 2023 08:49:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=cc:cc:content-transfer-encoding:date:date:from:from
- :in-reply-to:in-reply-to:message-id:mime-version:references
- :reply-to:sender:subject:subject:to:to; s=fm3; t=1673358579; x=
- 1673444979; bh=miI7uGTmU797GNjdEiXAgXhylwamx1SsJtp/2vvjRP0=; b=s
- XDWI1R3BjC/KaR2Uv0Q4x5WWQOXZD7lZCiV2LDjD/2DxyM6S6XLa5wHESsWhQWlu
- WHNMBm5NiF71nqsKDK/R6wTJSfXcBhDaFwkjZC+FMc1SmWJIZsl5/jTdxyZGpPXv
- XhVV0emgyvLVzpLtvNyD68ZKm8NzmbpIZED1FYwKps68vuXfImBxv04iwFhtPIfM
- yyi7TYvlORUnFQbajrAbC4ZH/lyB/92rVQKYu/WZbBMprG3VebC8dW8htHowPcPX
- 4uFXDeRrjhhp5GmLoRoreRHQbiDlS3uFx4siuJhghJJrbD5laClfyDfoVAsNr7pR
- ci1gW+ZLTvDTN9o6BJsAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
- :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
- :message-id:mime-version:references:reply-to:sender:subject
- :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
- :x-sasl-enc; s=fm3; t=1673358579; x=1673444979; bh=miI7uGTmU797G
- NjdEiXAgXhylwamx1SsJtp/2vvjRP0=; b=oJSsyslUAq5ivoc+ASYb5qrS50b6F
- 1eMeSZjEdFN1ZutO9LfK7ibYD4KUkLjcLvWeCM4BiZjPFxLta7ubA6Rzon0vXVay
- Q/BROyXKqX4nHYImKwZ8L/RB5wNmqx5b26yui7oRzF3sfeUi9MHeocgTskzDjVu1
- I4/bZ0Z2FGnz4u6tHupKegPIWpO5PZBOqbBTROus9jYLrHgG2XbQdcEVPQsEQ4mN
- yPpvSzpHrms/vq7ryvVx1jWOPNu0j7NkX0zoV7tDXfub8GFy/cH0vFF3mTA2/7la
- 0gphwpaZRzGgCkMsDK3Nl89mj8zmbm9vA3VFl76YNqITazoZ97BQUYyAQ==
-X-ME-Sender: <xms:8my9Y43_hF7cRucEfueWF88kUzutFzaFkOVlbeQFr1r5wuKNSNlzpQ>
- <xme:8my9YzGZK-BucvwtwRmdpKzYXCZxEto50AJFJKrd-IEh5UiSZ50uCjsOlXe9ggbo7
- 1NxtCd9clbNSoSAy2g>
-X-ME-Received: <xmr:8my9Yw6Yvkz-fXLVIKi7YeCac_X1wQN97QebfHQTrtMgQvbWnOcp0BDJ3-EnrFH6qc5qA9t-JHzX0lN50h2B5iSF8aCGC4pqSINDSxGXluhjRUJi0NR0kAs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrkeekgdehjecutefuodetggdotefrodftvf
- curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestdekre
- dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
- shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepvdejgfejue
- dvgfduudekleevtefgtdevhfdtffefiefgveeuteffiedvffekvddtnecuvehluhhsthgv
- rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihessh
- grkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:8my9Yx2-jn-uVMyeqcobBrCQ_-tj-zDftjK6eYy9-4kzaGr0WLaqMw>
- <xmx:8my9Y7HElDM5nbqJU8iVSYukK0OgLcVOL3jcp5xy_1mxHdWRO4Snow>
- <xmx:8my9Y69hIfFkwBso0oL32de9Bc2Ldb_rYTbtIaFSJ16Az4p3AO-hLg>
- <xmx:82y9YxOQArJcGxxNrqc2xtFJbbDYbm_7NfC7FVgK0QukrQOQufcI4g>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 10 Jan 2023 08:49:37 -0500 (EST)
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: tiwai@suse.de
-Subject: [PATCH 1/3] ALSA: firewire-lib: move parameter for pcm frame
- multiplier from context payload processing layer
-Date: Tue, 10 Jan 2023 22:49:31 +0900
-Message-Id: <20230110134933.322794-2-o-takashi@sakamocchi.jp>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230110134933.322794-1-o-takashi@sakamocchi.jp>
-References: <20230110134933.322794-1-o-takashi@sakamocchi.jp>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6CFEAF800C7
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2023 14:58:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CFEAF800C7
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=munQoUGv
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 46D0D61717;
+ Tue, 10 Jan 2023 13:58:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D0D7C433D2;
+ Tue, 10 Jan 2023 13:58:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1673359110;
+ bh=lF/saPJXboEiKAom+2j+crI83CaqhVkfm0qrNigQRTs=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=munQoUGvJ1wVnawEOm1XVAwqy9FchXaPwxlgUwY435kPFQ24oJieCz7c486ad4lyY
+ nft95+w4qsRdpS+w27iTDIK3o3dEtcPbTV1M/fzMonNyLmxGz28ZZ5FeIYK8ejtyso
+ qy0oQLxEJ77CnoW2HzPwqz5AfDCL2C04H/CMtpNHfH1PyUwksyrNBdVnLkStB6oFSb
+ wmaoNvjDtl6uazVwh2m3FF4i/IviVtOAiDHvTJfoUz6DuZcv7GIOeKTQE8d0JwIrIX
+ VKRpY3FAky59ooFjua8S8HQYCcKPkISdwLLfXT0rfaoGgwdsmUMSCf5d0l7qBOtVaY
+ zNKwZOYQBboLA==
+Date: Tue, 10 Jan 2023 13:58:24 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [PATCH 15/27] ASoC: pxa: remove unused board support
+Message-ID: <Y71vABj05MAYEbHJ@sirena.org.uk>
+References: <20230105134622.254560-1-arnd@kernel.org>
+ <20230105134622.254560-16-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="mUO23bK4vSgaY15P"
+Content-Disposition: inline
+In-Reply-To: <20230105134622.254560-16-arnd@kernel.org>
+X-Cookie: I think we're in trouble.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,245 +78,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org, Ken McGuire <kenm@desertweyr.com>,
+ Arnd Bergmann <arnd@arndb.de>, Ian Molton <spyro@f2s.com>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Daniel Mack <daniel@zonque.org>,
+ Mike Rapoport <rppt@kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ linux-arm-kernel@lists.infradead.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The current implementation delegates the task to calculate the number of
-processed PCM frames into the context payload processing layer. It looks
-good as long as frame calculation is done for a single purpose.
-Nevertheless, another purpose, the computation of extra delay for the
-runtime of PCM substream, requires frame calculation, too.
 
-This commit refactors the current implementation so that the packet stream
-processing layer is responsible for the calculation of PCM frame, too. The
-member is moved to stream structure for multiplier between data block
-count and PCM frame count.
+--mUO23bK4vSgaY15P
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp-am824.c         | 34 +++++++++++++---------------
- sound/firewire/amdtp-stream.c        | 25 +++++++++++++++-----
- sound/firewire/amdtp-stream.h        |  3 ++-
- sound/firewire/digi00x/amdtp-dot.c   |  2 +-
- sound/firewire/fireface/amdtp-ff.c   |  2 +-
- sound/firewire/motu/amdtp-motu.c     |  2 +-
- sound/firewire/tascam/amdtp-tascam.c |  2 +-
- 7 files changed, 41 insertions(+), 29 deletions(-)
+On Thu, Jan 05, 2023 at 02:46:10PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> Most PXA/MMP boards were removed, so the board specific ASoC
+> support is no longer needed, leaving only support for DT
+> based ones, as well as the "gumstix" and "spitz" machines
+> that may get converted to DT later.
 
-diff --git a/sound/firewire/amdtp-am824.c b/sound/firewire/amdtp-am824.c
-index cf55f7784d23..b849f529fcba 100644
---- a/sound/firewire/amdtp-am824.c
-+++ b/sound/firewire/amdtp-am824.c
-@@ -36,8 +36,6 @@ struct amdtp_am824 {
- 
- 	u8 pcm_positions[AM824_MAX_CHANNELS_FOR_PCM];
- 	u8 midi_position;
--
--	unsigned int frame_multiplier;
- };
- 
- /**
-@@ -59,8 +57,8 @@ int amdtp_am824_set_parameters(struct amdtp_stream *s, unsigned int rate,
- {
- 	struct amdtp_am824 *p = s->protocol;
- 	unsigned int midi_channels;
--	unsigned int i;
--	int err;
-+	unsigned int pcm_frame_multiplier;
-+	int i, err;
- 
- 	if (amdtp_stream_running(s))
- 		return -EINVAL;
-@@ -77,8 +75,18 @@ int amdtp_am824_set_parameters(struct amdtp_stream *s, unsigned int rate,
- 	    WARN_ON(midi_channels > AM824_MAX_CHANNELS_FOR_MIDI))
- 		return -EINVAL;
- 
--	err = amdtp_stream_set_parameters(s, rate,
--					  pcm_channels + midi_channels);
-+	/*
-+	 * In IEC 61883-6, one data block represents one event. In ALSA, one
-+	 * event equals to one PCM frame. But Dice has a quirk at higher
-+	 * sampling rate to transfer two PCM frames in one data block.
-+	 */
-+	if (double_pcm_frames)
-+		pcm_frame_multiplier = 2;
-+	else
-+		pcm_frame_multiplier = 1;
-+
-+	err = amdtp_stream_set_parameters(s, rate, pcm_channels + midi_channels,
-+					  pcm_frame_multiplier);
- 	if (err < 0)
- 		return err;
- 
-@@ -88,16 +96,6 @@ int amdtp_am824_set_parameters(struct amdtp_stream *s, unsigned int rate,
- 	p->pcm_channels = pcm_channels;
- 	p->midi_ports = midi_ports;
- 
--	/*
--	 * In IEC 61883-6, one data block represents one event. In ALSA, one
--	 * event equals to one PCM frame. But Dice has a quirk at higher
--	 * sampling rate to transfer two PCM frames in one data block.
--	 */
--	if (double_pcm_frames)
--		p->frame_multiplier = 2;
--	else
--		p->frame_multiplier = 1;
--
- 	/* init the position map for PCM and MIDI channels */
- 	for (i = 0; i < pcm_channels; i++)
- 		p->pcm_positions[i] = i;
-@@ -361,7 +359,7 @@ static unsigned int process_it_ctx_payloads(struct amdtp_stream *s,
- 
- 		if (pcm) {
- 			write_pcm_s32(s, pcm, buf, data_blocks, pcm_frames);
--			pcm_frames += data_blocks * p->frame_multiplier;
-+			pcm_frames += data_blocks * s->pcm_frame_multiplier;
- 		} else {
- 			write_pcm_silence(s, buf, data_blocks);
- 		}
-@@ -392,7 +390,7 @@ static unsigned int process_ir_ctx_payloads(struct amdtp_stream *s,
- 
- 		if (pcm) {
- 			read_pcm_s32(s, pcm, buf, data_blocks, pcm_frames);
--			pcm_frames += data_blocks * p->frame_multiplier;
-+			pcm_frames += data_blocks * s->pcm_frame_multiplier;
- 		}
- 
- 		if (p->midi_ports) {
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 65720ae866cb..98a033afc5f8 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -271,12 +271,14 @@ EXPORT_SYMBOL(amdtp_stream_add_pcm_hw_constraints);
-  * @s: the AMDTP stream to configure
-  * @rate: the sample rate
-  * @data_block_quadlets: the size of a data block in quadlet unit
-+ * @pcm_frame_multiplier: the multiplier to compute the number of PCM frames by the number of AMDTP
-+ *			  events.
-  *
-  * The parameters must be set before the stream is started, and must not be
-  * changed while the stream is running.
-  */
- int amdtp_stream_set_parameters(struct amdtp_stream *s, unsigned int rate,
--				unsigned int data_block_quadlets)
-+				unsigned int data_block_quadlets, unsigned int pcm_frame_multiplier)
- {
- 	unsigned int sfc;
- 
-@@ -298,6 +300,8 @@ int amdtp_stream_set_parameters(struct amdtp_stream *s, unsigned int rate,
- 	if (s->flags & CIP_BLOCKING)
- 		s->transfer_delay += TICKS_PER_SECOND * s->syt_interval / rate;
- 
-+	s->pcm_frame_multiplier = pcm_frame_multiplier;
-+
- 	return 0;
- }
- EXPORT_SYMBOL(amdtp_stream_set_parameters);
-@@ -1032,16 +1036,25 @@ static inline void cancel_stream(struct amdtp_stream *s)
- }
- 
- static void process_ctx_payloads(struct amdtp_stream *s,
--				 const struct pkt_desc *descs,
-+				 const struct pkt_desc *desc,
- 				 unsigned int count)
- {
- 	struct snd_pcm_substream *pcm;
--	unsigned int pcm_frames;
-+	int i;
- 
- 	pcm = READ_ONCE(s->pcm);
--	pcm_frames = s->process_ctx_payloads(s, descs, count, pcm);
--	if (pcm)
--		update_pcm_pointers(s, pcm, pcm_frames);
-+	(void)s->process_ctx_payloads(s, desc, count, pcm);
-+
-+	if (pcm) {
-+		unsigned int data_block_count = 0;
-+
-+		for (i = 0; i < count; ++i) {
-+			data_block_count += desc->data_blocks;
-+			desc = amdtp_stream_next_packet_desc(s, desc);
-+		}
-+
-+		update_pcm_pointers(s, pcm, data_block_count * s->pcm_frame_multiplier);
-+	}
- }
- 
- static void process_rx_packets(struct fw_iso_context *context, u32 tstamp, size_t header_length,
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index a8dd1c3ec8d9..35b48f9ddbf7 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -190,6 +190,7 @@ struct amdtp_stream {
- 	struct snd_pcm_substream *pcm;
- 	snd_pcm_uframes_t pcm_buffer_pointer;
- 	unsigned int pcm_period_pointer;
-+	unsigned int pcm_frame_multiplier;
- 
- 	// To start processing content of packets at the same cycle in several contexts for
- 	// each direction.
-@@ -216,7 +217,7 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
- void amdtp_stream_destroy(struct amdtp_stream *s);
- 
- int amdtp_stream_set_parameters(struct amdtp_stream *s, unsigned int rate,
--				unsigned int data_block_quadlets);
-+				unsigned int data_block_quadlets, unsigned int pcm_frame_multiplier);
- unsigned int amdtp_stream_get_max_payload(struct amdtp_stream *s);
- 
- void amdtp_stream_update(struct amdtp_stream *s);
-diff --git a/sound/firewire/digi00x/amdtp-dot.c b/sound/firewire/digi00x/amdtp-dot.c
-index fcae7d07aa03..b3f67af2d3b1 100644
---- a/sound/firewire/digi00x/amdtp-dot.c
-+++ b/sound/firewire/digi00x/amdtp-dot.c
-@@ -123,7 +123,7 @@ int amdtp_dot_set_parameters(struct amdtp_stream *s, unsigned int rate,
- 	 * A first data channel is for MIDI messages, the rest is Multi Bit
- 	 * Linear Audio data channel.
- 	 */
--	err = amdtp_stream_set_parameters(s, rate, pcm_channels + 1);
-+	err = amdtp_stream_set_parameters(s, rate, pcm_channels + 1, 1);
- 	if (err < 0)
- 		return err;
- 
-diff --git a/sound/firewire/fireface/amdtp-ff.c b/sound/firewire/fireface/amdtp-ff.c
-index 2402e2be87a6..27943b7f86fa 100644
---- a/sound/firewire/fireface/amdtp-ff.c
-+++ b/sound/firewire/fireface/amdtp-ff.c
-@@ -24,7 +24,7 @@ int amdtp_ff_set_parameters(struct amdtp_stream *s, unsigned int rate,
- 	p->pcm_channels = pcm_channels;
- 	data_channels = pcm_channels;
- 
--	return amdtp_stream_set_parameters(s, rate, data_channels);
-+	return amdtp_stream_set_parameters(s, rate, data_channels, 1);
- }
- 
- static void write_pcm_s32(struct amdtp_stream *s, struct snd_pcm_substream *pcm,
-diff --git a/sound/firewire/motu/amdtp-motu.c b/sound/firewire/motu/amdtp-motu.c
-index ea0063cec5fb..4153527b5e08 100644
---- a/sound/firewire/motu/amdtp-motu.c
-+++ b/sound/firewire/motu/amdtp-motu.c
-@@ -73,7 +73,7 @@ int amdtp_motu_set_parameters(struct amdtp_stream *s, unsigned int rate,
- 	data_chunks = formats->msg_chunks + pcm_chunks;
- 	data_block_quadlets = 1 + DIV_ROUND_UP(data_chunks * 3, 4);
- 
--	err = amdtp_stream_set_parameters(s, rate, data_block_quadlets);
-+	err = amdtp_stream_set_parameters(s, rate, data_block_quadlets, 1);
- 	if (err < 0)
- 		return err;
- 
-diff --git a/sound/firewire/tascam/amdtp-tascam.c b/sound/firewire/tascam/amdtp-tascam.c
-index c367a6ee6121..bb4cf2d26d1b 100644
---- a/sound/firewire/tascam/amdtp-tascam.c
-+++ b/sound/firewire/tascam/amdtp-tascam.c
-@@ -29,7 +29,7 @@ int amdtp_tscm_set_parameters(struct amdtp_stream *s, unsigned int rate)
- 	if (s->direction == AMDTP_IN_STREAM)
- 		data_channels += 2;
- 
--	return amdtp_stream_set_parameters(s, rate, data_channels);
-+	return amdtp_stream_set_parameters(s, rate, data_channels, 1);
- }
- 
- static void write_pcm_s32(struct amdtp_stream *s, struct snd_pcm_substream *pcm,
--- 
-2.37.2
+This doesn't apply against current code, please check and resend.
 
+--mUO23bK4vSgaY15P
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmO9bv8ACgkQJNaLcl1U
+h9CmuAf/QrI3z3oJ4pU/rY4gmnY4otSvXcS25C5zSiDcRACA362DAnPbjJqs/ZNr
+ZxkPTrMY1RIPLDZfZf6/BREI9LEw8GYOEMmkDVTys1mcT/cx7rd/4dhlD/uZjls0
+7xITTtwxw7vQ++qTpoHClcgiuEg22MJcviMzFNg3lHd/4zVuTlA/O7fe+IfmV7I7
++b2Mx645/T9OALXfcXWa7xc6r8a++as0+sBn1T9wsk7ciqYGSUUEda3zPrf/DlvM
+4t3WYY7WCWZ9m3kG37mKn/qPpCf3xG9nfUcjkJ3cOsqpj/M6z21IidSLRKq5mv9h
+S7DQ4GBmjlPVPqZ7jzYrWwLyML9cWQ==
+=uKo2
+-----END PGP SIGNATURE-----
+
+--mUO23bK4vSgaY15P--
