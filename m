@@ -4,90 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E4CCC6379F
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Jan 2023 08:45:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8862C46467
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Jan 2023 08:46:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5EA6DBB3;
-	Tue, 10 Jan 2023 09:44:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5EA6DBB3
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD341DBA7;
+	Tue, 10 Jan 2023 09:45:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD341DBA7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673340326;
-	bh=UKHqD4wgS7u6gCEaUMYSspFgvO7u+gd0DsYlDyblh1Y=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1673340359;
+	bh=TAaAXJSemXt0Gx9jJS9gF3vg/psC5t6amgkArQOx6OE=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=MR4x0+nOSruF4tSA6Z/eAHB6Z6cVUixLgZgsSXt5RL4RAGyeekWO0PrdNkFwtqQOa
-	 j3Fay04EnnBnj/zhLoWQurpu+qCDFS5WWcVclDx8Musw/SdbjAf2hDtQuAugpavLcm
-	 U9CQ148ar4sevnZxw/WuGoLsyVE68mNN7djT58+k=
+	b=Rk2bYzbCSaQl5p2FEsh3OyrqCRENjmkRKeWJVX6NJMHiy/HKcYTxnVJ/Kn452nEpR
+	 Pc3adaXVzFJ0ZaqwkfoNYtaLZxd3YOsxhIYl/dEC+paIurs882+E6fd+A+Hx/Kvi5d
+	 OoifGyCk7rhFduTF8paTwniyDmOU+2Mjt6fFldi0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B8C6F80570;
-	Tue, 10 Jan 2023 09:43:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63510F804C1;
+	Tue, 10 Jan 2023 09:45:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 228A3F80568; Tue, 10 Jan 2023 09:43:43 +0100 (CET)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id EDFEEF804C1; Tue, 10 Jan 2023 09:45:07 +0100 (CET)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
+ [IPv6:2a00:1450:4864:20::429])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B36EF80563;
- Tue, 10 Jan 2023 09:43:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B36EF80563
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=J9MbmLML
-X-UUID: 52be8810eca7441faf70ecfa49b33d19-20230110
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
- s=dk; 
- h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=Yt/1rVdKqsCac3uXMYG6HnpQCTqHWocqbiuBN4kIjIY=; 
- b=J9MbmLMLe629K81IkJ6Nng6LSqAYxJ+ArdxxbtOsHcFGevXiKzk+XCX9FdhFrWjHnkwDxMcMe14e3WjoHoxlhevr7kL6gvEgz/8KwdH/U3WJrWhV0nyigYtxq0H/ZsVokzfFEUvBT2yVcXCd/tiViYd8q1KOjrqVqNUia+BsPmA=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.17, REQID:1333e0b4-20bc-4748-90d2-4a1d84e108b8, IP:0,
- U
- RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
- N:release,TS:-25
-X-CID-META: VersionHash:543e81c, CLOUDID:bd2e61f5-ff42-4fb0-b929-626456a83c14,
- B
- ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
- RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0
-X-CID-BVR: 0
-X-UUID: 52be8810eca7441faf70ecfa49b33d19-20230110
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by
- mailgw02.mediatek.com (envelope-from <tinghan.shen@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
- with ESMTP id 650736675; Tue, 10 Jan 2023 16:43:14 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Tue, 10 Jan 2023 16:43:13 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.792.15 via Frontend Transport; Tue, 10 Jan 2023 16:43:13 +0800
-From: Tinghan Shen <tinghan.shen@mediatek.com>
-To: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, Pierre-Louis Bossart
- <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Bard Liao
- <yung-chuan.liao@linux.intel.com>, Ranjani Sridharan
- <ranjani.sridharan@linux.intel.com>, Kai Vehmanen
- <kai.vehmanen@linux.intel.com>, Daniel Baluta <daniel.baluta@nxp.com>, "Mark
- Brown" <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
- <tiwai@suse.com>, Tinghan Shen <tinghan.shen@mediatek.com>, "AngeloGioacchino
- Del Regno" <angelogioacchino.delregno@collabora.com>, Chunxu Li
- <chunxu.li@mediatek.com>, Dan Carpenter <error27@gmail.com>, YC Hung
- <yc.hung@mediatek.com>, Wan Jiabing <wanjiabing@vivo.com>, Allen-KH Cheng
- <Allen-KH.Cheng@mediatek.com>
-Subject: [PATCH v2 2/3] ASoC: SOF: mediatek: Support mt8188 platform
-Date: Tue, 10 Jan 2023 16:43:11 +0800
-Message-ID: <20230110084312.12953-3-tinghan.shen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230110084312.12953-1-tinghan.shen@mediatek.com>
-References: <20230110084312.12953-1-tinghan.shen@mediatek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id CD9ADF8026A
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2023 09:45:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD9ADF8026A
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=uALzNial
+Received: by mail-wr1-x429.google.com with SMTP id t5so6516910wrq.1
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2023 00:45:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=3nhalakForWLq/BpHz4s5xQNDs64Epq6wJvSqVishPM=;
+ b=uALzNialZgr8wwwci5b4iFEDY3qvdfFZaiMcOqwbtJlbsZAbvKl73tT0WSmmrnpCYw
+ 2VmlXimyUZMpg5LSlN5CadKHjNCSrYUvuipdJS/M6QQHEsYHDFAVwBFwDIwNMTnekv2O
+ L8FHDJBtHzOSk2o96VGTpYroLdFENaYwZ94M9KHisZkLlZU7iowpbF9Ex4crJFtt+7KB
+ CN9niLyTHQhXgObh0khQdnnb+QUOwdyvA0EUBjb/091q8T9qcc6EbR8hKpMTpdTZNqq2
+ ra1+musbKmt2DQxT3iRP7gVyW3tUPdfxlFuu11eLXkDGHyAxh3W76CIkZ+CNsf49thy7
+ TOrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=3nhalakForWLq/BpHz4s5xQNDs64Epq6wJvSqVishPM=;
+ b=UR4v0ypz92No2RSbNOvo5QecBZr1sbftRcZcaZ73hsZy+C1SmrJu1s9IpifqnRBz1l
+ CkEVeRN7aXWuYkSVeqIHbthKBD2vTtrJy5mW4gYGdaH1UTEQtwLbYryxuTo0qWh7jbCA
+ illi2/NwEK6xJJc/c9iIFlJ52An3iBL9NT8zBOfiHy2L3hwWYrirNe1EYaOTkEHyjXkD
+ qPF2oG7wGAIwpeA+kw2K31z5zKfP76tsMlMaXaCq3F8UmLNYIRXGbtYtovgTe4kDgiVi
+ 1pC1/r+H7ZPMyNCHz9Z0gpePkZLhVUWC9rOMgCTqqvXxJ5NlS1mTKZvuTCvz5id6+xaK
+ WcYg==
+X-Gm-Message-State: AFqh2krDM5kZa9+DrKz/v4c6oRVTpnKZiC6I9O/0WPNeCC34iVITNX3/
+ ZRsNmoFxS13Xmv2GEqDBiwr48g==
+X-Google-Smtp-Source: AMrXdXulnkGqYk+DJ+tLAOVP3aPTbM+3YrOEXeaSdxC8EXrMCyDK3H0xlqDMHPCf0sA7EDuEPNGceg==
+X-Received: by 2002:a5d:56c1:0:b0:288:d139:3690 with SMTP id
+ m1-20020a5d56c1000000b00288d1393690mr28887704wrw.67.1673340304041; 
+ Tue, 10 Jan 2023 00:45:04 -0800 (PST)
+Received: from [192.168.1.109] ([178.197.216.144])
+ by smtp.gmail.com with ESMTPSA id
+ q14-20020adff94e000000b002b065272da2sm10478381wrr.13.2023.01.10.00.45.02
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 10 Jan 2023 00:45:03 -0800 (PST)
+Message-ID: <cf65926c-d2c1-f1bc-6e27-f07611a5cce8@linaro.org>
+Date: Tue, 10 Jan 2023 09:45:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-MTK: N
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH] ASoC: dt-bindings: simple-card: Document
+ simple-audio-card,plat
+Content-Language: en-US
+To: Mohammad Faiz Abbas Rizvi <faiz.abbas@arm.com>,
+ Rob Herring <robh@kernel.org>
+References: <20230105160346.29018-1-faiz.abbas@arm.com>
+ <20230108163741.GA30997-robh@kernel.org>
+ <f0ad7a4e-a8af-77d4-09e4-3717041677e7@arm.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <f0ad7a4e-a8af-77d4-09e4-3717041677e7@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,87 +103,28 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- sound-open-firmware@alsa-project.org
+ kuninori.morimoto.gx@renesas.com, Deepak.Pandey@arm.com,
+ linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, Anurag.Koul@arm.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support of SOF on MediaTek MT8188 SoC.
-MT8188 ADSP integrates with a single core Cadence HiFi-5 DSP.
-The IPC communication between AP and DSP is based on shared DRAM and
-mailbox interrupt.
+On 10/01/2023 09:23, Mohammad Faiz Abbas Rizvi wrote:
+> Hi Rob,
 
-The change in the mt8186.h is compatible on both mt8186 and
-mt8188. The register controls booting the DSP core with the
-default address or the user specified address. Both mt8186
-and mt8188 should boot with the user specified boot in the driver.
-The usage of the register is the same on both SoC, but the
-control bit is different on mt8186 and mt8188, which is bit 1 on mt8186
-and bit 0 on mt8188. Configure the redundant bit has noside effect
-on both SoCs.
+(...)
 
-Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
----
- sound/soc/sof/mediatek/mt8186/mt8186.c | 17 +++++++++++++++++
- sound/soc/sof/mediatek/mt8186/mt8186.h | 10 +++++++++-
- 2 files changed, 26 insertions(+), 1 deletion(-)
+> 
+> Thanks,
+> 
+> Faiz
+> 
+> IMPORTANT NOTICE: The contents of this email and any attachments are confidential and may also be privileged. If you are not the intended recipient, please notify the sender immediately and do not disclose the contents to any other person, use it for any purpose, or store or copy the information in any medium. Thank you.
 
-diff --git a/sound/soc/sof/mediatek/mt8186/mt8186.c b/sound/soc/sof/mediatek/mt8186/mt8186.c
-index 79da25725987..af0dfc2fc4cc 100644
---- a/sound/soc/sof/mediatek/mt8186/mt8186.c
-+++ b/sound/soc/sof/mediatek/mt8186/mt8186.c
-@@ -625,8 +625,25 @@ static const struct sof_dev_desc sof_of_mt8186_desc = {
- 	.ops = &sof_mt8186_ops,
- };
- 
-+static const struct sof_dev_desc sof_of_mt8188_desc = {
-+	.ipc_supported_mask	= BIT(SOF_IPC),
-+	.ipc_default		= SOF_IPC,
-+	.default_fw_path = {
-+		[SOF_IPC] = "mediatek/sof",
-+	},
-+	.default_tplg_path = {
-+		[SOF_IPC] = "mediatek/sof-tplg",
-+	},
-+	.default_fw_filename = {
-+		[SOF_IPC] = "sof-mt8188.ri",
-+	},
-+	.nocodec_tplg_filename = "sof-mt8188-nocodec.tplg",
-+	.ops = &sof_mt8186_ops,
-+};
-+
- static const struct of_device_id sof_of_mt8186_ids[] = {
- 	{ .compatible = "mediatek,mt8186-dsp", .data = &sof_of_mt8186_desc},
-+	{ .compatible = "mediatek,mt8188-dsp", .data = &sof_of_mt8188_desc},
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, sof_of_mt8186_ids);
-diff --git a/sound/soc/sof/mediatek/mt8186/mt8186.h b/sound/soc/sof/mediatek/mt8186/mt8186.h
-index 98b2965e5ba6..5b521c60b4e3 100644
---- a/sound/soc/sof/mediatek/mt8186/mt8186.h
-+++ b/sound/soc/sof/mediatek/mt8186/mt8186.h
-@@ -52,7 +52,15 @@ struct snd_sof_dev;
- #define ADSP_PRID			0x0
- #define ADSP_ALTVEC_C0			0x04
- #define ADSP_ALTVECSEL			0x0C
--#define ADSP_ALTVECSEL_C0		BIT(1)
-+#define MT8188_ADSP_ALTVECSEL_C0	BIT(0)
-+#define MT8186_ADSP_ALTVECSEL_C0	BIT(1)
-+
-+/*
-+ * On MT8188, BIT(1) is not evaluated and on MT8186 BIT(0) is not evaluated:
-+ * We can simplify the driver by safely setting both bits regardless of the SoC.
-+ */
-+#define ADSP_ALTVECSEL_C0		(MT8188_ADSP_ALTVECSEL_C0 | \
-+					 MT8186_ADSP_ALTVECSEL_C0)
- 
- /* dsp bus */
- #define ADSP_SRAM_POOL_CON		0x190
--- 
-2.18.0
+Please fix your mail setup. We cannot work in upstream/LKML with
+confidential emails. Since I was not a intended recipient (I don't know
+who is), then I should start removing your emails?
+
+Best regards,
+Krzysztof
 
