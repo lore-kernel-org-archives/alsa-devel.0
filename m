@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA310C67871
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Jan 2023 13:51:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73683C46467
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Jan 2023 13:51:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2942B6F49;
-	Tue, 10 Jan 2023 14:50:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2942B6F49
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D7E4A724;
+	Tue, 10 Jan 2023 14:50:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D7E4A724
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673358679;
-	bh=NVjAuIumiUR230u9WUVNXhz6j7a7AajPcQDctOP2NqM=;
+	s=default; t=1673358690;
+	bh=4oGSJ6FbnspCAIUmDXE7cKoixn7zT1eynXgj/tg+wmY=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=C6ROctCHxoHLrpOxax7dnLGGD2aJCypLuK82/0XiaQB2PegwJGlfRh/oRYT7QQBzt
-	 55Mtu2s35GGR70WN/XItf+ZMc095yFoLeoBTwIj/5Qgqdi26BExjG6CB3rqFODlX+r
-	 YNWFeFKIb14AAMwAo9qIRVkPPwo7bL6tqoz0PTpM=
+	b=Jdrb6IIiJyjM4J3uPHiWRlUCwYeYI3LgobBHhMdvmHGPaBk9wht8ySXqeCHQ7V0DG
+	 I/HSPhT1FvHMf1IJ3+fAPhzyfSVHt0/zFAZvZk6c3P3olrRztWqiI3gBhjx/9pE7G/
+	 gTBITf9IiCaUIZQlLXsnxSjgmXi8ETfrei3SGl2U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60FF3F80549;
-	Tue, 10 Jan 2023 14:49:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D305F80557;
+	Tue, 10 Jan 2023 14:49:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4378DF80542; Tue, 10 Jan 2023 14:49:52 +0100 (CET)
+ id BD535F80558; Tue, 10 Jan 2023 14:49:55 +0100 (CET)
 Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com
  [66.111.4.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F20DCF804D9
- for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2023 14:49:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F20DCF804D9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 037BDF8019B
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2023 14:49:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 037BDF8019B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key, unprotected) header.d=sakamocchi.jp
- header.i=@sakamocchi.jp header.a=rsa-sha256 header.s=fm3 header.b=HVVaCcqS; 
+ header.i=@sakamocchi.jp header.a=rsa-sha256 header.s=fm3 header.b=sXDWI1R3; 
  dkim=pass (2048-bit key,
  unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm3 header.b=NHDw/AJW
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.nyi.internal (Postfix) with ESMTP id BF6AD5C0134;
- Tue, 10 Jan 2023 08:49:41 -0500 (EST)
+ header.a=rsa-sha256 header.s=fm3 header.b=oJSsyslU
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+ by mailout.nyi.internal (Postfix) with ESMTP id 1B8FB5C0145;
+ Tue, 10 Jan 2023 08:49:39 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute5.internal (MEProxy); Tue, 10 Jan 2023 08:49:41 -0500
+ by compute6.internal (MEProxy); Tue, 10 Jan 2023 08:49:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=cc:cc:content-transfer-encoding:date:date:from:from
  :in-reply-to:in-reply-to:message-id:mime-version:references
- :reply-to:sender:subject:subject:to:to; s=fm3; t=1673358581; x=
- 1673444981; bh=0Emcl8G9/A5QVEe2uyAFeP376p0PzVxV17iq0NCxdGw=; b=H
- VVaCcqSbFJHhWeYIZcVznGp35FDhzGASNCv10gvTkNzzk7+De6Nk9NcyUCATrUbv
- 8cYJH6uGPiijUn2S1ON4f84UoJKtF7b+TnQtcVxp7u0tnBR6L3N0htKrNINXDpef
- /OJ10v2ylzZMxiziYOfsPDM7NYEgR6gTzCU/T7EMHUfwOFa51JySjR7sv+8ox3kx
- ZcwGcL9GGb4lHKoDUr0H891U0/ik901D5+yL5UPjZ9+hPaY7/NTB9KLXr1tfbRIT
- q7JLXt4gN9ls/aeDQgzTkAX640G3QT6lgD8wBpo1ais6YRrDb5Q93MdiwkSG7/qq
- kTC/ewCpZaLtfmRuOhutg==
+ :reply-to:sender:subject:subject:to:to; s=fm3; t=1673358579; x=
+ 1673444979; bh=miI7uGTmU797GNjdEiXAgXhylwamx1SsJtp/2vvjRP0=; b=s
+ XDWI1R3BjC/KaR2Uv0Q4x5WWQOXZD7lZCiV2LDjD/2DxyM6S6XLa5wHESsWhQWlu
+ WHNMBm5NiF71nqsKDK/R6wTJSfXcBhDaFwkjZC+FMc1SmWJIZsl5/jTdxyZGpPXv
+ XhVV0emgyvLVzpLtvNyD68ZKm8NzmbpIZED1FYwKps68vuXfImBxv04iwFhtPIfM
+ yyi7TYvlORUnFQbajrAbC4ZH/lyB/92rVQKYu/WZbBMprG3VebC8dW8htHowPcPX
+ 4uFXDeRrjhhp5GmLoRoreRHQbiDlS3uFx4siuJhghJJrbD5laClfyDfoVAsNr7pR
+ ci1gW+ZLTvDTN9o6BJsAw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
  :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
  :message-id:mime-version:references:reply-to:sender:subject
  :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
- :x-sasl-enc; s=fm3; t=1673358581; x=1673444981; bh=0Emcl8G9/A5QV
- Ee2uyAFeP376p0PzVxV17iq0NCxdGw=; b=NHDw/AJWWEdDiwphsioHc3SgZBzra
- IxiHZZtLNNho4FovUveUwF2gXP3NvWLu6VYBq0B3IwsPhb9EYKFOjj7orXtjmqYQ
- UZcOTb84piA9GUQsK89SUjliKc0o1LBfBpbMeqZEiStpiH9hp9OPUGAILdrtgtdi
- yciNkvhX5PkWS+qdRYedII2O34R6JdthbRIjZhsg5sCOsIefIceCc7ZsQ/VU7n5c
- MGbA20bLO0phRGeTcHFxOa5OhvGcisqOwAtDnowJXxEg1ObAMCie6iG3toazYUeB
- t1u4SXoucEDRc6CUmawB9gel68F1KAxGH2Fg8kQd9IMdP+yvDLTslnUTA==
-X-ME-Sender: <xms:9Wy9Y3WstkX617I4UKmDeL5v5qnZutLzHxximgzB_6q044Ac97CxcQ>
- <xme:9Wy9Y_mniodphwEe40wZu71hkZCxRNn77NLrdQm3ibGxf7YxPdbvkj-sGfmuMIjNX
- Y1m5c8yw7WI1vDcVtc>
-X-ME-Received: <xmr:9Wy9YzaT3wf_5gN2k0RsaPt9GbS-_rkG7adgKWN3OPVPeBaSKtbcC7ViUJcftW0r8-SKKjs5PD2FUtjDzPYq3j7wgXB6t895oisRumrgA23o5QIlORqGNyM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrkeekgdehiecutefuodetggdotefrodftvf
+ :x-sasl-enc; s=fm3; t=1673358579; x=1673444979; bh=miI7uGTmU797G
+ NjdEiXAgXhylwamx1SsJtp/2vvjRP0=; b=oJSsyslUAq5ivoc+ASYb5qrS50b6F
+ 1eMeSZjEdFN1ZutO9LfK7ibYD4KUkLjcLvWeCM4BiZjPFxLta7ubA6Rzon0vXVay
+ Q/BROyXKqX4nHYImKwZ8L/RB5wNmqx5b26yui7oRzF3sfeUi9MHeocgTskzDjVu1
+ I4/bZ0Z2FGnz4u6tHupKegPIWpO5PZBOqbBTROus9jYLrHgG2XbQdcEVPQsEQ4mN
+ yPpvSzpHrms/vq7ryvVx1jWOPNu0j7NkX0zoV7tDXfub8GFy/cH0vFF3mTA2/7la
+ 0gphwpaZRzGgCkMsDK3Nl89mj8zmbm9vA3VFl76YNqITazoZ97BQUYyAQ==
+X-ME-Sender: <xms:8my9Y43_hF7cRucEfueWF88kUzutFzaFkOVlbeQFr1r5wuKNSNlzpQ>
+ <xme:8my9YzGZK-BucvwtwRmdpKzYXCZxEto50AJFJKrd-IEh5UiSZ50uCjsOlXe9ggbo7
+ 1NxtCd9clbNSoSAy2g>
+X-ME-Received: <xmr:8my9Yw6Yvkz-fXLVIKi7YeCac_X1wQN97QebfHQTrtMgQvbWnOcp0BDJ3-EnrFH6qc5qA9t-JHzX0lN50h2B5iSF8aCGC4pqSINDSxGXluhjRUJi0NR0kAs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrkeekgdehjecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestdekre
  dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
@@ -80,19 +80,19 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrkeekgdehiecutefuodetggdote
  dvgfduudekleevtefgtdevhfdtffefiefgveeuteffiedvffekvddtnecuvehluhhsthgv
  rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihessh
  grkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:9Wy9YyWeHwerwkFZedtSXWT_k-xpqvqsX_Ju0mLVlVC36HEGuX99gA>
- <xmx:9Wy9YxlY64wvDXTT8ITPl8SpWhrbD9dk372hdEafWysOvbeDgKAYOQ>
- <xmx:9Wy9Y_eUTdcLS2kfsO_jdLgfCnMSKMIUZJnl2fHik8SOf4P8OpQP3w>
- <xmx:9Wy9Yxtp_H-Eg-Jr16_raU8gmIQj7wLoN2-u1Ukf-YvT-REJCqBeNg>
+X-ME-Proxy: <xmx:8my9Yx2-jn-uVMyeqcobBrCQ_-tj-zDftjK6eYy9-4kzaGr0WLaqMw>
+ <xmx:8my9Y7HElDM5nbqJU8iVSYukK0OgLcVOL3jcp5xy_1mxHdWRO4Snow>
+ <xmx:8my9Y69hIfFkwBso0oL32de9Bc2Ldb_rYTbtIaFSJ16Az4p3AO-hLg>
+ <xmx:82y9YxOQArJcGxxNrqc2xtFJbbDYbm_7NfC7FVgK0QukrQOQufcI4g>
 Feedback-ID: ie8e14432:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 10 Jan 2023 08:49:40 -0500 (EST)
+ 10 Jan 2023 08:49:37 -0500 (EST)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH 3/3] ALSA: firewire-lib: compute extra delay for runtime of
- PCM substream
-Date: Tue, 10 Jan 2023 22:49:33 +0900
-Message-Id: <20230110134933.322794-4-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/3] ALSA: firewire-lib: move parameter for pcm frame
+ multiplier from context payload processing layer
+Date: Tue, 10 Jan 2023 22:49:31 +0900
+Message-Id: <20230110134933.322794-2-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230110134933.322794-1-o-takashi@sakamocchi.jp>
 References: <20230110134933.322794-1-o-takashi@sakamocchi.jp>
@@ -114,165 +114,241 @@ Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-All drivers in ALSA firewire stack have never reported extra delay for
-the runtime of PCM substream. There is some reason, but the main reason
-is that the meaning of extra delay differs depending on driver design,
-especially for the packet-oriented driver.
+The current implementation delegates the task to calculate the number of
+processed PCM frames into the context payload processing layer. It looks
+good as long as frame calculation is done for a single purpose.
+Nevertheless, another purpose, the computation of extra delay for the
+runtime of PCM substream, requires frame calculation, too.
 
-Here I define the extra delay for the case of IEC 61883-1/6. It is the
-number of PCM frames transferred or should be transferred between the
-current isochronous cycle and the isochronous cycle to which the latest
-isochronous packet arrived (in IR context) or is scheduled (in IT context).
-
-A commit baa914cd81f5 ("firewire: add kernel API to access CYCLE_TIME
-register") allow unit drivers to read CYCLE_TIME of 1394 OHCI controller.
-It allows the drivers to compute the current isochronous cycle.
-
-Additionally, a commit f0117128879b ("ALSA: firewire-lib: keep history to
-process isochronous packet") enables to save the history processing
-packets. It allows the driver to estimate the total number of data blocks
-in packets arriving shortly, or calculate the total number of data blocks
-in scheduled packets.
-
-Now it is ready. This commit implements the computation of the extra delay.
+This commit refactors the current implementation so that the packet stream
+processing layer is responsible for the calculation of PCM frame, too. The
+member is moved to stream structure for multiplier between data block
+count and PCM frame count.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 83 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 81 insertions(+), 2 deletions(-)
+ sound/firewire/amdtp-am824.c         | 34 +++++++++++++---------------
+ sound/firewire/amdtp-stream.c        | 25 +++++++++++++++-----
+ sound/firewire/amdtp-stream.h        |  3 ++-
+ sound/firewire/digi00x/amdtp-dot.c   |  2 +-
+ sound/firewire/fireface/amdtp-ff.c   |  2 +-
+ sound/firewire/motu/amdtp-motu.c     |  2 +-
+ sound/firewire/tascam/amdtp-tascam.c |  2 +-
+ 7 files changed, 41 insertions(+), 29 deletions(-)
 
+diff --git a/sound/firewire/amdtp-am824.c b/sound/firewire/amdtp-am824.c
+index cf55f7784d23..b849f529fcba 100644
+--- a/sound/firewire/amdtp-am824.c
++++ b/sound/firewire/amdtp-am824.c
+@@ -36,8 +36,6 @@ struct amdtp_am824 {
+ 
+ 	u8 pcm_positions[AM824_MAX_CHANNELS_FOR_PCM];
+ 	u8 midi_position;
+-
+-	unsigned int frame_multiplier;
+ };
+ 
+ /**
+@@ -59,8 +57,8 @@ int amdtp_am824_set_parameters(struct amdtp_stream *s, unsigned int rate,
+ {
+ 	struct amdtp_am824 *p = s->protocol;
+ 	unsigned int midi_channels;
+-	unsigned int i;
+-	int err;
++	unsigned int pcm_frame_multiplier;
++	int i, err;
+ 
+ 	if (amdtp_stream_running(s))
+ 		return -EINVAL;
+@@ -77,8 +75,18 @@ int amdtp_am824_set_parameters(struct amdtp_stream *s, unsigned int rate,
+ 	    WARN_ON(midi_channels > AM824_MAX_CHANNELS_FOR_MIDI))
+ 		return -EINVAL;
+ 
+-	err = amdtp_stream_set_parameters(s, rate,
+-					  pcm_channels + midi_channels);
++	/*
++	 * In IEC 61883-6, one data block represents one event. In ALSA, one
++	 * event equals to one PCM frame. But Dice has a quirk at higher
++	 * sampling rate to transfer two PCM frames in one data block.
++	 */
++	if (double_pcm_frames)
++		pcm_frame_multiplier = 2;
++	else
++		pcm_frame_multiplier = 1;
++
++	err = amdtp_stream_set_parameters(s, rate, pcm_channels + midi_channels,
++					  pcm_frame_multiplier);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -88,16 +96,6 @@ int amdtp_am824_set_parameters(struct amdtp_stream *s, unsigned int rate,
+ 	p->pcm_channels = pcm_channels;
+ 	p->midi_ports = midi_ports;
+ 
+-	/*
+-	 * In IEC 61883-6, one data block represents one event. In ALSA, one
+-	 * event equals to one PCM frame. But Dice has a quirk at higher
+-	 * sampling rate to transfer two PCM frames in one data block.
+-	 */
+-	if (double_pcm_frames)
+-		p->frame_multiplier = 2;
+-	else
+-		p->frame_multiplier = 1;
+-
+ 	/* init the position map for PCM and MIDI channels */
+ 	for (i = 0; i < pcm_channels; i++)
+ 		p->pcm_positions[i] = i;
+@@ -361,7 +359,7 @@ static unsigned int process_it_ctx_payloads(struct amdtp_stream *s,
+ 
+ 		if (pcm) {
+ 			write_pcm_s32(s, pcm, buf, data_blocks, pcm_frames);
+-			pcm_frames += data_blocks * p->frame_multiplier;
++			pcm_frames += data_blocks * s->pcm_frame_multiplier;
+ 		} else {
+ 			write_pcm_silence(s, buf, data_blocks);
+ 		}
+@@ -392,7 +390,7 @@ static unsigned int process_ir_ctx_payloads(struct amdtp_stream *s,
+ 
+ 		if (pcm) {
+ 			read_pcm_s32(s, pcm, buf, data_blocks, pcm_frames);
+-			pcm_frames += data_blocks * p->frame_multiplier;
++			pcm_frames += data_blocks * s->pcm_frame_multiplier;
+ 		}
+ 
+ 		if (p->midi_ports) {
 diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 03e97faca797..16e45ac28607 100644
+index 65720ae866cb..98a033afc5f8 100644
 --- a/sound/firewire/amdtp-stream.c
 +++ b/sound/firewire/amdtp-stream.c
-@@ -352,6 +352,9 @@ void amdtp_stream_pcm_prepare(struct amdtp_stream *s)
- }
- EXPORT_SYMBOL(amdtp_stream_pcm_prepare);
- 
-+#define prev_packet_desc(s, desc) \
-+	list_prev_entry_circular(desc, &s->packet_descs_list, link)
-+
- static void pool_blocking_data_blocks(struct amdtp_stream *s, struct seq_desc *descs,
- 				      unsigned int size, unsigned int pos, unsigned int count)
+@@ -271,12 +271,14 @@ EXPORT_SYMBOL(amdtp_stream_add_pcm_hw_constraints);
+  * @s: the AMDTP stream to configure
+  * @rate: the sample rate
+  * @data_block_quadlets: the size of a data block in quadlet unit
++ * @pcm_frame_multiplier: the multiplier to compute the number of PCM frames by the number of AMDTP
++ *			  events.
+  *
+  * The parameters must be set before the stream is started, and must not be
+  * changed while the stream is running.
+  */
+ int amdtp_stream_set_parameters(struct amdtp_stream *s, unsigned int rate,
+-				unsigned int data_block_quadlets)
++				unsigned int data_block_quadlets, unsigned int pcm_frame_multiplier)
  {
-@@ -851,10 +854,15 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
- // In CYCLE_TIMER register of IEEE 1394, 7 bits are used to represent second. On
- // the other hand, in DMA descriptors of 1394 OHCI, 3 bits are used to represent
- // it. Thus, via Linux firewire subsystem, we can get the 3 bits for second.
-+static inline u32 compute_ohci_iso_ctx_cycle_count(u32 tstamp)
-+{
-+	return (((tstamp >> 13) & 0x07) * CYCLES_PER_SECOND) + (tstamp & 0x1fff);
-+}
+ 	unsigned int sfc;
+ 
+@@ -298,6 +300,8 @@ int amdtp_stream_set_parameters(struct amdtp_stream *s, unsigned int rate,
+ 	if (s->flags & CIP_BLOCKING)
+ 		s->transfer_delay += TICKS_PER_SECOND * s->syt_interval / rate;
+ 
++	s->pcm_frame_multiplier = pcm_frame_multiplier;
 +
- static inline u32 compute_ohci_cycle_count(__be32 ctx_header_tstamp)
- {
- 	u32 tstamp = be32_to_cpu(ctx_header_tstamp) & HEADER_TSTAMP_MASK;
--	return (((tstamp >> 13) & 0x07) * 8000) + (tstamp & 0x1fff);
-+	return compute_ohci_iso_ctx_cycle_count(tstamp);
+ 	return 0;
+ }
+ EXPORT_SYMBOL(amdtp_stream_set_parameters);
+@@ -1032,16 +1036,25 @@ static inline void cancel_stream(struct amdtp_stream *s)
  }
  
- static inline u32 increment_ohci_cycle_count(u32 cycle, unsigned int addend)
-@@ -865,6 +873,14 @@ static inline u32 increment_ohci_cycle_count(u32 cycle, unsigned int addend)
- 	return cycle;
- }
- 
-+static inline u32 decrement_ohci_cycle_count(u32 minuend, u32 subtrahend)
-+{
-+	if (minuend < subtrahend)
-+		minuend += OHCI_SECOND_MODULUS * CYCLES_PER_SECOND;
-+
-+	return minuend - subtrahend;
-+}
-+
- static int compare_ohci_cycle_count(u32 lval, u32 rval)
- {
- 	if (lval == rval)
-@@ -1035,6 +1051,63 @@ static inline void cancel_stream(struct amdtp_stream *s)
- 	WRITE_ONCE(s->pcm_buffer_pointer, SNDRV_PCM_POS_XRUN);
- }
- 
-+static snd_pcm_sframes_t compute_pcm_extra_delay(struct amdtp_stream *s,
-+						 const struct pkt_desc *desc, unsigned int count)
-+{
-+	unsigned int data_block_count = 0;
-+	u32 latest_cycle;
-+	u32 cycle_time;
-+	u32 curr_cycle;
-+	u32 cycle_gap;
-+	int i, err;
-+
-+	if (count == 0)
-+		goto end;
-+
-+	// Forward to the latest record.
-+	for (i = 0; i < count - 1; ++i)
-+		desc = amdtp_stream_next_packet_desc(s, desc);
-+	latest_cycle = desc->cycle;
-+
-+	err = fw_card_read_cycle_time(fw_parent_device(s->unit)->card, &cycle_time);
-+	if (err < 0)
-+		goto end;
-+
-+	// Compute cycle count with lower 3 bits of second field and cycle field like timestamp
-+	// format of 1394 OHCI isochronous context.
-+	curr_cycle = compute_ohci_iso_ctx_cycle_count((cycle_time >> 12) & 0x0000ffff);
-+
-+	if (s->direction == AMDTP_IN_STREAM) {
-+		// NOTE: The AMDTP packet descriptor should be for the past isochronous cycle since
-+		// it corresponds to arrived isochronous packet.
-+		if (compare_ohci_cycle_count(latest_cycle, curr_cycle) > 0)
-+			goto end;
-+		cycle_gap = decrement_ohci_cycle_count(curr_cycle, latest_cycle);
-+
-+		// NOTE: estimate delay by recent history of arrived AMDTP packets. The estimated
-+		// value expectedly corresponds to a few packets (0-2) since the packet arrived at
-+		// the most recent isochronous cycle has been already processed.
-+		for (i = 0; i < cycle_gap; ++i) {
-+			desc = amdtp_stream_next_packet_desc(s, desc);
-+			data_block_count += desc->data_blocks;
-+		}
-+	} else {
-+		// NOTE: The AMDTP packet descriptor should be for the future isochronous cycle
-+		// since it was already scheduled.
-+		if (compare_ohci_cycle_count(latest_cycle, curr_cycle) < 0)
-+			goto end;
-+		cycle_gap = decrement_ohci_cycle_count(latest_cycle, curr_cycle);
-+
-+		// NOTE: use history of scheduled packets.
-+		for (i = 0; i < cycle_gap; ++i) {
-+			data_block_count += desc->data_blocks;
-+			desc = prev_packet_desc(s, desc);
-+		}
-+	}
-+end:
-+	return data_block_count * s->pcm_frame_multiplier;
-+}
-+
  static void process_ctx_payloads(struct amdtp_stream *s,
- 				 const struct pkt_desc *desc,
+-				 const struct pkt_desc *descs,
++				 const struct pkt_desc *desc,
  				 unsigned int count)
-@@ -1048,6 +1121,8 @@ static void process_ctx_payloads(struct amdtp_stream *s,
- 	if (pcm) {
- 		unsigned int data_block_count = 0;
+ {
+ 	struct snd_pcm_substream *pcm;
+-	unsigned int pcm_frames;
++	int i;
  
-+		pcm->runtime->delay = compute_pcm_extra_delay(s, desc, count);
+ 	pcm = READ_ONCE(s->pcm);
+-	pcm_frames = s->process_ctx_payloads(s, descs, count, pcm);
+-	if (pcm)
+-		update_pcm_pointers(s, pcm, pcm_frames);
++	(void)s->process_ctx_payloads(s, desc, count, pcm);
 +
- 		for (i = 0; i < count; ++i) {
- 			data_block_count += desc->data_blocks;
- 			desc = amdtp_stream_next_packet_desc(s, desc);
-@@ -1686,7 +1761,11 @@ static int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed,
- 	else
- 		s->tag = TAG_CIP;
++	if (pcm) {
++		unsigned int data_block_count = 0;
++
++		for (i = 0; i < count; ++i) {
++			data_block_count += desc->data_blocks;
++			desc = amdtp_stream_next_packet_desc(s, desc);
++		}
++
++		update_pcm_pointers(s, pcm, data_block_count * s->pcm_frame_multiplier);
++	}
+ }
  
--	descs = kcalloc(s->queue_size, sizeof(*descs), GFP_KERNEL);
-+	// NOTE: When operating without hardIRQ/softIRQ, applications tends to call ioctl request
-+	// for runtime of PCM substream in the interval equivalent to the size of PCM buffer. It
-+	// could take a round over queue of AMDTP packet descriptors and small loss of history. For
-+	// safe, keep more 8 elements for the queue, equivalent to 1 ms.
-+	descs = kcalloc(s->queue_size + 8, sizeof(*descs), GFP_KERNEL);
- 	if (!descs) {
- 		err = -ENOMEM;
- 		goto err_context;
+ static void process_rx_packets(struct fw_iso_context *context, u32 tstamp, size_t header_length,
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index a8dd1c3ec8d9..35b48f9ddbf7 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -190,6 +190,7 @@ struct amdtp_stream {
+ 	struct snd_pcm_substream *pcm;
+ 	snd_pcm_uframes_t pcm_buffer_pointer;
+ 	unsigned int pcm_period_pointer;
++	unsigned int pcm_frame_multiplier;
+ 
+ 	// To start processing content of packets at the same cycle in several contexts for
+ 	// each direction.
+@@ -216,7 +217,7 @@ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+ void amdtp_stream_destroy(struct amdtp_stream *s);
+ 
+ int amdtp_stream_set_parameters(struct amdtp_stream *s, unsigned int rate,
+-				unsigned int data_block_quadlets);
++				unsigned int data_block_quadlets, unsigned int pcm_frame_multiplier);
+ unsigned int amdtp_stream_get_max_payload(struct amdtp_stream *s);
+ 
+ void amdtp_stream_update(struct amdtp_stream *s);
+diff --git a/sound/firewire/digi00x/amdtp-dot.c b/sound/firewire/digi00x/amdtp-dot.c
+index fcae7d07aa03..b3f67af2d3b1 100644
+--- a/sound/firewire/digi00x/amdtp-dot.c
++++ b/sound/firewire/digi00x/amdtp-dot.c
+@@ -123,7 +123,7 @@ int amdtp_dot_set_parameters(struct amdtp_stream *s, unsigned int rate,
+ 	 * A first data channel is for MIDI messages, the rest is Multi Bit
+ 	 * Linear Audio data channel.
+ 	 */
+-	err = amdtp_stream_set_parameters(s, rate, pcm_channels + 1);
++	err = amdtp_stream_set_parameters(s, rate, pcm_channels + 1, 1);
+ 	if (err < 0)
+ 		return err;
+ 
+diff --git a/sound/firewire/fireface/amdtp-ff.c b/sound/firewire/fireface/amdtp-ff.c
+index 2402e2be87a6..27943b7f86fa 100644
+--- a/sound/firewire/fireface/amdtp-ff.c
++++ b/sound/firewire/fireface/amdtp-ff.c
+@@ -24,7 +24,7 @@ int amdtp_ff_set_parameters(struct amdtp_stream *s, unsigned int rate,
+ 	p->pcm_channels = pcm_channels;
+ 	data_channels = pcm_channels;
+ 
+-	return amdtp_stream_set_parameters(s, rate, data_channels);
++	return amdtp_stream_set_parameters(s, rate, data_channels, 1);
+ }
+ 
+ static void write_pcm_s32(struct amdtp_stream *s, struct snd_pcm_substream *pcm,
+diff --git a/sound/firewire/motu/amdtp-motu.c b/sound/firewire/motu/amdtp-motu.c
+index ea0063cec5fb..4153527b5e08 100644
+--- a/sound/firewire/motu/amdtp-motu.c
++++ b/sound/firewire/motu/amdtp-motu.c
+@@ -73,7 +73,7 @@ int amdtp_motu_set_parameters(struct amdtp_stream *s, unsigned int rate,
+ 	data_chunks = formats->msg_chunks + pcm_chunks;
+ 	data_block_quadlets = 1 + DIV_ROUND_UP(data_chunks * 3, 4);
+ 
+-	err = amdtp_stream_set_parameters(s, rate, data_block_quadlets);
++	err = amdtp_stream_set_parameters(s, rate, data_block_quadlets, 1);
+ 	if (err < 0)
+ 		return err;
+ 
+diff --git a/sound/firewire/tascam/amdtp-tascam.c b/sound/firewire/tascam/amdtp-tascam.c
+index c367a6ee6121..bb4cf2d26d1b 100644
+--- a/sound/firewire/tascam/amdtp-tascam.c
++++ b/sound/firewire/tascam/amdtp-tascam.c
+@@ -29,7 +29,7 @@ int amdtp_tscm_set_parameters(struct amdtp_stream *s, unsigned int rate)
+ 	if (s->direction == AMDTP_IN_STREAM)
+ 		data_channels += 2;
+ 
+-	return amdtp_stream_set_parameters(s, rate, data_channels);
++	return amdtp_stream_set_parameters(s, rate, data_channels, 1);
+ }
+ 
+ static void write_pcm_s32(struct amdtp_stream *s, struct snd_pcm_substream *pcm,
 -- 
 2.37.2
 
