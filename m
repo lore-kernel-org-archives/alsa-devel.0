@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3E64C46467
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 Jan 2023 08:39:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29932C61DB3
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 Jan 2023 08:39:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D92ACB79;
-	Tue, 10 Jan 2023 09:38:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D92ACB79
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6AD40AB70;
+	Tue, 10 Jan 2023 09:38:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AD40AB70
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673339947;
-	bh=rocWwoX0LGyzN8H1F/C2h9pI9C44XcJWx374mbqMkuY=;
+	s=default; t=1673339958;
+	bh=oEuo4Q1OFY6wu7ZfjVDR9Ffo/H751KhTyrOSJD/92qE=;
 	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=bQKozXkiniEytJt+uQazB4tskDm1iC7SP5q1KLRQDhQtUv6BAVKO0spd28JJtZEpY
-	 zj7eVkiObpEljXNjFUsUHYVEQllqBuswPqoIld1g+1VVmEy61WtADzBKNX8bi1TzUp
-	 Bi38Fj2ob7Nkg3K4TTXzwYIP3vwJfeFrc9ad3diI=
+	b=GRWp5jBtkxuxDMta/LI+GiQGxxOrbdAQ7KEzHrPpqltZZTwihW3oymdj8B1CDenrM
+	 2A5sbNbpeyMdPwse6qmWO0HFp+cpzGNkWwf1yIxFOK9zSIJBGAWY7XQwngTvSVj3Pw
+	 3VwPzUoyHxJVAdUtLmFxgvD2zTpSVW6LFrAgiUKg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6CB7F8057F;
-	Tue, 10 Jan 2023 09:36:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86FAEF8059F;
+	Tue, 10 Jan 2023 09:36:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 55F1AF8057E; Tue, 10 Jan 2023 09:36:40 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ id 3BA01F805A0; Tue, 10 Jan 2023 09:36:52 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BAB65F8057E
- for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2023 09:36:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BAB65F8057E
+ by alsa1.perex.cz (Postfix) with ESMTPS id A2D40F80588
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2023 09:36:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2D40F80588
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=sLt1j2De; 
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=X/O1ObvC; 
  dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=DZuJmvUt
+ header.s=susede2_ed25519 header.b=gRgRgvUH
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 0F895678BF;
- Tue, 10 Jan 2023 08:36:38 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 552BA4E223;
+ Tue, 10 Jan 2023 08:36:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1673339798; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1673339810; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=xvS//62VSffaOVkPd7AJ+WkPm2q+fEQoyqXPxSgE+Tc=;
- b=sLt1j2De2qQT5zPcMyDikiQPYwPstDNGwUA+QwDZTjMdEHh/s5GuDx/XkgrLZrCN0jpYtm
- r9IgMiVSFfcsQZ38yWwqsGfJvg7nDXXdaY2zBLTgU+35YhzPWPBlPxV4zmtKh15WqGnSk3
- JD9CWhXokfnH500EdukLWNyDmWJtlME=
+ bh=GXeFo9P91gTYdK+C2m1QxVFGsJvTKhMhx5nV2aVYSOg=;
+ b=X/O1ObvCxomZmocw9dpVIt+yGGkuvql+0YojAAA92+9BnUqBOSYJvix/BuDKK4RLaoU9cl
+ HXvaaEMJSGtkoj8/X3/573uQu29wPxenkxQ9ld6/2SOdJwPEintN9+a61xRPW89yzw/b8q
+ 3Zpthvbqt68M3nqqzUH6FKXvwwMSGAQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1673339798;
+ s=susede2_ed25519; t=1673339810;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=xvS//62VSffaOVkPd7AJ+WkPm2q+fEQoyqXPxSgE+Tc=;
- b=DZuJmvUtsJf4nJ5sVotgf+gUVorDRkWgCrx6j8e8mSNd7NpIaS3LmCPyRIX2wUu3KiDfVM
- q3zzuibEavQ5jADw==
+ bh=GXeFo9P91gTYdK+C2m1QxVFGsJvTKhMhx5nV2aVYSOg=;
+ b=gRgRgvUHylzMechgH6ItCoLX8jrdjmnye3tRUKGniPNQ3LFU7ZpWlJYyrEN02nfVQXgOwK
+ TrFa8b2LipSp1QBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E2BC01358A;
- Tue, 10 Jan 2023 08:36:37 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3668913338;
+ Tue, 10 Jan 2023 08:36:50 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id OUC5NpUjvWOyFgAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 10 Jan 2023 08:36:37 +0000
-Date: Tue, 10 Jan 2023 09:36:37 +0100
-Message-ID: <87k01ueqga.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id ilRhDKIjvWPGFgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 10 Jan 2023 08:36:50 +0000
+Date: Tue, 10 Jan 2023 09:36:49 +0100
+Message-ID: <87ilheeqfy.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Luka Guzenko <l.guzenko@web.de>
-Subject: Re: [PATCH] ALSA: hda/realtek: Enable mute/micmute LEDs on HP Spectre
- x360 13-aw0xxx
-In-Reply-To: <20230109235840.26452-1-l.guzenko@web.de>
-References: <20230109235840.26452-1-l.guzenko@web.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: firewire-lib: extend tracepoints event including
+ CYCLE_TIME of 1394 OHCI
+In-Reply-To: <20230109213231.138223-1-o-takashi@sakamocchi.jp>
+References: <20230109213231.138223-1-o-takashi@sakamocchi.jp>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -92,42 +92,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 10 Jan 2023 00:58:40 +0100,
-Luka Guzenko wrote:
+On Mon, 09 Jan 2023 22:32:31 +0100,
+Takashi Sakamoto wrote:
 > 
-> The HP Spectre x360 13-aw0xxx devices use the ALC285 codec with GPIO 0x04
-> controlling the micmute LED and COEF 0x0b index 8 controlling the mute LED.
-> A quirk was added to make these work as well as a fixup entry.
+> A commit baa914cd81f5 ("firewire: add kernel API to access CYCLE_TIME
+> register") allow unit drivers to read CYCLE_TIME of 1394 OHCI controller.
+> The value expresses monotonic time with 42.195 Mhz resolution and wrapping
+> around every 128 seconds. The controller uses the time to govern
+> isochronous cycle.
 > 
-> Signed-off-by: Luka Guzenko <l.guzenko@web.de>
-> ---
->  sound/pci/hda/patch_realtek.c | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
+> This commit extends tracepoints event including the value so that event
+> parser can compute gap between current isochronous cycle and the latest
+> isochronous cycle in which packet is processed (in IR context) or scheduled
+> (in IT context). It loses backward compatibility to former format of the
+> tracepoints event.
 > 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 3794b522c222..6a76a2eddd3c 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -4644,6 +4644,16 @@ static void alc285_fixup_hp_coef_micmute_led(struct hda_codec *codec,
->  	}
->  }
-> 
-> +static void alc285_fixup_hp_gpio_micmute_led(struct hda_codec *codec,
-> +				const struct hda_fixup *fix, int action)
-> +{
-> +	struct alc_spec *spec = codec->spec;
-> +
-> +	if (action != HDA_FIXUP_ACT_PRE_PROBE)
-> +		spec->micmute_led_polarity = 1;
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Is this condition correct?  It's usually other way round; a flag is
-set up only once at parsing.
+Thanks, applied now.
 
-
-thanks,
 
 Takashi
