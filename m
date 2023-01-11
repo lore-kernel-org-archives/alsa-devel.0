@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1D2BC5479D
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Jan 2023 15:07:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 118E0C46467
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Jan 2023 15:41:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DDAE77938;
-	Wed, 11 Jan 2023 16:07:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDAE77938
+	by alsa0.perex.cz (Postfix) with ESMTPS id 669522ACB;
+	Wed, 11 Jan 2023 16:40:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 669522ACB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673449671;
-	bh=96p48KGQVOszGpiIUB1uMQHTSrU1mw+PEt8uGhIXaOc=;
+	s=default; t=1673451679;
+	bh=RR+rWxCapXWCf5VAhLRMluPGOt+VpkuB5+flyMpJTZY=;
 	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=JuRJUP0dJcHLNekNa3v/uvuypcy0MOw9czHAO8hblHqhbMnby0NO9V5Dty/U+GROk
-	 B2/iZviKW4imsZ6ES6tDWC4+J/l4a7lr3hCF5BuWonnKrOLf785IFkE5OUMqg5MVnl
-	 qsZiDJIQjgbaADprCEkOL7JSjThn4MCNwRliNIwE=
+	b=noBEdun52hYUcQK86xdhA0zVm+ooOrWZ4YwUm3JjzgGWoKBZ06GitEUV0XEw2L7sG
+	 1TYK3DK1GHoxRgMOYiixvv/X6iObKamQlW+qEIoSrVvK5OF3cdITA48u+2UbLqh3ta
+	 dYq9Cg73bIi+k1CcK7QiaRqIRCTHhpSPk+ySHtvc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 882ACF8030F;
-	Wed, 11 Jan 2023 16:07:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1AB47F80425;
+	Wed, 11 Jan 2023 16:40:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EAB7BF803DC; Wed, 11 Jan 2023 16:06:59 +0100 (CET)
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::225])
+ id A7766F80424; Wed, 11 Jan 2023 16:40:27 +0100 (CET)
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
+ [IPv6:2001:4b98:dc4:8::224])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF31DF8019B
- for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2023 16:06:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF31DF8019B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39130F8016E
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2023 16:40:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39130F8016E
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=J2zebCAM
+ header.s=gm1 header.b=Q+o9216w
 Received: (Authenticated sender: herve.codina@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id 7925C1C000B;
- Wed, 11 Jan 2023 15:06:52 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPSA id B16AFE0004;
+ Wed, 11 Jan 2023 15:40:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1673449616;
+ t=1673451624;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:content-type:content-type:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=96p48KGQVOszGpiIUB1uMQHTSrU1mw+PEt8uGhIXaOc=;
- b=J2zebCAM0gphMWejuOqgoceHr5MqD34OCvw5uIQ+F8xbwSyORqkjh5JN2WScz1Txu5rTA2
- oWG0oqjsC4TfW2W6iI9azZabaMlxD4UwGsCtIMgaxUsBAVf+S4BhZxNsfF++6qyd88P51j
- jTN0lxAM9hMeQ2T1yXZ3dCMevMQX/c69W2vPSEc81hUm2hBKXfojWt/aKd1iw4OGl0mv14
- 6jyJY34VcHSqHG5PWqLJhCiaVS7KwdXzjRRNsRc7oZvowk1q7ZqmkvjRCtumbZwDyt60IY
- gVVVVQjYQyaYgKeiyyyZhzYFLYpjrQTPE5pNH2V3X3c+rY/pgSOvtO7fye2REA==
-Date: Wed, 11 Jan 2023 16:06:51 +0100
+ bh=TJ80tI+n7E12DAvDikBDbLVrg9IXgTxZ252Cq+neEbQ=;
+ b=Q+o9216wXpyzH4Fmo4XE+A/19Rhli449oB8gxh74cMuVSBe7TmgTWv0NVMgETjHj7ICimI
+ 2lEldE8luCvEuRzv4wncGEOGkp8+YWnj/gHNVwVIcANGc/i9KFCarw2xI7Zy7ii4mw01BP
+ 3yh4Y2Qf6FLQR/pCfsBovsMC1nhClDVRgsfz9BsqGrMm8sPNTEXSy366YeN1nX8+aedw2l
+ 5dU2xzoQw9jeYIRqNq8AjlA436V/DgDKdEL+uikobI8yvJhFeEtymQvw2NPhOwbDD2+MwT
+ mU28pFltJe6k53uG/R2oCKCPp6dR2f20BtbgaXKCRweyOUiSP64AKbrgZhfqEA==
+Date: Wed, 11 Jan 2023 16:40:18 +0100
 From: Herve Codina <herve.codina@bootlin.com>
 To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH v2 02/10] soc: fsl: qe: Add support for TSA
-Message-ID: <20230111160651.24538b35@bootlin.com>
-In-Reply-To: <7a36f02b-1ba1-b509-4aa0-c5c37a3cb3ef@csgroup.eu>
+Subject: Re: [PATCH v2 06/10] soc: fsl: qe: Add support for QMC
+Message-ID: <20230111164018.676a8ca1@bootlin.com>
+In-Reply-To: <f46eb64d-ad4c-7531-60b0-68961f171ed8@csgroup.eu>
 References: <20230106163746.439717-1-herve.codina@bootlin.com>
- <20230106163746.439717-3-herve.codina@bootlin.com>
- <7a36f02b-1ba1-b509-4aa0-c5c37a3cb3ef@csgroup.eu>
+ <20230106163746.439717-7-herve.codina@bootlin.com>
+ <f46eb64d-ad4c-7531-60b0-68961f171ed8@csgroup.eu>
 Organization: Bootlin
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
@@ -96,45 +96,56 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Hi Christophe,
-
-On Wed, 11 Jan 2023 13:47:23 +0000
+On Wed, 11 Jan 2023 13:58:03 +0000
 Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
 
 > Le 06/01/2023 =C3=A0 17:37, Herve Codina a =C3=A9crit=C2=A0:
-> > The TSA (Time Slot Assigner) is available in some
-> > PowerQUICC SoC such as the MPC885 or MPC866.
+> > The QMC (QUICC Multichannel Controller) is available on some
+> > PowerQUICC SoC such as the MPC885 or MPC866. =20
+>=20
+> Same, that's QMC for CPM for the time being, should that be made clear=20
+> in the subject ?
+
+Also same answer:
+Will changing the subject be enough or do I need to move it to new
+created drivers/soc/fsl/cpm/ directory ?
+
+>=20
+> QE also has QMC and this driver might be used for QE QMC as well with=20
+> some enhancement, maybe that could be explained here ?
+
+Yes and we plan to have it working on QE too.
+
+What do you think if I add the following:
+  The QMC is also available on some Quicc Engine SoC.
+  This current version support CPM1 SoC only. Some
+  enhancement are needed to support Quicc Engine SoC.
+
+>=20
+> I see you are using in_be16(), out_be16() etc ....
+> That's specific to powerpc arch, maybe it is better to use ioread16be,=20
+> iowrite16be() etc ....
+> See commit 3f39f38ea91d ("soc: fsl: qe: replace qe_io{read,write}*=20
+> wrappers by generic io{read,write}*") and commit 6ac9b61786cc ("soc:=20
+> fsl: qe: introduce qe_io{read,write}* wrappers") for information.
+
+You're right.
+I will switch to io{read,write}{16,32}be.
+
+I prefer avoid the use of qe_* wrappers as the driver is not
+(yet) compatible with QE.
+
+>=20
 > >=20
-> > Its purpose is to route some TDM time-slots to other
-> > internal serial controllers. =20
->=20
-> Is the subject correct ? As far as I understand this patch adds support=20
-> for the TSA on the CPM (exactly on CPM1), not on the QE.
-
-Yes exactly, it is a CPM1 support (kind of previous version of QE).
-
-Do you think that fixing the subject is enough or do I need also
-to create a new directory drivers/soc/fsl/cpm/ and move these drivers
-(TSA and QMC) in this new directory.
-
-The alternative could be to leave this driver in drivers/soc/qe/ and
-rename it to cpm-tsa.c.
-
-For information, we have some plan to have this driver working
-with QE (not done yet).
-
->=20
-> By the way, there are already some embryo for handling TSA on QE in=20
-> drivers/soc/fsl/qe/qe-tdm.c
-
-Yes but this can be seen as an extension only used by=20
-drivers/net/wan/fsl_ucc_hdlc.c and it supports QE only.
-
-Not sure that qe-tdm.c will fit well if several other
-drivers instances use it.
-
->=20
+> > It emulates up to 64 channels within one serial controller
+> > using the same TDM physical interface routed from the TSA.
 > >=20
 > > Signed-off-by: Herve Codina <herve.codina@bootlin.com> =20
+>=20
+> In some places, you comments use the network style, not the generic style.
+
+I will fix them.
+
 >=20
 > Christophe
 
