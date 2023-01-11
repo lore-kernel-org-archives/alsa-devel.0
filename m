@@ -4,67 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 118E0C46467
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Jan 2023 15:41:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7272C46467
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Jan 2023 16:29:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 669522ACB;
-	Wed, 11 Jan 2023 16:40:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 669522ACB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2FF0C6C1D;
+	Wed, 11 Jan 2023 17:28:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FF0C6C1D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673451679;
-	bh=RR+rWxCapXWCf5VAhLRMluPGOt+VpkuB5+flyMpJTZY=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1673454555;
+	bh=uU3Y9GiFhya/dgYG5vN/LRF4cAC/4aVRadvTPKOqovM=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=noBEdun52hYUcQK86xdhA0zVm+ooOrWZ4YwUm3JjzgGWoKBZ06GitEUV0XEw2L7sG
-	 1TYK3DK1GHoxRgMOYiixvv/X6iObKamQlW+qEIoSrVvK5OF3cdITA48u+2UbLqh3ta
-	 dYq9Cg73bIi+k1CcK7QiaRqIRCTHhpSPk+ySHtvc=
+	b=J6U936Uv9Dqk/rziDjNL+LrIKcdhTj03G6naQ8cgjVq3V7LIELmZn515icqN3oCTv
+	 zgFhNDtoleZGJaaS9jQsQLCpZq53gxfWJ6JPfGENlHMOg2s/FE8zPHtjVYC+R9hdVI
+	 yJy37xmwcbqbXY6h21DKVlSrFd9RpwjRMzuoPtQw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1AB47F80425;
-	Wed, 11 Jan 2023 16:40:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 884E4F803DC;
+	Wed, 11 Jan 2023 17:28:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7766F80424; Wed, 11 Jan 2023 16:40:27 +0100 (CET)
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::224])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 41987F803DC; Wed, 11 Jan 2023 17:28:23 +0100 (CET)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 39130F8016E
- for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2023 16:40:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39130F8016E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47DC6F8016E
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2023 17:28:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47DC6F8016E
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=Q+o9216w
-Received: (Authenticated sender: herve.codina@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPSA id B16AFE0004;
- Wed, 11 Jan 2023 15:40:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1673451624;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=TJ80tI+n7E12DAvDikBDbLVrg9IXgTxZ252Cq+neEbQ=;
- b=Q+o9216wXpyzH4Fmo4XE+A/19Rhli449oB8gxh74cMuVSBe7TmgTWv0NVMgETjHj7ICimI
- 2lEldE8luCvEuRzv4wncGEOGkp8+YWnj/gHNVwVIcANGc/i9KFCarw2xI7Zy7ii4mw01BP
- 3yh4Y2Qf6FLQR/pCfsBovsMC1nhClDVRgsfz9BsqGrMm8sPNTEXSy366YeN1nX8+aedw2l
- 5dU2xzoQw9jeYIRqNq8AjlA436V/DgDKdEL+uikobI8yvJhFeEtymQvw2NPhOwbDD2+MwT
- mU28pFltJe6k53uG/R2oCKCPp6dR2f20BtbgaXKCRweyOUiSP64AKbrgZhfqEA==
-Date: Wed, 11 Jan 2023 16:40:18 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH v2 06/10] soc: fsl: qe: Add support for QMC
-Message-ID: <20230111164018.676a8ca1@bootlin.com>
-In-Reply-To: <f46eb64d-ad4c-7531-60b0-68961f171ed8@csgroup.eu>
-References: <20230106163746.439717-1-herve.codina@bootlin.com>
- <20230106163746.439717-7-herve.codina@bootlin.com>
- <f46eb64d-ad4c-7531-60b0-68961f171ed8@csgroup.eu>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-redhat-linux-gnu)
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=QG/1xRDc
+Received: by mail-wm1-x32d.google.com with SMTP id l26so11494143wme.5
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2023 08:28:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=h7CWF9KkUKbOJvIgyBGuBX3AgumkGtq/yuQpNawXVGo=;
+ b=QG/1xRDc2gvPUcV3qYyLpo9U1+DrMtmYMCpfUHY3aBxCA/zvDPrypygAq50eRHghxJ
+ VMQZMBAirs1WNJzVVb5Z2Cr9RIBnVWz/mxGftXpw0Vl5NqIg/1370zLOgEEStiNr9L8n
+ 6u97vE0rrLrlha03SYeQIX+8vZD2HXqxn2I6ogvtXhMWZ0MD3iV9VAa/QA1qSafYq10g
+ /Dv0x3t+uUCvWLa3esZKGcAoUI+MRcKPyf+GgWtlOiYECKsOOcVajufpcYZI4oa6IFCo
+ 9iMsozsf8EujJzSufGogv/LJdpQ9o8xZZwozSz9oZSGHTiz2dEmesqr5B2O9Lk/fQEck
+ r8tQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=h7CWF9KkUKbOJvIgyBGuBX3AgumkGtq/yuQpNawXVGo=;
+ b=HywRlQv79pdrd9ZkTEMBdWEDQ+bGAY+aHiLfto/ZFUPPK7pnfXx0N6KYULXDgr1N5l
+ RmMNyMnZqEMXdTDnEnD57nJrnhzv9ClmSMhrkUgochMlEliXVOUDslG86mHUyKDW+DjF
+ ZvAER1nO13PowufJfV6RLP+4e+9Oav26PjhoMU5f/PhGW0F3fp9DpZs5g7y0eTckIDrq
+ BxXzexsTSeoyRwqGCabNA+6QyeEiDq3QHdhHPJjOXLAupnhiy59OicwJh0EPHFBwII24
+ wAuB9/C48jcDeZiSs2xAGIcKRISGhslMDuAj/BsRsgYV3ehHg5scZKtXg5yiFdVtKzoK
+ KjMQ==
+X-Gm-Message-State: AFqh2kqf/lZdXIOX+gGkQ3Bc4YFzZ1Q+3BIEk8xVLLbSMNNTmiXj4apv
+ MtcLQqJZ0aiOG0z3+V9OB1QPhA==
+X-Google-Smtp-Source: AMrXdXsJO0FKX4wDji1FsHRVmHI5Sp0+ktkb3opEqy9j/XqlcQpG//WN65wKFYu7H+P8NXUVJtGUQg==
+X-Received: by 2002:a05:600c:1e09:b0:3cf:b73f:bf8f with SMTP id
+ ay9-20020a05600c1e0900b003cfb73fbf8fmr51982781wmb.7.1673454493504; 
+ Wed, 11 Jan 2023 08:28:13 -0800 (PST)
+Received: from [192.168.1.109] ([178.197.216.144])
+ by smtp.gmail.com with ESMTPSA id
+ l3-20020a05600c4f0300b003a6125562e1sm20455115wmq.46.2023.01.11.08.28.11
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 11 Jan 2023 08:28:13 -0800 (PST)
+Message-ID: <c4497bde-c1e0-1efc-7a46-233495f7760b@linaro.org>
+Date: Wed, 11 Jan 2023 17:28:11 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH 1/3] dt-bindings: sound: Add Renesas IDT821034 codec
+Content-Language: en-US
+To: Herve Codina <herve.codina@bootlin.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski
+ <brgl@bgdev.pl>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+References: <20230111134905.248305-1-herve.codina@bootlin.com>
+ <20230111134905.248305-2-herve.codina@bootlin.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230111134905.248305-2-herve.codina@bootlin.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,82 +105,124 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Fabio Estevam <festevam@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Xiubo Li <Xiubo.Lee@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, Li Yang <leoyang.li@nxp.com>,
- Nicolin Chen <nicoleotsuka@gmail.com>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- Mark Brown <broonie@kernel.org>, Nicholas Piggin <npiggin@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Shengjiu Wang <shengjiu.wang@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Qiang Zhao <qiang.zhao@nxp.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ linux-gpio@vger.kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Christophe,
-On Wed, 11 Jan 2023 13:58:03 +0000
-Christophe Leroy <christophe.leroy@csgroup.eu> wrote:
+On 11/01/2023 14:49, Herve Codina wrote:
+> The Renesas IDT821034 codec is a quad PCM codec with
+> programmable gain.
+> 
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> ---
+>  .../bindings/sound/renesas,idt821034.yaml     | 97 +++++++++++++++++++
+>  1 file changed, 97 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/renesas,idt821034.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/renesas,idt821034.yaml b/Documentation/devicetree/bindings/sound/renesas,idt821034.yaml
+> new file mode 100644
+> index 000000000000..2c29b770e3f7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/renesas,idt821034.yaml
+> @@ -0,0 +1,97 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/renesas,idt821034.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Renesas IDT821034 codec device
+> +
+> +maintainers:
+> +  - Herve Codina <herve.codina@bootlin.com>
+> +
+> +description: |
+> +  The IDT821034 codec is a four channel PCM codec with onchip filters and
+> +  programmable gain setting.
+> +
+> +  The time-slots used by the codec must be set and so, the properties
+> +  'dai-tdm-slot-num', 'dai-tdm-slot-width', 'dai-tdm-slot-tx-mask' and
+> +  'dai-tdm-slot-rx-mask' must be present in the ALSA sound card node for
+> +  sub-nodes that involve the codec. The codec uses one 8bit time-slot per
+> +  channel.
+> +  'dai-tdm-tdm-slot-with' must be set to 8.
+> +
+> +  The IDT821034 codec also supports 5 gpios (SLIC signals) per channel.
+> +
+> +allOf:
+> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
+> +  - $ref: /schemas/gpio/gpio.yaml#
 
-> Le 06/01/2023 =C3=A0 17:37, Herve Codina a =C3=A9crit=C2=A0:
-> > The QMC (QUICC Multichannel Controller) is available on some
-> > PowerQUICC SoC such as the MPC885 or MPC866. =20
->=20
-> Same, that's QMC for CPM for the time being, should that be made clear=20
-> in the subject ?
+This one is never needed. Drop.
 
-Also same answer:
-Will changing the subject be enough or do I need to move it to new
-created drivers/soc/fsl/cpm/ directory ?
+> +  - $ref: dai-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: renesas,idt821034
+> +
+> +  reg:
+> +    description:
+> +      SPI device address.
+> +    maxItems: 1
+> +
+> +  spi-max-frequency:
+> +    maximum: 8192000
+> +
+> +  spi-cpha: true
+> +
+> +  '#sound-dai-cells':
+> +    const: 0
+> +
+> +  '#gpio-cells':
+> +    const: 2
+> +
+> +  gpio-controller: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - spi-cpha
+> +  - '#sound-dai-cells'
+> +  - gpio-controller
+> +  - '#gpio-cells'
+> +
+> +additionalProperties: false
 
->=20
-> QE also has QMC and this driver might be used for QE QMC as well with=20
-> some enhancement, maybe that could be explained here ?
+This should be rather unevaluatedProperties: false, so other properties
+from spi-props and dai-common will work.
 
-Yes and we plan to have it working on QE too.
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    spi0 {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        codec: idt821034@0 {
 
-What do you think if I add the following:
-  The QMC is also available on some Quicc Engine SoC.
-  This current version support CPM1 SoC only. Some
-  enhancement are needed to support Quicc Engine SoC.
+Node names should be generic, so "audio-codec"
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
 
->=20
-> I see you are using in_be16(), out_be16() etc ....
-> That's specific to powerpc arch, maybe it is better to use ioread16be,=20
-> iowrite16be() etc ....
-> See commit 3f39f38ea91d ("soc: fsl: qe: replace qe_io{read,write}*=20
-> wrappers by generic io{read,write}*") and commit 6ac9b61786cc ("soc:=20
-> fsl: qe: introduce qe_io{read,write}* wrappers") for information.
+> +            compatible = "renesas,idt821034";
+> +            reg = <0>;
+> +            spi-max-frequency = <8192000>;
+> +            spi-cpha;
+> +            #sound-dai-cells = <0>;
+> +            gpio-controller;
+> +            #gpio-cells = <2>;
+> +        };
+> +    };
+> +    sound {
+> +        compatible = "simple-audio-card";
 
-You're right.
-I will switch to io{read,write}{16,32}be.
+Drop sound{} node. Not relevant to the case here and it's the same in
+every case of audio codec... unless something here is specific. But even
+the dai-tdm properties are sound card specific.
 
-I prefer avoid the use of qe_* wrappers as the driver is not
-(yet) compatible with QE.
 
->=20
-> >=20
-> > It emulates up to 64 channels within one serial controller
-> > using the same TDM physical interface routed from the TSA.
-> >=20
-> > Signed-off-by: Herve Codina <herve.codina@bootlin.com> =20
->=20
-> In some places, you comments use the network style, not the generic style.
+Best regards,
+Krzysztof
 
-I will fix them.
-
->=20
-> Christophe
-
-Thanks for the review,
-Herv=C3=A9
-
---=20
-Herv=C3=A9 Codina, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
