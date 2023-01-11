@@ -4,75 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72A11C46467
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Jan 2023 16:40:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EADE0C54EBC
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Jan 2023 16:41:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A15FF760E;
-	Wed, 11 Jan 2023 17:39:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A15FF760E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1102A1918;
+	Wed, 11 Jan 2023 17:40:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1102A1918
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673455225;
-	bh=/lWO9em8bpuZCH9dItRfGVyYoxvw1jBBMDLOYUCca7U=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1673455280;
+	bh=V27jqtrjbGGXh7zimZxCrskbp7V7X6hXh2gEibi92Cw=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=AX7tzrrN3lL5aTj5GdKCrEjjJUbc9DQFaKXp/VeDgCU04OfmlYoFV0SGi1Q/h9phM
-	 V+e2MAQlFFgASaxhj1r6i0FlyqUJx+e8cK9gywZWww6xNvm/NGzisJTP2EHpV9WtM/
-	 5E0BlJ/s9O7hefFNKFrmr7PDJwVee943F1IX03aQ=
+	b=kYwSRFVanR07AtgO6ENo1FpyLojPOwsQHzKqCpDRdIFF2fyAeQzFOZPMXT6G3CZli
+	 N/wrdtVqrtknyg+NPW2Vh4CNzJaP2xIlsSkF6b8z7AVgk8rMu8OlQkc3PQ1qtwsQcK
+	 1iJsWUQlyu9jfwri1TmKE87fKIz7wbXq5mF0QXgQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5481CF805C0;
-	Wed, 11 Jan 2023 17:36:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC053F803DC;
+	Wed, 11 Jan 2023 17:40:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 147A7F805C0; Wed, 11 Jan 2023 17:36:25 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 91BE5F80424; Wed, 11 Jan 2023 17:40:28 +0100 (CET)
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net
+ [IPv6:2001:4b98:dc4:8::226])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DF026F805B1
- for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2023 17:36:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF026F805B1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3C3D0F8016E
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2023 17:40:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C3D0F8016E
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=RbriOdB3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1673454984; x=1704990984;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=/lWO9em8bpuZCH9dItRfGVyYoxvw1jBBMDLOYUCca7U=;
- b=RbriOdB3HuqyYZH18jETbsM6wK8gIUWfnB6kg3aq75itRXL+h8cUWwgb
- BF59Nzwe5hug1LGlxL2wnH7xq++SQs7rPlma3ypEPa1OtPtxHo3LKW9sD
- HcGZoVLo0klnZ+8sD4yagctJMC1Iz7GlEhoNLc/SxLfLcl3ZVPPVF1Hr8
- 6u205R5CUKiasurMXrr/Kt5AS2ZJjjjZezPxeZe2DtQsEdJYsmek8y5xi
- SVcSU8Q9LE1WMTXwyX8ho4wzwB4OLWUhx2BwNHUouHEFn1iJZlkIgonc7
- upVUVwxCM5mluMytrZWMwLCSeJCjVaI1l9YdcYGJecDr2kKA+m9RLS9Ev g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="324704312"
-X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; d="scan'208";a="324704312"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2023 08:32:52 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="607408856"
-X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; d="scan'208";a="607408856"
-Received: from flobatol-mobl1.amr.corp.intel.com (HELO [10.212.110.208])
- ([10.212.110.208])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2023 08:32:49 -0800
-Message-ID: <c7f018e3-c8be-6819-0ece-244bfb943c62@linux.intel.com>
-Date: Wed, 11 Jan 2023 10:02:52 -0600
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=bmCljGHA
+Received: (Authenticated sender: herve.codina@bootlin.com)
+ by mail.gandi.net (Postfix) with ESMTPSA id 42BD2C000D;
+ Wed, 11 Jan 2023 16:40:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+ t=1673455225;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=oGdtiEMVVLmjdlMhzVMr6gYLdJzA+jzOtls9FW8855g=;
+ b=bmCljGHAKJnjYOgao3zIAnf1JX2bGWcKm8KDBBfKhvUuexUL+GP4D1cLbWCfWqKv7wnoJY
+ 5APlF6VCuTJUCGVpR7tGH+2eGPGyq4eu9mJ9o5PTDo0YWGA7JajFJ1VOFU+ihFzcX6emdM
+ grTDbC3NW45Hoymvdigaao6b2rgM03skXrgY97dmZRics5n+NnJFlQmiux0UTDIVLoOiZC
+ aMvQVWGI280RbKkqUXTq2n2G8toi3MOMZKpGFloB5PtqtC+Y4kOVYbHubyedANb0F7Acc1
+ xfiucowxIj7OEwgj67voWbr2h+TKolLLxpHYdnl/M6eibt7nLpHOPH05Y3oaeg==
+Date: Wed, 11 Jan 2023 17:40:22 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/3] ASoC: codecs: Add support for the Renesas IDT821034
+ codec
+Message-ID: <20230111174022.077f6a8c@bootlin.com>
+In-Reply-To: <Y77DKSdZf27qE+xl@sirena.org.uk>
+References: <20230111134905.248305-1-herve.codina@bootlin.com>
+ <20230111134905.248305-3-herve.codina@bootlin.com>
+ <Y77DKSdZf27qE+xl@sirena.org.uk>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH 19/19] ASoC: amd: ps: increase runtime suspend delay
-Content-Language: en-US
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org,
- vkoul@kernel.org, alsa-devel@alsa-project.org
-References: <20230111090222.2016499-1-Vijendar.Mukunda@amd.com>
- <20230111090222.2016499-20-Vijendar.Mukunda@amd.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230111090222.2016499-20-Vijendar.Mukunda@amd.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,44 +78,155 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Mastan.Katragadda@amd.com, Sunil-kumar.Dommati@amd.com,
- Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
- Mario.Limonciello@amd.com, arungopal.kondaveeti@amd.com,
- Syed Saba Kareem <Syed.SabaKareem@amd.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, linux-kernel@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>, linux-gpio@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Mark,
 
+On Wed, 11 Jan 2023 14:09:45 +0000
+Mark Brown <broonie@kernel.org> wrote:
 
-On 1/11/23 03:02, Vijendar Mukunda wrote:
-> To avoid ACP entering into D3 state during slave enumeration and
-> initialization on two soundwire controller instances for multiple codecs,
-> increase the runtime suspend delay to 3 seconds.
+> On Wed, Jan 11, 2023 at 02:49:04PM +0100, Herve Codina wrote:
+>=20
+> > +++ b/sound/soc/codecs/idt821034.c
+> > @@ -0,0 +1,1234 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * IDT821034 ALSA SoC driver =20
+>=20
+> Please make the entire comment a C++ one so things look more
+> intentional.
 
-You have a parent PCI device and a set of child devices for each
-manager. The parent PCI device cannot suspend before all its children
-are also suspended, so shouldn't the delay be modified at the manager level?
+Ok, I will change in v2.
 
-Not getting what this delay is and how this would deal with a lengthy
-enumeration/initialization process.
+>=20
+> > +static int idt821034_8bit_write(struct idt821034 *idt821034, u8 val)
+> > +{
+> > +	struct spi_transfer xfer[] =3D {
+> > +		{
+> > +			.tx_buf =3D &idt821034->spi_tx_buf,
+> > +			.len =3D 1,
+> > +		}, {
+> > +			.cs_off =3D 1,
+> > +			.tx_buf =3D &idt821034->spi_tx_buf,
+> > +			.len =3D 1,
+> > +		}
+> > +	};
+> > +	int ret;
+> > +
+> > +	idt821034->spi_tx_buf =3D val;
+> > +
+> > +	dev_vdbg(&idt821034->spi->dev, "spi xfer wr 0x%x\n", val);
+> > +
+> > +	ret =3D spi_sync_transfer(idt821034->spi, xfer, 2); =20
+>=20
+> Why is this open coding register I/O rather than using regmap?
+>=20
+> > +	conf =3D 0x80 | idt821034->cache.codec_conf | IDT821034_CONF_CHANNEL(=
+ch); =20
+>=20
+> regmap provides cache support too.
+>=20
+> > +static int idt821034_reg_write_gain(struct idt821034 *idt821034,
+> > +				    unsigned int reg, unsigned int val)
+> > +{
+> > +	u16 gain_val;
+> > +	u8 gain_type;
+> > +	u8 ch;
+> > +
+> > +	ch =3D IDT821034_REGMAP_ADDR_GET_CH(reg);
+> > +	gain_type =3D IDT821034_REGMAP_ADDR_IS_DIR_OUT(reg) ?
+> > +			IDT821034_GAIN_RX : IDT821034_GAIN_TX;
+> > +	gain_val =3D (val & 0x01) ? 0 : val >> 1;
+> > +
+> > +	return idt821034_set_gain_channel(idt821034, ch, gain_type, gain_val);
+> > +} =20
+>=20
+> So if the low bit of the gain is zero we just discard the value?  This
+> really needs some comments...
+>=20
+> > +static int idt821034_reg_write(void *context, unsigned int reg, unsign=
+ed int val)
+> > +{
+> > +	struct idt821034 *idt821034 =3D context;
+> > +
+> > +	dev_dbg(&idt821034->spi->dev, "reg_write(0x%x, 0x%x)\n", reg, val);
+> > +
+> > +	switch (IDT821034_REGMAP_ADDR_GET_TYPE(reg)) {
+> > +	case IDT821034_REGMAP_ADDR_TYPE_GBLCONF:
+> > +		return idt821034_reg_write_gblconf(idt821034, reg, val);
+> > + =20
+>=20
+> Oh, so there is some regmap stuff but it's not actually a regmap and is
+> instead some virtual thing which rewrites all the values with no
+> comments or anything explaining what's going on....  this all feels very
+> confused.  I would expect the regmap usage to be such that the regmap
+> represents the physical device, any rewriting of the values or anything
+> like that should be done on top of the regmap rather than underneath it.
+>=20
+> Without knowing why things are written in this way or what it's trying
+> to accomplish it's hard to comment in detail on what specifically should
+> be done.
 
-> 
-> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-> ---
->  sound/soc/amd/ps/acp63.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/amd/ps/acp63.h b/sound/soc/amd/ps/acp63.h
-> index 833d0b5aa73d..6c8849f2bcec 100644
-> --- a/sound/soc/amd/ps/acp63.h
-> +++ b/sound/soc/amd/ps/acp63.h
-> @@ -51,7 +51,7 @@
->  #define MIN_BUFFER MAX_BUFFER
->  
->  /* time in ms for runtime suspend delay */
-> -#define ACP_SUSPEND_DELAY_MS	2000
-> +#define ACP_SUSPEND_DELAY_MS	3000
->  
->  #define ACP63_DMIC_ADDR		2
->  #define ACP63_PDM_MODE_DEVS		3
+Yes, I use regmap to ease the integration of controls and use the
+already defined controls macros but the device registers do not fit
+well with regmap.
+
+The device registers are not defined as simple as address/value pairs.
+Accesses contains one or more bytes and the signification of the
+data (and bytes) depends on the first bits.
+- 0b10xxxxxx means 'Control register' with some data as xxxxxx
+  and one extra byte
+- 0b1101yyyy means 'Configuration register, slic mode' with
+  some other data as yyyy and one extra byte
+- 0b1100zzzz means 'Configuration register, gain mode' with
+  some other data as zzzz and two extra bytes
+
+The datasheet is available at
+  https://www.renesas.com/us/en/document/dst/821034-data-sheet
+
+This does not fit well for a regmap usage.
+
+So I wrote some low-level access functions to handle this
+protocol and use some kind of "virtual registers" to map
+this protocol to regmap and use them in controls.
+
+The "virtual registers" were defined to match what I need.
+
+For instance, idt821034_reg_write_gain() is the regmap
+write access for one of the gain "virtual register".
+The mapping of this virtual register is:
+   |15          1|0|
+   | Gain value  |M|
+With M for Mute flag.
+
+The gain value is not discarded as it is available in the
+regmap cache.
+For the low-level access, I write the 'Gain Value' or 0 if
+the mute flag was set.
+
+In some low level accesses, I need save some data (cache) in
+order to be able to use them later for an other access.
+For instance when a channel is powered-on, a timeslot
+need to be present in the bytes sent.
+
+Of course, I can describe all of these in details.
+Where do you want to have this information ? All at the top
+of the file ? Each part (low-level, virtual regs, ...) at
+the beginning of each part in the code ?
+
+Best regards,
+Herv=C3=A9
+
+--=20
+Herv=C3=A9 Codina, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
