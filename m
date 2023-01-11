@@ -4,81 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDF73C54EBE
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Jan 2023 10:29:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB579C5479D
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Jan 2023 10:43:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DB638233;
-	Wed, 11 Jan 2023 11:28:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DB638233
+	by alsa0.perex.cz (Postfix) with ESMTPS id 06357E436;
+	Wed, 11 Jan 2023 11:42:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06357E436
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673432968;
-	bh=TdhW/su0bvIqy92U0pt8vjw/OXF7Ir6eSYFDJ/3VUfU=;
-	h=Date:From:To:Subject:In-Reply-To:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:Cc:From;
-	b=EhqF6/2snhDG7Z7oiSwt/eb7bzQf+xZwlburU7kl2slAhJeduS+dskuuwjswT/MhR
-	 US0EsX7eSfJn4BLNmus3XqEp1qfMt6twJSXOmSJ337Ec37UT2xDnuhT9pxGGjRrmtx
-	 GX9bO8zgHd6gSrpbMypj3Tp9Jadpek3fM8Nk98Jw=
+	s=default; t=1673433779;
+	bh=Jh6P01APnXH6kprR+1Y6g9ET4KrsF7MUmXeJ1Gmuwnk=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=S0tNKtTFt0pGXd/3oBSG/ARjdEnN4QPZWecVu3dfiuIQMo/h9a8OQXNY/341atJ2T
+	 A48lDIDrffniwb+cWFSGlUno+M4iuPdhz6kuSs6JliYGzxUuSyi6t2zikUq87boW4R
+	 I0Th/po0hTtBsvJdFQVhTa3nu56xI3VYloDX8z3Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA4F0F804BC;
-	Wed, 11 Jan 2023 11:28:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6901BF8030F;
+	Wed, 11 Jan 2023 11:42:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D389F80425; Wed, 11 Jan 2023 11:28:09 +0100 (CET)
-Received: from mout.web.de (mout.web.de [217.72.192.78])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
- SHA256) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E83B8F8019B
- for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2023 11:28:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E83B8F8019B
+ id D552CF803DC; Wed, 11 Jan 2023 11:42:06 +0100 (CET)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
+ [IPv6:2a00:1450:4864:20::330])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5CC7F8019B
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2023 11:42:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5CC7F8019B
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- secure) header.d=web.de header.i=@web.de header.a=rsa-sha256
- header.s=s29768273 header.b=vltt/iDx
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
- t=1673432882; bh=mXscmn+EgULEQieYIu4LA309Cv3+2fjfPlbSUiany04=;
- h=X-UI-Sender-Class:Date:From:To:CC:Subject:In-Reply-To;
- b=vltt/iDxIX3I2WCGqQw5rcYDb32e6U0uMg+rd22zmqRO2HS0C9DitMEFmXmvM9DET
- 5dF/pAx4K/1SA0F9LTrglAG2ZO2HDS0ohyhxwbrxmfOAHC+o74QVOI0yVRmfer/Wg2
- /FchasJvrlQtBOtMYJw2o1eGrxFmfkdh/0W+g07FrKef1vZ1U1BcPcJ2tsydg+ogYh
- oeXs3o9zgKcTjLP8Gk6raKh/Sl6aKasHtCaN8UYmAalh5qZ/dQnVNemdR0X3o/9cRn
- KjAjYuP6Z6iyus0prrmUpxpJ3tsO69NMNLYI36YRb8ZgQ0Tiu6+pYAqbh3ej10vdBC
- 1McSpI4LUq4YA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [127.0.0.1] ([80.187.114.121]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1Mvsq5-1owVHh1CVT-00sffa; Wed, 11
- Jan 2023 11:28:02 +0100
-Date: Wed, 11 Jan 2023 11:19:49 +0100
-From: Luka Guzenko <l.guzenko@web.de>
-To: tiwai@suse.de
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH=5D_ALSA=3A_hda/realtek=3A_Enable_mute?=
- =?US-ASCII?Q?/micmute_LEDs_on_HP_Spectre_x360_13-aw0xxx?=
-In-Reply-To: <87k01ueqga.wl-tiwai@suse.de>
-Message-ID: <028CAB62-8C21-4D3C-9E8B-A380302834ED@web.de>
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=cM0cDprD
+Received: by mail-wm1-x330.google.com with SMTP id
+ j16-20020a05600c1c1000b003d9ef8c274bso7923564wms.0
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2023 02:42:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=QCB9HC+nOODlhgQeT6tYCcnxKnTMlcj4XPzktx4ilxw=;
+ b=cM0cDprDbL3928y3K/CBVa6ETnMywsmJPhhQAv4pvu4CEHy4GKdy3qbaQEAd38EHzZ
+ ne7dt8ylDAA9lcwTB0/EJu9Lw/rdNjxjhHLy8PftjKhF19i4YEjBJ6RfqZ9CESSQQRdU
+ tlOty7NB1h1kgm/obRWwkCTVf7w5s+0Ue7kAlcYKSRnngSFk/UkeKH1QSWfZADyV9ZDG
+ suB9V6DhKlSJx4ByrBi4E6QcZnYyO0d/XU1gIWYnfRHAvw7Brn2vLhh8nZ4JAXIzEiuD
+ wUwdFIN1+klb4V0qt39R9BZSJXA0t3kFbH1HNTaVmejDs1vlEMdioeqdUyIwaVIDdBD8
+ rXlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=QCB9HC+nOODlhgQeT6tYCcnxKnTMlcj4XPzktx4ilxw=;
+ b=cOp6i7MzencPjFMVVGKp53PXTcDWX9Qq/P7tdVXS7jCMLu+BGHwP+rjOMxQgm/bCOn
+ 4GpPMtiHOF6iHUVAVH958WAlUySms+oVt58A8GSSR1LmE4S6rLdnwHuedBpvqOPUzxdQ
+ Kt5g7tRarN7lZ06QN+IOqFekK/ZW+Z32sl9yeJl9chJ0+6OgvM9n98qiaCvDDSkTuwxX
+ fNxg9hi2hX57rhboFacl3zQ5XCWqefwMZussPSLZ8YXPmGACGS8PlXqoU7NEb8vx7F6X
+ e7PYmgB7jaL93lr2vIrIfnOgd8hk3Fy3xjuBf5SQAoaYl2vmW3ysN7iRabSjJ+NJe3D9
+ 5UTA==
+X-Gm-Message-State: AFqh2kp5Yf3gqIPTjj+A52MRtnkUpTKiCo7rbzDtnzVllkha1FoV27sN
+ XRvAPNgW43aACoHlaRdISMAr/Q==
+X-Google-Smtp-Source: AMrXdXu+qZ79UaiIi9fB8q9zgE864/BrT4A7HXZ3JRhyGLpw7KkMcEnaFBxgrbP2oUdKUB6eoTKR/g==
+X-Received: by 2002:a05:600c:35d1:b0:3d3:58d1:2588 with SMTP id
+ r17-20020a05600c35d100b003d358d12588mr53288995wmq.41.1673433719242; 
+ Wed, 11 Jan 2023 02:41:59 -0800 (PST)
+Received: from [192.168.1.109] ([178.197.216.144])
+ by smtp.gmail.com with ESMTPSA id
+ q6-20020a05600c46c600b003d1f3e9df3csm24237019wmo.7.2023.01.11.02.41.58
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 11 Jan 2023 02:41:58 -0800 (PST)
+Message-ID: <5dab7c06-7d6a-0e8c-4618-6607df27217d@linaro.org>
+Date: Wed, 11 Jan 2023 11:41:57 +0100
 MIME-Version: 1.0
-X-Provags-ID: V03:K1:ChjDEo0DHFeTk4WA5JVfwlQqG4a383pf3GtzFbSBWvqHBqPeslE
- 8h6N+It7TSbN3BrxnPUeY4a5M7lgaAk2zYEElv74ugY6kgVPrEqa6Wh1jQ088+eSxM3SvOn
- pYy4cjYomHH8Vq1Ii7zZJLPOoNUD0goM48lBiggado7No5LABCiv8AcGEYALWrYWBdUoLix
- 88gCcrfHB5Jpvx4yD4c/g==
-UI-OutboundReport: notjunk:1;M01:P0:q5Dhu4PM1Lk=;yP3ngGQ1CYldy34myFznmd4EcTA
- taupQcrbxxgANVG3L2DmmMUC5wYC/8QjJFogEOiHxpY2mhuDbXrd12PedS2gtS7GPI9Ng+WrU
- EcV0wtPqdz3ayF0lxEghiccZMO1z8bagtSWpcG9cmBjDn/4X8P4PqycSXaryD2Gzj7AVX2vIB
- R1oeYu7LZSFnqqXxvtVGpfnwjbIvlDRredJ1bi4rLOrarU5gtl/RwLquyz0yX+e2YoF7F6JPc
- KG2dDcziGgWlpo1HGKJsz+bC/UwNJLdB/6k29LAgDC+ZfUMIj1nIIt21f465aCCKPQYglXf28
- IceFNIO1mgFFQje/pPgpCZU6C68/K5CvRcJihWRkOCyH4J7TghNXmwBVM7PuvMK8pPc17CVqK
- L7Hvkm37s46Gr7Qvz8Apn6OMSFSSWiciapTkCmPlHY3Rw/htv3tGqPXNdDfBtONqwDoHorTSJ
- Z39iSYCd+Fca55WAuYS+xykpwJVQf/7awEBYG3PsNyHLjk5zYIUv4VYJWbd3lNkQxmQaYW9E4
- txkjwfSR1KOY6lr7aneFqqyqyu4FZ8v/M51SzrOBMg/3bEW3C8ZvGXoK3525VJ5vWeKUoxmDR
- SNxb6//oXjQIVOt6JVwrWDvsZ8CpXKzylouf0EkIbAeziFMW8CaYaZLIWgieNes/38/3GyEeq
- OHf0/4cDehp2DLMJ8QmshlurISlioxufizUjTzcmkmC+hmjjf4LfmEt6GuqxbOJLnS4YAVDxJ
- jXhVChlFHicjrRrjYeHHZ5g+TJYqSSCg82eXo0C8lRwvIa/EIHMUk0eLmzRlYhQ7tldbTXgiq
- aYSctbpeGA05sW/XBvJRvm0p1gfOwTXD4L4JSr8PLo/ilnBjSuHx4VNPjyEyxvEmFrytzJzyG
- 9iCDEaA/j+upkWjiWzUZVEwxtTLZKPwIkTH0ZNdByadiZ9yJowMYkEP7Z/NygSyUsJhZoI8CY
- ab3h8GyX18I/qJmS4oRODiMFYyI=
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v2] dt-bindings: sound: tlv320aic3x: Add optional clock
+ and port properties
+Content-Language: en-US
+To: Jai Luthra <j-luthra@ti.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+References: <20221230132644.6398-1-j-luthra@ti.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20221230132644.6398-1-j-luthra@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,13 +102,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: l.guzenko@web.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- tiwai@suse.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This seems to be a mistake on my part=2E
-I have inverted the condition and recompiled the Kernel on my system=2E
-It works=2E I have created a Version 2 of this Patch=2E
-Thank you,
-Luka
+On 30/12/2022 14:26, Jai Luthra wrote:
+> Describe optional properties for clocks and ports that were missing in
+> the original txt binding, to fix warnings like:
+> 
+> aic33@18: 'assigned-clock-parents', 'assigned-clock-rates',
+> 	'assigned-clocks' do not match any of the regexes:
+> 	'pinctrl-[0-9]+'
+> 	arch/arm/boot/dts/omap2420-n810.dtb
+> 
+> tlv320aic3106@1b: 'port' does not match any of the regexes:
+> 	'pinctrl-[0-9]+'
+> 	arch/arm/boot/dts/am335x-sl50.dtb
+> 
+> codec@18: 'clocks' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 	arch/arm/boot/dts/imx6dl-gw5903.dtb
+> 	arch/arm/boot/dts/imx6q-gw5903.dtb
+> 
+> Some uses of "port" still lead to warnings because they pass clocks in
+> the endpoint, but that is discouraged:
+> https://lore.kernel.org/all/20210205152644.GA3083322@robh.at.kernel.org/
+> 
+> Signed-off-by: Jai Luthra <j-luthra@ti.com>
+> ---
+> 
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
+
