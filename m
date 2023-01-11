@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AE0FC46467
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Jan 2023 16:37:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4BD4C5479D
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Jan 2023 16:37:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B1597632;
-	Wed, 11 Jan 2023 17:36:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B1597632
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55E817628;
+	Wed, 11 Jan 2023 17:36:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55E817628
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673455041;
-	bh=6fg178pyC3sYYKy6n9PRcFhahGLP5hWIRuLMizCzi1g=;
+	s=default; t=1673455063;
+	bh=76lSxpjS7AmOwz8nezqUoaA4XsIIg5n3XpwLhwUttg0=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=ZhijDURVgoqQuulTx3Fq1h1Vx8DFLpHaQ1q/Taxiemf/tnn+yhBacRvh9YdM1Iad0
-	 fvspJIgZyYqxCubGd981Dz3WTh0IdMoZKjtgCnAlVtoKnsUnxqRqu0Cez/PnVNMZrw
-	 7oY4HEynlbyxYg1Kd0is2KDVBrWZuCSeFze4goYw=
+	b=VLgKCdcOukw3onsD7hVqZCYMk+6Sk5OirsrIM15VWR8Fe1f86yFslS1hBfk+OUwZX
+	 l60KkDbtgRXCkoE68wiC7qzw8gMbLsExUzx/RLGA866RkNERIecxcQA8HOYnED82N2
+	 vCHl0tJ2JEDaM0MiIwiYXZoKAcOEThwI+Ju4yvB4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6D9BF80539;
-	Wed, 11 Jan 2023 17:36:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A32BF80544;
+	Wed, 11 Jan 2023 17:36:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E87B8F80539; Wed, 11 Jan 2023 17:36:02 +0100 (CET)
+ id 4D325F8053A; Wed, 11 Jan 2023 17:36:04 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3ADAEF803DC
- for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2023 17:35:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3ADAEF803DC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 767DDF8026A
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2023 17:35:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 767DDF8026A
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=NAWKUSr5
+ header.s=Intel header.b=ivLGY70P
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1673454959; x=1704990959;
+ t=1673454960; x=1704990960;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=6fg178pyC3sYYKy6n9PRcFhahGLP5hWIRuLMizCzi1g=;
- b=NAWKUSr5M4aH4Sn2k0dDDOy6rCH+OIxlMbL6W84f5C8p4sSkaOewUWCR
- A+XbrPq+J15P4sMLj4hTsbwppq6qoIvaujwfqpCHPDTE8wb/Itf1nlMCw
- J0vQJC6oxTsvvSFWkMQJurnFNV/CawW7GujiiPm3jWoRp5LScfMsB38z5
- SH/yLp8RrOGj2CS8IOPap0IvmWKHEUFjnFxxJ6tR5FrnJW7D0zU2tzREF
- fb5nQCzycfw8tlyXoFg+g9z4s6Jleh1OgAaWU/kkOq5z12CfkJBYKphlU
- ktAypHWuNDHPhA6MN+zL1hXjJqoIXwhtCIWjnLZqvexULp1joAhQ01AcH Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="324704030"
-X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; d="scan'208";a="324704030"
+ bh=76lSxpjS7AmOwz8nezqUoaA4XsIIg5n3XpwLhwUttg0=;
+ b=ivLGY70PwzNo+Co+NonYKjAun2PWjZaKdmHZq4OD8JJYEThCZg1lD11/
+ i52YubyyN26KrNLgHXltSDUgNXF/Vaf5BksLRAZ8NcIYQ5mAzRLTHDmJ6
+ kov6yC44ewvlsQFMkNgaWwGKbmrbK//sNyMxrEzj4dMzJAUeXxrCy14wQ
+ fxhS18jdgLStTh/yIk/pVQ/Tgio4V9nVwfI8bC2zD/CWdgUggYm3R1njP
+ vZjEnkAiuoK838vhf1GLzoq9tx4i+UclaVfS3EeNEAUc8IIlresRY3Pfj
+ ctWDVb/acqzmjLpkhgaaNFNiLYE1XNlBDfiZJaPsNjFwJyTV/ibmD2lAA Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="324704055"
+X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; d="scan'208";a="324704055"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2023 08:32:15 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="607408347"
-X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; d="scan'208";a="607408347"
+ 11 Jan 2023 08:32:18 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="607408415"
+X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; d="scan'208";a="607408415"
 Received: from flobatol-mobl1.amr.corp.intel.com (HELO [10.212.110.208])
  ([10.212.110.208])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2023 08:32:13 -0800
-Message-ID: <ad052efb-286e-4716-7608-d284782011cd@linux.intel.com>
-Date: Wed, 11 Jan 2023 08:58:57 -0600
+ 11 Jan 2023 08:32:16 -0800
+Message-ID: <ff99cf26-56df-a3ae-ca0d-691d0cb034fc@linux.intel.com>
+Date: Wed, 11 Jan 2023 09:19:57 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH 03/19] soundwire: amd: register sdw controller dai ops
+Subject: Re: [PATCH 05/19] soundwire: amd: add soundwire interrupt handling
 Content-Language: en-US
 To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org,
  vkoul@kernel.org, alsa-devel@alsa-project.org
 References: <20230111090222.2016499-1-Vijendar.Mukunda@amd.com>
- <20230111090222.2016499-4-Vijendar.Mukunda@amd.com>
+ <20230111090222.2016499-6-Vijendar.Mukunda@amd.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230111090222.2016499-4-Vijendar.Mukunda@amd.com>
+In-Reply-To: <20230111090222.2016499-6-Vijendar.Mukunda@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -95,289 +95,112 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 1/11/23 03:02, Vijendar Mukunda wrote:
-> Register dai ops for two controller instances.
 
-manager instances
-
-> diff --git a/drivers/soundwire/amd_master.c b/drivers/soundwire/amd_master.c
-> index 7e1f618254ac..93bffe6ff9e2 100644
-> --- a/drivers/soundwire/amd_master.c
-> +++ b/drivers/soundwire/amd_master.c
-> @@ -952,6 +952,186 @@ static const struct sdw_master_ops amd_sdwc_ops = {
->  	.read_ping_status = amd_sdwc_read_ping_status,
->  };
 >  
-> +static int amd_sdwc_hw_params(struct snd_pcm_substream *substream,
-> +			      struct snd_pcm_hw_params *params,
-> +			      struct snd_soc_dai *dai)
+> +static void amd_sdwc_process_ping_status(u64 response, struct amd_sdwc_ctrl *ctrl)
 > +{
-> +	struct amd_sdwc_ctrl *ctrl = snd_soc_dai_get_drvdata(dai);
-> +	struct sdw_amd_dma_data *dma;
-> +	struct sdw_stream_config sconfig;
-> +	struct sdw_port_config *pconfig;
-> +	int ch, dir;
-> +	int ret;
+> +	u64 slave_stat = 0;
+> +	u32 val = 0;
+> +	u16 dev_index;
 > +
-> +	dma = snd_soc_dai_get_dma_data(dai, substream);
-> +	if (!dma)
-> +		return -EIO;
-> +
-> +	ch = params_channels(params);
-> +	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-> +		dir = SDW_DATA_DIR_RX;
-> +	else
-> +		dir = SDW_DATA_DIR_TX;
-> +	dev_dbg(ctrl->dev, "%s: dir:%d dai->id:0x%x\n", __func__, dir, dai->id);
-> +	dma->hw_params = params;
-> +
-> +	sconfig.direction = dir;
-> +	sconfig.ch_count = ch;
-> +	sconfig.frame_rate = params_rate(params);
-> +	sconfig.type = dma->stream_type;
-> +
-> +	sconfig.bps = snd_pcm_format_width(params_format(params));
-> +
-> +	/* Port configuration */
-> +	pconfig = kzalloc(sizeof(*pconfig), GFP_KERNEL);
-> +	if (!pconfig) {
-> +		ret =  -ENOMEM;
-> +		goto error;
-> +	}
-> +
-> +	pconfig->num = dai->id;
-> +	pconfig->ch_mask = (1 << ch) - 1;
-> +	ret = sdw_stream_add_master(&ctrl->bus, &sconfig,
-> +				    pconfig, 1, dma->stream);
-> +	if (ret)
-> +		dev_err(ctrl->dev, "add master to stream failed:%d\n", ret);
-> +
-> +	kfree(pconfig);
-> +error:
-> +	return ret;
-> +}
+> +	/* slave status from ping response*/
 
-This looks inspired from intel.c, but you are not programming ANY
-registers here. is this intentional?
+response */
 
-> +static int amd_sdwc_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
-> +{
-> +	struct amd_sdwc_ctrl *ctrl = snd_soc_dai_get_drvdata(dai);
-> +	struct sdw_amd_dma_data *dma;
-> +	int ret;
+> +	slave_stat = FIELD_GET(AMD_SDW_MCP_SLAVE_STAT_0_3, response);
+> +	slave_stat |= FIELD_GET(AMD_SDW_MCP_SLAVE_STAT_4_11, response) << 8;
 > +
-> +	dma = snd_soc_dai_get_dma_data(dai, substream);
-> +	if (!dma)
-> +		return -EIO;
-> +
-> +	ret = sdw_stream_remove_master(&ctrl->bus, dma->stream);
-> +	if (ret < 0) {
-> +		dev_err(dai->dev, "remove master from stream %s failed: %d\n",
-> +			dma->stream->name, ret);
-> +		return ret;
-> +	}
-> +	dma->hw_params = NULL;
-> +	return 0;
-> +}
-> +
-> +static int amd_set_sdw_stream(struct snd_soc_dai *dai, void *stream, int direction)
-> +{
-> +	struct amd_sdwc_ctrl *ctrl = snd_soc_dai_get_drvdata(dai);
-> +	struct sdw_amd_dma_data *dma;
-
-you want to avoid using dma_data and use your own runtime. We made that
-change recently for cadence_runtime.c
-
-> +
-> +	if (stream) {
-> +		if (direction == SNDRV_PCM_STREAM_PLAYBACK)
-> +			dma = dai->playback_dma_data;
-> +		else
-> +			dma = dai->capture_dma_data;
-> +
-> +		if (dma) {
-> +			dev_err(dai->dev,
-> +				"dma_data already allocated for dai %s\n",
-> +				dai->name);
-> +			return -EINVAL;
-> +		}
-> +
-> +		/* allocate and set dma info */
-> +		dma = kzalloc(sizeof(*dma), GFP_KERNEL);
-> +		if (!dma)
-> +			return -ENOMEM;
-> +		dma->stream_type = SDW_STREAM_PCM;
-> +		dma->bus = &ctrl->bus;
-> +		dma->link_id = ctrl->instance;
-> +		dma->stream = stream;
-> +
-> +		if (direction == SNDRV_PCM_STREAM_PLAYBACK)
-> +			dai->playback_dma_data = dma;
-> +		else
-> +			dai->capture_dma_data = dma;
-> +	} else {
-> +		if (direction == SNDRV_PCM_STREAM_PLAYBACK) {
-> +			kfree(dai->playback_dma_data);
-> +			dai->playback_dma_data = NULL;
-> +		} else {
-> +			kfree(dai->capture_dma_data);
-> +			dai->capture_dma_data = NULL;
+> +	dev_dbg(ctrl->dev, "%s: slave_stat:0x%llx\n", __func__, slave_stat);
+> +	for (dev_index = 0; dev_index <= SDW_MAX_DEVICES; ++dev_index) {
+> +		val = (slave_stat >> (dev_index * 2)) & AMD_SDW_MCP_SLAVE_STATUS_MASK;
+> +		dev_dbg(ctrl->dev, "%s val:0x%x\n", __func__, val);
+> +		switch (val) {
+> +		case SDW_SLAVE_ATTACHED:
+> +			ctrl->status[dev_index] = SDW_SLAVE_ATTACHED;
+> +			break;
+> +		case SDW_SLAVE_UNATTACHED:
+> +			ctrl->status[dev_index] = SDW_SLAVE_UNATTACHED;
+> +			break;
+> +		case SDW_SLAVE_ALERT:
+> +			ctrl->status[dev_index] = SDW_SLAVE_ALERT;
+> +			break;
+> +		default:
+> +			ctrl->status[dev_index] = SDW_SLAVE_RESERVED;
+> +			break;
 > +		}
 > +	}
-> +	return 0;
 > +}
 > +
-> +static int amd_pcm_set_sdw_stream(struct snd_soc_dai *dai, void *stream, int direction)
+> +static void amd_sdwc_read_and_process_ping_status(struct amd_sdwc_ctrl *ctrl)
 > +{
-> +	return amd_set_sdw_stream(dai, stream, direction);
+> +	u64 response = 0;
+> +
+> +	mutex_lock(&ctrl->bus.msg_lock);
+> +	response = amd_sdwc_send_cmd_get_resp(ctrl, 0, 0);
+> +	mutex_unlock(&ctrl->bus.msg_lock);
+> +	amd_sdwc_process_ping_status(response, ctrl);
+
+Is this saying that you actually need to send a PING frame manually
+every time the manager needs to check the device status, including
+interrupts?
+
 > +}
 > +
-> +static void *amd_get_sdw_stream(struct snd_soc_dai *dai, int direction)
-> +{
-> +	struct sdw_amd_dma_data *dma;
-> +
-> +	if (direction == SNDRV_PCM_STREAM_PLAYBACK)
-> +		dma = dai->playback_dma_data;
-> +	else
-> +		dma = dai->capture_dma_data;
-> +
-> +	if (!dma)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	return dma->stream;
-> +}
-> +
-> +static const struct snd_soc_dai_ops amd_sdwc_dai_ops = {
-> +	.hw_params = amd_sdwc_hw_params,
-> +	.hw_free = amd_sdwc_hw_free,
-> +	.set_stream = amd_pcm_set_sdw_stream,
-
-In the first patch there was support for PDM exposed, but here it's PDM
-only?
-
-> +	.get_stream = amd_get_sdw_stream,
-> +};
-> +
-> +static const struct snd_soc_component_driver amd_sdwc_dai_component = {
-> +	.name = "soundwire",
-> +};
-> +
-> +static int amd_sdwc_register_dais(struct amd_sdwc_ctrl *ctrl)
-> +{
-> +	struct snd_soc_dai_driver *dais;
-> +	struct snd_soc_pcm_stream *stream;
-> +	struct device *dev;
-> +	int i, num_dais;
-> +
-> +	dev = ctrl->dev;
-> +	num_dais = ctrl->num_dout_ports + ctrl->num_din_ports;
-> +	dais = devm_kcalloc(dev, num_dais, sizeof(*dais), GFP_KERNEL);
-> +	if (!dais)
-> +		return -ENOMEM;
-> +	for (i = 0; i < num_dais; i++) {
-> +		dais[i].name = devm_kasprintf(dev, GFP_KERNEL, "SDW%d Pin%d", ctrl->instance, i);
-> +		if (!dais[i].name) {
-> +			dev_err(ctrl->dev, "-ENOMEM dai name allocation failed\n");
-
-remove, we don't add error logs on memory allocation issues.
-
-> +			return -ENOMEM;
-> +		}
-> +
-> +		if (i < ctrl->num_dout_ports)
-> +			stream = &dais[i].playback;
-> +		else
-> +			stream = &dais[i].capture;
-> +
-> +		stream->channels_min = 2;
-> +		stream->channels_max = 2;
-
-Is this a port limitation or just a software definition?
-
-> +		stream->rates = SNDRV_PCM_RATE_48000;
-> +		stream->formats = SNDRV_PCM_FMTBIT_S16_LE;
-
-Wondering if this is needed. I don't even recall why it's in the Intel
-code, we tested with 32 bit data and 192kHz, that looks unnecessary to
-me unless the hardware is really limited to those values.
-
-> +
-> +		dais[i].ops = &amd_sdwc_dai_ops;
-> +		dais[i].id = i;
-> +	}
-> +
-> +	return devm_snd_soc_register_component(ctrl->dev, &amd_sdwc_dai_component,
-> +					       dais, num_dais);
-> +}
-> +
->  static void amd_sdwc_probe_work(struct work_struct *work)
+>  static u32 amd_sdwc_read_ping_status(struct sdw_bus *bus)
 >  {
->  	struct amd_sdwc_ctrl *ctrl  = container_of(work, struct amd_sdwc_ctrl, probe_work);
-> @@ -1043,6 +1223,12 @@ static int amd_sdwc_probe(struct platform_device *pdev)
->  			ret);
->  		return ret;
->  	}
-> +	ret = amd_sdwc_register_dais(ctrl);
-> +	if (ret) {
-> +		dev_err(dev, "CPU DAI registration failed\n");
-> +		sdw_bus_master_delete(&ctrl->bus);
-> +		return ret;
-> +	}
->  	INIT_WORK(&ctrl->probe_work, amd_sdwc_probe_work);
->  	schedule_work(&ctrl->probe_work);
->  	return 0;
-> diff --git a/include/linux/soundwire/sdw_amd.h b/include/linux/soundwire/sdw_amd.h
-> index 5ec39f8c2f2e..7a99d782969f 100644
-> --- a/include/linux/soundwire/sdw_amd.h
-> +++ b/include/linux/soundwire/sdw_amd.h
-> @@ -13,6 +13,7 @@
->  #define ACP_SDW0	0
->  #define ACP_SDW1	1
->  #define ACP_SDW0_MAX_DAI	6
-> +#define AMD_SDW_MAX_DAIS	8
-
-How does this work? 6 dais for the first master and 2 for the second?
-
+>  	struct amd_sdwc_ctrl *ctrl = to_amd_sdw(bus);
+> @@ -1132,6 +1173,119 @@ static int amd_sdwc_register_dais(struct amd_sdwc_ctrl *ctrl)
+>  					       dais, num_dais);
+>  }
 >  
->  struct acp_sdw_pdata {
->  	u16 instance;
-> @@ -25,6 +26,7 @@ struct amd_sdwc_ctrl {
->  	void __iomem *mmio;
->  	struct work_struct probe_work;
->  	struct mutex *sdw_lock;
-> +	struct sdw_stream_runtime *sruntime[AMD_SDW_MAX_DAIS];
-
-well no, a stream runtime needs to be allocated per stream and usually
-there's a 1:1 mapping between dailink and stream. A stream may use
-multiple DAIs, possibly on different masters - just like a dailink can
-rely on multiple cpu- and codec-dais.
-
-You are conflating/confusing concepts I am afraid here.
-
->  	int num_din_ports;
->  	int num_dout_ports;
->  	int cols_index;
-> @@ -36,4 +38,23 @@ struct amd_sdwc_ctrl {
->  	bool startup_done;
->  	u32 power_mode_mask;
->  };
+> +static void amd_sdwc_update_slave_status_work(struct work_struct *work)
+> +{
+> +	struct amd_sdwc_ctrl *ctrl =
+> +		container_of(work, struct amd_sdwc_ctrl, amd_sdw_work);
+> +	u32 sw_status_change_mask_0to7_reg;
+> +	u32 sw_status_change_mask_8to11_reg;
 > +
-> +/**
-> + * struct sdw_amd_dma_data: AMD DMA data
-> + *
-> + * @name: SoundWire stream name
-> + * @stream: stream runtime
-> + * @bus: Bus handle
-> + * @stream_type: Stream type
-> + * @link_id: Master link id
-> + * @hw_params: hw_params to be applied in .prepare step
-> + */
-> +struct sdw_amd_dma_data {
-> +	char *name;
-> +	struct sdw_stream_runtime *stream;
-> +	struct sdw_bus *bus;
-> +	enum sdw_stream_type stream_type;
-> +	int link_id;
-> +	struct snd_pcm_hw_params *hw_params;
-> +};
->  #endif
+> +	switch (ctrl->instance) {
+> +	case ACP_SDW0:
+> +		sw_status_change_mask_0to7_reg = SW_STATE_CHANGE_STATUS_MASK_0TO7;
+> +		sw_status_change_mask_8to11_reg = SW_STATE_CHANGE_STATUS_MASK_8TO11;
+> +		break;
+> +	case ACP_SDW1:
+> +		sw_status_change_mask_0to7_reg = P1_SW_STATE_CHANGE_STATUS_MASK_0TO7;
+> +		sw_status_change_mask_8to11_reg = P1_SW_STATE_CHANGE_STATUS_MASK_8TO11;
+> +		break;
+> +	default:
+> +		dev_err(ctrl->dev, "Invalid Soundwire controller instance\n");
+> +		return;
+> +	}
+> +
+> +	if (ctrl->status[0] == SDW_SLAVE_ATTACHED) {
+> +		acp_reg_writel(0, ctrl->mmio + sw_status_change_mask_0to7_reg);
+> +		acp_reg_writel(0, ctrl->mmio + sw_status_change_mask_8to11_reg);
+> +	}
+> +
+> +update_status:
+> +	sdw_handle_slave_status(&ctrl->bus, ctrl->status);
+> +	if (ctrl->status[0] == SDW_SLAVE_ATTACHED) {
+> +		acp_reg_writel(AMD_SDW_IRQ_MASK_0TO7, ctrl->mmio + sw_status_change_mask_0to7_reg);
+> +		acp_reg_writel(AMD_SDW_IRQ_MASK_8TO11,
+> +			       ctrl->mmio + sw_status_change_mask_8to11_reg);
+> +		amd_sdwc_read_and_process_ping_status(ctrl);
+> +		goto update_status;
+> +	}
+
+well no, you have to use some sort of retry count. You cannot handle
+interrupts in a loop like this, a faulty or chatty device would keep
+signaling an issue and you would be stuck here for a while.
+
+In addition, it's not clear if this is really needed. We added this loop
+in cadence_master.c because of issues with multiple devices becoming
+attached at the same time and how the hardware works. As it turns out,
+this update_status loop seems to be a paranoid case, the actually cause
+for devices de-attaching was found by Cirrus Logic and fixed in
+"soundwire: cadence: fix updating slave status when a bus has multiple
+peripherals"
+
+You would need to explain how the status is detected and if any race
+conditions can occur.
+
