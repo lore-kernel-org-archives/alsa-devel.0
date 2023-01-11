@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4D87C5479D
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Jan 2023 16:37:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08531C5479D
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Jan 2023 16:38:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BBA94762D;
-	Wed, 11 Jan 2023 17:36:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBA94762D
+	by alsa0.perex.cz (Postfix) with ESMTPS id D73167652;
+	Wed, 11 Jan 2023 17:37:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D73167652
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673455068;
-	bh=JO/X1hLLWdoPZeV4e0U1XRXlWg6KprX6CGLGaYJyPyU=;
+	s=default; t=1673455091;
+	bh=G0tJKzV5lHHaXRt1euD8K1hOmKAS82nXgpcI5KscenM=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=eLgC5eK0FvWCad4Cel7DmaJRdTxLMqPhWTP6qF+53vuQKSIlLZKtF3KVu0hhMwjE0
-	 +gh3lFrSH4hD4HsziaHieydGX/yA53K/7Spr4Q67B3/CDvBq6uudF6z3UJWxYB+vli
-	 OZzE5yM19au/wjjLEDFP2bpyc80AjTL1iqW80MtI=
+	b=rqBKnYvuDq5TyV8xZAo5nmA8EwmnMMCE1eB3/BaT67bCwtWIAiPiv8qMEr9bHRQia
+	 mddgIQesAnN3zsi+OI2qNJFPJRkREW2+cGoCz8pf9kKTjYQVONkofhWtT2hyGUIJDC
+	 YR489iZQKmJx/EzQMXQ1A4xQbVtCsDLtJN3BR5WM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61FB6F80553;
-	Wed, 11 Jan 2023 17:36:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73A3DF80568;
+	Wed, 11 Jan 2023 17:36:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CBECBF80551; Wed, 11 Jan 2023 17:36:06 +0100 (CET)
+ id 98534F80542; Wed, 11 Jan 2023 17:36:08 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2DD82F8030F
- for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2023 17:35:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DD82F8030F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E2CAF80542
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2023 17:36:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E2CAF80542
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Sb65Cw9e
+ header.s=Intel header.b=iuXX9MtH
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1673454957; x=1704990957;
+ t=1673454965; x=1704990965;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=JO/X1hLLWdoPZeV4e0U1XRXlWg6KprX6CGLGaYJyPyU=;
- b=Sb65Cw9ep7Ezlbgn6J+ETAa0tgTfDAu/k7n9GTIKAfGKE+2+iMPJdmLY
- BFf9pKd92TGmhYMC9s1G/s0nmxqe8u61IOmXUkT+n3lTfQNHtv8IfY6O8
- Iew5zvx7rLj/4+C0ecCjoNxghjhnR7p72k1701DlmwExKHoP3kCFQrNoO
- h+/TWBjP9i+X9PaQqN1XHl45YfIvHTJ43BkG4w5XCnNb56s+dQ9kDn9JC
- JLkRzbTyQsmysCzU2X5zyt2YoK0MpS/uGxM4nmA/NYvtuBMKd1iYZ1Ppx
- JaJir+Cjcp0PvwH4mICEm3YgQh0jcpZE8a+E9fhf3UvWKSZ75K1Tyb4/L w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="324703963"
-X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; d="scan'208";a="324703963"
+ bh=G0tJKzV5lHHaXRt1euD8K1hOmKAS82nXgpcI5KscenM=;
+ b=iuXX9MtH76YpOrTaMuTMcD5VCFAgXUjIDgijhyxeBo252dHdoeYxbCUX
+ 1vS3fOjjl8871aAqAKGF8Ix3jXFk9tymDgi5/At3I5NzQ0Oe3c62T5/b5
+ MBo77RZ0Jf9dBOnaBTMAcIaoICVwUknWaohUaiylmp3DieksoULVrsG/Y
+ +/ukWEwO9fBb+IMZ3AiloTOYJcslP8hVP33Kl5PTJrGJQSJvD72/7YvP/
+ O9T0E48gP7piCMWndjXFjcU27UdAU0geXo+Hlub9cPeNOdxG6b7k3POqB
+ Nc78cigltr1JK7gHd1Khr67CCUJg0SXCi7hnqwygPDvXq26N32YsHdPht Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="324704106"
+X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; d="scan'208";a="324704106"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2023 08:32:03 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="607408108"
-X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; d="scan'208";a="607408108"
+ 11 Jan 2023 08:32:26 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="607408509"
+X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; d="scan'208";a="607408509"
 Received: from flobatol-mobl1.amr.corp.intel.com (HELO [10.212.110.208])
  ([10.212.110.208])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2023 08:32:01 -0800
-Message-ID: <9f2229fb-499b-f802-993b-56a7ad2ce361@linux.intel.com>
-Date: Wed, 11 Jan 2023 07:32:58 -0600
+ 11 Jan 2023 08:32:24 -0800
+Message-ID: <77e35f54-323e-42d0-9e74-be984eebc0fe@linux.intel.com>
+Date: Wed, 11 Jan 2023 09:34:56 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH 01/19] ASoC: amd: ps: create platform devices based on acp
- config
+Subject: Re: [PATCH 08/19] ASoC: amd: ps: add soundwire dma driver dma ops
 Content-Language: en-US
 To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org,
  vkoul@kernel.org, alsa-devel@alsa-project.org
 References: <20230111090222.2016499-1-Vijendar.Mukunda@amd.com>
- <20230111090222.2016499-2-Vijendar.Mukunda@amd.com>
+ <20230111090222.2016499-9-Vijendar.Mukunda@amd.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230111090222.2016499-2-Vijendar.Mukunda@amd.com>
+In-Reply-To: <20230111090222.2016499-9-Vijendar.Mukunda@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -87,230 +86,297 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: Mastan.Katragadda@amd.com, Sunil-kumar.Dommati@amd.com,
- open list <linux-kernel@vger.kernel.org>, Basavaraj.Hiregoudar@amd.com,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Nathan Chancellor <nathan@kernel.org>, Mario.Limonciello@amd.com,
- arungopal.kondaveeti@amd.com, Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
+ Mario.Limonciello@amd.com, arungopal.kondaveeti@amd.com,
  Syed Saba Kareem <Syed.SabaKareem@amd.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-
-> +#define AMD_SDW_CLK_STOP_MODE		1
-
-there are multiple modes for clock stop in SoundWire, and multiple ways
-for the link manager to deal with clock stop, you want a comment to
-describe what this define refers to.
-
-> +#define AMD_SDW_POWER_OFF_MODE		2
-> +
-> +struct acp_sdw_pdata {
-> +	u16 instance;
-> +	struct mutex *sdw_lock;
-
-need a comment on what this lock protects.
-
-> +};
-> +#endif
+On 1/11/23 03:02, Vijendar Mukunda wrote:
+> Add Soundwire DMA driver dma ops for Pink Sardine platform.
+> 
+> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> ---
+>  sound/soc/amd/ps/acp63.h      |  61 ++++
+>  sound/soc/amd/ps/ps-sdw-dma.c | 531 ++++++++++++++++++++++++++++++++++
+>  2 files changed, 592 insertions(+)
+> 
 > diff --git a/sound/soc/amd/ps/acp63.h b/sound/soc/amd/ps/acp63.h
-> index b7535c7d093f..ed979e6d0c1d 100644
+> index b462320fdf2a..8963cfb6120d 100644
 > --- a/sound/soc/amd/ps/acp63.h
 > +++ b/sound/soc/amd/ps/acp63.h
-> @@ -10,7 +10,7 @@
->  #define ACP_DEVICE_ID 0x15E2
->  #define ACP63_REG_START		0x1240000
->  #define ACP63_REG_END		0x1250200
-> -#define ACP63_DEVS		3
-> +#define ACP63_DEVS		5
->  
->  #define ACP_SOFT_RESET_SOFTRESET_AUDDONE_MASK	0x00010001
->  #define ACP_PGFSM_CNTL_POWER_ON_MASK	1
-> @@ -55,8 +55,14 @@
->  
->  #define ACP63_DMIC_ADDR		2
->  #define ACP63_PDM_MODE_DEVS		3
-> -#define ACP63_PDM_DEV_MASK		1
->  #define ACP_DMIC_DEV	2
-> +#define ACP63_SDW0_MODE_DEVS		2
-> +#define ACP63_SDW0_SDW1_MODE_DEVS	3
-> +#define ACP63_SDW0_PDM_MODE_DEVS	4
-> +#define ACP63_SDW0_SDW1_PDM_MODE_DEVS   5
-> +#define ACP63_DMIC_ADDR			2
-> +#define ACP63_SDW_ADDR			5
-> +#define AMD_SDW_MAX_CONTROLLERS		2
+> @@ -67,6 +67,38 @@
+>  #define ACP_SDW0_IRQ_MASK	21
+>  #define ACP_SDW1_IRQ_MASK	2
+>  #define ACP_ERROR_IRQ_MASK      29
+> +#define ACP_AUDIO_TX_THRESHOLD	28
+> +#define ACP_BT_TX_THRESHOLD	26
+> +#define ACP_HS_TX_THRESHOLD	24
+> +#define ACP_AUDIO_RX_THRESHOLD	27
+> +#define ACP_BT_RX_THRESHOLD	25
+> +#define ACP_HS_RX_THRESHOLD	23
+> +#define ACP_P1_BT_TX_THRESHOLD	6
+> +#define ACP_P1_BT_RX_THRESHOLD	5
+> +#define ACP_SDW_DMA_IRQ_MASK	0x1F800000
+> +#define ACP_P1_SDW_DMA_IRQ_MASK	0x60
+> +#define ACP63_SDW_MAX_STREAMS		8
+> +
+> +#define ACP_DELAY_US		5
+> +#define SDW_MEM_WINDOW_START	0x4800000
+> +#define ACP_SDW_SRAM_PTE_OFFSET	0x03800400
+> +#define SDW_PTE_OFFSET		0x400
+> +#define SDW_FIFO_SIZE		0x100
+> +#define SDW_DMA_SIZE		0x40
+> +#define ACP_SDW_FIFO_OFFSET	0x100
+> +#define ACP_SDW_RING_BUFF_ADDR_OFFSET (128 * 1024)
+> +
+> +#define SDW_PLAYBACK_MIN_NUM_PERIODS    2
+> +#define SDW_PLAYBACK_MAX_NUM_PERIODS    8
+> +#define SDW_PLAYBACK_MAX_PERIOD_SIZE    8192
+> +#define SDW_PLAYBACK_MIN_PERIOD_SIZE    1024
+> +#define SDW_CAPTURE_MIN_NUM_PERIODS     2
+> +#define SDW_CAPTURE_MAX_NUM_PERIODS     8
+> +#define SDW_CAPTURE_MAX_PERIOD_SIZE     8192
+> +#define SDW_CAPTURE_MIN_PERIOD_SIZE     1024
+> +
+> +#define SDW_MAX_BUFFER (SDW_PLAYBACK_MAX_PERIOD_SIZE * SDW_PLAYBACK_MAX_NUM_PERIODS)
+> +#define SDW_MIN_BUFFER SDW_MAX_BUFFER
 >  
 >  enum acp_config {
 >  	ACP_CONFIG_0 = 0,
-> @@ -77,6 +83,12 @@ enum acp_config {
->  	ACP_CONFIG_15,
+> @@ -93,6 +125,17 @@ enum acp_pdev_mask {
+>  	ACP63_SDW_PDM_DEV_MASK,
 >  };
 >  
-> +enum acp_pdev_mask {
-> +	ACP63_PDM_DEV_MASK = 1,
-> +	ACP63_SDW_DEV_MASK,
-> +	ACP63_SDW_PDM_DEV_MASK,
+> +enum channel_type {
+> +	ACP_SDW_AUDIO_TX = 0,
+> +	ACP_SDW_BT_TX,
+> +	ACP_SDW_HS_TX,
+> +	ACP_SDW_AUDIO_RX,
+> +	ACP_SDW_BT_RX,
+> +	ACP_SDW_HS_RX,
+> +	ACP_SDW1_BT_TX,
+> +	ACP_SDW1_BT_RX,
 > +};
+
+this was defined in another patch already?
+
 > +
 >  struct pdm_stream_instance {
 >  	u16 num_pages;
 >  	u16 channels;
-> @@ -107,7 +119,15 @@ struct acp63_dev_data {
->  	struct resource *res;
->  	struct platform_device *pdev[ACP63_DEVS];
->  	struct mutex acp_lock; /* protect shared registers */
-> +	struct fwnode_handle *sdw_fw_node;
->  	u16 pdev_mask;
->  	u16 pdev_count;
->  	u16 pdm_dev_index;
-> +	u8 sdw_master_count;
+> @@ -139,4 +182,22 @@ struct acp63_dev_data {
+>  struct sdw_dma_dev_data {
+>  	void __iomem *acp_base;
+>  	struct mutex *acp_lock;
+> +	struct snd_pcm_substream *sdw_stream[ACP63_SDW_MAX_STREAMS];
+> +};
+> +
+> +struct sdw_stream_instance {
 
-for new contributions, it's recommended to use manager and peripheral.
+sdw_stream is already a well-defined concept. Please use sdw_dma_stream
+or something less confusing naming-wise.
 
-> +	u16 sdw0_dev_index;
-> +	u16 sdw1_dev_index;
-
-probably need a comment on what the 0 and 1 refer to, it's not clear if
-there's any sort of dependency/link with the 'sdw_master_count' above.
-
-If this is related to the two controllers mentioned in the cover letter,
-then an explanation of the sdw_master_count would be needed as well
-(single variable for two controllers?)
-
-> +	u16 sdw_dma_dev_index;
-> +	bool is_dmic_dev;
-> +	bool is_sdw_dev;
-> +	bool acp_sdw_power_off;
+> +	u16 num_pages;
+> +	u16 channels;
+> +	u32 stream_id;
+> +	dma_addr_t dma_addr;
+> +	u64 bytescount;
+> +	void __iomem *acp_base;
+> +};
+> +
+> +union acp_sdw_dma_count {
+> +	struct {
+> +	u32 low;
+> +	u32 high;
+> +	} bcount;
+> +	u64 bytescount;
 >  };
-> diff --git a/sound/soc/amd/ps/pci-ps.c b/sound/soc/amd/ps/pci-ps.c
-> index e86f23d97584..85154cf0b2a2 100644
-> --- a/sound/soc/amd/ps/pci-ps.c
-> +++ b/sound/soc/amd/ps/pci-ps.c
-> @@ -14,6 +14,7 @@
->  #include <linux/interrupt.h>
+> diff --git a/sound/soc/amd/ps/ps-sdw-dma.c b/sound/soc/amd/ps/ps-sdw-dma.c
+> index 388a4b7df715..e94f76053c66 100644
+> --- a/sound/soc/amd/ps/ps-sdw-dma.c
+> +++ b/sound/soc/amd/ps/ps-sdw-dma.c
+> @@ -12,12 +12,543 @@
 >  #include <sound/pcm_params.h>
->  #include <linux/pm_runtime.h>
+>  #include <sound/soc.h>
+>  #include <sound/soc-dai.h>
 > +#include <linux/soundwire/sdw_amd.h>
->  
 >  #include "acp63.h"
 >  
-> @@ -134,12 +135,68 @@ static irqreturn_t acp63_irq_handler(int irq, void *dev_id)
->  	return IRQ_NONE;
->  }
+>  #define DRV_NAME "amd_ps_sdw_dma"
 >  
-> -static void get_acp63_device_config(u32 config, struct pci_dev *pci,
-> -				    struct acp63_dev_data *acp_data)
-> +static int sdw_amd_scan_controller(struct device *dev)
+> +static const struct snd_pcm_hardware acp63_sdw_hardware_playback = {
+> +	.info = SNDRV_PCM_INFO_INTERLEAVED |
+> +		SNDRV_PCM_INFO_BLOCK_TRANSFER |
+> +		SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+> +		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
+> +	.formats = SNDRV_PCM_FMTBIT_S16_LE |  SNDRV_PCM_FMTBIT_S8 |
+> +		   SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE,
+> +	.channels_min = 2,
+> +	.channels_max = 2,
+> +	.rates = SNDRV_PCM_RATE_48000,
+> +	.rate_min = 48000,
+> +	.rate_max = 48000,
+
+is this really limited to 2ch 48kHz? This doesn't align with the
+references to Bluetooth above?
+
+> +	.buffer_bytes_max = SDW_PLAYBACK_MAX_NUM_PERIODS * SDW_PLAYBACK_MAX_PERIOD_SIZE,
+> +	.period_bytes_min = SDW_PLAYBACK_MIN_PERIOD_SIZE,
+> +	.period_bytes_max = SDW_PLAYBACK_MAX_PERIOD_SIZE,
+> +	.periods_min = SDW_PLAYBACK_MIN_NUM_PERIODS,
+> +	.periods_max = SDW_PLAYBACK_MAX_NUM_PERIODS,
+> +};
+> +
+> +static const struct snd_pcm_hardware acp63_sdw_hardware_capture = {
+> +	.info = SNDRV_PCM_INFO_INTERLEAVED |
+> +		SNDRV_PCM_INFO_BLOCK_TRANSFER |
+> +		SNDRV_PCM_INFO_MMAP |
+> +		SNDRV_PCM_INFO_MMAP_VALID |
+> +		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
+> +	.formats = SNDRV_PCM_FMTBIT_S16_LE |  SNDRV_PCM_FMTBIT_S8 |
+> +		   SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE,
+> +	.channels_min = 2,
+> +	.channels_max = 2,
+> +	.rates = SNDRV_PCM_RATE_48000,
+> +	.rate_min = 48000,
+> +	.rate_max = 48000,
+
+same here?
+
+> +	.buffer_bytes_max = SDW_CAPTURE_MAX_NUM_PERIODS * SDW_CAPTURE_MAX_PERIOD_SIZE,
+> +	.period_bytes_min = SDW_CAPTURE_MIN_PERIOD_SIZE,
+> +	.period_bytes_max = SDW_CAPTURE_MAX_PERIOD_SIZE,
+> +	.periods_min = SDW_CAPTURE_MIN_NUM_PERIODS,
+> +	.periods_max = SDW_CAPTURE_MAX_NUM_PERIODS,
+> +};
+> +
+> +static void acp63_config_dma(struct sdw_stream_instance *sdw_ins, u32 stream_id)
 > +{
-> +	struct acp63_dev_data *acp_data;
-> +	struct fwnode_handle *link;
-> +	char name[32];
-> +	u8 count = 0;
-> +	u32 acp_sdw_power_mode = 0;
-> +	int index;
+> +	u16 page_idx;
+> +	u32 low, high, val;
+> +	dma_addr_t addr;
+> +
+> +	addr = sdw_ins->dma_addr;
+> +	val = SDW_PTE_OFFSET + (stream_id * 256);
+> +
+> +	/* Group Enable */
+> +	acp63_writel(ACP_SDW_SRAM_PTE_OFFSET | BIT(31), sdw_ins->acp_base +
+> +		     ACPAXI2AXI_ATU_BASE_ADDR_GRP_2);
+> +	acp63_writel(PAGE_SIZE_4K_ENABLE, sdw_ins->acp_base +
+> +		     ACPAXI2AXI_ATU_PAGE_SIZE_GRP_2);
+> +	for (page_idx = 0; page_idx < sdw_ins->num_pages; page_idx++) {
+> +		/* Load the low address of page int ACP SRAM through SRBM */
+> +		low = lower_32_bits(addr);
+> +		high = upper_32_bits(addr);
+> +
+> +		acp63_writel(low, sdw_ins->acp_base + ACP_SCRATCH_REG_0 + val);
+> +		high |= BIT(31);
+> +		acp63_writel(high, sdw_ins->acp_base + ACP_SCRATCH_REG_0 + val + 4);
+> +		val += 8;
+> +		addr += PAGE_SIZE;
+> +	}
+> +
+> +	/*cache Invalidation added for Testing */
+
+/* cache
+
+> +	acp63_writel(0x1, sdw_ins->acp_base + ACPAXI2AXI_ATU_CTRL);
+> +}
+
+> +static int acp63_sdw_dma_hw_params(struct snd_soc_component *component,
+> +				   struct snd_pcm_substream *substream,
+> +				   struct snd_pcm_hw_params *params)
+> +{
+> +	struct sdw_stream_instance *sdw_stream_data;
+> +	struct sdw_dma_dev_data *sdw_data;
+> +	u32 period_bytes;
+> +	u32 water_mark_size_reg;
+> +	u32 irq_mask, ext_intr_ctrl;
+> +	u64 size;
+> +	u32 stream_id;
+> +	u32 acp_ext_intr_cntl_reg;
 > +	int ret;
 > +
-> +	acp_data = dev_get_drvdata(dev);
-> +	acp_data->acp_sdw_power_off = true;
-> +	/* Found controller, find links supported */
-> +	ret = fwnode_property_read_u8_array((acp_data->sdw_fw_node),
-> +					    "mipi-sdw-master-count", &count, 1);
-> +
+> +	stream_id = 0;
+
+useless initialization...
+
+> +	sdw_data = dev_get_drvdata(component->dev);
+> +	sdw_stream_data = substream->runtime->private_data;
+> +	if (!sdw_stream_data)
+> +		return -EINVAL;
+> +	stream_id = sdw_stream_data->stream_id;
+
+... overriden here
+
+> +	sdw_data->sdw_stream[stream_id] = substream;
+> +	size = params_buffer_bytes(params);
+> +	period_bytes = params_period_bytes(params);
+> +	sdw_stream_data->dma_addr = substream->runtime->dma_addr;
+> +	sdw_stream_data->num_pages = (PAGE_ALIGN(size) >> PAGE_SHIFT);
+> +	acp63_config_dma(sdw_stream_data, stream_id);
+> +	ret = acp63_configure_sdw_ringbuffer(sdw_stream_data->acp_base, stream_id, size);
 > +	if (ret) {
-> +		dev_err(dev,
-> +			"Failed to read mipi-sdw-master-count: %d\n", ret);
+> +		dev_err(component->dev, "Invalid channel type\n");
+> +		return -EINVAL;
+> +	}
+> +	switch (stream_id) {
+> +	case ACP_SDW_AUDIO_TX:
+> +		water_mark_size_reg = ACP_AUDIO_TX_INTR_WATERMARK_SIZE;
+> +		irq_mask = BIT(ACP_AUDIO_TX_THRESHOLD);
+> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL;
+> +		break;
 
-one line?
+so there's ONE resource to deal with external codecs? How does this work
+if you have a headset codec and an amplifier?
 
+> +	case ACP_SDW_BT_TX:
+> +		water_mark_size_reg = ACP_BT_TX_INTR_WATERMARK_SIZE;
+> +		irq_mask = BIT(ACP_BT_TX_THRESHOLD);
+> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL;
+> +		break;
+> +	case ACP_SDW_HS_TX:
+> +		water_mark_size_reg = ACP_HS_TX_INTR_WATERMARK_SIZE;
+> +		irq_mask = BIT(ACP_HS_TX_THRESHOLD);
+> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL;
+> +		break;
+> +	case ACP_SDW1_BT_TX:
+> +		water_mark_size_reg = ACP_P1_BT_TX_INTR_WATERMARK_SIZE;
+> +		irq_mask = BIT(ACP_P1_BT_TX_THRESHOLD);
+> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL1;
+> +		break;
+> +	case ACP_SDW_AUDIO_RX:
+> +		water_mark_size_reg = ACP_AUDIO_RX_INTR_WATERMARK_SIZE;
+> +		irq_mask = BIT(ACP_AUDIO_RX_THRESHOLD);
+> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL;
+> +		break;
+> +	case ACP_SDW_BT_RX:
+> +		water_mark_size_reg = ACP_BT_RX_INTR_WATERMARK_SIZE;
+> +		irq_mask = BIT(ACP_BT_RX_THRESHOLD);
+> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL;
+> +		break;
+> +	case ACP_SDW_HS_RX:
+> +		water_mark_size_reg = ACP_HS_RX_INTR_WATERMARK_SIZE;
+> +		irq_mask = BIT(ACP_HS_RX_THRESHOLD);
+> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL;
+> +		break;
+> +	case ACP_SDW1_BT_RX:
+> +		water_mark_size_reg = ACP_P1_BT_RX_INTR_WATERMARK_SIZE;
+> +		irq_mask = BIT(ACP_P1_BT_RX_THRESHOLD);
+> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL1;
+> +		break;
+> +	default:
+> +		dev_err(component->dev, "%s: Invalid channel type\n", __func__);
 > +		return -EINVAL;
 > +	}
 > +
-> +	/* Check count is within bounds */
-> +	if (count > AMD_SDW_MAX_CONTROLLERS) {
-> +		dev_err(dev, "Controller count %d exceeds max %d\n",
-> +			count, AMD_SDW_MAX_CONTROLLERS);
-
-No. controllers and masters are different concepts, see the DisCo
-specification for SoundWire. A Controller can have multiple Masters.
-
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!count) {
-> +		dev_warn(dev, "No SoundWire controllers detected\n");
-> +		return -EINVAL;
-> +	}
-
-is this really a warning, looks like a dev_dbg or info to me.
-
-> +	dev_dbg(dev, "ACPI reports %d Soundwire Controller devices\n", count);
-
-the term device is incorrect here, the DisCo spec does not expose ACPI
-devices for each master.
-
-"ACPI reports %d Managers"
-
-> +	acp_data->sdw_master_count  = count;
-> +	for (index = 0; index < count; index++) {
-> +		snprintf(name, sizeof(name), "mipi-sdw-link-%d-subproperties", index);
-> +		link = fwnode_get_named_child_node(acp_data->sdw_fw_node, name);
-> +		if (!link) {
-> +			dev_err(dev, "Master node %s not found\n", name);
-> +			return -EIO;
-> +		}
-> +
-> +		fwnode_property_read_u32(link, "amd-sdw-power-mode",
-> +					 &acp_sdw_power_mode);
-> +		if (acp_sdw_power_mode != AMD_SDW_POWER_OFF_MODE)
-> +			acp_data->acp_sdw_power_off = false;
-
-does power-off mean 'clock-stop'?
-
-> +	}
+> +	ext_intr_ctrl = acp63_readl(sdw_stream_data->acp_base + acp_ext_intr_cntl_reg);
+> +	ext_intr_ctrl |= irq_mask;
+> +	acp63_writel(ext_intr_ctrl, sdw_stream_data->acp_base + acp_ext_intr_cntl_reg);
+> +	acp63_writel(period_bytes, sdw_stream_data->acp_base + water_mark_size_reg);
 > +	return 0;
 > +}
-> +
-
-> +		if (is_dmic_dev && is_sdw_dev) {
-> +			switch (acp_data->sdw_master_count) {
-> +			case 1:
-> +				acp_data->pdev_mask = ACP63_SDW_PDM_DEV_MASK;
-> +				acp_data->pdev_count = ACP63_SDW0_PDM_MODE_DEVS;
-> +				break;
-> +			case 2:
-> +				acp_data->pdev_mask = ACP63_SDW_PDM_DEV_MASK;
-> +				acp_data->pdev_count = ACP63_SDW0_SDW1_PDM_MODE_DEVS;
-> +				break;
-
-so the cover letter is indeed wrong and confuses two controllers for two
-managers.
-
-> +			default:
-> +				return -EINVAL;
-> +			}
-> +		} else if (is_dmic_dev) {
->  			acp_data->pdev_mask = ACP63_PDM_DEV_MASK;
->  			acp_data->pdev_count = ACP63_PDM_MODE_DEVS;
-> +		} else if (is_sdw_dev) {
-> +			switch (acp_data->sdw_master_count) {
-> +			case 1:
-> +				acp_data->pdev_mask = ACP63_SDW_DEV_MASK;
-> +				acp_data->pdev_count = ACP63_SDW0_MODE_DEVS;
-> +				break;
-> +			case 2:
-> +				acp_data->pdev_mask = ACP63_SDW_DEV_MASK;
-> +				acp_data->pdev_count = ACP63_SDW0_SDW1_MODE_DEVS;
-> +				break;
-> +			default:
-> +				return -EINVAL;
-> +			}
->  		}
->  		break;
-> +	default:
-> +		break;
->  	}
-> +	return 0;
->  }
-
