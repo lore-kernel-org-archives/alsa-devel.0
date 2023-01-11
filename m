@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08531C5479D
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 Jan 2023 16:38:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D87BBC54EBC
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 Jan 2023 16:38:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D73167652;
-	Wed, 11 Jan 2023 17:37:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D73167652
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2DC867644;
+	Wed, 11 Jan 2023 17:37:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DC867644
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673455091;
-	bh=G0tJKzV5lHHaXRt1euD8K1hOmKAS82nXgpcI5KscenM=;
+	s=default; t=1673455106;
+	bh=72PaTYesMW80vMily3JGRP1WXS2H9ylBNLWcZ9UwqQA=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=rqBKnYvuDq5TyV8xZAo5nmA8EwmnMMCE1eB3/BaT67bCwtWIAiPiv8qMEr9bHRQia
-	 mddgIQesAnN3zsi+OI2qNJFPJRkREW2+cGoCz8pf9kKTjYQVONkofhWtT2hyGUIJDC
-	 YR489iZQKmJx/EzQMXQ1A4xQbVtCsDLtJN3BR5WM=
+	b=aN6Oh4S6KUhMOPvvjW3rPt84KVUvxJdwdG49MMn72UBW7C52SZUIwRbLQrgL285S1
+	 yv6NJpr1EZgLTHhsfKaDFXAPhb4vfvqRVNSsLuTBd+yz5ZDZxirmdtqXCqHJOxWKJh
+	 Yf6WoZEAcpyg680DI4a7FzYHTFTZ67v0MC9ySZ5c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73A3DF80568;
-	Wed, 11 Jan 2023 17:36:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2DDAFF803DC;
+	Wed, 11 Jan 2023 17:36:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98534F80542; Wed, 11 Jan 2023 17:36:08 +0100 (CET)
+ id E3A25F80424; Wed, 11 Jan 2023 17:36:13 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E2CAF80542
- for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2023 17:36:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E2CAF80542
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9D3ACF80424
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2023 17:35:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D3ACF80424
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=iuXX9MtH
+ header.s=Intel header.b=VnneLMHF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1673454965; x=1704990965;
+ t=1673454960; x=1704990960;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=G0tJKzV5lHHaXRt1euD8K1hOmKAS82nXgpcI5KscenM=;
- b=iuXX9MtH76YpOrTaMuTMcD5VCFAgXUjIDgijhyxeBo252dHdoeYxbCUX
- 1vS3fOjjl8871aAqAKGF8Ix3jXFk9tymDgi5/At3I5NzQ0Oe3c62T5/b5
- MBo77RZ0Jf9dBOnaBTMAcIaoICVwUknWaohUaiylmp3DieksoULVrsG/Y
- +/ukWEwO9fBb+IMZ3AiloTOYJcslP8hVP33Kl5PTJrGJQSJvD72/7YvP/
- O9T0E48gP7piCMWndjXFjcU27UdAU0geXo+Hlub9cPeNOdxG6b7k3POqB
- Nc78cigltr1JK7gHd1Khr67CCUJg0SXCi7hnqwygPDvXq26N32YsHdPht Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="324704106"
-X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; d="scan'208";a="324704106"
+ bh=72PaTYesMW80vMily3JGRP1WXS2H9ylBNLWcZ9UwqQA=;
+ b=VnneLMHFLeVlHPieqPLIbBKgnJKGbmY6P38w7v8I7T1hmC8RPrKfIQh9
+ MLRMXKHmClnL5taQJmJYpEw/vorbU1ZvRJe4xAlmg1bZfUkUkv7IvZbfw
+ jwrQVTPxwgRqvInZ3yk/wkLNDmWJEpAu6dXdEU87KbqHpc+CcWIl0opWC
+ K5gPOCM7jkYvlEARyoqdy71b4Dm2BM2LAfQyLkgOXwQk4Sv1r7VP63Imb
+ Q2e3qoBtF5DLZ2TMKnqe5MO/6YNDrCkcxsHMgLfhlcqmervIcdAi0seW+
+ 4sGnuseO0eSG0ugSZvREUepnv7qovXdNqEm+69Ydb/I9JM5naa724N76r Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="324704004"
+X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; d="scan'208";a="324704004"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2023 08:32:26 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="607408509"
-X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; d="scan'208";a="607408509"
+ 11 Jan 2023 08:32:10 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="607408284"
+X-IronPort-AV: E=Sophos;i="5.96,317,1665471600"; d="scan'208";a="607408284"
 Received: from flobatol-mobl1.amr.corp.intel.com (HELO [10.212.110.208])
  ([10.212.110.208])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Jan 2023 08:32:24 -0800
-Message-ID: <77e35f54-323e-42d0-9e74-be984eebc0fe@linux.intel.com>
-Date: Wed, 11 Jan 2023 09:34:56 -0600
+ 11 Jan 2023 08:32:08 -0800
+Message-ID: <991ff630-17a7-eef3-1436-e4a905fe0541@linux.intel.com>
+Date: Wed, 11 Jan 2023 08:37:35 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH 08/19] ASoC: amd: ps: add soundwire dma driver dma ops
+Subject: Re: [PATCH 02/19] soundwire: amd: Add support for AMD Master driver
 Content-Language: en-US
 To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org,
  vkoul@kernel.org, alsa-devel@alsa-project.org
 References: <20230111090222.2016499-1-Vijendar.Mukunda@amd.com>
- <20230111090222.2016499-9-Vijendar.Mukunda@amd.com>
+ <20230111090222.2016499-3-Vijendar.Mukunda@amd.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230111090222.2016499-9-Vijendar.Mukunda@amd.com>
+In-Reply-To: <20230111090222.2016499-3-Vijendar.Mukunda@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -86,297 +86,1160 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: Mastan.Katragadda@amd.com, Sunil-kumar.Dommati@amd.com,
- Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
+ Basavaraj.Hiregoudar@amd.com, open list <linux-kernel@vger.kernel.org>,
  Mario.Limonciello@amd.com, arungopal.kondaveeti@amd.com,
- Syed Saba Kareem <Syed.SabaKareem@amd.com>
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
 On 1/11/23 03:02, Vijendar Mukunda wrote:
-> Add Soundwire DMA driver dma ops for Pink Sardine platform.
+> AMD ACP IP block has two soundwire controller devices.
+
+s/controller/manager?
+
+> Add support for
+> - Master driver probe & remove sequence
+> - Helper functions to enable/disable interrupts, Initialize sdw controller,
+>   enable sdw pads
+> - Master driver sdw_master_ops & port_ops callbacks
 > 
 > Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 > ---
->  sound/soc/amd/ps/acp63.h      |  61 ++++
->  sound/soc/amd/ps/ps-sdw-dma.c | 531 ++++++++++++++++++++++++++++++++++
->  2 files changed, 592 insertions(+)
+>  drivers/soundwire/amd_master.c    | 1075 +++++++++++++++++++++++++++++
+>  drivers/soundwire/amd_master.h    |  279 ++++++++
+>  include/linux/soundwire/sdw_amd.h |   21 +
+>  3 files changed, 1375 insertions(+)
+>  create mode 100644 drivers/soundwire/amd_master.c
+>  create mode 100644 drivers/soundwire/amd_master.h
 > 
-> diff --git a/sound/soc/amd/ps/acp63.h b/sound/soc/amd/ps/acp63.h
-> index b462320fdf2a..8963cfb6120d 100644
-> --- a/sound/soc/amd/ps/acp63.h
-> +++ b/sound/soc/amd/ps/acp63.h
-> @@ -67,6 +67,38 @@
->  #define ACP_SDW0_IRQ_MASK	21
->  #define ACP_SDW1_IRQ_MASK	2
->  #define ACP_ERROR_IRQ_MASK      29
-> +#define ACP_AUDIO_TX_THRESHOLD	28
-> +#define ACP_BT_TX_THRESHOLD	26
-> +#define ACP_HS_TX_THRESHOLD	24
-> +#define ACP_AUDIO_RX_THRESHOLD	27
-> +#define ACP_BT_RX_THRESHOLD	25
-> +#define ACP_HS_RX_THRESHOLD	23
-> +#define ACP_P1_BT_TX_THRESHOLD	6
-> +#define ACP_P1_BT_RX_THRESHOLD	5
-> +#define ACP_SDW_DMA_IRQ_MASK	0x1F800000
-> +#define ACP_P1_SDW_DMA_IRQ_MASK	0x60
-> +#define ACP63_SDW_MAX_STREAMS		8
+> diff --git a/drivers/soundwire/amd_master.c b/drivers/soundwire/amd_master.c
+> new file mode 100644
+> index 000000000000..7e1f618254ac
+> --- /dev/null
+> +++ b/drivers/soundwire/amd_master.c
+> @@ -0,0 +1,1075 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * SoundWire AMD Master driver
+> + *
+> + * Copyright 2023 Advanced Micro Devices, Inc.
+> + */
 > +
-> +#define ACP_DELAY_US		5
-> +#define SDW_MEM_WINDOW_START	0x4800000
-> +#define ACP_SDW_SRAM_PTE_OFFSET	0x03800400
-> +#define SDW_PTE_OFFSET		0x400
-> +#define SDW_FIFO_SIZE		0x100
-> +#define SDW_DMA_SIZE		0x40
-> +#define ACP_SDW_FIFO_OFFSET	0x100
-> +#define ACP_SDW_RING_BUFF_ADDR_OFFSET (128 * 1024)
+> +#include <linux/completion.h>
+> +#include <linux/device.h>
+> +#include <linux/io.h>
+> +#include <linux/jiffies.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/slab.h>
+> +#include <linux/soundwire/sdw.h>
+> +#include <linux/soundwire/sdw_registers.h>
+> +#include <linux/soundwire/sdw_amd.h>
+> +#include <linux/wait.h>
+> +#include <sound/pcm_params.h>
+> +#include <sound/soc.h>
+> +#include "bus.h"
+> +#include "amd_master.h"
 > +
-> +#define SDW_PLAYBACK_MIN_NUM_PERIODS    2
-> +#define SDW_PLAYBACK_MAX_NUM_PERIODS    8
-> +#define SDW_PLAYBACK_MAX_PERIOD_SIZE    8192
-> +#define SDW_PLAYBACK_MIN_PERIOD_SIZE    1024
-> +#define SDW_CAPTURE_MIN_NUM_PERIODS     2
-> +#define SDW_CAPTURE_MAX_NUM_PERIODS     8
-> +#define SDW_CAPTURE_MAX_PERIOD_SIZE     8192
-> +#define SDW_CAPTURE_MIN_PERIOD_SIZE     1024
+> +#define DRV_NAME "amd_sdw_controller"
 > +
-> +#define SDW_MAX_BUFFER (SDW_PLAYBACK_MAX_PERIOD_SIZE * SDW_PLAYBACK_MAX_NUM_PERIODS)
-> +#define SDW_MIN_BUFFER SDW_MAX_BUFFER
->  
->  enum acp_config {
->  	ACP_CONFIG_0 = 0,
-> @@ -93,6 +125,17 @@ enum acp_pdev_mask {
->  	ACP63_SDW_PDM_DEV_MASK,
->  };
->  
-> +enum channel_type {
-> +	ACP_SDW_AUDIO_TX = 0,
-> +	ACP_SDW_BT_TX,
-> +	ACP_SDW_HS_TX,
-> +	ACP_SDW_AUDIO_RX,
-> +	ACP_SDW_BT_RX,
-> +	ACP_SDW_HS_RX,
+> +#define to_amd_sdw(b)	container_of(b, struct amd_sdwc_ctrl, bus)
+> +
+> +static int amd_enable_sdw_pads(struct amd_sdwc_ctrl *ctrl)
+> +{
+> +	u32 sw_pad_enable_mask;
+> +	u32 sw_pad_pulldown_mask;
+> +	u32 sw_pad_pulldown_val;
+> +	u32 val = 0;
+> +
+> +	switch (ctrl->instance) {
+
+Goodness no. A controller has one or more masters. It cannot have pins
+as described in the SoundWire master specification.
+
+> +	case ACP_SDW0:
+> +		sw_pad_enable_mask = AMD_SDW0_PAD_KEEPER_EN_MASK;
+> +		sw_pad_pulldown_mask = AMD_SDW0_PAD_PULLDOWN_CTRL_ENABLE_MASK;
+> +		break;
+> +	case ACP_SDW1:
+> +		sw_pad_enable_mask = AMD_SDW1_PAD_KEEPER_EN_MASK;
+> +		sw_pad_pulldown_mask = AMD_SDW1_PAD_PULLDOWN_CTRL_ENABLE_MASK;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	mutex_lock(ctrl->sdw_lock);
+> +	val = acp_reg_readl(ctrl->mmio + ACP_SW_PAD_KEEPER_EN);
+> +	val |= sw_pad_enable_mask;
+> +	acp_reg_writel(val, ctrl->mmio + ACP_SW_PAD_KEEPER_EN);
+> +	mutex_unlock(ctrl->sdw_lock);
+> +	usleep_range(1000, 1500);
+> +
+> +	mutex_lock(ctrl->sdw_lock);
+> +	sw_pad_pulldown_val  = acp_reg_readl(ctrl->mmio + ACP_PAD_PULLDOWN_CTRL);
+> +	sw_pad_pulldown_val &= sw_pad_pulldown_mask;
+> +	acp_reg_writel(sw_pad_pulldown_val, ctrl->mmio + ACP_PAD_PULLDOWN_CTRL);
+> +	mutex_unlock(ctrl->sdw_lock);
+> +	return 0;
+> +}
+> +
+> +static int amd_init_sdw_controller(struct amd_sdwc_ctrl *ctrl)
+> +{
+> +	u32 acp_sw_en_reg, acp_sw_en_stat_reg, sw_bus_reset_reg;
+> +	u32 val = 0;
+> +	u32 timeout = 0;
+> +	u32 retry_count = 0;
+> +
+> +	switch (ctrl->instance) {
+> +	case ACP_SDW0:
+> +		acp_sw_en_reg = ACP_SW_EN;
+> +		acp_sw_en_stat_reg = ACP_SW_EN_STATUS;
+> +		sw_bus_reset_reg = ACP_SW_BUS_RESET_CTRL;
+> +		break;
+> +	case ACP_SDW1:
+> +		acp_sw_en_reg = ACP_P1_SW_EN;
+> +		acp_sw_en_stat_reg = ACP_P1_SW_EN_STATUS;
+> +		sw_bus_reset_reg = ACP_P1_SW_BUS_RESET_CTRL;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	acp_reg_writel(AMD_SDW_ENABLE, ctrl->mmio + acp_sw_en_reg);
+> +	do {
+> +		val = acp_reg_readl(ctrl->mmio + acp_sw_en_stat_reg);
+> +		if (val)
+> +			break;
+> +		usleep_range(10, 50);
+> +	} while (retry_count++ < AMD_SDW_STAT_MAX_RETRY_COUNT);
+> +
+> +	if (retry_count > AMD_SDW_STAT_MAX_RETRY_COUNT)
+> +		return -ETIMEDOUT;
+> +
+> +	/* Sdw Controller reset */
+> +	acp_reg_writel(AMD_SDW_BUS_RESET_REQ, ctrl->mmio + sw_bus_reset_reg);
+> +	val = acp_reg_readl(ctrl->mmio + sw_bus_reset_reg);
+> +	while (!(val & AMD_SDW_BUS_RESET_DONE)) {
+> +		val = acp_reg_readl(ctrl->mmio + sw_bus_reset_reg);
+> +		if (timeout > AMD_DELAY_LOOP_ITERATION)
+> +			break;
+> +		usleep_range(1, 5);
+> +		timeout++;
+> +	}
+
+no test on timeout here to check if the bus was indeed reset?
+
+If you are talking about bus_reset you are referring to a master btw.
+The terms bus/master/link are interchangeable. A controller is not
+defined in the SoundWire specification, this is part of the DisCo spec
+to deal with enumeration when multiple bus/master/link are supported in
+the platform.
+
+> +	timeout = 0;
+> +	acp_reg_writel(AMD_SDW_BUS_RESET_CLEAR_REQ, ctrl->mmio + sw_bus_reset_reg);
+> +	val = acp_reg_readl(ctrl->mmio + sw_bus_reset_reg);
+> +	while (val) {
+> +		val = acp_reg_readl(ctrl->mmio + sw_bus_reset_reg);
+> +		if (timeout > AMD_DELAY_LOOP_ITERATION)
+> +			break;
+> +		usleep_range(1, 5);
+> +		timeout++;
+> +	}
+> +	if (timeout == AMD_DELAY_LOOP_ITERATION) {
+> +		dev_err(ctrl->dev, "Failed to reset SW%x Soundwire Controller\n", ctrl->instance);
+> +		return -ETIMEDOUT;
+> +	}
+> +	retry_count = 0;
+> +	acp_reg_writel(AMD_SDW_DISABLE, ctrl->mmio + acp_sw_en_reg);
+> +	do {
+> +		val = acp_reg_readl(ctrl->mmio + acp_sw_en_stat_reg);
+> +		if (!val)
+> +			break;
+> +		usleep_range(10, 50);
+> +	} while (retry_count++ < AMD_SDW_STAT_MAX_RETRY_COUNT);
+> +
+> +	if (retry_count > AMD_SDW_STAT_MAX_RETRY_COUNT)
+> +		return -ETIMEDOUT;
+> +	return 0;
+> +}
+> +
+> +static int amd_enable_sdw_controller(struct amd_sdwc_ctrl *ctrl)
+> +{
+> +	u32 acp_sw_en_reg;
+> +	u32 acp_sw_en_stat_reg;
+> +	u32 val = 0;
+> +	u32 retry_count = 0;
+> +
+> +	switch (ctrl->instance) {
+> +	case ACP_SDW0:
+> +		acp_sw_en_reg = ACP_SW_EN;
+> +		acp_sw_en_stat_reg = ACP_SW_EN_STATUS;
+> +		break;
+> +	case ACP_SDW1:
+> +		acp_sw_en_reg = ACP_P1_SW_EN;
+> +		acp_sw_en_stat_reg = ACP_P1_SW_EN_STATUS;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +	acp_reg_writel(AMD_SDW_ENABLE, ctrl->mmio + acp_sw_en_reg);
+> +
+> +	do {
+> +		val = acp_reg_readl(ctrl->mmio + acp_sw_en_stat_reg);
+> +		if (val)
+> +			break;
+> +		usleep_range(10, 50);
+> +	} while (retry_count++ < AMD_SDW_STAT_MAX_RETRY_COUNT);
+> +
+> +	if (retry_count > AMD_SDW_STAT_MAX_RETRY_COUNT)
+> +		return -ETIMEDOUT;
+> +	return 0;
+> +}
+> +
+> +static int amd_disable_sdw_controller(struct amd_sdwc_ctrl *ctrl)
+> +{
+> +	u32 clk_resume_ctrl_reg;
+> +	u32 acp_sw_en_reg;
+> +	u32 acp_sw_en_stat_reg;
+> +	u32 val = 0;
+> +	u32 retry_count = 0;
+> +
+> +	switch (ctrl->instance) {
+> +	case ACP_SDW0:
+> +		acp_sw_en_reg = ACP_SW_EN;
+> +		acp_sw_en_stat_reg = ACP_SW_EN_STATUS;
+> +		clk_resume_ctrl_reg = ACP_SW_CLK_RESUME_CTRL;
+> +		break;
+> +	case ACP_SDW1:
+> +		acp_sw_en_reg = ACP_P1_SW_EN;
+> +		acp_sw_en_stat_reg = ACP_P1_SW_EN_STATUS;
+> +		clk_resume_ctrl_reg = ACP_P1_SW_CLK_RESUME_CTRL;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +	acp_reg_writel(AMD_SDW_DISABLE, ctrl->mmio + acp_sw_en_reg);
+> +
+> +	/*
+> +	 * After invoking controller disable sequence, check whether
+> +	 * controller has executed clock stop sequence. In this case,
+> +	 * controller should ignore checking enable status register.
+
+again clock stop is a sequence at the master/link/bus level, not the
+controller.
+
+> +	 */
+> +	val = acp_reg_readl(ctrl->mmio + clk_resume_ctrl_reg);
+> +	if (val)
+> +		return 0;
+> +
+> +	do {
+> +		val = acp_reg_readl(ctrl->mmio + acp_sw_en_stat_reg);
+> +		if (!val)
+> +			break;
+> +		usleep_range(10, 50);
+> +	} while (retry_count++ < AMD_SDW_STAT_MAX_RETRY_COUNT);
+> +
+> +	if (retry_count > AMD_SDW_STAT_MAX_RETRY_COUNT)
+> +		return -ETIMEDOUT;
+> +	return 0;
+> +}
+> +
+> +static int amd_enable_sdw_interrupts(struct amd_sdwc_ctrl *ctrl)
+> +{
+> +	u32 val;
+> +	u32 acp_ext_intr_stat, acp_ext_intr_ctrl, acp_sdw_intr_mask;
+> +	u32 sw_stat_mask_0to7, sw_stat_mask_8to11, sw_err_intr_mask;
+> +
+> +	switch (ctrl->instance) {
+> +	case ACP_SDW0:
+> +		acp_ext_intr_ctrl = ACP_EXTERNAL_INTR_CNTL;
+
+should be renamed and end in CNTL0 if the other is CNTL1
+
+And it's manager anyways, not controller.
+
+> +		acp_sdw_intr_mask = AMD_SDW0_EXT_INTR_MASK;
+> +		acp_ext_intr_stat = ACP_EXTERNAL_INTR_STAT;
+> +		sw_stat_mask_0to7 = SW_STATE_CHANGE_STATUS_MASK_0TO7;
+> +		sw_stat_mask_8to11 = SW_STATE_CHANGE_STATUS_MASK_8TO11;
+> +		sw_err_intr_mask = SW_ERROR_INTR_MASK;
+> +		break;
+> +	case ACP_SDW1:
+> +		acp_ext_intr_ctrl = ACP_EXTERNAL_INTR_CNTL1;
+> +		acp_sdw_intr_mask = AMD_SDW1_EXT_INTR_MASK;
+> +		acp_ext_intr_stat = ACP_EXTERNAL_INTR_STAT1;
+> +		sw_stat_mask_0to7 = P1_SW_STATE_CHANGE_STATUS_MASK_0TO7;
+> +		sw_stat_mask_8to11 = P1_SW_STATE_CHANGE_STATUS_MASK_8TO11;
+> +		sw_err_intr_mask = P1_SW_ERROR_INTR_MASK;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +	mutex_lock(ctrl->sdw_lock);
+> +	val = acp_reg_readl(ctrl->mmio + acp_ext_intr_ctrl);
+> +	val |= acp_sdw_intr_mask;
+> +	acp_reg_writel(val, ctrl->mmio + acp_ext_intr_ctrl);
+> +	val = acp_reg_readl(ctrl->mmio + acp_ext_intr_ctrl);
+> +	mutex_unlock(ctrl->sdw_lock);
+> +	dev_dbg(ctrl->dev, "%s: acp_ext_intr_ctrl[0x%x]:0x%x\n", __func__, acp_ext_intr_ctrl, val);
+> +	val = acp_reg_readl(ctrl->mmio + acp_ext_intr_stat);
+> +	if (val)
+> +		acp_reg_writel(val, ctrl->mmio + acp_ext_intr_stat);
+> +	acp_reg_writel(AMD_SDW_IRQ_MASK_0TO7, ctrl->mmio + sw_stat_mask_0to7);
+> +	acp_reg_writel(AMD_SDW_IRQ_MASK_8TO11, ctrl->mmio + sw_stat_mask_8to11);
+> +	acp_reg_writel(AMD_SDW_IRQ_ERROR_MASK, ctrl->mmio + sw_err_intr_mask);
+> +	return 0;
+> +}
+> +
+
+> +static u64 amd_sdwc_send_cmd_get_resp(struct amd_sdwc_ctrl *ctrl, u32 lword, u32 uword)
+> +{
+> +	u64 resp = 0;
+> +	u32 imm_cmd_stat_reg, imm_cmd_uword_reg, imm_cmd_lword_reg;
+> +	u32 imm_resp_uword_reg, imm_resp_lword_reg;
+> +	u32 resp_lower, resp_high;
+> +	u32 sts = 0;
+> +	u32 timeout = 0;
+> +
+> +	switch (ctrl->instance) {
+> +	case ACP_SDW0:
+> +		imm_cmd_stat_reg = SW_IMM_CMD_STS;
+> +		imm_cmd_uword_reg = SW_IMM_CMD_UPPER_WORD;
+> +		imm_cmd_lword_reg = SW_IMM_CMD_LOWER_QWORD;
+> +		imm_resp_uword_reg = SW_IMM_RESP_UPPER_WORD;
+> +		imm_resp_lword_reg = SW_IMM_RESP_LOWER_QWORD;
+> +		break;
+> +	case ACP_SDW1:
+> +		imm_cmd_stat_reg = P1_SW_IMM_CMD_STS;
+> +		imm_cmd_uword_reg = P1_SW_IMM_CMD_UPPER_WORD;
+> +		imm_cmd_lword_reg = P1_SW_IMM_CMD_LOWER_QWORD;
+> +		imm_resp_uword_reg = P1_SW_IMM_RESP_UPPER_WORD;
+> +		imm_resp_lword_reg = P1_SW_IMM_RESP_LOWER_QWORD;
+
+naming consistency would be good, the P1 is sometimes a prefix,
+sometimes a suffix, sometimes in the middle. Pick one.
+
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +	sts = acp_reg_readl(ctrl->mmio + imm_cmd_stat_reg);
+> +	while (sts & AMD_SDW_IMM_CMD_BUSY) {
+> +		sts = acp_reg_readl(ctrl->mmio + imm_cmd_stat_reg);
+> +		if (timeout > AMD_SDW_RETRY_COUNT) {
+> +			dev_err(ctrl->dev, "SDW%x previous cmd status clear failed\n",
+> +				ctrl->instance);
+> +			return -ETIMEDOUT;
+> +		}
+> +		timeout++;
+> +	}
+> +
+> +	timeout = 0;
+> +	if (sts & AMD_SDW_IMM_RES_VALID) {
+> +		dev_err(ctrl->dev, "SDW%x controller is in bad state\n", ctrl->instance);
+> +		acp_reg_writel(0x00, ctrl->mmio + imm_cmd_stat_reg);
+> +	}
+> +	acp_reg_writel(uword, ctrl->mmio + imm_cmd_uword_reg);
+> +	acp_reg_writel(lword, ctrl->mmio + imm_cmd_lword_reg);
+> +
+> +	sts = acp_reg_readl(ctrl->mmio + imm_cmd_stat_reg);
+> +	while (!(sts & AMD_SDW_IMM_RES_VALID)) {
+> +		sts = acp_reg_readl(ctrl->mmio + imm_cmd_stat_reg);
+> +		if (timeout > AMD_SDW_RETRY_COUNT) {
+> +			dev_err(ctrl->dev, "SDW%x cmd response timeout occurred\n", ctrl->instance);
+> +			return -ETIMEDOUT;
+> +		}
+> +		timeout++;
+> +	}
+> +	resp_high = acp_reg_readl(ctrl->mmio + imm_resp_uword_reg);
+> +	resp_lower = acp_reg_readl(ctrl->mmio + imm_resp_lword_reg);
+> +	timeout = 0;
+> +	acp_reg_writel(AMD_SDW_IMM_RES_VALID, ctrl->mmio + imm_cmd_stat_reg);
+> +	while ((sts & AMD_SDW_IMM_RES_VALID)) {
+> +		sts = acp_reg_readl(ctrl->mmio + imm_cmd_stat_reg);
+> +		if (timeout > AMD_SDW_RETRY_COUNT) {
+> +			dev_err(ctrl->dev, "SDW%x cmd status retry failed\n", ctrl->instance);
+> +			return -ETIMEDOUT;
+> +		}
+> +		timeout++;
+> +	}
+> +	resp = resp_high;
+> +	resp = (resp << 32) | resp_lower;
+> +	return resp;
+> +}
+> +
+> +static enum sdw_command_response
+> +amd_program_scp_addr(struct amd_sdwc_ctrl *ctrl, struct sdw_msg *msg)
+> +{
+> +	struct sdw_msg scp_msg = {0};
+> +	u64 response_buf[2] = {0};
+> +	u32 uword = 0, lword = 0;
+> +	int nack = 0, no_ack = 0;
+> +	int index, timeout = 0;
+> +
+> +	scp_msg.dev_num = msg->dev_num;
+> +	scp_msg.addr = SDW_SCP_ADDRPAGE1;
+> +	scp_msg.buf = &msg->addr_page1;
+> +	amd_sdwc_ctl_word_prep(&lword, &uword, AMD_SDW_CMD_WRITE, &scp_msg, 0);
+> +	response_buf[0] = amd_sdwc_send_cmd_get_resp(ctrl, lword, uword);
+> +	scp_msg.addr = SDW_SCP_ADDRPAGE2;
+> +	scp_msg.buf = &msg->addr_page2;
+> +	amd_sdwc_ctl_word_prep(&lword, &uword, AMD_SDW_CMD_WRITE, &scp_msg, 0);
+> +	response_buf[1] = amd_sdwc_send_cmd_get_resp(ctrl, lword, uword);
+> +
+> +	/* check response the writes */
+
+response to the writes?  after the writes?
+
+> +	for (index = 0; index < 2; index++) {
+> +		if (response_buf[index] == -ETIMEDOUT) {
+> +			dev_err(ctrl->dev, "Program SCP cmd timeout\n");
+> +			timeout = 1;
+> +		} else if (!(response_buf[index] & AMD_SDW_MCP_RESP_ACK)) {
+> +			no_ack = 1;
+> +			if (response_buf[index] & AMD_SDW_MCP_RESP_NACK) {
+> +				nack = 1;
+> +				dev_err(ctrl->dev, "Program SCP NACK received\n");
+> +			}
+
+this is a copy of the cadence_master.c code... With the error added that
+this is not for a controller but for a master...
+
+> +		}
+> +	}
+> +
+> +	if (timeout) {
+> +		dev_err_ratelimited(ctrl->dev,
+> +				    "SCP_addrpage command timeout for Slave %d\n", msg->dev_num);
+> +		return SDW_CMD_TIMEOUT;
+> +	}
+> +
+> +	if (nack) {
+> +		dev_err_ratelimited(ctrl->dev,
+> +				    "SCP_addrpage NACKed for Slave %d\n", msg->dev_num);
+> +		return SDW_CMD_FAIL;
+> +	}
+> +
+> +	if (no_ack) {
+> +		dev_dbg_ratelimited(ctrl->dev,
+> +				    "SCP_addrpage ignored for Slave %d\n", msg->dev_num);
+> +		return SDW_CMD_IGNORED;
+> +	}
+> +	return SDW_CMD_OK;
+
+this should probably become a helper since the response is really the
+same as in cadence_master.c
+
+There's really room for optimization and reuse here.
+
+> +}
+> +
+> +static int amd_prep_msg(struct amd_sdwc_ctrl *ctrl, struct sdw_msg *msg, int *cmd)
+> +{
+> +	int ret;
+> +
+> +	if (msg->page) {
+> +		ret = amd_program_scp_addr(ctrl, msg);
+> +		if (ret) {
+> +			msg->len = 0;
+> +			return ret;
+> +		}
+> +	}
+> +	switch (msg->flags) {
+> +	case SDW_MSG_FLAG_READ:
+> +		*cmd = AMD_SDW_CMD_READ;
+> +		break;
+> +	case SDW_MSG_FLAG_WRITE:
+> +		*cmd = AMD_SDW_CMD_WRITE;
+> +		break;
+> +	default:
+> +		dev_err(ctrl->dev, "Invalid msg cmd: %d\n", msg->flags);
+> +		return -EINVAL;
+> +	}
+> +	return 0;
+> +}
+
+this is the same code as in cadence_master.c
+
+you just replaced sdw_cnds by amd_sdw_ctrl (which is a mistake) and
+cdns->dev by ctrl->dev.
+
+> +
+> +static unsigned int _amd_sdwc_xfer_msg(struct amd_sdwc_ctrl *ctrl, struct sdw_msg *msg,
+> +				       int cmd, int cmd_offset)
+> +{
+> +	u64 response = 0;
+> +	u32 uword = 0, lword = 0;
+> +	int nack = 0, no_ack = 0;
+> +	int timeout = 0;
+> +
+> +	amd_sdwc_ctl_word_prep(&lword, &uword, cmd, msg, cmd_offset);
+> +	response = amd_sdwc_send_cmd_get_resp(ctrl, lword, uword);
+> +
+> +	if (response & AMD_SDW_MCP_RESP_ACK) {
+> +		if (cmd == AMD_SDW_CMD_READ)
+> +			msg->buf[cmd_offset] = FIELD_GET(AMD_SDW_MCP_RESP_RDATA, response);
+> +	} else {
+> +		no_ack = 1;
+> +		if (response == -ETIMEDOUT) {
+> +			timeout = 1;
+> +		} else if (response & AMD_SDW_MCP_RESP_NACK) {
+> +			nack = 1;
+> +			dev_err(ctrl->dev, "Program SCP NACK received\n");
+> +		}
+> +	}
+> +
+> +	if (timeout) {
+> +		dev_err_ratelimited(ctrl->dev, "command timeout for Slave %d\n", msg->dev_num);
+> +		return SDW_CMD_TIMEOUT;
+> +	}
+> +	if (nack) {
+> +		dev_err_ratelimited(ctrl->dev,
+> +				    "command response NACK received for Slave %d\n", msg->dev_num);
+> +		return SDW_CMD_FAIL;
+> +	}
+> +
+> +	if (no_ack) {
+> +		dev_err_ratelimited(ctrl->dev, "command is ignored for Slave %d\n", msg->dev_num);
+> +		return SDW_CMD_IGNORED;
+> +	}
+> +	return SDW_CMD_OK;
+> +}
+> +
+> +static enum sdw_command_response amd_sdwc_xfer_msg(struct sdw_bus *bus, struct sdw_msg *msg)
+> +{
+> +	struct amd_sdwc_ctrl *ctrl = to_amd_sdw(bus);
+> +	int ret, i;
+> +	int cmd = 0;
+> +
+> +	ret = amd_prep_msg(ctrl, msg, &cmd);
+> +	if (ret)
+> +		return SDW_CMD_FAIL_OTHER;
+> +	for (i = 0; i < msg->len; i++) {
+> +		ret = _amd_sdwc_xfer_msg(ctrl, msg, cmd, i);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +	return SDW_CMD_OK;
+> +}
+> +
+> +static enum sdw_command_response
+> +amd_reset_page_addr(struct sdw_bus *bus, unsigned int dev_num)
+> +{
+> +	struct amd_sdwc_ctrl *ctrl = to_amd_sdw(bus);
+> +	struct sdw_msg msg;
+> +
+> +	/* Create dummy message with valid device number */
+> +	memset(&msg, 0, sizeof(msg));
+> +	msg.dev_num = dev_num;
+> +	return amd_program_scp_addr(ctrl, &msg);
+> +}
+> +
+> +static u32 amd_sdwc_read_ping_status(struct sdw_bus *bus)
+> +{
+> +	struct amd_sdwc_ctrl *ctrl = to_amd_sdw(bus);
+> +	u64 response;
+> +	u32 slave_stat = 0;
+> +
+> +	response = amd_sdwc_send_cmd_get_resp(ctrl, 0, 0);
+> +	/* slave status from ping response*/
+> +	slave_stat = FIELD_GET(AMD_SDW_MCP_SLAVE_STAT_0_3, response);
+> +	slave_stat |= FIELD_GET(AMD_SDW_MCP_SLAVE_STAT_4_11, response) << 8;
+> +	dev_dbg(ctrl->dev, "%s: slave_stat:0x%x\n", __func__, slave_stat);
+> +	return slave_stat;
+> +}
+> +
+> +static void amd_sdwc_compute_slave_ports(struct sdw_master_runtime *m_rt,
+> +					 struct sdw_transport_data *t_data)
+> +{
+> +	struct sdw_slave_runtime *s_rt = NULL;
+> +	struct sdw_port_runtime *p_rt;
+> +	int port_bo, sample_int;
+> +	unsigned int rate, bps, ch = 0;
+> +	unsigned int slave_total_ch;
+> +	struct sdw_bus_params *b_params = &m_rt->bus->params;
+> +
+> +	port_bo = t_data->block_offset;
+> +	list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
+> +		rate = m_rt->stream->params.rate;
+> +		bps = m_rt->stream->params.bps;
+> +		sample_int = (m_rt->bus->params.curr_dr_freq / rate);
+> +		slave_total_ch = 0;
+> +
+> +		list_for_each_entry(p_rt, &s_rt->port_list, port_node) {
+> +			ch = sdw_ch_mask_to_ch(p_rt->ch_mask);
+> +
+> +			sdw_fill_xport_params(&p_rt->transport_params,
+> +					      p_rt->num, false,
+> +					      SDW_BLK_GRP_CNT_1,
+> +					      sample_int, port_bo, port_bo >> 8,
+> +					      t_data->hstart,
+> +					      t_data->hstop,
+> +					      SDW_BLK_PKG_PER_PORT, 0x0);
+> +
+> +			sdw_fill_port_params(&p_rt->port_params,
+> +					     p_rt->num, bps,
+> +					     SDW_PORT_FLOW_MODE_ISOCH,
+> +					     b_params->s_data_mode);
+> +
+> +			port_bo += bps * ch;
+> +			slave_total_ch += ch;
+> +		}
+> +
+> +		if (m_rt->direction == SDW_DATA_DIR_TX &&
+> +		    m_rt->ch_count == slave_total_ch) {
+> +			port_bo = t_data->block_offset;
+> +		}
+> +	}
+> +}
+
+ok, this is really bad.
+
+This is a verbatim copy of the same function in
+generic_bandwidth_allocation.c
+
+see
+https://elixir.bootlin.com/linux/latest/source/drivers/soundwire/generic_bandwidth_allocation.c#L38
+
+You only removed the comments and renamed the function.
+
+Seriously? Why would you do that?
+
+And in addition, this has *NOTHING* to do with the master support.
+
+Programming the ports on peripheral side is something that happens at
+the stream level.
+
+I am afraid it's a double NAK, or rather NAK^2 from me here.
+
+> +
+> +static int amd_sdwc_compute_params(struct sdw_bus *bus)
+> +{
+> +	struct sdw_transport_data t_data = {0};
+> +	struct sdw_master_runtime *m_rt;
+> +	struct sdw_port_runtime *p_rt;
+> +	struct sdw_bus_params *b_params = &bus->params;
+> +	int port_bo, hstart, hstop, sample_int;
+> +	unsigned int rate, bps;
+> +
+> +	port_bo  = 0;
+> +	hstart = 1;
+> +	hstop = bus->params.col - 1;
+> +	t_data.hstop = hstop;
+> +	t_data.hstart = hstart;
+> +
+> +	list_for_each_entry(m_rt, &bus->m_rt_list, bus_node) {
+> +		rate = m_rt->stream->params.rate;
+> +		bps = m_rt->stream->params.bps;
+> +		sample_int = (bus->params.curr_dr_freq / rate);
+> +		list_for_each_entry(p_rt, &m_rt->port_list, port_node) {
+> +			port_bo = (p_rt->num * 64) + 1;
+> +			dev_dbg(bus->dev, "p_rt->num=%d hstart=%d hstop=%d port_bo=%d\n",
+> +				p_rt->num, hstart, hstop, port_bo);
+> +			sdw_fill_xport_params(&p_rt->transport_params, p_rt->num,
+> +					      false, SDW_BLK_GRP_CNT_1, sample_int,
+> +					      port_bo, port_bo >> 8, hstart, hstop,
+> +					      SDW_BLK_PKG_PER_PORT, 0x0);
+> +
+> +			sdw_fill_port_params(&p_rt->port_params,
+> +					     p_rt->num, bps,
+> +					     SDW_PORT_FLOW_MODE_ISOCH,
+> +					     b_params->m_data_mode);
+> +			t_data.hstart = hstart;
+> +			t_data.hstop = hstop;
+> +			t_data.block_offset = port_bo;
+> +			t_data.sub_block_offset = 0;
+> +		}
+> +		amd_sdwc_compute_slave_ports(m_rt, &t_data);
+> +	}
+> +	return 0;
+> +}
+
+this is a variation on sdw_compute_master_ports() in generic_allocation.c
+
+You would need a lot more comments to convince me that this is
+intentional and needed.
+
+> +
+> +static int amd_sdwc_port_params(struct sdw_bus *bus, struct sdw_port_params *p_params,
+> +				unsigned int bank)
+> +{
+> +	struct amd_sdwc_ctrl *ctrl = to_amd_sdw(bus);
+> +	u32 channel_type, frame_fmt_reg, dpn_frame_fmt;
+> +
+> +	dev_dbg(ctrl->dev, "%s: p_params->num:0x%x\n", __func__, p_params->num);
+> +	switch (ctrl->instance) {
+> +	case ACP_SDW0:
+> +		channel_type = p_params->num;
+> +		break;
+> +	case ACP_SDW1:
+> +		channel_type = p_params->num + ACP_SDW0_MAX_DAI;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	switch (channel_type) {
+> +	case ACP_SDW0_AUDIO_TX:
+
+you'll have to explain what you mean by 'channel_type'
+
+This looks like the streams that can be supported by this master
+implementation, with dailinks for each.
+
+> +		frame_fmt_reg = ACP_SW_AUDIO_TX_FRAME_FORMAT;
+> +		break;
+> +	case ACP_SDW0_HS_TX:
+> +		frame_fmt_reg = ACP_SW_HEADSET_TX_FRAME_FORMAT;
+> +		break;
+> +	case ACP_SDW0_BT_TX:
+> +		frame_fmt_reg = ACP_SW_BT_TX_FRAME_FORMAT;
+> +		break;
+> +	case ACP_SDW1_BT_TX:
+> +		frame_fmt_reg = ACP_P1_SW_BT_TX_FRAME_FORMAT;
+> +		break;
+> +	case ACP_SDW0_AUDIO_RX:
+> +		frame_fmt_reg = ACP_SW_AUDIO_RX_FRAME_FORMAT;
+> +		break;
+> +	case ACP_SDW0_HS_RX:
+> +		frame_fmt_reg = ACP_SW_HEADSET_RX_FRAME_FORMAT;
+> +		break;
+> +	case ACP_SDW0_BT_RX:
+> +		frame_fmt_reg = ACP_SW_BT_RX_FRAME_FORMAT;
+> +		break;
+> +	case ACP_SDW1_BT_RX:
+> +		frame_fmt_reg = ACP_P1_SW_BT_RX_FRAME_FORMAT;
+> +		break;
+> +	default:
+> +		dev_err(bus->dev, "%s:Invalid channel:%d\n", __func__, channel_type);
+> +		return -EINVAL;
+> +	}
+> +	dpn_frame_fmt = acp_reg_readl(ctrl->mmio + frame_fmt_reg);
+> +	u32p_replace_bits(&dpn_frame_fmt, p_params->flow_mode, AMD_DPN_FRAME_FMT_PFM);
+> +	u32p_replace_bits(&dpn_frame_fmt, p_params->data_mode, AMD_DPN_FRAME_FMT_PDM);
+> +	u32p_replace_bits(&dpn_frame_fmt, p_params->bps - 1, AMD_DPN_FRAME_FMT_WORD_LEN);
+> +	acp_reg_writel(dpn_frame_fmt, ctrl->mmio + frame_fmt_reg);
+> +	return 0;
+> +}
+> +
+> +static int amd_sdwc_transport_params(struct sdw_bus *bus,
+> +				     struct sdw_transport_params *params,
+> +				     enum sdw_reg_bank bank)
+> +{
+> +	struct amd_sdwc_ctrl *ctrl = to_amd_sdw(bus);
+> +	u32 ssp_counter_reg;
+> +	u32 dpn_frame_fmt;
+> +	u32 dpn_sampleinterval;
+> +	u32 dpn_hctrl;
+> +	u32 dpn_offsetctrl;
+> +	u32 dpn_lanectrl;
+> +	u32 channel_type;
+> +	u32 frame_fmt_reg, sample_int_reg, hctrl_dp0_reg;
+> +	u32 offset_reg, lane_ctrl_reg;
+> +
+> +	switch (ctrl->instance) {
+> +	case ACP_SDW0:
+> +		ssp_counter_reg = ACP_SW_SSP_COUNTER;
+> +		channel_type = params->port_num;
+> +		break;
+> +	case ACP_SDW1:
+> +		ssp_counter_reg = ACP_P1_SW_SSP_COUNTER;
+> +		channel_type = params->port_num + ACP_SDW0_MAX_DAI;
+
+There's obviously a dependency between SDW0 and SDW1 managers that you
+haven't described?
+
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +	acp_reg_writel(AMD_SDW_SSP_COUNTER_VAL, ctrl->mmio + ssp_counter_reg);
+> +	dev_dbg(bus->dev, "%s: p_params->num:0x%x entry channel_type:0x%x\n",
+> +		__func__, params->port_num, channel_type);
+> +
+> +	switch (channel_type) {
+> +	case ACP_SDW0_AUDIO_TX:
+> +	{
+> +		frame_fmt_reg = ACP_SW_AUDIO_TX_FRAME_FORMAT;
+> +		sample_int_reg = ACP_SW_AUDIO_TX_SAMPLEINTERVAL;
+> +		hctrl_dp0_reg = ACP_SW_AUDIO_TX_HCTRL_DP0;
+> +		offset_reg = ACP_SW_AUDIO_TX_OFFSET_DP0;
+> +		lane_ctrl_reg = ACP_SW_AUDIO_TX_CHANNEL_ENABLE_DP0;
+
+This is confusing. Is this about enabling a stream or selecting the lane
+for this port? Same for all cases.
+
+is this saying that the two cases are handled by the same register -
+unlike what is normative for the peripherals where the two concepts are
+handeld in DPN_ChannelEn and DPN_LaneCtrl registers?
+
+> +		break;
+> +	}
+> +	case ACP_SDW0_HS_TX:
+> +	{
+> +		frame_fmt_reg = ACP_SW_HEADSET_TX_FRAME_FORMAT;
+> +		sample_int_reg = ACP_SW_HEADSET_TX_SAMPLEINTERVAL;
+> +		hctrl_dp0_reg = ACP_SW_HEADSET_TX_HCTRL;
+> +		offset_reg = ACP_SW_HEADSET_TX_OFFSET;
+> +		lane_ctrl_reg = ACP_SW_HEADSET_TX_CHANNEL_ENABLE_DP0;
+> +		break;
+> +	}
+> +	case ACP_SDW0_BT_TX:
+> +	{
+> +		frame_fmt_reg = ACP_SW_BT_TX_FRAME_FORMAT;
+> +		sample_int_reg = ACP_SW_BT_TX_SAMPLEINTERVAL;
+> +		hctrl_dp0_reg = ACP_SW_BT_TX_HCTRL;
+> +		offset_reg = ACP_SW_BT_TX_OFFSET;
+> +		lane_ctrl_reg = ACP_SW_BT_TX_CHANNEL_ENABLE_DP0;
+> +		break;
+> +	}
+> +	case ACP_SDW1_BT_TX:
+> +	{
+> +		frame_fmt_reg = ACP_P1_SW_BT_TX_FRAME_FORMAT;
+> +		sample_int_reg = ACP_P1_SW_BT_TX_SAMPLEINTERVAL;
+> +		hctrl_dp0_reg = ACP_P1_SW_BT_TX_HCTRL;
+> +		offset_reg = ACP_P1_SW_BT_TX_OFFSET;
+> +		lane_ctrl_reg = ACP_P1_SW_BT_TX_CHANNEL_ENABLE_DP0;
+> +		break;
+> +	}
+> +	case ACP_SDW0_AUDIO_RX:
+> +	{
+> +		frame_fmt_reg = ACP_SW_AUDIO_RX_FRAME_FORMAT;
+> +		sample_int_reg = ACP_SW_AUDIO_RX_SAMPLEINTERVAL;
+> +		hctrl_dp0_reg = ACP_SW_AUDIO_RX_HCTRL_DP0;
+> +		offset_reg = ACP_SW_AUDIO_RX_OFFSET_DP0;
+> +		lane_ctrl_reg = ACP_SW_AUDIO_RX_CHANNEL_ENABLE_DP0;
+> +		break;
+> +	}
+> +	case ACP_SDW0_HS_RX:
+> +	{
+> +		frame_fmt_reg = ACP_SW_HEADSET_RX_FRAME_FORMAT;
+> +		sample_int_reg = ACP_SW_HEADSET_RX_SAMPLEINTERVAL;
+> +		hctrl_dp0_reg = ACP_SW_HEADSET_RX_HCTRL;
+> +		offset_reg = ACP_SW_HEADSET_RX_OFFSET;
+> +		lane_ctrl_reg = ACP_SW_HEADSET_RX_CHANNEL_ENABLE_DP0;
+> +		break;
+> +	}
+> +	case ACP_SDW0_BT_RX:
+> +	{
+> +		frame_fmt_reg = ACP_SW_BT_RX_FRAME_FORMAT;
+> +		sample_int_reg = ACP_SW_BT_RX_SAMPLEINTERVAL;
+> +		hctrl_dp0_reg = ACP_SW_BT_RX_HCTRL;
+> +		offset_reg = ACP_SW_BT_RX_OFFSET;
+> +		lane_ctrl_reg = ACP_SW_BT_RX_CHANNEL_ENABLE_DP0;
+> +		break;
+> +	}
+> +	case ACP_SDW1_BT_RX:
+> +	{
+> +		frame_fmt_reg = ACP_P1_SW_BT_RX_FRAME_FORMAT;
+> +		sample_int_reg = ACP_P1_SW_BT_RX_SAMPLEINTERVAL;
+> +		hctrl_dp0_reg = ACP_P1_SW_BT_RX_HCTRL;
+> +		offset_reg = ACP_P1_SW_BT_RX_OFFSET;
+> +		lane_ctrl_reg = ACP_P1_SW_BT_RX_CHANNEL_ENABLE_DP0;
+> +		break;
+> +	}
+> +	default:
+> +		dev_err(bus->dev, "%s:Invalid channel:%d\n", __func__, channel_type);
+> +		return -EINVAL;
+> +	}
+> +	dpn_frame_fmt = acp_reg_readl(ctrl->mmio + frame_fmt_reg);
+> +	u32p_replace_bits(&dpn_frame_fmt, params->blk_pkg_mode, AMD_DPN_FRAME_FMT_BLK_PKG_MODE);
+> +	u32p_replace_bits(&dpn_frame_fmt, params->blk_grp_ctrl, AMD_DPN_FRAME_FMT_BLK_GRP_CTRL);
+> +	u32p_replace_bits(&dpn_frame_fmt, SDW_STREAM_PCM, AMD_DPN_FRAME_FMT_PCM_OR_PDM);
+> +	acp_reg_writel(dpn_frame_fmt, ctrl->mmio + frame_fmt_reg);
+> +
+> +	dpn_sampleinterval = params->sample_interval - 1;
+> +	acp_reg_writel(dpn_sampleinterval, ctrl->mmio + sample_int_reg);
+> +
+> +	dpn_hctrl = FIELD_PREP(AMD_DPN_HCTRL_HSTOP, params->hstop);
+> +	dpn_hctrl |= FIELD_PREP(AMD_DPN_HCTRL_HSTART, params->hstart);
+> +	acp_reg_writel(dpn_hctrl, ctrl->mmio + hctrl_dp0_reg);
+> +
+> +	dpn_offsetctrl = FIELD_PREP(AMD_DPN_OFFSET_CTRL_1, params->offset1);
+> +	dpn_offsetctrl |= FIELD_PREP(AMD_DPN_OFFSET_CTRL_2, params->offset2);
+> +	acp_reg_writel(dpn_offsetctrl, ctrl->mmio + offset_reg);
+> +
+> +	dpn_lanectrl = acp_reg_readl(ctrl->mmio + lane_ctrl_reg);
+> +	u32p_replace_bits(&dpn_lanectrl, params->lane_ctrl, AMD_DPN_CH_EN_LCTRL);
+> +	acp_reg_writel(dpn_lanectrl, ctrl->mmio + lane_ctrl_reg);
+> +	return 0;
+> +}
+> +
+> +static int amd_sdwc_port_enable(struct sdw_bus *bus,
+> +				struct sdw_enable_ch *enable_ch,
+> +				unsigned int bank)
+> +{
+> +	struct amd_sdwc_ctrl *ctrl = to_amd_sdw(bus);
+> +	u32 dpn_ch_enable;
+> +	u32 ch_enable_reg, channel_type;
+> +
+> +	switch (ctrl->instance) {
+> +	case ACP_SDW0:
+> +		channel_type = enable_ch->port_num;
+> +		break;
+> +	case ACP_SDW1:
+> +		channel_type = enable_ch->port_num + ACP_SDW0_MAX_DAI;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	switch (channel_type) {
+> +	case ACP_SDW0_AUDIO_TX:
+> +		ch_enable_reg = ACP_SW_AUDIO_TX_CHANNEL_ENABLE_DP0;
+
+in the function above, I commented on
+
+		lane_ctrl_reg = ACP_SW_AUDIO_TX_CHANNEL_ENABLE_DP0;
+
+This looks really weird. You need to add comments is this is really
+intentional.
+
+> +		break;
+> +	case ACP_SDW0_HS_TX:
+> +		ch_enable_reg = ACP_SW_HEADSET_TX_CHANNEL_ENABLE_DP0;
+> +		break;
+> +	case ACP_SDW0_BT_TX:
+> +		ch_enable_reg = ACP_SW_BT_TX_CHANNEL_ENABLE_DP0;
+> +		break;
+> +	case ACP_SDW1_BT_TX:
+> +		ch_enable_reg = ACP_P1_SW_BT_TX_CHANNEL_ENABLE_DP0;
+> +		break;
+> +	case ACP_SDW0_AUDIO_RX:
+> +		ch_enable_reg = ACP_SW_AUDIO_RX_CHANNEL_ENABLE_DP0;
+> +		break;
+> +	case ACP_SDW0_HS_RX:
+> +		ch_enable_reg = ACP_SW_HEADSET_RX_CHANNEL_ENABLE_DP0;
+> +		break;
+> +	case ACP_SDW0_BT_RX:
+> +		ch_enable_reg = ACP_SW_BT_RX_CHANNEL_ENABLE_DP0;
+> +		break;
+> +	case ACP_SDW1_BT_RX:
+> +		ch_enable_reg = ACP_P1_SW_BT_RX_CHANNEL_ENABLE_DP0;
+> +		break;
+> +	default:
+> +		dev_err(bus->dev, "%s:Invalid channel:%d\n", __func__, channel_type);
+> +		return -EINVAL;
+> +	}
+> +
+> +	dpn_ch_enable =  acp_reg_readl(ctrl->mmio + ch_enable_reg);
+> +	u32p_replace_bits(&dpn_ch_enable, enable_ch->ch_mask, AMD_DPN_CH_EN_CHMASK);
+> +	if (enable_ch->enable)
+> +		acp_reg_writel(dpn_ch_enable, ctrl->mmio + ch_enable_reg);
+> +	else
+> +		acp_reg_writel(0, ctrl->mmio + ch_enable_reg);
+> +	return 0;
+> +}
+> +
+> +static int sdw_master_read_amd_prop(struct sdw_bus *bus)
+> +{
+> +	struct amd_sdwc_ctrl *ctrl = to_amd_sdw(bus);
+> +	struct fwnode_handle *link;
+> +	struct sdw_master_prop *prop;
+> +	u32 quirk_mask = 0;
+> +	u32 wake_en_mask = 0;
+> +	u32 power_mode_mask = 0;
+> +	char name[32];
+> +
+> +	prop = &bus->prop;
+> +	/* Find master handle */
+> +	snprintf(name, sizeof(name), "mipi-sdw-link-%d-subproperties", bus->link_id);
+> +	link = device_get_named_child_node(bus->dev, name);
+> +	if (!link) {
+> +		dev_err(bus->dev, "Master node %s not found\n", name);
+> +		return -EIO;
+> +	}
+> +	fwnode_property_read_u32(link, "amd-sdw-enable", &quirk_mask);
+> +	if (!(quirk_mask & AMD_SDW_QUIRK_MASK_BUS_ENABLE))
+> +		prop->hw_disabled = true;
+
+same quirk as Intel, nice :-)
+
+> +	prop->quirks = SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH |
+> +		       SDW_MASTER_QUIRKS_CLEAR_INITIAL_PARITY;
+
+And here too. Is this really needed or just-copy-pasted?
+
+> +	fwnode_property_read_u32(link, "amd-sdw-wake-enable", &wake_en_mask);
+> +	ctrl->wake_en_mask = wake_en_mask;
+> +	fwnode_property_read_u32(link, "amd-sdw-power-mode", &power_mode_mask);
+> +	ctrl->power_mode_mask = power_mode_mask;
+> +	return 0;
+> +}
+> +
+
+> +static int amd_sdwc_probe(struct platform_device *pdev)
+
+why not use an auxiliary device? we've moved away from platform devices
+maybe two years ago.
+
+> +{
+> +	const struct acp_sdw_pdata *pdata = pdev->dev.platform_data;
+> +	struct resource *res;
+> +	struct device *dev = &pdev->dev;
+> +	struct sdw_master_prop *prop;
+> +	struct sdw_bus_params *params;
+> +	struct amd_sdwc_ctrl *ctrl;
+> +	int ret;
+> +
+> +	if (!pdev->dev.platform_data) {
+> +		dev_err(&pdev->dev, "platform_data not retrieved\n");
+> +		return -ENODEV;
+> +	}
+> +	ctrl = devm_kzalloc(&pdev->dev, sizeof(struct amd_sdwc_ctrl), GFP_KERNEL);
+> +	if (!ctrl)
+> +		return -ENOMEM;
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res) {
+> +		dev_err(&pdev->dev, "IORESOURCE_MEM FAILED\n");
+> +		return -ENOMEM;
+> +	}
+> +	ctrl->mmio = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+> +	if (IS_ERR(ctrl->mmio)) {
+> +		dev_err(&pdev->dev, "mmio not found\n");
+> +		return PTR_ERR(ctrl->mmio);
+> +	}
+> +	ctrl->instance = pdata->instance;
+> +	ctrl->sdw_lock  = pdata->sdw_lock;
+> +	ctrl->rows_index = sdw_find_row_index(50);
+> +	ctrl->cols_index = sdw_find_col_index(10);
+> +
+> +	ctrl->dev = dev;
+> +	dev_set_drvdata(&pdev->dev, ctrl);
+> +
+> +	ctrl->bus.ops = &amd_sdwc_ops;
+> +	ctrl->bus.port_ops = &amd_sdwc_port_ops;
+> +	ctrl->bus.compute_params = &amd_sdwc_compute_params;
+> +	ctrl->bus.clk_stop_timeout = 1;
+> +	switch (ctrl->instance) {
+> +	case ACP_SDW0:
+> +		ctrl->num_dout_ports =  AMD_SDW0_MAX_TX_PORTS;
+> +		ctrl->num_din_ports = AMD_SDW0_MAX_RX_PORTS;
+> +		break;
+> +	case ACP_SDW1:
+> +		ctrl->num_dout_ports = AMD_SDW1_MAX_TX_PORTS;
+> +		ctrl->num_din_ports = AMD_SDW1_MAX_RX_PORTS;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +	params = &ctrl->bus.params;
+> +	params->max_dr_freq = AMD_SDW_DEFAULT_CLK_FREQ * 2;
+> +	params->curr_dr_freq = AMD_SDW_DEFAULT_CLK_FREQ * 2;
+> +	params->col = 10;
+> +	params->row = 50;
+> +
+> +	prop = &ctrl->bus.prop;
+> +	prop->clk_freq = &amd_sdwc_freq_tbl[0];
+> +	prop->mclk_freq = AMD_SDW_BUS_BASE_FREQ;
+> +	ctrl->bus.link_id = ctrl->instance;
+> +	ret = sdw_bus_master_add(&ctrl->bus, dev, dev->fwnode);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to register Soundwire controller (%d)\n",
+
+master. the confusion continues.
+
+> +			ret);
+> +		return ret;
+> +	}
+> +	INIT_WORK(&ctrl->probe_work, amd_sdwc_probe_work);
+> +	schedule_work(&ctrl->probe_work);
+> +	return 0;
+> +}
+> +
+> +static int amd_sdwc_remove(struct platform_device *pdev)
+> +{
+> +	struct amd_sdwc_ctrl *ctrl = dev_get_drvdata(&pdev->dev);
+> +	int ret;
+> +
+> +	amd_disable_sdw_interrupts(ctrl);
+> +	sdw_bus_master_delete(&ctrl->bus);
+> +	ret = amd_disable_sdw_controller(ctrl);
+> +	return ret;
+> +}
+> +
+> +static struct platform_driver amd_sdwc_driver = {
+> +	.probe	= &amd_sdwc_probe,
+> +	.remove = &amd_sdwc_remove,
+> +	.driver = {
+> +		.name	= "amd_sdw_controller",
+> +	}
+> +};
+> +module_platform_driver(amd_sdwc_driver);
+> +
+> +MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
+> +MODULE_DESCRIPTION("AMD soundwire driver");
+> +MODULE_LICENSE("GPL v2");
+
+"GPL" is enough
+
+> +enum amd_sdw_channel {
+> +	/* SDW0 */
+> +	ACP_SDW0_AUDIO_TX = 0,
+> +	ACP_SDW0_BT_TX,
+> +	ACP_SDW0_HS_TX,
+> +	ACP_SDW0_AUDIO_RX,
+> +	ACP_SDW0_BT_RX,
+> +	ACP_SDW0_HS_RX,
+> +	/* SDW1 */
 > +	ACP_SDW1_BT_TX,
 > +	ACP_SDW1_BT_RX,
 > +};
 
-this was defined in another patch already?
+you really need to comment on this. It looks like you've special-cased
+manager ports for specific usages? This is perfectly fine in closed
+applications, but it's not clear how it might work with headset,
+amplifier and mic codec devices.
 
-> +
->  struct pdm_stream_instance {
->  	u16 num_pages;
->  	u16 channels;
-> @@ -139,4 +182,22 @@ struct acp63_dev_data {
->  struct sdw_dma_dev_data {
->  	void __iomem *acp_base;
->  	struct mutex *acp_lock;
-> +	struct snd_pcm_substream *sdw_stream[ACP63_SDW_MAX_STREAMS];
-> +};
-> +
-> +struct sdw_stream_instance {
 
-sdw_stream is already a well-defined concept. Please use sdw_dma_stream
-or something less confusing naming-wise.
+> diff --git a/include/linux/soundwire/sdw_amd.h b/include/linux/soundwire/sdw_amd.h
+> index f0123815af46..5ec39f8c2f2e 100644
+> --- a/include/linux/soundwire/sdw_amd.h
+> +++ b/include/linux/soundwire/sdw_amd.h
+> @@ -10,9 +10,30 @@
+>  
+>  #define AMD_SDW_CLK_STOP_MODE		1
+>  #define AMD_SDW_POWER_OFF_MODE		2
+> +#define ACP_SDW0	0
+> +#define ACP_SDW1	1
+> +#define ACP_SDW0_MAX_DAI	6
 
-> +	u16 num_pages;
-> +	u16 channels;
-> +	u32 stream_id;
-> +	dma_addr_t dma_addr;
-> +	u64 bytescount;
-> +	void __iomem *acp_base;
-> +};
-> +
-> +union acp_sdw_dma_count {
-> +	struct {
-> +	u32 low;
-> +	u32 high;
-> +	} bcount;
-> +	u64 bytescount;
+is this related to the definition of amd_sdw_channel or the number of
+ports available?
+>  
+>  struct acp_sdw_pdata {
+>  	u16 instance;
+>  	struct mutex *sdw_lock;
 >  };
-> diff --git a/sound/soc/amd/ps/ps-sdw-dma.c b/sound/soc/amd/ps/ps-sdw-dma.c
-> index 388a4b7df715..e94f76053c66 100644
-> --- a/sound/soc/amd/ps/ps-sdw-dma.c
-> +++ b/sound/soc/amd/ps/ps-sdw-dma.c
-> @@ -12,12 +12,543 @@
->  #include <sound/pcm_params.h>
->  #include <sound/soc.h>
->  #include <sound/soc-dai.h>
-> +#include <linux/soundwire/sdw_amd.h>
->  #include "acp63.h"
->  
->  #define DRV_NAME "amd_ps_sdw_dma"
->  
-> +static const struct snd_pcm_hardware acp63_sdw_hardware_playback = {
-> +	.info = SNDRV_PCM_INFO_INTERLEAVED |
-> +		SNDRV_PCM_INFO_BLOCK_TRANSFER |
-> +		SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
-> +		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
-> +	.formats = SNDRV_PCM_FMTBIT_S16_LE |  SNDRV_PCM_FMTBIT_S8 |
-> +		   SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE,
-> +	.channels_min = 2,
-> +	.channels_max = 2,
-> +	.rates = SNDRV_PCM_RATE_48000,
-> +	.rate_min = 48000,
-> +	.rate_max = 48000,
+> +
+> +struct amd_sdwc_ctrl {
+> +	struct sdw_bus bus;
+> +	struct device *dev;
+> +	void __iomem *mmio;
+> +	struct work_struct probe_work;
+> +	struct mutex *sdw_lock;
 
-is this really limited to 2ch 48kHz? This doesn't align with the
-references to Bluetooth above?
+comment please.
 
-> +	.buffer_bytes_max = SDW_PLAYBACK_MAX_NUM_PERIODS * SDW_PLAYBACK_MAX_PERIOD_SIZE,
-> +	.period_bytes_min = SDW_PLAYBACK_MIN_PERIOD_SIZE,
-> +	.period_bytes_max = SDW_PLAYBACK_MAX_PERIOD_SIZE,
-> +	.periods_min = SDW_PLAYBACK_MIN_NUM_PERIODS,
-> +	.periods_max = SDW_PLAYBACK_MAX_NUM_PERIODS,
+> +	int num_din_ports;
+> +	int num_dout_ports;
+> +	int cols_index;
+> +	int rows_index;
+> +	u32 instance;
+> +	u32 quirks;
+> +	u32 wake_en_mask;
+> +	int num_ports;
+> +	bool startup_done;
+
+ah this was an Intel definition. Due to power dependencies we had to
+split the probe and startup step. Does AMD have a need for this? Is the
+SoundWire master IP dependent on DSP boot or something?
+
+> +	u32 power_mode_mask;
 > +};
-> +
-> +static const struct snd_pcm_hardware acp63_sdw_hardware_capture = {
-> +	.info = SNDRV_PCM_INFO_INTERLEAVED |
-> +		SNDRV_PCM_INFO_BLOCK_TRANSFER |
-> +		SNDRV_PCM_INFO_MMAP |
-> +		SNDRV_PCM_INFO_MMAP_VALID |
-> +		SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME,
-> +	.formats = SNDRV_PCM_FMTBIT_S16_LE |  SNDRV_PCM_FMTBIT_S8 |
-> +		   SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE,
-> +	.channels_min = 2,
-> +	.channels_max = 2,
-> +	.rates = SNDRV_PCM_RATE_48000,
-> +	.rate_min = 48000,
-> +	.rate_max = 48000,
-
-same here?
-
-> +	.buffer_bytes_max = SDW_CAPTURE_MAX_NUM_PERIODS * SDW_CAPTURE_MAX_PERIOD_SIZE,
-> +	.period_bytes_min = SDW_CAPTURE_MIN_PERIOD_SIZE,
-> +	.period_bytes_max = SDW_CAPTURE_MAX_PERIOD_SIZE,
-> +	.periods_min = SDW_CAPTURE_MIN_NUM_PERIODS,
-> +	.periods_max = SDW_CAPTURE_MAX_NUM_PERIODS,
-> +};
-> +
-> +static void acp63_config_dma(struct sdw_stream_instance *sdw_ins, u32 stream_id)
-> +{
-> +	u16 page_idx;
-> +	u32 low, high, val;
-> +	dma_addr_t addr;
-> +
-> +	addr = sdw_ins->dma_addr;
-> +	val = SDW_PTE_OFFSET + (stream_id * 256);
-> +
-> +	/* Group Enable */
-> +	acp63_writel(ACP_SDW_SRAM_PTE_OFFSET | BIT(31), sdw_ins->acp_base +
-> +		     ACPAXI2AXI_ATU_BASE_ADDR_GRP_2);
-> +	acp63_writel(PAGE_SIZE_4K_ENABLE, sdw_ins->acp_base +
-> +		     ACPAXI2AXI_ATU_PAGE_SIZE_GRP_2);
-> +	for (page_idx = 0; page_idx < sdw_ins->num_pages; page_idx++) {
-> +		/* Load the low address of page int ACP SRAM through SRBM */
-> +		low = lower_32_bits(addr);
-> +		high = upper_32_bits(addr);
-> +
-> +		acp63_writel(low, sdw_ins->acp_base + ACP_SCRATCH_REG_0 + val);
-> +		high |= BIT(31);
-> +		acp63_writel(high, sdw_ins->acp_base + ACP_SCRATCH_REG_0 + val + 4);
-> +		val += 8;
-> +		addr += PAGE_SIZE;
-> +	}
-> +
-> +	/*cache Invalidation added for Testing */
-
-/* cache
-
-> +	acp63_writel(0x1, sdw_ins->acp_base + ACPAXI2AXI_ATU_CTRL);
-> +}
-
-> +static int acp63_sdw_dma_hw_params(struct snd_soc_component *component,
-> +				   struct snd_pcm_substream *substream,
-> +				   struct snd_pcm_hw_params *params)
-> +{
-> +	struct sdw_stream_instance *sdw_stream_data;
-> +	struct sdw_dma_dev_data *sdw_data;
-> +	u32 period_bytes;
-> +	u32 water_mark_size_reg;
-> +	u32 irq_mask, ext_intr_ctrl;
-> +	u64 size;
-> +	u32 stream_id;
-> +	u32 acp_ext_intr_cntl_reg;
-> +	int ret;
-> +
-> +	stream_id = 0;
-
-useless initialization...
-
-> +	sdw_data = dev_get_drvdata(component->dev);
-> +	sdw_stream_data = substream->runtime->private_data;
-> +	if (!sdw_stream_data)
-> +		return -EINVAL;
-> +	stream_id = sdw_stream_data->stream_id;
-
-... overriden here
-
-> +	sdw_data->sdw_stream[stream_id] = substream;
-> +	size = params_buffer_bytes(params);
-> +	period_bytes = params_period_bytes(params);
-> +	sdw_stream_data->dma_addr = substream->runtime->dma_addr;
-> +	sdw_stream_data->num_pages = (PAGE_ALIGN(size) >> PAGE_SHIFT);
-> +	acp63_config_dma(sdw_stream_data, stream_id);
-> +	ret = acp63_configure_sdw_ringbuffer(sdw_stream_data->acp_base, stream_id, size);
-> +	if (ret) {
-> +		dev_err(component->dev, "Invalid channel type\n");
-> +		return -EINVAL;
-> +	}
-> +	switch (stream_id) {
-> +	case ACP_SDW_AUDIO_TX:
-> +		water_mark_size_reg = ACP_AUDIO_TX_INTR_WATERMARK_SIZE;
-> +		irq_mask = BIT(ACP_AUDIO_TX_THRESHOLD);
-> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL;
-> +		break;
-
-so there's ONE resource to deal with external codecs? How does this work
-if you have a headset codec and an amplifier?
-
-> +	case ACP_SDW_BT_TX:
-> +		water_mark_size_reg = ACP_BT_TX_INTR_WATERMARK_SIZE;
-> +		irq_mask = BIT(ACP_BT_TX_THRESHOLD);
-> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL;
-> +		break;
-> +	case ACP_SDW_HS_TX:
-> +		water_mark_size_reg = ACP_HS_TX_INTR_WATERMARK_SIZE;
-> +		irq_mask = BIT(ACP_HS_TX_THRESHOLD);
-> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL;
-> +		break;
-> +	case ACP_SDW1_BT_TX:
-> +		water_mark_size_reg = ACP_P1_BT_TX_INTR_WATERMARK_SIZE;
-> +		irq_mask = BIT(ACP_P1_BT_TX_THRESHOLD);
-> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL1;
-> +		break;
-> +	case ACP_SDW_AUDIO_RX:
-> +		water_mark_size_reg = ACP_AUDIO_RX_INTR_WATERMARK_SIZE;
-> +		irq_mask = BIT(ACP_AUDIO_RX_THRESHOLD);
-> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL;
-> +		break;
-> +	case ACP_SDW_BT_RX:
-> +		water_mark_size_reg = ACP_BT_RX_INTR_WATERMARK_SIZE;
-> +		irq_mask = BIT(ACP_BT_RX_THRESHOLD);
-> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL;
-> +		break;
-> +	case ACP_SDW_HS_RX:
-> +		water_mark_size_reg = ACP_HS_RX_INTR_WATERMARK_SIZE;
-> +		irq_mask = BIT(ACP_HS_RX_THRESHOLD);
-> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL;
-> +		break;
-> +	case ACP_SDW1_BT_RX:
-> +		water_mark_size_reg = ACP_P1_BT_RX_INTR_WATERMARK_SIZE;
-> +		irq_mask = BIT(ACP_P1_BT_RX_THRESHOLD);
-> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL1;
-> +		break;
-> +	default:
-> +		dev_err(component->dev, "%s: Invalid channel type\n", __func__);
-> +		return -EINVAL;
-> +	}
-> +
-> +	ext_intr_ctrl = acp63_readl(sdw_stream_data->acp_base + acp_ext_intr_cntl_reg);
-> +	ext_intr_ctrl |= irq_mask;
-> +	acp63_writel(ext_intr_ctrl, sdw_stream_data->acp_base + acp_ext_intr_cntl_reg);
-> +	acp63_writel(period_bytes, sdw_stream_data->acp_base + water_mark_size_reg);
-> +	return 0;
-> +}
+>  #endif
