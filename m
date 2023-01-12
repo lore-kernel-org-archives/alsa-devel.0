@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1957C54EBC
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Jan 2023 11:30:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA500C54EBC
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Jan 2023 11:30:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E002D8B44;
-	Thu, 12 Jan 2023 12:29:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E002D8B44
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8CB88B5C;
+	Thu, 12 Jan 2023 12:29:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8CB88B5C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673523020;
-	bh=9CUFrPQ09yPzbbj4IV4mmL6zJucv2gUZLtx+M2adKnU=;
+	s=default; t=1673523040;
+	bh=C4Q7t6S4036xeiDu5xxCUyx970NCpXYQ7LpyZ8TZ13k=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=suQ5KVlN2DzUI33Bo6I8aEUB9pyOwWwA22MHZc3p9J8Me+ZGmVE0d/QHW+Kys/OtP
-	 +SXTHp8rqvimePwjzjguqyb8+ODE8AUBiX5L7cYyDyKWS88/FP8U8nBCC7YTMbi4sO
-	 9aAp5+Wi+w4vyg+OoztkNSUMxaYbOv7Nrc0/aDnY=
+	b=H+FlZvmxgSwRrA9einT/S/cKzOGIT2cJyH8UD31RepbIEh078U6aOlwBnlIzYyX4d
+	 LZi0xtt3YuBjqbWtG9CAH/VSW61TdafpozzED9I7yIw9hZcKgAwbL6TlD6GR8xKK9N
+	 0pYAxtxkK0agQPl6+II6upwUFAgm8gVdy/zN2RfM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48A28F80552;
+	by alsa1.perex.cz (Postfix) with ESMTP id D5A37F80558;
 	Thu, 12 Jan 2023 12:28:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECBB8F8053D; Thu, 12 Jan 2023 12:28:41 +0100 (CET)
+ id BE8CCF80553; Thu, 12 Jan 2023 12:28:43 +0100 (CET)
 Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5DA81F804CA
- for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2023 12:28:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DA81F804CA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 98F0EF8013D
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2023 12:28:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98F0EF8013D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=EmxMTEDf
+ header.s=Intel header.b=NDwyEPaU
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1673522920; x=1705058920;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=9CUFrPQ09yPzbbj4IV4mmL6zJucv2gUZLtx+M2adKnU=;
- b=EmxMTEDf8VyMl6zJuu/iWrjvoG4390c8Xssk9iLziyl8R1xeZyniQLw/
- f4Iy3g4dF3qmWdrAli1b1k/F5Vht8Rf8wanUQ9dWbeSc24c19TU5v2hsd
- 0dP0t7TojZdjr7KfB6k0FzJd/RPgfaoVPg9qc0EqudnxWc2PiZqwGARC5
- HDpMhm6aNOqp3+nGHAyydwv+fnJj2P7A6s1WKkpHRpHj/NCVQKABdcUK4
- aLEyMxhLlKs/zI3fN6xptTYVcarwyhymbYQT9FjN6y3chFHM9SYO8PdEK
- 2AFxjK+UhPY0XEMiJCsvUZKgwBHo1HL0gIlN0xANmdmAnuEmg9y1guZGP g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="385994956"
-X-IronPort-AV: E=Sophos;i="5.96,319,1665471600"; d="scan'208";a="385994956"
+ bh=C4Q7t6S4036xeiDu5xxCUyx970NCpXYQ7LpyZ8TZ13k=;
+ b=NDwyEPaUH5bgK682RlfTWGiw8kz6oFTDYIyT4h4eK2Zya8atRUFOxc9K
+ RfU8r52zOEkZAPXFgxNMMod3mrJotWZZ6Gmn+AEz4GIb9AHfrCICNomfu
+ tONGfPf1OUgrV4lm4uZgOmLd8tNDTnoFRQgBFtq03U65pIGB62tpgVB+K
+ YJNFv0FkQw7ufYjIP2Io9X/+lKuKDCAPMCrLRYcdVc/wYcDwaWGOPfAag
+ L1uGGaH3UMAQIa43tfLdHQ+6PuK9ajIkBelUQ8egXdS/8MTZF9rrOMsAt
+ Hrgu1tJls1jDc9mmFzKCtddwqqUwfHlHtgslUqrKnqT7mHzlyydvsppvs g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="385994949"
+X-IronPort-AV: E=Sophos;i="5.96,319,1665471600"; d="scan'208";a="385994949"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  12 Jan 2023 03:28:27 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="986519420"
-X-IronPort-AV: E=Sophos;i="5.96,319,1665471600"; d="scan'208";a="986519420"
+X-IronPort-AV: E=McAfee;i="6500,9779,10586"; a="986519418"
+X-IronPort-AV: E=Sophos;i="5.96,319,1665471600"; d="scan'208";a="986519418"
 Received: from black.fi.intel.com ([10.237.72.28])
  by fmsmga005.fm.intel.com with ESMTP; 12 Jan 2023 03:28:22 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id 95AFE330; Thu, 12 Jan 2023 13:28:56 +0200 (EET)
+ id 72458E1; Thu, 12 Jan 2023 13:28:56 +0200 (EET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/5] ASoC: Intel: bytcr_wm5102: Drop reference count of
+Subject: [PATCH v2 1/5] ASoC: Intel: bytcht_es8316: Drop reference count of
  ACPI device after use
-Date: Thu, 12 Jan 2023 13:28:51 +0200
-Message-Id: <20230112112852.67714-5-andriy.shevchenko@linux.intel.com>
+Date: Thu, 12 Jan 2023 13:28:48 +0200
+Message-Id: <20230112112852.67714-2-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230112112852.67714-1-andriy.shevchenko@linux.intel.com>
 References: <20230112112852.67714-1-andriy.shevchenko@linux.intel.com>
@@ -103,27 +103,64 @@ count at the correct place.
 While at it, move to acpi_dev_put() as symmetrical call to the
 acpi_dev_get_first_match_dev().
 
-Fixes: 9a87fc1e0619 ("ASoC: Intel: bytcr_wm5102: Add machine driver for BYT/WM5102")
+Fixes: 3c22a73fb873 ("ASoC: Intel: bytcht_es8316: fix HID handling")
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/soc/intel/boards/bytcr_wm5102.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/bytcht_es8316.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_wm5102.c b/sound/soc/intel/boards/bytcr_wm5102.c
-index 1669eb3bd80f..c0706537f673 100644
---- a/sound/soc/intel/boards/bytcr_wm5102.c
-+++ b/sound/soc/intel/boards/bytcr_wm5102.c
-@@ -411,9 +411,9 @@ static int snd_byt_wm5102_mc_probe(struct platform_device *pdev)
- 		return -ENOENT;
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+index 09d1f0f6d686..df157b01df8b 100644
+--- a/sound/soc/intel/boards/bytcht_es8316.c
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -497,21 +497,28 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 	if (adev) {
+ 		snprintf(codec_name, sizeof(codec_name),
+ 			 "i2c-%s", acpi_dev_name(adev));
+-		put_device(&adev->dev);
+ 		byt_cht_es8316_dais[dai_index].codecs->name = codec_name;
+ 	} else {
+ 		dev_err(dev, "Error cannot find '%s' dev\n", mach->id);
+ 		return -ENXIO;
  	}
- 	snprintf(codec_name, sizeof(codec_name), "spi-%s", acpi_dev_name(adev));
--	put_device(&adev->dev);
  
- 	codec_dev = bus_find_device_by_name(&spi_bus_type, NULL, codec_name);
++	codec_dev = acpi_get_first_physical_node(adev);
 +	acpi_dev_put(adev);
- 	if (!codec_dev)
- 		return -EPROBE_DEFER;
++	if (!codec_dev)
++		return -EPROBE_DEFER;
++	priv->codec_dev = get_device(codec_dev);
++
+ 	/* override platform name, if required */
+ 	byt_cht_es8316_card.dev = dev;
+ 	platform_name = mach->mach_params.platform;
  
+ 	ret = snd_soc_fixup_dai_links_platform_name(&byt_cht_es8316_card,
+ 						    platform_name);
+-	if (ret)
++	if (ret) {
++		put_device(codec_dev);
+ 		return ret;
++	}
+ 
+ 	/* Check for BYTCR or other platform and setup quirks */
+ 	dmi_id = dmi_first_match(byt_cht_es8316_quirk_table);
+@@ -539,13 +546,10 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
+ 
+ 	/* get the clock */
+ 	priv->mclk = devm_clk_get(dev, "pmc_plt_clk_3");
+-	if (IS_ERR(priv->mclk))
++	if (IS_ERR(priv->mclk)) {
++		put_device(codec_dev);
+ 		return dev_err_probe(dev, PTR_ERR(priv->mclk), "clk_get pmc_plt_clk_3 failed\n");
+-
+-	codec_dev = acpi_get_first_physical_node(adev);
+-	if (!codec_dev)
+-		return -EPROBE_DEFER;
+-	priv->codec_dev = get_device(codec_dev);
++	}
+ 
+ 	if (quirk & BYT_CHT_ES8316_JD_INVERTED)
+ 		props[cnt++] = PROPERTY_ENTRY_BOOL("everest,jack-detect-inverted");
 -- 
 2.39.0
 
