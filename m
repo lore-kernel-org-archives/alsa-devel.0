@@ -4,74 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06FAFC54EBD
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Jan 2023 15:24:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5613CC54EBD
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Jan 2023 15:24:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 790B391B3;
-	Thu, 12 Jan 2023 16:23:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 790B391B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00F2991CC;
+	Thu, 12 Jan 2023 16:23:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00F2991CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673537047;
-	bh=D0hNIdfv9EWyP1RVxQgqv7k1sO7+UaCb9F79/VZ74AM=;
+	s=default; t=1673537079;
+	bh=TN1PtohmiBBHyfdy4nNcbruYWz6XfuHSrNsflFeJG/8=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=URKGutn+7rWW+CndapLL6qcbj/5DEBgzrKaAsBNw4mgcJrBf+FzY8ObM326xZ3dQZ
-	 JHRo0ik1MDmgP/mB2KqXws8Qypg4fPjK9umgx1dgrZ2DkmprKfU+T/wbZXuUDLus/U
-	 950MUuzWE5hlxW4M05T9xIuJ5j3A2AEnC7R+dBsU=
+	 Cc:From;
+	b=gbPuNlYERbmH9sdCGx8qpgr5+6YqWFr42bn8nyg5JkhtRDcGL1+IlPcpmgM/bcVCP
+	 k907yadGPc3yRA+c+eqWyzqyX1u1TU4gIdvgsqohGWV3GpOyCHODjrOnyVIA1s6WFc
+	 OEzhG+Fw8hXXF7SUtajs8fsQa/yLuTAxKZ69PKyA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F882F804CA;
-	Thu, 12 Jan 2023 16:23:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5900FF8019B;
+	Thu, 12 Jan 2023 16:23:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D8B00F8016E; Thu, 12 Jan 2023 16:23:15 +0100 (CET)
+ id DD3C9F804D9; Thu, 12 Jan 2023 16:23:16 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A48CBF8016E
- for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2023 16:23:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A48CBF8016E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6AE75F8013D
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2023 16:23:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AE75F8013D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=G2fA/egN
+ header.s=Intel header.b=ZvKULN/v
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1673536993; x=1705072993;
- h=message-id:date:mime-version:subject:to:references:from:
- in-reply-to:content-transfer-encoding;
- bh=D0hNIdfv9EWyP1RVxQgqv7k1sO7+UaCb9F79/VZ74AM=;
- b=G2fA/egN1Wi66kYUs5lcEIydoEcAddA/DiYghSsts2VMfNRnlpaQkgYe
- ya3bQD+Wu0AiC4TdNikmrpwKJGsRMZSbVNpU1Q557rrPcWuRBjlgH9e/G
- 7OUSGe6i3TmdDfT8gyw9CsG8GTQKmrahCOseRlL29AYHBAU1sC9LTGzxJ
- 3DRj3QWF6dNdFO0xwBTAUiSooMzEpueOp+A8m4/Lh1QZwMR7rPsauW/AE
- r7FPXGWwNlK1GMnLei0Wls7zEu4dosob0U9g03TqCcxnOVYHjN+RY1obw
- tSxZRJQuad9UAzQdHj4Yeh4NpVP/Wyr1cCFdEMwqHYylVhhoEXEBhSpOc w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10588"; a="388212560"
-X-IronPort-AV: E=Sophos;i="5.97,211,1669104000"; d="scan'208";a="388212560"
+ t=1673536995; x=1705072995;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=TN1PtohmiBBHyfdy4nNcbruYWz6XfuHSrNsflFeJG/8=;
+ b=ZvKULN/vXsfPPn5g48tmWB3/DCaQJbr4AiS1wVQRKFRLiKah4e/XrLE4
+ JJyPazDExxWDCDSK4LRowTD3f3aAXRXVkOT/OEk56+T+KMA7CRLTpGX/X
+ qUVMSNqHTKsAp0KG5gdZOB/fSbVQDUaHmDY9V+wE2neuAvxsOuyIHojsi
+ 999ZBP8Pe6KGME3o88J0hVrcTpYNtlqNx0YF0GHVUCNXPNEY5zU46CJSH
+ A3kvloMVf5ciL3UbnaxyIunzw/Qs7G96XSHuis94w24DUKW06K9EnW5hO
+ 3F1Xr+AYB3f/Izf81Clz2nEGVDrcSHm8+cnGQjGN/C8cyABc4wMFxgVdu A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10588"; a="388212578"
+X-IronPort-AV: E=Sophos;i="5.97,211,1669104000"; d="scan'208";a="388212578"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jan 2023 06:57:10 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10588"; a="607816924"
-X-IronPort-AV: E=Sophos;i="5.97,211,1669104000"; d="scan'208";a="607816924"
+ 12 Jan 2023 06:57:14 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10588"; a="607816938"
+X-IronPort-AV: E=Sophos;i="5.97,211,1669104000"; d="scan'208";a="607816938"
 Received: from jbetan3x-mobl1.amr.corp.intel.com (HELO [10.209.143.163])
  ([10.209.143.163])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jan 2023 06:57:10 -0800
-Message-ID: <d83615ae-10d9-ca5b-26aa-522b3f10b43f@linux.intel.com>
-Date: Thu, 12 Jan 2023 08:19:40 -0600
+ 12 Jan 2023 06:57:13 -0800
+Message-ID: <9edd31f6-1208-64fd-bdde-afb72699a1f5@linux.intel.com>
+Date: Thu, 12 Jan 2023 08:50:13 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH] ASoC: soc-pcm.c: Introduce a count to record the times of
- setting DAIs parameters
-To: Chancel Liu <chancel.liu@nxp.com>, lgirdwood@gmail.com,
- broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20230112065834.580192-1-chancel.liu@nxp.com>
+Subject: Re: [PATCH 17/19] soundwire: amd: add pm_prepare callback and pm ops
+ support
 Content-Language: en-US
+To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>, broonie@kernel.org,
+ vkoul@kernel.org, alsa-devel@alsa-project.org
+References: <20230111090222.2016499-1-Vijendar.Mukunda@amd.com>
+ <20230111090222.2016499-18-Vijendar.Mukunda@amd.com>
+ <a76043ad-c212-f625-8d0e-ef9460a078a5@linux.intel.com>
+ <8bc313ad-aaad-8d4e-b851-d08229dd5d55@amd.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230112065834.580192-1-chancel.liu@nxp.com>
+In-Reply-To: <8bc313ad-aaad-8d4e-b851-d08229dd5d55@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -86,115 +88,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: Mastan.Katragadda@amd.com, Sunil-kumar.Dommati@amd.com,
+ Basavaraj.Hiregoudar@amd.com, open list <linux-kernel@vger.kernel.org>,
+ Mario.Limonciello@amd.com, arungopal.kondaveeti@amd.com,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+>>> +static int __maybe_unused amd_pm_prepare(struct device *dev)
+>>> +{
+>>> +	struct amd_sdwc_ctrl *ctrl = dev_get_drvdata(dev);
+>>> +	struct sdw_bus *bus = &ctrl->bus;
+>>> +	int ret;
+>>> +
+>>> +	if (bus->prop.hw_disabled || !ctrl->startup_done) {
+>>> +		dev_dbg(bus->dev, "SoundWire master %d is disabled or not-started, ignoring\n",
+>>> +			bus->link_id);
+>>> +		return 0;
+>>> +	}
+>>> +	ret = device_for_each_child(bus->dev, NULL, amd_resume_child_device);
+>>> +	if (ret < 0)
+>>> +		dev_err(dev, "%s: amd_resume_child_device failed: %d\n", __func__, ret);
+>>> +	if (pm_runtime_suspended(dev) && ctrl->power_mode_mask & AMD_SDW_CLK_STOP_MODE) {
+>>> +		ret = pm_request_resume(dev);
+>>> +		if (ret < 0) {
+>>> +			dev_err(bus->dev, "pm_request_resume failed: %d\n", ret);
+>>> +			return 0;
+>>> +		}
+>>> +	}
+>>> +	return 0;
+>>> +}
+>> This seems to be inspired by the Intel code, but is this necessary here?
+> No It's not inspired by intel code. Initially, we haven't included
+> pm_prepare callback. We have observed issues without
+> pm_prepare callback.
+>> For Intel, we saw cases where we had to pm_resume before doing a system
+>> suspend, otherwise the hardware was in a bad state.
+>>
+>> Do you actually need to do so, or is is possible to do a system suspend
+>> when the clock is stopped.
+>>
+>> And in the case where the bus is in 'power-off' mode, do you actually
+>> need to resume at all?
+> Our platform supports different power modes. To support all
+> combinations, we have included pm_prepare callback.
 
-On 1/12/23 00:58, Chancel Liu wrote:
-> The commit 1da681e52853 ("ASoC: soc-pcm.c: Clear DAIs parameters after
-> stream_active is updated") tries to make sure DAIs parameters can be
-> cleared properly through moving the cleanup to the place where
-> stream_active is updated. However, it will cause the cleanup only
-> happening in soc_pcm_close().
-> 
-> Suppose a case: aplay -Dhw:0 44100.wav 48000.wav. The case calls
-> soc_pcm_open()->soc_pcm_hw_params()->soc_pcm_hw_free()->
-> soc_pcm_hw_params()->soc_pcm_hw_free()->soc_pcm_close() in order. The
-> parameters would be remained in the system even if the playback of
-> 44100.wav is finished.
-> 
-> The case requires us clearing parameters in phase of soc_pcm_hw_free().
-> We shouldn't use stream_active to decide if we must do the cleanup
-> since it is finally updated in soc_pcm_close().
-> 
-> This patch introduces a usage count called hw_params_count in
-> snd_soc_dai structure. It records the times of setting parameters to
-> this DAI then decreases each time soc_pcm_hw_free() is called. If the
-> count decreases to 0, it means this DAI is not used now and we should
-> clear the parameters.
+>> do you actually need to stop the clock before powering-off? This seems
+>> counter intuitive and not so useful?
+> Yes, as per our design, we need to stop the clock
+> before powering off.
 
-what makes you think that the use of hw_params and hw_free is symmetrical?
-
-A couple of years ago we found a case where the FE hw_params failed, and
-in that case the BE hw_free was called without the BE hw_params ever
-being invoked first. This is due to the DPCM error handling, and as a
-result all our hw_free implementations test if the resources are
-actually allocated/valid and never assume hw_params was used.
-
-IIRC it's also valid to call hw_params multiple times without calling
-hw_free every time.
-
-> Fixes: 1da681e52853 ("ASoC: soc-pcm.c: Clear DAIs parameters after stream_active is updated")
-> 
-> Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
-> ---
->  include/sound/soc-dai.h |  3 +++
->  sound/soc/soc-pcm.c     | 16 +++++++++++-----
->  2 files changed, 14 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-> index ea7509672086..a7e589a0fe72 100644
-> --- a/include/sound/soc-dai.h
-> +++ b/include/sound/soc-dai.h
-> @@ -451,6 +451,9 @@ struct snd_soc_dai {
->  	unsigned int channels;
->  	unsigned int sample_bits;
->  
-> +	/* Count of setting DAI parameters */
-> +	unsigned int hw_params_count;
-> +
->  	/* parent platform/codec */
->  	struct snd_soc_component *component;
->  
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index 579a44d81d9a..2c2a5dcf9e06 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -711,14 +711,10 @@ static int soc_pcm_clean(struct snd_soc_pcm_runtime *rtd,
->  
->  	if (!rollback) {
->  		snd_soc_runtime_deactivate(rtd, substream->stream);
-> -		/* clear the corresponding DAIs parameters when going to be inactive */
-> -		for_each_rtd_dais(rtd, i, dai) {
-> -			if (snd_soc_dai_active(dai) == 0)
-> -				soc_pcm_set_dai_params(dai, NULL);
->  
-> +		for_each_rtd_dais(rtd, i, dai)
->  			if (snd_soc_dai_stream_active(dai, substream->stream) == 0)
->  				snd_soc_dai_digital_mute(dai, 1, substream->stream);
-> -		}
->  	}
->  
->  	for_each_rtd_dais(rtd, i, dai)
-> @@ -949,6 +945,14 @@ static int soc_pcm_hw_clean(struct snd_soc_pcm_runtime *rtd,
->  
->  	snd_soc_dpcm_mutex_assert_held(rtd);
->  
-> +	/* clear the corresponding DAIs parameters when hw_params_count decreases to 0 */
-> +	for_each_rtd_dais(rtd, i, dai)
-> +		if (snd_soc_dai_stream_valid(dai, substream->stream)) {
-> +			dai->hw_params_count--;
-> +			if (dai->hw_params_count == 0)
-> +				soc_pcm_set_dai_params(dai, NULL);
-> +		}
-> +
->  	/* run the stream event */
->  	snd_soc_dapm_stream_stop(rtd, substream->stream);
->  
-> @@ -1051,6 +1055,7 @@ static int __soc_pcm_hw_params(struct snd_soc_pcm_runtime *rtd,
->  
->  		soc_pcm_set_dai_params(codec_dai, &codec_params);
->  		snd_soc_dapm_update_dai(substream, &codec_params, codec_dai);
-> +		codec_dai->hw_params_count++;
->  	}
->  
->  	for_each_rtd_cpu_dais(rtd, i, cpu_dai) {
-> @@ -1068,6 +1073,7 @@ static int __soc_pcm_hw_params(struct snd_soc_pcm_runtime *rtd,
->  		/* store the parameters for each DAI */
->  		soc_pcm_set_dai_params(cpu_dai, params);
->  		snd_soc_dapm_update_dai(substream, params, cpu_dai);
-> +		cpu_dai->hw_params_count++;
->  	}
->  
->  	ret = snd_soc_pcm_component_hw_params(substream, params);
+It'd be good to add comments capturing these points, that would be
+useful for new contributors and reviewers to know this is intentional
+and required by the hardware programming sequences.
