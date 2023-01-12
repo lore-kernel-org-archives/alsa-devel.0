@@ -4,80 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5466AC54EBD
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Jan 2023 11:00:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F24A2C54EBC
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Jan 2023 11:12:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 177CB8A8D;
-	Thu, 12 Jan 2023 12:00:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 177CB8A8D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82FB68A35;
+	Thu, 12 Jan 2023 12:11:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82FB68A35
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673521250;
-	bh=beb/MzzbBN/Q8toWLppR6k8xkpnksJWlcfl/d+Uc/tw=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
+	s=default; t=1673521923;
+	bh=/VKmYsvFhVjMD1aAlg6gH9ELj9CcssQhVv/zVq2tzBM=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=ldswwem+qTxfMPQti6JDFhXF9iB55wsvkJJsDrXHRVnL/Dp1O6TIBKopQgkcV5cmf
-	 HvW4xj4pGwvc7YjGLoNGi4nNSCOpTuUReDteAQWleTBUntTjp3mbN4r44UO+Jzn+Iw
-	 RfL1BM2bbX7IqSh+U2CxOGZSB32A7lhx0KvWTOwc=
+	b=TiWy3WzkXFTcM1AB/7EwhMzGx9PxbraGoAsJIb9iz5WdkCVyiwxDQVFIEeAKQpQOp
+	 7wfsaC7SWUpoWoKfpv8Km+c/CtXKcGerD9rD4ckF6TDsiPrdiqiRzaFmxITfbF8Ebb
+	 6pT8ePbpjLJAomGJrmB2GWGNqhjPOCvjPzmPsT60=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49DC3F804D9;
-	Thu, 12 Jan 2023 11:59:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8590F8019B;
+	Thu, 12 Jan 2023 12:11:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D7901F804C1; Thu, 12 Jan 2023 11:59:56 +0100 (CET)
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com
- [209.85.219.50])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ id B88F7F8016E; Thu, 12 Jan 2023 12:11:10 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1516FF804C1
- for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2023 11:59:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1516FF804C1
-Received: by mail-qv1-f50.google.com with SMTP id y8so12468792qvn.11
- for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2023 02:59:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=IH7mi4pHsD5CSZenw/RrhIslHHOi1JF8tLoL2JEA6Vc=;
- b=3dobmyzopB/WK6Akex7CLFEFJgsIRRh9rnWxe7HPYoe8qDopU1b5ZikMGbcijjPryF
- l792ObSL6SWsoH/0tOdt3pDFoDceMMKi4IfeFxmQecOXivKNger5N6qRRXhvEIfzbaT0
- sGy2kh9IKM6tQDZDBtPgXyisUBOpThyFYcuz+BVRKwTt31Aa9NcvFLlbCrzn9KcoPslw
- TglcOmh+C4vjlUJXV6aEPP5Hgpga+fwWhT6HaCgSC3f0dYoToSWkjObRgLQjOV8tGI+e
- FbeDllKymyKaPX10oxtz0bDvckqERsDoOsc5C1ePAmTF9JplEDii0UH7uds4Uwgu9w8G
- jiGQ==
-X-Gm-Message-State: AFqh2kqDIjQp3XNq5ouTHz/AfwqyH8QiBgYfmOnNKO5LjaAVZth6Fkqe
- RYuGtO3tNzkjvCObWYNczRAyLh+MYaLlQQ==
-X-Google-Smtp-Source: AMrXdXsbSWbTkX1Sd+XSMh7ArBTf+EWrQ2f7aPT+BY+9Q3Xnig4M8xnexIRBK9wUoBbfiyin4dkfsQ==
-X-Received: by 2002:ad4:4082:0:b0:531:9341:5485 with SMTP id
- l2-20020ad44082000000b0053193415485mr8057287qvp.17.1673521193308; 
- Thu, 12 Jan 2023 02:59:53 -0800 (PST)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com.
- [209.85.219.174]) by smtp.gmail.com with ESMTPSA id
- d12-20020a05620a240c00b006fcc3858044sm10912067qkn.86.2023.01.12.02.59.52
- for <alsa-devel@alsa-project.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 12 Jan 2023 02:59:52 -0800 (PST)
-Received: by mail-yb1-f174.google.com with SMTP id d62so2055558ybh.8
- for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2023 02:59:52 -0800 (PST)
-X-Received: by 2002:a25:d84e:0:b0:7b4:6a33:d89f with SMTP id
- p75-20020a25d84e000000b007b46a33d89fmr1877621ybg.543.1673521192231; Thu, 12
- Jan 2023 02:59:52 -0800 (PST)
-MIME-Version: 1.0
-References: <87edt2pxhd.wl-kuninori.morimoto.gx@renesas.com>
- <CAMuHMdUH-CSmaKuM2HA-5j5cP_c2pygp9DqyQiOC9XkCUuzCKw@mail.gmail.com>
- <87bkn44ne0.wl-kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87bkn44ne0.wl-kuninori.morimoto.gx@renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 12 Jan 2023 11:59:40 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXPS5zToCU-C=gQB3n6=OXzmhMdtVGbCn1Vk1GtKSZGwA@mail.gmail.com>
-Message-ID: <CAMuHMdXPS5zToCU-C=gQB3n6=OXzmhMdtVGbCn1Vk1GtKSZGwA@mail.gmail.com>
-Subject: Re: [PATCH 0/8] arm64: dts: renesas: Simple-Card /
- Audio-Graph-Card/Card2 dts for ULCB/KF
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60A65F8016E
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2023 12:11:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60A65F8016E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=T942ZZbL; 
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=+3Ck6E8f
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D3DEE3FC78;
+ Thu, 12 Jan 2023 11:11:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1673521867; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=6g3iM5WKSW2maoRg3zlxlslfcwv4ybJMYWSWJ5AL6iU=;
+ b=T942ZZbLsBpMgVl085JhZzdPr+opOHCm1/1+HsG/3YAkSc+iZZ9cyEIR7CTJaXT4NeyfcM
+ 11loYTkJshjwQ6/BQBeV9DJ2SUjn8OFBOLE2yA0HAKsT5smb3u09R0KYieQ9LTl424oNme
+ NpuLbkSk79L609+35AJLEGHAj/65JWU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1673521867;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=6g3iM5WKSW2maoRg3zlxlslfcwv4ybJMYWSWJ5AL6iU=;
+ b=+3Ck6E8ffwEChYoEmVgppDaOeSIQ4/nlCHC7PMtl3yqjTBZ2zAykB71Rkea02Z3Nc4/Lrk
+ dsZfmVekMDgmUSDw==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id B2C7113958;
+ Thu, 12 Jan 2023 11:11:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap1.suse-dmz.suse.de with ESMTPSA id p2bvKsvqv2O/QgAAGKfGzw
+ (envelope-from <tiwai@suse.de>); Thu, 12 Jan 2023 11:11:07 +0000
+Date: Thu, 12 Jan 2023 12:11:07 +0100
+Message-ID: <87ilhc6m9g.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Luka Guzenko <l.guzenko@web.de>
+Subject: Re: [PATCH v2] ALSA: hda/realtek: Enable mute/micmute LEDs on HP
+ Spectre x360 13-aw0xxx
+In-Reply-To: <20230110202514.2792-1-l.guzenko@web.de>
+References: <20230110202514.2792-1-l.guzenko@web.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,107 +92,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Mark Brown <broonie@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Morimoto-san,
+On Tue, 10 Jan 2023 21:25:14 +0100,
+Luka Guzenko wrote:
+> 
+> The HP Spectre x360 13-aw0xxx devices use the ALC285 codec with GPIO 0x04
+> controlling the micmute LED and COEF 0x0b index 8 controlling the mute LED.
+> A quirk was added to make these work as well as a fixup.
+> 
+> Signed-off-by: Luka Guzenko <l.guzenko@web.de>
+> ---
+> V1 -> V2: Inverted the conditional statement in
+> 	  alc285_fixup_hp_gpio_micmute_led as suggested by Takashi Iwai
 
-On Thu, Jan 12, 2023 at 1:17 AM Kuninori Morimoto
-<kuninori.morimoto.gx@renesas.com> wrote:
-> > What is the difference between "Simple Audio Card", "Audio Graph Card",
-> > and "Audio Graph Card2"?  Why do we need to support all three of them?
->
-> The answer is because of "history" and "compatibility".
->
-> "Simple Audio Card" was created before DT support, now it is supporting DT too.
-> But it is for very simple sound connection. It is using own DT style.
->
-> "Audio Graph Card" is almost same as "Simple Audio Card", but it is
-> using "Of Graph" style. It is needed for HDMI support (= Sound with Video).
-> "Audio Graph Card" was created because it is difficult to keep compatibility
-> for both "Of Graph style" and "own style" on "Simple Audio Card".
->
-> "Audio Graph Card2" is expand version of "Audio Graph Card",
-> but it is supporting more complex connections.
-> Because of this complex connection, it is difficult to keep compatibility
-> with "Audio Graph Card".
+Thanks, applied.
 
-So they are different ways (generations) of representing the audio
-topology on the board? Like "operating-points" and "operating-points-v2"
-for cpufreq?
 
-Hence these are orthogonal to (and independent of) the underlying audio
-hardware in the SoC?
-
-> For normal user case, selecting one of them is very enough.
-> But for me, I need to test all of them, thus I want to switch these easily.
-> And ULCB is good board for testing.
->
-> Basically, people don't need to care about this patch-set.
-> It separates DT file, but nothing change.
-> It is just easy for testing.
-
-OK. And I guess you intend to use them as examples to point people
-to, too?
-
-> > How come we can have no #sound-dai-cells, #sound-dai-cells = <0>,
-> > and #sound-dai-cells = <1>, for the same hardware?
-> > What is the real difference between Single DAI and Multi DAI?
-> > Why do we need to support both?
->
-> It is used on "Simple Audio Card".
-> We  need <0> if the board is using SSI x 1,
-> and need <1> if the board is using SSI x N.
-> It is not mandatory if the board is using "Audio Graph Card/Card2".
-
-So #sound-dai-cells should be in the board DTS, and never in the
-SoC .dtsi? Hence it should be moved out of
-arch/arm/boot/dts/{r8a7740,sh73a0}.dtsi and
-arch/arm64/boot/dts/renesas/r9a07g0{43,44,54}.dtsi?
-
-> > > Kuninori Morimoto (8):
-> > >   ARM: dts: renesas: #sound-dai-cells is used when simple-card
-> > >   arm64: dts: renesas: #sound-dai-cells is used when simple-card
-> > >   arm64: dts: renesas: add ulcb{-kf} Audio Graph Card dtsi
-> > >   arm64: dts: renesas: add ulcb{-kf} Audio Graph Card2 dtsi
-> > >   arm64: dts: renesas: add ulcb{-kf} Simple Audio Card dtsi
-> >
-> > The above three all describe the same hardware configuration?
->
-> Yes, same hardware, but is using different connection style (= driver).
-
-OK.
-
-> > >   arm64: dts: renesas: add ulcb{-kf} Audio Graph Card2 dtsi MIX + TDM Split dtsi
-> > >   arm64: dts: renesas: add ulcb{-kf} Audio Graph Card dtsi MIX + TDM Split dtsi
-> > >   arm64: dts: renesas: add ulcb{-kf} Simple Audio Card MIX + TDM Split dtsi
-> >
-> > Is MIX and TDM Split a different hardware configuration, or software
-> > policy?
->
-> Same hardware, but different connection (= mixing, split).
->
-> Hmm, it is difficult to explain via text...
-
-IC, this is more complicated...
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Takashi
