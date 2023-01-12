@@ -4,98 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD659C54EBC
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 Jan 2023 12:11:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F30AC54EBD
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 Jan 2023 12:11:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E82EC2E0C;
-	Thu, 12 Jan 2023 13:10:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E82EC2E0C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B1B83FAF;
+	Thu, 12 Jan 2023 13:11:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B1B83FAF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673525489;
-	bh=xDfhK1WRu59UWNh13PlTKWQ8FnAXYBs0RZSQlMDLADw=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=FYtyTYDBF79Dvenna0oxjIkRjJanqzlAQHex5DKWXoy8vnPRh019FlG+c3zyI17ZG
-	 JnL/t4dkPOM+T9FymODA93TBy80mCe76dPXbepNiOPGEq9UPslNVb0fr6sLA+8Z+DO
-	 14RfXDlVNBcC4xNyqxzftYQWw4gs896vLsltEj+w=
+	s=default; t=1673525515;
+	bh=To4lSe689bfimC1tf73m0as/vggIJfBEi8Jc8IhQo24=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=GhH4wX9V3fcdL6fXIvqICrpcOmmBhRfRbrS5Fpw8hKWwEUNkeNTQcJFc/yF2dpDPu
+	 t5g9DtM7nRJhlfcfsgZr4LRt2Vac4AjFiQchHA985mal3DJWrnoszbJHHOS+i7sWdq
+	 yjRX89bbCKQ8GJGPUPF7wHTfGRR72NV5yeytP4O4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41625F804E4;
-	Thu, 12 Jan 2023 13:10:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A201F804C1;
+	Thu, 12 Jan 2023 13:10:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A1FFCF804C1; Thu, 12 Jan 2023 13:10:11 +0100 (CET)
+ id D7D3CF8013D; Thu, 12 Jan 2023 13:10:12 +0100 (CET)
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com
  [64.147.123.20])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits))
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7F02F804C1
- for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2023 13:10:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7F02F804C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 67D96F8013D
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2023 13:10:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67D96F8013D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key, unprotected) header.d=sakamocchi.jp
- header.i=@sakamocchi.jp header.a=rsa-sha256 header.s=fm3 header.b=N61/H9AK; 
+ header.i=@sakamocchi.jp header.a=rsa-sha256 header.s=fm3 header.b=N6nE1KQ1; 
  dkim=pass (2048-bit key,
  unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm3 header.b=M8njHdX7
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.west.internal (Postfix) with ESMTP id 657BF320092C;
- Thu, 12 Jan 2023 07:10:05 -0500 (EST)
+ header.a=rsa-sha256 header.s=fm3 header.b=ADcsZXKl
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+ by mailout.west.internal (Postfix) with ESMTP id 577413200926;
+ Thu, 12 Jan 2023 07:10:00 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute5.internal (MEProxy); Thu, 12 Jan 2023 07:10:05 -0500
+ by compute2.internal (MEProxy); Thu, 12 Jan 2023 07:10:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=cc:cc:content-transfer-encoding:date:date:from:from
- :in-reply-to:in-reply-to:message-id:mime-version:references
- :reply-to:sender:subject:subject:to:to; s=fm3; t=1673525405; x=
- 1673611805; bh=QROKRqY2nM/HtDqTFwv3PBfv2g4ED2lHTZ9dBipP8Qc=; b=N
- 61/H9AKK3GcodcN3f5XBvBeO8D8kv1YpmD7ACoIV7r4fDgkMgeerDKD1OMxoejS2
- sQ/DIDT1AsH1vMbBLH5jxADowmvEv2jM3GLvgS+EEueEzbVrRG+2fwgQ8basd14z
- LZAMs6zeVYRpOoOZ7Dhgf2aoBnBzXswv23DAnzBwWUudRd9kV6CbI+qsastXqc4a
- t4o3aG6mLZRUpTcZc40K7fC6ibKL6McSi7OISwPMHisEIelZ5BTTFKHR2Z4FphXj
- 6ttDQY65Wn9VSVibup1Z6AdFmypODKp7nJ2FQLucuye80Lfmuqy4HcrFBS/MtpkH
- YzfInIvBJDpiCyXKRHHYw==
+ :in-reply-to:message-id:mime-version:reply-to:sender:subject
+ :subject:to:to; s=fm3; t=1673525399; x=1673611799; bh=zUmch9t+Od
+ dWRqZWCvewsHnaM99UXEj04SkfjwGm3pQ=; b=N6nE1KQ1Pjqqd784G2gCMcoktV
+ jLfaHzhNTOjmCpz92N4O9XHYvoSRU6darMj7nKyZWIUwXsaFEEMHztunUFSsPcNz
+ dExo99jK+4lHhHh3AYZwaga9NxcK/IBh1gSLnRqHloXyRGBDj5XRJSp1KdnijRcJ
+ GfU8X7btck1rFtud9Dyr0VJBCmTUp3FPbEj3YG7PsiKNTN/44qh/dOm9NL+YPQHQ
+ g1y94bS1OQXio6osVl6zCaC6Nq6wkpxV9+AfoRDNB5pecUOgDLTIDB+IjjAjXtK2
+ C7AvspmMwP5N7IjFHlT0D4u4HRQVSSp5x88WaYvrEUhfD/ZymkGNQTnuX3Bg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
- :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
- :message-id:mime-version:references:reply-to:sender:subject
- :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
- :x-sasl-enc; s=fm3; t=1673525405; x=1673611805; bh=QROKRqY2nM/Ht
- DqTFwv3PBfv2g4ED2lHTZ9dBipP8Qc=; b=M8njHdX7OoG14TwO9JCB6blODUGPh
- CPr/QnlZ2qLdHjeqC5eA3kg7L2jeez/Jcy+oalEYqZcnEE26k9TbJ2SZWJdf+s39
- Hm+VRSeY/9qESIOGthngu4CrzQlP9YNLxRVXuRJgLkXUwwO+6hXySCGY3fj9qeHp
- 11947QY3KfrY/s26dXg8d9IfFQrGXvFkSo60Rcp/6ehMojTDCT1vQgHlnXWcDoWe
- NwoFWo8PJbK/Kw0VdyfwtT1IpLsxx+vVDCTNCHNFK43TVXuXcK3phQEIUvzNt5Bw
- jbpR+n7Jgyq3T9k/VP3J4uzm6mtnRLK0w3o1E1aAnPR53jMPZJAhirqxA==
-X-ME-Sender: <xms:nPi_Y5JOta4ZhYCUx5zptl9MhjGPF0yVB3o76OnoQCg3Cy40ByoIzA>
- <xme:nPi_Y1K8V5rawdiiWSXm9bAIFqgPzf-vNBusDbMIsnRBBbAFFFPI5PDchmXm1Aw4U
- QETfpFEJHNcVRN_s08>
-X-ME-Received: <xmr:nPi_YxszhTnZQW4_qEgHYULQb_sz0OiHsexj60pWAi3xSeNC1l-dwo76rgGVTj6HS_dCSFEjK_seygWYYPK_sBukyNyNVGpEoQ4RcuimDsrK5iGaXE2yCoA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrleeigdefhecutefuodetggdotefrodftvf
+ :feedback-id:feedback-id:from:from:in-reply-to:message-id
+ :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+ 1673525399; x=1673611799; bh=zUmch9t+OddWRqZWCvewsHnaM99UXEj04Sk
+ fjwGm3pQ=; b=ADcsZXKlBwR262BH4p7Lfd/LQIEewA1IQbvJZfKNuaca267E2mu
+ XyAg5ryqEXuVT7AppsEk7QyMiRpylOwGMed7a2HZqjvJ0+ITZ8mFT3zkJCmgURQe
+ FGZ2382VLcou/7Dr5x7RyHNnUS2dDuvgb/Rq0k3aq8Br4GsX6G5I9816bLOu72Wt
+ so9Qje1aJhkbfDQ8bhFBaVpTl4OWmDNrUJF8TFkmp239kftwgOhe31tv5z253dm5
+ +mBR501uu0PZqNPdHD4gkv+Su7WGoGdp9kaZYoYMxD/iuYFHiR0acObe/YgItSaF
+ c1DAcLBJUqMPNrMozb2jUvl0g546JAiig9w==
+X-ME-Sender: <xms:l_i_Y8tVsBjf-ub6rynuksWZWIzm9edwP7VNdYtNP-GsImeRI8sYQA>
+ <xme:l_i_Y5cFQ1mbAsrpTp1b7gMmlcSK2y6w_I6RpU9TInTFjtrehOFm-dWbnLU8SfRQw
+ yFeiqZMOL7iaAbXocc>
+X-ME-Received: <xmr:l_i_Y3xjI0mEIvcdSieyLtYpr0JDYnaGHqaI5Y4uuqwlPvahGA_pEiCQCmGgAwpKIBFPWbzGuvwyCO0ctQfr-ynre6uqv8VQZZSg1JXiqDqYUX0AAIpMBW4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrleeigdefiecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestdekre
- dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
- shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepvdejgfejue
- dvgfduudekleevtefgtdevhfdtffefiefgveeuteffiedvffekvddtnecuvehluhhsthgv
- rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihessh
- grkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:nPi_Y6ZwaPW_-XygpJicrxo8n7rrCFP5v6OgRfh0MO9mPr6tbOMoXw>
- <xmx:nPi_Ywbf-FtimBhBaaqtNnsx-SIDWGgSwajTaVGtIVzcnNe9fXPyLw>
- <xmx:nPi_Y-D1xA8HH_LuKl_--QMkpMaWY-H9eKpE8NsYjxubBPvKZoko9w>
- <xmx:nfi_Y7yqwv0z5gHVXtqtR4OCkcqzrZAsNNalfXskRzFKd2vYhck1Jw>
+ uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
+ dttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhh
+ ihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepkeevteefgeduhe
+ ffudfgtedvuedvjeeviedvfeelgedvtdehtedvjefggedvtdeunecuffhomhgrihhnpehg
+ ihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+ hlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:l_i_Y_MvpnL9gXQrKiWEPPouPGrboRp3FbdwRWzugw2J7Aoc9u6idQ>
+ <xmx:l_i_Y8-AHkpSPyUULpdK9R1wddMnc1n3yS9_bgkzj0I8ZEQkh3ntAQ>
+ <xmx:l_i_Y3VucbhTrJa148TlDHIUuFFI4mkTLTJxhk5VhpTfi2TcQbn4jQ>
+ <xmx:l_i_Y6kmqvUgruEvHNt6SU925085d9ojJ80WvbZKkocsUinjBUV-Dw>
 Feedback-ID: ie8e14432:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 12 Jan 2023 07:10:03 -0500 (EST)
+ 12 Jan 2023 07:09:58 -0500 (EST)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de
-Subject: [PATCH 2/6] ALSA: fireface: pick up time stamp for request subaction
- of asynchronous transaction
-Date: Thu, 12 Jan 2023 21:09:50 +0900
-Message-Id: <20230112120954.500692-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/6] ALSA: fireface: support knob control event for Fireface
+ 400
+Date: Thu, 12 Jan 2023 21:09:48 +0900
+Message-Id: <20230112120954.500692-1-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230112120954.500692-1-o-takashi@sakamocchi.jp>
-References: <20230112120954.500692-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -114,89 +110,43 @@ Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The time stamp of isochronous cycle at which asynchronous transaction is
-sent is perhaps useful somehow. A commit b2405aa948b9 ("firewire: add
-kernel API to access packet structure in request structure for AR context")
-adds kernel API to retrieve the time stamp in inner structure of request
-subaction.
+Hi,
 
-This commit changes local framework to handle message delivered by the
-asynchronous transaction so that time stamp is picked up by the kernel API.
+Fireface 400 uses asynchronous transaction mechanism to deliver event of
+hardware knob control as well as received MIDI messages. Current
+implementation doesn't distinguish them, thus all arrived messages are
+processed for MIDI message.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/fireface/ff-protocol-former.c | 4 ++--
- sound/firewire/fireface/ff-protocol-latter.c | 2 +-
- sound/firewire/fireface/ff-transaction.c     | 3 ++-
- sound/firewire/fireface/ff.h                 | 2 +-
- 4 files changed, 6 insertions(+), 5 deletions(-)
+This patchset adds the parser to distinguish them, and deliver knob
+control event to user space via ALSA hwdep character device. The
+implementation works well as long as I tested with the patches for
+libhitaki library:
 
-diff --git a/sound/firewire/fireface/ff-protocol-former.c b/sound/firewire/fireface/ff-protocol-former.c
-index 16afcb334e3c..22d6aee52de3 100644
---- a/sound/firewire/fireface/ff-protocol-former.c
-+++ b/sound/firewire/fireface/ff-protocol-former.c
-@@ -403,7 +403,7 @@ static void ff800_finish_session(struct snd_ff *ff)
- // A write transaction to clear registered higher 4 bytes of destination address
- // has an effect to suppress asynchronous transaction from device.
- static void ff800_handle_midi_msg(struct snd_ff *ff, unsigned int offset, const __le32 *buf,
--				  size_t length)
-+				  size_t length, u32 tstamp)
- {
- 	int i;
- 
-@@ -554,7 +554,7 @@ static void ff400_finish_session(struct snd_ff *ff)
- // in its lower offset and expects userspace application to configure the
- // register for it.
- static void ff400_handle_msg(struct snd_ff *ff, unsigned int offset, const __le32 *buf,
--			     size_t length)
-+			     size_t length, u32 tstamp)
- {
- 	int i;
- 
-diff --git a/sound/firewire/fireface/ff-protocol-latter.c b/sound/firewire/fireface/ff-protocol-latter.c
-index e7a066fb1ead..9947e0c2e0aa 100644
---- a/sound/firewire/fireface/ff-protocol-latter.c
-+++ b/sound/firewire/fireface/ff-protocol-latter.c
-@@ -394,7 +394,7 @@ static void latter_dump_status(struct snd_ff *ff, struct snd_info_buffer *buffer
- // (0x'....'....'0000'0000) and expects userspace application to configure the
- // register for it.
- static void latter_handle_midi_msg(struct snd_ff *ff, unsigned int offset, const __le32 *buf,
--				   size_t length)
-+				   size_t length, u32 tstamp)
- {
- 	u32 data = le32_to_cpu(*buf);
- 	unsigned int index = (data & 0x000000f0) >> 4;
-diff --git a/sound/firewire/fireface/ff-transaction.c b/sound/firewire/fireface/ff-transaction.c
-index 764c772a0b1e..79f733d8c98b 100644
---- a/sound/firewire/fireface/ff-transaction.c
-+++ b/sound/firewire/fireface/ff-transaction.c
-@@ -131,11 +131,12 @@ static void handle_msg(struct fw_card *card, struct fw_request *request, int tco
- {
- 	struct snd_ff *ff = callback_data;
- 	__le32 *buf = data;
-+	u32 tstamp = fw_request_get_timestamp(request);
- 
- 	fw_send_response(card, request, RCODE_COMPLETE);
- 
- 	offset -= ff->async_handler.offset;
--	ff->spec->protocol->handle_msg(ff, (unsigned int)offset, buf, length);
-+	ff->spec->protocol->handle_msg(ff, (unsigned int)offset, buf, length, tstamp);
- }
- 
- static int allocate_own_address(struct snd_ff *ff, int i)
-diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
-index 0358b444bd01..f430ebe157b3 100644
---- a/sound/firewire/fireface/ff.h
-+++ b/sound/firewire/fireface/ff.h
-@@ -111,7 +111,7 @@ enum snd_ff_clock_src {
- 
- struct snd_ff_protocol {
- 	void (*handle_msg)(struct snd_ff *ff, unsigned int offset, const __le32 *buf,
--			   size_t length);
-+			   size_t length, u32 tstamp);
- 	int (*fill_midi_msg)(struct snd_ff *ff,
- 			     struct snd_rawmidi_substream *substream,
- 			     unsigned int port);
+https://github.com/alsa-project/libhitaki/tree/topic/ff/400-msg
+
+I note that Fireface 400 transmits no asynchronous transaction when it
+is not configured by block write transaction to offset 0x000080100514,
+which turn off HOST led from red.
+
+Takashi Sakamoto (6):
+  ALSA: fireface: rename callback functions
+  ALSA: fireface: pick up time stamp for request subaction of asynchronous
+    transaction
+  ALSA: fireface: add helper function to parse MIDI messages transmitted by
+    Fireface 400
+  ALSA: fireface: update UAPI for data of knob control
+  ALSA: fireface: add local framework to message parser
+  ALSA: fireface: implement message parser for Fireface 400
+
+ include/uapi/sound/firewire.h                |  24 +++
+ sound/firewire/fireface/ff-hwdep.c           |  41 ++--
+ sound/firewire/fireface/ff-protocol-former.c | 186 +++++++++++++++----
+ sound/firewire/fireface/ff-protocol-latter.c |   6 +-
+ sound/firewire/fireface/ff-transaction.c     |  17 +-
+ sound/firewire/fireface/ff.c                 |  10 +
+ sound/firewire/fireface/ff.h                 |   9 +-
+ 7 files changed, 239 insertions(+), 54 deletions(-)
+
 -- 
 2.37.2
 
