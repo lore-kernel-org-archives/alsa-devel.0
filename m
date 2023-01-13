@@ -4,60 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1273CC54EBE
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Jan 2023 08:54:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD936C54EBE
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Jan 2023 08:55:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F40BA526;
-	Fri, 13 Jan 2023 09:53:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F40BA526
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE41CA540;
+	Fri, 13 Jan 2023 09:54:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE41CA540
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673600070;
-	bh=pQv6XbL/T2VcCxt4uKNFLVlyX2iWhG7e+KCGtxPtPBk=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=bMxpVxghodKsU9xr/OhUurYGXlPXGdqErgSRcPDiz6dhR0DU/iHJjl+X0HgPGN36c
-	 lEo7cjOPeRJmjk/50G4InVySsJJkmvGe/1ZxIY8vGdMZ4D+GPfJQLex7l43Z3GJeQA
-	 ofVo2ks1CQbV4ofUhjwMxOJHuF4ADO0brXJbWo7M=
+	s=default; t=1673600101;
+	bh=OIFt1Z2spvVreKCzrmblTTGK6ZAj5WV2ytjw9N0OX0M=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=o/H8tnogl1/Rkw+adiJijroBtPb6bxjwc9479MhhEg8DvLkKh0hTD2NwJwq4wJD1f
+	 y1QA2yge1nsOvTx44lIPrWPGMURMgPye31eSVwPgaKhVo6EgTHnZ3wRRQP42Hl6feT
+	 tTvDJSKVxyB+mgBQ9Hw5I+rpGMb+fndZt3DJkSM4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2662BF802E8;
-	Fri, 13 Jan 2023 09:53:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74526F80424;
+	Fri, 13 Jan 2023 09:54:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D6054F8030F; Fri, 13 Jan 2023 09:53:38 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 54AAFF80425; Fri, 13 Jan 2023 09:54:10 +0100 (CET)
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com
+ [209.85.219.41])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 187C7F8016D
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 09:53:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 187C7F8016D
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- secure) header.d=perex.cz header.i=@perex.cz header.a=rsa-sha256
- header.s=default header.b=3EGV2f9y
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 5F0C0A0040;
- Fri, 13 Jan 2023 09:53:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 5F0C0A0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1673600014; bh=jGsuJl4vm4qCqTHSra+gs1Jv8yGxIGLogGS7Qry5yvU=;
- h=From:To:Cc:Subject:Date:From;
- b=3EGV2f9yYQnoXJJUIN0plEBRRaFf1RBClAu8afbk03mXj4+WWKO4xsr0lb3pIlItt
- hdMRw8AWWhUBz6ZrrtI1q1fDPQmkJNk8YVkERA/ZsawBQVPxg0a9nzPTbo5Zhll/+Q
- 1Wr2s/lNDb/QbQj+QO4AtgCWBwfVOUurMB4Rhpno=
-Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Fri, 13 Jan 2023 09:53:30 +0100 (CET)
-From: Jaroslav Kysela <perex@perex.cz>
-To: ALSA development <alsa-devel@alsa-project.org>
-Subject: [PATCH] ALSA: usb-audio: Fix possible NULL pointer dereference in
- snd_usb_pcm_has_fixed_rate()
-Date: Fri, 13 Jan 2023 09:53:11 +0100
-Message-Id: <20230113085311.623325-1-perex@perex.cz>
-X-Mailer: git-send-email 2.39.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA129F8019B
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 09:54:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA129F8019B
+Received: by mail-qv1-f41.google.com with SMTP id p96so2335514qvp.13
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 00:54:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=iHH87Wz4eqdDYk3yPRdInSdOf4/Qu/uaLfX4LZwjHtY=;
+ b=tT7hSr+2o9Nsz5+mWMj1uUZDZvTmC3rwgekofHASkyvE3fZyWvQlIiUH1J9pEyf3nb
+ vNZ8lOj59iWiwU+TO/A2AlkvDmnE2JpeziwvBYcK/h5mSO7Kdnhaw3nCFxNREHvMJ+UU
+ y2+l6bfoy+jP7wesoOqAoTQqM5NdQp9KaAj3DbNgQQiq2wyCI9NtKrzBnymyGdwNK3ML
+ dOHpeKO6YiK/aU2uGArx3JXiPEFzGRIWaxOaYEvt7RUfT0eftWq/zK0SdHi/gciV+CYZ
+ lfjtN8xqZNiwpsqbnaIa/ol9wlivcOQc+JdHQiBY78xu8++XjuZd6SgcL8GIiZjNnTiA
+ qVHA==
+X-Gm-Message-State: AFqh2kr4n1HOXYpWTCjz6fDYr9wRJyiE1gM3DMuK80y+JNqyW/+9U6Jy
+ RuN5wM7JrGNTF1TwWma7vATg7LP8d4CqFQ==
+X-Google-Smtp-Source: AMrXdXvjwUWaH23UMmTxNuMbspXTRTgOtAo6RtPkosHrbzz1iK1puhr70krjJMjOPd4rX9WyGiM3qQ==
+X-Received: by 2002:a0c:c388:0:b0:531:9d43:d8e0 with SMTP id
+ o8-20020a0cc388000000b005319d43d8e0mr59751388qvi.31.1673600046817; 
+ Fri, 13 Jan 2023 00:54:06 -0800 (PST)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com.
+ [209.85.219.169]) by smtp.gmail.com with ESMTPSA id
+ 64-20020a370c43000000b006cfc1d827cbsm12127037qkm.9.2023.01.13.00.54.05
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 13 Jan 2023 00:54:06 -0800 (PST)
+Received: by mail-yb1-f169.google.com with SMTP id p188so21635460yba.5
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 00:54:05 -0800 (PST)
+X-Received: by 2002:a25:d095:0:b0:7b6:daae:ad50 with SMTP id
+ h143-20020a25d095000000b007b6daaead50mr3261996ybg.89.1673600045570; Fri, 13
+ Jan 2023 00:54:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230113062339.1909087-1-hch@lst.de>
+ <20230113062339.1909087-20-hch@lst.de>
+In-Reply-To: <20230113062339.1909087-20-hch@lst.de>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 13 Jan 2023 09:53:54 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWLZF3uF8+Bs8FL__x=MyZPPBUqX-Q6XVQS3B08re-vZw@mail.gmail.com>
+Message-ID: <CAMuHMdWLZF3uF8+Bs8FL__x=MyZPPBUqX-Q6XVQS3B08re-vZw@mail.gmail.com>
+Subject: Re: [PATCH 19/22] fbdev: remove sh7760fb
+To: Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -70,37 +88,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Takashi Iwai <tiwai@suse.de>, coverity-bot <keescook@chromium.org>
+Cc: linux-fbdev@vger.kernel.org, Rich Felker <dalias@libc.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, linux-sh@vger.kernel.org,
+ alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ linux-arch@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>,
+ linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ linux-gpio@vger.kernel.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ netdev@vger.kernel.org, dmaengine@vger.kernel.org, linux-rtc@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The subs function argument may be NULL, so do not use it before the NULL check.
+Hi Christoph,
 
-Fixes: 291e9da91403 ("ALSA: usb-audio: Always initialize fixed_rate in snd_usb_find_implicit_fb_sync_format()")
-Reported-by: coverity-bot <keescook@chromium.org>
-Link: https://lore.kernel.org/alsa-devel/202301121424.4A79A485@keescook/
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
----
- sound/usb/pcm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On Fri, Jan 13, 2023 at 7:25 AM Christoph Hellwig <hch@lst.de> wrote:
+> Now that arch/sh is removed this driver is dead code.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 1f72960d0d53..d959da7a1afb 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -160,11 +160,12 @@ find_substream_format(struct snd_usb_substream *subs,
- bool snd_usb_pcm_has_fixed_rate(struct snd_usb_substream *subs)
- {
- 	const struct audioformat *fp;
--	struct snd_usb_audio *chip = subs->stream->chip;
-+	struct snd_usb_audio *chip;
- 	int rate = -1;
- 
- 	if (!subs)
- 		return false;
-+	chip = subs->stream->chip;
- 	if (!(chip->quirk_flags & QUIRK_FLAG_FIXED_RATE))
- 		return false;
- 	list_for_each_entry(fp, &subs->fmt_list, list) {
--- 
-2.39.0
+Thanks for your patch!
+
+> --- a/drivers/video/fbdev/Kconfig
+> +++ b/drivers/video/fbdev/Kconfig
+> @@ -1861,7 +1861,7 @@ config FB_W100
+>  config FB_SH_MOBILE_LCDC
+>         tristate "SuperH Mobile LCDC framebuffer support"
+>         depends on FB && HAVE_CLK && HAS_IOMEM
+> -       depends on SUPERH || ARCH_RENESAS || COMPILE_TEST
+> +       depends on ARCH_RENESAS || COMPILE_TEST
+
+Nit: this part should be a separate patch.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
