@@ -4,73 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D1CCC3DA78
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Jan 2023 07:52:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FA10C63797
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Jan 2023 07:52:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20CEF390E;
-	Sun, 15 Jan 2023 08:51:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20CEF390E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1BAA345F8;
+	Sun, 15 Jan 2023 08:52:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BAA345F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673769158;
-	bh=frcCV1k9oG9oKj3dpUqdJg1PxRT2RSN/XKdLCPjaYaY=;
-	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=eANDNO/C/pFEYKZ5N9C0klSGj3y7G9+hBjMjIWhY/Pec7inegcEl+pBpHnBgQXWEj
-	 TBvmGinRICCr4IuUc8DWZCAj2yuNq8nvPb1gXOGcOIWlIsiq0hveKzUexxruIT4AYm
-	 /+b12cnhuKdIvoKQ7/k0SifOn0wbLAb1K13GluLk=
+	s=default; t=1673769173;
+	bh=B62ZsrbRf3xRyaqZCCewmgctkdafk3kp0mApcmsVRi0=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=B0LH2ZnSU13DPToQwymlQIagBcbrtmV2SH/KlVb0DmzLW9QPmnWw8mBTeZFjZApO6
+	 fw3xA20ai/aXZwntoST8xmk8K9cf3edZsYsHarmStBJjAI8+nT3/vSp9iRvc4WCSaT
+	 hXbCUonsc2DzC1792/WHY38HWKQw+QmfMwkTfStc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16534F805AA;
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A552F805AE;
 	Sun, 15 Jan 2023 08:48:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1FEC1F8030F; Fri, 13 Jan 2023 13:25:21 +0100 (CET)
-Received: from st43p00im-ztfb10071701.me.com (st43p00im-ztfb10071701.me.com
- [17.58.63.173])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ id 53F93F80424; Fri, 13 Jan 2023 19:59:56 +0100 (CET)
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com
+ [IPv6:2607:f8b0:4864:20::c31])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 50A4BF8016D
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 13:25:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50A4BF8016D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3183DF8016D
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 19:59:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3183DF8016D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=mac.com header.i=@mac.com header.a=rsa-sha256
- header.s=1a1hai header.b=qi2Oj1bK
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mac.com; s=1a1hai;
- t=1673612716; bh=+oVvzsrERZqgJ3fcl9RAR80VZ71ww2UFJnb6O/Kv4/g=;
- h=Content-Type:MIME-Version:Message-ID:Date:Subject:From:To;
- b=qi2Oj1bK+4rOLRj3GHmm3ZmeJhRKQzqhsg1AWlb5S5wTBeXm7o4glVFLmH3gNNY8t
- SSBIu5ueUyq3e9xKmkx+W/rXjOg+ncP40IfzPMzqfICa7H3CAyl34RXJl1VCLkmOsB
- kIG1hHVm2Kokn0ZXmdZsx8rcqh1vwcXfvVhs2BbgC49+AAyflJU/cJAzhqQ70PsNHT
- 9KGC8UaRlVm0AN1NTwg/uXOwGZb2tCYgsf0/tvSrxDLpnexFrHZPpFWQ25mpm1FUq6
- xuimJkM2JpiG+zQtLhI8VMhRseTrPbpf/50xSlG9qNQS/86XdUZI2w0m6iFKdVVcAF
- QcCD/0vsbjgbA==
-Received: from [127.0.0.1] (st43p00im-dlb-asmtp-mailmevip.me.com
- [17.42.251.41])
- by st43p00im-ztfb10071701.me.com (Postfix) with ESMTPSA id B36CBA0D46
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 12:25:14 +0000 (UTC)
-X-Mailer: BlackBerry Email (10.3.3.3216)
-Message-ID: <20230113122514.5591123.98083.41900@mac.com>
-Date: Fri, 13 Jan 2023 05:25:14 -0700
-Subject: question about byte alignment (snd_pcm_hw_constraint_msbits and
- SNDRV_PCM_FMTBIT_S32_LE)
-From: Gagan Sidhu <beatlesnut@mac.com>
-To: alsa-devel@alsa-project.org
-X-Proofpoint-ORIG-GUID: tMIu94bK3XOBOBovxZtR4Pmd3v3a9Lmy
-X-Proofpoint-GUID: tMIu94bK3XOBOBovxZtR4Pmd3v3a9Lmy
-X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
- =?UTF-8?Q?2903e8d5c8f:6.0.138,18.0.572,17.11.64.514.0000000_definitions?=
- =?UTF-8?Q?=3D2020-02-14=5F11:2020-02-14=5F02,2020-02-14=5F11,2022-02-23?=
- =?UTF-8?Q?=5F01_signatures=3D0?=
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0
- mlxscore=0 phishscore=0
- spamscore=0 bulkscore=0 adultscore=0 clxscore=1031 malwarescore=0
- mlxlogscore=601 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2301130083
-X-Mailman-Approved-At: Sun, 15 Jan 2023 08:48:19 +0100
+ unprotected) header.d=landley-net.20210112.gappssmtp.com
+ header.i=@landley-net.20210112.gappssmtp.com header.a=rsa-sha256
+ header.s=20210112 header.b=PS9bts8W
+Received: by mail-oo1-xc31.google.com with SMTP id
+ d16-20020a4a5210000000b004f23d1aea58so2004714oob.3
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 10:59:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=landley-net.20210112.gappssmtp.com; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=bTIDomgS8mXkDJCvxm5Zm+LjWmMOagP4MCI8VhlfZ4M=;
+ b=PS9bts8WEYUdHc2dq03MseWIdo5SmkGasWJ1IHK/82VNd2x1nauvFpnIRKJHReewV4
+ qHgmemCtG+n4JzEug1j/TkXXGr7XuvlNF4IBzbNfnN6lagwFrOKhEymKlD3N/LDBaGvv
+ sKYDqBaLKXsSv5VTvSWrpB1Ro6mV2B1zSTvwS3WrXPPhGJgdWKpIwnEsYL1x49CphPxG
+ SL4YOgYdR5jGUY39ZZius3Ig7i4WfTYOC67k8Vh1lto4GbCgV9uKa97KEalM5EmLMGPn
+ 3yGQHE93+pmLVFjd1TlIZLJrfjBmFeNgyn5vD6/2wKe8LZIYKJC7joRnrftdzonfyS0K
+ +t4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=bTIDomgS8mXkDJCvxm5Zm+LjWmMOagP4MCI8VhlfZ4M=;
+ b=Z/G/p6E2uXskjLoQVLPeYxW1Qbs+v89TxJTxws1lMCNDnWO/dvnHUm/0fxngSnmKO0
+ fJJ4KOqsdHHBJUaIE9XEUBMO3BMPPLpx2NZpmZCPiUVEeMf8RMeg2vbCGTGeML3M/g+T
+ GDmEnRY3kDskAoFSf+X/QQIWvw7bRVPzsnuMCHKrz3LwpsDDqKAuPPa1wgALDmzNoBlx
+ Z5rdSbJXngqJZs49Vl7oX+cR9zFa8NVSNdhKelFqVZouMTArV+q05+t3v1LJTyYq2ivb
+ dHA2VDvsdcrAcnTzdn+aAxf1aRk7I7c89v5rpVCbwvyLa1ZB+iL6yx73xPME5QnPKYLN
+ BOdw==
+X-Gm-Message-State: AFqh2kru/m39KpPX51VPSaXnQiNNizWsLabqs24hsPIFmDcfXirWfHhC
+ cSIJIifQnh/rlxODuXrCsSo3cw==
+X-Google-Smtp-Source: AMrXdXvaOiO0G10Az4EGLc64Vx6N+KrZr3PuLGXv0M+M3iF7lrA3WUc8R2fIq6AYtp8ZC6Mk4E9lCQ==
+X-Received: by 2002:a4a:c594:0:b0:4e7:5d43:a654 with SMTP id
+ x20-20020a4ac594000000b004e75d43a654mr22358114oop.0.1673636389556; 
+ Fri, 13 Jan 2023 10:59:49 -0800 (PST)
+Received: from [192.168.86.224] ([136.62.38.22])
+ by smtp.gmail.com with ESMTPSA id
+ bc31-20020a056820169f00b0049f8b4b2095sm10111163oob.44.2023.01.13.10.59.47
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 13 Jan 2023 10:59:48 -0800 (PST)
+Message-ID: <6891afb6-4190-6a52-0319-745b3f138d97@landley.net>
+Date: Fri, 13 Jan 2023 13:11:56 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: remove arch/sh
+Content-Language: en-US
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20230113062339.1909087-1-hch@lst.de>
+ <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
+ <CAMuHMdUcnP6a9Ch5=_CMPq-io-YWK5pshkOT2nZmP1hvNcwBAg@mail.gmail.com>
+ <142532fb-5997-bdc1-0811-a80ae33f4ba4@physik.fu-berlin.de>
+From: Rob Landley <rob@landley.net>
+In-Reply-To: <142532fb-5997-bdc1-0811-a80ae33f4ba4@physik.fu-berlin.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailman-Approved-At: Sun, 15 Jan 2023 08:48:19 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -83,6 +106,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: linux-fbdev@vger.kernel.org, Rich Felker <dalias@libc.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, linux-sh@vger.kernel.org,
+ linux-rtc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ netdev@vger.kernel.org, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 1/13/23 02:52, John Paul Adrian Glaubitz wrote:
+> Hi Geert!
+> 
+> On 1/13/23 09:26, Geert Uytterhoeven wrote:
+>> Indeed.  The main issue is not the lack of people sending patches and
+>> fixes, but those patches never being applied by the maintainers.
+>> Perhaps someone is willing to stand up to take over maintainership?
+> 
+> I actually would be willing to do it but I'm a bit hesitant as I'm not 100%
+> sure my skills are sufficient. Maybe if someone can assist me?
+
+My skills aren't sufficient and I dunno how much time I have, but I can
+certainly assist. I test sh4 regularlyish and it's in the list of architectures
+I ship binaries and tiny VM images for, just refreshed tuesday:
+
+https://landley.net/toybox/downloads/binaries/0.8.9/
+https://landley.net/toybox/downloads/binaries/mkroot/0.8.9/
+
+(The sh2eb isn't a VM, it's a physical board I have here...)
+
+There is definitely interest in this architecture. I'm aware Rich hasn't been
+the most responsive maintainer. (I'm told he's on vacation with his family at
+the moment, according to the text I got about this issue from the J-core
+hardware guys in Japan.)
+
+The main reason we haven't converted everything to device tree is we only have
+access to test hardware for a subset of the boards. Pruning the list of
+supported boards and converting the rest to device tree might make sense. We can
+always add/convert boards back later...
+
+Rob
