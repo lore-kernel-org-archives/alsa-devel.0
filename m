@@ -4,72 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 916E5C54EBE
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Jan 2023 16:23:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84030C54EBD
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Jan 2023 16:23:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A7DAA6B5B;
-	Fri, 13 Jan 2023 17:22:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7DAA6B5B
+	by alsa0.perex.cz (Postfix) with ESMTPS id AFC8D6A58;
+	Fri, 13 Jan 2023 17:22:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AFC8D6A58
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673626993;
-	bh=7igi3QXwPJz6wzBQj26BT//kmqhniZAOlj7qDJhZfJo=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=QwGkMwquVgefl3ibOZ7W0HvDlnGmks+w9rplVvP+CHUK5ivqEFwsn4s2UEoTKFBFt
-	 Na2yZr8WPYwf8MBG1zbeKbJo8ub2JP+Zyiup4J2Yc6J3UFoxzHSgBV/uETlf38ahvZ
-	 Ym/G0l7wwsQk+XGoHKkD11VTZ/d/KsOdk29oUDww=
+	s=default; t=1673627020;
+	bh=Z4oDwHkHPTvOWGo2/BGKJ4VE8eCKBifMlKZSiY2yEUU=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=kdSiTcpPLcViG7ebnCA5CdYxeBwjdIsmpmYGRtyDCgYog5XhgbXdU9o/pPtAmqwEw
+	 zIAe8tQuCcdH+aTg/uyS53izpvZyym9SZbVM/qMAs2OKzYr4JqfocWHZk5xb8vPnUW
+	 78Ney9Mxa1mOyk3iDqUlpsZbtwxyL7j5V12wiqQI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56B8FF8026D;
-	Fri, 13 Jan 2023 17:22:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 049B4F804A9;
+	Fri, 13 Jan 2023 17:22:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AED39F8030F; Fri, 13 Jan 2023 17:22:22 +0100 (CET)
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com
- [IPv6:2a00:1450:4864:20::62e])
+ id 3FCF0F804A9; Fri, 13 Jan 2023 17:22:24 +0100 (CET)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
+ [IPv6:2a00:1450:4864:20::62d])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C533AF8019B
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 17:22:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C533AF8019B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5785AF8030F
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 17:22:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5785AF8030F
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=yz/Vebqf
-Received: by mail-ej1-x62e.google.com with SMTP id mp20so6867410ejc.7
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 08:22:20 -0800 (PST)
+ header.s=google header.b=M0oeeTuT
+Received: by mail-ej1-x62d.google.com with SMTP id l22so23764091eja.12
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 08:22:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=M9oKZpLB3KLxNjht49zMQ5zevFbZ/bcUUbDkM3FfyYA=;
- b=yz/VebqfEp1bmhZjr9FNC1ihtfQnR9SeGG3hAJziFTTvriFYLQCyTY3TTjL93C5MKA
- hla/sInL4jnIB1nKZJAyFRBaHSvNdGSCqqZ1I7hDPhrRKfuTr+RoZB1E0MKx7oZVY64h
- iKU+DDNYQwUUUhZ92UbsIUHk8by803W17KKNdpFFLyZgiCP0zpkV0zdfePV1+aUnlNHc
- 6vaJvgT3KNT60pZ6cszElSPhqfX9BBB4po46IhOvJkB6fmZ8MogstCBzywuA0vKjrhle
- hSB+ykAAJ6lFL+C/Tnf1soGmRB9OLBE4I3n0/uFJOonGnzDcY/PYQW1z6MZUl6Se2Ndm
- garQ==
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=qphHuiI3995fMsqnotERxhZjaBqWPqwflOdlSfg7u7A=;
+ b=M0oeeTuTJxcCGIov8N7a9cwJEF4PjtMbQry9x4/Ou4MJXCTqdNMqWZr6QMBzxEvR3Q
+ /o2AX3Wgl5g/LLXrR5xx1Eqqlnnnk0xz2r3wX1kagWU0kdGGXqJM5LLjToKoZ0RCg3YS
+ p5Mx4oi8ib1cMAX2BoxdZifdW8Wtv+iAXKXUVhSMAFcbIMQ1bkBa12/uDXMOGZDtXUJs
+ 6bgrTY3h5uXShC9oOArHaau4Ps5tLxOhrV4kDx34vuq/zuMZEhFflJmn6IkLSDPR3YK7
+ uoZFUrQs2ipkn6EgPcQCCJ5zTBEiCytplQS/Oi8PB/TWMKUvOo7EkFzetCxVDWC2aaba
+ ooNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=M9oKZpLB3KLxNjht49zMQ5zevFbZ/bcUUbDkM3FfyYA=;
- b=58jcr5je9YMgGtpG/5JlEkFCYr8e8UoooL3TqMxaCQA6BazdPZZY4gXzZBxcVoRqdE
- HL7++C1qb0aDupHpKh0frDSiAX8VNjci/YN/+qBK7orOhcfU5oP1024KKpGkbSMFy7p5
- Q4cMKZGGPxS/R15y7P24sdvQIAh+7OZY+V7DHleM7/ETBihe+aG0igjWUrbU33T11pbL
- zeSRq6faaDLzvvfC6aOI+VVseAmm9lbVLpvf+Kh/KXV+cdYrjcXyhN8ouVYeJXAw3GHz
- kBrQQbA7AyzEddv2WJ3NBXqa11qum04gz8MTEIimlMFzZmUDNdGszp5VqmD85NZ40Vlk
- 6Kow==
-X-Gm-Message-State: AFqh2kotcaKKtXvaWvSNnd2AkDPQ6ZvEKdA6ayU4LvubORc3pJQOFDbx
- uSPSylj1xi+mU+vEW5sOlpHv2w==
-X-Google-Smtp-Source: AMrXdXvd45K78hFtMbn/TLgUzGtyghVKPnuwBJk4k2UCCXd5I59g2iRZLy7eqsLZ58B/VpDHcrS18Q==
-X-Received: by 2002:a17:906:7fc3:b0:7c1:10b8:e6a4 with SMTP id
- r3-20020a1709067fc300b007c110b8e6a4mr65343071ejs.19.1673626938650; 
- Fri, 13 Jan 2023 08:22:18 -0800 (PST)
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=qphHuiI3995fMsqnotERxhZjaBqWPqwflOdlSfg7u7A=;
+ b=EZZUDGI9PVjuQsz980NxSHSIFT7Gb+8gvAXDpSCUDEBoKDNeOQqKTxeoZtuH+TSGTP
+ r1jZnMibmLP89o4L7O2XbjrLw2SvVhpD5iU8Lrcu1gpopkeRXVhwq7yCoFHR2nCU6nt/
+ 6Wp50e2Oic34/Uohuqeyv6tMbyNDK1FYeh435LFQSX5XM0JIX2zuguwIT3/kTO9EKxp4
+ a5wLkgsGs5KWyAdxXIqVCTpoJoQ07uVxyL5UWilAhsXjhaP0kKNSB34TWgeCtSFsOm0M
+ USYePiKyX85Ltzs64sdHx93VIKYqt0VxbW63uPwSqDi78GZF8jyauHnUth1+vJlPhPB6
+ G0KA==
+X-Gm-Message-State: AFqh2krMdpLvlGai5QcVtksADtbNb9agh23oPVpfehAikEfD5C5VteQo
+ elA3MlsQOG4MBlD8KlSx07HJ3w==
+X-Google-Smtp-Source: AMrXdXtz10DQ/GMKG5X8oHVUlAN1dqCKvaugAKT3DKU7zmqlYytG/RBEMle5ksnPhyux6qTtte0urw==
+X-Received: by 2002:a17:906:eda2:b0:84d:4712:9c42 with SMTP id
+ sa2-20020a170906eda200b0084d47129c42mr19114978ejb.56.1673626940618; 
+ Fri, 13 Jan 2023 08:22:20 -0800 (PST)
 Received: from krzk-bin.. ([178.197.216.144]) by smtp.gmail.com with ESMTPSA id
- o11-20020a170906768b00b0084d242d07ffsm8376737ejm.8.2023.01.13.08.22.17
+ o11-20020a170906768b00b0084d242d07ffsm8376737ejm.8.2023.01.13.08.22.19
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 13 Jan 2023 08:22:18 -0800 (PST)
+ Fri, 13 Jan 2023 08:22:20 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
@@ -80,10 +82,12 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] ASoC: dt-bindings: qcom,wsa881x: Allow sound-name-prefix
-Date: Fri, 13 Jan 2023 17:22:12 +0100
-Message-Id: <20230113162214.117261-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 2/3] ASoC: dt-bindings: qcom,wcd934x: Describe slim-ifc-dev
+Date: Fri, 13 Jan 2023 17:22:13 +0100
+Message-Id: <20230113162214.117261-2-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230113162214.117261-1-krzysztof.kozlowski@linaro.org>
+References: <20230113162214.117261-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -102,38 +106,29 @@ Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Reference common DAI properties to fix:
-
-  sdm845-db845c.dtb: speaker@0,1: 'sound-name-prefix' does not match any of the regexes: 'pinctrl-[0-9]+'
+The "slim-ifc-dev" property should not be just "true", because it allows
+any type.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
-index d702b489320f..ac03672ebf6d 100644
---- a/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
-@@ -15,6 +15,9 @@ description: |
-   Their primary operating mode uses a SoundWire digital audio
-   interface. This binding is for SoundWire interface.
+diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml b/Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml
+index 184e8ccbdd13..39b27126cfc1 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml
+@@ -28,7 +28,9 @@ properties:
+     description: GPIO spec for reset line to use
+     maxItems: 1
  
-+allOf:
-+  - $ref: dai-common.yaml#
-+
- properties:
-   compatible:
-     const: sdw10217201000
-@@ -39,7 +42,7 @@ required:
-   - "#thermal-sensor-cells"
-   - "#sound-dai-cells"
+-  slim-ifc-dev: true
++  slim-ifc-dev:
++    description: IFC device interface
++    $ref: /schemas/types.yaml#/definitions/phandle
  
--additionalProperties: false
-+unevaluatedProperties: false
- 
- examples:
-   - |
+   clocks:
+     maxItems: 1
 -- 
 2.34.1
 
