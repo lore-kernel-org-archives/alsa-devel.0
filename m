@@ -4,75 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EB13C6379F
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Jan 2023 19:58:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B07DFC3DA78
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Jan 2023 21:15:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1A37798F;
-	Fri, 13 Jan 2023 20:57:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1A37798F
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCE859E89;
+	Fri, 13 Jan 2023 22:14:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCE859E89
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673639895;
-	bh=psMGJdgXEDhHqs6+nx8XQ26BP+2CjFD7qZ/x59x3SEM=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1673644548;
+	bh=0Sj9Tr5QT4dzqV7iVWUiv4fQ8QN7e5UZzJ3VzXZ1p2g=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=XNOWcoDeWrqqZQAaTzp0Asd70asMYPmGuzF1SBaVpTcIq4nY4BAoIy4sTVHjD7f4K
-	 9l4wKmP2467BMK/4Vyp6EW76wTbImpG06KXP3WPNCJpDj5EsvvJt8lUcfVJoVyUjmv
-	 p06Shyz2k/DRof/WSutsghzENLftHcKzBAeyaGjE=
+	b=q3kbk7T30NMA1tlSUA220BwnRBdTcrD68nREl+HW5s4qwQ75ukX+vmcjDoxKU76/V
+	 jOy4zs+QvLgCvZX0F7lt4qQgsJ1GmxQn37hrB/KQp0neZW7SuVsfwO3R7cZfSOGtSA
+	 3+dThjFYT+geACcg5r/yudTlWaL9BgRdaMPP7yaw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5BBFAF802E8;
-	Fri, 13 Jan 2023 20:57:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8767CF802E8;
+	Fri, 13 Jan 2023 22:14:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 867B1F8026D; Fri, 13 Jan 2023 20:57:24 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 29B81F8030F; Fri, 13 Jan 2023 22:14:57 +0100 (CET)
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com
+ [IPv6:2a00:1450:4864:20::133])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 40E43F8026D
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 20:57:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40E43F8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1BD40F8016D
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 22:14:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BD40F8016D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=bZbdrdxa
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C7FC6622EC;
- Fri, 13 Jan 2023 19:57:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 508EDC433D2;
- Fri, 13 Jan 2023 19:57:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1673639839;
- bh=psMGJdgXEDhHqs6+nx8XQ26BP+2CjFD7qZ/x59x3SEM=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=bZbdrdxa58jGYYcx35JnYbKGRyS3ok+Lutba8s3nrkDWWQrDUXk+IZs+POhfcPxKG
- TVPR35D7bzqQDNsqS09UaY3VxR3j6CrPC9jGeXcdll0V/W8fgX2//7LXaSZv+0G9JO
- VJF343kc83gNHPzu6I6YAjE2fwoJ7qnEMo/6jgFGBWBNu8xIaWa60Ey1pJPUsJ+vAK
- h963STHp4Jn6JLEtPeXS8fFfRbDVfoCGR0gJThEqQ/7t5kXGQOIA2nnwtzv/G0omdx
- 8m0QVzvctvN0n6z6FjxARsFPDGnnp3L0IrCf4BVikulslqRWjc6JhEk3Rqbkmwpqh9
- SkoYYfHd4nxww==
-Date: Fri, 13 Jan 2023 19:57:12 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 19/19] ASoC: amd: ps: increase runtime suspend delay
-Message-ID: <Y8G3mPUDWWUu/3ZR@sirena.org.uk>
-References: <20230111090222.2016499-1-Vijendar.Mukunda@amd.com>
- <20230111090222.2016499-20-Vijendar.Mukunda@amd.com>
- <c7f018e3-c8be-6819-0ece-244bfb943c62@linux.intel.com>
- <0aaf3fa5-bcf1-ec06-8f78-c61e8809398e@amd.com>
- <5a34e6f7-eaf1-8128-81e4-81f65541d9a8@linux.intel.com>
- <1a14e117-4216-b98d-f972-c9a02cf79d1e@amd.com>
- <eb12ed5d-a9f9-cb8d-28f5-ac84c75cf441@linux.intel.com>
- <90782037-109b-b197-ca17-b7d199931f7d@amd.com>
- <e73032b1-ac5b-4a3a-e2a0-8ac121853dee@linux.intel.com>
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20210112 header.b=UEaP2XtX
+Received: by mail-lf1-x133.google.com with SMTP id g13so34829785lfv.7
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 13:14:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=v9Q6K4s5QhNtpyqKaOo9XKQFv6iSXNWhs/iQ5O+aNxA=;
+ b=UEaP2XtXo9uy7oVa0Mz87dudlHhc0V2Q5x5WQVEk/m8qZCSXoSPkGIVRFfsH9Ciaxm
+ SBHB/ziQ2ptuotGxaqnKCcYcb9PunzCiz+DCw1NSJ1YSvkRZEi+wREow/0tDFktgrM29
+ Ha5F7WTugiMrsNPdMiyqDTfQlMCLMh7zLGVNpIyyoE1dtn5N5o7z3QPaxyPFZJCx2lgW
+ YS1Wnql2WqjeQrg+PoIUJZRfVWeFwxMtrvRglR3jxHwZc9IIrkueG44CaXY8vVlxkleN
+ bHmBjtcFSekyCvja8rzwLng1KsZmydkzMbL6wHNV362p+wFql7IQP3aGAuADeZf/aQ8e
+ My1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=v9Q6K4s5QhNtpyqKaOo9XKQFv6iSXNWhs/iQ5O+aNxA=;
+ b=g1iB0JuQea2M4rUS1QB4B91a3XQ9IBhk/hbnFIomXzB+ebAfESa6MkcnP37Qk8vjQC
+ LyS2d3SLncVPm64d3pq7nmc6FEJl8tsN+kzR1jnswX3KrZtaCxpLdmn9ADjRUAomnkjN
+ C15245lxrnyu/MlmSHqeOoPgiCwh9JycDRDLIwL3X9+932rBvlLdS+/Ou1UNnfHOFy/o
+ dXKcmNT8mQbQAO5nj+rJeRSZjkjYsK8/QlqcLD07N1Rn/ek7QpiAs8ScKqX0cIXY/Iay
+ 3Fb70o5MVrrJubM/iAnCfQCNtWSWHG0tRZjdzx2aTW6o6zuK8Ys4n7afVM7CGTgbCn8i
+ o+hA==
+X-Gm-Message-State: AFqh2kojxxY6/jXJDcuBavESg4n7LCZ3EF6tjb4MCE7m0UxP9DoEYPUA
+ ogfGk0SqwTAzxaitM83pzFw=
+X-Google-Smtp-Source: AMrXdXuEK+H214nGsU2CeNX7R70Aik1NHSOs3d4i5Hk0bWget27myBty8mnJZNTUN+JaQ2vtIOfZnA==
+X-Received: by 2002:a05:6512:3196:b0:4cc:7ff0:dd64 with SMTP id
+ i22-20020a056512319600b004cc7ff0dd64mr10176064lfe.21.1673644491810; 
+ Fri, 13 Jan 2023 13:14:51 -0800 (PST)
+Received: from [10.0.0.42] (host-185-69-38-8.kaisa-laajakaista.fi.
+ [185.69.38.8]) by smtp.gmail.com with ESMTPSA id
+ x11-20020a056512078b00b004b5821219fbsm4020206lfr.60.2023.01.13.13.14.50
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 13 Jan 2023 13:14:51 -0800 (PST)
+Message-ID: <69c4d620-4b35-1ea0-c3ec-3d564d183a44@gmail.com>
+Date: Fri, 13 Jan 2023 23:25:19 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="5R3mQI7755N2isNj"
-Content-Disposition: inline
-In-Reply-To: <e73032b1-ac5b-4a3a-e2a0-8ac121853dee@linux.intel.com>
-X-Cookie: I know how to do SPECIAL EFFECTS!!
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH -next] ASoC: ti: davinci-evm: simplify the code with
+ module_platform_driver
+To: Yang Yingliang <yangyingliang@huawei.com>, alsa-devel@alsa-project.org
+References: <20230112135457.1490360-1-yangyingliang@huawei.com>
+Content-Language: en-US
+From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+In-Reply-To: <20230112135457.1490360-1-yangyingliang@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,46 +99,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Mastan.Katragadda@amd.com, Sunil-kumar.Dommati@amd.com,
- Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
- Basavaraj.Hiregoudar@amd.com, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, vkoul@kernel.org, "Limonciello,
- Mario" <mario.limonciello@amd.com>, "Mukunda,
- Vijendar" <vijendar.mukunda@amd.com>, arungopal.kondaveeti@amd.com,
- Syed Saba Kareem <Syed.SabaKareem@amd.com>
+Cc: tiwai@suse.com, broonie@kernel.org, lgirdwood@gmail.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---5R3mQI7755N2isNj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Fri, Jan 13, 2023 at 11:33:09AM -0600, Pierre-Louis Bossart wrote:
+On 1/12/23 15:54, Yang Yingliang wrote:
+> The init/exit() of driver only calls platform_driver_register/unregister,
+> it can be simpilfied with module_platform_driver.
 
-> I do recall some issues with the codec jacks, where if the card
-> registration happens too late the codec might have suspended. But we
-> added pm_runtime_resume_and_get in the set_jack_detect callbacks, so
-> that was solved.
+Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
 
-Right, I would expect that whatever needs the device to be powered on
-would be explicitly ensuring that this is done rather than tweaking
-timeouts - the timeouts should be more of a performance thing to avoid
-bouncing power too much, not a correctness thing.
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  sound/soc/ti/davinci-evm.c | 13 +------------
+>  1 file changed, 1 insertion(+), 12 deletions(-)
+> 
+> diff --git a/sound/soc/ti/davinci-evm.c b/sound/soc/ti/davinci-evm.c
+> index 983d69b951b0..544cb3da50eb 100644
+> --- a/sound/soc/ti/davinci-evm.c
+> +++ b/sound/soc/ti/davinci-evm.c
+> @@ -257,18 +257,7 @@ static struct platform_driver davinci_evm_driver = {
+>  	},
+>  };
+>  
+> -static int __init evm_init(void)
+> -{
+> -	return platform_driver_register(&davinci_evm_driver);
+> -}
+> -
+> -static void __exit evm_exit(void)
+> -{
+> -	platform_driver_unregister(&davinci_evm_driver);
+> -}
+> -
+> -module_init(evm_init);
+> -module_exit(evm_exit);
+> +module_platform_driver(davinci_evm_driver);
+>  
+>  MODULE_AUTHOR("Vladimir Barinov");
+>  MODULE_DESCRIPTION("TI DAVINCI EVM ASoC driver");
 
---5R3mQI7755N2isNj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPBt5cACgkQJNaLcl1U
-h9Amowf/TSY2DBZY7eTxdtVv9af5yNvLjFgJfNge3+K83ylW64H/9hLJV15RoHdI
-c9BdxzTIyxZucV8SLW0lYqG477MQzg/kSsASsPbETcSI77Qwm2lsVHSJC/nXU0N2
-PlhS/r8x+j/hVtX0B6d8p5mciXfAqI4KRXo3+P0BAddr1dT4FwQOHkeftzIEoU1z
-EHv5wVGPidIEjCnJraBzFCPtiqlQeelMQWUsAyBWWuiHjthhuHscuXTD0iH4vM82
-tLrSmopJFk8O23yQgICI+zBrUb/W46sXGf8JAbBvZBGmwwMuf+TEipFLfaJ8FP1F
-HcSufqSJhFfUnOIV0YB1sFWIUQSqqQ==
-=rznC
------END PGP SIGNATURE-----
-
---5R3mQI7755N2isNj--
+-- 
+Péter
