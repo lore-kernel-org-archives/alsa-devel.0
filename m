@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0967C678D4
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Jan 2023 19:28:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C5B3C3DA78
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Jan 2023 19:29:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CC55AF92;
-	Fri, 13 Jan 2023 20:27:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CC55AF92
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4BD9AFAA;
+	Fri, 13 Jan 2023 20:28:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4BD9AFAA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673638125;
-	bh=NoSp4Yj8rM26hkY4skqXoBTM3TREEhqDQjQrCdEQ3rw=;
+	s=default; t=1673638153;
+	bh=z3ekLWY5ObJLmIVZrmrckQLOgVzWCWpMqm4KtCSrWtI=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=oiHXoDSQBkFhejdbMA7rJz27yzJxp6X6rEU4XtUr+JbP9LAGeXG7ESHJFsvWI+5kw
-	 z3DdHPT+g0qU1pyR1qi+txr9DgbFb9LqNXcM5b+nnCEaKxqYvQNp16T2BAgku8dKx8
-	 M2Aei20xvff6Zu3+1htmSK6mq95UQMkDJ+NzsiVs=
+	b=ZxRDa3NcAbptb+8t6fQSsEeIQjphL/mPY9YuMC2sqlAyoHhgkLem6ME2Y5SqEz4TR
+	 75QJayK+O2jGyX6CcU6AURA8eEM4gLl13isDndh1OATNUEDemL7P0zHGgFJavjqzaA
+	 bO7cZ2/YHKjPYaI0uTQCqvVqnGrIOZGivqS92BPA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FB50F80425;
-	Fri, 13 Jan 2023 20:27:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3936F80424;
+	Fri, 13 Jan 2023 20:27:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B666F80424; Fri, 13 Jan 2023 20:27:54 +0100 (CET)
+ id 30790F804A9; Fri, 13 Jan 2023 20:27:55 +0100 (CET)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72698F8026D
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 20:27:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72698F8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0286F8030F
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 20:27:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0286F8030F
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=E2SeAvNO
+ header.s=Intel header.b=JHWaXsvi
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1673638072; x=1705174072;
+ t=1673638074; x=1705174074;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=NoSp4Yj8rM26hkY4skqXoBTM3TREEhqDQjQrCdEQ3rw=;
- b=E2SeAvNOAlZ7IAW0PH7KYIWSr/zVhdqo1zUdyKDJge4p6kQTemLqvBBe
- vVZ9lW9RCdZbm74id0MvC52V1HgLeva5InmIB9RCXfk8CcgBRYcLFupBk
- 5bF2+LpJzG1lRVX0KzfKSFpEHFmb8H1PLXcOeosv7GVMOnbV5AnQraP2H
- gsatKtH1zG0RDaMLRi1QlNcFOR7BH2zHHvWtD7UewKrcroO95Z4ZmSYMK
- j9hrjuVwFTsDHqyDFjdNGlpsDdwhPis4n7yaa6pmj1GhA3Y4o3TNVM1XK
- YWLeOF00D1TSAebvtNWRjk1S4Xx1T+YoEjJH/nV83DVR9vx7idD6sh6K4 Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10589"; a="322777184"
-X-IronPort-AV: E=Sophos;i="5.97,214,1669104000"; d="scan'208";a="322777184"
+ bh=z3ekLWY5ObJLmIVZrmrckQLOgVzWCWpMqm4KtCSrWtI=;
+ b=JHWaXsvic+wzkeAcIkovVDUWX3N4VCTFiG1CJVJ4ZYuCyFiq7Yw3Kp1Q
+ GmsyMvv/Uuz70BUgdxaH9EGdJFEr2BHnC7xzNo9Q+mwlNAHNQv/0+IrfY
+ E5HRYYJ5WoMZw79g0fnUCXczUFQVLd5InQc+NXYSYRTorhwc/aaRtQ+tb
+ uGQX4+DK5LyXg32TV2SitYTwK/Dv2YVu4xVQIqUYsmOhSdwxHiBQRa3HD
+ 0UmHMwzD+ZzvaZepU0CYdeMcp2rSgJ872y11IUqCObi/cOgRR90MtOTur
+ MqI6gmPQIxvtgcPX+BTInD2JZFv9A79h/Tt8dozFf3RU3MPr65rXab2Ll w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10589"; a="322777236"
+X-IronPort-AV: E=Sophos;i="5.97,214,1669104000"; d="scan'208";a="322777236"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2023 11:27:46 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10589"; a="608257437"
-X-IronPort-AV: E=Sophos;i="5.97,214,1669104000"; d="scan'208";a="608257437"
+ 13 Jan 2023 11:27:50 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10589"; a="608257464"
+X-IronPort-AV: E=Sophos;i="5.97,214,1669104000"; d="scan'208";a="608257464"
 Received: from rerayess-mobl.amr.corp.intel.com (HELO [10.212.13.223])
  ([10.212.13.223])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2023 11:27:44 -0800
-Message-ID: <3bb2114c-cd0c-f176-c837-90a665a25343@linux.intel.com>
-Date: Fri, 13 Jan 2023 11:05:54 -0600
+ 13 Jan 2023 11:27:49 -0800
+Message-ID: <68b22ad4-1da0-48e4-a3aa-2b55e5553c01@linux.intel.com>
+Date: Fri, 13 Jan 2023 11:13:46 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH 08/19] ASoC: amd: ps: add soundwire dma driver dma ops
+Subject: Re: [PATCH 03/19] soundwire: amd: register sdw controller dai ops
 Content-Language: en-US
 To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>, broonie@kernel.org,
  vkoul@kernel.org, alsa-devel@alsa-project.org
 References: <20230111090222.2016499-1-Vijendar.Mukunda@amd.com>
- <20230111090222.2016499-9-Vijendar.Mukunda@amd.com>
- <77e35f54-323e-42d0-9e74-be984eebc0fe@linux.intel.com>
- <6bb9b13c-2829-d7c3-872b-6e9586189300@amd.com>
+ <20230111090222.2016499-4-Vijendar.Mukunda@amd.com>
+ <ad052efb-286e-4716-7608-d284782011cd@linux.intel.com>
+ <abf07f9a-d34e-850f-1ed1-54b373960ce2@amd.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <6bb9b13c-2829-d7c3-872b-6e9586189300@amd.com>
+In-Reply-To: <abf07f9a-d34e-850f-1ed1-54b373960ce2@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -88,44 +88,80 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: Mastan.Katragadda@amd.com, Sunil-kumar.Dommati@amd.com,
- Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
+ Basavaraj.Hiregoudar@amd.com, open list <linux-kernel@vger.kernel.org>,
  Mario.Limonciello@amd.com, arungopal.kondaveeti@amd.com,
- Syed Saba Kareem <Syed.SabaKareem@amd.com>
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
->>> +	sdw_data->sdw_stream[stream_id] = substream;
->>> +	size = params_buffer_bytes(params);
->>> +	period_bytes = params_period_bytes(params);
->>> +	sdw_stream_data->dma_addr = substream->runtime->dma_addr;
->>> +	sdw_stream_data->num_pages = (PAGE_ALIGN(size) >> PAGE_SHIFT);
->>> +	acp63_config_dma(sdw_stream_data, stream_id);
->>> +	ret = acp63_configure_sdw_ringbuffer(sdw_stream_data->acp_base, stream_id, size);
->>> +	if (ret) {
->>> +		dev_err(component->dev, "Invalid channel type\n");
->>> +		return -EINVAL;
+
+>>> +static int amd_sdwc_hw_params(struct snd_pcm_substream *substream,
+>>> +			      struct snd_pcm_hw_params *params,
+>>> +			      struct snd_soc_dai *dai)
+>>> +{
+>>> +	struct amd_sdwc_ctrl *ctrl = snd_soc_dai_get_drvdata(dai);
+>>> +	struct sdw_amd_dma_data *dma;
+>>> +	struct sdw_stream_config sconfig;
+>>> +	struct sdw_port_config *pconfig;
+>>> +	int ch, dir;
+>>> +	int ret;
+>>> +
+>>> +	dma = snd_soc_dai_get_dma_data(dai, substream);
+>>> +	if (!dma)
+>>> +		return -EIO;
+>>> +
+>>> +	ch = params_channels(params);
+>>> +	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+>>> +		dir = SDW_DATA_DIR_RX;
+>>> +	else
+>>> +		dir = SDW_DATA_DIR_TX;
+>>> +	dev_dbg(ctrl->dev, "%s: dir:%d dai->id:0x%x\n", __func__, dir, dai->id);
+>>> +	dma->hw_params = params;
+>>> +
+>>> +	sconfig.direction = dir;
+>>> +	sconfig.ch_count = ch;
+>>> +	sconfig.frame_rate = params_rate(params);
+>>> +	sconfig.type = dma->stream_type;
+>>> +
+>>> +	sconfig.bps = snd_pcm_format_width(params_format(params));
+>>> +
+>>> +	/* Port configuration */
+>>> +	pconfig = kzalloc(sizeof(*pconfig), GFP_KERNEL);
+>>> +	if (!pconfig) {
+>>> +		ret =  -ENOMEM;
+>>> +		goto error;
 >>> +	}
->>> +	switch (stream_id) {
->>> +	case ACP_SDW_AUDIO_TX:
->>> +		water_mark_size_reg = ACP_AUDIO_TX_INTR_WATERMARK_SIZE;
->>> +		irq_mask = BIT(ACP_AUDIO_TX_THRESHOLD);
->>> +		acp_ext_intr_cntl_reg = ACP_EXTERNAL_INTR_CNTL;
->>> +		break;
->> so there's ONE resource to deal with external codecs? How does this work
->> if you have a headset codec and an amplifier?
-> Are you referring to playing a same stream over headset codec and
-> amplifier?
-> It's all about channel selection from DMA perspective.
-> We have tested speaker aggregation and headset playback use cases.
+>>> +
+>>> +	pconfig->num = dai->id;
+>>> +	pconfig->ch_mask = (1 << ch) - 1;
+>>> +	ret = sdw_stream_add_master(&ctrl->bus, &sconfig,
+>>> +				    pconfig, 1, dma->stream);
+>>> +	if (ret)
+>>> +		dev_err(ctrl->dev, "add master to stream failed:%d\n", ret);
+>>> +
+>>> +	kfree(pconfig);
+>>> +error:
+>>> +	return ret;
+>>> +}
+>> This looks inspired from intel.c, but you are not programming ANY
+>> registers here. is this intentional?
+> We don't have any additional registers to be programmed like intel.
 
-No, I wasn't asking about playing the same content to different sinks.
+ok, this is worthy of a comment.
 
-I was referring to playing/recording different content to/from different
-devices.
 
-Even when interfacing with a single device, there are interesting
-topologies in the SDCA spec that would require multiple DMA transfers
-conveying unrelated content (or processed content from the same source).
+>>> +static const struct snd_soc_dai_ops amd_sdwc_dai_ops = {
+>>> +	.hw_params = amd_sdwc_hw_params,
+>>> +	.hw_free = amd_sdwc_hw_free,
+>>> +	.set_stream = amd_pcm_set_sdw_stream,
+>> In the first patch there was support for PDM exposed, but here it's PDM
+>> only?
+> Didn't get your question.
+> First patch talks about creating dev nodes for Soundwire managers and
+> ACP PDM controller based on ACP pin config.
 
+Sorry, my comment has a typo.
+
+I meant that the first patch exposed PDM support but here you only have PCM?
