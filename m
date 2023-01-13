@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 947BDC54EBE
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Jan 2023 09:29:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09008C54EBE
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Jan 2023 09:29:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B10047B88;
-	Fri, 13 Jan 2023 10:28:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B10047B88
+	by alsa0.perex.cz (Postfix) with ESMTPS id C00A67B71;
+	Fri, 13 Jan 2023 10:28:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C00A67B71
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673602147;
-	bh=Msf7Ux2UBgkRWznDZIyNsLYT/We1sSSckwpIyVPyhL0=;
+	s=default; t=1673602157;
+	bh=7vfmYiwRnIv7Am96c9Qj/RTB4F0doxF2OEQMmfScbOc=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=KMb+YmgqCb3/aB1HQ+alORAIJTSqXILQVxfynmjf2ZTl0zSPkUDYI34zTh4oaGjmP
-	 HW0LVaOvxflO2ngFJ3tZ9H2Gji5qKNyYwXVSnCvcdZagicDZtdA/9KCYN8KkxRm7vk
-	 jmXOGDE5cez7emtGBEwzTwH0skBizyJaoFRaSP+w=
+	b=oLabAD6hrVPGbrW0yrw19qqm1QprPEdbWIiQN8+lz+MQabMjI/deGFVqmbJIrw/ZG
+	 vQzbkSTOJ0GYDLcv4PlKbMooPSMKcR9IQQ2d37yWVzHFqwE3zvwyknCHoc4NEJYHUz
+	 FlNlbXRE5RAn4HQHTME6TK0Uuh0Gsi0jkr/kC+80=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B454F804A9;
-	Fri, 13 Jan 2023 10:27:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5FCFF80551;
+	Fri, 13 Jan 2023 10:27:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 05906F80425; Fri, 13 Jan 2023 10:27:27 +0100 (CET)
+ id E0124F80549; Fri, 13 Jan 2023 10:27:45 +0100 (CET)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C07FEF802E8
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 10:27:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C07FEF802E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id D09F3F80543
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 10:27:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D09F3F80543
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=bZAa35aq
+ header.s=Intel header.b=ibHUSLlJ
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1673602046; x=1705138046;
+ t=1673602065; x=1705138065;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=Msf7Ux2UBgkRWznDZIyNsLYT/We1sSSckwpIyVPyhL0=;
- b=bZAa35aqt0Tpd7kpbGlVzvbn9GZx0jsrgLgouwD3WIqy+2ajZZjU0aPU
- N2DbMPefkaiJ5GQiUQezxOhk3B/c/0UfWwUzBYRdlyaMnlrmwi9fTT7hY
- MPNGZWcOreWDMeSZngn6NNRusG2ghdg29Nuu728F+Sp+eU75xLmvsT54x
- i4eIGwi6Mp/AFwPACoARVbfSoIq/QHJ3zBSxvgp91hHRkymv0jFLXT0zE
- ouAqtrzUXUVBXwabd1HPeC1CzPzk/tPGFKdvCEVjaDypJq3uPjLPCZIGa
- zwf1vg8dXOMQQp7SF0tu0Jk5FTTkkr3yv+IdFMgORVx8fdqAWy3xjz2j3 g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10588"; a="351189435"
-X-IronPort-AV: E=Sophos;i="5.97,213,1669104000"; d="scan'208";a="351189435"
+ bh=7vfmYiwRnIv7Am96c9Qj/RTB4F0doxF2OEQMmfScbOc=;
+ b=ibHUSLlJZ5AQbt3mltkte5XKDE4VGzILlvAltCyQ9g7YZzLlhCm/fgom
+ TxtzDdeZsIyKrZWm3qrgu2YU1Fx1ZKwbEAQO8yR7uw0oC28FNJaWQIT24
+ uUGVryf246oOra9mpW8pdk+qVK5CGN6uixC7P5GzrpfCEKsDOng1Pc7kY
+ fFl59Vx400CceJyBTb2mJqkKRC6o1qIYc3HWuI9wnjVj/IbVxPS+xHjmI
+ zoevu1h+4sc8Wv+tZ34sJ4L631jZm9Ux/fQWz6c1xzbPxVeYm51/ugPET
+ AmROzSvCUfaB6TxuuJL2E94Cb0WGFepiK1kklsJAjW/KlKdTu4mdZi8Ib w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10588"; a="351189450"
+X-IronPort-AV: E=Sophos;i="5.97,213,1669104000"; d="scan'208";a="351189450"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2023 01:27:21 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10588"; a="608116087"
-X-IronPort-AV: E=Sophos;i="5.97,213,1669104000"; d="scan'208";a="608116087"
+ 13 Jan 2023 01:27:25 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10588"; a="608116104"
+X-IronPort-AV: E=Sophos;i="5.97,213,1669104000"; d="scan'208";a="608116104"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2023 01:27:20 -0800
+ 13 Jan 2023 01:27:23 -0800
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 1/5] soundwire: stream: uniquify dev_err() logs
-Date: Fri, 13 Jan 2023 17:35:28 +0800
-Message-Id: <20230113093532.3872113-2-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 3/5] soundwire: bus: remove sdw_defer argument in
+ sdw_transfer_defer()
+Date: Fri, 13 Jan 2023 17:35:30 +0800
+Message-Id: <20230113093532.3872113-4-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230113093532.3872113-1-yung-chuan.liao@linux.intel.com>
 References: <20230113093532.3872113-1-yung-chuan.liao@linux.intel.com>
@@ -87,76 +88,96 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-There are a couple of duplicate logs which makes harder than needed to
-follow the error flows. Add __func__ or make the log unique.
+There's no point in passing an argument that is a pointer to a bus
+member. We can directly get the member and do an indirection when
+needed.
+
+This is a first step before simplifying the hardware-specific
+callbacks further.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/stream.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/soundwire/bus.c    | 10 ++++------
+ drivers/soundwire/bus.h    |  3 +--
+ drivers/soundwire/stream.c |  4 +---
+ 3 files changed, 6 insertions(+), 11 deletions(-)
 
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 633d411b64f3..572cc9a9af41 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -225,9 +225,9 @@ static inline int do_transfer(struct sdw_bus *bus, struct sdw_msg *msg)
+ }
+ 
+ static inline int do_transfer_defer(struct sdw_bus *bus,
+-				    struct sdw_msg *msg,
+-				    struct sdw_defer *defer)
++				    struct sdw_msg *msg)
+ {
++	struct sdw_defer *defer = &bus->defer_msg;
+ 	int retry = bus->prop.err_threshold;
+ 	enum sdw_command_response resp;
+ 	int ret = 0, i;
+@@ -335,19 +335,17 @@ EXPORT_SYMBOL(sdw_show_ping_status);
+  * sdw_transfer_defer() - Asynchronously transfer message to a SDW Slave device
+  * @bus: SDW bus
+  * @msg: SDW message to be xfered
+- * @defer: Defer block for signal completion
+  *
+  * Caller needs to hold the msg_lock lock while calling this
+  */
+-int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_msg *msg,
+-		       struct sdw_defer *defer)
++int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_msg *msg)
+ {
+ 	int ret;
+ 
+ 	if (!bus->ops->xfer_msg_defer)
+ 		return -ENOTSUPP;
+ 
+-	ret = do_transfer_defer(bus, msg, defer);
++	ret = do_transfer_defer(bus, msg);
+ 	if (ret != 0 && ret != -ENODATA)
+ 		dev_err(bus->dev, "Defer trf on Slave %d failed:%d\n",
+ 			msg->dev_num, ret);
+diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+index 7631ef5e71fb..96927a143796 100644
+--- a/drivers/soundwire/bus.h
++++ b/drivers/soundwire/bus.h
+@@ -151,8 +151,7 @@ int sdw_configure_dpn_intr(struct sdw_slave *slave, int port,
+ 			   bool enable, int mask);
+ 
+ int sdw_transfer(struct sdw_bus *bus, struct sdw_msg *msg);
+-int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_msg *msg,
+-		       struct sdw_defer *defer);
++int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_msg *msg);
+ 
+ #define SDW_READ_INTR_CLEAR_RETRY	10
+ 
 diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index df3b36670df4..e0eae0b98267 100644
+index f27bd37b154d..e0b0c63fc55c 100644
 --- a/drivers/soundwire/stream.c
 +++ b/drivers/soundwire/stream.c
-@@ -1389,7 +1389,7 @@ static int _sdw_prepare_stream(struct sdw_stream_runtime *stream,
+@@ -684,8 +684,6 @@ static int sdw_bank_switch(struct sdw_bus *bus, int m_rt_count)
+ 	if (!wr_msg)
+ 		return -ENOMEM;
  
- 	ret = do_bank_switch(stream);
- 	if (ret < 0) {
--		dev_err(bus->dev, "Bank switch failed: %d\n", ret);
-+		dev_err(bus->dev, "do_bank_switch failed: %d\n", ret);
- 		goto restore_params;
- 	}
- 
-@@ -1477,7 +1477,7 @@ static int _sdw_enable_stream(struct sdw_stream_runtime *stream)
- 		/* Program params */
- 		ret = sdw_program_params(bus, false);
- 		if (ret < 0) {
--			dev_err(bus->dev, "Program params failed: %d\n", ret);
-+			dev_err(bus->dev, "%s: Program params failed: %d\n", __func__, ret);
- 			return ret;
- 		}
- 
-@@ -1567,7 +1567,7 @@ static int _sdw_disable_stream(struct sdw_stream_runtime *stream)
- 		/* Program params */
- 		ret = sdw_program_params(bus, false);
- 		if (ret < 0) {
--			dev_err(bus->dev, "Program params failed: %d\n", ret);
-+			dev_err(bus->dev, "%s: Program params failed: %d\n", __func__, ret);
- 			return ret;
- 		}
- 	}
-@@ -1664,7 +1664,7 @@ static int _sdw_deprepare_stream(struct sdw_stream_runtime *stream)
- 		/* Program params */
- 		ret = sdw_program_params(bus, false);
- 		if (ret < 0) {
--			dev_err(bus->dev, "Program params failed: %d\n", ret);
-+			dev_err(bus->dev, "%s: Program params failed: %d\n", __func__, ret);
- 			return ret;
- 		}
- 	}
-@@ -1893,7 +1893,8 @@ int sdw_stream_add_master(struct sdw_bus *bus,
- 
- 	m_rt = sdw_master_rt_alloc(bus, stream);
- 	if (!m_rt) {
--		dev_err(bus->dev, "Master runtime alloc failed for stream:%s\n", stream->name);
-+		dev_err(bus->dev, "%s: Master runtime alloc failed for stream:%s\n",
-+			__func__, stream->name);
+-	bus->defer_msg.msg = wr_msg;
+-
+ 	wbuf = kzalloc(sizeof(*wbuf), GFP_KERNEL);
+ 	if (!wbuf) {
  		ret = -ENOMEM;
- 		goto unlock;
- 	}
-@@ -2012,7 +2013,8 @@ int sdw_stream_add_slave(struct sdw_slave *slave,
- 	 */
- 	m_rt = sdw_master_rt_alloc(slave->bus, stream);
- 	if (!m_rt) {
--		dev_err(&slave->dev, "Master runtime alloc failed for stream:%s\n", stream->name);
-+		dev_err(&slave->dev, "%s: Master runtime alloc failed for stream:%s\n",
-+			__func__, stream->name);
- 		ret = -ENOMEM;
- 		goto unlock;
- 	}
+@@ -713,7 +711,7 @@ static int sdw_bank_switch(struct sdw_bus *bus, int m_rt_count)
+ 	multi_link = bus->multi_link && (m_rt_count >= bus->hw_sync_min_links);
+ 
+ 	if (multi_link)
+-		ret = sdw_transfer_defer(bus, wr_msg, &bus->defer_msg);
++		ret = sdw_transfer_defer(bus, wr_msg);
+ 	else
+ 		ret = sdw_transfer(bus, wr_msg);
+ 
 -- 
 2.25.1
 
