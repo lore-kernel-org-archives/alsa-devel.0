@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E92D8C3DA78
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Jan 2023 07:52:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6A48C3DA78
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Jan 2023 07:52:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 24133AD3C;
-	Sun, 15 Jan 2023 08:50:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24133AD3C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 146F12ABA;
+	Sun, 15 Jan 2023 08:50:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 146F12ABA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673769072;
-	bh=y7pVf6Lpukzk3xis3LCBYxRtHXfDTLRlkEAhKXVRmUA=;
+	s=default; t=1673769091;
+	bh=NklCLtbWc5WyOgonvZKTPSjAxeAHnIbpUkTWUUnWx+Y=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=hhsECsYiBc3KFdRv7vhCfFgJHxoxjpi0Y6X5l5SKTvY8nU7X6aj22lRv6wk1NMSh7
-	 8pR+YZi2fOmKbJDFxuJSVL+c6DqR77IjZlHnxkHHvNWUScrJSMXpBme3W6K+O4/Lf4
-	 R75YoreCCpcZkTAS16eSqwTst/1zrqom0oz7F1bY=
+	b=nZsvIQyO5jXZeMDMmhN+kc+bWHmgXqbwMGFjW9fG7gA0F/oOzopw3Tc2ztqR6hiox
+	 6tMpidFmnbbgN08jEneS8vovSTywxavdAnHWjIxIjTTt8/X4zZxB/G4G1EKdtxBEvb
+	 2RPbWuWEVwBtnSpIsNY790MmOnUhVI8cOEo1/SMs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4830EF80570;
+	by alsa1.perex.cz (Postfix) with ESMTP id CF008F80578;
 	Sun, 15 Jan 2023 08:48:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6BA0BF8030F; Fri, 13 Jan 2023 09:53:01 +0100 (CET)
+ id EB548F803DC; Fri, 13 Jan 2023 20:05:39 +0100 (CET)
 Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de
  [130.133.4.66])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AC279F8016D
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 09:52:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC279F8016D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 02E91F8016D
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 20:05:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02E91F8016D
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
  by outpost.zedat.fu-berlin.de (Exim 4.95) with esmtps (TLS1.3)
  tls TLS_AES_256_GCM_SHA384
  (envelope-from <glaubitz@zedat.fu-berlin.de>)
- id 1pGFnq-001QE4-Us; Fri, 13 Jan 2023 09:52:46 +0100
-Received: from dynamic-078-054-173-160.78.54.pool.telefonica.de
- ([78.54.173.160] helo=[192.168.1.11])
- by inpost2.zedat.fu-berlin.de (Exim 4.95) with esmtpsa (TLS1.3)
- tls TLS_AES_128_GCM_SHA256
+ id 1pGPMg-003M27-Uf; Fri, 13 Jan 2023 20:05:22 +0100
+Received: from p57ae5361.dip0.t-ipconnect.de ([87.174.83.97]
+ helo=[192.168.178.35]) by inpost2.zedat.fu-berlin.de (Exim 4.95)
+ with esmtpsa (TLS1.3) tls TLS_AES_128_GCM_SHA256
  (envelope-from <glaubitz@physik.fu-berlin.de>)
- id 1pGFnq-002ngG-HF; Fri, 13 Jan 2023 09:52:46 +0100
-Message-ID: <142532fb-5997-bdc1-0811-a80ae33f4ba4@physik.fu-berlin.de>
-Date: Fri, 13 Jan 2023 09:52:45 +0100
+ id 1pGPMg-000Hn8-Jc; Fri, 13 Jan 2023 20:05:22 +0100
+Message-ID: <fe09d811-e290-821d-ec8b-75936b6583c2@physik.fu-berlin.de>
+Date: Fri, 13 Jan 2023 20:05:20 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.1
 Subject: Re: remove arch/sh
 Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Rob Landley <rob@landley.net>, Geert Uytterhoeven <geert@linux-m68k.org>
 References: <20230113062339.1909087-1-hch@lst.de>
  <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
  <CAMuHMdUcnP6a9Ch5=_CMPq-io-YWK5pshkOT2nZmP1hvNcwBAg@mail.gmail.com>
+ <142532fb-5997-bdc1-0811-a80ae33f4ba4@physik.fu-berlin.de>
+ <6891afb6-4190-6a52-0319-745b3f138d97@landley.net>
 From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-In-Reply-To: <CAMuHMdUcnP6a9Ch5=_CMPq-io-YWK5pshkOT2nZmP1hvNcwBAg@mail.gmail.com>
+In-Reply-To: <6891afb6-4190-6a52-0319-745b3f138d97@landley.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 78.54.173.160
+X-Originating-IP: 87.174.83.97
 X-Mailman-Approved-At: Sun, 15 Jan 2023 08:48:18 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -93,15 +94,35 @@ Cc: linux-fbdev@vger.kernel.org, Rich Felker <dalias@libc.org>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Geert!
+Hi Rob!
 
-On 1/13/23 09:26, Geert Uytterhoeven wrote:
-> Indeed.  The main issue is not the lack of people sending patches and
-> fixes, but those patches never being applied by the maintainers.
-> Perhaps someone is willing to stand up to take over maintainership?
+On 1/13/23 20:11, Rob Landley wrote:
+>> I actually would be willing to do it but I'm a bit hesitant as I'm not 100%
+>> sure my skills are sufficient. Maybe if someone can assist me?
+> 
+> My skills aren't sufficient and I dunno how much time I have, but I can
+> certainly assist. I test sh4 regularlyish and it's in the list of architectures
+> I ship binaries and tiny VM images for, just refreshed tuesday:
+> 
+> https://landley.net/toybox/downloads/binaries/0.8.9/
+> https://landley.net/toybox/downloads/binaries/mkroot/0.8.9/
+> 
+> (The sh2eb isn't a VM, it's a physical board I have here...)
+> 
+> There is definitely interest in this architecture. I'm aware Rich hasn't been
+> the most responsive maintainer. (I'm told he's on vacation with his family at
+> the moment, according to the text I got about this issue from the J-core
+> hardware guys in Japan.)
 
-I actually would be willing to do it but I'm a bit hesitant as I'm not 100%
-sure my skills are sufficient. Maybe if someone can assist me?
+Well, maybe we can just give it a try together ...
+
+> The main reason we haven't converted everything to device tree is we only have
+> access to test hardware for a subset of the boards. Pruning the list of
+> supported boards and converting the rest to device tree might make sense. We can
+> always add/convert boards back later...
+
+There is a patch by Yoshinori Sato which adds device tree support to SH. Maybe we
+can revive it.
 
 Adrian
 
