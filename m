@@ -4,100 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FF9CC63797
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Jan 2023 07:52:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D40D8C63797
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Jan 2023 07:52:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 731F93978;
-	Sun, 15 Jan 2023 08:50:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 731F93978
+	by alsa0.perex.cz (Postfix) with ESMTPS id CBE183EF1;
+	Sun, 15 Jan 2023 08:51:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBE183EF1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673769107;
-	bh=IRUqthaA5X6K+gtdbTlhzXVseCsUEEL8rASJdnzGhKE=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=Y+W7aboRBONarjAiZtzZ34WBTjQN8OqxTEVqH7hOeMoYZ+SCR5q4ZvKSgucFbyH5C
-	 upewmJt938ngyp49s5++PV/LiUd86TQ9Ofs6fpit7c6F6/ppLYAG6yP2HXTtwVbt4A
-	 cMyNZTK83ABs/XXQZyvYFd8W9DQWtcgqyuWgfTWE=
+	s=default; t=1673769123;
+	bh=2A6TzQ6ZeQgtidYMpYFRSlGT8Qh+ZRNIHSsYVLvxKuM=;
+	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=TXzN1IfMhV+mfpcxU5i7sWzZsPW1Pt7Krh2IsAH2qDKae7thpf16JN9uiiWRFZLEs
+	 DDDiXRc6YVV/LNUXIJsqsG2ZnIUNAE08Uzmo1bLMDlhH5MAk9xd4WsGmrWvpW7bGKF
+	 SiX0vyjMjDvKNgVzoOYirBYHd6GifyNcjrEyZLmk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C643F8057E;
+	by alsa1.perex.cz (Postfix) with ESMTP id CE23CF80588;
 	Sun, 15 Jan 2023 08:48:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DAC2FF802E8; Sat, 14 Jan 2023 01:31:27 +0100 (CET)
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ id CAE74F8030F; Fri, 13 Jan 2023 08:31:05 +0100 (CET)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
+ [209.85.166.200])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0CD4EF8019B
- for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2023 01:31:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CD4EF8019B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key, unprotected) header.d=undef.tools
- header.i=@undef.tools header.a=rsa-sha256 header.s=fm3 header.b=d2NkJzL1; 
- dkim=pass (2048-bit key,
- unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm3 header.b=OgLKE3xT
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 140455C00A7;
- Fri, 13 Jan 2023 19:31:19 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Fri, 13 Jan 2023 19:31:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=undef.tools; h=
- cc:cc:content-transfer-encoding:date:date:from:from:in-reply-to
- :message-id:mime-version:reply-to:sender:subject:subject:to:to;
- s=fm3; t=1673656279; x=1673742679; bh=06oSer/hbIX+e8ixGpELbsOVt
- s3pi8H+tRTjkc7QSco=; b=d2NkJzL1JwBETuvfrCBMhHNw91k9PEmBfKLJc81Gn
- qZBJ/dTpzWX1uNkywAsErH1obEYD6+W3XSqpb0SjEQ0Re87mW2jYm3HKyRARU6XR
- DLsVNRsz6Lr8fsIGxuILrXSShPJ+3XoJ7I4pvTtY+A46Xrkzd3TibguPUoEerSAu
- 6nw80dJmRNexmL6rg3TJndYhU0eE/OK3MSLjZ+gaw8T03AjcHKLKfyUt/sXMICkc
- 9O252C5oFKxYQg1l0HH0ADUg7NaS/l7YINW6WRPUJHfpS8bG+83999h1vjMQzjaq
- UKON3SmPXQgiqT9hwnVCcngTvQx6gxLj/e5iXm350gvvQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
- :feedback-id:feedback-id:from:from:in-reply-to:message-id
- :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
- 1673656279; x=1673742679; bh=06oSer/hbIX+e8ixGpELbsOVts3pi8H+tRT
- jkc7QSco=; b=OgLKE3xTvIREhVSDtMWTJj5enSFDb9I41shZnityxl7dkfv+vao
- 9KNQr8Y7gP/O2mJwSuoE4qsfrOBtZGVjVx/9cb4iUu1G0eAQRx1AfpQI3lBLov5D
- ynETmT3m1ZHdsCtNED6wYkfReHJ+OQ26uZc6t3Q7pVjjHtWm8uVN8WxTCyZl0rMr
- tdDa5y3ZlqKpjYyecAZbKo5mczg6d4MJRC9LdwmL2HGNEiRdA0MAGDi7ecgGYiKu
- E8TahxaMd4uFYBGqJ+J8yXVHU+fA+3uzibiGf4P+GZc1Kg4MRjo3xnytaxXsL5iI
- mLYUsvgrra2J3Byfkt4pREX7lvLn4yaXUow==
-X-ME-Sender: <xms:1ffBY5GekTrmQNbnKtYZiHgyjnvNBR9vUiN8PI_3MX2PuBTycpYBHw>
- <xme:1ffBY-XlGPiC-fOHc9PWgHhcxXmfTkakFnzQ1WZrpVS0vgWDGeaq-xCzEF5eiaWEG
- zwis_AVunJGYSC81H0>
-X-ME-Received: <xmr:1ffBY7L4oX1LS7QU59v-Arro1fp1phsHQEuGk4opMqihtEkf0p8Fb9mrmH4j_DiXWbXCXDGFsFtN2hLn_tPJ3BXBJfoaq1VvdmSKjAMcspKP2VHk3gAlzD-Lfg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrleelgddvgecutefuodetggdotefrodftvf
- curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
- fjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeflrghrrhgrhhcu
- ifhoshgsvghllhcuoehkvghrnhgvlhesuhhnuggvfhdrthhoohhlsheqnecuggftrfgrth
- htvghrnhepjeeuvefgjeefgefhhfefhedvffelteehkeekvdefheeiteeutdehveeghfeg
- kefhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepkh
- gvrhhnvghlsehunhguvghfrdhtohholhhs
-X-ME-Proxy: <xmx:1ffBY_E7Yui-m0Qql0NNBgfk59W7rops_-ItwjoFJyKNq8ifiKKrIQ>
- <xmx:1ffBY_XPHbC453p9rAmA4QVkK6PCh2-o40NE9Ccew8lcaiMkihYGgA>
- <xmx:1ffBY6NFSnL3O8AIuuI6xnA2XjXRj_o4TJKC-iBrjwRlJDVXjBXx2w>
- <xmx:1_fBY7pxaNJxadzhpnd7UrlFjHR1ccmRI8mDgv6JPFaDI7iZalfyvA>
-Feedback-ID: id76147eb:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 13 Jan 2023 19:31:14 -0500 (EST)
-From: Jarrah Gosbell <kernel@undef.tools>
-To: Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: codec: rt5640: Resolve failure to set DMIC clock after
- playback
-Date: Sat, 14 Jan 2023 00:30:54 +0000
-Message-Id: <20230114003053.401274-1-kernel@undef.tools>
-X-Mailer: git-send-email 2.39.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9E33F8016D
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 08:30:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9E33F8016D
+Received: by mail-il1-f200.google.com with SMTP id
+ c11-20020a056e020bcb00b0030be9d07d63so15198771ilu.0
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2023 23:30:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=4Jn2IjgZdXm/96r6RmphfrZAhetnN7SR5hazoCfKvYo=;
+ b=6sb9bFRVkGzQZI5qTqWIzS2cdCISh7zGwFJrCpcw9s+y3frd9gPeofjqgEyZ1Zvk/C
+ XVIdYAwSluHi47VZ6ANrcLcuGlZC/XB7A4ny09lLYn1OTKZRCgFLBJVSFiLjylLaNCBF
+ l4D5kxJrQF66BHd3bhFXs2f/ynnSXbp1/cCF0TY10DX7n7mxeGGhzrKSAB8P7yocVFu6
+ SVH+cSLthhTK79lKgYvIHS5pVD50OkV5XDcx4s7d4lZFXwBJ6KGEQmHDW0aMO7/DQj05
+ YIWi4G+2zq5pSU8ZSxwYRRwuvR6jAZ1GVxCZdJUclmI6GZrYDRP7FwzjHXcogiqFiBXU
+ Mf4Q==
+X-Gm-Message-State: AFqh2krYwrLQjN8zzBIdCFDnuZJgwkXs01jsfUGxWFnCOOgJE5izSrlL
+ omWlyX06JgUGJDA9I9H7+BJcXTchDKMLtKVo+Z46Hwz48ZPB
+X-Google-Smtp-Source: AMrXdXu1i4g0+NR+5NEcNu8wWWUy8SwoV90a88ao+uzXce6tzeqTVw23nD2X3DGGa8jrzAm8gBlSBJ7A/AMeUox8qf+tkqgYjyPB
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Sun, 15 Jan 2023 08:48:18 +0100
+X-Received: by 2002:a5d:9297:0:b0:6fa:3c6a:f9a6 with SMTP id
+ s23-20020a5d9297000000b006fa3c6af9a6mr5170096iom.184.1673595048751; Thu, 12
+ Jan 2023 23:30:48 -0800 (PST)
+Date: Thu, 12 Jan 2023 23:30:48 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000060fb5d05f2203601@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in snd_pcm_post_stop
+From: syzbot <syzbot+e29d28728f38190cecfc@syzkaller.appspotmail.com>
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, 
+ syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Sun, 15 Jan 2023 08:48:19 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -110,38 +76,184 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Jarrah Gosbell <kernel@undef.tools>, phone-devel@vger.kernel.org,
- Ondrej Jirman <megi@xff.cz>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ondrej Jirman <megi@xff.cz>
+Hello,
 
-rt5640_set_dai_sysclk is called with freq == 0 when playback stops. This
-causes DMIC setup code to fail. I2S interface doesn't need to be active
-for codec to work, so don't clear rt5640->sysclk after
-rt5640_set_dai_sysclk is called with freq == 0.
+syzbot found the following issue on:
 
-Signed-off-by: Ondrej Jirman <megi@xff.cz>
-Signed-off-by: Jarrah Gosbell <kernel@undef.tools>
+HEAD commit:    0a093b2893c7 Add linux-next specific files for 20230112
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=123b545e480000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=835f3591019836d5
+dashboard link: https://syzkaller.appspot.com/bug?extid=e29d28728f38190cecfc
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17530902480000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1206692c480000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/8111a570d6cb/disk-0a093b28.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ecc135b7fc9a/vmlinux-0a093b28.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ca8d73b446ea/bzImage-0a093b28.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e29d28728f38190cecfc@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in __wake_up_common+0x637/0x650 kernel/sched/wait.c:100
+Read of size 8 at addr ffff88801eb938f0 by task syz-executor234/5078
+
+CPU: 0 PID: 5078 Comm: syz-executor234 Not tainted 6.2.0-rc3-next-20230112-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd1/0x138 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:306 [inline]
+ print_report+0x15e/0x45d mm/kasan/report.c:417
+ kasan_report+0xc0/0xf0 mm/kasan/report.c:517
+ __wake_up_common+0x637/0x650 kernel/sched/wait.c:100
+ __wake_up_common_lock+0xd4/0x140 kernel/sched/wait.c:138
+ snd_pcm_post_stop+0x91/0x1f0 sound/core/pcm_native.c:1522
+ snd_pcm_action_single+0xf4/0x130 sound/core/pcm_native.c:1283
+ snd_pcm_action+0x6e/0x90 sound/core/pcm_native.c:1364
+ snd_pcm_stop sound/core/pcm_native.c:1543 [inline]
+ snd_pcm_drop+0x165/0x2b0 sound/core/pcm_native.c:2227
+ snd_pcm_kernel_ioctl+0x243/0x2e0 sound/core/pcm_native.c:3456
+ snd_pcm_oss_sync+0x230/0x810 sound/core/oss/pcm_oss.c:1746
+ snd_pcm_oss_release+0x27a/0x300 sound/core/oss/pcm_oss.c:2590
+ __fput+0x27c/0xa90 fs/file_table.c:321
+ task_work_run+0x16f/0x270 kernel/task_work.c:179
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0xb17/0x2a90 kernel/exit.c:867
+ do_group_exit+0xd4/0x2a0 kernel/exit.c:1012
+ get_signal+0x225f/0x24f0 kernel/signal.c:2859
+ arch_do_signal_or_restart+0x79/0x5c0 arch/x86/kernel/signal.c:306
+ exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+ exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
+ syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:297
+ do_syscall_64+0x46/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f864105c209
+Code: Unable to access opcode bytes at 0x7f864105c1df.
+RSP: 002b:00007fff6e56b898 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+RAX: fffffffffffffe00 RBX: 0000000000000004 RCX: 00007f864105c209
+RDX: 0000000000002020 RSI: 00000000200021c0 RDI: 0000000000000006
+RBP: 0000000000000000 R08: 00007fff6e56ba38 R09: 00007fff6e56ba38
+R10: 000000000000000d R11: 0000000000000246 R12: 00007f864101f800
+R13: 431bde82d7b634db R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+
+Allocated by task 5078:
+ kasan_save_stack+0x22/0x40 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ __kasan_slab_alloc+0x7f/0x90 mm/kasan/common.c:325
+ kasan_slab_alloc include/linux/kasan.h:186 [inline]
+ slab_post_alloc_hook mm/slab.h:769 [inline]
+ kmem_cache_alloc_bulk+0x3aa/0x730 mm/slub.c:4033
+ __io_alloc_req_refill+0xcc/0x40b io_uring/io_uring.c:1062
+ io_alloc_req_refill io_uring/io_uring.h:348 [inline]
+ io_submit_sqes.cold+0x7c/0xc2 io_uring/io_uring.c:2407
+ __do_sys_io_uring_enter+0x9e4/0x2c10 io_uring/io_uring.c:3429
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Freed by task 1002:
+ kasan_save_stack+0x22/0x40 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x2e/0x40 mm/kasan/generic.c:518
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x160/0x1c0 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:162 [inline]
+ slab_free_hook mm/slub.c:1781 [inline]
+ slab_free_freelist_hook+0x8b/0x1c0 mm/slub.c:1807
+ slab_free mm/slub.c:3787 [inline]
+ kmem_cache_free+0xec/0x4e0 mm/slub.c:3809
+ io_req_caches_free+0x1a9/0x1e6 io_uring/io_uring.c:2737
+ io_ring_exit_work+0x2e7/0xc80 io_uring/io_uring.c:2967
+ process_one_work+0x9bf/0x1750 kernel/workqueue.c:2293
+ worker_thread+0x669/0x1090 kernel/workqueue.c:2440
+ kthread+0x2e8/0x3a0 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+
+The buggy address belongs to the object at ffff88801eb938c0
+ which belongs to the cache io_kiocb of size 216
+The buggy address is located 48 bytes inside of
+ 216-byte region [ffff88801eb938c0, ffff88801eb93998)
+
+The buggy address belongs to the physical page:
+page:ffffea00007ae4c0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1eb93
+flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000000200 ffff88801bc32dc0 dead000000000122 0000000000000000
+raw: 0000000000000000 00000000800c000c 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 5078, tgid 5078 (syz-executor234), ts 58909389529, free_ts 58908987546
+ prep_new_page mm/page_alloc.c:2549 [inline]
+ get_page_from_freelist+0x11bb/0x2d50 mm/page_alloc.c:4324
+ __alloc_pages+0x1cb/0x5c0 mm/page_alloc.c:5590
+ alloc_pages+0x1aa/0x270 mm/mempolicy.c:2281
+ alloc_slab_page mm/slub.c:1851 [inline]
+ allocate_slab+0x25f/0x350 mm/slub.c:1998
+ new_slab mm/slub.c:2051 [inline]
+ ___slab_alloc+0xa91/0x1400 mm/slub.c:3193
+ __kmem_cache_alloc_bulk mm/slub.c:3951 [inline]
+ kmem_cache_alloc_bulk+0x23d/0x730 mm/slub.c:4026
+ __io_alloc_req_refill+0xcc/0x40b io_uring/io_uring.c:1062
+ io_alloc_req_refill io_uring/io_uring.h:348 [inline]
+ io_submit_sqes.cold+0x7c/0xc2 io_uring/io_uring.c:2407
+ __do_sys_io_uring_enter+0x9e4/0x2c10 io_uring/io_uring.c:3429
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1451 [inline]
+ free_pcp_prepare+0x4d0/0x910 mm/page_alloc.c:1501
+ free_unref_page_prepare mm/page_alloc.c:3387 [inline]
+ free_unref_page+0x1d/0x490 mm/page_alloc.c:3482
+ skb_free_frag include/linux/skbuff.h:3193 [inline]
+ skb_free_head+0x96/0x110 net/core/skbuff.c:818
+ skb_release_data+0x5f4/0x870 net/core/skbuff.c:849
+ skb_release_all net/core/skbuff.c:914 [inline]
+ __kfree_skb+0x4f/0x70 net/core/skbuff.c:928
+ tcp_rcv_established+0x15fd/0x2270 net/ipv4/tcp_input.c:5927
+ tcp_v4_do_rcv+0x663/0x9d0 net/ipv4/tcp_ipv4.c:1721
+ tcp_v4_rcv+0x2eab/0x3280 net/ipv4/tcp_ipv4.c:2142
+ ip_protocol_deliver_rcu+0x9f/0x480 net/ipv4/ip_input.c:205
+ ip_local_deliver_finish+0x2ec/0x4f0 net/ipv4/ip_input.c:233
+ NF_HOOK include/linux/netfilter.h:302 [inline]
+ NF_HOOK include/linux/netfilter.h:296 [inline]
+ ip_local_deliver+0x1ae/0x200 net/ipv4/ip_input.c:254
+ dst_input include/net/dst.h:454 [inline]
+ ip_sublist_rcv_finish+0x9a/0x2c0 net/ipv4/ip_input.c:580
+ ip_list_rcv_finish.constprop.0+0x4f9/0x6c0 net/ipv4/ip_input.c:630
+ ip_sublist_rcv net/ipv4/ip_input.c:638 [inline]
+ ip_list_rcv+0x347/0x4a0 net/ipv4/ip_input.c:673
+ __netif_receive_skb_list_ptype net/core/dev.c:5525 [inline]
+ __netif_receive_skb_list_core+0x548/0x8f0 net/core/dev.c:5573
+ __netif_receive_skb_list net/core/dev.c:5625 [inline]
+ netif_receive_skb_list_internal+0x75f/0xdc0 net/core/dev.c:5716
+
+Memory state around the buggy address:
+ ffff88801eb93780: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88801eb93800: fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc fc
+>ffff88801eb93880: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
+                                                             ^
+ ffff88801eb93900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88801eb93980: fb fb fb fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+
 ---
- sound/soc/codecs/rt5640.c | 3 +++
- 1 file changed, 3 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 18e01949f20e..054de41ceccb 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -1839,6 +1839,9 @@ static int rt5640_set_dai_sysclk(struct snd_soc_dai *dai,
- 	unsigned int reg_val = 0;
- 	unsigned int pll_bit = 0;
- 
-+	if (freq == 0)
-+		return 0;
-+
- 	switch (clk_id) {
- 	case RT5640_SCLK_S_MCLK:
- 		reg_val |= RT5640_SCLK_SRC_MCLK;
--- 
-2.39.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
