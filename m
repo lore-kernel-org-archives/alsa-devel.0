@@ -4,68 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90881C54EBD
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Jan 2023 15:36:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 557F3C54EBD
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Jan 2023 15:44:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 61C1468FD;
-	Fri, 13 Jan 2023 16:35:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61C1468FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A2B7ABDD;
+	Fri, 13 Jan 2023 16:44:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A2B7ABDD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673624176;
-	bh=AivO8JDw/WyHjidS7YoK4myyH4+EaADUH7bMH5PRS8I=;
+	s=default; t=1673624690;
+	bh=RDtldCHhOU3Bo3pJibaZpOM4uT1+p0yui2PnCg+as8o=;
 	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=IdmhCQk1pge6xApq5hpgj95Jr1+Yl+zeQnjrCURKMuVSY/iNR7l0jJKXGyn/u4CRG
-	 WH3ta3D4n18Shh6LfEkLfX3ZuJgqfxIsOLA39hilNWDmD6dYzfBnlfwjQdHTTxbPFN
-	 wDBUeJmMgCTOQXO1JOs/8Mgry4nxzPBmrbS54MLk=
+	b=bwa3bx9kaQJHyESWMZBfBzrRCW/Ez+yz3jzCi+ULhzge5phMjoZgsFuG1khk1lfjt
+	 bX99WXYhwc8wzw5gIpjBmAFAvkilwdFzhQKe4OeiPlZ0yhK08lMj7UtXAZq0XDqc6w
+	 0mCTCXvDllzd4PaRcwC3KCbkBmgO/1SvGBkCVQ2A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16642F80424;
-	Fri, 13 Jan 2023 16:35:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09723F8019B;
+	Fri, 13 Jan 2023 16:44:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A996CF80425; Fri, 13 Jan 2023 16:35:25 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 9F24BF8030F; Fri, 13 Jan 2023 16:43:58 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94F8BF802E8
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 16:35:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94F8BF802E8
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=IhXS6XQz
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7543F8019B
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 16:43:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7543F8019B
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=ONzkQ7gZ
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id B8934620DB;
- Fri, 13 Jan 2023 15:35:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A506C433D2;
- Fri, 13 Jan 2023 15:35:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1673624121;
- bh=AivO8JDw/WyHjidS7YoK4myyH4+EaADUH7bMH5PRS8I=;
+ by ams.source.kernel.org (Postfix) with ESMTPS id D0E10B82121;
+ Fri, 13 Jan 2023 15:43:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD5D1C433F1;
+ Fri, 13 Jan 2023 15:43:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1673624633;
+ bh=RDtldCHhOU3Bo3pJibaZpOM4uT1+p0yui2PnCg+as8o=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=IhXS6XQzAGz3WhQDr+A4dD8j2ujJJJjqKVuqCBovUZE80M5wS3OCMBP6D75EY6sLB
- 0HBs/xxlqJ2Fa07junLcSQFI1dClKbqUYgvt+WPpfOup8HoDND7xnVrHrwDSzJ+ARs
- 3vPnr+J4oWY/4P8SEenLgyt/JCyeP7WsdcTBH+kUWSeZT2NgLh/Pn6IpAxN5OZmh28
- e3kbaR2qkxW8gnN5WOuyZZB2GQ0C9Xra4JaByTXlWJt3VpCjV2VaY88YgzmyHvKzKx
- 99rsKewp6stHO5tthdCWeEM2elpVCD5A6iM3md1ev1o6hEY5FQoe9L8tpiuvXR5pXx
- HDfvVvODwSj7A==
-Date: Fri, 13 Jan 2023 15:35:16 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Kiseok Jo <kiseok.jo@irondevice.com>
-Subject: Re: [PATCH v2 2/2] ASoC: dt-bindings: sma1303: Iron Device SMA1303 Amp
-Message-ID: <Y8F6NKvrnLzX3qNv@sirena.org.uk>
-References: <20230109091402.11790-3-kiseok.jo@irondevice.com>
- <20230109091402.11790-4-kiseok.jo@irondevice.com>
+ b=ONzkQ7gZ51JUMsLapq5pmDiXaYOsJLLKodE1n30W6DeD/hxkiGhdhnuDXGP90YlbB
+ JSI9yUyvBZb3c/HDy6J4IQU80Ff8wPYSMi+gmsG4rZWTUwkdOG3YqVNsK35QKS5SvD
+ /pVuMIR7QPeHSFYlgmpFIzfAUvBV3uYCbkPFXmZw=
+Date: Fri, 13 Jan 2023 16:43:19 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH 5.10.y] ALSA: pcm: Properly take rwsem lock in
+ ctl_elem_read_user/ctl_elem_write_user to prevent UAF
+Message-ID: <Y8F8F9MpNR4O8kbB@kroah.com>
+References: <20230113142639.4420-1-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="0vxyvrCEvgr/23By"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230109091402.11790-4-kiseok.jo@irondevice.com>
-X-Cookie: I know how to do SPECIAL EFFECTS!!
+In-Reply-To: <20230113142639.4420-1-tiwai@suse.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,41 +72,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, application@irondevice.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, Clement Lecigne <clecigne@google.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Fri, Jan 13, 2023 at 03:26:39PM +0100, Takashi Iwai wrote:
+> From: Clement Lecigne <clecigne@google.com>
+> 
+> [ Note: this is a fix that works around the bug equivalently as the
+>   two upstream commits:
+>    1fa4445f9adf ("ALSA: control - introduce snd_ctl_notify_one() helper")
+>    56b88b50565c ("ALSA: pcm: Move rwsem lock inside snd_ctl_elem_read to prevent UAF")
+>   but in a simpler way to fit with older stable trees -- tiwai ]
 
---0vxyvrCEvgr/23By
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks for the backport, now queued up.
 
-On Mon, Jan 09, 2023 at 06:14:02PM +0900, Kiseok Jo wrote:
-
-> +properties:
-> +  compatible:
-> +    const: irondevice,sma1303
-> +
-> +  reg:
-> +    description:
-> +      I2C address of the amplifier. See the datasheet for possible values.
-> +
-
-This doesn't document the DT properties that the driver parses.
-
---0vxyvrCEvgr/23By
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPBejQACgkQJNaLcl1U
-h9A9KQf/YVwE9lzOTOrnPtghKjBgPs6XMCbRgjBEYFZQS4kLa2w1sDfYBa0vJ1bS
-TKWXK1BVtaR/dOP+kXz1rkt9fqGVeD65rcPNkyJ7wslFjjF7liGeWZjeGyg751LT
-1HbcoBvbIBmTYpCDCdMwCgYOBb8Kna7m+nhiYfb+1PhEja8NWKFrfZEt/CKAPhXW
-6Pv+hRMuw7E+U6gl5Th9qVNuDZNIp0/PIpyVNvIRuvx4SJdCBxDzzjhcsorwVAQR
-Cq2vm/Pwiz7UgESZhJHURTynrSGEdHRz7PTZry5cEKAi7Z/NYcsGXd3RX5D8QqOI
-s8vcGnzR1Zcg8Xmth0lDT/Ui6DI43g==
-=958i
------END PGP SIGNATURE-----
-
---0vxyvrCEvgr/23By--
+greg k-h
