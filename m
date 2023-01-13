@@ -4,67 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0FC0C54EBD
-	for <alsa-devel@archiver.kernel.org>; Fri, 13 Jan 2023 16:20:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 916E5C54EBE
+	for <alsa-devel@archiver.kernel.org>; Fri, 13 Jan 2023 16:23:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA86065EC;
-	Fri, 13 Jan 2023 17:19:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA86065EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7DAA6B5B;
+	Fri, 13 Jan 2023 17:22:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7DAA6B5B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673626820;
-	bh=7UIrW0U1JEkF4TWjgmyaqPSVRpI/JLtbqkB5o08g/WY=;
+	s=default; t=1673626993;
+	bh=7igi3QXwPJz6wzBQj26BT//kmqhniZAOlj7qDJhZfJo=;
 	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=BRnkznpoZd8v8PayzMx1zfZ9I//RcumSiEzsFlyYjizJEFGsTC5nn12C6ziKWog0q
-	 KDdCUa+aOXftw8FOEzkgkHYT/hi2ReA71emcMd6ZEocPXPg/rzBVf5HWacAz4vaQ/E
-	 QOR9Yg69a8XbcLE1J7WtuIWhTsUbRnNeQQfvJzsM=
+	b=QwGkMwquVgefl3ibOZ7W0HvDlnGmks+w9rplVvP+CHUK5ivqEFwsn4s2UEoTKFBFt
+	 Na2yZr8WPYwf8MBG1zbeKbJo8ub2JP+Zyiup4J2Yc6J3UFoxzHSgBV/uETlf38ahvZ
+	 Ym/G0l7wwsQk+XGoHKkD11VTZ/d/KsOdk29oUDww=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5F94F80549;
-	Fri, 13 Jan 2023 17:18:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56B8FF8026D;
+	Fri, 13 Jan 2023 17:22:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 15C34F8053A; Fri, 13 Jan 2023 17:18:56 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id AED39F8030F; Fri, 13 Jan 2023 17:22:22 +0100 (CET)
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com
+ [IPv6:2a00:1450:4864:20::62e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66B1FF80425
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 17:18:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66B1FF80425
+ by alsa1.perex.cz (Postfix) with ESMTPS id C533AF8019B
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 17:22:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C533AF8019B
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=NyQ0NMah
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1673626734; x=1705162734;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=7UIrW0U1JEkF4TWjgmyaqPSVRpI/JLtbqkB5o08g/WY=;
- b=NyQ0NMah73E1qef1ajM1O3hUBEGn4SqwYpb5sNOJQ/xJBr9s12xQ8d7n
- q1U1j2ejjEY4DQBA8nAx9dECLykRl3RVxG7DO981Wv/Yee7TGXgGVa+DM
- gh8KnDhb3IDuujvOmvQUKgT6TbjAIFmLhICUwSrFjiahglCV4E8HjiSc9
- ZlXNS/FTmAc5XpgQoA24raYUmac0lG8IOPRGh3HBgpm3l+b32GTavzYKa
- t2jgKYjefAjaHjMMdsIPMgpU+NrEkpwM8OrMJgKhhlWIdVNwTy0eNTzW3
- /oN/H72wAq+8LJq46IUl95HJ8i2T1EskSBjhkBKsrpCPKdOnaLp3X7jtK w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10589"; a="324087549"
-X-IronPort-AV: E=Sophos;i="5.97,214,1669104000"; d="scan'208";a="324087549"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2023 08:18:42 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10589"; a="690547406"
-X-IronPort-AV: E=Sophos;i="5.97,214,1669104000"; d="scan'208";a="690547406"
-Received: from rjmaskel-mobl1.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.27.128])
- by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jan 2023 08:18:40 -0800
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org
-Subject: [PATCH 0/3] ASoC: SOF: sof-audio: Fixes for widget prepare and
- unprepare
-Date: Fri, 13 Jan 2023 18:18:39 +0200
-Message-Id: <20230113161842.22059-1-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.39.0
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=yz/Vebqf
+Received: by mail-ej1-x62e.google.com with SMTP id mp20so6867410ejc.7
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 08:22:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=M9oKZpLB3KLxNjht49zMQ5zevFbZ/bcUUbDkM3FfyYA=;
+ b=yz/VebqfEp1bmhZjr9FNC1ihtfQnR9SeGG3hAJziFTTvriFYLQCyTY3TTjL93C5MKA
+ hla/sInL4jnIB1nKZJAyFRBaHSvNdGSCqqZ1I7hDPhrRKfuTr+RoZB1E0MKx7oZVY64h
+ iKU+DDNYQwUUUhZ92UbsIUHk8by803W17KKNdpFFLyZgiCP0zpkV0zdfePV1+aUnlNHc
+ 6vaJvgT3KNT60pZ6cszElSPhqfX9BBB4po46IhOvJkB6fmZ8MogstCBzywuA0vKjrhle
+ hSB+ykAAJ6lFL+C/Tnf1soGmRB9OLBE4I3n0/uFJOonGnzDcY/PYQW1z6MZUl6Se2Ndm
+ garQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=M9oKZpLB3KLxNjht49zMQ5zevFbZ/bcUUbDkM3FfyYA=;
+ b=58jcr5je9YMgGtpG/5JlEkFCYr8e8UoooL3TqMxaCQA6BazdPZZY4gXzZBxcVoRqdE
+ HL7++C1qb0aDupHpKh0frDSiAX8VNjci/YN/+qBK7orOhcfU5oP1024KKpGkbSMFy7p5
+ Q4cMKZGGPxS/R15y7P24sdvQIAh+7OZY+V7DHleM7/ETBihe+aG0igjWUrbU33T11pbL
+ zeSRq6faaDLzvvfC6aOI+VVseAmm9lbVLpvf+Kh/KXV+cdYrjcXyhN8ouVYeJXAw3GHz
+ kBrQQbA7AyzEddv2WJ3NBXqa11qum04gz8MTEIimlMFzZmUDNdGszp5VqmD85NZ40Vlk
+ 6Kow==
+X-Gm-Message-State: AFqh2kotcaKKtXvaWvSNnd2AkDPQ6ZvEKdA6ayU4LvubORc3pJQOFDbx
+ uSPSylj1xi+mU+vEW5sOlpHv2w==
+X-Google-Smtp-Source: AMrXdXvd45K78hFtMbn/TLgUzGtyghVKPnuwBJk4k2UCCXd5I59g2iRZLy7eqsLZ58B/VpDHcrS18Q==
+X-Received: by 2002:a17:906:7fc3:b0:7c1:10b8:e6a4 with SMTP id
+ r3-20020a1709067fc300b007c110b8e6a4mr65343071ejs.19.1673626938650; 
+ Fri, 13 Jan 2023 08:22:18 -0800 (PST)
+Received: from krzk-bin.. ([178.197.216.144]) by smtp.gmail.com with ESMTPSA id
+ o11-20020a170906768b00b0084d242d07ffsm8376737ejm.8.2023.01.13.08.22.17
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 13 Jan 2023 08:22:18 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] ASoC: dt-bindings: qcom,wsa881x: Allow sound-name-prefix
+Date: Fri, 13 Jan 2023 17:22:12 +0100
+Message-Id: <20230113162214.117261-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -79,38 +98,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, rander.wang@intel.com,
- ranjani.sridharan@linux.intel.com, yung-chuan.liao@linux.intel.com,
- angelogioacchino.delregno@collabora.com
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Reference common DAI properties to fix:
 
-This series contains one fix (first patch) followed by a nice to have safety
-belts in case we get a widget from topology which is not handled by SOF and will
-not have corresponding swidget associated with.
+  sdm845-db845c.dtb: speaker@0,1: 'sound-name-prefix' does not match any of the regexes: 'pinctrl-[0-9]+'
 
-I think these can be sent selectively to stable kernels with appropriate
-adjustments to apply.
-
-I was not comfortable to add Fixes or Complements tags since the last patch for
-sure going to conflict in some stable variants.
-
-Regards,
-Peter
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
-Bard Liao (2):
-  ASoC: SOF: sof-audio: Unprepare when swidget->use_count > 0
-  ASoC: SOF: sof-audio: keep prepare/unprepare widgets in sink path
+ Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Ranjani Sridharan (1):
-  ASoC: SOF: sof-audio: skip prepare/unprepare if swidget is NULL
-
- sound/soc/sof/sof-audio.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
+index d702b489320f..ac03672ebf6d 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml
+@@ -15,6 +15,9 @@ description: |
+   Their primary operating mode uses a SoundWire digital audio
+   interface. This binding is for SoundWire interface.
+ 
++allOf:
++  - $ref: dai-common.yaml#
++
+ properties:
+   compatible:
+     const: sdw10217201000
+@@ -39,7 +42,7 @@ required:
+   - "#thermal-sensor-cells"
+   - "#sound-dai-cells"
+ 
+-additionalProperties: false
++unevaluatedProperties: false
+ 
+ examples:
+   - |
 -- 
-2.39.0
+2.34.1
 
