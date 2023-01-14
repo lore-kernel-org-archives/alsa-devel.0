@@ -4,65 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6A48C3DA78
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Jan 2023 07:52:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FF9CC63797
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Jan 2023 07:52:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 146F12ABA;
-	Sun, 15 Jan 2023 08:50:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 146F12ABA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 731F93978;
+	Sun, 15 Jan 2023 08:50:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 731F93978
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673769091;
-	bh=NklCLtbWc5WyOgonvZKTPSjAxeAHnIbpUkTWUUnWx+Y=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=nZsvIQyO5jXZeMDMmhN+kc+bWHmgXqbwMGFjW9fG7gA0F/oOzopw3Tc2ztqR6hiox
-	 6tMpidFmnbbgN08jEneS8vovSTywxavdAnHWjIxIjTTt8/X4zZxB/G4G1EKdtxBEvb
-	 2RPbWuWEVwBtnSpIsNY790MmOnUhVI8cOEo1/SMs=
+	s=default; t=1673769107;
+	bh=IRUqthaA5X6K+gtdbTlhzXVseCsUEEL8rASJdnzGhKE=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=Y+W7aboRBONarjAiZtzZ34WBTjQN8OqxTEVqH7hOeMoYZ+SCR5q4ZvKSgucFbyH5C
+	 upewmJt938ngyp49s5++PV/LiUd86TQ9Ofs6fpit7c6F6/ppLYAG6yP2HXTtwVbt4A
+	 cMyNZTK83ABs/XXQZyvYFd8W9DQWtcgqyuWgfTWE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF008F80578;
-	Sun, 15 Jan 2023 08:48:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C643F8057E;
+	Sun, 15 Jan 2023 08:48:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EB548F803DC; Fri, 13 Jan 2023 20:05:39 +0100 (CET)
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de
- [130.133.4.66])
+ id DAC2FF802E8; Sat, 14 Jan 2023 01:31:27 +0100 (CET)
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02E91F8016D
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 20:05:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02E91F8016D
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
- by outpost.zedat.fu-berlin.de (Exim 4.95) with esmtps (TLS1.3)
- tls TLS_AES_256_GCM_SHA384
- (envelope-from <glaubitz@zedat.fu-berlin.de>)
- id 1pGPMg-003M27-Uf; Fri, 13 Jan 2023 20:05:22 +0100
-Received: from p57ae5361.dip0.t-ipconnect.de ([87.174.83.97]
- helo=[192.168.178.35]) by inpost2.zedat.fu-berlin.de (Exim 4.95)
- with esmtpsa (TLS1.3) tls TLS_AES_128_GCM_SHA256
- (envelope-from <glaubitz@physik.fu-berlin.de>)
- id 1pGPMg-000Hn8-Jc; Fri, 13 Jan 2023 20:05:22 +0100
-Message-ID: <fe09d811-e290-821d-ec8b-75936b6583c2@physik.fu-berlin.de>
-Date: Fri, 13 Jan 2023 20:05:20 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0CD4EF8019B
+ for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2023 01:31:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CD4EF8019B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key, unprotected) header.d=undef.tools
+ header.i=@undef.tools header.a=rsa-sha256 header.s=fm3 header.b=d2NkJzL1; 
+ dkim=pass (2048-bit key,
+ unprotected) header.d=messagingengine.com header.i=@messagingengine.com
+ header.a=rsa-sha256 header.s=fm3 header.b=OgLKE3xT
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+ by mailout.nyi.internal (Postfix) with ESMTP id 140455C00A7;
+ Fri, 13 Jan 2023 19:31:19 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute3.internal (MEProxy); Fri, 13 Jan 2023 19:31:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=undef.tools; h=
+ cc:cc:content-transfer-encoding:date:date:from:from:in-reply-to
+ :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+ s=fm3; t=1673656279; x=1673742679; bh=06oSer/hbIX+e8ixGpELbsOVt
+ s3pi8H+tRTjkc7QSco=; b=d2NkJzL1JwBETuvfrCBMhHNw91k9PEmBfKLJc81Gn
+ qZBJ/dTpzWX1uNkywAsErH1obEYD6+W3XSqpb0SjEQ0Re87mW2jYm3HKyRARU6XR
+ DLsVNRsz6Lr8fsIGxuILrXSShPJ+3XoJ7I4pvTtY+A46Xrkzd3TibguPUoEerSAu
+ 6nw80dJmRNexmL6rg3TJndYhU0eE/OK3MSLjZ+gaw8T03AjcHKLKfyUt/sXMICkc
+ 9O252C5oFKxYQg1l0HH0ADUg7NaS/l7YINW6WRPUJHfpS8bG+83999h1vjMQzjaq
+ UKON3SmPXQgiqT9hwnVCcngTvQx6gxLj/e5iXm350gvvQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
+ :feedback-id:feedback-id:from:from:in-reply-to:message-id
+ :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+ 1673656279; x=1673742679; bh=06oSer/hbIX+e8ixGpELbsOVts3pi8H+tRT
+ jkc7QSco=; b=OgLKE3xTvIREhVSDtMWTJj5enSFDb9I41shZnityxl7dkfv+vao
+ 9KNQr8Y7gP/O2mJwSuoE4qsfrOBtZGVjVx/9cb4iUu1G0eAQRx1AfpQI3lBLov5D
+ ynETmT3m1ZHdsCtNED6wYkfReHJ+OQ26uZc6t3Q7pVjjHtWm8uVN8WxTCyZl0rMr
+ tdDa5y3ZlqKpjYyecAZbKo5mczg6d4MJRC9LdwmL2HGNEiRdA0MAGDi7ecgGYiKu
+ E8TahxaMd4uFYBGqJ+J8yXVHU+fA+3uzibiGf4P+GZc1Kg4MRjo3xnytaxXsL5iI
+ mLYUsvgrra2J3Byfkt4pREX7lvLn4yaXUow==
+X-ME-Sender: <xms:1ffBY5GekTrmQNbnKtYZiHgyjnvNBR9vUiN8PI_3MX2PuBTycpYBHw>
+ <xme:1ffBY-XlGPiC-fOHc9PWgHhcxXmfTkakFnzQ1WZrpVS0vgWDGeaq-xCzEF5eiaWEG
+ zwis_AVunJGYSC81H0>
+X-ME-Received: <xmr:1ffBY7L4oX1LS7QU59v-Arro1fp1phsHQEuGk4opMqihtEkf0p8Fb9mrmH4j_DiXWbXCXDGFsFtN2hLn_tPJ3BXBJfoaq1VvdmSKjAMcspKP2VHk3gAlzD-Lfg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrleelgddvgecutefuodetggdotefrodftvf
+ curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+ uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+ fjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeflrghrrhgrhhcu
+ ifhoshgsvghllhcuoehkvghrnhgvlhesuhhnuggvfhdrthhoohhlsheqnecuggftrfgrth
+ htvghrnhepjeeuvefgjeefgefhhfefhedvffelteehkeekvdefheeiteeutdehveeghfeg
+ kefhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepkh
+ gvrhhnvghlsehunhguvghfrdhtohholhhs
+X-ME-Proxy: <xmx:1ffBY_E7Yui-m0Qql0NNBgfk59W7rops_-ItwjoFJyKNq8ifiKKrIQ>
+ <xmx:1ffBY_XPHbC453p9rAmA4QVkK6PCh2-o40NE9Ccew8lcaiMkihYGgA>
+ <xmx:1ffBY6NFSnL3O8AIuuI6xnA2XjXRj_o4TJKC-iBrjwRlJDVXjBXx2w>
+ <xmx:1_fBY7pxaNJxadzhpnd7UrlFjHR1ccmRI8mDgv6JPFaDI7iZalfyvA>
+Feedback-ID: id76147eb:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 13 Jan 2023 19:31:14 -0500 (EST)
+From: Jarrah Gosbell <kernel@undef.tools>
+To: Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: codec: rt5640: Resolve failure to set DMIC clock after
+ playback
+Date: Sat, 14 Jan 2023 00:30:54 +0000
+Message-Id: <20230114003053.401274-1-kernel@undef.tools>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: remove arch/sh
-Content-Language: en-US
-To: Rob Landley <rob@landley.net>, Geert Uytterhoeven <geert@linux-m68k.org>
-References: <20230113062339.1909087-1-hch@lst.de>
- <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
- <CAMuHMdUcnP6a9Ch5=_CMPq-io-YWK5pshkOT2nZmP1hvNcwBAg@mail.gmail.com>
- <142532fb-5997-bdc1-0811-a80ae33f4ba4@physik.fu-berlin.de>
- <6891afb6-4190-6a52-0319-745b3f138d97@landley.net>
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-In-Reply-To: <6891afb6-4190-6a52-0319-745b3f138d97@landley.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.174.83.97
+Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Sun, 15 Jan 2023 08:48:18 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -76,59 +110,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: linux-fbdev@vger.kernel.org, Rich Felker <dalias@libc.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>, linux-sh@vger.kernel.org,
- linux-rtc@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
- Yoshinori Sato <ysato@users.sourceforge.jp>, linux-serial@vger.kernel.org,
- linux-input@vger.kernel.org, linux-media@vger.kernel.org,
- devicetree@vger.kernel.org, linux-watchdog@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
- netdev@vger.kernel.org, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Jarrah Gosbell <kernel@undef.tools>, phone-devel@vger.kernel.org,
+ Ondrej Jirman <megi@xff.cz>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Rob!
+From: Ondrej Jirman <megi@xff.cz>
 
-On 1/13/23 20:11, Rob Landley wrote:
->> I actually would be willing to do it but I'm a bit hesitant as I'm not 100%
->> sure my skills are sufficient. Maybe if someone can assist me?
-> 
-> My skills aren't sufficient and I dunno how much time I have, but I can
-> certainly assist. I test sh4 regularlyish and it's in the list of architectures
-> I ship binaries and tiny VM images for, just refreshed tuesday:
-> 
-> https://landley.net/toybox/downloads/binaries/0.8.9/
-> https://landley.net/toybox/downloads/binaries/mkroot/0.8.9/
-> 
-> (The sh2eb isn't a VM, it's a physical board I have here...)
-> 
-> There is definitely interest in this architecture. I'm aware Rich hasn't been
-> the most responsive maintainer. (I'm told he's on vacation with his family at
-> the moment, according to the text I got about this issue from the J-core
-> hardware guys in Japan.)
+rt5640_set_dai_sysclk is called with freq == 0 when playback stops. This
+causes DMIC setup code to fail. I2S interface doesn't need to be active
+for codec to work, so don't clear rt5640->sysclk after
+rt5640_set_dai_sysclk is called with freq == 0.
 
-Well, maybe we can just give it a try together ...
+Signed-off-by: Ondrej Jirman <megi@xff.cz>
+Signed-off-by: Jarrah Gosbell <kernel@undef.tools>
+---
+ sound/soc/codecs/rt5640.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> The main reason we haven't converted everything to device tree is we only have
-> access to test hardware for a subset of the boards. Pruning the list of
-> supported boards and converting the rest to device tree might make sense. We can
-> always add/convert boards back later...
-
-There is a patch by Yoshinori Sato which adds device tree support to SH. Maybe we
-can revive it.
-
-Adrian
-
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 18e01949f20e..054de41ceccb 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -1839,6 +1839,9 @@ static int rt5640_set_dai_sysclk(struct snd_soc_dai *dai,
+ 	unsigned int reg_val = 0;
+ 	unsigned int pll_bit = 0;
+ 
++	if (freq == 0)
++		return 0;
++
+ 	switch (clk_id) {
+ 	case RT5640_SCLK_S_MCLK:
+ 		reg_val |= RT5640_SCLK_SRC_MCLK;
 -- 
-  .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.39.0
 
