@@ -4,97 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9736AC63797
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Jan 2023 07:53:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AE74C3DA78
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Jan 2023 07:53:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 46A1445E0;
-	Sun, 15 Jan 2023 08:52:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46A1445E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66EFE358D;
+	Sun, 15 Jan 2023 08:52:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66EFE358D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673769187;
-	bh=RcxvleO2ys/XahCHf89+p6wYj85gWSkzc7/STuF7zgk=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=lPPL4FpONWQPLon08+306EvppoYh3u09pfojp/rxFALYs39Mxr8ChK9mROAzEjMm2
-	 F2JX4nw0Z4IF1KhUcKUe9ymrNyagwQHE/oXd9BcA3wU2kjDi6lXzY1DtOUfMI6eF9I
-	 oPWkOf6FMnfrXfRuNTb1eQs/lZ1BkZqcNj+Dwdr0=
+	s=default; t=1673769204;
+	bh=gMU2qV2VgM+YENiKJhH+abvn4ddBqKL0P0RzB5p/M9M=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=Mt2RN3kBeYZj+RR+lpAR6k6qoAiB5LWqHctDQtRG+dgFGO89qd0meD8dGwoZ6tzLH
+	 5szV6awEMiWEq11pSNCOCdHPN6MSg5Ppjwx5+Nk1xD5Mq5Tz8ZKzLTcMNVIH/cTUm6
+	 C6RpYYvy5Yma+6SP3HqosOtTaN+0Tf5d48QtOHMs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 283B2F805B2;
+	by alsa1.perex.cz (Postfix) with ESMTP id A181EF805B6;
 	Sun, 15 Jan 2023 08:48:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F559F8030F; Sat, 14 Jan 2023 00:20:25 +0100 (CET)
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com
- [IPv6:2001:4860:4864:20::31])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id D205BF804CA; Sat, 14 Jan 2023 20:47:58 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 38CE1F8026D
- for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2023 00:20:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38CE1F8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E83DF8025F
+ for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2023 20:47:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E83DF8025F
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=landley-net.20210112.gappssmtp.com
- header.i=@landley-net.20210112.gappssmtp.com header.a=rsa-sha256
- header.s=20210112 header.b=HEeiDnUe
-Received: by mail-oa1-x31.google.com with SMTP id
- 586e51a60fabf-1433ef3b61fso23895028fac.10
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2023 15:20:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=landley-net.20210112.gappssmtp.com; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=TQ9PrP3iNHpghVpkywhiMHcSFTwXN8kLEUSP7zNfGWk=;
- b=HEeiDnUeOlaMmzrHg6LtTWNe2KIF6Q5d6PASMOjvpBnFNwlXnpxtBoyLsjdUSiFic5
- Zy4GrupmECG1CN3m99XRInimzLkAyFlnAC1yFwr9ZV5WqZ8Mxia0axE41+SyDlpGZHOF
- b9/hPmk9ZzrDZTerjRuPw9aOBuwmuFZgGCgGCyi5DNv5BOgrp6hpzWbx8PiSSS3PCS6S
- UoJjpLq7r0mXx6nv8CL2PCVxH6W+Fc0fSdqCoguiOJxRwovXLajxMhMVOFQITRvWQd2L
- +x8hdq/wHJdMhQD25h3cEnBEwX4srdIbxyBywCRXQlXO+4KVbgaam+X20emmeoxJCckb
- 5wPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=TQ9PrP3iNHpghVpkywhiMHcSFTwXN8kLEUSP7zNfGWk=;
- b=mHOViOjHzyAUZS/SYUy91/Ch8OGMz57AVRyPG28KOdw/rBH6X8CEdT3QE7yvBtzjbJ
- GIcFjpJ4wa0y8oI6YoeDTnkzMa+BxUTiBRAkD3jBVfH+UUpuzbonNRJdf1l8ACQQZF/f
- VZwOoaCYI3UxI9Rn0hiQmf68crMoASpxvff6yBbb+XOivJGtp6gkEXZ5wg9uBIdHNPR5
- 2wl1zAeG+5jznB1DwZeM+REyVjaEIjuvlCZR1a/gRzqND6rSMDftUKzl65S808Wo1Vnq
- tzaqLYpfPaO4EpvovdFUkyXwkT7nMGbQJ93rZw6EkqFiekzht5Po/7YPksPYIfVqCDst
- hgdg==
-X-Gm-Message-State: AFqh2krb+wIV2ZeUgyqJM/qIrKUqm7cRtO+NFSq4PFqA9d0RiZso+ONk
- H+MoGblviBEs1oUDXCcHbNEPMA==
-X-Google-Smtp-Source: AMrXdXu9HHEo/oiUtz2RMFCVU9bzsQZjZJ6cJq7QQE+EgrBS53y1RWYqF/4GpGuzhXIiUysKwMTRjQ==
-X-Received: by 2002:a05:6871:4090:b0:155:cb39:7325 with SMTP id
- kz16-20020a056871409000b00155cb397325mr16579350oab.6.1673652012126; 
- Fri, 13 Jan 2023 15:20:12 -0800 (PST)
-Received: from [192.168.86.224] ([136.62.38.22])
- by smtp.gmail.com with ESMTPSA id
- z13-20020a056870738d00b0013ae39d0575sm11411907oam.15.2023.01.13.15.20.10
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 13 Jan 2023 15:20:11 -0800 (PST)
-Message-ID: <38200b53-c743-4396-6603-7274f4a29c86@landley.net>
-Date: Fri, 13 Jan 2023 17:32:20 -0600
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=J80B8qRk
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id CB48460C08;
+ Sat, 14 Jan 2023 19:47:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DA54C433D2;
+ Sat, 14 Jan 2023 19:47:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1673725667;
+ bh=gMU2qV2VgM+YENiKJhH+abvn4ddBqKL0P0RzB5p/M9M=;
+ h=From:To:Cc:Subject:Date:From;
+ b=J80B8qRk5QOTG8JqtnwvGlTRxhA2TlX3aGgUGykutFA28xkS1L79HoIMWUQtYDCTj
+ dCd/689zlAuf5mMLONRyOIcLBGJAawuKZj0GNZM0DDyfIiv63g6cOGVUdPbGjzGOeK
+ 43nrrY1DnPSIiCsMQ1mdGBgd09ZbU7hmOt/yvu59q2hP3l8M/NAyQ9o/F9B/CQK0on
+ fE3yWz8n685HzaXhQIOLWmaeEhVdi+exUo8YNDBbMl6cPP11Fb39GIRiU/kHrDNDvZ
+ HNsfKIJOXgJf6U3sjs1605a6/2LOgx2m45e2P4jaM8tXl63pcbaHE+AD8eIJbaVA1T
+ Q5DrM4P1UlMBg==
+From: SeongJae Park <sj@kernel.org>
+To: Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH 1/2] Docs/subsystem-apis: Remove '[The ]Linux' prefixes from
+ titles of listed documents
+Date: Sat, 14 Jan 2023 19:47:40 +0000
+Message-Id: <20230114194741.115855-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: remove arch/sh
-Content-Language: en-US
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Geert Uytterhoeven <geert@linux-m68k.org>
-References: <20230113062339.1909087-1-hch@lst.de>
- <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
- <CAMuHMdUcnP6a9Ch5=_CMPq-io-YWK5pshkOT2nZmP1hvNcwBAg@mail.gmail.com>
- <142532fb-5997-bdc1-0811-a80ae33f4ba4@physik.fu-berlin.de>
- <6891afb6-4190-6a52-0319-745b3f138d97@landley.net>
- <fe09d811-e290-821d-ec8b-75936b6583c2@physik.fu-berlin.de>
-From: Rob Landley <rob@landley.net>
-In-Reply-To: <fe09d811-e290-821d-ec8b-75936b6583c2@physik.fu-berlin.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Sun, 15 Jan 2023 08:48:19 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -108,59 +73,256 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: linux-fbdev@vger.kernel.org, Rich Felker <dalias@libc.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>, linux-sh@vger.kernel.org,
- linux-rtc@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
- Yoshinori Sato <ysato@users.sourceforge.jp>, linux-serial@vger.kernel.org,
- linux-input@vger.kernel.org, linux-media@vger.kernel.org,
- devicetree@vger.kernel.org, linux-watchdog@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
- netdev@vger.kernel.org, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: alsa-devel@alsa-project.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Viresh Kumar <viresh.kumar@linaro.org>, dri-devel@lists.freedesktop.org,
+ Takashi Iwai <tiwai@suse.com>, David Airlie <airlied@gmail.com>,
+ linux-watchdog@vger.kernel.org, Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Iwona Winiarska <iwona.winiarska@intel.com>, openbmc@lists.ozlabs.org,
+ linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
+ Guenter Roeck <linux@roeck-us.net>, Jean Delvare <jdelvare@suse.com>,
+ Daniel Vetter <daniel@ffwll.ch>, linux-pm@vger.kernel.org,
+ linux-input@vger.kernel.org,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ linux-hwmon@vger.kernel.org, SeongJae Park <sj@kernel.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-crypto@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+ "David S. Miller" <davem@davemloft.net>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 1/13/23 13:05, John Paul Adrian Glaubitz wrote:
-> Hi Rob!
-> 
-> On 1/13/23 20:11, Rob Landley wrote:
->> There is definitely interest in this architecture. I'm aware Rich hasn't been
->> the most responsive maintainer. (I'm told he's on vacation with his family at
->> the moment, according to the text I got about this issue from the J-core
->> hardware guys in Japan.)
-> 
-> Well, maybe we can just give it a try together ...
+Some documents that listed on subsystem-apis have 'Linux' or 'The Linux'
+title prefixes.  It's duplicated information, and makes finding the
+document of interest with human eyes not easy.  Remove the prefixes from
+the titles.
 
-Jeff Dionne said he'd make himself available to answer hardware questions. (He
-said he maintained some Linux ports 20 years ago, but isn't current with Linux
-plumbing. Last month he was digging through the guts of vxworks, and the project
-before that was some sort of BSD I think?)
+Signed-off-by: SeongJae Park <sj@kernel.org>
+---
+ Documentation/PCI/index.rst        | 6 +++---
+ Documentation/cpu-freq/index.rst   | 6 +++---
+ Documentation/crypto/index.rst     | 6 +++---
+ Documentation/driver-api/index.rst | 6 +++---
+ Documentation/gpu/index.rst        | 6 +++---
+ Documentation/hwmon/index.rst      | 6 +++---
+ Documentation/input/index.rst      | 6 +++---
+ Documentation/mm/index.rst         | 6 +++---
+ Documentation/peci/index.rst       | 6 +++---
+ Documentation/scheduler/index.rst  | 6 +++---
+ Documentation/scsi/index.rst       | 6 +++---
+ Documentation/sound/index.rst      | 6 +++---
+ Documentation/virt/index.rst       | 6 +++---
+ Documentation/watchdog/index.rst   | 6 +++---
+ 14 files changed, 42 insertions(+), 42 deletions(-)
 
-I _do_ maintain Linux patches, I just generally don't bother to repost them
-endlessly. Here's my "on top of 6.1" stack for example, each of which links to
-at least one time it was posted to linux-kernel:
+diff --git a/Documentation/PCI/index.rst b/Documentation/PCI/index.rst
+index c17c87af1968..e73f84aebde3 100644
+--- a/Documentation/PCI/index.rst
++++ b/Documentation/PCI/index.rst
+@@ -1,8 +1,8 @@
+ .. SPDX-License-Identifier: GPL-2.0
+ 
+-=======================
+-Linux PCI Bus Subsystem
+-=======================
++=================
++PCI Bus Subsystem
++=================
+ 
+ .. toctree::
+    :maxdepth: 2
+diff --git a/Documentation/cpu-freq/index.rst b/Documentation/cpu-freq/index.rst
+index 2fe32dad562a..de25740651f7 100644
+--- a/Documentation/cpu-freq/index.rst
++++ b/Documentation/cpu-freq/index.rst
+@@ -1,8 +1,8 @@
+ .. SPDX-License-Identifier: GPL-2.0
+ 
+-==============================================================================
+-Linux CPUFreq - CPU frequency and voltage scaling code in the Linux(TM) kernel
+-==============================================================================
++========================================================================
++CPUFreq - CPU frequency and voltage scaling code in the Linux(TM) kernel
++========================================================================
+ 
+ Author: Dominik Brodowski  <linux@brodo.de>
+ 
+diff --git a/Documentation/crypto/index.rst b/Documentation/crypto/index.rst
+index 21338fa92642..da5d5ad2bdf3 100644
+--- a/Documentation/crypto/index.rst
++++ b/Documentation/crypto/index.rst
+@@ -1,6 +1,6 @@
+-=======================
+-Linux Kernel Crypto API
+-=======================
++==========
++Crypto API
++==========
+ 
+ :Author: Stephan Mueller
+ :Author: Marek Vasut
+diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
+index d3a58f77328e..b208e0dac3a0 100644
+--- a/Documentation/driver-api/index.rst
++++ b/Documentation/driver-api/index.rst
+@@ -1,6 +1,6 @@
+-========================================
+-The Linux driver implementer's API guide
+-========================================
++==============================
++Driver implementer's API guide
++==============================
+ 
+ The kernel offers a wide variety of interfaces to support the development
+ of device drivers.  This document is an only somewhat organized collection
+diff --git a/Documentation/gpu/index.rst b/Documentation/gpu/index.rst
+index b99dede9a5b1..eee5996acf2c 100644
+--- a/Documentation/gpu/index.rst
++++ b/Documentation/gpu/index.rst
+@@ -1,6 +1,6 @@
+-==================================
+-Linux GPU Driver Developer's Guide
+-==================================
++============================
++GPU Driver Developer's Guide
++============================
+ 
+ .. toctree::
+ 
+diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+index fe2cc6b73634..c2b3c1a822dd 100644
+--- a/Documentation/hwmon/index.rst
++++ b/Documentation/hwmon/index.rst
+@@ -1,6 +1,6 @@
+-=========================
+-Linux Hardware Monitoring
+-=========================
++===================
++Hardware Monitoring
++===================
+ 
+ .. toctree::
+    :maxdepth: 1
+diff --git a/Documentation/input/index.rst b/Documentation/input/index.rst
+index 9888f5cbf6d5..35581cd18e91 100644
+--- a/Documentation/input/index.rst
++++ b/Documentation/input/index.rst
+@@ -1,6 +1,6 @@
+-=============================
+-The Linux Input Documentation
+-=============================
++===================
++Input Documentation
++===================
+ 
+ Contents:
+ 
+diff --git a/Documentation/mm/index.rst b/Documentation/mm/index.rst
+index 4aa12b8be278..5a94a921ea40 100644
+--- a/Documentation/mm/index.rst
++++ b/Documentation/mm/index.rst
+@@ -1,6 +1,6 @@
+-=====================================
+-Linux Memory Management Documentation
+-=====================================
++===============================
++Memory Management Documentation
++===============================
+ 
+ Memory Management Guide
+ =======================
+diff --git a/Documentation/peci/index.rst b/Documentation/peci/index.rst
+index 989de10416e7..930e75217c33 100644
+--- a/Documentation/peci/index.rst
++++ b/Documentation/peci/index.rst
+@@ -1,8 +1,8 @@
+ .. SPDX-License-Identifier: GPL-2.0-only
+ 
+-====================
+-Linux PECI Subsystem
+-====================
++==============
++PECI Subsystem
++==============
+ 
+ .. toctree::
+ 
+diff --git a/Documentation/scheduler/index.rst b/Documentation/scheduler/index.rst
+index b430d856056a..1aac972a652f 100644
+--- a/Documentation/scheduler/index.rst
++++ b/Documentation/scheduler/index.rst
+@@ -1,6 +1,6 @@
+-===============
+-Linux Scheduler
+-===============
++=========
++Scheduler
++=========
+ 
+ .. toctree::
+     :maxdepth: 1
+diff --git a/Documentation/scsi/index.rst b/Documentation/scsi/index.rst
+index 7c5f5f8f614e..919f3edfe1bf 100644
+--- a/Documentation/scsi/index.rst
++++ b/Documentation/scsi/index.rst
+@@ -1,8 +1,8 @@
+ .. SPDX-License-Identifier: GPL-2.0
+ 
+-====================
+-Linux SCSI Subsystem
+-====================
++==============
++SCSI Subsystem
++==============
+ 
+ .. toctree::
+    :maxdepth: 1
+diff --git a/Documentation/sound/index.rst b/Documentation/sound/index.rst
+index 4d7d42acf6df..5abed5fc6485 100644
+--- a/Documentation/sound/index.rst
++++ b/Documentation/sound/index.rst
+@@ -1,6 +1,6 @@
+-===================================
+-Linux Sound Subsystem Documentation
+-===================================
++=============================
++Sound Subsystem Documentation
++=============================
+ 
+ .. toctree::
+    :maxdepth: 2
+diff --git a/Documentation/virt/index.rst b/Documentation/virt/index.rst
+index 56e003ff28ff..7fb55ae08598 100644
+--- a/Documentation/virt/index.rst
++++ b/Documentation/virt/index.rst
+@@ -1,8 +1,8 @@
+ .. SPDX-License-Identifier: GPL-2.0
+ 
+-============================
+-Linux Virtualization Support
+-============================
++======================
++Virtualization Support
++======================
+ 
+ .. toctree::
+    :maxdepth: 2
+diff --git a/Documentation/watchdog/index.rst b/Documentation/watchdog/index.rst
+index c177645081d8..4603f2511f58 100644
+--- a/Documentation/watchdog/index.rst
++++ b/Documentation/watchdog/index.rst
+@@ -1,8 +1,8 @@
+ .. SPDX-License-Identifier: GPL-2.0
+ 
+-======================
+-Linux Watchdog Support
+-======================
++================
++Watchdog Support
++================
+ 
+ .. toctree::
+     :maxdepth: 1
+-- 
+2.25.1
 
-https://landley.net/toybox/downloads/binaries/mkroot/0.8.9/linux-patches/
-
->> The main reason we haven't converted everything to device tree is we only have
->> access to test hardware for a subset of the boards. Pruning the list of
->> supported boards and converting the rest to device tree might make sense. We can
->> always add/convert boards back later...
-> 
-> There is a patch by Yoshinori Sato which adds device tree support to SH. Maybe we
-> can revive it.
-
-The turtle board is device tree and has been since it was merged. The
-infrastructure is there, the question is converting over boards and testing
-them, or deciding to prune them. Did Sato-san convert many boards? (I'm not
-finding his patch via google...)
-
-> Adrian
-
-Rob
