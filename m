@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9D4DC3DA78
-	for <alsa-devel@archiver.kernel.org>; Sun, 15 Jan 2023 15:02:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F088C63797
+	for <alsa-devel@archiver.kernel.org>; Sun, 15 Jan 2023 15:04:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 913A55211;
-	Sun, 15 Jan 2023 16:02:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 913A55211
+	by alsa0.perex.cz (Postfix) with ESMTPS id 867A55220;
+	Sun, 15 Jan 2023 16:03:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 867A55220
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673794976;
-	bh=sEDUKFkRL2BNAsh7WyQAagCnUcJwIQeX5GHXFx+Fpts=;
+	s=default; t=1673795064;
+	bh=GtHs0cZyB+6qbwDYFGmBagfem+2W06cJZtCt6JObNsY=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=hlJzyTPUkElw/78PXa3qd4RMZhlUKEIDBk/2lMEVxl80xscSpoduFQLIGwpa81gFv
-	 F597KUODBYqQMUHcRGBUHHom+kMNSuWvbVxngaUm+HP/s6sUjd0xtxeb+ArRcLGbzE
-	 UdtuBW6UR5RvelLTxBGcAt9bs4IYNleOiuhagv84=
+	b=q0BzQLmR10cOKS5hsiFLzwjMDtszomwlxKWabWt3iVDEW4vmglda071ks9HIrT2Zx
+	 R1TBmXMKOLumjDSxSSl0WIuu3gV8/iHEJvwqKc/ufTL7y3VcvKX1RjMs+sFlqFTLm2
+	 3OzXNw+47BezH7kHZXrgMektVcUg7vhwPOstfyC0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FE9DF804DE;
-	Sun, 15 Jan 2023 16:02:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4411CF804BC;
+	Sun, 15 Jan 2023 16:03:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5DDE4F804A9; Sun, 15 Jan 2023 16:02:05 +0100 (CET)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com
- [IPv6:2a00:1450:4864:20::632])
+ id 2E075F804DE; Sun, 15 Jan 2023 16:03:32 +0100 (CET)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com
+ [IPv6:2a00:1450:4864:20::631])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7DC0FF804A9
- for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2023 16:01:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DC0FF804A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6F194F801EB
+ for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2023 16:03:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F194F801EB
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=PsQwIqKm
-Received: by mail-ej1-x632.google.com with SMTP id qx13so4300246ejb.13
- for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2023 07:01:57 -0800 (PST)
+ header.s=google header.b=B5YxFiRJ
+Received: by mail-ej1-x631.google.com with SMTP id u19so62619883ejm.8
+ for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2023 07:03:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:in-reply-to:from:references:cc:to
  :content-language:subject:user-agent:mime-version:date:message-id
  :from:to:cc:subject:date:message-id:reply-to;
- bh=J3bq6rsilb+yzIau6JvOZs+9VdaUZxUWRaQK2SaliZM=;
- b=PsQwIqKmv8mUgQAfKRBTar7hkJFBWu8yHkUFdSFiONL0FtNX3oQmt62fwmI1uJMD+J
- +sddKvh15EIZgSODInndERNNqf33Cxj0ivluoXf/++txbGPkWKElLS3YwqdsE9CxR7MN
- CdenhB8vdwxa1nD/TPDp6Ks/nG7rbqocCxvY5xAvtvDTAq/QfjJZ00bC/UXZ87uvwgLK
- 5EBa7NXKP7Zyockn+St7pD/YqdEIrRqXeagIwccNWWpN9BdwkiNngvUrNSCBJvy5LmRf
- D/2VGuv18XneRm2cv6sFDRTVuyjhIDREtzOIfVOKy4maK43/FZ8/uQMgI2RpWSJ/nlCS
- i4qQ==
+ bh=A8Y0CWmx9pYLYLFHVHz0kb3QWfE3QG43dwg2EVd0xlo=;
+ b=B5YxFiRJIsTEWzPd0ZTbV2pXmodWqiMIQ9KGvEH9RI17fOY3c/sA7+pRdyiKlqInWQ
+ 1ObUB+eBe/lGyRlDoxzP32sFGqoRY9xz+xMMjs3pW4PyIi4pRH97BCpLX3aT8MxNrfvx
+ vSLgWoL+FUNxAUyBtbc79kyA17vSw/Upe0w7DjtHQkSpKGYOE29svc7ZoChQU57XJO4A
+ rLJQ98vIzuz2Pj6xkP/JQIXCG9HBvAImKP3MBAD+OWgHPlUSgV3h6lcz85udUKhpgyrZ
+ D7P8jZQQPpDebiF90i2ah61VnT1UZcdDkJOZH/jC7ZA59kXqWe+wxPiRqm3ijeXRlbTt
+ bmdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:in-reply-to:from:references:cc:to
  :content-language:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=J3bq6rsilb+yzIau6JvOZs+9VdaUZxUWRaQK2SaliZM=;
- b=a7ESSxGCnLIjisJuLZAhrUfouJJJY5g/6HVsHu4MrZgqO5imrQ2tHdbodfpt48OQZn
- 4O864VoxB69bFhaHHp/gee0hZOoi5ofq2f9sIpvLCpDpLFk5iQci5SWyvgDW0GzjRU/q
- qCvVgSjqdqFm8Z9/3bmLIjdxgGpbfohDzTVHV+VoP5JL0lxxhv6j71Wu3jA7ec6WcDPP
- sdM8FTB6PdZ6jY6afFFuMV2nDm3gZT07n1OMTXYFHiMERu9Xamemhzl9XLEwrAVGp1sX
- DY/buHCyj+ZWpjgYzW3Q0mw1SLdn+o7mUuzUnyHdSngAjgdqS7nuDwu30vBNcnCkOWuf
- 5i/A==
-X-Gm-Message-State: AFqh2kpWUUjUcdqVKhWUXs9qtGD0hjhJKIzImc6s+vIxhqKJCdlJWbTR
- OtfbT+E4SonX2+e/i92RQmxF7Q==
-X-Google-Smtp-Source: AMrXdXvutsPygOCMzesZ9qxp8xuN8emB9CtkFkWEFKnljtZ5h28K7Ck5Gtyv2iBBY6sW3n/hl5B9WA==
-X-Received: by 2002:a17:906:850c:b0:7c0:f44d:984 with SMTP id
- i12-20020a170906850c00b007c0f44d0984mr95610347ejx.74.1673794915641; 
- Sun, 15 Jan 2023 07:01:55 -0800 (PST)
+ bh=A8Y0CWmx9pYLYLFHVHz0kb3QWfE3QG43dwg2EVd0xlo=;
+ b=uM5iWu2SB6HRzOInLnRTRfz3PfdWNl+SChkci8CuwdBA1BQeQiNBRUvgbic4M+8C+D
+ /mH0R4WT6gJVrQvoAZR7AWSP1F7qvxI2sjsmd1JdLul99Xu/DTi1jV4Br714taAI3GJp
+ 9F92mHOi2GPjQu7cFsUiXsgM3nc0CrnKIVOw/x+e3VzeyXMqs2fOGAWgKfN8ulXIBgCU
+ 4pX1UW/hXWI8oRdzivzEL9ANI6Wdz1EKeU8xLQWXXW9qOlxrF2sVssXcp4VYEz3RvEEM
+ bW2ba3m9Vu4Kynz8VvO6nTKbtRRfYmi/JKFKJhGVeA2+AwFoueKdi4yKsGPSCa8NZMg0
+ ljFw==
+X-Gm-Message-State: AFqh2kojd8SAhWnMT6+ipPXLTG0d3sT6CE0St0xzhcsL8U/2bKXP2IHQ
+ maSHTwnhfWrAGRcKL6H10u/FGw==
+X-Google-Smtp-Source: AMrXdXur5srQnbH6d5PiLlzh3ia+za/Byv1Rojs4GeErYa2lh8pfGuIpTVhphf0I3nAyRehxjhIgbA==
+X-Received: by 2002:a17:907:c58c:b0:82c:3642:79b5 with SMTP id
+ tr12-20020a170907c58c00b0082c364279b5mr75676376ejc.58.1673795007740; 
+ Sun, 15 Jan 2023 07:03:27 -0800 (PST)
 Received: from [192.168.1.109] ([178.197.216.144])
  by smtp.gmail.com with ESMTPSA id
- kx5-20020a170907774500b007c14ae38a80sm10633909ejc.122.2023.01.15.07.01.53
+ k11-20020a1709062a4b00b0073022b796a7sm10926754eje.93.2023.01.15.07.03.25
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sun, 15 Jan 2023 07:01:55 -0800 (PST)
-Message-ID: <3c2c4da5-c63b-dd2a-c918-4b8163a52512@linaro.org>
-Date: Sun, 15 Jan 2023 16:01:52 +0100
+ Sun, 15 Jan 2023 07:03:27 -0800 (PST)
+Message-ID: <e5cd9794-d8ce-7285-5da2-7f3b6bf8dc2a@linaro.org>
+Date: Sun, 15 Jan 2023 16:03:25 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.6.1
-Subject: Re: [PATCH v3 1/5] ASoC: dt-bindings: Add FSD I2S controller bindings
+Subject: Re: [PATCH v3 2/5] ASoC: samsung: i2s: add support for FSD I2S
 Content-Language: en-US
 To: Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>, lgirdwood@gmail.com,
  broonie@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
@@ -86,10 +86,10 @@ To: Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>, lgirdwood@gmail.com,
  pankaj.dubey@samsung.com, alim.akhtar@samsung.com, rcsekar@samsung.com,
  aswani.reddy@samsung.com
 References: <20230113121749.4657-1-p.rajanbabu@samsung.com>
- <CGME20230113121816epcas5p469f952d775cdd709de18ec63b24cedf7@epcas5p4.samsung.com>
- <20230113121749.4657-2-p.rajanbabu@samsung.com>
+ <CGME20230113121821epcas5p4ebd116d75f12dafeb09391eb6f7a2646@epcas5p4.samsung.com>
+ <20230113121749.4657-3-p.rajanbabu@samsung.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230113121749.4657-2-p.rajanbabu@samsung.com>
+In-Reply-To: <20230113121749.4657-3-p.rajanbabu@samsung.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -110,14 +110,23 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 On 13/01/2023 13:17, Padmanabhan Rajanbabu wrote:
-> Add bindings for FSD CPU DAI driver which supports stereo channel
-> audio playback and capture on FSD platform.
+> Add support for enabling I2S controller on FSD platform.
 > 
+> FSD I2S controller is based on Exynos7 I2S controller, supporting
+> 2CH playback/capture in I2S mode and 7.1CH playback/capture in TDM
+> mode.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+
+Drop. It's for the bugs. Just be sure that the code compiles without W=1
+warnings.
+
+
 > Signed-off-by: Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>
-
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
+> ---
+>  sound/soc/samsung/i2s-regs.h |  1 +
+>  sound/soc/samsung/i2s.c      | 53 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 54 insertions(+)
 Best regards,
 Krzysztof
 
