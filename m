@@ -4,88 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBD5FC3DA78
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Jan 2023 08:00:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96B3FC3DA78
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Jan 2023 08:22:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36BFC63A1;
-	Tue, 17 Jan 2023 08:59:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36BFC63A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 565C06443;
+	Tue, 17 Jan 2023 09:21:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 565C06443
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673942401;
-	bh=CSh9BYVK+40WA2VBVUxD7plJyOBmDnICHtcRpHfuGX4=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=D+RGIK20DrUo8yRNEydW8Q6nspv1hGutrEd2GWJ/uBMABSlXVk+16XFkxmuhKEMHv
-	 1ukeVeBd0nNLac7qa45wYPgGULfv/RNFlXhjaHVXTk/OOyRshNWLmZCgVXiGMKujpl
-	 kR9RuvGFJI+/pHH9GbS307FKmsvAuEsRnNv/+EHM=
+	s=default; t=1673943764;
+	bh=//EXDCHEfElC4L8ZoDyXb3TaWhtxSto/pAqemBle+Gk=;
+	h=From:To:Subject:Date:References:List-Id:List-Unsubscribe:
+	 List-Archive:List-Post:List-Help:List-Subscribe:Cc:From;
+	b=u2POIZ/s2+hFEZ7Flbtxa+BNWc/vx0rN6fSU31LXxd0N7Ks1OVggMhm0mObS24JXj
+	 idm+HNQ6GnrF3u3vG2bzoFz+kwp9Q//WZy7WttE7wMZ+Wfc/UZogzVfFZunTLc9Hg0
+	 kRF0l5ysZIjzpFYhA5Ezz97a4JgpNJXbNxd29UPo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DEBB5F8026D;
-	Tue, 17 Jan 2023 08:59:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09E54F8026D;
+	Tue, 17 Jan 2023 09:21:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 349F2F8047B; Tue, 17 Jan 2023 08:59:09 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 3C286F804DE; Tue, 17 Jan 2023 09:21:52 +0100 (CET)
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 858AAF80083
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 08:58:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 858AAF80083
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=FEAs0lcD; 
- dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=LhhCTUsq
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 069DA682AF;
- Tue, 17 Jan 2023 07:58:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1673942338; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=5rFgTBusNm3ddP4IzybSpHqpVGkCzjxZ2pUkYqqDl70=;
- b=FEAs0lcDCu7Se3BD4a81nXSSpie4kO+bfF9jR0FEvbOf5npoFvuaX0+RH7YVsPiuMQfYUs
- C5paOgu83lhVKxGS3h9dVqwvBNcMYhDjhvfbp+n+zcGCRTTsL7cema0YMdIr5SBPK5HlVG
- Vq4h2AWxJTBR1ew+KelEd9dDi951CSE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1673942338;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=5rFgTBusNm3ddP4IzybSpHqpVGkCzjxZ2pUkYqqDl70=;
- b=LhhCTUsqzCfVi69cEi2jNp3EgC53mP19opb8Gaoc4gpOC4iSTr3e56UcbPu3okhiwY1wtf
- 7PpIG+jzGF7RkQDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D824713357;
- Tue, 17 Jan 2023 07:58:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id pH0MNEFVxmNMRQAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 17 Jan 2023 07:58:57 +0000
-Date: Tue, 17 Jan 2023 08:58:57 +0100
-Message-ID: <87tu0p8uda.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Marek =?ISO-8859-1?Q?Marczykowski-G=F3recki?=
- <marmarek@invisiblethingslab.com>
-Subject: Re: Intel HD Audio: sound stops working in Xen PV dom0 in >=5.17
-In-Reply-To: <87bkmya2zk.wl-tiwai@suse.de>
-References: <Y5KPAs6f7S2dEoxR@mail-itl> <87tu256lqs.wl-tiwai@suse.de>
- <Y5MssNfvE+mUyyZR@mail-itl> <Y5PaF4LhQGIrKthy@mail-itl>
- <Y5SxJ3IkhHSC/Psu@mail-itl> <87o7rv507o.wl-tiwai@suse.de>
- <Y6sOvyYwuR8Pu0wj@mail-itl> <87bkmya2zk.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3FB9CF8023A
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 09:21:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FB9CF8023A
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ unprotected) header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256
+ header.s=mail20170921 header.b=DFVfVAV+
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+ by mailout2.samsung.com (KnoxPortal) with ESMTP id
+ 20230117082142epoutp02e233a29c0cd68be4ff661127a56bb015~7Cu2glpLI1943819438epoutp02f
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 08:21:42 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com
+ 20230117082142epoutp02e233a29c0cd68be4ff661127a56bb015~7Cu2glpLI1943819438epoutp02f
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+ s=mail20170921; t=1673943702;
+ bh=ENCE8uiLf8l1fHPrs46GI/aw9Xxe4V1T7lZO3YvNhXk=;
+ h=From:To:Cc:Subject:Date:References:From;
+ b=DFVfVAV+H6JKsKeHA+GJJQzt2uHWpRmzAc3PW9yGrYICk9GWX043UlIiKlcdiNP6K
+ dObbPlFv01XjfZmt8i38eaaI5RWAOz/vVhJ4qEqUV+BIbu028kISvyXVwtRDiCX7aX
+ mRTLgykmuMiDLU7lqP1WMZJs3G0G+9ZyHC6hrgc0=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+ epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+ 20230117082141epcas5p476e44f422744ae1abd079e6b6313ee64~7Cu2Bm3Bl0211002110epcas5p4D;
+ Tue, 17 Jan 2023 08:21:41 +0000 (GMT)
+Received: from epsmges5p1new.samsung.com (unknown [182.195.38.174]) by
+ epsnrtp2.localdomain (Postfix) with ESMTP id 4Nx2100zPDz4x9Pw; Tue, 17 Jan
+ 2023 08:21:40 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+ epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+ 8C.49.02301.39A56C36; Tue, 17 Jan 2023 17:21:40 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+ epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+ 20230116103841epcas5p17b33f2b6567935d6be59b4d2b5d9f847~6w9KzjTOU1456314563epcas5p1q;
+ Mon, 16 Jan 2023 10:38:41 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+ epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+ 20230116103841epsmtrp20600063219915088cf83f394d7256cb8~6w9KyrIlu0521705217epsmtrp2D;
+ Mon, 16 Jan 2023 10:38:41 +0000 (GMT)
+X-AuditID: b6c32a49-473fd700000108fd-a1-63c65a93bf2e
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+ epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+ 71.F8.10542.13925C36; Mon, 16 Jan 2023 19:38:41 +0900 (KST)
+Received: from cheetah.sa.corp.samsungelectronics.net (unknown
+ [107.109.115.53]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+ 20230116103835epsmtip13afc6816ffd45f4df958c248f3fee2ff~6w9F47GGD0462804628epsmtip18;
+ Mon, 16 Jan 2023 10:38:35 +0000 (GMT)
+From: Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, s.nawrocki@samsung.com, perex@perex.cz,
+ tiwai@suse.com, pankaj.dubey@samsung.com, alim.akhtar@samsung.com,
+ rcsekar@samsung.com, aswani.reddy@samsung.com
+Subject: [PATCH v4 0/5] ASoC: samsung: fsd: audio support for FSD SoC
+Date: Mon, 16 Jan 2023 16:08:18 +0530
+Message-Id: <20230116103823.90757-1-p.rajanbabu@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnk+LIzCtJLcpLzFFi42LZdlhTQ3dK1LFkg6ZZLBYP5m1js7hy8RCT
+ xaHNW9ktpj58wmYx/8g5Vou+Fw+ZLb5d6WCyuLxrDpvFjPP7mCyObgy2WLT1C7tF565+VotZ
+ F3awWrTuPcJucfhNO6vFhu9rGR0EPDZ8bmLz2DnrLrvHplWdbB53ru1h89j3dhmbR9+WVYwe
+ 67dcZfH4vEkugCMq2yYjNTEltUghNS85PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnF
+ J0DXLTMH6AMlhbLEnFKgUEBicbGSvp1NUX5pSapCRn5xia1SakFKToFJgV5xYm5xaV66Xl5q
+ iZWhgYGRKVBhQnbGo819jAW7eSrenZjK0sB4kbOLkZNDQsBEYu3s56wgtpDAbkaJtfuiuhi5
+ gOxPjBKrD21nhEh8ZpQ42SUP03Dv6E52iKJdjBIvTh1ggnBamSR2vbsM1sEmYCqxak4jK0hC
+ RKCJSaLtzUQWEIdZYCOjxOljD5lAqoQFXCWmf+9nBrFZBFQlfp7dARbnFbCR+Pq6gQlin7zE
+ 6g0HmEGaJQQ6OSTWTbvHBpFwkVgzdQ8rhC0s8er4FnYIW0ri87u9UDX5EtM+NkPZFRJtHzdA
+ DbWXOHBlDtBFHEAXaUqs36UPEZaVmHpqHVgJswCfRO/vJ1DlvBI75sHYqhLrl29ihLClJfZd
+ 3wtle0i0b18CDa9Yieady5gmMMrOQtiwgJFxFaNkakFxbnpqsWmBYV5qOTymkvNzNzGCU6aW
+ 5w7Guw8+6B1iZOJgPMQowcGsJMLrt+twshBvSmJlVWpRfnxRaU5q8SFGU2CYTWSWEk3OBybt
+ vJJ4QxNLAxMzMzMTS2MzQyVx3tSt85OFBNITS1KzU1MLUotg+pg4OKUamNQi+r9qKn298M9I
+ yuJryXK+owu0hKyueGTzTptiEBe7aZug8L29/RYWTe2S74+lz91Zde4h55OKII1bG/dP3JYp
+ NeFkin/h00OKza9rD0lunNxVrHGqVSY7dbJ4KUtp3qtar/mnlvnvc+F9tLR3yom1RbvDGRKZ
+ +htXrxEz39tmui6ew8cz+a3JnTS/z5av2Y783r8zW8Rn3++cby+r4jaubeQzqakJtN7ht8bH
+ lV98xuTAfWlWuQbs9+aYXrlpr6HuGzdhwyWR9TE+1gwal823msR/WOMsW5DXtHqf5hbG/ISf
+ xVLckw1C2bRnLb40JYc9oN4sY5Py3/A9dnEG9blndsxsdjZpO+9mk9OhxFKckWioxVxUnAgA
+ hEGw4CIEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFLMWRmVeSWpSXmKPExsWy7bCSnK6h5tFkg74LnBYP5m1js7hy8RCT
+ xaHNW9ktpj58wmYx/8g5Vou+Fw+ZLb5d6WCyuLxrDpvFjPP7mCyObgy2WLT1C7tF565+VotZ
+ F3awWrTuPcJucfhNO6vFhu9rGR0EPDZ8bmLz2DnrLrvHplWdbB53ru1h89j3dhmbR9+WVYwe
+ 67dcZfH4vEkugCOKyyYlNSezLLVI3y6BK+PR5j7Ggt08Fe9OTGVpYLzI2cXIySEhYCJx7+hO
+ 9i5GLg4hgR2MEs8nH2aBSEhLTO/fwwZhC0us/PecHcQWEmhmkli8SRDEZhMwlVg1p5EVpFlE
+ YAKTxMl3x8CamQW2MkpM/WwEYgsLuEpM/97PDGKzCKhK/Dy7gwnE5hWwkfj6uoEJYoG8xOoN
+ B5gnMPIsYGRYxSiZWlCcm55bbFhglJdarlecmFtcmpeul5yfu4kRHLxaWjsY96z6oHeIkYmD
+ 8RCjBAezkgiv367DyUK8KYmVValF+fFFpTmpxYcYpTlYlMR5L3SdjBcSSE8sSc1OTS1ILYLJ
+ MnFwSjUwLSmr6krWeTj/4dsJaT1ZjFWPjs9L5pD5PzH694oTqw338xgmR3WJ/GjlPhZT/8G4
+ Pu9NVMo7aWGeIgFPt4B14WcWb372I0PuZpTumiOfFa78rDmsd6wvmVOlJP3AOmWHNo0T1xIi
+ 1Pf/rLVX/vI/I0Wi+Er+5Ou3bNW9ktO1jX7Hp/QWvNULmLB9XmbMrICf/YzHrRzqLlUumNSn
+ IFa00+nGuiTVGCtz48KzR3uCDiov+RTYu+WputG8Ny/V0ll7Fv24uvfO1IuFC1RtDzjbX+W+
+ K7M5NmLxjbL7PvoN+cwyR4Md82dP2vlojbuc4AZ+Dr7gqm2f/t7dd9svV+5rQJndZC/PPVPk
+ IxYKTz6vxFKckWioxVxUnAgAJ7JgIc0CAAA=
+X-CMS-MailID: 20230116103841epcas5p17b33f2b6567935d6be59b4d2b5d9f847
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230116103841epcas5p17b33f2b6567935d6be59b4d2b5d9f847
+References: <CGME20230116103841epcas5p17b33f2b6567935d6be59b4d2b5d9f847@epcas5p1.samsung.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -98,232 +136,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Harald Arnesen <harald@skogtun.org>,
- Alex Xu <alex_y_xu@yahoo.ca>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 16 Jan 2023 16:55:11 +0100,
-Takashi Iwai wrote:
-> 
-> On Tue, 27 Dec 2022 16:26:54 +0100,
-> Marek Marczykowski-Górecki wrote:
-> > 
-> > On Thu, Dec 22, 2022 at 09:09:15AM +0100, Takashi Iwai wrote:
-> > > On Sat, 10 Dec 2022 17:17:42 +0100,
-> > > Marek Marczykowski-Górecki wrote:
-> > > > 
-> > > > On Sat, Dec 10, 2022 at 02:00:06AM +0100, Marek Marczykowski-Górecki wrote:
-> > > > > On Fri, Dec 09, 2022 at 01:40:15PM +0100, Marek Marczykowski-Górecki wrote:
-> > > > > > On Fri, Dec 09, 2022 at 09:10:19AM +0100, Takashi Iwai wrote:
-> > > > > > > On Fri, 09 Dec 2022 02:27:30 +0100,
-> > > > > > > Marek Marczykowski-Górecki wrote:
-> > > > > > > > 
-> > > > > > > > Hi,
-> > > > > > > > 
-> > > > > > > > Under Xen PV dom0, with Linux >= 5.17, sound stops working after few
-> > > > > > > > hours. pavucontrol still shows meter bars moving, but the speakers
-> > > > > > > > remain silent. At least on some occasions I see the following message in
-> > > > > > > > dmesg:
-> > > > > > > > 
-> > > > > > > >   [ 2142.484553] snd_hda_intel 0000:00:1f.3: Unstable LPIB (18144 >= 6396); disabling LPIB delay counting
-> > > > > 
-> > > > > Hit the issue again, this message did not appear in the log (or at least
-> > > > > not yet).
-> > > > > 
-> > > > > (...)
-> > > > > 
-> > > > > > > In anyway, please check the behavior with 6.1-rc8 + the commit
-> > > > > > > cc26516374065a34e10c9a8bf3e940e42cd96e2a
-> > > > > > >     ALSA: memalloc: Allocate more contiguous pages for fallback case
-> > > > > > > from for-next of my sound git tree (which will be in 6.2-rc1).
-> > > > > 
-> > > > > This did not helped.
-> > > > > 
-> > > > > > Looking at the mentioned commits, there is one specific aspect of Xen PV
-> > > > > > that may be relevant. It configures PAT differently than native Linux.
-> > > > > > Theoretically Linux adapts automatically and using proper API (like
-> > > > > > set_memory_wc()) should just work, but at least for i915 driver it
-> > > > > > causes issues (not fully tracked down yet). Details about that bug
-> > > > > > report include some more background:
-> > > > > > https://lore.kernel.org/intel-gfx/Y5Hst0bCxQDTN7lK@mail-itl/
-> > > > > > 
-> > > > > > Anyway, I have tested it on a Xen modified to setup PAT the same way as
-> > > > > > native Linux and the audio issue is still there.
-> > > > > > 
-> > > > > > > If the problem persists, another thing to check is the hack below
-> > > > > > > works.
-> > > > > 
-> > > > > Trying this one now.
-> > > > 
-> > > > And this one didn't either :/
-> > > 
-> > > (Sorry for the late reply, as I've been off in the last weeks.)
-> > > 
-> > > I think the hack doesn't influence on the PCM buffer pages, but only
-> > > about BDL pages.  Could you check the patch below instead?
-> > > It'll disable the SG-buffer handling on x86 completely. 
-> > 
-> > This seems to "fix" the issue, thanks!
-> > I guess I'll run it this way for now, but a proper solution would be
-> > nice. Let me know if I can collect any more info that would help with
-> > that.
-> 
-> Then we seem to go back again with the coherent memory allocation for
-> the fallback sg cases.  It was changed because the use of
-> dma_alloc_coherent() caused a problem with IOMMU case for retrieving
-> the page addresses, but since the commit 9736a325137b, we essentially
-> avoid the fallback when IOMMU is used, so it should be fine again.
-> 
-> Let me know if the patch like below works for you instead of the
-> previous hack to disable SG-buffer (note: totally untested!)
+This patch series enables audio support on FSD SoC.
 
-Gah, there was an obvious typo, scratch that.
+Changes in v4:
+1. Rebased and addressed review comments provided for v3.
 
-Below is a proper patch.  Please try this one instead.
+Changes in v3:
+1. Addressed all the review comments provided for v2 patch.
+2. Fixed compilation warnings reported by kernel test robot.
 
+Changes in v2:
+1. New compatible added in Exynos I2S driver for FSD platform.
+2. Added Fixup support for Exynos I2S CPU DAI.
+3. Migration of manual PSR, OPCLK configuration to Exynos CPU DAI driver as
+fixup.
+4. Migrated from dedicated sound card to simple audio card.
+5. Support added for tlv320aic3x-i2c codec on FSD platform.
 
-thanks,
+Changes in v1:
+1. Add TDM support on samsung I2S interface.
+2. Allow sound card to directly configure I2S prescaler divider instead of
+calculating it from frame clock.
+3. The sound card support for FSD SoC which utilizes samsung I2S interface
+as CPU DAI.
 
-Takashi
+Padmanabhan Rajanbabu (5):
+  ASoC: dt-bindings: Add FSD I2S controller bindings
+  ASoC: samsung: i2s: add support for FSD I2S
+  arm64: dts: fsd: Add I2S DAI node for Tesla FSD
+  arm64: dts: fsd: Add codec node for Tesla FSD
+  arm64: dts: fsd: Add sound card node for Tesla FSD
 
--- 8< --
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: memalloc: Use coherent DMA allocation for fallback again
+ .../bindings/sound/samsung-i2s.yaml           |  8 +++
+ arch/arm64/boot/dts/tesla/fsd-evb.dts         | 53 +++++++++++++++++++
+ arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi    | 14 +++++
+ arch/arm64/boot/dts/tesla/fsd.dtsi            | 34 ++++++++++++
+ sound/soc/samsung/i2s-regs.h                  |  1 +
+ sound/soc/samsung/i2s.c                       | 53 +++++++++++++++++++
+ 6 files changed, 163 insertions(+)
 
-We switched the memory allocation for fallback cases in the noncontig
-type to use the standard alloc_pages*() at the commit a8d302a0b770
-("ALSA: memalloc: Revive x86-specific WC page allocations again"),
-while we used the dma_alloc_coherent() in the past.  The reason was
-that the page address retrieved from the virtual pointer returned from
-dma_alloc_coherent() can't be used with IOMMU systems.  Meanwhile, we
-explicitly disabled the fallback allocation for IOMMU systems at the
-commit 9736a325137b ("ALSA: memalloc: Don't fall back for SG-buffer
-with IOMMU") after the commit above; that is, the usage of
-dma_alloc_coherent() should be OK again.
-
-Now, we've received reports that the current fallback page allocation
-caused a regression on Xen (and maybe other) systems; the sound
-disappear partially or completely.  The further investigation showed
-that this can be worked around by the dma_alloc_coherent() pages.
-So, it's time to take it back.
-
-This patch switches back to the dma_alloc_coherent() for the fallback
-allocations.  Unlike the previous implementation, the allocation is
-implemented in a more optimized way to try larger chunks.  The page
-count is stored in the lower bits of the addresses.
-
-Fixes: a8d302a0b770 ("ALSA: memalloc: Revive x86-specific WC page allocations again")
-Fixes: 9736a325137b ("ALSA: memalloc: Don't fall back for SG-buffer with IOMMU")
-Link: https://lore.kernel.org/r/87tu256lqs.wl-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/memalloc.c | 44 +++++++++++++++++++++++++++++++++----------
- 1 file changed, 34 insertions(+), 10 deletions(-)
-
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-index 81025f50a542..dff07cd6f209 100644
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -719,17 +719,30 @@ static const struct snd_malloc_ops snd_dma_sg_wc_ops = {
- struct snd_dma_sg_fallback {
- 	size_t count;
- 	struct page **pages;
-+	dma_addr_t *addrs;
- };
- 
- static void __snd_dma_sg_fallback_free(struct snd_dma_buffer *dmab,
- 				       struct snd_dma_sg_fallback *sgbuf)
- {
--	bool wc = dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG_FALLBACK;
--	size_t i;
--
--	for (i = 0; i < sgbuf->count && sgbuf->pages[i]; i++)
--		do_free_pages(page_address(sgbuf->pages[i]), PAGE_SIZE, wc);
-+	size_t i, size;
-+
-+	if (sgbuf->pages && sgbuf->addrs) {
-+		i = 0;
-+		while (i < sgbuf->count) {
-+			if (!sgbuf->pages[i] || !sgbuf->addrs[i])
-+				break;
-+			size = sgbuf->addrs[i] & ~PAGE_MASK;
-+			if (WARN_ON(!size))
-+				break;
-+			dma_free_coherent(dmab->dev.dev, size,
-+					  page_address(sgbuf->pages[i]),
-+					  sgbuf->addrs[i] & PAGE_MASK);
-+			i += size;
-+		}
-+	}
- 	kvfree(sgbuf->pages);
-+	kvfree(sgbuf->addrs);
- 	kfree(sgbuf);
- }
- 
-@@ -738,9 +751,8 @@ static void *snd_dma_sg_fallback_alloc(struct snd_dma_buffer *dmab, size_t size)
- 	struct snd_dma_sg_fallback *sgbuf;
- 	struct page **pagep, *curp;
- 	size_t chunk, npages;
--	dma_addr_t addr;
-+	dma_addr_t *addrp;
- 	void *p;
--	bool wc = dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG_FALLBACK;
- 
- 	sgbuf = kzalloc(sizeof(*sgbuf), GFP_KERNEL);
- 	if (!sgbuf)
-@@ -748,14 +760,16 @@ static void *snd_dma_sg_fallback_alloc(struct snd_dma_buffer *dmab, size_t size)
- 	size = PAGE_ALIGN(size);
- 	sgbuf->count = size >> PAGE_SHIFT;
- 	sgbuf->pages = kvcalloc(sgbuf->count, sizeof(*sgbuf->pages), GFP_KERNEL);
--	if (!sgbuf->pages)
-+	sgbuf->addrs = kvcalloc(sgbuf->count, sizeof(*sgbuf->addrs), GFP_KERNEL);
-+	if (!sgbuf->pages || !sgbuf->addrs)
- 		goto error;
- 
- 	pagep = sgbuf->pages;
--	chunk = size;
-+	addrp = sgbuf->addrs;
-+	chunk = (PAGE_SIZE - 1) << PAGE_SHIFT; /* to fit in low bits in addrs */
- 	while (size > 0) {
- 		chunk = min(size, chunk);
--		p = do_alloc_pages(dmab->dev.dev, chunk, &addr, wc);
-+		p = dma_alloc_coherent(dmab->dev.dev, chunk, addrp, DEFAULT_GFP);
- 		if (!p) {
- 			if (chunk <= PAGE_SIZE)
- 				goto error;
-@@ -767,6 +781,8 @@ static void *snd_dma_sg_fallback_alloc(struct snd_dma_buffer *dmab, size_t size)
- 		size -= chunk;
- 		/* fill pages */
- 		npages = chunk >> PAGE_SHIFT;
-+		*addrp |= npages; /* store in lower bits */
-+		addrp += npages;
- 		curp = virt_to_page(p);
- 		while (npages--)
- 			*pagep++ = curp++;
-@@ -775,6 +791,10 @@ static void *snd_dma_sg_fallback_alloc(struct snd_dma_buffer *dmab, size_t size)
- 	p = vmap(sgbuf->pages, sgbuf->count, VM_MAP, PAGE_KERNEL);
- 	if (!p)
- 		goto error;
-+
-+	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG_FALLBACK)
-+		set_pages_array_wc(sgbuf->pages, sgbuf->count);
-+
- 	dmab->private_data = sgbuf;
- 	/* store the first page address for convenience */
- 	dmab->addr = snd_sgbuf_get_addr(dmab, 0);
-@@ -787,7 +807,11 @@ static void *snd_dma_sg_fallback_alloc(struct snd_dma_buffer *dmab, size_t size)
- 
- static void snd_dma_sg_fallback_free(struct snd_dma_buffer *dmab)
- {
-+	struct snd_dma_sg_fallback *sgbuf = dmab->private_data;
-+
- 	vunmap(dmab->area);
-+	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG_FALLBACK)
-+		set_pages_array_wb(sgbuf->pages, sgbuf->count);
- 	__snd_dma_sg_fallback_free(dmab, dmab->private_data);
- }
- 
 -- 
-2.35.3
+2.17.1
 
