@@ -4,66 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1465C678D4
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Jan 2023 17:24:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA7DEC54EBE
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Jan 2023 18:07:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A2BD7590A;
-	Mon, 16 Jan 2023 18:23:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2BD7590A
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2D76597C;
+	Mon, 16 Jan 2023 19:06:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2D76597C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673889885;
-	bh=JYdgMzjX3SdtHUhlc4JqQNlQEpIgJ4tHf+fTdHFdHb8=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1673892426;
+	bh=zSrlJOl6mUi04pTIjgeQpEmQFl7alGult2nqhe5MceM=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=Drg+Vx9upzfDzeCMZUVChLb9a45mARc0/6mzlPxBlPGOeHcmuh33bGxqa4J5bZE/E
-	 fryQaFlBTqb3l5voCaDZqe08IrTOJjCTSwT3KPE1K1SziuN2xqz5B0sDGfJsxt+2if
-	 JZhslPlDDTAIQuiaX/m4uwUsoMuYaZr092WjI5S4=
+	b=oYTx+pBPYb2TNY9DZft25ii0ilahlhe/6EnqLW5tfMe+UAFs9LfDSOT4gp7JT5PFK
+	 Fs92ulxYtORcEhRbCq7bDqqIcmRbqNB8JIfaYaBecAFfP+icVJSNG4Byx08neQD2Kf
+	 q5SjPSrUZD0GePY2i751fDXc5CJbT/NyKL6POWIQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 071DBF80240;
-	Mon, 16 Jan 2023 18:23:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6DEAF8024C;
+	Mon, 16 Jan 2023 19:06:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 953FDF80240; Mon, 16 Jan 2023 18:23:53 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3B739F80083
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 18:23:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B739F80083
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=YppIn6k9
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 00548F80482; Mon, 16 Jan 2023 19:06:13 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 451A1B810A0;
- Mon, 16 Jan 2023 17:23:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFC4EC433EF;
- Mon, 16 Jan 2023 17:23:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1673889828;
- bh=JYdgMzjX3SdtHUhlc4JqQNlQEpIgJ4tHf+fTdHFdHb8=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=YppIn6k9jGPDSp77P5hlkqwbe3XdHs8C+pzPcjc4LzgHZq9iYLlDNh1+m96T8qzyq
- 4dXD/4siUPnnCXhFsmjoqRbjuRnA0vksn98yQGWysEfS/zuyHJ/j2nvsDgtA4p0Uk+
- aXmAr6+VAkYhRBKGMwFoZbffaKhAsR5hGlzQAZyE5n+4+POhnM08Gk6apNO7D7aVRP
- +KmuEPwNNQLujE24eT2vagiEMBqWA3tu3d8zmCpkl4z61/0b17ZwoNy12h6Jv7+mCZ
- FvSJeU1AcyNui7w2DJ6gyAL0dntf7XuTrPuHFcwKy1Gj2Zebuqkeze/APTUoM178wo
- qTsgQLVE/AABQ==
-From: SeongJae Park <sj@kernel.org>
-To: Alex Deucher <alexdeucher@gmail.com>
-Subject: Re: [PATCH 2/2] Docs: Add some missing SPDX license identifiers of
- subsystem docs
-Date: Mon, 16 Jan 2023 17:23:45 +0000
-Message-Id: <20230116172345.12835-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CADnq5_OUnkzoZcCdW0X-=gJsXSRgY=GLrbmfNj0geDCzL5a7eQ@mail.gmail.com>
-References: 
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1D14F8023B
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 19:06:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1D14F8023B
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=OhvVoIcn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1673892368; x=1705428368;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=zSrlJOl6mUi04pTIjgeQpEmQFl7alGult2nqhe5MceM=;
+ b=OhvVoIcnGwse8FrzLTJ8DxOdhkpJ9gXT+S7t5Tj6CXecvfZYkahcyu8R
+ 9LqSFSwwqCsVeOnfkAfO5IS+UDXV4FP2YPz0QqmFBF6+U3HJR6spVab4Y
+ blzVzETxHDLEbHL7RNCFuhF7eaBQG51q6G6+4G+BTgWiH0Uwt7Lbm4h0r
+ chFuGZ3aH0WVIckkd49lThQqaRPE7m+rPWq+9lP/po63i/zg/q0FjDdOt
+ o/q4k8txs5AuM/Eu416UpEpbmgwMK+4j7BT6LgbJLu/IkHVb8GrklrQTZ
+ K8h9b3d2lQNBAgdvgyLWUsNRQMn8jpFkqDqEdcnd9PYRSYqpmaJVuOsez g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10592"; a="351767486"
+X-IronPort-AV: E=Sophos;i="5.97,221,1669104000"; d="scan'208";a="351767486"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Jan 2023 10:06:01 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10592"; a="766987448"
+X-IronPort-AV: E=Sophos;i="5.97,221,1669104000"; d="scan'208";a="766987448"
+Received: from mahdiahm-mobl1.amr.corp.intel.com (HELO [10.213.173.94])
+ ([10.213.173.94])
+ by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Jan 2023 10:05:59 -0800
+Message-ID: <d5638ec8-3fa4-4643-9740-ef87a4ba5833@linux.intel.com>
+Date: Mon, 16 Jan 2023 08:57:13 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.4.2
+Subject: Re: [PATCH 02/19] soundwire: amd: Add support for AMD Master driver
+Content-Language: en-US
+To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>, broonie@kernel.org,
+ vkoul@kernel.org, alsa-devel@alsa-project.org
+References: <20230111090222.2016499-1-Vijendar.Mukunda@amd.com>
+ <20230111090222.2016499-3-Vijendar.Mukunda@amd.com>
+ <991ff630-17a7-eef3-1436-e4a905fe0541@linux.intel.com>
+ <78741dee-9257-77c2-8950-0519ccb462e6@amd.com>
+ <420258d4-1f66-5288-f421-b26b2a2a35ea@linux.intel.com>
+ <dbf20726-3900-9bff-7a72-14608702f636@amd.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <dbf20726-3900-9bff-7a72-14608702f636@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,32 +89,90 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: linux-hwmon@vger.kernel.org, alsa-devel@alsa-project.org,
- SeongJae Park <sj@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
- linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- Takashi Iwai <tiwai@suse.com>, Jean Delvare <jdelvare@suse.com>,
- linux-crypto@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
- linux-input@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Guenter Roeck <linux@roeck-us.net>
+Cc: Mastan.Katragadda@amd.com, Sunil-kumar.Dommati@amd.com,
+ Basavaraj.Hiregoudar@amd.com, open list <linux-kernel@vger.kernel.org>,
+ Mario.Limonciello@amd.com, arungopal.kondaveeti@amd.com,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Alex,
-
-On Sun, 15 Jan 2023 10:35:57 -0500 Alex Deucher <alexdeucher@gmail.com> wrote:
-
-> On Sat, Jan 14, 2023 at 2:48 PM SeongJae Park <sj@kernel.org> wrote:
-> >
-> > Some subsystem documents are missing SPDX license identifiers.  Add
-> > those.
-> 
-> It would be good to split this up per subsystem.
-
-Thank you for the comment, will do so in next spin.
 
 
-Thanks,
-SJ
+On 1/16/23 01:53, Mukunda,Vijendar wrote:
+> On 14/01/23 00:11, Pierre-Louis Bossart wrote:
+>>>>> +	for (index = 0; index < 2; index++) {
+>>>>> +		if (response_buf[index] == -ETIMEDOUT) {
+>>>>> +			dev_err(ctrl->dev, "Program SCP cmd timeout\n");
+>>>>> +			timeout = 1;
+>>>>> +		} else if (!(response_buf[index] & AMD_SDW_MCP_RESP_ACK)) {
+>>>>> +			no_ack = 1;
+>>>>> +			if (response_buf[index] & AMD_SDW_MCP_RESP_NACK) {
+>>>>> +				nack = 1;
+>>>>> +				dev_err(ctrl->dev, "Program SCP NACK received\n");
+>>>>> +			}
+>>>> this is a copy of the cadence_master.c code... With the error added that
+>>>> this is not for a controller but for a master...
+>>> Its manager instance only. Our immediate command and response
+>>> mechanism allows sending commands over the link and get the
+>>> response for every command immediately, unlike as mentioned in
+>>> candence_master.c.
+>> I don't get the reply. The Cadence IP also has the ability to get the
+>> response immediately. There's limited scope for creativity, the commands
+>> are defined in the spec and the responses as well.
+> As per our understanding in Intel code, responses are processed
+> after sending all commands.
+> In our case, we send the command and process the response
+> immediately before invoking the next command.
 
-[...]
+The Cadence IP can queue a number of commands, I think 8 off the top of
+my head. But the response is provided immediately after each command.
+
+Maybe the disconnect is that there's an ability to define a watermark on
+the response buffer, so that the software can decide to process the
+command responses in one shot.
+
+>>>>> +		}
+>>>>> +	}
+>>>>> +
+>>>>> +	if (timeout) {
+>>>>> +		dev_err_ratelimited(ctrl->dev,
+>>>>> +				    "SCP_addrpage command timeout for Slave %d\n", msg->dev_num);
+>>>>> +		return SDW_CMD_TIMEOUT;
+>>>>> +	}
+>>>>> +
+>>>>> +	if (nack) {
+>>>>> +		dev_err_ratelimited(ctrl->dev,
+>>>>> +				    "SCP_addrpage NACKed for Slave %d\n", msg->dev_num);
+>>>>> +		return SDW_CMD_FAIL;
+>>>>> +	}
+>>>>> +
+>>>>> +	if (no_ack) {
+>>>>> +		dev_dbg_ratelimited(ctrl->dev,
+>>>>> +				    "SCP_addrpage ignored for Slave %d\n", msg->dev_num);
+>>>>> +		return SDW_CMD_IGNORED;
+>>>>> +	}
+>>>>> +	return SDW_CMD_OK;
+>>>> this should probably become a helper since the response is really the
+>>>> same as in cadence_master.c
+>>>>
+>>>> There's really room for optimization and reuse here.
+>>> not really needed. Please refer above comment as command/response
+>>> mechanism differs from Intel's implementation.
+>> how? there's a buffer of responses in both cases. please clarify.
+> Ours implementation is not interrupt driven like Intel.
+> When we send command over the link, we will wait for command's
+> response in polling method and process the response immediately
+> before issuing the new command.
+
+On the Intel side we use an interrupt to avoid polling, and in case of N
+commands the watermark will be set to N to reduce the overhead. That
+said, most users only use 1 command at a time, it's only recently that
+Cirrus Logic experimented with multiple commands to speed-up transfers.
+
+Even if there are differences in the way the responses are processed,
+whether one-at-a-time or in a batch, the point remains that each command
+response can be individually analyzed and that could be using a helper -
+moving code from cadence_master.c into the bus layer.
+
+
