@@ -4,79 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5AC2C54EBE
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Jan 2023 03:45:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6546AC67871
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Jan 2023 03:46:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 85A7D4DF6;
-	Mon, 16 Jan 2023 04:44:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85A7D4DF6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 402514DE3;
+	Mon, 16 Jan 2023 04:45:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 402514DE3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673840746;
-	bh=9r1Rc1br3RGEsy9yZ8z/puZJZ/V5LIOHdlnaI0+wzKo=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=PlR1rN34lMiDC8oUNV0/0SRnxlOoya2aON4zQzlKfm5GhpnzaFZPj/15UZUkmXZip
-	 7+esW7Hz5xxn3cu9xrN9Wx3Dm6IL+ukgy0U/F/WszDIQ+KXLnhtROtKgFkgbywltni
-	 PrOEovWLs1bm0gS8wDWPFYFX0LGjLkw4q1Waccco=
+	s=default; t=1673840767;
+	bh=MMB3JQOIy4wSH+1ekZrwYzud04+MeCl8uQA4higNZTI=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=tEjdsRXwkVBTnXfJaMA4puYtQJwLE9oyuGVmri6iPJPeEClpc8d5n9XaKj9X0LKnJ
+	 DkNzG0qTPyFMmimn0KcY3Rd5kd6GFp3CjvVerrrolwSozGTHMCUPiyNjH1MmikjNpM
+	 Lit4YpH+bF4SaISSNsJ7tFVsgY4RJmbGs4APhgHk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02FF0F805BD;
-	Mon, 16 Jan 2023 04:42:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAAF5F80240;
+	Mon, 16 Jan 2023 04:42:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A283F805AF; Mon, 16 Jan 2023 04:42:20 +0100 (CET)
+ id 7D901F805BE; Mon, 16 Jan 2023 04:42:23 +0100 (CET)
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9EE2F80578
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 04:42:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9EE2F80578
+ by alsa1.perex.cz (Postfix) with ESMTPS id A6125F80564
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 04:42:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6125F80564
 Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
  unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=EYFaxBmf
-X-UUID: acc3a5c0954f11ed945fc101203acc17-20230116
+ header.s=dk header.b=gaP+0AZf
+X-UUID: ae26d022954f11ed945fc101203acc17-20230116
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
  s=dk; 
- h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From;
- bh=eh4Cs4ZcRBlSDIsPuhVfHQleWBG2pqk8rqGH33Owp/w=; 
- b=EYFaxBmf/G+uRzF1ZmS0XZfqZQk8CWOO5MERh4O4ZG8bJ3wjfqZy2UGwr4UIoOrkK3YwDMXZ6itRkNEjnyu39sLmp6xGBMg9cUsE9b8CTKJkr5DUHeOHMavs6vSZkYq1PKr48dNYK+7oxnlo3g+k6HWBo9yCTz4cVapNMaotJlA=;
+ h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
+ bh=hZ47V1Nxsm5xIBY7uDVQ+veI3ngl2d6KM73Bju0xkiQ=; 
+ b=gaP+0AZfuArbNmS8fwo+loyvon11WGwIk3Wd5U8RTTa+fJjaNLqcu563oL1iTCgWrFV9smklH8s9AAijiFNwnkqKPNKEr+thHvjTGomLv2ko7ov8s5QOXbAUKU9JKmla5wlS6k2tWiaXjzEUmXoF5BgmFdCcrAWnbNtrqoh9GDE=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.17, REQID:2b89389f-bb20-49fe-b847-10653533c312, IP:0,
+X-CID-O-INFO: VERSION:1.1.17, REQID:70ca05c4-b4c7-4b87-88ba-bfa67c65c2c7, IP:0,
  U
- RL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTION
- :release,TS:95
-X-CID-INFO: VERSION:1.1.17, REQID:2b89389f-bb20-49fe-b847-10653533c312, IP:0,
- URL
- :0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTION
- :quarantine,TS:95
-X-CID-META: VersionHash:543e81c, CLOUDID:eeed568c-8530-4eff-9f77-222cf6e2895b,
+ RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+ N:release,TS:-25
+X-CID-META: VersionHash:543e81c, CLOUDID:43f1bb54-dd49-462e-a4be-2143a3ddc739,
  B
- ulkID:230116114137D3YUGBJE,BulkQuantity:0,Recheck:0,SF:38|28|17|19|48,TC:n
- il,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OS
- I:0,OSA:0
-X-CID-APTURL: Status:success,Category:nil,Trust:0,Unknown:0,Malicious:0
+ ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+ RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0
 X-CID-BVR: 0
-X-UUID: acc3a5c0954f11ed945fc101203acc17-20230116
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
+X-UUID: ae26d022954f11ed945fc101203acc17-20230116
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by
  mailgw02.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
  (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
- with ESMTP id 1704851698; Mon, 16 Jan 2023 11:41:35 +0800
+ with ESMTP id 1731002634; Mon, 16 Jan 2023 11:41:37 +0800
 Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.792.15; Mon, 16 Jan 2023 11:41:34 +0800
+ 15.2.792.15; Mon, 16 Jan 2023 11:41:36 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.792.15 via Frontend Transport; Mon, 16 Jan 2023 11:41:34 +0800
+ 15.2.792.15 via Frontend Transport; Mon, 16 Jan 2023 11:41:36 +0800
 From: Trevor Wu <trevor.wu@mediatek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
  <perex@perex.cz>, <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
  <matthias.bgg@gmail.com>, <p.zabel@pengutronix.de>
-Subject: [RESEND,v5 00/13] ASoC: mediatek: Add support for MT8188 SoC
-Date: Mon, 16 Jan 2023 11:41:18 +0800
-Message-ID: <20230116034131.23943-1-trevor.wu@mediatek.com>
+Subject: [RESEND,v5 03/13] ASoC: mediatek: mt8188: support audsys clock
+Date: Mon, 16 Jan 2023 11:41:21 +0800
+Message-ID: <20230116034131.23943-4-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20230116034131.23943-1-trevor.wu@mediatek.com>
+References: <20230116034131.23943-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK: N
@@ -100,87 +97,341 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series of patches adds support for Mediatek AFE of MT8188 SoC.
-Patches are based on broonie tree "for-next" branch.
+Add mt8188 audio cg clock control. Audio clock gates are registered to CCF
+for reference count and clock parent management.
 
-Changes since v4:
-  - refine etdm dai driver based on reviewer's suggestions
-  - refine dt-binding files based on reviewer's suggestions
-
-Changes since v3:
-  - replace apll_ck with apll to sync with the relationship in CCF
-  - add mtk-soundcard-driver.c to support codec parsing
-  - drop mclk-always-on-rates support in mt8188-dai-etdm.c
-  - refine dt-binding files based on reviewer's suggestions
-
-Changes since v2:
-  - drop CLK_IGNORE_UNUSED flag
-  - include bitfield.h to reslove the issue reported by kernel test robot
-  - rename mt8188-afe-pcm.yaml to mt8188-afe.yaml
-  - refine dt-binding files based on reviewer's suggestions
-
-Changes since v1:
-  - remove bus protection functions in case of unmerged dependency problem
-  - replace some bit operation macro with FIELD_PREP
-  - simplify register control by regmap_set_bits and regmap_clear_bits
-  - fix dt-binding errors
-  - rename compatible string for recognition
-
-Trevor Wu (13):
-  ASoC: mediatek: common: add SMC ops and SMC CMD
-  ASoC: mediatek: mt8188: add common header
-  ASoC: mediatek: mt8188: support audsys clock
-  ASoC: mediatek: mt8188: support adda in platform driver
-  ASoC: mediatek: mt8188: support etdm in platform driver
-  ASoC: mediatek: mt8188: support pcmif in platform driver
-  ASoC: mediatek: mt8188: support audio clock control
-  ASoC: mediatek: mt8188: add platform driver
-  ASoC: mediatek: mt8188: add control for timing select
-  ASoC: dt-bindings: mediatek,mt8188-afe: add audio afe document
-  ASoC: mediatek: common: add soundcard driver common code
-  ASoC: mediatek: mt8188: add machine driver with mt6359
-  ASoC: dt-bindings: mediatek,mt8188-mt6359: add mt8188-mt6359 document
-
- .../bindings/sound/mediatek,mt8188-afe.yaml   |  208 +
- .../sound/mediatek,mt8188-mt6359.yaml         |   97 +
- sound/soc/mediatek/Kconfig                    |   23 +
- sound/soc/mediatek/Makefile                   |    1 +
- sound/soc/mediatek/common/Makefile            |    2 +-
- sound/soc/mediatek/common/mtk-base-afe.h      |   19 +
- .../mediatek/common/mtk-soundcard-driver.c    |   79 +
- .../mediatek/common/mtk-soundcard-driver.h    |   14 +
- sound/soc/mediatek/mt8188/Makefile            |   15 +
- sound/soc/mediatek/mt8188/mt8188-afe-clk.c    |  658 ++++
- sound/soc/mediatek/mt8188/mt8188-afe-clk.h    |  115 +
- sound/soc/mediatek/mt8188/mt8188-afe-common.h |  151 +
- sound/soc/mediatek/mt8188/mt8188-afe-pcm.c    | 3359 +++++++++++++++++
- sound/soc/mediatek/mt8188/mt8188-audsys-clk.c |  205 +
- sound/soc/mediatek/mt8188/mt8188-audsys-clk.h |   15 +
- .../soc/mediatek/mt8188/mt8188-audsys-clkid.h |   83 +
- sound/soc/mediatek/mt8188/mt8188-dai-adda.c   |  632 ++++
- sound/soc/mediatek/mt8188/mt8188-dai-etdm.c   | 2588 +++++++++++++
- sound/soc/mediatek/mt8188/mt8188-dai-pcm.c    |  367 ++
- sound/soc/mediatek/mt8188/mt8188-mt6359.c     |  785 ++++
- sound/soc/mediatek/mt8188/mt8188-reg.h        | 3180 ++++++++++++++++
- 21 files changed, 12595 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt8188-afe.yaml
- create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt8188-mt6359.yaml
- create mode 100644 sound/soc/mediatek/common/mtk-soundcard-driver.c
- create mode 100644 sound/soc/mediatek/common/mtk-soundcard-driver.h
- create mode 100644 sound/soc/mediatek/mt8188/Makefile
- create mode 100644 sound/soc/mediatek/mt8188/mt8188-afe-clk.c
- create mode 100644 sound/soc/mediatek/mt8188/mt8188-afe-clk.h
- create mode 100644 sound/soc/mediatek/mt8188/mt8188-afe-common.h
- create mode 100644 sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ sound/soc/mediatek/mt8188/mt8188-audsys-clk.c | 205 ++++++++++++++++++
+ sound/soc/mediatek/mt8188/mt8188-audsys-clk.h |  15 ++
+ .../soc/mediatek/mt8188/mt8188-audsys-clkid.h |  83 +++++++
+ 3 files changed, 303 insertions(+)
  create mode 100644 sound/soc/mediatek/mt8188/mt8188-audsys-clk.c
  create mode 100644 sound/soc/mediatek/mt8188/mt8188-audsys-clk.h
  create mode 100644 sound/soc/mediatek/mt8188/mt8188-audsys-clkid.h
- create mode 100644 sound/soc/mediatek/mt8188/mt8188-dai-adda.c
- create mode 100644 sound/soc/mediatek/mt8188/mt8188-dai-etdm.c
- create mode 100644 sound/soc/mediatek/mt8188/mt8188-dai-pcm.c
- create mode 100644 sound/soc/mediatek/mt8188/mt8188-mt6359.c
- create mode 100644 sound/soc/mediatek/mt8188/mt8188-reg.h
 
+diff --git a/sound/soc/mediatek/mt8188/mt8188-audsys-clk.c b/sound/soc/mediatek/mt8188/mt8188-audsys-clk.c
+new file mode 100644
+index 000000000000..be1c53bf4729
+--- /dev/null
++++ b/sound/soc/mediatek/mt8188/mt8188-audsys-clk.c
+@@ -0,0 +1,205 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * mt8188-audsys-clk.c  --  MediaTek 8188 audsys clock control
++ *
++ * Copyright (c) 2022 MediaTek Inc.
++ * Author: Chun-Chia Chiu <chun-chia.chiu@mediatek.com>
++ */
++
++#include <linux/clk.h>
++#include <linux/clk-provider.h>
++#include <linux/clkdev.h>
++#include "mt8188-afe-common.h"
++#include "mt8188-audsys-clk.h"
++#include "mt8188-audsys-clkid.h"
++#include "mt8188-reg.h"
++
++struct afe_gate {
++	int id;
++	const char *name;
++	const char *parent_name;
++	int reg;
++	u8 bit;
++	const struct clk_ops *ops;
++	unsigned long flags;
++	u8 cg_flags;
++};
++
++#define GATE_AFE_FLAGS(_id, _name, _parent, _reg, _bit, _flags, _cgflags) {\
++		.id = _id,					\
++		.name = _name,					\
++		.parent_name = _parent,				\
++		.reg = _reg,					\
++		.bit = _bit,					\
++		.flags = _flags,				\
++		.cg_flags = _cgflags,				\
++	}
++
++#define GATE_AFE(_id, _name, _parent, _reg, _bit)		\
++	GATE_AFE_FLAGS(_id, _name, _parent, _reg, _bit,		\
++		       CLK_SET_RATE_PARENT, CLK_GATE_SET_TO_DISABLE)
++
++#define GATE_AUD0(_id, _name, _parent, _bit)			\
++	GATE_AFE(_id, _name, _parent, AUDIO_TOP_CON0, _bit)
++
++#define GATE_AUD1(_id, _name, _parent, _bit)			\
++	GATE_AFE(_id, _name, _parent, AUDIO_TOP_CON1, _bit)
++
++#define GATE_AUD3(_id, _name, _parent, _bit)			\
++	GATE_AFE(_id, _name, _parent, AUDIO_TOP_CON3, _bit)
++
++#define GATE_AUD4(_id, _name, _parent, _bit)			\
++	GATE_AFE(_id, _name, _parent, AUDIO_TOP_CON4, _bit)
++
++#define GATE_AUD5(_id, _name, _parent, _bit)			\
++	GATE_AFE(_id, _name, _parent, AUDIO_TOP_CON5, _bit)
++
++#define GATE_AUD6(_id, _name, _parent, _bit)			\
++	GATE_AFE(_id, _name, _parent, AUDIO_TOP_CON6, _bit)
++
++static const struct afe_gate aud_clks[CLK_AUD_NR_CLK] = {
++	/* AUD0 */
++	GATE_AUD0(CLK_AUD_AFE, "aud_afe", "top_a1sys_hp", 2),
++	GATE_AUD0(CLK_AUD_LRCK_CNT, "aud_lrck_cnt", "top_a1sys_hp", 4),
++	GATE_AUD0(CLK_AUD_SPDIFIN_TUNER_APLL, "aud_spdifin_tuner_apll", "top_apll4", 10),
++	GATE_AUD0(CLK_AUD_SPDIFIN_TUNER_DBG, "aud_spdifin_tuner_dbg", "top_apll4", 11),
++	GATE_AUD0(CLK_AUD_UL_TML, "aud_ul_tml", "top_a1sys_hp", 18),
++	GATE_AUD0(CLK_AUD_APLL1_TUNER, "aud_apll1_tuner", "top_apll1", 19),
++	GATE_AUD0(CLK_AUD_APLL2_TUNER, "aud_apll2_tuner", "top_apll2", 20),
++	GATE_AUD0(CLK_AUD_TOP0_SPDF, "aud_top0_spdf", "top_aud_iec_clk", 21),
++	GATE_AUD0(CLK_AUD_APLL, "aud_apll", "top_apll1", 23),
++	GATE_AUD0(CLK_AUD_APLL2, "aud_apll2", "top_apll2", 24),
++	GATE_AUD0(CLK_AUD_DAC, "aud_dac", "top_a1sys_hp", 25),
++	GATE_AUD0(CLK_AUD_DAC_PREDIS, "aud_dac_predis", "top_a1sys_hp", 26),
++	GATE_AUD0(CLK_AUD_TML, "aud_tml", "top_a1sys_hp", 27),
++	GATE_AUD0(CLK_AUD_ADC, "aud_adc", "top_a1sys_hp", 28),
++	GATE_AUD0(CLK_AUD_DAC_HIRES, "aud_dac_hires", "top_audio_h", 31),
++
++	/* AUD1 */
++	GATE_AUD1(CLK_AUD_A1SYS_HP, "aud_a1sys_hp", "top_a1sys_hp", 2),
++	GATE_AUD1(CLK_AUD_AFE_DMIC1, "aud_afe_dmic1", "top_a1sys_hp", 10),
++	GATE_AUD1(CLK_AUD_AFE_DMIC2, "aud_afe_dmic2", "top_a1sys_hp", 11),
++	GATE_AUD1(CLK_AUD_AFE_DMIC3, "aud_afe_dmic3", "top_a1sys_hp", 12),
++	GATE_AUD1(CLK_AUD_AFE_DMIC4, "aud_afe_dmic4", "top_a1sys_hp", 13),
++	GATE_AUD1(CLK_AUD_AFE_26M_DMIC_TM, "aud_afe_26m_dmic_tm", "top_a1sys_hp", 14),
++	GATE_AUD1(CLK_AUD_UL_TML_HIRES, "aud_ul_tml_hires", "top_audio_h", 16),
++	GATE_AUD1(CLK_AUD_ADC_HIRES, "aud_adc_hires", "top_audio_h", 17),
++
++	/* AUD3 */
++	GATE_AUD3(CLK_AUD_LINEIN_TUNER, "aud_linein_tuner", "top_apll5", 5),
++	GATE_AUD3(CLK_AUD_EARC_TUNER, "aud_earc_tuner", "top_apll3", 7),
++
++	/* AUD4 */
++	GATE_AUD4(CLK_AUD_I2SIN, "aud_i2sin", "top_a1sys_hp", 0),
++	GATE_AUD4(CLK_AUD_TDM_IN, "aud_tdm_in", "top_a1sys_hp", 1),
++	GATE_AUD4(CLK_AUD_I2S_OUT, "aud_i2s_out", "top_a1sys_hp", 6),
++	GATE_AUD4(CLK_AUD_TDM_OUT, "aud_tdm_out", "top_a1sys_hp", 7),
++	GATE_AUD4(CLK_AUD_HDMI_OUT, "aud_hdmi_out", "top_a1sys_hp", 8),
++	GATE_AUD4(CLK_AUD_ASRC11, "aud_asrc11", "top_a1sys_hp", 16),
++	GATE_AUD4(CLK_AUD_ASRC12, "aud_asrc12", "top_a1sys_hp", 17),
++	GATE_AUD4(CLK_AUD_MULTI_IN, "aud_multi_in", "mphone_slave_b", 19),
++	GATE_AUD4(CLK_AUD_INTDIR, "aud_intdir", "top_intdir", 20),
++	GATE_AUD4(CLK_AUD_A1SYS, "aud_a1sys", "top_a1sys_hp", 21),
++	GATE_AUD4(CLK_AUD_A2SYS, "aud_a2sys", "top_a2sys", 22),
++	GATE_AUD4(CLK_AUD_PCMIF, "aud_pcmif", "top_a1sys_hp", 24),
++	GATE_AUD4(CLK_AUD_A3SYS, "aud_a3sys", "top_a3sys", 30),
++	GATE_AUD4(CLK_AUD_A4SYS, "aud_a4sys", "top_a4sys", 31),
++
++	/* AUD5 */
++	GATE_AUD5(CLK_AUD_MEMIF_UL1, "aud_memif_ul1", "top_a1sys_hp", 0),
++	GATE_AUD5(CLK_AUD_MEMIF_UL2, "aud_memif_ul2", "top_a1sys_hp", 1),
++	GATE_AUD5(CLK_AUD_MEMIF_UL3, "aud_memif_ul3", "top_a1sys_hp", 2),
++	GATE_AUD5(CLK_AUD_MEMIF_UL4, "aud_memif_ul4", "top_a1sys_hp", 3),
++	GATE_AUD5(CLK_AUD_MEMIF_UL5, "aud_memif_ul5", "top_a1sys_hp", 4),
++	GATE_AUD5(CLK_AUD_MEMIF_UL6, "aud_memif_ul6", "top_a1sys_hp", 5),
++	GATE_AUD5(CLK_AUD_MEMIF_UL8, "aud_memif_ul8", "top_a1sys_hp", 7),
++	GATE_AUD5(CLK_AUD_MEMIF_UL9, "aud_memif_ul9", "top_a1sys_hp", 8),
++	GATE_AUD5(CLK_AUD_MEMIF_UL10, "aud_memif_ul10", "top_a1sys_hp", 9),
++	GATE_AUD5(CLK_AUD_MEMIF_DL2, "aud_memif_dl2", "top_a1sys_hp", 18),
++	GATE_AUD5(CLK_AUD_MEMIF_DL3, "aud_memif_dl3", "top_a1sys_hp", 19),
++	GATE_AUD5(CLK_AUD_MEMIF_DL6, "aud_memif_dl6", "top_a1sys_hp", 22),
++	GATE_AUD5(CLK_AUD_MEMIF_DL7, "aud_memif_dl7", "top_a1sys_hp", 23),
++	GATE_AUD5(CLK_AUD_MEMIF_DL8, "aud_memif_dl8", "top_a1sys_hp", 24),
++	GATE_AUD5(CLK_AUD_MEMIF_DL10, "aud_memif_dl10", "top_a1sys_hp", 26),
++	GATE_AUD5(CLK_AUD_MEMIF_DL11, "aud_memif_dl11", "top_a1sys_hp", 27),
++
++	/* AUD6 */
++	GATE_AUD6(CLK_AUD_GASRC0, "aud_gasrc0", "top_asm_h", 0),
++	GATE_AUD6(CLK_AUD_GASRC1, "aud_gasrc1", "top_asm_h", 1),
++	GATE_AUD6(CLK_AUD_GASRC2, "aud_gasrc2", "top_asm_h", 2),
++	GATE_AUD6(CLK_AUD_GASRC3, "aud_gasrc3", "top_asm_h", 3),
++	GATE_AUD6(CLK_AUD_GASRC4, "aud_gasrc4", "top_asm_h", 4),
++	GATE_AUD6(CLK_AUD_GASRC5, "aud_gasrc5", "top_asm_h", 5),
++	GATE_AUD6(CLK_AUD_GASRC6, "aud_gasrc6", "top_asm_h", 6),
++	GATE_AUD6(CLK_AUD_GASRC7, "aud_gasrc7", "top_asm_h", 7),
++	GATE_AUD6(CLK_AUD_GASRC8, "aud_gasrc8", "top_asm_h", 8),
++	GATE_AUD6(CLK_AUD_GASRC9, "aud_gasrc9", "top_asm_h", 9),
++	GATE_AUD6(CLK_AUD_GASRC10, "aud_gasrc10", "top_asm_h", 10),
++	GATE_AUD6(CLK_AUD_GASRC11, "aud_gasrc11", "top_asm_h", 11),
++};
++
++int mt8188_audsys_clk_register(struct mtk_base_afe *afe)
++{
++	struct mt8188_afe_private *afe_priv = afe->platform_priv;
++	struct clk *clk;
++	struct clk_lookup *cl;
++	int i;
++
++	afe_priv->lookup = devm_kcalloc(afe->dev, CLK_AUD_NR_CLK,
++					sizeof(*afe_priv->lookup),
++					GFP_KERNEL);
++
++	if (!afe_priv->lookup)
++		return -ENOMEM;
++
++	for (i = 0; i < ARRAY_SIZE(aud_clks); i++) {
++		const struct afe_gate *gate = &aud_clks[i];
++
++		clk = clk_register_gate(afe->dev, gate->name, gate->parent_name,
++					gate->flags, afe->base_addr + gate->reg,
++					gate->bit, gate->cg_flags, NULL);
++
++		if (IS_ERR(clk)) {
++			dev_err(afe->dev, "Failed to register clk %s: %ld\n",
++				gate->name, PTR_ERR(clk));
++			continue;
++		}
++
++		/* add clk_lookup for devm_clk_get(SND_SOC_DAPM_CLOCK_SUPPLY) */
++		cl = kzalloc(sizeof(*cl), GFP_KERNEL);
++		if (!cl)
++			return -ENOMEM;
++
++		cl->clk = clk;
++		cl->con_id = gate->name;
++		cl->dev_id = dev_name(afe->dev);
++		cl->clk_hw = NULL;
++		clkdev_add(cl);
++
++		afe_priv->lookup[i] = cl;
++	}
++
++	return 0;
++}
++
++void mt8188_audsys_clk_unregister(struct mtk_base_afe *afe)
++{
++	struct mt8188_afe_private *afe_priv = afe->platform_priv;
++	struct clk *clk;
++	struct clk_lookup *cl;
++	int i;
++
++	if (!afe_priv)
++		return;
++
++	for (i = 0; i < CLK_AUD_NR_CLK; i++) {
++		cl = afe_priv->lookup[i];
++		if (!cl)
++			continue;
++
++		clk = cl->clk;
++		clk_unregister_gate(clk);
++
++		clkdev_drop(cl);
++	}
++}
+diff --git a/sound/soc/mediatek/mt8188/mt8188-audsys-clk.h b/sound/soc/mediatek/mt8188/mt8188-audsys-clk.h
+new file mode 100644
+index 000000000000..6c5f463ad7e4
+--- /dev/null
++++ b/sound/soc/mediatek/mt8188/mt8188-audsys-clk.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * mt8188-audsys-clk.h  --  MediaTek 8188 audsys clock definition
++ *
++ * Copyright (c) 2022 MediaTek Inc.
++ * Author: Chun-Chia Chiu <chun-chia.chiu@mediatek.com>
++ */
++
++#ifndef _MT8188_AUDSYS_CLK_H_
++#define _MT8188_AUDSYS_CLK_H_
++
++int mt8188_audsys_clk_register(struct mtk_base_afe *afe);
++void mt8188_audsys_clk_unregister(struct mtk_base_afe *afe);
++
++#endif
+diff --git a/sound/soc/mediatek/mt8188/mt8188-audsys-clkid.h b/sound/soc/mediatek/mt8188/mt8188-audsys-clkid.h
+new file mode 100644
+index 000000000000..6f34ffc760e0
+--- /dev/null
++++ b/sound/soc/mediatek/mt8188/mt8188-audsys-clkid.h
+@@ -0,0 +1,83 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * mt8188-audsys-clkid.h  --  MediaTek 8188 audsys clock id definition
++ *
++ * Copyright (c) 2022 MediaTek Inc.
++ * Author: Chun-Chia Chiu <chun-chia.chiu@mediatek.com>
++ */
++
++#ifndef _MT8188_AUDSYS_CLKID_H_
++#define _MT8188_AUDSYS_CLKID_H_
++
++enum{
++	CLK_AUD_AFE,
++	CLK_AUD_LRCK_CNT,
++	CLK_AUD_SPDIFIN_TUNER_APLL,
++	CLK_AUD_SPDIFIN_TUNER_DBG,
++	CLK_AUD_UL_TML,
++	CLK_AUD_APLL1_TUNER,
++	CLK_AUD_APLL2_TUNER,
++	CLK_AUD_TOP0_SPDF,
++	CLK_AUD_APLL,
++	CLK_AUD_APLL2,
++	CLK_AUD_DAC,
++	CLK_AUD_DAC_PREDIS,
++	CLK_AUD_TML,
++	CLK_AUD_ADC,
++	CLK_AUD_DAC_HIRES,
++	CLK_AUD_A1SYS_HP,
++	CLK_AUD_AFE_DMIC1,
++	CLK_AUD_AFE_DMIC2,
++	CLK_AUD_AFE_DMIC3,
++	CLK_AUD_AFE_DMIC4,
++	CLK_AUD_AFE_26M_DMIC_TM,
++	CLK_AUD_UL_TML_HIRES,
++	CLK_AUD_ADC_HIRES,
++	CLK_AUD_LINEIN_TUNER,
++	CLK_AUD_EARC_TUNER,
++	CLK_AUD_I2SIN,
++	CLK_AUD_TDM_IN,
++	CLK_AUD_I2S_OUT,
++	CLK_AUD_TDM_OUT,
++	CLK_AUD_HDMI_OUT,
++	CLK_AUD_ASRC11,
++	CLK_AUD_ASRC12,
++	CLK_AUD_MULTI_IN,
++	CLK_AUD_INTDIR,
++	CLK_AUD_A1SYS,
++	CLK_AUD_A2SYS,
++	CLK_AUD_PCMIF,
++	CLK_AUD_A3SYS,
++	CLK_AUD_A4SYS,
++	CLK_AUD_MEMIF_UL1,
++	CLK_AUD_MEMIF_UL2,
++	CLK_AUD_MEMIF_UL3,
++	CLK_AUD_MEMIF_UL4,
++	CLK_AUD_MEMIF_UL5,
++	CLK_AUD_MEMIF_UL6,
++	CLK_AUD_MEMIF_UL8,
++	CLK_AUD_MEMIF_UL9,
++	CLK_AUD_MEMIF_UL10,
++	CLK_AUD_MEMIF_DL2,
++	CLK_AUD_MEMIF_DL3,
++	CLK_AUD_MEMIF_DL6,
++	CLK_AUD_MEMIF_DL7,
++	CLK_AUD_MEMIF_DL8,
++	CLK_AUD_MEMIF_DL10,
++	CLK_AUD_MEMIF_DL11,
++	CLK_AUD_GASRC0,
++	CLK_AUD_GASRC1,
++	CLK_AUD_GASRC2,
++	CLK_AUD_GASRC3,
++	CLK_AUD_GASRC4,
++	CLK_AUD_GASRC5,
++	CLK_AUD_GASRC6,
++	CLK_AUD_GASRC7,
++	CLK_AUD_GASRC8,
++	CLK_AUD_GASRC9,
++	CLK_AUD_GASRC10,
++	CLK_AUD_GASRC11,
++	CLK_AUD_NR_CLK,
++};
++
++#endif
 -- 
 2.18.0
 
