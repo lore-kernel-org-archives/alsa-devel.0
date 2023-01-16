@@ -4,85 +4,137 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE66EC46467
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Jan 2023 03:46:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB1F3C46467
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Jan 2023 04:44:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E0E84DD5;
-	Mon, 16 Jan 2023 04:45:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E0E84DD5
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3C704EC2;
+	Mon, 16 Jan 2023 05:43:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3C704EC2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673840806;
-	bh=clkMbcNRXo3RqI9Jo5/ttATtPmGt/jEpku22l2SColQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1673844288;
+	bh=XxEMduc1BuwlDpgZ1rgKqkHY6KJfCsE81V00TpBTEc8=;
+	h=From:To:In-Reply-To:Subject:Date:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=o6K2/6+zCd5s0PxOsBVb+edJcHkgnRXDSaFw/lfGuAyVNnTmjcVR6p8d8vsj/TzF2
-	 /VdtVgG/po0ltsj/Ga5W+uD5+NSK0dysj8+M68w0yZGYnCQX98lA32YEbbhqZ3F8ra
-	 8DPzXcImFHYAh8/M7pv/aFrNbSuhYxpS//M7jFAU=
+	b=gYG4BrATV8jzolD5jGl/aBGm4CNzje1KpizLGb5iFeJMnD2Lo4tXDDYFncjJB7GX/
+	 mfsSZNurtRa3iMvFtEwkqlcr4c5x35ENYF+UVA4wLJsme+eJ3YO/Mb5emyp5GZr9yq
+	 94Wmg9XXAe2WTPRxpn07M6AXaM45P34PQxxnl9mE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26721F805D7;
-	Mon, 16 Jan 2023 04:42:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7CF95F8024C;
+	Mon, 16 Jan 2023 05:43:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8FDC6F8057A; Mon, 16 Jan 2023 04:42:29 +0100 (CET)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 1132BF80482; Mon, 16 Jan 2023 05:43:51 +0100 (CET)
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 31024F8057A
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 04:42:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31024F8057A
+ by alsa1.perex.cz (Postfix) with ESMTPS id CF692F8023B
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 05:43:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF692F8023B
 Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=uQx1PGMy
-X-UUID: ae43259c954f11ed945fc101203acc17-20230116
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
- s=dk; 
- h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=n5EM9TcO7lc/qUGd84isrdLKRT8wHrVTlKMPWqSWe4c=; 
- b=uQx1PGMyV+jT2SBkBlTVgSRW8D1Mk35fm4gDYNe97tAC+HSsckEVUCaBiG+Sxv0Be+uye6Oz6b2zS4n629HsS4Ik+9YswbNq2cg7l1QpnhEcTc5WuoHCwrLhh7esih7f73AlUqBwB83DjqB1Lj2JagksYJjp2VDLb6GaMiyrX/U=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.17, REQID:ff686327-cd9d-40ac-8902-7c2cd90d9da6, IP:0,
- U
- RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
- N:release,TS:90
-X-CID-INFO: VERSION:1.1.17, REQID:ff686327-cd9d-40ac-8902-7c2cd90d9da6, IP:0,
- URL
- :0,TC:0,Content:-5,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTIO
- N:quarantine,TS:90
-X-CID-META: VersionHash:543e81c, CLOUDID:6cee568c-8530-4eff-9f77-222cf6e2895b,
- B
- ulkID:230116114141Y42TMJLQ,BulkQuantity:1,Recheck:0,SF:38|28|17|19|48,TC:n
- il,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:43,QS:nil,BEC:nil,COL:0,OSI
- :0,OSA:0
-X-CID-APTURL: Status:success,Category:nil,Trust:0,Unknown:0,Malicious:0
-X-CID-BVR: 0
-X-UUID: ae43259c954f11ed945fc101203acc17-20230116
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by
- mailgw02.mediatek.com (envelope-from <trevor.wu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
- with ESMTP id 705886380; Mon, 16 Jan 2023 11:41:37 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3; 
- Mon, 16 Jan 2023 11:41:36 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.792.15 via Frontend Transport; Mon, 16 Jan 2023 11:41:36 +0800
-From: Trevor Wu <trevor.wu@mediatek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
- <perex@perex.cz>, <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
- <matthias.bgg@gmail.com>, <p.zabel@pengutronix.de>
-Subject: [RESEND, v5 07/13] ASoC: mediatek: mt8188: support audio clock control
-Date: Mon, 16 Jan 2023 11:41:25 +0800
-Message-ID: <20230116034131.23943-8-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230116034131.23943-1-trevor.wu@mediatek.com>
-References: <20230116034131.23943-1-trevor.wu@mediatek.com>
+ unprotected) header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256
+ header.s=mail20170921 header.b=VFuHZDxi
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+ by mailout3.samsung.com (KnoxPortal) with ESMTP id
+ 20230116044337epoutp031a6bfdf4a1ad0febdf05cc40adbb9c2d~6sHKLsCi_1064710647epoutp03y
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 04:43:37 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com
+ 20230116044337epoutp031a6bfdf4a1ad0febdf05cc40adbb9c2d~6sHKLsCi_1064710647epoutp03y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+ s=mail20170921; t=1673844217;
+ bh=IvJBdGIdcYRMsJ9xPD6Iz04fX+aKGWGqsKip4KPnIoI=;
+ h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+ b=VFuHZDxiXzeyrSAlGaC8qdrk9IIMfxl4pJq3yArQFH60bcN2IdoGF12DzCkkRK4Hx
+ cU+nhfFaNGENtkkpB9e3T1W5qJt2rz/KxoadpfAKvH2sru5BGhdTRwAXvVRX+V5ha1
+ q8Qen37flaoYqVLP+lLEZFLbqYucXLfIvIFBZBvs=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+ epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+ 20230116044337epcas5p4670c73cd881c3bc1784b8569782f9eae~6sHJ0I_6B0552205522epcas5p4G;
+ Mon, 16 Jan 2023 04:43:37 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.177]) by
+ epsnrtp3.localdomain (Postfix) with ESMTP id 4NwKCq31Wjz4x9Pp; Mon, 16 Jan
+ 2023 04:43:35 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+ epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+ 22.C9.62806.6F5D4C36; Mon, 16 Jan 2023 13:43:34 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+ epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+ 20230116040959epcas5p4ec43384242bc9c14fca04aa9a3650d31~6rpy7eJZ_3108631086epcas5p47;
+ Mon, 16 Jan 2023 04:09:59 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+ epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+ 20230116040959epsmtrp115ae447bde732b8e42b12fe00fe605a2~6rpy6dxLH1798717987epsmtrp1L;
+ Mon, 16 Jan 2023 04:09:59 +0000 (GMT)
+X-AuditID: b6c32a4a-ea5fa7000000f556-1b-63c4d5f652f5
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+ epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+ 51.5F.10542.71EC4C36; Mon, 16 Jan 2023 13:09:59 +0900 (KST)
+Received: from FDSFTE070 (unknown [107.116.189.86]) by epsmtip2.samsung.com
+ (KnoxPortal) with ESMTPA id
+ 20230116040957epsmtip221bd062b3f2cd134ef14021df01805ae~6rpwufDFS2521725217epsmtip2o;
+ Mon, 16 Jan 2023 04:09:57 +0000 (GMT)
+From: "Padmanabhan Rajanbabu" <p.rajanbabu@samsung.com>
+To: "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>,
+ <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
+ <krzysztof.kozlowski+dt@linaro.org>, <s.nawrocki@samsung.com>,
+ <perex@perex.cz>, <tiwai@suse.com>, <pankaj.dubey@samsung.com>,
+ <alim.akhtar@samsung.com>, <rcsekar@samsung.com>, <aswani.reddy@samsung.com>
+In-Reply-To: <e5cd9794-d8ce-7285-5da2-7f3b6bf8dc2a@linaro.org>
+Subject: RE: [PATCH v3 2/5] ASoC: samsung: i2s: add support for FSD I2S
+Date: Mon, 16 Jan 2023 09:39:56 +0530
+Message-ID: <039d01d92960$665c6230$33152690$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-in
+Thread-Index: AQHLbZyfFuOXMbrDWpBwvoqdO4xuvAKyiR4/AjNceAgCN7SsGK6C+E4g
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Tf0xTVxjN7fvRFlPyKDju2KbNU7KBAi0r+JgiJjpscBGS/WO2ZPBS3lpC
+ aZu+suEiDEVA2AYKwdVSgWkGFnUQbBlWS7SFmDri6Ky6qUwwKIyBkyKQ6n61fbjx3/nOPed+
+ 93z3XgEi/gWPExRpjYxBS2tIPALtdyckJC3dGlJKHR1CarytH6d8XhePcl2w86mWiUmcah+6
+ gVEN0xMI5fw9yC35jvComw4LTpl+HORRp+zP+FSdoxGjzKMDGFXtHOJT7tlajOpdPg92EIre
+ hUO44qJ5jK/o667DFfdvX8YVg3OduKLB1g0UPbZbqGKhb12e4IPibWqGLmQMEkar1BUWaVWZ
+ 5J7383fmp6VLZUmyDGoLKdHSJUwmueu9vKTsIk0wAin5hNaUBqk8mmXJlO3bDLpSIyNR61hj
+ JsnoCzV6uT6ZpUvYUq0qWcsY35FJpalpQWFBsdp39gimb1hT1jpejVSCTmE9EAggIYePZgvq
+ QYRATFwC8B9TD+AKP4BLh+dxrlgA8PqvTl49EIYdNy4+RrkFB4CBJ1/zuWIawOqmY2hIhRNb
+ 4Cnnt+G9YggfDwbO1oYtCFEDoNN7HoRUQmI7nDL1YCEcTeyGF2aseAijRDysejwV1oiIDOgP
+ LGIcjoKeE5PhDgixHn4/Z0G4M0lg4FEnxvGxcDjwZZiPIbJh7R9Pwo0h8VQAzX9aMc6wC7ZO
+ X8E5HA1nrtn4HI6DvzXWrGAdPD5ftaIpgzXzvSsDyIJXfBY0ND6ESIA9jhSOfgO2XP+Ox50h
+ En71YnJFLoIDbS9xPOzp6gMcfg0O3nGCo4A0r4pmXhXNvCqO+f9uHQDtBq8yerZExbBp+lQt
+ 8+l/V67UlfSB8BtPzBkAE+NPk12AJwAuAAUIGSPa63ArxaJCev9njEGXbyjVMKwLpAXnfQyJ
+ W6vUBT+J1pgvk2dI5enp6fKMt9NlZKyIsbcrxYSKNjLFDKNnDC99PIEwrpL35u6IO6cP/Dyz
+ oRlRewMPDsxpYMuofV+zcCTrjLopz3m53qZpdNUVfyPcfLfES45GfnxQcfrdoz88/7u+T/z6
+ 4SmvIS23wrj87AvfuXaPtH+M3W+K6qWzKxrKYz8vEj9XV5xoGp66F3lfVj65t2pdoOyMb328
+ bM+AyD1bXnctQChHrHH7eHby0KXlrY7Na7GortzWTbk5jQ+y3hK3RN/zG8cenlNamv6yum8X
+ dGzc5G+2xAxajDdHrWaP9ODJhauLCQmJvZkfUVvlHS/aHVo0x5Nyd7itEmPM6I6f/FBzNbXt
+ FXRNrNqv2tA9AxZP2jz00ocbWx+q5CNdZeadpjkSZdW0LBExsPS/ClfgrmwEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrEIsWRmVeSWpSXmKPExsWy7bCSvK74uSPJBi9XKlo8mLeNzeLKxUNM
+ Foc2b2W3mPrwCZvF/CPnWC36Xjxkttj7Gij27UoHk8XlXXPYLGac38dksWjrF3aLzl39rBaz
+ LuxgtWjde4Td4vCbdlaLDd/XMjoIeGz43MTmsXPWXXaPTas62TzuXNvD5rHv7TI2j74tqxg9
+ 1m+5yuLxeZNcAEcUl01Kak5mWWqRvl0CV8aV1R2sBX3cFbMftDI3MC7j7GLk5JAQMJE4t/MZ
+ SxcjF4eQwA5GicZtq5kgEtIS0/v3sEHYwhIr/z1nhyh6xijR9Gg9I0iCTcBcYtHepYwgCRGB
+ R0wSc+c/YgNxmAW6GCWO/13JDNHynlFidctXsFmcAnYSz2esZwWxhQXcJTa/WgkWZxFQlWh+
+ 9hxsLK+ApcSnn19ZIWxBiZMzn7CA2MwC2hK9D1sZIWx5ie1v5zBD3Kcg8fPpMlaIuLjE0Z89
+ YHERATeJ9vfvWCYwCs9CMmoWklGzkIyahaR9ASPLKkbJ1ILi3PTcYsMCo7zUcr3ixNzi0rx0
+ veT83E2M4GjW0trBuGfVB71DjEwcjIcYJTiYlUR4/XYdThbiTUmsrEotyo8vKs1JLT7EKM3B
+ oiTOe6HrZLyQQHpiSWp2ampBahFMlomDU6qB6dQ216aWUyeeHnTTi2dZ9mrp17dczcc/zHrX
+ HX+1lC3xZmbShvtCO7p8vrsyGRsusk8qtXR4eGDiTQ99Q1vl1fLqM5dU/1ri+7Qg7Gxm/xaj
+ w2KzcgIvWcYsf9xbPCv1fPc/vXCWcKUnvdIPvmT9ENATNVp73j+z8/S74rgp5/e/Ls7gcDNs
+ 2DbZpuN78tWT2p/8cmJuG72ZPiXkf37e75faWoL/fVQcam980nkosV8st+CV4eGiCS/nnXum
+ 73bk+8Ujv05939ojd+auo+Ed1fSd2396hiSvjNLOzT297sJU3RYz54T411ZhEutvfozI0N9j
+ w5PXcl7a5AbT343RhmstbEMOqK1h2FJkM0l7lhJLcUaioRZzUXEiAM9MmPBVAwAA
+X-CMS-MailID: 20230116040959epcas5p4ec43384242bc9c14fca04aa9a3650d31
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230113121821epcas5p4ebd116d75f12dafeb09391eb6f7a2646
+References: <20230113121749.4657-1-p.rajanbabu@samsung.com>
+ <CGME20230113121821epcas5p4ebd116d75f12dafeb09391eb6f7a2646@epcas5p4.samsung.com>
+ <20230113121749.4657-3-p.rajanbabu@samsung.com>
+ <e5cd9794-d8ce-7285-5da2-7f3b6bf8dc2a@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -96,809 +148,47 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- linux-arm-kernel@lists.infradead.org, angelogioacchino.delregno@collabora.com
+ linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add audio clock wrapper and audio tuner control.
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- sound/soc/mediatek/mt8188/mt8188-afe-clk.c | 658 +++++++++++++++++++++
- sound/soc/mediatek/mt8188/mt8188-afe-clk.h | 115 ++++
- 2 files changed, 773 insertions(+)
- create mode 100644 sound/soc/mediatek/mt8188/mt8188-afe-clk.c
- create mode 100644 sound/soc/mediatek/mt8188/mt8188-afe-clk.h
 
-diff --git a/sound/soc/mediatek/mt8188/mt8188-afe-clk.c b/sound/soc/mediatek/mt8188/mt8188-afe-clk.c
-new file mode 100644
-index 000000000000..743d6a162cb9
---- /dev/null
-+++ b/sound/soc/mediatek/mt8188/mt8188-afe-clk.c
-@@ -0,0 +1,658 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * mt8188-afe-clk.c  --  MediaTek 8188 afe clock ctrl
-+ *
-+ * Copyright (c) 2022 MediaTek Inc.
-+ * Author: Bicycle Tsai <bicycle.tsai@mediatek.com>
-+ *         Trevor Wu <trevor.wu@mediatek.com>
-+ *         Chun-Chia Chiu <chun-chia.chiu@mediatek.com>
-+ */
-+
-+#include <linux/clk.h>
-+
-+#include "mt8188-afe-common.h"
-+#include "mt8188-afe-clk.h"
-+#include "mt8188-audsys-clk.h"
-+#include "mt8188-reg.h"
-+
-+static const char *aud_clks[MT8188_CLK_NUM] = {
-+	/* xtal */
-+	[MT8188_CLK_XTAL_26M] = "clk26m",
-+
-+	/* pll */
-+	[MT8188_CLK_APMIXED_APLL1] = "apll1",
-+	[MT8188_CLK_APMIXED_APLL2] = "apll2",
-+
-+	/* divider */
-+	[MT8188_CLK_TOP_APLL12_DIV0] = "apll12_div0",
-+	[MT8188_CLK_TOP_APLL12_DIV1] = "apll12_div1",
-+	[MT8188_CLK_TOP_APLL12_DIV2] = "apll12_div2",
-+	[MT8188_CLK_TOP_APLL12_DIV3] = "apll12_div3",
-+	[MT8188_CLK_TOP_APLL12_DIV9] = "apll12_div9",
-+
-+	/* mux */
-+	[MT8188_CLK_TOP_A1SYS_HP_SEL] = "top_a1sys_hp",
-+	[MT8188_CLK_TOP_AUD_INTBUS_SEL] = "top_aud_intbus",
-+	[MT8188_CLK_TOP_AUDIO_H_SEL] = "top_audio_h",
-+	[MT8188_CLK_TOP_AUDIO_LOCAL_BUS_SEL] = "top_audio_local_bus",
-+	[MT8188_CLK_TOP_DPTX_M_SEL] = "top_dptx",
-+	[MT8188_CLK_TOP_I2SO1_M_SEL] = "top_i2so1",
-+	[MT8188_CLK_TOP_I2SO2_M_SEL] = "top_i2so2",
-+	[MT8188_CLK_TOP_I2SI1_M_SEL] = "top_i2si1",
-+	[MT8188_CLK_TOP_I2SI2_M_SEL] = "top_i2si2",
-+
-+	/* clock gate */
-+	[MT8188_CLK_ADSP_AUDIO_26M] = "adsp_audio_26m",
-+	/* afe clock gate */
-+	[MT8188_CLK_AUD_AFE] = "aud_afe",
-+	[MT8188_CLK_AUD_APLL1_TUNER] = "aud_apll1_tuner",
-+	[MT8188_CLK_AUD_APLL2_TUNER] = "aud_apll2_tuner",
-+	[MT8188_CLK_AUD_APLL] = "aud_apll",
-+	[MT8188_CLK_AUD_APLL2] = "aud_apll2",
-+	[MT8188_CLK_AUD_DAC] = "aud_dac",
-+	[MT8188_CLK_AUD_ADC] = "aud_adc",
-+	[MT8188_CLK_AUD_DAC_HIRES] = "aud_dac_hires",
-+	[MT8188_CLK_AUD_A1SYS_HP] = "aud_a1sys_hp",
-+	[MT8188_CLK_AUD_ADC_HIRES] = "aud_adc_hires",
-+	[MT8188_CLK_AUD_I2SIN] = "aud_i2sin",
-+	[MT8188_CLK_AUD_TDM_IN] = "aud_tdm_in",
-+	[MT8188_CLK_AUD_I2S_OUT] = "aud_i2s_out",
-+	[MT8188_CLK_AUD_TDM_OUT] = "aud_tdm_out",
-+	[MT8188_CLK_AUD_HDMI_OUT] = "aud_hdmi_out",
-+	[MT8188_CLK_AUD_ASRC11] = "aud_asrc11",
-+	[MT8188_CLK_AUD_ASRC12] = "aud_asrc12",
-+	[MT8188_CLK_AUD_A1SYS] = "aud_a1sys",
-+	[MT8188_CLK_AUD_A2SYS] = "aud_a2sys",
-+	[MT8188_CLK_AUD_PCMIF] = "aud_pcmif",
-+	[MT8188_CLK_AUD_MEMIF_UL1] = "aud_memif_ul1",
-+	[MT8188_CLK_AUD_MEMIF_UL2] = "aud_memif_ul2",
-+	[MT8188_CLK_AUD_MEMIF_UL3] = "aud_memif_ul3",
-+	[MT8188_CLK_AUD_MEMIF_UL4] = "aud_memif_ul4",
-+	[MT8188_CLK_AUD_MEMIF_UL5] = "aud_memif_ul5",
-+	[MT8188_CLK_AUD_MEMIF_UL6] = "aud_memif_ul6",
-+	[MT8188_CLK_AUD_MEMIF_UL8] = "aud_memif_ul8",
-+	[MT8188_CLK_AUD_MEMIF_UL9] = "aud_memif_ul9",
-+	[MT8188_CLK_AUD_MEMIF_UL10] = "aud_memif_ul10",
-+	[MT8188_CLK_AUD_MEMIF_DL2] = "aud_memif_dl2",
-+	[MT8188_CLK_AUD_MEMIF_DL3] = "aud_memif_dl3",
-+	[MT8188_CLK_AUD_MEMIF_DL6] = "aud_memif_dl6",
-+	[MT8188_CLK_AUD_MEMIF_DL7] = "aud_memif_dl7",
-+	[MT8188_CLK_AUD_MEMIF_DL8] = "aud_memif_dl8",
-+	[MT8188_CLK_AUD_MEMIF_DL10] = "aud_memif_dl10",
-+	[MT8188_CLK_AUD_MEMIF_DL11] = "aud_memif_dl11",
-+};
-+
-+struct mt8188_afe_tuner_cfg {
-+	unsigned int id;
-+	int apll_div_reg;
-+	unsigned int apll_div_shift;
-+	unsigned int apll_div_maskbit;
-+	unsigned int apll_div_default;
-+	int ref_ck_sel_reg;
-+	unsigned int ref_ck_sel_shift;
-+	unsigned int ref_ck_sel_maskbit;
-+	unsigned int ref_ck_sel_default;
-+	int tuner_en_reg;
-+	unsigned int tuner_en_shift;
-+	unsigned int tuner_en_maskbit;
-+	int upper_bound_reg;
-+	unsigned int upper_bound_shift;
-+	unsigned int upper_bound_maskbit;
-+	unsigned int upper_bound_default;
-+	spinlock_t ctrl_lock; /* lock for apll tuner ctrl*/
-+	int ref_cnt;
-+};
-+
-+static struct mt8188_afe_tuner_cfg
-+	mt8188_afe_tuner_cfgs[MT8188_AUD_PLL_NUM] = {
-+	[MT8188_AUD_PLL1] = {
-+		.id = MT8188_AUD_PLL1,
-+		.apll_div_reg = AFE_APLL_TUNER_CFG,
-+		.apll_div_shift = 4,
-+		.apll_div_maskbit = 0xf,
-+		.apll_div_default = 0x7,
-+		.ref_ck_sel_reg = AFE_APLL_TUNER_CFG,
-+		.ref_ck_sel_shift = 1,
-+		.ref_ck_sel_maskbit = 0x3,
-+		.ref_ck_sel_default = 0x2,
-+		.tuner_en_reg = AFE_APLL_TUNER_CFG,
-+		.tuner_en_shift = 0,
-+		.tuner_en_maskbit = 0x1,
-+		.upper_bound_reg = AFE_APLL_TUNER_CFG,
-+		.upper_bound_shift = 8,
-+		.upper_bound_maskbit = 0xff,
-+		.upper_bound_default = 0x3,
-+	},
-+	[MT8188_AUD_PLL2] = {
-+		.id = MT8188_AUD_PLL2,
-+		.apll_div_reg = AFE_APLL_TUNER_CFG1,
-+		.apll_div_shift = 4,
-+		.apll_div_maskbit = 0xf,
-+		.apll_div_default = 0x7,
-+		.ref_ck_sel_reg = AFE_APLL_TUNER_CFG1,
-+		.ref_ck_sel_shift = 1,
-+		.ref_ck_sel_maskbit = 0x3,
-+		.ref_ck_sel_default = 0x1,
-+		.tuner_en_reg = AFE_APLL_TUNER_CFG1,
-+		.tuner_en_shift = 0,
-+		.tuner_en_maskbit = 0x1,
-+		.upper_bound_reg = AFE_APLL_TUNER_CFG1,
-+		.upper_bound_shift = 8,
-+		.upper_bound_maskbit = 0xff,
-+		.upper_bound_default = 0x3,
-+	},
-+	[MT8188_AUD_PLL3] = {
-+		.id = MT8188_AUD_PLL3,
-+		.apll_div_reg = AFE_EARC_APLL_TUNER_CFG,
-+		.apll_div_shift = 4,
-+		.apll_div_maskbit = 0x3f,
-+		.apll_div_default = 0x3,
-+		.ref_ck_sel_reg = AFE_EARC_APLL_TUNER_CFG,
-+		.ref_ck_sel_shift = 24,
-+		.ref_ck_sel_maskbit = 0x3,
-+		.ref_ck_sel_default = 0x0,
-+		.tuner_en_reg = AFE_EARC_APLL_TUNER_CFG,
-+		.tuner_en_shift = 0,
-+		.tuner_en_maskbit = 0x1,
-+		.upper_bound_reg = AFE_EARC_APLL_TUNER_CFG,
-+		.upper_bound_shift = 12,
-+		.upper_bound_maskbit = 0xff,
-+		.upper_bound_default = 0x4,
-+	},
-+	[MT8188_AUD_PLL4] = {
-+		.id = MT8188_AUD_PLL4,
-+		.apll_div_reg = AFE_SPDIFIN_APLL_TUNER_CFG,
-+		.apll_div_shift = 4,
-+		.apll_div_maskbit = 0x3f,
-+		.apll_div_default = 0x7,
-+		.ref_ck_sel_reg = AFE_SPDIFIN_APLL_TUNER_CFG1,
-+		.ref_ck_sel_shift = 8,
-+		.ref_ck_sel_maskbit = 0x1,
-+		.ref_ck_sel_default = 0,
-+		.tuner_en_reg = AFE_SPDIFIN_APLL_TUNER_CFG,
-+		.tuner_en_shift = 0,
-+		.tuner_en_maskbit = 0x1,
-+		.upper_bound_reg = AFE_SPDIFIN_APLL_TUNER_CFG,
-+		.upper_bound_shift = 12,
-+		.upper_bound_maskbit = 0xff,
-+		.upper_bound_default = 0x4,
-+	},
-+	[MT8188_AUD_PLL5] = {
-+		.id = MT8188_AUD_PLL5,
-+		.apll_div_reg = AFE_LINEIN_APLL_TUNER_CFG,
-+		.apll_div_shift = 4,
-+		.apll_div_maskbit = 0x3f,
-+		.apll_div_default = 0x3,
-+		.ref_ck_sel_reg = AFE_LINEIN_APLL_TUNER_CFG,
-+		.ref_ck_sel_shift = 24,
-+		.ref_ck_sel_maskbit = 0x1,
-+		.ref_ck_sel_default = 0,
-+		.tuner_en_reg = AFE_LINEIN_APLL_TUNER_CFG,
-+		.tuner_en_shift = 0,
-+		.tuner_en_maskbit = 0x1,
-+		.upper_bound_reg = AFE_LINEIN_APLL_TUNER_CFG,
-+		.upper_bound_shift = 12,
-+		.upper_bound_maskbit = 0xff,
-+		.upper_bound_default = 0x4,
-+	},
-+};
-+
-+static struct mt8188_afe_tuner_cfg *mt8188_afe_found_apll_tuner(unsigned int id)
-+{
-+	if (id >= MT8188_AUD_PLL_NUM)
-+		return NULL;
-+
-+	return &mt8188_afe_tuner_cfgs[id];
-+}
-+
-+static int mt8188_afe_init_apll_tuner(unsigned int id)
-+{
-+	struct mt8188_afe_tuner_cfg *cfg = mt8188_afe_found_apll_tuner(id);
-+
-+	if (!cfg)
-+		return -EINVAL;
-+
-+	cfg->ref_cnt = 0;
-+	spin_lock_init(&cfg->ctrl_lock);
-+
-+	return 0;
-+}
-+
-+static int mt8188_afe_setup_apll_tuner(struct mtk_base_afe *afe, unsigned int id)
-+{
-+	const struct mt8188_afe_tuner_cfg *cfg = mt8188_afe_found_apll_tuner(id);
-+
-+	if (!cfg)
-+		return -EINVAL;
-+
-+	regmap_update_bits(afe->regmap,
-+			   cfg->apll_div_reg,
-+			   cfg->apll_div_maskbit << cfg->apll_div_shift,
-+			   cfg->apll_div_default << cfg->apll_div_shift);
-+
-+	regmap_update_bits(afe->regmap,
-+			   cfg->ref_ck_sel_reg,
-+			   cfg->ref_ck_sel_maskbit << cfg->ref_ck_sel_shift,
-+			   cfg->ref_ck_sel_default << cfg->ref_ck_sel_shift);
-+
-+	regmap_update_bits(afe->regmap,
-+			   cfg->upper_bound_reg,
-+			   cfg->upper_bound_maskbit << cfg->upper_bound_shift,
-+			   cfg->upper_bound_default << cfg->upper_bound_shift);
-+
-+	return 0;
-+}
-+
-+static int mt8188_afe_enable_tuner_clk(struct mtk_base_afe *afe,
-+				       unsigned int id)
-+{
-+	struct mt8188_afe_private *afe_priv = afe->platform_priv;
-+
-+	switch (id) {
-+	case MT8188_AUD_PLL1:
-+		mt8188_afe_enable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_APLL]);
-+		mt8188_afe_enable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_APLL1_TUNER]);
-+		break;
-+	case MT8188_AUD_PLL2:
-+		mt8188_afe_enable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_APLL2]);
-+		mt8188_afe_enable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_APLL2_TUNER]);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mt8188_afe_disable_tuner_clk(struct mtk_base_afe *afe,
-+					unsigned int id)
-+{
-+	struct mt8188_afe_private *afe_priv = afe->platform_priv;
-+
-+	switch (id) {
-+	case MT8188_AUD_PLL1:
-+		mt8188_afe_disable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_APLL1_TUNER]);
-+		mt8188_afe_disable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_APLL]);
-+		break;
-+	case MT8188_AUD_PLL2:
-+		mt8188_afe_disable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_APLL2_TUNER]);
-+		mt8188_afe_disable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_APLL2]);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mt8188_afe_enable_apll_tuner(struct mtk_base_afe *afe, unsigned int id)
-+{
-+	struct mt8188_afe_tuner_cfg *cfg = mt8188_afe_found_apll_tuner(id);
-+	unsigned long flags;
-+	int ret;
-+
-+	if (!cfg)
-+		return -EINVAL;
-+
-+	ret = mt8188_afe_setup_apll_tuner(afe, id);
-+	if (ret)
-+		return ret;
-+
-+	ret = mt8188_afe_enable_tuner_clk(afe, id);
-+	if (ret)
-+		return ret;
-+
-+	spin_lock_irqsave(&cfg->ctrl_lock, flags);
-+
-+	cfg->ref_cnt++;
-+	if (cfg->ref_cnt == 1)
-+		regmap_update_bits(afe->regmap,
-+				   cfg->tuner_en_reg,
-+				   cfg->tuner_en_maskbit << cfg->tuner_en_shift,
-+				   BIT(cfg->tuner_en_shift));
-+
-+	spin_unlock_irqrestore(&cfg->ctrl_lock, flags);
-+
-+	return 0;
-+}
-+
-+static int mt8188_afe_disable_apll_tuner(struct mtk_base_afe *afe, unsigned int id)
-+{
-+	struct mt8188_afe_tuner_cfg *cfg = mt8188_afe_found_apll_tuner(id);
-+	unsigned long flags;
-+	int ret;
-+
-+	if (!cfg)
-+		return -EINVAL;
-+
-+	spin_lock_irqsave(&cfg->ctrl_lock, flags);
-+
-+	cfg->ref_cnt--;
-+	if (cfg->ref_cnt == 0)
-+		regmap_update_bits(afe->regmap,
-+				   cfg->tuner_en_reg,
-+				   cfg->tuner_en_maskbit << cfg->tuner_en_shift,
-+				   0 << cfg->tuner_en_shift);
-+	else if (cfg->ref_cnt < 0)
-+		cfg->ref_cnt = 0;
-+
-+	spin_unlock_irqrestore(&cfg->ctrl_lock, flags);
-+
-+	ret = mt8188_afe_disable_tuner_clk(afe, id);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+int mt8188_afe_get_mclk_source_clk_id(int sel)
-+{
-+	switch (sel) {
-+	case MT8188_MCK_SEL_26M:
-+		return MT8188_CLK_XTAL_26M;
-+	case MT8188_MCK_SEL_APLL1:
-+		return MT8188_CLK_APMIXED_APLL1;
-+	case MT8188_MCK_SEL_APLL2:
-+		return MT8188_CLK_APMIXED_APLL2;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+int mt8188_afe_get_mclk_source_rate(struct mtk_base_afe *afe, int apll)
-+{
-+	struct mt8188_afe_private *afe_priv = afe->platform_priv;
-+	int clk_id = mt8188_afe_get_mclk_source_clk_id(apll);
-+
-+	if (clk_id < 0) {
-+		dev_dbg(afe->dev, "invalid clk id\n");
-+		return 0;
-+	}
-+
-+	return clk_get_rate(afe_priv->clk[clk_id]);
-+}
-+
-+int mt8188_afe_get_default_mclk_source_by_rate(int rate)
-+{
-+	return ((rate % 8000) == 0) ?
-+		MT8188_MCK_SEL_APLL1 : MT8188_MCK_SEL_APLL2;
-+}
-+
-+int mt8188_afe_init_clock(struct mtk_base_afe *afe)
-+{
-+	struct mt8188_afe_private *afe_priv = afe->platform_priv;
-+	int i, ret;
-+
-+	ret = mt8188_audsys_clk_register(afe);
-+	if (ret) {
-+		dev_err(afe->dev, "register audsys clk fail %d\n", ret);
-+		return ret;
-+	}
-+
-+	afe_priv->clk =
-+		devm_kcalloc(afe->dev, MT8188_CLK_NUM, sizeof(*afe_priv->clk),
-+			     GFP_KERNEL);
-+	if (!afe_priv->clk)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < MT8188_CLK_NUM; i++) {
-+		afe_priv->clk[i] = devm_clk_get(afe->dev, aud_clks[i]);
-+		if (IS_ERR(afe_priv->clk[i])) {
-+			dev_err(afe->dev, "%s(), devm_clk_get %s fail, ret %ld\n",
-+				__func__, aud_clks[i],
-+				PTR_ERR(afe_priv->clk[i]));
-+			return PTR_ERR(afe_priv->clk[i]);
-+		}
-+	}
-+
-+	/* initial tuner */
-+	for (i = 0; i < MT8188_AUD_PLL_NUM; i++) {
-+		ret = mt8188_afe_init_apll_tuner(i);
-+		if (ret) {
-+			dev_info(afe->dev, "%s(), init apll_tuner%d failed",
-+				 __func__, (i + 1));
-+			return -EINVAL;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+void mt8188_afe_deinit_clock(void *priv)
-+{
-+	struct mtk_base_afe *afe = priv;
-+
-+	mt8188_audsys_clk_unregister(afe);
-+}
-+
-+int mt8188_afe_enable_clk(struct mtk_base_afe *afe, struct clk *clk)
-+{
-+	int ret;
-+
-+	if (clk) {
-+		ret = clk_prepare_enable(clk);
-+		if (ret) {
-+			dev_dbg(afe->dev, "%s(), failed to enable clk\n",
-+				__func__);
-+			return ret;
-+		}
-+	} else {
-+		dev_dbg(afe->dev, "NULL clk\n");
-+	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(mt8188_afe_enable_clk);
-+
-+void mt8188_afe_disable_clk(struct mtk_base_afe *afe, struct clk *clk)
-+{
-+	if (clk)
-+		clk_disable_unprepare(clk);
-+	else
-+		dev_dbg(afe->dev, "NULL clk\n");
-+}
-+EXPORT_SYMBOL_GPL(mt8188_afe_disable_clk);
-+
-+int mt8188_afe_set_clk_rate(struct mtk_base_afe *afe, struct clk *clk,
-+			    unsigned int rate)
-+{
-+	int ret;
-+
-+	if (clk) {
-+		ret = clk_set_rate(clk, rate);
-+		if (ret) {
-+			dev_dbg(afe->dev, "%s(), failed to set clk rate\n",
-+				__func__);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+int mt8188_afe_set_clk_parent(struct mtk_base_afe *afe, struct clk *clk,
-+			      struct clk *parent)
-+{
-+	int ret;
-+
-+	if (clk && parent) {
-+		ret = clk_set_parent(clk, parent);
-+		if (ret) {
-+			dev_dbg(afe->dev, "%s(), failed to set clk parent\n",
-+				__func__);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static unsigned int get_top_cg_reg(unsigned int cg_type)
-+{
-+	switch (cg_type) {
-+	case MT8188_TOP_CG_A1SYS_TIMING:
-+	case MT8188_TOP_CG_A2SYS_TIMING:
-+	case MT8188_TOP_CG_26M_TIMING:
-+		return ASYS_TOP_CON;
-+	default:
-+		return 0;
-+	}
-+}
-+
-+static unsigned int get_top_cg_mask(unsigned int cg_type)
-+{
-+	switch (cg_type) {
-+	case MT8188_TOP_CG_A1SYS_TIMING:
-+		return ASYS_TOP_CON_A1SYS_TIMING_ON;
-+	case MT8188_TOP_CG_A2SYS_TIMING:
-+		return ASYS_TOP_CON_A2SYS_TIMING_ON;
-+	case MT8188_TOP_CG_26M_TIMING:
-+		return ASYS_TOP_CON_26M_TIMING_ON;
-+	default:
-+		return 0;
-+	}
-+}
-+
-+static unsigned int get_top_cg_on_val(unsigned int cg_type)
-+{
-+	switch (cg_type) {
-+	case MT8188_TOP_CG_A1SYS_TIMING:
-+	case MT8188_TOP_CG_A2SYS_TIMING:
-+	case MT8188_TOP_CG_26M_TIMING:
-+		return get_top_cg_mask(cg_type);
-+	default:
-+		return 0;
-+	}
-+}
-+
-+static unsigned int get_top_cg_off_val(unsigned int cg_type)
-+{
-+	switch (cg_type) {
-+	case MT8188_TOP_CG_A1SYS_TIMING:
-+	case MT8188_TOP_CG_A2SYS_TIMING:
-+	case MT8188_TOP_CG_26M_TIMING:
-+		return 0;
-+	default:
-+		return get_top_cg_mask(cg_type);
-+	}
-+}
-+
-+static int mt8188_afe_enable_top_cg(struct mtk_base_afe *afe, unsigned int cg_type)
-+{
-+	unsigned int reg = get_top_cg_reg(cg_type);
-+	unsigned int mask = get_top_cg_mask(cg_type);
-+	unsigned int val = get_top_cg_on_val(cg_type);
-+
-+	regmap_update_bits(afe->regmap, reg, mask, val);
-+
-+	return 0;
-+}
-+
-+static int mt8188_afe_disable_top_cg(struct mtk_base_afe *afe, unsigned int cg_type)
-+{
-+	unsigned int reg = get_top_cg_reg(cg_type);
-+	unsigned int mask = get_top_cg_mask(cg_type);
-+	unsigned int val = get_top_cg_off_val(cg_type);
-+
-+	regmap_update_bits(afe->regmap, reg, mask, val);
-+
-+	return 0;
-+}
-+
-+int mt8188_afe_enable_reg_rw_clk(struct mtk_base_afe *afe)
-+{
-+	struct mt8188_afe_private *afe_priv = afe->platform_priv;
-+
-+	/* bus clock for AFE external access, like DRAM */
-+	mt8188_afe_enable_clk(afe, afe_priv->clk[MT8188_CLK_TOP_AUDIO_LOCAL_BUS_SEL]);
-+
-+	/* bus clock for AFE internal access, like AFE SRAM */
-+	mt8188_afe_enable_clk(afe, afe_priv->clk[MT8188_CLK_TOP_AUD_INTBUS_SEL]);
-+
-+	/* audio 26m clock source */
-+	mt8188_afe_enable_clk(afe, afe_priv->clk[MT8188_CLK_ADSP_AUDIO_26M]);
-+
-+	/* AFE hw clock */
-+	mt8188_afe_enable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_AFE]);
-+	mt8188_afe_enable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_A1SYS_HP]);
-+	mt8188_afe_enable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_A1SYS]);
-+
-+	return 0;
-+}
-+
-+int mt8188_afe_disable_reg_rw_clk(struct mtk_base_afe *afe)
-+{
-+	struct mt8188_afe_private *afe_priv = afe->platform_priv;
-+
-+	mt8188_afe_disable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_A1SYS]);
-+	mt8188_afe_disable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_A1SYS_HP]);
-+	mt8188_afe_disable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_AFE]);
-+	mt8188_afe_disable_clk(afe, afe_priv->clk[MT8188_CLK_ADSP_AUDIO_26M]);
-+	mt8188_afe_disable_clk(afe, afe_priv->clk[MT8188_CLK_TOP_AUD_INTBUS_SEL]);
-+	mt8188_afe_disable_clk(afe, afe_priv->clk[MT8188_CLK_TOP_AUDIO_LOCAL_BUS_SEL]);
-+
-+	return 0;
-+}
-+
-+static int mt8188_afe_enable_afe_on(struct mtk_base_afe *afe)
-+{
-+	regmap_update_bits(afe->regmap, AFE_DAC_CON0, 0x1, 0x1);
-+	return 0;
-+}
-+
-+static int mt8188_afe_disable_afe_on(struct mtk_base_afe *afe)
-+{
-+	regmap_update_bits(afe->regmap, AFE_DAC_CON0, 0x1, 0x0);
-+	return 0;
-+}
-+
-+static int mt8188_afe_enable_timing_sys(struct mtk_base_afe *afe)
-+{
-+	struct mt8188_afe_private *afe_priv = afe->platform_priv;
-+
-+	mt8188_afe_enable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_A1SYS]);
-+	mt8188_afe_enable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_A2SYS]);
-+
-+	mt8188_afe_enable_top_cg(afe, MT8188_TOP_CG_A1SYS_TIMING);
-+	mt8188_afe_enable_top_cg(afe, MT8188_TOP_CG_A2SYS_TIMING);
-+	mt8188_afe_enable_top_cg(afe, MT8188_TOP_CG_26M_TIMING);
-+
-+	return 0;
-+}
-+
-+static int mt8188_afe_disable_timing_sys(struct mtk_base_afe *afe)
-+{
-+	struct mt8188_afe_private *afe_priv = afe->platform_priv;
-+
-+	mt8188_afe_disable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_A1SYS]);
-+	mt8188_afe_disable_clk(afe, afe_priv->clk[MT8188_CLK_AUD_A2SYS]);
-+
-+	mt8188_afe_disable_top_cg(afe, MT8188_TOP_CG_26M_TIMING);
-+	mt8188_afe_disable_top_cg(afe, MT8188_TOP_CG_A2SYS_TIMING);
-+	mt8188_afe_disable_top_cg(afe, MT8188_TOP_CG_A1SYS_TIMING);
-+
-+	return 0;
-+}
-+
-+int mt8188_afe_enable_main_clock(struct mtk_base_afe *afe)
-+{
-+	mt8188_afe_enable_timing_sys(afe);
-+
-+	mt8188_afe_enable_afe_on(afe);
-+
-+	mt8188_afe_enable_apll_tuner(afe, MT8188_AUD_PLL1);
-+	mt8188_afe_enable_apll_tuner(afe, MT8188_AUD_PLL2);
-+
-+	return 0;
-+}
-+
-+int mt8188_afe_disable_main_clock(struct mtk_base_afe *afe)
-+{
-+	mt8188_afe_disable_apll_tuner(afe, MT8188_AUD_PLL2);
-+	mt8188_afe_disable_apll_tuner(afe, MT8188_AUD_PLL1);
-+
-+	mt8188_afe_disable_afe_on(afe);
-+
-+	mt8188_afe_disable_timing_sys(afe);
-+
-+	return 0;
-+}
-diff --git a/sound/soc/mediatek/mt8188/mt8188-afe-clk.h b/sound/soc/mediatek/mt8188/mt8188-afe-clk.h
-new file mode 100644
-index 000000000000..084fdfb1d877
---- /dev/null
-+++ b/sound/soc/mediatek/mt8188/mt8188-afe-clk.h
-@@ -0,0 +1,115 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * mt8188-afe-clk.h  --  MediaTek 8188 afe clock ctrl definition
-+ *
-+ * Copyright (c) 2022 MediaTek Inc.
-+ * Author: Bicycle Tsai <bicycle.tsai@mediatek.com>
-+ *         Trevor Wu <trevor.wu@mediatek.com>
-+ *         Chun-Chia Chiu <chun-chia.chiu@mediatek.com>
-+ */
-+
-+#ifndef _MT8188_AFE_CLK_H_
-+#define _MT8188_AFE_CLK_H_
-+
-+enum {
-+	/* xtal */
-+	MT8188_CLK_XTAL_26M,
-+	/* pll */
-+	MT8188_CLK_APMIXED_APLL1,
-+	MT8188_CLK_APMIXED_APLL2,
-+	/* divider */
-+	MT8188_CLK_TOP_APLL12_DIV0,
-+	MT8188_CLK_TOP_APLL12_DIV1,
-+	MT8188_CLK_TOP_APLL12_DIV2,
-+	MT8188_CLK_TOP_APLL12_DIV3,
-+	MT8188_CLK_TOP_APLL12_DIV9,
-+	/* mux */
-+	MT8188_CLK_TOP_A1SYS_HP_SEL,
-+	MT8188_CLK_TOP_AUD_INTBUS_SEL,
-+	MT8188_CLK_TOP_AUDIO_H_SEL,
-+	MT8188_CLK_TOP_AUDIO_LOCAL_BUS_SEL,
-+	MT8188_CLK_TOP_DPTX_M_SEL,
-+	MT8188_CLK_TOP_I2SO1_M_SEL,
-+	MT8188_CLK_TOP_I2SO2_M_SEL,
-+	MT8188_CLK_TOP_I2SI1_M_SEL,
-+	MT8188_CLK_TOP_I2SI2_M_SEL,
-+	/* clock gate */
-+	MT8188_CLK_ADSP_AUDIO_26M,
-+	MT8188_CLK_AUD_AFE,
-+	MT8188_CLK_AUD_APLL1_TUNER,
-+	MT8188_CLK_AUD_APLL2_TUNER,
-+	MT8188_CLK_AUD_TOP0_SPDF,
-+	MT8188_CLK_AUD_APLL,
-+	MT8188_CLK_AUD_APLL2,
-+	MT8188_CLK_AUD_DAC,
-+	MT8188_CLK_AUD_ADC,
-+	MT8188_CLK_AUD_DAC_HIRES,
-+	MT8188_CLK_AUD_A1SYS_HP,
-+	MT8188_CLK_AUD_ADC_HIRES,
-+	MT8188_CLK_AUD_I2SIN,
-+	MT8188_CLK_AUD_TDM_IN,
-+	MT8188_CLK_AUD_I2S_OUT,
-+	MT8188_CLK_AUD_TDM_OUT,
-+	MT8188_CLK_AUD_HDMI_OUT,
-+	MT8188_CLK_AUD_ASRC11,
-+	MT8188_CLK_AUD_ASRC12,
-+	MT8188_CLK_AUD_A1SYS,
-+	MT8188_CLK_AUD_A2SYS,
-+	MT8188_CLK_AUD_PCMIF,
-+	MT8188_CLK_AUD_MEMIF_UL1,
-+	MT8188_CLK_AUD_MEMIF_UL2,
-+	MT8188_CLK_AUD_MEMIF_UL3,
-+	MT8188_CLK_AUD_MEMIF_UL4,
-+	MT8188_CLK_AUD_MEMIF_UL5,
-+	MT8188_CLK_AUD_MEMIF_UL6,
-+	MT8188_CLK_AUD_MEMIF_UL8,
-+	MT8188_CLK_AUD_MEMIF_UL9,
-+	MT8188_CLK_AUD_MEMIF_UL10,
-+	MT8188_CLK_AUD_MEMIF_DL2,
-+	MT8188_CLK_AUD_MEMIF_DL3,
-+	MT8188_CLK_AUD_MEMIF_DL6,
-+	MT8188_CLK_AUD_MEMIF_DL7,
-+	MT8188_CLK_AUD_MEMIF_DL8,
-+	MT8188_CLK_AUD_MEMIF_DL10,
-+	MT8188_CLK_AUD_MEMIF_DL11,
-+	MT8188_CLK_NUM,
-+};
-+
-+enum {
-+	MT8188_AUD_PLL1,
-+	MT8188_AUD_PLL2,
-+	MT8188_AUD_PLL3,
-+	MT8188_AUD_PLL4,
-+	MT8188_AUD_PLL5,
-+	MT8188_AUD_PLL_NUM,
-+};
-+
-+enum {
-+	MT8188_MCK_SEL_26M,
-+	MT8188_MCK_SEL_APLL1,
-+	MT8188_MCK_SEL_APLL2,
-+	MT8188_MCK_SEL_APLL3,
-+	MT8188_MCK_SEL_APLL4,
-+	MT8188_MCK_SEL_APLL5,
-+	MT8188_MCK_SEL_NUM,
-+};
-+
-+struct mtk_base_afe;
-+
-+int mt8188_afe_get_mclk_source_clk_id(int sel);
-+int mt8188_afe_get_mclk_source_rate(struct mtk_base_afe *afe, int apll);
-+int mt8188_afe_get_default_mclk_source_by_rate(int rate);
-+int mt8188_afe_init_clock(struct mtk_base_afe *afe);
-+void mt8188_afe_deinit_clock(void *priv);
-+int mt8188_afe_enable_clk(struct mtk_base_afe *afe, struct clk *clk);
-+void mt8188_afe_disable_clk(struct mtk_base_afe *afe, struct clk *clk);
-+int mt8188_afe_set_clk_rate(struct mtk_base_afe *afe, struct clk *clk,
-+			    unsigned int rate);
-+int mt8188_afe_set_clk_parent(struct mtk_base_afe *afe, struct clk *clk,
-+			      struct clk *parent);
-+int mt8188_afe_enable_main_clock(struct mtk_base_afe *afe);
-+int mt8188_afe_disable_main_clock(struct mtk_base_afe *afe);
-+int mt8188_afe_enable_reg_rw_clk(struct mtk_base_afe *afe);
-+int mt8188_afe_disable_reg_rw_clk(struct mtk_base_afe *afe);
-+
-+#endif
--- 
-2.18.0
+> -----Original Message-----
+> From: Krzysztof Kozlowski [mailto:krzysztof.kozlowski@linaro.org]
+> Sent: 15 January 2023 08:33 PM
+> To: Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>;
+> lgirdwood@gmail.com; broonie@kernel.org; robh+dt@kernel.org;
+> krzysztof.kozlowski+dt@linaro.org; s.nawrocki@samsung.com;
+> perex@perex.cz; tiwai@suse.com; pankaj.dubey@samsung.com;
+> alim.akhtar@samsung.com; rcsekar@samsung.com;
+> aswani.reddy@samsung.com
+> Cc: alsa-devel@alsa-project.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org; linux-samsung-soc@vger.kernel.org
+> Subject: Re: [PATCH v3 2/5] ASoC: samsung: i2s: add support for FSD I2S
+> 
+> On 13/01/2023 13:17, Padmanabhan Rajanbabu wrote:
+> > Add support for enabling I2S controller on FSD platform.
+> >
+> > FSD I2S controller is based on Exynos7 I2S controller, supporting 2CH
+> > playback/capture in I2S mode and 7.1CH playback/capture in TDM mode.
+> >
+> > Reported-by: kernel test robot <lkp@intel.com>
+> 
+> Drop. It's for the bugs. Just be sure that the code compiles without W=1
+> warnings.
+
+Okay, got it. I'll drop it in the upcoming patchset.
+
+> 
+> 
+> > Signed-off-by: Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>
+> > ---
+> >  sound/soc/samsung/i2s-regs.h |  1 +
+> >  sound/soc/samsung/i2s.c      | 53
+> ++++++++++++++++++++++++++++++++++++
+> >  2 files changed, 54 insertions(+)
+> Best regards,
+> Krzysztof
+
 
