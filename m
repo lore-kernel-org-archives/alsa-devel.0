@@ -4,90 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3ED4FC46467
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Jan 2023 08:03:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1537C54EBE
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Jan 2023 08:03:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F95C517D;
-	Mon, 16 Jan 2023 09:02:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F95C517D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C1A20517B;
+	Mon, 16 Jan 2023 09:02:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1A20517B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673856178;
-	bh=CtVylMFpnJWK4+7d5PUIAjyOIqqFgGyuGsYcvb2iZXE=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1673856188;
+	bh=zXT8e1lsuCWvOA1LSVVVySAfZ6MKe/ib3dGFDvOyIlI=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=ZrlpDF7Lr1mIokCDrcyh+CAIEneRtQEBvTF5szKwnLE+/DGgMJLnf2OLBM4/tsNvG
-	 9PcFKzXnvUzhXlzt/CirNkkhXiHCmSQC2gp3DR7QxYBoaYfBAuqfKk0mF3lU7U0RLX
-	 YuuVU17FoStRw6BpsR2306evB5r/vcZUi/s7vra8=
+	b=Ajocxn4HTYJZbQedRH4Kbv7jBSExvuluLrtYWkxRSpgdEEz7A6IrqiJJeUzIJilmG
+	 KgAUBEHsAvHd/I23ynD22QCPNJ3Ut0KMHe9f+m6T7k60MpLwHyBEJ6LvxlaMUbfmWu
+	 qpnYCav0gQ9NLzohIq38RQt354aiKFeKBxotaXQk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D477EF80543;
-	Mon, 16 Jan 2023 09:01:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71267F80552;
+	Mon, 16 Jan 2023 09:01:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53A50F804F2; Sun, 15 Jan 2023 20:34:12 +0100 (CET)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id B1D9FF8024C; Mon, 16 Jan 2023 08:13:12 +0100 (CET)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7368F804DE
- for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2023 20:34:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7368F804DE
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=shruggie-ro.20210112.gappssmtp.com
- header.i=@shruggie-ro.20210112.gappssmtp.com header.a=rsa-sha256
- header.s=20210112 header.b=ptg+XxdP
-Received: by mail-wm1-x335.google.com with SMTP id
- f25-20020a1c6a19000000b003da221fbf48so4467214wmc.1
- for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2023 11:34:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=shruggie-ro.20210112.gappssmtp.com; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=aKS96pmJPoYb7b0N1pU8tQ1JoETnhuDxnTgIIKOenYM=;
- b=ptg+XxdP0iKhBkszM3udc/4H9pCnHeQS36Lsg2Ij0gMHkNcIvlvI1Cju75BpLjmsGX
- kHc0qsHeG4rGBEVp+kh2tmeQyyLVyDrdtY0z1CmRapu2VdLNtavrsQKmSz5u++fHJ4aV
- RliGMKFR4cvOcRMAeKpW3D/+zhgiqUyxi66rUm1gNcKYWk/VHZ12gMsoGRD/REB2BWBk
- RDshmY8uokHGzZjixSDoc67PtAdDhIXgjex3/HRthkje6iEvctdN4QX5AlLkD4i+0/Mp
- cIgj3pZ3+0D5e4tpKCaQT8v9Bqajzg8yccQ4Cocq5QqPTPsYdgoplDeH+ulyUInAAH2X
- iqcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=aKS96pmJPoYb7b0N1pU8tQ1JoETnhuDxnTgIIKOenYM=;
- b=ru+J23y7n/2+1E0scvLyhpLjjKW1AMOLapW5XHs0v898b/lLqNOYo5Th9LeGKIkPNl
- tTHx8o8M6X/JgIoch3kerYc1eAAHrSfqkm/TvGXmc6CxESFzeoYqXHooqfjv8ZshOuDT
- g0l/w5Akn9gz8s/LY06H+LohvLuJX5Vd9Vy4956jU3U4D69MnbYmOktnWwBh3fFMne2B
- FInURvUVLI0iHz80kieupqJ7OK30+TdhPUzD7JlF9eN0ScCZwXn84Wq7efHvmLcV4Spy
- DqpCirSsfoB8pDKcCLSQ1NpxKF6hdwsmiTyugY1ZqwkJAqhTlzn9SCnFJ7UNqmawLtYw
- uj9w==
-X-Gm-Message-State: AFqh2krEzvxctxpIFSLYQhMYodFoGaJCnwqMHty0IglRz4ZlHsQG5GH3
- zP5aFszcPZDKpFXEE+GqJ2HBpA==
-X-Google-Smtp-Source: AMrXdXtiAtWBNInaUn1ciDGHW3hTscUUewtiMApYCrZAJJioAH4xZZgDcR5vCIpdWiBgI2mj0JNJ6A==
-X-Received: by 2002:a7b:c39a:0:b0:3d2:640:c4e5 with SMTP id
- s26-20020a7bc39a000000b003d20640c4e5mr63160339wmj.8.1673811239112; 
- Sun, 15 Jan 2023 11:33:59 -0800 (PST)
-Received: from neptune.hotspot.internet-for-guests.com
- (ip-078-094-237-238.um19.pools.vodafone-ip.de. [78.94.237.238])
- by smtp.gmail.com with ESMTPSA id
- f15-20020a7bcd0f000000b003d9a71ee54dsm30559281wmj.36.2023.01.15.11.33.57
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 15 Jan 2023 11:33:58 -0800 (PST)
-From: Alexandru Ardelean <alex@shruggie.ro>
-To: devicetree@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: [PATCH 4/4] ASoC: dt-bindings: add entry for TAS5720A-Q1 driver
-Date: Sun, 15 Jan 2023 21:33:47 +0200
-Message-Id: <20230115193347.24190-4-alex@shruggie.ro>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230115193347.24190-1-alex@shruggie.ro>
-References: <20230115193347.24190-1-alex@shruggie.ro>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E12A1F80083
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 08:13:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E12A1F80083
+Received: by verein.lst.de (Postfix, from userid 2407)
+ id 617D468AFE; Mon, 16 Jan 2023 08:13:06 +0100 (CET)
+Date: Mon, 16 Jan 2023 08:13:06 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: Re: remove arch/sh
+Message-ID: <20230116071306.GA15848@lst.de>
+References: <20230113062339.1909087-1-hch@lst.de>
+ <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Mailman-Approved-At: Mon, 16 Jan 2023 09:01:06 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -101,40 +59,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: steffen.aschbacher@stihl.de, tiwai@suse.com, lgirdwood@gmail.com,
- broonie@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- Alexandru Ardelean <alex@shruggie.ro>
+Cc: linux-fbdev@vger.kernel.org, Rich Felker <dalias@libc.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, linux-sh@vger.kernel.org,
+ linux-rtc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ netdev@vger.kernel.org, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Steffen Aschbacher <steffen.aschbacher@stihl.de>
+On Fri, Jan 13, 2023 at 09:09:52AM +0100, John Paul Adrian Glaubitz wrote:
+> I'm still maintaining and using this port in Debian.
+>
+> It's a bit disappointing that people keep hammering on it. It works fine for me.
 
-Add entry for the TAS5720A-Q1 driver in the dt-bindings doc.
-
-Signed-off-by: Steffen Aschbacher <steffen.aschbacher@stihl.de>
-Signed-off-by: Alexandru Ardelean <alex@shruggie.ro>
----
- Documentation/devicetree/bindings/sound/tas5720.txt | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/tas5720.txt b/Documentation/devicetree/bindings/sound/tas5720.txt
-index df99ca9451b0..7d851ae2bba2 100644
---- a/Documentation/devicetree/bindings/sound/tas5720.txt
-+++ b/Documentation/devicetree/bindings/sound/tas5720.txt
-@@ -6,11 +6,13 @@ audio playback. For more product information please see the links below:
- 
- https://www.ti.com/product/TAS5720L
- https://www.ti.com/product/TAS5720M
-+https://www.ti.com/product/TAS5720A-Q1
- https://www.ti.com/product/TAS5722L
- 
- Required properties:
- 
- - compatible : "ti,tas5720",
-+               "ti,tas5720a-q1",
-                "ti,tas5722"
- - reg : I2C slave address
- - dvdd-supply : phandle to a 3.3-V supply for the digital circuitry
--- 
-2.34.1
-
+What platforms do you (or your users) use it on?
