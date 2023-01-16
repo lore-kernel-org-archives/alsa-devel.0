@@ -4,72 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC20CC54EBE
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Jan 2023 12:57:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77CBFC46467
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Jan 2023 13:17:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D2F255DD;
-	Mon, 16 Jan 2023 13:56:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D2F255DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93AFB5608;
+	Mon, 16 Jan 2023 14:16:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93AFB5608
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673873846;
-	bh=Lgv407e8OICbsi0gdN267HnBxdARqGVPHIoX3BHAuLM=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1673875023;
+	bh=29QfTPcs9/gEQmgCKCXaRl7jYtU3HRfzrfTR4DlbQv8=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=adwDDGEwl+zfc+jajENjyw8CjVAOgVWltP1BP/SWQQOVaIGq82unbOgFVL7LaJQA/
-	 vtkX2C+JyvWLyC8eHnm5UzMk9l5qnHBc91gmKt6th0Zv7xlnSDSuj8psiPmUWPndIi
-	 HSxD8k3M+eRGKUHEZROHzPY1c19sx7pe5B+3qSrE=
+	b=EEBSZHXndmrFb8v3PI7OM1IhDvae/AKv918I/DS2DU/VOFEdXVli1K9P/7SO8Rlv2
+	 WLjD3NaTBkDGArBdkm/f0bZvwLQNQkyBHzd+WqtbD6xvrWP6ulMQ+o3LEuTTweOn90
+	 /eeke33oKHm+KihvNs+h9O/9qxtm2y1eVu4dc+Uk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 961A2F8053D;
-	Mon, 16 Jan 2023 13:56:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46509F80240;
+	Mon, 16 Jan 2023 14:16:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E1907F8053A; Mon, 16 Jan 2023 13:56:33 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id 87A2FF8024C; Mon, 16 Jan 2023 14:16:11 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 93CB9F8023A
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 14:16:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93CB9F8023A
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=Rwwmd6He
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00BDEF80482
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 13:55:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00BDEF80482
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=eba5cC8d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1673873715; x=1705409715;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=Lgv407e8OICbsi0gdN267HnBxdARqGVPHIoX3BHAuLM=;
- b=eba5cC8d/3ZgldvhI7ldRfTIPsWjFZqzwXkw9FoOLLMH1G0m943E0nv/
- LYl1BMW6s1FqdlWcA9gy2MGySIphsLr9z0QU9dYMn56SGux44atyE/Y2Y
- cDBJ9yzjGZzGVLnRT0lTGSk8hySpldDygL4/QmAekdNMAhp4WJ6DZIytM
- piW6CWG4OoSqVIUzfO0luOs7GM83EmXGCq+C4FLHGZGF+4G34M8gsLLvb
- kuGCuqkPeXL7AH5vHPVHjS7icdb7vqWgnppXBnXu8FZKLpwyrUEjcN1Wj
- xhznB97fSj5+h1uZL2C5F75uAmEbgQ71OL995uMjyEn+d6cKfKSkku+nz w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10591"; a="325720844"
-X-IronPort-AV: E=Sophos;i="5.97,221,1669104000"; d="scan'208";a="325720844"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jan 2023 04:55:07 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10591"; a="660972417"
-X-IronPort-AV: E=Sophos;i="5.97,221,1669104000"; d="scan'208";a="660972417"
-Received: from mmclough-mobl1.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.13.59])
- by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jan 2023 04:55:04 -0800
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org
-Subject: [PATCH v2 1/3] ASoC: SOF: sof-audio: Unprepare when
- swidget->use_count > 0
-Date: Mon, 16 Jan 2023 14:55:04 +0200
-Message-Id: <20230116125506.27989-2-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230116125506.27989-1-peter.ujfalusi@linux.intel.com>
-References: <20230116125506.27989-1-peter.ujfalusi@linux.intel.com>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 8185FB80D2F;
+ Mon, 16 Jan 2023 13:16:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19F72C433EF;
+ Mon, 16 Jan 2023 13:15:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1673874961;
+ bh=29QfTPcs9/gEQmgCKCXaRl7jYtU3HRfzrfTR4DlbQv8=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=Rwwmd6He0NxJjr4f1ILWqhp9FNFKb4tQ4NS8uikEnEMibnZru5eRe99uMM72gNsju
+ cGn2Ss2REDrQgwy/ZolLQ8L6nxfmA+c2J8j8SGlO/QJOslphsntYH7XyFGimQFKRiu
+ iryooyKcgNgoakq++RWAswZz0ns7CHHtCE9E8Iiz9V17fxVbX31lBClYjlC6yAZkUT
+ EPQIjH0zsMA+9TARs5LtI0wnXJ4qbRAtvbXvJw3bqgsb4NhVDZ5u8OqG2fprc5njDg
+ Qn/pccU0lxSfZILJey4qi15/zoNIuFVuh9fsrzVhA03TeyN3rkNNeNnbhbR48dhJnI
+ 66bGbBL9fqxYA==
+From: Mark Brown <broonie@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jai Luthra <j-luthra@ti.com>
+In-Reply-To: <20221230132644.6398-1-j-luthra@ti.com>
+References: <20221230132644.6398-1-j-luthra@ti.com>
+Subject: Re: [PATCH v2] dt-bindings: sound: tlv320aic3x: Add optional clock
+ and port properties
+Message-Id: <167387495862.317762.14606265116095883268.b4-ty@kernel.org>
+Date: Mon, 16 Jan 2023 13:15:58 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12-dev-69c4d
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,41 +79,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, rander.wang@intel.com,
- ranjani.sridharan@linux.intel.com, yung-chuan.liao@linux.intel.com,
- angelogioacchino.delregno@collabora.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+On Fri, 30 Dec 2022 18:56:44 +0530, Jai Luthra wrote:
+> Describe optional properties for clocks and ports that were missing in
+> the original txt binding, to fix warnings like:
+> 
+> aic33@18: 'assigned-clock-parents', 'assigned-clock-rates',
+> 	'assigned-clocks' do not match any of the regexes:
+> 	'pinctrl-[0-9]+'
+> 	arch/arm/boot/dts/omap2420-n810.dtb
+> 
+> [...]
 
-We should unprepare the widget if its use_count = 1.
+Applied to
 
-Fixes: 9862dcf70245 ("ASoC: SOF: don't unprepare widget used other pipelines")
-Cc: <stable@vger.kernel.org> # 6.1
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
- sound/soc/sof/sof-audio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+   broonie/sound.git for-next
 
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index e1ab8380e7d8..068501ed7951 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -274,7 +274,7 @@ sof_unprepare_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dapm_widg
- 	struct snd_soc_dapm_path *p;
- 
- 	/* return if the widget is in use or if it is already unprepared */
--	if (!swidget->prepared || swidget->use_count > 1)
-+	if (!swidget->prepared || swidget->use_count > 0)
- 		return;
- 
- 	widget_ops = tplg_ops ? tplg_ops->widget : NULL;
--- 
-2.39.0
+Thanks!
 
+[1/1] dt-bindings: sound: tlv320aic3x: Add optional clock and port properties
+      commit: b6e98cf4ed3baff0c2f7a1c1babf96fde8e129f3
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
