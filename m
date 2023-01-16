@@ -4,84 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EE9DC54EBE
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Jan 2023 18:07:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E49FC46467
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Jan 2023 19:48:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C98D5986;
-	Mon, 16 Jan 2023 19:06:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C98D5986
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4864056A6;
+	Mon, 16 Jan 2023 20:48:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4864056A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673892452;
-	bh=N8T9dC4MhCj1V1rc1Oi3oPDU4pzVY12HeNUEeFyLyCE=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=W0axNM0WjY7v6VVAMK71ehdwh/8bBuo4+10CwTv2ujr+G2TS5Xg31XVVQHX9q5eRm
-	 bZqXCMUY0y6xmXDpFDk0fFT190eg0Zjhd7+VZBzCDSN/+vySDxmiX9FGopdTxvlhll
-	 2b+cGkLjQFsSYNiZNJ559jOVIQiMA/AB1eqLcZg0=
+	s=default; t=1673898536;
+	bh=89XTpp4pKXTQp3RAMlhORG2/4WKMSeaCjvBxaSg27g0=;
+	h=Date:To:From:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Ghl/EFA5hc30FoFaDr42/RxCM/2zogZfQlpG9FUN4JyOrWI0he7AAIu6oIv+R7kq/
+	 TpGAxCyXphZhSo8U1HZ9NzfSnZsp/YBvHlB/JKih5CsXEYihs03+Oz2vy2Dxk3mMy2
+	 76ZHZZrtdQsZCq/31ZqZFj7XZ+ix2gRx0tmtpMyg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D6D6F80495;
-	Mon, 16 Jan 2023 19:06:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1427F80240;
+	Mon, 16 Jan 2023 20:48:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 036F2F804BC; Mon, 16 Jan 2023 19:06:16 +0100 (CET)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 51A0EF8024C; Mon, 16 Jan 2023 20:48:05 +0100 (CET)
+Received: from a7-17.smtp-out.eu-west-1.amazonses.com
+ (a7-17.smtp-out.eu-west-1.amazonses.com [54.240.7.17])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46F17F80083
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 19:06:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46F17F80083
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=m4fORAOP
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1673892370; x=1705428370;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=N8T9dC4MhCj1V1rc1Oi3oPDU4pzVY12HeNUEeFyLyCE=;
- b=m4fORAOPO33klZczhhkdVLuXO0tbrq0CF0iEfbZQg2TyL88YTZi/lb4Y
- AhiBo/UYEIXCYfgDFTaPyr69Jyeo9kYo0/qKczkW/BroD+4IByh4CgHHg
- kUgEpRxNv/ft/9ZUwWSuZg9IedEnV0SSCtu2FuiZpME97nvvlgAVBtZNx
- HlebHbF2RldF0IVAnXFX2oLHu0hULTIoqRHKf36PcYDP4zNKrEoZFRr8F
- Dg3XM0kNUzQwPLmgnCwaBUaV2bIBcvZXh8O1/PG7niXnigFd/vvlKG3QA
- +fp+XB24CkyuTWuktKUl38Pf9Oh28lhw9Cmtedk3e5vN6Z9yHDn4HZ0NB Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10592"; a="351767495"
-X-IronPort-AV: E=Sophos;i="5.97,221,1669104000"; d="scan'208";a="351767495"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jan 2023 10:06:02 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10592"; a="766987458"
-X-IronPort-AV: E=Sophos;i="5.97,221,1669104000"; d="scan'208";a="766987458"
-Received: from mahdiahm-mobl1.amr.corp.intel.com (HELO [10.213.173.94])
- ([10.213.173.94])
- by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jan 2023 10:06:01 -0800
-Message-ID: <62272f17-bb97-aa10-d5d9-0914595e5431@linux.intel.com>
-Date: Mon, 16 Jan 2023 09:02:08 -0600
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42FE2F8023B
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 20:48:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42FE2F8023B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key, unprotected) header.d=i2rs.nl header.i=@i2rs.nl
+ header.a=rsa-sha256 header.s=2vyqd27h6gu7kyrtaamxo2tr266ggkha
+ header.b=hvmmdda1; dkim=pass (1024-bit key,
+ unprotected) header.d=amazonses.com header.i=@amazonses.com
+ header.a=rsa-sha256 header.s=ihchhvubuqgjsxyuhssfvqohv7z3u4hn
+ header.b=APPNv2Kx
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=2vyqd27h6gu7kyrtaamxo2tr266ggkha; d=i2rs.nl; t=1673898480;
+ h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type:Content-Transfer-Encoding;
+ bh=89XTpp4pKXTQp3RAMlhORG2/4WKMSeaCjvBxaSg27g0=;
+ b=hvmmdda1IUY/kZbFcbIvxQ0XHLayW1zFGKbWFJvu12vV0E5fICkA7rw3dN4ISY03
+ PcWhvFfAVnlfuFSyIKUAyFrFW2mpEiop5Fl7IE/rFllxxx0OWVxHCunEjFw7Emg52SQ
+ SMxwmstt1jm8ni6bljHg/YXbQ4YyWkujQng+CVK8=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+ s=ihchhvubuqgjsxyuhssfvqohv7z3u4hn; d=amazonses.com; t=1673898480;
+ h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type:Content-Transfer-Encoding:Feedback-ID;
+ bh=89XTpp4pKXTQp3RAMlhORG2/4WKMSeaCjvBxaSg27g0=;
+ b=APPNv2KxvBEYADXTrvgQoZ5J1+heqcW2DGbXlfoYI7XDWC/UmtPUgRcd1oAqlQbc
+ VYHqez70MBAxBswq/Suf3QbG0mVQubHEg/B6SJDw4c5ADWwsrplzIAwJ8VQhS/3Z0cY
+ 97ZyBLyHabkburfQVnWWebiAv2QDbaMkSFrm3kMk=
+Message-ID: <01020185bc1fd1bd-853c4526-e5d2-428a-a216-1c38763f0b21-000000@eu-west-1.amazonses.com>
+Date: Mon, 16 Jan 2023 19:48:00 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH 19/19] ASoC: amd: ps: increase runtime suspend delay
+ Thunderbird/102.6.0
+To: alsa-devel@alsa-project.org
 Content-Language: en-US
-To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>,
- Mark Brown <broonie@kernel.org>
-References: <20230111090222.2016499-1-Vijendar.Mukunda@amd.com>
- <20230111090222.2016499-20-Vijendar.Mukunda@amd.com>
- <c7f018e3-c8be-6819-0ece-244bfb943c62@linux.intel.com>
- <0aaf3fa5-bcf1-ec06-8f78-c61e8809398e@amd.com>
- <5a34e6f7-eaf1-8128-81e4-81f65541d9a8@linux.intel.com>
- <1a14e117-4216-b98d-f972-c9a02cf79d1e@amd.com>
- <eb12ed5d-a9f9-cb8d-28f5-ac84c75cf441@linux.intel.com>
- <90782037-109b-b197-ca17-b7d199931f7d@amd.com>
- <e73032b1-ac5b-4a3a-e2a0-8ac121853dee@linux.intel.com>
- <Y8G3mPUDWWUu/3ZR@sirena.org.uk>
- <ef05d550-c2aa-e256-58ec-612c2a3294ca@amd.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <ef05d550-c2aa-e256-58ec-612c2a3294ca@amd.com>
-Content-Type: text/plain; charset=UTF-8
+From: Jeroen Baten <jbaten@i2rs.nl>
+Subject: Question about amidi -l output
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Feedback-ID: 1.eu-west-1.Qg6RKS0Vh85rXfbGE/RC4HMWYYzuNzzB1o81d5I/9kU=:AmazonSES
+X-SES-Outgoing: 2023.01.16-54.240.7.17
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,49 +78,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Mastan.Katragadda@amd.com, Sunil-kumar.Dommati@amd.com,
- Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
- Basavaraj.Hiregoudar@amd.com, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, vkoul@kernel.org, "Limonciello,
- Mario" <mario.limonciello@amd.com>, arungopal.kondaveeti@amd.com,
- Syed Saba Kareem <Syed.SabaKareem@amd.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi,
 
+I hope someone can point me in the right direction.
 
-On 1/16/23 02:35, Mukunda,Vijendar wrote:
-> On 14/01/23 01:27, Mark Brown wrote:
->> On Fri, Jan 13, 2023 at 11:33:09AM -0600, Pierre-Louis Bossart wrote:
->>
->>> I do recall some issues with the codec jacks, where if the card
->>> registration happens too late the codec might have suspended. But we
->>> added pm_runtime_resume_and_get in the set_jack_detect callbacks, so
->>> that was solved.
->> Right, I would expect that whatever needs the device to be powered on
->> would be explicitly ensuring that this is done rather than tweaking
->> timeouts - the timeouts should be more of a performance thing to avoid
->> bouncing power too much, not a correctness thing.
-> Machine driver probe is executed in parallel with Manager driver
-> probe sequence. Because of it, before completion of all peripherals
-> enumeration across the multiple links, if card registration is
-> completed, codec register writes will fail as Codec device numbers
-> are not assigned.
-> 
-> If we understood correctly, as per your suggestion, We shouldn't use any
-> time bounds in machine driver probe sequence and before registering the
-> sound card, need to traverses through all peripheral initialization completion
-> status for all the managers.
+So the Ardour application uses the output of amidi -l to name USB 
+devices. In my case I now have 3 devices all named "Boutique MIDI 1", 
+although they are 3 different types of synth.
 
-What's not clear in your reply is this:
+I already added the devices to usb-list and system-hwdb so lsusb shows 
+up with correct synth names.
 
-What codec registers are accessed as a result of the machine driver
-probe and card registration, and in what part of the card registration?
+What can I do to make amidi -l show better device names? Where do these 
+names come from? What lib or db should I look at to patch and submit?
 
-Are we talking about SoundWire 'standard' registers for device/port
-management, about vendor specific ones that are exposed to userspace, or
-vendor-specific ones entirely configured by the driver/regmap.
+I hope someone can help me.
 
-You've got to give us more data or understanding of the sequence to
-help. Saying there's a race condition doesn't really help if there's
-nothing that explains what codec registers are accessed and when.
+Regards,
+
+Jeroen Baten
+
+-- 
+Jeroen Baten              | EMAIL :  JBATEN@I2RS.NL
+  ____  _  __              | web   :  www.i2rs.nl
+   |  )|_)(_               | tel   :  +31 (0)648519096
+  _|_/_| \__)              | Frisolaan 16, 4101 JK, Culemborg, the Netherlands
+
