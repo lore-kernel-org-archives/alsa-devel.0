@@ -4,67 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BFE3C63797
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Jan 2023 14:04:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4459AC63797
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 Jan 2023 14:05:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20FEF56CD;
-	Mon, 16 Jan 2023 15:03:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20FEF56CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 883A956E1;
+	Mon, 16 Jan 2023 15:04:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 883A956E1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673877881;
-	bh=jBxXofiDuMYrEyqP2oAXhBy9CTP5zsteBxobWUWQSW0=;
+	s=default; t=1673877905;
+	bh=rKhjvkQjqw5KgkQ2IGqQE+M1sJPep97rfaS5IO0auYg=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=PJeuUPnADYVtVcng/QJgsirnDyhEyCTq65F0qhkPVrk+NON0OH6Gf9yQY3OydjFCm
-	 C6lO699V3J1+JfdbUqW7hkR5kJkZwa3wdmUCvZD4hcK5y/6V62aT6aExqaU9xb/8+u
-	 ZZJQM82FHFz1xUSYhcdxulkNmsV+Bc7JHZjWftkk=
+	b=c9oN3sn65cpLRXtKYE2F54yhIpiSlxvHg9tT5dPBpua/qAtvYH5JTMXBwy7PRNuMk
+	 eiiiH7abOMd+T9+Q9LAEBMn1g7tzdHVYPdFAzTA2J9JJ1HjqpwVYyxBkethqL6zcBN
+	 hfntrUyGQPJ23ISUEXVjcLIYDVSs36DUT0yjFovI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84975F80570;
-	Mon, 16 Jan 2023 15:02:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA0D5F8057A;
+	Mon, 16 Jan 2023 15:02:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82BF3F80578; Mon, 16 Jan 2023 15:02:41 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 299F4F80570; Mon, 16 Jan 2023 15:02:42 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE709F80570
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 15:02:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE709F80570
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39B44F80571
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 15:02:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39B44F80571
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=DbtbqWIm
+ header.s=k20201202 header.b=NQ3kgJk1
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 3EB01B80F96;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 02D2C60FCA;
+ Mon, 16 Jan 2023 14:02:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1345AC433EF;
  Mon, 16 Jan 2023 14:02:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85982C433EF;
- Mon, 16 Jan 2023 14:02:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1673877753;
- bh=jBxXofiDuMYrEyqP2oAXhBy9CTP5zsteBxobWUWQSW0=;
+ s=k20201202; t=1673877757;
+ bh=rKhjvkQjqw5KgkQ2IGqQE+M1sJPep97rfaS5IO0auYg=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=DbtbqWImrBtoGgjSwtziE2ghkeP32f9gaZaEmbgsgBy7yUWLrYxJIT3hFMOt9RQU5
- 54/HiYUyGUBTuQx0OtyXBzFeZJGSizR7UierPOqsrzB1kJlcp8/EqqINsEUJCXgf8C
- hF9L0PeXmhEBaiUvT8Rua7ThT25IHH/gTaeafhc/1tiDECh1LhGezS6DfSaaYHiDky
- sEIXEKTGtzhAjnFYkHSwUMTd09Z2Uwcxr3AQimokDVQdAIZ0y0bNAf+naahhtjBQnv
- VhGqBozQQWtlQF3bf/1TSe+pdkIBymMRZsF7pQpOmN80m/6PKppOuUvDNwJsF//SeG
- VKsaRvYXfEvwQ==
+ b=NQ3kgJk1vmkTeA1lOwjtfoxP/rT4tY+1KhWg4RhMbiT77aX/ozV1XBKLXQUvBlYjg
+ 4ZdNbYK7X6qEo1Nz0xQfq9bZIAyygVGDnASxf+sU6HiTb06+XHvD/T6XJvJvlScQJ8
+ LmRHDh5xQD1T0h8H0WmNBWFZBbq6LLpvsD1CL2C7xfRwBgaZEc8zZl6OS5UH7CSuyo
+ 5ZCzZqq/sUh3eUoSsXZq2Iba2GLU5Wc0gTy2Ef/kxtYmo6xAmTCgVeYxG/3FgnmBF/
+ UuRIBtlpEMCedDWLznp5koEuOiebyX2Ty1CrrX4p4qshlh7JvN1EQHSEBz91+mqbmU
+ DWEE/p7TK8Dng==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 11/53] ASoC: amd: yc: Add ASUS M5402RA into DMI
- table
-Date: Mon, 16 Jan 2023 09:01:11 -0500
-Message-Id: <20230116140154.114951-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 12/53] ASoC: support machine driver with max98360
+Date: Mon, 16 Jan 2023 09:01:12 -0500
+Message-Id: <20230116140154.114951-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20230116140154.114951-1-sashal@kernel.org>
 References: <20230116140154.114951-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -81,45 +78,39 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- =?UTF-8?q?Aniol=20Mart=C3=AD?= <aniol@aniolmarti.cat>, lxy.lixiaoyan@gmail.com,
- tiwai@suse.com, wimvanboven@gmail.com, lgirdwood@gmail.com,
- Mark Brown <broonie@kernel.org>, mario.limonciello@amd.com,
- leohearts@leohearts.com, xazrael@hotmail.com, Syed.SabaKareem@amd.com
+ allen-kh.cheng@mediatek.com, lgirdwood@gmail.com, trevor.wu@mediatek.com,
+ renzhijie2@huawei.com, tiwai@suse.com, jiaxin.yu@mediatek.com,
+ Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
+ Mars Chen <chenxiangrui@huaqin.corp-partner.google.com>, tzungbi@kernel.org,
+ matthias.bgg@gmail.com, julianbraha@gmail.com,
+ linux-arm-kernel@lists.infradead.org, angelogioacchino.delregno@collabora.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Aniol Martí <aniol@aniolmarti.cat>
+From: Mars Chen <chenxiangrui@huaqin.corp-partner.google.com>
 
-[ Upstream commit a0dd7fcab5cd221fa960f594c586e1f9f16c02c0 ]
+[ Upstream commit 810948f45d99c46b60852ef2a5a2777c12d6bb3e ]
 
-ASUS VivoBook 13 OLED (M5402RA) needs this quirk to get the built-in microphone working properly.
-
-Signed-off-by: Aniol Martí <aniol@aniolmarti.cat>
-Link: https://lore.kernel.org/r/20221227224932.9771-1-aniol@aniolmarti.cat
+Signed-off-by: Mars Chen <chenxiangrui@huaqin.corp-partner.google.com>
+Link: https://lore.kernel.org/r/20221228103812.450956-1-chenxiangrui@huaqin.corp-partner.google.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/mediatek/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-index 469c5e79e0ea..0d283e41f66d 100644
---- a/sound/soc/amd/yc/acp6x-mach.c
-+++ b/sound/soc/amd/yc/acp6x-mach.c
-@@ -206,6 +206,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "UM5302TA"),
- 		}
- 	},
-+	{
-+		.driver_data = &acp6x_card,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "ASUSTeK COMPUTER INC."),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "M5402RA"),
-+		}
-+	},
- 	{
- 		.driver_data = &acp6x_card,
- 		.matches = {
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index 7bdb0ded831c..b027fba8233d 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -187,6 +187,7 @@ config SND_SOC_MT8186_MT6366_RT1019_RT5682S
+ 	depends on SND_SOC_MT8186 && MTK_PMIC_WRAP
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_MT6358
++	select SND_SOC_MAX98357A
+ 	select SND_SOC_RT1015P
+ 	select SND_SOC_RT5682S
+ 	select SND_SOC_BT_SCO
 -- 
 2.35.1
 
