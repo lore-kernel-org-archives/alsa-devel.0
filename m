@@ -4,80 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85F21C32793
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 16:08:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E49A1C32793
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 16:09:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B909B793B;
-	Wed, 18 Jan 2023 17:07:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B909B793B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2556844EB;
+	Wed, 18 Jan 2023 17:08:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2556844EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674058097;
-	bh=SCJAx3eH54KTFqildRuRoj2gIH2ZHXw9yE17zLyn9MA=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1674058181;
+	bh=WREOB3t8flR6ZGfm7JG3cDqAE+2VD24BdQqG9fbzXtg=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=GjwuZsOHdFE7BLPzpkeKAUdGOjgdsPeu1eqCUZzZJSweDPuEXA3wO5woK6plRxJRG
-	 Lyf5ezCu5/ulGVWCcG3/XhYNkTZevMU0REGXqJSdUUKe0EDz0PI18z4UMYYHGSGUJL
-	 7sVl7pqbUIxZBdpZ72+HN/dzLGKuaqQkDH2ODkto=
+	b=WzduN0PRoWkM4ptPjhOax+dIQZUuHmz2upuKitRBwxNL8H4xDs1N2vYGEqmYRckW0
+	 oXuQVRVYhw4h823XaGq5P/+pUd4gaQlCGqnpyXiKnzGVQ6RZpy4Xfl4wzhM2Zfnmnn
+	 wzu9o1WIEjeosyrD1oH87FRnn7mSQxdHuwmqae8E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5FDD0F80580;
-	Wed, 18 Jan 2023 17:05:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C12DDF80083;
+	Wed, 18 Jan 2023 17:08:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F068F8057C; Wed, 18 Jan 2023 17:05:21 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 1232FF8047B; Tue, 17 Jan 2023 20:01:36 +0100 (CET)
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com
+ [IPv6:2001:4860:4864:20::31])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 229C1F8024C
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 17:05:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 229C1F8024C
+ by alsa1.perex.cz (Postfix) with ESMTPS id DBF02F8023A
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 20:01:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBF02F8023A
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=E3JIXvjH
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 30IEDgrB022836; Wed, 18 Jan 2023 10:05:08 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=frUZfxKkTDkW87u5OQbfX6rw2QFXA5a5bNSyUepkgBc=;
- b=E3JIXvjHd/ksH23puwvZaV/38rQ5qDiH5szpk6owT2rX7sNDj9Ok5Ye+6U2MtHL3Vw1T
- FcAzKWiUca/5rPmnUJ76aFd4kIKioPDnav5Xx0i3Fxfj2CJLrmJhd8pAV5P8ymJ0TpPy
- OOucnoUgWROiEZ5UZVg3Dc3R0idqh5o5+qfAWDMvEY7eI6WJPinxMYLmDY0428xoAX1n
- hN1ie6extehDTziAHyqQ9ugPq+ReC7VbOxbSToeg9NvSbuuCJC6ce5ohvRu2EPWSpzG4
- amXYoqKZrIlWKhnUJKxA3USneIhvxASvivpkA0365vG7/CfS3PqlWXkDqeC22HICw7m7 og== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3n3spx6vk9-6
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 18 Jan 2023 10:05:08 -0600
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Wed, 18 Jan
- 2023 10:04:58 -0600
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.7 via Frontend Transport; Wed, 18 Jan 2023 10:04:58 -0600
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.202.160])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id ED30B11CB;
- Wed, 18 Jan 2023 16:04:57 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart
- <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 7/8] ASoC: cs42l42: Don't set idle_bias_on
-Date: Wed, 18 Jan 2023 16:04:51 +0000
-Message-ID: <20230118160452.2385494-8-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230118160452.2385494-1-sbinding@opensource.cirrus.com>
-References: <20230118160452.2385494-1-sbinding@opensource.cirrus.com>
+ unprotected) header.d=landley-net.20210112.gappssmtp.com
+ header.i=@landley-net.20210112.gappssmtp.com header.a=rsa-sha256
+ header.s=20210112 header.b=7UFMvbpK
+Received: by mail-oa1-x31.google.com with SMTP id
+ 586e51a60fabf-15bb8ec196aso21231570fac.3
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 11:01:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=landley-net.20210112.gappssmtp.com; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=OgaymgAXi9Z6g6pYwBOzM02/P477EqWitgDVTE3LFbU=;
+ b=7UFMvbpKkJyjWVLlq6ctk0nXiLL3RrLgvGqk+/g8pD0wAzMEFNodkoMNXxSPAzvJye
+ T4nqVDpRCF5Pkw4fe0ROrd1BjE8DZbycDcUSRlgnihtqJaZkkqELJ7TzEZYyPHojRNxM
+ MBh6YZCgcmJgLXwboxe3bvrjmez4qHhfCRIxGuc2G0+QOOJ/eKT38XBZ7MfSSmNLVm7z
+ gDt6C3Ymsnj+eKLcMZ0dj5q2KFKnZutgcY/1C6+IgeLmT5DwAU4QsUhG6TCQdnlD6nEb
+ fYtWfawIuB6wYahQA/cq89ISwAR2GZXbrrCFpCVxRJqHc9Mn337ID3jg/QgfKjbyHIu6
+ BObQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=OgaymgAXi9Z6g6pYwBOzM02/P477EqWitgDVTE3LFbU=;
+ b=gkrDO8LKnE8qs/iczsEep2mod4CbNmlhUXZlftjWBdlWYCbLQfuI3i9s0Rzk5wjrJQ
+ kNR48tVBRgvpiNKQqyNwmpQCpeL1SKJ1hJPUfg6zBHwq8VhkYRfKaZ1nNdZkjJd/zrYp
+ qgS3qtwbUD5UYAdVbZRPD2VW5Wdi19GeseSar5Ers9I72YUqKphW+esG83Y1jL59cnyy
+ kBzWd/UBCjB6/A5Vdi5ULGrBPDchV9RWMwQozAi9RIpIO1NRWS/Uzv1k5XwyVtn8exRB
+ 4Oezk0WldnPHPEtL1bmwv7kQPAz3Iu9juDaXo+Mydz2Ub53yHrn+0bzqoc87ey8TpZZH
+ 1iUg==
+X-Gm-Message-State: AFqh2kos9XFL5xns9UiStoZXNNsg8p+ygJS4baUMuuW2JB2iLSxhOmtZ
+ Mk8XWfXf3Z99fpHeGcp9d4i8pA==
+X-Google-Smtp-Source: AMrXdXsgzCxMhqm+bb3il7EsJjEv0NbGPCzT1qf9VREFYRxVllxrk/YEzaFAyrBdtefAaDgGfnk/UQ==
+X-Received: by 2002:a05:6870:c190:b0:15e:cfca:b312 with SMTP id
+ h16-20020a056870c19000b0015ecfcab312mr2807015oad.52.1673982083592; 
+ Tue, 17 Jan 2023 11:01:23 -0800 (PST)
+Received: from [192.168.86.224] ([136.62.38.22])
+ by smtp.gmail.com with ESMTPSA id
+ r18-20020a05687080d200b0012763819bcasm16664335oab.50.2023.01.17.11.01.21
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 17 Jan 2023 11:01:22 -0800 (PST)
+Message-ID: <9325a949-8d19-435a-50bd-9ebe0a432012@landley.net>
+Date: Tue, 17 Jan 2023 13:13:38 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: lo4yHFbhzh4p8Z6_5t_7Dhw_IJrSF4LQ
-X-Proofpoint-ORIG-GUID: lo4yHFbhzh4p8Z6_5t_7Dhw_IJrSF4LQ
-X-Proofpoint-Spam-Reason: safe
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: remove arch/sh
+Content-Language: en-US
+To: Christoph Hellwig <hch@lst.de>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+References: <20230113062339.1909087-1-hch@lst.de>
+ <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
+ <20230116071306.GA15848@lst.de>
+From: Rob Landley <rob@landley.net>
+In-Reply-To: <20230116071306.GA15848@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailman-Approved-At: Wed, 18 Jan 2023 17:08:49 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,49 +105,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
- Stefan Binding <sbinding@opensource.cirrus.com>
+Cc: linux-fbdev@vger.kernel.org, Rich Felker <dalias@libc.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, linux-sh@vger.kernel.org,
+ alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ linux-arch@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>,
+ linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ linux-gpio@vger.kernel.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ netdev@vger.kernel.org, dmaengine@vger.kernel.org, linux-rtc@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+On 1/16/23 01:13, Christoph Hellwig wrote:
+> On Fri, Jan 13, 2023 at 09:09:52AM +0100, John Paul Adrian Glaubitz wrote:
+>> I'm still maintaining and using this port in Debian.
+>>
+>> It's a bit disappointing that people keep hammering on it. It works fine for me.
+> 
+> What platforms do you (or your users) use it on?
 
-idle_bias_on was set because cs42l42 has a "VMID" type pseudo-midrail
-supply (named FILT+), and these typically take a long time to charge.
-But the driver never enabled pm_runtime so it would never have powered-
-down the cs42l42 anyway.
+3 j-core boards, two sh4 boards (the sh7760 one I patched the kernel of), and an
+sh4 emulator.
 
-In fact, FILT+ can charge to operating voltage within 12.5 milliseconds
-of enabling HP or ADC. This time is already covered by the startup
-delay of the HP/ADC.
+I have multiple j-core systems (sh2 compatible with extensions, nommu, 3
+different kinds of boards running it here). There's an existing mmu version of
+j-core that's sh3 flavored but they want to redo it so it hasn't been publicly
+released yet, I have yet to get that to run Linux because the mmu code would
+need adapting, but the most recent customer projects were on the existing nommu
+SOC, as was last year's ASIC work via sky130.
 
-The datasheet warning about FILT+ taking up to 1 second to charge only
-applies in the special cases that either the PLL is started or
-DETECT_MODE set to non-zero while both HP and ADC are off. The driver
-never does either of these.
+My physical sh4 boards are a Johnson Controls N40 (sh7760 chipset) and the
+little blue one is... sh4a I think? (It can run the same userspace, I haven't
+replaced that board's kernel since I got it, I think it's the type Glaubitz is
+using? It's mostly in case he had an issue I couldn't reproduce on different
+hardware, or if I spill something on my N40.)
 
-Removing idle_bias_on allows the Soundwire host controller to suspend
-if there isn't a snd_soc_jack handler registered.
+I also have a physical sh2 board on the shelf which I haven't touched in years
+(used to comparison test during j2 development, and then the j2 boards replaced it).
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42.c | 1 -
- 1 file changed, 1 deletion(-)
+I'm lazy and mostly test each new sh4 build under qemu -M r2d because it's
+really convenient: neither of my physical boards boot from SD card so replacing
+the kernel requires reflashing soldered in flash. (They'll net mount userspace
+but I haven't gotten either bootloader to net-boot a kernel.)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index a92499876ce2a..aa2223bfb885a 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -597,7 +597,6 @@ const struct snd_soc_component_driver cs42l42_soc_component = {
- 	.num_dapm_routes	= ARRAY_SIZE(cs42l42_audio_map),
- 	.controls		= cs42l42_snd_controls,
- 	.num_controls		= ARRAY_SIZE(cs42l42_snd_controls),
--	.idle_bias_on		= 1,
- 	.endianness		= 1,
- };
- EXPORT_SYMBOL_NS_GPL(cs42l42_soc_component, SND_SOC_CS42L42_CORE);
--- 
-2.34.1
+I include sh4 in the my mkroot builds each toybox release, I have a ~300 line
+bash script that builds bootable toybox systems for a dozen-ish architectures,
+including building a kernel configured to run under qemu:
 
+  https://github.com/landley/toybox/blob/master/scripts/mkroot.sh
+
+And I ship the resulting bootable system images, most recent release is at:
+
+  https://landley.net/toybox/downloads/binaries/mkroot/0.8.9/
+
+As described at:
+
+  http://landley.net/toybox/faq.html#mkroot
+
+Various people in Japan have more hardware, but I haven't made it physically
+back there since 2020. (My residency card expired during the pandemic.)
+
+Rob
