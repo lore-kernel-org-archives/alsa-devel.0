@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDD1BC63797
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Jan 2023 12:14:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1DFAC3DA78
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Jan 2023 12:15:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E4AE60F8;
-	Tue, 17 Jan 2023 13:14:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E4AE60F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id E5E7A63EC;
+	Tue, 17 Jan 2023 13:14:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5E7A63EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673957691;
-	bh=rGZDowB938FY5rEc62uxZubb2Ip5dpb68llWewfB7pQ=;
+	s=default; t=1673957714;
+	bh=r6oCh/ir4X+5F1PQ3w3dI9znniEmwXNhV9hUfc5WL3k=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=I0m2j+kcslw1s1vwFVmtnwMaNg/1eE+DKLe4X4uy14HhimyyokacUaqgsLI5PkT1k
-	 rtfTU020gs2lKudj0sHlqkqwr9sccXeuXgnJnjC7hRkUAy7Mma4BS6o1rmzEF0MRIV
-	 0oDFFp0CPuQB66aARty3f7eHf52GArBwHqjgEgiY=
+	b=nHDUbvyXdscvzk/BiBC57tButzRDpPG88uo+OR3lKnxHp0sdwCAayaVDbnxTCdBnZ
+	 78RqZDsbjm7/mh4jWKfFNFXi42MDyYQcov8S19hbljtHXkK/TL8RL1WhGJTqiEeAQZ
+	 emOvdOdnrRZOh7M/dM8Aanwq22G0ln1sL5LQ22vo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D1A6F80506;
-	Tue, 17 Jan 2023 13:13:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB8FAF80549;
+	Tue, 17 Jan 2023 13:13:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65E75F80506; Tue, 17 Jan 2023 13:13:33 +0100 (CET)
+ id A3B9FF8053C; Tue, 17 Jan 2023 13:13:34 +0100 (CET)
 Received: from EUR05-VI1-obe.outbound.protection.outlook.com
  (mail-vi1eur05on2067.outbound.protection.outlook.com [40.107.21.67])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 933FFF80083
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 13:13:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 933FFF80083
+ by alsa1.perex.cz (Postfix) with ESMTPS id 44CB5F8026D
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 13:13:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44CB5F8026D
 Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
  unprotected) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com
- header.a=rsa-sha256 header.s=selector2-NXP1-onmicrosoft-com header.b=dTeElcvp
+ header.a=rsa-sha256 header.s=selector2-NXP1-onmicrosoft-com header.b=FB4QA8LI
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DbEtft/YaSHLAaGnolOgbg70T8Yxo0e2AZJbTYGDF+nEwdci750GvbBW1eHY3EypDKTEWu44K91O6En4cMYFMYC4WYmWcRJco86XC6/fxrF2rPBFd8H3JHY8pG1yQXyiwVnafzSQ5HtL3d+YeIsVAbC1GyunbN+wPbVv7c2YUYKJduVuCi0sKkcDugys0+WP3tVrMjJsEFlM0rCqP5vr8WTIjTfzRbNYk4hZe/QsOhVFzsfcg9P3dPQK2loomE6pbH0kKzes0eGphCA3zit6/HOljt8ty/azN5uUKdfCLWRZWhws5zriToHzgdUAtWkZ1/Ij4PwdhMlJz2R1jKx90g==
+ b=Dp7+2pfEmceQbbiv8OVk8ybL9JBjBo+Hx7GNMrOY0+olypBrd2rVGwmcbRyewOB3Yisa2Qqk/HXph6LHuwetmGnQ8o1rxf+Gyb4VQ3wPKOYjiHXMXwR/7vbQYmTmt2FNZzK3YxWnvvQ36ncTCA4KcUOAZSLmsHihbb1JUNo3DcYmj3R069G8sLDrJF05e/YVkQPN0B6JfGCZEr+Py3/KqdurT6LbAfSo8vN0XrrwhEvh3Qe+93pZVPjj8e387mNrNKmdSKdD+kKg0qSNx25/IawNpbsntVvdAns91wVraRR0vRud69fdb+AbcR432Lcqb/n+Agd/PWe70h3QSYk5WA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QQFoR14869BPDFAV3d4Dnf4aqmzatPC7m64G6ndoUCA=;
- b=Y1hcn036saBlkstiPdFU1DxaRzTy0QQz3lhKZi50qRqv5OTfcM8f6lkur4qyzLZQc6yOfgWXDFYGZGSLq04/y7DvAK+JAiPeP1dQR/qHL9kdOF9S9aGiRS2dTvcTNkLUYlbR3YlCb2einYEj/525pFUczxPrC6OC3IdeJxeTxStWfWeI9WlEM+7mKbvhN92G6HyQCIr2LC/VXcqgC5y05oyZeix9iCE5hDvRcaV2zaTYjYH6i3HlujwIE/gwatmRBP9Hj9gISwmr6PYM7TPcS4r4GlDuaXNdYNWNr7WavJmb6Dh0+99Flqp2V08tQws2dN3ONlKQp9mIG8hoDGxUeg==
+ bh=oFBkJNu6zyKt1vYhb2aturuZ18OYnhjzeVueMXVKk/U=;
+ b=gh/G8T5u5TFaK9xPgrkOhhSgzFtkFBDWpuQb9DH8g8dOF5PNyte4OiL2d+fz8J1Ip7WlzE8AU3LCg5oEJQqRQIgwM2T/QM2K+uqmsOpv17xybRslls/T+FxVsKmEUkStnuacFqCjCTjGxLDoDuXMk8TPZ3a9TTAbVtI9LnhT6m14C8MFupqwNCDzbUi29zDQM4RvtU+/HPL5t1dbq5Rob7IvDhBM7hXb9WN1f898zYmWFM2zoktDoNnhCYcjfE2RFMTHh48TypxoNfPF+HqbLninf2J/BPZAMJqxcuDEO1l2vzpxBtcg1LvYA8FikMhKILfiDs30unIBVGpRbaxKfw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QQFoR14869BPDFAV3d4Dnf4aqmzatPC7m64G6ndoUCA=;
- b=dTeElcvpjRpVZOMXX6MlahOyce9pqvqVKORFunPR2QzG/mteE3dcuGQeefGUH2xnz6K9a/58UmH5+yIdOL3IOns3QJ7XqOeKKVAZeSEBqJu2tXm97gqSYeBUt3RAyybQ7n7CDGqYHByU10t6reddZH0otFyfUg7xV7fovi1BQ0Y=
+ bh=oFBkJNu6zyKt1vYhb2aturuZ18OYnhjzeVueMXVKk/U=;
+ b=FB4QA8LIB2t604w5GIRQnq1XR2kwUFC2tyeyXDqni1P/d/lpql0fJvhZseNvpvBOU8t1G0XicYrs/1y2Sgg/YU0xTWx1QdMg4SlVmkQZgEpDxQSExpoNjfwGDni1Wst2St7n8pJBOmNZ0gsFRvjH846A85x/HVvH8ZvbqNu34GU=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=oss.nxp.com;
 Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
  by PAXPR04MB9373.eurprd04.prod.outlook.com (2603:10a6:102:2b5::17)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5986.23; Tue, 17 Jan
- 2023 12:13:25 +0000
+ 2023 12:13:28 +0000
 Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
  ([fe80::b6f0:fe1d:5509:c226]) by VI1PR04MB5151.eurprd04.prod.outlook.com
  ([fe80::b6f0:fe1d:5509:c226%4]) with mapi id 15.20.6002.013; Tue, 17 Jan 2023
- 12:13:25 +0000
+ 12:13:27 +0000
 From: Daniel Baluta <daniel.baluta@oss.nxp.com>
 To: broonie@kernel.org
-Subject: [PATCH 1/4] ASoC: SOF: Prepare ipc_msg_data to be used with compress
- API
-Date: Tue, 17 Jan 2023 14:13:04 +0200
-Message-Id: <20230117121307.200183-2-daniel.baluta@oss.nxp.com>
+Subject: [PATCH 3/4] ASoC: SOF: Add support for compress API for stream
+ data/offset
+Date: Tue, 17 Jan 2023 14:13:06 +0200
+Message-Id: <20230117121307.200183-4-daniel.baluta@oss.nxp.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230117121307.200183-1-daniel.baluta@oss.nxp.com>
 References: <20230117121307.200183-1-daniel.baluta@oss.nxp.com>
@@ -80,53 +80,53 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: VI1PR04MB5151:EE_|PAXPR04MB9373:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4d71e718-acc8-4325-6a26-08daf8843be0
+X-MS-Office365-Filtering-Correlation-Id: 54a05b0d-d761-4ef1-5297-08daf8843d54
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r0upXdcoeqosPJSXXfuOC/bKs8yrarx1Sg2yMH3cowG30Xv55s2w0W5eGSBdd3Gsv4x7TGU4++DCREm5/XO/GXzcFShF1HHWVrTiZlKwu1Tt1roYEbkDDZYeYvYUsLfmpjRYeEq2Ayuhti1Xxa6w5QnRujeYbEQvWYVlDgPiEXyqUWFhZlCQ2auaiYhvrMUBi/Vom8oV/2VLkTdFPad4zWV7inyTVnTHtwbPGxweUHHG6MDMc4mEkUPsOxbFQj7OUPYAIm1ulSE1I53OwnTQs6V4i9Z6phW5AEIf59yIu0M8yOHnQPGXDXN7oH84uUORzzAPXnf6CnG5aNJKKhzTuoCxqEVXzM8BY863gCkYh6tj9zMoafkTzuFZ6rw/agdMvJlOoq9w34BxKkR1ACXmAJ/EMQQRJvmef9Y3VT/gGXn5VNCIG58gNlnzAfmJ/62CzF38DPV4uZJw+hmuHEIkNFj0OPQzp25a9FvkSXSGnpzKqhPyNMB5JkARB7XyjZnAYQQW5bbqiiKQgfVrdRV5Ex4JI/xMwZqa9cVoBtpDhGshTl46fuonySOmCPkj1VPwXXwvtyVes/0cF9lwn6XpSd4B6S1t6Xf8fS7pWTbXASORE/xSAFyeq/Fhc46XFs2OTVSu//0B5895JRrnUUSqOJrhipWYjOEcjEzBtprtn9tmm1s+j3M5T1KOEYLokAvv3GCWxQbmxPz0yXTdUoDa7Q==
+X-Microsoft-Antispam-Message-Info: +a+ccYNEXahaB9jyq3RelcYnhwzCYcEtQPVUl7jRz5g2ML25kGaoNA3VYGvn5PvsJaxl4Jg399+7FzKB5atD0uOOr5hbHPefYN5zVX4Tk4BRfNXH3ZW8wacZCjUG/6mLJo7BiPAb5HCp30ff8mi+788ioI7ITNL1U6LjODNCEB2gJy4MWHdxFQ3k88AiDYEeu2VEV29yCn9iGZ8vzsiOgU3t6R0r8o4z5g2eTidEpIGrK6Ww7fyX0BE+s9S3lYvglwphVq7hMwZuy6ZO+PiAOyXgYKdsLL8Q4esn4bPJMv87M6WX4pHG0ZpHy6cFtuEOVS9mEBppvM1CxbJbt1CDOS5nCGIDIpy1Pd6nNnp2ZX3423itO1dV7jtjww41r1w+Jxs/+ML/do33G2uVHR2Ex/P0/AiWiOFlzXvrxS3wUZvL8XkdO4ey9lBqoJuSrAFSM7US+C0KMJaRNlAPB0lE/a/XLsX3ruS7z6HwAhBm08csZJrqspyTJZ9iMWFGMKpKtXyTOurZRidnk7T+AW7K/aw0Wmzjt7Hjpzoldg09wjCqaaIy9z5kkaXLkxoX2HFHK5uYC/JBFFbtyP1u/v06hIq3C3a2VudScJntPz+q3Mo2lDxWxYmiC3k6AZZvAZIqj4PjI0V6NjiQvrscyvXsS7O7w8vZezVerZb6I/sg8yxbnVShrlCvqlNO43LEh5z0eotkWPEDovFEub0S0Djr/Q==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:VI1PR04MB5151.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230022)(4636009)(39860400002)(376002)(396003)(136003)(366004)(346002)(451199015)(316002)(83380400001)(6916009)(8936002)(5660300002)(66556008)(66476007)(4326008)(41300700001)(66946007)(8676002)(2616005)(38350700002)(1076003)(38100700002)(86362001)(6512007)(6506007)(26005)(186003)(52116002)(6666004)(6486002)(478600001)(2906002)(44832011);
+ SFS:(13230022)(4636009)(39860400002)(376002)(396003)(136003)(366004)(346002)(451199015)(316002)(83380400001)(6916009)(8936002)(5660300002)(66556008)(66476007)(4326008)(41300700001)(66946007)(8676002)(2616005)(38350700002)(1076003)(38100700002)(86362001)(6512007)(6506007)(26005)(186003)(52116002)(6666004)(6486002)(478600001)(66899015)(2906002)(44832011);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aur81q+syCvUB3B0DDky/EEjpPduTit5F8dydbJ/tIf4Ibkjgba7mL8EPFuw?=
- =?us-ascii?Q?wUoPYm3/9RpkwtngrBeMIrgPNu7lzXVKkKib6hhUy/mr6chRNdhtkYfaRVFV?=
- =?us-ascii?Q?TfzrRCK2Mc3DjmihwFo48f8k5xUDa84QRMOnTBKqTrjtt1JCZi5ndGEcN69V?=
- =?us-ascii?Q?/m5Cri1u14WQMXGvQg2nAOzLIx6U3m5VCa3EADxKh1/mxCdNnqyaeSp3Rkrh?=
- =?us-ascii?Q?GJrxPv8PFs6Q3DXdFG5AbVU0qvZpx/4R2aMGLk6IsDjUmcKNSF6ra1UgWG5W?=
- =?us-ascii?Q?q3RoGgVMHkyNLm/H4tthQ3n2DHms2m5Etl6GAL7/sStVYuEt32hsgaS3ep11?=
- =?us-ascii?Q?cZ15J+ywDN6+xNcB5EAbsI2qWJ9EbeG4lBpcZA/nUfsadrJ73gs7N5x3ouPv?=
- =?us-ascii?Q?7F7/6uKstiW8L3q3AJR2IFT7xWCEHymwL2rnO6c7xFNiGDt4GMrcpfOPrd+B?=
- =?us-ascii?Q?gZ9Y3PVjdodtG3rOsG0u0ALWPTpj+5RKcyAOmzlcMs9fLp99yhV/OHHnf5lZ?=
- =?us-ascii?Q?T+11DVMtUP8gndPTILFnc6TE4GtT9lBnBmNTOV4GlfZ3A9RR7slj3IFvnF7p?=
- =?us-ascii?Q?68uKmcTMCt9LDrJJyAsasd6DeGUFqIf/XHEkkNXV72CUbDakXLROvBWax/Ot?=
- =?us-ascii?Q?9hFz0EbqnZZt++yJkgRnab7pg0vwbaZUP0W958fxdgWr6nShvQ7lF5iJR4+3?=
- =?us-ascii?Q?6I/2fZpN84aTMYeJ0miBTZwwF57JxtRI3p64DYK90LEIJ6ZwkxtJAItwOY82?=
- =?us-ascii?Q?jQ0s2w/PjcLTl2Bk7qF8T4JIrG5PjJMsA69OTlxH36prRtvF3rH7RUzxdaDo?=
- =?us-ascii?Q?n6YSdIjh3KbrGJdN0va94MJD2dIxEy/TClHX0coxCL4N6lbN5IPsAT0X3puf?=
- =?us-ascii?Q?91YHlrgyiMrTwq7DKGboh5l4y9Ee8CHlKpbIVyG5aNDbxtn8m3sqaHy/kaU1?=
- =?us-ascii?Q?Wm3IH80g9F3k1RZ4bkS2RSiFRSrAmIIPU1szTWl4H2jSg9/+1Dza4/1Iaxya?=
- =?us-ascii?Q?Ke0Efm2QcNJAaEfXF/0dlZpMWCEi75BLUDIBW4JxN74eZuRLzOTeS9bl/f91?=
- =?us-ascii?Q?ppdoZ+JjfnObl07ZLEf3+ODDkPXOcBNV+L456570gay0UlwCwFejRrSZqBJi?=
- =?us-ascii?Q?Y0ak+Z+ZaR0vr+JYHLx2pfSe5AFKLqiTzuPZJtrk2DrMx3cxRyva+/UcS4WG?=
- =?us-ascii?Q?TXGSTBg9knLWoqs48Prbqu4triPh+htbSBB/ftCnieJxWpBaD61HlKeQwTjH?=
- =?us-ascii?Q?GmgNYxZNd2WImM80BT0Tk6oMrX5mH3YZdXCDjROEsynX0YR+Pj9UXPu2pZWa?=
- =?us-ascii?Q?JkMrlQoqB48NKIcIFcSlMG5NutZQHLuQrymR8la6HAMfvgrbD+viW+rHdeue?=
- =?us-ascii?Q?4zzmls+U/YLcUoYAS3ca4jeI3EafoQli176sQXRTLT/dhaqaUNEZ2EFYyK9F?=
- =?us-ascii?Q?IyvvEgoH7MCq6Svwmy9QWA3QmnF2M6NhKEnYWDzGz4HJvrVTavr80Ak2/FVF?=
- =?us-ascii?Q?KLFjGb5OdsbrR9yYtTIf4r0fxghd0GorH6uti1bZFCAyCLTuYIhKx4QPvPcO?=
- =?us-ascii?Q?9mJHuMPa/He7gC60s8aUwcVs5kcYN6ZV1+r0fFwS?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5fR3EuPll+8KAXwk5yT9xe5ck/GNUhqYvGU07pkr0G15p4sNt+O//mO5hYRr?=
+ =?us-ascii?Q?QQG5+85SyFybRpLrkSzNF2xk+aSntooGRs22d1FSAG6Qi4YOVIw3ERvMCW/a?=
+ =?us-ascii?Q?UIdQq2AClzFo4Cz5hJNQw/12vWvbiR30VDZmXVlalvP7iQvRmd+TZUIdMI/f?=
+ =?us-ascii?Q?lgBFr0zqgnA62CgsInltYTy1GS7LW9ESv8FdY8XWxBD3TAGRBooO3b4VsQTG?=
+ =?us-ascii?Q?9g2Uq1cikhY7M1Ln6MZunHs7mYF/cNOrmN4ZfUHFi3z8nmm5SPr6kV48iyz2?=
+ =?us-ascii?Q?0nn8yDGWASpne39rBFSrvTf9ou2wJDabeCJaXqElfTGR+d934tK0szOY9yOc?=
+ =?us-ascii?Q?RBAQzRVLFbzRojFqqpVvipeUW9i/UAxNH54jrVcxX3MlxT0NjSIHc45ffnty?=
+ =?us-ascii?Q?EjqkFmUtWMoUmZ7X9yEa8yzluza99ATYsVmyEoxeSoywlmYbTHSvyjMd3RLu?=
+ =?us-ascii?Q?65smhOkR1AJTDEZ5oMcABflb3gJK3S14cCGkcjcSrjfQaLeXb95NJft663mX?=
+ =?us-ascii?Q?NKXR1T8xdamvzcWsfYOIjZs1Ua/4IIlZrgORWwYMmceow4w6Pn1kLf+QXoYU?=
+ =?us-ascii?Q?3jcyoDMCcrzv1PYozceMh55N/jK9H/k6WzudfdFaALc/ZDPTfOJAf9Va7P8M?=
+ =?us-ascii?Q?91X630S+0sgr/MSnjVwwKZlnz6RlrqIJa4fRkCGCpEzP8ql1aiD0Qz5+tZuq?=
+ =?us-ascii?Q?n62FeIV+O+SoAyH5wGdYns7v/0j3V1OyI+o4NnZJQIatF6K4so0WqAoTyG6v?=
+ =?us-ascii?Q?cL0/JBaQ4WSGSryZQLGMeYw4yGu7z/54yyb4GD07Oe36CJSXbtDO35nGt3kX?=
+ =?us-ascii?Q?NRyM4gUo7PSzIzWHOIT5d1gDIuOBZ8HAthSHcr6WM8n5n+qAPsQn2DABv2cs?=
+ =?us-ascii?Q?GyGmpA2z0G6fz1/mgCDfq2FQQvx3/Sz6EjPe/CZCKrVprlEt1BE84al8NTBL?=
+ =?us-ascii?Q?28JvukfZl/0DvwL4TeVu2Hz9VPYNMi/3bhwNXOJC+qRPY+zxUk/aRKEGGYTG?=
+ =?us-ascii?Q?jz/tGKUr0wtjN/CS//Tr4k4quRUZ+FZKVY14GxBD6bP7ih/X7s/yFDZJepj1?=
+ =?us-ascii?Q?ev2Qii9BF9ReFdtGkcBsxK8hsHrzK8+V7FRPRjgGWuU7rDf3sJ5tL3svPgxZ?=
+ =?us-ascii?Q?0rR9ptoFEBA2wyBx2INEWaYrquRt0YMasIOLwu0QvZdVxXZ1is6FSKJPVNap?=
+ =?us-ascii?Q?BB13Ltc6Ka7HklpZvWeFaBq6SpZocgVf1IyzcrWKhwmcZXVW4Z+Y7FDgrkpy?=
+ =?us-ascii?Q?gyEnHpAVVqOkyo76COre48j+HtnEG/cqBC3rfq8573M/jHkZHKDIVxNps4Uz?=
+ =?us-ascii?Q?imyfLXPvzxYJ3Wq940iK3wKuGAyzueIl5QSq5foXNKcsDGgZxLPe/PUmd4bM?=
+ =?us-ascii?Q?mJVNOGqBHbLGZB9abRVdTlQSfNoOoGpvS7/ohDlbcqtTG6bd9Uw9HoNxgAWQ?=
+ =?us-ascii?Q?q2h6DOq2jUX26vdYEv2cJBlt3iZCuNQzRNkERhNn1VhuL0c5nTvQUluRCiST?=
+ =?us-ascii?Q?GJIZJjp9U0TX0GvQxukPQP8Ab55cBO1uRf5/n1S0Bd/GG00rmDeFjrqMlhIR?=
+ =?us-ascii?Q?TvJW6rBzR685Z1Q1+GHgrvYMUukoCUQyaDnj3mi1?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d71e718-acc8-4325-6a26-08daf8843be0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54a05b0d-d761-4ef1-5297-08daf8843d54
 X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2023 12:13:25.3405 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jan 2023 12:13:27.6841 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xW5LLAnth/1Bl78JClgBIMSxuraD/+4LCWI0QHEd+MAYcWdpKFip4893HsZjvJcim9hMLSH3Gy78CbZmWP9lhQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: jhLUU7XHVpP7fCMaopXXK2lN8DC0Dta4sTFrX/hxeJysbkwcB2tNecHa0MnSw0Kw+AZMAfZx9xmfAkCDW5xYDA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9373
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -149,13 +149,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Daniel Baluta <daniel.baluta@nxp.com>
 
-Make second parameter of ipc_msg_data generic
-in order to be able to support compressed streams.
+snd_sof_pcm_stream keeps information about both PCM (snd_pcm_substream)
+and Compress (snd_compr_stream) streams.
 
-This patch doesn't hold any functional change.
-
-With this case we can use ipc_msg_data, to retrieve information from
-DSP for both PCM/Compress API.
+When PCM substream pointer is NULL this means we are dealing with a
+compress stream.
 
 Reviewed-by: Paul Olaru <paul.olaru@nxp.com>
 Reviewed-by: Iuliana Prodan <iuliana.prodan@nxp.com>
@@ -163,218 +161,96 @@ Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 ---
- sound/soc/sof/amd/acp-ipc.c            | 5 +++--
- sound/soc/sof/amd/acp.h                | 3 ++-
- sound/soc/sof/intel/hda-ipc.c          | 5 +++--
- sound/soc/sof/intel/hda.h              | 2 +-
- sound/soc/sof/ipc3.c                   | 4 ++--
- sound/soc/sof/mediatek/mt8186/mt8186.c | 2 +-
- sound/soc/sof/mediatek/mt8195/mt8195.c | 2 +-
- sound/soc/sof/ops.h                    | 4 ++--
- sound/soc/sof/sof-priv.h               | 6 ++++--
- sound/soc/sof/stream-ipc.c             | 6 ++++--
- 10 files changed, 23 insertions(+), 16 deletions(-)
+ sound/soc/sof/sof-priv.h   |  1 +
+ sound/soc/sof/stream-ipc.c | 48 ++++++++++++++++++++++++++++----------
+ 2 files changed, 37 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/sof/amd/acp-ipc.c b/sound/soc/sof/amd/acp-ipc.c
-index 5a02753c4610..1f614eff2a68 100644
---- a/sound/soc/sof/amd/acp-ipc.c
-+++ b/sound/soc/sof/amd/acp-ipc.c
-@@ -200,14 +200,15 @@ irqreturn_t acp_sof_ipc_irq_thread(int irq, void *context)
- }
- EXPORT_SYMBOL_NS(acp_sof_ipc_irq_thread, SND_SOC_SOF_AMD_COMMON);
- 
--int acp_sof_ipc_msg_data(struct snd_sof_dev *sdev, struct snd_pcm_substream *substream,
-+int acp_sof_ipc_msg_data(struct snd_sof_dev *sdev, struct snd_sof_pcm_stream *sps,
- 			 void *p, size_t sz)
- {
- 	unsigned int offset = sdev->dsp_box.offset;
- 
--	if (!substream || !sdev->stream_box.size) {
-+	if (!sps || !sdev->stream_box.size) {
- 		acp_mailbox_read(sdev, offset, p, sz);
- 	} else {
-+		struct snd_pcm_substream *substream = sps->substream;
- 		struct acp_dsp_stream *stream = substream->runtime->private_data;
- 
- 		if (!stream)
-diff --git a/sound/soc/sof/amd/acp.h b/sound/soc/sof/amd/acp.h
-index 4314094a97fd..d8cc2a92f1c0 100644
---- a/sound/soc/sof/amd/acp.h
-+++ b/sound/soc/sof/amd/acp.h
-@@ -12,6 +12,7 @@
- #define __SOF_AMD_ACP_H
- 
- #include "../sof-priv.h"
-+#include "../sof-audio.h"
- 
- #define ACP_MAX_STREAM	8
- 
-@@ -211,7 +212,7 @@ int acp_dsp_block_read(struct snd_sof_dev *sdev, enum snd_sof_fw_blk_type blk_ty
- 
- /* IPC callbacks */
- irqreturn_t acp_sof_ipc_irq_thread(int irq, void *context);
--int acp_sof_ipc_msg_data(struct snd_sof_dev *sdev, struct snd_pcm_substream *substream,
-+int acp_sof_ipc_msg_data(struct snd_sof_dev *sdev, struct snd_sof_pcm_stream *sps,
- 			 void *p, size_t sz);
- int acp_set_stream_data_offset(struct snd_sof_dev *sdev,
- 			       struct snd_pcm_substream *substream,
-diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
-index a7c454e03952..5705279d0707 100644
---- a/sound/soc/sof/intel/hda-ipc.c
-+++ b/sound/soc/sof/intel/hda-ipc.c
-@@ -361,12 +361,13 @@ int hda_dsp_ipc_get_window_offset(struct snd_sof_dev *sdev, u32 id)
- }
- 
- int hda_ipc_msg_data(struct snd_sof_dev *sdev,
--		     struct snd_pcm_substream *substream,
-+		     struct snd_sof_pcm_stream *sps,
- 		     void *p, size_t sz)
- {
--	if (!substream || !sdev->stream_box.size) {
-+	if (!sps || !sdev->stream_box.size) {
- 		sof_mailbox_read(sdev, sdev->dsp_box.offset, p, sz);
- 	} else {
-+		struct snd_pcm_substream *substream = sps->substream;
- 		struct hdac_stream *hstream = substream->runtime->private_data;
- 		struct sof_intel_hda_stream *hda_stream;
- 
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index caccaf8fba9c..e6f1ff591332 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -656,7 +656,7 @@ int hda_dsp_stream_spib_config(struct snd_sof_dev *sdev,
- 			       int enable, u32 size);
- 
- int hda_ipc_msg_data(struct snd_sof_dev *sdev,
--		     struct snd_pcm_substream *substream,
-+		     struct snd_sof_pcm_stream *sps,
- 		     void *p, size_t sz);
- int hda_set_stream_data_offset(struct snd_sof_dev *sdev,
- 			       struct snd_pcm_substream *substream,
-diff --git a/sound/soc/sof/ipc3.c b/sound/soc/sof/ipc3.c
-index 1fef4dcc0936..8e936353c1c0 100644
---- a/sound/soc/sof/ipc3.c
-+++ b/sound/soc/sof/ipc3.c
-@@ -847,7 +847,7 @@ static void ipc3_period_elapsed(struct snd_sof_dev *sdev, u32 msg_id)
- 	}
- 
- 	stream = &spcm->stream[direction];
--	ret = snd_sof_ipc_msg_data(sdev, stream->substream, &posn, sizeof(posn));
-+	ret = snd_sof_ipc_msg_data(sdev, stream, &posn, sizeof(posn));
- 	if (ret < 0) {
- 		dev_warn(sdev->dev, "failed to read stream position: %d\n", ret);
- 		return;
-@@ -882,7 +882,7 @@ static void ipc3_xrun(struct snd_sof_dev *sdev, u32 msg_id)
- 	}
- 
- 	stream = &spcm->stream[direction];
--	ret = snd_sof_ipc_msg_data(sdev, stream->substream, &posn, sizeof(posn));
-+	ret = snd_sof_ipc_msg_data(sdev, stream, &posn, sizeof(posn));
- 	if (ret < 0) {
- 		dev_warn(sdev->dev, "failed to read overrun position: %d\n", ret);
- 		return;
-diff --git a/sound/soc/sof/mediatek/mt8186/mt8186.c b/sound/soc/sof/mediatek/mt8186/mt8186.c
-index dbea604ebc04..597cb4476acb 100644
---- a/sound/soc/sof/mediatek/mt8186/mt8186.c
-+++ b/sound/soc/sof/mediatek/mt8186/mt8186.c
-@@ -494,7 +494,7 @@ static snd_pcm_uframes_t mt8186_pcm_pointer(struct snd_sof_dev *sdev,
- 	}
- 
- 	stream = &spcm->stream[substream->stream];
--	ret = snd_sof_ipc_msg_data(sdev, stream->substream, &posn, sizeof(posn));
-+	ret = snd_sof_ipc_msg_data(sdev, stream, &posn, sizeof(posn));
- 	if (ret < 0) {
- 		dev_warn(sdev->dev, "failed to read stream position: %d\n", ret);
- 		return 0;
-diff --git a/sound/soc/sof/mediatek/mt8195/mt8195.c b/sound/soc/sof/mediatek/mt8195/mt8195.c
-index 5b04fec9c9c9..42bae574c87a 100644
---- a/sound/soc/sof/mediatek/mt8195/mt8195.c
-+++ b/sound/soc/sof/mediatek/mt8195/mt8195.c
-@@ -520,7 +520,7 @@ static snd_pcm_uframes_t mt8195_pcm_pointer(struct snd_sof_dev *sdev,
- 	}
- 
- 	stream = &spcm->stream[substream->stream];
--	ret = snd_sof_ipc_msg_data(sdev, stream->substream, &posn, sizeof(posn));
-+	ret = snd_sof_ipc_msg_data(sdev, stream, &posn, sizeof(posn));
- 	if (ret < 0) {
- 		dev_warn(sdev->dev, "failed to read stream position: %d\n", ret);
- 		return 0;
-diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
-index c52752250565..db92cd338467 100644
---- a/sound/soc/sof/ops.h
-+++ b/sound/soc/sof/ops.h
-@@ -472,10 +472,10 @@ static inline int snd_sof_load_firmware(struct snd_sof_dev *sdev)
- 
- /* host DSP message data */
- static inline int snd_sof_ipc_msg_data(struct snd_sof_dev *sdev,
--				       struct snd_pcm_substream *substream,
-+				       struct snd_sof_pcm_stream *sps,
- 				       void *p, size_t sz)
- {
--	return sof_ops(sdev)->ipc_msg_data(sdev, substream, p, sz);
-+	return sof_ops(sdev)->ipc_msg_data(sdev, sps, p, sz);
- }
- /* host side configuration of the stream's data offset in stream mailbox area */
- static inline int
 diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 752bf46c7bc9..39b015c59168 100644
+index 95a6b301da49..86fc5c6a9c39 100644
 --- a/sound/soc/sof/sof-priv.h
 +++ b/sound/soc/sof/sof-priv.h
-@@ -20,6 +20,8 @@
- #include <uapi/sound/sof/fw.h>
- #include <sound/sof/ext_manifest.h>
+@@ -115,6 +115,7 @@ struct sof_compr_stream {
+ 	u32 sampling_rate;
+ 	u16 channels;
+ 	u16 sample_container_bytes;
++	size_t posn_offset;
+ };
  
-+struct snd_sof_pcm_stream;
-+
- /* Flag definitions used in sof_core_debug (sof_debug module parameter) */
- #define SOF_DBG_ENABLE_TRACE	BIT(0)
- #define SOF_DBG_RETAIN_CTX	BIT(1)	/* prevent DSP D3 on FW exception */
-@@ -247,7 +249,7 @@ struct snd_sof_dsp_ops {
- 
- 	/* host read DSP stream data */
- 	int (*ipc_msg_data)(struct snd_sof_dev *sdev,
--			    struct snd_pcm_substream *substream,
-+			    struct snd_sof_pcm_stream *sps,
- 			    void *p, size_t sz); /* mandatory */
- 
- 	/* host side configuration of the stream's data offset in stream mailbox area */
-@@ -761,7 +763,7 @@ int sof_block_read(struct snd_sof_dev *sdev, enum snd_sof_fw_blk_type blk_type,
- 		   u32 offset, void *dest, size_t size);
- 
- int sof_ipc_msg_data(struct snd_sof_dev *sdev,
--		     struct snd_pcm_substream *substream,
-+		     struct snd_sof_pcm_stream *sps,
- 		     void *p, size_t sz);
- int sof_set_stream_data_offset(struct snd_sof_dev *sdev,
- 			       struct snd_pcm_substream *substream,
+ struct snd_sof_dev;
 diff --git a/sound/soc/sof/stream-ipc.c b/sound/soc/sof/stream-ipc.c
-index 5f1ceeea893a..13e44501d442 100644
+index 872a49550672..216b454f6b94 100644
 --- a/sound/soc/sof/stream-ipc.c
 +++ b/sound/soc/sof/stream-ipc.c
-@@ -19,6 +19,7 @@
- 
- #include "ops.h"
- #include "sof-priv.h"
-+#include "sof-audio.h"
- 
- struct sof_stream {
- 	size_t posn_offset;
-@@ -26,12 +27,13 @@ struct sof_stream {
- 
- /* Mailbox-based Generic IPC implementation */
- int sof_ipc_msg_data(struct snd_sof_dev *sdev,
--		     struct snd_pcm_substream *substream,
-+		     struct snd_sof_pcm_stream *sps,
- 		     void *p, size_t sz)
- {
--	if (!substream || !sdev->stream_box.size) {
-+	if (!sps || !sdev->stream_box.size) {
+@@ -33,14 +33,27 @@ int sof_ipc_msg_data(struct snd_sof_dev *sdev,
+ 	if (!sps || !sdev->stream_box.size) {
  		snd_sof_dsp_mailbox_read(sdev, sdev->dsp_box.offset, p, sz);
  	} else {
-+		struct snd_pcm_substream *substream = sps->substream;
- 		struct sof_stream *stream = substream->runtime->private_data;
+-		struct snd_pcm_substream *substream = sps->substream;
+-		struct sof_stream *stream = substream->runtime->private_data;
++		size_t posn_offset;
  
- 		/* The stream might already be closed */
+-		/* The stream might already be closed */
+-		if (!stream)
+-			return -ESTRPIPE;
++		if (sps->substream) {
++			struct sof_stream *stream = sps->substream->runtime->private_data;
+ 
+-		snd_sof_dsp_mailbox_read(sdev, stream->posn_offset, p, sz);
++			/* The stream might already be closed */
++			if (!stream)
++				return -ESTRPIPE;
++
++			posn_offset = stream->posn_offset;
++		} else {
++
++			struct sof_compr_stream *sstream = sps->cstream->runtime->private_data;
++
++			if (!sstream)
++				return -ESTRPIPE;
++
++			posn_offset = sstream->posn_offset;
++		}
++
++		snd_sof_dsp_mailbox_read(sdev, posn_offset, p, sz);
+ 	}
+ 
+ 	return 0;
+@@ -51,18 +64,29 @@ int sof_set_stream_data_offset(struct snd_sof_dev *sdev,
+ 			       struct snd_sof_pcm_stream *sps,
+ 			       size_t posn_offset)
+ {
+-	struct snd_pcm_substream *substream = sps->substream;
+-	struct sof_stream *stream = substream->runtime->private_data;
+-
+ 	/* check if offset is overflow or it is not aligned */
+ 	if (posn_offset > sdev->stream_box.size ||
+ 	    posn_offset % sizeof(struct sof_ipc_stream_posn) != 0)
+ 		return -EINVAL;
+ 
+-	stream->posn_offset = sdev->stream_box.offset + posn_offset;
++	posn_offset += sdev->stream_box.offset;
++
++	if (sps->substream) {
++		struct sof_stream *stream = sps->substream->runtime->private_data;
++
++		stream->posn_offset = posn_offset;
++		dev_dbg(sdev->dev, "pcm: stream dir %d, posn mailbox offset is %zu",
++			sps->substream->stream, posn_offset);
++	} else if (sps->cstream) {
++		struct sof_compr_stream *sstream = sps->cstream->runtime->private_data;
+ 
+-	dev_dbg(sdev->dev, "pcm: stream dir %d, posn mailbox offset is %zu",
+-		substream->stream, stream->posn_offset);
++		sstream->posn_offset = posn_offset;
++		dev_dbg(sdev->dev, "compr: stream dir %d, posn mailbox offset is %zu",
++			sps->cstream->direction, posn_offset);
++	} else {
++		dev_err(sdev->dev, "No stream opened");
++		return -EINVAL;
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
