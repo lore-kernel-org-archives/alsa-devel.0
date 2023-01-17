@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D342C54E76
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Jan 2023 17:11:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66E80C3DA78
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Jan 2023 17:12:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D19E46AFF;
-	Tue, 17 Jan 2023 18:10:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D19E46AFF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FDFC6AF4;
+	Tue, 17 Jan 2023 18:11:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FDFC6AF4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673975464;
-	bh=PKfVZA6Y+jGLD+yvKM7jtjfmj+Ws40Nmee3pJ5QOsKw=;
+	s=default; t=1673975544;
+	bh=ogcNUoswa1oXsPltMcrjGnZHdJ9zhp6Tstld29COrrY=;
 	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=UMKtiPopjmcuhilGnRCSIEYmLEivUfCPcD1y9GvJnP9PKcmSTOFHma2DpKsnJPlPn
-	 190TImf2gIYoygT3uCrn5imbonru2jMI6xwj4P71Ft9GSzDaW9RT4jgS87d1o36OLB
-	 0XNa4gB1TXE56Mm09+4Q3zIOZUv4Na8Jyh1+TV2I=
+	b=uPUEwQog6Nupdnljj9oVD9za0yuJrpUN95x7S5ub7Vh+PqlZG2lcP9z2BvuKt2jD4
+	 pSBGY8Uv65GlmFiOFtEc7/5LhgJvEqeJXRJdcEX02i1wovUdOqV7byGdOlu8A3GcJw
+	 t5SFirTLLvsFPVw8VS/OO6CmKoN9PYj6eDJ2ojns=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B927F804E6;
-	Tue, 17 Jan 2023 18:09:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27462F8026D;
+	Tue, 17 Jan 2023 18:11:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A0C23F80083; Tue, 17 Jan 2023 18:09:48 +0100 (CET)
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com
- [209.85.161.51])
+ id CACA8F8047B; Tue, 17 Jan 2023 18:11:32 +0100 (CET)
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com
+ [209.85.160.46])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41D9CF80083
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 18:09:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41D9CF80083
-Received: by mail-oo1-f51.google.com with SMTP id
- b10-20020a4a9fca000000b004e6f734c6b4so8129094oom.9
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 09:09:44 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id CE463F8022D
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 18:11:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE463F8022D
+Received: by mail-oa1-f46.google.com with SMTP id
+ 586e51a60fabf-15ed38a9b04so13993110fac.8
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 09:11:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=EBt6OwEc7aWzfw3HNqGtJVkR6yiTPViGz+8y019qzbo=;
- b=O1XEKf+OMu6OnaNUqi88dUqPtpnk0/MVkdddNJNjbS8ch27dyC/YWKGoBoN8cHIRgW
- 397MiVjzXW6b8EqGj3lC514qisfOftpbIrUeTjHySNYhLqdedOlIiwFjUZv768VvEWMD
- laql6Wo1DXZjgkS45bEGca7a9mCtjaElzCovLZ/iGyOj+Fkx59rL1gDX9fVcPov8N+f6
- OV8bvWFxLkHD572darBigksooS03hY3f0YbE4iDuBc38GalRIgJ3RAuYKvRYSanyKGLQ
- x3OG9yHNjiuJVrOnffQV/5RjtuW9Y4ELaadUz289wTPZ69G6+GGM163DCuVMGuznwrJO
- YyPw==
-X-Gm-Message-State: AFqh2koI8V/nJE7AZQsHbnJ0knuCuv/ke4kStuHKWcfy6HIrZiEfpPQj
- +pkqPejm+Wnjsj/mJxterQ==
-X-Google-Smtp-Source: AMrXdXuoCd2emcRioMWSkuiL5UJXYiiL7j05Xg3FB4TAOariAaf9grOg2xUsCHaHs0HnjFZPhOVlFg==
-X-Received: by 2002:a05:6820:150a:b0:4f2:875:5252 with SMTP id
- ay10-20020a056820150a00b004f208755252mr12029257oob.3.1673975383168; 
- Tue, 17 Jan 2023 09:09:43 -0800 (PST)
+ bh=sVkPYQT0+8PLUEYOWtovJMpxQSI+MX+r2Tx1WauPkPU=;
+ b=MnrmeC9fY9dyreiD6deQVmbQmFskvz/Sdof96pwRM4tqjSORlF4dpOwLmlCihO8Xca
+ pOPWvv44SXEMSFDC3oFe7esl0gi1QV0IfvpDmsb3lrIEPRqRXYJAeNxin8XqsIKfxpjo
+ cZ18cLLEw0h70B2g2EvjIEHxAdJ9lSHK3mfJdk+/hUm5TmmqSFtF9mOh3AICOY87TRRT
+ dR3QFl9XM0zWyLYYR3HsHybDTxElGpQNUvAhaD9Tu9A5XDTUyGgOFgJKfAJIRmIrnLqJ
+ JasgpeeZqaurD4e2rUPB7lyxc/rAnfFDXE5lV7yf9APWKxk0Pim+eQL/uj0t+Pi+KKbo
+ d54g==
+X-Gm-Message-State: AFqh2kpxqV/MihOtZ0sfLj47+suDHTWOUrzk9cBnxbrEPnTwY+iLPVbw
+ uTpigtjA3C/hRjJ/kKa53Q==
+X-Google-Smtp-Source: AMrXdXuv4aRfwPuKQk0uSp1scr1y9JapyxOAs2+2rhBM5xBmqDE7nV74YC021t+S9eEbr2xx7dkbiA==
+X-Received: by 2002:a05:6871:4684:b0:150:c4e4:447e with SMTP id
+ ni4-20020a056871468400b00150c4e4447emr2308171oab.12.1673975489154; 
+ Tue, 17 Jan 2023 09:11:29 -0800 (PST)
 Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
  [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
- r5-20020a4a83c5000000b0049ee88e86f9sm15310809oog.10.2023.01.17.09.09.42
+ t13-20020a056871020d00b0014435b51ef7sm16662914oad.30.2023.01.17.09.11.28
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Jan 2023 09:09:42 -0800 (PST)
-Received: (nullmailer pid 3250793 invoked by uid 1000);
- Tue, 17 Jan 2023 17:09:42 -0000
-Date: Tue, 17 Jan 2023 11:09:42 -0600
+ Tue, 17 Jan 2023 09:11:28 -0800 (PST)
+Received: (nullmailer pid 3253303 invoked by uid 1000);
+ Tue, 17 Jan 2023 17:11:28 -0000
+Date: Tue, 17 Jan 2023 11:11:28 -0600
 From: Rob Herring <robh@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v2 03/10] ASoC: dt-bindings: audio-graph-port: add
- missing mclk-fs
-Message-ID: <20230117170942.GA3244879-robh@kernel.org>
+Subject: Re: [PATCH v2 05/10] ASoC: dt-bindings: audio-graph-port: remove
+ prefix
+Message-ID: <167397548762.3253243.4644404963209524392.robh@kernel.org>
 References: <87358hj2ub.wl-kuninori.morimoto.gx@renesas.com>
- <87y1q9ho56.wl-kuninori.morimoto.gx@renesas.com>
+ <87v8ldho43.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87y1q9ho56.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87v8ldho43.wl-kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,19 +92,18 @@ Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jan 11, 2023 at 01:10:29AM +0000, Kuninori Morimoto wrote:
+
+On Wed, 11 Jan 2023 01:11:08 +0000, Kuninori Morimoto wrote:
+> 
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> audio-graph-port is missing "mclk-fs" on ports/port,
-> it is used not only endpoint. It is already defined on simple-card.
-> This patch fixup it.
-> Without this patch, we will get below warning.
+> Audio Graph port doesn't use prefix.
+> This patch removes it.
 > 
-> ${LINUX}/arch/arm64/boot/dts/renesas/r8a77951-ulcb-kf.dtb: audio-codec@44: ports: 'mclk-fs' does not match any of the regexes: '^port@[0-9a-f]+$', 'pinctrl-[0-9]+'
-> 	From schema: ${LINUX}/Documentation/devicetree/bindings/sound/ti,pcm3168a.yaml
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  Documentation/devicetree/bindings/sound/audio-graph-port.yaml | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
 
-IMO, the warning is correct. 'ports' should not be anything but a 
-container of 'port' nodes. If something applies to all ports, then it 
-should probably be in the device node (or implicit).
-
-Rob
+Acked-by: Rob Herring <robh@kernel.org>
