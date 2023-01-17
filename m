@@ -4,69 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EEDFC54EBE
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 Jan 2023 20:46:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE057C3DA78
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Jan 2023 06:19:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6682F5B64;
-	Mon, 16 Jan 2023 21:45:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6682F5B64
+	by alsa0.perex.cz (Postfix) with ESMTPS id 59FA858A3;
+	Tue, 17 Jan 2023 07:18:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59FA858A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673901991;
-	bh=gaQum/hpEgSBkVT7pFMgUrrH6bNLpb4/zJIx6k5X3Uk=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=tSWY7/dtBOQ1FqnvxtHZXr+S3KR5dCHhlKhILOhR7LwUpFx5A6W+0LJU9O2n9TZf0
-	 Na7eL4z4DNZue+mUZwR8L3SBQhBTPu2IjFcVPgQGkURy5b4P5iZxvyJjFeWsSeKFIo
-	 3EBUg0adIE1SwA9Nt042ngarweoR0OzyqIM4Rt8I=
+	s=default; t=1673936372;
+	bh=yy95o4QApPivuNS0Nej4ZbM+H7/1bk1CWHKkPdzwJuA=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=ds1hVhWdlYo0wlo0rUgBldFKz0J7apSbZ/rP5e1TuHDzxMlwD8ZdlXv48ukasGwpX
+	 kkEBbU/TXQP6fZrH7130w4yaJ1sCdYHd8kLDCVUAovRVnH9ZCACaHT5BNTlOEz81kR
+	 HtteqtHlTHwuXDE4pDwS1f1oiy0RK9kNmnGGsK0o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11E7DF8024C;
-	Mon, 16 Jan 2023 21:45:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1214DF8026D;
+	Tue, 17 Jan 2023 07:18:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C0C6F80482; Mon, 16 Jan 2023 21:45:40 +0100 (CET)
-Received: from 3.mo548.mail-out.ovh.net (3.mo548.mail-out.ovh.net
- [188.165.32.156])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 58CE6F80083
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 21:45:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58CE6F80083
-Received: from mxplan2.mail.ovh.net (unknown [10.108.16.163])
- by mo548.mail-out.ovh.net (Postfix) with ESMTPS id 96C7421D83
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 20:45:33 +0000 (UTC)
-Received: from gnuinos.org (37.59.142.99) by DAG5EX1.mxp2.local (172.16.2.9)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Mon, 16 Jan
- 2023 21:45:33 +0100
-Authentication-Results: garm.ovh; auth=pass
- (GARM-99G0035b72070c-1b07-4496-8dc0-d357c7d292cf,
- E907DC29016DD070D6EDB782DE4A89F4728548EC) smtp.auth=aitor_czr@gnuinos.org
-X-OVh-ClientIp: 88.11.110.122
-Message-ID: <d8b10881-5fe4-4e62-53d5-072d7d984de1@gnuinos.org>
-Date: Mon, 16 Jan 2023 21:45:38 +0100
+ id A1801F8047B; Tue, 17 Jan 2023 07:18:40 +0100 (CET)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 4B6D8F80083
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 07:18:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B6D8F80083
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 80631C14;
+ Mon, 16 Jan 2023 22:19:12 -0800 (PST)
+Received: from R913NWR2.arm.com (unknown [10.162.42.84])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 26E013F445;
+ Mon, 16 Jan 2023 22:18:26 -0800 (PST)
+From: Faiz Abbas <faiz.abbas@arm.com>
+To: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, broonie@kernel.org
+Subject: [PATCH v2] ASoC: dt-bindings: simple-card: Document simple-audio-card, plat
+Date: Tue, 17 Jan 2023 11:48:08 +0530
+Message-Id: <20230117061808.18422-1-faiz.abbas@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: Question about amidi -l output
-To: <alsa-devel@alsa-project.org>
-References: <01020185bc1fd1bd-853c4526-e5d2-428a-a216-1c38763f0b21-000000@eu-west-1.amazonses.com>
-Content-Language: en-US
-From: aitor <aitor_czr@gnuinos.org>
-In-Reply-To: <01020185bc1fd1bd-853c4526-e5d2-428a-a216-1c38763f0b21-000000@eu-west-1.amazonses.com>
-X-Originating-IP: [37.59.142.99]
-X-ClientProxiedBy: DAG3EX1.mxp2.local (172.16.2.5) To DAG5EX1.mxp2.local
- (172.16.2.9)
-X-Ovh-Tracer-GUID: e03ef893-0d68-4270-bc8b-aabdb4edb32d
-X-Ovh-Tracer-Id: 13217220484403750423
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvhedruddtgedgudegudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecunecujfgurheptgfkffggfgfuvfhfhfgjihesrgdtreertdefjeenucfhrhhomheprghithhorhcuoegrihhtohhrpggtiihrsehgnhhuihhnohhsrdhorhhgqeenucggtffrrghtthgvrhhnpeekueeuvefhjeehlefgffffjedvvddtuedvudejleffuddtieevieelhfefueelveenucffohhmrghinheprghlshgrqdhprhhojhgvtghtrdhorhhgnecukfhppeduvdejrddtrddtrddupdefjedrheelrddugedvrdelleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoegrihhtohhrpggtiihrsehgnhhuihhnohhsrdhorhhgqedpnhgspghrtghpthhtohepuddprhgtphhtthhopegrlhhsrgdquggvvhgvlhesrghlshgrqdhprhhojhgvtghtrdhorhhgpdfovfetjfhoshhtpehmohehgeekpdhmohguvgepshhmthhpohhuth
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,28 +56,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: kuninori.morimoto.gx@renesas.com, faiz.abbas@arm.com, lgirdwood@gmail.com,
+ Deepak.Pandey@arm.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ Anurag.Koul@arm.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Jeroen,
+The simple card driver already has support for a simple-audio-card,plat
+property but its not reflected in the documentation. Add documentation
+for this plat property.
 
-On 16/1/23 20:48, Jeroen Baten wrote:
+Signed-off-by: Faiz Abbas <faiz.abbas@arm.com>
+---
+Changes since v1:
+1. Updated commit message to indicate the property already exists
+2. Removed redundant example
+3. Fixed formatting issue found by 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 
-> I hope someone can point me in the right direction.
-> So the Ardour application uses the output of amidi -l to name USB
-> devices. In my case I now have 3 devices all named "Boutique MIDI 1",
-> although they are 3 different types of synth.
-> I already added the devices to usb-list and system-hwdb so lsusb shows
-> up with correct synth names.
-> What can I do to make amidi -l show better device names? Where do these
-> names come from? What lib or db should I look at to patch and submit?
-> I hope someone can help me.
+ Documentation/devicetree/bindings/sound/simple-card.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-You can use udev rules for that. The link below might help you:
-
-https://www.alsa-project.org/wiki/Changing_card_IDs_with_udev
-
-Cheers,
-
-Aitor.
+diff --git a/Documentation/devicetree/bindings/sound/simple-card.yaml b/Documentation/devicetree/bindings/sound/simple-card.yaml
+index ed19899bc94b..9abe99f15763 100644
+--- a/Documentation/devicetree/bindings/sound/simple-card.yaml
++++ b/Documentation/devicetree/bindings/sound/simple-card.yaml
+@@ -205,6 +205,8 @@ patternProperties:
+     $ref: "#/definitions/dai"
+   "^simple-audio-card,codec(@[0-9a-f]+)?$":
+     $ref: "#/definitions/dai"
++  "^simple-audio-card,plat(@[0-9a-f]+)?$":
++    $ref: "#/definitions/dai"
+ 
+   "^simple-audio-card,dai-link(@[0-9a-f]+)?$":
+     description: |
+-- 
+2.25.1
 
