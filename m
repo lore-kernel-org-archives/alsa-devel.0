@@ -4,129 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B76E5C3DA78
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Jan 2023 08:24:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2252C63797
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Jan 2023 09:07:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 989DB6452;
-	Tue, 17 Jan 2023 09:23:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 989DB6452
+	by alsa0.perex.cz (Postfix) with ESMTPS id CEE0864B7;
+	Tue, 17 Jan 2023 10:06:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CEE0864B7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673943839;
-	bh=4zRDNfct97RtYyfe+EaxdLW4DHiRuJEahXyPi1OYKZk=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=B/GQYZWV6gRWhIY549KAD7x+gMROM6kMzD/EgfZRvVhwm2rrBM3m/g6JxZ0iw+GqW
-	 iQ8kY1SRdKlJbpLtzt2A6JAG8IvshaO4crrgjLhCIGC6UIiUTeSXVfw8U+8D/lxLvK
-	 TC0ubK3b2LmW11YJTbaNfCTdv679W1INszhX1APU=
+	s=default; t=1673946435;
+	bh=BUX/6hlTgsSEkvYnvs/GaMFqO/NuMR49KtFfCSuoJFc=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=sPybI9TGqopSEV0Lb0YNx+9/1028MIn5m3L3gFKkVbsIwTQmWc5kamu740G+niFjl
+	 b53N/mj2uSTPAJZWNN7pTC8k9siB4NaJF8aFsTtcu3JqndXUmAsjvpQ7ZxiH4HIlpE
+	 ruHQUPrQBGGcoUBqG+ruWcvTWPBC98o+y3pyzdPY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50670F8055C;
-	Tue, 17 Jan 2023 09:22:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C25FF8047B;
+	Tue, 17 Jan 2023 10:06:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C9143F80563; Tue, 17 Jan 2023 09:22:32 +0100 (CET)
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id ACE9AF804DE; Tue, 17 Jan 2023 10:06:23 +0100 (CET)
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6E9B7F8055B
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 09:22:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E9B7F8055B
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- unprotected) header.d=samsung.com header.i=@samsung.com header.a=rsa-sha256
- header.s=mail20170921 header.b=dI/4X0gN
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
- by mailout4.samsung.com (KnoxPortal) with ESMTP id
- 20230117082224epoutp045a7bbb9e0711f99933fff3b1c663f79e~7CveBp9GK0655706557epoutp04e
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 08:22:24 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com
- 20230117082224epoutp045a7bbb9e0711f99933fff3b1c663f79e~7CveBp9GK0655706557epoutp04e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
- s=mail20170921; t=1673943744;
- bh=vhmZncf5080rWwGNjHNDrtkXaS1sv2q9iERbNtRikh8=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=dI/4X0gN3yNpr2flR4Mbdh2ELfyhtiec+06phEJSHitgjjf/1L3y5jj4X46Ow1Ltt
- lKhnD5qwHlV02x9s6NM9IRdqezOJaEc/JJI38SqbSveGPnRDPr9oF1w5nSF/0uaQ+M
- e+CYO5KBJDaT3Rjff6ZfSCLsoCT024Q8UN+0deB8=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
- epcas5p3.samsung.com (KnoxPortal) with ESMTP id
- 20230117082223epcas5p30d96a87717f66f31413d89d8b19ab37c~7CvdMHV5f2311823118epcas5p3o;
- Tue, 17 Jan 2023 08:22:23 +0000 (GMT)
-Received: from epsmges5p1new.samsung.com (unknown [182.195.38.178]) by
- epsnrtp4.localdomain (Postfix) with ESMTP id 4Nx21p1Pgdz4x9QG; Tue, 17 Jan
- 2023 08:22:22 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
- epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
- D7.99.02301.EBA56C36; Tue, 17 Jan 2023 17:22:22 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
- epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
- 20230116103912epcas5p2ae807f1b6435e103a6527332e42f03a2~6w9oRywb_2875628756epcas5p2P;
- Mon, 16 Jan 2023 10:39:12 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
- epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
- 20230116103912epsmtrp26ed9e08d942b406dd67e5923ca62dc16~6w9oQ4NPR0521705217epsmtrp2U;
- Mon, 16 Jan 2023 10:39:12 +0000 (GMT)
-X-AuditID: b6c32a49-201ff700000108fd-3c-63c65abe3009
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
- epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
- 77.FC.02211.05925C36; Mon, 16 Jan 2023 19:39:12 +0900 (KST)
-Received: from cheetah.sa.corp.samsungelectronics.net (unknown
- [107.109.115.53]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
- 20230116103910epsmtip17ec3fe4fe8dc616cea44286cea985488~6w9lrLA720241202412epsmtip1f;
- Mon, 16 Jan 2023 10:39:09 +0000 (GMT)
-From: Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, s.nawrocki@samsung.com, perex@perex.cz,
- tiwai@suse.com, pankaj.dubey@samsung.com, alim.akhtar@samsung.com,
- rcsekar@samsung.com, aswani.reddy@samsung.com
-Subject: [PATCH v4 5/5] arm64: dts: fsd: Add sound card node for Tesla FSD
-Date: Mon, 16 Jan 2023 16:08:23 +0530
-Message-Id: <20230116103823.90757-6-p.rajanbabu@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230116103823.90757-1-p.rajanbabu@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA0WSfUwTZxzHee7au4NYcyvMPXSo5BIk4MAWaXeMVpfM6LkR18S5RP9Yd2lv
- wPq6XiuObAzLyxAzh++ADUUwqDDGyyhgoUiKo3GLDiMyM0eERQ1jsvEmRMzGWg62/z6/3/P9
- 5vs8v+dHoNILmIzItTg4u4U1UViUqHMgKTGl79CgXj7dg9NjNZ0YPXwngNCB77w4fXb8EUZ7
- btwW0ycmxlF6YbgMoe/63Bhd+VMfQn/ftp+u887j9DHf12K6eqhbTJf4b+D0wNMvxXTrYjN4
- k2Ra51wYc616FGfaG49hzK8jvRjTN9WAMSc6GgHT0nFPxMy1b9ISh4zqHI41cPZ4zqK3GnIt
- 2Rrqnf26t3RKlVyRosigX6fiLayZ01C7srQpu3NNoRdQ8YdZkzPU0rI8T23bobZbnQ4uPsfK
- OzQUZzOYbOm2VJ41805LdqqFc7yhkMvTlCHhh8ac64X9wHYz6khg2osXgtNEOYgkIJkOB3+Z
- EpWDKEJK9gBY7LoChGIWwN6KWrFQLADYHLyDrVm6vPPiMEtJP4D+SqMgKkFgx2w9Hj7ASCVs
- dB9dcceQLgSWPj25EoKSbQD+ODiOhFXR5NuwrmICDbOITIDn20ZDTBASUg2bgmlC2mbY1Nq/
- IokkNfCZ/z4q9C8SsLtwvcC7YG3DOVzgaDgZ7FhlGZz70796ays8N1O0ykdg6UwrIvBO2D/s
- FoVjUTIJtvi2Ce2N8OwP365IUHI9/OrFo1W5BHbXrHECbLncDgR+Ffb97F9lBjbPj+LCUCoA
- rLtUhleATdX/R9QC0AhiORtvzuZ4pU1h4fL++zW91dwOVrY0eW83GB2bTg0AhAABAAmUipHs
- 8w3opRID+2k+Z7fq7E4TxweAMjS+k6jsZb01tOYWh06RniFPV6lU6RnbVQrqFQnn9eilZDbr
- 4IwcZ+Psaz6EiJQVIurzsCDWeW9pqklbcjDpE+XuHRvqSyt7v/lcr8geOYP3FBaNGbY4cqIl
- G36/XXnc/rzKp7FqErd6TO8PfbbHtVTvfm/5qOzjmdGHics7NZUvaYOdr00aYmX3C4xXL6gf
- e+KCtUU9flyRiTxocMn1xZFdZeu4yT3Bdc0pqVOZ717+qMp7+PHFW8+PKxOe/ZFvU97UuUY8
- tU/+Ur2g45yL6HJGl/lhzObl4u0RwWBNw9/Fv7UP9e07xVyPX+qi3dqtDyKu5lXtjcpDImo+
- ME9OZPm/mK0iqm/dnVH+E8woyHJ6xw6YrzWM85kLgH/Ss4VITkxzsu7u8rgDGz2nVGcW8w9S
- Ij6HVSSjdp79Fz0x2aguBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrELMWRmVeSWpSXmKPExsWy7bCSnG6A5tFkg45tuhYP5m1js7hy8RCT
- xaHNW9ktpj58wmYx/8g5Vou+Fw+ZLb5d6WCyuLxrDpvFjPP7mCyObgy2WLT1C7tF565+VotZ
- F3awWrTuPcJucfhNO6vFhu9rGR0EPDZ8bmLz2DnrLrvHplWdbB53ru1h89j3dhmbR9+WVYwe
- 67dcZfH4vEkugCOKyyYlNSezLLVI3y6BK2N/wwHGgpNcFYc+bGVvYJzM0cXIySEhYCKxfesX
- 1i5GLg4hgd2MEscnrGaCSEhLTO/fwwZhC0us/PecHaKomUni47ytzCAJNgFTiVVzGsG6RQQm
- MEmcfHeMBSTBLLCVUWLqZyMQW1jAS2LRhBdgDSwCqhLTN94Fsjk4eAVsJFYfN4JYIC+xesMB
- sBJOAVuJr3tvgNlCQCVPJpxnnMDIt4CRYRWjZGpBcW56brFhgWFearlecWJucWleul5yfu4m
- RnCwa2nuYNy+6oPeIUYmDsZDjBIczEoivH67DicL8aYkVlalFuXHF5XmpBYfYpTmYFES573Q
- dTJeSCA9sSQ1OzW1ILUIJsvEwSnVwHS4+cxlubTfvnFclzNfeDTsevLr2p70FcHVmw9xOO54
- WJj/qn+O5GnO629Kjji6/7xs+a/eaM/KWluVKoWgjWLxq26afn23otBn2xSjV9z3T7zi7thz
- 9oxl8eH3nuYftRcbrnuQe+RR2pF7tlc/njR2Y0g3YmtfbH8/kbGRd1+wTpy86gKx2ZZZHa//
- HXUR72h1L8pc4tW2eS+32DYJPY9JtkKWqRvVa3TPqkwTZGbl/Xzxb27Dms/r2OSjGP9yxYl+
- 3vrdsfDROp/L205NNix8xGGXer9C77wg08nwmPisv6+XdWQ8Xn/7QL3Tt1PpkRtVWI4a/vs/
- 16nL8OZKtitRScf/Z/MuvSKl9b79SqoSS3FGoqEWc1FxIgBRqa9q5QIAAA==
-X-CMS-MailID: 20230116103912epcas5p2ae807f1b6435e103a6527332e42f03a2
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230116103912epcas5p2ae807f1b6435e103a6527332e42f03a2
-References: <20230116103823.90757-1-p.rajanbabu@samsung.com>
- <CGME20230116103912epcas5p2ae807f1b6435e103a6527332e42f03a2@epcas5p2.samsung.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3983BF8023A
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 10:06:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3983BF8023A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key, unprotected) header.d=sakamocchi.jp
+ header.i=@sakamocchi.jp header.a=rsa-sha256 header.s=fm3 header.b=BKpkK/uu; 
+ dkim=pass (2048-bit key,
+ unprotected) header.d=messagingengine.com header.i=@messagingengine.com
+ header.a=rsa-sha256 header.s=fm3 header.b=KXodEdAg
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+ by mailout.nyi.internal (Postfix) with ESMTP id 3F6295C00E4;
+ Tue, 17 Jan 2023 04:06:15 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute6.internal (MEProxy); Tue, 17 Jan 2023 04:06:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=cc:cc:content-transfer-encoding:date:date:from:from
+ :in-reply-to:message-id:mime-version:reply-to:sender:subject
+ :subject:to:to; s=fm3; t=1673946375; x=1674032775; bh=bBFBHdgUEx
+ DtLc/7PnHuZCFolfc8GR5+frlbC+WuxQ4=; b=BKpkK/uu5m1z1sNkezqUciat0Z
+ KCxQJIb8Uqfsca0VG2Hq1sKEJYBpKQ5S5Zd2AKuodusHQ4F7KczG7NBQD0AyBPWE
+ Om1HJOFqA6c6BnpILuW5eTr70Y+NAXGVCbDYAos416zhrr10Dxhlq6Y8Ay6vQZMb
+ Bzw440eknpSGWtpww9t83FiRT0RDmzLzN+rjU4VdM/V4ei6L8m34n/kPu5IIEWjz
+ vVjOO8lsCbeXMMtBJN3t2F23sS6atOEOw+Gp/K3CH1TM8ohfJhVkFTi9wy2/s5Al
+ h1vw4jKrcc6JhMWt8wtPwMExwGQ56DFVNM9jUB0DcEMPTl2NDlUwv1/HG1YQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
+ :feedback-id:feedback-id:from:from:in-reply-to:message-id
+ :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+ 1673946375; x=1674032775; bh=bBFBHdgUExDtLc/7PnHuZCFolfc8GR5+frl
+ bC+WuxQ4=; b=KXodEdAgLxLnX5G0K3mUsjlOBNf5clBOSH7kW8zTuZVzun+LG5I
+ fFn2BZ+QLh7ahpiFcmCsmHP22HDavDgrpSjkiBdx2XfFctWb0RsbByFua0eOxMOl
+ qzePwDrad0fG4n7eWk07XyX4NC4fpf8/8WhfSVqTOvvsR3ozz+9ugnZZcF5Kum9G
+ Mc/vLZAASa5MJG6pVzv1Y6Q+5am3nOyjndFs0eVCqp5yJWYPtKkjuunLgmXsZuXO
+ wZ3o6uEDnOlI13pylrCDJFp3ebsu/LzGZinjuWtIozTiI1jJgcYZaeWW/dqmXgJ9
+ IQc8zddcn4fpRxov00Mz95+jC3kpyt3MaBw==
+X-ME-Sender: <xms:BmXGY9nYlvb3T1sNjzAcBwreLwH5fmMcHuU8OfcXeNoZ2DvkBP9GgA>
+ <xme:BmXGY41mD-MTV-u4bgAK_FN8-i_gw70_jMbJHGdVL5l_BDEO3DJzipJa1mpgQ7bwS
+ rSjBQkHba_UUkW5xbE>
+X-ME-Received: <xmr:BmXGYzqwDUugU_Oeqeg8dBjvCzmmf7yZFwtJQtUp45AcqW1HvKwTi-5RQ6oSxuw4SC7XkIU1Mj1JjyuktzWw4fQp-r9VVF3P1_-gtCkSOCWI09QQmmgRSaQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedruddthedgudefudcutefuodetggdotefrod
+ ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+ necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekre
+ dtredttdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgr
+ shhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepffdvueelff
+ evkeduhfetjeduffeghfettdfguedtgfdvgfeufeduheevheevkeeknecuvehluhhsthgv
+ rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihessh
+ grkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:BmXGY9mQg0d_jSwkaIVRtzdcPNaGMzsznzqNXQPhFpN9MBVIIlEBGQ>
+ <xmx:BmXGY71md5kfUijFt804Yxo97Bu87av6gMt7LziVvovdTycF4jfU4Q>
+ <xmx:BmXGY8soR7utB0zHDzNI_WH1_LSAvZO9Zlnq4ABEr3Ai6KStYu3vNA>
+ <xmx:B2XGY5CuT-p34ph1JC6Cha2StnKOWmaw9Peq9FQbw-N5Iw0zWtA4DA>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 17 Jan 2023 04:06:13 -0500 (EST)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: tiwai@suse.de
+Subject: [PATCH 0/1] firewire: fix memory leak for payload of request
+ subaction to IEC 61883-1 FCP region
+Date: Tue, 17 Jan 2023 18:06:09 +0900
+Message-Id: <20230117090610.93792-1-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.37.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -139,63 +106,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net,
+ linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add device tree node support for sound card on Tesla FSD platform
+Hi,
 
-Signed-off-by: Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>
----
- arch/arm64/boot/dts/tesla/fsd-evb.dts | 33 +++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+This single patch fixes a bug of Linux FireWire subsystem for kernel
+v2.6.33 or later. In detail, please refer patch comment.
 
-diff --git a/arch/arm64/boot/dts/tesla/fsd-evb.dts b/arch/arm64/boot/dts/tesla/fsd-evb.dts
-index 2cd721564a4f..8d7794642900 100644
---- a/arch/arm64/boot/dts/tesla/fsd-evb.dts
-+++ b/arch/arm64/boot/dts/tesla/fsd-evb.dts
-@@ -29,6 +29,39 @@
- 		device_type = "memory";
- 		reg = <0x0 0x80000000 0x2 0x00000000>;
- 	};
-+
-+	sound {
-+		compatible = "simple-audio-card";
-+
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		simple-audio-card,name = "FSD Audio Card";
-+		simple-audio-card,widgets = "Line", "Line Out",
-+					    "Line", "Line In";
-+		simple-audio-card,routing = "Line Out", "LLOUT",
-+					    "Line Out", "RLOUT",
-+					    "MIC2L", "Line In",
-+					    "MIC2R", "Line In";
-+
-+		simple-audio-card,dai-link@0 {
-+			reg = <0>;
-+			format = "i2s";
-+			bitclock-master = <&tlv320aic3x>;
-+			frame-master = <&tlv320aic3x>;
-+
-+			cpu-0 {
-+				sound-dai = <&i2s_0 0>;
-+			};
-+			cpu-1 {
-+				sound-dai = <&i2s_0 1>;
-+			};
-+			codec {
-+				sound-dai = <&tlv320aic3x>;
-+				system-clock-frequency = <33000000>;
-+			};
-+		};
-+	};
- };
- 
- &fin_pll {
+My intension of this cover-letter is to request sound subsystem maintainer
+to send it to mainline since upstream of Linux FireWire subsystem is
+already inactive.
+
+To Iwai-san, I would be pleased if you alternatively send it to mainline.
+
+
+Thanks
+
+Takashi Sakamoto (1):
+  firewire: fix memory leak for payload of request subaction to IEC
+    61883-1 FCP region
+
+ drivers/firewire/core-cdev.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
 -- 
-2.17.1
+2.37.2
 
