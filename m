@@ -4,76 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 064C7C3DA78
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Jan 2023 17:13:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A805DC6379F
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Jan 2023 17:13:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C3096AFF;
-	Tue, 17 Jan 2023 18:12:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C3096AFF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8BBA06B11;
+	Tue, 17 Jan 2023 18:12:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BBA06B11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673975597;
-	bh=1o746n6XaqNdBHBBXgIko8oc/lyHK2wDmVoUCTOc8co=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=PoKPgVQMjo0y7M2bTlF67NWggbX6lIJzj+MjODv/pdJ+DTNn4O71G7zgP6SyfKepk
-	 LlLpVuCWfACTnf2z7wIVb78hR2HxBRZpF/qYNPaj2+f8xoP5sVSDGUEEmCh4MSWCpH
-	 69+mqCASir8Rh976CZdKz/3pPse5QwjpjJCxiJyQ=
+	s=default; t=1673975616;
+	bh=T1YX+7v++iT+p9UCqcNeNXf8qzxAO8KXpTdkm/5Wh/4=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=nVGB29nK8LuHvAKzsMfNvHIAacUFmyLfgOw7LKUhRzRyYp9qizZRcJiorfM91zb4b
+	 m68ensm0paMUxN/OY2GsnsZ7+818Q+DnyvyV1Y2Buv2yIxreucuwjbU2mmAN1mJVpk
+	 VjcbcZJQrESnyaAtuciD9O/EYZ5mx/69Y3OiapMk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0AD3FF8022D;
-	Tue, 17 Jan 2023 18:12:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E74AF8053C;
+	Tue, 17 Jan 2023 18:12:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4D884F804F2; Tue, 17 Jan 2023 18:12:26 +0100 (CET)
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com
- [209.85.160.48])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id D4839F8047B; Tue, 17 Jan 2023 12:15:30 +0100 (CET)
+Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C924F8026D
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 18:12:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C924F8026D
-Received: by mail-oa1-f48.google.com with SMTP id
- 586e51a60fabf-15b9c93848dso24369295fac.1
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 09:12:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=GXlBNRvFyU5MgDW75FzyE0UnWFcuHtjWm9nMO/g5I80=;
- b=wry/JQ635BXXTQcw9c2l6ImEjy5hlC+XKaCMWNEcSnQXFWHgNVdNih2OgJ3MilV92z
- 5ULfJucIQeAimRKHZW4qTnYkejuUgT0DV+Y4NCSqUhtmDbIYZWWiNUwz1UM9w1WGInYO
- CgYUsIO1wCaiqqRxBITlv20n1bP+iUbsDFrNDaHWTBmPJCa79HDnoQkZUOUgszBpTTod
- 9JttMrn0rlJ56g7saFhjcXZImJXBzWgHWbX9OsjTNKxqd1PDpL289ewJURcGNnpT7syN
- ft5a6ZaEE8Nn2iGVTkm4mPwYP74UsufIMdE/ca+R0SHKI0rT+m7URTH1vwgSOkT53lzC
- OlhA==
-X-Gm-Message-State: AFqh2kpCI7qeioWRik2RdfwEAt59ZCnI43jVBAnkzqOA0CCeuCKMvV0n
- XboRYlsU8Dnh0HsRBAcjKw==
-X-Google-Smtp-Source: AMrXdXu8V+uqDI4MWC4oLGDZEHxnrDrioeXqBqtb0L0hElhLpi2SY88Kcro4xEnIAWEr2y9E0lt4Nw==
-X-Received: by 2002:a05:6871:b324:b0:15f:931:5aa9 with SMTP id
- bd36-20020a056871b32400b0015f09315aa9mr1652176oac.59.1673975542064; 
- Tue, 17 Jan 2023 09:12:22 -0800 (PST)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
- [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
- u42-20020a056870f2aa00b00140d421445bsm16630106oap.11.2023.01.17.09.12.21
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 17 Jan 2023 09:12:21 -0800 (PST)
-Received: (nullmailer pid 3254601 invoked by uid 1000);
- Tue, 17 Jan 2023 17:12:21 -0000
-Date: Tue, 17 Jan 2023 11:12:21 -0600
-From: Rob Herring <robh@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v2 06/10] ASoC: dt-bindings: ti,pcm3168a: Convert to
- json-schema
-Message-ID: <167397554057.3254544.17294836275411987169.robh@kernel.org>
-References: <87358hj2ub.wl-kuninori.morimoto.gx@renesas.com>
- <87tu0xho3d.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 34575F8022D
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 12:15:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34575F8022D
+Received: by air.basealt.ru (Postfix, from userid 490)
+ id 8FCFE2F20230; Tue, 17 Jan 2023 11:15:25 +0000 (UTC)
+Received: from localhost (broadband-188-32-10-232.ip.moscow.rt.ru
+ [188.32.10.232])
+ by air.basealt.ru (Postfix) with ESMTPSA id 1D6B82F2022C;
+ Tue, 17 Jan 2023 11:15:23 +0000 (UTC)
+Date: Tue, 17 Jan 2023 14:15:23 +0300
+From: "Alexey V. Vissarionov" <gremlin@altlinux.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH] ALSA: hda/ca0132: minor fix for allocation size
+Message-ID: <20230117111522.GA15213@altlinux.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="8t9RHnE3ZwKMSgU+"
 Content-Disposition: inline
-In-Reply-To: <87tu0xho3d.wl-kuninori.morimoto.gx@renesas.com>
+X-Mailman-Approved-At: Tue, 17 Jan 2023 18:12:39 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,33 +59,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>,
- Mark Brown <broonie@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: alsa-devel@alsa-project.org, lvc-project@linuxtesting.org,
+ Ian Minett <ian_minett@creativelabs.com>, ye xingchen <ye.xingchen@zte.com.cn>,
+ Takashi Iwai <tiwai@suse.com>, Xian Wang <dev@xianwang.io>,
+ "Alexey V. Vissarionov" <gremlin@altlinux.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-On Wed, 11 Jan 2023 01:11:35 +0000, Kuninori Morimoto wrote:
-> From: Geert Uytterhoeven <geert+renesas@glider.be>
-> 
-> Convert the Texas Instruments PCM3168A Audio Codec Device Tree binding
-> documentation to json-schema.
-> 
-> Add missing properties.
-> Drop unneeded pinctrl properties from example.
-> 
-> Link: https://lore.kernel.org/r/cover.1669980383.git.geert+renesas@glider.be
-> Link: https://lore.kernel.org/r/87mt7qpylw.wl-kuninori.morimoto.gx@renesas.com
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  .../devicetree/bindings/sound/ti,pcm3168a.txt |  56 ---------
->  .../bindings/sound/ti,pcm3168a.yaml           | 107 ++++++++++++++++++
->  2 files changed, 107 insertions(+), 56 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/ti,pcm3168a.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/ti,pcm3168a.yaml
-> 
+--8t9RHnE3ZwKMSgU+
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Although the "dma_chan" pointer occupies more or equal space compared
+to "*dma_chan", the allocation size should use the size of variable
+itself.
+
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Fixes: 01ef7dbffb411d9d ("ALSA: hda - Update CA0132 codec to load DSP firmw=
+are binary")
+Signed-off-by: Alexey V. Vissarionov <gremlin@altlinux.org>
+
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 0a292bf271f2e59a..acde4cd58785e0cb 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -2455,7 +2455,7 @@ static int dspio_set_uint_param(struct hda_codec *cod=
+ec, int mod_id,
+ static int dspio_alloc_dma_chan(struct hda_codec *codec, unsigned int *dma=
+_chan)
+ {
+ 	int status =3D 0;
+-	unsigned int size =3D sizeof(dma_chan);
++	unsigned int size =3D sizeof(*dma_chan);
+=20
+ 	codec_dbg(codec, "     dspio_alloc_dma_chan() -- begin\n");
+ 	status =3D dspio_scp(codec, MASTERCONTROL, 0x20,
+
+
+--=20
+Alexey V. Vissarionov
+gremlin =F0=F2=E9 altlinux =F4=FE=EB org; +vii-cmiii-ccxxix-lxxix-xlii
+GPG: 0D92F19E1C0DC36E27F61A29CD17E2B43D879005 @ hkp://keys.gnupg.net
+
+--8t9RHnE3ZwKMSgU+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCgAGBQJjxoNKAAoJEFv2F9znRj5KU2IP/A9EgJ/2sPrwFgPnInPTBDO/
+yL/DCmz1u/2iRUaeFo3lv6NCRzBWrvTT9UFa88VOntuGWS0rp4n6eRGVur907V12
+vkvK34rWUhxGW5FqATgwB04XjzwWBc2234ycOL6qQHDFEJJICt8YbjY08KMt/Xe+
+TTAMwNsfw9WvsSgAVuWwBkMztMXcTgbLkwBoZ9S3DUsOT4AiAKeCBXBZBb24NOjR
+a59fW2HAZZQr0zGONML7cGm7yzlfHrBrs/4kOI3461binaNaBaZD48XQRQ6pbZuZ
+GXAfsjCP04pyDy50BMBBUqJyhefZ3Ls0/6RP+UQSppECZO8vXwsQNGZL4j7os6rm
+kk5f3rejaW+wKbItHqJ28T8zuhmrNyzDFmmr8mx/2p5v9sDM2VFlzBSQXWZtAHK+
+N6BTkwQvYYomL2KY4yzfBcMmU9C+04WvV24n9iBUkjT2rZA4Ezctspq4V09gwWLa
+29BdZO6zOPixfwdnkmKfl8QhemNREPmuEUkdOB2nPQLivIOmm1Ea7XOlU6kh160z
+nlRSAXOZaouGa0rouQvlaFDWXXLKrHOIjxSezm3tVzahpnffJosckg5WNLLiuJyK
+L3fKtu72ly9GbbDxXRCXYJ51OyNpvsS+52XTaQ53S4AEWOKS8DnIw9lGkf+tDVWd
+j7YCGNWdxBxSyDXfWlmQ
+=IATM
+-----END PGP SIGNATURE-----
+
+--8t9RHnE3ZwKMSgU+--
