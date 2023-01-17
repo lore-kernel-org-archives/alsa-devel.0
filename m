@@ -4,66 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94DEFC54E76
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 Jan 2023 17:13:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32832C54E76
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 Jan 2023 19:23:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 510C66B0B;
-	Tue, 17 Jan 2023 18:12:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 510C66B0B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 43DC26CEA;
+	Tue, 17 Jan 2023 20:22:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43DC26CEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1673975611;
-	bh=Sy+DcVL862ePRsNSx1UnuRPqVKg9kcEBIMiIJvjooSU=;
-	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=HtSCE5Hf1oZ6O6oyVl4Yc6JdHlDnFOVbTQ//N0n9f0iJCeOKJAQjfmtAuKQ4Ybd9a
-	 yY1m58wX9+FeSpfVSX4EvVx9GGJ4fzcdWKStDMZ/JPLFBJNkv3+8fz9J5lr/z1WvmK
-	 NLsTALpXjIO3ImSyud5quAKWI274sZULSifnTKlI=
+	s=default; t=1673983398;
+	bh=SjNRNiTzikMPpjKkb9wzdKyMfUzA7YFBI3glIrtDNvs=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=UFeyXb7N1F80duJUpvAOVVYzNhrhWmSKaEUXM0G1Rgz7uQk0decA/XeK+UQuU2yKo
+	 vjQkTRn0XscaPbEMjA6VveUV6UECMkrrZMkUmM9gNHj1P2mbpfqMpWFhTxwQS7PUQ7
+	 UlBSDJLAsWUWHSwL9R6gNJORKaP0jITJiJ4WKRDo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C4CDF8047B;
-	Tue, 17 Jan 2023 18:12:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EF16AF8026D;
+	Tue, 17 Jan 2023 20:22:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D45A1F8024C; Mon, 16 Jan 2023 12:39:43 +0100 (CET)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
- [209.85.166.72])
+ id 4F338F804DE; Tue, 17 Jan 2023 20:22:26 +0100 (CET)
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com
+ [209.85.210.54])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08839F8023A
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 12:39:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08839F8023A
-Received: by mail-io1-f72.google.com with SMTP id
- k1-20020a6b3c01000000b006f744aee560so17392393iob.2
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2023 03:39:39 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id EB274F8023A
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 20:22:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB274F8023A
+Received: by mail-ot1-f54.google.com with SMTP id
+ i26-20020a9d68da000000b00672301a1664so18410153oto.6
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2023 11:22:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=to:from:subject:message-id:date:mime-version:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=MSwiniR5woQGqc8BuSp7q6E3UjD1x2HrdHo84ICBI9Q=;
- b=FF4PB7NNkVMrHfiH5EwOaii32wCACDm7LT1uPuGQAnlN4SpQlcLBOaDea9XGwNFoSp
- aTlp9lQqSE5NKjgqzz6Fn8BboiPHELozyIUDdV5cFXIt3wwCfmk27tWKsICd/5JkdZKm
- dLz3GL2a8Rh6wMjlB8Dcosp813BcPpLUxzvImPZ24kXHCNBKugPiYm/GflcD+wZTX2+E
- 0vex9T9d/bz1JI8qvBBfVZXvtLvjZLGBb7NRXjeObWQlvVrpgxkHt0RMgE61vkiHuZmy
- AYq32IzY3jzFue1LaGA2d7QOlnIJ4Wtztmf2jKYDNQrdu29YKf2ATRAwSZRa7TEPZxLn
- GOsw==
-X-Gm-Message-State: AFqh2kpWVNBdLdcfGZBLXuNDlGilLBjKao0pvtOC2gsdaJnu6mwMbdNN
- stZ+maqVobZdR7YTdsW3PdSNdquGJP7t0E5XlBHNe+hkn2wH
-X-Google-Smtp-Source: AMrXdXtN9RuEcXj4YKTwxvCY9z/PMotAZJVQBskp9A1ozhNVQ8sEqZC/00BYOUHyWuB7z4G4U43LfTQuZudjXwLhp7TX1Ivj4rK9
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=3rG3R2V1qqSN44Ku2yfSe1P+2hvGoj34mROM9Vs7AX8=;
+ b=uR6+OXX0/Bh43rNXeS0XtF1K/UoJKJSaVdnIIYcZ/II0FnZoMZ92yVdo0JdulmmIxP
+ Wb91s1Of4cRWHsvMIwaEmgvRb490vOYXpgdyv7+tjO4o9+SYrzvPMqPcq8EcjDGb9kO9
+ ZJ3+dFKeDC4mXL0TqHoDagWA/Fvcz6NPp1Zh805y2eYULHfa5wLm/iajAqqrcE6xAt7u
+ d1s35GoPAYgSPqLq4ZoaT1DdOiNZztZefkiUseqacOX5ZTI3PmMxnEeHGDrlPAmv87ue
+ ulpcsJ0U7D+qAbCeB/x4Apg3I3m/PkfSrdCzMyYmWVgAju8aCmcfkkLeXv+sJS/PlQIV
+ uspA==
+X-Gm-Message-State: AFqh2kou4vD48iC0he3bLPqmdym1QcVRfrBDKzy7P7PhvFM7OFHp4Q7t
+ 0b2eOk5IE7klO51oEuK+xQ==
+X-Google-Smtp-Source: AMrXdXvKqegazsLgf2v9G1uLKuVnBCQgYZfnuujKkNC+iUoo7aQUeewPrn0DJQx+IyQAjvv5Q53F/g==
+X-Received: by 2002:a9d:2c06:0:b0:684:c8ff:8844 with SMTP id
+ f6-20020a9d2c06000000b00684c8ff8844mr1992677otb.12.1673983340756; 
+ Tue, 17 Jan 2023 11:22:20 -0800 (PST)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
+ w25-20020a056830061900b006863c59f685sm3601880oti.28.2023.01.17.11.22.19
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 17 Jan 2023 11:22:20 -0800 (PST)
+Received: (nullmailer pid 3489286 invoked by uid 1000);
+ Tue, 17 Jan 2023 19:22:19 -0000
+Date: Tue, 17 Jan 2023 13:22:19 -0600
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/3] ASoC: dt-bindings: qcom,wsa881x: Allow
+ sound-name-prefix
+Message-ID: <167398333901.3489228.15719942715865032325.robh@kernel.org>
+References: <20230113162214.117261-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:60c:b0:38c:886a:219a with SMTP id
- g12-20020a056638060c00b0038c886a219amr10320580jar.133.1673869177783; Mon, 16
- Jan 2023 03:39:37 -0800 (PST)
-Date: Mon, 16 Jan 2023 03:39:37 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000be0f9b05f2600901@google.com>
-Subject: [syzbot] general protection fault in snd_rawmidi_write
-From: syzbot <syzbot+52d5f07074cbd0fa32d4@syzkaller.appspotmail.com>
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, 
- syzkaller-bugs@googlegroups.com, tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
-X-Mailman-Approved-At: Tue, 17 Jan 2023 18:12:39 +0100
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230113162214.117261-1-krzysztof.kozlowski@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,107 +85,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Banajit Goswami <bgoswami@quicinc.com>, linux-arm-msm@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Andy Gross <agross@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
 
-syzbot found the following issue on:
+On Fri, 13 Jan 2023 17:22:12 +0100, Krzysztof Kozlowski wrote:
+> Reference common DAI properties to fix:
+> 
+>   sdm845-db845c.dtb: speaker@0,1: 'sound-name-prefix' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/sound/qcom,wsa881x.yaml | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
 
-HEAD commit:    0a093b2893c7 Add linux-next specific files for 20230112
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=168edb4a480000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=835f3591019836d5
-dashboard link: https://syzkaller.appspot.com/bug?extid=52d5f07074cbd0fa32d4
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/8111a570d6cb/disk-0a093b28.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ecc135b7fc9a/vmlinux-0a093b28.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ca8d73b446ea/bzImage-0a093b28.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+52d5f07074cbd0fa32d4@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000007: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000038-0x000000000000003f]
-CPU: 1 PID: 8401 Comm: syz-executor.4 Not tainted 6.2.0-rc3-next-20230112-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/26/2022
-RIP: 0010:snd_rawmidi_ready_append sound/core/rawmidi.c:119 [inline]
-RIP: 0010:snd_rawmidi_write+0x358/0xbb0 sound/core/rawmidi.c:1592
-Code: f9 48 8b 44 24 38 48 c1 e8 03 80 3c 18 00 0f 85 0d 07 00 00 48 8b 04 24 4c 8b b0 a0 00 00 00 49 8d 7e 38 48 89 f8 48 c1 e8 03 <80> 3c 18 00 0f 85 06 07 00 00 49 8d 7e 30 49 8b 6e 38 48 89 f8 48
-RSP: 0018:ffffc900050a7c28 EFLAGS: 00010002
-
-RAX: 0000000000000007 RBX: dffffc0000000000 RCX: ffffc9000e84b000
-RDX: 0000000000040000 RSI: ffffffff879a3daf RDI: 0000000000000038
-RBP: 0000000000001bb8 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000001bb8 R11: 0000000000000000 R12: ffff88807ac10000
-R13: ffff888149ef0630 R14: 0000000000000000 R15: ffffc900050a7cc0
-FS:  00007f9e6738e700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200ce000 CR3: 0000000029217000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- vfs_write+0x2db/0xe10 fs/read_write.c:582
- ksys_write+0x1ec/0x250 fs/read_write.c:637
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f9e6668c0c9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f9e6738e168 EFLAGS: 00000246
- ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f9e667ac1f0 RCX: 00007f9e6668c0c9
-RDX: 00000000fffffd2c RSI: 0000000020000000 RDI: 0000000000000004
-RBP: 00007f9e666e7ae9 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffec721559f R14: 00007f9e6738e300 R15: 0000000000022000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:snd_rawmidi_ready_append sound/core/rawmidi.c:119 [inline]
-RIP: 0010:snd_rawmidi_write+0x358/0xbb0 sound/core/rawmidi.c:1592
-Code: f9 48 8b 44 24 38 48 c1 e8 03 80 3c 18 00 0f 85 0d 07 00 00 48 8b 04 24 4c 8b b0 a0 00 00 00 49 8d 7e 38 48 89 f8 48 c1 e8 03 <80> 3c 18 00 0f 85 06 07 00 00 49 8d 7e 30 49 8b 6e 38 48 89 f8 48
-RSP: 0018:ffffc900050a7c28 EFLAGS: 00010002
-
-RAX: 0000000000000007 RBX: dffffc0000000000 RCX: ffffc9000e84b000
-RDX: 0000000000040000 RSI: ffffffff879a3daf RDI: 0000000000000038
-RBP: 0000000000001bb8 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000001bb8 R11: 0000000000000000 R12: ffff88807ac10000
-R13: ffff888149ef0630 R14: 0000000000000000 R15: ffffc900050a7cc0
-FS:  00007f9e6738e700(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200ce000 CR3: 0000000029217000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	f9                   	stc
-   1:	48 8b 44 24 38       	mov    0x38(%rsp),%rax
-   6:	48 c1 e8 03          	shr    $0x3,%rax
-   a:	80 3c 18 00          	cmpb   $0x0,(%rax,%rbx,1)
-   e:	0f 85 0d 07 00 00    	jne    0x721
-  14:	48 8b 04 24          	mov    (%rsp),%rax
-  18:	4c 8b b0 a0 00 00 00 	mov    0xa0(%rax),%r14
-  1f:	49 8d 7e 38          	lea    0x38(%r14),%rdi
-  23:	48 89 f8             	mov    %rdi,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	80 3c 18 00          	cmpb   $0x0,(%rax,%rbx,1) <-- trapping instruction
-  2e:	0f 85 06 07 00 00    	jne    0x73a
-  34:	49 8d 7e 30          	lea    0x30(%r14),%rdi
-  38:	49 8b 6e 38          	mov    0x38(%r14),%rbp
-  3c:	48 89 f8             	mov    %rdi,%rax
-  3f:	48                   	rex.W
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Acked-by: Rob Herring <robh@kernel.org>
