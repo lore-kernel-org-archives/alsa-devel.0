@@ -4,73 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB0D1C32793
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 18:40:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 770B2C38147
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 18:40:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5679A789A;
-	Wed, 18 Jan 2023 19:39:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5679A789A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13BB66B88;
+	Wed, 18 Jan 2023 19:39:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13BB66B88
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674067208;
-	bh=rLOjY01QTq0Btsgrlpy5oCl1OvMXzrTFhGhJXtQRRpc=;
+	s=default; t=1674067216;
+	bh=fNVfUI0/Z0DjRR7gwu1N9IY2Ziu6mt7cPXccrzYKj08=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=FZpL1gH36zIvhoANrt4FNltjrVH1FdzRxmSgNic04IDpgOLRwAYQYtciUsLGIHgeI
-	 R9O29CBJJWtsGT4ZQzuk17xf9WghZxHf+RwVkZWHN0sclqQxtLhfv4EnBGqhITNvxP
-	 1USCmGV22iyToYELRFqe15KBkEOBMejt3eqVoM5Q=
+	b=SJJBVg3nbW63LO7MhtqJo0wnOdHQi15HdiKOXIcvhGHegyqyFhF15NHTtcw5T8eOt
+	 RaZc1UuICAEpYbOJMdYyNXOlVzwQAerOKU6q+Gwv8BZ4UhWoCKP1xXNt3eboeELaFB
+	 dgShXMNuETqSn2itr/npDM8GLXuIQMUYtScWUR5I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A579DF8053D;
-	Wed, 18 Jan 2023 19:38:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60F6AF80549;
+	Wed, 18 Jan 2023 19:38:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C0094F80520; Wed, 18 Jan 2023 19:38:29 +0100 (CET)
+ id 0B715F80542; Wed, 18 Jan 2023 19:38:30 +0100 (CET)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DBB6EF8024C
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 19:38:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBB6EF8024C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3813AF80495
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 19:38:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3813AF80495
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=mCUoYq/G
+ header.s=Intel header.b=hJbvU6AH
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674067101; x=1705603101;
+ t=1674067104; x=1705603104;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=rLOjY01QTq0Btsgrlpy5oCl1OvMXzrTFhGhJXtQRRpc=;
- b=mCUoYq/Gn76v40p7wT5zGBTZ1aAOidLT9Lkdz03hMNh1qtv6Uo5OGptz
- c4ibOUrgUjYS01cdFfHeIerazgQ7YivA3cbmAUcvU9qjNzlcUiIp5Zp8t
- Jf/RHzlpbVR2ZzM/VslfOB3oFP1j8S1NwKMsbqX/voip2REyEgO1s4PNk
- DH058g9UkMz8heimWIYWJew/cW81zGDD6YP8DK+RX+Amk1h7eQmWM14I9
- QiR79y8MOUK+QR9PYldNb+Y6q3Wf1HlY9JLI88EOhjuiWatSI6aeonnxg
- iqGiTZ0q6DEBSFIcJrn2/cqJhVoSDyhr/XFR2DsiRK2Ct/asK0mUVPNmi w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="327138517"
-X-IronPort-AV: E=Sophos;i="5.97,226,1669104000"; d="scan'208";a="327138517"
+ bh=fNVfUI0/Z0DjRR7gwu1N9IY2Ziu6mt7cPXccrzYKj08=;
+ b=hJbvU6AHsjI81rQmymHitMYKP06HMBhujSG/y/HdLgLBZ1byPAuXAH2Z
+ ySI687UrGbz0aSIzOlY3U/JuPnaDDAf3uKRyHe/p8vQxyiPnLskGRu8hr
+ Wzmyn+Vde4hiRXfvSpxqqF6x00PUfHZmD++S4zsaDk2QDK5YFJQQozVXR
+ EDGv4jKP36sm66+YA3tZIkXxeZJ1/y2xAJYxaCdH8WJwbKnvPdU7lkn65
+ sy130BO/NSYrWZRw597plbRLxM7uRC9ckvjkBHqLQpuFM8DlvGQNPgV69
+ 7PNnEipB5HDn/9pcTHah+5ilbyJPdxQ9+uhDGw869AuoXUK0faP8edFpU Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="327138543"
+X-IronPort-AV: E=Sophos;i="5.97,226,1669104000"; d="scan'208";a="327138543"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jan 2023 10:37:56 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="783777249"
-X-IronPort-AV: E=Sophos;i="5.97,226,1669104000"; d="scan'208";a="783777249"
+ 18 Jan 2023 10:38:01 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="783777265"
+X-IronPort-AV: E=Sophos;i="5.97,226,1669104000"; d="scan'208";a="783777265"
 Received: from jaibarra-mobl.amr.corp.intel.com (HELO [10.209.131.1])
  ([10.209.131.1])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jan 2023 10:37:55 -0800
-Message-ID: <eb9fe53e-013b-e477-1d14-8d0c1c7514fc@linux.intel.com>
-Date: Wed, 18 Jan 2023 10:41:18 -0600
+ 18 Jan 2023 10:37:59 -0800
+Message-ID: <feb8eedc-c7fe-ef0e-85c8-faf6b0f3592e@linux.intel.com>
+Date: Wed, 18 Jan 2023 11:43:42 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH v2 2/8] ASoC: cs42l42: Add SOFT_RESET_REBOOT register
+Subject: Re: [PATCH v2 0/8] ASoC: cs42l42: Add Soundwire support
 Content-Language: en-US
 To: Stefan Binding <sbinding@opensource.cirrus.com>,
  Mark Brown <broonie@kernel.org>
 References: <20230118160452.2385494-1-sbinding@opensource.cirrus.com>
- <20230118160452.2385494-3-sbinding@opensource.cirrus.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230118160452.2385494-3-sbinding@opensource.cirrus.com>
+In-Reply-To: <20230118160452.2385494-1-sbinding@opensource.cirrus.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -86,73 +85,52 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+ Bard Liao <yung-chuan.liao@linux.intel.com>, linux-kernel@vger.kernel.org,
+ Vinod Koul <vkoul@kernel.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
 On 1/18/23 10:04, Stefan Binding wrote:
-> From: Richard Fitzgerald <rf@opensource.cirrus.com>
+> The CS42L42 has a Soundwire interface for control and audio. This
+> chain of patches adds support for this.
 > 
-> The SOFT_RESET_REBOOT register is needed to recover CS42L42 state after
-> a Soundwire bus reset.
-
-Humm, you probably want to clarify the terminology, the 'soft reset' is
-defined in the SoundWire spec as the case where the peripheral device
-loses sync. Bus reset is a Severe Reset, but there's also a Hard Reset.
-
-does this 'SOFT_RESET_REBOOT' need to be accessed when there's a soft
-reset, or only after a Severe/Hard Reset?
-
+> Patches #1 .. #5 split out various changes to the existing code that
+> are needed for adding Soundwire. These are mostly around clocking and
+> supporting the separate probe and enumeration stages in Soundwire.
 > 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-> ---
->  include/sound/cs42l42.h    | 5 +++++
->  sound/soc/codecs/cs42l42.c | 2 ++
->  2 files changed, 7 insertions(+)
+> Patches #6 .. #8 actually adds the Soundwire handling.
 > 
-> diff --git a/include/sound/cs42l42.h b/include/sound/cs42l42.h
-> index 1d1c24fdd0cae..3994e933db195 100644
-> --- a/include/sound/cs42l42.h
-> +++ b/include/sound/cs42l42.h
-> @@ -34,6 +34,7 @@
->  #define CS42L42_PAGE_24		0x2400
->  #define CS42L42_PAGE_25		0x2500
->  #define CS42L42_PAGE_26		0x2600
-> +#define CS42L42_PAGE_27		0x2700
->  #define CS42L42_PAGE_28		0x2800
->  #define CS42L42_PAGE_29		0x2900
->  #define CS42L42_PAGE_2A		0x2A00
-> @@ -720,6 +721,10 @@
->  
->  #define CS42L42_SRC_SDOUT_FS		(CS42L42_PAGE_26 + 0x09)
->  
-> +/* Page 0x27 DMA */
-> +#define CS42L42_SOFT_RESET_REBOOT	(CS42L42_PAGE_27 + 0x01)
-> +#define CS42L42_SFT_RST_REBOOT_MASK	BIT(1)
-> +
->  /* Page 0x28 S/PDIF Registers */
->  #define CS42L42_SPDIF_CTL1		(CS42L42_PAGE_28 + 0x01)
->  #define CS42L42_SPDIF_CTL2		(CS42L42_PAGE_28 + 0x02)
-> diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-> index 2fefbcf7bd130..82aa11d6937be 100644
-> --- a/sound/soc/codecs/cs42l42.c
-> +++ b/sound/soc/codecs/cs42l42.c
-> @@ -293,6 +293,7 @@ bool cs42l42_readable_register(struct device *dev, unsigned int reg)
->  	case CS42L42_SPDIF_SW_CTL1:
->  	case CS42L42_SRC_SDIN_FS:
->  	case CS42L42_SRC_SDOUT_FS:
-> +	case CS42L42_SOFT_RESET_REBOOT:
->  	case CS42L42_SPDIF_CTL1:
->  	case CS42L42_SPDIF_CTL2:
->  	case CS42L42_SPDIF_CTL3:
-> @@ -358,6 +359,7 @@ bool cs42l42_volatile_register(struct device *dev, unsigned int reg)
->  	case CS42L42_LOAD_DET_DONE:
->  	case CS42L42_DET_STATUS1:
->  	case CS42L42_DET_STATUS2:
-> +	case CS42L42_SOFT_RESET_REBOOT:
->  		return true;
->  	default:
->  		return false;
+> Changes since v1:
+> - fixes for various review comments from v1
+> - add support for wakeup from clock stop using hardware interrupts
+> - use port_prep callback to prepare/deprepare codec
+> 
+> Richard Fitzgerald (6):
+>   ASoC: cs42l42: Add SOFT_RESET_REBOOT register
+>   ASoC: cs42l42: Ensure MCLKint is a multiple of the sample rate
+>   ASoC: cs42l42: Separate ASP config from PLL config
+>   ASoC: cs42l42: Export some functions for Soundwire
+>   ASoC: cs42l42: Add Soundwire support
+>   ASoC: cs42l42: Don't set idle_bias_on
+> 
+> Stefan Binding (2):
+>   soundwire: stream: Add specific prep/deprep commands to port_prep
+>     callback
+
+probably want to CC: Vinod and Bard to get their Acked-by tag...
+
+>   ASoC: cs42l42: Wait for debounce interval after resume
+> 
+>  drivers/soundwire/stream.c     |   4 +-
+>  include/linux/soundwire/sdw.h  |   8 +-
+>  include/sound/cs42l42.h        |   5 +
+>  sound/soc/codecs/Kconfig       |   8 +
+>  sound/soc/codecs/Makefile      |   2 +
+>  sound/soc/codecs/cs42l42-sdw.c | 603 +++++++++++++++++++++++++++++++++
+>  sound/soc/codecs/cs42l42.c     | 127 ++++---
+>  sound/soc/codecs/cs42l42.h     |   9 +-
+>  8 files changed, 716 insertions(+), 50 deletions(-)
+>  create mode 100644 sound/soc/codecs/cs42l42-sdw.c
+> 
