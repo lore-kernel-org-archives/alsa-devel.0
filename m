@@ -4,67 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A5FBC46467
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 16:13:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66BDAC38147
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 16:50:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E7F579D3;
-	Wed, 18 Jan 2023 17:12:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E7F579D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id AACC879D7;
+	Wed, 18 Jan 2023 17:49:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AACC879D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674058420;
-	bh=8cChsv74pYJOfcjtONuonGjh4UJndDRCDERVcmwltLQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1674060601;
+	bh=eyVl9mVLCzZwPHdiHntaix+p6qeOxBxpNIbfwNARgXY=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=vqXgDlhYE1Q7Capir9h+sI0V/EejlmjfuT/JhFlAmBKaAEJ9glEK9x6gGBirRjuvh
-	 NgYgFMSbeMGkHPHI+p3tK11NATAOrYHdZ4lpiBleIz/WdsyIDiHT9DnhmwBHdZCGJr
-	 T0fNHii2BJPNe8YsfcQwEI+1JxHHJl6HCmFmY7Bs=
+	b=HPY0Kdm6czD5psVm4LCOe13Id71+qmI4CTR2XijLe/jkJgl2tUHhMx5Q281mZSEx9
+	 p2IwmaiZAUWxcclu5A86KjmYiNZjkaQ9B3LFfY6Ii1ouhtZ6g7ooOfmo2tzKbo+d4R
+	 oi3fSxN4szxq2rLP5GghTjWWCCpbTlDl4QnSUiE0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24C50F8026D;
-	Wed, 18 Jan 2023 17:12:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48B96F8024C;
+	Wed, 18 Jan 2023 17:49:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F573F80482; Wed, 18 Jan 2023 17:12:48 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 69D1CF8026D; Wed, 18 Jan 2023 17:49:09 +0100 (CET)
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com
+ [209.85.160.50])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9EEEF8024D
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 17:12:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9EEEF8024D
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=VJ5KtuAX
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 8EEE0B81D8E;
- Wed, 18 Jan 2023 16:12:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 702BBC433D2;
- Wed, 18 Jan 2023 16:12:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674058365;
- bh=8cChsv74pYJOfcjtONuonGjh4UJndDRCDERVcmwltLQ=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=VJ5KtuAXOH316tSrgSNn6b8gq5MCYj0z0J+xThfFP72otWnHh0r1VmuOApvAXoCUr
- PG1a0KG4zAl6fL6MXUTy9rJseNw+H6F24mjOf9BaROeVSCRIZ0u7Ds8RkPN+vDTUyT
- hLVgDtHV91FGhg9LcpprKNIVDAAc9tvrak0cCtVY3GzdP7ED1RbEVREzIG1s/bmEuk
- GBzzeR2QxsxddC9iLeSD9YIEN7/n+rWo0nbCj+GKMVN/Ccky+Pq/cUI2MqlT+XKJW+
- NNlyht4DtVDNa4UD2mRlpj1l4kgAkfxnITqqTkV5U7LV7J7NoruaTnsgWGm4iKhO3Z
- T/9cwCxSiavPQ==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Lars-Peter Clausen <lars@metafoo.de>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5/5] ASoC: remove
- snd_dmaengine_pcm_config->compat_request_channel
-Date: Wed, 18 Jan 2023 17:10:49 +0100
-Message-Id: <20230118161110.521504-5-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230118161110.521504-1-arnd@kernel.org>
-References: <20230118161110.521504-1-arnd@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BD03DF8021D
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 17:49:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD03DF8021D
+Received: by mail-oa1-f50.google.com with SMTP id
+ 586e51a60fabf-12c8312131fso36120554fac.4
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 08:49:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=9W9y7b/ziaOFjGUNm7d4cmFDdM4EDargAbRPiR5bNLQ=;
+ b=bRDUQBHNgRFtmWyOnSPSjuAmGOZFr4p8qzWWUNjJc1SZdxCh+fdQc6cgwtAsHz716r
+ 4q8ZLI/OTqlJK0/H88KL4XLwcnn4HYhPnXD51y3fgbrr7S/046nOS3T0FuB0CL062dG+
+ m0mab5DN7cX+A6btCk8dAB+m6dQPwvLYwe712+bs8jlvy5rdtFlLvqdrYxnbXRpNwyNf
+ 2Raj58WAuzNXtZc7UIY3qnWZzgRHvsxTqv4NJNWQ8VS4Q9EDDELZLsWBDRAhFIyaLRWw
+ siw9M2Z5LYEUtRLLSVV9EQzM62xsViC/1BHRYSqPAn18gsGKclHsG2Y8JsniuHRwRcFo
+ WDQQ==
+X-Gm-Message-State: AFqh2kqaXf8Qng2rkEJwNlNTx/P/hbH79PAeNp3kebM3MEf+nKUJgVCM
+ DF1ijHc0ggDlS4BHt1rJkw==
+X-Google-Smtp-Source: AMrXdXtIWuC3J1y+UwrLmINbTm9kPgk76QzDW6udmvO3aPTiNNlYIcEhJTMYOiY45UdU64RY+g328A==
+X-Received: by 2002:a05:6870:c906:b0:15e:f1d6:3d8 with SMTP id
+ hj6-20020a056870c90600b0015ef1d603d8mr4189671oab.14.1674060545753; 
+ Wed, 18 Jan 2023 08:49:05 -0800 (PST)
+Received: from robh_at_kernel.org ([4.31.143.193])
+ by smtp.gmail.com with ESMTPSA id
+ s18-20020a056870611200b0014c7958c55bsm18632011oae.42.2023.01.18.08.49.04
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 18 Jan 2023 08:49:05 -0800 (PST)
+Received: (nullmailer pid 148495 invoked by uid 1000);
+ Wed, 18 Jan 2023 16:49:04 -0000
+Date: Wed, 18 Jan 2023 10:49:04 -0600
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: qcom,sm8250: use fallback for
+ SDM845 sound cards
+Message-ID: <167406054417.148440.18145295940494067473.robh@kernel.org>
+References: <20230118101542.96705-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230118101542.96705-1-krzysztof.kozlowski@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,79 +85,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-arm-msm@vger.kernel.org,
+ Bjorn Andersson <andersson@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@quicinc.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-The last reference to this struct member is gone, so the caller
-can be removed as well.
+On Wed, 18 Jan 2023 11:15:41 +0100, Krzysztof Kozlowski wrote:
+> All SDM845 sound cards are compatible with each other, so use one
+> generic fallback compatible for them.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  .../bindings/sound/qcom,sm8250.yaml           | 24 +++++++++++--------
+>  1 file changed, 14 insertions(+), 10 deletions(-)
+> 
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- include/sound/dmaengine_pcm.h         | 13 ++-----------
- sound/soc/soc-generic-dmaengine-pcm.c |  3 ---
- 2 files changed, 2 insertions(+), 14 deletions(-)
-
-diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
-index a497d1f81cab..9965d59ff8f0 100644
---- a/include/sound/dmaengine_pcm.h
-+++ b/include/sound/dmaengine_pcm.h
-@@ -93,8 +93,8 @@ int snd_dmaengine_pcm_refine_runtime_hwparams(
- 	struct dma_chan *chan);
- 
- /*
-- * Try to request the DMA channel using compat_request_channel or
-- * compat_filter_fn if it couldn't be requested through devicetree.
-+ * Try to request the DMA channel using compat_filter_fn if it
-+ * couldn't be requested through devicetree.
-  */
- #define SND_DMAENGINE_PCM_FLAG_COMPAT BIT(0)
- /*
-@@ -112,8 +112,6 @@ int snd_dmaengine_pcm_refine_runtime_hwparams(
-  * struct snd_dmaengine_pcm_config - Configuration data for dmaengine based PCM
-  * @prepare_slave_config: Callback used to fill in the DMA slave_config for a
-  *   PCM substream. Will be called from the PCM drivers hwparams callback.
-- * @compat_request_channel: Callback to request a DMA channel for platforms
-- *   which do not use devicetree.
-  * @process: Callback used to apply processing on samples transferred from/to
-  *   user space.
-  * @compat_filter_fn: Will be used as the filter function when requesting a
-@@ -126,18 +124,11 @@ int snd_dmaengine_pcm_refine_runtime_hwparams(
-  * @pcm_hardware: snd_pcm_hardware struct to be used for the PCM.
-  * @prealloc_buffer_size: Size of the preallocated audio buffer.
-  *
-- * Note: If both compat_request_channel and compat_filter_fn are set
-- * compat_request_channel will be used to request the channel and
-- * compat_filter_fn will be ignored. Otherwise the channel will be requested
-- * using dma_request_channel with compat_filter_fn as the filter function.
-  */
- struct snd_dmaengine_pcm_config {
- 	int (*prepare_slave_config)(struct snd_pcm_substream *substream,
- 			struct snd_pcm_hw_params *params,
- 			struct dma_slave_config *slave_config);
--	struct dma_chan *(*compat_request_channel)(
--			struct snd_soc_pcm_runtime *rtd,
--			struct snd_pcm_substream *substream);
- 	int (*process)(struct snd_pcm_substream *substream,
- 		       int channel, unsigned long hwoff,
- 		       void *buf, unsigned long bytes);
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 3b99f619e37e..a3d92eb645f2 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -190,9 +190,6 @@ static struct dma_chan *dmaengine_pcm_compat_request_channel(
- 	if ((pcm->flags & SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX) && pcm->chan[0])
- 		return pcm->chan[0];
- 
--	if (pcm->config->compat_request_channel)
--		return pcm->config->compat_request_channel(rtd, substream);
--
- 	return snd_dmaengine_pcm_request_channel(pcm->config->compat_filter_fn,
- 						 dma_data->filter_data);
- }
--- 
-2.39.0
-
+Acked-by: Rob Herring <robh@kernel.org>
