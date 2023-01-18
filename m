@@ -4,92 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B933FC32793
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 13:43:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D43B5C32793
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 13:43:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CEBB93BAB;
-	Wed, 18 Jan 2023 14:42:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CEBB93BAB
+	by alsa0.perex.cz (Postfix) with ESMTPS id E18C13893;
+	Wed, 18 Jan 2023 14:42:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E18C13893
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674049411;
-	bh=m2z8ZT/JeUv/duakXczjmQ1AtLtfp1unkt7+G0GCiKs=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1674049415;
+	bh=3aw2Of8C8dj0Sl2s2WbPQ4HaD1owl4Omnh3YKIftZSU=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=OOQTo+ubbqru3AtT9rbYdpCI++yENYYR+9/RqOGd2PIFM+L3gAjujAW2yTzmM5e7w
-	 27r9qJXmeIt2PP6J7UntVyQ4+KAkrqmeQ4IRO+bxwfpo3g2IwelT0pgYF6ZTKJ8L3N
-	 4r9oLu4QY4wzfi8bq0HMmNOckl1FDi5U2RJGlGeI=
+	b=rXKZ3vaqoR0hGIDqrSO7KrhAVGCRCOR0lTS0eWcCm27rij8cyzt6FqC9PTHIyeqn/
+	 /yhjjgZLGmJlIx8bvncRZO61/t4tDE/aNuydezP7wWIGw38HmxkoXxj1N6xkjh0y9U
+	 0xQrTFC32oigqSmhA5E4kNXre/dqRsGkpZrPV6Js=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 85930F805BB;
-	Wed, 18 Jan 2023 14:26:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6DBE4F80551;
+	Wed, 18 Jan 2023 14:42:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 505B1F805BB; Wed, 18 Jan 2023 14:26:14 +0100 (CET)
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
- [IPv6:2a00:1450:4864:20::32e])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id AB67AF80557; Wed, 18 Jan 2023 14:42:43 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E703EF805B6
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 14:26:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E703EF805B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id 34922F80083
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 14:42:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34922F80083
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=ZqJeDahI
-Received: by mail-wm1-x32e.google.com with SMTP id k16so4028407wms.2
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 05:26:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=S3k8frPalWO3Z3os+kNp0jp8dx/XM1Dyquz57dFW8EA=;
- b=ZqJeDahIqkSzoQJifZAZvvOn5FPWyWN/dKqKzr+D0yILoa1Yhq+84XSUD+kB31zN5+
- 4DEJAL49lbIKnZqgHs08GIRJ5CfNDgSNm0f4qNyHdcD+WXOJxLBBZQV8gKFXJ5QtDtuY
- 0c1/E/SGQ9ZoM2awPSnLJVq5vsjYoeE4n98Wd9EsDpkix3xSQi/c675ZV7KYCjcm9Rcj
- vX0BjIWYtdECxW6zSsHNVpFyLAHMyCCtjBztU9tw9Sge7b0K1bRL2FRRTwxlPfNlaktS
- DnXRAsbly8J06BHP/jjWft47IImkOeS5IsCIpTEri0ZlRuW3+/g6NVDdqLteoI5ZNPUJ
- 9TVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=S3k8frPalWO3Z3os+kNp0jp8dx/XM1Dyquz57dFW8EA=;
- b=svmtP1HgaWHbRm2fqhzfDjnyNR4FfEhT8fCQY4d0hMAQU/RmbQt1dcVEZoeIyq3HnE
- PrEkeIAPRRb7OXOzrGUG908JvMVQz51qsR2aLQwOZ2cUG3leZGP3/VI4LCNm6XmxpmyD
- QXf6QilPvP8vkr+Nos3xD8qYak7eQ8lsnLvj6xMSfM1E+/F7Bv++dCaozHhsF8jXmna1
- gdyLId9YWpGqgZUv1vQL/t0XOkMKXwEOnAwRY8+SUJEYWdyssTcCthUK3A6ZPRjwHRoF
- sESdu6B6S5wd+jaLvzAM0/sCUWu0vq0AkBHpnvvt1Zj4I8KLMdQWQ8wN0H9Cm/hGWFUt
- qMuQ==
-X-Gm-Message-State: AFqh2kpLjGzLhj2J6L6js+1JMrl6i+F8F+OA9JOx7SieJIAruudj4wOG
- KEzogWH9RtRF4qo2yG6QpvPwTg==
-X-Google-Smtp-Source: AMrXdXs37wvLroZfU7gxPexS9gisJjQH9LTOdnfUkpefHwuHlTbMrugwkgRc/efeLQZknOBY6HRD0g==
-X-Received: by 2002:a05:600c:281:b0:3da:1132:4b63 with SMTP id
- 1-20020a05600c028100b003da11324b63mr6726498wmk.5.1674048370192; 
- Wed, 18 Jan 2023 05:26:10 -0800 (PST)
-Received: from [192.168.1.109] ([178.197.216.144])
- by smtp.gmail.com with ESMTPSA id
- s4-20020a05600c384400b003d9862ec435sm1998066wmr.20.2023.01.18.05.26.08
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 18 Jan 2023 05:26:09 -0800 (PST)
-Message-ID: <b4ae25ea-bccd-d845-c133-488d23d92e47@linaro.org>
-Date: Wed, 18 Jan 2023 14:26:07 +0100
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=SEAzXHBa
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id D382BB81D15;
+ Wed, 18 Jan 2023 13:42:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9815C433F1;
+ Wed, 18 Jan 2023 13:42:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1674049359;
+ bh=3aw2Of8C8dj0Sl2s2WbPQ4HaD1owl4Omnh3YKIftZSU=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=SEAzXHBa6pUh42R8aSZQ8mep00K65aAwIAYt03OIA1yAqEk3Lh1t9RZnPjY4lZOMm
+ +jzbZbATJHB9xhbD5T0ZNQcuneI6wT7j0xtBXyqAv8aun2KnSGfFvueZ+LMLVYelY4
+ eHguuCw8v5z4vWMIFn8+bdgMQHNYSkq4Tw5U7WZWk1CCksDbNgwu757O4GNLWftzZH
+ HvPPJggcAmDftf/c/l6JGnGLrZNt4cMfihFtlWj7SSweCekAuBH1dydaQc9eWrfdeM
+ hZJ0Nvbg1SItcJ0yWxxyGpD7NQyWbFn77rSD5oVb5GIV4jRcvuxpjddSYhW9TrzA2T
+ OJxNw12FHol6A==
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, robh+dt@kernel.org, 
+ krzysztof.kozlowski+dt@linaro.org, s.nawrocki@samsung.com, perex@perex.cz, 
+ tiwai@suse.com, pankaj.dubey@samsung.com, alim.akhtar@samsung.com, 
+ rcsekar@samsung.com, aswani.reddy@samsung.com, 
+ Padmanabhan Rajanbabu <p.rajanbabu@samsung.com>
+In-Reply-To: <20230116103823.90757-1-p.rajanbabu@samsung.com>
+References: <CGME20230116103841epcas5p17b33f2b6567935d6be59b4d2b5d9f847@epcas5p1.samsung.com>
+ <20230116103823.90757-1-p.rajanbabu@samsung.com>
+Subject: Re: (subset) [PATCH v4 0/5] ASoC: samsung: fsd: audio support for
+ FSD SoC
+Message-Id: <167404935251.749539.9077335076740575140.b4-ty@kernel.org>
+Date: Wed, 18 Jan 2023 13:42:32 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Subject: Re: [PATCH 2/3] ASoC: dt-bindings: qcom,wcd934x: Describe slim-ifc-dev
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>
-References: <20230113162214.117261-1-krzysztof.kozlowski@linaro.org>
- <20230113162214.117261-2-krzysztof.kozlowski@linaro.org>
- <20230117192724.GA3489389-robh@kernel.org>
- <331eed95-eaf7-5c5a-86c1-0ee7b5591b9a@linaro.org>
- <CAL_JsqJUTFa24iZ2fovE_yJdBVcbkcUX8rBoPB12ptdAyxHW6g@mail.gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <CAL_JsqJUTFa24iZ2fovE_yJdBVcbkcUX8rBoPB12ptdAyxHW6g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12-dev-77e06
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,40 +83,49 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-arm-msm@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Andy Gross <agross@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@quicinc.com>
+ linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 18/01/2023 14:19, Rob Herring wrote:
-> On Wed, Jan 18, 2023 at 5:25 AM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->>
->> On 17/01/2023 20:27, Rob Herring wrote:
->>> On Fri, Jan 13, 2023 at 05:22:13PM +0100, Krzysztof Kozlowski wrote:
->>>> The "slim-ifc-dev" property should not be just "true", because it allows
->>>> any type.
->>>
->>> Yes, but it is common, so it should be in a common schema. Though
->>> there's only one other binding using it (wcd9335.txt).
->>
->> This is still wcd9335 and wcd934x specific, not really common. Maybe
->> next Qualcomm codec would also bring it so then we can define common
->> schema for the codecs. But so far I think it is not really a common
->> property.
+On Mon, 16 Jan 2023 16:08:18 +0530, Padmanabhan Rajanbabu wrote:
+> This patch series enables audio support on FSD SoC.
 > 
-> By common, I only mean used by more than 1 binding. That's already the
-> case, there's just not a schema for the 2nd one. In any case, can
-> address that later.
+> Changes in v4:
+> 1. Rebased and addressed review comments provided for v3.
 > 
-> Acked-by: Rob Herring <robh@kernel.org>
+> Changes in v3:
+> 1. Addressed all the review comments provided for v2 patch.
+> 2. Fixed compilation warnings reported by kernel test robot.
+> 
+> [...]
 
-Sure!
+Applied to
 
-Best regards,
-Krzysztof
+   broonie/sound.git for-next
+
+Thanks!
+
+[1/5] ASoC: dt-bindings: Add FSD I2S controller bindings
+      commit: 93d79d410c0b33ff7b31015b9c2459bb5cabf030
+[2/5] ASoC: samsung: i2s: add support for FSD I2S
+      commit: bc36d761cad7f3fec22cd97ddaa80f0120610181
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
