@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8449AC32793
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 18:39:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D5F4C38159
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 18:39:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB8E769AF;
-	Wed, 18 Jan 2023 19:38:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB8E769AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 65F20781F;
+	Wed, 18 Jan 2023 19:38:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65F20781F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674067157;
-	bh=OlBzbupfhV2bmyY8s2x6GJLsiZW8YnpaxbAPUhUsLXU=;
+	s=default; t=1674067184;
+	bh=owfFCOcMWokMVQlRyhN3ellpSL+gLwNfYoAZb2lVBYw=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=YhcEmKO8KYd8E/nk/h/c7YXWvEdFQQ0owpyfqHhSIRTvGcKCpe7RUi90GxIeuOcVX
-	 cY7RVGJY2MUGLqZuTw0RuwQYHJUZUHLCPXBJNSp9QJpVhKQqQqwBFuPZCKMJDHeVUA
-	 vrTuaCRyEvGoidBzX19b4q9DNBvD1/NKTIMH/+ec=
+	b=O80m9bQOPNYtOEOaApAfV7WSAktj53x2jbqtp7ugxjOoaZ1xB66FeyaZSfG5VRBgR
+	 4ge+/zXfr3M1bouZIi28SnP8K8uPMl4/SGu1dJ+sTRXWDXkFxOClUbNVD+7ciXug7K
+	 uqklRHJxd2PvAGA5fMC3E4hj+orA22ZpsGcIFfMQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5BFE0F804A9;
-	Wed, 18 Jan 2023 19:38:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F36DFF8026D;
+	Wed, 18 Jan 2023 19:38:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A2BAF804BC; Wed, 18 Jan 2023 19:38:25 +0100 (CET)
+ id 1FBA3F8053D; Wed, 18 Jan 2023 19:38:28 +0100 (CET)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7AC8F80083
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 19:38:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7AC8F80083
+ by alsa1.perex.cz (Postfix) with ESMTPS id F1832F8026D
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 19:38:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1832F8026D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=lyOcrq99
+ header.s=Intel header.b=eTWzRTlP
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674067099; x=1705603099;
+ t=1674067101; x=1705603101;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=OlBzbupfhV2bmyY8s2x6GJLsiZW8YnpaxbAPUhUsLXU=;
- b=lyOcrq99O2IV6g2B7yn4e6XZ7LugTcx/gLWNUOFEVSUWbKp8+ONemm+Y
- Wz72wZRttsWTGchOBhls7wGq+NavbJYvwjkwMiMXO8vVPT297yWlruLIY
- 3N60nxndXDIfErmOJiC2kZFG7QfjPABkZ+dZjJMdDiNUdNplm1hj9FjHc
- EZw0sAPHjmYVV8/BeFZTdAtXRFcXyZDLCI+1bIaCJIJNA8GokTKHzdKOr
- joPmQq90f3ixrAk04mZzMV2NQS5W+yr5UjsCTFe6Lz9V0PzvehjRnc/UC
- 2vf8yJhNc0ddP2XzSgfA441AzgRd/PJRR0OI3i58B9LZHY3uiRWd/vnEI w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="327138507"
-X-IronPort-AV: E=Sophos;i="5.97,226,1669104000"; d="scan'208";a="327138507"
+ bh=owfFCOcMWokMVQlRyhN3ellpSL+gLwNfYoAZb2lVBYw=;
+ b=eTWzRTlPRtmFy4Kn3YjkskDGKM3IF7l2FI0f/nDT9utiwh9V4/y2lDF5
+ zPMvV4VNdIEJEg319Vcmh8PU8rwffA/5WtyCRlqe6GKV/+PuRfDdtPsNa
+ 9U+65n1sa1AWnBy9t642KywR6UXODV8f59hKbo/l4NDL7WeCMogg5tDv7
+ 21a0HM8rE0/eNsXYFt4bSjXQH93A5F+613S2Ggh0M8eZfmi6KBejW6SkP
+ PZxuUkymKFfH1ROdd6NbImYDNq4PynoCxVPjlZ5j6caGCCYgVLzc7gvRF
+ yljo1j7RPZ6h32cWnNpO5kTF1z3bScN8uaeVLQ0kbl3xW7iTYDMm6dL8w Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="327138523"
+X-IronPort-AV: E=Sophos;i="5.97,226,1669104000"; d="scan'208";a="327138523"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jan 2023 10:37:55 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="783777243"
-X-IronPort-AV: E=Sophos;i="5.97,226,1669104000"; d="scan'208";a="783777243"
+ 18 Jan 2023 10:37:57 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="783777262"
+X-IronPort-AV: E=Sophos;i="5.97,226,1669104000"; d="scan'208";a="783777262"
 Received: from jaibarra-mobl.amr.corp.intel.com (HELO [10.209.131.1])
  ([10.209.131.1])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jan 2023 10:37:54 -0800
-Message-ID: <72ba99a9-3d21-b3be-4a23-6570078aaae9@linux.intel.com>
-Date: Wed, 18 Jan 2023 10:37:34 -0600
+ 18 Jan 2023 10:37:57 -0800
+Message-ID: <6fa372b6-f8e7-aaf8-dee4-bc0dde2cb931@linux.intel.com>
+Date: Wed, 18 Jan 2023 10:46:59 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH v2 1/8] soundwire: stream: Add specific prep/deprep
- commands to port_prep callback
+Subject: Re: [PATCH v2 3/8] ASoC: cs42l42: Ensure MCLKint is a multiple of the
+ sample rate
 Content-Language: en-US
 To: Stefan Binding <sbinding@opensource.cirrus.com>,
  Mark Brown <broonie@kernel.org>
 References: <20230118160452.2385494-1-sbinding@opensource.cirrus.com>
- <20230118160452.2385494-2-sbinding@opensource.cirrus.com>
+ <20230118160452.2385494-4-sbinding@opensource.cirrus.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230118160452.2385494-2-sbinding@opensource.cirrus.com>
+In-Reply-To: <20230118160452.2385494-4-sbinding@opensource.cirrus.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -87,89 +87,89 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+ Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
 On 1/18/23 10:04, Stefan Binding wrote:
-> Currently, port_prep callback only has commands for PRE_PREP, PREP,
-> and POST_PREP, which doesn't directly say whether this is for a
-> prepare or deprepare call. Extend the command list enum to say
-> whether the call is for prepare or deprepare aswell.
+> From: Richard Fitzgerald <rf@opensource.cirrus.com>
 > 
-> Also remove SDW_OPS_PORT_PREP from sdw_port_prep_ops as this is unused,
-> and update this enum to be simpler and more consistent with enum
-> sdw_clk_stop_type.
-
-yes, I don't know why this PORT_PREP was added, clearly the prepare part
-is something that would be done with standard registers without the need
-to inform the codec driver. The codec driver only need the pre- and
-post- notifications.
-
-Good cleanup!
-
-
-> Note: Currently, the only users of SDW_OPS_PORT_POST_PREP are codec
-> drivers sound/soc/codecs/wsa881x.c and sound/soc/codecs/wsa883x.c, both
-> of which seem to assume that POST_PREP only occurs after a prepare,
-> even though it would also have occurred after a deprepare. Since it
-> doesn't make sense to mark the port prepared after a deprepare, changing
-> the enum to separate PORT_DEPREP from PORT_PREP should make the check
-> for PORT_PREP in those drivers be more logical.
+> The chosen clocking configuration must give an internal MCLK (MCLKint)
+> that is an integer multiple of the sample rate.
 > 
-> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+> On I2S each of the supported bit clock frequencies can only be generated
+> from one sample rate group (either the 44100 or the 48000) so the code
+> could use only the bitclock to look up a PLL config.
+> 
+> The relationship between sample rate and bitclock frequency is more
+> complex on Soundwire and so it is possible to set a frame shape to
+> generate a bitclock from the "wrong" group. For example 2*147 with a
+> 48000 sample rate would give a bitclock of 14112000 which on I2S
+> could only be derived from a 44100 sample rate.
+
+The explanation is a bit convoluted, clearly the 147-row configuration
+was only meant to be used with 44100 kHz. I don't think 48kHz can be
+supported without using the source- or sink-controlled async modes.
+
+This is still a valid change so:
 
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+
+
+
 > ---
->  drivers/soundwire/stream.c    | 4 ++--
->  include/linux/soundwire/sdw.h | 8 +++++---
->  2 files changed, 7 insertions(+), 5 deletions(-)
+>  sound/soc/codecs/cs42l42.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-> index df3b36670df4c..1652fb5737d9d 100644
-> --- a/drivers/soundwire/stream.c
-> +++ b/drivers/soundwire/stream.c
-> @@ -469,7 +469,7 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
->  	}
->  
->  	/* Inform slave about the impending port prepare */
-> -	sdw_do_port_prep(s_rt, prep_ch, SDW_OPS_PORT_PRE_PREP);
-> +	sdw_do_port_prep(s_rt, prep_ch, prep ? SDW_OPS_PORT_PRE_PREP : SDW_OPS_PORT_PRE_DEPREP);
->  
->  	/* Prepare Slave port implementing CP_SM */
->  	if (!dpn_prop->simple_ch_prep_sm) {
-> @@ -501,7 +501,7 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
->  	}
->  
->  	/* Inform slaves about ports prepared */
-> -	sdw_do_port_prep(s_rt, prep_ch, SDW_OPS_PORT_POST_PREP);
-> +	sdw_do_port_prep(s_rt, prep_ch, prep ? SDW_OPS_PORT_POST_PREP : SDW_OPS_PORT_POST_DEPREP);
->  
->  	/* Disable interrupt after Port de-prepare */
->  	if (!prep && intr)
-> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-> index 3cd2a761911ff..547fc1b30a51a 100644
-> --- a/include/linux/soundwire/sdw.h
-> +++ b/include/linux/soundwire/sdw.h
-> @@ -569,13 +569,15 @@ struct sdw_prepare_ch {
->   * enum sdw_port_prep_ops: Prepare operations for Data Port
->   *
->   * @SDW_OPS_PORT_PRE_PREP: Pre prepare operation for the Port
-> - * @SDW_OPS_PORT_PREP: Prepare operation for the Port
-> + * @SDW_OPS_PORT_PRE_DEPREP: Pre deprepare operation for the Port
->   * @SDW_OPS_PORT_POST_PREP: Post prepare operation for the Port
-> + * @SDW_OPS_PORT_POST_DEPREP: Post deprepare operation for the Port
->   */
->  enum sdw_port_prep_ops {
->  	SDW_OPS_PORT_PRE_PREP = 0,
-> -	SDW_OPS_PORT_PREP = 1,
-> -	SDW_OPS_PORT_POST_PREP = 2,
-> +	SDW_OPS_PORT_PRE_DEPREP,
-> +	SDW_OPS_PORT_POST_PREP,
-> +	SDW_OPS_PORT_POST_DEPREP,
+> diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+> index 82aa11d6937be..939f8bcc222c0 100644
+> --- a/sound/soc/codecs/cs42l42.c
+> +++ b/sound/soc/codecs/cs42l42.c
+> @@ -653,7 +653,8 @@ static const struct cs42l42_pll_params pll_ratio_table[] = {
+>  	{ 24576000, 1, 0x03, 0x40, 0x000000, 0x03, 0x10, 12288000, 128, 1}
 >  };
 >  
->  /**
+> -static int cs42l42_pll_config(struct snd_soc_component *component, unsigned int clk)
+> +static int cs42l42_pll_config(struct snd_soc_component *component, unsigned int clk,
+> +			      unsigned int sample_rate)
+>  {
+>  	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
+>  	int i;
+> @@ -668,6 +669,10 @@ static int cs42l42_pll_config(struct snd_soc_component *component, unsigned int
+>  	}
+>  
+>  	for (i = 0; i < ARRAY_SIZE(pll_ratio_table); i++) {
+> +		/* MCLKint must be a multiple of the sample rate */
+> +		if (pll_ratio_table[i].mclk_int % sample_rate)
+> +			continue;
+> +
+>  		if (pll_ratio_table[i].sclk == clk) {
+>  			cs42l42->pll_config = i;
+>  
+> @@ -893,6 +898,7 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+>  	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
+>  	unsigned int channels = params_channels(params);
+>  	unsigned int width = (params_width(params) / 8) - 1;
+> +	unsigned int sample_rate = params_rate(params);
+>  	unsigned int slot_width = 0;
+>  	unsigned int val = 0;
+>  	unsigned int bclk;
+> @@ -956,11 +962,11 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+>  		break;
+>  	}
+>  
+> -	ret = cs42l42_pll_config(component, bclk);
+> +	ret = cs42l42_pll_config(component, bclk, sample_rate);
+>  	if (ret)
+>  		return ret;
+>  
+> -	cs42l42_src_config(component, params_rate(params));
+> +	cs42l42_src_config(component, sample_rate);
+>  
+>  	return 0;
+>  }
