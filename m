@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D5F4C38159
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 18:39:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB0D1C32793
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 18:40:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65F20781F;
-	Wed, 18 Jan 2023 19:38:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65F20781F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5679A789A;
+	Wed, 18 Jan 2023 19:39:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5679A789A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674067184;
-	bh=owfFCOcMWokMVQlRyhN3ellpSL+gLwNfYoAZb2lVBYw=;
+	s=default; t=1674067208;
+	bh=rLOjY01QTq0Btsgrlpy5oCl1OvMXzrTFhGhJXtQRRpc=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=O80m9bQOPNYtOEOaApAfV7WSAktj53x2jbqtp7ugxjOoaZ1xB66FeyaZSfG5VRBgR
-	 4ge+/zXfr3M1bouZIi28SnP8K8uPMl4/SGu1dJ+sTRXWDXkFxOClUbNVD+7ciXug7K
-	 uqklRHJxd2PvAGA5fMC3E4hj+orA22ZpsGcIFfMQ=
+	b=FZpL1gH36zIvhoANrt4FNltjrVH1FdzRxmSgNic04IDpgOLRwAYQYtciUsLGIHgeI
+	 R9O29CBJJWtsGT4ZQzuk17xf9WghZxHf+RwVkZWHN0sclqQxtLhfv4EnBGqhITNvxP
+	 1USCmGV22iyToYELRFqe15KBkEOBMejt3eqVoM5Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F36DFF8026D;
-	Wed, 18 Jan 2023 19:38:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A579DF8053D;
+	Wed, 18 Jan 2023 19:38:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1FBA3F8053D; Wed, 18 Jan 2023 19:38:28 +0100 (CET)
+ id C0094F80520; Wed, 18 Jan 2023 19:38:29 +0100 (CET)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1832F8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id DBB6EF8024C
  for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 19:38:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1832F8026D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBB6EF8024C
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=eTWzRTlP
+ header.s=Intel header.b=mCUoYq/G
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1674067101; x=1705603101;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=owfFCOcMWokMVQlRyhN3ellpSL+gLwNfYoAZb2lVBYw=;
- b=eTWzRTlPRtmFy4Kn3YjkskDGKM3IF7l2FI0f/nDT9utiwh9V4/y2lDF5
- zPMvV4VNdIEJEg319Vcmh8PU8rwffA/5WtyCRlqe6GKV/+PuRfDdtPsNa
- 9U+65n1sa1AWnBy9t642KywR6UXODV8f59hKbo/l4NDL7WeCMogg5tDv7
- 21a0HM8rE0/eNsXYFt4bSjXQH93A5F+613S2Ggh0M8eZfmi6KBejW6SkP
- PZxuUkymKFfH1ROdd6NbImYDNq4PynoCxVPjlZ5j6caGCCYgVLzc7gvRF
- yljo1j7RPZ6h32cWnNpO5kTF1z3bScN8uaeVLQ0kbl3xW7iTYDMm6dL8w Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="327138523"
-X-IronPort-AV: E=Sophos;i="5.97,226,1669104000"; d="scan'208";a="327138523"
+ bh=rLOjY01QTq0Btsgrlpy5oCl1OvMXzrTFhGhJXtQRRpc=;
+ b=mCUoYq/Gn76v40p7wT5zGBTZ1aAOidLT9Lkdz03hMNh1qtv6Uo5OGptz
+ c4ibOUrgUjYS01cdFfHeIerazgQ7YivA3cbmAUcvU9qjNzlcUiIp5Zp8t
+ Jf/RHzlpbVR2ZzM/VslfOB3oFP1j8S1NwKMsbqX/voip2REyEgO1s4PNk
+ DH058g9UkMz8heimWIYWJew/cW81zGDD6YP8DK+RX+Amk1h7eQmWM14I9
+ QiR79y8MOUK+QR9PYldNb+Y6q3Wf1HlY9JLI88EOhjuiWatSI6aeonnxg
+ iqGiTZ0q6DEBSFIcJrn2/cqJhVoSDyhr/XFR2DsiRK2Ct/asK0mUVPNmi w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="327138517"
+X-IronPort-AV: E=Sophos;i="5.97,226,1669104000"; d="scan'208";a="327138517"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jan 2023 10:37:57 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="783777262"
-X-IronPort-AV: E=Sophos;i="5.97,226,1669104000"; d="scan'208";a="783777262"
+ 18 Jan 2023 10:37:56 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="783777249"
+X-IronPort-AV: E=Sophos;i="5.97,226,1669104000"; d="scan'208";a="783777249"
 Received: from jaibarra-mobl.amr.corp.intel.com (HELO [10.209.131.1])
  ([10.209.131.1])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jan 2023 10:37:57 -0800
-Message-ID: <6fa372b6-f8e7-aaf8-dee4-bc0dde2cb931@linux.intel.com>
-Date: Wed, 18 Jan 2023 10:46:59 -0600
+ 18 Jan 2023 10:37:55 -0800
+Message-ID: <eb9fe53e-013b-e477-1d14-8d0c1c7514fc@linux.intel.com>
+Date: Wed, 18 Jan 2023 10:41:18 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH v2 3/8] ASoC: cs42l42: Ensure MCLKint is a multiple of the
- sample rate
+Subject: Re: [PATCH v2 2/8] ASoC: cs42l42: Add SOFT_RESET_REBOOT register
 Content-Language: en-US
 To: Stefan Binding <sbinding@opensource.cirrus.com>,
  Mark Brown <broonie@kernel.org>
 References: <20230118160452.2385494-1-sbinding@opensource.cirrus.com>
- <20230118160452.2385494-4-sbinding@opensource.cirrus.com>
+ <20230118160452.2385494-3-sbinding@opensource.cirrus.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230118160452.2385494-4-sbinding@opensource.cirrus.com>
+In-Reply-To: <20230118160452.2385494-3-sbinding@opensource.cirrus.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -96,80 +95,64 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 On 1/18/23 10:04, Stefan Binding wrote:
 > From: Richard Fitzgerald <rf@opensource.cirrus.com>
 > 
-> The chosen clocking configuration must give an internal MCLK (MCLKint)
-> that is an integer multiple of the sample rate.
+> The SOFT_RESET_REBOOT register is needed to recover CS42L42 state after
+> a Soundwire bus reset.
+
+Humm, you probably want to clarify the terminology, the 'soft reset' is
+defined in the SoundWire spec as the case where the peripheral device
+loses sync. Bus reset is a Severe Reset, but there's also a Hard Reset.
+
+does this 'SOFT_RESET_REBOOT' need to be accessed when there's a soft
+reset, or only after a Severe/Hard Reset?
+
 > 
-> On I2S each of the supported bit clock frequencies can only be generated
-> from one sample rate group (either the 44100 or the 48000) so the code
-> could use only the bitclock to look up a PLL config.
-> 
-> The relationship between sample rate and bitclock frequency is more
-> complex on Soundwire and so it is possible to set a frame shape to
-> generate a bitclock from the "wrong" group. For example 2*147 with a
-> 48000 sample rate would give a bitclock of 14112000 which on I2S
-> could only be derived from a 44100 sample rate.
-
-The explanation is a bit convoluted, clearly the 147-row configuration
-was only meant to be used with 44100 kHz. I don't think 48kHz can be
-supported without using the source- or sink-controlled async modes.
-
-This is still a valid change so:
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
 > Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 > Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-
-
-
 > ---
->  sound/soc/codecs/cs42l42.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
+>  include/sound/cs42l42.h    | 5 +++++
+>  sound/soc/codecs/cs42l42.c | 2 ++
+>  2 files changed, 7 insertions(+)
 > 
+> diff --git a/include/sound/cs42l42.h b/include/sound/cs42l42.h
+> index 1d1c24fdd0cae..3994e933db195 100644
+> --- a/include/sound/cs42l42.h
+> +++ b/include/sound/cs42l42.h
+> @@ -34,6 +34,7 @@
+>  #define CS42L42_PAGE_24		0x2400
+>  #define CS42L42_PAGE_25		0x2500
+>  #define CS42L42_PAGE_26		0x2600
+> +#define CS42L42_PAGE_27		0x2700
+>  #define CS42L42_PAGE_28		0x2800
+>  #define CS42L42_PAGE_29		0x2900
+>  #define CS42L42_PAGE_2A		0x2A00
+> @@ -720,6 +721,10 @@
+>  
+>  #define CS42L42_SRC_SDOUT_FS		(CS42L42_PAGE_26 + 0x09)
+>  
+> +/* Page 0x27 DMA */
+> +#define CS42L42_SOFT_RESET_REBOOT	(CS42L42_PAGE_27 + 0x01)
+> +#define CS42L42_SFT_RST_REBOOT_MASK	BIT(1)
+> +
+>  /* Page 0x28 S/PDIF Registers */
+>  #define CS42L42_SPDIF_CTL1		(CS42L42_PAGE_28 + 0x01)
+>  #define CS42L42_SPDIF_CTL2		(CS42L42_PAGE_28 + 0x02)
 > diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-> index 82aa11d6937be..939f8bcc222c0 100644
+> index 2fefbcf7bd130..82aa11d6937be 100644
 > --- a/sound/soc/codecs/cs42l42.c
 > +++ b/sound/soc/codecs/cs42l42.c
-> @@ -653,7 +653,8 @@ static const struct cs42l42_pll_params pll_ratio_table[] = {
->  	{ 24576000, 1, 0x03, 0x40, 0x000000, 0x03, 0x10, 12288000, 128, 1}
->  };
->  
-> -static int cs42l42_pll_config(struct snd_soc_component *component, unsigned int clk)
-> +static int cs42l42_pll_config(struct snd_soc_component *component, unsigned int clk,
-> +			      unsigned int sample_rate)
->  {
->  	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
->  	int i;
-> @@ -668,6 +669,10 @@ static int cs42l42_pll_config(struct snd_soc_component *component, unsigned int
->  	}
->  
->  	for (i = 0; i < ARRAY_SIZE(pll_ratio_table); i++) {
-> +		/* MCLKint must be a multiple of the sample rate */
-> +		if (pll_ratio_table[i].mclk_int % sample_rate)
-> +			continue;
-> +
->  		if (pll_ratio_table[i].sclk == clk) {
->  			cs42l42->pll_config = i;
->  
-> @@ -893,6 +898,7 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
->  	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
->  	unsigned int channels = params_channels(params);
->  	unsigned int width = (params_width(params) / 8) - 1;
-> +	unsigned int sample_rate = params_rate(params);
->  	unsigned int slot_width = 0;
->  	unsigned int val = 0;
->  	unsigned int bclk;
-> @@ -956,11 +962,11 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
->  		break;
->  	}
->  
-> -	ret = cs42l42_pll_config(component, bclk);
-> +	ret = cs42l42_pll_config(component, bclk, sample_rate);
->  	if (ret)
->  		return ret;
->  
-> -	cs42l42_src_config(component, params_rate(params));
-> +	cs42l42_src_config(component, sample_rate);
->  
->  	return 0;
->  }
+> @@ -293,6 +293,7 @@ bool cs42l42_readable_register(struct device *dev, unsigned int reg)
+>  	case CS42L42_SPDIF_SW_CTL1:
+>  	case CS42L42_SRC_SDIN_FS:
+>  	case CS42L42_SRC_SDOUT_FS:
+> +	case CS42L42_SOFT_RESET_REBOOT:
+>  	case CS42L42_SPDIF_CTL1:
+>  	case CS42L42_SPDIF_CTL2:
+>  	case CS42L42_SPDIF_CTL3:
+> @@ -358,6 +359,7 @@ bool cs42l42_volatile_register(struct device *dev, unsigned int reg)
+>  	case CS42L42_LOAD_DET_DONE:
+>  	case CS42L42_DET_STATUS1:
+>  	case CS42L42_DET_STATUS2:
+> +	case CS42L42_SOFT_RESET_REBOOT:
+>  		return true;
+>  	default:
+>  		return false;
