@@ -4,75 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 210BDC32793
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 18:40:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6209CC32793
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 18:46:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45A6A79C6;
-	Wed, 18 Jan 2023 19:39:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45A6A79C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32CBA7926;
+	Wed, 18 Jan 2023 19:45:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32CBA7926
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674067228;
-	bh=Mxky+plx16rPsgtojIjqis3Gy4qDWU96AbOKvkoFz5U=;
-	h=Date:From:Subject:To:References:In-Reply-To:List-Id:
+	s=default; t=1674067573;
+	bh=bI+3I7jEOIiGFG0OUiEj9DtLYMDw5QUc+0NJWi4lgGg=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=RyhmxRgTW2c4qZnPJ9K6dGzRkJ2wI85o/pT6jnJXkdjNeB2qUff3EJknflx7HMVer
-	 sNWK7z5vUzlBfcFBmrN83kEag3iI752a1GBkZGYKaXrQ2bfg6a0jgtHTI9PiUBo0uv
-	 ewfZmv1LHNKU8T+YDEWJygdjVClecCk4BKj48KHA=
+	b=PcEn8pJ4VGXKi3BR+vV3f6n16DrK+txb36KoypGRjhfGgfUqvIHO8I3NtMXprQ/EI
+	 hCtfHbFBWatp0CtNsd/qBF5Ag/ARu79Arfx/Sul00UhsJyk7HVinttk6I1M5WqgddA
+	 eHImfXZip3bBYwChRivpA7/xrAkB3H92fafc9w9o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34EB1F80553;
-	Wed, 18 Jan 2023 19:38:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4583F8024D;
+	Wed, 18 Jan 2023 19:45:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9EC80F80557; Wed, 18 Jan 2023 19:38:35 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9E39BF80083; Wed, 18 Jan 2023 19:45:21 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1A78EF80482
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 19:38:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A78EF80482
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=KtT9w0pg
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674067104; x=1705603104;
- h=message-id:date:mime-version:from:subject:to:cc:
- references:in-reply-to:content-transfer-encoding;
- bh=Mxky+plx16rPsgtojIjqis3Gy4qDWU96AbOKvkoFz5U=;
- b=KtT9w0pg2qAaDKZ3K7VcapKKIHSJ+b1g8Xd8/GQBGMQLpXb3zCpd/alC
- HAi+PJsLbumaK24n55TgnXTsP/YT9jwwk0lvHSJCM4PP6DdwUEwGihlw+
- aMiLy1QhrylLqfCiNT23pKZ38//2w+zNyxA/xd73Wf9H2/dUsFZ8VbfOm
- Xa2A026QuFkehmPtaU4mEYJ9X1RmnySVcX3HUF/j/y95eV5BxcuEPUb0b
- kTwytNpunaOMkfEctlq9lUgOxT67mX+ocenJO5AjqdpKfE+VZCW+7LmDa
- uN145ipxFL3YLcD2j2eEtByrsGJfMGWkM0crY9F0WosLNd4YjjvCEGpmi Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="327138532"
-X-IronPort-AV: E=Sophos;i="5.97,226,1669104000"; d="scan'208";a="327138532"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jan 2023 10:37:59 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="783777264"
-X-IronPort-AV: E=Sophos;i="5.97,226,1669104000"; d="scan'208";a="783777264"
-Received: from jaibarra-mobl.amr.corp.intel.com (HELO [10.209.131.1])
- ([10.209.131.1])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jan 2023 10:37:58 -0800
-Message-ID: <33130336-b2ce-330e-fdec-166eee977e13@linux.intel.com>
-Date: Wed, 18 Jan 2023 11:41:25 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.4.2
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 6/8] ASoC: cs42l42: Add Soundwire support
-To: Stefan Binding <sbinding@opensource.cirrus.com>,
- Mark Brown <broonie@kernel.org>
-References: <20230118160452.2385494-1-sbinding@opensource.cirrus.com>
- <20230118160452.2385494-7-sbinding@opensource.cirrus.com>
-Content-Language: en-US
-In-Reply-To: <20230118160452.2385494-7-sbinding@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9BF0CF80083
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 19:45:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BF0CF80083
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=RyXUT5Hl; 
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=NLWmAo3E
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id EA96F5C208;
+ Wed, 18 Jan 2023 18:45:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1674067516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Wup1jTLVlB7BnualzffoD/w5qclrnhQQwM3y50nMKO0=;
+ b=RyXUT5HluXPO4qE7SzMN0PTf4926WU64TdgkhdLRZzZv6e3J2s4VZ2BWpSLpGah00EqFKd
+ kdgzedOituLFuldpn2Y/4+kMfCXmDLKXB0RWh0jPSyfRZEkIzxKJyedL2T5G5uSDBK7+92
+ zjooRdjpqQcyQGfRUlixpLrNagqM6Bo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1674067516;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Wup1jTLVlB7BnualzffoD/w5qclrnhQQwM3y50nMKO0=;
+ b=NLWmAo3EfjCmtRWEapzXI6yPeCYlQIfYfDHfq3vPdLr7YR+wy+k3AFsfScJ5465sMUACFN
+ dBjxWvZYQIrzTaAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CF90B138FE;
+ Wed, 18 Jan 2023 18:45:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id Os/FMTw+yGO4bgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Wed, 18 Jan 2023 18:45:16 +0000
+Date: Wed, 18 Jan 2023 19:45:16 +0100
+Message-ID: <877cxj65s3.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mike FABIAN <mfabian@redhat.com>
+Subject: Re: No sound on HDMI by default on Lenovo T14s using Fedora 37
+In-Reply-To: <s9dfsc7ixik.fsf@hathi.site>
+References: <s9dy1pzx3ki.fsf@hathi.site> <87k01j6cw6.wl-tiwai@suse.de>
+ <s9dfsc7ixik.fsf@hathi.site>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -85,382 +95,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-nitpick: please use the MIPI SoundWire spelling
-
-> This adds support for using CS42L42 as a Soundwire device.
+On Wed, 18 Jan 2023 18:05:23 +0100,
+Mike FABIAN wrote:
 > 
-> Soundwire-specifics are kept separate from the I2S implementation as
-> much as possible, aiming to limit the risk of breaking the I2C+I2S
-> support.
+> Takashi Iwai <tiwai@suse.de> さんはかきました:
 > 
-> There are some important differences in the silicon behaviour between
-> I2S and Soundwire mode that are reflected in the implementation:
+> > On Wed, 18 Jan 2023 16:30:53 +0100,
+> > Mike FABIAN wrote:
+> >> 
+> >> 
+> >> With a Lenovo Thinkpad T14s (Gen1, Intel version), I tried to get sound
+> >> on the monitor speakers via the HDMI cable.
+> >> 
+> >> It didn’t work out of the box and after a bit of googling I found:
+> >> 
+> >>     https://forums.lenovo.com/t5/ThinkPad-T400-T500-and-newer-T-series-Laptops/T14s-AMD-no-HDMI-audio-on-Linux/m-p/5081195?page=2
+> >> 
+> >> 
+> >> which suggested to put
+> >> 
+> >>     snd_rn_pci_acp3x.dmic_acpi_check=0
+> >> 
+> >> on the kernel command line.
+> >> 
+> >> So I tried this:
+> >> 
+> >> $ cat /etc/modprobe.d/lenovot14s.conf 
+> >> options snd-rn-pci-acp3x dmic_acpi_check=0
+> >> 
+> >> And that did make it work indeed.
+> >> 
+> >> I have no idea what this means and why this makes it work.
+> >
+> > The option basically should influence on the driver's behavior whether
+> > to probe the built-in d-mic or not, and it has no direct relationship
+> > with HDMI (supposedly via HD-audio bus), so it's puzzling how this
+> > fixes the problem.
+> >
+> > Could you run alsa-info.sh (with --no-upload option) on both working
+> > and non-working cases, and attach both outputs for comparison?
 > 
-> - ASP (I2S) most not be used in Soundwire mode because the two interfaces
->   share pins.
+> I removed /etc/modprobe.d/lenovot14s.conf but now it still works ☹
 > 
-> - The Soundwire capture (record) port only supports 1 channel. It does
->   not have left-to-right duplication like the ASP.
+> I did a “sudo dnf --enablerepo=updates-testing update”
 > 
-> - DP2 can only be prepared if the HP has powered-up. DP1 can only be
->   prepared if the ADC has powered-up. (This ordering restriction does
->   not exist for ASPs.) The Soundwire core port-prepare step is
->   triggered by the DAI-link prepare(). This happens before the
->   codec DAI prepare() or the DAPM sequence so these cannot be used
->   to enable HP/ADC. Instead the HP/ADC enable/disable are done during
->   the port_prep callback.
+> since I last rebooted, so it is possible that an update fixed this.
 > 
-> - The SRCs are an integral part of the audio chain but in silicon their
->   power control is linked to the ASP. There is no equivalent power link
->   to Soundwire DPs so the driver must take "manual" control of SRC power.
-> 
-> - The Soundwire control registers occupy the lower part of the Soundwire
->   address space so cs42l42 registers are offset by 0x8000 (non-paged) in
->   Soundwire mode.
-> 
-> - Register addresses are 8-bit paged in I2C mode but 16-bit unpaged in
->   Soundwire.
-> 
-> - Special procedures are needed on register read/writes to (a) ensure
->   that the previous internal bus transaction has completed, and
->   (b) handle delayed read results, when the read value could not be
->   returned within the Soundwire read command.
-> 
-> There are also some differences in driver implementation between I2S
-> and Soundwire operation:
-> 
-> - CS42L42 does not runtime_suspend, but runtime_suspend/resume are required
->   in Soundwire mode as the most convenient way to power-up the bus manager
->   and to handle the unattach_request condition.
-That's an impressive commit message indeed.
+> So unfortunately I cannot produce a “alsa-info.sh --no-upload” output
+> for the non-working case anymore (I attached the output for the working
+> case *without* /etc/modprobe.d/lenovot14s.conf (i.e. without snd_rn_pci_acp3x.dmic_acpi_check=0)
 
-I couldn't really follow this paragraph though. The main reason why
-having suspend/resume routines is to wait for initialization to be
-complete, as well as handle the regcache status to deal with access to
-regmap'ed registers, if any, while the bus is stopped or resuming.
+Hm, I see no snd-rn-pci-acp3x module is loaded there, so something
+might prevent it loaded (e.g. blacklist or such)?
 
-Edit after reaching the end of this patch: that's actually what is done
-in the implementation below so you may want to clarify this part.
-
-> - Intel Soundwire host controllers have a low-power clock-stop mode that
->   requires resetting all peripherals when resuming. This means that the
->   interrupt registers will be reset in between the interrupt being
->   generated and the interrupt being handled, and since the interrupt
->   status is debounced, these values may not be accurrate immediately,
-
-accurate
+And, with this state, can you use the built-in mic?  Also, how after
+restoring the module option?
 
 
-> diff --git a/sound/soc/codecs/cs42l42-sdw.c b/sound/soc/codecs/cs42l42-sdw.c
-> new file mode 100644
-> index 0000000000000..67800b275e422
-> --- /dev/null
-> +++ b/sound/soc/codecs/cs42l42-sdw.c
-> @@ -0,0 +1,595 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +// cs42l42-sdw.c -- CS42L42 ALSA SoC audio driver Soundwire binding
+thanks,
 
-binding?
-
-> +//
-> +// Copyright (C) 2022 Cirrus Logic, Inc. and
-> +//                    Cirrus Logic International Semiconductor Ltd.
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/device.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/module.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/of_irq.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/soundwire/sdw.h>
-> +#include <linux/soundwire/sdw_registers.h>
-> +#include <linux/soundwire/sdw_type.h>
-> +#include <sound/pcm.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/sdw.h>
-> +#include <sound/soc.h>
-> +
-> +#include "cs42l42.h"
-> +
-> +#define CS42L42_SDW_CAPTURE_PORT	1
-> +#define CS42L42_SDW_PLAYBACK_PORT	2
-> +
-> +/* Register addresses are offset when sent over Soundwire */
-
-nitpick: SoundWire
-
-> +#define CS42L42_SDW_ADDR_OFFSET		0x8000
-> +
-> +#define CS42L42_SDW_MEM_ACCESS_STATUS	0xd0
-> +#define CS42L42_SDW_MEM_READ_DATA	0xd8
-> +
-> +#define CS42L42_SDW_LAST_LATE		BIT(3)
-> +#define CS42L42_SDW_CMD_IN_PROGRESS	BIT(2)
-> +#define CS42L42_SDW_RDATA_RDY		BIT(0)
-> +
-> +#define CS42L42_DELAYED_READ_POLL_US	1
-> +#define CS42L42_DELAYED_READ_TIMEOUT_US	100
-> +
-> +static const struct snd_soc_dapm_route cs42l42_sdw_audio_map[] = {
-> +	/* Playback Path */
-> +	{ "HP", NULL, "MIXER" },
-> +	{ "MIXER", NULL, "DACSRC" },
-> +	{ "DACSRC", NULL, "Playback" },
-> +
-> +	/* Capture Path */
-> +	{ "ADCSRC", NULL, "HS" },
-> +	{ "Capture", NULL, "ADCSRC" },
-> +};
-> +
-> +static int cs42l42_sdw_dai_startup(struct snd_pcm_substream *substream,
-> +				   struct snd_soc_dai *dai)
-> +{
-> +	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(dai->component);
-> +
-> +	if (!cs42l42->init_done)
-> +		return -ENODEV;
-
-Can this happen? IIRC the ASoC framework would use
-pm_runtime_resume_and_get() before .startup, which would guarantee that
-the device is initialized, no?
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int cs42l42_sdw_dai_hw_params(struct snd_pcm_substream *substream,
-> +				     struct snd_pcm_hw_params *params,
-> +				     struct snd_soc_dai *dai)
-> +{
-> +	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(dai->component);
-> +	struct sdw_stream_runtime *sdw_stream = snd_soc_dai_get_dma_data(dai, substream);
-> +	struct sdw_stream_config stream_config = {0};
-> +	struct sdw_port_config port_config = {0};
-> +	int ret;
-> +
-> +	if (!sdw_stream)
-> +		return -EINVAL;
-> +
-> +	/* Needed for PLL configuration when we are notified of new bus config */
-> +	cs42l42->sample_rate = params_rate(params);
-
-wouldn't it be better to check if the sample_rate is supported by the
-PLL here, instead of in the .prepare step ...
-
-> +
-> +	snd_sdw_params_to_config(substream, params, &stream_config, &port_config);
-> +
-> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +		port_config.num = CS42L42_SDW_PLAYBACK_PORT;
-> +	else
-> +		port_config.num = CS42L42_SDW_CAPTURE_PORT;
-> +
-> +	ret = sdw_stream_add_slave(cs42l42->sdw_peripheral, &stream_config, &port_config, 1,
-> +				   sdw_stream);
-> +	if (ret) {
-> +		dev_err(dai->dev, "Failed to add sdw stream: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	cs42l42_src_config(dai->component, params_rate(params));
-> +
-> +	return 0;
-> +}
-> +
-> +static int cs42l42_sdw_dai_prepare(struct snd_pcm_substream *substream,
-> +				   struct snd_soc_dai *dai)
-> +{
-> +	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(dai->component);
-> +
-> +	dev_dbg(dai->dev, "dai_prepare: sclk=%u rate=%u\n", cs42l42->sclk, cs42l42->sample_rate);
-> +
-> +	if (!cs42l42->sclk || !cs42l42->sample_rate)
-> +		return -EINVAL;
-> +
-> +	return cs42l42_pll_config(dai->component, cs42l42->sclk, cs42l42->sample_rate);
-
-... it's a bit late to verify the sample_rate is indeed supported, no?
-
-> +}
-> +
-> +static int cs42l42_sdw_dai_hw_free(struct snd_pcm_substream *substream,
-> +				   struct snd_soc_dai *dai)
-> +{
-> +	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(dai->component);
-> +	struct sdw_stream_runtime *sdw_stream = snd_soc_dai_get_dma_data(dai, substream);
-> +
-> +	sdw_stream_remove_slave(cs42l42->sdw_peripheral, sdw_stream);
-> +	cs42l42->sample_rate = 0;
-> +
-> +	return 0;
-> +}
-
-> +static int cs42l42_sdw_dai_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
-> +					  int direction)
-> +{
-> +	if (!sdw_stream)
-> +		return 0;
-> +
-> +	if (direction == SNDRV_PCM_STREAM_PLAYBACK)
-> +		dai->playback_dma_data = sdw_stream;
-> +	else
-> +		dai->capture_dma_data = sdw_stream;
-> +
-> +	return 0;
-
-Humm, this is interesting, you are not using the sdw_stream_data that
-all other codecs use, but in hindsight I have no idea why we allocate
-something to only store a pointer.
-
-
-> +
-> +static struct snd_soc_dai_driver cs42l42_sdw_dai = {
-> +	.name = "cs42l42-sdw",
-> +	.playback = {
-> +		.stream_name = "Playback",
-> +		.channels_min = 1,
-> +		.channels_max = 2,
-> +		.rates = SNDRV_PCM_RATE_8000_96000,
-> +		.formats = SNDRV_PCM_FMTBIT_S16_LE |
-> +			   SNDRV_PCM_FMTBIT_S24_LE |
-> +			   SNDRV_PCM_FMTBIT_S32_LE,
-> +	},
-> +	.capture = {
-> +		.stream_name = "Capture",
-> +		.channels_min = 1,
-> +		.channels_max = 1,
-> +		.rates = SNDRV_PCM_RATE_8000_96000,
-> +		.formats = SNDRV_PCM_FMTBIT_S16_LE |
-> +			   SNDRV_PCM_FMTBIT_S24_LE |
-> +			   SNDRV_PCM_FMTBIT_S32_LE,
-
-Are the rates and formats needed? IIRC only the channels are used.
-
-> +	},
-> +	.symmetric_rate = 1,
-> +	.ops = &cs42l42_sdw_dai_ops,
-> +};
-> +
-
-> +static void cs42l42_sdw_init(struct sdw_slave *peripheral)
-> +{
-> +	struct cs42l42_private *cs42l42 = dev_get_drvdata(&peripheral->dev);
-> +	int ret = 0;
-
-unnecessary init
-
-> +
-> +	regcache_cache_only(cs42l42->regmap, false);
-> +
-> +	ret = cs42l42_init(cs42l42);
-> +	if (ret < 0) {
-> +		regcache_cache_only(cs42l42->regmap, true);
-> +		return;
-> +	}
-> +
-> +	/* Write out any cached changes that happened between probe and attach */
-> +	ret = regcache_sync(cs42l42->regmap);
-> +	if (ret < 0)
-> +		dev_warn(cs42l42->dev, "Failed to sync cache: %d\n", ret);
-> +
-> +	/* Disable internal logic that makes clock-stop conditional */
-> +	regmap_clear_bits(cs42l42->regmap, CS42L42_PWR_CTL3, CS42L42_SW_CLK_STP_STAT_SEL_MASK);
-> +
-> +	/*
-> +	 * pm_runtime is needed to control bus manager suspend, and to
-> +	 * recover from an unattach_request when the manager suspends.
-> +	 * Autosuspend delay must be long enough to enumerate.
-> +	 */
-> +	pm_runtime_set_autosuspend_delay(cs42l42->dev, 3000);
-> +	pm_runtime_use_autosuspend(cs42l42->dev);
-> +	pm_runtime_set_active(cs42l42->dev);
-> +	pm_runtime_enable(cs42l42->dev);
-
-you would want to set all this once during the first initialization.
-
-> +	pm_runtime_mark_last_busy(cs42l42->dev);
-
-usually this is added before the pm_runtime_enable()
-
-> +	pm_runtime_idle(cs42l42->dev);
-
-is this needed?
-
-> +static int cs42l42_sdw_update_status(struct sdw_slave *peripheral,
-> +				     enum sdw_slave_status status)
-> +{
-> +	struct cs42l42_private *cs42l42 = dev_get_drvdata(&peripheral->dev);
-> +
-> +	switch (status) {
-> +	case SDW_SLAVE_ATTACHED:
-> +		dev_dbg(cs42l42->dev, "ATTACHED\n");
-> +		if (!cs42l42->init_done)
-> +			cs42l42_sdw_init(peripheral);
-
-unclear to me what happens is the bus suspends, how would you redo the init?
-
-> +		break;
-> +	case SDW_SLAVE_UNATTACHED:
-> +		dev_dbg(cs42l42->dev, "UNATTACHED\n");
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return 0;
-> +}
-
-> +static int __maybe_unused cs42l42_sdw_clk_stop(struct sdw_slave *peripheral,
-> +				enum sdw_clk_stop_mode mode,
-> +				enum sdw_clk_stop_type type)
-> +{
-> +	struct cs42l42_private *cs42l42 = dev_get_drvdata(&peripheral->dev);
-> +
-> +	dev_dbg(cs42l42->dev, "clk_stop mode:%d type:%d\n", mode, type);
-> +
-> +	return 0;
-
-that doesn't sound terribly useful?
-
-> +}
-> +
-> +static const struct sdw_slave_ops cs42l42_sdw_ops = {
-> +	.read_prop = cs42l42_sdw_read_prop,
-> +	.update_status = cs42l42_sdw_update_status,
-
-what about .interrupt_callback?
-
-I vaguely remember something about not using the in-band wake mechanism
-and having a separate interrupt line, if that's what happens it's worthy
-of a comment here.
-
-> +	.bus_config = cs42l42_sdw_bus_config,
-> +	.port_prep = cs42l42_sdw_port_prep,
-> +#ifdef DEBUG
-> +	.clk_stop = cs42l42_sdw_clk_stop,
-> +#endif
-> +};
-
-> +static int cs42l42_sdw_remove(struct sdw_slave *peripheral)
-> +{
-> +	struct cs42l42_private *cs42l42 = dev_get_drvdata(&peripheral->dev);
-> +
-> +	/* Resume so that cs42l42_remove() can access registers */
-> +	pm_runtime_get_sync(cs42l42->dev);
-
-is this necessary? I thought the device framework always did that.
-
-> +	cs42l42_common_remove(cs42l42);
-> +	pm_runtime_put(cs42l42->dev);
-> +	pm_runtime_disable(cs42l42->dev);
-> +
-> +	return 0;
-> +}
-
+Takashi
