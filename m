@@ -4,83 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3728C38147
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 16:12:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8DE5C32793
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 16:12:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1C5279B3;
-	Wed, 18 Jan 2023 17:11:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1C5279B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id DDF2C799A;
+	Wed, 18 Jan 2023 17:11:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDF2C799A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674058353;
-	bh=YX4fSLSS6wiTE7E+in9BKJMksbdqCAXzAugthn0MaWU=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1674058366;
+	bh=hfA2eXgm6COXrjgq0eXTI7FELNoNzfagIjCDGXpAipY=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=izky+l8BXwqcUTrJYunhzsdy73CRnpJCmwUw2Wr753Fs+NwLy65FmdNlT5INkBwmE
-	 +P8iySbusweOlH0YInai+HvuqEd9x4YIM9rwTOpPSEyO16aZ9xgSu1VvtWsNodofZX
-	 ZFlJViWS9rgmX2FZuEXJqCBRcQH3AFbXsFGz3yg4=
+	b=DF1i+jwZIPX8ffYGLXgmIIgI257l3RvCIAhjQizB5mMna1wZqMMyDsX3Ypob7FVWk
+	 qVK+5f2cD/d3DBlbkCQBpAgU8nwUqvX/MLCUjxzBFSUZLcke3s7LBABb4SgALUtATq
+	 9QUdmcwrP7ix5JIg8ckGmXn+uvL98saPbMbORHm4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4421F8026D;
-	Wed, 18 Jan 2023 17:11:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FC5DF8053C;
+	Wed, 18 Jan 2023 17:11:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 72F1BF8053C; Wed, 18 Jan 2023 17:11:41 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id AFD4DF8024C; Wed, 18 Jan 2023 17:11:54 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D43F3F8024D
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 17:11:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D43F3F8024D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=vO1JJtRb; 
- dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=IUZa/gf4
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E22C5F8024C
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 17:11:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E22C5F8024C
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=Ivc0Sazk
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CA59D3F032;
- Wed, 18 Jan 2023 16:11:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1674058297; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ci9BfRXm+PUDxlSF+KhiOqApnmlhczQyJkso56uj4G0=;
- b=vO1JJtRb3IykOIzxt1iwHptJzKJDFyyJMpl482Pw40lslGlUoEvw+vfgG7bjgV14YglCjg
- MrkmSlPXGqDlryA29aa/FQjy2VmwbkqcYoczRhV3F22cZE/oXpAeJYB8aOkCNzV79TxDYh
- JK9c8s4cUR7zo8dcNOi+m1Cb0oINfVU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1674058297;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=ci9BfRXm+PUDxlSF+KhiOqApnmlhczQyJkso56uj4G0=;
- b=IUZa/gf4hkkThBXo8LvDfWWOwUpunJ698WZfpRzIgxqgDRBZH2QsKT+Aa0j9+tJ9CX+Ca1
- YSxDJCFCoB3ODzCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 96292138FE;
- Wed, 18 Jan 2023 16:11:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id TLHOIzkayGMnIAAAMHmgww
- (envelope-from <tiwai@suse.de>); Wed, 18 Jan 2023 16:11:37 +0000
-Date: Wed, 18 Jan 2023 17:11:37 +0100
-Message-ID: <87k01j6cw6.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mike FABIAN <mfabian@redhat.com>
-Subject: Re: No sound on HDMI by default on Lenovo T14s using Fedora 37
-In-Reply-To: <s9dy1pzx3ki.fsf@hathi.site>
-References: <s9dy1pzx3ki.fsf@hathi.site>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-7
+ by ams.source.kernel.org (Postfix) with ESMTPS id 35B57B81D7D;
+ Wed, 18 Jan 2023 16:11:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 180ECC433D2;
+ Wed, 18 Jan 2023 16:11:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1674058309;
+ bh=hfA2eXgm6COXrjgq0eXTI7FELNoNzfagIjCDGXpAipY=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=Ivc0SazkaMpDaLRHVArm23f6+rwNgRkiIfG9MwhAW7qvfmEaAYeDraa6/XCaDxrJ1
+ s42Fqalv3DxyTCHjVmgR8W32HF/qP6/Dx61YFXpEaOP8tn2Gr1Fh7eHREZwxxm7K54
+ fZy5Z9xLEZA+VzFAFTeaIIvCY0qkmPpqf6N0sNFbxZhX6PWWIg3LNKLNnP1nLvsw+N
+ Zd76G5DoooNgMXU4IQNxTLAIUJwHq/J4RYM3kl2VbBPz7kM5ZNGjaeLYwubohztVLT
+ sjXcrSSe5mXmWxmBmUeeg9JSPgB99Eonvxw15xGm4MVLv9Lpi5P+Fa6h+OZ0JZQ6ac
+ d0Gdcn5OqDrYw==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH 2/5] ASoC: pxa: remove snd_dmaengine_pcm_open_request_chan()
+Date: Wed, 18 Jan 2023 17:10:46 +0100
+Message-Id: <20230118161110.521504-2-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230118161110.521504-1-arnd@kernel.org>
+References: <20230118161110.521504-1-arnd@kernel.org>
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -94,46 +75,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Eugeniu Rosca <erosca@de.adit-jv.com>,
+ Andreas Pape <apape@de.adit-jv.com>, linux-kernel@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 18 Jan 2023 16:30:53 +0100,
-Mike FABIAN wrote:
-> 
-> 
-> With a Lenovo Thinkpad T14s (Gen1, Intel version), I tried to get sound
-> on the monitor speakers via the HDMI cable.
-> 
-> It didn¢t work out of the box and after a bit of googling I found:
-> 
->     https://forums.lenovo.com/t5/ThinkPad-T400-T500-and-newer-T-series-Laptops/T14s-AMD-no-HDMI-audio-on-Linux/m-p/5081195?page=2
-> 
-> 
-> which suggested to put
-> 
->     snd_rn_pci_acp3x.dmic_acpi_check=0
-> 
-> on the kernel command line.
-> 
-> So I tried this:
-> 
-> $ cat /etc/modprobe.d/lenovot14s.conf 
-> options snd-rn-pci-acp3x dmic_acpi_check=0
-> 
-> And that did make it work indeed.
-> 
-> I have no idea what this means and why this makes it work.
+From: Arnd Bergmann <arnd@arndb.de>
 
-The option basically should influence on the driver's behavior whether
-to probe the built-in d-mic or not, and it has no direct relationship
-with HDMI (supposedly via HD-audio bus), so it's puzzling how this
-fixes the problem.
+The last caller was removed, so there is no longer a need for
+this function.
 
-Could you run alsa-info.sh (with --no-upload option) on both working
-and non-working cases, and attach both outputs for comparison?
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ include/sound/dmaengine_pcm.h |  2 --
+ sound/core/pcm_dmaengine.c    | 21 ---------------------
+ 2 files changed, 23 deletions(-)
 
+diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+index 2df54cf02cb3..a497d1f81cab 100644
+--- a/include/sound/dmaengine_pcm.h
++++ b/include/sound/dmaengine_pcm.h
+@@ -37,8 +37,6 @@ int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
+ 	struct dma_chan *chan);
+ int snd_dmaengine_pcm_close(struct snd_pcm_substream *substream);
+ 
+-int snd_dmaengine_pcm_open_request_chan(struct snd_pcm_substream *substream,
+-	dma_filter_fn filter_fn, void *filter_data);
+ int snd_dmaengine_pcm_close_release_chan(struct snd_pcm_substream *substream);
+ 
+ struct dma_chan *snd_dmaengine_pcm_request_channel(dma_filter_fn filter_fn,
+diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
+index 494ec0c207fa..9f4120f020d8 100644
+--- a/sound/core/pcm_dmaengine.c
++++ b/sound/core/pcm_dmaengine.c
+@@ -328,27 +328,6 @@ int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
+ }
+ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_open);
+ 
+-/**
+- * snd_dmaengine_pcm_open_request_chan - Open a dmaengine based PCM substream and request channel
+- * @substream: PCM substream
+- * @filter_fn: Filter function used to request the DMA channel
+- * @filter_data: Data passed to the DMA filter function
+- *
+- * This function will request a DMA channel using the passed filter function and
+- * data. The function should usually be called from the pcm open callback. Note
+- * that this function will use private_data field of the substream's runtime. So
+- * it is not available to your pcm driver implementation.
+- *
+- * Return: 0 on success, a negative error code otherwise
+- */
+-int snd_dmaengine_pcm_open_request_chan(struct snd_pcm_substream *substream,
+-	dma_filter_fn filter_fn, void *filter_data)
+-{
+-	return snd_dmaengine_pcm_open(substream,
+-		    snd_dmaengine_pcm_request_channel(filter_fn, filter_data));
+-}
+-EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_open_request_chan);
+-
+ /**
+  * snd_dmaengine_pcm_close - Close a dmaengine based PCM substream
+  * @substream: PCM substream
+-- 
+2.39.0
 
-thanks,
-
-Takashi
