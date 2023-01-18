@@ -4,62 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26F15C32793
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 12:54:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2179FC32793
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 13:38:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36C177041;
-	Wed, 18 Jan 2023 13:53:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36C177041
+	by alsa0.perex.cz (Postfix) with ESMTPS id E10787823;
+	Wed, 18 Jan 2023 14:37:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E10787823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674046476;
-	bh=NXtxseaayGYKr1CkJYmxKFAs2wC1YMd++TmZod7Ir9Y=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1674049111;
+	bh=ePgAPHOhTVOksHn0s2syMgYNYHXIHMPRSxnZp4wJ/38=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=dvIqkdvkXt5ORF1Jh0pVy19K01+eSe86sBwB+mv6r9OIDGWvr7HU8ZeLZZDJzRJ3q
-	 NF1aSKHxHSkjVwgG1ywIzylXkFHWgQIICL2MM/TSlF1k7+vGeF2yzRjSetVOJJIZvu
-	 N9u06a9OdT+bfVoG/jsuG2TpGc90irxD2v8wcbTo=
+	b=h+xeuGKaszNN38NRwsh9W1GwHm4QgAyltsPLjavWrQ25HjZnT3oG7eHh7Ld5K3x/c
+	 V9mo+eIg9tjHhI0VYZOKGwL0v8CF0CNasPk0p9VzSJwG6SrEinf7edZuDmcxBjQyCx
+	 2tchhICR3G6HCjPJ3pPVBa/QV87lPDGS/NS4tcts=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FC2BF80553;
-	Wed, 18 Jan 2023 13:52:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76930F8057F;
+	Wed, 18 Jan 2023 14:19:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75B5CF80548; Wed, 18 Jan 2023 13:52:36 +0100 (CET)
-Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
+ id 85BD4F80580; Wed, 18 Jan 2023 14:19:52 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7AC88F8057C
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 14:19:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7AC88F8057C
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ia5UQJco
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AC7DAF8024C
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 13:52:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC7DAF8024C
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=axis.com header.i=@axis.com header.a=rsa-sha256
- header.s=axis-central1 header.b=gpW+jnwM
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; q=dns/txt; s=axis-central1; t=1674046353;
- x=1705582353; h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=c9tQ6467axGUUkqK8Hn/WxBs1AovQDwhp7i0J3ZaltU=;
- b=gpW+jnwMV4nOsabNvXk6zjlp/n4LKEjysekyJsNxmWpo8UoTd8QpAh9i
- A5uL0H1SVqwz+434j3NB0lY9lGSM8lDowqZufEhqu6z+uI0MLFWkOE7P9
- cndCLF5pPhZxghzLncGy2AvWpl7Olo76oyuHVPqm+wNshdggTvngDCUTH
- 8951hOxdvBZsn5rJZoAkpSZ0XOaLliK1T6vR8+xQmiAB2VNs5fjTXbj87
- ONTkwEH8viD9HRAmsv5WpFw9wv+76qF90pVpG5zUc0aWnTlaCk3a+nqaU
- XvdfAEd80tarI1pw2Gq2JwJ098FPxGgctUMQh+tHsQhtWqoVgBy+j2oWo g==;
-From: Astrid Rost <astrid.rost@axis.com>
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Jaroslav Kysela
- <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v1 3/4] ASoC: ts3a227e: add set_jack and
- get_jack_supported_type
-Date: Wed, 18 Jan 2023 13:52:25 +0100
-Message-ID: <20230118125226.333214-4-astrid.rost@axis.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230118125226.333214-1-astrid.rost@axis.com>
-References: <20230118125226.333214-1-astrid.rost@axis.com>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 7A51E617E1
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 13:19:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD9E0C433F1
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 13:19:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1674047986;
+ bh=ePgAPHOhTVOksHn0s2syMgYNYHXIHMPRSxnZp4wJ/38=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=ia5UQJcongu0X+ElLOSAtjQ1h1Z4S8tC04z/rG10+8rBeyzSAG+V4BT6/5C0IPSe5
+ AaeNqgUaa0LWvfxRH4MDg7CxNPUrjB5RvCqiKJzFlFnqtOwORYtqxveFLmv0JBcIfd
+ /JJ3AgX+e0Rq8Pz2ob9MAnVqKiOg4UDw6YzMVaX0f500Dl+dowhGo+bL1FjyU6k2bH
+ w6mVhx6OWVFU7z++pOiffB/9KSR20DlnpNNgHA3yrmPzA8LkznjS7LEA6ntUDAWHwt
+ aBUg/YgXl7oVEWkCLy1QhaZMm8nANXwJrm0xJB3gvXRFQuU8pyXMS4Q8tyx0Qj5HZU
+ 7Wx4HcKaK8Hpg==
+Received: by mail-vs1-f41.google.com with SMTP id k4so35635277vsc.4
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 05:19:46 -0800 (PST)
+X-Gm-Message-State: AFqh2koC0s3N6/xPIXRF0dUxFLOwxepnGxroqifHQH3+8myJ/GEkRMJA
+ ZSVGSbezgPsrsV7TvDMg6Nk3jYPgsLvkBDJWFA==
+X-Google-Smtp-Source: AMrXdXux9aAlM451KGBma1Qs2rJpTOL4EbQDljgAz6sNK/elrsA2uBmlRu/x//wMYoC5wIXCvkWkR51ZCIzD8PoAZoA=
+X-Received: by 2002:a67:f506:0:b0:3d3:c767:4570 with SMTP id
+ u6-20020a67f506000000b003d3c7674570mr1026153vsn.85.1674047985721; Wed, 18 Jan
+ 2023 05:19:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20230113162214.117261-1-krzysztof.kozlowski@linaro.org>
+ <20230113162214.117261-2-krzysztof.kozlowski@linaro.org>
+ <20230117192724.GA3489389-robh@kernel.org>
+ <331eed95-eaf7-5c5a-86c1-0ee7b5591b9a@linaro.org>
+In-Reply-To: <331eed95-eaf7-5c5a-86c1-0ee7b5591b9a@linaro.org>
+From: Rob Herring <robh@kernel.org>
+Date: Wed, 18 Jan 2023 07:19:34 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJUTFa24iZ2fovE_yJdBVcbkcUX8rBoPB12ptdAyxHW6g@mail.gmail.com>
+Message-ID: <CAL_JsqJUTFa24iZ2fovE_yJdBVcbkcUX8rBoPB12ptdAyxHW6g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] ASoC: dt-bindings: qcom,
+ wcd934x: Describe slim-ifc-dev
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,47 +87,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, kernel@axis.com, linux-kernel@vger.kernel.org,
- Astrid Rost <astrid.rost@axis.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-arm-msm@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Andy Gross <agross@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@quicinc.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add set_jack and get_jack_supported_type
-to allow simple-card-utils to add a jack for it.
+On Wed, Jan 18, 2023 at 5:25 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 17/01/2023 20:27, Rob Herring wrote:
+> > On Fri, Jan 13, 2023 at 05:22:13PM +0100, Krzysztof Kozlowski wrote:
+> >> The "slim-ifc-dev" property should not be just "true", because it allows
+> >> any type.
+> >
+> > Yes, but it is common, so it should be in a common schema. Though
+> > there's only one other binding using it (wcd9335.txt).
+>
+> This is still wcd9335 and wcd934x specific, not really common. Maybe
+> next Qualcomm codec would also bring it so then we can define common
+> schema for the codecs. But so far I think it is not really a common
+> property.
 
-Signed-off-by: Astrid Rost <astrid.rost@axis.com>
----
- sound/soc/codecs/ts3a227e.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+By common, I only mean used by more than 1 binding. That's already the
+case, there's just not a schema for the 2nd one. In any case, can
+address that later.
 
-diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
-index 2305a472d132..212dfd2b60ed 100644
---- a/sound/soc/codecs/ts3a227e.c
-+++ b/sound/soc/codecs/ts3a227e.c
-@@ -258,7 +258,22 @@ int ts3a227e_enable_jack_detect(struct snd_soc_component *component,
- }
- EXPORT_SYMBOL_GPL(ts3a227e_enable_jack_detect);
- 
--static struct snd_soc_component_driver ts3a227e_soc_driver;
-+static int ts3a227e_set_jack(struct snd_soc_component *component,
-+			     struct snd_soc_jack *jack, void *data)
-+{
-+	return ts3a227e_enable_jack_detect(component, jack);
-+}
-+
-+static int ts3a227e_get_supported_jack_type(struct snd_soc_component *component)
-+{
-+	return TS3A227E_JACK_MASK;
-+}
-+
-+static const struct snd_soc_component_driver ts3a227e_soc_driver = {
-+	.name = "ti,ts3a227e",
-+	.set_jack = ts3a227e_set_jack,
-+	.get_jack_supported_type = ts3a227e_get_supported_jack_type,
-+};
- 
- static const struct regmap_config ts3a227e_regmap_config = {
- 	.val_bits = 8,
--- 
-2.30.2
-
+Acked-by: Rob Herring <robh@kernel.org>
