@@ -4,67 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5EA4C004D4
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 10:13:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A834C32793
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 10:14:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DEC3239E9;
-	Wed, 18 Jan 2023 11:13:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DEC3239E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8A7A3C06;
+	Wed, 18 Jan 2023 11:13:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8A7A3C06
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674036834;
-	bh=E/Hrn79MVAYVPSkjJabKf6qSdGEsFkb7wPe9ge5igM0=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=BOOXcozDcmYAeerlP3Itksa+8cURrPMTTbbYrMlx5GiJbSR43bg4AM61SIi3KvOPL
-	 Q+9wlcwNb41iUSL26nyVnBhtSIf/S3qMJ72xthcWpNyjSIQPojK4tM3zPJ/TIgIMpa
-	 SJZy5AEFZEcNE9YSxd6xuCG6w9VW6dhBiLzkxXh8=
+	s=default; t=1674036862;
+	bh=ZaTfT/TzpnziENBD0LGWp+bLkuEkhKUfAkz7DfPjrrw=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=JpL84YKjh4RQtDkBu2sR56wlLq+DD2TmbH3odJwcMuSDlJf9kTjJwmRIBsiYbrTkw
+	 SQOYSIWh256qSwEfSqnsAeGglf3F26chIkHxD9vRGbguX2TdbTqGyKRBtXcmOZ+oaI
+	 9fx1NIbBhfc6QppdtPGcAp0l9BCx17a2aIJjcbD4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 948D0F8026D;
-	Wed, 18 Jan 2023 11:13:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4FA61F8024D;
+	Wed, 18 Jan 2023 11:13:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B8BDF80495; Wed, 18 Jan 2023 11:13:03 +0100 (CET)
+ id 7E295F80482; Wed, 18 Jan 2023 11:13:04 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DD869F80083
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 11:12:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD869F80083
+ by alsa1.perex.cz (Postfix) with ESMTPS id 27A19F8026D
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 11:13:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27A19F8026D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=EhEsYHkQ
+ header.s=Intel header.b=I49RcDmz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674036780; x=1705572780;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=E/Hrn79MVAYVPSkjJabKf6qSdGEsFkb7wPe9ge5igM0=;
- b=EhEsYHkQX4P37nOvdzy6Qjdr6dVYtdrOVozONm7fGU/7W6QY+8P4PVZT
- UZDQBItdM8RdERIbA/Cph9zlUOpV6wCi+qSXs39PkObsrS2V4GhkiYGtu
- Z52247wz+/UWYzAaPmESyVkesMBK7IGuiKukBTLqpfSY8WQIQBCWA6s4J
- R2Hf7r/r0DgYYf/yD77U96AeEMkjYeu2UUJsaT20vViTYyTBMA4ZtI/Rn
- XWYLj8NE6xQE+Vo2rayJhBE2/hYiY0GHNCTXHUZ/lHKJDKQgdTMqr311J
- leajaBx4eFs7Dkp/Ae9/nvpnisuhgj8AIaPogdlcCLDqJZRl0msP/U2Kd w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10593"; a="304630434"
-X-IronPort-AV: E=Sophos;i="5.97,224,1669104000"; d="scan'208";a="304630434"
+ t=1674036782; x=1705572782;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=ZaTfT/TzpnziENBD0LGWp+bLkuEkhKUfAkz7DfPjrrw=;
+ b=I49RcDmzl/qHH3KXmdYpRl4omQsRJDZASpgWApCko7x2BcU6kjopk9DN
+ r5Lp5U40CyFlC/t8mle4dcPtyG5/55y7yUofjZSotvFJh1RZJ8l9PbLAm
+ ny/ChiL3S+1gwxqI6oTDtsazmgPa7r+gFfkCG//wvjAVOD08gTvm3QE14
+ rUwiWPVmAbg2yQ+AZPdwAl/jBhpz1gzXKFIJsHcjB30O2ngHfUQHjRITy
+ 1v935LxAsyr4G0c/GhGbCRu0CIeTuzH314odCECu9IT1jvJ0rsjJ4X86E
+ cd/5JOU94iOC2SSQY5fW63PuNBIrfnW0rzPG73E0or/1iceddoKHbWGV6 g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10593"; a="304630440"
+X-IronPort-AV: E=Sophos;i="5.97,224,1669104000"; d="scan'208";a="304630440"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jan 2023 02:12:53 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10593"; a="661653791"
-X-IronPort-AV: E=Sophos;i="5.97,224,1669104000"; d="scan'208";a="661653791"
+ 18 Jan 2023 02:12:56 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10593"; a="661653795"
+X-IronPort-AV: E=Sophos;i="5.97,224,1669104000"; d="scan'208";a="661653795"
 Received: from kevinkeo-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.26.150])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jan 2023 02:12:50 -0800
+ 18 Jan 2023 02:12:53 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH v3 0/3] ASoC: SOF: sof-audio: Fixes for widget prepare and
- unprepare (for 6.2)
-Date: Wed, 18 Jan 2023 12:12:52 +0200
-Message-Id: <20230118101255.29139-1-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH v3 1/3] ASoC: SOF: sof-audio: unprepare when
+ swidget->use_count > 0
+Date: Wed, 18 Jan 2023 12:12:53 +0200
+Message-Id: <20230118101255.29139-2-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230118101255.29139-1-peter.ujfalusi@linux.intel.com>
+References: <20230118101255.29139-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -86,37 +89,34 @@ Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-Changes since v2:
-- re-based on v6.2-rc4 (and tested)
-- tags added from AngeloGioacchino Del Regno for patch 2
+We should unprepare the widget if its use_count = 1.
 
-Changes since v1:
-- patches got re-ordered to make them (hopefully) apply on stable when picked
-- Added stable tag for 6.1 for the patches
-- Added Fixes tag for the swidget NULL check on unprepare
-
-This series contains one fix (first patch) followed by a nice to have safety
-belts in case we get a widget from topology which is not handled by SOF and will
-not have corresponding swidget associated with.
-
-Mark: these patches now on top of 6.2-rc4 and will not apply without conflict
-on next (patch 2 and 3 will ahve conflict)
-
-Regards,
-Peter
+Fixes: 9862dcf70245 ("ASoC: SOF: don't unprepare widget used other pipelines")
+Cc: <stable@vger.kernel.org> # 6.1
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
-Bard Liao (2):
-  ASoC: SOF: sof-audio: unprepare when swidget->use_count > 0
-  ASoC: SOF: keep prepare/unprepare widgets in sink path
+ sound/soc/sof/sof-audio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ranjani Sridharan (1):
-  ASoC: SOF: sof-audio: skip prepare/unprepare if swidget is NULL
-
- sound/soc/sof/sof-audio.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index 7306a2649857..e52ef62ce7a3 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -272,7 +272,7 @@ sof_unprepare_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dapm_widg
+ 	struct snd_soc_dapm_path *p;
+ 
+ 	/* return if the widget is in use or if it is already unprepared */
+-	if (!swidget->prepared || swidget->use_count > 1)
++	if (!swidget->prepared || swidget->use_count > 0)
+ 		return;
+ 
+ 	if (widget_ops[widget->id].ipc_unprepare)
 -- 
 2.39.0
 
