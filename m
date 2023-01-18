@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66175C32793
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 22:33:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2A49C38147
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 22:35:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5681C7BDD;
-	Wed, 18 Jan 2023 23:32:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5681C7BDD
+	by alsa0.perex.cz (Postfix) with ESMTPS id E23577BE1;
+	Wed, 18 Jan 2023 23:34:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E23577BE1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674081210;
-	bh=iR2rhrTSMYK9PDj2icFRUKFemo5k3GYEy4vYgABVWBA=;
+	s=default; t=1674081333;
+	bh=xJvYbw6U+K+0k8BLB+5FqLiyzX7FBCNqG4euLaaJvIg=;
 	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=Yho21hL4Gj2jHk/2axQK8fwj+qCOgFaixViNd7K2/tDl7CMYie3SO+y7Lywkip7vD
-	 R8a1/ATLau6+gBVKxt/LlaAROifW7GcwZdp+0CPEGyJlUCGBqJyLjFQsj69Dv32o9Q
-	 GG1hj9buhTIBuyD/T3Q2GEm4JGZVmps91gunhbB4=
+	b=pGvdpZTn1ngdiCSLGFQZplryj0TXMd88F78mSLoWwpFIqLM2R4YeQmytMi3S0VuA4
+	 fZEDWTqIZ2KfAcOTElduaRm5+YIBGhM7zpqZyG+ch+/at8BmZgeLep1fpdRSw/4Q6R
+	 maXAg6F8NlK8qyXufUa7dA6HmSGBcSNyY5Q3Ol4s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E235F8024D;
-	Wed, 18 Jan 2023 23:32:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 95199F8024D;
+	Wed, 18 Jan 2023 23:34:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2AE6F8026D; Wed, 18 Jan 2023 23:32:38 +0100 (CET)
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com
- [IPv6:2607:f8b0:4864:20::1129])
+ id 9BACFF8026D; Wed, 18 Jan 2023 23:34:42 +0100 (CET)
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com
+ [IPv6:2607:f8b0:4864:20::112d])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A2651F8024C
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 23:32:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2651F8024C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B1D8F8024C
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 23:34:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B1D8F8024C
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=mixoZB3X
-Received: by mail-yw1-x1129.google.com with SMTP id
- 00721157ae682-4bf16baa865so1222887b3.13
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 14:32:30 -0800 (PST)
+ header.s=google header.b=Gw0omF3r
+Received: by mail-yw1-x112d.google.com with SMTP id
+ 00721157ae682-4bf16baa865so1284847b3.13
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 14:34:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=iR2rhrTSMYK9PDj2icFRUKFemo5k3GYEy4vYgABVWBA=;
- b=mixoZB3XxmmwB+248ZOx2zNjqNP3syHPWQOlCKWGblxckFWMjSkBVb8eywGZvwRUBH
- 2cwxPpzrbeiHAIZfMqIXhTAdpWS0sYi+8waOYFI+zh2X6q6AqS8hKxWPE5lO17MoE2bx
- u93UNmBAkcQAsb5eRWo2mt0ca4/WXqAUfgOQiHeWj1VqyyIctf5GrACBkukpyVikFrNr
- qFVgR7FFMN2D+FFf+aDQ/I58WFeHnaYgPN+xgfKgxSDuiYDMhBBXSCxILdPU5vPbQN7K
- KxGwEaWV1/Fs0wPKjPnVXFvsK+KXS7oRs1S2ibwZ5/zcr/2rqij2f+S0plYKkBo7VCop
- 7H6w==
+ bh=xJvYbw6U+K+0k8BLB+5FqLiyzX7FBCNqG4euLaaJvIg=;
+ b=Gw0omF3rTcAXmt61uekjPSMgv7ju/jQkT+NRYfg9clCCKkBTEB23Evj839n2n8qoNx
+ s8Y59LwroPq/lApwG59kNIt6F9v38rKdQRdeYCn4EcLgR2xAE1WUahiFZDjTbGuOsbYL
+ yMDJWS0gyHaya9j7vNwSWnJbixaqTqy5xWGZRHjYJhefVMUHoMZ8bsX4pAL93frFHWpL
+ YH8kcGWtkNgRG2/YmoUITscmA1Fnpqd7WmdrZkRCYyrazIKac/BIIbegNk7SX6Pb0bNj
+ XBsP3S87RV2/SWpTohHkG+rxSMn5w9hGVhnGPDF+4CigzvO0xieBdBkTS0AogF02dkPb
+ jJ9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
  :reply-to;
- bh=iR2rhrTSMYK9PDj2icFRUKFemo5k3GYEy4vYgABVWBA=;
- b=17ogRme6meBO0IWLJ4atkx7aHdCTNdl3DJ8b8UBMykZpH5YnrEeDsMuRBchvI5NR/t
- TI65qLfZC1o94nFxQfNPlAFPK9JPZuTdtUEvqXIA31K8126vzTEdXppRHDf+IXv29Srx
- H92ODxBKIKbI69IMP01hSbWQKuyi7WTQUm3S6Q/IUY/+meme22h5K13I1oOCK9Rwor8j
- raAP7EDaGqCt8H0jmVKvKSl4KsPCifipy4ESUppLH1Yc5BZ12K8X7h0nO/k5WvrRhtlZ
- 735BV9Il6IuXTNKffg6tRJ0tVt8qHnEvGTFOumgKoy3/c8c6cEq9UaAySVQTWyDGD4R/
- PP0w==
-X-Gm-Message-State: AFqh2kr/TwbdQkUQDphVMJS7488icwt3HppfNqQ0fOxoVR5AJz1H0545
- DIVTqqPKsMpuSeCbJqwuvN+6Y6gQAX+BBrXA/m9jVQ==
-X-Google-Smtp-Source: AMrXdXthNU+N2HysXSnoWkZV1WoH8vtXfPtXO05j8luFV1F0xquuRFfbj1CWJAKa2gVJWtkVD+77IuheHg/Ii70YLyw=
-X-Received: by 2002:a0d:ce43:0:b0:474:b3f2:8df1 with SMTP id
- q64-20020a0dce43000000b00474b3f28df1mr999564ywd.434.1674081148032; Wed, 18
- Jan 2023 14:32:28 -0800 (PST)
+ bh=xJvYbw6U+K+0k8BLB+5FqLiyzX7FBCNqG4euLaaJvIg=;
+ b=A6j7yFlh2ynaMBNZCBmszPG6CANTKML2tH9059VQKNI226mKVlx8azZREitNzrVeX5
+ CUcQwnxVDNcALERct8OrUOUlFdYMe4mR9NNgoUY/pw5N5qq9PIeQxwpqoMBBgpS2vfjA
+ DTiwfdYHGT/nnF94AVEhvhDlgdwhy7fbweYS+K0llsctCvVPr7TZSwA8aBdAgsRduc+q
+ I6V3gjww+vgvxjp9fYV+oh1B4mJJaxa3GfSDu8+V93PnkB30vvj3plfapwlFjXBnveus
+ s2yIgsm3DkafRp9IRCRTb0FcBDjBmrkgyM2Z/GPtlYUCUXRvL6chR2kUi2l/VLen4PgC
+ +J5A==
+X-Gm-Message-State: AFqh2krKMC/v3r1JAVmGM+ayga9bMPPTgYcGhACyCZY/7DnEC8XnY8JE
+ SQtvCzqE0zReaLRH6ssv0obt17ffto5H0rNr8TkpzA==
+X-Google-Smtp-Source: AMrXdXsYvs9R4DumEh82QT8w/5J+EBP6tPUYo8vsrjxDEkR74vY+cmlmPYMXXZqlqcHX/KZpOQ1sN4+YM2TWY7PVyvM=
+X-Received: by 2002:a81:4e54:0:b0:4e1:a40a:af7a with SMTP id
+ c81-20020a814e54000000b004e1a40aaf7amr1150249ywb.273.1674081277745; Wed, 18
+ Jan 2023 14:34:37 -0800 (PST)
 MIME-Version: 1.0
 References: <20230118161110.521504-1-arnd@kernel.org>
- <20230118161110.521504-3-arnd@kernel.org>
-In-Reply-To: <20230118161110.521504-3-arnd@kernel.org>
+ <20230118161110.521504-4-arnd@kernel.org>
+In-Reply-To: <20230118161110.521504-4-arnd@kernel.org>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 18 Jan 2023 23:32:14 +0100
-Message-ID: <CACRpkdbO9-GioRumc8tOZ_NjUQUQ2JN2R2sJpRou4kbucmEWaQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] ASoC: ux500: remove platform_data support
+Date: Wed, 18 Jan 2023 23:34:26 +0100
+Message-ID: <CACRpkdZhyL4tTP+=uDB9CfYKRgoKvqp-T+SUzg0YZi4r0Hxy0g@mail.gmail.com>
+Subject: Re: [PATCH 4/5] ASoC: ux500: remove stedma40 references
 To: Arnd Bergmann <arnd@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
@@ -102,16 +102,16 @@ On Wed, Jan 18, 2023 at 5:17 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
 > From: Arnd Bergmann <arnd@arndb.de>
 >
-> The platform data definition for ux500 sound devices was removed
-> six years ago after the DT conversion was completed, see commit
-> 4b483ed0be8b ("ARM: ux500: cut some platform data").
->
-> Remove some leftover bits in the ASoC driver and just assume that
-> it always gets probed using DT.
+> ux500_pcm_request_chan() is never called because the dma channels
+> are already set up from DT. Remove this, along with the
+> ux500_msp_dma_params structure.
 >
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Now I will try to continue my work on refreshing the Ux500
+audio support on top of these patches!
 
 Yours,
 Linus Walleij
