@@ -4,78 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E474EC38159
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 13:40:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B933FC32793
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 13:43:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 224A53B15;
-	Wed, 18 Jan 2023 14:39:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 224A53B15
+	by alsa0.perex.cz (Postfix) with ESMTPS id CEBB93BAB;
+	Wed, 18 Jan 2023 14:42:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CEBB93BAB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674049207;
-	bh=9XYJBHKq4LlgEmfq3ocSfg4oZS+yzpsSfaET3bbVq4w=;
+	s=default; t=1674049411;
+	bh=m2z8ZT/JeUv/duakXczjmQ1AtLtfp1unkt7+G0GCiKs=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=dr4FkCvTSPFYKKO4T5uF4D11GnU8oae90VFlDVVMY6ahkVx0BwUxpmJydP9AnWbyV
-	 63AFYb5KdrM6nBkDCYhyi/gUPTD+ujExNrrbGL1U51H+AYpOkL7ELL+7f91ZqVLIbI
-	 yyLa14Yva96X+mwML7K+KrJNaD4tD1jxtowxHkms=
+	b=OOQTo+ubbqru3AtT9rbYdpCI++yENYYR+9/RqOGd2PIFM+L3gAjujAW2yTzmM5e7w
+	 27r9qJXmeIt2PP6J7UntVyQ4+KAkrqmeQ4IRO+bxwfpo3g2IwelT0pgYF6ZTKJ8L3N
+	 4r9oLu4QY4wzfi8bq0HMmNOckl1FDi5U2RJGlGeI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3806F80557;
-	Wed, 18 Jan 2023 14:39:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85930F805BB;
+	Wed, 18 Jan 2023 14:26:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C7EC7F80551; Wed, 18 Jan 2023 14:39:14 +0100 (CET)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 505B1F805BB; Wed, 18 Jan 2023 14:26:14 +0100 (CET)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B6DFF80551
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 14:39:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B6DFF80551
+ by alsa1.perex.cz (Postfix) with ESMTPS id E703EF805B6
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 14:26:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E703EF805B6
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=M5BWe4/G
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674049152; x=1705585152;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=9XYJBHKq4LlgEmfq3ocSfg4oZS+yzpsSfaET3bbVq4w=;
- b=M5BWe4/Gc6rAC0S2t3z/Xx5bLL66uYDykDLOv/A4Eal9p+aJT+opYDlH
- csOazW763mnc3UYubhYQ3OPvaHXzCnw5hwgwe6dZOJeWCEtEYyzJJWVbE
- SjVA6RZ66x227Ud2weZ1afH40BlCT17n7IDTRVXt2vrUJCY6+NrfSfX4g
- OL9lEVuYFnSpHKjHcWspyeeFzxEsqKwNUuHW6HiQYxR2VUnzGNNADPXVO
- K8xzBXYbZ1vGK1oCxAPctRVdbDy3RBBbyi8SBENIOJ+g0ZHdMXcgrN+Nn
- EdmJYDKvcjOUlhWw0TReRNhV2hyrA4/ALXapoTRKkSymNt3qNPIfn9kLB w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10593"; a="312861373"
-X-IronPort-AV: E=Sophos;i="5.97,226,1669104000"; d="scan'208";a="312861373"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jan 2023 05:39:09 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10593"; a="652941817"
-X-IronPort-AV: E=Sophos;i="5.97,226,1669104000"; d="scan'208";a="652941817"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.16.144])
- ([10.99.16.144])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Jan 2023 05:39:06 -0800
-Message-ID: <e08f5a83-5a7e-9095-92f2-d78601c7a0bd@linux.intel.com>
-Date: Wed, 18 Jan 2023 14:39:03 +0100
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=ZqJeDahI
+Received: by mail-wm1-x32e.google.com with SMTP id k16so4028407wms.2
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 05:26:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=S3k8frPalWO3Z3os+kNp0jp8dx/XM1Dyquz57dFW8EA=;
+ b=ZqJeDahIqkSzoQJifZAZvvOn5FPWyWN/dKqKzr+D0yILoa1Yhq+84XSUD+kB31zN5+
+ 4DEJAL49lbIKnZqgHs08GIRJ5CfNDgSNm0f4qNyHdcD+WXOJxLBBZQV8gKFXJ5QtDtuY
+ 0c1/E/SGQ9ZoM2awPSnLJVq5vsjYoeE4n98Wd9EsDpkix3xSQi/c675ZV7KYCjcm9Rcj
+ vX0BjIWYtdECxW6zSsHNVpFyLAHMyCCtjBztU9tw9Sge7b0K1bRL2FRRTwxlPfNlaktS
+ DnXRAsbly8J06BHP/jjWft47IImkOeS5IsCIpTEri0ZlRuW3+/g6NVDdqLteoI5ZNPUJ
+ 9TVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=S3k8frPalWO3Z3os+kNp0jp8dx/XM1Dyquz57dFW8EA=;
+ b=svmtP1HgaWHbRm2fqhzfDjnyNR4FfEhT8fCQY4d0hMAQU/RmbQt1dcVEZoeIyq3HnE
+ PrEkeIAPRRb7OXOzrGUG908JvMVQz51qsR2aLQwOZ2cUG3leZGP3/VI4LCNm6XmxpmyD
+ QXf6QilPvP8vkr+Nos3xD8qYak7eQ8lsnLvj6xMSfM1E+/F7Bv++dCaozHhsF8jXmna1
+ gdyLId9YWpGqgZUv1vQL/t0XOkMKXwEOnAwRY8+SUJEYWdyssTcCthUK3A6ZPRjwHRoF
+ sESdu6B6S5wd+jaLvzAM0/sCUWu0vq0AkBHpnvvt1Zj4I8KLMdQWQ8wN0H9Cm/hGWFUt
+ qMuQ==
+X-Gm-Message-State: AFqh2kpLjGzLhj2J6L6js+1JMrl6i+F8F+OA9JOx7SieJIAruudj4wOG
+ KEzogWH9RtRF4qo2yG6QpvPwTg==
+X-Google-Smtp-Source: AMrXdXs37wvLroZfU7gxPexS9gisJjQH9LTOdnfUkpefHwuHlTbMrugwkgRc/efeLQZknOBY6HRD0g==
+X-Received: by 2002:a05:600c:281:b0:3da:1132:4b63 with SMTP id
+ 1-20020a05600c028100b003da11324b63mr6726498wmk.5.1674048370192; 
+ Wed, 18 Jan 2023 05:26:10 -0800 (PST)
+Received: from [192.168.1.109] ([178.197.216.144])
+ by smtp.gmail.com with ESMTPSA id
+ s4-20020a05600c384400b003d9862ec435sm1998066wmr.20.2023.01.18.05.26.08
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 18 Jan 2023 05:26:09 -0800 (PST)
+Message-ID: <b4ae25ea-bccd-d845-c133-488d23d92e47@linaro.org>
+Date: Wed, 18 Jan 2023 14:26:07 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH v1 2/4] ASoC: simple-card-utils: create jack inputs for
- aux_devs
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.0
+Subject: Re: [PATCH 2/3] ASoC: dt-bindings: qcom,wcd934x: Describe slim-ifc-dev
 Content-Language: en-US
-To: Astrid Rost <astrid.rost@axis.com>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-References: <20230118125226.333214-1-astrid.rost@axis.com>
- <20230118125226.333214-3-astrid.rost@axis.com>
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <20230118125226.333214-3-astrid.rost@axis.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Rob Herring <robh@kernel.org>
+References: <20230113162214.117261-1-krzysztof.kozlowski@linaro.org>
+ <20230113162214.117261-2-krzysztof.kozlowski@linaro.org>
+ <20230117192724.GA3489389-robh@kernel.org>
+ <331eed95-eaf7-5c5a-86c1-0ee7b5591b9a@linaro.org>
+ <CAL_JsqJUTFa24iZ2fovE_yJdBVcbkcUX8rBoPB12ptdAyxHW6g@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CAL_JsqJUTFa24iZ2fovE_yJdBVcbkcUX8rBoPB12ptdAyxHW6g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -89,152 +102,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, kernel@axis.com, linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-arm-msm@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Andy Gross <agross@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Mark Brown <broonie@kernel.org>, Banajit Goswami <bgoswami@quicinc.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 1/18/2023 1:52 PM, Astrid Rost wrote:
-> Add a generic way to create jack inputs for auxiliary jack detection
-> drivers (e.g. via i2c, spi), which are not part of any real codec.
-> The simple-card can be used as combining card driver to add the jacks,
-> no new one is required.
+On 18/01/2023 14:19, Rob Herring wrote:
+> On Wed, Jan 18, 2023 at 5:25 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 17/01/2023 20:27, Rob Herring wrote:
+>>> On Fri, Jan 13, 2023 at 05:22:13PM +0100, Krzysztof Kozlowski wrote:
+>>>> The "slim-ifc-dev" property should not be just "true", because it allows
+>>>> any type.
+>>>
+>>> Yes, but it is common, so it should be in a common schema. Though
+>>> there's only one other binding using it (wcd9335.txt).
+>>
+>> This is still wcd9335 and wcd934x specific, not really common. Maybe
+>> next Qualcomm codec would also bring it so then we can define common
+>> schema for the codecs. But so far I think it is not really a common
+>> property.
 > 
-> Create a jack (for input-events) for jack devices in the auxiliary
-> device list (aux_devs). A device which has the functions set_jack and
-> get_jack_supported_type counts as jack device.
+> By common, I only mean used by more than 1 binding. That's already the
+> case, there's just not a schema for the 2nd one. In any case, can
+> address that later.
 > 
-> Add a devicetree entry, in case not all input types are required.
->   simple-card,aux-jack-types:
-> Array of snd_jack_type to create jack-input-event for jack devices in
-> aux-devs. If the setting is 0, the supported type of the device is used.
-> 
-> Signed-off-by: Astrid Rost <astrid.rost@axis.com>
-> ---
->   include/sound/simple_card_utils.h     |  3 ++
->   sound/soc/generic/simple-card-utils.c | 63 +++++++++++++++++++++++++++
->   sound/soc/generic/simple-card.c       |  4 ++
->   3 files changed, 70 insertions(+)
-> 
-> diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-> index 38590f1ae9ee..a3f3f3aa9e6e 100644
-> --- a/include/sound/simple_card_utils.h
-> +++ b/include/sound/simple_card_utils.h
-> @@ -69,6 +69,7 @@ struct asoc_simple_priv {
->   	} *dai_props;
->   	struct asoc_simple_jack hp_jack;
->   	struct asoc_simple_jack mic_jack;
-> +	struct snd_soc_jack *aux_jacks;
->   	struct snd_soc_dai_link *dai_link;
->   	struct asoc_simple_dai *dais;
->   	struct snd_soc_dai_link_component *dlcs;
-> @@ -187,6 +188,8 @@ int asoc_simple_parse_pin_switches(struct snd_soc_card *card,
->   int asoc_simple_init_jack(struct snd_soc_card *card,
->   			       struct asoc_simple_jack *sjack,
->   			       int is_hp, char *prefix, char *pin);
-> +int asoc_simple_init_aux_jacks(struct asoc_simple_priv *priv,
-> +				char *prefix);
->   int asoc_simple_init_priv(struct asoc_simple_priv *priv,
->   			       struct link_info *li);
->   int asoc_simple_remove(struct platform_device *pdev);
-> diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-> index e35becce9635..668123549fbf 100644
-> --- a/sound/soc/generic/simple-card-utils.c
-> +++ b/sound/soc/generic/simple-card-utils.c
-> @@ -786,6 +786,69 @@ int asoc_simple_init_jack(struct snd_soc_card *card,
->   }
->   EXPORT_SYMBOL_GPL(asoc_simple_init_jack);
->   
-> +int asoc_simple_init_aux_jacks(struct asoc_simple_priv *priv, char *prefix)
-> +{
-> +	struct snd_soc_card *card = simple_priv_to_card(priv);
-> +	struct device *dev = card->dev;
-> +	struct snd_soc_component *component;
-> +	char prop[128];
-> +	int found_jack_index = 0;
-> +	int num = 0;
-> +	int ret;
-> +
-> +	if (priv->aux_jacks)
-> +		return 0;
-> +
-> +	snprintf(prop, sizeof(prop), "%saux-jack-types", prefix);
-> +	num = of_property_count_u32_elems(dev->of_node, prop);
-> +	if (num < 1)
-> +		return 0;
-> +
-> +	priv->aux_jacks = devm_kcalloc(card->dev, num,
-> +				       sizeof(struct snd_soc_jack), GFP_KERNEL);
-> +	if (!priv->aux_jacks)
-> +		return -ENOMEM;
-> +
-> +	for_each_card_auxs(card, component) {
-> +		if (found_jack_index >= num)
-> +			break;
-> +
-> +		if (component->driver->set_jack &&
-> +		    component->driver->get_jack_supported_type) {
+> Acked-by: Rob Herring <robh@kernel.org>
 
-This check is really weird, you are checking if callbacks exist at all, 
-which should be unnecessary as it duplicates the work oh 
-snd_soc_component_ functions. I would just try to call 
-snd_soc_component_get_jack_supported_type() directly and if it returns 
--ENOTSUPP, just go to next iteration.
-I guess your main problem is snd_soc_component_set_jack(), but you can 
-just call it with NULL jack to check if it returns -ENOTSUPP, but I 
-guess the overall asumption would be that if someone implements 
-.get_jack_supported_type, they also implemented .set_jack, so maybe it 
-is just unnecessary?
+Sure!
 
-> +			char id[128];
-> +			int type = 0;
-> +			struct snd_soc_jack *jack =
-> +				&(priv->aux_jacks[found_jack_index]);
-> +			int type_supp_mask =
-> +				snd_soc_component_get_jack_supported_type(
-> +					component);
-> +
-> +			ret = of_property_read_u32_index(
-> +				dev->of_node, prop, found_jack_index++, &type);
-> +			if (ret)
-> +				continue;
-> +
-> +			if (type)
-> +				type &= type_supp_mask; /* use only supported types */
-> +			else
-> +				type = type_supp_mask; /* use all supported types */
-> +
-> +			if (!type)
-> +				continue;
-> +
-> +			/* create jack */
-> +			snprintf(id, sizeof(id), "%s-jack", component->name);
-> +			ret = snd_soc_card_jack_new(card, id, type, jack);
-> +			if (ret)
-> +				continue;
-> +
-> +			(void)snd_soc_component_set_jack(component, jack, NULL);
-> +		}
-> +	}
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(asoc_simple_init_aux_jacks);
-> +
->   int asoc_simple_init_priv(struct asoc_simple_priv *priv,
->   			  struct link_info *li)
->   {
-> diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-> index feb55b66239b..e98932c16754 100644
-> --- a/sound/soc/generic/simple-card.c
-> +++ b/sound/soc/generic/simple-card.c
-> @@ -623,6 +623,10 @@ static int simple_soc_probe(struct snd_soc_card *card)
->   	if (ret < 0)
->   		return ret;
->   
-> +	ret = asoc_simple_init_aux_jacks(priv, PREFIX);
-> +	if (ret < 0)
-> +		return ret;
-> +
->   	return 0;
->   }
->   
+Best regards,
+Krzysztof
 
