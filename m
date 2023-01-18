@@ -4,67 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BB1AC32793
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 15:48:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C699DC38147
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 16:06:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D749798D;
-	Wed, 18 Jan 2023 16:47:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D749798D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3ADF34A46;
+	Wed, 18 Jan 2023 17:05:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ADF34A46
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674056885;
-	bh=lYFKVvc7tvviq3RgBfe8rDLSTPHhOHUruMa3+8hdj6U=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1674057960;
+	bh=QZGzc+g+1usjix9l2tdIILJj4ee35Eg+h4AQ+ZEBNmQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=iyVOYvKOMI8E4vYg1UIW643hVRw/qhOliI5iSmpour59yUwm0IQSpwPnYAgle+hUS
-	 QKwhrvuBdS5OfZCW/cV1lu0V13s6dwZ05beMaHzs0OlB+OlSMsfPKclaFUmBDsTkcv
-	 wwdXUjWjMr0i7sLfn1w7613J+q5DAju7wbUaD8+Y=
+	b=UYnPTK0aLf0SsbngJJY47NwHBozSdKcIWH2IDU7LI8Fxc69YpBNr3BX1nTYseHzbD
+	 r9wsckdwBfN4V69K1yvWM5pFpq19eTQMRtD6SjHfoE4uM3dHNfG/vnvaF8ZJHdV1Ib
+	 rZyMm8TAQygA7vo0ca34vKvCEuIngSe2PfD8VVbk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59FF7F8053C;
-	Wed, 18 Jan 2023 16:46:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E9944F80520;
+	Wed, 18 Jan 2023 17:05:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A55E5F804A9; Wed, 18 Jan 2023 16:46:25 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1EB9F8024D
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 16:46:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1EB9F8024D
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=utPpXgq9
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 2E7E0F80520; Wed, 18 Jan 2023 17:05:08 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 4F5CDB81D8E;
- Wed, 18 Jan 2023 15:46:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 449F9C433EF;
- Wed, 18 Jan 2023 15:46:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674056780;
- bh=lYFKVvc7tvviq3RgBfe8rDLSTPHhOHUruMa3+8hdj6U=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=utPpXgq9BbrisKelrYCw8xfIK0oG88bZ9HCpeH6Nrj4Fk3GvtfXN3FpodWHciXSnP
- OAYbyIHsfUn7lXgFCzY01el7BGJgPlgdvARu7XqEWUzK3kAeGJjZYpsG+74q4ZAlvW
- OKinYBTezmsNS/gj0/uLtKS3y9qa+XxJYIEasBALHN05a/CHK1LEE1sGi5VEPwJdyj
- osycdD/mtq/NxV0whWwgU2o/QgjuAlOOyykFvVG2tGMJwPkI7C49TW8XXqkEsxB8yj
- eE2Bv4VjODhdx3MFz0ApW9NhbQOi7E6D6zmQ9LDeF0R3dZl+gicXx9CvtdWhhbx2TF
- fcWRUbEO+IW+Q==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230118101255.29139-1-peter.ujfalusi@linux.intel.com>
-References: <20230118101255.29139-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH v3 0/3] ASoC: SOF: sof-audio: Fixes for widget prepare
- and unprepare (for 6.2)
-Message-Id: <167405677569.930478.13759548736696801543.b4-ty@kernel.org>
-Date: Wed, 18 Jan 2023 15:46:15 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6D6F1F8024D
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 17:05:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D6F1F8024D
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=lQ6o62Lk
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 30IEDgr6022836; Wed, 18 Jan 2023 10:05:00 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=RrsmUAoPfdKz/GjTW3d2CI1v1QDtyYNp4XQoW8Gfmu4=;
+ b=lQ6o62LkRIncspk6CTo7TCqKVATdDk0oiVuVG99ajX5AaiO7NHtPCwg18mLY3uvS/JWz
+ OySbtAXgH06LDTOeOAKEJBtBQedcZjuznz4efhO+7VPUxrgAoI9NSwQdFQsQMvup1dSA
+ mg4YVy+JdkfSRh6KPARNEP9taMBjss5FqzDc5cwBC44ao/fVldacntdSGBRa3anaXN7B
+ qt0EjydzzJOL7SWD/VN1jfXDpBmdmRRPwzFTLp107EAsU2ExQ5KZQ+JKZ5hrGUB2e4ul
+ 7EdoSPriJUxlvLjYRJrtOoNuUjhC9EFZrvoMqLYus4Hd3dgNrQ4BlJPgVT1UW742HKkg Vw== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3n3spx6vk9-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 18 Jan 2023 10:05:00 -0600
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Wed, 18 Jan
+ 2023 10:04:57 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.7 via Frontend Transport; Wed, 18 Jan 2023 10:04:57 -0600
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.202.160])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0BA1EB12;
+ Wed, 18 Jan 2023 16:04:57 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart
+ <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 1/8] soundwire: stream: Add specific prep/deprep commands
+ to port_prep callback
+Date: Wed, 18 Jan 2023 16:04:45 +0000
+Message-ID: <20230118160452.2385494-2-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230118160452.2385494-1-sbinding@opensource.cirrus.com>
+References: <20230118160452.2385494-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-77e06
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: -czQAVRU0DdhMIyzE7Xe7chznsaOXhYp
+X-Proofpoint-ORIG-GUID: -czQAVRU0DdhMIyzE7Xe7chznsaOXhYp
+X-Proofpoint-Spam-Reason: safe
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,54 +91,79 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- rander.wang@intel.com, yung-chuan.liao@linux.intel.com,
- angelogioacchino.delregno@collabora.com
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 18 Jan 2023 12:12:52 +0200, Peter Ujfalusi wrote:
-> Changes since v2:
-> - re-based on v6.2-rc4 (and tested)
-> - tags added from AngeloGioacchino Del Regno for patch 2
-> 
-> Changes since v1:
-> - patches got re-ordered to make them (hopefully) apply on stable when picked
-> - Added stable tag for 6.1 for the patches
-> - Added Fixes tag for the swidget NULL check on unprepare
-> 
-> [...]
+Currently, port_prep callback only has commands for PRE_PREP, PREP,
+and POST_PREP, which doesn't directly say whether this is for a
+prepare or deprepare call. Extend the command list enum to say
+whether the call is for prepare or deprepare aswell.
 
-Applied to
+Also remove SDW_OPS_PORT_PREP from sdw_port_prep_ops as this is unused,
+and update this enum to be simpler and more consistent with enum
+sdw_clk_stop_type.
 
-   broonie/sound.git for-next
+Note: Currently, the only users of SDW_OPS_PORT_POST_PREP are codec
+drivers sound/soc/codecs/wsa881x.c and sound/soc/codecs/wsa883x.c, both
+of which seem to assume that POST_PREP only occurs after a prepare,
+even though it would also have occurred after a deprepare. Since it
+doesn't make sense to mark the port prepared after a deprepare, changing
+the enum to separate PORT_DEPREP from PORT_PREP should make the check
+for PORT_PREP in those drivers be more logical.
 
-Thanks!
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ drivers/soundwire/stream.c    | 4 ++--
+ include/linux/soundwire/sdw.h | 8 +++++---
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
-[1/3] ASoC: SOF: sof-audio: unprepare when swidget->use_count > 0
-      commit: 7d2a67e02549c4b1feaac4d8b4151bf46424a047
-[2/3] ASoC: SOF: sof-audio: skip prepare/unprepare if swidget is NULL
-      commit: 0ad84b11f2f8dd19d62d0b2ffd95ece897e6c3dc
-[3/3] ASoC: SOF: keep prepare/unprepare widgets in sink path
-      commit: cc755b4377b0520d594ae573497cf0824baea648
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index df3b36670df4c..1652fb5737d9d 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -469,7 +469,7 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
+ 	}
+ 
+ 	/* Inform slave about the impending port prepare */
+-	sdw_do_port_prep(s_rt, prep_ch, SDW_OPS_PORT_PRE_PREP);
++	sdw_do_port_prep(s_rt, prep_ch, prep ? SDW_OPS_PORT_PRE_PREP : SDW_OPS_PORT_PRE_DEPREP);
+ 
+ 	/* Prepare Slave port implementing CP_SM */
+ 	if (!dpn_prop->simple_ch_prep_sm) {
+@@ -501,7 +501,7 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
+ 	}
+ 
+ 	/* Inform slaves about ports prepared */
+-	sdw_do_port_prep(s_rt, prep_ch, SDW_OPS_PORT_POST_PREP);
++	sdw_do_port_prep(s_rt, prep_ch, prep ? SDW_OPS_PORT_POST_PREP : SDW_OPS_PORT_POST_DEPREP);
+ 
+ 	/* Disable interrupt after Port de-prepare */
+ 	if (!prep && intr)
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index 3cd2a761911ff..547fc1b30a51a 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -569,13 +569,15 @@ struct sdw_prepare_ch {
+  * enum sdw_port_prep_ops: Prepare operations for Data Port
+  *
+  * @SDW_OPS_PORT_PRE_PREP: Pre prepare operation for the Port
+- * @SDW_OPS_PORT_PREP: Prepare operation for the Port
++ * @SDW_OPS_PORT_PRE_DEPREP: Pre deprepare operation for the Port
+  * @SDW_OPS_PORT_POST_PREP: Post prepare operation for the Port
++ * @SDW_OPS_PORT_POST_DEPREP: Post deprepare operation for the Port
+  */
+ enum sdw_port_prep_ops {
+ 	SDW_OPS_PORT_PRE_PREP = 0,
+-	SDW_OPS_PORT_PREP = 1,
+-	SDW_OPS_PORT_POST_PREP = 2,
++	SDW_OPS_PORT_PRE_DEPREP,
++	SDW_OPS_PORT_POST_PREP,
++	SDW_OPS_PORT_POST_DEPREP,
+ };
+ 
+ /**
+-- 
+2.34.1
 
