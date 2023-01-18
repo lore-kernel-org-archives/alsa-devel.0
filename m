@@ -4,79 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7CDDC32793
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 16:06:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D874BC32793
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 16:07:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1E824B6D;
-	Wed, 18 Jan 2023 17:06:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1E824B6D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0DE185DE4;
+	Wed, 18 Jan 2023 17:06:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DE185DE4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674058011;
-	bh=F0MvsUPn9M+H9XbUc7/+LH1kqrdwkHJ6HCoGY/XW1Z0=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=DPailgG0BNmdQpvRhembbBd+IvIE+4Icg/U+uMQM7YucxojV4xxzsYcgjPfaq8VqD
-	 T8u9h85mG3rs8/JVr2beXD46hEOgT4fL1KIWvaEd+gSgmP7SFIrNmrCmzd5NWM6lW/
-	 klnCAvtD6budhfc5ttWC7mlrIdrmk6KinMVno6Fk=
+	s=default; t=1674058019;
+	bh=NGJIxez0hX5y1kWh4U8jctHG3HciDy9GdtO4craFfag=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=NANvyX6MXph05D9O5RpGaeXkxWxzfB/1xzJbWkRYlxBOqqrwV7eU31QEwQhG+JyvD
+	 /apkIqK2Ps7V/mi1VpozZyN63l/VwtiEyKqcVyWeVvbU/E+MAzrlBPUZtJVNn0VM1x
+	 oXgy86wzn5Y9VxAjzixECR2FjlTkiOdqkcjIFYr0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C736F80548;
-	Wed, 18 Jan 2023 17:05:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E8B9F80553;
+	Wed, 18 Jan 2023 17:05:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 89DB4F80548; Wed, 18 Jan 2023 17:05:11 +0100 (CET)
+ id 82F6FF80551; Wed, 18 Jan 2023 17:05:12 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 74211F8026D
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 17:05:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74211F8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E43DF80083
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 17:05:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E43DF80083
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=SoRyZtEW
+ header.s=PODMain02222019 header.b=letUPSPx
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
  by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 30IEEjlB023722; Wed, 18 Jan 2023 10:05:04 -0600
+ 30IEEjl9023722; Wed, 18 Jan 2023 10:05:02 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=4DC3FmrYnv3q+s9o9tP2DW9U1wOvwrAGTeF6A0jvBHQ=;
- b=SoRyZtEWS0ZMCaGg/MbazhydcTToCQHnCi7BeNte9Dd5nEPp9FoRk1I1GjIm0ph4AEvf
- 7mE7JIM2JYkMkwRvBTeEQttvDyUeaJCZACz39yzJHInM9sRlF7CuUZQWvSGhJ9zPGNXt
- iAy5QLIJnSrFC7Gnl8X9HqkhmJ8gNvG/orTs0ymCic3D1CJno3nWn4m+c/K7cdXRA+xm
- wy8cfNVxZkjLapoHGEr9O+Z4QDSSH9bjY7c5StuipDFnzVClxucUjAlHrR42oWlAb5Lf
- pF99rI61ds6Dw3Ko4hj8czopOjiUHAbydhs4ZjlxrZNkTGHx+e73EYZaJaO1uTvQR+ph Zg== 
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=TubZNWDH/zWXtSwzOFhswLR3JQxQo2D9s8O6hcO+0V4=;
+ b=letUPSPxqdfsIp8ZZBevx0WFZ3Ifg5H8vlu7ipN2qVVT8pZCTqJL53mumnEg3N7Tlcc3
+ YoVJT/CJcTsuvUfjJcn5EBGujKCM1ZNM8kNW1lyjbP3zIdI1tLpwtLMsX46eD16BVX3s
+ UVUFRItS2ZvE5iJqUH78lNcKqh8shj6n/vL3PFW+vrLFZ/JhaRi4pzdcX3qf/qgn6//V
+ TGhiXlhHs2+8ohep2SKfzm808EiI/Ch+c685r2CvMQ3v6io83IXwlJdIfAc8uOD+Ndfn
+ jZbngziWhDzrAKepUEFXogCOyWP/oil3/uUnVDwKK8uW1mcPCkBimyg9BebdKMAJ0U7k cA== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3n3spx6vk8-3
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3n3spx6vk8-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 18 Jan 2023 10:05:04 -0600
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ Wed, 18 Jan 2023 10:05:00 -0600
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Wed, 18 Jan
- 2023 10:04:58 -0600
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.21 via
- Frontend Transport; Wed, 18 Jan 2023 10:04:58 -0600
+ 2023 10:04:57 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.7 via Frontend Transport; Wed, 18 Jan 2023 10:04:57 -0600
 Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.202.160])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1A430B12;
- Wed, 18 Jan 2023 16:04:58 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DD5B411CA;
+ Wed, 18 Jan 2023 16:04:56 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart
  <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v2 8/8] ASoC: cs42l42: Wait for debounce interval after resume
-Date: Wed, 18 Jan 2023 16:04:52 +0000
-Message-ID: <20230118160452.2385494-9-sbinding@opensource.cirrus.com>
+Subject: [PATCH v2 0/8] ASoC: cs42l42: Add Soundwire support
+Date: Wed, 18 Jan 2023 16:04:44 +0000
+Message-ID: <20230118160452.2385494-1-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230118160452.2385494-1-sbinding@opensource.cirrus.com>
-References: <20230118160452.2385494-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: WuLPwJpdk5cA3HpxRI6bjl3uXaEa2-Gz
-X-Proofpoint-ORIG-GUID: WuLPwJpdk5cA3HpxRI6bjl3uXaEa2-Gz
+X-Proofpoint-GUID: Dvqzp6B2ec0kf04P6WmVhfG2McbCgK_L
+X-Proofpoint-ORIG-GUID: Dvqzp6B2ec0kf04P6WmVhfG2McbCgK_L
 X-Proofpoint-Spam-Reason: safe
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -95,43 +92,44 @@ Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Since clock stop causes bus reset on Intel controllers, we need
-to wait for the debounce interval on resume, to ensure all the
-interrupt status registers are set correctly.
+The CS42L42 has a Soundwire interface for control and audio. This
+chain of patches adds support for this.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42-sdw.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+Patches #1 .. #5 split out various changes to the existing code that
+are needed for adding Soundwire. These are mostly around clocking and
+supporting the separate probe and enumeration stages in Soundwire.
 
-diff --git a/sound/soc/codecs/cs42l42-sdw.c b/sound/soc/codecs/cs42l42-sdw.c
-index 67800b275e422..27653ea0f947c 100644
---- a/sound/soc/codecs/cs42l42-sdw.c
-+++ b/sound/soc/codecs/cs42l42-sdw.c
-@@ -451,14 +451,22 @@ static int __maybe_unused cs42l42_sdw_handle_unattach(struct cs42l42_private *cs
- 
- static int __maybe_unused cs42l42_sdw_runtime_resume(struct device *dev)
- {
-+	static const unsigned int ts_dbnce_ms[] = { 0, 125, 250, 500, 750, 1000, 1250, 1500};
- 	struct cs42l42_private *cs42l42 = dev_get_drvdata(dev);
-+	unsigned int dbnce;
- 	int ret;
- 
- 	dev_dbg(dev, "Runtime resume\n");
- 
- 	ret = cs42l42_sdw_handle_unattach(cs42l42);
--	if (ret < 0)
-+	if (ret < 0) {
- 		return ret;
-+	} else if (ret > 0) {
-+		dbnce = max(cs42l42->ts_dbnc_rise, cs42l42->ts_dbnc_fall);
-+
-+		if (dbnce > 0)
-+			msleep(ts_dbnce_ms[dbnce]);
-+	}
- 
- 	regcache_cache_only(cs42l42->regmap, false);
- 
+Patches #6 .. #8 actually adds the Soundwire handling.
+
+Changes since v1:
+- fixes for various review comments from v1
+- add support for wakeup from clock stop using hardware interrupts
+- use port_prep callback to prepare/deprepare codec
+
+Richard Fitzgerald (6):
+  ASoC: cs42l42: Add SOFT_RESET_REBOOT register
+  ASoC: cs42l42: Ensure MCLKint is a multiple of the sample rate
+  ASoC: cs42l42: Separate ASP config from PLL config
+  ASoC: cs42l42: Export some functions for Soundwire
+  ASoC: cs42l42: Add Soundwire support
+  ASoC: cs42l42: Don't set idle_bias_on
+
+Stefan Binding (2):
+  soundwire: stream: Add specific prep/deprep commands to port_prep
+    callback
+  ASoC: cs42l42: Wait for debounce interval after resume
+
+ drivers/soundwire/stream.c     |   4 +-
+ include/linux/soundwire/sdw.h  |   8 +-
+ include/sound/cs42l42.h        |   5 +
+ sound/soc/codecs/Kconfig       |   8 +
+ sound/soc/codecs/Makefile      |   2 +
+ sound/soc/codecs/cs42l42-sdw.c | 603 +++++++++++++++++++++++++++++++++
+ sound/soc/codecs/cs42l42.c     | 127 ++++---
+ sound/soc/codecs/cs42l42.h     |   9 +-
+ 8 files changed, 716 insertions(+), 50 deletions(-)
+ create mode 100644 sound/soc/codecs/cs42l42-sdw.c
+
 -- 
 2.34.1
 
