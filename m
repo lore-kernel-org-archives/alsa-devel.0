@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28F4FC46467
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 16:51:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE7E6C32793
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 16:52:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3FCFB7A14;
-	Wed, 18 Jan 2023 17:50:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FCFB7A14
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD14079D7;
+	Wed, 18 Jan 2023 17:51:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD14079D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674060663;
-	bh=6/fSz5vIWu3dKV6YZbSV9ZyoRev7jRdcIvDkfY1T0Oo=;
+	s=default; t=1674060736;
+	bh=rCPUsb5Z5hWbmDdohk8XIFN9Lt58wVUIzW611iTVqZI=;
 	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=PJLZkjsJojRDTaWdAoDy9QCyVT+7A0Oq8IfbXrHMBwOY0SphBvWys3Gv4IlwyTT1g
-	 XytJlxg3ZIpQ/0GWK/S1Ev2VJSmZfJ874chChjgzQQLWPjQQQ3/rYI6yyTs5vkNolx
-	 dak3hOcr+rejHuwtjsBn+y5TNTHGywatjVtU9xSc=
+	b=iVkLoU3/NargPVe2RG1QXScw+pGI56xvCBesdV5wVhvtbXTjueUM3oSpaIFxih74i
+	 +QI5s4J57qIQG7YCSqhSVlvO5JNagtx3sg+6KEVJSAEILqewSGLL1UAyv7oet7xZ2P
+	 GkEEX3MohT3NF3oaxLeW7bzroCnG1qb6BikHd29s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8C78F80083;
-	Wed, 18 Jan 2023 17:50:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6CADDF8024C;
+	Wed, 18 Jan 2023 17:51:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47009F80482; Wed, 18 Jan 2023 17:50:11 +0100 (CET)
+ id 8B5D1F8026D; Wed, 18 Jan 2023 17:51:24 +0100 (CET)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86339F8024C
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 17:50:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86339F8024C
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA9F8F8021D
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 17:51:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA9F8F8021D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=f8jAvJuw; 
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=Ka80w/KS; 
  dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Hy98FmnO
+ header.s=susede2_ed25519 header.b=F7zh8axC
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A119A5C14E;
- Wed, 18 Jan 2023 16:50:06 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id B04CF5C14E;
+ Wed, 18 Jan 2023 16:51:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1674060606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1674060681; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=XkmJQVrqLSeTF9iJLCagcw76EQJugVv+kmxMiIsVImQ=;
- b=f8jAvJuwkPrwqgi3ZEmxbxVDbynlq9g955krgcudjN09lUn2JXfk9SaHFUhbuVqbm9eMAX
- t1y0osHKdMxXFRIeOe6egdYkyUmf2F10fGfOdOpIQsOJ44g8gQcKCyrgu2SfcGNGeihHEL
- wv6TVsHxN34ibXImQdHptQBexelbAsQ=
+ bh=jefqhyj2TcVQ9pPbIpZH/M2Ul79jLYPcmwdUuDbCyiw=;
+ b=Ka80w/KSqBGxf0xP1n6/S/Jphm4LL1vRegk4KfZAjGUObL+yK/V2UjZ2tcwQzLzNisPcSw
+ 2OxRu3cLrw0GDfg6MIpddygWzFn+ESS+mhHVV1GH4CI8PcgdV1l26WRrEAQnTPjPfPPVSf
+ sbxz5FB4eYSfEY3mLn9UuR3U/M1wGrQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1674060606;
+ s=susede2_ed25519; t=1674060681;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=XkmJQVrqLSeTF9iJLCagcw76EQJugVv+kmxMiIsVImQ=;
- b=Hy98FmnO2RH4Ku2yYJPiL0iBb0jfOw2MAhJo3478YPGA1itARE6G21C9VJv4HXVQsp4uSz
- 2RVNHkajElOJDtAQ==
+ bh=jefqhyj2TcVQ9pPbIpZH/M2Ul79jLYPcmwdUuDbCyiw=;
+ b=F7zh8axCnPZmuJXCK63CA9eBAeEfJ2Bhr99zMHHHn3k/g9T1znX+M15E+TjRiAzElFWnm2
+ 2+lL/XllUp2GMGCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7434B138FE;
- Wed, 18 Jan 2023 16:50:06 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7960F138FE;
+ Wed, 18 Jan 2023 16:51:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id d5DMGz4jyGOTNAAAMHmgww
- (envelope-from <tiwai@suse.de>); Wed, 18 Jan 2023 16:50:06 +0000
-Date: Wed, 18 Jan 2023 17:50:05 +0100
-Message-ID: <87edrr6b42.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id gKO9HIkjyGNCNQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Wed, 18 Jan 2023 16:51:21 +0000
+Date: Wed, 18 Jan 2023 17:51:21 +0100
+Message-ID: <87cz7b6b1y.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Dan Carpenter <error27@gmail.com>
-Subject: Re: [PATCH] ALSA: fireface: fix locking bug in
- ff400_copy_msg_to_user()
-In-Reply-To: <Y8at+W/7OGvEBY8O@kili>
-References: <Y8at+W/7OGvEBY8O@kili>
+To: Jeremy Szu <jeremy.szu@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs,
+ speaker don't work for a HP platform
+In-Reply-To: <20230118115446.14902-1-jeremy.szu@canonical.com>
+References: <20230118115446.14902-1-jeremy.szu@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -92,21 +92,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>,
- kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Yuchi Yang <yangyuchi66@gmail.com>, Meng Tang <tangmeng@uniontech.com>,
+ Philipp Jungkamp <p.jungkamp@gmx.net>,
+ Gabriele Mazzotta <gabriele.mzt@gmail.com>,
+ Tim Crawford <tcrawford@system76.com>, tiwai@suse.com,
+ Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Kacper =?ISO-8859-2?Q?Michaj=B3ow?= <kasper93@gmail.com>,
+ open list <linux-kernel@vger.kernel.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 17 Jan 2023 15:17:29 +0100,
-Dan Carpenter wrote:
+On Wed, 18 Jan 2023 12:54:45 +0100,
+Jeremy Szu wrote:
 > 
-> The ff400_copy_msg_to_user() function drops the spin lock to call
-> copy_to_user().  However, if the copy_to_user() fails, then it must
-> take the lock again before returning.  Failure to take the lock leads
-> to a double unlock in the caller, hwdep_read().
+> There is a HP platform needs ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED quirk to
+> make mic-mute/audio-mute/speaker working.
 > 
-> Fixes: acdebd8b4c0c ("ALSA: fireface: implement message parser for Fireface 400")
-> Signed-off-by: Dan Carpenter <error27@gmail.com>
+> Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
 
 Thanks, applied.
 
