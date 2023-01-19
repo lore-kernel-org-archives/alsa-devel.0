@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4144DC46467
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 14:30:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EED10C004D4
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 14:42:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CC927BB7;
-	Thu, 19 Jan 2023 15:29:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CC927BB7
+	by alsa0.perex.cz (Postfix) with ESMTPS id A98CC80DE;
+	Thu, 19 Jan 2023 15:41:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A98CC80DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674138613;
-	bh=wT5S0nDQWzWnIsaH4HEuxd5xlypwYBgZucP+sjj8bQA=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=J9kldM2w9L3uTZyL/djOHV07FXNG/vIHxItLBiqaSb2LjW73n8tsjWUBsaKGbSMOg
-	 Ib+YSJI7mlLyt+MRTst36eRWkPQ+yxoV2RAKbE3ZdV+Bz0sF/+5gx1bqK5WQBFDT3S
-	 ZvCU+NpTC0ntzChsVLo+9151quMSzHjWvRkF8gok=
+	s=default; t=1674139320;
+	bh=yMS/v64YPCmiomY0+XdqIHOqN3HNABwIF6lwZwlDszc=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=Rec7TOyPb+m9FbXcRMxIl7W6ABqC/y8d0kiLK6u6W5ndmZLyEgMXOQO1qaihIyUvl
+	 AoCgQdxiiEgi9Dx7cfOrjOnXer3IK0KHNhL9LjsJQaAm3frWI0pn7dMGKjT2LOOgOH
+	 V8Yc8eBfnsgAIW/WxGSEH0Q5jqlyjFXui3x68VPA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2437DF8025D;
-	Thu, 19 Jan 2023 15:29:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56675F8025D;
+	Thu, 19 Jan 2023 15:41:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74278F8047B; Thu, 19 Jan 2023 15:29:21 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F00EFF80083
- for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 15:29:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F00EFF80083
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=MalkSexJ
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id B2BD3F8047B; Thu, 19 Jan 2023 15:41:09 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 1DA93B8249B;
- Thu, 19 Jan 2023 14:29:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 540BAC433EF;
- Thu, 19 Jan 2023 14:29:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674138555;
- bh=wT5S0nDQWzWnIsaH4HEuxd5xlypwYBgZucP+sjj8bQA=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=MalkSexJEfVIBArAEOGvkO285aOYo4jrXoKD7+1qXJCk+NaKgTytOYHGnYpfA4xz7
- uDsgVexUjwUwWCu5IdN+uSBTG6T64SARkYKkkpAUaZq8ZKEWKzfrDIAPYetdyrVpOT
- cELB/v2NmyYOBueHUd1AHG2LVD8A71QYadj5ddVFLyD/YG+rIoyhBT/D3aBSNmDNdT
- EgWQ2Gwl0Qa+Hme1DW2/r/hcXssI9nrQvgMy67e5oa017ZD6K3v5/RaUPVc6iFUVCr
- GmHf3q3ydYLlkZUobhngbZYOerwDpgRqBTOWnLQ4lFRwj/tRXPOMeFOT4ofn+XVFjo
- TrbbsyYmyFmSQ==
-Date: Thu, 19 Jan 2023 14:29:12 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Yang Yingliang <yangyingliang@huawei.com>
-Subject: Re: [PATCH -next] ASoC: ti: davinci-evm: simplify the code with
- module_platform_driver
-Message-ID: <Y8lTuGHpKI/dlkDi@sirena.org.uk>
-References: <20230112135457.1490360-1-yangyingliang@huawei.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id ABE06F80083
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 15:41:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABE06F80083
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=Pjb+d7xC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1674139261; x=1705675261;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=yMS/v64YPCmiomY0+XdqIHOqN3HNABwIF6lwZwlDszc=;
+ b=Pjb+d7xCpjqqnzUwsrtf5HoWYt1GnEMFI6p31yy1rvpI1XkwqFCXnPvG
+ 6eJpciBVuWo3cHGLodOVapDIjHuyg5v5vwmXk6OzFVIsE30A5kbrYg1V3
+ 2Ap54fgWRN7kdLiZ/9nZYq7E2wqwBQV76jPjKBtnaNFcojmXikxe/LTxE
+ S2badRrAu07w1wQt7+JFqnu0+5to1562Ih6GC8cnrZNBaOH2HIX+liOxw
+ Z6yzcSUnL3k05LKfR5JKOmddYWBlTPteOmXvijDB0oOPehha6n8+h9DUv
+ FLDOTAxRZAaMfRnZ9C4GQTe2Ezwt69DjtB7RrEQjOs36Vn13I2TzB7e8Z A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="327383548"
+X-IronPort-AV: E=Sophos;i="5.97,229,1669104000"; d="scan'208";a="327383548"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Jan 2023 06:15:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="802643711"
+X-IronPort-AV: E=Sophos;i="5.97,229,1669104000"; d="scan'208";a="802643711"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by fmsmga001.fm.intel.com with ESMTP; 19 Jan 2023 06:15:07 -0800
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org,
+	tiwai@suse.com
+Subject: [PATCH v2] ALSA: hda: Do not unset preset when cleaning up codec
+Date: Thu, 19 Jan 2023 15:32:35 +0100
+Message-Id: <20230119143235.1159814-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="gEY7iAwHsRhDTVJH"
-Content-Disposition: inline
-In-Reply-To: <20230112135457.1490360-1-yangyingliang@huawei.com>
-X-Cookie: Serving suggestion.
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,35 +77,83 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, peter.ujfalusi@gmail.com,
- lgirdwood@gmail.com
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com, broonie@kernel.org,
+ amadeuszx.slawinski@linux.intel.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Several functions that take part in codec's initialization and removal
+are re-used by ASoC codec drivers implementations. Drivers mimic the
+behavior of hda_codec_driver_probe/remove() found in
+sound/pci/hda/hda_bind.c with their component->probe/remove() instead.
 
---gEY7iAwHsRhDTVJH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+One of the reasons for that is the expectation of
+snd_hda_codec_device_new() to receive a valid pointer to an instance of
+struct snd_card. This expectation can be met only once sound card
+components probing commences.
 
-On Thu, Jan 12, 2023 at 09:54:57PM +0800, Yang Yingliang wrote:
-> The init/exit() of driver only calls platform_driver_register/unregister,
-> it can be simpilfied with module_platform_driver.
+As ASoC sound card may be unbound without codec device being actually
+removed from the system, unsetting ->preset in
+snd_hda_codec_cleanup_for_unbind() interferes with module unload -> load
+scenario causing null-ptr-deref. Preset is assigned only once, during
+device/driver matching whereas ASoC codec driver's module reloading may
+occur several times throughout the lifetime of an audio stack.
 
-This doesn't apply against current code, please check and resend.
+Suggested-by: Takashi Iwai <tiwai@suse.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
 
---gEY7iAwHsRhDTVJH
-Content-Type: application/pgp-signature; name="signature.asc"
+Changes in v2:
+- relocated the operation to routines found in hda_bind.c rather than
+  just removing it from the cleanup function
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPJU7cACgkQJNaLcl1U
-h9BeDQf/RtnHqg7h+jGwWimWk6raWzuIekNCXxD/hfhyOThnya5eCZ5DYhgWVV+Y
-z6jMEJ8jsA5HUVaYTeOLbFs7WTndfSvVprFFchCIHDfpscT1oyxQiOYNLNFxC0Hn
-RO75DHY0OcOVOkEULPgHn8ieyg5WOlyg5LFayenrleTjECwcu5pZY4CjYI+X01xB
-/9LPtSdW2RpvjhKN38YAABh3XoHNifbLOtb81puvlRvkQcFU4pa5X1iIkMXxz11f
-7WlT/ElXgna1EEGz76A75xtaAB5GKM/uZ6d32DDtxCK140JZSG8Nn+w3yIyvKUs1
-BXrrBZdLfBH0k0RjVXDYsxrAwFhndg==
-=UFxq
------END PGP SIGNATURE-----
+This is a continuation of a discussion that begun in the middle of 2022
+[1] and was part of a larger series addressing several HDAudio topics.
 
---gEY7iAwHsRhDTVJH--
+Single rmmod on ASoC's codec driver module is enough to cause a panic.
+Given our results, no regression shows up with modprobe/rmmod on
+snd_hda_intel side with this patch applied.
+
+[1]: https://lore.kernel.org/alsa-devel/20220706120230.427296-2-cezary.rojewski@intel.com/
+
+ sound/pci/hda/hda_bind.c  | 2 ++
+ sound/pci/hda/hda_codec.c | 1 -
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/hda_bind.c b/sound/pci/hda/hda_bind.c
+index 1a868dd9dc4b..890c2f7c33fc 100644
+--- a/sound/pci/hda/hda_bind.c
++++ b/sound/pci/hda/hda_bind.c
+@@ -144,6 +144,7 @@ static int hda_codec_driver_probe(struct device *dev)
+ 
+  error:
+ 	snd_hda_codec_cleanup_for_unbind(codec);
++	codec->preset = NULL;
+ 	return err;
+ }
+ 
+@@ -166,6 +167,7 @@ static int hda_codec_driver_remove(struct device *dev)
+ 	if (codec->patch_ops.free)
+ 		codec->patch_ops.free(codec);
+ 	snd_hda_codec_cleanup_for_unbind(codec);
++	codec->preset = NULL;
+ 	module_put(dev->driver->owner);
+ 	return 0;
+ }
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index edd653ece70d..ac1cc7c5290e 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -795,7 +795,6 @@ void snd_hda_codec_cleanup_for_unbind(struct hda_codec *codec)
+ 	snd_array_free(&codec->cvt_setups);
+ 	snd_array_free(&codec->spdif_out);
+ 	snd_array_free(&codec->verbs);
+-	codec->preset = NULL;
+ 	codec->follower_dig_outs = NULL;
+ 	codec->spdif_status_reset = 0;
+ 	snd_array_free(&codec->mixers);
+-- 
+2.25.1
+
