@@ -4,90 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9400DC38142
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 07:35:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 067D0C38142
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 08:13:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A23D670A8;
-	Thu, 19 Jan 2023 08:34:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A23D670A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E8947F02;
+	Thu, 19 Jan 2023 09:12:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E8947F02
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674113715;
-	bh=QNqCGqy7oOHaUpzWBbZafswn3J9kXKRvXI3Zf84+HzQ=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=IS0ub8yy2vIcFC+YkW3Sr0rE+VhNtYqaOQN3nMRmiNcZiqKZ6NvuK7eGGO8BBuDtb
-	 UZ004vGQ5NhQYhWTGXHGylaNgZ7n4mt9byIXUWtehQvpgY7I9EXO0I1jAeqctFafyl
-	 bPMzV4B5NN+m3QIiwIR0d0eaM2vE4nxN33+Irf0g=
+	s=default; t=1674115999;
+	bh=+4g507l25VzLlf4pOhvySF9NlEJKa/y/YawPBkHIs74=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=RzHtrP6rBKBKv+04Xu2DATrjy4XXmO8EeO59xbN9SDOiSH4ww8bHkmDQ2J0jiN4Qs
+	 yY4XGnfLKMq+nryfUb2HVREmOmWPRuq2u8Baskp3hvmq3HfX+SxyLp9Ek32lBf+i4N
+	 ftuAdsOEpTd3t8xB3TBwibhap0nsAutWaF9dnics=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 481CDF8025D;
-	Thu, 19 Jan 2023 08:34:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3FC4BF804DE;
+	Thu, 19 Jan 2023 09:12:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 45DE6F8047B; Thu, 19 Jan 2023 08:34:24 +0100 (CET)
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+ id C73CAF80083; Thu, 19 Jan 2023 09:12:27 +0100 (CET)
+Received: from KOR01-PS2-obe.outbound.protection.outlook.com
+ (mail-ps2kor01on2050.outbound.protection.outlook.com [40.107.128.50])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02D78F8024D
- for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 08:34:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02D78F8024D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key, unprotected) header.d=tq-group.com
- header.i=@tq-group.com header.a=rsa-sha256 header.s=key1 header.b=iL9AnlYQ; 
- dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com
- header.a=rsa-sha256 header.s=key1 header.b=Uk88ARAj
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
- t=1674113662; x=1705649662;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=s94IzfBcezUwrrXvkeXbHYzla1KnXTUynqvpSNJ59RI=;
- b=iL9AnlYQofjPaJWQ8kyuG3X1dRW1KZwSpcy52CqQ3qlOApnWd/ka3W6q
- R+96dA2jvAhR48dcEXazuDOrksagzlDWNYm8JQPwiDuLmz6lFpGfL5HP0
- iFBhdRC4sMW22o/AcjCFUavpVGfq2YiixFFHNZL0SQeS04ab/lXvhqvgx
- 71Hq20KcqFPBa4M2s9VF/FVitBJ1lJHdusqZXe7ucn7FXPDqOQDHMgf9/
- zFegG5/i0qxdSVx2/Wjhk1hy4mxnOnRLBZR3iSbYNsPaEqq92cKnpioPC
- 7OMurBhtyn6l0L/su1RWrxq3KJ2L+UrHYIKPGEv3nFKZdUNYp2yYba8M6 g==;
-X-IronPort-AV: E=Sophos;i="5.97,228,1669071600"; d="scan'208";a="28520959"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
- by mx1-pgp.tq-group.com with ESMTP; 19 Jan 2023 08:34:20 +0100
-Received: from mx1.tq-group.com ([192.168.6.7])
- by tq-pgp-pr1.tq-net.de (PGP Universal service);
- Thu, 19 Jan 2023 08:34:20 +0100
-X-PGP-Universal: processed;
- by tq-pgp-pr1.tq-net.de on Thu, 19 Jan 2023 08:34:20 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
- t=1674113660; x=1705649660;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=s94IzfBcezUwrrXvkeXbHYzla1KnXTUynqvpSNJ59RI=;
- b=Uk88ARAj4LAJjXbqgehHSp08D5NjYOd82SLwdcb7QLhxQf+8l5fULH2w
- jUlknjpLUxLXfVXgNSyy5NHsb1PYKmH0ePb2/4Gj6EJDVY4rmhWNRvfeo
- cdNB8BRb0u90yMwcqn9k9UYiTU6IscLDoZiyu93pvDgQWHNc58qN6Cufa
- /+NMTLS3ZK7xQWxovMebD+2yASNoYNcAYqUHmnsRjnhwRc5iR3yjvslki
- SF+xxj8HNonlA+sI10ZjcV/rlWx7iaI2UksR2rVC7uX56MqlTdAvTWE5U
- Aea3vrDVeW1BQW2fLAGgR1dADhYp/qfNMLgIOAW0Gk0vEdbymOdD8PG3g A==;
-X-IronPort-AV: E=Sophos;i="5.97,228,1669071600"; d="scan'208";a="28520958"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
- by mx1.tq-group.com with ESMTP; 19 Jan 2023 08:34:19 +0100
-Received: from steina-w.tq-net.de (unknown [10.123.53.21])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
- (No client certificate requested)
- by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 7508A280056;
- Thu, 19 Jan 2023 08:34:19 +0100 (CET)
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 1/1] ASoC: imx-hdmi: Use dev_err_probe
-Date: Thu, 19 Jan 2023 08:34:16 +0100
-Message-Id: <20230119073416.3064918-1-alexander.stein@ew.tq-group.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8098DF80083
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 09:12:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8098DF80083
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OX6oeyz1CXnnlFW4eKfqpCyoDn+PB2OmeBF569LwyqN3LMnQnIgLrml58DzHe5w9DNqrkwejDeBnojXKCfpcwXNqv8du7Mb3jROiFnsXttFnsCYWkYh82fBEUKK0GnsHfRj2vTwgKV7qv0vfcGpAy/nDyPZJJSMde1KD0+yLKwHKXg8Ghe6ZicCiePe1MLHAqecINKEYz5sqG1yvpPtCtsf6RFF1NcZSY47QzleIL/PNZLcwtfc65NzBySymxxhD42mzR+rDEmWOzDPXFS3N3XaI0A6zSE93SmPBdlHJfUppzbT4BGyKLSowaaXabwRaUEWlw+lOWo1Dk/g/tgIwUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=e8Wau7pYsociQTPuLtS2tEALmtkmjuzgbuaJ0Mls6CU=;
+ b=Y/cZAu+DbvAZIjpKeYq3w6D2i6b6HZw41NkyajSpYCHyPV/9jas+uShQbS2tc76alFXbyT5YaF6L/VkgYfazSN0sgqr/385YoZP0YhpXAyoV/Tnu1nypeqhR13Y9SKQ0BlH75YHO0UvvFrTVFUDqSk/yFX0Cso8nR9yAcdTY6WiXa0YgT8LS4tAkB7WX/JiTlaeCSJZnBAbMajpcWOz+wl6itQyOA/ykClDJih44VjknjPp5P2eDtWkSzztInr7wDbB+TfgqAQPegdG4IBbNcdXZsSvwIfBgneiqjXkm7p+oX68qzzNjT8nzsfK+jD8HO/Jv15uVZnSYhhNt52RmVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=irondevice.com; dmarc=pass action=none
+ header.from=irondevice.com; dkim=pass header.d=irondevice.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=irondevice.com;
+Received: from SLXP216MB0077.KORP216.PROD.OUTLOOK.COM (2603:1096:100:7::23) by
+ SL2P216MB0876.KORP216.PROD.OUTLOOK.COM (2603:1096:100:29::16) with
+ Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6002.25; Thu, 19 Jan 2023 08:12:15 +0000
+Received: from SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
+ ([fe80::3d9:7f82:fa73:e727]) by SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
+ ([fe80::3d9:7f82:fa73:e727%7]) with mapi id 15.20.6002.024; Thu, 19 Jan 2023
+ 08:12:14 +0000
+From: Kiseok Jo <kiseok.jo@irondevice.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 2/2] Modified the schema binding and added the vendor prefixes.
+Date: Thu, 19 Jan 2023 08:12:00 +0000
+Message-Id: <20230119081202.1456-2-kiseok.jo@irondevice.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20230119081202.1456-1-kiseok.jo@irondevice.com>
+References: <20230119081202.1456-1-kiseok.jo@irondevice.com>
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SL2P216CA0076.KORP216.PROD.OUTLOOK.COM (2603:1096:101:2::9)
+ To SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
+ (2603:1096:100:7::23)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SLXP216MB0077:EE_|SL2P216MB0876:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3cff196d-aa5f-4da7-67c4-08daf9f4dfb2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IE4i1BJmP14hkzpsK2YZa7+A8B7CmzqTRXacF/JkiBrYnSGPm02wt+ZcOh8MZpz7sCLEGOFjOjFfnbf2Lzc+z9MPf595/ChSI2NaONzFfnTOpOta/MVpQhp7Rgwi5DsRXa0bobAs2ucQYMZTpkHT72VDEqsKnURDMZPsNcTgqs3EARigpGh5oCCx4hD3Gxxm+/+RzxMf5Nqzo6uvSUyFeluLkP3FD6HLO2ha9kAc52WvlHfFKtjcJA7wNAr023hhZLTKjwkjX7ivLbhfvLcFren4lfhy0ZJIzAwPCKEfbBJyKhBrDcVOkrIcljlaobAdqZGiAf6jArX31fvk/Xt1ecwbY468NJJnRiWqAA2nn8ZxeL6NE/MQKl/E28o8frrPMM5JcBzZ79dbxhihrxDOUnrdH6+jYKn78nCWxTjRLB1GtQW6yhYS0FZYXNkqH9jy4gxaNGZ/U/aUEYXp0CG78IYgiPYujmkdI5sxW1gh+y84ue7+C1a5UGCuHLoqrQro1C1cAuBm0sxnIGh8DP2vJLMVdp68I3JGdKnF9I1RsyOcus85fpwPNx/KD+UiRgUQM2ZnA0PqRNUSB9J/ywCNWoOAoS+w8x/d8IriaIVl2kyTqfND9H/FAvmLjW/Pf/dbMwgBfIuqYw3M1egJ7Fy8q32A3gqBjw6fU7wpyScQt26dodMj5yiJlQ/NTIgogGTG7Lb1Qk3wf8sZBUlwGPb8anii/eFDIyFW79N4DZTB7N0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:SLXP216MB0077.KORP216.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
+ SFS:(13230022)(366004)(346002)(136003)(396003)(39830400003)(376002)(451199015)(86362001)(44832011)(41300700001)(5660300002)(8936002)(38350700002)(36756003)(38100700002)(6486002)(966005)(478600001)(52116002)(6506007)(26005)(186003)(6512007)(6666004)(107886003)(8676002)(6916009)(316002)(4326008)(66556008)(66946007)(66476007)(2616005)(1076003)(2906002);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cc29zyN1rLApnQYMRhxOa7cC7dusdUVqjCLAq37acOZW0Ep59xljGkTqZzZl?=
+ =?us-ascii?Q?LVaotw1Hhx6VH65pw2s7cupICOfc0qJTWLyU2yw1T0GJN5/v0EsAIrc0trlH?=
+ =?us-ascii?Q?Ohft6DDfH4ya0Oy9JFFy+KeiBHX08zewQ+pAi7XqH8feHop5y1K5rRlqL2+L?=
+ =?us-ascii?Q?QyYHTh+GilxbyNelYHNowEq4sNaiV1tKpppa4p0PN6xmc+P6Lg/B2f0gzKDv?=
+ =?us-ascii?Q?yDHGzefvTke4yzbFninS0+Ftdv4UThp4C8/cpkmK8R2dySrHSp/erX4eT4Uk?=
+ =?us-ascii?Q?pj5sbJDECycFVVODBWUy8xYfjMNHSUX/z9HAon4NzxW3BPZCDe+iSJfXPptU?=
+ =?us-ascii?Q?6JTwxn2TSjsABFbKX9x3onrhGIawbD/2wx+7eMRWLC0LjEk6f8KJ4CYYPrub?=
+ =?us-ascii?Q?LKeIb3Cw0yTexnF0O52B5LV5kkSamIS8VBD05vzwqKf/YlyDH0P6XsMqfcQP?=
+ =?us-ascii?Q?8OSme4jdYJ6ae2RSxFbP7vKBOjAEI3PtQwiDE4jeLp8YmIJOqf6fu+tm76mc?=
+ =?us-ascii?Q?SKGLEUugaqZQMTcVgnHCQAzhV4EDzoZ61TGBaZlkCEJJJnOUL6fVy/7JokkH?=
+ =?us-ascii?Q?2cgmNBU5w7Qv7+C7jhj5VlkTEYYggecXP6wj1NaNQZj6jBujDgQWNO2wvO6r?=
+ =?us-ascii?Q?fyMXIXGmBzZNwApIEc0zTJcE7qR6n55GCJu2fDxoybkZaNXncevNYS3yrE/J?=
+ =?us-ascii?Q?cB1A2zCjmzSHzPcqxv4vg6NIFCcUJlOeNuChCQ3JVH8ESGzkbU5MjjAFstgh?=
+ =?us-ascii?Q?UBZ/lEXcoIZTwoXxOSscOMHvouozik0uEkgEB8auuSLU0hzo6SkNW48SfVZS?=
+ =?us-ascii?Q?n1rJ257FSmXdSxqChmd/PKri/N7moW/ELUVrFaWLWbCY4goBF2LQ7nobZtsi?=
+ =?us-ascii?Q?A7hHOW0yCyTZmDvvDmmYpyLLeUobs1tPLRr4+wInsLUlTQJSDdoFDoRQcNA4?=
+ =?us-ascii?Q?RgXdCDs2JHQ2LhiEiJVHal4bYC7TVbj2nZCvCmcSMsUeW1xSmBentPZzKdbO?=
+ =?us-ascii?Q?7BojwNUisoYQfMo/bu7Fu4Srrme3cpEn/RBT41J3sDT3k0hJrlgIsqPxq6Y4?=
+ =?us-ascii?Q?UK2w80jGbgC9HARIBcurOmuuVap6owV2z1ry/SNXsjsV+pWo6OgYwuIGzlFq?=
+ =?us-ascii?Q?S+uiuVmn0yw+fs1zWgQxGxiv0FVjNN4EWklvsAtK4bN47uWfU3TP6FQoatYH?=
+ =?us-ascii?Q?AUXaXQRN5myY/W7yCSFQnwu4azdH1FF95bh1nj9SPtEUOvIsNArCmWt0wwKH?=
+ =?us-ascii?Q?X/46Is2LXVNkTdNtLgw7ssOiV3qUsEum1iOVFuI+vfXhiwBlyQRKo5ZoT9MW?=
+ =?us-ascii?Q?1Q6rc4lyGK3lQbGPABxL9sGDEK3r2XbQKdHKq5G+VX4IUpaP6DQwbNg3I7C4?=
+ =?us-ascii?Q?2RrRMZZrBbRNhuZSateaycQ11ad51tDilqzFtAXWotaaFEXCqEE6tUtmvz1f?=
+ =?us-ascii?Q?RX/285LvKwfue+WpfRgeV2ZpPrn0qrsi9Ju70yFUholpGs2HhDHqub9HG0gY?=
+ =?us-ascii?Q?gqdsS82xyoBt2JBn6Yn+woMefTWzxUa2045YLEWl/7r5BkxxH5vNsnPr37pH?=
+ =?us-ascii?Q?IyMvO33Tu+qwe5svudFnRy5vYbqqc+HOV9LM5FZC?=
+X-OriginatorOrg: irondevice.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3cff196d-aa5f-4da7-67c4-08daf9f4dfb2
+X-MS-Exchange-CrossTenant-AuthSource: SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2023 08:12:14.9037 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b4849faa-3337-494e-a76a-cb25a3b3d7d1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L4Qyy+XnrY2gHA5sxVwpdX09IAXSR4zSj+x9cB0EL3OsFBJ4gAFpP94BN3B+FTEejOuPz9whHAjgOrNuvL9Qw/d+axxqbDrNJ3A5Q4C1qWU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2P216MB0876
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,35 +129,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org,
- Alexander Stein <alexander.stein@ew.tq-group.com>,
- NXP Linux Team <linux-imx@nxp.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>, linuxppc-dev@lists.ozlabs.org,
- linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, application@irondevice.com,
+ KiseokJo <kiseok.jo@irondevice.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This silences -517 errors and helps figuring out why the device probe
-is deferred.
+From: KiseokJo <kiseok.jo@irondevice.com>
 
-Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Signed-off-by: KiseokJo <kiseok.jo@irondevice.com>
 ---
- sound/soc/fsl/imx-hdmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../bindings/sound/irondevice,sma1303.yaml    | 32 +++++++++++++++++++
+ .../devicetree/bindings/vendor-prefixes.yaml  |  2 ++
+ 2 files changed, 34 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/irondevice,sma1303.yaml
 
-diff --git a/sound/soc/fsl/imx-hdmi.c b/sound/soc/fsl/imx-hdmi.c
-index a780cf5a65ffa..b6cc7e6c2a320 100644
---- a/sound/soc/fsl/imx-hdmi.c
-+++ b/sound/soc/fsl/imx-hdmi.c
-@@ -202,7 +202,7 @@ static int imx_hdmi_probe(struct platform_device *pdev)
- 	snd_soc_card_set_drvdata(&data->card, data);
- 	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
- 	if (ret) {
--		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
-+		dev_err_probe(&pdev->dev, ret, "snd_soc_register_card failed\n");
- 		goto fail;
- 	}
- 
+diff --git a/Documentation/devicetree/bindings/sound/irondevice,sma1303.yaml b/Documentation/devicetree/bindings/sound/irondevice,sma1303.yaml
+new file mode 100644
+index 000000000000..a7c1ed14accc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/irondevice,sma1303.yaml
+@@ -0,0 +1,32 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/irondevice,sma1303.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Iron Device SMA1303 Audio Amplifier
++
++maintainers:
++  - Kiseok Jo <kiseok.jo@irondevice.com>
++
++description:
++  SMA1303 digital class-D audio amplifier with an integrated boost converter.
++
++allOf:
++  - $ref: name-prefix.yaml#
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: true
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    i2c_bus {
++		sma1303_amp: sma1303@1e {
++			compatible = "irondevice,sma1303";
++			reg = <0x1e>;
++		};
++	};
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 70ffb3780621..271ff119764a 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -635,6 +635,8 @@ patternProperties:
+     description: Inverse Path
+   "^iom,.*":
+     description: Iomega Corporation
++  "^irondevice,.*":
++    description: Iron Device Corporation
+   "^isee,.*":
+     description: ISEE 2007 S.L.
+   "^isil,.*":
 -- 
-2.34.1
+2.20.1
 
