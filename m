@@ -4,41 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F40A8C38142
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 08:14:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B82A0C004D4
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 08:14:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2DD67F0A;
-	Thu, 19 Jan 2023 09:13:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2DD67F0A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 330CB7F21;
+	Thu, 19 Jan 2023 09:13:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 330CB7F21
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674116050;
-	bh=mEWreu2YpxRlegsiqBM6MPfYQphBizG4zKAGWsQSJsc=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=kNEqB5rYyHcz/9abRtraCjCxO5Sjs5t7IlcWp1WR3Nd6P/0y0UkqfeZWrgVkT3tfh
-	 c570GQ9qEiAzoCF+FpKrakDtQuz5jyzdRJHGeXwFRMcsXN/Ie/GLBqqatO+tZ9k7DQ
-	 JU4WrYHc6gvr9lmCE0ZvI7QNWi1HuC/X0ghqw5Sg=
+	s=default; t=1674116060;
+	bh=PD8W7jjhFGgwNl+cnUun0GOQeKjisu0O8p1Lop00Zx4=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=kvgWt3QuaGRnrxzl0yT72Mz1ZqclrZvB+SysugN3XywlWYWr7bIiWqbkguy+RAGBu
+	 pIR/0o/k7TMILIEU+tooE+5aDy+RlG3p9KcozOghNWyB01eY4wZG0LXDnDPSoEbJRZ
+	 LhBf4UosoPeX0HYHDG3jOOYWjblLhEh+1MehSH5c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7C74F804F2;
-	Thu, 19 Jan 2023 09:12:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E1F1F80548;
+	Thu, 19 Jan 2023 09:12:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B28EF80542; Thu, 19 Jan 2023 09:12:35 +0100 (CET)
+ id 7BC65F8053D; Thu, 19 Jan 2023 09:12:36 +0100 (CET)
 Received: from KOR01-PS2-obe.outbound.protection.outlook.com
  (mail-ps2kor01on2050.outbound.protection.outlook.com [40.107.128.50])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2E0A7F8025D
- for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 09:12:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E0A7F8025D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 24589F80083
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 09:12:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24589F80083
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OkL2WRyQZAzVbgL6eIgkyv3Q1/k06QL5xVWDeIqynGFj/DAwaGYCilgm+A73YsABHb8nTAyBk8cVnn3s09b0oRvlR+0xftX+yA0deL0xUrQgM1m+qpNHZYktrorS3LZmthS3h80TGZ7e4fcTV+6klYy1UoBMD2sEGuVgGeNNilCb28GWa4MvNqyPlkt8cTgVpNc98swyF2//MF/3M8ONYTcMHaG54S+RALuxTGeJm9hG3+CT0e6fooILPQas8nth8JeavNIBddUh7Sh9aFig/2NHgbBsdmRDQokhah2gKSEaZGOcKeqhWADsdRI4eG/DqEuIdoIAUC2biGjDZuZCsw==
+ b=YYZF65tHZl30BJUt5MOB+PkdKwIY1WIbbIJTPZT5ksp6hBkSm4hL0NWa1Mof4ba+zgFAJswmhaqxfuL0nYJx/fhNhGX0y0Mbp1d8IuPwA+vq6QEaCZN7pkh2aPx3mJcp2JtdmvXWSsa9Y/nl7tYtb1GALIPvSQnrLzMg84EKKlmxc+2yfjVvbqQV8nU61nfNwCb4LnWuvIDyl5UTHjml+8eA0UwVbwpa/2MFe4R2AOw7DFxz3JwMYIPDwVpeYIYiOaH/nWXzqiHk/j2eXNn/06Drua5iTpf42TdCcVtM/1+Wxi/Gtz5StONsdNY+t/5p85ieFUyW5bLlh8tJBXmcJQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zczdlNyafw66ZppzyjLL9RlpVnYPHnJmsPNyStCJ9UU=;
- b=cVskIImkIwAMH6q4jyzvZ0mS7rUfQO3hrfXxrD2TcXonNHci+QHaFX87ImgW8x3O03Gtpvnmphd9JcR5bEG5AeRC4D6qY85qcvAWIDyGCTFU2KfTMCdnu3wZjUFg2c0CzlFpv9PG+xDWpeC2tlthYQ33i95FFWvKJXky+WfZPLJfGzcVQN/7bosQfOWcF24JBzBEHkRE/1nAI+GMqF0eX7iJfzrrP0Q4fIWxldG4In5mYDAl8qqzThm2ao1A//U02pV9LNMfA7qoB+2K4lVuWViefBzk2xlfnOk552mJuu9aplMd7euCRHqUQukLoYrI7V5IMwL58Q01nknkposdXQ==
+ bh=qdBzBe5jlddk8+XoXpFHrVSFD9+wloBtaXMRS4P+1FE=;
+ b=GZ0/jFSrMJCylQwHG/oQHdCrGZFxbIeRK28J1TbJX923HiHQj2gx9cEu7Deo0lVoa2YeAPYIlC1FiAEW3uXA5Qfyb+HoR9jburcRDN2D6JPMwf2uYtGtT08fKj9kNE8g2JionfZsSiE1dtvEVjz6XfikJ7kla+5rnGezMVLpsSvmJkSIivTXAD1NUtoepaALEn5G4Okc0+uCBpk2Q2zLLzNxJcTyMe+N32IQUoNF5ykPjDZIPorrP7DiJ1Xsu9ChqxL95auJV59wkR/zf9YQPjAlIUe/BZX2kqYj8qfNPRH2X0tM1daRrTSuRprgYvArUYhfpcv870kpho2mfk2RWg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=irondevice.com; dmarc=pass action=none
  header.from=irondevice.com; dkim=pass header.d=irondevice.com; arc=none
@@ -48,18 +49,20 @@ Received: from SLXP216MB0077.KORP216.PROD.OUTLOOK.COM (2603:1096:100:7::23) by
  SL2P216MB0876.KORP216.PROD.OUTLOOK.COM (2603:1096:100:29::16) with
  Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6002.25; Thu, 19 Jan 2023 08:12:12 +0000
+ 15.20.6002.25; Thu, 19 Jan 2023 08:12:23 +0000
 Received: from SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
  ([fe80::3d9:7f82:fa73:e727]) by SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
  ([fe80::3d9:7f82:fa73:e727%7]) with mapi id 15.20.6002.024; Thu, 19 Jan 2023
- 08:12:12 +0000
+ 08:12:23 +0000
 From: Kiseok Jo <kiseok.jo@irondevice.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 1/2] The Iron Device SMA1303 is a boosted Class-D audio
+Subject: [PATCH v3 1/2] The Iron Device SMA1303 is a boosted Class-D audio
  amplifier.
-Date: Thu, 19 Jan 2023 08:11:59 +0000
-Message-Id: <20230119081202.1456-1-kiseok.jo@irondevice.com>
+Date: Thu, 19 Jan 2023 08:12:01 +0000
+Message-Id: <20230119081202.1456-3-kiseok.jo@irondevice.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20230119081202.1456-1-kiseok.jo@irondevice.com>
+References: <20230119081202.1456-1-kiseok.jo@irondevice.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: SL2P216CA0076.KORP216.PROD.OUTLOOK.COM (2603:1096:101:2::9)
@@ -68,52 +71,52 @@ X-ClientProxiedBy: SL2P216CA0076.KORP216.PROD.OUTLOOK.COM (2603:1096:101:2::9)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SLXP216MB0077:EE_|SL2P216MB0876:EE_
-X-MS-Office365-Filtering-Correlation-Id: d3130e75-a990-4028-e562-08daf9f4de02
+X-MS-Office365-Filtering-Correlation-Id: a0d0f144-d2ac-4423-5512-08daf9f4e485
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: t5hIb3OYEZKlqN4cSWZDW6zBpW8dAjg9OaiVt7lpd3nv2KFn/ID0OlOmOsDJFs8DMgdkNVaoXrOI46Z0tk7KfQ61MAKHUXFlEpBoP1EHpjD552op6xvgyNoj00pEmXgg5F1U5odxp5v1GFqgbJ8QZhF3YkQqlKALTJFuq2mcRF20BzefBJo9dRJz+/4Q8aqTRo1XjOr/ntuOrw8+a2ZpJ/jvJEvIBSb5rJZ+bNx1yXeE6zm86Dvt7TAlY4cFgmX+L+OLXDl3WGK3rvrx9D2tz3moomm24k+IEO90X/ExjFgcPOG0DFvmqnQNxZFJhgsfZ3RSOeWyhjxy/TbP7NZTxqqoFrJlgofsXhL7r4WQ0k/+6bqruhrcqzWE81u6Wj4Q3W+gVrKvxqLX/C/uMlcCr3azOUEeajONpPFif9hlD2ORg6eZjGwxcgBTF5KUiGV9sojtlJ6sjXBx0NIoxj8elGn79hher8YIBKDxOG9wu2IqHahJXnqtVl+avGMSFt4pHxsgoHhQ64LhrblUS2pFAjAL7ZeLacc83S8vAJQqdWqjAgX44AInbl5DM7A+a8J6xuoKFVlTQGcblNkBE2+dYB93RhnSsCgeRT9dBN8FNguuIRky+Bpu0omArinjgdKhOBY2knmv87L7HcEGTm4w6m4aKmdQrhB3Y19zQJRpeVkw/Jj2UyTZ7Sp5Br3Qz2p1fnt6g7++s25cw/e+QjaBbQ==
+X-Microsoft-Antispam-Message-Info: 24aZBXEl8Xu3w3cBJJ4XJGp/pPyZBIyKZlSUFE44LOzqCw62E4VJXk2JKx6qIAxla3GwCnSVy6ILKlt6sEDc7i+nSUQJtR7nzQUMUwVf9TiAMcLnqEl/q3h1Wf8x2xHgmTR88IsnNYDr0z4Xop0qb3CBOVuy4FYeDuw4iepy5bi+2C/ItivBc2eXRIHxbKaWacoGRTZyABCc2WlyVlaOLVmHiSgF2g4pbB2oTOrj0FIGCYDIW54k0CHJ5F7AYUNvqrIf4xZHmupj8+lYLOCoN2x1eIcAWE9PKK+iY7h7UFXfhwy+8gK0wxIre6Pusn7ucxwJesMbhj6cAc5ObzyFZMeFIhdlTdsCcRZeq8MKqaAz0+0X9qQnEwD+1yBrDKExNg8p95YLuz+u4qlzFCLrk+s4gY4HlIO5TzTGpZGDHyUdFhwd050HAE8D3TJcTXH8dgbWVd75eG66d2ZMy83OasgE332HsPgnXkWKrVKg7Kp5F2ZiEngjQdURJhjHtJz/qxGXt7DWMr3fTWv0f5zvufWQ+s1iV1cmnmgM0gATtlXe7DnfQfZ6ZD/L19EU2GQaBDa8aVKMlmbzV0S+AEyLTSHtYCdHCLYPO8yA1EjAbRNAK2eITNaaRFX66cP4EvA9MQQcB5RzrzCMc5eAFiXVuzm5nB8hxCUJ5MZT54Vs+Bl+jFLyRH0wsKJ3l3dNq26p5iNoWta4bnYEOZFl2U2elw==
 X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
  IPV:NLI; SFV:NSPM; H:SLXP216MB0077.KORP216.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
  SFS:(13230022)(366004)(346002)(136003)(396003)(39830400003)(376002)(451199015)(86362001)(44832011)(30864003)(41300700001)(5660300002)(8936002)(38350700002)(36756003)(38100700002)(6486002)(478600001)(52116002)(83380400001)(6506007)(26005)(186003)(6512007)(6666004)(107886003)(8676002)(6916009)(316002)(4326008)(66556008)(66946007)(66476007)(2616005)(1076003)(2906002)(579004)(559001);
  DIR:OUT; SFP:1101; 
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?eqHHBYgpXRTpHlyIT4COnjy2BLdDh7Oan8Ny3+M/89DOiM5S8Cd3yb+25Js7?=
- =?us-ascii?Q?Njiyu2PBBP0F4WFhNkdCKnr6ETtECq/lK2VOTF6z5/ICi5TG6ZxTDHzpvmMS?=
- =?us-ascii?Q?OACwbsLmIcU1zBhKtUSATMquZYNXWh6yMe0YzIcALrwiXs2HUTzoaYWd8Q88?=
- =?us-ascii?Q?pEqT6auK7jX7ndai/0pkDKrXOrfr9Za6e3aYVMBaWT2Q5sva/4ipVF8XEQEW?=
- =?us-ascii?Q?s08D9LaJr24Rafc1/Fl6Uysw15wCRE73YgeSxDMK61Xqiz0lpHWLshdSfmlR?=
- =?us-ascii?Q?A/7QGKGD6LTBrW0kIEivvLKmYjhvw1bBmwQGkYSbg9ZaysHJ9pvN1ao6gdPf?=
- =?us-ascii?Q?Pmg0DGZtsZdp1KQXa8fwbGeyLzE32nE6UjuqZbWeiBZr6fKY45wb0qovpepd?=
- =?us-ascii?Q?56psG9w3aGRhgxNRoZKEiaosxnD6rvf8BBaYUxFTLEt2VNDX09sN+uwvMsHt?=
- =?us-ascii?Q?q88mSFjRbNSweg2fSJC147Xp5YHQ5CS3rZa3um/EeQVyQAWrvN1/7Jc1puW2?=
- =?us-ascii?Q?vke2ZDU+j/D3KKZDgTb0GCBz2mYh5dWJoN9taAOGKHm1E7zO2Alt0M9MV1Gv?=
- =?us-ascii?Q?e7W3GaVSbzMC3BkyErOUbtMSsAeeq/R27bjfaM0sNBz4/eW6wpY64HDllpKU?=
- =?us-ascii?Q?knZ5GDtgO0yy/m4w7UG9X45tyct0RTzxtbZXd1rbOzgUi1WOqyssxO7ICQIA?=
- =?us-ascii?Q?PW3oGA3AXlWHsm/8YxD4P4rYZPMoUfU18MDfKgsHLTSMZPbXvuEDJM2oCfhd?=
- =?us-ascii?Q?EzrM4eSUZkL76U7YTYu9Mu5ji0rVZLfOUlK8FoKa2ijLu/3IeNbwrGe6hwJB?=
- =?us-ascii?Q?WAClUKN8L2nZ0ADNfvBghavZub0031fTWMTce2EgJQJ7+I7HLWCihron4h5r?=
- =?us-ascii?Q?+apWrimkBBLr1HrDP/MZtgQXpm3K7CGeI2m7/AnQo1uiAMDNSNlM3YkTrqwd?=
- =?us-ascii?Q?AxWGtfW0ODGOBZFlKWvgqYR8jPm5pXlLCXBrnh1Lhw0TB/3OXNS2vEjvbzRK?=
- =?us-ascii?Q?FvhkStHSxkvMArsJhqA0qnoU9I4LJOu1ncMSPBu2/iY3BJkCOmqEhWSI5VsD?=
- =?us-ascii?Q?pni4xlk0IWfQ2KHBYWnFDGIvzJ6Dc59Xnetyn8tNyp79VDhCRCMqagN78NtE?=
- =?us-ascii?Q?uqEuxlu6fOuwJK0BvaFinPHrKldFRPjKpSYNWjwOBAOpkZ7lzq848axPaSjW?=
- =?us-ascii?Q?S2Hv2p4ReSiyXvYWqBALr1O9HsxiEI5HDkNeE8FG9y6gvUo3143F9WVK9tlq?=
- =?us-ascii?Q?MilhWTO+J7XIuQrJPPat8GoDkTRLqjbmlEqlkk2UERbn3+UdLNe0/G+6AgD7?=
- =?us-ascii?Q?Y/la1XqrxV32d5obrNAuSrXH559wJbACchOEqwkwJclIVkrcV2Awa7qFqCqc?=
- =?us-ascii?Q?qwJJmm1BIgAyDvMO3bdvpnQbUghYP5AuyDdzOAEQKUGx1z5VPmjM/NZawAOs?=
- =?us-ascii?Q?vmJrrZxZd0DqOG7bmavBddxlgq0ftgZ4nTZC8BOSqjk17IoSLZs6a7Wtz1pg?=
- =?us-ascii?Q?sS7Qqy8H/3HH0B3sC+j5F6dM9mWTk5Pkh+lIXGwakxkpreVJB+HH+essGQW+?=
- =?us-ascii?Q?tcgGv4RhWvQvUF+sTm6/+97ZnJGiQujLehZx2HNA?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3ZTfOCwt8Z1W7/N4ch6Wniqsnt4zRG+ooiHz72jqbAl//A7hhKSVlt56yMEi?=
+ =?us-ascii?Q?iR97vf2giwLzuM8xA1uOj/cKNGuOWoFX26kgKkm6r5HbBXIlloVe8TDmrfPo?=
+ =?us-ascii?Q?Y+Y/UA9KGLaO7EFTpHPTVaXTbRHU0YJ1soNk9xpDBLPhIQmz6bcMSRS+y2Sj?=
+ =?us-ascii?Q?P98n/qdHyqH9xzfhg3C1Nbt1emv8RLH05+7xcr9THR7Ne6z7vI72HbLM0MkR?=
+ =?us-ascii?Q?pGq2HzD20piUGMoxtmTW0eD3xwYiZMJRIm+9ejRioYjga+9ozlothzCh9XX0?=
+ =?us-ascii?Q?Fd5A8jkqXiMM2N6yr/rXFtt1NI1znpBN2NjZSIYA+gcKI6UWCT/TH6S5AV98?=
+ =?us-ascii?Q?qscV6Mle5atMnq1jP7eXCFXAcICCrL9cOrO7LBNzJ1e20U29+7gMiaIGtS2P?=
+ =?us-ascii?Q?VvaKkdclaeX2gky96ePyPwfLdA+jS+jz0HgHcRLWMmRpAWXwn7TkfJgDmxHG?=
+ =?us-ascii?Q?oKyS+NuyRyIk2KzN9bULLdSmB9GwpjwTeckO0EePACVVHahIDe64SmywR7r4?=
+ =?us-ascii?Q?5tAk579dsde4A10S+3cL62kXsj61Vp7tTeOWO4xlV4r4gzXsC7/SVLQe5Hkl?=
+ =?us-ascii?Q?AW8Uo6C3lgxEazVKSi+i5NnzYK9B/4GPdQ0uKoCQB741mBi666mnyr77oYJp?=
+ =?us-ascii?Q?Z6Y3yIPVmjW51EOn4vyosiB83cAgsHV1TmfBsQ4t6QlmV/1YyiKtv6t3kcLv?=
+ =?us-ascii?Q?a/q52UUw6pvd/kIuJfpuaiiwfCKx/SrPeHbOt2YtkE4WZB1+U3V7EPGK9W3H?=
+ =?us-ascii?Q?vAq5vKFQ9Xy2bK/9CoXyeXpaVl+oM5Ji5Qlp79YtQZQFylBBkD40oF745KjR?=
+ =?us-ascii?Q?dA8UDSnm/Ll+3nzHbMOF0HyoFdp7JRmrRhEtXRcfktY7aAvZPPLVoTGwa/Zd?=
+ =?us-ascii?Q?q+68GOa/BfqOaKXudouBwVRKsLKPEkyeNjbC4gKAap4Nwu5LKDqPaznXgx8N?=
+ =?us-ascii?Q?DPTBJKwZMW/+YoctUeLlwTLwiok/HLMvSh6Y/79grz/Rz83XbEMdEYQLkls0?=
+ =?us-ascii?Q?dEYbppy69uPi56vyBY6KSpURhrpxg5OIjUuzcK78GUB17V63Xh5pLIN6i40r?=
+ =?us-ascii?Q?zHzBtL2JCfWEKzWvQTIl39SWk1lXhgoEB7QbeVlWYZZbPS6/3i6bbWQbl7Ea?=
+ =?us-ascii?Q?7hJ7UMiCye/+ym9kTnC/CgTQJkeLySMv5zY2fEoR+QJiYPXJCL3UGK9aEj8M?=
+ =?us-ascii?Q?gVW8AHml2KKl/NlQ4OmQHjE3faQhD0OZe8iCR5Hnf3GtTh85eNX8j/pyTPK3?=
+ =?us-ascii?Q?kDUVqKlX4VBI4yGKKM7/d9VifXqsY4fqHKq/wtWuSmm4PCMAquBvo5JTEOAt?=
+ =?us-ascii?Q?uQMApzcEbHlxCPJ6TSIk7bVzFC2/0MHiyRXeGObFqeTSeccELr30z1KLqRDg?=
+ =?us-ascii?Q?m75JfLQML1HpT/h8cvAqnbXSMJNzSkKfLXguT99XdA5eaZjnMEVAjTwfphob?=
+ =?us-ascii?Q?p09ALidNTVGlj11LXFvo3hRHDPyN7gORuIW38VCW36QRVg2zbOPZukTAVUsd?=
+ =?us-ascii?Q?nDlNPSGMUusX7xyXiJn01PiSPFJZbX7Z+Utyxmpt3KkVG592glqIQYpdQxas?=
+ =?us-ascii?Q?F8BewwW70ZbIdzhyuX8gB1JZS9X8zbt9mHG7z1m2?=
 X-OriginatorOrg: irondevice.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d3130e75-a990-4028-e562-08daf9f4de02
+X-MS-Exchange-CrossTenant-Network-Message-Id: a0d0f144-d2ac-4423-5512-08daf9f4e485
 X-MS-Exchange-CrossTenant-AuthSource: SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2023 08:12:12.5445 (UTC)
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jan 2023 08:12:23.2625 (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: b4849faa-3337-494e-a76a-cb25a3b3d7d1
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: r2GbHr78n4z7LnR7aLy1azv/Y64fQeK5rlTerxJZJUnYLitBSFlLa39sKclu5Pub/7lxUjr+YVxIJLlWFhoeTamY5U6JaWqoUAWwq+7VnHw=
+X-MS-Exchange-CrossTenant-UserPrincipalName: 96rAYlPiV11EPSytQKxa038VVVHPKsjQR1TAnGg5VMv/p5IhfCoL6FLJvu6V7IgSjUe1YpdsFS7fbm1lVcLtSR8tHfPdqmOCh3ijNDyAybI=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2P216MB0876
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -2630,8 +2633,6 @@ index 000000000000..ae70f207adde
 +#define SMA1303_REV_NUM_TV1 (1<<0)
 +
 +#endif
-
-base-commit: ae7c40bc2c8b889cdb357a4e501bd70ed3155ada
 -- 
 2.20.1
 
