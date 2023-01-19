@@ -4,124 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16025C00A5A
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 08:17:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93503C00A5A
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 10:17:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E6677F1B;
-	Thu, 19 Jan 2023 09:17:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E6677F1B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E8177F90;
+	Thu, 19 Jan 2023 11:16:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E8177F90
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674116273;
-	bh=fN/fYWWadpPdf63ZVoi6ilagkm5xAHBxaiNhogMm62g=;
-	h=From:To:Subject:Date:References:In-Reply-To:List-Id:
+	s=default; t=1674123457;
+	bh=5PaNR9REzdoVOJJe+R7d5d9HzB8gxECduYvylZbeXow=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=it1fodKMHLVcHAsyH+hEr0PCDFEvXKn8AGDE33W3DJz2T7SXDswjKp59zMVMgZr+Q
-	 4wEkYQWIWEFozAlsUqJipFCGXegfoFCqka9kRUFg8hfkwwqFH0W54qXE5m0jKYE+Av
-	 ZRLlHLD4Fq8uyHhu+g3JzOgq9Yo2t35w+w3MatRQ=
+	b=O8QObXXC8dQG3jdInpZ4/HRk6MuOZKOMVEJI6aYMZ+kWZdnRVIOVaG4QKTJTMskWh
+	 1kUmZ2JMlpPLdQACuomGuMl+HT1R2L+YMrRLEz+nrrQhjXqfo5SeemXVXgzEDihUyi
+	 +e3RlqFP+AAcb27tY5MNvvw+WJ90DEbZKdWgOG1A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37AA2F8025D;
-	Thu, 19 Jan 2023 09:17:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2ADD2F8047B;
+	Thu, 19 Jan 2023 11:16:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76D69F8047B; Thu, 19 Jan 2023 09:17:01 +0100 (CET)
-Received: from KOR01-SL2-obe.outbound.protection.outlook.com
- (mail-sl2kor01on2051.outbound.protection.outlook.com [40.107.129.51])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 1145FF8047B; Thu, 19 Jan 2023 11:16:46 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1BCDDF8024D
- for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 09:16:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BCDDF8024D
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xd0L65v35ApvLOzF0qszXzlNLL6X46O1CSUrVmWf/eTE4cB0accXOjGezZoKHHtCbiSa5b7kHZeD6hF/85XgCQ3GKGL8xFtgJqloVqEiIJlpNq7NWU2KhuFrz8tScCjp/B6lieK8vo1fRZwCPCjKvcfYT8nv9fabbXrLxqCtlmQAih8br76TxqM2R7yqR1pgI18/dhVRwiEHCajIjqHjahZeZNC2imrducFB5PcsL8WBwoWYLSgdGvo3efvhUkpxic7xkjNgJIQyzRXOFJSvQrSZkELpIKPrqtv8Sr9PVS26Lp8hMqSwRjjxoY7MLiiidrMqxt/r2CKkQmXbI+Ys6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VtyZwMor/wDKmelAJUWF35apIOhA5bje4sMf/gOBdKY=;
- b=hl7QGueWiPGuWteHo4vV7iG7x3nLaN28NtIp41AM9IFxK/f87alUKmQxxEvI4DcutXKgLI19xWudyF6kJQfBm6/ZdJ+IMBKlPjk6TU/EZPuh2cmKmqsD0fhy+ZIKlIYD9VvRvPQ6fRiyrV28q1O8ZfNBx+eRKIcODNw62omfcwnpkZj11ry7Tp/4IsiCOWzIPI1+1gBvh0enY1IWtwVKiC0rW+GcVpt4xZ2hcg7neT5fvlSc3uxAgFpT/XwhaoV/Ta0KKrj66eVQM4vBurlU7kHz3jn13vI69pmdjlhP05XFKNSkg9AX2vCrcFEjneauHPPM47Q537Uk+QNpoKrl2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=irondevice.com; dmarc=pass action=none
- header.from=irondevice.com; dkim=pass header.d=irondevice.com; arc=none
-Received: from SLXP216MB0077.KORP216.PROD.OUTLOOK.COM (2603:1096:100:7::23) by
- PSXP216MB0181.KORP216.PROD.OUTLOOK.COM (2603:1096:300:9::21) with
- Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6002.24; Thu, 19 Jan 2023 08:16:53 +0000
-Received: from SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
- ([fe80::3d9:7f82:fa73:e727]) by SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
- ([fe80::3d9:7f82:fa73:e727%7]) with mapi id 15.20.6002.024; Thu, 19 Jan 2023
- 08:16:52 +0000
-From: Ki-Seok Jo <kiseok.jo@irondevice.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: RE: [PATCH v2 1/2] ASoC: sma1303: Add driver for Iron Device SMA1303
- Amp
-Thread-Topic: [PATCH v2 1/2] ASoC: sma1303: Add driver for Iron Device SMA1303
- Amp
-Thread-Index: AQHZJArIVEzVfU9li06XNzQ4m2TLv66cgOuAgAiI19A=
-Date: Thu, 19 Jan 2023 08:16:52 +0000
-Message-ID: <SLXP216MB0077F86978B363B5F4ECEBC78CC49@SLXP216MB0077.KORP216.PROD.OUTLOOK.COM>
-References: <20230109091402.11790-3-kiseok.jo@irondevice.com>
- <Y8F5+7vgl+f9rytb@sirena.org.uk>
-In-Reply-To: <Y8F5+7vgl+f9rytb@sirena.org.uk>
-Accept-Language: ko-KR, en-US
-Content-Language: ko-KR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=irondevice.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SLXP216MB0077:EE_|PSXP216MB0181:EE_
-x-ms-office365-filtering-correlation-id: bd93029a-21b5-4dde-4580-08daf9f58590
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KY1w/lApBSwYdlHD+SNDQ4BuU+QOUmNqjccoF+JZvfHPC5z2qd47mvlZHTA+uPfTtpyjudz65Q2f8LFU0LcRnmHSq28suzOm61YcUybDnXkkAAA8lCYke5/AWDLcmAYSAuflE4EJ5J8nx5w/IzeAbTvwtzDaMZ4LWmn65crkeqM4ItABoDptm8+iE4NcfxoLTDjNCcXZ58eFLlFrZaLUT1iAFBHPsdPlLzjxn/lgbZo8R0zdELo1Pyp6/HdgQvBziLMDMiEU+6WGkDVQfd2Izh9cniVbel7tWcgoOfYSYI9S4TK41doXFQ4eF+hAMknAIMs+6LGZFX4+w+l1/LUdmYIZaH2tXEIaitfQuRCP1GPKkg5Lycdmb1YFV3fiXbR+m0mrYZGjXLPK4LewJueYH85yR1HL5Zjbe1lzxJyaaeF2AZkIGjwXztfW52NxMxoAcbf5hImPzzGdesCnuaJ4ZQIJ8Qx0wzJHHGgsLRpmTX5s3IXUdeFuUZjY5UKyKMupyifyHKLTcbeuwki6EijO5cAo8fcJIsLrWqif++c24UtM2S079UoawDBOw89lJ1OvPxQfGCOW+JLP2/SZ6bqm2c1VEmpmhoDOJ7OazeEc+LtYphGuyqRRgEpDhrjwtrz7Lkpo71pT93xF/i4OzK0J68RKiCsZgOP1ABLQNPGLToEPvYpyp3stqRYFdT0SdTy9x2vL0IgCqEWGuDQBSYsaew==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:SLXP216MB0077.KORP216.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
- SFS:(13230022)(39830400003)(396003)(136003)(346002)(366004)(376002)(451199015)(55016003)(33656002)(66946007)(4326008)(8676002)(41300700001)(66446008)(6916009)(66556008)(64756008)(76116006)(66476007)(52536014)(83380400001)(186003)(9686003)(478600001)(107886003)(26005)(6506007)(8936002)(54906003)(316002)(71200400001)(7696005)(5660300002)(38070700005)(86362001)(2906002)(122000001)(38100700002);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?5JuIoGFukJxkrpUnlJbUF04maxi5K+xsTtM9dhgCcIZMgg6t2nZy2qljgRfY?=
- =?us-ascii?Q?8MDLAueyidBE0Rx5daX9veFBcns9r7HgL0E9a88VbXdb5C9BIktjj7qAVZNM?=
- =?us-ascii?Q?2XK/yhBF6aGiCelmNx7TWCHhKHS7iSxLe6NrG82Gw5ZjK9NtcWiGgvaoCh+m?=
- =?us-ascii?Q?+rl85D4Q9/d0X41YlPkO6GgIQXbLT6r+OD9gOmRpeh5rDGlk9S5LyNm8XoXG?=
- =?us-ascii?Q?Pn3MuKNDNVopdwyJEaeUHdrE6udNoFeJ0i2x7eLFhtcoT5z6cXkueWWoEpI7?=
- =?us-ascii?Q?qsj7p8uaNFnrTZCxzcwJttasECtLYIeA3MdNZOQ2HbBRVUsLC+gPaWLvRYES?=
- =?us-ascii?Q?AvPe2zcrITfTeiW6fxW0JjfZFiMDkgC/hffkHu777esAZG4C/TBCbLeTI/mM?=
- =?us-ascii?Q?EjSVOzZCt00y3jeAvPq5I69fgu03vkstJkH4j2gn+Y8lE/h4cYiFe2xAldOb?=
- =?us-ascii?Q?tww19y6Y5xH+bcr8Wy4xeKCuc4JuoFkdIaay4wLvnYK+OfF/xI5wiZ2h3uTW?=
- =?us-ascii?Q?soHTW5q7iTLznKJ/e98A4gwP3Fff6GLIaDInbq2PQL1qx4dmWy6KUgyJOaVG?=
- =?us-ascii?Q?mkolVS3lcakix7H6iAPxWYdJzoZCz2pZQozrBvBC448gRa1MT9EXol72eYH+?=
- =?us-ascii?Q?6+yfStP2Sl5YZv9RtZ5CaKQUhGEKgy0fWtb777WTknRk3zF0qAmPGvOQcU1h?=
- =?us-ascii?Q?B1g6B2VabG4dRnqzFCssT6BFuc2jJmi9ft/n9hoSPJTOQLkhVVhcuewIzvei?=
- =?us-ascii?Q?PVj0ITGz8Z77Us5ym1xlogMJnSWvkB3/R+YT8vjELExRQs4EIp5BPUzX771s?=
- =?us-ascii?Q?U+QiOHCo0qj2iw5xxkYCKtiSfX+fHNuYKVnsAdUIuZA6m+mJOTgPOY86v0i+?=
- =?us-ascii?Q?fw63+z/xdZ1iNvUW0yLFeoU3n2EBRK0AWzAKMmQP/XurqZ1grSeAZzojeqUz?=
- =?us-ascii?Q?SdeyQ59TwrxmqA3BwKSU+QhfBzyzkUzI355ip1QQW8MLUJHPZiKivv2SxCrX?=
- =?us-ascii?Q?Wh01iYEubWKup5UWifZv/HuAF7UeIhGqPiMyYpctrCDxwMbOwwDAIxXZ5GVE?=
- =?us-ascii?Q?5K5kaJH/oXLY1VL7XqkbqB2MuPNvA9X266jBaMgXcU3C7kBiEwwKgQgwbMkK?=
- =?us-ascii?Q?6aTn/wklNGggdr1WNbi5IUGCUq87pnwrtR9h+Cqzt2velLbDtgI2ZZSY3dTV?=
- =?us-ascii?Q?MCgugFYRBZOifumQX3DViPkgmO9r/XftpvyG5FK6CAQTAlHdQ49YdVJavCXX?=
- =?us-ascii?Q?z+5wzXr2qvrYLQFqyL4R11dDNC2wtwuByv6WDkojj1ZUiUBx+sGKTOzc7+8A?=
- =?us-ascii?Q?rVZL9gZ+Vgf9RNWCAFotFpqfOvzH8ATAc6qg8nifGpw6AD2iCfqPPKtidzvt?=
- =?us-ascii?Q?elgj41sUbQpOHYhLkni8WpXSTyuip6nKBzgMV8H0R3ct/jTsYVP++U8jh6zS?=
- =?us-ascii?Q?D45LLOL0cwmddFjzeqNVDbs58fsrDtZgB4XKiQWjhnFViIkZiYL6sVojfAv6?=
- =?us-ascii?Q?Dc1xikmLGjMRSo9eUaF85GR+3jEKtuO1AJvpx/3RTNfcJ3bkOH87U3IDdDEm?=
- =?us-ascii?Q?hL0v1Cd9UscFtO0xCUMvhrDezgu+3pUMRaE4IUOP?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: irondevice.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd93029a-21b5-4dde-4580-08daf9f58590
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jan 2023 08:16:52.9006 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b4849faa-3337-494e-a76a-cb25a3b3d7d1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VKsZl4pAxXCMDks7vHmPsBTcrw3z/gT8XfVFMvLZihCiL73RV0j1ccSSgo0tXg7EGsqhH1QQ9gRPui+ofbLWTeOCiby2QHB0c7tIJ7DaFzs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSXP216MB0181
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55B9DF8024D
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 11:16:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55B9DF8024D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=sKmonegD; 
+ dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=R0FjVJpJ
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 4C7DD38413;
+ Thu, 19 Jan 2023 10:16:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1674123401; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=L8GaUcxwMAhwYM3qUgsX/z2RYQWBpfZrbM64PXzVuiY=;
+ b=sKmonegDxsAPqcEn5rRQmxfhSrVaPXDI3TSENMApltShpMEcxyA9HCg5AW/e95xkWcbcDN
+ wy74cS8c2Lh0zAJf2Jke94EiwCLVeymo/u0ZmAYjJuStOCB/1FbuINO6dsIUqzxjzheP1h
+ 9s9pxhCKtstKW/EuTWyFQ3tcFc3FCDY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1674123401;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=L8GaUcxwMAhwYM3qUgsX/z2RYQWBpfZrbM64PXzVuiY=;
+ b=R0FjVJpJRUJP0QSEATZEtB/CyPwi6GoL7tQExk9uHoN/PJV2FOs2JlZAkz6LuLquZHva9K
+ 1jv94kpQdnYGG0CQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3021E139ED;
+ Thu, 19 Jan 2023 10:16:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id Ol2dCokYyWPnFwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Thu, 19 Jan 2023 10:16:41 +0000
+Date: Thu, 19 Jan 2023 11:16:40 +0100
+Message-ID: <87zgaerfqv.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mike FABIAN <mfabian@redhat.com>
+Subject: Re: No sound on HDMI by default on Lenovo T14s using Fedora 37
+In-Reply-To: <877cxj65s3.wl-tiwai@suse.de>
+References: <s9dy1pzx3ki.fsf@hathi.site> <87k01j6cw6.wl-tiwai@suse.de>
+ <s9dfsc7ixik.fsf@hathi.site> <877cxj65s3.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -134,90 +95,76 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Application <application@irondevice.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, 18 Jan 2023 19:45:16 +0100,
+Takashi Iwai wrote:
+> 
+> On Wed, 18 Jan 2023 18:05:23 +0100,
+> Mike FABIAN wrote:
+> > 
+> > Takashi Iwai <tiwai@suse.de> さんはかきました:
+> > 
+> > > On Wed, 18 Jan 2023 16:30:53 +0100,
+> > > Mike FABIAN wrote:
+> > >> 
+> > >> 
+> > >> With a Lenovo Thinkpad T14s (Gen1, Intel version), I tried to get sound
+> > >> on the monitor speakers via the HDMI cable.
+> > >> 
+> > >> It didn’t work out of the box and after a bit of googling I found:
+> > >> 
+> > >>     https://forums.lenovo.com/t5/ThinkPad-T400-T500-and-newer-T-series-Laptops/T14s-AMD-no-HDMI-audio-on-Linux/m-p/5081195?page=2
+> > >> 
+> > >> 
+> > >> which suggested to put
+> > >> 
+> > >>     snd_rn_pci_acp3x.dmic_acpi_check=0
+> > >> 
+> > >> on the kernel command line.
+> > >> 
+> > >> So I tried this:
+> > >> 
+> > >> $ cat /etc/modprobe.d/lenovot14s.conf 
+> > >> options snd-rn-pci-acp3x dmic_acpi_check=0
+> > >> 
+> > >> And that did make it work indeed.
+> > >> 
+> > >> I have no idea what this means and why this makes it work.
+> > >
+> > > The option basically should influence on the driver's behavior whether
+> > > to probe the built-in d-mic or not, and it has no direct relationship
+> > > with HDMI (supposedly via HD-audio bus), so it's puzzling how this
+> > > fixes the problem.
+> > >
+> > > Could you run alsa-info.sh (with --no-upload option) on both working
+> > > and non-working cases, and attach both outputs for comparison?
+> > 
+> > I removed /etc/modprobe.d/lenovot14s.conf but now it still works ☹
+> > 
+> > I did a “sudo dnf --enablerepo=updates-testing update”
+> > 
+> > since I last rebooted, so it is possible that an update fixed this.
+> > 
+> > So unfortunately I cannot produce a “alsa-info.sh --no-upload” output
+> > for the non-working case anymore (I attached the output for the working
+> > case *without* /etc/modprobe.d/lenovot14s.conf (i.e. without snd_rn_pci_acp3x.dmic_acpi_check=0)
+> 
+> Hm, I see no snd-rn-pci-acp3x module is loaded there, so something
+> might prevent it loaded (e.g. blacklist or such)?
+> 
+> And, with this state, can you use the built-in mic?  Also, how after
+> restoring the module option?
 
-Thank you for your kindly feedback.
+Also, maybe more fundamental question: how exactly "it didn't work"?
+Does the HDMI device appear on pipewire / PulseAudio, but the output
+results in silence?  Or Is no HDMI listed there?
 
-I have some questions and answers.
-
-> > +	if (!(sma1303->amp_power_status)) {
-> > +		dev_info(component->dev, "%s : %s\n",
-> > +			__func__, "Already AMP Shutdown");
-> > +		return ret;
-> > +	}
-> > +
-> > +	cancel_delayed_work_sync(&sma1303->check_fault_work);
-> > +
-> > +	msleep(55);
-> > +
-
-> That sleep looks odd - what are we delaying after? =20
-
-It need for IC(Amp) issue.
+BTW, the lack of AMD SoC stuff might be related with the device power
+state.  A cold boot might change the situation (or trying back to an
+older known kernel).
 
 
-> > +static int sma1303_dai_mute(struct snd_soc_dai *dai, int mute, int=20
-> > +stream) {
-> > +	struct snd_soc_component *component =3D dai->component;
-> > +	struct sma1303_priv *sma1303 =3D snd_soc_component_get_drvdata(compon=
-ent);
-> > +	int ret =3D 0;
-> > +
-> > +	if (stream =3D=3D SNDRV_PCM_STREAM_CAPTURE)
-> > +		return ret;
-> > +
-> > +	if (!(sma1303->amp_power_status)) {
-> > +		dev_info(component->dev, "%s : %s\n",
-> > +			__func__, "Already AMP Shutdown");
-> > +		return ret;
-> > +	}
-> > +
-> > +	if (mute) {
-> > +		dev_info(component->dev, "%s : %s\n", __func__, "MUTE");
-> > +
-> > +		ret +=3D sma1303_regmap_update_bits(sma1303,
-> > +				SMA1303_0E_MUTE_VOL_CTRL,
-> > +				SMA1303_SPK_MUTE_MASK,
-> > +				SMA1303_SPK_MUTE);
-> > +	} else {
-> > +		if (!sma1303->force_mute_status) {
-> > +			dev_info(component->dev, "%s : %s\n",
-> > +					__func__, "UNMUTE");
-> > +			ret +=3D sma1303_regmap_update_bits(sma1303,
-> > +					SMA1303_0E_MUTE_VOL_CTRL,
-> > +					SMA1303_SPK_MUTE_MASK,
-> > +					SMA1303_SPK_UNMUTE);
-> > +		} else {
-> > +			dev_info(sma1303->dev,
-> > +					"%s : FORCE MUTE!!!\n", __func__);
-> > +		}
-> > +	}
-
-> If you need to shut the device down to implement mute then it's better to=
- just not implement it, you shouldn't emulate features in the driver but in=
-stead let the core worry about how to handle that case.  AFAICT this is why=
- there's the startup/shutdown thing for the speaker amp?
-
-This is not power down device. It's only make zero signal level(only mute i=
-n amp).
-I removed checking power status.
-
-
-> > +static void sma1303_check_fault_worker(struct work_struct *work) {
-> > +	struct sma1303_priv *sma1303 =3D
-> > +		container_of(work, struct sma1303_priv, check_fault_work.work);
-> > +	int ret =3D 0;
-> > +	unsigned int over_temp, ocp_val, uvlo_val;
-> > +
-> > +	mutex_lock(&sma1303->lock);
-> > +
-
-> It looks like this mutex is only taken in this function, is it needed?
-
-This function is in workqueue. So, I think it can be done at the same time.=
-=20
-
+Takashi
