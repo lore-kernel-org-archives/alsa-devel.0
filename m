@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66628C004D4
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 13:27:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85528C00A5A
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 13:30:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C29197FD3;
-	Thu, 19 Jan 2023 14:26:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C29197FD3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8364169A5;
+	Thu, 19 Jan 2023 14:29:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8364169A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674134836;
-	bh=yJwpymIZou6ODPxXMJMYjGJV0f03q0qTnALZvoZmr/k=;
+	s=default; t=1674135039;
+	bh=5Fh4hWtbvPNQVg8p4ik9HoMk2VYNI1ZWzd0seIHBzQM=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J5jZZ6Jvu835hzCNHt52Ct0nuJcHQROWtiG0xewRWffXrqdPplXUVLF1FW5fQvaSm
-	 0tdLNOVQjVYYvQg5tTbBrSPgbp1W+IP2EUUq4S761cn3Z1H6MN2vxPNwyQ8pF0bu2V
-	 +0kfEMlm5aMEg8p4fmLoGAMS5QNSBXde5ol76yHQ=
+	b=ku6po/AN7QDuhDC7cBRGkMIpGVqD50KqPPbFFbGl2yo7iX/IxSIgIOM1qMA2mMnr1
+	 Az//DWgj5v+273bw0cLo/y7q5W/1D1auPUgDd4V9QDjO+6n8YGMxs9jB4itNf737a1
+	 mACwdimprr4Dj+HmRKZg5uJvuOjM9Q388DwbF99I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80CBCF8025D;
-	Thu, 19 Jan 2023 14:26:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34C10F800F0;
+	Thu, 19 Jan 2023 14:29:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C849F80083; Thu, 19 Jan 2023 14:26:25 +0100 (CET)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
+ id 59915F8047B; Thu, 19 Jan 2023 14:29:48 +0100 (CET)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
+ [IPv6:2a00:1450:4864:20::32f])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4CAEFF80083
- for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 14:26:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CAEFF80083
+ by alsa1.perex.cz (Postfix) with ESMTPS id BEEDDF800F0
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 14:29:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEEDDF800F0
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=RTx+nVav
-Received: by mail-wm1-x329.google.com with SMTP id g10so1534903wmo.1
- for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 05:26:22 -0800 (PST)
+ header.s=google header.b=VNpjeXq3
+Received: by mail-wm1-x32f.google.com with SMTP id q8so1516449wmo.5
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 05:29:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:in-reply-to:from:references:to
  :content-language:subject:user-agent:mime-version:date:message-id
  :from:to:cc:subject:date:message-id:reply-to;
- bh=liF/fJsraKfm9Mh6BETv21w34Yvp7QKUx+OiIsQvbek=;
- b=RTx+nVav6lWlpATz2R0+33QBCCwdDVZpJNN2IzIHcJguzSgbjxAIKqa7Opp+LawcFz
- VzxoBCy1LrqcV/UIZ6kBj2/mwrw4c9X3sJRsljzkv3xxtazRGFDAsWjNV+Qjyc9PWxQu
- b9jOlldhOp+/Ws+k03g/T1GaLPo1US/aP/tWSJu/y5XG/9Iryw7Szf4rMvFFtHzX0seS
- B2hmCmN1Etg8KoOikAuBCq2ge7eLxYDZczlqqGAzVVBa1cUbmpvAj+ZNn1Z1zRqqAjXE
- /2cHV5u1uRZWVyfP3XC1XGtF5sngK7yok6oFGqN7KCCiNpVjo+YEjqnwfq0E84bm6Hyv
- rSdw==
+ bh=C3dW0pBIAKxEtxU2RORikWEFqQVlFjW5pcOn+Qp2gyM=;
+ b=VNpjeXq3OZVrzKoFwoENfxprV0c/LHQ/ja2SbF6Ueo9L9iG5dfVKrDwgsBaGLiP0NX
+ htavdbNyI3VCb3Fc4cJNZB9kOP9FUqb/WznH7/oRBN8dQktYvjC0gCRALkv4fm1j+42a
+ SGzS53uwoHPZ0AzTPwdVXHvt5tCtoOx2OHlRkDCwsye+4WaGN0jkjXTA8T4q164+duOq
+ xWDirg55Ok5y2QwhoSSYJJNU47Gmy/v9QSA+FAgshFd2qwKAz+g3xruyi3IBxqSkZy16
+ AxZA6+bN6ZE/WjSPIMk9cd7VjTMYwX9AsZfLkk0KATIQz/qKlwpt3vLBRltnnuevNPFT
+ fJ7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:in-reply-to:from:references:to
  :content-language:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=liF/fJsraKfm9Mh6BETv21w34Yvp7QKUx+OiIsQvbek=;
- b=0HFpP7/LbtTDgvCFeoQgLR3E/oPsvnTtSikK55lhzms+Gh27g4kJc1AdchBOaW/m0W
- Gwmq3YN2GJHEOqQtYT20YxGrLwchO5yTYES0/4YwEQdKDnWSOe/7qH9N1fLhKy4gBNWz
- FKxLO6j6lGy/G1fsHsLrz1vdRzBD1c3/e2m91Znte8O7cUpOy7i0E0fr/1JbntIkphmf
- Im5nXiYa49/YyREMay1sqIMV6WSHZIcjF1l6PqSgKHY7/HdrUvjh7Rjm8AKR5uy5/Cd/
- 6sawo6pgIi4oe87abyqngkm28pQXEmRehpwEBf25/ENsNhO5wcQ1xFCWINov6T0/OmXr
- WC+A==
-X-Gm-Message-State: AFqh2kqXm08mmYyezY5Hz9w/DzHnApDEXcmx3eSpLt3YFfMhnCqd0hnv
- 05dAnKkhNg2KJY16UVdKyEPpIw==
-X-Google-Smtp-Source: AMrXdXswERYqjY+bheQCm0Hc0ktL/bw552J6U/3HxxcEPZmxwkI00Q5qpa1OapFFY2kT2djlObY54g==
-X-Received: by 2002:a05:600c:539a:b0:3db:419:8d3b with SMTP id
- hg26-20020a05600c539a00b003db04198d3bmr10507790wmb.39.1674134781449; 
- Thu, 19 Jan 2023 05:26:21 -0800 (PST)
+ bh=C3dW0pBIAKxEtxU2RORikWEFqQVlFjW5pcOn+Qp2gyM=;
+ b=qsEkU+axPz1sWDUx+eWX1zmhXCTtjQlSleWkBvoW1kv7AuxriaZQArlwU/yjAKYSj6
+ nhD+s9Zjb+95Qn+FrmlYq3w8N5FcGeMIT3nARVVtywnf6/ALlz0uVa99E4+PNWk89ASX
+ kUYjRVzezYESFvc4mp2Uws8BBP5jJ9N0MHZNoxRDoOkwW40ChTuZCEAmzNScjbO7shTV
+ BXvU45gfmTlkh7WCpbH7m1yoAmCVf8pg1mcdo40aPTMtmcOqVFy+QzedcY3fYxBZvdGH
+ jDfl53EOnSEG8/qQpoEA4AlWOULUsybLZjOBSsL4oH4FYUD+5TxNNcEl0T7/92cVIYyz
+ IJjg==
+X-Gm-Message-State: AFqh2kpdCR4Pan4krBFiUUTTsVsoOlHB2xDQSCDiD4RBwqt1C4qMtFAa
+ GOI8UJW/NUsSSyp4rIXbfMN9Yg==
+X-Google-Smtp-Source: AMrXdXutMqkmGbFSaII+0b3BWhZKLvebXXTCpEBdUITKyeT6dH7yiekgvhHNEYUi/sJ6hmCQbPDkfg==
+X-Received: by 2002:a05:600c:5114:b0:3db:254e:59a9 with SMTP id
+ o20-20020a05600c511400b003db254e59a9mr1687123wms.15.1674134982119; 
+ Thu, 19 Jan 2023 05:29:42 -0800 (PST)
 Received: from [192.168.1.109] ([178.197.216.144])
  by smtp.gmail.com with ESMTPSA id
- bp28-20020a5d5a9c000000b00273cd321a1bsm33847822wrb.107.2023.01.19.05.26.19
+ z4-20020a1cf404000000b003da2932bde0sm5538891wma.23.2023.01.19.05.29.40
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 19 Jan 2023 05:26:21 -0800 (PST)
-Message-ID: <16d26962-f55b-d420-e70e-bb832ca088ed@linaro.org>
-Date: Thu, 19 Jan 2023 14:26:19 +0100
+ Thu, 19 Jan 2023 05:29:41 -0800 (PST)
+Message-ID: <a3da518d-0247-e36c-1161-f82fddd76476@linaro.org>
+Date: Thu, 19 Jan 2023 14:29:39 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.7.0
-Subject: Re: [PATCH v3 2/7] arm64: dts: qcom: sc7280: Add sound node
+Subject: Re: [PATCH v3 3/7] arm64: dts: qcom: sc7280: Add LPASS PIL node
 Content-Language: en-US
 To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>, vkoul@kernel.org,
  agross@kernel.org, andersson@kernel.org, robh+dt@kernel.org,
@@ -89,9 +89,9 @@ To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>, vkoul@kernel.org,
  judyhsiao@chromium.org, alsa-devel@alsa-project.org,
  quic_rjendra@quicinc.com, konrad.dybcio@somainline.org, mka@chromium.org
 References: <1674131227-26456-1-git-send-email-quic_srivasam@quicinc.com>
- <1674131227-26456-3-git-send-email-quic_srivasam@quicinc.com>
+ <1674131227-26456-4-git-send-email-quic_srivasam@quicinc.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1674131227-26456-3-git-send-email-quic_srivasam@quicinc.com>
+In-Reply-To: <1674131227-26456-4-git-send-email-quic_srivasam@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -110,14 +110,59 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 On 19/01/2023 13:27, Srinivasa Rao Mandadapu wrote:
-> Add sound node for sc7280 based audioreach platforms.
+> Add LPASS PIL node for sc7280 based audioreach platforms.
 > 
-> Include audioreach dtsi into crd-rev3 platform specific dts file.
-> Also remove phandle to sound node, as audio routing is same as
-> audioreach specific dtsi file.
+> Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+> Tested-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+> ---
+>  .../qcom/sc7280-herobrine-audioreach-wcd9385.dtsi  |  4 +
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi               | 95 ++++++++++++++++++++++
+>  2 files changed, 99 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-herobrine-audioreach-wcd9385.dtsi b/arch/arm64/boot/dts/qcom/sc7280-herobrine-audioreach-wcd9385.dtsi
+> index 7b3f7ee..81e0f3a 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-herobrine-audioreach-wcd9385.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-herobrine-audioreach-wcd9385.dtsi
+> @@ -107,3 +107,7 @@
+>  		};
+>  	};
+>  };
+> +
+> +&remoteproc_adsp {
+> +	status = "okay";
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 6908bca..08142047 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -8,6 +8,7 @@
+>  #include <dt-bindings/clock/qcom,dispcc-sc7280.h>
+>  #include <dt-bindings/clock/qcom,gcc-sc7280.h>
+>  #include <dt-bindings/clock/qcom,gpucc-sc7280.h>
+> +#include <dt-bindings/clock/qcom,lpass-sc7280.h>
+>  #include <dt-bindings/clock/qcom,lpassaudiocc-sc7280.h>
+>  #include <dt-bindings/clock/qcom,lpasscorecc-sc7280.h>
+>  #include <dt-bindings/clock/qcom,rpmh.h>
+> @@ -21,6 +22,7 @@
+>  #include <dt-bindings/power/qcom-rpmpd.h>
+>  #include <dt-bindings/reset/qcom,sdm845-aoss.h>
+>  #include <dt-bindings/reset/qcom,sdm845-pdc.h>
+> +#include <dt-bindings/soc/qcom,gpr.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>  #include <dt-bindings/sound/qcom,lpass.h>
+>  #include <dt-bindings/thermal/thermal.h>
+> @@ -3439,6 +3441,99 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		remoteproc_adsp: remoteproc@3000000 {
+> +			compatible = "qcom,sc7280-adsp-pil";
+> +			reg = <0 0x03000000 0 0x5000>, <0 0x0355b000 0 0x10>;
+> +			reg-names = "qdsp6ss_base", "lpass_efuse";
+> +
+> +			status = "disabled";
 
-Your subject does not match exactly your contents. Subject says you are
-adding sound node to all sc7280 boards. Commit does something else...
+Status is always the last property.
 
 
 Best regards,
