@@ -4,68 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E946CC004D4
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 16:38:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17CAAC004D4
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 16:52:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05EE5182B;
-	Thu, 19 Jan 2023 17:37:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05EE5182B
+	by alsa0.perex.cz (Postfix) with ESMTPS id AB47086E;
+	Thu, 19 Jan 2023 17:51:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB47086E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674146299;
-	bh=BLxUwvcbJNE16lGVkyQ5NUwMXEUCuzke2hSZzqzQH+M=;
+	s=default; t=1674147125;
+	bh=YCzm+8PNge29ixl3/6h3jhDekAGaMIXKFHUbBlanzw0=;
 	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=GO8l5d4NG7twoEaLk+Uc5X8MQPW0k4aDQesxiuzAuvf6f/x/awEwjZn22ADYafs7i
-	 8PfRLZdRP14TQOIbqE05tU9KX3Pjw641eybGQFC5fkKRD0kEhpmRmoei7uo2ymLJcH
-	 LvIBtkcLCs4Op7vZTKSvIUlBEfoN7i5WTYwNA+tg=
+	b=j699C2MUit2Sq+nfU/Tz1q5wCoSVhC9g9OsDAYDIllec3uzKENf18hjfaf9qtO8Uo
+	 YrTs2r2OZmIaih38o+wzHuxSiOtS49HocDO1oVScd7QLAyQpZfvFJ48bs+OrFc6+Ro
+	 9BIndx3T1MSxXzFxoRCll/kaxZ5b2IdqxeSKft0A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D669DF8055C;
-	Thu, 19 Jan 2023 17:36:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 527DCF8047B;
+	Thu, 19 Jan 2023 17:51:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C9345F80542; Thu, 19 Jan 2023 17:36:12 +0100 (CET)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id DBC03F804DE; Thu, 19 Jan 2023 17:51:13 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1E975F8024D
- for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 17:36:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E975F8024D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1336FF80083
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 17:51:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1336FF80083
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=bNo4PIfW
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674146164; x=1705682164;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=BLxUwvcbJNE16lGVkyQ5NUwMXEUCuzke2hSZzqzQH+M=;
- b=bNo4PIfW3HJeQ83w/xPq8SxZFrojHZPKzdSwOkSeMWgGX7i9GwV1rJ5l
- GeMioZhPhM2TbyEynGzbCha05eDykZXuaU9QbqymxYtMacw96NlQ/79Kb
- EaTACizxnktgzcw4eodqlOTtKkM/4q6P+lQQjRV2bg4MCrhSggQw2tu/H
- gASyU0gHanNifXhJ5zjYXjjmgnwiULmAGpt5iVNBXeIZiPFRIs1RoloXy
- IPOMzPpfDuj6KcsmmLAh3sg1sJ/a/z6qZ6HC42BntCYXIIQWqdUBFFjn9
- pwXOdbAUs+y1zCukavyYUCKiG69QmQP/6C2hZq3nnFOyI9qInaZTjTKqg A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10595"; a="323029582"
-X-IronPort-AV: E=Sophos;i="5.97,229,1669104000"; d="scan'208";a="323029582"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Jan 2023 08:35:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10595"; a="662162951"
-X-IronPort-AV: E=Sophos;i="5.97,229,1669104000"; d="scan'208";a="662162951"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga007.fm.intel.com with ESMTP; 19 Jan 2023 08:35:56 -0800
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH 0/4] ASoC: Intel: set dpcm_capture for amps
-Date: Thu, 19 Jan 2023 18:34:55 +0200
-Message-Id: <20230119163459.2235843-1-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.39.0
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=QP9K8tch
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 30J1KBde020876; Thu, 19 Jan 2023 10:51:06 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=CkQ7VPfrmIC/WzRHmQdR/avtEQWObcg9xXhXG0ZGX5w=;
+ b=QP9K8tch1hW17mbzxWgDq9rPVEJfD6WXM4BrZ0+QclR/CqBjmKcnbzkTtu4NPB/Szexr
+ iImDRFs3OYviLhZ5H8Zwq1uOfI5I8N13GQ8jX7TCTENjlRH1+E5qu7HneodUEErQ2mOW
+ CAAfaIiEYOADP3whEo5e83P5ZZdfl1Zxb9JDFP99xv7OK7bCgXah2nFpcM1tsOOQuUe0
+ xzUfwdt8xdJKX0qCbHKt2DqF8VnsXOkMnSKliuf8g/IoA7g+zrPi4l9d2g85v6qpKxOP
+ 4n4Gu0cQ/2yDYvzKii4Gm65dynSbeatXSIUVJTLFzC7ea3AQ9row4wBXIa9o11/YT/sM rw== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3n3tp6ga7w-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 19 Jan 2023 10:51:06 -0600
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Thu, 19 Jan
+ 2023 10:51:04 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.21 via
+ Frontend Transport; Thu, 19 Jan 2023 10:51:04 -0600
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6568AB12;
+ Thu, 19 Jan 2023 16:51:04 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <vkoul@kernel.org>
+Subject: [PATCH 1/2] soundwire: bus: Don't filter slave alerts
+Date: Thu, 19 Jan 2023 16:51:03 +0000
+Message-ID: <20230119165104.3433290-1-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: IfEzvwbMwPqsRAnyGbfZaY2ssxED5uhT
+X-Proofpoint-GUID: IfEzvwbMwPqsRAnyGbfZaY2ssxED5uhT
+X-Proofpoint-Spam-Reason: safe
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,32 +86,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com,
- lgirdwood@gmail.com, peter.ujfalusi@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com,
- daniel.baluta@nxp.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
+ sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series addresses problems with echo reference devices
-reported in:
-"[BUG][ADL-N] Kernel panic when echo reference stream is opened"
-https://github.com/thesofproject/linux/issues/4083
+Currently the SoundWire core will loop handling slave alerts but it will
+only handle those present when the alert was first raised. This causes
+some issues with the Cadence SoundWire IP, which only generates an IRQ
+when alert changes state. This means that if a new alert arrives whilst
+old alerts are being handled it will not be handled in the currently
+loop and then no further alerts will be processed since alert never
+changes state to trigger a new IRQ.
 
-Pierre-Louis Bossart (4):
-  ASoC: Intel: sof_rt5682: always set dpcm_capture for amplifiers
-  ASoC: Intel: sof_cs42l42: always set dpcm_capture for amplifiers
-  ASoC: Intel: sof_nau8825: always set dpcm_capture for amplifiers
-  ASoC: Intel: sof_ssp_amp: always set dpcm_capture for amplifiers
+Correct this issue by allowing the core to handle all pending alerts in
+the IRQ handling loop. The code will still only loop up to
+SDW_READ_INTR_CLEAR_RETRY times, so it shouldn't be possible for it get
+completely stuck and if you are generating IRQs faster than you can
+handle them you likely have bigger problems anyway.
 
- sound/soc/intel/boards/sof_cs42l42.c | 3 +++
- sound/soc/intel/boards/sof_nau8825.c | 5 +++--
- sound/soc/intel/boards/sof_rt5682.c  | 5 +++--
- sound/soc/intel/boards/sof_ssp_amp.c | 5 ++---
- 4 files changed, 11 insertions(+), 7 deletions(-)
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ drivers/soundwire/bus.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-
-base-commit: 8dc08c82afbf00e3cbe8944f7e33fa133c01858f
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 633d411b64f35..daee2cca94a4d 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -1560,7 +1560,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ 	unsigned long port;
+ 	bool slave_notify;
+ 	u8 sdca_cascade = 0;
+-	u8 buf, buf2[2], _buf, _buf2[2];
++	u8 buf, buf2[2];
+ 	bool parity_check;
+ 	bool parity_quirk;
+ 
+@@ -1716,9 +1716,9 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ 				"SDW_SCP_INT1 recheck read failed:%d\n", ret);
+ 			goto io_err;
+ 		}
+-		_buf = ret;
++		buf = ret;
+ 
+-		ret = sdw_nread_no_pm(slave, SDW_SCP_INTSTAT2, 2, _buf2);
++		ret = sdw_nread_no_pm(slave, SDW_SCP_INTSTAT2, 2, buf2);
+ 		if (ret < 0) {
+ 			dev_err(&slave->dev,
+ 				"SDW_SCP_INT2/3 recheck read failed:%d\n", ret);
+@@ -1736,12 +1736,8 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ 		}
+ 
+ 		/*
+-		 * Make sure no interrupts are pending, but filter to limit loop
+-		 * to interrupts identified in the first status read
++		 * Make sure no interrupts are pending
+ 		 */
+-		buf &= _buf;
+-		buf2[0] &= _buf2[0];
+-		buf2[1] &= _buf2[1];
+ 		stat = buf || buf2[0] || buf2[1] || sdca_cascade;
+ 
+ 		/*
 -- 
-2.39.0
+2.30.2
 
