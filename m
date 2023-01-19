@@ -4,80 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2A49C38147
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 Jan 2023 22:35:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C88DAC00A5A
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 06:12:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E23577BE1;
-	Wed, 18 Jan 2023 23:34:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E23577BE1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0645754FB;
+	Thu, 19 Jan 2023 07:11:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0645754FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674081333;
-	bh=xJvYbw6U+K+0k8BLB+5FqLiyzX7FBCNqG4euLaaJvIg=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
+	s=default; t=1674108763;
+	bh=qYlAWrhh0WO9j/l5C7AaSrFmBhqJAsy3yrahnv7Lfnw=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=pGvdpZTn1ngdiCSLGFQZplryj0TXMd88F78mSLoWwpFIqLM2R4YeQmytMi3S0VuA4
-	 fZEDWTqIZ2KfAcOTElduaRm5+YIBGhM7zpqZyG+ch+/at8BmZgeLep1fpdRSw/4Q6R
-	 maXAg6F8NlK8qyXufUa7dA6HmSGBcSNyY5Q3Ol4s=
+	b=Os14fnfee7/o9BSJL1mzIY6tAWZqwhRnyaexXcZiI5rySwBRjuT4t+f4eIZtYF4CR
+	 b3NpDeOWs/SB3sGWVNjrNTB/GGwfGTzG9R8UCO7xx4ek4YlBWkNQbJW8AeQ9J6116N
+	 xqwCmUqev27JHFvA7xu4IjN5pc0V+hCeX5EcmI+4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 95199F8024D;
-	Wed, 18 Jan 2023 23:34:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AFF31F80083;
+	Thu, 19 Jan 2023 07:11:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9BACFF8026D; Wed, 18 Jan 2023 23:34:42 +0100 (CET)
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com
- [IPv6:2607:f8b0:4864:20::112d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 7396EF804EC; Thu, 19 Jan 2023 07:11:50 +0100 (CET)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7B1D8F8024C
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 23:34:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B1D8F8024C
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB381F8025D
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 07:11:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB381F8025D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=Gw0omF3r
-Received: by mail-yw1-x112d.google.com with SMTP id
- 00721157ae682-4bf16baa865so1284847b3.13
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2023 14:34:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=xJvYbw6U+K+0k8BLB+5FqLiyzX7FBCNqG4euLaaJvIg=;
- b=Gw0omF3rTcAXmt61uekjPSMgv7ju/jQkT+NRYfg9clCCKkBTEB23Evj839n2n8qoNx
- s8Y59LwroPq/lApwG59kNIt6F9v38rKdQRdeYCn4EcLgR2xAE1WUahiFZDjTbGuOsbYL
- yMDJWS0gyHaya9j7vNwSWnJbixaqTqy5xWGZRHjYJhefVMUHoMZ8bsX4pAL93frFHWpL
- YH8kcGWtkNgRG2/YmoUITscmA1Fnpqd7WmdrZkRCYyrazIKac/BIIbegNk7SX6Pb0bNj
- XBsP3S87RV2/SWpTohHkG+rxSMn5w9hGVhnGPDF+4CigzvO0xieBdBkTS0AogF02dkPb
- jJ9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=xJvYbw6U+K+0k8BLB+5FqLiyzX7FBCNqG4euLaaJvIg=;
- b=A6j7yFlh2ynaMBNZCBmszPG6CANTKML2tH9059VQKNI226mKVlx8azZREitNzrVeX5
- CUcQwnxVDNcALERct8OrUOUlFdYMe4mR9NNgoUY/pw5N5qq9PIeQxwpqoMBBgpS2vfjA
- DTiwfdYHGT/nnF94AVEhvhDlgdwhy7fbweYS+K0llsctCvVPr7TZSwA8aBdAgsRduc+q
- I6V3gjww+vgvxjp9fYV+oh1B4mJJaxa3GfSDu8+V93PnkB30vvj3plfapwlFjXBnveus
- s2yIgsm3DkafRp9IRCRTb0FcBDjBmrkgyM2Z/GPtlYUCUXRvL6chR2kUi2l/VLen4PgC
- +J5A==
-X-Gm-Message-State: AFqh2krKMC/v3r1JAVmGM+ayga9bMPPTgYcGhACyCZY/7DnEC8XnY8JE
- SQtvCzqE0zReaLRH6ssv0obt17ffto5H0rNr8TkpzA==
-X-Google-Smtp-Source: AMrXdXsYvs9R4DumEh82QT8w/5J+EBP6tPUYo8vsrjxDEkR74vY+cmlmPYMXXZqlqcHX/KZpOQ1sN4+YM2TWY7PVyvM=
-X-Received: by 2002:a81:4e54:0:b0:4e1:a40a:af7a with SMTP id
- c81-20020a814e54000000b004e1a40aaf7amr1150249ywb.273.1674081277745; Wed, 18
- Jan 2023 14:34:37 -0800 (PST)
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=jaz+/Isw
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+ by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 30J5GIpv028657; Thu, 19 Jan 2023 06:11:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=ycsvdaZzzZo0Hj96oiYWmCus4lU4cyJFpZnvm4daqk0=;
+ b=jaz+/IswQJvqlahddOKQ4+Iikc5fibh9IcxTgDdH+FI3Kz1+72OgZ+G6JAcGQ1Es4mPN
+ 6saGjOSO4cALnSqYlLATbcw7fsIpnc/9q4HYf06S7CHHGnpallb7NMyPbYxSgopZfM5A
+ 9R2/08jvx34faVeKdy46ToF2T48OLqmOKZBm6imBwIonxoj3MSR8FptMS1Z0iNkbhdFn
+ eVwd6vB8myAWPZ0xbosEzgi27UJaNKtMqR+RiNNJrUSAVC2B8cve6/vUZFnkNncloull
+ VmZC3DV1U/9gaJGhb63+NUapBiOuA2thgb+h4D2ZcxX6Y8PLjji5uOm03tyc+im4j9O7 qQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
+ [129.46.96.20])
+ by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3n6xktg6sq-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 19 Jan 2023 06:11:40 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com
+ [10.47.209.196])
+ by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 30J6BcrU014021
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 19 Jan 2023 06:11:38 GMT
+Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.36; Wed, 18 Jan 2023 22:11:33 -0800
+From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+To: <agross@kernel.org>, <andersson@kernel.org>, <lgirdwood@gmail.com>,
+ <broonie@kernel.org>, <robh+dt@kernel.org>, <quic_plai@quicinc.com>,
+ <bgoswami@quicinc.com>, <perex@perex.cz>, <tiwai@suse.com>,
+ <srinivas.kandagatla@linaro.org>, <quic_rohkumar@quicinc.com>,
+ <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+ <linux-kernel@vger.kernel.org>, <swboyd@chromium.org>,
+ <judyhsiao@chromium.org>, <devicetree@vger.kernel.org>
+Subject: [PATCH 1/3] ASoC: qcom: dt-bindings: lpass-va-macro: Update clock name
+Date: Thu, 19 Jan 2023 11:41:12 +0530
+Message-ID: <1674108674-8392-2-git-send-email-quic_srivasam@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1674108674-8392-1-git-send-email-quic_srivasam@quicinc.com>
+References: <1674108674-8392-1-git-send-email-quic_srivasam@quicinc.com>
 MIME-Version: 1.0
-References: <20230118161110.521504-1-arnd@kernel.org>
- <20230118161110.521504-4-arnd@kernel.org>
-In-Reply-To: <20230118161110.521504-4-arnd@kernel.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 18 Jan 2023 23:34:26 +0100
-Message-ID: <CACRpkdZhyL4tTP+=uDB9CfYKRgoKvqp-T+SUzg0YZi4r0Hxy0g@mail.gmail.com>
-Subject: Re: [PATCH 4/5] ASoC: ux500: remove stedma40 references
-To: Arnd Bergmann <arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-ORIG-GUID: SUMXaHe_MDN5qTO_k3wCbrCHEedg0KxM
+X-Proofpoint-GUID: SUMXaHe_MDN5qTO_k3wCbrCHEedg0KxM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.923,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-18_05,2023-01-18_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 adultscore=0
+ clxscore=1015 spamscore=0 mlxlogscore=999 lowpriorityscore=0 bulkscore=0
+ malwarescore=0 priorityscore=1501 mlxscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2301190048
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,28 +108,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
- Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jan 18, 2023 at 5:17 PM Arnd Bergmann <arnd@kernel.org> wrote:
+Upadte clock name from core to macro in lpass-va-macro node
+to make it compatible with existing driver and device tree node.
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> ux500_pcm_request_chan() is never called because the dma channels
-> are already set up from DT. Remove this, along with the
-> ux500_msp_dma_params structure.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 67d99b23c881 ("ASoC: qcom: dt-bindings: add bindings for lpass va macro codec")
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Tested-by: Ratna Deepthi Kudaravalli <quic_rkudarv@quicinc.com>
+---
+ Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Now I will try to continue my work on refreshing the Ux500
-audio support on top of these patches!
+diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
+index 26f0343..e468adb 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
+@@ -36,7 +36,7 @@ properties:
+     oneOf:
+       - items:   #for ADSP based platforms
+           - const: mclk
+-          - const: core
++          - const: macro
+           - const: dcodec
+       - items:   #for ADSP bypass based platforms
+           - const: mclk
+-- 
+2.7.4
 
-Yours,
-Linus Walleij
