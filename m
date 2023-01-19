@@ -4,99 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 291C8C00A5A
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 06:13:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B54FBC38142
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 07:24:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4E34E7C9E;
-	Thu, 19 Jan 2023 07:12:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E34E7C9E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 511F5568C;
+	Thu, 19 Jan 2023 08:23:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 511F5568C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674108823;
-	bh=Ua0wgVJ+nIzWKvu+aMjkbR5T5TRPDa3D0mhJSuMQAGg=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=rkiIXps+CgTCpVZ06WyFh99PIy2JARE5/baKcj9HuErKt3aPCArNq03QWvsO181Yo
-	 8DDR2E0MziTUeIQ0IEHFzhRaBPV7PYGgldp4xDgpmJXOkTek0L9uGqMQ9fYMuDSQ/r
-	 J7zhvU4pLaMTEDfQLJorY2xR8yk78wg+bJFKDdXs=
+	s=default; t=1674113077;
+	bh=J+PuaT8Pd5jSfyga8q8sol2GC6waEKgBjAT0Ja2R/Sk=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=tqR2c7ZkGLrVBiiIR0ajTvnCWpot7MxXfHBn/TE/jedA5nOBDBavM0g5uLRqyaToP
+	 4PWBCDZDHpJaCdFrIvkaNkivsYs8B8H0vikRUobuV80VTP1SfIk678cicVvyutyMS8
+	 szxCxuik2YB8e/F9GLTmtqQalivgyKlEx+MhbPWY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1EC1F80557;
-	Thu, 19 Jan 2023 07:12:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E89F4F8025D;
+	Thu, 19 Jan 2023 08:23:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2899F80557; Thu, 19 Jan 2023 07:11:55 +0100 (CET)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
+ id D50CCF8047B; Thu, 19 Jan 2023 08:23:45 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6E3A3F800F0
- for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 07:11:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E3A3F800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4FCEBF80083
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 08:23:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FCEBF80083
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=BMbhdNhN
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
- by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 30J5QKGw027038; Thu, 19 Jan 2023 06:11:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=WRGId+rwiqXrVn/Ni6IA1WwTJpvghQlRkwFGBb2lIeI=;
- b=BMbhdNhNV9HV+oOKteDWRNj85Ds6zmYp3ogY+VHEA94ade9l/cHox51UNGHiOIrgU20Z
- NhFo9TS1EJz3XGPGw6GtDDTif448fNqUrnSnFZVimBwLuuYQpKhQnXPvv8LMrTvY3/a1
- flfSYbqJa1V1qTUbhDfZ58hyN6RZ4V302fpr3z0yOnGzx/mmsISa5YYUOZ56rpFGxgov
- lMtfKE/nk8htFIK7PqZj5hhv/gr1afoiw7uOYRebFjKlgLdmYI/if9JEYAWxYCAtQ4ex
- RAZoZj9vbNGj5mqxcypziLw8BOWSEXAK3wcxo/3TQp3e8/CoGGuTcymgLOjZlCRjxhfa +Q== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com
- [129.46.96.20])
- by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3n6r598u0p-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 19 Jan 2023 06:11:51 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com
- [10.47.209.196])
- by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 30J6BopG014088
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 19 Jan 2023 06:11:50 GMT
-Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.36; Wed, 18 Jan 2023 22:11:44 -0800
-From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-To: <agross@kernel.org>, <andersson@kernel.org>, <lgirdwood@gmail.com>,
- <broonie@kernel.org>, <robh+dt@kernel.org>, <quic_plai@quicinc.com>,
- <bgoswami@quicinc.com>, <perex@perex.cz>, <tiwai@suse.com>,
- <srinivas.kandagatla@linaro.org>, <quic_rohkumar@quicinc.com>,
- <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
- <linux-kernel@vger.kernel.org>, <swboyd@chromium.org>,
- <judyhsiao@chromium.org>, <devicetree@vger.kernel.org>
-Subject: [PATCH 3/3] ASoC: google: dt-bindings: sc7280: Add #sound-dai-cells
- property
-Date: Thu, 19 Jan 2023 11:41:14 +0530
-Message-ID: <1674108674-8392-4-git-send-email-quic_srivasam@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1674108674-8392-1-git-send-email-quic_srivasam@quicinc.com>
-References: <1674108674-8392-1-git-send-email-quic_srivasam@quicinc.com>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=ZKG4OjKm
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1674113023; x=1705649023;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=J+PuaT8Pd5jSfyga8q8sol2GC6waEKgBjAT0Ja2R/Sk=;
+ b=ZKG4OjKmf3JyRb98vO+b9rLP0T07xw12rGEJD48hr2WtLEt8r/eXd2zx
+ vnptUFLzSqbW5KPABN7vksBbXViyP9OrgnVRNoySXm/+MbZj+65ZI/50v
+ yK9SKaRWLRKuKoKSEvBOHbLwKSj9lv2MLZwbFUjWoWmYKJTYD8/bt6Yoh
+ JDFFSfDqVNHCE1LDeV/eyMceVSgH7OPHm5BwBglS15CRhQJn3uU8drNu2
+ eAUrJ0vKkBXoqnJ75kR+D+v11kZRKW2Gec/uqiVzLgQ6ZbvdBFB6anQec
+ Z9eETX/96wHABlpkQq9SZW5BTEStoO9rfbIQH9f5uQhgFSTc/t5xVeG2P A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="322902650"
+X-IronPort-AV: E=Sophos;i="5.97,228,1669104000"; d="scan'208";a="322902650"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Jan 2023 23:23:38 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10594"; a="662027983"
+X-IronPort-AV: E=Sophos;i="5.97,228,1669104000"; d="scan'208";a="662027983"
+Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
+ by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Jan 2023 23:23:36 -0800
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	vkoul@kernel.org
+Subject: [PATCH v2 0/4] soundwire: better error handling in deferred transfers
+Date: Thu, 19 Jan 2023 15:32:07 +0800
+Message-Id: <20230119073211.85979-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
- signatures=585085
-X-Proofpoint-ORIG-GUID: 4BjjlwRYpCKTiGP-CCvGbFsk2twfPHz3
-X-Proofpoint-GUID: 4BjjlwRYpCKTiGP-CCvGbFsk2twfPHz3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.923,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-01-18_05,2023-01-18_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 clxscore=1015
- mlxscore=0 mlxlogscore=870 malwarescore=0 priorityscore=1501 bulkscore=0
- suspectscore=0 phishscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
- definitions=main-2301190048
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,33 +77,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org,
+ bard.liao@intel.com, linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Update sc7280 machine driver bindings with #sound-dai-cells property.
-This is to fix dtbs_check errors.
+This is a generic cleanup series.
 
-Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-Tested-by: Ratna Deepthi Kudaravalli <quic_rkudarv@quicinc.com>
----
- Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+v2:
+ - Remove the "soundwire: stream: uniquify dev_err() logs" patch
 
-diff --git a/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
-index ccf1b1d..be5c60a 100644
---- a/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
-+++ b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
-@@ -35,6 +35,9 @@ properties:
-   "#size-cells":
-     const: 0
- 
-+  "#sound-dai-cells":
-+    const: 0
-+
- patternProperties:
-   "^dai-link@[0-9a-f]$":
-     description:
+Pierre-Louis Bossart (4):
+  soundwire: stream: use consistent pattern for freeing buffers
+  soundwire: bus: remove sdw_defer argument in sdw_transfer_defer()
+  soundwire: cadence: use directly bus sdw_defer structure
+  soundwire: cadence: further simplify low-level xfer_msg_defer()
+    callback
+
+ drivers/soundwire/bus.c            | 12 +++++-------
+ drivers/soundwire/bus.h            |  3 +--
+ drivers/soundwire/cadence_master.c | 20 ++++++++++----------
+ drivers/soundwire/cadence_master.h |  5 +----
+ drivers/soundwire/stream.c         |  8 ++++----
+ include/linux/soundwire/sdw.h      |  6 +++---
+ 6 files changed, 24 insertions(+), 30 deletions(-)
+
 -- 
-2.7.4
+2.25.1
 
