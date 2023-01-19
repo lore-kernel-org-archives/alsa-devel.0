@@ -4,80 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78432C004D4
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 16:28:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E830EC00A5A
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 Jan 2023 16:37:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8AC332DCB;
-	Thu, 19 Jan 2023 17:27:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AC332DCB
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1EE1DF5;
+	Thu, 19 Jan 2023 17:36:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1EE1DF5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674145699;
-	bh=EzV80YrxebRUHuKIKvpev2GAI8oUOLaQkTdDBDXUvOI=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1674146221;
+	bh=7BqGXbp+0MXrBCi9UBVE06meqnRc4ODle+NYJ7NGtkk=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=eaoww7WNqpbN/48xAVF2U1zsytRsnqiICYA/rNoB8ytCaMax1KSVrcyqLyeq3dEMz
-	 tXEEaTtEgilXv5VRATBa6Ci0dP8rnCcL9kH+nz8TYXbnyw2QBZ0gMAmEZ02nIvgHhS
-	 uajpXnyLRjznJKrFBJ2deU/rLeOycVX2TPxGLCcA=
+	b=mCkHZ38VGT/L24mir4p64dl940c9GFwMviY3l2C0Y1bLEpZJzSgfbnD2N8HhlLfye
+	 PJWY2JsH+3+vqXVeT06XM7/H3zqALEd5Mk6z92aMsSYIOba6OghDQbR3iRWPGUdHfK
+	 QKzq7zUUnpudLWh1x+AJMnmPlh/WdQmnGBLzh54E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 373DDF8025D;
-	Thu, 19 Jan 2023 17:27:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5E98CF804DE;
+	Thu, 19 Jan 2023 17:36:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9A94EF8047B; Thu, 19 Jan 2023 17:27:27 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id 70A49F804EC; Thu, 19 Jan 2023 17:36:09 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5014CF8024D
- for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 17:27:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5014CF8024D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10AF2F80083
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2023 17:36:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10AF2F80083
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=EmWpQzIY
+ header.s=Intel header.b=dpkpA/7K
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674145646; x=1705681646;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=EzV80YrxebRUHuKIKvpev2GAI8oUOLaQkTdDBDXUvOI=;
- b=EmWpQzIYBA+WNRAVjZA35VywAci1qD6G9DixpQq91kzFu/IQVb8p45dh
- zM0dtbabCMYbUf06SFs1XeetQd/muG2aLb5qT2x0rxeHVN9YOdjT6Ydh7
- 14eA2Fp5OogVtNH8g1YaZnQd5RvOfd4BvNYXAvDfT7RblmH7zjtBuyrNY
- wOJzOvAWB1xAJKYdgAcYn1qWfD46p047jGpId3Bt6KanmDTfKrqmfBal7
- 9unHBbL75alzRXZX/HwehmNcXB1CkeIXfDC85XtGRjq5Yf5olnrqHXLz2
- VxgcXp7gPZq01MgTkc/yufs7snsUrS/2PlnElJp643XBSrEtYYWMKr2H0 Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10595"; a="326614550"
-X-IronPort-AV: E=Sophos;i="5.97,229,1669104000"; d="scan'208";a="326614550"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Jan 2023 08:27:23 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10595"; a="905577374"
-X-IronPort-AV: E=Sophos;i="5.97,229,1669104000"; d="scan'208";a="905577374"
-Received: from sahamad-mobl1.amr.corp.intel.com (HELO [10.213.187.97])
- ([10.213.187.97])
- by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Jan 2023 08:27:22 -0800
-Message-ID: <c45d34ba-1aee-16aa-1ccf-79c43c8c4ed4@linux.intel.com>
-Date: Thu, 19 Jan 2023 10:27:21 -0600
+ t=1674146166; x=1705682166;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=7BqGXbp+0MXrBCi9UBVE06meqnRc4ODle+NYJ7NGtkk=;
+ b=dpkpA/7Ksr7C/3v7Ge+LB+Ju7XzfiZJvS8YHDlgetRgLSzsx6i/7L6dK
+ AqP7jsFPKem1Lt1HIA5D5B4khegsvVn/QOvtKywwX3gbifwGicmRKccAc
+ bYK0bHGSFAObNmlqCBYCWK7m67231Jl3D3uSbVzYy/Q2IPn/gUOtTsWlO
+ VBVGo/V76+uxlaLjeh12VYVxHVLjckmFy5XjfLhPaWvonbJ4/9WB/rm70
+ YnJYwbksnHm0UO0p9qUXvYdxmf6drg5Kr7YfMUJQq+nQonC5dOb+40rEq
+ rBC6Wsh3FB5L2tBUAz0MsXsqrOcGFx7MsD5Xw+1kfSrjlBGifvT/T/GwB w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10595"; a="323029595"
+X-IronPort-AV: E=Sophos;i="5.97,229,1669104000"; d="scan'208";a="323029595"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Jan 2023 08:36:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10595"; a="662162976"
+X-IronPort-AV: E=Sophos;i="5.97,229,1669104000"; d="scan'208";a="662162976"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by fmsmga007.fm.intel.com with ESMTP; 19 Jan 2023 08:35:58 -0800
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH 1/4] ASoC: Intel: sof_rt5682: always set dpcm_capture for
+ amplifiers
+Date: Thu, 19 Jan 2023 18:34:56 +0200
+Message-Id: <20230119163459.2235843-2-kai.vehmanen@linux.intel.com>
+X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230119163459.2235843-1-kai.vehmanen@linux.intel.com>
+References: <20230119163459.2235843-1-kai.vehmanen@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH v2 6/8] ASoC: cs42l42: Add Soundwire support
-Content-Language: en-US
-To: Richard Fitzgerald <rf@opensource.cirrus.com>,
- Stefan Binding <sbinding@opensource.cirrus.com>,
- Mark Brown <broonie@kernel.org>
-References: <20230118160452.2385494-1-sbinding@opensource.cirrus.com>
- <20230118160452.2385494-7-sbinding@opensource.cirrus.com>
- <33130336-b2ce-330e-fdec-166eee977e13@linux.intel.com>
- <418f6b73-b5ac-8d87-a856-3413ec103f91@opensource.cirrus.com>
- <6ea1b85f-22e2-8744-9638-6321a5a21acf@linux.intel.com>
- <32fd1755-0128-8f32-9a88-a92f1647f903@opensource.cirrus.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <32fd1755-0128-8f32-9a88-a92f1647f903@opensource.cirrus.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,20 +82,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com,
+ lgirdwood@gmail.com, peter.ujfalusi@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ daniel.baluta@nxp.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
->> You lost me here. Are you saying the soundwire bus clock is only known
->> in the prepare stage?
->>
-> 
-> hw_params() doesn't know the Soundwire bus clock so it can't do the
-> check. We need to wait until we have both the sample rate and the
-> chosen SWIRE_CLK.
+The amplifier may provide hardware support for I/V feedback, or
+alternatively the firmware may generate an echo reference attached to
+the SSP and dailink used for the amplifier.
 
-Yes, makes sense. I forgot that all the stream management and bandwidth
-allocation takes place in the prepare stage at the dailink level, and
-the dai prepare happens after that. Thanks for the clarification.
+To avoid any issues with invalid/NULL substreams in the latter case,
+always unconditionally set dpcm_capture.
+
+Link: https://github.com/thesofproject/linux/issues/4083
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+---
+ sound/soc/intel/boards/sof_rt5682.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 2eabc4b0fafa..71a11d747622 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -761,8 +761,6 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 			links[id].num_codecs = ARRAY_SIZE(max_98373_components);
+ 			links[id].init = max_98373_spk_codec_init;
+ 			links[id].ops = &max_98373_ops;
+-			/* feedback stream */
+-			links[id].dpcm_capture = 1;
+ 		} else if (sof_rt5682_quirk &
+ 				SOF_MAX98360A_SPEAKER_AMP_PRESENT) {
+ 			max_98360a_dai_link(&links[id]);
+@@ -789,6 +787,9 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 		links[id].platforms = platform_component;
+ 		links[id].num_platforms = ARRAY_SIZE(platform_component);
+ 		links[id].dpcm_playback = 1;
++		/* feedback stream or firmware-generated echo reference */
++		links[id].dpcm_capture = 1;
++
+ 		links[id].no_pcm = 1;
+ 		links[id].cpus = &cpus[id];
+ 		links[id].num_cpus = 1;
+-- 
+2.39.0
+
