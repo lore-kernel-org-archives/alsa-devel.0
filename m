@@ -4,56 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9BE1C05027
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Jan 2023 10:27:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24C9AC25B4E
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Jan 2023 10:28:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F13513088;
-	Fri, 20 Jan 2023 11:27:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F13513088
+	by alsa0.perex.cz (Postfix) with ESMTPS id 144BD3092;
+	Fri, 20 Jan 2023 11:27:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 144BD3092
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674210474;
-	bh=UQbkVhpMTpgnTILbluOV+VuN9hK/Oq7ugvCkZKxXYuo=;
+	s=default; t=1674210479;
+	bh=KwfGMBaU2gWgaVN9Fo8sr/qJSnalTs5cmjKOWtVAOzc=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=arywTU0/zyYSKgcjhAjJ8WvBq28wFI9H7CqW2FjKoD+nQsfL/Y989L6Xuhsv3saXF
-	 sMA1UnO++B/Azzj0IfEpf93Sbqfgy3hJweJo0X0dniI3dxCoLH4W0fRRMwGQ+rIz5X
-	 fgi71Ns+mbIROYvNqnjNrtfxxHhM34xwnimdHXAs=
+	b=qmuC+s8BLkUadHSq1AywmYrJ8gjvaBtvuy6ZFrMVh3G7peFBG71W2Ooa6NibcZ2X2
+	 mH5kQU2qFvtDYe+pi6ynl+F8Zfqde5J6++kU7oL5s/RgHGaBdtg5RK9K2UHUNE8JaY
+	 gtnV9TysNqED/S6FXPJYf/KyvpMtIZZX1X5tHHg8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3774F80549;
-	Fri, 20 Jan 2023 11:26:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A909F80557;
+	Fri, 20 Jan 2023 11:26:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A80CFF80482; Fri, 20 Jan 2023 11:26:11 +0100 (CET)
-Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+ id 42592F80495; Fri, 20 Jan 2023 11:26:12 +0100 (CET)
+Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78985F8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id BCBF0F80495
  for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2023 11:26:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78985F8026D
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCBF0F80495
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=axis.com header.i=@axis.com header.a=rsa-sha256
- header.s=axis-central1 header.b=mXzZx7lv
+ header.s=axis-central1 header.b=g//LtH6e
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=axis.com; q=dns/txt; s=axis-central1; t=1674210366;
  x=1705746366; h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=vpu9tETurwEUff35qr7E5xH/0FKUrT9IUn9FLfI3fJw=;
- b=mXzZx7lv38ll3sBCvwzKA4NuSFEAkOiN+tFn10/pPe5kyUt9tCDtuSPa
- cGLnLlN8NiZz1EACkA2KNj3mB3BISFndQ3TZ/0TpmHXOAfW/WHsJkeNGH
- TBryKQuMxpDvUaVkvx9U1eavtqZzT0aiutZdmM/egE3YeQ804VZpFMb18
- P8dXFnvv/fhg6Y7IL2bmAFEmAi2P+fjdB8xOw/oXgKTwm7f+YKI0dLR17
- gBRFk80m61Eya+XALMRMfxGNuug0YQRUiaR0mkyL7afG0+dlpmXCe9N3g
- ypQsFMyul5k/c/hrdrthy5U/tt4mH5u3fMVqPGJuBAItXmo2qcG+GCX4u g==;
+ bh=zq0C28u4Y8exuvoqKW0nWKnZEuIJ+MuaDC7ZdjB7/+8=;
+ b=g//LtH6ew57MhGS3HqjT2MUmFSpUNbVjiHKfQxr91ObijPPmjacyxhJF
+ bIp62A/1R2+RO3WmZ+gnBzb6W/ZEsT2l2c3tbijKC6TY60tMBoHFp9cDx
+ 6e2V4ri+g7Rv2xq0ccvhDedzYtbr6GZGmJ7SDzUYVAwPKnDVZ691+q4+Y
+ F/tMORo7KbXsT5gUF8u92Z1QTsgEemXJgfA3PtCI3SGNV1kV3DF9zL87u
+ IERBDoij3A2Dnw+Ec3OCPtFcHPpPE7cjE0opvawv0r/h83ui5wQESEYiM
+ 61LIl/2nobzX4nsWXYKo9d/9s8KjgsQMqxHR44tLlOf+kIj8kbB8VZeOs A==;
 From: Astrid Rost <astrid.rost@axis.com>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Jaroslav Kysela
- <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 2/4] ASoC: simple-card-utils: create jack inputs for
- aux_devs
-Date: Fri, 20 Jan 2023 11:25:52 +0100
-Message-ID: <20230120102555.1523394-3-astrid.rost@axis.com>
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring
+ <robh+dt@kernel.org>, Dylan Reid <dgreid@chromium.org>
+Subject: [PATCH v2 4/4] ASoC: dt-bindings: ti,ts3a227e.yaml: add jack-type
+Date: Fri, 20 Jan 2023 11:25:54 +0100
+Message-ID: <20230120102555.1523394-5-astrid.rost@axis.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230120102555.1523394-1-astrid.rost@axis.com>
 References: <20230120102555.1523394-1-astrid.rost@axis.com>
@@ -72,124 +71,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, kernel@axis.com, linux-kernel@vger.kernel.org,
- Astrid Rost <astrid.rost@axis.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@axis.com,
+ linux-kernel@vger.kernel.org, Astrid Rost <astrid.rost@axis.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a generic way to create jack inputs for auxiliary jack detection
-drivers (e.g. via i2c, spi), which are not part of any real codec.
-The simple-card can be used as combining card driver to add the jacks,
-no new one is required.
-
-Create a jack (for input-events) for jack devices in the auxiliary
-device list (aux_devs). A device which returns a valid value on
-get_jack_type counts as jack device; set_jack is required
-to add the jack to the device.
+Add jack-type: Bitmap value of snd_jack_type to allow combining
+card drivers to create a jack for it.
 
 Signed-off-by: Astrid Rost <astrid.rost@axis.com>
 ---
- include/sound/simple_card_utils.h     |  3 ++
- sound/soc/generic/simple-card-utils.c | 49 +++++++++++++++++++++++++++
- sound/soc/generic/simple-card.c       |  4 +++
- 3 files changed, 56 insertions(+)
+ Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index 38590f1ae9ee..a3f3f3aa9e6e 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -69,6 +69,7 @@ struct asoc_simple_priv {
- 	} *dai_props;
- 	struct asoc_simple_jack hp_jack;
- 	struct asoc_simple_jack mic_jack;
-+	struct snd_soc_jack *aux_jacks;
- 	struct snd_soc_dai_link *dai_link;
- 	struct asoc_simple_dai *dais;
- 	struct snd_soc_dai_link_component *dlcs;
-@@ -187,6 +188,8 @@ int asoc_simple_parse_pin_switches(struct snd_soc_card *card,
- int asoc_simple_init_jack(struct snd_soc_card *card,
- 			       struct asoc_simple_jack *sjack,
- 			       int is_hp, char *prefix, char *pin);
-+int asoc_simple_init_aux_jacks(struct asoc_simple_priv *priv,
-+				char *prefix);
- int asoc_simple_init_priv(struct asoc_simple_priv *priv,
- 			       struct link_info *li);
- int asoc_simple_remove(struct platform_device *pdev);
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index e35becce9635..56552a616f21 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -786,6 +786,55 @@ int asoc_simple_init_jack(struct snd_soc_card *card,
- }
- EXPORT_SYMBOL_GPL(asoc_simple_init_jack);
+diff --git a/Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml b/Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml
+index 785930658029..1d949b805f98 100644
+--- a/Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml
++++ b/Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml
+@@ -27,6 +27,14 @@ properties:
+   interrupts:
+     maxItems: 1
  
-+int asoc_simple_init_aux_jacks(struct asoc_simple_priv *priv, char *prefix)
-+{
-+	struct snd_soc_card *card = simple_priv_to_card(priv);
-+	struct snd_soc_component *component;
-+	int found_jack_index = 0;
-+	int type = 0;
-+	int num = 0;
-+	int ret;
++  jack-type:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: Bitmap value of snd_jack_type to allow combining
++      card drivers to create a jack for it. Supported is
++        1 SND_JACK_HEADPHONE
++        2 SND_JACK_MICROPHONE
++    default: 3
 +
-+	if (priv->aux_jacks)
-+		return 0;
-+
-+	for_each_card_auxs(card, component) {
-+		type = snd_soc_component_get_jack_type(component);
-+		if (type > 0)
-+			num++;
-+	}
-+	if (num < 1)
-+		return 0;
-+
-+	priv->aux_jacks = devm_kcalloc(card->dev, num,
-+				       sizeof(struct snd_soc_jack), GFP_KERNEL);
-+	if (!priv->aux_jacks)
-+		return -ENOMEM;
-+
-+	for_each_card_auxs(card, component) {
-+		char id[128];
-+		struct snd_soc_jack *jack;
-+
-+		if (found_jack_index >= num)
-+			break;
-+
-+		type = snd_soc_component_get_jack_type(component);
-+		if (type <= 0)
-+			continue;
-+
-+		/* create jack */
-+		jack = &(priv->aux_jacks[found_jack_index++]);
-+		snprintf(id, sizeof(id), "%s-jack", component->name);
-+		ret = snd_soc_card_jack_new(card, id, type, jack);
-+		if (ret)
-+			continue;
-+
-+		(void)snd_soc_component_set_jack(component, jack, NULL);
-+	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(asoc_simple_init_aux_jacks);
-+
- int asoc_simple_init_priv(struct asoc_simple_priv *priv,
- 			  struct link_info *li)
- {
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index feb55b66239b..e98932c16754 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -623,6 +623,10 @@ static int simple_soc_probe(struct snd_soc_card *card)
- 	if (ret < 0)
- 		return ret;
- 
-+	ret = asoc_simple_init_aux_jacks(priv, PREFIX);
-+	if (ret < 0)
-+		return ret;
-+
- 	return 0;
- }
- 
+   ti,micbias:
+     $ref: /schemas/types.yaml#/definitions/uint32
+     description: Intended MICBIAS voltage (datasheet section 9.6.7).
 -- 
 2.30.2
 
