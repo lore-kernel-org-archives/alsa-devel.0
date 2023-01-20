@@ -4,62 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10113C25B4E
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Jan 2023 14:22:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE2F0C25B4E
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Jan 2023 14:22:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D1AB172C;
-	Fri, 20 Jan 2023 15:21:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D1AB172C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2F88F32DA;
+	Fri, 20 Jan 2023 15:22:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F88F32DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674224537;
-	bh=OzqkOWe+GX45jl34R/pYv9s2VnU3gO/7GdQELKZWks0=;
+	s=default; t=1674224572;
+	bh=O2DLXPO6MhsyTB89fm7zdE+nWTN52RPQ1lrd1S6Urk4=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=HXlO79HdBb2akSbrc13ljksKR17I3AiwXrLJ7HKdCTkEGv4gK5I0gv4+Ezz2/oNNQ
-	 JTQGpIFb67ttFREgZJiAxTd6uHl7/sNqwiFg9SZApk0/OSQYPGSmdqwUDMg4gAHWMf
-	 BhS4xoMCDUrK4YRflUGPam9ktR8UhtyLBZjhxrKY=
+	b=FwneykQ4TrE4+7gsdxYiYTp9fnd5moUgr0VMhp/5h+IKRucFIXTAfM2VeffIb7sMD
+	 bN1qei3mrxQtbZU53UhJRrTPSRKRUcOQYyGQ5WxHaMpGVfBI8llfzSuFxjlURq4Rfi
+	 qwp4JhLqV/rZ7XcXYZQlDvsULq0SnqfMbesDLSvs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6DC3F8024D;
-	Fri, 20 Jan 2023 15:21:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED32FF80482;
+	Fri, 20 Jan 2023 15:21:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B0FDAF800F0; Fri, 20 Jan 2023 15:21:25 +0100 (CET)
+ id DE101F804A9; Fri, 20 Jan 2023 15:21:29 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0710F800F0
- for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2023 15:21:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0710F800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 336CFF80495;
+ Fri, 20 Jan 2023 15:21:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 336CFF80495
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=fTZXdfxL
+ header.s=k20201202 header.b=jfjbZD97
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id BF86161F75;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id F0E1961F5F;
+ Fri, 20 Jan 2023 14:21:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF4F1C433AA;
  Fri, 20 Jan 2023 14:21:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FE6EC43445;
- Fri, 20 Jan 2023 14:21:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674224481;
- bh=OzqkOWe+GX45jl34R/pYv9s2VnU3gO/7GdQELKZWks0=;
+ s=k20201202; t=1674224485;
+ bh=O2DLXPO6MhsyTB89fm7zdE+nWTN52RPQ1lrd1S6Urk4=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=fTZXdfxLC1wVnOH0mJpQPV2+aegUb8OzZ2l4pMeYMsRJAbkJw375wydCWsW2c6E55
- idsMtV+2sT5o15JUlOdfkzdFnag42IYOHTarnqCBhxJCbac6uWTwD/HnG37JAYgwUK
- bZE69XhvJYXT9ubST/NxSIdbP/rATG6xuoQLad4AgRBrzPPZ+Sg1Hxy8gsgaKUo3Ov
- xakKqnvYj47RUmhu16lLGkK5HqOfn0dYmoyJh1LMS//QR7txTZHd4NczusShX3Hn+R
- ljCr51CGX0iFmm8OkPEu5KX9nNfNS859OVTrpLNT+wOHE7udKkA8ztscYAOTz6Qwhk
- DBgsNsuEd13fQ==
+ b=jfjbZD97KEtplE21rjRbIcyoiwp5hrkruQsWya6xv6RQci0elOvNi5Ifmzbr2RVdF
+ wURh1Rv2KBUZr2DXAwio5iDiaVARvDfl44X7swPAYttuY1syxPoz4mE5ivXgmXg96P
+ 0R9qM8eqjtymzsjW4SLibjSbBPk5RWE84xWr9czyfp11C46icQH1WBDzgKsT0zjrLb
+ eb9kLXDf1H7z1qxlexKGQ6/7bX7x2Zn5laDebck6bsFRjI5rNv4dvDhh/0/inBxJpt
+ W7B4Z2HKXOYDIT6cVRtN+3eSPjUtZ45o2hhL62wSJpDaXQAScJhgGFUufLSC96o7vh
+ qHkWYq0vd7b1A==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>
-In-Reply-To: <20230119163459.2235843-1-kai.vehmanen@linux.intel.com>
-References: <20230119163459.2235843-1-kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH 0/4] ASoC: Intel: set dpcm_capture for amps
-Message-Id: <167422447892.1273927.10648144665692801773.b4-ty@kernel.org>
-Date: Fri, 20 Jan 2023 14:21:18 +0000
+To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, 
+ Dan Carpenter <error27@gmail.com>
+In-Reply-To: <Y8laruWOEwOC/dx9@kili>
+References: <Y8laruWOEwOC/dx9@kili>
+Subject: Re: [PATCH] ASoC: SOF: ipc4-mtrace: prevent underflow in
+ sof_ipc4_priority_mask_dfs_write()
+Message-Id: <167422448135.1273927.7280697250336650251.b4-ty@kernel.org>
+Date: Fri, 20 Jan 2023 14:21:21 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -76,25 +78,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: pierre-louis.bossart@linux.intel.com, yung-chuan.liao@linux.intel.com,
- peter.ujfalusi@linux.intel.com, ranjani.sridharan@linux.intel.com,
- lgirdwood@gmail.com, daniel.baluta@nxp.com
+Cc: alsa-devel@alsa-project.org,
+ Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rander Wang <rander.wang@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ kernel-janitors@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ cip-dev <cip-dev@lists.cip-project.org>, Daniel Baluta <daniel.baluta@nxp.com>,
+ sound-open-firmware@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 19 Jan 2023 18:34:55 +0200, Kai Vehmanen wrote:
-> This series addresses problems with echo reference devices
-> reported in:
-> "[BUG][ADL-N] Kernel panic when echo reference stream is opened"
-> https://github.com/thesofproject/linux/issues/4083
+On Thu, 19 Jan 2023 17:58:54 +0300, Dan Carpenter wrote:
+> The "id" comes from the user.  Change the type to unsigned to prevent
+> an array underflow.
 > 
-> Pierre-Louis Bossart (4):
->   ASoC: Intel: sof_rt5682: always set dpcm_capture for amplifiers
->   ASoC: Intel: sof_cs42l42: always set dpcm_capture for amplifiers
->   ASoC: Intel: sof_nau8825: always set dpcm_capture for amplifiers
->   ASoC: Intel: sof_ssp_amp: always set dpcm_capture for amplifiers
 > 
-> [...]
 
 Applied to
 
@@ -102,14 +103,8 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: Intel: sof_rt5682: always set dpcm_capture for amplifiers
-      commit: 324f065cdbaba1b879a63bf07e61ca156b789537
-[2/4] ASoC: Intel: sof_cs42l42: always set dpcm_capture for amplifiers
-      commit: e0a52220344ab7defe25b9cdd58fe1dc1122e67c
-[3/4] ASoC: Intel: sof_nau8825: always set dpcm_capture for amplifiers
-      commit: 36a71a0eb7cdb5ccf4b0214dbd41ab00dff18c7f
-[4/4] ASoC: Intel: sof_ssp_amp: always set dpcm_capture for amplifiers
-      commit: b3c00316a2f847791bae395ea6dd91aa7a221471
+[1/1] ASoC: SOF: ipc4-mtrace: prevent underflow in sof_ipc4_priority_mask_dfs_write()
+      commit: ea57680af47587397f5005d7758022441ed66d54
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
