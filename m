@@ -4,64 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE2F0C25B4E
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Jan 2023 14:22:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26F59C25B4E
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Jan 2023 14:23:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F88F32DA;
-	Fri, 20 Jan 2023 15:22:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F88F32DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF36332D7;
+	Fri, 20 Jan 2023 15:22:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF36332D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674224572;
-	bh=O2DLXPO6MhsyTB89fm7zdE+nWTN52RPQ1lrd1S6Urk4=;
+	s=default; t=1674224581;
+	bh=PtxDICPJNZhUoxVkgqifR1jH9tzOzpv7vQmz1llEeR0=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=FwneykQ4TrE4+7gsdxYiYTp9fnd5moUgr0VMhp/5h+IKRucFIXTAfM2VeffIb7sMD
-	 bN1qei3mrxQtbZU53UhJRrTPSRKRUcOQYyGQ5WxHaMpGVfBI8llfzSuFxjlURq4Rfi
-	 qwp4JhLqV/rZ7XcXYZQlDvsULq0SnqfMbesDLSvs=
+	b=gdGHC5Lci9RGSolcRh5xf0RdoRDULCjtoGnARC3CnnV/oG8aBv+wgZuoU9neCVUt5
+	 I6Q4AtXh+SHJy69cjdoJhJfGVHHW2HQCD6QVk9U5dABdOyr+nhk6H+03iV+MAjwl6Q
+	 hWqCpL8Mr535RrMcIdhw86KiE7qKQ4ke1EtxUxBI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ED32FF80482;
-	Fri, 20 Jan 2023 15:21:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7BCD2F80543;
+	Fri, 20 Jan 2023 15:21:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DE101F804A9; Fri, 20 Jan 2023 15:21:29 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id C0623F80482; Fri, 20 Jan 2023 15:21:30 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 336CFF80495;
- Fri, 20 Jan 2023 15:21:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 336CFF80495
+ by alsa1.perex.cz (Postfix) with ESMTPS id EE59EF80482
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2023 15:21:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE59EF80482
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=jfjbZD97
+ header.s=k20201202 header.b=iYtgVZmY
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id F0E1961F5F;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4598961F8B;
+ Fri, 20 Jan 2023 14:21:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB4F7C433D2;
  Fri, 20 Jan 2023 14:21:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF4F1C433AA;
- Fri, 20 Jan 2023 14:21:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674224485;
- bh=O2DLXPO6MhsyTB89fm7zdE+nWTN52RPQ1lrd1S6Urk4=;
+ s=k20201202; t=1674224486;
+ bh=PtxDICPJNZhUoxVkgqifR1jH9tzOzpv7vQmz1llEeR0=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=jfjbZD97KEtplE21rjRbIcyoiwp5hrkruQsWya6xv6RQci0elOvNi5Ifmzbr2RVdF
- wURh1Rv2KBUZr2DXAwio5iDiaVARvDfl44X7swPAYttuY1syxPoz4mE5ivXgmXg96P
- 0R9qM8eqjtymzsjW4SLibjSbBPk5RWE84xWr9czyfp11C46icQH1WBDzgKsT0zjrLb
- eb9kLXDf1H7z1qxlexKGQ6/7bX7x2Zn5laDebck6bsFRjI5rNv4dvDhh/0/inBxJpt
- W7B4Z2HKXOYDIT6cVRtN+3eSPjUtZ45o2hhL62wSJpDaXQAScJhgGFUufLSC96o7vh
- qHkWYq0vd7b1A==
+ b=iYtgVZmYQ8jcsz84XJl25nw3AQE4Ml8w9FEPM2vZW1nFPOLUAevTbKE1qzM9bgTHt
+ yiNxcHuDK//clXtj58DEvFLSKHvZjeaueTd9aVIReqoYbT3xQdAVqkTfN0x0iIB/Bn
+ Oi2jc4V+nG+GrANjsDaCfxav1im3V55hsFQrSzRcOcAkx7YcP3dHcAK+gBevCjbrSm
+ wBUYt6zwk4O9/7+STirMAIJDA+F+fuEGrA9xdstdfioNeC9t1E59C+pSz+myWAE3pz
+ hJEVYOVkEcjVs8fdOJ3awGI0qBJA7x+hNdH1wRYbRXjtGcL86wao1FTxO72zv/59yi
+ 7qugkfbnva+Mw==
 From: Mark Brown <broonie@kernel.org>
-To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, 
- Dan Carpenter <error27@gmail.com>
-In-Reply-To: <Y8laruWOEwOC/dx9@kili>
-References: <Y8laruWOEwOC/dx9@kili>
-Subject: Re: [PATCH] ASoC: SOF: ipc4-mtrace: prevent underflow in
- sof_ipc4_priority_mask_dfs_write()
-Message-Id: <167422448135.1273927.7280697250336650251.b4-ty@kernel.org>
-Date: Fri, 20 Jan 2023 14:21:21 +0000
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87k01hlnqj.wl-kuninori.morimoto.gx@renesas.com>
+References: <87k01hlnqj.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: hdmi-codec: zero clear HDMI pdata
+Message-Id: <167422448552.1273927.11924063921389370740.b4-ty@kernel.org>
+Date: Fri, 20 Jan 2023 14:21:25 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -78,22 +75,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org,
- Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Rander Wang <rander.wang@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- kernel-janitors@vger.kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- cip-dev <cip-dev@lists.cip-project.org>, Daniel Baluta <daniel.baluta@nxp.com>,
- sound-open-firmware@alsa-project.org
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 19 Jan 2023 17:58:54 +0300, Dan Carpenter wrote:
-> The "id" comes from the user.  Change the type to unsigned to prevent
-> an array underflow.
+On Fri, 20 Jan 2023 06:32:52 +0000, Kuninori Morimoto wrote:
+> commit f77a066f4ed307d ("ASoC: hdmi-codec: Allow playback and capture
+> to be disabled") added new no_i2s_playback/capture.
+> We need to zero clear HDMI pdata first, otherwise unexpected flag
+> will be added.
 > 
 > 
 
@@ -103,8 +93,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: ipc4-mtrace: prevent underflow in sof_ipc4_priority_mask_dfs_write()
-      commit: ea57680af47587397f5005d7758022441ed66d54
+[1/1] ASoC: hdmi-codec: zero clear HDMI pdata
+      commit: 54650eb17132a099100264caf59bb2210f65085a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
