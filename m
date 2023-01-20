@@ -4,58 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24C9AC25B4E
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 Jan 2023 10:28:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DF1EC05027
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 Jan 2023 10:28:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 144BD3092;
-	Fri, 20 Jan 2023 11:27:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 144BD3092
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F0F03084;
+	Fri, 20 Jan 2023 11:27:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F0F03084
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674210479;
-	bh=KwfGMBaU2gWgaVN9Fo8sr/qJSnalTs5cmjKOWtVAOzc=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=qmuC+s8BLkUadHSq1AywmYrJ8gjvaBtvuy6ZFrMVh3G7peFBG71W2Ooa6NibcZ2X2
-	 mH5kQU2qFvtDYe+pi6ynl+F8Zfqde5J6++kU7oL5s/RgHGaBdtg5RK9K2UHUNE8JaY
-	 gtnV9TysNqED/S6FXPJYf/KyvpMtIZZX1X5tHHg8=
+	s=default; t=1674210497;
+	bh=p4LzubjMQglDcaTXu0qtsi5u0D8PGikogBiUpkcLbQQ=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=JiH+ZuS5bz3r3i8DleRanljcI2QdfA1vZ3wycWkEOAN0rg9yJ2anM0eT1e/ZROlm2
+	 VlS38BW/iKguTWuYAoobbEdkuNNfqi0kDwWeJC4Ch+sr4SEVjJY/PrOaCpoEKk1vmR
+	 0d/HxW0e5S273pHQv39/chpjBP3tylvv36r/nUWU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A909F80557;
+	by alsa1.perex.cz (Postfix) with ESMTP id E21EBF8055A;
 	Fri, 20 Jan 2023 11:26:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42592F80495; Fri, 20 Jan 2023 11:26:12 +0100 (CET)
-Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
+ id E149EF8053C; Fri, 20 Jan 2023 11:26:12 +0100 (CET)
+Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BCBF0F80495
- for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2023 11:26:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCBF0F80495
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F173F80246
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2023 11:26:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F173F80246
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=axis.com header.i=@axis.com header.a=rsa-sha256
- header.s=axis-central1 header.b=g//LtH6e
+ header.s=axis-central1 header.b=FgJmG2TV
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; q=dns/txt; s=axis-central1; t=1674210366;
- x=1705746366; h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=zq0C28u4Y8exuvoqKW0nWKnZEuIJ+MuaDC7ZdjB7/+8=;
- b=g//LtH6ew57MhGS3HqjT2MUmFSpUNbVjiHKfQxr91ObijPPmjacyxhJF
- bIp62A/1R2+RO3WmZ+gnBzb6W/ZEsT2l2c3tbijKC6TY60tMBoHFp9cDx
- 6e2V4ri+g7Rv2xq0ccvhDedzYtbr6GZGmJ7SDzUYVAwPKnDVZ691+q4+Y
- F/tMORo7KbXsT5gUF8u92Z1QTsgEemXJgfA3PtCI3SGNV1kV3DF9zL87u
- IERBDoij3A2Dnw+Ec3OCPtFcHPpPE7cjE0opvawv0r/h83ui5wQESEYiM
- 61LIl/2nobzX4nsWXYKo9d/9s8KjgsQMqxHR44tLlOf+kIj8kbB8VZeOs A==;
+ d=axis.com; q=dns/txt; s=axis-central1; t=1674210364;
+ x=1705746364;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=RvZNX3FYVF5mNab85ida8KMtTEb9QvKaCGvhzjrKy1Q=;
+ b=FgJmG2TVE3nXMzsNpX7xsebUF1SSGut5ChAf9ML82pQzgczKCJFr6MP5
+ 8TPKjva3pZ5RWESo3enYLHYXKgNeWi/bcA2vAGG/Wsktiawc2FP+VewFq
+ p7z4iqdt83nMPzrYQN0LJXz9R0j64AMuHaZ2xhJ9+4sIP7En4yWb3ITMB
+ E2MniFq60vVit39aDaVeP/kV1U2nMR+CKcyHBaS+Q30MvZITtRZo4C0Yd
+ u6ZPLQ3Ksxfv4687IgivG4FRk+xEgyHoQcdwLpRuET4v2/QcAAeQGFRc+
+ runSM/11+61HP9aurxIKoqcBXn5Hv6NG5gRi5RnEJ8iWa/Px17qqcjcvK w==;
 From: Astrid Rost <astrid.rost@axis.com>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring
- <robh+dt@kernel.org>, Dylan Reid <dgreid@chromium.org>
-Subject: [PATCH v2 4/4] ASoC: dt-bindings: ti,ts3a227e.yaml: add jack-type
-Date: Fri, 20 Jan 2023 11:25:54 +0100
-Message-ID: <20230120102555.1523394-5-astrid.rost@axis.com>
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Subject: [PATCH v2 0/4] ASoC: simple-card-utils: create jack inputs for
+ aux_devs
+Date: Fri, 20 Jan 2023 11:25:50 +0100
+Message-ID: <20230120102555.1523394-1-astrid.rost@axis.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230120102555.1523394-1-astrid.rost@axis.com>
-References: <20230120102555.1523394-1-astrid.rost@axis.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -71,38 +69,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@axis.com,
- linux-kernel@vger.kernel.org, Astrid Rost <astrid.rost@axis.com>
+Cc: alsa-devel@alsa-project.org, kernel@axis.com, linux-kernel@vger.kernel.org,
+ Astrid Rost <astrid.rost@axis.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add jack-type: Bitmap value of snd_jack_type to allow combining
-card drivers to create a jack for it.
+Add a generic way to create jack inputs for auxiliary jack detection
+drivers (e.g. via i2c, spi), which are not part of any real codec.
+The simple-card can be used as combining card driver to add the jacks,
+no new one is required.
 
-Signed-off-by: Astrid Rost <astrid.rost@axis.com>
----
- Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Create a jack (for input-events) for jack devices in the auxiliary
+device list (aux_devs). A device which returns a valid value on
+get_jack_type counts as jack device; set_jack is required
+to add the jack to the device.
 
-diff --git a/Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml b/Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml
-index 785930658029..1d949b805f98 100644
---- a/Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml
-+++ b/Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml
-@@ -27,6 +27,14 @@ properties:
-   interrupts:
-     maxItems: 1
- 
-+  jack-type:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: Bitmap value of snd_jack_type to allow combining
-+      card drivers to create a jack for it. Supported is
-+        1 SND_JACK_HEADPHONE
-+        2 SND_JACK_MICROPHONE
-+    default: 3
-+
-   ti,micbias:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     description: Intended MICBIAS voltage (datasheet section 9.6.7).
+v1 -> v2: Auxiliary jack drivers return the correct snd_jack_type with
+ the function: get_jack_type.
+- No devicetree changes in simple-card.
+- soc-component: changed name to: get_jack_type.
+- simple-jack-utils: updated algorithm to add jack devices.
+   A device which returns a valid value on get_jack_type counts as jack
+   device
+- ts3a227e: added devicetree property jack-type, added NULL check for jack.
+
+Astrid Rost (4):
+  [PATCH v2 1/4] ASoC: soc-component: add get_jack_type
+  [PATCH v2 2/4] ASoC: simple-card-utils: create jack inputs for aux_devs
+  [PATCH v2 3/4] ASoC: ts3a227e: add set_jack and get_jack_type
+  [PATCH v2 4/4] ASoC: dt-bindings: ti,ts3a227e.yaml: add jack-type
+
+ .../bindings/sound/ti,ts3a227e.yaml           |  8 +++
+ include/sound/simple_card_utils.h             |  3 ++
+ include/sound/soc-component.h                 |  2 +
+ sound/soc/codecs/ts3a227e.c                   | 29 ++++++++++-
+ sound/soc/generic/simple-card-utils.c         | 49 +++++++++++++++++++
+ sound/soc/generic/simple-card.c               |  4 ++
+ sound/soc/soc-component.c                     | 20 ++++++++
+ 7 files changed, 114 insertions(+), 1 deletion(-)
+
 -- 
 2.30.2
 
