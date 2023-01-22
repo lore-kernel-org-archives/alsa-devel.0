@@ -4,60 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0908BC38142
-	for <alsa-devel@archiver.kernel.org>; Sun, 22 Jan 2023 21:38:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC46CC38142
+	for <alsa-devel@archiver.kernel.org>; Sun, 22 Jan 2023 21:38:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36E8341C0;
-	Sun, 22 Jan 2023 22:37:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36E8341C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25FC041F2;
+	Sun, 22 Jan 2023 22:37:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25FC041F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674423478;
-	bh=+kFCj2QmQqaqkQtiLOFfyT0VJOQjHQOx/aIvyvGdoLs=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=N1aYSMLOb8UgtUUNIPzX6hsSk0zvfzg2MZb8uVm3plL87418zckwcq8RLECX2k1Kf
-	 RRssbnbxm4yEVoa5AncJK2UoY54yYhHxLmRzoH1yLLNwixDAbkCHGyKRVmOA1x+3Z7
-	 5sjermYO99uJxeg+jzeQPGrKKj2TjdQhdro19Ezc=
+	s=default; t=1674423504;
+	bh=ZUIDqsXYDWng6KDCJdrB2KTu4/airR/GrI1+yJu4p2s=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=ITPaVlGLOv503QmOg0riD1YzWnIsazRN9TRsuoWgvWiQVGy9FdQsADj4kxWl/2Ckb
+	 J8BZnLb7+7EtPndS8bdUYsFfqyfWENF0Wv7uYjigh9CA21ohV3mUzpHar9pHyztBbh
+	 G5U7TIjBGDqgxGncVVc45QrolK0EN54nrsv4exLc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD3FDF8025D;
-	Sun, 22 Jan 2023 22:37:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 813BAF8030F;
+	Sun, 22 Jan 2023 22:37:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF897F8027D; Sun, 22 Jan 2023 22:37:05 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 9D446F803DC; Sun, 22 Jan 2023 22:37:09 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 40BBAF80254
- for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2023 22:36:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40BBAF80254
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B852F8030F
+ for <alsa-devel@alsa-project.org>; Sun, 22 Jan 2023 22:37:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B852F8030F
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qdLvj6w6
+ header.s=k20201202 header.b=XsrsXrKI
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 0A62EB80B59;
- Sun, 22 Jan 2023 21:36:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB7E3C433D2;
- Sun, 22 Jan 2023 21:36:53 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id BBF7F60C14;
+ Sun, 22 Jan 2023 21:37:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A919FC433A0;
+ Sun, 22 Jan 2023 21:37:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674423415;
- bh=+kFCj2QmQqaqkQtiLOFfyT0VJOQjHQOx/aIvyvGdoLs=;
- h=From:To:Cc:Subject:Date:From;
- b=qdLvj6w6684w6d/X9zYg2BFZL54G4t/TuI0Ru07Dj8kOCPAVoymyXtBQGBX0RPJgO
- vFWVq0fHA9L+aPQE+N5MOg+6YTtOcP4dTjZmtyPALYNYrzyNnIhD9D4Cg+s1dLoWRn
- MTJ0fd1Mc4eMZu8t+o6Ry0xiUg+4vXPCoYAc9LUiLo09CPpbxmYMwjiHz020m3S/KF
- r0/s0x+hi+U9rpO1ef709JJU1EFLq9kdQwc68nhiBS1+PYEhvp8sB6o3uWPwvR8rBs
- YtF0hwHJxaiHHqqishvWLDP0UhZxVIOo4CWWoXdjGwNsbqYkC59+fkVed2OcOVwT1C
- rPI2g6AG2BcFw==
+ s=k20201202; t=1674423421;
+ bh=ZUIDqsXYDWng6KDCJdrB2KTu4/airR/GrI1+yJu4p2s=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=XsrsXrKIAUtZmAAMreBA5zeu9qGmaIvptQd7BHSUVq3oZ/dBinIaw/laDwuNGtxCk
+ V8jLuMzBCJRH8j4EHUHJ7B/DhbmQPERpsNPiqYGOet2oMlXP9rfILrnX5riPIEQ/MC
+ jJ4CHWE5psudgqzE936x5NsC3Mv3rYsO0ioeuBnRJdLTVTl3a4M4hYVjVkK8Pk0qfA
+ Nv3yUdMwhOhdlytomyynx1raLjLjMd3TPixFv/Q/WZLWm62BfhCGibjqNlSW43C8mY
+ 9O0x6RnIAVlNSgLiy4AXLlb6Yxb0T21TDYwX4RGAp/h+fmj8PJeRivKq6vtb71PtQm
+ ERx5nm3QuhOBQ==
 From: SeongJae Park <sj@kernel.org>
 To: Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v2 0/8] Docs: Add missing SPDX license identifiers of
-Date: Sun, 22 Jan 2023 21:36:42 +0000
-Message-Id: <20230122213650.187710-1-sj@kernel.org>
+Subject: [PATCH v2 8/8] Docs/sound/index: Add missing SPDX License Identifier
+Date: Sun, 22 Jan 2023 21:36:50 +0000
+Message-Id: <20230122213650.187710-9-sj@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230122213650.187710-1-sj@kernel.org>
+References: <20230122213650.187710-1-sj@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -72,51 +74,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
- David Airlie <airlied@gmail.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- linux-input@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
- Jean Delvare <jdelvare@suse.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, linux-hwmon@vger.kernel.org,
- SeongJae Park <sj@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- linux-crypto@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
- Alex Deucher <alexdeucher@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- "David S. Miller" <davem@davemloft.net>
+Cc: alsa-devel@alsa-project.org, SeongJae Park <sj@kernel.org>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some subsystem documents are missing SPDX license identifiers on index
-files.  This patchset adds those.
+Add missing SPDX License Identifier for sound documentation index file.
 
-Changes from v1
-(https://lore.kernel.org/lkml/20230114194741.115855-2-sj@kernel.org/)
-- Separate from index file content changes
-- Separate patch for each subsystem doc (Alex Deucher)
-- Use MIT license for gpu (Alex Deucher)
+Signed-off-by: SeongJae Park <sj@kernel.org>
+---
+ Documentation/sound/index.rst | 2 ++
+ 1 file changed, 2 insertions(+)
 
-SeongJae Park (8):
-  Docs/crypto/index: Add missing SPDX License Identifier
-  Docs/driver-api/index: Add missing SPDX License Identifier
-  Docs/gpu/index: Add missing SPDX License Identifier
-  Docs/hwmon/index: Add missing SPDX License Identifier
-  Docs/input/index: Add missing SPDX License Identifier
-  Docs/mm/index: Add missing SPDX License Identifier
-  Docs/scheduler/index: Add missing SPDX License Identifier
-  Docs/sound/index: Add missing SPDX License Identifier
-
- Documentation/crypto/index.rst     | 2 ++
- Documentation/driver-api/index.rst | 2 ++
- Documentation/gpu/index.rst        | 2 ++
- Documentation/hwmon/index.rst      | 2 ++
- Documentation/input/index.rst      | 2 ++
- Documentation/mm/index.rst         | 2 ++
- Documentation/scheduler/index.rst  | 2 ++
- Documentation/sound/index.rst      | 2 ++
- 8 files changed, 16 insertions(+)
-
+diff --git a/Documentation/sound/index.rst b/Documentation/sound/index.rst
+index 5abed5fc6485..7e67e12730d3 100644
+--- a/Documentation/sound/index.rst
++++ b/Documentation/sound/index.rst
+@@ -1,3 +1,5 @@
++.. SPDX-License-Identifier: GPL-2.0
++
+ =============================
+ Sound Subsystem Documentation
+ =============================
 -- 
 2.25.1
 
