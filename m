@@ -4,56 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D77FDC38142
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Jan 2023 14:00:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E72D6C38142
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Jan 2023 14:01:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 692B73339;
-	Mon, 23 Jan 2023 14:59:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 692B73339
+	by alsa0.perex.cz (Postfix) with ESMTPS id 69ABD3349;
+	Mon, 23 Jan 2023 15:00:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69ABD3349
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674482445;
-	bh=UQbkVhpMTpgnTILbluOV+VuN9hK/Oq7ugvCkZKxXYuo=;
+	s=default; t=1674482471;
+	bh=ZJdrDMWZHinBYd+RS22Hea5lmsp141B457M7qSe9N00=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=rFPFt5016X8h+c0lKTXpc2Mk858jo8EEiNePlWHRfZ8TaEi/ymeTfeTXToc3O7fo1
-	 YC+bn8M4GKazrLFDBCEQ6l1+jgSKFWzNheeAE+sL0HEQD59rblNrtsakyF3+hP/5Cc
-	 R/66YdlgwXQP1GsnRSY0Q9Md3RB/K+1a6z0Mb4K4=
+	b=R4uVuKkL+XlSeV9g1tT6RCtQ4V3WtQW5A2PQozMpdCrwELh23/Eg/yYwL2ZebzQtC
+	 BnychYmkP2vsESCM20CJPaPzZ2Rj8bg9vyQxGYR168SWiBAc+C/lpelk7ei9wDtG9Z
+	 L7607fpvYG/3fFCcAz0He7D8/ewRxIGJN7iFm3PE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05693F80515;
-	Mon, 23 Jan 2023 14:59:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A74CF80551;
+	Mon, 23 Jan 2023 14:59:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4609F804FC; Mon, 23 Jan 2023 14:59:25 +0100 (CET)
+ id 9CADAF80552; Mon, 23 Jan 2023 14:59:30 +0100 (CET)
 Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F67FF804C2
- for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2023 14:59:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F67FF804C2
+ by alsa1.perex.cz (Postfix) with ESMTPS id D1BFAF804A9
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2023 14:59:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1BFAF804A9
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=axis.com header.i=@axis.com header.a=rsa-sha256
- header.s=axis-central1 header.b=WtsP1yoQ
+ header.s=axis-central1 header.b=Xpj+Tf+h
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=axis.com; q=dns/txt; s=axis-central1; t=1674482362;
  x=1706018362; h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=vpu9tETurwEUff35qr7E5xH/0FKUrT9IUn9FLfI3fJw=;
- b=WtsP1yoQHRwbD4IBUaz5mInityEHanWm1iZmvSIuCVvsU0bNsGT1i2DC
- NKYs59oUHDz9AsFgBpsqOP1t+y8/02Rzb87ogTMIvaNN+nk2dqJJU0jgp
- GCTbPIKHZoTSDfbdIDXwx4AVxEj0L1cGoLCiDh1F90nPhmYPXRiN5PtMH
- XBBW3ax1W0s/sXFrYmSEpTZXdi/T6zn5u4u4FOojSGnwqDRDJDT4LFAUb
- EDG/lgUy67Hlj/O4im/6OAANhix16/GysvDt2TOQuIp8BPyNkBZtqKkUU
- fXhcN6Zu+2QWycd1pgs4GAZM9rZbGtUi2s1aIXA1KlVKy3+PxBDORNIiM Q==;
+ bh=/WXW21EG+pqy+W42CXni76Bfh0YGb++llEepThhlRRc=;
+ b=Xpj+Tf+hYVqNjKNlm+uDiP/w1DlgHReVmygj2di+WQbazhthScS3q+Q5
+ omdzQGCgquKVMtvXfGr4BG1iWtpLdDe6kHuLaTzmwG9x8cXJQljQyFXbz
+ 0Oeb5Uwk4FKelygsSX+qg+pa4wY/VpEQOcAh1+01IV73vApk0SLqde8n4
+ jyOwFs6jkAY/g/diO47NQg9XQb+3juNGQI73ZMq/yCM/ZwTudiXU9rbXo
+ NpHffamWWZRPWcPqomkIFk+BJ1gotO0z3s/acCtZN13hZGTySEsNq8dru
+ SfpkIxpnIgecE/H48owexTg0/AyoB1X8wpvk0wfKpk+XYoI6XA2MoczA6 w==;
 From: Astrid Rost <astrid.rost@axis.com>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Jaroslav Kysela
  <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v3 2/3] ASoC: simple-card-utils: create jack inputs for
- aux_devs
-Date: Mon, 23 Jan 2023 14:59:12 +0100
-Message-ID: <20230123135913.2720991-3-astrid.rost@axis.com>
+Subject: [PATCH v3 1/3] ASoC: soc-component: add get_jack_type
+Date: Mon, 23 Jan 2023 14:59:11 +0100
+Message-ID: <20230123135913.2720991-2-astrid.rost@axis.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230123135913.2720991-1-astrid.rost@axis.com>
 References: <20230123135913.2720991-1-astrid.rost@axis.com>
@@ -77,119 +76,67 @@ Cc: alsa-devel@alsa-project.org, kernel@axis.com, linux-kernel@vger.kernel.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a generic way to create jack inputs for auxiliary jack detection
-drivers (e.g. via i2c, spi), which are not part of any real codec.
-The simple-card can be used as combining card driver to add the jacks,
-no new one is required.
-
-Create a jack (for input-events) for jack devices in the auxiliary
-device list (aux_devs). A device which returns a valid value on
-get_jack_type counts as jack device; set_jack is required
-to add the jack to the device.
+Add function to return the jack type of snd_jack_types.
+This allows a generic card driver to add a jack with the specified
+type.
 
 Signed-off-by: Astrid Rost <astrid.rost@axis.com>
 ---
- include/sound/simple_card_utils.h     |  3 ++
- sound/soc/generic/simple-card-utils.c | 49 +++++++++++++++++++++++++++
- sound/soc/generic/simple-card.c       |  4 +++
- 3 files changed, 56 insertions(+)
+ include/sound/soc-component.h |  2 ++
+ sound/soc/soc-component.c     | 20 ++++++++++++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index 38590f1ae9ee..a3f3f3aa9e6e 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -69,6 +69,7 @@ struct asoc_simple_priv {
- 	} *dai_props;
- 	struct asoc_simple_jack hp_jack;
- 	struct asoc_simple_jack mic_jack;
-+	struct snd_soc_jack *aux_jacks;
- 	struct snd_soc_dai_link *dai_link;
- 	struct asoc_simple_dai *dais;
- 	struct snd_soc_dai_link_component *dlcs;
-@@ -187,6 +188,8 @@ int asoc_simple_parse_pin_switches(struct snd_soc_card *card,
- int asoc_simple_init_jack(struct snd_soc_card *card,
- 			       struct asoc_simple_jack *sjack,
- 			       int is_hp, char *prefix, char *pin);
-+int asoc_simple_init_aux_jacks(struct asoc_simple_priv *priv,
-+				char *prefix);
- int asoc_simple_init_priv(struct asoc_simple_priv *priv,
- 			       struct link_info *li);
- int asoc_simple_remove(struct platform_device *pdev);
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index e35becce9635..56552a616f21 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -786,6 +786,55 @@ int asoc_simple_init_jack(struct snd_soc_card *card,
- }
- EXPORT_SYMBOL_GPL(asoc_simple_init_jack);
+diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
+index c26ffb033777..3203d35bc8c1 100644
+--- a/include/sound/soc-component.h
++++ b/include/sound/soc-component.h
+@@ -98,6 +98,7 @@ struct snd_soc_component_driver {
+ 		       int source, unsigned int freq_in, unsigned int freq_out);
+ 	int (*set_jack)(struct snd_soc_component *component,
+ 			struct snd_soc_jack *jack,  void *data);
++	int (*get_jack_type)(struct snd_soc_component *component);
  
-+int asoc_simple_init_aux_jacks(struct asoc_simple_priv *priv, char *prefix)
+ 	/* DT */
+ 	int (*of_xlate_dai_name)(struct snd_soc_component *component,
+@@ -384,6 +385,7 @@ int snd_soc_component_set_pll(struct snd_soc_component *component, int pll_id,
+ 			      unsigned int freq_out);
+ int snd_soc_component_set_jack(struct snd_soc_component *component,
+ 			       struct snd_soc_jack *jack, void *data);
++int snd_soc_component_get_jack_type(struct snd_soc_component *component);
+ 
+ void snd_soc_component_seq_notifier(struct snd_soc_component *component,
+ 				    enum snd_soc_dapm_type type, int subseq);
+diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
+index e12f8244242b..3cd6952212e1 100644
+--- a/sound/soc/soc-component.c
++++ b/sound/soc/soc-component.c
+@@ -256,6 +256,26 @@ int snd_soc_component_set_jack(struct snd_soc_component *component,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_component_set_jack);
+ 
++/**
++ * snd_soc_component_get_jack_type
++ * @component: COMPONENTs
++ *
++ * Returns the jack type of the component
++ * This can either be the supported type or one read from
++ * devicetree with the property: jack-type.
++ */
++int snd_soc_component_get_jack_type(
++	struct snd_soc_component *component)
 +{
-+	struct snd_soc_card *card = simple_priv_to_card(priv);
-+	struct snd_soc_component *component;
-+	int found_jack_index = 0;
-+	int type = 0;
-+	int num = 0;
-+	int ret;
++	int ret = -ENOTSUPP;
 +
-+	if (priv->aux_jacks)
-+		return 0;
++	if (component->driver->get_jack_type)
++		ret = component->driver->get_jack_type(component);
 +
-+	for_each_card_auxs(card, component) {
-+		type = snd_soc_component_get_jack_type(component);
-+		if (type > 0)
-+			num++;
-+	}
-+	if (num < 1)
-+		return 0;
-+
-+	priv->aux_jacks = devm_kcalloc(card->dev, num,
-+				       sizeof(struct snd_soc_jack), GFP_KERNEL);
-+	if (!priv->aux_jacks)
-+		return -ENOMEM;
-+
-+	for_each_card_auxs(card, component) {
-+		char id[128];
-+		struct snd_soc_jack *jack;
-+
-+		if (found_jack_index >= num)
-+			break;
-+
-+		type = snd_soc_component_get_jack_type(component);
-+		if (type <= 0)
-+			continue;
-+
-+		/* create jack */
-+		jack = &(priv->aux_jacks[found_jack_index++]);
-+		snprintf(id, sizeof(id), "%s-jack", component->name);
-+		ret = snd_soc_card_jack_new(card, id, type, jack);
-+		if (ret)
-+			continue;
-+
-+		(void)snd_soc_component_set_jack(component, jack, NULL);
-+	}
-+	return 0;
++	return soc_component_ret(component, ret);
 +}
-+EXPORT_SYMBOL_GPL(asoc_simple_init_aux_jacks);
++EXPORT_SYMBOL_GPL(snd_soc_component_get_jack_type);
 +
- int asoc_simple_init_priv(struct asoc_simple_priv *priv,
- 			  struct link_info *li)
+ int snd_soc_component_module_get(struct snd_soc_component *component,
+ 				 void *mark, int upon_open)
  {
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index feb55b66239b..e98932c16754 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -623,6 +623,10 @@ static int simple_soc_probe(struct snd_soc_card *card)
- 	if (ret < 0)
- 		return ret;
- 
-+	ret = asoc_simple_init_aux_jacks(priv, PREFIX);
-+	if (ret < 0)
-+		return ret;
-+
- 	return 0;
- }
- 
 -- 
 2.30.2
 
