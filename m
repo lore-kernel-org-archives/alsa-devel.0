@@ -4,80 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7764C25B4E
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Jan 2023 16:45:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23D0CC25B4E
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Jan 2023 16:54:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6EC0C84C;
-	Tue, 24 Jan 2023 17:44:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EC0C84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86D0D84D;
+	Tue, 24 Jan 2023 17:53:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86D0D84D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674578729;
-	bh=XMXNG98wU4htDggDkSsJGSj0yk+o5fnOoyh609u/lE4=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=YBFuzUqaRzBlM2HJjcxm3WnVF1qS8+3/nOoljBSjfTQd69EcJ/Rg/3WEGsa2pzrG7
-	 2AdeAbniF7G3nNRMKmSkRrwYLkhS7uVfYbzqeL0og9GD3CG2UCchSG/Kd4ViCRA/qw
-	 Il1aYglgNA1My9X7p6HIiooIKZnbJWUpavTEThKw=
+	s=default; t=1674579271;
+	bh=/ND5Zk2NzvoM7gqe5Z0zuIdy289pTbCusyo4tdpoHjw=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=K9WYvPPOPRJcuGZECdat+I0WWCMgAiFsLFSuKMn48z44QvTMQdzAbyV8rCcyCl9HW
+	 VCGx4CX87WnqYFNw1V/Q3p2tj1y/hq80aiqMMfolXGyVx9Q5zsuCxd3gp9p2pFLzzR
+	 nnRk6x+0Xc81fFXuhIEfbvpvGQbQQ+Aq9DF9/9R8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A5C6F8025D;
-	Tue, 24 Jan 2023 17:44:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26D93F8025D;
+	Tue, 24 Jan 2023 17:53:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A58D6F8027D; Tue, 24 Jan 2023 17:44:38 +0100 (CET)
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com
- [IPv6:2607:f8b0:4864:20::b2a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ id 6FA8FF804C2; Mon, 23 Jan 2023 23:22:00 +0100 (CET)
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D6FFCF801D5
- for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2023 17:44:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6FFCF801D5
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=mbuki-mvuki.org header.i=@mbuki-mvuki.org
- header.a=rsa-sha256 header.s=google header.b=fz85swFz
-Received: by mail-yb1-xb2a.google.com with SMTP id p141so16830602ybg.12
- for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2023 08:44:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mbuki-mvuki.org; s=google;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=XMXNG98wU4htDggDkSsJGSj0yk+o5fnOoyh609u/lE4=;
- b=fz85swFzU0ss1AfQjWcKxeMogdi0W5nmAmHB7WwodY7UPv1tLI5xiES1H8MCdh8IEs
- CkKjTGYyGWljWa5dOc5/pY4tHJGSXQT58jUd6eutQohPSAnlTan7mCBlZdvZs+70KlSY
- fyQfUftaVHcemFs5zbYCwZiSHdUcotOa0wpyvnQ9X9wwINnisLMGJOfa98fvwx4RswMk
- mBj+wueCJOEMPxE3rBJrDiYvpC4AswkX1of2xColA5/KLB02miN9MaVM0+RV4aEWJlxB
- efrYKC7lKzI9UpV0evLazCLazri0Up2zxV8M3lzSAYzvUd3IArr5QE+IxhZLyXdPxDNy
- 2Waw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=XMXNG98wU4htDggDkSsJGSj0yk+o5fnOoyh609u/lE4=;
- b=GVhMth/5MMyFKhOTdYqOhEoe3+GTJlYLr9JPSXi92/SmcvAAWItG3r7vymXszDsYVp
- XqBgEjsFoXM/2EJior8CZ+CzQ767bs2LW1zoSUv++E0IM1HPNbOWbeYSs9ee8PO/s9dH
- acmoLf8OQ/By8872iBp6lVUenn2lAMqDjVNImRVgh8jdf8lIsaksS0P/HzjPvtYCI3Vz
- wqFoDClo2m7R62+d1pFBeiWO0iybpVEDOJ/Xi6jAt7sVCxh9OTBdLn/u6K8dQSeBBRDs
- 1D7qKx8BNNqenVczsSj0nH949SmNthhmmpE6IWQG0vaNbsHlkncUo7vxHJfAuqDu7VN0
- AIMA==
-X-Gm-Message-State: AFqh2kpRI8QfGrLdxjmryk2fVXv9bpK65u7GUDAG6n5c3fqMekYaaD9O
- R3NvjYOYhCyOgj+sRst5+bC9e1oT7Od5FWev22CngQ==
-X-Google-Smtp-Source: AMrXdXumHJ/HmMjlOuoJ/Z1EKCDzDbWR5RBKerE3pke2AT4dHNhq+1o39m2kt8ynuHKw9CpI+3JVgSvl7qGw7M2hbDs=
-X-Received: by 2002:a5b:592:0:b0:7ed:9cee:464 with SMTP id
- l18-20020a5b0592000000b007ed9cee0464mr3500184ybp.194.1674578672547; 
- Tue, 24 Jan 2023 08:44:32 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6E8F3F800FB
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2023 23:21:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E8F3F800FB
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ secure) header.d=riseup.net header.i=@riseup.net header.a=rsa-sha256
+ header.s=squak header.b=cnIYJMCU
+Received: from fews1.riseup.net (fews1-pn.riseup.net [10.0.1.83])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
+ client-signature RSA-PSS (2048 bits) client-digest SHA256)
+ (Client CN "mail.riseup.net", Issuer "R3" (not verified))
+ by mx1.riseup.net (Postfix) with ESMTPS id 4P14Mg2gjvzDqfh;
+ Mon, 23 Jan 2023 22:21:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+ t=1674512511; bh=/ND5Zk2NzvoM7gqe5Z0zuIdy289pTbCusyo4tdpoHjw=;
+ h=From:To:Cc:Subject:Date:From;
+ b=cnIYJMCUbhxK138sVMKXFR2s+iyLTawKEOLZPE5l5TV94m++4ZwjQjHekMyKde6Ks
+ 1woKd1mnGSI/RZg6rPtEazFbXHD7k3ksaXH00xRx+yUUmMjES4He19ej2RyC4Ewm9h
+ S1XXpRTTsN+dTv8T8hx5FRVHIDK7j/I4h+ceTlJg=
+X-Riseup-User-ID: 67473FD76F195408FF5FA3ED3A46999B0018E685C6C660A0AF3F5F9F2B07AC32
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+ by fews1.riseup.net (Postfix) with ESMTPSA id 4P14Md6Djyz5vRl;
+ Mon, 23 Jan 2023 22:21:49 +0000 (UTC)
+From: Victor Shyba <victor1984@riseup.net>
+To: perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: hda/realtek: Add Acer Predator PH315-54
+Date: Mon, 23 Jan 2023 19:21:29 -0300
+Message-Id: <20230123222129.17589-1-victor1984@riseup.net>
 MIME-Version: 1.0
-References: <CANSNSoUqROMDVAVb9ZFQbxRdBEAg7k86YHcyihp6hjoEokti6Q@mail.gmail.com>
- <47d687e3-50e4-967e-3c4a-846cfa4e3755@linux.intel.com>
-In-Reply-To: <47d687e3-50e4-967e-3c4a-846cfa4e3755@linux.intel.com>
-From: Jesse Hathaway <jesse@mbuki-mvuki.org>
-Date: Tue, 24 Jan 2023 10:44:21 -0600
-Message-ID: <CANSNSoWedQyTwSQHVrPz3u-YLs1yp94ioGepDiJOqEtOm3TVdg@mail.gmail.com>
-Subject: Re: Intel sof-hda-dsp breaks suspend after using Pro Audio UCM
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Tue, 24 Jan 2023 17:53:39 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,13 +74,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org
+Cc: Victor Shyba <victor1984@riseup.net>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jan 24, 2023 at 10:32 AM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
-> can you please file an issue here:
-> https://github.com/thesofproject/linux/issues
+Same issue as SP513-54N: Headset microphone does not work without
+ALC255_FIXUP_ACER_MIC_NO_PRESENCE fixup.
 
-done, https://github.com/thesofproject/linux/issues/4151, thanks!
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=211853
+Signed-off-by: Victor Shyba <victor1984@riseup.net>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6fab7c8fc..5b628fd33 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9202,6 +9202,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x142b, "Acer Swift SF314-42", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x1430, "Acer TravelMate B311R-31", ALC256_FIXUP_ACER_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x1466, "Acer Aspire A515-56", ALC255_FIXUP_ACER_HEADPHONE_AND_MIC),
++	SND_PCI_QUIRK(0x1025, 0x1534, "Acer Predator PH315-54", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
+ 	SND_PCI_QUIRK(0x1028, 0x053c, "Dell Latitude E5430", ALC292_FIXUP_DELL_E7X),
+ 	SND_PCI_QUIRK(0x1028, 0x054b, "Dell XPS one 2710", ALC275_FIXUP_DELL_XPS),
+-- 
+2.30.2
+
