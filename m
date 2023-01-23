@@ -4,77 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6C34C05027
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Jan 2023 16:51:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC389C38142
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Jan 2023 17:08:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5D3C82E;
-	Mon, 23 Jan 2023 17:50:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5D3C82E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4BD8D820;
+	Mon, 23 Jan 2023 18:07:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BD8D820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674492686;
-	bh=zqSr7sLBWMaG66a5DCNVRWx7XolcA+9TxO5OXQLe0DQ=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=Zpghto+8bWVqVXyXa62uX/cmcJDIOeduzqCe8wnyZt8WaUESNoALrPcBImHz21tMq
-	 QJZ3GuVrGfmepGxSN3T6JRmO2nU9Yb6OCko/sn4+ewbCqlWECHaminASQuQt7TZZGK
-	 QTvE53pE4rKwOa+un9v/78WGfFssyY9cCa8pHCNY=
+	s=default; t=1674493718;
+	bh=linyEMMKVnwdNpIfOTxbWKlr9UXsR7vPfyhlpCETtKA=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=g2OclOmVQcij61Pn3VIjk1teO+/X2WWI6GaC79Kafo8o/UYFq+irBiRXRg8MOG9ik
+	 DCdCskmyXd/c4Zy9bvKOdm+OPG+kx6+mqEyf0Niq7/ZEnCrYDn/irL24vGEieBawMY
+	 X9kbh0pJHjJ/dyYz2+mwJz1LVx1GTrbJqeL+JCuI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C50BF80549;
-	Mon, 23 Jan 2023 17:50:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5212F801D5;
+	Mon, 23 Jan 2023 18:07:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16D50F80542; Mon, 23 Jan 2023 17:50:01 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 40903F804A9; Mon, 23 Jan 2023 18:07:47 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 928FAF801D5
- for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2023 17:49:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 928FAF801D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF528F80132
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2023 18:07:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF528F80132
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=hBFPFsym
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 30N91JmA009174; Mon, 23 Jan 2023 10:49:51 -0600
+ header.s=PODMain02222019 header.b=FRHblMtJ
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 30NAP6G4007057; Mon, 23 Jan 2023 11:07:41 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=EEhuc1uSnv3B2TkErgB0IZM1Fy5T36RVXG2x8hfUnXE=;
- b=hBFPFsymmu3H+/BHZj3a529128yyGXpK8EB+hgapYnvSQKMhHyJqLf5KrYRjcCeZqjU7
- em+qzvG0wW0CKavGbkXclYwnxJUEFawB9BDF0/apmiikl7VOgSu1FmR1ZJOU9mX8muQQ
- PDe+7w3pTHh0fUySXP0MWWgqwTGHEfYqPve9Q9C4RJig9U2rnVK7uTRRzgESpGcOznZJ
- 4JCQ0o6UMEsmZLYrolRfmg0Id+HTUv/kGVsH+2je397tmFhgWqZNGhaJLIjy68aMaf+8
- d5X1t4vjxlJl9hh+17iOfYshunl7WFKys8HJ1fcGLv1XrJiUdejOvmnJsEHLwYSpDKQt 2w== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3n8dbsknrn-1
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=Bypk8m0B4ClrOqlNPEZdWHWuLQ2YgA0UrBqYq4ljdFs=;
+ b=FRHblMtJ7yjNbdGP+/ItfSm78VVOtgAzYKziZhe8CJ5OJyobd2ZXUc8/GxY0AwRP6FnY
+ HtaDkPJHd1/xtymk6XhL3dDCjsdcB+yAvNOhaFgX2QDafhq7alOv0REODueeAeSkE1Dh
+ bws4GEVM4SqDSML3tvZOy8kYDUBNEOwhiL6peUjqNlNwzLHgvjO+k3FHNRBU+RDxhbQv
+ YqePpzzy8GBvaLrnu5P9rA8WL0DM28y7SEOX25FXUg/c3wHUiFqwnguPRCdpDlfpqobR
+ Pp9NUiIampq/FVIQJFdqgBHrYgbtu1pWaG6wki8ZH6L+NC7eGwG/ueYBCJtHvu63lkfa og== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3n8eb5ucr3-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 23 Jan 2023 10:49:51 -0600
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Mon, 23 Jan 2023 11:07:41 -0600
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Mon, 23 Jan
- 2023 10:49:49 -0600
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.21 via
- Frontend Transport; Mon, 23 Jan 2023 10:49:49 -0600
-Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
- [198.90.251.127])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 460382C5;
- Mon, 23 Jan 2023 16:49:49 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
- <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>
-Subject: [PATCH v2 0/2] soundwire: Remove redundant zeroing of page registers
-Date: Mon, 23 Jan 2023 16:49:47 +0000
-Message-ID: <20230123164949.245898-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+ 2023 11:07:39 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.7 via Frontend Transport; Mon, 23 Jan 2023 11:07:39 -0600
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2477011CB;
+ Mon, 23 Jan 2023 17:07:39 +0000 (UTC)
+Date: Mon, 23 Jan 2023 17:07:39 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 2/2] soundwire: bus: Allow SoundWire peripherals to
+ register IRQ handlers
+Message-ID: <20230123170739.GZ36097@ediswmail.ad.cirrus.com>
+References: <20230119165104.3433290-1-ckeepax@opensource.cirrus.com>
+ <20230119165104.3433290-2-ckeepax@opensource.cirrus.com>
+ <c05a6791-96a7-2b10-d353-eb7b316aefc8@linux.intel.com>
+ <20230120095941.GL36097@ediswmail.ad.cirrus.com>
+ <881088ad-95d7-2462-20d2-72a6a9d3ba68@linux.intel.com>
+ <20230123145353.GX36097@ediswmail.ad.cirrus.com>
+ <034245f8-50b7-e801-7961-58c77dbc00b1@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: G-ubMUt4tlVURYgmRyjxWCcoLjCi4wnn
-X-Proofpoint-GUID: G-ubMUt4tlVURYgmRyjxWCcoLjCi4wnn
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <034245f8-50b7-e801-7961-58c77dbc00b1@linux.intel.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: 6yliXTqvAPLsr3X1LppXAYUUHQe5QsKw
+X-Proofpoint-ORIG-GUID: 6yliXTqvAPLsr3X1LppXAYUUHQe5QsKw
 X-Proofpoint-Spam-Reason: safe
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -88,43 +96,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-kernel@vger.kernel.org, vkoul@kernel.org, sanyog.r.kale@intel.com,
+ yung-chuan.liao@linux.intel.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Writing zero to the page registers after each message transaction can add
-up to a lot of overhead for codecs that need to transfer large amount of
-data - for example a firmware download.
+On Mon, Jan 23, 2023 at 09:50:15AM -0600, Pierre-Louis Bossart wrote:
+> On 1/23/23 08:53, Charles Keepax wrote:
+> > On Fri, Jan 20, 2023 at 10:20:50AM -0600, Pierre-Louis Bossart wrote:
+> >> On 1/20/23 03:59, Charles Keepax wrote:
+> >>> On Thu, Jan 19, 2023 at 11:12:04AM -0600, Pierre-Louis Bossart wrote:
+> >>>> There should be an explanation and something checking that both are not
+> >>>> used concurrently.
+> >>>
+> >>> I will try to expand the explanation a litte, but I dont see any
+> >>> reason to block calling both handlers, no ill effects would come
+> >>> for a driver having both and it is useful if any soundwire
+> >>> specific steps are needed that arn't on other control buses.
+> >>
+> >> I think it's problematic if the peripheral tries to wake-up the manager
+> >> from clock-stop with both an in-band wake (i.e. drive the data line
+> >> high) and a separate GPIO-based interrupt. It's asking for trouble IMHO.
+> >> We spent hours in the MIPI team to make sure there were no races between
+> >> the manager-initiated restarts and peripheral-initiated restarts, adding
+> >> a 3rd mechanism in the mix gives me a migraine already.
+> > 
+> > Apologies but I am struggling see why this has any bearing on
+> > the case of a device that does both an in-band and out-of-band
+> > wake. The code we are adding in this patch will only be called in the
+> > in-band case. handle_nested_irq doesn't do any hardware magic or
+> > schedule any threads, it just calls a function that was provided
+> > when the client called request_threaded_irq. The only guarantee
+> > of atomicity you have on the interrupt_callback is sdw_dev_lock
+> > and that is being held across both calls after the patch.
+> > 
+> > Could you be a little more specific on what you mean by this
+> > represents a 3rd mechanism, to me this isn't a new mechanism just
+> > an extra callback? Say for example this patch added an
+> > interrupt_callback_early to sdw_slave_ops that is called just
+> > before interrupt_callback.
+> 
+> Well, the main concern is exiting the clock-stop. That is handled by the
+> manager and could be done
+> a) as the result of the framework deciding that something needs to be
+> done (typically as a result of user/applications starting a stream)
+> b) by the device with an in-band wake in case of e.g. jack detection or
+> acoustic events detected
+> c) same as b) but with a separate out-of-band interrupt.
+> 
+> I'd like to make sure b) and c) are mutually-exclusive options, and that
+> the device will not throw BOTH an in-band wake and an external interrupt.
 
-There's no spec reason I can see for this zeroing. The page registers are
-only used for a paged address. The bus code uses a non-paged address for
-registers in page 0. It always writes the page registers at the start of
-a paged transaction.
+I think this is the bit I don't follow why does this patch have
+anything to do with whether b) and c) are mutually-exclusive
+options?
 
-If this zeroing was a workaround for anything, let me know and I will
-re-implement the zeroing as a quirk that can be enabled only when it is
-necessary.
+This patch lets you register an IRQ handler to the in-band IRQs,
+it has nothing to do with whether you register an IRQ handler to
+some out of band IRQ and there is nothing in the current
+framework that will prevent someone doing that. Adding a
+check that forces someone to choose between using
+handle_nested_irq or interrupt_callback will also have no
+bearing on whether they attach an IRQ handler to an out-of-band
+IRQ.
 
-Changes since v1:
-- Reworded the commit message to patch #1:
-  - say that this is for devices that support paging
-  - mention bit 15 as the paging flag
-  - split a long sentence into two sentences.
-
-No code changes.
-
-Richard Fitzgerald (2):
-  soundwire: bus: Don't zero page registers after every transaction
-  soundwire: bus: Remove unused reset_page_addr() callback
-
- drivers/soundwire/bus.c             | 23 -----------------------
- drivers/soundwire/cadence_master.c  | 14 --------------
- drivers/soundwire/cadence_master.h  |  3 ---
- drivers/soundwire/intel_auxdevice.c |  1 -
- include/linux/soundwire/sdw.h       |  3 ---
- 5 files changed, 44 deletions(-)
-
--- 
-2.30.2
-
+Thanks,
+Charles
