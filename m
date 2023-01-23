@@ -4,75 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5A47C05027
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Jan 2023 16:15:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05CC0C38142
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Jan 2023 16:26:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC9891286;
-	Mon, 23 Jan 2023 17:14:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC9891286
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00896E7D;
+	Mon, 23 Jan 2023 17:25:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00896E7D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674490548;
-	bh=Zj6dZXVKyi7v1vWPqQ8TT9JhDWYQ5GuMB9xvwkmrmTM=;
+	s=default; t=1674491200;
+	bh=5F+pTXbbpk7pf7RgZ9qcmjhgtU0br58EY++sDU2Qxrg=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=keuFpYYy2Qt+rR6CL8+bbrxAbcC4zROdoxYd0AQPaLcTQ2fAKfhInxmq4nRIh5dW1
-	 qnWZBl6mnROebc+S7uKYOrDVr9opF2zwQK/dpRAKXh/Crh3HxaR3+WhgANBG7QGVli
-	 kBGJKuQYO/poafUjiesr81Q4FqmQNJPyPpiVocSI=
+	b=PuAlHWYNoMlyFw1qWtKtA9ncQHtneXLIuh3auwXCdrRdcW/O7gk+ADVaCtupEhEIY
+	 ksQh+8RO2iHjJ8/AAf3VHZreiRFcsjrZEAjOqkBnqRovm67VyCwXRKlABsplTQ+/mE
+	 4sIEsde5yFgr4gP3d6gCoNbKiXo5powV57EKMCVA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7BF5CF804A9;
-	Mon, 23 Jan 2023 17:14:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9CFEBF804A9;
+	Mon, 23 Jan 2023 17:25:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 89870F804C2; Mon, 23 Jan 2023 17:14:55 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 9ED44F804C2; Mon, 23 Jan 2023 17:25:48 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AD84AF80132
- for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2023 17:14:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD84AF80132
+ by alsa1.perex.cz (Postfix) with ESMTPS id 597B4F80132
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2023 17:25:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 597B4F80132
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=LjwIxI3D
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 30N9hVpC020791; Mon, 23 Jan 2023 10:14:51 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=1o88bM7y7ZwiHr/xlaOTpLn8wYDWcOOL+Uk0R9J+/x4=;
- b=LjwIxI3Di15iZhPhn88y/S+ucmtdxjv1pJK1Q6mkL7ZrRkNrZ4xg0AQuo+6M9ZDoRYCM
- RM7f1x03jHnchHBY0LcvdmtpzQK94WedlJYiEkBvOURE7zI/X5Dq0gxU9bqdNa7uP6xH
- w+B8xp10iS0SS0jw3WrhBw7ZlgwBxb+dhTTh8ituyWsBG0C4ze8uF7nEIQlVD+TcM/WC
- REc/nmzyYIozC2WsUlOwFBmqfnJ4AEkd2nW3XOnVXtAFFQo/DLaXtjbIObHvzh1Cw28d
- eRWzyJZXPgE3l3MwCopyIjNWS9UoGECxgFdrfI8vxXNNhUXmt4fEpGP0xyjOEwuAnal8 Qw== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3n8dbskm26-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 23 Jan 2023 10:14:50 -0600
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Mon, 23 Jan
- 2023 10:14:49 -0600
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.7 via Frontend Transport; Mon, 23 Jan 2023 10:14:49 -0600
-Received: from [198.90.251.127] (edi-sw-dsktp-006.ad.cirrus.com
- [198.90.251.127])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3529CB06;
- Mon, 23 Jan 2023 16:14:49 +0000 (UTC)
-Message-ID: <d77636dc-f239-9780-edca-fa568582c05f@opensource.cirrus.com>
-Date: Mon, 23 Jan 2023 16:14:49 +0000
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=cyxtHvFI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1674491147; x=1706027147;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=5F+pTXbbpk7pf7RgZ9qcmjhgtU0br58EY++sDU2Qxrg=;
+ b=cyxtHvFIfqJz7/vFPOQLNwyR5rNs5ducgU8gpsr4yo+Zpd08JYUNMKQE
+ gKAyYEtXGXBqWxwTgHLcXYgUg2cSWwyA9/vzeHpdW7Njt3NOBpyxQwvqj
+ sIVrcEknR5e6/gYHklqqkJidNNhP9LSKhE2M71HDJ1ccBYhzge3h2WNdZ
+ W21Er61D/dA3W4mRjhhAiwcjZ+U0gJ4NzXx6cUjvSvI2brY2V2f8+eqrM
+ PApUZHioDpafGCr9Aotnbcu3/mmVbaeqHw3/oY7/gtVhlJVGZ3QN/CRUa
+ VFu1A5fqEdNvpVaNA+ZtFKwjgZJMuVH60Wd4JfKTvsQZqZp7fwY2WlYOF Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10599"; a="306436789"
+X-IronPort-AV: E=Sophos;i="5.97,240,1669104000"; d="scan'208";a="306436789"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Jan 2023 08:25:41 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10599"; a="663694296"
+X-IronPort-AV: E=Sophos;i="5.97,240,1669104000"; d="scan'208";a="663694296"
+Received: from rgrachek-mobl.amr.corp.intel.com (HELO [10.212.113.123])
+ ([10.212.113.123])
+ by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Jan 2023 08:25:07 -0800
+Message-ID: <427f4e8a-51a5-7a4b-c2c6-92bc98f6db87@linux.intel.com>
+Date: Mon, 23 Jan 2023 10:25:01 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
+ Firefox/102.0 Thunderbird/102.4.2
 Subject: Re: [PATCH v2 6/8] ASoC: cs42l42: Add Soundwire support
 Content-Language: en-US
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Stefan
- Binding <sbinding@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Stefan Binding <sbinding@opensource.cirrus.com>,
+ Mark Brown <broonie@kernel.org>
 References: <20230118160452.2385494-1-sbinding@opensource.cirrus.com>
  <20230118160452.2385494-7-sbinding@opensource.cirrus.com>
  <33130336-b2ce-330e-fdec-166eee977e13@linux.intel.com>
@@ -82,13 +77,11 @@ References: <20230118160452.2385494-1-sbinding@opensource.cirrus.com>
  <c8a9ff9b-d1d0-1cef-bf51-e7fa247d24f4@linux.intel.com>
  <3bac8055-2e6e-dc53-d143-f493e18a1e43@opensource.cirrus.com>
  <a54bf135-70ba-4c8f-b373-690a9ad8e7ef@linux.intel.com>
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <a54bf135-70ba-4c8f-b373-690a9ad8e7ef@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+ <d77636dc-f239-9780-edca-fa568582c05f@opensource.cirrus.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <d77636dc-f239-9780-edca-fa568582c05f@opensource.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: wS6-L1TODEulp8cHJsKbOZTrHMprJDP1
-X-Proofpoint-GUID: wS6-L1TODEulp8cHJsKbOZTrHMprJDP1
-X-Proofpoint-Spam-Reason: safe
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -106,69 +99,80 @@ Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 23/01/2023 16:05, Pierre-Louis Bossart wrote:
-> 
->>>> It's nicer to do the check in startup() because then the application
->>>> open() will fail cleanly. We could delay until prepare - which is the
->>>> point we really need the hardware to be accessible - and hope the
->>>> hardware enumerated and initialized by that time. But that's not so
->>>> nice from the app point of view.
->>>
->>> Another way to avoid problems is to rely on the codec component .probe
->>> to check if the SoundWire device is initialized before registering a
->>> card.
->>>
->>> I just tried with a system where the ACPI info exposes a codec which is
->>> not connected, it fails nicely. That avoids the pitfalls of creating a
->>> card which isn't functional since all dependencies are not met.
->>>
->>> [   64.616530] snd_soc_sof_sdw:mc_probe: sof_sdw sof_sdw: Entry
->>> [   64.616549] snd_soc_sof_sdw:log_quirks: sof_sdw sof_sdw: quirk
->>> SOF_SDW_PCH_DMIC enabled
->>> [   64.616559] snd_soc_sof_sdw:sof_card_dai_links_create: sof_sdw
->>> sof_sdw: sdw 2, ssp 0, dmic 2, hdmi 0
->>> [   64.616587] snd_soc_sof_sdw:init_dai_link: sof_sdw sof_sdw: create
->>> dai link SDW0-Playback, id 0
->>> [   64.616600] snd_soc_sof_sdw:init_dai_link: sof_sdw sof_sdw: create
->>> dai link SDW0-Capture, id 1
->>> [   64.616607] snd_soc_sof_sdw:init_dai_link: sof_sdw sof_sdw: create
->>> dai link dmic01, id 2
->>> [   64.616614] snd_soc_sof_sdw:init_dai_link: sof_sdw sof_sdw: create
->>> dai link dmic16k, id 3
->>> [   69.757115] rt5682 sdw:0:025d:5682:00: Initialization not complete,
->>> timed out
->>> [   69.757128] rt5682 sdw:0:025d:5682:00: ASoC: error at
->>> snd_soc_component_probe on sdw:0:025d:5682:00: -110
->>> [   69.757224] sof_sdw sof_sdw: ASoC: failed to instantiate card -110
->>> [   69.757734] sof_sdw sof_sdw: snd_soc_register_card failed -110
->>>
->>> see
->>> https://elixir.bootlin.com/linux/latest/source/sound/soc/codecs/rt5682.c#L2927
->>>
->>> I think this is compatible with the device model and bind/unbind, but it
->>> could be improved with the removal of the wait if we had a way to return
->>> -EPROBEDEFER, and have a mechanism to force the deferred probe work to
->>> be triggered when a device actually shows up. It's a generic problem
->>> that the probe cannot always be a synchronous function but may complete
->>> 'later'.
+
+
+On 1/23/23 10:14, Richard Fitzgerald wrote:
+> On 23/01/2023 16:05, Pierre-Louis Bossart wrote:
 >>
->> I see what you've done in your patch, but I had already experimented
->> with this idea and found that the wait_for_completion() can deadlock the
->> Soundwire core.
+>>>>> It's nicer to do the check in startup() because then the application
+>>>>> open() will fail cleanly. We could delay until prepare - which is the
+>>>>> point we really need the hardware to be accessible - and hope the
+>>>>> hardware enumerated and initialized by that time. But that's not so
+>>>>> nice from the app point of view.
+>>>>
+>>>> Another way to avoid problems is to rely on the codec component .probe
+>>>> to check if the SoundWire device is initialized before registering a
+>>>> card.
+>>>>
+>>>> I just tried with a system where the ACPI info exposes a codec which is
+>>>> not connected, it fails nicely. That avoids the pitfalls of creating a
+>>>> card which isn't functional since all dependencies are not met.
+>>>>
+>>>> [   64.616530] snd_soc_sof_sdw:mc_probe: sof_sdw sof_sdw: Entry
+>>>> [   64.616549] snd_soc_sof_sdw:log_quirks: sof_sdw sof_sdw: quirk
+>>>> SOF_SDW_PCH_DMIC enabled
+>>>> [   64.616559] snd_soc_sof_sdw:sof_card_dai_links_create: sof_sdw
+>>>> sof_sdw: sdw 2, ssp 0, dmic 2, hdmi 0
+>>>> [   64.616587] snd_soc_sof_sdw:init_dai_link: sof_sdw sof_sdw: create
+>>>> dai link SDW0-Playback, id 0
+>>>> [   64.616600] snd_soc_sof_sdw:init_dai_link: sof_sdw sof_sdw: create
+>>>> dai link SDW0-Capture, id 1
+>>>> [   64.616607] snd_soc_sof_sdw:init_dai_link: sof_sdw sof_sdw: create
+>>>> dai link dmic01, id 2
+>>>> [   64.616614] snd_soc_sof_sdw:init_dai_link: sof_sdw sof_sdw: create
+>>>> dai link dmic16k, id 3
+>>>> [   69.757115] rt5682 sdw:0:025d:5682:00: Initialization not complete,
+>>>> timed out
+>>>> [   69.757128] rt5682 sdw:0:025d:5682:00: ASoC: error at
+>>>> snd_soc_component_probe on sdw:0:025d:5682:00: -110
+>>>> [   69.757224] sof_sdw sof_sdw: ASoC: failed to instantiate card -110
+>>>> [   69.757734] sof_sdw sof_sdw: snd_soc_register_card failed -110
+>>>>
+>>>> see
+>>>> https://elixir.bootlin.com/linux/latest/source/sound/soc/codecs/rt5682.c#L2927
+>>>>
+>>>> I think this is compatible with the device model and bind/unbind,
+>>>> but it
+>>>> could be improved with the removal of the wait if we had a way to
+>>>> return
+>>>> -EPROBEDEFER, and have a mechanism to force the deferred probe work to
+>>>> be triggered when a device actually shows up. It's a generic problem
+>>>> that the probe cannot always be a synchronous function but may complete
+>>>> 'later'.
+>>>
+>>> I see what you've done in your patch, but I had already experimented
+>>> with this idea and found that the wait_for_completion() can deadlock the
+>>> Soundwire core.
+>>
+>> That's not good. Do you have any logs or explanation on what the
+>> root-cause of this deadlock might be? If something's broken, we might as
+>> well fix it.
 > 
-> That's not good. Do you have any logs or explanation on what the
-> root-cause of this deadlock might be? If something's broken, we might as
-> well fix it.
+> I suspect it might be the big mutex lock around the call to probe(),
+> that I removed in one of my pending patches
+> (https://lore.kernel.org/all/20221121162453.1834170-1-rf@opensource.cirrus.com/)
+> So fixing that might make the problem go away.
+> 
+> Charles just pointed out to me that whether component_probe() is
+> called within probe() depends whether everything needed to create
+> a soundcard is already present. Most likely in my case everything is
+> available and so snd_soc_register_component() immediately calls
+> my component_probe(). So probably in your case not everything is
+> ready and so the call to component_probe() is deferred and you
+> don't see the deadlock.
 
-I suspect it might be the big mutex lock around the call to probe(), 
-that I removed in one of my pending patches
-(https://lore.kernel.org/all/20221121162453.1834170-1-rf@opensource.cirrus.com/)
-So fixing that might make the problem go away.
-
-Charles just pointed out to me that whether component_probe() is
-called within probe() depends whether everything needed to create
-a soundcard is already present. Most likely in my case everything is
-available and so snd_soc_register_component() immediately calls
-my component_probe(). So probably in your case not everything is
-ready and so the call to component_probe() is deferred and you
-don't see the deadlock.
+In the case I tested, the codec driver was probed based on the presence
+of ACPI information and the register component did happen. That means
+all the resources were present for the card to be created, except that
+the codec hardware was not connected to the bus so the initialization
+never happened of course.
