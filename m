@@ -4,67 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA120C05027
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 Jan 2023 16:44:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D58DC05027
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 Jan 2023 16:50:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF3C8E73;
-	Mon, 23 Jan 2023 17:44:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF3C8E73
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20B7F3E7;
+	Mon, 23 Jan 2023 17:49:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20B7F3E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674492293;
-	bh=JmW7ERfPWXKm8wFtciy8l7lBJ/Sw3XypeD7gPISuKyY=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1674492649;
+	bh=+wFIhuQNb979ve7ZqQ0IPd4FrK5IU7jPINk4Ee3yrhg=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=c7W4anPq001XVD/8cUVxXMrc8iDDo2Bub9mDvCAcCPd3JXM7CWBOTLaiEj3zKM2Tt
-	 tdl7v8Lu7rQt8MPzUcOY5p2MBHZcs6LwRJ0s5G+dKShbXAWd44t0EBVBinPUGUD2Ne
-	 w+HlXSV87ym4Soxma4z0PZCb20EF1z8S8W1d7tPE=
+	b=tBjtuNTqOCjqzCaJxOioKUKYCBdYkWvXfoxqBcXu3rLU5w1YuL5rQTH9oljYuHhyA
+	 OB+25iUqGLH0rGX09GfsKvOyicYkUq8mRRQoO5J1Lrkn0Me+QmlgCALVKpI3cwdAKN
+	 nfOmpMDCsxjt9v9Sl5NGn0OP6x+dTaEhKRGSXiOY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 412D0F80548;
-	Mon, 23 Jan 2023 17:43:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B49A5F804C2;
+	Mon, 23 Jan 2023 17:49:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB92CF8053D; Mon, 23 Jan 2023 17:43:09 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 79661F80515
- for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2023 17:43:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79661F80515
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Crjh49DX
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 72BAEF804F3; Mon, 23 Jan 2023 17:49:57 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 256ED60FBD;
- Mon, 23 Jan 2023 16:43:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9503C4339C;
- Mon, 23 Jan 2023 16:43:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674492186;
- bh=JmW7ERfPWXKm8wFtciy8l7lBJ/Sw3XypeD7gPISuKyY=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Crjh49DXCdmPmqVDmSNvRrnl6Mqg3DbPTsE8OHDkG8CB3A6uEdCAeh8+JgwPZaLZJ
- JVsgUaCK97elgZnRd8v+d/Gtg59vD3KrslYWFNXGw1FcIFMOMGxeQ9gaaXDLJxvGYl
- hF4V3k9nOGU1lTilmArbwKFYYXe66eWhRmykY1bdVp0wz9dABtR5v/xOF24MTRfO5y
- OHPCdFKEBZS7M37fYlMMatTbR4zOwW2cRxKlpFQWo9p3XF6aAPbMrs2PZS0zDv+ldw
- RZ5dBhc7TuHqiVEL95Q3f3qKWbku7N43nSmtNO7sXbJu2X6vcUGczTifVC5j9TG+QS
- uuj3IuYLAXjEw==
-From: Mark Brown <broonie@kernel.org>
-To: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
- alsa-devel@alsa-project.org, Faiz Abbas <faiz.abbas@arm.com>
-In-Reply-To: <20230105160346.29018-1-faiz.abbas@arm.com>
-References: <20230105160346.29018-1-faiz.abbas@arm.com>
-Subject: Re: [PATCH] ASoC: dt-bindings: simple-card: Document
- simple-audio-card,plat
-Message-Id: <167449218337.1484410.12928081501203145393.b4-ty@kernel.org>
-Date: Mon, 23 Jan 2023 16:43:03 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F6B0F80132
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2023 17:49:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F6B0F80132
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=XK4aeSxX
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 30NBjTse014286; Mon, 23 Jan 2023 10:49:51 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=0JSJ3PjMpCm51ZHMD5LZ35Bg643Gkiql6yHmBZPBgGg=;
+ b=XK4aeSxX3NTUIqY2Q5XN2DqD3KfOxXczhfDnpm2n5/LskydGQs7sPUduNagu7991qk6W
+ Vdlt0pqOga6kHI2wYQqt+JuhLHoaj/7YQGga4EnmrIfwojTrgbUL38F3V/bp+Q13HS9f
+ 8zs6SwVhdFbG5970uUccZysuKGdSQbBdnXPed7eFroGB7pafFBFKDUHM0DL/MukrOkAR
+ teHZd7zCr9INFbQLRuNpVv19Z8rQN3E9oV6yEZ8+8XsEpEnToTkxyO3FHEReRZvB8Peb
+ Rlznxg0y0aA8jckF8b7KUfpCFFNgD5xPJbsD/IGaaKNwBeAeWPwA+7gI46GTJEfyGx3e 6Q== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3n8dbsknrm-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 23 Jan 2023 10:49:51 -0600
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Mon, 23 Jan
+ 2023 10:49:49 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.21 via
+ Frontend Transport; Mon, 23 Jan 2023 10:49:49 -0600
+Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
+ [198.90.251.127])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8363B11CB;
+ Mon, 23 Jan 2023 16:49:49 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
+ <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>
+Subject: [PATCH v2 1/2] soundwire: bus: Don't zero page registers after every
+ transaction
+Date: Mon, 23 Jan 2023 16:49:48 +0000
+Message-ID: <20230123164949.245898-2-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230123164949.245898-1-rf@opensource.cirrus.com>
+References: <20230123164949.245898-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: zvtXg2aWfemLtqXiZujYnELgE3RVT9Ta
+X-Proofpoint-GUID: zvtXg2aWfemLtqXiZujYnELgE3RVT9Ta
+X-Proofpoint-Spam-Reason: safe
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,44 +92,77 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com,
- Deepak.Pandey@arm.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- Anurag.Koul@arm.com
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 05 Jan 2023 21:33:46 +0530, Faiz Abbas wrote:
-> The simple card driver has support for adding cpu, codec and platform
-> nodes with the simple-audio-card prefix. Add documentation for the plat
-> binding.
-> 
-> 
+Zeroing the page registers at the end of every paged transaction is just
+overhead (40% overhead on a 1-register access, 25% on a 4-register
+transaction). According to the spec a peripheral that supports paging
+should only use the values in the page registers if the address is paged
+(address bit 15 set). The core SoundWire code always writes the page
+registers at the start of a paged transaction so there will never be a
+transaction that uses the stale values from a previous paged transaction.
 
-Applied to
+For peripherals that need large amounts of data to be transferred, for
+example firmware or filter coefficients, the overhead of page register
+zeroing can become quite significant.
 
-   broonie/sound.git for-next
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ drivers/soundwire/bus.c | 23 -----------------------
+ 1 file changed, 23 deletions(-)
 
-Thanks!
-
-[1/1] ASoC: dt-bindings: simple-card: Document simple-audio-card,plat
-      commit: e7e2b92e609f82cd164209509f852de941e1285b
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 633d411b64f3..b840322f7f1d 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -247,23 +247,6 @@ static inline int do_transfer_defer(struct sdw_bus *bus,
+ 	return ret;
+ }
+ 
+-static int sdw_reset_page(struct sdw_bus *bus, u16 dev_num)
+-{
+-	int retry = bus->prop.err_threshold;
+-	enum sdw_command_response resp;
+-	int ret = 0, i;
+-
+-	for (i = 0; i <= retry; i++) {
+-		resp = bus->ops->reset_page_addr(bus, dev_num);
+-		ret = find_response_code(resp);
+-		/* if cmd is ok or ignored return */
+-		if (ret == 0 || ret == -ENODATA)
+-			return ret;
+-	}
+-
+-	return ret;
+-}
+-
+ static int sdw_transfer_unlocked(struct sdw_bus *bus, struct sdw_msg *msg)
+ {
+ 	int ret;
+@@ -275,9 +258,6 @@ static int sdw_transfer_unlocked(struct sdw_bus *bus, struct sdw_msg *msg)
+ 			(msg->flags & SDW_MSG_FLAG_WRITE) ? "write" : "read",
+ 			msg->addr, msg->len);
+ 
+-	if (msg->page)
+-		sdw_reset_page(bus, msg->dev_num);
+-
+ 	return ret;
+ }
+ 
+@@ -352,9 +332,6 @@ int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_msg *msg,
+ 		dev_err(bus->dev, "Defer trf on Slave %d failed:%d\n",
+ 			msg->dev_num, ret);
+ 
+-	if (msg->page)
+-		sdw_reset_page(bus, msg->dev_num);
+-
+ 	return ret;
+ }
+ 
+-- 
+2.30.2
 
