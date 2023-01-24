@@ -4,78 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16540C54E94
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 07:55:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8134DC05027
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 07:55:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F423829;
-	Thu, 26 Jan 2023 08:54:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F423829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2B4CF82E;
+	Thu, 26 Jan 2023 08:55:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B4CF82E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674719702;
-	bh=1kryI9fmp/0/7tgRDGf0+gzDLXBckxfaq5aCAfPWxFM=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1674719756;
+	bh=fcBPj1RlmouTrt4xmiBVmnWCjXBQlpL/T8VkCeIhyQQ=;
+	h=From:To:Subject:In-Reply-To:References:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=gQLt7FapjZiM4o29PfYBV0QeJPqKitOJ3/TGZF8kSF9FAQdII3nwlitTXvxGWKDDb
-	 vxyqOEZ8ZwhQy/NvftLtNwqppjKK2ijHRU9bgOHrDNTpthf4yyoU8F/w38x9haFA6q
-	 7G5hPJKfQDZ5uvavpwiv+y3hAVF3i6nBt6L2RD20=
+	b=dDTSraMwqOJflr/2Gbew0Of9qcgY+kOmYWLluoYCC+8UwmclhBwlmcL3rT/ENoZRa
+	 1CrtiU22Hm/FhlD9y9xdZ2zgW71a/7xxiQJbLQ1I2Riid2q2T0jpxWT93xOZF+87sT
+	 O5GAxNB8KU+xLu/bXGAVR9R+UjyxmTm0LOsr+Rqg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01667F8025D;
-	Thu, 26 Jan 2023 08:54:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF171F8027D;
+	Thu, 26 Jan 2023 08:55:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 68EF7F8027D; Thu, 26 Jan 2023 08:54:09 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id 11E2BF8027D; Tue, 24 Jan 2023 23:28:12 +0100 (CET)
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8A861F801D5
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2023 23:27:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A861F801D5
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=lwn.net header.i=@lwn.net header.a=rsa-sha256
+ header.s=20201203 header.b=XW1biFoI
+Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CAFD7F800AE
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 08:54:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CAFD7F800AE
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=DagpuqJm
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674719645; x=1706255645;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=1kryI9fmp/0/7tgRDGf0+gzDLXBckxfaq5aCAfPWxFM=;
- b=DagpuqJm8Bt1xKF5IXZqQ2Sb7at2RwfnAS2ISzdAt2zrI7HqCndBQrdi
- 8GrquUZEwzG1iJJkNdtZgy13AlKUsx5ijeixNe8fVcmoa//kGT21aSYHW
- 7fWTQ3Qtfo7+4p1xmX2T3kKc0wVX84dvWPHr6lcUVA8u0MEJu3qEwlqT9
- aAbxDbEzE60R+66sY/sfs6Q+CrMd9u77Y7Xww/Fzlw1eDnKyo2FblENCw
- aFOj6yjVXNOX+DnvUn7T63L5t6cXc+bymYTmb++ndfdXs7JoaLOqw4f57
- YBTIBDlJLpFcnHpQf/qTAPno7eFATCf5Zm63W5vNf8R43BmYZOA0Bi9fh Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="325430953"
-X-IronPort-AV: E=Sophos;i="5.97,247,1669104000"; d="scan'208";a="325430953"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2023 23:54:00 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="805294069"
-X-IronPort-AV: E=Sophos;i="5.97,247,1669104000"; d="scan'208";a="805294069"
-Received: from mericx-mobl.ger.corp.intel.com (HELO [10.252.29.93])
- ([10.252.29.93])
- by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2023 23:53:56 -0800
-Message-ID: <6f0301dd-ce1f-084a-f29b-27bf897804de@linux.intel.com>
-Date: Thu, 26 Jan 2023 09:54:03 +0200
+ by ms.lwn.net (Postfix) with ESMTPSA id 5D12E739;
+ Tue, 24 Jan 2023 22:27:53 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 5D12E739
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+ t=1674599273; bh=MTaO760PJgYwDFixyQndXwkcxJ6qlGsTUp+EUcJgaCs=;
+ h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+ b=XW1biFoIP9a4rIRf2cLd3puFe2cCFrQPnLjCIkaYxizp+J6e+ypbS83QROQV7RjZL
+ x+AsBikpA3Vkk3ujbg62UV6QrSznWRdtlGR3w9N1P6p5SjPTaB1VvvVuFhl7bYnzao
+ e+Pb9bvOHC00Tv7pEsztMhT9Z72Gat9MaqdsTs8TiPqfNYcDgG/+/KR+sn5dVczsue
+ lu1v1+vuz/4hzlpLBA+KYbHbvLOlZ4/b/+Fc8THgu2Xt0YT87foyxCIQE79oboIidh
+ ZhOk8JFsQO6mPuPHLHgprow+Ki52f77LDa52ffGAHq1nhkgYRnJAeU48pOJekm2FoI
+ ARNZkhtCcl3AQ==
+From: Jonathan Corbet <corbet@lwn.net>
+To: SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH v2 1/1] Docs/subsystem-apis: Remove '[The ]Linux'
+ prefixes from titles of listed documents
+In-Reply-To: <20230122184834.181977-1-sj@kernel.org>
+References: <20230122184834.181977-1-sj@kernel.org>
+Date: Tue, 24 Jan 2023 15:27:52 -0700
+Message-ID: <87edrjftzr.fsf@meer.lwn.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.6.1
-Subject: Re: [PATCH v2 3/5] ASoC: amd: acp: Refactor i2s clocks programming
- sequence
-Content-Language: en-US
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Venkata Prasad Potturu <venkataprasad.potturu@amd.com>, broonie@kernel.org,
- alsa-devel@alsa-project.org
-References: <20230109132104.1259479-1-venkataprasad.potturu@amd.com>
- <20230109132104.1259479-4-venkataprasad.potturu@amd.com>
- <92052eef-3c61-7f3e-75c1-09b76cd38e24@linux.intel.com>
-From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <92052eef-3c61-7f3e-75c1-09b76cd38e24@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Mailman-Approved-At: Thu, 26 Jan 2023 08:55:02 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,83 +73,56 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Sunil-kumar.Dommati@amd.com, ssabakar@amd.com,
- Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
- open list <linux-kernel@vger.kernel.org>, Basavaraj.Hiregoudar@amd.com,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Jia-Ju Bai <baijiaju1990@gmail.com>,
- Mario Limonciello <mario.limonciello@amd.com>,
- Akihiko Odaki <akihiko.odaki@gmail.com>, Vijendar.Mukunda@amd.com,
- V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>
+Cc: alsa-devel@alsa-project.org, "Rafael
+ J. Wysocki" <rafael@kernel.org>, Viresh Kumar <viresh.kumar@linaro.org>,
+ dri-devel@lists.freedesktop.org, Takashi Iwai <tiwai@suse.com>,
+ linux-mm@kvack.org, David Airlie <airlied@gmail.com>,
+ linux-watchdog@vger.kernel.org, Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Iwona Winiarska <iwona.winiarska@intel.com>, openbmc@lists.ozlabs.org,
+ linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
+ Guenter Roeck <linux@roeck-us.net>, Jean Delvare <jdelvare@suse.com>,
+ Daniel Vetter <daniel@ffwll.ch>, linux-pm@vger.kernel.org,
+ linux-input@vger.kernel.org,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ linux-hwmon@vger.kernel.org, SeongJae Park <sj@kernel.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-crypto@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "David S. Miller" <davem@davemloft.net>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+SeongJae Park <sj@kernel.org> writes:
 
+> Some documents that listed on subsystem-apis have 'Linux' or 'The Linux'
+> title prefixes.  It's duplicated information, and makes finding the
+> document of interest with human eyes not easy.  Remove the prefixes from
+> the titles.
+>
+> Signed-off-by: SeongJae Park <sj@kernel.org>
+> ---
+> Changes from v1
+> (https://lore.kernel.org/lkml/20230114194741.115855-1-sj@kernel.org/)
+> - Drop second patch (will post later for each subsystem)
+>
+>  Documentation/PCI/index.rst        | 6 +++---
+>  Documentation/cpu-freq/index.rst   | 6 +++---
+>  Documentation/crypto/index.rst     | 6 +++---
+>  Documentation/driver-api/index.rst | 6 +++---
+>  Documentation/gpu/index.rst        | 6 +++---
+>  Documentation/hwmon/index.rst      | 6 +++---
+>  Documentation/input/index.rst      | 6 +++---
+>  Documentation/mm/index.rst         | 6 +++---
+>  Documentation/peci/index.rst       | 6 +++---
+>  Documentation/scheduler/index.rst  | 6 +++---
+>  Documentation/scsi/index.rst       | 6 +++---
+>  Documentation/sound/index.rst      | 6 +++---
+>  Documentation/virt/index.rst       | 6 +++---
+>  Documentation/watchdog/index.rst   | 6 +++---
+>  14 files changed, 42 insertions(+), 42 deletions(-)
 
-On 25/01/2023 19:15, Pierre-Louis Bossart wrote:
-> This patch adds new Sparse warnings [1]:
-> 
-> sound/soc/amd/acp/acp-mach-common.c:189:35: error: restricted
-> snd_pcm_format_t degrades to integer
-> sound/soc/amd/acp/acp-mach-common.c:333:35: error: restricted
-> snd_pcm_format_t degrades to integer
-> sound/soc/amd/acp/acp-mach-common.c:478:35: error: restricted
-> snd_pcm_format_t degrades to integer
-> sound/soc/amd/acp/acp-mach-common.c:619:35: error: restricted
-> snd_pcm_format_t degrades to integer
-> 
->> @@ -193,7 +163,11 @@ static int acp_card_rt5682_hw_params(struct snd_pcm_substream *substream,
->>  	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
->>  	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
->>  	int ret;
->> -	unsigned int fmt;
->> +	unsigned int fmt, srate, ch, format;
->> +
->> +	srate = params_rate(params);
->> +	ch = params_channels(params);
->> +	format = 8 * params_format(params);
-> 
-> This last line looks suspicious, no? format-to-physical-size conversions
-> should be using existing macros.
+Applied, thanks.
 
-not only that, but the "8 * params_format(params)" is certainly not
-correct for the purpose.
-
-params_format() returns SNDRV_PCM_FORMAT_*, which is basically an enum:
-SNDRV_PCM_FORMAT_S8		0
-SNDRV_PCM_FORMAT_S16_LE		2
-SNDRV_PCM_FORMAT_S24_LE		6
-SNDRV_PCM_FORMAT_S24_3LE	32
-SNDRV_PCM_FORMAT_S32_LE		10
-
-include/uapi/sound/asound.h
-
-> Should it be
-> 
-> format = params_physical_width(params);
-
-I believe this was the intention.
-
-> 
-> ?
-> 
-> 
->> +	/* Set tdm/i2s1 master bclk ratio */
->> +	ret = snd_soc_dai_set_bclk_ratio(codec_dai, ch * format);
->> +	if (ret < 0) {
->> +		dev_err(rtd->dev, "Failed to set rt5682 tdm bclk ratio: %d\n", ret);
->> +		return ret;
->> +	}
->> +
->> +	if (!drvdata->soc_mclk) {
->> +		ret = acp_clk_enable(drvdata, srate, ch * format);
->> +		if (ret < 0) {
->> +			dev_err(rtd->card->dev, "Failed to enable HS clk: %d\n", ret);
->> +			return ret;
->> +		}
-> 
-> [1]
-> https://github.com/thesofproject/linux/actions/runs/4005001249/jobs/6874834205
-
--- 
-Péter
+jon
