@@ -4,76 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53DCFC38142
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Jan 2023 09:28:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96790C25B4E
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Jan 2023 09:29:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E23BB85D;
-	Tue, 24 Jan 2023 10:27:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E23BB85D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6126DE10;
+	Tue, 24 Jan 2023 10:28:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6126DE10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674552527;
-	bh=CyuvSZ+k/B4DZfPX8vLEMWVkSlriM854bIhasRgmG9U=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=TUcUz1A00+mCVuUMzW/qXdbWmP9qzFB4bk3T9qEww4/QkdkvW88+zaHcg94+Gu6il
-	 Vnb0TMqsIMVAOLLJNP3/QsFhKXEK9UPbqOCc+nS60PULlmURzYn4bzJwplsgArghB7
-	 OGVFXiTTCRPvayqQKmVc+TChaadwPUCDX0qr+R6k=
+	s=default; t=1674552556;
+	bh=7SIOuY3IDrfIaQFtmnxf5ZD2EbUTOQqKWQVKo06zex4=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=td4YiwARbHtjJW6ztfg69StcbUCc+4LWJ+NOaSdPaX4MtaXWLCO0FFR0u2Gu+MOYB
+	 fSWkpC1qGLKmjWmlngOPuuDr9zEsiD8P87Qf7BQv4zWl7nMd7h6f4Ry10C7yINKvBk
+	 xS/aN526Q0KxsufmsfsftrkrREJECanHTsRaOVCc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73F1EF8027D;
-	Tue, 24 Jan 2023 10:27:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30F83F8030F;
+	Tue, 24 Jan 2023 10:28:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0AD8F8030F; Tue, 24 Jan 2023 10:27:52 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 49009F802DF; Tue, 24 Jan 2023 10:27:56 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B581DF801D5
- for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2023 10:27:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B581DF801D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id A40C4F8025D
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2023 10:27:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A40C4F8025D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=kSlUuZeC; 
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=YAlNilJM; 
  dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=ToOk0SaJ
+ header.s=susede2_ed25519 header.b=Senxscqa
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 530121F8C2;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D794521A28;
  Tue, 24 Jan 2023 09:27:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1674552469; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=dGPg8oz/0KgeKFm3O/KaO4akyscl5TmxoVb/DGwxXBs=;
- b=kSlUuZeCGYiogsBr6/6NIJYOQ76/QYbAbRXnTN4huO9k6KYXAC4jYrLNylMFhhsnPAYMH8
- sZXuNqeerLhwpdqkwaJ7Fn8HNHRvS1ihj7pXwOfHhAxkfnwoF11WQwSYgj2XkL4wh9v/k1
- j9nVuonOr9QNnF6EQSJ3kiMU+g3BQmQ=
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=QzYbn4C3HYBLORR/jhZRxC8sqg9FAYJkuTrSgW9nsqg=;
+ b=YAlNilJM7QWyNu9XtCVy/O+Z1KlG4VgKXIJMWPQV+36+s6TxlgdLlnWJhL7nzIvkLIRiyg
+ 1EgIvUIN+73LRotLJr/w/VpSpPym55mUl68lqPBNxmGPbCxAobxuYCd1mFDbhAr1OjqBK7
+ QibFmO8HxY+ltf7WX+c1nwzB1VRTyX8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1674552469;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding;
- bh=dGPg8oz/0KgeKFm3O/KaO4akyscl5TmxoVb/DGwxXBs=;
- b=ToOk0SaJs8D2ZeNX43NbGgBzlluX1ypdujQTtRG1FnZz/vWpluNS4q4Dzt+PztwIIyYjwO
- F7y6L78Utj5z4GAQ==
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=QzYbn4C3HYBLORR/jhZRxC8sqg9FAYJkuTrSgW9nsqg=;
+ b=Senxscqa36p1/uSAHDQGPeoDhX1x4Dq0IiZqT3dqXc+hoOZf4nSz+VKYtUp5z7C4sAR3Zy
+ zEkEhl021LDSXMCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 218C9139FB;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B3CC9139FB;
  Tue, 24 Jan 2023 09:27:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 2SypBpWkz2NeUgAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id kJbbKpWkz2NeUgAAMHmgww
  (envelope-from <tiwai@suse.de>); Tue, 24 Jan 2023 09:27:49 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/2] ALSA: memalloc: Fix for Xen PV and non-IOMMU systems
-Date: Tue, 24 Jan 2023 10:27:42 +0100
-Message-Id: <20230124092744.27370-1-tiwai@suse.de>
+Subject: [PATCH 2/2] ALSA: memalloc: Use coherent DMA allocation for fallback
+ again
+Date: Tue, 24 Jan 2023 10:27:44 +0100
+Message-Id: <20230124092744.27370-3-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230124092744.27370-1-tiwai@suse.de>
+References: <20230124092744.27370-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -94,29 +100,174 @@ Cc: =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?=
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+We switched the memory allocation for fallback cases in the noncontig
+type to use the standard alloc_pages*() at the commit a8d302a0b770
+("ALSA: memalloc: Revive x86-specific WC page allocations again"),
+while we used the dma_alloc_coherent() in the past.  The reason was
+that the page address retrieved from the virtual pointer returned from
+dma_alloc_coherent() can't be used with IOMMU systems.  Meanwhile, we
+explicitly disabled the fallback allocation for IOMMU systems at the
+commit 9736a325137b ("ALSA: memalloc: Don't fall back for SG-buffer
+with IOMMU") after the commit above; that is, the usage of
+dma_alloc_coherent() should be OK again.
 
-this is a patch series to address the recent regression on Xen PV (and
-possibly non-IOMMU) systems about the SG-buffer memory allocation.
-We switched to use dma_alloc_noncontiguous() as hoped it handling
-everything right, but it turned out that this doesn't work always.
-So this is one step back, use the explicit SG-buffer with
-dma_alloc_coherent() calls, but in a bit more optimized ways, and also
-applying only for those systems.
+Now, we've received reports that the current fallback page allocation
+caused a regression on Xen (and maybe other) systems; the sound
+disappear partially or completely.  So it's time to take back to
+dma_alloc_coherent().
 
+This patch switches back to the dma_alloc_coherent() for the fallback
+allocations.  Unlike the previous implementation, the allocation is
+implemented in a more optimized way to try larger chunks.  Also, the
+proper DMA address from the dma_alloc_coherent() is returned.
 
-Takashi
+The page count for the page chunk is stored in the lower bits of the
+first page address. The address is masked and re-calculated at
+get_addr memalloc ops in return.
 
-===
+Fixes: a8d302a0b770 ("ALSA: memalloc: Revive x86-specific WC page allocations again")
+Fixes: 9736a325137b ("ALSA: memalloc: Don't fall back for SG-buffer with IOMMU")
+Reported-and-tested-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+Link: https://lore.kernel.org/r/87tu256lqs.wl-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/memalloc.c | 61 ++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 49 insertions(+), 12 deletions(-)
 
-Takashi Iwai (2):
-  ALSA: memalloc: Explicit SG-allocations for Xen PV and non-IOMMU
-    systems
-  ALSA: memalloc: Use coherent DMA allocation for fallback again
-
- sound/core/memalloc.c | 68 +++++++++++++++++++++++++++++++++----------
- 1 file changed, 53 insertions(+), 15 deletions(-)
-
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+index 30c9ad192986..5fe21c0080dc 100644
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -720,17 +720,31 @@ static const struct snd_malloc_ops snd_dma_sg_wc_ops = {
+ struct snd_dma_sg_fallback {
+ 	size_t count;
+ 	struct page **pages;
++	/* DMA address array; the first page contains #pages in ~PAGE_MASK */
++	dma_addr_t *addrs;
+ };
+ 
+ static void __snd_dma_sg_fallback_free(struct snd_dma_buffer *dmab,
+ 				       struct snd_dma_sg_fallback *sgbuf)
+ {
+-	bool wc = dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG_FALLBACK;
+-	size_t i;
+-
+-	for (i = 0; i < sgbuf->count && sgbuf->pages[i]; i++)
+-		do_free_pages(page_address(sgbuf->pages[i]), PAGE_SIZE, wc);
++	size_t i, size;
++
++	if (sgbuf->pages && sgbuf->addrs) {
++		i = 0;
++		while (i < sgbuf->count) {
++			if (!sgbuf->pages[i] || !sgbuf->addrs[i])
++				break;
++			size = sgbuf->addrs[i] & ~PAGE_MASK;
++			if (WARN_ON(!size))
++				break;
++			dma_free_coherent(dmab->dev.dev, size << PAGE_SHIFT,
++					  page_address(sgbuf->pages[i]),
++					  sgbuf->addrs[i] & PAGE_MASK);
++			i += size;
++		}
++	}
+ 	kvfree(sgbuf->pages);
++	kvfree(sgbuf->addrs);
+ 	kfree(sgbuf);
+ }
+ 
+@@ -739,9 +753,9 @@ static void *snd_dma_sg_fallback_alloc(struct snd_dma_buffer *dmab, size_t size)
+ 	struct snd_dma_sg_fallback *sgbuf;
+ 	struct page **pagep, *curp;
+ 	size_t chunk, npages;
++	dma_addr_t *addrp;
+ 	dma_addr_t addr;
+ 	void *p;
+-	bool wc = dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG_FALLBACK;
+ 
+ 	sgbuf = kzalloc(sizeof(*sgbuf), GFP_KERNEL);
+ 	if (!sgbuf)
+@@ -749,14 +763,16 @@ static void *snd_dma_sg_fallback_alloc(struct snd_dma_buffer *dmab, size_t size)
+ 	size = PAGE_ALIGN(size);
+ 	sgbuf->count = size >> PAGE_SHIFT;
+ 	sgbuf->pages = kvcalloc(sgbuf->count, sizeof(*sgbuf->pages), GFP_KERNEL);
+-	if (!sgbuf->pages)
++	sgbuf->addrs = kvcalloc(sgbuf->count, sizeof(*sgbuf->addrs), GFP_KERNEL);
++	if (!sgbuf->pages || !sgbuf->addrs)
+ 		goto error;
+ 
+ 	pagep = sgbuf->pages;
+-	chunk = size;
++	addrp = sgbuf->addrs;
++	chunk = (PAGE_SIZE - 1) << PAGE_SHIFT; /* to fit in low bits in addrs */
+ 	while (size > 0) {
+ 		chunk = min(size, chunk);
+-		p = do_alloc_pages(dmab->dev.dev, chunk, &addr, wc);
++		p = dma_alloc_coherent(dmab->dev.dev, chunk, &addr, DEFAULT_GFP);
+ 		if (!p) {
+ 			if (chunk <= PAGE_SIZE)
+ 				goto error;
+@@ -768,17 +784,25 @@ static void *snd_dma_sg_fallback_alloc(struct snd_dma_buffer *dmab, size_t size)
+ 		size -= chunk;
+ 		/* fill pages */
+ 		npages = chunk >> PAGE_SHIFT;
++		*addrp = npages; /* store in lower bits */
+ 		curp = virt_to_page(p);
+-		while (npages--)
++		while (npages--) {
+ 			*pagep++ = curp++;
++			*addrp++ |= addr;
++			addr += PAGE_SIZE;
++		}
+ 	}
+ 
+ 	p = vmap(sgbuf->pages, sgbuf->count, VM_MAP, PAGE_KERNEL);
+ 	if (!p)
+ 		goto error;
++
++	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG_FALLBACK)
++		set_pages_array_wc(sgbuf->pages, sgbuf->count);
++
+ 	dmab->private_data = sgbuf;
+ 	/* store the first page address for convenience */
+-	dmab->addr = snd_sgbuf_get_addr(dmab, 0);
++	dmab->addr = sgbuf->addrs[0] & PAGE_MASK;
+ 	return p;
+ 
+  error:
+@@ -788,10 +812,23 @@ static void *snd_dma_sg_fallback_alloc(struct snd_dma_buffer *dmab, size_t size)
+ 
+ static void snd_dma_sg_fallback_free(struct snd_dma_buffer *dmab)
+ {
++	struct snd_dma_sg_fallback *sgbuf = dmab->private_data;
++
+ 	vunmap(dmab->area);
++	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG_FALLBACK)
++		set_pages_array_wb(sgbuf->pages, sgbuf->count);
+ 	__snd_dma_sg_fallback_free(dmab, dmab->private_data);
+ }
+ 
++static dma_addr_t snd_dma_sg_fallback_get_addr(struct snd_dma_buffer *dmab,
++					       size_t offset)
++{
++	struct snd_dma_sg_fallback *sgbuf = dmab->private_data;
++	size_t index = offset >> PAGE_SHIFT;
++
++	return (sgbuf->addrs[index] & PAGE_MASK) | (offset & ~PAGE_MASK);
++}
++
+ static int snd_dma_sg_fallback_mmap(struct snd_dma_buffer *dmab,
+ 				    struct vm_area_struct *area)
+ {
+@@ -806,8 +843,8 @@ static const struct snd_malloc_ops snd_dma_sg_fallback_ops = {
+ 	.alloc = snd_dma_sg_fallback_alloc,
+ 	.free = snd_dma_sg_fallback_free,
+ 	.mmap = snd_dma_sg_fallback_mmap,
++	.get_addr = snd_dma_sg_fallback_get_addr,
+ 	/* reuse vmalloc helpers */
+-	.get_addr = snd_dma_vmalloc_get_addr,
+ 	.get_page = snd_dma_vmalloc_get_page,
+ 	.get_chunk_size = snd_dma_vmalloc_get_chunk_size,
+ };
 -- 
 2.35.3
 
