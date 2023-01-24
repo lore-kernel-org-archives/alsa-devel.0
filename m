@@ -4,90 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1B57C25B4E
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Jan 2023 16:41:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7764C25B4E
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Jan 2023 16:45:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9434E80;
-	Tue, 24 Jan 2023 17:40:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9434E80
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6EC0C84C;
+	Tue, 24 Jan 2023 17:44:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EC0C84C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674578506;
-	bh=O6tre/K1p3qT0qVodp3E/67TPRmBMMVFkisvqohVZwE=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1674578729;
+	bh=XMXNG98wU4htDggDkSsJGSj0yk+o5fnOoyh609u/lE4=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=WGgxWsqtf+BOv/2RaSgduTdnjLGDqveR5qN5cH74DWTtUtO0ducmhGmudKRjr9g5z
-	 RTPCB9DA8Ase32z+BPsgjTN3bqFDVVPLeC17VgA1xEaYPmQKuI+Pqo5HjbJOPQSdeM
-	 XWUjWT50JShOqOzW8LtQT+g/42isBEmHNVJHDVRY=
+	b=YBFuzUqaRzBlM2HJjcxm3WnVF1qS8+3/nOoljBSjfTQd69EcJ/Rg/3WEGsa2pzrG7
+	 2AdeAbniF7G3nNRMKmSkRrwYLkhS7uVfYbzqeL0og9GD3CG2UCchSG/Kd4ViCRA/qw
+	 Il1aYglgNA1My9X7p6HIiooIKZnbJWUpavTEThKw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18368F80533;
-	Tue, 24 Jan 2023 17:40:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A5C6F8025D;
+	Tue, 24 Jan 2023 17:44:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34D69F8053D; Tue, 24 Jan 2023 17:40:08 +0100 (CET)
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
- [IPv6:2a00:1450:4864:20::32b])
+ id A58D6F8027D; Tue, 24 Jan 2023 17:44:38 +0100 (CET)
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com
+ [IPv6:2607:f8b0:4864:20::b2a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9B5AF800FB
- for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2023 17:39:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9B5AF800FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6FFCF801D5
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2023 17:44:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6FFCF801D5
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=YWpr991D
-Received: by mail-wm1-x32b.google.com with SMTP id
- q10-20020a1cf30a000000b003db0edfdb74so1205915wmq.1
- for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2023 08:39:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=aQbzhX3O4aLcuVdNK/dk+Vykc3yQgk316tpQ75kYYpw=;
- b=YWpr991DzZrpCyQD8H8S0rLyjvLpctwo+i6CeAnK+xOkNgDE8l94ht4zYl4pfCkSdF
- ejQNUFYhLR+W72nLyRG2ge6gMOXWrXbTeHAoQQyaNHLUjg8KC41RXe8QkDn+vUPzvims
- GxEbXoFeHMf/vFz4vFRP8LPvk39IK7CtXm0r9Zg+DOhTl7Z1GGCRDks24B6Jui9hUPqi
- NlEen2SWlJJT898HeQK2rnNObiMeUUSqaReAmRQoutH4vJvHKYbBveRozdz/KKg8Awud
- xDSfdiN64mK5SgKZRPC41JDAO5o7dWWkwpDgrk6h1DSRGcP/c1Wk2bIPUu/dcPX2h4Co
- UfNg==
+ unprotected) header.d=mbuki-mvuki.org header.i=@mbuki-mvuki.org
+ header.a=rsa-sha256 header.s=google header.b=fz85swFz
+Received: by mail-yb1-xb2a.google.com with SMTP id p141so16830602ybg.12
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2023 08:44:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mbuki-mvuki.org; s=google;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=XMXNG98wU4htDggDkSsJGSj0yk+o5fnOoyh609u/lE4=;
+ b=fz85swFzU0ss1AfQjWcKxeMogdi0W5nmAmHB7WwodY7UPv1tLI5xiES1H8MCdh8IEs
+ CkKjTGYyGWljWa5dOc5/pY4tHJGSXQT58jUd6eutQohPSAnlTan7mCBlZdvZs+70KlSY
+ fyQfUftaVHcemFs5zbYCwZiSHdUcotOa0wpyvnQ9X9wwINnisLMGJOfa98fvwx4RswMk
+ mBj+wueCJOEMPxE3rBJrDiYvpC4AswkX1of2xColA5/KLB02miN9MaVM0+RV4aEWJlxB
+ efrYKC7lKzI9UpV0evLazCLazri0Up2zxV8M3lzSAYzvUd3IArr5QE+IxhZLyXdPxDNy
+ 2Waw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=aQbzhX3O4aLcuVdNK/dk+Vykc3yQgk316tpQ75kYYpw=;
- b=VWfmDnirV9JHbe6LShrKZf5sNz4QLykWh+Ulyl9tOQsSwdoBnYM3vMy5wG4KAwR9vS
- 8rpfH8vFTiDxTjst9oVFHqWv19d/DfYOTNoYNiZ5oaQEZiMM4qQHuyReM5iIFemuTFVt
- AdV3Y8Gan8JyPjTyZ6ZDHHxs+D/aRD0wffhUkWuBMehgJHfgOVcnmPn0X8UrGhUdD1XZ
- +631wTBBBM8G7KIj0bCpIfw6pL86bvRj9Qq94xSMMKVw7HTDfmjpnij8SpdDNgKv2Aii
- /Rum2JnrvpOat+bi/IcPpzLTYY52ZERnMlW+DAoGDxr7lyHU4lU/Ta2alMu5GfB0mWKa
- 9Snw==
-X-Gm-Message-State: AFqh2kpRMp05ud/fh+G58yD3L4khZHuFm1k46bf94i5dn5MyTS2kotIZ
- grLnsGc3twtjgYuYR3DNaK949Q==
-X-Google-Smtp-Source: AMrXdXsf91JtIJ7nxf2E6Wp9UE/5gAhd0nWlaK0s4hgMqucVu7KQENRzpgWj9EikZa7aj7A4qseFyQ==
-X-Received: by 2002:a05:600c:3ac8:b0:3da:270b:ba6b with SMTP id
- d8-20020a05600c3ac800b003da270bba6bmr29759259wms.41.1674578397895; 
- Tue, 24 Jan 2023 08:39:57 -0800 (PST)
-Received: from krzk-bin.. ([178.197.216.144]) by smtp.gmail.com with ESMTPSA id
- h20-20020a1ccc14000000b003dafbd859a6sm13477147wmb.43.2023.01.24.08.39.56
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 24 Jan 2023 08:39:57 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] ASoC: codecs: constify static sdw_port_config struct
-Date: Tue, 24 Jan 2023 17:39:52 +0100
-Message-Id: <20230124163953.345949-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230124163953.345949-1-krzysztof.kozlowski@linaro.org>
-References: <20230124163953.345949-1-krzysztof.kozlowski@linaro.org>
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=XMXNG98wU4htDggDkSsJGSj0yk+o5fnOoyh609u/lE4=;
+ b=GVhMth/5MMyFKhOTdYqOhEoe3+GTJlYLr9JPSXi92/SmcvAAWItG3r7vymXszDsYVp
+ XqBgEjsFoXM/2EJior8CZ+CzQ767bs2LW1zoSUv++E0IM1HPNbOWbeYSs9ee8PO/s9dH
+ acmoLf8OQ/By8872iBp6lVUenn2lAMqDjVNImRVgh8jdf8lIsaksS0P/HzjPvtYCI3Vz
+ wqFoDClo2m7R62+d1pFBeiWO0iybpVEDOJ/Xi6jAt7sVCxh9OTBdLn/u6K8dQSeBBRDs
+ 1D7qKx8BNNqenVczsSj0nH949SmNthhmmpE6IWQG0vaNbsHlkncUo7vxHJfAuqDu7VN0
+ AIMA==
+X-Gm-Message-State: AFqh2kpRI8QfGrLdxjmryk2fVXv9bpK65u7GUDAG6n5c3fqMekYaaD9O
+ R3NvjYOYhCyOgj+sRst5+bC9e1oT7Od5FWev22CngQ==
+X-Google-Smtp-Source: AMrXdXumHJ/HmMjlOuoJ/Z1EKCDzDbWR5RBKerE3pke2AT4dHNhq+1o39m2kt8ynuHKw9CpI+3JVgSvl7qGw7M2hbDs=
+X-Received: by 2002:a5b:592:0:b0:7ed:9cee:464 with SMTP id
+ l18-20020a5b0592000000b007ed9cee0464mr3500184ybp.194.1674578672547; 
+ Tue, 24 Jan 2023 08:44:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CANSNSoUqROMDVAVb9ZFQbxRdBEAg7k86YHcyihp6hjoEokti6Q@mail.gmail.com>
+ <47d687e3-50e4-967e-3c4a-846cfa4e3755@linux.intel.com>
+In-Reply-To: <47d687e3-50e4-967e-3c4a-846cfa4e3755@linux.intel.com>
+From: Jesse Hathaway <jesse@mbuki-mvuki.org>
+Date: Tue, 24 Jan 2023 10:44:21 -0600
+Message-ID: <CANSNSoWedQyTwSQHVrPz3u-YLs1yp94ioGepDiJOqEtOm3TVdg@mail.gmail.com>
+Subject: Re: Intel sof-hda-dsp breaks suspend after using Pro Audio UCM
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,45 +90,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: alsa-devel@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The struct sdw_port_config is not modified, so make it a const for code
-safety.
+On Tue, Jan 24, 2023 at 10:32 AM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+> can you please file an issue here:
+> https://github.com/thesofproject/linux/issues
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- sound/soc/codecs/wsa881x.c | 2 +-
- sound/soc/codecs/wsa883x.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
-index 35bd6f7727ed..d142ca9f2fb6 100644
---- a/sound/soc/codecs/wsa881x.c
-+++ b/sound/soc/codecs/wsa881x.c
-@@ -424,7 +424,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA881X_MAX_SWR_PORTS] = {
- 	}
- };
- 
--static struct sdw_port_config wsa881x_pconfig[WSA881X_MAX_SWR_PORTS] = {
-+static const struct sdw_port_config wsa881x_pconfig[WSA881X_MAX_SWR_PORTS] = {
- 	{
- 		.num = 1,
- 		.ch_mask = 0x1,
-diff --git a/sound/soc/codecs/wsa883x.c b/sound/soc/codecs/wsa883x.c
-index 4fc7c01c27ae..de3f4b9b0dba 100644
---- a/sound/soc/codecs/wsa883x.c
-+++ b/sound/soc/codecs/wsa883x.c
-@@ -522,7 +522,7 @@ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA883X_MAX_SWR_PORTS] = {
- 	}
- };
- 
--static struct sdw_port_config wsa883x_pconfig[WSA883X_MAX_SWR_PORTS] = {
-+static const struct sdw_port_config wsa883x_pconfig[WSA883X_MAX_SWR_PORTS] = {
- 	{
- 		.num = 1,
- 		.ch_mask = 0x1,
--- 
-2.34.1
-
+done, https://github.com/thesofproject/linux/issues/4151, thanks!
