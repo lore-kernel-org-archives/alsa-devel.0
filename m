@@ -4,81 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC093C38142
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Jan 2023 09:30:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C820C38142
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Jan 2023 09:31:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A25B3DF3;
-	Tue, 24 Jan 2023 10:30:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A25B3DF3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34427DF8;
+	Tue, 24 Jan 2023 10:30:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34427DF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674552657;
-	bh=WdCu/+Bsv55Gm43W4p7HIMTRPJEZifxxtnMbXKkiXAw=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1674552683;
+	bh=zKq2cWJ07Jm1Xl6OCsQ8x5Ne2Ms3VmQjYEYEPzC1T/c=;
+	h=References:From:To:Subject:Date:In-reply-to:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=XCjNO7V7Zj4dXUNYgjBQIe5pXXwbhtoqmiTyEM5Xhn39sxBk+ATQoAyUrb5MfMQ+7
-	 JEMoiKpVKCWOXdExLKb/Ld2xNsLVR/L9ayftLb6zhnr1G+IxugH9nW7FBOlaoDYbOc
-	 x7DjiRujEquQwu0HcarZa3LfuFM4YbJ0omMISHiw=
+	b=Iho2IlHDIwAI4dTb09oYOD7ym75YevDTulYAB5EdjZssIz16Dnnkku6I2w5LVszm9
+	 y/hMqHUTM45UQdu6jbi9SFux+sHoPqe1QOv47dQN+bjkR7ajAr+jskWvYX+AzQa4PE
+	 WgLcfae7g2egCScbxFlD/zlUM5quqfE+Bqqt0+e4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DE5FF8027D;
-	Tue, 24 Jan 2023 10:30:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22019F8030F;
+	Tue, 24 Jan 2023 10:30:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B89D3F802DF; Tue, 24 Jan 2023 10:30:06 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ id 3472FF8030F; Tue, 24 Jan 2023 10:30:10 +0100 (CET)
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
+ [IPv6:2a00:1450:4864:20::42d])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 285E8F80163
- for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2023 10:30:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 285E8F80163
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=r98UgM0c; 
- dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=vOG8Wyy7
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 748A21FE48;
- Tue, 24 Jan 2023 09:30:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1674552602; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=YwA/5fllCKppteBdFT2QhE0uyPHoYmUXVaAw3fzTulA=;
- b=r98UgM0c80LbYgYEPKetE0dpPCE8fUyNCo1UL8qE5SuMP527DoFhfhNIyp+JOzdlOsTJKH
- 2Z4MaNXIhgRGZID8kuBOjBNxlpSWvjP+G64AWojxDdjC6ZEteYCoLoy5oOqTRGGhRX1F/H
- HJw5J+Ui1sO6EzvKt6uqmb87kJSUGAM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1674552602;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=YwA/5fllCKppteBdFT2QhE0uyPHoYmUXVaAw3fzTulA=;
- b=vOG8Wyy7/LIhpq3a+A/UdgdGV5IsExDZkXjKc8qEEG0BVh/7aKlHZSi8mTXxYQgD+P4XPm
- 0MW/uRmz70FddLDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 45A0F139FB;
- Tue, 24 Jan 2023 09:30:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ms8qEBqlz2PdUwAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 24 Jan 2023 09:30:02 +0000
-Date: Tue, 24 Jan 2023 10:30:01 +0100
-Message-ID: <87zga8uvom.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Victor Shyba <victor1984@riseup.net>
-Subject: Re: [PATCH] ALSA: hda/realtek: Add Acer Predator PH315-54
-In-Reply-To: <20230123222129.17589-1-victor1984@riseup.net>
-References: <20230123222129.17589-1-victor1984@riseup.net>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6096F801D5
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2023 10:30:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6096F801D5
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=baylibre-com.20210112.gappssmtp.com
+ header.i=@baylibre-com.20210112.gappssmtp.com header.a=rsa-sha256
+ header.s=20210112 header.b=I+tuDdwE
+Received: by mail-wr1-x42d.google.com with SMTP id q5so8570060wrv.0
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2023 01:30:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+ h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+ :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+ bh=zKq2cWJ07Jm1Xl6OCsQ8x5Ne2Ms3VmQjYEYEPzC1T/c=;
+ b=I+tuDdwEKw+9ohkGwY3IF4uCxUk5PRjJDNBURlph8boch6UG6H0iNbzl+ejrR14Lqx
+ uZF+LRaf0w287RHCjMKI8I7GRM8OnmaiusJUQCHXZ81KvcTMDn3CpHfpKF3U80HLxLil
+ ulvu9yw+FqtNb22vP1SiVelwMtbPytU0KbLuZur6v3fgu3wV6k7c0e8sdKEN1xHdEg5b
+ U5B1+2g0qfNBcadwDKkCyUc+USMJShKG0m4hCJh3GWs44CVVWo1+DRZJ4qOUx7iBiO68
+ QWqiSqWguYc+kl+KmJ0+WD5GYRkgol8Awu0oNT6C8XX+lRxcxmSiaEfqTFeXxQb/U0Vj
+ MX8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+ :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=zKq2cWJ07Jm1Xl6OCsQ8x5Ne2Ms3VmQjYEYEPzC1T/c=;
+ b=pZ/w8EBKEgUkhRS65rX8xHJ6CBK/TVqcKvianH1VUlgJYSdtDbfQ3i3V2Jk/danZIQ
+ w0wV54EtEuJjCJp1J5v02svRsTIoGrKtK/Ntz7fCUVtHHOjjkYxlTkYHCX+IRjGKNeye
+ ahWUcI84Cxl0QTI9gWKv5pVm3mMLJXg1HeKIz3078qiIuAbCRBtaNTpsWdQciIcOkwRp
+ wlyppaXXusoUHw5+VUsyDtJfMyvKoV1lDdCR2vdAU9u0EDqdMA2ONQvy2p/HddQuRFc4
+ xgtDIEUtxfKOJpaTrWkJe6yU2vrg+FScT8BskJ2AVYR+Ogl2Mo7SPqs8842FvpnlQISV
+ 1xWw==
+X-Gm-Message-State: AFqh2kqBvdDPIlUkGWuxBVHH0hucwN5OYtaz2UfBFN1lUOl6xby8FMOc
+ dzJi4y+nZvA73XvDkB4YZrkjUA==
+X-Google-Smtp-Source: AMrXdXuMCqzhrMJs53QLSqksE8sdifA96ZfMslWvX8EzmPm7sCeVj1H6MGHvlCQ6DtGnK4yEgoGgBg==
+X-Received: by 2002:a5d:5b18:0:b0:2bd:c2ce:dd5a with SMTP id
+ bx24-20020a5d5b18000000b002bdc2cedd5amr40770157wrb.16.1674552601763; 
+ Tue, 24 Jan 2023 01:30:01 -0800 (PST)
+Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr.
+ [90.63.244.31]) by smtp.gmail.com with ESMTPSA id
+ k9-20020a5d5249000000b002bdd21f25ebsm1413017wrc.71.2023.01.24.01.30.01
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 24 Jan 2023 01:30:01 -0800 (PST)
+References: <87y1psu1m1.wl-kuninori.morimoto.gx@renesas.com>
+ <87cz74u1c7.wl-kuninori.morimoto.gx@renesas.com>
+User-agent: mu4e 1.8.10; emacs 28.2
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
+ <broonie@kernel.org>
+Subject: Re: [PATCH v2 15/25] ASoC: meson: use helper function
+Date: Tue, 24 Jan 2023 10:29:04 +0100
+In-reply-to: <87cz74u1c7.wl-kuninori.morimoto.gx@renesas.com>
+Message-ID: <1jmt68gu09.fsf@starbuckisacylon.baylibre.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,20 +98,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: Neil Armstrong <neil.armstrong@linaro.org>, alsa-devel@alsa-project.org,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Kevin Hilman <khilman@baylibre.com>, linux-amlogic@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 23 Jan 2023 23:21:29 +0100,
-Victor Shyba wrote:
-> 
-> Same issue as SP513-54N: Headset microphone does not work without
-> ALC255_FIXUP_ACER_MIC_NO_PRESENCE fixup.
-> 
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=211853
-> Signed-off-by: Victor Shyba <victor1984@riseup.net>
 
-Thanks, applied.
+On Tue 24 Jan 2023 at 02:13, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> wrote:
 
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>
+> Current ASoC has many helper function.
+> This patch use it.
+>
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Takashi
+Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
