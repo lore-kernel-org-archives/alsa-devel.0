@@ -4,73 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A53F2C38142
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 Jan 2023 16:40:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64625C25B4E
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 Jan 2023 16:41:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC144E11;
-	Tue, 24 Jan 2023 17:40:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC144E11
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13794E72;
+	Tue, 24 Jan 2023 17:40:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13794E72
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674578456;
-	bh=dpJYabd19+WYJAYBDZp15QU5ZkMBcH50pgzhLIrhBJA=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=m7xfKjtNn7CLjpu2s1MbyBdnDsei9P3lgbtb0GclhxcxcXgifH2cZisgQkcth6Qjn
-	 i2ZA6vFLMRdyoOtLYVc3GNMD44jqsbttE4WTAjL7zEgiYsvehmxorHQPU1P3OKd3PK
-	 LNiIlx1dsWAPUrXVglb81hq0tbFlp34zNulk7+5E=
+	s=default; t=1674578482;
+	bh=Ef+leKFUpWhoSL/QkW49J0dK+6kRHx0CfkIzgr5Xta8=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=NPa1Bvmj0mVjxjJsjajBnS0so26Ti/AaBBoHSZ2fwDSZYQhYaac36LLMg5OXwSBtM
+	 vjzrsGlycpmKSM3X+XtZRR32ZTGcK8eObgM3SJH26rBywMyTXw8B7Vh9Xca8nL1C+4
+	 7Ow5acr0pfbEK/oKMkuBTlb0VrtwnUI+TASgUw/I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82F13F802DF;
-	Tue, 24 Jan 2023 17:40:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64708F803DC;
+	Tue, 24 Jan 2023 17:40:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECB9DF8030F; Tue, 24 Jan 2023 17:40:03 +0100 (CET)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
+ id 3BD5AF80515; Tue, 24 Jan 2023 17:40:06 +0100 (CET)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
+ [IPv6:2a00:1450:4864:20::332])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88BCDF801D5
- for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2023 17:39:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88BCDF801D5
+ by alsa1.perex.cz (Postfix) with ESMTPS id CEF88F8025D
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2023 17:40:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEF88F8025D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=yFOqlXOB
-Received: by mail-wm1-x335.google.com with SMTP id
- q10-20020a1cf30a000000b003db0edfdb74so1205882wmq.1
- for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2023 08:39:58 -0800 (PST)
+ header.s=google header.b=Hekbhkge
+Received: by mail-wm1-x332.google.com with SMTP id
+ o17-20020a05600c511100b003db021ef437so11387454wms.4
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2023 08:40:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=vSku+g0bwjaLrkc/iXNsucUFnEKlTzMW68UCbPKqtB8=;
- b=yFOqlXOBrsDarRfGGNu9VLdX1sSQsW/82WpbKLgzNC2xsN5o7iNl/lZYlWDTcNMZqd
- zn7utDsMYHgEY3q49J8p2vdCk/tAXYtnehqj8G27K0JlZCsw8J8j9hJ/hwmVwH5peUYG
- p7VKsKshkkRnQ6Pe6/xcfWOYkYxw20qb7P2BYCGarMiQKkjSkaMUyGFDZTdkkxq/nHuq
- 0NPI8ml/nIWG/nwcAm/FzPLilKGP3h6cj3uFHaqxbnLxcurWXGMvcB1IPqohtx4/k/w1
- hy3f10sZwjCee6fOtRj//UQjsjzDx2qiJUTKwQ4Ll/lSZFPo6lu5jEjSyriCUxh5GgUj
- jMlQ==
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=L9X8Ucbf6sRwlUnn/8vBIIf3X5AUVXDo3mvuuIk6r0o=;
+ b=Hekbhkge6JdDOnAucugsOX9pzI/aFw6Jo38Suz1gg8qj9+FE2PR8rStCUCJBvAWUo/
+ ft4B5epJsuIvQb/TKOnQQfFyq3GSMZNRpdOLVHVaE+6PXkaq+0ObMSxzu4itvLQvSqtJ
+ wyjqfUBWkRcVBJXxaJKx0nmrxaM2+Fs47JyLR3iw8HQY6NFk6hqhfEfq79ro/WR9SA4p
+ +QLechW8H7DNl/1JmDDIIVNYWb9m1/MSXYpN609QygZPcMB306OTkICxzSFICCeSpd5a
+ xcnA0h4UEKOpwSKLYwk8HVWmZOZNKb4hT+LynuHabx+9a6N6VxWIZmCoRHm1kmCW9yzS
+ Jy8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=vSku+g0bwjaLrkc/iXNsucUFnEKlTzMW68UCbPKqtB8=;
- b=HMcarIyfvGjAgQRMXv6l9ULLphncqDPjM21saqHXl0AWZXCGdRtmokXYLp+mT40DcH
- 8jR8839zo2ho9z2yHR0k0TZJ/yuRt+/sfe/87c1jgAwpwwDJIci6DAeBRZluMsjFU0E9
- GAX0Zoia6wydG6Q/hPXZOP+KP+vObA7eq4/T/pxtuK89ABaNmpIvV9XSFoMUl4MZReeS
- STWte8nWhBeBynGqFf5exVP48I0qu+doFTCtwaS8XNV187uDdZWyE5713N0Y3jWSao9K
- LDxwtYGi2wllswqF8nlONVtGD2w+01QDsvj52n8Het0IGdkyd3ZWQc81oNUkqIqHcvnW
- Wf/w==
-X-Gm-Message-State: AFqh2kp7CPhK7YP+M99FVS5/RLYBkfWZLLpMeafeR1bVgPwdUjsaymro
- OXQ88SIgeIKk2CknJUKyqiY38w==
-X-Google-Smtp-Source: AMrXdXujBZ5t7YodisYosOp+ESpSQ34PhMPaTAchZYG+gNWDBcGkBAPdonoMnLaX4x3c/2wIZll2aA==
-X-Received: by 2002:a05:600c:3d19:b0:3db:1810:8c9e with SMTP id
- bh25-20020a05600c3d1900b003db18108c9emr24306739wmb.38.1674578396592; 
- Tue, 24 Jan 2023 08:39:56 -0800 (PST)
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=L9X8Ucbf6sRwlUnn/8vBIIf3X5AUVXDo3mvuuIk6r0o=;
+ b=6d4apX00RNNmP1pD29G5kc5bSih6IqnnVavaHjpAJUxCJ2mFQHJHLwNkmNzRLy1NOQ
+ 5f1tQBqLe181ePoabbojopHVWW7IrYxdb4YS9iBsPQInWcEOrZbNDfbq/awMWP9XX5B8
+ s413kJ6tWzCIXrsXEYwVR1IajEbZEmSqSatQ7+2ram2yvmVtIzdY8S3RSWrZJ5eHLnRl
+ ecQU81ODbHnY9Qqg59shDEzVa7jJsimYsVElQFjFYX6uzUdf9ZYt2guUTVgbm04CjYkw
+ q9SlM4GUg1HZD/POKQW75TDn7bnMvDi3LXzEaD8WoWMmZxCD5LdBsUU3bMVIFFpugghk
+ hkKg==
+X-Gm-Message-State: AFqh2kqWHsLo9bkwBzfGXailjLmTQ9dkpJh+uNGaA502PlJrlC3wruKA
+ yR736h/4+kpJkB2033bgx17g0w==
+X-Google-Smtp-Source: AMrXdXt3sM9Ukk5z/BxKYw61KeZj4A9AedI7C5vzHWTUGQt3/b6pDwSGVspfWegeP6N9bzaP07qt3A==
+X-Received: by 2002:a05:600c:3582:b0:3d3:5c21:dd94 with SMTP id
+ p2-20020a05600c358200b003d35c21dd94mr25595559wmq.9.1674578399087; 
+ Tue, 24 Jan 2023 08:39:59 -0800 (PST)
 Received: from krzk-bin.. ([178.197.216.144]) by smtp.gmail.com with ESMTPSA id
- h20-20020a1ccc14000000b003dafbd859a6sm13477147wmb.43.2023.01.24.08.39.55
+ h20-20020a1ccc14000000b003dafbd859a6sm13477147wmb.43.2023.01.24.08.39.58
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 24 Jan 2023 08:39:56 -0800 (PST)
+ Tue, 24 Jan 2023 08:39:58 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
@@ -78,10 +80,12 @@ To: Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Banajit Goswami <bgoswami@quicinc.com>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] ASoC: codecs: constify static sdw_slave_ops struct
-Date: Tue, 24 Jan 2023 17:39:51 +0100
-Message-Id: <20230124163953.345949-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 3/3] ASoC: codecs: wsa88xx: remove unneeded includes
+Date: Tue, 24 Jan 2023 17:39:53 +0100
+Message-Id: <20230124163953.345949-3-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230124163953.345949-1-krzysztof.kozlowski@linaro.org>
+References: <20230124163953.345949-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -100,111 +104,51 @@ Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The struct sdw_slave_ops is not modified and sdw_driver takes pointer to
-const, so make it a const for code safety.
+Remove unneeded includes from wsa881x and wsa883x drivers.  The drivers
+do not reference anything from the headers.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/codecs/rt1316-sdw.c     | 2 +-
- sound/soc/codecs/rt1318-sdw.c     | 2 +-
- sound/soc/codecs/rt711-sdca-sdw.c | 2 +-
- sound/soc/codecs/rt715-sdca-sdw.c | 2 +-
- sound/soc/codecs/wcd938x-sdw.c    | 2 +-
- sound/soc/codecs/wsa881x.c        | 2 +-
- sound/soc/codecs/wsa883x.c        | 2 +-
- 7 files changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/codecs/wsa881x.c | 3 ---
+ sound/soc/codecs/wsa883x.c | 4 ----
+ 2 files changed, 7 deletions(-)
 
-diff --git a/sound/soc/codecs/rt1316-sdw.c b/sound/soc/codecs/rt1316-sdw.c
-index e6294cc7a995..45a3eff31915 100644
---- a/sound/soc/codecs/rt1316-sdw.c
-+++ b/sound/soc/codecs/rt1316-sdw.c
-@@ -584,7 +584,7 @@ static int rt1316_sdw_pcm_hw_free(struct snd_pcm_substream *substream,
-  * slave_ops: callbacks for get_clock_stop_mode, clock_stop and
-  * port_prep are not defined for now
-  */
--static struct sdw_slave_ops rt1316_slave_ops = {
-+static const struct sdw_slave_ops rt1316_slave_ops = {
- 	.read_prop = rt1316_read_prop,
- 	.update_status = rt1316_update_status,
- };
-diff --git a/sound/soc/codecs/rt1318-sdw.c b/sound/soc/codecs/rt1318-sdw.c
-index f85f5ab2c6d0..c6ec86e97a6e 100644
---- a/sound/soc/codecs/rt1318-sdw.c
-+++ b/sound/soc/codecs/rt1318-sdw.c
-@@ -697,7 +697,7 @@ static int rt1318_sdw_pcm_hw_free(struct snd_pcm_substream *substream,
-  * slave_ops: callbacks for get_clock_stop_mode, clock_stop and
-  * port_prep are not defined for now
-  */
--static struct sdw_slave_ops rt1318_slave_ops = {
-+static const struct sdw_slave_ops rt1318_slave_ops = {
- 	.read_prop = rt1318_read_prop,
- 	.update_status = rt1318_update_status,
- };
-diff --git a/sound/soc/codecs/rt711-sdca-sdw.c b/sound/soc/codecs/rt711-sdca-sdw.c
-index 88a8392a58ed..e23cec4c457d 100644
---- a/sound/soc/codecs/rt711-sdca-sdw.c
-+++ b/sound/soc/codecs/rt711-sdca-sdw.c
-@@ -338,7 +338,7 @@ static int rt711_sdca_interrupt_callback(struct sdw_slave *slave,
- 	return ret;
- }
- 
--static struct sdw_slave_ops rt711_sdca_slave_ops = {
-+static const struct sdw_slave_ops rt711_sdca_slave_ops = {
- 	.read_prop = rt711_sdca_read_prop,
- 	.interrupt_callback = rt711_sdca_interrupt_callback,
- 	.update_status = rt711_sdca_update_status,
-diff --git a/sound/soc/codecs/rt715-sdca-sdw.c b/sound/soc/codecs/rt715-sdca-sdw.c
-index 3f981a9e7fb6..75468e91ffef 100644
---- a/sound/soc/codecs/rt715-sdca-sdw.c
-+++ b/sound/soc/codecs/rt715-sdca-sdw.c
-@@ -172,7 +172,7 @@ static int rt715_sdca_read_prop(struct sdw_slave *slave)
- 	return 0;
- }
- 
--static struct sdw_slave_ops rt715_sdca_slave_ops = {
-+static const struct sdw_slave_ops rt715_sdca_slave_ops = {
- 	.read_prop = rt715_sdca_read_prop,
- 	.update_status = rt715_sdca_update_status,
- };
-diff --git a/sound/soc/codecs/wcd938x-sdw.c b/sound/soc/codecs/wcd938x-sdw.c
-index 1bf3c06a2b62..33d1b5ffeaeb 100644
---- a/sound/soc/codecs/wcd938x-sdw.c
-+++ b/sound/soc/codecs/wcd938x-sdw.c
-@@ -191,7 +191,7 @@ static int wcd9380_interrupt_callback(struct sdw_slave *slave,
- 	return IRQ_HANDLED;
- }
- 
--static struct sdw_slave_ops wcd9380_slave_ops = {
-+static const struct sdw_slave_ops wcd9380_slave_ops = {
- 	.update_status = wcd9380_update_status,
- 	.interrupt_callback = wcd9380_interrupt_callback,
- 	.bus_config = wcd9380_bus_config,
 diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
-index 7a5d31483cfc..35bd6f7727ed 100644
+index d142ca9f2fb6..f709231b1277 100644
 --- a/sound/soc/codecs/wsa881x.c
 +++ b/sound/soc/codecs/wsa881x.c
-@@ -1106,7 +1106,7 @@ static int wsa881x_bus_config(struct sdw_slave *slave,
- 	return 0;
- }
- 
--static struct sdw_slave_ops wsa881x_slave_ops = {
-+static const struct sdw_slave_ops wsa881x_slave_ops = {
- 	.update_status = wsa881x_update_status,
- 	.bus_config = wsa881x_bus_config,
- 	.port_prep = wsa881x_port_prep,
+@@ -5,10 +5,7 @@
+ #include <linux/bitops.h>
+ #include <linux/gpio.h>
+ #include <linux/gpio/consumer.h>
+-#include <linux/interrupt.h>
+ #include <linux/module.h>
+-#include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
+ #include <linux/pm_runtime.h>
 diff --git a/sound/soc/codecs/wsa883x.c b/sound/soc/codecs/wsa883x.c
-index be211422d38f..4fc7c01c27ae 100644
+index de3f4b9b0dba..c609cb63dae6 100644
 --- a/sound/soc/codecs/wsa883x.c
 +++ b/sound/soc/codecs/wsa883x.c
-@@ -1073,7 +1073,7 @@ static int wsa883x_port_prep(struct sdw_slave *slave,
- 	return 0;
- }
+@@ -4,16 +4,12 @@
+  */
  
--static struct sdw_slave_ops wsa883x_slave_ops = {
-+static const struct sdw_slave_ops wsa883x_slave_ops = {
- 	.update_status = wsa883x_update_status,
- 	.port_prep = wsa883x_port_prep,
- };
+ #include <linux/bitops.h>
+-#include <linux/debugfs.h>
+-#include <linux/delay.h>
+ #include <linux/device.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/of_gpio.h>
+-#include <linux/of_platform.h>
+-#include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/printk.h>
+ #include <linux/regmap.h>
 -- 
 2.34.1
 
