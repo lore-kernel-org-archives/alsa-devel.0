@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38616C05027
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 07:56:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57FCAC54E94
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 07:56:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1EA69E0E;
-	Thu, 26 Jan 2023 08:55:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EA69E0E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5953E846;
+	Thu, 26 Jan 2023 08:56:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5953E846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674719807;
-	bh=AMhWm3gEVtzGLVwbcmzmYh/KinNd9CMEiZtydbTmPfk=;
+	s=default; t=1674719817;
+	bh=rJ6v0G0f9bgZdFIT4weurb4LSw/utBFyX+yde/07LCE=;
 	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=U6vOjcYUQTV272muk9QVG3a3Wk/mZ6jT1Ju1YBmwFxcAV4rhgmDvCZOFsAwUE3k8B
-	 EWmW3ad+2OmSAIm7N6CN0I5cVHAPHIWCNGKvny0hO8rNuvcUTcpWldcGpWkZ4//Yvc
-	 8QOaDQSsvbE3LkAPaM3JDwlU0PSrn3/Bqy3YnQAM=
+	b=nYadFYCQfBn8+qvj3ijjlRN2QK8mojIcbQjczPUjSx6kFJ2eVXOH2iiogvxd+hNdA
+	 hvCC1RtQKYG/Jas02NpYjtebv5c5tvKBniv9tHQmIEkXErEMM//DmlcbYDyxr/pGqZ
+	 iiEgszntB3V9LoJOE5ehMo7av7wfI2IYX3sGUcuQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E07E2F80551;
-	Thu, 26 Jan 2023 08:55:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A965BF80558;
+	Thu, 26 Jan 2023 08:55:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B541CF800AE; Wed, 25 Jan 2023 10:31:10 +0100 (CET)
+ id 3FC7BF80163; Wed, 25 Jan 2023 10:38:58 +0100 (CET)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8DAEDF800AE
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 10:30:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DAEDF800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74AABF80163
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 10:38:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74AABF80163
 Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
  unprotected) header.d=suse.com header.i=@suse.com header.a=rsa-sha256
- header.s=susede1 header.b=Pij8ssoJ
+ header.s=susede1 header.b=r0FIat4k
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B91A621C63;
- Wed, 25 Jan 2023 09:30:54 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 94D5721C7F;
+ Wed, 25 Jan 2023 09:38:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
- t=1674639054; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1674639534; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=jognpwZWDP/caNk47/2I5pB+VrjaxgWmcyaDbH1onsg=;
- b=Pij8ssoJlw6k6tQr48jFXJyevDWch308vx0CLomRDmV84uEdMgTC6NhqR8VCkgI74II7DW
- anm6YuwD0GfDOi17b+9Zs5S20/ilyumOWkOAGicsthADYQDP18s2AfYp6RzP5d5hjTOUwm
- W4uNWFQcSkUDrOF5p/6xahiK2Zzyzto=
+ bh=rlC3v8G7Qltb7/sMWGykfElAbj3RZvreU88MtZ+OLHM=;
+ b=r0FIat4kOE8WovOTP3LWhacl5M3EjQXhF3aBT5cBj3FuQ5I+yJMTY0cq7QTmO7SFPDQv6O
+ tRrm4BhOZHjZFNfq3BxFKWYU7SqtAc8zTE0tqhcCiP6BOgQ+ipP6+yjGZBzFWwz4Mee2C0
+ GFF6IKS/BdrV8Bwlj7T9ur543veHKvk=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 684E91358F;
- Wed, 25 Jan 2023 09:30:54 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 446411358F;
+ Wed, 25 Jan 2023 09:38:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id yJRSGc720GMeHAAAMHmgww
- (envelope-from <mhocko@suse.com>); Wed, 25 Jan 2023 09:30:54 +0000
-Date: Wed, 25 Jan 2023 10:30:53 +0100
+ by imap2.suse-dmz.suse.de with ESMTPSA id jLUjEK740GMsIAAAMHmgww
+ (envelope-from <mhocko@suse.com>); Wed, 25 Jan 2023 09:38:54 +0000
+Date: Wed, 25 Jan 2023 10:38:53 +0100
 From: Michal Hocko <mhocko@suse.com>
 To: Suren Baghdasaryan <surenb@google.com>
-Subject: Re: [PATCH v2 3/6] mm: replace vma->vm_flags direct modifications
- with modifier calls
-Message-ID: <Y9D2zXpy+9iyZNun@dhcp22.suse.cz>
+Subject: Re: [PATCH v2 4/6] mm: replace vma->vm_flags indirect modification
+ in ksm_madvise
+Message-ID: <Y9D4rWEsajV/WfNx@dhcp22.suse.cz>
 References: <20230125083851.27759-1-surenb@google.com>
- <20230125083851.27759-4-surenb@google.com>
+ <20230125083851.27759-5-surenb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230125083851.27759-4-surenb@google.com>
+In-Reply-To: <20230125083851.27759-5-surenb@google.com>
 X-Mailman-Approved-At: Thu, 26 Jan 2023 08:55:01 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -144,23 +144,17 @@ Cc: michel@lespinasse.org, nvdimm@lists.linux.dev, heiko@sntech.de,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed 25-01-23 00:38:48, Suren Baghdasaryan wrote:
-> Replace direct modifications to vma->vm_flags with calls to modifier
+On Wed 25-01-23 00:38:49, Suren Baghdasaryan wrote:
+> Replace indirect modifications to vma->vm_flags with calls to modifier
 > functions to be able to track flag changes and to keep vma locking
-> correctness.
+> correctness. Add a BUG_ON check in ksm_madvise() to catch indirect
+> vm_flags modification attempts.
 
-Is this a manual (git grep) based work or have you used Coccinele for
-the patch generation?
+Those BUG_ONs scream to much IMHO. KSM is an MM internal code so I
+gueess we should be willing to trust it.
 
-My potentially incomplete check
-$ git grep ">[[:space:]]*vm_flags[[:space:]]*[&|^]="
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
-shows that nothing should be left after this. There is still quite a lot
-of direct checks of the flags (more than 600). Maybe it would be good to
-make flags accessible only via accessors which would also prevent any
-future direct setting of those flags in uncontrolled way as well.
-
-Anyway
 Acked-by: Michal Hocko <mhocko@suse.com>
 -- 
 Michal Hocko
