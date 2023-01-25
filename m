@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD93FC27C76
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 15:17:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19EBFC27C76
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 15:18:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF18D93A;
-	Wed, 25 Jan 2023 16:16:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF18D93A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52BD5E85;
+	Wed, 25 Jan 2023 16:17:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52BD5E85
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674659860;
-	bh=HqjyjaRRGEEJLN3luWkXHFgLtob+gQ7g8wCc8IAretI=;
+	s=default; t=1674659886;
+	bh=llXwsvUbCmKXT5PEYj3xP41RbbqNF31bAYCDMZOhfFA=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=ALOC3P6PkaySyGHuuaEKgDenm8lMztdaNkZrFCt4ZTGzpQp89MdzSEhGBn3+zQKT2
-	 YZJwmAo+PLohj7zY6sKtruzyYtmB+HkBQTcTFzEYMpJzrovPhy+r/vcIpUiahPuL6A
-	 R8tul7pQuitzaiwmO0X90MBYl/pfd6NFLsmYT4uw=
+	b=DEK8kf8imIG7WgaET8/sXketrnAKDKBBk3puSEYloFiaOtmd+kCefqBultiFTQXyQ
+	 8UbKYf8C/fhwYZBO7edmEu37w5ofKSqD7obHO7PT05OQ9A/ycZFsUqFZv1xkyAWqGU
+	 DfqHMonA8LO5txSc0We0M8J32kSn+rYlRCaWIpSk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88FA8F804F3;
-	Wed, 25 Jan 2023 16:16:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 253B7F80539;
+	Wed, 25 Jan 2023 16:16:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 930A4F800FB; Wed, 25 Jan 2023 16:16:26 +0100 (CET)
+ id AF1DCF8053D; Wed, 25 Jan 2023 16:16:30 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BBAA2F80163
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 16:16:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBAA2F80163
+ by alsa1.perex.cz (Postfix) with ESMTPS id ADDC4F80163
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 16:16:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADDC4F80163
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=jaiLdic7
+ header.s=Intel header.b=fEw+j0CH
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674659783; x=1706195783;
+ t=1674659787; x=1706195787;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=HqjyjaRRGEEJLN3luWkXHFgLtob+gQ7g8wCc8IAretI=;
- b=jaiLdic7XdjOipfjgK7W4Ms9QEsE1Il3ER3juK3troGZmLKgBOsUiyEc
- RYhc8tXNlFethiZNFb8xx3aVmsY/tE+ZIWapCEMtIp0TlIwued3Q/ewWj
- hqvcwq4NfXnBwTqp6MZfiOLnM7ak5Zf9KAewe9ep4TdCyOB81Jj3qy6Ku
- sbW2zfoa27KLRoFjnBRX/af/4Dcgq4R4a1mqOndiZQjyhmPg6GAV9m5q4
- Me0zI1kG/tMI8B/n7tg9Mg4JkLGz7nwtLIV8+xZR/fMRbd/aYPdbaOM+n
- 2zlRCnBtMoq4JHxuV/0fYRXAbjIV1hwPBKRmDu3Mk20OlMphhfZl03Zzy g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="327832054"
-X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="327832054"
+ bh=llXwsvUbCmKXT5PEYj3xP41RbbqNF31bAYCDMZOhfFA=;
+ b=fEw+j0CHT1lmGb9F2BEJACXgcnz06jQiRzxv7j312K2MyYQjWGwuMuEi
+ VM/OPv28UMaOW4A04P3zQ8lw/DwPYcwdg4iH3txpCte2uoE+CXZNVlYvq
+ 8YwYzQZb/RnAgi3qeFqYFSiIZ1NTMH19JpEOIoDTDR0BK76D60V/tRBZg
+ ykSVUJnYwf7J4mMhrI5mX78g/nDZeu/36M6ZIZhj1HGPljREEzGQt1rXV
+ J1xy6DgOnqbUSjwEn9bhe/tcWA3PggWQdBTCmaLaXTmvZfmP2Bf/0tpVb
+ RC/4SGE0CdT3xfie5v7jo9A92bIs1uWiZs6TORb62tDgzQGPiAUPD/iN8 g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="327832062"
+X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="327832062"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2023 07:16:11 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="786449110"
-X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="786449110"
+ 25 Jan 2023 07:16:12 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="786449144"
+X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="786449144"
 Received: from bshunt-mobl.amr.corp.intel.com (HELO [10.212.37.80])
  ([10.212.37.80])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2023 07:16:10 -0800
-Message-ID: <609b744a-1d5f-f390-45ad-9448cd5823ad@linux.intel.com>
-Date: Wed, 25 Jan 2023 09:13:52 -0600
+ 25 Jan 2023 07:16:12 -0800
+Message-ID: <40207a2a-3f2a-bbef-74f6-9e85ced3150a@linux.intel.com>
+Date: Wed, 25 Jan 2023 09:15:15 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH 10/11] ASoC: topology: Use unload() op directly
+Subject: Re: [PATCH 11/11] ASoC: topology: Unify kcontrol removal code
 Content-Language: en-US
 To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>, Mark Brown <broonie@kernel.org>
 References: <20230125194649.3485731-1-amadeuszx.slawinski@linux.intel.com>
- <20230125194649.3485731-11-amadeuszx.slawinski@linux.intel.com>
+ <20230125194649.3485731-12-amadeuszx.slawinski@linux.intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230125194649.3485731-11-amadeuszx.slawinski@linux.intel.com>
+In-Reply-To: <20230125194649.3485731-12-amadeuszx.slawinski@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -93,69 +93,86 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 On 1/25/23 13:46, Amadeusz Sławiński wrote:
-> Generic dynamic object (struct snd_soc_dobj) needs pointer to unload
-> function, however, instead of using function pointer to point at it
-> directly it points to all topology operations. Change code to use the
-> function pointer instead.
+> Functions removing bytes, enum and mixer kcontrols are identical. Unify
 
-This is a convoluted explanation, and the code does not support this
-last sentence.
+they are identical because of the change in patch10.
 
-There is no existing dobj 'function pointer', it's added by this patch ....
+Please clarify that this is not a cleanup removing duplicated code
+that's been there forever, it's become useless as a result of the
+previous patch.
 
+> them under one function and use it to free associated kcontrols.
+> 
 > Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 > Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 > ---
->  include/sound/soc-topology.h |  2 +-
->  sound/soc/soc-topology.c     | 56 ++++++++++++++++++++----------------
->  2 files changed, 33 insertions(+), 25 deletions(-)
+>  sound/soc/soc-topology.c | 48 +++++-----------------------------------
+>  1 file changed, 6 insertions(+), 42 deletions(-)
 > 
-> diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-> index b4b896f83b94..f055c6917f6c 100644
-> --- a/include/sound/soc-topology.h
-> +++ b/include/sound/soc-topology.h
-> @@ -62,7 +62,7 @@ struct snd_soc_dobj {
->  	enum snd_soc_dobj_type type;
->  	unsigned int index;	/* objects can belong in different groups */
->  	struct list_head list;
-> -	struct snd_soc_tplg_ops *ops;
-> +	int (*unload)(struct snd_soc_component *comp, struct snd_soc_dobj *dobj);
-
-.... here
-
-So what this changes is that instead of following the indirections ...
-
->  	union {
->  		struct snd_soc_dobj_control control;
->  		struct snd_soc_dobj_widget widget;
 > diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-> index 6689cf44464c..eb49037d86ae 100644
+> index eb49037d86ae..e66b0d9e387a 100644
 > --- a/sound/soc/soc-topology.c
 > +++ b/sound/soc/soc-topology.c
-> @@ -359,8 +359,8 @@ static void soc_tplg_remove_mixer(struct snd_soc_component *comp,
->  	if (pass != SOC_TPLG_PASS_CONTROL)
->  		return;
+> @@ -350,41 +350,9 @@ static int soc_tplg_add_kcontrol(struct soc_tplg *tplg,
+>  				tplg->dev, k, comp->name_prefix, comp, kcontrol);
+>  }
 >  
-> -	if (dobj->ops && dobj->ops->control_unload)
-> -		dobj->ops->control_unload(comp, dobj);
-> +	if (dobj->unload)
-> +		dobj->unload(comp, dobj);
-
-... here, you first need to set that pointer ....
-
+> -/* remove a mixer kcontrol */
+> -static void soc_tplg_remove_mixer(struct snd_soc_component *comp,
+> -	struct snd_soc_dobj *dobj, int pass)
+> -{
+> -	struct snd_card *card = comp->card->snd_card;
+> -
+> -	if (pass != SOC_TPLG_PASS_CONTROL)
+> -		return;
+> -
+> -	if (dobj->unload)
+> -		dobj->unload(comp, dobj);
+> -
+> -	snd_ctl_remove(card, dobj->control.kcontrol);
+> -	list_del(&dobj->list);
+> -}
+> -
+> -/* remove an enum kcontrol */
+> -static void soc_tplg_remove_enum(struct snd_soc_component *comp,
+> -	struct snd_soc_dobj *dobj, int pass)
+> -{
+> -	struct snd_card *card = comp->card->snd_card;
+> -
+> -	if (pass != SOC_TPLG_PASS_CONTROL)
+> -		return;
+> -
+> -	if (dobj->unload)
+> -		dobj->unload(comp, dobj);
+> -
+> -	snd_ctl_remove(card, dobj->control.kcontrol);
+> -	list_del(&dobj->list);
+> -}
+> -
+> -/* remove a byte kcontrol */
+> -static void soc_tplg_remove_bytes(struct snd_soc_component *comp,
+> -	struct snd_soc_dobj *dobj, int pass)
+> +/* remove kcontrol */
+> +static void soc_tplg_remove_kcontrol(struct snd_soc_component *comp, struct snd_soc_dobj *dobj,
+> +				     int pass)
+>  {
+>  	struct snd_card *card = comp->card->snd_card;
 >  
->  	sbe->max = le32_to_cpu(be->max);
->  	sbe->dobj.type = SND_SOC_DOBJ_BYTES;
-> -	sbe->dobj.ops = tplg->ops;
-> +	if (tplg->ops)
-> +		sbe->dobj.unload = tplg->ops->control_unload;
-
-... here.
-
-I don't see the gain, sorry.
-
-Edit: This removal only makes sense with the patch 11 added, where the
-same function can be used to remove multiple types of control.
-
-Please revisit the commit message here and explain the intent, otherwise
-this change in isolation isn't really useful.
+> @@ -2626,14 +2594,10 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp)
+>  			list) {
+>  
+>  			switch (dobj->type) {
+> -			case SND_SOC_DOBJ_MIXER:
+> -				soc_tplg_remove_mixer(comp, dobj, pass);
+> -				break;
+> -			case SND_SOC_DOBJ_ENUM:
+> -				soc_tplg_remove_enum(comp, dobj, pass);
+> -				break;
+>  			case SND_SOC_DOBJ_BYTES:
+> -				soc_tplg_remove_bytes(comp, dobj, pass);
+> +			case SND_SOC_DOBJ_ENUM:
+> +			case SND_SOC_DOBJ_MIXER:
+> +				soc_tplg_remove_kcontrol(comp, dobj, pass);
+>  				break;
+>  			case SND_SOC_DOBJ_GRAPH:
+>  				soc_tplg_remove_route(comp, dobj, pass);
