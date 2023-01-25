@@ -4,77 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0887C54E94
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 08:44:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98A2DC54E94
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 11:23:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 99F0E886;
-	Wed, 25 Jan 2023 09:43:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99F0E886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6CF03F0;
+	Wed, 25 Jan 2023 12:22:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CF03F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674636251;
-	bh=i9qzSGCf4VjjKsRpTQdVV0e0i6suTE3BuEEdNSTpS8E=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=NCV9Y/G+GJvws5q3Xf0zahCJovuQ5Jdk2/D2laGSuKC6kkRVIj2y9wlBV7OkiRx3r
-	 BW+0TvxoOcvcxFC6Upt36pwSSwygs0U6+C/2/wuP5JnLcO4pZ9Xg0I0AmFiT5Hssa0
-	 kuVDZWrDXtrcjS9CCrRiPr/GqiPDaki6tDEfQHjw=
+	s=default; t=1674645786;
+	bh=M4rgoJKzM7Z2LuxxXbIu5em8Kln56dbDqhxm61K4mB0=;
+	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=DrSi6n6nZGAn84kzSET4QSOVNAa1tSa4JZ/tfb1wlr2oKPBQXAWH5DR7toK4pklpm
+	 T5vg+UJvmvf20mzd1qP25pb+OsqpuBCK4fH0irofFX2c0nPR/LPG6V+zwDaTh64obY
+	 Ucja43Q5xiEKAPm0Ch//mf9LE4vrTheOUkRMeWkM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0D62FF802E8;
-	Wed, 25 Jan 2023 09:43:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8B20F802E8;
+	Wed, 25 Jan 2023 12:22:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2459F80424; Wed, 25 Jan 2023 09:43:17 +0100 (CET)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
- [IPv6:2a00:1450:4864:20::62f])
+ id EFF1BF80424; Wed, 25 Jan 2023 12:22:13 +0100 (CET)
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com
+ [IPv6:2607:f8b0:4864:20::b35])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8D75FF800FB
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 09:43:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D75FF800FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32E67F800FB
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 12:22:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32E67F800FB
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=GX0xNSqf
-Received: by mail-ej1-x62f.google.com with SMTP id mp20so45548974ejc.7
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 00:43:14 -0800 (PST)
+ header.s=20210112 header.b=iAOorhUl
+Received: by mail-yb1-xb35.google.com with SMTP id x4so20803272ybp.1
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 03:22:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=BR+sXDDqOMywpRsOn89/R8gqCffsKgaasplzlxVvrJI=;
- b=GX0xNSqfsGEizN+VyNTuk5FL4dwDgRoBnSUXE5B7H0fVbJgs4G7sAORzYx29XHc6yM
- kbVn5Tjp63mUqREvnLaVDYN/Q0tHovbsw0rDdEnUM+AZLwsUrGwBTkemU53wZtBOb9Em
- mHtZFMZKQQ4vM+QDTYEraNzd0fzOekmSjuHkR6yY0KHZ+m1SEGJCjcga65G7DHdtGk6O
- gijTe2hld9Skr5jMfJfymaP130WPBSkTVpOLDvFou4WIqYPodBDaYA5hf1Mfe3W4epd7
- Eq/I3RY9j0FTdXA00N7tu1ecvwygFXphAhE0seY/hLH5Tza1ymEqwGqNxNksyq/kTW8e
- Tcow==
+ h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+ :date:message-id:reply-to;
+ bh=4N1tknjR+6+Fvb5FdmpQFoWpPBKGXE1kIT0qNHjSdYY=;
+ b=iAOorhUlgVLuSqn4h7YW1i9G6eFcrA/lyJfTYP0pVQh8Wr4TLEnJog6OwF7KoA6kg3
+ JRAwQlfBBjmApn8GVfCx4ISzkDnUM70zVzwhwqejTHyGfYEBlsRr7ZzaRZCjWb8ve+H9
+ Jj06XnjYAJNdzdbhWDeu0CsQBtzEnx0KJVI0Bn8C4bzxDC5/abhPdtrQcbN+CVzaByMp
+ otLJYSi6+WYBapfXRxSVXm+4Pxrhkv50wDPjlevItgh9jFqWICvbk4tpu1mCSHHiEXfB
+ moSzFZxSGK39SmT8KfGOdtKX8cmHHDPJOR94TaM7rVPJUIfyjv/9C+Acxj2DhTSi0I25
+ owXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=BR+sXDDqOMywpRsOn89/R8gqCffsKgaasplzlxVvrJI=;
- b=5/aYCCkZvBa0VkFh3Po1YbLo7ETE9Mj0kzRV8b3ORZ6owMtgAU54lv0Uaer45ReA5V
- ztQnRPcmJNtHpDB7HWIODT02doYO20OfqAs9GY2XcSfxIhONyY4Kka2Y1GokdXzwdCj4
- sgUwkQWOua+rWIRDDC3eFGKvfRd9a6pzhc40SvIZxOF2n6LGX4CdAgBui9OXMVyDMRr+
- uT7Ckc5VAj4a7MyPQZjfxUJRL4Z6wqKmMQiZE/xtTcJC2Ob/jIjw+cOPt/7QKTTCPJcb
- 8Y5CAUAnpm9zKYIx9Dy/zKG3kQP9jdPct+SUwezCaD9+EdqX0/RNUu3xCQKM6inaIYOS
- 4nbQ==
-X-Gm-Message-State: AFqh2kqhNhc6qLyz9jQdXlN069D7Q3cQeQjoZLvAbImyr2oLuTIroNUb
- g0L/MEz66hcCjsC9Xt/gzZEEG/BxkYD7SIC/ZiI=
-X-Google-Smtp-Source: AMrXdXtr5E6dw5XwwpIhgEusGf2uuT6dPnujOTecS6vhDexwQJM17FKVIrEx1pQcj8cEqXMccT72HoycrpxWbl9/P4Y=
-X-Received: by 2002:a17:906:961a:b0:872:8cb:3d87 with SMTP id
- s26-20020a170906961a00b0087208cb3d87mr3435467ejx.350.1674636192510; Wed, 25
- Jan 2023 00:43:12 -0800 (PST)
+ h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=4N1tknjR+6+Fvb5FdmpQFoWpPBKGXE1kIT0qNHjSdYY=;
+ b=bRDwk3N3TtExQJ5tzlcQZ4NHPq3SpUu31M/vwhr00luQ8nEy90H5gSDuENhwMcqWbu
+ ZwV5eL2Rlke63P3seh15/9XgPSrOp0IIipDvjnvDLIqfQu6/w8YgFcBGFEhmiqwLmujs
+ at0l7AoY4ekzu/HtJFGCJ/1vaTto6iOC1ock9qkcwidD4Wt3NKAXvQsHBwT7bBLpPCp1
+ zBmKW/HvCUoXyRwaxELYAOiJKsbhEtKb3YP4j8h0bPeycBeG8hRIbkgRk4J99YuQjvi0
+ HetHrH52hVrAE8Xor0zOCrR/Oy6DqIhknJv8DPHxD07Ig9MABWutglp2OFZfRyqM296V
+ BB8Q==
+X-Gm-Message-State: AFqh2kqmlcTkHVkiKXbK1gNnfVhK20CI+K0+F8tmmPzYVgehZxr6gm2+
+ Em7PjAffODs++LFMz/V0vHiCgLEmw2A+fpP/WWrhCYnAar4=
+X-Google-Smtp-Source: AMrXdXvs4sSW0azhzwm5tSLNEdYEAZi1+A9qQEg/bGiu+m7GP9TQ5qcBosvFzpstOg5iHZ0WPr15DxrzGJG4A+Eu3JQ=
+X-Received: by 2002:a25:c645:0:b0:802:2e2c:2b8 with SMTP id
+ k66-20020a25c645000000b008022e2c02b8mr1747845ybf.200.1674645728063; Wed, 25
+ Jan 2023 03:22:08 -0800 (PST)
 MIME-Version: 1.0
-References: <CAOMZO5CVCm5bpVThYW7V379PyTfyVQLBrN03cUfOxLRyBXp0gw@mail.gmail.com>
-In-Reply-To: <CAOMZO5CVCm5bpVThYW7V379PyTfyVQLBrN03cUfOxLRyBXp0gw@mail.gmail.com>
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Date: Wed, 25 Jan 2023 10:43:03 +0200
-Message-ID: <CAEnQRZAUx0Xg_3J161VG=m9oCQFNBT3aFHwExFbWWOTK6xsSTA@mail.gmail.com>
-Subject: Re: i.MX8MN: SAI: First playback failure, second succeeds
-To: Fabio Estevam <festevam@gmail.com>
+From: Muni Sekhar <munisekharrms@gmail.com>
+Date: Wed, 25 Jan 2023 16:51:57 +0530
+Message-ID: <CAHhAz+gxrjB04c-GHa1YzahyKDQcW3+xoDt9iUnkj9THKvG_TA@mail.gmail.com>
+Subject: struct snd_pcm_ops callbacks
+To: alsa-devel <alsa-devel@alsa-project.org>, linux-sound@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -88,44 +84,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
- Shengjiu Wang <shengjiu.wang@gmail.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jan 25, 2023 at 5:29 AM Fabio Estevam <festevam@gmail.com> wrote:
->
-> Hi,
->
-> I am trying to get audio playback to work on i.MX8MN board with an
-> ES9080 DAC (with a not yet upstreamed driver).
->
-> The first playback after a POR fails most of the time (about 70%):
->
-> speaker-test -t sine -f  2000 -c 4 -F S32_LE -D hw:3
->
-> speaker-test 1.2.6
->
-> Playback device is hw:3
-> Stream parameters are 48000Hz, S32_LE, 4 channels
-> Sine wave rate is 2000.0000Hz
-> Rate set to 48000Hz (requested 48000Hz)
-> Buffer size range from 6 to 32768
-> Period size range from 3 to 4095
-> Using max buffer size 32768
-> Periods = 4
-> was set period_size = 2048
-> was set buffer_size = 32768
->  0 - Front Left
-> Write error: -5,Input/output error
-> xrun_recovery failed: -5,Input/output error
-> Transfer failed: Input/output error
->
-> However, the second attempt always succeeds.
->
-> I dumped the E9080 registers and they match the good and failure cases.
-
 Hi,
 
-Can you also dump SAI registers ?
+struct snd_pcm_ops callbacks can be used for sending\receiving PDM
+audio data to and from a sound card? Or is it only designed for PCM
+audio data?
+
+
+-- 
+Thanks,
+Sekhar
