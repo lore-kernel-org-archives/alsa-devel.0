@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D46A5C27C76
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 11:47:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5943BC54E94
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 11:48:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CBF8839;
-	Wed, 25 Jan 2023 12:47:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CBF8839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38B5F20B;
+	Wed, 25 Jan 2023 12:47:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38B5F20B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674647276;
-	bh=7wyeC/VdUZSwK1TsdTCPu82keY60B63Zr0PsdtBFRYM=;
+	s=default; t=1674647278;
+	bh=YlqoL2vjAVOeF0C3ZUUu4S4BuCe5W4aTNCYyrytFyMg=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=V4RmdaNzqM0JeR6GCh+g/OUjGArBRnjd/Zt/hHu7tGFQsHdSq5goyC84Sfk3yFy9l
-	 g6wmnqP8px7A92HAH5b1cz6Hi1/0q41jgzUNCQggQRYA6biuXmJO3qTvMs+rmw6gUr
-	 HBbTwW6WXl9JdaaIEQqaS+8w1tIdNrdOb/0ZPSfw=
+	b=X0jbUwl9rDLwtNjh8kfoTeiLWEwV+9/ywKYeNZa2gAp0xEsgPilLc5esl2ltyM5DJ
+	 PIP9hptC16soJ1ouQgR0qdgNlnP18HaBrk3WEurozM7Zpe65Cpx7AhlvPHtJP0v+uI
+	 TpwuU7NRVly8Asjq8NS/N2w0qaCt01qC0uOiAvCI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DCEF4F80551;
-	Wed, 25 Jan 2023 12:46:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D105EF80163;
+	Wed, 25 Jan 2023 12:46:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 91E1BF80539; Wed, 25 Jan 2023 12:46:14 +0100 (CET)
+ id 5482BF8053D; Wed, 25 Jan 2023 12:46:16 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24173F802E8
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 12:46:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24173F802E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC8E1F80163
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 12:46:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC8E1F80163
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=NIqfz7UJ
+ header.s=Intel header.b=kkYmW+un
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674647168; x=1706183168;
+ t=1674647173; x=1706183173;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=7wyeC/VdUZSwK1TsdTCPu82keY60B63Zr0PsdtBFRYM=;
- b=NIqfz7UJm0llKaoYGE+vGF20KIzTVoiQl3DlYlHAOCD3qDYCL+x/Mhty
- VLBiKwK5isHnqbxXoo+f0XvC/Uyy1H8ktWS2librsjyYh5w7tbUxfpDkw
- hRlETYGzLih9ALtv0Pi6STj1sRrKbLOgW4L5z7jY/eow57yISwZXC5ls0
- JktRAzV+BevM9DsNYwGmViVrIO1fdVNvmKZ9yRlwRhdgALR2CEahRqAbP
- xFe7gjN2XL8XsNVwlCQXMYs0kumLXFypKPYgB7/S5a0slrD1GKpOeaoYo
- mzjEvC4HCB5nxDFs4oTVJz/f91qbw/wvG1mowSr6rUXwigkQqDtB69/BF g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10600"; a="324234173"
-X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="324234173"
+ bh=YlqoL2vjAVOeF0C3ZUUu4S4BuCe5W4aTNCYyrytFyMg=;
+ b=kkYmW+un1VMzo4anDj3+F4WpKkSLWiSxFbTsXvS9goecHgL/Ixsnwtqa
+ HPveCHvq7nzW4iSO5AP5deHdgl/ElrSh4Aarcg3lovV+ONiKb1rC4z32S
+ TQPv3o+F2GffBpSbRh7LASakCQbguKirFSeDiN9U/K8jji5wP0OBBB/he
+ bi3wN3Tl15xi+Hp7o3ajhsdDGpGJW5Ux2jWMWWHcEJYRiD0445K/yIzX9
+ 8hUedSI8N20jPgP1BlNlqEptcWc2RN8oiZIE0mI/avkRasEEuzO7ouFtN
+ q/P9bLMLpD/Q7I+PG+aPPVCv9pfzWWzVMSoHyL5rNqNKms4XZ1Ru77Rw+ g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10600"; a="324234209"
+X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="324234209"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2023 03:46:02 -0800
+ 25 Jan 2023 03:46:10 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10600"; a="612393943"
-X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="612393943"
+X-IronPort-AV: E=McAfee;i="6500,9779,10600"; a="612394011"
+X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="612394011"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
- by orsmga003.jf.intel.com with ESMTP; 25 Jan 2023 03:46:00 -0800
+ by orsmga003.jf.intel.com with ESMTP; 25 Jan 2023 03:46:08 -0800
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 02/11] ASoC: topology: Remove unused SOC_TPLG_PASS_PINS
- constant
-Date: Wed, 25 Jan 2023 20:46:40 +0100
-Message-Id: <20230125194649.3485731-3-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 06/11] ASoC: topology: Remove unnecessary forward declarations
+Date: Wed, 25 Jan 2023 20:46:44 +0100
+Message-Id: <20230125194649.3485731-7-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230125194649.3485731-1-amadeuszx.slawinski@linux.intel.com>
 References: <20230125194649.3485731-1-amadeuszx.slawinski@linux.intel.com>
@@ -90,30 +89,29 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The constant is unused, so it can be safely removed.
+There is no need to forward declare functions if their use is after
+their definition.
 
 Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/soc-topology.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/soc-topology.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index b9addbab2b3d..e9138ec4df8f 100644
+index a952f7eaa646..766de161aa4a 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -44,9 +44,8 @@
- #define SOC_TPLG_PASS_WIDGET		3
- #define SOC_TPLG_PASS_PCM_DAI		4
- #define SOC_TPLG_PASS_GRAPH		5
--#define SOC_TPLG_PASS_PINS		6
--#define SOC_TPLG_PASS_BE_DAI		7
--#define SOC_TPLG_PASS_LINK		8
-+#define SOC_TPLG_PASS_BE_DAI		6
-+#define SOC_TPLG_PASS_LINK		7
+@@ -76,9 +76,6 @@ struct soc_tplg {
+ 	struct snd_soc_tplg_ops *ops;
+ };
  
- #define SOC_TPLG_PASS_START	SOC_TPLG_PASS_MANIFEST
- #define SOC_TPLG_PASS_END	SOC_TPLG_PASS_LINK
+-static int soc_tplg_process_headers(struct soc_tplg *tplg);
+-static int soc_tplg_complete(struct soc_tplg *tplg);
+-
+ /* check we dont overflow the data for this control chunk */
+ static int soc_tplg_check_elem_count(struct soc_tplg *tplg, size_t elem_size,
+ 	unsigned int count, size_t bytes, const char *elem_type)
 -- 
 2.25.1
 
