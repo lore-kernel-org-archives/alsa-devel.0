@@ -4,74 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98A2DC54E94
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 11:23:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 690DAC54E94
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 11:47:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6CF03F0;
-	Wed, 25 Jan 2023 12:22:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CF03F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id ABFB21E2;
+	Wed, 25 Jan 2023 12:46:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABFB21E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674645786;
-	bh=M4rgoJKzM7Z2LuxxXbIu5em8Kln56dbDqhxm61K4mB0=;
-	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=DrSi6n6nZGAn84kzSET4QSOVNAa1tSa4JZ/tfb1wlr2oKPBQXAWH5DR7toK4pklpm
-	 T5vg+UJvmvf20mzd1qP25pb+OsqpuBCK4fH0irofFX2c0nPR/LPG6V+zwDaTh64obY
-	 Ucja43Q5xiEKAPm0Ch//mf9LE4vrTheOUkRMeWkM=
+	s=default; t=1674647224;
+	bh=Y4MDaIFdAkxlz4T8TGmshBV4wjCywYa2pIfPeVA1rUE=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=WzxTsLgI2LU5g2k0W9SC1JVAo4RP9JKpScFqWFDW4QPhfJabur6B5vuE4uMp+XLyi
+	 Yyp1N+kQcN+K8ouzRDbFkqGgrS1cL2rSJOBYirsnCj8liYQ0yOe/G4Qyd8/2z73jxE
+	 p4LfmjRBbDNslnTC7g+EoqMBzl/0iyO2136WZypM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E8B20F802E8;
-	Wed, 25 Jan 2023 12:22:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 116B5F800FB;
+	Wed, 25 Jan 2023 12:46:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EFF1BF80424; Wed, 25 Jan 2023 12:22:13 +0100 (CET)
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com
- [IPv6:2607:f8b0:4864:20::b35])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 06ED6F804FD; Wed, 25 Jan 2023 12:46:11 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 32E67F800FB
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 12:22:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32E67F800FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 872DBF80163
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 12:46:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 872DBF80163
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=iAOorhUl
-Received: by mail-yb1-xb35.google.com with SMTP id x4so20803272ybp.1
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 03:22:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
- :date:message-id:reply-to;
- bh=4N1tknjR+6+Fvb5FdmpQFoWpPBKGXE1kIT0qNHjSdYY=;
- b=iAOorhUlgVLuSqn4h7YW1i9G6eFcrA/lyJfTYP0pVQh8Wr4TLEnJog6OwF7KoA6kg3
- JRAwQlfBBjmApn8GVfCx4ISzkDnUM70zVzwhwqejTHyGfYEBlsRr7ZzaRZCjWb8ve+H9
- Jj06XnjYAJNdzdbhWDeu0CsQBtzEnx0KJVI0Bn8C4bzxDC5/abhPdtrQcbN+CVzaByMp
- otLJYSi6+WYBapfXRxSVXm+4Pxrhkv50wDPjlevItgh9jFqWICvbk4tpu1mCSHHiEXfB
- moSzFZxSGK39SmT8KfGOdtKX8cmHHDPJOR94TaM7rVPJUIfyjv/9C+Acxj2DhTSi0I25
- owXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=to:subject:message-id:date:from:mime-version:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=4N1tknjR+6+Fvb5FdmpQFoWpPBKGXE1kIT0qNHjSdYY=;
- b=bRDwk3N3TtExQJ5tzlcQZ4NHPq3SpUu31M/vwhr00luQ8nEy90H5gSDuENhwMcqWbu
- ZwV5eL2Rlke63P3seh15/9XgPSrOp0IIipDvjnvDLIqfQu6/w8YgFcBGFEhmiqwLmujs
- at0l7AoY4ekzu/HtJFGCJ/1vaTto6iOC1ock9qkcwidD4Wt3NKAXvQsHBwT7bBLpPCp1
- zBmKW/HvCUoXyRwaxELYAOiJKsbhEtKb3YP4j8h0bPeycBeG8hRIbkgRk4J99YuQjvi0
- HetHrH52hVrAE8Xor0zOCrR/Oy6DqIhknJv8DPHxD07Ig9MABWutglp2OFZfRyqM296V
- BB8Q==
-X-Gm-Message-State: AFqh2kqmlcTkHVkiKXbK1gNnfVhK20CI+K0+F8tmmPzYVgehZxr6gm2+
- Em7PjAffODs++LFMz/V0vHiCgLEmw2A+fpP/WWrhCYnAar4=
-X-Google-Smtp-Source: AMrXdXvs4sSW0azhzwm5tSLNEdYEAZi1+A9qQEg/bGiu+m7GP9TQ5qcBosvFzpstOg5iHZ0WPr15DxrzGJG4A+Eu3JQ=
-X-Received: by 2002:a25:c645:0:b0:802:2e2c:2b8 with SMTP id
- k66-20020a25c645000000b008022e2c02b8mr1747845ybf.200.1674645728063; Wed, 25
- Jan 2023 03:22:08 -0800 (PST)
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=YxTrFSX8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1674647164; x=1706183164;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=Y4MDaIFdAkxlz4T8TGmshBV4wjCywYa2pIfPeVA1rUE=;
+ b=YxTrFSX8NsWBvQl60bqi02t8GzW7wFITbCyJkEJw3cm3tZItA6lunv0L
+ 7c1stSBIXwQ0VWpcg6RuBsh49pCu4Ifx0sQoIog8HBX+hiIEGEj04F2fe
+ eQK4JQt9Lfqo1LAuyJDIq/VwWn68YMeU9g7pGz+3R8PQ3LQy4VI8cLzFO
+ j7a3FFVZRmqxNqTKPC+7iDuE27cy6XDheOtmXVj11+GkIT2ixSKE90a0J
+ zG1HSfD8w7dFJKnaadBOymyd+79/YLJQS9TV3D3XVouBD0Dg3mkhdb6+w
+ z3Ao2FbI3MT8uu+2RGGc8Ee0AAxIskKO3nquchD0SBHd5xhnriSufkEIU Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10600"; a="324234142"
+X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="324234142"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Jan 2023 03:45:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10600"; a="612393916"
+X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="612393916"
+Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
+ by orsmga003.jf.intel.com with ESMTP; 25 Jan 2023 03:45:56 -0800
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 00/11] ASoC: topology: Fixes and cleanups
+Date: Wed, 25 Jan 2023 20:46:38 +0100
+Message-Id: <20230125194649.3485731-1-amadeuszx.slawinski@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-From: Muni Sekhar <munisekharrms@gmail.com>
-Date: Wed, 25 Jan 2023 16:51:57 +0530
-Message-ID: <CAHhAz+gxrjB04c-GHa1YzahyKDQcW3+xoDt9iUnkj9THKvG_TA@mail.gmail.com>
-Subject: struct snd_pcm_ops callbacks
-To: alsa-devel <alsa-devel@alsa-project.org>, linux-sound@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,16 +78,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Following is series of fixes and cleanups for core topology code. Few
+patches fixing various problems all around and few fixing function
+names.
 
-struct snd_pcm_ops callbacks can be used for sending\receiving PDM
-audio data to and from a sound card? Or is it only designed for PCM
-audio data?
+Amadeusz Sławiński (11):
+  ASoC: topology: Properly access value coming from topology file
+  ASoC: topology: Remove unused SOC_TPLG_PASS_PINS constant
+  ASoC: topology: Fix typo in functions name
+  ASoC: topology: Fix function name
+  ASoC: topology: Rename remove_ handlers
+  ASoC: topology: Remove unnecessary forward declarations
+  ASoC: topology: Pass correct pointer instead of casting
+  ASoC: topology: Return an error on complete() failure
+  ASoC: Topology: Remove unnecessary check for EOF
+  ASoC: topology: Use unload() op directly
+  ASoC: topology: Unify kcontrol removal code
 
+ include/sound/soc-topology.h |   2 +-
+ sound/soc/soc-topology.c     | 183 ++++++++++++++---------------------
+ 2 files changed, 74 insertions(+), 111 deletions(-)
 
 -- 
-Thanks,
-Sekhar
+2.25.1
+
