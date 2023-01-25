@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD31BC27C76
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 08:36:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42FCDC54E94
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 08:37:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E937846;
-	Wed, 25 Jan 2023 09:35:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E937846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 915A59F6;
+	Wed, 25 Jan 2023 09:36:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 915A59F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674635761;
-	bh=CotTbL/GbV6DXyqyvr+jqQJAYenUBwI8M9CqjuzFIl8=;
+	s=default; t=1674635827;
+	bh=WbPkbQAZ9P2xmLREm8w6DO7m9349kVYrLHBhm9+rA60=;
 	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=Q1A6ijEpLXigbHMXMIyrIX059kne+JwhKP6UXau0qVUVYRU/W/Y+Md4PfWE8JCeai
-	 U78bXeyjFGdjT34zewcHmyEGn3gAMWfUz8k9MgTr+NDD5Ol09SMTcPIg3bp+nx3jhH
-	 IlZ6kWI2YNa41KLN/h/Z49tuUfzsxD5uMm/CwenI=
+	b=b7nOL0AbRulFFJvye6gAikgcqDYc4vMk+Kr/Q4R8FKJaHpudBcni6NUeboepTpYmY
+	 gjilo4Z9MFJajAUhKFkVp0acywS7hLrx8t8mlvXLAZIPfd0u7HD5E6SiY+Vq3DYW77
+	 Brl8qYnL7Symbv/sxsyu9XJHVzuFkqksqsE9v9UE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8565F80424;
-	Wed, 25 Jan 2023 09:35:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4067BF802E8;
+	Wed, 25 Jan 2023 09:36:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3757F80424; Wed, 25 Jan 2023 09:35:05 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 1F831F804FC; Wed, 25 Jan 2023 09:35:12 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 812A2F800AE
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 09:34:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 812A2F800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id A0F64F800FB
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 09:35:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0F64F800FB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=OxrVfJWC; 
+ header.a=rsa-sha256 header.s=susede2_rsa header.b=iVxYPi2C; 
  dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=i+41ZHk6
+ header.s=susede2_ed25519 header.b=4EEvO/Qo
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C5A4A21F3F;
- Wed, 25 Jan 2023 08:34:57 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4D04D20285;
+ Wed, 25 Jan 2023 08:35:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1674635697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1674635709; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4pD6a1vgMmjem91hgO9Kz33HyqN716ma2eR4HQMVYA0=;
- b=OxrVfJWC87cy+y6BoUA/nMDRFcdVUAHuPxKe+V4fT7rqYCzcT7TX0tg32/CrpG7LNKtu6G
- WQkGXES8vt/8dy5RObel4J3N60PfGw+6+1LtfOOM53OhKLzQ1ZYR7IZhx2SacMPD7AJQai
- JKwwwd+oxzMy2Tnl48r5wyx6G1DQtWM=
+ bh=lQ0jctwPTNkmDUNtF4vMSoW4Azggy1ZZvdqA5S1CogE=;
+ b=iVxYPi2CWtJKh815Zk4gpov2AgwL6D9/JiAfIFUF8lHwYMj63V5elLRpBqTazoiiWLXK+R
+ zvRdLaEpAwNWmSPEr+jYOjRnP0IZ3SZ/FJ3+HZOucdtX3zRdMCskJxMbMjRJ4ZLqNHRt0Q
+ 3bNSWF4tiZohKsz2FR4nyGGyznD0rNs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1674635697;
+ s=susede2_ed25519; t=1674635709;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=4pD6a1vgMmjem91hgO9Kz33HyqN716ma2eR4HQMVYA0=;
- b=i+41ZHk6O15m/Kk0tgmWrLw3GWqlb8dqX8pvSW8RBZxRluy6pLrnr/kkZUlHcc/VWAJ2q5
- 2cpWirR+IF6uJOAQ==
+ bh=lQ0jctwPTNkmDUNtF4vMSoW4Azggy1ZZvdqA5S1CogE=;
+ b=4EEvO/QoFJw3Kv0I+VjCHiLk4be0pxaOkp2TJoCqiBa21YP1Mkx1HoZKe07hRHGMF5oqpM
+ ORDicHkAjcDazVAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9F3921339E;
- Wed, 25 Jan 2023 08:34:57 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 254D01339E;
+ Wed, 25 Jan 2023 08:35:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Uvf9JbHp0GN0ewAAMHmgww
- (envelope-from <tiwai@suse.de>); Wed, 25 Jan 2023 08:34:57 +0000
-Date: Wed, 25 Jan 2023 09:34:56 +0100
-Message-ID: <871qnjdnbj.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id d7DvB73p0GOVewAAMHmgww
+ (envelope-from <tiwai@suse.de>); Wed, 25 Jan 2023 08:35:09 +0000
+Date: Wed, 25 Jan 2023 09:35:08 +0100
+Message-ID: <87zga7c8qr.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Dawei Li <set_pte_at@outlook.com>
-Subject: Re: [PATCH v2] ALSA: ac97: make remove callback of ac97 driver void
- returned
-In-Reply-To: <TYCP286MB2323A5AB1B2578EF4FA15DA7CAFB9@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
-References: <TYCP286MB2323A5AB1B2578EF4FA15DA7CAFB9@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
+Subject: Re: [PATCH v2] ALSA: aoa: make remove callback of soundbus driver
+ void returned
+In-Reply-To: <TYCP286MB23234FED40A3AE6797DEBAB7CAFB9@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
+References: <TYCP286MB23234FED40A3AE6797DEBAB7CAFB9@TYCP286MB2323.JPNP286.PROD.OUTLOOK.COM>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -92,11 +92,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ johannes@sipsolutions.net, linuxppc-dev@lists.ozlabs.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 06 Jan 2023 16:13:49 +0100,
+On Fri, 06 Jan 2023 16:17:46 +0100,
 Dawei Li wrote:
 > 
 > Since commit fc7a6209d571 ("bus: Make remove callback return void")
@@ -104,8 +105,8 @@ Dawei Li wrote:
 > for any bus based driver implementing remove callbalk to return
 > non-void to its caller.
 > 
-> As such, change the remove function for ac97 based drivers to return
-> void.
+> As such, change the remove function for soundbus based drivers to
+> return void.
 > 
 > Signed-off-by: Dawei Li <set_pte_at@outlook.com>
 
