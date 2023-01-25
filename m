@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10954C54E94
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 11:50:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC401C54E94
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 11:50:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 613C8857;
-	Wed, 25 Jan 2023 12:49:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 613C8857
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0ED56E86;
+	Wed, 25 Jan 2023 12:49:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0ED56E86
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674647405;
-	bh=cMroyICDj7HNp70KTKI4Kd1HcFnD6wJVGFpILH2OEQU=;
+	s=default; t=1674647419;
+	bh=ounQ4d54jQLZpZovB939hajnZgQCnR0FXpbK7Grq9kI=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=P1qAX+RtPfUZo/JD2cSkBUrky36TKc2/Bco20rGn3O7Q97iOxQDwzaOybYQwhbP+7
-	 4yP+/H0z1w3EZcVdtGOxB9C0zGQi3k6FlZ3su70O9AP4lx2+k0xkJZIL/rpGNuOCwp
-	 ysZq1YvG4bqtv5fmITVdTGbjnD22ZAQuuBJ5bG4I=
+	b=My1r9z3pEDIfcFLsqNCHZvDaVf3zjaJrfPl28zkTjxtvDkZM05RveJwVsCUsY8CDD
+	 dMcNy01QTqXXEs7Ug+kXVPMyZCACFVK6p5mMPXpipB/Buk+Gb7r1WbFVpQhEv1TgNI
+	 XFoQOvmtpTtB3+rffEp8QChgkSI6Si3QKkDq39Cw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63A75F80424;
-	Wed, 25 Jan 2023 12:47:35 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2636FF804C2;
+	Wed, 25 Jan 2023 12:47:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EC516F805A9; Wed, 25 Jan 2023 12:46:40 +0100 (CET)
+ id 2A7E1F804FD; Wed, 25 Jan 2023 12:46:43 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4FDF7F804F3
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 12:46:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FDF7F804F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 93B67F80424
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 12:46:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93B67F80424
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=TdY1U4nA
+ header.s=Intel header.b=cPNx3rC6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674647170; x=1706183170;
+ t=1674647168; x=1706183168;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=cMroyICDj7HNp70KTKI4Kd1HcFnD6wJVGFpILH2OEQU=;
- b=TdY1U4nAoX5OG13BRwN0Y/MnOu1iKUAq4MjqsRB76Zo/XrO/Tln+nG4F
- vbylPZbE2JI1dqJONZJU9eWlb98/LUPiUOCNdm/0vZL2YnbGYz2thlj5J
- +x5vu/G2LNzC0FPLnPM2S5GocKnPunXD0QRcNvHOyFXlGdT2LyuP925GR
- 06ptkWQJF1Ns5rYlS4zvqYUrtZM7QaZbQ4JWKBOAUIbgBesImzVHJsJHO
- DZOm295G7uAcE43+0QlrQTtFh/58G4aHpPYW9/Cv3D/k038xiJJMhyeHJ
- ZnAS8HnMNcT56li/BIO6N0oK/uhnl8MmDcu3z6Cu8eqV5no0aUYhQCT4U Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10600"; a="324234203"
-X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="324234203"
+ bh=ounQ4d54jQLZpZovB939hajnZgQCnR0FXpbK7Grq9kI=;
+ b=cPNx3rC6NdJV8ZroFV9B8tV9A+b02TDkD06mKF9BdpL2Alf8tzpRwsbM
+ IKQP2gMjdG7YGYQmM926r5QxS6wVdDp5Z14ZqZgYsG8IT2vkw412Kasok
+ rtCxZ5h2CbLxlxjS00UIkTYOYGC4KoyCXlSIFlqgNroARZGktSsNQ30Uq
+ DW3Go9GSiiHd1K/rOn7bLhXKTNum4kLrJd95o5hhdfkB2FjeMueCXHPCm
+ tjjmuPSW2FkMYWWKRROU2Yu9Awubch0MuKtkzpznPdvgbnTR1IdaQItFG
+ z6AcIZe3qFW+5w29whKWSsur1jO4Esto/4CfbqzUxoLMH9mLVH5bn2YLQ w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10600"; a="324234185"
+X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="324234185"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2023 03:46:08 -0800
+ 25 Jan 2023 03:46:04 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10600"; a="612393993"
-X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="612393993"
+X-IronPort-AV: E=McAfee;i="6500,9779,10600"; a="612393968"
+X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="612393968"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
- by orsmga003.jf.intel.com with ESMTP; 25 Jan 2023 03:46:06 -0800
+ by orsmga003.jf.intel.com with ESMTP; 25 Jan 2023 03:46:02 -0800
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 05/11] ASoC: topology: Rename remove_ handlers
-Date: Wed, 25 Jan 2023 20:46:43 +0100
-Message-Id: <20230125194649.3485731-6-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 03/11] ASoC: topology: Fix typo in functions name
+Date: Wed, 25 Jan 2023 20:46:41 +0100
+Message-Id: <20230125194649.3485731-4-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230125194649.3485731-1-amadeuszx.slawinski@linux.intel.com>
 References: <20230125194649.3485731-1-amadeuszx.slawinski@linux.intel.com>
@@ -89,8 +89,8 @@ Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Those are the only functions missing soc_tplg_ prefix, add it for
-consistency.
+Topology is being abbreviated to "tplg", not "tplc", however, few
+functions have typo in name, fix it.
 
 Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
@@ -99,123 +99,88 @@ Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
  1 file changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 1fe4fa82fa2f..a952f7eaa646 100644
+index e9138ec4df8f..b9c29effeb60 100644
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -354,7 +354,7 @@ static int soc_tplg_add_kcontrol(struct soc_tplg *tplg,
+@@ -185,7 +185,7 @@ static const struct soc_tplg_map dapm_map[] = {
+ 	{SND_SOC_TPLG_DAPM_DECODER, snd_soc_dapm_decoder},
+ };
+ 
+-static int tplc_chan_get_reg(struct soc_tplg *tplg,
++static int tplg_chan_get_reg(struct soc_tplg *tplg,
+ 	struct snd_soc_tplg_channel *chan, int map)
+ {
+ 	int i;
+@@ -198,7 +198,7 @@ static int tplc_chan_get_reg(struct soc_tplg *tplg,
+ 	return -EINVAL;
  }
  
- /* remove a mixer kcontrol */
--static void remove_mixer(struct snd_soc_component *comp,
-+static void soc_tplg_remove_mixer(struct snd_soc_component *comp,
- 	struct snd_soc_dobj *dobj, int pass)
+-static int tplc_chan_get_shift(struct soc_tplg *tplg,
++static int tplg_chan_get_shift(struct soc_tplg *tplg,
+ 	struct snd_soc_tplg_channel *chan, int map)
  {
- 	struct snd_card *card = comp->card->snd_card;
-@@ -370,7 +370,7 @@ static void remove_mixer(struct snd_soc_component *comp,
- }
+ 	int i;
+@@ -779,10 +779,10 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, size_t size)
+ 	kc.access = le32_to_cpu(mc->hdr.access);
  
- /* remove an enum kcontrol */
--static void remove_enum(struct snd_soc_component *comp,
-+static void soc_tplg_remove_enum(struct snd_soc_component *comp,
- 	struct snd_soc_dobj *dobj, int pass)
- {
- 	struct snd_card *card = comp->card->snd_card;
-@@ -386,7 +386,7 @@ static void remove_enum(struct snd_soc_component *comp,
- }
+ 	/* we only support FL/FR channel mapping atm */
+-	sm->reg = tplc_chan_get_reg(tplg, mc->channel, SNDRV_CHMAP_FL);
+-	sm->rreg = tplc_chan_get_reg(tplg, mc->channel, SNDRV_CHMAP_FR);
+-	sm->shift = tplc_chan_get_shift(tplg, mc->channel, SNDRV_CHMAP_FL);
+-	sm->rshift = tplc_chan_get_shift(tplg, mc->channel, SNDRV_CHMAP_FR);
++	sm->reg = tplg_chan_get_reg(tplg, mc->channel, SNDRV_CHMAP_FL);
++	sm->rreg = tplg_chan_get_reg(tplg, mc->channel, SNDRV_CHMAP_FR);
++	sm->shift = tplg_chan_get_shift(tplg, mc->channel, SNDRV_CHMAP_FL);
++	sm->rshift = tplg_chan_get_shift(tplg, mc->channel, SNDRV_CHMAP_FR);
  
- /* remove a byte kcontrol */
--static void remove_bytes(struct snd_soc_component *comp,
-+static void soc_tplg_remove_bytes(struct snd_soc_component *comp,
- 	struct snd_soc_dobj *dobj, int pass)
- {
- 	struct snd_card *card = comp->card->snd_card;
-@@ -402,7 +402,7 @@ static void remove_bytes(struct snd_soc_component *comp,
- }
+ 	sm->max = le32_to_cpu(mc->max);
+ 	sm->min = le32_to_cpu(mc->min);
+@@ -926,10 +926,10 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, size_t size)
+ 	kc.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+ 	kc.access = le32_to_cpu(ec->hdr.access);
  
- /* remove a route */
--static void remove_route(struct snd_soc_component *comp,
-+static void soc_tplg_remove_route(struct snd_soc_component *comp,
- 			 struct snd_soc_dobj *dobj, int pass)
- {
- 	if (pass != SOC_TPLG_PASS_GRAPH)
-@@ -415,7 +415,7 @@ static void remove_route(struct snd_soc_component *comp,
- }
+-	se->reg = tplc_chan_get_reg(tplg, ec->channel, SNDRV_CHMAP_FL);
+-	se->shift_l = tplc_chan_get_shift(tplg, ec->channel,
++	se->reg = tplg_chan_get_reg(tplg, ec->channel, SNDRV_CHMAP_FL);
++	se->shift_l = tplg_chan_get_shift(tplg, ec->channel,
+ 		SNDRV_CHMAP_FL);
+-	se->shift_r = tplc_chan_get_shift(tplg, ec->channel,
++	se->shift_r = tplg_chan_get_shift(tplg, ec->channel,
+ 		SNDRV_CHMAP_FL);
  
- /* remove a widget and it's kcontrols - routes must be removed first */
--static void remove_widget(struct snd_soc_component *comp,
-+static void soc_tplg_remove_widget(struct snd_soc_component *comp,
- 	struct snd_soc_dobj *dobj, int pass)
- {
- 	struct snd_card *card = comp->card->snd_card;
-@@ -443,7 +443,7 @@ static void remove_widget(struct snd_soc_component *comp,
- }
+ 	se->mask = le32_to_cpu(ec->mask);
+@@ -1160,13 +1160,13 @@ static int soc_tplg_dapm_widget_dmixer_create(struct soc_tplg *tplg, struct snd_
+ 	kc->access = le32_to_cpu(mc->hdr.access);
  
- /* remove DAI configurations */
--static void remove_dai(struct snd_soc_component *comp,
-+static void soc_tplg_remove_dai(struct snd_soc_component *comp,
- 	struct snd_soc_dobj *dobj, int pass)
- {
- 	struct snd_soc_dai_driver *dai_drv =
-@@ -464,7 +464,7 @@ static void remove_dai(struct snd_soc_component *comp,
- }
+ 	/* we only support FL/FR channel mapping atm */
+-	sm->reg = tplc_chan_get_reg(tplg, mc->channel,
++	sm->reg = tplg_chan_get_reg(tplg, mc->channel,
+ 				    SNDRV_CHMAP_FL);
+-	sm->rreg = tplc_chan_get_reg(tplg, mc->channel,
++	sm->rreg = tplg_chan_get_reg(tplg, mc->channel,
+ 				     SNDRV_CHMAP_FR);
+-	sm->shift = tplc_chan_get_shift(tplg, mc->channel,
++	sm->shift = tplg_chan_get_shift(tplg, mc->channel,
+ 					SNDRV_CHMAP_FL);
+-	sm->rshift = tplc_chan_get_shift(tplg, mc->channel,
++	sm->rshift = tplg_chan_get_shift(tplg, mc->channel,
+ 					 SNDRV_CHMAP_FR);
  
- /* remove link configurations */
--static void remove_link(struct snd_soc_component *comp,
-+static void soc_tplg_remove_link(struct snd_soc_component *comp,
- 	struct snd_soc_dobj *dobj, int pass)
- {
- 	struct snd_soc_dai_link *link =
-@@ -492,7 +492,7 @@ static void remove_backend_link(struct snd_soc_component *comp,
- 		dobj->ops->link_unload(comp, dobj);
+ 	sm->max = le32_to_cpu(mc->max);
+@@ -1232,10 +1232,10 @@ static int soc_tplg_dapm_widget_denum_create(struct soc_tplg *tplg, struct snd_k
+ 	kc->access = le32_to_cpu(ec->hdr.access);
  
- 	/*
--	 * We don't free the link here as what remove_link() do since BE
-+	 * We don't free the link here as what soc_tplg_remove_link() do since BE
- 	 * links are not allocated by topology.
- 	 * We however need to reset the dobj type to its initial values
- 	 */
-@@ -1492,7 +1492,7 @@ static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
- 	return 0;
+ 	/* we only support FL/FR channel mapping atm */
+-	se->reg = tplc_chan_get_reg(tplg, ec->channel, SNDRV_CHMAP_FL);
+-	se->shift_l = tplc_chan_get_shift(tplg, ec->channel,
++	se->reg = tplg_chan_get_reg(tplg, ec->channel, SNDRV_CHMAP_FL);
++	se->shift_l = tplg_chan_get_shift(tplg, ec->channel,
+ 					  SNDRV_CHMAP_FL);
+-	se->shift_r = tplc_chan_get_shift(tplg, ec->channel,
++	se->shift_r = tplg_chan_get_shift(tplg, ec->channel,
+ 					  SNDRV_CHMAP_FR);
  
- ready_err:
--	remove_widget(widget->dapm->component, &widget->dobj, SOC_TPLG_PASS_WIDGET);
-+	soc_tplg_remove_widget(widget->dapm->component, &widget->dobj, SOC_TPLG_PASS_WIDGET);
- 	snd_soc_dapm_free_widget(widget);
- hdr_err:
- 	kfree(template.sname);
-@@ -2627,25 +2627,25 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp)
- 
- 			switch (dobj->type) {
- 			case SND_SOC_DOBJ_MIXER:
--				remove_mixer(comp, dobj, pass);
-+				soc_tplg_remove_mixer(comp, dobj, pass);
- 				break;
- 			case SND_SOC_DOBJ_ENUM:
--				remove_enum(comp, dobj, pass);
-+				soc_tplg_remove_enum(comp, dobj, pass);
- 				break;
- 			case SND_SOC_DOBJ_BYTES:
--				remove_bytes(comp, dobj, pass);
-+				soc_tplg_remove_bytes(comp, dobj, pass);
- 				break;
- 			case SND_SOC_DOBJ_GRAPH:
--				remove_route(comp, dobj, pass);
-+				soc_tplg_remove_route(comp, dobj, pass);
- 				break;
- 			case SND_SOC_DOBJ_WIDGET:
--				remove_widget(comp, dobj, pass);
-+				soc_tplg_remove_widget(comp, dobj, pass);
- 				break;
- 			case SND_SOC_DOBJ_PCM:
--				remove_dai(comp, dobj, pass);
-+				soc_tplg_remove_dai(comp, dobj, pass);
- 				break;
- 			case SND_SOC_DOBJ_DAI_LINK:
--				remove_link(comp, dobj, pass);
-+				soc_tplg_remove_link(comp, dobj, pass);
- 				break;
- 			case SND_SOC_DOBJ_BACKEND_LINK:
- 				/*
+ 	se->items = le32_to_cpu(ec->items);
 -- 
 2.25.1
 
