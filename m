@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DEF8C27C76
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 15:17:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD93FC27C76
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 15:17:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6CDB59F6;
-	Wed, 25 Jan 2023 16:16:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CDB59F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF18D93A;
+	Wed, 25 Jan 2023 16:16:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF18D93A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674659835;
-	bh=gcqbyw6ayk+85NAonOLvH++dgsc2K8VZLBwjvG3k21Q=;
+	s=default; t=1674659860;
+	bh=HqjyjaRRGEEJLN3luWkXHFgLtob+gQ7g8wCc8IAretI=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=bn/7kuPtGg6e+IEQAiONjl6nRzyezwPXUazg7zt/0V+s73vog+qxU1Tt8H7jSH9p9
-	 rSzY20SFy5UDhkDGIWEGD+bjQ5w6GXoeEPhPp88KaDZuwGYq5YU0jbxfBTJVE/R3T8
-	 2ftCn100rD5A0k3KlzKwoQJkKEEFT0dUB2c15SeI=
+	b=ALOC3P6PkaySyGHuuaEKgDenm8lMztdaNkZrFCt4ZTGzpQp89MdzSEhGBn3+zQKT2
+	 YZJwmAo+PLohj7zY6sKtruzyYtmB+HkBQTcTFzEYMpJzrovPhy+r/vcIpUiahPuL6A
+	 R8tul7pQuitzaiwmO0X90MBYl/pfd6NFLsmYT4uw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7207F802E8;
-	Wed, 25 Jan 2023 16:16:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88FA8F804F3;
+	Wed, 25 Jan 2023 16:16:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6C137F800FB; Wed, 25 Jan 2023 16:16:23 +0100 (CET)
+ id 930A4F800FB; Wed, 25 Jan 2023 16:16:26 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95DABF800FB
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 16:16:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95DABF800FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id BBAA2F80163
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 16:16:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBAA2F80163
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=naNueao7
+ header.s=Intel header.b=jaiLdic7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674659780; x=1706195780;
+ t=1674659783; x=1706195783;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=gcqbyw6ayk+85NAonOLvH++dgsc2K8VZLBwjvG3k21Q=;
- b=naNueao7f6yURfSA70C7aVGHyOTJSvQo0Mh+g5g0IQECeoinDGXUP1b/
- KDIA/w0+1Pq+fikpiwCIzUVlmy9iZ6AYnzCn4HaaU9eYQFAsi6W+SLzv7
- sH34Ah+su/J0LFKHm1093DCRvvkqNmEf2kc0+feYy1TRw69IfDP1cd+Tw
- Q/5K6aOprlSGoaFlsFbWtlix8nB/48xnnjfaRzkpixaJxQO5dulQSnQiN
- 6cYaFCkc2FcmTXRHy3kZ+iG4dFH5JZ44MCL7BfN3j1oV1ta26VSDI8Mbd
- zIlb5A6QRCmuHIGs3+50q28Nq8PCm+Nv8XV3mG3cfgB3RLNgX0/mTk8Eh g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="327832043"
-X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="327832043"
+ bh=HqjyjaRRGEEJLN3luWkXHFgLtob+gQ7g8wCc8IAretI=;
+ b=jaiLdic7XdjOipfjgK7W4Ms9QEsE1Il3ER3juK3troGZmLKgBOsUiyEc
+ RYhc8tXNlFethiZNFb8xx3aVmsY/tE+ZIWapCEMtIp0TlIwued3Q/ewWj
+ hqvcwq4NfXnBwTqp6MZfiOLnM7ak5Zf9KAewe9ep4TdCyOB81Jj3qy6Ku
+ sbW2zfoa27KLRoFjnBRX/af/4Dcgq4R4a1mqOndiZQjyhmPg6GAV9m5q4
+ Me0zI1kG/tMI8B/n7tg9Mg4JkLGz7nwtLIV8+xZR/fMRbd/aYPdbaOM+n
+ 2zlRCnBtMoq4JHxuV/0fYRXAbjIV1hwPBKRmDu3Mk20OlMphhfZl03Zzy g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="327832054"
+X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="327832054"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2023 07:16:09 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="786449072"
-X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="786449072"
+ 25 Jan 2023 07:16:11 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="786449110"
+X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="786449110"
 Received: from bshunt-mobl.amr.corp.intel.com (HELO [10.212.37.80])
  ([10.212.37.80])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2023 07:16:09 -0800
-Message-ID: <b736f2f5-eb20-78ff-0344-3263e13aefc2@linux.intel.com>
-Date: Wed, 25 Jan 2023 09:05:30 -0600
+ 25 Jan 2023 07:16:10 -0800
+Message-ID: <609b744a-1d5f-f390-45ad-9448cd5823ad@linux.intel.com>
+Date: Wed, 25 Jan 2023 09:13:52 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH 07/11] ASoC: topology: Pass correct pointer instead of
- casting
+Subject: Re: [PATCH 10/11] ASoC: topology: Use unload() op directly
 Content-Language: en-US
 To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>, Mark Brown <broonie@kernel.org>
 References: <20230125194649.3485731-1-amadeuszx.slawinski@linux.intel.com>
- <20230125194649.3485731-8-amadeuszx.slawinski@linux.intel.com>
+ <20230125194649.3485731-11-amadeuszx.slawinski@linux.intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230125194649.3485731-8-amadeuszx.slawinski@linux.intel.com>
+In-Reply-To: <20230125194649.3485731-11-amadeuszx.slawinski@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -94,78 +93,69 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 On 1/25/23 13:46, Amadeusz Sławiński wrote:
-> Instead of passing address of structure, the containg structure is
+> Generic dynamic object (struct snd_soc_dobj) needs pointer to unload
+> function, however, instead of using function pointer to point at it
+> directly it points to all topology operations. Change code to use the
+> function pointer instead.
 
-containing?
+This is a convoluted explanation, and the code does not support this
+last sentence.
 
-> casted to target structure. While it works - the expected structure is
+There is no existing dobj 'function pointer', it's added by this patch ....
 
-cast?
-
-> the first field of containing one - it is bad practice, fix this by
-> passing pointer to structure field.
-> 
 > Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 > Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 > ---
->  sound/soc/soc-topology.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>  include/sound/soc-topology.h |  2 +-
+>  sound/soc/soc-topology.c     | 56 ++++++++++++++++++++----------------
+>  2 files changed, 33 insertions(+), 25 deletions(-)
 > 
+> diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
+> index b4b896f83b94..f055c6917f6c 100644
+> --- a/include/sound/soc-topology.h
+> +++ b/include/sound/soc-topology.h
+> @@ -62,7 +62,7 @@ struct snd_soc_dobj {
+>  	enum snd_soc_dobj_type type;
+>  	unsigned int index;	/* objects can belong in different groups */
+>  	struct list_head list;
+> -	struct snd_soc_tplg_ops *ops;
+> +	int (*unload)(struct snd_soc_component *comp, struct snd_soc_dobj *dobj);
+
+.... here
+
+So what this changes is that instead of following the indirections ...
+
+>  	union {
+>  		struct snd_soc_dobj_control control;
+>  		struct snd_soc_dobj_widget widget;
 > diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-> index 766de161aa4a..c35c0c53a184 100644
+> index 6689cf44464c..eb49037d86ae 100644
 > --- a/sound/soc/soc-topology.c
 > +++ b/sound/soc/soc-topology.c
-> @@ -721,7 +721,7 @@ static int soc_tplg_dbytes_create(struct soc_tplg *tplg, size_t size)
->  	}
+> @@ -359,8 +359,8 @@ static void soc_tplg_remove_mixer(struct snd_soc_component *comp,
+>  	if (pass != SOC_TPLG_PASS_CONTROL)
+>  		return;
 >  
->  	/* pass control to driver for optional further init */
-> -	ret = soc_tplg_control_load(tplg, &kc, (struct snd_soc_tplg_ctl_hdr *)be);
-> +	ret = soc_tplg_control_load(tplg, &kc, &be->hdr);
->  	if (ret < 0) {
->  		dev_err(tplg->dev, "ASoC: failed to init %s\n", be->hdr.name);
->  		goto err;
-> @@ -805,7 +805,7 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, size_t size)
->  	}
+> -	if (dobj->ops && dobj->ops->control_unload)
+> -		dobj->ops->control_unload(comp, dobj);
+> +	if (dobj->unload)
+> +		dobj->unload(comp, dobj);
+
+... here, you first need to set that pointer ....
+
 >  
->  	/* pass control to driver for optional further init */
-> -	ret = soc_tplg_control_load(tplg, &kc, (struct snd_soc_tplg_ctl_hdr *)mc);
-> +	ret = soc_tplg_control_load(tplg, &kc, &mc->hdr);
->  	if (ret < 0) {
->  		dev_err(tplg->dev, "ASoC: failed to init %s\n", mc->hdr.name);
->  		goto err;
-> @@ -973,7 +973,7 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, size_t size)
->  	}
->  
->  	/* pass control to driver for optional further init */
-> -	ret = soc_tplg_control_load(tplg, &kc, (struct snd_soc_tplg_ctl_hdr *)ec);
-> +	ret = soc_tplg_control_load(tplg, &kc, &ec->hdr);
->  	if (ret < 0) {
->  		dev_err(tplg->dev, "ASoC: failed to init %s\n", ec->hdr.name);
->  		goto err;
-> @@ -1189,7 +1189,7 @@ static int soc_tplg_dapm_widget_dmixer_create(struct soc_tplg *tplg, struct snd_
->  	}
->  
->  	/* pass control to driver for optional further init */
-> -	err = soc_tplg_control_load(tplg, kc, (struct snd_soc_tplg_ctl_hdr *)mc);
-> +	err = soc_tplg_control_load(tplg, kc, &mc->hdr);
->  	if (err < 0) {
->  		dev_err(tplg->dev, "ASoC: failed to init %s\n",
->  			mc->hdr.name);
-> @@ -1273,7 +1273,7 @@ static int soc_tplg_dapm_widget_denum_create(struct soc_tplg *tplg, struct snd_k
->  	}
->  
->  	/* pass control to driver for optional further init */
-> -	err = soc_tplg_control_load(tplg, kc, (struct snd_soc_tplg_ctl_hdr *)ec);
-> +	err = soc_tplg_control_load(tplg, kc, &ec->hdr);
->  	if (err < 0) {
->  		dev_err(tplg->dev, "ASoC: failed to init %s\n",
->  			ec->hdr.name);
-> @@ -1325,7 +1325,7 @@ static int soc_tplg_dapm_widget_dbytes_create(struct soc_tplg *tplg, struct snd_
->  	}
->  
->  	/* pass control to driver for optional further init */
-> -	err = soc_tplg_control_load(tplg, kc, (struct snd_soc_tplg_ctl_hdr *)be);
-> +	err = soc_tplg_control_load(tplg, kc, &be->hdr);
->  	if (err < 0) {
->  		dev_err(tplg->dev, "ASoC: failed to init %s\n",
->  			be->hdr.name);
+>  	sbe->max = le32_to_cpu(be->max);
+>  	sbe->dobj.type = SND_SOC_DOBJ_BYTES;
+> -	sbe->dobj.ops = tplg->ops;
+> +	if (tplg->ops)
+> +		sbe->dobj.unload = tplg->ops->control_unload;
+
+... here.
+
+I don't see the gain, sorry.
+
+Edit: This removal only makes sense with the patch 11 added, where the
+same function can be used to remove multiple types of control.
+
+Please revisit the commit message here and explain the intent, otherwise
+this change in isolation isn't really useful.
