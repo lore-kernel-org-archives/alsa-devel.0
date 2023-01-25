@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7620C05027
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 08:02:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B20AC05027
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 08:02:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7BFBE8B;
-	Thu, 26 Jan 2023 09:01:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7BFBE8B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 179A784C;
+	Thu, 26 Jan 2023 09:01:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 179A784C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674720144;
-	bh=BSf4VdDu/Cipkbp8RNs0rNyAzPjqHzof5Fj9ZYA48xM=;
+	s=default; t=1674720161;
+	bh=ezg2eabCWSVB4l7XhnzfHs+x1Vn9MQYl2SLTazGntOk=;
 	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=cLoaTHBoq/RkOzHDql2Zbf4EZErQ2ohhSGssXG8cjmNPj/BBM8Xrbw/9de9xSrerr
-	 HTWG399IcYDfv6R+7zrzFTANfUeyWqnCCGMeKQyeFofrI5T7uxbW6dpVYc1UZlY9sT
-	 0YF/y+csJFQoCzvxbsO8s/TorYF28RVLos4Qb9Tk=
+	b=D2xW3VOVrxWV+fjtGTwwjowQgWkq9liUarBkmFQsRab17KogZ1jYFkgvzRU4fEbC3
+	 PsrpfIERuUQjbZf6FeJ36dB4X4wauoqZm5POCWb7nY/Fy5PwhMhD+IMsLcBLlipdf4
+	 IStCy/SgajrHGD2qNgsvkbOAinqG8jLlH+cdYxUw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6EC09F805EC;
-	Thu, 26 Jan 2023 08:55:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11839F805F2;
+	Thu, 26 Jan 2023 08:55:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 709F2F80424; Wed, 25 Jan 2023 12:41:36 +0100 (CET)
+ id 1B3A7F80424; Wed, 25 Jan 2023 12:41:52 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8BF16F80163
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 12:41:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BF16F80163
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3D876F80163
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 12:41:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D876F80163
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=GfilqO/e
+ header.s=k20201202 header.b=uU/+AR2C
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id B5C7B614C7;
- Wed, 25 Jan 2023 11:41:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E044DC433D2;
- Wed, 25 Jan 2023 11:41:26 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id E166C614D4;
+ Wed, 25 Jan 2023 11:41:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E1CFC4339B;
+ Wed, 25 Jan 2023 11:41:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674646887;
- bh=BSf4VdDu/Cipkbp8RNs0rNyAzPjqHzof5Fj9ZYA48xM=;
+ s=k20201202; t=1674646908;
+ bh=ezg2eabCWSVB4l7XhnzfHs+x1Vn9MQYl2SLTazGntOk=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=GfilqO/eKu/QoPePHTTuTn8J1r0Gfr8WyYnJTWSK83NPY89Lt3LaqRMiaWnnxEdz1
- 5GfmqGH8yJFKJlrPMbcp84JgDUzRLc2uldIX4k89jTMcPIFXHFbL6PPgMyEPoohaU3
- uAQ2xL2z2Rjhzaa8w1lCI5+i1z2YED4iJtXXyaxZ0XqaEafwrnSL76HnHSEhWrfZh2
- BSVoMTAFP3PkmPkb7Kyti1fKVYFgPbZvpPHr2csZ0HOGM4Do6P0nTDzzOAj/HPpgzU
- RU4p1z0AJO7YjLO6ciSZmTplImSf9p4ZS2V0k6wbLHUb3lAFakk5haqH41gWo/0kO1
- OKWEJLNDmmlsQ==
-Date: Wed, 25 Jan 2023 11:41:25 +0000
+ b=uU/+AR2CwjeymulismW9BMOZiWHGFUxIhzBe/aKJI2+1c1gGId0ABjLtUTu03obBG
+ 0TFOLM7sjKuh6JqE19PasKUw/fvnXB7YE0xCaFg5WiyMAIKVkKtlhBM5bqlPOX0vF2
+ jqOIv4Lzg2mbrHyFDTB/sT/C2DMoFJbEIIYrevZ3CAW7a2KiT9E0Re7km+4HgBgIOT
+ zZP2aSxEMoUywBiSAljmGYeT2e7Ev0v8lhU58lq5FU2XR7xxT3c3QzPrbzSP8csD9I
+ Q2YYEKrr+65C+KSNc3vZRbtDtiQJKw0dwU6Ei7YFxw7oqI2CdfL95Y8MAebk/UDJgf
+ Dh8XnNgakkOTQ==
+Date: Wed, 25 Jan 2023 11:41:47 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH] dt-bindings: Add missing
  (unevaluated|additional)Properties on child node schemas
-Message-ID: <Y9EVZQJEV8i5vdgp@sirena.org.uk>
-References: <20230124230048.371144-1-robh@kernel.org>
+Message-ID: <Y9EVexQ3yAN1n1NF@sirena.org.uk>
+References: <20230124230228.372305-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="YLw58GmZKH9QcKuc"
+ protocol="application/pgp-signature"; boundary="j0ZYRAV1FZ0iGu90"
 Content-Disposition: inline
-In-Reply-To: <20230124230048.371144-1-robh@kernel.org>
+In-Reply-To: <20230124230228.372305-1-robh@kernel.org>
 X-Cookie: Serving suggestion.
 X-Mailman-Approved-At: Thu, 26 Jan 2023 08:55:02 +0100
 X-BeenThere: alsa-devel@alsa-project.org
@@ -99,12 +99,12 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---YLw58GmZKH9QcKuc
+--j0ZYRAV1FZ0iGu90
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 24, 2023 at 05:00:48PM -0600, Rob Herring wrote:
+On Tue, Jan 24, 2023 at 05:02:28PM -0600, Rob Herring wrote:
 > Just as unevaluatedProperties or additionalProperties are required at
 > the top level of schemas, they should (and will) also be required for
 > child node schemas. That ensures only documented properties are
@@ -115,19 +115,19 @@ On Tue, Jan 24, 2023 at 05:00:48PM -0600, Rob Herring wrote:
 
 Acked-by: Mark Brown <broonie@kernel.org>
 
---YLw58GmZKH9QcKuc
+--j0ZYRAV1FZ0iGu90
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPRFWIACgkQJNaLcl1U
-h9C5IQf9Gj9QI/FW6Xw+gMpDw41zL45NSAa01ZJ7G8XkRAaJNWXTMWR1sZKiK4XJ
-5rjn6QJUusYQuPpRmgG2DjO115ttDY8PNNWUlbpHxdQ+0dQI/dzilsrEFOrFXH1S
-PcEA3qn6o7eU3ICxhOnhcJzf1auMMUeq0hHtfjHxHLhgxeJZ13yZA61DnR9uShhF
-DT2ZXj0DrflrKoX2haOnuhvLc0Rx5qV+O3LfPBcO53OdCgjkAkmW2Jll2UrtTUIc
-9+G5v1R2fy/qBGUUQSzfPcTESH8bAwxpdP3i61xeoUYzaRNM/K4F/00nXADmY71w
-uWdFdQq7y1nxrTCAKIbIk2i8KCJlTg==
-=IpOI
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPRFXoACgkQJNaLcl1U
+h9DUcAf7Btv4DlmnSpwnSwLLZLZjLHnfTWVpZJ81qaPCs4SvmkBNiQxX1s9Vld21
+8O/QaZxTRJp7+kru4tljDPFtPWIPRvcqVwgCtUoOJ2AIEKapcFBMVIh7nidnnNjs
++LXDzG2e4va5huH2/ghU9TQwULN6X3M3UY8y/sq604qT0koHoN9zoZo5idZF7BSQ
+/GVeXQzXzB3UgOLv0hHuuQ9sD8QDIHfNn7ThUEPWhDwvinpB7VqkiIOD8nrr9mhr
+AdbkpaWOi2iv3A5BgxyGFDMufybabjkqztUT54muSHZDxbCjU7vUe/fyyK1NEQGa
+sgZbeoPjsTAlgN0ytBYi1aQSUR2wLw==
+=DSza
 -----END PGP SIGNATURE-----
 
---YLw58GmZKH9QcKuc--
+--j0ZYRAV1FZ0iGu90--
