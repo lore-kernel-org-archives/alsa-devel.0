@@ -4,69 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37F69C27C76
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 14:24:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA803C54EAA
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 15:01:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25A8193A;
-	Wed, 25 Jan 2023 15:23:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25A8193A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8EC93827;
+	Wed, 25 Jan 2023 16:00:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8EC93827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674656682;
-	bh=jWLazPvj3pnZUFvAR8usCtdgM2mJnO+ZF5Qh2FhGkjM=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1674658897;
+	bh=S+Am6BVg0+FCGGCeOsty0UhhHPpQeXV2heQLstI67T0=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=aJmZqqD3Kw9Flhsl1b/f/fOWKSSfLdDAaEp3VacbDK8LaRphjauqJxwExhUGw3Ilr
-	 E2crqhXLZmmumL6FEASvF7Kj/B9HVyekoLxr5z6g1RN+KXfB2GpvK3lMjg53XyzP7H
-	 alQu6TXHfU5r9rJ3xTPHBRcCVsxZBp3BiE/bPqnc=
+	 From;
+	b=pPce5D1o7FBEmrN3CubKMYOgfsF7S0xYrm6sTq3l0Un3XGlqzwX38JrDwTknQBYMy
+	 MAJlDgcbYGP16CBrKYsfi+hQAFUNr9CC1W7SsQ1l1lgBcFK+CDWDIeTjEx4pySudv9
+	 nXSaIRAmtiRSQzzv2jQfReGZtqqpZDJ335SN3L3c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6710F802E8;
-	Wed, 25 Jan 2023 15:23:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36A55F802E8;
+	Wed, 25 Jan 2023 16:00:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB433F80424; Wed, 25 Jan 2023 15:23:50 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 175EDF800FB
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 15:23:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 175EDF800FB
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=V/Nqdcjw
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 5FAC6F80424; Wed, 25 Jan 2023 16:00:46 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A06AF61502;
- Wed, 25 Jan 2023 14:23:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90727C433EF;
- Wed, 25 Jan 2023 14:23:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674656623;
- bh=jWLazPvj3pnZUFvAR8usCtdgM2mJnO+ZF5Qh2FhGkjM=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=V/NqdcjwmFo8Pii2c8k80jWwIlPZPCk+/BEiiXTtYSzjqJlWG1Oj0kCmANCmOQuWT
- nxuw86sxfj8zdCyM8sRxDOiqTvF60zOJDLtMdARLCMe4r8g2PebBUISuzt/BoZ2/BE
- 9kk2N22Ih81NIaNIw4P5NaakV5zPag+bs5VI3LStXCSkiVKLusRqx4aOn8LS+KozaX
- t58R5gViQYLE3NmeLPzr4dMCR7w9dpHTd6cgyhyvPXvMlwaFOmWezuwMJsW4Sw+n0e
- 3CjnfbhPTin3JUh04SCj+Joxf9dpGsB6jZ/PvEueCHvMp21yHmuXYcWvTWipJRrn7f
- A2UVi//YZ9dCA==
-Date: Wed, 25 Jan 2023 14:23:39 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Alexandru Ardelean <alex@shruggie.ro>
-Subject: Re: [PATCH 2/4] ASoC: codecs: tas5720: add support for TAS5720A-Q1
- (automotive) variant
-Message-ID: <Y9E7a/erXV/xd3lz@sirena.org.uk>
-References: <20230115193347.24190-1-alex@shruggie.ro>
- <20230115193347.24190-2-alex@shruggie.ro>
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED9C7F800AE
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 16:00:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED9C7F800AE
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=htNwi3aw
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1674658841; x=1706194841;
+ h=message-id:date:mime-version:subject:to:references:from:
+ in-reply-to:content-transfer-encoding;
+ bh=S+Am6BVg0+FCGGCeOsty0UhhHPpQeXV2heQLstI67T0=;
+ b=htNwi3aw+3KOc6jf335Scvg8C5k9OYXV2ZlyKeIATI7AF922G/SMY3yP
+ O0Qbbbz0Uheot4Da/DgcGaq3kFsm42lYg4SHWb4ca8Tz9R6o83iTNLOFr
+ mCh/jxqRuMiSLD/pmg/Zst6cCWqnuI2APOWAsg/bIxj8P+vOMKOlKR4XT
+ togKAXJrLqGwLgzLUvbv413nW/yw11wPbdsM6rq8wC9hgFCPnNzNythT3
+ ti1dPnd6GQIFOX+JyY1NBB14uxwWB8d5v59AnzpcNBLI9DiSgjvwDGlSR
+ cAXwT80fauSWf3wjhzxBEo7yqCYHpTjwJ/hUQMWGKDKi8p3ueR4rIhsXt Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="326601088"
+X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="326601088"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Jan 2023 07:00:35 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="655824428"
+X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="655824428"
+Received: from bshunt-mobl.amr.corp.intel.com (HELO [10.212.37.80])
+ ([10.212.37.80])
+ by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Jan 2023 07:00:34 -0800
+Message-ID: <53e3919e-48cc-81a0-365e-015235d10c9b@linux.intel.com>
+Date: Wed, 25 Jan 2023 09:00:20 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="IN+g6atGAzM+/NVn"
-Content-Disposition: inline
-In-Reply-To: <20230115193347.24190-2-alex@shruggie.ro>
-X-Cookie: Nice guys get sick.
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.4.2
+Subject: Re: struct snd_pcm_ops callbacks
+To: Muni Sekhar <munisekharrms@gmail.com>,
+ alsa-devel <alsa-devel@alsa-project.org>, linux-sound@vger.kernel.org
+References: <CAHhAz+gxrjB04c-GHa1YzahyKDQcW3+xoDt9iUnkj9THKvG_TA@mail.gmail.com>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <CAHhAz+gxrjB04c-GHa1YzahyKDQcW3+xoDt9iUnkj9THKvG_TA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,63 +84,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- steffen.aschbacher@stihl.de, tiwai@suse.com, lgirdwood@gmail.com,
- krzysztof.kozlowski+dt@linaro.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---IN+g6atGAzM+/NVn
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jan 15, 2023 at 09:33:45PM +0200, Alexandru Ardelean wrote:
+On 1/25/23 05:21, Muni Sekhar wrote:
+> Hi,
+> 
+> struct snd_pcm_ops callbacks can be used for sending\receiving PDM
+> audio data to and from a sound card? Or is it only designed for PCM
+> audio data?
 
->  static int tas5720_mute_soc_component(struct snd_soc_component *componen=
-t, int mute)
->  {
-> +	unsigned int reg, mask, val;
->  	int ret;
-> =20
-> -	ret =3D snd_soc_component_update_bits(component, TAS5720_DIGITAL_CTRL2_=
-REG,
-> -				  TAS5720_MUTE, mute ? TAS5720_MUTE : 0);
-> +	switch (tas5720->devtype) {
-> +	case TAS5720A_Q1:
+It depends what side of the sound card you are looking at, the physical
+interface with external devices or the userspace interface.
 
-This doesn't build:
+PDM can be supported at the physical interface level as long as there is
+a conversion to PCM somewhere in the hardware. Userspace will
+play/record PCM. See examples in many codecs and SOCs.
 
-/build/stage/linux/sound/soc/codecs/tas5720.c:217:17: error: =E2=80=98tas57=
-20=E2=80=99 undeclare
-d (first use in this function); did you mean =E2=80=98TAS5720=E2=80=99?
-  217 |         switch (tas5720->devtype) {
-      |                 ^~~~~~~
-      |                 TAS5720
-/build/stage/linux/sound/soc/codecs/tas5720.c:217:17: note: each undeclared=
- iden
-tifier is reported only once for each function it appears in
-/build/stage/linux/sound/soc/codecs/tas5720.c:214:33: error: unused variabl=
-e =E2=80=98va
-l=E2=80=99 [-Werror=3Dunused-variable]
-  214 |         unsigned int reg, mask, val;
-      |                                 ^~~
-cc1: all warnings being treated as errors
+There is also the possibility of packing PDM (aka DSD) as pseudo-PCM,
+that's a trick used by several USB cards. In that case of course the
+sound card cannot apply any processing to the data and is just a
+pass-through module.
 
---IN+g6atGAzM+/NVn
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPRO2sACgkQJNaLcl1U
-h9CqZwf/XynyDp8ChZbxx3Q8y/3ooG8nSiuib+KNMcHqdZF/3KOnx3eW1vOXJ0IV
-WhmoFWOoW5qZ4naXyFiN04HKt9CYitZX9+dcKa1CjUfJPs1Sr9Z7VmxKU7evpR/y
-IacUhb1qU+EJrBGONg6erVrffgWD3quJw+DVripimsAi2MFAWdUCHw24GmgmG6ay
-F8RFX5TgH+6673YiM+LDsie/RER3QVlcbdVp7oHM99RCqIYpLL7XHeoaRNbumIWs
-b6wBlYm7cuaa83jRgflM/ka1Ac6J1yjlaFUfhu5n7MpxnTep5Hjfds5fwMh5SJHk
-qjmewk5RCT+4V0GsoxfEJalpsxTuMw==
-=4cCs
------END PGP SIGNATURE-----
-
---IN+g6atGAzM+/NVn--
