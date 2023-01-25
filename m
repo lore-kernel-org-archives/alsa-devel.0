@@ -4,81 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26735C05027
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 08:03:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D61C8C54E94
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 08:03:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C85BBE84;
-	Thu, 26 Jan 2023 09:02:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C85BBE84
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6704FE95;
+	Thu, 26 Jan 2023 09:02:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6704FE95
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674720177;
-	bh=5jIvH9CqETzpDoXn8tJjdWQRzQEgf/6OxsR8sHRfP2U=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
+	s=default; t=1674720191;
+	bh=DwE0aciCS7m1CLloDdEbT7AoS3V1fBrqXEptGTtb0rM=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=hF4wpjzaOnXVHWCTzCXwmLKWG2l1cJkgzC8R1gByFGz/irkn+lB6OJ6tFuX7RGJCG
-	 b0Kqo/yrvRqci0y8IaqVGXXKXc5YbjS/CWwWLzC139nsXrbyA9gXHtAn8w2LIKCMca
-	 4mTHXWaAvYnNLHea/ALNBiKzeM/Fo7ZU/BgFCqTI=
+	b=VRF/Xyams1v+2HIgyS7eC7aJDCM/bVG+P6FUDD0xljDFkFkyja0YK8KR7XZHxd9mz
+	 lL//koUNnTr/B5k4vAi/WjDf66Ha5+D4vW/71S+BFLftcqU6lmmm1LFMVR6x/WgMzQ
+	 EL4U4WjUFttKsuKrEABR/xNQOf5z+gTgK8U8Zlt4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB1E1F805F5;
-	Thu, 26 Jan 2023 08:55:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4700EF805F9;
+	Thu, 26 Jan 2023 08:55:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00C2FF80424; Wed, 25 Jan 2023 14:02:20 +0100 (CET)
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com
- [IPv6:2a00:1450:4864:20::133])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id D0925F80424; Wed, 25 Jan 2023 15:35:18 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6316BF80163
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 14:02:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6316BF80163
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=bgdev-pl.20210112.gappssmtp.com
- header.i=@bgdev-pl.20210112.gappssmtp.com header.a=rsa-sha256
- header.s=20210112 header.b=ZWujWps5
-Received: by mail-lf1-x133.google.com with SMTP id j17so28863275lfr.3
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 05:02:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=WUlWEcztX7LC+YPVdX7zQ3TiSCzemn77YbP9UmZzYSE=;
- b=ZWujWps5xV+1Wp9WkpTktZV8uw9uUYoO8g5XV6hX5GoFex0wS6QvPRwAG/2X2m1TpC
- AnHeNzLJDDtn53tWfoYWTefbTDjXDAE0nyphHivQZvoRdrxbqpV+7GwZiiMjSczRHu8S
- 2+wR907XANDw+tY9iJAZ7kQb7uGdBtK+VXYG5abfl8fMtfvdNrdyGPXGOMxIoU9QKeVu
- 4IlTBODyMAWFOY81r6JOyh5Fa315CiPWT2rXXbjFQEfpJSeF4VXVDJglh9UTsnUwh9su
- TYGOZhQhykmGOSX5lbdOvzn5eD1DRAR9mumAOcV1QbWLinLDbhcnO/qlNyd2Axsp+wEi
- p/4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=WUlWEcztX7LC+YPVdX7zQ3TiSCzemn77YbP9UmZzYSE=;
- b=3yg4RGhvzNA4H+xAZlwEszAlJ8A2NFp7Fvx5Ppp4fvl5XK+rCYXRNAcfXcvrCvDAtQ
- rU1/jves7KOy18+3zXHQeNir6EqQ7IbaQTZI8x2Opzg7hFqwSyTAhlvTnJnRIl6Abr9a
- bU6+8g6LdFU+QXd3r23HYvcg5qFeUJfEbZVLNWQ2HygTq/F8UfmTlcg+/Y2ju9JfTMQQ
- LTKn8bJOESxZYmUgc/3OP9KU8xZABdXL7I+yvS7SGafsQPGHvOPVQnDegtGffnBsAGoB
- tbwrCH2iz5/kH56phDvYjIkYYxHOEuTB97BSVUojICVRXFSgt1iXwQYXd9oWqcumpX7k
- 8B3g==
-X-Gm-Message-State: AFqh2kowtqWYXBuwzjXJ26+d8lRA8tbYlQ+J7d8jtLmbOHZV3OBLmcra
- 8JhRXoQTQsONyYf1VXmE9PMz4QXiRYNyQnaoHbXLXg==
-X-Google-Smtp-Source: AMrXdXua3Xzk3n+mAS+SHWDmCwyiaUE3a82cF5mU8PKvzbJFSacMHuyCjbHJ/PWxjesRw9CjRh1dmLPf3Blx2uP0BXc=
-X-Received: by 2002:a05:6512:3984:b0:4ca:faca:5b59 with SMTP id
- j4-20020a056512398400b004cafaca5b59mr2768406lfu.615.1674651728174; Wed, 25
- Jan 2023 05:02:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20230124230048.371144-1-robh@kernel.org>
-In-Reply-To: <20230124230048.371144-1-robh@kernel.org>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Wed, 25 Jan 2023 14:01:55 +0100
-Message-ID: <CAMRc=MfdDv5teeQx802Qi3otwfXtZ1jAX_bzvH4DQMvdas9YtQ@mail.gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1780F800FB
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 15:35:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1780F800FB
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=Affl/NlC
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 29D7661519;
+ Wed, 25 Jan 2023 14:35:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17329C4339C;
+ Wed, 25 Jan 2023 14:35:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1674657305;
+ bh=DwE0aciCS7m1CLloDdEbT7AoS3V1fBrqXEptGTtb0rM=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Affl/NlCjExKztE4qzigDJQkInvfvtCIrYxIvlFxplAQlFKKBKPjPicyergcu0VEs
+ mnldq2oV5JNcE2Q7uuFLlFFERUT6cYcWS0cyde5uyy2oTCzp/RaPABF65YcrGxK61o
+ PknfYSDA12Xv0MtPGnatIXO/wxd3AjIIhGAS5G1o=
+Date: Wed, 25 Jan 2023 15:35:02 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH] dt-bindings: Add missing
  (unevaluated|additional)Properties on child node schemas
-To: Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <Y9E+FjXnZiizTLc6@kroah.com>
+References: <20230124230048.371144-1-robh@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230124230048.371144-1-robh@kernel.org>
 X-Mailman-Approved-At: Thu, 26 Jan 2023 08:55:02 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -99,52 +80,61 @@ Cc: Ulf Hansson <ulf.hansson@linaro.org>,
  linux-mtd@lists.infradead.org, Lee Jones <lee@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  David Airlie <airlied@gmail.com>, Marc Zyngier <maz@kernel.org>,
- openbmc@lists.ozlabs.org, Jassi Brar <jassisinghbrar@gmail.com>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Jassi Brar <jassisinghbrar@gmail.com>,
  Guenter Roeck <linux@roeck-us.net>, linux-media@vger.kernel.org,
  Jean Delvare <jdelvare@suse.com>, linux-pm@vger.kernel.org,
  linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
  Thomas Gleixner <tglx@linutronix.de>,
  Mauro Carvalho Chehab <mchehab@kernel.org>,
  linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
- linux-spi@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- Richard Weinberger <richard@nod.at>
+ linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
+ Sebastian Reichel <sre@kernel.org>, linux-spi@vger.kernel.org,
+ Daniel Vetter <daniel@ffwll.ch>, Richard Weinberger <richard@nod.at>,
+ openbmc@lists.ozlabs.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jan 25, 2023 at 12:00 AM Rob Herring <robh@kernel.org> wrote:
->
+On Tue, Jan 24, 2023 at 05:00:48PM -0600, Rob Herring wrote:
 > Just as unevaluatedProperties or additionalProperties are required at
 > the top level of schemas, they should (and will) also be required for
 > child node schemas. That ensures only documented properties are
 > present.
->
+> 
 > Add unevaluatedProperties or additionalProperties as appropriate, and
 > then add any missing properties flagged by the addition.
->
+> 
 > Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
+> To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+> To: David Airlie <airlied@gmail.com>
+> To: Daniel Vetter <daniel@ffwll.ch>
+> To: Bartosz Golaszewski <brgl@bgdev.pl>
+> To: Jean Delvare <jdelvare@suse.com>
+> To: Guenter Roeck <linux@roeck-us.net>
+> To: Thomas Gleixner <tglx@linutronix.de>
+> To: Marc Zyngier <maz@kernel.org>
+> To: Jassi Brar <jassisinghbrar@gmail.com>
+> To: Mauro Carvalho Chehab <mchehab@kernel.org>
+> To: Lee Jones <lee@kernel.org>
+> To: Ulf Hansson <ulf.hansson@linaro.org>
+> To: Richard Weinberger <richard@nod.at>
+> To: Vignesh Raghavendra <vigneshr@ti.com>
+> To: Sebastian Reichel <sre@kernel.org>
+> To: Mark Brown <broonie@kernel.org>
+> To: "Rafael J. Wysocki" <rafael@kernel.org>
+> To: Daniel Lezcano <daniel.lezcano@linaro.org>
+> To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-gpio@vger.kernel.org
+> Cc: linux-hwmon@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: openbmc@lists.ozlabs.org
+> Cc: linux-mmc@vger.kernel.org
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-pm@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-spi@vger.kernel.org
+> Cc: linux-usb@vger.kernel.org
 
-[...]
-
->  .../devicetree/bindings/gpio/x-powers,axp209-gpio.yaml |  1 +
-
-[...]
-
-> diff --git a/Documentation/devicetree/bindings/gpio/x-powers,axp209-gpio.yaml b/Documentation/devicetree/bindings/gpio/x-powers,axp209-gpio.yaml
-> index 7f26f6b1eea1..31906c253940 100644
-> --- a/Documentation/devicetree/bindings/gpio/x-powers,axp209-gpio.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/x-powers,axp209-gpio.yaml
-> @@ -35,6 +35,7 @@ properties:
->  patternProperties:
->    "^.*-pins?$":
->      $ref: /schemas/pinctrl/pinmux-node.yaml#
-> +    additionalProperties: false
->
->      properties:
->        pins:
-
-Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-
-[...]
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
