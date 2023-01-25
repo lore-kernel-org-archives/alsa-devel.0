@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1C86C27C76
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 11:49:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4AD8C54E94
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 11:49:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE337E82;
-	Wed, 25 Jan 2023 12:48:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE337E82
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5DF5E8A;
+	Wed, 25 Jan 2023 12:48:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5DF5E8A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674647354;
-	bh=x6UX1wSdESJcjeykeYC59RFbaCKILiZkDXM3rO0CLaY=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1674647379;
+	bh=aEoWH4RVvF3dZqkOJ77RsIDTVgB7VipNGAEIa5cleMM=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=Y9SWRB7m//k1jpcJtvllPrURKBjufvymnoD79DiPD8ApcPliwk/kCdSshToFsrUVV
-	 +K7Y4WJgTI5Zo34dGopxt5l5PDeNiDQ6gYZljS9bqj9SSE06qsW1KDPVdFzRMN6IKc
-	 AjiOugGIQmN4gLGFh3IxT2FruG0O0ufzChKBz/0Y=
+	b=vmayvuV82/MxEZeK0upe+US/hgmNt7/qmTCFYvETFMgfzUGR5/BdjJI7RI+lmI4ls
+	 yzQYeHdZP68t8ZD7b4gamhnORdpvhfbEAcUpUSkCwMGpOxGhwKBMKGv9UfDiUcIMLN
+	 tq1T5rl/EFVsumqBzbEE9h4DS1hLZ01dTFH3LQrQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3F7FF8057E;
-	Wed, 25 Jan 2023 12:46:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3684AF805A1;
+	Wed, 25 Jan 2023 12:46:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E75FF80557; Wed, 25 Jan 2023 12:46:28 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 757B5F80163
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 12:46:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 757B5F80163
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Bb1btFzL
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 94BE9F80553; Wed, 25 Jan 2023 12:46:29 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 8DA54614BC;
- Wed, 25 Jan 2023 11:46:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 837D5C433D2;
- Wed, 25 Jan 2023 11:46:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674647179;
- bh=x6UX1wSdESJcjeykeYC59RFbaCKILiZkDXM3rO0CLaY=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Bb1btFzLKSSMUBrUoVDiH+mZHcVNy/qdiYsRRUNSvyD9KfqPDZchnVxTvoaujxK3l
- Zk94H1Hk6danqaHqtzjffazynU6p8BdmHcv7ozIp0YXu1kubgR2xjdzoTiKpH15HW9
- Kk5cqLUNB34ebSSk4nCOEsUbW/dpGRLpa7fqeaOLQO2dwZqFyZ0sdxOq6SiG7sfMem
- FUJdzk3nQSfLURtRpMMcJpk7vUVTFo1NbnXKT2CqiNLqc9gubDzHmBTutsJmsroJPF
- lZRYjfkrtlb/fhXem8IbI0DEPD02n1Hty6Q7dGvh78OSXSQsVC3FqGPUPv8qbNyCzN
- EZ9wEnwGxTqNg==
-Date: Wed, 25 Jan 2023 11:46:17 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Ki-Seok Jo <kiseok.jo@irondevice.com>
-Subject: Re: [PATCH v2 1/2] ASoC: sma1303: Add driver for Iron Device SMA1303
- Amp
-Message-ID: <Y9EWif///aqn6MiS@sirena.org.uk>
-References: <20230109091402.11790-3-kiseok.jo@irondevice.com>
- <Y8F5+7vgl+f9rytb@sirena.org.uk>
- <SLXP216MB0077F86978B363B5F4ECEBC78CC49@SLXP216MB0077.KORP216.PROD.OUTLOOK.COM>
- <Y8konjHXimUfm4NH@sirena.org.uk>
- <SLXP216MB007747CCA6C43D139712535C8CCE9@SLXP216MB0077.KORP216.PROD.OUTLOOK.COM>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3ACEBF80548
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 12:46:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3ACEBF80548
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=RC1cpzYQ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1674647184; x=1706183184;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=aEoWH4RVvF3dZqkOJ77RsIDTVgB7VipNGAEIa5cleMM=;
+ b=RC1cpzYQdUZdmuMX8tPBunKfDrlPv59Cp02r5vDOQh3ChU6MwUcsPoQr
+ O5BCW5ogD0ZFYymRuJaW/oRC1gVQHC5e9cT/rucJgysZOoOYeRZp4O9fe
+ 4+XVv4a8Q86xh+lL2bU9m8+buUdHppdPEoQqskDe5OiJ7ssqzURaEbO08
+ 69fTtTvfj0merYbM5KuYIvmYSFfIzQm05FFEENSt/V4KMYlaLAkD47T2W
+ WRB9sUHQ7LZF7ZQaX70aRSV90/JSHs2FLkLyhKmKMXMjV+PowSjcUgyp2
+ 2xWrjPr417JAjvL7Fmf6D9bIijPxTgwMWbHP1hnhVTEybs/53icoHVR1S w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10600"; a="324234251"
+X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="324234251"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Jan 2023 03:46:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10600"; a="612394060"
+X-IronPort-AV: E=Sophos;i="5.97,245,1669104000"; d="scan'208";a="612394060"
+Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
+ by orsmga003.jf.intel.com with ESMTP; 25 Jan 2023 03:46:19 -0800
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 11/11] ASoC: topology: Unify kcontrol removal code
+Date: Wed, 25 Jan 2023 20:46:49 +0100
+Message-Id: <20230125194649.3485731-12-amadeuszx.slawinski@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230125194649.3485731-1-amadeuszx.slawinski@linux.intel.com>
+References: <20230125194649.3485731-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="9AsDwl+85pnkdmtn"
-Content-Disposition: inline
-In-Reply-To: <SLXP216MB007747CCA6C43D139712535C8CCE9@SLXP216MB0077.KORP216.PROD.OUTLOOK.COM>
-X-Cookie: Serving suggestion.
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,62 +81,90 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Application <application@irondevice.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Functions removing bytes, enum and mixer kcontrols are identical. Unify
+them under one function and use it to free associated kcontrols.
 
---9AsDwl+85pnkdmtn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+---
+ sound/soc/soc-topology.c | 48 +++++-----------------------------------
+ 1 file changed, 6 insertions(+), 42 deletions(-)
 
-On Wed, Jan 25, 2023 at 02:12:58AM +0000, Ki-Seok Jo wrote:
-> On Thu, Jan 19, 2023 at 08:16:52AM +0000, Ki-Seok Jo wrote:
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index eb49037d86ae..e66b0d9e387a 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -350,41 +350,9 @@ static int soc_tplg_add_kcontrol(struct soc_tplg *tplg,
+ 				tplg->dev, k, comp->name_prefix, comp, kcontrol);
+ }
+ 
+-/* remove a mixer kcontrol */
+-static void soc_tplg_remove_mixer(struct snd_soc_component *comp,
+-	struct snd_soc_dobj *dobj, int pass)
+-{
+-	struct snd_card *card = comp->card->snd_card;
+-
+-	if (pass != SOC_TPLG_PASS_CONTROL)
+-		return;
+-
+-	if (dobj->unload)
+-		dobj->unload(comp, dobj);
+-
+-	snd_ctl_remove(card, dobj->control.kcontrol);
+-	list_del(&dobj->list);
+-}
+-
+-/* remove an enum kcontrol */
+-static void soc_tplg_remove_enum(struct snd_soc_component *comp,
+-	struct snd_soc_dobj *dobj, int pass)
+-{
+-	struct snd_card *card = comp->card->snd_card;
+-
+-	if (pass != SOC_TPLG_PASS_CONTROL)
+-		return;
+-
+-	if (dobj->unload)
+-		dobj->unload(comp, dobj);
+-
+-	snd_ctl_remove(card, dobj->control.kcontrol);
+-	list_del(&dobj->list);
+-}
+-
+-/* remove a byte kcontrol */
+-static void soc_tplg_remove_bytes(struct snd_soc_component *comp,
+-	struct snd_soc_dobj *dobj, int pass)
++/* remove kcontrol */
++static void soc_tplg_remove_kcontrol(struct snd_soc_component *comp, struct snd_soc_dobj *dobj,
++				     int pass)
+ {
+ 	struct snd_card *card = comp->card->snd_card;
+ 
+@@ -2626,14 +2594,10 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp)
+ 			list) {
+ 
+ 			switch (dobj->type) {
+-			case SND_SOC_DOBJ_MIXER:
+-				soc_tplg_remove_mixer(comp, dobj, pass);
+-				break;
+-			case SND_SOC_DOBJ_ENUM:
+-				soc_tplg_remove_enum(comp, dobj, pass);
+-				break;
+ 			case SND_SOC_DOBJ_BYTES:
+-				soc_tplg_remove_bytes(comp, dobj, pass);
++			case SND_SOC_DOBJ_ENUM:
++			case SND_SOC_DOBJ_MIXER:
++				soc_tplg_remove_kcontrol(comp, dobj, pass);
+ 				break;
+ 			case SND_SOC_DOBJ_GRAPH:
+ 				soc_tplg_remove_route(comp, dobj, pass);
+-- 
+2.25.1
 
-> > > > > +	cancel_delayed_work_sync(&sma1303->check_fault_work);
-
-> > > > > +	msleep(55);
-
-> > > > That sleep looks odd - what are we delaying after? =20
-
-> > > It need for IC(Amp) issue.
-
-> > Right, but what is the issue?  It's not clear what event
-> > we're delaying for so it's not clear it'll work properly.
-
-> This device requires a delay from mute to power off. If it is
-> turned off while the signal is coming out, it takes some time
-> to become muted. (need to about 50ms). So, this delay is
-> required to turn off the power after completely muting. If the
-> time is too long, we can reduce the delay a bit.
-
-This at the very least needs a comment since it's not clear how
-someone would work that out from the code, there's no connection
-here to the mute operation so someone might just remove the
-delay.  It may even be that this is happening well over 55ms
-after the mute happened.  The ideal thing would be to track the
-time from the last mute, the regulator core does something along
-those lines with off_on_delay.
-
-Please fix your mail client to word wrap within paragraphs at something
-substantially less than 80 columns.  Doing this makes your messages much
-easier to read and reply to.
-
---9AsDwl+85pnkdmtn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPRFokACgkQJNaLcl1U
-h9AN8Af/a0QueeKBu0CELz1mqeKMuOpUYfhO0ZDl+ovYbfI9x6F2+AnxINXCjK3e
-ClLpSYqp59bP2mx9C2JcMhKmPVGqr9gpSivA89feNLfB3/tMIS4R59ioAExLG2+I
-1VTzy7qMWHKDnBgnQCTKA6ESb04Pe2uhMpHZpeq62SjqWrq4rhX8TUn69aB8+hcy
-6Xs69qqD9q0oEacfxpp5h0ndNemHb0N24sAvf9nVcgK7P7yVE+oQszLuvjpAhxab
-MtAJzHSXVCS2vVsmDrKBWlNZjRrF5MZMGepDg6dQGNo469J04sX0Nvv7v+E0NzH3
-xw6sth7APGvh0GZi/VxY/V2Oz5iYNg==
-=ftvS
------END PGP SIGNATURE-----
-
---9AsDwl+85pnkdmtn--
