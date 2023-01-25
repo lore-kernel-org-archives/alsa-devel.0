@@ -4,75 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D555C54E94
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 08:00:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B866C61DA3
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 08:01:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 43E40E72;
-	Thu, 26 Jan 2023 09:00:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43E40E72
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82F8B82C;
+	Thu, 26 Jan 2023 09:00:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82F8B82C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674720050;
-	bh=b+dKVgvEBM+oDcwWYJsFaFLbLNzcPxdg6i7EapdIZMw=;
-	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=r0oQ0ClfQOigPw+ihycmqcMuUCmK+rn6JnmAGxejRMKORkX65VH/TUQdjnXWOk+fe
-	 r6fVWPPu0QQARe42agUIHzHX/UnhlqKp0S2uhm7Nt2p7ys1iid5bFOQVP0h7g6+x5z
-	 1dsRBb/f3o5v6MnrSGPCg1V9wAGH2vXA5uFWAx+g=
+	s=default; t=1674720067;
+	bh=fgiwiRKNBQqHsXCYxQ4UBGm3gWXjCyzD9oLVOvgvKMg=;
+	h=Date:In-Reply-To:References:Subject:From:To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=RhVi5g30fVP34hyYZY4TNJG6vlRMwKhNFqByuIkYOS0T+v1CJBu4v6/T0OpzYkBau
+	 LsXKW7+nGHC6KCV7U1gSdkDC7DsVALKqdbWf0DsDtk9OmMw0wfpP/k7I/vebv8Ue1s
+	 fMHXV+DuE7BeMMutIcXG3tiPcQ7l8CEy1iJ7/Goc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6A0DF805D2;
-	Thu, 26 Jan 2023 08:55:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 631DEF805D6;
+	Thu, 26 Jan 2023 08:55:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41DBBF804FC; Wed, 25 Jan 2023 09:39:30 +0100 (CET)
+ id DF445F800AE; Wed, 25 Jan 2023 09:39:35 +0100 (CET)
 Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com
  [IPv6:2607:f8b0:4864:20::114a])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4765F800AE
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 09:38:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4765F800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id E4769F804C2
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 09:39:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4769F804C2
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
- header.s=20210112 header.b=lB4btchv
+ header.s=20210112 header.b=MF4o67HH
 Received: by mail-yw1-x114a.google.com with SMTP id
- 00721157ae682-50660dd3263so29707457b3.19
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 00:38:58 -0800 (PST)
+ 00721157ae682-5073cf66299so1101407b3.17
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 00:39:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
- :date:message-id:reply-to;
- bh=gBh0+9Ej4fdZiBcL1FEtjjBddEyxpct0JkyXcSRf3Wg=;
- b=lB4btchvNlTfCRHflexrgCXbRXFvyy8g1gFK/OMeKiIJNh1tqeN9E/OUXMnf2U4uji
- YYT9ZG6Uz9BNIXcJPuB6IBGSNwEdssClBGTD7I8F8xN9feCnsNR77DeUemH49gSW7JIZ
- i8Fyk+8dX7xmZBgb/4LlxS50DWuY+p/ZAvE5rke3AXUvgG50Y7E3pTP3J2Z3NRLwRPG+
- tuCoTtjvQeclLyeusopPtZIO8LUuu13+9dnLJ2g+6d0g96WjPTO8eD8l7HbwyilzSGVH
- oGzLOV4is7gwgAYTgd7llD5IZe+pWMCF81FsE6KNSAjCT9NY1E+DcM18ZvHUvuruVpcX
- WOLw==
+ h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+ :date:from:to:cc:subject:date:message-id:reply-to;
+ bh=sj271avprjKe1me6H/esP7A1ES+jGLLWBsFdbdzx2Jg=;
+ b=MF4o67HHEg6wxxFaPI24vOvqDdgAsiiopj9Jmjd6uvJHKoN0cmyBguf/551h9iDvbU
+ uB2NKUhC7RaYIEm/9caYoWPUTANnNVHWS2xJdXDx/lcI6GcWgigCfEEbTlZGTMQBSsWX
+ k8/CWZcxcb/BySg6e3+h9eb7w5trNFt42RvDvxcst6OfmLoa5MBI2SAUfqwKLEaTxaEa
+ G0NocmVo14Y7xttJ2elLfQ94AxICUs5RwP447wA4tGne6++mYjvSxMX72QvUUwshvmYz
+ 3fNi++tbSZXqk3zPkMLsMlUogcx8otyfqKt95XXSqoizVnjCimFLvFXHXbaOzmHhXyvI
+ XWuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=gBh0+9Ej4fdZiBcL1FEtjjBddEyxpct0JkyXcSRf3Wg=;
- b=M1wbcoYRd4k3WbppXZxjAl79lDq31twVKOGue1mTCQmfiSV+7/Z9PqVeJYxPw0Lkcf
- zgwpQMgHdpg1KoFLUiyK8dsr32CeAqdGklvnq8/AeFDExVdQnkiL3hoEQV2Wa4e4hLIq
- E/zclAmvkmuKp/vQIV5phUa+KzEpA4OI6chdSoaDPdLF+FuWPaWrmOsnLqT0U+9XkVHf
- 5tm9ipwKJzJVfl2PyqBT5DLYfS8nm3ho7HRy9yKJYlO2VLj1b5gRhodaJEJ1D2+5C1gc
- gzaBGDzak98DQYCKaFsO3Irb3wXiE+YPSx+nTiiJSW0ItcLpoxPPZYAIhp0ecVjAtuc7
- OM7A==
-X-Gm-Message-State: AFqh2kr3hO6zHoR1h6tGbXJw59Zd0a1lED/44vGppXMK9sN8rWN4cFHs
- yXNDOqoyV/qvBXNaUmURZPiNhnyHROw=
-X-Google-Smtp-Source: AMrXdXtLI+TT5dUaC9pRI2aKjkmKt7tjdC79b+se6AwZUh4jJJgCSUqcAubWc2ByjewYclrfSPgwiLKmrmw=
+ h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+ :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=sj271avprjKe1me6H/esP7A1ES+jGLLWBsFdbdzx2Jg=;
+ b=sOcriSlMmrboyUXN3kWrhu+c6W26qPjEf44T2wpV2NbqHqQB6U5RyV2twc/zf9GIui
+ 175J1lk/IbWiYmvRD7v6LpfO5vMh/nJO5G0+2mLxY9fCrGDiwsDpkcKikbLL+xezZ+Dk
+ gJJDxZvLGx7T8xVkWcg0X4k31xUnxcwNm6FT7af/p04FvZS0vXCUH1Sp3vDLlfJDb6PU
+ ROlgfTtV3dPkT5ZOqkWcXptOFmg83U/nsgPb70dUifY6zX3ibrt+z9r2BRbePliVJu9h
+ RHU4VrE6FzzF4+lk/FSS++Q0LGG5kj1q5wGGw3VrI+jDrSKGRXv4RoKYQapHQQMBzC3V
+ owxQ==
+X-Gm-Message-State: AFqh2ko/kkZukHlcTiv/jSFnD6DI8QbpRMFiW9emfRPuAP2enqOdjpw5
+ /5eAbB01earQHc9iSwYWTiqOAHTjPJk=
+X-Google-Smtp-Source: AMrXdXuvyVzp2fB0Stt6K1hitZVrUldY7217lrubuFDE2XAwfP/Qm87P8hidNk4h8aVCYNlJLm5UfURoDHY=
 X-Received: from surenb-desktop.mtv.corp.google.com
  ([2620:15c:211:200:f7b0:20e8:ce66:f98])
- (user=surenb job=sendgmr) by 2002:a05:6902:34f:b0:6f9:7bf9:8fc7 with SMTP id
- e15-20020a056902034f00b006f97bf98fc7mr3373858ybs.279.1674635936246; Wed, 25
- Jan 2023 00:38:56 -0800 (PST)
-Date: Wed, 25 Jan 2023 00:38:45 -0800
+ (user=surenb job=sendgmr) by 2002:a25:2bc1:0:b0:7fe:35ff:fddb with SMTP id
+ r184-20020a252bc1000000b007fe35fffddbmr2303833ybr.466.1674635948201; Wed, 25
+ Jan 2023 00:39:08 -0800 (PST)
+Date: Wed, 25 Jan 2023 00:38:50 -0800
+In-Reply-To: <20230125083851.27759-1-surenb@google.com>
 Mime-Version: 1.0
+References: <20230125083851.27759-1-surenb@google.com>
 X-Mailer: git-send-email 2.39.1.405.gd4c25cc71f-goog
-Message-ID: <20230125083851.27759-1-surenb@google.com>
-Subject: [PATCH v2 0/6] introduce vm_flags modifier functions
+Message-ID: <20230125083851.27759-6-surenb@google.com>
+Subject: [PATCH v2 5/6] mm: introduce mod_vm_flags_nolock and use it in
+ untrack_pfn
 From: Suren Baghdasaryan <surenb@google.com>
 To: akpm@linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
@@ -149,163 +153,250 @@ Cc: michel@lespinasse.org, nvdimm@lists.linux.dev, heiko@sntech.de,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patchset was originally published as a part of per-VMA locking [1] and
-was split after suggestion that it's viable on its own and to facilitate
-the review process. It is now a preprequisite for the next version of per-VMA
-lock patchset, which reuses vm_flags modifier functions to lock the VMA when
-vm_flags are being updated.
+In cases when VMA flags are modified after VMA was isolated and mmap_lock
+was downgraded, flags modifications would result in an assertion because
+mmap write lock is not held.
+Introduce mod_vm_flags_nolock to be used in such situation.
+Pass a hint to untrack_pfn to conditionally use mod_vm_flags_nolock for
+flags modification and to avoid assertion.
 
-VMA vm_flags modifications are usually done under exclusive mmap_lock
-protection because this attrubute affects other decisions like VMA merging
-or splitting and races should be prevented. Introduce vm_flags modifier
-functions to enforce correct locking.
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+---
+ arch/x86/mm/pat/memtype.c | 10 +++++++---
+ include/linux/mm.h        | 12 +++++++++---
+ include/linux/pgtable.h   |  5 +++--
+ mm/memory.c               | 13 +++++++------
+ mm/memremap.c             |  4 ++--
+ mm/mmap.c                 | 16 ++++++++++------
+ 6 files changed, 38 insertions(+), 22 deletions(-)
 
-[1] https://lore.kernel.org/all/20230109205336.3665937-1-surenb@google.com/
-
-The patchset applies cleanly over mm-unstable branch of mm tree.
-
-My apologies for an extremely large distribution list. The patch touches
-lots of files and many are in arch/ and drivers/.
-
-Suren Baghdasaryan (6):
-  mm: introduce vma->vm_flags modifier functions
-  mm: replace VM_LOCKED_CLEAR_MASK with VM_LOCKED_MASK
-  mm: replace vma->vm_flags direct modifications with modifier calls
-  mm: replace vma->vm_flags indirect modification in ksm_madvise
-  mm: introduce mod_vm_flags_nolock and use it in untrack_pfn
-  mm: export dump_mm()
-
- arch/arm/kernel/process.c                     |  2 +-
- arch/ia64/mm/init.c                           |  8 +--
- arch/loongarch/include/asm/tlb.h              |  2 +-
- arch/powerpc/kvm/book3s_hv_uvmem.c            |  5 +-
- arch/powerpc/kvm/book3s_xive_native.c         |  2 +-
- arch/powerpc/mm/book3s64/subpage_prot.c       |  2 +-
- arch/powerpc/platforms/book3s/vas-api.c       |  2 +-
- arch/powerpc/platforms/cell/spufs/file.c      | 14 ++---
- arch/s390/mm/gmap.c                           |  8 +--
- arch/x86/entry/vsyscall/vsyscall_64.c         |  2 +-
- arch/x86/kernel/cpu/sgx/driver.c              |  2 +-
- arch/x86/kernel/cpu/sgx/virt.c                |  2 +-
- arch/x86/mm/pat/memtype.c                     | 14 +++--
- arch/x86/um/mem_32.c                          |  2 +-
- drivers/acpi/pfr_telemetry.c                  |  2 +-
- drivers/android/binder.c                      |  3 +-
- drivers/char/mspec.c                          |  2 +-
- drivers/crypto/hisilicon/qm.c                 |  2 +-
- drivers/dax/device.c                          |  2 +-
- drivers/dma/idxd/cdev.c                       |  2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c       |  2 +-
- drivers/gpu/drm/amd/amdkfd/kfd_chardev.c      |  4 +-
- drivers/gpu/drm/amd/amdkfd/kfd_doorbell.c     |  4 +-
- drivers/gpu/drm/amd/amdkfd/kfd_events.c       |  4 +-
- drivers/gpu/drm/amd/amdkfd/kfd_process.c      |  4 +-
- drivers/gpu/drm/drm_gem.c                     |  2 +-
- drivers/gpu/drm/drm_gem_dma_helper.c          |  3 +-
- drivers/gpu/drm/drm_gem_shmem_helper.c        |  2 +-
- drivers/gpu/drm/drm_vm.c                      |  8 +--
- drivers/gpu/drm/etnaviv/etnaviv_gem.c         |  2 +-
- drivers/gpu/drm/exynos/exynos_drm_gem.c       |  4 +-
- drivers/gpu/drm/gma500/framebuffer.c          |  2 +-
- drivers/gpu/drm/i810/i810_dma.c               |  2 +-
- drivers/gpu/drm/i915/gem/i915_gem_mman.c      |  4 +-
- drivers/gpu/drm/mediatek/mtk_drm_gem.c        |  2 +-
- drivers/gpu/drm/msm/msm_gem.c                 |  2 +-
- drivers/gpu/drm/omapdrm/omap_gem.c            |  3 +-
- drivers/gpu/drm/rockchip/rockchip_drm_gem.c   |  3 +-
- drivers/gpu/drm/tegra/gem.c                   |  5 +-
- drivers/gpu/drm/ttm/ttm_bo_vm.c               |  3 +-
- drivers/gpu/drm/virtio/virtgpu_vram.c         |  2 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_ttm_glue.c      |  2 +-
- drivers/gpu/drm/xen/xen_drm_front_gem.c       |  3 +-
- drivers/hsi/clients/cmt_speech.c              |  2 +-
- drivers/hwtracing/intel_th/msu.c              |  2 +-
- drivers/hwtracing/stm/core.c                  |  2 +-
- drivers/infiniband/hw/hfi1/file_ops.c         |  4 +-
- drivers/infiniband/hw/mlx5/main.c             |  4 +-
- drivers/infiniband/hw/qib/qib_file_ops.c      | 13 +++--
- drivers/infiniband/hw/usnic/usnic_ib_verbs.c  |  2 +-
- .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.c   |  2 +-
- .../common/videobuf2/videobuf2-dma-contig.c   |  2 +-
- .../common/videobuf2/videobuf2-vmalloc.c      |  2 +-
- drivers/media/v4l2-core/videobuf-dma-contig.c |  2 +-
- drivers/media/v4l2-core/videobuf-dma-sg.c     |  4 +-
- drivers/media/v4l2-core/videobuf-vmalloc.c    |  2 +-
- drivers/misc/cxl/context.c                    |  2 +-
- drivers/misc/habanalabs/common/memory.c       |  2 +-
- drivers/misc/habanalabs/gaudi/gaudi.c         |  4 +-
- drivers/misc/habanalabs/gaudi2/gaudi2.c       |  8 +--
- drivers/misc/habanalabs/goya/goya.c           |  4 +-
- drivers/misc/ocxl/context.c                   |  4 +-
- drivers/misc/ocxl/sysfs.c                     |  2 +-
- drivers/misc/open-dice.c                      |  4 +-
- drivers/misc/sgi-gru/grufile.c                |  4 +-
- drivers/misc/uacce/uacce.c                    |  2 +-
- drivers/sbus/char/oradax.c                    |  2 +-
- drivers/scsi/cxlflash/ocxl_hw.c               |  2 +-
- drivers/scsi/sg.c                             |  2 +-
- .../staging/media/atomisp/pci/hmm/hmm_bo.c    |  2 +-
- drivers/staging/media/deprecated/meye/meye.c  |  4 +-
- .../media/deprecated/stkwebcam/stk-webcam.c   |  2 +-
- drivers/target/target_core_user.c             |  2 +-
- drivers/uio/uio.c                             |  2 +-
- drivers/usb/core/devio.c                      |  3 +-
- drivers/usb/mon/mon_bin.c                     |  3 +-
- drivers/vdpa/vdpa_user/iova_domain.c          |  2 +-
- drivers/vfio/pci/vfio_pci_core.c              |  2 +-
- drivers/vhost/vdpa.c                          |  2 +-
- drivers/video/fbdev/68328fb.c                 |  2 +-
- drivers/video/fbdev/core/fb_defio.c           |  4 +-
- drivers/xen/gntalloc.c                        |  2 +-
- drivers/xen/gntdev.c                          |  4 +-
- drivers/xen/privcmd-buf.c                     |  2 +-
- drivers/xen/privcmd.c                         |  4 +-
- fs/aio.c                                      |  2 +-
- fs/cramfs/inode.c                             |  2 +-
- fs/erofs/data.c                               |  2 +-
- fs/exec.c                                     |  4 +-
- fs/ext4/file.c                                |  2 +-
- fs/fuse/dax.c                                 |  2 +-
- fs/hugetlbfs/inode.c                          |  4 +-
- fs/orangefs/file.c                            |  3 +-
- fs/proc/task_mmu.c                            |  2 +-
- fs/proc/vmcore.c                              |  3 +-
- fs/userfaultfd.c                              |  2 +-
- fs/xfs/xfs_file.c                             |  2 +-
- include/linux/mm.h                            | 51 +++++++++++++++++--
- include/linux/mm_types.h                      |  8 ++-
- include/linux/pgtable.h                       |  5 +-
- kernel/bpf/ringbuf.c                          |  4 +-
- kernel/bpf/syscall.c                          |  4 +-
- kernel/events/core.c                          |  2 +-
- kernel/fork.c                                 |  2 +-
- kernel/kcov.c                                 |  2 +-
- kernel/relay.c                                |  2 +-
- mm/debug.c                                    |  1 +
- mm/hugetlb.c                                  |  4 +-
- mm/khugepaged.c                               |  2 +
- mm/ksm.c                                      |  2 +
- mm/madvise.c                                  |  2 +-
- mm/memory.c                                   | 19 +++----
- mm/memremap.c                                 |  4 +-
- mm/mlock.c                                    | 12 ++---
- mm/mmap.c                                     | 32 +++++++-----
- mm/mprotect.c                                 |  2 +-
- mm/mremap.c                                   |  8 +--
- mm/nommu.c                                    | 11 ++--
- mm/secretmem.c                                |  2 +-
- mm/shmem.c                                    |  2 +-
- mm/vmalloc.c                                  |  2 +-
- net/ipv4/tcp.c                                |  4 +-
- security/selinux/selinuxfs.c                  |  6 +--
- sound/core/oss/pcm_oss.c                      |  2 +-
- sound/core/pcm_native.c                       |  9 ++--
- sound/soc/pxa/mmp-sspa.c                      |  2 +-
- sound/usb/usx2y/us122l.c                      |  4 +-
- sound/usb/usx2y/usX2Yhwdep.c                  |  2 +-
- sound/usb/usx2y/usx2yhwdeppcm.c               |  2 +-
- 129 files changed, 292 insertions(+), 233 deletions(-)
-
+diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
+index ae9645c900fa..d8adc0b42cf2 100644
+--- a/arch/x86/mm/pat/memtype.c
++++ b/arch/x86/mm/pat/memtype.c
+@@ -1046,7 +1046,7 @@ void track_pfn_insert(struct vm_area_struct *vma, pgprot_t *prot, pfn_t pfn)
+  * can be for the entire vma (in which case pfn, size are zero).
+  */
+ void untrack_pfn(struct vm_area_struct *vma, unsigned long pfn,
+-		 unsigned long size)
++		 unsigned long size, bool mm_wr_locked)
+ {
+ 	resource_size_t paddr;
+ 	unsigned long prot;
+@@ -1065,8 +1065,12 @@ void untrack_pfn(struct vm_area_struct *vma, unsigned long pfn,
+ 		size = vma->vm_end - vma->vm_start;
+ 	}
+ 	free_pfn_range(paddr, size);
+-	if (vma)
+-		clear_vm_flags(vma, VM_PAT);
++	if (vma) {
++		if (mm_wr_locked)
++			clear_vm_flags(vma, VM_PAT);
++		else
++			mod_vm_flags_nolock(vma, 0, VM_PAT);
++	}
+ }
+ 
+ /*
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 55335edd1373..48d49930c411 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -656,12 +656,18 @@ static inline void clear_vm_flags(struct vm_area_struct *vma,
+ 	vma->vm_flags &= ~flags;
+ }
+ 
++static inline void mod_vm_flags_nolock(struct vm_area_struct *vma,
++				       unsigned long set, unsigned long clear)
++{
++	vma->vm_flags |= set;
++	vma->vm_flags &= ~clear;
++}
++
+ static inline void mod_vm_flags(struct vm_area_struct *vma,
+ 				unsigned long set, unsigned long clear)
+ {
+ 	mmap_assert_write_locked(vma->vm_mm);
+-	vma->vm_flags |= set;
+-	vma->vm_flags &= ~clear;
++	mod_vm_flags_nolock(vma, set, clear);
+ }
+ 
+ static inline void vma_set_anonymous(struct vm_area_struct *vma)
+@@ -2087,7 +2093,7 @@ static inline void zap_vma_pages(struct vm_area_struct *vma)
+ }
+ void unmap_vmas(struct mmu_gather *tlb, struct maple_tree *mt,
+ 		struct vm_area_struct *start_vma, unsigned long start,
+-		unsigned long end);
++		unsigned long end, bool mm_wr_locked);
+ 
+ struct mmu_notifier_range;
+ 
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index 5fd45454c073..c63cd44777ec 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -1185,7 +1185,8 @@ static inline int track_pfn_copy(struct vm_area_struct *vma)
+  * can be for the entire vma (in which case pfn, size are zero).
+  */
+ static inline void untrack_pfn(struct vm_area_struct *vma,
+-			       unsigned long pfn, unsigned long size)
++			       unsigned long pfn, unsigned long size,
++			       bool mm_wr_locked)
+ {
+ }
+ 
+@@ -1203,7 +1204,7 @@ extern void track_pfn_insert(struct vm_area_struct *vma, pgprot_t *prot,
+ 			     pfn_t pfn);
+ extern int track_pfn_copy(struct vm_area_struct *vma);
+ extern void untrack_pfn(struct vm_area_struct *vma, unsigned long pfn,
+-			unsigned long size);
++			unsigned long size, bool mm_wr_locked);
+ extern void untrack_pfn_moved(struct vm_area_struct *vma);
+ #endif
+ 
+diff --git a/mm/memory.c b/mm/memory.c
+index d6902065e558..5b11b50e2c4a 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -1613,7 +1613,7 @@ void unmap_page_range(struct mmu_gather *tlb,
+ static void unmap_single_vma(struct mmu_gather *tlb,
+ 		struct vm_area_struct *vma, unsigned long start_addr,
+ 		unsigned long end_addr,
+-		struct zap_details *details)
++		struct zap_details *details, bool mm_wr_locked)
+ {
+ 	unsigned long start = max(vma->vm_start, start_addr);
+ 	unsigned long end;
+@@ -1628,7 +1628,7 @@ static void unmap_single_vma(struct mmu_gather *tlb,
+ 		uprobe_munmap(vma, start, end);
+ 
+ 	if (unlikely(vma->vm_flags & VM_PFNMAP))
+-		untrack_pfn(vma, 0, 0);
++		untrack_pfn(vma, 0, 0, mm_wr_locked);
+ 
+ 	if (start != end) {
+ 		if (unlikely(is_vm_hugetlb_page(vma))) {
+@@ -1675,7 +1675,7 @@ static void unmap_single_vma(struct mmu_gather *tlb,
+  */
+ void unmap_vmas(struct mmu_gather *tlb, struct maple_tree *mt,
+ 		struct vm_area_struct *vma, unsigned long start_addr,
+-		unsigned long end_addr)
++		unsigned long end_addr, bool mm_wr_locked)
+ {
+ 	struct mmu_notifier_range range;
+ 	struct zap_details details = {
+@@ -1689,7 +1689,8 @@ void unmap_vmas(struct mmu_gather *tlb, struct maple_tree *mt,
+ 				start_addr, end_addr);
+ 	mmu_notifier_invalidate_range_start(&range);
+ 	do {
+-		unmap_single_vma(tlb, vma, start_addr, end_addr, &details);
++		unmap_single_vma(tlb, vma, start_addr, end_addr, &details,
++				 mm_wr_locked);
+ 	} while ((vma = mas_find(&mas, end_addr - 1)) != NULL);
+ 	mmu_notifier_invalidate_range_end(&range);
+ }
+@@ -1723,7 +1724,7 @@ void zap_page_range_single(struct vm_area_struct *vma, unsigned long address,
+ 	 * unmap 'address-end' not 'range.start-range.end' as range
+ 	 * could have been expanded for hugetlb pmd sharing.
+ 	 */
+-	unmap_single_vma(&tlb, vma, address, end, details);
++	unmap_single_vma(&tlb, vma, address, end, details, false);
+ 	mmu_notifier_invalidate_range_end(&range);
+ 	tlb_finish_mmu(&tlb);
+ }
+@@ -2492,7 +2493,7 @@ int remap_pfn_range(struct vm_area_struct *vma, unsigned long addr,
+ 
+ 	err = remap_pfn_range_notrack(vma, addr, pfn, size, prot);
+ 	if (err)
+-		untrack_pfn(vma, pfn, PAGE_ALIGN(size));
++		untrack_pfn(vma, pfn, PAGE_ALIGN(size), true);
+ 	return err;
+ }
+ EXPORT_SYMBOL(remap_pfn_range);
+diff --git a/mm/memremap.c b/mm/memremap.c
+index 08cbf54fe037..2f88f43d4a01 100644
+--- a/mm/memremap.c
++++ b/mm/memremap.c
+@@ -129,7 +129,7 @@ static void pageunmap_range(struct dev_pagemap *pgmap, int range_id)
+ 	}
+ 	mem_hotplug_done();
+ 
+-	untrack_pfn(NULL, PHYS_PFN(range->start), range_len(range));
++	untrack_pfn(NULL, PHYS_PFN(range->start), range_len(range), true);
+ 	pgmap_array_delete(range);
+ }
+ 
+@@ -276,7 +276,7 @@ static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
+ 	if (!is_private)
+ 		kasan_remove_zero_shadow(__va(range->start), range_len(range));
+ err_kasan:
+-	untrack_pfn(NULL, PHYS_PFN(range->start), range_len(range));
++	untrack_pfn(NULL, PHYS_PFN(range->start), range_len(range), true);
+ err_pfn_remap:
+ 	pgmap_array_delete(range);
+ 	return error;
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 2c6e9072e6a8..69d440997648 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -78,7 +78,7 @@ core_param(ignore_rlimit_data, ignore_rlimit_data, bool, 0644);
+ static void unmap_region(struct mm_struct *mm, struct maple_tree *mt,
+ 		struct vm_area_struct *vma, struct vm_area_struct *prev,
+ 		struct vm_area_struct *next, unsigned long start,
+-		unsigned long end);
++		unsigned long end, bool mm_wr_locked);
+ 
+ static pgprot_t vm_pgprot_modify(pgprot_t oldprot, unsigned long vm_flags)
+ {
+@@ -2136,14 +2136,14 @@ static inline void remove_mt(struct mm_struct *mm, struct ma_state *mas)
+ static void unmap_region(struct mm_struct *mm, struct maple_tree *mt,
+ 		struct vm_area_struct *vma, struct vm_area_struct *prev,
+ 		struct vm_area_struct *next,
+-		unsigned long start, unsigned long end)
++		unsigned long start, unsigned long end, bool mm_wr_locked)
+ {
+ 	struct mmu_gather tlb;
+ 
+ 	lru_add_drain();
+ 	tlb_gather_mmu(&tlb, mm);
+ 	update_hiwater_rss(mm);
+-	unmap_vmas(&tlb, mt, vma, start, end);
++	unmap_vmas(&tlb, mt, vma, start, end, mm_wr_locked);
+ 	free_pgtables(&tlb, mt, vma, prev ? prev->vm_end : FIRST_USER_ADDRESS,
+ 				 next ? next->vm_start : USER_PGTABLES_CEILING);
+ 	tlb_finish_mmu(&tlb);
+@@ -2391,7 +2391,11 @@ do_vmi_align_munmap(struct vma_iterator *vmi, struct vm_area_struct *vma,
+ 			mmap_write_downgrade(mm);
+ 	}
+ 
+-	unmap_region(mm, &mt_detach, vma, prev, next, start, end);
++	/*
++	 * We can free page tables without write-locking mmap_lock because VMAs
++	 * were isolated before we downgraded mmap_lock.
++	 */
++	unmap_region(mm, &mt_detach, vma, prev, next, start, end, !downgrade);
+ 	/* Statistics and freeing VMAs */
+ 	mas_set(&mas_detach, start);
+ 	remove_mt(mm, &mas_detach);
+@@ -2704,7 +2708,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+ 
+ 		/* Undo any partial mapping done by a device driver. */
+ 		unmap_region(mm, &mm->mm_mt, vma, prev, next, vma->vm_start,
+-			     vma->vm_end);
++			     vma->vm_end, true);
+ 	}
+ 	if (file && (vm_flags & VM_SHARED))
+ 		mapping_unmap_writable(file->f_mapping);
+@@ -3031,7 +3035,7 @@ void exit_mmap(struct mm_struct *mm)
+ 	tlb_gather_mmu_fullmm(&tlb, mm);
+ 	/* update_hiwater_rss(mm) here? but nobody should be looking */
+ 	/* Use ULONG_MAX here to ensure all VMAs in the mm are unmapped */
+-	unmap_vmas(&tlb, &mm->mm_mt, vma, 0, ULONG_MAX);
++	unmap_vmas(&tlb, &mm->mm_mt, vma, 0, ULONG_MAX, false);
+ 	mmap_read_unlock(mm);
+ 
+ 	/*
 -- 
 2.39.1
 
