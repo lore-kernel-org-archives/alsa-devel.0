@@ -4,103 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9ADACC54E94
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 15:34:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7B0CC27C76
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 16:29:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5190383E;
-	Wed, 25 Jan 2023 16:34:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5190383E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 101661FE;
+	Wed, 25 Jan 2023 17:29:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 101661FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674660895;
-	bh=p9/lf49U4PHe9w04CV9h7pHFommhtOFCfPP73qcz3WY=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=Btqpn6CGEJ1dZMpWmy/6Kcfutp4KRLnnzYZVper5VaWWpZxxwiy1WtrGnCnqimj2v
-	 G27OuLw0Hr3CZnfHn5aozz6osehlTl0/HrByX4m6fnKDtv0BoqxKxyj/VuWC3LQ/fR
-	 04WQu2H3k3ZJdpcl05A3jLjqZQJQ7w3enym5RfMQ=
+	s=default; t=1674664193;
+	bh=frcCV1k9oG9oKj3dpUqdJg1PxRT2RSN/XKdLCPjaYaY=;
+	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=XjnMhH4/UD8k+uFhVY9kZ8TroG2zgBZEZdSPcQHGgzWfQf/UMfbyr9SFPf+Fn2AfP
+	 usCPgt5sYuVSlpsXIozF4A0jppDoXIjgyRr46CxUWLejg6DVJFHqSsklIHR4g+Gsm0
+	 issZlRot9gxyisJgqy7eIyaFrJsiQ9iLSh9OX//A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DAD8BF802E8;
-	Wed, 25 Jan 2023 16:34:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC4DAF80163;
+	Wed, 25 Jan 2023 17:29:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 25DFCF80424; Wed, 25 Jan 2023 16:34:03 +0100 (CET)
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
- [66.111.4.25])
+ id 30E13F802E8; Wed, 25 Jan 2023 17:28:58 +0100 (CET)
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77F38F80163
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 16:33:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77F38F80163
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key, unprotected) header.d=invisiblethingslab.com
- header.i=@invisiblethingslab.com header.a=rsa-sha256 header.s=fm3
- header.b=X5HxLc0S; dkim=pass (2048-bit key,
- unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm3 header.b=R5z7xMpp
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 3E0B55C01B7;
- Wed, 25 Jan 2023 10:33:51 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Wed, 25 Jan 2023 10:33:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- invisiblethingslab.com; h=cc:cc:content-type:date:date:from:from
- :in-reply-to:in-reply-to:message-id:mime-version:references
- :reply-to:sender:subject:subject:to:to; s=fm3; t=1674660831; x=
- 1674747231; bh=CDGI9yfvKLA16CZgTC7w7ljo6opAPCeJws8q0Zld1bc=; b=X
- 5HxLc0SvOuGUndsy74lCI6PfJaMZD4zEqsEhn0KPuHL7KGYF+Px51wzKeFQ/kb4k
- DFYWT1sBAgQxi9ltJcFTtp0eYemDeClIkamQd+9nlYODuywOIJqW4Qgz+uTk/gGp
- X85+iI1kDGgAYHiBgR8WHC+dzsiWhZymLS6J9pGBBNpalU/6Wz9Bf2NzDiw6Z0iP
- uGBrScLP2y/TGbythN5YpQbzwaMpXXKOkC4QWFSb9r9OL+70flrSNSW+926lQd2L
- ZCcdgvMb9tveAzX10eU1x96NFKd/1mFxaDALoQqF9b9PxssFOwzEEJb8jg8F1yFA
- 77snYnKVl1jrEQyFlf57A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
- :feedback-id:from:from:in-reply-to:in-reply-to:message-id
- :mime-version:references:reply-to:sender:subject:subject:to:to
- :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm3; t=1674660831; x=1674747231; bh=CDGI9yfvKLA16CZgTC7w7ljo6opA
- PCeJws8q0Zld1bc=; b=R5z7xMpp5RCMSYbldC8hF37F1uCMYMCM1/qEf9rN4zRq
- rc+RGHsdgXJFliWZIS01QOyYZHsQizF9C0ceNuiVAiHaCjka/a9B+E2faZS4EKIG
- StgsGVgzaZmtOIMepu/MA7KV8fm1Iy3vRtMeR3iw1kfsXOJTPCeLzU5kKlNXfQoc
- gOJo6KcsLabIMKzLUqipsNu44qQ0OBBwXbCuNfUUBKa3CuqRXpmT17+bhlIU0Fh4
- jNfKbx0W78CHqJOGu3qoWFb/HLU9XQY6JPidjSZmKNTXA7UdBYUY/0YLyIxPzfBy
- phUjjBCJYLm+CX8kCNHvL2OlLACx/2dtvczMQsoPuw==
-X-ME-Sender: <xms:30vRYyRYchoxDJIAKRMNdexYihPLmMbj5nlwXrXmtZg341mttrOgPA>
- <xme:30vRY3z7Bb8h6mxJyQxMoKMqyuvSWjpILq0gkea-TkshR-V-V543eNRNMlSU8u7vv
- qGAObTt8oZX7Q>
-X-ME-Received: <xmr:30vRY_3TLQsWiluQL01AGPKEz1iDu3tC9xrum-kmfrna_u8_i1JP3gdPX1OQgLu1xRzlLqmXNTelyIQcI94rBcQwxB5tqG3KIAU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedruddvvddgjeekucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepfffhvfevuffkfhggtggujgesghdtreertddtjeenucfhrhhomhepofgrrhgv
- khcuofgrrhgtiiihkhhofihskhhiqdfikphrvggtkhhiuceomhgrrhhmrghrvghksehinh
- hvihhsihgslhgvthhhihhnghhslhgrsgdrtghomheqnecuggftrfgrthhtvghrnhepgfdu
- leetfeevhfefheeiteeliefhjefhleduveetteekveettddvgeeuteefjedunecuvehluh
- hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrrhhmrghrvghk
- sehinhhvihhsihgslhgvthhhihhnghhslhgrsgdrtghomh
-X-ME-Proxy: <xmx:30vRY-D8FweYMM9Tq7kJu6b3x0GuKKfhUhJuVhQ8T9vgv-_8_uFIMQ>
- <xmx:30vRY7ivKy0-YHeWBlb8RgD1wWDm6F1JA2DTHvIdWf3y1XC1DB8Qxw>
- <xmx:30vRY6q9_4kUOURRL3yqCLemK-61NRo9G3mXf4jivjVp3EIdeAIEaQ>
- <xmx:30vRY9ehpyO2TJGP2UVWmv_gZ_wbxPAd7RFSmWbenpafBs_wG2VzDw>
-Feedback-ID: i1568416f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 25 Jan 2023 10:33:50 -0500 (EST)
-Date: Wed, 25 Jan 2023 16:33:45 +0100
-From: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?=
- <marmarek@invisiblethingslab.com>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 0/2] ALSA: memalloc: Fix for Xen PV and non-IOMMU systems
-Message-ID: <Y9FL2SOln564i6cE@mail-itl>
-References: <20230124092744.27370-1-tiwai@suse.de>
- <87o7qmtyy8.wl-tiwai@suse.de>
+ key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
+ SHA256) (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC81AF800FB
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 17:28:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC81AF800FB
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ secure) header.d=gmx.de header.i=@gmx.de header.a=rsa-sha256
+ header.s=s31663417 header.b=G9fLi44m
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+ t=1674664126; bh=MwGCgZCa0ZAwgTdGagV0PnHQy3i5AXOHDInRTdPQ1BM=;
+ h=X-UI-Sender-Class:Date:Subject:From:To;
+ b=G9fLi44mMFiHYmQMUzXJgOpDYiTax8jSQtQNohXZ1KZOBPt55kJLfIB6S95YDkUC7
+ UipKeXzciGMFeiLwV8IZt6X3oRoMCbOLC4X++UBlEpd3lCq+Blsfz+d92HjqYJfeV9
+ t+wSddDXOlL7duwXtztATEGpv+QMk+q+ANXHQPzSJpluau2dPoHx1GyEIRcc4j8fXi
+ tFksHnIsqI33VIOoAAsGAMaAa+GwSDxlRSAkOWM/nIxyRYQ4NTUtw3kzlMgb5lQ2mF
+ fb5gDylraR1OFIcQ03tbmym3DNrIROdpkcZ7eISMNi8xP3fcQqbLA+3smRrBo5qd3/
+ 1Twn+mA8xHT/g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.0.66] ([77.20.255.95]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MUXpQ-1pBsx34BYO-00QPJ5 for
+ <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 17:28:46 +0100
+Date: Wed, 25 Jan 2023 17:28:44 +0100
+Subject: Firewire ALSA Motu and Phase24
+X-Priority: 3
+Message-ID: <sokos1-r6xj933yn42y-hmy3gsrfgsma-mnwe9a-cahiug-3btbiljo1il7-8lhisz-trzq63b9es27-41z6o2wylkgf-tjvaeo3olqkz-elr571-us6u4977mlo1-p2gxkncmroem-foujcu-jg85lg-sqi612.1674640678660@email.android.com>
+From: "M. Armsby" <m.armsby@gmx.de>
+To: ALSA mail List <alsa-devel@alsa-project.org>
+X-Provags-ID: V03:K1:W/+z9g+vIkNiAQMS0JUoiIAtnY2CxZ/veGqMazI26WppH6PDHJ2
+ lr54yvpu3dalstTUReT1LjTI/HUssiyCQOZduaaGd64HgTrwyCBambKdPpEY4vpkSTH4tHJ
+ TZ25lsvquYFanVpMwhmHlGmAdQAF9wXtwqW5xtt4ilVwMkebxnxbdn+cxM+QdiKm53kMfyn
+ FD3jhQV5FkTr8snl4w3wQ==
+UI-OutboundReport: notjunk:1;M01:P0:DN8vp+h08s0=;nXnvu87xvinFTiqE8cbTQXrH/vw
+ +bGHq3sizbRQe5MlnQ4PW118Kl8RNP418d5ZdwSdGNjJsBrchIo8N3anjDzK7tc1KapNmXrRp
+ WQMnvqUQy4NGGICrf5i0DpWIrtzMbxyYQonXWSbH4JZaD9PrUGlai1RF73MNn3JuAhsmQbVPQ
+ tRRHRlo1UXL90E6zaiGGtc9ohgsctbjPBr20Ds0LyiJI2SDMTCxx3xJaqk+zcwE+w7DDrMjUW
+ XAH/7tSTWbCLNBpTp+cZRnc6Mx5tRPHAQBiXIva0yJ8306e022eTqPewYouTsa1iDx57iDe7W
+ tf9cVb2c6dYy9Xvjr3rB+rU6BCX6dwimoYp7CnVIBjFfqeVUXbZr+g6Z7VOdYTH9hK/kQnnAY
+ Y+jcVTuKaEOYb7ga91l1A8oNNUgu0KRYHhtAce1KoqTc3IxBR7CjNOUGbkoDzQJjhQlbn2VNm
+ wxQlgazbgi3pbxZbxmMdt24JdotJLVk8Z9l1vuUNsIJSZNpGYd2iuA6HDesXQcFELjGQh3shl
+ moOWPhSn5+m4O6Cl43O1kHLOJgRwUgrggLrTtt5/XyMZc+LDDJJKMRsNVzvGNemQNLphJnux+
+ TQoq07GHkT3jm8BHki/FPjZbXSc+C0UmkDCoIl7or/wUNSXyMTCOZZV30ujGJXqC+ijyIGMvX
+ XKFl7xAAstgAA034iqBp/Agv+NiaVgSzSGdFgBFDg67jI79cOivm4EhLv44cV5taeQzN8rbnB
+ hGCA21LTwPL4KdHSyDCss32h/i/EDNFpvhYEh+tAjuThz+TybJYvqWVuiaJqUliZOTMKErIEu
+ RXHt42/bsNShiJ/5rEtewfQqQkmb/+uXD7uQgXoVttJyPZPf6hJ9G5Ra9olyhvYV43Sf+lrgA
+ +byTBAIkSBptyzexeNM9eWTjQ5UM/JoYuT1w5HFPXG+i8nPW64n2hjbGHDXZT7f8qrskvFXqS
+ S7h0NFi/AG7W5fT5O+Xk+p1QrDQ=
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="yWi1MkSZBLE4jw0w"
-Content-Disposition: inline
-In-Reply-To: <87o7qmtyy8.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="utf-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -113,61 +88,6 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
---yWi1MkSZBLE4jw0w
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 25 Jan 2023 16:33:45 +0100
-From: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [PATCH 0/2] ALSA: memalloc: Fix for Xen PV and non-IOMMU systems
-
-On Wed, Jan 25, 2023 at 04:29:19PM +0100, Takashi Iwai wrote:
-> On Tue, 24 Jan 2023 10:27:42 +0100,
-> Takashi Iwai wrote:
-> >=20
-> > Hi,
-> >=20
-> > this is a patch series to address the recent regression on Xen PV (and
-> > possibly non-IOMMU) systems about the SG-buffer memory allocation.
-> > We switched to use dma_alloc_noncontiguous() as hoped it handling
-> > everything right, but it turned out that this doesn't work always.
-> > So this is one step back, use the explicit SG-buffer with
-> > dma_alloc_coherent() calls, but in a bit more optimized ways, and also
-> > applying only for those systems.
->=20
-> It seems that the second patch causes a problem; at least I see casual
-> Oopses on my system after using the patch.  Let's scratch.
->=20
-> I'll resubmit the fix.  Marek, could you try that later and report
-> back if it still works and doesn't break things again?
-
-Sure, just cc me.
-
---=20
-Best Regards,
-Marek Marczykowski-G=C3=B3recki
-Invisible Things Lab
-
---yWi1MkSZBLE4jw0w
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAmPRS9oACgkQ24/THMrX
-1ywRtQf+IFrHKwnmgxYD3lIYm4cfpgPuoA/wpp1LiOUqAqQDrKVpX3/NpOfNnBE0
-MKdT/sdYbfg1sxWM8/UstyMadrwlUJv3QM8+a9TGzSpVRUOxGP5oJ2rKICH8wyur
-kctZCLQkuCUPqI7j+OHlpJCrvVlQEgH595U0f4Ch/lkxs3wXvoUM8ZT6U/uNhohW
-n2w1/CGJWLDW4WLIGFZtz5S8LQd4aSc8ko0baPxAlGwz4PwpbJ12k5R5VmPSNsAb
-k6iQJybZ/K/OjNqnnnonJBE21zkx7Nd/IkrIM8PZmq31AJI+OmMez8yk1E7v0/C5
-sNqsUQYWFqfmoyOV88etw9kIOjZY9w==
-=kWtY
------END PGP SIGNATURE-----
-
---yWi1MkSZBLE4jw0w--
