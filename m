@@ -4,76 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADE13C54E94
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 17:17:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E746C54E94
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 18:07:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4163F6C0;
-	Wed, 25 Jan 2023 18:17:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4163F6C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E8971F3;
+	Wed, 25 Jan 2023 19:06:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E8971F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674667071;
-	bh=+FsfjVh96kHMiXflnl9uGUaz68h9YTawTmC/lL5rqUo=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1674670065;
+	bh=ocnFMDZ7ZlvU+rb+860PuFe5t5fj/KSwMKPUi4UYQRM=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=vUa33FChzF6xPl2prXEkz7oSByRt0NpHP3P7fXQHuwnL8Wf7p16OHrjrsdTms/wzN
-	 TsOGGQBNUBv292mZbwdA8dzQT8ErHnq0ipM2jT22x4nbAvjeSHa2g5U6owClbonSnL
-	 8CkaGOU/O8p+kViScuZs7z23YWH/AvnX6wwYnlEo=
+	b=p6WZKiy320jitpQlP5OqoYBYzY/SZ/sjgGJjTB4OHLQ3mxgedqjNduRvCbPQ0E81z
+	 /T4gleyp1v/B2GNYbAsnUOopVeeX3MSjESTmrEjL0xW66kx9/pDOa50vKDx1jUeAxD
+	 Ufva3/nGHFMMPr7Wl+rp9kyV62Wh14oyDGJx9r1U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CCF97F80163;
-	Wed, 25 Jan 2023 18:17:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0C98F802E8;
+	Wed, 25 Jan 2023 19:06:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 730AFF802E8; Wed, 25 Jan 2023 18:16:59 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9128CF80424; Wed, 25 Jan 2023 19:06:53 +0100 (CET)
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com
+ [IPv6:2607:f8b0:4864:20::b36])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9908F800FB
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 18:16:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9908F800FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11890F800FB
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 19:06:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11890F800FB
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=aCoMSfEP
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674667017; x=1706203017;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=+FsfjVh96kHMiXflnl9uGUaz68h9YTawTmC/lL5rqUo=;
- b=aCoMSfEPEpgLbKfs5jAjChSgE83LyF/LlHgPdBAqPntHCNND1uwKR3X2
- 8Jb0zr0jrs0trvwP8eUtB1lGShv3slWvz/3pCimUqPCZg+JRuzA2KZVgm
- 93ndIIMou+Uw2ERjm2dMRaC7OBLgyO832DtBH/MWDh+wTuIcwucSpyZdq
- vaPWSFIRowb3OHu0F3oXoH4SaW4lX/GpTkCJaz5Dnji1fsO2HCUoa7Wy3
- Jf2egjjbwNXHuuGIAKTA8gifg/CsLnEik2Vqk7GC3dFIbc04azXn+gicu
- WFCFzSAM8GMaG3hme5p5qp/YBtzO7wClelI4qZD6lcz4M12/EGQ1Wr2bC Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="327868193"
-X-IronPort-AV: E=Sophos;i="5.97,246,1669104000"; d="scan'208";a="327868193"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2023 09:15:32 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="805068835"
-X-IronPort-AV: E=Sophos;i="5.97,246,1669104000"; d="scan'208";a="805068835"
-Received: from bshunt-mobl.amr.corp.intel.com (HELO [10.212.37.80])
- ([10.212.37.80])
- by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2023 09:15:31 -0800
-Message-ID: <92052eef-3c61-7f3e-75c1-09b76cd38e24@linux.intel.com>
-Date: Wed, 25 Jan 2023 11:15:30 -0600
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20210112 header.b=M2/A3DMK
+Received: by mail-yb1-xb36.google.com with SMTP id p141so21292320ybg.12
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 10:06:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=i6gHcOs4YL08us1jf7eqClQvl9hw2ZJ/GGVNUWPoV+M=;
+ b=M2/A3DMKNrkMuVRPgHRpPnM/8VBUC0QRClJ3NCthcvkFRwtq1BW+UUx8wJbQS/X9Vv
+ 2yJ8qvGg+gMwklJ9FXlK/vBFNBdaFn8ccJVehxH35yPIMxPH9ca6nEpJSXuTz4LjWt2Z
+ IDlOfE4eEsD3Z1W+AjNqU0g1hmLugc9QNuD0Uip2nVNRStA5qUAAuTIdragnFsRD/o8y
+ a9xhWSMmO7A3GIedUYvaWvZBRlh8CONeCca5QiIA78iCmrEtWkL8u+HDMx2897+vo4Np
+ uf0gLZCvjNxFlk+2jp05yaSolgRkw2jfQNaQ8nE5Qvkb8xwNAlJKyAHyi0H81LITNMXI
+ YSUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=i6gHcOs4YL08us1jf7eqClQvl9hw2ZJ/GGVNUWPoV+M=;
+ b=uLAPXY8xGoDLOvq4sZCsAwRanCLASruRyDaBnWbul/4FIGTHqMsnaM/gvCoVYeFR8I
+ qxMAFUONjPyStLMqB/RphVhGxr43qJcYjvRM5AXW0vCVubh3oFTvdqt9pVfFdpLLdwNS
+ m02SSrc5zPhj4m1GlZHoEQK3TkrBZ1JvsUF9YY2PXBVBlUEGhhYX9k3+55qYpg1FyMpK
+ R2XkRt/SDjqaa8Loa6jTQjQNnFeU0Zc2p6jYii6sW5wZs+X32/CikSQxxyyEFEe1jKLj
+ F4hWhWlAkIOEZYxLoaus3SS3L7wmnZpKi4ZTKruJQ0CSgkyGi2vHIX0WddZCpuICsezL
+ uHwA==
+X-Gm-Message-State: AO0yUKWWP1SKd3JNWnR6FACEqcq2F711Mg3gXUE7HiSxUh2VdFfLc8Oe
+ iNLLFmUwpvlOXjHfeUwCYAEPMNGJBrv3n10DnjU=
+X-Google-Smtp-Source: AK7set8F0oCAlc9rmKVcmN+8IgcVrtWUmWM94OpPt1k34aP+Ff+vyWVWi3YqW/cKi+1+SPo5uBf4dy1te01zWWnwa+w=
+X-Received: by 2002:a25:b327:0:b0:80b:5bef:7c70 with SMTP id
+ l39-20020a25b327000000b0080b5bef7c70mr864603ybj.20.1674670001505; Wed, 25 Jan
+ 2023 10:06:41 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH v2 3/5] ASoC: amd: acp: Refactor i2s clocks programming
- sequence
-Content-Language: en-US
-To: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
- broonie@kernel.org, alsa-devel@alsa-project.org
-References: <20230109132104.1259479-1-venkataprasad.potturu@amd.com>
- <20230109132104.1259479-4-venkataprasad.potturu@amd.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230109132104.1259479-4-venkataprasad.potturu@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CAHhAz+gxrjB04c-GHa1YzahyKDQcW3+xoDt9iUnkj9THKvG_TA@mail.gmail.com>
+ <53e3919e-48cc-81a0-365e-015235d10c9b@linux.intel.com>
+In-Reply-To: <53e3919e-48cc-81a0-365e-015235d10c9b@linux.intel.com>
+From: Muni Sekhar <munisekharrms@gmail.com>
+Date: Wed, 25 Jan 2023 23:36:30 +0530
+Message-ID: <CAHhAz+gTrToehWki8h17DdR_u8uKmRPsDWeEygijpm51MLvz1g@mail.gmail.com>
+Subject: Re: struct snd_pcm_ops callbacks
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,62 +89,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Sunil-kumar.Dommati@amd.com, ssabakar@amd.com,
- Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Basavaraj.Hiregoudar@amd.com,
- Takashi Iwai <tiwai@suse.com>, open list <linux-kernel@vger.kernel.org>,
- Jia-Ju Bai <baijiaju1990@gmail.com>,
- Mario Limonciello <mario.limonciello@amd.com>,
- Akihiko Odaki <akihiko.odaki@gmail.com>, Vijendar.Mukunda@amd.com,
- V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-sound@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds new Sparse warnings [1]:
+On Wed, Jan 25, 2023 at 8:30 PM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+>
+>
+>
+> On 1/25/23 05:21, Muni Sekhar wrote:
+> > Hi,
+> >
+> > struct snd_pcm_ops callbacks can be used for sending\receiving PDM
+> > audio data to and from a sound card? Or is it only designed for PCM
+> > audio data?
+>
+> It depends what side of the sound card you are looking at, the physical
+> interface with external devices or the userspace interface.
+I am looking at the userspace interface side.
 
-sound/soc/amd/acp/acp-mach-common.c:189:35: error: restricted
-snd_pcm_format_t degrades to integer
-sound/soc/amd/acp/acp-mach-common.c:333:35: error: restricted
-snd_pcm_format_t degrades to integer
-sound/soc/amd/acp/acp-mach-common.c:478:35: error: restricted
-snd_pcm_format_t degrades to integer
-sound/soc/amd/acp/acp-mach-common.c:619:35: error: restricted
-snd_pcm_format_t degrades to integer
-
-> @@ -193,7 +163,11 @@ static int acp_card_rt5682_hw_params(struct snd_pcm_substream *substream,
->  	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
->  	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
->  	int ret;
-> -	unsigned int fmt;
-> +	unsigned int fmt, srate, ch, format;
-> +
-> +	srate = params_rate(params);
-> +	ch = params_channels(params);
-> +	format = 8 * params_format(params);
-
-This last line looks suspicious, no? format-to-physical-size conversions
-should be using existing macros.
-
-Should it be
-
-format = params_physical_width(params);
-
-?
+>
+> PDM can be supported at the physical interface level as long as there is
+> a conversion to PCM somewhere in the hardware. Userspace will
+> play/record PCM. See examples in many codecs and SOCs.
+>
+> There is also the possibility of packing PDM (aka DSD) as pseudo-PCM,
+> that's a trick used by several USB cards. In that case of course the
+> sound card cannot apply any processing to the data and is just a
+> pass-through module.
+>
+>
 
 
-> +	/* Set tdm/i2s1 master bclk ratio */
-> +	ret = snd_soc_dai_set_bclk_ratio(codec_dai, ch * format);
-> +	if (ret < 0) {
-> +		dev_err(rtd->dev, "Failed to set rt5682 tdm bclk ratio: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	if (!drvdata->soc_mclk) {
-> +		ret = acp_clk_enable(drvdata, srate, ch * format);
-> +		if (ret < 0) {
-> +			dev_err(rtd->card->dev, "Failed to enable HS clk: %d\n", ret);
-> +			return ret;
-> +		}
-
-[1]
-https://github.com/thesofproject/linux/actions/runs/4005001249/jobs/6874834205
+-- 
+Thanks,
+Sekhar
