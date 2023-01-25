@@ -4,66 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D53D7C54E94
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 08:03:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11574C54E94
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 08:04:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 247EDE9A;
-	Thu, 26 Jan 2023 09:03:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 247EDE9A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 929D682E;
+	Thu, 26 Jan 2023 09:03:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 929D682E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674720238;
-	bh=TofsbXpZihSKZUVsy9XrANh9lc730J6wSOc2QP9eoTI=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1674720253;
+	bh=Cn/wy12OoXe4zzgVjpS4JLw1oF+i30k/A5PkXu5dxPM=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=TEIg8brEKWtj/c4HB14CgxDBukmO6c/NFvFN+8/dk6K+fu2bVFedTazEa7+pzEwWe
-	 W7phUXFyZ48sqTpRzzz9sYF7w7cDy+tPMcg18UjpuzaiKfSBW2/AsgIqFD3UeOaq81
-	 71yxAYFiF8KMOwdId/hFg0NjmcHUpWJ2+eYz0hRw=
+	b=lVfMhyXYB4xHsZ22yaC+TllWQU+JMtaYOK5obhvAQGdgkmioptyPqyYBxuITwckOt
+	 xkrucsJ4o5tyATrVVisN8iqTSM3Sc/5eivhw2RgfaRvKfzq881yEAgPLEa3MXpUZBh
+	 OUYVGQEM053ntnrpalxYhy3/+piFxHEP2v/zRFRw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B314F80601;
+	by alsa1.perex.cz (Postfix) with ESMTP id CDF74F80607;
 	Thu, 26 Jan 2023 08:55:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F3796F80424; Wed, 25 Jan 2023 16:10:51 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id DAE0FF802E8; Wed, 25 Jan 2023 17:50:16 +0100 (CET)
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com
+ [IPv6:2607:f8b0:4864:20::1134])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB2BAF800FB
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 16:10:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB2BAF800FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 87DA4F800FB
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 17:50:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87DA4F800FB
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=PWvP9JOJ
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C548161494;
- Wed, 25 Jan 2023 15:10:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A53B0C4339E;
- Wed, 25 Jan 2023 15:10:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674659447;
- bh=TofsbXpZihSKZUVsy9XrANh9lc730J6wSOc2QP9eoTI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=PWvP9JOJGFWee6ASV9x3ADUxkKdcW+FrahCSA7zAki85HcwH0S+Qlftb5AVSx76V4
- qBpzvZbPNozQG37LDylg+pITOqfq3rlpjhbTAHNw0Oafns2nuDLECj60B1OrLEWMnV
- /DBCokptbh1fiSNjleo4CBNt1NKQdn8kPf8iqz68WINnJ4LRJldl0YhHV/lKBLFxj7
- iiB6+dKsKTB+B07SQ3EH4R91GxqW6sbp7ZwJOpScy+CeEyBddDco4n5ScTpc1xMwwc
- EyMfjtYYEe2OMD5XlBJx97JPAnsmnx3im+jMYOD9UXRGxoX7/db0GPAIhfy7NJWA1c
- KRS15JP4gUAzw==
-Date: Wed, 25 Jan 2023 15:10:38 +0000
-From: Lee Jones <lee@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: Add missing
- (unevaluated|additional)Properties on child node schemas
-Message-ID: <Y9FGbr8LB9dEHx1Z@google.com>
-References: <20230124230048.371144-1-robh@kernel.org>
+ unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
+ header.s=20210112 header.b=telMSbME
+Received: by mail-yw1-x1134.google.com with SMTP id
+ 00721157ae682-50112511ba7so213097747b3.3
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 08:50:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=9oBkpwDuDP6Raat/HRHsNpx8MqzIjjZSJojQEumXoyE=;
+ b=telMSbMEB1I/JdT8E+AOlYPkvLPDxj1UCnywL1f/zz+GxB6zyzUgN+Q3Q48l8AYc8X
+ qS5rmRFlzboD9JIVNM4srPZju+Dc0OvfYTnyPjpp4sHdEutwmKfLXtqzcN+4YmFBRVgu
+ A3oTpxaFO/E/7LaM1iu3pe6Iv0CmRV+MC10+sbVUAqr2eeBPD17IhS27buTMH3bCJoMu
+ fEQq5XzvwDAqtF1fp8r2H4g3vh98tijISo+CkjBRkXWvZWGfdkjpWZzF8VgIKtCc5sLs
+ +bZFNae0CmrxcmnBVuga8Dg0CQRlWnW+6m8p+riuFjzQ8BSrHATHKU3+MoO2RS3dWuby
+ cPfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=9oBkpwDuDP6Raat/HRHsNpx8MqzIjjZSJojQEumXoyE=;
+ b=tcQVKNsSPFEtBI0J5hwqgVlrQrwpCJ94ZLf2PdB6AUxmHrT7LcRSzW3qoIXm831mBh
+ 6A/8mCpOrSQzZnomx/sBXJeqf1b69cn70hbB+YAe9VHDcv5ZjMpzcp64GOigogPzIKHh
+ exu9Om3DNt4wyuhJUk1l4mU0Vf0gJbQmiILyooWRIe6gB8QS2reJUN+A9tV0mH0Y3DUc
+ 5F3NV0ZZ7B7xyBbtbEyZ9klxoUvFdDkRO7+ZS57UtbLTnc7yu3BP38St9fdW/iUgUk5r
+ iPuEWNmrW2DZICLHrduaLOBLZ1fjRUQGKjtGNwfVG0hdaWxq9qTnHvMUt7gxEho/0BpW
+ Vkyg==
+X-Gm-Message-State: AFqh2krHN39X2Votv7QFg0ptcWUMdIQIQZFyrpeS0yq8xIKPh1pAbpvh
+ /JtnSRs4o/9Id9miVQTpN9Zk77HQBBcYAeIDX1HXyQ==
+X-Google-Smtp-Source: AMrXdXsah5c2WKVW38d6ZSr7pPop+n/mEJC53KDRGLQOXrHcU20AK6F0ktCN8HrtzVAtxjIN7wyafP19A/nGyLOtNU8=
+X-Received: by 2002:a81:1d2:0:b0:433:f1c0:3f1c with SMTP id
+ 201-20020a8101d2000000b00433f1c03f1cmr4401576ywb.438.1674665403087; Wed, 25
+ Jan 2023 08:50:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230124230048.371144-1-robh@kernel.org>
+References: <20230125083851.27759-1-surenb@google.com>
+ <20230125083851.27759-2-surenb@google.com>
+ <Y9Dx0cPXF2yoLwww@hirez.programming.kicks-ass.net>
+In-Reply-To: <Y9Dx0cPXF2yoLwww@hirez.programming.kicks-ass.net>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Wed, 25 Jan 2023 08:49:50 -0800
+Message-ID: <CAJuCfpEcVCZaCGzc-Wim25eaV5e6YG1YJAAdKwZ6JHViB0z8aw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
+To: Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Thu, 26 Jan 2023 08:55:02 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -77,110 +92,93 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
- alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
- linux-mtd@lists.infradead.org,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- David Airlie <airlied@gmail.com>, Marc Zyngier <maz@kernel.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Jassi Brar <jassisinghbrar@gmail.com>,
- Guenter Roeck <linux@roeck-us.net>, linux-media@vger.kernel.org,
- Jean Delvare <jdelvare@suse.com>, linux-pm@vger.kernel.org,
- linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
- linux-spi@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- Richard Weinberger <richard@nod.at>, openbmc@lists.ozlabs.org
+Cc: michel@lespinasse.org, nvdimm@lists.linux.dev, heiko@sntech.de,
+ leewalsh@google.com, dri-devel@lists.freedesktop.org, jglisse@google.com,
+ arjunroy@google.com, m.szyprowski@samsung.com, linux-arch@vger.kernel.org,
+ qianweili@huawei.com, linux-samsung-soc@vger.kernel.org,
+ aneesh.kumar@linux.ibm.com, chenhuacai@kernel.org, kasan-dev@googlegroups.com,
+ linux-acpi@vger.kernel.org, rientjes@google.com,
+ xen-devel@lists.xenproject.org, devel@lists.orangefs.org, robdclark@gmail.com,
+ minchan@google.com, robert.jarzmik@free.fr, linux-um@lists.infradead.org,
+ etnaviv@lists.freedesktop.org, npiggin@gmail.com, alex.williamson@redhat.com,
+ viro@zeniv.linux.org.uk, luto@kernel.org, gthelen@google.com,
+ tglx@linutronix.de, ldufour@linux.ibm.com, linux-sgx@vger.kernel.org,
+ martin.petersen@oracle.com, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ akpm@linux-foundation.org, linux-media@vger.kernel.org,
+ freedreno@lists.freedesktop.org, joelaf@google.com, linux-aio@kvack.org,
+ linux-fbdev@vger.kernel.org, linux-ia64@vger.kernel.org, david@redhat.com,
+ dave.hansen@linux.intel.com, virtualization@lists.linux-foundation.org,
+ edumazet@google.com, target-devel@vger.kernel.org, punit.agrawal@bytedance.com,
+ linux-s390@vger.kernel.org, dave@stgolabs.net, deller@gmx.de, hughd@google.com,
+ andrii@kernel.org, patrik.r.jakobsson@gmail.com,
+ linux-stm32@st-md-mailman.stormreply.com, linux-rockchip@lists.infradead.org,
+ linux-graphics-maintainer@vmware.com, kernel-team@android.com,
+ jayalk@intworks.biz, soheil@google.com, selinux@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, mripard@kernel.org, shakeelb@google.com,
+ haojian.zhuang@gmail.com, loongarch@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, tytso@mit.edu, nico@fluxnic.net,
+ muchun.song@linux.dev, hjc@rock-chips.com, mcoquelin.stm32@gmail.com,
+ tatashin@google.com, mike.kravetz@oracle.com, songliubraving@fb.com,
+ jasowang@redhat.com, alsa-devel@alsa-project.org, peterx@redhat.com,
+ linux-tegra@vger.kernel.org, kraxel@redhat.com, will@kernel.org,
+ dmaengine@vger.kernel.org, bhe@redhat.com, miklos@szeredi.hu,
+ linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev, willy@infradead.org,
+ dgilbert@interlog.com, xiang@kernel.org, pabeni@redhat.com, jejb@linux.ibm.com,
+ quic_abhinavk@quicinc.com, bp@alien8.de, mchehab@kernel.org,
+ linux-ext4@vger.kernel.org, tomba@kernel.org, hughlynch@google.com,
+ sre@kernel.org, tfiga@chromium.org, linux-xfs@vger.kernel.org,
+ zhangfei.gao@linaro.org, wangzhou1@hisilicon.com, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-erofs@lists.ozlabs.org, davem@davemloft.net,
+ mhocko@suse.com, kvm@vger.kernel.org, mst@redhat.com, gurua@google.com,
+ bigeasy@linutronix.de, alexandre.torgue@foss.st.com, dhowells@redhat.com,
+ linux-mm@kvack.org, ray.huang@amd.com, adilger.kernel@dilger.ca,
+ kuba@kernel.org, sparclinux@vger.kernel.org, airlied@gmail.com,
+ anton.ivanov@cambridgegreys.com, herbert@gondor.apana.org.au,
+ linux-scsi@vger.kernel.org, richard@nod.at, x86@kernel.org, vkoul@kernel.org,
+ mingo@redhat.com, axelrasmussen@google.com, intel-gfx@lists.freedesktop.org,
+ daniel@ffwll.ch, paulmck@kernel.org, jannh@google.com, chao@kernel.org,
+ maarten.lankhorst@linux.intel.com, liam.howlett@oracle.com,
+ hdegoede@redhat.com, linux-mediatek@lists.infradead.org,
+ matthias.bgg@gmail.com, vbabka@suse.cz, dimitri.sivanich@hpe.com,
+ amd-gfx@lists.freedesktop.org, posk@google.com, lstoakes@gmail.com,
+ peterjung1337@gmail.com, yoshfuji@linux-ipv6.org,
+ linuxppc-dev@lists.ozlabs.org, dsahern@kernel.org, kent.overstreet@linux.dev,
+ kexec@lists.infradead.org, tiwai@suse.com, krzysztof.kozlowski@linaro.org,
+ tzimmermann@suse.de, hannes@cmpxchg.org, dmitry.baryshkov@linaro.org,
+ johannes@sipsolutions.net, mgorman@techsingularity.net,
+ linux-accelerators@lists.ozlabs.org, l.stach@pengutronix.de
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 24 Jan 2023, Rob Herring wrote:
+On Wed, Jan 25, 2023 at 1:10 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
+>
+> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> > index 2d6d790d9bed..6c7c70bf50dd 100644
+> > --- a/include/linux/mm_types.h
+> > +++ b/include/linux/mm_types.h
+> > @@ -491,7 +491,13 @@ struct vm_area_struct {
+> >        * See vmf_insert_mixed_prot() for discussion.
+> >        */
+> >       pgprot_t vm_page_prot;
+> > -     unsigned long vm_flags;         /* Flags, see mm.h. */
+> > +
+> > +     /*
+> > +      * Flags, see mm.h.
+> > +      * WARNING! Do not modify directly.
+> > +      * Use {init|reset|set|clear|mod}_vm_flags() functions instead.
+> > +      */
+> > +     unsigned long vm_flags;
+>
+> We have __private and ACCESS_PRIVATE() to help with enforcing this.
 
-> Just as unevaluatedProperties or additionalProperties are required at
-> the top level of schemas, they should (and will) also be required for
-> child node schemas. That ensures only documented properties are
-> present.
-> 
-> Add unevaluatedProperties or additionalProperties as appropriate, and
-> then add any missing properties flagged by the addition.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-> To: David Airlie <airlied@gmail.com>
-> To: Daniel Vetter <daniel@ffwll.ch>
-> To: Bartosz Golaszewski <brgl@bgdev.pl>
-> To: Jean Delvare <jdelvare@suse.com>
-> To: Guenter Roeck <linux@roeck-us.net>
-> To: Thomas Gleixner <tglx@linutronix.de>
-> To: Marc Zyngier <maz@kernel.org>
-> To: Jassi Brar <jassisinghbrar@gmail.com>
-> To: Mauro Carvalho Chehab <mchehab@kernel.org>
-> To: Lee Jones <lee@kernel.org>
-> To: Ulf Hansson <ulf.hansson@linaro.org>
-> To: Richard Weinberger <richard@nod.at>
-> To: Vignesh Raghavendra <vigneshr@ti.com>
-> To: Sebastian Reichel <sre@kernel.org>
-> To: Mark Brown <broonie@kernel.org>
-> To: "Rafael J. Wysocki" <rafael@kernel.org>
-> To: Daniel Lezcano <daniel.lezcano@linaro.org>
-> To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-gpio@vger.kernel.org
-> Cc: linux-hwmon@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: openbmc@lists.ozlabs.org
-> Cc: linux-mmc@vger.kernel.org
-> Cc: linux-mtd@lists.infradead.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-spi@vger.kernel.org
-> Cc: linux-usb@vger.kernel.org
-> ---
->  .../devicetree/bindings/arm/arm,vexpress-juno.yaml     |  1 +
->  .../bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml |  5 +++--
->  .../bindings/arm/tegra/nvidia,tegra20-pmc.yaml         |  4 ++++
->  .../bindings/bus/allwinner,sun50i-a64-de2.yaml         |  1 +
->  .../bindings/bus/allwinner,sun8i-a23-rsb.yaml          |  1 +
->  .../bus/intel,ixp4xx-expansion-bus-controller.yaml     |  6 ++++++
->  Documentation/devicetree/bindings/bus/palmbus.yaml     |  1 +
->  .../devicetree/bindings/display/msm/qcom,mdss.yaml     |  5 +++++
->  Documentation/devicetree/bindings/example-schema.yaml  |  2 ++
->  .../devicetree/bindings/gpio/x-powers,axp209-gpio.yaml |  1 +
->  .../devicetree/bindings/hwmon/adi,ltc2992.yaml         |  1 +
->  .../bindings/interrupt-controller/arm,gic-v3.yaml      |  2 ++
->  .../bindings/mailbox/xlnx,zynqmp-ipi-mailbox.yaml      |  1 +
->  .../devicetree/bindings/media/i2c/maxim,max9286.yaml   |  7 +++++++
->  .../bindings/memory-controllers/arm,pl35x-smc.yaml     |  1 +
->  .../bindings/memory-controllers/exynos-srom.yaml       |  1 +
->  .../memory-controllers/nvidia,tegra124-emc.yaml        |  1 +
->  .../bindings/memory-controllers/st,stm32-fmc2-ebi.yaml |  1 +
->  .../devicetree/bindings/mfd/mediatek,mt6370.yaml       |  2 ++
->  .../devicetree/bindings/mmc/aspeed,sdhci.yaml          |  1 +
->  Documentation/devicetree/bindings/mtd/mtd.yaml         |  1 +
->  .../devicetree/bindings/power/supply/ti,lp8727.yaml    |  1 +
->  .../devicetree/bindings/soc/imx/fsl,imx93-src.yaml     |  3 ++-
->  .../bindings/soc/microchip/atmel,at91rm9200-tcb.yaml   |  1 +
->  Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml |  1 +
->  .../devicetree/bindings/sound/marvell,mmp-sspa.yaml    |  1 +
->  .../devicetree/bindings/sound/qcom,wcd934x.yaml        |  1 +
->  .../devicetree/bindings/sound/samsung,odroid.yaml      |  2 ++
->  .../devicetree/bindings/soundwire/qcom,soundwire.yaml  |  1 +
->  .../bindings/spi/allwinner,sun4i-a10-spi.yaml          |  1 +
->  .../bindings/spi/allwinner,sun6i-a31-spi.yaml          |  1 +
->  .../devicetree/bindings/spi/spi-controller.yaml        |  1 +
->  .../sram/allwinner,sun4i-a10-system-control.yaml       | 10 +++++-----
->  Documentation/devicetree/bindings/sram/qcom,ocmem.yaml |  1 +
->  .../devicetree/bindings/thermal/thermal-zones.yaml     |  1 +
->  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml   |  1 +
->  36 files changed, 65 insertions(+), 8 deletions(-)
+Thanks for pointing this out, Peter! I guess for that I'll need to
+convert all read accesses and provide get_vm_flags() too? That will
+cause some additional churt (a quick search shows 801 hits over 248
+files) but maybe it's worth it? I think Michal suggested that too in
+another patch. Should I do that while we are at it?
 
-Is this the same as the patch I just reviewed?
-
--- 
-Lee Jones [李琼斯]
+>
