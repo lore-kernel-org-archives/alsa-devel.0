@@ -4,115 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59922C54E94
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 07:59:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 696BAC54E94
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 08:00:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5473DE71;
-	Thu, 26 Jan 2023 08:59:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5473DE71
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22679A4E;
+	Thu, 26 Jan 2023 08:59:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22679A4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674719990;
-	bh=kUEMfsjhCn7JaEZg8amr1LMPwSoYvim+0WKD26LHreU=;
+	s=default; t=1674720007;
+	bh=mHEpv0px31ERj2OPBlx9fadOzZ3nqEHbDJpCiBMUsv0=;
 	h=From:To:Subject:Date:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=rTQOXfTL/CP2CZBYoIBQ0uB8YK8XzOPP5mFpKlnI6DPmk7B+s3hgjxGbEhBGfVIrH
-	 vY03tnyGbV1hfzMRURWjU6o6OHcTA9aXN0HxXtcEbF5UmOyW96C/O27gjUDQttUL9M
-	 jXwfU0nZYiz2Yfb7qkqtRIHMvMIBAV5Beo9fUUeM=
+	b=RYmF5RPPjYE5GMlS+CVcULnJJGulaw/DaoM0f8ZcafpECrZzcTzDUlOy0HCVXFXWf
+	 tc9eUuSK2Z7uPmQSvHJA1W5xHxvmIUjV69RzLp7VXQp8BdOzGoClvmQQOdxT+RjpCe
+	 ByrQJj+3QSJcEJUWADzRLhn2PMDCHUy7id1v/0LU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E21C6F805BB;
-	Thu, 26 Jan 2023 08:55:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93954F805C0;
+	Thu, 26 Jan 2023 08:55:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4B284F802E8; Wed, 25 Jan 2023 17:59:44 +0100 (CET)
+ id 36ABFF802E8; Wed, 25 Jan 2023 18:00:17 +0100 (CET)
 Received: from NAM12-MW2-obe.outbound.protection.outlook.com
- (mail-mw2nam12olkn2099.outbound.protection.outlook.com [40.92.23.99])
+ (mail-mw2nam12olkn2038.outbound.protection.outlook.com [40.92.23.38])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7FAECF800AE
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 17:59:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FAECF800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97554F800AE
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 18:00:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97554F800AE
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=outlook.com header.i=@outlook.com header.a=rsa-sha256
- header.s=selector1 header.b=qff009T7
+ header.s=selector1 header.b=BoVDlV5e
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AA703dJL6fMJT5clPhZD4wjl8Mrw+qeOGMdf1A5KtRGCfkZ8flaM+MUjSzQIwtKY2sF/9YC3DMgXtCaD/VQlau47mdWIyQfcBeMh2TxSjygJ442X8QSeiIDtwg0KjiehmlGxr5BgaFY2Zk5Yi/vMscHCH1shPlSnlFPcmhtmW9CY6SKRovz1gKb9b988EY6GVLPeETCUp/4vdr83YhxSUyzMo3BNWtNrpx5GgdpIuVtSULAUoior13jLeCtUniWfPtZXZiRk4WxAy8znKebxcYnuo+keeDbs231oF2jxLGZoBHvs1dkngKm4HzUvWZttnlTyY/9tbBAosSHT1Kb8Yg==
+ b=eAzsJIQoJ7TbllUeF5ny6knSjgKPRNKkHqjjjQif3xig+NkRi3U+PkDafuqT/X9DYyoTXzwYbyS4aK5X83CCVbxgKgoV5v2O8qFdrvkVlF99aXTa56PDqBGU1Se3riOYq9NaG10ukGbFjOcOtMaEcyaaclxlZZSV6DCLyPgtx65/6WMVF35iOYrr5jEYRFS07Iv4FnPONWLwyIjuC7X1b3dh+P1u+cTlBiBIqoMC/yptpNITmIxGY2NJoajEU2J/+xQu4yK43hdaZU+QzaZ9yOARbqiuFu3xYODP9duzW7r/e//w1K4D1IyibrEOcKrZ9Dnv+mvlG6QjTHx9oA9GHw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YvB6V5CIJ86V2xS0WXpZP2hi2jtgVVfo/+XvjqFKh+g=;
- b=cKIXP4CWdiYDijEg/Qt5g3n0xgpeUjuGQP8w82qQvPH23bdmwQP2VB9spl9P7vjFsFb8xHazuYGJPCSKadtFhI0ms8i5l7SeA4xXGJWMpIG2GGajlMfcL7PyU8MMat/O8aOD0jhQ0Hd4zVGpBRAmx2ZB3AZX4rqwsqI/5kARh1h+TUSXC+c3kCgOf5984vxUVgSyyFMsTOhDbdihfys/b/2ThVZi5LIzMgJYmtpmcDbgyg9Gme61hj8rEcld3SQZYyKVMsS+8lAL3x8V2Fsr9+/DpNMX9j/UWStCYBlKgMjKCup8/wDF0Zli6w6ButT3+lNxD3zXFjkO8GVJ1Qt5yQ==
+ bh=vxqAzGmkjSAk7Lfz7vp/xqTWJZG/Mi/Quf47p/edwaE=;
+ b=LFprY1QVGip/PVaicjcFQyXBLQ0TYGhHo3/hr+1fVtzt4pBl2pnqt8jY1jsiMxsvzNppLszDxhjIH2+fq/hksCMncwmWTgTpR12vpU1X3ALnaGfyPDW0rsoBCctWU34UpgM1O27GI5umsQh39IWRHfxaLEX1o1TFn0MsxGrvasZz9Hk/5ApsTLDyur37qCUhhiJ2GZFWVmYVmVwyAYvNz3PSb1ANhZovOcrJtkbdtkyVNY36mgi6rtccMA9m8xvb0aIlsCaDmsAlfVxwPDmGtd0pma/3oHXnEU6oaDpUOONP0UnxUuyqFBGrGKoz3ptLbrSXTwj8XKRLX2lafSFYBg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YvB6V5CIJ86V2xS0WXpZP2hi2jtgVVfo/+XvjqFKh+g=;
- b=qff009T7RTCu6tgxX4jbsXXLm/79yQDYBxuiudblp/lCRgs5QSnsSrZzupbm0vwxYxLP0FwaD4hi+LzPwJsTM6m9PmiK2YKxnE3Zq9Jrv+pnVm+McnBOZF5WaPvUAiqPfmuJz6goZUfjVp69mRyMAb/fhMPk/15Tnsig1cm+/y4MihJDrsDPZc12XfrAjo7kzQ075qsmQDYo+qfsiVHY7rWEBLPMpzKstbrnweGv8oSs5pTz/44EdKOCbP7aoMz56wObVYa6qrdEpVfPf/AR0KJ8ry05xVDvtHW5ryGG961gpv5M0ejcisnlCqqS4eaxGj2oFPAXXYkct04pXxt80A==
+ bh=vxqAzGmkjSAk7Lfz7vp/xqTWJZG/Mi/Quf47p/edwaE=;
+ b=BoVDlV5e/ozhKZlq1jmx7lU9YpXU/BUz0a5tUsM8RpgV91JcuP6s9hIkaPCfcuH/3uxl0tf2t0mi+YNtsOt04D8RSQvRx4q34V/78x+NoAPBO//tVA6T2YZaIASecutxgAwc+N0d2K/RZ3haj0JFgBSoVFdTObcwankwrQUyebKn91UKUoWmaBatMgTSFCal93qqFLU4fzEySbdHKv2i/yRlUUq433NhhWmeaDGBMzzO70PWAJt7edueGrx3KHNAzGeT0CssBJzAMo0hOnSeXSZjkjl3H8fz69R5l1jm0k1cAz++A1CZ//l/7JvUfwzuZMHCtej+2ssHXTXJkz6+/A==
 Received: from MN2PR17MB3375.namprd17.prod.outlook.com (2603:10b6:208:13c::25)
  by MW4PR17MB4604.namprd17.prod.outlook.com (2603:10b6:303:101::11)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6002.33; Wed, 25 Jan
- 2023 16:59:31 +0000
+ 2023 17:00:08 +0000
 Received: from MN2PR17MB3375.namprd17.prod.outlook.com
  ([fe80::b0f7:cd05:5f4f:5b4]) by MN2PR17MB3375.namprd17.prod.outlook.com
  ([fe80::b0f7:cd05:5f4f:5b4%5]) with mapi id 15.20.6002.033; Wed, 25 Jan 2023
- 16:59:31 +0000
+ 17:00:08 +0000
 From: Vanessa Page <Vebpe@outlook.com>
-To: Jassi Brar <jassisinghbrar@gmail.com>, Rob Herring <robh@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH] dt-bindings: Add missing
  (unevaluated|additional)Properties on child node schemas
 Thread-Topic: [PATCH] dt-bindings: Add missing
  (unevaluated|additional)Properties on child node schemas
-Thread-Index: AQHZMEgIrioCItITZU2shGV9idtdpq6vUwWAgAAI5+qAAABM2A==
-Date: Wed, 25 Jan 2023 16:59:31 +0000
-Message-ID: <MN2PR17MB3375D83019832EA4EFB460FEB8CE9@MN2PR17MB3375.namprd17.prod.outlook.com>
+Thread-Index: AQHZMEgIrioCItITZU2shGV9idtdpq6vGdaAgABCgXk=
+Date: Wed, 25 Jan 2023 17:00:08 +0000
+Message-ID: <MN2PR17MB3375499A91290982CA0B8DD8B8CE9@MN2PR17MB3375.namprd17.prod.outlook.com>
 References: <20230124230048.371144-1-robh@kernel.org>
- <CABb+yY3FwCwEsNYuNP8MBi+2TUra5O7+-GWMzWr06x1g4MJUyg@mail.gmail.com>
- <MN2PR17MB3375A0A6EA306A2019787EE2B8CE9@MN2PR17MB3375.namprd17.prod.outlook.com>
-In-Reply-To: <MN2PR17MB3375A0A6EA306A2019787EE2B8CE9@MN2PR17MB3375.namprd17.prod.outlook.com>
+ <CAMRc=MfdDv5teeQx802Qi3otwfXtZ1jAX_bzvH4DQMvdas9YtQ@mail.gmail.com>
+In-Reply-To: <CAMRc=MfdDv5teeQx802Qi3otwfXtZ1jAX_bzvH4DQMvdas9YtQ@mail.gmail.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-tmn: [d9YIfwOS4oRn4+2aMypXP/nN/AUZ8PoC]
+x-tmn: [BjZhtJ5ZmsUIU2NGMv1qv49M8+1w/v29]
 x-ms-publictraffictype: Email
 x-ms-traffictypediagnostic: MN2PR17MB3375:EE_|MW4PR17MB4604:EE_
-x-ms-office365-filtering-correlation-id: a966d6dd-f3a5-4073-35d0-08dafef58756
+x-ms-office365-filtering-correlation-id: ae0d2c06-6cf6-4b93-b1a0-08dafef59d4b
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MMqmU3hQkvOnYhl4ZLwYqt4T3AxbYdTDEL2lJHGGDzA/CuRBNtyDnom2IUm6ZWkipr5rHALNngY18g+bvLY8WL6FaOt6TTVLtnYph37iUEH9n/1FWY8KGFNsnTTp0xI8GlVC9vBx+cPJ4W96VJNOcGujHedTQF+kvXZH0CA3SoNGdHmt4UvIOL5LIKv9a1KlqkQyh9Bkb5ClUaxbaXCAXnXI0zppCZc1TmdwPPGTWtub/ViW8FE9IF8jmnVnesVCSCIpyY/uV8E6x79NpCaezWWBYgR/xte716p/JlHq9T+4z6z/Xdtr3FpWZCQAvtza911P4fDJpd6jvRoR+e8r8DYpxMb0rbzkNA8AhkvRAgWAJz3BrwDu1bTjNiHynhFgdv+fqHpX2tuw2WZ+9JPgS2d9FSYf/Q8Cm9QIt/f8yrJNxWnEGmZ8ZBbB27StHhSKR72athyWA9iD4lQwAr2YTl7yfuEkvSGQo1ZbhjBVRfu6faWvPuoMGmUpM5md0siY27M5sOEGlhA9CqbEvKRvDsu+QXBlI65CC3Fglsm8O8JKPVxJYIzejv/rQGzLCAUUXcOYmIP0ghejoxN5T529GsFjjteyCoaTSvUtmq4vviHCADPCsnq87wtSMl0MT533MKC6JZeG3vXFRB25sGTrZJuRVK1irfiSHSq9W4oHxHk=
+x-microsoft-antispam-message-info: h7IibWKCTFR0fIdlOXoxnPr9cQIpltMqk16V9MQnX51kHYL/DkxaSiD1JI+xKWu4/dSQG+7wUnTOsWazRAthjukd5sHy4n+VUer8Id4rVaGyT3mTapIyaC+o6/qx5rLA/qtXgCFM2/jSUNbT5nSLQbjoSWVoCzSHEzaRyay+JsVRdzAtSvnVnoaUXTRHPgnupk0prgQExdsTZGpsqaq/bdjVsAbgrfdedw8p+eVs1KB6aqsNKPVQ/brj/G40R/35bY9/5pKFI7BO40Be+8boyRTTlNnyitwnBgTiYgylnSfTTvawLdy6SjDRaDAKtRMoRrSkm3YRV7HakjsYmvEqbr/SN2eQJayRaRjVK0sGrbAla8KBylQgOPYUVIBkTJJHRrBYJzosBdccB+AoOqdL/iDffd70BgmadURfCkzcxvVg8SyJw2jfFZrHFZ+g9Hh5A1G1H7u0GlutW7TvYLZuiI/o6T7NsQ2pbcM7bxRqGbiwgcv8U31+J84XRKqnL7ECzeDX20Dd7x0vVfyzM2vL8ekMIGHkhYieRu4ekCMZCrKSF4uTNYE9mxISFrLznAZi9hlFrfrsaH7Gzu5Qs+kW7GCF9gPsT8UMYHOFJfq0t2EzOVF4sepqAll8o/z+1aMqL1nxICzqqRXHkj7p1gP+vdwzWZl2LDpJraFPSHBhyJg=
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?Windows-1252?Q?ZtGwCQstRS/+Cgi6T3DR9LZk8Thnf8dIoFHRm3ScHn9PfuL34T0zVAqA?=
- =?Windows-1252?Q?QMsaVgO8zf31VnL70Mhl1COiOVRwHbSD/w1jvm0IHYXQPkv2AJJnZlxS?=
- =?Windows-1252?Q?vmK4jlnHxIAxAkCiEouQVuvSIHQbzPVErsa0YtfegBGuGUZR6+AHnimG?=
- =?Windows-1252?Q?u741zDcuYZwqb0hstquZRWANF+F7JSpD6NV6N3Fmdhhd7zgBHNURFMg6?=
- =?Windows-1252?Q?4B2LCcsIPn9i0FOc1ucBM7pNeOvuDrQMOOmpbPUSRjg1SDMNLEwBXW0g?=
- =?Windows-1252?Q?MT7GUYzuEJpN4gp0tf3ihZwA8c41/WEVpMVvxkATek1UgMjCnsNT9cmY?=
- =?Windows-1252?Q?ETf9PK7urNfgtj0i1hiNlD3zaZGbRlXRznuut14k6d01zpPz7sz/+NJA?=
- =?Windows-1252?Q?pMFk54+QPgi7ikk+FvzVDf3BEU0+Kz3s6mcMpKjtfqG+2S7bFQqbb1tE?=
- =?Windows-1252?Q?sy1uTp0wvR94HUyzn6LZ4Xc7vzPYeUZVunG7RkXMj5p14X93FBfjQA1s?=
- =?Windows-1252?Q?2F0i2htxFar30fiDO52OgeMwJoTZWPypW9E3wPDEQFvPSNHW7hiUrbFA?=
- =?Windows-1252?Q?qoS6LUDch5u3Z6HAWoFsQFnHVVxfOSIOF50poZJh5Fiman57lSbWZYOC?=
- =?Windows-1252?Q?g/XULbsvrFXB22JDPslQhteFx9sWR1EFRslZyIMq7gP/lh50DAUXMfwv?=
- =?Windows-1252?Q?vU/dWfW3X01700g6kwIYxsnFP4nbBHROsVpmeKvJKfmjUk/mBU1W1+Fy?=
- =?Windows-1252?Q?wfaTDNllDHVN29rIg5PPAeQ+ZOyqw4NNjskFLeun65z+VZn0ozKnp+RT?=
- =?Windows-1252?Q?9pXDBKNTpc8qvnDhQbZeQXM9AlAYYcT19fgRYvPJrHvId94Aq0N3zzo7?=
- =?Windows-1252?Q?GQXSelsLFuXzuaLh1hLEEqjIVPqkn612T2FBSQFl7aHuofUchGOeNJH8?=
- =?Windows-1252?Q?lhyJD0MGiVNUHU/kcNZE/ueoJf/OR7Tr1/kpm2/GmE95QqHYJ4jHKy8o?=
- =?Windows-1252?Q?UTLyuocDT4UaTk23vQqlZLD8k7l8Zj0J3bONNzmZ+SstcCtd9QU5ArC/?=
- =?Windows-1252?Q?XhNHo9BXwhbC8NeoTdJ+Lom+FTmG4hBkIC178YdSSy9GVlZspljuxYj2?=
- =?Windows-1252?Q?a7wLEueQlL21+SSQo1X8ksfoV+ftOFvHo4RkLGeaVBY27kz8A3Pxv54i?=
- =?Windows-1252?Q?+ua2V2Uf8/cdS0BHw1WfD3icZVSEaOgDm4LECCj7o9QY2cN2gxDZUMBm?=
- =?Windows-1252?Q?QqYqSNPEzvXGx10hjzxSvK0ryLGsuMuu+MYdScgiQlQJXRumVdbxYJ4d?=
- =?Windows-1252?Q?zTZeVdNVz7PpcPgOW4gRlYIS67DVFCwIu5CHf1cjHdTEmePO?=
+x-ms-exchange-antispam-messagedata-0: =?Windows-1252?Q?rSUozahbdSHEvKJ3tvnBpE5esMqOgHnBm2+VH7LITFx9EsN/eYeDDAIR?=
+ =?Windows-1252?Q?VRIpcqiS76+sJSXufC+S98SeJ7Esrl0dX4eRtDfFgV2/qeek1MbmtnqL?=
+ =?Windows-1252?Q?cZjIq6hPgc7YnOm6xG93w8VK7x2KwTquT/FmJ3/xg7+KJ5Djlo/6ORtI?=
+ =?Windows-1252?Q?PhNJNbGwlGJjOFz2PvrYcIiAOdoE9cMHvAufoTOt7Q4QzjVSQnC1ygZz?=
+ =?Windows-1252?Q?Tld09wuvkgZLD+IqKfzv/e0/Umy60aRnlu/CPh+Zo5KqGbBVb1O7EnnV?=
+ =?Windows-1252?Q?7Cchs7TplLN0sYmauD/IqtoDJ4qDD6OPYQ3RpXsy1xBVz3LKi+m8FFL4?=
+ =?Windows-1252?Q?MMQydto0ZycQZ9QQNgSp17QIeyHIm3enYugmYFS0CdbGwU1VZZAlYCiW?=
+ =?Windows-1252?Q?9qMSIs5hbUh8m0/bTKKQ3OhxCTfVDKtmDqqOyCxDA5zGsgT07XZ6F1qf?=
+ =?Windows-1252?Q?xhfkCwjMaG7wNqSY0hoWqv729YteEwjDlfA0MelCBOIwK8XXelTZRWwF?=
+ =?Windows-1252?Q?B5AvvxZ4qjC6oTp5tPV4s3SRQLojpAC9vt6z3r1ATAdStQiPkTg/+TDs?=
+ =?Windows-1252?Q?36gctmJwGF+A5gA7OghTO7Vymneg17mb8+AekrFRNV5YsHfj6S3uGr/k?=
+ =?Windows-1252?Q?baFoyjGH30QTRvYVEGpINpANPidE6W0PacvFnKJyM77ZM/tb8Z9w25Mf?=
+ =?Windows-1252?Q?hMwJsDcq8ti9Gd5lBN4oIig6AgTqf9DWtORKZJWeS9dMaQHYw//1gCRr?=
+ =?Windows-1252?Q?5LOGSDSmZmzUlmfOzLyxDBlSvSgBMxmFXFlAgF7gZQWrk6y458kkuGvI?=
+ =?Windows-1252?Q?UwZ0AsI+s1BuXcdEjOJogTSMIEISWRRMi59W21u+8jl9kmZ1N4/dLBCF?=
+ =?Windows-1252?Q?RSs45miUxg6GB6IeCUWDNVmIUtPA03BhtoQY1AW0GvIiLAoLeLVsoG9o?=
+ =?Windows-1252?Q?UYEC6oYBNbu6H7qpMJbbfC2WBYHUvPVfRMG6xd6pqZr9pCKYsFWBoEPx?=
+ =?Windows-1252?Q?HFJbBzbtFUB//4xERbOBQop8DMOeSwyrs9vyzxqS/7gjSOTc34VkkNbf?=
+ =?Windows-1252?Q?7LsUgmhKgteIW3Z/akml+IRTQ3MDjEu6YXYuAy2c+uDAALBxnfBE+DdC?=
+ =?Windows-1252?Q?aHdZoUEqmJHmNI0nvNhgF777b5un+dNtfZqd0HopIvg52fU23KTd5U+l?=
+ =?Windows-1252?Q?IrTA734WtBzvxUUkrm3plO0oXl14JyCocZZpw0MwH0ogO9j7okUgrRu3?=
+ =?Windows-1252?Q?nfnLatBBt37RMqORyibiH19u35g4QuPIOJLupEHEbqI33FwusuqWBTGr?=
+ =?Windows-1252?Q?iLaJbA2q4wr9OegaCIQu33Z/xUtv+8QUhgeJyHbtUNE9o/q7?=
 MIME-Version: 1.0
 X-OriginatorOrg: outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: MN2PR17MB3375.namprd17.prod.outlook.com
 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: a966d6dd-f3a5-4073-35d0-08dafef58756
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2023 16:59:31.6894 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ae0d2c06-6cf6-4b93-b1a0-08dafef59d4b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2023 17:00:08.5616 (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
 X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
@@ -135,14 +134,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: Ulf Hansson <ulf.hansson@linaro.org>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
- Vignesh Raghavendra <vigneshr@ti.com>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Vignesh Raghavendra <vigneshr@ti.com>, "Rafael J.
+ Wysocki" <rafael@kernel.org>,
  "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
  "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Lee Jones <lee@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  David Airlie <airlied@gmail.com>, Marc Zyngier <maz@kernel.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Lee Jones <lee@kernel.org>,
- Guenter Roeck <linux@roeck-us.net>,
+ "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+ Jassi Brar <jassisinghbrar@gmail.com>, Guenter Roeck <linux@roeck-us.net>,
  "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
  Jean Delvare <jdelvare@suse.com>,
  "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
@@ -156,70 +157,43 @@ Cc: Ulf Hansson <ulf.hansson@linaro.org>,
  "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
  Sebastian Reichel <sre@kernel.org>,
  "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- Daniel Vetter <daniel@ffwll.ch>, Richard Weinberger <richard@nod.at>,
- "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>
+ Daniel Vetter <daniel@ffwll.ch>, Richard Weinberger <richard@nod.at>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
-
-Lonely nasty ass dumbass
-________________________________
-From: Vanessa Page <Vebpe@outlook.com>
-Sent: Wednesday, January 25, 2023 11:59 AM
-To: Jassi Brar <jassisinghbrar@gmail.com>; Rob Herring <robh@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>; David Airlie <=
-airlied@gmail.com>; Daniel Vetter <daniel@ffwll.ch>; Bartosz Golaszewski <b=
-rgl@bgdev.pl>; Jean Delvare <jdelvare@suse.com>; Guenter Roeck <linux@roeck=
--us.net>; Thomas Gleixner <tglx@linutronix.de>; Marc Zyngier <maz@kernel.or=
-g>; Mauro Carvalho Chehab <mchehab@kernel.org>; Lee Jones <lee@kernel.org>;=
- Ulf Hansson <ulf.hansson@linaro.org>; Richard Weinberger <richard@nod.at>;=
- Vignesh Raghavendra <vigneshr@ti.com>; Sebastian Reichel <sre@kernel.org>;=
- Mark Brown <broonie@kernel.org>; Rafael J. Wysocki <rafael@kernel.org>; Da=
-niel Lezcano <daniel.lezcano@linaro.org>; Greg Kroah-Hartman <gregkh@linuxf=
-oundation.org>; linux-arm-kernel@lists.infradead.org <linux-arm-kernel@list=
-s.infradead.org>; dri-devel@lists.freedesktop.org <dri-devel@lists.freedesk=
-top.org>; linux-gpio@vger.kernel.org <linux-gpio@vger.kernel.org>; linux-hw=
-mon@vger.kernel.org <linux-hwmon@vger.kernel.org>; linux-media@vger.kernel.=
-org <linux-media@vger.kernel.org>; openbmc@lists.ozlabs.org <openbmc@lists.=
-ozlabs.org>; linux-mmc@vger.kernel.org <linux-mmc@vger.kernel.org>; linux-m=
-td@lists.infradead.org <linux-mtd@lists.infradead.org>; linux-pm@vger.kerne=
-l.org <linux-pm@vger.kernel.org>; alsa-devel@alsa-project.org <alsa-devel@a=
-lsa-project.org>; linux-spi@vger.kernel.org <linux-spi@vger.kernel.org>; li=
-nux-usb@vger.kernel.org <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH] dt-bindings: Add missing (unevaluated|additional)Prope=
-rties on child node schemas
 
 You are a disgusting disgraceful piece of shit as human being you deserve t=
 o eat yeah and literal human feces until you DIE motherfucker. You dumb fuc=
 k. Have nothing better to do. KEEP talking motherfucker KEEP FUCKING talkin=
 g. YOUR DELUSIONAL. It=92s sad
+
 ________________________________
-From: linux-mtd <linux-mtd-bounces@lists.infradead.org> on behalf of Jassi =
-Brar <jassisinghbrar@gmail.com>
-Sent: Wednesday, January 25, 2023 11:26 AM
+From: linux-mtd <linux-mtd-bounces@lists.infradead.org> on behalf of Bartos=
+z Golaszewski <brgl@bgdev.pl>
+Sent: Wednesday, January 25, 2023 8:01 AM
 To: Rob Herring <robh@kernel.org>
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>; David Airlie <=
-airlied@gmail.com>; Daniel Vetter <daniel@ffwll.ch>; Bartosz Golaszewski <b=
-rgl@bgdev.pl>; Jean Delvare <jdelvare@suse.com>; Guenter Roeck <linux@roeck=
--us.net>; Thomas Gleixner <tglx@linutronix.de>; Marc Zyngier <maz@kernel.or=
-g>; Mauro Carvalho Chehab <mchehab@kernel.org>; Lee Jones <lee@kernel.org>;=
- Ulf Hansson <ulf.hansson@linaro.org>; Richard Weinberger <richard@nod.at>;=
- Vignesh Raghavendra <vigneshr@ti.com>; Sebastian Reichel <sre@kernel.org>;=
- Mark Brown <broonie@kernel.org>; Rafael J. Wysocki <rafael@kernel.org>; Da=
-niel Lezcano <daniel.lezcano@linaro.org>; Greg Kroah-Hartman <gregkh@linuxf=
-oundation.org>; linux-arm-kernel@lists.infradead.org <linux-arm-kernel@list=
-s.infradead.org>; dri-devel@lists.freedesktop.org <dri-devel@lists.freedesk=
-top.org>; linux-gpio@vger.kernel.org <linux-gpio@vger.kernel.org>; linux-hw=
-mon@vger.kernel.org <linux-hwmon@vger.kernel.org>; linux-media@vger.kernel.=
-org <linux-media@vger.kernel.org>; openbmc@lists.ozlabs.org <openbmc@lists.=
-ozlabs.org>; linux-mmc@vger.kernel.org <linux-mmc@vger.kernel.org>; linux-m=
-td@lists.infradead.org <linux-mtd@lists.infradead.org>; linux-pm@vger.kerne=
-l.org <linux-pm@vger.kernel.org>; alsa-devel@alsa-project.org <alsa-devel@a=
-lsa-project.org>; linux-spi@vger.kernel.org <linux-spi@vger.kernel.org>; li=
-nux-usb@vger.kernel.org <linux-usb@vger.kernel.org>
+airlied@gmail.com>; Daniel Vetter <daniel@ffwll.ch>; Jean Delvare <jdelvare=
+@suse.com>; Guenter Roeck <linux@roeck-us.net>; Thomas Gleixner <tglx@linut=
+ronix.de>; Marc Zyngier <maz@kernel.org>; Jassi Brar <jassisinghbrar@gmail.=
+com>; Mauro Carvalho Chehab <mchehab@kernel.org>; Lee Jones <lee@kernel.org=
+>; Ulf Hansson <ulf.hansson@linaro.org>; Richard Weinberger <richard@nod.at=
+>; Vignesh Raghavendra <vigneshr@ti.com>; Sebastian Reichel <sre@kernel.org=
+>; Mark Brown <broonie@kernel.org>; Rafael J. Wysocki <rafael@kernel.org>; =
+Daniel Lezcano <daniel.lezcano@linaro.org>; Greg Kroah-Hartman <gregkh@linu=
+xfoundation.org>; linux-arm-kernel@lists.infradead.org <linux-arm-kernel@li=
+sts.infradead.org>; dri-devel@lists.freedesktop.org <dri-devel@lists.freede=
+sktop.org>; linux-gpio@vger.kernel.org <linux-gpio@vger.kernel.org>; linux-=
+hwmon@vger.kernel.org <linux-hwmon@vger.kernel.org>; linux-media@vger.kerne=
+l.org <linux-media@vger.kernel.org>; openbmc@lists.ozlabs.org <openbmc@list=
+s.ozlabs.org>; linux-mmc@vger.kernel.org <linux-mmc@vger.kernel.org>; linux=
+-mtd@lists.infradead.org <linux-mtd@lists.infradead.org>; linux-pm@vger.ker=
+nel.org <linux-pm@vger.kernel.org>; alsa-devel@alsa-project.org <alsa-devel=
+@alsa-project.org>; linux-spi@vger.kernel.org <linux-spi@vger.kernel.org>; =
+linux-usb@vger.kernel.org <linux-usb@vger.kernel.org>
 Subject: Re: [PATCH] dt-bindings: Add missing (unevaluated|additional)Prope=
 rties on child node schemas
 
-On Tue, Jan 24, 2023 at 5:00 PM Rob Herring <robh@kernel.org> wrote:
+On Wed, Jan 25, 2023 at 12:00 AM Rob Herring <robh@kernel.org> wrote:
 >
 > Just as unevaluatedProperties or additionalProperties are required at
 > the top level of schemas, they should (and will) also be required for
@@ -231,8 +205,30 @@ On Tue, Jan 24, 2023 at 5:00 PM Rob Herring <robh@kernel.org> wrote:
 >
 > Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
-For the mailbox change,
-   Acked-by: Jassi Brar <jassisinghbrar@gmail.com>
+
+[...]
+
+>  .../devicetree/bindings/gpio/x-powers,axp209-gpio.yaml |  1 +
+
+[...]
+
+> diff --git a/Documentation/devicetree/bindings/gpio/x-powers,axp209-gpio.=
+yaml b/Documentation/devicetree/bindings/gpio/x-powers,axp209-gpio.yaml
+> index 7f26f6b1eea1..31906c253940 100644
+> --- a/Documentation/devicetree/bindings/gpio/x-powers,axp209-gpio.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/x-powers,axp209-gpio.yaml
+> @@ -35,6 +35,7 @@ properties:
+>  patternProperties:
+>    "^.*-pins?$":
+>      $ref: /schemas/pinctrl/pinmux-node.yaml#
+> +    additionalProperties: false
+>
+>      properties:
+>        pins:
+
+Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+
+[...]
 
 ______________________________________________________
 Linux MTD discussion mailing list
