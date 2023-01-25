@@ -4,71 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74171C27C76
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 20:16:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79C9FC54E94
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 23:58:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 90CD7203;
-	Wed, 25 Jan 2023 21:16:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90CD7203
+	by alsa0.perex.cz (Postfix) with ESMTPS id 599C31FE;
+	Thu, 26 Jan 2023 00:58:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 599C31FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674677812;
-	bh=PrRnoTOSItQxShpM/zD41RIlzMsV/FLCN4WtDpeo6pI=;
-	h=Subject:From:To:Date:In-Reply-To:References:List-Id:
+	s=default; t=1674691131;
+	bh=+UI2oidHudLC8hLsWw48+PbEwA+zaKTOclsc/bgiP2g=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=t2S9SUtSkdLQgX4XR4RSMzM8ZgByYGJnDbMp8fwL0YE9IpTs2Bbz3O3LQdKcb68/s
-	 WNeQsv1yoaVqI7ER7RCSCwFm07anS9J7fkq/OErANG4s67At056ZnQvlgptg8yH5ci
-	 eIsis+3h+uI2zxA35WIB7GyJM+IOTM8J64yoD86E=
+	b=f5egTL8qsl9IfJ4ASDfFwtzbKUNyk4JA66JXKH6pQoMHOlyEInuDbzqtr5ehPtFyb
+	 v6lbOWyQ+dBnWJgAuH/Gk37CGBxKhdJfFt2FICqMukp0rxBMPGpbiuQL8MLYfCB32o
+	 5qbaxzn/Yrz+HMuzNFs8rpBWkbiN2CmreQlh1m6s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13CDCF802E8;
-	Wed, 25 Jan 2023 21:16:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED2D8F800FB;
+	Thu, 26 Jan 2023 00:58:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5DC4DF80424; Wed, 25 Jan 2023 21:16:00 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id AD1CAF80424; Thu, 26 Jan 2023 00:57:59 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9D411F800AE
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 00:57:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D411F800AE
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=f0M+ewff
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9746F800AE
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 21:15:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9746F800AE
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=PdtDTowW
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674677757; x=1706213757;
- h=message-id:subject:from:to:cc:date:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=PrRnoTOSItQxShpM/zD41RIlzMsV/FLCN4WtDpeo6pI=;
- b=PdtDTowWOSkc3N0BG6Jw9RBNpEna8OK9PeYYr09KSdbjviSs3buaAR5e
- GCWFSXPlNqYDrqjQRklWukkRRK4EMFnn13D7IlxjgGOuVx34c3VmbGqlK
- 1OkNr+UtKadFtHDvgBjv6bkAMwpkJppR6QILOzGed01YDpKDiE6ubaXhR
- 0IUOoO+BWCDEaelV5ABwMbW8QipUhSrTdOohZ7YZArajRiINfu5M2/v9Z
- n9IoT97PHzRbl4pR44A9aZvAcApVkkXN8U/i/DlhFHYOLvbvdeUtZQAdc
- LnHN2W7BzpL3KNm2lfu3Hmz8hx+AglfFWD1hADPdMLqmHrHaBTGwnfVgC g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="326696210"
-X-IronPort-AV: E=Sophos;i="5.97,246,1669104000"; d="scan'208";a="326696210"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2023 12:15:33 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="770874591"
-X-IronPort-AV: E=Sophos;i="5.97,246,1669104000"; d="scan'208";a="770874591"
-Received: from kccheng-desk.amr.corp.intel.com ([10.254.42.201])
- by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2023 12:15:33 -0800
-Message-ID: <cc0b1faa49bb86d68426a3f0223ff96829358c47.camel@linux.intel.com>
-Subject: Re: [PATCH 00/11] ASoC: topology: Fixes and cleanups
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: Amadeusz =?UTF-8?Q?S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Date: Wed, 25 Jan 2023 12:15:32 -0800
-In-Reply-To: <20230125194649.3485731-1-amadeuszx.slawinski@linux.intel.com>
-References: <20230125194649.3485731-1-amadeuszx.slawinski@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+ by ams.source.kernel.org (Postfix) with ESMTPS id BF4AAB81C56;
+ Wed, 25 Jan 2023 23:57:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37102C433D2;
+ Wed, 25 Jan 2023 23:57:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1674691070;
+ bh=+UI2oidHudLC8hLsWw48+PbEwA+zaKTOclsc/bgiP2g=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=f0M+ewff1L0mwM5sB1Lk951LFeK3DK3UD+ahyG/jj+csL3jNj0+9ALs3F0eFNRFmx
+ J++1zMiCNTeDnI86joApw4p0KW5ZWc5Fyb5Y99Gt0N33aahxD+Ni5n+WX9aI6HIqiJ
+ 9lcXUfsvBxL629oru+7PSQeNgV91h/T+w0/65pgLvmCrDg1nPcnW/hh2jwHQAfkQgV
+ PP0c/wvYZa8QNXUBF7sYwMzrjAApyYOPEXqKOCSWu4ZY3I+TZkc3OzCgb5NFs8c6Nx
+ neqTv052UaRh3mqA5NGC0j2OmW+1NoJI0S6GKxs/3YBpP+JVzqaK1D7duzjXASBLaL
+ nVkdejQs89jEg==
+Date: Thu, 26 Jan 2023 07:57:38 +0800
+From: Shawn Guo <shawnguo@kernel.org>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH 2/2] ARM: dts: vfxxx: Swap SAI DMA order
+Message-ID: <20230125235733.GG20713@T480>
+References: <20230105144145.165010-1-marex@denx.de>
+ <20230105144145.165010-2-marex@denx.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230105144145.165010-2-marex@denx.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -81,31 +76,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>
+Cc: Peng Fan <peng.fan@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Alexander Stein <alexander.stein@ew.tq-group.com>, alsa-devel@alsa-project.org,
+ Stefan Agner <stefan@agner.ch>, Liam Girdwood <lgirdwood@gmail.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Fabio Estevam <festevam@gmail.com>,
+ Markus Niebel <Markus.Niebel@ew.tq-group.com>,
+ Paul Elder <paul.elder@ideasonboard.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Tim Harvey <tharvey@gateworks.com>, devicetree@vger.kernel.org,
+ Richard Zhu <hongxing.zhu@nxp.com>, Richard Cochran <richardcochran@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, Adam Ford <aford173@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
+ Joakim Zhang <qiangqing.zhang@nxp.com>, Mark Brown <broonie@kernel.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Lucas Stach <l.stach@pengutronix.de>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 2023-01-25 at 20:46 +0100, Amadeusz Sławiński wrote:
-> Following is series of fixes and cleanups for core topology code. Few
-> patches fixing various problems all around and few fixing function
-> names.
+On Thu, Jan 05, 2023 at 03:41:45PM +0100, Marek Vasut wrote:
+> Swap the SAI dmas and dma-names to match the order documented in
+> Documentation/devicetree/bindings/sound/fsl,sai.yaml
+> No functional change.
 > 
-> Amadeusz Sławiński (11):
->   ASoC: topology: Properly access value coming from topology file
->   ASoC: topology: Remove unused SOC_TPLG_PASS_PINS constant
->   ASoC: topology: Fix typo in functions name
->   ASoC: topology: Fix function name
->   ASoC: topology: Rename remove_ handlers
->   ASoC: topology: Remove unnecessary forward declarations
->   ASoC: topology: Pass correct pointer instead of casting
->   ASoC: topology: Return an error on complete() failure
->   ASoC: Topology: Remove unnecessary check for EOF
->   ASoC: topology: Use unload() op directly
->   ASoC: topology: Unify kcontrol removal code
+> Signed-off-by: Marek Vasut <marex@denx.de>
 
- LGTM, thanks, Amadeusz!
-
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-
+Applied, thanks!
