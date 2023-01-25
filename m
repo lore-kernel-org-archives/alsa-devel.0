@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A9E7C54E94
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 07:56:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38616C05027
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 07:56:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A37D3DEE;
-	Thu, 26 Jan 2023 08:55:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A37D3DEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1EA69E0E;
+	Thu, 26 Jan 2023 08:55:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EA69E0E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674719789;
-	bh=K6x2rDvkk5WMPxtm/ZSlbEi9/X7J7tKkg2Ve8vE4OnM=;
+	s=default; t=1674719807;
+	bh=AMhWm3gEVtzGLVwbcmzmYh/KinNd9CMEiZtydbTmPfk=;
 	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=L3wCauuePoZyGSKyBs5rkbyHRr+TepXIR6EDDnZdifUlDlgUu0trQd/6w6lxWplCX
-	 kI66duAM2tWKFjZe1TwhTVGmQFSALe5uzkrrpc/dPjXHIxaWkUZbCdpmXNwYZQkkzB
-	 g0K98OtxO+V360YVf+L2bO95G4guG6sF3V72ukh4=
+	b=U6vOjcYUQTV272muk9QVG3a3Wk/mZ6jT1Ju1YBmwFxcAV4rhgmDvCZOFsAwUE3k8B
+	 EWmW3ad+2OmSAIm7N6CN0I5cVHAPHIWCNGKvny0hO8rNuvcUTcpWldcGpWkZ4//Yvc
+	 8QOaDQSsvbE3LkAPaM3JDwlU0PSrn3/Bqy3YnQAM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A95F2F80543;
-	Thu, 26 Jan 2023 08:55:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E07E2F80551;
+	Thu, 26 Jan 2023 08:55:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E11D4F80424; Wed, 25 Jan 2023 10:10:15 +0100 (CET)
-Received: from desiato.infradead.org (desiato.infradead.org
- [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+ id B541CF800AE; Wed, 25 Jan 2023 10:31:10 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 19118F800FB
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 10:10:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19118F800FB
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- secure) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256
- header.s=desiato.20200630 header.b=qsa+lu0U
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
- References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=hk+0OseVD3OO+ksIzhtEU5LrZV8KXEqXC3zpbOGn/ls=; b=qsa+lu0U9mwFGWjutATG/A9iym
- F+d7IIQowgNB15FNtA53/QA/RcEQKz2NQMKXkkpiUFb08vzCFWx/JFLhZ0br08C5Ckzefhutl3QCt
- ceW/0pGOVnNMXlzdiPZkUHL2edRHXWt902QL7eOXJMDQBzbzHfjVb3six/mnj0Lwks7UYNitCDD/a
- WjH6Y7VU5VmGXuLCLjlq1cs0p/QmTHDQxmy7G6T6M9gy021CLYFDOBZwIb0ILx+d/MfDO2qH3S0mE
- cy+gKIGp5mQPEgu/vJHsyE3Wju/jlQ1l3hOGxA/ErAiDF4zG2A5eFJiQUeMaQql9LtlJhR0gyt8F5
- 77Iz0wbQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84]
- helo=noisy.programming.kicks-ass.net)
- by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
- id 1pKbmL-0026m7-1c; Wed, 25 Jan 2023 09:09:21 +0000
-Received: from hirez.programming.kicks-ass.net
- (hirez.programming.kicks-ass.net [192.168.1.225])
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8DAEDF800AE
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 10:30:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DAEDF800AE
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ unprotected) header.d=suse.com header.i=@suse.com header.a=rsa-sha256
+ header.s=susede1 header.b=Pij8ssoJ
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (Client did not present a certificate)
- by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 83601300137;
- Wed, 25 Jan 2023 10:09:37 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
- id 673382C247607; Wed, 25 Jan 2023 10:09:37 +0100 (CET)
-Date: Wed, 25 Jan 2023 10:09:37 +0100
-From: Peter Zijlstra <peterz@infradead.org>
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B91A621C63;
+ Wed, 25 Jan 2023 09:30:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+ t=1674639054; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=jognpwZWDP/caNk47/2I5pB+VrjaxgWmcyaDbH1onsg=;
+ b=Pij8ssoJlw6k6tQr48jFXJyevDWch308vx0CLomRDmV84uEdMgTC6NhqR8VCkgI74II7DW
+ anm6YuwD0GfDOi17b+9Zs5S20/ilyumOWkOAGicsthADYQDP18s2AfYp6RzP5d5hjTOUwm
+ W4uNWFQcSkUDrOF5p/6xahiK2Zzyzto=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 684E91358F;
+ Wed, 25 Jan 2023 09:30:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id yJRSGc720GMeHAAAMHmgww
+ (envelope-from <mhocko@suse.com>); Wed, 25 Jan 2023 09:30:54 +0000
+Date: Wed, 25 Jan 2023 10:30:53 +0100
+From: Michal Hocko <mhocko@suse.com>
 To: Suren Baghdasaryan <surenb@google.com>
-Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
-Message-ID: <Y9Dx0cPXF2yoLwww@hirez.programming.kicks-ass.net>
+Subject: Re: [PATCH v2 3/6] mm: replace vma->vm_flags direct modifications
+ with modifier calls
+Message-ID: <Y9D2zXpy+9iyZNun@dhcp22.suse.cz>
 References: <20230125083851.27759-1-surenb@google.com>
- <20230125083851.27759-2-surenb@google.com>
+ <20230125083851.27759-4-surenb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230125083851.27759-2-surenb@google.com>
+In-Reply-To: <20230125083851.27759-4-surenb@google.com>
 X-Mailman-Approved-At: Thu, 26 Jan 2023 08:55:01 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -117,13 +117,13 @@ Cc: michel@lespinasse.org, nvdimm@lists.linux.dev, heiko@sntech.de,
  linux-tegra@vger.kernel.org, kraxel@redhat.com, will@kernel.org,
  dmaengine@vger.kernel.org, bhe@redhat.com, miklos@szeredi.hu,
  linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev, willy@infradead.org,
- dgilbert@interlog.com, xiang@kernel.org, pabeni@redhat.com, jejb@linux.ibm.com,
- quic_abhinavk@quicinc.com, bp@alien8.de, mchehab@kernel.org,
- linux-ext4@vger.kernel.org, tomba@kernel.org, hughlynch@google.com,
- sre@kernel.org, tfiga@chromium.org, linux-xfs@vger.kernel.org,
- zhangfei.gao@linaro.org, wangzhou1@hisilicon.com, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-erofs@lists.ozlabs.org, davem@davemloft.net,
- mhocko@suse.com, kvm@vger.kernel.org, mst@redhat.com, gurua@google.com,
+ gurua@google.com, dgilbert@interlog.com, xiang@kernel.org, pabeni@redhat.com,
+ jejb@linux.ibm.com, quic_abhinavk@quicinc.com, bp@alien8.de,
+ mchehab@kernel.org, linux-ext4@vger.kernel.org, tomba@kernel.org,
+ hughlynch@google.com, sre@kernel.org, tfiga@chromium.org,
+ linux-xfs@vger.kernel.org, zhangfei.gao@linaro.org, wangzhou1@hisilicon.com,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+ davem@davemloft.net, kvm@vger.kernel.org, mst@redhat.com, peterz@infradead.org,
  bigeasy@linutronix.de, alexandre.torgue@foss.st.com, dhowells@redhat.com,
  linux-mm@kvack.org, ray.huang@amd.com, adilger.kernel@dilger.ca,
  kuba@kernel.org, sparclinux@vger.kernel.org, airlied@gmail.com,
@@ -144,23 +144,24 @@ Cc: michel@lespinasse.org, nvdimm@lists.linux.dev, heiko@sntech.de,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
+On Wed 25-01-23 00:38:48, Suren Baghdasaryan wrote:
+> Replace direct modifications to vma->vm_flags with calls to modifier
+> functions to be able to track flag changes and to keep vma locking
+> correctness.
 
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 2d6d790d9bed..6c7c70bf50dd 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -491,7 +491,13 @@ struct vm_area_struct {
->  	 * See vmf_insert_mixed_prot() for discussion.
->  	 */
->  	pgprot_t vm_page_prot;
-> -	unsigned long vm_flags;		/* Flags, see mm.h. */
-> +
-> +	/*
-> +	 * Flags, see mm.h.
-> +	 * WARNING! Do not modify directly.
-> +	 * Use {init|reset|set|clear|mod}_vm_flags() functions instead.
-> +	 */
-> +	unsigned long vm_flags;
+Is this a manual (git grep) based work or have you used Coccinele for
+the patch generation?
 
-We have __private and ACCESS_PRIVATE() to help with enforcing this.
+My potentially incomplete check
+$ git grep ">[[:space:]]*vm_flags[[:space:]]*[&|^]="
+
+shows that nothing should be left after this. There is still quite a lot
+of direct checks of the flags (more than 600). Maybe it would be good to
+make flags accessible only via accessors which would also prevent any
+future direct setting of those flags in uncontrolled way as well.
+
+Anyway
+Acked-by: Michal Hocko <mhocko@suse.com>
+-- 
+Michal Hocko
+SUSE Labs
