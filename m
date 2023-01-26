@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A266EC54E94
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 00:30:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E95CBC27C76
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 00:30:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E5D87F4;
-	Thu, 26 Jan 2023 01:29:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E5D87F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id E06C0827;
+	Thu, 26 Jan 2023 01:30:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E06C0827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674693044;
-	bh=ugZ8xqRzG/MXWFMK1A6CKCJ9dwczVVYsZvs+Zqi8Mhk=;
+	s=default; t=1674693053;
+	bh=gd48QQ1G/fofkw08t5Nm1PtKKDKcVePwRYIRZ/2YscM=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dZDawbjtkQJ86YPY7r91eA6ztOZpMwmAzPryfv0OdwzumzdaTaD8UfoyLWsmfiHCd
-	 GNkO0ilU1RzERx+mj5L5HAyfJQ4TJUkYOuQsyT8oauC0S6g4MgtDO8kUYAEn3knmf9
-	 WrIbOFHEE27H0qdzeqcotypFIqAHnILybnHbbXqU=
+	b=TDEVhRT+JoYtAaiyYRNhxgN3Q4aJv3472RdV8yX6BE7YcIT8ES52GmINfk20H0CaL
+	 O4ToG7JXLmgHSaIsZO15rmDFWA1HzNj8gRng1t4FjODjuiadKMrun3CqfGl9Xk+GnF
+	 RpKjbOUR5IbPQ3QHdKmlAjUwaHEJnhZkVy3su+NY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C655FF8053D;
-	Thu, 26 Jan 2023 01:29:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59427F80558;
+	Thu, 26 Jan 2023 01:29:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31442F804F3; Thu, 26 Jan 2023 01:29:01 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 71F7CF80163; Thu, 26 Jan 2023 01:29:03 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 933D5F800FB
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 01:28:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 933D5F800FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB366F80163
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 01:28:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB366F80163
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=jBrnHhCJ
+ header.s=k20201202 header.b=rriKJ7Q6
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id D5F42B81C6D;
- Thu, 26 Jan 2023 00:28:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81687C433D2;
- Thu, 26 Jan 2023 00:28:53 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 4FF26B81C6F;
+ Thu, 26 Jan 2023 00:28:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1668EC433EF;
+ Thu, 26 Jan 2023 00:28:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674692935;
- bh=ugZ8xqRzG/MXWFMK1A6CKCJ9dwczVVYsZvs+Zqi8Mhk=;
+ s=k20201202; t=1674692938;
+ bh=gd48QQ1G/fofkw08t5Nm1PtKKDKcVePwRYIRZ/2YscM=;
  h=From:To:In-Reply-To:References:Subject:Date:From;
- b=jBrnHhCJ6JpOpO89l4637NxJyAix4JxyQkDTe1qcS37nBu3QjluVV1fx8JjRs7o7e
- LAT9sNWMfbh22NXTnjohoTL8Yno8nS8tS6/QXI6qrwsFtTyKQQCylEfABcSu3inmmq
- zj+1P2zoRSFWHZu/aYhRgXBZ4JcfsZPAEUL9SsM2VSJcr5BZfRhCLg5rRmQd447ZXx
- fNCFc00KePZyWwG/RUlFzm1k2MaqVw0B1LO1BayW/hJ8nUY+OdO3bJTcRi9Afz2zEb
- KkPQHfVmLdCuyTf02sep6tRGKpq1ejQrrkqvq9YauPSs9VOV7hlum1YzLBWolK8DAn
- VVGQH89JWYdhg==
+ b=rriKJ7Q6Cok9gWsDKHoLDJOlzvG7Q8T+zRjYTYlMDBLkFKpkAm4VTSp/smSQijp/B
+ aBkMcMXriYwiT+PfmRL90DzVT3iLkfMHcpmmiKTJxMgvQyoP4q2Hp/S16lNLb3GU+2
+ 8AVRTrNGKFY0URApMz890qGMrVxn1ijgzONEfbYB6lcKg+qN6hyARGGzVmQhxr9aCW
+ E016XyIqyHS+eZ2QMFCZxR8BKUCcnZYyHImLq/jOoLuxN51tD/n38Byxy7MiCfHlg0
+ 5JWPZspfkMZaNip9uW0VPJ5265ikiqQwUI5isom+LwEEMfLFk6I8e2t/jBJKNhaMxM
+ Yfnx72mo+AcNw==
 From: Mark Brown <broonie@kernel.org>
-To: Oder Chiou <oder_chiou@realtek.com>, 
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
- Takashi Iwai <tiwai@suse.com>, 
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
- Banajit Goswami <bgoswami@quicinc.com>, alsa-devel@alsa-project.org, 
- linux-kernel@vger.kernel.org, 
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>, 
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
+ Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230124163953.345949-1-krzysztof.kozlowski@linaro.org>
-References: <20230124163953.345949-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 1/3] ASoC: codecs: constify static sdw_slave_ops struct
-Message-Id: <167469293316.2696228.10033245530806500019.b4-ty@kernel.org>
-Date: Thu, 26 Jan 2023 00:28:53 +0000
+In-Reply-To: <20230120153020.320270-1-krzysztof.kozlowski@linaro.org>
+References: <20230120153020.320270-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: samsung,odroid: correct codec
+ DAI phandles
+Message-Id: <167469293574.2696228.16859545876419546902.b4-ty@kernel.org>
+Date: Thu, 26 Jan 2023 00:28:55 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -85,9 +83,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 24 Jan 2023 17:39:51 +0100, Krzysztof Kozlowski wrote:
-> The struct sdw_slave_ops is not modified and sdw_driver takes pointer to
-> const, so make it a const for code safety.
+On Fri, 20 Jan 2023 16:30:19 +0100, Krzysztof Kozlowski wrote:
+> The order of codec DAI phandles is reversed - first comes HDMI (always
+> present) and then codec (physically not present on Odroid XU4).
 > 
 > 
 
@@ -97,12 +95,10 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: codecs: constify static sdw_slave_ops struct
-      commit: 65b7b869da9bd3bd0b9fa60e6fe557bfbc0a75e8
-[2/3] ASoC: codecs: constify static sdw_port_config struct
-      commit: 57dc05c4e6faaab5d8e7fb631f285120d7ed4b07
-[3/3] ASoC: codecs: wsa88xx: remove unneeded includes
-      commit: 27681129b089d9a5d597a05f6e1821eb6d82919b
+[1/2] ASoC: dt-bindings: samsung,odroid: correct codec DAI phandles
+      commit: cc5be0e5477f53f2d4b3c9211206f34505ec17ba
+[2/2] ASoC: dt-bindings: samsung-i2s: drop unneeded assigned-clock*
+      commit: 73ab5b3aa59036e0e6689b0a20a5080ef7ab7c03
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
