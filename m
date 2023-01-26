@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96E27C05027
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 05:04:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D39FC05027
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 07:49:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49103828;
-	Thu, 26 Jan 2023 06:04:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49103828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4DD1D203;
+	Thu, 26 Jan 2023 08:48:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DD1D203
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674709493;
-	bh=IOO31S3UZEFg+OBPuIodU/9szzd9qdRTd6fV6k1E22M=;
-	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=DQvzESs/G6xXLYfz4vnySHOYr3WA6ZgGv9124cj1ZiMz+zPvyeAs+VCgGWK477YJR
-	 H4qP+NNj5DY3SXmfGQoowni3ZQP6pyQIP/DKvD2rNG+IWkMS2Dc6LiFlFrVet960AX
-	 fJWoduHk5fSA9kA6MMhFqttE/k6joaER9TTuQKhI=
+	s=default; t=1674719380;
+	bh=76XT9aCTD8B8LT/q4agWyU0rMRgv/FmnnUUpPtrX7Go=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=REFwWb2ZoYe7Aw8zAkAeWm1bLMrVwYPzBxJiZgZ/gIhKsWKxyLz8YQ07+rnpANBnL
+	 yAhU0BiSWqOEQ2sASH75+8mkX/FiTJkZs+GkWQn1zUzx1JiEuradc+wUnt2+EwRER1
+	 gUVyhDptsmRyU4QTiin5fAz7ey2iUjAYQAkGAgSY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2628F8025D;
-	Thu, 26 Jan 2023 06:04:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A8A11F80224;
+	Thu, 26 Jan 2023 08:48:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2D9CF8027D; Thu, 26 Jan 2023 06:03:59 +0100 (CET)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com
- [209.85.208.182])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 6EC48F8027D; Thu, 26 Jan 2023 08:48:43 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 23591F8016E
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 06:03:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23591F8016E
-Received: by mail-lj1-f182.google.com with SMTP id y19so742547ljq.7
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 21:03:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=to:subject:message-id:date:from:mime-version:x-gm-message-state
- :from:to:cc:subject:date:message-id:reply-to;
- bh=IOO31S3UZEFg+OBPuIodU/9szzd9qdRTd6fV6k1E22M=;
- b=1PEGbhuDZZgveAgTV3uIHG0rUdyjFhmSTPJH3I471IyHqGi3lwF/e6G8KcuspmDCOO
- /uDVLlEU5mQYeRwFb0QBvyEz8XEC6tCss70mSpEW64EPsffAaV1y9uCqF+eu/XbVeZFc
- atCnt9GXICrmLhQCHi5PDmoqXYrvXfY9jXRNYMqr+Wd5MkQuiukfywYyGXbVsyN0+A1Q
- d/hX+lAORRuJC0dTL9gOxIFxrr8vH8JhWH6kPgRSVHKsH8EZHzEHXjC1yhHY6i1NiRrM
- tJHTG4SKMlRkfwTAWqXciwhNtOVrmuQ43Vi63hHN+0Z2U9aHIuwApy0BNUPy7Yqs+Jwp
- F3lg==
-X-Gm-Message-State: AFqh2krHdMZ23Ckc5rqwV5NyqTTjBQf/fZgvO4O1rI42faqSKBvpE22r
- 3gu+RRbfnyjXTviB9vdUl5LSxaxnxNyctmlpRyFBNissE4o=
-X-Google-Smtp-Source: AMrXdXuF2OMwCwuS6ThLW9lHOePCPFBJcnUhWtmCxJTsXoZyUwH/QRwqgkKxFMw/R4JwCNxTEX/1QhRtfkGlBX9V3qA=
-X-Received: by 2002:a2e:9008:0:b0:28b:7067:94fa with SMTP id
- h8-20020a2e9008000000b0028b706794famr1631412ljg.304.1674709431759; Wed, 25
- Jan 2023 21:03:51 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7B32F800AE
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 08:48:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7B32F800AE
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=sw/vGS+2
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 3486F6175A;
+ Thu, 26 Jan 2023 07:48:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21FAEC433EF;
+ Thu, 26 Jan 2023 07:48:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1674719312;
+ bh=76XT9aCTD8B8LT/q4agWyU0rMRgv/FmnnUUpPtrX7Go=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=sw/vGS+2pAXtLvctCylbRvR+u/imgaZoMtOLeimjFEQNJNjGptMd1vAbA/RlBD7Ki
+ mG0YkGFe3I91Z+mzXfv3Qv0/i2eP19WhP96lYluQ2vPBclUfvgM0UTbmKbwtuiht5+
+ ebwhII+jfGloNGj5Q0x3TfIMFXgDVOqMUbBt7Z8I=
+Date: Thu, 26 Jan 2023 08:48:29 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: Re: [RFC PATCH v2 02/22] xhci: remove xhci_test_trb_in_td_math early
+ development check
+Message-ID: <Y9IwTTb7dfkI7C6b@kroah.com>
+References: <20230126031424.14582-1-quic_wcheng@quicinc.com>
+ <20230126031424.14582-3-quic_wcheng@quicinc.com>
 MIME-Version: 1.0
-From: Marijn Kruisselbrink <mkruisselbrink@kde.org>
-Date: Wed, 25 Jan 2023 21:03:39 -0800
-Message-ID: <CAEVe4dFkR7LbbV7RWd+PzZJmeBbe=Pfr2SEC1aD6TMhPHVtZEw@mail.gmail.com>
-Subject: Best way to add support a USB audio device where only the second usb
- configuration works
-To: alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230126031424.14582-3-quic_wcheng@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -72,45 +73,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-usb@vger.kernel.org, Mathias Nyman <mathias.nyman@linux.intel.com>,
+ bgoswami@quicinc.com, mathias.nyman@intel.com, Thinh.Nguyen@synopsys.com,
+ andersson@kernel.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org,
+ broonie@kernel.org, srinivas.kandagatla@linaro.org, agross@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org,
+ quic_plai@quicinc.com, linux-kernel@vger.kernel.org, quic_jackp@quicinc.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-(disclaimer: I'm fairly new to kernel stuff, alsa and low level usb
-things in general, so my terminology might all not be correct, and I
-might be missing obvious stuff, but:)
+On Wed, Jan 25, 2023 at 07:14:04PM -0800, Wesley Cheng wrote:
+> From: Mathias Nyman <mathias.nyman@linux.intel.com>
+> 
+> Time to remove this test trb in td math check that was added
+> in early stage of xhci driver deveopment.
+> 
+> It verified that the size, alignment and boundaries of the event and
+> command rings the driver itself allocated are correct.
+> 
+> Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+> ---
 
-I've been trying (and succeeding) to get a SoundDevices MixPre II 10
-to work well under linux. What I figured out is that this device
-advertises two usb configurations. The first configuration claims to
-be a UAC1 interface, exposing stereo in and output channels. This
-configuration isn't actually class compliant though, or at least
-neither playback nor recording are working right with this
-configuration. The second configuration on the other hand claims to be
-a UAC2 interface, exposing the full 12 in and 4 output channels the
-device is supposed to support. And in this configuration everything
-I've tried seems to work perfectly.
+Note, if you pass on a patch from someone else, you HAVE to also
+sign-off on it as well.  For that reason alone this series would have to
+be rejected :(
 
-I'm not sure what the best/cleanest way would to actually make
-snd-usb-audio/the linux kernel select this second configuration. In my
-experimenting I made this work by adding a usb_device_driver to
-snd-usb-audio that makes sure to select the second configuration for
-this particular USB device. Is that the right approach? Or would it be
-better for this to be an entirely separate module?
+thanks,
 
-I also wonder if this is something that would make sense to address in
-the generic usb driver's usb_choose_configuration method? Currently it
-seems that for audio devices it always picks the first configuration,
-unless one of the configurations uses the UAC3 protocol (in which case
-it picks the first UAC3 configuration). For this device in question,
-the first (non compliant/non functioning) configuration claims to use
-UAC1 protocol, while the second (and seemingly functioning completely
-fine) configuration uses UAC2. Should the generic logic prefer UAC2
-configurations over UAC1 configurations, like it already prefers UAC3
-configurations over anything else? Or is there a particular reason why
-UAC2 doesn't get that treatment?
-
-Or maybe I'm missing some other way of making sure this second
-configuration is used for this device?
-
-Thanks for any advice/help you can give me,
-Marijn
+greg k-h
