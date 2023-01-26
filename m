@@ -4,76 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14C37C61D9D
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 03:16:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31F43C27C76
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 03:16:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5B70A4B;
-	Thu, 26 Jan 2023 04:15:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5B70A4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45FBF82A;
+	Thu, 26 Jan 2023 04:16:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45FBF82A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674702999;
-	bh=1ULdXrdy+hlFnnRB9F6e2iOvzgn63RoutRMI//6W2FE=;
+	s=default; t=1674703012;
+	bh=DTNbY1ExuCiI5UkuDzSg73TZC7vMevRGlGtC76NdKbc=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=mTjF2dYAB7AC+jgGmcNXEqCLFQSllmVCXXbv6zQIjrKoV6FC7yYF1X2vrxezZA6dK
-	 z+aR59sngHz/Y0TTkx6+vEeFNAPa6m7oa6bZwA2cnZVujtXqi46nfYpNvlQ3+dvrZH
-	 Wj5QN41fcbje74e47acWtu4B26RCVPiW3w3Meu7s=
+	b=PUvd5pGq4N1KXpX30L0tMQdOp0hu+jguj68yggZzyuGCl16ZTUlU602qhhCtH7jtd
+	 fK3n0AdHUp+k8g/ZFOLn2Y9ZzcACd5kX3crK8NrXdxn/coqwGSWZaAsBta0cUsx00P
+	 3t7A6P5V6dF4QibkSQLnwQuURdFXMVgclat6AiEw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52F2FF80571;
-	Thu, 26 Jan 2023 04:15:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EE01CF80567;
+	Thu, 26 Jan 2023 04:15:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88AC9F80567; Thu, 26 Jan 2023 04:14:59 +0100 (CET)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9BC2EF800AE; Thu, 26 Jan 2023 04:14:59 +0100 (CET)
+Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
+ [199.106.114.38])
+ (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B2A1F802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0CF4F800AE
  for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 04:14:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B2A1F802DF
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0CF4F800AE
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=cWR2YZVa
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
- by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 30Q2rXli011227; Thu, 26 Jan 2023 03:14:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=WFZq4UMSCH856PMLB3UVkAwA4Wl+MSgSWggJjWLXJ6A=;
- b=cWR2YZVaU3JWSUcega+o7RXn2iak4OHL+r2PG1aBCdNhByOW4hHu8N82AFsLp8MaPi0Q
- 0Ysg87YlD+aDPiGxSbXsjYSL3KFHuF+GR52odkKF5W5togVwE4SUfx75tZtXDz2CDlPF
- dKkPugWxag8QbDjReUEncaI+YpXVvoEMlEbAaGp20p5ZjVjw9Sh9oIDBdzO+8Iyok9sL
- 1ayuIHaDw+JSy4P7vgaPbipcZZGeM0MSQH5PZPCywDc0LdPCaJsdie6uo/mkqnv9XNqY
- xj3h84l/wL+rvPtWfvYcl+9rw2K18GtDscDwlNsKoSnd7Sxb+tNGY3A0/1GqVTDROWuR 0w== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com
- [199.106.103.254])
- by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3nb6jc9brw-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 26 Jan 2023 03:14:42 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com
- [10.45.79.139])
- by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 30Q3EfMI031142
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 26 Jan 2023 03:14:41 GMT
+ header.s=qcdkim header.b=uYTQ6yww
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+ t=1674702886; x=1706238886;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version;
+ bh=YnjTkVHuxQtGQzjc/gDmzlIOB8H4c7tQDGmebubRFf4=;
+ b=uYTQ6ywwAOCC/Wqz4Ym+QL9OjSufIOeLKIoaO9sqBWVQ3lxh/UsbGnOL
+ rHky8vyrofthHUO2S9E5vlnR/y+bkC6CjOneh1URzisEcCYwtUugAn1Km
+ p/YiTxxIIz/A+QVFoikJsMjTU09tNHUMCwJpvZAv54HgpIIV+MvJLQz2t U=;
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+ by alexa-out-sd-01.qualcomm.com with ESMTP; 25 Jan 2023 19:14:39 -0800
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.45.79.139])
+ by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Jan 2023 19:14:39 -0800
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.36; Wed, 25 Jan 2023 19:14:41 -0800
+ 15.2.986.36; Wed, 25 Jan 2023 19:14:38 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
  <perex@perex.cz>, <lgirdwood@gmail.com>, <andersson@kernel.org>,
  <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
- <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
- <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
- <agross@kernel.org>
-Subject: [RFC PATCH v2 06/22] usb: host: xhci-mem: Cleanup pending secondary
- event ring events
-Date: Wed, 25 Jan 2023 19:14:08 -0800
-Message-ID: <20230126031424.14582-7-quic_wcheng@quicinc.com>
+ <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>, <bgoswami@quicinc.com>,
+ <tiwai@suse.com>, <robh+dt@kernel.org>, <agross@kernel.org>
+Subject: [RFC PATCH v2 02/22] xhci: remove xhci_test_trb_in_td_math early
+ development check
+Date: Wed, 25 Jan 2023 19:14:04 -0800
+Message-ID: <20230126031424.14582-3-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230126031424.14582-1-quic_wcheng@quicinc.com>
 References: <20230126031424.14582-1-quic_wcheng@quicinc.com>
@@ -82,20 +73,6 @@ Content-Type: text/plain
 X-Originating-IP: [10.49.16.6]
 X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
  nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
- signatures=585085
-X-Proofpoint-ORIG-GUID: kDhATwC0d0NyYk1o5n1L56LWOe4NiDHT
-X-Proofpoint-GUID: kDhATwC0d0NyYk1o5n1L56LWOe4NiDHT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-01-25_14,2023-01-25_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0
- phishscore=0 impostorscore=0 adultscore=0 priorityscore=1501 bulkscore=0
- suspectscore=0 clxscore=1015 mlxscore=0 spamscore=0 mlxlogscore=616
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2301260028
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -109,122 +86,200 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, Wesley Cheng <quic_wcheng@quicinc.com>,
+ Mathias Nyman <mathias.nyman@linux.intel.com>, linux-arm-msm@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
  quic_jackp@quicinc.com, quic_plai@quicinc.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As part of xHCI bus suspend, the XHCI is halted.  However, if there are
-pending events in the secondary event ring, it is observed that the xHCI
-controller stops responding to further commands upon host or device
-initiated bus resume.  Iterate through all pending events and updating the
-dequeue pointer to the last pending event trb.
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+Time to remove this test trb in td math check that was added
+in early stage of xhci driver deveopment.
+
+It verified that the size, alignment and boundaries of the event and
+command rings the driver itself allocated are correct.
+
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
 ---
- drivers/usb/host/xhci-mem.c | 74 ++++++++++++++++++++++++++++++++++---
- 1 file changed, 69 insertions(+), 5 deletions(-)
+ drivers/usb/host/xhci-mem.c | 160 ------------------------------------
+ 1 file changed, 160 deletions(-)
 
 diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
-index 45ac77a5d8e4..5c5266c18910 100644
+index 679befa97c7a..bf9bb29f924b 100644
 --- a/drivers/usb/host/xhci-mem.c
 +++ b/drivers/usb/host/xhci-mem.c
-@@ -1819,17 +1819,85 @@ int xhci_alloc_erst(struct xhci_hcd *xhci,
- 	return 0;
+@@ -1929,164 +1929,6 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
+ 	xhci->usb3_rhub.bus_state.bus_suspended = 0;
  }
  
-+static void xhci_handle_sec_intr_events(struct xhci_hcd *xhci,
-+	struct xhci_ring *ring,	struct xhci_intr_reg __iomem *ir_set,
-+	struct xhci_erst *erst)
-+{
-+	union xhci_trb *erdp_trb, *current_trb;
-+	struct xhci_segment	*seg;
-+	u64 erdp_reg;
-+	u32 iman_reg;
-+	dma_addr_t deq;
-+	unsigned long segment_offset;
-+
-+	/* disable irq, ack pending interrupt and ack all pending events */
-+	iman_reg = readl_relaxed(&ir_set->irq_pending);
-+	iman_reg &= ~IMAN_IE;
-+	writel_relaxed(iman_reg, &ir_set->irq_pending);
-+	iman_reg = readl_relaxed(&ir_set->irq_pending);
-+	if (iman_reg & IMAN_IP)
-+		writel_relaxed(iman_reg, &ir_set->irq_pending);
-+
-+	/* last acked event trb is in erdp reg  */
-+	erdp_reg = xhci_read_64(xhci, &ir_set->erst_dequeue);
-+	deq = (dma_addr_t)(erdp_reg & ~ERST_PTR_MASK);
-+	if (!deq) {
-+		xhci_dbg(xhci, "event ring handling not required\n");
-+		return;
-+	}
-+
-+	seg = ring->first_seg;
-+	segment_offset = deq - seg->dma;
-+
-+	/* find out virtual address of the last acked event trb */
-+	erdp_trb = current_trb = &seg->trbs[0] +
-+				(segment_offset/sizeof(*current_trb));
-+
-+	/* read cycle state of the last acked trb to find out CCS */
-+	ring->cycle_state = le32_to_cpu(current_trb->event_cmd.flags) & TRB_CYCLE;
-+
-+	while (1) {
-+		/* last trb of the event ring: toggle cycle state */
-+		if (current_trb == &seg->trbs[TRBS_PER_SEGMENT - 1]) {
-+			ring->cycle_state ^= 1;
-+			current_trb = &seg->trbs[0];
-+		} else {
-+			current_trb++;
-+		}
-+
-+		/* cycle state transition */
-+		if ((le32_to_cpu(current_trb->event_cmd.flags) & TRB_CYCLE) !=
-+		    ring->cycle_state)
-+			break;
-+	}
-+
-+	if (erdp_trb != current_trb) {
-+		deq = xhci_trb_virt_to_dma(ring->deq_seg, current_trb);
-+		if (deq == 0)
-+			xhci_warn(xhci,
-+				"WARN invalid SW event ring dequeue ptr.\n");
-+		/* Update HC event ring dequeue pointer */
-+		erdp_reg &= ERST_PTR_MASK;
-+		erdp_reg |= ((u64) deq & (u64) ~ERST_PTR_MASK);
-+	}
-+
-+	/* Clear the event handler busy flag (RW1C); event ring is empty. */
-+	erdp_reg |= ERST_EHB;
-+	xhci_write_64(xhci, erdp_reg, &ir_set->erst_dequeue);
-+}
-+
- static void
- xhci_free_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
- {
- 	struct device *dev = xhci_to_hcd(xhci)->self.sysdev;
- 	size_t erst_size;
--	u64 tmp64;
- 	u32 tmp;
- 
- 	if (!ir)
- 		return;
- 
-+	xhci_handle_sec_intr_events(xhci, ir->event_ring, ir->ir_set, &ir->erst);
-+
- 	erst_size = sizeof(struct xhci_erst_entry) * (ir->erst.num_entries);
- 	if (ir->erst.entries)
- 		dma_free_coherent(dev, erst_size,
-@@ -1842,10 +1910,6 @@ xhci_free_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
- 	tmp &= ERST_SIZE_MASK;
- 	writel(tmp, &ir->ir_set->erst_size);
- 
--	tmp64 = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
--	tmp64 &= (u64) ERST_PTR_MASK;
--	xhci_write_64(xhci, tmp64, &ir->ir_set->erst_dequeue);
+-static int xhci_test_trb_in_td(struct xhci_hcd *xhci,
+-		struct xhci_segment *input_seg,
+-		union xhci_trb *start_trb,
+-		union xhci_trb *end_trb,
+-		dma_addr_t input_dma,
+-		struct xhci_segment *result_seg,
+-		char *test_name, int test_number)
+-{
+-	unsigned long long start_dma;
+-	unsigned long long end_dma;
+-	struct xhci_segment *seg;
 -
- 	/* free interrrupter event ring */
- 	if (ir->event_ring)
- 		xhci_ring_free(xhci, ir->event_ring);
+-	start_dma = xhci_trb_virt_to_dma(input_seg, start_trb);
+-	end_dma = xhci_trb_virt_to_dma(input_seg, end_trb);
+-
+-	seg = trb_in_td(xhci, input_seg, start_trb, end_trb, input_dma, false);
+-	if (seg != result_seg) {
+-		xhci_warn(xhci, "WARN: %s TRB math test %d failed!\n",
+-				test_name, test_number);
+-		xhci_warn(xhci, "Tested TRB math w/ seg %p and "
+-				"input DMA 0x%llx\n",
+-				input_seg,
+-				(unsigned long long) input_dma);
+-		xhci_warn(xhci, "starting TRB %p (0x%llx DMA), "
+-				"ending TRB %p (0x%llx DMA)\n",
+-				start_trb, start_dma,
+-				end_trb, end_dma);
+-		xhci_warn(xhci, "Expected seg %p, got seg %p\n",
+-				result_seg, seg);
+-		trb_in_td(xhci, input_seg, start_trb, end_trb, input_dma,
+-			  true);
+-		return -1;
+-	}
+-	return 0;
+-}
+-
+-/* TRB math checks for xhci_trb_in_td(), using the command and event rings. */
+-static int xhci_check_trb_in_td_math(struct xhci_hcd *xhci)
+-{
+-	struct {
+-		dma_addr_t		input_dma;
+-		struct xhci_segment	*result_seg;
+-	} simple_test_vector [] = {
+-		/* A zeroed DMA field should fail */
+-		{ 0, NULL },
+-		/* One TRB before the ring start should fail */
+-		{ xhci->event_ring->first_seg->dma - 16, NULL },
+-		/* One byte before the ring start should fail */
+-		{ xhci->event_ring->first_seg->dma - 1, NULL },
+-		/* Starting TRB should succeed */
+-		{ xhci->event_ring->first_seg->dma, xhci->event_ring->first_seg },
+-		/* Ending TRB should succeed */
+-		{ xhci->event_ring->first_seg->dma + (TRBS_PER_SEGMENT - 1)*16,
+-			xhci->event_ring->first_seg },
+-		/* One byte after the ring end should fail */
+-		{ xhci->event_ring->first_seg->dma + (TRBS_PER_SEGMENT - 1)*16 + 1, NULL },
+-		/* One TRB after the ring end should fail */
+-		{ xhci->event_ring->first_seg->dma + (TRBS_PER_SEGMENT)*16, NULL },
+-		/* An address of all ones should fail */
+-		{ (dma_addr_t) (~0), NULL },
+-	};
+-	struct {
+-		struct xhci_segment	*input_seg;
+-		union xhci_trb		*start_trb;
+-		union xhci_trb		*end_trb;
+-		dma_addr_t		input_dma;
+-		struct xhci_segment	*result_seg;
+-	} complex_test_vector [] = {
+-		/* Test feeding a valid DMA address from a different ring */
+-		{	.input_seg = xhci->event_ring->first_seg,
+-			.start_trb = xhci->event_ring->first_seg->trbs,
+-			.end_trb = &xhci->event_ring->first_seg->trbs[TRBS_PER_SEGMENT - 1],
+-			.input_dma = xhci->cmd_ring->first_seg->dma,
+-			.result_seg = NULL,
+-		},
+-		/* Test feeding a valid end TRB from a different ring */
+-		{	.input_seg = xhci->event_ring->first_seg,
+-			.start_trb = xhci->event_ring->first_seg->trbs,
+-			.end_trb = &xhci->cmd_ring->first_seg->trbs[TRBS_PER_SEGMENT - 1],
+-			.input_dma = xhci->cmd_ring->first_seg->dma,
+-			.result_seg = NULL,
+-		},
+-		/* Test feeding a valid start and end TRB from a different ring */
+-		{	.input_seg = xhci->event_ring->first_seg,
+-			.start_trb = xhci->cmd_ring->first_seg->trbs,
+-			.end_trb = &xhci->cmd_ring->first_seg->trbs[TRBS_PER_SEGMENT - 1],
+-			.input_dma = xhci->cmd_ring->first_seg->dma,
+-			.result_seg = NULL,
+-		},
+-		/* TRB in this ring, but after this TD */
+-		{	.input_seg = xhci->event_ring->first_seg,
+-			.start_trb = &xhci->event_ring->first_seg->trbs[0],
+-			.end_trb = &xhci->event_ring->first_seg->trbs[3],
+-			.input_dma = xhci->event_ring->first_seg->dma + 4*16,
+-			.result_seg = NULL,
+-		},
+-		/* TRB in this ring, but before this TD */
+-		{	.input_seg = xhci->event_ring->first_seg,
+-			.start_trb = &xhci->event_ring->first_seg->trbs[3],
+-			.end_trb = &xhci->event_ring->first_seg->trbs[6],
+-			.input_dma = xhci->event_ring->first_seg->dma + 2*16,
+-			.result_seg = NULL,
+-		},
+-		/* TRB in this ring, but after this wrapped TD */
+-		{	.input_seg = xhci->event_ring->first_seg,
+-			.start_trb = &xhci->event_ring->first_seg->trbs[TRBS_PER_SEGMENT - 3],
+-			.end_trb = &xhci->event_ring->first_seg->trbs[1],
+-			.input_dma = xhci->event_ring->first_seg->dma + 2*16,
+-			.result_seg = NULL,
+-		},
+-		/* TRB in this ring, but before this wrapped TD */
+-		{	.input_seg = xhci->event_ring->first_seg,
+-			.start_trb = &xhci->event_ring->first_seg->trbs[TRBS_PER_SEGMENT - 3],
+-			.end_trb = &xhci->event_ring->first_seg->trbs[1],
+-			.input_dma = xhci->event_ring->first_seg->dma + (TRBS_PER_SEGMENT - 4)*16,
+-			.result_seg = NULL,
+-		},
+-		/* TRB not in this ring, and we have a wrapped TD */
+-		{	.input_seg = xhci->event_ring->first_seg,
+-			.start_trb = &xhci->event_ring->first_seg->trbs[TRBS_PER_SEGMENT - 3],
+-			.end_trb = &xhci->event_ring->first_seg->trbs[1],
+-			.input_dma = xhci->cmd_ring->first_seg->dma + 2*16,
+-			.result_seg = NULL,
+-		},
+-	};
+-
+-	unsigned int num_tests;
+-	int i, ret;
+-
+-	num_tests = ARRAY_SIZE(simple_test_vector);
+-	for (i = 0; i < num_tests; i++) {
+-		ret = xhci_test_trb_in_td(xhci,
+-				xhci->event_ring->first_seg,
+-				xhci->event_ring->first_seg->trbs,
+-				&xhci->event_ring->first_seg->trbs[TRBS_PER_SEGMENT - 1],
+-				simple_test_vector[i].input_dma,
+-				simple_test_vector[i].result_seg,
+-				"Simple", i);
+-		if (ret < 0)
+-			return ret;
+-	}
+-
+-	num_tests = ARRAY_SIZE(complex_test_vector);
+-	for (i = 0; i < num_tests; i++) {
+-		ret = xhci_test_trb_in_td(xhci,
+-				complex_test_vector[i].input_seg,
+-				complex_test_vector[i].start_trb,
+-				complex_test_vector[i].end_trb,
+-				complex_test_vector[i].input_dma,
+-				complex_test_vector[i].result_seg,
+-				"Complex", i);
+-		if (ret < 0)
+-			return ret;
+-	}
+-	xhci_dbg(xhci, "TRB math tests passed.\n");
+-	return 0;
+-}
+-
+ static void xhci_set_hc_event_deq(struct xhci_hcd *xhci)
+ {
+ 	u64 temp;
+@@ -2506,8 +2348,6 @@ int xhci_mem_init(struct xhci_hcd *xhci, gfp_t flags)
+ 					0, flags);
+ 	if (!xhci->event_ring)
+ 		goto fail;
+-	if (xhci_check_trb_in_td_math(xhci) < 0)
+-		goto fail;
+ 
+ 	ret = xhci_alloc_erst(xhci, xhci->event_ring, &xhci->erst, flags);
+ 	if (ret)
