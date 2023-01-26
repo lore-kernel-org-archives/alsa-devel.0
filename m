@@ -4,80 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56129C27C76
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 02:52:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85A6EC27C76
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 03:15:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 705FC828;
-	Thu, 26 Jan 2023 03:51:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 705FC828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 81954828;
+	Thu, 26 Jan 2023 04:14:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81954828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674701542;
-	bh=b3RJWkHcYIi6H28qkY/VPuWeD98hCPd708oG/BvjDkQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
+	s=default; t=1674702941;
+	bh=9X1RHVUCKQQV1uPc+3I5BXcwww9cOcP/lWfEGRpGOTU=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=auk5fDuCMCzLMJmyZ655H93j7Zc4lxXCGuThMi9QXTzqlGDTGX/pCcJO9kzA760DN
-	 cy1Mw/Bwiix5k1Pnc1aOLcEIgv0WRNnlFntdXZsYAkuJ5LPu8fphHMuxdhNWPXhmxX
-	 F9v8s1XkCaiProf4o2/JCSVMwzZOvY6Z5OSflaFU=
+	b=Hy3TS+6PjAW7Zv/GY1b536egOlg4rKuxAeTnPvbLjLriKmE4a3CH13CjF5P3ZsMa0
+	 i3QzxeP44DKmu+bCilN7dl4UylyWOClGO6A2l7IVMSgdOm2OzAoxtYxVaXDldKL6DA
+	 jZWUDeIzwxqz1fQvlNIVqdM4Mxdu9hHHF8eUnfB0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 096E4F8025D;
-	Thu, 26 Jan 2023 03:51:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04161F80553;
+	Thu, 26 Jan 2023 04:14:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5A0D3F8027D; Thu, 26 Jan 2023 03:51:29 +0100 (CET)
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com
- [IPv6:2607:f8b0:4864:20::102e])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 8B31EF80548; Thu, 26 Jan 2023 04:14:49 +0100 (CET)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BDC76F80224
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 03:51:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDC76F80224
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55696F8025D
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 04:14:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55696F8025D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=S3ob3k2v
-Received: by mail-pj1-x102e.google.com with SMTP id
- m7-20020a17090a71c700b0022c0c070f2eso3382640pjs.4
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 18:51:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=b3RJWkHcYIi6H28qkY/VPuWeD98hCPd708oG/BvjDkQ=;
- b=S3ob3k2v0EpwqTzm7/T4qUQrdeZOOqlZq//hKwTwwNgwqD+2hQCK2NVnCJTBr2GJZa
- PO1uQM13sSbUwl362CNVBk15h6jUKv6/5vN4DUqX7chXmSFupditz9oJjp/HoMYkejbW
- +xeq/BTzfU2S5RcpSgP4PeG0vDRKoKbfCQ7yzT7EYxHVtiLpf1V2ps+A+2sr9ua04kOh
- iUadyOgJE6NO/2rNaRiVij9Nz/a9YPplDuQrY6eMQx3HQ1g6qdyV+d2t+TSd8TuX6GO/
- cSlGbp9ktpKslBKbeC/76/ltPfw/SjZu36rQmjZmh7ljwbSxmibhMYafKHAdKa/eNjbh
- 5KXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=b3RJWkHcYIi6H28qkY/VPuWeD98hCPd708oG/BvjDkQ=;
- b=mN0ucMMTWBoMZfQOusZXrJafcv95b9lttwzhzIVl00IAeVEhB7BmW7irfDGtgCVkY3
- mdF0Pwrf3o62ZesMcw5VPcoQDGwteVutRe61PF5h28QdQXz48/PvTEJmws9TXM1D8b/z
- 9II8K2IOHF2uRX/y8cs5jw247xVbIJa2+LI7PJUoYvsT02EF0WspIW72CcTg4YErLTTX
- 7ofHO9MBsutEjETNyUxKjVLymt20g+siDrN3C7mdXCrfQyoF8jPWiqK4XSpK3uEVVT5P
- s9lf/EPotCNo0j1uthaI8u1+2bvh6lm5GS3qfp408D+oTp/ryiZFxEflBnr88TIsXm2l
- VG8A==
-X-Gm-Message-State: AO0yUKVGmH6qgjVutjoXJC+aYHRVpodz/wIuDOiWgeLXzJ/1N6fvBZ4U
- w8KwR/Ue7aiZO3o+xyzy6pHxcQaQr421jcXUf1M=
-X-Google-Smtp-Source: AK7set8pPhOKTIZ01rJQce1j9jPstD9Xcm0w5j4c4f5iXkCM9mYASf3BsBz1GtbzGTfU0G6GRR6dbpt0WbCj4kdrtg4=
-X-Received: by 2002:a17:90a:ca0e:b0:22c:2401:a6f6 with SMTP id
- x14-20020a17090aca0e00b0022c2401a6f6mr125365pjt.29.1674701482305; Wed, 25 Jan
- 2023 18:51:22 -0800 (PST)
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=m4/evpnu
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+ by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 30Q2tBUR030435; Thu, 26 Jan 2023 03:14:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=urZbrvlW56jM3NnnnRu12cktuIJHGAwqR4fhPFfPs1k=;
+ b=m4/evpnuewbvLg5/OxSHVgaYvOb74AxWJqPSFjnw6KRqAvA/ztOj/ZolC03viuo5swXm
+ j6FcsQciXtwMx7LIGea5lbacHQrw8gp6K1nygpzr8bKNZov3oijnyY8eAN+su29m4/Lz
+ A6/OCNLXSZgBpeAHc/qr+xCmZwt7o5/vvRCYHf4H8StiEjY1SwG7axSgFpKH1wa/9LTg
+ vTHFfudfPGDGQG9rkETKymEv57+iPnqq66iiNq+Y2Hb2P3sjNqFd26viFFhbtNgxgaCE
+ Nx23r/tNy0v9u3xgSCyuxFDI6+dFYNFvQMmmvA0q6m+nMGRGa+Xtyvvf7+NLfIY9MqKS iQ== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com
+ [199.106.103.254])
+ by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3nb2nssqvu-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 26 Jan 2023 03:14:40 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com
+ [10.45.79.139])
+ by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 30Q3Ecpx007834
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 26 Jan 2023 03:14:39 GMT
+Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
+ nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.36; Wed, 25 Jan 2023 19:14:38 -0800
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+ <perex@perex.cz>, <lgirdwood@gmail.com>, <andersson@kernel.org>,
+ <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+ <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+ <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+ <agross@kernel.org>
+Subject: [RFC PATCH v2 01/22] xhci: fix event ring segment table related masks
+ and variables in header
+Date: Wed, 25 Jan 2023 19:14:03 -0800
+Message-ID: <20230126031424.14582-2-quic_wcheng@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230126031424.14582-1-quic_wcheng@quicinc.com>
+References: <20230126031424.14582-1-quic_wcheng@quicinc.com>
 MIME-Version: 1.0
-References: <CAOMZO5CVCm5bpVThYW7V379PyTfyVQLBrN03cUfOxLRyBXp0gw@mail.gmail.com>
- <CAEnQRZAUx0Xg_3J161VG=m9oCQFNBT3aFHwExFbWWOTK6xsSTA@mail.gmail.com>
-In-Reply-To: <CAEnQRZAUx0Xg_3J161VG=m9oCQFNBT3aFHwExFbWWOTK6xsSTA@mail.gmail.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Wed, 25 Jan 2023 23:51:08 -0300
-Message-ID: <CAOMZO5DECuV17T+1u9WKXdZfGqQ84kMCm2Yt+b0cuOuFFUiBLw@mail.gmail.com>
-Subject: Re: i.MX8MN: SAI: First playback failure, second succeeds
-To: Daniel Baluta <daniel.baluta@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-ORIG-GUID: Y6vvkQInwFXW-z4RFK3bYsLbLfALUWWl
+X-Proofpoint-GUID: Y6vvkQInwFXW-z4RFK3bYsLbLfALUWWl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-25_14,2023-01-25_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1011 mlxlogscore=999
+ spamscore=0 malwarescore=0 impostorscore=0 suspectscore=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 adultscore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2301260028
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,23 +108,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
- Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Mathias Nyman <mathias.nyman@linux.intel.com>, linux-arm-msm@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+ quic_jackp@quicinc.com, quic_plai@quicinc.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Daniel,
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-On Wed, Jan 25, 2023 at 5:43 AM Daniel Baluta <daniel.baluta@gmail.com> wrote:
+xHC controller can supports up to 1024 interrupters.
+To fit these change the max_interrupters varable from u8 to u16.
 
-> Can you also dump SAI registers ?
+Add a separate mask for the reserve and preserve bits [5:0] in the erst
+base register and use it instead of the ERST_PRT_MASK.
+ERSR_PTR_MASK [3:0] is intended for masking bits in the
+event ring dequeue pointer register.
 
-They also match in the working and non-working cases.
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+---
+ drivers/usb/host/xhci-mem.c | 4 ++--
+ drivers/usb/host/xhci.h     | 5 ++++-
+ 2 files changed, 6 insertions(+), 3 deletions(-)
 
-I have also tried applying your patch:
-https://lore.kernel.org/lkml/20190308173904.27298-1-daniel.baluta@nxp.com/
-
-but it did not help.
-
-Thanks
+diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
+index 81ca2bc1f0be..679befa97c7a 100644
+--- a/drivers/usb/host/xhci-mem.c
++++ b/drivers/usb/host/xhci-mem.c
+@@ -2529,8 +2529,8 @@ int xhci_mem_init(struct xhci_hcd *xhci, gfp_t flags)
+ 			"// Set ERST base address for ir_set 0 = 0x%llx",
+ 			(unsigned long long)xhci->erst.erst_dma_addr);
+ 	val_64 = xhci_read_64(xhci, &xhci->ir_set->erst_base);
+-	val_64 &= ERST_PTR_MASK;
+-	val_64 |= (xhci->erst.erst_dma_addr & (u64) ~ERST_PTR_MASK);
++	val_64 &= ERST_BASE_RSVDP;
++	val_64 |= (xhci->erst.erst_dma_addr & (u64) ~ERST_BASE_RSVDP);
+ 	xhci_write_64(xhci, val_64, &xhci->ir_set->erst_base);
+ 
+ 	/* Set the event ring dequeue address */
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index c9f06c5e4e9d..e1362e0c50e1 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -513,6 +513,9 @@ struct xhci_intr_reg {
+ /* Preserve bits 16:31 of erst_size */
+ #define	ERST_SIZE_MASK		(0xffff << 16)
+ 
++/* erst_base bitmasks */
++#define ERST_BASE_RSVDP		(0x3f)
++
+ /* erst_dequeue bitmasks */
+ /* Dequeue ERST Segment Index (DESI) - Segment number (or alias)
+  * where the current dequeue pointer lies.  This is an optional HW hint.
+@@ -1773,7 +1776,7 @@ struct xhci_hcd {
+ 	u8		sbrn;
+ 	u16		hci_version;
+ 	u8		max_slots;
+-	u8		max_interrupters;
++	u16		max_interrupters;
+ 	u8		max_ports;
+ 	u8		isoc_threshold;
+ 	/* imod_interval in ns (I * 250ns) */
