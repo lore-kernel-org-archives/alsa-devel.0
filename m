@@ -4,63 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D1A2C54E94
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 15:25:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97839C54E94
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 15:34:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62A02A4C;
-	Thu, 26 Jan 2023 16:24:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62A02A4C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 687BCA4D;
+	Thu, 26 Jan 2023 16:33:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 687BCA4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674746715;
-	bh=bF7nec78rpML/twTF5G820YDlfuFSX4IR2BuisZbFr4=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=pQ2nzyn8X8U9eujHpnpyEZDMQGkpSyR6axIjSs6xnlTQCIuSrWuQb0z31iUsiY/6V
-	 HDrATSEtMGH66PQXR31bCMkRSZu94ji4DWSB53XQEmemg1UcnckAO4M2H0SfSqQFZa
-	 xvlD2sNbZ/EbMvTjvYyrxZhUTm/y5DonmjFmsDVA=
+	s=default; t=1674747246;
+	bh=S+44FzgrppMOoavAOsmBiZEPceMlEDD+t+wy7gXfS24=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=jCuHOy2wBlkbSx4u+YJ3L0+J2ycl5nMuFUTBQ4vuAg4UGEIl9OYcDk+knIUMpOh+D
+	 9ktfJD0707vvFy5h/NMCKih6algdqHTBl6+MIeF1/OURaLHtdiZuZNKV5yYICTKbc8
+	 t5RzuGoKVmj1c9RG65n0ZyCDadRtxtWpRv+svgss=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09940F8027D;
-	Thu, 26 Jan 2023 16:24:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05508F8025D;
+	Thu, 26 Jan 2023 16:33:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC36BF8027D; Thu, 26 Jan 2023 16:24:23 +0100 (CET)
-Received: from relay10.mail.gandi.net (relay10.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::230])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id DCC5EF8027D; Thu, 26 Jan 2023 16:33:13 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EC235F8016E
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 16:24:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC235F8016E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0EFC1F80224
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 16:33:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EFC1F80224
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=T4/5HVZH
-Received: from booty.fritz.box (unknown [77.244.183.192])
- (Authenticated sender: luca.ceresoli@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPA id F296E24000C;
- Thu, 26 Jan 2023 15:24:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1674746660;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding;
- bh=rxsciDeqntpVUYn5FLc+E1Uob0ovb8UfCOdsWZY5uwU=;
- b=T4/5HVZHxuMKo5KmRiXxx+syO4WcZeO6SScPR0KZgsHpfL+MczFljwh8BDAa0pmVyshuHe
- IJ1bxcFRQoNIYs+TwFHmKtVae8oqPmNS2noDNR95QdHobXLbdYqyJ6jZDzI8T/3a41JeNz
- k3gW/nYR1B5QmTiEx34iIP865Qb18W47bpNTKL7l2WHCbIWp0wByjjFtg0td73d9x1KGzF
- pTawqkzou34elhGXElMrgpLo76xcxjZ6sxvfb9lCvPRUa09EJG5eKh5ajq9oQrqj5IB/Ik
- ZpDuUhVqRc5VOxnWJhbtOIkrYFz6p4IkOGx922R+dpD2GRVLFxwu/b/4nNAsUg==
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-To: Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH] ASoC: fsl-asoc-card: constify fsl_asoc_card_dai
-Date: Thu, 26 Jan 2023 16:24:12 +0100
-Message-Id: <20230126152412.959574-1-luca.ceresoli@bootlin.com>
-X-Mailer: git-send-email 2.34.1
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=eGh3OnJ9
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 98FEB61890;
+ Thu, 26 Jan 2023 15:33:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEFCFC433D2;
+ Thu, 26 Jan 2023 15:32:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1674747180;
+ bh=S+44FzgrppMOoavAOsmBiZEPceMlEDD+t+wy7gXfS24=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=eGh3OnJ9GRcuM9g7cpO40tqn5NwbPhGgNnZvJmZceGjmMNFwaYbn18ZL6l5Enrhwu
+ 8wkHXS1zkWvjVr4qsCbdKCBIiwjWZzwf9B44GHoiOjRqeX0AeFIY9RK0Zrn4P8hSHJ
+ unpaOhJ6bXJmCW3UbMJsncrqKCFgCpKYtUS/G5XvcmLps8VY2anze0C9uaHkB6tseZ
+ Q3SaxF0JI0StKdUd/6JwJ33o8ndbF21+q6ssuvwe8yRXwJJ9NPnk3teFHsIFR8oi9m
+ kN5kUutkHi+fb0yWQdlHkwqD2LyOtiduyBYmL/oJq2D8ajAPnoMTo+NAYx9YGnWdSV
+ 3JOccIhOvb9oA==
+Date: Thu, 26 Jan 2023 15:32:51 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: cs42l56: fix DT probe
+Message-ID: <Y9KdIzlqHPL19YIB@sirena.org.uk>
+References: <20230126135552.3625887-1-arnd@kernel.org>
+ <Y9KIN7GerLd4ziw0@sirena.org.uk>
+ <20230126144635.GA36097@ediswmail.ad.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="Q1+h2puod9yEyzZ/"
+Content-Disposition: inline
+In-Reply-To: <20230126144635.GA36097@ediswmail.ad.cirrus.com>
+X-Cookie: Serving suggestion.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,32 +78,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org,
- Luca Ceresoli <luca.ceresoli@bootlin.com>, linux-kernel@vger.kernel.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: Arnd Bergmann <arnd@kernel.org>, alsa-devel@alsa-project.org,
+ Arnd Bergmann <arnd@arndb.de>, Lucas Tanure <tanureal@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, David Rhodes <david.rhodes@cirrus.com>,
+ Wolfram Sang <wsa@kernel.org>, linux-gpio@vger.kernel.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ James Schulman <james.schulman@cirrus.com>, linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is never modified and can be made const.
 
-Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
----
- sound/soc/fsl/fsl-asoc-card.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--Q1+h2puod9yEyzZ/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 2f25358196ee..00118a75d126 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -297,7 +297,7 @@ SND_SOC_DAILINK_DEFS(hifi_be,
- 	DAILINK_COMP_ARRAY(COMP_EMPTY()),
- 	DAILINK_COMP_ARRAY(COMP_DUMMY()));
- 
--static struct snd_soc_dai_link fsl_asoc_card_dai[] = {
-+static const struct snd_soc_dai_link fsl_asoc_card_dai[] = {
- 	/* Default ASoC DAI Link*/
- 	{
- 		.name = "HiFi",
--- 
-2.34.1
+On Thu, Jan 26, 2023 at 02:46:35PM +0000, Charles Keepax wrote:
+> On Thu, Jan 26, 2023 at 02:03:35PM +0000, Mark Brown wrote:
 
+> > Or there is no mandatory properties/platform data and the
+> > defaults are fine for most systems (which is a common case).
+
+> I think Arnd is right here, the driver appears to allocate a big
+> block of zeros and then blat that over the top of everything it
+> read from device tree. So you can literally never use any of the
+> DT properties as it stands.
+
+Oh, the fix is fixing a real issue - it's the claim in the commit
+log that the driver could never have worked that's not obviously
+correct.
+
+--Q1+h2puod9yEyzZ/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPSnSIACgkQJNaLcl1U
+h9DmDAf+P1aRExs02B6c0QhYJujZH3z8FJK6WQtLcZ6Tjhx8rdxgSJGvOgpyfU4H
+3qVJD+/OgGJt10tP0uuO8dQ07L6Gb5dESWCcgDZrd2McR8jhYLaKjv9rjQoMxb42
+zqDtN17vUrmp5AZ8CWfVjuMnrLi1sxBnfo4LvBrtOjAb8ZtOv9JHUaiSXbKZ3L5j
+yZYaq5IlE10V3WkH7QFrchvI/owjd4JnP9eTGkfBoHbXcVbx/A9Q1PxLLDPgMIM6
+ztd4KRFv2xv/PICsfnoxAxU+Lkca5yFQ+wRZOJ7Bj3lqNlN+RB6MTc1P/GBHXblT
+nSZvTwX+ld8zvHcoylJxizJCtgOqNg==
+=wS2J
+-----END PGP SIGNATURE-----
+
+--Q1+h2puod9yEyzZ/--
