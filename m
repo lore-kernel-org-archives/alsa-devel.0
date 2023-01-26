@@ -4,61 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73894C38142
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 11:52:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4141AC54EAA
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 11:53:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 18A31E7E;
-	Fri, 27 Jan 2023 12:51:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 18A31E7E
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3B84E86;
+	Fri, 27 Jan 2023 12:52:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3B84E86
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674820369;
-	bh=NaLFdO9ZYqRxI6ToyKxR1R/JAHIoDmmusUj7rBWRvNA=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=GHlqGNMUT45Hn8bWWMRLeNe6RcAo84lRaXImhX86b8qlGb3i13uxsBmx7sFJHKPZy
-	 Kn7tl0ZG+SDpVPnMNjQ4w9zfzeBK8v3D2e6UdORE83UkADGnhIsLTVWgJYsknpaBf8
-	 J31T/ratdvG6vGHuzrjHa1tam4151CFFXBBtYoHA=
+	s=default; t=1674820377;
+	bh=73aMcUob1WYX+/b4rggndOJ7N9caL088plxdfjSDDEQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=cwgOCpNrk00+SwZqobvOrL252r11XdWIK+5/oHNtgg8lWas9oTAsyQvEeEQ3BfavF
+	 ECdFcyd9ym4jWiX89x/P8cwanWd/8j+hVvS/W7r6gij5x4yDHN0YQYk6r4qijplY73
+	 5T+kBQaKYNOn1NIxAyNQ7vYNlmfdBl2X7MjQEIM4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9DC86F8053A;
-	Fri, 27 Jan 2023 12:51:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32B74F80544;
+	Fri, 27 Jan 2023 12:51:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E665DF804F3; Fri, 27 Jan 2023 07:41:56 +0100 (CET)
-Received: from bombadil.infradead.org (bombadil.infradead.org
- [IPv6:2607:7c80:54:3::133])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 5BA29F8027D; Thu, 26 Jan 2023 10:20:37 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED5CEF80224
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 07:41:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED5CEF80224
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43E90F80224
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 10:20:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43E90F80224
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- secure) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256
- header.s=bombadil.20210309 header.b=BHL2yK0m
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
- Content-ID:Content-Description:In-Reply-To:References;
- bh=u92ZIG8NeiReqULUpJ3dTyWf+uSNhJCKYYthA6vycZI=; b=BHL2yK0mIJr+KABpOGeA+u3Rl4
- B7i2Rbbg1zsJ5XUcinksH8hUB+n5okYbng9loY48Tjyofjk8OiUG4xkeaXAWl27DOJNOXqOxncMab
- MYR6RasB+6kB7NBxI5Ptdqc1xJnRvtvJMJgoTVl3e6o9pKE2P3FDcHqx+Z9F/gvv9fPUr/g6wVmk2
- 9Dc/EI24A/yOAoVs8mO3i8ly6BVPoqaTkISl0X1f71XCb1dbLyrGH9wWZnJIw2IzLOYM27mAEX1GD
- Se8srjkBYH4HkNZB0oYO6bGYGUHrSz2Oe6l41n4L6/KLtiiYAz/bal9B0+Qc6rEeLWb2YaS+NqC6y
- f2ChDZSQ==;
-Received: from [2601:1c2:d80:3110::9307] (helo=bombadil.infradead.org)
- by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1pLIPB-00DM0u-Dt; Fri, 27 Jan 2023 06:40:09 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 00/35] Documentation: correct lots of spelling errors (series
- 1)
-Date: Thu, 26 Jan 2023 22:39:30 -0800
-Message-Id: <20230127064005.1558-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.39.1
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=JmyjvNON
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id C04C8B81D19;
+ Thu, 26 Jan 2023 09:20:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F7DBC433D2;
+ Thu, 26 Jan 2023 09:19:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1674724832;
+ bh=73aMcUob1WYX+/b4rggndOJ7N9caL088plxdfjSDDEQ=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=JmyjvNONg1SgIhjqFFggxa6D/d0DdvOOGuNt2dtDINzMuck9VRm1yrgcKsMjflpW+
+ SwTLsN9QAcAPFlEDt4IXaVuzKuvw/QTFDgiE6iXZrjCF1Dk77N344FV6FZLMxl/SIh
+ YCzWCtWMyri2S/VxFa8w5izmma6QvGZR6W3LW+HhZQLDOEjS2QQ4+yWFtPAWXwzXjB
+ 8sjW4u5olaD4DQ8+tTWSGydqMOF+S7T6bSIcqdA9DZQS+/0Qnjc5pNbohtILz6vsxE
+ pH2w8v8IDyyC1JX/SGY55iAqC16GztTVGkZPd8qlGsAwBxzWAs0I60Xu7VFg5IVHwG
+ yDtfzpUFPYi0Q==
+Date: Thu, 26 Jan 2023 11:19:37 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Subject: Re: [PATCH v2 2/6] mm: replace VM_LOCKED_CLEAR_MASK with
+ VM_LOCKED_MASK
+Message-ID: <Y9JFqaE4n/eGoWWi@kernel.org>
+References: <20230125083851.27759-1-surenb@google.com>
+ <20230125083851.27759-3-surenb@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230125083851.27759-3-surenb@google.com>
 X-Mailman-Approved-At: Fri, 27 Jan 2023 12:51:03 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -72,297 +78,195 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Miaohe Lin <linmiaohe@huawei.com>, Juri Lelli <juri.lelli@redhat.com>,
- Henrik Rydberg <rydberg@bitmath.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, dri-devel@lists.freedesktop.org,
- Benjamin Tissoires <benjamin.tissoires@redhat.com>,
- Pavel Machek <pavel@ucw.cz>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Evgeniy Polyakov <zbr@ioremap.net>, Alexander Gordeev <agordeev@linux.ibm.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Michael Ellerman <mpe@ellerman.id.au>, James Morris <jmorris@namei.org>,
- linux-acpi@vger.kernel.org, Len Brown <len.brown@intel.com>,
- linux-pm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
- linux-sgx@vger.kernel.org, Karsten Keil <isdn@linux-pingi.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Randy Dunlap <rdunlap@infradead.org>, linux-spi@vger.kernel.org,
- Masami Hiramatsu <mhiramat@kernel.org>, Vladimir Oltean <olteanv@gmail.com>,
- alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
- linux-doc@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>,
- keyrings@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-s390@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
- linux-trace-kernel@vger.kernel.org, Helge Deller <deller@gmx.de>,
- Lee Jones <lee@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Jordan <daniel.m.jordan@oracle.com>, linux-crypto@vger.kernel.org,
- linux-xtensa@linux-xtensa.org, Vasily Gorbik <gor@linux.ibm.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, coresight@lists.linaro.org,
- Bjorn Helgaas <bhelgaas@google.com>, Stafford Horne <shorne@gmail.com>,
- linux-arm-kernel@lists.infradead.org, Chris Zankel <chris@zankel.net>,
- Mathieu Poirier <mathieu.poirier@linaro.org>, Wolfram Sang <wsa@kernel.org>,
- Jarkko Sakkinen <jarkko@kernel.org>, linux-pci@vger.kernel.org,
- Lorenzo Pieralisi <lpieralisi@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Will Deacon <will@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jonathan Corbet <corbet@lwn.net>, isdn4linux@listserv.isdn4linux.de,
- linux-input@vger.kernel.org, "Serge E. Hallyn" <serge@hallyn.com>,
- Fenghua Yu <fenghua.yu@intel.com>, Jiri Kosina <jikos@kernel.org>,
- Akinobu Mita <akinobu.mita@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
- Mark Brown <broonie@kernel.org>, Borislav Petkov <bp@alien8.de>,
- linux-fbdev@vger.kernel.org, Reinette Chatre <reinette.chatre@intel.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Naoya Horiguchi <naoya.horiguchi@nec.com>, target-devel@vger.kernel.org,
- bpf@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
- Peter Zijlstra <peterz@infradead.org>, David Howells <dhowells@redhat.com>,
- linux-mm@kvack.org, linux-trace-devel@vger.kernel.org,
- live-patching@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
- linux-leds@vger.kernel.org, Steffen Klassert <steffen.klassert@secunet.com>,
- linux-scsi@vger.kernel.org, Marc Zyngier <maz@kernel.org>, x86@kernel.org,
- Russell King <linux@armlinux.org.uk>, Ingo Molnar <mingo@redhat.com>,
- Jonas Bonn <jonas@southpole.se>, Heiko Carstens <hca@linux.ibm.com>,
- Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
- linux-block@vger.kernel.org,
- =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
- openrisc@lists.librecores.org, Josh Poimboeuf <jpoimboe@kernel.org>,
- Jens Axboe <axboe@kernel.dk>, netdev@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, linux-security-module@vger.kernel.org,
- Daniel Bristot de Oliveira <bristot@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Cc: michel@lespinasse.org, nvdimm@lists.linux.dev, heiko@sntech.de,
+ leewalsh@google.com, dri-devel@lists.freedesktop.org, jglisse@google.com,
+ arjunroy@google.com, m.szyprowski@samsung.com, linux-arch@vger.kernel.org,
+ qianweili@huawei.com, linux-samsung-soc@vger.kernel.org,
+ aneesh.kumar@linux.ibm.com, chenhuacai@kernel.org, kasan-dev@googlegroups.com,
+ linux-acpi@vger.kernel.org, rientjes@google.com,
+ xen-devel@lists.xenproject.org, devel@lists.orangefs.org, robdclark@gmail.com,
+ minchan@google.com, robert.jarzmik@free.fr, linux-um@lists.infradead.org,
+ etnaviv@lists.freedesktop.org, npiggin@gmail.com, alex.williamson@redhat.com,
+ viro@zeniv.linux.org.uk, luto@kernel.org, gthelen@google.com,
+ tglx@linutronix.de, ldufour@linux.ibm.com, linux-sgx@vger.kernel.org,
+ martin.petersen@oracle.com, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ akpm@linux-foundation.org, linux-media@vger.kernel.org,
+ freedreno@lists.freedesktop.org, joelaf@google.com, linux-aio@kvack.org,
+ linux-fbdev@vger.kernel.org, linux-ia64@vger.kernel.org, david@redhat.com,
+ dave.hansen@linux.intel.com, virtualization@lists.linux-foundation.org,
+ edumazet@google.com, target-devel@vger.kernel.org, punit.agrawal@bytedance.com,
+ linux-s390@vger.kernel.org, dave@stgolabs.net, deller@gmx.de, hughd@google.com,
+ andrii@kernel.org, patrik.r.jakobsson@gmail.com,
+ linux-stm32@st-md-mailman.stormreply.com, linux-rockchip@lists.infradead.org,
+ linux-graphics-maintainer@vmware.com, kernel-team@android.com,
+ jayalk@intworks.biz, soheil@google.com, selinux@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, mripard@kernel.org, shakeelb@google.com,
+ haojian.zhuang@gmail.com, loongarch@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, tytso@mit.edu, nico@fluxnic.net,
+ muchun.song@linux.dev, hjc@rock-chips.com, mcoquelin.stm32@gmail.com,
+ tatashin@google.com, mike.kravetz@oracle.com, songliubraving@fb.com,
+ jasowang@redhat.com, alsa-devel@alsa-project.org, peterx@redhat.com,
+ linux-tegra@vger.kernel.org, kraxel@redhat.com, will@kernel.org,
+ dmaengine@vger.kernel.org, bhe@redhat.com, miklos@szeredi.hu,
+ linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev, willy@infradead.org,
+ gurua@google.com, dgilbert@interlog.com, xiang@kernel.org, pabeni@redhat.com,
+ jejb@linux.ibm.com, quic_abhinavk@quicinc.com, bp@alien8.de,
+ mchehab@kernel.org, linux-ext4@vger.kernel.org, tomba@kernel.org,
+ hughlynch@google.com, sre@kernel.org, tfiga@chromium.org,
+ linux-xfs@vger.kernel.org, zhangfei.gao@linaro.org, wangzhou1@hisilicon.com,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+ davem@davemloft.net, mhocko@suse.com, kvm@vger.kernel.org, mst@redhat.com,
+ peterz@infradead.org, bigeasy@linutronix.de, alexandre.torgue@foss.st.com,
+ dhowells@redhat.com, linux-mm@kvack.org, ray.huang@amd.com,
+ adilger.kernel@dilger.ca, kuba@kernel.org, sparclinux@vger.kernel.org,
+ airlied@gmail.com, anton.ivanov@cambridgegreys.com,
+ herbert@gondor.apana.org.au, linux-scsi@vger.kernel.org, richard@nod.at,
+ x86@kernel.org, vkoul@kernel.org, mingo@redhat.com, axelrasmussen@google.com,
+ intel-gfx@lists.freedesktop.org, daniel@ffwll.ch, paulmck@kernel.org,
+ jannh@google.com, chao@kernel.org, maarten.lankhorst@linux.intel.com,
+ liam.howlett@oracle.com, hdegoede@redhat.com,
+ linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com, vbabka@suse.cz,
+ dimitri.sivanich@hpe.com, amd-gfx@lists.freedesktop.org, posk@google.com,
+ lstoakes@gmail.com, peterjung1337@gmail.com, yoshfuji@linux-ipv6.org,
+ linuxppc-dev@lists.ozlabs.org, dsahern@kernel.org, kent.overstreet@linux.dev,
+ kexec@lists.infradead.org, tiwai@suse.com, krzysztof.kozlowski@linaro.org,
+ tzimmermann@suse.de, hannes@cmpxchg.org, dmitry.baryshkov@linaro.org,
+ johannes@sipsolutions.net, mgorman@techsingularity.net,
+ linux-accelerators@lists.ozlabs.org, l.stach@pengutronix.de
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Correct many spelling errors in Documentation/ as reported by codespell.
+On Wed, Jan 25, 2023 at 12:38:47AM -0800, Suren Baghdasaryan wrote:
+> To simplify the usage of VM_LOCKED_CLEAR_MASK in clear_vm_flags(),
+> replace it with VM_LOCKED_MASK bitmask and convert all users.
+> 
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
-Maintainers of specific kernel subsystems are only Cc-ed on their
-respective patches, not the entire series. [if all goes well]
+Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-These patches are based on linux-next-20230125.
-
-
- [PATCH 01/35] Documentation: arm64: correct spelling
- [PATCH 02/35] Documentation: arm: correct spelling
- [PATCH 03/35] Documentation: block: correct spelling
- [PATCH 04/35] Documentation: bpf: correct spelling
- [PATCH 05/35] Documentation: core-api: correct spelling
- [PATCH 06/35] Documentation: fault-injection: correct spelling
- [PATCH 07/35] Documentation: fb: correct spelling
- [PATCH 08/35] Documentation: features: correct spelling
- [PATCH 09/35] Documentation: firmware-guide/acpi: correct spelling
- [PATCH 10/35] Documentation: hid: correct spelling
- [PATCH 11/35] Documentation: i2c: correct spelling
- [PATCH 12/35] Documentation: input: correct spelling
- [PATCH 13/35] Documentation: isdn: correct spelling
- [PATCH 14/35] Documentation: leds: correct spelling
- [PATCH 15/35] Documentation: litmus-tests: correct spelling
- [PATCH 16/35] Documentation: livepatch: correct spelling
- [PATCH 17/35] Documentation: locking: correct spelling
- [PATCH 18/35] Documentation: mm: correct spelling
- [PATCH 19/35] Documentation: openrisc: correct spelling
- [PATCH 20/35] Documentation: PCI: correct spelling
- [PATCH 21/35] Documentation: powerpc: correct spelling
- [PATCH 22/35] Documentation: power: correct spelling
- [PATCH 23/35] Documentation: s390: correct spelling
- [PATCH 24/35] Documentation: scheduler: correct spelling
- [PATCH 25/35] Documentation: security: correct spelling
- [PATCH 26/35] Documentation: sound: correct spelling
- [PATCH 27/35] Documentation: spi: correct spelling
- [PATCH 28/35] Documentation: target: correct spelling
- [PATCH 29/35] Documentation: timers: correct spelling
- [PATCH 30/35] Documentation: tools/rtla: correct spelling
- [PATCH 31/35] Documentation: trace: correct spelling
- [PATCH 32/35] Documentation: usb: correct spelling
- [PATCH 33/35] Documentation: w1: correct spelling
- [PATCH 34/35] Documentation: x86: correct spelling
- [PATCH 35/35] Documentation: xtensa: correct spelling
-
-
- Documentation/PCI/endpoint/pci-vntb-howto.rst                    |    2 -
- Documentation/PCI/msi-howto.rst                                  |    2 -
- Documentation/arm/arm.rst                                        |    2 -
- Documentation/arm/ixp4xx.rst                                     |    4 +-
- Documentation/arm/keystone/knav-qmss.rst                         |    2 -
- Documentation/arm/stm32/stm32-dma-mdma-chaining.rst              |    6 +--
- Documentation/arm/sunxi/clocks.rst                               |    2 -
- Documentation/arm/swp_emulation.rst                              |    2 -
- Documentation/arm/tcm.rst                                        |    2 -
- Documentation/arm/vlocks.rst                                     |    2 -
- Documentation/arm64/booting.rst                                  |    2 -
- Documentation/arm64/elf_hwcaps.rst                               |    2 -
- Documentation/arm64/sve.rst                                      |    4 +-
- Documentation/block/data-integrity.rst                           |    2 -
- Documentation/bpf/libbpf/libbpf_naming_convention.rst            |    6 +--
- Documentation/bpf/map_xskmap.rst                                 |    2 -
- Documentation/bpf/ringbuf.rst                                    |    4 +-
- Documentation/bpf/verifier.rst                                   |    2 -
- Documentation/core-api/packing.rst                               |    2 -
- Documentation/core-api/padata.rst                                |    2 -
- Documentation/fault-injection/fault-injection.rst                |    2 -
- Documentation/fb/sm712fb.rst                                     |    2 -
- Documentation/fb/sstfb.rst                                       |    2 -
- Documentation/features/core/thread-info-in-task/arch-support.txt |    2 -
- Documentation/firmware-guide/acpi/acpi-lid.rst                   |    2 -
- Documentation/firmware-guide/acpi/namespace.rst                  |    2 -
- Documentation/hid/hid-alps.rst                                   |    2 -
- Documentation/hid/hid-bpf.rst                                    |    2 -
- Documentation/hid/hiddev.rst                                     |    2 -
- Documentation/hid/hidraw.rst                                     |    2 -
- Documentation/hid/intel-ish-hid.rst                              |    2 -
- Documentation/i2c/gpio-fault-injection.rst                       |    2 -
- Documentation/i2c/smbus-protocol.rst                             |    2 -
- Documentation/input/devices/iforce-protocol.rst                  |    2 -
- Documentation/input/multi-touch-protocol.rst                     |    2 -
- Documentation/isdn/interface_capi.rst                            |    2 -
- Documentation/isdn/m_isdn.rst                                    |    2 -
- Documentation/leds/leds-qcom-lpg.rst                             |    4 +-
- Documentation/litmus-tests/README                                |    2 -
- Documentation/livepatch/reliable-stacktrace.rst                  |    2 -
- Documentation/locking/lockdep-design.rst                         |    4 +-
- Documentation/locking/locktorture.rst                            |    2 -
- Documentation/locking/locktypes.rst                              |    2 -
- Documentation/locking/preempt-locking.rst                        |    2 -
- Documentation/mm/hmm.rst                                         |    4 +-
- Documentation/mm/hwpoison.rst                                    |    2 -
- Documentation/openrisc/openrisc_port.rst                         |    4 +-
- Documentation/power/suspend-and-interrupts.rst                   |    2 -
- Documentation/powerpc/kasan.txt                                  |    2 -
- Documentation/powerpc/papr_hcalls.rst                            |    2 -
- Documentation/powerpc/qe_firmware.rst                            |    4 +-
- Documentation/powerpc/vas-api.rst                                |    4 +-
- Documentation/s390/pci.rst                                       |    4 +-
- Documentation/s390/vfio-ccw.rst                                  |    2 -
- Documentation/scheduler/sched-bwc.rst                            |    2 -
- Documentation/scheduler/sched-energy.rst                         |    4 +-
- Documentation/security/digsig.rst                                |    4 +-
- Documentation/security/keys/core.rst                             |    2 -
- Documentation/security/secrets/coco.rst                          |    2 -
- Documentation/sound/alsa-configuration.rst                       |    8 ++--
- Documentation/sound/cards/audigy-mixer.rst                       |    2 -
- Documentation/sound/cards/maya44.rst                             |    2 -
- Documentation/sound/cards/sb-live-mixer.rst                      |    2 -
- Documentation/sound/designs/jack-controls.rst                    |    2 -
- Documentation/sound/designs/seq-oss.rst                          |    2 -
- Documentation/sound/hd-audio/notes.rst                           |    2 -
- Documentation/spi/pxa2xx.rst                                     |   12 +++---
- Documentation/spi/spi-lm70llp.rst                                |    2 -
- Documentation/spi/spi-summary.rst                                |    2 -
- Documentation/target/tcmu-design.rst                             |    2 -
- Documentation/timers/hrtimers.rst                                |    2 -
- Documentation/tools/rtla/rtla-timerlat-top.rst                   |    2 -
- Documentation/trace/coresight/coresight-etm4x-reference.rst      |    2 -
- Documentation/trace/events.rst                                   |    6 +--
- Documentation/trace/fprobe.rst                                   |    2 -
- Documentation/trace/ftrace-uses.rst                              |    2 -
- Documentation/trace/hwlat_detector.rst                           |    2 -
- Documentation/trace/rv/runtime-verification.rst                  |    2 -
- Documentation/trace/uprobetracer.rst                             |    2 -
- Documentation/usb/chipidea.rst                                   |   19 +++++-----
- Documentation/usb/gadget-testing.rst                             |    2 -
- Documentation/usb/mass-storage.rst                               |    2 -
- Documentation/w1/w1-netlink.rst                                  |    2 -
- Documentation/x86/boot.rst                                       |    2 -
- Documentation/x86/buslock.rst                                    |    2 -
- Documentation/x86/mds.rst                                        |    2 -
- Documentation/x86/resctrl.rst                                    |    2 -
- Documentation/x86/sgx.rst                                        |    2 -
- Documentation/xtensa/atomctl.rst                                 |    2 -
- 89 files changed, 124 insertions(+), 123 deletions(-)
-
-
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Vladimir Oltean <olteanv@gmail.com>
-Cc: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Jiri Kosina <jikos@kernel.org>
-Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: Wolfram Sang <wsa@kernel.org>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Henrik Rydberg <rydberg@bitmath.org>
-Cc: Karsten Keil <isdn@linux-pingi.de>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Lee Jones <lee@kernel.org>
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: Miroslav Benes <mbenes@suse.cz>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Jérôme Glisse <jglisse@redhat.com>
-Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Cc: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Jonas Bonn <jonas@southpole.se>
-Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-Cc: Stafford Horne <shorne@gmail.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Len Brown <len.brown@intel.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: David Howells <dhowells@redhat.com>
-Cc: Jarkko Sakkinen <jarkko@kernel.org>
-Cc: Paul Moore <paul@paul-moore.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: "Serge E. Hallyn" <serge@hallyn.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Evgeniy Polyakov <zbr@ioremap.net>
-Cc: Fenghua Yu <fenghua.yu@intel.com>
-Cc: Reinette Chatre <reinette.chatre@intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-
-Cc: alsa-devel@alsa-project.org
-Cc: coresight@lists.linaro.org
-Cc: bpf@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: isdn4linux@listserv.isdn4linux.de
-Cc: keyrings@vger.kernel.org
-Cc: linux-acpi@vger.kernel.org
-Cc: linux-block@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-fbdev@vger.kernel.org
-Cc: linux-i2c@vger.kernel.org
-Cc: linux-input@vger.kernel.org
-Cc: linux-leds@vger.kernel.org
-Cc: linux-pci@vger.kernel.org
-Cc: linux-s390@vger.kernel.org
-Cc: linux-scsi@vger.kernel.org
-Cc: linux-sgx@vger.kernel.org
-Cc: linux-spi@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Cc: linux-trace-kernel@vger.kernel.org
-Cc: live-patching@vger.kernel.org
-Cc: linux-pm@vger.kernel.org
-Cc: linux-security-module@vger.kernel.org
-Cc: linux-usb@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: target-devel@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: openrisc@lists.librecores.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: x86@kernel.org
+> ---
+>  include/linux/mm.h | 4 ++--
+>  kernel/fork.c      | 2 +-
+>  mm/hugetlb.c       | 4 ++--
+>  mm/mlock.c         | 6 +++---
+>  mm/mmap.c          | 6 +++---
+>  mm/mremap.c        | 2 +-
+>  6 files changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index b71f2809caac..da62bdd627bf 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -421,8 +421,8 @@ extern unsigned int kobjsize(const void *objp);
+>  /* This mask defines which mm->def_flags a process can inherit its parent */
+>  #define VM_INIT_DEF_MASK	VM_NOHUGEPAGE
+>  
+> -/* This mask is used to clear all the VMA flags used by mlock */
+> -#define VM_LOCKED_CLEAR_MASK	(~(VM_LOCKED | VM_LOCKONFAULT))
+> +/* This mask represents all the VMA flag bits used by mlock */
+> +#define VM_LOCKED_MASK	(VM_LOCKED | VM_LOCKONFAULT)
+>  
+>  /* Arch-specific flags to clear when updating VM flags on protection change */
+>  #ifndef VM_ARCH_CLEAR
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 6683c1b0f460..03d472051236 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -669,7 +669,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+>  			tmp->anon_vma = NULL;
+>  		} else if (anon_vma_fork(tmp, mpnt))
+>  			goto fail_nomem_anon_vma_fork;
+> -		tmp->vm_flags &= ~(VM_LOCKED | VM_LOCKONFAULT);
+> +		clear_vm_flags(tmp, VM_LOCKED_MASK);
+>  		file = tmp->vm_file;
+>  		if (file) {
+>  			struct address_space *mapping = file->f_mapping;
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index d20c8b09890e..4ecdbad9a451 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -6973,8 +6973,8 @@ static unsigned long page_table_shareable(struct vm_area_struct *svma,
+>  	unsigned long s_end = sbase + PUD_SIZE;
+>  
+>  	/* Allow segments to share if only one is marked locked */
+> -	unsigned long vm_flags = vma->vm_flags & VM_LOCKED_CLEAR_MASK;
+> -	unsigned long svm_flags = svma->vm_flags & VM_LOCKED_CLEAR_MASK;
+> +	unsigned long vm_flags = vma->vm_flags & ~VM_LOCKED_MASK;
+> +	unsigned long svm_flags = svma->vm_flags & ~VM_LOCKED_MASK;
+>  
+>  	/*
+>  	 * match the virtual addresses, permission and the alignment of the
+> diff --git a/mm/mlock.c b/mm/mlock.c
+> index 0336f52e03d7..5c4fff93cd6b 100644
+> --- a/mm/mlock.c
+> +++ b/mm/mlock.c
+> @@ -497,7 +497,7 @@ static int apply_vma_lock_flags(unsigned long start, size_t len,
+>  		if (vma->vm_start != tmp)
+>  			return -ENOMEM;
+>  
+> -		newflags = vma->vm_flags & VM_LOCKED_CLEAR_MASK;
+> +		newflags = vma->vm_flags & ~VM_LOCKED_MASK;
+>  		newflags |= flags;
+>  		/* Here we know that  vma->vm_start <= nstart < vma->vm_end. */
+>  		tmp = vma->vm_end;
+> @@ -661,7 +661,7 @@ static int apply_mlockall_flags(int flags)
+>  	struct vm_area_struct *vma, *prev = NULL;
+>  	vm_flags_t to_add = 0;
+>  
+> -	current->mm->def_flags &= VM_LOCKED_CLEAR_MASK;
+> +	current->mm->def_flags &= ~VM_LOCKED_MASK;
+>  	if (flags & MCL_FUTURE) {
+>  		current->mm->def_flags |= VM_LOCKED;
+>  
+> @@ -681,7 +681,7 @@ static int apply_mlockall_flags(int flags)
+>  	for_each_vma(vmi, vma) {
+>  		vm_flags_t newflags;
+>  
+> -		newflags = vma->vm_flags & VM_LOCKED_CLEAR_MASK;
+> +		newflags = vma->vm_flags & ~VM_LOCKED_MASK;
+>  		newflags |= to_add;
+>  
+>  		/* Ignore errors */
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index d4abc6feced1..323bd253b25a 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -2671,7 +2671,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+>  		if ((vm_flags & VM_SPECIAL) || vma_is_dax(vma) ||
+>  					is_vm_hugetlb_page(vma) ||
+>  					vma == get_gate_vma(current->mm))
+> -			vma->vm_flags &= VM_LOCKED_CLEAR_MASK;
+> +			clear_vm_flags(vma, VM_LOCKED_MASK);
+>  		else
+>  			mm->locked_vm += (len >> PAGE_SHIFT);
+>  	}
+> @@ -3340,8 +3340,8 @@ static struct vm_area_struct *__install_special_mapping(
+>  	vma->vm_start = addr;
+>  	vma->vm_end = addr + len;
+>  
+> -	vma->vm_flags = vm_flags | mm->def_flags | VM_DONTEXPAND | VM_SOFTDIRTY;
+> -	vma->vm_flags &= VM_LOCKED_CLEAR_MASK;
+> +	init_vm_flags(vma, (vm_flags | mm->def_flags |
+> +		      VM_DONTEXPAND | VM_SOFTDIRTY) & ~VM_LOCKED_MASK);
+>  	vma->vm_page_prot = vm_get_page_prot(vma->vm_flags);
+>  
+>  	vma->vm_ops = ops;
+> diff --git a/mm/mremap.c b/mm/mremap.c
+> index 1b3ee02bead7..35db9752cb6a 100644
+> --- a/mm/mremap.c
+> +++ b/mm/mremap.c
+> @@ -687,7 +687,7 @@ static unsigned long move_vma(struct vm_area_struct *vma,
+>  
+>  	if (unlikely(!err && (flags & MREMAP_DONTUNMAP))) {
+>  		/* We always clear VM_LOCKED[ONFAULT] on the old vma */
+> -		vma->vm_flags &= VM_LOCKED_CLEAR_MASK;
+> +		clear_vm_flags(vma, VM_LOCKED_MASK);
+>  
+>  		/*
+>  		 * anon_vma links of the old vma is no longer needed after its page
+> -- 
+> 2.39.1
+> 
+> 
