@@ -4,66 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79C9FC54E94
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 Jan 2023 23:58:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECBC5C54E94
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 00:29:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 599C31FE;
-	Thu, 26 Jan 2023 00:58:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 599C31FE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 96B671F9;
+	Thu, 26 Jan 2023 01:29:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96B671F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674691131;
-	bh=+UI2oidHudLC8hLsWw48+PbEwA+zaKTOclsc/bgiP2g=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1674692993;
+	bh=gubbhzGaviSeApE3IdtZWRMvA0UHhr8l5Bb71wx7pHE=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=f5egTL8qsl9IfJ4ASDfFwtzbKUNyk4JA66JXKH6pQoMHOlyEInuDbzqtr5ehPtFyb
-	 v6lbOWyQ+dBnWJgAuH/Gk37CGBxKhdJfFt2FICqMukp0rxBMPGpbiuQL8MLYfCB32o
-	 5qbaxzn/Yrz+HMuzNFs8rpBWkbiN2CmreQlh1m6s=
+	b=Qk32zsmSV67mRRO9FEud3kFoyqgTw5A4jvIs/ik2i/DH23oaGd29CVs2Rl4Wu3dOf
+	 V4yDUBEANZBSzd0qM+397gzW46VeSxAm+ssaUxleb49WsAn+oEKFgNMHGTfJ4hyHJF
+	 0GgHI0V+lgdFq/eruewf78jBkNyL4zsvJB/F9PSA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ED2D8F800FB;
-	Thu, 26 Jan 2023 00:58:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13ABBF80424;
+	Thu, 26 Jan 2023 01:29:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AD1CAF80424; Thu, 26 Jan 2023 00:57:59 +0100 (CET)
+ id DC6B8F804A9; Thu, 26 Jan 2023 01:28:59 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9D411F800AE
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 00:57:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D411F800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id B6AFCF802E8
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 01:28:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6AFCF802E8
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=f0M+ewff
+ header.s=k20201202 header.b=tuIKNqm4
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id BF4AAB81C56;
- Wed, 25 Jan 2023 23:57:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37102C433D2;
- Wed, 25 Jan 2023 23:57:43 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 4CBD9B81C6A;
+ Thu, 26 Jan 2023 00:28:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED5B2C4339C;
+ Thu, 26 Jan 2023 00:28:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674691070;
- bh=+UI2oidHudLC8hLsWw48+PbEwA+zaKTOclsc/bgiP2g=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=f0M+ewff1L0mwM5sB1Lk951LFeK3DK3UD+ahyG/jj+csL3jNj0+9ALs3F0eFNRFmx
- J++1zMiCNTeDnI86joApw4p0KW5ZWc5Fyb5Y99Gt0N33aahxD+Ni5n+WX9aI6HIqiJ
- 9lcXUfsvBxL629oru+7PSQeNgV91h/T+w0/65pgLvmCrDg1nPcnW/hh2jwHQAfkQgV
- PP0c/wvYZa8QNXUBF7sYwMzrjAApyYOPEXqKOCSWu4ZY3I+TZkc3OzCgb5NFs8c6Nx
- neqTv052UaRh3mqA5NGC0j2OmW+1NoJI0S6GKxs/3YBpP+JVzqaK1D7duzjXASBLaL
- nVkdejQs89jEg==
-Date: Thu, 26 Jan 2023 07:57:38 +0800
-From: Shawn Guo <shawnguo@kernel.org>
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH 2/2] ARM: dts: vfxxx: Swap SAI DMA order
-Message-ID: <20230125235733.GG20713@T480>
-References: <20230105144145.165010-1-marex@denx.de>
- <20230105144145.165010-2-marex@denx.de>
+ s=k20201202; t=1674692933;
+ bh=gubbhzGaviSeApE3IdtZWRMvA0UHhr8l5Bb71wx7pHE=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=tuIKNqm4mU2Li0CLx3FjM1AU7UJSU4+yfdyi0iYXnnatFEF1v57rvOic1GS2TLqk/
+ 5kuA0L8CiRqoJr61ikJLH11e/0Pjf087rVIsL9X+zCgsoEErlmwTW6ryrKNN11l+2f
+ yu2kdJwnbMx6s/W6nIQ7Qw03SP1GkTCGh7/CxEpu+wPFmIBGaaS/FwMN/4yjNzq3jF
+ kXkHwnfTJGwG1hTaUTw7RYsqJFeq6rZO9m9iDcrhjJT9BFhhMcSzzcEdOOnCspfrFt
+ Qluy9+VnBfG9N5jPTin0UNkY16poI0H+otWEjcTlsvmpBa9ilrmxueMwQt3dfhIx/B
+ 9JwUuYGlhGYRg==
+From: Mark Brown <broonie@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>, 
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230124123049.285395-1-krzysztof.kozlowski@linaro.org>
+References: <20230124123049.285395-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] ASoC: codecs: wsa883x: correct playback min/max rates
+Message-Id: <167469293063.2696228.862026813738827424.b4-ty@kernel.org>
+Date: Thu, 26 Jan 2023 00:28:50 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230105144145.165010-2-marex@denx.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.0
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,29 +79,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Peng Fan <peng.fan@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>,
- Alexander Stein <alexander.stein@ew.tq-group.com>, alsa-devel@alsa-project.org,
- Stefan Agner <stefan@agner.ch>, Liam Girdwood <lgirdwood@gmail.com>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Fabio Estevam <festevam@gmail.com>,
- Markus Niebel <Markus.Niebel@ew.tq-group.com>,
- Paul Elder <paul.elder@ideasonboard.com>, NXP Linux Team <linux-imx@nxp.com>,
- Tim Harvey <tharvey@gateworks.com>, devicetree@vger.kernel.org,
- Richard Zhu <hongxing.zhu@nxp.com>, Richard Cochran <richardcochran@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, Adam Ford <aford173@gmail.com>,
- linux-arm-kernel@lists.infradead.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
- Joakim Zhang <qiangqing.zhang@nxp.com>, Mark Brown <broonie@kernel.org>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Lucas Stach <l.stach@pengutronix.de>
+Cc: stable@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jan 05, 2023 at 03:41:45PM +0100, Marek Vasut wrote:
-> Swap the SAI dmas and dma-names to match the order documented in
-> Documentation/devicetree/bindings/sound/fsl,sai.yaml
-> No functional change.
+On Tue, 24 Jan 2023 13:30:49 +0100, Krzysztof Kozlowski wrote:
+> Correct reversed values used in min/max rates, leading to incorrect
+> playback constraints.
 > 
-> Signed-off-by: Marek Vasut <marex@denx.de>
+> 
 
-Applied, thanks!
+Applied to
+
+   broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: codecs: wsa883x: correct playback min/max rates
+      commit: 100c94ffde489ee11e23400f2a07b236144b048f
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
