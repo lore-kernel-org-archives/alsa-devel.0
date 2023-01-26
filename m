@@ -4,84 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E132CC54E94
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 16:40:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32FC2C05027
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 17:10:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F722E75;
-	Thu, 26 Jan 2023 17:39:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F722E75
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1BEA7DF5;
+	Thu, 26 Jan 2023 18:09:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BEA7DF5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674751222;
-	bh=4y5T8Z1YzTy28i7M/tIXpNDOtq+YX0jkW9G/xOmLxUs=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1674753049;
+	bh=YQHLBU7Aivmn9WcnpQM380Yt0zjC5w1aDhENH54PYoM=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=VHZiKSClMZJXa7qjNgD2lApiXmi+9Glky1dTa2iS/qsbiia6xXZyQMNtDc3fMmfIx
-	 Bb191uwouwOYtyy5xbLXBFFe+ndjBhkYPvpJKM+/wE1bujd5ZCitrNe3i7XwozcxS7
-	 kylXRMjmr0ms2CdC6QP8AtMHcLvp9nkJPx2jL46E=
+	 From;
+	b=RfjQaht3FKc9QeS4r/397JtMi+y3vqH6kHgRcWWg0hMTjC6kCa252SS9QYc/GACN6
+	 TXl1hnlQwesikLQaymzvAYsc7c/Bpivxm9X8R4NR5LttGFGIsO2IHY2z+j0Yw8PsKZ
+	 39AukOiLnUjWDd8JE1PSb2aJ2Ku2rcrPMRQW761I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B14BF8025D;
-	Thu, 26 Jan 2023 17:39:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F591F802DF;
+	Thu, 26 Jan 2023 18:09:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4AB26F8027D; Thu, 26 Jan 2023 17:39:30 +0100 (CET)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
- [IPv6:2a00:1450:4864:20::42d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 096F9F802DF; Thu, 26 Jan 2023 18:09:57 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F34CDF800AE
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 17:39:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F34CDF800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7FBF8F80224
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 18:09:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FBF8F80224
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=nTJd3UqQ
-Received: by mail-wr1-x42d.google.com with SMTP id m14so1906288wrg.13
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 08:39:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
- bh=WcIULWf1hJO2aSG6ip1Q2Tbo7KEX8l8vfq1u07hQEUU=;
- b=nTJd3UqQHJYIgHfYtrJfyHF3jy6yesQbAxKnBfhlrW7ZZYv5vss1/BwpzGKnU//+pW
- zpEWqlJSU1UJSI1ZnMW1/fpJO+yHRhfSOrbz1DMeeefUw11iYpnJNzq7lutcwL4sdVQA
- M8u0eJoyy7W8bYrQw3m8zo2lACqWAzDw3gWKispcuaQug6tcfxcDGjBfRUSmloFUhxGM
- Sw/XwIM7yxzH/86FHVCW4XrLFoPQQKBIX3LLkuUfneMt47tO5zFJRor1KAkP1FlI503l
- rgytrxiJuJYtCArZvzsNUT3M8ZVe4MODcWS2KQ1S65g210VjD1EB76AaowZCvsQ/VBqY
- zIkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
- :message-id:reply-to;
- bh=WcIULWf1hJO2aSG6ip1Q2Tbo7KEX8l8vfq1u07hQEUU=;
- b=BbI/iN2t75MuB5y6AmCPAq1Vs9j0yTAAq8dVjMAQQ89wvbWn4VY3OZXdzwYCKMQTnp
- K8ZBsDqVumSUYXmf4YAIoLhCMnPViXNsivzusUyhn6bx0XxMunMr0Oehg74lWn8Zb2Ed
- wgYT7WPmQRNuV4Wtj0qY/CnSUzCsGBijNmgrvsa9se2Djni2vFjMDZkYCAjt3r7fUBFg
- uRqZObied8A2CyeQRJmoBuPCj2g5f74hZweyLMamba7cJ0G/4ntM2f4jZI8cuO34XBrS
- 9kBYEgmAzCPehnbFTIlC+yVnL/7dc8/9aFTVtk+uGlWL+mI9Z+xmg3QOpp/K5Tm6+iSd
- 8RiQ==
-X-Gm-Message-State: AFqh2kr+nzd6EGurPpH0MOAJWL+AonfSrHsjgPeYV9+NkFyj9LYqmi5r
- qzYZ2ydP4y9Z4svlcRBey0k=
-X-Google-Smtp-Source: AMrXdXsrjgrGETIMbiJakho1CzIks0SH953VqlAvOj6xcJEoDaMM1z2UyXPlB7L/3oOwE6z5TxzZag==
-X-Received: by 2002:a05:6000:1f95:b0:2bc:371a:8a2 with SMTP id
- bw21-20020a0560001f9500b002bc371a08a2mr32915198wrb.37.1674751157968; 
- Thu, 26 Jan 2023 08:39:17 -0800 (PST)
-Received: from localhost ([102.36.222.112]) by smtp.gmail.com with ESMTPSA id
- l16-20020adffe90000000b002b8fe58d6desm1716079wrr.62.2023.01.26.08.39.16
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 26 Jan 2023 08:39:17 -0800 (PST)
-Date: Thu, 26 Jan 2023 19:39:06 +0300
-From: Dan Carpenter <error27@gmail.com>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH] ALSA: pci: lx6464es: fix a debug loop
-Message-ID: <Y9KsqpFRrlhX57WJ@kadam>
-References: <Y9JIGt0HT8mLkUXF@kili>
- <878rhptq36.wl-tiwai@suse.de>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=r+e7VK9G
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 8FD02B81EB3;
+ Thu, 26 Jan 2023 17:09:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 661DDC433EF;
+ Thu, 26 Jan 2023 17:09:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1674752990;
+ bh=YQHLBU7Aivmn9WcnpQM380Yt0zjC5w1aDhENH54PYoM=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=r+e7VK9GhAWdoai6a4dQ+hIx/vGneah7AOXGXBJJsLAX8gnP+7gSJ/J2PumsnF8BT
+ mrQxqzbtj/bUwSeCizoBGXqEzizrhsr5Sno/lJElFpgw7FIEi9LbBVotgadNYZdnUl
+ fiNMXhAYhQWBMeoU7CPJBaZxv7nhwxZbEHwWAbKTS7E4fAUUFow1IFffpzUF8A86oC
+ YX+LHOWrOk+etv6P1z0G3+ltRSl4huGNuFutDcaKPe2GbdvmSXD8AUXA3e+S2Dy+sf
+ tBqDmckx5txXlmHhL0Ntqvag9YRoyU0DS5U4lU5eHuvZ+U8Q+Z7K+hzsWoLum9C6Iz
+ +bYmAVabkDmpw==
+From: Mark Brown <broonie@kernel.org>
+To: krzysztof.kozlowski+dt@linaro.org, agross@kernel.org, 
+ andersson@kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, 
+ quic_plai@quicinc.com, bgoswami@quicinc.com, srinivas.kandagatla@linaro.org, 
+ quic_rohkumar@quicinc.com, linux-arm-msm@vger.kernel.org, 
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, 
+ swboyd@chromium.org, judyhsiao@chromium.org, devicetree@vger.kernel.org, 
+ konrad.dybcio@linaro.org, 
+ Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+In-Reply-To: <1674468802-14834-1-git-send-email-quic_srivasam@quicinc.com>
+References: <1674468802-14834-1-git-send-email-quic_srivasam@quicinc.com>
+Subject: Re: [PATCH v3 0/2] Update lpass dt-bindings
+Message-Id: <167475298607.4003145.11363897170835254190.b4-ty@kernel.org>
+Date: Thu, 26 Jan 2023 17:09:46 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878rhptq36.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.0
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -94,56 +82,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Maxime Ripard <mripard@kernel.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jan 26, 2023 at 01:53:01PM +0100, Takashi Iwai wrote:
-> On Thu, 26 Jan 2023 10:30:02 +0100,
-> Dan Carpenter wrote:
-> > 
-> > This loop accidentally reuses the "i" iterator for both the inside and
-> > the outside loop.  The value of MAX_STREAM_BUFFER is 5.  I believe that
-> > chip->rmh.stat_len is in the 2-12 range.  If the value of .stat_len is
-> > 4 or more then it will loop exactly one time, but if it's less then it
-> > is a forever loop.
-> > 
-> > Fixes: 8e6320064c33 ("ALSA: lx_core: Remove useless #if 0 .. #endif")
-> > Signed-off-by: Dan Carpenter <error27@gmail.com>
-> > ---
-> >  sound/pci/lx6464es/lx_core.c | 12 +++++-------
-> >  1 file changed, 5 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/sound/pci/lx6464es/lx_core.c b/sound/pci/lx6464es/lx_core.c
-> > index d3f58a3d17fb..7c1b380a54c0 100644
-> > --- a/sound/pci/lx6464es/lx_core.c
-> > +++ b/sound/pci/lx6464es/lx_core.c
-> > @@ -493,13 +493,11 @@ int lx_buffer_ask(struct lx6464es *chip, u32 pipe, int is_capture,
-> >  		dev_dbg(chip->card->dev,
-> >  			"CMD_08_ASK_BUFFERS: needed %d, freed %d\n",
-> >  			    *r_needed, *r_freed);
-> > -		for (i = 0; i < MAX_STREAM_BUFFER; ++i) {
-> > -			for (i = 0; i != chip->rmh.stat_len; ++i)
-> > -				dev_dbg(chip->card->dev,
-> > -					"  stat[%d]: %x, %x\n", i,
-> > -					    chip->rmh.stat[i],
-> > -					    chip->rmh.stat[i] & MASK_DATA_SIZE);
-> > -		}
-> > +		for (i = 0; i < chip->rmh.stat_len; ++i)
+On Mon, 23 Jan 2023 15:43:20 +0530, Srinivasa Rao Mandadapu wrote:
+> Update va-macro driver dt-bindings and add missing properties in sc7280
+> machine driver dt-bindings.
 > 
-> Judging from the previous lines, the access over MAX_STREAM_BUFFER
-> might be unsafe.  So I guess a more safer change would be something
-> like:
+> Changes since v2:
+>     -- Update commit message and example in "Add platform property" patch.
+>     -- Update commit message in "Update clock name" patch.
+> Changes since v1:
+>     -- Remove sound-dai cells property patch.
+>     -- Update example in clock name change patch.
+>     -- Update commit message and add maxItems in platform proerty patch.
 > 
-> 		for (i = 0; i < MAX_STREAM_BUFFER && chip->rmh.stat_len; ++i)
+> [...]
 
-&& i < chip->rmh.stat_len
+Applied to
 
-TBH, I'd prefer to just delete all this code since it used be ifdef 0.
+   broonie/sound.git for-next
 
-But I'll resend as you have suggested.
+Thanks!
 
-regards,
-dan carpenter
+[1/2] ASoC: qcom: dt-bindings: lpass-va-macro: Update clock name
+      commit: 7a35498982e84e4d39e8c259f251dfa588f0f039
+[2/2] ASoC: dt-bindings: google,sc7280-herobrine: Add platform property
+      commit: ec9009724027b6599ee79a8ac6c97de442ad6f6d
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
