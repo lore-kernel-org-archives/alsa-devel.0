@@ -4,71 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A91DC38142
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 11:52:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79090C38142
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 11:52:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 46DD0AEA;
-	Fri, 27 Jan 2023 12:51:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46DD0AEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1664DE0E;
+	Fri, 27 Jan 2023 12:51:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1664DE0E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674820318;
-	bh=TJwB9xWefUtenAJhobcnuA3/dr44yh/1qZH05naV3dA=;
+	s=default; t=1674820346;
+	bh=A3jqgSV9WUxdb3ZkujtLcqAQwnfqkoU5ybDSQdNw5cg=;
 	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=bwDXOP4OAGRs87qu1tnAGfKOppzOLzfc+PznZMhktTn3Nl7zf/NPTDR8lMEUO5+jg
-	 J7e4WpTvpHiRZcG7ll7VFkmrxqw4NGQeB7OfrVa229ZvmNm1oXKwdWH3WnC6CUPEcO
-	 mDutswsey+5RrxcS8QEZcByET8zsCkbvbFGj0bkw=
+	b=RqzIPPBeBoxPDXkIBkpOq628hkTzjik4aZZShYGodDvIKiA9JoVTOqDesDz5mOUo9
+	 P1Mzpl/lvjSRnOw6itBzygl5UehGSb9lcOqHcJEOmu4/l52NJbIDwszcrLldoH4PAH
+	 bt3N1R1P117W6E9TOalcjwnDa65VjDRPFxxRqJiY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3000F802E8;
-	Fri, 27 Jan 2023 12:51:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9804DF804C2;
+	Fri, 27 Jan 2023 12:51:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A6537F8027D; Thu, 26 Jan 2023 18:07:54 +0100 (CET)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 28A53F8027D; Thu, 26 Jan 2023 10:18:10 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 47E5FF8016E
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 18:07:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47E5FF8016E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 897EFF8016E
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 10:18:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 897EFF8016E
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=HIAeawkS
-Received: from mercury (dyndsl-037-138-191-219.ewe-ip-backbone.de
- [37.138.191.219])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested) (Authenticated sender: sre)
- by madras.collabora.co.uk (Postfix) with ESMTPSA id 7E2906602E6E;
- Thu, 26 Jan 2023 17:07:41 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1674752861;
- bh=TJwB9xWefUtenAJhobcnuA3/dr44yh/1qZH05naV3dA=;
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=sky5enLF
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 148A86172A;
+ Thu, 26 Jan 2023 09:18:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B686C433EF;
+ Thu, 26 Jan 2023 09:17:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1674724682;
+ bh=A3jqgSV9WUxdb3ZkujtLcqAQwnfqkoU5ybDSQdNw5cg=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=HIAeawkSMl4wLK9atphFO2PYIuQtn0mXWrQTGJkp27Vvwen4RmNJXIKy0KOcMN2qu
- MGji/BoqRh//5quIKkg+7Jg9a4rlT6zYnOxKnHRve8IRt32uZ0O2J9C6ByA7KSG9ni
- ooI+f+xDzdj/4Xv/XqAW1ZMOqMbxlnaE69Ns4AaVsCb09DHvVD+xjXrJ7HkcJ65ZDs
- 0FKkR9qOOchTbFQKw+Lbe8GJsd/K96q/WWSPWtyPUY4G0yRJ/G34tsJUBI/vL5q95x
- a6dIJ/I/0Glk/75yhzfiBv6PLPN/HUTuWOcS4vpdAGRdicde5HTb77Vj3shLRE2rZN
- snAuQFm3yL5CQ==
-Received: by mercury (Postfix, from userid 1000)
- id 8DAD710609C7; Thu, 26 Jan 2023 18:07:39 +0100 (CET)
-Date: Thu, 26 Jan 2023 18:07:39 +0100
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
+ b=sky5enLFwJr3DfJ9b2ymbv/d7rE2oypuJvDM2cNeWmTa68+LJkoJeMjxMVF911xjR
+ /p46Fe2/pbyCsXipax42/Hou3ZWrY6fA7yy3y0E4tly4hSn7A+WSEbwQZyXAjmF/fy
+ t3crMkotzOdGBKQN+I5JbdstqSnsQJbVUv4CaD/JnI/YsWTl+N0fRV5BPO+OqFre41
+ 7ERJV1xNKFLVanuVeJ94drHEBHBdP99mIJAbLamNbCF2r05esRYyfEqSbQFmRXAtIl
+ xm2AXIIoDKu6q2SCf9/o5Ej3L+rCFY/nYnTN8yhQCyREfEIhRdSCFxGuw7sIOiHW7k
+ L6KyLx8xuXeew==
+Date: Thu, 26 Jan 2023 11:17:09 +0200
+From: Mike Rapoport <rppt@kernel.org>
 To: Suren Baghdasaryan <surenb@google.com>
-Subject: Re: [PATCH v2 3/6] mm: replace vma->vm_flags direct modifications
- with modifier calls
-Message-ID: <20230126170739.mlka2jivn3mfstyf@mercury.elektranox.org>
+Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
+Message-ID: <Y9JFFYjfJf9uDijE@kernel.org>
 References: <20230125083851.27759-1-surenb@google.com>
- <20230125083851.27759-4-surenb@google.com>
+ <20230125083851.27759-2-surenb@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="qcyccrleajamxo75"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230125083851.27759-4-surenb@google.com>
+In-Reply-To: <20230125083851.27759-2-surenb@google.com>
 X-Mailman-Approved-At: Fri, 27 Jan 2023 12:51:03 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -118,22 +112,22 @@ Cc: michel@lespinasse.org, nvdimm@lists.linux.dev, heiko@sntech.de,
  gurua@google.com, dgilbert@interlog.com, xiang@kernel.org, pabeni@redhat.com,
  jejb@linux.ibm.com, quic_abhinavk@quicinc.com, bp@alien8.de,
  mchehab@kernel.org, linux-ext4@vger.kernel.org, tomba@kernel.org,
- hughlynch@google.com, tfiga@chromium.org, linux-xfs@vger.kernel.org,
- zhangfei.gao@linaro.org, wangzhou1@hisilicon.com, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-erofs@lists.ozlabs.org, davem@davemloft.net,
- mhocko@suse.com, kvm@vger.kernel.org, mst@redhat.com, peterz@infradead.org,
- bigeasy@linutronix.de, alexandre.torgue@foss.st.com, dhowells@redhat.com,
- linux-mm@kvack.org, ray.huang@amd.com, adilger.kernel@dilger.ca,
- kuba@kernel.org, sparclinux@vger.kernel.org, airlied@gmail.com,
- anton.ivanov@cambridgegreys.com, herbert@gondor.apana.org.au,
- linux-scsi@vger.kernel.org, richard@nod.at, x86@kernel.org, vkoul@kernel.org,
- mingo@redhat.com, axelrasmussen@google.com, intel-gfx@lists.freedesktop.org,
- daniel@ffwll.ch, paulmck@kernel.org, jannh@google.com, chao@kernel.org,
- maarten.lankhorst@linux.intel.com, liam.howlett@oracle.com,
- hdegoede@redhat.com, linux-mediatek@lists.infradead.org,
- matthias.bgg@gmail.com, vbabka@suse.cz, dimitri.sivanich@hpe.com,
- amd-gfx@lists.freedesktop.org, posk@google.com, lstoakes@gmail.com,
- peterjung1337@gmail.com, yoshfuji@linux-ipv6.org,
+ hughlynch@google.com, sre@kernel.org, tfiga@chromium.org,
+ linux-xfs@vger.kernel.org, zhangfei.gao@linaro.org, wangzhou1@hisilicon.com,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+ davem@davemloft.net, mhocko@suse.com, kvm@vger.kernel.org, mst@redhat.com,
+ peterz@infradead.org, bigeasy@linutronix.de, alexandre.torgue@foss.st.com,
+ dhowells@redhat.com, linux-mm@kvack.org, ray.huang@amd.com,
+ adilger.kernel@dilger.ca, kuba@kernel.org, sparclinux@vger.kernel.org,
+ airlied@gmail.com, anton.ivanov@cambridgegreys.com,
+ herbert@gondor.apana.org.au, linux-scsi@vger.kernel.org, richard@nod.at,
+ x86@kernel.org, vkoul@kernel.org, mingo@redhat.com, axelrasmussen@google.com,
+ intel-gfx@lists.freedesktop.org, daniel@ffwll.ch, paulmck@kernel.org,
+ jannh@google.com, chao@kernel.org, maarten.lankhorst@linux.intel.com,
+ liam.howlett@oracle.com, hdegoede@redhat.com,
+ linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com, vbabka@suse.cz,
+ dimitri.sivanich@hpe.com, amd-gfx@lists.freedesktop.org, posk@google.com,
+ lstoakes@gmail.com, peterjung1337@gmail.com, yoshfuji@linux-ipv6.org,
  linuxppc-dev@lists.ozlabs.org, dsahern@kernel.org, kent.overstreet@linux.dev,
  kexec@lists.infradead.org, tiwai@suse.com, krzysztof.kozlowski@linaro.org,
  tzimmermann@suse.de, hannes@cmpxchg.org, dmitry.baryshkov@linaro.org,
@@ -142,63 +136,94 @@ Cc: michel@lespinasse.org, nvdimm@lists.linux.dev, heiko@sntech.de,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
---qcyccrleajamxo75
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Wed, Jan 25, 2023 at 12:38:48AM -0800, Suren Baghdasaryan wrote:
-> Replace direct modifications to vma->vm_flags with calls to modifier
-> functions to be able to track flag changes and to keep vma locking
-> correctness.
->=20
+On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
+> vm_flags are among VMA attributes which affect decisions like VMA merging
+> and splitting. Therefore all vm_flags modifications are performed after
+> taking exclusive mmap_lock to prevent vm_flags updates racing with such
+> operations. Introduce modifier functions for vm_flags to be used whenever
+> flags are updated. This way we can better check and control correct
+> locking behavior during these updates.
+> 
 > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 > ---
-> [...]
->  drivers/hsi/clients/cmt_speech.c                   |  2 +-
->  120 files changed, 188 insertions(+), 199 deletions(-)
-> [...]
-> diff --git a/drivers/hsi/clients/cmt_speech.c b/drivers/hsi/clients/cmt_s=
-peech.c
-> index 8069f795c864..952a31e742a1 100644
-> --- a/drivers/hsi/clients/cmt_speech.c
-> +++ b/drivers/hsi/clients/cmt_speech.c
-> @@ -1264,7 +1264,7 @@ static int cs_char_mmap(struct file *file, struct v=
-m_area_struct *vma)
->  	if (vma_pages(vma) !=3D 1)
->  		return -EINVAL;
-> =20
-> -	vma->vm_flags |=3D VM_IO | VM_DONTDUMP | VM_DONTEXPAND;
-> +	set_vm_flags(vma, VM_IO | VM_DONTDUMP | VM_DONTEXPAND);
->  	vma->vm_ops =3D &cs_char_vm_ops;
->  	vma->vm_private_data =3D file->private_data;
-> =20
+>  include/linux/mm.h       | 37 +++++++++++++++++++++++++++++++++++++
+>  include/linux/mm_types.h |  8 +++++++-
+>  2 files changed, 44 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index c2f62bdce134..b71f2809caac 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -627,6 +627,43 @@ static inline void vma_init(struct vm_area_struct *vma, struct mm_struct *mm)
+>  	INIT_LIST_HEAD(&vma->anon_vma_chain);
+>  }
+>  
+> +/* Use when VMA is not part of the VMA tree and needs no locking */
+> +static inline void init_vm_flags(struct vm_area_struct *vma,
+> +				 unsigned long flags)
 
-Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+I'd suggest to make it vm_flags_init() etc.
+Except that
 
--- Sebastian
+Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
---qcyccrleajamxo75
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmPSs1EACgkQ2O7X88g7
-+pquLBAAkw9lw9lxNRCI6jvqLy98JsUBgSQigNB6Eh8JVWsySHMm1OszFCcvTpoc
-vinC/VPMOa6JwEw5e9naXRF2UJahO+Cx+e5MYIKos3QyIUPfi0YM7Cv96h6+c4l/
-NdcxLS8+9ElitTuA47UVgPSeZwzdZ1kU5VUV1X2fx+6aGA+dBfWVBgWDqU6AB0Sa
-ehU4betso5Ypl26YEmLPHmY+8Xx2jXNwwBEgsHgO2/YjRn9YPDeMAqb4lWs99h0d
-nUV1VqwTClRrExtNDvidHryknmyCIBpYt38gn0i9+uIf9mFoBmUDN+/zAdRguGBT
-r1CQAwvRvHmEyGJ4dp1nijyt/PWxDBlCWytlmzXrK/rkeH8sQCRdCr9L83/d5DM0
-iU98ehmbH9kx8rD4y0L91xmsnegNYNKSfAvz3EP4KYFOHjTw2SOCYoazPu3z62bN
-d3HL+08LeZpm1XwVPydZqBd5UpBK8NaQYCJ3BjsLUefsSJE+SWzsnoYFnbUrL1X9
-1XfU6LGtVvjCPUsjk7oqh5PjtRGQsdtUhSZJLwNzTeh4I0nSzL1pj8vRFZ7UTcV4
-RmFYsjBbKhja2fC13eM4tKzfx53harnHVNuUPw2aoLKshpkQaOTUqWBnRXtbJZkb
-dSRKObxfPlHVI+awnfN6owpXF86Owew2+XJcXILOPxaBk8PI/Ns=
-=/0TB
------END PGP SIGNATURE-----
-
---qcyccrleajamxo75--
+> +{
+> +	vma->vm_flags = flags;
+> +}
+> +
+> +/* Use when VMA is part of the VMA tree and modifications need coordination */
+> +static inline void reset_vm_flags(struct vm_area_struct *vma,
+> +				  unsigned long flags)
+> +{
+> +	mmap_assert_write_locked(vma->vm_mm);
+> +	init_vm_flags(vma, flags);
+> +}
+> +
+> +static inline void set_vm_flags(struct vm_area_struct *vma,
+> +				unsigned long flags)
+> +{
+> +	mmap_assert_write_locked(vma->vm_mm);
+> +	vma->vm_flags |= flags;
+> +}
+> +
+> +static inline void clear_vm_flags(struct vm_area_struct *vma,
+> +				  unsigned long flags)
+> +{
+> +	mmap_assert_write_locked(vma->vm_mm);
+> +	vma->vm_flags &= ~flags;
+> +}
+> +
+> +static inline void mod_vm_flags(struct vm_area_struct *vma,
+> +				unsigned long set, unsigned long clear)
+> +{
+> +	mmap_assert_write_locked(vma->vm_mm);
+> +	vma->vm_flags |= set;
+> +	vma->vm_flags &= ~clear;
+> +}
+> +
+>  static inline void vma_set_anonymous(struct vm_area_struct *vma)
+>  {
+>  	vma->vm_ops = NULL;
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 2d6d790d9bed..6c7c70bf50dd 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -491,7 +491,13 @@ struct vm_area_struct {
+>  	 * See vmf_insert_mixed_prot() for discussion.
+>  	 */
+>  	pgprot_t vm_page_prot;
+> -	unsigned long vm_flags;		/* Flags, see mm.h. */
+> +
+> +	/*
+> +	 * Flags, see mm.h.
+> +	 * WARNING! Do not modify directly.
+> +	 * Use {init|reset|set|clear|mod}_vm_flags() functions instead.
+> +	 */
+> +	unsigned long vm_flags;
+>  
+>  	/*
+>  	 * For areas with an address space and backing store,
+> -- 
+> 2.39.1
+> 
+> 
