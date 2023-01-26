@@ -4,65 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7211AC61D9D
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 03:16:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE2C5C54E94
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 03:16:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C969883E;
-	Thu, 26 Jan 2023 04:15:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C969883E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D68984C;
+	Thu, 26 Jan 2023 04:15:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D68984C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674702968;
-	bh=4PFE1UM2408mBRD33AO1AVvXloYyWd5LYnUxPW4twSk=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=oaiE4+Dg3V3Xqepgv1jug9gwY3uNVLm5hWfofvCFnSfUHk0n2rS4rD96NGwXH03Uf
-	 +iJfS9eGCCin55qAN6yejLKKWF6rpBhZdE2tgH+X/tRKn6i07azRzw9hKo0lb7fcMh
-	 mn0dG/MRq38mVAjt5hHH/MKWSiTfsR82URE0s2nY=
+	s=default; t=1674702992;
+	bh=wGdqr77TIexjjMy4UE3QhhNMRSimPHLzfTNiwOUnNMw=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=emhjez1lyyZyj4lnpGLU3Ah8v5bPVrN8KIPuPayk+poDcn/ph2zcj1uuR625nEnGF
+	 DW8pG77vFhITak3SsNur7STcHSB2VfXXdehLrVJuoR48cdt5teF+kxsyLW8YpYJhuY
+	 gX4k6BFYBAF+//TneUt0HE2JhO9Z6XOVGaBrp9aU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B24B3F80549;
-	Thu, 26 Jan 2023 04:14:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D43EDF8056F;
+	Thu, 26 Jan 2023 04:14:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DACCCF80567; Thu, 26 Jan 2023 04:14:55 +0100 (CET)
-Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
- [199.106.114.38])
+ id 7EAE1F80564; Thu, 26 Jan 2023 04:14:57 +0100 (CET)
+Received: from alexa-out-sd-02.qualcomm.com (alexa-out-sd-02.qualcomm.com
+ [199.106.114.39])
  (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 228C7F80224
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 04:14:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 228C7F80224
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6567BF8027D
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 04:14:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6567BF8027D
 Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcdkim header.b=MvynqUUl
+ header.s=qcdkim header.b=hA+T+sTa
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1674702884; x=1706238884;
- h=from:to:cc:subject:date:message-id:mime-version;
- bh=vv6c+7Kfc39u2VKp89EVQLomNqZ9kSbPEs1muxjJ7tk=;
- b=MvynqUUlwlKMg2PA8cAnTsB1qGx+SIYvyagIifRKjOe0LZeHdRNQhsUO
- /UNqCd5PLTfU86LOluq5aWB1CyY3nIJAyeBOFOc4iYZZo4shD6hXi8wen
- 9keEskUjHNWPFEXxumdJGiX1WEcmnKZjvmXd1yMag3E52pICYlMUwK4wq I=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
- by alexa-out-sd-01.qualcomm.com with ESMTP; 25 Jan 2023 19:14:39 -0800
+ t=1674702886; x=1706238886;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version;
+ bh=F8qLeDa97kg2MOUQG0PUj/xnkvDv+6xRtHu1IQh2yrk=;
+ b=hA+T+sTabxbK5IqCweUaRNT8S3inrHujPP46KPHM0OYT8oh8IU2zPykC
+ ZQOh/MrLweIOGeKsUUAK99qUVrCAk8Jkh5XtzOTkLvBTR8exE5wuF4LWg
+ MNM1nGfmBdBJ1BCNUefkdLtfFlhkGRR1MBqnq++Udn8bTqMtEYVKclxAd A=;
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+ by alexa-out-sd-02.qualcomm.com with ESMTP; 25 Jan 2023 19:14:41 -0800
 X-QCInternal: smtphost
 Received: from nasanex01c.na.qualcomm.com ([10.45.79.139])
- by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2023 19:14:38 -0800
+ by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Jan 2023 19:14:41 -0800
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.36; Wed, 25 Jan 2023 19:14:37 -0800
+ 15.2.986.36; Wed, 25 Jan 2023 19:14:40 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
  <perex@perex.cz>, <lgirdwood@gmail.com>, <andersson@kernel.org>,
  <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
  <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>, <bgoswami@quicinc.com>,
  <tiwai@suse.com>, <robh+dt@kernel.org>, <agross@kernel.org>
-Subject: [RFC PATCH v2 00/22] Introduce QC USB SND audio offloading support
-Date: Wed, 25 Jan 2023 19:14:02 -0800
-Message-ID: <20230126031424.14582-1-quic_wcheng@quicinc.com>
+Subject: [RFC PATCH v2 05/22] usb: xhci: Add XHCI APIs to support USB
+ offloading
+Date: Wed, 25 Jan 2023 19:14:07 -0800
+Message-ID: <20230126031424.14582-6-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230126031424.14582-1-quic_wcheng@quicinc.com>
+References: <20230126031424.14582-1-quic_wcheng@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.49.16.6]
@@ -87,191 +92,184 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Changes in v2:
+Some use cases, such as USB audio offloading, will allow for a DSP to take
+over issuing USB transfers to the host controller.  In order for the DSP to
+submit transfers for a particular endpoint, and to handle its events, the
+client driver will need to query for some parameters allocated by XHCI.
 
-XHCI:
-- Replaced XHCI and HCD changes with Mathias' XHCI interrupter changes
-in his tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git/log/?h=feature_interrupters
+- XHCI secondary interrupter event ring address
+- XHCI transfer ring address (for a particular EP)
+- Stop endpoint command API
 
-Adjustments made to Mathias' changes:
-  - Created xhci-intr.h to export/expose interrupter APIs versus exposing xhci.h.
-    Moved dependent structures to this file as well. (so clients can parse out
-    information from "struct xhci_interrupter")
-  - Added some basic locking when requesting interrupters.
-  - Fixed up some sanity checks.
-  - Removed clearing of the ERSTBA during freeing of the interrupter. (pending
-    issue where SMMU fault occurs if DMA addr returned is 64b - TODO)
+Once the resources are handed off to the DSP, the offload begins, and the
+main processor can enter idle.  When stopped, since there are no URBs
+submitted from the main processor, the client will just issue a stop
+endpoint command to halt any pending transfers.
 
-- Clean up pending events in the XHCI secondary interrupter.  While testing USB
-bus suspend, it was seen that on bus resume, the xHCI HC would run into a command
-timeout.
-- Added offloading APIs to xHCI to fetch transfer and event ring information.
+Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+---
+ drivers/usb/host/xhci.c       | 130 ++++++++++++++++++++++++++++++++++
+ include/linux/usb/xhci-intr.h |   8 +++
+ 2 files changed, 138 insertions(+)
 
-ASoC:
-- Modified soc-usb to allow for multiple USB port additions.  For this to work,
-the USB offload driver has to have a reference to the USB backend by adding
-a "usb-soc-be" DT entry to the device saved into XHCI sysdev.
-- Created separate dt-bindings for defining USB_RX port.
-- Increased APR timeout to accommodate the situation where the AFE port start
-command could be delayed due to having to issue a USB bus resume while
-handling the QMI stream start command.
-
-USB SND:
-- Added a platform ops during usb_audio_suspend().  This allows for the USB
-offload driver to halt the audio stream when system enters PM suspend.  This
-ensures the audio DSP is not issuing transfers on the USB bus.
-- Do not override platform ops if they are already populated.
-- Introduce a shared status variable between the USB offload and USB SND layers,
-to ensure that only one path is active at a time.  If the USB bus is occupied,
-then userspace is notified that the path is busy.
-
-Several Qualcomm based chipsets can support USB audio offloading to a
-dedicated audio DSP, which can take over issuing transfers to the USB
-host controller.  The intention is to reduce the load on the main
-processors in the SoC, and allow them to be placed into lower power modes.
-There are several parts to this design:
-  1. Adding ASoC binding layer
-  2. Create a USB backend for Q6DSP
-  3. Introduce XHCI interrupter support
-  4. Create vendor ops for the USB SND driver
-
-Adding ASoC binding layer:
-soc-usb: Intention is to treat a USB port similar to a headphone jack.
-The port is always present on the device, but cable/pin status can be
-enabled/disabled.  Expose mechanisms for USB backend ASoC drivers to
-communicate with USB SND.
-
-Create a USB backend for Q6DSP:
-q6usb: Basic backend driver that will be responsible for maintaining the
-resources needed to initiate a playback stream using the Q6DSP.  Will
-be the entity that checks to make sure the connected USB audio device
-supports the requested PCM format.  If it does not, the PCM open call will
-fail, and userpsace ALSA can take action accordingly.
-
-Introduce XHCI interrupter support:
-XHCI HCD supports multiple interrupters, which allows for events to be routed
-to different event rings.  This is determined by "Interrupter Target" field
-specified in Section "6.4.1.1 Normal TRB" of the XHCI specification.
-
-Events in the offloading case will be routed to an event ring that is assigned
-to the audio DSP.
-
-Create vendor ops for the USB SND driver:
-qc_audio_offload: This particular driver has several components associated
-with it:
-- QMI stream request handler
-- XHCI interrupter and resource management
-- audio DSP memory management
-
-When the audio DSP wants to enable a playback stream, the request is first
-received by the ASoC platform sound card.  Depending on the selected route,
-ASoC will bring up the individual DAIs in the path.  The Q6USB backend DAI
-will send an AFE port start command (with enabling the USB playback path), and
-the audio DSP will handle the request accordingly.
-
-Part of the AFE USB port start handling will have an exchange of control
-messages using the QMI protocol.  The qc_audio_offload driver will populate the
-buffer information:
-- Event ring base address
-- EP transfer ring base address
-
-and pass it along to the audio DSP.  All endpoint management will now be handed
-over to the DSP, and the main processor is not involved in transfers.
-
-Overall, implementing this feature will still expose separate sound card and PCM
-devices for both the platorm card and USB audio device:
- 0 [SM8250MTPWCD938]: sm8250 - SM8250-MTP-WCD9380-WSA8810-VA-D
-                      SM8250-MTP-WCD9380-WSA8810-VA-DMIC
- 1 [Audio          ]: USB-Audio - USB Audio
-                      Generic USB Audio at usb-xhci-hcd.1.auto-1.4, high speed
-
-This is to ensure that userspace ALSA entities can decide which route to take
-when executing the audio playback.  In the above, if card#1 is selected, then
-USB audio data will take the legacy path over the USB PCM drivers, etc...
-
-This feature was validated using:
-- tinymix: set/enable the multimedia path to route to USB backend
-- tinyplay: issue playback on platform card
-
-Mathias Nyman (4):
-  xhci: fix event ring segment table related masks and variables in
-    header
-  xhci: remove xhci_test_trb_in_td_math early development check
-  xhci: Refactor interrupter code for initial multi interrupter support.
-  xhci: Add support to allocate several interrupters
-
-Wesley Cheng (18):
-  usb: xhci: Add XHCI APIs to support USB offloading
-  usb: host: xhci-mem: Cleanup pending secondary event ring events
-  ASoC: Add SOC USB APIs for adding an USB backend
-  ASoC: dt-bindings: Add USB_RX port
-  ASoC: qcom: qdsp6: Introduce USB AFE port to q6dsp
-  ASoC: qdsp6: q6afe: Increase APR timeout
-  ASoC: qcom: Add USB backend ASoC driver for Q6
-  sound: usb: card: Introduce USB SND platform op callbacks
-  sound: usb: Export USB SND APIs for modules
-  dt-bindings: usb: dwc3: Add snps,num-hc-interrupters definition
-  usb: dwc3: Add DT parameter to specify maximum number of interrupters
-  sound: usb: Introduce QC USB SND offloading support
-  sound: usb: card: Check for support for requested audio format
-  sound: soc: soc-usb: Add PCM format check API for USB backend
-  sound: soc: qcom: qusb6: Ensure PCM format is supported by USB audio
-    device
-  sound: usb: Prevent starting of audio stream if in use
-  ASoC: dt-bindings: Add Q6USB backend bindings
-  ASoC: dt-bindings: Update example for enabling USB offload on SM8250
-
- .../bindings/sound/qcom,q6usb-dais.yaml       |   55 +
- .../bindings/sound/qcom,sm8250.yaml           |   13 +
- .../devicetree/bindings/usb/snps,dwc3.yaml    |   12 +
- drivers/usb/dwc3/core.c                       |   12 +
- drivers/usb/dwc3/core.h                       |    2 +
- drivers/usb/dwc3/host.c                       |    5 +-
- drivers/usb/host/xhci-debugfs.c               |    2 +-
- drivers/usb/host/xhci-mem.c                   |  471 +++--
- drivers/usb/host/xhci-ring.c                  |   68 +-
- drivers/usb/host/xhci.c                       |  199 +-
- drivers/usb/host/xhci.h                       |   81 +-
- .../sound/qcom,q6dsp-lpass-ports.h            |    1 +
- include/linux/usb/xhci-intr.h                 |   94 +
- include/sound/pcm_params.h                    |    4 +
- include/sound/q6usboffload.h                  |   20 +
- include/sound/soc-usb.h                       |   36 +
- sound/core/oss/pcm_oss.c                      |   58 -
- sound/core/pcm_lib.c                          |   65 +
- sound/soc/Makefile                            |    2 +-
- sound/soc/qcom/Kconfig                        |    4 +
- sound/soc/qcom/qdsp6/Makefile                 |    1 +
- sound/soc/qcom/qdsp6/q6afe-dai.c              |   48 +
- sound/soc/qcom/qdsp6/q6afe.c                  |  185 +-
- sound/soc/qcom/qdsp6/q6afe.h                  |   46 +-
- sound/soc/qcom/qdsp6/q6dsp-lpass-ports.c      |   23 +
- sound/soc/qcom/qdsp6/q6dsp-lpass-ports.h      |    1 +
- sound/soc/qcom/qdsp6/q6routing.c              |    8 +
- sound/soc/qcom/qdsp6/q6usb.c                  |  234 +++
- sound/soc/soc-usb.c                           |  215 ++
- sound/usb/Kconfig                             |   14 +
- sound/usb/Makefile                            |    2 +-
- sound/usb/card.c                              |   58 +
- sound/usb/card.h                              |   29 +
- sound/usb/endpoint.c                          |    2 +
- sound/usb/helper.c                            |    1 +
- sound/usb/pcm.c                               |   28 +-
- sound/usb/pcm.h                               |   12 +
- sound/usb/qcom/Makefile                       |    2 +
- sound/usb/qcom/qc_audio_offload.c             | 1789 +++++++++++++++++
- sound/usb/qcom/usb_audio_qmi_v01.c            |  892 ++++++++
- sound/usb/qcom/usb_audio_qmi_v01.h            |  162 ++
- 41 files changed, 4546 insertions(+), 410 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6usb-dais.yaml
- create mode 100644 include/linux/usb/xhci-intr.h
- create mode 100644 include/sound/q6usboffload.h
- create mode 100644 include/sound/soc-usb.h
- create mode 100644 sound/soc/qcom/qdsp6/q6usb.c
- create mode 100644 sound/soc/soc-usb.c
- create mode 100644 sound/usb/qcom/Makefile
- create mode 100644 sound/usb/qcom/qc_audio_offload.c
- create mode 100644 sound/usb/qcom/usb_audio_qmi_v01.c
- create mode 100644 sound/usb/qcom/usb_audio_qmi_v01.h
-
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 003c6cc2fb55..36d81ecdb890 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -1580,6 +1580,136 @@ static int xhci_check_args(struct usb_hcd *hcd, struct usb_device *udev,
+ 	return 1;
+ }
+ 
++int xhci_stop_endpoint(struct usb_device *udev,
++			struct usb_host_endpoint *ep)
++{
++	struct usb_hcd *hcd = bus_to_hcd(udev->bus);
++	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
++	unsigned int ep_index;
++	struct xhci_virt_device *virt_dev;
++	struct xhci_command *cmd;
++	unsigned long flags;
++	int ret = 0;
++
++	ret = xhci_check_args(hcd, udev, ep, 1, true, __func__);
++	if (ret <= 0)
++		return ret;
++
++	cmd = xhci_alloc_command(xhci, true, GFP_NOIO);
++	if (!cmd)
++		return -ENOMEM;
++
++	spin_lock_irqsave(&xhci->lock, flags);
++	virt_dev = xhci->devs[udev->slot_id];
++	if (!virt_dev) {
++		ret = -ENODEV;
++		goto err;
++	}
++
++	ep_index = xhci_get_endpoint_index(&ep->desc);
++	if (virt_dev->eps[ep_index].ring &&
++			virt_dev->eps[ep_index].ring->dequeue) {
++		ret = xhci_queue_stop_endpoint(xhci, cmd, udev->slot_id,
++				ep_index, 0);
++		if (ret)
++			goto err;
++
++		xhci_ring_cmd_db(xhci);
++		spin_unlock_irqrestore(&xhci->lock, flags);
++
++		/* Wait for stop endpoint command to finish */
++		wait_for_completion(cmd->completion);
++
++		if (cmd->status == COMP_COMMAND_ABORTED ||
++				cmd->status == COMP_STOPPED) {
++			xhci_warn(xhci,
++				"stop endpoint command timeout for ep%d%s\n",
++				usb_endpoint_num(&ep->desc),
++				usb_endpoint_dir_in(&ep->desc) ? "in" : "out");
++			ret = -ETIME;
++				}
++		goto free_cmd;
++	}
++
++err:
++	spin_unlock_irqrestore(&xhci->lock, flags);
++free_cmd:
++	xhci_free_command(xhci, cmd);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(xhci_stop_endpoint);
++
++/* Retrieve the transfer ring base address for a specific endpoint. */
++phys_addr_t xhci_get_xfer_resource(struct usb_device *udev,
++					struct usb_host_endpoint *ep, dma_addr_t *dma)
++{
++	struct usb_hcd *hcd = bus_to_hcd(udev->bus);
++	struct device *dev = hcd->self.sysdev;
++	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
++	struct sg_table sgt;
++	phys_addr_t pa;
++	int ret;
++	unsigned int ep_index;
++	struct xhci_virt_device *virt_dev;
++	unsigned long flags;
++
++	if (!HCD_RH_RUNNING(hcd))
++		return 0;
++
++	ret = xhci_check_args(hcd, udev, ep, 1, true, __func__);
++	if (ret <= 0) {
++		xhci_err(xhci, "%s: invalid args\n", __func__);
++		return 0;
++	}
++
++	spin_lock_irqsave(&xhci->lock, flags);
++
++	virt_dev = xhci->devs[udev->slot_id];
++	ep_index = xhci_get_endpoint_index(&ep->desc);
++
++	if (virt_dev->eps[ep_index].ring &&
++		virt_dev->eps[ep_index].ring->first_seg) {
++
++		dma_get_sgtable(dev, &sgt,
++			virt_dev->eps[ep_index].ring->first_seg->trbs,
++			virt_dev->eps[ep_index].ring->first_seg->dma,
++			TRB_SEGMENT_SIZE);
++
++		*dma = virt_dev->eps[ep_index].ring->first_seg->dma;
++
++		pa = page_to_phys(sg_page(sgt.sgl));
++		sg_free_table(&sgt);
++		spin_unlock_irqrestore(&xhci->lock, flags);
++
++		return pa;
++	}
++	spin_unlock_irqrestore(&xhci->lock, flags);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(xhci_get_xfer_resource);
++
++phys_addr_t xhci_get_ir_resource(struct usb_device *udev, struct xhci_interrupter *ir)
++{
++	struct usb_hcd *hcd = bus_to_hcd(udev->bus);
++	struct device *dev = hcd->self.sysdev;
++	struct sg_table sgt;
++	phys_addr_t pa;
++
++	if (!ir)
++		return 0;
++
++	dma_get_sgtable(dev, &sgt, ir->event_ring->first_seg->trbs,
++		ir->event_ring->first_seg->dma, TRB_SEGMENT_SIZE);
++
++	pa = page_to_phys(sg_page(sgt.sgl));
++	sg_free_table(&sgt);
++
++	return pa;
++}
++EXPORT_SYMBOL_GPL(xhci_get_ir_resource);
++
+ static int xhci_configure_endpoint(struct xhci_hcd *xhci,
+ 		struct usb_device *udev, struct xhci_command *command,
+ 		bool ctx_change, bool must_succeed);
+diff --git a/include/linux/usb/xhci-intr.h b/include/linux/usb/xhci-intr.h
+index 738b0f0481a6..d42cc9a1e698 100644
+--- a/include/linux/usb/xhci-intr.h
++++ b/include/linux/usb/xhci-intr.h
+@@ -80,7 +80,15 @@ struct xhci_interrupter {
+ 	u64	s3_erst_dequeue;
+ };
+ 
++/* Secondary interrupter */
+ struct xhci_interrupter *
+ xhci_create_secondary_interrupter(struct usb_hcd *hcd, int intr_num);
+ void xhci_remove_secondary_interrupter(struct usb_hcd *hcd, struct xhci_interrupter *ir);
++
++/* Offload */
++int xhci_stop_endpoint(struct usb_device *udev,
++			struct usb_host_endpoint *ep);
++phys_addr_t xhci_get_xfer_resource(struct usb_device *udev,
++					struct usb_host_endpoint *ep, dma_addr_t *dma);
++phys_addr_t xhci_get_ir_resource(struct usb_device *udev, struct xhci_interrupter *ir);
+ #endif
