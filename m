@@ -4,67 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACD73C52D11
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 17:11:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CA59C52D11
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 17:11:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 793BAE71;
-	Thu, 26 Jan 2023 18:10:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 793BAE71
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1747E85;
+	Thu, 26 Jan 2023 18:10:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1747E85
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674753076;
-	bh=if+ZZR9mriJNhiK1akAY2Str+irW5BQMixOqBjyg1fM=;
+	s=default; t=1674753099;
+	bh=94LxLH7gn/i6If/hYiugUAdFtrZzTMpOWAhYT85GbpY=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=T3sGQ5rDCXhJZp2sq2TKAIgIeedSm1yGhEsZRI9EMPc/TaqjBuiFZHO4sVZvIPsnZ
-	 eCMU6vJL2P8Q92HXOPz/CVK4LsO9Ykokjxf/UWsCjI5lY/348NuNfCTXMnwgIpa+k1
-	 rwo/hxAJHciuWWtjCz4JX30VPHQwLrVFf8UhCTao=
+	 Cc:From;
+	b=u12tDAxgK4gMyYV4JE1l7HmdhvyY7byc3pQ/FWSpoSt9AsWcz+FTuq7bsm2A+G/Rr
+	 n9EFSHdQ+Q9PlGR8lqcIfFalLkJJh4b/JgbwwIf93TMz0SG2Ddkx1YUTU4shk0AvLU
+	 duZrdBaVWSRuYoA7WCRRiP8OQNK/b+Z8u9NxwORE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E89BF8025D;
+	by alsa1.perex.cz (Postfix) with ESMTP id C6DE2F80539;
 	Thu, 26 Jan 2023 18:10:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D70D3F8025D; Thu, 26 Jan 2023 18:09:58 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 14934F803DC; Thu, 26 Jan 2023 18:10:00 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC0A4F8025D
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 18:09:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC0A4F8025D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 77BD6F8016E
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 18:09:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77BD6F8016E
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=dTNlG/bH
+ header.s=k20201202 header.b=pNivwEpo
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 512EEB81E6E;
- Thu, 26 Jan 2023 17:09:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDACBC433D2;
- Thu, 26 Jan 2023 17:09:52 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id B0E86B81E71;
+ Thu, 26 Jan 2023 17:09:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C534EC4339B;
+ Thu, 26 Jan 2023 17:09:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674752995;
- bh=if+ZZR9mriJNhiK1akAY2Str+irW5BQMixOqBjyg1fM=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=dTNlG/bHwQJv9i2yhSDxGCUewNDtoybJyCqWIrugN0Jpb295ax9aY4nGKEmKP33Uw
- GYuZRCfjhKSfgxqDDsuphTvev2OsO/+kjoNLeIwWtvsnQjRZfRss+G8KChgu+PMpd/
- e/KMWxvoMJH1LoM7K3kYXkuIGIDy+/aB6Ve81kqFCsKg3D8VhT+Jybjrbjgpf1t/wB
- LrD+VIBKmc3cX6ZRFB1n0zwRWwOO/Ji0+ASh4NlM+jUcbx6tNE3yeKcbKRtssH5jVF
- DAGeom+4sOJM0SQmXRZhyn64CIsWj8kB8mHjE4Aw9EwYNE//BH18qXjD7LfsUf/rf0
- PcYnR0edZqKiA==
+ s=k20201202; t=1674752992;
+ bh=94LxLH7gn/i6If/hYiugUAdFtrZzTMpOWAhYT85GbpY=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=pNivwEpoTadqieg/XUvOQgd5MK0CCEVZwTg7Cn4g8/VyShxLcb12+hqE/gKIrK6E2
+ 8j6CbGt+cU8jgXTKHAMyI6VH71jTHRCaczQAQYeo35ASSEBEY8EU4BBhOimgFKrIRg
+ 7D5U6DJ+Y4UBC3UrPRbQxq/2FEIjjXy6TIQGjYki6HZAsJbDv5R0fj/dZefyXHaL35
+ Q+8FcsbJ2xDp/Gv0FhzmkCAcgalxKf1JuYMhispOvXLoKKYBQAAS0RANF28Vs4rmna
+ afO719mScBUXxNwq364jznMvPDFUvSN3DvUPgYTLf48w5O4cQPdgbsppzaX9YXka3S
+ fxX84Y+ZBJFnQ==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, 
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230126100722.9473-1-krzysztof.kozlowski@linaro.org>
-References: <20230126100722.9473-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: renesas,rsnd: simplify list of
- compatibles
-Message-Id: <167475299258.4003145.8163069094653403292.b4-ty@kernel.org>
-Date: Thu, 26 Jan 2023 17:09:52 +0000
+To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20230125141317.30302-1-peter.ujfalusi@linux.intel.com>
+References: <20230125141317.30302-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH v2] ASoC: SOF: ipc4-topology: use different channel
+ mask for each sdw amp feedback
+Message-Id: <167475299048.4003145.22787922384757053.b4-ty@kernel.org>
+Date: Thu, 26 Jan 2023 17:09:50 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -81,15 +77,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: alsa-devel@alsa-project.org, yung-chuan.liao@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, kai.vehmanen@linux.intel.com,
+ ranjani.sridharan@linux.intel.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 26 Jan 2023 11:07:22 +0100, Krzysztof Kozlowski wrote:
-> The fallback compatible in a list (the last one) cannot be enum, because
-> it is always fixed.  Also if such fallback is used alone ("Generic"
-> case), it's not a list anymore.
+On Wed, 25 Jan 2023 16:13:17 +0200, Peter Ujfalusi wrote:
+> Currently, we use the same channel mask for aggregated speakers.
+> It works fine for playback because we duplicate the audio data for all
+> aggregated speakers. But we need to get audio data from each aggregated
+> speaker and combine them to the captured audio. So we need to set
+> non-overlapping channel mask for aggregated ALH DAIs.
 > 
 > 
+> [...]
 
 Applied to
 
@@ -97,8 +99,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: renesas,rsnd: simplify list of compatibles
-      commit: 167b3a2b23c86ce44518afde93c82b65295ea60a
+[1/1] ASoC: SOF: ipc4-topology: use different channel mask for each sdw amp feedback
+      commit: 0390a102cc18cb7456d6c1f15ac51f1af90fcf9c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
