@@ -4,63 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77F10C38142
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 11:54:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0294DC54EAA
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 11:54:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CC14DE5;
-	Fri, 27 Jan 2023 12:53:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CC14DE5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1DDCFE8D;
+	Fri, 27 Jan 2023 12:53:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DDCFE8D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674820471;
-	bh=YDpHb4C0LKggwnwgXJvjm4mKI3DnxF/Ca8mwP8kOu5U=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1674820484;
+	bh=uDP5NJpU2YLH/pVtpSrh83TAI64Vbvu7vIRqdI0wC1U=;
+	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=e0v4TJbDGrGjqa33CPyhewMFjSoJ3V0UVbZedwc8LT5jA4sRFTsKvcHD1G7IdEuQR
-	 wIKpiKmx1sKrPKnFU87kc5DY3z+y6s6CvyTKzl9rTzbOfqKUQQxpM7f2kiGy9P79pf
-	 wifj8GwncW4rejOmQPY8mdSzO0Lbva3FlbGSj34c=
+	b=dqF0V+KAwY5cWwCiANnxY/zQYP5DYR8fe14A0favBpkxYrykIpfpYUAs/vyo2tCUs
+	 sJWrRCVtFfO5rg5nDYXd3y4BlDsP62RdsB+0LhsivoaIqA1f0/MtWY9l6aODEjzREW
+	 IpI2uac6z82tSddixSxBt1YMG5lvofJs73M1qp+E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DA924F8057C;
-	Fri, 27 Jan 2023 12:51:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75E25F80580;
+	Fri, 27 Jan 2023 12:51:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5050CF8027D; Thu, 26 Jan 2023 16:12:08 +0100 (CET)
-Received: from casper.infradead.org (casper.infradead.org
- [IPv6:2001:8b0:10b:1236::1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ id 35600F80578; Thu, 26 Jan 2023 17:25:25 +0100 (CET)
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com
+ [IPv6:2607:f8b0:4864:20::112e])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 45353F8016E
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 16:12:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45353F8016E
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7906F8055A
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 17:25:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7906F8055A
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- secure) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256
- header.s=casper.20170209 header.b=iqmwaHjx
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
- References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=EH9adbDOpWNaGYEHl4xrAV40gwHDwqK76tq84Z0eyXc=; b=iqmwaHjxa8hZXZrYCzuWMxG2Kd
- gUi1Y8eYsd0omFHjfmpVdNaehwIHED+H1VzLiTscJu/MXykaHjjIUo4/UeePSQ/3qO2Scxl5KBcbs
- rwafzWiMp0gW54lDXpQNTGojrzBrhUSE24qBNrz9Eu8wZKUKM+VJeNVRGRDui4Mjh6zNrJRA9uXJe
- 2WKv1rttzI5041i+Ny9WQoRsYwvuy+Pu29+WLEfQrszB7lQZjKA+bZ/4URx7/yXNldScNG2l8YeYl
- moQR7vt2oRKUKukioTBGNdLmNI+GiODuZUH9eGz4sLFdnhDHr8CijQAXVN9xNJqlnGwrCU0R4Kh9h
- Kpe2WfSQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red
- Hat Linux)) id 1pL3s4-006q4a-Hd; Thu, 26 Jan 2023 15:09:00 +0000
-Date: Thu, 26 Jan 2023 15:09:00 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Mike Rapoport <rppt@kernel.org>
-Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
-Message-ID: <Y9KXjLaFFUvqqdd4@casper.infradead.org>
+ unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
+ header.s=20210112 header.b=BrNExWGH
+Received: by mail-yw1-x112e.google.com with SMTP id
+ 00721157ae682-501c3a414acso30085797b3.7
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 08:25:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date:message-id:reply-to;
+ bh=rUFKXit/Slxp5jNkRtm2qJfbudUdkwg/5ym9L9/2xFg=;
+ b=BrNExWGHbV1NeR+vu2Js5zAqwDKTAmFhHgoWjYZ0a3qbH7rru8W3QViuclznskZkVo
+ 6Q5eqrGX7jMOOdvE9K9lsVmJpHX9roidNQoqd4ah6qpZ3z5AR/LzfumpWsF7qxr+L/L7
+ 2EeJAw9MATGkA5VBf2UwOc7KCg21F0CUspP8pGqPmL78PHbmYrJgHGcDXuiJf+tpyEq5
+ mYd3qiJmdB/mmqbT25mkgF6e/9yHOLIF4ZmJU2qiUjSg09+a1L9BOQF70sP/z/t1hEtG
+ N3QguNCw23qX8RL/9XVLJb/vAzwIwx19tcG6Myly1SJ+d6fdbBsCbrW+Wp9iSE9SLjFe
+ r7Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=rUFKXit/Slxp5jNkRtm2qJfbudUdkwg/5ym9L9/2xFg=;
+ b=TCZ3NxUueeLaIYJCuxNZLEo1i4uUO/86rzh+WN8wHAMl8wiTG05YcSqb2ncV7sZgE+
+ ATLI+L/y+ePAgSuDHm/XHax3ukWsIv98J0+sFCVdeHweNArxWMFSbjlyF0Ip2cEsF098
+ Wdw0yrwvbsnFKoX3sgvKy0B0gIOeZ94oeRFw2F4zIDKTtHk8X3DW3Qxmcb1bA74bC3cg
+ SUxpFjQfyjSA3tFQ4e97LDFRkI9zQLJB+8Jw7o6CbsHn1hNH8Vw1+UND8GlfiOwFxO8o
+ nynR+nDdnwXlazAUOLIxpZRv8j/IEIam0+/9DhSd4OQ1UY2FHfIOTwGCk8wY3hSycuBf
+ KHkw==
+X-Gm-Message-State: AFqh2kqhN4k7LHUbFc5QD632mI4vA0WcM1cUxymqxIe9v913Eso76iug
+ CZCELX61QbJ2nXlpMJyMmojndhivsd1kyTvUT8/Y3A==
+X-Google-Smtp-Source: AMrXdXvRVLeaIi85wIrJBS5zRkOyr5/BQ66PCe0y1aLe9hmWIu7jqHBlhyy2SYPoXbE9x4WotKo1j1aRHLVU6Hd1LsI=
+X-Received: by 2002:a81:1b8b:0:b0:4ff:774b:7ffb with SMTP id
+ b133-20020a811b8b000000b004ff774b7ffbmr3541685ywb.218.1674750315051; Thu, 26
+ Jan 2023 08:25:15 -0800 (PST)
+MIME-Version: 1.0
 References: <20230125083851.27759-1-surenb@google.com>
  <20230125083851.27759-2-surenb@google.com>
  <Y9JFFYjfJf9uDijE@kernel.org> <Y9KTUw/04FmBVplw@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y9KTUw/04FmBVplw@kernel.org>
+ <Y9KXjLaFFUvqqdd4@casper.infradead.org>
+In-Reply-To: <Y9KXjLaFFUvqqdd4@casper.infradead.org>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 26 Jan 2023 08:25:03 -0800
+Message-ID: <CAJuCfpHs4wvQpitiAYc+PQX3LnitF=wvm=zVX7CzMozzmnbcnw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
+To: Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Fri, 27 Jan 2023 12:51:03 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -84,8 +103,7 @@ Cc: michel@lespinasse.org, nvdimm@lists.linux.dev, heiko@sntech.de,
  minchan@google.com, robert.jarzmik@free.fr, linux-um@lists.infradead.org,
  etnaviv@lists.freedesktop.org, npiggin@gmail.com, alex.williamson@redhat.com,
  viro@zeniv.linux.org.uk, luto@kernel.org, gthelen@google.com,
- tglx@linutronix.de, ldufour@linux.ibm.com,
- Suren Baghdasaryan <surenb@google.com>, linux-sgx@vger.kernel.org,
+ tglx@linutronix.de, ldufour@linux.ibm.com, linux-sgx@vger.kernel.org,
  martin.petersen@oracle.com, linux-usb@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
  linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -115,43 +133,56 @@ Cc: michel@lespinasse.org, nvdimm@lists.linux.dev, heiko@sntech.de,
  sre@kernel.org, tfiga@chromium.org, linux-xfs@vger.kernel.org,
  zhangfei.gao@linaro.org, wangzhou1@hisilicon.com, netdev@vger.kernel.org,
  bpf@vger.kernel.org, linux-erofs@lists.ozlabs.org, davem@davemloft.net,
- mhocko@suse.com, kvm@vger.kernel.org, mst@redhat.com, peterz@infradead.org,
- bigeasy@linutronix.de, alexandre.torgue@foss.st.com, dhowells@redhat.com,
- linux-mm@kvack.org, ray.huang@amd.com, adilger.kernel@dilger.ca,
- kuba@kernel.org, sparclinux@vger.kernel.org, airlied@gmail.com,
- anton.ivanov@cambridgegreys.com, herbert@gondor.apana.org.au,
- linux-scsi@vger.kernel.org, richard@nod.at, x86@kernel.org, vkoul@kernel.org,
- mingo@redhat.com, axelrasmussen@google.com, intel-gfx@lists.freedesktop.org,
- daniel@ffwll.ch, paulmck@kernel.org, jannh@google.com, chao@kernel.org,
- maarten.lankhorst@linux.intel.com, liam.howlett@oracle.com,
- hdegoede@redhat.com, linux-mediatek@lists.infradead.org,
- matthias.bgg@gmail.com, vbabka@suse.cz, dimitri.sivanich@hpe.com,
- posk@google.com, lstoakes@gmail.com, peterjung1337@gmail.com,
- yoshfuji@linux-ipv6.org, linuxppc-dev@lists.ozlabs.org, dsahern@kernel.org,
- kent.overstreet@linux.dev, kexec@lists.infradead.org, tiwai@suse.com,
- krzysztof.kozlowski@linaro.org, tzimmermann@suse.de, hannes@cmpxchg.org,
- dmitry.baryshkov@linaro.org, johannes@sipsolutions.net,
- mgorman@techsingularity.net, linux-accelerators@lists.ozlabs.org,
- l.stach@pengutronix.de
+ Mike Rapoport <rppt@kernel.org>, mhocko@suse.com, kvm@vger.kernel.org,
+ mst@redhat.com, peterz@infradead.org, bigeasy@linutronix.de,
+ alexandre.torgue@foss.st.com, dhowells@redhat.com, linux-mm@kvack.org,
+ ray.huang@amd.com, adilger.kernel@dilger.ca, kuba@kernel.org,
+ sparclinux@vger.kernel.org, airlied@gmail.com, anton.ivanov@cambridgegreys.com,
+ herbert@gondor.apana.org.au, linux-scsi@vger.kernel.org, richard@nod.at,
+ x86@kernel.org, vkoul@kernel.org, mingo@redhat.com, axelrasmussen@google.com,
+ intel-gfx@lists.freedesktop.org, daniel@ffwll.ch, paulmck@kernel.org,
+ jannh@google.com, chao@kernel.org, maarten.lankhorst@linux.intel.com,
+ liam.howlett@oracle.com, hdegoede@redhat.com,
+ linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com, vbabka@suse.cz,
+ dimitri.sivanich@hpe.com, posk@google.com, lstoakes@gmail.com,
+ peterjung1337@gmail.com, yoshfuji@linux-ipv6.org,
+ linuxppc-dev@lists.ozlabs.org, dsahern@kernel.org, kent.overstreet@linux.dev,
+ kexec@lists.infradead.org, tiwai@suse.com, krzysztof.kozlowski@linaro.org,
+ tzimmermann@suse.de, hannes@cmpxchg.org, dmitry.baryshkov@linaro.org,
+ johannes@sipsolutions.net, mgorman@techsingularity.net,
+ linux-accelerators@lists.ozlabs.org, l.stach@pengutronix.de
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jan 26, 2023 at 04:50:59PM +0200, Mike Rapoport wrote:
-> On Thu, Jan 26, 2023 at 11:17:09AM +0200, Mike Rapoport wrote:
-> > On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
-> > > +/* Use when VMA is not part of the VMA tree and needs no locking */
-> > > +static inline void init_vm_flags(struct vm_area_struct *vma,
-> > > +				 unsigned long flags)
-> > 
-> > I'd suggest to make it vm_flags_init() etc.
-> 
-> Thinking more about it, it will be even clearer to name these vma_flags_xyz()
+On Thu, Jan 26, 2023 at 7:09 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Thu, Jan 26, 2023 at 04:50:59PM +0200, Mike Rapoport wrote:
+> > On Thu, Jan 26, 2023 at 11:17:09AM +0200, Mike Rapoport wrote:
+> > > On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
+> > > > +/* Use when VMA is not part of the VMA tree and needs no locking */
+> > > > +static inline void init_vm_flags(struct vm_area_struct *vma,
+> > > > +                          unsigned long flags)
+> > >
+> > > I'd suggest to make it vm_flags_init() etc.
+> >
+> > Thinking more about it, it will be even clearer to name these vma_flags_xyz()
+>
+> Perhaps vma_VERB_flags()?
+>
+> vma_init_flags()
+> vma_reset_flags()
+> vma_set_flags()
+> vma_clear_flags()
+> vma_mod_flags()
 
-Perhaps vma_VERB_flags()?
+Due to excessive email bouncing I posted the v3 of this patchset using
+the original per-VMA patchset's distribution list. That might have
+dropped Mike from the list. Sorry about that Mike, I'll add you to my
+usual list of suspects :)
+The v3 is here:
+https://lore.kernel.org/all/20230125233554.153109-1-surenb@google.com/
+and Andrew did suggest the same renames, so I'll be posting v4 with
+those changes later today.
+Thanks for the feedback!
 
-vma_init_flags()
-vma_reset_flags()
-vma_set_flags()
-vma_clear_flags()
-vma_mod_flags()
-
+>
