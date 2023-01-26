@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88447C61DA2
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 08:53:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE4CCC05027
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 08:53:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0AB79EB0;
-	Thu, 26 Jan 2023 09:52:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AB79EB0
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1E09E9F;
+	Thu, 26 Jan 2023 09:53:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1E09E9F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674723224;
-	bh=u7BC24PLXH1M5k4ZAwWCW9iGDRYP84c4x5XXlldKNUk=;
+	s=default; t=1674723233;
+	bh=v1fyaLhCyvOiXEMw4zIFtNoQZEwdgX78J1z/HeL+Se4=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=X65bos2OepTHb6PmWPLdBdlzMdPYR9lLQ5iSY6AzwoMFfXoekIBmyojULMF7qFDqO
-	 k9+4C+QqMrxyEwOxHBxanVApjvrCjiUQNR6trYW2qbOAN54g/2l1uFxE+3+GT3Asi+
-	 ZKO7VwZKUMVDce6J1ebkGgRYHSwsgeC9hhFFTj6M=
+	b=HDn8Pp1tgUJIQ15t+6NOiaJm8pKMECfoQUc24batrS7+hoU3qmI0dgAytRNuBQXDj
+	 0YeX4u9JWzp0sbeWQx/kjsoFk8/DnoDCADad/8uqwKYFe6AEy8Bt1Vec0xSU7qiyV0
+	 4O8ILfUrfWouR5uPTIcDeNzG+TrQW05ouzKAsuQ8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65BABF80539;
-	Thu, 26 Jan 2023 09:52:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0FD1FF80553;
+	Thu, 26 Jan 2023 09:52:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0FA45F804D2; Thu, 26 Jan 2023 09:52:11 +0100 (CET)
+ id 1784AF8027D; Thu, 26 Jan 2023 09:52:12 +0100 (CET)
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
- [217.70.183.194])
+ [IPv6:2001:4b98:dc4:8::222])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 39640F8027D
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 09:52:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39640F8027D
+ by alsa1.perex.cz (Postfix) with ESMTPS id AAA20F80224
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 09:51:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAA20F80224
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=PPEN/2Ne
+ header.s=gm1 header.b=jxLMyMus
 Received: (Authenticated sender: herve.codina@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPA id 4310440041;
- Thu, 26 Jan 2023 08:51:59 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPA id F3E154002B;
+ Thu, 26 Jan 2023 08:51:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1674723120;
+ t=1674723117;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=89IPk7Ub6kTzIYPBJ6dyur64fSCxEPkfLYPQ09yEpxc=;
- b=PPEN/2NeG6zvvx9ejClgOukuX9YXS0KGjRPIypDFZdaRH1d1COuOIefNOvmnXbQrZqKOzv
- uf+IvkL9o5jM7EaVRQJtjobq6nZySRq/d0OSG5rWY1gzwwwnhDqGybdcq4sGhAs8etPpYQ
- gNO+4Sx1Yh076AAH79MGFtWqjKdGOB833FWTwgVRVbjzVSPUSU+0rpiX32cZCWPzl3M2c0
- fw6hqNDWXDrOOHzp+FhMXdivG91iKYi2BRWuN2h8hkk9oMhomBwFrOUPjU1Nc/7yMtI4Oq
- s+G5Kn/GRzkXXqdy8mOBRXSdSSgKZH+7KTdZY68Ir9iJNIpyp0cWSfi9xpXSRg==
+ bh=hwaqQPmDrUKIdm5l0Y0T3RW2RQ9pM+xGeQ1lgAnxQdA=;
+ b=jxLMyMusKlBXvqCmu9XxAxS948BQ9GUDnzY1A7HSXSYLqUI1hkQgY3aitj5VbYNejxadg9
+ tIlwR6KBprkHi0HhtChoX2d6xy+ASxakMvdgEN4F5512YT3nBVsSuV0qBul6h2ZpcYfI8b
+ go5y1nZit9aGlkgW6t60ivNYqSyvmnWcytvBKbalfQRL/z6cIaYBumX58iV2YY6mjas2nb
+ yxPsCg83ehXlyu+oMjm9gxYulh1WLHL8m2ihoHeuHDDwXgJnreS2xolxJhkbfs7CVJJZq2
+ n55Tcv4kTau7gAIuuF2hf6T20nj1fYbkmUqDpWJZVYBIS9TEJwtV27amKPcQaQ==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
@@ -59,9 +59,9 @@ To: Herve Codina <herve.codina@bootlin.com>,
  Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <brgl@bgdev.pl>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v3 3/3] MAINTAINERS: add the Renesas IDT821034 codec entry
-Date: Thu, 26 Jan 2023 09:51:37 +0100
-Message-Id: <20230126085137.375814-4-herve.codina@bootlin.com>
+Subject: [PATCH v3 1/3] dt-bindings: sound: Add Renesas IDT821034 codec
+Date: Thu, 26 Jan 2023 09:51:35 +0100
+Message-Id: <20230126085137.375814-2-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230126085137.375814-1-herve.codina@bootlin.com>
 References: <20230126085137.375814-1-herve.codina@bootlin.com>
@@ -81,36 +81,103 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Christophe Leroy <christophe.leroy@csgroup.eu>,
- linux-gpio@vger.kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+ linux-gpio@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-After contributing the driver, add myself as the maintainer for the
-Renesas IDT821034 codec.
+The Renesas IDT821034 codec is a quad PCM codec with programmable
+gain.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+ .../bindings/sound/renesas,idt821034.yaml     | 75 +++++++++++++++++++
+ 1 file changed, 75 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/renesas,idt821034.yaml
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9dcfadec5aa3..31115a7e01c1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17809,6 +17809,13 @@ F:	Documentation/devicetree/bindings/net/renesas,*.yaml
- F:	drivers/net/ethernet/renesas/
- F:	include/linux/sh_eth.h
- 
-+RENESAS IDT821034 ASoC CODEC
-+M:	Herve Codina <herve.codina@bootlin.com>
-+L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/sound/renesas,idt821034.yaml
-+F:	sound/soc/codecs/idt821034.c
+diff --git a/Documentation/devicetree/bindings/sound/renesas,idt821034.yaml b/Documentation/devicetree/bindings/sound/renesas,idt821034.yaml
+new file mode 100644
+index 000000000000..a2b92dba5529
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/renesas,idt821034.yaml
+@@ -0,0 +1,75 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/renesas,idt821034.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- RENESAS R-CAR GYROADC DRIVER
- M:	Marek Vasut <marek.vasut@gmail.com>
- L:	linux-iio@vger.kernel.org
++title: Renesas IDT821034 codec device
++
++maintainers:
++  - Herve Codina <herve.codina@bootlin.com>
++
++description: |
++  The IDT821034 codec is a four channel PCM codec with onchip filters and
++  programmable gain setting.
++
++  The time-slots used by the codec must be set and so, the properties
++  'dai-tdm-slot-num', 'dai-tdm-slot-width', 'dai-tdm-slot-tx-mask' and
++  'dai-tdm-slot-rx-mask' must be present in the ALSA sound card node for
++  sub-nodes that involve the codec. The codec uses one 8bit time-slot per
++  channel.
++  'dai-tdm-tdm-slot-with' must be set to 8.
++
++  The IDT821034 codec also supports 5 gpios (SLIC signals) per channel.
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    const: renesas,idt821034
++
++  reg:
++    description:
++      SPI device address.
++    maxItems: 1
++
++  spi-max-frequency:
++    maximum: 8192000
++
++  spi-cpha: true
++
++  '#sound-dai-cells':
++    const: 0
++
++  '#gpio-cells':
++    const: 2
++
++  gpio-controller: true
++
++required:
++  - compatible
++  - reg
++  - spi-cpha
++  - '#sound-dai-cells'
++  - gpio-controller
++  - '#gpio-cells'
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        audio-codec@0 {
++            compatible = "renesas,idt821034";
++            reg = <0>;
++            spi-max-frequency = <8192000>;
++            spi-cpha;
++            #sound-dai-cells = <0>;
++            gpio-controller;
++            #gpio-cells = <2>;
++        };
++    };
 -- 
 2.39.0
 
