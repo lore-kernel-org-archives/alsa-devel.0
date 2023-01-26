@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E72F1C54E94
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 09:27:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CEB6C05027
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 09:31:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC80DAE9;
-	Thu, 26 Jan 2023 10:26:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC80DAE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32165AE9;
+	Thu, 26 Jan 2023 10:30:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32165AE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674725257;
-	bh=Mi9Xs8lXkuyKzP8S2V6KFQSz3JclzUkGqU+9kRnAFpU=;
+	s=default; t=1674725466;
+	bh=DJGJszFWJl+bVE21u1WXkVgzj0UZ58rcV8CrE7ROuRg=;
 	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=kol0lI2RfkdgGNRI3TWyiqyXEaZ43P/7yLqsDG75Us4m6j18ble4jsmSy0AxQAOLW
-	 AuU6jpU+THybiwJUp04S5SWQFn3FcfayQJ2He7K1xmnQuL5xqotgnB6O23+RFebKzK
-	 /xfpCrOsfYw/NUVmVY018Q60Yw7CAMxeZo+3WthQ=
+	b=F2weQb+nY60SQ7UB+vZ21iKAqsdKZy6vWirV2CsVlLzXvY9WfAysOlQ6+Szgy+7AT
+	 fpTl9SmMkd01fJlhOPp2+oWlTLtmqbcHbOp0VYoiP7BItdTySdMuMlQOUHeT0HoeeA
+	 sZ873gAmxclaHWawpl85LNparMYHX8EyeILdfJCM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C160F8025D;
-	Thu, 26 Jan 2023 10:26:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8A427F8025D;
+	Thu, 26 Jan 2023 10:30:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0C5EF8027D; Thu, 26 Jan 2023 10:26:44 +0100 (CET)
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
- [IPv6:2a00:1450:4864:20::332])
+ id E8171F8027D; Thu, 26 Jan 2023 10:30:13 +0100 (CET)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4D62F80224
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 10:26:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4D62F80224
+ by alsa1.perex.cz (Postfix) with ESMTPS id 31CA7F8016E
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 10:30:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31CA7F8016E
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=nyvmsai7
-Received: by mail-wm1-x332.google.com with SMTP id
- f25-20020a1c6a19000000b003da221fbf48so704155wmc.1
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 01:26:42 -0800 (PST)
+ header.s=20210112 header.b=oH4g29yG
+Received: by mail-wm1-x333.google.com with SMTP id
+ o17-20020a05600c511100b003db021ef437so692635wms.4
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 01:30:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=content-disposition:mime-version:message-id:subject:cc:to:from:date
  :from:to:cc:subject:date:message-id:reply-to;
- bh=1lidck4lW/zmw+foGw+y/7lttrAnguvFB5SfFlQVGE4=;
- b=nyvmsai7ZWt+8fiqIQJmJU1b5/dbt1jtvHROKxY7qs4cBunuCgFYWBS3vYtLuCEMAD
- PUtk9CgscbpUf5aVFQZ5LMQmlm5dx6m6vT9bSPEtqbRezF7snejuuAlHTvaYea4c5XvO
- EdCf+/jnIiAMhxfBHTW4qHsg/9IrLG/ewT9OboFuQVc4SK0bV/ApuUap2xiYIYpQ1uOx
- UOMR1OnbIwxxSpoB1YpkkRpDIbepNTX9bZiWWIH/UDKiyiNLbGD5Fmd9qnbnVo4fWZ/N
- cJTtarAbeTrKwcXJRTT5Pb41K5kSpL3pbKn/FipP4I7xSa2PJCuYmxDt6ltApD6EaQxj
- kV1g==
+ bh=53zqjk/QjV8XLHukhAeoEZ0VLwkWFteYs5gPHt0hVVw=;
+ b=oH4g29yGQ+U/JBwaDC+0dNSxWoVo3WG20yxUOq7FOuEjlLXrWCiKgwFO83wI2hqFyr
+ pjoN2q1GM+s0e9w98q3974f8amUfIOAYWiWd2EqdlgiSdbbsaDjr7MiZgW588iuqLSnz
+ K9deXfDNJiSFfzsKu8X3hrQFSA+Jkf4viA01kK4Rn73z0OUOZU3XlEH9t4gpUBPUVnyw
+ sA0b6ZkFzFnHN5opQEx12nQ+O/Om13YXz/GnuHLC1kYZ6QVougXw4vE2gt8ZMmL1j0kN
+ tt5IjAMbxsS1DD+o38dizcg4qXIthhw1yhBtKfT+c3RNBedQFmMZ5DhrYCfdzjj7OapM
+ 1Oaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-disposition:mime-version:message-id:subject:cc:to:from:date
  :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=1lidck4lW/zmw+foGw+y/7lttrAnguvFB5SfFlQVGE4=;
- b=jN6qOJg6uwhk8oBtI1GNHPT1GWzpeBioOkraSsDzr0gL7zRhVzsHS3MLYm0cOQkOVM
- XtYU7LHYy3coHfOxcvbEKs8RnkGWLUOmXfsVx1rV1aUz/Iy5jduVaQXKWaC50gWyam0H
- FcUEZkE4yk/hfXt6LR+HO2pRoinpvMAFnOi8HEtf9Bg061/y6cVlMLmeJ/+gMDDjIpYZ
- xIBxL35DQYw23meNbkhJeiAFWTBY1voR/BTcb/OFBsh6z+bPi4GzSvXnZnlsZygBMyMi
- d1NV9X135/i0hhBdZkJAougdtW7VVGJhA0FU+eD6fJuCey4Cj5mL+HknWUp7QyKFspiL
- vZtQ==
-X-Gm-Message-State: AFqh2kr90AlRJMRqhaUVu65xg3kEpJtJqQL0X8ddFspnkjIGbB7Dsk36
- cI0E/ytaC2E18LZADx+NU1k=
-X-Google-Smtp-Source: AMrXdXvBqRioyyA4099IubEJx8GR5Jtpr3rsCZ5m5Oyz8/c3oySRDIwRWgrlRYHiUeSXqbL2NsTbFA==
-X-Received: by 2002:a05:600c:4f86:b0:3db:66e:cfdd with SMTP id
- n6-20020a05600c4f8600b003db066ecfddmr32709189wmq.9.1674725200604; 
- Thu, 26 Jan 2023 01:26:40 -0800 (PST)
+ bh=53zqjk/QjV8XLHukhAeoEZ0VLwkWFteYs5gPHt0hVVw=;
+ b=VT+iSfjiSh5C3Jl3XXEMzOhg8uC56gPsYGrqNzG/+20cnOPdbvOBU6v/ITXPlQsmSF
+ O11dkSdikdHQO5URg/pYuhJnH2ZLvQ0Xe/4bV9tenSOoN5rE4V/S7eAEMYiA/Pe9w+39
+ xCDVPHb7GER2A4KaxafiRVwU/icfzuPOaAUzFuZNIr90Fjf3K5FWCv+TORvoFb1q1mGU
+ iNUEJqAghdWOVSdHmmwBeADftzFDXupncmW/V0ihnLz7B4ncbGK3qiHJI+ZGouuMC7Ie
+ tXh+N76UPkALRfri4XsKGQCfVhtGaTVMyk/kjPt0pucuzDuuHota/mKxvNK2UVNTCUPj
+ kfcA==
+X-Gm-Message-State: AFqh2kqh6w0QNdR/fVO1HAfqRZJuREQo74q5QCftNalZ1fUlu0CGvM17
+ eDlpEZNh9bEcoyospjSrIsQ=
+X-Google-Smtp-Source: AMrXdXveP98wGLr+SaP1jr7q/JDiHAEPg0nzZ12jzVvn+eqhQXA/cBk5+1w7fnP/sZf93ONs0DOFNw==
+X-Received: by 2002:a05:600c:35d0:b0:3db:c4c:9224 with SMTP id
+ r16-20020a05600c35d000b003db0c4c9224mr33355186wmq.3.1674725406458; 
+ Thu, 26 Jan 2023 01:30:06 -0800 (PST)
 Received: from localhost ([102.36.222.112]) by smtp.gmail.com with ESMTPSA id
- i21-20020a05600c071500b003db1ca20170sm896026wmn.37.2023.01.26.01.26.39
+ i21-20020a1c5415000000b003dc23574bf4sm957077wmb.7.2023.01.26.01.30.05
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 26 Jan 2023 01:26:40 -0800 (PST)
-Date: Thu, 26 Jan 2023 12:26:35 +0300
+ Thu, 26 Jan 2023 01:30:06 -0800 (PST)
+Date: Thu, 26 Jan 2023 12:30:02 +0300
 From: Dan Carpenter <error27@gmail.com>
-To: Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: mediatek: mt8188: remove some dead code
-Message-ID: <Y9JHSwcfdNcfMjjt@kili>
+To: Jaroslav Kysela <perex@perex.cz>, Maxime Ripard <mripard@kernel.org>
+Subject: [PATCH] ALSA: pci: lx6464es: fix a debug loop
+Message-ID: <Y9JIGt0HT8mLkUXF@kili>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -92,34 +92,45 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
- Yang Li <yang.lee@linux.alibaba.com>, Trevor Wu <trevor.wu@mediatek.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, linux-mediatek@lists.infradead.org,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+ Takashi Iwai <tiwai@suse.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We know that "irq < 0", so delete the unnecessary check.
+This loop accidentally reuses the "i" iterator for both the inside and
+the outside loop.  The value of MAX_STREAM_BUFFER is 5.  I believe that
+chip->rmh.stat_len is in the 2-12 range.  If the value of .stat_len is
+4 or more then it will loop exactly one time, but if it's less then it
+is a forever loop.
 
+Fixes: 8e6320064c33 ("ALSA: lx_core: Remove useless #if 0 .. #endif")
 Signed-off-by: Dan Carpenter <error27@gmail.com>
 ---
- sound/soc/mediatek/mt8188/mt8188-afe-pcm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/pci/lx6464es/lx_core.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c b/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
-index 57a31330e5f4..e8e84de86542 100644
---- a/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8188/mt8188-afe-pcm.c
-@@ -3220,8 +3220,7 @@ static int mt8188_afe_pcm_dev_probe(struct platform_device *pdev)
- 	/* request irq */
- 	irq_id = platform_get_irq(pdev, 0);
- 	if (irq_id < 0)
--		return dev_err_probe(dev, irq_id < 0 ? irq_id : -ENXIO,
--				     "no irq found");
-+		return dev_err_probe(dev, irq_id, "no irq found");
+diff --git a/sound/pci/lx6464es/lx_core.c b/sound/pci/lx6464es/lx_core.c
+index d3f58a3d17fb..7c1b380a54c0 100644
+--- a/sound/pci/lx6464es/lx_core.c
++++ b/sound/pci/lx6464es/lx_core.c
+@@ -493,13 +493,11 @@ int lx_buffer_ask(struct lx6464es *chip, u32 pipe, int is_capture,
+ 		dev_dbg(chip->card->dev,
+ 			"CMD_08_ASK_BUFFERS: needed %d, freed %d\n",
+ 			    *r_needed, *r_freed);
+-		for (i = 0; i < MAX_STREAM_BUFFER; ++i) {
+-			for (i = 0; i != chip->rmh.stat_len; ++i)
+-				dev_dbg(chip->card->dev,
+-					"  stat[%d]: %x, %x\n", i,
+-					    chip->rmh.stat[i],
+-					    chip->rmh.stat[i] & MASK_DATA_SIZE);
+-		}
++		for (i = 0; i < chip->rmh.stat_len; ++i)
++			dev_dbg(chip->card->dev,
++				"  stat[%d]: %x, %x\n", i,
++				chip->rmh.stat[i],
++				chip->rmh.stat[i] & MASK_DATA_SIZE);
+ 	}
  
- 	ret = devm_request_irq(dev, irq_id, mt8188_afe_irq_handler,
- 			       IRQF_TRIGGER_NONE, "asys-isr", (void *)afe);
+ 	mutex_unlock(&chip->msg_lock);
 -- 
 2.35.1
 
