@@ -4,67 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A71EAC27C76
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 03:18:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9351BC27C76
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 03:18:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 83285AE9;
-	Thu, 26 Jan 2023 04:17:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83285AE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id B85C8832;
+	Thu, 26 Jan 2023 04:17:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B85C8832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674703114;
-	bh=QUh1sFl92SS6gOcan7wQ/TUi02sTMiF1RqMUKxK9Llk=;
+	s=default; t=1674703128;
+	bh=3Ab+kIRxzXEK3RoLExemWTmToK6yYLMSK9628kaHZf4=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=N0x5DHsppRDhmdl6B+tgkcUmAgN2pIGVPiSa1n0cvUooXRJ/y2xRPCmacwjz6slwR
-	 lmK7SnZ8hZMrD/qSwXoaBl4aTwNjaj003qbJJ7eZfvI0MzSXUyX9viBqp9DHmAwYoW
-	 k6rqwXJ+bnixTvd8mAmUlYjLR4P1ouynbRXgmZd0=
+	b=MhvlEZqpjjA5GiizeCqj6pnSriThMEN5XghvR1oxjV3T+bXYr3VeGuncQMbyRGLdO
+	 jJZA+DmbhKZj9ZNfYvPysuoYFRi7hmDuwOcAKLYViGMtwQKZ3D5D1bkqtZ+XIqqgWE
+	 2eqhR8Gz0m83u9zgZSIdJSB8Ig5TSeglXrEsPHWk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBB6FF805B6;
-	Thu, 26 Jan 2023 04:15:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A5216F805BF;
+	Thu, 26 Jan 2023 04:15:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4FD12F805B5; Thu, 26 Jan 2023 04:15:11 +0100 (CET)
-Received: from alexa-out-sd-02.qualcomm.com (alexa-out-sd-02.qualcomm.com
- [199.106.114.39])
- (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
+ id 0B00DF805B3; Thu, 26 Jan 2023 04:15:11 +0100 (CET)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4FD26F8053D
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 04:14:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FD26F8053D
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21208F80548
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 04:14:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21208F80548
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcdkim header.b=bwsahz5E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1674702888; x=1706238888;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version;
- bh=hfiPgKvzjZwkMX/Yp7b1WkmuzfwbKyPbUhif802Ho3w=;
- b=bwsahz5Ey4I7KIAWZWf7nvp+ge0JvA5zvqzCCOJOV+Vc636Y8OgztbR9
- +4ZDX4OtszHZVNNoLKWoE52h9ol9if6kAfBNZV5Y0S9+ee73Vmk1u9SJ1
- u0gYvbtKYsv9/Y5cTY8UY6+h5MPBEGL7MOdBi2QvvxTKcXO0zTgD/+DhG k=;
-Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
- by alexa-out-sd-02.qualcomm.com with ESMTP; 25 Jan 2023 19:14:41 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.45.79.139])
- by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2023 19:14:41 -0800
+ header.s=qcppdkim1 header.b=l6bxJjql
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+ by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 30Q2va2R018786; Thu, 26 Jan 2023 03:14:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=9DUsAREdcbyKkri9QQ9DarmPLi+PaOWxom+nSMkrqB4=;
+ b=l6bxJjql0QVnu4oIc6epvCpUIO4hW0Fkzmso0X4dnD83PcPLMT5iJehMQmOgoWp+sYYv
+ 3x9BFugKqbEY75ymXTYpZ9wjVjAhJQGtqUh6CxEot7gs2IsoV0F1lk30g/AwU5bpofyw
+ eAAEjKIoJqFzn2c78bKdONCNDCuL+mFD0U8mww9+YojFlNibwwy4mKT6c/GXSQqC6Ukn
+ wGE5zGjJzoJgY1DwF3iNf4DAT2DlwgPCYePFiOIz4U7ki6W+CcJypUIxqr7L6RFHYLCW
+ LzpWLduYZUkIVJT3CGQztQsPiIA/dSLjiOlkmKkfbGNBKnz+rxwCMrRSBUSlHBNP1BK2 xQ== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com
+ [199.106.103.254])
+ by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3nbd7arbm7-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 26 Jan 2023 03:14:46 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com
+ [10.45.79.139])
+ by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 30Q3EjRY011805
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 26 Jan 2023 03:14:45 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.36; Wed, 25 Jan 2023 19:14:40 -0800
+ 15.2.986.36; Wed, 25 Jan 2023 19:14:45 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
  <perex@perex.cz>, <lgirdwood@gmail.com>, <andersson@kernel.org>,
  <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
- <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>, <bgoswami@quicinc.com>,
- <tiwai@suse.com>, <robh+dt@kernel.org>, <agross@kernel.org>
-Subject: [RFC PATCH v2 04/22] xhci: Add support to allocate several
- interrupters
-Date: Wed, 25 Jan 2023 19:14:06 -0800
-Message-ID: <20230126031424.14582-5-quic_wcheng@quicinc.com>
+ <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+ <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+ <agross@kernel.org>
+Subject: [RFC PATCH v2 13/22] sound: usb: Export USB SND APIs for modules
+Date: Wed, 25 Jan 2023 19:14:15 -0800
+Message-ID: <20230126031424.14582-14-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230126031424.14582-1-quic_wcheng@quicinc.com>
 References: <20230126031424.14582-1-quic_wcheng@quicinc.com>
@@ -73,6 +81,20 @@ Content-Type: text/plain
 X-Originating-IP: [10.49.16.6]
 X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
  nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-ORIG-GUID: iRx374J8JRqYXE32goI7hpBI2-vZkO0-
+X-Proofpoint-GUID: iRx374J8JRqYXE32goI7hpBI2-vZkO0-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-25_14,2023-01-25_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ mlxscore=0 lowpriorityscore=0
+ malwarescore=0 spamscore=0 mlxlogscore=999 impostorscore=0 adultscore=0
+ clxscore=1015 priorityscore=1501 phishscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2301260028
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,338 +108,310 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Mathias Nyman <mathias.nyman@linux.intel.com>, linux-arm-msm@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Wesley Cheng <quic_wcheng@quicinc.com>,
  quic_jackp@quicinc.com, quic_plai@quicinc.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+Some vendor modules will utilize useful parsing and endpoint management
+APIs to start audio playback/capture.
 
-Introduce xHCI APIs to allow for clients to allocate and free
-interrupters.  This allocates an array of interrupters, which is based on
-the max_interrupters parameter.  The primary interrupter is set as the
-first entry in the array, and secondary interrupters following after.
-
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/host/xhci-debugfs.c |  2 +-
- drivers/usb/host/xhci-mem.c     | 97 +++++++++++++++++++++++++++++++--
- drivers/usb/host/xhci-ring.c    |  2 +-
- drivers/usb/host/xhci.c         | 55 ++++++++++++-------
- drivers/usb/host/xhci.h         |  2 +-
- include/linux/usb/xhci-intr.h   |  4 ++
- 6 files changed, 134 insertions(+), 28 deletions(-)
+ include/sound/pcm_params.h |  4 +++
+ sound/core/oss/pcm_oss.c   | 58 ----------------------------------
+ sound/core/pcm_lib.c       | 65 ++++++++++++++++++++++++++++++++++++++
+ sound/usb/card.c           |  2 ++
+ sound/usb/endpoint.c       |  2 ++
+ sound/usb/helper.c         |  1 +
+ sound/usb/pcm.c            |  9 ++++--
+ sound/usb/pcm.h            | 12 +++++++
+ 8 files changed, 92 insertions(+), 61 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-debugfs.c b/drivers/usb/host/xhci-debugfs.c
-index 0bc7fe11f749..06a42b68446f 100644
---- a/drivers/usb/host/xhci-debugfs.c
-+++ b/drivers/usb/host/xhci-debugfs.c
-@@ -692,7 +692,7 @@ void xhci_debugfs_init(struct xhci_hcd *xhci)
- 				     "command-ring",
- 				     xhci->debugfs_root);
+diff --git a/include/sound/pcm_params.h b/include/sound/pcm_params.h
+index ba184f49f7e1..407557b72700 100644
+--- a/include/sound/pcm_params.h
++++ b/include/sound/pcm_params.h
+@@ -17,6 +17,10 @@ int snd_pcm_hw_param_last(struct snd_pcm_substream *pcm,
+ 			  snd_pcm_hw_param_t var, int *dir);
+ int snd_pcm_hw_param_value(const struct snd_pcm_hw_params *params,
+ 			   snd_pcm_hw_param_t var, int *dir);
++int _snd_pcm_hw_param_set(struct snd_pcm_hw_params *params,
++				 snd_pcm_hw_param_t var, unsigned int val,
++				 int dir);
++int snd_interval_refine_set(struct snd_interval *i, unsigned int val);
  
--	xhci_debugfs_create_ring_dir(xhci, &xhci->interrupter->event_ring,
-+	xhci_debugfs_create_ring_dir(xhci, &xhci->interrupters[0]->event_ring,
- 				     "event-ring",
- 				     xhci->debugfs_root);
- 
-diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
-index 2acd41a18190..45ac77a5d8e4 100644
---- a/drivers/usb/host/xhci-mem.c
-+++ b/drivers/usb/host/xhci-mem.c
-@@ -1854,6 +1854,30 @@ xhci_free_interrupter(struct xhci_hcd *xhci, struct xhci_interrupter *ir)
- 	kfree(ir);
+ #define SNDRV_MASK_BITS	64	/* we use so far 64bits only */
+ #define SNDRV_MASK_SIZE	(SNDRV_MASK_BITS / 32)
+diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+index ac2efeb63a39..eb45e37bb875 100644
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -103,16 +103,6 @@ static int snd_interval_refine_max(struct snd_interval *i, unsigned int max, int
+ 	return changed;
  }
  
-+/*
-+ * Free a secondary interrupter slot.  This will allow for other users to request for
-+ * the secondary interrupter in the future.
-+ */
-+void xhci_remove_secondary_interrupter(struct usb_hcd *hcd, struct xhci_interrupter *ir)
+-static int snd_interval_refine_set(struct snd_interval *i, unsigned int val)
+-{
+-	struct snd_interval t;
+-	t.empty = 0;
+-	t.min = t.max = val;
+-	t.openmin = t.openmax = 0;
+-	t.integer = 1;
+-	return snd_interval_refine(i, &t);
+-}
+-
+ /**
+  * snd_pcm_hw_param_value_min
+  * @params: the hw_params instance
+@@ -443,54 +433,6 @@ static int snd_pcm_hw_param_near(struct snd_pcm_substream *pcm,
+ 	return v;
+ }
+ 
+-static int _snd_pcm_hw_param_set(struct snd_pcm_hw_params *params,
+-				 snd_pcm_hw_param_t var, unsigned int val,
+-				 int dir)
+-{
+-	int changed;
+-	if (hw_is_mask(var)) {
+-		struct snd_mask *m = hw_param_mask(params, var);
+-		if (val == 0 && dir < 0) {
+-			changed = -EINVAL;
+-			snd_mask_none(m);
+-		} else {
+-			if (dir > 0)
+-				val++;
+-			else if (dir < 0)
+-				val--;
+-			changed = snd_mask_refine_set(hw_param_mask(params, var), val);
+-		}
+-	} else if (hw_is_interval(var)) {
+-		struct snd_interval *i = hw_param_interval(params, var);
+-		if (val == 0 && dir < 0) {
+-			changed = -EINVAL;
+-			snd_interval_none(i);
+-		} else if (dir == 0)
+-			changed = snd_interval_refine_set(i, val);
+-		else {
+-			struct snd_interval t;
+-			t.openmin = 1;
+-			t.openmax = 1;
+-			t.empty = 0;
+-			t.integer = 0;
+-			if (dir < 0) {
+-				t.min = val - 1;
+-				t.max = val;
+-			} else {
+-				t.min = val;
+-				t.max = val+1;
+-			}
+-			changed = snd_interval_refine(i, &t);
+-		}
+-	} else
+-		return -EINVAL;
+-	if (changed > 0) {
+-		params->cmask |= 1 << var;
+-		params->rmask |= 1 << var;
+-	}
+-	return changed;
+-}
+-
+ /**
+  * snd_pcm_hw_param_set
+  * @pcm: PCM instance
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 8b6aeb8a78f7..8305fd0860ad 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -2532,3 +2532,68 @@ int snd_pcm_add_chmap_ctls(struct snd_pcm *pcm, int stream,
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(snd_pcm_add_chmap_ctls);
++
++int snd_interval_refine_set(struct snd_interval *i, unsigned int val)
 +{
-+	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
-+	unsigned int intr_num;
-+	unsigned long flags;
++	struct snd_interval t;
 +
-+	if (!ir || !ir->intr_num || ir->intr_num > xhci->max_interrupters) {
-+		xhci_dbg(xhci, "Invalid secondary interrupter, can't remove\n");
-+		return;
-+	}
-+
-+	/* fixme, shuld we check xhci->interrupter[intr_num] == ir */
-+	intr_num = ir->intr_num;
-+	xhci_free_interrupter(xhci, ir);
-+	spin_lock_irqsave(&xhci->lock, flags);
-+	xhci->interrupters[intr_num] = NULL;
-+	spin_unlock_irqrestore(&xhci->lock, flags);
++	t.empty = 0;
++	t.min = t.max = val;
++	t.openmin = t.openmax = 0;
++	t.integer = 1;
++	return snd_interval_refine(i, &t);
 +}
-+EXPORT_SYMBOL_GPL(xhci_remove_secondary_interrupter);
++EXPORT_SYMBOL_GPL(snd_interval_refine_set);
 +
- void xhci_mem_cleanup(struct xhci_hcd *xhci)
- {
- 	struct device	*dev = xhci_to_hcd(xhci)->self.sysdev;
-@@ -1861,8 +1885,15 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
- 
- 	cancel_delayed_work_sync(&xhci->cmd_timer);
- 
--	xhci_free_interrupter(xhci, xhci->interrupter);
--	xhci->interrupter = NULL;
-+	for (i = 1; i < xhci->max_interrupters; i++) {
-+		if (xhci->interrupters[i])
-+			xhci_remove_secondary_interrupter(xhci_to_hcd(xhci),
-+							  xhci->interrupters[i]);
++int _snd_pcm_hw_param_set(struct snd_pcm_hw_params *params,
++				 snd_pcm_hw_param_t var, unsigned int val,
++				 int dir)
++{
++	int changed;
++
++	if (hw_is_mask(var)) {
++		struct snd_mask *m = hw_param_mask(params, var);
++
++		if (val == 0 && dir < 0) {
++			changed = -EINVAL;
++			snd_mask_none(m);
++		} else {
++			if (dir > 0)
++				val++;
++			else if (dir < 0)
++				val--;
++			changed = snd_mask_refine_set(hw_param_mask(params, var), val);
++		}
++	} else if (hw_is_interval(var)) {
++		struct snd_interval *i = hw_param_interval(params, var);
++
++		if (val == 0 && dir < 0) {
++			changed = -EINVAL;
++			snd_interval_none(i);
++		} else if (dir == 0)
++			changed = snd_interval_refine_set(i, val);
++		else {
++			struct snd_interval t;
++
++			t.openmin = 1;
++			t.openmax = 1;
++			t.empty = 0;
++			t.integer = 0;
++			if (dir < 0) {
++				t.min = val - 1;
++				t.max = val;
++			} else {
++				t.min = val;
++				t.max = val+1;
++			}
++			changed = snd_interval_refine(i, &t);
++		}
++	} else
++		return -EINVAL;
++	if (changed > 0) {
++		params->cmask |= 1 << var;
++		params->rmask |= 1 << var;
 +	}
-+
-+	/* free the primary interrupter, interrupter number 0 */
-+	xhci_free_interrupter(xhci, xhci->interrupters[0]);
-+	xhci->interrupters[0] = NULL;
- 	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "Freed primary event ring");
- 
- 	if (xhci->cmd_ring)
-@@ -1933,6 +1964,7 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
- 	for (i = 0; i < xhci->num_port_caps; i++)
- 		kfree(xhci->port_caps[i].psi);
- 	kfree(xhci->port_caps);
-+	kfree(xhci->interrupters);
- 	xhci->num_port_caps = 0;
- 
- 	xhci->usb2_rhub.ports = NULL;
-@@ -1941,6 +1973,7 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
- 	xhci->rh_bw = NULL;
- 	xhci->ext_caps = NULL;
- 	xhci->port_caps = NULL;
-+	xhci->interrupters = NULL;
- 
- 	xhci->page_size = 0;
- 	xhci->page_shift = 0;
-@@ -2251,7 +2284,7 @@ xhci_alloc_interrupter(struct xhci_hcd *xhci, unsigned int intr_num, gfp_t flags
- 		return NULL;
++	return changed;
++}
++EXPORT_SYMBOL_GPL(_snd_pcm_hw_param_set);
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 803230343c16..59be5f543315 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -1071,6 +1071,7 @@ int snd_usb_autoresume(struct snd_usb_audio *chip)
  	}
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(snd_usb_autoresume);
  
--	if (xhci->interrupter) {
-+	if (xhci->interrupters[intr_num]) {
- 		xhci_warn(xhci, "Can't allocate already set up interrupter %d\n", intr_num);
- 		return NULL;
+ void snd_usb_autosuspend(struct snd_usb_audio *chip)
+ {
+@@ -1084,6 +1085,7 @@ void snd_usb_autosuspend(struct snd_usb_audio *chip)
+ 	for (i = 0; i < chip->num_interfaces; i++)
+ 		usb_autopm_put_interface(chip->intf[i]);
+ }
++EXPORT_SYMBOL_GPL(snd_usb_autosuspend);
+ 
+ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
+ {
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 310cd6fb0038..25b79c067956 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -858,6 +858,7 @@ snd_usb_endpoint_open(struct snd_usb_audio *chip,
+ 	mutex_unlock(&chip->mutex);
+ 	return ep;
+ }
++EXPORT_SYMBOL_GPL(snd_usb_endpoint_open);
+ 
+ /*
+  * snd_usb_endpoint_set_sync: Link data and sync endpoints
+@@ -1506,6 +1507,7 @@ int snd_usb_endpoint_prepare(struct snd_usb_audio *chip,
+ 	mutex_unlock(&chip->mutex);
+ 	return err;
+ }
++EXPORT_SYMBOL_GPL(snd_usb_endpoint_prepare);
+ 
+ /* get the current rate set to the given clock by any endpoint */
+ int snd_usb_endpoint_get_clock_rate(struct snd_usb_audio *chip, int clock)
+diff --git a/sound/usb/helper.c b/sound/usb/helper.c
+index a4410267bf70..b4ed9ef3eeb3 100644
+--- a/sound/usb/helper.c
++++ b/sound/usb/helper.c
+@@ -62,6 +62,7 @@ void *snd_usb_find_csint_desc(void *buffer, int buflen, void *after, u8 dsubtype
  	}
-@@ -2298,6 +2331,56 @@ xhci_alloc_interrupter(struct xhci_hcd *xhci, unsigned int intr_num, gfp_t flags
  	return NULL;
  }
++EXPORT_SYMBOL_GPL(snd_usb_find_csint_desc);
  
-+/*
-+ * Allocate a XHCI secondary interrupter slot.  If the user requests a specific intr
-+ * number, then check if the slot is available.  Otherwise, fetch the first available
-+ * entry within the interrupter array.
-+ */
-+struct xhci_interrupter *
-+xhci_create_secondary_interrupter(struct usb_hcd *hcd, int intr_num)
-+{
-+	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
-+	struct xhci_interrupter *ir;
-+	unsigned int i;
-+	unsigned int idx = 0;
-+	unsigned long flags;
-+
-+	if (!xhci->interrupters || intr_num > xhci->max_interrupters)
-+		return NULL;
-+
-+	spin_lock_irqsave(&xhci->lock, flags);
-+	/* find available secondary interrupter, interrupter 0 is reserved for primary */
-+	if (intr_num > 0) {
-+		idx = intr_num;
-+	} else {
-+		for (i = 1; i < xhci->max_interrupters; i++) {
-+			if (xhci->interrupters[i] == NULL) {
-+				idx = i;
-+				break;
-+			}
-+		}
-+	}
-+
-+	if (idx > 0) {
-+		ir = xhci_alloc_interrupter(xhci, idx, GFP_KERNEL);
-+		if (!ir) {
-+			spin_unlock_irqrestore(&xhci->lock, flags);
-+			return NULL;
-+		}
-+		ir->intr_num = idx;
-+		xhci->interrupters[idx] = ir;
-+		spin_unlock_irqrestore(&xhci->lock, flags);
-+
-+		return ir;
-+	}
-+	spin_unlock_irqrestore(&xhci->lock, flags);
-+	xhci_warn(xhci, "Can't add new secondary interrupter, max interrupters %d\n",
-+		  xhci->max_interrupters);
-+
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(xhci_create_secondary_interrupter);
-+
- int xhci_mem_init(struct xhci_hcd *xhci, gfp_t flags)
+ /*
+  * Wrapper for usb_control_msg().
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 8ed165f036a0..0b01a5dfcb73 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -87,7 +87,7 @@ static snd_pcm_uframes_t snd_usb_pcm_pointer(struct snd_pcm_substream *substream
+ /*
+  * find a matching audio format
+  */
+-static const struct audioformat *
++const struct audioformat *
+ find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
+ 	    unsigned int rate, unsigned int channels, bool strict_match,
+ 	    struct snd_usb_substream *subs)
+@@ -147,8 +147,9 @@ find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
+ 	}
+ 	return found;
+ }
++EXPORT_SYMBOL_GPL(find_format);
+ 
+-static const struct audioformat *
++const struct audioformat *
+ find_substream_format(struct snd_usb_substream *subs,
+ 		      const struct snd_pcm_hw_params *params)
  {
- 	dma_addr_t	dma;
-@@ -2422,8 +2505,12 @@ int xhci_mem_init(struct xhci_hcd *xhci, gfp_t flags)
- 	/* allocate and set up primary interrupter with an event ring. */
- 	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
- 		       "Allocating primary event ring");
--	xhci->interrupter = xhci_alloc_interrupter(xhci, 0, flags);
--	if (!xhci->interrupter)
-+
-+	xhci->interrupters = kcalloc_node(xhci->max_interrupters, sizeof(*xhci->interrupters),
-+					  flags, dev_to_node(dev));
-+
-+	xhci->interrupters[0] = xhci_alloc_interrupter(xhci, 0, flags);
-+	if (!xhci->interrupters[0])
- 		goto fail;
+@@ -156,6 +157,7 @@ find_substream_format(struct snd_usb_substream *subs,
+ 			   params_rate(params), params_channels(params),
+ 			   true, subs);
+ }
++EXPORT_SYMBOL_GPL(find_substream_format);
  
- 	xhci->isoc_bei_interval = AVOID_BEI_INTERVAL_MAX;
-diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
-index 993c2dc2cd1a..2c20ccdc95bc 100644
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -3055,7 +3055,7 @@ irqreturn_t xhci_irq(struct usb_hcd *hcd)
- 	writel(status, &xhci->op_regs->status);
- 
- 	/* This is the handler of the primary interrupter */
--	ir = xhci->interrupter;
-+	ir = xhci->interrupters[0];
- 	if (!hcd->msi_enabled) {
- 		u32 irq_pending;
- 		irq_pending = readl(&ir->ir_set->irq_pending);
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index 8b19c6ea3d16..003c6cc2fb55 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -613,7 +613,7 @@ static int xhci_init(struct usb_hcd *hcd)
- 
- static int xhci_run_finished(struct xhci_hcd *xhci)
+ static int init_pitch_v1(struct snd_usb_audio *chip, int ep)
  {
--	struct xhci_interrupter *ir = xhci->interrupter;
-+	struct xhci_interrupter *ir = xhci->interrupters[0];
- 	unsigned long	flags;
- 	u32		temp;
- 
-@@ -666,7 +666,7 @@ int xhci_run(struct usb_hcd *hcd)
- 	u64 temp_64;
- 	int ret;
- 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
--	struct xhci_interrupter *ir = xhci->interrupter;
-+	struct xhci_interrupter *ir = xhci->interrupters[0];
- 	/* Start the xHCI host controller running only after the USB 2.0 roothub
- 	 * is setup.
- 	 */
-@@ -770,8 +770,8 @@ static void xhci_stop(struct usb_hcd *hcd)
- 			"// Disabling event ring interrupts");
- 	temp = readl(&xhci->op_regs->status);
- 	writel((temp & ~0x1fff) | STS_EINT, &xhci->op_regs->status);
--	temp = readl(&xhci->interrupter->ir_set->irq_pending);
--	writel(ER_IRQ_DISABLE(temp), &xhci->interrupter->ir_set->irq_pending);
-+	temp = readl(&xhci->interrupters[0]->ir_set->irq_pending);
-+	writel(ER_IRQ_DISABLE(temp), &xhci->interrupters[0]->ir_set->irq_pending);
- 
- 	xhci_dbg_trace(xhci, trace_xhci_dbg_init, "cleaning up memory");
- 	xhci_mem_cleanup(xhci);
-@@ -833,36 +833,51 @@ EXPORT_SYMBOL_GPL(xhci_shutdown);
- #ifdef CONFIG_PM
- static void xhci_save_registers(struct xhci_hcd *xhci)
- {
--	struct xhci_interrupter *ir = xhci->interrupter;
-+	struct xhci_interrupter *ir;
-+	unsigned int i;
- 
- 	xhci->s3.command = readl(&xhci->op_regs->command);
- 	xhci->s3.dev_nt = readl(&xhci->op_regs->dev_notification);
- 	xhci->s3.dcbaa_ptr = xhci_read_64(xhci, &xhci->op_regs->dcbaa_ptr);
- 	xhci->s3.config_reg = readl(&xhci->op_regs->config_reg);
- 
--	if (!ir)
--		return;
-+	/* save both primary and all secondary interrupters */
-+	/* fixme, shold we lock  to prevent race with remove secondary interrupter? */
-+	for (i = 0; i < xhci->max_interrupters; i++) {
-+		ir = xhci->interrupters[i];
-+		if (!ir)
-+			continue;
- 
--	ir->s3_erst_size = readl(&ir->ir_set->erst_size);
--	ir->s3_erst_base = xhci_read_64(xhci, &ir->ir_set->erst_base);
--	ir->s3_erst_dequeue = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
--	ir->s3_irq_pending = readl(&ir->ir_set->irq_pending);
--	ir->s3_irq_control = readl(&ir->ir_set->irq_control);
-+		ir->s3_erst_size = readl(&ir->ir_set->erst_size);
-+		ir->s3_erst_base = xhci_read_64(xhci, &ir->ir_set->erst_base);
-+		ir->s3_erst_dequeue = xhci_read_64(xhci, &ir->ir_set->erst_dequeue);
-+		ir->s3_irq_pending = readl(&ir->ir_set->irq_pending);
-+		ir->s3_irq_control = readl(&ir->ir_set->irq_control);
-+	}
+@@ -418,7 +420,7 @@ int snd_usb_pcm_resume(struct snd_usb_stream *as)
+ 	return 0;
  }
  
- static void xhci_restore_registers(struct xhci_hcd *xhci)
+-static void close_endpoints(struct snd_usb_audio *chip,
++void close_endpoints(struct snd_usb_audio *chip,
+ 			    struct snd_usb_substream *subs)
  {
--	struct xhci_interrupter *ir = xhci->interrupter;
-+	struct xhci_interrupter *ir;
-+	unsigned int i;
- 
- 	writel(xhci->s3.command, &xhci->op_regs->command);
- 	writel(xhci->s3.dev_nt, &xhci->op_regs->dev_notification);
- 	xhci_write_64(xhci, xhci->s3.dcbaa_ptr, &xhci->op_regs->dcbaa_ptr);
- 	writel(xhci->s3.config_reg, &xhci->op_regs->config_reg);
--	writel(ir->s3_erst_size, &ir->ir_set->erst_size);
--	xhci_write_64(xhci, ir->s3_erst_base, &ir->ir_set->erst_base);
--	xhci_write_64(xhci, ir->s3_erst_dequeue, &ir->ir_set->erst_dequeue);
--	writel(ir->s3_irq_pending, &ir->ir_set->irq_pending);
--	writel(ir->s3_irq_control, &ir->ir_set->irq_control);
-+
-+	/* FIXME should we lock to protect against freeing of interrupters */
-+	for (i = 0; i < xhci->max_interrupters; i++) {
-+		ir = xhci->interrupters[i];
-+		if (!ir)
-+			continue;
-+
-+		writel(ir->s3_erst_size, &ir->ir_set->erst_size);
-+		xhci_write_64(xhci, ir->s3_erst_base, &ir->ir_set->erst_base);
-+		xhci_write_64(xhci, ir->s3_erst_dequeue, &ir->ir_set->erst_dequeue);
-+		writel(ir->s3_irq_pending, &ir->ir_set->irq_pending);
-+		writel(ir->s3_irq_control, &ir->ir_set->irq_control);
-+	}
+ 	if (subs->data_endpoint) {
+@@ -432,6 +434,7 @@ static void close_endpoints(struct snd_usb_audio *chip,
+ 		subs->sync_endpoint = NULL;
+ 	}
  }
++EXPORT_SYMBOL(close_endpoints);
  
- static void xhci_set_cmd_ring_deq(struct xhci_hcd *xhci)
-@@ -1227,8 +1242,8 @@ int xhci_resume(struct xhci_hcd *xhci, bool hibernated)
- 		xhci_dbg(xhci, "// Disabling event ring interrupts\n");
- 		temp = readl(&xhci->op_regs->status);
- 		writel((temp & ~0x1fff) | STS_EINT, &xhci->op_regs->status);
--		temp = readl(&xhci->interrupter->ir_set->irq_pending);
--		writel(ER_IRQ_DISABLE(temp), &xhci->interrupter->ir_set->irq_pending);
-+		temp = readl(&xhci->interrupters[0]->ir_set->irq_pending);
-+		writel(ER_IRQ_DISABLE(temp), &xhci->interrupters[0]->ir_set->irq_pending);
+ /*
+  * hw_params callback
+diff --git a/sound/usb/pcm.h b/sound/usb/pcm.h
+index 493a4e34d78d..43a4a03dfce7 100644
+--- a/sound/usb/pcm.h
++++ b/sound/usb/pcm.h
+@@ -13,4 +13,16 @@ void snd_usb_preallocate_buffer(struct snd_usb_substream *subs);
+ int snd_usb_audioformat_set_sync_ep(struct snd_usb_audio *chip,
+ 				    struct audioformat *fmt);
  
- 		xhci_dbg(xhci, "cleaning up memory\n");
- 		xhci_mem_cleanup(xhci);
-diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
-index af356cc3b50b..f45cbfb79cea 100644
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -1726,7 +1726,7 @@ struct xhci_hcd {
- 	struct reset_control *reset;
- 	/* data structures */
- 	struct xhci_device_context_array *dcbaa;
--	struct xhci_interrupter *interrupter;
-+	struct xhci_interrupter **interrupters;
- 	struct xhci_ring	*cmd_ring;
- 	unsigned int            cmd_ring_state;
- #define CMD_RING_STATE_RUNNING         (1 << 0)
-diff --git a/include/linux/usb/xhci-intr.h b/include/linux/usb/xhci-intr.h
-index 9b3fcc9a1842..738b0f0481a6 100644
---- a/include/linux/usb/xhci-intr.h
-+++ b/include/linux/usb/xhci-intr.h
-@@ -79,4 +79,8 @@ struct xhci_interrupter {
- 	u64	s3_erst_base;
- 	u64	s3_erst_dequeue;
- };
++void close_endpoints(struct snd_usb_audio *chip,
++			    struct snd_usb_substream *subs);
++int configure_endpoints(struct snd_usb_audio *chip,
++			       struct snd_usb_substream *subs);
 +
-+struct xhci_interrupter *
-+xhci_create_secondary_interrupter(struct usb_hcd *hcd, int intr_num);
-+void xhci_remove_secondary_interrupter(struct usb_hcd *hcd, struct xhci_interrupter *ir);
- #endif
++const struct audioformat *
++find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
++	    unsigned int rate, unsigned int channels, bool strict_match,
++	    struct snd_usb_substream *subs);
++const struct audioformat *
++find_substream_format(struct snd_usb_substream *subs,
++		      const struct snd_pcm_hw_params *params);
+ #endif /* __USBAUDIO_PCM_H */
