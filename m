@@ -4,65 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBE87C52D11
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 17:11:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A600C52D11
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 17:26:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA1C1EA0;
-	Thu, 26 Jan 2023 18:10:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA1C1EA0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26749E75;
+	Thu, 26 Jan 2023 18:25:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26749E75
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674753109;
-	bh=jTbGFoPfo25hRqx1ZCzHGIrxhtUHBDBBhH41wY0atkg=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1674753995;
+	bh=JD9httDWUUglNMzfg7+AehAvGFbv725T8Se4OJY02UQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=QAbzshMUnXng0w8KOkl27O6BJMmwXn52Upv4AbSZeyjwPH/Cf6bBil3aso1YSzXt7
-	 vaKiyHITOzUsEmI5X5TBSgHIs50LZeZqsFUw28zcTZWGHU8kVF/CzbXMiQQ6RKple5
-	 +Fv50x0ddoH3/+3TCqeIfxKdKEycY71MJUmJtlRA=
+	b=pV8PqeSwuoYrmuAu+1hNzTewHbRbDyXJosq5WaKb66sohAmvtxDsgujWN4w4w4lfh
+	 +UYqR11HYja28UGI6yeYbuj7bcQvycCZ9j1UnzseLpajGwP6n3jjcS80Vbb4Jiesq+
+	 9zmXN9B/uB1N6LjuhvhhR16xPYYrYz/qQbT07Pe0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E8753F80553;
-	Thu, 26 Jan 2023 18:10:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D2E2F8025D;
+	Thu, 26 Jan 2023 18:25:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CE07CF80557; Thu, 26 Jan 2023 18:10:10 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C13ADF80552
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 18:09:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C13ADF80552
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Y0DdeS0s
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id EC274F8027D; Thu, 26 Jan 2023 18:25:42 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id E043B618D1;
- Thu, 26 Jan 2023 17:09:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D9C8C4339C;
- Thu, 26 Jan 2023 17:09:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674752997;
- bh=jTbGFoPfo25hRqx1ZCzHGIrxhtUHBDBBhH41wY0atkg=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Y0DdeS0sGiG6hy/rfdlWk04WuQrxmzJ7Jn0bZU2t7fGDGeb9UaezNyJcIGXs+POqX
- wikkES5aUX9CJgtSHQZ0XWgmYH6rJRjtoi1CCSyu5sBPahHREwgPr22FI5wL3JJoyD
- NEmnSaxwfHYJ6QNyJeFDyGpzpgO5t99AD7c3L0Z00txQ3NeeuhdjS3CrOKGM8KlrxO
- nNwtZQyWpk7U0xSXzhg3v0S+0w/5Xrl4UuM79AMADPwHBJir7uJPxFyXBXYSYKEd0h
- k6G4Xy8eLaUSgiuzxeGg1x9kDLphUaXJONc/RnZ1OWg6nSZcLV6hfht55LEugwSvU9
- INvziIFO2geXQ==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230126110637.25542-1-peter.ujfalusi@linux.intel.com>
-References: <20230126110637.25542-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: ipc4-topology: add buffer type support
-Message-Id: <167475299515.4003145.12026179635725917344.b4-ty@kernel.org>
-Date: Thu, 26 Jan 2023 17:09:55 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1B35F8016E
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 18:25:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1B35F8016E
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=eR8oVYOm
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 30Q6f0P8017579; Thu, 26 Jan 2023 11:25:38 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=+7e5BFB25/sG52OaE6KhwkTP0Mh+mscqtoxl33gubHQ=;
+ b=eR8oVYOmaW6FDjTg8Oy/V8uK9aMkAVDuBM6D8ksSfnT5mUlx4gLwbUiykSKEQ0uYRQc0
+ /NsYza/JKMFJuGkgBRAY9bqJs2PchCE8hBSUgauhB0oM1gsi+kbpKPkKoxtpH0rPohIa
+ lzJ715owR+d+/SO9BHgHgtuuugcBx9x16LE2YQa2q26O9FTypbcZbrmM4r//BvYLl8hR
+ BelkjPYvFn0vtfuwqfVGmCCq+L/BF3dOk9ULYwpK+CUvVYvX0uM86LrE0Za8D1UiL6km
+ S4kr1Z1Y3rToqH757FirX8oBLRNmpwSaNaZtviMwSWtnAt4caLyx84uSgyEcT9Qg5jVA yQ== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3n8dbst2rm-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 26 Jan 2023 11:25:38 -0600
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Thu, 26 Jan
+ 2023 11:25:36 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.7 via Frontend Transport; Thu, 26 Jan 2023 11:25:36 -0600
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7398311CC;
+ Thu, 26 Jan 2023 17:25:36 +0000 (UTC)
+Date: Thu, 26 Jan 2023 17:25:36 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [PATCH] [v2] ASoC: cs42l56: fix DT probe
+Message-ID: <20230126172536.GB36097@ediswmail.ad.cirrus.com>
+References: <20230126162203.2986339-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230126162203.2986339-1-arnd@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: NeF1VDHUKtXiNmzqz1XuC46pMvODmjXU
+X-Proofpoint-GUID: NeF1VDHUKtXiNmzqz1XuC46pMvODmjXU
+X-Proofpoint-Spam-Reason: safe
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,51 +89,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- rander.wang@intel.com, yung-chuan.liao@linux.intel.com
+Cc: alsa-devel@alsa-project.org, Zheyu Ma <zheyuma97@gmail.com>,
+ Arnd Bergmann <arnd@arndb.de>, Lucas Tanure <tanureal@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, David Rhodes <david.rhodes@cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
+ James Schulman <james.schulman@cirrus.com>, linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 26 Jan 2023 13:06:37 +0200, Peter Ujfalusi wrote:
-> The corresponding IPC4 module of snd_soc_dapm_buffer widget is module
-> -to-module copier.
-> The module-to-module copier is a buffer-like component with demuxing
-> capabilities.
-> Rename the host_token_list to common_copier_token_list since it will
-> be used by host copier and module-to-module copier.
-> The setup callback is almost the same as sof_ipc4_widget_setup_pcm except
-> the gtw_cfg data, and the free callback is exactly the same as
-> sof_ipc4_widget_free_comp_pcm. To reduce the duplication, the commit
-> reuses the setup and free callbacks.
+On Thu, Jan 26, 2023 at 05:21:24PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> [...]
+> While looking through legacy platform data users, I noticed that
+> the DT probing never uses data from the DT properties, as the
+> platform_data structure gets overwritten directly after it
+> is initialized.
+> 
+> There have never been any boards defining the platform_data in
+> the mainline kernel either, so this driver so far only worked
+> with patched kernels or with the default values.
+> 
+> For the benefit of possible downstream users, fix the DT probe
+> by no longer overwriting the data.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
 
-Applied to
-
-   broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: SOF: ipc4-topology: add buffer type support
-      commit: 7d573425d87642539480929e0172ad9a1917aced
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
 Thanks,
-Mark
-
+Charles
