@@ -4,67 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31F43C27C76
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 03:16:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE666C27C76
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 03:17:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45FBF82A;
-	Thu, 26 Jan 2023 04:16:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45FBF82A
+	by alsa0.perex.cz (Postfix) with ESMTPS id AB116DF2;
+	Thu, 26 Jan 2023 04:16:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB116DF2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674703012;
-	bh=DTNbY1ExuCiI5UkuDzSg73TZC7vMevRGlGtC76NdKbc=;
+	s=default; t=1674703026;
+	bh=QiyUMPdlPMZE/V2bWS9WMsVWKiY/Pdvi6APKzeNH84A=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=PUvd5pGq4N1KXpX30L0tMQdOp0hu+jguj68yggZzyuGCl16ZTUlU602qhhCtH7jtd
-	 fK3n0AdHUp+k8g/ZFOLn2Y9ZzcACd5kX3crK8NrXdxn/coqwGSWZaAsBta0cUsx00P
-	 3t7A6P5V6dF4QibkSQLnwQuURdFXMVgclat6AiEw=
+	b=pDoPoL+OaxdanlE8jottpmwegH8vhD7FwnH8QJr0+QuDEqyER6KyUHlYLhK7Q46Hj
+	 5729DpoLXi9cYMQH0GUpsBIsnkJ/C2Fwy8d3KX4qjeD+wwNm0rrjrpu5vlI0oN3Puc
+	 beS04B3ojHrHDPpzrj2PxNbwJ95KN3JldPWfEp0w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE01CF80567;
-	Thu, 26 Jan 2023 04:15:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 145E9F8057D;
+	Thu, 26 Jan 2023 04:15:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9BC2EF800AE; Thu, 26 Jan 2023 04:14:59 +0100 (CET)
-Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
- [199.106.114.38])
- (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
+ id 3AD2CF80571; Thu, 26 Jan 2023 04:15:00 +0100 (CET)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F0CF4F800AE
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 04:14:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0CF4F800AE
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC1AEF8030F
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 04:14:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC1AEF8030F
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcdkim header.b=uYTQ6yww
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1674702886; x=1706238886;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version;
- bh=YnjTkVHuxQtGQzjc/gDmzlIOB8H4c7tQDGmebubRFf4=;
- b=uYTQ6ywwAOCC/Wqz4Ym+QL9OjSufIOeLKIoaO9sqBWVQ3lxh/UsbGnOL
- rHky8vyrofthHUO2S9E5vlnR/y+bkC6CjOneh1URzisEcCYwtUugAn1Km
- p/YiTxxIIz/A+QVFoikJsMjTU09tNHUMCwJpvZAv54HgpIIV+MvJLQz2t U=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
- by alexa-out-sd-01.qualcomm.com with ESMTP; 25 Jan 2023 19:14:39 -0800
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.45.79.139])
- by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jan 2023 19:14:39 -0800
+ header.s=qcppdkim1 header.b=Nh9CSZXq
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+ by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 30Q3Da6b006094; Thu, 26 Jan 2023 03:14:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=qBXiNQtwFlkX5W6deQxEhKIHG8aNPycqcvlIiLU6plo=;
+ b=Nh9CSZXqcbZC/NvDF6HxcfxTuLrye0ZOkprVKjpeQXBb/8x1V0yrhdPFWjfQRRk/GwU6
+ KXkRvmH2LND4TGz6t9azQUMOEg+L9MwZghDJVve7glh3NzrBnIaela7EmAPnAM7BbrJs
+ AjATUm1VkkbIid2BBveOp7qw8SdElhhomK+2zBmPXS8yh/WME9iANSgOZbXcbpFrYL+8
+ qDhmu7qtslbpHwK9L3piRgpSI3IU6ixgrJMFcHlhHDiHtH9Ylvch/kapwNNdbe79cHom
+ hXIMC6P13CZxwtN63ItCTiCFi6rUUgh1q5cZeFV3hQSkGMrtB4BBudHOFyqjFkv9sGUg gQ== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com
+ [199.106.103.254])
+ by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3nb0qrsx71-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 26 Jan 2023 03:14:43 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com
+ [10.45.79.139])
+ by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 30Q3EgdP016036
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 26 Jan 2023 03:14:42 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.36; Wed, 25 Jan 2023 19:14:38 -0800
+ 15.2.986.36; Wed, 25 Jan 2023 19:14:41 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
  <perex@perex.cz>, <lgirdwood@gmail.com>, <andersson@kernel.org>,
  <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
- <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>, <bgoswami@quicinc.com>,
- <tiwai@suse.com>, <robh+dt@kernel.org>, <agross@kernel.org>
-Subject: [RFC PATCH v2 02/22] xhci: remove xhci_test_trb_in_td_math early
- development check
-Date: Wed, 25 Jan 2023 19:14:04 -0800
-Message-ID: <20230126031424.14582-3-quic_wcheng@quicinc.com>
+ <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+ <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+ <agross@kernel.org>
+Subject: [RFC PATCH v2 07/22] ASoC: Add SOC USB APIs for adding an USB backend
+Date: Wed, 25 Jan 2023 19:14:09 -0800
+Message-ID: <20230126031424.14582-8-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230126031424.14582-1-quic_wcheng@quicinc.com>
 References: <20230126031424.14582-1-quic_wcheng@quicinc.com>
@@ -73,6 +81,20 @@ Content-Type: text/plain
 X-Originating-IP: [10.49.16.6]
 X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
  nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-GUID: a_XQr21frpgJ8epFwFoDPKQB0M26kM23
+X-Proofpoint-ORIG-GUID: a_XQr21frpgJ8epFwFoDPKQB0M26kM23
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-25_14,2023-01-25_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ bulkscore=0 impostorscore=0
+ lowpriorityscore=0 phishscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0
+ priorityscore=1501 spamscore=0 suspectscore=0 clxscore=1015 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
+ definitions=main-2301260028
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -86,200 +108,280 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Mathias Nyman <mathias.nyman@linux.intel.com>, linux-arm-msm@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Wesley Cheng <quic_wcheng@quicinc.com>,
  quic_jackp@quicinc.com, quic_plai@quicinc.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+Some platforms may want to register its USB port to be handled by the ASoC
+framework.  Audio playback/capture support is also handled entirely by the
+vendor ASoC drivers.
 
-Time to remove this test trb in td math check that was added
-in early stage of xhci driver deveopment.
-
-It verified that the size, alignment and boundaries of the event and
-command rings the driver itself allocated are correct.
-
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/host/xhci-mem.c | 160 ------------------------------------
- 1 file changed, 160 deletions(-)
+ include/sound/soc-usb.h |  33 +++++++
+ sound/soc/Makefile      |   2 +-
+ sound/soc/soc-usb.c     | 202 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 236 insertions(+), 1 deletion(-)
+ create mode 100644 include/sound/soc-usb.h
+ create mode 100644 sound/soc/soc-usb.c
 
-diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
-index 679befa97c7a..bf9bb29f924b 100644
---- a/drivers/usb/host/xhci-mem.c
-+++ b/drivers/usb/host/xhci-mem.c
-@@ -1929,164 +1929,6 @@ void xhci_mem_cleanup(struct xhci_hcd *xhci)
- 	xhci->usb3_rhub.bus_state.bus_suspended = 0;
- }
+diff --git a/include/sound/soc-usb.h b/include/sound/soc-usb.h
+new file mode 100644
+index 000000000000..ec422a8a834f
+--- /dev/null
++++ b/include/sound/soc-usb.h
+@@ -0,0 +1,33 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
++ */
++
++#ifndef __LINUX_SND_SOC_USB_H
++#define __LINUX_SND_SOC_USB_H
++
++/**
++ * struct snd_soc_usb
++ * @component - Reference to DAPM component
++ * @connection_status_cb - callback to notify connection events
++ * @priv_data - vendor data
++ **/
++struct snd_soc_usb {
++	struct list_head list;
++	struct device *dev;
++	struct snd_soc_component *component;
++	int (*connection_status_cb)(struct snd_soc_usb *usb, int card_idx,
++				int connected);
++	void *priv_data;
++};
++
++int snd_soc_usb_connect(struct device *usbdev, int card_idx);
++int snd_soc_usb_disconnect(struct device *usbdev);
++void snd_soc_usb_set_priv_data(struct device *dev, void *priv);
++void *snd_soc_usb_get_priv_data(struct device *usbdev);
++
++struct snd_soc_usb *snd_soc_usb_add_port(struct device *dev,
++			int (*connection_cb)(struct snd_soc_usb *usb, int card_idx,
++			int connected));
++int snd_soc_usb_remove_port(struct device *dev);
++#endif
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 507eaed1d6a1..3305ceb59d84 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+-snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-utils.o soc-dai.o soc-component.o
++snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-usb.o soc-utils.o soc-dai.o soc-component.o
+ snd-soc-core-objs += soc-pcm.o soc-devres.o soc-ops.o soc-link.o soc-card.o
+ snd-soc-core-$(CONFIG_SND_SOC_COMPRESS) += soc-compress.o
  
--static int xhci_test_trb_in_td(struct xhci_hcd *xhci,
--		struct xhci_segment *input_seg,
--		union xhci_trb *start_trb,
--		union xhci_trb *end_trb,
--		dma_addr_t input_dma,
--		struct xhci_segment *result_seg,
--		char *test_name, int test_number)
--{
--	unsigned long long start_dma;
--	unsigned long long end_dma;
--	struct xhci_segment *seg;
--
--	start_dma = xhci_trb_virt_to_dma(input_seg, start_trb);
--	end_dma = xhci_trb_virt_to_dma(input_seg, end_trb);
--
--	seg = trb_in_td(xhci, input_seg, start_trb, end_trb, input_dma, false);
--	if (seg != result_seg) {
--		xhci_warn(xhci, "WARN: %s TRB math test %d failed!\n",
--				test_name, test_number);
--		xhci_warn(xhci, "Tested TRB math w/ seg %p and "
--				"input DMA 0x%llx\n",
--				input_seg,
--				(unsigned long long) input_dma);
--		xhci_warn(xhci, "starting TRB %p (0x%llx DMA), "
--				"ending TRB %p (0x%llx DMA)\n",
--				start_trb, start_dma,
--				end_trb, end_dma);
--		xhci_warn(xhci, "Expected seg %p, got seg %p\n",
--				result_seg, seg);
--		trb_in_td(xhci, input_seg, start_trb, end_trb, input_dma,
--			  true);
--		return -1;
--	}
--	return 0;
--}
--
--/* TRB math checks for xhci_trb_in_td(), using the command and event rings. */
--static int xhci_check_trb_in_td_math(struct xhci_hcd *xhci)
--{
--	struct {
--		dma_addr_t		input_dma;
--		struct xhci_segment	*result_seg;
--	} simple_test_vector [] = {
--		/* A zeroed DMA field should fail */
--		{ 0, NULL },
--		/* One TRB before the ring start should fail */
--		{ xhci->event_ring->first_seg->dma - 16, NULL },
--		/* One byte before the ring start should fail */
--		{ xhci->event_ring->first_seg->dma - 1, NULL },
--		/* Starting TRB should succeed */
--		{ xhci->event_ring->first_seg->dma, xhci->event_ring->first_seg },
--		/* Ending TRB should succeed */
--		{ xhci->event_ring->first_seg->dma + (TRBS_PER_SEGMENT - 1)*16,
--			xhci->event_ring->first_seg },
--		/* One byte after the ring end should fail */
--		{ xhci->event_ring->first_seg->dma + (TRBS_PER_SEGMENT - 1)*16 + 1, NULL },
--		/* One TRB after the ring end should fail */
--		{ xhci->event_ring->first_seg->dma + (TRBS_PER_SEGMENT)*16, NULL },
--		/* An address of all ones should fail */
--		{ (dma_addr_t) (~0), NULL },
--	};
--	struct {
--		struct xhci_segment	*input_seg;
--		union xhci_trb		*start_trb;
--		union xhci_trb		*end_trb;
--		dma_addr_t		input_dma;
--		struct xhci_segment	*result_seg;
--	} complex_test_vector [] = {
--		/* Test feeding a valid DMA address from a different ring */
--		{	.input_seg = xhci->event_ring->first_seg,
--			.start_trb = xhci->event_ring->first_seg->trbs,
--			.end_trb = &xhci->event_ring->first_seg->trbs[TRBS_PER_SEGMENT - 1],
--			.input_dma = xhci->cmd_ring->first_seg->dma,
--			.result_seg = NULL,
--		},
--		/* Test feeding a valid end TRB from a different ring */
--		{	.input_seg = xhci->event_ring->first_seg,
--			.start_trb = xhci->event_ring->first_seg->trbs,
--			.end_trb = &xhci->cmd_ring->first_seg->trbs[TRBS_PER_SEGMENT - 1],
--			.input_dma = xhci->cmd_ring->first_seg->dma,
--			.result_seg = NULL,
--		},
--		/* Test feeding a valid start and end TRB from a different ring */
--		{	.input_seg = xhci->event_ring->first_seg,
--			.start_trb = xhci->cmd_ring->first_seg->trbs,
--			.end_trb = &xhci->cmd_ring->first_seg->trbs[TRBS_PER_SEGMENT - 1],
--			.input_dma = xhci->cmd_ring->first_seg->dma,
--			.result_seg = NULL,
--		},
--		/* TRB in this ring, but after this TD */
--		{	.input_seg = xhci->event_ring->first_seg,
--			.start_trb = &xhci->event_ring->first_seg->trbs[0],
--			.end_trb = &xhci->event_ring->first_seg->trbs[3],
--			.input_dma = xhci->event_ring->first_seg->dma + 4*16,
--			.result_seg = NULL,
--		},
--		/* TRB in this ring, but before this TD */
--		{	.input_seg = xhci->event_ring->first_seg,
--			.start_trb = &xhci->event_ring->first_seg->trbs[3],
--			.end_trb = &xhci->event_ring->first_seg->trbs[6],
--			.input_dma = xhci->event_ring->first_seg->dma + 2*16,
--			.result_seg = NULL,
--		},
--		/* TRB in this ring, but after this wrapped TD */
--		{	.input_seg = xhci->event_ring->first_seg,
--			.start_trb = &xhci->event_ring->first_seg->trbs[TRBS_PER_SEGMENT - 3],
--			.end_trb = &xhci->event_ring->first_seg->trbs[1],
--			.input_dma = xhci->event_ring->first_seg->dma + 2*16,
--			.result_seg = NULL,
--		},
--		/* TRB in this ring, but before this wrapped TD */
--		{	.input_seg = xhci->event_ring->first_seg,
--			.start_trb = &xhci->event_ring->first_seg->trbs[TRBS_PER_SEGMENT - 3],
--			.end_trb = &xhci->event_ring->first_seg->trbs[1],
--			.input_dma = xhci->event_ring->first_seg->dma + (TRBS_PER_SEGMENT - 4)*16,
--			.result_seg = NULL,
--		},
--		/* TRB not in this ring, and we have a wrapped TD */
--		{	.input_seg = xhci->event_ring->first_seg,
--			.start_trb = &xhci->event_ring->first_seg->trbs[TRBS_PER_SEGMENT - 3],
--			.end_trb = &xhci->event_ring->first_seg->trbs[1],
--			.input_dma = xhci->cmd_ring->first_seg->dma + 2*16,
--			.result_seg = NULL,
--		},
--	};
--
--	unsigned int num_tests;
--	int i, ret;
--
--	num_tests = ARRAY_SIZE(simple_test_vector);
--	for (i = 0; i < num_tests; i++) {
--		ret = xhci_test_trb_in_td(xhci,
--				xhci->event_ring->first_seg,
--				xhci->event_ring->first_seg->trbs,
--				&xhci->event_ring->first_seg->trbs[TRBS_PER_SEGMENT - 1],
--				simple_test_vector[i].input_dma,
--				simple_test_vector[i].result_seg,
--				"Simple", i);
--		if (ret < 0)
--			return ret;
--	}
--
--	num_tests = ARRAY_SIZE(complex_test_vector);
--	for (i = 0; i < num_tests; i++) {
--		ret = xhci_test_trb_in_td(xhci,
--				complex_test_vector[i].input_seg,
--				complex_test_vector[i].start_trb,
--				complex_test_vector[i].end_trb,
--				complex_test_vector[i].input_dma,
--				complex_test_vector[i].result_seg,
--				"Complex", i);
--		if (ret < 0)
--			return ret;
--	}
--	xhci_dbg(xhci, "TRB math tests passed.\n");
--	return 0;
--}
--
- static void xhci_set_hc_event_deq(struct xhci_hcd *xhci)
- {
- 	u64 temp;
-@@ -2506,8 +2348,6 @@ int xhci_mem_init(struct xhci_hcd *xhci, gfp_t flags)
- 					0, flags);
- 	if (!xhci->event_ring)
- 		goto fail;
--	if (xhci_check_trb_in_td_math(xhci) < 0)
--		goto fail;
- 
- 	ret = xhci_alloc_erst(xhci, xhci->event_ring, &xhci->erst, flags);
- 	if (ret)
+diff --git a/sound/soc/soc-usb.c b/sound/soc/soc-usb.c
+new file mode 100644
+index 000000000000..bfce6c9609e1
+--- /dev/null
++++ b/sound/soc/soc-usb.c
+@@ -0,0 +1,202 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
++ */
++#include <linux/of.h>
++#include <linux/usb.h>
++#include <sound/soc.h>
++#include <sound/soc-usb.h>
++#include "../usb/card.h"
++
++static DEFINE_MUTEX(ctx_mutex);
++static LIST_HEAD(usb_ctx_list);
++
++#define for_each_usb_ctx(ctx)			\
++	list_for_each_entry(ctx, &usb_ctx_list, list)
++
++static struct device_node *snd_soc_find_phandle(struct device *dev)
++{
++	struct device_node *node;
++
++	node = of_parse_phandle(dev->of_node, "usb-soc-be", 0);
++	if (!node)
++		return ERR_PTR(-ENODEV);
++
++	return node;
++}
++
++static struct snd_soc_usb *snd_soc_find_usb_ctx(struct device *dev)
++{
++	struct device_node *node;
++	struct snd_soc_usb *ctx = NULL;
++
++	node = snd_soc_find_phandle(dev);
++	if (IS_ERR(node))
++		return NULL;
++
++	mutex_lock(&ctx_mutex);
++	for_each_usb_ctx(ctx) {
++		if (ctx->dev->of_node == node) {
++			of_node_put(node);
++			mutex_unlock(&ctx_mutex);
++			return ctx;
++		}
++	}
++	of_node_put(node);
++	mutex_unlock(&ctx_mutex);
++
++	return NULL;
++}
++
++/**
++ * snd_soc_usb_get_priv_data() - Retrieve private data stored
++ * @usbdev: USB bus sysdev
++ *
++ * Fetch the private data stored in the USB SND SOC structure.  This is
++ * intended to be called by the USB offloading class driver, in order to
++ * attain parameters about the USB backend device.
++ *
++ */
++void *snd_soc_usb_get_priv_data(struct device *usbdev)
++{
++	struct snd_soc_usb *ctx;
++
++	if (!usbdev)
++		return NULL;
++
++	ctx = snd_soc_find_usb_ctx(usbdev);
++
++	return ctx ? ctx->priv_data : NULL;
++}
++EXPORT_SYMBOL_GPL(snd_soc_usb_get_priv_data);
++
++/**
++ * snd_soc_usb_set_priv_data() - Set private data stored
++ * @dev: USB backend device
++ * @priv: private data to store
++ *
++ * Save data describing the USB backend device parameters.  This is intended
++ * to be called by the ASoC USB backend driver.
++ *
++ */
++void snd_soc_usb_set_priv_data(struct device *dev, void *priv)
++{
++	struct snd_soc_usb *ctx;
++
++	mutex_lock(&ctx_mutex);
++	for_each_usb_ctx(ctx) {
++		if (dev->of_node == ctx->dev->of_node) {
++			ctx->priv_data = priv;
++			break;
++		}
++	}
++	mutex_unlock(&ctx_mutex);
++}
++EXPORT_SYMBOL_GPL(snd_soc_usb_set_priv_data);
++
++/**
++ * snd_soc_usb_add_port() - Add a USB backend port
++ * @dev: USB backend device
++ * @connection_cb: connection status callback
++ *
++ * Register a USB backend device to the SND USB SOC framework.  Memory is
++ * allocated as part of the USB backend device.
++ *
++ */
++struct snd_soc_usb *snd_soc_usb_add_port(struct device *dev,
++			int (*connection_cb)(struct snd_soc_usb *usb, int card_idx,
++			int connected))
++{
++	struct snd_soc_usb *usb;
++
++	usb = devm_kzalloc(dev, sizeof(*usb), GFP_KERNEL);
++	if (!usb)
++		return ERR_PTR(-ENOMEM);
++
++	usb->connection_status_cb = connection_cb;
++	usb->dev = dev;
++
++	mutex_lock(&ctx_mutex);
++	list_add_tail(&usb->list, &usb_ctx_list);
++	mutex_unlock(&ctx_mutex);
++
++	return usb;
++}
++EXPORT_SYMBOL_GPL(snd_soc_usb_add_port);
++
++/**
++ * snd_soc_usb_remove_port() - Remove a USB backend port
++ * @dev: USB backend device
++ *
++ * Remove a USB backend device from USB SND SOC.  Memory is freed when USB
++ * backend is removed.
++ *
++ */
++int snd_soc_usb_remove_port(struct device *dev)
++{
++	struct snd_soc_usb *ctx, *tmp;
++
++	mutex_lock(&ctx_mutex);
++	list_for_each_entry_safe(ctx, tmp, &usb_ctx_list, list) {
++		if (ctx->dev == dev) {
++			list_del(&ctx->list);
++			break;
++		}
++	}
++	mutex_unlock(&ctx_mutex);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_usb_remove_port);
++
++/**
++ * snd_soc_usb_connect() - Notification of USB device connection
++ * @usbdev: USB bus device
++ * @card_idx: USB SND card instance
++ *
++ * Notify of a new USB SND device connection.  The card_idx can be used to
++ * handle how the USB backend selects, which device to enable offloading on.
++ *
++ */
++int snd_soc_usb_connect(struct device *usbdev, int card_idx)
++{
++	struct snd_soc_usb *ctx;
++
++	if (!usbdev)
++		return -ENODEV;
++
++	ctx = snd_soc_find_usb_ctx(usbdev);
++	if (!ctx)
++		return -ENODEV;
++
++	if (ctx->connection_status_cb)
++		ctx->connection_status_cb(ctx, card_idx, 1);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_usb_connect);
++
++/**
++ * snd_soc_usb_connect() - Notification of USB device connection
++ * @usbdev: USB bus device
++ *
++ * Notify of a new USB SND device disconnection to the USB backend.
++ *
++ */
++int snd_soc_usb_disconnect(struct device *usbdev)
++{
++	struct snd_soc_usb *ctx;
++
++	if (!usbdev)
++		return -ENODEV;
++
++	ctx = snd_soc_find_usb_ctx(usbdev);
++	if (!ctx)
++		return -ENODEV;
++
++	if (ctx->connection_status_cb)
++		ctx->connection_status_cb(ctx, -1, 0);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(snd_soc_usb_disconnect);
