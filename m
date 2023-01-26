@@ -4,93 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81D2DC54E94
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 16:03:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCEF0C61DA2
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 16:23:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36E86E75;
-	Thu, 26 Jan 2023 17:02:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36E86E75
+	by alsa0.perex.cz (Postfix) with ESMTPS id 94DC5E75;
+	Thu, 26 Jan 2023 17:22:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94DC5E75
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674748977;
-	bh=o5fw/D/+2f2WvkIcThjS/M3rGLZVBwzKkJMCEpU/TBw=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=sRYV3fbQzVlqO+5XFsYDhlBUTmDg9MFpKrSMA06K2HgVG2ADiuvggxLsaakuEcTPg
-	 dd3wUc6Y2pGAUsvFovZYp6XI+rubdRE+E5BX1+ylXbbuxeV6yMhXI/73bPPtA8BazA
-	 fj908/44IXSlynGL3NRmya65uBmfk5yH4crXu7Pc=
+	s=default; t=1674750189;
+	bh=SQ5jhsryjRdmabv2oRisOi9tQKyvrV7uZidDTYhHI+4=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=GrMXTfJ5zkVU93HPJ6ODExnfhlq8l5gg9LRzaGsxtJuHUOA/KXPouBfGkc9BI7VoW
+	 qP1Jo4gFSLJdmreJSbipAj14sQg+9Z/wQcJew2CzZns/OO8pTeGIA/nIPgkgpM8PPW
+	 2miGZdi15CAdAvaWvhsa209Nj24TUwiWWdVzD1GI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B382F8025D;
-	Thu, 26 Jan 2023 17:02:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C313F8025D;
+	Thu, 26 Jan 2023 17:22:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35949F8027D; Thu, 26 Jan 2023 17:02:05 +0100 (CET)
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com
- [IPv6:2a00:1450:4864:20::136])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 3BFB7F8027D; Thu, 26 Jan 2023 17:22:18 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CA9D1F800AE
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 17:01:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA9D1F800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0DFDF80224
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 17:22:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0DFDF80224
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=BUsa7nCQ
-Received: by mail-lf1-x136.google.com with SMTP id x40so3651154lfu.12
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 08:01:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=Z5Ms9/N7/h+Q3K/7Kcf2QDN/nKdDnsv1ksmJeqEJ4s8=;
- b=BUsa7nCQKL2wwrfAC+d6ATNxemzFJRPIToCfIKKNH3Aybg3LBuGXZcTveogBaeJwfZ
- v9BWLB1Gc3ulWTpl/CbcHBpBShbk/dBoswFnuh8nWEM861BYi/muql6nwbqp3NUU9BnM
- m99w7WloEb405olLaX4bQVlGkhyU5b62ZBA4LMtHawwWICGnzl2zXA1f21EhYjpYhAr8
- UW29g5fMyhmHY76FpEcUWelG+/f8A7mTPhs7soOwgUJNx2z18wDHGBf7F1vschF6VFnY
- OKITevXq83JgiEseptkms9J23mFehGp9VKNu3GiSeVlzWwWHN6b0jHiYNCqo7IGcCv2N
- s38A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=Z5Ms9/N7/h+Q3K/7Kcf2QDN/nKdDnsv1ksmJeqEJ4s8=;
- b=I+s5CZMl91pX6BGufwPj5e93/rZKApeYqUbWBoaufDCfK5KFMOUs1EmSZ5SXhv5Cy0
- sWgKy+EGzLrP8r2DfOFkkSXQuZHuMzNiR6dqF6Nf81a5AHUfdA4PwEwgCtcFpG7GQSNe
- xDtnpqAkObgomzJLXecBySe+hN7MkZ7Cg7smpruqplSLS4ssWyI2nVaGSL+IlJ7sophO
- q2B0E9xWOTD6Hyd9WUQdWjkxaB+x5oRde2hXy4rJjVU5ziMgSmpF5eA5r9/5pIeCoQBo
- kWtSKuM8g/IQH6CD8tO3A+qyzmpglTDM2p1USOXRAAvlDTnBaOOugHlidgemXRjT7+Q0
- 6aJg==
-X-Gm-Message-State: AFqh2kpKGraOTWXTE3QSQ/hFxwHQsu/6ZsDHGN9jPN0egGbbJHM6CNrk
- 5YZcsKHlL0odwbYuD2n6qZ4l9A==
-X-Google-Smtp-Source: AMrXdXvkVKfZdcsjY2sUxC828zVsk7+QQCWicTlakTGR1QBfrqe0HQ31k4Fm+iuXbse2OEbGopoRVA==
-X-Received: by 2002:ac2:4f0c:0:b0:4cc:6ffd:9fe6 with SMTP id
- k12-20020ac24f0c000000b004cc6ffd9fe6mr9574037lfr.50.1674748909319; 
- Thu, 26 Jan 2023 08:01:49 -0800 (PST)
-Received: from [192.168.1.195] ([5.133.47.210])
- by smtp.googlemail.com with ESMTPSA id
- y8-20020adfdf08000000b002bfb31bda06sm1700126wrl.76.2023.01.26.08.01.47
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 26 Jan 2023 08:01:48 -0800 (PST)
-Message-ID: <d6af0436-6c73-8fe0-0627-af18120adca8@linaro.org>
-Date: Thu, 26 Jan 2023 16:01:47 +0000
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=tKJBVZ/7
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4B9F5618C8;
+ Thu, 26 Jan 2023 16:22:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35F9FC4339B;
+ Thu, 26 Jan 2023 16:22:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1674750131;
+ bh=SQ5jhsryjRdmabv2oRisOi9tQKyvrV7uZidDTYhHI+4=;
+ h=From:To:Cc:Subject:Date:From;
+ b=tKJBVZ/7CYeBmXjWhJfISoo9OgvN+nP8c6o/lEwoWCEA00cwyMVwJtPCKFZLxD0vl
+ Q3FM+145xjx8ORpanpSKifs4LiSRp2gVje4g1u8R7jzd9R/OxVdORNc7YihRoj2aH7
+ 4EEOiRUoG0UHW1KE1FPzd+xK+f3OmhNXmuplTwjEhYb79YU4vDR3O6MnMhuUGgkBmE
+ GO4HvXPRl52Nfck9OUn3XXgGUQ9Bt9Sst1W33Yzqj0yhiSxvRhkxBAooVp2d0GmD/n
+ VjxsznI8CqNG3BA36PdUJCnyAL3v00x11Dz+cB8ZN3e63rdlKWwYtiHT4s0yktVKtt
+ uN+xGm5XebOVw==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] [v2] ASoC: cs42l56: fix DT probe
+Date: Thu, 26 Jan 2023 17:21:24 +0100
+Message-Id: <20230126162203.2986339-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [RFC PATCH v2 21/22] ASoC: dt-bindings: Add Q6USB backend bindings
-Content-Language: en-US
-To: Wesley Cheng <quic_wcheng@quicinc.com>, mathias.nyman@intel.com,
- perex@perex.cz, lgirdwood@gmail.com, andersson@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, gregkh@linuxfoundation.org,
- Thinh.Nguyen@synopsys.com, broonie@kernel.org, bgoswami@quicinc.com,
- tiwai@suse.com, robh+dt@kernel.org, agross@kernel.org
-References: <20230126031424.14582-1-quic_wcheng@quicinc.com>
- <20230126031424.14582-22-quic_wcheng@quicinc.com>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20230126031424.14582-22-quic_wcheng@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,90 +71,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, quic_jackp@quicinc.com, quic_plai@quicinc.com
+Cc: alsa-devel@alsa-project.org, Zheyu Ma <zheyuma97@gmail.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, Arnd Bergmann <arnd@arndb.de>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>, patches@opensource.cirrus.com,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ James Schulman <james.schulman@cirrus.com>, linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Arnd Bergmann <arnd@arndb.de>
 
+While looking through legacy platform data users, I noticed that
+the DT probing never uses data from the DT properties, as the
+platform_data structure gets overwritten directly after it
+is initialized.
 
-On 26/01/2023 03:14, Wesley Cheng wrote:
-> Add a dt-binding to describe the definition of enabling the Q6 USB backend
-> device for audio offloading.  The node carries information, which is passed
-> along to the QC USB SND class driver counterpart.  These parameters will be
-> utilized during QMI stream enable requests.
-> 
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-> ---
->   .../bindings/sound/qcom,q6usb-dais.yaml       | 55 +++++++++++++++++++
->   1 file changed, 55 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6usb-dais.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6usb-dais.yaml b/Documentation/devicetree/bindings/sound/qcom,q6usb-dais.yaml
-> new file mode 100644
-> index 000000000000..e24b4d52fa7e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/qcom,q6usb-dais.yaml
-> @@ -0,0 +1,55 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/qcom,q6usb-dais.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm ASoC USB backend DAI
-> +
-> +maintainers:
-> +  - Wesley Cheng <quic_wcheng@quicinc.com>
-> +
-> +description:
-> +  The Q6USB backend is a supported AFE port on the Q6DSP. This backend
-> +  driver will communicate the required settings to the QC USB SND class
-> +  driver for properly enabling the audio stream.  Parameters defined
-> +  under this node will carry settings, which will be passed along during
-> +  the QMI stream enable request.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,q6usb-dais
-> +
-> +  iommus:
-> +    maxItems: 1
-> +
-> +  "#sound-dai-cells":
-> +    const: 1
-> +
-> +  qcom,usb-audio-stream-id:
-> +    description:
-> +      SID for the Q6DSP processor for IOMMU mapping.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
+There have never been any boards defining the platform_data in
+the mainline kernel either, so this driver so far only worked
+with patched kernels or with the default values.
 
-We could derive this directly from iommus property as we do it like 
-q6asm-dai.c
+For the benefit of possible downstream users, fix the DT probe
+by no longer overwriting the data.
 
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: reword changelog
+---
+ sound/soc/codecs/cs42l56.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
---srini
-> +
-> +  qcom,usb-audio-intr-num:
-> +    description:
-> +      Desired XHCI interrupter number to use.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +required:
-> +  - compatible
-> +  - '#sound-dai-cells'
-> +  - qcom,usb-audio-intr-num
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    usbdai: usbd {
-> +      compatible = "qcom,q6usb-dais";
-> +      #sound-dai-cells = <1>;
-> +      iommus = <&apps_smmu 0x180f 0x0>;
-> +      qcom,usb-audio-stream-id = <0xf>;
-> +      qcom,usb-audio-intr-num = <2>;
-> +    };
+diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
+index 26066682c983..3b0e715549c9 100644
+--- a/sound/soc/codecs/cs42l56.c
++++ b/sound/soc/codecs/cs42l56.c
+@@ -1191,18 +1191,12 @@ static int cs42l56_i2c_probe(struct i2c_client *i2c_client)
+ 	if (pdata) {
+ 		cs42l56->pdata = *pdata;
+ 	} else {
+-		pdata = devm_kzalloc(&i2c_client->dev, sizeof(*pdata),
+-				     GFP_KERNEL);
+-		if (!pdata)
+-			return -ENOMEM;
+-
+ 		if (i2c_client->dev.of_node) {
+ 			ret = cs42l56_handle_of_data(i2c_client,
+ 						     &cs42l56->pdata);
+ 			if (ret != 0)
+ 				return ret;
+ 		}
+-		cs42l56->pdata = *pdata;
+ 	}
+ 
+ 	if (cs42l56->pdata.gpio_nreset) {
+-- 
+2.39.0
+
