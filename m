@@ -4,69 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE4CCC05027
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 08:53:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F575C54EAA
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 09:23:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1E09E9F;
-	Thu, 26 Jan 2023 09:53:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1E09E9F
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF3B786E;
+	Thu, 26 Jan 2023 10:22:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF3B786E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674723233;
-	bh=v1fyaLhCyvOiXEMw4zIFtNoQZEwdgX78J1z/HeL+Se4=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1674725006;
+	bh=QZRD9g35F/NDRqYmL+T9yJOxG2xvHNVanQSxoCD9XHk=;
+	h=Date:To:References:From:Subject:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=HDn8Pp1tgUJIQ15t+6NOiaJm8pKMECfoQUc24batrS7+hoU3qmI0dgAytRNuBQXDj
-	 0YeX4u9JWzp0sbeWQx/kjsoFk8/DnoDCADad/8uqwKYFe6AEy8Bt1Vec0xSU7qiyV0
-	 4O8ILfUrfWouR5uPTIcDeNzG+TrQW05ouzKAsuQ8=
+	b=F1gbv9TClAW8K8wHntvYQVGIrbTCFsBtTS+7I2u1B+TnV2uv72USxfyrFljROXrPf
+	 NAPvkQrWpW6T/NsYIYdoxdNdk4ZOksXmMbEO86HD7wx8MrM0ykzAVr84iMEU59Lvjv
+	 tlWFc2pwbacgf5SwUzpyhVG+/Eb9+AzlGfb0hJSk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0FD1FF80553;
-	Thu, 26 Jan 2023 09:52:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B4B2F8027D;
+	Thu, 26 Jan 2023 10:22:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1784AF8027D; Thu, 26 Jan 2023 09:52:12 +0100 (CET)
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::222])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 753F3F802DF; Thu, 26 Jan 2023 10:22:35 +0100 (CET)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AAA20F80224
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 09:51:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAA20F80224
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1A180F8025D
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 10:22:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A180F8025D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=jxLMyMus
-Received: (Authenticated sender: herve.codina@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPA id F3E154002B;
- Thu, 26 Jan 2023 08:51:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1674723117;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=hwaqQPmDrUKIdm5l0Y0T3RW2RQ9pM+xGeQ1lgAnxQdA=;
- b=jxLMyMusKlBXvqCmu9XxAxS948BQ9GUDnzY1A7HSXSYLqUI1hkQgY3aitj5VbYNejxadg9
- tIlwR6KBprkHi0HhtChoX2d6xy+ASxakMvdgEN4F5512YT3nBVsSuV0qBul6h2ZpcYfI8b
- go5y1nZit9aGlkgW6t60ivNYqSyvmnWcytvBKbalfQRL/z6cIaYBumX58iV2YY6mjas2nb
- yxPsCg83ehXlyu+oMjm9gxYulh1WLHL8m2ihoHeuHDDwXgJnreS2xolxJhkbfs7CVJJZq2
- n55Tcv4kTau7gAIuuF2hf6T20nj1fYbkmUqDpWJZVYBIS9TEJwtV27amKPcQaQ==
-From: Herve Codina <herve.codina@bootlin.com>
-To: Herve Codina <herve.codina@bootlin.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v3 1/3] dt-bindings: sound: Add Renesas IDT821034 codec
-Date: Thu, 26 Jan 2023 09:51:35 +0100
-Message-Id: <20230126085137.375814-2-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230126085137.375814-1-herve.codina@bootlin.com>
-References: <20230126085137.375814-1-herve.codina@bootlin.com>
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=bFYr37jt
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1674724953; x=1706260953;
+ h=message-id:date:mime-version:to:cc:references:from:
+ subject:in-reply-to:content-transfer-encoding;
+ bh=QZRD9g35F/NDRqYmL+T9yJOxG2xvHNVanQSxoCD9XHk=;
+ b=bFYr37jtnjC/IGaU4+1laLGjhB48AgElPGAk0bzIVnzrChrHyJnXpdyP
+ kCuZq+zrXpMbUTTXslQ4lSHbicBr0OTpFrbINgr5yHM3C/xbag+xKL7IA
+ Wi9E39kMOF9nMkg0M39sUlyYoa4/RwarXEsKnYvq65AFHLGeyYVNsKZ1Z
+ x0hCzwQQxEeBYLiw+Ii7Rd+0JktDMTnihE8fBB7Jbs2Yo11cUA4EDMgQ8
+ fzbli340r5JsPVXmiLeebUHsZIJFOj9fnS6w//eLLMaoxaX6ZjXblj4dO
+ QcffTPwrDBrFHhwYD9QXZpzeffKPrlrn37hYqozSKT13gzvAKnio6hQjo g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="413000676"
+X-IronPort-AV: E=Sophos;i="5.97,248,1669104000"; d="scan'208";a="413000676"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Jan 2023 01:22:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10601"; a="693274407"
+X-IronPort-AV: E=Sophos;i="5.97,248,1669104000"; d="scan'208";a="693274407"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199])
+ ([10.237.72.199])
+ by orsmga008.jf.intel.com with ESMTP; 26 Jan 2023 01:22:21 -0800
+Message-ID: <1e889754-6492-4c53-27f0-796002d5680c@linux.intel.com>
+Date: Thu, 26 Jan 2023 11:23:38 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.4.2
+Content-Language: en-US
+To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
+ mathias.nyman@intel.com, perex@perex.cz, lgirdwood@gmail.com,
+ andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ gregkh@linuxfoundation.org, Thinh.Nguyen@synopsys.com, broonie@kernel.org,
+ bgoswami@quicinc.com, tiwai@suse.com, robh+dt@kernel.org, agross@kernel.org
+References: <20230126031424.14582-1-quic_wcheng@quicinc.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [RFC PATCH v2 00/22] Introduce QC USB SND audio offloading support
+In-Reply-To: <20230126031424.14582-1-quic_wcheng@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -80,104 +88,37 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Christophe Leroy <christophe.leroy@csgroup.eu>,
- linux-gpio@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+ linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org, quic_jackp@quicinc.com, quic_plai@quicinc.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The Renesas IDT821034 codec is a quad PCM codec with programmable
-gain.
+On 26.1.2023 5.14, Wesley Cheng wrote:
+> Changes in v2:
+> 
+> XHCI:
+> - Replaced XHCI and HCD changes with Mathias' XHCI interrupter changes
+> in his tree:
+> https://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git/log/?h=feature_interrupters
+> 
 
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- .../bindings/sound/renesas,idt821034.yaml     | 75 +++++++++++++++++++
- 1 file changed, 75 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/renesas,idt821034.yaml
+I'll submit the first three patches from that branch myself to usb-next, might modify
+them slightly.
+Just need to make sure they don't cause regression. Those are changes I want done anyway.
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,idt821034.yaml b/Documentation/devicetree/bindings/sound/renesas,idt821034.yaml
-new file mode 100644
-index 000000000000..a2b92dba5529
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/renesas,idt821034.yaml
-@@ -0,0 +1,75 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/renesas,idt821034.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Renesas IDT821034 codec device
-+
-+maintainers:
-+  - Herve Codina <herve.codina@bootlin.com>
-+
-+description: |
-+  The IDT821034 codec is a four channel PCM codec with onchip filters and
-+  programmable gain setting.
-+
-+  The time-slots used by the codec must be set and so, the properties
-+  'dai-tdm-slot-num', 'dai-tdm-slot-width', 'dai-tdm-slot-tx-mask' and
-+  'dai-tdm-slot-rx-mask' must be present in the ALSA sound card node for
-+  sub-nodes that involve the codec. The codec uses one 8bit time-slot per
-+  channel.
-+  'dai-tdm-tdm-slot-with' must be set to 8.
-+
-+  The IDT821034 codec also supports 5 gpios (SLIC signals) per channel.
-+
-+allOf:
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-+  - $ref: dai-common.yaml#
-+
-+properties:
-+  compatible:
-+    const: renesas,idt821034
-+
-+  reg:
-+    description:
-+      SPI device address.
-+    maxItems: 1
-+
-+  spi-max-frequency:
-+    maximum: 8192000
-+
-+  spi-cpha: true
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+  '#gpio-cells':
-+    const: 2
-+
-+  gpio-controller: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - spi-cpha
-+  - '#sound-dai-cells'
-+  - gpio-controller
-+  - '#gpio-cells'
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        audio-codec@0 {
-+            compatible = "renesas,idt821034";
-+            reg = <0>;
-+            spi-max-frequency = <8192000>;
-+            spi-cpha;
-+            #sound-dai-cells = <0>;
-+            gpio-controller;
-+            #gpio-cells = <2>;
-+        };
-+    };
--- 
-2.39.0
+> Adjustments made to Mathias' changes:
+>    - Created xhci-intr.h to export/expose interrupter APIs versus exposing xhci.h.
+>      Moved dependent structures to this file as well. (so clients can parse out
+>      information from "struct xhci_interrupter")
+>    - Added some basic locking when requesting interrupters.
+>    - Fixed up some sanity checks.
+>    - Removed clearing of the ERSTBA during freeing of the interrupter. (pending
+>      issue where SMMU fault occurs if DMA addr returned is 64b - TODO)
+
+Was this solvable by first clearing high 32 bits and then low 32 bits?
+
+Thanks
+Mathias
+
+
 
