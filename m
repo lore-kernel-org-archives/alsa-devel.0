@@ -4,77 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5875AC61DB3
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 11:13:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A91DC38142
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 11:52:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5CEE693A;
-	Fri, 27 Jan 2023 12:13:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CEE693A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 46DD0AEA;
+	Fri, 27 Jan 2023 12:51:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 46DD0AEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674818033;
-	bh=BM+4344hA//hm+S8NKm14kMPGZIP0OpVEzCnk4QHcPw=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1674820318;
+	bh=TJwB9xWefUtenAJhobcnuA3/dr44yh/1qZH05naV3dA=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=QKI8rs+7se1HgPWUlGRKOnio/qM4XAER57JGgGof2gnIlCpO+Uju0IkOGjxdp2kdH
-	 MnKXsZ/hHwgTka+wlV/0OV37sEcHsR9BVIjLBUMxu2SBYjNEZTZSyWo6mJTAomQxOG
-	 ItYP1TEqChWzTJs+vPfMZYX0odG54/ADFGBLxxg4=
+	b=bwDXOP4OAGRs87qu1tnAGfKOppzOLzfc+PznZMhktTn3Nl7zf/NPTDR8lMEUO5+jg
+	 J7e4WpTvpHiRZcG7ll7VFkmrxqw4NGQeB7OfrVa229ZvmNm1oXKwdWH3WnC6CUPEcO
+	 mDutswsey+5RrxcS8QEZcByET8zsCkbvbFGj0bkw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3608F802E8;
-	Fri, 27 Jan 2023 12:13:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3000F802E8;
+	Fri, 27 Jan 2023 12:51:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6C8C4F80424; Fri, 27 Jan 2023 12:12:53 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A6537F8027D; Thu, 26 Jan 2023 18:07:54 +0100 (CET)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21FF5F80224
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 12:12:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21FF5F80224
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47E5FF8016E
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 18:07:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47E5FF8016E
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=VNP0E+L2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674817969; x=1706353969;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=BM+4344hA//hm+S8NKm14kMPGZIP0OpVEzCnk4QHcPw=;
- b=VNP0E+L2KbS3o8rv4i64usZgRDhqEG26+2NwmQgLjUkEejXqjo90MyTS
- cyCp0d7PbO9eAtZMNv68u8C/MMoSHbaoMfoGXLoJvx56xJsppx2AXXACs
- wNwMEmwREkb3VxVmmOFmjI4J31YSQhuOCn9brEOEt/k7dol9TkNYkWOXY
- rnAgZ36+qrwtev1XwbcJqHMM/IzmDSdyNSBmWW2814X3ep0zuJBH74juQ
- iMt4vPhqMO6W9Hsl33Y84StqJMdPiKuDLheWriT+mDURF9lPh8kowVQo4
- edTIj1w5M6e7L4levZ4EQQ3EiIaSpfzpdgSjQyPHRDyRIhP5/RvaW1bur A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="329192630"
-X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="329192630"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2023 03:12:43 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="787186784"
-X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="787186784"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.16.144])
- ([10.99.16.144])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2023 03:12:42 -0800
-Message-ID: <5f7e9b31-ad1f-0948-5673-0732d73a185e@linux.intel.com>
-Date: Fri, 27 Jan 2023 12:12:39 +0100
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=HIAeawkS
+Received: from mercury (dyndsl-037-138-191-219.ewe-ip-backbone.de
+ [37.138.191.219])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested) (Authenticated sender: sre)
+ by madras.collabora.co.uk (Postfix) with ESMTPSA id 7E2906602E6E;
+ Thu, 26 Jan 2023 17:07:41 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1674752861;
+ bh=TJwB9xWefUtenAJhobcnuA3/dr44yh/1qZH05naV3dA=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=HIAeawkSMl4wLK9atphFO2PYIuQtn0mXWrQTGJkp27Vvwen4RmNJXIKy0KOcMN2qu
+ MGji/BoqRh//5quIKkg+7Jg9a4rlT6zYnOxKnHRve8IRt32uZ0O2J9C6ByA7KSG9ni
+ ooI+f+xDzdj/4Xv/XqAW1ZMOqMbxlnaE69Ns4AaVsCb09DHvVD+xjXrJ7HkcJ65ZDs
+ 0FKkR9qOOchTbFQKw+Lbe8GJsd/K96q/WWSPWtyPUY4G0yRJ/G34tsJUBI/vL5q95x
+ a6dIJ/I/0Glk/75yhzfiBv6PLPN/HUTuWOcS4vpdAGRdicde5HTb77Vj3shLRE2rZN
+ snAuQFm3yL5CQ==
+Received: by mercury (Postfix, from userid 1000)
+ id 8DAD710609C7; Thu, 26 Jan 2023 18:07:39 +0100 (CET)
+Date: Thu, 26 Jan 2023 18:07:39 +0100
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Suren Baghdasaryan <surenb@google.com>
+Subject: Re: [PATCH v2 3/6] mm: replace vma->vm_flags direct modifications
+ with modifier calls
+Message-ID: <20230126170739.mlka2jivn3mfstyf@mercury.elektranox.org>
+References: <20230125083851.27759-1-surenb@google.com>
+ <20230125083851.27759-4-surenb@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH 11/11] ASoC: topology: Unify kcontrol removal code
-Content-Language: en-US
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
-References: <20230125194649.3485731-1-amadeuszx.slawinski@linux.intel.com>
- <20230125194649.3485731-12-amadeuszx.slawinski@linux.intel.com>
- <40207a2a-3f2a-bbef-74f6-9e85ced3150a@linux.intel.com>
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <40207a2a-3f2a-bbef-74f6-9e85ced3150a@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="qcyccrleajamxo75"
+Content-Disposition: inline
+In-Reply-To: <20230125083851.27759-4-surenb@google.com>
+X-Mailman-Approved-At: Fri, 27 Jan 2023 12:51:03 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -87,23 +82,123 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org
+Cc: michel@lespinasse.org, nvdimm@lists.linux.dev, heiko@sntech.de,
+ leewalsh@google.com, dri-devel@lists.freedesktop.org, jglisse@google.com,
+ arjunroy@google.com, m.szyprowski@samsung.com, linux-arch@vger.kernel.org,
+ qianweili@huawei.com, linux-samsung-soc@vger.kernel.org,
+ aneesh.kumar@linux.ibm.com, chenhuacai@kernel.org, kasan-dev@googlegroups.com,
+ linux-acpi@vger.kernel.org, rientjes@google.com,
+ xen-devel@lists.xenproject.org, devel@lists.orangefs.org, robdclark@gmail.com,
+ minchan@google.com, robert.jarzmik@free.fr, linux-um@lists.infradead.org,
+ etnaviv@lists.freedesktop.org, npiggin@gmail.com, alex.williamson@redhat.com,
+ viro@zeniv.linux.org.uk, luto@kernel.org, gthelen@google.com,
+ tglx@linutronix.de, ldufour@linux.ibm.com, linux-sgx@vger.kernel.org,
+ martin.petersen@oracle.com, linux-usb@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ akpm@linux-foundation.org, linux-media@vger.kernel.org,
+ freedreno@lists.freedesktop.org, joelaf@google.com, linux-aio@kvack.org,
+ linux-fbdev@vger.kernel.org, linux-ia64@vger.kernel.org, david@redhat.com,
+ dave.hansen@linux.intel.com, virtualization@lists.linux-foundation.org,
+ edumazet@google.com, target-devel@vger.kernel.org, punit.agrawal@bytedance.com,
+ linux-s390@vger.kernel.org, dave@stgolabs.net, deller@gmx.de, hughd@google.com,
+ andrii@kernel.org, patrik.r.jakobsson@gmail.com,
+ linux-stm32@st-md-mailman.stormreply.com, linux-rockchip@lists.infradead.org,
+ linux-graphics-maintainer@vmware.com, kernel-team@android.com,
+ jayalk@intworks.biz, soheil@google.com, selinux@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, mripard@kernel.org, shakeelb@google.com,
+ haojian.zhuang@gmail.com, loongarch@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, tytso@mit.edu, nico@fluxnic.net,
+ muchun.song@linux.dev, hjc@rock-chips.com, mcoquelin.stm32@gmail.com,
+ tatashin@google.com, mike.kravetz@oracle.com, songliubraving@fb.com,
+ jasowang@redhat.com, alsa-devel@alsa-project.org, peterx@redhat.com,
+ linux-tegra@vger.kernel.org, kraxel@redhat.com, will@kernel.org,
+ dmaengine@vger.kernel.org, bhe@redhat.com, miklos@szeredi.hu,
+ linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev, willy@infradead.org,
+ gurua@google.com, dgilbert@interlog.com, xiang@kernel.org, pabeni@redhat.com,
+ jejb@linux.ibm.com, quic_abhinavk@quicinc.com, bp@alien8.de,
+ mchehab@kernel.org, linux-ext4@vger.kernel.org, tomba@kernel.org,
+ hughlynch@google.com, tfiga@chromium.org, linux-xfs@vger.kernel.org,
+ zhangfei.gao@linaro.org, wangzhou1@hisilicon.com, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-erofs@lists.ozlabs.org, davem@davemloft.net,
+ mhocko@suse.com, kvm@vger.kernel.org, mst@redhat.com, peterz@infradead.org,
+ bigeasy@linutronix.de, alexandre.torgue@foss.st.com, dhowells@redhat.com,
+ linux-mm@kvack.org, ray.huang@amd.com, adilger.kernel@dilger.ca,
+ kuba@kernel.org, sparclinux@vger.kernel.org, airlied@gmail.com,
+ anton.ivanov@cambridgegreys.com, herbert@gondor.apana.org.au,
+ linux-scsi@vger.kernel.org, richard@nod.at, x86@kernel.org, vkoul@kernel.org,
+ mingo@redhat.com, axelrasmussen@google.com, intel-gfx@lists.freedesktop.org,
+ daniel@ffwll.ch, paulmck@kernel.org, jannh@google.com, chao@kernel.org,
+ maarten.lankhorst@linux.intel.com, liam.howlett@oracle.com,
+ hdegoede@redhat.com, linux-mediatek@lists.infradead.org,
+ matthias.bgg@gmail.com, vbabka@suse.cz, dimitri.sivanich@hpe.com,
+ amd-gfx@lists.freedesktop.org, posk@google.com, lstoakes@gmail.com,
+ peterjung1337@gmail.com, yoshfuji@linux-ipv6.org,
+ linuxppc-dev@lists.ozlabs.org, dsahern@kernel.org, kent.overstreet@linux.dev,
+ kexec@lists.infradead.org, tiwai@suse.com, krzysztof.kozlowski@linaro.org,
+ tzimmermann@suse.de, hannes@cmpxchg.org, dmitry.baryshkov@linaro.org,
+ johannes@sipsolutions.net, mgorman@techsingularity.net,
+ linux-accelerators@lists.ozlabs.org, l.stach@pengutronix.de
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 1/25/2023 4:15 PM, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 1/25/23 13:46, Amadeusz Sławiński wrote:
->> Functions removing bytes, enum and mixer kcontrols are identical. Unify
-> 
-> they are identical because of the change in patch10.
-> 
-> Please clarify that this is not a cleanup removing duplicated code
-> that's been there forever, it's become useless as a result of the
-> previous patch.
-> 
 
-There is no dependency on previous patch - it is just order I've send 
-them in - those functions have same implementation in current code.
+--qcyccrleajamxo75
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Wed, Jan 25, 2023 at 12:38:48AM -0800, Suren Baghdasaryan wrote:
+> Replace direct modifications to vma->vm_flags with calls to modifier
+> functions to be able to track flag changes and to keep vma locking
+> correctness.
+>=20
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> ---
+> [...]
+>  drivers/hsi/clients/cmt_speech.c                   |  2 +-
+>  120 files changed, 188 insertions(+), 199 deletions(-)
+> [...]
+> diff --git a/drivers/hsi/clients/cmt_speech.c b/drivers/hsi/clients/cmt_s=
+peech.c
+> index 8069f795c864..952a31e742a1 100644
+> --- a/drivers/hsi/clients/cmt_speech.c
+> +++ b/drivers/hsi/clients/cmt_speech.c
+> @@ -1264,7 +1264,7 @@ static int cs_char_mmap(struct file *file, struct v=
+m_area_struct *vma)
+>  	if (vma_pages(vma) !=3D 1)
+>  		return -EINVAL;
+> =20
+> -	vma->vm_flags |=3D VM_IO | VM_DONTDUMP | VM_DONTEXPAND;
+> +	set_vm_flags(vma, VM_IO | VM_DONTDUMP | VM_DONTEXPAND);
+>  	vma->vm_ops =3D &cs_char_vm_ops;
+>  	vma->vm_private_data =3D file->private_data;
+> =20
+
+Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+
+-- Sebastian
+
+--qcyccrleajamxo75
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmPSs1EACgkQ2O7X88g7
++pquLBAAkw9lw9lxNRCI6jvqLy98JsUBgSQigNB6Eh8JVWsySHMm1OszFCcvTpoc
+vinC/VPMOa6JwEw5e9naXRF2UJahO+Cx+e5MYIKos3QyIUPfi0YM7Cv96h6+c4l/
+NdcxLS8+9ElitTuA47UVgPSeZwzdZ1kU5VUV1X2fx+6aGA+dBfWVBgWDqU6AB0Sa
+ehU4betso5Ypl26YEmLPHmY+8Xx2jXNwwBEgsHgO2/YjRn9YPDeMAqb4lWs99h0d
+nUV1VqwTClRrExtNDvidHryknmyCIBpYt38gn0i9+uIf9mFoBmUDN+/zAdRguGBT
+r1CQAwvRvHmEyGJ4dp1nijyt/PWxDBlCWytlmzXrK/rkeH8sQCRdCr9L83/d5DM0
+iU98ehmbH9kx8rD4y0L91xmsnegNYNKSfAvz3EP4KYFOHjTw2SOCYoazPu3z62bN
+d3HL+08LeZpm1XwVPydZqBd5UpBK8NaQYCJ3BjsLUefsSJE+SWzsnoYFnbUrL1X9
+1XfU6LGtVvjCPUsjk7oqh5PjtRGQsdtUhSZJLwNzTeh4I0nSzL1pj8vRFZ7UTcV4
+RmFYsjBbKhja2fC13eM4tKzfx53harnHVNuUPw2aoLKshpkQaOTUqWBnRXtbJZkb
+dSRKObxfPlHVI+awnfN6owpXF86Owew2+XJcXILOPxaBk8PI/Ns=
+=/0TB
+-----END PGP SIGNATURE-----
+
+--qcyccrleajamxo75--
