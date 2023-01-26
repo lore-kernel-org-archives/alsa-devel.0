@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2302DC05027
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 16:26:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38CA0C61DA2
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 16:26:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E76EE97;
-	Thu, 26 Jan 2023 17:25:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E76EE97
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00223EA1;
+	Thu, 26 Jan 2023 17:25:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00223EA1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674750392;
-	bh=7tKbBPC9aDVVfGKolDI9/dBbPmFzcQG7teudBkR6D2c=;
+	s=default; t=1674750405;
+	bh=tkQrGs3FSg5dTmlRU0hcgvbam/IWtDu8mWuckiRq01s=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=ggLrNO2MGf/0ZKY8vZ0Yq7tlYk50FqiLrJlHTDXiJHwJ1i1Iz43TObPy4eYmnCYv+
-	 waLO4d96q5kY1yyV0W1Risw4qGmFvhmcjmy5k3ao4ZvCVjE/5iEbMZCT6MT7DyDQJm
-	 2Xr/MXQufAPdZ28LFVIutGDTSBqNwIgWq8FArG9A=
+	b=gyNY/A/fZ8bOpaSQ6dHkrXuBqdTQKVbBydz4Qh6sxzP316EZyp1Ir8RMn42jpAZtE
+	 lUQA9ppGmLD+1+GX/kvWbDVA+OHbgUVlAerSNj6IJcqBMrRpsVyOJwC2vBk33/kylR
+	 GVYg0iHMYX1BWYCDqN+K71TM3hVSDsIiQ7JHVDVs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A0B3F80551;
-	Thu, 26 Jan 2023 17:24:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB8D6F80557;
+	Thu, 26 Jan 2023 17:24:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 190CEF8025D; Thu, 26 Jan 2023 17:24:47 +0100 (CET)
+ id 671B2F80557; Thu, 26 Jan 2023 17:24:50 +0100 (CET)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 724B2F802DF
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 17:24:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 724B2F802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9A23F804D2
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 17:24:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9A23F804D2
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Un/EQ5jD
+ header.s=Intel header.b=lKPMcIyI
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674750282; x=1706286282;
+ t=1674750286; x=1706286286;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=7tKbBPC9aDVVfGKolDI9/dBbPmFzcQG7teudBkR6D2c=;
- b=Un/EQ5jDGRdWqmB/rphbv1ULONhtlpxXVF7+bC7+iLtvlaIWWc44V5JP
- Y1iD7glnWsKc3qsx1IYtkZoZYKOO7kPMZ1dGtkwXlmAgUv3EFljM9toxL
- rfU0v49TltScmWQWChHtMMzCMh+OXvlxdp0ddCICmcWGB1yeCANqnnpkY
- NBjcbzv9ng39OJnvYGHqWwpjNlK0IFe7Ct2AQFZtqkEuGD2FIFr1kygmK
- paAoqNeHiG19GX98KkuE7ccZxblUru72fSnCA208G3vr7TxQyYZTxRplW
- Si+eX2s9+btY5kT6SybpQVcOcNXrqJubIBzoD5PcTZdVV4shaxTl9OAfY A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="354154636"
-X-IronPort-AV: E=Sophos;i="5.97,248,1669104000"; d="scan'208";a="354154636"
+ bh=tkQrGs3FSg5dTmlRU0hcgvbam/IWtDu8mWuckiRq01s=;
+ b=lKPMcIyIe0Mt0tBsRqsIsYBQ728XiI18ptTGnySP4GcML28znrrM7Lp9
+ FG3hFsM5FDNPgbcwaQELzrFZ2laQ+1HC+1EeBIuHY7DS2e/IfLRPWZ1Nr
+ dNxqdS9abLGKK43QHV5yj8kovC3/OYwL44peMDtkPHhrpcMpAzSZfIm6I
+ h5IjqFw/xeOXx/TXVoGC3bMBSazk7xvyBq2JT4G62vSKOaA9aAZoSiZuG
+ 2CIEscINXj2HYVp9FxQaYAm4w6vocvK/uCI9fm6VXEwfFiePcZ+YRtNdU
+ +VXYWyUaISEGYHHCtVURdS7V3pvCgMD75O6dPzvbo8YaoVmu1tSdTbQSE A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="354154721"
+X-IronPort-AV: E=Sophos;i="5.97,248,1669104000"; d="scan'208";a="354154721"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Jan 2023 08:24:36 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="612855059"
-X-IronPort-AV: E=Sophos;i="5.97,248,1669104000"; d="scan'208";a="612855059"
+ 26 Jan 2023 08:24:43 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="612855093"
+X-IronPort-AV: E=Sophos;i="5.97,248,1669104000"; d="scan'208";a="612855093"
 Received: from nmani1-mobl2.amr.corp.intel.com (HELO [10.209.167.178])
  ([10.209.167.178])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Jan 2023 08:24:34 -0800
-Message-ID: <7f471960-0909-4680-e192-261d1fdfe6d7@linux.intel.com>
-Date: Thu, 26 Jan 2023 09:44:23 -0600
+ 26 Jan 2023 08:24:41 -0800
+Message-ID: <557f8f76-38f5-5e07-905e-774e03120bd2@linux.intel.com>
+Date: Thu, 26 Jan 2023 10:12:36 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [RFC PATCH v2 11/22] ASoC: qcom: Add USB backend ASoC driver for
- Q6
+Subject: Re: [RFC PATCH v2 20/22] sound: usb: Prevent starting of audio stream
+ if in use
 Content-Language: en-US
 To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
  mathias.nyman@intel.com, perex@perex.cz, lgirdwood@gmail.com,
@@ -72,9 +72,9 @@ To: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
  gregkh@linuxfoundation.org, Thinh.Nguyen@synopsys.com, broonie@kernel.org,
  bgoswami@quicinc.com, tiwai@suse.com, robh+dt@kernel.org, agross@kernel.org
 References: <20230126031424.14582-1-quic_wcheng@quicinc.com>
- <20230126031424.14582-12-quic_wcheng@quicinc.com>
+ <20230126031424.14582-21-quic_wcheng@quicinc.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230126031424.14582-12-quic_wcheng@quicinc.com>
+In-Reply-To: <20230126031424.14582-21-quic_wcheng@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -98,39 +98,142 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 On 1/25/23 21:14, Wesley Cheng wrote:
-> Create a USB BE component that will register a new USB port to the ASoC USB
-> framework.  This will handle determination on if the requested audio
-> profile is supported by the USB device currently selected.
+> With USB audio offloading, an audio session is started from the ASoC
+> platform sound card and PCM devices.  Likewise, the USB SND path is still
+> readily available for use, in case the non-offload path is desired.  In
+> order to prevent the two entities from attempting to use the USB bus,
+> introduce a flag that determines when either paths are in use.
+> 
+> If a PCM device is already in use, the check will return an error to
+> userspace notifying that the stream is currently busy.  This ensures that
+> only one path is using the USB substream.
 
-Can you clarify how? because ...
+It's good to maintain mutual exclusion, but it's still very hard for an
+application to figure out which card can be used when.
 
+Returning -EBUSY is not super helpful. There should be something like a
+notification or connection status so that routing decisions can be made
+without trial-and-error.
 
-> +static struct snd_soc_dai_driver q6usb_be_dais[] = {
-> +	{
-> +		.playback = {
-> +			.stream_name = "USB BE RX",
-> +			.rates = SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |
-> +				SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |
-> +				SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 |
-> +				SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000 |
-> +				SNDRV_PCM_RATE_192000,
-> +			.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |
-> +				SNDRV_PCM_FMTBIT_U16_LE | SNDRV_PCM_FMTBIT_U16_BE |
-> +				SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE |
-> +				SNDRV_PCM_FMTBIT_U24_LE | SNDRV_PCM_FMTBIT_U24_BE,
-> +			.channels_min = 1,
-> +			.channels_max = 2,
-> +			.rate_max =     192000,
-> +			.rate_min =	8000,
-> +		},
-> +		.id = USB_RX,
-> +		.name = "USB_RX_BE",
-> +		.ops = &q6usb_ops,
-> +	},
-> +};
-
-... here I see a single DAI, so presumably ONE endpoint can be supported?
-
-I didn't see in the rest of the code how a card with multiple endpoint
-would be rejected, nor how the capabilities are checked?
-
+> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> ---
+>  sound/usb/card.h                  |  1 +
+>  sound/usb/pcm.c                   | 19 +++++++++++++++++--
+>  sound/usb/qcom/qc_audio_offload.c | 15 ++++++++++++++-
+>  3 files changed, 32 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/usb/card.h b/sound/usb/card.h
+> index 410a4ffad98e..ff6d4695e727 100644
+> --- a/sound/usb/card.h
+> +++ b/sound/usb/card.h
+> @@ -163,6 +163,7 @@ struct snd_usb_substream {
+>  	unsigned int pkt_offset_adj;	/* Bytes to drop from beginning of packets (for non-compliant devices) */
+>  	unsigned int stream_offset_adj;	/* Bytes to drop from beginning of stream (for non-compliant devices) */
+>  
+> +	unsigned int opened:1;		/* pcm device opened */
+>  	unsigned int running: 1;	/* running status */
+>  	unsigned int period_elapsed_pending;	/* delay period handling */
+>  
+> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+> index 0b01a5dfcb73..8946f8ddb892 100644
+> --- a/sound/usb/pcm.c
+> +++ b/sound/usb/pcm.c
+> @@ -1114,8 +1114,15 @@ static int snd_usb_pcm_open(struct snd_pcm_substream *substream)
+>  	struct snd_usb_stream *as = snd_pcm_substream_chip(substream);
+>  	struct snd_pcm_runtime *runtime = substream->runtime;
+>  	struct snd_usb_substream *subs = &as->substream[direction];
+> +	struct snd_usb_audio *chip = subs->stream->chip;
+>  	int ret;
+>  
+> +	mutex_lock(&chip->mutex);
+> +	if (subs->opened) {
+> +		mutex_unlock(&chip->mutex);
+> +		return -EBUSY;
+> +	}
+> +
+>  	runtime->hw = snd_usb_hardware;
+>  	/* need an explicit sync to catch applptr update in low-latency mode */
+>  	if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
+> @@ -1132,13 +1139,17 @@ static int snd_usb_pcm_open(struct snd_pcm_substream *substream)
+>  
+>  	ret = setup_hw_info(runtime, subs);
+>  	if (ret < 0)
+> -		return ret;
+> +		goto out;
+>  	ret = snd_usb_autoresume(subs->stream->chip);
+>  	if (ret < 0)
+> -		return ret;
+> +		goto out;
+>  	ret = snd_media_stream_init(subs, as->pcm, direction);
+>  	if (ret < 0)
+>  		snd_usb_autosuspend(subs->stream->chip);
+> +	subs->opened = 1;
+> +out:
+> +	mutex_unlock(&chip->mutex);
+> +
+>  	return ret;
+>  }
+>  
+> @@ -1147,6 +1158,7 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream)
+>  	int direction = substream->stream;
+>  	struct snd_usb_stream *as = snd_pcm_substream_chip(substream);
+>  	struct snd_usb_substream *subs = &as->substream[direction];
+> +	struct snd_usb_audio *chip = subs->stream->chip;
+>  	int ret;
+>  
+>  	snd_media_stop_pipeline(subs);
+> @@ -1160,6 +1172,9 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream)
+>  
+>  	subs->pcm_substream = NULL;
+>  	snd_usb_autosuspend(subs->stream->chip);
+> +	mutex_lock(&chip->mutex);
+> +	subs->opened = 0;
+> +	mutex_unlock(&chip->mutex);
+>  
+>  	return 0;
+>  }
+> diff --git a/sound/usb/qcom/qc_audio_offload.c b/sound/usb/qcom/qc_audio_offload.c
+> index c1254d5f680d..9bd09282e70d 100644
+> --- a/sound/usb/qcom/qc_audio_offload.c
+> +++ b/sound/usb/qcom/qc_audio_offload.c
+> @@ -1365,12 +1365,17 @@ static void handle_uaudio_stream_req(struct qmi_handle *handle,
+>  		goto response;
+>  	}
+>  
+> +	mutex_lock(&chip->mutex);
+>  	if (req_msg->enable) {
+> -		if (info_idx < 0 || chip->system_suspend) {
+> +		if (info_idx < 0 || chip->system_suspend || subs->opened) {
+>  			ret = -EBUSY;
+> +			mutex_unlock(&chip->mutex);
+> +
+>  			goto response;
+>  		}
+> +		subs->opened = 1;
+>  	}
+> +	mutex_unlock(&chip->mutex);
+>  
+>  	if (req_msg->service_interval_valid) {
+>  		ret = get_data_interval_from_si(subs,
+> @@ -1392,6 +1397,11 @@ static void handle_uaudio_stream_req(struct qmi_handle *handle,
+>  		if (!ret)
+>  			ret = prepare_qmi_response(subs, req_msg, &resp,
+>  					info_idx);
+> +		if (ret < 0) {
+> +			mutex_lock(&chip->mutex);
+> +			subs->opened = 0;
+> +			mutex_unlock(&chip->mutex);
+> +		}
+>  	} else {
+>  		info = &uadev[pcm_card_num].info[info_idx];
+>  		if (info->data_ep_pipe) {
+> @@ -1413,6 +1423,9 @@ static void handle_uaudio_stream_req(struct qmi_handle *handle,
+>  		}
+>  
+>  		disable_audio_stream(subs);
+> +		mutex_lock(&chip->mutex);
+> +		subs->opened = 0;
+> +		mutex_unlock(&chip->mutex);
+>  	}
+>  
+>  response:
