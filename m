@@ -4,82 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC418C05027
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 08:06:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1808C05027
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 08:33:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE670EB0;
-	Thu, 26 Jan 2023 09:05:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE670EB0
+	by alsa0.perex.cz (Postfix) with ESMTPS id B507084C;
+	Thu, 26 Jan 2023 09:32:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B507084C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674720377;
-	bh=bQc6FAkKDsmNNGfn0ZaS5gJXlIM07RomXS/br6X0VGI=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
+	s=default; t=1674722019;
+	bh=O5BMieop3cd1pOeRMiEVtSCgKF8CKcwuBRgXePXG6ng=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=Wy3z5/YhNvI4C8An6Y5rUpREe5kKH5cbY7ZXfxvyZn5y9noP+5g2PRv+p6JGLDUUU
-	 LHc/NBeN7+HN4mUH1tzkgia9p6+qtX6kfHOMV0wCFlZsGYRtmDUXkeABVii5yOqwrc
-	 WaFGWqhFvUmZHkvy1H7oEUNe4TKczNL9/6jNuFcU=
+	b=jW0LYblzmL4jodyqUht84nJake8R4NV8TPTWYXpsfrp8tvaXcaFxmKxwwEJDDB/Hw
+	 QIZtvNk5lqXoAQ04GsMWhLpAOBPSShGStuohDfNWH9WRTIRTryUXV01PVEsZ+D+XXr
+	 t4/k8g+cURiKyUDXI3/LhSMpx/42CJsx1e1GkL2M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0ED1F80623;
-	Thu, 26 Jan 2023 08:55:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32279F804D2;
+	Thu, 26 Jan 2023 09:32:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 576DFF80424; Wed, 25 Jan 2023 20:22:55 +0100 (CET)
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com
- [IPv6:2607:f8b0:4864:20::1136])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 3DA1CF80508; Thu, 26 Jan 2023 09:32:47 +0100 (CET)
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net
+ [IPv6:2001:4b98:dc4:8::224])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5EB71F80163
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 20:22:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EB71F80163
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9AFBEF800AE
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 09:32:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9AFBEF800AE
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
- header.s=20210112 header.b=hXTUs83q
-Received: by mail-yw1-x1136.google.com with SMTP id
- 00721157ae682-506609635cbso63624137b3.4
- for <alsa-devel@alsa-project.org>; Wed, 25 Jan 2023 11:22:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=PCnMypYs8jymH6Ufuva+9r/69Y/DZs8kYxwQEYrzQFk=;
- b=hXTUs83qvSMCw0sqrewtph/1zyRGQA8EwV9VOqASoIhN1O27YlTeLHvU30LwpkaPKE
- 6ZtbduOBpeU0Mk6yScQyxHGjdOZ8W8NbAK7HCSbKR2qQVwpslpoP2Mqh8DnM60UrkSEV
- Fy/rJx/xAj6ReR1yQheSDvUeiLsUOZe36GsXUe+/pA5dp4+pot+ScO1k5jhTafZOkoJo
- vEjMe7B3/0BupSIQn5CSlkYjolaKBFMYB73xyId061H8p1ZYZbkvvK9SPdZltanRDpUl
- vOuM+M/xFo7tmOP85pcv8h038+SVqlBqYWxO3Lgun0O5W06va+PJHK2pFsHgrhvmIiGL
- lvow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=PCnMypYs8jymH6Ufuva+9r/69Y/DZs8kYxwQEYrzQFk=;
- b=EDoFOwOHa8QKCg6EqoSTAscigYBhy5lflh3/hN0iPoAeI7WhFaPYH9vtpF8e23dYth
- c0lkCQj7O+QWylE4UMZDNEDqQfoZK3gCH3yaZWloF1V+EV5bHl5Ck1+skcH+tZ731T/N
- iYsENh6nuwgIQAF0u0nG4bO0JijfgCBjgE80k1OtfOnXu2d449J0xcRq62aHBQ8sBvRQ
- DCiUCKMZrnPInvjzgNUOJh9r8QSchbGxVcZ3GlXoj4x1amXqBFgowzlL2cQvS5aJrv1c
- qgOtlCN/eB+oQ4B8LrXdk3SNIl9AQmMRQO9fXN9h4JDTcJPXhnmqkbR7hIE4JTrmx9n1
- zmYw==
-X-Gm-Message-State: AO0yUKUxCyTyuOKLAHp84mZgSUeHJtiTrJm+pzJvCjxUZYNmzKyO37VZ
- t+C/XklzPu3Fqh7RBbdfDKoGNwPcK1JwnOqavD05Dg==
-X-Google-Smtp-Source: AK7set/Rj29H3r8vHaYccCmp943Un+QyMRF/w8dcRdt99GFw8apI+/L+5tSmXBTsBLdlTBniti7hA8kyFbpjr3H10kc=
-X-Received: by 2002:a0d:d456:0:b0:507:26dc:ebd with SMTP id
- w83-20020a0dd456000000b0050726dc0ebdmr298632ywd.455.1674674569763; Wed, 25
- Jan 2023 11:22:49 -0800 (PST)
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=PbX5HZU+
+Received: (Authenticated sender: herve.codina@bootlin.com)
+ by mail.gandi.net (Postfix) with ESMTPA id 89E83E000A;
+ Thu, 26 Jan 2023 08:32:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+ t=1674721953;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Jk/kDMrmlMUDLLQub/uv1TLk/6SeUt/4dCQgaOc9CLM=;
+ b=PbX5HZU+agUL6C/3exc1SUzHLtjFX+do5Ts5kDxIaPRQMpi/SFjyCYkfo5DaI8YPkGjwnA
+ vI81w47+jlm/0WHuajButd4J9oIOBTdYSjf/UDT7IgFdBB4jlOfNi5fgSt+PMWOypAoUhM
+ vbsjvZR6pCRhqSWWcxQZ1HsYieZIwLrevMOwFFGRlhx22+HMhkCswKztisspv1uhWNon7s
+ ELU4EN0N7ZFgNN0OwZk12t+wbfZyHuKSX2yDvnvUjffpL7SdetnH96v4KtUtaA7iMd3m9c
+ i9vTSJxSCGNMopdPDE51HdzTMMpVzYRvjF577q6KfLPzJLF0zQyKRyn3dbvPXg==
+From: Herve Codina <herve.codina@bootlin.com>
+To: Herve Codina <herve.codina@bootlin.com>, Li Yang <leoyang.li@nxp.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
+ Qiang Zhao <qiang.zhao@nxp.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Shengjiu Wang <shengjiu.wang@gmail.com>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: [PATCH v4 01/10] dt-bindings: soc: fsl: cpm_qe: Add TSA controller
+Date: Thu, 26 Jan 2023 09:32:13 +0100
+Message-Id: <20230126083222.374243-2-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230126083222.374243-1-herve.codina@bootlin.com>
+References: <20230126083222.374243-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
-References: <20230125083851.27759-1-surenb@google.com>
- <20230125083851.27759-2-surenb@google.com>
- <Y9F19QEDX5d/44EV@casper.infradead.org>
-In-Reply-To: <Y9F19QEDX5d/44EV@casper.infradead.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 25 Jan 2023 11:22:38 -0800
-Message-ID: <CAJuCfpH+LMFX=TT04gSMA05cz_-CXMum6fobRrduWvzm1HWPmQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
-To: Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailman-Approved-At: Thu, 26 Jan 2023 08:55:02 +0100
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,89 +82,310 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: michel@lespinasse.org, nvdimm@lists.linux.dev, heiko@sntech.de,
- leewalsh@google.com, dri-devel@lists.freedesktop.org, jglisse@google.com,
- arjunroy@google.com, m.szyprowski@samsung.com, linux-arch@vger.kernel.org,
- qianweili@huawei.com, linux-samsung-soc@vger.kernel.org,
- aneesh.kumar@linux.ibm.com, chenhuacai@kernel.org, kasan-dev@googlegroups.com,
- linux-acpi@vger.kernel.org, rientjes@google.com,
- xen-devel@lists.xenproject.org, devel@lists.orangefs.org, robdclark@gmail.com,
- minchan@google.com, robert.jarzmik@free.fr, linux-um@lists.infradead.org,
- etnaviv@lists.freedesktop.org, npiggin@gmail.com, alex.williamson@redhat.com,
- viro@zeniv.linux.org.uk, luto@kernel.org, gthelen@google.com,
- tglx@linutronix.de, ldufour@linux.ibm.com, linux-sgx@vger.kernel.org,
- martin.petersen@oracle.com, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- akpm@linux-foundation.org, linux-media@vger.kernel.org,
- freedreno@lists.freedesktop.org, joelaf@google.com, linux-aio@kvack.org,
- linux-fbdev@vger.kernel.org, linux-ia64@vger.kernel.org, david@redhat.com,
- dave.hansen@linux.intel.com, virtualization@lists.linux-foundation.org,
- edumazet@google.com, target-devel@vger.kernel.org, punit.agrawal@bytedance.com,
- linux-s390@vger.kernel.org, dave@stgolabs.net, deller@gmx.de, hughd@google.com,
- andrii@kernel.org, patrik.r.jakobsson@gmail.com,
- linux-stm32@st-md-mailman.stormreply.com, linux-rockchip@lists.infradead.org,
- linux-graphics-maintainer@vmware.com, kernel-team@android.com,
- jayalk@intworks.biz, soheil@google.com, selinux@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, mripard@kernel.org, shakeelb@google.com,
- haojian.zhuang@gmail.com, loongarch@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, tytso@mit.edu, nico@fluxnic.net,
- muchun.song@linux.dev, hjc@rock-chips.com, mcoquelin.stm32@gmail.com,
- tatashin@google.com, mike.kravetz@oracle.com, songliubraving@fb.com,
- jasowang@redhat.com, alsa-devel@alsa-project.org, peterx@redhat.com,
- linux-tegra@vger.kernel.org, kraxel@redhat.com, will@kernel.org,
- dmaengine@vger.kernel.org, bhe@redhat.com, miklos@szeredi.hu,
- linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
- amd-gfx@lists.freedesktop.org, gurua@google.com, dgilbert@interlog.com,
- xiang@kernel.org, pabeni@redhat.com, jejb@linux.ibm.com,
- quic_abhinavk@quicinc.com, bp@alien8.de, mchehab@kernel.org,
- linux-ext4@vger.kernel.org, tomba@kernel.org, hughlynch@google.com,
- sre@kernel.org, tfiga@chromium.org, linux-xfs@vger.kernel.org,
- zhangfei.gao@linaro.org, wangzhou1@hisilicon.com, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-erofs@lists.ozlabs.org, davem@davemloft.net,
- mhocko@suse.com, kvm@vger.kernel.org, mst@redhat.com, peterz@infradead.org,
- bigeasy@linutronix.de, alexandre.torgue@foss.st.com, dhowells@redhat.com,
- linux-mm@kvack.org, ray.huang@amd.com, adilger.kernel@dilger.ca,
- kuba@kernel.org, sparclinux@vger.kernel.org, airlied@gmail.com,
- anton.ivanov@cambridgegreys.com, herbert@gondor.apana.org.au,
- linux-scsi@vger.kernel.org, richard@nod.at, x86@kernel.org, vkoul@kernel.org,
- mingo@redhat.com, axelrasmussen@google.com, intel-gfx@lists.freedesktop.org,
- daniel@ffwll.ch, paulmck@kernel.org, jannh@google.com, chao@kernel.org,
- maarten.lankhorst@linux.intel.com, liam.howlett@oracle.com,
- hdegoede@redhat.com, linux-mediatek@lists.infradead.org,
- matthias.bgg@gmail.com, vbabka@suse.cz, dimitri.sivanich@hpe.com,
- posk@google.com, lstoakes@gmail.com, peterjung1337@gmail.com,
- yoshfuji@linux-ipv6.org, linuxppc-dev@lists.ozlabs.org, dsahern@kernel.org,
- kent.overstreet@linux.dev, kexec@lists.infradead.org, tiwai@suse.com,
- krzysztof.kozlowski@linaro.org, tzimmermann@suse.de, hannes@cmpxchg.org,
- dmitry.baryshkov@linaro.org, johannes@sipsolutions.net,
- mgorman@techsingularity.net, linux-accelerators@lists.ozlabs.org,
- l.stach@pengutronix.de
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jan 25, 2023 at 10:33 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
-> > +/* Use when VMA is not part of the VMA tree and needs no locking */
-> > +static inline void init_vm_flags(struct vm_area_struct *vma,
-> > +                              unsigned long flags)
-> > +{
-> > +     vma->vm_flags = flags;
->
-> vm_flags are supposed to have type vm_flags_t.  That's not been
-> fully realised yet, but perhaps we could avoid making it worse?
->
-> >       pgprot_t vm_page_prot;
-> > -     unsigned long vm_flags;         /* Flags, see mm.h. */
-> > +
-> > +     /*
-> > +      * Flags, see mm.h.
-> > +      * WARNING! Do not modify directly.
-> > +      * Use {init|reset|set|clear|mod}_vm_flags() functions instead.
-> > +      */
-> > +     unsigned long vm_flags;
->
-> Including changing this line to vm_flags_t
+Add support for the time slot assigner (TSA)
+available in some PowerQUICC SoC such as MPC885
+or MPC866.
 
-Good point. Will make the change. Thanks!
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+---
+ .../bindings/soc/fsl/cpm_qe/fsl,tsa.yaml      | 261 ++++++++++++++++++
+ include/dt-bindings/soc/fsl,tsa.h             |  13 +
+ 2 files changed, 274 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,tsa.yaml
+ create mode 100644 include/dt-bindings/soc/fsl,tsa.h
+
+diff --git a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,tsa.yaml b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,tsa.yaml
+new file mode 100644
+index 000000000000..d027d4c3cf10
+--- /dev/null
++++ b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,tsa.yaml
+@@ -0,0 +1,261 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/soc/fsl/cpm_qe/fsl,tsa.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: PowerQUICC CPM Time-slot assigner (TSA) controller
++
++maintainers:
++  - Herve Codina <herve.codina@bootlin.com>
++
++description:
++  The TSA is the time-slot assigner that can be found on some PowerQUICC SoC.
++  Its purpose is to route some TDM time-slots to other internal serial
++  controllers.
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - fsl,mpc885-tsa
++          - fsl,mpc866-tsa
++      - const: fsl,cpm1-tsa
++
++  reg:
++    items:
++      - description: SI (Serial Interface) register base
++      - description: SI RAM base
++
++  reg-names:
++    items:
++      - const: si_regs
++      - const: si_ram
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++  '#serial-cells':
++    const: 1
++
++patternProperties:
++  '^tdm@[0-1]$':
++    description:
++      The TDM managed by this controller
++    type: object
++
++    additionalProperties: false
++
++    properties:
++      reg:
++        minimum: 0
++        maximum: 1
++        description:
++          The TDM number for this TDM, 0 for TDMa and 1 for TDMb
++
++      fsl,common-rxtx-pins:
++        $ref: /schemas/types.yaml#/definitions/flag
++        description:
++          The hardware can use four dedicated pins for Tx clock, Tx sync, Rx
++          clock and Rx sync or use only two pins, Tx/Rx clock and Tx/Rx sync.
++          Without the 'fsl,common-rxtx-pins' property, the four pins are used.
++          With the 'fsl,common-rxtx-pins' property, two pins are used.
++
++      clocks:
++        minItems: 2
++        items:
++          - description: External clock connected to L1RSYNC pin
++          - description: External clock connected to L1RCLK pin
++          - description: External clock connected to L1TSYNC pin
++          - description: External clock connected to L1TCLK pin
++      clock-names:
++        minItems: 2
++        items:
++          - const: l1rsync
++          - const: l1rclk
++          - const: l1tsync
++          - const: l1tclk
++
++      fsl,diagnostic-mode:
++        $ref: /schemas/types.yaml#/definitions/string
++        enum: [disabled, echo, internal-loopback, control-loopback]
++        default: disabled
++        description: |
++          The diagnostic mode can be used to diagnose some communication issues.
++          It should not be set (or set to 'disabled') when diagnostic is not
++          needed.
++          Diagnostic mode:
++            - disabled:
++                Diagnostic disabled (ie. normal operation)
++            - echo:
++                Automatic echo. Rx data is resent on Tx.
++            - internal-loopback:
++                The TDM transmitter is connected to the receiver. Data appears
++                on Tx pin.
++            - control-loopback:
++                The TDM transmitter is connected to the receiver. The Tx pin is
++                disconnected.
++
++      fsl,rx-frame-sync-delay-bits:
++        enum: [0, 1, 2, 3]
++        default: 0
++        description: |
++          Receive frame sync delay in number of bits.
++          Indicates the delay between the Rx sync and the first bit of the Rx
++          frame. 0 for no bit delay. 1, 2 or 3 for 1, 2 or 3 bits delay.
++
++      fsl,tx-frame-sync-delay-bits:
++        enum: [0, 1, 2, 3]
++        default: 0
++        description: |
++          Transmit frame sync delay in number of bits.
++          Indicates the delay between the Tx sync and the first bit of the Tx
++          frame. 0 for no bit delay. 1, 2 or 3 for 1, 2 or 3 bits delay.
++
++      fsl,clock-falling-edge:
++        $ref: /schemas/types.yaml#/definitions/flag
++        description:
++          Data is sent on falling edge of the clock (and received on the rising
++          edge). If 'clock-falling-edge' is not present, data is sent on the
++          rising edge (and received on the falling edge).
++
++      fsl,fsync-rising-edge:
++        $ref: /schemas/types.yaml#/definitions/flag
++        description:
++          Frame sync pulses are sampled with the rising edge of the channel
++          clock. If 'fsync-rising-edge' is not present, pulses are sampled with
++          the falling edge.
++
++      fsl,double-speed-clock:
++        $ref: /schemas/types.yaml#/definitions/flag
++        description:
++          The channel clock is twice the data rate.
++
++      fsl,tx-ts-routes:
++        $ref: /schemas/types.yaml#/definitions/uint32-matrix
++        description: |
++          A list of tupple that indicates the Tx time-slots routes.
++            tx_ts_routes =
++               < 2 0 >, /* The first 2 time slots are not used */
++               < 3 1 >, /* The next 3 ones are route to SCC2 */
++               < 4 0 >, /* The next 4 ones are not used */
++               < 2 2 >; /* The nest 2 ones are route to SCC3 */
++        items:
++          items:
++            - description:
++                The number of time-slots
++              minimum: 1
++              maximum: 64
++            - description: |
++                The source serial interface (dt-bindings/soc/fsl,tsa.h defines
++                these values)
++                 - 0: No destination
++                 - 1: SCC2
++                 - 2: SCC3
++                 - 3: SCC4
++                 - 4: SMC1
++                 - 5: SMC2
++              enum: [0, 1, 2, 3, 4, 5]
++        minItems: 1
++        maxItems: 64
++
++      fsl,rx-ts-routes:
++        $ref: /schemas/types.yaml#/definitions/uint32-matrix
++        description: |
++          A list of tupple that indicates the Rx time-slots routes.
++            tx_ts_routes =
++               < 2 0 >, /* The first 2 time slots are not used */
++               < 3 1 >, /* The next 3 ones are route from SCC2 */
++               < 4 0 >, /* The next 4 ones are not used */
++               < 2 2 >; /* The nest 2 ones are route from SCC3 */
++        items:
++          items:
++            - description:
++                The number of time-slots
++              minimum: 1
++              maximum: 64
++            - description: |
++                The destination serial interface (dt-bindings/soc/fsl,tsa.h
++                defines these values)
++                 - 0: No destination
++                 - 1: SCC2
++                 - 2: SCC3
++                 - 3: SCC4
++                 - 4: SMC1
++                 - 5: SMC2
++              enum: [0, 1, 2, 3, 4, 5]
++        minItems: 1
++        maxItems: 64
++
++    allOf:
++      # If fsl,common-rxtx-pins is present, only 2 clocks are needed.
++      # Else, the 4 clocks must be present.
++      - if:
++          required:
++            - fsl,common-rxtx-pins
++        then:
++          properties:
++            clocks:
++              maxItems: 2
++            clock-names:
++              maxItems: 2
++        else:
++          properties:
++            clocks:
++              minItems: 4
++            clock-names:
++              minItems: 4
++
++    required:
++      - reg
++      - clocks
++      - clock-names
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - '#address-cells'
++  - '#size-cells'
++  - '#serial-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/soc/fsl,tsa.h>
++
++    tsa@ae0 {
++        compatible = "fsl,mpc885-tsa", "fsl,cpm1-tsa";
++        reg = <0xae0 0x10>,
++              <0xc00 0x200>;
++        reg-names = "si_regs", "si_ram";
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++        #serial-cells = <1>;
++
++        tdm@0 {
++            /* TDMa */
++            reg = <0>;
++
++            clocks = <&clk_l1rsynca>, <&clk_l1rclka>;
++            clock-names = "l1rsync", "l1rclk";
++
++            fsl,common-rxtx-pins;
++            fsl,fsync-rising-edge;
++
++            fsl,tx-ts-routes = < 2 0 >,             /* TS 0..1 */
++                           < 24 FSL_CPM_TSA_SCC4 >, /* TS 2..25 */
++                           < 1 0 >,                 /* TS 26 */
++                           < 5 FSL_CPM_TSA_SCC3 >;  /* TS 27..31 */
++
++            fsl,rx-ts-routes = < 2 0 >,             /* TS 0..1 */
++                           < 24 FSL_CPM_TSA_SCC4 >, /* 2..25 */
++                           < 1 0 >,                 /* TS 26 */
++                           < 5 FSL_CPM_TSA_SCC3 >;  /* TS 27..31 */
++        };
++    };
+diff --git a/include/dt-bindings/soc/fsl,tsa.h b/include/dt-bindings/soc/fsl,tsa.h
+new file mode 100644
+index 000000000000..2cc44e867dbe
+--- /dev/null
++++ b/include/dt-bindings/soc/fsl,tsa.h
+@@ -0,0 +1,13 @@
++/* SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause */
++
++#ifndef __DT_BINDINGS_SOC_FSL_TSA_H
++#define __DT_BINDINGS_SOC_FSL_TSA_H
++
++#define FSL_CPM_TSA_NU		0	/* Pseuso Cell Id for not used item */
++#define FSL_CPM_TSA_SCC2	1
++#define FSL_CPM_TSA_SCC3	2
++#define FSL_CPM_TSA_SCC4	3
++#define FSL_CPM_TSA_SMC1	4
++#define FSL_CPM_TSA_SMC2	5
++
++#endif
+-- 
+2.39.0
+
