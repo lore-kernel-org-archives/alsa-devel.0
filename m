@@ -4,68 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEE9DC61DA4
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 11:54:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77F10C38142
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 11:54:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D7E0EA5;
-	Fri, 27 Jan 2023 12:53:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D7E0EA5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8CC14DE5;
+	Fri, 27 Jan 2023 12:53:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CC14DE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674820450;
-	bh=vTtNm5B4uxkFGkyUcD6bt7bUv740cC5zoLQ3n4iCXig=;
+	s=default; t=1674820471;
+	bh=YDpHb4C0LKggwnwgXJvjm4mKI3DnxF/Ca8mwP8kOu5U=;
 	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=b8sqvnZuu/c/soi45v3BQKQzB5KJ1j1zN9cZ+J/aYTWrYx1/2VyDsM5AE/T6P7d/9
-	 H8Usu/o4yXePRxRpP8WfaRd2H4uB60n3keW0SBj5ZxL7sd5lydkE2Ptywqak+W3Y9B
-	 o7ffVIVCgRmw4nVbzF2wZSRfiyj0OM+lntogJFMg=
+	b=e0v4TJbDGrGjqa33CPyhewMFjSoJ3V0UVbZedwc8LT5jA4sRFTsKvcHD1G7IdEuQR
+	 wIKpiKmx1sKrPKnFU87kc5DY3z+y6s6CvyTKzl9rTzbOfqKUQQxpM7f2kiGy9P79pf
+	 wifj8GwncW4rejOmQPY8mdSzO0Lbva3FlbGSj34c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41A0BF8057A;
+	by alsa1.perex.cz (Postfix) with ESMTP id DA924F8057C;
 	Fri, 27 Jan 2023 12:51:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DEEADF8027D; Thu, 26 Jan 2023 15:51:51 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 5050CF8027D; Thu, 26 Jan 2023 16:12:08 +0100 (CET)
+Received: from casper.infradead.org (casper.infradead.org
+ [IPv6:2001:8b0:10b:1236::1])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00974F8016E
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 15:51:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00974F8016E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45353F8016E
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 16:12:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45353F8016E
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=r54XDevq
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 1199FB81DC9;
- Thu, 26 Jan 2023 14:51:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3695EC433EF;
- Thu, 26 Jan 2023 14:51:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674744706;
- bh=vTtNm5B4uxkFGkyUcD6bt7bUv740cC5zoLQ3n4iCXig=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=r54XDevqCxaIthjhpV90e/3PReNDit6CxkjYziBMldcr+DpwGPcGH7s0yFhPlYu8B
- NohDoJ7KVIUCX5Zs7V0ydKB7t9XQRchAYOCR8XLnEbVPCZ8e7MIHv0UEcp73VODAq8
- aFhcsGcrVCc28IZRly/gODnl3cguu4R9trJCc4u2GtQ9ygUwR4IFSGftEKj188geBR
- 3987kGANtDLWA/GzBI6W69E/F450ClXU14kAngo3y+A1wCivQR2InkOef4HeCwIwVj
- QYEspA95Wv7WS3mfCUr9QMGnsDd2HsZvTUBOWl52ZSZiQBqHvpwy1Yy3PsmXixNWVQ
- B28KDvwGClVRQ==
-Date: Thu, 26 Jan 2023 16:50:59 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: Suren Baghdasaryan <surenb@google.com>
+ secure) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256
+ header.s=casper.20170209 header.b=iqmwaHjx
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+ References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+ Content-Transfer-Encoding:Content-ID:Content-Description;
+ bh=EH9adbDOpWNaGYEHl4xrAV40gwHDwqK76tq84Z0eyXc=; b=iqmwaHjxa8hZXZrYCzuWMxG2Kd
+ gUi1Y8eYsd0omFHjfmpVdNaehwIHED+H1VzLiTscJu/MXykaHjjIUo4/UeePSQ/3qO2Scxl5KBcbs
+ rwafzWiMp0gW54lDXpQNTGojrzBrhUSE24qBNrz9Eu8wZKUKM+VJeNVRGRDui4Mjh6zNrJRA9uXJe
+ 2WKv1rttzI5041i+Ny9WQoRsYwvuy+Pu29+WLEfQrszB7lQZjKA+bZ/4URx7/yXNldScNG2l8YeYl
+ moQR7vt2oRKUKukioTBGNdLmNI+GiODuZUH9eGz4sLFdnhDHr8CijQAXVN9xNJqlnGwrCU0R4Kh9h
+ Kpe2WfSQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red
+ Hat Linux)) id 1pL3s4-006q4a-Hd; Thu, 26 Jan 2023 15:09:00 +0000
+Date: Thu, 26 Jan 2023 15:09:00 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Mike Rapoport <rppt@kernel.org>
 Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
-Message-ID: <Y9KTUw/04FmBVplw@kernel.org>
+Message-ID: <Y9KXjLaFFUvqqdd4@casper.infradead.org>
 References: <20230125083851.27759-1-surenb@google.com>
  <20230125083851.27759-2-surenb@google.com>
- <Y9JFFYjfJf9uDijE@kernel.org>
+ <Y9JFFYjfJf9uDijE@kernel.org> <Y9KTUw/04FmBVplw@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y9JFFYjfJf9uDijE@kernel.org>
-X-Mailman-Approved-At: Fri, 27 Jan 2023 12:51:04 +0100
+In-Reply-To: <Y9KTUw/04FmBVplw@kernel.org>
+X-Mailman-Approved-At: Fri, 27 Jan 2023 12:51:03 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -88,7 +84,8 @@ Cc: michel@lespinasse.org, nvdimm@lists.linux.dev, heiko@sntech.de,
  minchan@google.com, robert.jarzmik@free.fr, linux-um@lists.infradead.org,
  etnaviv@lists.freedesktop.org, npiggin@gmail.com, alex.williamson@redhat.com,
  viro@zeniv.linux.org.uk, luto@kernel.org, gthelen@google.com,
- tglx@linutronix.de, ldufour@linux.ibm.com, linux-sgx@vger.kernel.org,
+ tglx@linutronix.de, ldufour@linux.ibm.com,
+ Suren Baghdasaryan <surenb@google.com>, linux-sgx@vger.kernel.org,
  martin.petersen@oracle.com, linux-usb@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
  linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -110,70 +107,51 @@ Cc: michel@lespinasse.org, nvdimm@lists.linux.dev, heiko@sntech.de,
  jasowang@redhat.com, alsa-devel@alsa-project.org, peterx@redhat.com,
  linux-tegra@vger.kernel.org, kraxel@redhat.com, will@kernel.org,
  dmaengine@vger.kernel.org, bhe@redhat.com, miklos@szeredi.hu,
- linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev, willy@infradead.org,
- gurua@google.com, dgilbert@interlog.com, xiang@kernel.org, pabeni@redhat.com,
- jejb@linux.ibm.com, quic_abhinavk@quicinc.com, bp@alien8.de,
- mchehab@kernel.org, linux-ext4@vger.kernel.org, tomba@kernel.org,
- hughlynch@google.com, sre@kernel.org, tfiga@chromium.org,
- linux-xfs@vger.kernel.org, zhangfei.gao@linaro.org, wangzhou1@hisilicon.com,
- netdev@vger.kernel.org, bpf@vger.kernel.org, linux-erofs@lists.ozlabs.org,
- davem@davemloft.net, mhocko@suse.com, kvm@vger.kernel.org, mst@redhat.com,
- peterz@infradead.org, bigeasy@linutronix.de, alexandre.torgue@foss.st.com,
- dhowells@redhat.com, linux-mm@kvack.org, ray.huang@amd.com,
- adilger.kernel@dilger.ca, kuba@kernel.org, sparclinux@vger.kernel.org,
- airlied@gmail.com, anton.ivanov@cambridgegreys.com,
- herbert@gondor.apana.org.au, linux-scsi@vger.kernel.org, richard@nod.at,
- x86@kernel.org, vkoul@kernel.org, mingo@redhat.com, axelrasmussen@google.com,
- intel-gfx@lists.freedesktop.org, daniel@ffwll.ch, paulmck@kernel.org,
- jannh@google.com, chao@kernel.org, maarten.lankhorst@linux.intel.com,
- liam.howlett@oracle.com, hdegoede@redhat.com,
- linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com, vbabka@suse.cz,
- dimitri.sivanich@hpe.com, amd-gfx@lists.freedesktop.org, posk@google.com,
- lstoakes@gmail.com, peterjung1337@gmail.com, yoshfuji@linux-ipv6.org,
- linuxppc-dev@lists.ozlabs.org, dsahern@kernel.org, kent.overstreet@linux.dev,
- kexec@lists.infradead.org, tiwai@suse.com, krzysztof.kozlowski@linaro.org,
- tzimmermann@suse.de, hannes@cmpxchg.org, dmitry.baryshkov@linaro.org,
- johannes@sipsolutions.net, mgorman@techsingularity.net,
- linux-accelerators@lists.ozlabs.org, l.stach@pengutronix.de
+ linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+ amd-gfx@lists.freedesktop.org, gurua@google.com, dgilbert@interlog.com,
+ xiang@kernel.org, pabeni@redhat.com, jejb@linux.ibm.com,
+ quic_abhinavk@quicinc.com, bp@alien8.de, mchehab@kernel.org,
+ linux-ext4@vger.kernel.org, tomba@kernel.org, hughlynch@google.com,
+ sre@kernel.org, tfiga@chromium.org, linux-xfs@vger.kernel.org,
+ zhangfei.gao@linaro.org, wangzhou1@hisilicon.com, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-erofs@lists.ozlabs.org, davem@davemloft.net,
+ mhocko@suse.com, kvm@vger.kernel.org, mst@redhat.com, peterz@infradead.org,
+ bigeasy@linutronix.de, alexandre.torgue@foss.st.com, dhowells@redhat.com,
+ linux-mm@kvack.org, ray.huang@amd.com, adilger.kernel@dilger.ca,
+ kuba@kernel.org, sparclinux@vger.kernel.org, airlied@gmail.com,
+ anton.ivanov@cambridgegreys.com, herbert@gondor.apana.org.au,
+ linux-scsi@vger.kernel.org, richard@nod.at, x86@kernel.org, vkoul@kernel.org,
+ mingo@redhat.com, axelrasmussen@google.com, intel-gfx@lists.freedesktop.org,
+ daniel@ffwll.ch, paulmck@kernel.org, jannh@google.com, chao@kernel.org,
+ maarten.lankhorst@linux.intel.com, liam.howlett@oracle.com,
+ hdegoede@redhat.com, linux-mediatek@lists.infradead.org,
+ matthias.bgg@gmail.com, vbabka@suse.cz, dimitri.sivanich@hpe.com,
+ posk@google.com, lstoakes@gmail.com, peterjung1337@gmail.com,
+ yoshfuji@linux-ipv6.org, linuxppc-dev@lists.ozlabs.org, dsahern@kernel.org,
+ kent.overstreet@linux.dev, kexec@lists.infradead.org, tiwai@suse.com,
+ krzysztof.kozlowski@linaro.org, tzimmermann@suse.de, hannes@cmpxchg.org,
+ dmitry.baryshkov@linaro.org, johannes@sipsolutions.net,
+ mgorman@techsingularity.net, linux-accelerators@lists.ozlabs.org,
+ l.stach@pengutronix.de
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jan 26, 2023 at 11:17:09AM +0200, Mike Rapoport wrote:
-> On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
-> > vm_flags are among VMA attributes which affect decisions like VMA merging
-> > and splitting. Therefore all vm_flags modifications are performed after
-> > taking exclusive mmap_lock to prevent vm_flags updates racing with such
-> > operations. Introduce modifier functions for vm_flags to be used whenever
-> > flags are updated. This way we can better check and control correct
-> > locking behavior during these updates.
+On Thu, Jan 26, 2023 at 04:50:59PM +0200, Mike Rapoport wrote:
+> On Thu, Jan 26, 2023 at 11:17:09AM +0200, Mike Rapoport wrote:
+> > On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
+> > > +/* Use when VMA is not part of the VMA tree and needs no locking */
+> > > +static inline void init_vm_flags(struct vm_area_struct *vma,
+> > > +				 unsigned long flags)
 > > 
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > ---
-> >  include/linux/mm.h       | 37 +++++++++++++++++++++++++++++++++++++
-> >  include/linux/mm_types.h |  8 +++++++-
-> >  2 files changed, 44 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > index c2f62bdce134..b71f2809caac 100644
-> > --- a/include/linux/mm.h
-> > +++ b/include/linux/mm.h
-> > @@ -627,6 +627,43 @@ static inline void vma_init(struct vm_area_struct *vma, struct mm_struct *mm)
-> >  	INIT_LIST_HEAD(&vma->anon_vma_chain);
-> >  }
-> >  
-> > +/* Use when VMA is not part of the VMA tree and needs no locking */
-> > +static inline void init_vm_flags(struct vm_area_struct *vma,
-> > +				 unsigned long flags)
+> > I'd suggest to make it vm_flags_init() etc.
 > 
-> I'd suggest to make it vm_flags_init() etc.
+> Thinking more about it, it will be even clearer to name these vma_flags_xyz()
 
-Thinking more about it, it will be even clearer to name these vma_flags_xyz()
+Perhaps vma_VERB_flags()?
 
-> Except that
-> 
-> Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> 
+vma_init_flags()
+vma_reset_flags()
+vma_set_flags()
+vma_clear_flags()
+vma_mod_flags()
 
---
-Sincerely yours,
-Mike.
