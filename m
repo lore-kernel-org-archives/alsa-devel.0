@@ -4,78 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12B41C61DA3
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 15:11:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41715C61DA3
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 15:11:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2A6486E;
-	Fri, 27 Jan 2023 16:10:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2A6486E
+	by alsa0.perex.cz (Postfix) with ESMTPS id BEE8193A;
+	Fri, 27 Jan 2023 16:10:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEE8193A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674832269;
-	bh=JovEU/tv9cMEu4oheaCqCXPJ9VxZiBJIyi5ljJzrRaM=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1674832298;
+	bh=LvKTiEZRlMazR+r++JvGSgZfrTxuCnGAk8uY0I0iui8=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=bRyqppcaknHw+rac80NJ1Kcw91OYsxCUbm21cJfOc614mtLYCymD9i6a/hVGZJjje
-	 EFUeSJB8Ez8Uu/tw+RbL2j7V8VuwS4LVbI2ZaBM6Y9uXb8Zxw+xcftD/eJKsYtbX58
-	 JImVzi9SGAQNTUjD1BU+FitmSjwZO745grgqkhFw=
+	b=aQhLp1goC9n+ZreWXlE49hBt9ZxbQikr70UWm4kj2ChGkthHWy1//NKvLgFKWYm6e
+	 on/OvnCWm0lFkBWEcc9+3nXYjmr/DD+ngj5tOAAAEjulO2GMHpQ6bWJclCqBInM5ge
+	 mRBu58z0RwAzoneIfu/HoBXWIGDz3S2XJaJ2oRBw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6138BF80424;
-	Fri, 27 Jan 2023 16:10:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13029F8007C;
+	Fri, 27 Jan 2023 16:10:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09B08F8028B; Fri, 27 Jan 2023 16:10:18 +0100 (CET)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id 6D1FBF804F3; Fri, 27 Jan 2023 16:10:20 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9D941F80074
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 16:10:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D941F80074
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2A196F8007C
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 16:10:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A196F8007C
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=d3JVVZax
+ header.s=Intel header.b=cgN1xjfp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674832208; x=1706368208;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=JovEU/tv9cMEu4oheaCqCXPJ9VxZiBJIyi5ljJzrRaM=;
- b=d3JVVZaxO84jtrC7rm+v63YuS6U6QCD1Ddu0byDdqDc5+Z1Ztn61eZmy
- E8JFsv1OjUptlTtQyWDdN/uqt8xSSKHwfwU49HRFVgzeX2qw6lq/OxKgb
- LchfnYyo5JdVJCbAGblWbOrULWqN8DOhEz/UGdhf7wCSHMFQDMaFYCFrP
- tJVIbmFK6CulYhYdEpALhsN/s1HR7t8Tg5vYmTNIY0LWsM42Ep47omWtC
- qdGnMcIrg4uICVOkqlabnpxg5bEYCr2GPOCDYhV9FUV3yR2SrgSbfQtVA
- 4GwB2DwApHOLUYBwir+rTVrGpMVN7dqUUCmXZcYXzM/xnOWhw0/JSlUJu A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10603"; a="307448361"
-X-IronPort-AV: E=Sophos;i="5.97,251,1669104000"; d="scan'208";a="307448361"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2023 07:10:02 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10603"; a="992104640"
-X-IronPort-AV: E=Sophos;i="5.97,251,1669104000"; d="scan'208";a="992104640"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.16.144])
- ([10.99.16.144])
- by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2023 07:10:01 -0800
-Message-ID: <cab5343c-a1cc-3173-c7f5-41ed0eec631f@linux.intel.com>
-Date: Fri, 27 Jan 2023 16:09:59 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH 11/11] ASoC: topology: Unify kcontrol removal code
-Content-Language: en-US
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Mark Brown <broonie@kernel.org>
-References: <20230125194649.3485731-1-amadeuszx.slawinski@linux.intel.com>
- <20230125194649.3485731-12-amadeuszx.slawinski@linux.intel.com>
- <40207a2a-3f2a-bbef-74f6-9e85ced3150a@linux.intel.com>
- <5f7e9b31-ad1f-0948-5673-0732d73a185e@linux.intel.com>
- <9f7b76db-c788-cd2a-f873-f8a3382f368c@linux.intel.com>
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ t=1674832217; x=1706368217;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=LvKTiEZRlMazR+r++JvGSgZfrTxuCnGAk8uY0I0iui8=;
+ b=cgN1xjfpNqj3H/WX5qglLZ0HQQ4UNYvMlyckfhu/fzsEiIpzfHKN3KGO
+ aj+G8P4siR5HnPGUDGuPkRIBPk0BVwkgtVsGogMT/RcCS1HAq8aZ6uyGz
+ jmjRPMppzYA4cQWV6BozZ2/2L6GNhoFmZD5ZkR+F1WPkNrDF2tfovN3nF
+ APvmLW1F1q43ABYJSHOmdAj28MOLAv+ZRSvf0X0Ghn6+24vUrEzDAT12q
+ QYeudD15Zoq099VRZtDWNuSsoLx5uDSSomU5lUZ+43gs3sydBBMgk7tIp
+ HbsDi7KjdUFHfXArw6MW+YprGXFORHF72qoh5sV1lng8z2iGXb8agydS8 g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10603"; a="324795769"
+X-IronPort-AV: E=Sophos;i="5.97,251,1669104000"; d="scan'208";a="324795769"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jan 2023 07:10:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10603"; a="908708985"
+X-IronPort-AV: E=Sophos;i="5.97,251,1669104000"; d="scan'208";a="908708985"
+Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
+ by fmsmga006.fm.intel.com with ESMTP; 27 Jan 2023 07:10:11 -0800
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <9f7b76db-c788-cd2a-f873-f8a3382f368c@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 01/11] ASoC: topology: Properly access value coming from
+ topology file
+Date: Sat, 28 Jan 2023 00:11:01 +0100
+Message-Id: <20230127231111.937721-2-amadeuszx.slawinski@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230127231111.937721-1-amadeuszx.slawinski@linux.intel.com>
+References: <20230127231111.937721-1-amadeuszx.slawinski@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -89,45 +82,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 1/27/2023 2:38 PM, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 1/27/23 05:12, Amadeusz Sławiński wrote:
->> On 1/25/2023 4:15 PM, Pierre-Louis Bossart wrote:
->>>
->>>
->>> On 1/25/23 13:46, Amadeusz Sławiński wrote:
->>>> Functions removing bytes, enum and mixer kcontrols are identical. Unify
->>>
->>> they are identical because of the change in patch10.
->>>
->>> Please clarify that this is not a cleanup removing duplicated code
->>> that's been there forever, it's become useless as a result of the
->>> previous patch.
->>>
->>
->> There is no dependency on previous patch - it is just order I've send
->> them in - those functions have same implementation in current code.
-> 
-> Not following, sorry. What is this addition in patch 10?
-> 
-> diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-> index b4b896f83b94..f055c6917f6c 100644
-> --- a/include/sound/soc-topology.h
-> +++ b/include/sound/soc-topology.h
-> @@ -62,7 +62,7 @@ struct snd_soc_dobj {
->   	enum snd_soc_dobj_type type;
->   	unsigned int index;	/* objects can belong in different groups */
->   	struct list_head list;
-> -	struct snd_soc_tplg_ops *ops;
-> +	int (*unload)(struct snd_soc_component *comp, struct snd_soc_dobj *dobj);
-> 
-> That's not in 'current code', is it? How is this not a dependency?
+When accessing values coming from topology, le32_to_cpu should be used.
+One of recent commits missed that.
 
-It only depends on it because of order I did changes in, but there is 
-really no dependency here. I will send v2 with reversed order.
+Fixes: 86e2d14b6d1a ("ASoC: topology: Add header payload_size verification")
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+---
+ sound/soc/soc-topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index c3be24b2fac5..b9addbab2b3d 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -2404,7 +2404,7 @@ static int soc_valid_header(struct soc_tplg *tplg,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (soc_tplg_get_hdr_offset(tplg) + hdr->payload_size >= tplg->fw->size) {
++	if (soc_tplg_get_hdr_offset(tplg) + le32_to_cpu(hdr->payload_size) >= tplg->fw->size) {
+ 		dev_err(tplg->dev,
+ 			"ASoC: invalid header of type %d at offset %ld payload_size %d\n",
+ 			le32_to_cpu(hdr->type), soc_tplg_get_hdr_offset(tplg),
+-- 
+2.25.1
+
