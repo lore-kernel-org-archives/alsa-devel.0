@@ -4,98 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11D79C05027
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Jan 2023 08:24:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81CCBC61D97
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Jan 2023 08:24:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1BEC86F;
-	Sun, 29 Jan 2023 09:23:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1BEC86F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 30C45E74;
+	Sun, 29 Jan 2023 09:23:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30C45E74
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674980643;
-	bh=fNmgdZUN2/2Uu/E39EHKHM8jOiAEPnx0mWMZL8FZ7OI=;
+	s=default; t=1674980671;
+	bh=CIl32mTcQHV5EHQmKnAyR2IkAxK+xsOkcApFBk0n/yQ=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=d1956W7+27Yce70B/8+HiIcfl/8oO+S/QxycSdJofjYSzpYtznFAIqLoulhA0DLrc
-	 zRj2ULGznGcSQixEq5xBdJ1l90fezYy5vHx9xailpI1SIrNW5TrYKKIsfx+KDkwwR7
-	 AtqaEJdMZBGFuz31UWYOTV0p8xFAHnJcJx39J0hk=
+	b=Rt8yC72WL1GE2eXnUpjgJCju9Jk7MtjsoLSH8eitPZj530h9G7uKLz13/sshU8QxH
+	 89jm3yFIjDWMrhid+ualKt1AkoqqEOul6bRQbw1DtB9XQVPNBZ1gZsmwz2EBdMZKrT
+	 acGX/YWzU11MRsZXJFUGgnklZOaUTBoSg/nxYdTo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34108F80494;
+	by alsa1.perex.cz (Postfix) with ESMTP id F3C0CF804E0;
 	Sun, 29 Jan 2023 09:23:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04899F80431; Fri, 27 Jan 2023 17:49:21 +0100 (CET)
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
- [IPv6:2a00:1450:4864:20::329])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 3A57BF80272; Fri, 27 Jan 2023 18:01:09 +0100 (CET)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [185.132.182.106])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BD956F801F7
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 17:49:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD956F801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B90BF80074
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 18:01:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B90BF80074
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=p0bN2yAu
-Received: by mail-wm1-x329.google.com with SMTP id
- q10-20020a1cf30a000000b003db0edfdb74so5746031wmq.1
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 08:49:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=MwxIin163802ACvSCq0jg4HlDZfjOU+b7ag/1i6mXEE=;
- b=p0bN2yAu28MNGvTlRbQWr0+f8dRrN7+Tn627u0K/x42EmNDLphayIf9NlMev0wqj8h
- /EmzHfmLQqKOVu8ZgIciDK/fUJr6PvWPKCTqRsZtsPxIDrQvOH3aJeQUvnun7rNkTSUQ
- 6/KZMhpjpBCdTsrlPk0Pq1AqbefuhemfseqENDs+CCppSNm6HT2vKHwFAalheOqTayxm
- dtjoNuM92e8Dp5V+KrvfMQYfpqoVE/fUi7G9DPER5YIOirUmedqSV5KeWbBKvr23C7Je
- C0hL4yNzr1apQ8T4Xaqa5bA4xfUJep3aF5qWXf5H1dWiQl4NI8yI1oLJqFFQ+XguiBLe
- Z84Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=MwxIin163802ACvSCq0jg4HlDZfjOU+b7ag/1i6mXEE=;
- b=mfe5jUOeu1wtvhvHy7PYllX4LgPOXwhr5GU2NqqSDdeJDIMfk9CVrX2jKgxrFpcBJA
- dz3Dd575/ZSriHFE9Ak7ao1Z9AlJmlGGOEFbhMGwnGK1yQt9CNVjB9Qy9iUVGP7HgUFq
- KOlaiVHqYop/fFdJ2S//ZCgwKZslwamHebQsbtayp4l9l5tdWy1VM71MMQk1ALYmMRX9
- SuTlYVbdR5o+Xt+MuIwXFWrVdVAOmehgzWYrQkiYEUjHDkqU1E6MTpzWXLKSl7PVFrxE
- NjyUqiUMK2c4VOKVMZm9tSR14MKi/u+PZjjdoAuNNxBEvg+eY+LQU8J0Bi3C/FHT3DsC
- eooA==
-X-Gm-Message-State: AO0yUKXFgFmDfSt3hAovSmN6IYMxVO3hUquHXjth8zwmkvLiznGTBX7F
- SbIvHClfDOIwKg8EhkSNZxZ+sQ==
-X-Google-Smtp-Source: AK7set91BwRn6DZssbXKyvbz30nnUQMYADbkS+Drm/RA9jZHFwp9Oe0M3rmb1c4Tgb8gUCp8+I209g==
-X-Received: by 2002:a05:600c:3151:b0:3dc:443e:420e with SMTP id
- h17-20020a05600c315100b003dc443e420emr40585wmo.2.1674838156833; 
- Fri, 27 Jan 2023 08:49:16 -0800 (PST)
-Received: from [192.168.1.109] ([178.197.216.144])
- by smtp.gmail.com with ESMTPSA id
- p24-20020a05600c1d9800b003dafadd2f77sm8990779wms.1.2023.01.27.08.49.14
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 27 Jan 2023 08:49:16 -0800 (PST)
-Message-ID: <1e498b93-d3bd-bd12-e991-e3f4bedf632d@linaro.org>
-Date: Fri, 27 Jan 2023 17:49:13 +0100
+ unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
+ header.s=selector1 header.b=aWrFglN6
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 30REGmZ8019692; Fri, 27 Jan 2023 18:01:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
+ h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=QNH1ux7cYrF5KW+Ey5DCbKnkWudemJAed1CdOisOzwU=;
+ b=aWrFglN6WN9lJ9UfkuNRCOf+eZLqOK/K/MwebDvkvlJ9BbraR7IaDQjfWJsuxG3qEl+w
+ /zcbla1ATkb34/cgfv+jY98hV15W4tnl5ImuyPNlwMV+YJAdJjbH1aopG15aLRkh8wmM
+ l4dhdDRjV+hC6xAWQteP9ugkWvZRUn+2SbiSOelz6JrhmEzzjMybo5hBxA3Bcimg9qnY
+ zdsENVEPxj6CymobQqyNOE70uQpKyrM9lu7NqbOzhejcg3jASSLXeSHG2+UOFLtTC114
+ gDpaZ6/KFUEeQG46+8MaDOHr4QDhzeheFE/3snJXRXDYFzO0erPQuMETrlvse78cpBw2 ww== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3n89chde7x-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 27 Jan 2023 18:01:06 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8FD5D100039;
+ Fri, 27 Jan 2023 18:00:43 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6F28D21F0C6;
+ Fri, 27 Jan 2023 18:00:43 +0100 (CET)
+Received: from [10.201.21.177] (10.201.21.177) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.13; Fri, 27 Jan
+ 2023 18:00:40 +0100
+Message-ID: <179fe90c-0ac9-bb43-6e49-8b1d7ec520df@foss.st.com>
+Date: Fri, 27 Jan 2023 18:00:39 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
+ Thunderbird/102.4.2
 Subject: Re: [PATCH v3 1/6] dt-bindings: Document common device controller
  bindings
 Content-Language: en-US
-To: Gatien Chevallier <gatien.chevallier@foss.st.com>,
- Oleksii_Moisieiev@epam.com, gregkh@linuxfoundation.org,
- herbert@gondor.apana.org.au, davem@davemloft.net, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, alexandre.torgue@foss.st.com,
- vkoul@kernel.org, jic23@kernel.org, olivier.moysan@foss.st.com,
- arnaud.pouliquen@foss.st.com, mchehab@kernel.org,
- fabrice.gasnier@foss.st.com, ulf.hansson@linaro.org, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
+ <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+ <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+ <alexandre.torgue@foss.st.com>, <vkoul@kernel.org>, <jic23@kernel.org>,
+ <olivier.moysan@foss.st.com>, <arnaud.pouliquen@foss.st.com>,
+ <mchehab@kernel.org>, <fabrice.gasnier@foss.st.com>,
+ <ulf.hansson@linaro.org>, <edumazet@google.com>, <kuba@kernel.org>,
+ <pabeni@redhat.com>
 References: <20230127164040.1047583-1-gatien.chevallier@foss.st.com>
  <20230127164040.1047583-2-gatien.chevallier@foss.st.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230127164040.1047583-2-gatien.chevallier@foss.st.com>
-Content-Type: text/plain; charset=UTF-8
+ <1e498b93-d3bd-bd12-e991-e3f4bedf632d@linaro.org>
+From: Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
+In-Reply-To: <1e498b93-d3bd-bd12-e991-e3f4bedf632d@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.201.21.177]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-27_10,2023-01-27_01,2022-06-22_01
 X-Mailman-Approved-At: Sun, 29 Jan 2023 09:23:11 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -120,25 +117,39 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 27/01/2023 17:40, Gatien Chevallier wrote:
-> From: Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
-> 
-> Introducing of the common device controller bindings for the controller
-> provider and consumer devices. Those bindings are intended to allow
-> divided system on chip into muliple domains, that can be used to
-> configure hardware permissions.
-> 
-> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-> ---
-> 
-> No change since V1. I'm letting this patch for dependency with bindings to
-> avoid noise with dt/bindings checks. Therefore, it should be reviewed on the
-> appropriate thread.
+Hello Krzysztof,
 
-There was a v6 already, this is v3 and I don't understand this comment.
-What do you let? Whom? If it is not for review and not for merging,
-please annotate it in the title ([IGNORE PATCH] or something).
+On 1/27/23 17:49, Krzysztof Kozlowski wrote:
+> On 27/01/2023 17:40, Gatien Chevallier wrote:
+>> From: Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
+>>
+>> Introducing of the common device controller bindings for the controller
+>> provider and consumer devices. Those bindings are intended to allow
+>> divided system on chip into muliple domains, that can be used to
+>> configure hardware permissions.
+>>
+>> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+>> ---
+>>
+>> No change since V1. I'm letting this patch for dependency with bindings to
+>> avoid noise with dt/bindings checks. Therefore, it should be reviewed on the
+>> appropriate thread.
+> 
+> There was a v6 already, this is v3 and I don't understand this comment.
+> What do you let? Whom? If it is not for review and not for merging,
+> please annotate it in the title ([IGNORE PATCH] or something).
+> 
+
+Sorry for not being clear in the previous comment.
+
+I meant I'm letting this patch in this patch set so the dependencies on 
+the feature-domain-controller.yaml file are satisfied.
+
+I will annotate it with [IGNORE PATCH], as you suggest.
+
+> Best regards,
+> Krzysztof
+> 
 
 Best regards,
-Krzysztof
-
+Gatien
