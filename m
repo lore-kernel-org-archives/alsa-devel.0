@@ -4,74 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2D4BC54EAA
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 16:42:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6FC0C38142
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 16:46:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C493BAE8;
-	Fri, 27 Jan 2023 17:42:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C493BAE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 83EB686F;
+	Fri, 27 Jan 2023 17:46:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83EB686F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674837776;
-	bh=y5WiWYoPmeWRQTq+h3ADF9qMzdRYPVjguNQ/7zr5ZKc=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1674838016;
+	bh=wOPBdXSozRh+EjgymZdzCP0VI0VR05KFsxTnmtNKJRE=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=rJ4lZ5zxwVCmt0kd/hh7ZV8hfaRmeicMVsRXSj9FACCWORvD1GHjGuoegVzKSS/yY
-	 uYmbblt2zcHEV8rSYxgdNBqZqVwMEF2wzSIBwElOUL1Sa/EohO5RtWH/odlc5pw081
-	 xQxDbV+M5zvOu3DGUu3hjQAL1WQyzdzgJzGKDIJg=
+	b=WlRX8mYHM7OOhDIJbCldt2FhkTG9rbth5GHMngMg2ABlTf/OMhbV8/dlsgab0Aaab
+	 zIcFQxnOt3NU5zI2pOvxgWIdvmxIK3HTor22VRgqVsMBVVIbArVQzA1xzWpTcRworn
+	 J5j8GfeOzi2bkXXEb40vpAkLDQqT3OBe6yD/JJTc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79DEEF80224;
-	Fri, 27 Jan 2023 17:42:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3F65F80224;
+	Fri, 27 Jan 2023 17:46:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 194ABF8007C; Fri, 27 Jan 2023 17:42:05 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 4CFF7F804C2; Fri, 27 Jan 2023 17:41:36 +0100 (CET)
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 673F6F8007C
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 17:41:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 673F6F8007C
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- secure) header.d=perex.cz header.i=@perex.cz header.a=rsa-sha256
- header.s=default header.b=qsE7WeDh
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 664B911E4;
- Fri, 27 Jan 2023 17:41:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 664B911E4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1674837714; bh=72VCcJJxXXJ2bRu6xheDpCpxeIDPr4x7r7Bh9fqdkxo=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=qsE7WeDhAIYITdqIx4QhUbq4ukEd81gGTxkWg1gHEcz+MM2p8mXAQfT8rrss4d7h9
- il6oXy/w1cphUQ2yixydix3aek4tCPlzUOzZcVYBqmDVH1MupuJH8ydK42YwtKOcmH
- VHRs/5VZvRdjtNQ0qJtzKkbmKhBKAP/TLElU0uOw=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Fri, 27 Jan 2023 17:41:44 +0100 (CET)
-Message-ID: <e9733e9a-ac70-846f-c3a2-f96a6787b9bc@perex.cz>
-Date: Fri, 27 Jan 2023 17:41:44 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 41199F8007C
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 17:41:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41199F8007C
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
+ header.s=selector1 header.b=MxmIr3mb
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+ by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 30RE39L1030097; Fri, 27 Jan 2023 17:41:26 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=selector1;
+ bh=TLpvxr0JKnv3cRRKcVieryIlKR66YrKuRhrp30o42fc=;
+ b=MxmIr3mbTrQKU7ILOiIuUYNRfPKtQyFd7Q82hX+mmlhHMN4bP3xNEQdVP15X9z9cUimc
+ h3JRuy7bhkE8k1RNhXZJ4yG0YLhpRXfPrTH+kQEP/hiwusIopmxIWLGZigkeMWdNoSlx
+ g8gGdDIbdnSWOFuq8aD+YaIb2Cup+gEMn12nOYn27NjlcJW2+ONzHOAgb9q2v9YYr9Q1
+ 5SYYew66hvSv0sRAE1PioJiPs3nhd4mTusQH1mf2r+gi1vH4qwwWm83BUc2SMUR8cuSB
+ XFP+OeH2V4WMjxDY0T9NCDS809tSzNnQ65Z++mQF8XCRAymslG7od7RZgeW9p4va7Fy3 Ow== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+ by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3najx6xg2m-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 27 Jan 2023 17:41:26 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+ by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4159A100034;
+ Fri, 27 Jan 2023 17:41:22 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+ by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3968721D3FA;
+ Fri, 27 Jan 2023 17:41:22 +0100 (CET)
+Received: from localhost (10.201.21.177) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.13; Fri, 27 Jan
+ 2023 17:41:21 +0100
+From: Gatien Chevallier <gatien.chevallier@foss.st.com>
+To: <Oleksii_Moisieiev@epam.com>, <gregkh@linuxfoundation.org>,
+ <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+ <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+ <alexandre.torgue@foss.st.com>, <vkoul@kernel.org>, <jic23@kernel.org>,
+ <olivier.moysan@foss.st.com>, <arnaud.pouliquen@foss.st.com>,
+ <mchehab@kernel.org>, <fabrice.gasnier@foss.st.com>,
+ <ulf.hansson@linaro.org>, <edumazet@google.com>, <kuba@kernel.org>,
+ <pabeni@redhat.com>
+Subject: [PATCH v3 1/6] dt-bindings: Document common device controller bindings
+Date: Fri, 27 Jan 2023 17:40:35 +0100
+Message-ID: <20230127164040.1047583-2-gatien.chevallier@foss.st.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20230127164040.1047583-1-gatien.chevallier@foss.st.com>
+References: <20230127164040.1047583-1-gatien.chevallier@foss.st.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH 2/6] ASoC: amd: yc: Add a module parameter to influence
- pdm_gain
-Content-Language: en-US
-To: "Limonciello, Mario" <Mario.Limonciello@amd.com>,
- "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>,
- "Saba Kareem, Syed" <Syed.SabaKareem@amd.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20230127160134.2658-1-mario.limonciello@amd.com>
- <20230127160134.2658-3-mario.limonciello@amd.com>
- <2e9f4301-0211-04f5-5b38-caf2be9f4fd1@perex.cz>
- <MN0PR12MB61014C004C798F7DE8682AAFE2CC9@MN0PR12MB6101.namprd12.prod.outlook.com>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <MN0PR12MB61014C004C798F7DE8682AAFE2CC9@MN0PR12MB6101.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.21.177]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-01-27_10,2023-01-27_01,2022-06-22_01
+X-Mailman-Approved-At: Fri, 27 Jan 2023 17:46:04 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,60 +100,127 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Pananchikkal,
- Renjith" <Renjith.Pananchikkal@amd.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Mark Pearson <mpearson@lenovo.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-iio@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-phy@lists.infradead.org,
+ Oleksii Moisieiev <oleksii_moisieiev@epam.com>, linux-crypto@vger.kernel.org,
+ linux-serial@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 27. 01. 23 17:25, Limonciello, Mario wrote:
-> [AMD Official Use Only - General]
-> 
-> 
-> 
->> -----Original Message-----
->> From: Jaroslav Kysela <perex@perex.cz>
->> Sent: Friday, January 27, 2023 10:23
->> To: Limonciello, Mario <Mario.Limonciello@amd.com>; Mukunda, Vijendar
->> <Vijendar.Mukunda@amd.com>; Saba Kareem, Syed
->> <Syed.SabaKareem@amd.com>; linux-kernel@vger.kernel.org
->> Cc: Pananchikkal, Renjith <Renjith.Pananchikkal@amd.com>; Mark Pearson
->> <mpearson@lenovo.com>; Liam Girdwood <lgirdwood@gmail.com>; Mark
->> Brown <broonie@kernel.org>; Takashi Iwai <tiwai@suse.com>; alsa-
->> devel@alsa-project.org
->> Subject: Re: [PATCH 2/6] ASoC: amd: yc: Add a module parameter to
->> influence pdm_gain
->>
->> On 27. 01. 23 17:01, Mario Limonciello wrote:
->>> In case of regressions for any users that the new pdm_gain value is
->>> too high and for additional debugging, introduce a module parameter
->>> that would let them configure it.
->>>
->>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
->>> ---
->>>    sound/soc/amd/yc/acp6x-pdm-dma.c | 7 ++++++-
->>>    sound/soc/amd/yc/acp6x.h         | 2 +-
->>>    2 files changed, 7 insertions(+), 2 deletions(-)
->>
->> ...
->>
->>>    	pdm_ctrl = acp6x_readl(acp_base + ACP_WOV_MISC_CTRL);
->>> -	pdm_ctrl |= ACP_WOV_MISC_CTRL_MASK;
->>> +	pdm_ctrl |= FIELD_PREP(ACP_WOV_GAIN_CONTROL, pdm_gain);
->>
->> The bits should be zeroed (AND - &) before OR to make sure that the correct
->> value is written to the register. More related patches are affected.
-> 
-> I had consider this, but the hardware default at reset is 0x0.  Do you think it's
-> still necessary for posterity?
+From: Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
 
-You're using 0644 permissions for the module parameter, so the value can be 
-changed by root using sysfs anytime (between SNDRV_PCM_TRIGGER calls).
+Introducing of the common device controller bindings for the controller
+provider and consumer devices. Those bindings are intended to allow
+divided system on chip into muliple domains, that can be used to
+configure hardware permissions.
 
-						Jaroslav
+Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+---
 
+No change since V1. I'm letting this patch for dependency with bindings to
+avoid noise with dt/bindings checks. Therefore, it should be reviewed on the
+appropriate thread.
+
+Depends-on: https://lore.kernel.org/lkml/c869d2751125181a55bc8a88c96e3a892b42f37a.1668070216.git.oleksii_moisieiev@epam.com/
+
+ .../feature-domain-controller.yaml            | 84 +++++++++++++++++++
+ 1 file changed, 84 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml
+
+diff --git a/Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml b/Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml
+new file mode 100644
+index 000000000000..90a7c38c833c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/feature-controllers/feature-domain-controller.yaml
+@@ -0,0 +1,84 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/feature-controllers/feature-domain-controller.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Generic Domain Controller bindings
++
++maintainers:
++  - Oleksii Moisieiev <oleksii_moisieiev@epam.com>
++
++description: |+
++  Common Feature Domains Controller bindings properties
++
++  Domain controllers allow to divided system on chip into multiple feature
++  domains that can be used to select by who hardware blocks could be accessed.
++  A feature domain could be a cluster of CPUs (or coprocessors), a range of
++  addresses or a group of hardware blocks.
++
++  This device tree bindings can be used to bind feature domain consumer devices
++  with their feature domains provided by feature-domains controllers.
++  Feature omain controller provider can be represened by any node in the
++  device tree and can provide one or more configuration parameters, needed to
++  control parameters of the consumer device. A consumer node can refer to the
++  provider by phandle and a set of phandle arguments, specified by
++  '#feature-domain-cells' property in the device controller provider node.
++
++  Device controllers are typically used to set the permissions of the hardware
++  block. The contents of the feature-domains configuration properties are
++  defined by the binding for the individual feature-domains controller device.
++
++  Each node can be a consumer for the several providers. The first
++  configuration of 'feature-domains' or the one named 'default' is applied
++  before probing the device itself.
++
++# always select the core schema
++select: true
++
++properties:
++  '#feature-domain-cells':
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Number of cells in a feature-domains controller specifier;
++      Can be any value as specified by device tree binding documentation
++      of a particular provider.
++
++  feature-domain-controller:
++    description:
++      Indicates that the node is feature-domain-controller provider.
++
++  feature-domain-names:
++    $ref: '/schemas/types.yaml#/definitions/string-array'
++    description:
++      A list of feature-domains names, sorted in the same order as
++      feature-domains entries. Consumer drivers will use feature-domain-names
++      to match with existing feature-domains entries.
++
++  feature-domains:
++    $ref: "/schemas/types.yaml#/definitions/phandle-array"
++    description:
++      A list of feature-domains controller specifiers, as defined by the
++      bindings of the feature-domain-controller provider.
++
++additionalProperties: true
++
++examples:
++  - |
++    ctrl0: ctrl@100 {
++        feature-domain-controller;
++        reg = <0x100 0x10>;
++        #feature-domain-cells = <2>;
++    };
++
++    ctrl1: ctrl@110 {
++        feature-domain-controller;
++        reg = <0x110 0x10>;
++        #feature-domain-cells = <3>;
++    };
++
++    foo@0 {
++        reg = <0x0 0x1>;
++        feature-domains = <&ctrl0 1 2>, <&ctrl1 3 4 5>;
++        feature-domain-names = "default", "unbind";
++    };
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.35.3
 
