@@ -4,80 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F9B2C38142
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 15:42:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA3E1C38142
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 16:03:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23CA2DE5;
-	Fri, 27 Jan 2023 16:41:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23CA2DE5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C16684D;
+	Fri, 27 Jan 2023 17:02:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C16684D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674834168;
-	bh=aD1OBZKremSLIPsPBKHDbNEiTmYoH/MrfvnLAF1kfM0=;
-	h=Date:To:From:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=PWrt518fXPnnWfQn2HFfYI0lhajP6Ykr478aMX71LIOqv2eez5aSnK7nwdLajlqvn
-	 DGB5T5Yzgc68s85xMuKKOtZuNdBR6XPVnpyIXu5u8qJkf3u6Yxi3CoZABZ7PmfwKrw
-	 NDO848SmkvEeuH/wdzQ+TFfso+9pNEHZIdYWE1MI=
+	s=default; t=1674835398;
+	bh=DloRz2y0bMEvM06on3C1wHyCZSZhB9corbwgfoBAQFw=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=Vp6SKXPHwgYb0E4D93YGJ0fbHZbsutHWHscf4NgPZDr89gMICc8kj/ebtTjDSbKpZ
+	 TiqjGYNp4mU38HHjEQ+Q+DKBImumGh3dkyLIgeZd5P0+jklUa0KnQGUeF8Dyz9lIDN
+	 MzpDl11OgdjUDi7Vm9oT5k1Z44QCjT9fy8o2JK2g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA1D8F801F7;
-	Fri, 27 Jan 2023 16:41:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AECC5F804F3;
+	Fri, 27 Jan 2023 17:02:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D1FCF801F7; Fri, 27 Jan 2023 16:41:56 +0100 (CET)
-Received: from ts201-relay02.ddc.teliasonera.net
- (ts201-relay02.ddc.teliasonera.net [81.236.60.203])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id D9BB0F8053A; Fri, 27 Jan 2023 17:02:26 +0100 (CET)
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam10on20631.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7e89::631])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8D25F80074
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 16:41:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8D25F80074
-X-Amavis-Alert: BAD HEADER SECTION, Improper folded header field made up
- entirely of whitespace (char 20 hex): X-Spam_report: ...t@localhost
- for details.  Content previ[...]
-Received: from mail.aio.nu (90-228-210-9-no78.tbcn.telia.com [90.228.210.9])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested)
- by ts201-relay02.ddc.teliasonera.net (Postfix) with ESMTPS id B0FFF8075D1
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 16:41:47 +0100 (CET)
-Received: from lwaxana.aio.vpn ([10.1.2.16] helo=lwaxana.aio.nu)
- by mail.aio.nu with esmtps  (TLS1.3) tls TLS_AES_256_GCM_SHA384
- (Exim 4.96) (envelope-from <aio.alsadevel@aio.nu>)
- id 1pLQrJ-000GZi-1y for alsa-devel@alsa-project.org;
- Fri, 27 Jan 2023 16:41:46 +0100
-Received: from [10.1.2.20] ([10.1.2.20]) by lwaxana.aio.nu with ESMTPSA
- id tk4EIbbw02MPmAAA88T9bw (envelope-from <aio.alsadevel@aio.nu>)
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 16:41:45 +0100
-Message-ID: <8e1c4dee-7643-807b-737c-276708a3ab8d@aio.nu>
-Date: Fri, 27 Jan 2023 16:41:42 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id ECBBDF80224
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 17:02:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECBBDF80224
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=WX9mSArn
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eDBhVDsfVBfFXyQ4YndsXWkTGIp7O6BvH43jHc/YgrgrgJq2OX+Vo6J6CfQcHsAi6HkVy73pfDwY2aeeIJJv9MyfcObthd88YZ0fA5IdelO/dBQMKWIlIHaCADtXgf9A2/h/pypEGAy13RWd1afMEqKb22sqoX3wFwIWV+ooPS8a5OMk2j6VWZYesEsiprTlrPBVrKEbUef83dvKqUHj9iHQSkCd8UIJjuCDjr95sJ1zhPUkmy5CPRSn4y+p8J8HBbNhl/zv6h9n4fxjpGC0YPJuSIIHDqUHU5UfDN1RctNk4coRHWxUkK/9AvHH+HZog6eO3a4MhIJkR6dsTc/ToQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5aKmvnOZr7+ZbKfC741aJVN4sW9FPDgnJEvlymWjFz8=;
+ b=Oe2Oh0Fc+ZR118HVUHudiVzG0sUJ4ACmI6I2hsXD7JDZWWH6VCv2ZpPU8TvUgUnE+iXaLX5yOFMNZVZpeQ3CQx+KNlc/aghzA7H7Tk8EugcGy011eFcqddfheH24xN/qURnpPgCqEgnjMjI0piAzD/+xj3dV8ufE+XYWdz/h1liPlBNbFSVqPho/bpPgBPQwzFZ2uHHS736krGggZPcFLzGZYdwGCN0+FSYdf9I0SzHhzQivQZMeHcIP8EypT608+6ZJviGca2ZM3G8HY/yU4CN8moabgsVI1rarUGhD0JF9XaNjvDMfRJOz8vchSk+wwvme22KL5nL+zhKto7LHxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5aKmvnOZr7+ZbKfC741aJVN4sW9FPDgnJEvlymWjFz8=;
+ b=WX9mSArnq8oY+6KPpY6mLjqp1wKviwQ7kMyczaBF5X4sqVQQI370AJsmK8QM3FNPa+4K2naMhT7HLx7dB47IoSZ39W1Q9BIjp/34B8+IRbUZPsHZ1VnvS2cCRmigVKDPHGPCsboQngShfyuaDYi4SunDEkmWx96I35UF5x13dDI=
+Received: from MW4PR03CA0166.namprd03.prod.outlook.com (2603:10b6:303:8d::21)
+ by CH3PR12MB8074.namprd12.prod.outlook.com (2603:10b6:610:12b::9)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6043.22; Fri, 27 Jan
+ 2023 16:02:12 +0000
+Received: from CO1PEPF00001A5F.namprd05.prod.outlook.com
+ (2603:10b6:303:8d:cafe::82) by MW4PR03CA0166.outlook.office365.com
+ (2603:10b6:303:8d::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6043.25 via Frontend
+ Transport; Fri, 27 Jan 2023 16:02:12 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1PEPF00001A5F.mail.protection.outlook.com (10.167.241.6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6043.10 via Frontend Transport; Fri, 27 Jan 2023 16:02:12 +0000
+Received: from AUS-LX-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Fri, 27 Jan
+ 2023 10:02:11 -0600
+From: Mario Limonciello <mario.limonciello@amd.com>
+To: Jaroslav Kysela <jkysela@redhat.com>, Mukunda Vijendar
+ <Vijendar.Mukunda@amd.com>, Saba Kareem Syed <Syed.SabaKareem@amd.com>,
+ <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/6] ASoC: amd: yc: Adjust the gain for PDM DMIC
+Date: Fri, 27 Jan 2023 10:01:28 -0600
+Message-ID: <20230127160134.2658-2-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230127160134.2658-1-mario.limonciello@amd.com>
+References: <20230127160134.2658-1-mario.limonciello@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Content-Language: en-US
-To: alsa-devel@alsa-project.org
-From: AiO <aio.alsadevel@aio.nu>
-Subject: Bug? Strange crash with snd_hdspm and RME RayDAT on MIDI-input
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam_score: -1.0
-X-Spam_score_int: -9
-X-Spam_bar: -
-X-Spam_report: Spam detection software,
- running on the system "christine.aio.vpn", 
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- root@localhost for details. Content preview:  Hello there,
- I've tried to find some insights in a weird problem
- I have with snd_hdspm. I guess it is an error-report/bug-posting. Audio-wise
- everything is super-duper, so don't worry. However... MIDI only works outbound
- from the on-board MIDI interface. 
- Content analysis details:   (-1.0 points, 5.0 required)
- pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -1.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF00001A5F:EE_|CH3PR12MB8074:EE_
+X-MS-Office365-Filtering-Correlation-Id: b7f7a0b2-3758-4f37-9ce0-08db007fda24
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +CN5ENAAd9PHWnVnQPeNPo/pEIUc1XIeJuWnEhxcwCryFjfDPRQeJJLytLlpQ5SH/aF7lJt4vjUna6xX7z6aXanPQnGNsgk93A6j0rAFGcW3jjr4DibHSRp9G/M5jN5Z/ztWQVmkseQun2PNLjc2rVTmZPWjpjAxcwFJJLSerm6FDEayiBX64T9/sQzz8xgNcZQWk6WKSxuaOd9Kp47nFJJDYI5vTZHX50lUfPdcy54+/eGQ9b6NmwBAKdvPvGJEVKs5MuH931ysb+kbc/nH2oG7vBrnPsU7DC2+gofpODfmJP0YgsPtTpZztvMV81Gkb5RHP6nHG2u6X4zIRTXyge7SnmxE1a0TkWg7GFEFSbaEJMFz1Kuw85hgh0+Ng92Y/6x2+ig8sq6Hww1KApHn8n36GrkNg1NSC26Wn202Jb2h2XY351oAK5QGn0AVwD9reYwyeC1U/HNXMFw5D6CDJ77XVXKYlVgSUQUbe0DBGO86sSG38Q6nT9vpN+Zw+ZEchErJ31tswhuPLnU6M8quOqlBJjXHo4ylFXDBb1PcjidJh62yfsvTL1oycnz8yCbPuCFo9CYhX1jcNw9Nk0LK9gNcHnuTLhco0ZERm4/v9IHBE1m1gbbwvEGNBuUhtzGU97Uu7uj6pLhoUNJo59RO7LHj7HRlHKdJs8iVcyIcNlSCPHgOKJqBvFHf/lF3ixWbvtx2D3WnhFo1cLcFxYkhftzrcOY3GMcOf+DJmsOXBT0=
+X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:CAL; SFV:NSPM; H:SATLEXMB04.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
+ SFS:(13230025)(4636009)(346002)(39860400002)(396003)(136003)(376002)(451199018)(46966006)(36840700001)(40470700004)(1076003)(44832011)(2906002)(5660300002)(4744005)(41300700001)(36860700001)(426003)(47076005)(6666004)(26005)(8936002)(336012)(186003)(478600001)(2616005)(16526019)(70206006)(70586007)(83380400001)(356005)(36756003)(40460700003)(82740400003)(86362001)(81166007)(316002)(4326008)(40480700001)(7696005)(8676002)(82310400005)(110136005)(54906003)(36900700001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2023 16:02:12.2173 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b7f7a0b2-3758-4f37-9ce0-08db007fda24
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
+ Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF00001A5F.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8074
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -90,35 +126,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: alsa-devel@alsa-project.org,
+ Pananchikkal Renjith <Renjith.Pananchikkal@amd.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam
+ Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Mario Limonciello <mario.limonciello@amd.com>,
+ Mark Pearson <mpearson@lenovo.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello there,
+A number of users for Lenovo Rembrandt based laptops are
+reporting that the microphone is too quiet relative to
+Windows with a dual boot.
 
-I've tried to find some insights in a weird problem I have with 
-snd_hdspm. I guess it is an error-report/bug-posting.
+Increase the PDM gain to overcome this problem.
 
-Audio-wise everything is super-duper, so don't worry. However... MIDI 
-only works outbound from the on-board MIDI interface.
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+---
+ sound/soc/amd/yc/acp6x.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-MIDI-out always works perfectly from the card during normal operations.
+diff --git a/sound/soc/amd/yc/acp6x.h b/sound/soc/amd/yc/acp6x.h
+index 74b596e6807ad..846ca10e24d3f 100644
+--- a/sound/soc/amd/yc/acp6x.h
++++ b/sound/soc/amd/yc/acp6x.h
+@@ -31,7 +31,7 @@
+ #define ACP_ERROR_STAT	29
+ #define PDM_DECIMATION_FACTOR	2
+ #define ACP_PDM_CLK_FREQ_MASK	7
+-#define ACP_WOV_MISC_CTRL_MASK	0x10
++#define ACP_WOV_MISC_CTRL_MASK	0x18
+ #define ACP_PDM_ENABLE		1
+ #define ACP_PDM_DISABLE		0
+ #define ACP_PDM_DMA_EN_STATUS	2
+-- 
+2.34.1
 
-Whenever I connect anything to the MIDI-in and start feeding some 
-MIDI-data, it seems ALSA crashes on me. here's a more detailed description:
-
-* I'm running linux-rt 6.0.5.14.realtime1-3-rt #1 SMP PREEMPT_RT (Arch)
-
-* When i give it a stream of MIDI data on the MIDI-in while playing
-   some audio that application (e.g. mplayer or live inputs) logs:
-
-   ALSA: poll time out, polled for 1999005 usecs, Retrying with a
-   recovery, retry cnt = 1 (2, 3, 4, 5, and so on)
-
-   And ALSA seem stuck in looping the last buffer over and over.
-
-* Nothing in journal, nothing in dmesg tells anything more about it
-
-What did I run in to?! :)
-
-Kind regards,
-AiO
