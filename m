@@ -4,80 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 797CEC38142
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 16:53:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6849BC54EAA
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 16:53:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BF8AFE7E;
-	Fri, 27 Jan 2023 17:52:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF8AFE7E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C19EE88;
+	Fri, 27 Jan 2023 17:52:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C19EE88
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674838397;
-	bh=O70BN066NXanXFdKIm70BwR5oQtspYkacWfkA5h7hYE=;
+	s=default; t=1674838406;
+	bh=5ics+glNTX98Lo+J8dAsrK1Bfmm7LkVRih1i4YImVas=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=rDIHuRy+Yn1xKJqMvGFMa2KnHT87NfLRNmfZpEb/H0sQoXaVtBhY6wd8mZwUV7zio
-	 Ahh2AqmHjgDdoBlo8s/fDqdvUoKZfkYBP2TmDpAKN1qsf8WUlnwFycIWRg8KPrQdOu
-	 B284FyZ4kcuWStz5JVgXZCiQEVEdR7OUuJ2pwbuo=
+	b=M3DhsDDZ/d66mkRHqCnmQdSW8xNRfJvyh8D4MJiK20gIrXfeOibVqlnLl+qbo8uaW
+	 1rYs0BLYfC8qYhxhGIGs/S8fYRI/0nu/8bzIbFGgAulsXAaqRjB/vBlMtxP0bKqRHA
+	 9DPKarD+vk0ZLth3rz91i23iIV+ik3b6pvHYPpTQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D53EDF8028B;
-	Fri, 27 Jan 2023 17:51:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C445F80549;
+	Fri, 27 Jan 2023 17:51:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D66E5F80224; Fri, 27 Jan 2023 17:51:36 +0100 (CET)
+ id 46999F80224; Fri, 27 Jan 2023 17:51:37 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8EA8CF80224
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 17:51:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EA8CF80224
+ by alsa1.perex.cz (Postfix) with ESMTPS id CA334F80431
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 17:51:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA334F80431
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=EIRhEgaJ
+ header.s=PODMain02222019 header.b=Im3wTmU5
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
  by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 30R9k8LP030633; Fri, 27 Jan 2023 10:51:31 -0600
+ 30R9k8LS030633; Fri, 27 Jan 2023 10:51:31 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=gzww93MA3M79V6JYJ0KSkJ/wBLiBFaVv6r0gK+hWsXw=;
- b=EIRhEgaJzWmHA5zR66SR2EivoiTvbu5HCfUR7KZUZF7clFQBcv7jJGGSS9Fk/GfqAtD/
- OcZmegfmh5bC8RKPueKjJFAURrEd7+3nj0r5p1DiegppKnqj50MPdktLOZMYxV0qgQ6+
- +sATVnPN+4tEk6g0GyRsxaIWh7uDQMS9v0d03JyDslDHpf38awUHnISDLYeTTrDF9Zsh
- z50lTH2EjbaWaA/KOGgRWdHZH/7Kn9+eU1YFxiHrtPXQTlZYivXW3RvarMRDLmRB/+UJ
- cI8KYh2oyLU5fEMbetsvI/3aVclUvjKrU1ZxQItoj1c9hZCcyxeHFyScIIFYH2UTWNdQ Tw== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3n8dbsvrd3-1
+ bh=Q6643SN4AhPLs3wHYgOI6E1yF6ud7lFu2qTqrsbh2yg=;
+ b=Im3wTmU59i+agQ7m09SmNeeTozZoc1saWpvMfX4rGrDypjlaePu4yYRlF1HcB0Hm2gkJ
+ 6k8TdKYC5Ly6oNLRt/bb0MyBga5RYl6Jwx0D7KJXiwOVpPVr1jNvkBJ47DL0BxbyFEWj
+ gu1DAi/qrR0fUj8gdBy1C8grhNciQKxt613S2jYD3D8iK87KWJla1iXRMOLurRKDmkKS
+ vtmJ9hBB6KyoQFQWS6Qo7b8XdDRLy8aYA1VanS9/TlqcTfMWZ8uSVcazR0iY/y5GIy0m
+ bbg/DWtYjEoEbXd9oLyzq9tY7zf0XxyatLs2iya7aBhxGMJDsF8pj26VdKxReIi9oRP/ Iw== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3n8dbsvrd1-4
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 27 Jan 2023 10:51:30 -0600
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 27 Jan 2023 10:51:31 -0600
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Fri, 27 Jan
- 2023 10:51:29 -0600
+ 2023 10:51:28 -0600
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.21 via
- Frontend Transport; Fri, 27 Jan 2023 10:51:29 -0600
+ Frontend Transport; Fri, 27 Jan 2023 10:51:28 -0600
 Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.202.160])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 05A7311D6;
- Fri, 27 Jan 2023 16:51:29 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AA49011D6;
+ Fri, 27 Jan 2023 16:51:28 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
  Mark Brown <broonie@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v3 5/8] ASoC: cs42l42: Export some functions for SoundWire
-Date: Fri, 27 Jan 2023 16:51:08 +0000
-Message-ID: <20230127165111.3010960-6-sbinding@opensource.cirrus.com>
+Subject: [PATCH v3 3/8] ASoC: cs42l42: Ensure MCLKint is a multiple of the
+ sample rate
+Date: Fri, 27 Jan 2023 16:51:06 +0000
+Message-ID: <20230127165111.3010960-4-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230127165111.3010960-1-sbinding@opensource.cirrus.com>
 References: <20230127165111.3010960-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: MWrLG6xNTkMsmJ1yAyy9tnEMFXowVR19
-X-Proofpoint-GUID: MWrLG6xNTkMsmJ1yAyy9tnEMFXowVR19
+X-Proofpoint-ORIG-GUID: WT5cJRf3oQYpJzdKUNOZ54pWNMlaiodu
+X-Proofpoint-GUID: WT5cJRf3oQYpJzdKUNOZ54pWNMlaiodu
 X-Proofpoint-Spam-Reason: safe
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -99,99 +100,73 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-Export functions that will be needed by a SoundWire module.
+The chosen clocking configuration must give an internal MCLK (MCLKint)
+that is an integer multiple of the sample rate.
+
+On I2S each of the supported bit clock frequencies can only be generated
+from one sample rate group (either the 44100 or the 48000) so the code
+could use only the bitclock to look up a PLL config.
+
+The relationship between sample rate and bitclock frequency is more
+complex on Soundwire and so it is possible to set a frame shape to
+generate a bitclock from the "wrong" group. For example 2*147 with a
+48000 sample rate would give a bitclock of 14112000 which on I2S
+could only be derived from a 44100 sample rate.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/cs42l42.c | 14 +++++++++-----
- sound/soc/codecs/cs42l42.h |  5 +++++
- 2 files changed, 14 insertions(+), 5 deletions(-)
+ sound/soc/codecs/cs42l42.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index d81c6eb1c1e59..cefefd7061689 100644
+index 82aa11d6937be..939f8bcc222c0 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -653,8 +653,8 @@ static const struct cs42l42_pll_params pll_ratio_table[] = {
+@@ -653,7 +653,8 @@ static const struct cs42l42_pll_params pll_ratio_table[] = {
  	{ 24576000, 1, 0x03, 0x40, 0x000000, 0x03, 0x10, 12288000, 128, 1}
  };
  
--static int cs42l42_pll_config(struct snd_soc_component *component, unsigned int clk,
--			      unsigned int sample_rate)
-+int cs42l42_pll_config(struct snd_soc_component *component, unsigned int clk,
-+		       unsigned int sample_rate)
+-static int cs42l42_pll_config(struct snd_soc_component *component, unsigned int clk)
++static int cs42l42_pll_config(struct snd_soc_component *component, unsigned int clk,
++			      unsigned int sample_rate)
  {
  	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
  	int i;
-@@ -740,8 +740,9 @@ static int cs42l42_pll_config(struct snd_soc_component *component, unsigned int
+@@ -668,6 +669,10 @@ static int cs42l42_pll_config(struct snd_soc_component *component, unsigned int
+ 	}
  
- 	return -EINVAL;
- }
-+EXPORT_SYMBOL_NS_GPL(cs42l42_pll_config, SND_SOC_CS42L42_CORE);
+ 	for (i = 0; i < ARRAY_SIZE(pll_ratio_table); i++) {
++		/* MCLKint must be a multiple of the sample rate */
++		if (pll_ratio_table[i].mclk_int % sample_rate)
++			continue;
++
+ 		if (pll_ratio_table[i].sclk == clk) {
+ 			cs42l42->pll_config = i;
  
--static void cs42l42_src_config(struct snd_soc_component *component, unsigned int sample_rate)
-+void cs42l42_src_config(struct snd_soc_component *component, unsigned int sample_rate)
- {
+@@ -893,6 +898,7 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
  	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
- 	unsigned int fs;
-@@ -773,6 +774,7 @@ static void cs42l42_src_config(struct snd_soc_component *component, unsigned int
- 				      CS42L42_CLK_OASRC_SEL_MASK,
- 				      fs << CS42L42_CLK_OASRC_SEL_SHIFT);
- }
-+EXPORT_SYMBOL_NS_GPL(cs42l42_src_config, SND_SOC_CS42L42_CORE);
+ 	unsigned int channels = params_channels(params);
+ 	unsigned int width = (params_width(params) / 8) - 1;
++	unsigned int sample_rate = params_rate(params);
+ 	unsigned int slot_width = 0;
+ 	unsigned int val = 0;
+ 	unsigned int bclk;
+@@ -956,11 +962,11 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 	}
  
- static int cs42l42_asp_config(struct snd_soc_component *component,
- 			      unsigned int sclk, unsigned int sample_rate)
-@@ -1013,7 +1015,7 @@ static int cs42l42_set_bclk_ratio(struct snd_soc_dai *dai,
+-	ret = cs42l42_pll_config(component, bclk);
++	ret = cs42l42_pll_config(component, bclk, sample_rate);
+ 	if (ret)
+ 		return ret;
+ 
+-	cs42l42_src_config(component, params_rate(params));
++	cs42l42_src_config(component, sample_rate);
+ 
  	return 0;
  }
- 
--static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
-+int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
-@@ -1106,6 +1108,7 @@ static int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_NS_GPL(cs42l42_mute_stream, SND_SOC_CS42L42_CORE);
- 
- #define CS42L42_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
- 			 SNDRV_PCM_FMTBIT_S24_LE |\
-@@ -1648,7 +1651,7 @@ static const struct cs42l42_irq_params irq_params_table[] = {
- 		CS42L42_TSRS_PLUG_VAL_MASK}
- };
- 
--static irqreturn_t cs42l42_irq_thread(int irq, void *data)
-+irqreturn_t cs42l42_irq_thread(int irq, void *data)
- {
- 	struct cs42l42_private *cs42l42 = (struct cs42l42_private *)data;
- 	unsigned int stickies[12];
-@@ -1765,6 +1768,7 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 
- 	return IRQ_HANDLED;
- }
-+EXPORT_SYMBOL_NS_GPL(cs42l42_irq_thread, SND_SOC_CS42L42_CORE);
- 
- static void cs42l42_set_interrupt_masks(struct cs42l42_private *cs42l42)
- {
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 17aab06adc8e6..ef8219f489100 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -61,6 +61,11 @@ extern struct snd_soc_dai_driver cs42l42_dai;
- bool cs42l42_readable_register(struct device *dev, unsigned int reg);
- bool cs42l42_volatile_register(struct device *dev, unsigned int reg);
- 
-+int cs42l42_pll_config(struct snd_soc_component *component,
-+		       unsigned int clk, unsigned int sample_rate);
-+void cs42l42_src_config(struct snd_soc_component *component, unsigned int sample_rate);
-+int cs42l42_mute_stream(struct snd_soc_dai *dai, int mute, int stream);
-+irqreturn_t cs42l42_irq_thread(int irq, void *data);
- int cs42l42_suspend(struct device *dev);
- int cs42l42_resume(struct device *dev);
- void cs42l42_resume_restore(struct device *dev);
 -- 
 2.34.1
 
