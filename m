@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F059C38142
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 12:02:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90025C54EAA
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 12:02:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED2E7DF1;
-	Fri, 27 Jan 2023 13:01:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED2E7DF1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 982D6ECE;
+	Fri, 27 Jan 2023 13:01:48 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 982D6ECE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674820947;
-	bh=SYxl5ORHfYu3n4ZTLyDzRfOA6FhujfLMgVg1CCrCmkI=;
+	s=default; t=1674820958;
+	bh=gIMwkMidUhA4Ii5fiqwjJHw3CbGLAGaZpvsrfz91oBE=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=Nk7bRVEZDtM253+Azr0LPFHQathR1FWykLU8RiGOlG10RaSQxV/imQQIgIRR+04Gd
-	 iZQRdX8Ui0zKLyAtNPjdBVAJI/bex6us5djvREol0gkyMKqZthGC4ta05c/79rxV06
-	 6nl6hgepF5xOGsb00LCCcxSlBHOZORtDbIi1FM5w=
+	b=cCiDyv1qOGZrz0fJnxEvA20R7onWGGGnnaXYEe8B9TCYexDd45YxmzwP17W2UUmhY
+	 7XNtN82fmwbm9da/3QfBl78P/UAokqQoG4TPHoC81Qb5I+FQnaZf1AvW/ooGH73eIu
+	 4oDP12lnB+pXebuREk3xGHVMg2vvG5INrlrLCVDU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8768FF804F3;
-	Fri, 27 Jan 2023 13:00:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7CA10F80557;
+	Fri, 27 Jan 2023 13:00:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 089D9F802E8; Fri, 27 Jan 2023 13:00:37 +0100 (CET)
+ id B1B55F80549; Fri, 27 Jan 2023 13:00:41 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F055F802E8
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 13:00:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F055F802E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2AD1F804F3
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 13:00:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2AD1F804F3
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=eokhHcSn
+ header.s=Intel header.b=jmWQgsub
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674820835; x=1706356835;
+ t=1674820838; x=1706356838;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=SYxl5ORHfYu3n4ZTLyDzRfOA6FhujfLMgVg1CCrCmkI=;
- b=eokhHcSnXi/bXRcEKTA4XgCeDUUtbVdCMD/xzGTZWZ4SUou1Lafei9UY
- 9ckY7+irrPjfkGkNK9Ht+VdJUeBY+YiaUdJTTFqOHcHL5uCTYUlMD7T4X
- oLEV9+wRQiVi/ft5mS5ashAliIiZ8xemkR65LTnHBE7FqSJ2pylEvlmOb
- wW9OJX5y8eiJy1Bv4P+MYbbaHKZFFS+jcw8BOL2qcNxgtHM3oDbIMeTiS
- sPT4Fl51VnDHs37y1RtJlIMWag8UsGDAcHbP1lMgP/gsuGXXYzHlzRO1u
- GAQft2gMYDYwtGJtTIO8Lbhn4Seor172Xy93Lvn0y+muBqjZEwCQkSKli Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="327091807"
-X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="327091807"
+ bh=gIMwkMidUhA4Ii5fiqwjJHw3CbGLAGaZpvsrfz91oBE=;
+ b=jmWQgsub8axtekOFMFueI0rW5nYbOuj48zVYnjLg1D7UxkI7cNRv3vNy
+ xIo1+4hTOKe+el68SILM+hM4UKGfXQwg/XcJOSlMfW8Rj/hFnZiTQTSxD
+ 4NB6AKN21XmxOwMa234dUpTIrJkrzwtATaybKwScDuo8cAP1Z3zAJTgCc
+ 0xGxyjoXAQFqkL3O5F3UvJHoWbbytD07hWcWfWosv9ZnaLvd6UnrmiqFG
+ j558wWk8MGCSxeN0CSkaQxwEiEoIs8FEMwu/FUYTgYGw2Ts8HI3yYoFvy
+ 1ZQ9XHrM99N7N9OmszliOSJqLcM2PRMDf8YxiS3zF+bRxxc8+pVev0vWb w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="327091819"
+X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="327091819"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2023 04:00:34 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="805782110"
-X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="805782110"
+ 27 Jan 2023 04:00:36 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="805782124"
+X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="805782124"
 Received: from aaralsto-mobl.amr.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.30.130])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2023 04:00:31 -0800
+ 27 Jan 2023 04:00:34 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 03/18] ASoC: SOF: sof-audio: Set up/free DAI/AIF widgets only
- once
-Date: Fri, 27 Jan 2023 14:00:16 +0200
-Message-Id: <20230127120031.10709-4-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 04/18] ASoC: SOF: sof-audio: Only process widgets in the
+ connected widget list
+Date: Fri, 27 Jan 2023 14:00:17 +0200
+Message-Id: <20230127120031.10709-5-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230127120031.10709-1-peter.ujfalusi@linux.intel.com>
 References: <20230127120031.10709-1-peter.ujfalusi@linux.intel.com>
@@ -91,11 +91,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Calling the sof_widget_setup/free() for the DAI/AIF widgets inside the
-snd_soc_dapm_widget_for_each_sink_path() loop will end up setting up or
-freeing the widget multiple times if there are multiple paths leaving
-the widget. Fix this by moving the widget setup/free for the starting
-widget in each path outside the loop.
+When walking the list of the widgets from the source to the sink, we
+accidentally also end up preparing/setting up the widgets that are not
+in the list of connected DAPM widgets associated with the PCM. Avoid
+this by checking if a widget is part of the connected DAPM widget list
+during widget prepare, unprepare, setup or free.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
@@ -103,84 +103,172 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/sof-audio.c | 48 +++++++++++++++------------------------
- 1 file changed, 18 insertions(+), 30 deletions(-)
+ sound/soc/sof/sof-audio.c | 51 +++++++++++++++++++++++++++------------
+ 1 file changed, 36 insertions(+), 15 deletions(-)
 
 diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index 2dff3ae25d27..572ac6a0c9ac 100644
+index 572ac6a0c9ac..b127b304298c 100644
 --- a/sound/soc/sof/sof-audio.c
 +++ b/sound/soc/sof/sof-audio.c
-@@ -358,19 +358,16 @@ static int sof_free_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dap
- 	int err;
- 	int ret = 0;
+@@ -241,24 +241,32 @@ static int sof_setup_pipeline_connections(struct snd_sof_dev *sdev,
+ 			if (!widget->dobj.private)
+ 				continue;
  
--	/* free all widgets even in case of error to keep use counts balanced */
-+	if (widget->dobj.private) {
-+		err = sof_widget_free(sdev, widget->dobj.private);
-+		if (err < 0)
-+			ret = err;
-+	}
+-			snd_soc_dapm_widget_for_each_sink_path(widget, p)
++			snd_soc_dapm_widget_for_each_sink_path(widget, p) {
++				if (!widget_in_list(list, p->sink))
++					continue;
 +
-+	/* free all widgets in the sink paths even in case of error to keep use counts balanced */
- 	snd_soc_dapm_widget_for_each_sink_path(widget, p) {
--		if (!p->walking && p->sink->dobj.private && widget->dobj.private) {
-+		if (!p->walking) {
- 			p->walking = true;
--			if (WIDGET_IS_AIF_OR_DAI(widget->id)) {
--				err = sof_widget_free(sdev, widget->dobj.private);
--				if (err < 0)
--					ret = err;
--			}
--
--			err = sof_widget_free(sdev, p->sink->dobj.private);
--			if (err < 0)
--				ret = err;
+ 				if (p->sink->dobj.private) {
+ 					ret = sof_route_setup(sdev, widget, p->sink);
+ 					if (ret < 0)
+ 						return ret;
+ 				}
++			}
+ 		}
+ 	} else {
+ 		for_each_dapm_widgets(list, i, widget) {
+ 			if (!widget->dobj.private)
+ 				continue;
  
- 			err = sof_free_widgets_in_path(sdev, p->sink, dir);
- 			if (err < 0)
-@@ -393,32 +390,23 @@ static int sof_set_up_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_d
- 	struct snd_soc_dapm_path *p;
- 	int ret;
- 
-+	if (widget->dobj.private) {
-+		ret = sof_widget_setup(sdev, widget->dobj.private);
-+		if (ret < 0)
-+			return ret;
-+	}
+-			snd_soc_dapm_widget_for_each_source_path(widget, p)
++			snd_soc_dapm_widget_for_each_source_path(widget, p) {
++				if (!widget_in_list(list, p->source))
++					continue;
 +
- 	snd_soc_dapm_widget_for_each_sink_path(widget, p) {
--		if (!p->walking && p->sink->dobj.private && widget->dobj.private) {
-+		if (!p->walking) {
- 			p->walking = true;
--			if (WIDGET_IS_AIF_OR_DAI(widget->id)) {
--				ret = sof_widget_setup(sdev, widget->dobj.private);
--				if (ret < 0)
--					goto out;
--			}
--
--			ret = sof_widget_setup(sdev, p->sink->dobj.private);
--			if (ret < 0) {
--				if (WIDGET_IS_AIF_OR_DAI(widget->id))
--					sof_widget_free(sdev, widget->dobj.private);
--				goto out;
--			}
- 
- 			ret = sof_set_up_widgets_in_path(sdev, p->sink, dir);
-+			p->walking = false;
- 			if (ret < 0) {
--				if (WIDGET_IS_AIF_OR_DAI(widget->id))
-+				if (widget->dobj.private)
- 					sof_widget_free(sdev, widget->dobj.private);
--				sof_widget_free(sdev, p->sink->dobj.private);
--			}
--out:
--			p->walking = false;
--			if (ret < 0)
- 				return ret;
+ 				if (p->source->dobj.private) {
+ 					ret = sof_route_setup(sdev, p->source, widget);
+ 					if (ret < 0)
+ 						return ret;
+ 				}
 +			}
  		}
  	}
  
+@@ -266,7 +274,8 @@ static int sof_setup_pipeline_connections(struct snd_sof_dev *sdev,
+ }
+ 
+ static void
+-sof_unprepare_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dapm_widget *widget)
++sof_unprepare_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dapm_widget *widget,
++			      struct snd_soc_dapm_widget_list *list)
+ {
+ 	const struct sof_ipc_tplg_ops *tplg_ops = sof_ipc_get_ops(sdev, tplg);
+ 	struct snd_sof_widget *swidget = widget->dobj.private;
+@@ -287,9 +296,11 @@ sof_unprepare_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dapm_widg
+ sink_unprepare:
+ 	/* unprepare all widgets in the sink paths */
+ 	snd_soc_dapm_widget_for_each_sink_path(widget, p) {
++		if (!widget_in_list(list, p->sink))
++			continue;
+ 		if (!p->walking && p->sink->dobj.private) {
+ 			p->walking = true;
+-			sof_unprepare_widgets_in_path(sdev, p->sink);
++			sof_unprepare_widgets_in_path(sdev, p->sink, list);
+ 			p->walking = false;
+ 		}
+ 	}
+@@ -299,7 +310,8 @@ static int
+ sof_prepare_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dapm_widget *widget,
+ 			    struct snd_pcm_hw_params *fe_params,
+ 			    struct snd_sof_platform_stream_params *platform_params,
+-			    struct snd_pcm_hw_params *pipeline_params, int dir)
++			    struct snd_pcm_hw_params *pipeline_params, int dir,
++			    struct snd_soc_dapm_widget_list *list)
+ {
+ 	const struct sof_ipc_tplg_ops *tplg_ops = sof_ipc_get_ops(sdev, tplg);
+ 	struct snd_sof_widget *swidget = widget->dobj.private;
+@@ -327,10 +339,13 @@ sof_prepare_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dapm_widget
+ sink_prepare:
+ 	/* prepare all widgets in the sink paths */
+ 	snd_soc_dapm_widget_for_each_sink_path(widget, p) {
++		if (!widget_in_list(list, p->sink))
++			continue;
+ 		if (!p->walking && p->sink->dobj.private) {
+ 			p->walking = true;
+ 			ret = sof_prepare_widgets_in_path(sdev, p->sink,  fe_params,
+-							  platform_params, pipeline_params, dir);
++							  platform_params, pipeline_params, dir,
++							  list);
+ 			p->walking = false;
+ 			if (ret < 0) {
+ 				/* unprepare the source widget */
+@@ -352,7 +367,7 @@ sof_prepare_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dapm_widget
+  * (DAI type for capture, AIF type for playback)
+  */
+ static int sof_free_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dapm_widget *widget,
+-				    int dir)
++				    int dir, struct snd_soc_dapm_widget_list *list)
+ {
+ 	struct snd_soc_dapm_path *p;
+ 	int err;
+@@ -367,9 +382,12 @@ static int sof_free_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dap
+ 	/* free all widgets in the sink paths even in case of error to keep use counts balanced */
+ 	snd_soc_dapm_widget_for_each_sink_path(widget, p) {
+ 		if (!p->walking) {
++			if (!widget_in_list(list, p->sink))
++				continue;
++
+ 			p->walking = true;
+ 
+-			err = sof_free_widgets_in_path(sdev, p->sink, dir);
++			err = sof_free_widgets_in_path(sdev, p->sink, dir, list);
+ 			if (err < 0)
+ 				ret = err;
+ 			p->walking = false;
+@@ -385,7 +403,7 @@ static int sof_free_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dap
+  * The error path in this function ensures that all successfully set up widgets getting freed.
+  */
+ static int sof_set_up_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dapm_widget *widget,
+-				      int dir)
++				      int dir, struct snd_soc_dapm_widget_list *list)
+ {
+ 	struct snd_soc_dapm_path *p;
+ 	int ret;
+@@ -398,9 +416,12 @@ static int sof_set_up_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_d
+ 
+ 	snd_soc_dapm_widget_for_each_sink_path(widget, p) {
+ 		if (!p->walking) {
++			if (!widget_in_list(list, p->sink))
++				continue;
++
+ 			p->walking = true;
+ 
+-			ret = sof_set_up_widgets_in_path(sdev, p->sink, dir);
++			ret = sof_set_up_widgets_in_path(sdev, p->sink, dir, list);
+ 			p->walking = false;
+ 			if (ret < 0) {
+ 				if (widget->dobj.private)
+@@ -435,11 +456,11 @@ sof_walk_widgets_in_order(struct snd_sof_dev *sdev, struct snd_soc_dapm_widget_l
+ 
+ 		switch (op) {
+ 		case SOF_WIDGET_SETUP:
+-			ret = sof_set_up_widgets_in_path(sdev, widget, dir);
++			ret = sof_set_up_widgets_in_path(sdev, widget, dir, list);
+ 			str = "set up";
+ 			break;
+ 		case SOF_WIDGET_FREE:
+-			ret = sof_free_widgets_in_path(sdev, widget, dir);
++			ret = sof_free_widgets_in_path(sdev, widget, dir, list);
+ 			str = "free";
+ 			break;
+ 		case SOF_WIDGET_PREPARE:
+@@ -455,12 +476,12 @@ sof_walk_widgets_in_order(struct snd_sof_dev *sdev, struct snd_soc_dapm_widget_l
+ 			 */
+ 			memcpy(&pipeline_params, fe_params, sizeof(*fe_params));
+ 
+-			ret = sof_prepare_widgets_in_path(sdev, widget, fe_params,
+-							  platform_params, &pipeline_params, dir);
++			ret = sof_prepare_widgets_in_path(sdev, widget, fe_params, platform_params,
++							  &pipeline_params, dir, list);
+ 			break;
+ 		}
+ 		case SOF_WIDGET_UNPREPARE:
+-			sof_unprepare_widgets_in_path(sdev, widget);
++			sof_unprepare_widgets_in_path(sdev, widget, list);
+ 			break;
+ 		default:
+ 			dev_err(sdev->dev, "Invalid widget op %d\n", op);
 -- 
 2.39.1
 
