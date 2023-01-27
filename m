@@ -4,67 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC5D2C38142
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 12:01:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2083BC38142
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 12:01:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 641C2829;
-	Fri, 27 Jan 2023 13:00:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 641C2829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29ACBE97;
+	Fri, 27 Jan 2023 13:01:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29ACBE97
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674820887;
-	bh=FXTSBC0gzf4aaWOnx8Ym+A4uT6Tq66uATumPGXTDNAY=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=pYdaLlqMwU2MqfQoWkQV9ekuqTfQKw7uCXmZSKOKgHh10kkUMaZF8FqFZFHODAwx1
-	 tiQqr2sspNIGETnqA7xWw7+wwOmfIUbKI8wKtYt2G8X4SjudFTRZ09d4+OdNlu5ArM
-	 RTUPoP8Lwz4javBm1f8oKC4cUL/YOcF44JWYQ21c=
+	s=default; t=1674820915;
+	bh=5yvFZt+LuISUfxj7udrcr3X4NtTxM9Mzz/F7j8/WCdE=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=XIdqXNGC+lmXusGOrpAP6GcYV1lAL0t9DCwW2GlSWsNWuunpTIy9os1z13BHrDENb
+	 WrzA5x0lVUF2J32BnNeS1VeQmmVLPZH1oa5/QLMm2KX+jewkYb7q8SXrsWu+ISjaJa
+	 OVAYvwZJNgW8laAV5klOD1GMnVQnEH3WJjy8i4Ek=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6400F80424;
-	Fri, 27 Jan 2023 13:00:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2997F804FC;
+	Fri, 27 Jan 2023 13:00:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88D0CF804C2; Fri, 27 Jan 2023 13:00:34 +0100 (CET)
+ id 4A739F80424; Fri, 27 Jan 2023 13:00:35 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF79CF80224
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 13:00:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF79CF80224
+ by alsa1.perex.cz (Postfix) with ESMTPS id F33AFF80424
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 13:00:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F33AFF80424
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=HoZ8hVle
+ header.s=Intel header.b=L1WDBqMq
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674820831; x=1706356831;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=FXTSBC0gzf4aaWOnx8Ym+A4uT6Tq66uATumPGXTDNAY=;
- b=HoZ8hVleEKfgTdltlBSjjxeBAmAJhxE11mLCFbVKWv9i8m7AsKctaX9l
- SMvUMgfHWGK4S+r2zqNspV9/CpGqyXiPF/5CXWqy8MiiRRQTvLXGAL42U
- RUqSR3HwbW0kDvMPuzT7YwMj8qS014eJ18QmgGE+Z3Fl3FX4GrqDLFI6z
- RAdQey/bQlG60IfYSCJHtGCFD3rHIVQNE4ph5DqHe6/+Q5ObIHVlcVqKz
- q2V0wHnSMms6vz9mCf98sR5NGBq24z+JxniQ+E8mNcAznaSNhVn39xZFH
- Y5UFFZ3wgpQqHwfYIyw4FsQ5Pg0Csnp0OaAiD1q9K/qHAxyMRKhqJHMwB A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="327091775"
-X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="327091775"
+ t=1674820833; x=1706356833;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=5yvFZt+LuISUfxj7udrcr3X4NtTxM9Mzz/F7j8/WCdE=;
+ b=L1WDBqMqTWwaoVFrhMLV/ZDfBFxLqI6TZTWBYipSTLkG36zQE4ea+u1b
+ M7BQkhxjfjN4bmH1EC3q4EjOmPSFFAExbgRueEeZCCws6+9pK3qbr0zwX
+ mlFAPhndG+z0q2vTD5prJM5HDhTZxqzwra60o22wV5LPHqLL1+kJyAn1k
+ dAGFWSVfX29Nd6mpdiuxEQt9xZz62AaKZnJxecFBnzYmFNAWLuxi7U3+Q
+ tesrklaOTSuTToSCrLmpcC2gEK9MysY4h5A6vKIVtMxeLRUilX/JZCAVh
+ DzYA8E1MPZD14GC2Spr+FEX3mcqnKiXBnNqdA35sS/QEIPlVtV3+lL/hK A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="327091796"
+X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="327091796"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2023 04:00:26 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="805782060"
-X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="805782060"
+ 27 Jan 2023 04:00:31 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="805782094"
+X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="805782094"
 Received: from aaralsto-mobl.amr.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.30.130])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2023 04:00:24 -0800
+ 27 Jan 2023 04:00:29 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: ﻿From 644473b181f0f310e428301a2ed459f912eec7ea Mon Sep 17 00:00:00 2001
-Date: Fri, 27 Jan 2023 14:00:13 +0200
-Message-Id: <20230127120031.10709-1-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 02/18] ASoC: soc-pcm: Export widget_in_list()
+Date: Fri, 27 Jan 2023 14:00:15 +0200
+Message-Id: <20230127120031.10709-3-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230127120031.10709-1-peter.ujfalusi@linux.intel.com>
+References: <20230127120031.10709-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -84,77 +88,54 @@ Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-The following series will enable multi-stream support for playback and capture
-streams.
-Currently only a single PCM can be connected to a DAI, with the multi-stream
-support it is possible to connect multiple PCMs to a single DAI.
+Export the widget_in_list() function to be used by other modules.
 
-To achieve this we need to make sure that DAIs/AIF are only set up once since
-other stream could be connected to it later.
-
-We also need to introduce reference or use counting for widgets to make sure
-that they are not going to be destroyed while other streams are still using
-them.
-
-With the multi-stream support we also need to extend our current locking scheme
-which worked well for simple paths.
-
-The first patch was sent to the mailing list, but it is not yet applied and I
-have included in this series as it is a direct dependency:
-https://lore.kernel.org/alsa-devel/20230117121615.25690-1-peter.ujfalusi@linux.intel.com/
-
-Regards,
-Peter
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
-Peter Ujfalusi (3):
-  ASoC: SOF: Avoid double decrementing use_count in sof_widget_setup on
-    error
-  ASoC: SOF: Protect swidget->use_count with mutex for kcontrol access
-    race
-  ASoC: SOF: ipc4-pcm: Do not run the trigger pipelines if no spipe is
-    stored
+ include/sound/soc-dpcm.h | 2 ++
+ sound/soc/soc-pcm.c      | 3 ++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-Ranjani Sridharan (15):
-  ASoC: SOF: ipc4-topology: No need to unbind routes within a pipeline
-  ASoC: soc-pcm: Export widget_in_list()
-  ASoC: SOF: sof-audio: Set up/free DAI/AIF widgets only once
-  ASoC: SOF: sof-audio: Only process widgets in the connected widget
-    list
-  ASoC: SOF: pcm: do not free widgets during suspend trigger
-  ASoC: SOF: topology: Set IPC-specific trigger order for DAI links
-  ASoC: SOF: Introduce PCM setup/free PCM IPC ops
-  ASoC: SOF: ipc4-pcm: Define pcm_setup/free ops
-  ASoC: SOF: ipc4: Add flag to skip triggering pipelines during FE DAI
-    trigger
-  ASoC: SOF: sof-audio: Populate the PCM stream pipeline_info
-  ASoC: SOF: ipc4-pcm: Use the PCM stream's pipeline_info during trigger
-  ASoC: SOF: Introduce struct snd_sof_pipeline
-  ASoC: SOF: ipc4-pcm: Rename 'data' variable to trigger_list
-  ASoC: SOF: ipc4-pcm: Implement pipeline trigger reference counting
-  ASoC: SOF: ipc4-topology: Protect pipeline free with mutex
-
- include/sound/soc-dpcm.h        |   2 +
- include/sound/sof/ipc4/header.h |   3 +
- sound/soc/soc-pcm.c             |   3 +-
- sound/soc/sof/core.c            |   1 +
- sound/soc/sof/intel/hda-dai.c   |  92 ++-------
- sound/soc/sof/ipc3-control.c    |  46 +++--
- sound/soc/sof/ipc3-topology.c   |  32 ++-
- sound/soc/sof/ipc4-control.c    |  33 ++-
- sound/soc/sof/ipc4-pcm.c        | 343 +++++++++++++++++++++++++-------
- sound/soc/sof/ipc4-priv.h       |   2 +
- sound/soc/sof/ipc4-topology.c   |  48 ++++-
- sound/soc/sof/ipc4-topology.h   |  12 ++
- sound/soc/sof/ipc4.c            |   2 +
- sound/soc/sof/pcm.c             |   5 +-
- sound/soc/sof/sof-audio.c       | 226 ++++++++++++++-------
- sound/soc/sof/sof-audio.h       |  54 ++++-
- sound/soc/sof/sof-priv.h        |   1 +
- sound/soc/sof/topology.c        | 114 +++++++----
- 18 files changed, 714 insertions(+), 305 deletions(-)
-
+diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
+index 2864aed72998..1e7d09556fe3 100644
+--- a/include/sound/soc-dpcm.h
++++ b/include/sound/soc-dpcm.h
+@@ -162,6 +162,8 @@ int dpcm_be_dai_prepare(struct snd_soc_pcm_runtime *fe, int stream);
+ int dpcm_dapm_stream_event(struct snd_soc_pcm_runtime *fe, int dir,
+ 	int event);
+ bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget, enum snd_soc_dapm_direction dir);
++int widget_in_list(struct snd_soc_dapm_widget_list *list,
++		   struct snd_soc_dapm_widget *widget);
+ 
+ #define dpcm_be_dai_startup_rollback(fe, stream, last)	\
+ 						dpcm_be_dai_stop(fe, stream, 0, last)
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 579a44d81d9a..f6caa55ef322 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1337,7 +1337,7 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
+ 	return NULL;
+ }
+ 
+-static int widget_in_list(struct snd_soc_dapm_widget_list *list,
++int widget_in_list(struct snd_soc_dapm_widget_list *list,
+ 		struct snd_soc_dapm_widget *widget)
+ {
+ 	struct snd_soc_dapm_widget *w;
+@@ -1349,6 +1349,7 @@ static int widget_in_list(struct snd_soc_dapm_widget_list *list,
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(widget_in_list);
+ 
+ bool dpcm_end_walk_at_be(struct snd_soc_dapm_widget *widget, enum snd_soc_dapm_direction dir)
+ {
 -- 
 2.39.1
 
