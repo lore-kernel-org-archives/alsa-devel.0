@@ -4,65 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7DBAC05027
-	for <alsa-devel@archiver.kernel.org>; Thu, 26 Jan 2023 23:56:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42299C61DA3
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 06:42:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CEA0FE71;
-	Fri, 27 Jan 2023 00:55:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CEA0FE71
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DEC0868;
+	Fri, 27 Jan 2023 07:41:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DEC0868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674777388;
-	bh=b4RDpwEILaDiIt/LpUYj6ICO+dPIjXDR8ok9CctcPps=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1674801721;
+	bh=MgXGhWg6sK1/D+peU3M6wEKjCe+ZIhwcytrxnsAjWSY=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=pXdJxLVKaCMXkQxSq3cSS7yZYfT9wIXfmkc12DeLOaxuAOhGbHZJ1JZVca6piczGV
-	 RGq8z/75LF9dK6Mrv7B/HivFYzPR8737gfyVjBGrekZATV44+WiAEbvi5BjJfof/5l
-	 Yp7gqP4ZiL1s/zgjAchF7+Y4umjBtvUm/u6re+Xs=
+	b=l5DdDt9u+HCSIW/dlrL/Uotg9UJmAT0X7B0zkQPw3PNpsrewrpR7GeqKrFfCUKfIc
+	 dFy5fUabE9tNR4tTSMXtJDtnRJUwecDsImjE35XcEQgMaY27Xlvh9RECkXLKYImDjZ
+	 UHDtTUbj+UVe0906Bw5ZJwozApT/peQHS0/QLZyw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72D26F8025D;
-	Fri, 27 Jan 2023 00:55:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88452F802E8;
+	Fri, 27 Jan 2023 07:41:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 265E7F8027D; Fri, 27 Jan 2023 00:55:37 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 7131EF80424; Fri, 27 Jan 2023 07:41:01 +0100 (CET)
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [IPv6:2607:7c80:54:3::133])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7021F800AE
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 00:55:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7021F800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13716F80224
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 07:40:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13716F80224
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=EjNRBD0x
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id B8989B80DF7;
- Thu, 26 Jan 2023 23:55:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5B99C433D2;
- Thu, 26 Jan 2023 23:55:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674777327;
- bh=b4RDpwEILaDiIt/LpUYj6ICO+dPIjXDR8ok9CctcPps=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=EjNRBD0x7DqI5RWqrQB53Z5Y0dhJERyDmr8qkJ5N0IoJEoVb5kEuCBlXqazqg6NTt
- 6R1V2ndj99lVu1sCQxKtDdEvjIFacZKGSz+Lhy8uRjmFYWsORmUCS1u6B8hKs7DvvJ
- j1FgWk9FgznH/mM6ARjb4iGeX/fRGcraMjEx28xzEE+9uopEpF5TN4NUx/rv882+aK
- 0qPw/IDwT4whMeGcK+EVs7cfVrMEUVyhvhE8ZLvKc3iXMSWP0zWUKUlOon9CyXo0NJ
- FLHAStWX96PnCHsfv4ZDYqqht1TBsrX82BA4jCSphv+pENkmWr6WVrpyCmT4VPx0nr
- kJTXOhmZm70/Q==
-Date: Thu, 26 Jan 2023 15:55:26 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Subject: Re: [PATCH] scripts/spelling.txt: add "exsits" pattern and fix typo
- instances
-Message-ID: <20230126155526.3247785a@kernel.org>
-In-Reply-To: <20230126152205.959277-1-luca.ceresoli@bootlin.com>
-References: <20230126152205.959277-1-luca.ceresoli@bootlin.com>
+ secure) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256
+ header.s=bombadil.20210309 header.b=zEpGUxm4
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+ :Reply-To:Content-Type:Content-ID:Content-Description;
+ bh=mH4Qi2qcMAmiKadOvXwS3HJsLvAWFbZOF0NHQSwuRKU=; b=zEpGUxm4rAs4i++xIIUDYdKJLm
+ 7brwKHX+V9iQl0/jYbJ/qzJQymFWBi46fEYRPYqzXrtd/t2F9Mv9pf+GaMZwUS5hFIBh6y8C/S/fQ
+ V0ntxM1i3vj3h7keonhwh5kFfV+gnIr3pTRtjN59BK+Tj64hewGx5Y4fO90kj8pwBUwNwIKl6LDo1
+ XPRLxkZQLPeRkgd3PrONhp/P4pKDvTedAoQQpWGYJUK3dakckMesTooK0oBDNGqCI+rZbXvYZXfQP
+ DpKlgsJe3pPX479wDTak5ExQSvwt2OWQm1S9M9f0acHMLyM0uoCvGcNh4k09mS2v5RuInpUAhTaVd
+ YHJHJZuQ==;
+Received: from [2601:1c2:d80:3110::9307] (helo=bombadil.infradead.org)
+ by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1pLIPO-00DM0u-BD; Fri, 27 Jan 2023 06:40:22 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 26/35] Documentation: sound: correct spelling
+Date: Thu, 26 Jan 2023 22:39:56 -0800
+Message-Id: <20230127064005.1558-27-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230127064005.1558-1-rdunlap@infradead.org>
+References: <20230127064005.1558-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,22 +72,133 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: dev@openvswitch.org, alsa-devel@alsa-project.org,
- Leon Romanovsky <leon@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Shengjiu Wang <shengjiu.wang@gmail.com>, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, Pravin B Shelar <pshelar@ovn.org>,
- Nicolin Chen <nicoleotsuka@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- Andrew Morton <akpm@linux-foundation.org>, Fabio Estevam <festevam@gmail.com>,
- Colin Ian King <colin.i.king@gmail.com>
+Cc: alsa-devel@alsa-project.org, Jonathan Corbet <corbet@lwn.net>,
+ Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 26 Jan 2023 16:22:05 +0100 Luca Ceresoli wrote:
-> Fix typos and add the following to the scripts/spelling.txt:
-> 
->   exsits||exists
-> 
-> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+Correct spelling problems for Documentation/sound/ as reported
+by codespell.
 
-You need to split this up per subsystem, I reckon :(
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+---
+ Documentation/sound/alsa-configuration.rst    |    8 ++++----
+ Documentation/sound/cards/audigy-mixer.rst    |    2 +-
+ Documentation/sound/cards/maya44.rst          |    2 +-
+ Documentation/sound/cards/sb-live-mixer.rst   |    2 +-
+ Documentation/sound/designs/jack-controls.rst |    2 +-
+ Documentation/sound/designs/seq-oss.rst       |    2 +-
+ Documentation/sound/hd-audio/notes.rst        |    2 +-
+ 7 files changed, 10 insertions(+), 10 deletions(-)
+
+diff -- a/Documentation/sound/cards/audigy-mixer.rst b/Documentation/sound/cards/audigy-mixer.rst
+--- a/Documentation/sound/cards/audigy-mixer.rst
++++ b/Documentation/sound/cards/audigy-mixer.rst
+@@ -17,7 +17,7 @@ Digital mixer controls
+ ======================
+ 
+ These controls are built using the DSP instructions. They offer extended
+-functionality. Only the default build-in code in the ALSA driver is described
++functionality. Only the default built-in code in the ALSA driver is described
+ here. Note that the controls work as attenuators: the maximum value is the 
+ neutral position leaving the signal unchanged. Note that if the  same destination 
+ is mentioned in multiple controls, the signal is accumulated and can be wrapped 
+diff -- a/Documentation/sound/cards/maya44.rst b/Documentation/sound/cards/maya44.rst
+--- a/Documentation/sound/cards/maya44.rst
++++ b/Documentation/sound/cards/maya44.rst
+@@ -156,7 +156,7 @@ IEC958 Output
+     S/PDIF should output the same signal as channel 3+4. [untested!]
+ 
+ 
+-Digitial output selectors
++Digital output selectors
+     These switches allow a direct digital routing from the ADCs to the DACs.
+     Each switch determines where the digital input data to one of the DACs comes from.
+     They are not supported by the ESI windows driver.
+diff -- a/Documentation/sound/designs/jack-controls.rst b/Documentation/sound/designs/jack-controls.rst
+--- a/Documentation/sound/designs/jack-controls.rst
++++ b/Documentation/sound/designs/jack-controls.rst
+@@ -8,7 +8,7 @@ Why we need Jack kcontrols
+ ALSA uses kcontrols to export audio controls(switch, volume, Mux, ...)
+ to user space. This means userspace applications like pulseaudio can
+ switch off headphones and switch on speakers when no headphones are
+-pluged in.
++plugged in.
+ 
+ The old ALSA jack code only created input devices for each registered
+ jack. These jack input devices are not readable by userspace devices
+diff -- a/Documentation/sound/designs/seq-oss.rst b/Documentation/sound/designs/seq-oss.rst
+--- a/Documentation/sound/designs/seq-oss.rst
++++ b/Documentation/sound/designs/seq-oss.rst
+@@ -96,7 +96,7 @@ if you use an AWE64 card, you'll see lik
+     Number of synth devices: 1
+     synth 0: [EMU8000]
+       type 0x1 : subtype 0x20 : voices 32
+-      capabilties : ioctl enabled / load_patch enabled
++      capabilities : ioctl enabled / load_patch enabled
+ 
+     Number of MIDI devices: 3
+     midi 0: [Emu8000 Port-0] ALSA port 65:0
+diff -- a/Documentation/sound/cards/sb-live-mixer.rst b/Documentation/sound/cards/sb-live-mixer.rst
+--- a/Documentation/sound/cards/sb-live-mixer.rst
++++ b/Documentation/sound/cards/sb-live-mixer.rst
+@@ -31,7 +31,7 @@ Digital mixer controls
+ ======================
+ 
+ These controls are built using the DSP instructions. They offer extended
+-functionality. Only the default build-in code in the ALSA driver is described
++functionality. Only the default built-in code in the ALSA driver is described
+ here. Note that the controls work as attenuators: the maximum value is the 
+ neutral position leaving the signal unchanged. Note that if the  same destination 
+ is mentioned in multiple controls, the signal is accumulated and can be wrapped 
+diff -- a/Documentation/sound/hd-audio/notes.rst b/Documentation/sound/hd-audio/notes.rst
+--- a/Documentation/sound/hd-audio/notes.rst
++++ b/Documentation/sound/hd-audio/notes.rst
+@@ -500,7 +500,7 @@ add_jack_modes (bool)
+     change the headphone amp and mic bias VREF capabilities
+ power_save_node (bool)
+     advanced power management for each widget, controlling the power
+-    sate (D0/D3) of each widget node depending on the actual pin and
++    state (D0/D3) of each widget node depending on the actual pin and
+     stream states
+ power_down_unused (bool)
+     power down the unused widgets, a subset of power_save_node, and
+diff -- a/Documentation/sound/alsa-configuration.rst b/Documentation/sound/alsa-configuration.rst
+--- a/Documentation/sound/alsa-configuration.rst
++++ b/Documentation/sound/alsa-configuration.rst
+@@ -70,7 +70,7 @@ dsp_map
+     PCM device number maps assigned to the 1st OSS device;
+     Default: 0
+ adsp_map
+-    PCM device number maps assigned to the 2st OSS device;
++    PCM device number maps assigned to the 2nd OSS device;
+     Default: 1
+ nonblock_open
+     Don't block opening busy PCM devices;
+@@ -97,7 +97,7 @@ midi_map
+     MIDI device number maps assigned to the 1st OSS device;
+     Default: 0
+ amidi_map
+-    MIDI device number maps assigned to the 2st OSS device;
++    MIDI device number maps assigned to the 2nd OSS device;
+     Default: 1
+ 
+ Module snd-soc-core
+@@ -727,9 +727,9 @@ Module for EMU10K1/EMU10k2 based PCI sou
+ * Sound Blaster Audigy
+ 	
+ extin
+-    bitmap of available external inputs for FX8010 (see bellow)
++    bitmap of available external inputs for FX8010 (see below)
+ extout
+-    bitmap of available external outputs for FX8010 (see bellow)
++    bitmap of available external outputs for FX8010 (see below)
+ seq_ports
+     allocated sequencer ports (4 by default)
+ max_synth_voices
