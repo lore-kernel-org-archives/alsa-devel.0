@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00B5CC636CB
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 12:05:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC9F3C54EAA
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 12:05:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77CE0EE5;
-	Fri, 27 Jan 2023 13:04:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77CE0EE5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82A09ED0;
+	Fri, 27 Jan 2023 13:04:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82A09ED0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674821119;
-	bh=YnmSLJaFnFtOzmsH3VkHh5gTAVhICMT69MYMah7BKLA=;
+	s=default; t=1674821136;
+	bh=/zQedUmqQ05hRyXZMI9pSi2x6aVDsMgYOBr4faBAQkg=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=q6GYBoSVVtNrHPLAEsTK+jPG2Rt3emYsfuv0bZ/ckAHUy3lTM1X33cwNWKc6oDrbC
-	 Xx2HmbjptathABJDRtsmreQ7LNeOOfofqvzNNGrUVdxBXrklRQQeVhIaV8Tqc0n6Kq
-	 Z+olIfweCIPcN8RzuV+7JYXzNw3wHs1lsETd6Ws0=
+	b=qH+5yFuPvDS8ZhjFYHVEBWiyQYBMaEXfPdsZcHXyhcPG76rMgBSWFq1p/MTh+wVio
+	 sjhS0BgMKVUy7tw3C6swGxSXyjCpAgoXQ55JfTDz4/10FRdMFyB1qQqkH4S68lqobv
+	 h3NeRG5ecPaQu6lm7gBPGmtHu37U1gCkYKimewsk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56F7CF805B6;
+	by alsa1.perex.cz (Postfix) with ESMTP id F2FCEF805BE;
 	Fri, 27 Jan 2023 13:01:22 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ADE43F8057A; Fri, 27 Jan 2023 13:01:09 +0100 (CET)
+ id DA93FF805B1; Fri, 27 Jan 2023 13:01:10 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03DCAF8057A
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 13:01:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03DCAF8057A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0365EF80154
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 13:01:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0365EF80154
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=W2xJjXmy
+ header.s=Intel header.b=G5HqE8Yv
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674820863; x=1706356863;
+ t=1674820869; x=1706356869;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=YnmSLJaFnFtOzmsH3VkHh5gTAVhICMT69MYMah7BKLA=;
- b=W2xJjXmyhM4X1ZQ6UPIq4ysaqyVQTn+ym3G97rLzk+5O4o+5R5bgd7zG
- o2XUwCj4Kqm6Wv/jUNXOyt+AZfzn97xecbUF9RiFzFtnNiRexpaDl0cPy
- oBN4sGzepql5saJtGCREblARF448WH9AhAAE8qyPj/lv+j1MH8Wgdpsn2
- YX9POsMA4l/fRz+isZKfj2pgoDtfIFp3pqD+vmTzQ7ZGusgiIFAeQ7GYY
- X1vHdlv5ejeyO0F7BDKFzr5rZmzm0qXnWuZi++3W5uYSiP2nApkfCzs4c
- VdZhnvDlTH7eiyRWtnGiopK09dhkB2faMGoBxID8DdbibsTt358nKTg39 w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="327091936"
-X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="327091936"
+ bh=/zQedUmqQ05hRyXZMI9pSi2x6aVDsMgYOBr4faBAQkg=;
+ b=G5HqE8YvMbUYD6u0jwmJKSP8DhBnPdUaDyJtI30bnL5Ls4tjPPrdFO/i
+ C0KNW6gycOyR4a0+EeKVaRWyWycoeEf33TNdnMhk3k0iwb/oQRkuVg+P9
+ LM83ICiNLVyKVyjFtA9EZpcKZpVsvVF7OKvzr5V7cEnAIcbomBo/ETqOU
+ kTBGCZkTJEfYqUXVg9zehiFFeOyx5cuDB/HGinFMJxRP6g+HXCKH7knR/
+ tkniulhS+9z9S6O4VE0Tf2Y654Qbpoec9QSZnPDTgKy2p+Cl8i9eJxE0v
+ 33bncYbd1atqbWZUOQwZOMuSGjHbVg5fa6RqdQDV9IBdpnJVbi9Td2aic Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="327091973"
+X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="327091973"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2023 04:01:01 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="805782295"
-X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="805782295"
+ 27 Jan 2023 04:01:06 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="805782343"
+X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="805782343"
 Received: from aaralsto-mobl.amr.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.30.130])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2023 04:00:59 -0800
+ 27 Jan 2023 04:01:04 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 14/18] ASoC: SOF: ipc4-pcm: Implement pipeline trigger
- reference counting
-Date: Fri, 27 Jan 2023 14:00:27 +0200
-Message-Id: <20230127120031.10709-15-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 16/18] ASoC: SOF: Avoid double decrementing use_count in
+ sof_widget_setup on error
+Date: Fri, 27 Jan 2023 14:00:29 +0200
+Message-Id: <20230127120031.10709-17-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230127120031.10709-1-peter.ujfalusi@linux.intel.com>
 References: <20230127120031.10709-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -89,364 +88,47 @@ Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+The sof_widget_free() on the error path will decrement the use count and if
+we jump to widget_free: then the use_count will be decremented by two,
+which is not correct as we only incremented once with 1.
 
-Use the started_count and paused_count to implement reference counting
-when making decisions to start/stop/pause pipelines during the FE DAI
-trigger. This is necessary to trigger the shared pipelines in the FE DAI
-trigger properly.
-
-With IPC4, the FE trigger will issue multiple pipeline state changes,
-and the triggers are propagated downstream to connected pipelines by
-the SOF driver - not the firmware. This creates a window for race
-conditions where an FE trigger preempts another one, which results
-in inconsistent pipeline states and refcounts.
-
-This patch introduces a mutex lock for the pcm trigger that guarantees
-that IPC4 state and resources are accessed in a serialized manner.
-
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/ipc4-pcm.c  | 228 +++++++++++++++++++++++++++++---------
- sound/soc/sof/ipc4-priv.h |   2 +
- sound/soc/sof/ipc4.c      |   2 +
- 3 files changed, 182 insertions(+), 50 deletions(-)
+ sound/soc/sof/sof-audio.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/ipc4-pcm.c b/sound/soc/sof/ipc4-pcm.c
-index 284e402709be..ababa29d6eac 100644
---- a/sound/soc/sof/ipc4-pcm.c
-+++ b/sound/soc/sof/ipc4-pcm.c
-@@ -59,19 +59,152 @@ int sof_ipc4_set_pipeline_state(struct snd_sof_dev *sdev, u32 id, u32 state)
- }
- EXPORT_SYMBOL(sof_ipc4_set_pipeline_state);
- 
-+static void
-+sof_ipc4_add_pipeline_to_trigger_list(struct snd_sof_dev *sdev, int state,
-+				      struct snd_sof_pipeline *spipe,
-+				      struct ipc4_pipeline_set_state_data *trigger_list)
-+{
-+	struct snd_sof_widget *pipe_widget = spipe->pipe_widget;
-+	struct sof_ipc4_pipeline *pipeline = pipe_widget->private;
-+
-+	if (pipeline->skip_during_fe_trigger)
-+		return;
-+
-+	switch (state) {
-+	case SOF_IPC4_PIPE_RUNNING:
-+		/*
-+		 * Trigger pipeline if all PCMs containing it are paused or if it is RUNNING
-+		 * for the first time
-+		 */
-+		if (spipe->started_count == spipe->paused_count)
-+			trigger_list->pipeline_ids[trigger_list->count++] =
-+				pipe_widget->instance_id;
-+		break;
-+	case SOF_IPC4_PIPE_RESET:
-+		/* RESET if the pipeline is neither running nor paused */
-+		if (!spipe->started_count && !spipe->paused_count)
-+			trigger_list->pipeline_ids[trigger_list->count++] =
-+				pipe_widget->instance_id;
-+		break;
-+	case SOF_IPC4_PIPE_PAUSED:
-+		/* Pause the pipeline only when its started_count is 1 more than paused_count */
-+		if (spipe->paused_count == (spipe->started_count - 1))
-+			trigger_list->pipeline_ids[trigger_list->count++] =
-+				pipe_widget->instance_id;
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
-+static void
-+sof_ipc4_update_pipeline_state(struct snd_sof_dev *sdev, int state, int cmd,
-+			       struct snd_sof_pipeline *spipe,
-+			       struct ipc4_pipeline_set_state_data *trigger_list)
-+{
-+	struct snd_sof_widget *pipe_widget = spipe->pipe_widget;
-+	struct sof_ipc4_pipeline *pipeline = pipe_widget->private;
-+	int i;
-+
-+	if (pipeline->skip_during_fe_trigger)
-+		return;
-+
-+	/* set state for pipeline if it was just triggered */
-+	for (i = 0; i < trigger_list->count; i++) {
-+		if (trigger_list->pipeline_ids[i] == pipe_widget->instance_id) {
-+			pipeline->state = state;
-+			break;
-+		}
-+	}
-+
-+	switch (state) {
-+	case SOF_IPC4_PIPE_PAUSED:
-+		switch (cmd) {
-+		case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+			/*
-+			 * increment paused_count if the PAUSED is the final state during
-+			 * the PAUSE trigger
-+			 */
-+			spipe->paused_count++;
-+			break;
-+		case SNDRV_PCM_TRIGGER_STOP:
-+		case SNDRV_PCM_TRIGGER_SUSPEND:
-+			/*
-+			 * decrement started_count if PAUSED is the final state during the
-+			 * STOP trigger
-+			 */
-+			spipe->started_count--;
-+			break;
-+		default:
-+			break;
-+		}
-+		break;
-+	case SOF_IPC4_PIPE_RUNNING:
-+		switch (cmd) {
-+		case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+			/* decrement paused_count for RELEASE */
-+			spipe->paused_count--;
-+			break;
-+		case SNDRV_PCM_TRIGGER_START:
-+		case SNDRV_PCM_TRIGGER_RESUME:
-+			/* increment started_count for START/RESUME */
-+			spipe->started_count++;
-+			break;
-+		default:
-+			break;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
-+/*
-+ * The picture below represents the pipeline state machine wrt PCM actions corresponding to the
-+ * triggers and ioctls
-+ *				+---------------+
-+ *				|               |
-+ *				|    INIT       |
-+ *				|               |
-+ *				+-------+-------+
-+ *					|
-+ *					|
-+ *					| START
-+ *					|
-+ *					|
-+ * +----------------+		   +------v-------+		  +-------------+
-+ * |                |   START     |              |   HW_FREE	  |             |
-+ * |   RUNNING      <-------------+  PAUSED      +--------------> +   RESET     |
-+ * |                |   PAUSE     |              |		  |             |
-+ * +------+---------+   RELEASE   +---------+----+		  +-------------+
-+ *	  |				     ^
-+ *	  |				     |
-+ *	  |				     |
-+ *	  |				     |
-+ *	  |		PAUSE		     |
-+ *	  +---------------------------------+
-+ *			STOP/SUSPEND
-+ *
-+ * Note that during system suspend, the suspend trigger is followed by a hw_free in
-+ * sof_pcm_trigger(). So, the final state during suspend would be RESET.
-+ * Also, since the SOF driver doesn't support full resume, streams would be restarted with the
-+ * prepare ioctl before the START trigger.
-+ */
-+
- static int sof_ipc4_trigger_pipelines(struct snd_soc_component *component,
--				      struct snd_pcm_substream *substream, int state)
-+				      struct snd_pcm_substream *substream, int state, int cmd)
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index 158f7b03fbc2..14b4b949d081 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -89,6 +89,7 @@ EXPORT_SYMBOL(sof_widget_free);
+ int sof_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
  {
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
- 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_sof_pcm_stream_pipeline_list *pipeline_list;
-+	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
- 	struct ipc4_pipeline_set_state_data *trigger_list;
--	struct snd_sof_widget *pipe_widget;
--	struct sof_ipc4_pipeline *pipeline;
- 	struct snd_sof_pipeline *spipe;
- 	struct snd_sof_pcm *spcm;
+ 	const struct sof_ipc_tplg_ops *tplg_ops = sof_ipc_get_ops(sdev, tplg);
++	bool use_count_decremented = false;
  	int ret;
--	int i, j;
-+	int i;
+ 
+ 	/* skip if there is no private data */
+@@ -160,13 +161,16 @@ int sof_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
+ widget_free:
+ 	/* widget use_count and core ref_count will both be decremented by sof_widget_free() */
+ 	sof_widget_free(sdev, swidget);
++	use_count_decremented = true;
+ core_put:
+ 	snd_sof_dsp_core_put(sdev, swidget->core);
+ pipe_widget_free:
+ 	if (swidget->id != snd_soc_dapm_scheduler)
+ 		sof_widget_free(sdev, swidget->spipe->pipe_widget);
+ use_count_dec:
+-	swidget->use_count--;
++	if (!use_count_decremented)
++		swidget->use_count--;
 +
-+	dev_dbg(sdev->dev, "trigger cmd: %d state: %d\n", cmd, state);
- 
- 	spcm = snd_sof_find_spcm_dai(component, rtd);
- 	if (!spcm)
-@@ -89,33 +222,41 @@ static int sof_ipc4_trigger_pipelines(struct snd_soc_component *component,
- 	if (!trigger_list)
- 		return -ENOMEM;
- 
-+	mutex_lock(&ipc4_data->trigger_mutex);
-+
- 	/*
- 	 * IPC4 requires pipelines to be triggered in order starting at the sink and
--	 * walking all the way to the source. So traverse the pipeline_list in the reverse order.
--	 * Skip the pipelines that have their skip_during_fe_trigger flag set or if they're already
--	 * in the requested state. If there is a fork in the pipeline, the order of triggering
--	 * between the left/right paths will be indeterministic. But the sink->source trigger order
--	 * sink->source would still be guaranteed for each fork independently.
-+	 * walking all the way to the source. So traverse the pipeline_list in the order
-+	 * sink->source when starting PCM's and in the reverse order to pause/stop PCM's.
-+	 * Skip the pipelines that have their skip_during_fe_trigger flag set. If there is a fork
-+	 * in the pipeline, the order of triggering between the left/right paths will be
-+	 * indeterministic. But the sink->source trigger order sink->source would still be
-+	 * guaranteed for each fork independently.
- 	 */
--	for (i = pipeline_list->count - 1; i >= 0; i--) {
--		spipe = pipeline_list->pipelines[i];
--		pipe_widget = spipe->pipe_widget;
--		pipeline = pipe_widget->private;
--		if (pipeline->state != state && !pipeline->skip_during_fe_trigger)
--			trigger_list->pipeline_ids[trigger_list->count++] =
--				pipe_widget->instance_id;
--	}
-+	if (state == SOF_IPC4_PIPE_RUNNING || state == SOF_IPC4_PIPE_RESET)
-+		for (i = pipeline_list->count - 1; i >= 0; i--) {
-+			spipe = pipeline_list->pipelines[i];
-+			sof_ipc4_add_pipeline_to_trigger_list(sdev, state, spipe, trigger_list);
-+		}
-+	else
-+		for (i = 0; i < pipeline_list->count; i++) {
-+			spipe = pipeline_list->pipelines[i];
-+			sof_ipc4_add_pipeline_to_trigger_list(sdev, state, spipe, trigger_list);
-+		}
- 
- 	/* return if all pipelines are in the requested state already */
- 	if (!trigger_list->count) {
--		kfree(trigger_list);
--		return 0;
-+		ret = 0;
-+		goto free;
- 	}
- 
-+	/* no need to pause before reset or before pause release */
-+	if (state == SOF_IPC4_PIPE_RESET || cmd == SNDRV_PCM_TRIGGER_PAUSE_RELEASE)
-+		goto skip_pause_transition;
-+
- 	/*
--	 * Pause all pipelines. This could result in an extra IPC to pause all pipelines even if
--	 * they are already paused. But it helps keep the logic simpler and the firmware handles
--	 * the repeated pause gracefully. This can be optimized in the future if needed.
-+	 * set paused state for pipelines if the final state is PAUSED or when the pipeline
-+	 * is set to RUNNING for the first time after the PCM is started.
- 	 */
- 	ret = sof_ipc4_set_multi_pipeline_state(sdev, SOF_IPC4_PIPE_PAUSED, trigger_list);
- 	if (ret < 0) {
-@@ -123,46 +264,32 @@ static int sof_ipc4_trigger_pipelines(struct snd_soc_component *component,
- 		goto free;
- 	}
- 
--	/* update PAUSED state for all pipelines that were just triggered */
--	for (i = 0; i < trigger_list->count; i++) {
--		for (j = 0; j < pipeline_list->count; j++) {
--			spipe = pipeline_list->pipelines[j];
--			pipe_widget = spipe->pipe_widget;
--			pipeline = pipe_widget->private;
--
--			if (trigger_list->pipeline_ids[i] == pipe_widget->instance_id) {
--				pipeline->state = SOF_IPC4_PIPE_PAUSED;
--				break;
--			}
--		}
-+	/* update PAUSED state for all pipelines just triggered */
-+	for (i = 0; i < pipeline_list->count ; i++) {
-+		spipe = pipeline_list->pipelines[i];
-+		sof_ipc4_update_pipeline_state(sdev, SOF_IPC4_PIPE_PAUSED, cmd, spipe,
-+					       trigger_list);
- 	}
- 
- 	/* return if this is the final state */
- 	if (state == SOF_IPC4_PIPE_PAUSED)
- 		goto free;
--
--	/* else set the final state in the DSP */
-+skip_pause_transition:
-+	/* else set the RUNNING/RESET state in the DSP */
- 	ret = sof_ipc4_set_multi_pipeline_state(sdev, state, trigger_list);
- 	if (ret < 0) {
- 		dev_err(sdev->dev, "failed to set final state %d for all pipelines\n", state);
- 		goto free;
- 	}
- 
--	/* update final state for all pipelines that were just triggered */
--	for (i = 0; i < trigger_list->count; i++) {
--		for (j = 0; j < pipeline_list->count; j++) {
--			spipe = pipeline_list->pipelines[j];
--			pipe_widget = spipe->pipe_widget;
--			pipeline = pipe_widget->private;
--
--			if (trigger_list->pipeline_ids[i] == pipe_widget->instance_id) {
--				pipeline->state = state;
--				break;
--			}
--		}
-+	/* update RUNNING/RESET state for all pipelines that were just triggered */
-+	for (i = 0; i < pipeline_list->count; i++) {
-+		spipe = pipeline_list->pipelines[i];
-+		sof_ipc4_update_pipeline_state(sdev, state, cmd, spipe, trigger_list);
- 	}
- 
- free:
-+	mutex_unlock(&ipc4_data->trigger_mutex);
- 	kfree(trigger_list);
  	return ret;
  }
-@@ -192,13 +319,14 @@ static int sof_ipc4_pcm_trigger(struct snd_soc_component *component,
- 	}
- 
- 	/* set the pipeline state */
--	return sof_ipc4_trigger_pipelines(component, substream, state);
-+	return sof_ipc4_trigger_pipelines(component, substream, state, cmd);
- }
- 
- static int sof_ipc4_pcm_hw_free(struct snd_soc_component *component,
- 				struct snd_pcm_substream *substream)
- {
--	return sof_ipc4_trigger_pipelines(component, substream, SOF_IPC4_PIPE_RESET);
-+	/* command is not relevant with RESET, so just pass 0 */
-+	return sof_ipc4_trigger_pipelines(component, substream, SOF_IPC4_PIPE_RESET, 0);
- }
- 
- static void ipc4_ssp_dai_config_pcm_params_match(struct snd_sof_dev *sdev, const char *link_name,
-diff --git a/sound/soc/sof/ipc4-priv.h b/sound/soc/sof/ipc4-priv.h
-index fc9efdce67e0..0c0d48376045 100644
---- a/sound/soc/sof/ipc4-priv.h
-+++ b/sound/soc/sof/ipc4-priv.h
-@@ -70,6 +70,7 @@ struct sof_ipc4_fw_library {
-  *		    base firmware
-  *
-  * @load_library: Callback function for platform dependent library loading
-+ * @trigger_mutex: Mutex to protect pipeline triggers, ref counts and states
-  */
- struct sof_ipc4_fw_data {
- 	u32 manifest_fw_hdr_offset;
-@@ -82,6 +83,7 @@ struct sof_ipc4_fw_data {
- 
- 	int (*load_library)(struct snd_sof_dev *sdev,
- 			    struct sof_ipc4_fw_library *fw_lib, bool reload);
-+	struct mutex trigger_mutex; /* protect pipeline triggers, ref counts and states */
- };
- 
- extern const struct sof_ipc_fw_loader_ops ipc4_loader_ops;
-diff --git a/sound/soc/sof/ipc4.c b/sound/soc/sof/ipc4.c
-index 74cd7e956019..fb4760ae593f 100644
---- a/sound/soc/sof/ipc4.c
-+++ b/sound/soc/sof/ipc4.c
-@@ -662,6 +662,8 @@ static int sof_ipc4_init(struct snd_sof_dev *sdev)
- {
- 	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
- 
-+	mutex_init(&ipc4_data->trigger_mutex);
-+
- 	xa_init_flags(&ipc4_data->fw_lib_xa, XA_FLAGS_ALLOC);
- 
- 	return 0;
+ EXPORT_SYMBOL(sof_widget_setup);
 -- 
 2.39.1
 
