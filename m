@@ -4,83 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0294DC54EAA
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 11:54:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC5D2C38142
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 12:01:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DDCFE8D;
-	Fri, 27 Jan 2023 12:53:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DDCFE8D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 641C2829;
+	Fri, 27 Jan 2023 13:00:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 641C2829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674820484;
-	bh=uDP5NJpU2YLH/pVtpSrh83TAI64Vbvu7vIRqdI0wC1U=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=dqF0V+KAwY5cWwCiANnxY/zQYP5DYR8fe14A0favBpkxYrykIpfpYUAs/vyo2tCUs
-	 sJWrRCVtFfO5rg5nDYXd3y4BlDsP62RdsB+0LhsivoaIqA1f0/MtWY9l6aODEjzREW
-	 IpI2uac6z82tSddixSxBt1YMG5lvofJs73M1qp+E=
+	s=default; t=1674820887;
+	bh=FXTSBC0gzf4aaWOnx8Ym+A4uT6Tq66uATumPGXTDNAY=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=pYdaLlqMwU2MqfQoWkQV9ekuqTfQKw7uCXmZSKOKgHh10kkUMaZF8FqFZFHODAwx1
+	 tiQqr2sspNIGETnqA7xWw7+wwOmfIUbKI8wKtYt2G8X4SjudFTRZ09d4+OdNlu5ArM
+	 RTUPoP8Lwz4javBm1f8oKC4cUL/YOcF44JWYQ21c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75E25F80580;
-	Fri, 27 Jan 2023 12:51:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6400F80424;
+	Fri, 27 Jan 2023 13:00:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35600F80578; Thu, 26 Jan 2023 17:25:25 +0100 (CET)
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com
- [IPv6:2607:f8b0:4864:20::112e])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 88D0CF804C2; Fri, 27 Jan 2023 13:00:34 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7906F8055A
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 17:25:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7906F8055A
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF79CF80224
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 13:00:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF79CF80224
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
- header.s=20210112 header.b=BrNExWGH
-Received: by mail-yw1-x112e.google.com with SMTP id
- 00721157ae682-501c3a414acso30085797b3.7
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2023 08:25:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=rUFKXit/Slxp5jNkRtm2qJfbudUdkwg/5ym9L9/2xFg=;
- b=BrNExWGHbV1NeR+vu2Js5zAqwDKTAmFhHgoWjYZ0a3qbH7rru8W3QViuclznskZkVo
- 6Q5eqrGX7jMOOdvE9K9lsVmJpHX9roidNQoqd4ah6qpZ3z5AR/LzfumpWsF7qxr+L/L7
- 2EeJAw9MATGkA5VBf2UwOc7KCg21F0CUspP8pGqPmL78PHbmYrJgHGcDXuiJf+tpyEq5
- mYd3qiJmdB/mmqbT25mkgF6e/9yHOLIF4ZmJU2qiUjSg09+a1L9BOQF70sP/z/t1hEtG
- N3QguNCw23qX8RL/9XVLJb/vAzwIwx19tcG6Myly1SJ+d6fdbBsCbrW+Wp9iSE9SLjFe
- r7Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=rUFKXit/Slxp5jNkRtm2qJfbudUdkwg/5ym9L9/2xFg=;
- b=TCZ3NxUueeLaIYJCuxNZLEo1i4uUO/86rzh+WN8wHAMl8wiTG05YcSqb2ncV7sZgE+
- ATLI+L/y+ePAgSuDHm/XHax3ukWsIv98J0+sFCVdeHweNArxWMFSbjlyF0Ip2cEsF098
- Wdw0yrwvbsnFKoX3sgvKy0B0gIOeZ94oeRFw2F4zIDKTtHk8X3DW3Qxmcb1bA74bC3cg
- SUxpFjQfyjSA3tFQ4e97LDFRkI9zQLJB+8Jw7o6CbsHn1hNH8Vw1+UND8GlfiOwFxO8o
- nynR+nDdnwXlazAUOLIxpZRv8j/IEIam0+/9DhSd4OQ1UY2FHfIOTwGCk8wY3hSycuBf
- KHkw==
-X-Gm-Message-State: AFqh2kqhN4k7LHUbFc5QD632mI4vA0WcM1cUxymqxIe9v913Eso76iug
- CZCELX61QbJ2nXlpMJyMmojndhivsd1kyTvUT8/Y3A==
-X-Google-Smtp-Source: AMrXdXvRVLeaIi85wIrJBS5zRkOyr5/BQ66PCe0y1aLe9hmWIu7jqHBlhyy2SYPoXbE9x4WotKo1j1aRHLVU6Hd1LsI=
-X-Received: by 2002:a81:1b8b:0:b0:4ff:774b:7ffb with SMTP id
- b133-20020a811b8b000000b004ff774b7ffbmr3541685ywb.218.1674750315051; Thu, 26
- Jan 2023 08:25:15 -0800 (PST)
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=HoZ8hVle
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1674820831; x=1706356831;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=FXTSBC0gzf4aaWOnx8Ym+A4uT6Tq66uATumPGXTDNAY=;
+ b=HoZ8hVleEKfgTdltlBSjjxeBAmAJhxE11mLCFbVKWv9i8m7AsKctaX9l
+ SMvUMgfHWGK4S+r2zqNspV9/CpGqyXiPF/5CXWqy8MiiRRQTvLXGAL42U
+ RUqSR3HwbW0kDvMPuzT7YwMj8qS014eJ18QmgGE+Z3Fl3FX4GrqDLFI6z
+ RAdQey/bQlG60IfYSCJHtGCFD3rHIVQNE4ph5DqHe6/+Q5ObIHVlcVqKz
+ q2V0wHnSMms6vz9mCf98sR5NGBq24z+JxniQ+E8mNcAznaSNhVn39xZFH
+ Y5UFFZ3wgpQqHwfYIyw4FsQ5Pg0Csnp0OaAiD1q9K/qHAxyMRKhqJHMwB A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="327091775"
+X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="327091775"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jan 2023 04:00:26 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="805782060"
+X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="805782060"
+Received: from aaralsto-mobl.amr.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.252.30.130])
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jan 2023 04:00:24 -0800
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org
+Subject: ﻿From 644473b181f0f310e428301a2ed459f912eec7ea Mon Sep 17 00:00:00 2001
+Date: Fri, 27 Jan 2023 14:00:13 +0200
+Message-Id: <20230127120031.10709-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-References: <20230125083851.27759-1-surenb@google.com>
- <20230125083851.27759-2-surenb@google.com>
- <Y9JFFYjfJf9uDijE@kernel.org> <Y9KTUw/04FmBVplw@kernel.org>
- <Y9KXjLaFFUvqqdd4@casper.infradead.org>
-In-Reply-To: <Y9KXjLaFFUvqqdd4@casper.infradead.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 26 Jan 2023 08:25:03 -0800
-Message-ID: <CAJuCfpHs4wvQpitiAYc+PQX3LnitF=wvm=zVX7CzMozzmnbcnw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
-To: Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailman-Approved-At: Fri, 27 Jan 2023 12:51:03 +0100
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -93,96 +78,83 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: michel@lespinasse.org, nvdimm@lists.linux.dev, heiko@sntech.de,
- leewalsh@google.com, dri-devel@lists.freedesktop.org, jglisse@google.com,
- arjunroy@google.com, m.szyprowski@samsung.com, linux-arch@vger.kernel.org,
- qianweili@huawei.com, linux-samsung-soc@vger.kernel.org,
- aneesh.kumar@linux.ibm.com, chenhuacai@kernel.org, kasan-dev@googlegroups.com,
- linux-acpi@vger.kernel.org, rientjes@google.com,
- xen-devel@lists.xenproject.org, devel@lists.orangefs.org, robdclark@gmail.com,
- minchan@google.com, robert.jarzmik@free.fr, linux-um@lists.infradead.org,
- etnaviv@lists.freedesktop.org, npiggin@gmail.com, alex.williamson@redhat.com,
- viro@zeniv.linux.org.uk, luto@kernel.org, gthelen@google.com,
- tglx@linutronix.de, ldufour@linux.ibm.com, linux-sgx@vger.kernel.org,
- martin.petersen@oracle.com, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
- linux-crypto@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- akpm@linux-foundation.org, linux-media@vger.kernel.org,
- freedreno@lists.freedesktop.org, joelaf@google.com, linux-aio@kvack.org,
- linux-fbdev@vger.kernel.org, linux-ia64@vger.kernel.org, david@redhat.com,
- dave.hansen@linux.intel.com, virtualization@lists.linux-foundation.org,
- edumazet@google.com, target-devel@vger.kernel.org, punit.agrawal@bytedance.com,
- linux-s390@vger.kernel.org, dave@stgolabs.net, deller@gmx.de, hughd@google.com,
- andrii@kernel.org, patrik.r.jakobsson@gmail.com,
- linux-stm32@st-md-mailman.stormreply.com, linux-rockchip@lists.infradead.org,
- linux-graphics-maintainer@vmware.com, kernel-team@android.com,
- jayalk@intworks.biz, soheil@google.com, selinux@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, mripard@kernel.org, shakeelb@google.com,
- haojian.zhuang@gmail.com, loongarch@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, tytso@mit.edu, nico@fluxnic.net,
- muchun.song@linux.dev, hjc@rock-chips.com, mcoquelin.stm32@gmail.com,
- tatashin@google.com, mike.kravetz@oracle.com, songliubraving@fb.com,
- jasowang@redhat.com, alsa-devel@alsa-project.org, peterx@redhat.com,
- linux-tegra@vger.kernel.org, kraxel@redhat.com, will@kernel.org,
- dmaengine@vger.kernel.org, bhe@redhat.com, miklos@szeredi.hu,
- linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
- amd-gfx@lists.freedesktop.org, gurua@google.com, dgilbert@interlog.com,
- xiang@kernel.org, pabeni@redhat.com, jejb@linux.ibm.com,
- quic_abhinavk@quicinc.com, bp@alien8.de, mchehab@kernel.org,
- linux-ext4@vger.kernel.org, tomba@kernel.org, hughlynch@google.com,
- sre@kernel.org, tfiga@chromium.org, linux-xfs@vger.kernel.org,
- zhangfei.gao@linaro.org, wangzhou1@hisilicon.com, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-erofs@lists.ozlabs.org, davem@davemloft.net,
- Mike Rapoport <rppt@kernel.org>, mhocko@suse.com, kvm@vger.kernel.org,
- mst@redhat.com, peterz@infradead.org, bigeasy@linutronix.de,
- alexandre.torgue@foss.st.com, dhowells@redhat.com, linux-mm@kvack.org,
- ray.huang@amd.com, adilger.kernel@dilger.ca, kuba@kernel.org,
- sparclinux@vger.kernel.org, airlied@gmail.com, anton.ivanov@cambridgegreys.com,
- herbert@gondor.apana.org.au, linux-scsi@vger.kernel.org, richard@nod.at,
- x86@kernel.org, vkoul@kernel.org, mingo@redhat.com, axelrasmussen@google.com,
- intel-gfx@lists.freedesktop.org, daniel@ffwll.ch, paulmck@kernel.org,
- jannh@google.com, chao@kernel.org, maarten.lankhorst@linux.intel.com,
- liam.howlett@oracle.com, hdegoede@redhat.com,
- linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com, vbabka@suse.cz,
- dimitri.sivanich@hpe.com, posk@google.com, lstoakes@gmail.com,
- peterjung1337@gmail.com, yoshfuji@linux-ipv6.org,
- linuxppc-dev@lists.ozlabs.org, dsahern@kernel.org, kent.overstreet@linux.dev,
- kexec@lists.infradead.org, tiwai@suse.com, krzysztof.kozlowski@linaro.org,
- tzimmermann@suse.de, hannes@cmpxchg.org, dmitry.baryshkov@linaro.org,
- johannes@sipsolutions.net, mgorman@techsingularity.net,
- linux-accelerators@lists.ozlabs.org, l.stach@pengutronix.de
+Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, rander.wang@intel.com,
+ ranjani.sridharan@linux.intel.com, yung-chuan.liao@linux.intel.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jan 26, 2023 at 7:09 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Thu, Jan 26, 2023 at 04:50:59PM +0200, Mike Rapoport wrote:
-> > On Thu, Jan 26, 2023 at 11:17:09AM +0200, Mike Rapoport wrote:
-> > > On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
-> > > > +/* Use when VMA is not part of the VMA tree and needs no locking */
-> > > > +static inline void init_vm_flags(struct vm_area_struct *vma,
-> > > > +                          unsigned long flags)
-> > >
-> > > I'd suggest to make it vm_flags_init() etc.
-> >
-> > Thinking more about it, it will be even clearer to name these vma_flags_xyz()
->
-> Perhaps vma_VERB_flags()?
->
-> vma_init_flags()
-> vma_reset_flags()
-> vma_set_flags()
-> vma_clear_flags()
-> vma_mod_flags()
+Hi,
 
-Due to excessive email bouncing I posted the v3 of this patchset using
-the original per-VMA patchset's distribution list. That might have
-dropped Mike from the list. Sorry about that Mike, I'll add you to my
-usual list of suspects :)
-The v3 is here:
-https://lore.kernel.org/all/20230125233554.153109-1-surenb@google.com/
-and Andrew did suggest the same renames, so I'll be posting v4 with
-those changes later today.
-Thanks for the feedback!
+The following series will enable multi-stream support for playback and capture
+streams.
+Currently only a single PCM can be connected to a DAI, with the multi-stream
+support it is possible to connect multiple PCMs to a single DAI.
 
->
+To achieve this we need to make sure that DAIs/AIF are only set up once since
+other stream could be connected to it later.
+
+We also need to introduce reference or use counting for widgets to make sure
+that they are not going to be destroyed while other streams are still using
+them.
+
+With the multi-stream support we also need to extend our current locking scheme
+which worked well for simple paths.
+
+The first patch was sent to the mailing list, but it is not yet applied and I
+have included in this series as it is a direct dependency:
+https://lore.kernel.org/alsa-devel/20230117121615.25690-1-peter.ujfalusi@linux.intel.com/
+
+Regards,
+Peter
+---
+Peter Ujfalusi (3):
+  ASoC: SOF: Avoid double decrementing use_count in sof_widget_setup on
+    error
+  ASoC: SOF: Protect swidget->use_count with mutex for kcontrol access
+    race
+  ASoC: SOF: ipc4-pcm: Do not run the trigger pipelines if no spipe is
+    stored
+
+Ranjani Sridharan (15):
+  ASoC: SOF: ipc4-topology: No need to unbind routes within a pipeline
+  ASoC: soc-pcm: Export widget_in_list()
+  ASoC: SOF: sof-audio: Set up/free DAI/AIF widgets only once
+  ASoC: SOF: sof-audio: Only process widgets in the connected widget
+    list
+  ASoC: SOF: pcm: do not free widgets during suspend trigger
+  ASoC: SOF: topology: Set IPC-specific trigger order for DAI links
+  ASoC: SOF: Introduce PCM setup/free PCM IPC ops
+  ASoC: SOF: ipc4-pcm: Define pcm_setup/free ops
+  ASoC: SOF: ipc4: Add flag to skip triggering pipelines during FE DAI
+    trigger
+  ASoC: SOF: sof-audio: Populate the PCM stream pipeline_info
+  ASoC: SOF: ipc4-pcm: Use the PCM stream's pipeline_info during trigger
+  ASoC: SOF: Introduce struct snd_sof_pipeline
+  ASoC: SOF: ipc4-pcm: Rename 'data' variable to trigger_list
+  ASoC: SOF: ipc4-pcm: Implement pipeline trigger reference counting
+  ASoC: SOF: ipc4-topology: Protect pipeline free with mutex
+
+ include/sound/soc-dpcm.h        |   2 +
+ include/sound/sof/ipc4/header.h |   3 +
+ sound/soc/soc-pcm.c             |   3 +-
+ sound/soc/sof/core.c            |   1 +
+ sound/soc/sof/intel/hda-dai.c   |  92 ++-------
+ sound/soc/sof/ipc3-control.c    |  46 +++--
+ sound/soc/sof/ipc3-topology.c   |  32 ++-
+ sound/soc/sof/ipc4-control.c    |  33 ++-
+ sound/soc/sof/ipc4-pcm.c        | 343 +++++++++++++++++++++++++-------
+ sound/soc/sof/ipc4-priv.h       |   2 +
+ sound/soc/sof/ipc4-topology.c   |  48 ++++-
+ sound/soc/sof/ipc4-topology.h   |  12 ++
+ sound/soc/sof/ipc4.c            |   2 +
+ sound/soc/sof/pcm.c             |   5 +-
+ sound/soc/sof/sof-audio.c       | 226 ++++++++++++++-------
+ sound/soc/sof/sof-audio.h       |  54 ++++-
+ sound/soc/sof/sof-priv.h        |   1 +
+ sound/soc/sof/topology.c        | 114 +++++++----
+ 18 files changed, 714 insertions(+), 305 deletions(-)
+
+-- 
+2.39.1
+
