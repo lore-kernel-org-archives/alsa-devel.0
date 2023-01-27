@@ -4,65 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0558CC05027
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Jan 2023 07:10:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11D79C05027
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Jan 2023 08:24:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8AA3C823;
-	Sun, 29 Jan 2023 08:10:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AA3C823
+	by alsa0.perex.cz (Postfix) with ESMTPS id A1BEC86F;
+	Sun, 29 Jan 2023 09:23:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1BEC86F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674976250;
-	bh=5QzWA80JnAMHP8PX2TMVNUHFE4JYQUNbxY2QalPX/4w=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1674980643;
+	bh=fNmgdZUN2/2Uu/E39EHKHM8jOiAEPnx0mWMZL8FZ7OI=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=l6OvDmoqSIvE48dzpDSJ+YndqmCraNZIgi46QAPkzSdaJM4C/IONgguYOw+4mgblg
-	 ZA9B+4B1svOcG96oMwNe2itWfTPMf/nXx8oVpE1phJSPQIeR44F+B1w81X/lX/rjmK
-	 pYd0NASW96OykddNdkrldNemfiEPj43SH66Zs9oY=
+	b=d1956W7+27Yce70B/8+HiIcfl/8oO+S/QxycSdJofjYSzpYtznFAIqLoulhA0DLrc
+	 zRj2ULGznGcSQixEq5xBdJ1l90fezYy5vHx9xailpI1SIrNW5TrYKKIsfx+KDkwwR7
+	 AtqaEJdMZBGFuz31UWYOTV0p8xFAHnJcJx39J0hk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17C17F8007C;
-	Sun, 29 Jan 2023 08:10:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34108F80494;
+	Sun, 29 Jan 2023 09:23:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07B57F804B2; Sun, 29 Jan 2023 08:09:57 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 04899F80431; Fri, 27 Jan 2023 17:49:21 +0100 (CET)
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
+ [IPv6:2a00:1450:4864:20::329])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 46B91F8007C
- for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2023 08:09:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46B91F8007C
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=rhzlM/PX
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id A38B0B80949;
- Sun, 29 Jan 2023 07:09:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCCEDC433D2;
- Sun, 29 Jan 2023 07:09:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1674976189;
- bh=5QzWA80JnAMHP8PX2TMVNUHFE4JYQUNbxY2QalPX/4w=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=rhzlM/PXVF3UGJ8Gzuu6E/mwYY6fuDkK7gh6hj+7cnJUYwy65c8kVUrOxYUdB0R4/
- jEQuUO6poSKB7P3QP3myRBJEg0gNKAUCmXILtzf5TOnl0yWPBWQPVlO/sZc4XuQxmF
- RngB74fzeURIwYGOagNvLrAuw+DDA5Ht9VXJ85Wo=
-Date: Sun, 29 Jan 2023 08:09:46 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Zhou Furong <furong.zhou@linux.intel.com>
-Subject: Re: [RFC PATCH v2 07/22] ASoC: Add SOC USB APIs for adding an USB
- backend
-Message-ID: <Y9YbumlV9qh+k68h@kroah.com>
-References: <20230126031424.14582-1-quic_wcheng@quicinc.com>
- <20230126031424.14582-8-quic_wcheng@quicinc.com>
- <Y9UiiMbJFjkzyEol@kroah.com>
- <7c1d80b6-5db3-9955-0a67-908455bd77fa@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BD956F801F7
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 17:49:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD956F801F7
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=p0bN2yAu
+Received: by mail-wm1-x329.google.com with SMTP id
+ q10-20020a1cf30a000000b003db0edfdb74so5746031wmq.1
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 08:49:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=MwxIin163802ACvSCq0jg4HlDZfjOU+b7ag/1i6mXEE=;
+ b=p0bN2yAu28MNGvTlRbQWr0+f8dRrN7+Tn627u0K/x42EmNDLphayIf9NlMev0wqj8h
+ /EmzHfmLQqKOVu8ZgIciDK/fUJr6PvWPKCTqRsZtsPxIDrQvOH3aJeQUvnun7rNkTSUQ
+ 6/KZMhpjpBCdTsrlPk0Pq1AqbefuhemfseqENDs+CCppSNm6HT2vKHwFAalheOqTayxm
+ dtjoNuM92e8Dp5V+KrvfMQYfpqoVE/fUi7G9DPER5YIOirUmedqSV5KeWbBKvr23C7Je
+ C0hL4yNzr1apQ8T4Xaqa5bA4xfUJep3aF5qWXf5H1dWiQl4NI8yI1oLJqFFQ+XguiBLe
+ Z84Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=MwxIin163802ACvSCq0jg4HlDZfjOU+b7ag/1i6mXEE=;
+ b=mfe5jUOeu1wtvhvHy7PYllX4LgPOXwhr5GU2NqqSDdeJDIMfk9CVrX2jKgxrFpcBJA
+ dz3Dd575/ZSriHFE9Ak7ao1Z9AlJmlGGOEFbhMGwnGK1yQt9CNVjB9Qy9iUVGP7HgUFq
+ KOlaiVHqYop/fFdJ2S//ZCgwKZslwamHebQsbtayp4l9l5tdWy1VM71MMQk1ALYmMRX9
+ SuTlYVbdR5o+Xt+MuIwXFWrVdVAOmehgzWYrQkiYEUjHDkqU1E6MTpzWXLKSl7PVFrxE
+ NjyUqiUMK2c4VOKVMZm9tSR14MKi/u+PZjjdoAuNNxBEvg+eY+LQU8J0Bi3C/FHT3DsC
+ eooA==
+X-Gm-Message-State: AO0yUKXFgFmDfSt3hAovSmN6IYMxVO3hUquHXjth8zwmkvLiznGTBX7F
+ SbIvHClfDOIwKg8EhkSNZxZ+sQ==
+X-Google-Smtp-Source: AK7set91BwRn6DZssbXKyvbz30nnUQMYADbkS+Drm/RA9jZHFwp9Oe0M3rmb1c4Tgb8gUCp8+I209g==
+X-Received: by 2002:a05:600c:3151:b0:3dc:443e:420e with SMTP id
+ h17-20020a05600c315100b003dc443e420emr40585wmo.2.1674838156833; 
+ Fri, 27 Jan 2023 08:49:16 -0800 (PST)
+Received: from [192.168.1.109] ([178.197.216.144])
+ by smtp.gmail.com with ESMTPSA id
+ p24-20020a05600c1d9800b003dafadd2f77sm8990779wms.1.2023.01.27.08.49.14
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 27 Jan 2023 08:49:16 -0800 (PST)
+Message-ID: <1e498b93-d3bd-bd12-e991-e3f4bedf632d@linaro.org>
+Date: Fri, 27 Jan 2023 17:49:13 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7c1d80b6-5db3-9955-0a67-908455bd77fa@linux.intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v3 1/6] dt-bindings: Document common device controller
+ bindings
+Content-Language: en-US
+To: Gatien Chevallier <gatien.chevallier@foss.st.com>,
+ Oleksii_Moisieiev@epam.com, gregkh@linuxfoundation.org,
+ herbert@gondor.apana.org.au, davem@davemloft.net, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, alexandre.torgue@foss.st.com,
+ vkoul@kernel.org, jic23@kernel.org, olivier.moysan@foss.st.com,
+ arnaud.pouliquen@foss.st.com, mchehab@kernel.org,
+ fabrice.gasnier@foss.st.com, ulf.hansson@linaro.org, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com
+References: <20230127164040.1047583-1-gatien.chevallier@foss.st.com>
+ <20230127164040.1047583-2-gatien.chevallier@foss.st.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230127164040.1047583-2-gatien.chevallier@foss.st.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailman-Approved-At: Sun, 29 Jan 2023 09:23:11 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,34 +110,35 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-usb@vger.kernel.org, bgoswami@quicinc.com, mathias.nyman@intel.com,
- Thinh.Nguyen@synopsys.com, andersson@kernel.org, tiwai@suse.com,
- lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, agross@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org,
- quic_plai@quicinc.com, Wesley Cheng <quic_wcheng@quicinc.com>,
- linux-kernel@vger.kernel.org, quic_jackp@quicinc.com
+ linux-iio@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-phy@lists.infradead.org,
+ linux-crypto@vger.kernel.org, linux-serial@vger.kernel.org,
+ dmaengine@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org,
+ linux-i2c@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, Jan 29, 2023 at 02:54:43PM +0800, Zhou Furong wrote:
+On 27/01/2023 17:40, Gatien Chevallier wrote:
+> From: Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
 > 
+> Introducing of the common device controller bindings for the controller
+> provider and consumer devices. Those bindings are intended to allow
+> divided system on chip into muliple domains, that can be used to
+> configure hardware permissions.
 > 
-> > > +void *snd_soc_usb_get_priv_data(struct device *usbdev)
-> > > +{
-> > > +	struct snd_soc_usb *ctx;
-> > > +
-> > > +	if (!usbdev)
-> > > +		return NULL;
-> > 
-> > How could usbdev ever be NULL?
-> The method is exported to public, valid check should be reasonable
-> as someone may call it by mistake
+> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+> ---
+> 
+> No change since V1. I'm letting this patch for dependency with bindings to
+> avoid noise with dt/bindings checks. Therefore, it should be reviewed on the
+> appropriate thread.
 
-We do not protect the kernel from itself like this, no need to check
-things that should never happen.  If the caller gets it wrong, their
-code will break :)
+There was a v6 already, this is v3 and I don't understand this comment.
+What do you let? Whom? If it is not for review and not for merging,
+please annotate it in the title ([IGNORE PATCH] or something).
 
-thanks,
+Best regards,
+Krzysztof
 
-greg k-h
