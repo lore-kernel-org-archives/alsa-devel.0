@@ -4,92 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BB84C38142
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 14:05:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48782C61DA3
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 14:19:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A799593A;
-	Fri, 27 Jan 2023 15:04:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A799593A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D88293A;
+	Fri, 27 Jan 2023 15:18:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D88293A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674828308;
-	bh=flV0ZFcXLzLLJXPeiD5J/9i1lme43Ue7agYHh5A/oFY=;
-	h=Date:To:From:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hh/ABcSB4yloqFFk22BfiKUbs5jsU5oJJ0AZDeK2ikED6bxZFGotIuLoayAiZf67f
-	 F1+1EUTrNX79zlBv1FfdWjs3wfpY/jHRThNfKdosP2cvaHURvu6wYjpYgJfN8VCK2D
-	 dXM2j7yFUeVmgqmDZUIQnT5M7wleaM93vvEW2YIk=
+	s=default; t=1674829144;
+	bh=H5yG2Ip8mH/6PiVE8w45zw8501pyRAqnMW39NYephOc=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=NcEY45PPSFk0iNnmLZZStHGhzeeo9RqNTvsDSLXgeWxNMidhkc0F8BeEj1KvqEL9w
+	 Bqmd5exOlSGa02tmrOL2zkS8a4pILsQhyETxM21H7gU48hWK8IpeZPBK9sdkLLH6pk
+	 Ud+I/+qPm6l7qtSJOgPv4AYUweygo2PLgQPqb6Dw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4D8DFF802E8;
-	Fri, 27 Jan 2023 15:04:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A7C1F802E8;
+	Fri, 27 Jan 2023 15:18:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C90DAF80224; Fri, 27 Jan 2023 15:04:16 +0100 (CET)
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
+ id F19AEF80424; Fri, 27 Jan 2023 15:18:11 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 26FA0F80224
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 15:04:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26FA0F80224
+ by alsa1.perex.cz (Postfix) with ESMTPS id 650B5F80154
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 15:18:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 650B5F80154
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=ad69Aurf
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
- by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 30RDbju5027613; Fri, 27 Jan 2023 14:04:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
- h=content-type :
- message-id : date : mime-version : to : from : subject; s=qcppdkim1;
- bh=SX3vNXpbmr7FlLbzr4GL851ZyNaygbNF6+mwKnuAv6w=;
- b=ad69AurfyKoU2yejoGEwDulovSualwAgs5y6zlTdQJIbhGzSUvVchN3V04Vs4nb32xPm
- 5YzFPRz22pScsPnyiDW2hdpOKNyeuqM5DzCqvjLfJGQSupqttZB6xQUYfVGgUi3Kql6y
- 9nR/91zMsbCQts0OZlewHTvd4fzQ80NwtXNvlX7/I8rG6/vR5/KD1+sIxUydJQOaL3fY
- OsJNmzu5CCjfxp4YRcwIxj7sxO9FxIbcV2504LUxU/d4+hQs+IOlG5pa9N+/4+mF5cIu
- v/k8VKTQ7WA5zcSPNxINRRGIautbKwhZrVQ/EwqRoG3HzyU3WGW8j6hzABXFUJyTPyZY rA== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com
- [199.106.103.254])
- by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3nbyma1grk-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 27 Jan 2023 14:04:05 +0000
-Received: from nasanex01a.na.qualcomm.com ([10.52.223.231])
- by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 30RE44XQ011628
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 27 Jan 2023 14:04:04 GMT
-Received: from [10.216.48.131] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.36; Fri, 27 Jan
- 2023 06:04:02 -0800
-Message-ID: <271019c5-cfba-fa77-12e0-df97034f25b3@quicinc.com>
-Date: Fri, 27 Jan 2023 19:33:29 +0530
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=f58sIoIZ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1674829087; x=1706365087;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=H5yG2Ip8mH/6PiVE8w45zw8501pyRAqnMW39NYephOc=;
+ b=f58sIoIZJiGB+2m1CoLZLaHzbNXcHBUtnJgK2cAiRQ8t2feTEcTnnMrr
+ zxj+CcjS9L/pqH3JYbJrkP3PksYe1sBcs1TF4hx8Gh5W29Z0Rv4JSz4Gy
+ enalu9IXPOHaZQTbPu1SC/dMW0J203ZMCWbie+CzdaE3TV/lm1d64CudM
+ 0T1CBzXdcYsuqx/vXXQXzax0/tqEH2OnC5zENBT97Ee+YCiWsbDU/QJG2
+ TdHnY6C8F2/MITFSqsuCmxZXuXH4JV66UKZmegdvYXmToDStMfI4fnX2u
+ l35LxTyLrWJhYEA+N1Be5pVSCjuw4Y6WXizP8Z8qePAR+SMeSDUqc2ldR A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="315045555"
+X-IronPort-AV: E=Sophos;i="5.97,251,1669104000"; d="scan'208";a="315045555"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jan 2023 06:18:03 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="695546185"
+X-IronPort-AV: E=Sophos;i="5.97,251,1669104000"; d="scan'208";a="695546185"
+Received: from vmodi-mobl2.amr.corp.intel.com (HELO [10.212.9.128])
+ ([10.212.9.128])
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jan 2023 06:18:03 -0800
+Message-ID: <9f7b76db-c788-cd2a-f873-f8a3382f368c@linux.intel.com>
+Date: Fri, 27 Jan 2023 07:38:13 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.4.2
+Subject: Re: [PATCH 11/11] ASoC: topology: Unify kcontrol removal code
 Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi
- Iwai <tiwai@suse.com>, <alsa-devel@alsa-project.org>
-From: Raghu Ballappa Bankapur <quic_rbankapu@quicinc.com>
-Subject: Query on get_time_info
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
- signatures=585085
-X-Proofpoint-ORIG-GUID: D5cRVyugT9EF2IoGuJMhRM9z-o8e4O7P
-X-Proofpoint-GUID: D5cRVyugT9EF2IoGuJMhRM9z-o8e4O7P
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-01-27_08,2023-01-27_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501
- malwarescore=0 mlxscore=0 bulkscore=0 spamscore=0 clxscore=1011
- impostorscore=0 lowpriorityscore=0 phishscore=0 suspectscore=0
- mlxlogscore=681 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2212070000 definitions=main-2301270132
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>, Mark Brown <broonie@kernel.org>
+References: <20230125194649.3485731-1-amadeuszx.slawinski@linux.intel.com>
+ <20230125194649.3485731-12-amadeuszx.slawinski@linux.intel.com>
+ <40207a2a-3f2a-bbef-74f6-9e85ced3150a@linux.intel.com>
+ <5f7e9b31-ad1f-0948-5673-0732d73a185e@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <5f7e9b31-ad1f-0948-5673-0732d73a185e@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,39 +87,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-HI All,
 
 
-We see get_time_info is not enabled from ALSA core. ay reason behind?
+On 1/27/23 05:12, Amadeusz Sławiński wrote:
+> On 1/25/2023 4:15 PM, Pierre-Louis Bossart wrote:
+>>
+>>
+>> On 1/25/23 13:46, Amadeusz Sławiński wrote:
+>>> Functions removing bytes, enum and mixer kcontrols are identical. Unify
+>>
+>> they are identical because of the change in patch10.
+>>
+>> Please clarify that this is not a cleanup removing duplicated code
+>> that's been there forever, it's become useless as a result of the
+>> previous patch.
+>>
+> 
+> There is no dependency on previous patch - it is just order I've send
+> them in - those functions have same implementation in current code.
 
-we enabled like below with some more code, we are able to get_time_info 
-to lower driver.
+Not following, sorry. What is this addition in patch 10?
 
-static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
-                 struct snd_soc_pcm_runtime *be, int stream)
-@@ -2907,6 +2927,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, 
-int num)
-                 rtd->ops.hw_free        = dpcm_fe_dai_hw_free;
-                 rtd->ops.close          = dpcm_fe_dai_close;
-                 rtd->ops.pointer        = soc_pcm_pointer;
-+               rtd->ops.get_time_info  = soc_pcm_get_time_info;
-         } else {
-                 rtd->ops.open           = soc_pcm_open;
-                 rtd->ops.hw_params      = soc_pcm_hw_params;
-@@ -2915,6 +2936,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, 
-int num)
-                 rtd->ops.hw_free        = soc_pcm_hw_free;
-                 rtd->ops.close          = soc_pcm_close;
-                 rtd->ops.pointer        = soc_pcm_pointer;
-+               rtd->ops.get_time_info  = soc_pcm_get_time_info;
-         }
+diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
+index b4b896f83b94..f055c6917f6c 100644
+--- a/include/sound/soc-topology.h
++++ b/include/sound/soc-topology.h
+@@ -62,7 +62,7 @@ struct snd_soc_dobj {
+ 	enum snd_soc_dobj_type type;
+ 	unsigned int index;	/* objects can belong in different groups */
+ 	struct list_head list;
+-	struct snd_soc_tplg_ops *ops;
++	int (*unload)(struct snd_soc_component *comp, struct snd_soc_dobj *dobj);
 
-Is this ALSA limitation or any other approach is followed to enable this 
-implementation.
-
-Thanks
-
-Raghu Bankapur
+That's not in 'current code', is it? How is this not a dependency?
