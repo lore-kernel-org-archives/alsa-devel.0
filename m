@@ -4,75 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48782C61DA3
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 14:19:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 725BBC38142
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 14:38:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D88293A;
-	Fri, 27 Jan 2023 15:18:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D88293A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66465868;
+	Fri, 27 Jan 2023 15:37:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66465868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674829144;
-	bh=H5yG2Ip8mH/6PiVE8w45zw8501pyRAqnMW39NYephOc=;
+	s=default; t=1674830295;
+	bh=vqTACG1Ldua3JvUd5Z0C9mplt8TXJI0+A+b8ihdnsZE=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=NcEY45PPSFk0iNnmLZZStHGhzeeo9RqNTvsDSLXgeWxNMidhkc0F8BeEj1KvqEL9w
-	 Bqmd5exOlSGa02tmrOL2zkS8a4pILsQhyETxM21H7gU48hWK8IpeZPBK9sdkLLH6pk
-	 Ud+I/+qPm6l7qtSJOgPv4AYUweygo2PLgQPqb6Dw=
+	b=bfDPbvH17mp78QwcT+/eejdYDKQND1QidU1RKUQU1u5bjStsF42R0k25iVTSzXN2A
+	 a+3SO2clHQWYWP7211/9gY1GlhYahl0Pe4y2XKiEfUXLE4MM1uAcGt1LwPX6cusJEw
+	 PLdNvmGGCD63OzIp67ha/CWMTQ39iIZf611Jcjtk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A7C1F802E8;
-	Fri, 27 Jan 2023 15:18:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 073F5F802E8;
+	Fri, 27 Jan 2023 15:37:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F19AEF80424; Fri, 27 Jan 2023 15:18:11 +0100 (CET)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id 1BEC4F80424; Fri, 27 Jan 2023 15:37:23 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 650B5F80154
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 15:18:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 650B5F80154
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0CBA1F80224
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 15:37:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CBA1F80224
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=f58sIoIZ
+ header.s=Intel header.b=ZBChKsoX
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674829087; x=1706365087;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=H5yG2Ip8mH/6PiVE8w45zw8501pyRAqnMW39NYephOc=;
- b=f58sIoIZJiGB+2m1CoLZLaHzbNXcHBUtnJgK2cAiRQ8t2feTEcTnnMrr
- zxj+CcjS9L/pqH3JYbJrkP3PksYe1sBcs1TF4hx8Gh5W29Z0Rv4JSz4Gy
- enalu9IXPOHaZQTbPu1SC/dMW0J203ZMCWbie+CzdaE3TV/lm1d64CudM
- 0T1CBzXdcYsuqx/vXXQXzax0/tqEH2OnC5zENBT97Ee+YCiWsbDU/QJG2
- TdHnY6C8F2/MITFSqsuCmxZXuXH4JV66UKZmegdvYXmToDStMfI4fnX2u
- l35LxTyLrWJhYEA+N1Be5pVSCjuw4Y6WXizP8Z8qePAR+SMeSDUqc2ldR A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="315045555"
-X-IronPort-AV: E=Sophos;i="5.97,251,1669104000"; d="scan'208";a="315045555"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2023 06:18:03 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="695546185"
-X-IronPort-AV: E=Sophos;i="5.97,251,1669104000"; d="scan'208";a="695546185"
+ t=1674830235; x=1706366235;
+ h=message-id:date:mime-version:subject:to:references:from:
+ cc:in-reply-to:content-transfer-encoding;
+ bh=vqTACG1Ldua3JvUd5Z0C9mplt8TXJI0+A+b8ihdnsZE=;
+ b=ZBChKsoXyH21DsmrQw2zn4lJb3uBtXDHngjnl1lyhTc2/q1DlAPNbFcl
+ HfvQzPP1Nj749rPuJ9STvfAL2SJ07OydFHjbO2Nj4GwiOuheu9MKxjC9l
+ RdFfQ54Y92d92TKBPqw2MrlHMUCAUPhuAAwf1+PnuZ+pqoP6k3B3jhRUM
+ j0z2IMzaJnudfexhI8bx5nntd1wl4S8y4iqm8/TwX8dRC0+YGV9APJOHZ
+ oJU7n9yDwkRNbEv0G+TL3tD4KI6CXx65XiXbHd5557muWgKCMPt1fzc9p
+ INnt4iZ9GiSnmEmhggHA114eIbHQSyyhTcObgfRKKH8f9OxWAuJ9gtSYO A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10603"; a="328383009"
+X-IronPort-AV: E=Sophos;i="5.97,251,1669104000"; d="scan'208";a="328383009"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jan 2023 06:36:57 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10603"; a="656624839"
+X-IronPort-AV: E=Sophos;i="5.97,251,1669104000"; d="scan'208";a="656624839"
 Received: from vmodi-mobl2.amr.corp.intel.com (HELO [10.212.9.128])
  ([10.212.9.128])
- by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2023 06:18:03 -0800
-Message-ID: <9f7b76db-c788-cd2a-f873-f8a3382f368c@linux.intel.com>
-Date: Fri, 27 Jan 2023 07:38:13 -0600
+ by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jan 2023 06:36:56 -0800
+Message-ID: <923c4ca3-bf79-bd34-279a-54c817dbf413@linux.intel.com>
+Date: Fri, 27 Jan 2023 08:36:55 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH 11/11] ASoC: topology: Unify kcontrol removal code
+Subject: Re: Query on get_time_info
 Content-Language: en-US
-To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, Mark Brown <broonie@kernel.org>
-References: <20230125194649.3485731-1-amadeuszx.slawinski@linux.intel.com>
- <20230125194649.3485731-12-amadeuszx.slawinski@linux.intel.com>
- <40207a2a-3f2a-bbef-74f6-9e85ced3150a@linux.intel.com>
- <5f7e9b31-ad1f-0948-5673-0732d73a185e@linux.intel.com>
+To: Raghu Ballappa Bankapur <quic_rbankapu@quicinc.com>,
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+References: <271019c5-cfba-fa77-12e0-df97034f25b3@quicinc.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <5f7e9b31-ad1f-0948-5673-0732d73a185e@linux.intel.com>
+In-Reply-To: <271019c5-cfba-fa77-12e0-df97034f25b3@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -87,41 +85,51 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org
+Cc: Rander Wang <rander.wang@linux.intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 1/27/23 05:12, Amadeusz Sławiński wrote:
-> On 1/25/2023 4:15 PM, Pierre-Louis Bossart wrote:
->>
->>
->> On 1/25/23 13:46, Amadeusz Sławiński wrote:
->>> Functions removing bytes, enum and mixer kcontrols are identical. Unify
->>
->> they are identical because of the change in patch10.
->>
->> Please clarify that this is not a cleanup removing duplicated code
->> that's been there forever, it's become useless as a result of the
->> previous patch.
->>
+On 1/27/23 08:03, Raghu Ballappa Bankapur wrote:
+> HI All,
 > 
-> There is no dependency on previous patch - it is just order I've send
-> them in - those functions have same implementation in current code.
+> 
+> We see get_time_info is not enabled from ALSA core. ay reason behind?
 
-Not following, sorry. What is this addition in patch 10?
+I think you meant ASoC core?
 
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index b4b896f83b94..f055c6917f6c 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -62,7 +62,7 @@ struct snd_soc_dobj {
- 	enum snd_soc_dobj_type type;
- 	unsigned int index;	/* objects can belong in different groups */
- 	struct list_head list;
--	struct snd_soc_tplg_ops *ops;
-+	int (*unload)(struct snd_soc_component *comp, struct snd_soc_dobj *dobj);
+> we enabled like below with some more code, we are able to get_time_info
+> to lower driver.
+> 
+> static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
+>                 struct snd_soc_pcm_runtime *be, int stream)
+> @@ -2907,6 +2927,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd,
+> int num)
+>                 rtd->ops.hw_free        = dpcm_fe_dai_hw_free;
+>                 rtd->ops.close          = dpcm_fe_dai_close;
+>                 rtd->ops.pointer        = soc_pcm_pointer;
+> +               rtd->ops.get_time_info  = soc_pcm_get_time_info;
+>         } else {
+>                 rtd->ops.open           = soc_pcm_open;
+>                 rtd->ops.hw_params      = soc_pcm_hw_params;
+> @@ -2915,6 +2936,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd,
+> int num)
+>                 rtd->ops.hw_free        = soc_pcm_hw_free;
+>                 rtd->ops.close          = soc_pcm_close;
+>                 rtd->ops.pointer        = soc_pcm_pointer;
+> +               rtd->ops.get_time_info  = soc_pcm_get_time_info;
+>         }
+> 
+> Is this ALSA limitation or any other approach is followed to enable this
+> implementation.
 
-That's not in 'current code', is it? How is this not a dependency?
+No, it's a miss.
+
+I had a patch to fix this in
+https://github.com/thesofproject/linux/pull/3792, but somehow it never
+made its path upstream. I don't fully recall the details, only vaguely
+that we first added support for the .delay(), but the get_time_info part
+was tested back in August 2022.
+
+Would that patch work for you?
