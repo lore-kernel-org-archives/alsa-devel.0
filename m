@@ -4,71 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65F1AC38142
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 12:02:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F059C38142
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 12:02:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14AA7EBB;
-	Fri, 27 Jan 2023 13:01:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14AA7EBB
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED2E7DF1;
+	Fri, 27 Jan 2023 13:01:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED2E7DF1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674820939;
-	bh=ErXZt99budl/AwAVcBjT9ltQP+XTzjusuCPQ2fqpFNE=;
+	s=default; t=1674820947;
+	bh=SYxl5ORHfYu3n4ZTLyDzRfOA6FhujfLMgVg1CCrCmkI=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=B6uDy10cTwPizeO5Hxfurntz7q4QR6ctIhRZdQ9v23QqzxI/odBpMiFy2tCkzPEmC
-	 fFNPjOYIetQ5L7wDXZQxvi728JEAMIVswy7AaMtB17DhVPyryur/JOX9cBqsk94QBf
-	 JrAIJ/dwwC1Cs4xDbjJy12JlFBcK140N0+Oj7VdQ=
+	b=Nk7bRVEZDtM253+Azr0LPFHQathR1FWykLU8RiGOlG10RaSQxV/imQQIgIRR+04Gd
+	 iZQRdX8Ui0zKLyAtNPjdBVAJI/bex6us5djvREol0gkyMKqZthGC4ta05c/79rxV06
+	 6nl6hgepF5xOGsb00LCCcxSlBHOZORtDbIi1FM5w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 711A9F8053D;
-	Fri, 27 Jan 2023 13:00:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8768FF804F3;
+	Fri, 27 Jan 2023 13:00:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 401A9F804A9; Fri, 27 Jan 2023 13:00:36 +0100 (CET)
+ id 089D9F802E8; Fri, 27 Jan 2023 13:00:37 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B2DDFF80154
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 13:00:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2DDFF80154
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7F055F802E8
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 13:00:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F055F802E8
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=DjATl/ZV
+ header.s=Intel header.b=eokhHcSn
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674820832; x=1706356832;
+ t=1674820835; x=1706356835;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=ErXZt99budl/AwAVcBjT9ltQP+XTzjusuCPQ2fqpFNE=;
- b=DjATl/ZV4qVBgEhiNXvn9ksD8xTwP+qfVXkTh9LvdbttLSjWK+B+uGm9
- kFYF5aVoUNiRBKLhmQaR+klQtFsEWt0yQeiatTraN1lQEmIzim/+uPDIC
- 5UeuIRIZSb/cin2n/AO4l7Mf9jAa2v/WHR/8MNg8r4FZwu4/KpQ3SRXdp
- q0EScNdhQjnAW6cxOA3+9XhsTiywt/IboT/wtqtzqDAKseQzF9BpUjCFJ
- B3SSZuQ2v/EpHnouJxvpS0LK7f4YAiSTROT1o6ABatfFO6HHUTguT/dOb
- 4ZfXVvtMqM8oWC3uNa5FLQwMRGV0KaX7tkqp0mvF1uedrb4fO/Ggri49A Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="327091783"
-X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="327091783"
+ bh=SYxl5ORHfYu3n4ZTLyDzRfOA6FhujfLMgVg1CCrCmkI=;
+ b=eokhHcSnXi/bXRcEKTA4XgCeDUUtbVdCMD/xzGTZWZ4SUou1Lafei9UY
+ 9ckY7+irrPjfkGkNK9Ht+VdJUeBY+YiaUdJTTFqOHcHL5uCTYUlMD7T4X
+ oLEV9+wRQiVi/ft5mS5ashAliIiZ8xemkR65LTnHBE7FqSJ2pylEvlmOb
+ wW9OJX5y8eiJy1Bv4P+MYbbaHKZFFS+jcw8BOL2qcNxgtHM3oDbIMeTiS
+ sPT4Fl51VnDHs37y1RtJlIMWag8UsGDAcHbP1lMgP/gsuGXXYzHlzRO1u
+ GAQft2gMYDYwtGJtTIO8Lbhn4Seor172Xy93Lvn0y+muBqjZEwCQkSKli Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="327091807"
+X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="327091807"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2023 04:00:28 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="805782076"
-X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="805782076"
+ 27 Jan 2023 04:00:34 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="805782110"
+X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="805782110"
 Received: from aaralsto-mobl.amr.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.30.130])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2023 04:00:26 -0800
+ 27 Jan 2023 04:00:31 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 01/18] ASoC: SOF: ipc4-topology: No need to unbind routes
- within a pipeline
-Date: Fri, 27 Jan 2023 14:00:14 +0200
-Message-Id: <20230127120031.10709-2-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 03/18] ASoC: SOF: sof-audio: Set up/free DAI/AIF widgets only
+ once
+Date: Fri, 27 Jan 2023 14:00:16 +0200
+Message-Id: <20230127120031.10709-4-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230127120031.10709-1-peter.ujfalusi@linux.intel.com>
 References: <20230127120031.10709-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -90,52 +91,95 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-The FW currently ignores unbinding routes if the source and sink widgets
-belong to the same pipeline. So no need to send the IPC at all in the
-first place.
+Calling the sof_widget_setup/free() for the DAI/AIF widgets inside the
+snd_soc_dapm_widget_for_each_sink_path() loop will end up setting up or
+freeing the widget multiple times if there are multiple paths leaving
+the widget. Fix this by moving the widget setup/free for the starting
+widget in each path outside the loop.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/ipc4-topology.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/soc/sof/sof-audio.c | 48 +++++++++++++++------------------------
+ 1 file changed, 18 insertions(+), 30 deletions(-)
 
-diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-index ba99114e86a9..ae8ec98bb4eb 100644
---- a/sound/soc/sof/ipc4-topology.c
-+++ b/sound/soc/sof/ipc4-topology.c
-@@ -1805,12 +1805,19 @@ static int sof_ipc4_route_free(struct snd_sof_dev *sdev, struct snd_sof_route *s
- 	struct sof_ipc4_fw_module *sink_fw_module = sink_widget->module_info;
- 	struct sof_ipc4_msg msg = {{ 0 }};
- 	u32 header, extension;
--	int ret;
-+	int ret = 0;
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index 2dff3ae25d27..572ac6a0c9ac 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -358,19 +358,16 @@ static int sof_free_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dap
+ 	int err;
+ 	int ret = 0;
  
- 	dev_dbg(sdev->dev, "unbind modules %s:%d -> %s:%d\n",
- 		src_widget->widget->name, sroute->src_queue_id,
- 		sink_widget->widget->name, sroute->dst_queue_id);
- 
-+	/*
-+	 * routes belonging to the same pipeline will be disconnected by the FW when the pipeline
-+	 * is freed. So avoid sending this IPC which will be ignored by the FW anyway.
-+	 */
-+	if (src_widget->pipe_widget == sink_widget->pipe_widget)
-+		goto out;
+-	/* free all widgets even in case of error to keep use counts balanced */
++	if (widget->dobj.private) {
++		err = sof_widget_free(sdev, widget->dobj.private);
++		if (err < 0)
++			ret = err;
++	}
 +
- 	header = src_fw_module->man4_module_entry.id;
- 	header |= SOF_IPC4_MOD_INSTANCE(src_widget->instance_id);
- 	header |= SOF_IPC4_MSG_TYPE_SET(SOF_IPC4_MOD_UNBIND);
-@@ -1829,7 +1836,7 @@ static int sof_ipc4_route_free(struct snd_sof_dev *sdev, struct snd_sof_route *s
- 	if (ret < 0)
- 		dev_err(sdev->dev, "failed to unbind modules %s -> %s\n",
- 			src_widget->widget->name, sink_widget->widget->name);
++	/* free all widgets in the sink paths even in case of error to keep use counts balanced */
+ 	snd_soc_dapm_widget_for_each_sink_path(widget, p) {
+-		if (!p->walking && p->sink->dobj.private && widget->dobj.private) {
++		if (!p->walking) {
+ 			p->walking = true;
+-			if (WIDGET_IS_AIF_OR_DAI(widget->id)) {
+-				err = sof_widget_free(sdev, widget->dobj.private);
+-				if (err < 0)
+-					ret = err;
+-			}
 -
-+out:
- 	sof_ipc4_put_queue_id(sink_widget, sroute->dst_queue_id, SOF_PIN_TYPE_SINK);
- 	sof_ipc4_put_queue_id(src_widget, sroute->src_queue_id, SOF_PIN_TYPE_SOURCE);
+-			err = sof_widget_free(sdev, p->sink->dobj.private);
+-			if (err < 0)
+-				ret = err;
+ 
+ 			err = sof_free_widgets_in_path(sdev, p->sink, dir);
+ 			if (err < 0)
+@@ -393,32 +390,23 @@ static int sof_set_up_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_d
+ 	struct snd_soc_dapm_path *p;
+ 	int ret;
+ 
++	if (widget->dobj.private) {
++		ret = sof_widget_setup(sdev, widget->dobj.private);
++		if (ret < 0)
++			return ret;
++	}
++
+ 	snd_soc_dapm_widget_for_each_sink_path(widget, p) {
+-		if (!p->walking && p->sink->dobj.private && widget->dobj.private) {
++		if (!p->walking) {
+ 			p->walking = true;
+-			if (WIDGET_IS_AIF_OR_DAI(widget->id)) {
+-				ret = sof_widget_setup(sdev, widget->dobj.private);
+-				if (ret < 0)
+-					goto out;
+-			}
+-
+-			ret = sof_widget_setup(sdev, p->sink->dobj.private);
+-			if (ret < 0) {
+-				if (WIDGET_IS_AIF_OR_DAI(widget->id))
+-					sof_widget_free(sdev, widget->dobj.private);
+-				goto out;
+-			}
+ 
+ 			ret = sof_set_up_widgets_in_path(sdev, p->sink, dir);
++			p->walking = false;
+ 			if (ret < 0) {
+-				if (WIDGET_IS_AIF_OR_DAI(widget->id))
++				if (widget->dobj.private)
+ 					sof_widget_free(sdev, widget->dobj.private);
+-				sof_widget_free(sdev, p->sink->dobj.private);
+-			}
+-out:
+-			p->walking = false;
+-			if (ret < 0)
+ 				return ret;
++			}
+ 		}
+ 	}
  
 -- 
 2.39.1
