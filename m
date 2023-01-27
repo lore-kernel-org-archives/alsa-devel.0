@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95BFBC38142
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 12:06:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74701C38142
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 Jan 2023 12:06:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 55598ECF;
-	Fri, 27 Jan 2023 13:05:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55598ECF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 14C6EEE8;
+	Fri, 27 Jan 2023 13:05:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14C6EEE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674821166;
-	bh=5Va798cQXhbO862MbOkfolstSdalrkBTuJu5kXBJ9co=;
+	s=default; t=1674821180;
+	bh=g2HxaHZv6nAGmwGq/ZGWCFp+VKkPfC+vYOfDP21maiQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=t8zGICvq3D5VERi8hIDApQTpbKwD8UMS2aSMS5rIO01tK69zT3D3r/zJ3p67B3r7w
-	 BfP1o5gEEqjhTA3ef6YRI93AoU1r0x7e203SV5P+z4Z2zO416zS4fXmSFBpGSK1ACI
-	 BbeQ9QJ5BLLPsM1lnCi6k7pCKg7G1CNb1UcEx39Y=
+	b=qi78OsaL2KfXmsZNzo1RMZCRvx4WCdnbtQz7vg/I3wUfibVK1OSbFICNyZKbaAQN7
+	 3z9jSZN80csiD9fK9Vvo/xicZqqWtld9usD8/H/5Rtasox4e4c+navjuBrGz0mRkES
+	 tE+h5IwEJdTzBq9/qbITyJMtth+qb5VgbFLusU9c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B50FF805C6;
-	Fri, 27 Jan 2023 13:01:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B0933F80424;
+	Fri, 27 Jan 2023 13:01:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE026F805B4; Fri, 27 Jan 2023 13:01:16 +0100 (CET)
+ id 3E826F805B3; Fri, 27 Jan 2023 13:01:18 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CBE5FF805A0
- for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 13:01:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBE5FF805A0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11113F805B1
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2023 13:01:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11113F805B1
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=k0Ba5aeN
+ header.s=Intel header.b=Xb50swOy
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1674820867; x=1706356867;
+ t=1674820873; x=1706356873;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=5Va798cQXhbO862MbOkfolstSdalrkBTuJu5kXBJ9co=;
- b=k0Ba5aeNuWJoJvz6zt1AT75AIZa+d/JDkCKRJrjqJV9WtBHueTzoAPIH
- 45yiZrtwKSC+ula6P5s8X+z0/VvMXYR2sMx3vm49k8u/C0F86FwNILf/8
- kdBskQEwQjKLA3J61MY4/0oj3E3jGcp850xM5oyO4nqxfg17xbANEvUOL
- wUy6Ivc9iFnyj7XuZ5U5oZmqBmAJJaSJ8TPtxH9k6//YtxdPvZEqHEOwX
- yiva4IEa2f2uReuY/HYSqmxOyOPDfE9Cav2G0EcMOCAx7uFXaEVc34WDK
- GWlnzRXzaxlBE/rGMbukRTJY2VCDtZL/g4abcOqVIg4s4g3iwF0y4U+ZP w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="327091959"
-X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="327091959"
+ bh=g2HxaHZv6nAGmwGq/ZGWCFp+VKkPfC+vYOfDP21maiQ=;
+ b=Xb50swOyiEJPc31zw8fNafo72PtZvfnU8pnQCClw0rVJcwHw/7q1+sj+
+ 1tuZQ2A54SRoktgZlFmOylZSJbydlXilfULogJrErcHsTlOA+vOuPaiBL
+ ZZvTBqAaDazpbvIV8a5zeZ/V9ju28/P3RtsSYPCuwNKVc5sabjl4TGTa8
+ qitaDaWSQpzRUZAu0Bt51kyT+77CTfIvGeQ2HCHrQ8SQTVtjSTQbY/hhW
+ Z9puMaIQsYizC4qXzjFUZpi4I4YPLE+abvAqMJAJxnTaDCRfAHLl2FhIw
+ 8dz0OG1U9TXKxdQw+iiGF/rDo9qno7w94ZU5TmSSPt1sEHnbAG9P8HYfV w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="327091992"
+X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="327091992"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2023 04:01:03 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="805782320"
-X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="805782320"
+ 27 Jan 2023 04:01:11 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10602"; a="805782380"
+X-IronPort-AV: E=Sophos;i="5.97,250,1669104000"; d="scan'208";a="805782380"
 Received: from aaralsto-mobl.amr.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.30.130])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Jan 2023 04:01:01 -0800
+ 27 Jan 2023 04:01:09 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 15/18] ASoC: SOF: ipc4-topology: Protect pipeline free with
- mutex
-Date: Fri, 27 Jan 2023 14:00:28 +0200
-Message-Id: <20230127120031.10709-16-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 18/18] ASoC: SOF: ipc4-pcm: Do not run the trigger pipelines
+ if no spipe is stored
+Date: Fri, 27 Jan 2023 14:00:31 +0200
+Message-Id: <20230127120031.10709-19-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230127120031.10709-1-peter.ujfalusi@linux.intel.com>
 References: <20230127120031.10709-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -89,106 +88,35 @@ Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+If the pipeline setup fails at the first widget/pipeline then we will have
+no spipe stored under the pipeline_list->pipelines, the
+pipeline_list->count is 0.
 
-When starting/stopping multiple streams in parallel, pipeline triggers
-and pipeline frees can get interleaved. So use the same mutex used for
-pipeline trigger to protect the pipeline frees as well. Rename the
-trigger_mutex to pipeline_state_mutex for more clarity.
+If this is the case we would have a NULL pointer dereference if the
+execution is allowed to proceed.
 
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Check for this condition along with the pipeline_list->pipelines check
+
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/ipc4-pcm.c      | 4 ++--
- sound/soc/sof/ipc4-priv.h     | 4 ++--
- sound/soc/sof/ipc4-topology.c | 5 +++++
- sound/soc/sof/ipc4.c          | 2 +-
- 4 files changed, 10 insertions(+), 5 deletions(-)
+ sound/soc/sof/ipc4-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/sof/ipc4-pcm.c b/sound/soc/sof/ipc4-pcm.c
-index ababa29d6eac..2d89d3708ed0 100644
+index 2d89d3708ed0..521090d4498d 100644
 --- a/sound/soc/sof/ipc4-pcm.c
 +++ b/sound/soc/sof/ipc4-pcm.c
-@@ -222,7 +222,7 @@ static int sof_ipc4_trigger_pipelines(struct snd_soc_component *component,
- 	if (!trigger_list)
- 		return -ENOMEM;
+@@ -213,7 +213,7 @@ static int sof_ipc4_trigger_pipelines(struct snd_soc_component *component,
+ 	pipeline_list = &spcm->stream[substream->stream].pipeline_list;
  
--	mutex_lock(&ipc4_data->trigger_mutex);
-+	mutex_lock(&ipc4_data->pipeline_state_mutex);
+ 	/* nothing to trigger if the list is empty */
+-	if (!pipeline_list->pipelines)
++	if (!pipeline_list->pipelines || !pipeline_list->count)
+ 		return 0;
  
- 	/*
- 	 * IPC4 requires pipelines to be triggered in order starting at the sink and
-@@ -289,7 +289,7 @@ static int sof_ipc4_trigger_pipelines(struct snd_soc_component *component,
- 	}
- 
- free:
--	mutex_unlock(&ipc4_data->trigger_mutex);
-+	mutex_unlock(&ipc4_data->pipeline_state_mutex);
- 	kfree(trigger_list);
- 	return ret;
- }
-diff --git a/sound/soc/sof/ipc4-priv.h b/sound/soc/sof/ipc4-priv.h
-index 0c0d48376045..38bb3d7df42e 100644
---- a/sound/soc/sof/ipc4-priv.h
-+++ b/sound/soc/sof/ipc4-priv.h
-@@ -70,7 +70,7 @@ struct sof_ipc4_fw_library {
-  *		    base firmware
-  *
-  * @load_library: Callback function for platform dependent library loading
-- * @trigger_mutex: Mutex to protect pipeline triggers, ref counts and states
-+ * @pipeline_state_mutex: Mutex to protect pipeline triggers, ref counts, states and deletion
-  */
- struct sof_ipc4_fw_data {
- 	u32 manifest_fw_hdr_offset;
-@@ -83,7 +83,7 @@ struct sof_ipc4_fw_data {
- 
- 	int (*load_library)(struct snd_sof_dev *sdev,
- 			    struct sof_ipc4_fw_library *fw_lib, bool reload);
--	struct mutex trigger_mutex; /* protect pipeline triggers, ref counts and states */
-+	struct mutex pipeline_state_mutex; /* protect pipeline triggers, ref counts and states */
- };
- 
- extern const struct sof_ipc_fw_loader_ops ipc4_loader_ops;
-diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-index 2f82b5e02a27..43340c8917b7 100644
---- a/sound/soc/sof/ipc4-topology.c
-+++ b/sound/soc/sof/ipc4-topology.c
-@@ -1625,8 +1625,11 @@ static int sof_ipc4_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget
- static int sof_ipc4_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- {
- 	struct sof_ipc4_fw_module *fw_module = swidget->module_info;
-+	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
- 	int ret = 0;
- 
-+	mutex_lock(&ipc4_data->pipeline_state_mutex);
-+
- 	/* freeing a pipeline frees all the widgets associated with it */
- 	if (swidget->id == snd_soc_dapm_scheduler) {
- 		struct sof_ipc4_pipeline *pipeline = swidget->private;
-@@ -1652,6 +1655,8 @@ static int sof_ipc4_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget
- 		ida_free(&fw_module->m_ida, swidget->instance_id);
- 	}
- 
-+	mutex_unlock(&ipc4_data->pipeline_state_mutex);
-+
- 	return ret;
- }
- 
-diff --git a/sound/soc/sof/ipc4.c b/sound/soc/sof/ipc4.c
-index fb4760ae593f..35c9f3913d9a 100644
---- a/sound/soc/sof/ipc4.c
-+++ b/sound/soc/sof/ipc4.c
-@@ -662,7 +662,7 @@ static int sof_ipc4_init(struct snd_sof_dev *sdev)
- {
- 	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
- 
--	mutex_init(&ipc4_data->trigger_mutex);
-+	mutex_init(&ipc4_data->pipeline_state_mutex);
- 
- 	xa_init_flags(&ipc4_data->fw_lib_xa, XA_FLAGS_ALLOC);
- 
+ 	/* allocate memory for the pipeline data */
 -- 
 2.39.1
 
