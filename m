@@ -4,81 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47954C38142
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Jan 2023 08:34:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D3E1C38142
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Jan 2023 10:49:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 27769DEE;
-	Sat, 28 Jan 2023 09:33:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27769DEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F1FEE99;
+	Sat, 28 Jan 2023 11:48:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F1FEE99
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674894854;
-	bh=u+f3pIg4JCfKW16bEPpW4Ue3I6OGquWtfPjUx7NpaMk=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1674902950;
+	bh=yyt4PvyYhxxot5o4TpwTNwQN8G6kIpJP0IpgE2Z2nV0=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=mTzP0tgb1EBnnZeGAVY6dDNq+Iaem/DWJlFCaXhPn2LoqW9ofpLZ3ntc/1TOix48S
-	 zN5VzU5Q9umeXhRaHG6YmfdItwpsYryoHirjwDuFlq5U15gGhZFiFhNiB1e98jZ4gR
-	 cUv7M1stGD41lnQY2AldyqBjpn1zTiKgtoDfK/2I=
+	 From;
+	b=VdJAZ7/Z8HI3EuSRZJdhpXaGXxCQYv3AYqjG3JyaX2Mj1V0/Y1yi+ADk+Bao766UZ
+	 s8Nywx9Wi+C2UQH4JBErQab/VspegHuLnSccENVPJ9lPFsEo8LPGCoOhTiXHO/fHgC
+	 I03s6G4ClXhGtiKtoKzfeEAOjA5OS9K/zAL2PeVQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBB89F8025D;
-	Sat, 28 Jan 2023 09:33:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A4F06F8007C;
+	Sat, 28 Jan 2023 11:48:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3FA6F8027D; Sat, 28 Jan 2023 09:33:20 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 05FABF803DC; Sat, 28 Jan 2023 11:48:15 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24DF7F8007C
- for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2023 09:33:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24DF7F8007C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=YVoU1EXp; 
- dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=GjMRb/sM
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2883DF8007C
+ for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2023 11:48:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2883DF8007C
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=Xx14yu5u
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 52A231FF34;
- Sat, 28 Jan 2023 08:33:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1674894794; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=kqK1RCCxqlzsFBt4peAgP1Q8O2k0ex7ImD/D4lS9Uog=;
- b=YVoU1EXprCYC5Ka0G7myRXyHEjy4x9HcCC3vDo8wJTEelOqF2kPzSlQLVb50064WKNI6Q/
- Qj6iTaQ/yt5xEX6f9i20Q59Xj6UtTGaqpjF8shoRxPsK6Q9DjHM79gaKFmZtcIYD4wP5hM
- MjPhsV1pYE1gyyEZjbYPSY8lMpdwemQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1674894794;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=kqK1RCCxqlzsFBt4peAgP1Q8O2k0ex7ImD/D4lS9Uog=;
- b=GjMRb/sMMzDwEVgK4R/pUv8YegdYh5IDYK946JB1Ac3Qd90zWRIH3CyucSyqRPsavKYLRo
- taj57mzCzYiiX6DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 379AE139BD;
- Sat, 28 Jan 2023 08:33:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Yr/VDMrd1GPDHwAAMHmgww
- (envelope-from <tiwai@suse.de>); Sat, 28 Jan 2023 08:33:14 +0000
-Date: Sat, 28 Jan 2023 09:33:13 +0100
-Message-ID: <874jsbqcs6.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC fixes for v6.2-rc5
-In-Reply-To: <20230127190002.2BA13C433EF@smtp.kernel.org>
-References: <20230127190002.2BA13C433EF@smtp.kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4DFC360B39;
+ Sat, 28 Jan 2023 10:48:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 520A9C433D2;
+ Sat, 28 Jan 2023 10:48:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1674902883;
+ bh=yyt4PvyYhxxot5o4TpwTNwQN8G6kIpJP0IpgE2Z2nV0=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=Xx14yu5u5OpIVGLUsOd8u2qsotoJJJQJdJBboaPGS+5asPKMyJQa5zW/r2J3KrgxG
+ 4SCkusxAJQEnAMdDjvXrsgtP0NZTU0cACRFTwVX5+AnvhVqimNoZCLNLjjtkUp8ASd
+ yvIZWI1Ou+odpvfsBDS3PhX1SzUt90tP9g6eRdbm8sWt5gSPsvK6sv231qk8L3DTvs
+ 2NRATlrrSoh3wT0o5pR+72L4mxPF312KuWFYvngM892dOAfWEWwdUmPjBTZHjnRPRW
+ jSEL04s2xq754OTkEWf+HHvo1KBzw62f5hZ0xTpUQxykzkXhlx9hSUdoxUJ9a/4Kqv
+ DekHkMiOlgpNg==
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, 
+ pierre-louis.bossart@linux.intel.com, cpgs@samsung.com, 
+ =?utf-8?q?=EA=B0=95=EC=8B=A0=ED=98=95?= <s47.kang@samsung.com>
+In-Reply-To: <016401d90ac4$7b6848c0$7238da40$@samsung.com>
+References: <CGME20221208051818epcas2p122a0ce58691ac70d8a77b5e922e81fea@epcas2p1.samsung.com>
+ <016401d90ac4$7b6848c0$7238da40$@samsung.com>
+Subject: Re: [PATCH] ASoC: soc-compress: Reposition and add pcm_mutex
+Message-Id: <167490288202.2145828.17434688245122287609.b4-ty@kernel.org>
+Date: Sat, 28 Jan 2023 10:48:02 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.0
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,37 +79,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 27 Jan 2023 19:59:49 +0100,
-Mark Brown wrote:
+On Thu, 08 Dec 2022 14:18:18 +0900, 강신형 wrote:
+> If panic_on_warn is set and compress stream(DPCM) is started,
+> then kernel panic occurred because card->pcm_mutex isn't held appropriately.
+> In the following functions, warning were issued at this line
+> "snd_soc_dpcm_mutex_assert_held".
 > 
-> The following changes since commit 242fc66ae6e1e2b8519daacc7590a73cd0e8a6e4:
+> static int dpcm_be_connect(struct snd_soc_pcm_runtime *fe,
+> 		struct snd_soc_pcm_runtime *be, int stream)
+> {
+> 	...
+> 	snd_soc_dpcm_mutex_assert_held(fe);
+> 	...
+> }
 > 
->   ASoC: fsl-asoc-card: Fix naming of AC'97 CODEC widgets (2023-01-10 12:45:22 +0000)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.2-rc5
-> 
-> for you to fetch changes up to e18c6da62edc780e4f4f3c9ce07bdacd69505182:
-> 
->   ASoC: cs42l56: fix DT probe (2023-01-26 17:42:36 +0000)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v6.2
-> 
-> An unfortunately large batch of fixes here, the numbers amplified
-> by several repeated fixes for patterns of bugs in multiple
-> drivers.  Most of this is in the x86 drivers which are very
-> actively developed, the implementation of PCI shutdown is a fix
-> for issues with spamming warnings into the logs with a leaked
-> reference to the i915 driver.
+> [...]
 
-Thanks, pulled now.  This slipped from the PR for 6.2-rc6, and it'll
-be in rc7 together with other pending fixes in my side.
+Applied to
 
+   broonie/sound.git for-next
 
-Takashi
+Thanks!
+
+[1/1] ASoC: soc-compress: Reposition and add pcm_mutex
+      commit: aa9ff6a4955fdba02b54fbc4386db876603703b7
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
