@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E81FC05027
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Jan 2023 08:25:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 288FFC61D97
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Jan 2023 08:25:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 19473EB4;
-	Sun, 29 Jan 2023 09:24:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19473EB4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D223E7B;
+	Sun, 29 Jan 2023 09:24:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D223E7B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674980730;
-	bh=7R+Y0pFZ9qQaQE2Of8Zyt01fF+w51NH/3ezIsAynqvk=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1674980747;
+	bh=NyfyYmvHuYCep7B9YHaipGsiO9fFZKxd2hw/3QQJwqQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=ahuUi8NVgIdpa5cozKZgl6t6MexzrB2JTLIc3EefBLF6kdj7DH18UZrtlagSqHj+U
-	 v9cSDVyreFyLnAI5wV1zNdpno0EfW5tnjdPPYC0rLw063p1l8GtKqKOR0kaUlvxLL7
-	 3vEzmQ6Nh4sheFu89sVbHszlYNXj4E3eNrj5eUuk=
+	b=HGJVjBB1dNGvT2Q2qtaHxlUTYK/l7MWByptjm/5JExZ/iYNwop/87rS7t7ESYw4jq
+	 JF3zhjJVP+PY80oMWHWMshNzIuDhw6vEWVEGzTxuVVcTxe9494BDtfQ0/IFWVp2Of4
+	 Zs3n8YndvA/CcDctLqfTsLbWTcEmjjt4LZby4nRY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7519F8055A;
-	Sun, 29 Jan 2023 09:23:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3A6AF80564;
+	Sun, 29 Jan 2023 09:23:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F4E6F8027D; Sat, 28 Jan 2023 16:58:38 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 751D0F8027D; Sat, 28 Jan 2023 21:30:31 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C59C4F80074
- for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2023 16:58:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C59C4F80074
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32A4EF80171
+ for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2023 21:30:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32A4EF80171
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=d4enHA5M
+ header.s=k20201202 header.b=LEOdKD+x
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 728A460B4D;
- Sat, 28 Jan 2023 15:58:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DC8FC433D2;
- Sat, 28 Jan 2023 15:58:23 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 9FF69B80B93;
+ Sat, 28 Jan 2023 20:30:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A4020C433D2;
+ Sat, 28 Jan 2023 20:30:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674921508;
- bh=7R+Y0pFZ9qQaQE2Of8Zyt01fF+w51NH/3ezIsAynqvk=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=d4enHA5MJ371GrPucjk++EVvYqWfJUb0Rmdj7ygsHD6FdJSuKLpmLKZObRmyoduRb
- F7/rgXbXthLnxMVJdAyroI/3tQf7IL+wc3TYMiY9DLLWZ9lgFPGplKFOxflb3tFuNt
- UtYcUlsjz0il95gmiB3mk4Bvk/TbRiYPJ9FjEivIPmpDedLPGd1WcinaLHdellNT7Y
- g/L7fp8K98T+nO5sT29tqenfN8c3UVjvN0Ncbjl4SfTpSGVwHHakRtS6Y7/70MN4yc
- AsRCXMaJ9yLeFgwHKcot/dcC5xFelUPaBwh2MZkhTt1C1Gr3icbGZaQVBWurLjEUVb
- 0mCC0mntbHQgQ==
-Date: Sat, 28 Jan 2023 16:12:17 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Gatien Chevallier <gatien.chevallier@foss.st.com>
-Subject: Re: [PATCH v3 4/6] bus: stm32_sys_bus: add support for STM32MP15
- and STM32MP13 system bus
-Message-ID: <20230128161217.0e79436e@jic23-huawei>
-In-Reply-To: <20230127164040.1047583-5-gatien.chevallier@foss.st.com>
-References: <20230127164040.1047583-1-gatien.chevallier@foss.st.com>
- <20230127164040.1047583-5-gatien.chevallier@foss.st.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.36; x86_64-pc-linux-gnu)
+ s=k20201202; t=1674937816;
+ bh=NyfyYmvHuYCep7B9YHaipGsiO9fFZKxd2hw/3QQJwqQ=;
+ h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+ b=LEOdKD+xVK+ChdUeMYF7EWUBmGq14I7a4s4JCxsX0Z2pbDfy98ZnOQg9LaM70RuVC
+ 9xRu4+lF+DVHmBGVHpWV6C3DKQnB6htlyuiQ1J3mBpVE0Cta4vW2RE/BXmcJavx0so
+ NpT9ZM/k0gp3REittQZbOAE5Pu2nnNW4ZzWWewKaFAFD3E6WwCsC+zOFh5CoV4HfQe
+ lQLG294nW9w5VbGq5Yt6s9D6T/oia27mZXgUwJMw43HV8z7gJz+N1dbAJrJr5rDjld
+ W58/LuDYy+LQisFZsbodjJ+lGQoGjrCfyPfOcghY/B7T6gUkoFPJyIGFHljP3NeW1j
+ sFiy6/39HdTbA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org
+ (localhost.localdomain [127.0.0.1])
+ by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id
+ 76D09E52504; Sat, 28 Jan 2023 20:30:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 00/35] Documentation: correct lots of spelling errors
+ (series 1)
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: <167493781647.31903.18128774325127042067.git-patchwork-notify@kernel.org>
+Date: Sat, 28 Jan 2023 20:30:16 +0000
+References: <20230127064005.1558-1-rdunlap@infradead.org>
+In-Reply-To: <20230127064005.1558-1-rdunlap@infradead.org>
+To: Randy Dunlap <rdunlap@infradead.org>
 X-Mailman-Approved-At: Sun, 29 Jan 2023 09:23:11 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -79,216 +80,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: ulf.hansson@linaro.org, linux-iio@vger.kernel.org,
- alexandre.torgue@foss.st.com, edumazet@google.com, Oleksii_Moisieiev@epam.com,
- krzysztof.kozlowski+dt@linaro.org, linux-phy@lists.infradead.org,
- linux-stm32@st-md-mailman.stormreply.com, herbert@gondor.apana.org.au,
- Loic PALLARDY <loic.pallardy@st.com>, olivier.moysan@foss.st.com,
- kuba@kernel.org, arnaud.pouliquen@foss.st.com, pabeni@redhat.com,
- linux-media@vger.kernel.org, devicetree@vger.kernel.org,
- linux-serial@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org,
- mchehab@kernel.org, linux-arm-kernel@lists.infradead.org,
+Cc: linmiaohe@huawei.com, juri.lelli@redhat.com, rydberg@bitmath.org,
+ rafael@kernel.org, catalin.marinas@arm.com, dri-devel@lists.freedesktop.org,
+ benjamin.tissoires@redhat.com, pavel@ucw.cz,
+ srinivas.pandruvada@linux.intel.com, zbr@ioremap.net, agordeev@linux.ibm.com,
+ vincent.guittot@linaro.org, mpe@ellerman.id.au, jmorris@namei.org,
+ linux-acpi@vger.kernel.org, len.brown@intel.com, linux-pm@vger.kernel.org,
+ tglx@linutronix.de, linux-sgx@vger.kernel.org, isdn@linux-pingi.de,
  gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, vkoul@kernel.org, fabrice.gasnier@foss.st.com,
- linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
- dmaengine@vger.kernel.org, davem@davemloft.net, linux-i2c@vger.kernel.org
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org, mhiramat@kernel.org,
+ olteanv@gmail.com, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
+ jcmvbkbc@gmail.com, keyrings@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-s390@vger.kernel.org, paul@paul-moore.com,
+ linux-trace-kernel@vger.kernel.org, deller@gmx.de, lee@kernel.org,
+ andrii@kernel.org, daniel.m.jordan@oracle.com, linux-crypto@vger.kernel.org,
+ linux-xtensa@linux-xtensa.org, gor@linux.ibm.com, suzuki.poulose@arm.com,
+ coresight@lists.linaro.org, bhelgaas@google.com, shorne@gmail.com,
+ linux-arm-kernel@lists.infradead.org, chris@zankel.net,
+ mathieu.poirier@linaro.org, wsa@kernel.org, jarkko@kernel.org,
+ linux-pci@vger.kernel.org, lpieralisi@kernel.org, ast@kernel.org,
+ will@kernel.org, daniel@iogearbox.net, corbet@lwn.net,
+ isdn4linux@listserv.isdn4linux.de, linux-input@vger.kernel.org,
+ serge@hallyn.com, fenghua.yu@intel.com, jikos@kernel.org,
+ akinobu.mita@gmail.com, rostedt@goodmis.org, broonie@kernel.org, bp@alien8.de,
+ linux-fbdev@vger.kernel.org, reinette.chatre@intel.com,
+ martin.petersen@oracle.com, dmitry.torokhov@gmail.com, naoya.horiguchi@nec.com,
+ target-devel@vger.kernel.org, bpf@vger.kernel.org, pmladek@suse.com,
+ peterz@infradead.org, dhowells@redhat.com, linux-mm@kvack.org,
+ linux-trace-devel@vger.kernel.org, live-patching@vger.kernel.org,
+ mbenes@suse.cz, linux-leds@vger.kernel.org, steffen.klassert@secunet.com,
+ linux-scsi@vger.kernel.org, maz@kernel.org, x86@kernel.org,
+ linux@armlinux.org.uk, mingo@redhat.com, jonas@southpole.se, hca@linux.ibm.com,
+ stefan.kristiansson@saunalahti.fi, linux-block@vger.kernel.org,
+ jglisse@redhat.com, openrisc@lists.librecores.org, jpoimboe@kernel.org,
+ axboe@kernel.dk, netdev@vger.kernel.org, tiwai@suse.com,
+ linux-security-module@vger.kernel.org, bristot@kernel.org,
+ linuxppc-dev@lists.ozlabs.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 27 Jan 2023 17:40:38 +0100
-Gatien Chevallier <gatien.chevallier@foss.st.com> wrote:
+Hello:
 
-> This driver is checking the access rights of the different
-> peripherals connected to the system bus. If access is denied,
-> the associated device tree node is skipped so the platform bus
-> does not probe it.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Thu, 26 Jan 2023 22:39:30 -0800 you wrote:
+> Correct many spelling errors in Documentation/ as reported by codespell.
 > 
-> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
-> Signed-off-by: Loic PALLARDY <loic.pallardy@st.com>
+> Maintainers of specific kernel subsystems are only Cc-ed on their
+> respective patches, not the entire series. [if all goes well]
+> 
+> These patches are based on linux-next-20230125.
+> 
+> [...]
 
-Hi Gatien,
+Here is the summary with links:
+  - [04/35] Documentation: bpf: correct spelling
+    https://git.kernel.org/bpf/bpf-next/c/1d3cab43f4c7
+  - [05/35] Documentation: core-api: correct spelling
+    (no matching commit)
+  - [13/35] Documentation: isdn: correct spelling
+    (no matching commit)
 
-A few comments inline,
-
-Thanks,
-
-Jonathan
-
-> diff --git a/drivers/bus/stm32_sys_bus.c b/drivers/bus/stm32_sys_bus.c
-> new file mode 100644
-> index 000000000000..c12926466bae
-> --- /dev/null
-> +++ b/drivers/bus/stm32_sys_bus.c
-> @@ -0,0 +1,168 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2023, STMicroelectronics - All Rights Reserved
-> + */
-> +
-> +#include <linux/bitfield.h>
-> +#include <linux/bits.h>
-> +#include <linux/device.h>
-> +#include <linux/err.h>
-> +#include <linux/io.h>
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/platform_device.h>
-> +
-> +/* ETZPC peripheral as firewall bus */
-> +/* ETZPC registers */
-> +#define ETZPC_DECPROT			0x10
-> +
-> +/* ETZPC miscellaneous */
-> +#define ETZPC_PROT_MASK			GENMASK(1, 0)
-> +#define ETZPC_PROT_A7NS			0x3
-> +#define ETZPC_DECPROT_SHIFT		1
-
-This define makes the code harder to read.  What we care about is
-the number of bits in the register divided by number of entries.
-(which is 2) hence the shift by 1. See below for more on this.
-
-
-> +
-> +#define IDS_PER_DECPROT_REGS		16
-
-> +#define STM32MP15_ETZPC_ENTRIES		96
-> +#define STM32MP13_ETZPC_ENTRIES		64
-
-These defines just make the code harder to check.
-They aren't magic numbers, but rather just telling us how many
-entries there are, so I would just put them in the structures directly.
-Their use make it clear what they are without needing to give them a name.
-
-
-> +struct stm32_sys_bus_match_data {
-
-Comment on naming of this below.
-
-> +	unsigned int max_entries;
-> +};
-> +
-
-+static int stm32_etzpc_get_access(struct sys_bus_data *pdata, struct device_node *np)
-+{
-+	int err;
-+	u32 offset, reg_offset, sec_val, id;
-+
-+	err = stm32_sys_bus_get_periph_id(pdata, np, &id);
-+	if (err)
-+		return err;
-+
-+	/* Check access configuration, 16 peripherals per register */
-+	reg_offset = ETZPC_DECPROT + 0x4 * (id / IDS_PER_DECPROT_REGS);
-+	offset = (id % IDS_PER_DECPROT_REGS) << ETZPC_DECPROT_SHIFT;
-
-Use of defines in here is actively unhelpful when it comes to review. I would suggest letting
-the maths be self explanatory (even if it's more code).
-
-	offset = (id % IDS_PER_DECPROT_REGS) * (sizeof(u32) * BITS_PER_BYTE / IDS_PER_DECPROT_REGS);
-
-Or if you prefer have a define of
-
-#define DECPROT_BITS_PER_ID (sizeof(u32) * BITS_PER_BYTE / IDS_PER_DECPROT_REGS)
-
-and
-	offset = (id % IDS_PER_DECPROT_REGS) * DECPROT_BITS_PER_ID;
-
-+
-+	/* Verify peripheral is non-secure and attributed to cortex A7 */
-+	sec_val = (readl(pdata->sys_bus_base + reg_offset) >> offset) & ETZPC_PROT_MASK;
-+	if (sec_val != ETZPC_PROT_A7NS) {
-+		dev_dbg(pdata->dev, "Invalid bus configuration: reg_offset %#x, value %d\n",
-+			reg_offset, sec_val);
-+		return -EACCES;
-+	}
-+
-+	return 0;
-+}
-+
-...
-
-> +static int stm32_sys_bus_probe(struct platform_device *pdev)
-> +{
-> +	struct sys_bus_data *pdata;
-> +	void __iomem *mmio;
-> +	struct device_node *np = pdev->dev.of_node;
-
-I'd be consistent. You use dev_of_node() accessor elsewhere, so should
-use it here as well.
-
-> +
-> +	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
-> +	if (!pdata)
-> +		return -ENOMEM;
-> +
-> +	mmio = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(mmio))
-> +		return PTR_ERR(mmio);
-> +
-> +	pdata->sys_bus_base = mmio;
-> +	pdata->pconf = of_device_get_match_data(&pdev->dev);
-> +	pdata->dev = &pdev->dev;
-> +
-> +	platform_set_drvdata(pdev, pdata);
-
-Does this get used? I can't immediately spot where but maybe I just
-missed it.
-
-> +
-> +	stm32_sys_bus_populate(pdata);
-> +
-> +	/* Populate all available nodes */
-> +	return of_platform_populate(np, NULL, NULL, &pdev->dev);
-
-As np only used here, I'd not bother with the local variable in this function.
-
-> +}
-> +
-> +static const struct stm32_sys_bus_match_data stm32mp15_sys_bus_data = {
-
-Naming a structure after where it comes from is a little unusual and
-confusion when a given call gets it from somewhere else.
-
-I'd expect it to be named after what sort of thing it contains.
-stm32_sys_bus_info or something like that.
-
-> +	.max_entries = STM32MP15_ETZPC_ENTRIES,
-> +};
-> +
-> +static const struct stm32_sys_bus_match_data stm32mp13_sys_bus_data = {
-> +	.max_entries = STM32MP13_ETZPC_ENTRIES,
-> +};
-> +
-> +static const struct of_device_id stm32_sys_bus_of_match[] = {
-> +	{ .compatible = "st,stm32mp15-sys-bus", .data = &stm32mp15_sys_bus_data },
-> +	{ .compatible = "st,stm32mp13-sys-bus", .data = &stm32mp13_sys_bus_data },
-
-Alphabetical order usually preferred when there isn't a strong reason for
-another choice.
-
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, stm32_sys_bus_of_match);
-> +
-> +static struct platform_driver stm32_sys_bus_driver = {
-> +	.probe  = stm32_sys_bus_probe,
-> +	.driver = {
-> +		.name = "stm32-sys-bus",
-> +		.of_match_table = stm32_sys_bus_of_match,
-> +	},
-> +};
-> +
-> +static int __init stm32_sys_bus_init(void)
-> +{
-> +	return platform_driver_register(&stm32_sys_bus_driver);
-> +}
-> +arch_initcall(stm32_sys_bus_init);
-> +
-
-Unwanted trailing blank line.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
