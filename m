@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FC74C27C76
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Jan 2023 10:49:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AE6AC27C76
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Jan 2023 10:50:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 868AEEA2;
-	Sat, 28 Jan 2023 11:48:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 868AEEA2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 52216EBF;
+	Sat, 28 Jan 2023 11:49:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52216EBF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674902977;
-	bh=OPsHbgzLdqwYQd1m4ImhqSwn7ne/bkBi7OcQQaQhu+g=;
+	s=default; t=1674903001;
+	bh=fJ2O0Xp8qig0PONRP8hnGCqbt209AFAWi6nCkqYVf1Y=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=Wwn6IaAfQy8EE8JLD+ZG8rekYJRbCq+tXaB5UPPqJ4QqyP4Nsasw9axLxL8x9Am39
-	 F+/vBA4n7SLMr0wlxaLiyqmMqaxV9USFY5cbKar4f2pq4RIxf78XpAdTb9nuowyn6c
-	 +2TXg/OeVNl/45+K2qbBbxoeFgHanpoDHJrmUz2M=
+	b=oBqu7E3n0OtNiq7QoYC0iV51zoP8jAtyszjaE87MWaVH3sZdvPxiS+0YxbweiKIQj
+	 zlwmbERutvy3UGZzQEnmSmYZuO2SBW6fHw7Ur7ZimrrmP9GeJaXwIU72l+YMEyhP5b
+	 VkRc0eRlUqHd3jtQy7PgoM5WPs4lrreFkf9BjDOY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8A5DF8027D;
-	Sat, 28 Jan 2023 11:48:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DDFE6F8053D;
+	Sat, 28 Jan 2023 11:48:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 40C8EF8030F; Sat, 28 Jan 2023 11:48:19 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 17460F80506; Sat, 28 Jan 2023 11:48:20 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33CFAF80074
+ by alsa1.perex.cz (Postfix) with ESMTPS id A1984F8025D
  for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2023 11:48:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33CFAF80074
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1984F8025D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=gkF/PYcK
+ header.s=k20201202 header.b=qY0He4Gf
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id B9D6F60BA6;
- Sat, 28 Jan 2023 10:48:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46697C433EF;
- Sat, 28 Jan 2023 10:48:04 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 71334CE08D4;
+ Sat, 28 Jan 2023 10:48:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D723FC433EF;
+ Sat, 28 Jan 2023 10:47:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674902886;
- bh=OPsHbgzLdqwYQd1m4ImhqSwn7ne/bkBi7OcQQaQhu+g=;
+ s=k20201202; t=1674902881;
+ bh=fJ2O0Xp8qig0PONRP8hnGCqbt209AFAWi6nCkqYVf1Y=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=gkF/PYcK5V3vmyshqRmHkW12KZkely6AuA3QTZMcUjVWN6kLfwu6ttm/MekTfhlLh
- cQ/bJUwl8VWHCKYDz5fOKJADjCoUcCa0MQ09fLPFNdmMjLzOpeDXwZo2ZboipSp9y3
- zcgYaxhzRnMFEj6ufU356VL8n+d80fRSCrgXcFb+YSf+sbgqhe2Tx/WOM6d6u6CA/x
- HKi+Q7mbgKSzcBCWSU+Rycp2XPjgCOkYnsglVhh8zQ2KUDLN8a3DcG5ZLX/CMEkiqZ
- rCN62kC5EQlS10GTgxxgosa29yGOPU4Qpx/n/2xOqTWYZgiOBj/jtEjAe7WN8a1RhD
- doGNYpLtgbhxQ==
+ b=qY0He4GfHO0oi8VHTrzCF4bIEppMFjWj0fG/Sw23OgjMpjTNJ40kCmGuY93vNMyyT
+ fPQfrjBIHFXJZCVM57LxGdLsRO8OabwN+lt3m2c9YfZk1qeDcZLBhtTMEmUIM3VizD
+ 0AzECBBxT8bVa+s1z2EnYh8MPztqhujkVlSB0SJFvZI1eDKSRIFK4sPl+GzcR0fwDl
+ eguFfLyNtvWO804ZVhcOzs7hjjFD9MwBeU5XQGVFmmLzHNydHeMrtNU2LeKdK7PUdy
+ XOuD2Ok3i+sJKmtqGsTGxSts8IwKZ8t986Eyn3BsaFxp8u1vgj7Yx8dsBlMpUWT5/g
+ RIA13LglLFrsQ==
 From: Mark Brown <broonie@kernel.org>
 To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230127120031.10709-1-peter.ujfalusi@linux.intel.com>
-References: <20230127120031.10709-1-peter.ujfalusi@linux.intel.com>
-Subject: =?utf-8?q?Re=3A_=EF=BB=BFFrom_644473b181f0f310e428301a2ed459f912?=
- =?utf-8?q?eec7ea_Mon_Sep_17_00=3A00=3A00_2001?=
-Message-Id: <167490288394.2145828.1502152108556968978.b4-ty@kernel.org>
-Date: Sat, 28 Jan 2023 10:48:03 +0000
+In-Reply-To: <20230117121615.25690-1-peter.ujfalusi@linux.intel.com>
+References: <20230117121615.25690-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: ipc4-topology: No need to unbind routes
+ within a pipeline
+Message-Id: <167490287960.2145828.3346973946324840661.b4-ty@kernel.org>
+Date: Sat, 28 Jan 2023 10:47:59 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -82,16 +83,12 @@ Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 27 Jan 2023 14:00:13 +0200, Peter Ujfalusi wrote:
-> The following series will enable multi-stream support for playback and capture
-> streams.
-> Currently only a single PCM can be connected to a DAI, with the multi-stream
-> support it is possible to connect multiple PCMs to a single DAI.
+On Tue, 17 Jan 2023 14:16:15 +0200, Peter Ujfalusi wrote:
+> The FW currently ignores unbinding routes if the source and sink widgets
+> belong to the same pipeline. So no need to send the IPC at all in the
+> first place.
 > 
-> To achieve this we need to make sure that DAIs/AIF are only set up once since
-> other stream could be connected to it later.
 > 
-> [...]
 
 Applied to
 
@@ -99,42 +96,8 @@ Applied to
 
 Thanks!
 
-[01/18] ASoC: SOF: ipc4-topology: No need to unbind routes within a pipeline
-        commit: 9a62d87acee94919af1fe92f2412fff83dcbcda0
-[02/18] ASoC: soc-pcm: Export widget_in_list()
-        commit: 5edcf2a3aad41ee398ac011cda7bccca400b56f0
-[03/18] ASoC: SOF: sof-audio: Set up/free DAI/AIF widgets only once
-        commit: 73ea660947b52969214473434396a33d283c5ac8
-[04/18] ASoC: SOF: sof-audio: Only process widgets in the connected widget list
-        commit: 4639029b046bcab11bd566afa2979c68edeb338a
-[05/18] ASoC: SOF: pcm: do not free widgets during suspend trigger
-        commit: 82b18242ae68214c44ccb13e993c2bc925f28428
-[06/18] ASoC: SOF: topology: Set IPC-specific trigger order for DAI links
-        commit: e380c9071032b89ea2e77b871792d908d0f15512
-[07/18] ASoC: SOF: Introduce PCM setup/free PCM IPC ops
-        commit: 7201a3d47e8a6a0b3a55125e70a9c650afabe7b0
-[08/18] ASoC: SOF: ipc4-pcm: Define pcm_setup/free ops
-        commit: ba223b3ad0b9f1753f0822c5c441a925cc82b63a
-[09/18] ASoC: SOF: ipc4: Add flag to skip triggering pipelines during FE DAI trigger
-        commit: 37a26eec53b09b7054234b77200ce729601b0ccb
-[10/18] ASoC: SOF: sof-audio: Populate the PCM stream pipeline_info
-        commit: 19137532dbe32ff2c8b5b1442c077bf3abff86f3
-[11/18] ASoC: SOF: ipc4-pcm: Use the PCM stream's pipeline_info during trigger
-        commit: 2d271af1af241e64726ada07c6bef6572f1be6a5
-[12/18] ASoC: SOF: Introduce struct snd_sof_pipeline
-        commit: 9c04363d222bc94d49d883458b2854334a848b5f
-[13/18] ASoC: SOF: ipc4-pcm: Rename 'data' variable to trigger_list
-        commit: 6f9eb19a33d608ba36162a9ccbd34a77249fcc2e
-[14/18] ASoC: SOF: ipc4-pcm: Implement pipeline trigger reference counting
-        commit: 32c4b69872e5fe5fd9517826be31dbf2c3dd917a
-[15/18] ASoC: SOF: ipc4-topology: Protect pipeline free with mutex
-        commit: 6bc4d1b714aafc0ee3c7649c36aa19998b4c11f9
-[16/18] ASoC: SOF: Avoid double decrementing use_count in sof_widget_setup on error
-        commit: 955a6f131a50c3685c560ef7b75880d272337b33
-[17/18] ASoC: SOF: Protect swidget->use_count with mutex for kcontrol access race
-        commit: f94f3915274d22d5cd8b253e0533822b934f5f41
-[18/18] ASoC: SOF: ipc4-pcm: Do not run the trigger pipelines if no spipe is stored
-        commit: 251a2b11851531526260db1dbc5673a7d6177895
+[1/1] ASoC: SOF: ipc4-topology: No need to unbind routes within a pipeline
+      commit: 9a62d87acee94919af1fe92f2412fff83dcbcda0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
