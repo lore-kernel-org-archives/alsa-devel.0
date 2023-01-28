@@ -4,67 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA687C38142
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Jan 2023 17:20:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23AD9C38142
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Jan 2023 17:21:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F2CEEA2;
-	Sat, 28 Jan 2023 18:20:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F2CEEA2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E3B1E9D;
+	Sat, 28 Jan 2023 18:20:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E3B1E9D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674926451;
-	bh=UykfPTbGDvILC/tRy7XI1XkGj0Yf2yNGJ45GzxQQ+ZQ=;
+	s=default; t=1674926465;
+	bh=Sf8e39xlrlBgctvAjNmyaVJ8lTKFI4W3ruclNnksOWQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=XVlHe42FTyi2vLdjWy7W2ehQram1rDChE+4UwgIzMcGSTFyTvB90xV67Pxbq3GzvY
-	 AqSn+DXzzPCykO8RKObTCpjfxe03/AHQv8YEkBdGcU5UHNcbJ05/pTHNr9YRVkXzKQ
-	 jN5fmKZaSets4LTksM0xLOKOSlWMGvWUEp7xa1LE=
+	b=YFFFy703yy22+jBC5uZ8SEON+eOCl2+b+aR/6TWerKuI1nsfGkPpnsrds6A6nR9b1
+	 DOKw1ey1W3gjrrE8A5PxvtZDaXNsjyZEQbjVC1HKyklAu4ZD0LjPLMSFO1aL3Eed/r
+	 hr8PorkIyaVnyrWTMb+JUpxsXapcaWlQ+ChSxXu0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC426F80548;
-	Sat, 28 Jan 2023 18:19:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 58188F8053D;
+	Sat, 28 Jan 2023 18:19:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DD1AEF802DF; Sat, 28 Jan 2023 18:19:04 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 39A3AF8053D; Sat, 28 Jan 2023 18:19:40 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 58CACF8027D
- for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2023 18:18:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58CACF8027D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5EA44F80171
+ for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2023 18:19:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EA44F80171
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Q/h7ILGe
+ header.s=k20201202 header.b=qlXG48eQ
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 8854CB8069C;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id E74B460C38;
+ Sat, 28 Jan 2023 17:18:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28DF1C4339C;
  Sat, 28 Jan 2023 17:18:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82F1FC433EF;
- Sat, 28 Jan 2023 17:18:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674926336;
- bh=UykfPTbGDvILC/tRy7XI1XkGj0Yf2yNGJ45GzxQQ+ZQ=;
+ s=k20201202; t=1674926339;
+ bh=Sf8e39xlrlBgctvAjNmyaVJ8lTKFI4W3ruclNnksOWQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Q/h7ILGefhpfAwyN2R6Cfm0yd3vzqOWqf1/37XqBIzM6FUeS9VfVVZlUDMiNDuHnO
- yrXf0bhwP30iGJVmoFviQ7RMQ+q78tKuo87b8kyTJRvFz+B249R6cSGI3A10GlGO9A
- HqVM1QevzjZJ0Vx4Zra/k+Df1MsKAd0RjrmsgAuwpfWNKtx6H3vgZgHdwRUiIV5x3N
- tp2Y5e4xYbjdKVAzQNydZhlqM7+5VyaqzsbevEXPtvoQkK6T4RpjoCZhgu0bntAXbO
- tpE5K5UJZJdZNdqP5iAXLXAWChDA4BoffIXIBjc6BhqORr18cblKGmmrooV1FZS2Z+
- T1bOSnNX00f4w==
+ b=qlXG48eQCOe3z8Urz+wDffxl9GdN0pgqSbrDxcIex7q6Hqmy33aeIetLf/n5jEiJF
+ uans6w2v3EkhTjky0H+k3K2LM6E6k3q+j78XU1WgDlV9QSZzBhCpqg7wmYhjpZWRe0
+ tg9RIYRlPcCP5vmdjYuxaTlzUxsCRixOwBvPXAX382RNGXYjsvY6OkLm4MfXYFJbRw
+ RBl1/leHXfhzCzbYXtpns/ZQF7X8PaiidX1amryL0fV2afygTusdcpLbqpJVMT2Whc
+ 0oZ5otwv8jNpNqz19KyoWx4cZLtHJKMbGOwUWdJ/cQyetJ7dwGllEZudVZlcE0EOq4
+ ERourzK8scoyg==
 From: Mark Brown <broonie@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, 
- Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, 
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
- Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- Alexander Stein <alexander.stein@ew.tq-group.com>
-In-Reply-To: <20230119073416.3064918-1-alexander.stein@ew.tq-group.com>
-References: <20230119073416.3064918-1-alexander.stein@ew.tq-group.com>
-Subject: Re: [PATCH 1/1] ASoC: imx-hdmi: Use dev_err_probe
-Message-Id: <167492633131.2479102.10605156106740609522.b4-ty@kernel.org>
-Date: Sat, 28 Jan 2023 17:18:51 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>, Kees Cook <keescook@chromium.org>
+In-Reply-To: <20230127224128.never.410-kees@kernel.org>
+References: <20230127224128.never.410-kees@kernel.org>
+Subject: Re: [PATCH] ASoC: kirkwood: Iterate over array indexes instead of
+ using pointer math
+Message-Id: <167492633694.2479102.1677977069431569775.b4-ty@kernel.org>
+Date: Sat, 28 Jan 2023 17:18:56 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -81,17 +77,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
- linuxppc-dev@lists.ozlabs.org, NXP Linux Team <linux-imx@nxp.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-hardening@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 19 Jan 2023 08:34:16 +0100, Alexander Stein wrote:
-> This silences -517 errors and helps figuring out why the device probe
-> is deferred.
+On Fri, 27 Jan 2023 14:41:29 -0800, Kees Cook wrote:
+> Walking the dram->cs array was seen as accesses beyond the first array
+> item by the compiler. Instead, use the array index directly. This allows
+> for run-time bounds checking under CONFIG_UBSAN_BOUNDS as well. Seen
+> with GCC 13 with -fstrict-flex-arrays:
 > 
+> ../sound/soc/kirkwood/kirkwood-dma.c: In function
+> 'kirkwood_dma_conf_mbus_windows.constprop':
+> ../sound/soc/kirkwood/kirkwood-dma.c:90:24: warning: array subscript 0 is outside array bounds of 'const struct mbus_dram_window[0]' [-Warray-bounds=]
+>    90 |                 if ((cs->base & 0xffff0000) < (dma & 0xffff0000)) {
+>       |                      ~~^~~~~~
 > 
+> [...]
 
 Applied to
 
@@ -99,8 +102,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: imx-hdmi: Use dev_err_probe
-      commit: 362e8d0f27c40864b4f8994624409f7b4316d2dd
+[1/1] ASoC: kirkwood: Iterate over array indexes instead of using pointer math
+      commit: b3bcedc0402fcdc5c8624c433562d9d1882749d8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
