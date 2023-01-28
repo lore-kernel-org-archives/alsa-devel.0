@@ -4,63 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AE6AC27C76
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Jan 2023 10:50:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BECB9C61DA7
+	for <alsa-devel@archiver.kernel.org>; Sat, 28 Jan 2023 10:50:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52216EBF;
-	Sat, 28 Jan 2023 11:49:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52216EBF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2193BED1;
+	Sat, 28 Jan 2023 11:49:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2193BED1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674903001;
-	bh=fJ2O0Xp8qig0PONRP8hnGCqbt209AFAWi6nCkqYVf1Y=;
+	s=default; t=1674903009;
+	bh=X9g24zwHYHzuWSbHrdtBTwJcaKn7C4eDSMB8zCgqzYM=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=oBqu7E3n0OtNiq7QoYC0iV51zoP8jAtyszjaE87MWaVH3sZdvPxiS+0YxbweiKIQj
-	 zlwmbERutvy3UGZzQEnmSmYZuO2SBW6fHw7Ur7ZimrrmP9GeJaXwIU72l+YMEyhP5b
-	 VkRc0eRlUqHd3jtQy7PgoM5WPs4lrreFkf9BjDOY=
+	b=pONuWo62iyT0LNit4HV/ETu3yICUdai/gagwyfXbQtaSUI2gemdMNRMPXzfyvnt/l
+	 ysz0JYwyAtNnv/i2lRMPiOEfCn3aEMHyJ+evum+7c2LXRa0C3D7O1TJlIro9XQ832B
+	 M5dp7WqbG/HIOqsjbjhRXipXgNiAVJH19f71+Fw8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DDFE6F8053D;
-	Sat, 28 Jan 2023 11:48:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37F24F802DF;
+	Sat, 28 Jan 2023 11:49:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17460F80506; Sat, 28 Jan 2023 11:48:20 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id 02992F80549; Sat, 28 Jan 2023 11:49:02 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1984F8025D
- for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2023 11:48:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1984F8025D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 577C2F802DF
+ for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2023 11:48:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 577C2F802DF
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=qY0He4Gf
+ header.s=k20201202 header.b=cInG9ZbX
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 71334CE08D4;
- Sat, 28 Jan 2023 10:48:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D723FC433EF;
- Sat, 28 Jan 2023 10:47:59 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 6F084B8016A;
+ Sat, 28 Jan 2023 10:48:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6586C4339B;
+ Sat, 28 Jan 2023 10:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1674902881;
- bh=fJ2O0Xp8qig0PONRP8hnGCqbt209AFAWi6nCkqYVf1Y=;
+ s=k20201202; t=1674902888;
+ bh=X9g24zwHYHzuWSbHrdtBTwJcaKn7C4eDSMB8zCgqzYM=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=qY0He4GfHO0oi8VHTrzCF4bIEppMFjWj0fG/Sw23OgjMpjTNJ40kCmGuY93vNMyyT
- fPQfrjBIHFXJZCVM57LxGdLsRO8OabwN+lt3m2c9YfZk1qeDcZLBhtTMEmUIM3VizD
- 0AzECBBxT8bVa+s1z2EnYh8MPztqhujkVlSB0SJFvZI1eDKSRIFK4sPl+GzcR0fwDl
- eguFfLyNtvWO804ZVhcOzs7hjjFD9MwBeU5XQGVFmmLzHNydHeMrtNU2LeKdK7PUdy
- XOuD2Ok3i+sJKmtqGsTGxSts8IwKZ8t986Eyn3BsaFxp8u1vgj7Yx8dsBlMpUWT5/g
- RIA13LglLFrsQ==
+ b=cInG9ZbXv3rWjk3KrXGYMnTes/ngAQ77H7cyCUrvd6emb68vGG5wTcZ7JOEYH4CqH
+ IjMHAaagJMdhPY6JkQzzkwH7nFpMgghkKpn0rONHJvoVXFTeQeZJFlXLoHNHzWkYmL
+ sfkzNZWMq1B0VMiGyOU2nVRvlIto/j2USJFYOUSk7e6rdG1DEeZH+gydhzcv3SlrdI
+ Kc4JmEFIVmf+NP/Jvt3lTJo9xJ9w2oJ+sG3zFfwZ1u8BjVmIroTWJxsCPEOJkrXBUa
+ BmaPUxjUpgDAL2CT4JdtkbJ4kQ7nbcKy0l1E+qWl1ooPVElnj3+WerZl/h7HLfZOGH
+ JUwqpuptPWjjw==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230117121615.25690-1-peter.ujfalusi@linux.intel.com>
-References: <20230117121615.25690-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: ipc4-topology: No need to unbind routes
- within a pipeline
-Message-Id: <167490287960.2145828.3346973946324840661.b4-ty@kernel.org>
-Date: Sat, 28 Jan 2023 10:47:59 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Astrid Rost <astrid.rost@axis.com>
+In-Reply-To: <20230123135913.2720991-1-astrid.rost@axis.com>
+References: <20230123135913.2720991-1-astrid.rost@axis.com>
+Subject: Re: [PATCH v3 0/3] ASoC: simple-card-utils: create jack inputs for
+ aux_devs
+Message-Id: <167490288646.2145828.6069622969761502857.b4-ty@kernel.org>
+Date: Sat, 28 Jan 2023 10:48:06 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -77,18 +78,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- rander.wang@intel.com, yung-chuan.liao@linux.intel.com
+Cc: alsa-devel@alsa-project.org, kernel@axis.com, linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 17 Jan 2023 14:16:15 +0200, Peter Ujfalusi wrote:
-> The FW currently ignores unbinding routes if the source and sink widgets
-> belong to the same pipeline. So no need to send the IPC at all in the
-> first place.
+On Mon, 23 Jan 2023 14:59:10 +0100, Astrid Rost wrote:
+> Add a generic way to create jack inputs for auxiliary jack detection
+> drivers (e.g. via i2c, spi), which are not part of any real codec.
+> The simple-card can be used as combining card driver to add the jacks,
+> no new one is required.
 > 
+> Create a jack (for input-events) for jack devices in the auxiliary
+> device list (aux_devs). A device which returns a valid value on
+> get_jack_type counts as jack device; set_jack is required
+> to add the jack to the device.
 > 
+> [...]
 
 Applied to
 
@@ -96,8 +101,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: ipc4-topology: No need to unbind routes within a pipeline
-      commit: 9a62d87acee94919af1fe92f2412fff83dcbcda0
+[1/3] ASoC: soc-component: add get_jack_type
+      commit: df55122ba0955951a85ef3ffb19f0dcb0ad3ffbb
+[2/3] ASoC: simple-card-utils: create jack inputs for aux_devs
+      commit: 9b271207ac83db362fac757d367923bde57dce86
+[3/3] ASoC: ts3a227e: add set_jack and get_jack_type
+      commit: 087b9dda8658052a33031ef82a8d8ef77a7c94ea
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
