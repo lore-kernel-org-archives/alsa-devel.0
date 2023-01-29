@@ -4,81 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F5F9C27C76
-	for <alsa-devel@archiver.kernel.org>; Sat, 28 Jan 2023 17:42:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0558CC05027
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Jan 2023 07:10:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E733868;
-	Sat, 28 Jan 2023 18:41:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E733868
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8AA3C823;
+	Sun, 29 Jan 2023 08:10:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AA3C823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674927746;
-	bh=UsFqkHpq+zecSpbileA8oE88rqAqGP2pVfXbVmj47MI=;
-	h=References:In-Reply-To:From:Date:Subject:To:List-Id:
+	s=default; t=1674976250;
+	bh=5QzWA80JnAMHP8PX2TMVNUHFE4JYQUNbxY2QalPX/4w=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=RZWQ8kYFuJRaba3LhjQmXIqZxr9jsNV1pZG9JVOTETQEwwbZiZISy3owbYDc1qNfO
-	 lIqtwkwwnutTSG/mtihTcavZItjAkfoNmSPrZt1g+NhUe4IgC3AKPd8kHfkSw9QL2A
-	 xTHw476+e2rMzIKyWnLjEMPtS8Y3PoJtwtl+AxM4=
+	b=l6OvDmoqSIvE48dzpDSJ+YndqmCraNZIgi46QAPkzSdaJM4C/IONgguYOw+4mgblg
+	 ZA9B+4B1svOcG96oMwNe2itWfTPMf/nXx8oVpE1phJSPQIeR44F+B1w81X/lX/rjmK
+	 pYd0NASW96OykddNdkrldNemfiEPj43SH66Zs9oY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0A2E2F8025D;
-	Sat, 28 Jan 2023 18:41:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17C17F8007C;
+	Sun, 29 Jan 2023 08:10:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E035F8027D; Sat, 28 Jan 2023 18:41:34 +0100 (CET)
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com
- [IPv6:2607:f8b0:4864:20::102a])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 07B57F804B2; Sun, 29 Jan 2023 08:09:57 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9D339F8007C
- for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2023 18:41:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D339F8007C
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=L0lEN66n
-Received: by mail-pj1-x102a.google.com with SMTP id
- b24-20020a17090a551800b0022beefa7a23so11633134pji.5
- for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2023 09:41:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date:message-id:reply-to;
- bh=UsFqkHpq+zecSpbileA8oE88rqAqGP2pVfXbVmj47MI=;
- b=L0lEN66nLcsX0ghB6goBIntsba9sN7PcE6bVsX8ySLBl+BTHGRTq/G8B6WBORTZd6u
- QpRKoxp5+i6akpcFjzK2ozQ7uT1mvJfm2pj9NIyqGZyOU1/JICy3371dSy0F7VEEFGQb
- 1mzVZ+hDE+u7xApSKYzyaNS0IX4NidUm7LCXdKwQCz6J+izOvZPCgV4zBCKj5PSvFbaj
- ulv47WxfAQYIo1MtAl6JBMfhz5KMJJKIL6em1ktwODZjbBn0V6OFS9B9yW+OCc1bNqxD
- obbktN3BLzYa/z8JlgPVZv+wIqcWBMQm+Vi9gf2fTD6cf5MttxmUrh9RfvUMVqFShXvw
- GaGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=UsFqkHpq+zecSpbileA8oE88rqAqGP2pVfXbVmj47MI=;
- b=uijRbg+8h7UJeyQOilEdZAF6c06sMPJmCzBio9pn4oqyMl2b5V7rrjxwvRhSFC+/gV
- X0emSLYjLePnoBRTFwy8sbXIhH5UxzEDDnh8Nh0+e5t8iL0c0JD25U/tNcA1UPlZiwN1
- anz6+r5+0KsFb4u1bQjlmrSyohHUtxm/GjyMny2IlVxB9IwKp1JNsnKimjq8Kb0r4ry7
- MdshYJ2IWwp3czgw7cpvxzrICk+AZSOx/SNKLp/hsduyXfwXJ98nKL2OpvXcCkBkb5rC
- BElGQHOh6aD4wrlLj0ruWDaM3wB0kjNlEg1LtUWzCTVOyf903n4xK11XcDI8C4rl899+
- sUgQ==
-X-Gm-Message-State: AFqh2kpi3nrQCujkvlCrHVzRkRq2K09IgIbtp1O15VQm5wYaydG1qWVp
- vDMovtlVGX2Xv6wJ1YVhieC0LDnBDMhF8COTzJ4=
-X-Google-Smtp-Source: AMrXdXvG34XZO6eEJVvN5aHCgWL4ph6DjbkuCqQRHM0QoQwGRZFixeab9z7mufGs9srhIPdEp+/zj5Lq4CAL4PyhNTA=
-X-Received: by 2002:a17:90a:8404:b0:228:d64f:ddbe with SMTP id
- j4-20020a17090a840400b00228d64fddbemr6866466pjn.40.1674927686993; Sat, 28 Jan
- 2023 09:41:26 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46B91F8007C
+ for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2023 08:09:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46B91F8007C
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=rhzlM/PX
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id A38B0B80949;
+ Sun, 29 Jan 2023 07:09:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCCEDC433D2;
+ Sun, 29 Jan 2023 07:09:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1674976189;
+ bh=5QzWA80JnAMHP8PX2TMVNUHFE4JYQUNbxY2QalPX/4w=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=rhzlM/PXVF3UGJ8Gzuu6E/mwYY6fuDkK7gh6hj+7cnJUYwy65c8kVUrOxYUdB0R4/
+ jEQuUO6poSKB7P3QP3myRBJEg0gNKAUCmXILtzf5TOnl0yWPBWQPVlO/sZc4XuQxmF
+ RngB74fzeURIwYGOagNvLrAuw+DDA5Ht9VXJ85Wo=
+Date: Sun, 29 Jan 2023 08:09:46 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Zhou Furong <furong.zhou@linux.intel.com>
+Subject: Re: [RFC PATCH v2 07/22] ASoC: Add SOC USB APIs for adding an USB
+ backend
+Message-ID: <Y9YbumlV9qh+k68h@kroah.com>
+References: <20230126031424.14582-1-quic_wcheng@quicinc.com>
+ <20230126031424.14582-8-quic_wcheng@quicinc.com>
+ <Y9UiiMbJFjkzyEol@kroah.com>
+ <7c1d80b6-5db3-9955-0a67-908455bd77fa@linux.intel.com>
 MIME-Version: 1.0
-References: <CAOMZO5CVCm5bpVThYW7V379PyTfyVQLBrN03cUfOxLRyBXp0gw@mail.gmail.com>
- <CAEnQRZAUx0Xg_3J161VG=m9oCQFNBT3aFHwExFbWWOTK6xsSTA@mail.gmail.com>
- <CAOMZO5DECuV17T+1u9WKXdZfGqQ84kMCm2Yt+b0cuOuFFUiBLw@mail.gmail.com>
-In-Reply-To: <CAOMZO5DECuV17T+1u9WKXdZfGqQ84kMCm2Yt+b0cuOuFFUiBLw@mail.gmail.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Sat, 28 Jan 2023 14:41:14 -0300
-Message-ID: <CAOMZO5DPLdt2BqPVrwd9+TCYnJAGQowKqL=7g6i_-Fr7qktDPw@mail.gmail.com>
-Subject: Re: i.MX8MN: SAI: First playback failure, second succeeds
-To: Daniel Baluta <daniel.baluta@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7c1d80b6-5db3-9955-0a67-908455bd77fa@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,25 +75,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>,
- Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
- Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-usb@vger.kernel.org, bgoswami@quicinc.com, mathias.nyman@intel.com,
+ Thinh.Nguyen@synopsys.com, andersson@kernel.org, tiwai@suse.com,
+ lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, agross@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org,
+ quic_plai@quicinc.com, Wesley Cheng <quic_wcheng@quicinc.com>,
+ linux-kernel@vger.kernel.org, quic_jackp@quicinc.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Daniel,
+On Sun, Jan 29, 2023 at 02:54:43PM +0800, Zhou Furong wrote:
+> 
+> 
+> > > +void *snd_soc_usb_get_priv_data(struct device *usbdev)
+> > > +{
+> > > +	struct snd_soc_usb *ctx;
+> > > +
+> > > +	if (!usbdev)
+> > > +		return NULL;
+> > 
+> > How could usbdev ever be NULL?
+> The method is exported to public, valid check should be reasonable
+> as someone may call it by mistake
 
-On Wed, Jan 25, 2023 at 11:51 PM Fabio Estevam <festevam@gmail.com> wrote:
+We do not protect the kernel from itself like this, no need to check
+things that should never happen.  If the caller gets it wrong, their
+code will break :)
 
-> They also match in the working and non-working cases.
->
-> I have also tried applying your patch:
-> https://lore.kernel.org/lkml/20190308173904.27298-1-daniel.baluta@nxp.com/
->
-> but it did not help.
+thanks,
 
-It is working now. The error was caused by an out-of-tree patch to handle MCLK.
-
-Without such a patch, it works well.
-
-Thanks
+greg k-h
