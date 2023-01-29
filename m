@@ -4,90 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E206C636D3
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 14:44:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94F62C636CD
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 14:53:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC8C3203;
-	Wed,  1 Feb 2023 15:43:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC8C3203
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7EAA882A;
+	Wed,  1 Feb 2023 15:52:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EAA882A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675262657;
-	bh=ox1Jtj6mr5fp39dnr84jCJ6WyBw6ssqSENH4udXGmdw=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=UT/UF3/9+CJT5MfkbG5B6CjVrA1izMnPeY7V8nKZUuAZggnPJl3bYqBua6SmSz3bd
-	 tUYEGKtNWR5v6vwM8yZ0xelySNYRGJydWGgOnvhXJRBOaglIsDHcbAMw+uHzys6n1g
-	 iAJGj171l1aG6k/6T2G5chFCNtzJA1fSyzn7xkCo=
+	s=default; t=1675263223;
+	bh=CxXX7ALvzcgPD+tC8QPk8lV98rQMFeGLlT8VjUlgNu8=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=JB7zN29tUwlsTT3FkPfe+QU1gZrfFLjY3os0bQHKse9HDd29o+/XKqmI2SJd5xDcQ
+	 hdj7dQK/GoTFkD0N72ZN7z50MFXsxkKOan2rQ+Xem5OO8R31Y421qruJECL753vcrN
+	 JTPRWazbhJFfwJvKBaht711Owc7jcPfMQiCpc9ys=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84218F8032B;
-	Wed,  1 Feb 2023 15:43:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24ACEF8032B;
+	Wed,  1 Feb 2023 15:52:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BDCD8F80423; Wed,  1 Feb 2023 15:43:26 +0100 (CET)
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
- [IPv6:2a00:1450:4864:20::433])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 8A5D1F804B2; Sun, 29 Jan 2023 18:14:26 +0100 (CET)
+Received: from ovh.texitoi.eu (ovh.texitoi.eu [51.254.137.88])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA512)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6AE04F8032B
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 15:43:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AE04F8032B
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=ibXFxt9B
-Received: by mail-wr1-x433.google.com with SMTP id m7so17529116wru.8
- for <alsa-devel@alsa-project.org>; Wed, 01 Feb 2023 06:43:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=dC2Rf+qs0P/jrCe9msdGE8AkAgDIJW5HtHWs9aRUyUM=;
- b=ibXFxt9BRYojnFB5aMpK5zHfRUr3rTuXK8gbzrbbANcmXrBoR3/gZFAibr8X/eCyvG
- nZM2qAouhLUMXlBtMMSSx22Q2Wh+QbUCfXVemidC222OvyJrgcpA2z3s6d0cGPUOooas
- KfadIZ9z7m0x69PB9tFiOVfdYU/Ynba6LssKc07/efXQ255RPM8osrkZf3G4oXwnvGyJ
- hPqhdqdZrA0LkIDPCzL+aAsGQ5LcfPAg6yvUiSx1EiXVR2TfIplLZtYvjZQgZgA2SNw9
- E4SeopzvVb5y0LGJbxCZzJvQtw6EmxbQvpnV2Je6RJhpaZj7HrcpJgIWti8ZHGNrppvk
- gd0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=dC2Rf+qs0P/jrCe9msdGE8AkAgDIJW5HtHWs9aRUyUM=;
- b=w5+lWw/R/nb0o8XP6cKgkc4TaxlP0rcn6gGeNNwh1DftyDiZzlnKAX8JygFe/U55kF
- iWE8l2SNTYJzDQJi9I7PJ6R79cVPeQ0vbOCkksdaPU7Nsfo8Jp/MSVdbWtBFAx0pnAeS
- sXyE0ei7oyMh8CYTryUqFoGz2dFRzuCu/+19lCjsvhy2puNuDsR3BgvKTDKYJaAwwxKV
- Y5uHWKFT+Kqr26NPeWHQgrnOnY9N1f6fjRwMaH03C9Ahs3TBHK+DPzPoO9qZM0ZvddnS
- FnCgv4pILj9TnBDsyVZhmhQgV0c5bekn02ZIJ6C1Bc0dArl2q8SqgQQkjF4zoL79B+Us
- yIDw==
-X-Gm-Message-State: AO0yUKWZxPW3f/QykQe+rCUlDuz+iEjlHQP0kwI3gaDGShqCrkKq3yOp
- cpITALkXkEJModcWL92jMk+WwA==
-X-Google-Smtp-Source: AK7set8PI06q3hLefAX/yzLn2ALEYmydTMRpaxfh4uUmHXpFyC9Y/mCBDAhLTB1c6A+QZNC14bxd6A==
-X-Received: by 2002:adf:d1e9:0:b0:2bf:9543:2bea with SMTP id
- g9-20020adfd1e9000000b002bf95432beamr3759674wrd.35.1675262594646; 
- Wed, 01 Feb 2023 06:43:14 -0800 (PST)
-Received: from [192.168.1.109] ([178.197.216.144])
- by smtp.gmail.com with ESMTPSA id
- r8-20020adfda48000000b002be25db0b7bsm17513102wrl.10.2023.02.01.06.43.13
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 01 Feb 2023 06:43:14 -0800 (PST)
-Message-ID: <6491d6fb-2a10-1c80-d422-8300d5a75ce4@linaro.org>
-Date: Wed, 1 Feb 2023 15:43:12 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E5B3F80171
+ for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2023 18:14:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E5B3F80171
+Received: from book360.numericable.fr (55.174.26.93.rev.sfr.net [93.26.174.55])
+ by ovh.texitoi.eu (OpenSMTPD) with ESMTPSA id 199205cf
+ (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO); 
+ Sun, 29 Jan 2023 18:14:16 +0100 (CET)
+From: Guillaume Pinot <texitoi@texitoi.eu>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: hda/realtek: Fix the speaker output on Samsung Galaxy
+ Book2 Pro 360
+Date: Sun, 29 Jan 2023 18:13:38 +0100
+Message-Id: <20230129171338.17249-1-texitoi@texitoi.eu>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] ASoC: dt-bindings: Drop broken irondevice, sma1303 binding
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-References: <20230201131059.65527-1-krzysztof.kozlowski@linaro.org>
- <1bcd61d6-810f-1239-1b6e-367e0fe87370@linaro.org>
- <Y9pxGUMWyMeXQpZM@sirena.org.uk>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <Y9pxGUMWyMeXQpZM@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Wed, 01 Feb 2023 15:52:51 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,56 +58,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Kiseok Jo <kiseok.jo@irondevice.com>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Guillaume Pinot <texitoi@texitoi.eu>, stable@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 01/02/2023 15:03, Mark Brown wrote:
-> On Wed, Feb 01, 2023 at 02:13:46PM +0100, Krzysztof Kozlowski wrote:
->> On 01/02/2023 14:10, Krzysztof Kozlowski wrote:
-> 
->>> Because the binding:
->>> 1. Was never tested,
->>> 2. Was never sent to Devicetree maintainers,
->>> 3. Is entirely broken and wrong, so it would have to be almost rewritten
->>>    from scratch,
->>> 4. It does not match the driver, IOW, the binding is fake.
-> 
->> I understand that in general we tend to fix, not just to revert. But the
->> poor quality of this binding and the next patch, which was suppose to
->> fix it, plus complete lack of testing, means I do not believe the author
->> will send correct binding.
-> 
->> More over, fixing binding might require dropping incorrect properties,
->> thus changing the driver. I am not willing to do that, I doubt that
->> anyone has the time for it.
-> 
-> It is an absolutely trivial binding as is, it is utterly
-> disproportionate to delete both the binding and the driver to fix
-> whatever it is that the issues you're seeing are (I can't really tell
-> TBH).  Undocumented properties are a separate thing but again a revert
-> is obviously disproportionate here, glancing at the driver the code is
-> all well enough separated and can have default values.  Looking again I
-> did miss the sysclk selection which should be dropped, clocks should use
-> the clock bindings.
-> 
->> It's the job of submitter to work on it.
-> 
-> It's also not the end of the world if we have a driver that isn't
-> perfect.
-> 
-> Please, try to keep things constructive.
+Samsung Galaxy Book2 Pro 360 (13" 2022 NP930QED-KA1FR) with codec SSID
+144d:ca03 requires the same workaround for enabling the speaker amp
+like other Samsung models with ALC298 codec.
 
-I tried. I started writing patch to fix few things in this binding and
-then noticed that it is entirely empty and documents nothing.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Guillaume Pinot <texitoi@texitoi.eu>
+---
+I've tested this fix on my laptop with success. I've took "inspiration" from
+https://lore.kernel.org/all/20221115170235.18875-1-tiwai@suse.de/
 
-The trouble is that soon you will send it to Linus and then it becomes
-the ABI even though no one ever approved or reviewed the actual ABI.
+This is my first contribution, so feel free to give me feedbacks!
 
-Best regards,
-Krzysztof
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6fab7c8fc19a..c4496206c3e7 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9521,6 +9521,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x144d, 0xc812, "Samsung Notebook Pen S (NT950SBE-X58)", ALC298_FIXUP_SAMSUNG_AMP),
+ 	SND_PCI_QUIRK(0x144d, 0xc830, "Samsung Galaxy Book Ion (NT950XCJ-X716A)", ALC298_FIXUP_SAMSUNG_AMP),
+ 	SND_PCI_QUIRK(0x144d, 0xc832, "Samsung Galaxy Book Flex Alpha (NP730QCJ)", ALC256_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
++	SND_PCI_QUIRK(0x144d, 0xca03, "Samsung Galaxy Book2 Pro 360 (NP930QED)", ALC298_FIXUP_SAMSUNG_AMP),
+ 	SND_PCI_QUIRK(0x1458, 0xfa53, "Gigabyte BXBT-2807", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1462, 0xb120, "MSI Cubi MS-B120", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1462, 0xb171, "Cubi N 8GL (MS-B171)", ALC283_FIXUP_HEADSET_MIC),
+-- 
+2.30.2
 
