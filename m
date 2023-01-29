@@ -4,82 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B9C6C05027
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 Jan 2023 08:26:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E548AC61D97
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 Jan 2023 15:54:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9296E7F;
-	Sun, 29 Jan 2023 09:25:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9296E7F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89114844;
+	Sun, 29 Jan 2023 16:53:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89114844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1674980781;
-	bh=CvTUgW7B5PVeM1zlnvCR+4pGjOCrxHQ8rpv6el6tGgU=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=HioPpAPngIxmRdMKS9S+OkBPiWAOweYQhLlx4RnEuTguRywhuaEClAUOyh5v9Dz4x
-	 xmsNmfYewzxeN53BqdS5XPMbxMNGT+CqWMAiBkN67cr7RLbAMCyRRZ5uj6Fc2vMi2F
-	 siFnbVG2Pahhw6E44jnidngf6+wkqEA8cvQSWqV4=
+	s=default; t=1675007685;
+	bh=wRKlzLdup8jq63YLyCL4fm6uQTG/7e4WBP4+o6TwvBg=;
+	h=Date:To:From:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=gcAyDbm9S/T1iSHkEhzxNS68Qc1UqXrCqPjGtF0osOSeqMB/86y658z0CZ2zzuGZA
+	 Oc1443rn+wjQ18SUcWCRYghybzoBBwqXn7t4r4aXR6IlK54dJCUJlmiIBs+lWItCRe
+	 2S1vojJtFjuMIikeS1TqxVp/g6g596bolTHdoJ0k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 730E4F804B2;
-	Sun, 29 Jan 2023 09:25:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2164FF80494;
+	Sun, 29 Jan 2023 16:53:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ED46AF804B2; Sun, 29 Jan 2023 09:24:58 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ id 870DEF804B2; Sun, 29 Jan 2023 16:53:52 +0100 (CET)
+Received: from 2.mo552.mail-out.ovh.net (2.mo552.mail-out.ovh.net
+ [178.33.105.233])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C226FF80155
- for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2023 09:24:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C226FF80155
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=xdsEYQL6; 
- dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=/MpqNgt9
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1E6911F747;
- Sun, 29 Jan 2023 08:24:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1674980693; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hFsZ/OUeRjzrEDqCoXlJCYznOsRH5op4j2JHn4HyTqs=;
- b=xdsEYQL6qOnUKmuUX2mSwm6wZjsUabe0NRLhlVmiapAsRln8kEH+N/0LtsLl5WUzgU7u+2
- oYMdgfZ98XBQ02us5Cij04QnNliHfUgB7TDrf3PAz7FrabfPlv5CfLP6DZ7OE8MFodKIHB
- uVUfqeMErg5SBNrWVFLIj7wWAA43Uy0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1674980693;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=hFsZ/OUeRjzrEDqCoXlJCYznOsRH5op4j2JHn4HyTqs=;
- b=/MpqNgt9SNg21i7pq7fE5uFC7EPUXCpZLEn/a5FP5lsSRHeDoiVTCsHP/cHzQlnhY2U6A9
- l9GIhl3EkKmY+8CA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7BAF113918;
- Sun, 29 Jan 2023 08:24:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id RW5dHVQt1mNbSAAAMHmgww
- (envelope-from <tiwai@suse.de>); Sun, 29 Jan 2023 08:24:52 +0000
-Date: Sun, 29 Jan 2023 09:24:52 +0100
-Message-ID: <87h6w9px2j.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH 26/35] Documentation: sound: correct spelling
-In-Reply-To: <20230127064005.1558-27-rdunlap@infradead.org>
-References: <20230127064005.1558-1-rdunlap@infradead.org>
- <20230127064005.1558-27-rdunlap@infradead.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+ by alsa1.perex.cz (Postfix) with ESMTPS id 720ACF8007C
+ for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2023 16:53:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 720ACF8007C
+Received: from mxplan2.mail.ovh.net (unknown [10.109.146.28])
+ by mo552.mail-out.ovh.net (Postfix) with ESMTPS id 688AA27475
+ for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2023 15:53:44 +0000 (UTC)
+Received: from gnuinos.org (37.59.142.110) by DAG5EX1.mxp2.local (172.16.2.9)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.17; Sun, 29 Jan
+ 2023 16:53:43 +0100
+Authentication-Results: garm.ovh; auth=pass
+ (GARM-110S00452f60c98-3a68-4c92-9daf-66caf81a4558,
+ 05BB96B847A8C1366371E7DF300F641C8D2E5AED) smtp.auth=aitor_czr@gnuinos.org
+X-OVh-ClientIp: 88.11.110.122
+Message-ID: <18cfeb79-1a35-332b-d526-05a68cbee28f@gnuinos.org>
+Date: Sun, 29 Jan 2023 16:53:37 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Content-Language: en-US
+To: <alsa-devel@alsa-project.org>
+From: aitor <aitor_czr@gnuinos.org>
+Subject: amixer-gtk
+X-Originating-IP: [37.59.142.110]
+X-ClientProxiedBy: DAG8EX1.mxp2.local (172.16.2.15) To DAG5EX1.mxp2.local
+ (172.16.2.9)
+X-Ovh-Tracer-GUID: f4563c32-68d3-4767-ba5a-ab1d3ae0495e
+X-Ovh-Tracer-Id: 10846919706100885015
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvhedrudeftddgkeefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpegtkfffgggfvffhufhisegrtderredtfeejnecuhfhrohhmpegrihhtohhruceorghithhorhgptgiirhesghhnuhhinhhoshdrohhrgheqnecuggftrfgrthhtvghrnhepkefgtefgjedvtddvgfehfeeuueehueejvdejveeuhedvuddvteektdetgeefheffnecuffhomhgrihhnpeguvghvuhgrnhdrohhrghenucfkphepuddvjedrtddrtddruddpfeejrdehledrudegvddruddutdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoegrihhtohhrpggtiihrsehgnhhuihhnohhsrdhorhhgqedpnhgspghrtghpthhtohepuddprhgtphhtthhopegrlhhsrgdquggvvhgvlhesrghlshgrqdhprhhojhgvtghtrdhorhhgpdfovfetjfhoshhtpehmohehhedvpdhmohguvgepshhmthhpohhuth
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Content-Filtered-By: Mailman/MimeDel 2.1.29
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,26 +76,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, Jonathan Corbet <corbet@lwn.net>,
- linux-doc@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 27 Jan 2023 07:39:56 +0100,
-Randy Dunlap wrote:
-> 
-> Correct spelling problems for Documentation/sound/ as reported
-> by codespell.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: alsa-devel@alsa-project.org
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
+Hi all,
 
-Applied this one now to for-next branch.  Thanks.
+This might be a bit off-topic in a low level mailing list like this (I mean, at kernel level),
+but I would like to share with you a new gtk based interface for alsa mixer I'm working on.
+I called it amixer-gtk because most of the code in the backend is built on top of Jaroslav's amixer.
+If you want to give it a try, just download the git repo and follow the explanations in the README:
+
+$ git clonehttps://git.devuan.org/aitor_czr/amixer-gtk.git
+
+By default, the source will be built in gtk2, but you can change gtkmm-2.4 with gtmm-3.0 in the ui/Makefile
+if you wish. Feedback is welcome, especially with regard to devices, cards, and so on... ;~)
+
+On the other hand, one of the reasons I'm writing here concerns the licensing issue. Files like:
+
+https://git.devuan.org/aitor_czr/amixer-gtk/src/branch/master/alsa/amixer.c
+
+https://git.devuan.org/aitor_czr/amixer-gtk/src/branch/master/alsa/events.c
+
+contain a header referring to GPL (either version 2 or higher), and also to Jaroslav Kysela. Is this enough?
+
+Cheers,
+
+Aitor.
 
 
-Takashi
