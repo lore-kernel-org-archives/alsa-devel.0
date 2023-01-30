@@ -4,104 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83B6DC54EAA
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Jan 2023 22:03:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77EB5C54EAA
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Jan 2023 22:09:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 43AC6829;
-	Mon, 30 Jan 2023 23:03:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43AC6829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7501A829;
+	Mon, 30 Jan 2023 23:08:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7501A829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675116230;
-	bh=ojPz9OXzDmAGtMcojCo8zWwF/P2fB9XVSaqZBC6tw6Y=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1675116550;
+	bh=DloRz2y0bMEvM06on3C1wHyCZSZhB9corbwgfoBAQFw=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=XnEQiTWjlyNVHrbRR0u+nlJcWptpcsgEx3Z4D1140bWmhQ1o86XyCxwSm5BLh8eR3
-	 OBosY9p9fjX/l45o+fxYtXN7e46KrXZ+F1Dihpy4olBWSfnOXoiOfg9xx7vnnTZ9RU
-	 nBSRZVe5XeRhm3PItLHLohJUbKC1nDGsKsJ7YkoI=
+	b=G1PqSzxtEy5MDM96r85je+9yoPGU9GvsezVOZDcdrxBFuxYDSxupPJbvb/Ai2Q5To
+	 57nWdTqZDKNVYiGg8ggHjM/fyOvfJIYz9EYinMnSsil2/Zq0qxCfR2KHzwghWLn5fn
+	 HENlc0pvqVuiWFnWHpIbDidM0wxsadQQgZ82eLAk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1C33F80236;
-	Mon, 30 Jan 2023 23:02:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07E1EF80496;
+	Mon, 30 Jan 2023 23:08:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B259CF8032B; Mon, 30 Jan 2023 23:02:58 +0100 (CET)
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
+ id AE66BF8047D; Mon, 30 Jan 2023 23:08:18 +0100 (CET)
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam12on2073.outbound.protection.outlook.com [40.107.243.73])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71800F80155
- for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2023 23:02:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71800F80155
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=CM53rTJI
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
- by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 30ULsVXN017941; Mon, 30 Jan 2023 22:02:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
- h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ILW2ve8L0jEt9qEsEsaaeIOpHW9pUVZIoAQxIT5Y2Eg=;
- b=CM53rTJIuODJJOlNE7LUXbBP8s4euiMXtzMlkTYKN8kPKs8MgoojnVD+6VCXib/OT9/N
- 680mb4xbAEH5FO6msq9EvwSj2WsN7dhXU02av1zpTFYfiAnOQ4p42kftehfS+qnpgj/B
- BLTgL7yXgB5z8APTqsmgP+iZlhTexvqJCF/YipUhzM5aoco8/HnCOq7R6CwMs3iqi4hx
- mOMJZ43I1Hul9fXslk16Sc1PL5+jKXfBZrXXHLuwmT+ZOyqpBYib2MFkK/TjV41b+9UW
- M70rp6COAyl8hsJ8czOJvipO47kZGd5a0u1OfpsEsAdpxmV2xMVqi/AODs3U/u4kSSxY xQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
- [129.46.96.20])
- by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3nefmfrwp3-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 30 Jan 2023 22:02:52 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
- [10.47.209.197])
- by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 30UM2psh025299
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 30 Jan 2023 22:02:51 GMT
-Received: from [10.110.113.14] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.36; Mon, 30 Jan
- 2023 14:02:50 -0800
-Message-ID: <6655bd97-61e8-e03b-b782-bcfcc2138717@quicinc.com>
-Date: Mon, 30 Jan 2023 14:02:49 -0800
+ by alsa1.perex.cz (Postfix) with ESMTPS id 502A2F800A7
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2023 23:08:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 502A2F800A7
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=hyyUCFCl
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FwIqQ/7J/TlEuluJL4GVWJO4jTZrP0z7QsJCb1ypyUwos5O/dLQ+ZRgYJKpkJgprWPsS7jRrACAOVSaMw988SHzMxV6I9ZRgmOfx2/YCYNjZfJBHzGLO68EnGBlXphmKEEDZghLllzNOFXBnk1kpcxNENvFylhAA24yOCzLJM1Qqsf+1jzvrPFTQFhrcFCxqEX5CPYLDikSn46BAf4f4FCTOgUN0w6v4y/mdmyWJ7n5iEcVcqmo8TwmHjeMSqumSIoaMpeepNtulOyqa0x+2tbdK9rkp9wNQdR7I5PipAeHNsy9A4cIbrZHJaye0+yn0BlSzWVqydmh1taF1jQWJ5Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5aKmvnOZr7+ZbKfC741aJVN4sW9FPDgnJEvlymWjFz8=;
+ b=D3fgKrv7aBecg75BEnDwl19UZwIoIEnoTMbu01nbrzBIW6Y/kGJX6MzmpxOx+xFuHnavt8/zHPvCO4K73Pc2o11VCt9tG5KGbu5vzLX2S/OUIKJA9iXuPF5bhlbCboZbMCyZxcH7l5OooepuoUfYlS+9hqRZMp7ONOBy+Y90PU0F1eo/OfZxlwWjWKOSiglfDQ5F9eK/fmLIT84MDylkiWzOO8ufHMViE3/CRMLlHn9sbPYli39Os9ZgJxKwB8MZfj3zvybJ0YqTp+fUzyvEbcxmuj2JQ1+POAr8fX1zqC8p+qRBGLczwUBIau4LGdhZUxr2qzcqgylnh50Tt4NmKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5aKmvnOZr7+ZbKfC741aJVN4sW9FPDgnJEvlymWjFz8=;
+ b=hyyUCFClvEV8t8s/O4+mUkMt/CB93Aj0ms7dGmRBbYnhgKz60d38tWG9TBusCxfvQ0qM9blkhym+9rUlrIOGQ+wW5bcbC0GSpNHYYWocLglz55mchvET46aMWMEVyLRIxJlDSkNyFSsNTtHNga2ikUdxb5hwhdeKPwqfwqcmHLY=
+Received: from DM6PR06CA0096.namprd06.prod.outlook.com (2603:10b6:5:336::29)
+ by DM4PR12MB7599.namprd12.prod.outlook.com (2603:10b6:8:109::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6043.33; Mon, 30 Jan
+ 2023 22:08:08 +0000
+Received: from DM6NAM11FT068.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:336:cafe::35) by DM6PR06CA0096.outlook.office365.com
+ (2603:10b6:5:336::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6043.36 via Frontend
+ Transport; Mon, 30 Jan 2023 22:08:07 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT068.mail.protection.outlook.com (10.13.173.67) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6043.22 via Frontend Transport; Mon, 30 Jan 2023 22:08:07 +0000
+Received: from AUS-LX-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 30 Jan
+ 2023 16:08:06 -0600
+From: Mario Limonciello <mario.limonciello@amd.com>
+To: Jaroslav Kysela <jkysela@redhat.com>, Mukunda Vijendar
+ <Vijendar.Mukunda@amd.com>, Saba Kareem Syed <Syed.SabaKareem@amd.com>,
+ <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 1/6] ASoC: amd: yc: Adjust the gain for PDM DMIC
+Date: Mon, 30 Jan 2023 16:07:49 -0600
+Message-ID: <20230130220754.8379-2-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230130220754.8379-1-mario.limonciello@amd.com>
+References: <20230130220754.8379-1-mario.limonciello@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [RFC PATCH v2 14/22] dt-bindings: usb: dwc3: Add
- snps,num-hc-interrupters definition
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
- <perex@perex.cz>, <lgirdwood@gmail.com>, <andersson@kernel.org>,
- <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
- <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
- <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
- <agross@kernel.org>
-References: <20230126031424.14582-1-quic_wcheng@quicinc.com>
- <20230126031424.14582-15-quic_wcheng@quicinc.com>
- <05e55db1-5181-8025-8aee-e398200b047c@linaro.org>
-From: Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <05e55db1-5181-8025-8aee-e398200b047c@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
- signatures=585085
-X-Proofpoint-ORIG-GUID: Yz_E4BLFiZ2GtEA--tQbffoSRNPjd3yO
-X-Proofpoint-GUID: Yz_E4BLFiZ2GtEA--tQbffoSRNPjd3yO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-01-30_17,2023-01-30_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 adultscore=0
- priorityscore=1501 mlxlogscore=353 suspectscore=0 bulkscore=0 mlxscore=0
- impostorscore=0 phishscore=0 lowpriorityscore=0 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2212070000
- definitions=main-2301300202
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT068:EE_|DM4PR12MB7599:EE_
+X-MS-Office365-Filtering-Correlation-Id: 95617e9a-3206-4a55-178d-08db030e77d5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tpKOmrSsdyLwGrw6Wv+QTIbz6N9QXDTdbuRSybMJ8JQfSY+s+FGXQQlMRRF6L8ONYWPzyocdzvhVFt6vgzU7GGuOL3lhpz6bz6FlfuVrgz0PxhmPLXf169Ni4JMNLAuqbafcwQnHhqtZ4n0CPztFyuTTMylPdoG9rhgMxq/tyAnTXRr+VHTjmYtzYUHC2U6MVqbYs5o39tnrODVGhE5JVQntzkv9QYTGSwAmgE/Gd/Ic7FcH07tTj5hi0wYuI0JtxiyVlKUBKk/ADMlg8gAWZdslPTQZU/kXc5o2avXQQxy5eJZi+jPUDnfdehV0ClVN1xEsnyeUCglxPk3R+RI/tDXW9KnLfZcfJumM6nSWU+NFElGrsmbHNFF3pQTagZl4kQsm0GnVFKsZ1WzHrZQOj13fQxJ0uZ6MkT29Y+dwN+p37UALvljwj/NLqVgRtxAkU4lzFpFnCBW1wchqAxCwmBiIdh3oREjb2WSnJrSRqLbFBn7FSIpYtgiu/g8NWCc+u5J+nExAS+Mr306F1hYQEI6HAyPrNiCrd1pEHuS0Q4OeXIEWGzy8TZ/z0KQBPmjE1Lh9iCHn5nU8jg+E1l6ZOWpe3DghCgANdgR2vRmrF7EZH29OrCMmwcgRPhltftFQQV5XDpSwcPHqoN5fqGBSN7seveSdxCosncBnw04U0guiv2Uom7OrmHa+PKqGx+CXMCDUtB0CpasmpshlsKADQKnDCSyGb5yr6Gsr79u3RI8=
+X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:CAL; SFV:NSPM; H:SATLEXMB04.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
+ SFS:(13230025)(4636009)(346002)(39860400002)(376002)(136003)(396003)(451199018)(40470700004)(36840700001)(46966006)(2906002)(36756003)(86362001)(82310400005)(16526019)(2616005)(26005)(186003)(70206006)(336012)(4326008)(70586007)(47076005)(8676002)(426003)(7696005)(110136005)(1076003)(40460700003)(6666004)(478600001)(316002)(54906003)(81166007)(82740400003)(4744005)(44832011)(5660300002)(356005)(40480700001)(41300700001)(36860700001)(83380400001)(8936002)(36900700001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2023 22:08:07.7155 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95617e9a-3206-4a55-178d-08db030e77d5
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
+ Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT068.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7599
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -114,76 +125,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, quic_jackp@quicinc.com, quic_plai@quicinc.com
+Cc: alsa-devel@alsa-project.org,
+ Pananchikkal Renjith <Renjith.Pananchikkal@amd.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam
+ Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Mario Limonciello <mario.limonciello@amd.com>,
+ Mark Pearson <mpearson@lenovo.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Krzysztof,
+A number of users for Lenovo Rembrandt based laptops are
+reporting that the microphone is too quiet relative to
+Windows with a dual boot.
 
-On 1/26/2023 4:01 AM, Krzysztof Kozlowski wrote:
-> On 26/01/2023 04:14, Wesley Cheng wrote:
->> Add a new definition for specifying how many XHCI secondary interrupters
->> can be allocated.  XHCI in general can potentially support up to 1024
->> interrupters, which some uses may want to limit depending on how many
->> users utilize the interrupters.
-> 
-> I cannot find in the code any user of this. Your next patch stores it,
-> but which other patch uses stored value?
-> 
-> What I still don't get how is this exactly hardware property, not policy
-> or driver choice.
-> 
+Increase the PDM gain to overcome this problem.
 
-Sorry I must have missed that patchset when rebasing over Mathias' xHCI 
-changes.  It was there previously in my initial submission where the 
-property is carried over into xhci-plat from dwc3/host.c.
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+---
+ sound/soc/amd/yc/acp6x.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-So the xHC controller has a HCSPARAMs field that defines the number of 
-interrupters it can support.  It does potentially have the capability of 
-having 1024 interrupters.  Each interrupter has to have its own set of 
-interrupt register sets, which depending on the vendor implementing it 
-could limit the maximum.  For example, as stated below, DWC3 only allows 
-for 8 interrupters to be allocated.
+diff --git a/sound/soc/amd/yc/acp6x.h b/sound/soc/amd/yc/acp6x.h
+index 74b596e6807ad..846ca10e24d3f 100644
+--- a/sound/soc/amd/yc/acp6x.h
++++ b/sound/soc/amd/yc/acp6x.h
+@@ -31,7 +31,7 @@
+ #define ACP_ERROR_STAT	29
+ #define PDM_DECIMATION_FACTOR	2
+ #define ACP_PDM_CLK_FREQ_MASK	7
+-#define ACP_WOV_MISC_CTRL_MASK	0x10
++#define ACP_WOV_MISC_CTRL_MASK	0x18
+ #define ACP_PDM_ENABLE		1
+ #define ACP_PDM_DISABLE		0
+ #define ACP_PDM_DMA_EN_STATUS	2
+-- 
+2.34.1
 
-The purpose for this property is to allow the user/driver to not have to 
-allocate memory for supporting 1024 event rings, if they are only going 
-to utilize one.  Likewise, if the user attempts to allocate more than 
-what is supported by the HW, then Mathias' SW will cross check to ensure 
-that isn't allowed. (by checking the HCSPARAMs against the DT property 
-below)
-
->>
->> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
->> ---
->>   Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 12 ++++++++++++
->>   1 file changed, 12 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
->> index 6d78048c4613..4faaec9655e0 100644
->> --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
->> +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
->> @@ -349,6 +349,18 @@ properties:
->>       items:
->>         enum: [1, 4, 8, 16, 32, 64, 128, 256]
->>   
->> +  snps,num-hc-interrupters:
->> +    description:
->> +      Defines the maximum number of XHCI host controller interrupters that can
->> +      be supported.  The XHCI host controller has support to allocate multiple
->> +      event rings, which can be assigned to different clients/users.  The DWC3
->> +      controller has a maximum of 8 interrupters.  If this is not defined then
->> +      the value will be defaulted to 1.  This parameter is used only when
->> +      operating in host mode.
->> +    $ref: /schemas/types.yaml#/definitions/uint8
->> +    minimum: 1
->> +    maximum: 8
-> 
-> default: 1
-> 
-
-Got it.
-
-Thanks
-Wesley Cheng
