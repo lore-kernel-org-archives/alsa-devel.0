@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC44CC61DA4
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Jan 2023 12:10:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F13B6C54EAA
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Jan 2023 13:10:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8546ECD;
-	Mon, 30 Jan 2023 13:09:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8546ECD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82639DED;
+	Mon, 30 Jan 2023 14:09:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82639DED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675080641;
-	bh=Zg6MguSNDaqbB/z5cJmHX/RzGSEZnrDsEwnqwyBRCy8=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1675084201;
+	bh=HgXHkcI7jdzDaygojJXPl0kEAzDM1E3og5/Yhjq1+cY=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=qGvOtdzeyNAUVYcnDEUZ8pXKgjHfsIxHqXEAjS9YVpPtozdKHUAU1LIqGsqKaKNRz
-	 TozIoQRkTty7UVALot2nfQQoA98or7K864drwNHe5d+iVua+86zsly9TqXGFsZWcRf
-	 4BZmu4eFLSdKNw0V67Q1m7fA16gM0QswtPnahx8c=
+	b=KihGT0Ptza/57Qq5DRasz8VuTiehQEbJiqfpNXGou3kOs/oJ8jvZkl1qtlJiz4VhD
+	 dJEd2Bi0nzlWlxbjGzdHgt/9ofTDjcLeAe9zQv74/tZwUEK+kaqcOwwp2oaGUflpmH
+	 EdkWIx7lv97p+x1L9N5S9KjxivlfhDngmLyJ0wYM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1AAA5F80580;
-	Mon, 30 Jan 2023 13:08:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B4CDF80236;
+	Mon, 30 Jan 2023 14:09:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5666DF8057A; Mon, 30 Jan 2023 13:08:05 +0100 (CET)
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
- [68.232.153.233])
+ id 19792F80423; Mon, 30 Jan 2023 14:09:09 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68042F80568
- for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2023 13:07:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68042F80568
+ by alsa1.perex.cz (Postfix) with ESMTPS id 61CF5F8007C
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2023 14:08:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61CF5F8007C
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=microchip.com header.i=@microchip.com
- header.a=rsa-sha256 header.s=mchp header.b=jt22owD9
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=J0biottH
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1675080478; x=1706616478;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=Zg6MguSNDaqbB/z5cJmHX/RzGSEZnrDsEwnqwyBRCy8=;
- b=jt22owD95gqejj32VqWnA0l8zahAHFAGhA9SW52lo6JnKxjQmGSJ41C6
- BSsZekVU/DKgqvbXTUGci4AHbNGmFVxmdgpNysdaJVACu65ZYXUa274B2
- S1TY1jRldGOAkcm3gr1tIhScs4vWLXRbpqtaFDEGWX/WvZ5Ssp0NAisH2
- ztTqnHuTL9EUwsAN8jauHsJTqICemle5/YULNDhOdNhiouDqGWEAXLrb4
- Qf1UOByQ1G1QMw8DQtrCfZDsfI1uhXeRzYzpu/lHwhwI2LW1/FJpWCRKm
- heuz1JxJmvDne2FfyRgKngPrYiSL6O6XK+CiGLtap5sEeCL16J158pb+p w==;
-X-IronPort-AV: E=Sophos;i="5.97,257,1669100400"; d="scan'208";a="198544941"
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
- by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 30 Jan 2023 05:07:52 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Mon, 30 Jan 2023 05:07:52 -0700
-Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.16 via Frontend Transport; Mon, 30 Jan 2023 05:07:48 -0700
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
- <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
- <alexandre.belloni@bootlin.com>
-Subject: [PATCH 8/8] ASoC: mchp-spdifrx: document data structures
-Date: Mon, 30 Jan 2023 14:06:47 +0200
-Message-ID: <20230130120647.638049-9-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230130120647.638049-1-claudiu.beznea@microchip.com>
-References: <20230130120647.638049-1-claudiu.beznea@microchip.com>
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1675084145; x=1706620145;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=HgXHkcI7jdzDaygojJXPl0kEAzDM1E3og5/Yhjq1+cY=;
+ b=J0biottH1FVT5XrCvRP7pZqoirRXz8Q/glkoe54xf1svW1bH8bsdLOkF
+ oNry3Y5FI9Evqs66rrPoBZn7lcLZb0kShhw1nhKd3SIp01vu5HS0VDPZc
+ pB2W1KnkYRYfSmgcA97rnV4+rrHDFdxj6BtfnoBaY5bD0cdvWGZhyOav3
+ V25OMcYX0DQariL4zbdmvlHb0Yb9vuAkdL7q/ow+p96IdTLf40/oqeB1P
+ ox8AKYoC2hnkUNJFNBQc1G/3NPBBDFprJYL6xIhk4v980h4c2nlQBIiC3
+ 8s943BUUCmCpdt3oHSMhpU+ZU9tGg/J3mml2yBu5JKJ5PfTnS6duhdNG1 Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10605"; a="315510985"
+X-IronPort-AV: E=Sophos;i="5.97,258,1669104000"; d="scan'208";a="315510985"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Jan 2023 05:08:25 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10605"; a="641538580"
+X-IronPort-AV: E=Sophos;i="5.97,258,1669104000"; d="scan'208";a="641538580"
+Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.16.144])
+ ([10.99.16.144])
+ by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 30 Jan 2023 05:08:23 -0800
+Message-ID: <f98fa3d6-81ae-9427-f494-d185b02afbce@linux.intel.com>
+Date: Mon, 30 Jan 2023 14:08:20 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH 00/11] ASoC: topology: Fixes and cleanups
+Content-Language: en-US
+To: Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>
+References: <20230127231111.937721-1-amadeuszx.slawinski@linux.intel.com>
+ <9f98fb6e-ff4b-5cac-9606-fcc0b3f256fe@perex.cz>
+From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+In-Reply-To: <9f98fb6e-ff4b-5cac-9606-fcc0b3f256fe@perex.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,76 +85,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Document data structures used by mchp-spdifrx driver.
+On 1/27/2023 5:27 PM, Jaroslav Kysela wrote:
+> On 28. 01. 23 0:11, Amadeusz Sławiński wrote:
+>> Following is series of fixes and cleanups for core topology code. Few
+>> patches fixing various problems all around and few fixing function
+>> names.
+> 
+> Just an info - the sent date seems to be in future in your git patch sets.
+> 
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- sound/soc/atmel/mchp-spdifrx.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
-
-diff --git a/sound/soc/atmel/mchp-spdifrx.c b/sound/soc/atmel/mchp-spdifrx.c
-index 796d4ec2b2b1..dab5d93de329 100644
---- a/sound/soc/atmel/mchp-spdifrx.c
-+++ b/sound/soc/atmel/mchp-spdifrx.c
-@@ -249,16 +249,34 @@ static const struct regmap_config mchp_spdifrx_regmap_config = {
- 
- #define SPDIFRX_CHANNELS	2
- 
-+/**
-+ * struct mchp_spdifrx_ch_stat: MCHP SPDIFRX channel status
-+ * @data: channel status bits
-+ * @done: completion to signal channel status bits acquisition done
-+ */
- struct mchp_spdifrx_ch_stat {
- 	unsigned char data[SPDIFRX_CS_BITS / 8];
- 	struct completion done;
- };
- 
-+/**
-+ * struct mchp_spdifrx_user_data: MCHP SPDIFRX user data
-+ * @data: user data bits
-+ * @done: completion to signal user data bits acquisition done
-+ */
- struct mchp_spdifrx_user_data {
- 	unsigned char data[SPDIFRX_UD_BITS / 8];
- 	struct completion done;
- };
- 
-+/**
-+ * struct mchp_spdifrx_mixer_control: MCHP SPDIFRX mixer control data structure
-+ * @ch_stat: array of channel statuses
-+ * @user_data: array of user data
-+ * @ulock: ulock bit status
-+ * @badf: badf bit status
-+ * @signal: signal bit status
-+ */
- struct mchp_spdifrx_mixer_control {
- 	struct mchp_spdifrx_ch_stat ch_stat[SPDIFRX_CHANNELS];
- 	struct mchp_spdifrx_user_data user_data[SPDIFRX_CHANNELS];
-@@ -267,6 +285,17 @@ struct mchp_spdifrx_mixer_control {
- 	bool signal;
- };
- 
-+/**
-+ * struct mchp_spdifrx_dev: MCHP SPDIFRX device data structure
-+ * @capture: DAI DMA configuration data
-+ * @control: mixer controls
-+ * @mlock: mutex to protect concurency b/w configuration and control APIs
-+ * @dev: struct device
-+ * @regmap: regmap for this device
-+ * @pclk: peripheral clock
-+ * @gclk: generic clock
-+ * @trigger_enabled: true if enabled though trigger() ops
-+ */
- struct mchp_spdifrx_dev {
- 	struct snd_dmaengine_dai_dma_data	capture;
- 	struct mchp_spdifrx_mixer_control	control;
--- 
-2.34.1
-
+Eh..., I'm not sure how it got out of sync. Anyway fixed. Thanks!
