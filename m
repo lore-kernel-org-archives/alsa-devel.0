@@ -4,64 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52749C636CD
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Jan 2023 21:01:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14CDEC54EAA
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Jan 2023 21:01:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 28D3C86E;
-	Mon, 30 Jan 2023 22:00:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28D3C86E
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB400DF8;
+	Mon, 30 Jan 2023 22:00:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB400DF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675112465;
-	bh=cf47b8CAKK73Es+LoTlxJKk80qn/DQy1RvwAP1SqyUM=;
+	s=default; t=1675112493;
+	bh=NsVV/5BOHPQc7islZ776I/OBWFeiI6BU7PrKDMsT53s=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=aXFdBtxr/rq+wSDusM4WyOasQr29kCSZpna4w0zRtLGpfPWhnMoUjj5Y7uC5ZFVs7
-	 aIXfuh8E3NiBwsskpa1F4HecT0L8GlIpO9rE/Jb3VbNAgBs3aJOESh0+Cqy7Odji70
-	 aiHMc3WsQALyh2h+iuMooVBKACh6HNeaPfDfv674=
+	b=vh4tIKkM+pspw7hWOlWi9r0NpviRwqF4W0Lk4orhAN+AV2I+emWXaHY1chxcmrhEa
+	 jYQMvM17breVOK/E9pdxGUzNqngepklkz0DgVFvxr/n2ofLQUVznZD/+tjN0h0K5X9
+	 INdasULCQFWq46kXaj3OqeztnPhs+uFbiZGo8+RM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1CF8F80236;
-	Mon, 30 Jan 2023 22:00:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26E37F80543;
+	Mon, 30 Jan 2023 22:00:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BCCD7F80423; Mon, 30 Jan 2023 22:00:11 +0100 (CET)
+ id 26E59F8032B; Mon, 30 Jan 2023 22:00:14 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E6AB9F800A7
- for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2023 22:00:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6AB9F800A7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B487F8007C
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2023 22:00:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B487F8007C
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=WzI0yrz5
+ header.s=k20201202 header.b=hVcfNtoq
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 8AFCB6122C;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4FF9761262;
+ Mon, 30 Jan 2023 21:00:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82846C433D2;
  Mon, 30 Jan 2023 21:00:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AB98C433EF;
- Mon, 30 Jan 2023 20:59:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1675112400;
- bh=cf47b8CAKK73Es+LoTlxJKk80qn/DQy1RvwAP1SqyUM=;
+ s=k20201202; t=1675112404;
+ bh=NsVV/5BOHPQc7islZ776I/OBWFeiI6BU7PrKDMsT53s=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=WzI0yrz5MLh+YZP+wofAz67AukTVZU0QtEHdm3HjwLu9Cx6+g6Czt3cMj+vOooU0Z
- Cpk0GEweBMxjMk0N1m9K1Rq2i1jqMDfUE6MoT5G+vhufLGiPHjZ3zZ4T68xHfYVewc
- XnM6v212lKPlOEP8KjKyN5rSiBP/nKBQO8+UdqC8wXOhlIrIvEljMctmFD2GroXXgM
- uywzlLb4K7sO8NuzoRWlIwz+q1ioND79PWyhEro+O6xWVIkm4pQE/O/M+GJexKCQN4
- /oaVYcKpWRqxaz/Ik+Vy65kSsOMMpQFWAg3CU822fw78T2JDjwnPpwu/aI0pPnvAKT
- 71Uew8aWOAJ2A==
+ b=hVcfNtoqQFaAvMlN86W+G+JFHvTTXTPL47Gv8a6laBz0AZ54YaCO7qb4S0EebiZmQ
+ fKWa+Gw7aqGOCzdbHZCzXvu1jNXmL5j4m0subvQ1gbpDWTfd9yNMb7tPVDaHGtxzxZ
+ Z+bEM+wTL5xFk2TpsCeB51cANz24fYaOHUZbe8uHwLzJNPaZjTPpwZL3A2siB5xdRb
+ ZPMx/R0k5qACRsNq9VIIyJckB8j/wKmO1SMu0R1EfCeKKglK1hUxWOlSZuSAB24lMJ
+ 8EvVTrQRUhPkYvCH1wdxTe4a8XKSNFq6Vnt1sLxotobs7lRrlTGU0hdfBR4bVeYhG9
+ f4rNUNyHTtMNw==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
- Takashi Iwai <tiwai@suse.com>, KiseokJo <kiseok.jo@irondevice.com>, 
- alsa-devel@alsa-project.org, Colin Ian King <colin.i.king@gmail.com>
-In-Reply-To: <20230130092157.36446-1-colin.i.king@gmail.com>
-References: <20230130092157.36446-1-colin.i.king@gmail.com>
-Subject: Re: [PATCH][next] ASoC: SMA1303: Fix spelling mistake "Invald" ->
- "Invalid"
-Message-Id: <167511239928.2141894.16999579130173129133.b4-ty@kernel.org>
-Date: Mon, 30 Jan 2023 20:59:59 +0000
+To: alsa-devel@alsa-project.org, 
+ Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+In-Reply-To: <20230130100104.4076640-1-venkataprasad.potturu@amd.com>
+References: <20230130100104.4076640-1-venkataprasad.potturu@amd.com>
+Subject: Re: [PATCH] ASoC: amd: acp: Refactor bit width calculation
+Message-Id: <167511240124.2141894.6369090225666254370.b4-ty@kernel.org>
+Date: Mon, 30 Jan 2023 21:00:01 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -78,12 +76,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: kernel-janitors@vger.kernel.org
+Cc: Sunil-kumar.Dommati@amd.com, ssabakar@amd.com,
+ Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+ ye xingchen <ye.xingchen@zte.com.cn>, Basavaraj.Hiregoudar@amd.com,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jia-Ju Bai <baijiaju1990@gmail.com>, Akihiko Odaki <akihiko.odaki@gmail.com>,
+ Vijendar.Mukunda@amd.com, V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+ open list <linux-kernel@vger.kernel.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 30 Jan 2023 09:21:57 +0000, Colin Ian King wrote:
-> There are spelling mistakes in dev_err messages. Fix them.
+On Mon, 30 Jan 2023 15:31:00 +0530, Venkata Prasad Potturu wrote:
+> Refactor bit width calculation using params_physical_width()
+> instead hard-code values.
 > 
 > 
 
@@ -93,8 +98,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SMA1303: Fix spelling mistake "Invald" -> "Invalid"
-      commit: 5b28c049ff53cf49e3a97d80cebd2e9c2779ea96
+[1/1] ASoC: amd: acp: Refactor bit width calculation
+      commit: 55e681c950d89bcc9dc13bc15f5b64393ef58897
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
