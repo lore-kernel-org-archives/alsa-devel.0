@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8D64C54EED
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 Jan 2023 12:08:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DDF0C54EAA
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 Jan 2023 12:09:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 383D1E9D;
-	Mon, 30 Jan 2023 13:08:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 383D1E9D
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC7CEEAE;
+	Mon, 30 Jan 2023 13:08:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC7CEEAE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675080530;
-	bh=rU46NQL4hbbHQR9L/65OOymuaCyWdxogbhBIy2BOVDA=;
+	s=default; t=1675080554;
+	bh=9NjD6iisgsn/UZGyyRXU8RZMqU7SjVu8tXkA5Lp5KWk=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=iUA3ZoOu77DeEMPu0nGIaFdIeu81hBmBHXdzMPaXmAf/Dexa4YDJK2C8P0ltXCtm7
-	 QV/rzXXDr0aPyyv/1W4/1VTW2cyYZV0IZT8oH/+gSgzMhStFcNVTarLOzbVKdMmw8z
-	 fi/YxXhOP0XzaujFvjtqRqrAM5MsFUKzDv5XdUjU=
+	b=SUXr7A+4/RobbjeMxaCUXzcnybMDEe06DM4mth+XV5Q2y+bKAl4ZdHD/yenVBoRIO
+	 S52HvePhmbAKZlhgz5PlJz24fMNKF6vWNEf4/SvUfkfA1ECFJo3v8YQGvSZMlLe2Hy
+	 ufi1jcIN/bMQWKT9PZLifOmwm41aG0uWRGdhZSNE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FBD2F80423;
-	Mon, 30 Jan 2023 13:07:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D32AEF804EB;
+	Mon, 30 Jan 2023 13:07:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4E908F80494; Mon, 30 Jan 2023 13:07:36 +0100 (CET)
+ id E3859F804B2; Mon, 30 Jan 2023 13:07:40 +0100 (CET)
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
  [68.232.154.123])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0418AF80236
- for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2023 13:07:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0418AF80236
+ by alsa1.perex.cz (Postfix) with ESMTPS id BCE08F804B2
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2023 13:07:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCE08F804B2
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=microchip.com header.i=@microchip.com
- header.a=rsa-sha256 header.s=mchp header.b=ad8rE9hx
+ header.a=rsa-sha256 header.s=mchp header.b=hQwmdPd/
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1675080453; x=1706616453;
+ t=1675080459; x=1706616459;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=rU46NQL4hbbHQR9L/65OOymuaCyWdxogbhBIy2BOVDA=;
- b=ad8rE9hx1zTTIZNrTtFrcu8uP/60ISLuoEFS+/OwUWfS3rR47s17GwtP
- +fOJLSTa25I02noCI9sn+iNJN9pLrPwN8M+bWcYA9FQL5ebhDuJnNUtYA
- huNdEVHflr9V4B9HZJNH2UEK58cHLZQLNlYHuwQBzXfxY8RlkB467RBZ2
- +JO7w9n0+GjCQ+L0+EhvBC7hp7xzybTAgEGZ5GD4gFhOlGuPG80vbg6DL
- i/UXgHMqtwFL27N/X4vxkt2wd0HbExnvPymc+K7V0iBltIhvNUsnQWGBX
- rHMAFgYT3DyW/jXNMwzN2pX4AqWih2Y9JMhXvcrOM4B03h6ejNHlmDp0N A==;
-X-IronPort-AV: E=Sophos;i="5.97,257,1669100400"; d="scan'208";a="197975239"
+ bh=9NjD6iisgsn/UZGyyRXU8RZMqU7SjVu8tXkA5Lp5KWk=;
+ b=hQwmdPd/PMVNJv5t/vTD8r7FUpS4fVUDg1yHFt/9+m2vZ+o/iN+xS9CW
+ xRAIAhw4nbZMxhfeMnjvW5P2vlTF4W2LJeTnhErgfy/PD2skxz2PSH7Ed
+ VyTJil6gxJ44HuNEph2rQ83c96a+XY6x6DehTx6VwmuoXXFQcU2pecBOs
+ Ft1P4z76guxHyVx0EqQpHC2ldTGgLPuxO9Mt4lf6+aRblSdEvfB8uZdSm
+ 5h1ib60iWzJHtHtmUaP3BhWAkiumCWdlTAPUG8eK2CUN8o2VETfS8X7Jx
+ FKJ+KI2NMK9FvD5a9PnxYoRNgxnsnMmXK82NKU+jTUg1kYBvMBfpa4gZv g==;
+X-IronPort-AV: E=Sophos;i="5.97,257,1669100400"; d="scan'208";a="194432967"
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
- by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 30 Jan 2023 05:07:28 -0700
+ by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 30 Jan 2023 05:07:37 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Mon, 30 Jan 2023 05:07:28 -0700
+ 15.1.2507.16; Mon, 30 Jan 2023 05:07:36 -0700
 Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.16 via Frontend Transport; Mon, 30 Jan 2023 05:07:24 -0700
+ 15.1.2507.16 via Frontend Transport; Mon, 30 Jan 2023 05:07:33 -0700
 From: Claudiu Beznea <claudiu.beznea@microchip.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
  <alexandre.belloni@bootlin.com>
-Subject: [PATCH 2/8] ASoC: mchp-spdifrx: fix return value in case completion
- times out
-Date: Mon, 30 Jan 2023 14:06:41 +0200
-Message-ID: <20230130120647.638049-3-claudiu.beznea@microchip.com>
+Subject: [PATCH 4/8] ASoC: mchp-spdifrx: disable all interrupts in
+ mchp_spdifrx_dai_remove()
+Date: Mon, 30 Jan 2023 14:06:43 +0200
+Message-ID: <20230130120647.638049-5-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230130120647.638049-1-claudiu.beznea@microchip.com>
 References: <20230130120647.638049-1-claudiu.beznea@microchip.com>
@@ -91,40 +91,29 @@ Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-wait_for_completion_interruptible_timeout() returns 0 in case of
-timeout. Check this into account when returning from function.
+CSC interrupts which might be used in controls are on bits 8 and 9 of
+SPDIFRX_IDR register. Thus disable all the interrupts that are exported
+by driver.
 
 Fixes: ef265c55c1ac ("ASoC: mchp-spdifrx: add driver for SPDIF RX")
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- sound/soc/atmel/mchp-spdifrx.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/atmel/mchp-spdifrx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/atmel/mchp-spdifrx.c b/sound/soc/atmel/mchp-spdifrx.c
-index 2d86e0ec930f..7f359371b31b 100644
+index 31ffaaf46dec..b81fc77728df 100644
 --- a/sound/soc/atmel/mchp-spdifrx.c
 +++ b/sound/soc/atmel/mchp-spdifrx.c
-@@ -524,9 +524,10 @@ static int mchp_spdifrx_cs_get(struct mchp_spdifrx_dev *dev,
- 	ret = wait_for_completion_interruptible_timeout(&ch_stat->done,
- 							msecs_to_jiffies(100));
- 	/* IP might not be started or valid stream might not be present */
--	if (ret < 0) {
-+	if (ret <= 0) {
- 		dev_dbg(dev->dev, "channel status for channel %d timeout\n",
- 			channel);
-+		return ret ? : -ETIMEDOUT;
- 	}
+@@ -921,7 +921,7 @@ static int mchp_spdifrx_dai_remove(struct snd_soc_dai *dai)
+ 	struct mchp_spdifrx_dev *dev = snd_soc_dai_get_drvdata(dai);
  
- 	memcpy(uvalue->value.iec958.status, ch_stat->data,
-@@ -580,7 +581,7 @@ static int mchp_spdifrx_subcode_ch_get(struct mchp_spdifrx_dev *dev,
- 		dev_dbg(dev->dev, "user data for channel %d timeout\n",
- 			channel);
- 		mchp_spdifrx_isr_blockend_dis(dev);
--		return ret;
-+		return ret ? : -ETIMEDOUT;
- 	}
+ 	/* Disable interrupts */
+-	regmap_write(dev->regmap, SPDIFRX_IDR, 0xFF);
++	regmap_write(dev->regmap, SPDIFRX_IDR, GENMASK(14, 0));
  
- 	spin_lock_irqsave(&user_data->lock, flags);
+ 	clk_disable_unprepare(dev->pclk);
+ 
 -- 
 2.34.1
 
