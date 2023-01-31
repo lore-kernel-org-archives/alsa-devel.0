@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65C07C636CC
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Jan 2023 14:34:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31A71C636D4
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Jan 2023 14:34:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF8A71F7;
-	Tue, 31 Jan 2023 15:33:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF8A71F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id D20DD85D;
+	Tue, 31 Jan 2023 15:33:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D20DD85D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675175674;
-	bh=hGEYxozapv2lFwUHx3F3CpHxfGxtk761b6hTvAin2Jw=;
+	s=default; t=1675175681;
+	bh=+nA64MgxzhQQwbXmSEB3Z+dMUY9PfDWJ1yhJx9jJczk=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=IsFz/I+BLJM1VfWOOZUwlLZgc4NnvhrqXazkby8L7/1Dfny02Rpzfje0aC17kf/dz
-	 b1sjyptF6Ricp2Z5vUEQVh0NgJS7efIneP4OVl9ukHQlQ6dFgSwC7jJV7DGHxHC2N7
-	 2HQKHs/jAG2rKPeKGp7SL931nBMF+KHk0xhaetrI=
+	b=J9zAB+1U/5b/vy5E0P5+Rpf+1x0Z8mPHRG6eJjio4oPvL2qnVD9R6AqE/H+U2/rIS
+	 IhpZ5Ba3vTJDSx1+2qWqcAZv83FXkdbR1OsAPVC+B/zfpyhNXamsjoxa0PTTUhvkpW
+	 xMSVdKaK+d6GzukqD85qP5yVUhi7yEjpYvvuIjmQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01FF5F80520;
-	Tue, 31 Jan 2023 15:33:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AF1A9F804E2;
+	Tue, 31 Jan 2023 15:33:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CA0A0F8055C; Tue, 31 Jan 2023 15:33:16 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 30334F8055C; Tue, 31 Jan 2023 15:33:18 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67BA4F80543
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2023 15:32:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67BA4F80543
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5CBBF80524
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2023 15:32:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5CBBF80524
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=h+2dlPRx
+ header.s=k20201202 header.b=Rsmeol58
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 52C61B81D21;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 7A038B81D1A;
+ Tue, 31 Jan 2023 14:32:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EEB9C4339B;
  Tue, 31 Jan 2023 14:32:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8329C433EF;
- Tue, 31 Jan 2023 14:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1675175561;
- bh=hGEYxozapv2lFwUHx3F3CpHxfGxtk761b6hTvAin2Jw=;
+ s=k20201202; t=1675175562;
+ bh=+nA64MgxzhQQwbXmSEB3Z+dMUY9PfDWJ1yhJx9jJczk=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=h+2dlPRx5BQMyuwm+6z+ZRBuys1PqrD5uuuiPK7S+4djDefxBsLTXrYP4OIri8PLg
- nMDrDe+lFKqjoUtF0aR/Xe9N9ibd0K+gPMA1Q/62vzOMyaZcG6h042oC0vkYQ8GFjC
- JmEhmOYbhWEfYOIHDEWv5leUr5dPefJ6BjOrVeRM+L2DoeZMNmf7/GWFlsQ9TfZBK1
- eCLZ/kSR6hC5oeFSWVwlOYvdRiLzVsU+pRnm06Hj/Vbl+DpQTR8ibfzKZ6x48Kdy+p
- rhgjDsrRn4m/3t7lU3wg0F1lt347Wjqa7thN//JnZiyJuWvXN8By+Kh0lfI4K6kzAY
- V9DP/+X1Z/GpQ==
+ b=Rsmeol586rBjeQoAyYN/rhsYOUwjOV5v4XZV4seMTN1vBIY+FYn+VICpN6eR8lFEY
+ V0b9hhKVOx1saRf2PA9IyA6V3ozUPBlihnaD0pHURe1KxJRqK9MIYQUgFy77Mmcv7M
+ ygOw9y8dEFYRw9aNP52H9fqhuUYq4ukQ9YF51ow/5tP5CWl5W4wVhYqBIAwBms2q3G
+ lBwI8TRk5zR76OmMU/rVHRV7PgJ+HDTSsYdT2KoKixJBV6DKAaMtKkAqwKAksYFzqj
+ 8BaqYYMQ+mL2kHs7oL3gedrbZZz/+tAbNwz08f1yALDL0wCd0HlMXPiIZSXv435EYl
+ J226IAzF7WP4w==
 From: Mark Brown <broonie@kernel.org>
-To: Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Kiseok Jo <kiseok.jo@irondevice.com>
-In-Reply-To: <20230131054526.14653-1-kiseok.jo@irondevice.com>
-References: <20230131054526.14653-1-kiseok.jo@irondevice.com>
-Subject: Re: [PATCH] MAINTAINERS: add IRON DEVICE AUDIO CODEC DRIVERS
-Message-Id: <167517555954.691025.17847273688504869741.b4-ty@kernel.org>
-Date: Tue, 31 Jan 2023 14:32:39 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>, 
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20230131082107.174739-1-u.kleine-koenig@pengutronix.de>
+References: <20230131082107.174739-1-u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH] ASoC: sma1303: Convert to i2c's .probe_new()
+Message-Id: <167517556123.691025.7238290799598696877.b4-ty@kernel.org>
+Date: Tue, 31 Jan 2023 14:32:41 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.12.0
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -77,12 +77,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Wolfram Sang <wsa@kernel.org>, alsa-devel@alsa-project.org,
+ Colin Ian King <colin.i.king@gmail.com>, kernel@pengutronix.de
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 31 Jan 2023 05:45:27 +0000, Kiseok Jo wrote:
-> Add Kiseok Jo as maintainer for Iron Device audio codec drivers.
+On Tue, 31 Jan 2023 09:21:07 +0100, Uwe Kleine-König wrote:
+> The probe function doesn't make use of the i2c_device_id * parameter so it
+> can be trivially converted.
 > 
 > 
 
@@ -92,8 +94,8 @@ Applied to
 
 Thanks!
 
-[1/1] MAINTAINERS: add IRON DEVICE AUDIO CODEC DRIVERS
-      commit: 4a639a757128debbede924736f255680740a4364
+[1/1] ASoC: sma1303: Convert to i2c's .probe_new()
+      commit: 30cf002579969120ce926dffa3630afbb2ae899f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
