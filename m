@@ -4,82 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9E69C38142
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Jan 2023 08:43:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76F00C636CD
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Jan 2023 08:45:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1FD8EE79;
-	Tue, 31 Jan 2023 09:42:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FD8EE79
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BAB6E7B;
+	Tue, 31 Jan 2023 09:44:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BAB6E7B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675154594;
-	bh=Pl1T/cKheKdr8IKPdNwYvfgQ4bj/gBweVuiywijjsKw=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=I/ENZq80D5V0p8y3KCZKjnksxjQVta7QjtmDPETfEOB8dvrpoE9mR97iu0d7zzfnC
-	 Xh0zhNvaNe71J3mK3JXu/paRpD1qv3L4XyIqMLEAUI/phsnRwOrLcXgxCd4D1CKqSg
-	 kAqDctmqoiva0cfrWEDjK++kxM0IAgYKT8kbOZlc=
+	s=default; t=1675154721;
+	bh=Om6Maw7qfsjglyXYRw2Hy4yfWEIxfLdogp8lsRwOusk=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=jgW+qkhH1VgPi6w/mm7CAs7Of9Tb2J34CvipxfrHI7cVAF5P1rM72GS0wkhn4upci
+	 jsysbDrXyW3bUKwmnTgb0RHncCMrA712arViLhH2tQoZWtxjXC4SUYpHmzlibwkAA8
+	 3sN+LKxS0tSgHil5149yU50ZqAUngDVfqplSpo0k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40C44F80245;
-	Tue, 31 Jan 2023 09:42:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 24332F80245;
+	Tue, 31 Jan 2023 09:44:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 959F6F804C2; Tue, 31 Jan 2023 09:42:21 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 54078F804C2; Tue, 31 Jan 2023 09:44:29 +0100 (CET)
+Received: from out199-2.us.a.mail.aliyun.com (out199-2.us.a.mail.aliyun.com
+ [47.90.199.2])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 13F47F80169
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2023 09:42:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13F47F80169
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key, unprotected) header.d=suse.de header.i=@suse.de
- header.a=rsa-sha256 header.s=susede2_rsa header.b=bAZZ3DT6; 
- dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=Ijb/M36D
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 43C112044A;
- Tue, 31 Jan 2023 08:42:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1675154537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=6IzR7OIYzC8EYOZdG4b7A56eKO0AXznAEjTYVO2Q9r8=;
- b=bAZZ3DT6egOxwAJx+GkZJBuuI94wJD2Ijgd9fscIUOQZFwaTD1l14y817bgd1Z0Z8qzAtW
- NM4jfDtO6JNAGxnScUVL6ToBGMGMPIZBeXr3rOlpZxBknx/9AnXhmDwxF19ILUfBGGkYQv
- wPPPm2/2QGVQSxVTbkhA2B07SgDzUj8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1675154537;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=6IzR7OIYzC8EYOZdG4b7A56eKO0AXznAEjTYVO2Q9r8=;
- b=Ijb/M36DVaIAU1p6ftT1NLQ/sxPS2yDx8VEcikwG1tlrVhcpjQLkePsMdnl2rqmtfPmL75
- qxML3w30xB7YX1DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2BDE213585;
- Tue, 31 Jan 2023 08:42:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id qPEECmnU2GODHQAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 31 Jan 2023 08:42:17 +0000
-Date: Tue, 31 Jan 2023 09:42:16 +0100
-Message-ID: <87mt5zp02f.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] [RFC] ALSA: hda: Fix the control element identification
- for multiple codecs
-In-Reply-To: <20230130082118.3267980-1-perex@perex.cz>
-References: <20230130082118.3267980-1-perex@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2C139F800A7
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2023 09:44:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C139F800A7
+X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R181e4; CH=green; DM=||false|;
+ DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=ay29a033018046050;
+ MF=jiapeng.chong@linux.alibaba.com; NM=1; PH=DS; RN=6; SR=0;
+ TI=SMTPD_---0VaW9tU._1675154649; 
+Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com
+ fp:SMTPD_---0VaW9tU._1675154649) by smtp.aliyun-inc.com;
+ Tue, 31 Jan 2023 16:44:17 +0800
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To: perex@perex.cz
+Subject: [PATCH] ALSA: emu10k1: clean up some inconsistent indenting
+Date: Tue, 31 Jan 2023 16:43:04 +0800
+Message-Id: <20230131084304.12920-1-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -92,56 +60,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+Cc: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+ alsa-devel@alsa-project.org, Abaci Robot <abaci@linux.alibaba.com>,
+ tiwai@suse.com, linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 30 Jan 2023 09:21:18 +0100,
-Jaroslav Kysela wrote:
-> 
-> [This is a RFC for the discussion]
-> 
-> Some motherboards have multiple HDA codecs connected to the serial bus.
-> The current code may create multiple mixer controls with the almost
-> identical identification.
-> 
-> The current code use id.device field from the control element structure
-> to store the codec address to avoid such clashes for multiple codecs.
-> Unfortunately, the user space do not handle this correctly. For mixer
-> controls, only name and index are used for the identifiers.
-> 
-> This patch fixes this problem to compose the index using the codec
-> address as an offset in case, when the control already exists. It is
-> really unlikely that one codec will create 10 similar controls.
-> 
-> This patch adds new kernel module parameter 'ctl_dev_id' to allow
-> select the old behaviour, too.
-> 
-> BugLink: https://github.com/alsa-project/alsa-lib/issues/294
-> BugLink: https://github.com/alsa-project/alsa-lib/issues/205
-> Fixes: 54d174031576 ("[ALSA] hda-codec - Fix connection list parsing")
-> Fixes: 1afe206ab699 ("ALSA: hda - Try to find an empty control index when it's occupied")
-> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-> 
-> --
-> 
-> Discussion:
-> 
-> There are several possibilities to handle the old behaviour - a kernel
-> module parameter (proposed), a kernel configuration option or drop
-> the old behaviour completely.
+No functional modification involved.
 
-Dropping is likely no-go, as we don't even know whether it really
-breaks or is safe, I suppose.  The module option sounds like a
-feasible workaround, maybe with the default behavior defined by
-kconfig.  And we can put some message for the old behavior to mention
-it'll be deprecated, for example.  Then after some time, we can really
-drop the old behavior, too.
+sound/pci/emu10k1/memory.c:446 snd_emu10k1_synth_free() warn: inconsistent indenting.
 
-One more question is which driver provides the option.  Does this
-problem happen with SOF HDA driver, too?
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=3903
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ sound/pci/emu10k1/memory.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/pci/emu10k1/memory.c b/sound/pci/emu10k1/memory.c
+index edb3f1763719..6a7406014f81 100644
+--- a/sound/pci/emu10k1/memory.c
++++ b/sound/pci/emu10k1/memory.c
+@@ -443,7 +443,7 @@ snd_emu10k1_synth_free(struct snd_emu10k1 *emu, struct snd_util_memblk *memblk)
+ 		unmap_memblk(emu, blk);
+ 	spin_unlock_irqrestore(&emu->memblk_lock, flags);
+ 	synth_free_pages(emu, blk);
+-	 __snd_util_mem_free(hdr, memblk);
++	__snd_util_mem_free(hdr, memblk);
+ 	mutex_unlock(&hdr->block_mutex);
+ 	return 0;
+ }
+-- 
+2.20.1.7.g153144c
 
-thanks,
-
-Takashi
