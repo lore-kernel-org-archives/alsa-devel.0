@@ -4,81 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9055BC38142
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Jan 2023 22:20:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BBAAC636CC
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Jan 2023 22:55:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1340482A;
-	Tue, 31 Jan 2023 23:19:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1340482A
+	by alsa0.perex.cz (Postfix) with ESMTPS id E2A6E1E2;
+	Tue, 31 Jan 2023 23:54:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E2A6E1E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675203637;
-	bh=+4pP4aZIVuYUiorSRqW2o3O3DmDW8pntZFPIjn4fwAI=;
-	h=Date:From:Subject:To:References:In-Reply-To:List-Id:
+	s=default; t=1675205737;
+	bh=TlDpM4JxpT631r62xY5llqyLQDbSYM3Crt0zBN/mQ40=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=dZ/+e/V01qL9mE9JrZKJVT/Y8EWB5gOiNhRd8rUUMDFKMmjbiLqZJM+RyqEUFddIV
-	 nkTWiik+vEbDHMRBlB6pVCBwe735w0bJa1ohXcojoZ7PiM6lMQAQJBKByLEEQj82DR
-	 Ixm6WvThKf/nAqIWcpkwoBa2hgA6bi2pgyFuaK5A=
+	b=NVBIkBwBdQeZIXKtZwInCHDwzKh9qPQwQx7cV2GNzvkwM3IQLMQIuVZqSzvG2auF4
+	 0jJ2nmL/z/9ZSZcxvRlNnAX/K/ZgAKv4SgSgNb3VovFB6oGCKeiDliPm+Z8wTFwjld
+	 +QGrPbPSE/AutwDg/fdDAKQYKFOgpyrjl3ujEsCs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBAE3F804C2;
-	Tue, 31 Jan 2023 23:19:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81C9DF80245;
+	Tue, 31 Jan 2023 23:54:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CCFF7F80519; Tue, 31 Jan 2023 23:19:44 +0100 (CET)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id BB0FCF804C2; Tue, 31 Jan 2023 23:54:45 +0100 (CET)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8A869F804C2
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2023 23:19:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A869F804C2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 79CB4F80155
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2023 23:54:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79CB4F80155
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=Lk8UVgJ+
+ header.s=Intel header.b=GUoFoCY2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1675203571; x=1706739571;
- h=message-id:date:mime-version:from:subject:to:cc:
- references:in-reply-to:content-transfer-encoding;
- bh=+4pP4aZIVuYUiorSRqW2o3O3DmDW8pntZFPIjn4fwAI=;
- b=Lk8UVgJ+E3NQVvh2bwehmRoV8HBSNmmXd5nGTePFVRbXE96jLRdTt3jr
- KLw53UMhX24iMUvWfmeW8EmrYvAup/EAUYnYtMVcmGOucWLT0dGoNzSXf
- bZdMivqiVHxkofEQDjNjJNb9P3R36Cp/ydM0sa1fGhSVFgzPiidF4IHOe
- 2w5ZuXw84tNCn/Z30sW8GQIdr9eUT0TBbpFa8dVYlkxkBYOpw9gWqSiOX
- scf/piHEMN6XND30y+ui9fVrb1+nfu9ayrmNQ4923iZfZqn6AJT9kyuRh
- rwAfQnNif3WwvYBID78f14rlcKvMf4VJQnuWJkyMSebFDV+XNlhvciDl7 A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="308318514"
-X-IronPort-AV: E=Sophos;i="5.97,261,1669104000"; d="scan'208";a="308318514"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jan 2023 14:19:28 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="788615806"
-X-IronPort-AV: E=Sophos;i="5.97,261,1669104000"; d="scan'208";a="788615806"
-Received: from ncollins-mobl.amr.corp.intel.com (HELO [10.212.85.244])
- ([10.212.85.244])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jan 2023 14:19:26 -0800
-Message-ID: <fa4cdd91-b430-eb1b-a151-d144f62e827d@linux.intel.com>
-Date: Tue, 31 Jan 2023 10:00:54 -0600
+ t=1675205678; x=1706741678;
+ h=date:from:to:cc:subject:message-id:references:
+ mime-version:in-reply-to;
+ bh=TlDpM4JxpT631r62xY5llqyLQDbSYM3Crt0zBN/mQ40=;
+ b=GUoFoCY2sx2xcamuVPoaNw0jq3EJfERHdvbgSJ6Ob8a6vvip9gmhbdZf
+ ZyxSFv6FuWBlZJWumk2VH7zN5ymVXqQQunyUlWrASSDLBqQvS9XqE6hUR
+ kZFNuHmI7oknGliQxMsmGUrSrAu4eRryUqT4xYJwivBUIh3irD1gzws6O
+ Ly+zHk/z/0/C78Yr2H1Lwj88n3sirmHk/WBYP2c/2gWL94c2abys75c+F
+ 2bzNkfxTPfiWjHVQGB5nM7PeVclsXw3EP3LG18JfLho85JJu76Bb8Nmsp
+ O7bNHqwpydf2ZDoj5FMcDrp7/1JPJy6yPWczkyVGC/BVJrLynF49kARRN g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="392537114"
+X-IronPort-AV: E=Sophos;i="5.97,261,1669104000"; d="scan'208";a="392537114"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Jan 2023 14:54:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="697001679"
+X-IronPort-AV: E=Sophos;i="5.97,261,1669104000"; d="scan'208";a="697001679"
+Received: from lkp-server01.sh.intel.com (HELO ffa7f14d1d0f) ([10.239.97.150])
+ by orsmga001.jf.intel.com with ESMTP; 31 Jan 2023 14:54:29 -0800
+Received: from kbuild by ffa7f14d1d0f with local (Exim 4.96)
+ (envelope-from <lkp@intel.com>) id 1pMzWG-0004mA-1f;
+ Tue, 31 Jan 2023 22:54:28 +0000
+Date: Wed, 1 Feb 2023 06:54:07 +0800
+From: kernel test robot <lkp@intel.com>
+To: Shenghao Ding <13916275206@139.com>, broonie@kernel.org,
+ lgirdwood@gmail.com, perex@perex.cz, pierre-louis.bossart@linux.intel.com
+Subject: Re: [PATCH v2] ASoC: tas2781: Add tas2781 driver.
+Message-ID: <202302010621.HbhoRa8c-lkp@intel.com>
+References: <20230131131701.7097-1-13916275206@139.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.4.2
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 01/19] ASoC: amd: ps: create platform devices based on acp
- config
-To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>, broonie@kernel.org,
- vkoul@kernel.org, alsa-devel@alsa-project.org
-References: <20230111090222.2016499-1-Vijendar.Mukunda@amd.com>
- <20230111090222.2016499-2-Vijendar.Mukunda@amd.com>
- <9f2229fb-499b-f802-993b-56a7ad2ce361@linux.intel.com>
- <257b6f1e-f403-573f-3978-13ffb14342ad@amd.com>
- <2b4c12ce-2586-0277-ede0-560f8317e4e4@linux.intel.com>
- <27eabbf2-eff2-0964-b72b-f9db251c3b57@amd.com>
- <87ddd91b-fb5f-4f27-942b-dc439b32ce20@amd.com>
-Content-Language: en-US
-In-Reply-To: <87ddd91b-fb5f-4f27-942b-dc439b32ce20@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230131131701.7097-1-13916275206@139.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -91,123 +83,193 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Mastan.Katragadda@amd.com, Sunil-kumar.Dommati@amd.com,
- Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
- Nathan Chancellor <nathan@kernel.org>, Mario.Limonciello@amd.com,
- arungopal.kondaveeti@amd.com, Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Syed Saba Kareem <Syed.SabaKareem@amd.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ shenghao-ding@ti.com, kevin-lu@ti.com, oe-kbuild-all@lists.linux.dev,
+ Shenghao Ding <13916275206@139.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Shenghao,
 
+Thank you for the patch! Perhaps something to improve:
 
-On 1/31/23 07:09, Mukunda,Vijendar wrote:
-> On 16/01/23 13:32, Mukunda,Vijendar wrote:
->> On 13/01/23 22:41, Pierre-Louis Bossart wrote:
->>>>>> +		if (is_dmic_dev && is_sdw_dev) {
->>>>>> +			switch (acp_data->sdw_master_count) {
->>>>>> +			case 1:
->>>>>> +				acp_data->pdev_mask = ACP63_SDW_PDM_DEV_MASK;
->>>>>> +				acp_data->pdev_count = ACP63_SDW0_PDM_MODE_DEVS;
->>>>>> +				break;
->>>>>> +			case 2:
->>>>>> +				acp_data->pdev_mask = ACP63_SDW_PDM_DEV_MASK;
->>>>>> +				acp_data->pdev_count = ACP63_SDW0_SDW1_PDM_MODE_DEVS;
->>>>>> +				break;
->>>>> so the cover letter is indeed wrong and confuses two controllers for two
->>>>> managers.
->>>> ACP IP has two independent manager instances driven by separate controller
->>>> each which are connected in different power domains.
->>>>
->>>> we should create two separate ACPI companion devices for separate
->>>> manager instance.  Currently we have limitations with BIOS.
->>>> we are going with single ACPI companion device.
->>>> We will update the changes later.
->>> Humm, this is tricky. The BIOS interface isn't something that can be
->>> changed at will on the kernel side, you'd have to maintain two solutions
->>> with a means to detect which one to use.
->>>
->>> Or is this is a temporary issue on development devices, then that part
->>> should probably not be upstreamed.
->> It's a temporary issue on development devices.
->> We had discussion with Windows dev team and BIOS team.
->> They have agreed to modify ACPI companion device logic.
->> We will update the two companion devices logic for two manager
->> instances in V2 version.
-> After experimenting, two ACPI companion devices approach,
-> we got an update from Windows team, there is a limitation
-> on windows stack. For current platform, we can't proceed
-> with two ACPI companion devices.
+[auto build test WARNING on broonie-sound/for-next]
+[also build test WARNING on linus/master v6.2-rc6 next-20230131]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-so how would the two controllers be declared then in the DSDT used by
-Windows? There's a contradiction between having a single companion
-device and the ability to set the 'manager-number' to one.
+url:    https://github.com/intel-lab-lkp/linux/commits/Shenghao-Ding/ASoC-tas2781-Add-tas2781-driver/20230131-212221
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+patch link:    https://lore.kernel.org/r/20230131131701.7097-1-13916275206%40139.com
+patch subject: [PATCH v2] ASoC: tas2781: Add tas2781 driver.
+config: m68k-randconfig-m031-20230129 (https://download.01.org/0day-ci/archive/20230201/202302010621.HbhoRa8c-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 12.1.0
 
-You probably want to give an example of what you have, otherwise we
-probably will talk past each other.
-> 
-> Even on Linux side, if we create two ACPI companion devices
-> followed by creating a single soundwire manager instance per
-> Soundwire controller, we have observed an issue in a scenario,
-> where similar codec parts(UID are also same) are connected on
-> both soundwire manager instances.
+If you fix the issue, kindly add following tag where applicable
+| Reported-by: kernel test robot <lkp@intel.com>
 
-We've been handling this case of two identical amplifiers on two
-different links for the last 3 years. I don't see how this could be a
-problem, the codecs are declared in the scope of the companion device
-and the _ADR defines in bits [51..48] which link the codec is connected to.
+New smatch warnings:
+sound/soc/codecs/tas2781-i2c.c:220 tasdevice_process_block() warn: inconsistent indenting
+sound/soc/codecs/tas2781-i2c.c:471 tas2781_digital_putvol() warn: unsigned 'val' is never less than zero.
+sound/soc/codecs/tas2781-i2c.c:544 tas2781_amp_putvol() warn: unsigned 'val' is never less than zero.
+sound/soc/codecs/tas2781-i2c.c:841 tasdevice_rca_ready() error: we previously assumed 'tas_dev' could be null (see line 840)
+sound/soc/codecs/tas2781-i2c.c:1095 tasdevice_dapm_event() error: uninitialized symbol 'pwr_state'.
+sound/soc/codecs/tas2781-i2c.c:1818 tasdevice_pm_suspend() error: we previously assumed 'tas_dev' could be null (see line 1817)
+sound/soc/codecs/tas2781-dsp.c:1670 tasdevice_load_block() warn: inconsistent indenting
+sound/soc/codecs/tas2781-dsp.c:732 tas2781_clear_calfirmware() warn: inconsistent indenting
+sound/soc/codecs/tas2781-dsp.c:2038 tasdevice_dsp_remove() warn: inconsistent indenting
 
-see example below from a TigerLake device with two identical amsp on
-link 1 and 2.
+Old smatch warnings:
+sound/soc/codecs/tas2781-dsp.c:1688 tasdevice_load_block() warn: inconsistent indenting
+sound/soc/codecs/tas2781-dsp.c:2042 tasdevice_dsp_remove() warn: inconsistent indenting
+sound/soc/codecs/tas2781-dsp.c:2069 tasdevice_dsp_remove() warn: inconsistent indenting
+sound/soc/codecs/tas2781-dsp.c:2073 tasdevice_dsp_remove() warn: inconsistent indenting
 
-   Scope (_SB.PC00.HDAS.SNDW)
-    {
-       Device (SWD1)
-        {
-            Name (_ADR, 0x000131025D131601)  // _ADR: Address
+vim +220 sound/soc/codecs/tas2781-i2c.c
 
-	Device (SWD2)
-        {
-            Name (_ADR, 0x000230025D131601)  // _ADR: Address
+    94	
+    95	int tasdevice_process_block(void *context,
+    96		unsigned char *data, unsigned char dev_idx, int sublocksize)
+    97	{
+    98		struct tasdevice_priv *tas_dev =
+    99			(struct tasdevice_priv *)context;
+   100		unsigned char subblk_typ = data[1];
+   101		int subblk_offset = 2;
+   102		int chn = 0, chnend = 0;
+   103		int rc = 0;
+   104		int blktyp = dev_idx & 0xC0, idx = dev_idx & 0x3F;
+   105		bool is_err = false;
+   106	
+   107		if (idx) {
+   108			chn = idx-1;
+   109			chnend = idx;
+   110		} else {
+   111			if (tas_dev->set_global_mode) {
+   112				chn = tas_dev->ndev;
+   113				chnend = tas_dev->ndev + 1;
+   114			} else {
+   115				chn = 0;
+   116				chnend = tas_dev->ndev;
+   117			}
+   118		}
+   119	
+   120		for (; chn < chnend; chn++) {
+   121			if (tas_dev->set_global_mode == NULL &&
+   122				tas_dev->tasdevice[chn].is_loading == false)
+   123				continue;
+   124	
+   125			is_err = false;
+   126			subblk_offset = 2;
+   127			switch (subblk_typ) {
+   128			case TASDEVICE_CMD_SING_W: {
+   129				int i = 0;
+   130				unsigned short len = SMS_HTONS(data[2], data[3]);
+   131	
+   132				subblk_offset  += 2;
+   133				if (subblk_offset + 4 * len > sublocksize) {
+   134					dev_err(tas_dev->dev,
+   135						"process_block: Out of memory\n");
+   136					is_err = true;
+   137					break;
+   138				}
+   139	
+   140				for (i = 0; i < len; i++) {
+   141					rc = tasdevice_dev_write(tas_dev, chn,
+   142						TASDEVICE_REG(data[subblk_offset],
+   143							data[subblk_offset + 1],
+   144							data[subblk_offset + 2]),
+   145						data[subblk_offset + 3]);
+   146					if (rc < 0) {
+   147						is_err = true;
+   148						dev_err(tas_dev->dev,
+   149						"process_block: single write error\n");
+   150					}
+   151					subblk_offset  += 4;
+   152				}
+   153			}
+   154				break;
+   155			case TASDEVICE_CMD_BURST: {
+   156				unsigned short len = SMS_HTONS(data[2], data[3]);
+   157	
+   158				subblk_offset  += 2;
+   159				if (subblk_offset + 4 + len > sublocksize) {
+   160					dev_err(tas_dev->dev,
+   161					"process_block: BURST Out of memory\n");
+   162					is_err = true;
+   163					break;
+   164				}
+   165				if (len % 4) {
+   166					dev_err(tas_dev->dev,
+   167						"%s: Burst len(%u) can be div by 4\n",
+   168						__func__, len);
+   169					break;
+   170				}
+   171	
+   172				rc = tasdevice_dev_bulk_write(tas_dev, chn,
+   173					TASDEVICE_REG(data[subblk_offset],
+   174						data[subblk_offset + 1],
+   175						data[subblk_offset + 2]),
+   176						&(data[subblk_offset + 4]), len);
+   177				if (rc < 0) {
+   178					is_err = true;
+   179					dev_err(tas_dev->dev,
+   180						"%s: bulk_write error = %d\n",
+   181						__func__, rc);
+   182				}
+   183				subblk_offset  += (len + 4);
+   184			}
+   185				break;
+   186			case TASDEVICE_CMD_DELAY: {
+   187				unsigned short delay_time = 0;
+   188	
+   189				if (subblk_offset + 2 > sublocksize) {
+   190					dev_err(tas_dev->dev,
+   191						"%s: deley Out of memory\n",
+   192						__func__);
+   193					is_err = true;
+   194					break;
+   195				}
+   196				delay_time = SMS_HTONS(data[2], data[3]);
+   197				usleep_range(delay_time*1000, delay_time*1000);
+   198				subblk_offset  += 2;
+   199			}
+   200				break;
+   201			case TASDEVICE_CMD_FIELD_W:
+   202			if (subblk_offset + 6 > sublocksize) {
+   203				dev_err(tas_dev->dev,
+   204					"process_block: bit write Out of memory\n");
+   205				is_err = true;
+   206				break;
+   207			}
+   208			rc = tasdevice_dev_update_bits(tas_dev, chn,
+   209				TASDEVICE_REG(data[subblk_offset + 2],
+   210					data[subblk_offset + 3],
+   211					data[subblk_offset + 4]),
+   212					data[subblk_offset + 1],
+   213					data[subblk_offset + 5]);
+   214			if (rc < 0) {
+   215				is_err = true;
+   216				dev_err(tas_dev->dev,
+   217					"process_block: update_bits error = %d\n", rc);
+   218			}
+   219			subblk_offset  += 6;
+ > 220				break;
+   221			default:
+   222				break;
+   223			};
+   224			if (is_err == true && blktyp != 0) {
+   225				if (blktyp == 0x80) {
+   226					tas_dev->tasdevice[chn].cur_prog = -1;
+   227					tas_dev->tasdevice[chn].cur_conf = -1;
+   228				} else
+   229					tas_dev->tasdevice[chn].cur_conf = -1;
+   230			}
+   231		}
+   232		return subblk_offset;
+   233	}
+   234	
 
-> As per MIPI Disco spec, for single link controllers Link ID should
-> be set to zero.
-> If we use Link ID as zero, for the soundwire manager which is on
-> the second soundwire controller ACPI device scope, then soundwire
-> framework is not allowing to create peripheral device node as its
-> duplicate one.
-
-I still don't see how it's possible. There is an IDA used in the bus
-allocation
-
-static int sdw_get_id(struct sdw_bus *bus)
-{
-	int rc = ida_alloc(&sdw_bus_ida, GFP_KERNEL);
-
-	if (rc < 0)
-		return rc;
-
-	bus->id = rc;
-	return 0;
-}
-
-and that's used for debugfs
-
-	/* create the debugfs master-N */
-	snprintf(name, sizeof(name), "master-%d-%d", bus->id, bus->link_id);
-
-as well as in sdw_master_device_add():
-	dev_set_name(&md->dev, "sdw-master-%d", bus->id);
-
-can you clarify what part of the 'SoundWire framework' is problematic? I
-guess the problem is that you have identical devices with the same _ADR
-under the same manager, which is problematic indeed, but that's not a
-SoundWire framework issue, just not a supported configuration.
-
-> If we want to support two ACPI companion device approach
-> on our future platforms, how to proceed?
-
-Well how about dealing with a single companion device first, cause
-that's what you have now and that's already problematic.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests
