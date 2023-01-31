@@ -4,50 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76F00C636CD
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Jan 2023 08:45:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AD7CC38142
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Jan 2023 08:59:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9BAB6E7B;
-	Tue, 31 Jan 2023 09:44:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BAB6E7B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20CA9100;
+	Tue, 31 Jan 2023 09:58:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20CA9100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675154721;
-	bh=Om6Maw7qfsjglyXYRw2Hy4yfWEIxfLdogp8lsRwOusk=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=jgW+qkhH1VgPi6w/mm7CAs7Of9Tb2J34CvipxfrHI7cVAF5P1rM72GS0wkhn4upci
-	 jsysbDrXyW3bUKwmnTgb0RHncCMrA712arViLhH2tQoZWtxjXC4SUYpHmzlibwkAA8
-	 3sN+LKxS0tSgHil5149yU50ZqAUngDVfqplSpo0k=
+	s=default; t=1675155547;
+	bh=3cSmVu482f82EtoAicegu+MUZP4XXo6h224Iv0uXFH0=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=VEtnz3CGogtXR8x/z+/j9gYpW5Rs1ozpE19FE64ZqLT9rIEFrd4zbsCOxZaf9uW0J
+	 KCnPHypjNg53wCUOza72vAg43N3kRUxWZA67DSQAQFurSt4bjYZqYVAlMtIGTuLhCA
+	 d6LUAqh3LxY9GN9KVXtjMq5kOvO2ikUm5VFFW3W4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24332F80245;
-	Tue, 31 Jan 2023 09:44:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A70F7F80245;
+	Tue, 31 Jan 2023 09:58:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 54078F804C2; Tue, 31 Jan 2023 09:44:29 +0100 (CET)
-Received: from out199-2.us.a.mail.aliyun.com (out199-2.us.a.mail.aliyun.com
- [47.90.199.2])
+ id 90EA5F804C2; Tue, 31 Jan 2023 09:58:15 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2C139F800A7
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2023 09:44:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C139F800A7
-X-Alimail-AntiSpam: AC=PASS; BC=-1|-1; BR=01201311R181e4; CH=green; DM=||false|;
- DS=||; FP=0|-1|-1|-1|0|-1|-1|-1; HT=ay29a033018046050;
- MF=jiapeng.chong@linux.alibaba.com; NM=1; PH=DS; RN=6; SR=0;
- TI=SMTPD_---0VaW9tU._1675154649; 
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com
- fp:SMTPD_---0VaW9tU._1675154649) by smtp.aliyun-inc.com;
- Tue, 31 Jan 2023 16:44:17 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: perex@perex.cz
-Subject: [PATCH] ALSA: emu10k1: clean up some inconsistent indenting
-Date: Tue, 31 Jan 2023 16:43:04 +0800
-Message-Id: <20230131084304.12920-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1DEEAF800A7
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2023 09:58:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DEEAF800A7
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ secure) header.d=perex.cz header.i=@perex.cz header.a=rsa-sha256
+ header.s=default header.b=p5zhfMKy
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id BD2E6400;
+ Tue, 31 Jan 2023 09:58:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz BD2E6400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1675155491; bh=Df32d9+tBJt+l1gaOLtCLqs8ZAu+lNOocFzZQxUlWQ8=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+ b=p5zhfMKyp2/yiAjgHlUjIKyS36sk93B1yvGXNfoQM2ekmc+n0XNzoFXX+7neKK0g2
+ rUx8o5RMqW7cw8H262p1aaDJWXghzoHp4E1R0yTY2/5kiZbUCA3+eWr4QybgmH2RqX
+ DkjPrIblfjMHPeDFas+OfxbelhfCZSYqSVknmm0Q=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Tue, 31 Jan 2023 09:58:09 +0100 (CET)
+Message-ID: <eec11ba9-009e-a93e-3c1c-403bfa8f37c1@perex.cz>
+Date: Tue, 31 Jan 2023 09:58:09 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH] [RFC] ALSA: hda: Fix the control element identification
+ for multiple codecs
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>
+References: <20230130082118.3267980-1-perex@perex.cz>
+ <87mt5zp02f.wl-tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <87mt5zp02f.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -60,36 +79,68 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
- alsa-devel@alsa-project.org, Abaci Robot <abaci@linux.alibaba.com>,
- tiwai@suse.com, linux-kernel@vger.kernel.org
+Cc: ALSA development <alsa-devel@alsa-project.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-No functional modification involved.
+On 31. 01. 23 9:42, Takashi Iwai wrote:
+> On Mon, 30 Jan 2023 09:21:18 +0100,
+> Jaroslav Kysela wrote:
+>>
+>> [This is a RFC for the discussion]
+>>
+>> Some motherboards have multiple HDA codecs connected to the serial bus.
+>> The current code may create multiple mixer controls with the almost
+>> identical identification.
+>>
+>> The current code use id.device field from the control element structure
+>> to store the codec address to avoid such clashes for multiple codecs.
+>> Unfortunately, the user space do not handle this correctly. For mixer
+>> controls, only name and index are used for the identifiers.
+>>
+>> This patch fixes this problem to compose the index using the codec
+>> address as an offset in case, when the control already exists. It is
+>> really unlikely that one codec will create 10 similar controls.
+>>
+>> This patch adds new kernel module parameter 'ctl_dev_id' to allow
+>> select the old behaviour, too.
+>>
+>> BugLink: https://github.com/alsa-project/alsa-lib/issues/294
+>> BugLink: https://github.com/alsa-project/alsa-lib/issues/205
+>> Fixes: 54d174031576 ("[ALSA] hda-codec - Fix connection list parsing")
+>> Fixes: 1afe206ab699 ("ALSA: hda - Try to find an empty control index when it's occupied")
+>> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+>>
+>> --
+>>
+>> Discussion:
+>>
+>> There are several possibilities to handle the old behaviour - a kernel
+>> module parameter (proposed), a kernel configuration option or drop
+>> the old behaviour completely.
+> 
+> Dropping is likely no-go, as we don't even know whether it really
+> breaks or is safe, I suppose.  The module option sounds like a
+> feasible workaround, maybe with the default behavior defined by
+> kconfig.  And we can put some message for the old behavior to mention
+> it'll be deprecated, for example.  Then after some time, we can really
+> drop the old behavior, too.
 
-sound/pci/emu10k1/memory.c:446 snd_emu10k1_synth_free() warn: inconsistent indenting.
+OK. I'll add a Kconfig default to my patch. I assume that the default preset 
+will be the new behaviour.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Link: https://bugzilla.openanolis.cn/show_bug.cgi?id=3903
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- sound/pci/emu10k1/memory.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> One more question is which driver provides the option.  Does this
+> problem happen with SOF HDA driver, too?
 
-diff --git a/sound/pci/emu10k1/memory.c b/sound/pci/emu10k1/memory.c
-index edb3f1763719..6a7406014f81 100644
---- a/sound/pci/emu10k1/memory.c
-+++ b/sound/pci/emu10k1/memory.c
-@@ -443,7 +443,7 @@ snd_emu10k1_synth_free(struct snd_emu10k1 *emu, struct snd_util_memblk *memblk)
- 		unmap_memblk(emu, blk);
- 	spin_unlock_irqrestore(&emu->memblk_lock, flags);
- 	synth_free_pages(emu, blk);
--	 __snd_util_mem_free(hdr, memblk);
-+	__snd_util_mem_free(hdr, memblk);
- 	mutex_unlock(&hdr->block_mutex);
- 	return 0;
- }
+I think that this hardware is rare and I've not seen this combination of HDA 
+codecs with SOF yet. From the googling and the alsa-info database analysis, 
+it's an old issue touching some "hi-end" ATX motherboards. Basically, 
+pulseaudio nor pipewire can work with this hardware properly, because the 
+mixer cannot be initialized.
+
+					Jaroslav
+
 -- 
-2.20.1.7.g153144c
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 
