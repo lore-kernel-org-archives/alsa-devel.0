@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08443C38142
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Jan 2023 15:11:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A7F3C636CC
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Jan 2023 16:25:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EDED51F3;
-	Tue, 31 Jan 2023 16:10:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDED51F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id B39CA1F4;
+	Tue, 31 Jan 2023 17:24:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B39CA1F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675177861;
-	bh=MEM1cwCVSTmwLqFbehqNIVjnLWUHb6/SQKKmZ3uIb3o=;
+	s=default; t=1675182307;
+	bh=blhwIt4pXs4RZFwAJ+0oJ/pbR/6npPnMEeUr9ldlKgc=;
 	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=flka/LZWS2bh35CMoasd4kt6sNrksIhRqKnk2vWaPiU5c05hWcQgchjM8TtctgpVy
-	 EvN/9kH2lx3ecyhtF5/FgR9g5TfJZxgWWqi5RvX0cQnpMCeOY7Xo0ZcZQAaQr6Bd2e
-	 /qgXU0aBoMzFc/U+M5tdMCkFNRqgAhtNMkbVkCJY=
+	b=hzodLcYVmutP0tK4U7vaafuFgetkOJY5noMRDujwa8IzdVrGLlqJ2f2k18zka1lLH
+	 aykJ4vIZp3dss5yGdX8Nlao8b92TdJ/2nQHeidbsA72AuPeU24iy3g3/HBQaDOliEm
+	 eHZY2gL79vHrTl8y172a7MwebDVU34m/gj21XHoo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A5EAF80245;
-	Tue, 31 Jan 2023 16:10:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3DD21F80245;
+	Tue, 31 Jan 2023 17:24:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA13EF804C2; Tue, 31 Jan 2023 16:10:08 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id 5DD6CF804C2; Tue, 31 Jan 2023 17:24:15 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 013CFF80155
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2023 16:10:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 013CFF80155
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2953F800A7
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2023 17:24:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2953F800A7
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=BrcTXZ2L
+ header.s=Intel header.b=ZS/LVXQJ
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1675177803; x=1706713803;
+ t=1675182250; x=1706718250;
  h=date:from:to:cc:subject:message-id:references:
  mime-version:in-reply-to;
- bh=MEM1cwCVSTmwLqFbehqNIVjnLWUHb6/SQKKmZ3uIb3o=;
- b=BrcTXZ2L6cCO5TWPHV7M4IDoUC2hEN2dU8f6G2ygqbTbF99gSD1sAxpI
- zCcepBQTdTEtJg6j/j6NUxMUH9fEQy1NJ6dcRi609mSbAbN9Ecx9a+fIa
- gwASmRbD4h8+nmn8SjFCBCVazsJ4Q51jVK0nCFChRe2/dXKlzltZbdwUC
- jH29ZeK5aICJefc5kj9Di3ActugwaK/TvoHiTDwug7FeuYNJDPX7yN0wp
- MEQi4iy6ziE3VEKjrsZ0HJQ/wOEmVkSBpcIODNrxSSPZYvKQ1XP97AwXK
- tM7EiOu3l/Ay1csDrk6enMgnwLoCXYfGnxJLXRRq/PjngirDf546GBml1 w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10606"; a="326524635"
-X-IronPort-AV: E=Sophos;i="5.97,261,1669104000"; d="scan'208";a="326524635"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 31 Jan 2023 07:09:59 -0800
+ bh=blhwIt4pXs4RZFwAJ+0oJ/pbR/6npPnMEeUr9ldlKgc=;
+ b=ZS/LVXQJGFjEZM7k2+IKEZzAg9NaKLPPEq2yjHOB3CHxs1oyIgHEWGh4
+ aFg+CFo+IsrIe68k0GZVtWkK6yTHc9p9VXiKkKk91ggYLScrufjXeH0Q8
+ VU3sQlfVVU9yvjT3rdhpB0VG4YAYlFfv3npAf1g9a8Gs+uX5XFyfQ1FoG
+ jzhfVsoO0B4bJdUAUwSIy/Z0oHxCCkSYpiAzH6ncpl3G1QH0Drc7xBnoI
+ yBNdyWYmfSEAcnk+AXXhmscbfUbrytXyiCm0ZCuhlFY4M/KloKYs6xnPP
+ j2QVGltJv55KQkBiCUNxG7A8XlVfGxxgREjiDbi/lkd3liKPaCED6RhhL g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10606"; a="311504551"
+X-IronPort-AV: E=Sophos;i="5.97,261,1669104000"; d="scan'208";a="311504551"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Jan 2023 08:24:04 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10606"; a="664519803"
-X-IronPort-AV: E=Sophos;i="5.97,261,1669104000"; d="scan'208";a="664519803"
+X-IronPort-AV: E=McAfee;i="6500,9779,10606"; a="909970895"
+X-IronPort-AV: E=Sophos;i="5.97,261,1669104000"; d="scan'208";a="909970895"
 Received: from lkp-server01.sh.intel.com (HELO ffa7f14d1d0f) ([10.239.97.150])
- by orsmga002.jf.intel.com with ESMTP; 31 Jan 2023 07:09:57 -0800
+ by fmsmga006.fm.intel.com with ESMTP; 31 Jan 2023 08:24:01 -0800
 Received: from kbuild by ffa7f14d1d0f with local (Exim 4.96)
- (envelope-from <lkp@intel.com>) id 1pMsGi-0004Ug-0X;
- Tue, 31 Jan 2023 15:09:56 +0000
-Date: Tue, 31 Jan 2023 23:09:47 +0800
+ (envelope-from <lkp@intel.com>) id 1pMtQO-0004YL-2f;
+ Tue, 31 Jan 2023 16:24:00 +0000
+Date: Wed, 1 Feb 2023 00:23:30 +0800
 From: kernel test robot <lkp@intel.com>
 To: Shenghao Ding <13916275206@139.com>, broonie@kernel.org,
  lgirdwood@gmail.com, perex@perex.cz, pierre-louis.bossart@linux.intel.com
 Subject: Re: [PATCH v2] ASoC: tas2781: Add tas2781 driver.
-Message-ID: <202301312243.8wxlGhpo-lkp@intel.com>
+Message-ID: <202302010039.V0TFjmXX-lkp@intel.com>
 References: <20230131131701.7097-1-13916275206@139.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -103,8 +103,8 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Shenghao-Ding/ASoC-tas278
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 patch link:    https://lore.kernel.org/r/20230131131701.7097-1-13916275206%40139.com
 patch subject: [PATCH v2] ASoC: tas2781: Add tas2781 driver.
-config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230131/202301312243.8wxlGhpo-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 12.1.0
+config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20230201/202302010039.V0TFjmXX-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 12.1.0
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
@@ -114,141 +114,169 @@ reproduce (this is a W=1 build):
         git checkout d0782b52a1274657458fa49356eacb7c56eddf6b
         # save the config file
         mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=sparc olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=sparc SHELL=/bin/bash sound/soc/
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=sh olddefconfig
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=sh SHELL=/bin/bash sound/soc/
 
 If you fix the issue, kindly add following tag where applicable
 | Reported-by: kernel test robot <lkp@intel.com>
 
 All warnings (new ones prefixed by >>):
 
->> sound/soc/codecs/tas2781-dsp.c:591:5: warning: no previous prototype for 'fw_parse_variable_header_git' [-Wmissing-prototypes]
+   sound/soc/codecs/tas2781-dsp.c:591:5: warning: no previous prototype for 'fw_parse_variable_header_git' [-Wmissing-prototypes]
      591 | int fw_parse_variable_header_git(struct tasdevice_priv *tas_dev,
          |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> sound/soc/codecs/tas2781-dsp.c:650:5: warning: no previous prototype for 'fw_parse_variable_header_cal' [-Wmissing-prototypes]
+   sound/soc/codecs/tas2781-dsp.c:650:5: warning: no previous prototype for 'fw_parse_variable_header_cal' [-Wmissing-prototypes]
      650 | int fw_parse_variable_header_cal(struct tasdevice_priv *tas_dev,
          |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from include/linux/device.h:15,
+                    from include/linux/acpi.h:15,
+                    from include/linux/i2c.h:13,
+                    from sound/soc/codecs/tas2781-dsp.c:16:
+   sound/soc/codecs/tas2781-dsp.c: In function 'fw_parse_block_data':
+>> sound/soc/codecs/tas2781-dsp.c:809:25: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+     809 |                         "%s: File Size(%lu) error offset = %d n = %d\n",
+         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/dev_printk.h:110:30: note: in definition of macro 'dev_printk_index_wrap'
+     110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+         |                              ^~~
+   include/linux/dev_printk.h:144:56: note: in expansion of macro 'dev_fmt'
+     144 |         dev_printk_index_wrap(_dev_err, KERN_ERR, dev, dev_fmt(fmt), ##__VA_ARGS__)
+         |                                                        ^~~~~~~
+   sound/soc/codecs/tas2781-dsp.c:808:17: note: in expansion of macro 'dev_err'
+     808 |                 dev_err(tas_fmw->dev,
+         |                 ^~~~~~~
+   sound/soc/codecs/tas2781-dsp.c:809:42: note: format string is defined here
+     809 |                         "%s: File Size(%lu) error offset = %d n = %d\n",
+         |                                        ~~^
+         |                                          |
+         |                                          long unsigned int
+         |                                        %u
+   sound/soc/codecs/tas2781-dsp.c: In function 'fw_parse_header':
+>> sound/soc/codecs/tas2781-dsp.c:1199:39: warning: format '%ld' expects argument of type 'long int', but argument 3 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+    1199 |                 dev_err(tas_dev->dev, "File size not match, %ld %u", fmw->size,
+         |                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/dev_printk.h:110:30: note: in definition of macro 'dev_printk_index_wrap'
+     110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+         |                              ^~~
+   include/linux/dev_printk.h:144:56: note: in expansion of macro 'dev_fmt'
+     144 |         dev_printk_index_wrap(_dev_err, KERN_ERR, dev, dev_fmt(fmt), ##__VA_ARGS__)
+         |                                                        ^~~~~~~
+   sound/soc/codecs/tas2781-dsp.c:1199:17: note: in expansion of macro 'dev_err'
+    1199 |                 dev_err(tas_dev->dev, "File size not match, %ld %u", fmw->size,
+         |                 ^~~~~~~
+   sound/soc/codecs/tas2781-dsp.c:1199:63: note: format string is defined here
+    1199 |                 dev_err(tas_dev->dev, "File size not match, %ld %u", fmw->size,
+         |                                                             ~~^
+         |                                                               |
+         |                                                               long int
+         |                                                             %d
+   sound/soc/codecs/tas2781-dsp.c: In function 'tas2781_load_calibration':
+   sound/soc/codecs/tas2781-dsp.c:1819:33: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+    1819 |                                 "%s: file read error: size = %ld\n",
+         |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/dev_printk.h:110:30: note: in definition of macro 'dev_printk_index_wrap'
+     110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+         |                              ^~~
+   include/linux/dev_printk.h:144:56: note: in expansion of macro 'dev_fmt'
+     144 |         dev_printk_index_wrap(_dev_err, KERN_ERR, dev, dev_fmt(fmt), ##__VA_ARGS__)
+         |                                                        ^~~~~~~
+   sound/soc/codecs/tas2781-dsp.c:1818:25: note: in expansion of macro 'dev_err'
+    1818 |                         dev_err(tas_dev->dev,
+         |                         ^~~~~~~
+   sound/soc/codecs/tas2781-dsp.c:1819:64: note: format string is defined here
+    1819 |                                 "%s: file read error: size = %ld\n",
+         |                                                              ~~^
+         |                                                                |
+         |                                                                long int
+         |                                                              %d
 
 
-vim +/fw_parse_variable_header_git +591 sound/soc/codecs/tas2781-dsp.c
+vim +809 sound/soc/codecs/tas2781-dsp.c
 
-   590	
- > 591	int fw_parse_variable_header_git(struct tasdevice_priv *tas_dev,
-   592		const struct firmware *fmw, int offset)
-   593	{
-   594		const unsigned char *buf = fmw->data;
-   595		struct tasdevice_fw *tas_fmw = tas_dev->fmw;
-   596		struct tasdevice_dspfw_hdr *fw_hdr = &(tas_fmw->fw_hdr);
-   597		int i = strlen((char *)&buf[offset]);
-   598	
-   599		i++;
-   600	
-   601		if (offset + i > fmw->size) {
-   602			dev_err(tas_dev->dev, "%s: File Size error\n", __func__);
-   603			offset = -1;
-   604			goto out;
-   605		}
-   606	
-   607		offset  += i;
-   608	
-   609		if (offset + 4 > fmw->size) {
-   610			dev_err(tas_dev->dev, "%s: File Size error\n", __func__);
-   611			offset = -1;
-   612			goto out;
-   613		}
-   614		fw_hdr->device_family = SMS_HTONL(buf[offset], buf[offset + 1],
-   615			buf[offset + 2], buf[offset + 3]);
-   616		if (fw_hdr->device_family != 0) {
-   617			dev_err(tas_dev->dev, "ERROR:%s: not TAS device\n", __func__);
-   618			offset = -1;
-   619			goto out;
-   620		}
-   621		offset  += 4;
-   622		if (offset + 4 > fmw->size) {
-   623			dev_err(tas_dev->dev, "%s: File Size error\n", __func__);
-   624			offset = -1;
-   625			goto out;
-   626		}
-   627		fw_hdr->device = SMS_HTONL(buf[offset], buf[offset + 1],
-   628			buf[offset + 2], buf[offset + 3]);
-   629		if (fw_hdr->device >= TASDEVICE_DSP_TAS_MAX_DEVICE ||
-   630			fw_hdr->device == 6) {
-   631			dev_err(tas_dev->dev, "ERROR:%s: not support device %d\n",
-   632				__func__, fw_hdr->device);
-   633			offset = -1;
-   634			goto out;
-   635		}
-   636		offset  += 4;
-   637		fw_hdr->ndev = deviceNumber[fw_hdr->device];
-   638		if (fw_hdr->ndev != tas_dev->ndev) {
-   639			dev_err(tas_dev->dev,
-   640				"%s: ndev(%u) in dspbin dismatch ndev(%u) in DTS\n",
-   641				__func__, fw_hdr->ndev,
-   642				tas_dev->ndev);
-   643			offset = -1;
-   644		}
-   645	
-   646	out:
-   647		return offset;
-   648	}
-   649	
- > 650	int fw_parse_variable_header_cal(struct tasdevice_priv *tas_dev,
-   651		struct tasdevice_fw *tas_fmw, const struct firmware *fmw, int offset)
-   652	{
-   653		const unsigned char *buf = fmw->data;
-   654		struct tasdevice_dspfw_hdr *fw_hdr = &(tas_fmw->fw_hdr);
-   655		int i = strlen((char *)&buf[offset]);
-   656	
-   657		i++;
-   658	
-   659		if (offset + i > fmw->size) {
-   660			dev_err(tas_dev->dev, "%s: File Size error\n", __func__);
-   661			offset = -1;
-   662			goto out;
-   663		}
-   664	
-   665		offset  += i;
-   666	
-   667		if (offset + 4 > fmw->size) {
-   668			dev_err(tas_dev->dev, "%s: mnDeviceFamily error\n", __func__);
-   669			offset = -1;
-   670			goto out;
-   671		}
-   672		fw_hdr->device_family = SMS_HTONL(buf[offset], buf[offset + 1],
-   673			buf[offset + 2], buf[offset + 3]);
-   674		if (fw_hdr->device_family != 0) {
-   675			dev_err(tas_dev->dev, "ERROR:%s: not TAS device\n", __func__);
-   676			offset = -1;
-   677			goto out;
-   678		}
-   679		offset  += 4;
-   680		if (offset + 4 > fmw->size) {
-   681			dev_err(tas_dev->dev, "%s: mnDevice error\n", __func__);
-   682			offset = -1;
-   683			goto out;
-   684		}
-   685		fw_hdr->device = SMS_HTONL(buf[offset], buf[offset + 1],
-   686			buf[offset + 2], buf[offset + 3]);
-   687		if (fw_hdr->device >= TASDEVICE_DSP_TAS_MAX_DEVICE ||
-   688			fw_hdr->device == 6) {
-   689			dev_err(tas_dev->dev, "ERROR:%s: not support device %d\n",
-   690				__func__, fw_hdr->device);
-   691			offset = -1;
-   692			goto out;
-   693		}
-   694		offset  += 4;
-   695		fw_hdr->ndev = deviceNumber[fw_hdr->device];
-   696		if (fw_hdr->ndev != 1) {
-   697			dev_err(tas_dev->dev,
-   698				"%s: calbin must be 1, but currently ndev(%u)\n",
-   699				__func__, fw_hdr->ndev);
-   700			offset = -1;
-   701		}
-   702	
-   703	out:
-   704		return offset;
-   705	}
-   706	
+   740	
+   741	static int fw_parse_block_data(struct tasdevice_fw *tas_fmw,
+   742		struct tasdevice_block *block, const struct firmware *fmw, int offset)
+   743	{
+   744		unsigned char *data = (unsigned char *)fmw->data;
+   745		int n;
+   746	
+   747		if (offset + 4 > fmw->size) {
+   748			dev_err(tas_fmw->dev, "%s: mnType error\n", __func__);
+   749			offset = -1;
+   750			goto out;
+   751		}
+   752		block->type = SMS_HTONL(data[offset], data[offset + 1],
+   753			data[offset + 2], data[offset + 3]);
+   754		offset  += 4;
+   755	
+   756		if (tas_fmw->fw_hdr.fixed_hdr.drv_ver >=
+   757			PPC_DRIVER_CRCCHK) {
+   758			if (offset + 1 > fmw->size) {
+   759				dev_err(tas_fmw->dev, "%s: mbPChkSumPresent error\n",
+   760					__func__);
+   761				offset = -1;
+   762				goto out;
+   763			}
+   764			block->is_pchksum_present = data[offset];
+   765			offset++;
+   766	
+   767			if (offset + 1 > fmw->size) {
+   768				dev_err(tas_fmw->dev, "%s: mnPChkSum error\n",
+   769					__func__);
+   770				offset = -1;
+   771				goto out;
+   772			}
+   773			block->pchksum = data[offset];
+   774			offset++;
+   775	
+   776			if (offset + 1 > fmw->size) {
+   777				dev_err(tas_fmw->dev, "%s: mbYChkSumPresent error\n",
+   778					__func__);
+   779				offset = -1;
+   780				goto out;
+   781			}
+   782			block->is_ychksum_present = data[offset];
+   783			offset++;
+   784	
+   785			if (offset + 1 > fmw->size) {
+   786				dev_err(tas_fmw->dev, "%s: mnYChkSum error\n",
+   787					__func__);
+   788				offset = -1;
+   789				goto out;
+   790			}
+   791			block->ychksum = data[offset];
+   792			offset++;
+   793		} else {
+   794			block->is_pchksum_present = 0;
+   795			block->is_ychksum_present = 0;
+   796		}
+   797		if (offset + 4 > fmw->size) {
+   798			dev_err(tas_fmw->dev, "%s: mnCommands error\n", __func__);
+   799			offset = -1;
+   800			goto out;
+   801		}
+   802		block->n_cmds = SMS_HTONL(data[offset], data[offset + 1],
+   803			data[offset + 2], data[offset + 3]);
+   804		offset  += 4;
+   805	
+   806		n = block->n_cmds * 4;
+   807		if (offset + n > fmw->size) {
+   808			dev_err(tas_fmw->dev,
+ > 809				"%s: File Size(%lu) error offset = %d n = %d\n",
+   810				__func__, fmw->size, offset, n);
+   811			offset = -1;
+   812			goto out;
+   813		}
+   814		block->data = kmemdup(&data[offset], n, GFP_KERNEL);
+   815		if (block->data == NULL) {
+   816			offset = -1;
+   817			goto out;
+   818		}
+   819		offset  += n;
+   820	out:
+   821		return offset;
+   822	}
+   823	
 
 -- 
 0-DAY CI Kernel Test Service
