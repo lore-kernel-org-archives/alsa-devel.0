@@ -4,66 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10FDDC636CC
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 Jan 2023 22:19:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 709D2C38142
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 Jan 2023 22:20:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 24DA482B;
-	Tue, 31 Jan 2023 23:19:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24DA482B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8553E836;
+	Tue, 31 Jan 2023 23:19:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8553E836
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675203594;
-	bh=LM+Q1L66VNrohk2KsCb097ycRFTc55Zp5fivS41VsiU=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1675203624;
+	bh=1k+bgDHjFw33vi2FYCvnMsD2v6XTns/PIAju5+u3Wh4=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=bX0Tgcis2EL1SMHiz3AM6W37PozDd2UmBhC5faqZkzIae2AYbXvTCADv5Vn6EHQQ9
-	 YrKLi1JDyX7vjiYpOxdbk6zGaCsAYLPsc/9lPmg42GP5uvyZgkeWFH1xANb/9gmBeM
-	 8gsVTtgwI8lQ+T61rqcqk9R61iwjM1xayUUlljeI=
+	b=c8pwPi30ocwCrV/DSFHzmNS8os7DxLccBNjrSO71wCSmIbcrTXUSNSkOxhRBHM/Q6
+	 IbiA8vpXzxPVITfja6aNsOsbFQmgtF14pvJ4NtN8gqplYgSovMCL5xykYO3nPWjy2O
+	 gRPYlm8BM8FrA7Pai3yLBxullT9F70cQGklwBpLk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9273EF80520;
-	Tue, 31 Jan 2023 23:18:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E39DF804DF;
+	Tue, 31 Jan 2023 23:19:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4B0A3F804E2; Tue, 31 Jan 2023 23:18:14 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9087F80155
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2023 23:18:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9087F80155
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=FQWtluPt
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 580FCF804E0; Tue, 31 Jan 2023 23:19:33 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 7963C61736;
- Tue, 31 Jan 2023 22:18:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66694C433D2;
- Tue, 31 Jan 2023 22:17:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1675203479;
- bh=LM+Q1L66VNrohk2KsCb097ycRFTc55Zp5fivS41VsiU=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=FQWtluPtEFrxtp5goJezeECWbLdi5vo6TKrMsrAGZJPIG9T6Pvh+4YGKjUs+VZkXY
- 2LK74xKt3wfsExnCfRjDZjgn25l3Suv2ZYooMY4GQczfYEzIwpNfpMy0LFcBOuGPC6
- bJnrscbl8SVhgcV6pZBT7uUovaTuM/A8fh3UftqHGLbdLSi44OSuvt48RcKPWkqDAf
- xb2Mwtw70NUenw77cFaxvRDBO9VhpH+XqtQCQBkQC7FOqzOuHQJVKS97Pj2W0Uocoz
- S7ZG7gP4+OqDA9nBNmdskRYV+l3OQfKgz55iXVjAHvnIYkGsdOl0x/AK2ZY6LNNJhy
- phqjfCJ5YWZKA==
-From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87y1psu1m1.wl-kuninori.morimoto.gx@renesas.com>
-References: <87y1psu1m1.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v2 00/25] ASoC: use helper function and cleanup
-Message-Id: <167520347913.1362284.16856323521695657016.b4-ty@kernel.org>
-Date: Tue, 31 Jan 2023 22:17:59 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id 65C81F80155
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2023 23:19:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65C81F80155
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=TJwrEM65
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1675203569; x=1706739569;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=1k+bgDHjFw33vi2FYCvnMsD2v6XTns/PIAju5+u3Wh4=;
+ b=TJwrEM65Jq5qiAkT84bnS6w+ifdJOmWXAZmq/oV2SlwzwPx0eevbydn4
+ BEN9L634fP6ENQ9DtCPj40D1xn42wtPDpVHcY/lyVSKQMFmQAmGFYMQvM
+ Z0HPU3T/ZRKiGareh8pw7sLSloORtLezKd7eLEu/PD1kTAQisaaEDoSxU
+ stSDt7O7Y/ZdpG0OAxRmpKVic95TodriSxyRBapbX/d2jXSQgVQHp4PTw
+ 0XW95W2DMjcdI7FjJnE7ijOQUpOUih0kHG9d57IyCs087JzQ8b9Tkg9da
+ m7h/QiTSbEAcBDQERZIM1EMF0wmEMQuf0heOG1Q6jlb+HL3+CKLzWpFya g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="308318503"
+X-IronPort-AV: E=Sophos;i="5.97,261,1669104000"; d="scan'208";a="308318503"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Jan 2023 14:19:26 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="788615794"
+X-IronPort-AV: E=Sophos;i="5.97,261,1669104000"; d="scan'208";a="788615794"
+Received: from ncollins-mobl.amr.corp.intel.com (HELO [10.212.85.244])
+ ([10.212.85.244])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 31 Jan 2023 14:19:25 -0800
+Message-ID: <12b10990-8f06-e0a3-df6a-33fa20ba2cd9@linux.intel.com>
+Date: Tue, 31 Jan 2023 09:52:22 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.4.2
+Subject: Re: [PATCH v3 8/8] ASoC: cs42l42: Wait for debounce interval after
+ resume
+Content-Language: en-US
+To: Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Stefan Binding <sbinding@opensource.cirrus.com>,
+ Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>
+References: <20230127165111.3010960-1-sbinding@opensource.cirrus.com>
+ <20230127165111.3010960-9-sbinding@opensource.cirrus.com>
+ <1e5e1312-18f5-e70f-3237-c2ffc851eef7@linux.intel.com>
+ <cb52e4cf-47d8-33be-f77d-fc2d0b868a5c@opensource.cirrus.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <cb52e4cf-47d8-33be-f77d-fc2d0b868a5c@opensource.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.0
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -76,95 +90,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 24 Jan 2023 02:07:19 +0000, Kuninori Morimoto wrote:
-> These are v2 patch-set to use helper function on ASoC.
+
+
+On 1/31/23 05:03, Richard Fitzgerald wrote:
+> On 30/01/2023 16:45, Pierre-Louis Bossart wrote:
+>>
+>>
+>> On 1/27/23 10:51, Stefan Binding wrote:
+>>> Since clock stop causes bus reset on Intel controllers, we need
+>>
+>> nit-pick: It's more that the Intel controller has a power optimization
+>> where the context is lost when stopping the clock, which requires a bus
+>> reset and full re-enumeration/initialization when the clock resumes.
+>>
 > 
-> I'm posting about DT schema fixup, but it seems take longer time.
-> This patch-set is 100% independent from it, so I will post it.
+> Ok, it's true that clock stop doesn't _cause_ bus reset, bus reset is
+> necessary when exiting clock stop. We can re-word if you want us to
+> describe that accurately.
 > 
-> struct snd_soc_dai need to have info for playback/capture,
-> but it is using "playback/capture_xxx" or "tx/tx_xxx" or array.
-> This kind of random definition is very difficult to read.
-> 
-> [...]
+> But from the codec driver's point of view, a clock stop causes a bus
+> reset.
 
-Applied to
+it's fine, we all agree here.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[01/25] ASoC: soc-dai.h: add missing snd_soc_dai_set_widget()
-        commit: 37ed123689968fa7f733598d9a6966e8a2db66fb
-[02/25] ASoC: soc-dai.h: add snd_soc_dai_dma_data_set/get() for low level
-        commit: 60df5935c27e19cc6595bd1740479a60f1880a32
-[03/25] ASoC: soc-dai.h: add snd_soc_dai_tdm_mask_set/get() helper
-        commit: d4c0326e6ea038cf99fde6f22296e4e68de4f2b5
-[04/25] ASoC: soc-dai.h: add snd_soc_dai_get/set_widget_playback/capture() helper
-        commit: 944d721ee5defb376410c7054a7db0a0ef5ff584
-[05/25] ASoC: soc.h: add snd_soc_card_is_instantiated() helper
-        commit: 2e5f86174e31cc1eda92b308f23f3b29684b339e
-[06/25] ASoC: hdmi-codec: use helper function
-        commit: c59331b39045fcc9ed3c66cb5c80a8ef3ade820f
-[07/25] ASoC: hda: use helper function
-        commit: 5bf13408fd06068aeef751597748c9d0569c3708
-[08/25] ASoC: max: use helper function
-        commit: 812c2852c59f1f532ea9b53d9bbe86231dd83fea
-[09/25] ASoC: rt: use helper function
-        commit: 8ec352362848d8cc9500ccfb051810597c0abf8a
-[10/25] ASoC: cirrus: use helper function
-        commit: 0e478b88b257049e1e22077b880419a431595645
-[11/25] ASoC: spear: use helper function
-        commit: c4d78c4127f9371dcfc77e71417addddcc5a9533
-[12/25] ASoC: sdw-mockup: use helper function
-        commit: e87abb83fc24a481ba490d8596969e1de3a16384
-[13/25] ASoC: intel: use helper function
-        commit: ec4b2099c6e01342e5c3289a906615c3abef85b8
-[14/25] ASoC: mediatek: use helper function
-        commit: 0df2ec8e4706a6adc36d12cc5cf8e1fa7485fbf5
-[15/25] ASoC: meson: use helper function
-        commit: c765ceda78f0bd9df1217f9beaefea58ecf3865c
-[16/25] ASoC: rockchip: use helper function
-        commit: 67cc242679b106909be52f8476e372dbb03c0a88
-[17/25] ASoC: sof: use helper function
-        commit: 323f09a61d43da2aff9b71e8a4764f4c9a88a5e0
-[18/25] ASoC: tegra: use helper function
-        commit: 1c1a778401b8ad04ae618eb8baa9a34a8b7e3d50
-[19/25] ASoC: ti: use helper function
-        commit: 2abde57fb82b4259b790212135b2194f2fd4dc7c
-[20/25] ASoC: soc-core.c: use helper function
-        commit: 9024bae4bb229c38522bb8c5dc45b82f9c27e0fc
-[21/25] ASoC: soc-dapm.c: use helper function
-        commit: 6855ec72102921814aaa43eab305b541af3e9757
-[22/25] ASoC: soc-dai.c: use helper function
-        commit: 8ede4b7109f618b3267a9577083b38984857a267
-[23/25] ASoC: soc-pcm.c: use helper function
-        commit: e15ff262e212387a05316dc465d754c0a62d9691
-[24/25] ASoC: soc-topology.c: use helper function
-        commit: 2b34c1359cca4812d7c8253ff70c394871c22590
-[25/25] ASoC: soc-dai.h: cleanup Playback/Capture data for snd_soc_dai
-        commit: 3653480c68120dc16ebfeb80e529200dbbd98f92
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+>> The rest of the patch is fine so
+>>
+>> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>
+>>> to wait for the debounce interval on resume, to ensure all the
+>>> interrupt status registers are set correctly.
+>>>
+>>> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
