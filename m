@@ -4,79 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB1F2C636CD
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 14:59:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 531B9C05027
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 15:02:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B379E98;
-	Wed,  1 Feb 2023 15:58:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B379E98
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF1E3AEA;
+	Wed,  1 Feb 2023 16:01:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF1E3AEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675263544;
-	bh=5pdkkcPZ5BPJOT6puxQ+wDgXntPtwBN5qOPkcnVMaus=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1675263717;
+	bh=YmsUF8dYyS1t9iHkHZl4QyzCYaAaEk1KI4sRfdsRaIg=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=nm4h3yhnvPa9F4WHRvNZ773jTqZyOZm/nUITU1hy25rYShed5rrg3wpYHKUm0axQy
-	 rq3TAFS3M//BG/3P42rM2UcrwoPVBvI9ZnE9QlnTMNwmHtMHp4kGM02vff1CsWzLQh
-	 26TpEEuJMVvTaiW22pAOthdDAPYv50jc/6huXtKU=
+	b=Rg9H4jOsO0TylT9OlQjA2d75Qw6FxG4vKrlSXmnGDE1ae7HU6n9Ho9e8Mkm7k6s3y
+	 3Fwkl/Pp/iBToLFtGCjhXC2cL+Sso5PitIzOWtEi/Ngnd0TC3Ac9sVUQJ5DfCB2gdG
+	 TVvBUjXElfFKrbbW8ZE8v6XpKXPmPyxIqnAIGLCU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20DD1F805D6;
-	Wed,  1 Feb 2023 15:53:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92F88F8032B;
+	Wed,  1 Feb 2023 16:01:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 178BBF8045D; Wed,  1 Feb 2023 14:52:52 +0100 (CET)
-Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
- [199.106.114.38])
- (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
+ id 62432F80423; Wed,  1 Feb 2023 16:01:06 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22879F80155
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 14:52:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22879F80155
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcdkim header.b=zI9T/8cs
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1675259570; x=1706795570;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=HwQIVDLFm5wts9Zpmji6vpaZ2OWNop5ROxZR3n4FmwQ=;
- b=zI9T/8csdMfkbHC53x2rtyyy2lJKHYP336pLgVd6JXAZl8pI2K7W8CvS
- 7KRqMe5/qvQfzq8g27UjMbicBqx1VCD3RbOCFj7E6YCuLduLNAnDjti/y
- xyhfqO/tACU6zfsZUTPru+dUpC4sFm/9+wfup7Q183KUmRHBXpNGZavyb o=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
- by alexa-out-sd-01.qualcomm.com with ESMTP; 01 Feb 2023 05:52:48 -0800
-X-QCInternal: smtphost
-Received: from nalasex01b.na.qualcomm.com ([10.47.209.197])
- by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Feb 2023 05:52:48 -0800
-Received: from hu-mohs-hyd.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.36; Wed, 1 Feb 2023 05:52:42 -0800
-From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-To: <krzysztof.kozlowski+dt@linaro.org>, <agross@kernel.org>,
- <andersson@kernel.org>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
- <robh+dt@kernel.org>, <quic_plai@quicinc.com>, <bgoswami@quicinc.com>,
- <srinivas.kandagatla@linaro.org>, <quic_rohkumar@quicinc.com>,
- <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
- <linux-kernel@vger.kernel.org>, <swboyd@chromium.org>,
- <judyhsiao@chromium.org>, <devicetree@vger.kernel.org>,
- <konrad.dybcio@linaro.org>
-Subject: [PATCH 14/14] ASoC: q6dsp: audioreach: Add gapless feature support
-Date: Wed, 1 Feb 2023 19:19:47 +0530
-Message-ID: <20230201134947.1638197-15-quic_mohs@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230201134947.1638197-1-quic_mohs@quicinc.com>
-References: <20230201134947.1638197-1-quic_mohs@quicinc.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B4E8F80155
+ for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 16:01:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B4E8F80155
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=uWU/uBx6
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 3A9CF6179C;
+ Wed,  1 Feb 2023 15:01:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 699B2C433D2;
+ Wed,  1 Feb 2023 15:00:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1675263660;
+ bh=YmsUF8dYyS1t9iHkHZl4QyzCYaAaEk1KI4sRfdsRaIg=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=uWU/uBx64dGc2xdxP94hbFndKoMOooiLvGJW9syKl5VW9CNhcBGfe7leZ3+USFgBz
+ END1RF7ldrpYmDuxzDaiVcl6IPJ5pG9QQ53bx1raIxWCcQDSxdCpDsa6rssURWBx4e
+ bmLZbMGPyovn5XkJpVagXH4LHEqA26B+k55d0yAn5S9Bdbc3rMwlI5PXi9yqc3QPWt
+ 1PlU3MdR5rEhCNKRaOyca1wGW2JCQ/cV0KO634+pEjX3Bqgb89r47NsWW97LSRSIpp
+ GZGUqfY++Cvcb1L2sVUcukcpP72lKIVYac2xVj//PRSeeF3lXLJk+e2Pvl8LawP++J
+ cIUrK0SftDKPA==
+Date: Wed, 1 Feb 2023 15:00:55 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] ASoC: dt-bindings: Drop broken irondevice, sma1303 binding
+Message-ID: <Y9p+p6wt8WugDBuH@sirena.org.uk>
+References: <20230201131059.65527-1-krzysztof.kozlowski@linaro.org>
+ <1bcd61d6-810f-1239-1b6e-367e0fe87370@linaro.org>
+ <Y9pxGUMWyMeXQpZM@sirena.org.uk>
+ <6491d6fb-2a10-1c80-d422-8300d5a75ce4@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-Mailman-Approved-At: Wed, 01 Feb 2023 15:52:51 +0100
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="qLcimmkhW1yYyJm9"
+Content-Disposition: inline
+In-Reply-To: <6491d6fb-2a10-1c80-d422-8300d5a75ce4@linaro.org>
+X-Cookie: Oh no, not again.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -89,119 +80,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Kiseok Jo <kiseok.jo@irondevice.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for setting EOS delay command and receive the
-EOS response from ADSP, for seamless compress offload
-playback feature.
 
-Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-Co-developed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/qdsp6/audioreach.c | 40 +++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/audioreach.h |  6 +++++
- sound/soc/qcom/qdsp6/q6apm.c      |  3 +++
- 3 files changed, 49 insertions(+)
+--qLcimmkhW1yYyJm9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/qcom/qdsp6/audioreach.c b/sound/soc/qcom/qdsp6/audioreach.c
-index 250ed828c7d3..71ff705e27cb 100644
---- a/sound/soc/qcom/qdsp6/audioreach.c
-+++ b/sound/soc/qcom/qdsp6/audioreach.c
-@@ -852,6 +852,43 @@ static int audioreach_mfc_set_media_format(struct q6apm_graph *graph,
- 	return rc;
- }
- 
-+static int audioreach_gapless_set_media_format(struct q6apm_graph *graph,
-+					   struct audioreach_module *module,
-+					   struct audioreach_module_config *cfg)
-+{
-+	struct apm_module_param_data *param_data;
-+	struct param_id_gapless_early_eos_delay_t *media_format;
-+	int payload_size;
-+	struct gpr_pkt *pkt;
-+	int rc;
-+	void *p;
-+
-+	payload_size = sizeof(struct param_id_gapless_early_eos_delay_t) +
-+		APM_MODULE_PARAM_DATA_SIZE;
-+
-+	pkt = audioreach_alloc_apm_cmd_pkt(payload_size, APM_CMD_SET_CFG, 0);
-+	if (IS_ERR(pkt))
-+		return PTR_ERR(pkt);
-+
-+	p = (void *)pkt + GPR_HDR_SIZE + APM_CMD_HDR_SIZE;
-+
-+	param_data = p;
-+	param_data->module_instance_id = module->instance_id;
-+	param_data->error_code = 0;
-+	param_data->param_id = PARAM_ID_EARLY_EOS_DELAY;
-+	param_data->param_size = sizeof(struct param_id_gapless_early_eos_delay_t);
-+	p = p + APM_MODULE_PARAM_DATA_SIZE;
-+	media_format = p;
-+
-+	media_format->early_eos_delay_ms = EARLY_EOS_DELAY_MS;
-+
-+	rc = q6apm_send_cmd_sync(graph->apm, pkt, 0);
-+
-+	kfree(pkt);
-+
-+	return rc;
-+}
-+
- static int  audioreach_set_compr_media_format(struct media_format *media_fmt_hdr,
- 					      void *p, struct audioreach_module_config *mcfg)
- {
-@@ -1249,6 +1286,9 @@ int audioreach_set_media_format(struct q6apm_graph *graph, struct audioreach_mod
- 	case MODULE_ID_MFC:
- 		rc = audioreach_mfc_set_media_format(graph, module, cfg);
- 		break;
-+	case MODULE_ID_GAPLESS:
-+		rc = audioreach_gapless_set_media_format(graph, module, cfg);
-+		break;
- 	default:
- 		rc = 0;
- 	}
-diff --git a/sound/soc/qcom/qdsp6/audioreach.h b/sound/soc/qcom/qdsp6/audioreach.h
-index 044994ca4811..a9d4f70ad3e0 100644
---- a/sound/soc/qcom/qdsp6/audioreach.h
-+++ b/sound/soc/qcom/qdsp6/audioreach.h
-@@ -543,6 +543,8 @@ struct param_id_sal_limiter_enable {
- } __packed;
- 
- #define PARAM_ID_MFC_OUTPUT_MEDIA_FORMAT	0x08001024
-+#define PARAM_ID_EARLY_EOS_DELAY		0x0800114C
-+#define EARLY_EOS_DELAY_MS			150
- 
- struct param_id_mfc_media_format {
- 	uint32_t sample_rate;
-@@ -551,6 +553,10 @@ struct param_id_mfc_media_format {
- 	uint16_t channel_mapping[];
- } __packed;
- 
-+struct param_id_gapless_early_eos_delay_t {
-+	uint32_t early_eos_delay_ms;
-+} __packed;
-+
- struct media_format {
- 	uint32_t data_format;
- 	uint32_t fmt_id;
-diff --git a/sound/soc/qcom/qdsp6/q6apm.c b/sound/soc/qcom/qdsp6/q6apm.c
-index 1a6c7108bae0..37ded6e0f4ea 100644
---- a/sound/soc/qcom/qdsp6/q6apm.c
-+++ b/sound/soc/qcom/qdsp6/q6apm.c
-@@ -605,6 +605,9 @@ static int graph_callback(struct gpr_resp_pkt *data, void *priv, int op)
- 		}
- 		break;
- 	case DATA_CMD_WR_SH_MEM_EP_EOS_RENDERED:
-+		client_event = APM_CLIENT_EVENT_CMD_EOS_DONE;
-+		if (graph->cb)
-+			graph->cb(client_event, hdr->token, data->payload, graph->priv);
- 		break;
- 	case GPR_BASIC_RSP_RESULT:
- 		switch (result->opcode) {
--- 
-2.25.1
+On Wed, Feb 01, 2023 at 03:43:12PM +0100, Krzysztof Kozlowski wrote:
 
+> I tried. I started writing patch to fix few things in this binding and
+> then noticed that it is entirely empty and documents nothing.
+
+I really don't see an empty binding as a major problem in and of itself,
+we can always add properties later.  Again, I can't tell what the
+problems you're seeing are.
+
+> The trouble is that soon you will send it to Linus and then it becomes
+> the ABI even though no one ever approved or reviewed the actual ABI.
+
+So send a patch to delete the property parsing code then, like I say
+removing the entire driver is very much an overraction.  The properties
+are all optional in the code.
+
+--qLcimmkhW1yYyJm9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPafqYACgkQJNaLcl1U
+h9B4SQf/V/sdNWAHAktgLl/T/dtFKrx37Qe9wxNlsIs5nCLDx+P4A075LhmLQC7/
+CBRhMIjVPmWoXMvMz+QcrL1YZw4Yuqt+pMg0vOxkKuQQplPLK+sj1Os36jT+NLAR
+VXmvhhsy/ohXtnTdD7tx+YycrlQBw25Wd/iMBKzBRHoqjBFCYSyJqKcYtqxw2jqQ
+wAoxYuNJi3NIZYHlOd4qVLJTp8zGmW023L+MomhTFTimbr94npCTbz49CjVZ8B5v
+a9YHAKi3jsDWpIz45hLso5GQZvrvbvRbst3u92dAN2CXSQpb3mW75EDm+rn21TuF
+ANteV+q5cPoO2CT9zGdGYBhFYe5pLw==
+=mFhz
+-----END PGP SIGNATURE-----
+
+--qLcimmkhW1yYyJm9--
