@@ -4,66 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AD0CC05027
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 11:29:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8405C636D3
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 11:30:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 362D51E1;
-	Wed,  1 Feb 2023 12:28:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 362D51E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0F190844;
+	Wed,  1 Feb 2023 12:29:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F190844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675250986;
-	bh=K40Lt57OPAP1h+2SzTXpQNiv7apJHAs07JXKz58s6u4=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=ZLyDHglxlhKDobtvHXQMD+4krm0Ta0XGF/Mbcy0POwafEtpJB3kYnrXtSJOFmLbF4
-	 MH1pVuwZrit1l/HeXpVs6AlknCzvhrrYAptcOuyBczV/idko8Wl0/ckyEFHPx6Iu/J
-	 atPdLKt1KUaBSKZqqMLOXHLFTcE1ce2yaQTYK1qI=
+	s=default; t=1675251013;
+	bh=Vl2HJSwfSR5lkLqCRdv6CFEeu+SEaD2DT5NE+KA+YG4=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=brEWV10PeCjJbj/dTc75zrlaFidtPtUgkTU02mVEP+USRnX6rs8YRy9cLv3t38edr
+	 pgcR3eWL4WyTg7nEvXgGrzsKZOkbYNaPJ5TLPTXPXXr+q4TmnhYu5tL0VYYo8QfW0D
+	 VWoLBAgsBmDZgeIQ2vC0Anq6KRNOfxEWyeW6c8wA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA281F8032B;
-	Wed,  1 Feb 2023 12:28:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92F01F8045D;
+	Wed,  1 Feb 2023 12:28:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93DA3F8047D; Wed,  1 Feb 2023 12:28:49 +0100 (CET)
+ id A6427F8045D; Wed,  1 Feb 2023 12:28:51 +0100 (CET)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A8D2AF80169
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 12:28:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8D2AF80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id C0268F80423
+ for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 12:28:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0268F80423
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=EZrWWMIw
+ header.s=Intel header.b=Vgl6wYnX
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1675250923; x=1706786923;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=K40Lt57OPAP1h+2SzTXpQNiv7apJHAs07JXKz58s6u4=;
- b=EZrWWMIwUFXhqWJhsaq+1orh3iTooe1EXayW+FJcVRHLIDdTdTz/+Or0
- jH52gSvP4AXTVvYqofKSQiNb2p/HZfxNpOC6ZpTVF+QOqbtQ8+ZAG0wG6
- HsKhavRn3qNL315slCjp9SZ4EPCg/jwEuCX1TOUNAPghQ5yia/4eCqbxm
- R0Fu+DNBxrWbljHzMpZ4X+wnmPB7zVWBXoaB36A9n2VbHIGRufyUd7D3O
- wIG7uJRo0jHJzeQROYp1t2bc8Z7ZQeayD0sG/azP1YQ+l8elqeou1q7GS
- Mxud2WD4Zx+YYCpIfDPuFW1KgqnmDxJiEdh/KSepZUcU6doRHzEy0DzA8 g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="329409365"
-X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; d="scan'208";a="329409365"
+ t=1675250928; x=1706786928;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=Vl2HJSwfSR5lkLqCRdv6CFEeu+SEaD2DT5NE+KA+YG4=;
+ b=Vgl6wYnXjh9xKcnvAE/qOBm8LBh4F2ZlHnTJRYMsrJcQUBIEka46hfVT
+ 6ItYyEIxZzAE2O8TFkrZJlqLxgi4iCGKKZvk1evjD7HJHjLWUsh5j4dru
+ LPd4Ghxn9WU18Vg0izc9vh3s3MpwIq6rTeB0w62/aBWvX0NN/s589cSjr
+ xu2KSblyzDqDcBRZNF2lwq8FHGiP3Rz7EFmwTRCd3sjjGP7YaPnsTQknm
+ Bbwtny+xK/wJQDN66hO20roIHzCNXAACHWSdNzqMnO2Tn8htsJ7yeLLdc
+ tWAGW6NrnqPoKtFlx5GEh33iE/iOloW5MBR3qXFDmX929wQ8ACQw5sHmU g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="329409388"
+X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; d="scan'208";a="329409388"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Feb 2023 03:28:39 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="642374164"
-X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; d="scan'208";a="642374164"
+ 01 Feb 2023 03:28:46 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="642374246"
+X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; d="scan'208";a="642374246"
 Received: from jehdildi-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.31.67])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Feb 2023 03:28:36 -0800
+ 01 Feb 2023 03:28:42 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org, kuninori.morimoto.gx@renesas.com,
  amadeuszx.slawinski@linux.intel.com
-Subject: [PATCH 0/2] ASoC: (SOF) topology: Regression fixes for next
-Date: Wed,  1 Feb 2023 13:28:44 +0200
-Message-Id: <20230201112846.27707-1-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: topology: Set correct unload callback for graph type
+Date: Wed,  1 Feb 2023 13:28:46 +0200
+Message-Id: <20230201112846.27707-3-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230201112846.27707-1-peter.ujfalusi@linux.intel.com>
+References: <20230201112846.27707-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -84,30 +87,30 @@ Cc: pierre-louis.bossart@linux.intel.com, cezary.rojewski@intel.com,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Using the control_unload for graph type of elem will lead surprises on
+module unload.
 
-Today I came across two regressions in next with SOF:
+The correct callback to use is the dapm_route_unload.
 
-The topology would not load with a failure of creating playback DAI
-the first patch is fixing this which was caused by a missing 'else' in the patch
-
-After fixing the topology loading, the module unloading caused kernel panic.
-The second patch is correcting that which is I likely caused by copy-paste to
-set wrong unload callback for the graph element.
-
-With these patches applied SOF is working on next and modules can be unloaded
-
-Regards,
-Peter
+Fixes: 31e9273912bf ("ASoC: topology: Use unload() op directly")
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
-Peter Ujfalusi (2):
-  ASoC: SOF: topology: Add missed "else" in sof_connect_dai_widget
-  ASoC: topology: Set correct unload callback for graph type
-
  sound/soc/soc-topology.c | 2 +-
- sound/soc/sof/topology.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index caf547816ea7..78223603088e 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1081,7 +1081,7 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
+ 		/* add route dobj to dobj_list */
+ 		route->dobj.type = SND_SOC_DOBJ_GRAPH;
+ 		if (tplg->ops)
+-			route->dobj.unload = tplg->ops->control_unload;
++			route->dobj.unload = tplg->ops->dapm_route_unload;
+ 		route->dobj.index = tplg->index;
+ 		list_add(&route->dobj.list, &tplg->comp->dobj_list);
+ 
 -- 
 2.39.1
 
