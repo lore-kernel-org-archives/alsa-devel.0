@@ -4,71 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2123C05027
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 12:36:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2591C05027
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 12:45:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0784E0E;
-	Wed,  1 Feb 2023 13:35:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0784E0E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A28F820;
+	Wed,  1 Feb 2023 13:44:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A28F820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675254965;
-	bh=PWm0vyhHI7D3eocYSia+cq1hDXzXLcNoTI2P2k03OmU=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1675255508;
+	bh=gkD6HRgfOl2ffKtHR7tQZwvitttJ6AZILFMJL8aBzXU=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=dKqb58NZ0+LBAWg1d9VpKfKMNoT3lfdyYZr6CzjoRHYn0VMj/uXo9vq8apmWgu+Az
-	 PNvMcLuhp2JTjeDcWsjDv0VZlANYCjHjTvTc/He/hX1iuFE1eEuVz3ToggKCpp8yvi
-	 7RVnoB3JjeX8Q3JHP7zWC0DtKyy/QGpEoV0ymkBE=
+	b=g1ID3qyQ6NsvTOmJk23r5aYFfIhrO//92cApkgVsg/ofhRZi3bHkJjzlN9x4/oOU4
+	 jiYrLOEgWlIAHO4leYI5zeRQ9PaL2wFOXVUfJsOrd/3Bt5w1tQjOVS06vH5hyr8BYJ
+	 lIPgkaR9qrPu8c12RCfyG3aV5pMCsh5AAMdirgxg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5BFBDF80544;
-	Wed,  1 Feb 2023 13:34:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CAEF7F8032B;
+	Wed,  1 Feb 2023 13:44:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D360FF8045D; Wed,  1 Feb 2023 13:34:13 +0100 (CET)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9A0B1F80423; Wed,  1 Feb 2023 13:44:16 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC7FAF8053D
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 13:32:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC7FAF8053D
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=GjaPqwDC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1675254762; x=1706790762;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=PWm0vyhHI7D3eocYSia+cq1hDXzXLcNoTI2P2k03OmU=;
- b=GjaPqwDC6FecYT5AdRGagbIpyXaTaogTvCQP5iPVBHA6y5dSKlJU8wbL
- HtoEoXnrYToiVQ+/0N6jnlyxXn3UuctvkPEofhyI+NgEFL6MOhilK4fd8
- yIFIKx91OYjcQOJlE5e0LTvyEReTiwlm65fIGNrSQ8QOP1u1314yBOFsm
- GPXXNrLmZGuoar3x9WA2zUCkuj/Nac5QaMtJdWW6YmoI+5wPVAKAeLCr4
- UUoVdm8z7FFU85FGqL2Op6qH3eOCT0+zT6gVcf0VhxrwnqIZ/hJr+3HH3
- su3FQvZgdVa1L87V3m9/6KmrzC4nvG7HbJ4+Z4OKm0M3yaW6phaNP8VLs Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="328143598"
-X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; d="scan'208";a="328143598"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Feb 2023 04:32:41 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="788865705"
-X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; d="scan'208";a="788865705"
-Received: from jehdildi-mobl.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.31.67])
- by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Feb 2023 04:32:38 -0800
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org
-Subject: [PATCH 6/9] ASoC: SOF: add delay function support in sof framework
-Date: Wed,  1 Feb 2023 14:32:28 +0200
-Message-Id: <20230201123231.26361-7-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230201123231.26361-1-peter.ujfalusi@linux.intel.com>
-References: <20230201123231.26361-1-peter.ujfalusi@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E9314F80169
+ for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 13:44:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9314F80169
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ secure) header.d=perex.cz header.i=@perex.cz header.a=rsa-sha256
+ header.s=default header.b=xe0mCmtk
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id ADACD400;
+ Wed,  1 Feb 2023 13:44:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz ADACD400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1675255451; bh=/Yd2TOqlsMlmjlL8fFy/F70AA/X9hqlI6H9gn+IdeP8=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+ b=xe0mCmtk+/5jBU6sNVDwU+z6vaJPldinmMzYjcQxU83PKKfbd/nfdKJaBaVAzO3Xq
+ M4+qBmhQap/EX7Zxr0jvW7OXkOrLKUJ6MuQQOJMQNZV0vmA+uUo3X/TsbKpN0kmd9l
+ Svuivh04SmRGLp7fxuCp54Sd7doX+2x/Hjhbm6xs=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Wed,  1 Feb 2023 13:44:02 +0100 (CET)
+Message-ID: <d5f6aa34-4fff-9e23-0811-de1ee6d8a2e9@perex.cz>
+Date: Wed, 1 Feb 2023 13:44:01 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH 9/9] ASoC: SOF: ipc4-pcm: add delay function support
+Content-Language: en-US
+To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, lgirdwood@gmail.com,
+ broonie@kernel.org
+References: <20230201123231.26361-1-peter.ujfalusi@linux.intel.com>
+ <20230201123231.26361-10-peter.ujfalusi@linux.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20230201123231.26361-10-peter.ujfalusi@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,78 +80,41 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, rander.wang@intel.com,
- ranjani.sridharan@linux.intel.com, yung-chuan.liao@linux.intel.com
+ ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ rander.wang@intel.com, yung-chuan.liao@linux.intel.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Rander Wang <rander.wang@intel.com>
+On 01. 02. 23 13:32, Peter Ujfalusi wrote:
 
-Sof framework will call specific delay function for
-different IPC version.
+> +static snd_pcm_sframes_t sof_ipc4_pcm_delay(struct snd_soc_component *component,
+> +					    struct snd_pcm_substream *substream)
+> +{
 
-Signed-off-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
- sound/soc/sof/pcm.c       | 13 +++++++++++++
- sound/soc/sof/sof-audio.h |  3 +++
- 2 files changed, 16 insertions(+)
+...
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 34d40c5c629a..445acb5c3a21 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -646,6 +646,18 @@ static int sof_pcm_ack(struct snd_soc_component *component,
- 	return snd_sof_pcm_platform_ack(sdev, substream);
- }
- 
-+static snd_pcm_sframes_t sof_pcm_delay(struct snd_soc_component *component,
-+				       struct snd_pcm_substream *substream)
-+{
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	const struct sof_ipc_pcm_ops *pcm_ops = sof_ipc_get_ops(sdev, pcm);
-+
-+	if (pcm_ops && pcm_ops->delay)
-+		return pcm_ops->delay(component, substream);
-+
-+	return 0;
-+}
-+
- void snd_sof_new_platform_drv(struct snd_sof_dev *sdev)
- {
- 	struct snd_soc_component_driver *pd = &sdev->plat_drv;
-@@ -670,6 +682,7 @@ void snd_sof_new_platform_drv(struct snd_sof_dev *sdev)
- 	pd->trigger = sof_pcm_trigger;
- 	pd->pointer = sof_pcm_pointer;
- 	pd->ack = sof_pcm_ack;
-+	pd->delay = sof_pcm_delay;
- 
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_COMPRESS)
- 	pd->compress_ops = &sof_compressed_ops;
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index 334b715b17c8..d3104941e83e 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -102,6 +102,7 @@ struct snd_sof_dai_config_data {
-  *	       additional memory in the SOF PCM stream structure
-  * @pcm_free: Function pointer for PCM free that can be used for freeing any
-  *	       additional memory in the SOF PCM stream structure
-+ * @delay: Function pointer for pcm delay calculation
-  */
- struct sof_ipc_pcm_ops {
- 	int (*hw_params)(struct snd_soc_component *component, struct snd_pcm_substream *substream,
-@@ -113,6 +114,8 @@ struct sof_ipc_pcm_ops {
- 	int (*dai_link_fixup)(struct snd_soc_pcm_runtime *rtd, struct snd_pcm_hw_params *params);
- 	int (*pcm_setup)(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm);
- 	void (*pcm_free)(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm);
-+	snd_pcm_sframes_t (*delay)(struct snd_soc_component *component,
-+				   struct snd_pcm_substream *substream);
- };
- 
- /**
+> +
+> +	/*
+> +	 * Handle 32-bit counter wrap around, which would happen
+> +	 * for a 48khz 2ch stream in 24.855 hours
+> +	 */
+> +	link_ptr = tmp_ptr & UINT_MAX;
+> +
+> +	host_ptr = substream->runtime->status->hw_ptr;
+> +
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		return host_ptr - link_ptr;
+> +
+> +	return link_ptr - host_ptr;
+
+I don't think that this calculation is fine for the wrap point. The hw_ptr is 
+in range 0..pcm_boundary not UINT_MAX. Also, you should consider the 
+underrun/overrun situations. The simple substraction is not enough to handle 
+this correctly.
+
+						Jaroslav
+
 -- 
-2.39.1
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
 
