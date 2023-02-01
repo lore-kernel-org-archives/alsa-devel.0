@@ -4,72 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08602C636D3
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 11:30:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36AE6C05027
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 11:44:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1C5084C;
-	Wed,  1 Feb 2023 12:29:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1C5084C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 14578820;
+	Wed,  1 Feb 2023 12:43:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14578820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675251036;
-	bh=f/IuMQXWQgsvip32dGWCsB0+gTrfk/NU8TOVayzClK0=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1675251880;
+	bh=MmpffVf8hWOZgiIPLTUppyG844PtEs1DvL1GWwkqiDY=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=J+8gzfGfh7ZKd3mWOtRQSartYeqgNzPT7qAw8Ppfps7lWrRg2aHtrNPe450EHWVbq
-	 j9tBVXRKeDT+NrMmEj4OgKkEoCitYACMtKkKyC/nMhYCgVGql/mtsVd4BA/8kKmnFP
-	 ZyRVfkUSMwsL4JOjeKEZr01z27m3pg8S15S5iSa8=
+	b=oFbDBppmqxsxd9dxqsnrmZ3zw0xmJYP2KbwEm64me4o+1ynlaAyXWxxVFh1nuHzcX
+	 4hPGe1uQBcD5Pl/jnBcyOeohnxhGYv8T7YxFfsVdofuW5IUFtGIxlrAoMgZTgWYkJI
+	 V/KUphPQsUdQbBwfvsg9tTcnscOC0D0PZPRZR1NI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56226F80543;
-	Wed,  1 Feb 2023 12:28:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C5F9F80423;
+	Wed,  1 Feb 2023 12:43:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4DA2DF80423; Wed,  1 Feb 2023 12:28:52 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id 111B2F8045D; Wed,  1 Feb 2023 12:43:48 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA87BF80246
+ for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 12:43:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA87BF80246
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=k5X21ojP
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B48C3F80155
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 12:28:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B48C3F80155
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=VrDBZeU2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1675250925; x=1706786925;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=f/IuMQXWQgsvip32dGWCsB0+gTrfk/NU8TOVayzClK0=;
- b=VrDBZeU2EeUqqhMhP6sdblFqSbGoHESPp4KxYQTzhz2Lf4huLhQlCm0l
- HG03Ka+vYQwNoK2svBEz++G6fNB8WFuYv0EHbqfngVkjjNVwZOzBNJp9l
- n821bYcyjCM7+11TBS3dtl1+c1Ol2MWTaaSIHM6GhxGZ3grrfXtFZ6YP2
- BmsUpH2u4vcIl8Gwc7FR42kk3Z+x2kWYLRnnNhg1l97NFKWY6lQX1hedW
- eoP21b4LrQdzGPMTMO3k268GiN6+EtQPUccjr7UdFlZKEMh0ar3fhczs2
- Qpsl5c9r954oHKZWFxAjkQqVxmFn94RhwPa93gflr6H4l/8iW7+nremLH A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="329409377"
-X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; d="scan'208";a="329409377"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Feb 2023 03:28:42 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="642374223"
-X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; d="scan'208";a="642374223"
-Received: from jehdildi-mobl.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.31.67])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Feb 2023 03:28:39 -0800
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, kuninori.morimoto.gx@renesas.com,
- amadeuszx.slawinski@linux.intel.com
-Subject: [PATCH 1/2] ASoC: SOF: topology: Add missed "else" in
- sof_connect_dai_widget
-Date: Wed,  1 Feb 2023 13:28:45 +0200
-Message-Id: <20230201112846.27707-2-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230201112846.27707-1-peter.ujfalusi@linux.intel.com>
-References: <20230201112846.27707-1-peter.ujfalusi@linux.intel.com>
+ by ams.source.kernel.org (Postfix) with ESMTPS id E12B2B8201D;
+ Wed,  1 Feb 2023 11:43:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A586C433D2;
+ Wed,  1 Feb 2023 11:43:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1675251819;
+ bh=MmpffVf8hWOZgiIPLTUppyG844PtEs1DvL1GWwkqiDY=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=k5X21ojPzgg64FyE0xLoklKIZ3cC3qnVqQ78IQszlmXX1/dSDT+N1mfUsmFkEC5Km
+ mlxz3LFAE9E7Z6JoA28n5m9iUUP4nWyHd+L8Q61fFaTMEja9sGiLReo/8H28rHJMcy
+ S2h3siUiaQHgc0KZJn3gx7gS8XYkOVpmNWjI99OekPPUu3uq5aSnxONRrS1Mqd6NXo
+ Plvc6pukuchxj/QtAgbYYLHCs9YlHPgSlVy/dCANsZAZ9jKCI5GTsc/Tjyk01AR/gc
+ 9u0dAPzipbvLYli4GXBHDl0D9ref8rySSsTbySLA3E08ilvACYevxfqWEDYkyujgQ4
+ WHVun4uDpW6Sg==
+From: Mark Brown <broonie@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>, 
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
+ Yassine Oudjana <yassine.oudjana@gmail.com>
+In-Reply-To: <20220622061106.35071-1-y.oudjana@protonmail.com>
+References: <20220622061106.35071-1-y.oudjana@protonmail.com>
+Subject: Re: [PATCH] ASoC: qcom: apq8096: set driver name correctly
+Message-Id: <167525181733.63465.381746473105058457.b4-ty@kernel.org>
+Date: Wed, 01 Feb 2023 11:43:37 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.0
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -82,34 +79,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: pierre-louis.bossart@linux.intel.com, cezary.rojewski@intel.com,
- kai.vehmanen@linux.intel.com, alsa-devel@alsa-project.org, tiwai@suse.com,
- ranjani.sridharan@linux.intel.com
+Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ Yassine Oudjana <y.oudjana@protonmail.com>, linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The conversion to use generic helpers missed the else for the dai
-direction check which leads to failure when loading playback widgets
+On Wed, 22 Jun 2022 10:11:06 +0400, Yassine Oudjana wrote:
+> Set driver name to allow matching different UCM2 configurations
+> for the multiple devices sharing the same APQ8096 ASoC.
+> 
+> 
 
-Fixes: 323f09a61d43 ("ASoC: sof: use helper function")
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
- sound/soc/sof/topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied to
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 3cfdf782afca..4a62ccc71fcb 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -1065,7 +1065,7 @@ static int sof_connect_dai_widget(struct snd_soc_component *scomp,
- 
- 	if (w->id == snd_soc_dapm_dai_out)
- 		stream = SNDRV_PCM_STREAM_CAPTURE;
--	if (w->id == snd_soc_dapm_dai_in)
-+	else if (w->id == snd_soc_dapm_dai_in)
- 		stream = SNDRV_PCM_STREAM_PLAYBACK;
- 	else
- 		goto end;
--- 
-2.39.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: qcom: apq8096: set driver name correctly
+      commit: 86b753a86f6dc31ca9bccb489ebde1968d26c89b
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
