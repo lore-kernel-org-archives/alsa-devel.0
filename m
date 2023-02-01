@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABD42C636CD
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 12:35:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2123C05027
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 12:36:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 91440852;
-	Wed,  1 Feb 2023 13:35:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91440852
+	by alsa0.perex.cz (Postfix) with ESMTPS id A0784E0E;
+	Wed,  1 Feb 2023 13:35:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0784E0E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675254953;
-	bh=qFV2i75zO5MVG4AiexOVN5pRHMk14Pc1mQpx6RGneuA=;
+	s=default; t=1675254965;
+	bh=PWm0vyhHI7D3eocYSia+cq1hDXzXLcNoTI2P2k03OmU=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=maOBtg6+E9RKrxZGRNSaraujWcMFUJP3zzFj7oR7+IKriXyPNDwEhLnvVRiapJeBk
-	 P5sRnuHYDJIR6sRkVKtOF/cgl6TBpgHZkc5WFNZKmQc3c+nLes/dVfGNcsKDxAUPR4
-	 mikiO9pAErALdVnllcTkrOaWx/CbhXiJR16E8hcw=
+	b=dKqb58NZ0+LBAWg1d9VpKfKMNoT3lfdyYZr6CzjoRHYn0VMj/uXo9vq8apmWgu+Az
+	 PNvMcLuhp2JTjeDcWsjDv0VZlANYCjHjTvTc/He/hX1iuFE1eEuVz3ToggKCpp8yvi
+	 7RVnoB3JjeX8Q3JHP7zWC0DtKyy/QGpEoV0ymkBE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3030F8047D;
-	Wed,  1 Feb 2023 13:34:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BFBDF80544;
+	Wed,  1 Feb 2023 13:34:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C19DAF8032B; Wed,  1 Feb 2023 13:34:12 +0100 (CET)
+ id D360FF8045D; Wed,  1 Feb 2023 13:34:13 +0100 (CET)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B2B8F8047D
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 13:32:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B2B8F8047D
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC7FAF8053D
+ for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 13:32:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC7FAF8053D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=nAiOHnuh
+ header.s=Intel header.b=GjaPqwDC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1675254767; x=1706790767;
+ t=1675254762; x=1706790762;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=qFV2i75zO5MVG4AiexOVN5pRHMk14Pc1mQpx6RGneuA=;
- b=nAiOHnuhTat6pS8JZqRiXieE/E8iVcMQhLZEeI5U+BABsqbqW9C5DnSQ
- ieRwncMVH9CF1ZRzibk2N7VrE3RGR5HY6SNoJYFqsTT71Ko7T6WFb7EHn
- G0V1IyPesOn9TMKPY0tAHNIokw+FoTm/xHakSfjHzj15EPrBVnfkI3DSL
- l0wPbdRUKsR2SsrHUGlEZk/nGisSJHAWJBRE+JdlKiw+F6g3MxVAlR6oW
- Im6sBa4DJD8+ySPMEJg4WbG1+7xjB3NIqvHGK9DYs83N97SADEcMH3TRC
- ET7R0RWMAekRgvoj23ODRRFyJRjco7+KtAaqssZb9uVc2NFay2H/tAHyD g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="328143620"
-X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; d="scan'208";a="328143620"
+ bh=PWm0vyhHI7D3eocYSia+cq1hDXzXLcNoTI2P2k03OmU=;
+ b=GjaPqwDC6FecYT5AdRGagbIpyXaTaogTvCQP5iPVBHA6y5dSKlJU8wbL
+ HtoEoXnrYToiVQ+/0N6jnlyxXn3UuctvkPEofhyI+NgEFL6MOhilK4fd8
+ yIFIKx91OYjcQOJlE5e0LTvyEReTiwlm65fIGNrSQ8QOP1u1314yBOFsm
+ GPXXNrLmZGuoar3x9WA2zUCkuj/Nac5QaMtJdWW6YmoI+5wPVAKAeLCr4
+ UUoVdm8z7FFU85FGqL2Op6qH3eOCT0+zT6gVcf0VhxrwnqIZ/hJr+3HH3
+ su3FQvZgdVa1L87V3m9/6KmrzC4nvG7HbJ4+Z4OKm0M3yaW6phaNP8VLs Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="328143598"
+X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; d="scan'208";a="328143598"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Feb 2023 04:32:44 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="788865715"
-X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; d="scan'208";a="788865715"
+ 01 Feb 2023 04:32:41 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10607"; a="788865705"
+X-IronPort-AV: E=Sophos;i="5.97,263,1669104000"; d="scan'208";a="788865705"
 Received: from jehdildi-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.31.67])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Feb 2023 04:32:41 -0800
+ 01 Feb 2023 04:32:38 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 7/9] ASoC: SOF: add get_stream_position ops for pcm delay
-Date: Wed,  1 Feb 2023 14:32:29 +0200
-Message-Id: <20230201123231.26361-8-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 6/9] ASoC: SOF: add delay function support in sof framework
+Date: Wed,  1 Feb 2023 14:32:28 +0200
+Message-Id: <20230201123231.26361-7-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230201123231.26361-1-peter.ujfalusi@linux.intel.com>
 References: <20230201123231.26361-1-peter.ujfalusi@linux.intel.com>
@@ -89,9 +89,8 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Rander Wang <rander.wang@intel.com>
 
-PCM delay depends on stream position based on hardware
-counter to calculate stream delay so add this ops to get
-stream position according to hardware counter.
+Sof framework will call specific delay function for
+different IPC version.
 
 Signed-off-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
@@ -99,51 +98,62 @@ Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/ops.h      | 10 ++++++++++
- sound/soc/sof/sof-priv.h |  9 +++++++++
- 2 files changed, 19 insertions(+)
+ sound/soc/sof/pcm.c       | 13 +++++++++++++
+ sound/soc/sof/sof-audio.h |  3 +++
+ 2 files changed, 16 insertions(+)
 
-diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
-index febe318b9427..03752c8405ca 100644
---- a/sound/soc/sof/ops.h
-+++ b/sound/soc/sof/ops.h
-@@ -511,6 +511,16 @@ static inline int snd_sof_pcm_platform_ack(struct snd_sof_dev *sdev,
- 	return 0;
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index 34d40c5c629a..445acb5c3a21 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -646,6 +646,18 @@ static int sof_pcm_ack(struct snd_soc_component *component,
+ 	return snd_sof_pcm_platform_ack(sdev, substream);
  }
  
-+static inline u64 snd_sof_pcm_get_stream_position(struct snd_sof_dev *sdev,
-+						  struct snd_soc_component *component,
-+						  struct snd_pcm_substream *substream)
++static snd_pcm_sframes_t sof_pcm_delay(struct snd_soc_component *component,
++				       struct snd_pcm_substream *substream)
 +{
-+	if (sof_ops(sdev) && sof_ops(sdev)->get_stream_position)
-+		return sof_ops(sdev)->get_stream_position(sdev, component, substream);
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
++	const struct sof_ipc_pcm_ops *pcm_ops = sof_ipc_get_ops(sdev, pcm);
++
++	if (pcm_ops && pcm_ops->delay)
++		return pcm_ops->delay(component, substream);
 +
 +	return 0;
 +}
 +
- /* machine driver */
- static inline int
- snd_sof_machine_register(struct snd_sof_dev *sdev, void *pdata)
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index fd1c3b17a396..14f7adb2dc12 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -248,6 +248,15 @@ struct snd_sof_dsp_ops {
- 	/* pcm ack */
- 	int (*pcm_ack)(struct snd_sof_dev *sdev, struct snd_pcm_substream *substream); /* optional */
+ void snd_sof_new_platform_drv(struct snd_sof_dev *sdev)
+ {
+ 	struct snd_soc_component_driver *pd = &sdev->plat_drv;
+@@ -670,6 +682,7 @@ void snd_sof_new_platform_drv(struct snd_sof_dev *sdev)
+ 	pd->trigger = sof_pcm_trigger;
+ 	pd->pointer = sof_pcm_pointer;
+ 	pd->ack = sof_pcm_ack;
++	pd->delay = sof_pcm_delay;
  
-+	/*
-+	 * optional callback to retrieve the link DMA position for the substream
-+	 * when the position is not reported in the shared SRAM windows but
-+	 * instead from a host-accessible hardware counter.
-+	 */
-+	u64 (*get_stream_position)(struct snd_sof_dev *sdev,
-+				   struct snd_soc_component *component,
-+				   struct snd_pcm_substream *substream); /* optional */
-+
- 	/* host read DSP stream data */
- 	int (*ipc_msg_data)(struct snd_sof_dev *sdev,
- 			    struct snd_sof_pcm_stream *sps,
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_COMPRESS)
+ 	pd->compress_ops = &sof_compressed_ops;
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index 334b715b17c8..d3104941e83e 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -102,6 +102,7 @@ struct snd_sof_dai_config_data {
+  *	       additional memory in the SOF PCM stream structure
+  * @pcm_free: Function pointer for PCM free that can be used for freeing any
+  *	       additional memory in the SOF PCM stream structure
++ * @delay: Function pointer for pcm delay calculation
+  */
+ struct sof_ipc_pcm_ops {
+ 	int (*hw_params)(struct snd_soc_component *component, struct snd_pcm_substream *substream,
+@@ -113,6 +114,8 @@ struct sof_ipc_pcm_ops {
+ 	int (*dai_link_fixup)(struct snd_soc_pcm_runtime *rtd, struct snd_pcm_hw_params *params);
+ 	int (*pcm_setup)(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm);
+ 	void (*pcm_free)(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm);
++	snd_pcm_sframes_t (*delay)(struct snd_soc_component *component,
++				   struct snd_pcm_substream *substream);
+ };
+ 
+ /**
 -- 
 2.39.1
 
