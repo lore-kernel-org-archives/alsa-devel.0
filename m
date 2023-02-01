@@ -4,93 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95CB7C636CD
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 13:14:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 784A6C05027
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 14:04:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E816823;
-	Wed,  1 Feb 2023 14:13:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E816823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 83D38828;
+	Wed,  1 Feb 2023 15:03:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83D38828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675257288;
-	bh=3hbB94ob54SghJbx3LOYEKAx6WHgEvlc8k5VsfJVN5M=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1675260266;
+	bh=2DbOtTQRhr8tnJUsWJlJ8/mz0ACGWFvVrr7Khf67Jw4=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=Nn35dMFBhMs0TIy53KDBgaFGeWpcA0znpJBIKij7O8zqH8e0kUEAwzuoAY9uNvoPg
-	 RUWjILMnzFAFAU8Y6kvtXLjl/fkyJZfGkdFuh3271fXOnUTRWgnO7QXB3TUGpMweRD
-	 AkeWFnqme80uvciNb7gMTrfeMAyUCbMvqEpn2G/Y=
+	b=DXVXccddbDW08hs2IvXPmhIgT/E7DyAVV6WAmtEKAwI+4TSYc6hrjCLt8NjT4TguS
+	 drN6rQYrOEMhYuTJS0g0/hfBgZNg2TGG0qFVkxRtSyqqWHEkJjBXlBxXYdcwz7K8EM
+	 fMSO/vmme9faDWTiGhBbOd4QJyEzESfBHes27CU4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 101AEF8032B;
-	Wed,  1 Feb 2023 14:13:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D58AF8032B;
+	Wed,  1 Feb 2023 15:03:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 121A6F80423; Wed,  1 Feb 2023 14:13:57 +0100 (CET)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 0892AF80423; Wed,  1 Feb 2023 15:03:32 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 775C8F80169
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 14:13:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 775C8F80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4066CF80246
+ for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 15:03:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4066CF80246
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=CawsGJou
-Received: by mail-wm1-x335.google.com with SMTP id l8so12639242wms.3
- for <alsa-devel@alsa-project.org>; Wed, 01 Feb 2023 05:13:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=NBVSqHRFtG/oRQBhwtv4eQUlLsJwKfgYGxR//a3EtVY=;
- b=CawsGJou9VXLSTLiSbX94s6GV0QPhhZLeRf5TV1XVsktftepDsXJYJblOBAdRuQB9o
- rmE+KByzfmAVrZctCx3YP7a2gNbfNWKpVs5EfjJoYQxQOJV/kkBP465DkNhH0cS9+73E
- /LOxy8+De01bfA5Vp+5bTC9yeqs24OTuY1iFUivKuSkQAc1gegbgJdwpvw3WeOCg65k0
- DHUz+knydv1eaoUm0WZFLJYbpCwqQsq38571FXTWd86VI/y9fdgZBwCjX0kmTLzRLQeP
- ENbI4oAdMAh59CWpPwkevxfGUzsvMXRr5MSmwYRIh8EaUr1Lu55D4+SVdtLBa9K6ifTw
- XkTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=NBVSqHRFtG/oRQBhwtv4eQUlLsJwKfgYGxR//a3EtVY=;
- b=n4aMLHvMimnEqkiwU8u5wueOV6wBLJ3F7ErQqpeAojyvfqBZnnHiNY2AsC8ZmhIE+L
- Xst91YzYTPStZXlYGCHFN0BbZGdyD3fHgwbJsJ+nRFXcJUJ5bkWdsK/YvwmrshAzuKtC
- YYUGgTXHgfsq6d+C+cQCnkB+Ap66OQdmsB2MNFnX+ASyRDHgay50VD893tsfTazd6lPt
- e0/mwJ8SOH80BVTdcYirzsJdJe/ewsIgi5R0HKsCZR8Q6waoUx2pusMEHHofyG5pwCaa
- BwsMVtcXHGEletTb2k06QhZgr7VYgMy6xEjqN5w89IYrNc5DK0j93QXar868rFdDQv7n
- EiOg==
-X-Gm-Message-State: AO0yUKUA5Wl5Ytgb25ySgTjjjp6AJdwC817lPgUBEm/q3scc5lumwxAE
- oSM+5JjWE/HP2TVGZP+VI68XxQ==
-X-Google-Smtp-Source: AK7set+yf3Nsm5C9ZeM11L6U4K6PWqyZeCiqzJ6QeAuVfoj2t+QoDJCDauh2FgNVUvOi6P2O7Ttkww==
-X-Received: by 2002:a05:600c:1c9b:b0:3dc:5240:53b6 with SMTP id
- k27-20020a05600c1c9b00b003dc524053b6mr2211877wms.6.1675257229667; 
- Wed, 01 Feb 2023 05:13:49 -0800 (PST)
-Received: from [192.168.1.109] ([178.197.216.144])
- by smtp.gmail.com with ESMTPSA id
- o9-20020a05600c4fc900b003dc1300eab0sm1965656wmq.33.2023.02.01.05.13.47
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 01 Feb 2023 05:13:49 -0800 (PST)
-Message-ID: <1bcd61d6-810f-1239-1b6e-367e0fe87370@linaro.org>
-Date: Wed, 1 Feb 2023 14:13:46 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=CFlfGnI1
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 91B01B82189;
+ Wed,  1 Feb 2023 14:03:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D926C433D2;
+ Wed,  1 Feb 2023 14:03:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1675260192;
+ bh=2DbOtTQRhr8tnJUsWJlJ8/mz0ACGWFvVrr7Khf67Jw4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=CFlfGnI1en/ZcXxspRRKujokG0KfusW/3vbZN6nQ1sBWV9M3AJirnOhHNOCa6d1rp
+ +Xo7tdZGOphyvxQmtXrdpPoUbYi84vdrNBD2JBXBOCDGEPhGQ0vcO4RCkXlFX4XuAt
+ 73UZ0jmt88xKYYOPv2DmpcTWsun1xr0mhRMrWoGSYeOvpJtFdRc9deY5bI0GPnzW/M
+ 3VxHq8piROjRVbKlbqSkMzyYOdE/5mw5BxPoVehnA6IFlCgUVTxjPgSXbVghdeBg/1
+ zejP3mtJa6CLBc1EMd7XvQI3tm+2C+GK8kX27LrTj+jl9NhoHwHz+IE3Y6Jpz+q8fP
+ vw6GWaKQm24Nw==
+Date: Wed, 1 Feb 2023 14:03:05 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Subject: Re: [PATCH] ASoC: dt-bindings: Drop broken irondevice, sma1303 binding
-Content-Language: en-US
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Message-ID: <Y9pxGUMWyMeXQpZM@sirena.org.uk>
 References: <20230201131059.65527-1-krzysztof.kozlowski@linaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230201131059.65527-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <1bcd61d6-810f-1239-1b6e-367e0fe87370@linaro.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="XMD2Qw0vG4t+o25k"
+Content-Disposition: inline
+In-Reply-To: <1bcd61d6-810f-1239-1b6e-367e0fe87370@linaro.org>
+X-Cookie: Oh no, not again.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -103,41 +77,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Kiseok Jo <kiseok.jo@irondevice.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Kiseok Jo <kiseok.jo@irondevice.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 01/02/2023 14:10, Krzysztof Kozlowski wrote:
-> This reverts entire SMA1303 submission:
-> 
-> 1. commit 1c24d12b68fa ("ASoC: dt-bindings: irondevice,sma1303.yaml: Fix about breaking the checks")
-> 2. commit dcf6d2ef0e82 ("ASoC: Modified the schema binding and added the vendor prefixes.")
-> 3. commit 5b28c049ff53 ("ASoC: SMA1303: Fix spelling mistake "Invald" -> "Invalid"")
-> 4. commit 68cd394efd0f ("ASoC: The Iron Device SMA1303 is a boosted Class-D audio amplifier.")
-> 
-> Because the binding:
-> 1. Was never tested,
-> 2. Was never sent to Devicetree maintainers,
-> 3. Is entirely broken and wrong, so it would have to be almost rewritten
->    from scratch,
-> 4. It does not match the driver, IOW, the binding is fake.
-> 
-> We cannot accept drivers with broken bindings and make it an ABI.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
 
-I understand that in general we tend to fix, not just to revert. But the
-poor quality of this binding and the next patch, which was suppose to
-fix it, plus complete lack of testing, means I do not believe the author
-will send correct binding.
+--XMD2Qw0vG4t+o25k
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-More over, fixing binding might require dropping incorrect properties,
-thus changing the driver. I am not willing to do that, I doubt that
-anyone has the time for it.
+On Wed, Feb 01, 2023 at 02:13:46PM +0100, Krzysztof Kozlowski wrote:
+> On 01/02/2023 14:10, Krzysztof Kozlowski wrote:
 
-It's the job of submitter to work on it.
+> > Because the binding:
+> > 1. Was never tested,
+> > 2. Was never sent to Devicetree maintainers,
+> > 3. Is entirely broken and wrong, so it would have to be almost rewritten
+> >    from scratch,
+> > 4. It does not match the driver, IOW, the binding is fake.
 
-Best regards,
-Krzysztof
+> I understand that in general we tend to fix, not just to revert. But the
+> poor quality of this binding and the next patch, which was suppose to
+> fix it, plus complete lack of testing, means I do not believe the author
+> will send correct binding.
 
+> More over, fixing binding might require dropping incorrect properties,
+> thus changing the driver. I am not willing to do that, I doubt that
+> anyone has the time for it.
+
+It is an absolutely trivial binding as is, it is utterly
+disproportionate to delete both the binding and the driver to fix
+whatever it is that the issues you're seeing are (I can't really tell
+TBH).  Undocumented properties are a separate thing but again a revert
+is obviously disproportionate here, glancing at the driver the code is
+all well enough separated and can have default values.  Looking again I
+did miss the sysclk selection which should be dropped, clocks should use
+the clock bindings.
+
+> It's the job of submitter to work on it.
+
+It's also not the end of the world if we have a driver that isn't
+perfect.
+
+Please, try to keep things constructive.
+
+--XMD2Qw0vG4t+o25k
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPacRgACgkQJNaLcl1U
+h9Clqgf/fBAlVIkG5zw/SgqTKfN1Yg8nM89WTIvkRkH9P4VzP5/4AcY1JGgQ88LS
+wLn12hGKAm9M96JTB3HMPfBuTbF/sn2oduUU1GUx7T0sM13LVwPCM59/Kv0EZO1r
+60yUzotgLtAMP+bp6qxi5FXG+K9npW+hk7zhtZOu9ia48m3R2k1T2LfO5Ai0Mp4Q
+wJrN5nbyHtXf0MzUcVc+do/mf/1p76HP/NvvyteAoLJVg3l7gEECdws7G+/b1VZf
+xS+tjYlH9R0a1XJsJm+7rAcjlovdpMLZESIb6vHYxDJ18rdBlTsfDtSfIiWDrwof
+4cTRjKLygsYMBrleaja1+7DlW8Satg==
+=nfWJ
+-----END PGP SIGNATURE-----
+
+--XMD2Qw0vG4t+o25k--
