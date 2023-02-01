@@ -4,90 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD2FEC38142
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 07:12:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01348C05027
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 10:20:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 601CE82A;
-	Wed,  1 Feb 2023 08:12:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 601CE82A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33E3E829;
+	Wed,  1 Feb 2023 11:19:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33E3E829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675235572;
-	bh=ETG8xzXnR5XE4VofqZV4A/M5phg1WDFIG1cxbUMSgQA=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1675246819;
+	bh=xSgjTUX1wqrAaPENfVdLfXLd5hvVLPmMp7rXoRYb8IY=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=ViykWBWJ7BDaCcTWkasWFsSKzgI1Hjxuyj1jCrcaU7CzQEdqOIJWjP4e7TYryXdfg
-	 0pFSnmw/1W2qn7UcGQAcTfObqCYW6B9dONgnbQIdeTwQqDzLBXEsKsaE/+pyUp7tlu
-	 /61XTgmz+VVnNANLQKxzDzde7oOL9jvSRjvrTGuA=
+	b=LYGo2olNG/VV4ygwkYF8qYLLtNAekCyE4s3JPlCbc8Rr93qP+kAZ9X+66Lcktyp6J
+	 Pmw8zLTAha4SnCOblD9KZLNM4VElUNLwaocHb7dEone0ASjd0rmvZSlJEPJURdRW8B
+	 +C+NYOOjzrIYVObDkvWvXb6GlPo4EAImvJVvGAWI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E63EFF8032B;
-	Wed,  1 Feb 2023 08:12:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A46D4F8032B;
+	Wed,  1 Feb 2023 11:19:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59C6DF80423; Wed,  1 Feb 2023 08:12:00 +0100 (CET)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 45441F80423; Wed,  1 Feb 2023 11:19:25 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 47B09F80246
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 08:11:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47B09F80246
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49EF9F80169
+ for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 11:19:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49EF9F80169
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=xULa/7uK
-Received: by mail-wm1-x32d.google.com with SMTP id l8so11921906wms.3
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2023 23:11:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=cn9LZKnUiXYPN0HrV8FpuolH+EcmV36idl0jPM8Bs7g=;
- b=xULa/7uKAzVNHnAjrjCp9bVHGfDdSgVls4B3o+aiUOTV71IywmXVOFH7OcwQRPAvJ7
- o4ekM/su0yqeVM3iZCXiPw8O3u2X6XfDGArz2H/Jpluck7lVJPyaR7zTZKiDC17mZ6uU
- LNCR6kaYks2FVZFKDnlbpvujlu1UBSXPdfYB7/tPGUnmX0XtlF/7gBiwCr6p2S+1vw6x
- KCiQltH7fAyBus7kyq+2VWrbTOAUfhEkc1ZrQ+P8F0OcOPi/bItCnidq+VUWduy3iHnu
- hVfpdfZ2HrshxO7ANs0DY3mirg1Xu7jECm+ERSKSelXhozgIYiUYALyVDI+nUvb0UZFj
- VJ+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=cn9LZKnUiXYPN0HrV8FpuolH+EcmV36idl0jPM8Bs7g=;
- b=GSymRMDRh2E0+yqzbFTy7o7suNFsFX5mXGXAHgJITFcyqTPby02XLmqkWNWYOB8byz
- yOTQMKVYvkCFe+1WrOUSxWNu1eahmrd4kJNVR4ih5CCMBEVtrfFNi93QKb9KWPMTk9T+
- 1wgWtnqu5tgU38l9s8obD6JEpcH362+m2hHy+ru5X2C1CFRt038V0V8PTmwXAFLDVnJo
- M+bbvyH8TTPWAzMMdG6y+5lsJ/gL6f8RymbEwuTM2RYNotW9BqTL4+/B9AND697URx9j
- rHbLsokmXKqeQE9Lo+BV5ZQTXxzowsRIv+KD+G7lldVpr3bFoqWBvmVRSnD7fOU+rSTW
- e/FQ==
-X-Gm-Message-State: AO0yUKWEUUC0Y8h7Exlw6LeR7ZvhC/YSUMxUJvZ8Fnlj6GvMG49kL2pe
- kjn3CtXmTNucl5JLVAFt/xcTqQ==
-X-Google-Smtp-Source: AK7set/sqXRZ6V1JnblJNIQrhR6jqsQ/X0zsu4VBAYE/A3nGGIdQrfitkZ9AQ2RPkzdeaCl+ugfyYg==
-X-Received: by 2002:a05:600c:3b89:b0:3dc:19d1:3c13 with SMTP id
- n9-20020a05600c3b8900b003dc19d13c13mr891765wms.12.1675235510442; 
- Tue, 31 Jan 2023 23:11:50 -0800 (PST)
-Received: from [192.168.1.109] ([178.197.216.144])
- by smtp.gmail.com with ESMTPSA id
- m4-20020a05600c4f4400b003dc36981727sm858730wmq.14.2023.01.31.23.11.49
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 31 Jan 2023 23:11:50 -0800 (PST)
-Message-ID: <17542e28-36dd-2bb6-6c04-49df9433a67a@linaro.org>
-Date: Wed, 1 Feb 2023 08:11:48 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=MOGFu0fQ
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 8D47561739;
+ Wed,  1 Feb 2023 10:19:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5436C4339B;
+ Wed,  1 Feb 2023 10:19:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1675246756;
+ bh=xSgjTUX1wqrAaPENfVdLfXLd5hvVLPmMp7rXoRYb8IY=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=MOGFu0fQPnUel34mVi49lcCLYOXTEJSDvTMqrzmDiiMM6eppjJJAp1UMLjAHnFEF5
+ d5mJRSh2uHxuW2H25JdFoVVrMHMpv9IhjrSnPzJTrcE5V/eM7OJK9xc/3rgsRvoZS7
+ WL6F9GZs5O20gWnfmCACd6qXBcr3T8VyZGHcJz42frAHIzEszPVYLhw5oEgNgOc0W8
+ wLHxpXldlE2w8If5GevIsd7ne1Rxakj0CntPnytTxuHC6e7dRLTF3Q8KUlgf4eDxFI
+ jsg0svaRcyA6zFkK8+FpNJSsLm2P/xL8TSgwfyWbQQt8BH8Gl25FhZsWB5+90dxu0j
+ datdt4OSa3+Bw==
+Date: Wed, 1 Feb 2023 10:19:11 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Subject: Re: [PATCH 14/15] ASoC: dt-bindings: renesas: add R8A779G0 V4H
-Content-Language: en-US
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>
+Message-ID: <Y9o8n5tyXSY60Wg2@sirena.org.uk>
 References: <87a61y6t8e.wl-kuninori.morimoto.gx@renesas.com>
  <87pmau5ejk.wl-kuninori.morimoto.gx@renesas.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <87pmau5ejk.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <17542e28-36dd-2bb6-6c04-49df9433a67a@linaro.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="XO+wdLb7H/tLNR/H"
+Content-Disposition: inline
+In-Reply-To: <17542e28-36dd-2bb6-6c04-49df9433a67a@linaro.org>
+X-Cookie: Oh no, not again.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -100,26 +79,41 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: Rob Herring <robh@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ devicetree@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 01/02/2023 03:02, Kuninori Morimoto wrote:
-> 
 
-Blank line above From?
+--XO+wdLb7H/tLNR/H
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> Document R-Car V4H (R8A779G0), and R-Car Gen4 SoC bindings.
-> 
-> Link: https://lore.kernel.org/r/87zga6t5r4.wl-kuninori.morimoto.gx@renesas.com
+On Wed, Feb 01, 2023 at 08:11:48AM +0100, Krzysztof Kozlowski wrote:
+> On 01/02/2023 03:02, Kuninori Morimoto wrote:
 
-The Link is a tag added by maintainers pointing to applied version of
-the patch. This does not look correct...
+> > Link: https://lore.kernel.org/r/87zga6t5r4.wl-kuninori.morimoto.gx@renesas.com
 
-Don't you wanted to just reference v1 under ---?
+> The Link is a tag added by maintainers pointing to applied version of
+> the patch. This does not look correct...
 
-Best regards,
-Krzysztof
+It's just a general thing for linking to relevant information, it can be
+used for linking to other things too.
 
+--XO+wdLb7H/tLNR/H
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPaPJ4ACgkQJNaLcl1U
+h9AZsgf/aJMoCoZzoWhCX5NKedEg4lcv11tTss1GItdBbH9UaAeH3pFY6UTeuleS
+m3i2TFZs97ujstBmmu0FPiblXk8/bzvNEtOsucN1ffs9IVMYV7PxYPPgOhEdTyZ8
+7CcAVHvdQW2HelllA44bsvumWG3X45ENnBSxC9dnA+GUnZVInjusSHSVsZHLffcb
+xk3ojzM0rvPSXfdDhdZ66FvLDlgJpjb5/a5obirngrTmUgrlaD2r4o4hypwW/vap
+vIDbLm/B+ytozsXnVxTmY6bGux6ZcTymwWAN26xw+mcpUCbvlN643yt+1OkXMhsG
+H773cyFsGzDX4kI1dJE/3EhEF6XEbA==
+=N61+
+-----END PGP SIGNATURE-----
+
+--XO+wdLb7H/tLNR/H--
