@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8330C05027
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 14:57:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2406FC636CD
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 14:58:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DDFCAA4E;
-	Wed,  1 Feb 2023 15:56:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDFCAA4E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A2AC832;
+	Wed,  1 Feb 2023 15:57:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A2AC832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675263466;
-	bh=j6XkCkKusfHVmewgSOLw2qyRK3D5uhmrae5jWN4EkLQ=;
+	s=default; t=1675263484;
+	bh=sFATrtgciToFvB94xGQRQFcO8C/ECfZHs59ML2xb2uI=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=dxV/MWOZ4n7y7PRE+fPd/zjNnvnqHtOm6AwP4Jl/T+uTEH4pBjZD22dBvjPhCU3xC
-	 wI4woapgMEaGS/eLrGGVfJOWd16W90L0GqVWyEPHzRuj6IWRIGZ7UN5ffzZq5LXwgS
-	 sRtS24gIVpIdSLed55no3lhJeTvUV6TDClPrmcoE=
+	b=TKAvT+q6K9mH2TvEK0wU9U+EqkIJXlK0xhy0MJP2A9H/tVXkbdoEUqyIfsmkpP0wY
+	 p8+5f7d7R3sIxROAsQ8tj+wcJwnz9Z25a5hyeNtNEt38lkS7qwA9npqO5d/jXSWjSU
+	 6XSFEIEi4r2ZBmcjs/aooqQBAWbDwt961Cx99dw0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0ABA5F805BB;
+	by alsa1.perex.cz (Postfix) with ESMTP id 86677F805C0;
 	Wed,  1 Feb 2023 15:53:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2B73F8045D; Wed,  1 Feb 2023 14:52:24 +0100 (CET)
+ id 0A01FF80246; Wed,  1 Feb 2023 14:52:29 +0100 (CET)
 Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
  [199.106.114.38])
  (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00E88F80423
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 14:52:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00E88F80423
+ by alsa1.perex.cz (Postfix) with ESMTPS id 95AB6F80246
+ for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 14:52:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95AB6F80246
 Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcdkim header.b=Otgmq7lK
+ header.s=qcdkim header.b=IObU21ZK
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1675259543; x=1706795543;
+ t=1675259547; x=1706795547;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=LJD/2fCmODYcH9KoF3x+TewQn5VG9fepk8yXNyFelww=;
- b=Otgmq7lKqaLuF+q9kct0ATxk8D5jDqAUy2bOiej6MpmkWlkrBJ3qBk5z
- XZ+Qxs+JXX4/s18SvdptBbo9pIrih8DO3BcMIvdXsHHwoqwtGLvk8cW61
- GJHRTXnHGEWrf5zhcuxIgHBYSuSufTtJRaWywYQ49ZAtXAVdcFcvdDBwz U=;
+ bh=fx8eUSWeP9jdx2AoQEHNg/mpJumHcAAPsJfotX19Rso=;
+ b=IObU21ZKcL8x5OPciGOXxBR5KLOeXTGy697OuBcCr++NoCRFKk90LDjb
+ +V6k2rSKmu4VJaXI2u7jISm2KRekzUEhTIOtBLJ81pmjaMRIe23PuLVGA
+ iIshppdgNYAAV6O0PMe8gWiHBwqouUZ1XmbMt+kUD2XssrUawh/VkoktZ o=;
 Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
- by alexa-out-sd-01.qualcomm.com with ESMTP; 01 Feb 2023 05:52:20 -0800
+ by alexa-out-sd-01.qualcomm.com with ESMTP; 01 Feb 2023 05:52:26 -0800
 X-QCInternal: smtphost
 Received: from nalasex01b.na.qualcomm.com ([10.47.209.197])
  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Feb 2023 05:52:20 -0800
+ 01 Feb 2023 05:52:25 -0800
 Received: from hu-mohs-hyd.qualcomm.com (10.80.80.8) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.36; Wed, 1 Feb 2023 05:52:14 -0800
+ 15.2.986.36; Wed, 1 Feb 2023 05:52:20 -0800
 From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 To: <krzysztof.kozlowski+dt@linaro.org>, <agross@kernel.org>,
  <andersson@kernel.org>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
@@ -64,10 +64,10 @@ To: <krzysztof.kozlowski+dt@linaro.org>, <agross@kernel.org>,
  <linux-kernel@vger.kernel.org>, <swboyd@chromium.org>,
  <judyhsiao@chromium.org>, <devicetree@vger.kernel.org>,
  <konrad.dybcio@linaro.org>
-Subject: [PATCH 09/14] ASoC: q6dsp: q6apm-dai: Add compress DAI and codec caps
- get callbacks
-Date: Wed, 1 Feb 2023 19:19:42 +0530
-Message-ID: <20230201134947.1638197-10-quic_mohs@quicinc.com>
+Subject: [PATCH 10/14] ASoC: q6dsp: q6apm-dai: Add trigger/pointer compress
+ DAI callbacks
+Date: Wed, 1 Feb 2023 19:19:43 +0530
+Message-ID: <20230201134947.1638197-11-quic_mohs@quicinc.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230201134947.1638197-1-quic_mohs@quicinc.com>
 References: <20230201134947.1638197-1-quic_mohs@quicinc.com>
@@ -94,90 +94,113 @@ Cc: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add q6apm get compress DAI capabilities and codec capabilities callbacks
-to support compress offload playback.
+Add q6apm trigger and pointer compress DAI callbacks to support
+compress offload playback.
 
 Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 Co-developed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6apm-dai.c | 51 ++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
+ sound/soc/qcom/qdsp6/q6apm-dai.c | 68 ++++++++++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6apm.h     |  1 +
+ 2 files changed, 69 insertions(+)
 
 diff --git a/sound/soc/qcom/qdsp6/q6apm-dai.c b/sound/soc/qcom/qdsp6/q6apm-dai.c
-index fd134c268189..54e1aca61e4c 100644
+index 54e1aca61e4c..f43b60742e2f 100644
 --- a/sound/soc/qcom/qdsp6/q6apm-dai.c
 +++ b/sound/soc/qcom/qdsp6/q6apm-dai.c
-@@ -29,8 +29,25 @@
- #define BUFFER_BYTES_MIN (PLAYBACK_MIN_NUM_PERIODS * PLAYBACK_MIN_PERIOD_SIZE)
- #define COMPR_PLAYBACK_MAX_FRAGMENT_SIZE (128 * 1024)
- #define COMPR_PLAYBACK_MAX_NUM_FRAGMENTS (16 * 4)
-+#define COMPR_PLAYBACK_MIN_FRAGMENT_SIZE (8 * 1024)
-+#define COMPR_PLAYBACK_MIN_NUM_FRAGMENTS (4)
- #define SID_MASK_DEFAULT	0xF
- 
-+static const struct snd_compr_codec_caps q6apm_compr_caps = {
-+	.num_descriptors = 1,
-+	.descriptor[0].max_ch = 2,
-+	.descriptor[0].sample_rates = {	8000, 11025, 12000, 16000, 22050,
-+					24000, 32000, 44100, 48000, 88200,
-+					96000, 176400, 192000 },
-+	.descriptor[0].num_sample_rates = 13,
-+	.descriptor[0].bit_rate[0] = 320,
-+	.descriptor[0].bit_rate[1] = 128,
-+	.descriptor[0].num_bitrates = 2,
-+	.descriptor[0].profiles = 0,
-+	.descriptor[0].modes = SND_AUDIOCHANMODE_MP3_STEREO,
-+	.descriptor[0].formats = 0,
-+};
-+
- enum stream_state {
- 	Q6APM_STREAM_IDLE = 0,
- 	Q6APM_STREAM_STOPPED,
-@@ -507,9 +524,43 @@ static int q6apm_dai_compr_free(struct snd_soc_component *component,
+@@ -556,11 +556,79 @@ static int q6apm_dai_compr_get_codec_caps(struct snd_soc_component *component,
  
  	return 0;
  }
 +
-+static int q6apm_dai_compr_get_caps(struct snd_soc_component *component,
-+				    struct snd_compr_stream *stream,
-+				    struct snd_compr_caps *caps)
++static int q6apm_dai_compr_pointer(struct snd_soc_component *component,
++				   struct snd_compr_stream *stream,
++				   struct snd_compr_tstamp *tstamp)
 +{
-+	caps->direction = SND_COMPRESS_PLAYBACK;
-+	caps->min_fragment_size = COMPR_PLAYBACK_MIN_FRAGMENT_SIZE;
-+	caps->max_fragment_size = COMPR_PLAYBACK_MAX_FRAGMENT_SIZE;
-+	caps->min_fragments = COMPR_PLAYBACK_MIN_NUM_FRAGMENTS;
-+	caps->max_fragments = COMPR_PLAYBACK_MAX_NUM_FRAGMENTS;
-+	caps->num_codecs = 3;
-+	caps->codecs[0] = SND_AUDIOCODEC_MP3;
-+	caps->codecs[1] = SND_AUDIOCODEC_AAC;
-+	caps->codecs[2] = SND_AUDIOCODEC_FLAC;
++	struct snd_compr_runtime *runtime = stream->runtime;
++	struct q6apm_dai_rtd *prtd = runtime->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&prtd->lock, flags);
++	tstamp->copied_total = prtd->copied_total;
++	tstamp->byte_offset = prtd->copied_total % prtd->pcm_size;
++	spin_unlock_irqrestore(&prtd->lock, flags);
 +
 +	return 0;
 +}
 +
-+static int q6apm_dai_compr_get_codec_caps(struct snd_soc_component *component,
-+					  struct snd_compr_stream *stream,
-+					  struct snd_compr_codec_caps *codec)
++int q6apm_dai_compr_trigger(struct snd_soc_component *component,
++			    struct snd_compr_stream *stream, int cmd)
 +{
-+	switch (codec->codec) {
-+	case SND_AUDIOCODEC_MP3:
-+		*codec = q6apm_compr_caps;
++	struct snd_compr_runtime *runtime = stream->runtime;
++	struct q6apm_dai_rtd *prtd = runtime->private_data;
++	int ret = 0;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		ret = q6apm_write_async_compr(prtd->graph, prtd->pcm_count, 0, 0, NO_TIMESTAMP);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		break;
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		break;
++	case SND_COMPR_TRIGGER_NEXT_TRACK:
++		prtd->next_track = true;
++		prtd->next_track_stream_id = (prtd->graph->id == 1 ? 2 : 1);
++		break;
++	case SND_COMPR_TRIGGER_DRAIN:
++	case SND_COMPR_TRIGGER_PARTIAL_DRAIN:
++		prtd->notify_on_drain = true;
 +		break;
 +	default:
++		ret = -EINVAL;
 +		break;
 +	}
 +
-+	return 0;
++	return ret;
 +}
++
++int q6apm_dai_compr_ack(struct snd_soc_component *component, struct snd_compr_stream *stream,
++			size_t count)
++{
++	struct snd_compr_runtime *runtime = stream->runtime;
++	struct q6apm_dai_rtd *prtd = runtime->private_data;
++	unsigned long flags;
++
++	spin_lock_irqsave(&prtd->lock, flags);
++	prtd->bytes_received += count;
++	spin_unlock_irqrestore(&prtd->lock, flags);
++
++	return count;
++}
++
  static const struct snd_compress_ops q6apm_dai_compress_ops = {
  	.open		= q6apm_dai_compr_open,
  	.free		= q6apm_dai_compr_free,
-+	.get_caps	= q6apm_dai_compr_get_caps,
-+	.get_codec_caps	= q6apm_dai_compr_get_codec_caps,
+ 	.get_caps	= q6apm_dai_compr_get_caps,
+ 	.get_codec_caps	= q6apm_dai_compr_get_codec_caps,
++	.pointer	= q6apm_dai_compr_pointer,
++	.trigger	= q6apm_dai_compr_trigger,
++	.ack		= q6apm_dai_compr_ack,
  };
  
  static const struct snd_soc_component_driver q6apm_fe_dai_component = {
+diff --git a/sound/soc/qcom/qdsp6/q6apm.h b/sound/soc/qcom/qdsp6/q6apm.h
+index 630c2bca0f06..e0247e6e4fd2 100644
+--- a/sound/soc/qcom/qdsp6/q6apm.h
++++ b/sound/soc/qcom/qdsp6/q6apm.h
+@@ -46,6 +46,7 @@
+ 
+ #define APM_MAX_SESSIONS			8
+ #define APM_LAST_BUFFER_FLAG			BIT(30)
++#define NO_TIMESTAMP				0xFF00
+ 
+ struct q6apm {
+ 	struct device *dev;
 -- 
 2.25.1
 
