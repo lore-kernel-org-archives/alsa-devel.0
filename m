@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18023C636D3
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 14:55:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EC10C05027
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 14:55:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E54386F;
-	Wed,  1 Feb 2023 15:54:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E54386F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5A484DED;
+	Wed,  1 Feb 2023 15:55:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A484DED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675263339;
-	bh=hA45/WFRIXTRXOtA4228m8pLAsrZhlH073CJU8/KKNY=;
+	s=default; t=1675263357;
+	bh=K60gsC0D4UtqZR/60DvGs6heSgFxDY7rQhg+WHiD4Dk=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=fIDKAwr8uwXUJyRouolvweayFuvgxXHRNlDFXt6xx9+AAPJhil3lBE6JORlVBWTYa
-	 9p51g4g/W3iEa3qE8Amvh/KirrW991BHUWMZq8sql4hWm+Jii7oQX0laieu+1IYdTh
-	 hRfGGjPyt/OznPq6EoFO/K+VQdw+VVtikO6EK62o=
+	b=CSGyGwV908/eHmH+lTSjQPI8nt6M7Oq51WhDQk1tvVQASBVKB2SiFpYKa0Ws+oKpa
+	 +J5ZoiSHhkdlb53X5i9csQ/QcBPaq/a/X7hHcKDYz9K30TA69QmvyhESg++ZIe0jo6
+	 mpnHdOekX1AV6HyxHPIlLw5Mn07v2YOfaLi+GpTE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE9A4F80578;
-	Wed,  1 Feb 2023 15:52:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56212F8057A;
+	Wed,  1 Feb 2023 15:52:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3CA4FF80423; Wed,  1 Feb 2023 14:51:42 +0100 (CET)
-Received: from alexa-out-sd-02.qualcomm.com (alexa-out-sd-02.qualcomm.com
- [199.106.114.39])
+ id 3396DF80423; Wed,  1 Feb 2023 14:51:47 +0100 (CET)
+Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
+ [199.106.114.38])
  (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B1617F80246
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 14:51:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1617F80246
+ by alsa1.perex.cz (Postfix) with ESMTPS id 38B11F80246
+ for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 14:51:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38B11F80246
 Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcdkim header.b=l6Z+sZlR
+ header.s=qcdkim header.b=JzQbUiP/
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1675259499; x=1706795499;
+ t=1675259504; x=1706795504;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=gS3pWCRLJFPc0ueQ3n5YfLnR8R+V6sqtxnfm0b570DU=;
- b=l6Z+sZlRA0Koq0BumCzfCzAxaEBt2QHSxXKgCzNYzYhm1tlXCrgpSazD
- 8HlslWlO8OEFoRuGY0yMqqLujLbgAvua1YTYryhSXqV1lMOHEeqiBKzch
- jKjIPSFjPP6e8r9IA668Adhuz2S1c8+Lz7mlX86O/78s6myw6R3atEvQ3 I=;
+ bh=GiEzJgDsbJ12OC0OY1MyeVdHTCfY0JNAlrT1cCHeKZ4=;
+ b=JzQbUiP/LsF8GlrUAftuffEtL6CcDt9n/mgfpGXZ2D+IGk5A+CisDfyi
+ lxYaCebOBNFTKAYLBUOPtU1a5Bcllug9Zw4JYwBO1WIqyQ4QF8kKPvHD0
+ E9xsaZpk9DGGVjGBlZFXBcvaBnd0X0xG+qie4BBF9HlLwXCyjb5S3dkJd s=;
 Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
- by alexa-out-sd-02.qualcomm.com with ESMTP; 01 Feb 2023 05:51:34 -0800
+ by alexa-out-sd-01.qualcomm.com with ESMTP; 01 Feb 2023 05:51:41 -0800
 X-QCInternal: smtphost
 Received: from nalasex01b.na.qualcomm.com ([10.47.209.197])
  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Feb 2023 05:51:34 -0800
+ 01 Feb 2023 05:51:41 -0800
 Received: from hu-mohs-hyd.qualcomm.com (10.80.80.8) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.36; Wed, 1 Feb 2023 05:51:29 -0800
+ 15.2.986.36; Wed, 1 Feb 2023 05:51:34 -0800
 From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 To: <krzysztof.kozlowski+dt@linaro.org>, <agross@kernel.org>,
  <andersson@kernel.org>, <lgirdwood@gmail.com>, <broonie@kernel.org>,
@@ -64,10 +64,10 @@ To: <krzysztof.kozlowski+dt@linaro.org>, <agross@kernel.org>,
  <linux-kernel@vger.kernel.org>, <swboyd@chromium.org>,
  <judyhsiao@chromium.org>, <devicetree@vger.kernel.org>,
  <konrad.dybcio@linaro.org>
-Subject: [PATCH 01/14] ALSA: compress: Update compress set params for gapless
- playback
-Date: Wed, 1 Feb 2023 19:19:34 +0530
-Message-ID: <20230201134947.1638197-2-quic_mohs@quicinc.com>
+Subject: [PATCH 02/14] ASoC: qcom: SC7280: audioreach: Add sc7280 hardware
+ param fixup callback
+Date: Wed, 1 Feb 2023 19:19:35 +0530
+Message-ID: <20230201134947.1638197-3-quic_mohs@quicinc.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230201134947.1638197-1-quic_mohs@quicinc.com>
 References: <20230201134947.1638197-1-quic_mohs@quicinc.com>
@@ -94,50 +94,84 @@ Cc: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Update compress set params for supporting next track settings
-during gapless playback.
-Update the runtime state to setup state only if it's in open state.
-Allow parameter change only when stream has been opened and running
-state.
+Add support to set backend params such as sampling rate and
+number of channels using backend params fixup callback.
+Also remove hardware params constraints setting.
 
 Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
 Co-developed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/core/compress_offload.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ sound/soc/qcom/sc7280.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index 243acad89fd3..9b951d76c120 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -589,7 +589,8 @@ snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
- 	struct snd_compr_params *params;
- 	int retval;
+diff --git a/sound/soc/qcom/sc7280.c b/sound/soc/qcom/sc7280.c
+index da7469a6a267..aaa95fe63d83 100644
+--- a/sound/soc/qcom/sc7280.c
++++ b/sound/soc/qcom/sc7280.c
+@@ -14,6 +14,7 @@
+ #include <sound/soc.h>
+ #include <sound/rt5682s.h>
+ #include <linux/soundwire/sdw.h>
++#include <sound/pcm_params.h>
  
--	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN) {
-+	if (stream->runtime->state == SNDRV_PCM_STATE_OPEN ||
-+			stream->runtime->state == SNDRV_PCM_STATE_RUNNING) {
- 		/*
- 		 * we should allow parameter change only when stream has been
- 		 * opened not in other cases
-@@ -612,10 +613,13 @@ snd_compr_set_params(struct snd_compr_stream *stream, unsigned long arg)
- 		if (retval)
- 			goto out;
+ #include "../codecs/rt5682.h"
+ #include "../codecs/rt5682s.h"
+@@ -24,6 +25,7 @@
+ #define DEFAULT_MCLK_RATE              19200000
+ #define RT5682_PLL_FREQ (48000 * 512)
+ #define MI2S_BCLK_RATE		1536000
++#define DEFAULT_SAMPLE_RATE_48K	48000
  
--		stream->metadata_set = false;
--		stream->next_track = false;
-+		if (stream->runtime->state == SNDRV_PCM_STATE_OPEN) {
-+			stream->metadata_set = false;
-+			stream->next_track = false;
+ struct sc7280_snd_data {
+ 	struct snd_soc_card card;
+@@ -188,7 +190,6 @@ static int sc7280_init(struct snd_soc_pcm_runtime *rtd)
+ static int sc7280_snd_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params)
+ {
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *codec_dai;
+ 	const struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+@@ -196,8 +197,6 @@ static int sc7280_snd_hw_params(struct snd_pcm_substream *substream,
+ 	struct sdw_stream_runtime *sruntime;
+ 	int i;
+ 
+-	snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
+-	snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_RATE, 48000, 48000);
+ 
+ 	switch (cpu_dai->id) {
+ 	case LPASS_CDC_DMA_TX3:
+@@ -358,6 +357,20 @@ static const struct snd_soc_dapm_widget sc7280_snd_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ };
+ 
++static int sc7280_snd_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
++					 struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *rate = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
 +
-+			stream->runtime->state = SNDRV_PCM_STATE_SETUP;
-+		}
- 
--		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
- 	} else {
- 		return -EPERM;
++	rate->min = rate->max = DEFAULT_SAMPLE_RATE_48K;
++	channels->min = channels->max = 2;
++	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
++
++	return 0;
++}
++
+ static int sc7280_snd_platform_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card;
+@@ -387,6 +400,8 @@ static int sc7280_snd_platform_probe(struct platform_device *pdev)
+ 	for_each_card_prelinks(card, i, link) {
+ 		link->init = sc7280_init;
+ 		link->ops = &sc7280_ops;
++		if (link->no_pcm == 1)
++			link->be_hw_params_fixup = sc7280_snd_be_hw_params_fixup;
  	}
+ 
+ 	return devm_snd_soc_register_card(dev, card);
 -- 
 2.25.1
 
