@@ -4,68 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86E43C05027
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 14:42:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E206C636D3
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 14:44:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 30A7E844;
-	Wed,  1 Feb 2023 15:41:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30A7E844
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC8C3203;
+	Wed,  1 Feb 2023 15:43:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC8C3203
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675262536;
-	bh=KtS59Ia92JMXEp6HI/ACr8/i5UoMboazeSuRwj5Gwys=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1675262657;
+	bh=ox1Jtj6mr5fp39dnr84jCJ6WyBw6ssqSENH4udXGmdw=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=BDQRExmBa8KBRS8TGnuD1XnRu60r/xNluefA+jdISYB/JK8Ym6KDzxIWF8VIgblW6
-	 yPNDF8oFXgadqQYeRoqjdc90cxTHuf9U0UpceFmwYON/KFEvbDExS2j/JoEUPugPyK
-	 EHoKF0wJX7hMfv1wDnKkvWaGVjdHbcAL2por2KsM=
+	b=UT/UF3/9+CJT5MfkbG5B6CjVrA1izMnPeY7V8nKZUuAZggnPJl3bYqBua6SmSz3bd
+	 tUYEGKtNWR5v6vwM8yZ0xelySNYRGJydWGgOnvhXJRBOaglIsDHcbAMw+uHzys6n1g
+	 iAJGj171l1aG6k/6T2G5chFCNtzJA1fSyzn7xkCo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A360BF80528;
-	Wed,  1 Feb 2023 15:41:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 84218F8032B;
+	Wed,  1 Feb 2023 15:43:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E1D9CF80169; Wed,  1 Feb 2023 15:40:58 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id BDCD8F80423; Wed,  1 Feb 2023 15:43:26 +0100 (CET)
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
+ [IPv6:2a00:1450:4864:20::433])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0F4A4F80169
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 15:40:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F4A4F80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6AE04F8032B
+ for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 15:43:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AE04F8032B
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=FeowVP6f
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 4787CB8219F;
- Wed,  1 Feb 2023 14:40:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 833F4C4339B;
- Wed,  1 Feb 2023 14:40:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1675262452;
- bh=KtS59Ia92JMXEp6HI/ACr8/i5UoMboazeSuRwj5Gwys=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=FeowVP6fl+RQKPyGSsV51OlkN9+Q+MDQD+ZLvW8A+38wZaNYjMd7fc0h5jFnyHUGS
- 0fljAB7xQbxdH84e1F9OmIkV0q/HpPU/M0y9wALI6beGsPzoMy+K4K8DKc1Cc+I4Rv
- MxZ0qZx+Ki4Q2S7ij7Gb7+oCpFuGOaPM3hc9Dn5lUQoqOy6l66socywszAfSn1REpD
- ewPCUWkHwkoELT3peEMeREWSS4bU6qsjmyexExo4nY3UrpqFkslKUjIbBKYgIi+4ha
- Su2MJa96XAsAnFUtCE943JTIy2RaRNKeqIbP43L+pd04CazY5DFdoVGLTATTQz6j36
- 7uuhpL1OOtyow==
-Date: Wed, 1 Feb 2023 14:40:46 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-Subject: Re: [PATCH 02/14] ASoC: qcom: SC7280: audioreach: Add sc7280
- hardware param fixup callback
-Message-ID: <Y9p57qn9+Pig9igE@sirena.org.uk>
-References: <20230201134947.1638197-1-quic_mohs@quicinc.com>
- <20230201134947.1638197-3-quic_mohs@quicinc.com>
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=ibXFxt9B
+Received: by mail-wr1-x433.google.com with SMTP id m7so17529116wru.8
+ for <alsa-devel@alsa-project.org>; Wed, 01 Feb 2023 06:43:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date:message-id:reply-to;
+ bh=dC2Rf+qs0P/jrCe9msdGE8AkAgDIJW5HtHWs9aRUyUM=;
+ b=ibXFxt9BRYojnFB5aMpK5zHfRUr3rTuXK8gbzrbbANcmXrBoR3/gZFAibr8X/eCyvG
+ nZM2qAouhLUMXlBtMMSSx22Q2Wh+QbUCfXVemidC222OvyJrgcpA2z3s6d0cGPUOooas
+ KfadIZ9z7m0x69PB9tFiOVfdYU/Ynba6LssKc07/efXQ255RPM8osrkZf3G4oXwnvGyJ
+ hPqhdqdZrA0LkIDPCzL+aAsGQ5LcfPAg6yvUiSx1EiXVR2TfIplLZtYvjZQgZgA2SNw9
+ E4SeopzvVb5y0LGJbxCZzJvQtw6EmxbQvpnV2Je6RJhpaZj7HrcpJgIWti8ZHGNrppvk
+ gd0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=dC2Rf+qs0P/jrCe9msdGE8AkAgDIJW5HtHWs9aRUyUM=;
+ b=w5+lWw/R/nb0o8XP6cKgkc4TaxlP0rcn6gGeNNwh1DftyDiZzlnKAX8JygFe/U55kF
+ iWE8l2SNTYJzDQJi9I7PJ6R79cVPeQ0vbOCkksdaPU7Nsfo8Jp/MSVdbWtBFAx0pnAeS
+ sXyE0ei7oyMh8CYTryUqFoGz2dFRzuCu/+19lCjsvhy2puNuDsR3BgvKTDKYJaAwwxKV
+ Y5uHWKFT+Kqr26NPeWHQgrnOnY9N1f6fjRwMaH03C9Ahs3TBHK+DPzPoO9qZM0ZvddnS
+ FnCgv4pILj9TnBDsyVZhmhQgV0c5bekn02ZIJ6C1Bc0dArl2q8SqgQQkjF4zoL79B+Us
+ yIDw==
+X-Gm-Message-State: AO0yUKWZxPW3f/QykQe+rCUlDuz+iEjlHQP0kwI3gaDGShqCrkKq3yOp
+ cpITALkXkEJModcWL92jMk+WwA==
+X-Google-Smtp-Source: AK7set8PI06q3hLefAX/yzLn2ALEYmydTMRpaxfh4uUmHXpFyC9Y/mCBDAhLTB1c6A+QZNC14bxd6A==
+X-Received: by 2002:adf:d1e9:0:b0:2bf:9543:2bea with SMTP id
+ g9-20020adfd1e9000000b002bf95432beamr3759674wrd.35.1675262594646; 
+ Wed, 01 Feb 2023 06:43:14 -0800 (PST)
+Received: from [192.168.1.109] ([178.197.216.144])
+ by smtp.gmail.com with ESMTPSA id
+ r8-20020adfda48000000b002be25db0b7bsm17513102wrl.10.2023.02.01.06.43.13
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 01 Feb 2023 06:43:14 -0800 (PST)
+Message-ID: <6491d6fb-2a10-1c80-d422-8300d5a75ce4@linaro.org>
+Date: Wed, 1 Feb 2023 15:43:12 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="It/vzamgdtamVvYL"
-Content-Disposition: inline
-In-Reply-To: <20230201134947.1638197-3-quic_mohs@quicinc.com>
-X-Cookie: Oh no, not again.
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH] ASoC: dt-bindings: Drop broken irondevice, sma1303 binding
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+References: <20230201131059.65527-1-krzysztof.kozlowski@linaro.org>
+ <1bcd61d6-810f-1239-1b6e-367e0fe87370@linaro.org>
+ <Y9pxGUMWyMeXQpZM@sirena.org.uk>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <Y9pxGUMWyMeXQpZM@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,48 +101,55 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- quic_rohkumar@quicinc.com, bgoswami@quicinc.com, linux-arm-msm@vger.kernel.org,
- andersson@kernel.org, agross@kernel.org, lgirdwood@gmail.com,
- konrad.dybcio@linaro.org, robh+dt@kernel.org, srinivas.kandagatla@linaro.org,
- krzysztof.kozlowski+dt@linaro.org, quic_plai@quicinc.com, swboyd@chromium.org,
- judyhsiao@chromium.org, linux-kernel@vger.kernel.org
+ Kiseok Jo <kiseok.jo@irondevice.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 01/02/2023 15:03, Mark Brown wrote:
+> On Wed, Feb 01, 2023 at 02:13:46PM +0100, Krzysztof Kozlowski wrote:
+>> On 01/02/2023 14:10, Krzysztof Kozlowski wrote:
+> 
+>>> Because the binding:
+>>> 1. Was never tested,
+>>> 2. Was never sent to Devicetree maintainers,
+>>> 3. Is entirely broken and wrong, so it would have to be almost rewritten
+>>>    from scratch,
+>>> 4. It does not match the driver, IOW, the binding is fake.
+> 
+>> I understand that in general we tend to fix, not just to revert. But the
+>> poor quality of this binding and the next patch, which was suppose to
+>> fix it, plus complete lack of testing, means I do not believe the author
+>> will send correct binding.
+> 
+>> More over, fixing binding might require dropping incorrect properties,
+>> thus changing the driver. I am not willing to do that, I doubt that
+>> anyone has the time for it.
+> 
+> It is an absolutely trivial binding as is, it is utterly
+> disproportionate to delete both the binding and the driver to fix
+> whatever it is that the issues you're seeing are (I can't really tell
+> TBH).  Undocumented properties are a separate thing but again a revert
+> is obviously disproportionate here, glancing at the driver the code is
+> all well enough separated and can have default values.  Looking again I
+> did miss the sysclk selection which should be dropped, clocks should use
+> the clock bindings.
+> 
+>> It's the job of submitter to work on it.
+> 
+> It's also not the end of the world if we have a driver that isn't
+> perfect.
+> 
+> Please, try to keep things constructive.
 
---It/vzamgdtamVvYL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I tried. I started writing patch to fix few things in this binding and
+then noticed that it is entirely empty and documents nothing.
 
-On Wed, Feb 01, 2023 at 07:19:35PM +0530, Mohammad Rafi Shaik wrote:
+The trouble is that soon you will send it to Linus and then it becomes
+the ABI even though no one ever approved or reviewed the actual ABI.
 
-> +#define DEFAULT_SAMPLE_RATE_48K	48000
+Best regards,
+Krzysztof
 
-Why are we bothering with a define here given that the define also
-encodes the value and it's only used in once place?
-
->  	for_each_card_prelinks(card, i, link) {
->  		link->init = sc7280_init;
->  		link->ops = &sc7280_ops;
-> +		if (link->no_pcm == 1)
-> +			link->be_hw_params_fixup = sc7280_snd_be_hw_params_fixup;
-
-We only set the fixup in the case where there's no PCM but we removed
-the constraint in all cases - isn't the constraint needed otherwise?
-
---It/vzamgdtamVvYL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPaee0ACgkQJNaLcl1U
-h9CiNgf/SDWbO2koQKvCH5xT7veA8uFDK7FX/PmIQ0kAWddbyKY2R+povhqysfIW
-wg9TAzbz60wfmDhq+NTTeiHrB4TqbEhpOsRS9E5GyA5+D64d8JEc6iNju+SUhb8x
-XjyRIKFntWKqSxgEDiw3ZSPj+unDqfJjsW9JSj06gMzYBM58mvXiDKIUm1PkXwdz
-1CjZSKA4Yq1Oy8JXCJulti9SkgzaFI/ylXPK/+zqXR6BjZ/uWY0xicLF4W6nGfkQ
-wRoXtjAMfcK9LKLAf2U0i0Lmb6tJdP7waq0qaGQIB/2kT4GDtPGcgCCqROqMjXFT
-90ffHxNOpdMnd0EQSrSTUWQBwYTaCg==
-=Ge6o
------END PGP SIGNATURE-----
-
---It/vzamgdtamVvYL--
