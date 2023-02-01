@@ -4,67 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3627BC61DA4
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 15:09:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58BF9C05027
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 15:12:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CDE24844;
-	Fri,  3 Feb 2023 16:08:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDE24844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7609B1E3;
+	Fri,  3 Feb 2023 16:11:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7609B1E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675436963;
-	bh=BBtPJZjlylan3yySZw9Gkl+gnno+wj0wx5HgGd6te1A=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1675437142;
+	bh=A3OPBOpZFYUYwUMhLao7aBJ7DMGEYe/S93D8TYK9mmI=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=gaR8LvS6Y5uRCQEwMXV2OaOYNi5zSWxNURXOFn0wgeKgHan3qDxyP29Kczy7JuCUZ
-	 pRyCq4yFKfhBB2ggak/O3y7X7XnrByfBvYaMYIjIFMY8A0SYi2N+OUNMu3HueSLyEj
-	 pyoTXjlD4oLskXT9W3OzG7/rku8ruMyavMurbkRA=
+	b=Vyjx0UAXaC7KQYt/gPdGeAVpEKqxuq5KIQXnSHuCeVfJCygjT/U6TvlUz/HMXEGmQ
+	 Jc4bJWCtMUGpFKmMLlSwB3BDNevWWocaE7dHCrW4Ay/TbJV7V5bdjYnj1r4heMjIsr
+	 V5A5PqVBgqbNpoAo3HKAulkWw1vb3LYiouYFHUvs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F434F80519;
-	Fri,  3 Feb 2023 16:08:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0CCEEF80254;
+	Fri,  3 Feb 2023 16:11:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7815DF8047D; Fri,  3 Feb 2023 16:08:04 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6AC5CF8001D
- for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 16:08:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AC5CF8001D
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=cqmNiM/v
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id BE5E2F802E8; Fri,  3 Feb 2023 16:11:30 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id AB5BCB829B9;
- Fri,  3 Feb 2023 15:08:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 908B3C433EF;
- Fri,  3 Feb 2023 15:07:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1675436879;
- bh=BBtPJZjlylan3yySZw9Gkl+gnno+wj0wx5HgGd6te1A=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=cqmNiM/vmUWjfu5UIdHDS06LkTXPNcwuxjtWCDiGubMtuOzjLeSmPM/aEowuOAOSD
- vdIkKQ8/ynzLH8WFqX+sEEC5cU8ACpPyTdXBfinJR0R7AdkcdGKFx+lZGRxTxB2F89
- uGlPUr4brkQOW80S0R77mYuswNfNLf/Y54/5h1MyPFAAEQXIuNSmKURzpdqk9PEPWZ
- 4QtLwnMb1pGeRtCLcIpuWBkeod0FrUjZ8oQXWIUT6AQ2tmk1kBV+Hp6RML5uQTZ9XP
- qG5jskKSi8F9sTzz1XsZYatbtrDj02VBsmIKyVQxIXmSWz9i8Z0wHxaKmYK1HTLZ7t
- uS8Uvh1KwnWsg==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, perex@perex.cz, 
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230202132954.26773-1-peter.ujfalusi@linux.intel.com>
-References: <20230202132954.26773-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH v3 0/9] ASoC: SOF: core/ipc4/mtl: Add support for PCM
- delay reporting
-Message-Id: <167543687729.955300.8575073693335113237.b4-ty@kernel.org>
-Date: Fri, 03 Feb 2023 15:07:57 +0000
+ by alsa1.perex.cz (Postfix) with ESMTPS id E708BF8001D
+ for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 16:11:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E708BF8001D
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=HLkk26oi
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1675437088; x=1706973088;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=A3OPBOpZFYUYwUMhLao7aBJ7DMGEYe/S93D8TYK9mmI=;
+ b=HLkk26oiethDr91+BUp+RUlbkQ3xEXlSwUML6wCJalS/TBs0FoY2xByJ
+ kBxp44hSLLwh4SRxOXhzgC5Hl7QdbmnWhrmc2z9IOUVtDn3RBxfJ0MSpK
+ brhoIpwEQZNdOkxWLHDqlRZ4OW2otsZHE1oDdksB1dBaT5KrA1ZF0g7QN
+ qgsnklXtILv9rBhhhcpujgncESfWOX/Tq9/bMR6ns1+okO/IqFtu9w70K
+ kKoRKH5h1gCpeIQPydGzWCjo5uwNEabL25fX1R26lo23asjejXbyNv3e3
+ ZnlLmRYifrpW01chEhZuDha+neG4a3xLGwZozOOXwMHVP0AXPRn5S49Ey g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10610"; a="330898230"
+X-IronPort-AV: E=Sophos;i="5.97,270,1669104000"; d="scan'208";a="330898230"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Feb 2023 07:11:24 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10610"; a="729289957"
+X-IronPort-AV: E=Sophos;i="5.97,270,1669104000"; d="scan'208";a="729289957"
+Received: from albuitra-desk.amr.corp.intel.com (HELO [10.209.172.145])
+ ([10.209.172.145])
+ by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Feb 2023 07:11:23 -0800
+Message-ID: <1473e1e9-b368-d8f3-c1f5-1b64e6e2ed90@linux.intel.com>
+Date: Wed, 1 Feb 2023 17:08:57 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.4.2
+Subject: Re: [PATCH 01/19] ASoC: amd: ps: create platform devices based on acp
+ config
+Content-Language: en-US
+To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>,
+ "Limonciello, Mario" <Mario.Limonciello@amd.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ "vkoul@kernel.org" <vkoul@kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+References: <20230111090222.2016499-1-Vijendar.Mukunda@amd.com>
+ <20230111090222.2016499-2-Vijendar.Mukunda@amd.com>
+ <9f2229fb-499b-f802-993b-56a7ad2ce361@linux.intel.com>
+ <257b6f1e-f403-573f-3978-13ffb14342ad@amd.com>
+ <2b4c12ce-2586-0277-ede0-560f8317e4e4@linux.intel.com>
+ <27eabbf2-eff2-0964-b72b-f9db251c3b57@amd.com>
+ <87ddd91b-fb5f-4f27-942b-dc439b32ce20@amd.com>
+ <fa4cdd91-b430-eb1b-a151-d144f62e827d@linux.intel.com>
+ <MN0PR12MB6101DBF0419C2C565F7F6840E2D09@MN0PR12MB6101.namprd12.prod.outlook.com>
+ <c5161bc3-62cb-d0a1-2ba2-d670285b6958@linux.intel.com>
+ <2ea354bc-4263-1db6-4423-4de1b0d4e535@amd.com>
+ <815ab487-a1a3-1978-94fc-b60e931c2848@linux.intel.com>
+ <ac734e4e-2f61-b9b8-0751-4e3293084696@amd.com>
+ <7b8fe2b6-84cb-e8c8-22aa-2d940a5c68b7@linux.intel.com>
+ <9e6200ee-9b21-66d1-6bb1-832ec7399111@amd.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <9e6200ee-9b21-66d1-6bb1-832ec7399111@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.0
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,63 +102,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- rander.wang@intel.com, yung-chuan.liao@linux.intel.com
+Cc: "Katragadda, Mastan" <Mastan.Katragadda@amd.com>, "Dommati,
+ Sunil-kumar" <Sunil-kumar.Dommati@amd.com>, "Hiregoudar,
+ Basavaraj" <Basavaraj.Hiregoudar@amd.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>, "Saba Kareem,
+ Syed" <Syed.SabaKareem@amd.com>, "kondaveeti,
+ Arungopal" <Arungopal.kondaveeti@amd.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 02 Feb 2023 15:29:45 +0200, Peter Ujfalusi wrote:
-> Changes since v2:
-> - Use div64_u64_rem() to make the code compile and work on non 64bit architectures
-> 
-> Changes since v1:
-> - The delay calculation updated to take into account the counter wrapping on both
->   ends (host and link side).
-> 
-> [...]
 
-Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On 2/1/23 00:01, Mukunda,Vijendar wrote:
+> On 01/02/23 09:22, Pierre-Louis Bossart wrote:
+>>
+>>
+>>>>> In above case, two manager instances will be created.
+>>>>> When manager under SWC1 scope tries to add peripheral
+>>>>> device, In sdw_slave_add() API its failing because peripheral
+>>>>> device descriptor uses link id followed by 48bit encoded address.
+>>>>> In above scenarios, both the manager's link id is zero only.
+>>>> what fails exactly? The device_register() ?
+>>>>
+>>>> If yes, what the issue. the device name?
+>>> device_register() is failing because of duplication of
+>>> device name.
+>>>> I wonder if we need to use something like
+>>>>
+>>>> "name shall be sdw:bus_id:link:mfg:part:class"
+>>>>
+>>>> so as to uniquify the device name, if that was the problem.
+>>> Yes correct.
+>> can you check https://github.com/thesofproject/linux/pull/4165 and see
+>> if this works for you? I tested it on Intel platforms.
+> It's working fine on our platform. As mentioned earlier in this thread,
+> we can't go with two ACPI companion device approach due to
+> limitations on windows stack for current platform.
 
-Thanks!
+Thanks for testing.
 
-[1/9] ASoC: SOF: add ipc4_fw_reg header file
-      commit: 2740dcce918f385aea0fb0a026cc0b91629479af
-[2/9] ASoC: SOF: add fw_info_box support
-      commit: 4700bfb2bb3acae63ff4cbf82fbde35a325ebdf2
-[3/9] ASoC: SOF: add time info structure for ipc4 path
-      commit: 65a8ef494aff8bceac9a952ae8f6a1681231aee5
-[4/9] ASoC: SOF: ipc4-pcm: allocate time info for pcm delay feature
-      commit: af74dbd0dbcf49e8a3ae3e766683e13ecaf71e3b
-[5/9] ASoC: SOF: ipc4-pcm: add hw_params
-      commit: 7cb19007baba0c7a76bd3f8f324a6b6548025968
-[6/9] ASoC: SOF: add delay function support in sof framework
-      commit: 27c2100b6bc8b0b064f89250eb4081431299115f
-[7/9] ASoC: SOF: add get_stream_position ops for pcm delay
-      commit: 7f956297272bbc3535a02fa32579375a0d40283c
-[8/9] ASoC: SOF: Intel: mtl: add get_stream_position support
-      commit: faceb3445aaf1704583744b48c622dbc96ef9ab2
-[9/9] ASoC: SOF: ipc4-pcm: add delay function support
-      commit: 3937a76c64931109dfafa999a0c78b4df2a6e0a1
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+So if you can't go with 2 ACPI companion devices, what does the
+'Windows' DSDT look like and how would you identify that there are two
+controllers on the platform?
