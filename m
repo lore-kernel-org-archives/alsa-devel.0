@@ -4,65 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36AE6C05027
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 11:44:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDF75C05027
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Feb 2023 11:45:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14578820;
-	Wed,  1 Feb 2023 12:43:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14578820
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6158844;
+	Wed,  1 Feb 2023 12:44:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6158844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675251880;
-	bh=MmpffVf8hWOZgiIPLTUppyG844PtEs1DvL1GWwkqiDY=;
+	s=default; t=1675251907;
+	bh=J0K9S8yFXiKlvm+y0wcMBTPEZqcD2PGq3EBiajeeAlM=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=oFbDBppmqxsxd9dxqsnrmZ3zw0xmJYP2KbwEm64me4o+1ynlaAyXWxxVFh1nuHzcX
-	 4hPGe1uQBcD5Pl/jnBcyOeohnxhGYv8T7YxFfsVdofuW5IUFtGIxlrAoMgZTgWYkJI
-	 V/KUphPQsUdQbBwfvsg9tTcnscOC0D0PZPRZR1NI=
+	b=A0oOWbgJ137NzfTuHUuXd8GgMQsBKKaCRiOS6S+ef1xzELmqunJxqB/QZa6REm5QN
+	 vDVXjyPmG43H5Z4SxH5DYQkXNuqUQK7j63Dqp8JcFQRXIH3TjJbvcaNsHSHjQ5Nwbc
+	 LpJgiM+e3svCjMF838Y3dXeTkTvv9q9x8pqyscRI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8C5F9F80423;
-	Wed,  1 Feb 2023 12:43:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 449DBF80494;
+	Wed,  1 Feb 2023 12:43:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 111B2F8045D; Wed,  1 Feb 2023 12:43:48 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id A518FF80169; Wed,  1 Feb 2023 12:43:49 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DA87BF80246
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 12:43:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA87BF80246
+ by alsa1.perex.cz (Postfix) with ESMTPS id E19F3F80169
+ for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2023 12:43:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E19F3F80169
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=k5X21ojP
+ header.s=k20201202 header.b=Hrll9uS8
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id E12B2B8201D;
- Wed,  1 Feb 2023 11:43:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A586C433D2;
- Wed,  1 Feb 2023 11:43:37 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 438C5616B5;
+ Wed,  1 Feb 2023 11:43:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06E91C4339B;
+ Wed,  1 Feb 2023 11:43:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1675251819;
- bh=MmpffVf8hWOZgiIPLTUppyG844PtEs1DvL1GWwkqiDY=;
+ s=k20201202; t=1675251820;
+ bh=J0K9S8yFXiKlvm+y0wcMBTPEZqcD2PGq3EBiajeeAlM=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=k5X21ojPzgg64FyE0xLoklKIZ3cC3qnVqQ78IQszlmXX1/dSDT+N1mfUsmFkEC5Km
- mlxz3LFAE9E7Z6JoA28n5m9iUUP4nWyHd+L8Q61fFaTMEja9sGiLReo/8H28rHJMcy
- S2h3siUiaQHgc0KZJn3gx7gS8XYkOVpmNWjI99OekPPUu3uq5aSnxONRrS1Mqd6NXo
- Plvc6pukuchxj/QtAgbYYLHCs9YlHPgSlVy/dCANsZAZ9jKCI5GTsc/Tjyk01AR/gc
- 9u0dAPzipbvLYli4GXBHDl0D9ref8rySSsTbySLA3E08ilvACYevxfqWEDYkyujgQ4
- WHVun4uDpW6Sg==
+ b=Hrll9uS812177H3TZChP2TRRwrck2UYmWHT02AlTbtkwTCp2TXn1+svofJr78+Vii
+ 6NBW6HHavvUt+JwkEwclA16GvbH66nYBVofVOEoekwGCs37zh9zOWTugNA+lSxIyGv
+ wrl0nPdR+RHxtxa7rNraYXlqU9cVWtr/w5AyUC4oBdWCSdJSoYQoSl9X35mWJl20Qb
+ syEtke4Dpa9mw97uceIFkMHDBBHAEmwRNNvWm9SY9Z3LaN6hz0sN4ZzDOP8wljX0zf
+ PYsgsPrnjQZ+QSH+Ah760hU6jm4SVYbE8h7m1tZh+kisMJzC4D25FmvmXWfuNwDXz8
+ 3663/8ShiI7/A==
 From: Mark Brown <broonie@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- Yassine Oudjana <yassine.oudjana@gmail.com>
-In-Reply-To: <20220622061106.35071-1-y.oudjana@protonmail.com>
-References: <20220622061106.35071-1-y.oudjana@protonmail.com>
-Subject: Re: [PATCH] ASoC: qcom: apq8096: set driver name correctly
-Message-Id: <167525181733.63465.381746473105058457.b4-ty@kernel.org>
-Date: Wed, 01 Feb 2023 11:43:37 +0000
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87bkme6vp5.wl-kuninori.morimoto.gx@renesas.com>
+References: <87bkme6vp5.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: cs42l42: use helper function
+Message-Id: <167525181975.63465.3386268959455951743.b4-ty@kernel.org>
+Date: Wed, 01 Feb 2023 11:43:39 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -79,14 +75,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- Yassine Oudjana <y.oudjana@protonmail.com>, linux-kernel@vger.kernel.org
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Linux-ALSA <alsa-devel@alsa-project.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 22 Jun 2022 10:11:06 +0400, Yassine Oudjana wrote:
-> Set driver name to allow matching different UCM2 configurations
-> for the multiple devices sharing the same APQ8096 ASoC.
+On Wed, 01 Feb 2023 01:06:15 +0000, Kuninori Morimoto wrote:
+> Current ASoC has many helper function.
 > 
 > 
 
@@ -96,8 +91,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: apq8096: set driver name correctly
-      commit: 86b753a86f6dc31ca9bccb489ebde1968d26c89b
+[1/1] ASoC: cs42l42: use helper function
+      commit: cbfa85a5c5ab123f4dc99efae1b0182d2f8d956c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
