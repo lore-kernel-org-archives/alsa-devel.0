@@ -4,87 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1DBEC05027
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 13:56:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C58FFC61DA4
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 15:24:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF7C7EA0;
-	Thu,  2 Feb 2023 14:55:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF7C7EA0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 778E0839;
+	Thu,  2 Feb 2023 16:23:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 778E0839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675346188;
-	bh=26O0NO/Hy2JFBCd9wk5B2KqKhiZtBRyTpqOAfDhnge8=;
-	h=Date:To:From:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=I7y96c/sOILpbdRgx7oPU7evZejJ8Wwx5Ws6rCnl47di8JLMhwInGlQPM3VTwSPnO
-	 1gliYqJ2meEnW7PXT5eZOK1DAe22Sn0nSq62RMT6gae9wHbC5Um/hD3goQ7AYsXZnP
-	 QVhM0x0qksvxDmUgfKORuXHzusNFfnRnOd6HJHQc=
+	s=default; t=1675351473;
+	bh=0YIlhLQM4vruCq5Gzqgsdm7w/F6iwRUJvFRBV7ba3nU=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=PoMB9xRI3msBgd1oaEQAsaUm1hp/K/NRX4CaGtDUw1T0uScz+32hAJVGgxrPKBwof
+	 Uz7vTnoqOU4R/MYBC5rWtfr8OVHSegzomlDVntg4V33qlBQoZXAqZWUX7nvSM6Vc+Q
+	 0YA0tVPp7/tmqNk3KuZmcIRm7Nr2o2IpDNMYM1B8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5510BF80271;
-	Thu,  2 Feb 2023 14:55:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21D44F80271;
+	Thu,  2 Feb 2023 16:23:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2559F804C2; Thu,  2 Feb 2023 14:55:36 +0100 (CET)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
- [IPv6:2a00:1450:4864:20::330])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 9C218F804C2; Thu,  2 Feb 2023 16:23:41 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9FCECF80169
- for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 14:55:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FCECF80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id 565DAF800E3
+ for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 16:23:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 565DAF800E3
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=Gge2CQbv
-Received: by mail-wm1-x330.google.com with SMTP id
- bg13-20020a05600c3c8d00b003d9712b29d2so3785770wmb.2
- for <alsa-devel@alsa-project.org>; Thu, 02 Feb 2023 05:55:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=subject:from:to:content-language:user-agent:mime-version:date
- :message-id:from:to:cc:subject:date:message-id:reply-to;
- bh=a9BBQUqB0Sm7Tud/YEdVG0PBDErjDrRzpyyI5ZM1kgw=;
- b=Gge2CQbvadHolXyOce3v687PMEiuALPhjgbGbHrVh5tWqf+sWR2CFudTun+Mkgd/HL
- 20xRVHaZoCvjQKiU3u0jnyMcbqo8+2WuD2B48z1RmF0a4TUTXvPYrShijX+4XeZhlzwK
- TxqKN3lY2TFSxcauCsxh++zYFgHx+bz8cs/07L2xHfhIUY1zKt/FA8x7YVV9Qp6SvGOZ
- pFhhYRJ0aqajblCPFaAlikI8TC2WFShqEoBqAGPPi9fcHefQowMcZ1n5qRaPXn9cmwZM
- DKqPDQI0tKEJgYHRMAVI0saWlcoQYAZcCNrdm0bxlO7RCY3EmaxxptvyM7zUdnCWhmrw
- MWAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=subject:from:to:content-language:user-agent:mime-version:date
- :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=a9BBQUqB0Sm7Tud/YEdVG0PBDErjDrRzpyyI5ZM1kgw=;
- b=5KkCI36g0c2cnnRHux3VIq2P0q3FhQAOcDAWRk1l01s4b7tSoxFLgmeqAiqWlRLBxt
- 1DWoDchy8xUYSaL0qopivOxXeqRKZdrRAWHQuXAZezvTI9q5HRulpWP9e5SJ0oQ0fBt3
- s6Cbuad57AZcckrvA4NoscuoGFrbZ6vrfQBN9T7NL7Qg80U5/aZlamvp0z8kxBsfoeDW
- k9HCjn8CCk7SVdLAiAz3yWIp/T9t3Y44uwWyXeE3mRn7x4VzByTlFZWaD+dTj5eEEVXW
- P0XGYUj9Fpfk+en1eimoGvSNggeE4hsofxGfVb2Okwrf/k3YaZfYmWeCrFIxq0G90Idi
- gT/w==
-X-Gm-Message-State: AO0yUKU3umrTXTv3k/wBYRDk3B8L72zcFpnogIcYS07MnqOvN/zBbeIN
- calZqndM2bpEauvMFC1djZKIQK3eTQs=
-X-Google-Smtp-Source: AK7set+HDRnandI8WPWnpDzs2kLuvWAF7PZli9uYd0LReXI0568VG8P5zDgeQj2xH6iLOHsrCGbpfw==
-X-Received: by 2002:a05:600c:3b8e:b0:3df:9858:c03e with SMTP id
- n14-20020a05600c3b8e00b003df9858c03emr1837081wms.19.1675346126225; 
- Thu, 02 Feb 2023 05:55:26 -0800 (PST)
-Received: from [192.168.21.204] (surfbythesea.plus.com. [81.174.134.71])
- by smtp.gmail.com with ESMTPSA id
- z18-20020a1c4c12000000b003dc48a2f997sm4366950wmf.17.2023.02.02.05.55.25
- for <alsa-devel@alsa-project.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 02 Feb 2023 05:55:25 -0800 (PST)
-Message-ID: <70ff4e3a-b171-131c-a039-4fc99aa4bbfc@gmail.com>
-Date: Thu, 2 Feb 2023 13:55:24 +0000
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=hGHOPS9h
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 5004EB826AD;
+ Thu,  2 Feb 2023 15:23:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD114C433D2;
+ Thu,  2 Feb 2023 15:23:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1675351414;
+ bh=0YIlhLQM4vruCq5Gzqgsdm7w/F6iwRUJvFRBV7ba3nU=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=hGHOPS9h9OO2OydzGQsguIxn9y10+P6scImajKzEEcw0MwvTg6k5dxz20bertJZqk
+ taPrZikLRyw4da7wNVyfOBx0VNrZloTZQLhgTSlkR3zfvB98JnOs9uZZBKgxWlOQW/
+ E87kdo5y+I0bPnXVADWiaDujfx7O0Y+/rC8pXRchZhZKKs9fiLiBKsjk3uEu4ntbzM
+ 1bo//LsrbKKgrJQL+FOvGkGqzICKwZyfRrPqkVNeGni39D4QJ62Ds2q5CKph/iJNUm
+ CYYdRLQ/BnP/bl7zAYNir+i8rSWgiyLbVFqdTLIoHEHIS6/P15n1CvDWZdJRG163P1
+ ZO17vvtE96nuw==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
+ Takashi Iwai <tiwai@suse.com>, Bruce zhao <zhaolei@awinic.com>, 
+ Weidong Wang <wangweidong.a@awinic.com>, Nick Li <liweilei@awinic.com>, 
+ alsa-devel@alsa-project.org, Colin Ian King <colin.i.king@gmail.com>
+In-Reply-To: <20230202103236.270057-1-colin.i.king@gmail.com>
+References: <20230202103236.270057-1-colin.i.king@gmail.com>
+Subject: Re: [PATCH][next] ASoC: codecs: aw88395: Fix spelling mistake
+ "cersion" -> "version"
+Message-Id: <167535141146.392917.9691227972443524961.b4-ty@kernel.org>
+Date: Thu, 02 Feb 2023 15:23:31 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Content-Language: en-GB
-To: alsa-devel@alsa-project.org
-From: Alan Young <consult.awy@gmail.com>
-Subject: Overflow in calculating audio timestamp
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Content-Filtered-By: Mailman/MimeDel 2.1.29
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.0
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -97,20 +79,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-sound/core/pcm_lib.c:update_audio_tstamp() contains the following 
-calculation:
+On Thu, 02 Feb 2023 10:32:36 +0000, Colin Ian King wrote:
+> There are spelling mistakes in dev_err messages. Fix them.
+> 
+> 
 
-         audio_nsecs = div_u64(audio_frames * 1000000000LL,
-                 runtime->rate);
+Applied to
 
-This will result in a 64-bit overflow after 4.4 days at 48000 Hz, or 1.1 
-days at 192000.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Are you interested in a patch to improve this?
+Thanks!
 
-The same calculation occurs in a couple of other places.
+[1/1] ASoC: codecs: aw88395: Fix spelling mistake "cersion" -> "version"
+      commit: 2a096315be7d8ccad883203876c4b53e7b024f12
 
-Alan.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
