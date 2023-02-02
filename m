@@ -4,68 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DF44C636D3
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 11:12:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 325E8C05027
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 11:12:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D961584A;
-	Thu,  2 Feb 2023 12:11:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D961584A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 91A5693A;
+	Thu,  2 Feb 2023 12:11:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91A5693A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675336340;
-	bh=jRUyEIVdpu4MW3dtQd6mL58e4pV4LcYazij3/G6tazU=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=RNVz/+0lXRIBTtFuTYxXyX1W4+Ma1Hn+xiQtFoXKi8+Cqa5ShdP22h3nLJfkQiXc6
-	 DSseOhs8+99ldh+t3GIIYzYQwyc22Kdj+q87/G70BM1qvwrRofAa3F6ID3cRku6m1V
-	 IfFV2nm/yLb/mBpxTSv2SW9Ax9qFKAmhiTL4Qxzc=
+	s=default; t=1675336367;
+	bh=aiF6/8a6SS1hHhHKbLczSkALMVzusrvlToxYPNO/+4c=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=uqG5Dr4VA021g64qrNK1wlwBW1WiHTvsY4Rc0O7mPijj9GeAcijBjig6cNFQFvBlU
+	 V7ufb7dT//Sq9GNkUMyJH4q5WBPor22MoJVF0/iNKPqr3ZpoU9uAxZzqED2i27x1Xl
+	 OtP1749Lgko+FyeDFWImbZQtpCEAhUSatzn2K0TA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5FE80F800E3;
-	Thu,  2 Feb 2023 12:11:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63A0FF804DF;
+	Thu,  2 Feb 2023 12:11:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 744E5F804E0; Thu,  2 Feb 2023 12:11:26 +0100 (CET)
+ id C065AF8053D; Thu,  2 Feb 2023 12:11:35 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F46EF800E3
- for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 12:11:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F46EF800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11A58F80271
+ for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 12:11:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11A58F80271
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=MeYz02lh
+ header.s=Intel header.b=jIUlGmkm
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1675336281; x=1706872281;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=jRUyEIVdpu4MW3dtQd6mL58e4pV4LcYazij3/G6tazU=;
- b=MeYz02lhjSOxBFcQJc1gA41yL0yDrhqbJVGaZyjMGQXejjIVX1haj1iB
- ACp5iRQXvfWjU56lKX9L2bFTrtj0dcij3YOO3cTdXorEqCo5N3+TvuYjr
- CYzNyhI+cwADifR1KRxZSUDunzHsMSfQztbcrm8zTIgJA+XVdSizCi6ug
- QVpS6EcY/VHHETT91m/rR+4XV5MLY04RV62YPPxNtugMMXNWaqr0BF4ka
- UUyfz6Eq25t/JKXL63+46gm0aqqC8Ukw5PTE7PHlf9GA5w+az0/t5Ea+P
- 9dTHz0tXch6CL7knz0i/ajhL6r2gT2oospPPWRnkUd8Mk4N6W6GgCMwkj w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="414625117"
-X-IronPort-AV: E=Sophos;i="5.97,267,1669104000"; d="scan'208";a="414625117"
+ t=1675336285; x=1706872285;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=aiF6/8a6SS1hHhHKbLczSkALMVzusrvlToxYPNO/+4c=;
+ b=jIUlGmkmF+XLhTWPR7pIXWrdLnUgXnx8cA5K+NWJ0oi7y64BbXUg3Zbf
+ xGB8XkFG8k5N4zq30yl8L81NivFzSaheS1bkWPW7S2YkRTyKg+VxhjykW
+ zXhLxq9Jstm143TGlUwOmx9k6okT7y1/8QzhWacW3rjEi9sKKoK/BnD6r
+ 7yJ9pwnekGlFr6FA1fQF29ON8DD4iXZjNYMiqLks9txCdDKb5yUSkprkL
+ yFx0lK9hydPORXB6NB/59/TnYTTj/dOc4UFY3EnXbsXSV8d34wSPbX//b
+ bYsI5txrtCRVsBPljTKb7n1hpCxVBwO9f2joLp4GZSPBUhWWx481wfH2/ Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="414625148"
+X-IronPort-AV: E=Sophos;i="5.97,267,1669104000"; d="scan'208";a="414625148"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Feb 2023 03:11:17 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="695747659"
-X-IronPort-AV: E=Sophos;i="5.97,267,1669104000"; d="scan'208";a="695747659"
+ 02 Feb 2023 03:11:23 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="695747672"
+X-IronPort-AV: E=Sophos;i="5.97,267,1669104000"; d="scan'208";a="695747672"
 Received: from jpdamery-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.1.104])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Feb 2023 03:11:13 -0800
+ 02 Feb 2023 03:11:20 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org,
 	perex@perex.cz
-Subject: [PATCH v2 0/9] ASoC: SOF: core/ipc4/mtl: Add support for PCM delay
- reporting
-Date: Thu,  2 Feb 2023 13:11:14 +0200
-Message-Id: <20230202111123.25231-1-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH v2 2/9] ASoC: SOF: add fw_info_box support
+Date: Thu,  2 Feb 2023 13:11:16 +0200
+Message-Id: <20230202111123.25231-3-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230202111123.25231-1-peter.ujfalusi@linux.intel.com>
+References: <20230202111123.25231-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -86,46 +88,70 @@ Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+From: Rander Wang <rander.wang@intel.com>
 
-Changes since v1:
-- The delay calculation updated to take into account the counter wrapping on both
-  ends (host and link side).
+FW can share some information with host driver, .e.g fw status, pipeline
+status and volume status. On ipc4 platform it is located in memory
+windows 0 with size of struct sof_ipc4_fw_reg.
 
-The following series adds support for the PCM delay reporting in SOF core level
-and implements the needed infrastructure with IPC4 to finally enable it for MTL.
+With this patch, ipc4 driver can find fw information in fw_info_box
 
-Currently this is only supported on MTL (and via IPC4), but with the
-infrastructure in place it will be possible to support other platforms with
-DeepBuffer.
-
-Regards,
-Peter
+Signed-off-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
-Rander Wang (9):
-  ASoC: SOF: add ipc4_fw_reg header file
-  ASoC: SOF: add fw_info_box support
-  ASoC: SOF: add time info structure for ipc4 path
-  ASoC: SOF: ipc4-pcm: allocate time info for pcm delay feature
-  ASoC: SOF: ipc4-pcm: add hw_params
-  ASoC: SOF: add delay function support in sof framework
-  ASoC: SOF: add get_stream_position ops for pcm delay
-  ASoC: SOF: Intel: mtl: add get_stream_position support
-  ASoC: SOF: ipc4-pcm: add delay function support
+ sound/soc/sof/ipc4-priv.h | 1 +
+ sound/soc/sof/ipc4.c      | 3 +++
+ sound/soc/sof/sof-priv.h  | 1 +
+ 3 files changed, 5 insertions(+)
 
- sound/soc/sof/intel/mtl.c   |  14 +++
- sound/soc/sof/intel/mtl.h   |   6 +
- sound/soc/sof/ipc4-fw-reg.h | 155 ++++++++++++++++++++++++
- sound/soc/sof/ipc4-pcm.c    | 232 ++++++++++++++++++++++++++++++++++++
- sound/soc/sof/ipc4-priv.h   |  15 +++
- sound/soc/sof/ipc4.c        |   3 +
- sound/soc/sof/ops.h         |  10 ++
- sound/soc/sof/pcm.c         |  13 ++
- sound/soc/sof/sof-audio.h   |   6 +
- sound/soc/sof/sof-priv.h    |  10 ++
- 10 files changed, 464 insertions(+)
- create mode 100644 sound/soc/sof/ipc4-fw-reg.h
-
+diff --git a/sound/soc/sof/ipc4-priv.h b/sound/soc/sof/ipc4-priv.h
+index 38bb3d7df42e..8f8259a7e21c 100644
+--- a/sound/soc/sof/ipc4-priv.h
++++ b/sound/soc/sof/ipc4-priv.h
+@@ -14,6 +14,7 @@
+ #include "sof-priv.h"
+ 
+ /* The DSP window indices are fixed */
++#define SOF_IPC4_INBOX_WINDOW_IDX	0
+ #define SOF_IPC4_OUTBOX_WINDOW_IDX	1
+ #define SOF_IPC4_DEBUG_WINDOW_IDX	2
+ 
+diff --git a/sound/soc/sof/ipc4.c b/sound/soc/sof/ipc4.c
+index 35c9f3913d9a..f3c0c839d177 100644
+--- a/sound/soc/sof/ipc4.c
++++ b/sound/soc/sof/ipc4.c
+@@ -13,6 +13,7 @@
+ #include <sound/sof/ipc4/header.h>
+ #include "sof-priv.h"
+ #include "sof-audio.h"
++#include "ipc4-fw-reg.h"
+ #include "ipc4-priv.h"
+ #include "ops.h"
+ 
+@@ -542,6 +543,8 @@ static int ipc4_fw_ready(struct snd_sof_dev *sdev, struct sof_ipc4_msg *ipc4_msg
+ 	outbox_offset = snd_sof_dsp_get_window_offset(sdev, SOF_IPC4_OUTBOX_WINDOW_IDX);
+ 	outbox_size = SOF_IPC4_MSG_MAX_SIZE;
+ 
++	sdev->fw_info_box.offset = snd_sof_dsp_get_window_offset(sdev, SOF_IPC4_INBOX_WINDOW_IDX);
++	sdev->fw_info_box.size = sizeof(struct sof_ipc4_fw_registers);
+ 	sdev->dsp_box.offset = inbox_offset;
+ 	sdev->dsp_box.size = inbox_size;
+ 	sdev->host_box.offset = outbox_offset;
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 208a30ff3db9..fd1c3b17a396 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -548,6 +548,7 @@ struct snd_sof_dev {
+ 
+ 	/* IPC */
+ 	struct snd_sof_ipc *ipc;
++	struct snd_sof_mailbox fw_info_box;	/* FW shared memory */
+ 	struct snd_sof_mailbox dsp_box;		/* DSP initiated IPC */
+ 	struct snd_sof_mailbox host_box;	/* Host initiated IPC */
+ 	struct snd_sof_mailbox stream_box;	/* Stream position update */
 -- 
 2.39.1
 
