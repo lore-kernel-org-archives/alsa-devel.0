@@ -4,92 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3C0CC61DA4
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 15:52:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B39AAC61DA4
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 16:18:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D5F74E80;
-	Thu,  2 Feb 2023 16:51:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5F74E80
+	by alsa0.perex.cz (Postfix) with ESMTPS id C8C1FDEC;
+	Thu,  2 Feb 2023 17:17:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8C1FDEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675353125;
-	bh=Y9xqbz51S397OO9AGGIlpQv4kUC2bme5ue2mifphKRk=;
+	s=default; t=1675354698;
+	bh=4e6BC4NTOr3CWC6ti8Bb3vrMG2t91KKoYvhqNKu8ZOs=;
 	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=vLTaxxDOXBZs+3pxDWM3mIetpHW1/YLHqOwKpRuYpPvzHn7NsqK5PvbmTe/dItz1m
-	 pJ3IK7Y+4U8fkPiqWKnZ1wvcDOY3gtb3xjeFXKEuqh0M42Lsd9A8WIazJEtzAehux7
-	 1yfD3OeD0ymORJHQKsmiNJoRl+i0tfNTOewHnFCU=
+	b=ILREHP9zwlHTJdqsmWANl+60j51RXwzxz52vJg4qjs28nsqxCo+xX2c7TF69y5xg1
+	 SnGFbrg3CSPX6SwYdH408yZxnITKiBDq9gcMX9IaJetmcyVMOCag2Cb2Af8hpsJ8nu
+	 hrzv7Pz9dXCbqXHceCxUELC6yvVb2fWZSNAEKsPY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83103F80271;
-	Thu,  2 Feb 2023 16:51:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D24DF80271;
+	Thu,  2 Feb 2023 17:17:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EBC4AF804C2; Thu,  2 Feb 2023 16:51:14 +0100 (CET)
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com
- [IPv6:2607:f8b0:4864:20::32e])
+ id 8B078F804C2; Thu,  2 Feb 2023 17:17:26 +0100 (CET)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C15C1F80169
- for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 16:51:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C15C1F80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57BB2F800ED
+ for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 17:17:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57BB2F800ED
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=H1C4HgP0
-Received: by mail-ot1-x32e.google.com with SMTP id
- f5-20020a9d5f05000000b00684c0c2eb3fso562279oti.10
- for <alsa-devel@alsa-project.org>; Thu, 02 Feb 2023 07:51:05 -0800 (PST)
+ header.s=20210112 header.b=QskZxot5
+Received: by mail-wm1-x32d.google.com with SMTP id bg26so1847455wmb.0
+ for <alsa-devel@alsa-project.org>; Thu, 02 Feb 2023 08:17:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
- :reply-to; bh=yHdnGHGya01Jv0VuLki3dw4SIg6d4Y5ozkEOLFh106s=;
- b=H1C4HgP0+4cLGdmQvHXhQ3i0Vkr9SlgDZWxF4hOHH2AGXebPuzKKwW99Yh4YTpP1eP
- DCo9lGGq4Uaskn0A/qpE/587NZUAp8TpYnHQptkb3vr98DKbUSc+S/gjs8EDUgMqdMHC
- 1Fm21hBVnVxea7Mamzac0GhsUcc4/b/0FRcOgoa6X0FSffmLYIv39p8fwlSC5D69msYa
- xm8OYvlbzvhjK8bwQpPhDpTZYnNrDa8XACIuBaI1w171jbOli829AYrvjq6Xtlcaq53+
- SXOJsABhmccDXYVkDBtb974H/G2+nxW5DmGQV2vzaHBDw9bstdCiYf0YqeEz0HgTT7SN
- 7cEQ==
+ :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+ bh=tM2tAG1KHS9gAyhcPLjkjYt8F4gMNaekAqdi+Z0D3jE=;
+ b=QskZxot5mc2Exa8IWCLZzUy0ZgCN5SeK2vwVanKyB2t7of02G81jkeeZ/2Bzj7lfmm
+ 2siEjAcnKKBmmU+NNSxvq35ExnO+IKq1JiytOwRetZunBwuOXuBdHP+v2T/0QnfArYxL
+ b4uRxVGr3Ta5mfPQ3az1H8E3HzVuK9SnsMsq9ArYDnmFyrX3bfmJENN9M0tnBt1pSnqd
+ KaatnXYDhoUurnrXaq6szgyFW7CZenyM/A3vZ/1qqoas2SUy0uAdyewjiBH/VCzBAzOt
+ h4OrQA/KW8RrhdN0a1as7vg4+4gFdK4ql0TK7adPFUlZY/cGovr5c4V1yUZ76c48blqk
+ zhaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=yHdnGHGya01Jv0VuLki3dw4SIg6d4Y5ozkEOLFh106s=;
- b=WT59HG7REi9d37+N/H7jtX3PuE6U0bMmh+gYnXPQQi26OSGDED6pPA5dqFuHPC/GSz
- jI2HYcAaqTUKcHojY96jdoC/IskJKrrcVridu7eNIVBnGd/+wjdki3qcuyxJoPlJ+aID
- x69th516ixpxwI+U8VYnfpy1wpwh1Zi7dipBidJjdScV3C8QhVyX019/Xbb8NnmeAlZc
- /D3bnY1y+d6S7xDqSf13rv8urwT2aMOSLR6x6hf2fO/s1HHZsp20PtCpIny3pQysT33r
- NVdPy0MmDfTuqsohvG3mOBGV1r62l0DDYpV1UV0GFI3t90EzCdq79sqlZ1FmCQAhxOFC
- n5vw==
-X-Gm-Message-State: AO0yUKWrEShvrVOhJAFp5NblFR8zi8JXBLKWJbPqgkvQvVeNM1k9FQah
- g1e7+dctyOELcnO/vbMkKsk=
-X-Google-Smtp-Source: AK7set8yIDY8bSn1xg+ZZWxJIPoyhQiBcGeEppFiitpyMYHL/QXHUa0PabTEfahvJWo8bR0FD9YgLw==
-X-Received: by 2002:a05:6830:1686:b0:68b:d347:2457 with SMTP id
- k6-20020a056830168600b0068bd3472457mr3411625otr.21.1675353063689; 
- Thu, 02 Feb 2023 07:51:03 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
- by smtp.gmail.com with ESMTPSA id
- s10-20020a9d58ca000000b006865223e532sm3173925oth.51.2023.02.02.07.51.02
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=tM2tAG1KHS9gAyhcPLjkjYt8F4gMNaekAqdi+Z0D3jE=;
+ b=rByc+A2vUT4G9wcOMglqOgV8L/V3/K7Y7/TDq7bukm6wJ+LkjHiGBW7ytxaY758piI
+ /XHe/8jiEE3URzsVtVuMj0x9dSQ/zNOOTv8khongtKJof7RSo46y4TDPFsnxtkt58yb1
+ Sts2w+M/Sa2EQ9k4zvArfuRQEgum091v8sOeAyP8shD3C6GWS7AbtmNzvjVNwD6yqo+g
+ L/c99U7RRh4Ar9wbGmwVGXANgGvq/7ZZmouVVfXhqLHYn57AGtYEBNeVDnMAekJstMhK
+ UkkA5tiOOGCE+psc/FtRA0fKwBYSOdjzRy0l10y31ZYLviyFG1yFSRyUVfNsHfWIB7AC
+ v1eA==
+X-Gm-Message-State: AO0yUKWE/ZAZ2Dug7KUfFw2SG09PrhyDvxaDWwjfe4Zg84wjxe/brBpP
+ PHoNyBCb17CCY+DaVgDhfno=
+X-Google-Smtp-Source: AK7set+px4qLsaBOaUEfLm/zCt9ycrIHjHt1QgT6ErzvraazA3Tx2vnHVt3VDBi6Er2VVCrDXjc4dw==
+X-Received: by 2002:a05:600c:3d06:b0:3df:dc0d:f0b3 with SMTP id
+ bh6-20020a05600c3d0600b003dfdc0df0b3mr2521516wmb.9.1675354641972; 
+ Thu, 02 Feb 2023 08:17:21 -0800 (PST)
+Received: from localhost ([102.36.222.112]) by smtp.gmail.com with ESMTPSA id
+ r17-20020a05600c459100b003dee8c5d814sm5332469wmo.24.2023.02.02.08.17.21
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 02 Feb 2023 07:51:03 -0800 (PST)
-Date: Thu, 2 Feb 2023 07:51:01 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: da7219: Fix pole orientation detection on OMTP
- headsets when playing music
-Message-ID: <20230202155101.GB1373010@roeck-us.net>
-References: <20221121050744.2278-1-david.rau.zg@renesas.com>
- <20230117195645.GA83401@roeck-us.net>
- <OS3PR01MB66416CEF9F6E5AE62D194BACCDC49@OS3PR01MB6641.jpnprd01.prod.outlook.com>
- <20230119161221.GA981953@roeck-us.net>
- <OS3PR01MB66416C10BF8E6400C84DAD02CDD09@OS3PR01MB6641.jpnprd01.prod.outlook.com>
- <38f09c4d-70d1-f65f-6e9b-4ad84eda4059@roeck-us.net>
- <Y9kE1cSUg2CQM5vq@sirena.org.uk>
+ Thu, 02 Feb 2023 08:17:21 -0800 (PST)
+Date: Thu, 2 Feb 2023 15:17:04 +0300
+From: Dan Carpenter <error27@gmail.com>
+To: Trevor Wu <trevor.wu@mediatek.com>
+Subject: Re: [PATCH] ASoC: mediatek: mt8188: remove etdm dead code
+Message-ID: <Y9upwNAzXzSxmiFo@kadam>
+References: <20230202103704.15626-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Y9kE1cSUg2CQM5vq@sirena.org.uk>
+In-Reply-To: <20230202103704.15626-1-trevor.wu@mediatek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -102,45 +93,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "support.opensource@diasemi.com" <support.opensource@diasemi.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>,
- David Rau <david.rau.zg@renesas.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ lgirdwood@gmail.com, broonie@kernel.org, linux-mediatek@lists.infradead.org,
+ matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jan 31, 2023 at 12:08:53PM +0000, Mark Brown wrote:
-> On Mon, Jan 30, 2023 at 10:16:06PM -0800, Guenter Roeck wrote:
-> > On 1/30/23 19:58, David Rau wrote:
+On Thu, Feb 02, 2023 at 06:37:04PM +0800, Trevor Wu wrote:
+> Some Smatch static checker warning like below was found.
 > 
-> > > Thanks for the kind feedback.
-> > > Would you please let me know what kinds of environment such error appears you ever meet?
-> > > Ex: da7219_aad->gnd_switch_delay = ?
+> sound/soc/mediatek/mt8188/mt8188-dai-etdm.c:2487
+> mt8188_dai_etdm_parse_of()
+> warn: 'ret' returned from snprintf() might be larger than 48
 > 
-> > We are seeing the problem on various Chromebooks.
+>     2479         for (i = 0; i < MT8188_AFE_IO_ETDM_NUM; i++) {
+>     2480                 dai_id = ETDM_TO_DAI_ID(i);
+>     2481                 etdm_data = afe_priv->dai_priv[dai_id];
+>     2482
+>     2483                 ret = snprintf(prop, sizeof(prop),
+>     2484                                "mediatek,%s-multi-pin-mode",
+>     2485                                of_afe_etdms[i].name);
+>     2486                 if (ret < 0) {
+> --> 2487                         dev_err(afe->dev, "%s snprintf
+> err=%d\n",
+>     2488
 > 
-> > Never mind, though. I really don't have time to keep arguing about this.
-> > I would have assumed that it is obvious that a long msleep() in an
-> > interrupt handler is not appropriate, but obviously I was wrong.
+> In linux kernel, snprintf() never returns negatives. On the other hand,
+> the format string like "mediatek,%s-multi-pin-mode" must be smaller
+> than sizeof(prop)=48.
 > 
-> This is a threaded interrupt handler so it's a bit less clear that it's
-> meaningfully different to just disabling the interrupt for debounce or
-> whatever.  Not to say it's ideal.
+> After discussing in the mail thread[1], I remove the dead code to fix
+> the Smatch warnings.
 > 
-> > I'll see if I can implement a downstream fix.
+> [1]: https://lore.kernel.org/all/Y9EdBg641tJDDrt%2F@kili/
 > 
-> If you implement something I don't see a reason not to post it upstream.
+> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+> ---
 
-I had a look into the code, and concluded that it is too complex for anyone
-who doesn't know it to find a proper fix. For example, for an outsider it
-is not conceivable (or explained) why the ground switch is enabled only
-to be disabled immediately afterwards if a jack was removed.
+Thanks!
 
-This is now the top crash reason on affected Chromebooks (so far I
-identified Asus C424, HP SeaStar, and HP StingRay) with this patch
-applied. I am inclined to revert it from all ChromeOS kernel branches.
-At least for us the cure for the problem is much worse than the problem
-itself.
+Regards,
+dan carpenter
 
-Guenter
