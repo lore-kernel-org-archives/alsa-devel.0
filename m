@@ -4,70 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4A86C05027
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 13:33:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83142C05027
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 13:38:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45BBDEA8;
-	Thu,  2 Feb 2023 14:32:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45BBDEA8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4E59EE97;
+	Thu,  2 Feb 2023 14:37:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4E59EE97
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675344804;
-	bh=TjhwXLW+ISaVWh4oCIl17D1DQtIaO80qf9PbF9DFUNs=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=p8fliLSkhoDCjNRTCr7Y+54P9ajt9Ia4W0ioBymMcf62fFlUrUj6ZgXBbc/Flv58e
-	 IJ9veGKsMhlnSvHDancRfsPNYopYXj3KOqRq2NCRIsgH4+qNt5m+fojNqSjGchZpY6
-	 hWXNpre0Js3OCaUeX8x0NTIELbOGM9MuKaNeOL8M=
+	s=default; t=1675345094;
+	bh=6/EgTt7JuCy1PTRpQOe36pguPJ7+Pxp4QJLEI8XA38k=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=n36bldyGxaqzZ/V3Fv0z60qGLgIb5aecQJv/dPaNtovxoeUHOqivu3put13wzivlH
+	 KEYoqA6i0xkSuM/72ZkH/avAeuymyqg+To805d+EbO3oT4HSC7LWWvGNu5aAbzT1PM
+	 ZiKS47t+5gHk62lLO38oWrHgYMrXZhmUW6iOjLVM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B85AF80548;
-	Thu,  2 Feb 2023 14:30:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC875F80271;
+	Thu,  2 Feb 2023 14:37:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1224F8053D; Thu,  2 Feb 2023 14:30:40 +0100 (CET)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E9844F804C2; Thu,  2 Feb 2023 14:37:22 +0100 (CET)
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com
+ [64.147.123.24])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8A0AF800E3
- for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 14:30:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8A0AF800E3
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=ZhLGxSM4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1675344606; x=1706880606;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=TjhwXLW+ISaVWh4oCIl17D1DQtIaO80qf9PbF9DFUNs=;
- b=ZhLGxSM4OUt/5Zynpvo+KPrEkWY/bPuT+xbEY1QgatK22k0J4LDW1mjZ
- BHji72lOPcvAteB8MaGGH3yyWy5iORBDeuKnnsHK1Poa+AQsaz/6+Qg2l
- r7rcj8BUMR70zWox822BFwwlHpauAnwuLct+UCP/Otp+NI4gdIl9G4PS4
- PJCCW0nusQ6Y7RmwVkfzya4tUJyfrKgRixcx/3uWBSby378N+Zm9dwulw
- B1NODCP8u0vuNC1rt3tp1QgSaA/2wbvvIvwoC1/u3BwjAy/8M71lmcFGq
- b/oAyrLOWz4Xf6y7SXc4YVcgKewL4iGfdecsipW90+qZtM7Fn3mtNW2cK g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="308783290"
-X-IronPort-AV: E=Sophos;i="5.97,267,1669104000"; d="scan'208";a="308783290"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Feb 2023 05:30:02 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="658727389"
-X-IronPort-AV: E=Sophos;i="5.97,267,1669104000"; d="scan'208";a="658727389"
-Received: from jpdamery-mobl.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.1.104])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Feb 2023 05:29:59 -0800
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	perex@perex.cz
-Subject: [PATCH v3 5/9] ASoC: SOF: ipc4-pcm: add hw_params
-Date: Thu,  2 Feb 2023 15:29:50 +0200
-Message-Id: <20230202132954.26773-6-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230202132954.26773-1-peter.ujfalusi@linux.intel.com>
-References: <20230202132954.26773-1-peter.ujfalusi@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47AEBF80169
+ for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 14:37:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47AEBF80169
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key, unprotected) header.d=sakamocchi.jp
+ header.i=@sakamocchi.jp header.a=rsa-sha256 header.s=fm3 header.b=e84ZMUHe; 
+ dkim=pass (2048-bit key,
+ unprotected) header.d=messagingengine.com header.i=@messagingengine.com
+ header.a=rsa-sha256 header.s=fm3 header.b=onqGLus/
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailout.west.internal (Postfix) with ESMTP id 39D0C32003C0;
+ Thu,  2 Feb 2023 08:37:13 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute5.internal (MEProxy); Thu, 02 Feb 2023 08:37:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=cc:cc:content-transfer-encoding:date:date:from:from
+ :in-reply-to:message-id:mime-version:reply-to:sender:subject
+ :subject:to:to; s=fm3; t=1675345032; x=1675431432; bh=89sIOUVWUw
+ kN1bm7THHRbQb6iNz8H9x7HGaB0Zkj/RA=; b=e84ZMUHe3QtqGEHqnGISXh3QOX
+ Yt/ez9s4EOAQVmuRCK/W5ilG99mbUJuWPTSVGYOSjbPAvPD2JvF1eb9Q/IUvbLu+
+ r9kIdcRPMarD6AuimF3rlIx+fIU5A8v1MhZPOGPhFZamgGAuva5mfyfleWASpG5h
+ N9m7QdrNw84+DNAbquC3Br0fpf4WfziJMg8tOW549mi1m+Axl0wlW9UF6r14jeHj
+ qqEdxQ3q5Wv6dSNUL7FlebTZrgzt2Ha205PPk/b9CUf8HwvWb8H6GcpiMNjZx79C
+ EaZvhvoik+7FBwlENqd3cVn0WsjEwArVnRqlrI71oWRCURc8F2MN7P9R6Fbg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
+ :feedback-id:feedback-id:from:from:in-reply-to:message-id
+ :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+ :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+ 1675345032; x=1675431432; bh=89sIOUVWUwkN1bm7THHRbQb6iNz8H9x7HGa
+ B0Zkj/RA=; b=onqGLus/Zj/27kXo0n9IRb2jPGTfyElL7YZmGX15kFhOQCREA4Z
+ OUD4q4be1AT6AwbcUWXil7KCkw3Qk3pBF44WHuCnJ2CjBGz0xch1Uu2haTBIxcn1
+ FOHPC43M3MBbWknXat0Q5ZiusGpu0SjYzlH44rwO4tw7rqiUK7J4Rool+nW6T1kc
+ UmUODOw3XcNIZPr9GD0T7TyxRpYVC6piO+g7ETtaS6HJf1dFYl/B2WlYKO1BR6wk
+ 3v2B9hUT0yXd90XoDXcabOqThPvQBq89/8yAvH7okceFeKaQ3WlOCKYxEvDc3hpk
+ KYqQzg7Zv9Jnko8z86LH6/xqEi1YFW3H5Bg==
+X-ME-Sender: <xms:iLzbYz6VucjRwZRfMLsgGxe9xznYKQuEAXHhSRmm4JU5k6mjjZgFnA>
+ <xme:iLzbY45bONSENFRpJD3gjomANSyHnuJcJ8swiyHnMj1zrIyhQXt8FIlQD9293U9Nx
+ G6P-_R_AacvgXkH_Ms>
+X-ME-Received: <xmr:iLzbY6fniIBnchZN5VhQ_FgPZqpu55clHBNnaSWy_5JIdl3VsPY-7vy_2NH6UKxP_vxJx3eY-gILjyUpi8rDTOiK6wFvxB-jHKyl89Wr0Zx5kMtQqwDbYrM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudefkedgheduucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+ ertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
+ hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeeggfehleehje
+ eileehveefkefhtdeffedtfeeghfekffetudevjeegkeevhfdvueenucffohhmrghinhep
+ khgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+ hilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:iLzbY0IYQl_mLz88hSGjE3jiNWqsGl4I0x8oPQfB9pXtw3YzkiGlRg>
+ <xmx:iLzbY3JkC8ZkFCAFNubkUO_t2WJHdUJjf-vC3-fB1JQpDcFonVrPjw>
+ <xmx:iLzbY9zMFoW61znnGzfo50c56cJ7zESwVCdkHvy6KXYgd6N0w3HyCg>
+ <xmx:iLzbY5yy9vUWQH-L-hIJx530PSXqwf22uKCQjsRuotqnL7wY4wMXdg>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 2 Feb 2023 08:37:11 -0500 (EST)
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: tiwai@suse.de
+Subject: [PATCH] ALSA: fireface: add field for the number of messages copied
+ to user space
+Date: Thu,  2 Feb 2023 22:37:08 +0900
+Message-Id: <20230202133708.163936-1-o-takashi@sakamocchi.jp>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -82,135 +106,103 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, rander.wang@intel.com,
- ranjani.sridharan@linux.intel.com, yung-chuan.liao@linux.intel.com
+Cc: alsa-devel@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Rander Wang <rander.wang@intel.com>
+Current structure includes no field to express the number of messages
+copied to user space, thus user space application needs to information
+out of the structure to parse the content of structure.
 
-Use the hw_params to init time info for ipc4 delay calculation.
+This commit adds a field to express the number of messages copied to user
+space since It is more preferable to use self-contained structure.
 
-Signed-off-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Kees Cook proposed an idea of annotation for bound of flexible arrays
+in his future improvement for flexible-length array in kernel. The
+additional field for message count is suitable to the idea as well.
+
+Reference: https://people.kernel.org/kees/bounded-flexible-arrays-in-c
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/sof/ipc4-pcm.c | 98 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 98 insertions(+)
+ include/uapi/sound/firewire.h                |  2 ++
+ sound/firewire/fireface/ff-protocol-former.c | 28 +++++++++++---------
+ 2 files changed, 18 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/sof/ipc4-pcm.c b/sound/soc/sof/ipc4-pcm.c
-index 8071db487815..a457d4d479d8 100644
---- a/sound/soc/sof/ipc4-pcm.c
-+++ b/sound/soc/sof/ipc4-pcm.c
-@@ -459,7 +459,105 @@ static int sof_ipc4_pcm_setup(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm
- 	return 0;
+diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
+index 50917581dd2b..1e86872c151f 100644
+--- a/include/uapi/sound/firewire.h
++++ b/include/uapi/sound/firewire.h
+@@ -78,6 +78,7 @@ struct snd_firewire_event_motu_register_dsp_change {
+  *					     operating hardware knob.
+  *
+  * @type: Fixed to SNDRV_FIREWIRE_EVENT_FF400_MESSAGE.
++ * @message_count: The number of messages.
+  * @messages.message: The messages expressing hardware knob operation.
+  * @messages.tstamp: The isochronous cycle at which the request subaction of asynchronous
+  *		     transaction was sent to deliver the message. It has 16 bit unsigned integer
+@@ -89,6 +90,7 @@ struct snd_firewire_event_motu_register_dsp_change {
+  */
+ struct snd_firewire_event_ff400_message {
+ 	unsigned int type;
++	unsigned int message_count;
+ 	struct {
+ 		__u32 message;
+ 		__u32 tstamp;
+diff --git a/sound/firewire/fireface/ff-protocol-former.c b/sound/firewire/fireface/ff-protocol-former.c
+index fa41de978756..efd59e9d9935 100644
+--- a/sound/firewire/fireface/ff-protocol-former.c
++++ b/sound/firewire/fireface/ff-protocol-former.c
+@@ -677,23 +677,19 @@ static void ff400_handle_msg(struct snd_ff *ff, unsigned int offset, const __le3
+ 
+ static long ff400_copy_msg_to_user(struct snd_ff *ff, char __user *buf, long count)
+ {
++	struct snd_firewire_event_ff400_message ev = {
++		.type = SNDRV_FIREWIRE_EVENT_FF400_MESSAGE,
++		.message_count = 0,
++	};
+ 	struct ff400_msg_parser *parser = ff->msg_parser;
+-	u32 type = SNDRV_FIREWIRE_EVENT_FF400_MESSAGE;
+ 	long consumed = 0;
+-	int ret = 0;
++	long ret = 0;
+ 
+-	if (count < 8)
++	if (count < sizeof(ev) || parser->pull_pos == parser->push_pos)
+ 		return 0;
+ 
+-	spin_unlock_irq(&ff->lock);
+-	if (copy_to_user(buf, &type, sizeof(type)))
+-		ret = -EFAULT;
+-	spin_lock_irq(&ff->lock);
+-	if (ret)
+-		return ret;
+-
+-	count -= sizeof(type);
+-	consumed += sizeof(type);
++	count -= sizeof(ev);
++	consumed += sizeof(ev);
+ 
+ 	while (count >= sizeof(*parser->msgs) && parser->pull_pos != parser->push_pos) {
+ 		spin_unlock_irq(&ff->lock);
+@@ -707,10 +703,18 @@ static long ff400_copy_msg_to_user(struct snd_ff *ff, char __user *buf, long cou
+ 		++parser->pull_pos;
+ 		if (parser->pull_pos >= FF400_QUEUE_SIZE)
+ 			parser->pull_pos = 0;
++		++ev.message_count;
+ 		count -= sizeof(*parser->msgs);
+ 		consumed += sizeof(*parser->msgs);
+ 	}
+ 
++	spin_unlock_irq(&ff->lock);
++	if (copy_to_user(buf, &ev, sizeof(ev)))
++		ret = -EFAULT;
++	spin_lock_irq(&ff->lock);
++	if (ret)
++		return ret;
++
+ 	return consumed;
  }
  
-+static void sof_ipc4_build_time_info(struct snd_sof_dev *sdev, struct snd_sof_pcm_stream *spcm)
-+{
-+	struct sof_ipc4_copier *host_copier = NULL;
-+	struct sof_ipc4_copier *dai_copier = NULL;
-+	struct sof_ipc4_llp_reading_slot llp_slot;
-+	struct sof_ipc4_timestamp_info *info;
-+	struct snd_soc_dapm_widget *widget;
-+	struct snd_sof_dai *dai;
-+	int i;
-+
-+	/* find host & dai to locate info in memory window */
-+	for_each_dapm_widgets(spcm->list, i, widget) {
-+		struct snd_sof_widget *swidget = widget->dobj.private;
-+
-+		if (!swidget)
-+			continue;
-+
-+		if (WIDGET_IS_AIF(swidget->widget->id)) {
-+			host_copier = swidget->private;
-+		} else if (WIDGET_IS_DAI(swidget->widget->id)) {
-+			dai = swidget->private;
-+			dai_copier = dai->private;
-+		}
-+	}
-+
-+	/* both host and dai copier must be valid for time_info */
-+	if (!host_copier || !dai_copier) {
-+		dev_err(sdev->dev, "host or dai copier are not found\n");
-+		return;
-+	}
-+
-+	info = spcm->private;
-+	info->host_copier = host_copier;
-+	info->dai_copier = dai_copier;
-+	info->llp_offset = offsetof(struct sof_ipc4_fw_registers, llp_gpdma_reading_slots) +
-+				    sdev->fw_info_box.offset;
-+
-+	/* find llp slot used by current dai */
-+	for (i = 0; i < SOF_IPC4_MAX_LLP_GPDMA_READING_SLOTS; i++) {
-+		sof_mailbox_read(sdev, info->llp_offset, &llp_slot, sizeof(llp_slot));
-+		if (llp_slot.node_id == dai_copier->data.gtw_cfg.node_id)
-+			break;
-+
-+		info->llp_offset += sizeof(llp_slot);
-+	}
-+
-+	if (i < SOF_IPC4_MAX_LLP_GPDMA_READING_SLOTS)
-+		return;
-+
-+	/* if no llp gpdma slot is used, check aggregated sdw slot */
-+	info->llp_offset = offsetof(struct sof_ipc4_fw_registers, llp_sndw_reading_slots) +
-+					sdev->fw_info_box.offset;
-+	for (i = 0; i < SOF_IPC4_MAX_LLP_SNDW_READING_SLOTS; i++) {
-+		sof_mailbox_read(sdev, info->llp_offset, &llp_slot, sizeof(llp_slot));
-+		if (llp_slot.node_id == dai_copier->data.gtw_cfg.node_id)
-+			break;
-+
-+		info->llp_offset += sizeof(llp_slot);
-+	}
-+
-+	if (i < SOF_IPC4_MAX_LLP_SNDW_READING_SLOTS)
-+		return;
-+
-+	/* check EVAD slot */
-+	info->llp_offset = offsetof(struct sof_ipc4_fw_registers, llp_evad_reading_slot) +
-+					sdev->fw_info_box.offset;
-+	sof_mailbox_read(sdev, info->llp_offset, &llp_slot, sizeof(llp_slot));
-+	if (llp_slot.node_id != dai_copier->data.gtw_cfg.node_id) {
-+		dev_info(sdev->dev, "no llp found, fall back to default HDA path");
-+		info->llp_offset = 0;
-+	}
-+}
-+
-+static int sof_ipc4_pcm_hw_params(struct snd_soc_component *component,
-+				  struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_sof_platform_stream_params *platform_params)
-+{
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct sof_ipc4_timestamp_info *time_info;
-+	struct snd_sof_pcm *spcm;
-+
-+	spcm = snd_sof_find_spcm_dai(component, rtd);
-+	time_info = spcm->stream[substream->stream].private;
-+	/* delay calculation is not supported by current fw_reg ABI */
-+	if (!time_info)
-+		return 0;
-+
-+	time_info->stream_start_offset = SOF_IPC4_INVALID_STREAM_POSITION;
-+	time_info->llp_offset = 0;
-+
-+	sof_ipc4_build_time_info(sdev, &spcm->stream[substream->stream]);
-+
-+	return 0;
-+}
-+
- const struct sof_ipc_pcm_ops ipc4_pcm_ops = {
-+	.hw_params = sof_ipc4_pcm_hw_params,
- 	.trigger = sof_ipc4_pcm_trigger,
- 	.hw_free = sof_ipc4_pcm_hw_free,
- 	.dai_link_fixup = sof_ipc4_pcm_dai_link_fixup,
 -- 
-2.39.1
+2.37.2
 
