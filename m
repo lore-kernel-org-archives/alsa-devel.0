@@ -4,83 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D1D1C61DA4
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 18:39:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B61D6C05027
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 18:39:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 424B3ECA;
-	Thu,  2 Feb 2023 19:38:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 424B3ECA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85B89ED0;
+	Thu,  2 Feb 2023 19:38:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85B89ED0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675363144;
-	bh=UejLPaoKYCRvJ51W6iWmn45OlArgnITusSv92XIVh78=;
+	s=default; t=1675363157;
+	bh=D2+8waWGdQDq5vcLBu8LAPugcaNAoS6HUSTb+IOlYJ0=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=GUjCJ4h27881ekZMebxz5l2rdZJa+mYuoUyoCMZ/GbsgDL3qz1FLvTucMNxFGFjHc
-	 95nzzvpJehlDCD2x5QqLjO+dY6t7o6icStc4RpjRxKHXm5XOumiiBcYgctSFWSsh+q
-	 yi3lqzPYV6g6CcBYy10KLDHzz4omYm/x7OAgEWy4=
+	b=lsURBLKQG3vIE47i2EKVeBzzyXwoeEFRB9f4PvQ/hFwWKvPERyj4/b9B3s3ZVoZUD
+	 xgVe82HMsaFktmX/KbviRi5D1lGpBATLJ6T/pNNm8TjFIpJG0wc0AqxCv+AFKfJ/eD
+	 haG/VLOMCT3TDooX3z64jigS71EMds5lycthmCOo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1BD58F80549;
-	Thu,  2 Feb 2023 19:37:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B11A0F8055A;
+	Thu,  2 Feb 2023 19:37:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8F01F80553; Thu,  2 Feb 2023 19:37:38 +0100 (CET)
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
- [IPv6:2a00:1450:4864:20::433])
+ id 32561F8055B; Thu,  2 Feb 2023 19:37:41 +0100 (CET)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42972F800ED
- for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 19:37:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42972F800ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4F46F80551
+ for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 19:37:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4F46F80551
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=baylibre-com.20210112.gappssmtp.com
  header.i=@baylibre-com.20210112.gappssmtp.com header.a=rsa-sha256
- header.s=20210112 header.b=T35BJJth
-Received: by mail-wr1-x433.google.com with SMTP id a2so2281069wrd.6
- for <alsa-devel@alsa-project.org>; Thu, 02 Feb 2023 10:37:28 -0800 (PST)
+ header.s=20210112 header.b=xaYuudaL
+Received: by mail-wr1-x436.google.com with SMTP id m14so2524142wrg.13
+ for <alsa-devel@alsa-project.org>; Thu, 02 Feb 2023 10:37:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=baylibre-com.20210112.gappssmtp.com; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=it81YP95JIRPJswh/FgK8dhTohEGTS21tUAjm96BPMQ=;
- b=T35BJJthNSXWGuipJ/S57/Vin4LoRONI1yOJ2iw8a6ampM/SH/alQlaM3pwJXbfIto
- rhB/lH9b1SfkOR19HeWTkVB7VSSsTJgHyiavcYsEoM/cXzmWt6zg2rxDTIV6fKG7uY6C
- R59zbQQItYpdbiiKXP3AQ7Vsyoc4Swh2MVx05ksPml3KYRaXwgZdpVxGAzQzbmS6ZsUk
- hFKqBE/i/V1NnVVjwq0cZN7FQRbfbNj0VLT9zzJo0vI2vf1zI2ghqgOOttCZZN4+N/qR
- OJNFfbUx3uQyls1lZ4AVo++FolCmlr1lg3WtFc0TRW0TSRpiuvX8jLi/jVecCpg+wtgK
- voEA==
+ bh=hZDf/HLHsmXllvXlzMaBba2wF4a3xInBovmR2gll1NE=;
+ b=xaYuudaLyB+uAk3PVQ8DP1LP3TKOxSqkpwctcjT4Z0iVbrSjlIK7ROCuOD4TzGetXo
+ tgqj0nGRsRQJe072REFgPgVjHQ61dQkyQ5aEa/e1iHKNSevRrsRIF1xECSFXNThvxi8q
+ PwFwhy/U4yfMzR+lsF4xgGiPi+SKpVMSj4sxR3WM/+My7FdcSoHpJmJ23HL4wFjcipNM
+ JTB+yER/k59c2hjSoR533p4BYEdcUx7B5RLfR0YaDmPSpm/sp83jQTcs18KIfbZhK2du
+ ELJ9eRv3HiVXVpuad6m6/Z/hcVB7PWmib8ZJlJvx+Py4/mEjinnOAWxXh9fSxRK0LwYM
+ NhEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=it81YP95JIRPJswh/FgK8dhTohEGTS21tUAjm96BPMQ=;
- b=3HI/zVpawhY3t6Yud/QuKmLjm85yJ4OQ/bo6O1SXgrvFLS/jhQM39hkv0FlrAcdAQC
- QO80crRUGgSOkb65mG1g0ira8qGF1xcN71y0XOL3EBpTWtYB6e92xYvt03YiFYDnC/qr
- vzSc6K1ib85xvSJ3myS1FD2RxvVbSuaq//Okveoz73hlfIQSFg4o9fTa5H2tpxpumVaa
- s8ShxiGe1RRtBzv5Xz2ErEJL5UC7rukLda2TceJxlI2pgD6dsFiYkKvCKVC96OE12aja
- lo3sRUhL34T7Irk2/QiFG9MS1PF7lTn1gfIcKDVPamf+Ei0Yo1A6f663LD9FgXv5fWwz
- htdA==
-X-Gm-Message-State: AO0yUKWh+wOdt3prbmddbj5a/8vRTFVQh7PFsE7IByVZbg+zPQZtbMEk
- AFglP/uu4YsWOIx9vfuZe26dHA==
-X-Google-Smtp-Source: AK7set9UbIruMnv6kKNSa19q5j5yp9TO2ovfLKQ/UNar58Gc9j9V2Mg4N6Ph1JnAFCA//MyCXwBx+Q==
-X-Received: by 2002:a05:6000:1285:b0:2bf:b036:ffe3 with SMTP id
- f5-20020a056000128500b002bfb036ffe3mr6707490wrx.45.1675363047162; 
- Thu, 02 Feb 2023 10:37:27 -0800 (PST)
+ bh=hZDf/HLHsmXllvXlzMaBba2wF4a3xInBovmR2gll1NE=;
+ b=HyaftGEeYu4PmyT04H+dxsACdg3PRex/TZgHAafrft47369n1y0kztoGaJLxyQkGn6
+ Zo4b9fLby8OEMtD67BtXzbYHCaw9xP1H9Q4B7k7C8rN3xAu/rYeFyru+Mf8gJkivMJco
+ KQyrPa22xzcKw7xmZC+RlR2fzMexDznaquh+K0ISaNAm0z3gh1ZBIGuLwf3Y62p0yx5O
+ Twx6R4oC8RhjheR4/Gm8hQv2Idau7JanbXknsXcqS4t2YFJs+Zw9On1M72sIi4FGtDve
+ ias9Ik9xqISx5PgVgrmxf/0itaOJ+mSTnYCADJOjOZI844nQkYnQ68Zgm+/Iyv+gIEHW
+ bhyw==
+X-Gm-Message-State: AO0yUKUVm96QAU+qS8B7h2SypgDOMDPsRTzpW3oHU/OEPkveJ2cpF2M2
+ 1WdbdQLckELny/NDjqnOCNKZ0A==
+X-Google-Smtp-Source: AK7set87mrYHNE/0/I372ct8ZaVBEWpNKw4XOYrrrvcmO7iVSYhOhxapZ0+s93W5U33cXIJHeAn8Sg==
+X-Received: by 2002:a5d:6da3:0:b0:2bf:ae11:c40c with SMTP id
+ u3-20020a5d6da3000000b002bfae11c40cmr7784287wrs.32.1675363054576; 
+ Thu, 02 Feb 2023 10:37:34 -0800 (PST)
 Received: from localhost.localdomain (82-65-169-74.subs.proxad.net.
  [82.65.169.74]) by smtp.googlemail.com with ESMTPSA id
- p12-20020a5d48cc000000b00241fab5a296sm164664wrs.40.2023.02.02.10.37.23
+ p12-20020a5d48cc000000b00241fab5a296sm164664wrs.40.2023.02.02.10.37.30
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 02 Feb 2023 10:37:26 -0800 (PST)
+ Thu, 02 Feb 2023 10:37:34 -0800 (PST)
 From: Jerome Brunet <jbrunet@baylibre.com>
 To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org
-Subject: [PATCH 1/9] ASoC: dt-bindings: create component common schema
-Date: Thu,  2 Feb 2023 19:36:45 +0100
-Message-Id: <20230202183653.486216-2-jbrunet@baylibre.com>
+Subject: [PATCH 3/9] ASoC: dt-bindings: meson: convert axg tdm interface to
+ schema
+Date: Thu,  2 Feb 2023 19:36:47 +0100
+Message-Id: <20230202183653.486216-4-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230202183653.486216-1-jbrunet@baylibre.com>
 References: <20230202183653.486216-1-jbrunet@baylibre.com>
@@ -107,67 +108,110 @@ Cc: Neil Armstrong <neil.armstrong@linaro.org>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-All DAIs are component but not all components are DAI.
-Move the component properties (sound-name-prefix ATM) to a separate schema
-file so it can be used by non-DAI components, such as auxiliary devices.
+Convert the DT binding documentation for the Amlogic tdm interface to
+schema.
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- .../bindings/sound/component-common.yaml      | 21 +++++++++++++++++++
- .../devicetree/bindings/sound/dai-common.yaml | 11 +++-------
- 2 files changed, 24 insertions(+), 8 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/component-common.yaml
+ .../bindings/sound/amlogic,axg-tdm-iface.txt  | 22 -------
+ .../bindings/sound/amlogic,axg-tdm-iface.yaml | 59 +++++++++++++++++++
+ 2 files changed, 59 insertions(+), 22 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml
 
-diff --git a/Documentation/devicetree/bindings/sound/component-common.yaml b/Documentation/devicetree/bindings/sound/component-common.yaml
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.txt
+deleted file mode 100644
+index cabfb26a5f22..000000000000
+--- a/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.txt
++++ /dev/null
+@@ -1,22 +0,0 @@
+-* Amlogic Audio TDM Interfaces
+-
+-Required properties:
+-- compatible: 'amlogic,axg-tdm-iface'
+-- clocks: list of clock phandle, one for each entry clock-names.
+-- clock-names: should contain the following:
+-  * "sclk" : bit clock.
+-  * "lrclk": sample clock
+-  * "mclk" : master clock
+-	     -> optional if the interface is in clock slave mode.
+-- #sound-dai-cells: must be 0.
+-
+-Example of TDM_A on the A113 SoC:
+-
+-tdmif_a: audio-controller@0 {
+-	compatible = "amlogic,axg-tdm-iface";
+-	#sound-dai-cells = <0>;
+-	clocks = <&clkc_audio AUD_CLKID_MST_A_MCLK>,
+-		 <&clkc_audio AUD_CLKID_MST_A_SCLK>,
+-		 <&clkc_audio AUD_CLKID_MST_A_LRCLK>;
+-	clock-names = "mclk", "sclk", "lrclk";
+-};
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml
 new file mode 100644
-index 000000000000..37766c5f3974
+index 000000000000..362414fc9a9b
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/component-common.yaml
-@@ -0,0 +1,21 @@
++++ b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.yaml
+@@ -0,0 +1,59 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/sound/component-common.yaml#
++$id: http://devicetree.org/schemas/sound/amlogic,axg-tdm-iface.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Audio Component Common Properties
++title: Amlogic Audio TDM Interfaces
 +
 +maintainers:
 +  - Jerome Brunet <jbrunet@baylibre.com>
 +
-+properties:
-+  sound-name-prefix:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: |
-+      Card implementing the routing property define the connection between
-+      audio components as list of string pair. Component using the same
-+      sink/source names may use this property to prepend the name of their
-+      sinks/sources with the provided string.
-+
-+additionalProperties: true
-diff --git a/Documentation/devicetree/bindings/sound/dai-common.yaml b/Documentation/devicetree/bindings/sound/dai-common.yaml
-index d858eea73ed7..1aed2f0f1775 100644
---- a/Documentation/devicetree/bindings/sound/dai-common.yaml
-+++ b/Documentation/devicetree/bindings/sound/dai-common.yaml
-@@ -9,15 +9,10 @@ title: Digital Audio Interface Common Properties
- maintainers:
-   - Jerome Brunet <jbrunet@baylibre.com>
- 
--properties:
--  sound-name-prefix:
--    $ref: /schemas/types.yaml#/definitions/string
--    description: |
--      Card implementing the routing property define the connection between
--      audio components as list of string pair. Component using the same
--      sink/source names may use this property to prepend the name of their
--      sinks/sources with the provided string.
 +allOf:
-+  - $ref: component-common.yaml#
- 
++  - $ref: dai-common.yaml#
++
 +properties:
-   '#sound-dai-cells': true
- 
- additionalProperties: true
++  $nodename:
++    pattern: "^audio-controller-.*"
++
++  compatible:
++    items:
++      - const: 'amlogic,axg-tdm-iface'
++
++  "#sound-dai-cells":
++    const: 0
++
++  clocks:
++    minItems: 2
++    items:
++      - description: Bit clock
++      - description: Sample clock
++      - description: Master clock #optional
++
++  clock-names:
++    minItems: 2
++    items:
++      - const: sclk
++      - const: lrclk
++      - const: mclk
++
++required:
++  - compatible
++  - "#sound-dai-cells"
++  - clocks
++  - clock-names
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/axg-audio-clkc.h>
++
++    tdmif_a: audio-controller-0 {
++        compatible = "amlogic,axg-tdm-iface";
++        #sound-dai-cells = <0>;
++        clocks = <&clkc_audio AUD_CLKID_MST_A_SCLK>,
++                 <&clkc_audio AUD_CLKID_MST_A_LRCLK>,
++                 <&clkc_audio AUD_CLKID_MST_A_MCLK>;
++        clock-names = "sclk", "lrclk", "mclk";
++    };
 -- 
 2.39.0
 
