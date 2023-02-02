@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5CF2C05027
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 13:31:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0C07C61DA4
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 13:31:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21360E96;
-	Thu,  2 Feb 2023 14:30:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21360E96
+	by alsa0.perex.cz (Postfix) with ESMTPS id C15BCEA8;
+	Thu,  2 Feb 2023 14:30:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C15BCEA8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675344689;
-	bh=aiF6/8a6SS1hHhHKbLczSkALMVzusrvlToxYPNO/+4c=;
+	s=default; t=1675344701;
+	bh=vBHxm0ECjItpDsr4NygqyeYSNweCZZ0kvTU94VSrlDA=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=iUmVqZuVsO2G8Wa3XX19ANyxxwL9krIuSTrZ5rPsfQ2LRJQAnIgaYxA9WVhG0Cv9s
-	 H3m14UY/Bg8vek8O41to007h3R3aKVqwokDnPdKQdXwHHUdzoRFWeyh2G7FFg3fsmW
-	 Ni77GU1vOIyQxJc69eWvuEmhzi2Qrd8wIBOiYJhY=
+	b=If4nCj3tzRbm5LQ1pQhRofvK/fkBfrI5vcKBUQ7ScMOElZq21B2tvrp0obezEVTKt
+	 XbS++ZnIcnn6bG6X4kAfpQKe/zFBCy0iYh4W8vULh5vwsRu1MxJ5sjJf1/8/IfntaT
+	 NW8BNIQ6mTkdpJ+joXmu8fkJ/6NJbqAsSZrwUr5A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C50CFF80553;
-	Thu,  2 Feb 2023 14:30:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67EE9F8055C;
+	Thu,  2 Feb 2023 14:30:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8B13CF80557; Thu,  2 Feb 2023 14:30:07 +0100 (CET)
+ id 449F3F80548; Thu,  2 Feb 2023 14:30:08 +0100 (CET)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C42AF80271
- for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 14:29:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C42AF80271
+ by alsa1.perex.cz (Postfix) with ESMTPS id A2561F80548
+ for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 14:30:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2561F80548
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=OCY468lg
+ header.s=Intel header.b=VpXhTNEi
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1675344595; x=1706880595;
+ t=1675344601; x=1706880601;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=aiF6/8a6SS1hHhHKbLczSkALMVzusrvlToxYPNO/+4c=;
- b=OCY468lgkfgF7tjvefrs5VjgpyK5nrVcAI0dpSJB/mjr/338GdExyBF9
- N8wmQ/s8aeVcnmcakhToXpoVLegtB89V6drauZtXDxFbdYuWcWo/l9IqB
- 6jQyfxkcHm0wmm4f2Sl9Ovc+A1/tC/et/knVAUfIIURqEMW1lkn8H96Dm
- KE3qXeHOQOLxSXg+rkVV3IdOn/ClGG3wnh+uMu9To2vvC6H25W38v8M1N
- jVo74OmFOVIo6HVP+D63zo3vP5ZsZIvekAYNUESSk+ErqDEjEnaZnhvaL
- FWpjyTrxHjvK209Jr7Nt8YKn4GbOpUlUYLmFQlGnvgHf7rkOWIIToKeZy g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="308783260"
-X-IronPort-AV: E=Sophos;i="5.97,267,1669104000"; d="scan'208";a="308783260"
+ bh=vBHxm0ECjItpDsr4NygqyeYSNweCZZ0kvTU94VSrlDA=;
+ b=VpXhTNEiYzubk56W9kjyV0jIEcefyjzBOZlL3LeWGAG1KRMm8Gq78v/b
+ bjwPQ4T39iRXKi1NbdGw5+LbeMwYTSCmVEU3aa2wW3Ci22ZDLjd4lq+l6
+ 2FTIXN6Why6EzDMVA94EUZ3Xz2On3qT+KW0umJaYdvx54Q5P0GmTnHx/r
+ CDBFFXZFkNdxvspVKTRI3c9i2IIgpaA+XfY10bBUynCoizYcIw97y9SOn
+ jhFfBI5f1VS8M2iER9dqMfiB+wA9k6r25wvqzet5oLEWMvvAnnONUePt4
+ w8dbjHPVFksVtx/nNaQwzoAHonO1qCScUIKltF0jsF4izfBJ4yCRt911Q w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="308783281"
+X-IronPort-AV: E=Sophos;i="5.97,267,1669104000"; d="scan'208";a="308783281"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Feb 2023 05:29:53 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="658727315"
-X-IronPort-AV: E=Sophos;i="5.97,267,1669104000"; d="scan'208";a="658727315"
+ 02 Feb 2023 05:29:59 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="658727348"
+X-IronPort-AV: E=Sophos;i="5.97,267,1669104000"; d="scan'208";a="658727348"
 Received: from jpdamery-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.1.104])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Feb 2023 05:29:50 -0800
+ 02 Feb 2023 05:29:56 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org,
 	perex@perex.cz
-Subject: [PATCH v3 2/9] ASoC: SOF: add fw_info_box support
-Date: Thu,  2 Feb 2023 15:29:47 +0200
-Message-Id: <20230202132954.26773-3-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH v3 4/9] ASoC: SOF: ipc4-pcm: allocate time info for pcm delay
+ feature
+Date: Thu,  2 Feb 2023 15:29:49 +0200
+Message-Id: <20230202132954.26773-5-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230202132954.26773-1-peter.ujfalusi@linux.intel.com>
 References: <20230202132954.26773-1-peter.ujfalusi@linux.intel.com>
@@ -90,11 +91,8 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Rander Wang <rander.wang@intel.com>
 
-FW can share some information with host driver, .e.g fw status, pipeline
-status and volume status. On ipc4 platform it is located in memory
-windows 0 with size of struct sof_ipc4_fw_reg.
-
-With this patch, ipc4 driver can find fw information in fw_info_box
+Allocate time info when pcm is loaded by topology
+and free it when pcm is unloaded by topology.
 
 Signed-off-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
@@ -102,56 +100,68 @@ Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/ipc4-priv.h | 1 +
- sound/soc/sof/ipc4.c      | 3 +++
- sound/soc/sof/sof-priv.h  | 1 +
- 3 files changed, 5 insertions(+)
+ sound/soc/sof/ipc4-pcm.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-diff --git a/sound/soc/sof/ipc4-priv.h b/sound/soc/sof/ipc4-priv.h
-index 38bb3d7df42e..8f8259a7e21c 100644
---- a/sound/soc/sof/ipc4-priv.h
-+++ b/sound/soc/sof/ipc4-priv.h
-@@ -14,6 +14,7 @@
+diff --git a/sound/soc/sof/ipc4-pcm.c b/sound/soc/sof/ipc4-pcm.c
+index 521090d4498d..8071db487815 100644
+--- a/sound/soc/sof/ipc4-pcm.c
++++ b/sound/soc/sof/ipc4-pcm.c
+@@ -12,6 +12,7 @@
  #include "sof-priv.h"
- 
- /* The DSP window indices are fixed */
-+#define SOF_IPC4_INBOX_WINDOW_IDX	0
- #define SOF_IPC4_OUTBOX_WINDOW_IDX	1
- #define SOF_IPC4_DEBUG_WINDOW_IDX	2
- 
-diff --git a/sound/soc/sof/ipc4.c b/sound/soc/sof/ipc4.c
-index 35c9f3913d9a..f3c0c839d177 100644
---- a/sound/soc/sof/ipc4.c
-+++ b/sound/soc/sof/ipc4.c
-@@ -13,6 +13,7 @@
- #include <sound/sof/ipc4/header.h>
- #include "sof-priv.h"
- #include "sof-audio.h"
-+#include "ipc4-fw-reg.h"
  #include "ipc4-priv.h"
- #include "ops.h"
+ #include "ipc4-topology.h"
++#include "ipc4-fw-reg.h"
  
-@@ -542,6 +543,8 @@ static int ipc4_fw_ready(struct snd_sof_dev *sdev, struct sof_ipc4_msg *ipc4_msg
- 	outbox_offset = snd_sof_dsp_get_window_offset(sdev, SOF_IPC4_OUTBOX_WINDOW_IDX);
- 	outbox_size = SOF_IPC4_MSG_MAX_SIZE;
+ static int sof_ipc4_set_multi_pipeline_state(struct snd_sof_dev *sdev, u32 state,
+ 					     struct ipc4_pipeline_set_state_data *trigger_list)
+@@ -410,6 +411,8 @@ static void sof_ipc4_pcm_free(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm
+ 		pipeline_list = &spcm->stream[stream].pipeline_list;
+ 		kfree(pipeline_list->pipelines);
+ 		pipeline_list->pipelines = NULL;
++		kfree(spcm->stream[stream].private);
++		spcm->stream[stream].private = NULL;
+ 	}
+ }
  
-+	sdev->fw_info_box.offset = snd_sof_dsp_get_window_offset(sdev, SOF_IPC4_INBOX_WINDOW_IDX);
-+	sdev->fw_info_box.size = sizeof(struct sof_ipc4_fw_registers);
- 	sdev->dsp_box.offset = inbox_offset;
- 	sdev->dsp_box.size = inbox_size;
- 	sdev->host_box.offset = outbox_offset;
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 208a30ff3db9..fd1c3b17a396 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -548,6 +548,7 @@ struct snd_sof_dev {
+@@ -417,8 +420,19 @@ static int sof_ipc4_pcm_setup(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm
+ {
+ 	struct snd_sof_pcm_stream_pipeline_list *pipeline_list;
+ 	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
++	struct sof_ipc4_timestamp_info *stream_info;
++	bool support_info = true;
++	u32 abi_version;
++	u32 abi_offset;
+ 	int stream;
  
- 	/* IPC */
- 	struct snd_sof_ipc *ipc;
-+	struct snd_sof_mailbox fw_info_box;	/* FW shared memory */
- 	struct snd_sof_mailbox dsp_box;		/* DSP initiated IPC */
- 	struct snd_sof_mailbox host_box;	/* Host initiated IPC */
- 	struct snd_sof_mailbox stream_box;	/* Stream position update */
++	abi_offset = offsetof(struct sof_ipc4_fw_registers, abi_ver);
++	sof_mailbox_read(sdev, sdev->fw_info_box.offset + abi_offset, &abi_version,
++			 sizeof(abi_version));
++
++	if (abi_version < SOF_IPC4_FW_REGS_ABI_VER)
++		support_info = false;
++
+ 	for_each_pcm_streams(stream) {
+ 		pipeline_list = &spcm->stream[stream].pipeline_list;
+ 
+@@ -429,6 +443,17 @@ static int sof_ipc4_pcm_setup(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm
+ 			sof_ipc4_pcm_free(sdev, spcm);
+ 			return -ENOMEM;
+ 		}
++
++		if (!support_info)
++			continue;
++
++		stream_info = kzalloc(sizeof(*stream_info), GFP_KERNEL);
++		if (!stream_info) {
++			sof_ipc4_pcm_free(sdev, spcm);
++			return -ENOMEM;
++		}
++
++		spcm->stream[stream].private = stream_info;
+ 	}
+ 
+ 	return 0;
 -- 
 2.39.1
 
