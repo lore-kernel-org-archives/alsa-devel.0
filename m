@@ -4,63 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52B95C636CC
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 08:26:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADCDAC636CC
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 08:38:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23466825;
-	Fri,  3 Feb 2023 09:25:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23466825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C8E274C;
+	Fri,  3 Feb 2023 09:37:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C8E274C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675412767;
-	bh=JpmQSF9Y8RtcWu+B4MBVztFWMPFLaacZCPHBNjzKz/o=;
-	h=Subject:From:To:Date:In-Reply-To:References:List-Id:
+	s=default; t=1675413525;
+	bh=fXCSzLNB/nHCY6Ax/FH+cDfYlohm0NZEIuSsNaeAatw=;
+	h=Date:To:References:Subject:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=p2CDhfsVVuFbUJEKmkpNT4ejtNcVGWt67XjYmjA1kxoTtFK4CShgLYNLmSwDY7uUm
-	 5z7e2HJK+PBPu5ugTPyLYwUAOHmUEs0QaOwEUDQn0b0Nqf/HfDdL5RTeaPPyt1Jb4a
-	 kF+Hs9ZPtWpV1L0MuLn56Uyf299IhmxE+tfXmysA=
+	b=QtSyByS2Tt8vCwy/pHApYTu23rZAfIgMb+0JbGuaRC96FgyluEVO6aWAI+00Q1SYP
+	 XfPLhc2mRKtaYIl4phdQP0yHVT35W7mYXRKc8xwp9Mjqdjml+48Kvt4YZc6gaIycFn
+	 SClJqyJyzQ4f9ITd+FOyXI8kWECisTIXOQZDgjTk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC893F80254;
-	Fri,  3 Feb 2023 09:25:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C1D8FF80254;
+	Fri,  3 Feb 2023 09:37:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C2D4F8032B; Fri,  3 Feb 2023 09:25:15 +0100 (CET)
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de
- [130.133.4.66])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ id B6E4FF804C2; Thu,  2 Feb 2023 03:13:09 +0100 (CET)
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com
+ [IPv6:2607:f8b0:4864:20::829])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 974F8F800E3
- for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 09:25:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 974F8F800E3
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
- by outpost.zedat.fu-berlin.de (Exim 4.95) with esmtps (TLS1.3)
- tls TLS_AES_256_GCM_SHA384
- (envelope-from <glaubitz@zedat.fu-berlin.de>)
- id 1pNrNI-003Nx4-Ij; Fri, 03 Feb 2023 09:24:48 +0100
-Received: from p57bd9464.dip0.t-ipconnect.de ([87.189.148.100]
- helo=[192.168.178.81]) by inpost2.zedat.fu-berlin.de (Exim 4.95)
- with esmtpsa (TLS1.3) tls TLS_AES_256_GCM_SHA384
- (envelope-from <glaubitz@physik.fu-berlin.de>)
- id 1pNrNI-0042Ei-Ac; Fri, 03 Feb 2023 09:24:48 +0100
-Message-ID: <afd056a95d21944db1dc0c9708f692dd1f7bb757.camel@physik.fu-berlin.de>
-Subject: Re: remove arch/sh
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Christoph Hellwig <hch@lst.de>
-Date: Fri, 03 Feb 2023 09:24:46 +0100
-In-Reply-To: <20230203071423.GA24833@lst.de>
-References: <20230113062339.1909087-1-hch@lst.de>
- <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
- <20230116071306.GA15848@lst.de>
- <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
- <20230203071423.GA24833@lst.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.3 
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90375F800E3
+ for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 03:13:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90375F800E3
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20210112 header.b=CMH1KQae
+Received: by mail-qt1-x829.google.com with SMTP id v17so549615qto.3
+ for <alsa-devel@alsa-project.org>; Wed, 01 Feb 2023 18:13:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:content-language:subject
+ :references:cc:to:user-agent:mime-version:date:message-id:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=mmp+gLg2mSwFYsxZZpssJ7RfilX35F9BxrqBwqKEOfM=;
+ b=CMH1KQaeR1zBMkTvorqv6ltZsHsXpyIxEnJIO+Wi88DESKoLf5MC9TsmRskvy4/IVc
+ mGU1VWpCFb2D4Kz+Na9vZEF9uQR6CdUTI8EFbNY/JPy/f/JbNOPmv106EEEZREc6Oc77
+ 8lwBAEgzxjDKaH1JpUNwOWvRhVTLIHP/Yd4KkbRJNLQFXMFXy5E0aLZQxHmbgZYGZygA
+ tVxbZOhsow7KI6vaiEJHor6+QfAbSzs0VoGbmbKtia/wHorQj42Cs9Si/TEut2uolTTl
+ nK9dxUwoZBmvfvz3UKAimUrnOlYJsCYq2NT5GQtFMPKT4TaOtAjPCQU3NfnioTRHanic
+ rerw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:content-language:subject
+ :references:cc:to:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=mmp+gLg2mSwFYsxZZpssJ7RfilX35F9BxrqBwqKEOfM=;
+ b=DeALPLIMFwxkC1odCo4s23jcWz5A4K21MJweIe3z8vBwWlVoTtrqWYQfexzrgg6vuI
+ Kxf+ut9QeGZJc5hb99IGYStdUvhzc2QUNurFK+v6JOz9oHPakHVwhlVhxssaOzpN34fv
+ bFApbDeqFIhqqrqDHlrgXCkhGPjLw7JrHsJy38yT2OvTZGGwDR2wcN9X0t7lnZdbVvOC
+ VX0xeE7aTExiy3DzqpZkZTZsgSyTRJyOtp5qpTbC/0HaU4l+Vn8+XggHlqoys3z0dKzw
+ 5stgOxTX6rzGiNEVRifs6NZMndrd0CESDPKVOHnuYCP9w1NbjG2JZwFpRpm7W5wJov6y
+ rmIg==
+X-Gm-Message-State: AO0yUKWfQ+uEQjO+EmApIvqPnGxzyifXumjdimctc++nukutxNQLFkkH
+ HRxbSf9uqA1PWzNuUKUSNyc=
+X-Google-Smtp-Source: AK7set/NhmMODJ/+csynPebZ9of6l0csjZa+SU2VJG6GGm64zASG23DDTN79qA1xq1PXjeP78iRLKw==
+X-Received: by 2002:ac8:5ac5:0:b0:3b8:6c80:c113 with SMTP id
+ d5-20020ac85ac5000000b003b86c80c113mr8779770qtd.66.1675303980154; 
+ Wed, 01 Feb 2023 18:13:00 -0800 (PST)
+Received: from [192.168.0.162] (cpe-74-69-166-246.stny.res.rr.com.
+ [74.69.166.246]) by smtp.gmail.com with ESMTPSA id
+ p3-20020ae9f303000000b006fa43e139b5sm13188164qkg.59.2023.02.01.18.12.59
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 01 Feb 2023 18:12:59 -0800 (PST)
+Message-ID: <f72469f6-60bd-6bcf-be73-a804a1193e54@gmail.com>
+Date: Wed, 1 Feb 2023 21:12:58 -0500
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.148.100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+To: faenkhauser@gmail.com
+References: <20220811152923.10143-1-faenkhauser@gmail.com>
+Subject: Re: [PATCH] Sound: pci/hda: Add quirk for HP Envy x360 ey0xxx
+Content-Language: en-US
+From: Albert Tseng <tsengalb99@gmail.com>
+In-Reply-To: <20220811152923.10143-1-faenkhauser@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Mailman-Approved-At: Fri, 03 Feb 2023 09:37:52 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -73,61 +99,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: linux-fbdev@vger.kernel.org, Rich Felker <dalias@libc.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>, linux-sh@vger.kernel.org,
- alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- linux-arch@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>,
- linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- linux-media@vger.kernel.org, devicetree@vger.kernel.org,
- linux-watchdog@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- linux-gpio@vger.kernel.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
- netdev@vger.kernel.org, dmaengine@vger.kernel.org, linux-rtc@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, tanureal@opensource.cirrus.com,
+ patches@opensource.cirrus.com, tiwai@suse.com, linux-kernel@vger.kernel.org,
+ rf@opensource.cirrus.com, james.schulman@cirrus.com, david.rhodes@cirrus.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello Christoph!
+Apologies if this thread is already dead, but I came across this thread 
+while debugging an audio issue with my HP 865 G9 (bugzilla report 
+https://bugzilla.kernel.org/show_bug.cgi?id=216927). I think the issue 
+with my machine is the same and related to the cirrus logic driver code, 
+as suggested by Jaroslav (apparently also on this thread). The bug 
+appears to have been fixed in 6.2rc6, but not in 6.1.8. Can someone add 
+whatever got fixed to 6.1 since 6.1 is the stable kernel? This is also 
+my first time using the kernel mailing list so I hope I am not emailing 
+1000 people or doing something wrong like not opening a new thread.
 
-On Fri, 2023-02-03 at 08:14 +0100, Christoph Hellwig wrote:
-> On Mon, Jan 16, 2023 at 09:52:10AM +0100, John Paul Adrian Glaubitz wrote=
-:
-> > We have had a discussion between multiple people invested in the SuperH=
- port and
-> > I have decided to volunteer as a co-maintainer of the port to support R=
-ich Felker
-> > when he isn't available.
->=20
-> So, this still isn't reflected in MAINTAINERS in linux-next.  When
-> do you plan to take over?
-
-Since this is my very first time stepping up as a kernel maintainer, I was =
-hoping
-to get some pointers on what to do to make this happen.
-
-So far, we have set up a new kernel tree and I have set up a local developm=
-ent and
-test environment for SH kernels using my SH7785LCR board as the target plat=
-form.
-
-Do I just need to send a patch asking to change the corresponding entry in =
-the
-MAINTAINERS file?
-
-> What platforms will remain supported and what can we start dropping due t=
-o
-> being unused and unmaintained?
-
-This has not been sorted out yet.
-
-Adrian
-
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
