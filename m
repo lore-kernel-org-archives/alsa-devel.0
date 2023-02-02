@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E642C636D3
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 11:13:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18086C61DA4
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 11:13:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB26CE10;
-	Thu,  2 Feb 2023 12:12:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB26CE10
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCE32E74;
+	Thu,  2 Feb 2023 12:12:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCE32E74
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675336414;
-	bh=TjhwXLW+ISaVWh4oCIl17D1DQtIaO80qf9PbF9DFUNs=;
+	s=default; t=1675336429;
+	bh=qFV2i75zO5MVG4AiexOVN5pRHMk14Pc1mQpx6RGneuA=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=e8D++hkTJUpo7VsVpzUxrd607RHK5rRpgVmIQCqK0xJPm0xyTrEZ92g9MJE+A4a0p
-	 VrgIX1N8aX/nJ/yPMqp8wAeH/VY4uBYQFm+uym6SV5lQvY2pim8XzCs0xKWk1RW955
-	 SgKvXDiOokxkOCynaWDc7NgVrcD+VZJQiJLcSjfM=
+	b=QH5wDPsO/1CjtpjzOIQTxbHSrkWG/Fu6NWkvcLeBtJKJnFcIqYgXyolBznmAhFD50
+	 f8Vczsx53roQ21hP9FdrfcCl1bIMX32jlCEpoT7ZFM6PF2m5kxeFkUNbECVY1ljJSL
+	 PrWjXd9tcLZAPSvj+JanOHJECn1GPV7lknxq3Ijw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFD98F8055B;
-	Thu,  2 Feb 2023 12:11:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 45ABFF80271;
+	Thu,  2 Feb 2023 12:11:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A3D0F80271; Thu,  2 Feb 2023 12:11:44 +0100 (CET)
+ id 132EBF8055C; Thu,  2 Feb 2023 12:11:46 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DAAE9F80271
- for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 12:11:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAAE9F80271
+ by alsa1.perex.cz (Postfix) with ESMTPS id C0363F80552
+ for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 12:11:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0363F80552
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=L0V8B53Y
+ header.s=Intel header.b=N8SRpIl0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1675336296; x=1706872296;
+ t=1675336303; x=1706872303;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=TjhwXLW+ISaVWh4oCIl17D1DQtIaO80qf9PbF9DFUNs=;
- b=L0V8B53YLeU3/MZCU04AOZaBvlG/yyPsGOp5QifBmOn1eO3F1KlYpK0x
- kx/u0x2jrx29EalvWgGMcpa4X2tFGZP1g/Lgve1EiUmRbUIyQwTfiialN
- dedvDc9oNxQfnBwv9mqwoq2Y9VoZfSDh9Dsj3EQ3RZrEW99EnA6RbDWOE
- QUiBa8J+eyJ7G0iRjyMi+ErzpPE2Lr6oWKMYxLGKyrHh1u4B6ln2nVFbw
- F6w1W64uwXE7A8lDhdPnpJq98MzNRkcPTxCdn8SxTC3yx3oH+Bgo0xaMb
- bMzmVqIBwDjjiuSDIxwQ5NPSNypaid3W1aagaWGG52wJblNYKcUFknEpR Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="414625201"
-X-IronPort-AV: E=Sophos;i="5.97,267,1669104000"; d="scan'208";a="414625201"
+ bh=qFV2i75zO5MVG4AiexOVN5pRHMk14Pc1mQpx6RGneuA=;
+ b=N8SRpIl0bE+phg+aw14vKu6Yjadl9rZGjK8GC3aFIwcm/Bo/JEFodUZd
+ lKft/pKTeo6xuvgiTukck5vO5p+ZBcDfTi1ivPU+sLLnsc0e2/WqjS5zJ
+ RmOFhGOxaGP8dUMEHWUeMTMGQXL+vY3I9khi+2ma8M83cF7KXO4VF2w1r
+ +blSYQSXfdojX7psTdihp0WheyY75kJKYM4/xCXDJhN57zq5Mh+KA1t2j
+ NVlGgdTAIdiqyINqLDpQ12erd9LyCAehW77xG/1bxSxG+kLqQCnXDqPKZ
+ tj0Lp6XqWlccXm8RaDGYWrWeWvN05GFJUerCtytSXU3ZdlOkLR1P+9zZy w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="414625222"
+X-IronPort-AV: E=Sophos;i="5.97,267,1669104000"; d="scan'208";a="414625222"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Feb 2023 03:11:33 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="695747691"
-X-IronPort-AV: E=Sophos;i="5.97,267,1669104000"; d="scan'208";a="695747691"
+ 02 Feb 2023 03:11:39 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10608"; a="695747701"
+X-IronPort-AV: E=Sophos;i="5.97,267,1669104000"; d="scan'208";a="695747701"
 Received: from jpdamery-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.1.104])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Feb 2023 03:11:29 -0800
+ 02 Feb 2023 03:11:36 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org,
 	perex@perex.cz
-Subject: [PATCH v2 5/9] ASoC: SOF: ipc4-pcm: add hw_params
-Date: Thu,  2 Feb 2023 13:11:19 +0200
-Message-Id: <20230202111123.25231-6-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH v2 7/9] ASoC: SOF: add get_stream_position ops for pcm delay
+Date: Thu,  2 Feb 2023 13:11:21 +0200
+Message-Id: <20230202111123.25231-8-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230202111123.25231-1-peter.ujfalusi@linux.intel.com>
 References: <20230202111123.25231-1-peter.ujfalusi@linux.intel.com>
@@ -90,7 +90,9 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Rander Wang <rander.wang@intel.com>
 
-Use the hw_params to init time info for ipc4 delay calculation.
+PCM delay depends on stream position based on hardware
+counter to calculate stream delay so add this ops to get
+stream position according to hardware counter.
 
 Signed-off-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
@@ -98,119 +100,51 @@ Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/ipc4-pcm.c | 98 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 98 insertions(+)
+ sound/soc/sof/ops.h      | 10 ++++++++++
+ sound/soc/sof/sof-priv.h |  9 +++++++++
+ 2 files changed, 19 insertions(+)
 
-diff --git a/sound/soc/sof/ipc4-pcm.c b/sound/soc/sof/ipc4-pcm.c
-index 8071db487815..a457d4d479d8 100644
---- a/sound/soc/sof/ipc4-pcm.c
-+++ b/sound/soc/sof/ipc4-pcm.c
-@@ -459,7 +459,105 @@ static int sof_ipc4_pcm_setup(struct snd_sof_dev *sdev, struct snd_sof_pcm *spcm
+diff --git a/sound/soc/sof/ops.h b/sound/soc/sof/ops.h
+index febe318b9427..03752c8405ca 100644
+--- a/sound/soc/sof/ops.h
++++ b/sound/soc/sof/ops.h
+@@ -511,6 +511,16 @@ static inline int snd_sof_pcm_platform_ack(struct snd_sof_dev *sdev,
  	return 0;
  }
  
-+static void sof_ipc4_build_time_info(struct snd_sof_dev *sdev, struct snd_sof_pcm_stream *spcm)
++static inline u64 snd_sof_pcm_get_stream_position(struct snd_sof_dev *sdev,
++						  struct snd_soc_component *component,
++						  struct snd_pcm_substream *substream)
 +{
-+	struct sof_ipc4_copier *host_copier = NULL;
-+	struct sof_ipc4_copier *dai_copier = NULL;
-+	struct sof_ipc4_llp_reading_slot llp_slot;
-+	struct sof_ipc4_timestamp_info *info;
-+	struct snd_soc_dapm_widget *widget;
-+	struct snd_sof_dai *dai;
-+	int i;
-+
-+	/* find host & dai to locate info in memory window */
-+	for_each_dapm_widgets(spcm->list, i, widget) {
-+		struct snd_sof_widget *swidget = widget->dobj.private;
-+
-+		if (!swidget)
-+			continue;
-+
-+		if (WIDGET_IS_AIF(swidget->widget->id)) {
-+			host_copier = swidget->private;
-+		} else if (WIDGET_IS_DAI(swidget->widget->id)) {
-+			dai = swidget->private;
-+			dai_copier = dai->private;
-+		}
-+	}
-+
-+	/* both host and dai copier must be valid for time_info */
-+	if (!host_copier || !dai_copier) {
-+		dev_err(sdev->dev, "host or dai copier are not found\n");
-+		return;
-+	}
-+
-+	info = spcm->private;
-+	info->host_copier = host_copier;
-+	info->dai_copier = dai_copier;
-+	info->llp_offset = offsetof(struct sof_ipc4_fw_registers, llp_gpdma_reading_slots) +
-+				    sdev->fw_info_box.offset;
-+
-+	/* find llp slot used by current dai */
-+	for (i = 0; i < SOF_IPC4_MAX_LLP_GPDMA_READING_SLOTS; i++) {
-+		sof_mailbox_read(sdev, info->llp_offset, &llp_slot, sizeof(llp_slot));
-+		if (llp_slot.node_id == dai_copier->data.gtw_cfg.node_id)
-+			break;
-+
-+		info->llp_offset += sizeof(llp_slot);
-+	}
-+
-+	if (i < SOF_IPC4_MAX_LLP_GPDMA_READING_SLOTS)
-+		return;
-+
-+	/* if no llp gpdma slot is used, check aggregated sdw slot */
-+	info->llp_offset = offsetof(struct sof_ipc4_fw_registers, llp_sndw_reading_slots) +
-+					sdev->fw_info_box.offset;
-+	for (i = 0; i < SOF_IPC4_MAX_LLP_SNDW_READING_SLOTS; i++) {
-+		sof_mailbox_read(sdev, info->llp_offset, &llp_slot, sizeof(llp_slot));
-+		if (llp_slot.node_id == dai_copier->data.gtw_cfg.node_id)
-+			break;
-+
-+		info->llp_offset += sizeof(llp_slot);
-+	}
-+
-+	if (i < SOF_IPC4_MAX_LLP_SNDW_READING_SLOTS)
-+		return;
-+
-+	/* check EVAD slot */
-+	info->llp_offset = offsetof(struct sof_ipc4_fw_registers, llp_evad_reading_slot) +
-+					sdev->fw_info_box.offset;
-+	sof_mailbox_read(sdev, info->llp_offset, &llp_slot, sizeof(llp_slot));
-+	if (llp_slot.node_id != dai_copier->data.gtw_cfg.node_id) {
-+		dev_info(sdev->dev, "no llp found, fall back to default HDA path");
-+		info->llp_offset = 0;
-+	}
-+}
-+
-+static int sof_ipc4_pcm_hw_params(struct snd_soc_component *component,
-+				  struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_sof_platform_stream_params *platform_params)
-+{
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(component);
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-+	struct sof_ipc4_timestamp_info *time_info;
-+	struct snd_sof_pcm *spcm;
-+
-+	spcm = snd_sof_find_spcm_dai(component, rtd);
-+	time_info = spcm->stream[substream->stream].private;
-+	/* delay calculation is not supported by current fw_reg ABI */
-+	if (!time_info)
-+		return 0;
-+
-+	time_info->stream_start_offset = SOF_IPC4_INVALID_STREAM_POSITION;
-+	time_info->llp_offset = 0;
-+
-+	sof_ipc4_build_time_info(sdev, &spcm->stream[substream->stream]);
++	if (sof_ops(sdev) && sof_ops(sdev)->get_stream_position)
++		return sof_ops(sdev)->get_stream_position(sdev, component, substream);
 +
 +	return 0;
 +}
 +
- const struct sof_ipc_pcm_ops ipc4_pcm_ops = {
-+	.hw_params = sof_ipc4_pcm_hw_params,
- 	.trigger = sof_ipc4_pcm_trigger,
- 	.hw_free = sof_ipc4_pcm_hw_free,
- 	.dai_link_fixup = sof_ipc4_pcm_dai_link_fixup,
+ /* machine driver */
+ static inline int
+ snd_sof_machine_register(struct snd_sof_dev *sdev, void *pdata)
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index fd1c3b17a396..14f7adb2dc12 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -248,6 +248,15 @@ struct snd_sof_dsp_ops {
+ 	/* pcm ack */
+ 	int (*pcm_ack)(struct snd_sof_dev *sdev, struct snd_pcm_substream *substream); /* optional */
+ 
++	/*
++	 * optional callback to retrieve the link DMA position for the substream
++	 * when the position is not reported in the shared SRAM windows but
++	 * instead from a host-accessible hardware counter.
++	 */
++	u64 (*get_stream_position)(struct snd_sof_dev *sdev,
++				   struct snd_soc_component *component,
++				   struct snd_pcm_substream *substream); /* optional */
++
+ 	/* host read DSP stream data */
+ 	int (*ipc_msg_data)(struct snd_sof_dev *sdev,
+ 			    struct snd_sof_pcm_stream *sps,
 -- 
 2.39.1
 
