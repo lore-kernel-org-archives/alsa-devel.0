@@ -4,91 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EADBC61DA4
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 09:16:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC313C05027
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 09:21:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4928823;
-	Thu,  2 Feb 2023 10:15:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4928823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67F08828;
+	Thu,  2 Feb 2023 10:20:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67F08828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675329400;
-	bh=sJqxgV51pQB9DJ1OIAROWMSPK1rXpMcTy1VRmCfj+9M=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=oEBd8NdiIOMzjWhwZhZ9tQy7EUE43DkdF0ce6W7onsqefpI7JXBPk0Dj315CQoLSr
-	 1774tp167nwNir1eSck+Tn4S/a5bPrH8FGaaTAQop/kXMkmVQITPaLJpVLjJuL3HuB
-	 8OICkmquXFlhLnZv/UEZqdMEPCIvlHsHtIQddEz4=
+	s=default; t=1675329681;
+	bh=/w3jBF9Gxz1dTitxISr4oe3CnvZHI8EbUlT8KiN88V0=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=HYyrmum6I6cMOMhtv7oQ6fyUGh0TuwJvlfJ+lZqFzorNrU4+mxsgJ4Bx1sTtTs2Nc
+	 xfvQYq4jjpWoyiXBJLD989B8EYCC/5Sg/8o1Ihj7dG1OjK/TU1/jmimDtKleIGQZGf
+	 enWNzaWkjr8fi7HiXgSSBg257y8jeSiLEPAdFaMU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30264F800E3;
-	Thu,  2 Feb 2023 10:15:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09F2EF80271;
+	Thu,  2 Feb 2023 10:20:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A23CEF804C2; Thu,  2 Feb 2023 10:15:48 +0100 (CET)
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
- [IPv6:2a00:1450:4864:20::42c])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ id B6596F804C2; Thu,  2 Feb 2023 10:20:29 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 16290F80169
- for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 10:15:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16290F80169
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=GcCHg1yC
-Received: by mail-wr1-x42c.google.com with SMTP id d14so1039338wrr.9
- for <alsa-devel@alsa-project.org>; Thu, 02 Feb 2023 01:15:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date:message-id:reply-to;
- bh=RC/waujmzDR6aaO1i7Us/eAJ3rIYO70QGCYk2/l27l4=;
- b=GcCHg1yC0pMmEeKvVNrj2xH0zliRUfXnUm7/tZud3ZC30eDF3n8BSFtKoP5KuS1Qg5
- ZLxdgocNnGLz+3UviJzDAqpIEWObD4Ku1HUxIE/uv+FxJzBHT343NpCygZFVyvmxHT1c
- M7IBtmc36Coou7oAFCVrq4FobzyVbZvpegt3PLLqal1YxLXGYfI8r3CaE6D0qBm+DbHE
- /zR+C4QGww9Fg9GKAH9vTQDLz6RCW1xVawbLvPd9K+nYkkJUyd29ESha8aa5jOMr1PHJ
- 73Vs9t3WpywdW7NgaP9O5QcgZ/K2x04KZhZ3UF89rA2Pxw6bcyqupsQTn5MzSXI8fuRX
- J6dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=RC/waujmzDR6aaO1i7Us/eAJ3rIYO70QGCYk2/l27l4=;
- b=0u2HSkVUozzh9EQZkdwxVi5GNIRMB2lPIDzPqsEu+jIM8Bo60S3+8Ieb9qchiYvYxY
- 16Wui2v2Wpz30iBcc6OLcKE1OLxiqMi2UGKDF1mhuTnskLtRhL50d00vo2/mORSqKqRB
- 81RNksB8I2ac4mbMTU/cqCnfDAiBgcf3iElW6LPSHNcUIoOZ0t79nMZ0DxShAfE8xrH+
- a94iMCfDBsvN5r0VQZeDpmhnx8wTuoHRGBZe1WdSt9RaSyzMXjYYtrmQvJhGE+7kuvpN
- mXn/8EbaCgQVVGa8+pU4eaqSZXfc/WkdEU2GB7nLkhrsiKmIt/UtLCQCOGEz2ADFYgKS
- dCfg==
-X-Gm-Message-State: AO0yUKXVQ1N7vcHi5LtNtHIv+j9eRbNrzoHxVR/oAXwIHSCTWAuG85Ua
- m/xMNitkMMF4cRnblpyAldDO2Cx4iwWAXFj2
-X-Google-Smtp-Source: AK7set+HjM7/u7nGSanVRFA3UE2vWW8KqzZsfA7RaoTdtFUbko0OLTyEmitcnfANKME1fUsKzxDBCA==
-X-Received: by 2002:a5d:6d4b:0:b0:2bf:f44b:7a28 with SMTP id
- k11-20020a5d6d4b000000b002bff44b7a28mr4861946wri.29.1675329342542; 
- Thu, 02 Feb 2023 01:15:42 -0800 (PST)
-Received: from [192.168.1.109] ([178.197.216.144])
- by smtp.gmail.com with ESMTPSA id
- z14-20020a5d640e000000b002bfb5bda59asm19403954wru.25.2023.02.02.01.15.41
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 02 Feb 2023 01:15:42 -0800 (PST)
-Message-ID: <ac140660-0df0-8b43-3585-17511a280830@linaro.org>
-Date: Thu, 2 Feb 2023 10:15:40 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1744CF80169
+ for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 10:20:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1744CF80169
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ secure) header.d=perex.cz header.i=@perex.cz header.a=rsa-sha256
+ header.s=default header.b=vZfsvQZI
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id C198111D6;
+ Thu,  2 Feb 2023 10:20:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz C198111D6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1675329621; bh=GMCk3k9t7QGDdjFyZ+XVtQoR4tzn/+nXA4p6F/E3t3c=;
+ h=From:To:Cc:Subject:Date:From;
+ b=vZfsvQZIVK1hkbP56vQJ160jKlM9JsSKLqFgSkAEya9t57c4jxpWMHQMaZp6FDvfW
+ 3hnhyrCB53Q2OvQ1Mf40R+gXLccmL/0U8OyAXSUpbIpqRA18PdudgcGVTIJwqtZyfl
+ IZ4EAxJfaYVvFFPDM+7meKPJsHo0zxbNmyNaw+h4=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Thu,  2 Feb 2023 10:20:18 +0100 (CET)
+From: Jaroslav Kysela <perex@perex.cz>
+To: ALSA development <alsa-devel@alsa-project.org>
+Subject: [PATCH v2] ALSA: hda: Fix the control element identification for
+ multiple codecs
+Date: Thu,  2 Feb 2023 10:20:13 +0100
+Message-Id: <20230202092013.4066998-1-perex@perex.cz>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] Fixed the schema binding according to test
-Content-Language: en-US
-To: Kiseok Jo <kiseok.jo@irondevice.com>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-References: <20230202090715.18384-1-kiseok.jo@irondevice.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230202090715.18384-1-kiseok.jo@irondevice.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,95 +72,172 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Thank you for your patch. There is something to discuss/improve.
+Some motherboards have multiple HDA codecs connected to the serial bus.
+The current code may create multiple mixer controls with the almost
+identical identification.
 
-On 02/02/2023 10:07, Kiseok Jo wrote:
-> Modified according to the writing-schema.rst file and tested.
+The current code use id.device field from the control element structure
+to store the codec address to avoid such clashes for multiple codecs.
+Unfortunately, the user space do not handle this correctly. For mixer
+controls, only name and index are used for the identifiers.
 
-Use imperative, not past tense (Fixed->Fix, Modified->Modify).
+This patch fixes this problem to compose the index using the codec
+address as an offset in case, when the control already exists. It is
+really unlikely that one codec will create 10 similar controls.
 
-> 
-> Signed-off-by: Kiseok Jo <kiseok.jo@irondevice.com>
+This patch adds new kernel module parameter 'ctl_dev_id' to allow
+select the old behaviour, too. The CONFIG_SND_HDA_CTL_DEV_ID Kconfig
+option sets the default value.
 
-Use subject prefixes matching the subsystem (which you can get for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching). Therefore it should be:
-"ASoC: dt-bindings: irondevice,sma1303: Rework binding and add missing
-properties"
+BugLink: https://github.com/alsa-project/alsa-lib/issues/294
+BugLink: https://github.com/alsa-project/alsa-lib/issues/205
+Fixes: 54d174031576 ("[ALSA] hda-codec - Fix connection list parsing")
+Fixes: 1afe206ab699 ("ALSA: hda - Try to find an empty control index when it's occupied")
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 
+--
 
+rfc..v1:
+ - added CONFIG_SND_HDA_CTL_DEV_ID Kconfig option
+v1..v2:
+ - ctl_dev_id is not an array
+ - use IS_ENABLED() macro to check the CONFIG_SND_HDA_CTL_DEV_ID setup
+---
+ include/sound/hda_codec.h      |  1 +
+ sound/pci/hda/Kconfig          | 14 ++++++++++++++
+ sound/pci/hda/hda_codec.c      | 13 ++++++++++---
+ sound/pci/hda/hda_controller.c |  1 +
+ sound/pci/hda/hda_controller.h |  1 +
+ sound/pci/hda/hda_intel.c      |  5 +++++
+ 6 files changed, 32 insertions(+), 3 deletions(-)
 
-> ---
->  .../bindings/sound/irondevice,sma1303.yaml    | 46 +++++++++++++++++--
->  1 file changed, 43 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/irondevice,sma1303.yaml b/Documentation/devicetree/bindings/sound/irondevice,sma1303.yaml
-> index 162c52606635..35d9a046ef75 100644
-> --- a/Documentation/devicetree/bindings/sound/irondevice,sma1303.yaml
-> +++ b/Documentation/devicetree/bindings/sound/irondevice,sma1303.yaml
-> @@ -10,22 +10,62 @@ maintainers:
->    - Kiseok Jo <kiseok.jo@irondevice.com>
->  
->  description:
-> -  SMA1303 digital class-D audio amplifier with an integrated boost converter.
-> +  SMA1303 digital class-D audio amplifier
-> +  with an integrated boost converter.
->  
->  allOf:
-> -  - $ref: name-prefix.yaml#
-> +  - $ref: dai-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - irondevice,sma1303
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  '#sound-dai-cells':
-> +    const: 1
-> +
-> +  i2c-retry:
-> +    description: number of retries for I2C regmap.
-
-Why do you need this? Why this fits the purpose of DT (or IOW why this
-differs between boards)?
-
-> +    maximum: 49
-> +    default: 3
-> +
-> +  tdm-slot-rx:
-> +    description: set the tdm rx start slot.
-
-Aren't you now re-writing dai-tdm-slot-rx-mask property? Same for tx below.
-
-
-> +    maximum: 7
-> +    default: 0
-> +
-> +  tdm-slot-tx:
-> +    description: set the tdm tx start slot.
-> +    maximum: 7
-> +    default: 0
-> +
-> +  sys-clk-id:
-> +    description: select the using system clock.
-
-What does it mean? Why do you need such property instead of clocks?
-
-> +    default: 3
->  
->  required:
->    - compatible
->    - reg
-> +  - '#sound-dai-cells'
->  
-
-Best regards,
-Krzysztof
+diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
+index eba23daf2c29..bbb7805e85d8 100644
+--- a/include/sound/hda_codec.h
++++ b/include/sound/hda_codec.h
+@@ -259,6 +259,7 @@ struct hda_codec {
+ 	unsigned int relaxed_resume:1;	/* don't resume forcibly for jack */
+ 	unsigned int forced_resume:1; /* forced resume for jack */
+ 	unsigned int no_stream_clean_at_suspend:1; /* do not clean streams at suspend */
++	unsigned int ctl_dev_id:1; /* old control element id build behaviour */
+ 
+ #ifdef CONFIG_PM
+ 	unsigned long power_on_acct;
+diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+index 06d304db4183..886255a03e8b 100644
+--- a/sound/pci/hda/Kconfig
++++ b/sound/pci/hda/Kconfig
+@@ -302,6 +302,20 @@ config SND_HDA_INTEL_HDMI_SILENT_STREAM
+ 	  This feature can impact power consumption as resources
+ 	  are kept reserved both at transmitter and receiver.
+ 
++config SND_HDA_CTL_DEV_ID
++	bool "Use the device identifier field for controls"
++	depends on SND_HDA_INTEL
++	help
++	  Say Y to use the device identifier field for (mixer)
++	  controls (old behaviour until this option is available).
++
++	  When enabled, the multiple HDA codecs may set the device
++	  field in control (mixer) element identifiers. The use
++	  of this field is not recommended and defined for mixer controls.
++
++	  The old behaviour (Y) is obsolete and will be removed. Consider
++	  to not enable this option.
++
+ endif
+ 
+ endmenu
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index edd653ece70d..8f20abc036bf 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3390,7 +3390,12 @@ int snd_hda_add_new_ctls(struct hda_codec *codec,
+ 			kctl = snd_ctl_new1(knew, codec);
+ 			if (!kctl)
+ 				return -ENOMEM;
+-			if (addr > 0)
++			/* Do not use the id.device field for MIXER elements.
++			 * This field is for real device numbers (like PCM) but codecs
++			 * are hidden components from the user space view (unrelated
++			 * to the mixer element identification).
++			 */
++			if (addr > 0 && codec->ctl_dev_id)
+ 				kctl->id.device = addr;
+ 			if (idx > 0)
+ 				kctl->id.index = idx;
+@@ -3401,9 +3406,11 @@ int snd_hda_add_new_ctls(struct hda_codec *codec,
+ 			 * the codec addr; if it still fails (or it's the
+ 			 * primary codec), then try another control index
+ 			 */
+-			if (!addr && codec->core.addr)
++			if (!addr && codec->core.addr) {
+ 				addr = codec->core.addr;
+-			else if (!idx && !knew->index) {
++				if (!codec->ctl_dev_id)
++					idx += 10 * addr;
++			} else if (!idx && !knew->index) {
+ 				idx = find_empty_mixer_ctl_idx(codec,
+ 							       knew->name, 0);
+ 				if (idx <= 0)
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index 0ff286b7b66b..083df287c1a4 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -1231,6 +1231,7 @@ int azx_probe_codecs(struct azx *chip, unsigned int max_slots)
+ 				continue;
+ 			codec->jackpoll_interval = chip->jackpoll_interval;
+ 			codec->beep_mode = chip->beep_mode;
++			codec->ctl_dev_id = chip->ctl_dev_id;
+ 			codecs++;
+ 		}
+ 	}
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index f5bf295eb830..8556031bcd68 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -124,6 +124,7 @@ struct azx {
+ 	/* HD codec */
+ 	int  codec_probe_mask; /* copied from probe_mask option */
+ 	unsigned int beep_mode;
++	bool ctl_dev_id;
+ 
+ #ifdef CONFIG_SND_HDA_PATCH_LOADER
+ 	const struct firmware *fw;
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 87002670c0c9..2dbc082076f6 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -119,6 +119,7 @@ static bool beep_mode[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)] =
+ 					CONFIG_SND_HDA_INPUT_BEEP_MODE};
+ #endif
+ static bool dmic_detect = 1;
++static bool ctl_dev_id = IS_ENABLED(CONFIG_SND_HDA_CTL_DEV_ID) ? 1 : 0;
+ 
+ module_param_array(index, int, NULL, 0444);
+ MODULE_PARM_DESC(index, "Index value for Intel HD audio interface.");
+@@ -157,6 +158,8 @@ module_param(dmic_detect, bool, 0444);
+ MODULE_PARM_DESC(dmic_detect, "Allow DSP driver selection (bypass this driver) "
+ 			     "(0=off, 1=on) (default=1); "
+ 		 "deprecated, use snd-intel-dspcfg.dsp_driver option instead");
++module_param(ctl_dev_id, bool, 0444);
++MODULE_PARM_DESC(ctl_dev_id, "Use control device identifier (based on codec address).");
+ 
+ #ifdef CONFIG_PM
+ static int param_set_xint(const char *val, const struct kernel_param *kp);
+@@ -2278,6 +2281,8 @@ static int azx_probe_continue(struct azx *chip)
+ 	chip->beep_mode = beep_mode[dev];
+ #endif
+ 
++	chip->ctl_dev_id = ctl_dev_id;
++
+ 	/* create codec instances */
+ 	if (bus->codec_mask) {
+ 		err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
+-- 
+2.39.0
 
