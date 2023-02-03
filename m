@@ -4,72 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DB65C05027
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 15:12:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D574C61DA4
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 15:13:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 941C782E;
-	Fri,  3 Feb 2023 16:11:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 941C782E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B769847;
+	Fri,  3 Feb 2023 16:12:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B769847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675437169;
-	bh=cL3cDZ3cU575R2Pn0PMxEk6zsutuTJdd2e6As3uhekg=;
+	s=default; t=1675437193;
+	bh=MT/1DWmiNdOv0jG/vTHIL9cjtaEEbp2aoOQTv2f9NTg=;
 	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=s9WnimQw3YcXXPvbGa0qeQLbgsHPetrmv9+WHpqHa6Cvg/Kjzvvb84yRELY/o2mSX
-	 9jIBBKAWRF58u4kncsK6fYmTsBTw2TzPYlcmap/oLvJujF8G4SF1LI2y+1agBbCfuD
-	 z49/ot2E475dRmMgus2mgoHubute4HjNes0uCTYY=
+	b=aLSpt4e1dXApnYS22Scq2ueJK0nHaHgeprYQKTFJmYccoOHmGIyWKE8GX5b/YyoaO
+	 koKdHz+XvnwnM9CgvkrMYgxKqfeO7kjT7q/yiP9xyBFi/JP1B8RWKz29xohLRCO74B
+	 y5+aK2oUwWsUQLHX/zOtxgdpXhNNMLmfJzcgddiE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA47BF8032B;
-	Fri,  3 Feb 2023 16:11:34 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 47B6DF8053D;
+	Fri,  3 Feb 2023 16:11:48 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 40107F8045D; Fri,  3 Feb 2023 16:11:33 +0100 (CET)
+ id E06AFF80543; Fri,  3 Feb 2023 16:11:47 +0100 (CET)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65651F80022
- for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 16:11:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65651F80022
+ by alsa1.perex.cz (Postfix) with ESMTPS id 612B3F80494
+ for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 16:11:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 612B3F80494
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=B5cSXGLL
+ header.s=Intel header.b=QK0Eqyz6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1675437089; x=1706973089;
+ t=1675437106; x=1706973106;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=cL3cDZ3cU575R2Pn0PMxEk6zsutuTJdd2e6As3uhekg=;
- b=B5cSXGLLlzBUpGPup13pJULp7ImXWu2MZE27YzQ/gvaxDFC5zPbCdse6
- ENQGVu4XZjU0YVemp/GZGNbZ6LLeI/OwpzXBvPeKjSwTryi/gfjrzgWL9
- jef+GOs+Xh9E/qATQ5lQT5uZi1w3xNukyMEDIkWZPB0+XXZNvhh2gnlgR
- CarI/S4pnhLdWUjDzApZasuUDn9ZY1ohpu1qiostdhgqZRItd4oAvDUtH
- eg7HkFQoBtHbIwlFpxyE9TwS0+zLVp9n9RDOBSlk65hZVT25c1ZdrSEQ8
- 107IDQiUG1pcdk7CiKqCgXCwAEjFWXiKHohA5hEzOX39WfVZ44Ot+/u6Z Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10610"; a="330898237"
-X-IronPort-AV: E=Sophos;i="5.97,270,1669104000"; d="scan'208";a="330898237"
+ bh=MT/1DWmiNdOv0jG/vTHIL9cjtaEEbp2aoOQTv2f9NTg=;
+ b=QK0Eqyz6aVl9Fl15wxQxPRDQK7JSchfx/iX01hWd9AULeJMP3aBIxve5
+ R9YGL/zc1t6rM+axPEpZD/q5T1LDRY0FmjckuccT0fo28qstaDLBi+vuw
+ HbgKJkcHJBoORScqGXmUnDzlLo7NItZ4KBt337O2Dyw8rtiDGALcTRDWY
+ pT6CHWrAC5YbBP7GDpHnnSWnOnsaE63bBWO/fdDMvXUUSUJBSnGA78/6j
+ ghLLnzMt0UGLu9F40uCUtpRFk9VouNefaHQG0vOPLF6OQsOhGFqxdLS4O
+ mg9igO4KOnlID8JpyrdLZ62sjm8V5YCKIgEgZrKg0uG7no0yTbO4ZAbuL w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10610"; a="330898278"
+X-IronPort-AV: E=Sophos;i="5.97,270,1669104000"; d="scan'208";a="330898278"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Feb 2023 07:11:26 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10610"; a="729289964"
-X-IronPort-AV: E=Sophos;i="5.97,270,1669104000"; d="scan'208";a="729289964"
+ 03 Feb 2023 07:11:42 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10610"; a="729290046"
+X-IronPort-AV: E=Sophos;i="5.97,270,1669104000"; d="scan'208";a="729290046"
 Received: from albuitra-desk.amr.corp.intel.com (HELO [10.209.172.145])
  ([10.209.172.145])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Feb 2023 07:11:25 -0800
-Message-ID: <84adef23-fecf-76ec-c597-5f8b4be214da@linux.intel.com>
-Date: Wed, 1 Feb 2023 17:21:15 -0600
+ 03 Feb 2023 07:11:42 -0800
+Message-ID: <0b49c924-5994-c1cd-a174-4a2e2cfaf0d2@linux.intel.com>
+Date: Fri, 3 Feb 2023 08:35:11 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.4.2
-Subject: Re: [PATCH] soundwire: export sdw_compute_slave_ports() function
+Subject: Re: [PATCH 1/2] soundwire: bus: Prevent infinite loop in
+ sdw_ch_mask_to_ch()
 Content-Language: en-US
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org,
- alsa-devel@alsa-project.org
-References: <20230201165944.3169125-1-Vijendar.Mukunda@amd.com>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>, vkoul@kernel.org,
+ yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com
+References: <20230202154212.1098736-1-rf@opensource.cirrus.com>
+ <20230202154212.1098736-2-rf@opensource.cirrus.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230201165944.3169125-1-Vijendar.Mukunda@amd.com>
+In-Reply-To: <20230202154212.1098736-2-rf@opensource.cirrus.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -84,89 +86,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Mastan.Katragadda@amd.com, Sunilkumar.Dommati@amd.com,
- Basavaraj.Hiregoudar@amd.com, open list <linux-kernel@vger.kernel.org>,
- Vinod Koul <vkoul@kernel.org>, Mario.Limonciello@amd.com,
- arungopal.kondaveeti@amd.com, Sanyog Kale <sanyog.r.kale@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 2/1/23 10:59, Vijendar Mukunda wrote:
-> Export sdw_compute_slave_ports() function to use it in another
-> soundwire manager module.
-> Move sdw_transport_data structure to bus header file to export
-> sdw_compute_slave_ports() function.
+On 2/2/23 09:42, Richard Fitzgerald wrote:
+> Define the ch_mask argument of sdw_ch_mask_to_ch() as an unsigned
+> so that the shift right is guaranteed to eventually make the
+> value of ch_mask==0.
 > 
-> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-
-
-If a specific platform has a need to modify parts of the bit allocation
-but can reuse parts of the code, that's fine. The 'generic bandwidth
-allocation' was meant to be a reference, not a one-size-fits-all solution.
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
+> Previously ch_mask was defined as a signed int, but a right
+> shift of a signed value preserves the sign bit. So if the sign
+> bit was 1, ch_mask would never become 0 and the for loop would
+> be infinite.
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 > ---
->  drivers/soundwire/bus.h                          |  9 +++++++++
->  drivers/soundwire/generic_bandwidth_allocation.c | 12 +++---------
->  2 files changed, 12 insertions(+), 9 deletions(-)
+>  drivers/soundwire/bus.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-> index 7631ef5e71fb..141b99ac58de 100644
+> index 7631ef5e71fb..28bedc919b78 100644
 > --- a/drivers/soundwire/bus.h
 > +++ b/drivers/soundwire/bus.h
-> @@ -144,6 +144,13 @@ struct sdw_master_runtime {
->  	struct list_head bus_node;
->  };
+> @@ -160,7 +160,7 @@ int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
+>  		 u32 addr, size_t count, u16 dev_num, u8 flags, u8 *buf);
 >  
-> +struct sdw_transport_data {
-> +	int hstart;
-> +	int hstop;
-> +	int block_offset;
-> +	int sub_block_offset;
-> +};
-> +
->  struct sdw_dpn_prop *sdw_get_slave_dpn_prop(struct sdw_slave *slave,
->  					    enum sdw_data_direction direction,
->  					    unsigned int port_num);
-> @@ -213,5 +220,7 @@ int sdw_bwrite_no_pm_unlocked(struct sdw_bus *bus, u16 dev_num, u32 addr, u8 val
->  
->  void sdw_clear_slave_status(struct sdw_bus *bus, u32 request);
->  int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
-> +void sdw_compute_slave_ports(struct sdw_master_runtime *m_rt,
-> +			     struct sdw_transport_data *t_data);
->  
->  #endif /* __SDW_BUS_H */
-> diff --git a/drivers/soundwire/generic_bandwidth_allocation.c b/drivers/soundwire/generic_bandwidth_allocation.c
-> index f7c66083a4dd..39543048baa7 100644
-> --- a/drivers/soundwire/generic_bandwidth_allocation.c
-> +++ b/drivers/soundwire/generic_bandwidth_allocation.c
-> @@ -28,15 +28,8 @@ struct sdw_group {
->  	unsigned int *rates;
->  };
->  
-> -struct sdw_transport_data {
-> -	int hstart;
-> -	int hstop;
-> -	int block_offset;
-> -	int sub_block_offset;
-> -};
-> -
-> -static void sdw_compute_slave_ports(struct sdw_master_runtime *m_rt,
-> -				    struct sdw_transport_data *t_data)
-> +void sdw_compute_slave_ports(struct sdw_master_runtime *m_rt,
-> +			     struct sdw_transport_data *t_data)
+>  /* Retrieve and return channel count from channel mask */
+> -static inline int sdw_ch_mask_to_ch(int ch_mask)
+> +static inline int sdw_ch_mask_to_ch(unsigned int ch_mask)
 >  {
->  	struct sdw_slave_runtime *s_rt = NULL;
->  	struct sdw_port_runtime *p_rt;
-> @@ -85,6 +78,7 @@ static void sdw_compute_slave_ports(struct sdw_master_runtime *m_rt,
->  		}
->  	}
->  }
-> +EXPORT_SYMBOL(sdw_compute_slave_ports);
+>  	int c = 0;
 >  
->  static void sdw_compute_master_ports(struct sdw_master_runtime *m_rt,
->  				     struct sdw_group_params *params,
+
+This patch1 is fine, but you remove this function in patch2, so is this
+patch needed at all?
+
+-/* Retrieve and return channel count from channel mask */
+-static inline int sdw_ch_mask_to_ch(unsigned int ch_mask)
+-{
+-	int c = 0;
+-
+-	for (c = 0; ch_mask; ch_mask >>= 1)
+-		c += ch_mask & 1;
+-
+-	return c;
+-}
+-
