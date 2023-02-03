@@ -4,107 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 285AAC61DA4
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 13:27:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7B48C05027
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 13:38:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 29C071D6;
-	Fri,  3 Feb 2023 14:27:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29C071D6
+	by alsa0.perex.cz (Postfix) with ESMTPS id B60351ED;
+	Fri,  3 Feb 2023 14:37:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B60351ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675430872;
-	bh=9zvCM+eD3HFAM/JHI9K9Jo747SBmayBE6kxnuy/yG1Q=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1675431502;
+	bh=unIYp8TTE723ciZu0oNaexw40yoC6GI+uvWw+r5E8/4=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=u57Kl8QiRz2qzawjQNywne8iEQl4zbxp2QL0WaSzWyulv7WGYJU5ReEQsu3m5KxIM
-	 qQpQAMZ22s1Sfj6Nj/9DNR3OREJFr3rBUcBXEBWmxZLvnnBtYbteX6zik56JVaizQR
-	 wNTzFXd7J12NzEdwkpZr3IEjB6sz3iYMYQueCU+c=
+	b=ET8zOS4sgpXzusUmWrTCXyouE3IeTXQQBht5ejFBB95CL114zOrFyTAORA8b12ulo
+	 crGLJ1zsZ8KDzajmGHywnaz2HXXlCW3HjN4SBdqosgpC9MlmnuFnIFr7OBnQprI47Z
+	 W0HhGIc/zFdCLYtZblisoO4oQHKV8l0WWKmB00t8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8684F80254;
-	Fri,  3 Feb 2023 14:27:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50103F80254;
+	Fri,  3 Feb 2023 14:37:32 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B5D19F8032B; Fri,  3 Feb 2023 14:26:59 +0100 (CET)
-Received: from omta039.useast.a.cloudfilter.net
- (omta039.useast.a.cloudfilter.net [44.202.169.38])
+ id 235B8F8032B; Fri,  3 Feb 2023 14:37:31 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9D5D8F800E3
+ for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 14:37:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D5D8F800E3
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=NH+8wi0c
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B96CFF80169
- for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 14:26:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B96CFF80169
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=embeddedor.com header.i=@embeddedor.com
- header.a=rsa-sha256 header.s=default header.b=GS02NFii
-Received: from eig-obgw-5009a.ext.cloudfilter.net ([10.0.29.176])
- by cmsmtp with ESMTP
- id NlX7p5LifJlHBNw5WpkhDl; Fri, 03 Feb 2023 13:26:46 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22]) by cmsmtp with ESMTP
- id Nw5VpYU0RVU6VNw5VpzQfY; Fri, 03 Feb 2023 13:26:45 +0000
-X-Authority-Analysis: v=2.4 cv=Z/j/oVdA c=1 sm=1 tr=0 ts=63dd0b95
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=wTog8WU66it3cfrESHnF4A==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=IkcTkHD0fZMA:10 a=m04uMKEZRckA:10
- a=wYkD_t78qR0A:10 a=iox4zFpeAAAA:8 a=foHCeV_ZAAAA:8 a=VwQbUJbxAAAA:8
- a=IyAp9IQCZIwS9LQYF3AA:9 a=QEXdDO2ut3YA:10 a=WzC6qhA0u3u7Ye7llzcV:22
- a=h8a9FgHX5U4dIE3jaWyr:22 a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
- In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
- :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
- Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
- List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=ySRLWLu89+QMAMhoYmt4n2D42TaV++/FIinnTamcjbs=; b=GS02NFii4yxQLyVGj/NN0afEyL
- bqHdDW4OS28UVvoUtrWf6om+Oj5dQPby7lzks+R1AX1wzPzsLBI/w+K8Zlb7ptOJ8f3HMb/kAqyy7
- PV/fEcq0lJ/YxFA2uZV89NwL/VyE+h9IM82MSZD5Gl9re/nmdMA2izsiLhMBHUQCol1GYCRiXbboM
- hNyfa6TKNgk0003wmNMHrk1eM35xBw9tpTt2x2/af6S5BcQy9EWj/2gPMHZZj7HZ/aPqiFIRQd2+e
- 3MkSMrWWj2pIGvY2vE5lP8or6pTuKstNcZ9CtWzxbv4WUeRSS04Tl30xqpLewJxS05BTW0hlXKk9q
- sADZxnAw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:35378
- helo=[192.168.15.7])
- by gator4166.hostgator.com with esmtpsa (TLS1.2) tls
- TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.95)
- (envelope-from <gustavo@embeddedor.com>) id 1pNw5U-0030IK-IW;
- Fri, 03 Feb 2023 07:26:44 -0600
-Message-ID: <652684af-bd10-99da-1ed8-104407493428@embeddedor.com>
-Date: Fri, 3 Feb 2023 07:27:03 -0600
+ by sin.source.kernel.org (Postfix) with ESMTPS id 2793ACE2FC4;
+ Fri,  3 Feb 2023 13:37:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7AB1C433EF;
+ Fri,  3 Feb 2023 13:37:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1675431438;
+ bh=unIYp8TTE723ciZu0oNaexw40yoC6GI+uvWw+r5E8/4=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=NH+8wi0cH0SroieKSfjKxRAG17IFzTDDe/ecV2yk9TBDodw31G45d8EDqJZm+hu+M
+ 29QxYPufaZv+Jdeybi0FaIbsKzi/3M4MaqMa8Rk3c2++tGC4DWp4EoV2zaLOC69i4r
+ nq+/QJc6AQbb00G7x30Ietzfodg65ZmqrxN+8PZpRkyyI00lgRdvpFNU+bAncV9dDN
+ aCC5CZ2UWMUdptzDcEeoTaHaF1aV2tCF4xTnq/WBgmwZ3RKMEvY6qNsBwbsyrze83Q
+ oBUyGVQKtApllvVxI2edPvhq8AtbLJEv+RkC6hRkKTKY5tMUFNBNJ7FwuY0KrnB8n/
+ RinCyGhvm2QZQ==
+Date: Fri, 3 Feb 2023 13:37:13 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Kiseok Jo <kiseok.jo@irondevice.com>
+Subject: Re: [PATCH 1/3] ASoC: dt-bindings: irondevice,sma1303: Rework
+ binding and add missing properties
+Message-ID: <Y90OCX002gLuf+Jx@sirena.org.uk>
+References: <20230203094239.25700-1-kiseok.jo@irondevice.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH][next] ASoC: uapi: Replace zero-length arrays with
- __DECLARE_FLEX_ARRAY() helper
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-References: <YzIzUjUuJKf0mkKg@work>
- <fcd83e77-a3fb-9061-771a-8509ea6f5950@embeddedor.com>
- <Y9wmnfTi/p4FuRmd@sirena.org.uk>
- <bb43c410-bd8c-66fe-19a1-0f41442838eb@embeddedor.com>
- <Y90ExljX2qCsowhu@sirena.org.uk>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <Y90ExljX2qCsowhu@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse,
- please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - alsa-project.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1pNw5U-0030IK-IW
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.7])
- [187.162.31.110]:35378
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfH7FM6L5rRFwrZoA4/Aa6rxQJ5/219ew8fHju0w7eLdTABDIpFCpameynkHvAN7W2hShcrDIwjr4/WYx4hBRzEKXa5W8nFYFUHj3ddTAVCee6cBlT2vR
- wlEPFAbAihbJ7dQHi/6Qz3yHEDK16wSasI43UQyGNMwEDoHLsZyXuSYcVVc5LPGfAypcvloc00DScxFackWyDdgCBLgw/+8is+lyck/bMSMlDDJS0JxFv985
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="N+stlK+T/xtXLQ+R"
+Content-Disposition: inline
+In-Reply-To: <20230203094239.25700-1-kiseok.jo@irondevice.com>
+X-Cookie: No animals were injured.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -117,48 +78,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- linux-hardening@vger.kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--N+stlK+T/xtXLQ+R
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 2/3/23 06:57, Mark Brown wrote:
-> On Thu, Feb 02, 2023 at 03:18:47PM -0600, Gustavo A. R. Silva wrote:
->> On 2/2/23 15:09, Mark Brown wrote:
->>> On Thu, Feb 02, 2023 at 02:34:17PM -0600, Gustavo A. R. Silva wrote:
-> 
->>> As documented in submitting-patches.rst please send patches to the
->>> maintainers for the code you would like to change.  The normal kernel
->>> workflow is that people apply patches from their inboxes, if they aren't
->>> copied they are likely to not see the patch at all and it is much more
->>> difficult to apply patches.
-> 
->> Yep; that's exactly what I did. :)
-> 
->> scripts/get_maintainer.pl --nokeywords --nogit --nogit-fallback include/uapi/sound/asoc.h
->> Jaroslav Kysela <perex@perex.cz> (maintainer:SOUND)
->> Takashi Iwai <tiwai@suse.com> (maintainer:SOUND)
->> alsa-devel@alsa-project.org (moderated list:SOUND)
->> linux-kernel@vger.kernel.org (open list)
-> 
->> If you're one the maintainers of that file, you're clearly not listed as such.
-> 
-> You did manage to figure out that it's an ASoC patch given the subject
-> line...
+On Fri, Feb 03, 2023 at 09:42:37AM +0000, Kiseok Jo wrote:
 
-As with the list of maintainers, I use a tool to get that info:
+> +  sys-clk-id:
+> +    description:
+> +      select the using system clock.
+> +      0 = External Clock 19.2MHz
+> +      1 = External Clock 24.576MHz
+> +      2 = Using PLL in MCLK
+> +      3 = Using PLL in BCLK
+> +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> +    maximum: 3
+> +    default: 3
 
-git log --oneline include/uapi/sound/asoc.h
+We really shouldn't have this as a custom property, we should be using
+a combination of the clock bindings.
 
-I think we have run into this same issue (you not being listed in the
-MAINTAINERS file) at least once in the past, right? (thinkingface)
+In the driver this would turn into using clk_get() to get the MCLK, then
+we can query the rate with clk_get_rate() and use option 0 or 1 if the
+rate matches, or the PLL otherwise.  If we fail to get MCLK then we can
+fall back to using BCLK.
 
-IMHO, the sensible solution for this is to keep the MAINTAINERS file
-up-to-date. So, get_maintainer.pl can continue to be useful for people.
+--N+stlK+T/xtXLQ+R
+Content-Type: application/pgp-signature; name="signature.asc"
 
---
-Gustavo
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPdDgkACgkQJNaLcl1U
+h9B8LQf8DFGH+a04ycoUUBFk1KB8KTcpcsg9bxqAEV3wXSQAVXXcXmni+9egtWxY
+HAB9/+P+RG2wlQvJeWipCc43kH583d8RFlQazZRbQIi0ZuLdurHxIvnkFMZTFMLY
+/+S9khQK8N0IkOg3dmiji8E6LtxULO7zRM0yRfBkQekQ+1qdjotJaI/Zyt5j4USP
+coO7Zws3z8zFSzEIXK7Puv+8XoUe4UjI2sHdGmad9THE9AJKkmuxMoZ6jn/qG3oa
+XSu9rd2iaisjhIzM3V3+02YvKxQCHveFmJgEFgHVJk3aZCTgad4GysPWxsADIO9p
+kyoTjhxgHmxicvrCVvJaPHs88CR1Qw==
+=k4Fw
+-----END PGP SIGNATURE-----
+
+--N+stlK+T/xtXLQ+R--
