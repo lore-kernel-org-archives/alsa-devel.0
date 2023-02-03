@@ -4,65 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6951EC61DA4
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 10:30:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 248F2C61DA4
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 11:15:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F2487846;
-	Fri,  3 Feb 2023 11:29:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2487846
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD09742;
+	Fri,  3 Feb 2023 12:14:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD09742
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675420244;
-	bh=swhnE7w3sg8iL5aZivT2WY1Fn93DZa0qbBZd/P4mbHw=;
-	h=Subject:From:To:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=kRGl6YMpKi+t9aj/laxf1FO8Fsn+cEcvaezy1zpB8t+uSedniyRsgcgatMn4GoeGn
-	 FdgFK80X3Nud29WKrFXB/KVH/c8rdtTErLwF8iAJA+RQ0ZMdQO3MEVQj5Uo0m/14/K
-	 65hUa++Cm5lDX3/7232OuvEo2kRyqSE9J1bUuEvA=
+	s=default; t=1675422928;
+	bh=Klki+5BXEhj8/DZeiWZannPuh6qWty6qUF3JxXgLJS4=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=skepTRoAwEkaX0ZmxDAx5vuuy6hyBmikA0kxv774lCe+dsi4N4DnLtXAR+Vct1+eK
+	 iMeNB7ugEtSoFN53NaUP1LKAMQhnIQ0iYPBWXMdtcv7oqLudHg+XPPI4G7y38edSA6
+	 RBcfssOMWUpPw2JjeVGQzlgXX2cIncdrOFb6bBFI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A0F83F80254;
-	Fri,  3 Feb 2023 11:29:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3702CF8032B;
+	Fri,  3 Feb 2023 12:14:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3AEFF8032B; Fri,  3 Feb 2023 11:29:52 +0100 (CET)
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de
- [130.133.4.66])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 80F4EF80423; Fri,  3 Feb 2023 12:14:37 +0100 (CET)
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
+ [217.70.183.197])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 19B88F80022
- for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 11:29:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19B88F80022
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
- by outpost.zedat.fu-berlin.de (Exim 4.95) with esmtps (TLS1.3)
- tls TLS_AES_256_GCM_SHA384
- (envelope-from <glaubitz@zedat.fu-berlin.de>)
- id 1pNtJx-0002fq-Hz; Fri, 03 Feb 2023 11:29:29 +0100
-Received: from p57bd9464.dip0.t-ipconnect.de ([87.189.148.100]
- helo=[192.168.178.81]) by inpost2.zedat.fu-berlin.de (Exim 4.95)
- with esmtpsa (TLS1.3) tls TLS_AES_256_GCM_SHA384
- (envelope-from <glaubitz@physik.fu-berlin.de>)
- id 1pNtJx-000PVD-9p; Fri, 03 Feb 2023 11:29:29 +0100
-Message-ID: <d10fe31b2af6cf4e03618f38ca9d3ca5c72601ed.camel@physik.fu-berlin.de>
-Subject: Re: remove arch/sh
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: Christoph Hellwig <hch@lst.de>
-Date: Fri, 03 Feb 2023 11:29:27 +0100
-In-Reply-To: <20230203083037.GA30738@lst.de>
-References: <20230113062339.1909087-1-hch@lst.de>
- <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
- <20230116071306.GA15848@lst.de>
- <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
- <20230203071423.GA24833@lst.de>
- <afd056a95d21944db1dc0c9708f692dd1f7bb757.camel@physik.fu-berlin.de>
- <20230203083037.GA30738@lst.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.3 
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9BB42F800E3
+ for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 12:14:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BB42F800E3
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=A3ZfWhkC
+Received: (Authenticated sender: herve.codina@bootlin.com)
+ by mail.gandi.net (Postfix) with ESMTPA id B67FD1C000F;
+ Fri,  3 Feb 2023 11:14:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+ t=1675422873;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=HAMONlr9R1WXauSk/Wj92zOzmiMIj87cwyrNJBK5Ezk=;
+ b=A3ZfWhkCsAD4ulDqxrzeWbibM3BdocWhNXDIyJM9oR5wq7EKn1P7f/+wwuvj9xwv+O66PA
+ 2zcQydBGBDSbJMU//fm+piM5NsXyWq8mJbQRjixdQxDlRSxKnqoTXtlxvxLJ+ouiGRGPCe
+ eZmkKF2O2K1phXQnRtNZkRyrPGfdAS1Nv0JIw8ONeOZWkTqbuAVdcHfUpwY2n+ItSubbhu
+ tpFZxGIvtVSOkIcK6DWkjuVw93Z/yp+NX790IGNELwf1rdNO68aPJ2MYhh9+3Z8kgymtFQ
+ DTDzv1u3dRafXpCqZqh2Jijr6CoUvTkBFQyLFrmuyfLo8nxtC5Rb01E+JT7icg==
+From: Herve Codina <herve.codina@bootlin.com>
+To: Herve Codina <herve.codina@bootlin.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH 0/3] Add the Renesas X9250 potentiometers ASoC support
+Date: Fri,  3 Feb 2023 12:14:19 +0100
+Message-Id: <20230203111422.142479-1-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.39.0
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.148.100
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,62 +73,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: linux-fbdev@vger.kernel.org, Rich Felker <dalias@libc.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>, linux-sh@vger.kernel.org,
- alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- linux-arch@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>,
- linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- linux-media@vger.kernel.org, devicetree@vger.kernel.org,
- linux-watchdog@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- linux-gpio@vger.kernel.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
- netdev@vger.kernel.org, dmaengine@vger.kernel.org, linux-rtc@vger.kernel.org
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Christophe Leroy <christophe.leroy@csgroup.eu>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Christoph!
+Hi,
 
-On Fri, 2023-02-03 at 09:30 +0100, Christoph Hellwig wrote:
-> On Fri, Feb 03, 2023 at 09:24:46AM +0100, John Paul Adrian Glaubitz wrote=
-:
-> > Since this is my very first time stepping up as a kernel maintainer, I =
-was hoping
-> > to get some pointers on what to do to make this happen.
-> >=20
-> > So far, we have set up a new kernel tree and I have set up a local deve=
-lopment and
-> > test environment for SH kernels using my SH7785LCR board as the target =
-platform.
-> >=20
-> > Do I just need to send a patch asking to change the corresponding entry=
- in the
-> > MAINTAINERS file?
->=20
-> I'm not sure a there is a document, but:
->=20
->  - add the MAINTAINERS change to your tree
->  - ask Stephen to get your tree included in linux-next
->=20
-> then eventually send a pull request to Linus with all of that.  Make
-> sure it's been in linux-next for a while.
+The Renesas X9250 is a quad digitally controlled potentiometers.
 
-OK, thanks for the pointers! Will try to get this done by next week.
+In the audio path, it can be present on amplifiers designs and it can
+be used in ALSA as an auxiliary audio device to control these amplifiers.
 
-We're still discussing among SuperH developer community whether there will =
-be a second
-maintainer, so please bear with us a few more days. I will collect patches =
-in the
-meantime.
+Best regards,
+Herve Codina
 
-Adrian
+Herve Codina (3):
+  dt-bindings: sound: Add the Renesas X9250 potentiometers
+  ASoC: codecs: Add support for the Renesas X9250 potentiometers
+  MAINTAINERS: add the Renesas X9250 ASoC entry
 
---=20
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+ .../bindings/sound/renesas,x9250.yaml         |  60 ++++
+ MAINTAINERS                                   |   7 +
+ sound/soc/codecs/Kconfig                      |  11 +
+ sound/soc/codecs/Makefile                     |   2 +
+ sound/soc/codecs/x9250.c                      | 276 ++++++++++++++++++
+ 5 files changed, 356 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/renesas,x9250.yaml
+ create mode 100644 sound/soc/codecs/x9250.c
+
+-- 
+2.39.0
+
