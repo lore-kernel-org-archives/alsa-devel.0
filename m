@@ -4,68 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09DD1C05027
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 11:43:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C671AC61DA4
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Feb 2023 12:29:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CAA9BAE8;
-	Thu,  2 Feb 2023 12:42:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAA9BAE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54ABBDFA;
+	Thu,  2 Feb 2023 13:28:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54ABBDFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675338197;
-	bh=8AzNixb4xVs4owedtSG8sTCOfFb8S5iNQAR8r+NfxZ8=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=JrNC9has4lpMKRUsqdLYvgHKYUgaKCLz90U8M3unSzvKNtvoH/VHaybgFkqRPF9lO
-	 l3FinoBqwWh2mnf7gPKGWBaJNmdFdGMlhOWhR3AZNVq0uFqzEB7+M8RfN5YyYqZh1j
-	 9f9x5aJYKt8I0xM5ephKkF0NJwDN0858BeElxwd0=
+	s=default; t=1675340967;
+	bh=xPey4hUhX6ENuwkL5sEETNz9LUIedmKF6aa69pXhh6o=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=VdohulL4d5Vr0fVvBqxpNcGFBs3gQZDBQkdzxxUzZlvSLgvqTIH6lmE14l8Lt9P54
+	 agME8l6kK5cc3HcfKg/Fa8efFNJ0iZDWkqL4p/XVPzivalMnvI6cPF6KKN063aAzrd
+	 cHFxItrcf8TkeijMQp+tV4bxUl6rAajlI17NLNec=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57F77F80169;
-	Thu,  2 Feb 2023 12:42:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 52DF9F804E0;
+	Thu,  2 Feb 2023 13:28:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4BFBF804C2; Thu,  2 Feb 2023 12:42:24 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 412C8F80169
- for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 12:42:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 412C8F80169
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=tQwfYR2N
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 7D42FF804C2; Thu,  2 Feb 2023 13:28:31 +0100 (CET)
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam04on20613.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7e8d::613])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 46E57B825AB;
- Thu,  2 Feb 2023 11:42:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62AD7C433EF;
- Thu,  2 Feb 2023 11:42:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1675338134;
- bh=8AzNixb4xVs4owedtSG8sTCOfFb8S5iNQAR8r+NfxZ8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=tQwfYR2NPvHwDjeYm403lPhEhb9ha0tflaAzLW3vKknWfhRsVbHBjdjbI+KKCyzhj
- yowzrYBOEB8JS7tabwYrzR9jXZCDu271i9G6UC53JdknMMkz6qQf48OAKALKiIPZnk
- 8/gYLpRkA8aUqXTqgVgfJsq9LYVKuDu0f8+137JNd+w5CRDyYacC2eiXf+9wRk49Il
- ODfB+fUmnz7wFG2Qi4SPgYJ3vXVqezF8VITynpsWgmHDFXOEh+iOGhNL5cyJ4ghx/f
- HHYQd3XMGPQfGrOr7AiP0Ze3nCmMgnhRBVy8597FQqyLS0tC64CvlfMeLrriGF+9FG
- l1d8HyTxfBFNA==
-Date: Thu, 2 Feb 2023 11:42:08 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Mario Limonciello <mario.limonciello@amd.com>
-Subject: Re: [PATCH v3 1/6] ASoC: amd: yc: Adjust the gain for PDM DMIC
-Message-ID: <Y9uhkEo9INU0IPEr@sirena.org.uk>
-References: <20230131184653.10216-1-mario.limonciello@amd.com>
- <20230131184653.10216-2-mario.limonciello@amd.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A1FFDF800ED;
+ Thu,  2 Feb 2023 13:28:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1FFDF800ED
+Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
+ unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=fXNPmzX8
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TEAgwpfbQ9CWyUOc5mvhSw3pXc2YTuE/sIjYkxIg971seydfHmnNYsGupga43YsojeE+buq0UfbzZsU5p2fUudqCWw5zwv/Y20oNVm0wbfdeFaWrreZTMZYss6YfY1PDgqXB/gPcuMEmBlvQxTrtuu11GqRJh6/iOGF77j6D8WhV6tUdUj/sdrPmhD6bpVPNcVBJgPjPjympz863+oULcf8xrPFXEb14KH9UTSDuSSMR/N/wSwSYwyuA3aOmcggIPaPMAUusLZmz04FU7rK1p/W+9rM3sae+B7eYM/HsfLSkI3YO7SqUbhP2anXL4tLfhabXjcA5WaR2P37iJF736g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=i7N1bJaz6MlWIOxfR8rOi2BGCsogP/eGeNfYjP0oXdM=;
+ b=JNJqVFY2VUm43rdqiIuT7kIK5BqlkWkcNwbiKlsdBCmNtaq7/gDkmlhQNq/IKkxOPp79Yd7kj0AasKi78G0mdkE6Ceo1pC8pgLlOjqTGCg8CsqC3/LYxks74aTUb5YHFf/Gu9PqDZaQDauTmTcfX8cny3iQWBNLWGOROYMaz9a5iM0eNZEASibu2NEl0FVyQo5ntxID2JkDIg3VqSbo6BGQ4lRlUawFF9NJ4r/05GeAi/dnBGLngz9xFiPNOxVYVu5Hjx9kJuULUEZnh2c6qxxCZDySHnJaf5exHmNVQVY+/gCIlcCU+sHsF6JVx8vxhsWvAjM9LDa+0j44z0Ta+jw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i7N1bJaz6MlWIOxfR8rOi2BGCsogP/eGeNfYjP0oXdM=;
+ b=fXNPmzX8O+Ats3xMehmcGAWA/7JEfCN0YF8+IhdpkGxxrODwmX/zlNGg6br+gZY12j0ikbWZ5tPiFjfw65opXwuPSQEAgiXnCHHlNcj0cLEU/L9zuRa9vqLPjdljX84+q7G0MDyIH63ckgpS5MYde8QBqvKi9Bp9dFi1lGhFOhU=
+Received: from CY5PR15CA0227.namprd15.prod.outlook.com (2603:10b6:930:88::25)
+ by CY5PR12MB6551.namprd12.prod.outlook.com (2603:10b6:930:41::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6043.38; Thu, 2 Feb
+ 2023 12:28:18 +0000
+Received: from CY4PEPF0000C964.namprd02.prod.outlook.com
+ (2603:10b6:930:88:cafe::5b) by CY5PR15CA0227.outlook.office365.com
+ (2603:10b6:930:88::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6064.27 via Frontend
+ Transport; Thu, 2 Feb 2023 12:28:17 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ CY4PEPF0000C964.mail.protection.outlook.com (10.167.241.68) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6064.17 via Frontend Transport; Thu, 2 Feb 2023 12:28:17 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Thu, 2 Feb
+ 2023 06:28:16 -0600
+Received: from sof-System-Product-Name.amd.com (10.180.168.240) by
+ SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2375.34
+ via Frontend Transport; Thu, 2 Feb 2023 06:28:11 -0600
+From: V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>
+To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
+Subject: [PATCH] ASoC: SOF: amd: Fix for handling spurious interrupts from DSP
+Date: Fri, 3 Feb 2023 18:02:52 +0530
+Message-ID: <20230203123254.1898794-1-Vsujithkumar.Reddy@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="mBPl7DRMq9TEhSTH"
-Content-Disposition: inline
-In-Reply-To: <20230131184653.10216-2-mario.limonciello@amd.com>
-X-Cookie: Swim at your own risk.
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000C964:EE_|CY5PR12MB6551:EE_
+X-MS-Office365-Filtering-Correlation-Id: 254767e3-0de9-491c-c880-08db0518f6a8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zyDQduxVeOk9WODGGBunmzzTpav+bOATYpFlz+IlzabehttlTbT5q0Y9SwG1ZlsFuZriuqfH6CWttMnLBq6wxsy0/S/DLHlufgjAC2DD2LtwBmICvgLtK830RK5at2W2rn2R/kMB3CjScSp8u4T2zVLHnWzUUnKMNW2+s8g8FUrvmHCV/jO7bUvrzjV1aOyZTQHSSTMeMAbsF+pP0QdJ74mQ1dR5G4JOV3A6tIcTDx/pvVZKzr8XgTED0DbIL4LKNL4euRHq71Fe9dFiAVhC2s/saUHOwg4fftAV+ZIZxZM4VPMD8R2wAXawMU1Bwd+BWOd2jCdIeKyq7j/IfS1PWNraj/4Jhlc2RpwwGy8v2qdetDxSauX5t2ZJqkTozfCPwiLWsWAzCPIfqG++qs8c383SCfj14xAxXlLdvPiz8eEmd+n2XE/L5r35xaGFyp+as2uYdLizfWyXwiJ2hAYJWv8lDZW2ucoEF81TCuWKoHeovam6lVhH9WGO/GV8yupgMvIfbcTNwItiGxgIPkC0HjUMVEXJEULYxQM7JSlNfITeoG+oOTPAPnr2Kuc5acrl+SxhsOd2TdVVpJkbrBlbWBwPZMUv9eIuhgaT20skMVv3itO74Wg2qE8vgILx+ncrJGtwqImRRo7P6DulIK/D7GQ9VO/pVrQqAYe502S6xDhq2+y25xvyqMdYbulZttXpoFSyUPJn5O+V8ARLVtEVNVQq8IAiP30y14RVNRqHcRo=
+X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:CAL; SFV:NSPM; H:SATLEXMB03.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
+ SFS:(13230025)(4636009)(396003)(346002)(136003)(39860400002)(376002)(451199018)(46966006)(40470700004)(36840700001)(110136005)(86362001)(82740400003)(54906003)(7416002)(5660300002)(356005)(81166007)(40460700003)(6666004)(36756003)(1076003)(26005)(186003)(2616005)(316002)(2906002)(82310400005)(47076005)(40480700001)(70206006)(83380400001)(426003)(7696005)(8676002)(336012)(478600001)(8936002)(4326008)(70586007)(41300700001)(36860700001)(36900700001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2023 12:28:17.7573 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 254767e3-0de9-491c-c880-08db0518f6a8
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
+ Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000C964.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6551
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -78,42 +121,120 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org,
- Pananchikkal Renjith <Renjith.Pananchikkal@amd.com>,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Jaroslav Kysela <jkysela@redhat.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Saba Kareem Syed <Syed.SabaKareem@amd.com>,
- Mukunda Vijendar <Vijendar.Mukunda@amd.com>,
- Mark Pearson <mpearson@lenovo.com>
+Cc: Daniel Baluta <daniel.baluta@nxp.com>,
+ Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, Sunil-kumar.Dommati@amd.com,
+ ssabakar@amd.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ venkataprasad.potturu@amd.com, Bard
+ Liao <yung-chuan.liao@linux.intel.com>, Basavaraj.Hiregoudar@amd.com,
+ Takashi Iwai <tiwai@suse.com>,
+ Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Vijendar.Mukunda@amd.com, V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Ajit Kumar
+ Pandey <AjitKumar.Pandey@amd.com>, open
+ list <linux-kernel@vger.kernel.org>, "moderated list:SOUND - SOUND
+ OPEN FIRMWARE \(SOF\) DRIVERS" <sound-open-firmware@alsa-project.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+As interrupts are Level-triggered,unless and until we deassert the register
+the interrupts are generated which causes spurious interrupts unhandled.
 
---mBPl7DRMq9TEhSTH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Now we deasserted the interrupt at top half which solved the below
+"nobody cared" warning.
 
-On Tue, Jan 31, 2023 at 12:46:47PM -0600, Mario Limonciello wrote:
-> A number of users for Lenovo Rembrandt based laptops are
-> reporting that the microphone is too quiet relative to
-> Windows with a dual boot.
+warning reported in dmesg:
+	irq 80: nobody cared (try booting with the "irqpoll" option)
+	CPU: 5 PID: 2735 Comm: irq/80-AudioDSP
+		Not tainted 5.15.86-15817-g4c19f3e06d49 #1 1bd3fd932cf58caacc95b0504d6ea1e3eab22289
+	Hardware name: Google Skyrim/Skyrim, BIOS Google_Skyrim.15303.0.0 01/03/2023
+	Call Trace:
+	<IRQ>
+	dump_stack_lvl+0x69/0x97
+	 __report_bad_irq+0x3a/0xae
+	note_interrupt+0x1a9/0x1e3
+	handle_irq_event_percpu+0x4b/0x6e
+	handle_irq_event+0x36/0x5b
+	handle_fasteoi_irq+0xae/0x171
+	 __common_interrupt+0x48/0xc4
+	</IRQ>
 
-If you're sending a cover letter for a series you should send it to the
-maintainers as well, not just the patches.
+	handlers:
+	acp_irq_handler [snd_sof_amd_acp] threaded [<000000007e089f34>] acp_irq_thread [snd_sof_amd_acp]
+	Disabling IRQ #80
 
---mBPl7DRMq9TEhSTH
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>
+---
+ sound/soc/sof/amd/acp.c | 36 +++++++++++++++---------------------
+ 1 file changed, 15 insertions(+), 21 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
+index 6bd2888fbb66..d5ccd4d09278 100644
+--- a/sound/soc/sof/amd/acp.c
++++ b/sound/soc/sof/amd/acp.c
+@@ -318,7 +318,6 @@ static irqreturn_t acp_irq_thread(int irq, void *context)
+ {
+ 	struct snd_sof_dev *sdev = context;
+ 	const struct sof_amd_acp_desc *desc = get_chip_info(sdev->pdata);
+-	unsigned int base = desc->dsp_intr_base;
+ 	unsigned int val, count = ACP_HW_SEM_RETRY_COUNT;
+ 
+ 	val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, desc->ext_intr_stat);
+@@ -328,28 +327,20 @@ static irqreturn_t acp_irq_thread(int irq, void *context)
+ 		return IRQ_HANDLED;
+ 	}
+ 
+-	val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, base + DSP_SW_INTR_STAT_OFFSET);
+-	if (val & ACP_DSP_TO_HOST_IRQ) {
+-		while (snd_sof_dsp_read(sdev, ACP_DSP_BAR, desc->hw_semaphore_offset)) {
+-			/* Wait until acquired HW Semaphore lock or timeout */
+-			count--;
+-			if (!count) {
+-				dev_err(sdev->dev, "%s: Failed to acquire HW lock\n", __func__);
+-				return IRQ_NONE;
+-			}
++	while (snd_sof_dsp_read(sdev, ACP_DSP_BAR, desc->hw_semaphore_offset)) {
++		/* Wait until acquired HW Semaphore lock or timeout */
++		count--;
++		if (!count) {
++			dev_err(sdev->dev, "%s: Failed to acquire HW lock\n", __func__);
++			return IRQ_NONE;
+ 		}
+-
+-		sof_ops(sdev)->irq_thread(irq, sdev);
+-		val |= ACP_DSP_TO_HOST_IRQ;
+-		snd_sof_dsp_write(sdev, ACP_DSP_BAR, base + DSP_SW_INTR_STAT_OFFSET, val);
+-
+-		/* Unlock or Release HW Semaphore */
+-		snd_sof_dsp_write(sdev, ACP_DSP_BAR, desc->hw_semaphore_offset, 0x0);
+-
+-		return IRQ_HANDLED;
+ 	}
+ 
+-	return IRQ_NONE;
++	sof_ops(sdev)->irq_thread(irq, sdev);
++	/* Unlock or Release HW Semaphore */
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, desc->hw_semaphore_offset, 0x0);
++
++	return IRQ_HANDLED;
+ };
+ 
+ static irqreturn_t acp_irq_handler(int irq, void *dev_id)
+@@ -360,8 +351,11 @@ static irqreturn_t acp_irq_handler(int irq, void *dev_id)
+ 	unsigned int val;
+ 
+ 	val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, base + DSP_SW_INTR_STAT_OFFSET);
+-	if (val)
++	if (val) {
++		val |= ACP_DSP_TO_HOST_IRQ;
++		snd_sof_dsp_write(sdev, ACP_DSP_BAR, base + DSP_SW_INTR_STAT_OFFSET, val);
+ 		return IRQ_WAKE_THREAD;
++	}
+ 
+ 	return IRQ_NONE;
+ }
+-- 
+2.25.1
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPboY8ACgkQJNaLcl1U
-h9CdGAf/dKm9kij8B6NkqCtz4OXZSs3ntNhPZrdHOJRAqAbAYxfOSUW7vn7JxKL4
-uj+mDVczOvS88KTVDMyzlLE4wG7aTJbYTITOnapi4DkApEs0h6JwuUIZSLTyljB6
-mis7Q8iuG/+jIbEiI5c7AsRZ+d7PcmVpTWT5coMeHgWpb8YoHIVsoUqHVzpBDo8+
-1gwr1oIGG5pcf+UbgChgafDjt+SOt7ak2znfZ+bav/UDKz9r93k80F0CUcZhsMg8
-KWu2mqzQO5cwMrjA9Y7ghkP+HLRL/6LlqRpOdWyYJVTX281KmwZlwiWbOpHORlqu
-AWae882bIQonj9D/ASxEyfx/euaplg==
-=4g9a
------END PGP SIGNATURE-----
-
---mBPl7DRMq9TEhSTH--
