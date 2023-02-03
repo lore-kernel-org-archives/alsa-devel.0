@@ -4,98 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DF39C636CC
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 06:34:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAB33C61DA4
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 07:16:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9C8F27F1;
-	Fri,  3 Feb 2023 07:33:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C8F27F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 35BE874C;
+	Fri,  3 Feb 2023 08:15:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35BE874C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675406082;
-	bh=UrIFYIXTwfdMZen7X4iFu+uskI5lUUqQhf4wVL182Hs=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1675408564;
+	bh=AF2dgrN02VYoSqDLZ6wwwx4xVDbukLvJC7eC9RwXOUg=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=orzszxXVCdtPwbdJTJsiF/YMdDKFYvCCbe9sHRxb9dbWx+4lIquNdZO0L9Mv6RQEA
-	 aRslNzpMLJ/J+pGcMFFuFUJO7VzhB889y/+sObp/+mFnNv3QcKLsnrJDn+XVfjTbWc
-	 wp38TcJTSnqkj4MxCx0vpKev/YKfu73wIEAJCw4U=
+	b=LuTw4V28GV9BNyphanqc3yuQ54o47M4OdY2uLEAl8ZRwyhEUQK67FQP4qU6FBlw7D
+	 m0qxAv6nlF1vZn58sWvUfniy5riEtt4wejIZAxgStquNfyAdIyyCVEhdshZhNB/keW
+	 7/EOVB0Vhyabeq7SsXLkI1aydY6u1JwfYzAoJ1qc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F482F80254;
-	Fri,  3 Feb 2023 07:33:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AFDE8F80254;
+	Fri,  3 Feb 2023 08:15:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 81EFBF8032B; Fri,  3 Feb 2023 07:33:48 +0100 (CET)
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
- [205.220.180.131])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id DE521F8032B; Fri,  3 Feb 2023 08:15:11 +0100 (CET)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 60F9EF80022
- for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 07:33:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60F9EF80022
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=mZD2JtqJ
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
- by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 3135HhfC001674; Fri, 3 Feb 2023 06:33:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
- h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=SuTIbaGSUcvGKk8oWpdqXguJe8chLfMFfh4n4U1RKs8=;
- b=mZD2JtqJu+cWl3fP93Br3vKp5cHWzCFhBH9psjywYzvpHDbvZufgS0D3HT3dfQRolSZS
- Y/qyg7ScoyONLFzhk4uWTj0XrsDFh8F4ohXFZq3ONPiY7grkYC9EjkS4teitFzmzzftQ
- sZxJHPux3o72JA6A8JmSb2NnIAa4Q8Wdzi6sjOq7dPunr9+viQL/H42QX9ypt7og0DyH
- xUgOLYwQpYFhYomZqinlkD0IHYcVjn1kDsc6sVZUOYb6x8Jv4EVp5vLsxcbyuKuk4weh
- bX5KacHx+9vucHqWCg7zC6tU3wP0Q8sJ45RUeU5YCu72e2BqVzfHe9vtprgwTe7ymoKF eg== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
- [129.46.96.20])
- by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3nfnyhmx6k-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 03 Feb 2023 06:33:26 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
- [10.47.209.197])
- by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3136XPV2016299
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 3 Feb 2023 06:33:25 GMT
-Received: from [10.216.51.161] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.36; Thu, 2 Feb 2023
- 22:33:20 -0800
-Message-ID: <de86d4ce-b9a9-9202-c7b9-ea49e9b1d41b@quicinc.com>
-Date: Fri, 3 Feb 2023 12:03:17 +0530
+ by alsa1.perex.cz (Postfix) with ESMTPS id C0998F80169
+ for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 08:15:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0998F80169
+Received: by verein.lst.de (Postfix, from userid 2407)
+ id AFA2168D05; Fri,  3 Feb 2023 08:15:07 +0100 (CET)
+Date: Fri, 3 Feb 2023 08:15:06 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH 01/22] gpu/drm: remove the shmobile drm driver
+Message-ID: <20230203071506.GB24833@lst.de>
+References: <20230113062339.1909087-1-hch@lst.de>
+ <20230113062339.1909087-2-hch@lst.de>
+ <Y8EMZ0GI5rtor9xr@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH 02/14] ASoC: qcom: SC7280: audioreach: Add sc7280 hardware
- param fixup callback
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-References: <20230201134947.1638197-1-quic_mohs@quicinc.com>
- <20230201134947.1638197-3-quic_mohs@quicinc.com>
- <Y9p57qn9+Pig9igE@sirena.org.uk>
-From: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-In-Reply-To: <Y9p57qn9+Pig9igE@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
- signatures=585085
-X-Proofpoint-GUID: FQhYFWnXTTN1IudxQWb0NB1blKm9qU0h
-X-Proofpoint-ORIG-GUID: FQhYFWnXTTN1IudxQWb0NB1blKm9qU0h
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-02-03_03,2023-02-02_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 mlxlogscore=630
- priorityscore=1501 bulkscore=0 adultscore=0 spamscore=0 clxscore=1011
- impostorscore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2302030058
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y8EMZ0GI5rtor9xr@pendragon.ideasonboard.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -108,30 +59,22 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- quic_rohkumar@quicinc.com, bgoswami@quicinc.com, linux-arm-msm@vger.kernel.org,
- andersson@kernel.org, agross@kernel.org, lgirdwood@gmail.com,
- konrad.dybcio@linaro.org, robh+dt@kernel.org, srinivas.kandagatla@linaro.org,
- krzysztof.kozlowski+dt@linaro.org, quic_plai@quicinc.com, swboyd@chromium.org,
- judyhsiao@chromium.org, linux-kernel@vger.kernel.org
+Cc: linux-fbdev@vger.kernel.org, Rich Felker <dalias@libc.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, linux-sh@vger.kernel.org,
+ alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ netdev@vger.kernel.org, dmaengine@vger.kernel.org, linux-rtc@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-On 2/1/2023 8:10 PM, Mark Brown wrote:
-> On Wed, Feb 01, 2023 at 07:19:35PM +0530, Mohammad Rafi Shaik wrote:
->
->> +#define DEFAULT_SAMPLE_RATE_48K	48000
-> Why are we bothering with a define here given that the define also
-> encodes the value and it's only used in once place?
-okay, will remove it.
->
->>   	for_each_card_prelinks(card, i, link) {
->>   		link->init = sc7280_init;
->>   		link->ops = &sc7280_ops;
->> +		if (link->no_pcm == 1)
->> +			link->be_hw_params_fixup = sc7280_snd_be_hw_params_fixup;
-> We only set the fixup in the case where there's no PCM but we removed
-> the constraint in all cases - isn't the constraint needed otherwise?
-okay, will add conditional check for constraint and will only do if 
-no_pcm is zero.
+So given that the big series doesn't go in, can we get this removal
+picked up through the drm tree?
