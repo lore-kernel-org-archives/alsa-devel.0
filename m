@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE36FC636CC
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 11:16:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07283C636CC
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 11:49:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D976BE76;
-	Fri,  3 Feb 2023 12:15:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D976BE76
+	by alsa0.perex.cz (Postfix) with ESMTPS id 870EB6C0;
+	Fri,  3 Feb 2023 12:48:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 870EB6C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675422989;
-	bh=R8Q1Ff68CwRW3LN5JEac1D6+Q5cJJY1O8qGsHnR7s3w=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	s=default; t=1675424947;
+	bh=sXBX1FG6ndVGefT904bnksV8B+g4LxIK97sutzKIqNE=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=kIWXFlgVRC50TfFlNldMgjBO4ImOUK/BOraZQH5a2cHCNSqAWE92kYkPkHVjPjIid
-	 4VIw/3/8WXHJDuVpy3LkdhpOhE58OsxTpblMGycP0GoavUIBdTaAqKRE3u/8GabBcq
-	 0zrKBLqgKtcY70foHbFms3LsN0SO99HeTTDoC+c0=
+	b=J0EwYWbSc35XSRVNG2Xq2a0qBx1tdxeunBjUjJRtahKFu0f2MwpZmlrOdKWIWpr2G
+	 n6z6JniNLs3deUH2yIJP/ZRDusXFuuuNJ/SPy7UvHUeT7Vd2vZ2qx92KGsjBA8452v
+	 WQYwrnkyYrS6/7O4VBkl7CL+lOxgEsmXwSdmzxPs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BCB8AF80549;
-	Fri,  3 Feb 2023 12:14:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 009D8F80254;
+	Fri,  3 Feb 2023 12:48:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47D20F80551; Fri,  3 Feb 2023 12:14:44 +0100 (CET)
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net
- [217.70.183.197])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 419DEF8032B; Fri,  3 Feb 2023 12:48:15 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 27577F80169
- for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 12:14:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27577F80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9D904F800E3
+ for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 12:48:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D904F800E3
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=dUKST8CV
-Received: (Authenticated sender: herve.codina@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPA id 4ED591C0014;
- Fri,  3 Feb 2023 11:14:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1675422878;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=W42MFx6suAptLaA0wWjwDvw0VhASANBKLIIJxJFCArs=;
- b=dUKST8CVaLqp2JzjKoME7qSaZpaytThUwJzR5CkybjwsmyII+N0Wgjo40ZqXHchEfutqu9
- 0w+4TVJTLzP9SjJVqDFv/9doCyaCC6PlbzhIM0jZqtvGxoZaK3WO8iZZPkTsq4eJNU8sJg
- 7My+8gqxxZxZewu8S8C7rlsdk/+cL23JpHEjbHAa+CgXOLSd7xXWu2Xpm4LKk7dI3H5AaS
- 3TCpEAhhD57fxMEgs1vKIaeDZT5Zm5DDcFQrm1cTkD5nuhgY2pm33i7/nBbrM5HAvd6C7m
- 0HFFgBF/aD3f5+AUVk8O1Dxbb4a9ff34a6JiUdHA2LfWEP6v6ygg/Ebny8fTDA==
-From: Herve Codina <herve.codina@bootlin.com>
-To: Herve Codina <herve.codina@bootlin.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 3/3] MAINTAINERS: add the Renesas X9250 ASoC entry
-Date: Fri,  3 Feb 2023 12:14:22 +0100
-Message-Id: <20230203111422.142479-4-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230203111422.142479-1-herve.codina@bootlin.com>
-References: <20230203111422.142479-1-herve.codina@bootlin.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=OQ5/MYRv
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6030D61EDF;
+ Fri,  3 Feb 2023 11:48:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89106C433EF;
+ Fri,  3 Feb 2023 11:48:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1675424885;
+ bh=sXBX1FG6ndVGefT904bnksV8B+g4LxIK97sutzKIqNE=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=OQ5/MYRvKvLBYmD0dA3PJdZ7Epr40/BTH7nbSlK7+wFZPoEBj5EmO4JWqecjeRxR+
+ B/iSweeCvTGY3fjdke/bBXjQtVykCLPdFqqGU9ktxc0N70sghU8BNDNuaNjzfDMWhS
+ 9xRmj7NUziC4xCvRKjHJVNZOLGyot+RdeudHWY7IRVy13TkKgaDOYBJU9t6ynd5wQy
+ 8feOq45sLlq6jWd1OVq10ZXObB6hZ7Ishp7lMHgECKl5O5z5sPGynRTQhdAmFwGN6/
+ ydAbA0R/fQhWdcJFsjLIHKeABeGhliAhtNPY7Cop+P0ZgWlFp3i2xIHg8Lh04A7wPg
+ waLBdhfqtax9g==
+Date: Fri, 3 Feb 2023 11:47:57 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] tree-wide: trivial: s/ a SPI/ an SPI/
+Message-ID: <Y9z0bQ8TeFROA0Fj@sirena.org.uk>
+References: <20230203101624.474611-1-tudor.ambarus@linaro.org>
+ <CAMuHMdVeDbTGLBAk5QWGQGf=o6g25t341FjGTmNsHw0_sDOceg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="SpLBoke9z0+WTDIl"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdVeDbTGLBAk5QWGQGf=o6g25t341FjGTmNsHw0_sDOceg@mail.gmail.com>
+X-Cookie: Pay toll ahead.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,38 +77,62 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-wireless@vger.kernel.org,
+ linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org,
+ chrome-platform@lists.linux.dev, linux-staging@lists.linux.dev,
+ linux-acpi@vger.kernel.org, Tudor Ambarus <tudor.ambarus@linaro.org>,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, trivial@kernel.org,
+ netdev@vger.kernel.org, linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-After contributing the driver, add myself as the maintainer for the
-Renesas X9250 ASoC driver.
 
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+--SpLBoke9z0+WTDIl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 31115a7e01c1..cd22e8e06561 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17905,6 +17905,13 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/clock/renesas,versaclock7.yaml
- F:	drivers/clk/clk-versaclock7.c
- 
-+RENESAS X9250 ASoC DRIVER
-+M:	Herve Codina <herve.codina@bootlin.com>
-+L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/sound/renesas,x9250.yaml
-+F:	sound/soc/codecs/x9250.c
-+
- RESET CONTROLLER FRAMEWORK
- M:	Philipp Zabel <p.zabel@pengutronix.de>
- S:	Maintained
--- 
-2.39.0
+On Fri, Feb 03, 2023 at 11:28:03AM +0100, Geert Uytterhoeven wrote:
+> On Fri, Feb 3, 2023 at 11:17 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
 
+> > The deciding factor for when a/an should be used is the sound
+> > that begins the word which follows these indefinite articles,
+> > rather than the letter which does. Use "an SPI" (SPI begins
+> > with the consonant letter S, but the S is pronounced with its
+> > letter name, "es.").
+
+> While I agree with your pronunciation, I believe the SPI maintainer
+> (which you forgot to CC) pronounces it in James Bond-style, i.e. rhymes
+> with "spy" ;-)
+
+Yes, I do.  To the best of my knowledge most people just say "spy"
+rather than pronouncing the letters or anything.
+
+In any case as I said in reply to one of the individual patches English
+isn't regular enough to go with hard and fast rules on anything, and the
+letter rule is much more commonly used where something is needed.  Using
+an here looks wrong to me, and the fact that a is so widely used does
+suggest that usage has escaped whatever rule there is.
+
+--SpLBoke9z0+WTDIl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPc9GwACgkQJNaLcl1U
+h9BWWgf7B2SbxlDCRQ/tXsgEj6IpmRoheV/Rc6V7cDJ3WW0RDwuKuwr+iYGYH4wI
+JMhxrKQp0ohQOtyboaLZK7RSARZQtK65wRZ2Cnrc3ilSy9T0cwDCOwBQ8I14Rclq
+/g2LhsTjAgrRpbQDo70vY9TV1fgGhwKHTNkGBfUAlfdPRz38Q/xX53UXHBy6cVqC
+ZWmrmxiRWO0ERd1qkYXsmPVVrtor6skFKeuri+z1H/l/Rl+vj0R4zLIiek1nzhnm
+W92b3oRnp6fRbyoiNsBO24Hrvd4POfaUHRf006dJ3jQnJpFKQwP8sFCMJD3BLpIU
+flkBLxV/d8OAm+zvn+ZpbTQr/78vKQ==
+=4YMj
+-----END PGP SIGNATURE-----
+
+--SpLBoke9z0+WTDIl--
