@@ -4,109 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88C3FC61DA4
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 01:45:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E457C636D4
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 04:02:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 90A11820;
-	Fri,  3 Feb 2023 02:44:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90A11820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99ED7820;
+	Fri,  3 Feb 2023 05:02:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99ED7820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675388714;
-	bh=ragvkdfJrDF05EPVepwVw/+c++CgKfk/2RnrBz3X+BQ=;
-	h=Date:Subject:From:To:References:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=RlGprmT9I5nk+FLjCRC8KzQBa0qdAuNb7RghhzLg2H5jrIvCMAjdLE2qLUPEp/o3e
-	 IHD6eqjRj5S5uxMIShxkcO78rHEPb8ToCp/CMQcwULW/ciqyO2oyL1UeEA+Dmuqbqs
-	 7DrCGSkMp1ndJk7JdX3QncqQg+bkbO9jg+qZPpts=
+	s=default; t=1675396971;
+	bh=o3BM/KzutC7pHFyyUaJfwUK2sMTKiHC7R+X1mu93Cq4=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=czsUj76K0w1BGUeci9N17TmLblqnI2mxKe/K0SQdHZEeFw60yL2nejjgjv6f2iy8y
+	 WExLTlk/waScYJBsB4CVOzG9lc1Wg7HlVK/cnYaDAiOw7HqFgkiknj4Li373DMfZhQ
+	 WlvYIMoNllUI7g5fCM+uLuSSYcneoo6odq7sBX9E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3185F80271;
-	Fri,  3 Feb 2023 02:44:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36BE1F8032B;
+	Fri,  3 Feb 2023 05:02:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47A04F804C2; Fri,  3 Feb 2023 02:44:22 +0100 (CET)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97FDAF800ED
- for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 02:44:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97FDAF800ED
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=hioipy7y
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
- by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 3131PMjO010081; Fri, 3 Feb 2023 01:44:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
- h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=y/EGlQxsE1kUhAZMG5EHnn7oBAg7cZ8XuFCCE6P9M74=;
- b=hioipy7yCXyEN2l+Ymce8pQ/tFSWaKtgY0Mm+zrUTIoiJeEfNKvghUTOl1byH8BtVyIg
- xHCZBzp425J4lKWNgSb/Uv0tDZGf9mQ9idvjK8K33w9RHSTZyMMxaoVSO1UtHzRL3DUE
- 61FBsMYpO8uw8jEfKosY1wILEyq6p6tiGaYjJr6WH5/j+ZCutWZXEGJtbVr1sNH/Oqjy
- 4mB8odRt3OH2Du+adlgn0aKLtT/IL74bQOrSYMFTXJ6LyRLeyO0VEAmAWgy2J3rhHzOE
- UoqO0Iu0ilEJxKQdrmLwj+OwxQ6FbuBi4z9WI+tkWmGpgf5ykbF8QpwBOC5V5W+LvHDo 3Q== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
- [129.46.96.20])
- by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ngns4gabg-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 03 Feb 2023 01:44:06 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
- [10.47.209.197])
- by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3131i5mA027861
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Fri, 3 Feb 2023 01:44:05 GMT
-Received: from [10.110.106.32] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.36; Thu, 2 Feb 2023
- 17:44:04 -0800
-Message-ID: <8c6b145c-6d38-2055-7526-7586edbea45d@quicinc.com>
-Date: Thu, 2 Feb 2023 17:44:04 -0800
+ id 7F3C3F80423; Fri,  3 Feb 2023 05:01:54 +0100 (CET)
+Received: from n169-114.mail.139.com (n169-114.mail.139.com [120.232.169.114])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA096F80022
+ for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 05:01:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA096F80022
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM: 
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[183.194.156.72])
+ by rmsmtp-lg-appmail-43-12057 (RichMail) with SMTP id 2f1963dc8710dba-5c12d;
+ Fri, 03 Feb 2023 12:01:24 +0800 (CST)
+X-RM-TRANSID: 2f1963dc8710dba-5c12d
+From: Shenghao Ding <13916275206@139.com>
+To: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, broonie@kernel.org,
+ lgirdwood@gmail.com
+Subject: [PATCH v5] ASoC: dt-bindings: Add tas2781 amplifier
+Date: Fri,  3 Feb 2023 12:01:15 +0800
+Message-Id: <20230203040115.27321-1-13916275206@139.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [RFC PATCH v2 09/22] ASoC: qcom: qdsp6: Introduce USB AFE port to
- q6dsp
-Content-Language: en-US
-From: Wesley Cheng <quic_wcheng@quicinc.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
- <perex@perex.cz>, <lgirdwood@gmail.com>, <andersson@kernel.org>,
- <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
- <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
- <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
- <agross@kernel.org>
-References: <20230126031424.14582-1-quic_wcheng@quicinc.com>
- <20230126031424.14582-10-quic_wcheng@quicinc.com>
- <dea77277-6971-fe27-1ae0-ed551e84b6e4@linux.intel.com>
- <5dec443d-9894-2d06-1798-c56b8f2e1e5e@quicinc.com>
- <ebf8ebed-ef79-bf18-4635-360f916877a6@linux.intel.com>
- <fa35124c-682f-8045-6733-c71f9ce8df9e@quicinc.com>
- <de03c6b1-b6d6-0045-ea60-6ae800913e95@linux.intel.com>
- <a494e063-f0a0-2a71-5b7b-cb247efa245c@quicinc.com>
-In-Reply-To: <a494e063-f0a0-2a71-5b7b-cb247efa245c@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
- signatures=585085
-X-Proofpoint-GUID: PcVo-wq9bOwB1td7G2pH7qN240NgpFjn
-X-Proofpoint-ORIG-GUID: PcVo-wq9bOwB1td7G2pH7qN240NgpFjn
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
- definitions=2023-02-02_16,2023-02-02_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=16
- lowpriorityscore=0
- suspectscore=0 mlxscore=16 mlxlogscore=71 impostorscore=0 malwarescore=0
- adultscore=0 phishscore=0 clxscore=1015 spamscore=16 priorityscore=1501
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2302030015
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -120,101 +60,121 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, quic_jackp@quicinc.com, quic_plai@quicinc.com
+ linux-kernel@vger.kernel.org, shenghao-ding@ti.com, kevin-lu@ti.com,
+ Shenghao Ding <13916275206@139.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Pierre,
+Create tas2781.yaml for tas2781 driver.
 
-On 2/2/2023 5:23 PM, Wesley Cheng wrote:
-> Hi Pierre,
-> 
-> On 1/31/2023 7:02 PM, Pierre-Louis Bossart wrote:
->>
->>
->> On 1/31/23 20:40, Wesley Cheng wrote:
->>> Hi Pierre,
->>>
->>> On 1/30/2023 3:59 PM, Pierre-Louis Bossart wrote:
->>>>
->>>>
->>>> On 1/30/23 16:54, Wesley Cheng wrote:
->>>>> Hi Pierre,
->>>>>
->>>>> On 1/26/2023 7:38 AM, Pierre-Louis Bossart wrote:
->>>>>>
->>>>>>
->>>>>> On 1/25/23 21:14, Wesley Cheng wrote:
->>>>>>> The QC ADSP is able to support USB playback endpoints, so that the
->>>>>>> main
->>>>>>> application processor can be placed into lower CPU power modes.  
->>>>>>> This
->>>>>>> adds
->>>>>>> the required AFE port configurations and port start command to
->>>>>>> start an
->>>>>>> audio session.
->>>>>>>
->>>>>>> Specifically, the QC ADSP can support all potential endpoints 
->>>>>>> that are
->>>>>>> exposed by the audio data interface.  This includes, feedback
->>>>>>> endpoints
->>>>>>> (both implicit and explicit) as well as the isochronous (data)
->>>>>>> endpoints.
->>>>>>> The size of audio samples sent per USB frame (microframe) will be
->>>>>>> adjusted
->>>>>>> based on information received on the feedback endpoint.
->>>>>>
->>>>>> I think you meant "support all potential endpoint types"
->>>>>>
->>>>>> It's likely that some USB devices have more endpoints than what 
->>>>>> the DSP
->>>>>> can handle, no?
->>>>>>
->>>>>
->>>>> True, as we discussed before, we only handle the endpoints for the 
->>>>> audio
->>>>> interface.  Other endpoints, such as HID, or control is still 
->>>>> handled by
->>>>> the main processor.
->>>>
->>>> The number of isoc/audio endpoints can be larger than 1 per direction,
->>>> it's not uncommon for a USB device to have multiple connectors on the
->>>> front side for instruments, mics, monitor speakers, you name it. Just
->>>> google 'motu' or 'rme usb' and you'll see examples of USB devices that
->>>> are very different from plain vanilla headsets.
->>>>
->>>
->>> Thanks for the reference.
->>>
->>> I tried to do some research on the RME USB audio devices, and they
->>> mentioned that they do have a "class compliant mode," which is for
->>> compatibility w/ Linux hosts.  I didn't see a vendor specific USB SND
->>> driver matching the USB VID/PID either, so I am assuming that it uses
->>> the USB SND driver as is.(and that Linux doesn't currently support their
->>> vendor specific mode)  In that case, the device should conform to the
->>> UAC2.0 spec (same statement seen on UAC3.0), which states in Section
->>> 4.9.1 Standard AS Interface Descriptor Table 4-26:
->>>
->>> "4 bNumEndpoints 1 Number Number of endpoints used by this
->>> interface (excluding endpoint 0). Must be
->>> either 0 (no data endpoint), 1 (data
->>> endpoint) or 2 (data and explicit feedback
->>> endpoint)."
->>>
->>> So each audio streaming interface should only have 1 data and
->>> potentially 1 feedback.  However, this device does expose a large number
->>> of channels (I saw up to 18 channels), which the USB backend won't be
->>> able to support.  I still need to check how ASoC behaves if I pass in a
->>> profile that the backend can't support.
+Signed-off-by: Shenghao Ding <13916275206@139.com>
 
-Getting back to passing in a format/profile that the USB BE doesn't 
-support.  It looks like ASoC doesn't actually check against the PCM HW 
-params received (for components), so the audio playback does still occur 
-even though its outside of what we support.
+---
+Changes in v5:
+ - Drop the full stop in the Subject.
+ - Drop the reset-gpios reference to gpio.txt.
+ - Add Changelog.
+ Changes to be committed:
+	new file:   Documentation/devicetree/bindings/sound/ti,tas2781.yaml
+---
+ .../devicetree/bindings/sound/ti,tas2781.yaml | 87 +++++++++++++++++++
+ 1 file changed, 87 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/ti,tas2781.yaml
 
-Will need to add changes to specifically check for # of channels, 
-format, etc... before we allow the session to proceed.
+diff --git a/Documentation/devicetree/bindings/sound/ti,tas2781.yaml b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
+new file mode 100644
+index 000000000000..8af44792a904
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
+@@ -0,0 +1,87 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright (C) 2022 - 2023 Texas Instruments Incorporated
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/ti,tas2781.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Texas Instruments TAS2781 SmartAMP
++
++maintainers:
++  - Shenghao Ding <shenghao-ding@ti.com>
++  - Kevin Lu <kevin-lu@ti.com>
++
++description: |
++  The TAS2781 is a mono, digital input Class-D audio amplifier
++  optimized for efficiently driving high peak power into small
++  loudspeakers. Integrated an on-chip DSP supports Texas Instruments
++  Smart Amp speaker protection algorithm. The integrated speaker
++  voltage and current sense provides for real time
++  monitoring of loudspeaker behavior.
++
++properties:
++  compatible:
++    enum:
++      - ti,tas2781
++
++  reg:
++    maxItems: 1
++    description: |
++      I2C address of the device can be in range from 0x38 to 0x40.
++
++  reset-gpios:
++    maxItems: 1
++    description: |
++      A GPIO line handling reset of the chip. As the line is active high,
++      it should be marked GPIO_ACTIVE_HIGH.
++
++  interrupts:
++    maxItems: 1
++
++  ti,audio-slots:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 1
++    maxItems: 4
++    description: |
++      I2c address of the device for different audio slots,
++      useless in mono case.
++
++  ti,broadcast-addr:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      Generic i2c address for all the tas2781 devices in
++      purpose of I2C broadcast during the multi-device
++      writes, useless in mono case.
++
++  '#sound-dai-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++   #include <dt-bindings/gpio/gpio.h>
++   i2c {
++     /* example with quad support, such as tablet or pad device */
++     #address-cells = <1>;
++     #size-cells = <0>;
++     quad: codec@38 {
++       compatible = "ti,tas2781";
++       reg = <0x38>;
++       #sound-dai-cells = <1>;
++       reset-gpios = < &gpio1 10 GPIO_ACTIVE_HIGH >;
++       interrupt-parent = <&gpio1>;
++       interrupts = <15>;
++       ti,audio-slots = < 0x38 /* topleft-channel */
++                          0x39 /* topright-channel */
++                          0x3a /* bottomleft-channel */
++                          0x3b /* bottomright-channel */
++                        >;
++       ti,broadcast-addr = <0x40>;
++     };
++   };
++...
+-- 
+2.34.1
 
-Thanks
-Wesley Cheng
+
