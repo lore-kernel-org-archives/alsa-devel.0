@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32E08C05027
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 14:58:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EB8EC61DA4
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 15:08:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D13282E;
-	Fri,  3 Feb 2023 15:57:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D13282E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 175CD11C;
+	Fri,  3 Feb 2023 16:08:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 175CD11C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675436316;
-	bh=HBW7gQQhXYjcv51yj9Mg8t0xqUMKWXdcmuW5/POrA4I=;
+	s=default; t=1675436934;
+	bh=vLcSxG6OxueRtNft61IytUHlS5UMOS0PFEatfvka+LI=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=T37+Tu/fWAIYneiD0M+AjE6601j/tBbQJdgSJ+xuf4GsJuuplEN6c/cy8BXgNRQPp
-	 VCKG0PKsoQwfnCBhtJYgTgqTWbg0PMsgZZZlsff6ueGrEqR5mSelh4wED6c03mu04q
-	 TRUn4EvhSr5vbTXvpcy8NUe9MaIi3BT6e413je80=
+	b=AnqYQHWEodrLZT4rH/Bwf1auuVy6Zww10cJ6YGwpbBa91Fs1m2MNe7Bpz1oNGBW7o
+	 pWcAEh9/vp4b2+ubJBZue1My7B3q/TgnG18U7gTRTEQ6jBdPGKE0Y+z6q+pMAMcO6k
+	 OTlhA/bj5dkzgJwZ9t8tJ+YWDSHZN/tv4gO6nvXU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6AF15F80563;
-	Fri,  3 Feb 2023 15:56:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6F47F80254;
+	Fri,  3 Feb 2023 16:08:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C6CF4F80543; Fri,  3 Feb 2023 15:56:18 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 4DB48F8001D; Fri,  3 Feb 2023 16:08:02 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A333F80022
- for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 15:56:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A333F80022
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99AD1F8001D
+ for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 16:07:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99AD1F8001D
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=rJ69gpF9
+ header.s=k20201202 header.b=Bb5CC5r3
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id B7FFC61F65;
- Fri,  3 Feb 2023 14:56:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FF24C433A0;
- Fri,  3 Feb 2023 14:56:12 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 70071B82AEE;
+ Fri,  3 Feb 2023 15:07:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 509B5C4339B;
+ Fri,  3 Feb 2023 15:07:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1675436174;
- bh=HBW7gQQhXYjcv51yj9Mg8t0xqUMKWXdcmuW5/POrA4I=;
+ s=k20201202; t=1675436877;
+ bh=vLcSxG6OxueRtNft61IytUHlS5UMOS0PFEatfvka+LI=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=rJ69gpF9aipo4mKw2c/YxbUOTxC9hSsdzvi2N6dixE54ys38FTHnMDle5M9hPbvBr
- 8X5xuBSYak2+bVBIEVqZVuA58z4qW6MOLZ3m0i0u7JxXMpL2ELo/TUQIr+5+h58ZJr
- JyWfj8hkOSE/FQuVgomrX2FA31hdMIwSuXIvzo9gAnGyXQdIhw4Ep6U411acOtIxOa
- Co4G1BXvJv89u/mItFYOI+nl1N53XLiDnONGLE1iPbP1xPYr2ZBJKwJ6YWu3F/ljL0
- GeW23JfwFjhz4kIpzLgplML4md+fwK2pGF++KLkRLPnw0ycYVR2zUfK92ZJCkA94FF
- VhSGrgIpOMXoQ==
+ b=Bb5CC5r3OHYm1XOaJCsOj04pbFL8ArxG6GZPPacqLz0OOAikoj46QmVOjwEhT3Q4+
+ FWqYETbQe6mVKNTQtrjLY8y5J0y+iDGSA9CtaIA1lNNhIatEVbNd63dajJfrGteXVS
+ YxlEWxQvloZY7yhcoVngODz2VUa6pRbroiE/g3eSI9eyYruOC5Qu8yrh9dT6tsC87p
+ izbJO5uEqbbILCqmazaaFz0Kg9RArKt3VkIAvTTi/FOBIf/rakHLdEqp9thFoakn6Z
+ +Rbdupu3FKlEdRt5NahGPG/2hwHcFVB7TuIZTvyvn3bH4e687x0jGrvzl/hqsXLKnJ
+ +oWPW7d0isYVw==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, 
- matthias.bgg@gmail.com, Trevor Wu <trevor.wu@mediatek.com>
-In-Reply-To: <20230202103704.15626-1-trevor.wu@mediatek.com>
-References: <20230202103704.15626-1-trevor.wu@mediatek.com>
-Subject: Re: [PATCH] ASoC: mediatek: mt8188: remove etdm dead code
-Message-Id: <167543617210.928818.16034479848573995520.b4-ty@kernel.org>
-Date: Fri, 03 Feb 2023 14:56:12 +0000
+To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20230201123231.26361-1-peter.ujfalusi@linux.intel.com>
+References: <20230201123231.26361-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH 0/9] ASoC: SOF: core/ipc4/mtl: Add support for PCM
+ delay reporting
+Message-Id: <167543687504.955300.7802819124628276586.b4-ty@kernel.org>
+Date: Fri, 03 Feb 2023 15:07:55 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -77,30 +77,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- error27@gmail.com
+Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ rander.wang@intel.com, yung-chuan.liao@linux.intel.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 02 Feb 2023 18:37:04 +0800, Trevor Wu wrote:
-> Some Smatch static checker warning like below was found.
+On Wed, 01 Feb 2023 14:32:22 +0200, Peter Ujfalusi wrote:
+> The following series adds support for the PCM delay reporting in SOF core level
+> and implements the needed infrastructure with IPC4 to finally enable it for MTL.
 > 
-> sound/soc/mediatek/mt8188/mt8188-dai-etdm.c:2487
-> mt8188_dai_etdm_parse_of()
-> warn: 'ret' returned from snprintf() might be larger than 48
-> 
->     2479         for (i = 0; i < MT8188_AFE_IO_ETDM_NUM; i++) {
->     2480                 dai_id = ETDM_TO_DAI_ID(i);
->     2481                 etdm_data = afe_priv->dai_priv[dai_id];
->     2482
->     2483                 ret = snprintf(prop, sizeof(prop),
->     2484                                "mediatek,%s-multi-pin-mode",
->     2485                                of_afe_etdms[i].name);
->     2486                 if (ret < 0) {
-> --> 2487                         dev_err(afe->dev, "%s snprintf
-> err=%d\n",
->     2488
+> Currently this is only supported on MTL (and via IPC4), but with the
+> infrastructure in place it will be possible to support other platforms with
+> DeepBuffer.
 > 
 > [...]
 
@@ -110,8 +99,24 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: mt8188: remove etdm dead code
-      commit: 66b9e94cb7783d3c632e2c1b436b26ece8c14e5d
+[1/9] ASoC: SOF: add ipc4_fw_reg header file
+      commit: 2740dcce918f385aea0fb0a026cc0b91629479af
+[2/9] ASoC: SOF: add fw_info_box support
+      commit: 4700bfb2bb3acae63ff4cbf82fbde35a325ebdf2
+[3/9] ASoC: SOF: add time info structure for ipc4 path
+      commit: 65a8ef494aff8bceac9a952ae8f6a1681231aee5
+[4/9] ASoC: SOF: ipc4-pcm: allocate time info for pcm delay feature
+      commit: af74dbd0dbcf49e8a3ae3e766683e13ecaf71e3b
+[5/9] ASoC: SOF: ipc4-pcm: add hw_params
+      commit: 7cb19007baba0c7a76bd3f8f324a6b6548025968
+[6/9] ASoC: SOF: add delay function support in sof framework
+      commit: 27c2100b6bc8b0b064f89250eb4081431299115f
+[7/9] ASoC: SOF: add get_stream_position ops for pcm delay
+      commit: 7f956297272bbc3535a02fa32579375a0d40283c
+[8/9] ASoC: SOF: Intel: mtl: add get_stream_position support
+      commit: faceb3445aaf1704583744b48c622dbc96ef9ab2
+[9/9] ASoC: SOF: ipc4-pcm: add delay function support
+      commit: 3937a76c64931109dfafa999a0c78b4df2a6e0a1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
