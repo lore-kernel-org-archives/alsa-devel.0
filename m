@@ -4,88 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADCDAC636CC
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 08:38:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A5AAC636CC
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 08:39:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C8E274C;
-	Fri,  3 Feb 2023 09:37:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C8E274C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 221BD83A;
+	Fri,  3 Feb 2023 09:38:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 221BD83A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675413525;
-	bh=fXCSzLNB/nHCY6Ax/FH+cDfYlohm0NZEIuSsNaeAatw=;
-	h=Date:To:References:Subject:From:In-Reply-To:List-Id:
+	s=default; t=1675413553;
+	bh=+MSqn6VdGCTIL9zqYOxCDNWyy4y0NLru7Z54XsUU9EA=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=QtSyByS2Tt8vCwy/pHApYTu23rZAfIgMb+0JbGuaRC96FgyluEVO6aWAI+00Q1SYP
-	 XfPLhc2mRKtaYIl4phdQP0yHVT35W7mYXRKc8xwp9Mjqdjml+48Kvt4YZc6gaIycFn
-	 SClJqyJyzQ4f9ITd+FOyXI8kWECisTIXOQZDgjTk=
+	b=OlscfFIL0ZmRv3sRZeUk950MDBufZBS8v5333/D8PhXwgkGw9rccqV6jCmVdQDuSQ
+	 4CWbjPhr/CfJ82T0qqbkGbePkjay0a6OFhe58fJ5HUJLgaHvOtqYGouAJHQPPHgMf1
+	 DcPIYPOAuYmYodqDUrHERX4rDoyumgbzOu1EYWTg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C1D8FF80254;
-	Fri,  3 Feb 2023 09:37:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 868C4F8047D;
+	Fri,  3 Feb 2023 09:37:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6E4FF804C2; Thu,  2 Feb 2023 03:13:09 +0100 (CET)
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com
- [IPv6:2607:f8b0:4864:20::829])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id A98C2F8032B; Fri,  3 Feb 2023 08:14:41 +0100 (CET)
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 90375F800E3
- for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2023 03:13:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90375F800E3
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=CMH1KQae
-Received: by mail-qt1-x829.google.com with SMTP id v17so549615qto.3
- for <alsa-devel@alsa-project.org>; Wed, 01 Feb 2023 18:13:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:content-language:subject
- :references:cc:to:user-agent:mime-version:date:message-id:from:to:cc
- :subject:date:message-id:reply-to;
- bh=mmp+gLg2mSwFYsxZZpssJ7RfilX35F9BxrqBwqKEOfM=;
- b=CMH1KQaeR1zBMkTvorqv6ltZsHsXpyIxEnJIO+Wi88DESKoLf5MC9TsmRskvy4/IVc
- mGU1VWpCFb2D4Kz+Na9vZEF9uQR6CdUTI8EFbNY/JPy/f/JbNOPmv106EEEZREc6Oc77
- 8lwBAEgzxjDKaH1JpUNwOWvRhVTLIHP/Yd4KkbRJNLQFXMFXy5E0aLZQxHmbgZYGZygA
- tVxbZOhsow7KI6vaiEJHor6+QfAbSzs0VoGbmbKtia/wHorQj42Cs9Si/TEut2uolTTl
- nK9dxUwoZBmvfvz3UKAimUrnOlYJsCYq2NT5GQtFMPKT4TaOtAjPCQU3NfnioTRHanic
- rerw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:content-language:subject
- :references:cc:to:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
- bh=mmp+gLg2mSwFYsxZZpssJ7RfilX35F9BxrqBwqKEOfM=;
- b=DeALPLIMFwxkC1odCo4s23jcWz5A4K21MJweIe3z8vBwWlVoTtrqWYQfexzrgg6vuI
- Kxf+ut9QeGZJc5hb99IGYStdUvhzc2QUNurFK+v6JOz9oHPakHVwhlVhxssaOzpN34fv
- bFApbDeqFIhqqrqDHlrgXCkhGPjLw7JrHsJy38yT2OvTZGGwDR2wcN9X0t7lnZdbVvOC
- VX0xeE7aTExiy3DzqpZkZTZsgSyTRJyOtp5qpTbC/0HaU4l+Vn8+XggHlqoys3z0dKzw
- 5stgOxTX6rzGiNEVRifs6NZMndrd0CESDPKVOHnuYCP9w1NbjG2JZwFpRpm7W5wJov6y
- rmIg==
-X-Gm-Message-State: AO0yUKWfQ+uEQjO+EmApIvqPnGxzyifXumjdimctc++nukutxNQLFkkH
- HRxbSf9uqA1PWzNuUKUSNyc=
-X-Google-Smtp-Source: AK7set/NhmMODJ/+csynPebZ9of6l0csjZa+SU2VJG6GGm64zASG23DDTN79qA1xq1PXjeP78iRLKw==
-X-Received: by 2002:ac8:5ac5:0:b0:3b8:6c80:c113 with SMTP id
- d5-20020ac85ac5000000b003b86c80c113mr8779770qtd.66.1675303980154; 
- Wed, 01 Feb 2023 18:13:00 -0800 (PST)
-Received: from [192.168.0.162] (cpe-74-69-166-246.stny.res.rr.com.
- [74.69.166.246]) by smtp.gmail.com with ESMTPSA id
- p3-20020ae9f303000000b006fa43e139b5sm13188164qkg.59.2023.02.01.18.12.59
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 01 Feb 2023 18:12:59 -0800 (PST)
-Message-ID: <f72469f6-60bd-6bcf-be73-a804a1193e54@gmail.com>
-Date: Wed, 1 Feb 2023 21:12:58 -0500
+ by alsa1.perex.cz (Postfix) with ESMTPS id 70580F80169
+ for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 08:14:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70580F80169
+Received: by verein.lst.de (Postfix, from userid 2407)
+ id 9CB7868C4E; Fri,  3 Feb 2023 08:14:23 +0100 (CET)
+Date: Fri, 3 Feb 2023 08:14:23 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: Re: remove arch/sh
+Message-ID: <20230203071423.GA24833@lst.de>
+References: <20230113062339.1909087-1-hch@lst.de>
+ <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
+ <20230116071306.GA15848@lst.de>
+ <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-To: faenkhauser@gmail.com
-References: <20220811152923.10143-1-faenkhauser@gmail.com>
-Subject: Re: [PATCH] Sound: pci/hda: Add quirk for HP Envy x360 ey0xxx
-Content-Language: en-US
-From: Albert Tseng <tsengalb99@gmail.com>
-In-Reply-To: <20220811152923.10143-1-faenkhauser@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Mailman-Approved-At: Fri, 03 Feb 2023 09:37:52 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -99,19 +61,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org, tanureal@opensource.cirrus.com,
- patches@opensource.cirrus.com, tiwai@suse.com, linux-kernel@vger.kernel.org,
- rf@opensource.cirrus.com, james.schulman@cirrus.com, david.rhodes@cirrus.com
+Cc: linux-fbdev@vger.kernel.org, Rich Felker <dalias@libc.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, linux-sh@vger.kernel.org,
+ linux-rtc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ netdev@vger.kernel.org, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Apologies if this thread is already dead, but I came across this thread 
-while debugging an audio issue with my HP 865 G9 (bugzilla report 
-https://bugzilla.kernel.org/show_bug.cgi?id=216927). I think the issue 
-with my machine is the same and related to the cirrus logic driver code, 
-as suggested by Jaroslav (apparently also on this thread). The bug 
-appears to have been fixed in 6.2rc6, but not in 6.1.8. Can someone add 
-whatever got fixed to 6.1 since 6.1 is the stable kernel? This is also 
-my first time using the kernel mailing list so I hope I am not emailing 
-1000 people or doing something wrong like not opening a new thread.
+On Mon, Jan 16, 2023 at 09:52:10AM +0100, John Paul Adrian Glaubitz wrote:
+> We have had a discussion between multiple people invested in the SuperH port and
+> I have decided to volunteer as a co-maintainer of the port to support Rich Felker
+> when he isn't available.
 
+So, this still isn't reflected in MAINTAINERS in linux-next.  When
+do you plan to take over?  What platforms will remain supported and
+what can we start dropping due to being unused and unmaintained?
