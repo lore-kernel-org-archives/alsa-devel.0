@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EA27C05027
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 14:57:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CE70C61DA4
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 14:57:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD42182B;
-	Fri,  3 Feb 2023 15:56:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD42182B
+	by alsa0.perex.cz (Postfix) with ESMTPS id D800F84B;
+	Fri,  3 Feb 2023 15:57:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D800F84B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675436252;
-	bh=bHTwdQUfTMFSZm5VtpOoEQH5hZ/O5gwP6aGVUcpUMpI=;
+	s=default; t=1675436275;
+	bh=eEGNAnaXLsNmCdIMPQ111OgMwhkshA87XIXK/XShWCY=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=cQrYJBgkWN7H3wjaNR4AZiMQvBfNywyxsKHw3eIbloDqzFG9bpQqHOhuZgu7w1fqD
-	 5UhHAJOT9AtHOh/RXz/JMLwYk27tK2qT1VxVw254MXHgtb141z/qD0GXYqJcYedrnS
-	 htOADXyXje/jeDSR4bRDGUJh0I9HvPmmXo51tPPk=
+	b=QIYDBX7c7SQzhZbOYI/lq2VMXshoqd7yQrmIuKZedpMceqTlY8kW6vVXXpLBvs5S0
+	 coTxDoXhq+TwBdScPmX69DtLfpyPvaJy8tgSAXbfURWmvvphFRCQK8m4pU+0V30FI4
+	 rQQ0CmAr/V+UtD9iBvsDvInO9kIEprJIMdka+KpI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79F69F8045D;
-	Fri,  3 Feb 2023 15:56:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14291F8053D;
+	Fri,  3 Feb 2023 15:56:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 91E81F8045D; Fri,  3 Feb 2023 15:56:13 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 47C63F80254; Fri,  3 Feb 2023 15:56:15 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C72AAF800E3
- for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 15:56:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C72AAF800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 44CB7F80254
+ for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 15:56:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44CB7F80254
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=T2KVSpJU
+ header.s=k20201202 header.b=vJgs2cOq
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id E313AB82ADD;
- Fri,  3 Feb 2023 14:56:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9D1CC4339B;
- Fri,  3 Feb 2023 14:56:01 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A72E261F65;
+ Fri,  3 Feb 2023 14:56:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17FC5C433D2;
+ Fri,  3 Feb 2023 14:56:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1675436163;
- bh=bHTwdQUfTMFSZm5VtpOoEQH5hZ/O5gwP6aGVUcpUMpI=;
+ s=k20201202; t=1675436165;
+ bh=eEGNAnaXLsNmCdIMPQ111OgMwhkshA87XIXK/XShWCY=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=T2KVSpJUj9K690EgAN5EuTtJGGxDCTHELFkwiKcrgx8WIw8ACPr0OdzILjMcuGVHH
- w/nwhMDgvMyG5luAYTt/Atp0Fkwe02Dc2ezLQseA0dVRCUXnlpJ+9ea6glnCUfRbmh
- yKKRudgzhFJoKR2Z9gb8CWEql9vGIAS7FC1Z/ViFNF5dkvryXoelnQPi9nP9nc+sUK
- VUma/CzQzhj+1cbiU0aTddu23R3ZpzjCOmFiPUlxgrQDbNDzVXXRmic06VuWh7O0i8
- ezt45RNs1R4ZaOpniUVkHtYwS4gS/5/+mfY97oIpNvzPGJ8OGED9v6CjOuPbDIlOG1
- nARdhXFeG2IwQ==
+ b=vJgs2cOqEK31OUMYvbuISPMT0nywLiRNhui5sSOrOPRFE4GHnZw40n4zbArzPTW0B
+ 5F/YEHsOtIok05vj03SxsSD/ak+C5B4ZNqG2zESwGBsEZv1ZEvXMBxjwg8BSU7C7W+
+ XKyZiPFXjPQMkBSdyFlaLAJ1IbE87pO3Im+Uo+cEHZeYIANXVQYMXX950dQjvqyJ16
+ VjqiWeE1ToeEPnJF1OLi7Xt6jUF88xruPiTBEG4fVhFMgt0FLCeJNgFMER+eO3Ni2d
+ GbQeuj4CY1vCwFjxCcNFJusmlLWB/uny0WHxH/VE56c25QwVUX8YRAwo4xjFqLh+nH
+ CwgCzB7j9RUTA==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, 
- Jerome Brunet <jbrunet@baylibre.com>
-In-Reply-To: <20230202183653.486216-1-jbrunet@baylibre.com>
-References: <20230202183653.486216-1-jbrunet@baylibre.com>
-Subject: Re: (subset) [PATCH 0/9] ASoC: dt-bindings: meson: covert axg
- audio to schema
-Message-Id: <167543616131.928818.17902040818579023398.b4-ty@kernel.org>
-Date: Fri, 03 Feb 2023 14:56:01 +0000
+To: perex@perex.cz, Yang Li <yang.lee@linux.alibaba.com>
+In-Reply-To: <20230203011504.78918-1-yang.lee@linux.alibaba.com>
+References: <20230203011504.78918-1-yang.lee@linux.alibaba.com>
+Subject: Re: [PATCH -next] ASoC: codecs: fix platform_no_drv_owner.cocci
+ warning
+Message-Id: <167543616380.928818.16403862674733683634.b4-ty@kernel.org>
+Date: Fri, 03 Feb 2023 14:56:03 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -77,29 +77,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
- Kevin Hilman <khilman@baylibre.com>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-amlogic@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Abaci Robot <abaci@linux.alibaba.com>, tiwai@suse.com, lgirdwood@gmail.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 02 Feb 2023 19:36:44 +0100, Jerome Brunet wrote:
-> Convert AXG audio dt-binding documentation to schema
+On Fri, 03 Feb 2023 09:15:04 +0800, Yang Li wrote:
+> ./sound/soc/codecs/aw88395/aw88395.c:572:3-8: No need to set .owner here. The core will do it.
 > 
-> Jerome Brunet (9):
->   ASoC: dt-bindings: create component common schema
->   ASoC: dt-bindings: meson: fix gx-card codec node regex
->   ASoC: dt-bindings: meson: convert axg tdm interface to schema
->   ASoC: dt-bindings: meson: convert axg tdm formatters to schema
->   ASoC: dt-bindings: meson: convert axg pdm to schema
->   ASoC: dt-bindings: meson: convert axg fifo to schema
->   ASoC: dt-bindings: meson: convert axg spdif input to schema
->   ASoC: dt-bindings: meson: convert axg spdif output to schema
->   ASoC: dt-bindings: meson: convert axg sound card control to schema
 > 
-> [...]
 
 Applied to
 
@@ -107,10 +93,8 @@ Applied to
 
 Thanks!
 
-[1/9] ASoC: dt-bindings: create component common schema
-      commit: e398bbb9834a2f6cbe27cbd72956159ecc92055f
-[2/9] ASoC: dt-bindings: meson: fix gx-card codec node regex
-      commit: 480b26226873c88e482575ceb0d0a38d76e1be57
+[1/1] ASoC: codecs: fix platform_no_drv_owner.cocci warning
+      commit: 1c9ded98bd4e5b87756423e0abededda6f4ba0b8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
