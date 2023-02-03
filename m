@@ -4,73 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F409FC61DA4
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 21:58:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF2C8C05027
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Feb 2023 22:02:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4352C7F1;
-	Fri,  3 Feb 2023 22:57:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4352C7F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 313B2829;
+	Fri,  3 Feb 2023 23:01:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 313B2829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675461510;
-	bh=Gthv3th2HC6/Abys8ip0oIUVpZguDpRyMtRq4+/leY0=;
+	s=default; t=1675461763;
+	bh=Zjj6/U5R9Nl5m6X+fTRWyUlmTx2EJrPlcn9myK8cyBY=;
 	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=urwl8OpRCxqO9RD4fzVe1Q6TIi7j5Ov37Ctk9oYbvB2HKj3KRFxT6IhV0cbWI3PSI
-	 5XOv7kMc4rtf4S4GLs5GNk5UQX2Rpm/Khiy2YV5M83Rw66hDHnAWkbpGYzjZ6D4d48
-	 jJYau+NSApAcg8CdL246aHrAXnAF+w6hm9R99pQ0=
+	b=bxT3Jd9XwAB8dMvh8YO4fFfrRXRv4ahQPjtDBXRXJlbrIaOqD5B6qBgZa41+Vge/I
+	 52C2ddka58MI5MoY4Mc7C5zLswDtLqyqZdB1HecgBYehqYuk5ryOLDT2tF/h+V6pxf
+	 rRoikkhy7Np1I4ktcgXA6M6xzcBII7E6k5Xi5n2s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5537F80022;
-	Fri,  3 Feb 2023 22:57:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BAAF5F80169;
+	Fri,  3 Feb 2023 23:01:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BCB18F80254; Fri,  3 Feb 2023 22:57:37 +0100 (CET)
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com
- [209.85.167.174])
+ id A4B64F80254; Fri,  3 Feb 2023 23:01:51 +0100 (CET)
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com
+ [209.85.210.41])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95ED1F800E3
- for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 22:57:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95ED1F800E3
-Received: by mail-oi1-f174.google.com with SMTP id bx13so5333694oib.13
- for <alsa-devel@alsa-project.org>; Fri, 03 Feb 2023 13:57:27 -0800 (PST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B7E9F800E3
+ for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 23:01:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B7E9F800E3
+Received: by mail-ot1-f41.google.com with SMTP id
+ n25-20020a9d7119000000b0068bd8c1e836so1797645otj.3
+ for <alsa-devel@alsa-project.org>; Fri, 03 Feb 2023 14:01:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
  :message-id:reply-to;
- bh=T2vc3qMIstkTWFHwtw+c6I2ctj9RY4rHLBiXXNGhXcw=;
- b=PiFmBTAmTNqgSeqxIEjQ8gCreHlJDG88Sy12iFizGdx0cbQI/m4CwpOzZibmFh9jTj
- VuceHGMqT/CpTt2aTAR9i1kAG58hJsjQUyR72sjPXv4T48wRcuKCJWfkbW206zZpf5oy
- Ha+ErUwss6z/tPhTi53NRNvlEZNopo7knXXkFC2kL4LOfHxQDtWqlI9zf8CfLXIRwWiw
- naU/8msdUrW70MgcLPZTb3wb7hiiEujDQkBTADYgcUskot69l0LLsCmAKTjT+2UJQBgn
- IwzgtMqr0HvY+WuZ1m0am6urhSxYhebP7nlQt5L8ohfDMP/n9Y9bLkQQ7wN3YyQW7wCW
- SZrA==
-X-Gm-Message-State: AO0yUKUoiTDhXfOnpDqOvvmbxF09eKOdZcDh94BQSuRKH76HV1qCtnMM
- 1vN90MiWL8HzuLGK1KXPTw==
-X-Google-Smtp-Source: AK7set+wElBYaFN6oCAW8rVJ/iackvGmOusAIRbPlBnuY5f0Rhx+PfVdKYwxURSkvIKDntW3pUrA3w==
-X-Received: by 2002:aca:3e57:0:b0:36b:fbdb:eb61 with SMTP id
- l84-20020aca3e57000000b0036bfbdbeb61mr4792106oia.23.1675461445527; 
- Fri, 03 Feb 2023 13:57:25 -0800 (PST)
+ bh=sLBbKHff03+vVGWqe2MOMoSPPBdcGrhs7s9dvLhZ51E=;
+ b=JTL+Xom1Z7czaE9uyevVnYYJIzOUdevadqBAm85e7iQExWUzvTzVhPIcJ6WCn2QrQh
+ ZINgNJjyFmfk5yh4YaOOOD2G407XOz/ALnSHI6zC9fARDEqeyJYZZ91Evxj4DMqeykKR
+ rfMw0XFlOWkGRSa2/Yd5aC823W//UdrZdUQqCC2BbRVtChYmNZNjNtTQgMldMRWK3eCU
+ kC/kGNYqgfjxxGLomWJG9GS8gJxGxu949yBhBTbqB1c3h/MqOevHnyuheze8TYr22dJE
+ rc8J/o87WPOs3Du9RV71Xka0dZxfGzxMtzk05CqQvgnJSzUwBb0i/fbIjzZJ/CBJw5J3
+ rMeA==
+X-Gm-Message-State: AO0yUKXSSSIRFTt8TqA1D7s5xeO89Ka6Pt3RsIMGOKCDOYOE3UZG2sMJ
+ Z/zgzpEA05J6Oh1Y8I4cFQ==
+X-Google-Smtp-Source: AK7set8/0qEFxBOGZr4WEUquF66k/9USt4Hb9aZLwSyX4t9XclvAwOXr5VkKe7LmJGpajO8W4MjLcQ==
+X-Received: by 2002:a9d:66ce:0:b0:68b:d30e:7aa3 with SMTP id
+ t14-20020a9d66ce000000b0068bd30e7aa3mr6048424otm.33.1675461704923; 
+ Fri, 03 Feb 2023 14:01:44 -0800 (PST)
 Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
  [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
- a26-20020a056808099a00b00378ce4197casm1276811oic.8.2023.02.03.13.57.24
+ j74-20020a9d17d0000000b0068bd04b4292sm1612292otj.31.2023.02.03.14.01.44
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 03 Feb 2023 13:57:25 -0800 (PST)
-Received: (nullmailer pid 947483 invoked by uid 1000);
- Fri, 03 Feb 2023 21:57:24 -0000
-Date: Fri, 3 Feb 2023 15:57:24 -0600
+ Fri, 03 Feb 2023 14:01:44 -0800 (PST)
+Received: (nullmailer pid 952016 invoked by uid 1000);
+ Fri, 03 Feb 2023 22:01:43 -0000
+Date: Fri, 3 Feb 2023 16:01:43 -0600
 From: Rob Herring <robh@kernel.org>
-To: Shenghao Ding <13916275206@139.com>
-Subject: Re: [PATCH v5] ASoC: dt-bindings: Add tas2781 amplifier
-Message-ID: <20230203215724.GA938713-robh@kernel.org>
-References: <20230203040115.27321-1-13916275206@139.com>
+To: Kiseok Jo <kiseok.jo@irondevice.com>
+Subject: Re: [PATCH 1/3] ASoC: dt-bindings: irondevice,sma1303: Rework
+ binding and add missing properties
+Message-ID: <20230203220143.GA947805-robh@kernel.org>
+References: <20230203094239.25700-1-kiseok.jo@irondevice.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230203040115.27321-1-13916275206@139.com>
+In-Reply-To: <20230203094239.25700-1-kiseok.jo@irondevice.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,153 +86,22 @@ List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, shenghao-ding@ti.com, linux-kernel@vger.kernel.org,
- kevin-lu@ti.com, broonie@kernel.org, krzysztof.kozlowski+dt@linaro.org
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Feb 03, 2023 at 12:01:15PM +0800, Shenghao Ding wrote:
-> Create tas2781.yaml for tas2781 driver.
+On Fri, Feb 03, 2023 at 09:42:37AM +0000, Kiseok Jo wrote:
+> Fix according to the writing-schema.rst file and tested.
+> Add the missing property as compatible, reg, sys-clk-id.
 > 
-> Signed-off-by: Shenghao Ding <13916275206@139.com>
-> 
+> Signed-off-by: Kiseok Jo <kiseok.jo@irondevice.com>
 > ---
-> Changes in v5:
->  - Drop the full stop in the Subject.
->  - Drop the reset-gpios reference to gpio.txt.
->  - Add Changelog.
->  Changes to be committed:
-> 	new file:   Documentation/devicetree/bindings/sound/ti,tas2781.yaml
-> ---
->  .../devicetree/bindings/sound/ti,tas2781.yaml | 87 +++++++++++++++++++
->  1 file changed, 87 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/ti,tas2781.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/ti,tas2781.yaml b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
-> new file mode 100644
-> index 000000000000..8af44792a904
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/ti,tas2781.yaml
-> @@ -0,0 +1,87 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (C) 2022 - 2023 Texas Instruments Incorporated
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/ti,tas2781.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Texas Instruments TAS2781 SmartAMP
-> +
-> +maintainers:
-> +  - Shenghao Ding <shenghao-ding@ti.com>
-> +  - Kevin Lu <kevin-lu@ti.com>
-> +
-> +description: |
+>  .../bindings/sound/irondevice,sma1303.yaml    | 35 +++++++++++++++++--
+>  1 file changed, 32 insertions(+), 3 deletions(-)
 
-Don't need '|' unless you need line endings preserved. Wrap lines at 80 
-chars.
+What's the output of 'make dt_binding_check'? Asking since linux-next 
+has been broken in different ways with this schema.
 
-> +  The TAS2781 is a mono, digital input Class-D audio amplifier
-> +  optimized for efficiently driving high peak power into small
-> +  loudspeakers. Integrated an on-chip DSP supports Texas Instruments
-> +  Smart Amp speaker protection algorithm. The integrated speaker
-> +  voltage and current sense provides for real time
-> +  monitoring of loudspeaker behavior.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - ti,tas2781
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description: |
-> +      I2C address of the device can be in range from 0x38 to 0x40.
-
-Express as constraints instead:
-
-items:
-  minimum: 0x38
-  maximum: 0x40
-
-Or was this the range of the slot addresses?
-
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +    description: |
-> +      A GPIO line handling reset of the chip. As the line is active high,
-> +      it should be marked GPIO_ACTIVE_HIGH.
-
-The description doesn't add anything. Drop.
-
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  ti,audio-slots:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    minItems: 1
-> +    maxItems: 4
-> +    description: |
-> +      I2c address of the device for different audio slots,
-
-I2C
-
-> +      useless in mono case.
-> +
-> +  ti,broadcast-addr:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: |
-> +      Generic i2c address for all the tas2781 devices in
-
-I2C
-
-Be consistent.
-
-> +      purpose of I2C broadcast during the multi-device
-> +      writes, useless in mono case.
-> +
-> +  '#sound-dai-cells':
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +   #include <dt-bindings/gpio/gpio.h>
-> +   i2c {
-> +     /* example with quad support, such as tablet or pad device */
-> +     #address-cells = <1>;
-> +     #size-cells = <0>;
-> +     quad: codec@38 {
-> +       compatible = "ti,tas2781";
-> +       reg = <0x38>;
-> +       #sound-dai-cells = <1>;
-> +       reset-gpios = < &gpio1 10 GPIO_ACTIVE_HIGH >;
-> +       interrupt-parent = <&gpio1>;
-> +       interrupts = <15>;
-> +       ti,audio-slots = < 0x38 /* topleft-channel */
-> +                          0x39 /* topright-channel */
-> +                          0x3a /* bottomleft-channel */
-> +                          0x3b /* bottomright-channel */
-
-Do these vary? Or the slot addresses are fixed and which slots are used 
-varies? 
-
-> +                        >;
-> +       ti,broadcast-addr = <0x40>;
-
-I tend to think the I2C addresses should all be in 'reg'.
-
-> +     };
-> +   };
-> +...
-> -- 
-> 2.34.1
-> 
-> 
+Rob
