@@ -4,67 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23333C61DA4
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 13:12:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50A37C05027
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 13:36:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D70111CF;
-	Mon,  6 Feb 2023 14:11:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D70111CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D008F7;
+	Mon,  6 Feb 2023 14:35:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D008F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675689147;
-	bh=bj7z4VfBMW0oYbqujy/aQRtk9/bVRQMqEKQV5nfKues=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1675690558;
+	bh=DrSwxjkFAAX2EJQKx6EFPodKze9FWg8UlocWmWLGPxk=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=oSwiX9jMz65V7KZz+buE0/WDAkx4k//ll+FIz3+IrjldzIIMoWVWmWh4ElA7WcoD+
-	 o7tziU+gFBeXXjyJC44uQSO7/8lXaRlU5fEWgKwtqglkSkR0BKDczgSYT45ES2GliG
-	 xsPE5i/mXGLtdnnNO4TnvQFoclzP+42pUG5Jrzk0=
+	b=TXKkKnEsDkE6Uv7Qwl28VBWlRhgJB0P+N02NwczU1XpMuNnMxFW7c/IMAXHK7Oyoy
+	 IuVUWwrTU1wAjp4uP+etEzw+myKmCfI652xHTGgpM3DkrMTY7aaqJXHwEOd+0+eDV7
+	 a5Xz2GL9EbIzpYt+Ud6/Q/8A0+dlyXKe2zqMQw+M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6765AF804E7;
-	Mon,  6 Feb 2023 14:11:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1EB7F804E7;
+	Mon,  6 Feb 2023 14:35:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7881F804F1; Mon,  6 Feb 2023 14:11:25 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 494CDF80254; Fri,  3 Feb 2023 16:57:49 +0100 (CET)
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [IPv6:2607:7c80:54:3::133])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE6D7F800E3
- for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 14:11:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE6D7F800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 37820F80022
+ for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2023 16:57:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37820F80022
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ENQBymOO
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 7CC7AB81097;
- Mon,  6 Feb 2023 13:11:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 311CAC4339B;
- Mon,  6 Feb 2023 13:11:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1675689074;
- bh=bj7z4VfBMW0oYbqujy/aQRtk9/bVRQMqEKQV5nfKues=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=ENQBymOO24Jnyr4VXvEPADyvpAYXELsy8/mAecH3s6YB24bNFEVL8BFmZMrOvWAcn
- ZlO0x03R3ukRxX57XbPUaCgM1mFij9Dp2DMSBkHwrZFVSK5LPo2mCIYsynkL/BDRA2
- Lny52Ca7Vc+5ltaljbmgUaWNgc5pAXyQq6AEZ3e28zeMs5CLytMYIfEtbZ0lRGXeBo
- rWt335esryV+W9Wb0BSl5QlTI8U4dPWd3IVkU+4eLfWUT4iB6CFQSAQYPRHEqgKQan
- 4/lyKzwSM9JLPTdZ8ocIKeabdHCcHvCSVi36DPgZ2C0E+nRlYNVT0lQtaCJz1abJX1
- v9mZQyaG5dVaw==
-Date: Mon, 6 Feb 2023 13:11:09 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Daniel Beer <daniel.beer@igorinstitute.com>
-Subject: Re: [PATCH v3 2/2] ASoC: tas5805m: add missing page switch.
-Message-ID: <Y+D8bf/19aOL7Wzl@sirena.org.uk>
-References: <cover.1675497326.git.daniel.beer@igorinstitute.com>
- <1fea38a71ea6ab0225d19ab28d1fa12828d762d0.1675497326.git.daniel.beer@igorinstitute.com>
+ secure) header.d=infradead.org header.i=@infradead.org header.a=rsa-sha256
+ header.s=bombadil.20210309 header.b=mxbhKN8e
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+ Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+ bh=RABYZKQEnf0QK23SEeW3xVSQhJGlQ3o0a9xB2pxXdFg=; b=mxbhKN8eDLHf3sRbpUD1Pm5ad9
+ DUxn/adCxDe6jPyxHF/gdCrJDf3lsIsIixEOuV8CpNuzkiX752ZBaf0wsnY0b2i3cM9FUEcN20eX2
+ rIR05AXVLD17i/oQNhbkjja3UIifH2qUWnxDkJqAUC7NG8o6c1/1J2q0zeQmeJMRLojURzkVBUv7W
+ j9O4rmt4LMN1wjI6tRgPyBaBqiFphCrvwmB0uTJBDK4DzjkMj6rO8E5wNKaysJXqmttqL9r4yHFrh
+ f47+XS3tx6LOOWc7AZ91W6sFA96KtfzRuvr3oItFzuKm5u8MGjDHAAIf0SDJC5iX+lV71N215QhEo
+ +ggV+adQ==;
+Received: from [2601:1c2:d00:6a60::9526]
+ by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1pNyR8-002pf0-3m; Fri, 03 Feb 2023 15:57:14 +0000
+Message-ID: <f6a60193-a5d1-c42c-158a-4b0bfe9c7538@infradead.org>
+Date: Fri, 3 Feb 2023 07:57:12 -0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="lwql8M/YpjFd8AGP"
-Content-Disposition: inline
-In-Reply-To: <1fea38a71ea6ab0225d19ab28d1fa12828d762d0.1675497326.git.daniel.beer@igorinstitute.com>
-X-Cookie: Hope is a waking dream.
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: remove arch/sh
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+References: <20230113062339.1909087-1-hch@lst.de>
+ <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
+ <20230116071306.GA15848@lst.de>
+ <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
+ <20230203071423.GA24833@lst.de>
+ <afd056a95d21944db1dc0c9708f692dd1f7bb757.camel@physik.fu-berlin.de>
+ <20230203083037.GA30738@lst.de>
+ <d10fe31b2af6cf4e03618f38ca9d3ca5c72601ed.camel@physik.fu-berlin.de>
+ <CAMuHMdUitVfW088YOmqYm4kwbKwkwb22fAakHcu6boxv7dXDfQ@mail.gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <CAMuHMdUitVfW088YOmqYm4kwbKwkwb22fAakHcu6boxv7dXDfQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailman-Approved-At: Mon, 06 Feb 2023 14:35:03 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -77,37 +85,73 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Andy Liu <andy-liu@ti.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: linux-fbdev@vger.kernel.org, Rich Felker <dalias@libc.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, linux-sh@vger.kernel.org,
+ linux-rtc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ netdev@vger.kernel.org, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi--
 
---lwql8M/YpjFd8AGP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 2/3/23 02:33, Geert Uytterhoeven wrote:
+> Hi Adrian,
+> 
+> On Fri, Feb 3, 2023 at 11:29 AM John Paul Adrian Glaubitz
+> <glaubitz@physik.fu-berlin.de> wrote:
+>> On Fri, 2023-02-03 at 09:30 +0100, Christoph Hellwig wrote:
+>>> On Fri, Feb 03, 2023 at 09:24:46AM +0100, John Paul Adrian Glaubitz wrote:
+>>>> Since this is my very first time stepping up as a kernel maintainer, I was hoping
+>>>> to get some pointers on what to do to make this happen.
+>>>>
+>>>> So far, we have set up a new kernel tree and I have set up a local development and
+>>>> test environment for SH kernels using my SH7785LCR board as the target platform.
+>>>>
+>>>> Do I just need to send a patch asking to change the corresponding entry in the
+>>>> MAINTAINERS file?
+>>>
+>>> I'm not sure a there is a document, but:
+>>>
+>>>  - add the MAINTAINERS change to your tree
+>>>  - ask Stephen to get your tree included in linux-next
+>>>
+>>> then eventually send a pull request to Linus with all of that.  Make
+>>> sure it's been in linux-next for a while.
+>>
+>> OK, thanks for the pointers! Will try to get this done by next week.
+>>
+>> We're still discussing among SuperH developer community whether there will be a second
+>> maintainer, so please bear with us a few more days. I will collect patches in the
+>> meantime.
+> 
+> Thanks a lot!
+> 
+> If you need any help with process, setup, ... don't hesitate to ask
+> (on e.g. #renesas-soc on Libera).
 
-On Thu, Oct 27, 2022 at 09:38:38PM +1300, Daniel Beer wrote:
-> In tas5805m_refresh, we switch pages to update the DSP volume control,
-> but we need to switch back to page 0 before trying to alter the
-> soft-mute control. This latter page-switch was missing.
+While Adrian and Geert are reading this, I have a question:
 
-You should just use the register windowing support in regmap, it will
-take care of this for you, avoiding any further similar errors.
+Is this "sh64" still accurate and applicable? from Documentation/kbuild/kbuild.rst:
 
---lwql8M/YpjFd8AGP
-Content-Type: application/pgp-signature; name="signature.asc"
+But some architectures such as x86 and sparc have aliases.
 
------BEGIN PGP SIGNATURE-----
+- x86: i386 for 32 bit, x86_64 for 64 bit
+- sh: sh for 32 bit, sh64 for 64 bit <<<<<<<<<<<<<<<
+- sparc: sparc32 for 32 bit, sparc64 for 64 bit
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPg/G0ACgkQJNaLcl1U
-h9AuSQf9EIW5Ag9rte8wlMbJdknCSfP5QH1E+2rlRNZ1vU7bbCbj80l55CjyNJoN
-qk3UDHU5n/Vx/NF2rvqO+FS9WmVsaZOQF6QQLeNjId4674oNZbWPjGeGY0Xb/PPH
-1MLwW0+33bChc4YGHuBu/aaVrTUxYdTSDoPKCSBz4eU3yHgmxhv5nYmIsa8CGNHT
-aiHQebGLtf5GuZ7MOkSbQi1NsdCeVBzC4/VCpYtflEjFF136pYUp3PEXUjdah+lR
-m6P62noZIflD/Hyu6CrkK+PajErpp7vKwcn46Z6LcGCx2FJ96N3rZUS20fG4c5Bs
-16awfDAQeRN1MBCfGB33EUHNaCajFg==
-=W1Zr
------END PGP SIGNATURE-----
 
---lwql8M/YpjFd8AGP--
+
+Thanks.
+-- 
+~Randy
