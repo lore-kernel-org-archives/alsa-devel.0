@@ -4,88 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08F52C05027
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 15:06:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90F59C636D3
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 15:21:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1CCDA1EB;
-	Mon,  6 Feb 2023 16:05:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CCDA1EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 09ED8FA;
+	Mon,  6 Feb 2023 16:20:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09ED8FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675695994;
-	bh=xj7MQynLBpo+XB3+sKlUiA5fGyS2Apw1llbssqMWXzo=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=BaCDrFzVJPFFCgBCs2mVjjPmOEoTjHnRC85J7GpxjU4LRp16ziu36mcaniJ0mo59n
-	 Dvwq9R6+TwvsZo325e3uqzKtakS3vKU7QMVc+lrxCyy+pUKX/22SiZqwWTekxHdEA0
-	 yjjWhmvjjyW4uO+snuDztc3kG1jQ2SQwDc2P4kqY=
+	s=default; t=1675696867;
+	bh=VY/4txuOr/CHvl+E4Ut2tqQwAqaXZViNwIEQb0oI0f0=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=UGtJPj2Ak0gSF/QQhJ3JeBuG1VnewVJKj/rEEi+haNdhexLPUjtFFe3VDGaC8YH7+
+	 ixaWLdvRfyBhE1Y+Vqkm/2oujwBQUbjGIVi2kwmkh1CSvLZHPh8PhOySxjfde9S8K0
+	 CUln52KyPCoizi5FtzWMjCmUiEBB/jkmV1k2sKvs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 923A4F804E7;
-	Mon,  6 Feb 2023 16:05:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A4BE3F8014B;
+	Mon,  6 Feb 2023 16:20:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A42E4F804F1; Mon,  6 Feb 2023 16:05:42 +0100 (CET)
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
- [IPv6:2a00:1450:4864:20::42c])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 21282F804FB; Mon,  6 Feb 2023 16:20:14 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C0900F800E3
- for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 16:05:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0900F800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6F109F800E3
+ for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 16:20:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F109F800E3
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=wyheIegP
-Received: by mail-wr1-x42c.google.com with SMTP id k13so3251274wrh.8
- for <alsa-devel@alsa-project.org>; Mon, 06 Feb 2023 07:05:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date:message-id:reply-to;
- bh=amhvuQJiOyM43SbMnQxHq99ru2XL4cfNPHdX1Hxtb1E=;
- b=wyheIegPWInE+xuWRmetJaDQ6503y6u+ZY4Z/UZOQjNiKTXIDL9x4feew6EE7T8u97
- ZzuCwIHrchMRL8gxV+f9j9YMxTO2FGa+vCzRrj5o5rSKyH2DGEiZ5gTFY8ysGLPw+7QD
- 5JkqDA+GzCE5VrVW3k3d2VoLwqjNaRiJiaiU0G0xbh53O4hoLaSVcMy11OooGTv5ftIb
- jnUFO7yWjmptevIW67Fwx0V/tzyylKvZSsFvjU5KH9UCGMqi81UaotxPDh6o8+7CzSmx
- Oqv+TC5CYH9Ocaiz9pl0mX6/S0uycTWNiJpdfFKChHlE7/JX5UU2cBCua/Oisf8JN3SF
- YWfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=amhvuQJiOyM43SbMnQxHq99ru2XL4cfNPHdX1Hxtb1E=;
- b=4HT53crgg/dSpPC2AcaotQT8jOqTDR/1TTJMQwsHkfS5KxwEG7CojXm4Ac2gcIx+bp
- jU4s3zMj/Ou+NFEiJns5eKr/A4cgJ+sW5ruMxYBrJxz9zGQg9CKC/pIQtmgmzh6Sti9j
- z7roYWc2CPRWr2zeYhUwwXJ44LVzKVVGZJ4bgUK0+xQ/t952k/4t7aVZMGfiY2s9DcPa
- W3qt5WeBo048ibNwTydw+EAG95Sz7fN5ndp1U28may/U5dNaz/KaGn6FQ0ttV8LC0WEH
- jHkj1RpIc2kAis7AowVyrbtRhFj6kAEslo4E1exnLUmmCPxYoPkdkyduQskuFDlDMK0i
- WhrA==
-X-Gm-Message-State: AO0yUKVXitP+4+iCKbw6n432uuGcaachva/F1ueVSH5nOcL7UcR/wSkW
- UmACs7yAya4slwyZR24T9Whxmg==
-X-Google-Smtp-Source: AK7set87ORlIh4onmuZwhL5ZeCR/96bwUDAU2cystvVCwMKhtFZxhlwVf6cQZ1UtL61nGykNveZhfg==
-X-Received: by 2002:adf:e192:0:b0:2bd:fd81:b503 with SMTP id
- az18-20020adfe192000000b002bdfd81b503mr18911355wrb.1.1675695937848; 
- Mon, 06 Feb 2023 07:05:37 -0800 (PST)
-Received: from krzk-bin.. ([178.197.216.144]) by smtp.gmail.com with ESMTPSA id
- i14-20020a0560001ace00b002bfb8f829eesm9543492wry.71.2023.02.06.07.05.36
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 06 Feb 2023 07:05:37 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: dt-bindings: qcom,
- q6apm-dai: adjust iommus for SM8550 ADSP
-Date: Mon,  6 Feb 2023 16:05:32 +0100
-Message-Id: <20230206150532.513468-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=bWODPXG1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1675696810; x=1707232810;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=VY/4txuOr/CHvl+E4Ut2tqQwAqaXZViNwIEQb0oI0f0=;
+ b=bWODPXG19R6y3irt2iQAZafA60ZM9repLjW61xLPyX8EnDMeGeFuRdli
+ cy+JhG55QGeH8rT4cL5tF84Mjo7i1TEz7XhWbnP60YzHw1n8wEWrneNgr
+ x0hibH9mlqIkq0g8FFvNG6eiIXw3uqdY4wl4KAW83TIxfFhB1dVwmETzk
+ gq+IE81ineWE3qKyBBnKlecYruAF9P2ba56+gZVe30tJfyYxTF29sbJJx
+ oWthu2FsdtFsQr79OAI2rQZhoM+lD4aNZHAWtr5+OhCtrtkmFqzoKLMKC
+ nHgMHvj20fSas9KEcTXPrgl+7JrhxNg6KAl6/znhbDyIIGQeNccBAfHdN A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10613"; a="331360719"
+X-IronPort-AV: E=Sophos;i="5.97,276,1669104000"; d="scan'208";a="331360719"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Feb 2023 07:20:02 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10613"; a="696888657"
+X-IronPort-AV: E=Sophos;i="5.97,276,1669104000"; d="scan'208";a="696888657"
+Received: from pmagdum-mobl1.amr.corp.intel.com (HELO [10.209.159.190])
+ ([10.209.159.190])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Feb 2023 07:20:01 -0800
+Message-ID: <4398e3f3-ea2f-1e23-d64b-39723e4790d2@linux.intel.com>
+Date: Fri, 3 Feb 2023 18:54:00 -0600
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.4.2
+Subject: Re: Overflow in calculating audio timestamp
+To: Jaroslav Kysela <perex@perex.cz>, Alan Young <consult.awy@gmail.com>,
+ o-takashi@sakamocchi.jp
+References: <70ff4e3a-b171-131c-a039-4fc99aa4bbfc@gmail.com>
+ <Y9xWlbhPg3PteH5G@workstation>
+ <2598bf64-708c-cf62-e634-44db5a850226@gmail.com>
+ <74350bce-a6ea-c3b8-7b00-4deb47f7e623@perex.cz>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <74350bce-a6ea-c3b8-7b00-4deb47f7e623@perex.cz>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -99,31 +87,115 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: alsa-devel@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-It seems that SM8550 ADSP remote processor uses two IOMMUs.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml b/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
-index a53c9ef938fa..cdbb4096fa44 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
-@@ -17,7 +17,8 @@ properties:
-     const: qcom,q6apm-dais
- 
-   iommus:
--    maxItems: 1
-+    minItems: 1
-+    maxItems: 2
- 
- required:
-   - compatible
--- 
-2.34.1
+On 2/3/23 12:02, Jaroslav Kysela wrote:
+> On 03. 02. 23 17:11, Alan Young wrote:
+>>
+>> On 03/02/2023 00:34, Takashi Sakamoto wrote:
+>>> Hi,
+>>>
+>>> Thank you for the report.
+>>>
+>>> On Thu, Feb 02, 2023 at 01:55:24PM +0000, Alan Young wrote:
+>>>> sound/core/pcm_lib.c:update_audio_tstamp() contains the following
+>>>> calculation:
+>>>>
+>>>>           audio_nsecs = div_u64(audio_frames * 1000000000LL,
+>>>>                   runtime->rate);
+>>>>
+>>>> This will result in a 64-bit overflow after 4.4 days at 48000 Hz, or
+>>>> 1.1
+>>>> days at 192000.
+>>>>
+>>>> Are you interested in a patch to improve this?
+>>>>
+>>>> The same calculation occurs in a couple of other places.
+>>> I'm interested in your patch. Would you please post it C.C.ed to the
+>>> list and me?  As you noted, we can see the issue in ALSA PCM core and
+>>> Intel HDA stuffs at least.
+>>>
+>>>    * sound/core/pcm_lib.c
+>>>    * sound/pci/hda/hda_controller.c
+>>>    * sound/soc/intel/skylake/skl-pcm.c
+>>>
+>>> I note that 'NSEC_PER_SEC' macro is available once including
+>>> 'linux/time.h'. It is better to use instead of the literal.
+>>> The macro is defined in 'include/vdso/time64.h'.
+>>>
+>>>
+>>> As another issue, the value of 'audio_frames' comes from the value of
+>>> 'struct snd_pcm_runtime.hw_ptr_wrap'. In ALSA PCM core, the value is
+>>> increased by the size of PCM buffer every time hw_ptr cross the boundary
+>>> of PCM buffer, thus multiples of the size is expected. Nevertheless,
+>>> there is no check for overflow within 64 bit storage. In my opinion, the
+>>> committer had less care of it since user does not practically
+>>> playback or
+>>> capture PCM substream so long. But the additional check is preferable as
+>>> long as it does not break the fallback implementation of audio time
+>>> stamp.
+>>
+>>
+>> I have not yet finished testing various alternatives. I want to extend
+>> the overflow by "enough" and also am conscious of the need to keep the
+>> overhead down.
+>>
+>> I actually think, on reflection, that the only case that matters is the
+>> call from update_audio_tstamp(). The others only deal with codec delays
+>> which will be small (unless I misunderstand those drivers).
+>>
+>> This is what I have so far but I'll submit a proper patch when I have it
+>> refined.
+>>
+>> static u64 snd_pcm_lib_frames_to_nsecs(u64 frames, unsigned int rate)
+>> {
+>>       /*
+>>        *  Avoid 64-bit calculation overflow after:
+>>        *  - 4.8 days @ 44100
+>>        *  - 0.56 days @ 384000
+>>        *  extending these intervals by a factor of 100.
+>>        */
+>>       if (frames < 0xffffffffffffffffLLU / NSEC_PER_SEC)
+>>           return div_u64(frames * NSEC_PER_SEC, rate);
+>>
+>>       if (rate % 100 == 0)
+>>           return div_u64(frames * (NSEC_PER_SEC/100), (rate/100));
+>>
+>>       /* Fallback: reduce precision to approximately
+>> deci-micro-seconds: 1.28e-7 */
+>>       return div_u64(frames * (NSEC_PER_SEC >> 7), rate) << 7;
+>> }
+> 
+> Thank you for your suggestion, but I think that the *whole* code for
+> !get_time_info in update_audio_tstamp() should be recoded. The calling
+> of ns_to_timespec64() is not enough to handle the boundary wraps in a
+> decent range (tenths years for 24x7 operation) and the bellow code is
+> dangerous for 32-bit apps / system:
+> 
+>      if (crossed_boundary) {
+>                 snd_BUG_ON(crossed_boundary != 1);
+>                 runtime->hw_ptr_wrap += runtime->boundary;
+>      }
+> 
+> I would probably propose to have just hw_ptr_wrap +1 counter (we can
+> reconstruct the frame position back by multiplication and do range check
+> later), remove snd_BUG_ON and improve the timespec64 calculation.
+> 
+> The calculation should be split to two parts (tv_sec / tv_nsec):
+> 
+> 1) calculate seconds: (frames / rate)
+> 2) calculate the remainder (ns): ((frames % rate) * NSEC_PER_SEC) / rate
+> 
+> With 64-bit integer range, we should go up to (for 384000Hz rate):
+> 
+> 2**64 / 384000 / 3600 / 24 / 365 = ~1523287 years
+> 
+> Maybe I did a mistake somewhere. I'm open for comments.
 
+I am not following how the boundary comes into play for cases where the
+timestamp comes directly from a link counter, and is not related to the
+DMA hw_ptr at all.
