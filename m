@@ -4,71 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E3EEC61DA4
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 13:39:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C6EBC61DA4
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 13:39:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 330DE82A;
-	Mon,  6 Feb 2023 14:38:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 330DE82A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99E87847;
+	Mon,  6 Feb 2023 14:38:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99E87847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675690742;
-	bh=m+i1k0f7864cwO7P9NjkFdCfTGSkOvxgAujphgFDvz8=;
-	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
+	s=default; t=1675690748;
+	bh=OlO9TnU1Zb+6h32WFcOgQ4VPZyMFEj+oLrHw9/dO0c8=;
+	h=Subject:From:To:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=UohVkPa1smHmR7XmBOlGozZ+RQcflzURpLuX9L9Dmbq8fX+7XG3dd7V59Ztj+pmFe
-	 znQMnUiLS8kZQ75RNr2ZiRJPJCRdF0VhxBkxpWO0hDQjJAZAvCvNEVIFl+Vy7dGku5
-	 TCIypJzK4vrvDdPTAaDTjDtgPjwznH3u6DkrJ9dY=
+	b=SclusBcwsjoQmMtrfKsku4nAnO67dHUIrQPZ++rwUFXqzBMbHFkCIARux8qaesKZl
+	 Jp65Iy9A9xzfKDopwbSoT49SCtzLwNfVVpaP7wuNlbv0IHbtgzlwBr6I6iQvKCE9hQ
+	 C5iSy9M+xuL7AGeo6qMWGt0sVukpHDj0j1Y2raE8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0ABE1F805A0;
+	by alsa1.perex.cz (Postfix) with ESMTP id 9B520F805A8;
 	Mon,  6 Feb 2023 14:35:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 72B54F804AA; Mon,  6 Feb 2023 00:09:24 +0100 (CET)
-Received: from gandalf.ozlabs.org (mail.ozlabs.org
- [IPv6:2404:9400:2221:ea00::3])
+ id E278FF8014B; Mon,  6 Feb 2023 00:20:54 +0100 (CET)
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de
+ [130.133.4.66])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 27419F8014B
- for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 00:09:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27419F8014B
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- secure) header.d=canb.auug.org.au header.i=@canb.auug.org.au
- header.a=rsa-sha256 header.s=201702 header.b=ZnYADCx5
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest
- SHA256) (No client certificate requested)
- by mail.ozlabs.org (Postfix) with ESMTPSA id 4P94p10kzhz4x1f;
- Mon,  6 Feb 2023 10:08:56 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
- s=201702; t=1675638543;
- bh=pNXUawnaU3qfDTxBKpmXsJPpQ4kMgE5LZAjUfYaVNaQ=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=ZnYADCx5yiYMn3pkGOedm0t/sNMIjkMYLf/dBTxabGoodLOZTSPJETPuFDge/Cde4
- aIRPsac6jVpl6zYzM5s0sf9qZ8PH7w9zSC17MHdHR3/1Prai5iUUUHvsKOEj2nhHO3
- Cblnv6/K2AhBj4YkTU2WIyVtn11Iyu9muX3ILcAHxEldyx9xBhSO4GKxKXmaTccHeU
- yYw5esGxcNGOWPs8dnxojmNjd9fFKZA9h2nPmfY09YsEtc/xrY2g/H5zDiLVhBoJXQ
- OF2qL+X7Qm4pEDL2kEKjgtpjAAAz7yUq4t9yOAfwzn4aDqbJ6ZpjiHa3qtmhjT39nt
- 0JnygHWxXhFVw==
-Date: Mon, 6 Feb 2023 10:08:55 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F2DEF8014B
+ for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 00:20:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F2DEF8014B
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+ by outpost.zedat.fu-berlin.de (Exim 4.95) with esmtps (TLS1.3)
+ tls TLS_AES_256_GCM_SHA384
+ (envelope-from <glaubitz@zedat.fu-berlin.de>)
+ id 1pOoJC-003MG3-TF; Mon, 06 Feb 2023 00:20:30 +0100
+Received: from dynamic-077-183-123-111.77.183.pool.telefonica.de
+ ([77.183.123.111] helo=[192.168.1.11])
+ by inpost2.zedat.fu-berlin.de (Exim 4.95) with esmtpsa (TLS1.3)
+ tls TLS_AES_256_GCM_SHA384
+ (envelope-from <glaubitz@physik.fu-berlin.de>)
+ id 1pOoJC-0046Y6-LE; Mon, 06 Feb 2023 00:20:30 +0100
+Message-ID: <98d8ae20998c70988db52ba26f0a4e02ff2295a1.camel@physik.fu-berlin.de>
 Subject: Re: remove arch/sh
-Message-ID: <20230206100856.603a0f8f@canb.auug.org.au>
-In-Reply-To: <20230203083037.GA30738@lst.de>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 06 Feb 2023 00:20:29 +0100
+In-Reply-To: <20230206100856.603a0f8f@canb.auug.org.au>
 References: <20230113062339.1909087-1-hch@lst.de>
  <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
  <20230116071306.GA15848@lst.de>
  <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
  <20230203071423.GA24833@lst.de>
  <afd056a95d21944db1dc0c9708f692dd1f7bb757.camel@physik.fu-berlin.de>
- <20230203083037.GA30738@lst.de>
+ <20230203083037.GA30738@lst.de> <20230206100856.603a0f8f@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.3 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/9=gZIOzZKIZz.T3XwOWz_99";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 77.183.123.111
 X-Mailman-Approved-At: Mon, 06 Feb 2023 14:35:04 +0100
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
@@ -100,60 +95,49 @@ Cc: linux-fbdev@vger.kernel.org, Rich Felker <dalias@libc.org>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
---Sig_/9=gZIOzZKIZz.T3XwOWz_99
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Stephen!
 
-Hi,
-
-On Fri, 3 Feb 2023 09:30:37 +0100 Christoph Hellwig <hch@lst.de> wrote:
->
-> On Fri, Feb 03, 2023 at 09:24:46AM +0100, John Paul Adrian Glaubitz wrote:
-> > Since this is my very first time stepping up as a kernel maintainer, I =
-was hoping
-> > to get some pointers on what to do to make this happen.
-> >=20
-> > So far, we have set up a new kernel tree and I have set up a local deve=
-lopment and
-> > test environment for SH kernels using my SH7785LCR board as the target =
-platform.
-> >=20
-> > Do I just need to send a patch asking to change the corresponding entry=
- in the
-> > MAINTAINERS file? =20
+On Mon, 2023-02-06 at 10:08 +1100, Stephen Rothwell wrote:
+> Hi,
 >=20
-> I'm not sure a there is a document, but:
+> On Fri, 3 Feb 2023 09:30:37 +0100 Christoph Hellwig <hch@lst.de> wrote:
+> >=20
+> > On Fri, Feb 03, 2023 at 09:24:46AM +0100, John Paul Adrian Glaubitz wro=
+te:
+> > > Since this is my very first time stepping up as a kernel maintainer, =
+I was hoping
+> > > to get some pointers on what to do to make this happen.
+> > >=20
+> > > So far, we have set up a new kernel tree and I have set up a local de=
+velopment and
+> > > test environment for SH kernels using my SH7785LCR board as the targe=
+t platform.
+> > >=20
+> > > Do I just need to send a patch asking to change the corresponding ent=
+ry in the
+> > > MAINTAINERS file? =20
+> >=20
+> > I'm not sure a there is a document, but:
+> >=20
+> >  - add the MAINTAINERS change to your tree
+> >  - ask Stephen to get your tree included in linux-next
 >=20
->  - add the MAINTAINERS change to your tree
->  - ask Stephen to get your tree included in linux-next
+> And by "Stephen", Christoph means me.  When you are ready, please send
+> me a request to include your tree/branch in linux-next (usually the
+> branch is called something like "for-next" or just "next") telling me
+> the git URL, and the contacts I should send email to if there are
+> conflicts/build issues with the branch.  I will then fetch the branch
+> every time I create a new linux-next release (most work days), so all
+> you need to do is update that branch each time you are ready to publish
+> more commits.
 
-And by "Stephen", Christoph means me.  When you are ready, please send
-me a request to include your tree/branch in linux-next (usually the
-branch is called something like "for-next" or just "next") telling me
-the git URL, and the contacts I should send email to if there are
-conflicts/build issues with the branch.  I will then fetch the branch
-every time I create a new linux-next release (most work days), so all
-you need to do is update that branch each time you are ready to publish
-more commits.
+Thanks a lot! I will start with that tomorrow with Geert giving me some gui=
+dance.
+
+Adrian
 
 --=20
-Cheers,
-Stephen Rothwell
-
---Sig_/9=gZIOzZKIZz.T3XwOWz_99
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmPgNwgACgkQAVBC80lX
-0GzQVAgAjy+Ruo0rndMBlq3LUsn3e3WM6k7+dwjW7y5KrWBUtO9yrheMEypNr12O
-byLw07yy1/H56vz7bZJN3IaFDMrx7kFxU2Rfi4K2lkrd5y7hRGFHFbyG9KACdTVo
-d4yMastrzpa4sqz6druszU7GDQnWEFS8+bdy18sKOXOIF2A4/bCfyPcwbu6WcX9U
-PWBzYOIqYThwk1BW+po7wuq+KMZW0337iVEob5zS9qRotE98YCs2zc5AjSg1XQx3
-SWMIA+zrNKOlxUJ9BUoeDAQUoe6UJjekpz9o0j9q/w1DDNKl9mXQ5q+JvpuzrtGj
-5u71j4opYj+PidkCy3HMoXj2z0tlFw==
-=TRVa
------END PGP SIGNATURE-----
-
---Sig_/9=gZIOzZKIZz.T3XwOWz_99--
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
