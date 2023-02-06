@@ -4,84 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67D08C63797
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 15:37:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33B1DC636D3
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 15:37:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50AF884C;
-	Mon,  6 Feb 2023 16:36:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50AF884C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28FEFA4A;
+	Mon,  6 Feb 2023 16:36:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28FEFA4A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675697845;
-	bh=qQN3/5P/T68AukroEanHmca2nkBTUJJZSUGar9rbPZ8=;
+	s=default; t=1675697866;
+	bh=jZdKiVh44UYo6mK0vn9y6CsvHLIDZuTlTWuq4rMFPgA=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=NHR83S71eDGxrmolBcgffd/HLPuGXsXNJGFUdfcODA4eje9boZIbAr+4g+f4OLx0F
-	 3BlGkbuAtWLzprYyJyNqzaFOwoFFIsfv/puUswH43pmd/DbWaXm4khCsHsn7S8bQtc
-	 A+SJrAP/3zaqIqHGciF01COXNP87bUWOundj9cKk=
+	b=QmKDOrpCHPpgRv0eC8dYkYrHSxxnqHRSpoWadJkFvjDxer7i+xerF1tf6Gx0Q8lW1
+	 mPam77JAKbuYcARw3ZQ0zWAsHakymP7iQU93bWzSJd0BnpsR5mH9iNek8oxGfdEplr
+	 4f+TyTOar19kOt7uwnOLICrSj4MknfInLE2yn5+4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33003F80568;
+	by alsa1.perex.cz (Postfix) with ESMTP id CBB3EF80571;
 	Mon,  6 Feb 2023 16:35:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2D9DFF80564; Mon,  6 Feb 2023 16:35:18 +0100 (CET)
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com
- [IPv6:2a00:1450:4864:20::42c])
+ id B771EF80568; Mon,  6 Feb 2023 16:35:18 +0100 (CET)
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
+ [IPv6:2a00:1450:4864:20::431])
  (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC6A9F804FF
- for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 16:35:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC6A9F804FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62535F804FB
+ for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 16:35:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62535F804FB
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=baylibre-com.20210112.gappssmtp.com
  header.i=@baylibre-com.20210112.gappssmtp.com header.a=rsa-sha256
- header.s=20210112 header.b=ZHnYuiRL
-Received: by mail-wr1-x42c.google.com with SMTP id bk16so10741806wrb.11
- for <alsa-devel@alsa-project.org>; Mon, 06 Feb 2023 07:35:01 -0800 (PST)
+ header.s=20210112 header.b=YHvM+plL
+Received: by mail-wr1-x431.google.com with SMTP id bk16so10741882wrb.11
+ for <alsa-devel@alsa-project.org>; Mon, 06 Feb 2023 07:35:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=baylibre-com.20210112.gappssmtp.com; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date
  :message-id:reply-to;
- bh=kfu3jmputrK/og1fqi3qU6ALj7vxKy6rZ0t8pc/sq40=;
- b=ZHnYuiRL3ENEjIwA8CHehxzcMS0zC4kw5Iza3g804QEPASmtOWIjX26AeoJOl8d6ik
- CQ4vNjYSK1/ctcPjXRAW3ajeN84Je2bt9qKHOgAPXcD2fkD+xFr3Krn+KJS46jS4m5NZ
- VuttM8+gNd3D4ZkBdhY3HpEAfvY3W35RB0p3m3Y9tOp3+61Yr9PBdwnnlc0I4P8IPgc8
- DsJseBI1jG8lZo1gAJm4TOzqFzlag06ATAsw6I6dYJM1Zzl6wf2eJSqWwVltMou7RPBz
- TbCbBtRmkUL0NbCVsTDmO8siTV+CQch7/CzrbYhrJsXgwS2Sk9s/0wcC4uabLVKEwsIt
- kigA==
+ bh=0lBSrvjf3cyT4RRbBVK5enJ7REZCr1oSf4WB5Ql0EWc=;
+ b=YHvM+plLw381A2A2MT7QOvNVDR0HQtu8RETa2oQ7H8qE4X5SYfWUsxIfeXOHA1SRqq
+ cC8yUyxnxWXOidoy3NlBMk4umQobfq6DVuwwpme1AzMnToLU7Xd/jScj4TMaPEklhG+6
+ Pux1PK+aFU3FsF5r5Q8j0LE32477kwTGDUTJVHB8eKX2jaiB6IqZG5mUiWXbxbxAfPbz
+ 7F4ozXCCf9wkyda2wtXAzYS8NiTSfCiT8wYi/gLCbPwAaaCmEZvaEOHrEwgZYcNBpZTY
+ asRqhVRd5dp+6uuis/eFdTVAHU1qDmoTAwzmbYVj9bwWCy8otdl55Kzv7IQs9xlqhNj0
+ Q9Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date:message-id:reply-to;
- bh=kfu3jmputrK/og1fqi3qU6ALj7vxKy6rZ0t8pc/sq40=;
- b=KSMYy/GmfpSk90C7B4UJlQ0yo+zCAW0X7t2ATcWMLmsIld2JpG2tPb7SZZLcWTJ9+U
- tNwm/Wnse220xd8b40CGHWRi9+zSSSg37ZlPaMAxaHdka+Lpd239ygEp0BIw1cybSIT9
- +n1ezDFto7lXLsYlq/CxeFcaO1AtSRtKry3Hadkz01AeUZk9OL74XkFfQzAAroURbFbi
- 3nlg5IK3ZLJgISv34dhfiYbVeWaR1fLpOCNy9F8MGsCTsBSeFXb+TtOiDwqQbhmfEoay
- m7SYNPJtfhkOMUwF8YIyeqhFNjJSbxHuuk52unRec3xY9ky3SnnVyvChxK/aXS8L6eNY
- t5jg==
-X-Gm-Message-State: AO0yUKUINdl4uEJVMqbxr/D+ULjAXMVJf71Zw+mCqrzgiVOwWZx1l5Ic
- dNOP4A8zZJutAoerc64ibw37Dg==
-X-Google-Smtp-Source: AK7set+OlO3PH8z3y6S9935BmxKTNBfxjdGzm8eW/ChncLIOvUsblIiZQx0RpAzxtxa7Feew7HlELw==
-X-Received: by 2002:adf:9c8e:0:b0:2c1:2a15:9dd3 with SMTP id
- d14-20020adf9c8e000000b002c12a159dd3mr18450773wre.48.1675697699902; 
- Mon, 06 Feb 2023 07:34:59 -0800 (PST)
+ bh=0lBSrvjf3cyT4RRbBVK5enJ7REZCr1oSf4WB5Ql0EWc=;
+ b=GEqNkALUj6lx/VtWopDsYXeYn32w8GkbM1AnKxZdLRYxwyL6S9qReaax87l+8TZv4C
+ OaMd7GseSCWSRIAA7I2XG3u9hS2+3fpDH6difB2YT9sTpjgWcK8uuVXfgBnReIE76ByE
+ jtDJPuMKLJWJ4bTAcX/bSwfku7iAtxeM5R1jmnO8r2ohItTHnDGRPAFsxCWIc4EyHJ7u
+ iO1a3ek3WAWYIJZQis4Lc/ihQuiW/aShCksCwR3GsK/pDeR+mV8O9Wggu6UYYrbyxIZQ
+ kFvdarGfsAuwp0k+fBH0F43CpET9x8qOzoYmxHm0q6cMxI18XE4cz7hhShJ2F0gWNuE5
+ FjdA==
+X-Gm-Message-State: AO0yUKVmUJqPt3dm/W6jje3rFCkm1V00iro11P5HKyMWLPblgjlTcopp
+ IELTITMtCQh2CBu59VlxNI6vST4jGfjKVD2Z
+X-Google-Smtp-Source: AK7set8csyy3uREeZXYPe0M9EgeJi6ngyhaJnYH6JVUyFj4TDjHqUq0uvG+o1JoR/ri7NlPhSAfqlQ==
+X-Received: by 2002:adf:f1cc:0:b0:2c3:ea64:425c with SMTP id
+ z12-20020adff1cc000000b002c3ea64425cmr3475028wro.17.1675697701479; 
+ Mon, 06 Feb 2023 07:35:01 -0800 (PST)
 Received: from localhost.localdomain
  (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
  by smtp.googlemail.com with ESMTPSA id
- e12-20020a5d500c000000b002c3ea9655easm2197317wrt.108.2023.02.06.07.34.59
+ e12-20020a5d500c000000b002c3ea9655easm2197317wrt.108.2023.02.06.07.35.00
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 06 Feb 2023 07:34:59 -0800 (PST)
+ Mon, 06 Feb 2023 07:35:01 -0800 (PST)
 From: Jerome Brunet <jbrunet@baylibre.com>
 To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org
-Subject: [PATCH v2 3/7] ASoC: dt-bindings: meson: convert axg pdm to schema
-Date: Mon,  6 Feb 2023 16:34:45 +0100
-Message-Id: <20230206153449.596326-4-jbrunet@baylibre.com>
+Subject: [PATCH v2 5/7] ASoC: dt-bindings: meson: convert axg spdif input to
+ schema
+Date: Mon,  6 Feb 2023 16:34:47 +0100
+Message-Id: <20230206153449.596326-6-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230206153449.596326-1-jbrunet@baylibre.com>
 References: <20230206153449.596326-1-jbrunet@baylibre.com>
@@ -108,65 +109,63 @@ Cc: Neil Armstrong <neil.armstrong@linaro.org>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Convert the DT binding documentation for the Amlogic axg PDM device to
+Convert the DT binding documentation for the Amlogic axg spdif input to
 schema.
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- .../bindings/sound/amlogic,axg-pdm.txt        | 29 -------
- .../bindings/sound/amlogic,axg-pdm.yaml       | 82 +++++++++++++++++++
- 2 files changed, 82 insertions(+), 29 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-pdm.txt
- create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
+ .../bindings/sound/amlogic,axg-spdifin.txt    | 27 ------
+ .../bindings/sound/amlogic,axg-spdifin.yaml   | 86 +++++++++++++++++++
+ 2 files changed, 86 insertions(+), 27 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.yaml
 
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.txt
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.txt
 deleted file mode 100644
-index 716878107a24..000000000000
---- a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.txt
+index df92a4ecf288..000000000000
+--- a/Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.txt
 +++ /dev/null
-@@ -1,29 +0,0 @@
--* Amlogic Audio PDM input
+@@ -1,27 +0,0 @@
+-* Amlogic Audio SPDIF Input
 -
 -Required properties:
--- compatible: 'amlogic,axg-pdm' or
--	      'amlogic,g12a-pdm' or
--	      'amlogic,sm1-pdm'
--- reg: physical base address of the controller and length of memory
--       mapped region.
+-- compatible: 'amlogic,axg-spdifin' or
+-	      'amlogic,g12a-spdifin' or
+-	      'amlogic,sm1-spdifin'
+-- interrupts: interrupt specifier for the spdif input.
 -- clocks: list of clock phandle, one for each entry clock-names.
 -- clock-names: should contain the following:
--  * "pclk"   : peripheral clock.
--  * "dclk"   : pdm digital clock
--  * "sysclk" : dsp system clock
+-  * "pclk" : peripheral clock.
+-  * "refclk" : spdif input reference clock
 -- #sound-dai-cells: must be 0.
 -
 -Optional property:
--- resets: phandle to the dedicated reset line of the pdm input.
+-- resets: phandle to the dedicated reset line of the spdif input.
 -
--Example of PDM on the A113 SoC:
+-Example on the A113 SoC:
 -
--pdm: audio-controller@ff632000 {
--	compatible = "amlogic,axg-pdm";
--	reg = <0x0 0xff632000 0x0 0x34>;
+-spdifin: audio-controller@400 {
+-	compatible = "amlogic,axg-spdifin";
+-	reg = <0x0 0x400 0x0 0x30>;
 -	#sound-dai-cells = <0>;
--	clocks = <&clkc_audio AUD_CLKID_PDM>,
--		 <&clkc_audio AUD_CLKID_PDM_DCLK>,
--		 <&clkc_audio AUD_CLKID_PDM_SYSCLK>;
--	clock-names = "pclk", "dclk", "sysclk";
+-	interrupts = <GIC_SPI 87 IRQ_TYPE_EDGE_RISING>;
+-	clocks = <&clkc_audio AUD_CLKID_SPDIFIN>,
+-		 <&clkc_audio AUD_CLKID_SPDIFIN_CLK>;
+-	clock-names = "pclk", "refclk";
 -};
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.yaml
 new file mode 100644
-index 000000000000..df21dd72fc65
+index 000000000000..a0bd7a5fb9b3
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
-@@ -0,0 +1,82 @@
++++ b/Documentation/devicetree/bindings/sound/amlogic,axg-spdifin.yaml
+@@ -0,0 +1,86 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/sound/amlogic,axg-pdm.yaml#
++$id: http://devicetree.org/schemas/sound/amlogic,axg-spdifin.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Amlogic Audio AXG PDM input
++title: Amlogic Audio AXG SPDIF Input
 +
 +maintainers:
 +  - Jerome Brunet <jbrunet@baylibre.com>
@@ -174,12 +173,12 @@ index 000000000000..df21dd72fc65
 +properties:
 +  compatible:
 +    oneOf:
++      - const: amlogic,axg-spdifin
 +      - items:
 +          - enum:
-+              - amlogic,g12a-pdm
-+              - amlogic,sm1-pdm
-+          - const: amlogic,axg-pdm
-+      - const: amlogic,axg-pdm
++              - amlogic,g12a-spdifin
++              - amlogic,sm1-spdifin
++          - const: amlogic,axg-spdifin
 +
 +  reg:
 +    maxItems: 1
@@ -190,14 +189,15 @@ index 000000000000..df21dd72fc65
 +  clocks:
 +    items:
 +      - description: Peripheral clock
-+      - description: PDM digital clock
-+      - description: DSP system clock
++      - description: SPDIF input reference clock
 +
 +  clock-names:
 +    items:
 +      - const: pclk
-+      - const: dclk
-+      - const: sysclk
++      - const: refclk
++
++  interrupts:
++    maxItems: 1
 +
 +  resets:
 +    maxItems: 1
@@ -208,6 +208,7 @@ index 000000000000..df21dd72fc65
 +  - "#sound-dai-cells"
 +  - clocks
 +  - clock-names
++  - interrupts
 +
 +allOf:
 +  - $ref: dai-common.yaml#
@@ -217,8 +218,8 @@ index 000000000000..df21dd72fc65
 +        compatible:
 +          contains:
 +            enum:
-+              - amlogic,g12a-pdm
-+              - amlogic,sm1-pdm
++              - amlogic,g12a-spdifin
++              - amlogic,sm1-spdifin
 +    then:
 +      required:
 +        - resets
@@ -232,15 +233,17 @@ index 000000000000..df21dd72fc65
 +examples:
 +  - |
 +    #include <dt-bindings/clock/axg-audio-clkc.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
 +
-+    audio-controller@ff632000 {
-+        compatible = "amlogic,axg-pdm";
-+        reg = <0xff632000 0x34>;
++    audio-controller@400 {
++        compatible = "amlogic,axg-spdifin";
++        reg = <0x400 0x30>;
 +        #sound-dai-cells = <0>;
-+        clocks = <&clkc_audio AUD_CLKID_PDM>,
-+                 <&clkc_audio AUD_CLKID_PDM_DCLK>,
-+                 <&clkc_audio AUD_CLKID_PDM_SYSCLK>;
-+        clock-names = "pclk", "dclk", "sysclk";
++        interrupts = <GIC_SPI 87 IRQ_TYPE_EDGE_RISING>;
++        clocks = <&clkc_audio AUD_CLKID_SPDIFIN>,
++                 <&clkc_audio AUD_CLKID_SPDIFIN_CLK>;
++        clock-names = "pclk", "refclk";
 +    };
 -- 
 2.39.0
