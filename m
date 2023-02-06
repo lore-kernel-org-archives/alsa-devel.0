@@ -4,91 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 157CDC636D3
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 15:38:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48CADC636D3
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 16:18:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 26ED4832;
-	Mon,  6 Feb 2023 16:37:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26ED4832
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3911482E;
+	Mon,  6 Feb 2023 17:17:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3911482E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675697881;
-	bh=rIWdVKv7wEbRWIt6Cyk3BI7C3kWkSIQczetcRnpQ6Ok=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 Cc:From;
-	b=ErjfC6/u395oZjmhdZYe1VGo1wpx8VbtppU6kQy6u4OtDAqrJ9NFA0fGToOiVnPNW
-	 iDmnQvGow8iBm65713mLhsP+EraT+pd0qK7TdujIAEHidOmP+QnAQPrv7Ga5vfqcqS
-	 Y9smmY9ImZW9N89QOZK3+DpX7nvBZdbq5r3EDhpA=
+	s=default; t=1675700287;
+	bh=jzTKJEV799yCgwcgEJFK5dKgTezG27y0PD6IUngRf7U=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=RQGfdGzDmAYHAyIVjd8H8kfh04zOEtnhzBAyCHuEW2BcOaptOZWctWUrc113vniQc
+	 wop+QayuttG3ha2z3N/EKGI7lKEqfVJaz+nWTOOjS+Q/YwoG3Jkf+XIc1qdog5zdqN
+	 OGX7Q/gbnF+fj2dUf5Y1fzZ3d7a+tjh0ZUt3zuws=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59200F8057B;
-	Mon,  6 Feb 2023 16:35:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C91CEF804E7;
+	Mon,  6 Feb 2023 17:17:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6FE7CF80571; Mon,  6 Feb 2023 16:35:19 +0100 (CET)
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
- [IPv6:2a00:1450:4864:20::429])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id B806BF804F1; Mon,  6 Feb 2023 17:17:15 +0100 (CET)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BCC77F8014B
- for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 16:35:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCC77F8014B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89666F8014B
+ for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 17:17:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89666F8014B
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- unprotected) header.d=baylibre-com.20210112.gappssmtp.com
- header.i=@baylibre-com.20210112.gappssmtp.com header.a=rsa-sha256
- header.s=20210112 header.b=uITFYSqU
-Received: by mail-wr1-x429.google.com with SMTP id g6so2780102wrv.1
- for <alsa-devel@alsa-project.org>; Mon, 06 Feb 2023 07:35:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20210112.gappssmtp.com; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date
- :message-id:reply-to;
- bh=W8FN4EvykAI4IHl4CftNphEVB0wNAxrQh05VKdmQXhI=;
- b=uITFYSqUqgTIidcd8LPSMOTw2ZmKXAI7KBgKeOsy2BerfLW0io7swQkw+HoDvo6eq5
- Dw8M9NeSttjleVMYaHHFzDuWQozgyw/dW3zVGer/ABF7wwLFgZVKR61ZXnlN+qlRG6Zy
- pI8CpKEhgrHmzF9n354GduIygtpF+6064V20DuNIntgczh9xPtOP55HGJY4tEYWrMLtT
- gqKkN8mdGu/uldfgydcvg24BqU4MIJ433HNUH+ghKJSCi71d+5sTfIQzuwynE6YPq5MD
- cVSrF7er8jx5U9QUkE9+Ssf6lSaFsc79zSAoyCT4ycIBBDqFmVH028QrXI+bfCFl/Q8o
- rVLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=W8FN4EvykAI4IHl4CftNphEVB0wNAxrQh05VKdmQXhI=;
- b=mCdCHMfy2lctU7uh+SmRKOnXEWmjypLAUrxxlobky56IFaq0Np5RpkmxlBAJmvJPzT
- uOlg4Uj4KhwQOlL94dqfwWQ8beJlYmzwt0T5ZZLdoPGxDWDamberx7nZVWOKdeyeVWZk
- oq5r1Y8gUnbAFKPIrjdgj8kyCFLZl8yIf2etGFdMlmzhh8+gNkmB76xNxBQ8RUigvOPU
- 01+C+2VwKLRSmMfVphyYHZWxCkID8O3TVnxqOAsQRV+tqU/caH5Ek5kta0MkgkoJ95up
- 0BG/Bfl9BKKSaIw2MLclGdIiASn8E0Ra1ezTACcZn3oWDNNId8hr8iNqD6wc3odmsnli
- Nsng==
-X-Gm-Message-State: AO0yUKU0u/xEwG73YOf4K/CBkGKTn2FLaXvrAzC8Vhvv3nNOJ4VRZhKu
- qOxgd8hst5ddPy0mIT2cfQTT8g==
-X-Google-Smtp-Source: AK7set9OiM48xEewyoAZU7y5zm+UkbyRMEhymrKbpEYSJglqGuv4o0288BnponDYegoB13uBs+DSJA==
-X-Received: by 2002:adf:e0c3:0:b0:2c3:d808:e82f with SMTP id
- m3-20020adfe0c3000000b002c3d808e82fmr11851675wri.17.1675697702228; 
- Mon, 06 Feb 2023 07:35:02 -0800 (PST)
-Received: from localhost.localdomain
- (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
- by smtp.googlemail.com with ESMTPSA id
- e12-20020a5d500c000000b002c3ea9655easm2197317wrt.108.2023.02.06.07.35.01
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 06 Feb 2023 07:35:01 -0800 (PST)
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org
-Subject: [PATCH v2 6/7] ASoC: dt-bindings: meson: convert axg spdif output to
- schema
-Date: Mon,  6 Feb 2023 16:34:48 +0100
-Message-Id: <20230206153449.596326-7-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230206153449.596326-1-jbrunet@baylibre.com>
-References: <20230206153449.596326-1-jbrunet@baylibre.com>
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=GoJPFcgo
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+ by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 316FYITd023602; Mon, 6 Feb 2023 16:17:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=Peiayn3TZDzpZtvrbG7ocZtCxKhQO0i+HE+2mMzaTU4=;
+ b=GoJPFcgowVd3ap3dxcIJ69k+VRB/f8IpDdpZlA62OYXpC9Aq6chyc7QpAbvjgyi5yC5D
+ qiM3qQEEp9pSUn/S92Je4n/Pm+VvEiDYuAcH6eT31MTNtWqe+RtqtW9LbxUYjHng8rph
+ WG7pBJh+PAuyC03u+DgQBllfJ6H4d+pWW/NNSXa07bOF2LOiDAvANM3hXERFCxBldYq5
+ 6rwYvQ8wCjukFR7FUcjtMkgKgYGFudKOpBk0ETobxmwauIu6l6tLPousB5swbxe/F1Mc
+ dMxOQHFrijujVSD/pVVNdFrJzk+HckzWaoWe/VWVuszDcVcCsU917qVBtxu1iu00g+DJ pw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
+ [129.46.96.20])
+ by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3nhfkac12x-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 06 Feb 2023 16:17:06 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com
+ [10.47.209.196])
+ by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 316GH5e7017813
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 6 Feb 2023 16:17:05 GMT
+Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.36; Mon, 6 Feb 2023 08:16:59 -0800
+From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+To: <krzysztof.kozlowski+dt@linaro.org>, <vkoul@kernel.org>,
+ <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
+ <broonie@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <quic_rohkumar@quicinc.com>, <srinivas.kandagatla@linaro.org>,
+ <dianders@chromium.org>, <swboyd@chromium.org>,
+ <judyhsiao@chromium.org>, <alsa-devel@alsa-project.org>,
+ <quic_rjendra@quicinc.com>, <konrad.dybcio@somainline.org>,
+ <mka@chromium.org>, <quic_mohs@quicinc.com>
+Subject: [PATCH v5 0/8] Add SC7280 audioreach device tree nodes
+Date: Mon, 6 Feb 2023 21:46:33 +0530
+Message-ID: <1675700201-12890-1-git-send-email-quic_srivasam@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-ORIG-GUID: hL3XLMLQYNBNOUpQ0Il4Xp3z3Z6y-9yH
+X-Proofpoint-GUID: hL3XLMLQYNBNOUpQ0Il4Xp3z3Z6y-9yH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-02-06_07,2023-02-06_03,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ mlxlogscore=999
+ impostorscore=0 priorityscore=1501 phishscore=0 lowpriorityscore=0
+ adultscore=0 suspectscore=0 spamscore=0 bulkscore=0 clxscore=1011
+ mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302060141
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -101,141 +106,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
- Kevin Hilman <khilman@baylibre.com>, linux-kernel@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-amlogic@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
+Cc: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Convert the DT binding documentation for the Amlogic axg spdif output to
-schema.
+Add SC7280 audioreach device tree nodes and extract audio specific
+dtsi nodes and add them in new file.
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- .../bindings/sound/amlogic,axg-spdifout.txt   | 25 ------
- .../bindings/sound/amlogic,axg-spdifout.yaml  | 79 +++++++++++++++++++
- 2 files changed, 79 insertions(+), 25 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.txt
- create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.yaml
+This patch series depends on:
+    -- https://patchwork.kernel.org/project/linux-clk/list/?series=717985
+Corresponding dt-bindings not mainlined yet.
+    -- https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git/commit/?h=rproc-next&id=8490a99586abd480d7139893f78c019790a58979
 
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.txt
-deleted file mode 100644
-index 28381dd1f633..000000000000
---- a/Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.txt
-+++ /dev/null
-@@ -1,25 +0,0 @@
--* Amlogic Audio SPDIF Output
--
--Required properties:
--- compatible: 'amlogic,axg-spdifout' or
--	      'amlogic,g12a-spdifout' or
--	      'amlogic,sm1-spdifout'
--- clocks: list of clock phandle, one for each entry clock-names.
--- clock-names: should contain the following:
--  * "pclk" : peripheral clock.
--  * "mclk" : master clock
--- #sound-dai-cells: must be 0.
--
--Optional property:
--- resets: phandle to the dedicated reset line of the spdif output.
--
--Example on the A113 SoC:
--
--spdifout: audio-controller@480 {
--	compatible = "amlogic,axg-spdifout";
--	reg = <0x0 0x480 0x0 0x50>;
--	#sound-dai-cells = <0>;
--	clocks = <&clkc_audio AUD_CLKID_SPDIFOUT>,
--		 <&clkc_audio AUD_CLKID_SPDIFOUT_CLK>;
--	clock-names = "pclk", "mclk";
--};
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.yaml
-new file mode 100644
-index 000000000000..15be8dae9398
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.yaml
-@@ -0,0 +1,79 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/amlogic,axg-spdifout.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Amlogic Audio AXG SPDIF Output
-+
-+maintainers:
-+  - Jerome Brunet <jbrunet@baylibre.com>
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: amlogic,axg-spdifout
-+      - items:
-+          - enum:
-+              - amlogic,g12a-spdifout
-+              - amlogic,sm1-spdifout
-+          - const: amlogic,axg-spdifout
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#sound-dai-cells":
-+    const: 0
-+
-+  clocks:
-+    items:
-+      - description: Peripheral clock
-+      - description: SPDIF output master clock
-+
-+  clock-names:
-+    items:
-+      - const: pclk
-+      - const: mclk
-+
-+  resets:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#sound-dai-cells"
-+  - clocks
-+  - clock-names
-+
-+allOf:
-+  - $ref: dai-common.yaml#
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - amlogic,g12a-spdifout
-+              - amlogic,sm1-spdifout
-+    then:
-+      required:
-+        - resets
-+
-+    else:
-+      properties:
-+        resets: false
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/axg-audio-clkc.h>
-+
-+    audio-controller@480 {
-+        compatible = "amlogic,axg-spdifout";
-+        reg = <0x480 0x50>;
-+        #sound-dai-cells = <0>;
-+        clocks = <&clkc_audio AUD_CLKID_SPDIFOUT>,
-+                 <&clkc_audio AUD_CLKID_SPDIFOUT_CLK>;
-+        clock-names = "pclk", "mclk";
-+    };
+Changes Since v4:
+    -- Modify lpasscc clock controller node name.
+    -- Disable lpass_core node.
+    -- Modify Model name in sound node in "Add sound node for crd-rev3 board" patch.
+    -- Remove protection domain property in "Add LPASS PIL node".
+Changes Since v3:
+    -- Remove deleting digital codecs in crd-rev3 board specific dtsi and upadate them using phandle.
+    -- Update commit message in "Update lpass_tlmm node" patch.
+    -- Change the position of status property in LPASS PIL node.
+    -- Update commit message in "Add sound node" patch.
+Changes Since v2:
+    -- Remove Patch related to Add CGCR reset property.
+    -- Remove Patch related to Disable legacy path clock nodes.
+    -- Add dt-bindings for missing properties.
+    -- Change the order of nodes.
+    -- Move digictal codec macro nodes to root node from soc node.
+    -- Add adsp-pil-mode property in required clock nodes.
+Changes Since v1:
+    -- Move remoteproc node to soc dtsi file.
+    -- Add qcom, adsp-pil-mode reg property in lpasscc node.
+    -- Fix typo errors.
+    -- Remove redundant status properties.
+
+Srinivasa Rao Mandadapu (8):
+  arm64: dts: qcom: sc7280: Extract audio nodes from common idp dtsi
+    file
+  arm64: dts: qcom: sc7280: Add sound node for crd-rev3 board
+  arm64: dts: qcom: sc7280: Add LPASS PIL node
+  arm64: dts: qcom: sc7280: Update VA/RX/TX macro clock nodes
+  arm64: dts: qcom: sc7280: Update lpass_tlmm node
+  arm64: dts: qcom: sc7280: Add qcom,adsp-pil-mode property in clock
+    nodes
+  arm64: dts: qcom: sc7280: Modify lpasscc node name
+  dt-bindings: remoteproc: qcom: sc7280-adsp-pil: Add missing properties
+
+ .../bindings/remoteproc/qcom,sc7280-adsp-pil.yaml  |  30 +++-
+ arch/arm64/boot/dts/qcom/sc7280-audio-idp.dtsi     | 135 ++++++++++++++++
+ arch/arm64/boot/dts/qcom/sc7280-crd-r3.dts         |  24 +--
+ .../qcom/sc7280-herobrine-audioreach-wcd9385.dtsi  | 171 +++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sc7280-idp.dtsi           | 126 ---------------
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               |  95 +++++++++++-
+ 6 files changed, 427 insertions(+), 154 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7280-audio-idp.dtsi
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7280-herobrine-audioreach-wcd9385.dtsi
+
 -- 
-2.39.0
+2.7.4
 
