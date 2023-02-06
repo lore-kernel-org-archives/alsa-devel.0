@@ -4,74 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E144CC61DA4
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 09:19:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23333C61DA4
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 13:12:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 060FC1EC;
-	Mon,  6 Feb 2023 10:18:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 060FC1EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id D70111CF;
+	Mon,  6 Feb 2023 14:11:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D70111CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675675145;
-	bh=JyVMpLFR1Qsw8FGCpsMY/tFsIT0RloU4vytFEPz2N/k=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1675689147;
+	bh=bj7z4VfBMW0oYbqujy/aQRtk9/bVRQMqEKQV5nfKues=;
+	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=jS5M4D9RxMD0Eoh4X9n/1XJER/vTNGaxNUFpCYzoiqej30dn6KpzAA/5vOmDMxF45
-	 tJUMj5jbk4H8oGNtPQxYTaaiRfMyRYCd4rnk0w6vPZd27RKXXrTmFW+ht7bt82/8p7
-	 Ua8dwK2moddDBR/s6wmyGhpZEnthPSZIhsQ+CsY4=
+	b=oSwiX9jMz65V7KZz+buE0/WDAkx4k//ll+FIz3+IrjldzIIMoWVWmWh4ElA7WcoD+
+	 o7tziU+gFBeXXjyJC44uQSO7/8lXaRlU5fEWgKwtqglkSkR0BKDczgSYT45ES2GliG
+	 xsPE5i/mXGLtdnnNO4TnvQFoclzP+42pUG5Jrzk0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E2B0F804E7;
-	Mon,  6 Feb 2023 10:18:14 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6765AF804E7;
+	Mon,  6 Feb 2023 14:11:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD95BF804F1; Mon,  6 Feb 2023 10:18:11 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id E7881F804F1; Mon,  6 Feb 2023 14:11:25 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 53F75F8014B
- for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 10:18:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53F75F8014B
-Authentication-Results: alsa1.perex.cz; dkim=pass (1024-bit key,
- secure) header.d=perex.cz header.i=@perex.cz header.a=rsa-sha256
- header.s=default header.b=tkA1ulHl
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id B8A2211C3;
- Mon,  6 Feb 2023 10:18:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz B8A2211C3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1675675082; bh=UmrCRxoYcIdmE0MvBkiBS/DT6mqNtSfNXsdEEcHDlIQ=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=tkA1ulHljbSQPxWWmV/5RjZLOuMZN8gUaMG7qE9h1mmvKrln8n8DUw2wK5P9uEdU1
- qwocI7tEqFC2rtt+q9NxopRLuvoXGWF5Ej6p9bISZujWCN/yLlqLzjCP0e3YAy32wE
- Ala7iverTprOgOL2bT4GF7A+jrl4ijOAoem24ER4=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Mon,  6 Feb 2023 10:17:58 +0100 (CET)
-Message-ID: <2f17d941-ebf5-9cf6-f8cd-e6bf249d36f7@perex.cz>
-Date: Mon, 6 Feb 2023 10:17:58 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE6D7F800E3
+ for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 14:11:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE6D7F800E3
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ENQBymOO
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 7CC7AB81097;
+ Mon,  6 Feb 2023 13:11:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 311CAC4339B;
+ Mon,  6 Feb 2023 13:11:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1675689074;
+ bh=bj7z4VfBMW0oYbqujy/aQRtk9/bVRQMqEKQV5nfKues=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=ENQBymOO24Jnyr4VXvEPADyvpAYXELsy8/mAecH3s6YB24bNFEVL8BFmZMrOvWAcn
+ ZlO0x03R3ukRxX57XbPUaCgM1mFij9Dp2DMSBkHwrZFVSK5LPo2mCIYsynkL/BDRA2
+ Lny52Ca7Vc+5ltaljbmgUaWNgc5pAXyQq6AEZ3e28zeMs5CLytMYIfEtbZ0lRGXeBo
+ rWt335esryV+W9Wb0BSl5QlTI8U4dPWd3IVkU+4eLfWUT4iB6CFQSAQYPRHEqgKQan
+ 4/lyKzwSM9JLPTdZ8ocIKeabdHCcHvCSVi36DPgZ2C0E+nRlYNVT0lQtaCJz1abJX1
+ v9mZQyaG5dVaw==
+Date: Mon, 6 Feb 2023 13:11:09 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Daniel Beer <daniel.beer@igorinstitute.com>
+Subject: Re: [PATCH v3 2/2] ASoC: tas5805m: add missing page switch.
+Message-ID: <Y+D8bf/19aOL7Wzl@sirena.org.uk>
+References: <cover.1675497326.git.daniel.beer@igorinstitute.com>
+ <1fea38a71ea6ab0225d19ab28d1fa12828d762d0.1675497326.git.daniel.beer@igorinstitute.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: Overflow in calculating audio timestamp
-Content-Language: en-US
-To: Alan Young <consult.awy@gmail.com>, o-takashi@sakamocchi.jp,
- pierre-louis.bossart@linux.intel.com
-References: <70ff4e3a-b171-131c-a039-4fc99aa4bbfc@gmail.com>
- <Y9xWlbhPg3PteH5G@workstation>
- <2598bf64-708c-cf62-e634-44db5a850226@gmail.com>
- <74350bce-a6ea-c3b8-7b00-4deb47f7e623@perex.cz>
- <e2ab7f52-4fc9-bcff-5051-5590ca4f8496@gmail.com>
- <fa44f39c-4dea-5433-fd89-1286ed6a94da@perex.cz>
- <4a1eb148-d246-7a10-9eac-57408d57cf74@gmail.com>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <4a1eb148-d246-7a10-9eac-57408d57cf74@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="lwql8M/YpjFd8AGP"
+Content-Disposition: inline
+In-Reply-To: <1fea38a71ea6ab0225d19ab28d1fa12828d762d0.1675497326.git.daniel.beer@igorinstitute.com>
+X-Cookie: Hope is a waking dream.
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -84,58 +77,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: alsa-devel@alsa-project.org
+Cc: Andy Liu <andy-liu@ti.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 06. 02. 23 9:52, Alan Young wrote:
-> Hi Jaroslav,
-> 
-> On 04/02/2023 15:40, Jaroslav Kysela wrote:
->> For 32-bit apps the boundary is near to UINT32_MAX (see
->> recalculate_boundary() function). So only one crossing point is not
->> enough to cover a decent time range.
->>
->> There should be a better check, if the add operation crosses the U64
->> range for snd_BUG_ON. In my eyes, it looks safer to use counter here
->> and do the checks
->> in the function which uses this value.
-> 
-> 
-> I think you are misunderstanding how crossed_boundary is used. It
-> relates to a single call of snd_pcm_update_hw_ptr0(), which should be
-> called once per period, or at the very least once per buffer-size. In
-> its processing, it may be detected that the boundary has been crossed.
-> There are three separate tests that could result in this but only one
-> should actually happen during a single call. The snd_BUG_ON() is just to
-> detect (report on) a failure in that logic.
 
-Oops, the `snd_BUG_ON(crossed_boundary != 1)` check is fine, of course. I 
-thought that `if (crossed_boundary)` checks for `if (runtime->hw_ptr_wrap)` 
-which has a different meaning. Thank you for your explanation.
+--lwql8M/YpjFd8AGP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> None of this restricts the total number of frames that might be
-> processed, as a result of multiple boundary crossings.
+On Thu, Oct 27, 2022 at 09:38:38PM +1300, Daniel Beer wrote:
+> In tas5805m_refresh, we switch pages to update the DSP volume control,
+> but we need to switch back to page 0 before trying to alter the
+> soft-mute control. This latter page-switch was missing.
 
-Unfortunately, for 64-bit systems, it works only for up to 2 iterations, 
-because boundary is nearby LONG_MAX (see snd_pcm_hw_params()).
+You should just use the register windowing support in regmap, it will
+take care of this for you, avoiding any further similar errors.
 
-> Changing hw_ptr_wrap to be a boundary-wrap-counter instead of its
-> current use as the cumulative number of frames processed at boundary
-> wraps would not make any useful difference.
+--lwql8M/YpjFd8AGP
+Content-Type: application/pgp-signature; name="signature.asc"
 
-At least, we should not have a problem even with the 64-bit boundary crossing 
-in the hw_ptr0 function. But given the fact, that it's impossible to reach 
-this limit, the fix for the timestamp calculation would be sufficient at the 
-moment.
+-----BEGIN PGP SIGNATURE-----
 
-And `snd_BUG_ON(runtime->hw_ptr_wrap < runtime->boundary);` check may be 
-useful when the hw_ptr_wrap is updated.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPg/G0ACgkQJNaLcl1U
+h9AuSQf9EIW5Ag9rte8wlMbJdknCSfP5QH1E+2rlRNZ1vU7bbCbj80l55CjyNJoN
+qk3UDHU5n/Vx/NF2rvqO+FS9WmVsaZOQF6QQLeNjId4674oNZbWPjGeGY0Xb/PPH
+1MLwW0+33bChc4YGHuBu/aaVrTUxYdTSDoPKCSBz4eU3yHgmxhv5nYmIsa8CGNHT
+aiHQebGLtf5GuZ7MOkSbQi1NsdCeVBzC4/VCpYtflEjFF136pYUp3PEXUjdah+lR
+m6P62noZIflD/Hyu6CrkK+PajErpp7vKwcn46Z6LcGCx2FJ96N3rZUS20fG4c5Bs
+16awfDAQeRN1MBCfGB33EUHNaCajFg==
+=W1Zr
+-----END PGP SIGNATURE-----
 
-			Thanks,
-				Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
-
+--lwql8M/YpjFd8AGP--
