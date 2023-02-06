@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75CAEC63797
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 14:48:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B46B5C05027
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 14:50:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B163D8;
-	Mon,  6 Feb 2023 15:47:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B163D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC3BE1DB;
+	Mon,  6 Feb 2023 15:49:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC3BE1DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675694927;
-	bh=TH+PAHQpA1SthDfdGU2CXTiwSGxzXPWpUKWd18Bsuho=;
-	h=Date:From:Subject:To:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=rhIEmHusim8fq9Qw2Ax0QQi14msBdvmmUMP152mN2QtMnRqOg+sf85nsOeomGiksQ
-	 0OZOo8AhS83IB1Pb5tUp91QIkHKxXMsNjPxX+x2fxGEdeEVql2dpJPLAsrOdTTLsEH
-	 ZIFTWzjoao6fhVnqt213H/38Xs7kq73aeQNJcHmQ=
+	s=default; t=1675695011;
+	bh=2QjzqA2nkdqdBnbpf6MqTrwdfZbbjxFnlPT2tL8LnYk=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Cc:From;
+	b=Bo0PP55PSiY0YHZnKVlbnFxDZkT0ax1kfdkssw6gGdcSvqhQcpsiZUBLTPy+DcYvl
+	 m5HJkQ8EtJbcP7Inyb8RJaIHoOtp8zM/x1syUmwq0si4Nig8gpY3hFOXOg5xS0aP5Z
+	 +uAD5Yr/zmm1pYsNCq4UiyucZI7cHVTf2GnfazdI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB306F804E7;
-	Mon,  6 Feb 2023 15:47:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 86687F804E7;
+	Mon,  6 Feb 2023 15:49:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A336F804F1; Mon,  6 Feb 2023 15:47:55 +0100 (CET)
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ id 06C52F804F1; Mon,  6 Feb 2023 15:49:20 +0100 (CET)
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net
+ [217.70.183.195])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0557FF8014B
- for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 15:47:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0557FF8014B
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC9EDF800E3
+ for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 15:49:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC9EDF800E3
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
- secure) header.d=mailbox.org header.i=@mailbox.org header.a=rsa-sha256
- header.s=mail20150812 header.b=LHGGk1wd
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [10.196.197.2])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest
- SHA256) (No client certificate requested)
- by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4P9TdK2Bwfz9sSN
- for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 15:47:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org;
- s=mail20150812; t=1675694869;
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=COQcQzPd
+Received: (Authenticated sender: herve.codina@bootlin.com)
+ by mail.gandi.net (Postfix) with ESMTPA id 1998A60008;
+ Mon,  6 Feb 2023 14:49:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+ t=1675694956;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:mime-version:mime-version:content-type:content-type:
+ to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding;
- bh=1dRd2TmEkwbzOOPQ4qnQcOmZ/bzUW7hJZZYOvhnc+P8=;
- b=LHGGk1wd3JroplkqDgOsMaevyKQ5F6r6StWzdA2743/n3gDqgoM4xRfK/L7Cy6+dgQhUYQ
- 601HiCMaDLvY84XRYlTMdq1tZFvrHczv+Gt97RkBxBXhprG8/FKfb9Tj5Rghd9esX7Ok03
- UxV72OuHZZkTMIAUoaVwuOsUhSSEZO+O/TNUvhyHd4w8358I+JRC5+9K/SJjpuqgWRoY+I
- fqOH5lJZAvcGcqvC6Kfhjv0gdQ5DKR66AlNQ52fOe1WcymZBJ0QXopXl2CfuntW/SfEyBp
- htSpBsI2KsmztTz4TJrpnL/8g9j2bJlm1m32eXkfioVpaIH4ojrc0q1yNrwuBA==
-Message-ID: <aa029de8-3ab1-5cda-fc3b-979999bfd965@mailbox.org>
-Date: Mon, 6 Feb 2023 15:47:48 +0100
+ bh=jssNCiN7d9s4FVYSLSQNiyVO3Ef91kZOrafXDxLBvCU=;
+ b=COQcQzPd++3+6kKr86fsnQKxAAOXJW0JTXfd8ACn3wA00LkZxrNz1Kn7mpHSDeIAA+FzP6
+ 4leRgqa2DKiybYvDlArlGTc0dc7bvn6zgIdD+n22GPxMCm0hLeLNqL9KyvhyWtL6GMeVYM
+ u/p8VmGw9k650IasMSMs6PHscy2j8mkzlgdPD0d8c8OUXb1ij0r4LAvmcfvs1kVld330CJ
+ nZToQi9xBPezbHbOn5iUdeIBu5Z7Z2JDERNeNMs4sL4KfjLAEPuUg2r+nUHJTP6vDszJWR
+ qIvMgrFa3/WPw+6MaalIuHFzC/SHl9bcRGTDnKlP6zIbDVm5a0pwyW04X34TrA==
+From: Herve Codina <herve.codina@bootlin.com>
+To: Herve Codina <herve.codina@bootlin.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH 0/3] Add the Infineon PEB2466 codec support
+Date: Mon,  6 Feb 2023 15:49:01 +0100
+Message-Id: <20230206144904.91078-1-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-From: Carlos Rafael Giani <crg7475@mailbox.org>
-Subject: sample_size field in snd_dec_flac structure
-To: alsa-devel@alsa-project.org
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-MBO-RS-ID: 0431f22ac1d83d8da19
-X-MBO-RS-META: 9e3rz9xfoi1wed4hq9g8999qcqaownik
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -75,19 +75,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ linux-gpio@vger.kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In snd_dec_flac (see: 
-https://github.com/torvalds/linux/blob/master/include/uapi/sound/compress_params.h#L291 
-), there is the sample_size field.
+Hi,
 
-It seems to me that this is meant to contain the same value as the 
-sample size as the one in the frame header: 
-https://xiph.org/flac/format.html#frame_header
+The Infineon PEB2466 codec is a programmable DSP-based four channels
+codec with filters capabilities.
+It also provides signals as GPIOs.
 
-Does this mean that if I always send a full FLAC stream into the device, 
-with its complete STREAMINFO header, I can just always set sample_size 
-to 0? The spec does mention that 0 mean "get [the sample size] from 
-STREAMINFO metadata block".
+Best regards,
+Herve Codina
+
+Herve Codina (3):
+  dt-bindings: sound: Add the Infineon PEB2466 codec
+  ASoC: codecs: Add support for the Infineon PEB2466 codec
+  MAINTAINERS: add the Infineon PEB2466 codec entry
+
+ .../bindings/sound/infineon,peb2466.yaml      |   91 +
+ MAINTAINERS                                   |    7 +
+ sound/soc/codecs/Kconfig                      |   12 +
+ sound/soc/codecs/Makefile                     |    2 +
+ sound/soc/codecs/peb2466.c                    | 2071 +++++++++++++++++
+ 5 files changed, 2183 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/infineon,peb2466.yaml
+ create mode 100644 sound/soc/codecs/peb2466.c
+
+-- 
+2.39.1
 
