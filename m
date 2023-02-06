@@ -4,69 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C527C05027
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 21:15:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4711BC05027
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 21:38:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A7F51E2;
-	Mon,  6 Feb 2023 22:14:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A7F51E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D0871E1;
+	Mon,  6 Feb 2023 22:37:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D0871E1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675718136;
-	bh=riTB1YokzEFFDU4GzUfnUbRbAWC2sdyJCh34WVA0iyU=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:
+	s=default; t=1675719515;
+	bh=QwaT+uJL/hJru5ZOlxoiZKTJPcnsFBXbvupQfgZvSkQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=TkFDkiCXnumbsXLx6pr9X/YcI5A4wJcwGcOVHkFLwrNRSEhc2/bMx4DSbw2sKeM3e
-	 iMBjhhq9WncYtrhGfJpvtZ5pzfHmy/yV2SxmUQi9ZmZr1eK58aX/Dwo/5BevspKCAv
-	 EWAkjYGUE8UYzoBESnD7HD/TFqcB3MNYEYU6+srI=
+	b=e/yXHi2aYblKt67zpr6vUle14A9NP0mAFXTLY/00FcB6th6/SshHOM1WtuwPlH1Oe
+	 d6871CB7GtqJ+ma1ncRs7+wxXCIm9+BfqLC/NqdRsnCHtk5iaACB5FWyaCiN18lox0
+	 NnjfgBrVaEpZ1lnqQlWwc+5URX05cCbzIKmf51RM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FE45F804E7;
-	Mon,  6 Feb 2023 22:14:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A78B2F804F1;
+	Mon,  6 Feb 2023 22:37:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60CBAF804F1; Mon,  6 Feb 2023 22:14:44 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 9A594F804FB; Mon,  6 Feb 2023 22:37:43 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9AF89F800E3
- for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 22:14:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9AF89F800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8D2E3F8014B
+ for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 22:37:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D2E3F8014B
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=uOlR740q
+ header.s=k20201202 header.b=Ix0IJHSI
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A1C716101E;
- Mon,  6 Feb 2023 21:14:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CC1FC433EF;
- Mon,  6 Feb 2023 21:14:37 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id ACAC0B81617;
+ Mon,  6 Feb 2023 21:37:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02F28C433EF;
+ Mon,  6 Feb 2023 21:37:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1675718078;
- bh=riTB1YokzEFFDU4GzUfnUbRbAWC2sdyJCh34WVA0iyU=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=uOlR740qcEbFNWHQHLtvWGGe0sBxuYEHajtCVC4uTaWPl9L7gjr5Toz2/gJ1nlkrJ
- 08lZ39/Xu4Ca+NHu1hj1PflPTSodIkpRR3CYt/cpDvUgPWIM6Q+AZtHa2ptzPZG68M
- cu1p5vVZpGmHn0vdKrph9ALM9hMhYTAQ9In4FhzdDI7XgRsFr1n3J803akkOk14V9X
- C8voOKR36DMXk3kFL6rRQeuCKD7zfmOIeTwahOWNALnd2fkSej2onXJa7rns3fZFRA
- lUqmfwqBJtLewY78tYpzz1zE3a5JQnB/cgaeUTASknGOHJ2dgs+JNR+vraEgCcL0uU
- JNKoQCyCYexyg==
-Date: Mon, 6 Feb 2023 21:14:34 +0000
+ s=k20201202; t=1675719452;
+ bh=QwaT+uJL/hJru5ZOlxoiZKTJPcnsFBXbvupQfgZvSkQ=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=Ix0IJHSIFXQySAea5+p1zqW+CUM4NQuaLh4P2Ij+y39Qmgg41vavbV43EbATOAMfU
+ UhR+wZOi905vysyAewh2ktpU9RFFnFdey7rVehmEbka53rGioCxLdryXeQFDw+SG20
+ 9r+ycXj+G51hKwuLCH2IphLm4pmm1QYJv6OsTqkzWmiBCEMSAHa5Y1rV9tmkE1uKRY
+ YVlFq/UvHnBYT+qZA1xeLy/hsECV8d3P1L1lGlwBvoYyq93kEw/xeddtsms6XTD+lH
+ FXY8pXOND9RQ9UxzABVzUg9F9+k8Od8vvdtD7onP24yFb404db2h+cSYHtMFcm9sqf
+ rH8wjVnGGrUhg==
 From: Mark Brown <broonie@kernel.org>
-To: Daniel Beer <daniel.beer@igorinstitute.com>
-Subject: Re: [PATCH v3 2/2] ASoC: tas5805m: add missing page switch.
-Message-ID: <Y+FtutYjJFlrFtvP@sirena.org.uk>
-References: <cover.1675497326.git.daniel.beer@igorinstitute.com>
- <1fea38a71ea6ab0225d19ab28d1fa12828d762d0.1675497326.git.daniel.beer@igorinstitute.com>
- <Y+D8bf/19aOL7Wzl@sirena.org.uk>
- <20230206204546.GA233871@nyquist.nev>
+To: linux-kernel@vger.kernel.org, Alexey Firago <a.firago@yadro.com>
+In-Reply-To: <20230204195106.46539-1-a.firago@yadro.com>
+References: <20230204195106.46539-1-a.firago@yadro.com>
+Subject: Re: [PATCH] ASoC: codecs: es8326: Fix DTS properties reading
+Message-Id: <167571945073.1296981.607333949793064897.b4-ty@kernel.org>
+Date: Mon, 06 Feb 2023 21:37:30 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="dCj5T8jTG3AIPXcS"
-Content-Disposition: inline
-In-Reply-To: <20230206204546.GA233871@nyquist.nev>
-X-Cookie: Hope is a waking dream.
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.0
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -79,58 +75,46 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: Andy Liu <andy-liu@ti.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, zhuning0077@gmail.com,
+ yangxiaohua@everest-semi.com, yangyingliang@huawei.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Sat, 04 Feb 2023 22:51:06 +0300, Alexey Firago wrote:
+> Seems like properties parsing and reading was copy-pasted,
+> so "everest,interrupt-src" and "everest,interrupt-clk" are saved into
+> the es8326->jack_pol variable. This might lead to wrong settings
+> being saved into the reg 57 (ES8326_HP_DET).
+> 
+> Fix this by using proper variables while reading properties.
+> 
+> [...]
 
---dCj5T8jTG3AIPXcS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Tue, Feb 07, 2023 at 09:45:46AM +1300, Daniel Beer wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> We did discuss this a while back when the driver first went in.
-> Unfortunately the vendor software tools provide configuration for the
-> part in the form of a sequence of raw register writes, including
-> explicit page changes:
+Thanks!
 
->     https://lore.kernel.org/lkml/Yd85bjKEX9JnoOlI@sirena.org.uk/
+[1/1] ASoC: codecs: es8326: Fix DTS properties reading
+      commit: fe1e7e8ce2c47bd8fd9885eab63fca0a522e94c9
 
-That seems surmountable, either bypassing regmap or parsing the
-configuration files.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-> Aside from this, I have two other practical issues.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> The first is that I'm not sure how exactly to implement the paging
-> scheme in terms of regmap_range_cfg (assuming this is what you're
-> referring to). This chip has multi-level paging (books/pages), with the
-> book selection register itself requiring paging to access. A sequence of
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-That's absolutely fine, this isn't the first device which has such a
-setup and the code handles nested windows fine.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> Secondly, the patches as submitted here have been tested, but I don't
-> currently have access to hardware. I'm very hesitant to make a
-> significant change without retesting and leave the driver in a broken
-> state again.
+Thanks,
+Mark
 
-Presumably someone does given that the problem was noticed?
-
---dCj5T8jTG3AIPXcS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPhbbkACgkQJNaLcl1U
-h9C9Ewf+KewXF5GyAN4ZUwICEK/KJH2L6ZUXWmLiuhWilIkEZaxZb9Dc3zW29GHv
-P1OSQba9GM+o+FyQX1lQaGp7lwt3POmUF4nVlxyDnuHZrSGJwbeS0ermaomFstJe
-4n9PY1CpIsxAFyhXLaeOO5mFpYins/crft0TIgT03bLn5BaM5xu8bn9ywQYNHdpI
-0u3Qy/k8KpO32qheL99/Xcb1twsZLEbLIRwpAaLAE+r0NXeCU9B4fnov/S33a9cF
-PnlMk9384GoGtwqUjUcWZ5cDMjNffDZNLFht97JlTzC8hbaDj84zfolZ4vlyQEYw
-QhRF7Id4KquZJZKzWuzWSoBYkm5ZBg==
-=0Hl7
------END PGP SIGNATURE-----
-
---dCj5T8jTG3AIPXcS--
