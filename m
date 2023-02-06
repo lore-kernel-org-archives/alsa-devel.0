@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1BD1C61DA4
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 14:50:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E67D3C05027
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Feb 2023 14:51:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14CD011C;
-	Mon,  6 Feb 2023 15:49:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14CD011C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8AF8D1F0;
+	Mon,  6 Feb 2023 15:50:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8AF8D1F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675695039;
-	bh=gAw4UNXncZKJid1ywDivRZo1ilxa/KdJ/ct3KKjhTpA=;
+	s=default; t=1675695062;
+	bh=Zy9dK5giYu5r5DOyPmVtsTr3kg7bbsjNrhR2v2BBGkE=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 Cc:From;
-	b=O8pDhUp3A9CKUh134mlwMmgWPYM3yMFB/ql/3Ml0gww1joDnG3770nO8k4u5A0dO2
-	 8H0yE4VSlVl4hqnhEJBAFCaPjXolarjP1+rYSIScPxAWgW+yKC34/HGbW3gxObvG50
-	 pNK1Jli2SqLlopDHXGyUVHRuQLDHm5Q822zrWMRI=
+	b=EetVRFdFQmqLC1KftQpY0WT9OlyUTuLhleyRnGiKO4ZEyO0zFD30lXcwZ4m3I331i
+	 retCvCbyewGejxQJXGujP59IBs8khuAt28JxWMTdqBc3iZmSASqny45q81b0V5cznM
+	 7um4E92FsYJZ2D17WvtVWu96VGTCcsA95qHDLNFM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14561F80533;
-	Mon,  6 Feb 2023 15:49:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D96A5F80539;
+	Mon,  6 Feb 2023 15:49:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41E23F80533; Mon,  6 Feb 2023 15:49:25 +0100 (CET)
+ id A49B3F8053D; Mon,  6 Feb 2023 15:49:39 +0100 (CET)
 Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net
  [IPv6:2001:4b98:dc4:8::223])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D9339F800E3
- for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 15:49:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9339F800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 83D36F804FF
+ for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2023 15:49:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83D36F804FF
 Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=gyaIhfKU
+ header.s=gm1 header.b=OP2hH2uB
 Received: (Authenticated sender: herve.codina@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPA id 7FAB16000D;
- Mon,  6 Feb 2023 14:49:16 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPA id 11B9360011;
+ Mon,  6 Feb 2023 14:49:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1675694960;
+ t=1675694967;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Hc6tSYGP6pagK3HP8K5vQ3QQwbkp4/tptja2Ht0GKFQ=;
- b=gyaIhfKU3HeXmm3q7l9+kcBrul7dOc3Y05n+SoLGJRlpgK0BypASD7/fgtSK0m9fwCewPu
- LzCeCb0slfEN5GNjo62KkrOvCPddVn1JhteeOljtZBOdKSeIvxsz8pfSPx0pSgu7n1QBBn
- 9IKoTBwKoc9llEh/vMAv7bNiCE2E2HTnd2Gf8umYwCNO7CG61DE9u5MHkRbnPvcTwJtqGY
- xv4FLTsxSXZpYaSEC4fGUm4We7UwUK1f91IZpRDzgKxbJtbNd2SKmZz0P/6f1btinp4IOV
- kRBkuYuD/Cto75NHKpvZyegLMzAbWQFyuA0Uv+yFmSYjRjh4GPAqbaLckacOrg==
+ bh=DCdYyqkSk91FGT2k2pmAC91uCq4Q0ikwYZO1U2uUWbc=;
+ b=OP2hH2uBf0k0FjW+qDpKsiyI4NEqaiPGXNjF0y8inO3q50Fg4X6ThDa7XY3yPVx1vTcpIz
+ EHUtbquhVj0NRMMgQRH88N7CQrbbjhjPS1MvSTtoSgYIHhORRbF1vBJPz9bCc4xaOTLBFY
+ txCPHhwfRQMj6ggpQv4fSNvstpp62MkeIbEZNR/Exf3/HBb5Tfp6b6uSB5CHo3bBlZKfF8
+ wSfB9VnEbMIrHZVxTu5dXQLhNavJ3li5UQo2xIC3LhchZwR0+a/ksk9fcp/F2TKzEm/tWl
+ jn2iiUxbDiNrUTO2uoQOxaLKykF8xhw7D25rt22Jt6ff+l13iu4iO2MzKU0vCg==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
@@ -59,9 +59,9 @@ To: Herve Codina <herve.codina@bootlin.com>,
  Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <brgl@bgdev.pl>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 1/3] dt-bindings: sound: Add the Infineon PEB2466 codec
-Date: Mon,  6 Feb 2023 15:49:02 +0100
-Message-Id: <20230206144904.91078-2-herve.codina@bootlin.com>
+Subject: [PATCH 3/3] MAINTAINERS: add the Infineon PEB2466 codec entry
+Date: Mon,  6 Feb 2023 15:49:04 +0100
+Message-Id: <20230206144904.91078-4-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230206144904.91078-1-herve.codina@bootlin.com>
 References: <20230206144904.91078-1-herve.codina@bootlin.com>
@@ -85,112 +85,32 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The Infineon PEB2466 codec is a programmable DSP-based four channels
-codec with filters capabilities.
+After contributing the driver, add myself as the maintainer for the
+Infineon PEB2466 codec.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- .../bindings/sound/infineon,peb2466.yaml      | 91 +++++++++++++++++++
- 1 file changed, 91 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/infineon,peb2466.yaml
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/infineon,peb2466.yaml b/Documentation/devicetree/bindings/sound/infineon,peb2466.yaml
-new file mode 100644
-index 000000000000..66993d378aaf
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/infineon,peb2466.yaml
-@@ -0,0 +1,91 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/infineon,peb2466.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/MAINTAINERS b/MAINTAINERS
+index cd22e8e06561..0cd8a4d1f7b0 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10184,6 +10184,13 @@ L:	linux-iio@vger.kernel.org
+ S:	Maintained
+ F:	drivers/iio/pressure/dps310.c
+ 
++INFINEON PEB2466 ASoC CODEC
++M:	Herve Codina <herve.codina@bootlin.com>
++L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
++S:	Maintained
++F:	Documentation/devicetree/bindings/sound/infineon,peb2466.yaml
++F:	sound/soc/codecs/peb2466.c
 +
-+title: Infineon PEB2466 codec
-+
-+maintainers:
-+  - Herve Codina <herve.codina@bootlin.com>
-+
-+description: |
-+  The Infineon PEB2466 codec is a programmable DSP-based four channels codec
-+  with filters capabilities.
-+
-+  The time-slots used by the codec must be set and so, the properties
-+  'dai-tdm-slot-num', 'dai-tdm-slot-width', 'dai-tdm-slot-tx-mask' and
-+  'dai-tdm-slot-rx-mask' must be present in the sound card node for sub-nodes
-+  that involve the codec. The codec uses one 8bit time-slot per channel.
-+  'dai-tdm-tdm-slot-with' must be set to 8.
-+
-+  The PEB2466 codec also supports 28 gpios (signaling pins).
-+
-+allOf:
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml
-+  - $ref: dai-common.yaml#
-+
-+properties:
-+  compatible:
-+    const: infineon,peb2466
-+
-+  reg:
-+    description:
-+      SPI device address.
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: Master clock
-+
-+  clock-names:
-+    items:
-+      - const: mclk
-+
-+  spi-max-frequency:
-+    maximum: 8192000
-+
-+  reset-gpios:
-+    description:
-+      GPIO used to reset the device.
-+    maxItems: 1
-+
-+  firmware-name:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description:
-+      Filters coefficients file to load. If this property is omitted, internal
-+      filters are disabled.
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+  '#gpio-cells':
-+    const: 2
-+
-+  gpio-controller: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - '#sound-dai-cells'
-+  - gpio-controller
-+  - '#gpio-cells'
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        audio-codec@0 {
-+            compatible = "infineon,peb2466";
-+            reg = <0>;
-+            spi-max-frequency = <8192000>;
-+            reset-gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
-+            #sound-dai-cells = <0>;
-+            gpio-controller;
-+            #gpio-cells = <2>;
-+        };
-+    };
+ INFINIBAND SUBSYSTEM
+ M:	Jason Gunthorpe <jgg@nvidia.com>
+ M:	Leon Romanovsky <leonro@nvidia.com>
 -- 
 2.39.1
 
