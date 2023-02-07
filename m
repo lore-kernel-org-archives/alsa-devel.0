@@ -4,53 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61D56C636CD
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Feb 2023 09:31:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 272E9C636CC
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Feb 2023 09:34:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC159210;
-	Tue,  7 Feb 2023 10:30:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC159210
+	by alsa0.perex.cz (Postfix) with ESMTPS id 695A4208;
+	Tue,  7 Feb 2023 10:33:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 695A4208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675762265;
-	bh=Mb1FKRQwKMP7gGg6MSMYD0pJ1yeNk4inkYK3BWSdVoA=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Cc:From;
-	b=qZy34Qg3G3fp6dpoY2c4/aHW+VF5vAF/LB5FH5r1Jhhj4oggyYq99309X9sPDntZI
-	 acGmJIKNuY9UzeCMvlxe6+N23TJnqno1k/n7EgQRoZLuoiTc6n3K3gYqIHJ52lbjta
-	 sehXzWG7hia7xwkJ95dfvJ4XVtdDXxF5b76psJzk=
+	s=default; t=1675762486;
+	bh=Pb4mYLwJtr/GXDFMeMsCqDOBszCV8Z+hDJzSfsTRjTk=;
+	h=References:From:To:Subject:Date:In-reply-to:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 Cc:From;
+	b=ao3qnWRIw9fYjztho1HaxpU7UoSXyAS3Cght4oe28BO/WM8g0wuxSugUXrXWSuC5h
+	 J7k6Re5tomD2nOIOUbNRUH1+qiQK/gF+byY42Z3qVe4YpMQDpUjcM4RMogtCFBzLo5
+	 X+8IA7mhQRfQ1gfEvGTJBk3VXiYVjd+9B7QptxDo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 853EEF80240;
-	Tue,  7 Feb 2023 10:30:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A89BCF80240;
+	Tue,  7 Feb 2023 10:33:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B9531F8045D; Tue,  7 Feb 2023 10:30:14 +0100 (CET)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 97F4BF8045D; Tue,  7 Feb 2023 10:33:53 +0100 (CET)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67912F8014C
- for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2023 10:30:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67912F8014C
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 83126200301;
- Tue,  7 Feb 2023 10:30:08 +0100 (CET)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4C8052013CC;
- Tue,  7 Feb 2023 10:30:08 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id B4804183ABF0;
- Tue,  7 Feb 2023 17:30:06 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: fsl_sai: fix getting version from VERID
-Date: Tue,  7 Feb 2023 17:04:24 +0800
-Message-Id: <1675760664-25193-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8349BF8014E
+ for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2023 10:33:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8349BF8014E
+Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key,
+ unprotected) header.d=baylibre-com.20210112.gappssmtp.com
+ header.i=@baylibre-com.20210112.gappssmtp.com header.a=rsa-sha256
+ header.s=20210112 header.b=nseoynKl
+Received: by mail-wm1-x336.google.com with SMTP id
+ l21-20020a05600c1d1500b003dfe462b7e4so752559wms.0
+ for <alsa-devel@alsa-project.org>; Tue, 07 Feb 2023 01:33:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+ h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+ :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+ bh=8PxGYDQ7050hUgTLYscGuzXllbJKzPjPKyLOB6Wlrjo=;
+ b=nseoynKl6Jy2ScxAfRj0HrX7qUwIqGb7zjc0T/2N+jzmisGjIBhcZe8qX/r3oVew9m
+ mgJL4de/kMuVjooR8M1HCLyjb/2XN8Q8rSyM5d8ZD/Zd1uBdBDXsdPvhGppXPdc2a9ad
+ QH4TAJDrSM0nmaOc4bDruO2gCEe3gjaJNv/2dOik3H51S9XcFV2w+7gLFrQFpGX9Ypmk
+ ahPzZsZyUToaSmcOF/lIPrU5fYksdDze985GVR4bEw0NVhHgfpr8GSAhqIvXBUWIeEnz
+ ACl01bAYJz5NUWcKdW4XrxzPSkFvr8T8spCFCRcy5LufICxWpWBGq1Husqvlsu9b4TW3
+ D85w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+ :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=8PxGYDQ7050hUgTLYscGuzXllbJKzPjPKyLOB6Wlrjo=;
+ b=vvbKoD9QOriXsAVQOP/c9G4/utcT302GDfP1AvngknCMLXA90B0zXjuPEyzJt7ziFQ
+ n+Nkhv4KWl2I52TbkKzsaTK/fXl6DQ1JVJp0d9CGjPzf+zKE6F+4/Sz879a6BGW2hku1
+ sgq1lSA+cJy2w9AEg9DhGFYd+A20Ne8yx3v9KjdVz0civ/LXBZk2TY/TDCQI+Sd5eEMK
+ /GjUCue+Qfr2buWFT5tght1/ihbRmdxLCnNcA5cT2PhHzFIp5Q9IUcbG4AZrLDfgQumJ
+ MBjmXQBpJLYD4T00S7nYKNS2cGONMEzxlQRxapljaD2Yev8zV9OwjsSzNOk3CNErG5it
+ dl0g==
+X-Gm-Message-State: AO0yUKV1a1MxP6WOiLrO8H0wvIJSrsl8BZjeyVNQwjk1kFL+zyrA2Cdq
+ urs1TebA1odlhiX7mYBKXUyyKjQq+btvC9va
+X-Google-Smtp-Source: AK7set9PZDReFALR1aMtqwOzve4hwOZf9PGErxwjDd/BKVseEzEILgyBlESqGUn3B5zmiP3nYCTErA==
+X-Received: by 2002:a05:600c:1817:b0:3df:e54a:4ac5 with SMTP id
+ n23-20020a05600c181700b003dfe54a4ac5mr2468276wmp.27.1675762423657; 
+ Tue, 07 Feb 2023 01:33:43 -0800 (PST)
+Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr.
+ [90.63.244.31]) by smtp.gmail.com with ESMTPSA id
+ t6-20020a05600c450600b003dc433bb5e1sm14240200wmo.9.2023.02.07.01.33.43
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 07 Feb 2023 01:33:43 -0800 (PST)
+References: <20230206153449.596326-1-jbrunet@baylibre.com>
+ <20230206153449.596326-3-jbrunet@baylibre.com>
+ <167571334291.1212116.1869881432057405431.robh@kernel.org>
+User-agent: mu4e 1.8.10; emacs 28.2
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v2 2/7] ASoC: dt-bindings: meson: convert axg tdm
+ formatters to schema
+Date: Tue, 07 Feb 2023 10:29:51 +0100
+In-reply-to: <167571334291.1212116.1869881432057405431.robh@kernel.org>
+Message-ID: <1j7cwt3jm1.fsf@starbuckisacylon.baylibre.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.29
 Precedence: list
@@ -63,33 +100,69 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc: Neil Armstrong <neil.armstrong@linaro.org>, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>,
+ linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Mark Brown <broonie@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-amlogic@lists.infradead.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The version information is at the bit31 ~ bit16 in the VERID
-register, so need to right shift 16bit to get it, otherwise
-the result of comparison "sai->verid.version >= 0x0301" is
-wrong.
 
-Fixes: 99c1e74f25d4 ("ASoC: fsl_sai: store full version instead of major/minor")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_sai.c | 1 +
- 1 file changed, 1 insertion(+)
+On Mon 06 Feb 2023 at 13:59, Rob Herring <robh@kernel.org> wrote:
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index c365afd6c4ea..1b197478b3d9 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -1142,6 +1142,7 @@ static int fsl_sai_check_version(struct device *dev)
- 
- 	sai->verid.version = val &
- 		(FSL_SAI_VERID_MAJOR_MASK | FSL_SAI_VERID_MINOR_MASK);
-+	sai->verid.version >>= FSL_SAI_VERID_MINOR_SHIFT;
- 	sai->verid.feature = val & FSL_SAI_VERID_FEATURE_MASK;
- 
- 	ret = regmap_read(sai->regmap, FSL_SAI_PARAM, &val);
--- 
-2.34.1
+> On Mon, 06 Feb 2023 16:34:44 +0100, Jerome Brunet wrote:
+>> Convert the DT binding documentation for the Amlogic tdm formatters to
+>> schema.
+>> 
+>> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+>> ---
+>>  .../sound/amlogic,axg-tdm-formatters.txt      | 36 --------
+>>  .../sound/amlogic,axg-tdm-formatters.yaml     | 88 +++++++++++++++++++
+>>  2 files changed, 88 insertions(+), 36 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.txt
+>>  create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.yaml
+>> 
+>
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>
+> yamllint warnings/errors:
+>
+> dtschema/dtc warnings/errors:
+> ./Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.yaml:
+> Unable to find schema file matching $id:
+> http://devicetree.org/schemas/sound/component-common.yaml
+
+This is a false error because the bot does not have the patch applied
+by Mark from v1 here [0]
+
+[0]: https://lore.kernel.org/all/167543616131.928818.17902040818579023398.b4-ty@kernel.org/
+
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.example.dtb:
+> audio-controller@500: False schema does not allow {'compatible':
+> ['amlogic,g12a-tdmout'], 'reg': [[1280, 64]], 'resets': [[4294967295, 12]],
+> 'clocks': [[4294967295, 35], [4294967295, 127], [4294967295, 120],
+> [4294967295, 134], [4294967295, 134]], 'clock-names': ['pclk', 'sclk',
+> 'sclk_sel', 'lrclk', 'lrclk_sel'], '$nodename': ['audio-controller@500']}
+> 	From schema:
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.yaml
+>
+> doc reference errors (make refcheckdocs):
+>
+> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230206153449.596326-3-jbrunet@baylibre.com
+>
+> The base for the series is generally the latest rc1. A different dependency
+> should be noted in *this* patch.
+>
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>
+> pip3 install dtschema --upgrade
+>
+> Please check and re-submit after running the above command yourself. Note
+> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+> your schema. However, it must be unset to test all examples with your schema.
 
