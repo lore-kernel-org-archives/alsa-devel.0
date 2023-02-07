@@ -4,86 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00476C636CC
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Feb 2023 23:34:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 553E6C636CC
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Feb 2023 23:42:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B177B886;
-	Wed,  8 Feb 2023 00:33:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B177B886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 062FD7F8;
+	Wed,  8 Feb 2023 00:42:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 062FD7F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675812876;
-	bh=h6Asegb3UosZ64SLaFl7xxcR07djTQ+PvmszvRBil6w=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	s=default; t=1675813370;
+	bh=Ju9beePp7bAYEhek0mXetGx1R+Zbuu/Si/5uQYOpoYQ=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=U42sc7TLAtjw6xL5+nGBiQmLfuWeNjkRHU0IlGo/qtPbyl/oVFkHIfigfF2GTAM2r
-	 l+ujs5YcsrHXMHngCabOI6eYvId2QrnZKWKQgAX+DihqCPx19vpsTkolQIGvTDFSvC
-	 RFoG/6Xw9Xt4cYjaZTbcZ0QlZgXfuozof9pInOJI=
+	b=hnR2AdNDuBsjQZSZXb5ZvmqBa6oRApbG0ukFHRIcXXRcpsCCd+apC5rYV+6R81s2p
+	 GMF9IXHGVWbvhirBHO5mF8odTCBwOevwVu+/9q+JMOeB6KnBqBsPj1MBsWfR7EYdaI
+	 1Ou4SF3fktLGuQs1/HzZVArHMu1NsOa4L+bT+zFg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7021DF8012B;
-	Wed,  8 Feb 2023 00:33:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9212BF8012B;
+	Wed,  8 Feb 2023 00:41:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32DCCF80152; Wed,  8 Feb 2023 00:33:42 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 80D50F8012B; Wed,  8 Feb 2023 00:41:29 +0100 (CET)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [46.235.227.172])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 97DF3F80095
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 00:33:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97DF3F80095
+	by alsa1.perex.cz (Postfix) with ESMTPS id C7A75F800E2
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 00:41:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7A75F800E2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=p93Ap3nu
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=edQKC4NE
+Received: from [192.168.86.246]
+ (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net [82.11.51.62])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id AAE82B816D4;
-	Tue,  7 Feb 2023 14:06:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CBEAC433EF;
-	Tue,  7 Feb 2023 14:06:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1675778784;
-	bh=h6Asegb3UosZ64SLaFl7xxcR07djTQ+PvmszvRBil6w=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=p93Ap3nummMzTCFrhTuIZj/pRJupCaGKWU2886vJi7VYMArbOWawjy7df6+SgP6ar
-	 fmjWTVRM+c7pgNSFVvFCOFnmSjnxgWEXrcqX8H2zpEkPl0Lgu7ThM+wLFGO8dW0WYv
-	 6CrKIqz1fGb2Or7NvZdHzkI1rLD9ZvD4EUbMNmIqxf5wAQsV5tQqrAs5EbUyZAAjKh
-	 pqvu1AmoB37Z+S5Jg6UCdUSBLz3dbXY88k1ub18XXWClIekN8tSOpusycWYxTcGykR
-	 8ldPt5g+CdT1PdhbfQD2HiY8xHTQGPsgukFWx6ahPE0MURRHv5p9EOT2M+rUl/86f4
-	 QYXoHwKWQT03w==
-From: Mark Brown <broonie@kernel.org>
-To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- shengjiu.wang@gmail.com, lgirdwood@gmail.com, perex@perex.cz,
- tiwai@suse.com, alsa-devel@alsa-project.org,
- Shengjiu Wang <shengjiu.wang@nxp.com>
-In-Reply-To: <1675760664-25193-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1675760664-25193-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: fix getting version from VERID
-Message-Id: <167577878194.133259.5914289862792868772.b4-ty@kernel.org>
-Date: Tue, 07 Feb 2023 14:06:21 +0000
+	(Authenticated sender: tanureal)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 37CA1660208D;
+	Tue,  7 Feb 2023 16:34:44 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1675787684;
+	bh=Ju9beePp7bAYEhek0mXetGx1R+Zbuu/Si/5uQYOpoYQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=edQKC4NEPBgk6xe98pLs1bQKH/mVHP9YXgIKmxRpaFkpenX2o/OQ+p83JRoc98JIu
+	 s5vkVGN/Q3Tj2Or/cTy3yxAjr10QlhINvyc333vtYnB+y3Z03j7M4sXTRDKyRSzUVv
+	 aDl6VlVamlv+1h1kaKIG3iQ6WuDLUB+HFyMuKki0rCv1/uYtizueGxxXRamCI1/6gO
+	 hP+dQq9wfMXVMCXavKYoqjuNhUlyqAMuQunVAjhnIBanTd/hpxLc0jIYcElCHEHib8
+	 ZWl2KyMZDKnwX/WX6495BOgPIhDt+1fAtjnQVrZNkwwaRB81ApYUv/r14QG5jwblfb
+	 6qDOxL8gzupbw==
+Message-ID: <4efe9796-6d3e-09d1-d5f7-cfb25a439061@collabora.com>
+Date: Tue, 7 Feb 2023 16:34:42 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH 2/2] Documentation: cs35l41: Shared boost properties
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+References: <20230207104021.2842-1-lucas.tanure@collabora.com>
+ <20230207104021.2842-3-lucas.tanure@collabora.com>
+ <44faeca1-94c9-4423-d87a-03d80e286812@linaro.org>
+ <e7257f9a-86c5-74e8-c538-6f6d2ba13274@collabora.com>
+ <44c7274f-8a5e-0235-413a-6c3260018601@linaro.org>
+From: Lucas Tanure <lucas.tanure@collabora.com>
+In-Reply-To: <44c7274f-8a5e-0235-413a-6c3260018601@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.0
-Message-ID-Hash: TOY43YLBWR66V4LURSIOTGI2GEWZPACB
-X-Message-ID-Hash: TOY43YLBWR66V4LURSIOTGI2GEWZPACB
-X-MailFrom: broonie@kernel.org
+Message-ID-Hash: G56O462CGFYHRZ3LWZQ5OJCGDVGJFVBQ
+X-Message-ID-Hash: G56O462CGFYHRZ3LWZQ5OJCGDVGJFVBQ
+X-MailFrom: lucas.tanure@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ kernel@collabora.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TOY43YLBWR66V4LURSIOTGI2GEWZPACB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G56O462CGFYHRZ3LWZQ5OJCGDVGJFVBQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,39 +105,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 07 Feb 2023 17:04:24 +0800, Shengjiu Wang wrote:
-> The version information is at the bit31 ~ bit16 in the VERID
-> register, so need to right shift 16bit to get it, otherwise
-> the result of comparison "sai->verid.version >= 0x0301" is
-> wrong.
+On 07-02-2023 16:13, Krzysztof Kozlowski wrote:
+> On 07/02/2023 16:46, Lucas Tanure wrote:
+>>>> +      Shared boost allows two amplifiers to share a single boost circuit by
+>>>> +      communicating on the MDSYNC bus. The passive amplifier does not control
+>>>> +      the boost and receives data from the active amplifier. GPIO1 should be
+>>>> +      configured for Sync when shared boost is used. Shared boost is not
+>>>> +      compatible with External boost. Active amplifier requires
+>>>> +      boost-peak-milliamp, boost-ind-nanohenry and boost-cap-microfarad.
+>>>>          0 = Internal Boost
+>>>>          1 = External Boost
+>>>> +      2 = Reserved
+>>>
+>>> How binding can be reserved? For what and why? Drop. 2 is shared active,
+>>> 3 is shared passive.
+>> 2 Is shared boost without VSPK switch, a mode not supported for new
+>> system designs. But there is laptops using it, so we need to keep
+>> supporting in the driver.
+> 
+> That's not the answer. 2 is nothing here, so it cannot be reserved.
+> Aren't you mixing now some register value with bindings?
+> 
+> Best regards,
+> Krzysztof
 > 
 > 
+I have added a new patch with propper documentation.
+And I would like to use 3 and 4 for shared boost as 
+CS35L41_EXT_BOOST_NO_VSPK_SWITCH already exist as 2 and is used in the 
+current driver.
+The laptop that uses CS35L41_EXT_BOOST_NO_VSPK_SWITCH doesn't have the 
+property "cirrus,boost-type", but to make everything consistent I would 
+prefer to use 3 and 4 for the new boost types.
+Is that ok with you?
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: fsl_sai: fix getting version from VERID
-      commit: 29aab38823b61e482995c24644bd2d8acfe56185
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Thanks
+Lucas
