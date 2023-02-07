@@ -4,80 +4,121 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3CB2C636CC
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Feb 2023 02:19:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF186C636CC
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Feb 2023 06:33:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6DB77827;
-	Wed,  8 Feb 2023 03:18:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DB77827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D786203;
+	Wed,  8 Feb 2023 07:32:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D786203
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675822751;
-	bh=o9nDh5D9lbB1P18GCHf28jRr1Vr/tryJ53hmiMh/dEo=;
+	s=default; t=1675837989;
+	bh=WGIk0RcZug+yiCumQBgNz7m9ygzBh+DTvs8frQyiJW4=;
 	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qAnE/DazJe6HPJKXDOmDnYQyaqaQvYwMy/uqL0BPWw/NIC95/tv/iDAX+KB/pnoCD
-	 NGkFNs0Rnte//MagxOTT9y0SpNgw/P6762toWPaEbjVINO9/Up3oqXJf5wMNSD/Icy
-	 DlYmhqTmAdappkkr9Bo+73j0jHUfoo3sfAR0tQwQ=
+	b=haLFRfoEHQlH8xmfvyaYBD7RFWfne9ZOCYGLOwEBujLrVzi+eD5d0QzeEm9y0quna
+	 vR1CJfjoWDZmY7UoEVJveBeW7iE1/UQ35Hx0et8UMM6EMHgTmonzTOJIhHgNgtqGJJ
+	 vyRjkFhWPf2PJJ63xrAmaMKfhNdEsYfj/AnC7T6c=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C44C5F8012B;
-	Wed,  8 Feb 2023 03:17:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00095F800E2;
+	Wed,  8 Feb 2023 07:31:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 93AECF8012B; Wed,  8 Feb 2023 03:17:51 +0100 (CET)
-Received: from smtp.smtpout.orange.fr (smtp-21.smtpout.orange.fr
- [80.12.242.21])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3C30F800E2
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 03:17:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3C30F800E2
-Received: from [192.168.1.18] ([86.243.2.178])
-	by smtp.orange.fr with ESMTPA
-	id PVLUp8FlEPPaiPVLUpiiRq; Tue, 07 Feb 2023 22:17:46 +0100
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 07 Feb 2023 22:17:46 +0100
-X-ME-IP: 86.243.2.178
-Message-ID: <fd3ccda3-f964-6904-6056-f93c43b85a0f@wanadoo.fr>
-Date: Tue, 7 Feb 2023 22:17:39 +0100
+	id 7DC39F80152; Wed,  8 Feb 2023 00:54:49 +0100 (CET)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [185.132.182.106])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9A05EF8010B
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 00:54:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A05EF8010B
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=foss.st.com header.i=@foss.st.com header.a=rsa-sha256
+ header.s=selector1 header.b=v+r2Y+dW
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 317ArBxI023356;
+	Tue, 7 Feb 2023 15:12:28 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
+ h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=bRPLjENYLm4EkeQxpcXBxnDMwaCRtrrOyJyCcEKFKwM=;
+ b=v+r2Y+dW5qpe2evs4+p2Rph0HUeYJkhrIakAtRF4fJW7pf/iMoA2BrjUcXOgAS4O+JMl
+ IXKV7Hp74w1KJP0PvEekg8P/i3SR3P0AwBgPlA+9ojsAnk0s7LDy3CWyXOWlKcwqqPfu
+ wPE7CdTQ6u+DTonaxS8J7QYwU2uD3eROQ4b0UVJqA3TaS3QYgy35kLMkIT8d6Z2toWJ5
+ tMeMMxNPT8PXIpemJJgIQyZVYQ9Vv2xTMUAyQ8CNlfu2WPa6wKy9p9vIs1O/gAb/LlqC
+ 1+7jKtxsEn7AYZrcWlego6inAn0ozOi+IQs8ea9RiHb5iRVStFIyQmQyADvaliPIL6nK lw==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3nhfk72dkh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 07 Feb 2023 15:12:28 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 763D6100034;
+	Tue,  7 Feb 2023 15:12:27 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 48EEA21B516;
+	Tue,  7 Feb 2023 15:12:27 +0100 (CET)
+Received: from [10.201.20.249] (10.201.20.249) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Tue, 7 Feb
+ 2023 15:12:24 +0100
+Message-ID: <d6c659d8-2e5c-cb60-d950-685c4ba319e2@foss.st.com>
+Date: Tue, 7 Feb 2023 15:12:23 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.7.1
-Subject: Re: [PATCH 2/3] ASoC: codecs: Add support for the Infineon PEB2466
- codec
-To: Herve Codina <herve.codina@bootlin.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski
- <brgl@bgdev.pl>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-References: <20230206144904.91078-1-herve.codina@bootlin.com>
- <20230206144904.91078-3-herve.codina@bootlin.com>
-Content-Language: fr
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20230206144904.91078-3-herve.codina@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 22SHHAMR7SBJOEI6N54ZEJW3FUCNHYA3
-X-Message-ID-Hash: 22SHHAMR7SBJOEI6N54ZEJW3FUCNHYA3
-X-MailFrom: christophe.jaillet@wanadoo.fr
+Subject: Re: [PATCH v3 4/6] bus: stm32_sys_bus: add support for STM32MP15 and
+ STM32MP13 system bus
+Content-Language: en-US
+To: Jonathan Cameron <jic23@kernel.org>
+References: <20230127164040.1047583-1-gatien.chevallier@foss.st.com>
+ <20230127164040.1047583-5-gatien.chevallier@foss.st.com>
+ <20230128161217.0e79436e@jic23-huawei>
+From: Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
+In-Reply-To: <20230128161217.0e79436e@jic23-huawei>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.201.20.249]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.122.1
+ definitions=2023-02-07_05,2023-02-06_03,2022-06-22_01
+X-MailFrom: prvs=040240bbbf=gatien.chevallier@foss.st.com
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: GKRZCYCWOZHNKF4JY77YP6357JHPPQ2S
+X-Message-ID-Hash: GKRZCYCWOZHNKF4JY77YP6357JHPPQ2S
+X-Mailman-Approved-At: Wed, 08 Feb 2023 06:31:47 +0000
+CC: Oleksii_Moisieiev@epam.com, gregkh@linuxfoundation.org,
+ herbert@gondor.apana.org.au, davem@davemloft.net, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, alexandre.torgue@foss.st.com,
+ vkoul@kernel.org, olivier.moysan@foss.st.com, arnaud.pouliquen@foss.st.com,
+ mchehab@kernel.org, fabrice.gasnier@foss.st.com, ulf.hansson@linaro.org,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-iio@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ netdev@vger.kernel.org, linux-phy@lists.infradead.org,
+ linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-usb@vger.kernel.org, Loic PALLARDY <loic.pallardy@st.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/22SHHAMR7SBJOEI6N54ZEJW3FUCNHYA3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GKRZCYCWOZHNKF4JY77YP6357JHPPQ2S/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -86,163 +127,226 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Le 06/02/2023 à 15:49, Herve Codina a écrit :
-> The Infineon PEB2466 codec is a programmable DSP-based four channels
-> codec with filters capabilities.
-> It also provides signals as GPIOs.
+Hi Jonathan,
+
+On 1/28/23 17:12, Jonathan Cameron wrote:
+> On Fri, 27 Jan 2023 17:40:38 +0100
+> Gatien Chevallier <gatien.chevallier@foss.st.com> wrote:
 > 
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> ---
->   sound/soc/codecs/Kconfig   |   12 +
->   sound/soc/codecs/Makefile  |    2 +
->   sound/soc/codecs/peb2466.c | 2071 ++++++++++++++++++++++++++++++++++++
->   3 files changed, 2085 insertions(+)
->   create mode 100644 sound/soc/codecs/peb2466.c
+>> This driver is checking the access rights of the different
+>> peripherals connected to the system bus. If access is denied,
+>> the associated device tree node is skipped so the platform bus
+>> does not probe it.
+>>
+>> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+>> Signed-off-by: Loic PALLARDY <loic.pallardy@st.com>
+> 
+> Hi Gatien,
+> 
+> A few comments inline,
+> 
+> Thanks,
+> 
+> Jonathan
+> 
+>> diff --git a/drivers/bus/stm32_sys_bus.c b/drivers/bus/stm32_sys_bus.c
+>> new file mode 100644
+>> index 000000000000..c12926466bae
+>> --- /dev/null
+>> +++ b/drivers/bus/stm32_sys_bus.c
+>> @@ -0,0 +1,168 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Copyright (C) 2023, STMicroelectronics - All Rights Reserved
+>> + */
+>> +
+>> +#include <linux/bitfield.h>
+>> +#include <linux/bits.h>
+>> +#include <linux/device.h>
+>> +#include <linux/err.h>
+>> +#include <linux/io.h>
+>> +#include <linux/init.h>
+>> +#include <linux/kernel.h>
+>> +#include <linux/module.h>
+>> +#include <linux/of.h>
+>> +#include <linux/of_platform.h>
+>> +#include <linux/platform_device.h>
+>> +
+>> +/* ETZPC peripheral as firewall bus */
+>> +/* ETZPC registers */
+>> +#define ETZPC_DECPROT			0x10
+>> +
+>> +/* ETZPC miscellaneous */
+>> +#define ETZPC_PROT_MASK			GENMASK(1, 0)
+>> +#define ETZPC_PROT_A7NS			0x3
+>> +#define ETZPC_DECPROT_SHIFT		1
+> 
+> This define makes the code harder to read.  What we care about is
+> the number of bits in the register divided by number of entries.
+> (which is 2) hence the shift by 1. See below for more on this.
+> 
+> 
+>> +
+>> +#define IDS_PER_DECPROT_REGS		16
+> 
+>> +#define STM32MP15_ETZPC_ENTRIES		96
+>> +#define STM32MP13_ETZPC_ENTRIES		64
+> 
+> These defines just make the code harder to check.
+> They aren't magic numbers, but rather just telling us how many
+> entries there are, so I would just put them in the structures directly.
+> Their use make it clear what they are without needing to give them a name.
 > 
 
-[...]
+Honestly, I'd rather read the hardware configuration registers to get 
+this information instead of differentiating MP13/15. Would you agree on 
+that?
 
-> +static int peb2466_spi_probe(struct spi_device *spi)
+> 
+>> +struct stm32_sys_bus_match_data {
+> 
+> Comment on naming of this below.
+> 
+>> +	unsigned int max_entries;
+>> +};
+>> +
+> 
+> +static int stm32_etzpc_get_access(struct sys_bus_data *pdata, struct device_node *np)
 > +{
-> +	struct peb2466 *peb2466;
-> +	unsigned long mclk_rate;
-> +	int ret;
-> +	u8 xr5;
+> +	int err;
+> +	u32 offset, reg_offset, sec_val, id;
 > +
-> +	spi->bits_per_word = 8;
-> +	ret = spi_setup(spi);
-> +	if (ret < 0)
-> +		return ret;
+> +	err = stm32_sys_bus_get_periph_id(pdata, np, &id);
+> +	if (err)
+> +		return err;
 > +
-> +	peb2466 = devm_kzalloc(&spi->dev, sizeof(*peb2466), GFP_KERNEL);
-> +	if (!peb2466)
-> +		return -ENOMEM;
-> +
-> +	peb2466->spi = spi;
-> +
-> +	peb2466->regmap = devm_regmap_init(&peb2466->spi->dev, NULL, peb2466,
-> +					   &peb2466_regmap_config);
-> +	if (IS_ERR(peb2466->regmap))
-> +		return PTR_ERR(peb2466->regmap);
-> +
-> +	peb2466->reset_gpio = devm_gpiod_get_optional(&peb2466->spi->dev,
-> +						      "reset", GPIOD_OUT_LOW);
-> +	if (IS_ERR(peb2466->reset_gpio))
-> +		return PTR_ERR(peb2466->reset_gpio);
-> +
-> +	peb2466->mclk = devm_clk_get(&peb2466->spi->dev, "mclk");
+> +	/* Check access configuration, 16 peripherals per register */
+> +	reg_offset = ETZPC_DECPROT + 0x4 * (id / IDS_PER_DECPROT_REGS);
+> +	offset = (id % IDS_PER_DECPROT_REGS) << ETZPC_DECPROT_SHIFT;
+> 
+> Use of defines in here is actively unhelpful when it comes to review. I would suggest letting
+> the maths be self explanatory (even if it's more code).
+> 
+> 	offset = (id % IDS_PER_DECPROT_REGS) * (sizeof(u32) * BITS_PER_BYTE / IDS_PER_DECPROT_REGS);
+> 
+> Or if you prefer have a define of
+> 
+> #define DECPROT_BITS_PER_ID (sizeof(u32) * BITS_PER_BYTE / IDS_PER_DECPROT_REGS)
+> 
+> and
+> 	offset = (id % IDS_PER_DECPROT_REGS) * DECPROT_BITS_PER_ID;
+> 
 
-Hi,
-
-Up to you to decide if it is a good idea or not, but using 
-devm_clk_get_enabled() would save the 'mclk' field in peb2466 ...
-
-> +	if (IS_ERR(peb2466->mclk))
-> +		return PTR_ERR(peb2466->mclk);
-> +	ret = clk_prepare_enable(peb2466->mclk);
-> +	if (ret)
-> +		return ret;
-
-... these 3 lines ...
+Ok I'll rework this for better understanding. Your suggestion seems fine
 
 > +
-> +	if (peb2466->reset_gpio) {
-> +		gpiod_set_value_cansleep(peb2466->reset_gpio, 1);
-> +		udelay(4);
-> +		gpiod_set_value_cansleep(peb2466->reset_gpio, 0);
-> +		udelay(4);
-> +	}
-> +
-> +	spi_set_drvdata(spi, peb2466);
-
-... this spi_set_drvdata() call ...
-
-> +
-> +	mclk_rate = clk_get_rate(peb2466->mclk);
-> +	switch (mclk_rate) {
-> +	case 1536000:
-> +		xr5 = PEB2466_XR5_MCLK_1536;
-> +		break;
-> +	case 2048000:
-> +		xr5 = PEB2466_XR5_MCLK_2048;
-> +		break;
-> +	case 4096000:
-> +		xr5 = PEB2466_XR5_MCLK_4096;
-> +		break;
-> +	case 8192000:
-> +		xr5 = PEB2466_XR5_MCLK_8192;
-> +		break;
-> +	default:
-> +		dev_err(&peb2466->spi->dev, "Unsupported clock rate %lu\n",
-> +			mclk_rate);
-> +		ret = -EINVAL;
-> +		goto failed;
-> +	}
-> +	ret = regmap_write(peb2466->regmap, PEB2466_XR5, xr5);
-> +	if (ret) {
-> +		dev_err(&peb2466->spi->dev, "Setting MCLK failed (%d)\n", ret);
-> +		goto failed;
-> +	}
-> +
-> +	ret = devm_snd_soc_register_component(&spi->dev, &peb2466_component_driver,
-> +					      &peb2466_dai_driver, 1);
-> +	if (ret)
-> +		goto failed;
-> +
-> +	if (IS_ENABLED(CONFIG_GPIOLIB)) {
-> +		ret = peb2466_gpio_init(peb2466);
-> +		if (ret)
-> +			goto failed;
+> +	/* Verify peripheral is non-secure and attributed to cortex A7 */
+> +	sec_val = (readl(pdata->sys_bus_base + reg_offset) >> offset) & ETZPC_PROT_MASK;
+> +	if (sec_val != ETZPC_PROT_A7NS) {
+> +		dev_dbg(pdata->dev, "Invalid bus configuration: reg_offset %#x, value %d\n",
+> +			reg_offset, sec_val);
+> +		return -EACCES;
 > +	}
 > +
 > +	return 0;
-> +
-> +failed:
-> +	clk_disable_unprepare(peb2466->mclk);
-> +	return ret;
-
-... this error handling path ...
-
 > +}
 > +
-> +static void peb2466_spi_remove(struct spi_device *spi)
-> +{
-> +	struct peb2466 *peb2466 = spi_get_drvdata(spi);
-> +
-> +	clk_disable_unprepare(peb2466->mclk);
-> +}
+> ...
+> 
+>> +static int stm32_sys_bus_probe(struct platform_device *pdev)
+>> +{
+>> +	struct sys_bus_data *pdata;
+>> +	void __iomem *mmio;
+>> +	struct device_node *np = pdev->dev.of_node;
+> 
+> I'd be consistent. You use dev_of_node() accessor elsewhere, so should
+> use it here as well >> +
+>> +	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+>> +	if (!pdata)
+>> +		return -ENOMEM;
+>> +
+>> +	mmio = devm_platform_ioremap_resource(pdev, 0);
+>> +	if (IS_ERR(mmio))
+>> +		return PTR_ERR(mmio);
+>> +
+>> +	pdata->sys_bus_base = mmio;
+>> +	pdata->pconf = of_device_get_match_data(&pdev->dev);
+>> +	pdata->dev = &pdev->dev;
+>> +
+>> +	platform_set_drvdata(pdev, pdata);
+> 
+> Does this get used? I can't immediately spot where but maybe I just
+> missed it.
+> 
 
-... and the remove function.
+Not for now :)
 
-CJ
+>> +
+>> +	stm32_sys_bus_populate(pdata);
+>> +
+>> +	/* Populate all available nodes */
+>> +	return of_platform_populate(np, NULL, NULL, &pdev->dev);
+> 
+> As np only used here, I'd not bother with the local variable in this function.
+> 
 
+Agreed
 
-> +
-> +static const struct of_device_id peb2466_of_match[] = {
-> +	{ .compatible = "infineon,peb2466", },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, peb2466_of_match);
-> +
-> +static const struct spi_device_id peb2466_id_table[] = {
-> +	{ "peb2466", 0 },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(spi, peb2466_id_table);
-> +
-> +static struct spi_driver peb2466_spi_driver = {
-> +	.driver  = {
-> +		.name   = "peb2466",
-> +		.of_match_table = peb2466_of_match,
-> +	},
-> +	.id_table = peb2466_id_table,
-> +	.probe  = peb2466_spi_probe,
-> +	.remove = peb2466_spi_remove,
-> +};
-> +
-> +module_spi_driver(peb2466_spi_driver);
-> +
-> +MODULE_AUTHOR("Herve Codina <herve.codina@bootlin.com>");
-> +MODULE_DESCRIPTION("PEB2466 ALSA SoC driver");
-> +MODULE_LICENSE("GPL");
+>> +}
+>> +
+>> +static const struct stm32_sys_bus_match_data stm32mp15_sys_bus_data = {
+> 
+> Naming a structure after where it comes from is a little unusual and
+> confusion when a given call gets it from somewhere else.
+> 
+> I'd expect it to be named after what sort of thing it contains.
+> stm32_sys_bus_info or something like that.
+> 
 
+Then, this shall be removed thanks to the read to hardware registers.
+
+>> +	.max_entries = STM32MP15_ETZPC_ENTRIES,
+>> +};
+>> +
+>> +static const struct stm32_sys_bus_match_data stm32mp13_sys_bus_data = {
+>> +	.max_entries = STM32MP13_ETZPC_ENTRIES,
+>> +};
+>> +
+>> +static const struct of_device_id stm32_sys_bus_of_match[] = {
+>> +	{ .compatible = "st,stm32mp15-sys-bus", .data = &stm32mp15_sys_bus_data },
+>> +	{ .compatible = "st,stm32mp13-sys-bus", .data = &stm32mp13_sys_bus_data },
+> 
+> Alphabetical order usually preferred when there isn't a strong reason for
+> another choice.
+> 
+
+I second that
+
+>> +	{}
+>> +};
+>> +MODULE_DEVICE_TABLE(of, stm32_sys_bus_of_match);
+>> +
+>> +static struct platform_driver stm32_sys_bus_driver = {
+>> +	.probe  = stm32_sys_bus_probe,
+>> +	.driver = {
+>> +		.name = "stm32-sys-bus",
+>> +		.of_match_table = stm32_sys_bus_of_match,
+>> +	},
+>> +};
+>> +
+>> +static int __init stm32_sys_bus_init(void)
+>> +{
+>> +	return platform_driver_register(&stm32_sys_bus_driver);
+>> +}
+>> +arch_initcall(stm32_sys_bus_init);
+>> +
+> 
+> Unwanted trailing blank line.
+> 
+
+Good spot, thanks
+
+> 
+
+Best regards,
+Gatien
