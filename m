@@ -4,94 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D476C636CC
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Feb 2023 23:34:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00476C636CC
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Feb 2023 23:34:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F11F868;
-	Wed,  8 Feb 2023 00:33:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F11F868
+	by alsa0.perex.cz (Postfix) with ESMTPS id B177B886;
+	Wed,  8 Feb 2023 00:33:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B177B886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675812854;
-	bh=hp7+RIW8t0DhnlPrsaa9bOGMIlvjoMtViuNy75rPkCg=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	s=default; t=1675812876;
+	bh=h6Asegb3UosZ64SLaFl7xxcR07djTQ+PvmszvRBil6w=;
+	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uXyNKdMITCy1kWHZDt8YcuUW58ScqDl1O1OA91bJWDzA+ylKc5KLoEXp3bbaG0OwX
-	 DYalaMsWbKsepuelgnp7mCqKOjf1muN/acvjJElCA9b1FKL2uvurt7yFAtMriKIVfE
-	 kn7rMftJQnIJS0Xrq/IfGv4MiTwzYt8Q/nJzH+UM=
+	b=U42sc7TLAtjw6xL5+nGBiQmLfuWeNjkRHU0IlGo/qtPbyl/oVFkHIfigfF2GTAM2r
+	 l+ujs5YcsrHXMHngCabOI6eYvId2QrnZKWKQgAX+DihqCPx19vpsTkolQIGvTDFSvC
+	 RFoG/6Xw9Xt4cYjaZTbcZ0QlZgXfuozof9pInOJI=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73A00F8055C;
-	Wed,  8 Feb 2023 00:31:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7021DF8012B;
+	Wed,  8 Feb 2023 00:33:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7A94CF80526; Wed,  8 Feb 2023 00:31:41 +0100 (CET)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 32DCCF80152; Wed,  8 Feb 2023 00:33:42 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D1D75F80152
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 00:31:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1D75F80152
+	by alsa1.perex.cz (Postfix) with ESMTPS id 97DF3F80095
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 00:33:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97DF3F80095
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=T6om5oGS
-Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
- [82.11.51.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=p93Ap3nu
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	(Authenticated sender: tanureal)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 1D4696602090;
-	Tue,  7 Feb 2023 16:25:38 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1675787138;
-	bh=hp7+RIW8t0DhnlPrsaa9bOGMIlvjoMtViuNy75rPkCg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=T6om5oGSoaBuk5i3e5uXbGBuH62ti3Anqox9E4aBwfC1NgDLqHudhjyZGO4WfXVeX
-	 P6G4K7562ru38HVf9zBYAHZP+ve5DxINWdKquM2gKQ7ZPU2jOX5nLd5eA5v+1ZB2de
-	 H3Skg6S3+BeLuivuxfYIMQ+Oy5Pp9jHvFo9KVMvzUrlnv6ZCxMEJyGJ4EkV3Y7spaJ
-	 YaPRrewqHZ1a1zoj12H9mFET4xvzQlqpvvQauD+jZJ/tdxtIO1h38AKeD9MF7E32vO
-	 xf7f9q330q8L2VKHaWbDC5P1pHH/0d7rdMhSL0YwrY+/PGJrs6m3e80fRAuuR0HuY/
-	 PnvUKLVFpUPPQ==
-From: Lucas Tanure <lucas.tanure@collabora.com>
-To: David Rhodes <david.rhodes@cirrus.com>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 2/5] ASoC: cs35l41: Refactor error release code
-Date: Tue,  7 Feb 2023 16:25:23 +0000
-Message-Id: <20230207162526.1024286-3-lucas.tanure@collabora.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230207162526.1024286-1-lucas.tanure@collabora.com>
-References: <20230207162526.1024286-1-lucas.tanure@collabora.com>
+	by ams.source.kernel.org (Postfix) with ESMTPS id AAE82B816D4;
+	Tue,  7 Feb 2023 14:06:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CBEAC433EF;
+	Tue,  7 Feb 2023 14:06:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1675778784;
+	bh=h6Asegb3UosZ64SLaFl7xxcR07djTQ+PvmszvRBil6w=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=p93Ap3nummMzTCFrhTuIZj/pRJupCaGKWU2886vJi7VYMArbOWawjy7df6+SgP6ar
+	 fmjWTVRM+c7pgNSFVvFCOFnmSjnxgWEXrcqX8H2zpEkPl0Lgu7ThM+wLFGO8dW0WYv
+	 6CrKIqz1fGb2Or7NvZdHzkI1rLD9ZvD4EUbMNmIqxf5wAQsV5tQqrAs5EbUyZAAjKh
+	 pqvu1AmoB37Z+S5Jg6UCdUSBLz3dbXY88k1ub18XXWClIekN8tSOpusycWYxTcGykR
+	 8ldPt5g+CdT1PdhbfQD2HiY8xHTQGPsgukFWx6ahPE0MURRHv5p9EOT2M+rUl/86f4
+	 QYXoHwKWQT03w==
+From: Mark Brown <broonie@kernel.org>
+To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ shengjiu.wang@gmail.com, lgirdwood@gmail.com, perex@perex.cz,
+ tiwai@suse.com, alsa-devel@alsa-project.org,
+ Shengjiu Wang <shengjiu.wang@nxp.com>
+In-Reply-To: <1675760664-25193-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1675760664-25193-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: fix getting version from VERID
+Message-Id: <167577878194.133259.5914289862792868772.b4-ty@kernel.org>
+Date: Tue, 07 Feb 2023 14:06:21 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: OE7XJEQ6USNLWTREHX33EJP6XFY76TTT
-X-Message-ID-Hash: OE7XJEQ6USNLWTREHX33EJP6XFY76TTT
-X-MailFrom: lucas.tanure@collabora.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.0
+Message-ID-Hash: TOY43YLBWR66V4LURSIOTGI2GEWZPACB
+X-Message-ID-Hash: TOY43YLBWR66V4LURSIOTGI2GEWZPACB
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- kernel@collabora.com, Lucas Tanure <lucas.tanure@collabora.com>
+CC: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OE7XJEQ6USNLWTREHX33EJP6XFY76TTT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TOY43YLBWR66V4LURSIOTGI2GEWZPACB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,126 +92,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add cs35l41_error_release function to handle
-error release sequences.
+On Tue, 07 Feb 2023 17:04:24 +0800, Shengjiu Wang wrote:
+> The version information is at the bit31 ~ bit16 in the VERID
+> register, so need to right shift 16bit to get it, otherwise
+> the result of comparison "sai->verid.version >= 0x0301" is
+> wrong.
+> 
+> 
 
-Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
----
- sound/soc/codecs/cs35l41.c | 64 ++++++++++----------------------------
- 1 file changed, 16 insertions(+), 48 deletions(-)
+Applied to
 
-diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index f2b5032daa6a..c006364e5335 100644
---- a/sound/soc/codecs/cs35l41.c
-+++ b/sound/soc/codecs/cs35l41.c
-@@ -369,6 +369,16 @@ static void cs35l41_boost_enable(struct cs35l41_private *cs35l41, unsigned int e
- 	}
- }
- 
-+
-+static void cs35l41_error_release(struct cs35l41_private *cs35l41, unsigned int irq_err_bit,
-+				  unsigned int rel_err_bit)
-+{
-+	regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1, irq_err_bit);
-+	regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
-+	regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, rel_err_bit, rel_err_bit);
-+	regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, rel_err_bit, 0);
-+}
-+
- static irqreturn_t cs35l41_irq(int irq, void *data)
- {
- 	struct cs35l41_private *cs35l41 = data;
-@@ -405,54 +415,26 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
- 	 */
- 	if (status[0] & CS35L41_AMP_SHORT_ERR) {
- 		dev_crit_ratelimited(cs35l41->dev, "Amp short error\n");
--		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
--			     CS35L41_AMP_SHORT_ERR);
--		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_AMP_SHORT_ERR_RLS,
--				   CS35L41_AMP_SHORT_ERR_RLS);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_AMP_SHORT_ERR_RLS, 0);
-+		cs35l41_error_release(cs35l41, CS35L41_AMP_SHORT_ERR, CS35L41_AMP_SHORT_ERR_RLS);
- 		ret = IRQ_HANDLED;
- 	}
- 
- 	if (status[0] & CS35L41_TEMP_WARN) {
- 		dev_crit_ratelimited(cs35l41->dev, "Over temperature warning\n");
--		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
--			     CS35L41_TEMP_WARN);
--		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_TEMP_WARN_ERR_RLS,
--				   CS35L41_TEMP_WARN_ERR_RLS);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_TEMP_WARN_ERR_RLS, 0);
-+		cs35l41_error_release(cs35l41, CS35L41_TEMP_WARN, CS35L41_TEMP_WARN_ERR_RLS);
- 		ret = IRQ_HANDLED;
- 	}
- 
- 	if (status[0] & CS35L41_TEMP_ERR) {
- 		dev_crit_ratelimited(cs35l41->dev, "Over temperature error\n");
--		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
--			     CS35L41_TEMP_ERR);
--		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_TEMP_ERR_RLS,
--				   CS35L41_TEMP_ERR_RLS);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_TEMP_ERR_RLS, 0);
-+		cs35l41_error_release(cs35l41, CS35L41_TEMP_ERR, CS35L41_TEMP_ERR_RLS);
- 		ret = IRQ_HANDLED;
- 	}
- 
- 	if (status[0] & CS35L41_BST_OVP_ERR) {
- 		dev_crit_ratelimited(cs35l41->dev, "VBST Over Voltage error\n");
- 		cs35l41_boost_enable(cs35l41, 0);
--		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
--			     CS35L41_BST_OVP_ERR);
--		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_BST_OVP_ERR_RLS,
--				   CS35L41_BST_OVP_ERR_RLS);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_BST_OVP_ERR_RLS, 0);
-+		cs35l41_error_release(cs35l41, CS35L41_BST_OVP_ERR, CS35L41_BST_OVP_ERR_RLS);
- 		cs35l41_boost_enable(cs35l41, 1);
- 		ret = IRQ_HANDLED;
- 	}
-@@ -460,14 +442,7 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
- 	if (status[0] & CS35L41_BST_DCM_UVP_ERR) {
- 		dev_crit_ratelimited(cs35l41->dev, "DCM VBST Under Voltage Error\n");
- 		cs35l41_boost_enable(cs35l41, 0);
--		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
--			     CS35L41_BST_DCM_UVP_ERR);
--		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_BST_UVP_ERR_RLS,
--				   CS35L41_BST_UVP_ERR_RLS);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_BST_UVP_ERR_RLS, 0);
-+		cs35l41_error_release(cs35l41, CS35L41_BST_DCM_UVP_ERR, CS35L41_BST_UVP_ERR_RLS);
- 		cs35l41_boost_enable(cs35l41, 1);
- 		ret = IRQ_HANDLED;
- 	}
-@@ -475,14 +450,7 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
- 	if (status[0] & CS35L41_BST_SHORT_ERR) {
- 		dev_crit_ratelimited(cs35l41->dev, "LBST error: powering off!\n");
- 		cs35l41_boost_enable(cs35l41, 0);
--		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
--			     CS35L41_BST_SHORT_ERR);
--		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_BST_SHORT_ERR_RLS,
--				   CS35L41_BST_SHORT_ERR_RLS);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_BST_SHORT_ERR_RLS, 0);
-+		cs35l41_error_release(cs35l41, CS35L41_BST_SHORT_ERR, CS35L41_BST_SHORT_ERR_RLS);
- 		cs35l41_boost_enable(cs35l41, 1);
- 		ret = IRQ_HANDLED;
- 	}
--- 
-2.39.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: fsl_sai: fix getting version from VERID
+      commit: 29aab38823b61e482995c24644bd2d8acfe56185
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
