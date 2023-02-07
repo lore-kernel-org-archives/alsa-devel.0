@@ -4,88 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B130C636CD
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Feb 2023 23:25:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADE5CC636CC
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Feb 2023 23:32:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D26B3E7;
-	Wed,  8 Feb 2023 00:24:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D26B3E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85B1A3E7;
+	Wed,  8 Feb 2023 00:32:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85B1A3E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675812300;
-	bh=YqDF29yTDTzZofC0OrRusN/jw+sSqFWwWjB3YnAN8mA=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	s=default; t=1675812774;
+	bh=nxo4Zb66w1eIe+mN83K0Syc5b5UVVfS5ABRQkEweHz8=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tru0zlJ5JHGqVrgKkggOCB/xug3I9lo1HAVssEmI97jgxaC3arWOkrsJ8OFlW+cYa
-	 IwGMPaPu4kHrtuAPzS5GzO3MzgNQvV0EuvzaI/jC8qga/+CWEnVgZm2wBN251SWatO
-	 IeVkifqaFFh2zDXVf89kb+RVviyrAdwztimippZo=
+	b=bBqjF2N6ug+nmu44JqidhSQEdHVuhD0JoqWdnxoKBLYfeJilXf4t8c+xpSbZXLxln
+	 0stTHc7QMi0EhF9dQQUx7xL/trsXYoukFr/LAKGtlaNuSfgoBkXkXRup5c9MaLXY+V
+	 6eapVRdY4cFTgyC85ZaOICvG2CghEhdKgdgz/K80=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9C89F80095;
-	Wed,  8 Feb 2023 00:23:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E64BF8010B;
+	Wed,  8 Feb 2023 00:31:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6F428F8012B; Wed,  8 Feb 2023 00:23:39 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 40F01F8051D; Wed,  8 Feb 2023 00:31:33 +0100 (CET)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [46.235.227.172])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C399DF800E2
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 00:23:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C399DF800E2
+	by alsa1.perex.cz (Postfix) with ESMTPS id 364B2F800E2
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 00:31:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 364B2F800E2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=asZxJim1
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=f1uZqHAQ
+Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
+ [82.11.51.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 1DD2BB8198E;
-	Tue,  7 Feb 2023 15:06:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71A4AC433EF;
-	Tue,  7 Feb 2023 15:06:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1675782365;
-	bh=YqDF29yTDTzZofC0OrRusN/jw+sSqFWwWjB3YnAN8mA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=asZxJim1OThPT7N/ebQJty/PhYOPN7aFj6sKP/aVDIQUStFsecBWjYU/z1Fwo4eor
-	 6ElGV8nV1q4aW+V2wdnhw7ENQbNQqV5fVShFAZRy5vAFuFaU3miDJKqOQYnAE5mD/P
-	 vCvk5dFDVixQFm4zarCpiEraFsialIIpxdIHrAoBxmldRTYNwRxUNU+jHEQUqV8LBW
-	 MA8X0lf0/kfczCAOln2DWdu4hac1ib2WjoD1HploTeNTz+P8BxL3QqPjjRnjPY1kGN
-	 O06lj23OOqxzUp9BStpP+K+64A38HMwWIhbbrUnlNS938ik+nXlmz9H5vdQKG21cRO
-	 iTTTOoHtOR3nQ==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- Jerome Brunet <jbrunet@baylibre.com>
-In-Reply-To: <20230206153449.596326-1-jbrunet@baylibre.com>
-References: <20230206153449.596326-1-jbrunet@baylibre.com>
-Subject: Re: (subset) [PATCH v2 0/7] ASoC: dt-bindings: meson: covert axg
- audio to schema
-Message-Id: <167578236315.223502.6627129328138282057.b4-ty@kernel.org>
-Date: Tue, 07 Feb 2023 15:06:03 +0000
+	(Authenticated sender: tanureal)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id C07416602085;
+	Tue,  7 Feb 2023 16:25:37 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1675787138;
+	bh=nxo4Zb66w1eIe+mN83K0Syc5b5UVVfS5ABRQkEweHz8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=f1uZqHAQDZ6HvpfmznRbNNNS1FU65E9RkCWtZ4EpRhnegYVCdPeKhzN9maLNO1k5a
+	 baTvuCkJOpfo46Vo9yyXsSGMj/+sAStR8m60V2auTkKxwnAisF2GXbAVlvA0HFyJUN
+	 MMR1NLlYKIHVcU5kcL9MK84j4v8aRWdjtabH5iJFlGul+g5pNOF6RDHvEufjvK8vdM
+	 bGa0h+8L0qeTSzgCiZaybtOrk2/RQIwll0jRQbeiAu3LwvbgEvrJ+7BQma5Qvh9iHF
+	 kR4q2JEw0e//CpVCb7RpB64dXddsJAgHXINhrQkaTw9PxMDlX/iqkH7BEiWGWvA3RR
+	 c7eoiNhPgI8Ow==
+From: Lucas Tanure <lucas.tanure@collabora.com>
+To: David Rhodes <david.rhodes@cirrus.com>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v2 1/5] ASoC: cs35l41: Only disable internal boost
+Date: Tue,  7 Feb 2023 16:25:22 +0000
+Message-Id: <20230207162526.1024286-2-lucas.tanure@collabora.com>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230207162526.1024286-1-lucas.tanure@collabora.com>
+References: <20230207162526.1024286-1-lucas.tanure@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.0
-Message-ID-Hash: 7HPQ47UWUZDWNPD2LIMFYC5RBJ6E7HKM
-X-Message-ID-Hash: 7HPQ47UWUZDWNPD2LIMFYC5RBJ6E7HKM
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: U2FPPG2FJIVEVEOMO5KJPTTTHOGTFHTU
+X-Message-ID-Hash: U2FPPG2FJIVEVEOMO5KJPTTTHOGTFHTU
+X-MailFrom: lucas.tanure@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: linux-amlogic@lists.infradead.org, Kevin Hilman <khilman@baylibre.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-kernel@vger.kernel.org
+CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ kernel@collabora.com, Lucas Tanure <lucas.tanure@collabora.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7HPQ47UWUZDWNPD2LIMFYC5RBJ6E7HKM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U2FPPG2FJIVEVEOMO5KJPTTTHOGTFHTU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,52 +101,100 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 06 Feb 2023 16:34:42 +0100, Jerome Brunet wrote:
-> Convert AXG audio dt-binding documentation to schema
-> 
-> Changes since v1:
-> * Drop 2 patches applied with v1
-> * Drop node name patterns
-> * Fix examples indentation
-> * Yaml fixups requested by Krzysztof
-> 
-> [...]
+In error situations, only the internal boost case
+should be disabled and re-enabled.
+Also, for other boost cases re-enabling the boost
+to the default internal boost config is incorrect.
 
-Applied to
+Fixes: 6450ef559056 ("ASoC: cs35l41: CS35L41 Boosted Smart Amplifier")
+Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
+---
+ sound/soc/codecs/cs35l41.c | 34 +++++++++++++++++++---------------
+ 1 file changed, 19 insertions(+), 15 deletions(-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/7] ASoC: dt-bindings: meson: convert axg tdm interface to schema
-      commit: cdff91122de52f480bea730fee6665a7404d758c
-[2/7] ASoC: dt-bindings: meson: convert axg tdm formatters to schema
-      commit: c5536e7be70cf2ab55c674b3c2120565e9559c50
-[3/7] ASoC: dt-bindings: meson: convert axg pdm to schema
-      commit: 4d37c72ec42374c5ad416f851b572a9fb794e8ef
-[4/7] ASoC: dt-bindings: meson: convert axg fifo to schema
-      commit: 6b6f5ea7ab0062d152a3bc9192cee45c7fc31387
-[5/7] ASoC: dt-bindings: meson: convert axg spdif input to schema
-      commit: ede6aa4087abfac527267c4ac5bb6eebdfe958ba
-[6/7] ASoC: dt-bindings: meson: convert axg spdif output to schema
-      commit: 32f7b9102bfc48a210bf655e049145f6450b03a0
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
+index c223d83e02cf..f2b5032daa6a 100644
+--- a/sound/soc/codecs/cs35l41.c
++++ b/sound/soc/codecs/cs35l41.c
+@@ -356,6 +356,19 @@ static const struct snd_kcontrol_new cs35l41_aud_controls[] = {
+ 	WM_ADSP_FW_CONTROL("DSP1", 0),
+ };
+ 
++static void cs35l41_boost_enable(struct cs35l41_private *cs35l41, unsigned int enable)
++{
++	switch (cs35l41->hw_cfg.bst_type) {
++	case CS35L41_INT_BOOST:
++		enable = enable ? CS35L41_BST_EN_DEFAULT : CS35L41_BST_DIS_FET_OFF;
++		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2, CS35L41_BST_EN_MASK,
++				enable << CS35L41_BST_EN_SHIFT);
++		break;
++	default:
++		break;
++	}
++}
++
+ static irqreturn_t cs35l41_irq(int irq, void *data)
+ {
+ 	struct cs35l41_private *cs35l41 = data;
+@@ -431,8 +444,7 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
+ 
+ 	if (status[0] & CS35L41_BST_OVP_ERR) {
+ 		dev_crit_ratelimited(cs35l41->dev, "VBST Over Voltage error\n");
+-		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-				   CS35L41_BST_EN_MASK, 0);
++		cs35l41_boost_enable(cs35l41, 0);
+ 		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
+ 			     CS35L41_BST_OVP_ERR);
+ 		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
+@@ -441,16 +453,13 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
+ 				   CS35L41_BST_OVP_ERR_RLS);
+ 		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
+ 				   CS35L41_BST_OVP_ERR_RLS, 0);
+-		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-				   CS35L41_BST_EN_MASK,
+-				   CS35L41_BST_EN_DEFAULT << CS35L41_BST_EN_SHIFT);
++		cs35l41_boost_enable(cs35l41, 1);
+ 		ret = IRQ_HANDLED;
+ 	}
+ 
+ 	if (status[0] & CS35L41_BST_DCM_UVP_ERR) {
+ 		dev_crit_ratelimited(cs35l41->dev, "DCM VBST Under Voltage Error\n");
+-		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-				   CS35L41_BST_EN_MASK, 0);
++		cs35l41_boost_enable(cs35l41, 0);
+ 		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
+ 			     CS35L41_BST_DCM_UVP_ERR);
+ 		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
+@@ -459,16 +468,13 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
+ 				   CS35L41_BST_UVP_ERR_RLS);
+ 		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
+ 				   CS35L41_BST_UVP_ERR_RLS, 0);
+-		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-				   CS35L41_BST_EN_MASK,
+-				   CS35L41_BST_EN_DEFAULT << CS35L41_BST_EN_SHIFT);
++		cs35l41_boost_enable(cs35l41, 1);
+ 		ret = IRQ_HANDLED;
+ 	}
+ 
+ 	if (status[0] & CS35L41_BST_SHORT_ERR) {
+ 		dev_crit_ratelimited(cs35l41->dev, "LBST error: powering off!\n");
+-		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-				   CS35L41_BST_EN_MASK, 0);
++		cs35l41_boost_enable(cs35l41, 0);
+ 		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
+ 			     CS35L41_BST_SHORT_ERR);
+ 		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
+@@ -477,9 +483,7 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
+ 				   CS35L41_BST_SHORT_ERR_RLS);
+ 		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
+ 				   CS35L41_BST_SHORT_ERR_RLS, 0);
+-		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-				   CS35L41_BST_EN_MASK,
+-				   CS35L41_BST_EN_DEFAULT << CS35L41_BST_EN_SHIFT);
++		cs35l41_boost_enable(cs35l41, 1);
+ 		ret = IRQ_HANDLED;
+ 	}
+ 
+-- 
+2.39.1
 
