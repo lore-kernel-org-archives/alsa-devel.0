@@ -4,76 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD69EC636CD
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Feb 2023 23:50:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8459DC636CC
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Feb 2023 23:53:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE4B820C;
-	Wed,  8 Feb 2023 00:49:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE4B820C
+	by alsa0.perex.cz (Postfix) with ESMTPS id C14B73E8;
+	Wed,  8 Feb 2023 00:52:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C14B73E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675813799;
-	bh=MSOBHuptKQh+Vis/NZF17skKNEjY1BhRVlPjpCBLRaE=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=ZdFTNxUt3SPzT5jjQnRDkMhrWXFTe9aORrcMbvf1Ynih2Pn9sDGtfoqUM7I76t0N3
-	 4Aq3TQ9LajFtEQlaY+f0VZt6HosciYhJdEZwIHeEQKZkUzo6yZtsvELlnG/bq7ieAw
-	 0PXNDbh3gYRGIgyDA9jnJUiP0aYHeGxVSSXEZZDg=
+	s=default; t=1675814010;
+	bh=QndZ7tYlfmaqsT9TpWtutfsir/wk+cDucaDxJbdN7W8=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=RBvKfhivSLAY72DtGfIcGW/riefe/1I8tvKuffpUjz4jnCvlawVv9sCnJV9XM2TTa
+	 KfqWKfTgHoX4FIuqAj4fcmFBGICgUn70LXfHOSJvcdPy1VL0hEkDxB6a/ho4TUx+Sf
+	 DUWbg+DG6FtXpQrlUZz5AMJwjovxj//8rsDQ+Mu8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B34A3F800E2;
-	Wed,  8 Feb 2023 00:48:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 93E4AF80095;
+	Wed,  8 Feb 2023 00:52:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E5F3AF8012B; Wed,  8 Feb 2023 00:48:39 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 4C8DCF80152; Wed,  8 Feb 2023 00:52:10 +0100 (CET)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C0F8CF800E2
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 00:48:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0F8CF800E2
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=A4AHhf84
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id EEE7DB819AA;
-	Tue,  7 Feb 2023 16:43:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 216E3C433EF;
-	Tue,  7 Feb 2023 16:43:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1675788201;
-	bh=MSOBHuptKQh+Vis/NZF17skKNEjY1BhRVlPjpCBLRaE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=A4AHhf84pnIOfOt7NPZN/z/IuRYfeHdLwT5eWEX8DI+wc0xQa6Ha+TKxfkBvXiKqT
-	 ptmRJEpJAYwC3Ete8GSmEWIm4rBoUFiu+BUR9SBpu44VZTYy6U6TfnEpznEDgcytjD
-	 //D1g6bmPw/HObu1/1Qa4SQDnQSe0ERtXG/AYPYgkkiTc6oZhTNPkHiDjV47PbTc2o
-	 xF0fXXPbLSq3Tq9XFL1tnngdu4KIokyHqhwz39hNdq1AiCoq1xJu4Sm+5fzHDnfMYu
-	 WBlWmZxP0po0YlkN/kO+hGuPkZ/PVlyLiJUEjRbfQJaKgSvedjuhy2sSPo47DSGuQl
-	 PBMsd/Chllp4w==
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: [GIT PULL] ASoC fixes for v6.2-rc7
-Date: Tue, 07 Feb 2023 16:43:17 +0000
-Message-Id: <20230207164321.216E3C433EF@smtp.kernel.org>
-Message-ID-Hash: STAPMXIV5IGAVYVMCPVO6D2NPKWHLX5M
-X-Message-ID-Hash: STAPMXIV5IGAVYVMCPVO6D2NPKWHLX5M
-X-MailFrom: broonie@kernel.org
+	by alsa1.perex.cz (Postfix) with ESMTPS id 19AFCF80095
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 00:52:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19AFCF80095
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1pPTVA-0008RQ-8V; Tue, 07 Feb 2023 20:19:36 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1pPTV8-003LvE-6l; Tue, 07 Feb 2023 20:19:35 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1pPTV8-001ewC-RR; Tue, 07 Feb 2023 20:19:34 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH 2/3] ALSA: core: Make snd_card_free_when_closed() return void
+Date: Tue,  7 Feb 2023 20:19:06 +0100
+Message-Id: <20230207191907.467756-3-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230207191907.467756-1-u.kleine-koenig@pengutronix.de>
+References: <20230207191907.467756-1-u.kleine-koenig@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2431;
+ i=u.kleine-koenig@pengutronix.de; h=from:subject;
+ bh=QndZ7tYlfmaqsT9TpWtutfsir/wk+cDucaDxJbdN7W8=;
+ b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBj4qQihqS+RqvE4mHTbtFK25t/9HPpCE7QvpjDFs9f
+ Hx8KRTOJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCY+KkIgAKCRDB/BR4rcrsCYi3CA
+ CCKHI+lrkoXLA2CbSJ4SFg/vgq1RZVLHyKNc4YX2LyU7Qf9H0mX8HERUduG/VCS3nbG5qB45/bI9nO
+ IcDmLzI3Xe4Bh/KMc/g1vvgqp33/7q/v/RXmxId8sw8lOUL1Ct7Jb3klyLFaHSo/5s4PVcaXAjv43g
+ F6ABuS5BV/uMFZSWb1enx7G493u19CHnq8oBd+kcIZQiptjTjKkqwCPf7h+8mCl0pZxMOd6OgTsCqM
+ sLByoQuXA9E0MTe+LnMYVzoP0CYA+Y8PQal+QelNdGvywmJ4cWkLUxg3U51CbUWXv/9WpmA2REQ3IA
+ 0SGOyWIit5AWISkBwJ2KqIPsEfr97u
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp;
+ fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Message-ID-Hash: I3T5GFJWB56XANDBL7FSSQTLRHA5IXMI
+X-Message-ID-Hash: I3T5GFJWB56XANDBL7FSSQTLRHA5IXMI
+X-MailFrom: ukl@pengutronix.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>
+CC: alsa-devel@alsa-project.org, kernel@pengutronix.de
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/STAPMXIV5IGAVYVMCPVO6D2NPKWHLX5M/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I3T5GFJWB56XANDBL7FSSQTLRHA5IXMI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -82,51 +101,74 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The following changes since commit e18c6da62edc780e4f4f3c9ce07bdacd69505182:
+All callers from other files ignore the return value of this function.
+And it can only ever return a non-zero value if the parameter card is NULL.
 
-  ASoC: cs42l56: fix DT probe (2023-01-26 17:42:36 +0000)
+This cannot happen in snd_card_free() as card was dereferenced just before
+snd_card_free_when_closed() is called. So the error handling can be dropped
+there.
 
-are available in the Git repository at:
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ include/sound/core.h |  2 +-
+ sound/core/init.c    | 12 +++++-------
+ 2 files changed, 6 insertions(+), 8 deletions(-)
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.2-rc7
+diff --git a/include/sound/core.h b/include/sound/core.h
+index 9a73c60b6f1e..21884c979c17 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -289,7 +289,7 @@ int snd_devm_card_new(struct device *parent, int idx, const char *xid,
+ void snd_card_disconnect(struct snd_card *card);
+ void snd_card_disconnect_sync(struct snd_card *card);
+ int snd_card_free(struct snd_card *card);
+-int snd_card_free_when_closed(struct snd_card *card);
++void snd_card_free_when_closed(struct snd_card *card);
+ int snd_card_free_on_error(struct device *dev, int ret);
+ void snd_card_set_id(struct snd_card *card, const char *id);
+ int snd_card_register(struct snd_card *card);
+diff --git a/sound/core/init.c b/sound/core/init.c
+index a03eddab12fe..6bb3e2b77971 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -608,14 +608,14 @@ static int snd_card_do_free(struct snd_card *card)
+  *
+  * Return: zero if successful, or a negative error code
+  */
+-int snd_card_free_when_closed(struct snd_card *card)
++void snd_card_free_when_closed(struct snd_card *card)
+ {
+ 	if (!card)
+-		return -EINVAL;
++		return;
+ 
+ 	snd_card_disconnect(card);
+ 	put_device(&card->card_dev);
+-	return 0;
++	return;
+ }
+ EXPORT_SYMBOL(snd_card_free_when_closed);
+ 
+@@ -635,7 +635,6 @@ EXPORT_SYMBOL(snd_card_free_when_closed);
+ int snd_card_free(struct snd_card *card)
+ {
+ 	DECLARE_COMPLETION_ONSTACK(released);
+-	int ret;
+ 
+ 	/* The call of snd_card_free() is allowed from various code paths;
+ 	 * a manual call from the driver and the call via devres_free, and
+@@ -647,9 +646,8 @@ int snd_card_free(struct snd_card *card)
+ 		return 0;
+ 
+ 	card->release_completion = &released;
+-	ret = snd_card_free_when_closed(card);
+-	if (ret)
+-		return ret;
++	snd_card_free_when_closed(card);
++
+ 	/* wait, until all devices are ready for the free operation */
+ 	wait_for_completion(&released);
+ 
+-- 
+2.39.0
 
-for you to fetch changes up to c173ee5b2fa6195066674d66d1d7e191010fb1ff:
-
-  ASoC: topology: Return -ENOMEM on memory allocation failure (2023-02-07 14:06:26 +0000)
-
-----------------------------------------------------------------
-ASoC: Fixes for v6.2
-
-A few more fixes for v6.2, all driver specific and small.  It's larger
-than is ideal but we can't really control when people find problems.
-
-----------------------------------------------------------------
-Alexey Firago (1):
-      ASoC: codecs: es8326: Fix DTS properties reading
-
-Amadeusz Sławiński (1):
-      ASoC: topology: Return -ENOMEM on memory allocation failure
-
-Daniel Beer (2):
-      ASoC: tas5805m: rework to avoid scheduling while atomic.
-      ASoC: tas5805m: add missing page switch.
-
-Jack Yu (1):
-      ASoC: rt715-sdca: fix clock stop prepare timeout issue
-
-Mark Brown (1):
-      Two bug fixes for tas5805m codec driver
-
-Shengjiu Wang (1):
-      ASoC: fsl_sai: fix getting version from VERID
-
-V sujith kumar Reddy (1):
-      ASoC: SOF: amd: Fix for handling spurious interrupts from DSP
-
- sound/soc/codecs/es8326.c         |   6 +-
- sound/soc/codecs/rt715-sdca-sdw.c |   2 +-
- sound/soc/codecs/tas5805m.c       | 131 ++++++++++++++++++++++++++------------
- sound/soc/fsl/fsl_sai.c           |   1 +
- sound/soc/soc-topology.c          |   8 ++-
- sound/soc/sof/amd/acp.c           |  36 +++++------
- 6 files changed, 117 insertions(+), 67 deletions(-)
