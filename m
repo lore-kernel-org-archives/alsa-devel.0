@@ -4,107 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50FE7C636CC
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Feb 2023 00:01:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 715FBC636CC
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Feb 2023 00:02:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B2C23E7;
-	Wed,  8 Feb 2023 01:00:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B2C23E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38E52208;
+	Wed,  8 Feb 2023 01:02:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38E52208
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675814483;
-	bh=MquVMAf3/BoZTo6VkzVjE/2X2pvOnnCwJXu+dLBD/aw=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=m208D1GBAegNM3LzkZnSGXgiO4bd5IOcMdf41JbipRyty7+keRcJgXzeYktRvU35O
-	 4zM34IEDkZ36PXA+e3ipzkZRdp6RLmacnIxuTU/rjcXmDhmSZApMBOunwG8Ov+36s1
-	 SzKcSPvu4wVLmdSKgnOXUsQlTMmYuhNWghG3F8GY=
+	s=default; t=1675814577;
+	bh=tt5lrHlIVInMq27wdZG33n5kYVhMCWLk9XkuAdem+b0=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Pk3gA5/dkyFZmQJwF0azsfKSUk/zGGrjyy8HWjUmeaqfnZPc4g7sR4rktWpOw/gpH
+	 89foUSdIMZXY1g4rggv24ocIqUvn8Qm8s4gPIQkLTc+j7Aeh4NEIcAIOk/gsb8ZeNO
+	 qyPuzTk/rjM8+N2K0K7CCjRukiK3Cv5XC1qrSvIo=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CAB19F8012B;
-	Wed,  8 Feb 2023 01:00:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8719BF800E2;
+	Wed,  8 Feb 2023 01:01:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D508AF8012B; Wed,  8 Feb 2023 01:00:00 +0100 (CET)
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com
- [IPv6:2607:f8b0:4864:20::1034])
+	id EC032F8012B; Wed,  8 Feb 2023 01:01:36 +0100 (CET)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [46.235.227.172])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id CAFD5F80095
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 01:01:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CAFD5F80095
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=SFSUuLCr
+Received: from [192.168.86.246]
+ (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net [82.11.51.62])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BE356F80095
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 00:59:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE356F80095
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=qQLwVhZ2
-Received: by mail-pj1-x1034.google.com with SMTP id pj3so16696952pjb.1
-        for <alsa-devel@alsa-project.org>;
- Tue, 07 Feb 2023 15:59:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=W57wzZYsbIJZQpPVkemrOHsbaIu0hnor4kfOcH0Od4c=;
-        b=qQLwVhZ270H3VGVANdcjtqqRppTerXYZ6I40r+1bS9MWm1u73znQl4be/O4+sRGhkl
-         Ce35RngMI2NJZsHTbjqmF1nrYBbSc3Cu5JvJOHqP0dfOM9e8aR36jlj5e4Z5uQ8IhLQn
-         k5b5AircWsWO3B4DrR9mSrxsITztRhtFKjkVJNFgLoIZrlgbCYiV0T62L11TeRh+fCTQ
-         /69D1GLmS65UqVL937ee3EVEfbxTEhGZ/qybf+uJujuY5c9VNaRe3wkqB9od37qWI6Xi
-         tGgx2cdvOgLw7/vcn/wuFGK7PfFW3H1XwUO/BVQMCeLDZKd9BFQa6UQUgUK1iGXPHA/f
-         vgzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W57wzZYsbIJZQpPVkemrOHsbaIu0hnor4kfOcH0Od4c=;
-        b=rUZkvyPlNiY8Jg3FOls2VRoD/m4gslGZkSv0MokqcflNWN/JWqvXAMpcEE4/YUWOsb
-         eWXx1Dieo64cMEo2CyM/Gqbq8vMAm5bbVHIzFpuZSJHbNuXH8Rmk7PDcH9c8tKyJpoo+
-         fd24E5wRDVXxBF5KAGW5+1fybArsm5Agfcv45oaJRdqBCL93M5tqsvYfI31fONgi2VVk
-         kAVOc0d31ihSnpAoitOLNnvebcjddc5YIEe4fNSw1BFPoUCpEJz4RKKFXG5kCt4htBj3
-         KEqo8hqYwLa2lAODOn/aZf9E8AmV65xLPHQaTnq2/5+GQjyC9+1oeys4NnSOoceuqWAW
-         HNZA==
-X-Gm-Message-State: AO0yUKUXh0+1C+P3cqgrZIEMiHPBUZaQhcFPXM/QmwhrIOw0Mpk4r1BU
-	8uMVKw5c+GNViN2fvi9D/MLXoCR56MAQRg==
-X-Google-Smtp-Source: 
- AK7set8EQJJrF3sqkkw6+s06OzoOlz8vfZY+v0BYwKhl+DAPy0UmiD+hZ1iTgYzy5ldhZ+BBuk7oLQ==
-X-Received: by 2002:a05:6870:328b:b0:166:fc4a:aec7 with SMTP id
- q11-20020a056870328b00b00166fc4aaec7mr1880532oac.41.1675799172607;
-        Tue, 07 Feb 2023 11:46:12 -0800 (PST)
-Received: from policorp.cardume.local (177.207.126.10.dynamic.adsl.gvt.net.br.
- [177.207.126.10])
-        by smtp.gmail.com with ESMTPSA id
- c5-20020a056870a58500b0010c727a3c79sm1027497oam.26.2023.02.07.11.46.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Feb 2023 11:46:12 -0800 (PST)
-From: drosdeck <edson.drosdeck@gmail.com>
-To: perex@perex.cz
-Subject: [PATCH] ALSA: hda/realtek: Add Positivo N14KP6-TG
-Date: Tue,  7 Feb 2023 15:37:20 -0300
-Message-Id: <20230207183720.2519-1-edson.drosdeck@gmail.com>
-X-Mailer: git-send-email 2.30.2
+	(Authenticated sender: tanureal)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 9D0686602077;
+	Tue,  7 Feb 2023 15:46:08 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1675784768;
+	bh=tt5lrHlIVInMq27wdZG33n5kYVhMCWLk9XkuAdem+b0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=SFSUuLCrMTSOqxVXNcSnMi/bv6tL1Zrzdke2be//6XLQKUihpkqdmp+027ZFDz2sZ
+	 AtmS/ua3flrVRaKtuN/U8HPiolzhl8xniuQ2gz4NfEhsikXX3TtgQu+F0pV100wDnI
+	 yPHfIWGiFXNMbvx56QMNdSu+WdwPh78FQgEcQ+URT74uc+3ThHudOGt2zH2LIrp6Mb
+	 k0Cwglw9oDerHuoldUOsuaFNC5WB7mtTNu8IvcAOlPGAGkSNDKj0D3vm22Xt6UqA0z
+	 5vT+MmZ7q98eWQr41f9vBZaxi76qATAKa+MmcJOpMs69TmNJflZ5FvDprkt0Qk0pXa
+	 OSX+K1mSR8Ysg==
+Message-ID: <e7257f9a-86c5-74e8-c538-6f6d2ba13274@collabora.com>
+Date: Tue, 7 Feb 2023 15:46:06 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: VMQGSBTOWM6FAOE7YMKU2TUREZ74A6KR
-X-Message-ID-Hash: VMQGSBTOWM6FAOE7YMKU2TUREZ74A6KR
-X-MailFrom: edson.drosdeck@gmail.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH 2/2] Documentation: cs35l41: Shared boost properties
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+References: <20230207104021.2842-1-lucas.tanure@collabora.com>
+ <20230207104021.2842-3-lucas.tanure@collabora.com>
+ <44faeca1-94c9-4423-d87a-03d80e286812@linaro.org>
+Content-Language: en-US
+From: Lucas Tanure <lucas.tanure@collabora.com>
+In-Reply-To: <44faeca1-94c9-4423-d87a-03d80e286812@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: 5VSHAAUGA4PHVZP7OVIHCGTSKCCG3SJ5
+X-Message-ID-Hash: 5VSHAAUGA4PHVZP7OVIHCGTSKCCG3SJ5
+X-MailFrom: lucas.tanure@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: tiwai@suse.com, tcrawford@system76.com, sbinding@opensource.cirrus.com,
- tangmeng@uniontech.com, kai.heng.feng@canonical.com, p.jungkamp@gmx.net,
- kasper93@gmail.com, gabriele.mzt@gmail.com, yangyuchi66@gmail.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- edson.drosdeck@gmail.com
+CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ kernel@collabora.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VMQGSBTOWM6FAOE7YMKU2TUREZ74A6KR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5VSHAAUGA4PHVZP7OVIHCGTSKCCG3SJ5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,26 +104,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Positivo N14KP6-TG (1c6c:1251)
-require quirk for enabling headset-mic
+On 07-02-2023 10:42, Krzysztof Kozlowski wrote:
+> On 07/02/2023 11:40, Lucas Tanure wrote:
+>> Describe the properties used for shared boost
+>> configuration.
+> 
+> Use subject prefixes matching the subsystem (which you can get for
+> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+> your patch is touching).
+ack
+> 
+>>
+>> Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
+>> ---
+>>   .../devicetree/bindings/sound/cirrus,cs35l41.yaml     | 11 ++++++++++-
+>>   1 file changed, 10 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
+>> index 18fb471aa891..6f5f01bec6f1 100644
+>> --- a/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
+>> +++ b/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
+>> @@ -85,11 +85,20 @@ properties:
+>>         boost-cap-microfarad.
+>>         External Boost must have GPIO1 as GPIO output. GPIO1 will be set high to
+>>         enable boost voltage.
+>> +      Shared boost allows two amplifiers to share a single boost circuit by
+>> +      communicating on the MDSYNC bus. The passive amplifier does not control
+>> +      the boost and receives data from the active amplifier. GPIO1 should be
+>> +      configured for Sync when shared boost is used. Shared boost is not
+>> +      compatible with External boost. Active amplifier requires
+>> +      boost-peak-milliamp, boost-ind-nanohenry and boost-cap-microfarad.
+>>         0 = Internal Boost
+>>         1 = External Boost
+>> +      2 = Reserved
+> 
+> How binding can be reserved? For what and why? Drop. 2 is shared active,
+> 3 is shared passive.
+2 Is shared boost without VSPK switch, a mode not supported for new 
+system designs. But there is laptops using it, so we need to keep 
+supporting in the driver.
 
-Signed-off-by: Edson Juliano Drosdeck <edson.drosdeck@gmail.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index db9518de9343..ee5d3347354c 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9701,6 +9701,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
- 	SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
- 	SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
-+	SND_PCI_QUIRK(0x1c6c, 0x1251, "Positivo N14KP6-TG", ALC288_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1d05, 0x1132, "TongFang PHxTxX1", ALC256_FIXUP_SET_COEF_DEFAULTS),
- 	SND_PCI_QUIRK(0x1d05, 0x1096, "TongFang GMxMRxx", ALC269_FIXUP_NO_SHUTUP),
- 	SND_PCI_QUIRK(0x1d05, 0x1100, "TongFang GKxNRxx", ALC269_FIXUP_NO_SHUTUP),
--- 
-2.30.2
+> 
+> Best regards,
+> Krzysztof
+> 
 
