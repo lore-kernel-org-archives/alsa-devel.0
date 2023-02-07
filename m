@@ -4,95 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15D01C636CD
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Feb 2023 00:07:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7069C636CD
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Feb 2023 00:10:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3CD603E8;
-	Wed,  8 Feb 2023 01:07:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CD603E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71D1D826;
+	Wed,  8 Feb 2023 01:10:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71D1D826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675814876;
-	bh=cfvcfREHPh+IggvFYU/1ryO6SCNcrW7aAlVSVH/ZGNQ=;
+	s=default; t=1675815057;
+	bh=ky7HAXJkS1X4hEgrcJjQQo7al6D+HHtf9urEyCKlGps=;
 	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HsDXDBSmBltv475/2d6Es38XW5nbHrY4HxzwUco0QNju+UJUM6xg8cz056CcwSE4j
-	 c+m7tpXzOTJ6KsGzs/jVdg/YRM7DQggyry8YxrVxGxYQYtgOId9c7JL96cBTxz7McK
-	 FG+Eu5/GRDvZsmpD6D8Z62Zor4sGU0X/7xkNRjsM=
+	b=jh23tDI4FpyCk7GJI3KBLqdeu9B5VkYXamnujk77V3q1DS77/vwBd2hqdc+oqzSqm
+	 l7YLmPzQY2HzbfgPHbaUw3M5AJOzLmkRAuii8Yrpbhh/8+5kWGwoJTyErh0vu3aHIl
+	 dvO3cSJ5pWMJv8LNiKbBNOAnty5djwiH96x1jq/4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99414F8012B;
-	Wed,  8 Feb 2023 01:06:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 953F7F8012B;
+	Wed,  8 Feb 2023 01:09:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A9755F8012B; Wed,  8 Feb 2023 01:06:34 +0100 (CET)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [46.235.227.172])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 07F9BF8012B; Wed,  8 Feb 2023 01:09:36 +0100 (CET)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com
+ [IPv6:2a00:1450:4864:20::62d])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7EBCBF800AF
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 01:06:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EBCBF800AF
+	by alsa1.perex.cz (Postfix) with ESMTPS id 48716F800AF
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 01:09:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48716F800AF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=CeR53vBJ
-Received: from [192.168.86.246]
- (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net [82.11.51.62])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	(Authenticated sender: tanureal)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 0E3DE6602086;
-	Tue,  7 Feb 2023 15:49:31 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1675784971;
-	bh=cfvcfREHPh+IggvFYU/1ryO6SCNcrW7aAlVSVH/ZGNQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=CeR53vBJRzwPjXGUbYyL6Oqi6B9zBJGFT2gHfCaC67eoPDJq3DTT0n1mUCNdEpRAp
-	 bILX7Qq0QU7ek5QOtvnMdsO7Up22uzZsWNpQByGkZwd88WEZvaWfETwUTrYFRVuPPd
-	 KJHBw/oS+BLqlYyYVPsZci/lbZDuaY1MN++Cb5ObSr5N5ohZ5l4I2qPMuktyG49scq
-	 W5YrmFVI+cppp2Xr6C6jRGNwEJUpYre4/nZZ1NertMnLJj4bIFvPoKHzzh24ljxXgb
-	 mNFmMitYeZTziWVGmOXa+XxSp0X4mIHM49dEsobi8ZS1EGaRTxINdtLfwIcfp8b5f1
-	 R5AWl8kcZopcg==
-Message-ID: <dd1bad2b-a56a-c4d2-cc28-6703febdc475@collabora.com>
-Date: Tue, 7 Feb 2023 15:49:28 +0000
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=ZVmVyDjS
+Received: by mail-ej1-x62d.google.com with SMTP id u22so2545960ejj.10
+        for <alsa-devel@alsa-project.org>;
+ Tue, 07 Feb 2023 16:09:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ky7HAXJkS1X4hEgrcJjQQo7al6D+HHtf9urEyCKlGps=;
+        b=ZVmVyDjSx6EgkFT8iA42dx4e6NkiFFvRjgyVg3vEwOo0sTodqpf/6xC7Kg8zvu5zOi
+         +i12SLbbl4EZG+LN97qWe6I+1nf7msNnuZujHBy1cutT62jCNnRsC29vzSbwShTGLJk1
+         qZYaDyl5UTtWP6oEC2vJLZfbjaQlWRcfn9s1g62TU2LJurA6KpeBdnISuwk0MQw6cNY5
+         892USyFUbQ90GHznIUqrP6DW2lUZ+wf44TCj8WwXad3JpTV4x64SRgkhtbuXHVcqTGJK
+         MFbAe8tiuizvuNYAJkNKmLvFSSDg+Gxjp6mXLkKvCTbo5ygU/iFBvdk1NlblLIO98PDs
+         M9iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ky7HAXJkS1X4hEgrcJjQQo7al6D+HHtf9urEyCKlGps=;
+        b=eenkebOQQvvKn4JIJG9dtGFVwjthTpx65txGJjsTcLRNfuv5/PCjJ2HInIw150EeAw
+         L2M8o7uw01Y3H3v4sktKKobpzs+3eIUeesGGHO5t5eVFHFi12QLjlDnFxL7KO14mELC8
+         Py2x+TkbuypP9uf3auDkBEiUDCRkMJg18lNaqxtmKs5HwqnaA3+LK+DvJQRdi0yslt0V
+         YU2erABfdjQ38rG0aA2ltu5TLR4UhhVc+NRKbjNJJLjOVXOhfzh0+BXkh9+SDs6fSFHL
+         ocByjCRZhsRY65JMpsiUEePPLpSc03Dml2ZfxZxBIlU1x7Wg+SCa07BMnWH93ilHXyn+
+         +Pxg==
+X-Gm-Message-State: AO0yUKU+bMR50fJ84MOH1RT4FdScYu40VOg+brrgknaacbF2d3wPKLiG
+	yyeOD3i5EsSRY/1Phy0uJLENyOAwFvW1eljB
+X-Google-Smtp-Source: 
+ AK7set8TXIFkWABojtv5YPhyN5r9CAIvfLXqNjua96/e+MfEknoAwWnL/akisqL1H78whXRbC2TL6A==
+X-Received: by 2002:a5d:4bc2:0:b0:2c1:28e7:5081 with SMTP id
+ l2-20020a5d4bc2000000b002c128e75081mr3490785wrt.68.1675788495656;
+        Tue, 07 Feb 2023 08:48:15 -0800 (PST)
+Received: from [192.168.1.109] ([178.197.216.144])
+        by smtp.gmail.com with ESMTPSA id
+ i6-20020adffc06000000b002c3e28d0343sm7732034wrr.85.2023.02.07.08.48.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Feb 2023 08:48:15 -0800 (PST)
+Message-ID: <1dad040e-fb18-8291-5e11-31ab35a8e4a2@linaro.org>
+Date: Tue, 7 Feb 2023 17:48:13 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.7.1
-Subject: Re: [PATCH 1/2] ALSA: cs35l41: Add shared boost feature
+Subject: Re: [PATCH v2 4/5] ASoC: cs35l41: Document CS35l41 external boost
+ without VSPK
 Content-Language: en-US
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-References: <20230207104021.2842-1-lucas.tanure@collabora.com>
- <20230207104021.2842-2-lucas.tanure@collabora.com>
- <20230207114855.GC36097@ediswmail.ad.cirrus.com>
-From: Lucas Tanure <lucas.tanure@collabora.com>
-In-Reply-To: <20230207114855.GC36097@ediswmail.ad.cirrus.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Lucas Tanure <lucas.tanure@collabora.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+References: <20230207162526.1024286-1-lucas.tanure@collabora.com>
+ <20230207162526.1024286-5-lucas.tanure@collabora.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230207162526.1024286-5-lucas.tanure@collabora.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: JKHBCISPIMBA5AW7MESFK6Y6UJVGEQGG
-X-Message-ID-Hash: JKHBCISPIMBA5AW7MESFK6Y6UJVGEQGG
-X-MailFrom: lucas.tanure@collabora.com
+Message-ID-Hash: GGWAWXWDH3M6CAVTGQ6CJJQECZPKL634
+X-Message-ID-Hash: GGWAWXWDH3M6CAVTGQ6CJJQECZPKL634
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: David Rhodes <david.rhodes@cirrus.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, patches@opensource.cirrus.com,
- linux-kernel@vger.kernel.org, kernel@collabora.com
+CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ kernel@collabora.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JKHBCISPIMBA5AW7MESFK6Y6UJVGEQGG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GGWAWXWDH3M6CAVTGQ6CJJQECZPKL634/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,90 +125,21 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 07-02-2023 11:48, Charles Keepax wrote:
-> On Tue, Feb 07, 2023 at 10:40:20AM +0000, Lucas Tanure wrote:
->> Shared boost allows two amplifiers to share a single boost
->> circuit by communicating on the MDSYNC bus.
->> The passive amplifier does not control the boost and receives
->> data from the active amplifier.
->>
->> Shared Boost is not supported in HDA Systems.
->>
-> 
-> Probably would be nice to put at least a note to say based on
-> David's patches.
-ack
-> 
->> +static const struct reg_sequence cs35l41_shd_boost_seq[] = {
->> +	{CS35L41_PWR_CTRL3,	0x01000110},
-> 
-> This will blat whatever the user set in the DRE switch.
-> Technically blats the CLASS H enable from the DAPM widget too,
-> but as that always turns on should be a no-op. Probably should
-> either not register the DRE switch or have setting it return an
-> error for these boost modes.
-Fixed in v2.
-Changed to regmap_update_bits.
-> 
->> +int cs35l41_global_enable(struct regmap *regmap, enum cs35l41_boost_type b_type, int enable,
->> +			  struct completion *pll_lock)
->>   {
->>   	int ret;
->> +	unsigned int gpio1;
->>   
->>   	switch (b_type) {
->> +	case CS35L41_SHD_BOOST_ACTV:
->> +	case CS35L41_SHD_BOOST_PASS:
->> +		regmap_update_bits(regmap, CS35L41_PWR_CTRL3, CS35L41_SYNC_EN_MASK, 0);
->> +
->> +		gpio1 = enable ? CS35L41_GPIO1_MDSYNC : CS35L41_GPIO1_HIZ;
->> +		regmap_update_bits(regmap, CS35L41_GPIO_PAD_CONTROL, CS35L41_GPIO1_CTRL_MASK,
->> +				   gpio1 << CS35L41_GPIO1_CTRL_SHIFT);
->> +
->> +		ret = regmap_update_bits(regmap, CS35L41_PWR_CTRL1, CS35L41_GLOBAL_EN_MASK,
->> +					 enable << CS35L41_GLOBAL_EN_SHIFT);
->> +		usleep_range(3000, 3100);
->> +		if (!enable)
->> +			break;
->> +
->> +		if (!pll_lock)
->> +			return -EINVAL;
->> +
->> +		ret = wait_for_completion_timeout(pll_lock, msecs_to_jiffies(1000));
->> +		if (ret == 0)
->> +			ret = -ETIMEDOUT;
-> 
-> This feels kinda scary, in that you are relying on a 1 to 1
-> correspondence between this code running and getting a PLL lock
-> signal. The datasheet is helpfully completely vague on when PLL
-> locks are triggered.
-> 
-> The PLL enable seems to be set through set_sysclk, which could
-> be called multiple times, per DAPM power up.  Does the PLL
-> lock only go once global enable has been set? Can't help
-> but wonder if a reinit_completion should probably go somewhere
-> to ensure we are getting this lock of the PLL not a past one.
-Added a reinit_completion at cs35l41_pcm_startup
+On 07/02/2023 17:25, Lucas Tanure wrote:
+> External Boost without GPIO1 as VSPK switch
+> is no longer supported, but there is laptop
+> models using this feature.
 
-> 
->> @@ -483,6 +483,11 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
->>   		ret = IRQ_HANDLED;
->>   	}
->>   
->> +	if (status[2] & CS35L41_PLL_LOCK) {
->> +		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS3, CS35L41_PLL_LOCK);
->> +		complete(&cs35l41->pll_lock);
->> +	}
->> +
-> 
-> If you fall into any of the error cases in this IRQ handler above
-> this, it will blat values you don't want into BST_EN although, to
-> be fair that does look currently broken for external boost as
-> well.
-Fixed with a new patch in v2 series.
 
-> 
-> Thanks,
-> Charles
-> 
+No, because:
+
+1. We did not finish discussion
+2. Subject prefix is still not correct.
+3. Please wrap commit message according to Linux coding style /
+submission process (neither too early nor over the limit):
+https://elixir.bootlin.com/linux/v5.18-rc4/source/Documentation/process/submitting-patches.rst#L586
+
+
+Best regards,
+Krzysztof
 
