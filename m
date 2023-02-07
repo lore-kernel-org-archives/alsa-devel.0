@@ -4,97 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F6FFC636CC
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Feb 2023 23:18:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91E16C636CC
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Feb 2023 23:20:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8889820B;
-	Wed,  8 Feb 2023 00:17:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8889820B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8CBD3F3;
+	Wed,  8 Feb 2023 00:19:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CBD3F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675811892;
-	bh=Q9XFuDCHUIToibZa2MkJgz0EX5b+KAw6KFN83e+1hBA=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	s=default; t=1675811998;
+	bh=H/oVSZcRF3b8KDtF5uAb06gMQM+ekcrQs1AeSvC4p6Q=;
+	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=W4ueYdaSKFgKjeO/sb6wmp9N9w0hnU0X12+qaaY6Hl3c43xi5XemiIyjFQ6xtfw/o
-	 oostWGuf7bVFEcTBTZ9JjXVrG+h0pca3rSZS7kCJLXrF4ls0xnJP/qEPupIla9Umml
-	 jhkCyET9/6gDvcYnBehk4z31qF+AnMOklZkukPks=
+	b=J9QN5esowbiIyfkz7CEFiN07ZB81XPG8MnptqtkSgP2mqsbAFMaAq3igSRPwWRP6b
+	 ZOifk7aw4CAcZNnuTMYxXH0LHhFtHQ7xGw1ChLCNi0/WX4sjgFa+rXK4umof+3PDa9
+	 Xdjm4m7/u3gmerNdQjbu8zyDL/AW9UqFeZHk+0tA=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3AC7EF8012B;
-	Wed,  8 Feb 2023 00:16:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4E23F8012B;
+	Wed,  8 Feb 2023 00:18:42 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D2880F8012B; Wed,  8 Feb 2023 00:16:51 +0100 (CET)
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com
- [209.85.128.169])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 47597F8012B; Wed,  8 Feb 2023 00:18:40 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C7057F80095
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 00:16:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7057F80095
-Received: by mail-yw1-f169.google.com with SMTP id
- 00721157ae682-4c24993965eso214573127b3.12
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2C94AF80095
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 00:18:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C94AF80095
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=X3rJisH4
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 79945B81990
+	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2023 13:50:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FF22C433A1
+	for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2023 13:50:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1675777830;
+	bh=DMSQcB2gRBiYrCLNnIJNq5P5lvWtVkLpSH0UjyUj4+0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=X3rJisH4D9N4h5LfmaiMiCPlCAXxUJhpyx9ew/Qn4HmiBs6tdOUxfBIzfz0Il9GJJ
+	 1VPzI5KWWmjwHjSFgiaRzN+g3npE+qNoFO0ws6s69xFX2zJ2DvsnSUX5W2hgVnmA+f
+	 q2caFLVBY4pxxrvmAniqU2DWA8NuV8AMfHPjP5oDCnpllUL7nJ82oCpvm4beCQ5tS2
+	 wswnZswe2QOC6sNtMrUq+EDhlHdOtd1ouUVKCjDSV9Qlqwzmv4805Jt9HVu4XEpjIu
+	 k3ZANYH4/7Dcvoq20Cp8nnKYgsSJ+Vr+iEalXRugEJNv+2IAy8STA/HR0tno/PAshc
+	 fxjvzA/xhEn6w==
+Received: by mail-vs1-f49.google.com with SMTP id d66so16264191vsd.9
         for <alsa-devel@alsa-project.org>;
- Tue, 07 Feb 2023 15:16:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ioxj3ZTtyZyoRXID9W54q51E/7+JLsaD1JUQ4RjMd/U=;
-        b=uyRUsUyWoIcQczyIjpG2G2aVfiX/5TguyO5NKemepWj+vd2mN4ROD0fCEvuG3R7SCH
-         LqHPK5Ax5MkPyoc7VJFbmLaj1QoXN3BgCL+bj7mPrb/DQKrkFOgQQ2eYdtli08LA6/VC
-         p5iFDVKZ6wMgMyibFQl5CRbzWpBKqyiez+rpN7uAV+DRt7wwZds/3iKWJ1TWttFku6FI
-         y9KY5t09n894jEsV033JbsAk+3ygKUIHo/fIAYOjKecEttkHkwTF9mpdEbft9w0M2df9
-         NquEby61KbQy4+EUyptpfJY9jZl3I8BPQ+5ny8SZRLDGGoOBHaDO2v4WCqkHqZHLTlSZ
-         VD8A==
-X-Gm-Message-State: AO0yUKXYWltA4hj1YS0i5EZVf18BZlQb0UCuVf/nWjylCTfcfn4MDdus
-	cUrq2hJWP4Cd8hHpnovWNTewxiP5ZQ==
+ Tue, 07 Feb 2023 05:50:30 -0800 (PST)
+X-Gm-Message-State: AO0yUKXU8h/y/71lTW+QM393KOtiaoDv5LibmPoygLOd1cFfRx6hyGc1
+	WzJLd0azoIrgAbM7jA8ojMPG8recEpJWwRXC0g==
 X-Google-Smtp-Source: 
- AK7set/LXJZ14Lnt/7wSTjfoNuOWNVvBD7iTVO2U5b0BQCZrCvX39bOZL6VMHpnGCzvpZ12XEM91UQ==
-X-Received: by 2002:aca:1316:0:b0:378:528:d83b with SMTP id
- e22-20020aca1316000000b003780528d83bmr2044736oii.55.1675804582113;
-        Tue, 07 Feb 2023 13:16:22 -0800 (PST)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
- [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id
- bk30-20020a0568081a1e00b0037880fdb1f6sm6120330oib.24.2023.02.07.13.16.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Feb 2023 13:16:21 -0800 (PST)
-Received: (nullmailer pid 4167457 invoked by uid 1000);
-	Tue, 07 Feb 2023 21:16:21 -0000
-Date: Tue, 7 Feb 2023 15:16:21 -0600
-From: Rob Herring <robh@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH RFC 1/2] ASoC: dt-bindings: renesas,rsnd.yaml: tidyup
- reg/reg-name
-Message-ID: <20230207211621.GA4158591-robh@kernel.org>
-References: <87r0v2uvm7.wl-kuninori.morimoto.gx@renesas.com>
- <87pmamuvlh.wl-kuninori.morimoto.gx@renesas.com>
+ AK7set9Mqs4Sx0a58l7EyhlbieUTrJF9RKPUKmeczwiTxCkbvS2g0I4TZU3iyOJf9Ok5Nh88ak3V1dtUt64keTdUzkc=
+X-Received: by 2002:a67:7206:0:b0:3ea:c8c:48a5 with SMTP id
+ n6-20020a677206000000b003ea0c8c48a5mr659074vsc.53.1675777829362; Tue, 07 Feb
+ 2023 05:50:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87pmamuvlh.wl-kuninori.morimoto.gx@renesas.com>
-Message-ID-Hash: MRIMZF2Z5B72KJYEWWNVD3DRHVH64ZAS
-X-Message-ID-Hash: MRIMZF2Z5B72KJYEWWNVD3DRHVH64ZAS
-X-MailFrom: robherring2@gmail.com
+References: <20230206153449.596326-1-jbrunet@baylibre.com>
+ <20230206153449.596326-3-jbrunet@baylibre.com>
+ <167571334291.1212116.1869881432057405431.robh@kernel.org>
+ <1j7cwt3jm1.fsf@starbuckisacylon.baylibre.com>
+In-Reply-To: <1j7cwt3jm1.fsf@starbuckisacylon.baylibre.com>
+From: Rob Herring <robh@kernel.org>
+Date: Tue, 7 Feb 2023 07:50:17 -0600
+X-Gmail-Original-Message-ID: 
+ <CAL_Jsq+OMYwJ3_bjhOgGq--SAotqAW7fnzQfEOnHR+_cxSW1RA@mail.gmail.com>
+Message-ID: 
+ <CAL_Jsq+OMYwJ3_bjhOgGq--SAotqAW7fnzQfEOnHR+_cxSW1RA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] ASoC: dt-bindings: meson: convert axg tdm
+ formatters to schema
+To: Jerome Brunet <jbrunet@baylibre.com>
+Message-ID-Hash: O5ESU3YX2SQDVKJ4MX4GIFXK3X3CRYH5
+X-Message-ID-Hash: O5ESU3YX2SQDVKJ4MX4GIFXK3X3CRYH5
+X-MailFrom: robh@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Linux-ALSA <alsa-devel@alsa-project.org>, devicetree@vger.kernel.org
+CC: Mark Brown <broonie@kernel.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Kevin Hilman <khilman@baylibre.com>, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-amlogic@lists.infradead.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MRIMZF2Z5B72KJYEWWNVD3DRHVH64ZAS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O5ESU3YX2SQDVKJ4MX4GIFXK3X3CRYH5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,67 +110,43 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 07, 2023 at 01:12:42AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> Current reg/reg-name is using "maxItems", but the convention is to
-> use "minItems".
+On Tue, Feb 7, 2023 at 3:33 AM Jerome Brunet <jbrunet@baylibre.com> wrote:
+>
+>
+> On Mon 06 Feb 2023 at 13:59, Rob Herring <robh@kernel.org> wrote:
+>
+> > On Mon, 06 Feb 2023 16:34:44 +0100, Jerome Brunet wrote:
+> >> Convert the DT binding documentation for the Amlogic tdm formatters to
+> >> schema.
+> >>
+> >> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+> >> ---
+> >>  .../sound/amlogic,axg-tdm-formatters.txt      | 36 --------
+> >>  .../sound/amlogic,axg-tdm-formatters.yaml     | 88 +++++++++++++++++++
+> >>  2 files changed, 88 insertions(+), 36 deletions(-)
+> >>  delete mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.txt
+> >>  create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.yaml
+> >>
+> >
+> > My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> >
+> > yamllint warnings/errors:
+> >
+> > dtschema/dtc warnings/errors:
+> > ./Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.yaml:
+> > Unable to find schema file matching $id:
+> > http://devicetree.org/schemas/sound/component-common.yaml
+>
+> This is a false error because the bot does not have the patch applied
+> by Mark from v1 here [0]
+>
+> [0]: https://lore.kernel.org/all/167543616131.928818.17902040818579023398.b4-ty@kernel.org/
 
-Yes, but that's not really true in if/then schemas. If that's your 
-reason, then the changes are wrong.
+State that in this patch and the bot's advanced AI capabilities will
+not send the report.
 
-> And the core DT schemas already have a constraint that
-> requires reg-names to have the same number of elements as reg.
-
-Actually, no it doesn't.
-
-> 
-> This patch switch to use "minItems" on reg, and remove it from
-> reg-names.
-> 
-> Link: https://lore.kernel.org/r/46974ae7-5f7f-8fc1-4ea8-fe77b58f5bfb@linaro.org
-> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  Documentation/devicetree/bindings/sound/renesas,rsnd.yaml | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-> index d106de00c6b2..223f4859780f 100644
-> --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-> +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-> @@ -298,9 +298,8 @@ allOf:
->      then:
->        properties:
->          reg:
-> -          maxItems: 3
-> +          minItems: 3
-
-This was probably correct before if the base 'reg' entry says more than 
-3 entries are allowed and in this case 3 is most you can have.
-
->          reg-names:
-> -          maxItems: 3
->            items:
->              enum:
->                - scu
-> @@ -309,9 +308,8 @@ allOf:
->      else:
->        properties:
->          reg:
-> -          maxItems: 5
-> +          minItems: 5
-
-This might be correct...
-
->          reg-names:
-> -          maxItems: 5
->            items:
->              enum:
->                - scu
-> -- 
-> 2.25.1
-> 
+Rob
 _______________________________________________
 Alsa-devel mailing list -- alsa-devel@alsa-project.org
 To unsubscribe send an email to alsa-devel-leave@alsa-project.org
