@@ -4,113 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A372C636CC
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Feb 2023 12:43:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 346FAC05027
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Feb 2023 13:15:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 986CD82B;
-	Wed,  8 Feb 2023 13:42:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 986CD82B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D291829;
+	Wed,  8 Feb 2023 14:14:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D291829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675860206;
-	bh=/8OLYnrQkzbUpmCQhagC5ahcRosEqdYcIXPQ2n8nA3g=;
-	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
+	s=default; t=1675862126;
+	bh=8fGBGs3HjX0aUTesqOsRu+lhLIAg05lxUth8mUkVOso=;
+	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=sfxkVeHyW81GVcGu5n3xshSlWvf6XbCwjCjkuiZad1tVYpBMDRd+WNtfLxnxT0mth
-	 ucBDu/5rzr7D6hKU2vDeGmpp0jzKokIWPMjPiJkJ2FmEMfcQwpdG7/sYdkKl7PiJCk
-	 cxb/u6yKOj7Q6rSzvcW/RhRkci8EeEj+ES/8wdFo=
+	b=agsUmZMRwMoXvSOcWMcFCwSRQRlAxEydzkiqHmjyTcohpY7xQ4JkZZeqmOVf9Qska
+	 NtsJZjE1UuaxzvYhA6nL/mfyuOGGhWjz6QMApX7fMoP8ftF6/Mf3ZKFws8w5IygnB+
+	 YsPTiP4GguyOiEEeQewQsr/oIYvTGJ7NAtgtcHts=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C94CF80152;
-	Wed,  8 Feb 2023 13:42:11 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A85BF80095;
+	Wed,  8 Feb 2023 14:14:11 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 42FBAF80152; Wed,  8 Feb 2023 13:42:08 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id ADA02F80152; Wed,  8 Feb 2023 14:14:06 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9A2E9F800AA
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 13:41:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A2E9F800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0BD5BF80095
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 14:14:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BD5BF80095
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=c6uKMqhE;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=P6no0dGd
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ZxgSFhY6
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0C01E200D8;
-	Wed,  8 Feb 2023 12:41:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1675860116;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Isbo3Z+x7kLy5xQ2o2aI51q2cVdGeclfSP/RVUlNeAE=;
-	b=c6uKMqhEQCsFuDafO1fiqDIe7YqH3ax86Skda5Mp90NLXxMdByHcSQRYFLkbe/Xv9miz3j
-	G3D+Fzx1DWG7qlamwcrXIKp/RnAoc85fk8RZTNL+PORr5dueV4wwmaXqQbAVouTsDb6i91
-	6Uf8mZxOpeeodw+Eicxky/CMGr2eeKI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1675860116;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Isbo3Z+x7kLy5xQ2o2aI51q2cVdGeclfSP/RVUlNeAE=;
-	b=P6no0dGdvd6exptD5AwjqkJIjyEhVqq8Kjz5wiXwnKdROgPkcPRGfKSWCmfvCvtMXdNpFu
-	keE3hEr7eVi1/8AQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E55B913425;
-	Wed,  8 Feb 2023 12:41:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id ZN2tN5OY42MVcQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Wed, 08 Feb 2023 12:41:55 +0000
-Date: Wed, 08 Feb 2023 13:41:55 +0100
-Message-ID: <87sffgmir0.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH 0/3] ALSA: core: Make some functions return void
-In-Reply-To: <20230207191907.467756-1-u.kleine-koenig@pengutronix.de>
-References: <20230207191907.467756-1-u.kleine-koenig@pengutronix.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: N7SBP22SYXLETNLD3ONZQDIRLAOBGYIG
-X-Message-ID-Hash: N7SBP22SYXLETNLD3ONZQDIRLAOBGYIG
-X-MailFrom: tiwai@suse.de
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8FDF9616A1;
+	Wed,  8 Feb 2023 13:13:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40946C433D2;
+	Wed,  8 Feb 2023 13:13:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1675862039;
+	bh=8fGBGs3HjX0aUTesqOsRu+lhLIAg05lxUth8mUkVOso=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=ZxgSFhY64f+G8Vs2HlD1ktg2P3VFBVWAuAPM+01o1ekZR6lJLTZr/CTTJjNTdXsvR
+	 GUMv0LY9k2fOEOxClB04LvpWgRCW5hz+xjLRitGXuqC9UsvKeRYqCNlfborm/fFBRm
+	 WKA7MtYxDym+wd0y40yNspzuPp4kH8GKGe15heUoydrvS+k7b00acTxpgFf4M93ZvU
+	 SkZHNmJqoU/JGephqmso5ogWH/l9Gd6X5OSwCGqodVq/qHDPK0KTIae8MZwRyYrrMi
+	 772pdZ9zqgfdPqnBooU0KOBBE9///Cq+PvJe/oMkSdbXgHZ0e0AkDlhDk5FAAPaOnQ
+	 KHuVQijE94Ocg==
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20230208104404.20554-1-peter.ujfalusi@linux.intel.com>
+References: <20230208104404.20554-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: ops: refine parameters order in function
+ snd_sof_dsp_update8
+Message-Id: <167586203697.104842.2594970595275091322.b4-ty@kernel.org>
+Date: Wed, 08 Feb 2023 13:13:56 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.0
+Message-ID-Hash: NNO3RUA4WBZZYK7CUISKQFLUXULJZMWZ
+X-Message-ID-Hash: NNO3RUA4WBZZYK7CUISKQFLUXULJZMWZ
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Takashi Iwai <tiwai@suse.com>, Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Geoff Levand <geoff@infradead.org>,
- Michael Ellerman <mpe@ellerman.id.au>, alsa-devel@alsa-project.org,
- kernel@pengutronix.de, Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>, linux-tegra@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org
+CC: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ yung-chuan.liao@linux.intel.com, rander.wang@intel.com,
+ chao.song@linux.intel.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N7SBP22SYXLETNLD3ONZQDIRLAOBGYIG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NNO3RUA4WBZZYK7CUISKQFLUXULJZMWZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,26 +92,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 07 Feb 2023 20:19:04 +0100,
-Uwe Kleine-König wrote:
+On Wed, 08 Feb 2023 12:44:04 +0200, Peter Ujfalusi wrote:
+> SOF driver calls snd_sof_dsp_update8 with parameters mask and value but
+> the snd_sof_dsp_update8 declares these two parameters in reverse order.
+> This causes some issues such as d0i3 register can't be set correctly
+> Now change function definition according to common SOF usage.
 > 
-> Hello,
 > 
-> while checking in which cases hda_tegra_remove() can return a non-zero value, I
-> found that actually cannot happen. This series makes the involved functions
-> return void to make this obvious.
-> 
-> This is a preparation for making platform_driver::remove return void, too.
-> 
-> Best regards
-> Uwe
-> 
-> Uwe Kleine-König (3):
->   ALSA: core: Make snd_card_disconnect() return void
->   ALSA: core: Make snd_card_free_when_closed() return void
->   ALSA: core: Make snd_card_free() return void
 
-Applied all three patches now.  Thanks.
+Applied to
 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Takashi
+Thanks!
+
+[1/1] ASoC: SOF: ops: refine parameters order in function snd_sof_dsp_update8
+      commit: 5afc7eefe41645259da84898fc55f6f46cb4de47
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
