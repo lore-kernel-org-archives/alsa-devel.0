@@ -4,94 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3396C636CC
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Feb 2023 14:21:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC72CC05027
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Feb 2023 14:54:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E34C6836;
-	Wed,  8 Feb 2023 15:20:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E34C6836
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3D7E9829;
+	Wed,  8 Feb 2023 15:53:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D7E9829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675866086;
-	bh=IRarZelYPmBHrTv8mYRAQ2aRcwLzEdk+ohpigPdbaOQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	s=default; t=1675868039;
+	bh=RUfI31Jp44rV1IeXbD4t0AsPLNTznicHOFs5hGw+KFs=;
+	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bLoDNyVWtEeFnoijmVZV2zN1VxpFPzhr1AAj2O6xLKUIZi44lFjJ6ETvUFst9xl7+
-	 DtLosVCBdr9jCDNxgE2baSV/XRCVGLrXxCtGkHhQw7TrPKNPIptSq0k+xjk726i6h8
-	 O4mwqijGePy7deVG0xkP2Pa0g8qZ4eMYgmvORLlM=
+	b=A1+Ex1Y+0/7wnudI6+59gcKc9zFjnv0bepo0gXU03pMo1Y0AYL6RJNlMZkejskAY+
+	 BiyVOSJAtvG7TMfyx3qy6DAJVlapHUem8z6bSqpnKO6LLSD4APmEvy/N8BssulPt+S
+	 upfF/hUKO9MhphS1ToQKurH7QT7lKXujBy3tgPRs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C2C3F80558;
-	Wed,  8 Feb 2023 15:19:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3A1AFF80152;
+	Wed,  8 Feb 2023 15:52:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8A44CF8012B; Wed,  8 Feb 2023 15:18:54 +0100 (CET)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [46.235.227.172])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id D317FF80152; Wed,  8 Feb 2023 13:25:06 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 581CEF804CC
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 15:18:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 581CEF804CC
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6765AF80095
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 13:25:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6765AF80095
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=kX27tt2A
-Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
- [82.11.51.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=bMMO1+Az
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	(Authenticated sender: tanureal)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 29AB466020F0;
-	Wed,  8 Feb 2023 14:18:44 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1675865924;
-	bh=IRarZelYPmBHrTv8mYRAQ2aRcwLzEdk+ohpigPdbaOQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kX27tt2A0op5ijS6BRs55dT7wGT/5eGHN6IWw3UIu6yBLbyw9YrqcjBS4hXZom//S
-	 7/5LiPYoWhS1tRL8ANOpq4RcxF7ghiKh5DZFITEU5PdqmSdctWqCRZYcs6C92yDQ0H
-	 5E1EhMGvDCVBa2ZCcZunSQgb0R48xAbaqnEMrmHeTWQJfbjEud9g/5mmFQ4KEs7NpL
-	 GmFsaSDNe46hJxSI8Ivp0qjbfazwjEgtNW6akBcF6PBQDfx6k8UM2o6KUbpx2+hxPu
-	 WXW2uil13hPcEoxctJswaE/HoWIm/+DIzj4R/grdU4lhVmlLttkaVEJ2NMjLTYweaO
-	 VQoCWMY89SlFw==
-From: Lucas Tanure <lucas.tanure@collabora.com>
-To: David Rhodes <david.rhodes@cirrus.com>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v3 4/4] ASoC: cs35l41: Document CS35l41 shared boost
-Date: Wed,  8 Feb 2023 14:18:39 +0000
-Message-Id: <20230208141839.1097377-5-lucas.tanure@collabora.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230208141839.1097377-1-lucas.tanure@collabora.com>
-References: <20230208141839.1097377-1-lucas.tanure@collabora.com>
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 9E1A161698
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 12:25:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E5E1C433D2
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 12:25:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1675859100;
+	bh=RUfI31Jp44rV1IeXbD4t0AsPLNTznicHOFs5hGw+KFs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=bMMO1+Azhs4Km63qgW7MyIf+xqhtlvG35nq7SJSy2pRcyN1Otm0Ye2NpZm65hUFqw
+	 g2UXYyZAG7y/GFHBum+Tqvnc08IW/1rKLeK2jUsXxW7365sg7nfY60Nm/b5ecUvZQ+
+	 jq+lxc+dnzzsBOH4xyeBMTDmL0feOmwqVdR28/LMrsSb4zQ7MmlEy1CKADHvAJGQ10
+	 xpco4MhgWctFyqW7SPENgukrqaHiImxPZNFmW4rTruJqX80YiWBcJ9RCfx9cgGGxxL
+	 w+OZLjdQi4usnRrjDZg5ctNF6esi6dZRhb/3dLkvxKIhjpj2Rv5UGltstIpXEGZNZq
+	 KJq9yQDIINrkw==
+Received: by mail-ed1-f48.google.com with SMTP id u21so20201902edv.3
+        for <alsa-devel@alsa-project.org>;
+ Wed, 08 Feb 2023 04:24:59 -0800 (PST)
+X-Gm-Message-State: AO0yUKUnsygzIphUyr7A4nIDurRlfkm0rxpmHTIPyQNMH8cgg4fFV7GB
+	+ky0lZYtbVmmPslxQD29mMah20Tm7vOmxQTmX3E=
+X-Google-Smtp-Source: 
+ AK7set/Q+/uOAbYZFM/jkIz+fISRabx3Hr+/BidGERpWGk7aoFNjh3zSLNUNVVzX/I6kZ5ZONaxFoF5vNNtc7g05RbQ=
+X-Received: by 2002:a50:ce0c:0:b0:4aa:a4f7:2304 with SMTP id
+ y12-20020a50ce0c000000b004aaa4f72304mr1816736edi.38.1675859098335; Wed, 08
+ Feb 2023 04:24:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: E7AZ74TJR55GVIVMUB74HNE3YWSWTT3H
-X-Message-ID-Hash: E7AZ74TJR55GVIVMUB74HNE3YWSWTT3H
-X-MailFrom: lucas.tanure@collabora.com
+References: <20230113062339.1909087-1-hch@lst.de>
+ <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
+ <20230116071306.GA15848@lst.de>
+ <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
+ <20230203071423.GA24833@lst.de>
+ <60ed320c8f5286e8dbbf71be29b760339fd25069.camel@physik.fu-berlin.de>
+ <0e26bf17-864e-eb22-0d07-5b91af4fde92@infradead.org>
+ <f6317e9073362b13b10df57de23e63945becea32.camel@physik.fu-berlin.de>
+In-Reply-To: 
+ <f6317e9073362b13b10df57de23e63945becea32.camel@physik.fu-berlin.de>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Wed, 8 Feb 2023 20:24:44 +0800
+X-Gmail-Original-Message-ID: 
+ <CAAhV-H57bV855SMr6iBqoQzdak5QSnaRLjQ9oAbOtYZnik5SoQ@mail.gmail.com>
+Message-ID: 
+ <CAAhV-H57bV855SMr6iBqoQzdak5QSnaRLjQ9oAbOtYZnik5SoQ@mail.gmail.com>
+Subject: Re: remove arch/sh
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Content-Type: text/plain; charset="UTF-8"
+X-MailFrom: chenhuacai@kernel.org
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- kernel@collabora.com, Lucas Tanure <lucas.tanure@collabora.com>
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: UX2FRHNYBG4XRGITWKDCJWY5QP7KXQE5
+X-Message-ID-Hash: UX2FRHNYBG4XRGITWKDCJWY5QP7KXQE5
+X-Mailman-Approved-At: Wed, 08 Feb 2023 14:52:39 +0000
+CC: Randy Dunlap <rdunlap@infradead.org>, Christoph Hellwig <hch@lst.de>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, linux-kernel@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arch@vger.kernel.org, dmaengine@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-sh@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E7AZ74TJR55GVIVMUB74HNE3YWSWTT3H/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UX2FRHNYBG4XRGITWKDCJWY5QP7KXQE5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,39 +123,48 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Describe the properties used for shared boost configuration.
-Based on David Rhodes shared boost patches.
+Emm, maybe this patch has its chance to be merged now. :)
 
-Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
----
- .../devicetree/bindings/sound/cirrus,cs35l41.yaml      | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+https://lore.kernel.org/linux-sh/CAAhV-H6siOtVkZpkS4aABejgZCqTwp3TihA0+0HGZ1+mU3XAVA@mail.gmail.com/T/#u
 
-diff --git a/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
-index 51d815d0c696..74f08a6cf95c 100644
---- a/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
-+++ b/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
-@@ -82,11 +82,19 @@ properties:
-       boost-cap-microfarad.
-       External Boost must have GPIO1 as GPIO output. GPIO1 will be set high to
-       enable boost voltage.
-+      Shared boost allows two amplifiers to share a single boost circuit by
-+      communicating on the MDSYNC bus. The passive amplifier does not control
-+      the boost and receives data from the active amplifier. GPIO1 should be
-+      configured for Sync when shared boost is used. Shared boost is not
-+      compatible with External boost. Active amplifier requires
-+      boost-peak-milliamp, boost-ind-nanohenry and boost-cap-microfarad.
-       0 = Internal Boost
-       1 = External Boost
-+      2 = Shared Boost Active
-+      3 = Shared Boost Passive
-     $ref: "/schemas/types.yaml#/definitions/uint32"
-     minimum: 0
--    maximum: 1
-+    maximum: 3
- 
-   cirrus,gpio1-polarity-invert:
-     description:
--- 
-2.39.1
+Huacai
 
+On Wed, Feb 8, 2023 at 8:14 PM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+>
+> Hi Randy!
+>
+> On Tue, 2023-02-07 at 17:31 -0800, Randy Dunlap wrote:
+> >
+> > On 2/7/23 01:06, John Paul Adrian Glaubitz wrote:
+> > > Hello Christoph!
+> > >
+> > > On Fri, 2023-02-03 at 08:14 +0100, Christoph Hellwig wrote:
+> > > > On Mon, Jan 16, 2023 at 09:52:10AM +0100, John Paul Adrian Glaubitz wrote:
+> > > > > We have had a discussion between multiple people invested in the SuperH port and
+> > > > > I have decided to volunteer as a co-maintainer of the port to support Rich Felker
+> > > > > when he isn't available.
+> > > >
+> > > > So, this still isn't reflected in MAINTAINERS in linux-next.  When
+> > > > do you plan to take over?  What platforms will remain supported and
+> > > > what can we start dropping due to being unused and unmaintained?
+> > >
+> > > I'm getting everything ready now with Geert's help and I have a probably dumb
+> > > question regarding the MAINTAINERS file change: Shall I just add myself as an
+> > > additional maintainer first or shall I also drop Yoshinori Sato?
+> > >
+> > > Also, is it desirable to add a "T:" entry for the kernel tree?
+> >
+> > Yes, definitely.
+>
+> Geert has suggested to wait with adding a tree source to the entry until I get my
+> own kernel.org account. I have enough GPG signatures from multiple kernel developers
+> on my GPG key, so I think it shouldn't be too difficult to qualify for an account.
+>
+> Adrian
+>
+> --
+>  .''`.  John Paul Adrian Glaubitz
+> : :' :  Debian Developer
+> `. `'   Physicist
+>   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
