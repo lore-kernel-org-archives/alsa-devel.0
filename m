@@ -4,80 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C247C05027
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Feb 2023 10:17:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0A32C05027
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Feb 2023 10:17:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE338E10;
-	Wed,  8 Feb 2023 11:16:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE338E10
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8722FE78;
+	Wed,  8 Feb 2023 11:17:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8722FE78
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675851464;
-	bh=6yYwbm4pg7eSuLhj7Ob7cP66gX2ej++NyNuUcyrUcTU=;
+	s=default; t=1675851473;
+	bh=WpnikFqDzHELuPke23TKt+aeY2MHX6gpNHpmXNZFryE=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WwfrXprJWhnKST2riM4SOx6znwtFnsSSm3D/LQza5jXT3ZrkDVR6fopyl26b3Kv1g
-	 dWiKobi1RmGIXYi5xf3e+PWeBtL9sjaNZkw+gk6sf44n8w1J0IKK4fX/Vz0EEnEmGf
-	 EH6uHqjICECxrDuHEXFOKFy/CiH8w8d8IyLGpiMs=
+	b=B+H1sgDYsATE3TW1yt8ZGQ+YdtV+Yjp1Nc2xqCs5A1JzFjyX6U3S+EoW7h2reXwrC
+	 vM9YRb/P7s8QJFMYu9fDXBVPme7np3HMMIR9+6lN/uD5qdJDkUNkMA6sA0Z9gqQaRq
+	 aLjXEGx6Rpo+PiZ7Q+fFirnWOqb/xB33zpk6Ym4U=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2A69F8051E;
-	Wed,  8 Feb 2023 11:16:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A155F80525;
+	Wed,  8 Feb 2023 11:16:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DDA35F80152; Wed,  8 Feb 2023 11:15:56 +0100 (CET)
+	id 6B974F80152; Wed,  8 Feb 2023 11:15:59 +0100 (CET)
 Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com
  [IPv6:2a00:1450:4864:20::329])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EADA4F800AF
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 11:15:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EADA4F800AF
+	by alsa1.perex.cz (Postfix) with ESMTPS id B9EADF800AA
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 11:15:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9EADF800AA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=VS3V3vJE
-Received: by mail-wm1-x329.google.com with SMTP id z13so5483319wmp.2
+ header.s=google header.b=qTVFa5Rg
+Received: by mail-wm1-x329.google.com with SMTP id
+ f47-20020a05600c492f00b003dc584a7b7eso1043892wmp.3
         for <alsa-devel@alsa-project.org>;
- Wed, 08 Feb 2023 02:15:53 -0800 (PST)
+ Wed, 08 Feb 2023 02:15:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eVEuYxssYzS6K5JrTOLvMTdbukj74pIFYD+z30S9/84=;
-        b=VS3V3vJEHQN/F+Pe5DaKbbio/v4b9V6vMRPxKMe9+yY+91mSKgemsjWdrDcu1JeGXJ
-         cdJIWD2jJi+V4ZySzq1GdZ6g1HP4LYQrGAIAmQB85vYbUIltjKEwAcUuUlDulhhBgsGN
-         9BSY0D4iWk9cd8SKjX3wMPBht2t6Mqe9mt9lT2iU1O3Por7ralBb0vCg4kEsX23rOfoS
-         cQ6wE6PC34jg/YUoxoDOnlaT+37DKKHzjdCmfrSvO0tIPSs4s0KPx1ynJGU/N7y2PZKQ
-         ydEalrfM3VBUK/JwOmihWwkNOC1khv80gD3gmeh4LoVytIVIHbL0HYUTn/jpsQgEvRRV
-         XR5A==
+        bh=jKDdeglkNeUYsDE7dNCq4DvipvOoaBQXMMUdKEcJp/s=;
+        b=qTVFa5RgMhys3GGm+9g32DXDiQdSAtwy7Tat/X4xAnd7P8SEoasyyDRs1XC9nKwmeU
+         0ZcERYTUzqS0h8Fifuvv030i2nnLbLTpe0Wa1Dx4VtAdieO6w3URXqUO79G/uP60dZUk
+         fFDKxEbS3T2Stj+vlpB79Zjf2RDMMvWWf9JPpXoAnlpgfj/0clsFkoky6tUJfZD3r28T
+         2wu4U556PcVC9fv3jXr53TRx0vLrRKig/P7QQzfaKosLHOQyTofjIX/ePz8m75QjTGfQ
+         Rp6/2HcNJbA1vMk6dSo18wRNOe807ufBom05YO1/hhLrVU0yuTwtxC9b7ayiKt/rkoSd
+         TtNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eVEuYxssYzS6K5JrTOLvMTdbukj74pIFYD+z30S9/84=;
-        b=UwXj4x63hHl9UUZvRbP8s11q2lfjEsgYzJ1ZbXAQMFaG2183ep7bQCfGH1agno+OmZ
-         MjH3RwdFE8Kx/h1Hnyz7nFPdOwM37PlF1VM+YzooMOedm6pf3PY33n5QL7WFx/qZbs/D
-         ftEIVW1XJd2VeI4rJXGilfYQgtFz3s/tbWnI4AF9eVTjOFJ7MsX+9zbActbUpSQ49zHD
-         P7wBnGe7jdAabRIdrkltBCzb22Y3IXzAFZ5rYIhCoHZ2f0FBHxD/HYoMH0oDKNdwtuOM
-         8L2Mrxp6l+SZPchgzZwfXIu3KzNw7gV6QnnXq9Q8ZnPhqhZPxYJ7APqHNS4PHNxZXkkI
-         861Q==
-X-Gm-Message-State: AO0yUKWeZrnx+ylRHuKsUDpnW/el/NwTgczH0cpvpY92ZU8NjaTQgoej
-	/z34kKxQfq6d9LmqT90PXfT09A==
+        bh=jKDdeglkNeUYsDE7dNCq4DvipvOoaBQXMMUdKEcJp/s=;
+        b=NclB8AcB4oZ193obYCVyCfiQIIGP/Zu/3glpsTboIrH+3+E4m9IVexErlY1WvBpIJJ
+         fTT+LJzzOeeAZ6fm79nN6Yi3m3CVH1Gl/Ab6Xj5081w+KY1YPGuoDbg4MAF+2bUV5sdn
+         GLDNcx0uSBuuAXeL3qhwWFxrVn76OXGm076b/Sb09ILEgINc85A85LU+IV1xAGeHdN5I
+         g8X2pSD7o2h8uOCI+t5fg1FxXOd0SrjXaHJTXA6p9p0R3l2H5ZIrpZUZh40OIPTm8Y7d
+         losQmApNDKkvZbhmxZMkoUBU/mo24FxysgTxgCDOZrm5xIJNdzw26SNI5S2fsH5jZPHQ
+         TkiQ==
+X-Gm-Message-State: AO0yUKX7CkXnYZEqx2UoFCJ8iZKmBihJZsX9S6819w4Oq8vHW3/cHBLp
+	g3mVF4pj7gVyrHTMNJefdvMG0w==
 X-Google-Smtp-Source: 
- AK7set8QWSrB1VoOwQDhU4/XDsvh97uKEmQ5ftpRs9Z0p1SnhshHE2kaliOz0S8RQAp+4Zy2+7nrUw==
-X-Received: by 2002:a05:600c:13d4:b0:3df:e1e9:200e with SMTP id
- e20-20020a05600c13d400b003dfe1e9200emr6033073wmg.39.1675851351905;
-        Wed, 08 Feb 2023 02:15:51 -0800 (PST)
+ AK7set9I7FQyv5QlH9tUgviBZftDZjVnw+tfEbullhD6mNVpLl6bzzA6hwk4pWCze2U3YVWY1ZsX7Q==
+X-Received: by 2002:a05:600c:331a:b0:3d2:392e:905f with SMTP id
+ q26-20020a05600c331a00b003d2392e905fmr5835162wmp.24.1675851353876;
+        Wed, 08 Feb 2023 02:15:53 -0800 (PST)
 Received: from krzk-bin.. ([178.197.216.144])
         by smtp.gmail.com with ESMTPSA id
- t14-20020a05600c198e00b003dc4ecfc4d7sm1496328wmq.29.2023.02.08.02.15.50
+ t14-20020a05600c198e00b003dc4ecfc4d7sm1496328wmq.29.2023.02.08.02.15.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Feb 2023 02:15:51 -0800 (PST)
+        Wed, 08 Feb 2023 02:15:53 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Andy Gross <agross@kernel.org>,
 	Bjorn Andersson <andersson@kernel.org>,
@@ -94,17 +95,17 @@ To: Andy Gross <agross@kernel.org>,
 	devicetree@vger.kernel.org,
 	linux-remoteproc@vger.kernel.org,
 	alsa-devel@alsa-project.org
-Subject: [PATCH v2 2/7] arm64: dts: qcom: qcs404: align RPM G-Link node with
- bindings
-Date: Wed,  8 Feb 2023 11:15:40 +0100
-Message-Id: <20230208101545.45711-2-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 3/7] arm64: dts: qcom: msm8996: align RPM G-Link
+ clock-controller node with bindings
+Date: Wed,  8 Feb 2023 11:15:41 +0100
+Message-Id: <20230208101545.45711-3-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230208101545.45711-1-krzysztof.kozlowski@linaro.org>
 References: <20230208101545.45711-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3IS27BMRFCBWNFHKIGM3QS5D63TQQV73
-X-Message-ID-Hash: 3IS27BMRFCBWNFHKIGM3QS5D63TQQV73
+Message-ID-Hash: XGTXTU4VQCCLE2CDPV4X36UYTYQZNU6L
+X-Message-ID-Hash: XGTXTU4VQCCLE2CDPV4X36UYTYQZNU6L
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -119,7 +120,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3IS27BMRFCBWNFHKIGM3QS5D63TQQV73/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XGTXTU4VQCCLE2CDPV4X36UYTYQZNU6L/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -128,8 +129,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Bindings expect (and most of DTS use) the RPM G-Link node name to be
-"rpm-requests".
+qcom,rpmcc bindings expect RPM clock controller to be named generic
+"clock-controller":
+
+  rpm-glink: rpm-requests: 'qcom,rpmcc' does not match any of the regexes: '^regulators(-[01])?$', 'pinctrl-[0-9]+'
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
@@ -139,22 +142,22 @@ Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 Changes since v1:
 1. Add Rb tag.
 ---
- arch/arm64/boot/dts/qcom/qcs404.dtsi | 2 +-
+ arch/arm64/boot/dts/qcom/msm8996.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/qcs404.dtsi b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-index 9c9890cf1b10..bc2ed73afb74 100644
---- a/arch/arm64/boot/dts/qcom/qcs404.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-@@ -223,7 +223,7 @@ rpm-glink {
- 		qcom,rpm-msg-ram = <&rpm_msg_ram>;
- 		mboxes = <&apcs_glb 0>;
- 
--		rpm_requests: glink-channel {
-+		rpm_requests: rpm-requests {
- 			compatible = "qcom,rpm-qcs404";
+diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+index 55180586f7b6..e0d46dbd498f 100644
+--- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+@@ -483,7 +483,7 @@ rpm_requests: rpm-requests {
+ 			compatible = "qcom,rpm-msm8996";
  			qcom,glink-channels = "rpm_requests";
  
+-			rpmcc: qcom,rpmcc {
++			rpmcc: clock-controller {
+ 				compatible = "qcom,rpmcc-msm8996", "qcom,rpmcc";
+ 				#clock-cells = <1>;
+ 				clocks = <&xo_board>;
 -- 
 2.34.1
 
