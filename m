@@ -4,117 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC72CC05027
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Feb 2023 14:54:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F392EC05027
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Feb 2023 16:05:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D7E9829;
-	Wed,  8 Feb 2023 15:53:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D7E9829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 11D7F7F8;
+	Wed,  8 Feb 2023 17:04:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11D7F7F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675868039;
-	bh=RUfI31Jp44rV1IeXbD4t0AsPLNTznicHOFs5hGw+KFs=;
-	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
+	s=default; t=1675872342;
+	bh=vHTNVK5x9mlkG7LFG3BebgDQ8s8RdWzGXFK8f5T9o4U=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=A1+Ex1Y+0/7wnudI6+59gcKc9zFjnv0bepo0gXU03pMo1Y0AYL6RJNlMZkejskAY+
-	 BiyVOSJAtvG7TMfyx3qy6DAJVlapHUem8z6bSqpnKO6LLSD4APmEvy/N8BssulPt+S
-	 upfF/hUKO9MhphS1ToQKurH7QT7lKXujBy3tgPRs=
+	b=nvnj0aRFxImAQPZGXhp6fqJ6KfVA+Zy5+LLdHawXLSylTeUS973BR7BaBQRXLyB7s
+	 ts2HebEmtAHk9k7hPCcv/9z/xA/mViGJdO9NwgNM2OgYWe2SVRn40u37uovbcl/dno
+	 UAaf3A99wmOXsMir9mHSbR09Z890O/m6SDd8MnQI=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A1AFF80152;
-	Wed,  8 Feb 2023 15:52:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 80D19F8010B;
+	Wed,  8 Feb 2023 17:04:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D317FF80152; Wed,  8 Feb 2023 13:25:06 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 9C4CDF80165; Wed,  8 Feb 2023 17:04:22 +0100 (CET)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6765AF80095
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 13:25:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6765AF80095
+	by alsa1.perex.cz (Postfix) with ESMTPS id 99C16F8010B
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 17:04:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99C16F8010B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=bMMO1+Az
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 9E1A161698
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 12:25:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E5E1C433D2
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 12:25:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1675859100;
-	bh=RUfI31Jp44rV1IeXbD4t0AsPLNTznicHOFs5hGw+KFs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=bMMO1+Azhs4Km63qgW7MyIf+xqhtlvG35nq7SJSy2pRcyN1Otm0Ye2NpZm65hUFqw
-	 g2UXYyZAG7y/GFHBum+Tqvnc08IW/1rKLeK2jUsXxW7365sg7nfY60Nm/b5ecUvZQ+
-	 jq+lxc+dnzzsBOH4xyeBMTDmL0feOmwqVdR28/LMrsSb4zQ7MmlEy1CKADHvAJGQ10
-	 xpco4MhgWctFyqW7SPENgukrqaHiImxPZNFmW4rTruJqX80YiWBcJ9RCfx9cgGGxxL
-	 w+OZLjdQi4usnRrjDZg5ctNF6esi6dZRhb/3dLkvxKIhjpj2Rv5UGltstIpXEGZNZq
-	 KJq9yQDIINrkw==
-Received: by mail-ed1-f48.google.com with SMTP id u21so20201902edv.3
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=ejg/jsd4
+Received: by mail-wm1-x32e.google.com with SMTP id o36so13673378wms.1
         for <alsa-devel@alsa-project.org>;
- Wed, 08 Feb 2023 04:24:59 -0800 (PST)
-X-Gm-Message-State: AO0yUKUnsygzIphUyr7A4nIDurRlfkm0rxpmHTIPyQNMH8cgg4fFV7GB
-	+ky0lZYtbVmmPslxQD29mMah20Tm7vOmxQTmX3E=
+ Wed, 08 Feb 2023 08:04:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l+m3F3iCUC+jLles+DVcgXooXwK7NZCMV3ti5i6vKFM=;
+        b=ejg/jsd4afdTbrNvBe+FF55hHfpxJn0Y/8BT6NTXpa/o4Tk6z8yZyt/vz39+oG+2+d
+         PxCaODODZoI4mKRsEmQovjsVgfCdoel8z3aH25CRr79ZnKKzV+ocWnG4fmSpgqSvgN1V
+         kyLmiiXRfkDvyu0FgrxULi5nAFcKHE5Ucv9EE0jPwGGhLlkDSCuHJi/T0o4wvE/FDFO8
+         TbOwMdSbGSkTHCEhnw3oBjACwBimx0cXyI2SJXcrKJpTeNvmf5MVDYMRCY/VSfWSqgns
+         gkcvhd1um6HaImYSyg13JStrCNKEIsLtC3qj2uY8ZUiRuou2hbkFTRDAcpRjZMYrVTDn
+         +KhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l+m3F3iCUC+jLles+DVcgXooXwK7NZCMV3ti5i6vKFM=;
+        b=I6T+4t3QDkpLiz/YaIH11RbQx9nfQ968VJX5z0ldCzwlmHXp55v58OsgNO+E5oK9kl
+         NiBn00yZwKm7uV+NtghTKfwhNR0z48ulMN9Mif7RLYqdJuojZLDu/lyBSsl9L3Tj4IR7
+         a0wZpfqW1mBebG773FQTslhKLQQq9J5qIfRLDBDfPxewPeLDqgXRioc8q0DIOiGPgqil
+         w/W3eYI6/yJefeJ8FzdCWncSeMbqu6TpHOmHeUj0t7yHbHOuvf5ryLXer6rBP1dWRk0j
+         gSZgLqhVw/x+80c++sx6ONmX0HsCIluPueAeWVfI8HDeroavm7/3gN67gMc+RjhiM1jl
+         mCdg==
+X-Gm-Message-State: AO0yUKWs3r2ns4d6h1aat0w+WNXyH2a+hKXusIRLhUMeZkBhCvgNKPC3
+	sDMIsliDsjuN3B0xpeCr1vsYUg==
 X-Google-Smtp-Source: 
- AK7set/Q+/uOAbYZFM/jkIz+fISRabx3Hr+/BidGERpWGk7aoFNjh3zSLNUNVVzX/I6kZ5ZONaxFoF5vNNtc7g05RbQ=
-X-Received: by 2002:a50:ce0c:0:b0:4aa:a4f7:2304 with SMTP id
- y12-20020a50ce0c000000b004aaa4f72304mr1816736edi.38.1675859098335; Wed, 08
- Feb 2023 04:24:58 -0800 (PST)
+ AK7set8omr9IactH1otM+Cqkk1aEQpSRxG3aPP3qUBcBsscAJnAoRkNQlMhTD7TwqkYrWkA0yvIJgw==
+X-Received: by 2002:a05:600c:998:b0:3dc:59ee:7978 with SMTP id
+ w24-20020a05600c099800b003dc59ee7978mr6967187wmp.38.1675872254623;
+        Wed, 08 Feb 2023 08:04:14 -0800 (PST)
+Received: from krzk-bin.. ([178.197.216.144])
+        by smtp.gmail.com with ESMTPSA id
+ o18-20020a05600c2e1200b003dd1b00bd9asm2169890wmf.32.2023.02.08.08.04.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Feb 2023 08:04:14 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] ASoC: codecs: max98090: simplify snd_soc_dai_driver
+Date: Wed,  8 Feb 2023 17:04:10 +0100
+Message-Id: <20230208160410.371609-2-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230208160410.371609-1-krzysztof.kozlowski@linaro.org>
+References: <20230208160410.371609-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-References: <20230113062339.1909087-1-hch@lst.de>
- <11e2e0a8-eabe-2d8c-d612-9cdd4bcc3648@physik.fu-berlin.de>
- <20230116071306.GA15848@lst.de>
- <40dc1bc1-d9cd-d9be-188e-5167ebae235c@physik.fu-berlin.de>
- <20230203071423.GA24833@lst.de>
- <60ed320c8f5286e8dbbf71be29b760339fd25069.camel@physik.fu-berlin.de>
- <0e26bf17-864e-eb22-0d07-5b91af4fde92@infradead.org>
- <f6317e9073362b13b10df57de23e63945becea32.camel@physik.fu-berlin.de>
-In-Reply-To: 
- <f6317e9073362b13b10df57de23e63945becea32.camel@physik.fu-berlin.de>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Wed, 8 Feb 2023 20:24:44 +0800
-X-Gmail-Original-Message-ID: 
- <CAAhV-H57bV855SMr6iBqoQzdak5QSnaRLjQ9oAbOtYZnik5SoQ@mail.gmail.com>
-Message-ID: 
- <CAAhV-H57bV855SMr6iBqoQzdak5QSnaRLjQ9oAbOtYZnik5SoQ@mail.gmail.com>
-Subject: Re: remove arch/sh
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Content-Type: text/plain; charset="UTF-8"
-X-MailFrom: chenhuacai@kernel.org
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: ANYSDR6CTMHKTMTFZ2QBBDM436Z2YY4V
+X-Message-ID-Hash: ANYSDR6CTMHKTMTFZ2QBBDM436Z2YY4V
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: UX2FRHNYBG4XRGITWKDCJWY5QP7KXQE5
-X-Message-ID-Hash: UX2FRHNYBG4XRGITWKDCJWY5QP7KXQE5
-X-Mailman-Approved-At: Wed, 08 Feb 2023 14:52:39 +0000
-CC: Randy Dunlap <rdunlap@infradead.org>, Christoph Hellwig <hch@lst.de>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, linux-kernel@vger.kernel.org,
- linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arch@vger.kernel.org, dmaengine@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-sh@vger.kernel.org
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UX2FRHNYBG4XRGITWKDCJWY5QP7KXQE5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ANYSDR6CTMHKTMTFZ2QBBDM436Z2YY4V/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,48 +120,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Emm, maybe this patch has its chance to be merged now. :)
+The max98090 has only one DAI, so snd_soc_dai_driver does not have to be
+an array.
 
-https://lore.kernel.org/linux-sh/CAAhV-H6siOtVkZpkS4aABejgZCqTwp3TihA0+0HGZ1+mU3XAVA@mail.gmail.com/T/#u
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ sound/soc/codecs/max98090.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Huacai
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index 06ed2a938108..b419c49e1e08 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2356,8 +2356,7 @@ static const struct snd_soc_dai_ops max98090_dai_ops = {
+ 	.no_capture_mute = 1,
+ };
+ 
+-static struct snd_soc_dai_driver max98090_dai[] = {
+-{
++static struct snd_soc_dai_driver max98090_dai = {
+ 	.name = "HiFi",
+ 	.playback = {
+ 		.stream_name = "HiFi Playback",
+@@ -2374,7 +2373,6 @@ static struct snd_soc_dai_driver max98090_dai[] = {
+ 		.formats = MAX98090_FORMATS,
+ 	},
+ 	 .ops = &max98090_dai_ops,
+-}
+ };
+ 
+ static int max98090_probe(struct snd_soc_component *component)
+@@ -2594,8 +2592,8 @@ static int max98090_i2c_probe(struct i2c_client *i2c)
+ 	}
+ 
+ 	ret = devm_snd_soc_register_component(&i2c->dev,
+-			&soc_component_dev_max98090, max98090_dai,
+-			ARRAY_SIZE(max98090_dai));
++					      &soc_component_dev_max98090,
++					      &max98090_dai, 1);
+ err_enable:
+ 	return ret;
+ }
+-- 
+2.34.1
 
-On Wed, Feb 8, 2023 at 8:14 PM John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
->
-> Hi Randy!
->
-> On Tue, 2023-02-07 at 17:31 -0800, Randy Dunlap wrote:
-> >
-> > On 2/7/23 01:06, John Paul Adrian Glaubitz wrote:
-> > > Hello Christoph!
-> > >
-> > > On Fri, 2023-02-03 at 08:14 +0100, Christoph Hellwig wrote:
-> > > > On Mon, Jan 16, 2023 at 09:52:10AM +0100, John Paul Adrian Glaubitz wrote:
-> > > > > We have had a discussion between multiple people invested in the SuperH port and
-> > > > > I have decided to volunteer as a co-maintainer of the port to support Rich Felker
-> > > > > when he isn't available.
-> > > >
-> > > > So, this still isn't reflected in MAINTAINERS in linux-next.  When
-> > > > do you plan to take over?  What platforms will remain supported and
-> > > > what can we start dropping due to being unused and unmaintained?
-> > >
-> > > I'm getting everything ready now with Geert's help and I have a probably dumb
-> > > question regarding the MAINTAINERS file change: Shall I just add myself as an
-> > > additional maintainer first or shall I also drop Yoshinori Sato?
-> > >
-> > > Also, is it desirable to add a "T:" entry for the kernel tree?
-> >
-> > Yes, definitely.
->
-> Geert has suggested to wait with adding a tree source to the entry until I get my
-> own kernel.org account. I have enough GPG signatures from multiple kernel developers
-> on my GPG key, so I think it shouldn't be too difficult to qualify for an account.
->
-> Adrian
->
-> --
->  .''`.  John Paul Adrian Glaubitz
-> : :' :  Debian Developer
-> `. `'   Physicist
->   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
