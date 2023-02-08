@@ -4,114 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16395C636CC
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Feb 2023 09:35:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C5F8C636CC
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Feb 2023 09:36:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBA6484D;
-	Wed,  8 Feb 2023 10:35:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBA6484D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57E98839;
+	Wed,  8 Feb 2023 10:35:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57E98839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675848957;
-	bh=MCuUmkBEnBPcdd6EinFDOnx0ugVHT8srnKzl7g6jjGQ=;
-	h=Date:Subject:From:To:References:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=a/bcZl7YwMfSLZbZPtHB52+dhGCRqp2ckRBQnzlL4skNt/w04g+h8rmjmpsZZfCT+
-	 TB8+G77KoaLuJYXUwg0B/VFFBjCcNd3TmHB2aEyHASqETH77jdQx6Sptj+WVwJcICt
-	 Ntg19r/IcQNsxgnXEgGTTIZ08S847IC4uF4Lo7Sc=
+	s=default; t=1675848988;
+	bh=wMkWdyYxHDhyhJZBboQ33F9OEZKyqiaE9Vd5KYcjkVk=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=AydWhiMEcL0c4dzdaSBX9tqCEfVwFglWdORqOoofXct01yIdmE9XdmrcyGOVY3vDm
+	 EMKbmJcG7a0CeVLbgjF3PLNztJLxTWE9G54/YVct3XbnZy0E5CLPobOpcwRARt7xRA
+	 iCiNF2VxRIzti11JqnIKpT6fGRmsPFNbUTbob9MA=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FF4FF80224;
-	Wed,  8 Feb 2023 10:35:05 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 935E2F804CC;
+	Wed,  8 Feb 2023 10:35:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B9A2F80518; Wed,  8 Feb 2023 10:35:01 +0100 (CET)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
- [IPv6:2a00:1450:4864:20::42d])
+	id 325AEF80518; Wed,  8 Feb 2023 10:35:33 +0100 (CET)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
+ [IPv6:2a00:1450:4864:20::330])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 962E7F80095
-	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 10:34:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 962E7F80095
+	by alsa1.perex.cz (Postfix) with ESMTPS id B6446F800AF
+	for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2023 10:35:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6446F800AF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=RfGikjQL
-Received: by mail-wr1-x42d.google.com with SMTP id a2so15816383wrd.6
+ unprotected) header.d=baylibre-com.20210112.gappssmtp.com
+ header.i=@baylibre-com.20210112.gappssmtp.com header.a=rsa-sha256
+ header.s=20210112 header.b=iqGdC41c
+Received: by mail-wm1-x330.google.com with SMTP id
+ hn2-20020a05600ca38200b003dc5cb96d46so958094wmb.4
         for <alsa-devel@alsa-project.org>;
- Wed, 08 Feb 2023 01:34:57 -0800 (PST)
+ Wed, 08 Feb 2023 01:35:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y4bZDzVuR8Me/WxngPWog91qqgFIe75LT50el4aHpVc=;
-        b=RfGikjQLX/00EQxnZD0ATTPgkbth9KvnLvNikXrA5CllXeu7aX7e4MnW9B9NotqMAE
-         /g051GgCGxva5v9NSDf+OfRmDIBrayQKapko3of33bajot1Z9qbPabzusfbhWP0FvXvp
-         dFPNgUpiY3Rv4uR2oJLrnUaVU4YoQftGVifqovmB/7WF/qentm5yheY5T2TUW/KPFhHn
-         kdt2dpH6jbrgbyRG8HPb9Ls1ygQTWhJih7LAiJnd28NtQZYD98Z2pLtGOoz++o25V9Cp
-         eKFRUeHR4OQLsTZ4tBhQ4ljtFoui5xoIS2tl8quvMza7puRjZdW+r5mkBmMiYSk7Illz
-         1sFA==
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=e5Tu8R0oupz/ghiHxU+IGFJ45u5bYP68xNxl3K3/IjE=;
+        b=iqGdC41c/7Nav5uKJe7OFSVlN/w+wAHQedSiSAkvS2V0cWV1aa0Vz+pHyXM/Bhgw1t
+         kQ+ZYwiGtNowD8cHal8ybws8mppYjq+jtUrl1+kgm2r6TSK2obKank2PdZnBZBOZ5oTn
+         5SFe3xDzSSkr653gRrWicS3lePMHkFofroQSRg3NW4mizNyb1SWTxBozNHJuVB2WKl39
+         pSOSO7ev/PlYUHMQ55bqc1VAek0gRkRln/clenas4STXF50e+WGhd4yVbLg/PCGaiR6m
+         d6+VpLwlrYrPHGiSKfYTAU/0SyfXslc3w8xYu4ap7ns54COAm8pIh1lmLKsW2lkOHiWs
+         QEHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y4bZDzVuR8Me/WxngPWog91qqgFIe75LT50el4aHpVc=;
-        b=DfDLOL9LRYVQJWtPqoAStCdPGwP8eaa8lcIIqP2L/PTWfLEdK5GZngMzPTIuNLmyWd
-         nXI2/c0X+INvcDbPcuLZY9J9o3No46Kss154Hr53GoSoGxwKPpcNxfCK8QvKkAYGGy+X
-         J7wvJygOyFZaA1WxuN1eTLL6i2BBMtNGVpKgW7S3r6l76b2u7+Wfg5Vetkwvrhq1R632
-         jZgLrGjetDe/J+9AoKIMzUi/o5oz56y4tnJzyqHr+SMtqiGYF+xMS0zthD2vnXL5ZNzV
-         DF7s23Rdptm6agjHM4RKZN5rM32/nDuN4uZfP7xWiWAHl0t2Ol1/+E4HdPvNMGnf3otF
-         rH2A==
-X-Gm-Message-State: AO0yUKXdA/JDv2N01A5KGoFe7bl1UdMBxOF3o9KGk37kOwaKauGLDizH
-	P0dm9ZKCpnDz5eR/jDcohZyoSA==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e5Tu8R0oupz/ghiHxU+IGFJ45u5bYP68xNxl3K3/IjE=;
+        b=N6MRTnV5R10NjkEx+HNywccZUEIXO1qqGw9dNWKToR1ywFHoMNLvZPsS8H1CJSbK2A
+         qiSNYMcJ/TV77sUh1b7EcOfxWztWoQ8+wd6hStX2hpRhPoYdF2A1usShFwtmzObPKrZ/
+         +q364U6IV0I2DJKn/JObMHtsamvyJucJcp+V/p50HwpzKk78fX3R1gu5AxEIK+vW8Vgb
+         wqf5A3c4SSmarUS9ZVamgBQOQAJ8xscEku6JynRa146asUWoz1bv1mSQ+tXpo3DVwLxg
+         l5h+yCHkQGWoWxP7oUD3Ev7a/AblqWqGdQGL6EJSX94OUMHqEJFFzXnwQmqSx5mOW05K
+         jRJw==
+X-Gm-Message-State: AO0yUKV0d/jBvBGjQDBQVRdWiuZ9SjzG0YeMROavfpXBkZ0CdCu8NwmA
+	uMAuzvm8MVTy/Sb11AMvyE/Cqg==
 X-Google-Smtp-Source: 
- AK7set8o9WP1nPPsi/wK08C2W8gBquf/0OvqI8oSV6ZOocWlQSIr56gp5ZYlTXP9QUe1q62lsHMDLg==
-X-Received: by 2002:adf:f68b:0:b0:2c3:e3ec:8142 with SMTP id
- v11-20020adff68b000000b002c3e3ec8142mr5409043wrp.54.1675848895876;
-        Wed, 08 Feb 2023 01:34:55 -0800 (PST)
-Received: from [192.168.1.109] ([178.197.216.144])
-        by smtp.gmail.com with ESMTPSA id
- s7-20020adfeb07000000b002bff1de8d4bsm13128945wrn.49.2023.02.08.01.34.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Feb 2023 01:34:55 -0800 (PST)
-Message-ID: <18ab911f-6ef3-f75e-c4cc-3457d5c6bc74@linaro.org>
-Date: Wed, 8 Feb 2023 10:34:54 +0100
+ AK7set/kCIIZcHoJ4TsvPawNaB7DdeTgLnyVQKSy16xqjOEFQfYshN3+RU6iL+FYD1oxwlLAWFVWqg==
+X-Received: by 2002:a05:600c:1d8b:b0:3dc:198c:dde with SMTP id
+ p11-20020a05600c1d8b00b003dc198c0ddemr5669502wms.41.1675848927019;
+        Wed, 08 Feb 2023 01:35:27 -0800 (PST)
+Received: from jackdaw.baylibre
+ (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.googlemail.com with ESMTPSA id
+ j23-20020a05600c1c1700b003dc1a525f22sm1375051wms.25.2023.02.08.01.35.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Feb 2023 01:35:26 -0800 (PST)
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Mark Brown <broonie@kernel.org>,
+	alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH v3 0/1] ASoC: dt-bindings: meson: covert axg audio to schema
+Date: Wed,  8 Feb 2023 10:35:18 +0100
+Message-Id: <20230208093520.52843-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v2 4/4] ASoC: dt-bindings: irondevice,sma1303: Rework
- binding and add missing properties
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Kiseok Jo <kiseok.jo@irondevice.com>, Rob Herring <robh+dt@kernel.org>,
- Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-References: <20230208092420.5037-5-kiseok.jo@irondevice.com>
- <20230208092420.5037-8-kiseok.jo@irondevice.com>
- <481a2a2d-bf2e-b707-1a32-8199eeda78a3@linaro.org>
-In-Reply-To: <481a2a2d-bf2e-b707-1a32-8199eeda78a3@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: ZZCJLM55ICHLY4QQISI5BRKG45NKSVBJ
-X-Message-ID-Hash: ZZCJLM55ICHLY4QQISI5BRKG45NKSVBJ
-X-MailFrom: krzysztof.kozlowski@linaro.org
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: 2OD7UH4UZN44WSN5KHVYYFME42DY2SSA
+X-Message-ID-Hash: 2OD7UH4UZN44WSN5KHVYYFME42DY2SSA
+X-MailFrom: jbrunet@baylibre.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org
+CC: Jerome Brunet <jbrunet@baylibre.com>, linux-amlogic@lists.infradead.org,
+ Kevin Hilman <khilman@baylibre.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-kernel@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZZCJLM55ICHLY4QQISI5BRKG45NKSVBJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2OD7UH4UZN44WSN5KHVYYFME42DY2SSA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,21 +118,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 08/02/2023 10:34, Krzysztof Kozlowski wrote:
-> On 08/02/2023 10:24, Kiseok Jo wrote:
->> Add the missing properties as compatible, reg, sound-dai-cells.
->> And then check this file using 'make dt_binding_check'.
->>
->> Signed-off-by: Kiseok Jo <kiseok.jo@irondevice.com>
->> ---
->>  .../bindings/sound/irondevice,sma1303.yaml    | 23 ++++++++++++++++---
-> 
-> 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Continue conversion of AXG audio dt-binding documentation to schema
 
-Wait, no, I see you added some more undocumented properties - at least
-clk is new. Didn't we learn anything from first submission errors?
+Changes since v2:
+ * Drop 6 patches applied with v2
+ * Drop Yaml block style indicator for multiline description
 
-Best regards,
-Krzysztof
+Changes since v1:
+* Drop 2 patches applied with v1
+* Drop node name patterns
+* Fix examples indentation
+* Yaml fixups requested by Krzysztof
+
+Jerome Brunet (1):
+  ASoC: dt-bindings: meson: convert axg sound card control to schema
+
+ .../bindings/sound/amlogic,axg-sound-card.txt | 124 ------------
+ .../sound/amlogic,axg-sound-card.yaml         | 183 ++++++++++++++++++
+ 2 files changed, 183 insertions(+), 124 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.yaml
+
+-- 
+2.39.1
 
