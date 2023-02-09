@@ -4,85 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CAD6C636D3
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 18:39:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11904C636D6
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 18:48:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 67CEAE74;
-	Thu,  9 Feb 2023 19:38:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67CEAE74
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9CF5083E;
+	Thu,  9 Feb 2023 19:48:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CF5083E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675967964;
-	bh=HrpKAMSDmyqGpv909f4Wp0VRsW+bh5HO23xF+LPWN/I=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	s=default; t=1675968531;
+	bh=d63iRJWOdS7dprxJvaMZDkB9M+DKxugWNdmHqG86+4s=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=OqbYUGszQwUU1Xzr3oFVAlG2TtuAa2UH4ylfgMDwkyyxQ3jRT6ogHy54jT4QqafLi
-	 8rZ34haCCl9zvnboCj1iFadDGLF/EWeCQHrl3C9JxcWmRjbaeIUA1JMaKFTqtjsbKH
-	 19EsSGqtv6syo4P9fsWEsKvDALyNGRX4xd0notRg=
+	b=JRieyLEDl+A/BztzVRCa1KVb4k7GM83xckOMvwW8FZH7DC95n1yBBWAKV/Mi3O5tc
+	 P2cnE4Eb0eidLt7lvS1yvN7Ok8kaUhb1LD4N5qPU8mREhFrRSwVxtuCsGdfafyutuG
+	 U5B2YhlyLJj2YHU/tCdvvIwb/1ZqZ1NBiKB1dAn0=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32FFDF80567;
-	Thu,  9 Feb 2023 19:36:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DCC9AF8018A;
+	Thu,  9 Feb 2023 19:47:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9924DF80553; Thu,  9 Feb 2023 19:36:38 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 02E10F800E4; Thu,  9 Feb 2023 19:47:33 +0100 (CET)
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com
+ [209.85.160.51])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4F824F80027
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 19:36:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F824F80027
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=rfRQOYmO
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id A29C961B7C;
-	Thu,  9 Feb 2023 18:36:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D511C4339C;
-	Thu,  9 Feb 2023 18:36:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1675967785;
-	bh=HrpKAMSDmyqGpv909f4Wp0VRsW+bh5HO23xF+LPWN/I=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=rfRQOYmO9XCI4v3FoSpeQjG36syBE8DO/87YATHQyQmZT0IdNLp5Rc1zJm90xs/Kc
-	 YV52OPC5GJNR+iIOEEXeCiTyT1Nc8KDyJ2VMfKlXhNPg/9E7fKMJ77lWw2zDzdAr/3
-	 Rvma0Hb/oJUoKVpwiTp5HB7v7ExxSDwGrOnkeKBJ37Q+xHmmfNsYJ/A0XwOpPAQZ/5
-	 0HQRIThufx+pKN6+PXEZyLZHw3v8IciFqzmiN0MmIX+jlq9gT+3WaAG9VkTjP9nsKz
-	 kQXf6cl6oNy0Bi2NkABP2oeA3tqSdzdEAJ2L4RByOLcsyr/E0BAi6FoAysC7OMuNA7
-	 nWKYcZJIhNO/A==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, shumingf@realtek.com
-In-Reply-To: <20230207090946.20659-1-shumingf@realtek.com>
-References: <20230207090946.20659-1-shumingf@realtek.com>
-Subject: Re: [PATCH] ASoC: rt712-sdca: Add RT712 SDCA driver for Jack and
- Amp topology
-Message-Id: <167596778330.879652.10581871492810651320.b4-ty@kernel.org>
-Date: Thu, 09 Feb 2023 18:36:23 +0000
+	by alsa1.perex.cz (Postfix) with ESMTPS id F0A21F80086
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 19:47:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0A21F80086
+Received: by mail-oa1-f51.google.com with SMTP id
+ 586e51a60fabf-1636eae256cso3855287fac.0
+        for <alsa-devel@alsa-project.org>;
+ Thu, 09 Feb 2023 10:47:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qNaA54ncyf5PWWN1fTCkDz/pbo/DWHHSJveDPsBxHU4=;
+        b=EFTnB2N7JdUBN5jzg47ARy88ef2xfjKDh0ZrPz5ycmnwFzlcHC6H0XzL5oww4nQI4u
+         2tfjA+ML3yggv8nPMweF70yW2ZyvFXRXT074s/Q4tlghIJa5muSWLnzSTvZKxg7WTcnv
+         73MtwrmnVrQYb7q0fBhk2qUCWHFw+GRMrNHAGmahH+Q/nnrPWFKA5YizBeAfdIut5ld1
+         M1MzfxFUdJY+OrSVoDILODP4mV12lEEX2RM46g5rXHYbAS8xVNNXGywvxiWNtWeZqUcO
+         zMSUAJOb2Z+RoavqVXxdbmNTSZAe6Un89wGnDR5jSpAu+WgB5c1UB2izwr1B7nB3F59P
+         Ymqg==
+X-Gm-Message-State: AO0yUKVYHkKxXbiCmdjXyPC1EwUXUG1DKKqKcWeD/0GC75KMbCvS8SH8
+	+ItH6VqPHRlByUkzlWN+jA==
+X-Google-Smtp-Source: 
+ AK7set+LpAAQrdDi21BmP35c4QuiXWbAckRokthyKVqKkwsAlsFerd9xp/Vfd28aqzRs2F+J01ZqkQ==
+X-Received: by 2002:a05:6870:428f:b0:163:3f73:b0fc with SMTP id
+ y15-20020a056870428f00b001633f73b0fcmr6970166oah.18.1675968446460;
+        Thu, 09 Feb 2023 10:47:26 -0800 (PST)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id
+ u36-20020a056870b0e400b0014ff15936casm1008335oag.40.2023.02.09.10.47.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Feb 2023 10:47:26 -0800 (PST)
+Received: (nullmailer pid 622962 invoked by uid 1000);
+	Thu, 09 Feb 2023 18:47:25 -0000
+Date: Thu, 9 Feb 2023 12:47:25 -0600
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2] ASoC: dt-bindings: wlf,wm8994: Convert to dtschema
+Message-ID: <167596844504.622906.11149464288778013778.robh@kernel.org>
+References: <20230208195235.453774-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.0
-Message-ID-Hash: VJJVPTRJ6W457JVZJFFH5MEUBFFGUDNK
-X-Message-ID-Hash: VJJVPTRJ6W457JVZJFFH5MEUBFFGUDNK
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230208195235.453774-1-krzysztof.kozlowski@linaro.org>
+Message-ID-Hash: NNDGGX6SKCGGLMQ7JZJWXNQGSBF64GSQ
+X-Message-ID-Hash: NNDGGX6SKCGGLMQ7JZJWXNQGSBF64GSQ
+X-MailFrom: robherring2@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, derek.fang@realtek.com, bard.liao@intel.com,
- flove@realtek.com, pierre-louis.bossart@intel.com
+CC: linux-kernel@vger.kernel.org, - <patches@opensource.cirrus.com>,
+ alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VJJVPTRJ6W457JVZJFFH5MEUBFFGUDNK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NNDGGX6SKCGGLMQ7JZJWXNQGSBF64GSQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,37 +104,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 07 Feb 2023 17:09:46 +0800, shumingf@realtek.com wrote:
-> This is the initial codec driver for rt712 SDCA (Jack+Amp topology).
-> The host should connect with rt712 SdW1 interface.
+
+On Wed, 08 Feb 2023 20:52:35 +0100, Krzysztof Kozlowski wrote:
+> Convert the Wolfson WM1811/WM8994/WM8958 audio codecs bindings to DT
+> schema.
 > 
+> Changes against original binding:
+> 1. Add missing LDO1VDD-supply and LDO2VDD-supply.
+> 2. Use "gpios" suffix for wlf,ldo1ena and wlf,ldo2ena (Linux kernel's
+>    gpiolib already looks for both variants).
+> 3. Do not require AVDD1-supply and DCVDD-supply, because at least on
+>    Arndale board with Exynos5250 these are being supplied by internal
+>    LDOs.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> Changes since v1:
+> 1. Add LDO2VDD-supply.
+> 2. Do not require AVDD1-supply on WM8994.
+> 3. Move requiring of common supplies to top-level "required:".
+> 
+> DTS is being corrected here:
+> https://lore.kernel.org/linux-samsung-soc/20230208172634.404452-1-krzysztof.kozlowski@linaro.org/T/#t
+> ---
+>  .../devicetree/bindings/sound/wlf,wm8994.yaml | 194 ++++++++++++++++++
+>  .../devicetree/bindings/sound/wm8994.txt      | 112 ----------
+>  2 files changed, 194 insertions(+), 112 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/wlf,wm8994.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/sound/wm8994.txt
 > 
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: rt712-sdca: Add RT712 SDCA driver for Jack and Amp topology
-      commit: 6c39710da75caabc5f459a3f73fbb7435b4000aa
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Reviewed-by: Rob Herring <robh@kernel.org>
 
