@@ -4,93 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AD9DC61DA4
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 12:31:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00294C05027
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 12:31:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22A54E8A;
-	Thu,  9 Feb 2023 13:30:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22A54E8A
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD1EEDF8;
+	Thu,  9 Feb 2023 13:31:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD1EEDF8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675945896;
-	bh=qOsSHZNBDQ1YoRgx0/aTwcAO7uF24uQ0GIM4s5B4VOg=;
+	s=default; t=1675945913;
+	bh=g8yWAMHOEtKPU4VyJRz6nq4Fyg2cTCoz+RcmRnQqw44=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Gvar8Q1elCr2c/TqATUwNWvBPgAmsrcfTv8hijhashhf0ZYTRPiwnQP2HnDJ+/3Wq
-	 zlBJwjzhBZD1bYOyy/XoFFgpdNQIADA+CvDhOlDZGwDQaCEmnq4Xsudrl8wXJKhVUs
-	 ofcbi24A5ejVCRJT9/NIxHFEhoIJ1JPpYxjf2Re4=
+	b=F35uzpRh9zWTFuSiV19PLqX4wUvK/Lv7hoxCu6esN1yN70mPbzKXq4F624MR6I9lT
+	 zEzMdZWI4qsahP20EjX9KIwxJVSMrXIQa+qSYgSXoles8CGGxpdtm7t7c7uPSafhRl
+	 tTqBMfHfEGknqMSv0Pz4jbWbnJa2yBwDxvpFbDeM=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77EEEF80567;
-	Thu,  9 Feb 2023 13:29:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 875F4F80571;
+	Thu,  9 Feb 2023 13:29:17 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 48981F80551; Thu,  9 Feb 2023 13:28:52 +0100 (CET)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
+	id 39023F80551; Thu,  9 Feb 2023 13:28:55 +0100 (CET)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DEE4EF8018A
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 13:28:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEE4EF8018A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8CC7DF8021D
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 13:28:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CC7DF8021D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=Ro8BWxNH
-Received: by mail-wr1-x42a.google.com with SMTP id m14so1560586wrg.13
+ header.s=google header.b=QJVTqSRd
+Received: by mail-wr1-x436.google.com with SMTP id bk16so1568699wrb.11
         for <alsa-devel@alsa-project.org>;
- Thu, 09 Feb 2023 04:28:18 -0800 (PST)
+ Thu, 09 Feb 2023 04:28:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DEzXaR05SusPPC1DvCjjsQFeMd90WYnfj1cUKYhegZE=;
-        b=Ro8BWxNHoJAvx5SGpTR7yXMmlpv09d9Nj0eJZjJSW3/ZEazepb0uXgN9ztasMc+Cll
-         dVA3pJPtNyAV8yMVsPb1/TtSYV000KqkVbzrwx5tu0Q0nqTqgcGh2iHU07/c5xTFUmBy
-         0svc7agcaOFDVVa7bbpvCq9uugf0iFY7YMvlWhCk73OJx4Wm7GVU2U8hyKeNKg6qXqYk
-         G+Zt+bZVSrnmatVQNw02P5i7Mhfk+BYH2ekpfHjDxoJ6U2csb921an3zMk1NGtAa9ImR
-         Lbft66T1ISERPELJc1zb4cC/QzgDS9y9Do+HZCFR/bk4kWbwzvzjUw0DJQ2jq2DNQkOf
-         MHjA==
+        bh=RdgbNuhnuI8HvGFss/JHz5QrLG7sfZSeSJMIaBHo/bk=;
+        b=QJVTqSRdqqHcybqhGKd2Rfv9F2xEWixeuwVkVGwpshvwk/g848tUi0Tnis3ZZPWjWV
+         6Uy+gztl/cYhIirToJICkm5iwqJYu/Uk85Q15oUO6TjGoexpBWWIy1trXUCg7Ynh46Ku
+         t/Qkd/tQhXlzuF43Oqd24cCfB/nMbl3CCCqJFaU/U1CWygEnXA+1F2esIadvmGjC2o1e
+         MBGndlLA5y0/4A6mQ9+piQKENLzl3YM0lVIF3lZdPskfaTS8IuqVw2espMWsccbBEfc2
+         oiGb/P7q7J9IzWau5/7x0jw+TWoH2Nvpo0RxUUMKnuArv9rj1EMfl2khyTzwD+VxJHLj
+         R0pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DEzXaR05SusPPC1DvCjjsQFeMd90WYnfj1cUKYhegZE=;
-        b=b5K3x/npjshxScV78Q7tqyfHTthh992vsBuFe+2WBWtJriCPOQywzZLP4dWUsDtjqM
-         nh2lkm/VR7p0++QKjRwPJPQ/lsFwkSoQJo+l/q+BcdU8HrEKiSDbfiY4KpxUQR0w/VmZ
-         rg51E1m/L8lqFsVZpC6fY2YKeGc/4SHhGI2dep8jKXK3Wx/TckFA1NvMDXTi4IokvMXM
-         62KnI9zGomF4SkWkoRqb54PBcd8fPz375vJizLEPTKQm7BOQRqWOPlDmxV31GABuwQyP
-         xT/4G1S80+Z9TgPpCeajDy7hKXn8H0X05g02UDzdxXpYynLApdSKU9gtwQlDqdZyJ0/u
-         +Asg==
-X-Gm-Message-State: AO0yUKXL7g7t+JrSsx7+4jzg19frCjC923VD6ZBfhbMZo8eFadQjb9Oz
-	U+wMILH2vl7VpfiNULTaih1QuA==
+        bh=RdgbNuhnuI8HvGFss/JHz5QrLG7sfZSeSJMIaBHo/bk=;
+        b=09WD9TSP7wu2dLXU8JEohkKb58iuVLCbh9+g32lQwkRgn6Q5NYQmOrew3gAbmm0BvP
+         Lqez/aP6zbqX5rmfwAYQT1vLZbuVNzVGxcXR4fLhB5Vxt82u376AoPslRjUyxHOuvXw+
+         2SyxBxcutJtdblD890aDafwIHFnSwADCTgy2AgcnO2XYPNyPoHE7xW5TmckN5+Dsy59b
+         8nl70YLWh1rs4+iPyg4KO3gZ20Nl+VGRB/N+e85dIlmNOnrZC+dtp1uHdVSpwFLCivgb
+         627nNon6Fy5fiTLWTdbryJxneTv1frKzqwVxebDIi2h/56c2dNr3bTirCqEcwtpH1Gt6
+         562A==
+X-Gm-Message-State: AO0yUKVLkjUsNgkKOjqmX2coX4HHu1E1lNGe5aicVssSk41yT/q9TR0/
+	BYKODvMvb2cHq5FCYnOk64fuPw==
 X-Google-Smtp-Source: 
- AK7set/w5TMutzbY7TMwqS2Sdy2AZrf0aaxC5Vh9Ec926w/x34Wooj0jRJGk5yU9H7y61AKa3/HnVA==
-X-Received: by 2002:a5d:6dd2:0:b0:2c4:b152:9ae with SMTP id
- d18-20020a5d6dd2000000b002c4b15209aemr1704298wrz.31.1675945696476;
-        Thu, 09 Feb 2023 04:28:16 -0800 (PST)
+ AK7set/t5oKzjlWyATb/30pIVAqCDe9grRBKvQ8EXy0hhIFD0gb2WbEgVKamQN6iPJkux3DL11JsNQ==
+X-Received: by 2002:a5d:4806:0:b0:2c3:ea6b:ef83 with SMTP id
+ l6-20020a5d4806000000b002c3ea6bef83mr11677540wrq.12.1675945701608;
+        Thu, 09 Feb 2023 04:28:21 -0800 (PST)
 Received: from localhost.localdomain ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- o8-20020a5d58c8000000b002c3f0a4ce98sm1134763wrf.98.2023.02.09.04.28.15
+ o8-20020a5d58c8000000b002c3f0a4ce98sm1134763wrf.98.2023.02.09.04.28.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Feb 2023 04:28:15 -0800 (PST)
+        Thu, 09 Feb 2023 04:28:20 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 1/8] ASoC: qcom: q6apm-lpass-dai: unprepare stream if its
- already prepared
-Date: Thu,  9 Feb 2023 12:27:59 +0000
-Message-Id: <20230209122806.18923-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 5/8] ASoC: codecs: lpass: register mclk after runtime pm
+Date: Thu,  9 Feb 2023 12:28:03 +0000
+Message-Id: <20230209122806.18923-6-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20230209122806.18923-1-srinivas.kandagatla@linaro.org>
 References: <20230209122806.18923-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 5QPJKAWXOZWZJVLMMHGXKDI7RU5KFQIC
-X-Message-ID-Hash: 5QPJKAWXOZWZJVLMMHGXKDI7RU5KFQIC
+Message-ID-Hash: W42NEK6ORAWDOJEOL4HUGSHX2QZDJQI3
+X-Message-ID-Hash: W42NEK6ORAWDOJEOL4HUGSHX2QZDJQI3
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5QPJKAWXOZWZJVLMMHGXKDI7RU5KFQIC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W42NEK6ORAWDOJEOL4HUGSHX2QZDJQI3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,34 +115,138 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-prepare callback can be called multiple times, so unprepare the stream
-if its already prepared.
+move mclk out registration after runtime pm is enabled so that the
+clk framework can resume the codec if it requires to enable the mclk out.
 
-Without this DSP is not happy to setting the params on a already
-prepared graph.
-
-Fixes: 9b4fe0f1cd79 ("ASoC: qdsp6: audioreach: add q6apm-dai support")
+Fixes: c96baa2949b2 ("ASoC: codecs: wsa-macro: add runtime pm support")
+Fixes: 72ad25eabda0 ("ASoC: codecs: va-macro: add runtime pm support")
+Fixes: 366ff79ed539 ("ASoC: codecs: rx-macro: add runtime pm support")
+Fixes: 1fb83bc5cf64 ("ASoC: codecs: tx-macro: add runtime pm support")
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6apm-lpass-dais.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/codecs/lpass-rx-macro.c  |  8 ++++----
+ sound/soc/codecs/lpass-tx-macro.c  |  8 ++++----
+ sound/soc/codecs/lpass-va-macro.c  | 20 ++++++++++----------
+ sound/soc/codecs/lpass-wsa-macro.c |  9 ++++-----
+ 4 files changed, 22 insertions(+), 23 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
-index ce9e5646d8f3..23d23bc6fbaa 100644
---- a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
-+++ b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
-@@ -127,6 +127,11 @@ static int q6apm_lpass_dai_prepare(struct snd_pcm_substream *substream, struct s
- 	int graph_id = dai->id;
- 	int rc;
+diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
+index a9ef9d5ffcc5..dd6970d5eb8d 100644
+--- a/sound/soc/codecs/lpass-rx-macro.c
++++ b/sound/soc/codecs/lpass-rx-macro.c
+@@ -3601,10 +3601,6 @@ static int rx_macro_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_fsgen;
  
-+	if (dai_data->is_port_started[dai->id]) {
-+		q6apm_graph_stop(dai_data->graph[dai->id]);
-+		dai_data->is_port_started[dai->id] = false;
+-	ret = rx_macro_register_mclk_output(rx);
+-	if (ret)
+-		goto err_clkout;
+-
+ 	ret = devm_snd_soc_register_component(dev, &rx_macro_component_drv,
+ 					      rx_macro_dai,
+ 					      ARRAY_SIZE(rx_macro_dai));
+@@ -3618,6 +3614,10 @@ static int rx_macro_probe(struct platform_device *pdev)
+ 	pm_runtime_set_active(dev);
+ 	pm_runtime_enable(dev);
+ 
++	ret = rx_macro_register_mclk_output(rx);
++	if (ret)
++		goto err_clkout;
++
+ 	return 0;
+ 
+ err_clkout:
+diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpass-tx-macro.c
+index 2ef62d6edc30..b9475ba55e20 100644
+--- a/sound/soc/codecs/lpass-tx-macro.c
++++ b/sound/soc/codecs/lpass-tx-macro.c
+@@ -2036,10 +2036,6 @@ static int tx_macro_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_fsgen;
+ 
+-	ret = tx_macro_register_mclk_output(tx);
+-	if (ret)
+-		goto err_clkout;
+-
+ 	ret = devm_snd_soc_register_component(dev, &tx_macro_component_drv,
+ 					      tx_macro_dai,
+ 					      ARRAY_SIZE(tx_macro_dai));
+@@ -2052,6 +2048,10 @@ static int tx_macro_probe(struct platform_device *pdev)
+ 	pm_runtime_set_active(dev);
+ 	pm_runtime_enable(dev);
+ 
++	ret = tx_macro_register_mclk_output(tx);
++	if (ret)
++		goto err_clkout;
++
+ 	return 0;
+ 
+ err_clkout:
+diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
+index b0b6cf29cba3..1623ba78ddb3 100644
+--- a/sound/soc/codecs/lpass-va-macro.c
++++ b/sound/soc/codecs/lpass-va-macro.c
+@@ -1524,16 +1524,6 @@ static int va_macro_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_mclk;
+ 
+-	ret = va_macro_register_fsgen_output(va);
+-	if (ret)
+-		goto err_clkout;
+-
+-	va->fsgen = clk_hw_get_clk(&va->hw, "fsgen");
+-	if (IS_ERR(va->fsgen)) {
+-		ret = PTR_ERR(va->fsgen);
+-		goto err_clkout;
+-	}
+-
+ 	if (va->has_swr_master) {
+ 		/* Set default CLK div to 1 */
+ 		regmap_update_bits(va->regmap, CDC_VA_TOP_CSR_SWR_MIC_CTL0,
+@@ -1560,6 +1550,16 @@ static int va_macro_probe(struct platform_device *pdev)
+ 	pm_runtime_set_active(dev);
+ 	pm_runtime_enable(dev);
+ 
++	ret = va_macro_register_fsgen_output(va);
++	if (ret)
++		goto err_clkout;
++
++	va->fsgen = clk_hw_get_clk(&va->hw, "fsgen");
++	if (IS_ERR(va->fsgen)) {
++		ret = PTR_ERR(va->fsgen);
++		goto err_clkout;
 +	}
 +
- 	/**
- 	 * It is recommend to load DSP with source graph first and then sink
- 	 * graph, so sequence for playback and capture will be different
+ 	return 0;
+ 
+ err_clkout:
+diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
+index 5cfe96f6e430..c0b86d69c72e 100644
+--- a/sound/soc/codecs/lpass-wsa-macro.c
++++ b/sound/soc/codecs/lpass-wsa-macro.c
+@@ -2451,11 +2451,6 @@ static int wsa_macro_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_fsgen;
+ 
+-	ret = wsa_macro_register_mclk_output(wsa);
+-	if (ret)
+-		goto err_clkout;
+-
+-
+ 	ret = devm_snd_soc_register_component(dev, &wsa_macro_component_drv,
+ 					      wsa_macro_dai,
+ 					      ARRAY_SIZE(wsa_macro_dai));
+@@ -2468,6 +2463,10 @@ static int wsa_macro_probe(struct platform_device *pdev)
+ 	pm_runtime_set_active(dev);
+ 	pm_runtime_enable(dev);
+ 
++	ret = wsa_macro_register_mclk_output(wsa);
++	if (ret)
++		goto err_clkout;
++
+ 	return 0;
+ 
+ err_clkout:
 -- 
 2.21.0
 
