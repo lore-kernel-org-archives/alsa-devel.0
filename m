@@ -4,41 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 081B2C61DA4
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 08:39:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 930C5C05027
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 08:40:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C75D0DED;
-	Thu,  9 Feb 2023 09:39:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C75D0DED
+	by alsa0.perex.cz (Postfix) with ESMTPS id C7E3FDF2;
+	Thu,  9 Feb 2023 09:39:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7E3FDF2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675931994;
-	bh=Z48QWxDK0/f4H4mIdRdsffvxbQuvYXuBe8k5FTV2gSg=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=cUdgCwnD/mqsQKg4CW0ytJ67qbZ/GaIDpg0d0nXYX2orqZdFgIyw1nHtKjTDNdqM6
-	 HWvZX+RLdMkVwIKhDDHh4iXBcsEpzhe7LgW2WSNWFoufTs4Y0RVZYCVU9bkZSvXWE6
-	 vga+Tb6jiENUF76Bfox22W9WJSctcwQ/rWiKpzzM=
+	s=default; t=1675932015;
+	bh=i1JlebRdfvjtPYpGWrkORFgqL1KTDHUIWHRch2IPV2g=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=fgGOIF9oR51lqQ6tm9ERUG1QwSkmhuAu29+p3nh6+QxRkykp7YCVeb4ML/sGikNoK
+	 cM2jsF7+SYAACKuiFajTYm8FmtDuDaeo560AYhHQEm9mUE3zBS5oXwCLKDeJbrNQtB
+	 KfNXwYtzWHQ8XZyMz6pF4vOl3ivOU8sU4Yjyobzs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 82D37F80534;
-	Thu,  9 Feb 2023 09:38:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6AF86F80544;
+	Thu,  9 Feb 2023 09:38:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 18DA6F8053B; Thu,  9 Feb 2023 09:37:54 +0100 (CET)
+	id 4C3D9F80534; Thu,  9 Feb 2023 09:37:56 +0100 (CET)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [46.235.227.172])
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B7248F800B8
+	by alsa1.perex.cz (Postfix) with ESMTPS id CB566F80086
 	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 09:37:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7248F800B8
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB566F80086
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=ainB73me
+ header.a=rsa-sha256 header.s=mail header.b=lEuC+l0G
 Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
  [82.11.51.62])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -46,18 +45,18 @@ Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: tanureal)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id AD18166020D9;
-	Thu,  9 Feb 2023 08:37:31 +0000 (GMT)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id A665066020B9;
+	Thu,  9 Feb 2023 08:37:30 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1675931851;
-	bh=Z48QWxDK0/f4H4mIdRdsffvxbQuvYXuBe8k5FTV2gSg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ainB73meId0Snp2ceGVk3McTGSmiawHmQ8uEZlcTi3Nqt+Z61mts8mXSngJbQJlLu
-	 tqljxBMz8OcU37DkNJma3aut/qdEkEAdzuKd0w70a5W+0SySBFs7UE1ZAhVuOZ9MnW
-	 WGPBv+M0KR1OFQq8bVQxIN24exxgYkmzUN3PpcwjR+ceO9KdPU+8VoUFK7JzAHYgWV
-	 IxIyC13ul+whWt8mdycP9/TaE4mGaZieY2NO09Q43wgYt72ISJX6vRj4/U+skHZxNn
-	 EDfZVN822TqbkJ1BlmCDTxGs+ITHUKp5JxAdJq7JVcMO9Hoy3ewqC1j09RCtYkEHPT
-	 Y9lAALYUlDJRg==
+	s=mail; t=1675931850;
+	bh=i1JlebRdfvjtPYpGWrkORFgqL1KTDHUIWHRch2IPV2g=;
+	h=From:To:Cc:Subject:Date:From;
+	b=lEuC+l0Gd9iUjwyIouDp2TRfXK4SQadLKVZyPT9EizOYzYc6WFYqLK8KK82fbR+iw
+	 KtspcEarrHXGk2eBaJ2SpeB1EUI0IoqSd6FVt80+1KfduyvIsVnCjA9Cqjmo8Pwys7
+	 qpMGoFv564+Txpe4UUvuV9xhPlfM6mOR1nPZGCG0leoZZdArMeWNLktCosmQ5sMEjX
+	 L2Soe5EJ5XBQVWejYFs36jYwxm4m66sZF/d9boS2/MhGrE3xJWCUfTFAEdBM0O+BA6
+	 rouR/D2ZwDRKzH7O2DShWNPq42BPoH7etr6Squuq5IZ53R1DOXVQaKRNX4EYkP5n9q
+	 A/cPUtIHBqHSg==
 From: Lucas Tanure <lucas.tanure@collabora.com>
 To: David Rhodes <david.rhodes@cirrus.com>,
 	Charles Keepax <ckeepax@opensource.cirrus.com>,
@@ -67,16 +66,14 @@ To: David Rhodes <david.rhodes@cirrus.com>,
 	Rob Herring <robh+dt@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v4 3/4] ALSA: cs35l41: Add shared boost feature
-Date: Thu,  9 Feb 2023 08:37:25 +0000
-Message-Id: <20230209083726.1337150-4-lucas.tanure@collabora.com>
+Subject: [PATCH v4 0/4] Add CS35L41 shared boost feature
+Date: Thu,  9 Feb 2023 08:37:22 +0000
+Message-Id: <20230209083726.1337150-1-lucas.tanure@collabora.com>
 X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230209083726.1337150-1-lucas.tanure@collabora.com>
-References: <20230209083726.1337150-1-lucas.tanure@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: IIFYJOIGVNCYTFORKL4INA3XO2SPJWMY
-X-Message-ID-Hash: IIFYJOIGVNCYTFORKL4INA3XO2SPJWMY
+Message-ID-Hash: CPLPTSGGXHDT2YXII6WQ6IZFUI5ZZGPM
+X-Message-ID-Hash: CPLPTSGGXHDT2YXII6WQ6IZFUI5ZZGPM
 X-MailFrom: lucas.tanure@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IIFYJOIGVNCYTFORKL4INA3XO2SPJWMY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CPLPTSGGXHDT2YXII6WQ6IZFUI5ZZGPM/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,312 +98,50 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Shared boost allows two amplifiers to share a single boost circuit by
-communicating on the MDSYNC bus.
-The passive amplifier does not control the boost and receives data from
-the active amplifier.
+Valve's Steam Deck uses CS35L41 in shared boost mode, where both speakers
+share the boost circuit.
+Add this support in the shared lib, but for now, shared boost is not
+supported in HDA systems as would require BIOS changes.
 
-Shared Boost is not supported in HDA Systems.
 Based on David Rhodes shared boost patches.
 
-Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
----
- include/sound/cs35l41.h        | 13 +++++-
- sound/pci/hda/cs35l41_hda.c    |  6 +--
- sound/soc/codecs/cs35l41-lib.c | 73 +++++++++++++++++++++++++++++++++-
- sound/soc/codecs/cs35l41.c     | 27 ++++++++++++-
- sound/soc/codecs/cs35l41.h     |  1 +
- 5 files changed, 113 insertions(+), 7 deletions(-)
+Also, fix boost config overwriting in IRQ found in the review and do a
+small refactor of the code.
 
-diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
-index 9ac5918269a5..7239d943942c 100644
---- a/include/sound/cs35l41.h
-+++ b/include/sound/cs35l41.h
-@@ -11,6 +11,7 @@
- #define __CS35L41_H
- 
- #include <linux/regmap.h>
-+#include <linux/completion.h>
- #include <linux/firmware/cirrus/cs_dsp.h>
- 
- #define CS35L41_FIRSTREG		0x00000000
-@@ -677,6 +678,7 @@
- 
- #define CS35L36_PUP_DONE_IRQ_UNMASK	0x5F
- #define CS35L36_PUP_DONE_IRQ_MASK	0xBF
-+#define CS35L41_SYNC_EN_MASK		BIT(8)
- 
- #define CS35L41_AMP_SHORT_ERR		0x80000000
- #define CS35L41_BST_SHORT_ERR		0x0100
-@@ -686,6 +688,7 @@
- #define CS35L41_BST_DCM_UVP_ERR		0x80
- #define CS35L41_OTP_BOOT_DONE		0x02
- #define CS35L41_PLL_UNLOCK		0x10
-+#define CS35L41_PLL_LOCK		BIT(1)
- #define CS35L41_OTP_BOOT_ERR		0x80000000
- 
- #define CS35L41_AMP_SHORT_ERR_RLS	0x02
-@@ -705,6 +708,8 @@
- #define CS35L41_INT1_MASK_DEFAULT	0x7FFCFE3F
- #define CS35L41_INT1_UNMASK_PUP		0xFEFFFFFF
- #define CS35L41_INT1_UNMASK_PDN		0xFF7FFFFF
-+#define CS35L41_INT3_PLL_LOCK_SHIFT	1
-+#define CS35L41_INT3_PLL_LOCK_MASK	BIT(CS35L41_INT3_PLL_LOCK_SHIFT)
- 
- #define CS35L41_GPIO_DIR_MASK		0x80000000
- #define CS35L41_GPIO_DIR_SHIFT		31
-@@ -742,6 +747,11 @@
- enum cs35l41_boost_type {
- 	CS35L41_INT_BOOST,
- 	CS35L41_EXT_BOOST,
-+	CS35L41_SHD_BOOST_ACTV,
-+	CS35L41_SHD_BOOST_PASS,
-+
-+	// Not present in Binding Documentation, so no system should use this value.
-+	// This value is only used in CLSA0100 Laptop
- 	CS35L41_EXT_BOOST_NO_VSPK_SWITCH,
- };
- 
-@@ -891,6 +901,7 @@ int cs35l41_exit_hibernate(struct device *dev, struct regmap *regmap);
- int cs35l41_init_boost(struct device *dev, struct regmap *regmap,
- 		       struct cs35l41_hw_cfg *hw_cfg);
- bool cs35l41_safe_reset(struct regmap *regmap, enum cs35l41_boost_type b_type);
--int cs35l41_global_enable(struct regmap *regmap, enum cs35l41_boost_type b_type, int enable);
-+int cs35l41_global_enable(struct regmap *regmap, enum cs35l41_boost_type b_type, int enable,
-+			  struct completion *pll_lock);
- 
- #endif /* __CS35L41_H */
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index f7815ee24f83..38c0079ef303 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -515,13 +515,13 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
- 		break;
- 	case HDA_GEN_PCM_ACT_PREPARE:
- 		mutex_lock(&cs35l41->fw_mutex);
--		ret = cs35l41_global_enable(reg, cs35l41->hw_cfg.bst_type, 1);
-+		ret = cs35l41_global_enable(reg, cs35l41->hw_cfg.bst_type, 1, NULL);
- 		mutex_unlock(&cs35l41->fw_mutex);
- 		break;
- 	case HDA_GEN_PCM_ACT_CLEANUP:
- 		mutex_lock(&cs35l41->fw_mutex);
- 		regmap_multi_reg_write(reg, cs35l41_hda_mute, ARRAY_SIZE(cs35l41_hda_mute));
--		ret = cs35l41_global_enable(reg, cs35l41->hw_cfg.bst_type, 0);
-+		ret = cs35l41_global_enable(reg, cs35l41->hw_cfg.bst_type, 0, NULL);
- 		mutex_unlock(&cs35l41->fw_mutex);
- 		break;
- 	case HDA_GEN_PCM_ACT_CLOSE:
-@@ -673,7 +673,7 @@ static int cs35l41_runtime_suspend(struct device *dev)
- 	if (cs35l41->playback_started) {
- 		regmap_multi_reg_write(cs35l41->regmap, cs35l41_hda_mute,
- 				       ARRAY_SIZE(cs35l41_hda_mute));
--		cs35l41_global_enable(cs35l41->regmap, cs35l41->hw_cfg.bst_type, 0);
-+		cs35l41_global_enable(cs35l41->regmap, cs35l41->hw_cfg.bst_type, 0, NULL);
- 		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
- 				   CS35L41_AMP_EN_MASK, 0 << CS35L41_AMP_EN_SHIFT);
- 		if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
-diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
-index 04be71435491..4d6417ce70bb 100644
---- a/sound/soc/codecs/cs35l41-lib.c
-+++ b/sound/soc/codecs/cs35l41-lib.c
-@@ -1114,12 +1114,31 @@ static const struct reg_sequence cs35l41_reset_to_safe[] = {
- 	{ 0x00000040,			0x00000033 },
- };
- 
-+static const struct reg_sequence cs35l41_actv_seq[] = {
-+	/* SYNC_BST_CTL_RX_EN = 0; SYNC_BST_CTL_TX_EN = 1 */
-+	{CS35L41_MDSYNC_EN,        0x00001000},
-+	/* BST_CTL_SEL = CLASSH */
-+	{CS35L41_BSTCVRT_VCTRL2,    0x00000001},
-+};
-+
-+static const struct reg_sequence cs35l41_pass_seq[] = {
-+	/* SYNC_BST_CTL_RX_EN = 1; SYNC_BST_CTL_TX_EN = 0 */
-+	{CS35L41_MDSYNC_EN,        0x00002000},
-+	/* BST_EN = 0 */
-+	{CS35L41_PWR_CTRL2,        0x00003300},
-+	/* BST_CTL_SEL = MDSYNC */
-+	{CS35L41_BSTCVRT_VCTRL2,    0x00000002},
-+};
-+
- int cs35l41_init_boost(struct device *dev, struct regmap *regmap,
- 		       struct cs35l41_hw_cfg *hw_cfg)
- {
- 	int ret;
- 
- 	switch (hw_cfg->bst_type) {
-+	case CS35L41_SHD_BOOST_ACTV:
-+		regmap_multi_reg_write(regmap, cs35l41_actv_seq, ARRAY_SIZE(cs35l41_actv_seq));
-+		fallthrough;
- 	case CS35L41_INT_BOOST:
- 		ret = cs35l41_boost_config(dev, regmap, hw_cfg->bst_ind,
- 					   hw_cfg->bst_cap, hw_cfg->bst_ipk);
-@@ -1138,6 +1157,10 @@ int cs35l41_init_boost(struct device *dev, struct regmap *regmap,
- 		ret = regmap_update_bits(regmap, CS35L41_PWR_CTRL2, CS35L41_BST_EN_MASK,
- 					 CS35L41_BST_DIS_FET_OFF << CS35L41_BST_EN_SHIFT);
- 		break;
-+	case CS35L41_SHD_BOOST_PASS:
-+		ret = regmap_multi_reg_write(regmap, cs35l41_pass_seq,
-+					     ARRAY_SIZE(cs35l41_pass_seq));
-+		break;
- 	default:
- 		dev_err(dev, "Boost type %d not supported\n", hw_cfg->bst_type);
- 		ret = -EINVAL;
-@@ -1165,11 +1188,59 @@ bool cs35l41_safe_reset(struct regmap *regmap, enum cs35l41_boost_type b_type)
- }
- EXPORT_SYMBOL_GPL(cs35l41_safe_reset);
- 
--int cs35l41_global_enable(struct regmap *regmap, enum cs35l41_boost_type b_type, int enable)
-+int cs35l41_global_enable(struct regmap *regmap, enum cs35l41_boost_type b_type, int enable,
-+			  struct completion *pll_lock)
- {
- 	int ret;
-+	unsigned int gpio1_func, pad_control, pwr_ctrl1, pwr_ctrl3;
-+	struct reg_sequence cs35l41_mdsync_down_seq[] = {
-+		{CS35L41_PWR_CTRL3,		0},
-+		{CS35L41_GPIO_PAD_CONTROL,	0},
-+		{CS35L41_PWR_CTRL1,		0, 3000},
-+	};
-+	struct reg_sequence cs35l41_mdsync_up_seq[] = {
-+		{CS35L41_PWR_CTRL3,	0},
-+		{CS35L41_PWR_CTRL1,	0x00000000, 3000},
-+		{CS35L41_PWR_CTRL1,	0x00000001, 3000},
-+	};
- 
- 	switch (b_type) {
-+	case CS35L41_SHD_BOOST_ACTV:
-+	case CS35L41_SHD_BOOST_PASS:
-+		regmap_read(regmap, CS35L41_PWR_CTRL3, &pwr_ctrl3);
-+		regmap_read(regmap, CS35L41_GPIO_PAD_CONTROL, &pad_control);
-+
-+		pwr_ctrl3 &= ~CS35L41_SYNC_EN_MASK;
-+		pwr_ctrl1 = enable << CS35L41_GLOBAL_EN_SHIFT;
-+
-+		gpio1_func = enable ? CS35L41_GPIO1_MDSYNC : CS35L41_GPIO1_HIZ;
-+		gpio1_func <<= CS35L41_GPIO1_CTRL_SHIFT;
-+
-+		pad_control &= ~CS35L41_GPIO1_CTRL_MASK;
-+		pad_control |= gpio1_func & CS35L41_GPIO1_CTRL_MASK;
-+
-+		cs35l41_mdsync_down_seq[0].def = pwr_ctrl3;
-+		cs35l41_mdsync_down_seq[1].def = pad_control;
-+		cs35l41_mdsync_down_seq[2].def = pwr_ctrl1;
-+		ret = regmap_multi_reg_write(regmap, cs35l41_mdsync_down_seq,
-+					     ARRAY_SIZE(cs35l41_mdsync_down_seq));
-+		if (!enable)
-+			break;
-+
-+		if (!pll_lock)
-+			return -EINVAL;
-+
-+		ret = wait_for_completion_timeout(pll_lock, msecs_to_jiffies(1000));
-+		if (ret == 0) {
-+			ret = -ETIMEDOUT;
-+		} else {
-+			regmap_read(regmap, CS35L41_PWR_CTRL3, &pwr_ctrl3);
-+			pwr_ctrl3 |= CS35L41_SYNC_EN_MASK;
-+			cs35l41_mdsync_up_seq[0].def = pwr_ctrl3;
-+			ret = regmap_multi_reg_write(regmap, cs35l41_mdsync_up_seq,
-+						     ARRAY_SIZE(cs35l41_mdsync_up_seq));
-+		}
-+		break;
- 	case CS35L41_INT_BOOST:
- 		ret = regmap_update_bits(regmap, CS35L41_PWR_CTRL1, CS35L41_GLOBAL_EN_MASK,
- 					 enable << CS35L41_GLOBAL_EN_SHIFT);
-diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index c006364e5335..1624510d09c0 100644
---- a/sound/soc/codecs/cs35l41.c
-+++ b/sound/soc/codecs/cs35l41.c
-@@ -360,6 +360,7 @@ static void cs35l41_boost_enable(struct cs35l41_private *cs35l41, unsigned int e
- {
- 	switch (cs35l41->hw_cfg.bst_type) {
- 	case CS35L41_INT_BOOST:
-+	case CS35L41_SHD_BOOST_ACTV:
- 		enable = enable ? CS35L41_BST_EN_DEFAULT : CS35L41_BST_DIS_FET_OFF;
- 		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2, CS35L41_BST_EN_MASK,
- 				enable << CS35L41_BST_EN_SHIFT);
-@@ -455,6 +456,12 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
- 		ret = IRQ_HANDLED;
- 	}
- 
-+	if (status[2] & CS35L41_PLL_LOCK) {
-+		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS3, CS35L41_PLL_LOCK);
-+		complete(&cs35l41->pll_lock);
-+		ret = IRQ_HANDLED;
-+	}
-+
- done:
- 	pm_runtime_mark_last_busy(cs35l41->dev);
- 	pm_runtime_put_autosuspend(cs35l41->dev);
-@@ -492,10 +499,12 @@ static int cs35l41_main_amp_event(struct snd_soc_dapm_widget *w,
- 						cs35l41_pup_patch,
- 						ARRAY_SIZE(cs35l41_pup_patch));
- 
--		cs35l41_global_enable(cs35l41->regmap, cs35l41->hw_cfg.bst_type, 1);
-+		cs35l41_global_enable(cs35l41->regmap, cs35l41->hw_cfg.bst_type, 1,
-+				      &cs35l41->pll_lock);
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
--		cs35l41_global_enable(cs35l41->regmap, cs35l41->hw_cfg.bst_type, 0);
-+		cs35l41_global_enable(cs35l41->regmap, cs35l41->hw_cfg.bst_type, 0,
-+				      &cs35l41->pll_lock);
- 
- 		ret = regmap_read_poll_timeout(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
- 					       val, val &  CS35L41_PDN_DONE_MASK,
-@@ -802,6 +811,10 @@ static const struct snd_pcm_hw_constraint_list cs35l41_constraints = {
- static int cs35l41_pcm_startup(struct snd_pcm_substream *substream,
- 			       struct snd_soc_dai *dai)
- {
-+	struct cs35l41_private *cs35l41 = snd_soc_component_get_drvdata(dai->component);
-+
-+	reinit_completion(&cs35l41->pll_lock);
-+
- 	if (substream->runtime)
- 		return snd_pcm_hw_constraint_list(substream->runtime, 0,
- 						  SNDRV_PCM_HW_PARAM_RATE,
-@@ -1252,6 +1265,10 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
- 	/* Set interrupt masks for critical errors */
- 	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1,
- 		     CS35L41_INT1_MASK_DEFAULT);
-+	if (cs35l41->hw_cfg.bst_type == CS35L41_SHD_BOOST_PASS ||
-+	    cs35l41->hw_cfg.bst_type == CS35L41_SHD_BOOST_ACTV)
-+		regmap_update_bits(cs35l41->regmap, CS35L41_IRQ1_MASK3, CS35L41_INT3_PLL_LOCK_MASK,
-+				   0 << CS35L41_INT3_PLL_LOCK_SHIFT);
- 
- 	ret = devm_request_threaded_irq(cs35l41->dev, cs35l41->irq, NULL, cs35l41_irq,
- 					IRQF_ONESHOT | IRQF_SHARED | irq_pol,
-@@ -1275,6 +1292,8 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
- 	if (ret < 0)
- 		goto err;
- 
-+	init_completion(&cs35l41->pll_lock);
-+
- 	pm_runtime_set_autosuspend_delay(cs35l41->dev, 3000);
- 	pm_runtime_use_autosuspend(cs35l41->dev);
- 	pm_runtime_mark_last_busy(cs35l41->dev);
-@@ -1317,6 +1336,10 @@ void cs35l41_remove(struct cs35l41_private *cs35l41)
- 	pm_runtime_disable(cs35l41->dev);
- 
- 	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1, 0xFFFFFFFF);
-+	if (cs35l41->hw_cfg.bst_type == CS35L41_SHD_BOOST_PASS ||
-+	    cs35l41->hw_cfg.bst_type == CS35L41_SHD_BOOST_ACTV)
-+		regmap_update_bits(cs35l41->regmap, CS35L41_IRQ1_MASK3, CS35L41_INT3_PLL_LOCK_MASK,
-+				   1 << CS35L41_INT3_PLL_LOCK_SHIFT);
- 	kfree(cs35l41->dsp.system_name);
- 	wm_adsp2_remove(&cs35l41->dsp);
- 	cs35l41_safe_reset(cs35l41->regmap, cs35l41->hw_cfg.bst_type);
-diff --git a/sound/soc/codecs/cs35l41.h b/sound/soc/codecs/cs35l41.h
-index c85cbc1dd333..34d967d4372b 100644
---- a/sound/soc/codecs/cs35l41.h
-+++ b/sound/soc/codecs/cs35l41.h
-@@ -33,6 +33,7 @@ struct cs35l41_private {
- 	int irq;
- 	/* GPIO for /RST */
- 	struct gpio_desc *reset_gpio;
-+	struct completion pll_lock;
- };
- 
- int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *hw_cfg);
+Changes from V3:
+ - Fix wrong code sent
+ - Fix ISO C90 mixed declarations and code 
+
+Changes from V2:
+ - Drop External boost without VSPK Documentation
+ - Move Shared boost to use values 2 and 3
+ - Revert back to reg_sequence but reading the value first and only update
+the necessary bits
+ - Fix bug found by Intel kernel Test Robot
+
+Changes from V1:
+ - Fix Documentation patch subject
+ - New patch for External boost without VSPK Documentation
+ - New patch to fix boost IRQ overwriting issue
+ - New patch to refactor IRQ release error code
+ - reinit_completion on pcm_startup
+ - fix DRE switch overwriting
+ - return IRQ_HANDLED in PLL_LOCK case
+
+Lucas Tanure (4):
+  ASoC: cs35l41: Only disable internal boost
+  ASoC: cs35l41: Refactor error release code
+  ALSA: cs35l41: Add shared boost feature
+  ASoC: cs35l41: Document CS35l41 shared boost
+
+ .../bindings/sound/cirrus,cs35l41.yaml        |  10 +-
+ include/sound/cs35l41.h                       |  13 +-
+ sound/pci/hda/cs35l41_hda.c                   |   6 +-
+ sound/soc/codecs/cs35l41-lib.c                |  73 +++++++++-
+ sound/soc/codecs/cs35l41.c                    | 125 +++++++++---------
+ sound/soc/codecs/cs35l41.h                    |   1 +
+ 6 files changed, 157 insertions(+), 71 deletions(-)
+
 -- 
 2.39.1
 
