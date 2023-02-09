@@ -4,72 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDA69C636D6
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 18:39:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CAD6C636D3
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 18:39:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AAE6AA4D;
-	Thu,  9 Feb 2023 19:38:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAE6AA4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67CEAE74;
+	Thu,  9 Feb 2023 19:38:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67CEAE74
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675967949;
-	bh=KJFYdKEwIQ4c63KYJlEOv6bHkZ40qvZiPlbsQ4nPPMc=;
+	s=default; t=1675967964;
+	bh=HrpKAMSDmyqGpv909f4Wp0VRsW+bh5HO23xF+LPWN/I=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=s8pKiDLyHD2CTFbl5LdymHyiegp+C3EQ8AYOj/xTBxlvUwXtMnXFK6GFgG1rNPpjc
-	 AKoTw/t0ijDO2A2ZUWzOROllX1T83EDaI9rheOgVvNz9G8eT78jkYZJ07BwSg2CGpP
-	 TM+sISUe+b0qxPE6xx2IwV2i18hSkrI9n9duyWeM=
+	b=OqbYUGszQwUU1Xzr3oFVAlG2TtuAa2UH4ylfgMDwkyyxQ3jRT6ogHy54jT4QqafLi
+	 8rZ34haCCl9zvnboCj1iFadDGLF/EWeCQHrl3C9JxcWmRjbaeIUA1JMaKFTqtjsbKH
+	 19EsSGqtv6syo4P9fsWEsKvDALyNGRX4xd0notRg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42648F80558;
-	Thu,  9 Feb 2023 19:36:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32FFDF80567;
+	Thu,  9 Feb 2023 19:36:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4D7E1F80557; Thu,  9 Feb 2023 19:36:37 +0100 (CET)
+	id 9924DF80553; Thu,  9 Feb 2023 19:36:38 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 62633F8052D
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 19:36:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62633F8052D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4F824F80027
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 19:36:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F824F80027
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=keTcFSJD
+ header.s=k20201202 header.b=rfRQOYmO
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4FAB661B80;
-	Thu,  9 Feb 2023 18:36:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 141E7C433EF;
-	Thu,  9 Feb 2023 18:36:28 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id A29C961B7C;
+	Thu,  9 Feb 2023 18:36:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D511C4339C;
+	Thu,  9 Feb 2023 18:36:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1675967791;
-	bh=KJFYdKEwIQ4c63KYJlEOv6bHkZ40qvZiPlbsQ4nPPMc=;
+	s=k20201202; t=1675967785;
+	bh=HrpKAMSDmyqGpv909f4Wp0VRsW+bh5HO23xF+LPWN/I=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=keTcFSJDyJWxI188DJ9zkzk0OZOjkllBpCgxCYXP73ogRTdu2nl3DdKqYia3nQoj1
-	 66Hhmjr+RDnThjZW8oTuchniDteXnuiZ2HAxTdcU0Ex64GI5l5aYN9zzVPSWM8Du3n
-	 4RAeh+wrzhMCpCJZ/3ecw9TDOVrB0KjvKJRK/xigHzuJSv3gd4V+RsCfuseVEz6Blc
-	 qDToSqGR6x43J9rowSP6GW5Mw8HnILSWWZMNsFV4eqISMo/SN9R3JI6cdAUVERZSv4
-	 BhgUlCEl7SbxJQPmH6yFuERuSohBPngTSmBvOD4NABczjtlatlbL7JdhcywdPNb/wa
-	 YYeoCgfOoYc0w==
+	b=rfRQOYmO9XCI4v3FoSpeQjG36syBE8DO/87YATHQyQmZT0IdNLp5Rc1zJm90xs/Kc
+	 YV52OPC5GJNR+iIOEEXeCiTyT1Nc8KDyJ2VMfKlXhNPg/9E7fKMJ77lWw2zDzdAr/3
+	 Rvma0Hb/oJUoKVpwiTp5HB7v7ExxSDwGrOnkeKBJ37Q+xHmmfNsYJ/A0XwOpPAQZ/5
+	 0HQRIThufx+pKN6+PXEZyLZHw3v8IciFqzmiN0MmIX+jlq9gT+3WaAG9VkTjP9nsKz
+	 kQXf6cl6oNy0Bi2NkABP2oeA3tqSdzdEAJ2L4RByOLcsyr/E0BAi6FoAysC7OMuNA7
+	 nWKYcZJIhNO/A==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Herve Codina <herve.codina@bootlin.com>
-In-Reply-To: <20230206144904.91078-1-herve.codina@bootlin.com>
-References: <20230206144904.91078-1-herve.codina@bootlin.com>
-Subject: Re: [PATCH 0/3] Add the Infineon PEB2466 codec support
-Message-Id: <167596778880.879652.18301706233837933352.b4-ty@kernel.org>
-Date: Thu, 09 Feb 2023 18:36:28 +0000
+To: lgirdwood@gmail.com, shumingf@realtek.com
+In-Reply-To: <20230207090946.20659-1-shumingf@realtek.com>
+References: <20230207090946.20659-1-shumingf@realtek.com>
+Subject: Re: [PATCH] ASoC: rt712-sdca: Add RT712 SDCA driver for Jack and
+ Amp topology
+Message-Id: <167596778330.879652.10581871492810651320.b4-ty@kernel.org>
+Date: Thu, 09 Feb 2023 18:36:23 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.0
-Message-ID-Hash: FOFBVA7H3B7LMIY2ANJPU56T46YERHBT
-X-Message-ID-Hash: FOFBVA7H3B7LMIY2ANJPU56T46YERHBT
+Message-ID-Hash: VJJVPTRJ6W457JVZJFFH5MEUBFFGUDNK
+X-Message-ID-Hash: VJJVPTRJ6W457JVZJFFH5MEUBFFGUDNK
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -77,16 +74,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+CC: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, derek.fang@realtek.com, bard.liao@intel.com,
+ flove@realtek.com, pierre-louis.bossart@intel.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FOFBVA7H3B7LMIY2ANJPU56T46YERHBT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VJJVPTRJ6W457JVZJFFH5MEUBFFGUDNK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,15 +91,11 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 06 Feb 2023 15:49:01 +0100, Herve Codina wrote:
-> The Infineon PEB2466 codec is a programmable DSP-based four channels
-> codec with filters capabilities.
-> It also provides signals as GPIOs.
+On Tue, 07 Feb 2023 17:09:46 +0800, shumingf@realtek.com wrote:
+> This is the initial codec driver for rt712 SDCA (Jack+Amp topology).
+> The host should connect with rt712 SdW1 interface.
 > 
-> Best regards,
-> Herve Codina
 > 
-> [...]
 
 Applied to
 
@@ -111,12 +103,8 @@ Applied to
 
 Thanks!
 
-[1/3] dt-bindings: sound: Add the Infineon PEB2466 codec
-      commit: 4c03e952ad8688a28aed9b72fc48291240707c7d
-[2/3] ASoC: codecs: Add support for the Infineon PEB2466 codec
-      commit: 227f609c7c0e44f2103a8406ff9379ee1de3bc28
-[3/3] MAINTAINERS: add the Infineon PEB2466 codec entry
-      commit: 564972dbf85c0900521e6273b772fd7f0b720dd7
+[1/1] ASoC: rt712-sdca: Add RT712 SDCA driver for Jack and Amp topology
+      commit: 6c39710da75caabc5f459a3f73fbb7435b4000aa
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
