@@ -4,155 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 935EFC61DA4
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 12:02:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E46E3C61DA4
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 12:21:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22A44DEC;
-	Thu,  9 Feb 2023 13:01:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22A44DEC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 94CA6DEC;
+	Thu,  9 Feb 2023 13:20:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94CA6DEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675944168;
-	bh=Muq29iKv1HAF3XiA6W8PkRgH+kHNvsjX6nbJMnZhvUY=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=DfD392An00WBhIvfFsY508KEm16h5fhwjS8sVFknI3jgeRTWzd+sk9jwgOk+9m/fz
-	 Mn1vyxSuKhsUk57MEIda+R5iYg6KCJzJqPyKG/UxP9VKmWLnsr1cXelG6rAi0ugtHY
-	 xZ9uZx2xdI0/PsyC4HI5XSSPBFC54xKPQ8B2AOcs=
+	s=default; t=1675945283;
+	bh=Unuxrons6NJrQ8DcR5RnZB/8+VSzTMReCmwF3gNOM1w=;
+	h=Date:Subject:References:From:To:CC:List-Id:List-Archive:List-Help:
+	 List-Owner:List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=YdENrGbUidwm6/s0F/RA24TkltnFDa2UsFlgVFJKOgFBZp7bC1TpI7XnB8XquDn80
+	 eb2ThqQlzHmwyLOZLRrx1bY4Ljvb9qKwsthQ8Iguyg8h0+6flLMTq7A2g/cUgxZpuX
+	 6qUMKgl8A6IrF6LP/ajSfeL8OJjRvqqBR1H/WPnk=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6FEEF804F2;
-	Thu,  9 Feb 2023 13:01:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06BC8F800E4;
+	Thu,  9 Feb 2023 13:20:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3311FF800E4; Thu,  9 Feb 2023 13:01:04 +0100 (CET)
-Received: from repost01.tmes.trendmicro.eu (repost01.tmes.trendmicro.eu
- [18.185.115.6])
+	id 5A637F800E4; Thu,  9 Feb 2023 13:20:01 +0100 (CET)
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 17FB0F80027
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 13:00:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17FB0F80027
+	by alsa1.perex.cz (Postfix) with ESMTPS id 812CEF80027
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 13:19:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 812CEF80027
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=opensynergy.com header.i=@opensynergy.com
- header.a=rsa-sha256 header.s=TM-DKIM-20210503141657 header.b=gAf3TBFX
-Received: from 104.47.17.172_.trendmicro.com (unknown [172.21.191.62])
-	by repost01.tmes.trendmicro.eu (Postfix) with SMTP id AB7D310000C5F;
-	Thu,  9 Feb 2023 12:00:39 +0000 (UTC)
-X-TM-MAIL-RECEIVED-TIME: 1675944036.950000
-X-TM-MAIL-UUID: 91bccc04-e651-4047-b4d7-0445c28fc6f2
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (unknown
- [104.47.17.172])
-	by repre01.tmes.trendmicro.eu (Trend Micro Email Security) with ESMTPS id
- E8393100003AE;
-	Thu,  9 Feb 2023 12:00:36 +0000 (UTC)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=US+KPmOV5NwaJPiTeJ3EEf60bLR1tGmpWYNpdsgNNMMdwZ4zcl2/zw01bKKd6r8V+Y+J3OlBX/jMoHn9erwtRiTfQ+lWEARl578IRaQN4PNfddkHwFg/SSqFfzKGyy2KLMrHD70dPd1A+tmLjb4iEMNakytONxi7ZxgmrRJQEJ5595yy6c47as/hcrZbF9m05edcv+fhcoxn7iS5N6HRzP3SFdI5lY2cC0MgVw2G2CX101ryYpJgaIDE01Tc4iNBUnfOnVppZNXkger8Pg6AhKhNmRY5i8iEQrnOGmfMsVebQ0Cwaipa5L+OZhvTxKtw0bTj2akdg7Xv4g1HHlpbvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CZ02oTACz2KcVlvqyYQqq224B+q7XX5jKoyPuhODcXk=;
- b=ZLp+IgfGn3tBWAUqM0YZV2MyAveUpfIATxBrPOPk49/W5/H/Aa5DVHmZ/KmG1CZaBf9XOZ3yrsfqmdULrl97hkGxvJXPVQjS5V9jaBgNy9HhNY0YyIbzg8r++HT3E+xmTLWDvrlKk3sqEroJuDEwtzUU5lqA98F+6c8+0FaqfPaM1bQN0qiUqdTUKD8evWMXr3AcHF6GTp4FQzuveuL14MeV8Xv0vuFlAgpOBO6anJN4A17uK+mM7peUHTXnl9QTDt4M4aqmPKIDUR5r06gAajDdIE46E5am/GSNN989jGC+i6Ublk4+NtZJki+lUUkH6baQCq/JluaBZBt08tgEeA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 217.66.60.4) smtp.rcpttodomain=alsa-project.org
- smtp.mailfrom=opensynergy.com; dmarc=pass (p=none sp=none pct=100)
- action=none header.from=opensynergy.com; dkim=none (message not signed);
- arc=none
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 217.66.60.4)
- smtp.mailfrom=opensynergy.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=opensynergy.com;
-Received-SPF: Pass (protection.outlook.com: domain of opensynergy.com
- designates 217.66.60.4 as permitted sender) receiver=protection.outlook.com;
- client-ip=217.66.60.4; helo=SR-MAIL-03.open-synergy.com; pr=C
-From: Aiswarya Cyriac <aiswarya.cyriac@opensynergy.com>
-To: mst@redhat.com,
-	jasowang@redhat.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	virtualization@lists.linux-foundation.org,
-	virtio-dev@lists.oasis-open.org
-Subject: [RESEND PATCH 0/1] ALSA: virtio: add support for audio controls
-Date: Thu,  9 Feb 2023 12:59:15 +0100
-Message-Id: <20230209115916.917569-1-aiswarya.cyriac@opensynergy.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB8EUR05FT032:EE_|FR3P281MB1613:EE_
-X-MS-Office365-Filtering-Correlation-Id: a5865f2c-05dd-4726-4538-08db0a953fe8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	iYiVtna5hdSXuwxzqNDaveEgbGU7/28VMkZLFjZ1xhQmVBlOrJ5NKvDMQrHtkFxt7WC0YKcPDVjC1x0kscxJ9tY/2D1VW2tLV3IgHF3v1uzxmRcCn9GQ2oa4VOhfdhrUlB64AmirklHcYkozWGm9TGuHlH1jKlJCvUqFG2eaLVNGiwyIdOT7mYxT9OM09oTo1zBSBWO2D7dYiqczBgHUV1f+sW/9V21DWxO0oT0Eie1ZINiTTW+bXpr5KbULPljbTi9JXmGqsElcImuCHf1uhySxUg7Iyyy/O6mundRd137GE3KZykkx6hisVcCL7Aey7b+tO6AqF4UyxAfPADSbYxpBZORAzY2BzjVch7xUobBa7SEA0Tlpu2BUTVpji2GtjoqAIXaXBsBEre8JnOwQbrdOV4/qJZ8Y82zfRb4UGC2SeuvgTw8FuD6PDJgs2XQ98E2MqeD85oxtlJv5Fk6M1IlogG+MoahE/YrXUoT2opbzyNIBIr5P7Y0JcsyDkuJWj+4SNOpERA9Q5kboeTEKtPC4gXNi2WaZOS9PDYw4Et7UFZHICvMYNXnNxNPM4hwTbOsAqwZAXhqaqcplXZktZ7/r+55LmAkBXPpZpj878fQ89S0nEpevE0EjM8L8RihQ0tDJacwggvybKfZpURzqtRhmBKm0fpH5vukzdFXkxUlCSHMjI61VNWmFiDQ+5H5DPL6E7HTQZbGH+YTlAUAW1zHN0TUTW1aSm1rh4AzskQY=
-X-Forefront-Antispam-Report: 
-	CIP:217.66.60.4;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SR-MAIL-03.open-synergy.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(39840400004)(346002)(376002)(136003)(396003)(451199018)(36840700001)(46966006)(86362001)(36756003)(81166007)(36860700001)(186003)(70206006)(8936002)(41300700001)(42186006)(316002)(70586007)(5660300002)(4326008)(8676002)(82310400005)(40480700001)(44832011)(2906002)(966005)(336012)(478600001)(47076005)(2616005)(107886003)(1076003)(26005)(36900700001);DIR:OUT;SFP:1102;
-X-OriginatorOrg: opensynergy.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2023 12:00:34.0711
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- a5865f2c-05dd-4726-4538-08db0a953fe8
-X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=800fae25-9b1b-4edc-993d-c939c4e84a64;Ip=[217.66.60.4];Helo=[SR-MAIL-03.open-synergy.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	DB8EUR05FT032.eop-eur05.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: FR3P281MB1613
-X-TM-AS-ERS: 104.47.17.172-0.0.0.0
-X-TMASE-Version: StarCloud-1.3-9.0.1006-27436.006
-X-TMASE-Result: 10--2.278700-4.000000
-X-TMASE-MatchedRID: I6rpFm0lrcP5S+IvXI7mDfIq3+8DQd0oRpgtqnD1BD7+a1TrNm8OEcTv
-	CDkkT7+sVlW1V3SVSFT58HP6T5es/o+eiI05y0fp7pujb8urdzawQ8dOma+kqkmtW7dN/qcX76d
-	4tCBY3uWYL7Af4qgNyrwc7WEBS4b7WWj2fZGMdP9+yskgwrfsC30tCKdnhB58FMkUvzgg/cWX0L
-	n1to6aTkazPf1QyU1JjoczmuoPCq1RmM/kpAuKCvWCXnU6ITIJHFSvLlz2EMjN8WnBKlB3Gtosd
-	I0E3fVu
-X-TMASE-XGENCLOUD: 20d5ccd3-51b8-4965-8f4b-a5919edc87aa-0-0-200-0
-X-TM-Deliver-Signature: 99970238E759D8410FE01175CF601E5D
-X-TM-Addin-Auth: FYEoRHqsW7qiPPOA2CqAkSB3yzlybqZil5u9J228xJqlo5ViyBB7S1w+XU3
-	0hd1N/+hKruaw3/A8ZvFOEKLgT03xYTSP4XyYX+jMkCUqUfd5DCwKb/2DZOpqfdXrvTmAqK1PV3
-	dG0c7B1pJmWlkBQUJCMairN5BmQUmhRbNhCNE5hbyuJw0n4uoS/vYwK9UuvU+zyVDnEhz3gSWdl
-	TROsicjuHqMz7gWTU/1UpDVSScPl+TxJjjkd8g4Ltxjx5ETFR50zz61sq/X5jhv+Spuhzht/grR
-	G1XxxGhY6Fa+lA+ozWew2Npzhq85nP3moi0y.WG1v7treR4i4ZRLh69dhY6no4Bg0bGpcEjHlSv
-	HsDwyo9Y+AW0tB8Kt3B6KVm02u77DIUtLdltwZMZBt5iqEd0O+5qUk7BmGCuICzUJJOn07i/XaO
-	tL1qmzCuvcIKgwr9FuPoH/u3E5k84wQJ2A/Zaa9V0i+hcPLbdPnEMeWa3Tht0P1areCI0VjRj7/
-	eGpUdOBoOd0Oszl06htjWF14lObxhMwVuu8CCXr3v3lNgaDy+Svu/kTeE0ziSeDeUOVvXDbSeWN
-	zxqFK2006723E1lIidV/TKdFOel5Xh2//HUNsmlwP9EA8YUHHwKGY9SlSqsl/s5qARDol8vDVE+
-	tKtg==
-X-TM-Addin-ProductCode: EMS
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=opensynergy.com;
-	s=TM-DKIM-20210503141657; t=1675944039;
-	bh=Muq29iKv1HAF3XiA6W8PkRgH+kHNvsjX6nbJMnZhvUY=; l=1112;
-	h=From:To:Date;
-	b=gAf3TBFX9zCRgQpm6N2K248pznB33k1Gg3SVBJCo/hmWMjCti6X9AkQx3Hi/Su5LN
-	 qTKd//wIQ+AobsR/FuLXAlg3Uv4fNCuW2GtrwVH1oK9HLoGipX63HrpxyJGTnC+U/b
-	 kL5rmZSNyLIcoH1vsQsHD3TyuDiVTZqcVPwO5GtPyTCth3/bQBPqgCY4AghU01ZFAf
-	 x0vA/yV7Uc3koISI7K+GWt4reIrTba/tloTiRP3oUM8zDnWnDx4Az4gdoTCNib6/3I
-	 SCK8SGW3JQ5Vf5/PMy294wfZFPjdQYKpFAXqaMsCU4VMQItFpV3kE1CojFRLMA/3yk
-	 8qjdRo1uKTzHg==
-Message-ID-Hash: MWCKQWKZHOHCXUKMRRN7EXIP42UMFQRO
-X-Message-ID-Hash: MWCKQWKZHOHCXUKMRRN7EXIP42UMFQRO
-X-MailFrom: Aiswarya.Cyriac@opensynergy.com
+ unprotected) header.d=gmx.de header.i=@gmx.de header.a=rsa-sha256
+ header.s=s31663417 header.b=FfkOLBB7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1675945191; bh=z8bwNhCUGeo7HQMuGnZOYygW88x7K5ZdXPD502CqYDc=;
+	h=X-UI-Sender-Class:Date:Subject:References:From:To:Cc;
+	b=FfkOLBB74M9KcmEHAtitkhn8MMpEh9s32SOgl210eXEiWNWNSg4k7FTjGRv3al4Iy
+	 R1ToRZClD2ZMu96hi1cg6DX+MNyFtN36ZNVhio34p6fJ46pTkkGJAwr9hS3TrWuSA0
+	 4nFXkewZvnig6rTI0qwAcDZyT2IEPFKVXN5+4iOTwqTiiuG1PuzeoLoIiOllKF7zUO
+	 6+mF9rDDwwWuvwlZW7xoUS5mtkX0MS0JZKn52RdvL5Eqlu9DFBfFcb8ZMdKR1Qgsp4
+	 0jeYLHSFIO+GsuO75QQr4uWrT5WeTN0vn2EkgUR1JcgDSLOiV5G7c1JYpZX2ErSeNT
+	 GqQ0obkse6egA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.0.66] ([77.20.255.105]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M8ygY-1pTxWT0L38-006BUd; Thu, 09
+ Feb 2023 13:19:51 +0100
+Date: Thu, 09 Feb 2023 13:19:49 +0100
+Subject: Re:Motu 896Mk3Hybrid dump
+X-Priority: 3
+Message-ID: 
+ <dthyo67qd7oj-30ctll-vrg1evnr7efht4ec6d-vumue675livm-arck14-npbh32-o2k9duez9ilsuaqtqxlx8623-kq6ura-pddtnlaydil563o5b0waa3tw-27ybk4y6e3x5-nxupxe-wmtcs3-6w8h10.1675945189061@email.android.com>
+References: 
+ <clpqss6u2nl2-tqmbic2pqf4x-fl7n8ufasb45-1to1x7160p65-86skuflc32uf-b435ds-2dqjqzzi2x9r-n26ssw-jjzxq0-aeknhb-drcr4x44iip67z8kfz-gayyzivnj1e3-exbx9z-ayuv2umcdyh1.1675078615418@email.android.com>
+ <Y9fD0Nzg+bwKsDEZ@workstation>
+ <63DF98FE.2060604@gmx.de>
+ <Y+BXPeHLp+qoKJcv@workstation>
+ <rbih9oyihq4crt3olr-o19zohmq8w36-ipfswlyypvjp5a8src-wcww6tahyaki-q7v6tx-j5yh81-vzf7pq-qn78wo-tww8q3-2h35ww-sk0mu3-7fsog578xr2k-jfqgg5-rvg5aw-mhtapx-pch8v9t7epgq.1675704644475@email.android.com>
+ <Y+JDwWHZAI8BRgu9@workstation>
+ <-9ql34ax08baa-u8njs4ojzl8k9qj8kusba8u-119dm2-3md8uqbmil7lckunia-ijl9m4n5xuto-76roex-ucqm5h-1c3kdf-5ahx5l1oy29o-no4drk-5wjqfzqre34j-p7he4b9rr95u-3lcrfi-9o14b8.1675872031471@email.android.com>
+ <Y+R3Trgr8gM7A1KC@workstation>
+From: "M. Armsby" <m.armsby@gmx.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+X-Provags-ID: V03:K1:tqC0duEp183SKDa2vp3o6s0sNH+sq1XDB68Xwe4ZOa/Sb9JVVzg
+ jNEqvk9t0c4HjN8f5ZxMqjZwU/1N8/vb6HeKM2CPZa/5+gzPPpT3omaSBRAQ3zOZ6lIP8Dj
+ fchIx3CkzUeVxD5ZG4JcooKP5u0SMf0o9BzWokLM/eiMqJrdWGBFSUnI8MxPxeilxwkt888
+ K6AxEdUD1aKVbI6qGELIg==
+UI-OutboundReport: notjunk:1;M01:P0:DkGrn8aFot8=;17h+/U/qH6G5JR01ew4fccbiD1c
+ SPOk7UCJ4zzA+eSU76mqgdZXvSpLzWJwVm5S1uEkhf65aH/G4RJIanaMlJkofWD77yM97+6tu
+ Mrh7qpZQJzhu7DIBhAu2tACQ2en0FHW/oEkoA9FqTmoBGTTjWMagS3G2ENP57YWr5tRG1DEPF
+ ofL1oi5DHEHHrWYNjnb/WQKXi4GG9zNSLQAkv27C4kBCca3d2Bkw+Ftu7LvGI92oNzUFX56EJ
+ C9YN+Sp5VM7CbJ7S/ciVsFiE3rJ7Hao77nyzRLedJtnIqXvt7EkzFtSVir+SpsWupkr3T7zTt
+ B3jptQYGJ58F9e0ElqzptkyEmmMsPGSyxOYMDdioazFqJXgYunFxoHAPJdE9Kns6EeZoejZdg
+ IYmTcD1pZHj5X8cjJCn5jA4LfbrWCAqiXLdbXiZeSQnOE+6QHEx+G957iG/PODM75LTUWRoW7
+ 4iOTg1m59Ca0CGg+5ivc9s862YTKPemY616i7Uj9pFEZf8hsD0ltyE+a48oHnMMXnUahsBVcH
+ 0kw/vQSGrKABLEPsU4+QimUDdCcTMSGydTPFjDL7jqKXIgDyFcMIJ2HzHpLc1nO/ekUh3w8Lh
+ /f3BTXmkHkgDAQ2w47oRx9ezi28UrbEeY9GItpAhKcU8Wqvqd7HP6VWKIeAVk/Sz+VzcgVUVy
+ TZgPp2EV0ZCPL233aLxV5VNWLazigw1L1gRgMN0t2IeVWBGpLvJ0QVc6a3C9vQMvoaKFYnGmW
+ Bxy8TxOnndJX9tpaFk0xpUby5NNDl6ol2XnROc95vk2tnZXqmxta2f7Zo+w5HCUxM7LI7Pxzn
+ ldsTvNYAwF88oQWSIqdvNQ2b+G7aUCArjYHd3PGgMC0sBNAUm4VurUEU7DNRI9qmmfDqo3SJP
+ tC7E2RfH7ScnP3KVba3TBcfE0Qr24fkMuj9XoldyVoMTLSBLKxneHb/neGn5qTpld7gB3eQR/
+ j80GOEeeayFA8L33qVYS40lJPfU=
+Message-ID-Hash: SLH7GNMJYW3E5V4BU7JCXDDAPSB6YDAR
+X-Message-ID-Hash: SLH7GNMJYW3E5V4BU7JCXDDAPSB6YDAR
+X-MailFrom: m.armsby@gmx.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Content-Filtered-By: Mailman/MimeDel 3.3.8
+CC: ALSA mail List <alsa-devel@alsa-project.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MWCKQWKZHOHCXUKMRRN7EXIP42UMFQRO/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SLH7GNMJYW3E5V4BU7JCXDDAPSB6YDAR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -161,34 +113,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-
-Implementation of support for audio controls in accordance with the
-extension of the virtio sound device specification[1] planned for
-virtio-v1.3-cs01.
-
-Design　of virtual audio controls is based on and derived from ALSA
-audio controls. It allows the driver to perform all standard operations,
-such as reading and writing audio control value, as well as working with
-metadata (represented in the TLV form).
-
-The driver part was tested on top of the Linux 5.10 kernel.
-
-As a device part was used OpenSynergy proprietary implementation.
-
-[1] https://lists.oasis-open.org/archives/virtio-comment/202104/msg00013.html
-
-Anton Yakovlev (1):
-  ALSA: virtio: add support for audio controls
-
- include/uapi/linux/virtio_snd.h | 154 +++++++++++
- sound/virtio/Makefile           |   1 +
- sound/virtio/virtio_card.c      |  21 ++
- sound/virtio/virtio_card.h      |  22 ++
- sound/virtio/virtio_kctl.c      | 464 ++++++++++++++++++++++++++++++++
- 5 files changed, 662 insertions(+)
- create mode 100644 sound/virtio/virtio_kctl.c
-
--- 
-2.25.1
-
+ICAgT2ssIHNvcnJ5IGZvciBwaWN0dXJlcy4KICAgSSB3aWxsIHRyeSB0aGUgaW5zdHJ1Y3Rpb25z
+IHlvdSBnYXZlIG1lIGluIHRoZSBjb21pbmcgZGF5cy4KICAgVGhlIEFyY2ggc3lzdGVtIChtYW5q
+YXJvKSBJJ20gdXNpbmcgaXMgdGhlIG9ubHkgb25lIEkga25vdyB0aGF0IHVzZXMgYQogICBjdXJy
+ZW50IEtlcm5lbHMgYW5kIG5vdyBydW5zIHZlcnkgd2VsbCB3aXRoIEFMU0EgRmlyZXdpcmUuCiAg
+IFNob3VsZCBJIHVzZSBhIGJldHRlciBEaXN0cm8/CiAgIFJlZ2FyZHMsCiAgIE1hcnRpbgoKICAg
+ICBJbmRlZWQsIGl0IGlzIGluY29udmVuaWVudCBpbiB0aGUgdmlldyBvZiB1c2VyLiBCdXQgbGV0
+IHVzIGZvY3VzIG9uCiAgICAgaG93CiAgICAgdG8gc3VwcG9ydCBNT1RVIDg5NiBtazMgaHlicmlk
+IGF0IHByZXNlbnQsIHNpbmNlIHRoZSBpc3N1ZSBpbmNsdWRlcwogICAgIG1hbnkKICAgICB0ZWNo
+bmljYWwgdG9waWNzOyBlYWNoIGFwcGxpY2F0aW9uLCBkcml2ZXJzIGluIGtlcm5lbCwgbGlicmFy
+aWVzLAogICAgIGFuZAogICAgIGludGVyZmFjZSBiZXR3ZWVuIHRoZW0uCiAgICAgPiBTZWUgUGlj
+dHVyZXMgdGFrZW4gZnJvbSBSZWFwZXIgaW4gV2luZG93cyAxMAogICAgIFdvdWxkIEkgYXNrIHlv
+dSB0byBhdm9pZCBhdHRhY2hpbmcgcGljdHVyZXMgdG8gb3BlbiBtYWlsaW5nIGxpc3Q/CiAgICAg
+VGhlCiAgICAgbWVzc2FnZSB3aXRoIG1hbnkgZmlsZXMgaXMgZWFzaWx5IGp1ZGdlZCBhcyBzcGFt
+IG1lc3NhZ2UuCiAgICAgUmVnYXJkcwogICAgIFRha2FzaGkgU2FrYW1vdG8K
