@@ -4,70 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93D79C61DA4
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 18:38:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC6F6C636D6
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 18:38:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CBD0AE9;
-	Thu,  9 Feb 2023 19:37:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CBD0AE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 255CBDEE;
+	Thu,  9 Feb 2023 19:37:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 255CBDEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675967890;
-	bh=gnD//W34OrUvbABbvW+58k084t2zW9miLQ6Hz78yBtk=;
+	s=default; t=1675967894;
+	bh=P3p3nQT18iB5KgEcNBU65v36D9Khuq9im6IUZT0tPnk=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=GOm2L6VCz6cGtu8HrXKlOhSyzPJroYhLYwB7hw5cSP4bFGi8TWOUEhN+FXt7V4VYr
-	 x4AB2BqiFV5VRXzzo+6QehQV0oI+ViSNOgepghRWxd/DAM8q3+/7q6GkRfRTOIsFYe
-	 8HDIKPiWKcloAEfkQWT+RCCFOsJl3K7Ism8P/rMg=
+	b=p2ozMNYuoMRGwVAoQu4EvJmUabclODzaH+SdSpWLd6hMIfZR6+slxErqpdXOyrCju
+	 2YUED5C51B6NCXcG+EeMpnY5aHAnuzbWIe9+Xl6+FN0czxk0rJLYdRTeb+oDpfqXnd
+	 DvWhciCll8oebT6L+/AkseuV/D3M4BqaychlBEw4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3BD1FF80527;
+	by alsa1.perex.cz (Postfix) with ESMTP id D1E14F80534;
 	Thu,  9 Feb 2023 19:36:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C4EB3F80027; Thu,  9 Feb 2023 19:36:26 +0100 (CET)
+	id D8245F80269; Thu,  9 Feb 2023 19:36:28 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id ACBE5F80027
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 19:36:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACBE5F80027
+	by alsa1.perex.cz (Postfix) with ESMTPS id A1ABDF80094
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 19:36:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1ABDF80094
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Y99RGxMM
+ header.s=k20201202 header.b=g4QVe/AL
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 997F461B8C;
-	Thu,  9 Feb 2023 18:36:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78952C4339B;
-	Thu,  9 Feb 2023 18:36:15 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 5642F61B80;
+	Thu,  9 Feb 2023 18:36:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7170AC433A0;
+	Thu,  9 Feb 2023 18:36:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1675967777;
-	bh=gnD//W34OrUvbABbvW+58k084t2zW9miLQ6Hz78yBtk=;
+	s=k20201202; t=1675967783;
+	bh=P3p3nQT18iB5KgEcNBU65v36D9Khuq9im6IUZT0tPnk=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Y99RGxMMLmwEE/1uq+gZEE4On5g8ggvWvb6OJfvXzj2y4kjbEuG8dGJqJbZnM4dje
-	 lrQT3x4X3CiSkU9KCUEs04EoJkIkykf3rRgcbo4xFyYfbzpP6yI5bWeV/+b2V17zBQ
-	 JVlktiDz23fMHMRnl47RSUVtb2WFdeCwL5JwhMbZR0vTPQHULEPLtiUo4+Wlr8fudv
-	 9S6Uh+KwXsGm5lkly4ft1KNE8KeJHSCg74kyc/RV0Adb6flwXQQgduoyeLw7cp/WGZ
-	 LFeAV7BeP2j++Q741q6eeWt+GzKO/2v2DeaN2K3Z3/KxDg165iplw4Q0CgHBr4Y1rN
-	 +2FQQD28lOodw==
+	b=g4QVe/AL+TAnwYSc4YCElFAX9/qtKqwrG4JP7XSpkKtpZ0I9LT4qG9bL4aXXLJbq8
+	 eRBDxsuxoY0f62lDt1ch+Ibo8jEZFHvJa+D5y+eQ9FSQfvOLGdWtZtuIjokErjp6wJ
+	 wz/nGbHugKD1YcE54LEqlcY9wOB3yVUlxkoFYiPu2AtJMguc427UKhClTkjOubsyFt
+	 r047BhG1c2gcN5lbraZNdxyrX86DIsxDWn+dJnYMMX2meZshLszMTqZnR3mvE4CLEj
+	 VjzAzJrK9B1rmuM7vMkmG8glUBul1tB+PfeL+zd3KKG8iDdiQ6NL08WUYOJbtdISu6
+	 TWkSqu/I3JZvg==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230209142123.17193-1-peter.ujfalusi@linux.intel.com>
-References: <20230209142123.17193-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: SOF: ipc4-topology: Configure copier sink
- format
-Message-Id: <167596777514.879652.5974777454589984102.b4-ty@kernel.org>
-Date: Thu, 09 Feb 2023 18:36:15 +0000
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230206180805.6621-1-krzysztof.kozlowski@linaro.org>
+References: <20230206180805.6621-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [RESEND PATCH 1/3] ASoC: dt-bindings: qcom,wsa881x: Allow
+ sound-name-prefix
+Message-Id: <167596778018.879652.6223173953232819619.b4-ty@kernel.org>
+Date: Thu, 09 Feb 2023 18:36:20 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.0
-Message-ID-Hash: NWHS62MB7JXARIEUZIPS6HVH7PFCZT5E
-X-Message-ID-Hash: NWHS62MB7JXARIEUZIPS6HVH7PFCZT5E
+Message-ID-Hash: YS744ZQIDHWZR6XUYFHPVNBVFYBBXF2Z
+X-Message-ID-Hash: YS744ZQIDHWZR6XUYFHPVNBVFYBBXF2Z
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -75,15 +83,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- yung-chuan.liao@linux.intel.com, rander.wang@intel.com
+CC: Rob Herring <robh@kernel.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NWHS62MB7JXARIEUZIPS6HVH7PFCZT5E/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YS744ZQIDHWZR6XUYFHPVNBVFYBBXF2Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,15 +98,12 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 09 Feb 2023 16:21:21 +0200, Peter Ujfalusi wrote:
-> In a course of creating complicated topologies where multiple output pins of a
-> copier is enabled, we have discovered that additional configuration needs to be
-> sent to the firmware to make the use cases working.
+On Mon, 06 Feb 2023 19:08:03 +0100, Krzysztof Kozlowski wrote:
+> Reference common DAI properties to fix:
 > 
-> Regards,
-> Peter
+>   sdm845-db845c.dtb: speaker@0,1: 'sound-name-prefix' does not match any of the regexes: 'pinctrl-[0-9]+'
 > 
-> [...]
+> 
 
 Applied to
 
@@ -108,10 +111,12 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: SOF: ipc4-topology: Print queue IDs in error
-      commit: b796ff3bf03fd8c838ddd2709ded15865e4af4a4
-[2/2] ASoC: SOF: ipc4-topology: set copier sink format
-      commit: 11f605633b33cdffd4ffe3b8e1e89590e8f521e7
+[1/3] ASoC: dt-bindings: qcom,wsa881x: Allow sound-name-prefix
+      commit: edcda9a605bbfdd78d8d79043e01544d8b742828
+[2/3] ASoC: dt-bindings: qcom,wcd934x: Describe slim-ifc-dev
+      commit: 636caca3583923b75fa538bc43ce57801fb8a1a2
+[3/3] ASoC: dt-bindings: qcom,wcd934x: Allow usage as IFD device
+      commit: 7ee35b6b099ce6b51c6ac249d19b5b405f8e825d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
