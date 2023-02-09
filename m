@@ -4,93 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A42BFC05027
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 12:31:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC6CDC61DA4
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 12:31:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9340A4F;
-	Thu,  9 Feb 2023 13:30:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9340A4F
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6569DEF;
+	Thu,  9 Feb 2023 13:30:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6569DEF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675945867;
-	bh=v6Ei/DGd8STPCLpkspoLjewoCE/cAzIfR+wVaXXJDnM=;
+	s=default; t=1675945887;
+	bh=pGzWtbvQZB0rOpQxea9glsEGzbqvHMGMaNKREC7kf8Q=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=O2ZpHO8F48OynfFstqC7qLzAtttDj0RHe5Ncw7HO+lG6wMMRQIBsJLi/q0gVNRAH+
-	 R4Csx63P3MM7rGJzWdyx5xCS0CMBVpi2tAPDyHWPt42/QZqulQl0VTj4xuZrCP2pnh
-	 ApF1FNl92EL6W7NccgfFsBGJP45zM3yc3SlhQn0s=
+	b=KOgOzsQR0P40VHS+V7eebxaDISRpuEd+CpDmFE2PKRVpTdZBxztrZM7QORfm7mVnK
+	 I72grYpWzer6/f7xyoSax7sOm9RveokE8JBxqGH1dQr7g9lk7KXCEan+MaOayufoiq
+	 5ufLNh+MBLZ0Dmhw/T/Ryb2+mwEsEiU5PASZo+Aw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03E25F8051F;
-	Thu,  9 Feb 2023 13:29:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56726F80558;
+	Thu,  9 Feb 2023 13:29:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 59759F80534; Thu,  9 Feb 2023 13:28:43 +0100 (CET)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
+	id 9FB43F8052D; Thu,  9 Feb 2023 13:28:45 +0100 (CET)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
+ [IPv6:2a00:1450:4864:20::42b])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 376D2F800E4
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 13:28:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 376D2F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id E924BF804F2
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 13:28:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E924BF804F2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=Ijtf7zQN
-Received: by mail-wm1-x32d.google.com with SMTP id
- j32-20020a05600c1c2000b003dc4fd6e61dso3737218wms.5
+ header.s=google header.b=b9oygx40
+Received: by mail-wr1-x42b.google.com with SMTP id a2so1590384wrd.6
         for <alsa-devel@alsa-project.org>;
- Thu, 09 Feb 2023 04:28:21 -0800 (PST)
+ Thu, 09 Feb 2023 04:28:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=J3ujPUkgM6w68JhuQ2OFyntLPvFx3aPpntFnJGR14xI=;
-        b=Ijtf7zQNxQutfacxe7HkX1oZwBtdY0P9UgLSO8dhkP1U65kpJZJY7R1MMUyp6Ct4cD
-         GLrKvMf4G8iPDCfLMR3KxkIlon3eS1Xk3zCwH/xrQT4V7rasfXSqO1W9FkT8JEwYG5nd
-         vP7HU4m5aPIf3u7g0VK2aJyRsrCAVSO4I+7yaTvQlY0tkYTo78Ug18ERnMuYx1t6mXeu
-         oZSmmi80y0kP5uJ/f6Ek8Y6oJvaacva8e/X8jBsI6J64GMqPq05H2DDCLPvWcgtqAy3k
-         aFstUecHk+zX1c8eISshFvZUTetRV1WcNNIufuMsAsWp1bBovtK8eJZpyD4YQlqFQtJO
-         IJQA==
+        bh=UO9KJ117wKTOcC1OUg42YLZeFHf8xivZIBaKC4T0Ad8=;
+        b=b9oygx40ldJo9LFfDxM4Te1QkbTRduIx2zVwXgfZZlw016ZqVoksT+wtVCQGunMT/J
+         YjodNFj2pecm6xkX981QtGhSTVyPtLanuH3r+sXdTB0TcDZQXKNnaADCcOvzTHa1zj3j
+         V7qtW6UTFA/Mvp2VPbdzlI+7RerZUVvD7KCQVI1+oGwJXR7PbS8vQHPluqqNvJFDTzfa
+         6IOKqlub03jLkeKyoriFs6RIlaiTw8DuJAXG7RTu1jPbqEiLgZJ5OsCvS4MpoqI5HtFD
+         qUh650ZARW0ePEJKErVcUo5+dpXXAoMX4YWQumZOAGbsUKlt7Qg1PYPPPYu5I001/x28
+         RhDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=J3ujPUkgM6w68JhuQ2OFyntLPvFx3aPpntFnJGR14xI=;
-        b=N3rdfkN6paWAzAABEs6mPYlNnyw67etesfofeByh71IRfmfRFSpQuB8Z11Y9buhdFV
-         jdbmNKK+LVhrykEG/9my42Wm74EeBTwIghknv45xCWKV/Zugwn11GL9+kXPEXiuSo420
-         813+XYrBtVGkFgpEYalkJ1V09zGL0JIjcdoIyzYo7tWHqYMpxHkj1K6sIAnbjp/WEOy/
-         M983BRzi59xTrCJRbISUjYUMnxAhcbEbPn8sVJ2xtT23i3Hdx/nbXIPFhmCeKX5x9KXr
-         bozIg+nfjOtuAwhtG74rZYqiQ+/ArgzoFXZ7Zb89pRgHGxCfHI83WdRe5+2T6j94V1iW
-         jSeQ==
-X-Gm-Message-State: AO0yUKUV9IrpMsV30fvqk2irCW/ZKw1RdFrNNi68IrscSIIpdj83LNVM
-	oZBnxoKF165Sc3S062SGpV6i0c2Qw2YwDpYH
+        bh=UO9KJ117wKTOcC1OUg42YLZeFHf8xivZIBaKC4T0Ad8=;
+        b=qU2rCnS1fCt8/8NtPM/hHRO5nyb6j3XSfVstdDrGAn7O5SnknE5aUDlNFix30kWw/o
+         RYALqzs/Fqwv5cZs/agTgDhw4LCYoWcSD8Ikuq5bXnGpVWQG52mszCJeTOKygreWTFO3
+         ewvNIQZmYJgRLUZod0LZ5iqdehriy7P20q2I7/kbAtvmLqMiOcSwxStE4sIud0RbeXns
+         Pwk6Xe7PEZPoqrVZCMOWVFTB77uhZZER4J4IaiTNNss2Gn860Z+82N4ibGGgX3lkTP1e
+         OYI2gQoWI0E7r1gFCG4VcBTa3kUdlkJA/LnHVO8pKiIKI3HExV+OYrAzjr/N4LXg5pPU
+         6dFQ==
+X-Gm-Message-State: AO0yUKWZYgWMXDMkSel2cZCbzpXnPKomgU766Ab3aelvZffPSZL4XGvl
+	Y3zMXwSpu433p9Tfu0VdrI0oEA==
 X-Google-Smtp-Source: 
- AK7set9AiscBQz9AMthG4OOWx2uMKBCI8kOz4peYLZo64rXsBho4JKZR0is3unV5v8eYp3JKFk2CzA==
-X-Received: by 2002:a05:600c:511e:b0:3df:9858:c038 with SMTP id
- o30-20020a05600c511e00b003df9858c038mr5876254wms.13.1675945700377;
-        Thu, 09 Feb 2023 04:28:20 -0800 (PST)
+ AK7set+GamFipe+c8M1q6TLNFOo8pih+b9q2zXK486+LOUgbGRpEhNTbdAQDHNOVoUgWjdpJAGbahg==
+X-Received: by 2002:a5d:4350:0:b0:2bf:d137:9945 with SMTP id
+ u16-20020a5d4350000000b002bfd1379945mr9561299wrr.51.1675945705398;
+        Thu, 09 Feb 2023 04:28:25 -0800 (PST)
 Received: from localhost.localdomain ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- o8-20020a5d58c8000000b002c3f0a4ce98sm1134763wrf.98.2023.02.09.04.28.19
+ o8-20020a5d58c8000000b002c3f0a4ce98sm1134763wrf.98.2023.02.09.04.28.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Feb 2023 04:28:19 -0800 (PST)
+        Thu, 09 Feb 2023 04:28:24 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 4/8] ASoC: qcom: audioreach: fix ADSP ready check
-Date: Thu,  9 Feb 2023 12:28:02 +0000
-Message-Id: <20230209122806.18923-5-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 8/8] ASoC: codecs: lpass: remove not so useful verbose log
+Date: Thu,  9 Feb 2023 12:28:06 +0000
+Message-Id: <20230209122806.18923-9-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20230209122806.18923-1-srinivas.kandagatla@linaro.org>
 References: <20230209122806.18923-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MG5BY5UYZ6HED44RRIFB4ELVTDPIVKHM
-X-Message-ID-Hash: MG5BY5UYZ6HED44RRIFB4ELVTDPIVKHM
+Message-ID-Hash: LN6ESC7WVPVKWS3HTXEEF2FJJTEB24I6
+X-Message-ID-Hash: LN6ESC7WVPVKWS3HTXEEF2FJJTEB24I6
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -107,7 +106,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MG5BY5UYZ6HED44RRIFB4ELVTDPIVKHM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LN6ESC7WVPVKWS3HTXEEF2FJJTEB24I6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,54 +115,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-currently q6apm_is_adsp_ready() will only return the cached value of
-previous result. If we are unlucky and previous result is not-ready
-then the caller will always get not-ready flag.
-
-This is not correct, we should query the dsp of its current state in
-irrespective of previous reported state.
-
-Fixes: 47bc8cf60e92 ("ASoC: qdsp6: audioreach: Add ADSP ready check")
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6apm.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ sound/soc/codecs/lpass-rx-macro.c  | 4 +---
+ sound/soc/codecs/lpass-wsa-macro.c | 4 +---
+ 2 files changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6apm.c b/sound/soc/qcom/qdsp6/q6apm.c
-index 8a7dfd27d3c5..994c9e823a88 100644
---- a/sound/soc/qcom/qdsp6/q6apm.c
-+++ b/sound/soc/qcom/qdsp6/q6apm.c
-@@ -145,14 +145,6 @@ static void q6apm_put_audioreach_graph(struct kref *ref)
- 	kfree(graph);
- }
+diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
+index e0d891a67a12..a73a7d7a1c0a 100644
+--- a/sound/soc/codecs/lpass-rx-macro.c
++++ b/sound/soc/codecs/lpass-rx-macro.c
+@@ -2296,10 +2296,8 @@ static int rx_macro_mux_put(struct snd_kcontrol *kcontrol,
  
--bool q6apm_is_adsp_ready(void)
--{
--	if (g_apm && g_apm->state)
--		return true;
--
--	return false;
--}
--EXPORT_SYMBOL_GPL(q6apm_is_adsp_ready);
+ 	aif_rst = rx->rx_port_value[widget->shift];
+ 	if (!rx_port_value) {
+-		if (aif_rst == 0) {
+-			dev_err(component->dev, "%s:AIF reset already\n", __func__);
++		if (aif_rst == 0)
+ 			return 0;
+-		}
+ 		if (aif_rst > RX_MACRO_AIF4_PB) {
+ 			dev_err(component->dev, "%s: Invalid AIF reset\n", __func__);
+ 			return 0;
+diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
+index e6b85f3692ac..ba7480f3831e 100644
+--- a/sound/soc/codecs/lpass-wsa-macro.c
++++ b/sound/soc/codecs/lpass-wsa-macro.c
+@@ -1856,10 +1856,8 @@ static int wsa_macro_rx_mux_put(struct snd_kcontrol *kcontrol,
  
- static int q6apm_get_apm_state(struct q6apm *apm)
- {
-@@ -169,6 +161,15 @@ static int q6apm_get_apm_state(struct q6apm *apm)
- 	return apm->state;
- }
- 
-+bool q6apm_is_adsp_ready(void)
-+{
-+	if (g_apm)
-+		return q6apm_get_apm_state(g_apm);
-+
-+	return false;
-+}
-+EXPORT_SYMBOL_GPL(q6apm_is_adsp_ready);
-+
- static struct audioreach_module *__q6apm_find_module_by_mid(struct q6apm *apm,
- 						    struct audioreach_graph_info *info,
- 						    uint32_t mid)
+ 	aif_rst = wsa->rx_port_value[widget->shift];
+ 	if (!rx_port_value) {
+-		if (aif_rst == 0) {
+-			dev_err(component->dev, "%s: AIF reset already\n", __func__);
++		if (aif_rst == 0)
+ 			return 0;
+-		}
+ 		if (aif_rst >= WSA_MACRO_RX_MAX) {
+ 			dev_err(component->dev, "%s: Invalid AIF reset\n", __func__);
+ 			return 0;
 -- 
 2.21.0
 
