@@ -4,92 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC6CDC61DA4
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 12:31:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AD9DC61DA4
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 12:31:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B6569DEF;
-	Thu,  9 Feb 2023 13:30:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6569DEF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22A54E8A;
+	Thu,  9 Feb 2023 13:30:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22A54E8A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675945887;
-	bh=pGzWtbvQZB0rOpQxea9glsEGzbqvHMGMaNKREC7kf8Q=;
+	s=default; t=1675945896;
+	bh=qOsSHZNBDQ1YoRgx0/aTwcAO7uF24uQ0GIM4s5B4VOg=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KOgOzsQR0P40VHS+V7eebxaDISRpuEd+CpDmFE2PKRVpTdZBxztrZM7QORfm7mVnK
-	 I72grYpWzer6/f7xyoSax7sOm9RveokE8JBxqGH1dQr7g9lk7KXCEan+MaOayufoiq
-	 5ufLNh+MBLZ0Dmhw/T/Ryb2+mwEsEiU5PASZo+Aw=
+	b=Gvar8Q1elCr2c/TqATUwNWvBPgAmsrcfTv8hijhashhf0ZYTRPiwnQP2HnDJ+/3Wq
+	 zlBJwjzhBZD1bYOyy/XoFFgpdNQIADA+CvDhOlDZGwDQaCEmnq4Xsudrl8wXJKhVUs
+	 ofcbi24A5ejVCRJT9/NIxHFEhoIJ1JPpYxjf2Re4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56726F80558;
-	Thu,  9 Feb 2023 13:29:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 77EEEF80567;
+	Thu,  9 Feb 2023 13:29:09 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9FB43F8052D; Thu,  9 Feb 2023 13:28:45 +0100 (CET)
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
- [IPv6:2a00:1450:4864:20::42b])
+	id 48981F80551; Thu,  9 Feb 2023 13:28:52 +0100 (CET)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
+ [IPv6:2a00:1450:4864:20::42a])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E924BF804F2
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 13:28:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E924BF804F2
+	by alsa1.perex.cz (Postfix) with ESMTPS id DEE4EF8018A
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 13:28:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEE4EF8018A
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=b9oygx40
-Received: by mail-wr1-x42b.google.com with SMTP id a2so1590384wrd.6
+ header.s=google header.b=Ro8BWxNH
+Received: by mail-wr1-x42a.google.com with SMTP id m14so1560586wrg.13
         for <alsa-devel@alsa-project.org>;
- Thu, 09 Feb 2023 04:28:26 -0800 (PST)
+ Thu, 09 Feb 2023 04:28:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UO9KJ117wKTOcC1OUg42YLZeFHf8xivZIBaKC4T0Ad8=;
-        b=b9oygx40ldJo9LFfDxM4Te1QkbTRduIx2zVwXgfZZlw016ZqVoksT+wtVCQGunMT/J
-         YjodNFj2pecm6xkX981QtGhSTVyPtLanuH3r+sXdTB0TcDZQXKNnaADCcOvzTHa1zj3j
-         V7qtW6UTFA/Mvp2VPbdzlI+7RerZUVvD7KCQVI1+oGwJXR7PbS8vQHPluqqNvJFDTzfa
-         6IOKqlub03jLkeKyoriFs6RIlaiTw8DuJAXG7RTu1jPbqEiLgZJ5OsCvS4MpoqI5HtFD
-         qUh650ZARW0ePEJKErVcUo5+dpXXAoMX4YWQumZOAGbsUKlt7Qg1PYPPPYu5I001/x28
-         RhDA==
+        bh=DEzXaR05SusPPC1DvCjjsQFeMd90WYnfj1cUKYhegZE=;
+        b=Ro8BWxNHoJAvx5SGpTR7yXMmlpv09d9Nj0eJZjJSW3/ZEazepb0uXgN9ztasMc+Cll
+         dVA3pJPtNyAV8yMVsPb1/TtSYV000KqkVbzrwx5tu0Q0nqTqgcGh2iHU07/c5xTFUmBy
+         0svc7agcaOFDVVa7bbpvCq9uugf0iFY7YMvlWhCk73OJx4Wm7GVU2U8hyKeNKg6qXqYk
+         G+Zt+bZVSrnmatVQNw02P5i7Mhfk+BYH2ekpfHjDxoJ6U2csb921an3zMk1NGtAa9ImR
+         Lbft66T1ISERPELJc1zb4cC/QzgDS9y9Do+HZCFR/bk4kWbwzvzjUw0DJQ2jq2DNQkOf
+         MHjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UO9KJ117wKTOcC1OUg42YLZeFHf8xivZIBaKC4T0Ad8=;
-        b=qU2rCnS1fCt8/8NtPM/hHRO5nyb6j3XSfVstdDrGAn7O5SnknE5aUDlNFix30kWw/o
-         RYALqzs/Fqwv5cZs/agTgDhw4LCYoWcSD8Ikuq5bXnGpVWQG52mszCJeTOKygreWTFO3
-         ewvNIQZmYJgRLUZod0LZ5iqdehriy7P20q2I7/kbAtvmLqMiOcSwxStE4sIud0RbeXns
-         Pwk6Xe7PEZPoqrVZCMOWVFTB77uhZZER4J4IaiTNNss2Gn860Z+82N4ibGGgX3lkTP1e
-         OYI2gQoWI0E7r1gFCG4VcBTa3kUdlkJA/LnHVO8pKiIKI3HExV+OYrAzjr/N4LXg5pPU
-         6dFQ==
-X-Gm-Message-State: AO0yUKWZYgWMXDMkSel2cZCbzpXnPKomgU766Ab3aelvZffPSZL4XGvl
-	Y3zMXwSpu433p9Tfu0VdrI0oEA==
+        bh=DEzXaR05SusPPC1DvCjjsQFeMd90WYnfj1cUKYhegZE=;
+        b=b5K3x/npjshxScV78Q7tqyfHTthh992vsBuFe+2WBWtJriCPOQywzZLP4dWUsDtjqM
+         nh2lkm/VR7p0++QKjRwPJPQ/lsFwkSoQJo+l/q+BcdU8HrEKiSDbfiY4KpxUQR0w/VmZ
+         rg51E1m/L8lqFsVZpC6fY2YKeGc/4SHhGI2dep8jKXK3Wx/TckFA1NvMDXTi4IokvMXM
+         62KnI9zGomF4SkWkoRqb54PBcd8fPz375vJizLEPTKQm7BOQRqWOPlDmxV31GABuwQyP
+         xT/4G1S80+Z9TgPpCeajDy7hKXn8H0X05g02UDzdxXpYynLApdSKU9gtwQlDqdZyJ0/u
+         +Asg==
+X-Gm-Message-State: AO0yUKXL7g7t+JrSsx7+4jzg19frCjC923VD6ZBfhbMZo8eFadQjb9Oz
+	U+wMILH2vl7VpfiNULTaih1QuA==
 X-Google-Smtp-Source: 
- AK7set+GamFipe+c8M1q6TLNFOo8pih+b9q2zXK486+LOUgbGRpEhNTbdAQDHNOVoUgWjdpJAGbahg==
-X-Received: by 2002:a5d:4350:0:b0:2bf:d137:9945 with SMTP id
- u16-20020a5d4350000000b002bfd1379945mr9561299wrr.51.1675945705398;
-        Thu, 09 Feb 2023 04:28:25 -0800 (PST)
+ AK7set/w5TMutzbY7TMwqS2Sdy2AZrf0aaxC5Vh9Ec926w/x34Wooj0jRJGk5yU9H7y61AKa3/HnVA==
+X-Received: by 2002:a5d:6dd2:0:b0:2c4:b152:9ae with SMTP id
+ d18-20020a5d6dd2000000b002c4b15209aemr1704298wrz.31.1675945696476;
+        Thu, 09 Feb 2023 04:28:16 -0800 (PST)
 Received: from localhost.localdomain ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- o8-20020a5d58c8000000b002c3f0a4ce98sm1134763wrf.98.2023.02.09.04.28.24
+ o8-20020a5d58c8000000b002c3f0a4ce98sm1134763wrf.98.2023.02.09.04.28.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Feb 2023 04:28:24 -0800 (PST)
+        Thu, 09 Feb 2023 04:28:15 -0800 (PST)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 8/8] ASoC: codecs: lpass: remove not so useful verbose log
-Date: Thu,  9 Feb 2023 12:28:06 +0000
-Message-Id: <20230209122806.18923-9-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 1/8] ASoC: qcom: q6apm-lpass-dai: unprepare stream if its
+ already prepared
+Date: Thu,  9 Feb 2023 12:27:59 +0000
+Message-Id: <20230209122806.18923-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20230209122806.18923-1-srinivas.kandagatla@linaro.org>
 References: <20230209122806.18923-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LN6ESC7WVPVKWS3HTXEEF2FJJTEB24I6
-X-Message-ID-Hash: LN6ESC7WVPVKWS3HTXEEF2FJJTEB24I6
+Message-ID-Hash: 5QPJKAWXOZWZJVLMMHGXKDI7RU5KFQIC
+X-Message-ID-Hash: 5QPJKAWXOZWZJVLMMHGXKDI7RU5KFQIC
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -106,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LN6ESC7WVPVKWS3HTXEEF2FJJTEB24I6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5QPJKAWXOZWZJVLMMHGXKDI7RU5KFQIC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,44 +116,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+prepare callback can be called multiple times, so unprepare the stream
+if its already prepared.
+
+Without this DSP is not happy to setting the params on a already
+prepared graph.
+
+Fixes: 9b4fe0f1cd79 ("ASoC: qdsp6: audioreach: add q6apm-dai support")
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/lpass-rx-macro.c  | 4 +---
- sound/soc/codecs/lpass-wsa-macro.c | 4 +---
- 2 files changed, 2 insertions(+), 6 deletions(-)
+ sound/soc/qcom/qdsp6/q6apm-lpass-dais.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
-index e0d891a67a12..a73a7d7a1c0a 100644
---- a/sound/soc/codecs/lpass-rx-macro.c
-+++ b/sound/soc/codecs/lpass-rx-macro.c
-@@ -2296,10 +2296,8 @@ static int rx_macro_mux_put(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
+index ce9e5646d8f3..23d23bc6fbaa 100644
+--- a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
++++ b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
+@@ -127,6 +127,11 @@ static int q6apm_lpass_dai_prepare(struct snd_pcm_substream *substream, struct s
+ 	int graph_id = dai->id;
+ 	int rc;
  
- 	aif_rst = rx->rx_port_value[widget->shift];
- 	if (!rx_port_value) {
--		if (aif_rst == 0) {
--			dev_err(component->dev, "%s:AIF reset already\n", __func__);
-+		if (aif_rst == 0)
- 			return 0;
--		}
- 		if (aif_rst > RX_MACRO_AIF4_PB) {
- 			dev_err(component->dev, "%s: Invalid AIF reset\n", __func__);
- 			return 0;
-diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
-index e6b85f3692ac..ba7480f3831e 100644
---- a/sound/soc/codecs/lpass-wsa-macro.c
-+++ b/sound/soc/codecs/lpass-wsa-macro.c
-@@ -1856,10 +1856,8 @@ static int wsa_macro_rx_mux_put(struct snd_kcontrol *kcontrol,
- 
- 	aif_rst = wsa->rx_port_value[widget->shift];
- 	if (!rx_port_value) {
--		if (aif_rst == 0) {
--			dev_err(component->dev, "%s: AIF reset already\n", __func__);
-+		if (aif_rst == 0)
- 			return 0;
--		}
- 		if (aif_rst >= WSA_MACRO_RX_MAX) {
- 			dev_err(component->dev, "%s: Invalid AIF reset\n", __func__);
- 			return 0;
++	if (dai_data->is_port_started[dai->id]) {
++		q6apm_graph_stop(dai_data->graph[dai->id]);
++		dai_data->is_port_started[dai->id] = false;
++	}
++
+ 	/**
+ 	 * It is recommend to load DSP with source graph first and then sink
+ 	 * graph, so sequence for playback and capture will be different
 -- 
 2.21.0
 
