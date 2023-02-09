@@ -4,92 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 930C5C05027
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 08:40:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC157C61DA4
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Feb 2023 08:48:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7E3FDF2;
-	Thu,  9 Feb 2023 09:39:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7E3FDF2
+	by alsa0.perex.cz (Postfix) with ESMTPS id CF268850;
+	Thu,  9 Feb 2023 09:47:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF268850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1675932015;
-	bh=i1JlebRdfvjtPYpGWrkORFgqL1KTDHUIWHRch2IPV2g=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=fgGOIF9oR51lqQ6tm9ERUG1QwSkmhuAu29+p3nh6+QxRkykp7YCVeb4ML/sGikNoK
-	 cM2jsF7+SYAACKuiFajTYm8FmtDuDaeo560AYhHQEm9mUE3zBS5oXwCLKDeJbrNQtB
-	 KfNXwYtzWHQ8XZyMz6pF4vOl3ivOU8sU4Yjyobzs=
+	s=default; t=1675932519;
+	bh=htMEtkZfh2aHxTkQFyz4MdDl6h9cVVF28TAZD9p84hk=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=dIjdwLRc+efXz43a6rx1Ok8kGRtWaDdhl9fbhWjs/rBpV7nwnNKlCNxOtSVeiBSWH
+	 hOOThjdWDJpSNP8RUwvmrBgoez2kDRI0Vr8uOafw94ISaMXLYs8gdRmK+bHYGNgs9d
+	 iUEL5nsEwddg6OjsAaIOy9fL4JkVk00yNIY08O0c=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6AF86F80544;
-	Thu,  9 Feb 2023 09:38:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B6C6F800E4;
+	Thu,  9 Feb 2023 09:47:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4C3D9F80534; Thu,  9 Feb 2023 09:37:56 +0100 (CET)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	id 836C4F800E4; Thu,  9 Feb 2023 09:47:21 +0100 (CET)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
+ [IPv6:2a00:1450:4864:20::42f])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CB566F80086
-	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 09:37:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB566F80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3DE2DF80086
+	for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2023 09:47:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3DE2DF80086
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=lEuC+l0G
-Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
- [82.11.51.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	(Authenticated sender: tanureal)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id A665066020B9;
-	Thu,  9 Feb 2023 08:37:30 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1675931850;
-	bh=i1JlebRdfvjtPYpGWrkORFgqL1KTDHUIWHRch2IPV2g=;
-	h=From:To:Cc:Subject:Date:From;
-	b=lEuC+l0Gd9iUjwyIouDp2TRfXK4SQadLKVZyPT9EizOYzYc6WFYqLK8KK82fbR+iw
-	 KtspcEarrHXGk2eBaJ2SpeB1EUI0IoqSd6FVt80+1KfduyvIsVnCjA9Cqjmo8Pwys7
-	 qpMGoFv564+Txpe4UUvuV9xhPlfM6mOR1nPZGCG0leoZZdArMeWNLktCosmQ5sMEjX
-	 L2Soe5EJ5XBQVWejYFs36jYwxm4m66sZF/d9boS2/MhGrE3xJWCUfTFAEdBM0O+BA6
-	 rouR/D2ZwDRKzH7O2DShWNPq42BPoH7etr6Squuq5IZ53R1DOXVQaKRNX4EYkP5n9q
-	 A/cPUtIHBqHSg==
-From: Lucas Tanure <lucas.tanure@collabora.com>
-To: David Rhodes <david.rhodes@cirrus.com>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v4 0/4] Add CS35L41 shared boost feature
-Date: Thu,  9 Feb 2023 08:37:22 +0000
-Message-Id: <20230209083726.1337150-1-lucas.tanure@collabora.com>
-X-Mailer: git-send-email 2.39.1
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=M/IqiT5b
+Received: by mail-wr1-x42f.google.com with SMTP id a2so995733wrd.6
+        for <alsa-devel@alsa-project.org>;
+ Thu, 09 Feb 2023 00:47:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gNxrYafZPgwkI9Zs1VddIiODgFm8O0UYgQsUcqELM8E=;
+        b=M/IqiT5bfF2H2m7rp+kNBZYDXUMi6g0BSid0W4hQ+sVsYfyCr4xv0e+OcKt3THpg3D
+         aeF8u4euFYL3Vk97qTsryho5y//inzGHfXQAX4JAWC+SuQp6RWlCU8Q4cv/Wbh5Z1Oix
+         cZ4e9/PjUR3lczRKICPz5erR6N2wsJi97x9OzBqGBaUBesUhBaRhpQL1dr32PqTQ9nNM
+         YJqIkY1rAuP5eWX6ONuFl4x1aI0gRrjoWWDA5KAai6JiiHN7h7tkYDnOpza8g1SFSyL2
+         CZT55WZ/OsGr8sNNh17AgaKt4e9YIC64hOrd7zwWMILXYJgGM2u8IPaSIVfYUErSPinS
+         F0yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gNxrYafZPgwkI9Zs1VddIiODgFm8O0UYgQsUcqELM8E=;
+        b=ul+4cqe/MkRm5tpjg7IHTdT9NNc1mFPOjKF0+OdyB2liipfsUKRMtYUHTeJig8rXa3
+         JJ01lHa8fcSH/P4Ez9mHD1Kr2sar4LFOUdn5xaGY9vvE8xo7zLL86ku6a+ZsTlwkSff1
+         /7caqLfC14Z5nMBABQp2C2RZIzy2giSVlpAt3FP5SwgeOvQGF6Mnl5xFh2ZT0haDiP30
+         ULgIxRe9lZ26+SkUA65xN2+XZ7W6sAms6d+wqQN9OIej2XHMoPm9aAPJ3bVDMztMPS+X
+         SsFTGtuu8gVJ41AC3i9lZVNdWz75k/1f+XtfozOZhyBV/xt6TUOvWouidXFRmc7FL/2n
+         wYbQ==
+X-Gm-Message-State: AO0yUKXhYc+Z8yUjlUvVpZRusEBuOhXtHv6xc/4zAy3C6v1gMGIbPI/R
+	3mP8U0QO1bGN1iKMRaLXw3vdkg==
+X-Google-Smtp-Source: 
+ AK7set+CAKpxvDUCxsfDlhqJVlXOXj4uGBOiNFeNOcybsM4BZdQQKESjC9ggTPmEbdrpp99Z3EPGEw==
+X-Received: by 2002:adf:db88:0:b0:2bf:b92b:8a8a with SMTP id
+ u8-20020adfdb88000000b002bfb92b8a8amr9410439wri.7.1675932432804;
+        Thu, 09 Feb 2023 00:47:12 -0800 (PST)
+Received: from [192.168.1.109] ([178.197.216.144])
+        by smtp.gmail.com with ESMTPSA id
+ p3-20020adff203000000b002c3f6d7d5fesm682882wro.44.2023.02.09.00.47.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Feb 2023 00:47:12 -0800 (PST)
+Message-ID: <072724aa-2bf3-32a6-dee8-e74c74b01019@linaro.org>
+Date: Thu, 9 Feb 2023 09:47:11 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: CPLPTSGGXHDT2YXII6WQ6IZFUI5ZZGPM
-X-Message-ID-Hash: CPLPTSGGXHDT2YXII6WQ6IZFUI5ZZGPM
-X-MailFrom: lucas.tanure@collabora.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v2 2/2] ASoC: dt-bindings: renesas,rsnd.yaml: add R-Car
+ Gen4 support
+Content-Language: en-US
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>
+References: <87y1p7bpma.wl-kuninori.morimoto.gx@renesas.com>
+ <87v8kbbpl4.wl-kuninori.morimoto.gx@renesas.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <87v8kbbpl4.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: CEOFVGWTXTOS7J52UKTRB5Y2VP4JLZWS
+X-Message-ID-Hash: CEOFVGWTXTOS7J52UKTRB5Y2VP4JLZWS
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- kernel@collabora.com, Lucas Tanure <lucas.tanure@collabora.com>
+CC: Linux-DT <devicetree@vger.kernel.org>,
+ Linux-ALSA <alsa-devel@alsa-project.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CPLPTSGGXHDT2YXII6WQ6IZFUI5ZZGPM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CEOFVGWTXTOS7J52UKTRB5Y2VP4JLZWS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,50 +120,44 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Valve's Steam Deck uses CS35L41 in shared boost mode, where both speakers
-share the boost circuit.
-Add this support in the shared lib, but for now, shared boost is not
-supported in HDA systems as would require BIOS changes.
+On 09/02/2023 02:22, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> There are no compatible for "reg/reg-names" and "clock-name"
+> between previous R-Car series and R-Car Gen4.
+> 
+> "reg/reg-names" needs 3 categorize (for Gen1, for Gen2/Gen3, for Gen4),
+> therefore, use 3 if-then to avoid nested if-then-else.
+> 
+> Move "clock-name" property to under allOf to use if-then-else.
+> 
+> Link: https://lore.kernel.org/all/87zg9vk0ex.wl-kuninori.morimoto.gx@renesas.com/#r
+> Link: https://lore.kernel.org/all/87r0v2uvm7.wl-kuninori.morimoto.gx@renesas.com/#r
+> Link: https://lore.kernel.org/all/87r0v1t02h.wl-kuninori.morimoto.gx@renesas.com/#r
+> Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  .../bindings/sound/renesas,rsnd.yaml          | 80 +++++++++++++++----
+>  1 file changed, 65 insertions(+), 15 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+> index 12ccf29338d9..5fd6435f4873 100644
+> --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+> +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
+> @@ -99,20 +99,6 @@ properties:
+>      minItems: 1
+>      maxItems: 31
+>  
+> -  clock-names:
+> -    description: List of necessary clock names.
+> -    minItems: 1
+> -    maxItems: 31
 
-Based on David Rhodes shared boost patches.
+No improvements here. Your argument that you need to remove it to
+customize is not correct.
 
-Also, fix boost config overwriting in IRQ found in the review and do a
-small refactor of the code.
+https://elixir.bootlin.com/linux/v5.19-rc6/source/Documentation/devicetree/bindings/clock/samsung,exynos7-clock.yaml#L57
 
-Changes from V3:
- - Fix wrong code sent
- - Fix ISO C90 mixed declarations and code 
-
-Changes from V2:
- - Drop External boost without VSPK Documentation
- - Move Shared boost to use values 2 and 3
- - Revert back to reg_sequence but reading the value first and only update
-the necessary bits
- - Fix bug found by Intel kernel Test Robot
-
-Changes from V1:
- - Fix Documentation patch subject
- - New patch for External boost without VSPK Documentation
- - New patch to fix boost IRQ overwriting issue
- - New patch to refactor IRQ release error code
- - reinit_completion on pcm_startup
- - fix DRE switch overwriting
- - return IRQ_HANDLED in PLL_LOCK case
-
-Lucas Tanure (4):
-  ASoC: cs35l41: Only disable internal boost
-  ASoC: cs35l41: Refactor error release code
-  ALSA: cs35l41: Add shared boost feature
-  ASoC: cs35l41: Document CS35l41 shared boost
-
- .../bindings/sound/cirrus,cs35l41.yaml        |  10 +-
- include/sound/cs35l41.h                       |  13 +-
- sound/pci/hda/cs35l41_hda.c                   |   6 +-
- sound/soc/codecs/cs35l41-lib.c                |  73 +++++++++-
- sound/soc/codecs/cs35l41.c                    | 125 +++++++++---------
- sound/soc/codecs/cs35l41.h                    |   1 +
- 6 files changed, 157 insertions(+), 71 deletions(-)
-
--- 
-2.39.1
+Best regards,
+Krzysztof
 
