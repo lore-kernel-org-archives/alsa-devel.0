@@ -4,85 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A011CC05027
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Feb 2023 16:52:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50B83C05027
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Feb 2023 19:08:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5840486E;
-	Fri, 10 Feb 2023 17:51:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5840486E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3ADB683E;
+	Fri, 10 Feb 2023 20:07:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3ADB683E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676047944;
-	bh=/MMgWxBJujfafO8l8heeRjmnV5hXbYw4NeNMhuLPRpk=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	s=default; t=1676056102;
+	bh=v5afqR5UlvN+xs27ZSOLqnDLfHlveAB/tvlZs/l3JW4=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LlcnKV4Tq4o3X1NxVTchAfEFEhAMYof9kJq5iE7MICwxr+6aJJ1vLwj9MHXs3F/lm
-	 KriXiUKyKW37GMbASy1eNsZeE9x8wmLMYXoyU+BznWgDWZIujZkrw8H970UjBP2Rkb
-	 DWYj+apmfS626oAvE2Yk5cEW2FJDFnlnKTHL4PUw=
+	b=WGZxYnhj4tZdiW73CDsTTvacV5bTT667nPg7RuIztcWOatbGItgRuNj9sFiX4X5LN
+	 E07Ai+97YYb5pWKLtO2J/3PoC788D6Vcx53Dc8gjMW2VHLH6MvxD3G3rksWWPMYb8F
+	 jwATq1V6t3X/5+XXQ5gktzSrg0u1yp5IbrfOUBrs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF851F804F2;
-	Fri, 10 Feb 2023 17:50:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBCD9F8001E;
+	Fri, 10 Feb 2023 20:07:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A1E4AF800E4; Fri, 10 Feb 2023 17:50:40 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 0C7AFF800E4; Fri, 10 Feb 2023 20:06:59 +0100 (CET)
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com
+ [IPv6:2607:f8b0:4864:20::42f])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 463A1F80094
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2023 17:50:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 463A1F80094
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9EF2CF8001E
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2023 20:06:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EF2CF8001E
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=jEhg2t2R
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 9C39FB82542;
-	Fri, 10 Feb 2023 16:50:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FAA3C433D2;
-	Fri, 10 Feb 2023 16:50:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1676047835;
-	bh=/MMgWxBJujfafO8l8heeRjmnV5hXbYw4NeNMhuLPRpk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=jEhg2t2RsRvJVS7X5FU9WslVPOB+pf4mij4WWQDYyKKSHP+lKrspf+6IHqJ6kf+r2
-	 RVRDyg3lCdaYuVyXF/RtbmIQOLqLqxKMUThOmiBS+uBXPebcS6vD2mOtdvjmI/rDdh
-	 tDNYpg3g0cO3/TUcfHre0ZBuqd8Ik7BcgwgY7N3egAiIOV4YcQ9AcX9+5rgNPrGpew
-	 /UXy3BR6ACVOaI8uQj3oaZPFLrzAxY/cCzoituK81Zn5XYwfYWZyn8eLDxySaPZbOc
-	 QvnD3/p8ZbQpDmhNK7vF8Um236UmUpKdqDMNmDrKnse3BZLNc8qvW3/roYA7DnOAE4
-	 XWgV3SXsiwo1Q==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, shumingf@realtek.com
-In-Reply-To: <20230210082141.24077-1-shumingf@realtek.com>
-References: <20230210082141.24077-1-shumingf@realtek.com>
-Subject: Re: [PATCH] ASoC: rt712-sdca: fix coding style and unconditionally
- return issues
-Message-Id: <167604783303.559421.12101263230670034560.b4-ty@kernel.org>
-Date: Fri, 10 Feb 2023 16:50:33 +0000
+	dkim=pass (1024-bit key,
+ unprotected) header.d=chromium.org header.i=@chromium.org header.a=rsa-sha256
+ header.s=google header.b=j39WWB84
+Received: by mail-pf1-x42f.google.com with SMTP id o75so4069893pfg.12
+        for <alsa-devel@alsa-project.org>;
+ Fri, 10 Feb 2023 11:06:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:subject:cc:to:from:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=0X3/n7/A3PNJZ8jZ8dVcNSR9WNlUKR8kt+0R8RsIS+I=;
+        b=j39WWB84ZEJ6nBQwen5FJIoUqsORXqEcNFES8EWG0YtMpZrjHM96f7RjBAPQ+JDsJG
+         3u7EWAxijHOfV0E4/AyEt5PIKduwsIm6TL3Zy9dOcsf49sUQaIQSgDmoufdde8n67DOR
+         0h2eY3ciTD1yALLQqjrT9sbHgfjkc04QOWVTg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:subject:cc:to:from:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0X3/n7/A3PNJZ8jZ8dVcNSR9WNlUKR8kt+0R8RsIS+I=;
+        b=KBE9qtrs9CJXc/12lABw0WsWqkBM4uCKvb+N0IBeb1n7vVrqt7K6jBVYM74Z5UzPqG
+         8bjhvmniaPaGNrNzQgupklL8/X1HdRfS1NgPkRwEzcMP0ZfjIsb7cK9n/loOC+wtwFhG
+         tlO+36VxChUZxmG9ZOXxULlvRCOMInu5aXEpFPm06gcEwiF6+oXpJ+L22JEbjpCO2gLv
+         XrreWTycILaqE4r0x5/g7C+BfZKP8mngA39CR+Np8WkYe8TjVr+szPTJd5R47CrtH+Nq
+         sj7wzV7oOOnvA3Sp6JXYCFQdyCtFB3RRezqZ211wHyEhPFvR6e1q52CD1mESRhgd+JFp
+         TQ0g==
+X-Gm-Message-State: AO0yUKUVAccFcrfijBRn2AecES6gwfSOHtsRMBtfPOLqeumSbsPrpm9u
+	y8q+kbfobcBWiWEia4WJ2eR0G7YT7V+8nl7H
+X-Google-Smtp-Source: 
+ AK7set/PmQSV8PsNJ5/Q5QKIBZDr28wVDC62O7GllUpJ4GDZE0hTRfK4cvrK8Bht08Iw93IjrZK9Kg==
+X-Received: by 2002:a62:1b4d:0:b0:593:ea06:7fd with SMTP id
+ b74-20020a621b4d000000b00593ea0607fdmr14083024pfb.13.1676056001372;
+        Fri, 10 Feb 2023 11:06:41 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net.
+ [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id
+ l22-20020a62be16000000b005943bd7c72bsm3595216pff.190.2023.02.10.11.06.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Feb 2023 11:06:40 -0800 (PST)
+Message-ID: <63e695c0.620a0220.f69b1.6eec@mx.google.com>
+X-Google-Original-Message-ID: <202302101104.@keescook>
+Date: Fri, 10 Feb 2023 11:06:40 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?=
+ <amadeuszx.slawinski@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Skylake: Replace 1-element array with
+ flex-array
+References: <20230210051447.never.204-kees@kernel.org>
+ <54d4ffb1-1488-1a4f-58b2-8b3471389729@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.0
-Message-ID-Hash: VPB2437DIVRWHCW4WPOWEURJFHIRHIJM
-X-Message-ID-Hash: VPB2437DIVRWHCW4WPOWEURJFHIRHIJM
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <54d4ffb1-1488-1a4f-58b2-8b3471389729@linux.intel.com>
+Message-ID-Hash: YA4W2CTB6YSR5REPRK5XJNUZZ7PSDOJT
+X-Message-ID-Hash: YA4W2CTB6YSR5REPRK5XJNUZZ7PSDOJT
+X-MailFrom: keescook@chromium.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, lars@metafoo.de, flove@realtek.com,
- oder_chiou@realtek.com, jack.yu@realtek.com, derek.fang@realtek.com,
- pierre-louis.bossart@intel.com, bard.liao@intel.com
+CC: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Sasa Ostrouska <casaxa@gmail.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VPB2437DIVRWHCW4WPOWEURJFHIRHIJM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YA4W2CTB6YSR5REPRK5XJNUZZ7PSDOJT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,38 +125,105 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 10 Feb 2023 16:21:41 +0800, shumingf@realtek.com wrote:
-> This patch fixes
-> 1. coding style issues
-> 2. check if the setting was set already in rt712_sdca_mux_put callback
+On Fri, Feb 10, 2023 at 02:10:56PM +0100, Amadeusz Sławiński wrote:
+> On 2/10/2023 6:14 AM, Kees Cook wrote:
+> > The kernel is globally removing the ambiguous 0-length and 1-element
+> > arrays in favor of flexible arrays, so that we can gain both compile-time
+> > and run-time array bounds checking[1]. In this instance, struct
+> > skl_cpr_cfg contains struct skl_cpr_gtw_cfg, which defined "config_data"
+> > as a 1-element array.
+> > 
+> > Normally when switching from a 1-element array to a flex-array, any
+> > related size calculations must be adjusted too. However, it seems the
+> > original code was over-allocating space, since 1 extra u32 would be
+> > included by the sizeof():
+> > 
+> >                  param_size = sizeof(struct skl_cpr_cfg);
+> >                  param_size += mconfig->formats_config[SKL_PARAM_INIT].caps_size;
+> > 
+> > But the copy uses caps_size bytes, and cap_size / 4 (i.e. sizeof(u32))
+> > for the length tracking:
+> > 
+> >          memcpy(cpr_mconfig->gtw_cfg.config_data,
+> >                          mconfig->formats_config[SKL_PARAM_INIT].caps,
+> >                          mconfig->formats_config[SKL_PARAM_INIT].caps_size);
+> > 
+> >          cpr_mconfig->gtw_cfg.config_length =
+> >                          (mconfig->formats_config[SKL_PARAM_INIT].caps_size) / 4;
+> > 
+> > Therefore, no size calculations need adjusting. Change the struct
+> > skl_cpr_gtw_cfg config_data member to be a true flexible array, which
+> > also fixes the over-allocation, and silences this memcpy run-time false
+> > positive:
+> > 
+> >    memcpy: detected field-spanning write (size 100) of single field "cpr_mconfig->gtw_cfg.config_data" at sound/soc/intel/skylake/skl-messages.c:554 (size 4)
+> > 
+> > [1] For lots of details, see both:
+> >      https://docs.kernel.org/process/deprecated.html#zero-length-and-one-element-arrays
+> >      https://people.kernel.org/kees/bounded-flexible-arrays-in-c
+> > 
+> > Reported-by: Sasa Ostrouska <casaxa@gmail.com>
+> > Link: https://lore.kernel.org/all/CALFERdwvq5day_sbDfiUsMSZCQu9HG8-SBpOZDNPeMdZGog6XA@mail.gmail.com/
+> > Cc: Cezary Rojewski <cezary.rojewski@intel.com>
+> > Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> > Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+> > Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+> > Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
+> > Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> > Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> > Cc: Mark Brown <broonie@kernel.org>
+> > Cc: Jaroslav Kysela <perex@perex.cz>
+> > Cc: Takashi Iwai <tiwai@suse.com>
+> > Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> > Cc: "Amadeusz Sławiński" <amadeuszx.slawinski@linux.intel.com>
+> > Cc: alsa-devel@alsa-project.org
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >   sound/soc/intel/skylake/skl-topology.h | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+> > index 6db0fd7bad49..ad94f8020c27 100644
+> > --- a/sound/soc/intel/skylake/skl-topology.h
+> > +++ b/sound/soc/intel/skylake/skl-topology.h
+> > @@ -115,7 +115,7 @@ struct skl_cpr_gtw_cfg {
+> >   	u32 dma_buffer_size;
+> >   	u32 config_length;
+> >   	/* not mandatory; required only for DMIC/I2S */
+> > -	u32 config_data[1];
+> > +	u32 config_data[];
+> >   } __packed;
+> >   struct skl_dma_control {
 > 
+> This fails in our validation.
+
+Ah, okay. Thanks for checking!
+
+> Maybe we can use the union workaround, to
+> leave the size as is?
 > 
+> Following seems to work in manual test:
+> diff --git a/sound/soc/intel/skylake/skl-topology.h
+> b/sound/soc/intel/skylake/skl-topology.h
+> index 6db0fd7bad49..ffbd2e60fede 100644
+> --- a/sound/soc/intel/skylake/skl-topology.h
+> +++ b/sound/soc/intel/skylake/skl-topology.h
+> @@ -115,7 +115,10 @@ struct skl_cpr_gtw_cfg {
+>         u32 dma_buffer_size;
+>         u32 config_length;
+>         /* not mandatory; required only for DMIC/I2S */
+> -       u32 config_data[1];
+> +       union {
+> +               u32 x;
+> +               u32 config_data[0];
+> +       };
 
-Applied to
+Yeah, that could work, though the last member would be:
+	DECLARE_FLEX_ARRAY(u32, config_data);
+otherwise the array is 0 length (rather than a proper flex array).
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+But before that, let me see if I can track down where the size is being
+used, in case we can avoid adding the padding.
 
-Thanks!
-
-[1/1] ASoC: rt712-sdca: fix coding style and unconditionally return issues
-      commit: e093e74b819b38074f07289da9933f9c413337ab
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+-- 
+Kees Cook
