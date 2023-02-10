@@ -4,182 +4,128 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2292C636CC
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Feb 2023 15:00:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 028BAC61DA4
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Feb 2023 15:01:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F096EF26;
-	Thu, 16 Feb 2023 16:00:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F096EF26
+	by alsa0.perex.cz (Postfix) with ESMTPS id 72131DF;
+	Thu, 16 Feb 2023 16:00:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72131DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676559655;
-	bh=fBUEtufyE1bYFCH7OLLt2CigQVMK5Ehk1OTEIKppxU4=;
+	s=default; t=1676559672;
+	bh=ULSWie6OmYtTqWpFXDO0V4VcfhXu0u9dEOwEaKPbuEU=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WV9EXP42o0Yc23bdh/m3paJfQmkJcZHlUCSEw/bKoRVf1AMVc6h8tcQJS0K4lLJlQ
-	 GM1nhZ3+XNaoLUYYhQcIkDTdhqABimnAQjdXyUcPmMYHHk/o219kJ2zYKhVYEGnKFJ
-	 BSL3wlcaX3uVJpOevUzhHFHh4HFsyT4zAAf3NrVc=
+	b=rpXbPXGjUVTMVWRYwA4VUbAnDzK4UYYkqsDBUlGq9vaZJd7KlexuXY1hS9szBhMiw
+	 UsVXRxvbLfsqlYr+ui7Ztak0Ljj7XmL4mCXDp/8M1p7bDH2PxucAkcyxTPUNCFupWf
+	 45Hl80Ta7RCARAUWRv819+YfNCcPIZXyCcsh1L1A=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30276F804B2;
-	Thu, 16 Feb 2023 15:55:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 121D5F805EB;
+	Thu, 16 Feb 2023 15:55:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 40B44F80269; Fri, 10 Feb 2023 20:42:45 +0100 (CET)
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com
- (mail-dm6nam12on20617.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe59::617])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 511D8F800B8; Fri, 10 Feb 2023 05:50:36 +0100 (CET)
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com
+ [IPv6:2607:f8b0:4864:20::430])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 64475F80086
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2023 20:42:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64475F80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id 19E3BF8018A
+	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2023 05:50:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19E3BF8018A
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=e6MiNXhy
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jBds7Q6gvenP1gZLPRzrdtoBPWaaAHr4ZkrPOMzIV2Dqji6prghn6y7JpaiC+gnZ09gIRN5Rsgq2IHTj00b4sdOLIuDe0af9JFgZQ5GlmKd9Nr4C17od171Smb/gex2Z343uplk9Z3cmW+X5aMhbU2uG0LikY175VFt1OAF3TxxqN1qns5UIRwsxiWXKANqiRxlp/VG+8HSfgKQXilldJ1BhFthEvlZ5+rGRBcc+F84n+ekCv11DbSMv8/vjMUq21JMDsGsk6gYNDBEXiK8uxv8k/nD75zgaE5vseCbnWVLNM3GhkPs9Nkb/IvomcrqWtBDVPD/NjM9NSjkHG+fcvw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OgO4Y1hQP6qJn0ylulPlZiAg4zwkUsqUf66sHia2XoM=;
- b=jMCz5dPc/aenVaUBwQhfgiq1gcxDyGmzX6x2XzCE3nqP1mY7aRE1zIoisGUgRHyJc6q+Q74FguAYHMozr3gEiNaOlul88zIkTABU1cLiCmmK6OJMhRqHGMpS+W9CngrKu5+KW3HKeAYi8h+vM+mC48/wonBaGDjyKAPKWB5SoyPhYrkq6kVcOUVh1sayDkQe7ghZq5ZOaf/5QKcdnqUpX1L2wq5/jraKg2CzkiHZGBRZkbSJ3e2qd01JAqOKSlSrNXH79D5+YbA25Cp7m/fv71Sv/o1oyR/byN8S9TWX0dVhlRZ/iy+k37nuLhBUEb9E63gMU6cvryl+Iyo7/DVDgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OgO4Y1hQP6qJn0ylulPlZiAg4zwkUsqUf66sHia2XoM=;
- b=e6MiNXhycrfm6JGsmYqJyFrXzyXHXm49c3GaZBhc97CWh/bTBHiGPMLf2ELZ+A/j6vxp9wWIurCPVCvxrQxnDGPAOiHhugxXGcHEGRQacgg6OlsRGiaarQqUEjSXhOStoXqWPv1+enF+y3HV0YnWZwtYJJkJD6GiuKrZPvY+ILE=
-Received: from MW4PR04CA0307.namprd04.prod.outlook.com (2603:10b6:303:82::12)
- by CY5PR12MB6600.namprd12.prod.outlook.com (2603:10b6:930:40::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.19; Fri, 10 Feb
- 2023 19:42:36 +0000
-Received: from CO1NAM11FT111.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:82:cafe::c2) by MW4PR04CA0307.outlook.office365.com
- (2603:10b6:303:82::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.21 via Frontend
- Transport; Fri, 10 Feb 2023 19:42:36 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT111.mail.protection.outlook.com (10.13.174.61) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6086.21 via Frontend Transport; Fri, 10 Feb 2023 19:42:35 +0000
-Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Fri, 10 Feb
- 2023 13:42:34 -0600
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB07.amd.com
- (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Fri, 10 Feb
- 2023 11:42:34 -0800
-Received: from xhdsneeli40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Fri, 10 Feb 2023 13:42:08 -0600
-From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-To: <broonie@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-	<vigneshr@ti.com>, <jic23@kernel.org>, <tudor.ambarus@microchip.com>,
-	<pratyush@kernel.org>, <sanju.mehta@amd.com>, <chin-ting_kuo@aspeedtech.com>,
-	<clg@kaod.org>, <kdasu.kdev@gmail.com>, <f.fainelli@gmail.com>,
-	<rjui@broadcom.com>, <sbranden@broadcom.com>, <eajames@linux.ibm.com>,
-	<olteanv@gmail.com>, <han.xu@nxp.com>, <john.garry@huawei.com>,
-	<shawnguo@kernel.org>, <s.hauer@pengutronix.de>, <narmstrong@baylibre.com>,
-	<khilman@baylibre.com>, <matthias.bgg@gmail.com>, <haibo.chen@nxp.com>,
-	<linus.walleij@linaro.org>, <daniel@zonque.org>, <haojian.zhuang@gmail.com>,
-	<robert.jarzmik@free.fr>, <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-	<heiko@sntech.de>, <krzysztof.kozlowski@linaro.org>, <andi@etezian.org>,
-	<mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>, <wens@csie.org>,
-	<jernej.skrabec@gmail.com>, <samuel@sholland.org>,
-	<masahisa.kojima@linaro.org>, <jaswinder.singh@linaro.org>,
-	<rostedt@goodmis.org>, <mingo@redhat.com>, <l.stelmach@samsung.com>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <alex.aring@gmail.com>, <stefan@datenfreihafen.org>,
-	<kvalo@kernel.org>, <james.schulman@cirrus.com>, <david.rhodes@cirrus.com>,
-	<tanureal@opensource.cirrus.com>, <rf@opensource.cirrus.com>,
-	<perex@perex.cz>, <tiwai@suse.com>, <npiggin@gmail.com>,
-	<christophe.leroy@csgroup.eu>, <mpe@ellerman.id.au>, <oss@buserror.net>,
-	<windhl@126.com>, <yangyingliang@huawei.com>
-Subject: [PATCH v4 12/15] mtd: spi-nor: Add stacked memories support in
- spi-nor
-Date: Sat, 11 Feb 2023 01:06:43 +0530
-Message-ID: <20230210193647.4159467-13-amit.kumar-mahapatra@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230210193647.4159467-1-amit.kumar-mahapatra@amd.com>
-References: <20230210193647.4159467-1-amit.kumar-mahapatra@amd.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20210112 header.b=Om+u/6Vn
+Received: by mail-pf1-x430.google.com with SMTP id y4so2764476pfe.4
+        for <alsa-devel@alsa-project.org>;
+ Thu, 09 Feb 2023 20:50:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zqShi3EgLDtgztLIgW/MuPsWv2vSLPgVWXrp/LobXww=;
+        b=Om+u/6VnAJG9TE8AtmP7qvhlFAe++DibsHxfnKB/uw1rT0M0wwXXptoFr0Xv+20ydo
+         eakNNTYlCCk2g+ALxRE6kmjCfzNbNOYJFbMBHqWvHvIm2k/uZfv6KIo0xugx3nQig2py
+         J1no3BHk6c8ezYo6oWs4KfkhLQOu7YRb0G1aFzEpM6YreNPESvbQ4vwbkdQg1ll66Mfa
+         qmCJAD9lIdQ09n5BrE3kzDSLu8s0jx5ZJ2hqM233WpFqKrLUDc8SXFgEQ8iWwYwFo7zR
+         SkcsIvSD7qiSPHhO2o5OR47wO55x0ECXZiVlRFfBnNKUyj1V+gZQOOhi2rAshPHtOKDE
+         yP0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zqShi3EgLDtgztLIgW/MuPsWv2vSLPgVWXrp/LobXww=;
+        b=oXDeKi05byC3Mw+8w00KtmNAjVUSUjwpA1IMu/18X5SSvnj8DQr7ZBXJFdu0smq/UH
+         LmhtlKCxjWikEFc8roB6EsGZRbZaRS/p6SidkVkXauGuOZcuYJ95Y4DpZaEahE4dHYAv
+         OawDiw6rA4Jk0BSiZoISHtYjtemwNylLbNmpMqgfwheQKQ+whgCbjsdcaArlt3miQr6B
+         O5UvX/49KfSHaNL/N4NPCQ4AuXQ6eZgmUs1NldI3k7+B9s7bnt03xx2cLH8FnKJX3ztM
+         u883TW+cjVMqaA+byiGQuf3QUNH53WOhj0PI88QmcdfSw0ZCO5fS/O0qEFRcBcJPNyAT
+         u4Aw==
+X-Gm-Message-State: AO0yUKVyngRmre5wO+fwvBba8dKp0/6xD4ew5mrAQ9r6qbrNFoxLbAg3
+	lXZA3eiXLUe6ntEw/4xrX47ubqFHC10YpA==
+X-Google-Smtp-Source: 
+ AK7set//ZS0OEdNcYuTp0DRJ59S0YHaU7AVoVK7clC6F+urpcBjbK1/I7g8ZJg3rnX+smO5B0TtQfg==
+X-Received: by 2002:a62:6458:0:b0:5a8:6bb7:5fc5 with SMTP id
+ y85-20020a626458000000b005a86bb75fc5mr1170747pfb.19.1676004628485;
+        Thu, 09 Feb 2023 20:50:28 -0800 (PST)
+Received: from localhost.localdomain ([202.53.32.211])
+        by smtp.gmail.com with ESMTPSA id
+ t13-20020a62ea0d000000b0057fec210d33sm2269218pfh.152.2023.02.09.20.50.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Feb 2023 20:50:28 -0800 (PST)
+From: Orlando Chamberlain <orlandoch.dev@gmail.com>
+To: platform-driver-x86@vger.kernel.org,
+	amd-gfx@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: [RFC PATCH 3/9] apple-gmux: use first bit to check switch state
+Date: Fri, 10 Feb 2023 15:48:20 +1100
+Message-Id: <20230210044826.9834-4-orlandoch.dev@gmail.com>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230210044826.9834-1-orlandoch.dev@gmail.com>
+References: <20230210044826.9834-1-orlandoch.dev@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT111:EE_|CY5PR12MB6600:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8d73f6c6-1bcc-42d4-9015-08db0b9ef5a8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	mI2ss+Qk/oflS78x6i35KWQcL3CiZuLbQG5hRv9dyrZSoCAyT3sVA6zh2AaQqHwouKG/ZGnZyW5I9loBTV31vrhr9tKAycZxeB3RT7j1yUmXuZzZNWk2cRWmGmppFToY/8g7+S/xG1azK1xUdAOMjMruP2kEvaoj7n2k9yoHa01w2vST6LpNgOswGhfWKJ8QgHOPlMlh6YiDs2RtdnwYkQ0p8X8rePloOMGtzcAVDLb0EC71D8bmyiAh/cnqQwoafXzApy5XmqCMCZeiqMeoGZ2cnNLd2QwVmyxhf2o9TOoM2ULiqRs+j3WNWc4V/AimodWd7sO0+aQpQhGAjK39x6YfwDYpwA1ffZarEnDAW1USfRn7PtfPArAwmISO42dhp5QbLHsncNt7NQFp9+Vy4X8BGGQE/NIL5/YhCSkt32nZClXtEYU211UsukUPopDtYoPbPB0yDVyrb8xqUQbYefzr4LnsLIPCUTvSq0THET8mn+c4282J7z6qiZfrL0WnIMVfx2CHRMWsOvX6bcopD7lll2Qi8qpEwGywSSqXpb8pl+9MoAcjoIiE7E0XG/JIIt0w0ahmGaStpoIflh1UbFczMx0vKMIry6SXn0z2Oe8DBcIK8W7FVsepxIlLIyqZ3VM8hv19ucQxz3lBHkrOUc68VaClsaYXIbUKnTPBiMTMKVI+HAJdB4pGJBMdTyvGzITujhgw/WtqeuR8ahzN3Ns+19GmfzDQjOqHFmSWYd5d65fkvDAH6WXKbE5veL0t6s6eNgbe1I7jy8vszUEM4OmVpATxA4hGzzH3oLOcklBl6DzuTFu3rjJ1JpBSkSeGCaeULw99A0tnk+pXgQv1bi9djNzoCzqEewaRBUi9FLw=
-X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(136003)(396003)(376002)(346002)(39860400002)(451199018)(36840700001)(40470700004)(46966006)(36756003)(2906002)(82310400005)(54906003)(26005)(40480700001)(478600001)(2616005)(1076003)(186003)(336012)(83380400001)(41300700001)(47076005)(4326008)(426003)(70206006)(40460700003)(70586007)(1191002)(7336002)(30864003)(7276002)(6666004)(7366002)(7406005)(8676002)(7416002)(5660300002)(8936002)(921005)(36860700001)(82740400003)(81166007)(356005)(316002)(110136005)(86362001)(2101003)(84006005)(36900700001)(83996005)(41080700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2023 19:42:35.5229
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 8d73f6c6-1bcc-42d4-9015-08db0b9ef5a8
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	CO1NAM11FT111.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6600
-X-MailFrom: amit.kumar-mahapatra@amd.com
+X-MailFrom: orlandoch.dev@gmail.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: C2QLK6XKAO3BAAMZ36SG47YM3IRYEMWN
-X-Message-ID-Hash: C2QLK6XKAO3BAAMZ36SG47YM3IRYEMWN
-X-Mailman-Approved-At: Thu, 16 Feb 2023 14:55:17 +0000
-CC: git@amd.com, linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
- joel@jms.id.au, andrew@aj.id.au, radu_nicolae.pirea@upb.ro,
- nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
- claudiu.beznea@microchip.com, bcm-kernel-feedback-list@broadcom.com,
- fancer.lancer@gmail.com, kernel@pengutronix.de, festevam@gmail.com,
- linux-imx@nxp.com, jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
- avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
- venture@google.com, yuenn@google.com, benjaminfair@google.com,
- yogeshgaur.83@gmail.com, konrad.dybcio@somainline.org,
- alim.akhtar@samsung.com, ldewangan@nvidia.com, thierry.reding@gmail.com,
- jonathanh@nvidia.com, michal.simek@amd.com, linux-aspeed@lists.ozlabs.org,
- openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
- linux-rpi-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-rockchip@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev,
- linux-tegra@vger.kernel.org, netdev@vger.kernel.org,
- linux-wpan@vger.kernel.org, libertas-dev@lists.infradead.org,
- linux-wireless@vger.kernel.org, linux-mtd@lists.infradead.org,
- lars@metafoo.de, Michael.Hennerich@analog.com, linux-iio@vger.kernel.org,
- michael@walle.cc, palmer@dabbelt.com, linux-riscv@lists.infradead.org,
- alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- linuxppc-dev@lists.ozlabs.org, amitrkcian2002@gmail.com,
- Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Message-ID-Hash: PPMRIDQ3PGVHF33OJD7ZACJ2VV4P5VS4
+X-Message-ID-Hash: PPMRIDQ3PGVHF33OJD7ZACJ2VV4P5VS4
+X-Mailman-Approved-At: Thu, 16 Feb 2023 14:55:23 +0000
+CC: Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>, "Pan,
+ Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Hans de Goede <hdegoede@redhat.com>,
+ Mark Gross <markgross@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Hawking Zhang <Hawking.Zhang@amd.com>,
+ Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+ Lijo Lazar <lijo.lazar@amd.com>, YiPeng Chai <YiPeng.Chai@amd.com>,
+ Somalapuram Amaranath <Amaranath.Somalapuram@amd.com>,
+ Mario Limonciello <mario.limonciello@amd.com>,
+ Bokun Zhang <Bokun.Zhang@amd.com>, Jack Xiao <Jack.Xiao@amd.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Rander Wang <rander.wang@intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>,
+ Evan Quan <evan.quan@amd.com>, Kerem Karabay <kekrby@gmail.com>,
+ Aditya Garg <gargaditya08@live.com>, Aun-Ali Zaidi <admin@kodeit.net>,
+ Orlando Chamberlain <orlandoch.dev@gmail.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C2QLK6XKAO3BAAMZ36SG47YM3IRYEMWN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PPMRIDQ3PGVHF33OJD7ZACJ2VV4P5VS4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -188,555 +134,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Each flash that is connected in stacked mode should have a separate
-parameter structure. So, the flash parameter member(*params) of the spi_nor
-structure is changed to an array (*params[2]). The array is used to store
-the parameters of each flash connected in stacked configuration.
+On T2 Macs with MMIO gmux, when GMUX_PORT_SWITCH_DISPLAY is read, it can
+have values of 2, 3, 4, and 5. Odd values correspond to the discrete gpu,
+and even values correspond to the integrated gpu. The current logic is
+that only 2 corresponds to IGD, but this doesn't work for T2 Macs.
+Instead, check the first bit to determine the connected gpu.
 
-The current implementation assumes that a maximum of two flashes are
-connected in stacked mode and both the flashes are of same make but can
-differ in sizes. So, except the sizes all other flash parameters of both
-the flashes are identical.
+As T2 Macs with gmux only can switch the internal display, it is
+untested if this change (or a similar change) would be applicable
+to GMUX_PORT_SWITCH_DDC and GMUX_PORT_SWITCH_EXTERNAL.
 
-SPI-NOR is not aware of the chip_select values, for any incoming request
-SPI-NOR will decide the flash index with the help of individual flash size
-and the configuration type (single/stacked). SPI-NOR will pass on the flash
-index information to the SPI core & SPI driver by setting the appropriate
-bit in nor->spimem->spi->cs_index_mask. For example, if nth bit of
-nor->spimem->spi->cs_index_mask is set then the driver would
-assert/de-assert spi->chip_slect[n].
-
-Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Signed-off-by: Orlando Chamberlain <orlandoch.dev@gmail.com>
 ---
- drivers/mtd/spi-nor/core.c  | 282 +++++++++++++++++++++++++++++-------
- drivers/mtd/spi-nor/core.h  |   4 +
- include/linux/mtd/spi-nor.h |  12 +-
- 3 files changed, 244 insertions(+), 54 deletions(-)
+ drivers/platform/x86/apple-gmux.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 8a4a54bf2d0e..bb7326dc8b70 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -1441,13 +1441,18 @@ static int spi_nor_erase_multi_sectors(struct spi_nor *nor, u64 addr, u32 len)
- static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
--	u32 addr, len;
-+	struct spi_nor_flash_parameter *params;
-+	u32 addr, len, offset, cur_cs_num = 0;
- 	uint32_t rem;
- 	int ret;
-+	u64 sz;
+diff --git a/drivers/platform/x86/apple-gmux.c b/drivers/platform/x86/apple-gmux.c
+index 67628104f31a..6109f4c2867c 100644
+--- a/drivers/platform/x86/apple-gmux.c
++++ b/drivers/platform/x86/apple-gmux.c
+@@ -332,10 +332,10 @@ static void gmux_read_switch_state(struct apple_gmux_data *gmux_data)
+ 	else
+ 		gmux_data->switch_state_ddc = VGA_SWITCHEROO_DIS;
  
- 	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr,
- 			(long long)instr->len);
+-	if (gmux_read8(gmux_data, GMUX_PORT_SWITCH_DISPLAY) == 2)
+-		gmux_data->switch_state_display = VGA_SWITCHEROO_IGD;
+-	else
++	if (gmux_read8(gmux_data, GMUX_PORT_SWITCH_DISPLAY) & 1)
+ 		gmux_data->switch_state_display = VGA_SWITCHEROO_DIS;
++	else
++		gmux_data->switch_state_display = VGA_SWITCHEROO_IGD;
  
-+	params = spi_nor_get_params(nor, 0);
-+	sz = params->size;
-+
- 	if (spi_nor_has_uniform_erase(nor)) {
- 		div_u64_rem(instr->len, mtd->erasesize, &rem);
- 		if (rem)
-@@ -1465,26 +1470,30 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	if (len == mtd->size && !(nor->flags & SNOR_F_NO_OP_CHIP_ERASE)) {
- 		unsigned long timeout;
- 
--		ret = spi_nor_write_enable(nor);
--		if (ret)
--			goto erase_err;
-+		while (cur_cs_num < SNOR_FLASH_CNT_MAX && params) {
-+			nor->spimem->spi->cs_index_mask = 0x01 << cur_cs_num;
-+			ret = spi_nor_write_enable(nor);
-+			if (ret)
-+				goto erase_err;
- 
--		ret = spi_nor_erase_chip(nor);
--		if (ret)
--			goto erase_err;
-+			ret = spi_nor_erase_chip(nor);
-+			if (ret)
-+				goto erase_err;
- 
--		/*
--		 * Scale the timeout linearly with the size of the flash, with
--		 * a minimum calibrated to an old 2MB flash. We could try to
--		 * pull these from CFI/SFDP, but these values should be good
--		 * enough for now.
--		 */
--		timeout = max(CHIP_ERASE_2MB_READY_WAIT_JIFFIES,
--			      CHIP_ERASE_2MB_READY_WAIT_JIFFIES *
--			      (unsigned long)(mtd->size / SZ_2M));
--		ret = spi_nor_wait_till_ready_with_timeout(nor, timeout);
--		if (ret)
--			goto erase_err;
-+			/*
-+			 * Scale the timeout linearly with the size of the flash, with
-+			 * a minimum calibrated to an old 2MB flash. We could try to
-+			 * pull these from CFI/SFDP, but these values should be good
-+			 * enough for now.
-+			 */
-+			timeout = max(CHIP_ERASE_2MB_READY_WAIT_JIFFIES,
-+				      CHIP_ERASE_2MB_READY_WAIT_JIFFIES *
-+				      (unsigned long)(params->size / SZ_2M));
-+			ret = spi_nor_wait_till_ready_with_timeout(nor, timeout);
-+			if (ret)
-+				goto erase_err;
-+			cur_cs_num++;
-+		}
- 
- 	/* REVISIT in some cases we could speed up erasing large regions
- 	 * by using SPINOR_OP_SE instead of SPINOR_OP_BE_4K.  We may have set up
-@@ -1493,12 +1502,26 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 
- 	/* "sector"-at-a-time erase */
- 	} else if (spi_nor_has_uniform_erase(nor)) {
-+		/* Determine the flash from which the operation need to start */
-+		while ((cur_cs_num < SNOR_FLASH_CNT_MAX) && (addr > sz - 1) && params) {
-+			cur_cs_num++;
-+			params = spi_nor_get_params(nor, cur_cs_num);
-+			sz += params->size;
-+		}
-+
- 		while (len) {
-+			nor->spimem->spi->cs_index_mask = 0x01 << cur_cs_num;
- 			ret = spi_nor_write_enable(nor);
- 			if (ret)
- 				goto erase_err;
- 
--			ret = spi_nor_erase_sector(nor, addr);
-+			offset = addr;
-+			if (nor->flags & SNOR_F_HAS_STACKED) {
-+				params = spi_nor_get_params(nor, cur_cs_num);
-+				offset -= (sz - params->size);
-+			}
-+
-+			ret = spi_nor_erase_sector(nor, offset);
- 			if (ret)
- 				goto erase_err;
- 
-@@ -1508,13 +1531,45 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 
- 			addr += mtd->erasesize;
- 			len -= mtd->erasesize;
-+
-+			/*
-+			 * Flash cross over condition in stacked mode.
-+			 */
-+			if ((nor->flags & SNOR_F_HAS_STACKED) && (addr > sz - 1)) {
-+				cur_cs_num++;
-+				params = spi_nor_get_params(nor, cur_cs_num);
-+				sz += params->size;
-+			}
- 		}
- 
- 	/* erase multiple sectors */
- 	} else {
--		ret = spi_nor_erase_multi_sectors(nor, addr, len);
--		if (ret)
--			goto erase_err;
-+		u64 erase_len = 0;
-+
-+		/* Determine the flash from which the operation need to start */
-+		while ((cur_cs_num < SNOR_FLASH_CNT_MAX) && (addr > sz - 1) && params) {
-+			cur_cs_num++;
-+			params = spi_nor_get_params(nor, cur_cs_num);
-+			sz += params->size;
-+		}
-+		/* perform multi sector erase onec per Flash*/
-+		while (len) {
-+			erase_len = (len > (sz - addr)) ? (sz - addr) : len;
-+			offset = addr;
-+			nor->spimem->spi->cs_index_mask = 0x01 << cur_cs_num;
-+			if (nor->flags & SNOR_F_HAS_STACKED) {
-+				params = spi_nor_get_params(nor, cur_cs_num);
-+				offset -= (sz - params->size);
-+			}
-+			ret = spi_nor_erase_multi_sectors(nor, offset, erase_len);
-+			if (ret)
-+				goto erase_err;
-+			len -= erase_len;
-+			addr += erase_len;
-+			cur_cs_num++;
-+			params = spi_nor_get_params(nor, cur_cs_num);
-+			sz += params->size;
-+		}
- 	}
- 
- 	ret = spi_nor_write_disable(nor);
-@@ -1713,7 +1768,10 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 			size_t *retlen, u_char *buf)
- {
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
--	ssize_t ret;
-+	struct spi_nor_flash_parameter *params;
-+	ssize_t ret, read_len;
-+	u32 cur_cs_num = 0;
-+	u64 sz;
- 
- 	dev_dbg(nor->dev, "from 0x%08x, len %zd\n", (u32)from, len);
- 
-@@ -1721,9 +1779,23 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	if (ret)
- 		return ret;
- 
-+	params = spi_nor_get_params(nor, 0);
-+	sz = params->size;
-+
-+	/* Determine the flash from which the operation need to start */
-+	while ((cur_cs_num < SNOR_FLASH_CNT_MAX) && (from > sz - 1) && params) {
-+		cur_cs_num++;
-+		params = spi_nor_get_params(nor, cur_cs_num);
-+		sz += params->size;
-+	}
- 	while (len) {
- 		loff_t addr = from;
- 
-+		nor->spimem->spi->cs_index_mask = 0x01 << cur_cs_num;
-+		read_len = (len > (sz - addr)) ? (sz - addr) : len;
-+		params = spi_nor_get_params(nor, cur_cs_num);
-+		addr -= (sz - params->size);
-+
- 		addr = spi_nor_convert_addr(nor, addr);
- 
- 		ret = spi_nor_read_data(nor, addr, len, buf);
-@@ -1735,11 +1807,22 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 		if (ret < 0)
- 			goto read_err;
- 
--		WARN_ON(ret > len);
-+		WARN_ON(ret > read_len);
- 		*retlen += ret;
- 		buf += ret;
- 		from += ret;
- 		len -= ret;
-+
-+		/*
-+		 * Flash cross over condition in stacked mode.
-+		 *
-+		 */
-+		if ((nor->flags & SNOR_F_HAS_STACKED) && (from > sz - 1)) {
-+			cur_cs_num++;
-+			params = spi_nor_get_params(nor, cur_cs_num);
-+			sz += params->size;
-+		}
-+
- 	}
- 	ret = 0;
- 
-@@ -1759,13 +1842,22 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	struct spi_nor *nor = mtd_to_spi_nor(mtd);
- 	struct spi_nor_flash_parameter *params;
- 	size_t page_offset, page_remain, i;
-+	u32 page_size, cur_cs_num = 0;
- 	ssize_t ret;
--	u32 page_size;
-+	u64 sz;
- 
- 	dev_dbg(nor->dev, "to 0x%08x, len %zd\n", (u32)to, len);
- 
- 	params = spi_nor_get_params(nor, 0);
- 	page_size = params->page_size;
-+	sz = params->size;
-+
-+	/* Determine the flash from which the operation need to start */
-+	while ((cur_cs_num < SNOR_FLASH_CNT_MAX) && (to > sz - 1) && params) {
-+		cur_cs_num++;
-+		params = spi_nor_get_params(nor, cur_cs_num);
-+		sz += params->size;
-+	}
- 
- 	ret = spi_nor_lock_and_prep(nor);
- 	if (ret)
-@@ -1790,6 +1882,10 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		/* the size of data remaining on the first page */
- 		page_remain = min_t(size_t, page_size - page_offset, len - i);
- 
-+		nor->spimem->spi->cs_index_mask = 0x01 << cur_cs_num;
-+		params = spi_nor_get_params(nor, cur_cs_num);
-+		addr -= (sz - params->size);
-+
- 		addr = spi_nor_convert_addr(nor, addr);
- 
- 		ret = spi_nor_write_enable(nor);
-@@ -1806,6 +1902,15 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 			goto write_err;
- 		*retlen += written;
- 		i += written;
-+
-+		/*
-+		 * Flash cross over condition in stacked mode.
-+		 */
-+		if ((nor->flags & SNOR_F_HAS_STACKED) && ((to + i) > sz - 1)) {
-+			cur_cs_num++;
-+			params = spi_nor_get_params(nor, cur_cs_num);
-+			sz += params->size;
-+		}
- 	}
- 
- write_err:
-@@ -1918,8 +2023,6 @@ int spi_nor_hwcaps_pp2cmd(u32 hwcaps)
- static int spi_nor_spimem_check_op(struct spi_nor *nor,
- 				   struct spi_mem_op *op)
- {
--	struct spi_nor_flash_parameter *params = spi_nor_get_params(nor, 0);
--
- 	/*
- 	 * First test with 4 address bytes. The opcode itself might
- 	 * be a 3B addressing opcode but we don't care, because
-@@ -1928,7 +2031,7 @@ static int spi_nor_spimem_check_op(struct spi_nor *nor,
- 	 */
- 	op->addr.nbytes = 4;
- 	if (!spi_mem_supports_op(nor->spimem, op)) {
--		if (params->size > SZ_16M)
-+		if (nor->mtd.size > SZ_16M)
- 			return -EOPNOTSUPP;
- 
- 		/* If flash size <= 16MB, 3 address bytes are sufficient */
-@@ -2516,6 +2619,10 @@ static void spi_nor_init_fixup_flags(struct spi_nor *nor)
- static void spi_nor_late_init_params(struct spi_nor *nor)
- {
- 	struct spi_nor_flash_parameter *params = spi_nor_get_params(nor, 0);
-+	struct device_node *np = spi_nor_get_flash_node(nor);
-+	u64 flash_size[SNOR_FLASH_CNT_MAX];
-+	u32 idx = 0, i = 0;
-+	int rc;
- 
- 	if (nor->manufacturer && nor->manufacturer->fixups &&
- 	    nor->manufacturer->fixups->late_init)
-@@ -2533,6 +2640,36 @@ static void spi_nor_late_init_params(struct spi_nor *nor)
- 	 */
- 	if (nor->flags & SNOR_F_HAS_LOCK && !params->locking_ops)
- 		spi_nor_init_default_locking_ops(nor);
-+	/*
-+	 * The flashes that are connected in stacked mode should be of same make.
-+	 * Except the flash size all other properties are identical for all the
-+	 * flashes connected in stacked mode.
-+	 * The flashes that are connected in parallel mode should be identical.
-+	 */
-+	while (i < SNOR_FLASH_CNT_MAX) {
-+		rc = of_property_read_u64_index(np, "stacked-memories", idx, &flash_size[i]);
-+		if (rc == -EINVAL) {
-+			break;
-+		} else if (rc == -EOVERFLOW) {
-+			idx++;
-+		} else {
-+			idx++;
-+			i++;
-+			if (!(nor->flags & SNOR_F_HAS_STACKED))
-+				nor->flags |= SNOR_F_HAS_STACKED;
-+		}
-+	}
-+	if (nor->flags & SNOR_F_HAS_STACKED) {
-+		for (idx = 1; idx < SNOR_FLASH_CNT_MAX; idx++) {
-+			params = spi_nor_get_params(nor, idx);
-+			params = devm_kzalloc(nor->dev, sizeof(*params), GFP_KERNEL);
-+			if (params) {
-+				memcpy(params, spi_nor_get_params(nor, 0), sizeof(*params));
-+				params->size = flash_size[idx];
-+				spi_nor_set_params(nor, idx, params);
-+			}
-+		}
-+	}
- }
- 
- /**
-@@ -2741,22 +2878,36 @@ static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
-  */
- static int spi_nor_quad_enable(struct spi_nor *nor)
- {
--	struct spi_nor_flash_parameter *params = spi_nor_get_params(nor, 0);
-+	struct spi_nor_flash_parameter *params;
-+	int err, idx;
- 
--	if (!params->quad_enable)
--		return 0;
-+	for (idx = 0; idx < SNOR_FLASH_CNT_MAX; idx++) {
-+		params = spi_nor_get_params(nor, idx);
-+		if (params) {
-+			if (!params->quad_enable)
-+				return 0;
- 
--	if (!(spi_nor_get_protocol_width(nor->read_proto) == 4 ||
--	      spi_nor_get_protocol_width(nor->write_proto) == 4))
--		return 0;
-+			if (!(spi_nor_get_protocol_width(nor->read_proto) == 4 ||
-+			      spi_nor_get_protocol_width(nor->write_proto) == 4))
-+				return 0;
-+			/*
-+			 * Set the appropriate CS index before
-+			 * issuing the command.
-+			 */
-+			nor->spimem->spi->cs_index_mask = 0x01 << idx;
- 
--	return params->quad_enable(nor);
-+			err = params->quad_enable(nor);
-+			if (err)
-+				return err;
-+		}
-+	}
-+	return err;
- }
- 
- static int spi_nor_init(struct spi_nor *nor)
- {
--	struct spi_nor_flash_parameter *params = spi_nor_get_params(nor, 0);
--	int err;
-+	struct spi_nor_flash_parameter *params;
-+	int err, idx;
- 
- 	err = spi_nor_octal_dtr_enable(nor, true);
- 	if (err) {
-@@ -2797,9 +2948,19 @@ static int spi_nor_init(struct spi_nor *nor)
- 		 */
- 		WARN_ONCE(nor->flags & SNOR_F_BROKEN_RESET,
- 			  "enabling reset hack; may not recover from unexpected reboots\n");
--		err = params->set_4byte_addr_mode(nor, true);
--		if (err && err != -ENOTSUPP)
--			return err;
-+		for (idx = 0; idx < SNOR_FLASH_CNT_MAX; idx++) {
-+			params = spi_nor_get_params(nor, idx);
-+			if (params) {
-+				/*
-+				 * Select the appropriate CS index before
-+				 * issuing the command.
-+				 */
-+				nor->spimem->spi->cs_index_mask = 0x01 << idx;
-+				err = params->set_4byte_addr_mode(nor, true);
-+				if (err && err != -ENOTSUPP)
-+					return err;
-+			}
-+		}
- 	}
- 
- 	return 0;
-@@ -2915,19 +3076,31 @@ void spi_nor_restore(struct spi_nor *nor)
- {
- 	struct spi_nor_flash_parameter *params;
- 	int ret;
-+	int idx;
- 
- 	/* restore the addressing mode */
- 	if (nor->addr_nbytes == 4 && !(nor->flags & SNOR_F_4B_OPCODES) &&
- 	    nor->flags & SNOR_F_BROKEN_RESET) {
--		params = spi_nor_get_params(nor, 0);
--		ret = params->set_4byte_addr_mode(nor, false);
--		if (ret)
--			/*
--			 * Do not stop the execution in the hope that the flash
--			 * will default to the 3-byte address mode after the
--			 * software reset.
--			 */
--			dev_err(nor->dev, "Failed to exit 4-byte address mode, err = %d\n", ret);
-+		for (idx = 0; idx < SNOR_FLASH_CNT_MAX; idx++) {
-+			params = spi_nor_get_params(nor, idx);
-+			if (params) {
-+				/*
-+				 * Select the appropriate CS index before
-+				 * issuing the command.
-+				 */
-+				nor->spimem->spi->cs_index_mask = 0x01 << idx;
-+				ret = params->set_4byte_addr_mode(nor, false);
-+				if (ret)
-+					/*
-+					 * Do not stop the execution in the hope that the flash
-+					 * will default to the 3-byte address mode after the
-+					 * software reset.
-+					 */
-+					dev_err(nor->dev,
-+						"Failed to exit 4-byte address mode, err = %d\n",
-+						ret);
-+			}
-+		}
- 	}
- 
- 	if (nor->flags & SNOR_F_SOFT_RESET)
-@@ -2995,6 +3168,8 @@ static void spi_nor_set_mtd_info(struct spi_nor *nor)
- 	struct spi_nor_flash_parameter *params = spi_nor_get_params(nor, 0);
- 	struct mtd_info *mtd = &nor->mtd;
- 	struct device *dev = nor->dev;
-+	u64 total_sz = 0;
-+	int idx;
- 
- 	spi_nor_set_mtd_locking_ops(nor);
- 	spi_nor_set_mtd_otp_ops(nor);
-@@ -3010,7 +3185,12 @@ static void spi_nor_set_mtd_info(struct spi_nor *nor)
- 		mtd->_erase = spi_nor_erase;
- 	mtd->writesize = params->writesize;
- 	mtd->writebufsize = params->page_size;
--	mtd->size = params->size;
-+	for (idx = 0; idx < SNOR_FLASH_CNT_MAX; idx++) {
-+		params = spi_nor_get_params(nor, idx);
-+		if (params)
-+			total_sz += params->size;
-+	}
-+	mtd->size = total_sz;
- 	mtd->_read = spi_nor_read;
- 	/* Might be already set by some SST flashes. */
- 	if (!mtd->_write)
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index f03b55cf7e6f..e94107cc465e 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -11,6 +11,9 @@
- 
- #define SPI_NOR_MAX_ID_LEN	6
- 
-+/* In single configuration enable CS0 */
-+#define SPI_NOR_ENABLE_CS0     BIT(0)
-+
- /* Standard SPI NOR flash operations. */
- #define SPI_NOR_READID_OP(naddr, ndummy, buf, len)			\
- 	SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 0),			\
-@@ -130,6 +133,7 @@ enum spi_nor_option_flags {
- 	SNOR_F_IO_MODE_EN_VOLATILE = BIT(11),
- 	SNOR_F_SOFT_RESET	= BIT(12),
- 	SNOR_F_SWP_IS_VOLATILE	= BIT(13),
-+	SNOR_F_HAS_STACKED      = BIT(14),
- };
- 
- struct spi_nor_read_command {
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 728674ea3c22..79be5d50a509 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -128,6 +128,12 @@
- #define SR2_LB3			BIT(5)	/* Security Register Lock Bit 3 */
- #define SR2_QUAD_EN_BIT7	BIT(7)
- 
-+/*
-+ * Maximum number of flashes that can be connected
-+ * in stacked/parallel configuration
-+ */
-+#define	SNOR_FLASH_CNT_MAX	2
-+
- /* Supported SPI protocols */
- #define SNOR_PROTO_INST_MASK	GENMASK(23, 16)
- #define SNOR_PROTO_INST_SHIFT	16
-@@ -400,7 +406,7 @@ struct spi_nor {
- 
- 	const struct spi_nor_controller_ops *controller_ops;
- 
--	struct spi_nor_flash_parameter *params;
-+	struct spi_nor_flash_parameter *params[SNOR_FLASH_CNT_MAX];
- 
- 	struct {
- 		struct spi_mem_dirmap_desc *rdesc;
-@@ -423,13 +429,13 @@ static inline struct device_node *spi_nor_get_flash_node(struct spi_nor *nor)
- 
- static inline struct spi_nor_flash_parameter *spi_nor_get_params(const struct spi_nor *nor, u8 idx)
- {
--	return nor->params;
-+	return nor->params[idx];
- }
- 
- static inline void spi_nor_set_params(struct spi_nor *nor, u8 idx,
- 				      struct spi_nor_flash_parameter *params)
- {
--	nor->params = params;
-+	nor->params[idx] = params;
- }
- /**
-  * spi_nor_scan() - scan the SPI NOR
+ 	if (gmux_read8(gmux_data, GMUX_PORT_SWITCH_EXTERNAL) == 2)
+ 		gmux_data->switch_state_external = VGA_SWITCHEROO_IGD;
 -- 
-2.25.1
+2.39.1
 
