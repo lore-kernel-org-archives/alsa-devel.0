@@ -4,133 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8CC3C636CC
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Feb 2023 14:57:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44882C636CC
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Feb 2023 14:58:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6B5DEC0;
-	Thu, 16 Feb 2023 15:56:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6B5DEC0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6853CEF9;
+	Thu, 16 Feb 2023 15:57:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6853CEF9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676559470;
-	bh=tZ8hIGi9k4RUDNQ4lr7TpGDC3hsA2IQMZaiISm7O/GM=;
-	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=HfOe/rzath7imF5zVr9x0birBb1gYQzxaieYXGk3zE1upZ47SYQzRtrgvkwBJs3WU
-	 kRucDUjf79prYnSLFiuqcUiReA3wvVoWvvcYvKEz1ObpzLrhd62EgABl3xvX81petr
-	 MIAyoV8Rrd7Nj3di3QlmjY9kQWcDJHOuuDGkqKU0=
+	s=default; t=1676559481;
+	bh=hJUIVjIWcroVtvu4OXuhx/MmU7Sz2UPG988Be7bAuc8=;
+	h=From:Date:Subject:To:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=RduoHE2IFNI3ID1lz4dkz5zcC6B6sk8nXES6swDII9EXBcVbdIE49wjtUx4sxEZRb
+	 2lMxe6VT6s8xRj1SzNTvU7X/JeZxWilP/dpNOghsqqQ5a67L6rc/abIL7p7HOk0mrR
+	 KRBBaqUgN0E9S15fPEgOPmKdGaxWV8ZEfP+RkJ00=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24594F8059F;
-	Thu, 16 Feb 2023 15:55:12 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01A89F805A8;
+	Thu, 16 Feb 2023 15:55:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ED433F8018A; Sat, 11 Feb 2023 00:55:13 +0100 (CET)
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com
- [IPv6:2607:f8b0:4864:20::42f])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 1E96EF800E4; Sat, 11 Feb 2023 04:34:14 +0100 (CET)
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7D641F80086
-	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2023 00:55:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D641F80086
+	by alsa1.perex.cz (Postfix) with ESMTPS id E04A0F80086
+	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2023 04:34:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E04A0F80086
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=Oh6mXmII
-Received: by mail-pf1-x42f.google.com with SMTP id n2so4598077pfo.3
-        for <alsa-devel@alsa-project.org>;
- Fri, 10 Feb 2023 15:55:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sac/fX0wt9v0DHBtkfOe72qxgSq2ZxL7sJ1RWk0mQzQ=;
-        b=Oh6mXmII+Z7iHd6314WW1IkZYatL53ousxgQOW7+m/EyoqbBUNzdiADjeTgbLBh4MM
-         r6WJWYin1EetsFpHoW2v/rrFOwVTFqYi97k7uzhc4gSRvCjsxPbOKxKPpNQkuplwxMYj
-         iJwCrNrYgb7Q4kVc9EykNh6RO4shGUuPYn7oB59kkng+UMxT94IJ2E+7NoB6UI0oVts0
-         FCPkDXToksMdz/CKXYy7M2Daa6U4j7HT90WhTUHMbghRVOdfyqFpkjfMKOor2poztRAF
-         qszAjfqrMzBPVc4sCRbSolXncQ4LD4B3G2ruzxF0kEglUfAL/afRdWpGGqLPYj16bMnc
-         NvDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sac/fX0wt9v0DHBtkfOe72qxgSq2ZxL7sJ1RWk0mQzQ=;
-        b=Cy22pmcXOSQktCEqQdSjTMjjeTu/+NCdJQZyKkl3CQABZGv2ozIv90yD0MQ3jsmMUI
-         3BdLCGhMEmsEVA7v7sLif4E/LEad0yOD6Xu+v7I1yhokRelw9pZsa8BacvdBz0WedY6X
-         sNEpVpkA4x23GPxZIdpjBX4VAEl42DcrNKxgPInd5YU06DfCNQwz8g/OQMIiZXs6GzJZ
-         PYfkESzcbdlKmPWhWx/NvZnxK6bxgixO63h6kWpbKolbeti57Dfp06z0cbBkLet44vwc
-         5DxQNYiOgm4lVXHM4x1hsW1vodjQjZBF28S9+0k1ABLWJCkqx+DTpZxFlyPVdG9U7SKD
-         47Mg==
-X-Gm-Message-State: AO0yUKWWO3aF4+wmihDsWUUgbR0TSLHZPqz/DPr1ufIOyZUnWeDq+bw+
-	QQQqASXJPVDWng1Zob7QlHw=
-X-Google-Smtp-Source: 
- AK7set9nPEtV76VsB+ysNcWvcdA/XjTiAQwDc+XnZPZ2oGeO6JBsSezTX4grz36H63ofrjyYlHusKg==
-X-Received: by 2002:a62:1b8a:0:b0:592:fc9f:8ae5 with SMTP id
- b132-20020a621b8a000000b00592fc9f8ae5mr14453938pfb.23.1676073301644;
-        Fri, 10 Feb 2023 15:55:01 -0800 (PST)
-Received: from redecorated-mbp ([202.53.32.211])
-        by smtp.gmail.com with ESMTPSA id
- g8-20020aa78188000000b0056be1581126sm3888031pfi.143.2023.02.10.15.54.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Feb 2023 15:55:01 -0800 (PST)
-Date: Sat, 11 Feb 2023 10:54:47 +1100
-From: Orlando Chamberlain <orlandoch.dev@gmail.com>
-To: Alex Deucher <alexdeucher@gmail.com>
-Subject: Re: [RFC PATCH 9/9] drm/amdgpu: register a vga_switcheroo client
- for all GPUs that are not thunderbolt attached
-Message-ID: <20230211105447.0d8dda6b@redecorated-mbp>
-In-Reply-To: 
- <CADnq5_PXa=d8ie8jj7sGxvxfn+ZNwed-eSyNg89PfWCvpo8LCw@mail.gmail.com>
-References: <20230210044826.9834-1-orlandoch.dev@gmail.com>
-	<20230210044826.9834-10-orlandoch.dev@gmail.com>
-	<CADnq5_PVsrk4+K45kVgU=r98B9GgC2CxbC8AvGUXRtv2sZAHPg@mail.gmail.com>
-	<b3a2d525-b30c-164c-705c-97fcb0016540@redhat.com>
-	<CADnq5_PXa=d8ie8jj7sGxvxfn+ZNwed-eSyNg89PfWCvpo8LCw@mail.gmail.com>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.35; x86_64-pc-linux-gnu)
+	dkim=pass (1024-bit key,
+ unprotected) header.d=weissschuh.net header.i=@weissschuh.net
+ header.a=rsa-sha256 header.s=mail header.b=Nlkhb7/w
+From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+	s=mail; t=1676086438;
+	bh=hJUIVjIWcroVtvu4OXuhx/MmU7Sz2UPG988Be7bAuc8=;
+	h=From:Date:Subject:To:Cc:From;
+	b=Nlkhb7/w3HVQhOPusCBshsTE2RxwP3UhboUuSlVe4kmfAXzewm6FRxuBAPonAjtDu
+	 GuXKqyfoCfmWQ8zV44Uc/GBSAy3M9vMrGgentEpTfObRWH8Hj8RL2oa+XyIoqy+1Fg
+	 ZHCHXJvxdNr68pYPqgZi+/rhGbhQ8pljY2KA7wZg=
+Date: Sat, 11 Feb 2023 03:33:53 +0000
+Subject: [PATCH] ALSA: hda: make kobj_type structure constant
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-MailFrom: orlandoch.dev@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20230211-kobj_type-sound-v1-1-17107ceb25b7@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAKAM52MC/x2N0QrCMAwAf2Xk2ULTPemviEizRhcd6WicOMb+f
+ cHHOzhuA+MmbHDpNmj8FZOqDnjqYBizPjlIcYYUUx8TYnhXet0/68zB6qIlxB4LIjOdmcArysa
+ BWtZh9E6XaXI5N37I77+53vb9ALFIMzl2AAAA
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+X-Mailer: b4 0.12.1
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1676086434; l=970;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=hJUIVjIWcroVtvu4OXuhx/MmU7Sz2UPG988Be7bAuc8=;
+ b=hfQTL2SZmLdiFSwlG3dnRfYwVUsBxpeQYwTuSWZgxp/oi3Uw/HmSgB6yKiqlWzlQ+YOah2NzE
+ 59vxI90qCtBAQh4xuDlNWs8bIvhLqNfs7jGQPDwKIZhMB4zIu1HgMBK
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+X-MailFrom: linux@weissschuh.net
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: TMLNKFOEQ6ZVAOAIHTD2FVABNIAF6LJF
-X-Message-ID-Hash: TMLNKFOEQ6ZVAOAIHTD2FVABNIAF6LJF
+Message-ID-Hash: 76SBCPPWCWIKFUHL7PIBEW7TBYURFWKS
+X-Message-ID-Hash: 76SBCPPWCWIKFUHL7PIBEW7TBYURFWKS
 X-Mailman-Approved-At: Thu, 16 Feb 2023 14:54:48 +0000
-CC: Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org,
- amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, "Pan, Xinhui" <Xinhui.Pan@amd.com>,
- Lijo Lazar <lijo.lazar@amd.com>, Rander Wang <rander.wang@intel.com>,
- YiPeng Chai <YiPeng.Chai@amd.com>,
- Mario Limonciello <mario.limonciello@amd.com>,
- David Airlie <airlied@gmail.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Evan Quan <evan.quan@amd.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Yong Zhi <yong.zhi@intel.com>, Aun-Ali Zaidi <admin@kodeit.net>,
- Bokun Zhang <Bokun.Zhang@amd.com>, Mark Gross <markgross@kernel.org>,
- Kerem Karabay <kekrby@gmail.com>, Jack Xiao <Jack.Xiao@amd.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Somalapuram Amaranath <Amaranath.Somalapuram@amd.com>,
- Takashi Iwai <tiwai@suse.com>, Aditya Garg <gargaditya08@live.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
- Hawking Zhang <Hawking.Zhang@amd.com>
+CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TMLNKFOEQ6ZVAOAIHTD2FVABNIAF6LJF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/76SBCPPWCWIKFUHL7PIBEW7TBYURFWKS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -139,137 +88,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 10 Feb 2023 11:37:08 -0500
-Alex Deucher <alexdeucher@gmail.com> wrote:
+Since commit ee6d3dd4ed48 ("driver core: make kobj_type constant.")
+the driver core allows the usage of const struct kobj_type.
 
-> On Fri, Feb 10, 2023 at 11:07 AM Hans de Goede <hdegoede@redhat.com>
-> wrote:
-> >
-> > Hi,
-> >
-> > On 2/10/23 16:53, Alex Deucher wrote:  
-> > > On Fri, Feb 10, 2023 at 3:04 AM Orlando Chamberlain
-> > > <orlandoch.dev@gmail.com> wrote:  
-> > >>
-> > >> From: Kerem Karabay <kekrby@gmail.com>
-> > >>
-> > >> Commit 3840c5bcc245 ("drm/amdgpu: disentangle runtime pm and
-> > >> vga_switcheroo") made amdgpu only register a vga_switcheroo
-> > >> client for GPU's with PX, however AMD GPUs in dual gpu Apple
-> > >> Macbooks do need to register, but don't have PX. Instead of
-> > >> AMD's PX, they use apple-gmux.  
-> > >
-> > > Is there a way to detect apple-gmux instead?  Otherwise, we
-> > > register vga_switcheroo on any system with multiple GPUs which is
-> > > not what we want.  
-> >
-> > Yes since 6.1.y (either stable series or just take 6.2.0) the
-> > apple-gmux detect code has been factored out into a stand-alone
-> > apple_gmux_detect() helper inside:
-> >
-> > include/linux/apple-gmux.h
-> >
-> > For usage outside of the actual apple-gmux driver you can simply
-> > pass NULL for both arguments.
-> >
-> > This was necessary to reliably check if the apple-gmux should be
-> > used for backlight control.
-> >
-> > Note there also is the older apple_gmux_present() helper, which is
-> > already used in some drm code. That function is not reliable though
-> > it detects if the ACPI tables contain an ACPI device describing
-> > the presence of a gmux, but it turns out even Apple has buggy ACPI
-> > tables and the mere presence of that ACPI device is not a reliable
-> > indicator the gmux is actually there.
-> >
-> > I have not changed over any of the existing apple_gmux_present()
-> > users for fear of unwanted side effects...  
-> 
-> Looks like we could maybe use the PWRD ACPI check like patch 8 does
-> as well.
+Take advantage of this to constify the structure definition to prevent
+modification at runtime.
 
-I wasn't using apple_gmux_detect as I mistakenly thought
-pnp_get_resource would fail if apple-gmux had bound to the resource but
-it looks like I was wrong about that so we can use that to determine if
-the system has a gmux. I think I'll do that in v2.
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ sound/hda/hdac_sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-As far as I know there's only one internal (non
-thunderbolt) amd gpu inside all Macbooks with gmux so we probably
-wouldn't need to check for PWRD to ensure it's  the right gpu.
+diff --git a/sound/hda/hdac_sysfs.c b/sound/hda/hdac_sysfs.c
+index 62a9615dcf52..60b0a70428d5 100644
+--- a/sound/hda/hdac_sysfs.c
++++ b/sound/hda/hdac_sysfs.c
+@@ -148,7 +148,7 @@ static void widget_release(struct kobject *kobj)
+ 	kfree(kobj);
+ }
+ 
+-static struct kobj_type widget_ktype = {
++static const struct kobj_type widget_ktype = {
+ 	.release	= widget_release,
+ 	.sysfs_ops	= &widget_sysfs_ops,
+ };
 
-With PWRD, I don't know if its present on all Dual GPU Macbooks, I've
-only found the acpi tables for Macbookpro14,x to Macbookpro16,x, so I
-don't know if it will work on older Macs (I'm also not sure if those
-macs are using radeon or amdgpu).
+---
+base-commit: 420b2d431d18a2572c8e86579e78105cb5ed45b0
+change-id: 20230211-kobj_type-sound-031d11eeb9eb
 
-> Alex
-> 
-> >
-> > Regards,
-> >
-> > Hans
-> >
-> >
-> >
-> >  
-> > >> Revert to the old logic of registering for all non-thunderbolt
-> > >> gpus, like radeon and nouveau.
-> > >>
-> > >> Fixes: 3840c5bcc245 ("drm/amdgpu: disentangle runtime pm and
-> > >> vga_switcheroo") Signed-off-by: Kerem Karabay <kekrby@gmail.com>
-> > >> [Orlando Chamberlain <orlandoch.dev@gmail.com>: add commit
-> > >> description] Signed-off-by: Orlando Chamberlain
-> > >> <orlandoch.dev@gmail.com> ---
-> > >>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 18
-> > >> +++++++++++------- 1 file changed, 11 insertions(+), 7
-> > >> deletions(-)
-> > >>
-> > >> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> > >> b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c index
-> > >> 2f28a8c02f64..0bb553a61552 100644 ---
-> > >> a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c +++
-> > >> b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c @@ -3919,12
-> > >> +3919,13 @@ int amdgpu_device_init(struct amdgpu_device *adev,
-> > >> if ((adev->pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA)
-> > >> vga_client_register(adev->pdev, amdgpu_device_vga_set_decode);
-> > >>
-> > >> -       if (amdgpu_device_supports_px(ddev)) {
-> > >> -               px = true;
-> > >> -               vga_switcheroo_register_client(adev->pdev,
-> > >> -
-> > >> &amdgpu_switcheroo_ops, px);
-> > >> +       px = amdgpu_device_supports_px(ddev);
-> > >> +
-> > >> +       if (!pci_is_thunderbolt_attached(adev->pdev))
-> > >> +               vga_switcheroo_register_client(adev->pdev,
-> > >> &amdgpu_switcheroo_ops, px); +
-> > >> +       if (px)
-> > >>                 vga_switcheroo_init_domain_pm_ops(adev->dev,
-> > >> &adev->vga_pm_domain);
-> > >> -       }
-> > >>
-> > >>         if (adev->gmc.xgmi.pending_reset)
-> > >>                 queue_delayed_work(system_wq,
-> > >> &mgpu_info.delayed_reset_work, @@ -4048,10 +4049,13 @@ void
-> > >> amdgpu_device_fini_sw(struct amdgpu_device *adev)
-> > >>
-> > >>         kfree(adev->bios);
-> > >>         adev->bios = NULL;
-> > >> -       if (amdgpu_device_supports_px(adev_to_drm(adev))) {
-> > >> +
-> > >> +       if (!pci_is_thunderbolt_attached(adev->pdev))
-> > >>                 vga_switcheroo_unregister_client(adev->pdev);
-> > >> +
-> > >> +       if (amdgpu_device_supports_px(adev_to_drm(adev)))
-> > >>                 vga_switcheroo_fini_domain_pm_ops(adev->dev);
-> > >> -       }
-> > >> +
-> > >>         if ((adev->pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA)
-> > >>                 vga_client_unregister(adev->pdev);
-> > >>
-> > >> --
-> > >> 2.39.1
-> > >>  
-> > >  
-> >  
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
 
