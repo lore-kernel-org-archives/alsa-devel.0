@@ -4,90 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6D28C61DA4
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Feb 2023 08:38:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13664C61DA4
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Feb 2023 08:39:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9472E84D;
-	Sat, 11 Feb 2023 09:37:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9472E84D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73722207;
+	Sat, 11 Feb 2023 09:39:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73722207
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676104701;
-	bh=OT8dIPMBiw7/y5c+4ACRONXWeo1iN5efVjRFwPC5uRg=;
+	s=default; t=1676104793;
+	bh=r6Ig+AxXPZ0frUZfleZMZSnU2+7yAiLnyhPQY7tFTS4=;
 	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mR3/tfRwuwiSAZtIE1/9nZxZatVr22OHebnyNNzaQ3ZsgxWQwMjaO1vVBZFMpc2gu
-	 TyXtofEBfHvrtPiLjNPvGl993IE6NE6wiChdHj6fxuMxi3h82KoXF+dPYwvlzfrnxB
-	 lPfUDTRiCaNiGSz7KeXTFFNKyJBr9MZPvUkyFrIY=
+	b=Der83bfB0HTcvLz3QeiehV4t+6Fn4YCGx76SXxCSGR7q0LnGXDSyOV8SESJhQrDIe
+	 3nukV4LnTdF75CN2lLe8MMIlV762LOcw2hj6KfrjPy+nWUA8C9QX783/iUXh8e3lCQ
+	 KXCEK6o5wR8WD/usdCOug31ORwqYEHfHcEXCtREA=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6C42F804F2;
-	Sat, 11 Feb 2023 09:37:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB37EF800E4;
+	Sat, 11 Feb 2023 09:38:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5ED70F804F2; Sat, 11 Feb 2023 09:37:12 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	id 25A88F800E4; Sat, 11 Feb 2023 09:38:34 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2947CF8018A
-	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2023 09:37:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2947CF8018A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 19C55F80038
+	for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2023 09:38:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19C55F80038
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=C7Qkr5s+;
+ header.s=susede2_rsa header.b=zJxgweaq;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=QD4AAHQJ
+ header.s=susede2_ed25519 header.b=1nudmfgJ
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A666D1FF63;
-	Sat, 11 Feb 2023 08:37:04 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 803A3336B1;
+	Sat, 11 Feb 2023 08:38:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1676104624;
+	t=1676104710;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rxqUG4FW+UytzRD9sit/yMzYpMXvO/bELYRtO7bnM4Q=;
-	b=C7Qkr5s+gBQ6Png/WKlihiPIiC1BxLWt4WiDA6j7G9z5fiv+bRYrXkkYUPHO/4baytQYWz
-	cYbKM8ZC6Z8Zm571qyyfj/g/6svAAZDRPOUjbaKaHvmhxfMbFo7gqS4LvYH3C6p6zlCCdR
-	/KWpniEY/b4G1sZtnzxSrmJYWvh460c=
+	bh=hzYAmcEVYk0qhXxqW+ZCHSAIQSBuANzaT/Rs3V9LXdg=;
+	b=zJxgweaqO7cpPESNCxWFuJptYx8YfRkfxrTK+GlNfD3NpqOvdiemdvcVnrMXbzYPBofuCC
+	WwRU9ByWdtVpsIvlf8J9LkuS5A4dw5/3EhVkYPSv6Ob+8iHCTCyNMdsrEAMF+ClYCZzmHc
+	Oalg0ybVbcAG+Y1cg/tbuDPDDxKHX5E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1676104624;
+	s=susede2_ed25519; t=1676104710;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rxqUG4FW+UytzRD9sit/yMzYpMXvO/bELYRtO7bnM4Q=;
-	b=QD4AAHQJ2oD9USvKYDPn8B2FRcKO08zSp4WDyWg1z6DRz1vYWpOb/Vo7d2Kzor0Av3EiKH
-	IwKpzIZqf3CH5zDQ==
+	bh=hzYAmcEVYk0qhXxqW+ZCHSAIQSBuANzaT/Rs3V9LXdg=;
+	b=1nudmfgJXeqlLVpgSo0fRO2iuqp0cxPlUlBZwZpAJIBPDWksWtaPooifZJsvvlnqXiRNp8
+	XDZsriNeUyeMEQBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6D48113A1F;
-	Sat, 11 Feb 2023 08:37:04 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5573713A1F;
+	Sat, 11 Feb 2023 08:38:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id d73jGbBT52MJDQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Sat, 11 Feb 2023 08:37:04 +0000
-Date: Sat, 11 Feb 2023 09:37:03 +0100
-Message-ID: <87y1p4ha34.wl-tiwai@suse.de>
+	id WnvrEwZU52OJDQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Sat, 11 Feb 2023 08:38:30 +0000
+Date: Sat, 11 Feb 2023 09:38:29 +0100
+Message-ID: <87wn4oha0q.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH] ALSA: hda: Fix codec device field initializan
-In-Reply-To: <20230210165541.3543604-1-cezary.rojewski@intel.com>
-References: <20230210165541.3543604-1-cezary.rojewski@intel.com>
+To: Thomas =?ISO-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Subject: Re: [PATCH] ALSA: hda: make kobj_type structure constant
+In-Reply-To: <20230211-kobj_type-sound-v1-1-17107ceb25b7@weissschuh.net>
+References: <20230211-kobj_type-sound-v1-1-17107ceb25b7@weissschuh.net>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: U4TZYBMSXKIKPBEUVF5C57EQMXTQJ7GK
-X-Message-ID-Hash: U4TZYBMSXKIKPBEUVF5C57EQMXTQJ7GK
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: B46K22KOSS723TLWYN6J7QKIT3TDG4AH
+X-Message-ID-Hash: B46K22KOSS723TLWYN6J7QKIT3TDG4AH
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -95,15 +99,14 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, tiwai@suse.com, broonie@kernel.org,
- amadeuszx.slawinski@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- hdegoede@redhat.com, jmontleo@redhat.com, casaxa@gmail.com, lma@semihalf.com
+CC: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U4TZYBMSXKIKPBEUVF5C57EQMXTQJ7GK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B46K22KOSS723TLWYN6J7QKIT3TDG4AH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,38 +115,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 10 Feb 2023 17:55:41 +0100,
-Cezary Rojewski wrote:
+On Sat, 11 Feb 2023 04:33:53 +0100,
+Thomas Weiﬂschuh wrote:
 > 
-> Commit f2bd1c5ae2cb ("ALSA: hda: Fix page fault in
-> snd_hda_codec_shutdown()") relocated initialization of several codec
-> device fields. Due to differences between codec_exec_verb() and
-> snd_hdac_bus_exec_bus() in how they handle VERB execution - the latter
-> does not touch PM - assigning ->exec_verb to codec_exec_verb() causes PM
-> to be engaged before it is configured for the device. Configuration of
-> PM for the ASoC HDAudio sound card is done with snd_hda_set_power_save()
-> during skl_hda_audio_probe() whereas the assignment happens early, in
-> snd_hda_codec_device_init().
+> Since commit ee6d3dd4ed48 ("driver core: make kobj_type constant.")
+> the driver core allows the usage of const struct kobj_type.
 > 
-> Revert to previous behavior to avoid problems caused by too early PM
-> manipulation.
+> Take advantage of this to constify the structure definition to prevent
+> modification at runtime.
 > 
-> Suggested-by: Jason Montleon <jmontleo@redhat.com>
-> Link: https://lore.kernel.org/regressions/CALFERdzKUodLsm6=Ub3g2+PxpNpPtPq3bGBLbff=eZr9_S=YVA@mail.gmail.com
-> Fixes: f2bd1c5ae2cb ("ALSA: hda: Fix page fault in snd_hda_codec_shutdown()")
-> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-> ---
-> 
-> A result of recent discussion [1] regarding sound regression in v6.1 and
-> onward. Fix made possible by outstanding input from Jason and Sasa
-> (Cced) - Thank you!
-> 
-> Note: I did not receive results from our CI yet, should happen on Monday
-> but posting early so the review can be conducted.
-> 
-> [1]: https://lore.kernel.org/regressions/CALFERdzKUodLsm6=Ub3g2+PxpNpPtPq3bGBLbff=eZr9_S=YVA@mail.gmail.com/
+> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
 
-Applied now.  Thanks.
+Thanks, applied now.
 
 
 Takashi
