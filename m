@@ -4,124 +4,172 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 628CEC636CC
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Feb 2023 12:39:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B72BC636D4
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Feb 2023 12:52:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 477FC82A;
-	Mon, 13 Feb 2023 13:38:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 477FC82A
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD26E20B;
+	Mon, 13 Feb 2023 13:52:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD26E20B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676291986;
-	bh=2SQ/LU4e1NX+vkEWCvcD2LJR3vXqnk9dn/dilBbnng4=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=XAGPm/xIlsc3WnbnIHpSJLGu7eTQYwfN2ktx4b3nHT9BYOf/s1TodvjjdXhbWftiP
-	 QIdsq89yF6QAFrrbIGi9BqVHIjH8DOucJuSi+1/C2d/y95HaMEifelN4NKEIxMiHaV
-	 GSmaU0uakpHcsV+w8/5WHQ4ImM58wGFYcMYMLfmc=
+	s=default; t=1676292773;
+	bh=SqUSc0xFa6eoBF99+TocfgxvHOe2xZ/W1XkwGdDE6as=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=iMDwFibbKY8IsOERAbmU9zGTXw4/9ekHmjvCJPtREyET/XnkoFpSTYgMGlYZ4QtM8
+	 9aDooX+UJNotiWijT1sHQlIXFafxZ8s4v4xOUkXyFq5/AxhvZshurK2yptmnVTi9vf
+	 EYScW9hpLgDjDiB+4rJDHIDkUPGUCAEphnXs6Blc=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EAF87F804D6;
-	Mon, 13 Feb 2023 13:38:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46867F8001E;
+	Mon, 13 Feb 2023 13:51:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CC73DF804D6; Mon, 13 Feb 2023 13:38:53 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0B796F80038
-	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2023 13:38:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B796F80038
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=JifwUng5
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	id BA114F804B4; Mon, 13 Feb 2023 13:51:35 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 84A9CB811A9;
-	Mon, 13 Feb 2023 12:38:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9D77C433D2;
-	Mon, 13 Feb 2023 12:38:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1676291927;
-	bh=2SQ/LU4e1NX+vkEWCvcD2LJR3vXqnk9dn/dilBbnng4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JifwUng5qvgtyVqhifBmyQB2Ngkh3ybYoZtPPyTA+KRIT2y7akRB5tnXWWbTd87be
-	 ls5pkznd3VBXtf9RrA5TDuWFspUXaHWgoqCMI/jJ4AGXgqebDlhGUq/9Wzp9q3wmc7
-	 wsBfLWEPmhwVQLSZ151ANKYNd9//IURXHYBDNy5ehoRZgjj5BVxcqhKfaQJ/ODwHOh
-	 vgAp/lPNQBFLhhgylu5vO5NWkwGQwroMTiTnHv1wmBI+QX2S0F60U9738H3wC8cfiX
-	 mB8K553Us2t2yYErjWqze9xYJV04Hb3FNAgAoCqGbj0RH4pggEzXVdCCkwrcg+aX3E
-	 k6UTV+j7FijRA==
-Date: Mon, 13 Feb 2023 12:38:43 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Alexandru Ardelean <alex@shruggie.ro>
-Subject: Re: [PATCH] sound: soc: codec: tlv320adcx140: fix 'ti,gpio-config'
- DT property init
-Message-ID: <Y+ovU4lfc1SjJJKT@sirena.org.uk>
-References: <20230211191315.24554-1-alex@shruggie.ro>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 04085F800B0
+	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2023 13:51:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04085F800B0
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=FitqmEcA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676292689; x=1707828689;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=SqUSc0xFa6eoBF99+TocfgxvHOe2xZ/W1XkwGdDE6as=;
+  b=FitqmEcA9hiKyZiYnvJefEnzOmxuk3onQ9l23mdBu8kOks2y/zrrUq6S
+   91ywv3YkuYzYZjXCo7119MkcVmp0gZ5WB+H7dnD4/0w8MCut9Y8MF+ZHy
+   Pl+knSK7rPF5bxYsI5EeMsEdF86FZ6oBj9cT5hxT00ivyhFFfzYfHt8Vy
+   qW1Cqr4AtZTyaDT0kQA4lZnNDtlOEC/1ansIMkEuc2t731algcLpcrtQY
+   Xkp9kz15T0jFdSScob4+aPv0/AkwNpt6BR9K5m9xBR4qMhW28Eme0lZZs
+   JOYK3jtjRt8G3tNIuB0k5qmzFlp/6Nd9fPvI6r1JRuLcD+Czwg6l6ZW2m
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10619"; a="330887230"
+X-IronPort-AV: E=Sophos;i="5.97,294,1669104000";
+   d="scan'208";a="330887230"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Feb 2023 04:51:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10619"; a="699170321"
+X-IronPort-AV: E=Sophos;i="5.97,294,1669104000";
+   d="scan'208";a="699170321"
+Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
+  by orsmga008.jf.intel.com with ESMTP; 13 Feb 2023 04:51:21 -0800
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: Intel: Skylake: Fix struct definition
+Date: Mon, 13 Feb 2023 21:52:23 +0100
+Message-Id: <20230213205223.2679357-1-amadeuszx.slawinski@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="hH/FRTbnXZxk0HSj"
-Content-Disposition: inline
-In-Reply-To: <20230211191315.24554-1-alex@shruggie.ro>
-X-Cookie: Serving suggestion.
-Message-ID-Hash: AKQOXGCKT5XYQBQZ6NU4XAQCYPLLIPDB
-X-Message-ID-Hash: AKQOXGCKT5XYQBQZ6NU4XAQCYPLLIPDB
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: IYCJDQBJIGWAITJWJWPEAXBXM7KHOB37
+X-Message-ID-Hash: IYCJDQBJIGWAITJWJWPEAXBXM7KHOB37
+X-MailFrom: amadeuszx.slawinski@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com,
- steffen.aschbacher@stihl.de, patrick.frick@stihl.de
+CC: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>, Sasa Ostrouska <casaxa@gmail.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Kees Cook <keescook@chromium.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AKQOXGCKT5XYQBQZ6NU4XAQCYPLLIPDB/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IYCJDQBJIGWAITJWJWPEAXBXM7KHOB37/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+The kernel is globally removing the ambiguous 0-length and 1-element
+arrays in favor of flexible arrays, so that we can gain both compile-time
+and run-time array bounds checking[1]. In this instance, struct
+skl_cpr_cfg contains struct skl_cpr_gtw_cfg, which defined "config_data"
+as a 1-element array.
 
---hH/FRTbnXZxk0HSj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+However, case present in sound/soc/intel/skylake/skl-topology.h is not a
+simple one as the structure takes part in IPC communication. Apparently
+original definition missed one field, which while not used by AudioDSP
+firmware when there is no additional data, is still expected to be part
+of an IPC message. Currently this works because of how 'config_data' is
+declared: 'config_data[1]'. Now when one replaces it with a flexible
+array there would be one field missing. Update struct declaration to fix
+this.
 
-On Sat, Feb 11, 2023 at 09:13:15PM +0200, Alexandru Ardelean wrote:
-> From: Steffen Aschbacher <steffen.aschbacher@stihl.de>
->=20
-> When the 'ti,gpio-config' property is not defined, the
-> device_property_count_u32() will return an error, rather than zero.
+Reported-by: Sasa Ostrouska <casaxa@gmail.com>
+Link: https://lore.kernel.org/all/CALFERdwvq5day_sbDfiUsMSZCQu9HG8-SBpOZDNPeMdZGog6XA@mail.gmail.com/
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: alsa-devel@alsa-project.org
+CC: Kees Cook <keescook@chromium.org>
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+---
+ sound/soc/intel/skylake/skl-messages.c | 2 +-
+ sound/soc/intel/skylake/skl-topology.h | 5 ++++-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 5ab0917a2b3d..d31509298a0a 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -549,7 +549,7 @@ static void skl_copy_copier_caps(struct skl_module_cfg *mconfig,
+ 	if (mconfig->formats_config[SKL_PARAM_INIT].caps_size == 0)
+ 		return;
+ 
+-	memcpy(cpr_mconfig->gtw_cfg.config_data,
++	memcpy(&cpr_mconfig->gtw_cfg.config_data,
+ 			mconfig->formats_config[SKL_PARAM_INIT].caps,
+ 			mconfig->formats_config[SKL_PARAM_INIT].caps_size);
+ 
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index 6db0fd7bad49..30a0977af943 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -115,7 +115,10 @@ struct skl_cpr_gtw_cfg {
+ 	u32 dma_buffer_size;
+ 	u32 config_length;
+ 	/* not mandatory; required only for DMIC/I2S */
+-	u32 config_data[1];
++	struct {
++		u32 gtw_attrs;
++		u32 data[];
++	} config_data;
+ } __packed;
+ 
+ struct skl_dma_control {
+-- 
+2.34.1
 
---hH/FRTbnXZxk0HSj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPqL1MACgkQJNaLcl1U
-h9DBcAf+L+0n4HFrJZXTSpXPIhKxGNQ7B7uB2rhVPdN5j6BXh5PlsJQh9IOw1thk
-AlPQVL7i96Gv+I0WDvwhM9vkQuM+M0ljFKFuxGCsU74cpfLYkOR+tzuu80VlEAoB
-Td1kz56MeQZWjeNtkLci9IXlj8RWm8wIiNh/v1C4DoRNK1pfbpGaK2G5puOtYx6u
-pUQUGrDckIonc/R7K6poje/QTIhuFJZwFFNZ2ZvvgR5qZNxbGDSckQTIrBX18D3l
-ke75MMpf8WekYWRf6APrJi/KTU4P9jmM5eKrfKwi/8SgnJqW8am9zF3lOK41JreT
-kIk5P6zV3CZVskZA19TYofJjQ3bGcg==
-=/kjS
------END PGP SIGNATURE-----
-
---hH/FRTbnXZxk0HSj--
