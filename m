@@ -4,107 +4,119 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E43BC636D4
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Feb 2023 12:54:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87C07C636D4
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Feb 2023 13:42:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C257174C;
-	Mon, 13 Feb 2023 13:53:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C257174C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 62A3A74C;
+	Mon, 13 Feb 2023 14:41:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62A3A74C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676292856;
-	bh=jIAHiOpUZyu4o903XDVaMT723GpUHcMR7GxaRSQTEGg=;
+	s=default; t=1676295760;
+	bh=mBtKMxoiwXj0IdHB3txPg9Cb7TlNZ5n12nvAA+b9JQ0=;
 	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZZu4Cxxu3kLDb/qGF5UnLsir8NP2waL4RItfOHC4O2b7dziF8Cke53x8cqpIkrDkO
-	 rieCpghOfBBQ+FdJzdGwPD+iCuwUkEEt0S0OJYQEYcaFqLFgdTmTdSNqGeR37o18ap
-	 HsnhbkrCKin3+S1L7T/L+81demtcaZyD/UFzTkZY=
+	b=M1s3vEwu8yMAhb4RARSBVDAH7U1dYqQprbbKi/x4k1vstNUMGqz2GJ6MQ/V3FwDWZ
+	 Iwo8OcImdqHy06PfPV0dmaQXVIhQ7XMGJFRSIPvAGAWYTMRO3J/oga9hbScLrIJ8Wf
+	 YbJtwW6GwJmWVOvOcGfs7HugA3co8ZGLk3Vvu/cs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB579F804B4;
-	Mon, 13 Feb 2023 13:53:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6EA2F804B4;
+	Mon, 13 Feb 2023 14:41:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B579BF804B4; Mon, 13 Feb 2023 13:52:58 +0100 (CET)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 6F46DF804B4; Mon, 13 Feb 2023 14:41:22 +0100 (CET)
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
+ [IPv6:2a00:1450:4864:20::433])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id EBE53F8001E
-	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2023 13:52:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EBE53F8001E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0782DF800B0
+	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2023 14:41:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0782DF800B0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=RISancr8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676292775; x=1707828775;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=jIAHiOpUZyu4o903XDVaMT723GpUHcMR7GxaRSQTEGg=;
-  b=RISancr8Vs/T1aTN7lsukQ1kj/Qfr93GWqiQ67vgV77zOcM6N/Qx9g72
-   pO350p3/OIzfk6ATzwb9dbqoXUCZdA8xuo1YhR2JxpROjlMBrXDzD0toJ
-   xgMASjbuUSDkEZPoJ35YrBEUqyYAsysGJLjWh6tHmNcDbB/EQ9WhOFsfM
-   BJfdh5szoQhxNHTfX1M2OMKhvtI943+aH6NU15T/1Ssl8y85rp7wTAEmn
-   fCWMr4DD1zHzjdfAccusk0lvJVaI0fvqvaoF4nJnyrFcvLhx9RbiIPa7B
-   +SBR/vNuyBPRh52k12O9XzTWfRT/Nqvdu0jvK/R+ZwNTBf+bimDNqnFqg
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10619"; a="332190687"
-X-IronPort-AV: E=Sophos;i="5.97,294,1669104000";
-   d="scan'208";a="332190687"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Feb 2023 04:52:50 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10619"; a="670809929"
-X-IronPort-AV: E=Sophos;i="5.97,294,1669104000";
-   d="scan'208";a="670809929"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.16.144])
- ([10.99.16.144])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Feb 2023 04:52:47 -0800
-Message-ID: <af96abd5-1eaa-a74f-cfb6-7ed82fe2207c@linux.intel.com>
-Date: Mon, 13 Feb 2023 13:52:45 +0100
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=FBWDFebJ
+Received: by mail-wr1-x433.google.com with SMTP id m10so3351268wrn.4
+        for <alsa-devel@alsa-project.org>;
+ Mon, 13 Feb 2023 05:41:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jniYWNW0O39wpTJxa3SQEvop6eWznu5uXxnO2EMbWgQ=;
+        b=FBWDFebJdOqOt9UisLdoEICfZUOvdzF4VjQAvexnYvTzYXlNt/8kpZ93WzcGcOScmh
+         GSGmXXBlLEH03sbYKwfyYdGJvTvt4pMuzr3QvwOk6Kpg4D/CaMXYF0kQ4MjOSvjV+bAN
+         KlEL8mdPr3o/gPPowuH8FFQXdXYrJWnq+OJMUqoW2x21lUo42IHDegHxH9wGE21goH5s
+         PTMnWdcixkpnLWd6tjeycsGC2mgjtdXIZ+dqpkzb/RsZGUW8qR8wSIkPtka0Zx/OmEYP
+         ce7lM/rKB9WmY38o5PP/PBywnkTlLPXqo5ljii1M743Mgwkq03eN214Npjdq6fbL0aIG
+         sAhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jniYWNW0O39wpTJxa3SQEvop6eWznu5uXxnO2EMbWgQ=;
+        b=pkJ6X9TRokBRALrl8926qK4pJXtugr2w6Gn9yK5Fpc4Mm48Rt5SPl5W2JKd90oFT0t
+         rtg6vuByEu1jdd5shzHXj3sEUG6ekqMDT0H4KXPx5NCjWxhdJ4cQ0067TKU+IbDL5Ik2
+         o5Q30WNExZufANRCNA2FhkC5eCJIiyh8VQTbQ5fX8V/iWAiQzE9jFXAsOKLI9SmnuGU3
+         N2npkSbhj+1aYFmL23drtmPXPwwbFqbc5++rDs3Ic+PT9CGdJmeFONIavAQVVvRr479J
+         MjQ13F29ydw3s59RkEFZFpRXT5HqF0z7T4YcCfcsOu2P1ghmYL0INb5oRq0FdaqaODsM
+         TFMw==
+X-Gm-Message-State: AO0yUKWZuZw1474z9TOkK6nvV4I6eoeIcFGMdgzyki7UlNmzV2KGqBzi
+	prA2T1aK1ic7ERlIQvicT5hxwQ==
+X-Google-Smtp-Source: 
+ AK7set9Ck5nVtGr3AA0e07USwlY0O4KmviAeT07ZvvWqq9KVybVYwczKDubU1V+AXYHkIkH/gEo6Nw==
+X-Received: by 2002:a5d:61c8:0:b0:2c5:57d5:ef6e with SMTP id
+ q8-20020a5d61c8000000b002c557d5ef6emr3328146wrv.46.1676295673210;
+        Mon, 13 Feb 2023 05:41:13 -0800 (PST)
+Received: from [192.168.1.109] ([178.197.216.144])
+        by smtp.gmail.com with ESMTPSA id
+ q2-20020a5d5742000000b002c560e6ea57sm218722wrw.47.2023.02.13.05.41.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Feb 2023 05:41:12 -0800 (PST)
+Message-ID: <0c74070f-6dbe-9379-3acf-85d173217419@linaro.org>
+Date: Mon, 13 Feb 2023 14:41:10 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.2
-Subject: Re: [PATCH] ASoC: Intel: Skylake: Replace 1-element array with
- flex-array
-To: Kees Cook <keescook@chromium.org>
-References: <20230210051447.never.204-kees@kernel.org>
- <54d4ffb1-1488-1a4f-58b2-8b3471389729@linux.intel.com>
- <63e695c0.620a0220.f69b1.6eec@mx.google.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH 14/17] dt-bindings: sound: apple,mca: Add t8112-mca
+ compatible
+To: Janne Grunau <j@jannau.net>, Hector Martin <marcan@marcan.st>,
+ Sven Peter <sven@svenpeter.dev>, Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Mark Kettenis <kettenis@openbsd.org>, =?UTF-8?Q?Martin_Povi=c5=a1er?=
+ <povik+lin@cutebit.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>
+References: <20230202-asahi-t8112-dt-v1-0-cb5442d1c229@jannau.net>
+ <20230202-asahi-t8112-dt-v1-14-cb5442d1c229@jannau.net>
 Content-Language: en-US
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <63e695c0.620a0220.f69b1.6eec@mx.google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: XVLDRFJSVN6WPJLR6MWBKJE2HQTLSOTL
-X-Message-ID-Hash: XVLDRFJSVN6WPJLR6MWBKJE2HQTLSOTL
-X-MailFrom: amadeuszx.slawinski@linux.intel.com
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230202-asahi-t8112-dt-v1-14-cb5442d1c229@jannau.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: RF7ABUNQMS5SHUKQCOPSKZJITN2Q2FXU
+X-Message-ID-Hash: RF7ABUNQMS5SHUKQCOPSKZJITN2Q2FXU
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Cezary Rojewski <cezary.rojewski@intel.com>,
- Sasa Ostrouska <casaxa@gmail.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
+CC: asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XVLDRFJSVN6WPJLR6MWBKJE2HQTLSOTL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RF7ABUNQMS5SHUKQCOPSKZJITN2Q2FXU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,108 +125,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 2/10/2023 8:06 PM, Kees Cook wrote:
-> On Fri, Feb 10, 2023 at 02:10:56PM +0100, Amadeusz Sławiński wrote:
->> On 2/10/2023 6:14 AM, Kees Cook wrote:
->>> The kernel is globally removing the ambiguous 0-length and 1-element
->>> arrays in favor of flexible arrays, so that we can gain both compile-time
->>> and run-time array bounds checking[1]. In this instance, struct
->>> skl_cpr_cfg contains struct skl_cpr_gtw_cfg, which defined "config_data"
->>> as a 1-element array.
->>>
->>> Normally when switching from a 1-element array to a flex-array, any
->>> related size calculations must be adjusted too. However, it seems the
->>> original code was over-allocating space, since 1 extra u32 would be
->>> included by the sizeof():
->>>
->>>                   param_size = sizeof(struct skl_cpr_cfg);
->>>                   param_size += mconfig->formats_config[SKL_PARAM_INIT].caps_size;
->>>
->>> But the copy uses caps_size bytes, and cap_size / 4 (i.e. sizeof(u32))
->>> for the length tracking:
->>>
->>>           memcpy(cpr_mconfig->gtw_cfg.config_data,
->>>                           mconfig->formats_config[SKL_PARAM_INIT].caps,
->>>                           mconfig->formats_config[SKL_PARAM_INIT].caps_size);
->>>
->>>           cpr_mconfig->gtw_cfg.config_length =
->>>                           (mconfig->formats_config[SKL_PARAM_INIT].caps_size) / 4;
->>>
->>> Therefore, no size calculations need adjusting. Change the struct
->>> skl_cpr_gtw_cfg config_data member to be a true flexible array, which
->>> also fixes the over-allocation, and silences this memcpy run-time false
->>> positive:
->>>
->>>     memcpy: detected field-spanning write (size 100) of single field "cpr_mconfig->gtw_cfg.config_data" at sound/soc/intel/skylake/skl-messages.c:554 (size 4)
->>>
->>> [1] For lots of details, see both:
->>>       https://docs.kernel.org/process/deprecated.html#zero-length-and-one-element-arrays
->>>       https://people.kernel.org/kees/bounded-flexible-arrays-in-c
->>>
->>> Reported-by: Sasa Ostrouska <casaxa@gmail.com>
->>> Link: https://lore.kernel.org/all/CALFERdwvq5day_sbDfiUsMSZCQu9HG8-SBpOZDNPeMdZGog6XA@mail.gmail.com/
->>> Cc: Cezary Rojewski <cezary.rojewski@intel.com>
->>> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>> Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
->>> Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
->>> Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
->>> Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
->>> Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
->>> Cc: Mark Brown <broonie@kernel.org>
->>> Cc: Jaroslav Kysela <perex@perex.cz>
->>> Cc: Takashi Iwai <tiwai@suse.com>
->>> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
->>> Cc: "Amadeusz Sławiński" <amadeuszx.slawinski@linux.intel.com>
->>> Cc: alsa-devel@alsa-project.org
->>> Signed-off-by: Kees Cook <keescook@chromium.org>
->>> ---
->>>    sound/soc/intel/skylake/skl-topology.h | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
->>> index 6db0fd7bad49..ad94f8020c27 100644
->>> --- a/sound/soc/intel/skylake/skl-topology.h
->>> +++ b/sound/soc/intel/skylake/skl-topology.h
->>> @@ -115,7 +115,7 @@ struct skl_cpr_gtw_cfg {
->>>    	u32 dma_buffer_size;
->>>    	u32 config_length;
->>>    	/* not mandatory; required only for DMIC/I2S */
->>> -	u32 config_data[1];
->>> +	u32 config_data[];
->>>    } __packed;
->>>    struct skl_dma_control {
->>
->> This fails in our validation.
+On 12/02/2023 16:41, Janne Grunau wrote:
+> The block found on Apple's M2 SoC is compatible with the existing driver
+> so add its per-SoC compatible.
 > 
-> Ah, okay. Thanks for checking!
-> 
->> Maybe we can use the union workaround, to
->> leave the size as is?
->>
->> Following seems to work in manual test:
->> diff --git a/sound/soc/intel/skylake/skl-topology.h
->> b/sound/soc/intel/skylake/skl-topology.h
->> index 6db0fd7bad49..ffbd2e60fede 100644
->> --- a/sound/soc/intel/skylake/skl-topology.h
->> +++ b/sound/soc/intel/skylake/skl-topology.h
->> @@ -115,7 +115,10 @@ struct skl_cpr_gtw_cfg {
->>          u32 dma_buffer_size;
->>          u32 config_length;
->>          /* not mandatory; required only for DMIC/I2S */
->> -       u32 config_data[1];
->> +       union {
->> +               u32 x;
->> +               u32 config_data[0];
->> +       };
-> 
-> Yeah, that could work, though the last member would be:
-> 	DECLARE_FLEX_ARRAY(u32, config_data);
-> otherwise the array is 0 length (rather than a proper flex array).
-> 
-> But before that, let me see if I can track down where the size is being
-> used, in case we can avoid adding the padding.
-> 
+> Signed-off-by: Janne Grunau <j@jannau.net>
 
-I did spend some more time on this, apparently struct was missing one 
-field according to IPC protocol. I've send fix for this.
+
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
 
