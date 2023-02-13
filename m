@@ -4,69 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10C42C636CC
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Feb 2023 16:20:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 455B6C636D4
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Feb 2023 16:20:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 587F8850;
-	Mon, 13 Feb 2023 17:19:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 587F8850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 497B393A;
+	Mon, 13 Feb 2023 17:19:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 497B393A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676305233;
-	bh=Z5wDnvOGNHRIFgJc+WGtrzbrEBxSmidUa+bQ3LSxztc=;
+	s=default; t=1676305242;
+	bh=/OvkeG9wKo9iaI6Zk4528VnQPTqz6+8K6mJg09DPqXE=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=NX4dfimdIfy4FTF8/+aCkRBI8lSmTCEQdyLI4JpWkdGOWiE7ofIi6WYSeu1S726qT
-	 PIztosQxePd3DGFy7Dm+4Cz2bceE5wXLSv53wdQSVGzuTutTUq3JYmfpVE5xCHqS8y
-	 iwe8QnsREEVn8rBTcf5pKhgUMgGYjNWPcYmgeIY8=
+	b=Jiz4zwnvJ99FRlXNGa51TrUmCAPPsQkLqBuXqXCkPrTt0j2pyV/tMVNDbx0fmea0a
+	 K2wMtt/DwNX9s7fT2JTY4ONL5EEvGi63cTnLq5lFgCLnFezShmZDXy3SgB3ZS0ziUI
+	 9LaYFj/xhQ4glVyGpoX4qnmJ8fd1Axshk+QOtaj4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 13947F8051F;
-	Mon, 13 Feb 2023 17:18:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC137F80529;
+	Mon, 13 Feb 2023 17:18:57 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CDA58F804D6; Mon, 13 Feb 2023 17:18:51 +0100 (CET)
+	id 042E4F8051F; Mon, 13 Feb 2023 17:18:53 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 178AEF804B0
-	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2023 17:18:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 178AEF804B0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7D473F80051
+	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2023 17:18:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D473F80051
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=BtZQE/gF
+ header.s=k20201202 header.b=irRiXqCG
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id AAC48B815C6;
-	Mon, 13 Feb 2023 16:18:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95EDDC433EF;
-	Mon, 13 Feb 2023 16:18:45 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 7BB52B81074;
+	Mon, 13 Feb 2023 16:18:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1741C433EF;
+	Mon, 13 Feb 2023 16:18:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1676305127;
-	bh=Z5wDnvOGNHRIFgJc+WGtrzbrEBxSmidUa+bQ3LSxztc=;
+	s=k20201202; t=1676305123;
+	bh=/OvkeG9wKo9iaI6Zk4528VnQPTqz6+8K6mJg09DPqXE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=BtZQE/gF/++2WEj5M0RL7Ph6EZp6UZ9k/BKk6EQZuca2DTZrylsJhjXN44fjVMG85
-	 jbe3E6uoOKMb0UVMsyYbtVBMCOLF5+5s/4m2esiuqqU43Wcb2MVEQyr4jsONScGHO5
-	 4pP/qQP6qoOMpBWTu9PYVlNSWj0scLk8hO+KVvMoljf5T9JkHul7ljNiKm4/BnY+rG
-	 S1HWCyetPRcOCYpIa56Jjhbi2GS3DcRmm2iRea7xGt1N0nev+EE1UgkBOmyUoIeeft
-	 cxI/ao42OiuiQD8kXOywoqY9TsDB3OIOutfoqOIVs99P7SFskygruJK6K1ve77IuPX
-	 eRw0ujLC0FsFg==
+	b=irRiXqCG/t7HBS3w36NGh3N5EJ/rBHj76kxAOIkQA08ApUpaJq5/SUHekOg3NO/zz
+	 vmQ6Jp9u7YhGkivmt6hjVUWYOCMvBZknL4v9A7zY4SN0T3mWpWQg4CM8btBNh3BmIh
+	 DIIELoX+RP1vLbB5dKRIs5/qjf/DKErMsaeeR3/FwE93Ud0TzMnFJgDm0Hny3oRAPG
+	 nTRXY2FuRFkfcgzl44+kXAgNG/SYMwdOQ+6J/UVZcmNsnFocJXNjinG86GnX+3BO/d
+	 0+ygc8Tvk9liOYXDudy3nqdwQGm5e8i/hHoggz2peaRtVdj1TpWS/Qt2kvA7F9SyCJ
+	 RfEp8GQeUoOwg==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, Yang Li <yang.lee@linux.alibaba.com>
-In-Reply-To: <20230213010547.105312-1-yang.lee@linux.alibaba.com>
-References: <20230213010547.105312-1-yang.lee@linux.alibaba.com>
-Subject: Re: [PATCH -next] ASoC: codecs: Remove unneeded semicolon
-Message-Id: <167630512528.2770751.9782489444187002292.b4-ty@kernel.org>
-Date: Mon, 13 Feb 2023 16:18:45 +0000
+To: alsa-devel@alsa-project.org, Alexandru Ardelean <alex@shruggie.ro>
+In-Reply-To: <20230213073805.14640-1-alex@shruggie.ro>
+References: <20230211191315.24554-1-alex@shruggie.ro>
+ <20230213073805.14640-1-alex@shruggie.ro>
+Subject: Re: [PATCH v2] sound: soc: codec: tlv320adcx140: fix
+ 'ti,gpio-config' DT property init
+Message-Id: <167630512142.2770751.16715644113922205742.b4-ty@kernel.org>
+Date: Mon, 13 Feb 2023 16:18:41 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.0
-Message-ID-Hash: LRFKJGE6ONRRWQ4PMFW2E7SI2CGSZSKT
-X-Message-ID-Hash: LRFKJGE6ONRRWQ4PMFW2E7SI2CGSZSKT
+Message-ID-Hash: VE5VGZT5N6LSHVTD46Y5EVS45UPSUNYH
+X-Message-ID-Hash: VE5VGZT5N6LSHVTD46Y5EVS45UPSUNYH
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -74,15 +76,14 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: herve.codina@bootlin.com, lgirdwood@gmail.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Abaci Robot <abaci@linux.alibaba.com>
+CC: lgirdwood@gmail.com, tiwai@suse.com, steffen.aschbacher@stihl.de,
+ patrick.frick@stihl.de
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LRFKJGE6ONRRWQ4PMFW2E7SI2CGSZSKT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VE5VGZT5N6LSHVTD46Y5EVS45UPSUNYH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,11 +92,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 13 Feb 2023 09:05:47 +0800, Yang Li wrote:
-> ./sound/soc/codecs/peb2466.c:1851:2-3: Unneeded semicolon
-> ./sound/soc/codecs/peb2466.c:1887:2-3: Unneeded semicolon
+On Mon, 13 Feb 2023 09:38:05 +0200, Alexandru Ardelean wrote:
+> When the 'ti,gpio-config' property is not defined, the
+> device_property_count_u32() will return an error, rather than zero.
 > 
+> The current check, only handles a return value of zero, which assumes that
+> the property is defined and has nothing defined.
 > 
+> This change extends the check to also check for an error case (most likely
+> to be hit by the case that the 'ti,gpio-config' is not defined).
+> 
+> [...]
 
 Applied to
 
@@ -103,8 +110,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: Remove unneeded semicolon
-      commit: d227116c0e216da2eceba1d51a364ff025dffa58
+[1/1] sound: soc: codec: tlv320adcx140: fix 'ti,gpio-config' DT property init
+      commit: 771725efe5e2e5396dd9d1220437e5f9d6b9ca9d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
