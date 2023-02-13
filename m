@@ -4,119 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87C07C636D4
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Feb 2023 13:42:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07059C636D4
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Feb 2023 14:51:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62A3A74C;
-	Mon, 13 Feb 2023 14:41:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62A3A74C
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF2CD207;
+	Mon, 13 Feb 2023 15:50:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF2CD207
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676295760;
-	bh=mBtKMxoiwXj0IdHB3txPg9Cb7TlNZ5n12nvAA+b9JQ0=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1676299900;
+	bh=h9DHZIWk5d+3fOFSD+01gZW510pTOFnqX663KvpUkTw=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=M1s3vEwu8yMAhb4RARSBVDAH7U1dYqQprbbKi/x4k1vstNUMGqz2GJ6MQ/V3FwDWZ
-	 Iwo8OcImdqHy06PfPV0dmaQXVIhQ7XMGJFRSIPvAGAWYTMRO3J/oga9hbScLrIJ8Wf
-	 YbJtwW6GwJmWVOvOcGfs7HugA3co8ZGLk3Vvu/cs=
+	b=Ojc57WiuX4tqbcgzrvntSqCqO7bRyIUJRfjhTsKiRrdOVgzmShretT45ZeOnwAeVB
+	 dRCU8L4DHoxF40iusjPHPTqkTGUyz0sdKPYi2zbunsR5R7aFS20O1rn5ErF/EVZwnu
+	 Em2edpn4hLLL9M4F5ZUh6m8HO6JKqVU071cWpWYI=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6EA2F804B4;
-	Mon, 13 Feb 2023 14:41:25 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6058CF804B4;
+	Mon, 13 Feb 2023 15:50:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6F46DF804B4; Mon, 13 Feb 2023 14:41:22 +0100 (CET)
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
- [IPv6:2a00:1450:4864:20::433])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 97271F804F2; Mon, 13 Feb 2023 15:50:21 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0782DF800B0
-	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2023 14:41:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0782DF800B0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 439F2F804B0
+	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2023 15:50:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 439F2F804B0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=FBWDFebJ
-Received: by mail-wr1-x433.google.com with SMTP id m10so3351268wrn.4
-        for <alsa-devel@alsa-project.org>;
- Mon, 13 Feb 2023 05:41:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jniYWNW0O39wpTJxa3SQEvop6eWznu5uXxnO2EMbWgQ=;
-        b=FBWDFebJdOqOt9UisLdoEICfZUOvdzF4VjQAvexnYvTzYXlNt/8kpZ93WzcGcOScmh
-         GSGmXXBlLEH03sbYKwfyYdGJvTvt4pMuzr3QvwOk6Kpg4D/CaMXYF0kQ4MjOSvjV+bAN
-         KlEL8mdPr3o/gPPowuH8FFQXdXYrJWnq+OJMUqoW2x21lUo42IHDegHxH9wGE21goH5s
-         PTMnWdcixkpnLWd6tjeycsGC2mgjtdXIZ+dqpkzb/RsZGUW8qR8wSIkPtka0Zx/OmEYP
-         ce7lM/rKB9WmY38o5PP/PBywnkTlLPXqo5ljii1M743Mgwkq03eN214Npjdq6fbL0aIG
-         sAhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jniYWNW0O39wpTJxa3SQEvop6eWznu5uXxnO2EMbWgQ=;
-        b=pkJ6X9TRokBRALrl8926qK4pJXtugr2w6Gn9yK5Fpc4Mm48Rt5SPl5W2JKd90oFT0t
-         rtg6vuByEu1jdd5shzHXj3sEUG6ekqMDT0H4KXPx5NCjWxhdJ4cQ0067TKU+IbDL5Ik2
-         o5Q30WNExZufANRCNA2FhkC5eCJIiyh8VQTbQ5fX8V/iWAiQzE9jFXAsOKLI9SmnuGU3
-         N2npkSbhj+1aYFmL23drtmPXPwwbFqbc5++rDs3Ic+PT9CGdJmeFONIavAQVVvRr479J
-         MjQ13F29ydw3s59RkEFZFpRXT5HqF0z7T4YcCfcsOu2P1ghmYL0INb5oRq0FdaqaODsM
-         TFMw==
-X-Gm-Message-State: AO0yUKWZuZw1474z9TOkK6nvV4I6eoeIcFGMdgzyki7UlNmzV2KGqBzi
-	prA2T1aK1ic7ERlIQvicT5hxwQ==
-X-Google-Smtp-Source: 
- AK7set9Ck5nVtGr3AA0e07USwlY0O4KmviAeT07ZvvWqq9KVybVYwczKDubU1V+AXYHkIkH/gEo6Nw==
-X-Received: by 2002:a5d:61c8:0:b0:2c5:57d5:ef6e with SMTP id
- q8-20020a5d61c8000000b002c557d5ef6emr3328146wrv.46.1676295673210;
-        Mon, 13 Feb 2023 05:41:13 -0800 (PST)
-Received: from [192.168.1.109] ([178.197.216.144])
-        by smtp.gmail.com with ESMTPSA id
- q2-20020a5d5742000000b002c560e6ea57sm218722wrw.47.2023.02.13.05.41.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Feb 2023 05:41:12 -0800 (PST)
-Message-ID: <0c74070f-6dbe-9379-3acf-85d173217419@linaro.org>
-Date: Mon, 13 Feb 2023 14:41:10 +0100
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=KwtavNN8
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 31D5UX5D028354;
+	Mon, 13 Feb 2023 08:50:13 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=JIw8mwY5Md9J5BihoIWcs2nfJGbKKEYCYk7xpXo8uDM=;
+ b=KwtavNN8opSlhFVCAxvQt7gDRvMENHJyrOOr5yVcbih+xawgGpVKnU/BRoHaOgzm42Yq
+ /vAuv8wCz7MtEFz3PmDiv4Qs2tIi+uLH6PyTQcADOXz3MHg00F1Ke2bYS91YyFP27cB/
+ SDxx1hrHiF7pyl+j/+5ODoR8gMSNBzIE+8xzAJwMPO9Svj5Lq3D5mzJTuRCqQPTv23bD
+ +GSDlaFno32Eut1ibghvGGtg+tErifXPGHNpdRuV4wuvarBppJPt9ONLNOrM50U87qAL
+ Y6xU3VGsTuPrqoSe2snzM2qfsvPatInsJbTHPwmblIGJv+PTTM0ng2M9mcNnEkE2TAZr dg==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3np9a72amh-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 13 Feb 2023 08:50:13 -0600
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Mon, 13 Feb
+ 2023 08:50:11 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.21 via Frontend Transport; Mon, 13 Feb 2023 08:50:11 -0600
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.202.160])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D7C0411AA;
+	Mon, 13 Feb 2023 14:50:10 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v2 1/3] ALSA: hda: cs35l41: Correct error condition handling
+Date: Mon, 13 Feb 2023 14:50:06 +0000
+Message-ID: <20230213145008.1215849-2-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230213145008.1215849-1-sbinding@opensource.cirrus.com>
+References: <20230213145008.1215849-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 14/17] dt-bindings: sound: apple,mca: Add t8112-mca
- compatible
-To: Janne Grunau <j@jannau.net>, Hector Martin <marcan@marcan.st>,
- Sven Peter <sven@svenpeter.dev>, Alyssa Rosenzweig <alyssa@rosenzweig.io>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Mark Kettenis <kettenis@openbsd.org>, =?UTF-8?Q?Martin_Povi=c5=a1er?=
- <povik+lin@cutebit.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
-References: <20230202-asahi-t8112-dt-v1-0-cb5442d1c229@jannau.net>
- <20230202-asahi-t8112-dt-v1-14-cb5442d1c229@jannau.net>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230202-asahi-t8112-dt-v1-14-cb5442d1c229@jannau.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: RF7ABUNQMS5SHUKQCOPSKZJITN2Q2FXU
-X-Message-ID-Hash: RF7ABUNQMS5SHUKQCOPSKZJITN2Q2FXU
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: Gg-lYgEfW_18MPAlBlaKj0GT02Ieh2fr
+X-Proofpoint-ORIG-GUID: Gg-lYgEfW_18MPAlBlaKj0GT02Ieh2fr
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: HIOZ2OFGV25FUFAZWFJ3MR7XDXMOZVBJ
+X-Message-ID-Hash: HIOZ2OFGV25FUFAZWFJ3MR7XDXMOZVBJ
+X-MailFrom: prvs=7408c1a398=sbinding@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org
+CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com,
+ Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
+ Stefan Binding <sbinding@opensource.cirrus.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RF7ABUNQMS5SHUKQCOPSKZJITN2Q2FXU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HIOZ2OFGV25FUFAZWFJ3MR7XDXMOZVBJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,15 +106,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 12/02/2023 16:41, Janne Grunau wrote:
-> The block found on Apple's M2 SoC is compatible with the existing driver
-> so add its per-SoC compatible.
-> 
-> Signed-off-by: Janne Grunau <j@jannau.net>
+From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 
+Function cs_dsp_coeff_write_ctrl() can return 3 possible values:
+0 - no change, 1 - value has changed and -1 - error, so positive value
+is not an error.
+Fixes: 7406bdbc4fb8 ("ASoC: wm_adsp: Return whether changed when writing controls")
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ sound/pci/hda/hda_cs_dsp_ctl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/sound/pci/hda/hda_cs_dsp_ctl.c b/sound/pci/hda/hda_cs_dsp_ctl.c
+index 5433f6227ac9..463ca06036bf 100644
+--- a/sound/pci/hda/hda_cs_dsp_ctl.c
++++ b/sound/pci/hda/hda_cs_dsp_ctl.c
+@@ -218,10 +218,10 @@ int hda_cs_dsp_write_ctl(struct cs_dsp *dsp, const char *name, int type,
+ 	cs_ctl = cs_dsp_get_ctl(dsp, name, type, alg);
+ 	ret = cs_dsp_coeff_write_ctrl(cs_ctl, 0, buf, len);
+ 	mutex_unlock(&dsp->pwr_lock);
+-	if (ret)
++	if (ret < 0)
+ 		return ret;
+ 
+-	if (cs_ctl->flags & WMFW_CTL_FLAG_SYS)
++	if (ret == 0 || (cs_ctl->flags & WMFW_CTL_FLAG_SYS))
+ 		return 0;
+ 
+ 	ctl = cs_ctl->priv;
+-- 
+2.34.1
 
