@@ -4,42 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8920C636D7
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Feb 2023 09:39:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 520A7C636D4
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Feb 2023 09:39:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD008846;
-	Mon, 13 Feb 2023 10:38:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD008846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3517F82A;
+	Mon, 13 Feb 2023 10:38:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3517F82A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676281151;
-	bh=vKc1OuHFB2ch7WY3s3LjqCk5OvLaMGbcCXaVMPkv8No=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=mwkKKgxzAe79a7La+8fEPVZlDIet//aHqtpAyBxeis2DolgC5KzEdN4xXUChlmbmP
-	 2ux4/PJej+vuFCXo+9rvp/L6FFksK7QFU/5fbYZ7nETluCSozUIQtt+78m+cRxL1nv
-	 eoQM1h1HB8LZMmDLIttotT1eQAm6IKyiHPJReqnw=
+	s=default; t=1676281170;
+	bh=KjwcqPPyVysCNEXgm49rjUUyqorecBzFx7iFhVajNwk=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=aFzUfZ4SKFDa32miRtI9Eool/m2uSzkDP1XJnM8F7qJLXHpzOJ3U9Z6askvQ6VLQ/
+	 R3FQ+UIm5dW5cguX3/LX0Os1FMaHumrrDuXGGOqV6LvVpvRntF/lpIPFS8mgYqIOT7
+	 C+6zlWaybFvFftZLGCfPHloopfVNR/w+0au9FET4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91F3EF80529;
-	Mon, 13 Feb 2023 10:37:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85B6DF8053B;
+	Mon, 13 Feb 2023 10:37:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 715F4F804B4; Mon, 13 Feb 2023 10:37:14 +0100 (CET)
-Received: from out28-171.mail.aliyun.com (out28-171.mail.aliyun.com
- [115.124.28.171])
+	id 0B74FF804B0; Mon, 13 Feb 2023 10:37:16 +0100 (CET)
+Received: from out28-77.mail.aliyun.com (out28-77.mail.aliyun.com
+ [115.124.28.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F092AF804B0
-	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2023 10:37:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F092AF804B0
+	by alsa1.perex.cz (Postfix) with ESMTPS id BFB35F804D6
+	for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2023 10:37:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFB35F804D6
 X-Alimail-AntiSpam: 
- AC=CONTINUE;BC=0.08069851|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00672893-0.000500749-0.99277;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=21;RT=21;SR=0;TI=SMTPD_---.RKjcWdk_1676281011;
+ AC=CONTINUE;BC=0.1776371|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0848819-0.000824855-0.914293;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=21;RT=21;SR=0;TI=SMTPD_---.RKjcWqW_1676281017;
 Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com
- fp:SMTPD_---.RKjcWdk_1676281011)
+ fp:SMTPD_---.RKjcWqW_1676281017)
           by smtp.aliyun-inc.com;
-          Mon, 13 Feb 2023 17:36:53 +0800
+          Mon, 13 Feb 2023 17:36:58 +0800
 From: wangweidong.a@awinic.com
 To: lgirdwood@gmail.com,
 	broonie@kernel.org,
@@ -58,15 +59,17 @@ To: lgirdwood@gmail.com,
 	colin.i.king@gmail.com,
 	alsa-devel@alsa-project.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3][next] ASoC: codecs: Modify error implicit declaration of
- function and misspelling
-Date: Mon, 13 Feb 2023 17:36:46 +0800
-Message-Id: <20230213093649.22928-1-wangweidong.a@awinic.com>
+Subject: [PATCH 3/3][next] ASoC: codecs: Modify error implicit declaration of
+  function 'gpiod_set_value_cansleep'
+Date: Mon, 13 Feb 2023 17:36:49 +0800
+Message-Id: <20230213093649.22928-4-wangweidong.a@awinic.com>
 X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230213093649.22928-1-wangweidong.a@awinic.com>
+References: <20230213093649.22928-1-wangweidong.a@awinic.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: H2IY5M27AIUFXL6QBJDKYPMOZPE667YT
-X-Message-ID-Hash: H2IY5M27AIUFXL6QBJDKYPMOZPE667YT
+Message-ID-Hash: FRSKFJ2CKQIWSDCOUIWGT4KIFF4SRZXI
+X-Message-ID-Hash: FRSKFJ2CKQIWSDCOUIWGT4KIFF4SRZXI
 X-MailFrom: wangweidong.a@awinic.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -81,7 +84,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H2IY5M27AIUFXL6QBJDKYPMOZPE667YT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FRSKFJ2CKQIWSDCOUIWGT4KIFF4SRZXI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,23 +95,26 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Weidong Wang <wangweidong.a@awinic.com>
 
-Change the function name aw88395_plack_event to aw88395_playback_event
-Change hdrlen to hdr_len
 Add select GPIOLIB to the sound/soc/codecs/Kconfig file
 
-Weidong Wang (3):
-  ASoC: codecs: Fixed a spelling error in the function name
-  ASoC: codecs: Modify the log print statement
-  ASoC: codecs: Modify error: implicit declaration of  function
-    'gpiod_set_value_cansleep'
+Signed-off-by: Ben Yi <yijiangtao@awinic.com>
+Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
+---
+ sound/soc/codecs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
- sound/soc/codecs/Kconfig               | 1 +
- sound/soc/codecs/aw88395/aw88395.c     | 4 ++--
- sound/soc/codecs/aw88395/aw88395_lib.c | 2 +-
- 3 files changed, 4 insertions(+), 3 deletions(-)
-
-
-base-commit: 6ba8a227fd19d19779005fb66ad7562608e1df83
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index ab7b0696d01d..4621674e68bf 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -614,6 +614,7 @@ config SND_SOC_AW88395
+ 	select CRC8
+ 	select CRC32
+ 	select REGMAP_I2C
++	select GPIOLIB
+ 	select SND_SOC_AW88395_LIB
+ 	help
+ 	  this option enables support for aw88395 Smart PA.
 -- 
 2.39.1
 
