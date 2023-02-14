@@ -4,94 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8A09C05027
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Feb 2023 14:06:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15E0FC61DA4
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Feb 2023 14:08:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CAA26827;
-	Tue, 14 Feb 2023 15:05:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAA26827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71E1D83B;
+	Tue, 14 Feb 2023 15:07:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71E1D83B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676383565;
-	bh=RN0IGKg75RyuuAItY3VXtlUy/UiOG2QzTLEZNMnbfLo=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	s=default; t=1676383686;
+	bh=x2M4RTQhs4BuIteruCMYvPdwzVGa1ALi20bvbopSMHE=;
+	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=j87ckoVPlBc9HGhf3bF+6DSApzkzLzzg3TppDqI1k8y2s/36jRPn+PBCVWoNPbcge
-	 ofn8sdec87gx8zwFG8m4jyK3tUYUCIpXhBOcevZzGSSe+dUAg/qy5CngbqQE/nMl4W
-	 Qfshxf/FsLvmByA0gomAiJK5O9i6FVaYu3URzDbc=
+	b=gtBCCp7LufNPOV+RBGBWOWooIGopzD8/WFuQNsPZgB8E0RGo8URxGpNIScU1JGVo4
+	 G/cFZrmewXagK4q4bObwUb8nB4LV9v8rmEEgZElGYQ/KTwZFO1BJ+1Sz0fMXzfMI1l
+	 eT329u5JwmtJ3l7bgsROuO0N7+KbKKYsI8ji6+AI=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91BF2F801C0;
-	Tue, 14 Feb 2023 15:04:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 432C9F8001E;
+	Tue, 14 Feb 2023 15:06:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C12AF801C0; Tue, 14 Feb 2023 15:04:47 +0100 (CET)
-Received: from smtp-relay-canonical-1.canonical.com
- (smtp-relay-canonical-1.canonical.com [185.125.188.121])
+	id 89389F801C0; Tue, 14 Feb 2023 15:06:48 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D1810F800E4
-	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2023 15:04:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1810F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 71986F8001E
+	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2023 15:06:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71986F8001E
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=canonical.com header.i=@canonical.com
- header.a=rsa-sha256 header.s=20210705 header.b=TT+o/Ohl
-Received: from andch-XPS-15-9520.. (1-163-107-120.dynamic-ip.hinet.net
- [1.163.107.120])
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=hRqXq/Mf;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=e5GLnQJz
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 63B83416DC;
-	Tue, 14 Feb 2023 14:04:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1676383482;
-	bh=3vW/TOuUOyoNxoCl0gdvqpkN36BLIBSGjQTU1hx8s50=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version;
-	b=TT+o/OhlyZCq/jifuByjYCYW5TZZAKIrvmG9+WPwyIKq0JycZxUZAFKmMT9IMtZL6
-	 uEnT5smQ3W4HOl1L+ay+ud1URILoVtfNBjCDV7ejVTTLWmmsuct5KAphEsGUggm7It
-	 Bdggieu4JM8lV5XxxIyUrN8AiuuLxKL6Q1qZmM8oCzN/2mLU4GiiZjgVyDSPIz7GNX
-	 1k+Sv+lz+jPbFhlvH6C6jReJYFxIcPpg3gxtlNMlou8zrt9mYXM7W1YBOYdeGYu6/l
-	 K7Oya70M5t4j8BBcmmk6HT4FRrdtwIB/+vIow/44Ie08sqYtD2IuMABixsuJhdhObG
-	 2b3n5YiQ+f2TQ==
-From: Andy Chi <andy.chi@canonical.com>
-To: 
-Subject: [PATCH v3] ALSA: hda/realtek: Enable mute/micmute LEDs and speaker
- support for HP Laptops
-Date: Tue, 14 Feb 2023 22:04:31 +0800
-Message-Id: <20230214140432.39654-1-andy.chi@canonical.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <87sff88p2c.wl-tiwai@suse.de>
-References: <87sff88p2c.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: V62RVD6WRJ3U2KQA47RO5AEFTCRBZDNF
-X-Message-ID-Hash: V62RVD6WRJ3U2KQA47RO5AEFTCRBZDNF
-X-MailFrom: andy.chi@canonical.com
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B3698221DB;
+	Tue, 14 Feb 2023 14:06:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1676383603;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/HyqnGIS75uaLUEjLKgI49GIHkPwUU9uYI/uuygCtm8=;
+	b=hRqXq/MfvDxzvnzSQS02+kHLhkO5r4Ek9/tNBuyXSxX4n2jNYaGqlJwaxweihE7zS/AxKf
+	6JgBWKFbZcKJxptIyUG+M7NPe7Gwj0VQbd82ohr3HvDBLpMErchpLKIalrF7xqXbrceLe0
+	AjDUWNrmcJGj4x5m+tLHZr8k9hsF78Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1676383603;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/HyqnGIS75uaLUEjLKgI49GIHkPwUU9uYI/uuygCtm8=;
+	b=e5GLnQJznd1xcmrZbk9fbcUEV//Hf7yfjrwbpM5RhmSyWAhvqZ6loYHy4jEJbf6qIvo8Tx
+	xrOgmAXtsjmK87Bw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2AE3113A21;
+	Tue, 14 Feb 2023 14:06:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id AJR5B3OV62PfSQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 14 Feb 2023 14:06:43 +0000
+Date: Tue, 14 Feb 2023 15:06:42 +0100
+Message-ID: <87fsb88hot.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Stefan Binding <sbinding@opensource.cirrus.com>
+Subject: Re: [PATCH v2 0/3] Fixes and Improvements for CS35L41 HDA
+In-Reply-To: <20230213145008.1215849-1-sbinding@opensource.cirrus.com>
+References: <20230213145008.1215849-1-sbinding@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: UNUHZTPVFFHLV6EQCVLIQJGJGLMFOBME
+X-Message-ID-Hash: UNUHZTPVFFHLV6EQCVLIQJGJGLMFOBME
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: andy.chi@canonical.com, Takashi Iwai <tiwai@suse.com>,
- Tim Crawford <tcrawford@system76.com>,
- Stefan Binding <sbinding@opensource.cirrus.com>,
- Meng Tang <tangmeng@uniontech.com>, Philipp Jungkamp <p.jungkamp@gmx.net>,
- =?UTF-8?q?Kacper=20Michaj=C5=82ow?= <kasper93@gmail.com>,
- Gabriele Mazzotta <gabriele.mzt@gmail.com>,
- Yuchi Yang <yangyuchi66@gmail.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+CC: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V62RVD6WRJ3U2KQA47RO5AEFTCRBZDNF/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UNUHZTPVFFHLV6EQCVLIQJGJGLMFOBME/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,33 +112,25 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On HP Laptops, requires the ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED quirk to
-make its audio LEDs and speaker work.
+On Mon, 13 Feb 2023 15:50:05 +0100,
+Stefan Binding wrote:
+> 
+> Fixes issue in calibration, where return codes were misinterpreted.
+> Enable High Pass filter to reduce pops and clicks.
+> Add improvement to ensure firmware and tuning files are always loaded
+> together. This ensure the firmware is alsways running with valid
+> coefficients.
+> 
+> Stefan Binding (2):
+>   ALSA: hda: cs35l41: Ensure firmware/tuning pairs are always loaded
+>   ALSA: hda: cs35l41: Enable Amp High Pass Filter
+> 
+> Vitaly Rodionov (1):
+>   ALSA: hda: cs35l41: Correct error condition handling
 
-Signed-off-by: Andy Chi <andy.chi@canonical.com>
+Applied all three patches now to for-next branch.
 
-v3: mentioned that this quirk also fix speaker in commit message
----
- sound/pci/hda/patch_realtek.c | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 7b9fb38ff732..e2cd5456f2a6 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9432,6 +9432,12 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	 SND_PCI_QUIRK(0x103c, 0x8abb, "HP ZBook Firefly 14 G9", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8ad1, "HP EliteBook 840 14 inch G9 Notebook PC", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8ad2, "HP EliteBook 860 16 inch G9 Notebook PC", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8b42, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8b43, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8b44, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8b45, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8b46, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8b47, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8b5d, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x103c, 0x8b5e, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x103c, 0x8b7a, "HP", ALC236_FIXUP_HP_GPIO_LED),
--- 
-2.34.1
+thanks,
 
+Takashi
