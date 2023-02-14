@@ -4,92 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4879EC61DA4
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Feb 2023 10:26:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93A6DC6379F
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Feb 2023 10:26:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8AF13E7;
-	Tue, 14 Feb 2023 11:25:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8AF13E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B877836;
+	Tue, 14 Feb 2023 11:25:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B877836
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676370376;
-	bh=wskxsjfzfRly+4XSvzdVAQ/S/19r1QqBxdtGYmKeHi8=;
+	s=default; t=1676370403;
+	bh=o+LDZ3zWY+9yDFkQvUjvEK73yBLRb/a90tfL0GPafLQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gARWW7xY4Vwq5Zo6bJOv2IP8uV5wb2/i6Rzlg9s4Oz04wy19I90fadsEqtp368xxL
-	 lYerH39cqcqJhDzch1jTLOPFKgaipOB2ZDQRSwfdzUH2DEQf21s1P20JdUU3Uk6rtF
-	 2Fy7mOdTRWvoU+3KmyF3YLUG64aQB9uqlbev5aAw=
+	b=XJ8IaKkSfYRHyb3ZDaOmrMIKbfUQZSjzfHtcYLOVYzQyc9qdFtd4Yi7iRR7Qfvj3k
+	 Vf26FTAqu6Nj5ZXpNoNSMQm7snb8c+s3N+B3IwOCFORkXvsf3cILdcGZa57VEi4qLt
+	 /0tHPsrlh/V62DuSkvTXSAoYs29jp52BPa4MD2DU=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9B15F8001E;
-	Tue, 14 Feb 2023 11:25:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 703F3F804B2;
+	Tue, 14 Feb 2023 11:25:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6EACFF801C0; Tue, 14 Feb 2023 11:24:53 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+	id 9E8F4F804B2; Tue, 14 Feb 2023 11:25:26 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BFE18F8001E
-	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2023 11:24:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFE18F8001E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 495A6F801C0
+	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2023 11:25:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 495A6F801C0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=NZs8DFRx;
+ header.s=susede2_rsa header.b=wqdLB2KJ;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=VfPD76bX
+ header.s=susede2_ed25519 header.b=Dks2P7kH
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 337FE21AB7;
-	Tue, 14 Feb 2023 10:24:43 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B637121AB7;
+	Tue, 14 Feb 2023 10:25:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1676370283;
+	t=1676370323;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ddKpLCie8SrphQTBEbjvDVOF+x0PREeROSkbPvx0csA=;
-	b=NZs8DFRxTbLlqe9qBzLxiMOpu3D/6Fyjov8WetNL541kPOWQaRYV3rhGZWx7BiOmhhz4Ze
-	6aJ9l+QxargQSFCZwgEJxK0GfISx2ebVPABIZCOFY61j4ivsKP8FMMnQ0gv5xXgUH2Kt3G
-	5BMH7zdG3nde94z0MCij7k1EhDmxvjo=
+	bh=FLHBkRY+L1xpNsmbz5ptnUy0dOk12hcQPFC+umha1Gc=;
+	b=wqdLB2KJODUyfYA8VLRlnGJivl2njpEmKDIRh/KELuHaeUfGNL4fL/PCkBji86O+HkPWvo
+	aKUFYiTuk2GcViiLeBym5uTF6mGqK7eZGg9CgbmNZD6qv4C81W2LsLszcvwN+7Q+5Kz0a1
+	xOBq7i9Eamrgm9aj1iRVZFTz25L+Fbg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1676370283;
+	s=susede2_ed25519; t=1676370323;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ddKpLCie8SrphQTBEbjvDVOF+x0PREeROSkbPvx0csA=;
-	b=VfPD76bXzzJTP7r8RWPqnfhGsCIYp8owwqC/VXjeD6ufVOce+B1NE7tN1NeQLoIleRLyjd
-	KVoSl1/OP65KuCCg==
+	bh=FLHBkRY+L1xpNsmbz5ptnUy0dOk12hcQPFC+umha1Gc=;
+	b=Dks2P7kHwRoe/xv74Vaytc2KJHFVUUvwfixBrIK3sSLatpBRWYdqbLaLUT4xCf1VQowW3q
+	nKuIXryyW6gbUQCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E683913A21;
-	Tue, 14 Feb 2023 10:24:42 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7883E13A21;
+	Tue, 14 Feb 2023 10:25:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id smYNN2ph62MUYAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 14 Feb 2023 10:24:42 +0000
-Date: Tue, 14 Feb 2023 11:24:42 +0100
-Message-ID: <87zg9g8ryt.wl-tiwai@suse.de>
+	id 2iBqFZNh62NZYAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 14 Feb 2023 10:25:23 +0000
+Date: Tue, 14 Feb 2023 11:25:22 +0100
+Message-ID: <87y1p08rxp.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Andy Chi <andy.chi@canonical.com>
-Subject: Re: [PATCH 2/2] ALSA: hda/realtek: Enable mute/micmute LEDs support
- for HP Laptops
-In-Reply-To: <20230214035853.31217-2-andy.chi@canonical.com>
+Subject: Re: [PATCH 1/2] ALSA: hda/realtek: fix mute/micmute LEDs don't work
+ for a HP platform.
+In-Reply-To: <20230214035853.31217-1-andy.chi@canonical.com>
 References: <20230214035853.31217-1-andy.chi@canonical.com>
-	<20230214035853.31217-2-andy.chi@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: B3NCMCXCUFAA2NWZRY3LFZ2TGK7UXIRX
-X-Message-ID-Hash: B3NCMCXCUFAA2NWZRY3LFZ2TGK7UXIRX
+Message-ID-Hash: HKXFWRZFDRCACUG3POA2VPOROWPMZOJH
+X-Message-ID-Hash: HKXFWRZFDRCACUG3POA2VPOROWPMZOJH
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -109,7 +109,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/B3NCMCXCUFAA2NWZRY3LFZ2TGK7UXIRX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HKXFWRZFDRCACUG3POA2VPOROWPMZOJH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,41 +118,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 14 Feb 2023 04:58:52 +0100,
+On Tue, 14 Feb 2023 04:58:51 +0100,
 Andy Chi wrote:
 > 
-> On HP Laptops, requires the same ALC285_FIXUP_HP_GPIO_LED quirk to
-> make its audio LEDs work.
-
-This doesn't match with the actual change?  It appears to be the
-additional quirk for Cirrus amps.
-
-
-Takashi
-
+> There is a HP platform needs ALC236_FIXUP_HP_GPIO_LED quirk to
+> make mic-mute/audio-mute working.
 > 
 > Signed-off-by: Andy Chi <andy.chi@canonical.com>
-> ---
->  sound/pci/hda/patch_realtek.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 7b9fb38ff732..e2cd5456f2a6 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -9432,6 +9432,12 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
->  	 SND_PCI_QUIRK(0x103c, 0x8abb, "HP ZBook Firefly 14 G9", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
->  	SND_PCI_QUIRK(0x103c, 0x8ad1, "HP EliteBook 840 14 inch G9 Notebook PC", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
->  	SND_PCI_QUIRK(0x103c, 0x8ad2, "HP EliteBook 860 16 inch G9 Notebook PC", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-> +	SND_PCI_QUIRK(0x103c, 0x8b42, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-> +	SND_PCI_QUIRK(0x103c, 0x8b43, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-> +	SND_PCI_QUIRK(0x103c, 0x8b44, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-> +	SND_PCI_QUIRK(0x103c, 0x8b45, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-> +	SND_PCI_QUIRK(0x103c, 0x8b46, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-> +	SND_PCI_QUIRK(0x103c, 0x8b47, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
->  	SND_PCI_QUIRK(0x103c, 0x8b5d, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
->  	SND_PCI_QUIRK(0x103c, 0x8b5e, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
->  	SND_PCI_QUIRK(0x103c, 0x8b7a, "HP", ALC236_FIXUP_HP_GPIO_LED),
-> -- 
-> 2.34.1
-> 
+
+Applied this one (but the second one looks dubious).
+
+
+thanks,
+
+Takashi
