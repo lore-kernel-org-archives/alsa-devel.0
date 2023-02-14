@@ -4,108 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2A6EC61DA4
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Feb 2023 14:02:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8A09C05027
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Feb 2023 14:06:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42BC282A;
-	Tue, 14 Feb 2023 15:01:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42BC282A
+	by alsa0.perex.cz (Postfix) with ESMTPS id CAA26827;
+	Tue, 14 Feb 2023 15:05:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAA26827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676383358;
-	bh=Ykf9H8knl2Wue6d7Jq18a7oZOln2cEwjq7rvW24rQX0=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1676383565;
+	bh=RN0IGKg75RyuuAItY3VXtlUy/UiOG2QzTLEZNMnbfLo=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nt1Z6RlbKrZUqs/TGLVcYKqeFH3o6A3b04NLryd8URiYhe/Q4B5PqFqR7MSYSkzyI
-	 2zVg2dKBUa8XshwbOJQgZt3KH8Hk4MLNA9enFz0oU380nTY1T3dfiMyAsd5er7D8E1
-	 St1rha6lBDY2X+qpe8oSK8VrgQJkko5Syca+0rlM=
+	b=j87ckoVPlBc9HGhf3bF+6DSApzkzLzzg3TppDqI1k8y2s/36jRPn+PBCVWoNPbcge
+	 ofn8sdec87gx8zwFG8m4jyK3tUYUCIpXhBOcevZzGSSe+dUAg/qy5CngbqQE/nMl4W
+	 Qfshxf/FsLvmByA0gomAiJK5O9i6FVaYu3URzDbc=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CCAB6F8001E;
-	Tue, 14 Feb 2023 15:01:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91BF2F801C0;
+	Tue, 14 Feb 2023 15:04:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2EB5CF801C0; Tue, 14 Feb 2023 15:01:18 +0100 (CET)
-Received: from smtp-relay-internal-1.canonical.com
- (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	id 3C12AF801C0; Tue, 14 Feb 2023 15:04:47 +0100 (CET)
+Received: from smtp-relay-canonical-1.canonical.com
+ (smtp-relay-canonical-1.canonical.com [185.125.188.121])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 514E8F8001E
-	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2023 15:01:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 514E8F8001E
+	by alsa1.perex.cz (Postfix) with ESMTPS id D1810F800E4
+	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2023 15:04:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1810F800E4
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=canonical.com header.i=@canonical.com
- header.a=rsa-sha256 header.s=20210705 header.b=kc3tVqVH
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199])
+ header.a=rsa-sha256 header.s=20210705 header.b=TT+o/Ohl
+Received: from andch-XPS-15-9520.. (1-163-107-120.dynamic-ip.hinet.net
+ [1.163.107.120])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id CAD153F131
-	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2023 14:01:02 +0000 (UTC)
+	by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 63B83416DC;
+	Tue, 14 Feb 2023 14:04:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1676383262;
-	bh=YiY2TFvhepOf5fzf5OKz0Zyj41ghiQS4kSQBEjqb9fI=;
-	h=Content-Type:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To;
-	b=kc3tVqVHX05O+OYZKLoRqh/uGlVcj4cTpNHdyw/z7tCKq2PjSC0W/NDOI1MjpQVL5
-	 Z27m+Z/D5XNjLb7t6QGNXAK5TuRGEXzAwatYxCSPViM0GSsGO7Wn30HuMW9nTGCSFt
-	 24IhuQZ9XbdAQoMIviJVW1m8MQ8eOknC2YtXjaV0rZm0vqrdtRhwKgGNrZ3a2Nny9Z
-	 /GkOCXCme52a1wOwlFlT8yV/d+wGZQ4WHDxxw1fYYDidE0dFtwTsAW9c9pWTYqmTJU
-	 7k/NGEi9LSEj9QcRSppy0Kt+jTu9CJ7v7P460ckKkuCBkoEN9ejeWEnaCF2kcZAZkf
-	 DunMLxAehSyeA==
-Received: by mail-pf1-f199.google.com with SMTP id
- z14-20020a056a00240e00b0059395f5a701so8048513pfh.13
-        for <alsa-devel@alsa-project.org>;
- Tue, 14 Feb 2023 06:01:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:from:references:cc:to:content-language:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=YiY2TFvhepOf5fzf5OKz0Zyj41ghiQS4kSQBEjqb9fI=;
-        b=tieNqiOmVnV72ioCNIqb26uolZgfg/rBPJqAdvLH0/Ckn4nvKEqMgfSdt7d4bT0mIZ
-         gsm4K2job6sZOfJpfrm9LKceUTErm2okNAiETSSY5s5Fl1PZuinMoHqNZvjZ9bOeTwoA
-         1Hj2TLwl5x+tFa4AsaXccv6vYX+X/w05SgQFtL4Q7L125JNHmj71G4YC8Qvh2fCzpvBW
-         MALOXRqLg+n0EIK/MAt5Rt5wbw45nvgzV+LFTZ/R4EIaojGtnECzhFCP9mQGN2sEPWj0
-         zXSJeGA6diI9+VKk3wUiAKzIZkaB3dD2LswinG8/xyCO9OqgpzEA4KI9py3EF29SwYiR
-         DEIA==
-X-Gm-Message-State: AO0yUKWKPqtU+znWz/RmX2+C6O+omFalw/yO2+du0fISszy3W5riu9ar
-	h3T5pSk81Q1zYLizNhl94X2QZJeE2DhVqekpBOwoH5fti+07XDuiVFJisPwT0a4yzACrr5/7gkD
-	XkRTpld0lk+ECTIlc2633fF7z7leZcpY+FB1OIXjt
-X-Received: by 2002:a17:90b:1d87:b0:233:e710:119b with SMTP id
- pf7-20020a17090b1d8700b00233e710119bmr2568479pjb.43.1676383261443;
-        Tue, 14 Feb 2023 06:01:01 -0800 (PST)
-X-Google-Smtp-Source: 
- AK7set8Nuc1Gb3uiJCI74WfdbVCfYzQ8Vy3tJKZlyF7Q1/z1v6CC0EpQcqR5NaBKZcoKyg17+9z7fg==
-X-Received: by 2002:a17:90b:1d87:b0:233:e710:119b with SMTP id
- pf7-20020a17090b1d8700b00233e710119bmr2568434pjb.43.1676383260928;
-        Tue, 14 Feb 2023 06:01:00 -0800 (PST)
-Received: from [192.168.50.191] (1-163-107-120.dynamic-ip.hinet.net.
- [1.163.107.120])
-        by smtp.gmail.com with ESMTPSA id
- b8-20020a17090a550800b0022c0a05229fsm9296395pji.41.2023.02.14.06.00.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Feb 2023 06:01:00 -0800 (PST)
-Message-ID: <a87c02f3-fa76-e4fb-d151-c566b5d5145a@canonical.com>
-Date: Tue, 14 Feb 2023 22:00:55 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v2] ALSA: hda/realtek: Enable mute/micmute LEDs support
- for HP Laptops
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>
-References: <87y1p08rxp.wl-tiwai@suse.de>
- <20230214103757.36624-1-andy.chi@canonical.com> <87sff88p2c.wl-tiwai@suse.de>
+	s=20210705; t=1676383482;
+	bh=3vW/TOuUOyoNxoCl0gdvqpkN36BLIBSGjQTU1hx8s50=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version;
+	b=TT+o/OhlyZCq/jifuByjYCYW5TZZAKIrvmG9+WPwyIKq0JycZxUZAFKmMT9IMtZL6
+	 uEnT5smQ3W4HOl1L+ay+ud1URILoVtfNBjCDV7ejVTTLWmmsuct5KAphEsGUggm7It
+	 Bdggieu4JM8lV5XxxIyUrN8AiuuLxKL6Q1qZmM8oCzN/2mLU4GiiZjgVyDSPIz7GNX
+	 1k+Sv+lz+jPbFhlvH6C6jReJYFxIcPpg3gxtlNMlou8zrt9mYXM7W1YBOYdeGYu6/l
+	 K7Oya70M5t4j8BBcmmk6HT4FRrdtwIB/+vIow/44Ie08sqYtD2IuMABixsuJhdhObG
+	 2b3n5YiQ+f2TQ==
 From: Andy Chi <andy.chi@canonical.com>
+To: 
+Subject: [PATCH v3] ALSA: hda/realtek: Enable mute/micmute LEDs and speaker
+ support for HP Laptops
+Date: Tue, 14 Feb 2023 22:04:31 +0800
+Message-Id: <20230214140432.39654-1-andy.chi@canonical.com>
+X-Mailer: git-send-email 2.34.1
 In-Reply-To: <87sff88p2c.wl-tiwai@suse.de>
-Message-ID-Hash: CX743RZHEHHN62EIURXBAQKNVGWMLDK6
-X-Message-ID-Hash: CX743RZHEHHN62EIURXBAQKNVGWMLDK6
+References: <87sff88p2c.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: V62RVD6WRJ3U2KQA47RO5AEFTCRBZDNF
+X-Message-ID-Hash: V62RVD6WRJ3U2KQA47RO5AEFTCRBZDNF
 X-MailFrom: andy.chi@canonical.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -113,13 +78,11 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-Content-Filtered-By: Mailman/MimeDel 3.3.8
-CC: Takashi Iwai <tiwai@suse.com>, Tim Crawford <tcrawford@system76.com>,
+CC: andy.chi@canonical.com, Takashi Iwai <tiwai@suse.com>,
+ Tim Crawford <tcrawford@system76.com>,
  Stefan Binding <sbinding@opensource.cirrus.com>,
  Meng Tang <tangmeng@uniontech.com>, Philipp Jungkamp <p.jungkamp@gmx.net>,
- =?UTF-8?Q?Kacper_Michaj=c5=82ow?= <kasper93@gmail.com>,
+ =?UTF-8?q?Kacper=20Michaj=C5=82ow?= <kasper93@gmail.com>,
  Gabriele Mazzotta <gabriele.mzt@gmail.com>,
  Yuchi Yang <yangyuchi66@gmail.com>, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org
@@ -128,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CX743RZHEHHN62EIURXBAQKNVGWMLDK6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/V62RVD6WRJ3U2KQA47RO5AEFTCRBZDNF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -137,11 +100,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-DQpPbiAyLzE0LzIzIDE5OjI3LCBUYWthc2hpIEl3YWkgd3JvdGU6DQo+IE9uIFR1ZSwgMTQgRmVi
-IDIwMjMgMTE6Mzc6NTYgKzAxMDAsDQo+IEFuZHkgQ2hpIHdyb3RlOg0KPj4gT24gSFAgTGFwdG9w
-cywgcmVxdWlyZXMgdGhlIHNhbWUgQUxDMjQ1X0ZJWFVQX0NTMzVMNDFfU1BJXzJfSFBfR1BJT19M
-RUQgcXVpcmsgdG8NCj4+IG1ha2UgaXRzIGF1ZGlvIExFRHMgd29yay4NCj4gV2VsbCwgdGhpcyBx
-dWlyayBpcyBub3Qgb25seSBhYm91dCBtdXRlL21pYyBMRUQgYnV0IHJhdGhlciBtYWlubHkgZm9y
-DQo+IGVuYWJsaW5nIHRoZSBDaXJydXMgYW1wLiAgSSBzdXBwb3NlIHRoZSBzcGVha2VyIGRpZG4n
-dCB3b3JrIHdpdGhvdXQNCj4gdGhpcyBxdWlyaywgdG9vPw0KQWgsIHJpZ2h0LiBJJ2xsIHNlbmQg
-b3V0IHYzLiBTb3JyeSBmb3IgdGhhdC4NCj4NCj4NCj4gVGFrYXNoaQ==
+On HP Laptops, requires the ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED quirk to
+make its audio LEDs and speaker work.
+
+Signed-off-by: Andy Chi <andy.chi@canonical.com>
+
+v3: mentioned that this quirk also fix speaker in commit message
+---
+ sound/pci/hda/patch_realtek.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 7b9fb38ff732..e2cd5456f2a6 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9432,6 +9432,12 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	 SND_PCI_QUIRK(0x103c, 0x8abb, "HP ZBook Firefly 14 G9", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8ad1, "HP EliteBook 840 14 inch G9 Notebook PC", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8ad2, "HP EliteBook 860 16 inch G9 Notebook PC", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x8b42, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x8b43, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x8b44, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x8b45, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x8b46, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
++	SND_PCI_QUIRK(0x103c, 0x8b47, "HP", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8b5d, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ 	SND_PCI_QUIRK(0x103c, 0x8b5e, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
+ 	SND_PCI_QUIRK(0x103c, 0x8b7a, "HP", ALC236_FIXUP_HP_GPIO_LED),
+-- 
+2.34.1
+
