@@ -4,99 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC817C05027
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Feb 2023 18:16:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECD93C05027
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Feb 2023 19:24:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 80801AEA;
-	Tue, 14 Feb 2023 19:15:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80801AEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 460E3DEF;
+	Tue, 14 Feb 2023 20:23:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 460E3DEF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676398559;
-	bh=e5l31k4He5Wbwe+okLfDpHV2VRfYIpl6dVetofwc8Rs=;
+	s=default; t=1676402660;
+	bh=mN730GcofAZx7UQtH9cNk0SirtgsgD2Oln+LpGur4LI=;
 	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YCG6hqG7Du+XvmE150HyPMDm1SiGlAPr9UPd0cbi71NQud6j3AjMMT3ZYtv4O8sa9
-	 vgTqRmQddFLL2gqepEwlpO2348UktxAy02lsBxU3ij8rGri6yCRR59eVk7MrfBFadc
-	 oPZlWn+S7YplnP+hMgHZmctD1pWIKTOFgr900f68=
+	b=kF44/Qy+amaAfa6W80ZtUccAdz4sUBKffOxo+Xv20g/WMwLnCgzz3niHmRdX3eCn0
+	 tWEZn+H70FehU0cT+m4BD9+tH5yBJFqnY//tzlohUrJAVrgYzMEUpceJhVa/oqND50
+	 pZTtDhgVJPYw/Tg0KdI+NzfnL6H8H+ihvEfHwBfs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ACC98F801C0;
-	Tue, 14 Feb 2023 19:14:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 718DAF801C0;
+	Tue, 14 Feb 2023 20:23:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3F357F801C0; Tue, 14 Feb 2023 19:14:40 +0100 (CET)
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 2B55AF8001E; Tue, 14 Feb 2023 20:23:01 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A044EF8001E
-	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2023 19:14:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A044EF8001E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0172AF8001E
+	for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2023 20:22:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0172AF8001E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=metafoo.de header.i=@metafoo.de header.a=rsa-sha256
- header.s=default2002 header.b=C00pkt56
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-	s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=7UiTt2U5U+keNr7GSs36T48tk7MVL1FoJS8R8CnMXGM=; b=C00pkt563Z3KjI9vz41S1iMCTD
-	N4RfsdniXaJeA88YxA2Ww5QMTGddIyPlHXEdYSiQ+LfOXLEQMpQZcy2eV0Id+f0WtPCUiY9qn8FQz
-	U8us3U9MiV4b4sljhHsfvy2RWR3kEuFOv9mxg6P/L/XPgloVhYhItjrjSkJ61y0lwxdHUYb277jyi
-	szUNEprxBeeQ3/n44i1XSnytn2XV3ZZIOtDiU5P9X1tOhRcm4FuVidJ+XWJ7XBnwFrvOo23/YvZsn
-	vUkYSmU2a40597F9G0XYmlaHDKBg9hBtsXuVWV70KN6jqKUBWghCRkhPsNAsvrvvTMlEEhkzCb1MA
-	ticvzzig==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-	by www381.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <lars@metafoo.de>)
-	id 1pRzp2-000BdF-7q; Tue, 14 Feb 2023 19:14:32 +0100
-Received: from [2604:5500:c0e5:eb00:da5e:d3ff:feff:933b]
-	by sslproxy01.your-server.de with esmtpsa
- (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <lars@metafoo.de>)
-	id 1pRzp1-000KQi-N8; Tue, 14 Feb 2023 19:14:31 +0100
-Message-ID: <b065e2bb-1f11-067a-b085-45d47626927e@metafoo.de>
-Date: Tue, 14 Feb 2023 10:14:28 -0800
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=cq8ddtXp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1676402577; x=1707938577;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=mN730GcofAZx7UQtH9cNk0SirtgsgD2Oln+LpGur4LI=;
+  b=cq8ddtXpcYovP8EkrOIHTn1y1wnWHRV8w1tawvGYmC2NkQK6zJFpFz6L
+   xyXm0AefXvTd3vGaSMXznZVNFaAIGTOXXOOTsb3sp1RJJZkq5Xs39qIwS
+   oPezt6nNcx0w1CJ5Q+u/3FOWiS7P1XcGDb7hvYQ28ElLM0VpTyp6/IVmQ
+   ld2XU/BN38vGXJnjU44KIQ8ymPjnIGzllsrTtk20v3PP+xA8FiP478k2A
+   6FFTHw4HGu++YNrfZfU6jYeHk+PqBKIUodL2U+t2w7AxVTiZwt8lJFzxW
+   7UPXt84DiykcQmwh+EtvUrdOWxFlZtn4zsiBQ6ySexwzc45C3V84XbJk6
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="314893705"
+X-IronPort-AV: E=Sophos;i="5.97,297,1669104000";
+   d="scan'208";a="314893705"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Feb 2023 11:22:50 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="778485232"
+X-IronPort-AV: E=Sophos;i="5.97,297,1669104000";
+   d="scan'208";a="778485232"
+Received: from parthgup-mobl2.amr.corp.intel.com (HELO [10.209.175.23])
+ ([10.209.175.23])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 14 Feb 2023 11:22:49 -0800
+Message-ID: <e79dae39-faec-b2a4-82e6-e11325904f3e@linux.intel.com>
+Date: Tue, 14 Feb 2023 07:21:33 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH 1/3] ASoC: soc-generic-dmaengine-pcm: add option to start
- DMA after DAI
+ Firefox/102.0 Thunderbird/102.7.1
+Subject: Re: [PATCH V2 2/8] soundwire: amd: Add support for AMD Manager driver
 Content-Language: en-US
-To: Claudiu Beznea <claudiu.beznea@microchip.com>, lgirdwood@gmail.com,
- broonie@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- perex@perex.cz, tiwai@suse.com, nicolas.ferre@microchip.com,
- alexandre.belloni@bootlin.com
-References: <20230214161435.1088246-1-claudiu.beznea@microchip.com>
- <20230214161435.1088246-2-claudiu.beznea@microchip.com>
-From: Lars-Peter Clausen <lars@metafoo.de>
-In-Reply-To: <20230214161435.1088246-2-claudiu.beznea@microchip.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>, vkoul@kernel.org
+References: <20230213094031.2231058-1-Vijendar.Mukunda@amd.com>
+ <20230213094031.2231058-3-Vijendar.Mukunda@amd.com>
+ <a3a75ead-5430-ae32-a6ae-78314bc637f1@linux.intel.com>
+ <7b5198f5-1894-5ab5-f84b-410cf102268d@amd.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <7b5198f5-1894-5ab5-f84b-410cf102268d@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.103.7/26812/Tue Feb 14 09:53:27 2023)
-Message-ID-Hash: YDBHVB2RW7OXLTCV2GL64OQGJBBNXCK5
-X-Message-ID-Hash: YDBHVB2RW7OXLTCV2GL64OQGJBBNXCK5
-X-MailFrom: lars@metafoo.de
+Message-ID-Hash: DESOX5D4IP5FKUYMGCK4WKMVXIRE4K7F
+X-Message-ID-Hash: DESOX5D4IP5FKUYMGCK4WKMVXIRE4K7F
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+CC: amadeuszx.slawinski@linux.intel.com, Mario.Limonciello@amd.com,
+ Sunil-kumar.Dommati@amd.com, Basavaraj.Hiregoudar@amd.com,
+ Mastan.Katragadda@amd.com, Arungopal.kondaveeti@amd.com,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ "moderated list:SOUNDWIRE SUBSYSTEM" <alsa-devel@alsa-project.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YDBHVB2RW7OXLTCV2GL64OQGJBBNXCK5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DESOX5D4IP5FKUYMGCK4WKMVXIRE4K7F/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,44 +108,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 2/14/23 08:14, Claudiu Beznea wrote:
-> diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-> index 3b99f619e37e..264e87af6b58 100644
-> --- a/sound/soc/soc-generic-dmaengine-pcm.c
-> +++ b/sound/soc/soc-generic-dmaengine-pcm.c
-> @@ -318,7 +318,7 @@ static int dmaengine_copy_user(struct snd_soc_component *component,
->   	return 0;
->   }
->   
-> -static const struct snd_soc_component_driver dmaengine_pcm_component = {
-> +static struct snd_soc_component_driver dmaengine_pcm_component = {
->   	.name		= SND_DMAENGINE_PCM_DRV_NAME,
->   	.probe_order	= SND_SOC_COMP_ORDER_LATE,
->   	.open		= dmaengine_pcm_open,
-> @@ -329,7 +329,7 @@ static const struct snd_soc_component_driver dmaengine_pcm_component = {
->   	.pcm_construct	= dmaengine_pcm_new,
->   };
->   
-> -static const struct snd_soc_component_driver dmaengine_pcm_component_process = {
-> +static struct snd_soc_component_driver dmaengine_pcm_component_process = {
->   	.name		= SND_DMAENGINE_PCM_DRV_NAME,
->   	.probe_order	= SND_SOC_COMP_ORDER_LATE,
->   	.open		= dmaengine_pcm_open,
-> @@ -425,7 +425,7 @@ static const struct snd_dmaengine_pcm_config snd_dmaengine_pcm_default_config =
->   int snd_dmaengine_pcm_register(struct device *dev,
->   	const struct snd_dmaengine_pcm_config *config, unsigned int flags)
->   {
-> -	const struct snd_soc_component_driver *driver;
-> +	struct snd_soc_component_driver *driver;
->   	struct dmaengine_pcm *pcm;
->   	int ret;
->   
-> @@ -450,6 +450,8 @@ int snd_dmaengine_pcm_register(struct device *dev,
->   	else
->   		driver = &dmaengine_pcm_component;
->   
-> +	driver->start_dma_last = config->start_dma_last;
 
-This will break if you have multiple sound cards in the system. 
-dmaengine_pcm_component must stay const.
+>>> +static void amd_sdw_probe_work(struct work_struct *work)
+>>> +{
+>>> +	struct amd_sdw_manager *amd_manager = container_of(work, struct amd_sdw_manager,
+>>> +							   probe_work);
+>>> +	struct sdw_master_prop *prop;
+>>> +	int ret;
+>>> +
+>>> +	prop = &amd_manager->bus.prop;
+>>> +	if (!prop->hw_disabled) {
+>>> +		amd_enable_sdw_pads(amd_manager);
+>>> +		ret = amd_init_sdw_manager(amd_manager);
+>>> +		if (ret)
+>>> +			return;
+>>> +		amd_enable_sdw_interrupts(amd_manager);
+>>> +		ret = amd_enable_sdw_manager(amd_manager);
+>>> +		if (ret)
+>>> +			return;
+>>> +		amd_sdw_set_frameshape(amd_manager);
+>>> +	}
+>>> +}
+>> There should be an explanation as to why you need a workqueue to
+>> complete the probe.
+> We want to separate the manager probe sequence and start up sequence.
+> we will add the comment.
 
+Do you need to split in two? For Intel, on some platforms we had a clear
+power dependency, we had to wait until parts of the DSP were powered
+before accessing SHIM registers, so we called the startup() when those
+dependencies were resolved.
+
+I am not sure you can count on the probe_work to enforce any kind of
+delay, worst case the work function could be scheduled immediately.
