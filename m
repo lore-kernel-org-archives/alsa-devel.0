@@ -4,149 +4,142 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 516F7C636CC
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Feb 2023 19:21:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E2C1C636CC
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Feb 2023 19:47:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 403BF886;
-	Wed, 15 Feb 2023 20:20:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 403BF886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 27CCDA4D;
+	Wed, 15 Feb 2023 20:47:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 27CCDA4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676488876;
-	bh=j+7GGiF4OQmmWeeBajHkaO7pnaF3gDIBjmRD8vplX0o=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1676490477;
+	bh=0gY6fPU2wIKz3O7JKb5l+ZOzMIrxO+gU/Fm6ycOW600=;
+	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cS+XInidM9Q1klTjOSFdu6NTuGkqKRwtFErsU1B7DldetR8bW6huceVUuabM2xlnf
-	 FmUy8p2O+8h0gL+we67BA2u+s+5xsEjCko5t7Acf5ctCbyVx1TBU2FLTSlbdUNoOoP
-	 YEZ/YMOtJFbI2ZR/nlGdPNsXozkGt151+y/jyZ7w=
+	b=oreVVajvWvFstbDcjEl48iiEJvdwos7NzlFvTRs4dAZsMbk62W6gfexuTwDHxv3+7
+	 lKDEjugM+zWORZAdry+PbkcDu8woYbbkBjBsSTQ93NqNaLF1I2l0yND6EGYYEzY4WP
+	 i+XHiZz1LOY1MNUsEveWK2bhGLwQFjpzV8pdnMGs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B8EFF80526;
-	Wed, 15 Feb 2023 20:19:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A785CF800E4;
+	Wed, 15 Feb 2023 20:46:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A63D2F80526; Wed, 15 Feb 2023 20:19:50 +0100 (CET)
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
- [IPv6:2a00:1450:4864:20::42b])
+	id 88A1CF800E4; Wed, 15 Feb 2023 20:46:38 +0100 (CET)
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
+ [IPv6:2a00:1450:4864:20::529])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A9D17F80496
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2023 20:19:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9D17F80496
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9924BF800B6
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2023 20:46:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9924BF800B6
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=fBnHeZPL
-Received: by mail-wr1-x42b.google.com with SMTP id o15so16918290wrc.9
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20210112 header.b=CHXE1eU9
+Received: by mail-ed1-x529.google.com with SMTP id w3so18152299edc.2
         for <alsa-devel@alsa-project.org>;
- Wed, 15 Feb 2023 11:19:46 -0800 (PST)
+ Wed, 15 Feb 2023 11:46:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zVy/c+cEbMIt9TIoyvZusWRPHpRTQuTATF5cUQLqC4s=;
-        b=fBnHeZPLzrGTJ+GWgxhoUQ9ZzA3Lc7rxkwystan7qPiLYpBrQCaL3fRgz6836TNTHz
-         0iRj/kV9eAPZdwryApHfytig73xF31qAFfLDTc9kubaZor1EIr0Z4ie4gQz+lUrlq9C8
-         AbzlsY2hrUPX/PGGF9aXLRqydd36ogYo8YFWgcqwHh9CH5w+DORJybeyaXgCoKbLChWy
-         F27AGqX52xFaCy7uGk1ApL/r+Wq2TvTPkoGUqzLTpq5KcGP9D8E0rdPGmMBUSYI1XYIU
-         Zdy/18FoRvtaQwRvwIhC7xEJ77Dz4Y2eLbj3Q2uT101HaqUzNKO3k9nWcsBtikrlkHf8
-         pVpQ==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0gY6fPU2wIKz3O7JKb5l+ZOzMIrxO+gU/Fm6ycOW600=;
+        b=CHXE1eU9oJnw19JirsAUnDO3tkBMRfy1btendDMBP5AvRrQ0274GX5pCHVg7IW85Xl
+         Y0kqwtXxmIT3Vla8GB5aF5QlCVLGN9Y+j8vIsdXZ6xhhetLg/qhA7nrwF666eFQy/ZYJ
+         4N46YnXGiVfvZRwo1LP6ndb9jq0kCL1xXNTlK8feWZhgJxM46rkHNOCD1ZGUh4IgvE9g
+         A7SE6tXe4M5bDAWr3LtRZRPlUv3/YDSTzjM4J8Au9ixcKNg9V7SNiGl/eTlPZkslqUg9
+         K6lwqBminK/H7J3SMiR7JkR7ybvL8GdZyVcqfAQz2diVErk4UGA5xOouUohCzwC+pwDr
+         767Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zVy/c+cEbMIt9TIoyvZusWRPHpRTQuTATF5cUQLqC4s=;
-        b=MW0SqmHiks1U7oqMJ0sc/ynK/9qrpAepZ01b9O5PB1s0Njj5BHIx9/ZWVSDSuKrTn7
-         SvoX8bGRnpMzONq5uNKeFr0GzHfuJM0UzvYAKWjXbHukHxmEJQbhH9j/e+SsjHo78dQ8
-         snnS49NFHOnb3BAbTT0wEuPquNmamy8sMWC/8o60//ug7F7bzlVh189rwPQP8/bC0Lzy
-         PX9pZ1jbH0yvj4hSpDCkS8TD0Hk/00VM8/QCNODJyiczrLH3z//RZhahBCDJHEleD1fI
-         /PzGeayT8TuzprUucRF15OPN0q1XUQl/U1Xiwqx31E2Djopnc0/WAhs4dK6mP8jMBnU0
-         sLLQ==
-X-Gm-Message-State: AO0yUKWlFVfvPIsTI6O+g4HVovVe8ZD6YBOSn5D1k1t+OxlzrgdFY0fo
-	HFXGA+DGqGXmqbgJkwEj/U5Zbg==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0gY6fPU2wIKz3O7JKb5l+ZOzMIrxO+gU/Fm6ycOW600=;
+        b=5+BQ0yseAK/X8Mzg3BKYTw28oWq+uZBN8G7O41ONGTJ+FQYAdYASi41OICF0AKdi0l
+         OhUqyJPM/4//EcRcljpMeZU9fsUuYqYBR8pbQlzBz15brP2aR6jvVQg71kn4ZnO11fSe
+         w5fnoSmCFuZ6P819YkKD+17gk7VRtePzxz8qTZh9KNpDdBgM5FSlacp8S/XuGe6oenRg
+         LGrQ294fqPCHe1dtlmjUTTfjKG381yH13rqy9A3LuGhauPly5bG4mjUOCZEdl1+xcYdv
+         CUzNwlnL6cVx19H42VOQ0aj3CyrPYq9KbDXHsUyvLZWuQdOhZKmMFFNuafyr/LreJNzT
+         TLeQ==
+X-Gm-Message-State: AO0yUKVo+6fDkkztgtY8nL/Ej6EKwHystl7WMMVDZOx1nI2jAyPt75T2
+	lpzfkHUaiwry3pRjUkXkPeDiEB0ngZpeNCv/YZQ=
 X-Google-Smtp-Source: 
- AK7set/9DsbtaIrsocf96fJaGpubiBoTK5aOjMvOd3HgsZ49/Uzn8dJY8QA23em2CaUqweOCX9YRDw==
-X-Received: by 2002:a05:6000:1152:b0:2c5:52f5:c63b with SMTP id
- d18-20020a056000115200b002c552f5c63bmr2756520wrx.11.1676488784705;
-        Wed, 15 Feb 2023 11:19:44 -0800 (PST)
-Received: from [192.168.1.109] ([178.197.216.144])
-        by smtp.gmail.com with ESMTPSA id
- t15-20020a5d534f000000b002c55306f6edsm10284549wrv.54.2023.02.15.11.19.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Feb 2023 11:19:44 -0800 (PST)
-Message-ID: <2334035b-cc52-8dfb-9ba4-544081b98d6f@linaro.org>
-Date: Wed, 15 Feb 2023 20:19:42 +0100
+ AK7set+5UINGYpxfOT+JqbbXrDGaMZhcao3eRocx2Q849cXbeJg5nU66qqezg0N3hP3F2iUPkmOt4fymeqb7uO0SUdE=
+X-Received: by 2002:a17:907:68b:b0:877:747d:1112 with SMTP id
+ wn11-20020a170907068b00b00877747d1112mr1645959ejb.15.1676490388540; Wed, 15
+ Feb 2023 11:46:28 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 1/2] dt-bindings: sound: ep93xx: Add I2S and AC'97
- descriptions
-Content-Language: en-US
-To: Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- devicetree@vger.kernel.org
-References: <20230212232137.299005-1-alexander.sverdlin@gmail.com>
- <46d5b6af-23e1-4178-83bc-b4a435b1426e@linaro.org>
- <109868b9492aecaca0a7170cba9fb51e62de7116.camel@gmail.com>
- <c4f5f733-ce22-2dfa-30f7-cde309eadaf9@linaro.org>
- <ba51ecefb814115e977d90062ca5fe99859cb327.camel@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <ba51ecefb814115e977d90062ca5fe99859cb327.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 3DYNDUD4PACOHGO2F2SXSMDKP5CESDZD
-X-Message-ID-Hash: 3DYNDUD4PACOHGO2F2SXSMDKP5CESDZD
-X-MailFrom: krzysztof.kozlowski@linaro.org
+References: <20230208101545.45711-1-krzysztof.kozlowski@linaro.org>
+ <20230208101545.45711-4-krzysztof.kozlowski@linaro.org>
+ <20230215192123.4ore7ac6tnedrsyq@ripper>
+In-Reply-To: <20230215192123.4ore7ac6tnedrsyq@ripper>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Date: Wed, 15 Feb 2023 13:46:17 -0600
+Message-ID: 
+ <CABb+yY1xHOac4C7fWHW6Cj67-O7nBWFP8LXbW-9V_F24b1SMTA@mail.gmail.com>
+Subject: Re: [PATCH v2 4/7] dt-bindings: mailbox: qcom,apcs-kpss-global: drop
+ mbox-names from example
+To: Bjorn Andersson <andersson@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Message-ID-Hash: HZ74NWC2UWNGJ5YYWDAPF4M4S4GGSO52
+X-Message-ID-Hash: HZ74NWC2UWNGJ5YYWDAPF4M4S4GGSO52
+X-MailFrom: jassisinghbrar@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Hartley Sweeten <hsweeten@visionengravers.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Andy Gross <agross@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
  Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Mark Brown <broonie@kernel.org>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+ alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3DYNDUD4PACOHGO2F2SXSMDKP5CESDZD/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HZ74NWC2UWNGJ5YYWDAPF4M4S4GGSO52/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 14/02/2023 15:26, Alexander Sverdlin wrote:
-> Hello Krzysztof!
-> 
-> On Tue, 2023-02-14 at 15:11 +0100, Krzysztof Kozlowski wrote:
->>>>> +  interrupts:
->>>>> +    maxItems: 1
->>>>> +
->>>>> +  clocks:
->>>>> +    minItems: 3
->>>>
->>>> maxItems instead
->>>
->>> reg and clocks are required, I suppose I should include both minItems
->>> and maxItems for both of them?
->>
->> No. minItems is implied.
-> 
-> I see. But I think minItems "3" should be included for clocks, right?
+On Wed, Feb 15, 2023 at 1:19 PM Bjorn Andersson <andersson@kernel.org> wrote:
+>
+> On Wed, Feb 08, 2023 at 11:15:42AM +0100, Krzysztof Kozlowski wrote:
+> > Qualcomm G-Link RPM edge bindings do not allow and do not use mbox-names
+> > property.
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> >
+> > ---
+> >
+> > Changes since v1:
+> > 1. None.
+> > 2. Previously was sent as separate patch.
+> >
+> > There are no strict dependencies. This can go anytime. The next patch
+> > (glink-rpm-edge) should be applied in the same or later cycle (could be
+> > via different trees).
+>
+> Jassi, I missed this note and merged the following patches, introducing
+> the forecasted issue in linux-next. To remedy this, I took the liberty
+> of merging this patch as well into the remoteproc tree.
+>
+No problem.
 
-No, why? It is implied when you provide maxItems. Therefore why would
-you need it to make it explicitly (although you can, but we avoid it for
-smaller code)?
-
-Best regards,
-Krzysztof
-
+Cheers.
