@@ -4,92 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09B80C6379F
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Feb 2023 13:24:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A2D1C64EC7
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Feb 2023 13:30:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C3EC847;
-	Wed, 15 Feb 2023 14:23:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C3EC847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 06D20847;
+	Wed, 15 Feb 2023 14:29:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06D20847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676467475;
-	bh=WUgNwUhbHaN9HZCnYj8+XtWA1iYsv49O9uBI9FvhwpY=;
+	s=default; t=1676467832;
+	bh=Sh4IjgaHokJgqHxuz69NNaDzjOc7kjI45TUUvWgBqN8=;
 	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=tcwrytw14TxISzhnsCCkpUE4mJY8aXAcsCFQHoad9gPxEAkkR/hcygJpDildrYFel
-	 UEJRm8IpkcZoD0JBJxOYpxHKh3sgxd9Jd0GF1/LPMWsEYP+9toc9Cc2cFUYZYRMRVZ
-	 Xdc/U/jp2P8RFUwYS0u/B5CtTTmV/T/64NGU65XY=
+	b=EwZrNlOk0OqqNLH0dFj69XUebj5lyZq1g0rWKoQTEr3LkC8ArW17CRJnDhGtbYYJC
+	 S9//8D6zA29P6LIoOSZVUGki1v/T61bc00WTBP3165qco/QKu0918sPG1MucOjauej
+	 E8SzPsdFyNCtD6ETSWlKnHj9n5NAZfbRrEih0DX8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 940EBF800B6;
-	Wed, 15 Feb 2023 14:23:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A4286F8047C;
+	Wed, 15 Feb 2023 14:29:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2BF43F800E4; Wed, 15 Feb 2023 14:23:18 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 9F85CF8047C; Wed, 15 Feb 2023 14:29:13 +0100 (CET)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E4951F800E4
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2023 14:23:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4951F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 14C42F80083
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2023 14:29:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14C42F80083
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=IYuEuJgu
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676467392; x=1708003392;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=WUgNwUhbHaN9HZCnYj8+XtWA1iYsv49O9uBI9FvhwpY=;
-  b=IYuEuJgu15WKXhurMBeZCF/Zxd/lLN2UYvSBFnOIX8pVqN9wZui97oqC
-   b5+5fo80zwxI4LER6g9FdzlmLzAhEuuY7aZTUj7bkj7R0j09PU3hHllA1
-   HSW6s9IT8gi7Z8RASGXA91Kk7S9d8AVjyvxgGkW0b32taNxUwDj3v1vOE
-   Kodph3cgYqch54Rg+qaGaSpvqiaQtY/RywQKo5w1sZRJxBanhJO8UyE+i
-   gtDfZ5TC35VfWZX+f6wEx/CFRl3zCXBdrOW+CHWIMc9c2CRuimE+NU/LU
-   dhGquU6Bs2xKUrLMg+Edj43iZyzcqQ8Xw9tMxJKlGXIjtQ5gYSErDOg57
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="333563902"
-X-IronPort-AV: E=Sophos;i="5.97,299,1669104000";
-   d="scan'208";a="333563902"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Feb 2023 05:23:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="733281649"
-X-IronPort-AV: E=Sophos;i="5.97,299,1669104000";
-   d="scan'208";a="733281649"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Feb 2023 05:23:05 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 56FC51A6; Wed, 15 Feb 2023 15:23:45 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/1] ASoC: soc-ac97: Return correct error codes
-Date: Wed, 15 Feb 2023 15:23:43 +0200
-Message-Id: <20230215132343.35547-1-andriy.shevchenko@linux.intel.com>
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=ZsoQDgIk
+Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
+ [82.11.51.62])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	(Authenticated sender: tanureal)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 181B0660218B;
+	Wed, 15 Feb 2023 13:29:04 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1676467744;
+	bh=Sh4IjgaHokJgqHxuz69NNaDzjOc7kjI45TUUvWgBqN8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ZsoQDgIkrIcWTRcE4vZCQzUkyJidWRL35fXuYH8HRY7tkeG8cy60wOgJc0R1PwuHs
+	 +FtFzU5FhoP24BuLSZKKCLDHvovyGtqwZYomcY3u/ZO9vMqCM1JnjwCMmuNFcbj+ir
+	 4jl/+mVDQLnRQwqY9LiFsbxjQJfEA52wUS4hBahheD7kBAEPVuBI/GsABKgNdYUFNi
+	 LZnTNHXPhf8a7rsXWVgvfhmWLlGRP5YenhbaQRlsW5hpC3mB3UOaN/gCwXXDwP+XK4
+	 /8L0HM+9ovPxUiWKWhOJy1b851URODxuMwAtVcCuhJabbVZVH54k2AFEQK8h/seh7D
+	 ZJ6G679yk6JHw==
+From: Lucas Tanure <lucas.tanure@collabora.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH v2] ASoC: soc-dapm.h: fixup warning struct snd_pcm_substream
+ not declared
+Date: Wed, 15 Feb 2023 13:28:51 +0000
+Message-Id: <20230215132851.1626881-1-lucas.tanure@collabora.com>
 X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: EUWLNQLOTDXFK2VHORHOF6ROBQNN7XHD
-X-Message-ID-Hash: EUWLNQLOTDXFK2VHORHOF6ROBQNN7XHD
-X-MailFrom: andriy.shevchenko@linux.intel.com
+Message-ID-Hash: WF3EGLLULY2SMCFBA6MOMLLLFKNSLKGA
+X-Message-ID-Hash: WF3EGLLULY2SMCFBA6MOMLLLFKNSLKGA
+X-MailFrom: lucas.tanure@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, kernel test robot <lkp@intel.com>,
- Dan Carpenter <error27@gmail.com>
+CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Lucas Tanure <lucas.tanure@collabora.com>, kernel@collabora.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EUWLNQLOTDXFK2VHORHOF6ROBQNN7XHD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WF3EGLLULY2SMCFBA6MOMLLLFKNSLKGA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,38 +95,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-With the switching to dev_err_probe(), during the conversion
-of GPIO calls, the return code is passed is a paratemer to it.
-At the same time a copy'n'paste mistake was made, so the wrong
-variable has been taken for the error reporting. Fix this.
+Add struct snd_pcm_substream forward declaration
 
-Fixes: 3ee0d39c50dc ("ASoC: soc-ac97: Convert to agnostic GPIO API")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <error27@gmail.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Fixes: 078a85f2806f ("ASoC: dapm: Only power up active channels from a DAI")
+Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
 ---
- sound/soc/soc-ac97.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changes since v1:
+- Use forward declaration instead of header sound/pcm.h
+---
+ include/sound/soc-dapm.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/soc-ac97.c b/sound/soc/soc-ac97.c
-index 40051f513c6a..4e4fe29ade50 100644
---- a/sound/soc/soc-ac97.c
-+++ b/sound/soc/soc-ac97.c
-@@ -336,12 +336,12 @@ static int snd_soc_ac97_parse_pinctl(struct device *dev,
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 77495e5988c1..64915ebd641e 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -16,6 +16,7 @@
+ #include <sound/asoc.h>
  
- 	cfg->sdata_gpio = devm_gpiod_get_index(dev, "ac97", 1, GPIOD_ASIS);
- 	if (IS_ERR(cfg->sdata_gpio))
--		return dev_err_probe(dev, PTR_ERR(cfg->sync_gpio), "Can't find ac97-sdata gpio\n");
-+		return dev_err_probe(dev, PTR_ERR(cfg->sdata_gpio), "Can't find ac97-sdata gpio\n");
- 	gpiod_set_consumer_name(cfg->sdata_gpio, "AC97 link sdata");
+ struct device;
++struct snd_pcm_substream;
+ struct snd_soc_pcm_runtime;
+ struct soc_enum;
  
- 	cfg->reset_gpio = devm_gpiod_get_index(dev, "ac97", 2, GPIOD_ASIS);
- 	if (IS_ERR(cfg->reset_gpio))
--		return dev_err_probe(dev, PTR_ERR(cfg->sync_gpio), "Can't find ac97-reset gpio\n");
-+		return dev_err_probe(dev, PTR_ERR(cfg->reset_gpio), "Can't find ac97-reset gpio\n");
- 	gpiod_set_consumer_name(cfg->reset_gpio, "AC97 link reset");
- 
- 	return 0;
 -- 
 2.39.1
 
