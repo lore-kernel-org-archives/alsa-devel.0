@@ -4,89 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A2D1C64EC7
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Feb 2023 13:30:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5EB8C636CC
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Feb 2023 14:11:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 06D20847;
-	Wed, 15 Feb 2023 14:29:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06D20847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0091A83D;
+	Wed, 15 Feb 2023 15:10:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0091A83D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676467832;
-	bh=Sh4IjgaHokJgqHxuz69NNaDzjOc7kjI45TUUvWgBqN8=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=EwZrNlOk0OqqNLH0dFj69XUebj5lyZq1g0rWKoQTEr3LkC8ArW17CRJnDhGtbYYJC
-	 S9//8D6zA29P6LIoOSZVUGki1v/T61bc00WTBP3165qco/QKu0918sPG1MucOjauej
-	 E8SzPsdFyNCtD6ETSWlKnHj9n5NAZfbRrEih0DX8=
+	s=default; t=1676470267;
+	bh=MYhOAEbjlmEV72d4Y+wbUnJSCyy31d4OR9meqpFLgMY=;
+	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=nO10FPL0yTjGpbFBP5L976cSVWZM8soUn4TY7iEsRQDETQj3sQmAnRZ/Ew8D1ef5n
+	 14IhwtqPbtyIFaRP1/wEeF+HRvilodCwG6KqfEOeIkesPM5vbHCpewA7tIcg7W4/0R
+	 gCAMLyLPXDXCq+eRFHP/zuqBMpeQsEnapxVG/nTQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4286F8047C;
-	Wed, 15 Feb 2023 14:29:18 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F34EF8047C;
+	Wed, 15 Feb 2023 15:09:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9F85CF8047C; Wed, 15 Feb 2023 14:29:13 +0100 (CET)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id A448CF8047C; Wed, 15 Feb 2023 15:09:48 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 14C42F80083
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2023 14:29:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14C42F80083
+	by alsa1.perex.cz (Postfix) with ESMTPS id E891BF80083
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2023 15:09:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E891BF80083
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=ZsoQDgIk
-Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
- [82.11.51.62])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=OyTRxe7V
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	(Authenticated sender: tanureal)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 181B0660218B;
-	Wed, 15 Feb 2023 13:29:04 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1676467744;
-	bh=Sh4IjgaHokJgqHxuz69NNaDzjOc7kjI45TUUvWgBqN8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=ZsoQDgIkrIcWTRcE4vZCQzUkyJidWRL35fXuYH8HRY7tkeG8cy60wOgJc0R1PwuHs
-	 +FtFzU5FhoP24BuLSZKKCLDHvovyGtqwZYomcY3u/ZO9vMqCM1JnjwCMmuNFcbj+ir
-	 4jl/+mVDQLnRQwqY9LiFsbxjQJfEA52wUS4hBahheD7kBAEPVuBI/GsABKgNdYUFNi
-	 LZnTNHXPhf8a7rsXWVgvfhmWLlGRP5YenhbaQRlsW5hpC3mB3UOaN/gCwXXDwP+XK4
-	 /8L0HM+9ovPxUiWKWhOJy1b851URODxuMwAtVcCuhJabbVZVH54k2AFEQK8h/seh7D
-	 ZJ6G679yk6JHw==
-From: Lucas Tanure <lucas.tanure@collabora.com>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH v2] ASoC: soc-dapm.h: fixup warning struct snd_pcm_substream
- not declared
-Date: Wed, 15 Feb 2023 13:28:51 +0000
-Message-Id: <20230215132851.1626881-1-lucas.tanure@collabora.com>
-X-Mailer: git-send-email 2.39.1
+	by ams.source.kernel.org (Postfix) with ESMTPS id DDF42B8223B
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2023 14:09:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86CD8C4339C
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2023 14:09:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1676470180;
+	bh=MYhOAEbjlmEV72d4Y+wbUnJSCyy31d4OR9meqpFLgMY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=OyTRxe7V4vdQUFAlReUDb2pTJwiqN1iOeTpFEjTo2yVKKgpefOtoM9e4BsgjHYzDg
+	 d4fIIFTzmxWo5/nb32KTzS2eeJaNKLrlGG6gll66+V7qYxBPzj6us4+rgUnnAaOaW1
+	 G2K+tGSz5zIRIR60TupiIqGUQSI3oTB4DG3ETv5D1bI7o6PG/+dPouzACJaYn5RPHu
+	 NlDVkZMiIQ7+Tvyusc5BbRf9x82tr0gJ50AOP+a+n+3do4o5PDIG5FAwqoqHWMOWaP
+	 nqU4OihiVDbKSqPUsUxB8VY/BKfpg8FaqaAwODE/Ivof8U9FYbp7+bd2V0paR22Wzb
+	 1Am+A1snUaPkw==
+Received: by mail-ua1-f48.google.com with SMTP id b18so3592321uan.11
+        for <alsa-devel@alsa-project.org>;
+ Wed, 15 Feb 2023 06:09:40 -0800 (PST)
+X-Gm-Message-State: AO0yUKXcQwa17Fejk2oNNe/NOhEKmlaZ+eEkJjOS+0n7OWq6n79TkVCS
+	xOu1/4moivD4d8+weJSWF3B/Pmu7S9fele6yUw==
+X-Google-Smtp-Source: 
+ AK7set8eUNQpS7lJ5nErj1IiR33ZGzYaWTVPtCM5cZxTLKp8Gtd1AHcNI6ym2Cxr2WOkM6UTp27i5UTovF6FcXK2BKw=
+X-Received: by 2002:ab0:2818:0:b0:68a:5d77:362a with SMTP id
+ w24-20020ab02818000000b0068a5d77362amr266020uap.61.1676470179519; Wed, 15 Feb
+ 2023 06:09:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: WF3EGLLULY2SMCFBA6MOMLLLFKNSLKGA
-X-Message-ID-Hash: WF3EGLLULY2SMCFBA6MOMLLLFKNSLKGA
-X-MailFrom: lucas.tanure@collabora.com
+References: <20230208101545.45711-1-krzysztof.kozlowski@linaro.org>
+ <20230208101545.45711-4-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230208101545.45711-4-krzysztof.kozlowski@linaro.org>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Wed, 15 Feb 2023 08:09:28 -0600
+X-Gmail-Original-Message-ID: 
+ <CAL_JsqLdrpwJ4VhH4MK+RDjZZtWWosXOC48yW+STwtJR6QCAjg@mail.gmail.com>
+Message-ID: 
+ <CAL_JsqLdrpwJ4VhH4MK+RDjZZtWWosXOC48yW+STwtJR6QCAjg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/7] dt-bindings: mailbox: qcom,apcs-kpss-global: drop
+ mbox-names from example
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Message-ID-Hash: CPQ4C4TTZRNNFXCAYEM4IRRGFIW2V4CT
+X-Message-ID-Hash: CPQ4C4TTZRNNFXCAYEM4IRRGFIW2V4CT
+X-MailFrom: robh+dt@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Lucas Tanure <lucas.tanure@collabora.com>, kernel@collabora.com
+CC: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Jassi Brar <jassisinghbrar@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Mark Brown <broonie@kernel.org>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+ alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WF3EGLLULY2SMCFBA6MOMLLLFKNSLKGA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CPQ4C4TTZRNNFXCAYEM4IRRGFIW2V4CT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,29 +110,24 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add struct snd_pcm_substream forward declaration
+On Wed, Feb 8, 2023 at 4:16 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> Qualcomm G-Link RPM edge bindings do not allow and do not use mbox-names
+> property.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>
+> ---
+>
+> Changes since v1:
+> 1. None.
+> 2. Previously was sent as separate patch.
+>
+> There are no strict dependencies. This can go anytime. The next patch
+> (glink-rpm-edge) should be applied in the same or later cycle (could be
+> via different trees).
 
-Fixes: 078a85f2806f ("ASoC: dapm: Only power up active channels from a DAI")
-Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
----
-Changes since v1:
-- Use forward declaration instead of header sound/pcm.h
----
- include/sound/soc-dapm.h | 1 +
- 1 file changed, 1 insertion(+)
+Except that without this patch there is now a warning in linux-next.
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 77495e5988c1..64915ebd641e 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -16,6 +16,7 @@
- #include <sound/asoc.h>
- 
- struct device;
-+struct snd_pcm_substream;
- struct snd_soc_pcm_runtime;
- struct soc_enum;
- 
--- 
-2.39.1
-
+Rob
