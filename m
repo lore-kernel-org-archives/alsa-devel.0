@@ -4,105 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DC91C636CC
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Feb 2023 19:18:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F296BC636D4
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Feb 2023 19:20:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 83209A4E;
-	Wed, 15 Feb 2023 20:17:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83209A4E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E0E8AEA;
+	Wed, 15 Feb 2023 20:19:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E0E8AEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676488696;
-	bh=2o0NBlI99vxjR5tJ0+4CS+psmmcp56zqp2u+m8SinuQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	s=default; t=1676488826;
+	bh=8GWjqreOHv2W/xsRv67Y//DXKDgBWI0OWSUAjgSvAVQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TTy8YsDWeNKa+yU7X4pTyKzCd5JigXWNokLFRhjCbkmJzYDlPavmRN6ZIPZOEKzYv
-	 duUNXScJqH1jjBWOL3z2nPh9Obfj1U46Vp64+2q9HIfrTwmvqLFQgjz/Jj1DSOvtn8
-	 B5GsFn2F5DrMP4vKhA7xXDQhEWy8U7lJ0JKtDyaw=
+	b=ejsK+BR0Y9hnZHdVYsMViKVHP7vhf43ROj9UZIuV9a4UJhSbyawdM0mDjjDYNoIpG
+	 8C2E8j7K2L2jKkdhjyOv44VoLJe2OS6jJlQiwMvD018UqmWJCKvJgB6SRyoASz9kw3
+	 /YbhXMKFVdK1sfq+n/QY75CaC8rQIMdYMDodQnKg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id ACC26F80083;
-	Wed, 15 Feb 2023 20:17:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56BA9F80083;
+	Wed, 15 Feb 2023 20:19:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 84716F800E4; Wed, 15 Feb 2023 20:16:58 +0100 (CET)
-Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com
- [209.85.160.42])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 5EFF7F800E4; Wed, 15 Feb 2023 20:19:09 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 61FCDF800AA
-	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2023 20:16:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61FCDF800AA
-Received: by mail-oa1-f42.google.com with SMTP id
- 586e51a60fabf-16df32f2ffdso13497952fac.1
-        for <alsa-devel@alsa-project.org>;
- Wed, 15 Feb 2023 11:16:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PW1m1yQHM9XDpw4IOvOruehCKlPQgSONUVgmXhDIYf8=;
-        b=p4koiDTMEkBopBet1NNMRjPT6RD6n8mz06j01D+uCsh+jjieSk/QwUY3Nl8LLnoh5S
-         /4nmy6lEij0KdR/+1RwYth6q2FbCFEz+Dkix14rkQjYeQ7y7mqxK8A8qig8J/zUME1F3
-         h9U4A1xq85kedLXpHY+KbGbIBF5V3IDuq3VrbqEtVU5WdZtTl1aCJJqnBCPta8PkL1jB
-         vyWQ3k6iJiyGJmSE775i7UvDzwp2RUkMOcR0gRZSXk0ag4bZ7/lr4CHkiXUqBAPNp1/2
-         6aEM0/CjOW4XpTWp+0/qOwvO6Tr5u9OgcdoNTZ0rQWhAc2KxiA4t9uuBNaBAR0abA8pB
-         vaCA==
-X-Gm-Message-State: AO0yUKUPb/VBYMGC7Q5yL8PPydLJOMq0yPyVpQsOLD9a5OwIjOrwwKeU
-	OfO4Nt8UhfNUXfyQoikf8Q==
-X-Google-Smtp-Source: 
- AK7set9i3pcpR00UkNEQS3Uh8VyZQHo+YJjV/Yrf/s71LptmDnJn6po1KLPiFeqH5Dnm4F9xM9ROwg==
-X-Received: by 2002:a05:6871:60e:b0:16d:2b42:811a with SMTP id
- w14-20020a056871060e00b0016d2b42811amr1849530oan.17.1676488609294;
-        Wed, 15 Feb 2023 11:16:49 -0800 (PST)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
- [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id
- ec22-20020a0568708c1600b00143824af059sm7361240oab.7.2023.02.15.11.16.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Feb 2023 11:16:48 -0800 (PST)
-Received: (nullmailer pid 424169 invoked by uid 1000);
-	Wed, 15 Feb 2023 19:16:48 -0000
-Date: Wed, 15 Feb 2023 13:16:48 -0600
-From: Rob Herring <robh@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: sound: ep93xx: Add I2S and AC'97
- descriptions
-Message-ID: <20230215191648.GA408047-robh@kernel.org>
-References: <20230212232137.299005-1-alexander.sverdlin@gmail.com>
- <46d5b6af-23e1-4178-83bc-b4a435b1426e@linaro.org>
- <109868b9492aecaca0a7170cba9fb51e62de7116.camel@gmail.com>
- <c4f5f733-ce22-2dfa-30f7-cde309eadaf9@linaro.org>
- <ba51ecefb814115e977d90062ca5fe99859cb327.camel@gmail.com>
- <Y+uiaqvdIL4IpRlC@sirena.org.uk>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6ED83F80083
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2023 20:19:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6ED83F80083
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=hnQg+Ob1
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id DE05761BD5;
+	Wed, 15 Feb 2023 19:18:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22671C433D2;
+	Wed, 15 Feb 2023 19:18:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1676488739;
+	bh=8GWjqreOHv2W/xsRv67Y//DXKDgBWI0OWSUAjgSvAVQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=hnQg+Ob1o4x1ag1phNPXzCCPePM7FpcHoMw2E2NvCAKiZD8lJLVz8piHK+EUzctPG
+	 9Z/veiyEXLSYwlG6xGUEuADeQiwaQWQyG6ZTDxAqYQ3C8dTZ+Y8UZPCvChRiA1kTpc
+	 QVbkSBzS+FgL6gfGYpMOd8y3+Pd7BwMX+3IrsvdE7l0bOeftmZ+cW2LBfDoSkzhDP9
+	 EC74qv/UIWtObUNzeEqMugqxSwAPmqlD3cc4nLq1Kwm9XoUxPJTmSH+7QbFln1z37W
+	 PLIcEC0wh8SWJiX+P4hMnxdiPejTz7OUhFxNEbfcJHeLvNWNhjoqVgLtvCf85SZRjo
+	 sNk4xeDcfOK4g==
+From: Bjorn Andersson <andersson@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	Andy Gross <agross@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Mark Brown <broonie@kernel.org>,
+	linux-remoteproc@vger.kernel.org,
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Jassi Brar <jassisinghbrar@gmail.com>,
+	Banajit Goswami <bgoswami@quicinc.com>,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: Re: (subset) [PATCH v2 1/7] arm64: dts: qcom: ipq6018: align RPM
+ G-Link node with bindings
+Date: Wed, 15 Feb 2023 11:21:01 -0800
+Message-Id: <167648885791.1615253.5210458428567341276.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230208101545.45711-1-krzysztof.kozlowski@linaro.org>
+References: <20230208101545.45711-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y+uiaqvdIL4IpRlC@sirena.org.uk>
-Message-ID-Hash: TK27NQM3TESEEXKZNLEEJN5RNVTVU6T5
-X-Message-ID-Hash: TK27NQM3TESEEXKZNLEEJN5RNVTVU6T5
-X-MailFrom: robherring2@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: WMYLTFCDT5CNHZ2JIHN47JOJUZTDCNML
+X-Message-ID-Hash: WMYLTFCDT5CNHZ2JIHN47JOJUZTDCNML
+X-MailFrom: andersson@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- devicetree@vger.kernel.org, Hartley Sweeten <hsweeten@visionengravers.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+CC: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TK27NQM3TESEEXKZNLEEJN5RNVTVU6T5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WMYLTFCDT5CNHZ2JIHN47JOJUZTDCNML/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,29 +104,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Feb 14, 2023 at 03:02:02PM +0000, Mark Brown wrote:
-> On Tue, Feb 14, 2023 at 03:26:14PM +0100, Alexander Sverdlin wrote:
-> > On Tue, 2023-02-14 at 15:11 +0100, Krzysztof Kozlowski wrote:
+On Wed, 8 Feb 2023 11:15:39 +0100, Krzysztof Kozlowski wrote:
+> Bindings expect (and most of DTS use) the RPM G-Link node name to be
+> "rpm-requests".
 > 
-> > > OK, but then I like the example - if datasheet would use name
-> > > "clk_clk_this_is_clk" would you still find it meaningful?
 > 
-> > > Every clock input in clocks is a clock. There is usually no need to say
-> > > that a clock is a clock...
-> 
-> > I see you point, but this is legacy code (sound/soc/cirrus/ep93xx-i2s.c)
-> > which took these names back in platform data times... I also see that
-> > rather majority of *i2s*.yaml use something "*clk", so maybe it could
-> > be accepted for legacy code?
-> 
-> Even ignoring the whole legacy thing these are industry standard
-> names for the clocks - they are pretty much universally named and
-> referred to with the clk suffix.  I can't see what removing it
-> would accomplish other than reducing clarity.
 
-Agreed.
+Applied, thanks!
 
-If a clock is called "Nclk" then I think that is fine. If it is 
-foo_bar_clk, then yes, 'foo_bar' is preferred.
+[4/7] dt-bindings: mailbox: qcom,apcs-kpss-global: drop mbox-names from example
+      commit: 7c855ef7137a67bcff0e039691b969428dd8ef6a
 
-Rob
+Best regards,
+-- 
+Bjorn Andersson <andersson@kernel.org>
