@@ -4,69 +4,132 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3FBAC636CC
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Feb 2023 13:31:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 444CDC636CC
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Feb 2023 13:31:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 87315E80;
-	Thu, 16 Feb 2023 14:30:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87315E80
+	by alsa0.perex.cz (Postfix) with ESMTPS id 09011E88;
+	Thu, 16 Feb 2023 14:30:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09011E88
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676554280;
-	bh=IAgsBF4ANYOsWrMlLvnN+PPC4Pi1HojSN7EDP9tJSDo=;
-	h=Date:From:To:Subject:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=O0wN9FwYquGO4SiJRFXba5/OcwU5LcOpps4TmzmWER5uQwNl/qY72iHLPdS+zw4L/
-	 7P8pQscfcVIzbiU1g33a6eYpEfh4VdSgKlDC5k1KTMHVJHmjHlkOMwh3CeC6SHLea7
-	 95mwyy4b8vCONUlJRwAkqVKleIpDiR7KyB14Gsks=
+	s=default; t=1676554289;
+	bh=gQEel9EdWJL6nindAVV89iHXQOyC9ETUfqvkvbtD2gg=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=uPTAWOkLqf1wklooir2bYdXghokZzeDBYmxsVMKAubS4Lx+R6y9+eN8BomYVjMMHB
+	 K41Z+Mez/qpOTqFZEwnsbrikQ7lShP4NFMUrao4kub/WCVLyXXd4BNNaSeveeJC5n3
+	 0nJmX0hhlpHuAlZ4f+la0lOeomZ0Ra9iQoB2UyAs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E84BFF804B0;
-	Thu, 16 Feb 2023 14:29:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D8EC8F80526;
+	Thu, 16 Feb 2023 14:30:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 96B74F80171; Thu, 16 Feb 2023 12:33:20 +0100 (CET)
-Received: from bluemchen.kde.org (bluemchen.kde.org
- [IPv6:2001:470:142:8::100])
+	id 35751F8047C; Wed, 15 Feb 2023 15:19:30 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DF9FEF80083
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2023 12:33:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF9FEF80083
-Received: from ugly.fritz.box (localhost [127.0.0.1])
-	by bluemchen.kde.org (Postfix) with ESMTP id 9326C23F65;
-	Thu, 16 Feb 2023 06:33:05 -0500 (EST)
-Received: by ugly.fritz.box (masqmail 0.3.4, from userid 1000)
-	id 1pScVd-xVv-00; Thu, 16 Feb 2023 12:33:05 +0100
-Date: Thu, 16 Feb 2023 12:33:05 +0100
-From: Oswald Buddenhagen <oswald.buddenhagen@gmx.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/130+] ALSA: emu10k1 & more
-Message-ID: <Y+4UcetSxH6lDPoy@ugly>
+	by alsa1.perex.cz (Postfix) with ESMTPS id CB135F800B6
+	for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2023 15:19:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB135F800B6
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=PEGQwrEr
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 8E83AB82239;
+	Wed, 15 Feb 2023 14:19:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E56C4C4339B;
+	Wed, 15 Feb 2023 14:19:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1676470760;
+	bh=gQEel9EdWJL6nindAVV89iHXQOyC9ETUfqvkvbtD2gg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PEGQwrEr7+4WeFzY/RpUMkgnLnkz3fghVF7WJBwbfnBSFv/l/K9ykEmLj7kWn6gss
+	 boN+28fkVXq2qh9YXa3j66y4Hj/kpEL9EYG3AiTTfxOrke1JcvDKQydudVbzQ17IGH
+	 ZL4MG5W5BmvBAd6rx1y4zhrf/hs2iovXQ0Y1T2Z28UEqyKBjNDQkO60YWp04Z15os0
+	 LITBxJhiNSW/UvxDu/uH5bdF9unqvUhGcL4wXv6m2shBXdbZI7J9XcZ3STxeTl72a0
+	 U4bJYIhivyPi3krbtjRY1d/s/g+7MAdiLn1pDItsS9gGz71pmYvlLxV6SmGbJp+ikl
+	 VT4QJaIeWDiZw==
+Date: Wed, 15 Feb 2023 14:19:16 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Subject: Re: [PATCH v4 01/15] spi: Replace all spi->chip_select and
+ spi->cs_gpiod references with function call
+Message-ID: <Y+zp5F2l8pffEEvN@sirena.org.uk>
+References: <20230210193647.4159467-1-amit.kumar-mahapatra@amd.com>
+ <20230210193647.4159467-2-amit.kumar-mahapatra@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="mHMK7QDQWaz9I52Q"
 Content-Disposition: inline
-X-MailFrom: ossi@kde.org
-X-Mailman-Rule-Hits: nonmember-moderation
+In-Reply-To: <20230210193647.4159467-2-amit.kumar-mahapatra@amd.com>
+X-Cookie: Serving suggestion.
+X-MailFrom: broonie@kernel.org
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: AKEPZNUEOHBOU6MVUDSGH5QGMPETKSPZ
-X-Message-ID-Hash: AKEPZNUEOHBOU6MVUDSGH5QGMPETKSPZ
-X-Mailman-Approved-At: Thu, 16 Feb 2023 13:29:37 +0000
-CC: Takashi Iwai <tiwai@suse.de>, Lee Revell <rlrevell@joe-job.com>,
- James Courtier-Dutton <James@superbug.co.uk>,
- Veli-Matti Valtonen <maligor@gmail.com>, Ctirad Fertr <c.fertr@gmail.com>,
- Pavel Hofman <dustin@seznam.cz>, michael@gernoth.net,
- Maxim Kachur <mcdebugger@duganet.ru>, shane-alsa@cm.nu,
- Thomas Zehetbauer <thomasz@hostmaster.org>,
- Alexander Samad <alex@samad.com.au>
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: EP5NX5PPXAFBLWJ5N4SGZMUUSVU3AIFJ
+X-Message-ID-Hash: EP5NX5PPXAFBLWJ5N4SGZMUUSVU3AIFJ
+X-Mailman-Approved-At: Thu, 16 Feb 2023 13:30:16 +0000
+CC: miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ jic23@kernel.org, tudor.ambarus@microchip.com, pratyush@kernel.org,
+ sanju.mehta@amd.com, chin-ting_kuo@aspeedtech.com, clg@kaod.org,
+ kdasu.kdev@gmail.com, f.fainelli@gmail.com, rjui@broadcom.com,
+ sbranden@broadcom.com, eajames@linux.ibm.com, olteanv@gmail.com,
+ han.xu@nxp.com, john.garry@huawei.com, shawnguo@kernel.org,
+ s.hauer@pengutronix.de, narmstrong@baylibre.com, khilman@baylibre.com,
+ matthias.bgg@gmail.com, haibo.chen@nxp.com, linus.walleij@linaro.org,
+ daniel@zonque.org, haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
+ agross@kernel.org, bjorn.andersson@linaro.org, heiko@sntech.de,
+ krzysztof.kozlowski@linaro.org, andi@etezian.org, mcoquelin.stm32@gmail.com,
+ alexandre.torgue@foss.st.com, wens@csie.org, jernej.skrabec@gmail.com,
+ samuel@sholland.org, masahisa.kojima@linaro.org, jaswinder.singh@linaro.org,
+ rostedt@goodmis.org, mingo@redhat.com, l.stelmach@samsung.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ alex.aring@gmail.com, stefan@datenfreihafen.org, kvalo@kernel.org,
+ james.schulman@cirrus.com, david.rhodes@cirrus.com,
+ tanureal@opensource.cirrus.com, rf@opensource.cirrus.com, tiwai@suse.com,
+ npiggin@gmail.com, christophe.leroy@csgroup.eu, mpe@ellerman.id.au,
+ oss@buserror.net, windhl@126.com, yangyingliang@huawei.com, git@amd.com,
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, joel@jms.id.au,
+ andrew@aj.id.au, radu_nicolae.pirea@upb.ro, nicolas.ferre@microchip.com,
+ alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com,
+ bcm-kernel-feedback-list@broadcom.com, fancer.lancer@gmail.com,
+ kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+ jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
+ avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
+ venture@google.com, yuenn@google.com, benjaminfair@google.com,
+ yogeshgaur.83@gmail.com, konrad.dybcio@somainline.org,
+ alim.akhtar@samsung.com, ldewangan@nvidia.com, thierry.reding@gmail.com,
+ jonathanh@nvidia.com, michal.simek@amd.com, linux-aspeed@lists.ozlabs.org,
+ openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+ linux-rpi-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev,
+ linux-tegra@vger.kernel.org, netdev@vger.kernel.org,
+ linux-wpan@vger.kernel.org, libertas-dev@lists.infradead.org,
+ linux-wireless@vger.kernel.org, linux-mtd@lists.infradead.org,
+ lars@metafoo.de, Michael.Hennerich@analog.com, linux-iio@vger.kernel.org,
+ michael@walle.cc, palmer@dabbelt.com, linux-riscv@lists.infradead.org,
+ alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linuxppc-dev@lists.ozlabs.org, amitrkcian2002@gmail.com,
+ Dhruva Gole <d-gole@ti.com>, Patrice Chotard <patrice.chotard@foss.st.com>,
+ William Zhang <william.zhang@broadcom.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AKEPZNUEOHBOU6MVUDSGH5QGMPETKSPZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EP5NX5PPXAFBLWJ5N4SGZMUUSVU3AIFJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -75,39 +138,38 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-moin,
 
-i got myself an old e-mu 0404 card, because i found the analog hardware 
-well hackable for dc operation.
-then i found the driver to be lacking, and got hacking that, too. hence 
-this blast from the past.
+--mHMK7QDQWaz9I52Q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-this is a huge branch with many internal dependencies, so i'm assuming 
-i'm not supposed to post a patch series.
-instead it's on https://github.com/ossilator/linux/tree/ossis-alsa - let 
-me know if another review platform is preferable.
+On Sat, Feb 11, 2023 at 01:06:32AM +0530, Amit Kumar Mahapatra wrote:
+> Supporting multi-cs in spi drivers would require the chip_select & cs_gpiod
+> members of struct spi_device to be an array. But changing the type of these
+> members to array would break the spi driver functionality. To make the
+> transition smoother introduced four new APIs to get/set the
+> spi->chip_select & spi->cs_gpiod and replaced all spi->chip_select and
 
-apart from the actual driver work, this contains some alsa patches 
-unrelated to emu10k1, some patches which really shouldn't be merged via 
-the alsa route (if at all), and some patches which are just collections 
-of questions (to which i hope to receive answers on github). this is of 
-course meant to be cleaned up in due time.
+This again doesn't apply against my current code - I think the
+best thing to do here is going to be to rebase against -rc1 when
+it comes out and resend then, that will also make the issues
+integrating with other trees easier as then I can make a clean
+branch against -rc1 that other trees will be able to merge as
+needed.
 
-feel free to cherry-pick the patches you deem ready; i'll happily rebase 
-the branch.
+--mHMK7QDQWaz9I52Q
+Content-Type: application/pgp-signature; name="signature.asc"
 
-some of these patches are not (fully) tested due to lack of hardware. in 
-particular, someone should check that SB Live! and Audigy cards still 
-work. then there is a whole bunch of e-mu card specific functionality 
-which targets the "bigger members of the family". all patches that need 
-testing are clearly marked as such.
-if someone wants to provide me with hardware (temporarily or 
-permanently), go ahead (i'm in berlin, germany).
+-----BEGIN PGP SIGNATURE-----
 
-on CC is everyone who is recorded to have hacked the emu1010 part of the 
-driver or tested something. i fully expect half the addresses to bounce, 
-and the remainder to wonder what i'm smoking. ;-)
-when you reply, please do so only to the list and me.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPs6eMACgkQJNaLcl1U
+h9DMTQf7BClrpZ6y6mPa14iVbIWKtokY4RW9qSMUPLjIFwC9eRXAa0tO9cEn7yie
+Dhg3Nh0HQil5b3ETrpYSZcezEkC0LjXhOcrQL2AaNPnYqp8rwD3n4tFQXOY7hA9R
+fhdZQcSulOPdvy2GDwF7fvgenpxkVDIZM0OyEYKr5amWKxjhGICMWTBjvHmWJWo5
+Kh34j6KD6URlG9Rlf2b8CSTbJrwj5bREjrjMOvUNQWTt775APe+cKcZF6Jp3IhOC
+q8wYya1VrWoegeXxgG6IJW/I5BYCmloUtbj8BTpW9CIHMuOTdeqMduuExe3cWHOx
+xEsHIS5meBbApEDmthwKyZw5q9xE6w==
+=3UQL
+-----END PGP SIGNATURE-----
 
-regards
-
+--mHMK7QDQWaz9I52Q--
