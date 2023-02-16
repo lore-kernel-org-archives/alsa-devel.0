@@ -4,107 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B581DC636CC
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Feb 2023 16:01:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC691C61DA4
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Feb 2023 16:02:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D56AEF6;
-	Thu, 16 Feb 2023 17:00:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D56AEF6
+	by alsa0.perex.cz (Postfix) with ESMTPS id E202CF0B;
+	Thu, 16 Feb 2023 17:01:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E202CF0B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676563294;
-	bh=fqV5myKqJnEVsgdLbBpO98fBDCh6JSOSwRZUmtyrDgQ=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=hXUMXSSh2f4z2cdUQyr0mPldNixatZUwLWoHyp2117hhvVFxdFGL96FcbtSq9HAqj
-	 7GBoen5vDi8kPXRUU/pFT1iGXedKvfMdFDHAbuqwyy8Ld212X76u3WPF8AvnTQBmL9
-	 8XBeQJuGE5AeYW3kVrtk6klWiR+7h6R+eHjtSy6Y=
+	s=default; t=1676563322;
+	bh=zn5cqo7ihCyFYu66pNpA0T87YS1Zk1ekASHfJaV9lFQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=D6I7tWzQlnsoEyUww8AxM5qyOXDUW1mF5qOonXt9ia/6FrMIPxtLsNQvxIn11FurW
+	 N+nchAE+8vtBO6Yzu7nhlqdPQetoxqRr8hSoCB9fyDAoTrZE/DAjeRj+9NY/XFO/OC
+	 ATlo/C7bB86OINcN+sJATNlkpM06kFBK/TiC5hac=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46A61F80171;
-	Thu, 16 Feb 2023 17:00:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CE5FF80527;
+	Thu, 16 Feb 2023 17:00:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AB69DF80171; Thu, 16 Feb 2023 17:00:15 +0100 (CET)
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com
- [IPv6:2607:f8b0:4864:20::f2a])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 82952F80527; Thu, 16 Feb 2023 17:00:43 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9BF9BF800E3
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2023 17:00:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BF9BF800E3
+	by alsa1.perex.cz (Postfix) with ESMTPS id C9E31F804B2
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2023 17:00:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9E31F804B2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=q33rqeXe
-Received: by mail-qv1-xf2a.google.com with SMTP id i5so1520689qvp.6
-        for <alsa-devel@alsa-project.org>;
- Thu, 16 Feb 2023 08:00:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=090PiZboWm4xKAxokbVWDfrV3xrsWJlZwqvYSImMRoI=;
-        b=q33rqeXeRbuTnWBfq4xJA2U7uspFazDKHLWhY0GzG3ZmPtIg3WeMYI4dlKoqsdiZj3
-         8kaik4slpbHdZuOq2mSHpOfQTymngQ4mVUjUY9RL3PqxnD1ogdo3usfZJZpiTYwPA41d
-         Ck/kfiFydd8s7snRnU75zXZEYAotd+49s0fYHeXY1/WlxU5VwytBnNHiSFQcEenBRo0K
-         hAHawc3uCmfdRb2ISlprcAfMEA9Y7kXDjZhvXtCieqs/1VKW/qzgPi+T1Y5pYwQZeX7m
-         yBpuFo4oqvmcYVaRt0v+KyNLFXTfWGEH5wsMj93s9Kh6zgeK0wqCTO/ypeFd6CPhreed
-         aHTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=090PiZboWm4xKAxokbVWDfrV3xrsWJlZwqvYSImMRoI=;
-        b=BgtwXnG1IlNO+CUpopSnzEDkqlN70fmuXY+Dgo55D/iwjbxqOj9vNLUOj0tCdTOs9c
-         5DyUIkYh4HeES4BGzuFxdPoJM9hMAiAEACjrYkEyERkuQ2IKOuW0aQNFs8c/3yUdjxIO
-         2fyugEEbhfi9EEdfhxT3F5xg//J2xFnvKohHMyikQzd0H50SMBr0LAhFjTtQ1bPKrSKC
-         +K50J9ybxkxqLkCqrWIPLCc/fR9hv2Jjija32jqzsvHQGLRLSbfNXNJDJuZ1OT3toa0m
-         pW7LIM1VPe7eFXhXelDSaVYoHRUtVv7RAKiKOK/PPgccR+XYZEsOTYGRb+ScUlfR+811
-         /cdQ==
-X-Gm-Message-State: AO0yUKUCr7K9trNJcqZIo8oKCohEkhHxkK7rHEoE4MqstVXJe0C2RWsk
-	jWhHB3FPYhBQZ3x5iEfmWz0=
-X-Google-Smtp-Source: 
- AK7set/slyxS0VTiycNJWvqfexed9tSt/x1r2N1T0sTVLe20qQdkH0hCX0ZHeg4i255H71bxBQyJBg==
-X-Received: by 2002:ad4:4ea8:0:b0:56e:a331:cf14 with SMTP id
- ed8-20020ad44ea8000000b0056ea331cf14mr12985012qvb.51.1676563207358;
-        Thu, 16 Feb 2023 08:00:07 -0800 (PST)
-Received: from localhost.localdomain
- ([2601:14d:4e80:336e:6940:faac:fba5:1dee])
-        by smtp.gmail.com with ESMTPSA id
- t80-20020a374653000000b007203bbbbb31sm1430439qka.47.2023.02.16.08.00.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Feb 2023 08:00:06 -0800 (PST)
-From: Joseph Hunkeler <jhunkeler@gmail.com>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH] soc:amd:yp:Add OMEN by HP Gaming Laptop 16z-n000 to quirks
-Date: Thu, 16 Feb 2023 10:50:07 -0500
-Message-Id: <20230216155007.26143-1-jhunkeler@gmail.com>
-X-Mailer: git-send-email 2.39.1
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=skNWlZoO
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id E25D8B828B5;
+	Thu, 16 Feb 2023 16:00:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED648C4339B;
+	Thu, 16 Feb 2023 16:00:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1676563233;
+	bh=zn5cqo7ihCyFYu66pNpA0T87YS1Zk1ekASHfJaV9lFQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=skNWlZoOUUXh0hy+tBZaGGHPkzQBlRXFvd3ajeTtsBr9VvieB4Pdmv+sF3W75I1WW
+	 efwoUZF216MVg2URY8IBDMypyQGyJHsC4CsdzlHkwB261fJA+dm7/KC0w/Lr66hyL3
+	 6odrVBCFWi4Jd0PAG6hRo24i4eNiEV/mOSmBLjKIY5ZvV2Y2TTW10xWpme9Mnu579a
+	 rnzyhb06wZjAAkEwNxuAKriz113isyUezmUt1jff8srxo7148y1+QHAcpRM09x6Br3
+	 kWDAVePj5QETCISxrl5mU8MNmpGo1HiXRho65U1rh2Lw54ZevvuWTu+G/f5zZ1nbpF
+	 n7walrUmsTm1g==
+Date: Thu, 16 Feb 2023 16:00:24 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Janne Grunau <j@jannau.net>
+Subject: Re: [PATCH 14/17] dt-bindings: sound: apple,mca: Add t8112-mca
+ compatible
+Message-ID: <Y+5TGKoMuRr4XQ+b@sirena.org.uk>
+References: <20230202-asahi-t8112-dt-v1-0-cb5442d1c229@jannau.net>
+ <20230202-asahi-t8112-dt-v1-14-cb5442d1c229@jannau.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DE2EAGF44N7CGNEPTYOPNWQIWLRFIQJ5
-X-Message-ID-Hash: DE2EAGF44N7CGNEPTYOPNWQIWLRFIQJ5
-X-MailFrom: jhunkeler@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="zLAA02ljnSaFRQBD"
+Content-Disposition: inline
+In-Reply-To: <20230202-asahi-t8112-dt-v1-14-cb5442d1c229@jannau.net>
+X-Cookie: Serving suggestion.
+Message-ID-Hash: TQO3654FWDXTVLXIOJPTIJT7FA277ON2
+X-Message-ID-Hash: TQO3654FWDXTVLXIOJPTIJT7FA277ON2
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Joseph Hunkeler <jhunkeler@gmail.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+CC: Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+ Alyssa Rosenzweig <alyssa@rosenzweig.io>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Mark Kettenis <kettenis@openbsd.org>,
+ Martin =?utf-8?Q?Povi=C5=A1er?= <povik+lin@cutebit.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, asahi@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DE2EAGF44N7CGNEPTYOPNWQIWLRFIQJ5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TQO3654FWDXTVLXIOJPTIJT7FA277ON2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,33 +99,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Enables display microphone on the HP OMEN 16z-n000 (8A42) laptop
 
-Signed-off-by: Joseph Hunkeler <jhunkeler@gmail.com>
----
- sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+--zLAA02ljnSaFRQBD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-index 363147539..4e681e9c0 100644
---- a/sound/soc/amd/yc/acp6x-mach.c
-+++ b/sound/soc/amd/yc/acp6x-mach.c
-@@ -255,6 +255,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "15NBC1011"),
- 		}
- 	},
-+	{
-+		.driver_data = &acp6x_card,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "HP"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "OMEN by HP Gaming Laptop 16z-n000"),
-+		}
-+	},
- 	{}
- };
- 
+On Sun, Feb 12, 2023 at 04:41:24PM +0100, Janne Grunau wrote:
 
-base-commit: e1c04510f521e853019afeca2a5991a5ef8d6a5b
--- 
-2.39.1
+> This trivial dt-bindings update should be merged through the asahi-soc
+> tree to ensure validation of the Apple M2 (t8112) devicetrees in this
+> series.
 
+I didn't get a response to my query about the nearness to the
+merge window and the prospects of the series hitting v6.3, though
+I do see that there's a new version needed for some of the other
+patches.  I'm just going to go ahead and apply so it's there and
+I don't need to worry about or see resends, in case the rest of
+the series is going to go in it's not the end of the world if it
+gets applied twice anyway so
+
+Reviewed-by: Mark Brown <broonie@kernel.org>
+
+--zLAA02ljnSaFRQBD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPuUxcACgkQJNaLcl1U
+h9Af/Af/YMaqhnQb4Eh5+46lP4Mxb8PbrkBIC4qlIjcB+Hh/k8zv4T6lxMliCgrb
+V26ONFvyzAl+q0EBaeRgwcB2htrFjzmrTmXa4QnbmfGIOriavTXNqKhfwAqqIFOs
+NJhxIAqVavNLiKHkW2opVIiWRDWq8Sf/tyKwsVZB6OQym2Fj+X1Zv35s1jp2SUeb
+MhzQYMIvIrLLXtIcZzBb6H7G0kOFCFbnaqTginkiQPgYawuoHaZ/kxsGlbPZA1Dr
+tuWHPGnkdFtg8tnlYDn9AUSI+k5VJovf9m9bGzstnzBpH8uovKEciu6sDAkJtkww
+A/goHQ6NXCEgVO+yyApSnF7Ai4X5gg==
+=KvWA
+-----END PGP SIGNATURE-----
+
+--zLAA02ljnSaFRQBD--
