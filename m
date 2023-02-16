@@ -4,95 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90BB5C05027
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 13:51:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DCE1C05027
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 14:15:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F80CF21;
-	Fri, 17 Feb 2023 14:51:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F80CF21
+	by alsa0.perex.cz (Postfix) with ESMTPS id 928CFF2B;
+	Fri, 17 Feb 2023 15:14:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 928CFF2B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676641914;
-	bh=wo9leP4z+3lq2c8RvEbXWZDwVdn9gtko4armAoJhFVo=;
-	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
+	s=default; t=1676643342;
+	bh=vjZqTQspToWPU9DQB0dweXSBbejTCss84sFN0Gmq70c=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ScJ2LOTWAe095SH1YuLrkhH3AlFM7YLXHNyQHdp+lyb1nJMaDqFS+IZShtl0fHAFQ
-	 ECZcZa57SliDTOOB6H3/W4amXv19Gy7Y0xAvFQJoUx1PgVxTbF/djryaqlNDU8zggA
-	 iP2dyA9d8lqhQ+GHGKTWMHTQnYumCWnGEe7QaO8U=
+	b=pgKBKh1Y5m0JIrB6Upw3lJBBvMZNfpOxwIxVRtRMNe4vjCBZf5OzcIDfOoochelqv
+	 XOPFupYFu5NcCGGTHx2I+sH5rAtHdlTWvz7MIQIZdGrGUtwWTjEw3OQzRZoKul5sDw
+	 cC8E+5Rl/UR/3pnRKCJOBvVuSp6c13y5KOvAzEOw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0CD48F800E4;
-	Fri, 17 Feb 2023 14:50:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31176F800B6;
+	Fri, 17 Feb 2023 15:14:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 31E24F80171; Fri, 17 Feb 2023 14:50:35 +0100 (CET)
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net
- [217.70.183.195])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	id 889A4F80171; Thu, 16 Feb 2023 17:26:50 +0100 (CET)
+Received: from soltyk.jannau.net (soltyk.jannau.net [144.76.91.90])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9A04AF80083
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 14:50:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A04AF80083
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=RoBsXKNP
-Received: (Authenticated sender: herve.codina@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPSA id 47F6B60003;
-	Fri, 17 Feb 2023 13:50:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1676641825;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IXtty5j4EPkHzMourS16qE5SNRSNmBZzzykreudpYyw=;
-	b=RoBsXKNPDSFIw+waIM9X3bayblvPaLqhufkZQmycFa7Xnrs3aTpCAWzjhfnGtitb8+V2N1
-	7lvs3fA9mB2xffWdKYEEfQNqEKifHKxSneXjI8wUgFitrhpYd/n+2eAtt+u9wdBpmfiF99
-	3+IsOBT6U1N4DOFMFnmQspVrm+xBGluGmi55YzwE/u8kJufXbbl+0bmekuU9Xl8KhAW5EU
-	AVXU7Vb/pZ14cC+S+t5i+AZPWyZoqSPusgF7ggwvHd6IDqZnmrk8/AarNmkNGQDl6tIZJP
-	kmwG5k2P/GWE4TNLz5ynqio6byKJqgjXOVaFfHowgpEcNTsKLnSWj+XNN8tEKQ==
-Date: Fri, 17 Feb 2023 14:50:19 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v5 01/10] dt-bindings: soc: fsl: cpm_qe: Add TSA
- controller
-Message-ID: <20230217145019.0def6f9a@bootlin.com>
-In-Reply-To: <6ae9af19-1d52-c31f-79be-a36f06caaf80@linaro.org>
-References: <20230216134226.1692107-1-herve.codina@bootlin.com>
-	<20230216134226.1692107-2-herve.codina@bootlin.com>
-	<6ae9af19-1d52-c31f-79be-a36f06caaf80@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.36; x86_64-redhat-linux-gnu)
+	by alsa1.perex.cz (Postfix) with ESMTPS id E1077F800E3
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2023 17:26:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1077F800E3
+Received: by soltyk.jannau.net (Postfix, from userid 1000)
+	id 4018826F7A9; Thu, 16 Feb 2023 17:26:46 +0100 (CET)
+Date: Thu, 16 Feb 2023 17:26:46 +0100
+From: Janne Grunau <j@jannau.net>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 14/17] dt-bindings: sound: apple,mca: Add t8112-mca
+ compatible
+Message-ID: <20230216162646.GK17933@jannau.net>
+References: <20230202-asahi-t8112-dt-v1-0-cb5442d1c229@jannau.net>
+ <20230202-asahi-t8112-dt-v1-14-cb5442d1c229@jannau.net>
+ <Y+5TGKoMuRr4XQ+b@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: Q5SDUYAWVBOK63OYPGMHBHNFQBIB4KYJ
-X-Message-ID-Hash: Q5SDUYAWVBOK63OYPGMHBHNFQBIB4KYJ
-X-MailFrom: herve.codina@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y+5TGKoMuRr4XQ+b@sirena.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MailFrom: janne@jannau.net
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-CC: Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: NKKHFFNKUWX4FUKPS5YBS3NNAUKPLLOA
+X-Message-ID-Hash: NKKHFFNKUWX4FUKPS5YBS3NNAUKPLLOA
+X-Mailman-Approved-At: Fri, 17 Feb 2023 14:14:22 +0000
+CC: Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+ Alyssa Rosenzweig <alyssa@rosenzweig.io>, Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
- Qiang Zhao <qiang.zhao@nxp.com>, Takashi Iwai <tiwai@suse.com>,
- Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+ Mark Kettenis <kettenis@openbsd.org>,
+ Martin =?utf-8?Q?Povi=C5=A1er?= <povik+lin@cutebit.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, asahi@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q5SDUYAWVBOK63OYPGMHBHNFQBIB4KYJ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NKKHFFNKUWX4FUKPS5YBS3NNAUKPLLOA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,80 +81,27 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Krzysztof,
+On 2023-02-16 16:00:24 +0000, Mark Brown wrote:
+> On Sun, Feb 12, 2023 at 04:41:24PM +0100, Janne Grunau wrote:
+> 
+> > This trivial dt-bindings update should be merged through the asahi-soc
+> > tree to ensure validation of the Apple M2 (t8112) devicetrees in this
+> > series.
+> 
+> I didn't get a response to my query about the nearness to the
+> merge window and the prospects of the series hitting v6.3, though
+> I do see that there's a new version needed for some of the other
+> patches.  I'm just going to go ahead and apply so it's there and
+> I don't need to worry about or see resends, in case the rest of
+> the series is going to go in it's not the end of the world if it
+> gets applied twice anyway so
 
-On Fri, 17 Feb 2023 10:14:48 +0100
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+Sorry, I forgot to answer. The devicetree commit is too late for 6.3. If 
+some of the binding updates make it into v6.3-rc1 it will get dropped.
 
-> On 16/02/2023 14:42, Herve Codina wrote:
-> > Add support for the time slot assigner (TSA)
-> > available in some PowerQUICC SoC such as MPC885
-> > or MPC866.
-> >=20
-> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> > ---
-> >  .../bindings/soc/fsl/cpm_qe/fsl,cpm1-tsa.yaml | 234 ++++++++++++++++++
-> >  include/dt-bindings/soc/fsl,tsa.h             |  13 +
-> >  2 files changed, 247 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/soc/fsl/cpm_qe/fs=
-l,cpm1-tsa.yaml
-> >  create mode 100644 include/dt-bindings/soc/fsl,tsa.h
+> Reviewed-by: Mark Brown <broonie@kernel.org>
 
-[...]
-> > +
-> > +patternProperties:
-> > +  '^tdm@[0-1]$':
-> > +    description:
-> > +      The TDM managed by this controller
-> > +    type: object
-> > +
-> > +    additionalProperties: false
-> > +
-> > +    properties:
-> > +      reg:
-> > +        minimum: 0
-> > +        maximum: 1
-> > +        description:
-> > +          The TDM number for this TDM, 0 for TDMa and 1 for TDMb
-[...]
-> > +
-> > +      fsl,rx-frame-sync-delay-bits:
-> > +        enum: [0, 1, 2, 3] =20
->=20
-> maxItems: 1
+Thanks
 
-The property is an enum
-Why this maxItems value ?
+Janne
 
-If I add the maxItems value, I've got some dt_binding_check errors:
-  /xxxx/bindings/soc/fsl/cpm_qe/fsl,cpm1-tsa.yaml:
-  patternProperties:^tdm@[0-1]$:properties:fsl,rx-frame-sync-delay-bits:
-  'enum' should not be valid under {'enum': ['const', 'enum', 'exclusiveMax=
-imum', 'exclusiveMinimum', 'minimum', 'maximum', 'multipleOf', 'pattern']}
-	hint: Scalar and array keywords cannot be mixed
-	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
-
->=20
-> > +        default: 0
-> > +        description: |
-> > +          Receive frame sync delay in number of bits.
-> > +          Indicates the delay between the Rx sync and the first bit of=
- the Rx
-> > +          frame. 0 for no bit delay. 1, 2 or 3 for 1, 2 or 3 bits dela=
-y.
-> > +
-> > +      fsl,tx-frame-sync-delay-bits:
-> > +        enum: [0, 1, 2, 3] =20
->=20
-> maxItems: 1
-
-Same question here.
-
-
-Thanks for the review,
-
-Herv=C3=A9
---=20
-Herv=C3=A9 Codina, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
