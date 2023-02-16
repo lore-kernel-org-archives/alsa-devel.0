@@ -4,125 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26E4EC61DA4
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Feb 2023 14:32:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69AC0C61DA4
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Feb 2023 14:34:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3AA1EAD;
-	Thu, 16 Feb 2023 15:31:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3AA1EAD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37B72EAE;
+	Thu, 16 Feb 2023 15:33:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37B72EAE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676557965;
-	bh=dqoBvTpk39VV6sxzwlZsme2/yh/18Scz/S2EDv3UyPc=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1676558070;
+	bh=QqmQt/krC6S5uww76juPUBb0WAImXoL3KsjKZXWfA/0=;
+	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=WcLJ+RJRFe0fhKKRdkURAOplKDVQZt+tzH77aI9ePqjQ3xHp0DAJ9MbHXu3J5LL7t
-	 5uCsLFOi9TXLZmcyhSfa/j8z4y1iovFga/bViBrKlYma6yB69znT9fiFL5EuRywveC
-	 x/gusZP3aICBkE3qufW8jz2cuTg6Jb3M6hIPEOWU=
+	b=J+INZqaHJlDAGltGWaJr06kRsmJKV9inoQMbrhrDXt7aK8jlA2aLdBiy490j4arqz
+	 XJHaOGje3LCxF7ZjeXn1t+Wohsy1eT3no98oeQC94zPBw/baZgl6ja8uf2Ic7U5xz/
+	 9wSsepqjFGyBsXE+nXtpfnAPfZLrGXqNXnX4kJbo=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE930F80171;
-	Thu, 16 Feb 2023 15:31:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 887E6F80171;
+	Thu, 16 Feb 2023 15:33:16 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 279B1F80171; Thu, 16 Feb 2023 15:31:27 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 128E4F80171; Thu, 16 Feb 2023 15:33:13 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 03D2EF800B6
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2023 15:31:23 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id A48BF11C1;
-	Thu, 16 Feb 2023 15:31:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz A48BF11C1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1676557882; bh=6dY1A0UFPWQuuapAlpdzCPQP9ob5MI/jkui2BedESi4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=UTopnVZi5HSCVqSt31JgIR5PnidL/7A/LGggzsKoCGoBZrGktTJisAZh9Nrr3S9C6
-	 HTs9KQtxF8vUC1+FN+p543Uiwb+2Dejp1CcpG/VQktkFLgZGlJVwFunKPYoiIqKzSG
-	 c31PKFnaSBQ1pu3z6QzQ6UDgEFaUK2ujA6m13Pkc=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9DE5CF80083
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2023 15:33:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DE5CF80083
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ADjwh5iL
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Thu, 16 Feb 2023 15:31:18 +0100 (CET)
-Message-ID: <ace4f06a-ecfd-000d-ec00-d3e70d797bb9@perex.cz>
-Date: Thu, 16 Feb 2023 15:31:18 +0100
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 272B761380;
+	Thu, 16 Feb 2023 14:33:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1CB3C433D2;
+	Thu, 16 Feb 2023 14:32:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1676557980;
+	bh=QqmQt/krC6S5uww76juPUBb0WAImXoL3KsjKZXWfA/0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=ADjwh5iLY63HLuZVMYO4D5VbvkVzcEIiH36I7s2fBoYZDw0WSjgdWOEWLRTH/UrJf
+	 F83j9PoLNzjS8YK74bYntQ0jIk89Ae6Cd0cGkMRCOMq57jLgthe7x7XzsKtG1GumYW
+	 pnxgQl66eeekB6B9eQXjE5AkQaXXQ0mGAELuo+Xutnol8o3198y/BR+hefq0QFft6a
+	 CB3ZQaRdzA/XO70ucrrGXLyrHZ0QbgVND6b9qra0Czc0SHgQimWIRxNbTgVEEr//5n
+	 09osxMH5cJ1w9xYh54aCgjM5MzmC57qzp6MUVbMBdvFIsSnTqPVlTRUbQveGnfZiaZ
+	 RVgae3W4elUJw==
+From: Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Geert Uytterhoeven <geert+renesas@glider.be>
+In-Reply-To: 
+ <ac6365c17861d71fbc89d823089db4aafdb763ed.1676470202.git.geert+renesas@glider.be>
+References: 
+ <ac6365c17861d71fbc89d823089db4aafdb763ed.1676470202.git.geert+renesas@glider.be>
+Subject: Re: [PATCH] ASoC: rsnd: adg: Fix BRG typos
+Message-Id: <167655797866.4030382.9723735853907637449.b4-ty@kernel.org>
+Date: Thu, 16 Feb 2023 14:32:58 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH] pcm_rate: fix hw_ptr boundary wrapping issue
-Content-Language: en-US
-To: Alan Young <consult.awy@gmail.com>, alsa-devel@alsa-project.org
-References: <20230105153546.468288-1-consult.awy@gmail.com>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20230105153546.468288-1-consult.awy@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: 47ADTFVF2HH7GVY4WVL7EYW2QAU2XG6D
-X-Message-ID-Hash: 47ADTFVF2HH7GVY4WVL7EYW2QAU2XG6D
-X-MailFrom: perex@perex.cz
+X-Mailer: b4 0.12.0
+Message-ID-Hash: L5SURCLKYUV26LGDBS6XR75X7ICIHBVB
+X-Message-ID-Hash: L5SURCLKYUV26LGDBS6XR75X7ICIHBVB
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: tiwai@suse.de, mahendran.kuppusamy@in.bosch.com
+CC: alsa-devel@alsa-project.org, linux-renesas-soc@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/47ADTFVF2HH7GVY4WVL7EYW2QAU2XG6D/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L5SURCLKYUV26LGDBS6XR75X7ICIHBVB/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 05. 01. 23 16:35, Alan Young wrote:
-> Wrap the hw_ptr using the total position of the slave hw_ptr, including
-> boundary wraps. Otherwise, small errors can creep in due to residuals
-> (when boundary is not a multiple of period size) and which can
-> accumulate.
+On Wed, 15 Feb 2023 15:17:41 +0100, Geert Uytterhoeven wrote:
+> "BRG" stands for "Baud Rate Generator", but is frequently misspelled as
+> "RBG".
 > 
-> Signed-off-by: Alan Young <consult.awy@gmail.com>
-> Fixes: 7570e5d7 ("pcm: rate: fix the hw_ptr update until the boundary available")
-> ---
->   src/pcm/pcm_rate.c | 54 ++++++++++++++++++++++++++++++----------------
->   1 file changed, 36 insertions(+), 18 deletions(-)
 > 
-> diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
-> index c8076859..a29fc5a9 100644
-> --- a/src/pcm/pcm_rate.c
-> +++ b/src/pcm/pcm_rate.c
 
-...
+Applied to
 
-> +	if (rate->slave_hw_ptr_wrap) {
-> +		/*
-> +		 * Restrict explicit 64-bit calculations to case where rate->slave_hw_ptr_wrap
-> +		 * is non-zero, which will only happen in 32-bit environments.
-> +		 */
-> +		u_int64_t wrapped_slave_hw_ptr = slave_hw_ptr + rate->slave_hw_ptr_wrap;
-> +		new_hw_ptr = ((wrapped_slave_hw_ptr / rate->gen.slave->period_size) * pcm->period_size) % pcm->boundary;
-> +		slave_residual = wrapped_slave_hw_ptr % rate->gen.slave->period_size;
+   broonie/sound.git for-next
 
-I don't think that this calculation is correct. If the boundary differs by 
-more than buffer_size, the new_hw_ptr will be cropped (downsampling).
+Thanks!
 
-It will be probably much better to track only pointer diffs and let hw/appl 
-ptrs updating independently like we do in other plugins.
+[1/1] ASoC: rsnd: adg: Fix BRG typos
+      commit: 4932b1fa61322b737dc3615a298aafdc42f97f79
 
-					Jaroslav
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
