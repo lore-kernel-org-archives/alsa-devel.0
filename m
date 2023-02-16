@@ -4,108 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54C6CC636CC
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Feb 2023 13:22:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6094C61DA4
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Feb 2023 13:25:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D364BE12;
-	Thu, 16 Feb 2023 14:21:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D364BE12
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5E2F4E0F;
+	Thu, 16 Feb 2023 14:24:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E2F4E0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676553736;
-	bh=3sAyq8I93Sn1ZNFBBMF1TK6zBpcx7pni0jp/3iUxjkQ=;
-	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
+	s=default; t=1676553899;
+	bh=zZ4rQNc8mPRkeZ0/8qJ2pJ5hmbNsF1z0HeQ280pKM6E=;
+	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Xi1794p27K+Nnb7wWkJhCEWuilujaYINZDsFa+S12KDESeqT+yL8csqXneQbu6d1T
-	 KrOi48K1U0jZE+tz85iqUtx1xwVGlSIj+pF9eWzvIRU1v0geHkNJFU6NWUNSHc4cmK
-	 3PtCUo04d9DRtgkoJcqiaafqDmcYAh7m4dyXeQeU=
+	b=A643HaZ7HMZ2jc1pb8F1S+yOJWmJB2V/Fs03YUVJCtJX79BWsYic13kTif4qCoU4I
+	 u8SkOQgkYaIvZ+KDcvhfr9O/RPS2eyyHD8QN6XXEsS9Gt+FJcq75NzBtnDi5HpD2+F
+	 /EWsVus6FnmzcLWsD9+7Bak1trbGI/LHTkewFtUc=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D9D7F80083;
-	Thu, 16 Feb 2023 14:21:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31179F80171;
+	Thu, 16 Feb 2023 14:23:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 01364F80171; Thu, 16 Feb 2023 14:20:58 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id C5687F80171; Thu, 16 Feb 2023 14:23:40 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4DD0DF80083
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2023 14:20:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DD0DF80083
+	by alsa1.perex.cz (Postfix) with ESMTPS id 17D3AF800E3
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2023 14:23:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17D3AF800E3
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=fmgnUO6t;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=+eP391B+
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=ZUpV/cal
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 950C421D16;
-	Thu, 16 Feb 2023 13:20:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1676553654;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=v5JyBkcwirWIeq0OSn+O0k4FE4Kvt8rex6mOed7tRrA=;
-	b=fmgnUO6tJUMWyCAl90ikIHcD+QVsgNJ+X85yUTvubM6VeHRBhGkirr6ec8EBeeJ7sT96AP
-	2gYC/S4AfaXsD5jJAfbnMYUpicipvq486Xekd/unJRib5TgrS8tdvdd6IVgA/Pyybv5WRB
-	2ks8uYqEcILsN2TzTJ8sxBIa8ewd0vI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1676553654;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=v5JyBkcwirWIeq0OSn+O0k4FE4Kvt8rex6mOed7tRrA=;
-	b=+eP391B+GYmkBsdtm0gPaCMhmkp8eW+nLpvVV1lmZbCAaoMPHHFM27V2Ka+UbIuNjYLwZt
-	5NDkkVfWXPsxeRBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 64A5E13438;
-	Thu, 16 Feb 2023 13:20:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id wthuF7Yt7mN5WQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 16 Feb 2023 13:20:54 +0000
-Date: Thu, 16 Feb 2023 14:20:53 +0100
-Message-ID: <877cwh7nm2.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Orlando Chamberlain <orlandoch.dev@gmail.com>
-Subject: Re: [PATCHv2] hda/hdmi: Register with vga_switcheroo on Dual GPU
- Macbooks
-In-Reply-To: <20230216103450.12925-1-orlandoch.dev@gmail.com>
-References: <20230216103450.12925-1-orlandoch.dev@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: WQJAJJA3NJHAZE5RFOUOEMEAAFHAWLFU
-X-Message-ID-Hash: WQJAJJA3NJHAZE5RFOUOEMEAAFHAWLFU
-X-MailFrom: tiwai@suse.de
+	by ams.source.kernel.org (Postfix) with ESMTPS id 3253BB827FA;
+	Thu, 16 Feb 2023 13:23:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9643C433D2;
+	Thu, 16 Feb 2023 13:23:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1676553815;
+	bh=zZ4rQNc8mPRkeZ0/8qJ2pJ5hmbNsF1z0HeQ280pKM6E=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=ZUpV/cal3CvprEvJANGAsyd4jjRMoj2iuceMPIdBzVvrvACNFdGcn7m9r7o9P+lbP
+	 j2NdFaCR6W9mlUAa9529aKRKl5210D++z7f2doAAAuWDd6TZ2Tp7N05PaTpNSJYiLI
+	 NbBHhn3/yv0yHLlRLV0mQ+tZVCclF5PYujt+jzgX+VOSyhr6PscPj9B2icQvQmBNTM
+	 z2iRSqKptCLCSOenFzS/dse6BJwSD4bsumw9EH/spJm9k9/Vtl4OxJZyQMOWlEzGfX
+	 BWjdTfauhtM9v+962YbyUCkUge/b8vunBFYUudx49t3PTC3sgR02iaiyNCdrsbnEX3
+	 FEfim0Ag+tl/Q==
+From: Mark Brown <broonie@kernel.org>
+To: David Rau <David.Rau.opensource@dm.renesas.com>
+In-Reply-To: <20230215101045.21456-1-David.Rau.opensource@dm.renesas.com>
+References: <20230215101045.21456-1-David.Rau.opensource@dm.renesas.com>
+Subject: Re: [PATCH] ASoC: da7219: Improve the IRQ process to increase the
+ stability
+Message-Id: <167655381355.3676286.5725030746001526408.b4-ty@kernel.org>
+Date: Thu, 16 Feb 2023 13:23:33 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.0
+Message-ID-Hash: KNMA6WQE3OZJEE7CWJPSXIGZCKQ5P2UE
+X-Message-ID-Hash: KNMA6WQE3OZJEE7CWJPSXIGZCKQ5P2UE
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- Evan Quan <evan.quan@amd.com>, Alex Deucher <alexander.deucher@amd.com>,
- linux-kernel@vger.kernel.org, Aditya Garg <gargaditya08@live.com>,
- Aun-Ali Zaidi <admin@kodeit.net>, Kerem Karabay <kekrby@gmail.com>
+CC: support.opensource@diasemi.com, lgirdwood@gmail.com, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ bailideng@google.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WQJAJJA3NJHAZE5RFOUOEMEAAFHAWLFU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KNMA6WQE3OZJEE7CWJPSXIGZCKQ5P2UE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,32 +92,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 16 Feb 2023 11:34:51 +0100,
-Orlando Chamberlain wrote:
+On Wed, 15 Feb 2023 10:10:45 +0000, David Rau wrote:
+> Remove the sleep control in IRQ thread
+> and create an individual task to handel it for Jack plug in event.
 > 
-> Commit 586bc4aab878 ("ALSA: hda/hdmi - fix vgaswitcheroo detection for
-> AMD") caused only AMD gpu's with PX to have their audio component register
-> with vga_switcheroo. This meant that Apple Macbooks with apple-gmux as the
-> gpu switcher no longer had the audio client registering, so when the gpu is
-> powered off by vga_switcheroo snd_hda_intel is unaware that it should have
-> suspended the device:
+> This commit improves the control of ground switches in the AAD IRQ.
 > 
-> amdgpu: switched off
-> snd_hda_intel 0000:03:00.1:
->     Unable to change power state from D3hot to D0, device inaccessible
-> snd_hda_intel 0000:03:00.1: CORB reset timeout#2, CORBRP = 65535
 > 
-> To resolve this, we use apple_gmux_detect() and register a
-> vga_switcheroo audio client when apple-gmux is detected.
-> 
-> Fixes: 586bc4aab878 ("ALSA: hda/hdmi - fix vgaswitcheroo detection for AMD")
-> Link: https://lore.kernel.org/all/20230210044826.9834-9-orlandoch.dev@gmail.com/
-> Signed-off-by: Orlando Chamberlain <orlandoch.dev@gmail.com>
-> ---
-> v1->v2: Use apple_gmux_detect(), split this patch out of the patch
-> series
 
-Thanks, applied now.
+Applied to
 
+   broonie/sound.git for-next
 
-Takashi
+Thanks!
+
+[1/1] ASoC: da7219: Improve the IRQ process to increase the stability
+      commit: 7fde88eda855952766a74026c181c6270b3392fc
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
