@@ -4,40 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29038C636CC
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Feb 2023 10:36:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3110DC636CC
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Feb 2023 10:37:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 04FB4DEC;
-	Thu, 16 Feb 2023 11:36:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04FB4DEC
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE664E81;
+	Thu, 16 Feb 2023 11:36:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE664E81
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676543815;
-	bh=43yrk27ebZVqNfPcof4HKNkZsJxttOq3JVVqD2Lme4I=;
+	s=default; t=1676543827;
+	bh=Lavf09jyhdS+ewCEWzduKnGfji+NNs/v8MNjkeD6LV8=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=iasqubpqVhlo03+zA/4MmBecTXTIK95XpqxlyNn/iueo+vMv7ukJEhPJrs1o6Mua8
-	 SIoTs37gdthSskvp+v+CMMRM3uNnLlIk20jiGYJ+3drcrlJMDukZKrHwJh6HltQMWN
-	 CRYk7YKkFaLLSE0cvl5oMXRA975r+rLugQXBOrTw=
+	b=Q/on8CaRKFNGQNv2ib/MnIkmuksyFay+nKHpdtRVpuC2oIOXx2g1DcqfbpLZoVyFi
+	 MOdkX2dOkSX1UEy15Orv5vuYr7Qh1dC0sR7fmmyIke6EZdfeZgrj7vaokwaMEa3rwp
+	 WOaw0VHcSIBAzV90n2Crk1V0pdN2G3KUSEj75U84=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E81F5F804B2;
-	Thu, 16 Feb 2023 11:35:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09094F80527;
+	Thu, 16 Feb 2023 11:35:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 79190F80525; Thu, 16 Feb 2023 11:34:56 +0100 (CET)
+	id CB5F8F80496; Thu, 16 Feb 2023 11:34:56 +0100 (CET)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
  [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 200BBF804B2
-	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2023 11:33:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 200BBF804B2
+	by alsa1.perex.cz (Postfix) with ESMTPS id D5E9BF80496
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2023 11:33:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5E9BF80496
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=X3p7b9WG
+ header.a=rsa-sha256 header.s=mail header.b=SdYotCyj
 Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
  [82.11.51.62])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -45,35 +46,34 @@ Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: tanureal)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 509D366021AC;
-	Thu, 16 Feb 2023 10:33:17 +0000 (GMT)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 18B78660219B;
+	Thu, 16 Feb 2023 10:33:16 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1676543597;
-	bh=43yrk27ebZVqNfPcof4HKNkZsJxttOq3JVVqD2Lme4I=;
+	s=mail; t=1676543596;
+	bh=Lavf09jyhdS+ewCEWzduKnGfji+NNs/v8MNjkeD6LV8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=X3p7b9WGXkiLWV7Vk9OC51TdwgqNL/CwWbd5k4+W9YpiZEn0bjZ8Dv8PPvvHPt7Jh
-	 LoXlY1EoPY0Ve6K84AdXLnmLcAZ/A/7S5s2gQtHnChWz0W99O2J1ny6KMnGWOCE8lx
-	 fwCZi0nQ/FL2t8DaPx0fzDS0C5naLKNlIZ1Swu608UizlNXtRcWm3SY0GslPNTSi/q
-	 J43hRDM8d0YpzhsG8xVllEW2f/CDoaHn1eNjT+WYklwnuNOVd3NNc6YeLxhNXPB0Er
-	 dHW3UjXUwFN+8B1F6HcITHKHeZzoZLC34oEGefsgYJR+pJr3M/C6CFMfQLQlR35DtH
-	 +jc1hL79vuXQA==
+	b=SdYotCyjGxEC59z5vvsg8tUCHQYuttvDuoXkFA2KqDTlWwbX9m3zi8pqClqyMzoWT
+	 FAfGrJAFU90XrJ4p0WRrX7q4CQoqDOHjgxhcOHLm04Yn+BY2VRJBOYzH7udzIuHtNj
+	 OLfuJvJZ4YtSFgXI4FQAPLFOu2hfckb6Q8EH2sJjanAAAwxbcO2zrXjVWK3NHMVhOg
+	 z3TZzb4qPkXNRjvMMjA+lHQF5d+v5nOCLtkG6NHIj7AMzEx1PnRYNAcSXxklBWeXVl
+	 lCl+H0Rn6Yn0mkOTwZsbCRZUCWH9HeK1NiX5qqcbb9Xc+f/K+Fvo8SVzGZR5/JdsUP
+	 +FRCSFW7JvLgg==
 From: Lucas Tanure <lucas.tanure@collabora.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
 	Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 5/9] ASoC: amd: vangogh: use for_each_rtd_components instead
- of for
-Date: Thu, 16 Feb 2023 10:32:56 +0000
-Message-Id: <20230216103300.360016-6-lucas.tanure@collabora.com>
+Subject: [PATCH 1/9] ASoC: amd: vangogh: Remove unnecessary init function
+Date: Thu, 16 Feb 2023 10:32:52 +0000
+Message-Id: <20230216103300.360016-2-lucas.tanure@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230216103300.360016-1-lucas.tanure@collabora.com>
 References: <20230216103300.360016-1-lucas.tanure@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4EVOTS7R43ZNC2VFFVMR2RGY47IT77TV
-X-Message-ID-Hash: 4EVOTS7R43ZNC2VFFVMR2RGY47IT77TV
+Message-ID-Hash: XKRY4WOMM7IXECJ74MSLTMZF2PKJH5ZW
+X-Message-ID-Hash: XKRY4WOMM7IXECJ74MSLTMZF2PKJH5ZW
 X-MailFrom: lucas.tanure@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4EVOTS7R43ZNC2VFFVMR2RGY47IT77TV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XKRY4WOMM7IXECJ74MSLTMZF2PKJH5ZW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,75 +97,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-To iterate over components use for_each_rtd_components
-And compare to component name, so asoc_rtd_to_codec and the dai code can
-be removed
+Remove empty acp5x_cs35l41_init function
 
 Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
 ---
- sound/soc/amd/vangogh/acp5x-mach.c | 40 +++++++++++++++---------------
- 1 file changed, 20 insertions(+), 20 deletions(-)
+ sound/soc/amd/vangogh/acp5x-mach.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
 diff --git a/sound/soc/amd/vangogh/acp5x-mach.c b/sound/soc/amd/vangogh/acp5x-mach.c
-index 841b79fa6af5..e7a7558f70ae 100644
+index eebf2650ad27..5bd9418919a0 100644
 --- a/sound/soc/amd/vangogh/acp5x-mach.c
 +++ b/sound/soc/amd/vangogh/acp5x-mach.c
-@@ -146,35 +146,35 @@ static int acp5x_cs35l41_startup(struct snd_pcm_substream *substream)
- static int acp5x_cs35l41_hw_params(struct snd_pcm_substream *sub, struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(sub);
--	unsigned int num_codecs = rtd->dai_link->num_codecs;
--	struct snd_soc_card *card = rtd->card;
--	struct snd_soc_dai *dai;
--	unsigned int bclk_val;
-+	unsigned int bclk, rate = params_rate(params);
-+	struct snd_soc_component *comp;
- 	int ret, i;
- 
--	ret = 0;
--	for (i = 0; i < num_codecs; i++) {
--		dai = asoc_rtd_to_codec(rtd, i);
--		if (strcmp(dai->name, "cs35l41-pcm") == 0) {
--			switch (params_rate(params)) {
--			case 48000:
--				bclk_val = 1536000;
--				break;
--			default:
--				dev_err(card->dev, "Invalid Samplerate:0x%x\n",
--					params_rate(params));
-+	switch (rate) {
-+	case 48000:
-+		bclk = 1536000;
-+		break;
-+	default:
-+		bclk = 0;
-+		break;
-+	}
-+
-+	for_each_rtd_components(rtd, i, comp) {
-+		if (!(strcmp(comp->name, "spi-VLV1776:00")) ||
-+		    !(strcmp(comp->name, "spi-VLV1776:01"))) {
-+			if (!bclk) {
-+				dev_err(comp->dev, "Invalid sample rate: 0x%x\n", rate);
- 				return -EINVAL;
- 			}
--			ret = snd_soc_component_set_sysclk(dai->component,
--							   0, 0, bclk_val, SND_SOC_CLOCK_IN);
--			if (ret < 0) {
--				dev_err(card->dev, "failed to set sysclk for CS35l41 dai\n");
-+			ret = snd_soc_component_set_sysclk(comp, 0, 0, bclk, SND_SOC_CLOCK_IN);
-+			if (ret) {
-+				dev_err(comp->dev, "failed to set SYSCLK: %d\n", ret);
- 				return ret;
- 			}
- 		}
- 	}
- 
--	return ret;
-+	return 0;
+@@ -73,11 +73,6 @@ static int acp5x_8821_init(struct snd_soc_pcm_runtime *rtd)
+ 	return ret;
  }
  
- static const struct snd_soc_ops acp5x_8821_ops = {
+-static int acp5x_cs35l41_init(struct snd_soc_pcm_runtime *rtd)
+-{
+-	return 0;
+-}
+-
+ static const unsigned int rates[] = {
+ 	48000,
+ };
+@@ -258,7 +253,6 @@ static struct snd_soc_dai_link acp5x_dai[] = {
+ 		.dpcm_playback = 1,
+ 		.playback_only = 1,
+ 		.ops = &acp5x_cs35l41_play_ops,
+-		.init = acp5x_cs35l41_init,
+ 		SND_SOC_DAILINK_REG(acp5x_bt, cs35l41, platform),
+ 	},
+ };
 -- 
 2.39.2
 
