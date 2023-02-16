@@ -4,128 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D70EC61DA4
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Feb 2023 15:04:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE55AC61DA4
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Feb 2023 15:17:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 08A53F2E;
-	Thu, 16 Feb 2023 16:03:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08A53F2E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6862EED;
+	Thu, 16 Feb 2023 16:16:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6862EED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676559872;
-	bh=qzvdIDt2ohY1Wu2a9+uUMlNbPl+eaX7VSiiEzZmNDgE=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	s=default; t=1676560634;
+	bh=ZsMqIuzb05Ne4ViqazRmOCH133Ieiya5wrDPPquG8/M=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=m08YEbZ8lmU6QqhH/0dV788l7B9FWfPR0TMnAFyZ2D2rjIYcHKmOch3oI1yqs9+vn
-	 tW4qHtj92NynrgmOA1wDWDewLRGpXvmbaaXBdOCsTRuIqKvtgz3G211LL6z42Sh99H
-	 SqFCo0XoYiQ/p2F82l6rzqyLiNUIivgc7Rn16umI=
+	b=bdw2Ss6Byw9XxSTwCmTMBEBwTtnrk7xcjMcYiT9jsl0KjatT29jUoatCRXN5ni6d6
+	 H0Xv+A64jMmSdUHoFqtu8miC4yxKGEpjjzFTYo7FqIZG5h5yV5XTJ0zX7CY5NsGzUF
+	 akjynuqvYEsLJAKqvWipoPxlLMJ7AsnW36FTwDrk=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0260F80544;
-	Thu, 16 Feb 2023 15:56:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62A5FF80083;
+	Thu, 16 Feb 2023 16:16:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F2550F8018A; Fri, 10 Feb 2023 05:50:29 +0100 (CET)
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com
- [IPv6:2607:f8b0:4864:20::1035])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 98301F80171; Thu, 16 Feb 2023 16:15:55 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5219EF800E4
-	for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2023 05:50:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5219EF800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 81C39F80083
+	for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2023 16:15:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81C39F80083
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=dfjrwZCU
-Received: by mail-pj1-x1035.google.com with SMTP id d2so4090972pjd.5
-        for <alsa-devel@alsa-project.org>;
- Thu, 09 Feb 2023 20:50:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y8Z+rw3Lo4ZI53HBYFrES/rZyYmIcMPWeV9Tjc6GjJE=;
-        b=dfjrwZCUTXg0++zE/wVkz4Z96Dke9cdiJGPWOJx+bSbwOuQzxzamUP7h08RKQKxmci
-         TJuBqsc+PY+NgKeBk1dK5ehjoB56e05oCGCVdL0fCqIdQhc0VEGhFat0cmuxanHzAMg0
-         PkBLd+8yttsFpd3mZCaA1SzojWL4FcQ3HiMdQp77gFhOpZsKqeYz/jeR1LyHxN4YyLTb
-         3ZMp1vTJystxqoDQUey6c9p8i3s2QjUBsSsvBZ5rfq9WUIORdJzIDSR0QALHgrjXZ77j
-         ScTwjw3ohujsiuZkCI2r2hTPzZp/mGapCXYydIZhMspEsgiXfPGfK8D+y5YVUcqfbqEh
-         3VYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y8Z+rw3Lo4ZI53HBYFrES/rZyYmIcMPWeV9Tjc6GjJE=;
-        b=aGKXKpUg3+p4VrOzgdzrlkxNZQooSddfG4TjEtQIHEBzDHegFEE7AXm5AqYwAhhas6
-         H/aTyNODqrGkkeHT/FUxtHqAiyZAVqOpzASwAMr97L92QuoFutnhOJ0TBdgbmfqYCD6l
-         avdx6JpiFMQP7SJTECWaY0D7Vpl3Fkfnx64jkoJTsdB/RZ//HWZSK8fQTkyx28su3bEi
-         QamvjoYbQSesV9i0iZAHm5EK9wTpQkNBao6W5tpJ/yLaWJBHaIvONBBHo7nrggNBn8df
-         236vvSbUXyw8sCBMr6bdQbwcBUxAQV+xINfM0b5NNqYbw7B5RgkviuMscHWon+Kv74Pz
-         0Kpg==
-X-Gm-Message-State: AO0yUKXtgmXD+6/pSfYnQWBX5FaPIrbjWWXThR4QwjT7zth2mG5s4WSu
-	MInnEnx9qbjT9e2oAoPgcBGC85q9THsSvg==
-X-Google-Smtp-Source: 
- AK7set/7KSbVgE9qkN7uNWue+wzw+pXkSmt+auWpnDKP9/ad63Y3Jn6uOO0PkG79K7jm7BGnaA7Ihg==
-X-Received: by 2002:a05:6a21:339a:b0:bf:22ca:ef55 with SMTP id
- yy26-20020a056a21339a00b000bf22caef55mr17822193pzb.37.1676004618944;
-        Thu, 09 Feb 2023 20:50:18 -0800 (PST)
-Received: from localhost.localdomain ([202.53.32.211])
-        by smtp.gmail.com with ESMTPSA id
- t13-20020a62ea0d000000b0057fec210d33sm2269218pfh.152.2023.02.09.20.50.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Feb 2023 20:50:18 -0800 (PST)
-From: Orlando Chamberlain <orlandoch.dev@gmail.com>
-To: platform-driver-x86@vger.kernel.org,
-	amd-gfx@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: [RFC PATCH 2/9] apple-gmux: consolidate version reading
-Date: Fri, 10 Feb 2023 15:48:19 +1100
-Message-Id: <20230210044826.9834-3-orlandoch.dev@gmail.com>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230210044826.9834-1-orlandoch.dev@gmail.com>
-References: <20230210044826.9834-1-orlandoch.dev@gmail.com>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=aHXcznFk
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id C4051B825DD;
+	Thu, 16 Feb 2023 15:15:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1602C433EF;
+	Thu, 16 Feb 2023 15:15:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1676560543;
+	bh=ZsMqIuzb05Ne4ViqazRmOCH133Ieiya5wrDPPquG8/M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aHXcznFkbedVsxumyqDWvT20Y6thvMkFgR8xuI/CfmFCAWTZqXbJDquucbTqFHavj
+	 HC7A5aXXCUlR7VvU50fCHFvN4eVm0MeyxJjNULMNAQEWJBhAW8QQGNANymkkRNdpIP
+	 iy0+IMU+sWc4P++3DJ1v6U8gs55ibvgBpqd7+NlxAwctvyaUp4Dfr/0PI7X/IhMOee
+	 CkWl/MkbS1Y3eN4AVVBodxrOfW9h+swQu2QzDxUklOHMMK50jniWxAQjlIyRK4XomN
+	 rJ9YbyY/q2x2OiR9ZpM3mGJheuuRvU1w3fLSV9hyt23W3seNtdF+bQMKVi/UcHSJri
+	 P0tlhyiM+ArRA==
+Date: Thu, 16 Feb 2023 15:15:39 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Lucas Tanure <lucas.tanure@collabora.com>
+Subject: Re: [PATCH 2/9] ASoC: amd: vangogh: Update code indentation
+Message-ID: <Y+5Im/6wsqNQ8FYo@sirena.org.uk>
+References: <20230216103300.360016-1-lucas.tanure@collabora.com>
+ <20230216103300.360016-3-lucas.tanure@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: orlandoch.dev@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5riVcraAeE+0JMsT"
+Content-Disposition: inline
+In-Reply-To: <20230216103300.360016-3-lucas.tanure@collabora.com>
+X-Cookie: Serving suggestion.
+Message-ID-Hash: ALMROVUMIBM5ZKDZZPMUCQ2IQ5CGGZPO
+X-Message-ID-Hash: ALMROVUMIBM5ZKDZZPMUCQ2IQ5CGGZPO
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: YHUZ7D2MAWLHLG6LPHEJ5ICKLRNKFCC5
-X-Message-ID-Hash: YHUZ7D2MAWLHLG6LPHEJ5ICKLRNKFCC5
-X-Mailman-Approved-At: Thu, 16 Feb 2023 14:56:51 +0000
-CC: Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>, "Pan,
- Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Hans de Goede <hdegoede@redhat.com>,
- Mark Gross <markgross@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Hawking Zhang <Hawking.Zhang@amd.com>,
- Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
- Lijo Lazar <lijo.lazar@amd.com>, YiPeng Chai <YiPeng.Chai@amd.com>,
- Somalapuram Amaranath <Amaranath.Somalapuram@amd.com>,
- Mario Limonciello <mario.limonciello@amd.com>,
- Bokun Zhang <Bokun.Zhang@amd.com>, Jack Xiao <Jack.Xiao@amd.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>,
- Evan Quan <evan.quan@amd.com>, Kerem Karabay <kekrby@gmail.com>,
- Aditya Garg <gargaditya08@live.com>, Aun-Ali Zaidi <admin@kodeit.net>,
- Orlando Chamberlain <orlandoch.dev@gmail.com>
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, kernel@collabora.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YHUZ7D2MAWLHLG6LPHEJ5ICKLRNKFCC5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ALMROVUMIBM5ZKDZZPMUCQ2IQ5CGGZPO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -134,76 +93,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Read gmux version in one go as 32 bits on both indexed and classic
-gmux's.
 
-Classic gmux's used to read the version as
+--5riVcraAeE+0JMsT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-major = inb(base + 0x4);
-minor = inb(base + 0x5);
-release = inb(base + 0x6);
+On Thu, Feb 16, 2023 at 10:32:53AM +0000, Lucas Tanure wrote:
+> Make use of 100 character limit and modify indentation so code is
+> easier to read.
 
-but this can instead be done the same way as indexed gmux's with
-gmux_read32(), so the same version reading code is used for classic
-and indexed gmux's (as well as mmio gmux's that will be added to this
-driver).
+I'm having a hard time seeing this as a helpful=20
 
-Signed-off-by: Orlando Chamberlain <orlandoch.dev@gmail.com>
----
- drivers/platform/x86/apple-gmux.c | 14 ++++++--------
- include/linux/apple-gmux.h        |  6 +-----
- 2 files changed, 7 insertions(+), 13 deletions(-)
+> While at it:
+>  - sort includes in alphabetical order
+>  - sort variables declarations by line length
+>  - use smaller variables names
+>  - remove unnecessary "struct snd_soc_card *card" lines
+>  - insert blank lines before return
+>  - align defines
 
-diff --git a/drivers/platform/x86/apple-gmux.c b/drivers/platform/x86/apple-gmux.c
-index e8cb084cb81f..67628104f31a 100644
---- a/drivers/platform/x86/apple-gmux.c
-+++ b/drivers/platform/x86/apple-gmux.c
-@@ -580,15 +580,13 @@ static int gmux_probe(struct pnp_dev *pnp, const struct pnp_device_id *id)
- 	if (indexed) {
- 		mutex_init(&gmux_data->index_lock);
- 		gmux_data->indexed = true;
--		version = gmux_read32(gmux_data, GMUX_PORT_VERSION_MAJOR);
--		ver_major = (version >> 24) & 0xff;
--		ver_minor = (version >> 16) & 0xff;
--		ver_release = (version >> 8) & 0xff;
--	} else {
--		ver_major = gmux_read8(gmux_data, GMUX_PORT_VERSION_MAJOR);
--		ver_minor = gmux_read8(gmux_data, GMUX_PORT_VERSION_MINOR);
--		ver_release = gmux_read8(gmux_data, GMUX_PORT_VERSION_RELEASE);
- 	}
-+
-+	version = gmux_read32(gmux_data, GMUX_PORT_VERSION_MAJOR);
-+	ver_major = (version >> 24) & 0xff;
-+	ver_minor = (version >> 16) & 0xff;
-+	ver_release = (version >> 8) & 0xff;
-+
- 	pr_info("Found gmux version %d.%d.%d [%s]\n", ver_major, ver_minor,
- 		ver_release, (gmux_data->indexed ? "indexed" : "classic"));
- 
-diff --git a/include/linux/apple-gmux.h b/include/linux/apple-gmux.h
-index 1f68b49bcd68..eb2caee04abd 100644
---- a/include/linux/apple-gmux.h
-+++ b/include/linux/apple-gmux.h
-@@ -67,7 +67,6 @@ static inline bool apple_gmux_is_indexed(unsigned long iostart)
-  */
- static inline bool apple_gmux_detect(struct pnp_dev *pnp_dev, bool *indexed_ret)
- {
--	u8 ver_major, ver_minor, ver_release;
- 	struct device *dev = NULL;
- 	struct acpi_device *adev;
- 	struct resource *res;
-@@ -95,10 +94,7 @@ static inline bool apple_gmux_detect(struct pnp_dev *pnp_dev, bool *indexed_ret)
- 	 * Invalid version information may indicate either that the gmux
- 	 * device isn't present or that it's a new one that uses indexed io.
- 	 */
--	ver_major = inb(res->start + GMUX_PORT_VERSION_MAJOR);
--	ver_minor = inb(res->start + GMUX_PORT_VERSION_MINOR);
--	ver_release = inb(res->start + GMUX_PORT_VERSION_RELEASE);
--	if (ver_major == 0xff && ver_minor == 0xff && ver_release == 0xff) {
-+	if (!(~inl(res->start + GMUX_PORT_VERSION_MAJOR))) {
- 		indexed = apple_gmux_is_indexed(res->start);
- 		if (!indexed)
- 			goto out;
--- 
-2.39.1
+This isn't helping make things easier to review :/
 
+> -static int acp5x_8821_startup(struct snd_pcm_substream *substream)
+> +static int acp5x_8821_startup(struct snd_pcm_substream *sub)
+
+We do usually refer to substreams as such, I'm not sure this is
+really helping.
+
+> -	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+> -				   &constraints_channels);
+> +	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS, &co=
+nstraints_channels);
+
+I'm having a *really* hard time seeing this as helping with
+legibility, it just makes things worse when viewed at 80 columns
+but it's hard to see what it helps.  The 100 column limit is
+flexibility we can use to avoid contortions but this is fairly
+natural.
+
+--5riVcraAeE+0JMsT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPuSJsACgkQJNaLcl1U
+h9Bkpgf9He+GgisvMXfHzovOeUmaexSlr7cC8udBT98h0ba00jKK6TKSwlhxQbC9
+P42L20e/Zorz014nCe42Srv9gRCllVenYG0lQZbIJ567xRuW02yP5pPHIcxJunRE
+3JNtDONZ5pxl/rJC1A/wGpPTQRVCYcudtimB3jYTTx29/8Brfv+HzWNOCHOgQvn5
+9Zw6Xo1wXSOhC3qQBHs3N8iQfyL6RJ2KRZ18twgw3aWTNs1yu9rBA2/hQEfSDJk1
+JEvlWx+q3uIta3UFMmLiaIYScpW1S7KkIOdQNN1x/0kMiVSvszC94L2eo+K/OS+c
+Ka2Q4PN+/taP2AnLQSmn1FhyqZ7DjA==
+=onrk
+-----END PGP SIGNATURE-----
+
+--5riVcraAeE+0JMsT--
