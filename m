@@ -4,124 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0B49C64EC4
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 15:08:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D89AC636D6
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 16:15:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B131F6C;
-	Fri, 17 Feb 2023 16:08:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B131F6C
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6AEDF56;
+	Fri, 17 Feb 2023 17:14:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6AEDF56
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676646530;
-	bh=dMCSTdE+nM11lnXimVhnu+NYShCdu4ojtnfVzoo7GOc=;
+	s=default; t=1676650542;
+	bh=jWXo/OhmaRA96DNh1A80n3xxlghGvIBXz9S6P0kseqo=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YQEMiVdcjPwRJfV/XGNpYLVwmFrwIAwOBY/zkQVZLlKEAyUQ81VeJF1SLOEIhzriM
-	 7g35NkFNliouB4OjkKdPxrzaY+VZAiJ3zFLhEwiu+Jz3ULrRIYUDRYiyj+0t0HzhBB
-	 tx2KTrup1LsIzcV3ls0qwk7cfrcEK3kQrdRD/Vl0=
+	b=k9lLVMrG+XGXqNE0/ISoTzb7zg2jrkiNBoUckdWTBBnM3IrptAkyP4ysut1/F7Aix
+	 hMW7fqUVaINylgXCIwDfIgFHPq/eABI+Eez3R/YlsHmd2qRsmBbd1oAEjiWtmz36Pi
+	 uq6H/uUBB4x54qOcyEgvYVIWAAZcWPfIYbT9/2CM=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6BE9DF80526;
-	Fri, 17 Feb 2023 16:06:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DAA8AF80526;
+	Fri, 17 Feb 2023 17:14:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2A4FEF80171; Fri, 17 Feb 2023 16:06:46 +0100 (CET)
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com
- [IPv6:2a00:1450:4864:20::52a])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id C6C68F80529; Fri, 17 Feb 2023 17:14:21 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 17C84F80083
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 16:06:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17C84F80083
+	by alsa1.perex.cz (Postfix) with ESMTPS id C180FF800AA
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 17:14:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C180FF800AA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=xltorjJq
-Received: by mail-ed1-x52a.google.com with SMTP id m17so5880513edc.9
-        for <alsa-devel@alsa-project.org>;
- Fri, 17 Feb 2023 07:06:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AfR58zk5Lq0Y4NpQRVcnXrMaw/hr0XQUMG7wTZBuFEA=;
-        b=xltorjJqnSMn9avO+CAsyd8bicX3NQVHPp2PNAklprp4tJLGKGevWTMcEr34ls0ZFC
-         0bR/EVXvyCS4R+RWN8/dbeBa7h0tRyd1m+OL80XEfzI8MHMmrl3exVUscP7io7EsB+Qa
-         QjtZEUk+8K0oUV4OYsdx2ubv3woHrCuuGsCAn+WSQf8t8WfDFfBk+kl+6q9C27hg0+Xu
-         L4Jj4rmMKdBgC2Sp2oc01OLN3V9PQk5YFyLPYGBC2FN+EyBcpO3JZveG+9m+/Rc+hAVj
-         Q085YiwR1p+xvLr36lC9k811UeBquC44G4SKDBBpsaNBjY4Mo8NqL9CpcjFIrPBTfl5m
-         zSZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AfR58zk5Lq0Y4NpQRVcnXrMaw/hr0XQUMG7wTZBuFEA=;
-        b=vx4UCRHbpiMWbH6Siod4dj93Qrkg4Dqdpg2f8yolLqZrhpEv18dfPptHWFDcKCUTAo
-         t82+/v2nE+3sNrk2s7C6uzYtiRbOmuEGeEZU1epiXREW+VGiYCtgvjowoPTPcZ7RyjVl
-         1PItewQbtWKv+2pAJ4fTuYmZpnP0uBNUXgFMNNnT/8UdadyqApvz9R9gjXn2FgL1Pe+0
-         R1ZQyv8zo+f0cGz7wxPm/VrftWEGWcY6oojsDy10ygYDpooPrBSPGi6h7/X9Y6DCDXlI
-         KotKHN8UP2GE4vhkZpA1DhPjPsCQcPkgx2rkqXD7IhU0SOEa4qKUpAxl1/QMLdhlrDFU
-         X5dw==
-X-Gm-Message-State: AO0yUKW4fy5O4CBfvE0XUGN7kpPjV2RZaOyXHJvp2oI7ewkT6s+sZjGr
-	LSg2GaAY/xcQbxPSEKON28IUdw==
-X-Google-Smtp-Source: 
- AK7set/KwPZmBYn2iAIMR26SlMvThSNNLiKnjZs3zyLE9MpxGJ+X05/w4/XNBlegEFA+gRT9U4tMJw==
-X-Received: by 2002:a17:906:5a4c:b0:8b1:811e:cd30 with SMTP id
- my12-20020a1709065a4c00b008b1811ecd30mr2904858ejc.22.1676646401896;
-        Fri, 17 Feb 2023 07:06:41 -0800 (PST)
-Received: from krzk-bin.. ([178.197.216.144])
-        by smtp.gmail.com with ESMTPSA id
- fx15-20020a170906b74f00b008b14ba6c954sm2221303ejb.194.2023.02.17.07.06.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Feb 2023 07:06:41 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	- <patches@opensource.cirrus.com>,
-	Adrien Grassein <adrien.grassein@gmail.com>,
-	Randy Li <ayaka@soulik.info>,
-	alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org
-Subject: [PATCH 3/3] ARM: dts: exynos: fix WM8960 clock name in Itop Elite
-Date: Fri, 17 Feb 2023 16:06:27 +0100
-Message-Id: <20230217150627.779764-3-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230217150627.779764-1-krzysztof.kozlowski@linaro.org>
-References: <20230217150627.779764-1-krzysztof.kozlowski@linaro.org>
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=oYNUPI3J
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 31HFgnU4014021;
+	Fri, 17 Feb 2023 10:14:12 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=KSx4vfnoG0hKeX0+I8Xc6vC4Q61Hdoi1UYzczfNsx1Y=;
+ b=oYNUPI3JkmSKKfpVnMIHi8T4mryop/uePwJerdvurSoCRETK64p29HFMtLcHNTDLoxtP
+ 8xiYKpSxIp7if4q0eyQXDf5CnlejuhOKTV8vi3emF07jaPSVCU3BQ8xy6mWTSabtSvz0
+ QJVwV0RZF6u++10SiK7lhcouHPk55X4k7JqoPZH+b6cJG2+rkzjTPlMtWc47iw2BSUWt
+ ivbNySHJ19Ud3ULFB5fLdgxO9hLVObqqDYAoNFJZqng5Tb7EkqpyAroAs9uplSLKHNh9
+ HNYqwPQs7q8F6NaBQ3dDs0nZP3TzcqrpzugzROW8v1S7xC5C1xmd98Vbt4eWGpHOQcKb CQ==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3nrm8wm7t6-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 17 Feb 2023 10:14:12 -0600
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Fri, 17 Feb
+ 2023 10:14:10 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.21 via Frontend
+ Transport; Fri, 17 Feb 2023 10:14:10 -0600
+Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
+ [198.90.251.127])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 61B9211D3;
+	Fri, 17 Feb 2023 16:14:10 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>, <pierre-louis.bossart@linux.intel.com>,
+        <cezary.rojewski@intel.com>, <peter.ujfalusi@linux.intel.com>,
+        <yung-chuan.liao@linux.intel.com>, <kai.vehmanen@linux.intel.com>
+Subject: [PATCH 03/10] firmware: cs_dsp: Support DSPs that don't require
+ firmware download
+Date: Fri, 17 Feb 2023 16:14:03 +0000
+Message-ID: <20230217161410.915202-4-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230217161410.915202-1-rf@opensource.cirrus.com>
+References: <20230217161410.915202-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: R2DCMJLCQIO3SVV5Z5FUG2EYZX7HTCXN
-X-Message-ID-Hash: R2DCMJLCQIO3SVV5Z5FUG2EYZX7HTCXN
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Type: text/plain
+X-Proofpoint-GUID: 7jho9u0DN5K2-kFdVLRRTrilrIEX9Xba
+X-Proofpoint-ORIG-GUID: 7jho9u0DN5K2-kFdVLRRTrilrIEX9Xba
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: Y4ENGWDCXVFAUV2RPDF3WGHRZM5WV3AH
+X-Message-ID-Hash: Y4ENGWDCXVFAUV2RPDF3WGHRZM5WV3AH
+X-MailFrom: prvs=74127981b7=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- stable@vger.kernel.org
+CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com, Simon Trimmer <simont@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R2DCMJLCQIO3SVV5Z5FUG2EYZX7HTCXN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y4ENGWDCXVFAUV2RPDF3WGHRZM5WV3AH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -130,29 +109,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The WM8960 Linux driver expects the clock to be named "mclk".  Otherwise
-the clock will be ignored and not prepared/enabled by the driver.
+From: Simon Trimmer <simont@opensource.cirrus.com>
 
-Cc: <stable@vger.kernel.org>
-Fixes: 339b2fb36a67 ("ARM: dts: exynos: Add TOPEET itop elite based board")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+When a DSP can self-boot from ROM it is not necessary to download
+firmware during the powering up sequence.
+
+A DSP that required firmware download would fail in a previous
+configuration step if firmware was not available.
+
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- arch/arm/boot/dts/exynos4412-itop-elite.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firmware/cirrus/cs_dsp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm/boot/dts/exynos4412-itop-elite.dts b/arch/arm/boot/dts/exynos4412-itop-elite.dts
-index b596e997e451..6260da187e92 100644
---- a/arch/arm/boot/dts/exynos4412-itop-elite.dts
-+++ b/arch/arm/boot/dts/exynos4412-itop-elite.dts
-@@ -182,7 +182,7 @@ codec: audio-codec@1a {
- 		compatible = "wlf,wm8960";
- 		reg = <0x1a>;
- 		clocks = <&pmu_system_controller 0>;
--		clock-names = "MCLK1";
-+		clock-names = "mclk";
- 		wlf,shared-lrclk;
- 		#sound-dai-cells = <0>;
- 	};
+diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
+index 97b73a254380..513136a924cf 100644
+--- a/drivers/firmware/cirrus/cs_dsp.c
++++ b/drivers/firmware/cirrus/cs_dsp.c
+@@ -1301,6 +1301,9 @@ static int cs_dsp_load(struct cs_dsp *dsp, const struct firmware *firmware,
+ 	int regions = 0;
+ 	int ret, offset, type;
+ 
++	if (!firmware)
++		return 0;
++
+ 	ret = -EINVAL;
+ 
+ 	pos = sizeof(*header) + sizeof(*adsp1_sizes) + sizeof(*footer);
 -- 
-2.34.1
+2.30.2
 
