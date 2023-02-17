@@ -4,87 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94D1AC64ED6
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 16:18:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF224C05027
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 16:18:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C0C9F66;
-	Fri, 17 Feb 2023 17:17:10 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C0C9F66
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA558FAA;
+	Fri, 17 Feb 2023 17:17:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA558FAA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676650680;
-	bh=R5OFaqUkC1Y/n/+UB4mhVCDijfv1IGX6IkOJqt0SkL4=;
+	s=default; t=1676650695;
+	bh=EdmSJBI52NpxTZebQY3rzB4Sc31jSEb5pCWFuQYXBnY=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nqfjlHsjefH2FHWrypIsxkhBiFvkYRBOTWxRshAjgVqZ2O76IXimlkej3MXXPsywF
-	 +yMJnXgqZEji9nqJKW23c+hX9I8DGZ8FjNT3TqFZIUcUMGs/x/H4FkfD+e5+s0qaBI
-	 MKCAI15RtPGr0BrVLF19gKTcNQ5Bch3m4G5E9NfE=
+	b=G8HDUqdKwF2PdArIVCDGMlUvj51V/vVF9DpgoHyPWCoAYaZOeASo3NXwXDbTORftx
+	 Lm250GiKhR+rB9quuaN1eJUWoCuDG4nMSukwPam31/yGDOQ7wux2Cs1D4KGlD3tQoC
+	 wkF9LM8e6mcq7ARfSH2LbmpJM3+TpoxB8tg0y+68=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48E6EF80578;
-	Fri, 17 Feb 2023 17:14:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44863F8057F;
+	Fri, 17 Feb 2023 17:14:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 51254F80544; Fri, 17 Feb 2023 17:14:37 +0100 (CET)
+	id 2CF50F80557; Fri, 17 Feb 2023 17:14:43 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 58A66F801C0
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 17:14:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58A66F801C0
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5819AF80525
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 17:14:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5819AF80525
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=EtjptNTW
+ header.s=PODMain02222019 header.b=hsApAvKb
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
 	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 31HFh1JL028722;
-	Fri, 17 Feb 2023 10:14:12 -0600
+ 31HFh1JQ028722;
+	Fri, 17 Feb 2023 10:14:16 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=pKF0uI7lm6EPpC6Qzi9YRJ+YwdwwOiOgrKlQyRUjDH0=;
- b=EtjptNTWAf+6a9VC8Cm4/r2pT0c/Q7NYVJuPVpsZUeja2gN2W50CG3v13C7Ndx+TDQqo
- f9W4sPEhpra+ZWj2CBlU7SfBCPdRlYRUY0qiqucSERb+Nn3OUjzOiZeyxgIoAMXFoz0i
- QFgm8XLR0GSLe/C7meM7xTJBmOY8qjkLpSbouoarzwH9QNh8LXF3SHuQ/s8/E0CjDd++
- /tCyl/x0+Y7T+ixwjoGYCy4PQ4bKKbd+kJesIVoigJfPUY/37naclQFGjLJBjJvtLW38
- u3O2sZ6QwJYqO8VnwChAoYQow5ws+xVzyyVZfKVEsdh3bmVwiSIe7ObzmeJhQ9pLSAlb zw==
+ bh=Ht2/O3ebDaPae4TLLZNIuvgSojUYziL/Ut/LvqsNiEw=;
+ b=hsApAvKbQksJfawDNH9ri6stdFFXqIf50zFhDHoXnM0KGMIwQu0GHxTIg5EO6HERfvZ5
+ Gip8jFTk3b6Rzr84k9srHPUHb12SMEvfsWWxPGB/BbJRcHobNlWIEvqO6XSUmgIylClg
+ yd7LF8LpBei0FMVz6PEwn6wctp45Sv+XNH14WFSYezbMHF093vlbZ+ZysDOE5l/ZkMRN
+ HFCCMFz5GYjWHiutmksC7HOMSgeqFjyq6stxxaouikhRMkdWPaZvXfXHI/2xE4wxw9ca
+ VrgVCs57EpSZgnOQv5bbwYrW+4qI8OztTlVTpc0qqI6g+v224cMFLfBHAJeppr84t1Nz /g==
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3nt1btgsph-1
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3nt1btgsph-6
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 17 Feb 2023 10:14:12 -0600
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+	Fri, 17 Feb 2023 10:14:16 -0600
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Fri, 17 Feb
  2023 10:14:10 -0600
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.21 via Frontend
- Transport; Fri, 17 Feb 2023 10:14:10 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.21 via Frontend Transport; Fri, 17 Feb 2023 10:14:10 -0600
 Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
  [198.90.251.127])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 382F546B;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D62B211AD;
 	Fri, 17 Feb 2023 16:14:10 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <pierre-louis.bossart@linux.intel.com>,
         <cezary.rojewski@intel.com>, <peter.ujfalusi@linux.intel.com>,
         <yung-chuan.liao@linux.intel.com>, <kai.vehmanen@linux.intel.com>
-Subject: [PATCH 01/10] firmware: cs_dsp: Introduce no_core_startstop for
- self-booting DSPs
-Date: Fri, 17 Feb 2023 16:14:01 +0000
-Message-ID: <20230217161410.915202-2-rf@opensource.cirrus.com>
+Subject: [PATCH 09/10] ASoC: Intel: sof_sdw: Add support for Cirrus Logic
+ CS35L56
+Date: Fri, 17 Feb 2023 16:14:09 +0000
+Message-ID: <20230217161410.915202-10-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230217161410.915202-1-rf@opensource.cirrus.com>
 References: <20230217161410.915202-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Yu1ZOUbJXhaCp1gzWL6MeDEnA7YeZeQ1
-X-Proofpoint-GUID: Yu1ZOUbJXhaCp1gzWL6MeDEnA7YeZeQ1
+X-Proofpoint-ORIG-GUID: nCH5A9e22-gAo9qKOQuaYJTqA43WX6G9
+X-Proofpoint-GUID: nCH5A9e22-gAo9qKOQuaYJTqA43WX6G9
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: AKVMQNZR4RGSEYGMLOT25HBNQQOCJQWC
-X-Message-ID-Hash: AKVMQNZR4RGSEYGMLOT25HBNQQOCJQWC
+Message-ID-Hash: YZKRCYNTTS6MSZNM732Q4G33GU45EEUZ
+X-Message-ID-Hash: YZKRCYNTTS6MSZNM732Q4G33GU45EEUZ
 X-MailFrom: prvs=74127981b7=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,87 +93,236 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
 CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com, Simon Trimmer <simont@opensource.cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>
+ patches@opensource.cirrus.com, Richard Fitzgerald <rf@opensource.cirrus.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AKVMQNZR4RGSEYGMLOT25HBNQQOCJQWC/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YZKRCYNTTS6MSZNM732Q4G33GU45EEUZ/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Simon Trimmer <simont@opensource.cirrus.com>
+The CS35L56 is a high-performance mono boosted audio amplifier.
 
-There are devices containing Halo Core DSPs that self-boot, cs_dsp is
-used to manage the running firmware but the host does not have direct
-control over starting and stopping the DSP and so cs_dsp should consider
-the DSP to be always running.
+This patch adds the initialization for one, two or four amps.
 
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+All amps receive the same 2-channel (stereo) audio. Left/right
+channel-to-speaker mapping is not fixed. The CS35L56 on-board DSP
+adjusts the mapping based on current posture (orientation).
+
+Each CS35L56 has 6 feedback channels for monitoring but to
+remain within limited SoundWire bandwidth only one channel per
+amp is enabled.
+
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- drivers/firmware/cirrus/cs_dsp.c       | 14 +++++++++++++-
- include/linux/firmware/cirrus/cs_dsp.h |  1 +
- 2 files changed, 14 insertions(+), 1 deletion(-)
+ MAINTAINERS                              |   1 +
+ sound/soc/intel/boards/Kconfig           |   1 +
+ sound/soc/intel/boards/Makefile          |   1 +
+ sound/soc/intel/boards/sof_sdw.c         |   7 ++
+ sound/soc/intel/boards/sof_sdw_common.h  |   7 ++
+ sound/soc/intel/boards/sof_sdw_cs35l56.c | 115 +++++++++++++++++++++++
+ 6 files changed, 132 insertions(+)
+ create mode 100644 sound/soc/intel/boards/sof_sdw_cs35l56.c
 
-diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
-index f558b390fbfe..97b73a254380 100644
---- a/drivers/firmware/cirrus/cs_dsp.c
-+++ b/drivers/firmware/cirrus/cs_dsp.c
-@@ -301,6 +301,7 @@ struct cs_dsp_ops {
- static const struct cs_dsp_ops cs_dsp_adsp1_ops;
- static const struct cs_dsp_ops cs_dsp_adsp2_ops[];
- static const struct cs_dsp_ops cs_dsp_halo_ops;
-+static const struct cs_dsp_ops cs_dsp_halo_ao_ops;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 3d7aaa42b854..c40bae5e90ea 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5039,6 +5039,7 @@ F:	include/sound/cs*
+ F:	sound/pci/hda/cs*
+ F:	sound/pci/hda/hda_cs_dsp_ctl.*
+ F:	sound/soc/codecs/cs*
++F:	sound/soc/intel/boards/sof_sdw_cs35l56.c
  
- struct cs_dsp_buf {
- 	struct list_head list;
-@@ -2821,7 +2822,10 @@ EXPORT_SYMBOL_NS_GPL(cs_dsp_adsp2_init, FW_CS_DSP);
-  */
- int cs_dsp_halo_init(struct cs_dsp *dsp)
- {
--	dsp->ops = &cs_dsp_halo_ops;
-+	if (dsp->no_core_startstop)
-+		dsp->ops = &cs_dsp_halo_ao_ops;
-+	else
-+		dsp->ops = &cs_dsp_halo_ops;
+ CIRRUS LOGIC DSP FIRMWARE DRIVER
+ M:	Simon Trimmer <simont@opensource.cirrus.com>
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 99308ed85277..3e483bbf3ebe 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -662,6 +662,7 @@ config SND_SOC_INTEL_SOUNDWIRE_SOF_MACH
+ 	depends on MFD_INTEL_LPSS || COMPILE_TEST
+ 	depends on SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES || COMPILE_TEST
+ 	depends on SOUNDWIRE
++	select SND_SOC_CS35L56_SDW
+ 	select SND_SOC_MAX98373_I2C
+ 	select SND_SOC_MAX98373_SDW
+ 	select SND_SOC_RT700_SDW
+diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
+index d1fd7a2b32db..64e37f8e4a4b 100644
+--- a/sound/soc/intel/boards/Makefile
++++ b/sound/soc/intel/boards/Makefile
+@@ -37,6 +37,7 @@ snd-soc-sof_da7219_max98373-objs := sof_da7219_max98373.o
+ snd-soc-ehl-rt5660-objs := ehl_rt5660.o
+ snd-soc-sof-ssp-amp-objs := sof_ssp_amp.o
+ snd-soc-sof-sdw-objs += sof_sdw.o				\
++			sof_sdw_cs35l56.o			\
+ 			sof_sdw_max98373.o sof_sdw_rt_amp.o	\
+ 			sof_sdw_rt5682.o sof_sdw_rt700.o	\
+ 			sof_sdw_rt711.o sof_sdw_rt711_sdca.o 	\
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index d2ed807abde9..6c679b4b963f 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -544,6 +544,13 @@ static struct sof_sdw_codec_info codec_info_list[] = {
+ 		.exit = sof_sdw_rt711_exit,
+ 		.codec_type = SOF_SDW_CODEC_TYPE_JACK,
+ 	},
++	{
++		.part_id = 0x3556,
++		.direction = {true, true},
++		.dai_name = "cs35l56-sdw1",
++		.init = sof_sdw_cs35l56_init,
++		.codec_type = SOF_SDW_CODEC_TYPE_AMP,
++	},
+ 	{
+ 		.part_id = 0x1308,
+ 		.acpi_id = "10EC1308",
+diff --git a/sound/soc/intel/boards/sof_sdw_common.h b/sound/soc/intel/boards/sof_sdw_common.h
+index 350010b0e5f4..1bb8e4a34c56 100644
+--- a/sound/soc/intel/boards/sof_sdw_common.h
++++ b/sound/soc/intel/boards/sof_sdw_common.h
+@@ -102,6 +102,13 @@ int sof_sdw_hdmi_card_late_probe(struct snd_soc_card *card);
+ /* DMIC support */
+ int sof_sdw_dmic_init(struct snd_soc_pcm_runtime *rtd);
  
- 	return cs_dsp_common_init(dsp);
- }
-@@ -3187,6 +3191,14 @@ static const struct cs_dsp_ops cs_dsp_halo_ops = {
- 	.stop_core = cs_dsp_halo_stop_core,
- };
- 
-+static const struct cs_dsp_ops cs_dsp_halo_ao_ops = {
-+	.parse_sizes = cs_dsp_adsp2_parse_sizes,
-+	.validate_version = cs_dsp_halo_validate_version,
-+	.setup_algs = cs_dsp_halo_setup_algs,
-+	.region_to_reg = cs_dsp_halo_region_to_reg,
-+	.show_fw_status = cs_dsp_halo_show_fw_status,
++/* CS35L56 support */
++int sof_sdw_cs35l56_init(struct snd_soc_card *card,
++			 const struct snd_soc_acpi_link_adr *link,
++			 struct snd_soc_dai_link *dai_links,
++			 struct sof_sdw_codec_info *info,
++			 bool playback);
++
+ /* RT711 support */
+ int sof_sdw_rt711_init(struct snd_soc_card *card,
+ 		       const struct snd_soc_acpi_link_adr *link,
+diff --git a/sound/soc/intel/boards/sof_sdw_cs35l56.c b/sound/soc/intel/boards/sof_sdw_cs35l56.c
+new file mode 100644
+index 000000000000..b862567fd9e2
+--- /dev/null
++++ b/sound/soc/intel/boards/sof_sdw_cs35l56.c
+@@ -0,0 +1,115 @@
++// SPDX-License-Identifier: GPL-2.0-only
++// Based on sof_sdw_rt5682.c
++// Copyright (c) 2020 Intel Corporation
++
++/*
++ *  sof_sdw_cs35l56 - Helpers to handle CS35L56 from generic machine driver
++ */
++
++#include <linux/device.h>
++#include <linux/errno.h>
++#include <sound/soc.h>
++#include <sound/soc-acpi.h>
++#include <sound/soc-dai.h>
++#include "sof_sdw_common.h"
++
++static const struct snd_soc_dapm_widget cs35l56_sof_widgets[] = {
++	SND_SOC_DAPM_SPK("Speaker", NULL),
++	SND_SOC_DAPM_LINE("Monitor", NULL),
 +};
 +
- /**
-  * cs_dsp_chunk_write() - Format data to a DSP memory chunk
-  * @ch: Pointer to the chunk structure
-diff --git a/include/linux/firmware/cirrus/cs_dsp.h b/include/linux/firmware/cirrus/cs_dsp.h
-index cad828e21c72..29cd11d5a3cf 100644
---- a/include/linux/firmware/cirrus/cs_dsp.h
-+++ b/include/linux/firmware/cirrus/cs_dsp.h
-@@ -156,6 +156,7 @@ struct cs_dsp {
- 	unsigned int sysclk_reg;
- 	unsigned int sysclk_mask;
- 	unsigned int sysclk_shift;
-+	bool no_core_startstop;
- 
- 	struct list_head alg_regions;
- 
++static const struct snd_soc_dapm_route cs35l56_sof_map[] = {
++	{ "Speaker", NULL, "AMP1 SPK" },
++	{ "Speaker", NULL, "AMP2 SPK" },
++	{ "Speaker", NULL, "AMP3 SPK" },
++	{ "Speaker", NULL, "AMP4 SPK" },
++};
++
++static int cs35l56_init_multiple(struct snd_soc_pcm_runtime *rtd, int count)
++{
++	struct snd_soc_card *card = rtd->card;
++	struct snd_soc_dai *codec_dai;
++	int i, ret;
++
++	card->components = devm_kasprintf(card->dev, GFP_KERNEL,
++					  "%s hs:cs35l56",
++					  card->components);
++	if (!card->components)
++		return -ENOMEM;
++
++	ret = snd_soc_dapm_new_controls(&card->dapm,
++					cs35l56_sof_widgets, ARRAY_SIZE(cs35l56_sof_widgets));
++	if (ret) {
++		dev_err(card->dev, "Widgets add failed: %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_dapm_add_routes(&card->dapm, cs35l56_sof_map, count);
++	if (ret) {
++		dev_err(card->dev, "Map add %d failed: %d\n", count, ret);
++		return ret;
++	}
++
++	/* Enable one feedback TX per amp on different slots */
++	for_each_rtd_codec_dais(rtd, i, codec_dai) {
++		ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x3, 1 << i, 4, 16);
++		if (ret < 0)
++			return ret;
++	}
++
++	return 0;
++}
++
++static int cs35l56_init_one(struct snd_soc_pcm_runtime *rtd)
++{
++	return cs35l56_init_multiple(rtd, 1);
++}
++
++static int cs35l56_init_two(struct snd_soc_pcm_runtime *rtd)
++{
++	return cs35l56_init_multiple(rtd, 2);
++}
++
++static int cs35l56_init_three(struct snd_soc_pcm_runtime *rtd)
++{
++	return cs35l56_init_multiple(rtd, 3);
++}
++
++static int cs35l56_init_four(struct snd_soc_pcm_runtime *rtd)
++{
++	return cs35l56_init_multiple(rtd, 4);
++}
++
++int sof_sdw_cs35l56_init(struct snd_soc_card *card,
++			 const struct snd_soc_acpi_link_adr *link,
++			 struct snd_soc_dai_link *dai_links,
++			 struct sof_sdw_codec_info *info,
++			 bool playback)
++{
++	/* Init with playback dai link only. */
++	if (!playback)
++		return 0;
++
++	info->amp_num++;
++
++	switch (info->amp_num) {
++	case 1:
++		dai_links->init = cs35l56_init_one;
++		break;
++	case 2:
++		dai_links->init = cs35l56_init_two;
++		break;
++	case 3:
++		dai_links->init = cs35l56_init_three;
++		break;
++	case 4:
++		dai_links->init = cs35l56_init_four;
++		break;
++	default:
++		dev_err(card->dev, "%s: Unexpected number of amps %d\n", __func__, info->amp_num);
++		dai_links->init = cs35l56_init_four;
++		break;
++	}
++
++	return 0;
++}
 -- 
 2.30.2
 
