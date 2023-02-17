@@ -4,69 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0928C636CC
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 01:51:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F722C61DA4
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 01:55:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3EBA0ECE;
-	Fri, 17 Feb 2023 02:50:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EBA0ECE
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC3DBEC5;
+	Fri, 17 Feb 2023 02:54:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC3DBEC5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676598706;
-	bh=/KrhUL+4wIiRbYE4o9s7QsJp1TAnufLzsQ5ur0U5Ka8=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	s=default; t=1676598933;
+	bh=Gw5LE3twoGw4eDFOyNeOTFFuzAZaxlBPT44ZcdXStuk=;
+	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=TBExyBt+0pdJOJV5hOwUblaxKYgPCigzePESDIoAT99zCG9lF99Ug7uj926T7lKGW
-	 1egUr4Lc3k3dj+2Qi+lqhLA6dsL4W+uu3YM8q4Mz6WK6s3KdD+N3weuZtW/87WZgUn
-	 WmyEGAFBk5YH6m3USPDnqEfjpZqHQ983yuC5JERE=
+	b=aVJZmNN8c/3rLcbYVDisrYgFtMFu34LeDWOsq3LFdcwCLqcsfRwL5ws633uDB2hl7
+	 l0+M+LTgruGT937ClI8bgoxDsm3lyaKu+PelzM9L8LPXSG3EBttgiZBSXXKORoic3Z
+	 Ig/NgWGIwpHBy0gIHZNNUIV9Lkc94pfzNwV1TLqQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8EC8F80171;
-	Fri, 17 Feb 2023 02:50:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6627CF80083;
+	Fri, 17 Feb 2023 02:54:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4A0F0F80171; Fri, 17 Feb 2023 02:50:27 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id A9486F8047C; Fri, 17 Feb 2023 02:54:15 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E7535F80083
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 02:50:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7535F80083
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8EDADF800B6
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 02:54:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8EDADF800B6
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=kqEDbH+a
+ header.s=k20201202 header.b=pMYaEO+n
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 7A177611F0;
-	Fri, 17 Feb 2023 01:50:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B985C433D2;
-	Fri, 17 Feb 2023 01:50:20 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id B4D9D61191;
+	Fri, 17 Feb 2023 01:54:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B961FC4339B;
+	Fri, 17 Feb 2023 01:54:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1676598620;
-	bh=/KrhUL+4wIiRbYE4o9s7QsJp1TAnufLzsQ5ur0U5Ka8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kqEDbH+ahi82OcLzQWO0Hb9Fe4tsL4C81nZJmwh01TK68Cs/OqWFHyj4p9BFDDdNO
-	 dSSUBhNj+k09445yr9AS3t7HGn5kVoIHpekgyOlNmJ10n7JGV4iov7p/nOedob1611
-	 i+3rkn/gIdplY7+JT+eknH4/ENN+PTdhqvuGiwEgCMzO5Rbb9Oai4t/oUzA0SMiwxy
-	 X4QSPHsMDb+R+GGH1mq+MXX7+m3KOjY9O45pYdDy8be0ZfDInR73nAx+lkweqbT40t
-	 M4iBn5oh2oiu7fxEvNwJ2GuDcS6r1wtZwiA3hQ7/h/pcUHro6OKwpCIstUnCh0F4tz
-	 UKKNGo41ZvuIQ==
-Date: Fri, 17 Feb 2023 01:50:17 +0000
+	s=k20201202; t=1676598849;
+	bh=Gw5LE3twoGw4eDFOyNeOTFFuzAZaxlBPT44ZcdXStuk=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=pMYaEO+nM4HYKGFOGrCC2gJ8NTppz1XUFbx7S2o42CcorIXnk5RaTfbxb9X3YstTs
+	 NoBC09X09lo6E8Wp1rYMY33QQ5+NjHLYMMvKHUqAhSHpntxnTerAY4yK7Xdn0VdyI5
+	 lCsunmp/8USEwUfWiySLAzgkgYonRJmxMxmuzfrfmimlc0a975onIagYfxp26/Egyr
+	 tDwiUZDmYYhI0nAvO+hzjacM39/rania2WmrBI2KGYMNml3l/ui3Vd6hQWw2K7yv+B
+	 x90xrZX0C3jQf0IQ/DmiTSgrJ2XFTHO1Jbq+VGybP8ixpawXN11ZPnUK5Te+KOoouf
+	 GbDq4v3MHcwdw==
 From: Mark Brown <broonie@kernel.org>
-To: Yang Yingliang <yangyingliang@huawei.com>
-Subject: Re: [PATCH -next] ASoC: soc-ac97: fix wrong pointer pass to PTR_ERR()
-Message-ID: <Y+7dWRbyf+AWK/EW@sirena.org.uk>
-References: <20230217013702.4009448-1-yangyingliang@huawei.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Joseph Hunkeler <jhunkeler@gmail.com>
+In-Reply-To: <20230216155007.26143-1-jhunkeler@gmail.com>
+References: <20230216155007.26143-1-jhunkeler@gmail.com>
+Subject: Re: [PATCH] soc:amd:yp:Add OMEN by HP Gaming Laptop 16z-n000 to
+ quirks
+Message-Id: <167659884738.51394.3064624449308276945.b4-ty@kernel.org>
+Date: Fri, 17 Feb 2023 01:54:07 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="78jUowrUp01kHwqA"
-Content-Disposition: inline
-In-Reply-To: <20230217013702.4009448-1-yangyingliang@huawei.com>
-X-Cookie: Serving suggestion.
-Message-ID-Hash: YMHZCXHBNDLWKXPSW6WN2JLU6MJ3I2BY
-X-Message-ID-Hash: YMHZCXHBNDLWKXPSW6WN2JLU6MJ3I2BY
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.0
+Message-ID-Hash: JH3VQT2Z7BR4ULXG7CP53Q63CNHTJMTS
+X-Message-ID-Hash: JH3VQT2Z7BR4ULXG7CP53Q63CNHTJMTS
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -74,14 +76,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com,
- andriy.shevchenko@linux.intel.com
+CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YMHZCXHBNDLWKXPSW6WN2JLU6MJ3I2BY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JH3VQT2Z7BR4ULXG7CP53Q63CNHTJMTS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,29 +91,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Thu, 16 Feb 2023 10:50:07 -0500, Joseph Hunkeler wrote:
+> Enables display microphone on the HP OMEN 16z-n000 (8A42) laptop
+> 
+> 
 
---78jUowrUp01kHwqA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Fri, Feb 17, 2023 at 09:37:02AM +0800, Yang Yingliang wrote:
-> Fix wrong pointer pass to PTR_ERR() if devm_gpiod_get_index() fails.
+   broonie/sound.git for-next
 
-This was already fixed by Andy, thanks.
+Thanks!
 
---78jUowrUp01kHwqA
-Content-Type: application/pgp-signature; name="signature.asc"
+[1/1] soc:amd:yp:Add OMEN by HP Gaming Laptop 16z-n000 to quirks
+      commit: 22ce6843abec19270bf69b176d7ee0a4ef781da5
 
------BEGIN PGP SIGNATURE-----
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmPu3VkACgkQJNaLcl1U
-h9AuYQgAheOBmAWCgsE89CDaslubYxqI3pQfbbPIiu2BLuF+tvhNX8mi1SIs55sw
-xTDl2UOso1h7Y/rfDk0ADEZOCCEoJknp3J9C+iau+hRqGIDSks7fADrCh7iLTOk4
-laKbdTVN9fKDwg1Qkq89c981BvWKmhJH1l2ZiUfvPM0PRwNoCKpBNx61CHU61RYj
-H3ySYdRZiUJQLdFmlrZKYbDQK0KkJ2hLEcuexn7bOcnlEcow9kUeokPs+d5nJxJF
-Rc16tPJTi+7b9IsK5fNDHg+0XQwnRFLGHHhRSUboC9Pa1W6xXsY+v2NNGm8wbPZt
-oN9HrQkObWYC5CppwRjbnU2fEt+CfA==
-=+Kv7
------END PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---78jUowrUp01kHwqA--
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
