@@ -4,76 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59156C05027
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 14:16:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D534C05027
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 14:26:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3CBC1F44;
-	Fri, 17 Feb 2023 15:15:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CBC1F44
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3105F33;
+	Fri, 17 Feb 2023 15:25:22 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3105F33
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676643377;
-	bh=68R7vM2WSqKHQH6K9b4DPoGlc/nETcFl/uxkEbukG2k=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=jDk/Vu15qmdwXyaKJdicOG+D+70ZCN6wvxBzBIgRhbWfysQ9y489hjbKYvibcfJsG
-	 o/ERWMXgsynmbjFRuTMAzuxeSEccCSAWsy5/Dk/s4sk6HHKwJeeWPhm3sanjh0ZsIs
-	 4jEbtWab3tWno17g2B7gs7nNCQW5iyfmyEMqtsAc=
+	s=default; t=1676643973;
+	bh=KWRIP39QLVNO5wwu3BPiUtgpzVi8E3Ox6E8mwIxj70s=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=RV6Vj4e3waOHvsHuF/OvMtZ/anNM1iJEkvFn6GXZFNaNyuKhG8UmByDeFZBUPnJkj
+	 65Ru4OVnF2ao3ZyL5ZL7lWAyj58m2wbtUN/hMKD65IgJvY9mMUqp5L/j4pIBRwVuzY
+	 rEMxY8Kfl1MdgP+s8InX73BLuzaMuYjS0ePoDs04=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E43FF80526;
-	Fri, 17 Feb 2023 15:14:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18E5DF80171;
+	Fri, 17 Feb 2023 15:24:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E3DB1F801C0; Fri, 17 Feb 2023 14:15:44 +0100 (CET)
-Received: from exchange.fintech.ru (e10edge.fintech.ru [195.54.195.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	id 5CC45F80171; Fri, 17 Feb 2023 15:24:55 +0100 (CET)
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
+ [IPv6:2a00:1450:4864:20::529])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E4E39F800AA
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 14:15:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4E39F800AA
-Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
- (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 17 Feb
- 2023 16:15:33 +0300
-Received: from KANASHIN1.fintech.ru (10.0.253.125) by Ex16-01.fintech.ru
- (10.0.10.18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 17 Feb
- 2023 16:15:33 +0300
-From: Natalia Petrova <n.petrova@fintech.ru>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: [PATCH] skl-topology_3627: using sprintf changed to snprintf
-Date: Fri, 17 Feb 2023 16:15:30 +0300
-Message-ID: <20230217131530.486962-1-n.petrova@fintech.ru>
-X-Mailer: git-send-email 2.34.1
+	by alsa1.perex.cz (Postfix) with ESMTPS id D94FFF800B6
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 15:24:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D94FFF800B6
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=OJ7TQIHz
+Received: by mail-ed1-x529.google.com with SMTP id i28so4390127eda.8
+        for <alsa-devel@alsa-project.org>;
+ Fri, 17 Feb 2023 06:24:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FFjYG4jLURw1kYo7ShDSCBnd1OYlrQohbQF4zsR/gVk=;
+        b=OJ7TQIHzJQsa9/EIpru1db+VCZ+X8QPOmP8Ua+5RufEjNaROgv5Dn9z0CgKGtVsa7X
+         CNn1AyalhSJZY4Yyk818UgKQh8HiZo36uePEcFO6JiJavsq/SrbxryXvtXI2qPYjBsHQ
+         GuF9Erxp4Uz3LxkoIF0rKcclWfy+iF8GSohzT0lI2imelyWfBKATTefqn5GExQgtaAox
+         tzoYg81uHbP/ty0VRPfsz8fo4qWr22tRn3VwyvCUoZYcAhIhl3Zt8kUoa6pAOdOIw02F
+         afh8zWhUZBDzuP3pY1+DT4w6RnVe70qzP41d4lnTSKDyX1AZljqUeG2KLhdEEUsxB0u+
+         /t9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FFjYG4jLURw1kYo7ShDSCBnd1OYlrQohbQF4zsR/gVk=;
+        b=DazmhIIDnBUccFFAWHKJp4qNjtJDj4nVD2L9xsLJkM64HKYfzNLDQMFqdWgGDPMmTK
+         GjNy2PCJcUTiDCg4cL9yH08v1yhYUTBRIb8A1b+GG4TsC/NcM6XZGL5ZLjcrtpHMhKqn
+         Tac1wdadhdXQdp+Wo8xTSXj+KsFdNpcNuPikhn0LEF0T91Js3Fm43jVGpXkEj5z6GvRG
+         KakS6upMVMdqkoy5/4ME67ejrQLNflCkg2wrfXPugIa50iVbkOxZJb9ZugnAS/iUcGWx
+         /HB3KC8Sl20xIBEUkL8DrbDUlhOZdw68EQ+h/uGxgcNxiWd2LPbkAr3socdXmmdhMrvT
+         8tDg==
+X-Gm-Message-State: AO0yUKXXFku2ULvATcrQ7/cnM9yslpF9uN60gKuDwAiPVQ0CTrjlhMbP
+	1N+sHKKZQTh0vxBbrrLNVRoUWg==
+X-Google-Smtp-Source: 
+ AK7set8cRq4IQx60rnukD9fbsNxxPpGXqav2rSq1nDhiVMKrQpHtAHfPgWf+DofWiP2cGt75L4meVA==
+X-Received: by 2002:a17:906:6454:b0:8b1:4507:eec with SMTP id
+ l20-20020a170906645400b008b145070eecmr758694ejn.34.1676643889054;
+        Fri, 17 Feb 2023 06:24:49 -0800 (PST)
+Received: from [192.168.1.109] ([178.197.216.144])
+        by smtp.gmail.com with ESMTPSA id
+ f27-20020a170906139b00b008b14399b74fsm2155741ejc.201.2023.02.17.06.24.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Feb 2023 06:24:48 -0800 (PST)
+Message-ID: <272c1291-dfea-3dcb-9462-5f84c55f7637@linaro.org>
+Date: Fri, 17 Feb 2023 15:24:46 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.0.253.125]
-X-ClientProxiedBy: Ex16-01.fintech.ru (10.0.10.18) To Ex16-01.fintech.ru
- (10.0.10.18)
-X-MailFrom: n.petrova@fintech.ru
-X-Mailman-Rule-Hits: nonmember-moderation
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v5 01/10] dt-bindings: soc: fsl: cpm_qe: Add TSA
+ controller
+Content-Language: en-US
+To: Herve Codina <herve.codina@bootlin.com>
+References: <20230216134226.1692107-1-herve.codina@bootlin.com>
+ <20230216134226.1692107-2-herve.codina@bootlin.com>
+ <6ae9af19-1d52-c31f-79be-a36f06caaf80@linaro.org>
+ <20230217145019.0def6f9a@bootlin.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230217145019.0def6f9a@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: E7RFU5D3J4ZV5VOSH5UT2D2LNTUDO36M
+X-Message-ID-Hash: E7RFU5D3J4ZV5VOSH5UT2D2LNTUDO36M
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 7PMZEBG73NIS52TML44MGJPEEJBQURBY
-X-Message-ID-Hash: 7PMZEBG73NIS52TML44MGJPEEJBQURBY
-X-Mailman-Approved-At: Fri, 17 Feb 2023 14:14:27 +0000
-CC: Natalia Petrova <n.petrova@fintech.ru>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
+ Qiang Zhao <qiang.zhao@nxp.com>, Takashi Iwai <tiwai@suse.com>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7PMZEBG73NIS52TML44MGJPEEJBQURBY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E7RFU5D3J4ZV5VOSH5UT2D2LNTUDO36M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -82,29 +129,61 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use snprintf instead of sprintf to avoid buffer overflow.
+On 17/02/2023 14:50, Herve Codina wrote:
+> Hi Krzysztof,
+> 
+> On Fri, 17 Feb 2023 10:14:48 +0100
+> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+> 
+>> On 16/02/2023 14:42, Herve Codina wrote:
+>>> Add support for the time slot assigner (TSA)
+>>> available in some PowerQUICC SoC such as MPC885
+>>> or MPC866.
+>>>
+>>> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+>>> ---
+>>>  .../bindings/soc/fsl/cpm_qe/fsl,cpm1-tsa.yaml | 234 ++++++++++++++++++
+>>>  include/dt-bindings/soc/fsl,tsa.h             |  13 +
+>>>  2 files changed, 247 insertions(+)
+>>>  create mode 100644 Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-tsa.yaml
+>>>  create mode 100644 include/dt-bindings/soc/fsl,tsa.h
+> 
+> [...]
+>>> +
+>>> +patternProperties:
+>>> +  '^tdm@[0-1]$':
+>>> +    description:
+>>> +      The TDM managed by this controller
+>>> +    type: object
+>>> +
+>>> +    additionalProperties: false
+>>> +
+>>> +    properties:
+>>> +      reg:
+>>> +        minimum: 0
+>>> +        maximum: 1
+>>> +        description:
+>>> +          The TDM number for this TDM, 0 for TDMa and 1 for TDMb
+> [...]
+>>> +
+>>> +      fsl,rx-frame-sync-delay-bits:
+>>> +        enum: [0, 1, 2, 3]  
+>>
+>> maxItems: 1
+> 
+> The property is an enum
+> Why this maxItems value ?
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Hm, it's an array, but you are right that enum forces dtschema to
+interpret it as scalar value, so your code is correct.
+> 
+> If I add the maxItems value, I've got some dt_binding_check errors:
+>   /xxxx/bindings/soc/fsl/cpm_qe/fsl,cpm1-tsa.yaml:
+>   patternProperties:^tdm@[0-1]$:properties:fsl,rx-frame-sync-delay-bits:
+>   'enum' should not be valid under {'enum': ['const', 'enum', 'exclusiveMaximum', 'exclusiveMinimum', 'minimum', 'maximum', 'multipleOf', 'pattern']}
+> 	hint: Scalar and array keywords cannot be mixed
+> 	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
 
-Fixes: 2d744ecf2b98 ("ASoC: Intel: Skylake: Automatic DMIC format configuration according to information from NHLT")
-Signed-off-by: Natalia Petrova <n.petrova@fintech.ru>
----
- sound/soc/intel/skylake/skl-topology.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index e06eac592da1..ac06926e651d 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -3660,7 +3660,7 @@ static int skl_tplg_complete(struct snd_soc_component *component)
- 
- 		se = (struct soc_enum *)kcontrol->private_value;
- 		texts = dobj->control.dtexts;
--		sprintf(chan_text, "c%d", mach->mach_params.dmic_num);
-+		snprintf(chan_text, sizeof(chan_text), "c%d", mach->mach_params.dmic_num);
- 
- 		for (i = 0; i < se->items; i++) {
- 			if (strstr(texts[i], chan_text)) {
--- 
-2.34.1
+Best regards,
+Krzysztof
 
