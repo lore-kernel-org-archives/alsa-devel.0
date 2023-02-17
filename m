@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E02FC636D6
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 16:17:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4D46C05027
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 16:17:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84E3DF64;
-	Fri, 17 Feb 2023 17:16:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84E3DF64
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDE6BFA0;
+	Fri, 17 Feb 2023 17:16:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDE6BFA0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676650629;
-	bh=/iYpVVZFChNHg/kZPDEuTHqKmns60d2q0qK47y/KBEU=;
+	s=default; t=1676650645;
+	bh=IWu+8BdmHzVpIKVS5BpPMQNkiZPzzMjLI3OmE3MkG4c=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=itxb2hSNmw6fkUNav/iskpaihjPZ3xfixFOFD9eypfADxAR88M0Z/vbFSw00eD3Q2
-	 CQvLs3PNVvJCS1cijQhCczPrEEA4GtzVhdl278LqrOjYnhqsYF1OwTRQGKgXkCvw01
-	 NHxQ/sNqbzijG7BZLg9ZD1DZEgGPf1pRJDZi0HDc=
+	b=HsUayD2FJuHXoFveHyKemwLLGuHWcDr91ZiDny8tH5uz2j2Kop+LBJ4rP6DImlGqw
+	 zfqv3+I+pKCvk2tu0xgGES4fMJEtD0mA19spSDgnFsBR70P6EIvdNajlFLTrdHs0Dw
+	 68hL7gADnbiynrtOi67Nszsrn7o1RJIS6j50l2n4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DF11F80558;
-	Fri, 17 Feb 2023 17:14:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3FA22F80567;
+	Fri, 17 Feb 2023 17:14:45 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C2751F80534; Fri, 17 Feb 2023 17:14:31 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+	id 66CE3F80533; Fri, 17 Feb 2023 17:14:33 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 60BFEF80496
+	by alsa1.perex.cz (Postfix) with ESMTPS id D9B79F80171
 	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 17:14:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60BFEF80496
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9B79F80171
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=h+/92DbX
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 31HFh1JN028722;
+ header.s=PODMain02222019 header.b=pN5baqNA
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 31HFgnU6014021;
 	Fri, 17 Feb 2023 10:14:14 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=uFBC8RrDMvweaYvhR9SIiEznOkshqG+7URIf1J9cblY=;
- b=h+/92DbXWXznSvOt3wq8s+mQwPxInTjKchMcoASO29y4V9K3m0+zWH3OCYIhhDUbR09P
- 67fbHPs5NmMnUqFLuonq/ANVNdvr4zEDZOAoXM/nRby2iyiKozmm77apErDr6D+/aIfH
- 2TD2uZ2MsnnsJ8z0MWi0SxqEWG295r2AuMeLWJWMS2B0b9zA632VT5NQkaJ7fXOw05ex
- gZqWbJbiDQ/1zVPk+QCrNtwfI4LQp+mij1RM+ZnsscRRl42T34b6m1IVK/pUE8fant5W
- 7066rRUqtzWnvU171awu5wGMt1EjYUBPi9lsvVsYhvMxBpNRGyqIwL1YNKawJpsJCCh0 LA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3nt1btgsph-3
+ bh=BTzjXHS8eGJxhVWLT03TdB551hVigNKYmkSmV3VC72k=;
+ b=pN5baqNAzos9zTAUCDG08LxOESwchhnD/w4UVCnBRuwhy+pB7cqipWYf+D22yQBmGrWI
+ TleYihdhcks1/3y5JhLNuJ9oVbSiUZT6mau+9q8w9Vx8zOUsGKzScLY8wwhAk4cHdUDg
+ ++wM8+5S6kgkEInvBuXunPMnVS8B9Ky7lMwNXwIrQieu/QZls0G2+cj/fjqkmOneBkzE
+ neWOKDFM3wdPS7cN0VkjRJbZPmDNLaiZZE9zr8OdHBtArxT8YWjmpnlE97xmFieMrD2Z
+ 5sVVXEVQP94uCqAN5ByCKFA0UKHQG3QzVlt4xswxT5EkKQ4HN7Bb9P3hcALmLcp+bGXQ 8w==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3nrm8wm7t6-4
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 17 Feb 2023 10:14:13 -0600
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Fri, 17 Feb
  2023 10:14:10 -0600
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
@@ -64,27 +64,26 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  Transport; Fri, 17 Feb 2023 10:14:10 -0600
 Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
  [198.90.251.127])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 82E2C45;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DE46745;
 	Fri, 17 Feb 2023 16:14:10 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <pierre-louis.bossart@linux.intel.com>,
         <cezary.rojewski@intel.com>, <peter.ujfalusi@linux.intel.com>,
         <yung-chuan.liao@linux.intel.com>, <kai.vehmanen@linux.intel.com>
-Subject: [PATCH 05/10] ASoC: wm_adsp: Expose the DSP boot work actions as
- wm_adsp_power_up()
-Date: Fri, 17 Feb 2023 16:14:05 +0000
-Message-ID: <20230217161410.915202-6-rf@opensource.cirrus.com>
+Subject: [PATCH 10/10] ASoC: Intel: soc-acpi: Add CS35L56 Soundwire to TGL
+Date: Fri, 17 Feb 2023 16:14:10 +0000
+Message-ID: <20230217161410.915202-11-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230217161410.915202-1-rf@opensource.cirrus.com>
 References: <20230217161410.915202-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: RG7P-JmcHNI6CJLGP3WPDr-j2beVBUOF
-X-Proofpoint-GUID: RG7P-JmcHNI6CJLGP3WPDr-j2beVBUOF
+X-Proofpoint-GUID: mqzk6flip_3wcJ6k9Ft6Lz4HKUzCdVT6
+X-Proofpoint-ORIG-GUID: mqzk6flip_3wcJ6k9Ft6Lz4HKUzCdVT6
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: AM2PLAOSWZFIIRPXNCZFW6G775IVLI6U
-X-Message-ID-Hash: AM2PLAOSWZFIIRPXNCZFW6G775IVLI6U
+Message-ID-Hash: EAS3JNHUWQTC3HGG35ZEIBRY6RQ7FG3V
+X-Message-ID-Hash: EAS3JNHUWQTC3HGG35ZEIBRY6RQ7FG3V
 X-MailFrom: prvs=74127981b7=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,14 +92,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
 CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com, Simon Trimmer <simont@opensource.cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>
+ patches@opensource.cirrus.com, Richard Fitzgerald <rf@opensource.cirrus.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AM2PLAOSWZFIIRPXNCZFW6G775IVLI6U/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EAS3JNHUWQTC3HGG35ZEIBRY6RQ7FG3V/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,86 +107,88 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Simon Trimmer <simont@opensource.cirrus.com>
+This adds match entries for one or four CS35L56 on SDW0.
 
-To support self-booting DSPs that are considered always running, the work
-that is usually invoked as part of a DAPM sequence needs to be triggered
-by a client of wm_adsp as part of it's startup sequence.
-
-These actions load firmware files that might create ALSA controls and
-apply configuration to the device.
-
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/wm_adsp.c | 27 ++++++++++++++++++---------
- sound/soc/codecs/wm_adsp.h |  2 ++
- 2 files changed, 20 insertions(+), 9 deletions(-)
+ .../intel/common/soc-acpi-intel-tgl-match.c   | 57 +++++++++++++++++++
+ 1 file changed, 57 insertions(+)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 8176b6173de9..d4bffa2f7005 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -998,11 +998,8 @@ int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
- }
- EXPORT_SYMBOL_GPL(wm_adsp2_preloader_put);
+diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+index ef19150e7b2e..dae76c96d9fe 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+@@ -414,6 +414,51 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_machines[] = {
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_tgl_machines);
  
--static void wm_adsp_boot_work(struct work_struct *work)
-+int wm_adsp_power_up(struct wm_adsp *dsp)
- {
--	struct wm_adsp *dsp = container_of(work,
--					   struct wm_adsp,
--					   boot_work);
- 	int ret = 0;
- 	char *wmfw_filename = NULL;
- 	const struct firmware *wmfw_firmware = NULL;
-@@ -1013,16 +1010,28 @@ static void wm_adsp_boot_work(struct work_struct *work)
- 					     &wmfw_firmware, &wmfw_filename,
- 					     &coeff_firmware, &coeff_filename);
- 	if (ret)
--		return;
-+		return ret;
- 
--	cs_dsp_power_up(&dsp->cs_dsp,
--			wmfw_firmware, wmfw_filename,
--			coeff_firmware, coeff_filename,
--			wm_adsp_fw_text[dsp->fw]);
-+	ret = cs_dsp_power_up(&dsp->cs_dsp,
-+			      wmfw_firmware, wmfw_filename,
-+			      coeff_firmware, coeff_filename,
-+			      wm_adsp_fw_text[dsp->fw]);
- 
- 	wm_adsp_release_firmware_files(dsp,
- 				       wmfw_firmware, wmfw_filename,
- 				       coeff_firmware, coeff_filename);
++static const struct snd_soc_acpi_adr_device cs35l56_sdw0_adr[] = {
++	{
++		.adr = 0x00003001fa355601,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++		.name_prefix = "AMP1"
++	},
++	{
++		.adr = 0x00003101fa355601,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++		.name_prefix = "AMP2"
++	},
++	{
++		.adr = 0x00003201fa355601,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++		.name_prefix = "AMP3"
++	},
++	{
++		.adr = 0x00003301fa355601,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++		.name_prefix = "AMP4"
++	},
++};
 +
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(wm_adsp_power_up);
++static const struct snd_soc_acpi_link_adr up_extreme_cs35l56_sdw0_one[] = {
++	{
++		.mask = BIT(0),
++		.num_adr = 1,
++		.adr_d = cs35l56_sdw0_adr,
++	},
++	{}
++};
 +
-+static void wm_adsp_boot_work(struct work_struct *work)
-+{
-+	struct wm_adsp *dsp = container_of(work,
-+					   struct wm_adsp,
-+					   boot_work);
++static const struct snd_soc_acpi_link_adr up_extreme_cs35l56_sdw0_four[] = {
++	{
++		.mask = BIT(0),
++		.num_adr = 4,
++		.adr_d = cs35l56_sdw0_adr,
++	},
++	{}
++};
 +
-+	wm_adsp_power_up(dsp);
- }
- 
- int wm_adsp_early_event(struct snd_soc_dapm_widget *w,
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 173dcae2c260..769904d34a87 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -91,6 +91,8 @@ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
- int wm_adsp_early_event(struct snd_soc_dapm_widget *w,
- 			struct snd_kcontrol *kcontrol, int event);
- 
-+int wm_adsp_power_up(struct wm_adsp *dsp);
-+
- irqreturn_t wm_adsp2_bus_error(int irq, void *data);
- irqreturn_t wm_halo_bus_error(int irq, void *data);
- irqreturn_t wm_halo_wdt_expire(int irq, void *data);
+ /* this table is used when there is no I2S codec present */
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_sdw_machines[] = {
+ 	/* mockup tests need to be first */
+@@ -501,6 +546,18 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_sdw_machines[] = {
+ 		.drv_name = "sof_sdw",
+ 		.sof_tplg_filename = "sof-tgl-rt711.tplg",
+ 	},
++	{
++		.link_mask = BIT(0),
++		.links = up_extreme_cs35l56_sdw0_four,
++		.drv_name = "sof_sdw",
++		.sof_tplg_filename = "sof-tgl-cs35l56-sdw0.tplg"
++	},
++	{
++		.link_mask = BIT(0),
++		.links = up_extreme_cs35l56_sdw0_one,
++		.drv_name = "sof_sdw",
++		.sof_tplg_filename = "sof-tgl-cs35l56-sdw0.tplg"
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_tgl_sdw_machines);
 -- 
 2.30.2
 
