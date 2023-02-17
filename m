@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E811C636CC
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 01:56:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70228C636CC
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 01:56:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AAA43EDE;
-	Fri, 17 Feb 2023 02:55:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAA43EDE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 43360EE7;
+	Fri, 17 Feb 2023 02:55:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43360EE7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676598959;
-	bh=N5dU7vSeJJk7hHS+VAJUWrF+nBsAniJz+yjge9/eNtk=;
+	s=default; t=1676598968;
+	bh=x1LZ7ii3mg07z/Meu9ICZ3rodqhgkj9TTWtOSt2yxeE=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=nRk6UfvYlpM+DsjcUBdnvjIVju/EtXMBlV8QUYdepKWkuj322cRnP+KUm4yk6Zixr
-	 Y/Hy6kW+KwL3SKKavg3Yq95bkRcdHvS6+VnoFas+y+A7FNVzrjghZ9DQ8eG4Gzd+/R
-	 UscvEKnSB+GIymF6241xt4Y7IQhhO2ZFzzK1sn8I=
+	b=kgSD1bfZ+xmKB+4Ch6K81zUWSd2nQbjCOwSWscrShzTQGwKohO+Hq+8K598h0zELw
+	 9L0VFbspEy8TwZfaPkyKhV91+Q/C7dNSWlupEAigwNuSzlV0zsGQUiR0BSYuyHwZWL
+	 EmrSu3pTAumGv2zV7uUeB/T4wk04Q7qWZ6cjPFl4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0CDF1F804B0;
-	Fri, 17 Feb 2023 02:54:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8AF16F80526;
+	Fri, 17 Feb 2023 02:54:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 64541F801C0; Fri, 17 Feb 2023 02:54:17 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 49771F80083; Fri, 17 Feb 2023 02:54:18 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C69E2F800E4
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 02:54:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C69E2F800E4
+	by alsa1.perex.cz (Postfix) with ESMTPS id 16FC9F80083
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 02:54:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16FC9F80083
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=uYmLPg0J
+ header.s=k20201202 header.b=DZrs8vgu
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 14DA9611FC;
-	Fri, 17 Feb 2023 01:54:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB43CC433EF;
-	Fri, 17 Feb 2023 01:54:09 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTPS id E4FFBCE2DA2;
+	Fri, 17 Feb 2023 01:54:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17422C433EF;
+	Fri, 17 Feb 2023 01:54:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1676598851;
-	bh=N5dU7vSeJJk7hHS+VAJUWrF+nBsAniJz+yjge9/eNtk=;
+	s=k20201202; t=1676598847;
+	bh=x1LZ7ii3mg07z/Meu9ICZ3rodqhgkj9TTWtOSt2yxeE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=uYmLPg0J7Rbdg/Hh33bGQHW6nvLgU9rOnqeSMRTv9N29+P3EgiFWYO3qlmg5hmFFU
-	 ttf6gHK5fBMusYySydkmkrdUjRLgGz2SAdQHfrQpo7KAIBn2j3StcseHjqYuMSLyFs
-	 lPheSJ+Etkc2wnDQ+s5llhHwAtSMIgfrAlNRiKLJccy6pP5RRtjmdMruiYZgtTHQBc
-	 zxQXiYOYR5Duxdr8NhXXWAk3Yy5N02brMZ5TxjfckqMAa4gbnGiGt7agPOCNV/lWMI
-	 GUSqjmO1Uj9K+fKKU0bCtfChymzsP0F/IWLnaQXJxmmrQUKUTUz1+ZZcgn5slLyz5s
-	 VLGZ4WyHwLh5Q==
+	b=DZrs8vguh32f2pgoIKp8k28jH3vcgo584avhYb2L2ODTUQwdDwwzk7azVMuuzly6r
+	 6Z9kizj3uLtSTVPatMQl6Wg451Dm05osb8hBeJxi4dAfXddkf+zPKHjWnt42urTJaT
+	 I2c2w22o/q6tbUODfDj6YTjJ9wIuSW/Pjv3a5MRzcTwPrFsuEBsqYtQqCjI3FU+JBQ
+	 8ocAkH3I9BPiV5NVR/wC+HkdQ+q69jLUr4uDpocN5abPARquSdahX/Jg4N0lhZ2UqJ
+	 HsvlkzRgP8XlBOK2KXLrLExA6w82MUsFxammmdu/hbhGqLsJGJboy1z2buyUstHBAN
+	 vi9YUgrxwu0GQ==
 From: Mark Brown <broonie@kernel.org>
 To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230216162340.19480-1-peter.ujfalusi@linux.intel.com>
-References: <20230216162340.19480-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: SOF: Intel: hda-dai: fix possible stream_tag
+In-Reply-To: <20230216144054.26203-1-peter.ujfalusi@linux.intel.com>
+References: <20230216144054.26203-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: Intel: hda-dai: fix possible stream_tag
  leak
-Message-Id: <167659884931.51394.12529347002057479214.b4-ty@kernel.org>
-Date: Fri, 17 Feb 2023 01:54:09 +0000
+Message-Id: <167659884474.51394.4671218930545421608.b4-ty@kernel.org>
+Date: Fri, 17 Feb 2023 01:54:04 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.0
-Message-ID-Hash: QCVZS2OCWDOCJPQIAT5WCAAF6DA3LTMD
-X-Message-ID-Hash: QCVZS2OCWDOCJPQIAT5WCAAF6DA3LTMD
+Message-ID-Hash: KZM2PBE5DM4E7KTBKBLPJ56ZHQFKHSZC
+X-Message-ID-Hash: KZM2PBE5DM4E7KTBKBLPJ56ZHQFKHSZC
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -83,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QCVZS2OCWDOCJPQIAT5WCAAF6DA3LTMD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KZM2PBE5DM4E7KTBKBLPJ56ZHQFKHSZC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,7 +91,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 16 Feb 2023 18:23:40 +0200, Peter Ujfalusi wrote:
+On Thu, 16 Feb 2023 16:40:54 +0200, Peter Ujfalusi wrote:
 > The HDaudio stream allocation is done first, and in a second step the
 > LOSIDV parameter is programmed for the multi-link used by a codec.
 > 
