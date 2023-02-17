@@ -4,41 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F193C636D4
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 11:12:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45C93C05027
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 11:12:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F914F27;
-	Fri, 17 Feb 2023 12:11:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F914F27
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC94DF2D;
+	Fri, 17 Feb 2023 12:11:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC94DF2D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676632350;
-	bh=BB0n+xkJc9Xy7B2lrptZGE8c8ONrpfeHbm8HJDJyX4Y=;
+	s=default; t=1676632362;
+	bh=V1DmDXBuEU2N+OWQ6l6wu98aHxvRRwoLqb+Y0J5Zxg4=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=kDG/CWmbPuDppFHVWUxker4s5RTnv7u1PffnwoTh+BGTrsatqw77b5EbIxLIbMy+7
-	 e9AhLdmHy/WOPc2WAkotI/SbRPbf0GMYdW6XstUscm1VThV5nHFcgktGNeD66MSukn
-	 iOtLzX3fN4iVN5BhrDMY4oI1ZGBpt7gMCaPyh7eE=
+	b=e+sN4yrGFLm5L9Qd5BLFTKllFTWj/33kEjbPNSmbtAgKjfONpJjE3RCWCRMBxR20h
+	 LCP1LswRhdDcVDX6mZHGoO7trrsrFFMujtInpm3p5AHZD98P6py4hKpedgsCjGwyXV
+	 oaJIpEVS0M2/34rOxnxOq9lnUVZs6finQAowLVbY=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4BCCF80563;
-	Fri, 17 Feb 2023 12:10:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89BD6F8056F;
+	Fri, 17 Feb 2023 12:10:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C5507F80171; Fri, 17 Feb 2023 12:09:54 +0100 (CET)
+	id 55791F8052D; Fri, 17 Feb 2023 12:09:56 +0100 (CET)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
  [46.235.227.172])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0560DF801C0
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 12:09:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0560DF801C0
+	by alsa1.perex.cz (Postfix) with ESMTPS id CF201F804B2
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 12:09:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF201F804B2
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=Owx1Fal5
+ header.a=rsa-sha256 header.s=mail header.b=iPjG/6+r
 Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
  [82.11.51.62])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -46,35 +45,35 @@ Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: tanureal)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id E28EC66021BF;
-	Fri, 17 Feb 2023 11:09:34 +0000 (GMT)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 132F366021CA;
+	Fri, 17 Feb 2023 11:09:36 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1676632175;
-	bh=BB0n+xkJc9Xy7B2lrptZGE8c8ONrpfeHbm8HJDJyX4Y=;
+	s=mail; t=1676632176;
+	bh=V1DmDXBuEU2N+OWQ6l6wu98aHxvRRwoLqb+Y0J5Zxg4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Owx1Fal5qKGwyYicswEJSQOBMj7gxD9DDYR/igas+T58x5HIE0le86mCtQPe5Fnfe
-	 DtSQlulkS/1R9xEtRv9Hd/NPQZGGgxvzv3IkM69YFTNBRdm5NMfb/srQ+IY3Q/nLqG
-	 WwIz+iZN4LN530g4z0Fbbmz6Im4Eu/Qth3xFDT/g8d4PArOXoGoKyddCgQatr0/8Oj
-	 9VDXoIBJKd2fbTg8fUqdoOLsC4pBfLLtzDtxhy1tSCJhvfbZwpB9v3ncWGhPTZWYwV
-	 RYDcwwecJTX9Xw7j0M/a5SRNwsOTqSzHCPMg43lyjXgfLg2ffIB12gCk2ica1vurRu
-	 boQQ2O5mciIew==
+	b=iPjG/6+rnzqDx7/fqJEnD/LNQBclM54RsSYkLH/KY/8U2KN8wOSpYAxRWNDQyhSD/
+	 DI0VrybksNpNJLj2/TB8wGCk2grkJl862MgPorDabo+YW+ma5bCa/GEaZyRj9+YmYq
+	 XzFUaMMM/gzs170K5pD9bl+ThLSbfJDH1dYYMd41BebGMYtZFxur4c3wJgt+qMIg7u
+	 HUa/YzY1swpk6SC8v32WiOYAlilJx4MUgZcgn2ZcuFbI37CR4y8hkJHBPr9Lk/yplX
+	 JchrM0/yTnn1zxqQB24BiR4R8mIoGHw7LFb/yWh8+XEjZDvQ8BccVMmi0Wso3AIkPk
+	 RlUatD2OscfdQ==
 From: Lucas Tanure <lucas.tanure@collabora.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
 	Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH v2 3/9] ASoC: amd: vangogh: use sizeof of variable instead of
- struct type
-Date: Fri, 17 Feb 2023 11:08:44 +0000
-Message-Id: <20230217110850.1045250-4-lucas.tanure@collabora.com>
+Subject: [PATCH v2 7/9] ASoC: amd: vangogh: Move nau8821 and CPU side code up
+ for future platform
+Date: Fri, 17 Feb 2023 11:08:48 +0000
+Message-Id: <20230217110850.1045250-8-lucas.tanure@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230217110850.1045250-1-lucas.tanure@collabora.com>
 References: <20230217110850.1045250-1-lucas.tanure@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 4XYLQKKFM7QM66DB6HPR2EIAE2X5VUSA
-X-Message-ID-Hash: 4XYLQKKFM7QM66DB6HPR2EIAE2X5VUSA
+Message-ID-Hash: KVRQAELHCTGFIYVUZVHYNHKTZNL5VPGZ
+X-Message-ID-Hash: KVRQAELHCTGFIYVUZVHYNHKTZNL5VPGZ
 X-MailFrom: lucas.tanure@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -89,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4XYLQKKFM7QM66DB6HPR2EIAE2X5VUSA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KVRQAELHCTGFIYVUZVHYNHKTZNL5VPGZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,29 +97,158 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use sizeof(*machine) instead of sizeof(struct acp5x_platform_info)
-
-There is a possibility of bug when variable type has changed but
-corresponding struct passed to the sizeof has not.
+Move nau8821 and CPU side code up in the source so future platforms can
+be added.
 
 Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
 ---
- sound/soc/amd/vangogh/acp5x-mach.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/amd/vangogh/acp5x-mach.c | 97 +++++++++++++++---------------
+ 1 file changed, 50 insertions(+), 47 deletions(-)
 
 diff --git a/sound/soc/amd/vangogh/acp5x-mach.c b/sound/soc/amd/vangogh/acp5x-mach.c
-index f914f6327cda..43c80103d138 100644
+index c746605b63a1..153ce9e84a23 100644
 --- a/sound/soc/amd/vangogh/acp5x-mach.c
 +++ b/sound/soc/amd/vangogh/acp5x-mach.c
-@@ -342,7 +342,7 @@ static int acp5x_probe(struct platform_device *pdev)
- 	struct snd_soc_card *card;
- 	int ret;
+@@ -30,6 +30,11 @@
+ static unsigned long acp5x_machine_id;
+ static struct snd_soc_jack vg_headset;
  
--	machine = devm_kzalloc(dev, sizeof(struct acp5x_platform_info), GFP_KERNEL);
-+	machine = devm_kzalloc(dev, sizeof(*machine), GFP_KERNEL);
- 	if (!machine)
- 		return -ENOMEM;
++SND_SOC_DAILINK_DEF(platform,  DAILINK_COMP_ARRAY(COMP_PLATFORM("acp5x_i2s_dma.0")));
++SND_SOC_DAILINK_DEF(acp5x_i2s, DAILINK_COMP_ARRAY(COMP_CPU("acp5x_i2s_playcap.0")));
++SND_SOC_DAILINK_DEF(acp5x_bt,  DAILINK_COMP_ARRAY(COMP_CPU("acp5x_i2s_playcap.1")));
++SND_SOC_DAILINK_DEF(nau8821,   DAILINK_COMP_ARRAY(COMP_CODEC("i2c-NVTN2020:00", "nau8821-hifi")));
++
+ static struct snd_soc_jack_pin acp5x_nau8821_jack_pins[] = {
+ 	{
+ 		.pin	= "Headphone",
+@@ -41,6 +46,44 @@ static struct snd_soc_jack_pin acp5x_nau8821_jack_pins[] = {
+ 	},
+ };
  
++static const struct snd_kcontrol_new acp5x_8821_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++	SOC_DAPM_PIN_SWITCH("Int Mic"),
++};
++
++static int platform_clock_control(struct snd_soc_dapm_widget *w,
++				  struct snd_kcontrol *k, int event)
++{
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_soc_card *card = dapm->card;
++	struct snd_soc_dai *dai;
++	int ret = 0;
++
++	dai = snd_soc_card_get_codec_dai(card, ACP5X_NUVOTON_CODEC_DAI);
++	if (!dai) {
++		dev_err(card->dev, "Codec dai not found\n");
++		return -EIO;
++	}
++
++	if (SND_SOC_DAPM_EVENT_OFF(event)) {
++		ret = snd_soc_dai_set_sysclk(dai, NAU8821_CLK_INTERNAL, 0, SND_SOC_CLOCK_IN);
++		if (ret < 0) {
++			dev_err(card->dev, "set sysclk err = %d\n", ret);
++			return -EIO;
++		}
++	} else {
++		ret = snd_soc_dai_set_sysclk(dai, NAU8821_CLK_FLL_BLK, 0, SND_SOC_CLOCK_IN);
++		if (ret < 0)
++			dev_err(dai->dev, "can't set BLK clock %d\n", ret);
++		ret = snd_soc_dai_set_pll(dai, 0, 0, ACP5X_NUVOTON_BCLK, ACP5X_NAU8821_FREQ_OUT);
++		if (ret < 0)
++			dev_err(dai->dev, "can't set FLL: %d\n", ret);
++	}
++
++	return ret;
++}
++
+ static int acp5x_8821_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_component *component = asoc_rtd_to_codec(rtd, 0)->component;
+@@ -138,6 +181,11 @@ static int acp5x_nau8821_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
++static const struct snd_soc_ops acp5x_8821_ops = {
++	.startup = acp5x_8821_startup,
++	.hw_params = acp5x_nau8821_hw_params,
++};
++
+ static int acp5x_cs35l41_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+@@ -192,11 +240,6 @@ static int acp5x_cs35l41_hw_params(struct snd_pcm_substream *substream,
+ 
+ }
+ 
+-static const struct snd_soc_ops acp5x_8821_ops = {
+-	.startup = acp5x_8821_startup,
+-	.hw_params = acp5x_nau8821_hw_params,
+-};
+-
+ static const struct snd_soc_ops acp5x_cs35l41_play_ops = {
+ 	.startup = acp5x_cs35l41_startup,
+ 	.hw_params = acp5x_cs35l41_hw_params,
+@@ -213,12 +256,8 @@ static struct snd_soc_codec_conf cs35l41_conf[] = {
+ 	},
+ };
+ 
+-SND_SOC_DAILINK_DEF(platform,  DAILINK_COMP_ARRAY(COMP_PLATFORM("acp5x_i2s_dma.0")));
+-SND_SOC_DAILINK_DEF(acp5x_i2s, DAILINK_COMP_ARRAY(COMP_CPU("acp5x_i2s_playcap.0")));
+-SND_SOC_DAILINK_DEF(acp5x_bt,  DAILINK_COMP_ARRAY(COMP_CPU("acp5x_i2s_playcap.1")));
+-SND_SOC_DAILINK_DEF(nau8821,   DAILINK_COMP_ARRAY(COMP_CODEC("i2c-NVTN2020:00", "nau8821-hifi")));
+-SND_SOC_DAILINK_DEF(cs35l41,   DAILINK_COMP_ARRAY(COMP_CODEC("spi-VLV1776:00", "cs35l41-pcm"),
+-						  COMP_CODEC("spi-VLV1776:01", "cs35l41-pcm")));
++SND_SOC_DAILINK_DEF(cs35l41, DAILINK_COMP_ARRAY(COMP_CODEC("spi-VLV1776:00", "cs35l41-pcm"),
++						COMP_CODEC("spi-VLV1776:01", "cs35l41-pcm")));
+ 
+ static struct snd_soc_dai_link acp5x_dai[] = {
+ 	{
+@@ -246,43 +285,7 @@ static struct snd_soc_dai_link acp5x_dai[] = {
+ 	},
+ };
+ 
+-static int platform_clock_control(struct snd_soc_dapm_widget *w,
+-				  struct snd_kcontrol *k, int event)
+-{
+-	struct snd_soc_dapm_context *dapm = w->dapm;
+-	struct snd_soc_card *card = dapm->card;
+-	struct snd_soc_dai *dai;
+-	int ret = 0;
+-
+-	dai = snd_soc_card_get_codec_dai(card, ACP5X_NUVOTON_CODEC_DAI);
+-	if (!dai) {
+-		dev_err(card->dev, "Codec dai not found\n");
+-		return -EIO;
+-	}
+-
+-	if (SND_SOC_DAPM_EVENT_OFF(event)) {
+-		ret = snd_soc_dai_set_sysclk(dai, NAU8821_CLK_INTERNAL, 0, SND_SOC_CLOCK_IN);
+-		if (ret < 0) {
+-			dev_err(card->dev, "set sysclk err = %d\n", ret);
+-			return -EIO;
+-		}
+-	} else {
+-		ret = snd_soc_dai_set_sysclk(dai, NAU8821_CLK_FLL_BLK, 0, SND_SOC_CLOCK_IN);
+-		if (ret < 0)
+-			dev_err(dai->dev, "can't set BLK clock %d\n", ret);
+-		ret = snd_soc_dai_set_pll(dai, 0, 0, ACP5X_NUVOTON_BCLK, ACP5X_NAU8821_FREQ_OUT);
+-		if (ret < 0)
+-			dev_err(dai->dev, "can't set FLL: %d\n", ret);
+-	}
+-
+-	return ret;
+-}
+ 
+-static const struct snd_kcontrol_new acp5x_8821_controls[] = {
+-	SOC_DAPM_PIN_SWITCH("Headphone"),
+-	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+-	SOC_DAPM_PIN_SWITCH("Int Mic"),
+-};
+ 
+ static const struct snd_soc_dapm_widget acp5x_8821_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone", NULL),
 -- 
 2.39.2
 
