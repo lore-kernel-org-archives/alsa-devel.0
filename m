@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F14CC636D4
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 11:13:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAA1CC64EC4
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 11:13:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC77EF0E;
-	Fri, 17 Feb 2023 12:12:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC77EF0E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 80240F29;
+	Fri, 17 Feb 2023 12:12:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80240F29
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676632399;
-	bh=Kwd+z51GyilBatKyRaOXykYfGSgdgInb9P6BCS/XdpM=;
+	s=default; t=1676632416;
+	bh=j0T197P1YELVItgZWtEGBCaEB/XtoykOAuZbhiemsIc=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=YeBIWH6hmPEffsEpUSOtuCyQ0cT/36WkUhoR5p8kNsBEAsOz1W8esEa+45ChZVCvj
-	 eESvnwEJZG9OVEjzGiSfde3Nj7MTp+WFOEsrY2G+hxOsTmmoRyZM9eZ/MQKIrzZHAU
-	 WDIqTXJUE87CU+pgd9v5aTV5lz6zPauCw/Oazjhc=
+	b=HA3Qf1JWNTclR0vhW9LrP2mK2XKhxKbT10KLD4LJtf34os7zqoZqY6aUMz52I+fBl
+	 +4ELh3i23aUTqeX2XkzrziPPd37w5SF6e8S2fWLav19Dt/UrikTSPl2/4WwpGLtMLJ
+	 EHICGS630+mOp5gArIQovzKr6fVgposqBlE8bEvM=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A135FF80529;
-	Fri, 17 Feb 2023 12:10:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB2B9F80578;
+	Fri, 17 Feb 2023 12:11:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7F322F804B2; Fri, 17 Feb 2023 12:10:55 +0100 (CET)
+	id A9BBBF804B2; Fri, 17 Feb 2023 12:10:56 +0100 (CET)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [46.235.227.172])
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 141E5F804FC
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 12:09:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 141E5F804FC
+	by alsa1.perex.cz (Postfix) with ESMTPS id ED96BF80496
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 12:09:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED96BF80496
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=lqfdgdTt
+ header.a=rsa-sha256 header.s=mail header.b=Q3x8mb05
 Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
  [82.11.51.62])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -45,34 +45,35 @@ Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: tanureal)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 54E9466021CE;
-	Fri, 17 Feb 2023 11:09:36 +0000 (GMT)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 80BE266021C5;
+	Fri, 17 Feb 2023 11:09:35 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1676632176;
-	bh=Kwd+z51GyilBatKyRaOXykYfGSgdgInb9P6BCS/XdpM=;
+	s=mail; t=1676632175;
+	bh=j0T197P1YELVItgZWtEGBCaEB/XtoykOAuZbhiemsIc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lqfdgdTtxMe5XOJK3Nb4Uk62NI0c4UfJKrHh5cksS6ihBGWdEX/sv0t9PCkTu9MYe
-	 W/Kx1unge/kkub0VpnCyWfWHXU/ecQ7U3q56GSc5WT7tvDOjSdoMhOfL2jUnQMdhss
-	 5n9UNzv9ppea5DNZEoo5esAdIOPeqqdJ2SvR2jPxK7gJ+87KCkuEoPgZF5gUcRuAMr
-	 fWFFNT1lxR/cYtyISwEcgtS8GPMbfTh7Aa7x532XANRmUc0OgslyQcG5CIFsY7Z1Gs
-	 yBEXPyQ2+4f/Gns9wXZ3LD8pDnkaefsXx21kMcW54HIwTp8onyYh1veX15T4nJrdZG
-	 WzUYrp7c6M2CA==
+	b=Q3x8mb05DCpL7U9Co6mIqtV0E1aJzClgwueGgeknBCroY+WPnkHgYxyyUMg6gV2NR
+	 ZTYt2Bfe3IHuNQNUpwuzYW+B1ghPxsGNYsRjIxIFLXUdv2AyQ8kNIfzuUghtUUdjyS
+	 p/1zRi2HZpyfFKJOR4UbP+PdcrakJRR8iAUam26Vj/FTLM9xT0TDKHe1MqkqdVzJ8S
+	 UShTnSWTilgXmtsTIW8gRffZUyEFyp2d/KV/BmpIFrPJ4LMBG8h7FzeornzMbDLDgF
+	 IMyKaOSC2fjWZhxWhvMgcbvh7NElDUWoS3qMiYGOV+nuzNRhCdBj+Nbn7RPIu/p2Ka
+	 H8oHOO9c5BBPA==
 From: Lucas Tanure <lucas.tanure@collabora.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
 	Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH v2 8/9] ASoC: amd: vangogh: Centralize strings definition
-Date: Fri, 17 Feb 2023 11:08:49 +0000
-Message-Id: <20230217110850.1045250-9-lucas.tanure@collabora.com>
+Subject: [PATCH v2 5/9] ASoC: amd: vangogh: use for_each_rtd_components
+ instead of for
+Date: Fri, 17 Feb 2023 11:08:46 +0000
+Message-Id: <20230217110850.1045250-6-lucas.tanure@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230217110850.1045250-1-lucas.tanure@collabora.com>
 References: <20230217110850.1045250-1-lucas.tanure@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DIBLVZTRZ6GDVE6Y6HSZ2TSXOXF54TT4
-X-Message-ID-Hash: DIBLVZTRZ6GDVE6Y6HSZ2TSXOXF54TT4
+Message-ID-Hash: YSZF3IKCOBGVPEYRF6YOSC6NIPI6XCMU
+X-Message-ID-Hash: YSZF3IKCOBGVPEYRF6YOSC6NIPI6XCMU
 X-MailFrom: lucas.tanure@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DIBLVZTRZ6GDVE6Y6HSZ2TSXOXF54TT4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YSZF3IKCOBGVPEYRF6YOSC6NIPI6XCMU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,109 +97,77 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Replace occurrences of strings by their definition, avoiding
-bugs where the string changed, but not all places have been modified.
-While at it rename defines to use NAU8821 codec name instead of NUVOTON
-and align with the other defines.
+To iterate over components use for_each_rtd_components
+And compare to component name, so asoc_rtd_to_codec and the dai code can
+be removed
 
 Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
 ---
- sound/soc/amd/vangogh/acp5x-mach.c | 31 ++++++++++++++++++------------
- 1 file changed, 19 insertions(+), 12 deletions(-)
+ sound/soc/amd/vangogh/acp5x-mach.c | 42 ++++++++++++++++--------------
+ 1 file changed, 22 insertions(+), 20 deletions(-)
 
 diff --git a/sound/soc/amd/vangogh/acp5x-mach.c b/sound/soc/amd/vangogh/acp5x-mach.c
-index 153ce9e84a23..367570e5c60f 100644
+index a1cd52e58574..e7183d8ac3a2 100644
 --- a/sound/soc/amd/vangogh/acp5x-mach.c
 +++ b/sound/soc/amd/vangogh/acp5x-mach.c
-@@ -22,10 +22,14 @@
- 
- #define DRV_NAME			"acp5x_mach"
- #define DUAL_CHANNEL			2
--#define ACP5X_NUVOTON_CODEC_DAI		"nau8821-hifi"
- #define VG_JUPITER			1
--#define ACP5X_NUVOTON_BCLK		3072000
-+#define ACP5X_NAU8821_BCLK		3072000
- #define ACP5X_NAU8821_FREQ_OUT		12288000
-+#define ACP5X_NAU8821_COMP_NAME 	"i2c-NVTN2020:00"
-+#define ACP5X_NAU8821_DAI_NAME		"nau8821-hifi"
-+#define ACP5X_CS35L41_COMP_LNAME	"spi-VLV1776:00"
-+#define ACP5X_CS35L41_COMP_RNAME	"spi-VLV1776:01"
-+#define ACP5X_CS35L41_DAI_NAME		"cs35l41-pcm"
- 
- static unsigned long acp5x_machine_id;
- static struct snd_soc_jack vg_headset;
-@@ -33,7 +37,8 @@ static struct snd_soc_jack vg_headset;
- SND_SOC_DAILINK_DEF(platform,  DAILINK_COMP_ARRAY(COMP_PLATFORM("acp5x_i2s_dma.0")));
- SND_SOC_DAILINK_DEF(acp5x_i2s, DAILINK_COMP_ARRAY(COMP_CPU("acp5x_i2s_playcap.0")));
- SND_SOC_DAILINK_DEF(acp5x_bt,  DAILINK_COMP_ARRAY(COMP_CPU("acp5x_i2s_playcap.1")));
--SND_SOC_DAILINK_DEF(nau8821,   DAILINK_COMP_ARRAY(COMP_CODEC("i2c-NVTN2020:00", "nau8821-hifi")));
-+SND_SOC_DAILINK_DEF(nau8821,   DAILINK_COMP_ARRAY(COMP_CODEC(ACP5X_NAU8821_COMP_NAME,
-+							     ACP5X_NAU8821_DAI_NAME)));
- 
- static struct snd_soc_jack_pin acp5x_nau8821_jack_pins[] = {
- 	{
-@@ -60,7 +65,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 	struct snd_soc_dai *dai;
- 	int ret = 0;
- 
--	dai = snd_soc_card_get_codec_dai(card, ACP5X_NUVOTON_CODEC_DAI);
-+	dai = snd_soc_card_get_codec_dai(card, ACP5X_NAU8821_DAI_NAME);
- 	if (!dai) {
- 		dev_err(card->dev, "Codec dai not found\n");
- 		return -EIO;
-@@ -76,7 +81,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 		ret = snd_soc_dai_set_sysclk(dai, NAU8821_CLK_FLL_BLK, 0, SND_SOC_CLOCK_IN);
- 		if (ret < 0)
- 			dev_err(dai->dev, "can't set BLK clock %d\n", ret);
--		ret = snd_soc_dai_set_pll(dai, 0, 0, ACP5X_NUVOTON_BCLK, ACP5X_NAU8821_FREQ_OUT);
-+		ret = snd_soc_dai_set_pll(dai, 0, 0, ACP5X_NAU8821_BCLK, ACP5X_NAU8821_FREQ_OUT);
- 		if (ret < 0)
- 			dev_err(dai->dev, "can't set FLL: %d\n", ret);
- 	}
-@@ -161,7 +166,7 @@ static int acp5x_nau8821_hw_params(struct snd_pcm_substream *substream,
+@@ -153,35 +153,37 @@ static int acp5x_cs35l41_hw_params(struct snd_pcm_substream *substream,
+ 				   struct snd_pcm_hw_params *params)
  {
  	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_card *card = rtd->card;
--	struct snd_soc_dai *dai = snd_soc_card_get_codec_dai(card, ACP5X_NUVOTON_CODEC_DAI);
-+	struct snd_soc_dai *dai = snd_soc_card_get_codec_dai(card, ACP5X_NAU8821_DAI_NAME);
- 	int ret, bclk;
+-	unsigned int num_codecs = rtd->dai_link->num_codecs;
+-	struct snd_soc_card *card = rtd->card;
+-	struct snd_soc_dai *dai;
+-	unsigned int bclk_val;
++	unsigned int bclk, rate = params_rate(params);
++	struct snd_soc_component *comp;
+ 	int ret, i;
  
- 	ret = snd_soc_dai_set_sysclk(dai, NAU8821_CLK_FLL_BLK, 0, SND_SOC_CLOCK_IN);
-@@ -221,8 +226,8 @@ static int acp5x_cs35l41_hw_params(struct snd_pcm_substream *substream,
+-	ret = 0;
+-	for (i = 0; i < num_codecs; i++) {
+-		dai = asoc_rtd_to_codec(rtd, i);
+-		if (strcmp(dai->name, "cs35l41-pcm") == 0) {
+-			switch (params_rate(params)) {
+-			case 48000:
+-				bclk_val = 1536000;
+-				break;
+-			default:
+-				dev_err(card->dev, "Invalid Samplerate:0x%x\n",
+-					params_rate(params));
++	switch (rate) {
++	case 48000:
++		bclk = 1536000;
++		break;
++	default:
++		bclk = 0;
++		break;
++	}
++
++	for_each_rtd_components(rtd, i, comp) {
++		if (!(strcmp(comp->name, "spi-VLV1776:00")) ||
++		    !(strcmp(comp->name, "spi-VLV1776:01"))) {
++			if (!bclk) {
++				dev_err(comp->dev, "Invalid sample rate: 0x%x\n", rate);
+ 				return -EINVAL;
+ 			}
+-			ret = snd_soc_component_set_sysclk(dai->component, 0, 0,
+-							   bclk_val, SND_SOC_CLOCK_IN);
+-			if (ret < 0) {
+-				dev_err(card->dev, "failed to set sysclk for CS35l41 dai\n");
++
++			ret = snd_soc_component_set_sysclk(comp, 0, 0, bclk, SND_SOC_CLOCK_IN);
++			if (ret) {
++				dev_err(comp->dev, "failed to set SYSCLK: %d\n", ret);
+ 				return ret;
+ 			}
+ 		}
  	}
  
- 	for_each_rtd_components(rtd, i, comp) {
--		if (!(strcmp(comp->name, "spi-VLV1776:00")) ||
--		    !(strcmp(comp->name, "spi-VLV1776:01"))) {
-+		if (!(strcmp(comp->name, ACP5X_CS35L41_COMP_LNAME)) ||
-+		    !(strcmp(comp->name, ACP5X_CS35L41_COMP_RNAME))) {
- 			if (!bclk) {
- 				dev_err(comp->dev, "Invalid sample rate: 0x%x\n", rate);
- 				return -EINVAL;
-@@ -247,17 +252,19 @@ static const struct snd_soc_ops acp5x_cs35l41_play_ops = {
+-	return ret;
++	return 0;
++
+ }
  
- static struct snd_soc_codec_conf cs35l41_conf[] = {
- 	{
--		.dlc = COMP_CODEC_CONF("spi-VLV1776:00"),
-+		.dlc = COMP_CODEC_CONF(ACP5X_CS35L41_COMP_LNAME),
- 		.name_prefix = "Left",
- 	},
- 	{
--		.dlc = COMP_CODEC_CONF("spi-VLV1776:01"),
-+		.dlc = COMP_CODEC_CONF(ACP5X_CS35L41_COMP_RNAME),
- 		.name_prefix = "Right",
- 	},
- };
- 
--SND_SOC_DAILINK_DEF(cs35l41, DAILINK_COMP_ARRAY(COMP_CODEC("spi-VLV1776:00", "cs35l41-pcm"),
--						COMP_CODEC("spi-VLV1776:01", "cs35l41-pcm")));
-+SND_SOC_DAILINK_DEF(cs35l41, DAILINK_COMP_ARRAY(COMP_CODEC(ACP5X_CS35L41_COMP_LNAME,
-+							   ACP5X_CS35L41_DAI_NAME),
-+						COMP_CODEC(ACP5X_CS35L41_COMP_RNAME,
-+							   ACP5X_CS35L41_DAI_NAME)));
- 
- static struct snd_soc_dai_link acp5x_dai[] = {
- 	{
+ static const struct snd_soc_ops acp5x_8821_ops = {
 -- 
 2.39.2
 
