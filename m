@@ -4,57 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D89AC636D6
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 16:15:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53134C636D6
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 16:16:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6AEDF56;
-	Fri, 17 Feb 2023 17:14:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6AEDF56
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3F8B5F6E;
+	Fri, 17 Feb 2023 17:15:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F8B5F6E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676650542;
-	bh=jWXo/OhmaRA96DNh1A80n3xxlghGvIBXz9S6P0kseqo=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=k9lLVMrG+XGXqNE0/ISoTzb7zg2jrkiNBoUckdWTBBnM3IrptAkyP4ysut1/F7Aix
-	 hMW7fqUVaINylgXCIwDfIgFHPq/eABI+Eez3R/YlsHmd2qRsmBbd1oAEjiWtmz36Pi
-	 uq6H/uUBB4x54qOcyEgvYVIWAAZcWPfIYbT9/2CM=
+	s=default; t=1676650569;
+	bh=66mCHoi9tVMF1QgQ14+MF/XXH8UwOVx9QsdzJea5Q+A=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ZrfuKUN67O0hMtYk2yqqu1awRwQ0kvqHNugKAOBlGjc5AIiVu46SJVqw22sJ52yIv
+	 sK7kjpiyLQvG05wCap9G3yEDK1ZLk7/GFHMUcoD9Q/e240e7TDaNIw00FZxLGZkTmN
+	 5KEZvQ1t2oERZ2gMwz01GkKaZr12UvGKv0GgGOM0=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DAA8AF80526;
-	Fri, 17 Feb 2023 17:14:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3405DF80529;
+	Fri, 17 Feb 2023 17:14:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C6C68F80529; Fri, 17 Feb 2023 17:14:21 +0100 (CET)
+	id B5E9CF80527; Fri, 17 Feb 2023 17:14:25 +0100 (CET)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C180FF800AA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5F0FEF800B6
 	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 17:14:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C180FF800AA
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F0FEF800B6
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=oYNUPI3J
+ header.s=PODMain02222019 header.b=PXxvX5or
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
 	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 31HFgnU4014021;
+ 31HFgnU3014021;
 	Fri, 17 Feb 2023 10:14:12 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=KSx4vfnoG0hKeX0+I8Xc6vC4Q61Hdoi1UYzczfNsx1Y=;
- b=oYNUPI3JkmSKKfpVnMIHi8T4mryop/uePwJerdvurSoCRETK64p29HFMtLcHNTDLoxtP
- 8xiYKpSxIp7if4q0eyQXDf5CnlejuhOKTV8vi3emF07jaPSVCU3BQ8xy6mWTSabtSvz0
- QJVwV0RZF6u++10SiK7lhcouHPk55X4k7JqoPZH+b6cJG2+rkzjTPlMtWc47iw2BSUWt
- ivbNySHJ19Ud3ULFB5fLdgxO9hLVObqqDYAoNFJZqng5Tb7EkqpyAroAs9uplSLKHNh9
- HNYqwPQs7q8F6NaBQ3dDs0nZP3TzcqrpzugzROW8v1S7xC5C1xmd98Vbt4eWGpHOQcKb CQ==
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=F+dsDHEU5Sdrumj0dlGMpDecJC4UrDNmYuQpDZmDbiA=;
+ b=PXxvX5orBXGZurS/SQg3f3xCHPEvIjGi4jkZ3Lr6D28lQeYKlLEKSLkIrHNmznIbXRX/
+ IGLui6qD29GdMR6WRgUiDSIr6IM6UKBpZDbknIfacEjHOg7DIZtYCe69jygL8N0qJlpr
+ VI0F0makVsBr8XQVnrdTIfmHqQfZTLsHw05qYSfMlW0B094BXVt9NDrhwlKogkicKrDb
+ OyDKXh4+Hx2HLGEyuhRcMPDbVsobWD2xaPwPlejbHVuKwlUJpoA353chQcL6e+6E5aNo
+ 0gzdZ/CHRcC2qiY71ziQk7ehKdaz/JG7523zDrltBrJkzANlpM/gUalZuSemPlb8MYNP zQ==
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3nrm8wm7t6-2
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3nrm8wm7t6-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 17 Feb 2023 10:14:12 -0600
+	Fri, 17 Feb 2023 10:14:11 -0600
 Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Fri, 17 Feb
@@ -64,27 +63,24 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  Transport; Fri, 17 Feb 2023 10:14:10 -0600
 Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
  [198.90.251.127])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 61B9211D3;
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2769E45;
 	Fri, 17 Feb 2023 16:14:10 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>, <pierre-louis.bossart@linux.intel.com>,
         <cezary.rojewski@intel.com>, <peter.ujfalusi@linux.intel.com>,
         <yung-chuan.liao@linux.intel.com>, <kai.vehmanen@linux.intel.com>
-Subject: [PATCH 03/10] firmware: cs_dsp: Support DSPs that don't require
- firmware download
-Date: Fri, 17 Feb 2023 16:14:03 +0000
-Message-ID: <20230217161410.915202-4-rf@opensource.cirrus.com>
+Subject: [PATCH 00/10] ASoC: Initial support for Cirrus Logic CS35L56
+Date: Fri, 17 Feb 2023 16:14:00 +0000
+Message-ID: <20230217161410.915202-1-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230217161410.915202-1-rf@opensource.cirrus.com>
-References: <20230217161410.915202-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: 7jho9u0DN5K2-kFdVLRRTrilrIEX9Xba
-X-Proofpoint-ORIG-GUID: 7jho9u0DN5K2-kFdVLRRTrilrIEX9Xba
+X-Proofpoint-GUID: PbOFLCyzbstWCN1voV9HEeBQBOa2gmiY
+X-Proofpoint-ORIG-GUID: PbOFLCyzbstWCN1voV9HEeBQBOa2gmiY
 X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: Y4ENGWDCXVFAUV2RPDF3WGHRZM5WV3AH
-X-Message-ID-Hash: Y4ENGWDCXVFAUV2RPDF3WGHRZM5WV3AH
+Message-ID-Hash: XKNXYCLHESOFX7BHPA5JOPYITMXZ2ULO
+X-Message-ID-Hash: XKNXYCLHESOFX7BHPA5JOPYITMXZ2ULO
 X-MailFrom: prvs=74127981b7=rf@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,14 +89,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
 CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com, Simon Trimmer <simont@opensource.cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>
+ patches@opensource.cirrus.com, Richard Fitzgerald <rf@opensource.cirrus.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y4ENGWDCXVFAUV2RPDF3WGHRZM5WV3AH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XKNXYCLHESOFX7BHPA5JOPYITMXZ2ULO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -109,34 +104,66 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Simon Trimmer <simont@opensource.cirrus.com>
+The CS35L56 is a high-performance boosted mono audio amplifier.
+Supported control interfaces are I2C, SPI or SoundWire.
+Supported audio interfaces are I2S/TDM or SoundWire.
 
-When a DSP can self-boot from ROM it is not necessary to download
-firmware during the powering up sequence.
+The CS35L56 has a self-booting firmware in ROM, with the ability
+to patch the firmware and/or apply tunings.
+Patches #1 to #7 add support to cs_dsp and wm_adsp for self-booting
+firmware and the ability to apply a .bin file without having to
+apply a .wmfw.
 
-A DSP that required firmware download would fail in a previous
-configuration step if firmware was not available.
+Patch #8 adds the ASoC driver.
 
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- drivers/firmware/cirrus/cs_dsp.c | 3 +++
- 1 file changed, 3 insertions(+)
+Patches #9 and #10 add support for this to the Intel sof_sdw
+machine driver.
 
-diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
-index 97b73a254380..513136a924cf 100644
---- a/drivers/firmware/cirrus/cs_dsp.c
-+++ b/drivers/firmware/cirrus/cs_dsp.c
-@@ -1301,6 +1301,9 @@ static int cs_dsp_load(struct cs_dsp *dsp, const struct firmware *firmware,
- 	int regions = 0;
- 	int ret, offset, type;
- 
-+	if (!firmware)
-+		return 0;
-+
- 	ret = -EINVAL;
- 
- 	pos = sizeof(*header) + sizeof(*adsp1_sizes) + sizeof(*footer);
+Richard Fitzgerald (3):
+  ASoC: cs35l56: Add driver for Cirrus Logic CS35L56
+  ASoC: Intel: sof_sdw: Add support for Cirrus Logic CS35L56
+  ASoC: Intel: soc-acpi: Add CS35L56 Soundwire to TGL
+
+Simon Trimmer (7):
+  firmware: cs_dsp: Introduce no_core_startstop for self-booting DSPs
+  ASoC: wm_adsp: Use no_core_startstop to prevent creating preload
+    control
+  firmware: cs_dsp: Support DSPs that don't require firmware download
+  ASoC: wm_adsp: Support DSPs that don't require firmware download
+  ASoC: wm_adsp: Expose the DSP boot work actions as wm_adsp_power_up()
+  ASoC: wm_adsp: Add support for loading bin files without wmfw
+  ASoC: wm_adsp: Simplify the logging of requested firmware files
+
+ MAINTAINERS                                   |    2 +
+ drivers/firmware/cirrus/cs_dsp.c              |   17 +-
+ include/linux/firmware/cirrus/cs_dsp.h        |    1 +
+ include/sound/cs35l56.h                       |  266 +++
+ sound/soc/codecs/Kconfig                      |   34 +
+ sound/soc/codecs/Makefile                     |   10 +
+ sound/soc/codecs/cs35l56-i2c.c                |   83 +
+ sound/soc/codecs/cs35l56-sdw.c                |  525 ++++++
+ sound/soc/codecs/cs35l56-shared.c             |  387 +++++
+ sound/soc/codecs/cs35l56-spi.c                |   81 +
+ sound/soc/codecs/cs35l56.c                    | 1451 +++++++++++++++++
+ sound/soc/codecs/cs35l56.h                    |   77 +
+ sound/soc/codecs/wm_adsp.c                    |   63 +-
+ sound/soc/codecs/wm_adsp.h                    |    3 +
+ sound/soc/intel/boards/Kconfig                |    1 +
+ sound/soc/intel/boards/Makefile               |    1 +
+ sound/soc/intel/boards/sof_sdw.c              |    7 +
+ sound/soc/intel/boards/sof_sdw_common.h       |    7 +
+ sound/soc/intel/boards/sof_sdw_cs35l56.c      |  115 ++
+ .../intel/common/soc-acpi-intel-tgl-match.c   |   57 +
+ 20 files changed, 3172 insertions(+), 16 deletions(-)
+ create mode 100644 include/sound/cs35l56.h
+ create mode 100644 sound/soc/codecs/cs35l56-i2c.c
+ create mode 100644 sound/soc/codecs/cs35l56-sdw.c
+ create mode 100644 sound/soc/codecs/cs35l56-shared.c
+ create mode 100644 sound/soc/codecs/cs35l56-spi.c
+ create mode 100644 sound/soc/codecs/cs35l56.c
+ create mode 100644 sound/soc/codecs/cs35l56.h
+ create mode 100644 sound/soc/intel/boards/sof_sdw_cs35l56.c
+
 -- 
 2.30.2
 
