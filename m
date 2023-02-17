@@ -4,40 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59D86C05027
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 11:12:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F193C636D4
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Feb 2023 11:12:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 60E92F04;
-	Fri, 17 Feb 2023 12:11:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60E92F04
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F914F27;
+	Fri, 17 Feb 2023 12:11:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F914F27
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676632338;
-	bh=DAuXTtqmkoDGzsllM35093kOPQ0tDer14y1VqAIQIps=;
+	s=default; t=1676632350;
+	bh=BB0n+xkJc9Xy7B2lrptZGE8c8ONrpfeHbm8HJDJyX4Y=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fsFHmtU9oxnM43j4wTJ2B6UXgrJfgTtWeVtG4u82NSgScoB7ddJ9wjbVhvU/8yZz1
-	 gCzzxGnGEcE5vZQVC7aR/ACVL2KnaM45dJYqbhfDatCyIyAg42lctD/CZAOTMDRJvv
-	 CsLaek0j/weSBSu9xT7GXVs+1XHlGYtqHWoNbADw=
+	b=kDG/CWmbPuDppFHVWUxker4s5RTnv7u1PffnwoTh+BGTrsatqw77b5EbIxLIbMy+7
+	 e9AhLdmHy/WOPc2WAkotI/SbRPbf0GMYdW6XstUscm1VThV5nHFcgktGNeD66MSukn
+	 iOtLzX3fN4iVN5BhrDMY4oI1ZGBpt7gMCaPyh7eE=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AF6FF80558;
-	Fri, 17 Feb 2023 12:10:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E4BCCF80563;
+	Fri, 17 Feb 2023 12:10:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E214AF80171; Fri, 17 Feb 2023 12:09:53 +0100 (CET)
+	id C5507F80171; Fri, 17 Feb 2023 12:09:54 +0100 (CET)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
  [46.235.227.172])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5CB13F8047C
-	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 12:09:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CB13F8047C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0560DF801C0
+	for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2023 12:09:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0560DF801C0
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=b1Tsv/Wl
+ header.a=rsa-sha256 header.s=mail header.b=Owx1Fal5
 Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
  [82.11.51.62])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -45,35 +46,35 @@ Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: tanureal)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id C8D4166021C8;
-	Fri, 17 Feb 2023 11:09:35 +0000 (GMT)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id E28EC66021BF;
+	Fri, 17 Feb 2023 11:09:34 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
 	s=mail; t=1676632175;
-	bh=DAuXTtqmkoDGzsllM35093kOPQ0tDer14y1VqAIQIps=;
+	bh=BB0n+xkJc9Xy7B2lrptZGE8c8ONrpfeHbm8HJDJyX4Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=b1Tsv/WlcxK/fXr3fMVjaCFOqVIntQNRVj4eeNVNA8EDRP85Rzd7bIubVTyvUb1iP
-	 vzVHAe9HdSEeJ+EGMuJAu2ccfKoaZ+kL4JyD79HqlPVt/JvYCO4mvhUSyE9yy7AZVx
-	 Qilw5CKDaorYmFA2FBnqXOHb+7Npap+qBHRKzHwhkUZWgXpHYLItYeoWgXsxkOHod7
-	 bmZ0L5WmZ52SZGm8kLWsWzbN0DaOpnFmf16VZIYlQQUOxUXqd3Ki5QuK18DCMjLJ6a
-	 82S/zw9F2kcdSHzL1tuqfu/k/Zrp+kOgRbBLW/01/Q9hNi16LQwt4XrRE5jjtLgD/W
-	 SW+I73LCE7AnA==
+	b=Owx1Fal5qKGwyYicswEJSQOBMj7gxD9DDYR/igas+T58x5HIE0le86mCtQPe5Fnfe
+	 DtSQlulkS/1R9xEtRv9Hd/NPQZGGgxvzv3IkM69YFTNBRdm5NMfb/srQ+IY3Q/nLqG
+	 WwIz+iZN4LN530g4z0Fbbmz6Im4Eu/Qth3xFDT/g8d4PArOXoGoKyddCgQatr0/8Oj
+	 9VDXoIBJKd2fbTg8fUqdoOLsC4pBfLLtzDtxhy1tSCJhvfbZwpB9v3ncWGhPTZWYwV
+	 RYDcwwecJTX9Xw7j0M/a5SRNwsOTqSzHCPMg43lyjXgfLg2ffIB12gCk2ica1vurRu
+	 boQQ2O5mciIew==
 From: Lucas Tanure <lucas.tanure@collabora.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
 	Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH v2 6/9] ASoC: amd: vangogh: Check Bit Clock rate before
- snd_soc_dai_set_pll
-Date: Fri, 17 Feb 2023 11:08:47 +0000
-Message-Id: <20230217110850.1045250-7-lucas.tanure@collabora.com>
+Subject: [PATCH v2 3/9] ASoC: amd: vangogh: use sizeof of variable instead of
+ struct type
+Date: Fri, 17 Feb 2023 11:08:44 +0000
+Message-Id: <20230217110850.1045250-4-lucas.tanure@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230217110850.1045250-1-lucas.tanure@collabora.com>
 References: <20230217110850.1045250-1-lucas.tanure@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 5VAM2PP7JUBBYB7IQBFQXW5M272W7XZK
-X-Message-ID-Hash: 5VAM2PP7JUBBYB7IQBFQXW5M272W7XZK
+Message-ID-Hash: 4XYLQKKFM7QM66DB6HPR2EIAE2X5VUSA
+X-Message-ID-Hash: 4XYLQKKFM7QM66DB6HPR2EIAE2X5VUSA
 X-MailFrom: lucas.tanure@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5VAM2PP7JUBBYB7IQBFQXW5M272W7XZK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4XYLQKKFM7QM66DB6HPR2EIAE2X5VUSA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -97,39 +98,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Check bit clock is valid before setting it with snd_soc_dai_set_pll
+Use sizeof(*machine) instead of sizeof(struct acp5x_platform_info)
+
+There is a possibility of bug when variable type has changed but
+corresponding struct passed to the sizeof has not.
 
 Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
 ---
- sound/soc/amd/vangogh/acp5x-mach.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ sound/soc/amd/vangogh/acp5x-mach.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/amd/vangogh/acp5x-mach.c b/sound/soc/amd/vangogh/acp5x-mach.c
-index e7183d8ac3a2..c746605b63a1 100644
+index f914f6327cda..43c80103d138 100644
 --- a/sound/soc/amd/vangogh/acp5x-mach.c
 +++ b/sound/soc/amd/vangogh/acp5x-mach.c
-@@ -119,13 +119,19 @@ static int acp5x_nau8821_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_card *card = rtd->card;
- 	struct snd_soc_dai *dai = snd_soc_card_get_codec_dai(card, ACP5X_NUVOTON_CODEC_DAI);
--	int ret;
-+	int ret, bclk;
+@@ -342,7 +342,7 @@ static int acp5x_probe(struct platform_device *pdev)
+ 	struct snd_soc_card *card;
+ 	int ret;
  
- 	ret = snd_soc_dai_set_sysclk(dai, NAU8821_CLK_FLL_BLK, 0, SND_SOC_CLOCK_IN);
- 	if (ret < 0)
- 		dev_err(card->dev, "can't set FS clock %d\n", ret);
--	ret = snd_soc_dai_set_pll(dai, 0, 0, snd_soc_params_to_bclk(params),
--				  params_rate(params) * 256);
-+
-+	bclk = snd_soc_params_to_bclk(params);
-+	if (bclk < 0) {
-+		dev_err(dai->dev, "Fail to get BCLK rate: %d\n", bclk);
-+		return bclk;
-+	}
-+
-+	ret = snd_soc_dai_set_pll(dai, 0, 0, bclk, params_rate(params) * 256);
- 	if (ret < 0)
- 		dev_err(card->dev, "can't set FLL: %d\n", ret);
+-	machine = devm_kzalloc(dev, sizeof(struct acp5x_platform_info), GFP_KERNEL);
++	machine = devm_kzalloc(dev, sizeof(*machine), GFP_KERNEL);
+ 	if (!machine)
+ 		return -ENOMEM;
  
 -- 
 2.39.2
