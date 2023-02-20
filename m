@@ -4,145 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB9D8C636CC
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Feb 2023 10:05:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62B34C05027
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Feb 2023 10:18:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B54B6ED7;
-	Mon, 20 Feb 2023 11:04:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B54B6ED7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9CB6BEDA;
+	Mon, 20 Feb 2023 11:17:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CB6BEDA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676887526;
-	bh=gbkqkMRnma3ZYJZI2nriIWh37XqG2zHOlVEp6+bWQMo=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	s=default; t=1676888308;
+	bh=+seYBP2yVSyeCrgNpHDnF+pLx1SNrGlHDXKYbzR8fdQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=eskWJcPtMHTOpW2k8Q7k9yG/JJibsrJqPc0C2+gNijOaSfo4RlY5nrIO6z8jCsh1g
-	 X39OepYHXc1BGFcHRNfxeBGGuuxtICoBKfuuIGz800Kg+UnqsMfz6+GJBe/yWwIXJv
-	 USuHLNuE2Cc8V8+6Jdo6+ypPCE78noKsMoCz72ww=
+	b=L0iKFMHbatuxbQnhTX+o62NWtmdgBRPdJhn7XvQiQ3oWLWNVqpLaT01dpRAzaBmLf
+	 DuGTEStCiQDBci7sHKma6SDcX0+70rQD6hz4XiGHsIG0rcVMA/bSPCX9NOvzxexCnQ
+	 hx5Ub1hvjgy7FoLfz4HQ9J06NZkx1I28eY0n3s9Q=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68168F80534;
-	Mon, 20 Feb 2023 11:03:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37F54F80266;
+	Mon, 20 Feb 2023 11:17:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E976CF8047C; Mon, 20 Feb 2023 11:03:39 +0100 (CET)
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com
- (mail-mw2nam10on2062b.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7e89::62b])
+	id 54E2AF80266; Mon, 20 Feb 2023 11:17:13 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8E987F804B0
-	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2023 11:01:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E987F804B0
+	by alsa1.perex.cz (Postfix) with ESMTPS id B88D2F800BA
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2023 11:17:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B88D2F800BA
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=lKZ/Qu7/
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i1x0mhYjgZW4OikW29ymqqAeEpmDijjRYJR2asQB83mUKrTTICMxuHtw9oJUbkUU1xNFNjbRTT2EMeHYqL7jDTK5K/VFtWzO0Fp8ys3BZlM25TIs9P3dtelbGOiJw48C3ZDOsRyHIpArmeRTryO4Esf+8ZdpvGExRIXjX7J2GjAWQQpQKaAliUaH5QtBSOyrzNUmedipWDVVxzvgDOm0bAMU5w8LiYGaD0zkOIXn1rscCDmJ3mqP8fuWYYt0B5sZFDIuXDbtbY2vNoC4GMonIgKH0zBCC1w/CiaMrusk4Dt2jaMlqMcoLIHSvz37i8inJ26MZNg03SXLV+BbW9RbOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xv07jA+/eL69iRpQLwjC5Fpf3SD7Lei4pML164kGXTs=;
- b=b0EnoWisfRTSAZBV7+dfijc7lK1aKZnhargSW4lOWl3y1d9tBljMkIVmISzbb7sYvA0dZyj22p83cFSeUnUgnG85AeybWseBclmVUr803qvKUdD3M5va92Uszh1ApmMgIOCPr5nCPiUaMTLSDq7LDt/QQa+IGC+Ef0pzlF2Y4asXcmQSalrzkcjzyZyUZgIJ6TIv89D+zBw4oc5EMTpu/qvjqqe0qsgt8//55fw5Cxt8BMg6qFZov3VBL6v9DIxOtmb7yhShywFR13aSe1JE9hF6qkDeH/yNDclXm4yf104JlcIvxVA/M7MeXlJT7Qx799GHNamqAQt2SAWgIz2pKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xv07jA+/eL69iRpQLwjC5Fpf3SD7Lei4pML164kGXTs=;
- b=lKZ/Qu7/yC/PuL+rT9navvBvUnfio5hJK4UFQ2BdswbtntRTf8zLH64aMTwzAlwttAOa4G131u/27wpBpLgbEWrxJXl/g/amKsR66c5EL6PhCBgsU7oPxcgJ4s8GKFyUFl6k8hBPZvak2xTzWjB/CIBws6JjEsybMBtXozeCliA=
-Received: from MW3PR05CA0022.namprd05.prod.outlook.com (2603:10b6:303:2b::27)
- by BN9PR12MB5228.namprd12.prod.outlook.com (2603:10b6:408:101::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6111.19; Mon, 20 Feb
- 2023 10:01:49 +0000
-Received: from CO1NAM11FT046.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:2b:cafe::14) by MW3PR05CA0022.outlook.office365.com
- (2603:10b6:303:2b::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6134.15 via Frontend
- Transport; Mon, 20 Feb 2023 10:01:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CO1NAM11FT046.mail.protection.outlook.com (10.13.174.203) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6111.20 via Frontend Transport; Mon, 20 Feb 2023 10:01:49 +0000
-Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 20 Feb
- 2023 04:01:47 -0600
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB07.amd.com
- (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 20 Feb
- 2023 02:01:46 -0800
-Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
- SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2375.34
- via Frontend Transport; Mon, 20 Feb 2023 04:01:43 -0600
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To: <vkoul@kernel.org>
-Subject: [PATCH V3 4/8] soundwire: amd: enable build for AMD SoundWire manager
- driver
-Date: Mon, 20 Feb 2023 15:34:14 +0530
-Message-ID: <20230220100418.76754-5-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230220100418.76754-1-Vijendar.Mukunda@amd.com>
-References: <20230220100418.76754-1-Vijendar.Mukunda@amd.com>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=FKbRaf4/
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 31K5bmhs025658;
+	Mon, 20 Feb 2023 04:17:05 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=4t3QpaWWouFSiBxmF3fvCCsghAJG/UHx01EbLuY8ygI=;
+ b=FKbRaf4/kLURFVrQnV4+RP67tz7EEPCVUm2824VVKmOhSq6kG/zIbPdyQskLYbyK5/jK
+ TKyfIXCKwxryEDSKnIb5hyvqInLZ0DEOBVeiistBtnx+cnbAVXmhd5pHJ/BpgGm5VLg7
+ NQuQgS8Uist+PcyN/YpIJBUr/aD0kCrSk++qALh1jkFUgarMvCUXyLtBZpiOoVHdhOk+
+ nnes6mIAbUqvCW6sqRK+AGWJj8XTEWiilm75ZM8dbeZ3z0sP7KuA0IQHTyD4WmeCUq/w
+ 7pn1EzQWT4hi56vVRNOoLoktthz+ziLFpCtUXoz9m7I2nSux0cUiGkQElVJegVPwLuIq Pg==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ntuyst25a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 20 Feb 2023 04:17:05 -0600
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Mon, 20 Feb
+ 2023 04:17:03 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.21 via Frontend
+ Transport; Mon, 20 Feb 2023 04:17:03 -0600
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com
+ [198.61.86.93])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D383011A8;
+	Mon, 20 Feb 2023 10:17:03 +0000 (UTC)
+Date: Mon, 20 Feb 2023 10:17:03 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/3] ASoC: dt-bindings: wlf,wm8960: Convert to dtschema
+Message-ID: <20230220101703.GL68926@ediswmail.ad.cirrus.com>
+References: <20230217150627.779764-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT046:EE_|BN9PR12MB5228:EE_
-X-MS-Office365-Filtering-Correlation-Id: f1b3db49-1270-4a49-663b-08db13297bfa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	50hUmMqfPcsZI6KRiJ/zDNg1SPxuCjvhYqqNx3MvfwxxfuC6wb+JA5jxaQWLqn0ZfxMAcnrRe6C1FyH5zqNPw/xxojyc+l1vo8idQthz4i8lBnWK+30xyYSsTUVN/fJdrZbO2tomw2K1SiUW8fdfxBJ4KOqyLLyXEtp5pNObtfeYIKzN4sMNoy2JkalB86zkymUjnyBmeNNG2F8Z+zV2nxBebxK8SBXHdT9Lsmr97sS4i/lYLFRnTD4FPiz89h9cutn/STOtWlss9MTK5awO+bDyPIXcOlDDcCs0a5H4wT86D1J2g3Q7AeHPkkUN4MSHyKllSdz7AMI6WWlK1rTb1nVO0Wb90M8eUs6Jl26xqq37jiJPTWILPM1tvPJAK/GIuhOb7lbFrWweR8hisgPaOKJ8z7Rmt9MXPvPS2Y3vqtWQaPPclNO+AJMSne9YrGscyBlRsXOUC0CZrT4u1TVLWt01bPwAveLoPb+KAPMvxMI6GsLbojhaosKPEATVm4aPOu2djB6a1nvk1SSfqcjdJls3kxxMCNk0McuyEPb7TjBSqF870WMhotmsxQqd1F6Gl+AQa7DIdP0XtXq58PE8h0NkeamxVeeZVFHzQgbsS0Oi6SUtXxJpMIFDmNahSzHUUV5nToTdGAQI6x8XGRq+/cKIveLnFduyvSOftedvRiCkivZptPjL3qfaoSsyTX+A6qXXM8m4l3hh2QVuC6Yt2tfQ4/lKRGwSNmSOJzB3niY=
-X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(396003)(346002)(39860400002)(136003)(376002)(451199018)(36840700001)(40470700004)(46966006)(83380400001)(40480700001)(336012)(70206006)(70586007)(8676002)(7696005)(54906003)(40460700003)(426003)(478600001)(47076005)(316002)(1076003)(186003)(356005)(26005)(8936002)(2616005)(5660300002)(36756003)(4326008)(6916009)(41300700001)(82740400003)(6666004)(86362001)(81166007)(82310400005)(36860700001)(2906002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2023 10:01:49.5933
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- f1b3db49-1270-4a49-663b-08db13297bfa
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: 
-	CO1NAM11FT046.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5228
-Message-ID-Hash: GAVVT77BNIOM74VC53UMX3BDJZIP37LY
-X-Message-ID-Hash: GAVVT77BNIOM74VC53UMX3BDJZIP37LY
-X-MailFrom: Vijendar.Mukunda@amd.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230217150627.779764-1-krzysztof.kozlowski@linaro.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: vKwsPWc5Lsz0QnISxBTIqrwxYh6kG-RP
+X-Proofpoint-ORIG-GUID: vKwsPWc5Lsz0QnISxBTIqrwxYh6kG-RP
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: URWF5BX2WNQKNGBVIKDI7IXDMGTHOKEO
+X-Message-ID-Hash: URWF5BX2WNQKNGBVIKDI7IXDMGTHOKEO
+X-MailFrom: prvs=74155c8cea=ckeepax@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- amadeuszx.slawinski@linux.intel.com, Mario.Limonciello@amd.com,
- Sunil-kumar.Dommati@amd.com, Basavaraj.Hiregoudar@amd.com,
- Mastan.Katragadda@amd.com, Arungopal.kondaveeti@amd.com,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>,
- open list <linux-kernel@vger.kernel.org>
+CC: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Alim Akhtar <alim.akhtar@samsung.com>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ - <patches@opensource.cirrus.com>,
+ Adrien Grassein <adrien.grassein@gmail.com>, Randy Li <ayaka@soulik.info>,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GAVVT77BNIOM74VC53UMX3BDJZIP37LY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/URWF5BX2WNQKNGBVIKDI7IXDMGTHOKEO/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,45 +115,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Enable build for SoundWire manager driver for AMD platforms.
+On Fri, Feb 17, 2023 at 04:06:25PM +0100, Krzysztof Kozlowski wrote:
+> Convert the Wolfson WM8960 audio codecs bindings to DT schema.
+> 
+> Changes against original binding:
+> 1. Document clocks and clock-names - already present in DTS and used
+>    by Linux driver.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
 
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
- drivers/soundwire/Kconfig  | 10 ++++++++++
- drivers/soundwire/Makefile |  4 ++++
- 2 files changed, 14 insertions(+)
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
-index 2b7795233282..983afe3570b2 100644
---- a/drivers/soundwire/Kconfig
-+++ b/drivers/soundwire/Kconfig
-@@ -46,4 +46,14 @@ config SOUNDWIRE_QCOM
- config SOUNDWIRE_GENERIC_ALLOCATION
- 	tristate
- 
-+config SOUNDWIRE_AMD
-+	tristate "AMD SoundWire Manager driver"
-+	select SOUNDWIRE_GENERIC_ALLOCATION
-+	depends on ACPI && SND_SOC
-+	help
-+	  SoundWire AMD Manager driver.
-+	  If you have an AMD platform which has a SoundWire Manager then
-+	  enable this config option to get the SoundWire support for that
-+	  device.
-+
- endif
-diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-index ca97414ada70..5956229d3eb3 100644
---- a/drivers/soundwire/Makefile
-+++ b/drivers/soundwire/Makefile
-@@ -26,3 +26,7 @@ obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel.o
- #Qualcomm driver
- soundwire-qcom-y :=	qcom.o
- obj-$(CONFIG_SOUNDWIRE_QCOM) += soundwire-qcom.o
-+
-+#AMD driver
-+soundwire-amd-y :=	amd_manager.o
-+obj-$(CONFIG_SOUNDWIRE_AMD) += soundwire-amd.o
--- 
-2.34.1
-
+Thanks,
+Charles
