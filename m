@@ -4,108 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 952C7C6379F
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Feb 2023 20:29:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B433FC636D6
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Feb 2023 22:57:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 19FA6EB7;
-	Mon, 20 Feb 2023 21:28:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19FA6EB7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99021EAE;
+	Mon, 20 Feb 2023 23:56:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99021EAE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676924973;
-	bh=WoUsDdTqnQiHFQbNUq2TDZkO4z6hK7XK7+vzyZk9eG0=;
-	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
+	s=default; t=1676933848;
+	bh=WJuNqd+dhqX9uwfgyqU5mqT9A7/qaoAIM9C2gthWC3Q=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=o/BKF5rcWwAINzQCAGbD2Don83eouAWGoAB7JbQXOXbHZCU8f9ZwxYW03p+7nMhw+
-	 y/SH2/Mp8lJxTzupYBRZ8Bds7lgmIGJ2gLjVB8atnO9Y3BMgj6/We5ZmVUVyGphch2
-	 ygpUp4WAri4z4Kdl+pXAsmNUoJzcHiAOFFgTkiM0=
+	b=HSUhytgxSz+EvqlniazdO8oUICMrCmmTveJyJ4mXiq9oHtbBcohnhOJjawdBuzN+e
+	 uju7TbjAIs+aoAt+vSQiHPeU3TQOZDedklYTaeeKJ+GaCemeAsCV0g6bckjGixwcSA
+	 cXlYsNCR/HsjS444NyiMZndOwfjp+TDbHrTurFO4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5694DF80266;
-	Mon, 20 Feb 2023 21:28:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3DCA0F80266;
+	Mon, 20 Feb 2023 23:56:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E2C49F80266; Mon, 20 Feb 2023 18:11:18 +0100 (CET)
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com
- [IPv6:2607:f8b0:4864:20::d35])
+	id 9CA57F80266; Mon, 20 Feb 2023 23:56:14 +0100 (CET)
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com
+ [209.85.167.179])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 618CFF800BA
-	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2023 18:11:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 618CFF800BA
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
- header.s=20210112 header.b=Es+PiD55
-Received: by mail-io1-xd35.google.com with SMTP id y140so1327262iof.6
+	by alsa1.perex.cz (Postfix) with ESMTPS id 12A1EF800BA
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2023 23:56:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12A1EF800BA
+Received: by mail-oi1-f179.google.com with SMTP id w7so2569677oik.13
         for <alsa-devel@alsa-project.org>;
- Mon, 20 Feb 2023 09:11:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=nEOyqyX16+a0s8LVg/pF7pxqSztYrWWhg38vHHBi3tk=;
-        b=Es+PiD554nf4b0lw9BenSHvyrbUQvjUaddCdjlFQzviROGfsy+bH6ztbIzUJj8HN3D
-         kPFalkX9vL9YMjqz+RQVaezLe3n/aWJABu/mKRnRsZo/vKgmoFbWvroh6JVpowJoBHGr
-         ouIETH64oNwmqNZtENWIe7zqF1yBoI9U+pI2+rgWa0wIwTubNonQomcCnOuI+qJ1Bgyb
-         c5z1Hq8/EpN92SQK6JIMTTvJqi37WvromkSXSCfimYdo4Cphf5I8fw2JhNUTYXlvXl1y
-         1ylrOYnpce4/fJktTg6YdKuj1QoRl2oV/CPtP27vQ5fjr4KMO/oZ0fCrGc1WANg5I610
-         tb5A==
+ Mon, 20 Feb 2023 14:56:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nEOyqyX16+a0s8LVg/pF7pxqSztYrWWhg38vHHBi3tk=;
-        b=DLGQy1TKDQH+U/1p0Dxt/2FcpP4vEzpyoVADUXD2nmH751BpwSboAHQJhpefN6h1Ij
-         Jgs1tuJ2QXlDwIty6pNw3AonQfxk1WX/xTkKAODHl9hd7yazMCCgsQN3ekMgQ9LyijOD
-         5JF9kaUhYfFqaPbV/XjpeDTBGPW4U75lPUOB7+4/nXK3wV7dRQidLpwA5Rv8LiiSmGHZ
-         8V5k135NfggbXF6yLWzQEPmzJOajEZJkuz+XjJov0fn3bwUVO8Tcgf/V2NoXXeOQapOq
-         9OMefc5z5mSEwEcR4fWND1+2o3y3cRXlvmpJXxnExkLZa34kzpcqQNf8KRYeUETiCZM7
-         Z+Ag==
-X-Gm-Message-State: AO0yUKVro3qZNzVtiypY1CX78XWWgbt+TUeycklpviu9vErN+e+H+ecM
-	sHXt7lUPRXZMuw6tECiWKGFcfclWgNvC4o9KMEXB5A==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wYGFpd9GU+JENPbJLudnhXGQHElorftzXREixJ5gOhw=;
+        b=Neg9Rzz0zFh1d/BPviThCL+wWKx/cQMJcxZ1pDkuSv0hjiyodiUgMZaqGCCAnW+I8b
+         B0akmb9ua0mS3dxNU20qLz/jQsUvmI0QwSr68wt5ap7jYYba3nK3cgTsUhVhDN+3Dfqq
+         039a8QovfwequgjPcX3CWx2v63TY2DfA5SLFADO+7Xz0jARBUhiI+GY0nLC8ODoO2F8D
+         1P/mHD9rycVFIHkLvB20W+iGTnVw8kER4uiqb22s83dWNb409NDgEXrQmTG+8AAPHzkc
+         +5nCooQQM5BCxZ97yE+OI1e1SWIysd1fx3vmdjN0TwDlpZP1dn3rFdG9GYZICBv6Zp7w
+         wDbw==
+X-Gm-Message-State: AO0yUKWSu9nBCyW4zQRBjdMKSD6bgv9J5B4KqAQwg1bmCkYzPy/2fU3F
+	3MwhmIz+HgDsWV4jJ8rlIw==
 X-Google-Smtp-Source: 
- AK7set+503zOSFCrMzUFKu9VpHP1CxTcABe7Y2qzNdRVr4GS9RE0Nr+Aep7G/9QRg/X7y9lOZcCc6YFmXuu71RYiegk=
-X-Received: by 2002:a6b:6207:0:b0:71c:479d:741a with SMTP id
- f7-20020a6b6207000000b0071c479d741amr2462205iog.38.1676913075061; Mon, 20 Feb
- 2023 09:11:15 -0800 (PST)
+ AK7set9Q1vDIBcq1JTQXLqThjuKC6KcYB16w6rpvFlIrUVN587KknWRoNx9iYitO8c5mHuJfPQqe2Q==
+X-Received: by 2002:a05:6808:3c8:b0:378:5987:6dc9 with SMTP id
+ o8-20020a05680803c800b0037859876dc9mr5134784oie.9.1676933763064;
+        Mon, 20 Feb 2023 14:56:03 -0800 (PST)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id
+ p84-20020acad857000000b00378ce4197casm5382660oig.8.2023.02.20.14.56.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Feb 2023 14:56:02 -0800 (PST)
+Received: (nullmailer pid 548521 invoked by uid 1000);
+	Mon, 20 Feb 2023 22:56:01 -0000
+Date: Mon, 20 Feb 2023 16:56:01 -0600
+From: Rob Herring <robh@kernel.org>
+To: Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: Re: [PATCH v2 2/3] ASoC: dt-bindings: sama7g5-pdmc: add
+ microchip,startup-delay-us binding
+Message-ID: <20230220225601.GA545317-robh@kernel.org>
+References: <20230217124151.236216-1-claudiu.beznea@microchip.com>
+ <20230217124151.236216-3-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-References: <20230126031424.14582-1-quic_wcheng@quicinc.com>
- <20230126031424.14582-13-quic_wcheng@quicinc.com>
-In-Reply-To: <20230126031424.14582-13-quic_wcheng@quicinc.com>
-From: Albert Wang <albertccwang@google.com>
-Date: Tue, 21 Feb 2023 01:11:04 +0800
-Message-ID: 
- <CANqn-rhAWKVrSGKkoDCC+Jy6qdceSqo22KYb-5k+haHpcgQJaA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 12/22] sound: usb: card: Introduce USB SND platform
- op callbacks
-To: Wesley Cheng <quic_wcheng@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-MailFrom: albertccwang@google.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230217124151.236216-3-claudiu.beznea@microchip.com>
+Message-ID-Hash: IHQXLRU372CCTOHSW6LA4R7WK2WQ36KV
+X-Message-ID-Hash: IHQXLRU372CCTOHSW6LA4R7WK2WQ36KV
+X-MailFrom: robherring2@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: SSSJMLSZVEMTXV4JU4EFSNLR7XDQIZHE
-X-Message-ID-Hash: SSSJMLSZVEMTXV4JU4EFSNLR7XDQIZHE
-X-Mailman-Approved-At: Mon, 20 Feb 2023 20:28:17 +0000
-CC: srinivas.kandagatla@linaro.org, mathias.nyman@intel.com,
- lgirdwood@gmail.com, andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- gregkh@linuxfoundation.org, Thinh.Nguyen@synopsys.com, broonie@kernel.org,
- bgoswami@quicinc.com, tiwai@suse.com, robh+dt@kernel.org, agross@kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: lgirdwood@gmail.com, broonie@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, tiwai@suse.com,
+ nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
  alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-usb@vger.kernel.org, quic_jackp@quicinc.com, quic_plai@quicinc.com
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SSSJMLSZVEMTXV4JU4EFSNLR7XDQIZHE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IHQXLRU372CCTOHSW6LA4R7WK2WQ36KV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -114,123 +106,36 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Wesley,
+On Fri, Feb 17, 2023 at 02:41:50PM +0200, Claudiu Beznea wrote:
+> Add microchip,startup-delay-us binding to let PDMC users to specify
+> startup delay.
 
-It looks like your audio offload driver will fetch the required
-resources for a stream enable request. But we have different designs.
-In the integration with your patch set, we found we still need a call
-back function in card.c when the usb set interface is done, in which
-we would call the new API, xhci_get_xfer_resource(), to get the EP
-transfer ring address. Of course, we will try the
-platform_ops->connect_cb() first to see if it is able to cover what we
-need or not.
+The diff tells me all this. Why does this need to be per platform?
 
-
-Thanks,
-Albert Wang
-
-Albert Wang | Pixel USB Software  | albertccwang@google.com | +886-918-695-245
-
-
-On Thu, Jan 26, 2023 at 11:16 AM Wesley Cheng <quic_wcheng@quicinc.com> wrote:
->
-> Allow for different platforms to be notified on USB SND connect/disconnect
-> seqeunces.  This allows for platform USB SND modules to properly initialize
-> and populate internal structures with references to the USB SND chip
-> device.
->
-> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->  sound/usb/card.c | 28 ++++++++++++++++++++++++++++
->  sound/usb/card.h | 20 ++++++++++++++++++++
->  2 files changed, 48 insertions(+)
->
-> diff --git a/sound/usb/card.c b/sound/usb/card.c
-> index 26268ffb8274..803230343c16 100644
-> --- a/sound/usb/card.c
-> +++ b/sound/usb/card.c
-> @@ -117,6 +117,24 @@ MODULE_PARM_DESC(skip_validation, "Skip unit descriptor validation (default: no)
->  static DEFINE_MUTEX(register_mutex);
->  static struct snd_usb_audio *usb_chip[SNDRV_CARDS];
->  static struct usb_driver usb_audio_driver;
-> +static struct snd_usb_platform_ops *platform_ops;
+>  .../devicetree/bindings/sound/microchip,sama7g5-pdmc.yaml   | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/microchip,sama7g5-pdmc.yaml b/Documentation/devicetree/bindings/sound/microchip,sama7g5-pdmc.yaml
+> index c4cf1e5ab84b..9b40268537cb 100644
+> --- a/Documentation/devicetree/bindings/sound/microchip,sama7g5-pdmc.yaml
+> +++ b/Documentation/devicetree/bindings/sound/microchip,sama7g5-pdmc.yaml
+> @@ -67,6 +67,12 @@ properties:
+>      maxItems: 4
+>      uniqueItems: true
+>  
+> +  microchip,startup-delay-us:
+> +    description: |
+> +      Specifies the delay in microseconds that needs to be applied after
+> +      enabling the PDMC microphones to avoid unwanted noise due to microphones
+> +      not being ready.
 > +
-> +int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops)
-> +{
-> +       if (platform_ops)
-> +               return -EEXIST;
-> +
-> +       platform_ops = ops;
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(snd_usb_register_platform_ops);
-> +
-> +int snd_usb_unregister_platform_ops(void)
-> +{
-> +       platform_ops = NULL;
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(snd_usb_unregister_platform_ops);
->
->  /*
->   * disconnect streams
-> @@ -910,6 +928,10 @@ static int usb_audio_probe(struct usb_interface *intf,
->         usb_set_intfdata(intf, chip);
->         atomic_dec(&chip->active);
->         mutex_unlock(&register_mutex);
-> +
-> +       if (platform_ops->connect_cb)
-> +               platform_ops->connect_cb(intf, chip);
-> +
->         return 0;
->
->   __error:
-> @@ -943,6 +965,9 @@ static void usb_audio_disconnect(struct usb_interface *intf)
->         if (chip == USB_AUDIO_IFACE_UNUSED)
->                 return;
->
-> +       if (platform_ops->disconnect_cb)
-> +               platform_ops->disconnect_cb(intf);
-> +
->         card = chip->card;
->
->         mutex_lock(&register_mutex);
-> @@ -1087,6 +1112,9 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
->                 chip->system_suspend = chip->num_suspended_intf;
->         }
->
-> +       if (platform_ops->suspend_cb)
-> +               platform_ops->suspend_cb(intf, message);
-> +
->         return 0;
->  }
->
-> diff --git a/sound/usb/card.h b/sound/usb/card.h
-> index 40061550105a..2249c411c3a1 100644
-> --- a/sound/usb/card.h
-> +++ b/sound/usb/card.h
-> @@ -206,4 +206,24 @@ struct snd_usb_stream {
->         struct list_head list;
->  };
->
-> +struct snd_usb_platform_ops {
-> +       void (*connect_cb)(struct usb_interface *intf, struct snd_usb_audio *chip);
-> +       void (*disconnect_cb)(struct usb_interface *intf);
-> +       void (*suspend_cb)(struct usb_interface *intf, pm_message_t message);
-> +};
-> +
-> +#if IS_ENABLED(CONFIG_SND_USB_AUDIO)
-> +int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops);
-> +int snd_usb_unregister_platform_ops(void);
-> +#else
-> +int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops)
-> +{
-> +       return -EOPNOTSUPP;
-> +}
-> +
-> +int snd_usb_unregister_platform_ops(void)
-> +{
-> +       return -EOPNOTSUPP;
-> +}
-> +#endif /* IS_ENABLED(CONFIG_SND_USB_AUDIO) */
->  #endif /* __USBAUDIO_CARD_H */
+>  required:
+>    - compatible
+>    - reg
+> -- 
+> 2.34.1
+> 
