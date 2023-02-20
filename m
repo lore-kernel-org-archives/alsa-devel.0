@@ -4,164 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78FD6C636CC
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Feb 2023 13:19:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05E5CC636D6
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Feb 2023 19:27:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1AC8CEF8;
-	Mon, 20 Feb 2023 14:18:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AC8CEF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB2B3ECD;
+	Mon, 20 Feb 2023 20:26:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB2B3ECD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676899177;
-	bh=wCEGTVYLafb8K8cCdC2uEB/u/MwPuzCNrmy0G0UDXpQ=;
-	h=From:To:Subject:Date:References:In-Reply-To:CC:List-Id:
+	s=default; t=1676921223;
+	bh=mhex65RHYPWiRq98JJHpdUOjqSti3H7l2Q2jmhLixig=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=J4K6U0439lvbkuFqGsAShxGoA9sH+KqvcjBSY/BzO3Vg6MtzNpYyY9qi84izPRv22
-	 i7SbyYOzie+gCuiZ46PKDF3qbQIxf1lWDL3RjXxFibcZkld/ogjcB9lnm06TD/r8oH
-	 m6ZunEmOMWfQt+7YSfNHSP8AVnDCm5AuILi2Ix2k=
+	b=MV8wxSjluK7tRqRdrHVu8BbuRNQTCHh2v3yVFXVxAuVgRBY0OQAgxzZ3VbwmcYIW/
+	 yVq+T7YFarifhduU4sOXDKvsg/z4TDapel4WuJ0oKbX9i1jFVhsF+ioTAcBKRLY2sJ
+	 I9CjFiMlUwXeH9v6nIIChZzlNbS+n/jvEvWQyG98=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79488F80266;
-	Mon, 20 Feb 2023 14:18:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8BCCF80266;
+	Mon, 20 Feb 2023 20:25:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 842D6F80266; Mon, 20 Feb 2023 14:18:24 +0100 (CET)
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com
- (mail-tycjpn01on2071d.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:7010::71d])
+	id 356CEF80266; Mon, 20 Feb 2023 20:25:49 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 38E41F80083
-	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2023 14:18:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38E41F80083
+	by alsa1.perex.cz (Postfix) with ESMTPS id 348EFF800BA
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2023 20:25:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 348EFF800BA
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=bp.renesas.com header.i=@bp.renesas.com
- header.a=rsa-sha256 header.s=selector1 header.b=ffKADlrX
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BpH+dGVitcezQ032gAnJm+IRDgDLr1+hYdkGpB22ZDuzFFF7V6Iib48ly/n/jkL1ZeSkS0uUOzGlTRhQ3OXw425+YMZrLQSpwFLGgSRHwb9g5AXWpl3PZxMtUijcLqK1O+YWcERrgGfUH2uq15Zgb2d3Zg8Ka80JWdycB3bZqZthYs3DWbw7VeG8dEmtaKqo/NNTZcJ9mWjp/Y+7U7OJGh5Nk3aoai/uGoIY46egjHKtiX3zKroR6n3qlIzLi/Dp4S+g7XaUJ4VQ3SuzGDVb12vcaW/dgIczXS+kd2hDkse8KRQxH3zszRDwDVXd1kOornqSFHBA0roRqWYVUG8+KA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=t36J5Qtqjgt6Pp3RXMF7UBl3KTE6kdf2GcBjL0VOHII=;
- b=jbZ/tLS4oxyJNbh+5eLpFKDoYdk/atgLtTq9k7M6YR5OVRv57OwqNMBl6AkxpWAbLmEImJmiH7Eh5rGsVGUAzb4nlAD9w4kljfVAwKm5wXSRRs/3Uet6wGv7eQ64q2WoW9GWSzrZ1cl3YddJgb/k4r80fwOuEkScPs/4RPSb2SqQOtiA+pAStg3qElNS+8mfX531cgmTsU/gHeFf4DHEEVFuInKWkUM0L3nQWAMTMmSIRWMP3PCxsYXUvUF7hyst7Fa5RJt3MVFmz8Y0r+xcpF6LDyFsq5vZcEwVsMUAF5QUrSbGrfgOft+oDPDqF3V6WAhrQzz6dhmdwonzm+xzEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t36J5Qtqjgt6Pp3RXMF7UBl3KTE6kdf2GcBjL0VOHII=;
- b=ffKADlrXmcpxVs6OOkU+Ba96pXR5lrFELQjhDtmX9CQdgHsnya2Flb4asm3TdhC+G6q0++ganMnKIrAognFC+GWpzRbcNWf6VVhzsHCP9wgY8Gi37ID8aLKyigmZjrWFVgeI2o/qQH+eUB9uzNXzCf1vkiAVntrmI5GyK9n4iGo=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by TYCPR01MB10760.jpnprd01.prod.outlook.com (2603:1096:400:294::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6111.18; Mon, 20 Feb
- 2023 13:18:10 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::343d:7339:78e5:a46e]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::343d:7339:78e5:a46e%8]) with mapi id 15.20.6111.020; Mon, 20 Feb 2023
- 13:18:08 +0000
-From: Biju Das <biju.das.jz@bp.renesas.com>
-To: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
-	<sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>
-Subject: RE: [PATCH RFC 0/3] Add Versa3 clock generator support
-Thread-Topic: [PATCH RFC 0/3] Add Versa3 clock generator support
-Thread-Index: AQHZRS0b8JYC5www50CVHBoCQPQrMK7X0LvQ
-Date: Mon, 20 Feb 2023 13:18:08 +0000
-Message-ID: 
- <OS0PR01MB592217664FC7D09EB968947486A49@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <20230220131307.269100-1-biju.das.jz@bp.renesas.com>
-In-Reply-To: <20230220131307.269100-1-biju.das.jz@bp.renesas.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|TYCPR01MB10760:EE_
-x-ms-office365-filtering-correlation-id: 58ee151a-ae7a-4f55-fdd1-08db1344e87f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- WyIyJozhWHkrZ6fmdQHJghTVTgY0nIvptTZeaYMknJPbGe4a7A9V4jVdK3vEz0SBRjlUy/94aAlewiYf+1+dCcIpZexSyMwiU0j22ugJg/eZ618vAGRr7TGn7K7ruwo0MqtWcX6jd24CIajkBWbvdEJXQWCZqQxlfkMv7UG70ZETDeWfYjVhO27nLx04N4Jvl44OZaUUJYe0cLwRiPqG0vGaK/grqPeNcPcsflfqC3ZrgAvolKjlO0GQm8zaV9LDvSIhMWwZ7j1+k9vMnC5NtZ/7GTmV7Iz5F5KhJ8Mu3QgLGo9gAEuUCMzrVTNbuoafARm99i4FFzTfPUdcndrt1Marol5FSmnY0YYw9LwlYwrGnkPEiaoNz6iwWeyBdSxYS7qELPFZR/4w6Z8bO8q0zRKW7iLQZwhA4nLJQrouc05EQxUwm13V4ssHD40uDMlT7Uo8DJK0ln8/dCcVBBACRWHQQIH/dtmlaObZGoc5a5ONLFYt4r4RHk/NLas6NXEL2VDDdktTKBsFp63Ltb0h/ZbWSCNCpbQnFprr8zb6tcAvV1Opcv9pqIbIj83ZYm2YQbqckVSwxR8Tk7HYfxM91X7Tky5VWygpqQ/YWMJMiyTLz2OAbwDhSo8SNZdAh+ZEQkwqS/68ENXKSYzggRh0YJE5MVLw77H+Ls0UHE08Dt8bmFgSIsGJowrEQkzAhtf7
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(346002)(136003)(396003)(366004)(376002)(39860400002)(451199018)(38100700002)(7696005)(54906003)(110136005)(316002)(122000001)(38070700005)(76116006)(2906002)(966005)(83380400001)(64756008)(66556008)(5660300002)(66476007)(66946007)(478600001)(71200400001)(86362001)(52536014)(6506007)(55016003)(8936002)(7416002)(53546011)(66446008)(8676002)(4326008)(41300700001)(33656002)(26005)(9686003)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?OavH7Zgn9O1zlUqHe9s4nre3Qkrdaor8d3etIh0UkwYDUycZJ+GIUgd/MkSM?=
- =?us-ascii?Q?kqAtM4SGnhADBzoN85w+rTGYx6OZSB/YmwFsXuJkzhMPlaNxJRfHWgWVXfoi?=
- =?us-ascii?Q?79VHXXHBwD6L58I4awxf+B8k58PUNEJJh7jh4l2X6wHVikyfPaVdfGhDJ1Vo?=
- =?us-ascii?Q?cUOw9/glvkrK493rfmgHg06YVZ+ndfsGrv9J4Iy28kj9l4WLZ5o4u67TEfjp?=
- =?us-ascii?Q?XcRtqKHlHmmxsHjLA7rXvWtY4O2wadIWx6AHbUE/Fmn7XOGeLA5iWmCrqMC3?=
- =?us-ascii?Q?mCrECNDErdQucpxsIrjmpglKCd7YB8X1id2R6tlXz8+Fk5evyJ1EJoM5m8FL?=
- =?us-ascii?Q?sUnz71buUh/pSVyb0SE0QXDzbxa4rPuEblMrmqmQ1BFtxafxDqQzsy6Er99c?=
- =?us-ascii?Q?6wJy9TDppt/JdiatqpNX2wl/+hWsJzDZWl/oZxrarvPoLvc9y0jsvQ2EX3qO?=
- =?us-ascii?Q?bbN7EOD8jgld8bta5+pI/JYyfoL9TkWHW7gV2Exs+xzpX+2f4Y6OKolbT9rR?=
- =?us-ascii?Q?44h4HutcB3/8Ys3Qw8NgIPvTMf6XZ0uxsDinHO65YbE5cF4O04XYEkYCYvlx?=
- =?us-ascii?Q?RWhcdOMclWw4YsWsdqzwzpc2IkpofJVI3pfmzGhIaaN/FADSQEeqmF3qc0Rg?=
- =?us-ascii?Q?lpe0JZMmdZIccDGkX5g4s+2PPqRpyqWWyBWheMjM+6viF5YoKCYPCRfZcKoK?=
- =?us-ascii?Q?MDOTnGvD0rgdQRyOxedqvpGa1PFyn/kxOd+3idnHWvCvlJ9iAioR2XKoZsTU?=
- =?us-ascii?Q?BPCwyABoxxdBrJGGW7nAlcHIFEvSc+qeoAosTDnOuMfm/FtHPBTDC+y7oOtG?=
- =?us-ascii?Q?9auMJQ0umzj7nBBLyz+AP2dcCbdsLYw6+d4Pg7qCCu7toq58F2Y57r8L06PD?=
- =?us-ascii?Q?t8+isuyvbDV25DqiEjCtPUElA102gHbxKC9AqpLkYs8WWOH5r6UmkmP0WbUD?=
- =?us-ascii?Q?9OMBI5/TLXjg9zXXK+Qnom4EFzPpOzesFV4UJHNPhpmunX5lBoyfmcy5ppNQ?=
- =?us-ascii?Q?QM++pN9l0/6nAIb8d2ZIrbsABfYk09I1QFAhiSnQL+356bx6IqoVnUkiC5bB?=
- =?us-ascii?Q?vhum6XwmZAoOx2m+JTxDNbqdKc1ocSt0bIkTwnHiiypWFjN8UfT8nXx1/JBA?=
- =?us-ascii?Q?ES5Xzi0iGhOyCGtVUii1BNjci476Fnwt4uoap0HLkPMGX1Q05SXr+oakRLob?=
- =?us-ascii?Q?6JizPkTWgpvbhz62S3Q4vCTR6jXVxAa+2fDM82n8Fvw1ySeQvwpZHkV1/knB?=
- =?us-ascii?Q?13PWCSiiN92RavQFrYMisl7xp2zljhGvl7myvGg3DD1rGCBLc9XzihYCP4Rz?=
- =?us-ascii?Q?Xa2W7wtYJIZnv4uN9Z1cR4B5SbKOz6iwqnvVtzm9LXN3u4UejBqY1GpxwOuL?=
- =?us-ascii?Q?VU6G38v0Xbmh+LoVlZ2j/nuVwUip4fDECLvsq4Pj/TTgA2we1r1Hobm5tVC8?=
- =?us-ascii?Q?A4tw297i5OBywKQisY0hX/angac7yoK+OZcNDif2lCl9VsRRMSPDPD1Dn8p3?=
- =?us-ascii?Q?FMHpsj6IOoOkISvxt3VbNymFeD3uRcj+Qi/URUJCI6tV6Zl6PgATCKmqf3lv?=
- =?us-ascii?Q?7u457UK+9wPRpK6/cNQ/yCHUgvKN90LGBp1TmuCUTgzZpAXccs0OesuJJIwh?=
- =?us-ascii?Q?3Q=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=H62igKwH
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 31KHMr2N029656;
+	Mon, 20 Feb 2023 13:25:37 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=content-type :
+ message-id : date : mime-version : subject : to : cc : references : from :
+ in-reply-to; s=PODMain02222019;
+ bh=363M9H1sb198VwVEOhU4MvQdkpTmAqaUjxc8k/t/0jk=;
+ b=H62igKwHpzu+/l1ta9V0BuUQPoGgQ9B/e2FnLMoysA6JTYyPW6VWOeMRhvryV9ikK/5J
+ QPkJHJghLdvIXK+78Nt0qdl/FnpaC6mDkogQtkyCm1mgtXJekcnG063PH+SrMEMn7pH1
+ SBQDLmG2HwXXQEzNyugVHLC6W3Nnv5KnS1fv+vw5aCBFgTA2fDdSpSLrIPsCt3CC2z6x
+ /fQbcaLDJWE4Mf/Jl1muwGg0bLAclqf7tqTYJXwIuBLfuhbMxLN5yvVIJLP1gOQyOUql
+ 0IUUQKL48BD2RaK5MhhY9YH8KLZNrblnF8PnsKckZP7Ry5NKyat5gcsDMlBkaTElr/CE zw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ntvy7jkdk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 20 Feb 2023 13:25:37 -0600
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Mon, 20 Feb
+ 2023 13:25:35 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.21 via Frontend Transport; Mon, 20 Feb 2023 13:25:35 -0600
+Received: from [141.131.215.58] (david-linux.ad.cirrus.com [141.131.215.58])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5C793B0E;
+	Mon, 20 Feb 2023 19:25:33 +0000 (UTC)
+Message-ID: <d86d989b-0d82-74b3-a5da-9972324e9477@opensource.cirrus.com>
+Date: Mon, 20 Feb 2023 13:25:32 -0600
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 58ee151a-ae7a-4f55-fdd1-08db1344e87f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Feb 2023 13:18:08.2150
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 
- YhY2AEyP5kEIbM1hm4O9WX7c0Cc87BlGVhQXrW/ydHENktbcH4QBpp8+niElODXTp53z39Plhj1gdzmE9aAVOkQxkRdFya+Bbn2JCtwx4hQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB10760
-Message-ID-Hash: T23ZH3SLUHIJI4AL246IDAESRTBGADLP
-X-Message-ID-Hash: T23ZH3SLUHIJI4AL246IDAESRTBGADLP
-X-MailFrom: biju.das.jz@bp.renesas.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v5 3/4] ALSA: cs35l41: Add shared boost feature
+To: Lucas Tanure <lucas.tanure@collabora.com>,
+        Charles Keepax
+	<ckeepax@opensource.cirrus.com>
+References: <20230210091942.10866-1-lucas.tanure@collabora.com>
+ <20230210091942.10866-4-lucas.tanure@collabora.com>
+ <20230210134341.GF68926@ediswmail.ad.cirrus.com>
+ <cfacc3d6-2daa-6aa3-ba19-281b7e48bb47@collabora.com>
+ <20230211170638.GG68926@ediswmail.ad.cirrus.com>
+ <1e3ef067-9b39-dc19-5fbc-75436c67f206@collabora.com>
+Content-Language: en-US
+From: David Rhodes <drhodes@opensource.cirrus.com>
+In-Reply-To: <1e3ef067-9b39-dc19-5fbc-75436c67f206@collabora.com>
+X-Proofpoint-ORIG-GUID: 7E8p-1ad3S1xAjSE2WY4DJOcAWapiNh5
+X-Proofpoint-GUID: 7E8p-1ad3S1xAjSE2WY4DJOcAWapiNh5
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: QLGE2G4SFMQSI6SI6Q6VBT6XRTHMCBFH
+X-Message-ID-Hash: QLGE2G4SFMQSI6SI6Q6VBT6XRTHMCBFH
+X-MailFrom: prvs=74150f5cb0=drhodes@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+X-Content-Filtered-By: Mailman/MimeDel 3.3.8
+CC: David Rhodes <david.rhodes@cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, patches@opensource.cirrus.com,
+ linux-kernel@vger.kernel.org, kernel@collabora.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZNH4WNHFXJWHQFDBBNZSLW3S5ATNJ43R/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QLGE2G4SFMQSI6SI6Q6VBT6XRTHMCBFH/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -170,119 +119,53 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-+ Rob , Krzysztof Kozlowski
-
-> -----Original Message-----
-> From: Biju Das <biju.das.jz@bp.renesas.com>
-> Sent: Monday, February 20, 2023 1:13 PM
-> To: Michael Turquette <mturquette@baylibre.com>; Stephen Boyd
-> <sboyd@kernel.org>
-> Cc: Biju Das <biju.das.jz@bp.renesas.com>; linux-clk@vger.kernel.org; Gee=
-rt
-> Uytterhoeven <geert+renesas@glider.be>; Kuninori Morimoto
-> <kuninori.morimoto.gx@renesas.com>; Prabhakar Mahadev Lad
-> <prabhakar.mahadev-lad.rj@bp.renesas.com>; Fabrizio Castro
-> <fabrizio.castro.jz@renesas.com>; Mark Brown <broonie@kernel.org>; Takash=
-i
-> Iwai <tiwai@suse.de>; alsa-devel@alsa-project.org; linux-renesas-
-> soc@vger.kernel.org
-> Subject: [PATCH RFC 0/3] Add Versa3 clock generator support
->=20
-> The 5P35023 is a VersaClock programmable clock generator and it provides =
-6
-> clk outputs {diff2, diff1, se3, se2, se1 and refin}.
->=20
-> It has an internal OTP memory allows the user to store the configuration =
-in
-> the device. After power up, the user can change the device register setti=
-ngs
-> through the I2C interface when I2C mode is selected.
->=20
-> This driver is for overriding OTP default values during boot based on a f=
-ull
-> register map from DT, and also minimal support to change the parent of a
-> output clock.
->=20
-> The motivation for developing this driver is for supporting 48KHz
-> playback/record with audio codec on RZ/G2L SMARC EVK.
->=20
-> On RZ/G2L SMARC EVK, By default audio mclk is connected to
-> 11.2896 MHz clk which is multiple of 44.1KHz.
->=20
-> Please see the below default OTP configuration of Dividers connected to
-> output clocks.
->=20
-> DIV3 12.2880 MHz   DIFF2--> Audio clk2
-> DIV5 11.2896 MHz   SE1  --> Audio clk1
-> DIV5 11.2896 MHz   SE2  --> Audio mck
-> DIV4 12      MHz   SE3  --> This clk Not used
-> DIV1 25 MHz        DIFF1-->Ethernet clk
-> Ref1-> 24MHz
->=20
-> With this setup, we won't be able to do 48KHz playback/record on audio
-> codec, as mck is always connected to 11.2896MHz clk.
->=20
-> But by programming the i2c, we can make use of DIV4 to generate 12.2880 M=
-Hz
-> and make that as parent of SE2 and there by supporting 48KHz
-> playback/record.
->=20
-> A block diagram with modification can be find here[1]
-> [1] https://paste.pics/a253ce7cdc8720c3b5eb6953b97b25ff=20
->=20
-> DIV3 12.2880 MHz   DIFF2--> Audio clk2
-> DIV5 11.2896 MHz   SE1  --> Audio clk1
-> DIV5 11.2896 MHz | SE2  --> Audio mck
-> DIV4 12.2880 MHz |
-> DIV2 12      MHz   SE3  --> This clk Not used
-> DIV1 25 MHz        DIFF1--> Ethernet clk
-> Ref1-> 24MHz
->=20
-> The driver can read a full register map from the DT, and will use that
-> register map to initialize the clk generator when the system boots.
-> and later, based on sampling rate, it switches the parent of SE2 and supp=
-ort
-> both 44.1 and 48 KHz playback/record at run time.
->=20
-> 48KHz playback
-> 1f: f6 --> setting Div4 as clock source for se2 Read at address  0x10049C=
-00
-> : 0x300B4022 --> Setting Audio clk2 in SSI
->        pfd2                           1        1        0    24000000
->           pll2                        1        1        0   491519897
->              div4_mux                 1        1        0   491519897
->                 div4                  1        1        0    12287998
->                    se2_mux            1        1        0    12287998
->                       se2             1        1        0    12287998
->=20
-> 44.1KHz playback
-> 1f: b6 --> setting Div5 as clock source for se2 Read at address  0x10049C=
-00:
-> 0x700B4022--> Setting Audio clk1 in SSI
->     pfd3_mux                          1        1        0    24000000
->        pfd3                           1        1        0      960000
->           pll3                        1        1        0   564480000
->              div5                     1        1        0    11289600
->                 se2_mux               1        1        0    11289600
->                    se2                1        1        0    11289600
->=20
-> Please provide your valuable comment for this patch series.
->=20
-> Biju Das (3):
->   dt-bindings: clock: Add Renesas versa3 clock generator bindings
->   drivers: clk: Add support for versa3 clock driver
->   arm64: dts: renesas: rzg2l-smarc: Use versa3 clk for audio mclk
->=20
->  .../bindings/clock/renesas,versaclock3.yaml   |  135 ++
->  .../boot/dts/renesas/rz-smarc-common.dtsi     |    7 -
->  arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi  |   35 +
->  drivers/clk/Kconfig                           |    9 +
->  drivers/clk/Makefile                          |    1 +
->  drivers/clk/clk-versaclock3.c                 | 1134 +++++++++++++++++
->  6 files changed, 1314 insertions(+), 7 deletions(-)  create mode 100644
-> Documentation/devicetree/bindings/clock/renesas,versaclock3.yaml
->  create mode 100644 drivers/clk/clk-versaclock3.c
->=20
-> --
-> 2.25.1
-
+DQpPbiAyLzEyLzIzIDAzOjI4LCBMdWNhcyBUYW51cmUgd3JvdGU6DQo+IE9uIDExLTAyLTIwMjMg
+MTc6MDYsIENoYXJsZXMgS2VlcGF4IHdyb3RlOg0KPj4gT24gRnJpLCBGZWIgMTAsIDIwMjMgYXQg
+MDI6Mzk6NTZQTSArMDAwMCwgTHVjYXMgVGFudXJlIHdyb3RlOg0KPj4+IE9uIDEwLTAyLTIwMjMg
+MTM6NDMsIENoYXJsZXMgS2VlcGF4IHdyb3RlOg0KPj4+PiBPbiBGcmksIEZlYiAxMCwgMjAyMyBh
+dCAwOToxOTo0MUFNICswMDAwLCBMdWNhcyBUYW51cmUgd3JvdGU6DQo+Pj4+PiArIHtDUzM1TDQx
+X01EU1lOQ19FTizCoMKgwqDCoMKgwqDCoCAweDAwMDAxMDAwfSwNCj4+Pj4gRGF2aWQncyBpbnRl
+cm5hbCBwYXRjaCBhcHBlYXJzIHRvIHNldCAweDMwMDAgb24gdGhlIGFjdGl2ZSBzaWRlLA0KPj4+
+PiBub3Qgc3VyZSB3aGVyZSB0aGF0IGRpZmZlcmVuY2Ugc251Y2sgaW4sIG9yIHdoaWNoIGlzIHRo
+ZSBjb3JyZWN0DQo+Pj4+IHZhbHVlLiBZb3VyIHNldHRpbmdzIGFwcGVhciB0byBtYWtlIGxvZ2lj
+YWwgc2Vuc2UgdG8gbWUgdGhvdWdoLCBUWA0KPj4+PiBvbiB0aGUgYWN0aXZlIHNpZGUsIFJYIG9u
+IHRoZSBwYXNzaXZlIHNpZGUuDQo+Pj4gQW5kIGFzIHRoZSBwYXRjaCBzZXRzIFRYIGFuZCBSWCBp
+biB0aGUgc2FtZSBjaGlwIEkgY2hhbmdlZCB0byBmb2xsb3cNCj4+PiB0aGUgZG9jdW1lbnRhdGlv
+bi4NCj4+DQo+PiBZZWFoIEkgbWVhbiBJIHN1c3BlY3QgdGhpcyBpcyBzZW5zaWJsZSwgdW5sZXNz
+IHRoZXJlIGlzIHNvbWUNCj4+IHJlYXNvbiB0aGUgY29udHJvbGxlciBzaWRlIGFsc28gbmVlZHMg
+dG8gaGF2ZSBSWCBlbmFibGVkLiBQZXJoYXBzDQo+PiBmb3IgZmVlZGJhY2sgb3Igc29tZXRoaW5n
+IGZyb20gdGhlIHBhc3NpdmUgc2lkZSwgYnV0IEkgaW1hZ2luZQ0KPj4gdGhpcyBpcyBqdXN0IGEg
+dHlwbyBpbiB0aGUgb3JpZ2luYWwgcGF0Y2guDQo+DQo+IE9rLCBidXQgdGhlIG90aGVyIHNpZGUg
+ZG9lc24ndCBoYXZlIGJvdGggUlggYW5kIFRYIGVuYWJsZWQuDQo+IElmIHRoZSBhY3RpdmUgc2lk
+ZSBuZWVkZWQgUlggdG8gcmVjZWl2ZSBpbmZvcm1hdGlvbiBmb3IgdGhlIG90aGVyIA0KPiBzaWRl
+LCB0aGUgcGFzc2l2ZSBvbmUgd291bGQgbmVlZCBUWCBlbmFibGVkIHRvby4NCj4gU28gaWYgYSBm
+ZWVkYmFjayBpcyBuZWNlc3NhcnksIGJvdGggY2hhbm5lbHMgb24gYm90aCBzaWRlcyB3b3VsZCBi
+ZSANCj4gZW5hYmxlZCwgbm90IG9uZSBjaGFubmVsIGluIG9uZSBzaWRlIGFuZCBib3RoIG9uIHRo
+ZSBvdGhlci4NCj4NCkJvdGggYW1wcyBuZWVkIHRvIHRyYW5zbWl0IHRoZWlyIGJvb3N0IHRhcmdl
+dHMgdG8gdGhlIE1EU1lOQyBidXMuIFRoZSANCmFjdGl2ZSBhbXAgbmVlZHMgdG8gcmVjZWl2ZSB0
+aGUgY29tYmluZWQgYm9vc3QgdGFyZ2V0IGZyb20gdGhlIE1EU1lOQyANCmJ1cy4gVGhhdCBpcyB3
+aHkgdGhlIGFjdGl2ZSBhbXAgc2hvdWxkIGVuYWJsZSBib3RoIFJYIGFuZCBUWCwgYW5kIHRoZSAN
+CnBhc3NpdmUgYW1wIG9ubHkgbmVlZHMgdG8gZW5hYmxlIFRYLiBJdCBpcyBub3Qgc2ltcGx5IGEg
+dW5pZGlyZWN0aW9uYWwgDQpmbG93IG9mIGRhdGEgZnJvbSBvbmUgYW1wIHRvIHRoZSBvdGhlci4N
+Cg0KU29ycnkgaWYgdGhlIGRvY3VtZW50YXRpb24gaGFzIGJlZW4gbWlzbWF0Y2hlZCBvciBjb25m
+dXNpbmcgYXQgdGltZXMuIA0KSXQncyB0YWtlbiBtZSBhIHdoaWxlIHRvIGdhdGhlciB0aGUgcmln
+aHQgdW5kZXJzdGFuZGluZyBvZiBob3cgdGhpcyBhbGwgDQp3b3Jrcy4NCg0KDQpPbiAyLzEwLzIz
+IDAzOjE5LCBMdWNhcyBUYW51cmUgd3JvdGU6DQo+ICsgICAgICBTaGFyZWQgYm9vc3QgYWxsb3dz
+IHR3byBhbXBsaWZpZXJzIHRvIHNoYXJlIGEgc2luZ2xlIGJvb3N0IGNpcmN1aXQgYnkNCj4gKyAg
+ICAgIGNvbW11bmljYXRpbmcgb24gdGhlIE1EU1lOQyBidXMuIFRoZSBwYXNzaXZlIGFtcGxpZmll
+ciBkb2VzIG5vdCBjb250cm9sDQo+ICsgICAgICB0aGUgYm9vc3QgYW5kIHJlY2VpdmVzIGRhdGEg
+ZnJvbSB0aGUgYWN0aXZlIGFtcGxpZmllci4gR1BJTzEgc2hvdWxkIGJlDQoNCk5vdCBxdWl0ZSBj
+b3JyZWN0LiBJIHdvdWxkIHN1Z2dlc3Q6ICJTaGFyZWQgYm9vc3QgYWxsb3dzIHR3byBhbXBsaWZp
+ZXJzIA0KdG8gc2hhcmUgYSBzaW5nbGUgYm9vc3QgY2lyY3VpdCBieSBjb21tdW5pY2F0aW5nIG9u
+IHRoZSBNRFNZTkMgYnVzLiBUaGUgDQphY3RpdmUgYW1wbGlmaWVyIGNvbnRyb2xzIHRoZSBib29z
+dCBjaXJjdWl0IHVzaW5nIGNvbWJpbmVkIGRhdGEgZnJvbSANCmJvdGggYW1wbGlmaWVycy4iDQoN
+Cg0KT24gMi8xMC8yMyAwODozOSwgTHVjYXMgVGFudXJlIHdyb3RlOg0KPg0KPiBUaGlzIHdyaXRl
+IGhlcmUgaXMgdG8gc2VsZWN0IHRoZSBib29zdCBjb250cm9sIHNvdXJjZSwgd2hpY2ggZm9yIHRo
+ZSANCj4gYWN0aXZlIHNob3VsZCBiZSAiQ2xhc3MgSCB0cmFja2luZyB2YWx1ZSIuIA0KDQpBY3Rp
+dmUgc2hvdWxkIHVzZSB0aGUgTURTWU5DIHZhbHVlLiBPdGhlcndpc2UgaXQgd2lsbCBub3QgcHJv
+dmlkZSBib29zdCANCnRvIHRoZSBwYXNzaXZlIGFtcCB3aGVuIHRoZXJlIGlzIG9ubHkgYXVkaW8g
+b24gdGhlIHBhc3NpdmUgYW1wJ3MgY2hhbm5lbC4NCg0KDQpJIGJlbGlldmUgdGhlcmUgaXMgYW5v
+dGhlciBjaGFuZ2UgbmVlZGVkIGZvciB0aGUgRGVjaywgdG8gaGFuZGxlIHRoZSANCidsZWdhY3kn
+IHByb3BlcnR5IG5hbWVzIGluc3RlYWQgb2YgYnN0LXR5cGU/DQoNCk90aGVyIHRoYW4gdGhlIGNo
+YW5nZXMgbmVlZGVkIHRvIHRoZSByZWdfc2VxdWVuY2VzIHRoaXMgbG9va3MgZ29vZC4NCg0KDQpU
+aGFua3MsDQoNCkRhdmlkDQo=
