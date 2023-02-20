@@ -4,92 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFECAC05027
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Feb 2023 10:04:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1B70C05027
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Feb 2023 10:04:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3FC7EF4;
-	Mon, 20 Feb 2023 11:03:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3FC7EF4
+	by alsa0.perex.cz (Postfix) with ESMTPS id A00C7ED0;
+	Mon, 20 Feb 2023 11:03:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A00C7ED0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676887459;
-	bh=HpPEhI7a+2hKOJJcwHuL8Wcn4vzByrXvTH+GgPaqp+8=;
+	s=default; t=1676887485;
+	bh=dQ22xVqeeDbPg1mP+sGSbcQFjzhxR1kMPg94Z0ZQlbw=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mMrhqEVzF2FsoDJNREqNv10Bo0IKZ0FOCPU5QAsFFd3lzHfeb+pDAzAPsCLDjwWBR
-	 p4KIXPL4pxGScHoZjr3u6QhgpzKUjqd79K3A3XDCcNsHEvuGSYOQJq7sRXmFIHqinc
-	 1NblChXNQFCJzbQqGxmBb11g74K63KsBp/+TsHMQ=
+	b=IFO83IlDiVLUjz8/3eKj5jfz1tqn7/vvAcNuW1ooqwqtyOXuCFWB+HpPj80+NL4u8
+	 qaRZ4Vv/lVGIx7KJl/Bhq5zhi8Y/jjbnhBR9C9s4Cu3uQQhkCwqcphR7QAb2yp9Gz1
+	 49kGbpnuVNZHBirWp3P4is3cdD+g7Zetmv45oG0A=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3EE08F80551;
-	Mon, 20 Feb 2023 11:02:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C26FF800B6;
+	Mon, 20 Feb 2023 11:02:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0BF7DF8053B; Mon, 20 Feb 2023 11:02:11 +0100 (CET)
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam12on2062a.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe5b::62a])
+	id 18CC4F80570; Mon, 20 Feb 2023 11:02:43 +0100 (CET)
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam04on20622.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7e8d::622])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 30D92F80525
-	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2023 11:01:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30D92F80525
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9E9EDF80496
+	for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2023 11:02:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E9EDF80496
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=v5LQj+Yl
+ header.s=selector1 header.b=V7y7pYy5
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YSDhcbpjHinjmsPrrKiE51Kmt2DLTI9K1rfIxZOzPgYc6M4uqgUEvRECJyzCq2U2wJvYVycTGPGICrqElWZl6wKzIidHrYMuvxE4q5zUp67r2EiKEKEkyf/ebQFC943V5aXRGpYBKrZH3Hrx49ncHSb5NIlY2+OMRN2V9NfymjWa49iIjkJDhQkI3Qe1aGURg8TL2C9dGP1CwwUOSmxa4i57U/y4Cz1ekz57P2+zOTVP+SS4kqmL5o0BVzvhoCY9BmudArnvO9DUE+p6vz+ZwLtBNG5LVpQYoPMyFCy0wA6GkF8F6qrfLSO9VDzscyP1bLw2U8ArB7h97ECcoy7/5w==
+ b=OUg++kzhgSw0yXaUaFiJYaiLXT7m69e0eN0fI4neR9bsuVHYujLtDZhrqBBfprnm8VOD5z0aZOAlMNPledzDT34m0rKznat2JyrtD+J/IL22QkWHDX69jkphzKDH4FA5f42j+xZB6baZdOFw8V7Gr5ZT0RSUVGiSyEsRUpZssrZ+xIGzQhkCtFzuZdDV4eJXfTnPBGsGMEQ5TTaBykop989kh+o84eq9wEyvQ0eNwEy655b+/1GWoC5HIPSAYXRDmWcl17oWkb14AgWP4wWC587iVGJwzJN+d0MNwEUBB0RpWf0A5b7mqfJ7mQ0ID0N9cQDkVWqHNRRrneqcQmwWPg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mhzE+LILTJ8+DkN8t2RcWFJyo908glnQM7JXFMy/obA=;
- b=M+u9Wr4IPBE1oo7niU4U0C6fqAKY8qCPM/BXZkWhVxCsbIcW86A6bTCOArqIbE6Ii4aNT7PNYXq3yqhxhHwfb8v+TZx1st8F5QYgxnJe36CiInlYf3cdz6+zz50W75lkvZaqJl7u+1V5F+nWqEb6AOEoyBjBYMY79vc0dqmso/tdaKbRaVuOBkt/YyCePeu4HWpJJJ1cPOV2ZtjZNBE/RszHVeASKyV8xyphjfiBSuwLGUioOcXz/p8aE7qAjDQaCOS4aWWDU6/+ekRs04dNfgTy7J50lrOxMSc+WAuT3LCCPi8CdjH60a7pPVck1lVwh1oFvTFyo0sBlw4PbZr1DA==
+ bh=2+WAW5FtO4Ro2HWINN6+qyNUE5nso7XQfRhjl/8PbFg=;
+ b=GhafRtn8o395nhxQkeNkFWjTRHeVqdpZmAfLDa/8xgzKIgan93EkVAo5ES3BYHVQMNtQcWyjRauqIK95xpXtbpmxxn1cMIc0b9ramz4Hx7A6joGx/qnW3tUSVoYQRLNlScIXgEsfHgVYiu/3tm8Ey8pVc6/8slf/GhtyZtw9Pa5OZufG2fcjpUkBYAyGiUXPxOgJrLhPSqRMBudTKcjtNTvyHPzKLgyT+l1HgtTxtxUwWW9pJFddVeoni41ajwcmdXptSYfO7z0Z/ZHlOGdIk+uGk5U+SMfJXmRZ+nzutxpGgCyCp2AUJGLxOPDut2llfcvV51qkxEwrEWzWNHERqg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mhzE+LILTJ8+DkN8t2RcWFJyo908glnQM7JXFMy/obA=;
- b=v5LQj+YlacL1gcNmV8LUHmmn7ftRNF9mdtAiodIOBDAzT7MGNZGIKWY6Rx5/PmesBoRBlw83PUpWLyTh/2x8jzws2NQpJxVfiLXLIk1X8ZOnGfh9LYHmC/SjWwOyF6rsSaQketABOAiFFvI/e40H278AUx2s9Wg+tZZG9X2yAUQ=
-Received: from MW4PR03CA0347.namprd03.prod.outlook.com (2603:10b6:303:dc::22)
- by SA0PR12MB7001.namprd12.prod.outlook.com (2603:10b6:806:2c0::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.26; Mon, 20 Feb
- 2023 10:01:52 +0000
-Received: from CO1NAM11FT110.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:dc:cafe::dc) by MW4PR03CA0347.outlook.office365.com
- (2603:10b6:303:dc::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6111.19 via Frontend
- Transport; Mon, 20 Feb 2023 10:01:52 +0000
+ bh=2+WAW5FtO4Ro2HWINN6+qyNUE5nso7XQfRhjl/8PbFg=;
+ b=V7y7pYy5m05ZW1T0TXZNdJXZbe/TVxRA2qqgjIU5enAirV5Sreme/URepH3NxlEROSh54OzUDZLAuYpY69smF1Vje86DAKSy3WbGG5Dq8LWy4kHtzLN/GNghrzDcvEDf7GVXoPwljk6YDFVuHDpewMx4qIcz04OLs8PypVeMMH4=
+Received: from DM6PR01CA0029.prod.exchangelabs.com (2603:10b6:5:296::34) by
+ SN7PR12MB7978.namprd12.prod.outlook.com (2603:10b6:806:34b::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6111.20; Mon, 20 Feb 2023 10:02:33 +0000
+Received: from DS1PEPF0000E654.namprd02.prod.outlook.com
+ (2603:10b6:5:296:cafe::b3) by DM6PR01CA0029.outlook.office365.com
+ (2603:10b6:5:296::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6111.20 via Frontend
+ Transport; Mon, 20 Feb 2023 10:02:32 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CO1NAM11FT110.mail.protection.outlook.com (10.13.175.125) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6111.20 via Frontend Transport; Mon, 20 Feb 2023 10:01:51 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS1PEPF0000E654.mail.protection.outlook.com (10.167.18.10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6134.14 via Frontend Transport; Mon, 20 Feb 2023 10:02:32 +0000
+Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 20 Feb
- 2023 04:01:51 -0600
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
+ 2023 04:02:29 -0600
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB07.amd.com
+ (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 20 Feb
- 2023 04:01:50 -0600
+ 2023 02:02:02 -0800
 Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
  SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2375.34
- via Frontend Transport; Mon, 20 Feb 2023 04:01:47 -0600
+ via Frontend Transport; Mon, 20 Feb 2023 04:01:59 -0600
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 To: <vkoul@kernel.org>
-Subject: [PATCH V3 5/8] soundwire: amd: add SoundWire manager interrupt
- handling
-Date: Mon, 20 Feb 2023 15:34:15 +0530
-Message-ID: <20230220100418.76754-6-Vijendar.Mukunda@amd.com>
+Subject: [PATCH V3 8/8] soundwire: amd: add pm_prepare callback and pm ops
+ support
+Date: Mon, 20 Feb 2023 15:34:18 +0530
+Message-ID: <20230220100418.76754-9-Vijendar.Mukunda@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230220100418.76754-1-Vijendar.Mukunda@amd.com>
 References: <20230220100418.76754-1-Vijendar.Mukunda@amd.com>
@@ -98,30 +97,30 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT110:EE_|SA0PR12MB7001:EE_
-X-MS-Office365-Filtering-Correlation-Id: b05cdc4b-8a5f-452d-803b-08db13297d5d
+X-MS-TrafficTypeDiagnostic: DS1PEPF0000E654:EE_|SN7PR12MB7978:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3e0a0cd7-a953-4416-c201-08db132995ab
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	2E3zeZj+3vy5dY4Zn5G0dX4KEpK0VcAlEvOkoLtoce679NJzi2V3aBOopkZWDYO+u6L9AtND2doDozgjzqCsBFyBrwDvZWW0LXGQQ2R+zRZfbaXNWREupWBb9qchtmmnpZtWKq11AiH0mPJD4vZZpoh1xMOu7k7rbLqI3x7oQ2TtAsRW6fkUgbXUqz2EXOO+hkH69UoNtGA2CjrebgZQFmrmAgdTnZ+gbNM3gNZ0Ss79nMs1uVM1CBeJpu+VAUb8CVzElXioGfay45mrosTxEYuMgNVZ/BkpLNA/0Fn3+PNrM5KN7SyCLgrVWxRX3oMTloY+ZVYjZpWfuwsJWreZN9HwObu+I95SjI8jZ0kfMfHvug458NmO7i4PV6y3zcictg0yzode/tBzkcPxmy6dxk9Nwih3EU7khP4gVloUPqDtnAz7SlQDGCB0DI2eLaZoYkRdYydx+oDVowqm9GIDe866hPiuqpfMqb41Y7JR8fu7/FRHyBZqMFzPszGx6ycJzD8rj3ayAkK3eaJdyhsXVkAc6rlbhhNibh4vWPoHyz9eiYGjYhcoE3YjWQG9M3gkN1H/4b0JHhd7pj7O8siMIHgsPD1c6f3KYExa7+KilzTrNzBv6AvPsKDTE1jAxEo/R/qBfBATmjSQISIlt/47KM43/k0bcTiJiMfzzCsGkvIKi3yMnYFwaZJHAhYDx1zbMy/28r7Dh5giXqjjsmVY4b8ywwGoMlG33rFx4E0VmaY=
+	mNJuOyUw7ERXfmxw3jZjM3+Ck0Er5XLktAxpzifMqmAHMUa/3wAiJf4E6LbjgGFbn7vIEhFZ6q1cc1U88CztaOems7ZBO+lmnw9NNes1EHMbt56kmqwr9Ad/IM0Tj2W9XcdQxBpqUR2tAv1qKtS/rEnDPkJmFGPdEzduOA4eQkauf+QdVC3DDnjbQV1b0VLvAhycwSMkRR1DO72CgMN8lITOoV8ui+AYGExD+w1e0bRwASwe1x5roo+se45984qldXHb6grVw4qH8vDtYYiLi+V6Smg82ihsbseqB0dBwX8JKN414WJb0hKDtr6V1UZOHt9N/BgFMQsJkfOOnqP3sntWga6Qzyl6sUx/a7h6nJAPA/0VwETkYyC0eRc1ttkQHthsI199oAb2QB0wnKipTehX8L7gBjqpSwIITGSMH0swnjrGw9QEhJ5YTh2Ruc85X+OgqUvegcEMjfgBUePIMHOKBlFa3dYw4HumX+qJTRzKsCy2046PkrBffta6fo602dKFIf7Dh9vCQt7jIZ0mR6HE2Gbtzdx0PqbLAXPHIu6BwOM+kRXXULv+a8aoRaeYAXtNd6gFMi2jwRrDg+6VSxIvVc+6rCJxi93Rlin7sb6i5gll+ozvLvcB8O81u20zAPGn1w4TEe/mp89FgN0sYxKuQfu8c4IMblIqaq6mrHE70opJVo73G8Api7ScUEaUfxJF6Bon3Ml0BzB3jxL6c4Ytjj4J3leIjzYeXfyTlAo=
 X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(346002)(396003)(136003)(39860400002)(376002)(451199018)(40470700004)(36840700001)(46966006)(82310400005)(2906002)(8936002)(36860700001)(47076005)(83380400001)(40480700001)(426003)(1076003)(5660300002)(36756003)(41300700001)(2616005)(186003)(82740400003)(26005)(336012)(478600001)(6666004)(86362001)(356005)(4326008)(6916009)(70586007)(316002)(70206006)(54906003)(8676002)(40460700003)(81166007)(7696005)(36900700001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(376002)(136003)(39860400002)(396003)(346002)(451199018)(46966006)(40470700004)(36840700001)(36860700001)(8936002)(356005)(40460700003)(478600001)(5660300002)(2616005)(40480700001)(426003)(36756003)(336012)(7696005)(54906003)(83380400001)(81166007)(316002)(47076005)(86362001)(70206006)(70586007)(4326008)(6916009)(82310400005)(8676002)(41300700001)(82740400003)(26005)(186003)(1076003)(2906002)(6666004)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2023 10:01:51.9361
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2023 10:02:32.6986
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- b05cdc4b-8a5f-452d-803b-08db13297d5d
+ 3e0a0cd7-a953-4416-c201-08db132995ab
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+ TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	CO1NAM11FT110.eop-nam11.prod.protection.outlook.com
+	DS1PEPF0000E654.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB7001
-Message-ID-Hash: A7LJ4R5LQKTDY6BWWSQWPE55YEO4CZC7
-X-Message-ID-Hash: A7LJ4R5LQKTDY6BWWSQWPE55YEO4CZC7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7978
+Message-ID-Hash: W56YIR5SLWNGWZ4HG6E4TRR7RFSNABFJ
+X-Message-ID-Hash: W56YIR5SLWNGWZ4HG6E4TRR7RFSNABFJ
 X-MailFrom: Vijendar.Mukunda@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -142,7 +141,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A7LJ4R5LQKTDY6BWWSQWPE55YEO4CZC7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W56YIR5SLWNGWZ4HG6E4TRR7RFSNABFJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,210 +150,121 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add support for handling SoundWire manager interrupts.
+Add pm_prepare callback and System level pm ops support for
+AMD SoundWire manager driver.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Signed-off-by: Mastan Katragadda <Mastan.Katragadda@amd.com>
 ---
- drivers/soundwire/amd_manager.c   | 130 ++++++++++++++++++++++++++++++
- drivers/soundwire/amd_manager.h   |   1 +
- include/linux/soundwire/sdw_amd.h |   6 ++
- 3 files changed, 137 insertions(+)
+ drivers/soundwire/amd_manager.c | 89 +++++++++++++++++++++++++++++++++
+ 1 file changed, 89 insertions(+)
 
 diff --git a/drivers/soundwire/amd_manager.c b/drivers/soundwire/amd_manager.c
-index 6aab738dcb45..5d9f0a9b2dfd 100644
+index a7182aa78652..b974e52248da 100644
 --- a/drivers/soundwire/amd_manager.c
 +++ b/drivers/soundwire/amd_manager.c
-@@ -417,6 +417,51 @@ static enum sdw_command_response amd_sdw_xfer_msg(struct sdw_bus *bus, struct sd
- 	return SDW_CMD_OK;
+@@ -1155,6 +1155,93 @@ static int amd_sdw_clock_stop_exit(struct amd_sdw_manager *amd_manager)
+ 	return 0;
  }
  
-+static void amd_sdw_fill_slave_status(struct amd_sdw_manager *amd_manager, u16 index, u32 status)
++static int amd_resume_child_device(struct device *dev, void *data)
 +{
-+	switch (status) {
-+	case SDW_SLAVE_ATTACHED:
-+		amd_manager->status[index] = SDW_SLAVE_ATTACHED;
-+		break;
-+	case SDW_SLAVE_UNATTACHED:
-+		amd_manager->status[index] = SDW_SLAVE_UNATTACHED;
-+		break;
-+	case SDW_SLAVE_ALERT:
-+		amd_manager->status[index] = SDW_SLAVE_ALERT;
-+		break;
-+	default:
-+		amd_manager->status[index] = SDW_SLAVE_RESERVED;
-+		break;
++	int ret;
++	struct sdw_slave *slave = dev_to_sdw_dev(dev);
++
++	if (!slave->probed) {
++		dev_dbg(dev, "skipping device, no probed driver\n");
++		return 0;
 +	}
++	if (!slave->dev_num_sticky) {
++		dev_dbg(dev, "skipping device, never detected on bus\n");
++		return 0;
++	}
++	if (!pm_runtime_suspended(dev))
++		return 0;
++	ret = pm_request_resume(dev);
++	if (ret < 0)
++		dev_err(dev, "pm_request_resume failed: %d\n", ret);
++
++	return ret;
 +}
 +
-+static void amd_sdw_process_ping_status(u64 response, struct amd_sdw_manager *amd_manager)
++static int __maybe_unused amd_pm_prepare(struct device *dev)
 +{
-+	u64 slave_stat;
-+	u32 val;
-+	u16 dev_index;
++	struct amd_sdw_manager *amd_manager = dev_get_drvdata(dev);
++	struct sdw_bus *bus = &amd_manager->bus;
++	int ret;
 +
-+	/* slave status response */
-+	slave_stat = FIELD_GET(AMD_SDW_MCP_SLAVE_STAT_0_3, response);
-+	slave_stat |= FIELD_GET(AMD_SDW_MCP_SLAVE_STAT_4_11, response) << 8;
-+	dev_dbg(amd_manager->dev, "slave_stat:0x%llx\n", slave_stat);
-+	for (dev_index = 0; dev_index <= SDW_MAX_DEVICES; ++dev_index) {
-+		val = (slave_stat >> (dev_index * 2)) & AMD_SDW_MCP_SLAVE_STATUS_MASK;
-+		dev_dbg(amd_manager->dev, "val:0x%x\n", val);
-+		amd_sdw_fill_slave_status(amd_manager, dev_index, val);
++	if (bus->prop.hw_disabled) {
++		dev_dbg(bus->dev, "SoundWire manager %d is disabled, ignoring\n",
++			bus->link_id);
++		return 0;
 +	}
-+}
-+
-+static void amd_sdw_read_and_process_ping_status(struct amd_sdw_manager *amd_manager)
-+{
-+	u64 response;
-+
-+	mutex_lock(&amd_manager->bus.msg_lock);
-+	response = amd_sdw_send_cmd_get_resp(amd_manager, 0, 0);
-+	mutex_unlock(&amd_manager->bus.msg_lock);
-+	amd_sdw_process_ping_status(response, amd_manager);
-+}
-+
- static u32 amd_sdw_read_ping_status(struct sdw_bus *bus)
- {
- 	struct amd_sdw_manager *amd_manager = to_amd_sdw(bus);
-@@ -817,6 +862,89 @@ static int amd_sdw_register_dais(struct amd_sdw_manager *amd_manager)
- 					       dais, num_dais);
- }
- 
-+static void amd_sdw_update_slave_status_work(struct work_struct *work)
-+{
-+	struct amd_sdw_manager *amd_manager =
-+		container_of(work, struct amd_sdw_manager, amd_sdw_work);
-+	int retry_count = 0;
-+
-+	if (amd_manager->status[0] == SDW_SLAVE_ATTACHED) {
-+		acp_reg_writel(0, amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_MASK_0TO7);
-+		acp_reg_writel(0, amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_MASK_8TO11);
-+	}
-+
-+update_status:
-+	sdw_handle_slave_status(&amd_manager->bus, amd_manager->status);
 +	/*
-+	 * During the peripheral enumeration sequence, the SoundWire manager interrupts
-+	 * are masked. Once the device number programming is done for all peripherals,
-+	 * interrupts will be unmasked. Read the peripheral device status from ping command
-+	 * and process the response. This sequence will ensure all peripheral devices enumerated
-+	 * and initialized properly.
++	 * When multiple peripheral devices connected over the same link, if SoundWire manager
++	 * device is not in runtime suspend state, observed that device alerts are missing
++	 * without pm_prepare on AMD platforms in clockstop mode0.
 +	 */
-+	if (amd_manager->status[0] == SDW_SLAVE_ATTACHED) {
-+		if (retry_count++ < SDW_MAX_DEVICES) {
-+			acp_reg_writel(AMD_SDW_IRQ_MASK_0TO7, amd_manager->mmio +
-+				       ACP_SW_STATE_CHANGE_STATUS_MASK_0TO7);
-+			acp_reg_writel(AMD_SDW_IRQ_MASK_8TO11,
-+				       amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_MASK_8TO11);
-+			amd_sdw_read_and_process_ping_status(amd_manager);
-+			goto update_status;
-+		} else {
-+			dev_err_ratelimited(amd_manager->dev,
-+					    "Device0 detected after %d iterations\n",
-+					    retry_count);
++	if (pm_runtime_suspended(dev) && amd_manager->power_mode_mask & AMD_SDW_CLK_STOP_MODE) {
++		ret = pm_request_resume(dev);
++		if (ret < 0) {
++			dev_err(bus->dev, "pm_request_resume failed: %d\n", ret);
++			return 0;
 +		}
 +	}
++	/* To force peripheral devices to system level suspend state, resume the devices
++	 * from runtime suspend state first. Without that unable to dispatch the alert
++	 * status to peripheral driver during system level resume as they are in runtime
++	 * suspend state.
++	 */
++	ret = device_for_each_child(bus->dev, NULL, amd_resume_child_device);
++	if (ret < 0)
++		dev_err(dev, "amd_resume_child_device failed: %d\n", ret);
++	return 0;
 +}
 +
-+static void amd_sdw_update_slave_status(u32 status_change_0to7, u32 status_change_8to11,
-+					struct amd_sdw_manager *amd_manager)
++static int __maybe_unused amd_suspend(struct device *dev)
 +{
-+	u64 slave_stat;
-+	u32 val;
-+	int dev_index;
++	struct amd_sdw_manager *amd_manager = dev_get_drvdata(dev);
++	struct sdw_bus *bus = &amd_manager->bus;
++	int ret;
 +
-+	if (status_change_0to7 == AMD_SDW_SLAVE_0_ATTACHED)
-+		memset(amd_manager->status, 0, sizeof(amd_manager->status));
-+	slave_stat = status_change_0to7;
-+	slave_stat |= FIELD_GET(AMD_SDW_MCP_SLAVE_STATUS_8TO_11, status_change_8to11) << 32;
-+	dev_dbg(amd_manager->dev, "status_change_0to7:0x%x status_change_8to11:0x%x\n",
-+		status_change_0to7, status_change_8to11);
-+	if (slave_stat) {
-+		for (dev_index = 0; dev_index <= SDW_MAX_DEVICES; ++dev_index) {
-+			if (slave_stat & AMD_SDW_MCP_SLAVE_STATUS_VALID_MASK(dev_index)) {
-+				val = (slave_stat >> AMD_SDW_MCP_SLAVE_STAT_SHIFT_MASK(dev_index)) &
-+				      AMD_SDW_MCP_SLAVE_STATUS_MASK;
-+				amd_sdw_fill_slave_status(amd_manager, dev_index, val);
-+			}
-+		}
++	if (bus->prop.hw_disabled) {
++		dev_dbg(bus->dev, "SoundWire manager %d is disabled, ignoring\n",
++			bus->link_id);
++		return 0;
 +	}
++
++	if (amd_manager->power_mode_mask & AMD_SDW_CLK_STOP_MODE) {
++		ret = amd_sdw_clock_stop(amd_manager);
++		if (ret)
++			return ret;
++	} else if (amd_manager->power_mode_mask & AMD_SDW_POWER_OFF_MODE) {
++		/*
++		 * As per hardware programming sequence on AMD platforms,
++		 * clock stop should be invoked first before powering-off
++		 */
++		ret = amd_sdw_clock_stop(amd_manager);
++		if (ret)
++			return ret;
++		ret = amd_deinit_sdw_manager(amd_manager);
++		if (ret)
++			return ret;
++	}
++	return 0;
 +}
 +
-+static void amd_sdw_irq_thread(struct work_struct *work)
-+{
-+	struct amd_sdw_manager *amd_manager =
-+			container_of(work, struct amd_sdw_manager, amd_sdw_irq_thread);
-+	u32 status_change_8to11;
-+	u32 status_change_0to7;
-+
-+	status_change_8to11 = acp_reg_readl(amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_8TO11);
-+	status_change_0to7 = acp_reg_readl(amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_0TO7);
-+	dev_dbg(amd_manager->dev, "[SDW%d] SDW INT: 0to7=0x%x, 8to11=0x%x\n",
-+		amd_manager->instance, status_change_0to7, status_change_8to11);
-+	if (status_change_8to11 & AMD_SDW_PREQ_INTR_STAT) {
-+		amd_sdw_read_and_process_ping_status(amd_manager);
-+	} else {
-+		/* Check for the updated status on peripheral device */
-+		amd_sdw_update_slave_status(status_change_0to7, status_change_8to11, amd_manager);
-+	}
-+	if (status_change_8to11 || status_change_0to7)
-+		schedule_work(&amd_manager->amd_sdw_work);
-+	acp_reg_writel(0x00, amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_8TO11);
-+	acp_reg_writel(0x00, amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_0TO7);
-+}
-+
- static void amd_sdw_probe_work(struct work_struct *work)
+ static int __maybe_unused amd_suspend_runtime(struct device *dev)
  {
- 	struct amd_sdw_manager *amd_manager = container_of(work, struct amd_sdw_manager,
-@@ -909,6 +1037,8 @@ static int amd_sdw_manager_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 	dev_set_drvdata(dev, amd_manager);
-+	INIT_WORK(&amd_manager->amd_sdw_irq_thread, amd_sdw_irq_thread);
-+	INIT_WORK(&amd_manager->amd_sdw_work, amd_sdw_update_slave_status_work);
- 	INIT_WORK(&amd_manager->probe_work, amd_sdw_probe_work);
- 	/*
- 	 * Instead of having lengthy probe sequence, spilt probe in two and
-diff --git a/drivers/soundwire/amd_manager.h b/drivers/soundwire/amd_manager.h
-index 3e1bded1e769..5bcaf7a763bb 100644
---- a/drivers/soundwire/amd_manager.h
-+++ b/drivers/soundwire/amd_manager.h
-@@ -186,6 +186,7 @@
- #define AMD_SDW1_PAD_KEEPER_EN_MASK			0x10
- #define AMD_SDW0_PAD_KEEPER_DISABLE_MASK		0x1E
- #define AMD_SDW1_PAD_KEEPER_DISABLE_MASK		0xF
-+#define AMD_SDW_PREQ_INTR_STAT				BIT(19)
+ 	struct amd_sdw_manager *amd_manager = dev_get_drvdata(dev);
+@@ -1227,6 +1314,8 @@ static int __maybe_unused amd_resume_runtime(struct device *dev)
+ }
  
- enum amd_sdw_cmd_type {
- 	AMD_SDW_CMD_PING = 0,
-diff --git a/include/linux/soundwire/sdw_amd.h b/include/linux/soundwire/sdw_amd.h
-index ffbe0d1eaeef..6d1007e96a1e 100644
---- a/include/linux/soundwire/sdw_amd.h
-+++ b/include/linux/soundwire/sdw_amd.h
-@@ -45,6 +45,8 @@ struct sdw_amd_dai_runtime {
-  * @mmio: SoundWire registers mmio base
-  * @acp_mmio: acp registers mmio base
-  * @reg_mask: register mask structure per manager instance
-+ * @amd_sdw_irq_thread: SoundWire manager irq workqueue
-+ * @amd_sdw_work: peripheral status work queue
-  * @probe_work: SoundWire manager probe workqueue
-  * @sdw_lock: mutex to protect acp share register access
-  * @num_din_ports: number of input ports
-@@ -65,10 +67,14 @@ struct amd_sdw_manager {
- 	void __iomem *acp_mmio;
- 
- 	struct sdw_manager_reg_mask *reg_mask;
-+	struct work_struct amd_sdw_irq_thread;
-+	struct work_struct amd_sdw_work;
- 	struct work_struct probe_work;
- 	/* mutex to protect acp common register access */
- 	struct mutex *acp_sdw_lock;
- 
-+	enum sdw_slave_status status[SDW_MAX_DEVICES + 1];
-+
- 	int num_din_ports;
- 	int num_dout_ports;
+ static const struct dev_pm_ops amd_pm = {
++	.prepare = amd_pm_prepare,
++	SET_SYSTEM_SLEEP_PM_OPS(amd_suspend, amd_resume_runtime)
+ 	SET_RUNTIME_PM_OPS(amd_suspend_runtime, amd_resume_runtime, NULL)
+ };
  
 -- 
 2.34.1
