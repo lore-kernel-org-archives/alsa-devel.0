@@ -4,78 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DA75C636D7
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Feb 2023 18:37:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DF6AC636D7
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Feb 2023 18:38:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39CCFE82;
-	Tue, 21 Feb 2023 19:36:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39CCFE82
+	by alsa0.perex.cz (Postfix) with ESMTPS id EDCD2E90;
+	Tue, 21 Feb 2023 19:37:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDCD2E90
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677004667;
-	bh=y5f/7FD5XngEI+WAgdFrak7KGfSwx36w2Fb0H7QFUug=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=lcGU7KMnrUris93Mye6U5ef/vJlyBl2UMAooW2Wc/NhXi690ZP/sZAJfI7nqyosnf
-	 kNtBIjf5y/F3CPbFNetYOG9xBr6IDG5TwGWe5uNeufv+wIISgtaLx7/eqPO951/SuJ
-	 IiKkfZyEs5SFr1+mPAcjPkUsxJDxGdsjHAmVTFdY=
+	s=default; t=1677004699;
+	bh=l9Tvg3xCXE1LEULfRgL7vvOvJSC0aCQ9+4oeC5HMhEg=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=qI16lpxKMlFZ3fBZ3BxajVAXbKi6U6DCzAeg78y4nqz4u4QKJO55/4c+AIMHytmNV
+	 N9uz/pDo3o2dIExeUC4lpTjIeF6H0roO1l6n0CyajyiHv3sEKFOLmLJc7OL80oKBgo
+	 Qz+e28eJAHzwCA0wvChr4nU2gtDAY0bXeM+CDtCY=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3265F80266;
-	Tue, 21 Feb 2023 19:36:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1BEBFF8047C;
+	Tue, 21 Feb 2023 19:36:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EA4BFF804FC; Tue, 21 Feb 2023 19:32:33 +0100 (CET)
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
- [IPv6:2a00:1450:4864:20::529])
+	id 80DF6F804FC; Tue, 21 Feb 2023 19:32:35 +0100 (CET)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
+ [IPv6:2a00:1450:4864:20::532])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A1885F800BA
-	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2023 19:32:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1885F800BA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 501CFF80266
+	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2023 19:32:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 501CFF80266
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=kWq4ecHF
-Received: by mail-ed1-x529.google.com with SMTP id ee7so5923742edb.2
+ header.s=20210112 header.b=n5P5sUEH
+Received: by mail-ed1-x532.google.com with SMTP id ck15so22231788edb.0
         for <alsa-devel@alsa-project.org>;
- Tue, 21 Feb 2023 10:32:24 -0800 (PST)
+ Tue, 21 Feb 2023 10:32:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0EeJlO8QUl1DZMAlcd+EODPEJDc+DBbZZnZ+JDzoEdg=;
-        b=kWq4ecHFuWXMSQZOzGBaSB3TZctWJCNGUWIu8P3VK24KihWheD/Hkgnz3BhcjBm+Ov
-         z8eahBqmrp2SwL0wBFOCTd+8Knk4Nx90ZwYEY03DeTfn6M/VqR6QPOqhy5+242r9yDzt
-         Ebj1teN7A4oA8YgIQe8byK5O6YanmP4Rk4ZeqmJR7xKaFSbu8E7tfn3utJjUFoZ988os
-         QEbB2xHc3wW1X2WPp4qC8P+OOaY4c9nDtBXBo3LdSxRv8OmHfXrfBf1SVw9icnA4wePn
-         SA8PnAH5xFwF8CR18LYgwYpvbCp28OMh9f4PgaM5DxNZ/D9Fk68DmsvDr2FtOiXzVAsJ
-         Jbqg==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IAXecBgeRkHu8ZmrGSEh+xC8pZ8csJk/gLQuqMv+ZEI=;
+        b=n5P5sUEHLppfy1KRySapcmLr3VmalIXip2527iBV1pCY+xwS8ywbsnb6vBwPteurfH
+         Ou9heSahzhfGJVOnzPjla6C+JQo2VGd0yOCOpw4k/pjtCPDEpRrjpZLdpNF66Pi1DKH9
+         WLP3xJQVbHYcEVJ7Wy9+73EuPBfWRbCokMg00ejhFAjQXjTyfePQrZKDmFkJzrRKuLnx
+         e3M1VTGBwW93NFqHDNrX3XzJJqgBFJMitGzKukSDLzjuw8aKsmEHHiVsL6l5ARdcTx7Z
+         NB5lKQ8K6GmD8sZRwzyMJ4RNTwnljCCDwYAzGsGxScbfzvJvZWnorpAYlZQpX1l6rhMw
+         Ad/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0EeJlO8QUl1DZMAlcd+EODPEJDc+DBbZZnZ+JDzoEdg=;
-        b=oaNe71YcSpgLPS03tYGATJ0bpuUiw4Dxj8U4vRvX7Oq/XVvS/5zUx/jyCq2U42sQH5
-         ZIK0xQO2rkg2PQG6b3Z9X/3eC/NzY5W7vlXQEuHaUhah4aarvhGgxy2b0SP8BpWqtedu
-         AwNWpRgJQTYHwxGd17A3URuwxor6FbF9JCYBId3lriJCdqP8vGTrfeMrIpGfVo9YxW+B
-         hZ1PNHfexbjhMfKUq2tIQqBx615BAhMvpKHaf9W3+4GUcuw+h6Sdbq3EvjC8Oq6eaR18
-         IzMTVJYhbIvAfKITYUAOMABgkCJtfcoLW5hm8lyzOLohfw2iqo0klFenAtI+pYgQxaRX
-         PnAg==
-X-Gm-Message-State: AO0yUKXj1dfc+wHoVEO5aadIKvYl7fsMdVDsF3O5RgzNpwk82Cgfz0H0
-	GGouAEDj64+RQbQlF7bkhrY=
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IAXecBgeRkHu8ZmrGSEh+xC8pZ8csJk/gLQuqMv+ZEI=;
+        b=KY0bJD0wkkAD7Ju0nSatY+3H4n2qyFyETT3UewdX0MbDydDFQdoKrNLNYfXxtDMmej
+         Rbciz22dE/7sFaRcBcKAAB+J7czvhu4NhTQi8gINMAEnrCva6Lz3rVVpguLRHnt0OwC1
+         6NL2Uosdnc9YgRDD4o/Jne3FPws+Li5rOx1r5KTbaF+LGDcQPdGvRwxrpGVEYFHTOolo
+         BknZSQEIBj8xFdU9eUE4Klf+/B86k+dq0SgnJ2u4PH304117eMrTRiK9YRqUOTh82V35
+         Mb5FuW7w81CkBionFyBpiGmC0K5xKKvuhVnxzp9Zxt3ZZdcNdOeyO4e9ZjKG8JhRCUjM
+         A9tQ==
+X-Gm-Message-State: AO0yUKUtFVDL1hoey1IvXZfF/229qUZ70NHmrqpHv0lUSEmuKLWkeH6F
+	GdOJNwx7by10X6UXfTqNl3Y=
 X-Google-Smtp-Source: 
- AK7set86GBsI14U6VEaKmjm3BNimI8/ZzoK6Ek4xMuPyAJKltWK2m8xRKjLbpVGkaLUsc2k/7+79Yw==
-X-Received: by 2002:a05:6402:215:b0:4af:515d:5658 with SMTP id
- t21-20020a056402021500b004af515d5658mr2968051edv.35.1677004342754;
-        Tue, 21 Feb 2023 10:32:22 -0800 (PST)
+ AK7set9zWlurnl/3CRZ7DTez58dz2jKnck1MAztIosG4p1jWNb1dZJz3bfbLFRpOyeGB3qiJQ4VlZQ==
+X-Received: by 2002:aa7:ca56:0:b0:4ae:e5ab:46d7 with SMTP id
+ j22-20020aa7ca56000000b004aee5ab46d7mr3752692edt.8.1677004345190;
+        Tue, 21 Feb 2023 10:32:25 -0800 (PST)
 Received: from xeon.. ([188.163.112.76])
         by smtp.gmail.com with ESMTPSA id
- i3-20020a50c3c3000000b004af5aa16fcasm169102edf.66.2023.02.21.10.32.21
+ i3-20020a50c3c3000000b004af5aa16fcasm169102edf.66.2023.02.21.10.32.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Feb 2023 10:32:22 -0800 (PST)
+        Tue, 21 Feb 2023 10:32:24 -0800 (PST)
 From: Svyatoslav Ryhel <clamor95@gmail.com>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -89,10 +91,12 @@ To: Rob Herring <robh+dt@kernel.org>,
 	Svyatoslav Ryhel <clamor95@gmail.com>,
 	Maxim Schwalm <maxim.schwalm@gmail.com>,
 	Dmitry Osipenko <digetx@gmail.com>
-Subject: [PATCH v1 00/10] Fix sound on ASUS Transformers
-Date: Tue, 21 Feb 2023 20:32:01 +0200
-Message-Id: <20230221183211.21964-1-clamor95@gmail.com>
+Subject: [PATCH v1 02/10] sound: soc: jack: allow multiple interrupt per gpio
+Date: Tue, 21 Feb 2023 20:32:03 +0200
+Message-Id: <20230221183211.21964-3-clamor95@gmail.com>
 X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20230221183211.21964-1-clamor95@gmail.com>
+References: <20230221183211.21964-1-clamor95@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-MailFrom: clamor95@gmail.com
@@ -101,9 +105,9 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: IFCLOGWXTBXAN2XZWXV4KCCG2TQ2VKOR
-X-Message-ID-Hash: IFCLOGWXTBXAN2XZWXV4KCCG2TQ2VKOR
-X-Mailman-Approved-At: Tue, 21 Feb 2023 18:36:34 +0000
+Message-ID-Hash: E5743CSI3X7ZAHODHXEEP4NL6A3URH6P
+X-Message-ID-Hash: E5743CSI3X7ZAHODHXEEP4NL6A3URH6P
+X-Mailman-Approved-At: Tue, 21 Feb 2023 18:36:35 +0000
 CC: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
  linux-staging@lists.linux.dev
@@ -112,7 +116,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IFCLOGWXTBXAN2XZWXV4KCCG2TQ2VKOR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/E5743CSI3X7ZAHODHXEEP4NL6A3URH6P/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -121,56 +125,26 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-- add quirk for headset detection used by some T30 devices
-  (ASUS Transformers, LG Optimus 4X HD and Vu);
-- add RT5631 and MAX9808x machine drivers
-- add Fortemedia FM34NE DSP driver used by ASUS Transformers
-  and mandatory for correct sound work
-- bind everything into working configuration
+This feature is required for coupled hp-mic quirk used
+by some Nvidia Tegra 3 based devices work properly.
 
-David Heidelberg (1):
-  dt-bindings: sound: nvidia,tegra-audio: add RT5631 CODEC
+Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
+---
+ sound/soc/soc-jack.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Svyatoslav Ryhel (9):
-  dt-bindings: sound: nvidia,tegra-audio-common: add new property
-  sound: soc: jack: allow multiple interrupt per gpio
-  ASoC: tegra: Support RT5631 by machine driver
-  dt-bindings: sound: nvidia,tegra-audio: add MAX9808x CODEC
-  ASoC: tegra: Support MAX9808x by machine driver
-  ARM: tegra: transformers: update bindings of sound graph
-  dt-bindings: dsp: add Fortemedia FM34 DSP
-  staging: dsp: add support for Fortemedia FM34NE DSP
-  ARM: tegra: transformers: bind FM34NE DSP on supported devices
-
- .../bindings/dsp/fortemedia,dsp.yaml          |  95 ++
- .../sound/nvidia,tegra-audio-common.yaml      |   4 +
- .../sound/nvidia,tegra-audio-max9808x.yaml    |  93 ++
- .../sound/nvidia,tegra-audio-rt5631.yaml      |  88 ++
- arch/arm/boot/dts/tegra20-asus-tf101.dts      |  22 +-
- arch/arm/boot/dts/tegra30-asus-tf201.dts      |  46 +
- arch/arm/boot/dts/tegra30-asus-tf300t.dts     |  34 +-
- arch/arm/boot/dts/tegra30-asus-tf300tg.dts    |  36 +
- arch/arm/boot/dts/tegra30-asus-tf700t.dts     |  36 +
- .../dts/tegra30-asus-transformer-common.dtsi  |   9 +-
- .../arm/boot/dts/tegra30-pegatron-chagall.dts |  29 +-
- drivers/staging/Kconfig                       |   2 +
- drivers/staging/Makefile                      |   1 +
- drivers/staging/dsp/Kconfig                   |   7 +
- drivers/staging/dsp/Makefile                  |   2 +
- drivers/staging/dsp/dsp-fm34ne.c              | 364 ++++++++
- drivers/staging/dsp/dsp-fm34ne.h              | 845 ++++++++++++++++++
- sound/soc/soc-jack.c                          |   1 +
- sound/soc/tegra/Kconfig                       |  18 +
- sound/soc/tegra/tegra_asoc_machine.c          | 120 ++-
- 20 files changed, 1837 insertions(+), 15 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/dsp/fortemedia,dsp.yaml
- create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-max9808x.yaml
- create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5631.yaml
- create mode 100644 drivers/staging/dsp/Kconfig
- create mode 100644 drivers/staging/dsp/Makefile
- create mode 100644 drivers/staging/dsp/dsp-fm34ne.c
- create mode 100644 drivers/staging/dsp/dsp-fm34ne.h
-
+diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+index fcece5ca38c6..f951acb2ce36 100644
+--- a/sound/soc/soc-jack.c
++++ b/sound/soc/soc-jack.c
+@@ -367,6 +367,7 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 
+ 		ret = request_any_context_irq(gpiod_to_irq(gpios[i].desc),
+ 					      gpio_handler,
++					      IRQF_SHARED |
+ 					      IRQF_TRIGGER_RISING |
+ 					      IRQF_TRIGGER_FALLING,
+ 					      gpios[i].name,
 -- 
 2.37.2
 
