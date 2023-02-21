@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62023C636D7
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Feb 2023 18:39:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E263C61DA3
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Feb 2023 18:39:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A522E87;
-	Tue, 21 Feb 2023 19:38:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A522E87
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4D116EC0;
+	Tue, 21 Feb 2023 19:38:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D116EC0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677004757;
-	bh=rM4h26//E0MQP7dt1QpwFE+KENRYFrL/1rwXnQiGpow=;
+	s=default; t=1677004770;
+	bh=GJp3dakHCrfssrLo80pECOILqO3xbZUG92GIcDrXAwE=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=IHFfptWxGLBPsUR6io963bzAglmmKL4Irx1FLGEe1qgDbOGNjfjrtuHy74ydHqtd0
-	 toWQqQ31pf4zgb//aHUq/zOFACL0GEE55lmnyf4VqRw+paVu5ZHjl15/oyKV3piUMo
-	 yZlMjMbvPL3gTDwoC7iqATN0wSTonzQpHIXoYcWY=
+	b=L2gGcnZtkenXeQ2n2OUI76gLuetLHFq8lV+jKBc/qMK3oPsTR+OM9gscsAf6rMwQL
+	 2h6mla1sr3ISRkGYCqZ7s68tkPxbM3YLdxwtRniqloX0C6PSfiXkmLP3rz5u7cZOSF
+	 +ssi63Yh0Dr1cBCDRy0mQXLYixyGFbIbmbaG+c80=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 25D4BF8055A;
-	Tue, 21 Feb 2023 19:36:48 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21645F80564;
+	Tue, 21 Feb 2023 19:36:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6CC41F80527; Tue, 21 Feb 2023 19:32:43 +0100 (CET)
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com
- [IPv6:2a00:1450:4864:20::530])
+	id ED9EBF80525; Tue, 21 Feb 2023 19:32:46 +0100 (CET)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com
+ [IPv6:2a00:1450:4864:20::52f])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1554CF8047C
-	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2023 19:32:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1554CF8047C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8300BF802DB
+	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2023 19:32:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8300BF802DB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=Ku08TnoY
-Received: by mail-ed1-x530.google.com with SMTP id da10so22223074edb.3
+ header.s=20210112 header.b=H/CTM8eq
+Received: by mail-ed1-x52f.google.com with SMTP id s26so20956145edw.11
         for <alsa-devel@alsa-project.org>;
- Tue, 21 Feb 2023 10:32:30 -0800 (PST)
+ Tue, 21 Feb 2023 10:32:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7mbS3PQtaiGcPdHVmHK5KHmqLpEohCcTweQJ5EgXuiY=;
-        b=Ku08TnoYik5za8z9qvRzVXLT6c1xZUixmrWodB6t+suqVat/3n0Jrtzr2IhboiCRAY
-         5FMHqXM69Wqmuv37UIZs9hnkJDlSU5NXr8q/eTdNH6ijCZ14qZDxT5F0MjOKYzrCqedA
-         ZgN/y+y2CWqj8Dvo0DImcvd1Cwzz2/uU9y22Coi3WqQPRw72Hc07WlrlD6Xu4ESJznPF
-         53etHxCFf0ql6+sX4Dc8LbjYpRLpFA3qEdH6Ca5ytApvCVqCXWjN7OTBrGS9d3jahpq7
-         EoMseFH8UTUkyIFmVLW1cA8Ae76cpFEXGNlY7Yo4U14vWM1R1Pke0ywsLllqLCT5uNSF
-         B/AQ==
+        bh=NH8T3uIDsMsshselwDvDLZiGP6dvAgAvE+M69z4Yx3w=;
+        b=H/CTM8eqll4oT5mdFcfpaEYryD5fvk1h+y1Tbx39YEVekGOVolmb/0uTeQLtxZE1fl
+         nDKd8uCmSKwbzkevYopP8oOoFWbX2MXvWsA+tthPw6mCF7xFgwJQ6ewYSQWOnIpFuEp0
+         usH3bVyQ8WsYbQNcJKdo4W66lYT+ccTnrksgYnsj25QXX8kAA6kb7EjfloCTaMMZbNj4
+         qEDw4FB3oxyV9Tde9ie1Giv02lSDCDtlfinG12y6McC7sJDtCpXccNxQH57lziAcFRC8
+         Pi1gP8ynmxlLGKRC1nrgyosthPKS7dQQve9gmYtWzxYIsSWDWD41OQDvf9v+PnrIDjL0
+         4yYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7mbS3PQtaiGcPdHVmHK5KHmqLpEohCcTweQJ5EgXuiY=;
-        b=1uBVaQeAjYNBrtiXanPDvVh6J+VrYNE4h3LmNqZIclg8o9qjzZJNMdXC4b9PIK6arf
-         7Hfziij1eOXM31ujaazmOgD0qiBxsAjUaCFvdIFQJFgghVIwurnU0PIFbfmTiPU2bPnl
-         VC7v86vvTrAqlpp2mimCZwRfKvrE9uQbScZvpc+GdQy8RdTbtE42dgCN1GLM5Nu5oIJo
-         3nHC5clGz/1/iXYkAVXIhliXtz4rt5Gf106ecPoLejgVjnOsgqG6GTNyQu1vfiMRBlkB
-         Guj+3b3O8gkYp6TeYwQwjAlDd/84Vs1wxFAGeR6pWpvTQreVjQzHM6Z4aBga0V1bgKtk
-         o+JA==
-X-Gm-Message-State: AO0yUKVsPNS3fPTrn4KyQoZS3plDD90SUUrjGcI8qnYPnhBpfEu9Wz9e
-	GM7DqOfJ1sxzSkdRlvscfcg=
+        bh=NH8T3uIDsMsshselwDvDLZiGP6dvAgAvE+M69z4Yx3w=;
+        b=Svim/6IphQ4UJAu9Q0VpONc+/r2r9aV1wi4/DcdsAs0M8DdyDv36MU7uVrHdWpCdY8
+         rlwFNPA6BBR+6x/iLEsviX2nU+hXDp2RdY0xG4/sHfY/rwgG6cINZaLiSACk9/6PViRS
+         jpkkOB+kvwSMmmV5u42uhYeIJ2tSLaDx3JanoEUqKCDGo/AIGeXYnrKiN4qAF/IQQWMs
+         +jLYgbSaApHkCRcD2545ZuMHgSJdvaTelCeGmB1fRVt0DUBzC0gjlOdC0OatsisROVEd
+         hRo/EDqk6bd0JmP3PclQGLd51Jw19iFct0EspU/n6hNPV1IerIR3hIoFRcm0DtI8WOSI
+         pM+g==
+X-Gm-Message-State: AO0yUKWa+Sket5kCMmUox+mONvOtq+fiw6xaRKv9cdzNuDtIKPAXfJDz
+	IqbazhUVQbuF+QNERjSRvaY=
 X-Google-Smtp-Source: 
- AK7set/LteK3qpbAq1LKdw+rlpbLWNJhpurzLhgxg23pB6vb+FQgCIHXqCxN3v958CVxug40jX9oFw==
-X-Received: by 2002:a50:ee01:0:b0:4ae:eb0f:892e with SMTP id
- g1-20020a50ee01000000b004aeeb0f892emr5579895eds.20.1677004348983;
-        Tue, 21 Feb 2023 10:32:28 -0800 (PST)
+ AK7set9MPFA7PiA4Qwf584jP14HcozBU036cScKVnlwHTZJuOfvIsNU4rUdHRJDpVcT91NlLdpB80w==
+X-Received: by 2002:aa7:c055:0:b0:4ac:bbd8:d04a with SMTP id
+ k21-20020aa7c055000000b004acbbd8d04amr6237682edo.5.1677004346521;
+        Tue, 21 Feb 2023 10:32:26 -0800 (PST)
 Received: from xeon.. ([188.163.112.76])
         by smtp.gmail.com with ESMTPSA id
- i3-20020a50c3c3000000b004af5aa16fcasm169102edf.66.2023.02.21.10.32.27
+ i3-20020a50c3c3000000b004af5aa16fcasm169102edf.66.2023.02.21.10.32.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Feb 2023 10:32:28 -0800 (PST)
+        Tue, 21 Feb 2023 10:32:26 -0800 (PST)
 From: Svyatoslav Ryhel <clamor95@gmail.com>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -91,10 +91,10 @@ To: Rob Herring <robh+dt@kernel.org>,
 	Svyatoslav Ryhel <clamor95@gmail.com>,
 	Maxim Schwalm <maxim.schwalm@gmail.com>,
 	Dmitry Osipenko <digetx@gmail.com>
-Subject: [PATCH v1 05/10] dt-bindings: sound: nvidia,tegra-audio: add MAX9808x
+Subject: [PATCH v1 03/10] dt-bindings: sound: nvidia,tegra-audio: add RT5631
  CODEC
-Date: Tue, 21 Feb 2023 20:32:06 +0200
-Message-Id: <20230221183211.21964-6-clamor95@gmail.com>
+Date: Tue, 21 Feb 2023 20:32:04 +0200
+Message-Id: <20230221183211.21964-4-clamor95@gmail.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230221183211.21964-1-clamor95@gmail.com>
 References: <20230221183211.21964-1-clamor95@gmail.com>
@@ -106,8 +106,8 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: BGGYUHXTH44NDSIE32KDPRYG2UHDK2QG
-X-Message-ID-Hash: BGGYUHXTH44NDSIE32KDPRYG2UHDK2QG
+Message-ID-Hash: NGRPDCSHSEKZB2OWKQDIS2GSRRCFI6CA
+X-Message-ID-Hash: NGRPDCSHSEKZB2OWKQDIS2GSRRCFI6CA
 X-Mailman-Approved-At: Tue, 21 Feb 2023 18:36:36 +0000
 CC: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
@@ -117,7 +117,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/BGGYUHXTH44NDSIE32KDPRYG2UHDK2QG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NGRPDCSHSEKZB2OWKQDIS2GSRRCFI6CA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,27 +126,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add dt-binding for MAX9808x CODEC.
+From: David Heidelberg <david@ixit.cz>
 
-Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
+Add dt-binding for RT5631 CODEC.
+
+Signed-off-by: David Heidelberg <david@ixit.cz>
 ---
- .../sound/nvidia,tegra-audio-max9808x.yaml    | 93 +++++++++++++++++++
- 1 file changed, 93 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-max9808x.yaml
+ .../sound/nvidia,tegra-audio-rt5631.yaml      | 88 +++++++++++++++++++
+ 1 file changed, 88 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5631.yaml
 
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-max9808x.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-max9808x.yaml
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5631.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5631.yaml
 new file mode 100644
-index 000000000000..256ca4ad081e
+index 000000000000..b347f34c47f2
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-max9808x.yaml
-@@ -0,0 +1,93 @@
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5631.yaml
+@@ -0,0 +1,88 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/sound/nvidia,tegra-audio-max9808x.yaml#
++$id: http://devicetree.org/schemas/sound/nvidia,tegra-audio-rt5631.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: NVIDIA Tegra audio complex with MAX9808x CODEC
++title: NVIDIA Tegra audio complex with RT5631 CODEC
 +
 +maintainers:
 +  - Jon Hunter <jonathanh@nvidia.com>
@@ -157,13 +159,9 @@ index 000000000000..256ca4ad081e
 +
 +properties:
 +  compatible:
-+    oneOf:
-+      - items:
-+          - pattern: '^[a-z0-9]+,tegra-audio-max98088(-[a-z0-9]+)+$'
-+          - const: nvidia,tegra-audio-max98088
-+      - items:
-+          - pattern: '^[a-z0-9]+,tegra-audio-max98089(-[a-z0-9]+)+$'
-+          - const: nvidia,tegra-audio-max98089
++    items:
++      - pattern: '^[a-z0-9]+,tegra-audio-rt5631(-[a-z0-9]+)+$'
++      - const: nvidia,tegra-audio-rt5631
 +
 +  nvidia,audio-routing:
 +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
@@ -179,25 +177,27 @@ index 000000000000..256ca4ad081e
 +        # Board Connectors
 +        - "Int Spk"
 +        - "Headphone Jack"
-+        - "Earpiece"
-+        - "Headset Mic"
-+        - "Internal Mic 1"
-+        - "Internal Mic 2"
++        - "Mic Jack"
++        - "Int Mic"
 +
 +        # CODEC Pins
-+        - HPL
-+        - HPR
-+        - SPKL
-+        - SPKR
-+        - RECL
-+        - RECR
-+        - INA1
-+        - INA2
-+        - INB1
-+        - INB2
 +        - MIC1
 +        - MIC2
-+        - MICBIAS
++        - AXIL
++        - AXIR
++        - MONOIN_RXN
++        - MONOIN_RXP
++        - DMIC
++        - MIC Bias1
++        - MIC Bias2
++        - MONO_IN
++        - AUXO1
++        - AUXO2
++        - SPOL
++        - SPOR
++        - HPOL
++        - HPOR
++        - MONO
 +
 +required:
 +  - nvidia,i2s-controller
@@ -209,24 +209,21 @@ index 000000000000..256ca4ad081e
 +    #include <dt-bindings/clock/tegra30-car.h>
 +    #include <dt-bindings/soc/tegra-pmc.h>
 +    sound {
-+        compatible = "lge,tegra-audio-max98089-p895",
-+                     "nvidia,tegra-audio-max98089";
-+        nvidia,model = "LG Optimus Vu MAX98089";
++        compatible = "asus,tegra-audio-rt5631-tf700t",
++                     "nvidia,tegra-audio-rt5631";
++        nvidia,model = "Asus Transformer Infinity TF700T RT5631";
 +
 +        nvidia,audio-routing =
-+            "Headphone Jack", "HPL",
-+            "Headphone Jack", "HPR",
-+            "Int Spk", "SPKL",
-+            "Int Spk", "SPKR",
-+            "Earpiece", "RECL",
-+            "Earpiece", "RECR",
-+            "INA1", "Headset Mic",
-+            "MIC1", "MICBIAS",
-+            "MICBIAS", "Internal Mic 1",
-+            "MIC2", "Internal Mic 2";
++                "Headphone Jack", "HPOL",
++                "Headphone Jack", "HPOR",
++                "Int Spk", "SPOL",
++                "Int Spk", "SPOR",
++                "MIC1", "MIC Bias1",
++                "MIC Bias1", "Mic Jack",
++                "DMIC", "Int Mic";
 +
-+        nvidia,i2s-controller = <&tegra_i2s0>;
-+        nvidia,audio-codec = <&codec>;
++        nvidia,i2s-controller = <&tegra_i2s1>;
++        nvidia,audio-codec = <&rt5631>;
 +
 +        clocks = <&tegra_car TEGRA30_CLK_PLL_A>,
 +                 <&tegra_car TEGRA30_CLK_PLL_A_OUT0>,
