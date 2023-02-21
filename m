@@ -4,119 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06D0BC61DA3
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Feb 2023 18:40:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB047C61DA3
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Feb 2023 18:50:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C18D8EEA;
-	Tue, 21 Feb 2023 19:39:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C18D8EEA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 754C2EA0;
+	Tue, 21 Feb 2023 19:49:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 754C2EA0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677004837;
-	bh=XDIVABp6eKs2mHx64i1RqbuGLljQnHQeH0qXYLsu3NA=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	s=default; t=1677005437;
+	bh=M3oqQLiVeiKFcSkxvyf9FUxCmoqIq16Mpy7MB7rQ9hQ=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=koRA/bQ6/k4UZ8Udg3Ph5ZS73Bc3oSqZEWA6v9AZKOXorBOXnEG2/VpYh/Et0ualK
-	 ecc22hsPfljZYZiQORmiYxAX4sF+dWphICsI58YakKRyT4c7dpxMYdTHOUlK+t+Yyj
-	 V1oEf/e4jL7ZtaIwPKwKcvtYb065Gkwf3ffzO6NQ=
+	b=MaL1zM8Xmmed3B9H/KHLiUN69TLsuACSeTC+1F7ADb/ZQ7VMjAUBNbpScghsYn45u
+	 wh+EJqK/PS4X5wzHPWT/IegAsAo180dCSfEXC9a5tDdvOCAz7BA2wi4BC2O26CdOVC
+	 Gergfugh/y4mtwnt7f8iOjpj+lkBkl5IMz+Kl3sw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF284F805AC;
-	Tue, 21 Feb 2023 19:37:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2EA71F80266;
+	Tue, 21 Feb 2023 19:49:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7F37AF802DB; Tue, 21 Feb 2023 19:32:54 +0100 (CET)
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com
- [IPv6:2a00:1450:4864:20::52d])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id C94A7F80266; Tue, 21 Feb 2023 19:49:24 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 62AC3F80125
-	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2023 19:32:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62AC3F80125
+	by alsa1.perex.cz (Postfix) with ESMTPS id CBC03F80125
+	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2023 19:49:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBC03F80125
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=ZLcktQw2
-Received: by mail-ed1-x52d.google.com with SMTP id b12so20977306edd.4
-        for <alsa-devel@alsa-project.org>;
- Tue, 21 Feb 2023 10:32:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E6kk1KEQ/IVeQbAn9G08dCn7f0VBqM2RVSZE4nU8tG8=;
-        b=ZLcktQw2yWXCWMLb+r8k3efgMJdd79CTAIDnmVywqDznjLEw7xRrl+1MN5bg3O9APj
-         rxgt1EBGlzVHpz2UKl91tl9NqLvKa8ZN8onCQC0xPgxACvaPaRT2dG0OisdIPFfDegwe
-         HPlqUrtQXwINZYZXwaWsVr64ce43UOrB/JyyrJ7isp/56MEvMArY/wOmTfbYiGGxvwll
-         QcAwvI9570rgvn8J76VKSf3V9m1ttMHrCwH69JeLOdrePrwvoZYHsJNMl/fyKmV89mpn
-         RLwy5dmrX5ezd85Uey7M786lydd2/IFPLkNgI3HbIyNm5dIStee4ktUKPnj2XKqoqH+W
-         XE8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E6kk1KEQ/IVeQbAn9G08dCn7f0VBqM2RVSZE4nU8tG8=;
-        b=FFWRfFeFfHeTO/neA1XziBj/i3ZJ7vki9mFYvtxARqilETP+UQ+1xQjd+dKCdIIajv
-         OrKaWe7V8t73Ncb/9T52HdOdqy3kmmd7mV9UBJh+LWEIsa5bxkuLQZEGzjfPuwxVfThj
-         hzdRB6PASD4ftslZfDGNqV5RUK/QPFqJOFmqjchJ2RbiFDnBWos1cZPuRxqetuQ1yWWG
-         16nUazBMeZXDDcqZtZUcA7z8VzeYFrYPJVGzyItlXhwpCagg7wMTMihBxS8pJkLLDibs
-         brPyrqd6Cqu6x20qJJA82EYZnOEOBwR+piwHu/1shxpdf9SuC0QWY4GWZgVxmEFpqjMu
-         igvw==
-X-Gm-Message-State: AO0yUKV26kajrbaUqsseJvji6WMNPy5q5rXhD8rPxS6S5qs9w20Diqbm
-	0tSXRoQH2V0abXfBDCoW8Afqy2nbdOrWnw==
-X-Google-Smtp-Source: 
- AK7set/E+SxHoaq2fIGnYaXslbfvlnMH0WhFAMr8EmmsfbBnfuTToK9OvYA29COaSsoBwpvFXPsCfA==
-X-Received: by 2002:aa7:c908:0:b0:4af:502b:4437 with SMTP id
- b8-20020aa7c908000000b004af502b4437mr4090015edt.34.1677004351477;
-        Tue, 21 Feb 2023 10:32:31 -0800 (PST)
-Received: from xeon.. ([188.163.112.76])
-        by smtp.gmail.com with ESMTPSA id
- i3-20020a50c3c3000000b004af5aa16fcasm169102edf.66.2023.02.21.10.32.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Feb 2023 10:32:31 -0800 (PST)
-From: Svyatoslav Ryhel <clamor95@gmail.com>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Svyatoslav Ryhel <clamor95@gmail.com>,
-	Maxim Schwalm <maxim.schwalm@gmail.com>,
-	Dmitry Osipenko <digetx@gmail.com>
-Subject: [PATCH v1 07/10] ARM: tegra: transformers: update bindings of sound
- graph
-Date: Tue, 21 Feb 2023 20:32:08 +0200
-Message-Id: <20230221183211.21964-8-clamor95@gmail.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230221183211.21964-1-clamor95@gmail.com>
-References: <20230221183211.21964-1-clamor95@gmail.com>
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=joYQ8WL6
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 31LHHMac001982;
+	Tue, 21 Feb 2023 12:49:18 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=2yIT5sQ3F8uH9sOOaYmVBC+bo+0d0nFSg4rXQhVBuT8=;
+ b=joYQ8WL637xlEGwSS/ZtKncTOn59Hg+pltTOUSJ2WA8bi1w4tMu+J5gatQU7/DvPvyw9
+ CtVqOfGOf/NK9gJ3TpBGEHlOaGG/HQUwvTgjk/iwK33pwZImOK3TybVc6xoTJUOF4zuu
+ tPSmkLkD2Qo6IAlGAQLw1NmgLygCTE3eZtoSp0dIyOTtM/G+NTAvqBf3saMBHPglNJHi
+ 0mUvweLcFuk2aHWXsbSxIcC8C8AECgv1hNyzjVvlz4CBARIbWMZUDDH644N35h/m3qsm
+ 1Omv+mYDjjQtjjCFXtAeqZYAFNN81szJqTdqioU7i0Fb5kZzxBXcaTJ6KNu/tmrT9X7B wQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3nvmnqs1xb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 21 Feb 2023 12:49:18 -0600
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Tue, 21 Feb
+ 2023 12:49:16 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.21 via Frontend Transport; Tue, 21 Feb 2023 12:49:16 -0600
+Received: from [141.131.215.58] (david-linux.ad.cirrus.com [141.131.215.58])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B77EFB0E;
+	Tue, 21 Feb 2023 18:49:14 +0000 (UTC)
+Message-ID: <c09675da-5259-d8f3-77de-da54aef939d4@opensource.cirrus.com>
+Date: Tue, 21 Feb 2023 12:49:14 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: clamor95@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v5 3/4] ALSA: cs35l41: Add shared boost feature
+Content-Language: en-US
+To: Lucas Tanure <lucas.tanure@collabora.com>,
+        Charles Keepax
+	<ckeepax@opensource.cirrus.com>
+References: <20230210091942.10866-1-lucas.tanure@collabora.com>
+ <20230210091942.10866-4-lucas.tanure@collabora.com>
+ <20230210134341.GF68926@ediswmail.ad.cirrus.com>
+ <cfacc3d6-2daa-6aa3-ba19-281b7e48bb47@collabora.com>
+ <20230211170638.GG68926@ediswmail.ad.cirrus.com>
+ <1e3ef067-9b39-dc19-5fbc-75436c67f206@collabora.com>
+ <d86d989b-0d82-74b3-a5da-9972324e9477@opensource.cirrus.com>
+ <09bf8e07-6275-654f-4a70-d46b54e9b853@collabora.com>
+From: David Rhodes <drhodes@opensource.cirrus.com>
+In-Reply-To: <09bf8e07-6275-654f-4a70-d46b54e9b853@collabora.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: lW4awi_3iOB0bT4v7fYDunC_lLoNfel_
+X-Proofpoint-GUID: lW4awi_3iOB0bT4v7fYDunC_lLoNfel_
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: DALW5IIY4KQPLXFECGCDNQHCXUUONPDR
+X-Message-ID-Hash: DALW5IIY4KQPLXFECGCDNQHCXUUONPDR
+X-MailFrom: prvs=74167ab121=drhodes@opensource.cirrus.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: ZZMWY6JS32LBY7EL2W2QFVETRAFEASQW
-X-Message-ID-Hash: ZZMWY6JS32LBY7EL2W2QFVETRAFEASQW
-X-Mailman-Approved-At: Tue, 21 Feb 2023 18:36:40 +0000
-CC: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
- linux-staging@lists.linux.dev
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: David Rhodes <david.rhodes@cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, patches@opensource.cirrus.com,
+ linux-kernel@vger.kernel.org, kernel@collabora.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DALW5IIY4KQPLXFECGCDNQHCXUUONPDR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -125,199 +120,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-- fix headset detection in common device tree;
-- diverge control and detect elements for mic;
-- use GPIO mic detection on wm8903 devices;
+On 2/21/23 02:28, Lucas Tanure wrote:
+> David can you confirm that both sides should use MDSYNC for boost 
+> control source?
 
-Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
----
- arch/arm/boot/dts/tegra20-asus-tf101.dts        |  8 +++++---
- arch/arm/boot/dts/tegra30-asus-tf201.dts        | 17 +++++++++++++++++
- arch/arm/boot/dts/tegra30-asus-tf300t.dts       |  5 ++---
- arch/arm/boot/dts/tegra30-asus-tf300tg.dts      | 17 +++++++++++++++++
- arch/arm/boot/dts/tegra30-asus-tf700t.dts       | 17 +++++++++++++++++
- .../dts/tegra30-asus-transformer-common.dtsi    |  9 +++++----
- arch/arm/boot/dts/tegra30-pegatron-chagall.dts  |  2 +-
- 7 files changed, 64 insertions(+), 11 deletions(-)
+Both amps can use the value 'MDSYNC' for BST_CTL_SEL.
+The value for the passive amp does not affect the behavior because BST_EN=0.
 
-diff --git a/arch/arm/boot/dts/tegra20-asus-tf101.dts b/arch/arm/boot/dts/tegra20-asus-tf101.dts
-index c39ddb462ad0..8d0613567e82 100644
---- a/arch/arm/boot/dts/tegra20-asus-tf101.dts
-+++ b/arch/arm/boot/dts/tegra20-asus-tf101.dts
-@@ -1179,15 +1179,17 @@ sound {
- 			"Int Spk", "RON",
- 			"Int Spk", "LOP",
- 			"Int Spk", "LON",
--			"Mic Jack", "MICBIAS",
--			"IN1L", "Mic Jack";
-+			"IN1L", "Headset Mic",
-+			"IN2L", "Headset Mic",
-+			"DMICDAT", "Int Mic";
- 
- 		nvidia,i2s-controller = <&tegra_i2s1>;
- 		nvidia,audio-codec = <&wm8903>;
- 
- 		nvidia,spkr-en-gpios = <&wm8903 2 GPIO_ACTIVE_HIGH>;
- 		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2) GPIO_ACTIVE_LOW>;
--		nvidia,headset;
-+		nvidia,mic-det-gpios = <&gpio TEGRA_GPIO(X, 1) GPIO_ACTIVE_HIGH>;
-+		nvidia,coupled-mic-hp-det;
- 
- 		clocks = <&tegra_car TEGRA20_CLK_PLL_A>,
- 			 <&tegra_car TEGRA20_CLK_PLL_A_OUT0>,
-diff --git a/arch/arm/boot/dts/tegra30-asus-tf201.dts b/arch/arm/boot/dts/tegra30-asus-tf201.dts
-index 315c6dc068c5..47865deeb88a 100644
---- a/arch/arm/boot/dts/tegra30-asus-tf201.dts
-+++ b/arch/arm/boot/dts/tegra30-asus-tf201.dts
-@@ -605,6 +605,23 @@ haptic-feedback {
- 		enable-gpios = <&gpio TEGRA_GPIO(H, 7) GPIO_ACTIVE_HIGH>;
- 		vcc-supply = <&vdd_3v3_sys>;
- 	};
-+
-+	sound {
-+		compatible = "asus,tegra-audio-rt5631-tf201",
-+			     "nvidia,tegra-audio-rt5631";
-+		nvidia,model = "Asus Transformer Prime TF201 RT5631";
-+
-+		nvidia,audio-routing =
-+			"Headphone Jack", "HPOL",
-+			"Headphone Jack", "HPOR",
-+			"Int Spk", "SPOL",
-+			"Int Spk", "SPOR",
-+			"MIC1", "MIC Bias1",
-+			"MIC Bias1", "Headset Mic",
-+			"DMIC", "Int Mic";
-+
-+		nvidia,audio-codec = <&rt5631>;
-+	};
- };
- 
- &emc_icc_dvfs_opp_table {
-diff --git a/arch/arm/boot/dts/tegra30-asus-tf300t.dts b/arch/arm/boot/dts/tegra30-asus-tf300t.dts
-index f47434871a5c..78f78cca337a 100644
---- a/arch/arm/boot/dts/tegra30-asus-tf300t.dts
-+++ b/arch/arm/boot/dts/tegra30-asus-tf300t.dts
-@@ -1011,13 +1011,12 @@ sound {
- 			"Int Spk", "RON",
- 			"Int Spk", "LOP",
- 			"Int Spk", "LON",
--			"IN1L", "Mic Jack",
--			"IN2L", "Mic Jack",
-+			"IN1L", "Headset Mic",
-+			"IN2L", "Headset Mic",
- 			"DMICDAT", "Int Mic";
- 
- 		nvidia,audio-codec = <&wm8903>;
- 		nvidia,spkr-en-gpios = <&wm8903 2 GPIO_ACTIVE_HIGH>;
--		nvidia,headset;
- 	};
- };
- 
-diff --git a/arch/arm/boot/dts/tegra30-asus-tf300tg.dts b/arch/arm/boot/dts/tegra30-asus-tf300tg.dts
-index 96345f821c3d..82c51e177a70 100644
---- a/arch/arm/boot/dts/tegra30-asus-tf300tg.dts
-+++ b/arch/arm/boot/dts/tegra30-asus-tf300tg.dts
-@@ -1072,6 +1072,23 @@ timing-667000000 {
- 	display-panel {
- 		compatible = "innolux,g101ice-l01";
- 	};
-+
-+	sound {
-+		compatible = "asus,tegra-audio-rt5631-tf300tg",
-+			     "nvidia,tegra-audio-rt5631";
-+		nvidia,model = "Asus Transformer Pad TF300TG RT5631";
-+
-+		nvidia,audio-routing =
-+			"Headphone Jack", "HPOL",
-+			"Headphone Jack", "HPOR",
-+			"Int Spk", "SPOL",
-+			"Int Spk", "SPOR",
-+			"MIC1", "MIC Bias1",
-+			"MIC Bias1", "Headset Mic",
-+			"DMIC", "Int Mic";
-+
-+		nvidia,audio-codec = <&rt5631>;
-+	};
- };
- 
- &emc_icc_dvfs_opp_table {
-diff --git a/arch/arm/boot/dts/tegra30-asus-tf700t.dts b/arch/arm/boot/dts/tegra30-asus-tf700t.dts
-index 1a331dec3cfe..766225ebdeab 100644
---- a/arch/arm/boot/dts/tegra30-asus-tf700t.dts
-+++ b/arch/arm/boot/dts/tegra30-asus-tf700t.dts
-@@ -812,6 +812,23 @@ vdd_1v2_mipi: regulator-mipi {
- 		enable-active-high;
- 		vin-supply = <&vdd_3v3_sys>;
- 	};
-+
-+	sound {
-+		compatible = "asus,tegra-audio-rt5631-tf700t",
-+			     "nvidia,tegra-audio-rt5631";
-+		nvidia,model = "Asus Transformer Infinity TF700T RT5631";
-+
-+		nvidia,audio-routing =
-+			"Headphone Jack", "HPOL",
-+			"Headphone Jack", "HPOR",
-+			"Int Spk", "SPOL",
-+			"Int Spk", "SPOR",
-+			"MIC1", "MIC Bias1",
-+			"MIC Bias1", "Headset Mic",
-+			"DMIC", "Int Mic";
-+
-+		nvidia,audio-codec = <&rt5631>;
-+	};
- };
- 
- &emc_icc_dvfs_opp_table {
-diff --git a/arch/arm/boot/dts/tegra30-asus-transformer-common.dtsi b/arch/arm/boot/dts/tegra30-asus-transformer-common.dtsi
-index 08ea9cb32d0e..42dae0f4759e 100644
---- a/arch/arm/boot/dts/tegra30-asus-transformer-common.dtsi
-+++ b/arch/arm/boot/dts/tegra30-asus-transformer-common.dtsi
-@@ -550,7 +550,7 @@ spi1_mosi_px4 {
- 				nvidia,enable-input = <TEGRA_PIN_ENABLE>;
- 			};
- 
--			spi2_cs1_n_pw2 {
-+			hp_detect {
- 				nvidia,pins = "spi2_cs1_n_pw2";
- 				nvidia,function = "spi2";
- 				nvidia,pull = <TEGRA_PIN_PULL_UP>;
-@@ -558,10 +558,10 @@ spi2_cs1_n_pw2 {
- 				nvidia,enable-input = <TEGRA_PIN_ENABLE>;
- 			};
- 
--			spi2_sck_px2 {
-+			mic_detect {
- 				nvidia,pins = "spi2_sck_px2";
- 				nvidia,function = "spi2";
--				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
-+				nvidia,pull = <TEGRA_PIN_PULL_UP>;
- 				nvidia,tristate = <TEGRA_PIN_DISABLE>;
- 				nvidia,enable-input = <TEGRA_PIN_ENABLE>;
- 			};
-@@ -1674,7 +1674,8 @@ sound {
- 		nvidia,i2s-controller = <&tegra_i2s1>;
- 
- 		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2) GPIO_ACTIVE_LOW>;
--		nvidia,hp-mute-gpios = <&gpio TEGRA_GPIO(X, 2) GPIO_ACTIVE_LOW>;
-+		nvidia,mic-det-gpios = <&gpio TEGRA_GPIO(X, 2) GPIO_ACTIVE_LOW>;
-+		nvidia,coupled-mic-hp-det;
- 
- 		clocks = <&tegra_car TEGRA30_CLK_PLL_A>,
- 			 <&tegra_car TEGRA30_CLK_PLL_A_OUT0>,
-diff --git a/arch/arm/boot/dts/tegra30-pegatron-chagall.dts b/arch/arm/boot/dts/tegra30-pegatron-chagall.dts
-index d9408a90653a..6e24b095713b 100644
---- a/arch/arm/boot/dts/tegra30-pegatron-chagall.dts
-+++ b/arch/arm/boot/dts/tegra30-pegatron-chagall.dts
-@@ -2731,7 +2731,7 @@ sound {
- 			"Int Spk", "RON",
- 			"Int Spk", "LOP",
- 			"Int Spk", "LON",
--			"IN1R", "Mic Jack",
-+			"IN1R", "Headset Mic",
- 			"DMICDAT", "Int Mic";
- 
- 		nvidia,i2s-controller = <&tegra_i2s1>;
--- 
-2.37.2
 
+On 2/21/23 02:28, Lucas Tanure wrote:
+ >> I believe there is another change needed for the Deck, to handle the
+ >> 'legacy' property names instead of bst-type?
+ > I am working with valve to update their bios.
+
+Great, I think that's a better solution.
+
+Thanks,
+David
