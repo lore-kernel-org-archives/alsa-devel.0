@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2909FC636D7
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Feb 2023 18:40:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06D0BC61DA3
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Feb 2023 18:40:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3862EC2;
-	Tue, 21 Feb 2023 19:39:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3862EC2
+	by alsa0.perex.cz (Postfix) with ESMTPS id C18D8EEA;
+	Tue, 21 Feb 2023 19:39:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C18D8EEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677004821;
-	bh=kuRU1eOF3bgVGSQXfM4YtrxSHQ/HVckKu2gKwSWP8f8=;
+	s=default; t=1677004837;
+	bh=XDIVABp6eKs2mHx64i1RqbuGLljQnHQeH0qXYLsu3NA=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QrrwjxGnRFfDmnfK9qjxEJz43GyaO3W/rUxmDqICv5TY3lH0ZiPAtDdd+skvXKYMc
-	 qzhUd0JTWksFfVjoXlAmK37vIYs8x/Uds0FxXmgdW+Fg7yguvI15UEaOz1rmc16FbX
-	 j6+vNi6HbyY5kUHRirkXDMqJfN83dkwLLIl8kHMk=
+	b=koRA/bQ6/k4UZ8Udg3Ph5ZS73Bc3oSqZEWA6v9AZKOXorBOXnEG2/VpYh/Et0ualK
+	 ecc22hsPfljZYZiQORmiYxAX4sF+dWphICsI58YakKRyT4c7dpxMYdTHOUlK+t+Yyj
+	 V1oEf/e4jL7ZtaIwPKwKcvtYb065Gkwf3ffzO6NQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89D6DF80589;
-	Tue, 21 Feb 2023 19:37:01 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF284F805AC;
+	Tue, 21 Feb 2023 19:37:03 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 24E1EF8047C; Tue, 21 Feb 2023 19:32:53 +0100 (CET)
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
- [IPv6:2a00:1450:4864:20::532])
+	id 7F37AF802DB; Tue, 21 Feb 2023 19:32:54 +0100 (CET)
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com
+ [IPv6:2a00:1450:4864:20::52d])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6F97CF800BA
-	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2023 19:32:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F97CF800BA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 62AC3F80125
+	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2023 19:32:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62AC3F80125
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=NWW0looc
-Received: by mail-ed1-x532.google.com with SMTP id cq23so20731382edb.1
+ header.s=20210112 header.b=ZLcktQw2
+Received: by mail-ed1-x52d.google.com with SMTP id b12so20977306edd.4
         for <alsa-devel@alsa-project.org>;
- Tue, 21 Feb 2023 10:32:36 -0800 (PST)
+ Tue, 21 Feb 2023 10:32:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pQSmh32OKE33I5420mu9+Fe2dybwDMzPyqZp98Es5A0=;
-        b=NWW0loock5oBID3QFLzVq8K9EpVNYl+ZYmsU652aRgHtxBKeNfj8DPn7GmSYs/ttfZ
-         sewS3t7yAWMaLsrLFpM20K9bzEbiga0bMCN6Q1YEmbwN0DCnD4VYXFRhq0Bf22glKT3j
-         9ehzd27SMlkUawFEBbW1dlxeCo9EH52YqwvgwEjhMURX18dliuMncwqZStFByf6z9OA7
-         6aUSJy1Kfwi2nwHPIG21i5UQo4g2uyHqY012/k1DuJVB57C2RAMteAafi9GTxvY8YmgD
-         cMuLN9PWNsYrvyaNfhFkaE/89jEpoSXltkVWUB0ugYGreMFxCMpS62PuwvebAs3GujFe
-         +8Cw==
+        bh=E6kk1KEQ/IVeQbAn9G08dCn7f0VBqM2RVSZE4nU8tG8=;
+        b=ZLcktQw2yWXCWMLb+r8k3efgMJdd79CTAIDnmVywqDznjLEw7xRrl+1MN5bg3O9APj
+         rxgt1EBGlzVHpz2UKl91tl9NqLvKa8ZN8onCQC0xPgxACvaPaRT2dG0OisdIPFfDegwe
+         HPlqUrtQXwINZYZXwaWsVr64ce43UOrB/JyyrJ7isp/56MEvMArY/wOmTfbYiGGxvwll
+         QcAwvI9570rgvn8J76VKSf3V9m1ttMHrCwH69JeLOdrePrwvoZYHsJNMl/fyKmV89mpn
+         RLwy5dmrX5ezd85Uey7M786lydd2/IFPLkNgI3HbIyNm5dIStee4ktUKPnj2XKqoqH+W
+         XE8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pQSmh32OKE33I5420mu9+Fe2dybwDMzPyqZp98Es5A0=;
-        b=MOKvoJfJZwB/A1RpytfGVl7ojpllULYVxt3IIDGmpurR2HCEMw+EKxSDKBXtQh1aQK
-         HXcypHb8QrRtnbBmTYSO1LHJM/IoSyNeI/251XjUOwr+u3jHfKbXhPlFB+rjcwFAu6PO
-         Wctm7ssGcXL8Qvh510KesNplNrO0FlTG9DjWUwvBPnPS2Utz/aSWrD9I5Daa7B5U1qb2
-         /C814X8lgiYBztUp+8oW55ZFj+5z6VjTyujEXrZNLGDNvVPJQX9G403SdiZ8ZgGkoyMB
-         mH9odx+5tx3vbiKEU97rwnOKHc5teFcvQxLQKFeyjl6I7QCjXF+R0GZgeaeEaXw0Nimx
-         zwiA==
-X-Gm-Message-State: AO0yUKW2V5tzckqxSOi2M1HMxnA+EW2BTt9qRXKqWIZSV+54lWZi0LPt
-	jwxxILKagneqJkFAhMX9WMc=
+        bh=E6kk1KEQ/IVeQbAn9G08dCn7f0VBqM2RVSZE4nU8tG8=;
+        b=FFWRfFeFfHeTO/neA1XziBj/i3ZJ7vki9mFYvtxARqilETP+UQ+1xQjd+dKCdIIajv
+         OrKaWe7V8t73Ncb/9T52HdOdqy3kmmd7mV9UBJh+LWEIsa5bxkuLQZEGzjfPuwxVfThj
+         hzdRB6PASD4ftslZfDGNqV5RUK/QPFqJOFmqjchJ2RbiFDnBWos1cZPuRxqetuQ1yWWG
+         16nUazBMeZXDDcqZtZUcA7z8VzeYFrYPJVGzyItlXhwpCagg7wMTMihBxS8pJkLLDibs
+         brPyrqd6Cqu6x20qJJA82EYZnOEOBwR+piwHu/1shxpdf9SuC0QWY4GWZgVxmEFpqjMu
+         igvw==
+X-Gm-Message-State: AO0yUKV26kajrbaUqsseJvji6WMNPy5q5rXhD8rPxS6S5qs9w20Diqbm
+	0tSXRoQH2V0abXfBDCoW8Afqy2nbdOrWnw==
 X-Google-Smtp-Source: 
- AK7set+fSmOPE7HCxYwmGeNARvkMtewnxLHluxAnobePLwdWIIZgbTWFuCdB66FrKtK6B5zRmhBjXg==
-X-Received: by 2002:a05:6402:516e:b0:474:a583:2e1a with SMTP id
- d14-20020a056402516e00b00474a5832e1amr5711519ede.12.1677004355491;
-        Tue, 21 Feb 2023 10:32:35 -0800 (PST)
+ AK7set/E+SxHoaq2fIGnYaXslbfvlnMH0WhFAMr8EmmsfbBnfuTToK9OvYA29COaSsoBwpvFXPsCfA==
+X-Received: by 2002:aa7:c908:0:b0:4af:502b:4437 with SMTP id
+ b8-20020aa7c908000000b004af502b4437mr4090015edt.34.1677004351477;
+        Tue, 21 Feb 2023 10:32:31 -0800 (PST)
 Received: from xeon.. ([188.163.112.76])
         by smtp.gmail.com with ESMTPSA id
- i3-20020a50c3c3000000b004af5aa16fcasm169102edf.66.2023.02.21.10.32.34
+ i3-20020a50c3c3000000b004af5aa16fcasm169102edf.66.2023.02.21.10.32.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Feb 2023 10:32:35 -0800 (PST)
+        Tue, 21 Feb 2023 10:32:31 -0800 (PST)
 From: Svyatoslav Ryhel <clamor95@gmail.com>
 To: Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -91,10 +91,10 @@ To: Rob Herring <robh+dt@kernel.org>,
 	Svyatoslav Ryhel <clamor95@gmail.com>,
 	Maxim Schwalm <maxim.schwalm@gmail.com>,
 	Dmitry Osipenko <digetx@gmail.com>
-Subject: [PATCH v1 10/10] ARM: tegra: transformers: bind FM34NE DSP on
- supported devices
-Date: Tue, 21 Feb 2023 20:32:11 +0200
-Message-Id: <20230221183211.21964-11-clamor95@gmail.com>
+Subject: [PATCH v1 07/10] ARM: tegra: transformers: update bindings of sound
+ graph
+Date: Tue, 21 Feb 2023 20:32:08 +0200
+Message-Id: <20230221183211.21964-8-clamor95@gmail.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230221183211.21964-1-clamor95@gmail.com>
 References: <20230221183211.21964-1-clamor95@gmail.com>
@@ -106,9 +106,9 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: JU5NCZDQEQ2TLENL2CSKQT5C5HHYIG7V
-X-Message-ID-Hash: JU5NCZDQEQ2TLENL2CSKQT5C5HHYIG7V
-X-Mailman-Approved-At: Tue, 21 Feb 2023 18:36:36 +0000
+Message-ID-Hash: ZZMWY6JS32LBY7EL2W2QFVETRAFEASQW
+X-Message-ID-Hash: ZZMWY6JS32LBY7EL2W2QFVETRAFEASQW
+X-Mailman-Approved-At: Tue, 21 Feb 2023 18:36:40 +0000
 CC: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
  linux-staging@lists.linux.dev
@@ -116,8 +116,7 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JU5NCZDQEQ2TLENL2CSKQT5C5HHYIG7V/>
+Archived-At: <>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,242 +125,199 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-FM34NE is mandatory for correct sound work on ASUS Transformers.
+- fix headset detection in common device tree;
+- diverge control and detect elements for mic;
+- use GPIO mic detection on wm8903 devices;
 
 Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
 ---
- arch/arm/boot/dts/tegra20-asus-tf101.dts      | 14 +++++++++
- arch/arm/boot/dts/tegra30-asus-tf201.dts      | 29 +++++++++++++++++++
- arch/arm/boot/dts/tegra30-asus-tf300t.dts     | 29 +++++++++++++++++++
- arch/arm/boot/dts/tegra30-asus-tf300tg.dts    | 19 ++++++++++++
- arch/arm/boot/dts/tegra30-asus-tf700t.dts     | 19 ++++++++++++
- .../arm/boot/dts/tegra30-pegatron-chagall.dts | 27 +++++++++++++++++
- 6 files changed, 137 insertions(+)
+ arch/arm/boot/dts/tegra20-asus-tf101.dts        |  8 +++++---
+ arch/arm/boot/dts/tegra30-asus-tf201.dts        | 17 +++++++++++++++++
+ arch/arm/boot/dts/tegra30-asus-tf300t.dts       |  5 ++---
+ arch/arm/boot/dts/tegra30-asus-tf300tg.dts      | 17 +++++++++++++++++
+ arch/arm/boot/dts/tegra30-asus-tf700t.dts       | 17 +++++++++++++++++
+ .../dts/tegra30-asus-transformer-common.dtsi    |  9 +++++----
+ arch/arm/boot/dts/tegra30-pegatron-chagall.dts  |  2 +-
+ 7 files changed, 64 insertions(+), 11 deletions(-)
 
 diff --git a/arch/arm/boot/dts/tegra20-asus-tf101.dts b/arch/arm/boot/dts/tegra20-asus-tf101.dts
-index 8d0613567e82..8a51a4c53014 100644
+index c39ddb462ad0..8d0613567e82 100644
 --- a/arch/arm/boot/dts/tegra20-asus-tf101.dts
 +++ b/arch/arm/boot/dts/tegra20-asus-tf101.dts
-@@ -493,6 +493,20 @@ i2c@7000c000 {
- 		status = "okay";
- 		clock-frequency = <400000>;
+@@ -1179,15 +1179,17 @@ sound {
+ 			"Int Spk", "RON",
+ 			"Int Spk", "LOP",
+ 			"Int Spk", "LON",
+-			"Mic Jack", "MICBIAS",
+-			"IN1L", "Mic Jack";
++			"IN1L", "Headset Mic",
++			"IN2L", "Headset Mic",
++			"DMICDAT", "Int Mic";
  
-+		/* Fortemedia FM34NE voice processor */
-+		dsp@60 {
-+			compatible = "asus,tf101-dsp", "fortemedia,fm34";
-+			reg = <0x60>;
-+
-+			bypass-gpios = <&gpio TEGRA_GPIO(H, 3) GPIO_ACTIVE_HIGH>;
-+			reset-gpios = <&gpio TEGRA_GPIO(H, 2) GPIO_ACTIVE_LOW>;
-+
-+			vdd-supply = <&vdd_1v8_sys>;
-+
-+			clocks = <&tegra_car TEGRA20_CLK_CDEV1>;
-+			clock-names = "mclk";
-+		};
-+
- 		/* Aichi AMI306 digital compass */
- 		magnetometer@e {
- 			compatible = "asahi-kasei,ak8974";
+ 		nvidia,i2s-controller = <&tegra_i2s1>;
+ 		nvidia,audio-codec = <&wm8903>;
+ 
+ 		nvidia,spkr-en-gpios = <&wm8903 2 GPIO_ACTIVE_HIGH>;
+ 		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2) GPIO_ACTIVE_LOW>;
+-		nvidia,headset;
++		nvidia,mic-det-gpios = <&gpio TEGRA_GPIO(X, 1) GPIO_ACTIVE_HIGH>;
++		nvidia,coupled-mic-hp-det;
+ 
+ 		clocks = <&tegra_car TEGRA20_CLK_PLL_A>,
+ 			 <&tegra_car TEGRA20_CLK_PLL_A_OUT0>,
 diff --git a/arch/arm/boot/dts/tegra30-asus-tf201.dts b/arch/arm/boot/dts/tegra30-asus-tf201.dts
-index 47865deeb88a..e214fc23609e 100644
+index 315c6dc068c5..47865deeb88a 100644
 --- a/arch/arm/boot/dts/tegra30-asus-tf201.dts
 +++ b/arch/arm/boot/dts/tegra30-asus-tf201.dts
-@@ -60,6 +60,25 @@ bluetooth {
- 		};
- 	};
- 
-+	i2c@7000c000 {
-+		/* Fortemedia FM34NE voice processor */
-+		dsp@60 {
-+			compatible = "asus,tf201-dsp", "fortemedia,fm34";
-+			reg = <0x60>;
-+
-+			bypass-gpios = <&gpio TEGRA_GPIO(BB, 6) GPIO_ACTIVE_HIGH>;
-+			reset-gpios = <&gpio TEGRA_GPIO(O, 3) GPIO_ACTIVE_LOW>;
-+
-+			vdd-supply = <&vdd_1v8_dsp>;
-+
-+			clocks = <&tegra_pmc TEGRA_PMC_CLK_OUT_1>;
-+			clock-names = "mclk";
-+
-+			assigned-clocks = <&tegra_pmc TEGRA_PMC_CLK_OUT_1>;
-+			assigned-clock-parents = <&tegra_car TEGRA30_CLK_EXTERN1>;
-+		};
-+	};
-+
- 	i2c@7000c400 {
- 		/* Atmel MXT768E touchscreen */
- 		touchscreen@4d {
-@@ -606,6 +625,16 @@ haptic-feedback {
+@@ -605,6 +605,23 @@ haptic-feedback {
+ 		enable-gpios = <&gpio TEGRA_GPIO(H, 7) GPIO_ACTIVE_HIGH>;
  		vcc-supply = <&vdd_3v3_sys>;
  	};
- 
-+	vdd_1v8_dsp: regulator-dsp {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vdd_1v8_dsp";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		gpio = <&gpio TEGRA_GPIO(U, 5) GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		vin-supply = <&vdd_1v8_vio>;
-+	};
 +
- 	sound {
- 		compatible = "asus,tegra-audio-rt5631-tf201",
- 			     "nvidia,tegra-audio-rt5631";
++	sound {
++		compatible = "asus,tegra-audio-rt5631-tf201",
++			     "nvidia,tegra-audio-rt5631";
++		nvidia,model = "Asus Transformer Prime TF201 RT5631";
++
++		nvidia,audio-routing =
++			"Headphone Jack", "HPOL",
++			"Headphone Jack", "HPOR",
++			"Int Spk", "SPOL",
++			"Int Spk", "SPOR",
++			"MIC1", "MIC Bias1",
++			"MIC Bias1", "Headset Mic",
++			"DMIC", "Int Mic";
++
++		nvidia,audio-codec = <&rt5631>;
++	};
+ };
+ 
+ &emc_icc_dvfs_opp_table {
 diff --git a/arch/arm/boot/dts/tegra30-asus-tf300t.dts b/arch/arm/boot/dts/tegra30-asus-tf300t.dts
-index 78f78cca337a..2dcf0e1f6ca2 100644
+index f47434871a5c..78f78cca337a 100644
 --- a/arch/arm/boot/dts/tegra30-asus-tf300t.dts
 +++ b/arch/arm/boot/dts/tegra30-asus-tf300t.dts
-@@ -68,6 +68,25 @@ bluetooth {
- 		};
- 	};
+@@ -1011,13 +1011,12 @@ sound {
+ 			"Int Spk", "RON",
+ 			"Int Spk", "LOP",
+ 			"Int Spk", "LON",
+-			"IN1L", "Mic Jack",
+-			"IN2L", "Mic Jack",
++			"IN1L", "Headset Mic",
++			"IN2L", "Headset Mic",
+ 			"DMICDAT", "Int Mic";
  
-+	i2c@7000c000 {
-+		/* Fortemedia FM34NE voice processor */
-+		dsp@60 {
-+			compatible = "asus,tf300t-dsp", "fortemedia,fm34";
-+			reg = <0x60>;
-+
-+			bypass-gpios = <&gpio TEGRA_GPIO(BB, 6) GPIO_ACTIVE_HIGH>;
-+			reset-gpios = <&gpio TEGRA_GPIO(O, 3) GPIO_ACTIVE_LOW>;
-+
-+			vdd-supply = <&vdd_1v8_dsp>;
-+
-+			clocks = <&tegra_pmc TEGRA_PMC_CLK_OUT_1>;
-+			clock-names = "mclk";
-+
-+			assigned-clocks = <&tegra_pmc TEGRA_PMC_CLK_OUT_1>;
-+			assigned-clock-parents = <&tegra_car TEGRA30_CLK_EXTERN1>;
-+		};
-+	};
-+
- 	i2c@7000c400 {
- 		/* Elantech EKTH1036 touchscreen */
- 		touchscreen@10 {
-@@ -999,6 +1018,16 @@ display-panel {
- 		compatible = "innolux,g101ice-l01";
+ 		nvidia,audio-codec = <&wm8903>;
+ 		nvidia,spkr-en-gpios = <&wm8903 2 GPIO_ACTIVE_HIGH>;
+-		nvidia,headset;
  	};
+ };
  
-+	vdd_1v8_dsp: regulator-dsp {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vdd_1v8_dsp";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		gpio = <&gpio TEGRA_GPIO(P, 3) GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		vin-supply = <&vdd_1v8_vio>;
-+	};
-+
- 	sound {
- 		compatible = "asus,tegra-audio-wm8903-tf300t",
- 			     "nvidia,tegra-audio-wm8903";
 diff --git a/arch/arm/boot/dts/tegra30-asus-tf300tg.dts b/arch/arm/boot/dts/tegra30-asus-tf300tg.dts
-index 82c51e177a70..7f23021611a4 100644
+index 96345f821c3d..82c51e177a70 100644
 --- a/arch/arm/boot/dts/tegra30-asus-tf300tg.dts
 +++ b/arch/arm/boot/dts/tegra30-asus-tf300tg.dts
-@@ -164,6 +164,25 @@ bluetooth {
- 		};
+@@ -1072,6 +1072,23 @@ timing-667000000 {
+ 	display-panel {
+ 		compatible = "innolux,g101ice-l01";
  	};
- 
-+	i2c@7000c000 {
-+		/* Fortemedia FM34NE voice processor */
-+		dsp@60 {
-+			compatible = "asus,tf300t-dsp", "fortemedia,fm34";
-+			reg = <0x60>;
 +
-+			bypass-gpios = <&gpio TEGRA_GPIO(BB, 6) GPIO_ACTIVE_HIGH>;
-+			reset-gpios = <&gpio TEGRA_GPIO(O, 3) GPIO_ACTIVE_LOW>;
++	sound {
++		compatible = "asus,tegra-audio-rt5631-tf300tg",
++			     "nvidia,tegra-audio-rt5631";
++		nvidia,model = "Asus Transformer Pad TF300TG RT5631";
 +
-+			vdd-supply = <&vdd_1v8_vio>;
++		nvidia,audio-routing =
++			"Headphone Jack", "HPOL",
++			"Headphone Jack", "HPOR",
++			"Int Spk", "SPOL",
++			"Int Spk", "SPOR",
++			"MIC1", "MIC Bias1",
++			"MIC Bias1", "Headset Mic",
++			"DMIC", "Int Mic";
 +
-+			clocks = <&tegra_pmc TEGRA_PMC_CLK_OUT_1>;
-+			clock-names = "mclk";
-+
-+			assigned-clocks = <&tegra_pmc TEGRA_PMC_CLK_OUT_1>;
-+			assigned-clock-parents = <&tegra_car TEGRA30_CLK_EXTERN1>;
-+		};
++		nvidia,audio-codec = <&rt5631>;
 +	};
-+
- 	i2c@7000c400 {
- 		/* Elantech EKTH1036 touchscreen */
- 		touchscreen@10 {
+ };
+ 
+ &emc_icc_dvfs_opp_table {
 diff --git a/arch/arm/boot/dts/tegra30-asus-tf700t.dts b/arch/arm/boot/dts/tegra30-asus-tf700t.dts
-index 766225ebdeab..bbb33119780e 100644
+index 1a331dec3cfe..766225ebdeab 100644
 --- a/arch/arm/boot/dts/tegra30-asus-tf700t.dts
 +++ b/arch/arm/boot/dts/tegra30-asus-tf700t.dts
-@@ -85,6 +85,25 @@ bluetooth {
- 		};
+@@ -812,6 +812,23 @@ vdd_1v2_mipi: regulator-mipi {
+ 		enable-active-high;
+ 		vin-supply = <&vdd_3v3_sys>;
  	};
- 
-+	i2c@7000c000 {
-+		/* Fortemedia FM34NE voice processor */
-+		dsp@60 {
-+			compatible = "asus,tf700t-dsp", "fortemedia,fm34";
-+			reg = <0x60>;
 +
-+			bypass-gpios = <&gpio TEGRA_GPIO(BB, 6) GPIO_ACTIVE_HIGH>;
-+			reset-gpios = <&gpio TEGRA_GPIO(O, 3) GPIO_ACTIVE_LOW>;
++	sound {
++		compatible = "asus,tegra-audio-rt5631-tf700t",
++			     "nvidia,tegra-audio-rt5631";
++		nvidia,model = "Asus Transformer Infinity TF700T RT5631";
 +
-+			vdd-supply = <&vdd_1v8_vio>;
++		nvidia,audio-routing =
++			"Headphone Jack", "HPOL",
++			"Headphone Jack", "HPOR",
++			"Int Spk", "SPOL",
++			"Int Spk", "SPOR",
++			"MIC1", "MIC Bias1",
++			"MIC Bias1", "Headset Mic",
++			"DMIC", "Int Mic";
 +
-+			clocks = <&tegra_pmc TEGRA_PMC_CLK_OUT_1>;
-+			clock-names = "mclk";
-+
-+			assigned-clocks = <&tegra_pmc TEGRA_PMC_CLK_OUT_1>;
-+			assigned-clock-parents = <&tegra_car TEGRA30_CLK_EXTERN1>;
-+		};
++		nvidia,audio-codec = <&rt5631>;
 +	};
-+
- 	i2c@7000c400 {
- 		/* Elantech ELAN-3024-7053 or 5184N FPC-1 REV: 2/3 touchscreen */
- 		touchscreen@10 {
+ };
+ 
+ &emc_icc_dvfs_opp_table {
+diff --git a/arch/arm/boot/dts/tegra30-asus-transformer-common.dtsi b/arch/arm/boot/dts/tegra30-asus-transformer-common.dtsi
+index 08ea9cb32d0e..42dae0f4759e 100644
+--- a/arch/arm/boot/dts/tegra30-asus-transformer-common.dtsi
++++ b/arch/arm/boot/dts/tegra30-asus-transformer-common.dtsi
+@@ -550,7 +550,7 @@ spi1_mosi_px4 {
+ 				nvidia,enable-input = <TEGRA_PIN_ENABLE>;
+ 			};
+ 
+-			spi2_cs1_n_pw2 {
++			hp_detect {
+ 				nvidia,pins = "spi2_cs1_n_pw2";
+ 				nvidia,function = "spi2";
+ 				nvidia,pull = <TEGRA_PIN_PULL_UP>;
+@@ -558,10 +558,10 @@ spi2_cs1_n_pw2 {
+ 				nvidia,enable-input = <TEGRA_PIN_ENABLE>;
+ 			};
+ 
+-			spi2_sck_px2 {
++			mic_detect {
+ 				nvidia,pins = "spi2_sck_px2";
+ 				nvidia,function = "spi2";
+-				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
++				nvidia,pull = <TEGRA_PIN_PULL_UP>;
+ 				nvidia,tristate = <TEGRA_PIN_DISABLE>;
+ 				nvidia,enable-input = <TEGRA_PIN_ENABLE>;
+ 			};
+@@ -1674,7 +1674,8 @@ sound {
+ 		nvidia,i2s-controller = <&tegra_i2s1>;
+ 
+ 		nvidia,hp-det-gpios = <&gpio TEGRA_GPIO(W, 2) GPIO_ACTIVE_LOW>;
+-		nvidia,hp-mute-gpios = <&gpio TEGRA_GPIO(X, 2) GPIO_ACTIVE_LOW>;
++		nvidia,mic-det-gpios = <&gpio TEGRA_GPIO(X, 2) GPIO_ACTIVE_LOW>;
++		nvidia,coupled-mic-hp-det;
+ 
+ 		clocks = <&tegra_car TEGRA30_CLK_PLL_A>,
+ 			 <&tegra_car TEGRA30_CLK_PLL_A_OUT0>,
 diff --git a/arch/arm/boot/dts/tegra30-pegatron-chagall.dts b/arch/arm/boot/dts/tegra30-pegatron-chagall.dts
-index 6e24b095713b..007ba3f3e95e 100644
+index d9408a90653a..6e24b095713b 100644
 --- a/arch/arm/boot/dts/tegra30-pegatron-chagall.dts
 +++ b/arch/arm/boot/dts/tegra30-pegatron-chagall.dts
-@@ -1145,6 +1145,23 @@ lcd_ddc: i2c@7000c000 {
- 		status = "okay";
- 		clock-frequency = <400000>;
+@@ -2731,7 +2731,7 @@ sound {
+ 			"Int Spk", "RON",
+ 			"Int Spk", "LOP",
+ 			"Int Spk", "LON",
+-			"IN1R", "Mic Jack",
++			"IN1R", "Headset Mic",
+ 			"DMICDAT", "Int Mic";
  
-+		/* Fortemedia FM34NE voice processor */
-+		dsp@60 {
-+			compatible = "pegatron,chagall-dsp", "fortemedia,fm34";
-+			reg = <0x60>;
-+
-+			bypass-gpios = <&gpio TEGRA_GPIO(N, 3) GPIO_ACTIVE_HIGH>;
-+			reset-gpios = <&gpio TEGRA_GPIO(N, 0) GPIO_ACTIVE_LOW>;
-+
-+			vdd-supply = <&vdd_1v8_dsp>;
-+
-+			clocks = <&tegra_pmc TEGRA_PMC_CLK_OUT_1>;
-+			clock-names = "mclk";
-+
-+			assigned-clocks = <&tegra_pmc TEGRA_PMC_CLK_OUT_1>;
-+			assigned-clock-parents = <&tegra_car TEGRA30_CLK_EXTERN1>;
-+		};
-+
- 		/* Wolfson Microelectronics WM8903 audio codec */
- 		wm8903: audio-codec@1a {
- 			compatible = "wlf,wm8903";
-@@ -1500,6 +1517,16 @@ vdd_vbus_usb3: regulator-usb3 {
- 		vin-supply = <&vdd_5v0_sys>;
- 	};
- 
-+	vdd_1v8_dsp: regulator-dsp {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vdd_1v8_dsp";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		gpio = <&gpio TEGRA_GPIO(N, 1) GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		vin-supply = <&vdd_1v8_vio>;
-+	};
-+
- 	pmc@7000e400 {
- 		status = "okay";
- 		nvidia,invert-interrupt;
+ 		nvidia,i2s-controller = <&tegra_i2s1>;
 -- 
 2.37.2
 
