@@ -4,81 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD206C636D7
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Feb 2023 17:01:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 674B6C636D7
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Feb 2023 17:01:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 727F8DF2;
-	Tue, 21 Feb 2023 18:00:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 727F8DF2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1BBA5E7F;
+	Tue, 21 Feb 2023 18:00:40 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BBA5E7F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1676998867;
-	bh=6moRbn9LHrkq8wHU5QRl+XdeMGFzTjj1yLlLgdMDgOQ=;
+	s=default; t=1676998890;
+	bh=GmFG1YKCb0Q/ommkmUjwup7T9MZg39/d3oY0mhMCpc0=;
 	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=hMLCLLkT0bqflxcPs7EjDQICSi6xvSAhrt+yS5rcHCYSIivm0O+RgKPiXC8KE1Hkp
-	 gZbfVrtZgmcNdagZQJ74HQAor3QBYlrZR7Iju3/KI4M001+MPDmxjpYt3RM9FMR238
-	 5HzvK212H6nRk+J1PaJyBs8nQJ0sv7AlxqBH0OAA=
+	b=lHbISsMcAQu6nB5rCfVzkZras5VvMZZuBa6nLDbwp1lK6BUdbOkLDlJfBMt+IlBEo
+	 jy/Kn7MMHpPwbmB+Sim57rjbV/kQVBNoTVK4xqxBijr5IR+UxZCZh3FUZGIxxsChYa
+	 2YaAN2S3hFlsgsYhFtWogLOmXhDgAtAo/LUPeuOM=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A30D9F80533;
-	Tue, 21 Feb 2023 17:59:10 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E843F8053D;
+	Tue, 21 Feb 2023 17:59:15 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 173E8F804FC; Tue, 21 Feb 2023 17:59:04 +0100 (CET)
+	id C32D4F8052D; Tue, 21 Feb 2023 17:59:05 +0100 (CET)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 78A78F8047C
-	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2023 17:58:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78A78F8047C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9B0C8F80266
+	for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2023 17:58:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B0C8F80266
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=NfYB6zbn
+ header.s=Intel header.b=H/4EZrn1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676998736; x=1708534736;
+  t=1676998735; x=1708534735;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=6moRbn9LHrkq8wHU5QRl+XdeMGFzTjj1yLlLgdMDgOQ=;
-  b=NfYB6zbnpLqhFRJTVDcu+4J8K4JQQ99QyzCrvCcCLeazw8S/jusnR8jl
-   a5tkImuKR3+2v5Giy/jINcQKX/PGvl7yhddaoQGefPSCy4wZ/0oyYhcuI
-   OlJv8QKhZfSnNcSRaoajpAp2e1XwvQJrMkGjtGE9z9pQNmdK7yBj7lOHO
-   eEYOX59AdEGv1PniLoP84PU3iLSxM97MQxhbnGjFQr8AUinwfSTX+YYhA
-   FLFP5kK+574JWneqJ1jWnrPLGzJ/56YJm2LTLH7fclUdryieXwoA5uJF/
-   HDRCCQZkMBF+mz2JFlXpR4Ox9xtJjOTyXchNpv4tnoTegZX9gJfs2aopV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="334884707"
+  bh=GmFG1YKCb0Q/ommkmUjwup7T9MZg39/d3oY0mhMCpc0=;
+  b=H/4EZrn1NbJJtkH+eWZwQdVfHPLSmJsdSIoLydOo4p6qW0uC7TFaolzJ
+   BbTPm6+srxnylXvKdrynHO3igTvECTKnlXBr4ksTPJcJqTQeV42sKk+Fe
+   5I0LE6ao1MOUDBIre/ghymxJt6X1QmGEMbuF81J0gZxITKSZxstPhhI3C
+   mjvlm7keB+D4825xq32NpJfXsUZ4+cp8MkF9l9MI9TFUlANG47D1ds3U/
+   4Ur5aXbWQb4eRqzrFNt5/sHPaD3XJIZa64P9zhlG86x6YA3z5DVbETPqV
+   9FTk1zp9v0xL2XG1ssKnAquTFei4U+OQ0G31KeUjWcu8vsTP9uy70tuLf
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="334884695"
 X-IronPort-AV: E=Sophos;i="5.97,315,1669104000";
-   d="scan'208";a="334884707"
+   d="scan'208";a="334884695"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Feb 2023 08:58:47 -0800
-X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="814569123"
+ 21 Feb 2023 08:58:46 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10628"; a="814569114"
 X-IronPort-AV: E=Sophos;i="5.97,315,1669104000";
-   d="scan'208";a="814569123"
+   d="scan'208";a="814569114"
 Received: from taevough-mobl.amr.corp.intel.com (HELO [10.209.174.213])
  ([10.209.174.213])
   by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Feb 2023 08:58:41 -0800
-Message-ID: <8a002459-37aa-47c2-4e7d-50adac6015f6@linux.intel.com>
-Date: Tue, 21 Feb 2023 11:13:44 -0500
+ 21 Feb 2023 08:58:39 -0800
+Message-ID: <72b601b9-93bf-b9f5-c898-c63ad46e5167@linux.intel.com>
+Date: Tue, 21 Feb 2023 11:10:30 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Firefox/102.0 Thunderbird/102.7.1
-Subject: Re: [PATCH V3 7/8] soundwire: amd: handle SoundWire wake enable
- interrupt
+Subject: Re: [PATCH V3 6/8] soundwire: amd: add runtime pm ops for AMD
+ SoundWire manager driver
 Content-Language: en-US
 To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, vkoul@kernel.org
 References: <20230220100418.76754-1-Vijendar.Mukunda@amd.com>
- <20230220100418.76754-8-Vijendar.Mukunda@amd.com>
+ <20230220100418.76754-7-Vijendar.Mukunda@amd.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230220100418.76754-8-Vijendar.Mukunda@amd.com>
+In-Reply-To: <20230220100418.76754-7-Vijendar.Mukunda@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: XHJPF263J5RVQBAGTAWNFX5YEDSLRB52
-X-Message-ID-Hash: XHJPF263J5RVQBAGTAWNFX5YEDSLRB52
+Message-ID-Hash: PK2WX3NQVZ5KKT3XHDTTAUNP2TVDBB3V
+X-Message-ID-Hash: PK2WX3NQVZ5KKT3XHDTTAUNP2TVDBB3V
 X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +97,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XHJPF263J5RVQBAGTAWNFX5YEDSLRB52/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PK2WX3NQVZ5KKT3XHDTTAUNP2TVDBB3V/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -107,40 +107,93 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
-
-On 2/20/23 05:04, Vijendar Mukunda wrote:
-> Add wake enable interrupt support for both the SoundWire manager
-> instances.
-> 
-> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-> Signed-off-by: Mastan Katragadda <Mastan.Katragadda@amd.com>
-> ---
->  drivers/soundwire/amd_manager.c | 10 ++++++++++
->  drivers/soundwire/amd_manager.h |  1 +
->  2 files changed, 11 insertions(+)
-> 
-> diff --git a/drivers/soundwire/amd_manager.c b/drivers/soundwire/amd_manager.c
-> index 3322adeca0d8..a7182aa78652 100644
-> --- a/drivers/soundwire/amd_manager.c
-> +++ b/drivers/soundwire/amd_manager.c
-> @@ -932,6 +932,13 @@ static void amd_sdw_update_slave_status(u32 status_change_0to7, u32 status_chang
->  	}
->  }
->  
-> +static void amd_sdw_process_wake_event(struct amd_sdw_manager *amd_manager)
+> +static int amd_deinit_sdw_manager(struct amd_sdw_manager *amd_manager)
 > +{
-> +	pm_request_resume(amd_manager->dev);
+> +	int ret;
+> +
+> +	amd_disable_sdw_interrupts(amd_manager);
+> +	ret = amd_disable_sdw_manager(amd_manager);
+> +	return ret;
 
-is this needed?
+return amd_disable_sdw_manager(amd_manager); ?
 
-In the Intel case, the wakes do not necessarily come as in-band wakes,
-but they can also be notified by the PCI subsystem, so we do have to use
-pm_request_resume.
-
-In the AMD case, what happens if you don't do this? Doesn't the
-interrupt trigger a pm_runtime_resume already?
-
-> +	acp_reg_writel(0x00, amd_manager->acp_mmio + ACP_SW_WAKE_EN(amd_manager->instance));
-> +	acp_reg_writel(0x00, amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_8TO11);
 > +}
-\
+
+> +static int amd_sdw_clock_stop(struct amd_sdw_manager *amd_manager)
+> +{
+> +	u32 val;
+> +	u32 retry_count = 0;
+> +	int ret;
+> +
+> +	ret = sdw_bus_prep_clk_stop(&amd_manager->bus);
+> +	if (ret < 0 && ret != -ENODATA) {
+> +		dev_err(amd_manager->dev, "prepare clock stop failed %d", ret);
+> +		return 0;
+> +	}
+> +	ret = sdw_bus_clk_stop(&amd_manager->bus);
+> +	if (ret < 0 && ret != -ENODATA) {
+> +		dev_err(amd_manager->dev, "bus clock stop failed %d", ret);
+> +		return 0;
+> +	}
+> +
+> +	do {
+> +		val = acp_reg_readl(amd_manager->mmio + ACP_SW_CLK_RESUME_CTRL);
+
+don't you need a minimal usleep_range to avoid re-reading the same
+register over and over?
+
+This is tied to the frame duration, isn't it? this is 20us typically.
+
+> +		if (val & AMD_SDW_CLK_STOP_DONE) {
+> +			amd_manager->clk_stopped = true;
+> +			break;
+> +		}
+> +	} while (retry_count++ < AMD_SDW_CLK_STOP_MAX_RETRY_COUNT);
+> +
+> +	if (!amd_manager->clk_stopped) {
+> +		dev_err(amd_manager->dev, "SDW%x clock stop failed\n", amd_manager->instance);
+> +		return 0;
+> +	}
+> +
+> +	if (amd_manager->wake_en_mask)
+> +		acp_reg_writel(0x01, amd_manager->acp_mmio + ACP_SW_WAKE_EN(amd_manager->instance));
+> +
+> +	dev_dbg(amd_manager->dev, "SDW%x clock stop successful\n", amd_manager->instance);
+> +	return 0;
+> +}
+> +
+> +static int amd_sdw_clock_stop_exit(struct amd_sdw_manager *amd_manager)
+> +{
+> +	int ret;
+> +	u32 val;
+> +	u32 retry_count = 0;
+> +
+> +	if (amd_manager->clk_stopped) {
+> +		val = acp_reg_readl(amd_manager->mmio + ACP_SW_CLK_RESUME_CTRL);
+> +		val |= AMD_SDW_CLK_RESUME_REQ;
+> +		acp_reg_writel(val, amd_manager->mmio + ACP_SW_CLK_RESUME_CTRL);
+> +		do {
+> +			val = acp_reg_readl(amd_manager->mmio + ACP_SW_CLK_RESUME_CTRL);
+> +			if (val & AMD_SDW_CLK_RESUME_DONE)
+> +				break;
+> +			usleep_range(10, 100);
+
+that's 10x range for sleep, that sounds a vague and suspicious, no?
+
+> +		} while (retry_count++ < AMD_SDW_CLK_STOP_MAX_RETRY_COUNT);
+> +		if (val & AMD_SDW_CLK_RESUME_DONE) {
+> +			acp_reg_writel(0, amd_manager->mmio + ACP_SW_CLK_RESUME_CTRL);
+> +			ret = sdw_bus_exit_clk_stop(&amd_manager->bus);
+> +			if (ret < 0)
+> +				dev_err(amd_manager->dev, "bus failed to exit clock stop %d\n",
+> +					ret);
+> +			amd_manager->clk_stopped = false;
+> +		}
+> +	}
+> +	if (amd_manager->clk_stopped) {
+> +		dev_err(amd_manager->dev, "SDW%x clock stop exit failed\n", amd_manager->instance);
+> +		return 0;
+> +	}
+> +	dev_dbg(amd_manager->dev, "SDW%x clock stop exit successful\n", amd_manager->instance);
+> +	return 0;
+
