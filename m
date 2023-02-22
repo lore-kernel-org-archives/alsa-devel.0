@@ -4,40 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F32C5C6379F
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Feb 2023 09:34:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9873C6379F
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Feb 2023 09:34:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4767E7E;
-	Wed, 22 Feb 2023 10:33:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4767E7E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70460EA8;
+	Wed, 22 Feb 2023 10:33:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70460EA8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677058451;
-	bh=Ku18ycB9XTTA4rTLVx3riq+NXKwahcrPj/ekIBMCZI4=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=TBZ51PkGdeD8OqVq8SKaDGZV7xoNQiFJAXbS3VujGqu/yL3NKECKRU6qiW8KrKKmA
-	 nUefbAsZOtiZ30RKblfcYufnS4qWJsjML3NxaxK3DUsiIhkyiiSg1i+sBIyF037Eml
-	 fD5p511qhXOvJ5c+jRTSpCApvZCWZi/hkXxwpNnY=
+	s=default; t=1677058483;
+	bh=/uNR33hg52LzVuUvSmkhH9OvcQocTCaa2wVQkfF34SA=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=ctCBsy54dcbhW8KvqTQ4p+Md9OPr/OkFKg7tel12yJLRPzK2Xhbnjzco1CFUqHqbV
+	 IQXfgfoC054FbmJdsi3oOfE6GdBLXc9Ho5dLT6ilHWlAf+gzI7kYt0gH7jA+lSWXuL
+	 rSCYfZUNhSZnFKiVYmd8AwYfBim2tk7yC0uyYrgA=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B34DF80083;
-	Wed, 22 Feb 2023 10:33:02 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75493F80525;
+	Wed, 22 Feb 2023 10:33:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B804DF804B2; Wed, 22 Feb 2023 10:32:58 +0100 (CET)
+	id 0F69BF804B0; Wed, 22 Feb 2023 10:33:01 +0100 (CET)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [46.235.227.172])
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 45F32F80125
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2023 10:32:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45F32F80125
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0FE58F80266
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2023 10:32:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FE58F80266
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=PVzlRLwR
+ header.a=rsa-sha256 header.s=mail header.b=KUORYmiY
 Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
  [82.11.51.62])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -45,18 +46,18 @@ Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: tanureal)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 8944C66021B8;
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id DEF0066021BA;
 	Wed, 22 Feb 2023 09:32:51 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1677058371;
-	bh=Ku18ycB9XTTA4rTLVx3riq+NXKwahcrPj/ekIBMCZI4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=PVzlRLwRnJzkGqqLf2KD0nsVgOfRNGV+hCyuSu/7N85X4ZY1BFZzmlgyQPrpOp84R
-	 LiILtcq2/+r1SRgWXqNLedEToNSRzRqZWd4wupunqcN1N1ShWBjgHTEYwvtIp3BmB/
-	 p973GhLt2j1ClkSMNS+ywuBmf8rUc9g33Sxo+3MJSgWE/dpojbAkQIxZo5WDjIOs0h
-	 rJlAND0Ff77egRKxW3zpYb4Zvtcpbfbb1l0B0XMyAe3xNnfSnu7FsYwrQF8qo9mHIu
-	 v3ppBIEgz9JbZZFMC/Ln0rKVafF8F6y1ix/SsJHY+hCisuE/iC0GqEnr23MVsbeH6p
-	 HwPud9o1wxzmA==
+	s=mail; t=1677058372;
+	bh=/uNR33hg52LzVuUvSmkhH9OvcQocTCaa2wVQkfF34SA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=KUORYmiYxuJWpI+Jxvo2JqUjlvHJgNNdF0X/ueCn49xRQ9kHaPgwiLHQXNE3R7Fpg
+	 mefNTBov17H1eoTNZtJ6+/D1Z8IKqsq7tnPCinR9Z3a9eR2Jx4hg7sMM0gcyLIAXnp
+	 E1DN/GEEtpgiHiEsRQyMPVrt70X3GFJg65iblkI7Eil1tNP7Wer284ExDICGaRnpXj
+	 vGJYu9J7a5IX+niyH7biozHw4bqKfStHQ9eDZC7EVKK3QaccvUHgHLK4h4bzQ+eDuJ
+	 nH4KIHi00KesehZcNSg2I1iEYgVciQ6xrFUnbapIcOIjG+V7gv3ORqS58Ig7CzyV6T
+	 sTr6necSnabGg==
 From: Lucas Tanure <lucas.tanure@collabora.com>
 To: David Rhodes <david.rhodes@cirrus.com>,
 	Charles Keepax <ckeepax@opensource.cirrus.com>,
@@ -66,14 +67,16 @@ To: David Rhodes <david.rhodes@cirrus.com>,
 	Rob Herring <robh+dt@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v6 0/4] Add CS35L41 shared boost feature
-Date: Wed, 22 Feb 2023 09:32:40 +0000
-Message-Id: <20230222093244.938156-1-lucas.tanure@collabora.com>
+Subject: [PATCH v6 1/4] ASoC: cs35l41: Only disable internal boost
+Date: Wed, 22 Feb 2023 09:32:41 +0000
+Message-Id: <20230222093244.938156-2-lucas.tanure@collabora.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230222093244.938156-1-lucas.tanure@collabora.com>
+References: <20230222093244.938156-1-lucas.tanure@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KGP3JTKJD3IQN3GLNEHXP33I4OWPVUO4
-X-Message-ID-Hash: KGP3JTKJD3IQN3GLNEHXP33I4OWPVUO4
+Message-ID-Hash: G5TO6GR4YCB72ZBJPSK3FBMAJMYORU2N
+X-Message-ID-Hash: G5TO6GR4YCB72ZBJPSK3FBMAJMYORU2N
 X-MailFrom: lucas.tanure@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -89,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KGP3JTKJD3IQN3GLNEHXP33I4OWPVUO4/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/G5TO6GR4YCB72ZBJPSK3FBMAJMYORU2N/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,58 +101,101 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Valve's Steam Deck uses CS35L41 in shared boost mode, where both speakers
-share the boost circuit.
-Add this support in the shared lib, but for now, shared boost is not
-supported in HDA systems as would require BIOS changes.
+In error situations, only the internal boost case should be disabled and
+re-enabled.
+Also, for other boost cases re-enabling the boost to the default internal
+boost config is incorrect.
 
-Based on David Rhodes shared boost patches.
+Fixes: 6450ef559056 ("ASoC: cs35l41: CS35L41 Boosted Smart Amplifier")
+Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs35l41.c | 34 +++++++++++++++++++---------------
+ 1 file changed, 19 insertions(+), 15 deletions(-)
 
-Also, fix boost config overwriting in IRQ found in the review and do a
-small refactor of the code.
-
-Changes from V5:
- - Improved documentation from Cirrrus
- - All amps use MDSCYN for boost source
- - Active amp has TX and RX enabled
-
-Changes from V4:
- - Fix Document subject
-
-Changes from V3:
- - Fix wrong code sent
- - Fix ISO C90 mixed declarations and code 
-
-Changes from V2:
- - Drop External boost without VSPK Documentation
- - Move Shared boost to use values 2 and 3
- - Revert back to reg_sequence but reading the value first and only update
-the necessary bits
- - Fix bug found by Intel kernel Test Robot
-
-Changes from V1:
- - Fix Documentation patch subject
- - New patch for External boost without VSPK Documentation
- - New patch to fix boost IRQ overwriting issue
- - New patch to refactor IRQ release error code
- - reinit_completion on pcm_startup
- - fix DRE switch overwriting
- - return IRQ_HANDLED in PLL_LOCK case
-
-Lucas Tanure (4):
-  ASoC: cs35l41: Only disable internal boost
-  ASoC: cs35l41: Refactor error release code
-  ALSA: cs35l41: Add shared boost feature
-  ASoC: dt-bindings: cirrus,cs35l41: Document CS35l41 shared boost
-
- .../bindings/sound/cirrus,cs35l41.yaml        |  10 +-
- include/sound/cs35l41.h                       |  13 +-
- sound/pci/hda/cs35l41_hda.c                   |   6 +-
- sound/soc/codecs/cs35l41-lib.c                |  73 +++++++++-
- sound/soc/codecs/cs35l41.c                    | 125 +++++++++---------
- sound/soc/codecs/cs35l41.h                    |   1 +
- 6 files changed, 157 insertions(+), 71 deletions(-)
-
+diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
+index c223d83e02cf..f2b5032daa6a 100644
+--- a/sound/soc/codecs/cs35l41.c
++++ b/sound/soc/codecs/cs35l41.c
+@@ -356,6 +356,19 @@ static const struct snd_kcontrol_new cs35l41_aud_controls[] = {
+ 	WM_ADSP_FW_CONTROL("DSP1", 0),
+ };
+ 
++static void cs35l41_boost_enable(struct cs35l41_private *cs35l41, unsigned int enable)
++{
++	switch (cs35l41->hw_cfg.bst_type) {
++	case CS35L41_INT_BOOST:
++		enable = enable ? CS35L41_BST_EN_DEFAULT : CS35L41_BST_DIS_FET_OFF;
++		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2, CS35L41_BST_EN_MASK,
++				enable << CS35L41_BST_EN_SHIFT);
++		break;
++	default:
++		break;
++	}
++}
++
+ static irqreturn_t cs35l41_irq(int irq, void *data)
+ {
+ 	struct cs35l41_private *cs35l41 = data;
+@@ -431,8 +444,7 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
+ 
+ 	if (status[0] & CS35L41_BST_OVP_ERR) {
+ 		dev_crit_ratelimited(cs35l41->dev, "VBST Over Voltage error\n");
+-		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-				   CS35L41_BST_EN_MASK, 0);
++		cs35l41_boost_enable(cs35l41, 0);
+ 		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
+ 			     CS35L41_BST_OVP_ERR);
+ 		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
+@@ -441,16 +453,13 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
+ 				   CS35L41_BST_OVP_ERR_RLS);
+ 		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
+ 				   CS35L41_BST_OVP_ERR_RLS, 0);
+-		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-				   CS35L41_BST_EN_MASK,
+-				   CS35L41_BST_EN_DEFAULT << CS35L41_BST_EN_SHIFT);
++		cs35l41_boost_enable(cs35l41, 1);
+ 		ret = IRQ_HANDLED;
+ 	}
+ 
+ 	if (status[0] & CS35L41_BST_DCM_UVP_ERR) {
+ 		dev_crit_ratelimited(cs35l41->dev, "DCM VBST Under Voltage Error\n");
+-		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-				   CS35L41_BST_EN_MASK, 0);
++		cs35l41_boost_enable(cs35l41, 0);
+ 		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
+ 			     CS35L41_BST_DCM_UVP_ERR);
+ 		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
+@@ -459,16 +468,13 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
+ 				   CS35L41_BST_UVP_ERR_RLS);
+ 		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
+ 				   CS35L41_BST_UVP_ERR_RLS, 0);
+-		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-				   CS35L41_BST_EN_MASK,
+-				   CS35L41_BST_EN_DEFAULT << CS35L41_BST_EN_SHIFT);
++		cs35l41_boost_enable(cs35l41, 1);
+ 		ret = IRQ_HANDLED;
+ 	}
+ 
+ 	if (status[0] & CS35L41_BST_SHORT_ERR) {
+ 		dev_crit_ratelimited(cs35l41->dev, "LBST error: powering off!\n");
+-		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-				   CS35L41_BST_EN_MASK, 0);
++		cs35l41_boost_enable(cs35l41, 0);
+ 		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
+ 			     CS35L41_BST_SHORT_ERR);
+ 		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
+@@ -477,9 +483,7 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
+ 				   CS35L41_BST_SHORT_ERR_RLS);
+ 		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
+ 				   CS35L41_BST_SHORT_ERR_RLS, 0);
+-		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+-				   CS35L41_BST_EN_MASK,
+-				   CS35L41_BST_EN_DEFAULT << CS35L41_BST_EN_SHIFT);
++		cs35l41_boost_enable(cs35l41, 1);
+ 		ret = IRQ_HANDLED;
+ 	}
+ 
 -- 
 2.39.2
 
