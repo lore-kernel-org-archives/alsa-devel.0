@@ -4,117 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5AECC636D6
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Feb 2023 14:54:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 263F5C636D6
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Feb 2023 14:58:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41988EA8;
-	Wed, 22 Feb 2023 15:53:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41988EA8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8FCE6EA8;
+	Wed, 22 Feb 2023 15:57:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FCE6EA8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677077686;
-	bh=1ZxM1DIUyrIzDf+fi/7zIyQdW4rQKjFnUFhOGlIkpJ0=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=a7EJhDUC6V2BHl2P2pMwjQYl5Cg+3OcK+qYjdL7cP4uKpLoXn8UHxdJCZFXURDnBt
-	 j1EAiAwW8kK4ph+QL/qQMRHxYxq0bMuWCrm95/vPm1JZxp8Xn8Fqt9iwRyZsnowtQ+
-	 qLzejSngulRs76Gl8WeepSouc5AsLBBUFHH9JpBU=
+	s=default; t=1677077916;
+	bh=0oI0QSVIZmrYGzm5qMI9FC9aY3lntQPLGoGkeh0XrTQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=o9PtQeJFfW2RskcJxLITMYPSZdC+H2tVJkS2/5dJgKCFSFfnK/AOL5DSy29rS7Sqe
+	 LpG5fBcWY00VZ7V/IGLuuFkCWYbVjPuYEjlCu73ZqZHSLiMOeBMZPU/c9G+UIn9HCK
+	 sqovjwGhw2lgu3QEvodLhwJkH7qmH9jpVKEXaM/4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AECD1F80083;
-	Wed, 22 Feb 2023 15:53:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB7C6F8025A;
+	Wed, 22 Feb 2023 15:57:29 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D10B7F80266; Wed, 22 Feb 2023 15:53:35 +0100 (CET)
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com
- [IPv6:2a00:1450:4864:20::12e])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 13B27F80266; Wed, 22 Feb 2023 15:57:24 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 89D4DF80083
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2023 15:53:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89D4DF80083
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5DC8EF80083
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2023 15:57:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DC8EF80083
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=yIaGRZdf
-Received: by mail-lf1-x12e.google.com with SMTP id x24so10475817lfr.1
-        for <alsa-devel@alsa-project.org>;
- Wed, 22 Feb 2023 06:53:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XtiAUhBRnV1kzRpqeljMlrgfEP8oapNbELdUiPr+q0Q=;
-        b=yIaGRZdfGhPRxB1k8ow9epTiEE1W20A8grO7TCejcTJ9sWi1bZHAds5FbSz221ZTgc
-         XY+qfPUtt4sp+Rr8533QuRnBFRfyC9e5t70/Z86qx+VK2ILclkW2XWvn9kZ/+UyFKuoa
-         X28QYxXXtkuaave1dYN9Fiuv/jZYY4Lom0dKo3852iGBIY8af9JqyXVGLJVvSd41ym6O
-         Wy/obk73XRE8S4v5Qlf3i3KQ02UEZhazuGUXtNSrUU+P6P05EbCPh8aIG+hwdMCc5Qx7
-         0pXwcTR1KpkXeIg/BgUex7/RhJZJwkDYuOas/jUlZqbPv7dWUyC5ZHgBt6zYJ9V/kAMd
-         EVAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XtiAUhBRnV1kzRpqeljMlrgfEP8oapNbELdUiPr+q0Q=;
-        b=P7Ivb1OlwVAY42GInewuWQd3D42h6Xf9bXRHWMbHEIPBMmwmR8CN98swWyqx41rSJK
-         +jvXVlDifSXJhXwmMoKNcWlZjqs0aEhGLzcMI1HDIapbAEiyfjlxFkjJD4I3H7a+SQDV
-         pBTmllgAooGI01LR7rMaOoFDZHY6oiaW5r1UWyc5T0yDDyeI/FAONbAPhp1+YRd5szs3
-         haRd3wGhcMV5kDaH0Cvey8uwbglo1nj2UOBGMaxHUKHeai2RzZNyyj7gnk/1FkpGxx0P
-         +uMQjy023KF3AGwJkyX9wwAEQSKWXcnsbieqi67CCsrLO8+Oav4HHEqV1FI4FyYLolY+
-         R4WQ==
-X-Gm-Message-State: AO0yUKWp6omb8aWTjpk+CKI6OhKqsHTk7m0ecuKuhAgCERj3wCtl/uez
-	Z9UWShv+NYndEH5oavVh//jgL4cKxrneI82d
-X-Google-Smtp-Source: 
- AK7set8GZAysuh1vxytnbgEUxlKPIUmiScd1FKQtLfvEvrgSqsAGqT845Dtx9NeLeTWFSw7AwRcICQ==
-X-Received: by 2002:ac2:5282:0:b0:4d5:a689:7580 with SMTP id
- q2-20020ac25282000000b004d5a6897580mr2678118lfm.47.1677077611335;
-        Wed, 22 Feb 2023 06:53:31 -0800 (PST)
-Received: from [192.168.1.101] (abxi151.neoplus.adsl.tpnet.pl. [83.9.2.151])
-        by smtp.gmail.com with ESMTPSA id
- w26-20020a05651204da00b004d39af98af6sm646836lfq.81.2023.02.22.06.53.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Feb 2023 06:53:31 -0800 (PST)
-Message-ID: <64c80ca9-2317-8225-2345-146e41f3c251@linaro.org>
-Date: Wed, 22 Feb 2023 15:53:29 +0100
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=Zhr39bqj
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 75A6E61487;
+	Wed, 22 Feb 2023 14:57:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F7FFC433D2;
+	Wed, 22 Feb 2023 14:57:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1677077837;
+	bh=0oI0QSVIZmrYGzm5qMI9FC9aY3lntQPLGoGkeh0XrTQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Zhr39bqj+x9QOvNA+gfkh257ZaUD7gPdpSBgJ2x/L5bH8xIqU5qhpEHpMC/GMgXhO
+	 0ulwaRWnaBj6fhmCnbcdPAwn2y+qIb0xDkNN3M1RUBih935hUPxP4gWtiWxLyCPvMV
+	 kKeiejMm2q0cKVSluDw685zojrYX9OvB0Gi/Sr0JxMT6lw/g241bbusWK8ilMJ9RAn
+	 e+XTiYjBARNyh9n0yQitJByY/7dQqpvvHM8QcNIP4CaeY/DurtL5TK1w1Tkg1h+A8y
+	 rEZtoUT3Ff5fu5N1cQlRoJK4qxQVfS2Nde9UAmD71lleNujfrZIbqGj4Un+IBMQ+Jc
+	 +ftVYAfe92jmw==
+Date: Wed, 22 Feb 2023 14:57:10 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Dan Carpenter <error27@gmail.com>
+Subject: Re: [PATCH v1 04/10] ASoC: tegra: Support RT5631 by machine driver
+Message-ID: <Y/YtRtSqFAQj+AZU@sirena.org.uk>
+References: <20230221183211.21964-1-clamor95@gmail.com>
+ <20230221183211.21964-5-clamor95@gmail.com>
+ <Y/UcXNueAmrrhWG0@kadam>
+ <CAPVz0n01YWQ6FY9RDsa1rw_36n=NKpRLokFiVTxLsMDpQEd4YA@mail.gmail.com>
+ <Y/YYaVhE7WwqLIey@kadam>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH 2/2] soundwire: qcom: gracefully handle too many ports in
- DT
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Vinod Koul <vkoul@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Sanyog Kale <sanyog.r.kale@intel.com>, linux-arm-msm@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20230222144412.237832-1-krzysztof.kozlowski@linaro.org>
- <20230222144412.237832-2-krzysztof.kozlowski@linaro.org>
- <dc544641-b9f1-96b4-95a1-30fafc0712e5@linaro.org>
- <80339c7f-1cea-3c97-7dc4-5efb4597cb69@linaro.org>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <80339c7f-1cea-3c97-7dc4-5efb4597cb69@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: PUUFUKY2AVQ72NCVXZEWADW2SFGZCN5M
-X-Message-ID-Hash: PUUFUKY2AVQ72NCVXZEWADW2SFGZCN5M
-X-MailFrom: konrad.dybcio@linaro.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="SP3ot0dvarn2c/WQ"
+Content-Disposition: inline
+In-Reply-To: <Y/YYaVhE7WwqLIey@kadam>
+X-Cookie: My LESLIE GORE record is BROKEN ...
+Message-ID-Hash: HYHEL7CLPJTI567E6DJOTIRW247SQZTU
+X-Message-ID-Hash: HYHEL7CLPJTI567E6DJOTIRW247SQZTU
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
+CC: Svyatoslav Ryhel <clamor95@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Takashi Iwai <tiwai@suse.com>, Maxim Schwalm <maxim.schwalm@gmail.com>,
+ Dmitry Osipenko <digetx@gmail.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-tegra@vger.kernel.org, linux-staging@lists.linux.dev
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PUUFUKY2AVQ72NCVXZEWADW2SFGZCN5M/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HYHEL7CLPJTI567E6DJOTIRW247SQZTU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -124,41 +103,46 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
+--SP3ot0dvarn2c/WQ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 22.02.2023 15:50, Krzysztof Kozlowski wrote:
-> On 22/02/2023 15:47, Konrad Dybcio wrote:
->>
->>
->> On 22.02.2023 15:44, Krzysztof Kozlowski wrote:
->>> There are two issues related to the number of ports coming from
->>> Devicetree when exceeding in total QCOM_SDW_MAX_PORTS.  Both lead to
->>> incorrect memory accesses:
->>> 1. With DTS having too big value of input or output ports, the driver,
->>>    when copying port parameters from local/stack arrays into 'pconfig'
->>>    array in 'struct qcom_swrm_ctrl', will iterate over their sizes.
->>>
->>> 2. If DTS also has too many parameters for these ports (e.g.
->>>    qcom,ports-sinterval-low), the driver will overflow buffers on the
->>>    stack when reading these properties from DTS.
->>>
->>> Add a sanity check so incorrect DTS will not cause kernel memory
->>> corruption.
->>>
->>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>> ---
->> Fixes: 02efb49aa805 ("soundwire: qcom: add support for SoundWire controller")
-> 
-> Can be... but is it really a bug of the kernel? Issue is visible with
-> incorrect DTS and it's not the kernel's job to fix it. If DTS has
-> incorrect values (e.g. IO addresses) system won't work anyway and that's
-> the same type of bug.
-I'm not sure to what extent the kernel should be responsible for
-checking DT sanity, but in case of a buffer overflow, I really
-think it definitely deserves a fixes tag.
+On Wed, Feb 22, 2023 at 04:28:09PM +0300, Dan Carpenter wrote:
+> On Wed, Feb 22, 2023 at 09:55:52AM +0200, Svyatoslav Ryhel wrote:
+> > =D0=B2=D1=82, 21 =D0=BB=D1=8E=D1=82. 2023 =D1=80. =D0=BE 21:32 Dan Carp=
+enter <error27@gmail.com> =D0=BF=D0=B8=D1=88=D0=B5:
 
-Konrad
+> > > >  /* Mic Jack */
 
-> 
-> Best regards,
-> Krzysztof
-> 
+> > > This comment doesn't make sense now.  It was never super useful, thou=
+gh.
+> > > Just delete it.
+
+> > It does. Headset is Mic Jack + Headphones combined. headset_check funct=
+ion
+> > performs check for a Mic Jack component in plugged Jack 3.5
+
+> I feel if we need to discuess what a comment means or if it even means
+> anything then that's a useless comment by definition.
+
+If the device doesn't have a distinct mic jack then it's not ideal to
+talk about there being one (as opposed to the microphone on the headset
+jack).
+
+--SP3ot0dvarn2c/WQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmP2LUUACgkQJNaLcl1U
+h9DohwgAg5B1RDs7IHmHXbAnOEJot3PmpYe4ZT8mvWdsipVsEOmicv9Jq5TgOMBr
+8tj3IwItO4yzHJDcN3A/dwYZFVppFntMyVC8RRP13DSzXdwquSXpfnKm+JPoV7MQ
+pgCCVTw6NMhE35JfxkzGrvEmJdnPYzxkeDhjOKpNLL+j5w/BntNBUfvtf1mLv0HL
+9kHud7beeXTyY6TNXMnm33ZeUjXpGsSXizJgvDrxl+kjr2KG02uS6ad/7fdNhBK3
+AnNKzJbzKuydQFAWbBGDQUg2qwkcBzyo8aQm1rpw7WmdS839MaeU0lxyM9aa3WiQ
+ndwCYvC+WVNlJ6v9nFJ5XeCtAIJBGA==
+=g3uz
+-----END PGP SIGNATURE-----
+
+--SP3ot0dvarn2c/WQ--
