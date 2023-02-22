@@ -4,94 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D14C3C61DA4
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Feb 2023 09:35:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBE15C61DA4
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Feb 2023 10:22:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE22BE86;
-	Wed, 22 Feb 2023 10:34:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE22BE86
+	by alsa0.perex.cz (Postfix) with ESMTPS id 163C0E96;
+	Wed, 22 Feb 2023 11:21:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 163C0E96
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677058531;
-	bh=QE7F/onyjKYUPvtkvg2U39BtyxJXdvTS4fCO6hEXZIY=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	s=default; t=1677061360;
+	bh=RxA55QL3kceLXRzzYl2wYkiLirPFa6M00cJUTqj9zQ0=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DKJe/PoAKALaW5cdsoPdD2aIdBGWAPXu2YkGZkZewhSEa/wly29V4oEuU1ZPqid17
-	 isJcLIw7x6TkSUN1eb510LPFBHeWVmZo0yQNxIfhDYlEKenxNyCdlJ8d1LwD1oDi7+
-	 iiguit95xZ8sVHGFXnCRVkZuseFZVbaMEolsd0po=
+	b=WgRQQ3huXoyRts6Pm5Vv5LPYHGVy5ENbKMZDgG3nLbaJuUM3QnTMvgoq4XAcjm2va
+	 VrRygDfAqwoWDjH+EqjPycPSOwW12CQUraUeZZA8GBQ3HV1LPW8wp9CWSV2SeDvAfl
+	 /pkOYlmoqYVPJ/kQGA0kI60dmp9BogglcTTl13zI=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FCC1F80552;
-	Wed, 22 Feb 2023 10:33:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 80F48F80083;
+	Wed, 22 Feb 2023 11:21:30 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D09D1F80544; Wed, 22 Feb 2023 10:33:31 +0100 (CET)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [46.235.227.172])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 394BCF8047C
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2023 10:32:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 394BCF8047C
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=ZCMC0VDx
-Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
- [82.11.51.62])
+	id 83EA2F80266; Wed, 22 Feb 2023 11:21:25 +0100 (CET)
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
+ [64.147.123.19])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	(Authenticated sender: tanureal)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 4019566021D4;
-	Wed, 22 Feb 2023 09:32:52 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1677058372;
-	bh=QE7F/onyjKYUPvtkvg2U39BtyxJXdvTS4fCO6hEXZIY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZCMC0VDx3Ew6xuhCMweNhAmsc58BbMOnCuVVzzAbkZQTCwpXmwDz252qcUqdhBoU+
-	 F5HhKzxDifr/DC54YkRscSj+ssQNbe95Lo0c/+nhmYUyrYICt1x6Tb/iNXdml/JcH1
-	 /vDJhpeChdlyInLHfUJMnI7szjn8+naNl4RJYq3LsjjS39TarETLvWjJpP6SfYBtuH
-	 pvYoa0VjkEpsxHTAjY7KlErvVuRtE2rjRsBoxGln68ADU87/HjZH8w+OGIo4eVojIM
-	 1we+KA8XMoQ9V2YomAr2UhQ/88kCrWT7AE2DIZ+z0bJvGohwBVDa3D8dOHWR9xUmdA
-	 o5evPmYLDeO7w==
-From: Lucas Tanure <lucas.tanure@collabora.com>
-To: David Rhodes <david.rhodes@cirrus.com>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v6 2/4] ASoC: cs35l41: Refactor error release code
-Date: Wed, 22 Feb 2023 09:32:42 +0000
-Message-Id: <20230222093244.938156-3-lucas.tanure@collabora.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230222093244.938156-1-lucas.tanure@collabora.com>
-References: <20230222093244.938156-1-lucas.tanure@collabora.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id DC954F80125
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2023 11:21:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC954F80125
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.a=rsa-sha256 header.s=fm1 header.b=J2iNf9KV;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=messagingengine.com header.i=@messagingengine.com
+ header.a=rsa-sha256 header.s=fm1 header.b=Jr55O56o
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 4ABDD320016F;
+	Wed, 22 Feb 2023 05:21:12 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Wed, 22 Feb 2023 05:21:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
+	:from:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:sender:subject:subject:to:to; s=fm1; t=1677061271; x=
+	1677147671; bh=RxA55QL3kceLXRzzYl2wYkiLirPFa6M00cJUTqj9zQ0=; b=J
+	2iNf9KVtHTIINbvHKLG1NAd7bmZGW1m29KHyrBOhCvwQ5iB38+4atZHNY907ounL
+	BstlR72sCR5c5NbLdmNCMYaBuywkS7EW931DqCcKlQoh9p44k+OZ5JXipTP68xRj
+	uKwjVO1zOQP2aB4hQ5Q8Zz6sR/zuzz0Q0p033DTaMYmJqgmWxrYJshIP9mVSAovG
+	H/mgLvVYj/2lHeoiW6gLPa0k2WR1esaC/dPPDW2bI3jingYwlD+4IDfVIR1mNSxJ
+	WU4u63Io1FGovKLzsrby55QEFa0heWDy+0tCh1BRW5k45s7wW/mun5ip8mnY/DnT
+	/xfk5y9LlPEDaDbTZaVLg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1677061271; x=
+	1677147671; bh=RxA55QL3kceLXRzzYl2wYkiLirPFa6M00cJUTqj9zQ0=; b=J
+	r55O56oU9axMGZtomYugaf67tSZUFMhcGO64BH6uOOt2xow0vjS3vQ/BNV7+njmi
+	yy1Z+ua2BKoODPldqzQ/2VgIa7SqiNLjFcFNXc0TeH3qQxPTYvmvaI6XkVIufMsm
+	u8OnZfNa08BTaQZEYRbekTaLszQbWr8PngxmJSj/KUqapu7lFVox/D7O4hIfhk5E
+	IlVtqASLo+LFm69DS/xd8H3j/GubzxyqCkTQFE6AcKK/6vTLMLTb1yun47X4y4rn
+	+hClYVeVw0X0qIhXXN0ENw7rpk6MrLyBWaxcUkMLoY0CvawIVmFvcLMvMtUjVp7/
+	IFzY4YeetIYqf13NavMLw==
+X-ME-Sender: <xms:l-z1YzsAq4tdRI1LUMiZzJb2vvYyz93qJBL1Vf2rh0_Er9SbkEWl0g>
+    <xme:l-z1Y0c3XsI3oryAm12SrDeKz4FOvrTDitcw0BqIDlZIakBjbawbDpL7KhrNc1Wgj
+    L6o3L0rKdFFyeXhpQc>
+X-ME-Received: 
+ <xmr:l-z1Y2yrm-b1Bwig-NVcOEHebDQAHSIVm_N0qTR1A-ZJ5if7CPssHDZ0dIvoY49jpIxicJTnD006L5ZyNAHvKODaGuSQN9ZKm0lxpA>
+X-ME-Proxy-Cause: 
+ gggruggvucftvghtrhhoucdtuddrgedvhedrudejledgudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtugfgjgesth
+    ekredttddtjeenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgr
+    khgrshhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepgeelke
+    euhedvjeduvdeigeduudffheegfeekgeegledvieelhfelhfetffelheehnecuffhomhgr
+    ihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:l-z1YyNxvgCuo_mqzzXgydwl-lWlwADCocvs7-x6Lh_D_ZLdZVVC1g>
+    <xmx:l-z1Yz9iQ02BrMaEYfkaeUcqGAOaUMRklJ7_d3ByYs-Ki75BvPjGhg>
+    <xmx:l-z1YyUL8CTyCHMqeasEMySiWFHwrd-qr0n_y0eRZW4HN5iCfG9gAw>
+    <xmx:l-z1YwFKcmwqnlb9FzPH8anLznyhehodXWgOv0F9yf1GSssr4QofHA>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 22 Feb 2023 05:21:10 -0500 (EST)
+Date: Wed, 22 Feb 2023 19:21:07 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: "mj@mj" <mj@michaeljosephs.com>
+Subject: Re: Firewire Audio Interface
+Message-ID: <Y/Xskw6JUYY+xWN1@workstation>
+Mail-Followup-To: "mj@mj" <mj@michaeljosephs.com>,
+	alsa-devel@alsa-project.org
+References: <2E89E35E-85D0-45D1-8727-BB013FA78DAA@michaeljosephs.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SZT6MLSSK2UDLUMPGLKZX3ZDEXYYV4RK
-X-Message-ID-Hash: SZT6MLSSK2UDLUMPGLKZX3ZDEXYYV4RK
-X-MailFrom: lucas.tanure@collabora.com
+In-Reply-To: <2E89E35E-85D0-45D1-8727-BB013FA78DAA@michaeljosephs.com>
+Message-ID-Hash: 277JTE3AKQKE2TLBO7WNNKS262NWDCPC
+X-Message-ID-Hash: 277JTE3AKQKE2TLBO7WNNKS262NWDCPC
+X-MailFrom: o-takashi@sakamocchi.jp
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- kernel@collabora.com, Lucas Tanure <lucas.tanure@collabora.com>
+CC: alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SZT6MLSSK2UDLUMPGLKZX3ZDEXYYV4RK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/277JTE3AKQKE2TLBO7WNNKS262NWDCPC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,126 +129,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add cs35l41_error_release function to handle error release sequences.
+Hi,
+(C.C.ed to alsa-devel)
 
-Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- sound/soc/codecs/cs35l41.c | 64 ++++++++++----------------------------
- 1 file changed, 16 insertions(+), 48 deletions(-)
+On Tue, Feb 21, 2023 at 10:21:14AM -0500, mj@mj wrote:
+> Hello Takashi!
+> I came across your name when trying to find software to make a TC
+> Konnekt 6 work in OSX Big Sur.
+> TC has abandoned the Konnekt series.
+> I saw this Github entry that I think is from you?
+> [1]https://github.com/alsa-project/snd-firewire-ctl-services/blob/master/README.rst
+> I wanted to ask…is this your project? and would it allow me to use the
+> Konnekt with OSX 64-bit?
 
-diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index f2b5032daa6a..c006364e5335 100644
---- a/sound/soc/codecs/cs35l41.c
-+++ b/sound/soc/codecs/cs35l41.c
-@@ -369,6 +369,16 @@ static void cs35l41_boost_enable(struct cs35l41_private *cs35l41, unsigned int e
- 	}
- }
- 
-+
-+static void cs35l41_error_release(struct cs35l41_private *cs35l41, unsigned int irq_err_bit,
-+				  unsigned int rel_err_bit)
-+{
-+	regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1, irq_err_bit);
-+	regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
-+	regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, rel_err_bit, rel_err_bit);
-+	regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, rel_err_bit, 0);
-+}
-+
- static irqreturn_t cs35l41_irq(int irq, void *data)
- {
- 	struct cs35l41_private *cs35l41 = data;
-@@ -405,54 +415,26 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
- 	 */
- 	if (status[0] & CS35L41_AMP_SHORT_ERR) {
- 		dev_crit_ratelimited(cs35l41->dev, "Amp short error\n");
--		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
--			     CS35L41_AMP_SHORT_ERR);
--		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_AMP_SHORT_ERR_RLS,
--				   CS35L41_AMP_SHORT_ERR_RLS);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_AMP_SHORT_ERR_RLS, 0);
-+		cs35l41_error_release(cs35l41, CS35L41_AMP_SHORT_ERR, CS35L41_AMP_SHORT_ERR_RLS);
- 		ret = IRQ_HANDLED;
- 	}
- 
- 	if (status[0] & CS35L41_TEMP_WARN) {
- 		dev_crit_ratelimited(cs35l41->dev, "Over temperature warning\n");
--		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
--			     CS35L41_TEMP_WARN);
--		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_TEMP_WARN_ERR_RLS,
--				   CS35L41_TEMP_WARN_ERR_RLS);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_TEMP_WARN_ERR_RLS, 0);
-+		cs35l41_error_release(cs35l41, CS35L41_TEMP_WARN, CS35L41_TEMP_WARN_ERR_RLS);
- 		ret = IRQ_HANDLED;
- 	}
- 
- 	if (status[0] & CS35L41_TEMP_ERR) {
- 		dev_crit_ratelimited(cs35l41->dev, "Over temperature error\n");
--		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
--			     CS35L41_TEMP_ERR);
--		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_TEMP_ERR_RLS,
--				   CS35L41_TEMP_ERR_RLS);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_TEMP_ERR_RLS, 0);
-+		cs35l41_error_release(cs35l41, CS35L41_TEMP_ERR, CS35L41_TEMP_ERR_RLS);
- 		ret = IRQ_HANDLED;
- 	}
- 
- 	if (status[0] & CS35L41_BST_OVP_ERR) {
- 		dev_crit_ratelimited(cs35l41->dev, "VBST Over Voltage error\n");
- 		cs35l41_boost_enable(cs35l41, 0);
--		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
--			     CS35L41_BST_OVP_ERR);
--		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_BST_OVP_ERR_RLS,
--				   CS35L41_BST_OVP_ERR_RLS);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_BST_OVP_ERR_RLS, 0);
-+		cs35l41_error_release(cs35l41, CS35L41_BST_OVP_ERR, CS35L41_BST_OVP_ERR_RLS);
- 		cs35l41_boost_enable(cs35l41, 1);
- 		ret = IRQ_HANDLED;
- 	}
-@@ -460,14 +442,7 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
- 	if (status[0] & CS35L41_BST_DCM_UVP_ERR) {
- 		dev_crit_ratelimited(cs35l41->dev, "DCM VBST Under Voltage Error\n");
- 		cs35l41_boost_enable(cs35l41, 0);
--		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
--			     CS35L41_BST_DCM_UVP_ERR);
--		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_BST_UVP_ERR_RLS,
--				   CS35L41_BST_UVP_ERR_RLS);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_BST_UVP_ERR_RLS, 0);
-+		cs35l41_error_release(cs35l41, CS35L41_BST_DCM_UVP_ERR, CS35L41_BST_UVP_ERR_RLS);
- 		cs35l41_boost_enable(cs35l41, 1);
- 		ret = IRQ_HANDLED;
- 	}
-@@ -475,14 +450,7 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
- 	if (status[0] & CS35L41_BST_SHORT_ERR) {
- 		dev_crit_ratelimited(cs35l41->dev, "LBST error: powering off!\n");
- 		cs35l41_boost_enable(cs35l41, 0);
--		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
--			     CS35L41_BST_SHORT_ERR);
--		regmap_write(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN, 0);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_BST_SHORT_ERR_RLS,
--				   CS35L41_BST_SHORT_ERR_RLS);
--		regmap_update_bits(cs35l41->regmap, CS35L41_PROTECT_REL_ERR_IGN,
--				   CS35L41_BST_SHORT_ERR_RLS, 0);
-+		cs35l41_error_release(cs35l41, CS35L41_BST_SHORT_ERR, CS35L41_BST_SHORT_ERR_RLS);
- 		cs35l41_boost_enable(cs35l41, 1);
- 		ret = IRQ_HANDLED;
- 	}
--- 
-2.39.2
+I maintain the repository.
 
+Linux kernel has driver stack for audio and music unit in IEEE 1394 bus.
+I maintain the driver stack as well. For example, you can see backport
+drivers from mainline Linux kernel:
+
+* https://github.com/takaswie/snd-firewire-improve/
+
+The repository you found is supplemental one. It provides user space
+service program to configure DSP functions such as channel strip effects.
+
+Besides, they are available in Linux only. As long as I know, no one
+work to develop craft drivers in MacOS for your device.
+
+
+P.S. I think you use 'Desktop Konnekt 6' or 'Konnekt 8'.
+
+Takashi Sakamoto
