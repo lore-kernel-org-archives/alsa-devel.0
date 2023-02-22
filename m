@@ -4,106 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1066C6379F
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Feb 2023 10:40:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF9FCC636D6
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Feb 2023 11:16:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A4E4E96;
-	Wed, 22 Feb 2023 11:39:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A4E4E96
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10BB583B;
+	Wed, 22 Feb 2023 12:15:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10BB583B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677062401;
-	bh=gp2w0QkuelptL1Cp/PCquJQ1aJnbWyY9riv4z9+aoNs=;
-	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
+	s=default; t=1677064596;
+	bh=L+vlKF7HhKxFmv88Coa+zjcHwjiWGvdeEhd8PDUoiRY=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=moYtiKRjdpuhcNhPfRFFGoY864GJUvBOD51pHEXd1NheI0Xb7jxlhoOB5nw1YgEAA
-	 cE4omCCVLZsayzoSuITkAM2UVKZtq7FeJORAHc41VU2ZCjTHbtjPvVqRq2uupqQYJy
-	 Tmdhll1xZpeIXGnIZdazZSqMRAj+APb6c2X1Z8F0=
+	b=FQyBF0IbpdtoxKOS/PzlSXSBad+T1bwkqNSYyDYgrxmV1ZVkkVef3dUU5/xuYVLXi
+	 V7RItg+nfQ70aRjT6of/ZyBJfSxk0psU9RHg7+NbYnkydVzddvtRBU5SUAc61gJ0dI
+	 k3zDBr9qDxxp4ebI2wEAyqTS1f/8YxBsjLuN3WtY=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B1FBF8025A;
-	Wed, 22 Feb 2023 11:38:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id BBFE8F8025A;
+	Wed, 22 Feb 2023 12:15:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DDFFBF80266; Wed, 22 Feb 2023 10:40:08 +0100 (CET)
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com
- [IPv6:2a00:1450:4864:20::22f])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 06559F8025A; Wed, 22 Feb 2023 12:15:24 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 846E6F80125
-	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2023 10:40:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 846E6F80125
+	by alsa1.perex.cz (Postfix) with ESMTPS id 4441DF800BA
+	for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2023 12:15:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4441DF800BA
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=MaR6vviA
-Received: by mail-lj1-x22f.google.com with SMTP id by8so2202325ljb.7
-        for <alsa-devel@alsa-project.org>;
- Wed, 22 Feb 2023 01:40:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Yleek0oaFc70WbJunAtXSm0MOQeAIy9beRoYkSDegxQ=;
-        b=MaR6vviAZKVp1bFr4GsfVcqKsd/ROQreCiDNcS1+A/LFIMFtBOmT5Zq/0YH1dh8EzE
-         19ijszOgiXRWeTRZBoYGTWSR2M1W+qaB1soNJp9vb1GMyvJMT0xubVIVIilmbu2LY5V9
-         7wlKMhiN0GFK6f/SXB7U0zf5wqg5XHbAJ31HEgI4nnKcvwkZfPbargHwsz322Kt9vLUc
-         bevPvHUwQbg0VgPcGWsBIjIkTW2ExcW5kWunrqhddlXx1/8P5e/3ByfAy5PNlz/FeNpp
-         WX6GD+kGdOmSr9U0t380kEfCMXcQ8tknOgLjtCoiAWvNX12416KNGZ/uiIcKzjAfXGlb
-         MHtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:references
-         :in-reply-to:user-agent:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Yleek0oaFc70WbJunAtXSm0MOQeAIy9beRoYkSDegxQ=;
-        b=BvZ59FWMPamiiGN656mp0QH5jxUTvMBjoyFNdTFHpJ58u5AD7UVOXea+3apjC1O84x
-         qDZ8Q7Co1Hq+xmDA+pQempEtv7mF+UIVcaRUo0BaGRf4LhLCG6Y9vfG97/M8JmCxgy0R
-         mgbQlmdm9uFfAzfzCt1dWOhLqgshqf9qQRxYDfJLfKWJcYp7rIOVu3ItpntFuVtukd2r
-         sJD+SD6s8AG7v6B4Plnx6JnRK4gwhW6AU2cLz/tTxJZ9qsKXoGDnq6EDcAqhmIocOzCO
-         O5svVDeYqry19GJBhW2mVZ8l4ONWeqpC92gDwGp5ViAc+qbTnj0z0CYBSgit+joyDcVg
-         87oQ==
-X-Gm-Message-State: AO0yUKXlj1IXgKqqu/mcGUBKJnM1BEWGFJWTUNU0X95ppqMEXQi4WclP
-	lnxNR4jzSdlg2b6dR4xQxOM=
-X-Google-Smtp-Source: 
- AK7set/JBY1TYm0YPPO8CsPIN7FcVv0ivVO2LrB1rButFqoarh+nxqZLywS5l5PLR/ZvbWmGNiTH+w==
-X-Received: by 2002:a2e:bc0d:0:b0:294:669b:8f97 with SMTP id
- b13-20020a2ebc0d000000b00294669b8f97mr4297154ljf.46.1677058801266;
-        Wed, 22 Feb 2023 01:40:01 -0800 (PST)
-Received: from [127.0.0.1] ([91.204.85.69])
-        by smtp.gmail.com with ESMTPSA id
- o16-20020a2e9b50000000b002958bb2deacsm401396ljj.46.2023.02.22.01.40.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Feb 2023 01:40:00 -0800 (PST)
-Date: Wed, 22 Feb 2023 11:39:59 +0200
-From: =?UTF-8?B?0KHQstGP0YLQvtGB0LvQsNCyINCg0LjQs9C10LvRjA==?=
+	dkim=pass (1024-bit key,
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=PJbMubh3
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 6FE48B8125F;
+	Wed, 22 Feb 2023 11:15:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96280C433D2;
+	Wed, 22 Feb 2023 11:15:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1677064513;
+	bh=L+vlKF7HhKxFmv88Coa+zjcHwjiWGvdeEhd8PDUoiRY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PJbMubh3B2HkoSiUZH0OTHYBRvfoY+pKE03DyTYLWPzFk4IW/FgJR4CZGvFLUr9vt
+	 KvZvE4DrfmDWPImH4o3NCc8jfUpCGXkXBQMPQaDem9yw8g+P/LffaSrkBI5ywVgF8d
+	 90I9pFnfH6s1j3byFYsxO0IlUgTZ4uKQ7ZVChq+M=
+Date: Wed, 22 Feb 2023 12:15:10 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: =?utf-8?B?0KHQstGP0YLQvtGB0LvQsNCyINCg0LjQs9C10LvRjA==?=
  <clamor95@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v1_09/10=5D_staging=3A_dsp=3A_a?=
- =?US-ASCII?Q?dd_support_for_Fortemedia_FM34NE_DSP?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <Y/Xefn/76JW1C03d@kroah.com>
+Subject: Re: [PATCH v1 09/10] staging: dsp: add support for Fortemedia FM34NE
+ DSP
+Message-ID: <Y/X5Po7Ieao3svBm@kroah.com>
 References: <20230221183211.21964-1-clamor95@gmail.com>
- <20230221183211.21964-10-clamor95@gmail.com> <Y/UbMH5tXDgsvSbD@kroah.com>
+ <20230221183211.21964-10-clamor95@gmail.com>
+ <Y/UbMH5tXDgsvSbD@kroah.com>
  <CAPVz0n2-giCF9Z9fMimTFQnGk73HAdfU4SitGn58iZapLjeuTQ@mail.gmail.com>
  <Y/Xefn/76JW1C03d@kroah.com>
-Message-ID: <C94BE033-EE34-40E4-96D4-1EB4C1B04A09@gmail.com>
+ <C94BE033-EE34-40E4-96D4-1EB4C1B04A09@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-MailFrom: clamor95@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <C94BE033-EE34-40E4-96D4-1EB4C1B04A09@gmail.com>
+Message-ID-Hash: JXGCNHCJKYTUKB3E2YVB63LZRI5TYQ4M
+X-Message-ID-Hash: JXGCNHCJKYTUKB3E2YVB63LZRI5TYQ4M
+X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: YJN5TJTIJBDZCCCTNOPPQJDNHG6ZI2WC
-X-Message-ID-Hash: YJN5TJTIJBDZCCCTNOPPQJDNHG6ZI2WC
-X-Mailman-Approved-At: Wed, 22 Feb 2023 10:38:47 +0000
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 CC: Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
@@ -118,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YJN5TJTIJBDZCCCTNOPPQJDNHG6ZI2WC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JXGCNHCJKYTUKB3E2YVB63LZRI5TYQ4M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,67 +101,64 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Wed, Feb 22, 2023 at 11:39:59AM +0200, Святослав Ригель wrote:
+> 
+> 
+> 22 лютого 2023 р. 11:21:02 GMT+02:00, Greg Kroah-Hartman <gregkh@linuxfoundation.org> написав(-ла):
+> >On Wed, Feb 22, 2023 at 10:19:47AM +0200, Svyatoslav Ryhel wrote:
+> >> вт, 21 лют. 2023 р. о 21:27 Greg Kroah-Hartman
+> >> <gregkh@linuxfoundation.org> пише:
+> >> >
+> >> > On Tue, Feb 21, 2023 at 08:32:10PM +0200, Svyatoslav Ryhel wrote:
+> >> > > FM34NE is digital sound processing chip used for active
+> >> > > noise suppression mainly on ASUS Transformers.
+> >> > >
+> >> > > Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
+> >> > > ---
+> >> > >  drivers/staging/Kconfig          |   2 +
+> >> > >  drivers/staging/Makefile         |   1 +
+> >> > >  drivers/staging/dsp/Kconfig      |   7 +
+> >> > >  drivers/staging/dsp/Makefile     |   2 +
+> >> > >  drivers/staging/dsp/dsp-fm34ne.c | 364 +++++++++++++
+> >> > >  drivers/staging/dsp/dsp-fm34ne.h | 845 +++++++++++++++++++++++++++++++
+> >> > >  6 files changed, 1221 insertions(+)
+> >> > >  create mode 100644 drivers/staging/dsp/Kconfig
+> >> > >  create mode 100644 drivers/staging/dsp/Makefile
+> >> > >  create mode 100644 drivers/staging/dsp/dsp-fm34ne.c
+> >> > >  create mode 100644 drivers/staging/dsp/dsp-fm34ne.h
+> >> >
+> >> >
+> >> > Sorry, but why is this going into drivers/staging/ at all?  What is
+> >> > needed to be done to get this out of staging?  Why not do that work
+> >> > right now?  At the least, we need a TODO file in the directory that
+> >> > lists what needs to be done and who is responsible for it.
+> >> 
+> >> Because this driver sets up fm34 and switches it to bypass mode allowing
+> >> sound to work on the device. There is no dsp framework in kernel which could
+> >> be called to operate dsp from the actual sound codec. (If there is, I
+> >> would be glad
+> >> if you show me). Fm34 must be active only on DMIC use, all other cases require
+> >> it to be in bypass.
+> >
+> >That does not explain at all why this needs to go into drivers/staging/
+> >and not the normal portion of the kernel.  Why this specific location?
+> >What is wrong with it that requires it to go here?
+> 
+> It is not fully functional and does not perform its main function
+> (noise cancellation) because it has to be called only for DMIC. Same
+> time it is essential to be set so that audio could work on device.
 
+But why does that mean it should go to drivers/staging/?  That's not
+what staging is for (broken code).
 
-22 =D0=BB=D1=8E=D1=82=D0=BE=D0=B3=D0=BE 2023 =D1=80=2E 11:21:02 GMT+02:00,=
- Greg Kroah-Hartman <gregkh@linuxfoundation=2Eorg> =D0=BD=D0=B0=D0=BF=D0=B8=
-=D1=81=D0=B0=D0=B2(-=D0=BB=D0=B0):
->On Wed, Feb 22, 2023 at 10:19:47AM +0200, Svyatoslav Ryhel wrote:
->> =D0=B2=D1=82, 21 =D0=BB=D1=8E=D1=82=2E 2023 =D1=80=2E =D0=BE 21:27 Greg=
- Kroah-Hartman
->> <gregkh@linuxfoundation=2Eorg> =D0=BF=D0=B8=D1=88=D0=B5:
->> >
->> > On Tue, Feb 21, 2023 at 08:32:10PM +0200, Svyatoslav Ryhel wrote:
->> > > FM34NE is digital sound processing chip used for active
->> > > noise suppression mainly on ASUS Transformers=2E
->> > >
->> > > Signed-off-by: Svyatoslav Ryhel <clamor95@gmail=2Ecom>
->> > > ---
->> > >  drivers/staging/Kconfig          |   2 +
->> > >  drivers/staging/Makefile         |   1 +
->> > >  drivers/staging/dsp/Kconfig      |   7 +
->> > >  drivers/staging/dsp/Makefile     |   2 +
->> > >  drivers/staging/dsp/dsp-fm34ne=2Ec | 364 +++++++++++++
->> > >  drivers/staging/dsp/dsp-fm34ne=2Eh | 845 +++++++++++++++++++++++++=
-++++++
->> > >  6 files changed, 1221 insertions(+)
->> > >  create mode 100644 drivers/staging/dsp/Kconfig
->> > >  create mode 100644 drivers/staging/dsp/Makefile
->> > >  create mode 100644 drivers/staging/dsp/dsp-fm34ne=2Ec
->> > >  create mode 100644 drivers/staging/dsp/dsp-fm34ne=2Eh
->> >
->> >
->> > Sorry, but why is this going into drivers/staging/ at all?  What is
->> > needed to be done to get this out of staging?  Why not do that work
->> > right now?  At the least, we need a TODO file in the directory that
->> > lists what needs to be done and who is responsible for it=2E
->>=20
->> Because this driver sets up fm34 and switches it to bypass mode allowin=
-g
->> sound to work on the device=2E There is no dsp framework in kernel whic=
-h could
->> be called to operate dsp from the actual sound codec=2E (If there is, I
->> would be glad
->> if you show me)=2E Fm34 must be active only on DMIC use, all other case=
-s require
->> it to be in bypass=2E
->
->That does not explain at all why this needs to go into drivers/staging/
->and not the normal portion of the kernel=2E  Why this specific location?
->What is wrong with it that requires it to go here?
+> Once there is such a framework in kernel, which allows to control dsp
+> from, I assume, asoc machine driver, this driver can be moved wherever
+> it should be. Currently I can not tell where it should be since I
+> haven't seen dsp drivers like this in kernel.
 
-It is not fully functional and does not perform its main function (noise c=
-ancellation) because it has to be called only for DMIC=2E Same time it is e=
-ssential to be set so that audio could work on device=2E
+Then work to create that, don't dump stuff in drivers/staging/ for no
+valid reason.
 
-Once there is such a framework in kernel, which allows to control dsp from=
-, I assume, asoc machine driver, this driver can be moved wherever it shoul=
-d be=2E Currently I can not tell where it should be since I haven't seen ds=
-p drivers like this in kernel=2E
+thanks,
 
->In other words, you need to document _WHY_ it must go here as it is not
->obvious at all=2E
->
->thanks,
->
->greg k-h
+greg k-h
