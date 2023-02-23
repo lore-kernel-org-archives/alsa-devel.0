@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0369C636D7
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Feb 2023 08:47:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0138C636D7
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Feb 2023 08:47:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6184AA4B;
-	Thu, 23 Feb 2023 09:46:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6184AA4B
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB940DF3;
+	Thu, 23 Feb 2023 09:47:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB940DF3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677142056;
-	bh=Pyy4+SZVekNirtkGEkJ02ji/jAYr8ndwKDae9kAk4h8=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=e1qc+dLC15kJQhf0bQXa7WkWPmmDvy8xXtCJj59GhvtdOpA85Kesf8efYaKobZDIJ
-	 VKFqazUupGfyvmggGd3CDrYkTVKWc+NSPfM4H28+wAGGlXXu+q8rRQExWRK9wob2sZ
-	 4CKEiVu39dY1f8gn2cIvhgJSk/XJV/NX1zyB8Nv4=
+	s=default; t=1677142070;
+	bh=ULUS8juqT9D663UOmoNu1JrQcrXe/fPV+74I8cFGkeE=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=MVqy30ye++jSD/vxc8EHEa13kW/s8Lw98Wczj4jP6SKz+tBVQ8DctnecSgq/gYL0U
+	 jXAEsBFtYjxMSGNbmyxkstwYGHsPtU1y5MiAuHMoYfnGOc87Mfdc5gQ6NNU6k3U1Sz
+	 q05hPEGwpdonqN1n7PJhAGr8+j4DPj8jf8zsDtmw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B712F80526;
-	Thu, 23 Feb 2023 09:45:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A612CF80533;
+	Thu, 23 Feb 2023 09:45:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6FBA2F80496; Thu, 23 Feb 2023 09:45:40 +0100 (CET)
+	id 30250F80266; Thu, 23 Feb 2023 09:45:42 +0100 (CET)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
  [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 861F0F8025A
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2023 09:43:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 861F0F8025A
+	by alsa1.perex.cz (Postfix) with ESMTPS id 007E2F802DB
+	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2023 09:43:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 007E2F802DB
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=GN1EV4eg
+ header.a=rsa-sha256 header.s=mail header.b=TENpdt+t
 Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
  [82.11.51.62])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -45,18 +45,18 @@ Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
  SHA256)
 	(No client certificate requested)
 	(Authenticated sender: tanureal)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 7FE7266021EF;
-	Thu, 23 Feb 2023 08:43:27 +0000 (GMT)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id E638666021FF;
+	Thu, 23 Feb 2023 08:43:28 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1677141807;
-	bh=Pyy4+SZVekNirtkGEkJ02ji/jAYr8ndwKDae9kAk4h8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=GN1EV4egjuQkjjKlRoGVPI2vqp2VDVWfpmo5EsK3Udl7/F1zH7op0TTVcBS2onQIj
-	 Cq5Eh4VD0XPF6GjNggCP57dEFoobbNRAYtOV8WNBwG/TimPYUrhfHYQQ0pfjuhJWFJ
-	 QF/+TCk0cxoGpfSnovFFsqLbFkTVUjUYfdOdLUsX3pKQPEvHnmCn6ne6pBxrVZF5ms
-	 Ehr3aZuNm9+gIaD7SZKxLbbpqZRxxlpgMWkm8YM7rrGEJgMWXa0F4cJH5x+IHsRuTG
-	 PSEuNv+kOhjtgYPDIbgEHORCYNbfWyjAU7dFrAPc1+Mf2BQLOfr2QTzrwQAfGfLIoF
-	 1Of5N0o9ZjpOQ==
+	s=mail; t=1677141809;
+	bh=ULUS8juqT9D663UOmoNu1JrQcrXe/fPV+74I8cFGkeE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=TENpdt+t0Yvr5vcNTBdb6dDKeDJ1cVNmxMmvwatqCMDmgbo25cy72ILeeU5hSW525
+	 UdO1JjXjA6SXeIwMeeD0QrWD6nSWlEAVObTOnXWV50MFnAgpQ/q0ImuichQYL0AXl6
+	 HwVZu2KMUupiqgZlyd3dHBZNOEEA59IfH22ssoGaCtgPFI+Ugdu8Gk6O+pnZdwI+FX
+	 o+n6hV6ZvJswdbmOnJah4jmbKB8GEYJDowjmwAHydmPCAbuNstj3lrWozHRyjEk/Sg
+	 uS8dQ1apLrWMaquTiI0VriBwMbUI38JCohGXhfYHTNBrzum33KLTDIaPI1Se254LxX
+	 k4R3KaPvHXpJQ==
 From: Lucas Tanure <lucas.tanure@collabora.com>
 To: David Rhodes <david.rhodes@cirrus.com>,
 	Charles Keepax <ckeepax@opensource.cirrus.com>,
@@ -66,14 +66,17 @@ To: David Rhodes <david.rhodes@cirrus.com>,
 	Rob Herring <robh+dt@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v7 0/4] Add CS35L41 shared boost feature
-Date: Thu, 23 Feb 2023 08:43:20 +0000
-Message-Id: <20230223084324.9076-1-lucas.tanure@collabora.com>
+Subject: [PATCH v7 4/4] ASoC: dt-bindings: cirrus,cs35l41: Document CS35l41
+ shared boost
+Date: Thu, 23 Feb 2023 08:43:24 +0000
+Message-Id: <20230223084324.9076-5-lucas.tanure@collabora.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230223084324.9076-1-lucas.tanure@collabora.com>
+References: <20230223084324.9076-1-lucas.tanure@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: EN7UVRX3KM4ZSXNBRIHVJEX63YIODHJM
-X-Message-ID-Hash: EN7UVRX3KM4ZSXNBRIHVJEX63YIODHJM
+Message-ID-Hash: 6HT5YRL4OCRI26MKY3XGC2GMETE47KQP
+X-Message-ID-Hash: 6HT5YRL4OCRI26MKY3XGC2GMETE47KQP
 X-MailFrom: lucas.tanure@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -83,13 +86,14 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  no-subject; digests; suspicious-header
 CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
  patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- kernel@collabora.com, Lucas Tanure <lucas.tanure@collabora.com>
+ kernel@collabora.com, Lucas Tanure <lucas.tanure@collabora.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EN7UVRX3KM4ZSXNBRIHVJEX63YIODHJM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6HT5YRL4OCRI26MKY3XGC2GMETE47KQP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,61 +102,40 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Valve's Steam Deck uses CS35L41 in shared boost mode, where both speakers
-share the boost circuit.
-Add this support in the shared lib, but for now, shared boost is not
-supported in HDA systems as would require BIOS changes.
-
+Describe the properties used for shared boost configuration.
 Based on David Rhodes shared boost patches.
 
-Also, fix boost config overwriting in IRQ found in the review and do a
-small refactor of the code.
+Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ .../devicetree/bindings/sound/cirrus,cs35l41.yaml      | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-Changes from V6:
- - Fix TX/RX bits in passive amp
-
-Changes from V5:
- - Improved documentation from Cirrrus
- - All amps use MDSCYN for boost source
- - Active amp has TX and RX enabled
-
-Changes from V4:
- - Fix Document subject
-
-Changes from V3:
- - Fix wrong code sent
- - Fix ISO C90 mixed declarations and code 
-
-Changes from V2:
- - Drop External boost without VSPK Documentation
- - Move Shared boost to use values 2 and 3
- - Revert back to reg_sequence but reading the value first and only update
-the necessary bits
- - Fix bug found by Intel kernel Test Robot
-
-Changes from V1:
- - Fix Documentation patch subject
- - New patch for External boost without VSPK Documentation
- - New patch to fix boost IRQ overwriting issue
- - New patch to refactor IRQ release error code
- - reinit_completion on pcm_startup
- - fix DRE switch overwriting
- - return IRQ_HANDLED in PLL_LOCK case
-
-Lucas Tanure (4):
-  ASoC: cs35l41: Only disable internal boost
-  ASoC: cs35l41: Refactor error release code
-  ALSA: cs35l41: Add shared boost feature
-  ASoC: dt-bindings: cirrus,cs35l41: Document CS35l41 shared boost
-
- .../bindings/sound/cirrus,cs35l41.yaml        |  10 +-
- include/sound/cs35l41.h                       |  13 +-
- sound/pci/hda/cs35l41_hda.c                   |   6 +-
- sound/soc/codecs/cs35l41-lib.c                |  73 +++++++++-
- sound/soc/codecs/cs35l41.c                    | 125 +++++++++---------
- sound/soc/codecs/cs35l41.h                    |   1 +
- 6 files changed, 157 insertions(+), 71 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
+index 18fb471aa891..14dea1feefc5 100644
+--- a/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
++++ b/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
+@@ -85,11 +85,19 @@ properties:
+       boost-cap-microfarad.
+       External Boost must have GPIO1 as GPIO output. GPIO1 will be set high to
+       enable boost voltage.
++      Shared boost allows two amplifiers to share a single boost circuit by
++      communicating on the MDSYNC bus. The active amplifier controls the boost
++      circuit using combined data from both amplifiers. GPIO1 should be
++      configured for Sync when shared boost is used. Shared boost is not
++      compatible with External boost. Active amplifier requires
++      boost-peak-milliamp, boost-ind-nanohenry and boost-cap-microfarad.
+       0 = Internal Boost
+       1 = External Boost
++      2 = Shared Boost Active
++      3 = Shared Boost Passive
+     $ref: /schemas/types.yaml#/definitions/uint32
+     minimum: 0
+-    maximum: 1
++    maximum: 3
+ 
+   cirrus,gpio1-polarity-invert:
+     description:
 -- 
 2.39.2
 
