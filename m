@@ -4,126 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D994C636D6
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Feb 2023 02:40:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19A75C636D7
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Feb 2023 08:45:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B67F184D;
-	Thu, 23 Feb 2023 03:39:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B67F184D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8FDF484C;
+	Thu, 23 Feb 2023 09:44:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FDF484C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677120032;
-	bh=1wnm1Qu02ntoEzzUE8cRH7jxDILmWnuXsf0zgpuT5j8=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	s=default; t=1677141943;
+	bh=SZyEA11fi4LzAZtvbo3M9qFGoEFnzq74c8IOBh1NzeI=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=B8VlEirGQ0AND8b6Zy3pOnqPlhrWD4Wgs4pzKCwukD5URD62h6VEi/y+00v02KsdE
-	 U8zU0bbJJwCtsT1Oj0FUO29LSZ6vIsD9Rba8mG3zCKM/ayUEqG+sGs4UrfSwGtflGK
-	 rWWH8okrazBpG5B6K9DcRmjqVfYUEsqBYz4hjFKU=
+	b=AeZMcLRYL8YMLhm4k7PDLweY2iOxcvvKNTGxHUKGsMLg4cNghr14A6jwUoL6MmnFE
+	 AW6UWgnGTD3Kj7fnYVy1mTzbJni8sjZ/kZTUEG8AB+UPVN/GCMH3etmZpFcoyTWmg4
+	 KBu7WxxrYGG455Xjx52SgEDuJxGsj+T6yD0R8jiA=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 56F41F80266;
-	Thu, 23 Feb 2023 03:39:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78554F8047C;
+	Thu, 23 Feb 2023 09:44:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C0BC0F80266; Thu, 23 Feb 2023 03:39:19 +0100 (CET)
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
- [64.147.123.19])
+	id 3CD16F804B0; Thu, 23 Feb 2023 09:43:46 +0100 (CET)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [46.235.227.172])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9FED6F80266
+	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2023 09:43:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FED6F80266
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=hDamXEzT
+Received: from cryzen.lan (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net
+ [82.11.51.62])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2F74CF800B6
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2023 03:39:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F74CF800B6
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.a=rsa-sha256 header.s=fm1 header.b=22KfCeDH;
-	dkim=pass (2048-bit key,
- unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm1 header.b=SGyNSzxn
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id 889443200893;
-	Wed, 22 Feb 2023 21:39:03 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 22 Feb 2023 21:39:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-transfer-encoding:content-type:date:date:from
-	:from:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to; s=fm1; t=1677119943; x=
-	1677206343; bh=rW9tMncaa2rm3RkUwVdXX9HjlBdZ/7uuX/6ED3hueLQ=; b=2
-	2KfCeDH3WfVRzmuq5IDi9RsrC0y4KDldHkPopWiXX75SDQ9NM4bcqGo/w2vdRnQP
-	79Bn0YTlmUsLUQ70ZFRom8Z36zQSD1QCZ82kcERrjXIEOL9QPjgxmiC9o5iiUoUU
-	1ZV9Tw/PM7w4TtxMVjrrrmET0MDvlHSnvbV0jtHo7PAJdHZGYE1gFnYl4CZj1ZbD
-	tiAU5up5Jo22kd76bqmVoaLBjF4rYDMpLjCc/vItKulyU/O2oybeHYoGyN6fAwV+
-	jZf5z4esHXMCyM4gRIl3+S3YWHbkiOcUnWpgMuu8cm6thoIQs36E00Ux7GS7e/1c
-	UMCxsPwtgt4rd3uLDldfw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1677119943; x=
-	1677206343; bh=rW9tMncaa2rm3RkUwVdXX9HjlBdZ/7uuX/6ED3hueLQ=; b=S
-	GyNSzxnAC2AV4AxcOShcF3CMrwoBboNoRRll6+lBIb345Q47Fg/6oOx0lhTtZNdE
-	6fkac1sk8jy8wpuocNsj/ZhVOHnbhg4uq0BtCGIUQb5z5HPNwn0DTK2LtWOf0kLW
-	rop/bc5Ofs0KD1qSj5gVMwWMJ5ESiGTfDWC4COLawepVioiZVyuDzunxeEM80jRG
-	y7cm4VvfJxdEApQRB6MelSohs+SC9+JjOaE8Gmc930oULfTpHNdRzE/Nb6Z7bw1U
-	5pYAsKyT/6KAThqlHUTRtIXcMg8YH17aWeqybE0BG+n+s+sFJDSJSVWvbut194A5
-	ZISu4XY99H/MSzMrGWpEw==
-X-ME-Sender: <xms:xtH2Y_YSKMqnJtZoehPcc6zdNvDJsUzX47LRYJ7KZhHntKRKvUIiNQ>
-    <xme:xtH2Y-Yy1yrBvaeEg0hxTsUatQDEi42KiDTSL1lIrFhSBTbVVr0tNSnh9z94t4HCd
-    BQYGLgpASLqwWC5y1g>
-X-ME-Received: 
- <xmr:xtH2Yx-ow-xKXjICWYkZZgeD1mXbu2y086UTwdwowQ6BPLLuotl731a96ob-1MymUUX8sNf9zvInkA_PTXoS_ZeMRpcKJD-D20DM>
-X-ME-Proxy-Cause: 
- gggruggvucftvghtrhhoucdtuddrgedvhedrudektddggeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtugfgjgesth
-    ekredttddtjeenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgr
-    khgrshhhihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhepfeekke
-    egfedufeduueejfeehleetvdffveejfefhteeitdethfekudeljeeiteejnecuffhomhgr
-    ihhnpehkvghrnhgvlhdrohhrghdpnhgvhihrihhntghkrdgtohhmnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgr
-    khgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:xtH2Y1rb0bv9ItvZLWnMf-xKSn3Hs8uPoClFa5EwGvMJREGAOj3UoQ>
-    <xmx:xtH2Y6oFqQIiK2shTX1pITxyFbNl7WK-UcpK8mKjJxz06SV6Vhz6cA>
-    <xmx:xtH2Y7TBrCKLQXu58lR7Q-9-MUJ-RwjquAu2Fw2j8CA8tD26FCukrg>
-    <xmx:x9H2Y_A3o0LU-2ZJLMxMNNUQXl0RCz9aRYFfXdftr0aZv6dq-O21sA>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 22 Feb 2023 21:39:01 -0500 (EST)
-Date: Thu, 23 Feb 2023 11:38:58 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: "mj@mj" <mj@michaeljosephs.com>
-Subject: Re: Firewire Audio Interface
-Message-ID: <Y/bRwirgNNPPCpop@workstation>
-Mail-Followup-To: "mj@mj" <mj@michaeljosephs.com>, paul@neyrinck.com,
-	alsa-devel@alsa-project.org
-References: <2E89E35E-85D0-45D1-8727-BB013FA78DAA@michaeljosephs.com>
- <Y/Xskw6JUYY+xWN1@workstation>
- <CB595AFA-C37B-44AE-BF7F-9F58A3AEF106@michaeljosephs.com>
+	(Authenticated sender: tanureal)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 954AB66021FA;
+	Thu, 23 Feb 2023 08:43:28 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1677141808;
+	bh=SZyEA11fi4LzAZtvbo3M9qFGoEFnzq74c8IOBh1NzeI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=hDamXEzTuuKpgpgLlmE4eOx4gYj3sT4ssK7/WwF7OfVyozz0S5EzMJxjN6TtOzJAs
+	 wwomLzsgSsvo1E8qz1EQokHSIQN3oBivXF28gCv7Yh2kV0ZybknQatOw8zr6j6MOpe
+	 llpRu4WevXYUtmkQ3kvziNrt5VLSMA8S08U3becRYFjsTN3QpnhcLVrgBjXjCIIULW
+	 64Aj3Ymr+bLQ6mp7SLNazzUJ01nQ46X6+zpcNLacn/cw9Z/vremDH1XeEcuDCFJJ6q
+	 Za2Lo9BeB+CIT+T9F2PpzI/7aE52tfxTJzDZY+drsDRTuMpT46/w4z2uycw5HU8taK
+	 ztIdDShpbiw/A==
+From: Lucas Tanure <lucas.tanure@collabora.com>
+To: David Rhodes <david.rhodes@cirrus.com>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v7 3/4] ALSA: cs35l41: Add shared boost feature
+Date: Thu, 23 Feb 2023 08:43:23 +0000
+Message-Id: <20230223084324.9076-4-lucas.tanure@collabora.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230223084324.9076-1-lucas.tanure@collabora.com>
+References: <20230223084324.9076-1-lucas.tanure@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CB595AFA-C37B-44AE-BF7F-9F58A3AEF106@michaeljosephs.com>
-Message-ID-Hash: 5F5JNRH5P2EPC74QHG7HLFEZT5Z3SIWH
-X-Message-ID-Hash: 5F5JNRH5P2EPC74QHG7HLFEZT5Z3SIWH
-X-MailFrom: o-takashi@sakamocchi.jp
+Message-ID-Hash: HKKGKRB4GDNVFVZRXPQTTH53AUGUANYA
+X-Message-ID-Hash: HKKGKRB4GDNVFVZRXPQTTH53AUGUANYA
+X-MailFrom: lucas.tanure@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: paul@neyrinck.com, alsa-devel@alsa-project.org
+CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ kernel@collabora.com, Lucas Tanure <lucas.tanure@collabora.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5F5JNRH5P2EPC74QHG7HLFEZT5Z3SIWH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HKKGKRB4GDNVFVZRXPQTTH53AUGUANYA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -132,42 +100,312 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
-(C.C.ed to alsa-devel)
+Shared boost allows two amplifiers to share a single boost circuit by
+communicating on the MDSYNC bus.
+The passive amplifier does not control the boost and receives data from
+the active amplifier.
 
-On Wed, Feb 22, 2023 at 11:51:23AM -0500, mj@mj wrote:
-> Hey man thanks so much for the reply!
-> 
-> Why TC put the phantom switch in the software instead of on the
-> hardware unit I can’t figure out!
-> 
-> I think I’m just going to use it a 2-in 2-out interface without
-> the phantom.
-> 
-> A friend of mine looked at the circuit board and told me it
-> would be too difficult to put a switch for the phantom power in it.
-> 
-> Thanks again for the reply!
+Shared Boost is not supported in HDA Systems.
+Based on David Rhodes shared boost patches.
 
-If it is Desktop Konnekt 6, node offset 0x'ffff'e0a0'103c has the 32 bit
-value to express the state of phantom powering. If it is 0, disabled, else
-enabled. Quadlet write asynchronous transaction can change the state, but
-I have never used MacOs to operate any node in IEEE 1394 bus.
+Signed-off-by: Lucas Tanure <lucas.tanure@collabora.com>
+---
+ include/sound/cs35l41.h        | 13 +++++-
+ sound/pci/hda/cs35l41_hda.c    |  6 +--
+ sound/soc/codecs/cs35l41-lib.c | 73 +++++++++++++++++++++++++++++++++-
+ sound/soc/codecs/cs35l41.c     | 27 ++++++++++++-
+ sound/soc/codecs/cs35l41.h     |  1 +
+ 5 files changed, 113 insertions(+), 7 deletions(-)
 
-I know some developer and user for the craft driver; e.g.
+diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
+index 9ac5918269a5..7239d943942c 100644
+--- a/include/sound/cs35l41.h
++++ b/include/sound/cs35l41.h
+@@ -11,6 +11,7 @@
+ #define __CS35L41_H
+ 
+ #include <linux/regmap.h>
++#include <linux/completion.h>
+ #include <linux/firmware/cirrus/cs_dsp.h>
+ 
+ #define CS35L41_FIRSTREG		0x00000000
+@@ -677,6 +678,7 @@
+ 
+ #define CS35L36_PUP_DONE_IRQ_UNMASK	0x5F
+ #define CS35L36_PUP_DONE_IRQ_MASK	0xBF
++#define CS35L41_SYNC_EN_MASK		BIT(8)
+ 
+ #define CS35L41_AMP_SHORT_ERR		0x80000000
+ #define CS35L41_BST_SHORT_ERR		0x0100
+@@ -686,6 +688,7 @@
+ #define CS35L41_BST_DCM_UVP_ERR		0x80
+ #define CS35L41_OTP_BOOT_DONE		0x02
+ #define CS35L41_PLL_UNLOCK		0x10
++#define CS35L41_PLL_LOCK		BIT(1)
+ #define CS35L41_OTP_BOOT_ERR		0x80000000
+ 
+ #define CS35L41_AMP_SHORT_ERR_RLS	0x02
+@@ -705,6 +708,8 @@
+ #define CS35L41_INT1_MASK_DEFAULT	0x7FFCFE3F
+ #define CS35L41_INT1_UNMASK_PUP		0xFEFFFFFF
+ #define CS35L41_INT1_UNMASK_PDN		0xFF7FFFFF
++#define CS35L41_INT3_PLL_LOCK_SHIFT	1
++#define CS35L41_INT3_PLL_LOCK_MASK	BIT(CS35L41_INT3_PLL_LOCK_SHIFT)
+ 
+ #define CS35L41_GPIO_DIR_MASK		0x80000000
+ #define CS35L41_GPIO_DIR_SHIFT		31
+@@ -742,6 +747,11 @@
+ enum cs35l41_boost_type {
+ 	CS35L41_INT_BOOST,
+ 	CS35L41_EXT_BOOST,
++	CS35L41_SHD_BOOST_ACTV,
++	CS35L41_SHD_BOOST_PASS,
++
++	// Not present in Binding Documentation, so no system should use this value.
++	// This value is only used in CLSA0100 Laptop
+ 	CS35L41_EXT_BOOST_NO_VSPK_SWITCH,
+ };
+ 
+@@ -891,6 +901,7 @@ int cs35l41_exit_hibernate(struct device *dev, struct regmap *regmap);
+ int cs35l41_init_boost(struct device *dev, struct regmap *regmap,
+ 		       struct cs35l41_hw_cfg *hw_cfg);
+ bool cs35l41_safe_reset(struct regmap *regmap, enum cs35l41_boost_type b_type);
+-int cs35l41_global_enable(struct regmap *regmap, enum cs35l41_boost_type b_type, int enable);
++int cs35l41_global_enable(struct regmap *regmap, enum cs35l41_boost_type b_type, int enable,
++			  struct completion *pll_lock);
+ 
+ #endif /* __CS35L41_H */
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index 75020edd39e7..b5210abb5141 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -514,13 +514,13 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
+ 		break;
+ 	case HDA_GEN_PCM_ACT_PREPARE:
+ 		mutex_lock(&cs35l41->fw_mutex);
+-		ret = cs35l41_global_enable(reg, cs35l41->hw_cfg.bst_type, 1);
++		ret = cs35l41_global_enable(reg, cs35l41->hw_cfg.bst_type, 1, NULL);
+ 		mutex_unlock(&cs35l41->fw_mutex);
+ 		break;
+ 	case HDA_GEN_PCM_ACT_CLEANUP:
+ 		mutex_lock(&cs35l41->fw_mutex);
+ 		regmap_multi_reg_write(reg, cs35l41_hda_mute, ARRAY_SIZE(cs35l41_hda_mute));
+-		ret = cs35l41_global_enable(reg, cs35l41->hw_cfg.bst_type, 0);
++		ret = cs35l41_global_enable(reg, cs35l41->hw_cfg.bst_type, 0, NULL);
+ 		mutex_unlock(&cs35l41->fw_mutex);
+ 		break;
+ 	case HDA_GEN_PCM_ACT_CLOSE:
+@@ -672,7 +672,7 @@ static int cs35l41_runtime_suspend(struct device *dev)
+ 	if (cs35l41->playback_started) {
+ 		regmap_multi_reg_write(cs35l41->regmap, cs35l41_hda_mute,
+ 				       ARRAY_SIZE(cs35l41_hda_mute));
+-		cs35l41_global_enable(cs35l41->regmap, cs35l41->hw_cfg.bst_type, 0);
++		cs35l41_global_enable(cs35l41->regmap, cs35l41->hw_cfg.bst_type, 0, NULL);
+ 		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2,
+ 				   CS35L41_AMP_EN_MASK, 0 << CS35L41_AMP_EN_SHIFT);
+ 		if (cs35l41->hw_cfg.bst_type == CS35L41_EXT_BOOST)
+diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
+index 04be71435491..8538e2871c5f 100644
+--- a/sound/soc/codecs/cs35l41-lib.c
++++ b/sound/soc/codecs/cs35l41-lib.c
+@@ -1114,12 +1114,31 @@ static const struct reg_sequence cs35l41_reset_to_safe[] = {
+ 	{ 0x00000040,			0x00000033 },
+ };
+ 
++static const struct reg_sequence cs35l41_actv_seq[] = {
++	/* SYNC_BST_CTL_RX_EN = 1; SYNC_BST_CTL_TX_EN = 1 */
++	{CS35L41_MDSYNC_EN,        0x00003000},
++	/* BST_CTL_SEL = MDSYNC */
++	{CS35L41_BSTCVRT_VCTRL2,    0x00000002},
++};
++
++static const struct reg_sequence cs35l41_pass_seq[] = {
++	/* SYNC_BST_CTL_RX_EN = 0; SYNC_BST_CTL_TX_EN = 1 */
++	{CS35L41_MDSYNC_EN,        0x00001000},
++	/* BST_EN = 0 */
++	{CS35L41_PWR_CTRL2,        0x00003300},
++	/* BST_CTL_SEL = MDSYNC */
++	{CS35L41_BSTCVRT_VCTRL2,    0x00000002},
++};
++
+ int cs35l41_init_boost(struct device *dev, struct regmap *regmap,
+ 		       struct cs35l41_hw_cfg *hw_cfg)
+ {
+ 	int ret;
+ 
+ 	switch (hw_cfg->bst_type) {
++	case CS35L41_SHD_BOOST_ACTV:
++		regmap_multi_reg_write(regmap, cs35l41_actv_seq, ARRAY_SIZE(cs35l41_actv_seq));
++		fallthrough;
+ 	case CS35L41_INT_BOOST:
+ 		ret = cs35l41_boost_config(dev, regmap, hw_cfg->bst_ind,
+ 					   hw_cfg->bst_cap, hw_cfg->bst_ipk);
+@@ -1138,6 +1157,10 @@ int cs35l41_init_boost(struct device *dev, struct regmap *regmap,
+ 		ret = regmap_update_bits(regmap, CS35L41_PWR_CTRL2, CS35L41_BST_EN_MASK,
+ 					 CS35L41_BST_DIS_FET_OFF << CS35L41_BST_EN_SHIFT);
+ 		break;
++	case CS35L41_SHD_BOOST_PASS:
++		ret = regmap_multi_reg_write(regmap, cs35l41_pass_seq,
++					     ARRAY_SIZE(cs35l41_pass_seq));
++		break;
+ 	default:
+ 		dev_err(dev, "Boost type %d not supported\n", hw_cfg->bst_type);
+ 		ret = -EINVAL;
+@@ -1165,11 +1188,59 @@ bool cs35l41_safe_reset(struct regmap *regmap, enum cs35l41_boost_type b_type)
+ }
+ EXPORT_SYMBOL_GPL(cs35l41_safe_reset);
+ 
+-int cs35l41_global_enable(struct regmap *regmap, enum cs35l41_boost_type b_type, int enable)
++int cs35l41_global_enable(struct regmap *regmap, enum cs35l41_boost_type b_type, int enable,
++			  struct completion *pll_lock)
+ {
+ 	int ret;
++	unsigned int gpio1_func, pad_control, pwr_ctrl1, pwr_ctrl3;
++	struct reg_sequence cs35l41_mdsync_down_seq[] = {
++		{CS35L41_PWR_CTRL3,		0},
++		{CS35L41_GPIO_PAD_CONTROL,	0},
++		{CS35L41_PWR_CTRL1,		0, 3000},
++	};
++	struct reg_sequence cs35l41_mdsync_up_seq[] = {
++		{CS35L41_PWR_CTRL3,	0},
++		{CS35L41_PWR_CTRL1,	0x00000000, 3000},
++		{CS35L41_PWR_CTRL1,	0x00000001, 3000},
++	};
+ 
+ 	switch (b_type) {
++	case CS35L41_SHD_BOOST_ACTV:
++	case CS35L41_SHD_BOOST_PASS:
++		regmap_read(regmap, CS35L41_PWR_CTRL3, &pwr_ctrl3);
++		regmap_read(regmap, CS35L41_GPIO_PAD_CONTROL, &pad_control);
++
++		pwr_ctrl3 &= ~CS35L41_SYNC_EN_MASK;
++		pwr_ctrl1 = enable << CS35L41_GLOBAL_EN_SHIFT;
++
++		gpio1_func = enable ? CS35L41_GPIO1_MDSYNC : CS35L41_GPIO1_HIZ;
++		gpio1_func <<= CS35L41_GPIO1_CTRL_SHIFT;
++
++		pad_control &= ~CS35L41_GPIO1_CTRL_MASK;
++		pad_control |= gpio1_func & CS35L41_GPIO1_CTRL_MASK;
++
++		cs35l41_mdsync_down_seq[0].def = pwr_ctrl3;
++		cs35l41_mdsync_down_seq[1].def = pad_control;
++		cs35l41_mdsync_down_seq[2].def = pwr_ctrl1;
++		ret = regmap_multi_reg_write(regmap, cs35l41_mdsync_down_seq,
++					     ARRAY_SIZE(cs35l41_mdsync_down_seq));
++		if (!enable)
++			break;
++
++		if (!pll_lock)
++			return -EINVAL;
++
++		ret = wait_for_completion_timeout(pll_lock, msecs_to_jiffies(1000));
++		if (ret == 0) {
++			ret = -ETIMEDOUT;
++		} else {
++			regmap_read(regmap, CS35L41_PWR_CTRL3, &pwr_ctrl3);
++			pwr_ctrl3 |= CS35L41_SYNC_EN_MASK;
++			cs35l41_mdsync_up_seq[0].def = pwr_ctrl3;
++			ret = regmap_multi_reg_write(regmap, cs35l41_mdsync_up_seq,
++						     ARRAY_SIZE(cs35l41_mdsync_up_seq));
++		}
++		break;
+ 	case CS35L41_INT_BOOST:
+ 		ret = regmap_update_bits(regmap, CS35L41_PWR_CTRL1, CS35L41_GLOBAL_EN_MASK,
+ 					 enable << CS35L41_GLOBAL_EN_SHIFT);
+diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
+index c006364e5335..1624510d09c0 100644
+--- a/sound/soc/codecs/cs35l41.c
++++ b/sound/soc/codecs/cs35l41.c
+@@ -360,6 +360,7 @@ static void cs35l41_boost_enable(struct cs35l41_private *cs35l41, unsigned int e
+ {
+ 	switch (cs35l41->hw_cfg.bst_type) {
+ 	case CS35L41_INT_BOOST:
++	case CS35L41_SHD_BOOST_ACTV:
+ 		enable = enable ? CS35L41_BST_EN_DEFAULT : CS35L41_BST_DIS_FET_OFF;
+ 		regmap_update_bits(cs35l41->regmap, CS35L41_PWR_CTRL2, CS35L41_BST_EN_MASK,
+ 				enable << CS35L41_BST_EN_SHIFT);
+@@ -455,6 +456,12 @@ static irqreturn_t cs35l41_irq(int irq, void *data)
+ 		ret = IRQ_HANDLED;
+ 	}
+ 
++	if (status[2] & CS35L41_PLL_LOCK) {
++		regmap_write(cs35l41->regmap, CS35L41_IRQ1_STATUS3, CS35L41_PLL_LOCK);
++		complete(&cs35l41->pll_lock);
++		ret = IRQ_HANDLED;
++	}
++
+ done:
+ 	pm_runtime_mark_last_busy(cs35l41->dev);
+ 	pm_runtime_put_autosuspend(cs35l41->dev);
+@@ -492,10 +499,12 @@ static int cs35l41_main_amp_event(struct snd_soc_dapm_widget *w,
+ 						cs35l41_pup_patch,
+ 						ARRAY_SIZE(cs35l41_pup_patch));
+ 
+-		cs35l41_global_enable(cs35l41->regmap, cs35l41->hw_cfg.bst_type, 1);
++		cs35l41_global_enable(cs35l41->regmap, cs35l41->hw_cfg.bst_type, 1,
++				      &cs35l41->pll_lock);
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMD:
+-		cs35l41_global_enable(cs35l41->regmap, cs35l41->hw_cfg.bst_type, 0);
++		cs35l41_global_enable(cs35l41->regmap, cs35l41->hw_cfg.bst_type, 0,
++				      &cs35l41->pll_lock);
+ 
+ 		ret = regmap_read_poll_timeout(cs35l41->regmap, CS35L41_IRQ1_STATUS1,
+ 					       val, val &  CS35L41_PDN_DONE_MASK,
+@@ -802,6 +811,10 @@ static const struct snd_pcm_hw_constraint_list cs35l41_constraints = {
+ static int cs35l41_pcm_startup(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *dai)
+ {
++	struct cs35l41_private *cs35l41 = snd_soc_component_get_drvdata(dai->component);
++
++	reinit_completion(&cs35l41->pll_lock);
++
+ 	if (substream->runtime)
+ 		return snd_pcm_hw_constraint_list(substream->runtime, 0,
+ 						  SNDRV_PCM_HW_PARAM_RATE,
+@@ -1252,6 +1265,10 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
+ 	/* Set interrupt masks for critical errors */
+ 	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1,
+ 		     CS35L41_INT1_MASK_DEFAULT);
++	if (cs35l41->hw_cfg.bst_type == CS35L41_SHD_BOOST_PASS ||
++	    cs35l41->hw_cfg.bst_type == CS35L41_SHD_BOOST_ACTV)
++		regmap_update_bits(cs35l41->regmap, CS35L41_IRQ1_MASK3, CS35L41_INT3_PLL_LOCK_MASK,
++				   0 << CS35L41_INT3_PLL_LOCK_SHIFT);
+ 
+ 	ret = devm_request_threaded_irq(cs35l41->dev, cs35l41->irq, NULL, cs35l41_irq,
+ 					IRQF_ONESHOT | IRQF_SHARED | irq_pol,
+@@ -1275,6 +1292,8 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
+ 	if (ret < 0)
+ 		goto err;
+ 
++	init_completion(&cs35l41->pll_lock);
++
+ 	pm_runtime_set_autosuspend_delay(cs35l41->dev, 3000);
+ 	pm_runtime_use_autosuspend(cs35l41->dev);
+ 	pm_runtime_mark_last_busy(cs35l41->dev);
+@@ -1317,6 +1336,10 @@ void cs35l41_remove(struct cs35l41_private *cs35l41)
+ 	pm_runtime_disable(cs35l41->dev);
+ 
+ 	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1, 0xFFFFFFFF);
++	if (cs35l41->hw_cfg.bst_type == CS35L41_SHD_BOOST_PASS ||
++	    cs35l41->hw_cfg.bst_type == CS35L41_SHD_BOOST_ACTV)
++		regmap_update_bits(cs35l41->regmap, CS35L41_IRQ1_MASK3, CS35L41_INT3_PLL_LOCK_MASK,
++				   1 << CS35L41_INT3_PLL_LOCK_SHIFT);
+ 	kfree(cs35l41->dsp.system_name);
+ 	wm_adsp2_remove(&cs35l41->dsp);
+ 	cs35l41_safe_reset(cs35l41->regmap, cs35l41->hw_cfg.bst_type);
+diff --git a/sound/soc/codecs/cs35l41.h b/sound/soc/codecs/cs35l41.h
+index c85cbc1dd333..34d967d4372b 100644
+--- a/sound/soc/codecs/cs35l41.h
++++ b/sound/soc/codecs/cs35l41.h
+@@ -33,6 +33,7 @@ struct cs35l41_private {
+ 	int irq;
+ 	/* GPIO for /RST */
+ 	struct gpio_desc *reset_gpio;
++	struct completion pll_lock;
+ };
+ 
+ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *hw_cfg);
+-- 
+2.39.2
 
-* Re: [alsa-devel] Tascam Coding Inquiry
-  * https://lore.kernel.org/alsa-devel/20200108095430.GA16741@workstation/
-
-I think it your help to contact to them. Especially Paul Neyrinck[1] seems
-to complete his work for the craft driver of Digidesign Digi 002/003
-family in MacOS. They are different hardware from yours, while he will
-help you to execute the simple read/write transaction to a certain
-offset of it.
-
-
-[1] https://neyrinck.com/
-
-Regards
-
-Takashi Sakamoto
