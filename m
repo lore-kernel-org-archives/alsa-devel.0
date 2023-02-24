@@ -4,113 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09F32C61DA3
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Feb 2023 10:02:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82A3BC64ED8
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Feb 2023 10:45:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 046FD832;
-	Fri, 24 Feb 2023 11:01:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 046FD832
+	by alsa0.perex.cz (Postfix) with ESMTPS id B6AA3206;
+	Fri, 24 Feb 2023 11:44:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B6AA3206
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677232956;
-	bh=qv1ebqxNKYeh2P2ahXxCf6dkKAslAGphNWhUKZ3rmH4=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=fAsqEnn/phAytovp2JvSy71SEl1xUcOKGhd8UkygYfBhU2r23NNVjzzPUbFrz0xzv
-	 +Yus+SGeuCcF9nt8W6neNVSORq03vZ8UtLsCVuRtdaaT7tmeyTq3K4XZ0y//xgHSnw
-	 xGxGLiJjZRmubzLLiqyCuRZYee2Q/sk6bztmkuy0=
+	s=default; t=1677235540;
+	bh=R54f0chdWf5oEyxsccz/CXdM2qdcPwCj0KYPumDuF6Y=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=klJN9exKgf9yKq+l20FNzxSYn+cXiubaxy9stklW4/EP9Rf0U8iU2bn9d6VIvUBGM
+	 KBnyrMvKcKC9CzwsX2tCaDMOx/uf0YMgVBiy0KgUD99CkpvmRloZ9EkWxuBRUcrpgK
+	 eDCpMfg6sGuHxdjJQooU88BJPb+y9vYJ7tHUwWRk=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E696F80534;
-	Fri, 24 Feb 2023 11:00:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A37EEF80125;
+	Fri, 24 Feb 2023 11:44:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B57CF80496; Thu, 23 Feb 2023 21:15:10 +0100 (CET)
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com
- [IPv6:2a00:1450:4864:20::52d])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 1A3EEF80125; Fri, 24 Feb 2023 11:44:27 +0100 (CET)
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com
+ [148.163.135.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 913FDF80038
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2023 21:15:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 913FDF80038
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=BaLgVKhu
-Received: by mail-ed1-x52d.google.com with SMTP id cy6so41152562edb.5
-        for <alsa-devel@alsa-project.org>;
- Thu, 23 Feb 2023 12:15:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1677183298;
-        h=content-transfer-encoding:in-reply-to:cc:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kAb0qzqWSP/U+Kj5L5nLqdqYurAmo6JZhKfQvH683Pk=;
-        b=BaLgVKhuX1clAmVVahaKedAK7xDb7n37VgbEl5j85och7Y9+re7M8ZB/GCXlN0iW4P
-         RpY+bsTzN0egXJpJpNN6fArx526j4YSZMdYk9+RQAwoSaK8RddM/LoJ7NJ4WNge1jI4W
-         293i+uUBsLoU17XWO6XQoOMRekI+h/hSXlrVMYaHq9e9lyshfu5uXQ+L7ErgJk07+5VO
-         wf5Y+moJHpgaDl2hpoPsc/ktmPyHoaI1J4Y6eO9UQJ0D8/75X+SR2Hgj3Kz+Q7PDGUwJ
-         wEKJF4emYuhPovJsIuKN13NKtTWZayn5CQ7InFhtxFJueiuJvH7c89YgRPQnJjKVVYvb
-         GSwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677183298;
-        h=content-transfer-encoding:in-reply-to:cc:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kAb0qzqWSP/U+Kj5L5nLqdqYurAmo6JZhKfQvH683Pk=;
-        b=YDkMtUB7KhsB0IoqOYL4tFhZm5b9frvK46Als/9mz0d6AaGT6QQYjIMFTTryh1/z7D
-         Odb15ecRk/AsfJVQRQwrk/85mgHWOJrvqHPnDVAKKJWDv0CwDrc769ujB9ryq1n6Hn9J
-         Ea46Cm6GHl5YUmDgusR1TP4juzHkB8XB2VQCb1Ca5t/ELCB1Y0g88g0DN64W29xJ1MK+
-         gFint0A8gUEXEHbcOl1CCx4vDyBMUYC8TLFrmFa4Xzwta4snmVM9pGli+0A0Mz8j3Cgf
-         VdGNNas/1vL9hcz7fzhjCDgRMsKmnkRW91lrKcJSUkY3JVdu15Wfi0xRtTJ7/8AnfnGw
-         Tfhg==
-X-Gm-Message-State: AO0yUKXVGfAylqtERzi+k2C4N6/IIiP04pqA3YkV0aVV2RszZNPfTMKq
-	gw1nfDJtxwHAARLsBeVnJFM=
-X-Google-Smtp-Source: 
- AK7set+fyV8NY7swJO99sprnqCQsbhtz4OVtCCE4+qb/xglPT66O02/tvTfiEpZ9YzNZX/uhSq5ksQ==
-X-Received: by 2002:a05:6402:34d5:b0:4ac:8e63:300a with SMTP id
- w21-20020a05640234d500b004ac8e63300amr12695555edc.3.1677183298324;
-        Thu, 23 Feb 2023 12:14:58 -0800 (PST)
-Received: from [192.168.88.131] ([37.252.81.68])
-        by smtp.gmail.com with ESMTPSA id
- s21-20020a50d495000000b004aee548b3e2sm5338830edi.69.2023.02.23.12.14.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Feb 2023 12:14:58 -0800 (PST)
-Message-ID: <1db3bfe5-0982-b445-9c94-784478279028@gmail.com>
-Date: Thu, 23 Feb 2023 23:14:56 +0300
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9794FF800BA
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2023 11:44:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9794FF800BA
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+	by mx0a-00128a01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 31OAUxoU013317;
+	Fri, 24 Feb 2023 05:44:14 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+	by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3nxc0e4vp4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 24 Feb 2023 05:44:14 -0500
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+	by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 31OAiDej036087
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256
+ verify=FAIL);
+	Fri, 24 Feb 2023 05:44:13 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Fri, 24 Feb
+ 2023 05:44:12 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Fri, 24 Feb 2023 05:44:12 -0500
+Received: from nsa.ad.analog.com ([10.44.3.102])
+	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 31OAhvHl023569;
+	Fri, 24 Feb 2023 05:43:59 -0500
+From: =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>
+To: <alsa-devel@alsa-project.org>
+Subject: [PATCH] ASoC: adau7118: don't disable regulators on device unbind
+Date: Fri, 24 Feb 2023 11:45:51 +0100
+Message-ID: <20230224104551.1139981-1-nuno.sa@analog.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] Fix snprintf format warnings during 'alsa' kselftest
- compilation
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-References: <20230223143214.16564-1-ivan.orlov0322@gmail.com>
- <Y/eAyrYs+wEu180d@sirena.org.uk>
-From: Ivan Orlov <ivan.orlov0322@gmail.com>
-In-Reply-To: <Y/eAyrYs+wEu180d@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-MailFrom: ivan.orlov0322@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: RjWFZ8c7-UZz9DPnim9YoSlTg7hPFVoG
+X-Proofpoint-GUID: RjWFZ8c7-UZz9DPnim9YoSlTg7hPFVoG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-24_06,2023-02-24_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ lowpriorityscore=0
+ spamscore=0 mlxscore=0 mlxlogscore=921 bulkscore=0 malwarescore=0
+ adultscore=0 impostorscore=0 phishscore=0 suspectscore=0
+ priorityscore=1501 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2212070000 definitions=main-2302240088
+Message-ID-Hash: LMTIXU7AN4Y3H3BYX35QXGDWYKWZ4HIB
+X-Message-ID-Hash: LMTIXU7AN4Y3H3BYX35QXGDWYKWZ4HIB
+X-MailFrom: Nuno.Sa@analog.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: DN5EGZCYT5MZ45TJOP5JG4OMUXRSDPMV
-X-Message-ID-Hash: DN5EGZCYT5MZ45TJOP5JG4OMUXRSDPMV
-X-Mailman-Approved-At: Fri, 24 Feb 2023 10:00:14 +0000
-CC: tiwai@suse.com, shuah@kernel.org, alsa-devel@alsa-project.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- skhan@linuxfoundation.org
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>,
+ =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+ Lars-Peter Clausen <lars@metafoo.de>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DN5EGZCYT5MZ45TJOP5JG4OMUXRSDPMV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LMTIXU7AN4Y3H3BYX35QXGDWYKWZ4HIB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,23 +103,59 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 23.02.2023 18:05, Mark Brown wrote:
+The regulators are supposed to be controlled through the
+set_bias_level() component callback. Moreover, the regulators are not
+enabled during probe and so, this would lead to a regulator unbalanced
+use count.
 
-> What warnings are you seeing in what configuration (arch, toolchain, any
-> custom options...)?  I'm not seeing anything when I test.  Are these
-> perhaps architecture dependent warnings?
-> 
-> Please submit patches using subject lines reflecting the style for the
-> subsystem, this makes it easier for people to identify relevant patches.
-> Look at what existing commits in the area you're changing are doing and
-> make sure your subject lines visually resemble what they're doing.
-> There's no need to resubmit to fix this alone.
+Fixes: ca514c0f12b02 ("ASOC: Add ADAU7118 8 Channel PDM-to-I2S/TDM Converter driver")
+Signed-off-by: Nuno Sá <nuno.sa@analog.com>
+---
 
-Thank you for the review! I will follow the common subject lines style 
-in the future.
+Note this was only checked by code inspection but unless I'm missing
+something, it looks clear this could happen by just insmod + rmmod the
+module.
 
-I compiled the test via gcc 11.3.0 without any custom options, the arch 
-is x86_64. There were five warnings during the test compilation, and all 
-of them were caused by incorrect format in 'snprintf' function calls. As 
-I know, using incorrect format in 'snprintf' creates an undefined 
-behavior. Maybe there is a point to fix it?
+ sound/soc/codecs/adau7118.c | 19 +------------------
+ 1 file changed, 1 insertion(+), 18 deletions(-)
+
+diff --git a/sound/soc/codecs/adau7118.c b/sound/soc/codecs/adau7118.c
+index bbb097249887..a663d37e5776 100644
+--- a/sound/soc/codecs/adau7118.c
++++ b/sound/soc/codecs/adau7118.c
+@@ -444,22 +444,6 @@ static const struct snd_soc_component_driver adau7118_component_driver = {
+ 	.endianness		= 1,
+ };
+ 
+-static void adau7118_regulator_disable(void *data)
+-{
+-	struct adau7118_data *st = data;
+-	int ret;
+-	/*
+-	 * If we fail to disable DVDD, don't bother in trying IOVDD. We
+-	 * actually don't want to be left in the situation where DVDD
+-	 * is enabled and IOVDD is disabled.
+-	 */
+-	ret = regulator_disable(st->dvdd);
+-	if (ret)
+-		return;
+-
+-	regulator_disable(st->iovdd);
+-}
+-
+ static int adau7118_regulator_setup(struct adau7118_data *st)
+ {
+ 	st->iovdd = devm_regulator_get(st->dev, "iovdd");
+@@ -481,8 +465,7 @@ static int adau7118_regulator_setup(struct adau7118_data *st)
+ 		regcache_cache_only(st->map, true);
+ 	}
+ 
+-	return devm_add_action_or_reset(st->dev, adau7118_regulator_disable,
+-					st);
++	return 0;
+ }
+ 
+ static int adau7118_parset_dt(const struct adau7118_data *st)
+-- 
+2.39.2
+
