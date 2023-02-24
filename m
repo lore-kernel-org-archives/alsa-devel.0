@@ -4,63 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60A06C678DB
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Feb 2023 15:35:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1DE4C7EE30
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Feb 2023 18:20:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8653E836;
-	Fri, 24 Feb 2023 16:34:27 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8653E836
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8D221E3;
+	Fri, 24 Feb 2023 19:19:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8D221E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677252917;
-	bh=rCFXXTml1wABDxkMWr1I8LFjQLgiwH9druL0X7gY42I=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	s=default; t=1677262845;
+	bh=IP3WmVGiSdHPgtth19FmgMeNWLngRTpXqmuQC7OcnYE=;
+	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=juFmaikwekgmG3Jtwri5IeYTerhVXhThdkhrWgVb2665Taj5liCniP/WqnIyCf+oJ
-	 UyXDONC/dgF88jBRGwR5u1k1+uabyO2tFxPuTQvjaXdCmTCnl7AZfz4He6EFk6GjMa
-	 MKatKHujOcjeQDO3XDWkqt+02o6/8bZ7fA30ueUk=
+	b=cNk1CrnWTgg4RRSTHf0qQsW4YjffLDKFbmKea7u0cKUIYxCAi9B5cGZfxbVIkUuk0
+	 +ngmkc92ojp5Vmjt/jXdpJrOP3U2DxmurJfSPfCREapkZSGNevXuvDOW4Tu48ipN8V
+	 cDRkcgsAzMVgt6wrcpea+nMGKTISyd2g0RsRpZb8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C0FF8F80534;
-	Fri, 24 Feb 2023 16:33:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE7A6F80125;
+	Fri, 24 Feb 2023 19:19:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BE095F800DF; Fri, 24 Feb 2023 16:33:34 +0100 (CET)
-Received: from hutie.ust.cz (hutie.ust.cz [185.8.165.127])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id E95F4F80125; Fri, 24 Feb 2023 19:19:30 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 66257F800DF
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2023 16:33:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66257F800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id D842DF800DF
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2023 19:19:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D842DF800DF
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=cutebit.org header.i=@cutebit.org header.a=rsa-sha256
- header.s=mail header.b=GWnPLTv6
-From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
-	t=1677252795; bh=+kyfNHJb1YUWgssduOtt+KjIRL6xvmqOGLr82KEtgl8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=GWnPLTv6eKrOX4bcSNlgD9Mb7givR36pFAi7Gfi9KoVsZN70u7rXMBFrRzGOPVMwr
-	 jiceOeT+ToeMqjK1nGqWPppC36U+e9WjwjaoqY+A34rKdKjgkQcdU6/IrG25pJy6yr
-	 4C8AjVoSeljoGitTwMFFiwThJXThpbDnVlzjZfW4=
-To: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 2/3] ASoC: apple: mca: Fix SERDES reset sequence
-Date: Fri, 24 Feb 2023 16:33:01 +0100
-Message-Id: <20230224153302.45365-2-povik+lin@cutebit.org>
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=CuHTWtUw
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 7CCBA61924;
+	Fri, 24 Feb 2023 18:19:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F570C433EF;
+	Fri, 24 Feb 2023 18:19:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1677262761;
+	bh=IP3WmVGiSdHPgtth19FmgMeNWLngRTpXqmuQC7OcnYE=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=CuHTWtUwJmsByLaDSGrpYnkmjXg3kjw8kyKorqYDc1kBRZbuxpGH6xmRev2LcVS92
+	 rBb6sEHPIteFv+xOZDnsQuzjCDL4iXV/0+muHPdDMZkSvpUPOEdLYvSl54fL9MrKvE
+	 GByIOBuOtAxHY/DoHi5yb4/6u1RNzNZ8MkT1Pqzm4Jwp+qgH0Mr/Hv5FZAqCeeHGe0
+	 UqVAquIOC26y3XJEVo8NfanW6rucia08Xdd6g31EUci5BNjWPc+lYq2+wtzlYZIfuE
+	 hWgqBnGW7CYD1avOwFJovMCuA/OINR+GZnhU0jJxpBy2oFky9BP2tLgkfT3uapMiQY
+	 aVXyNN07oE0ww==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+ =?utf-8?q?Martin_Povi=C5=A1er?= <povik+lin@cutebit.org>
 In-Reply-To: <20230224153302.45365-1-povik+lin@cutebit.org>
 References: <20230224153302.45365-1-povik+lin@cutebit.org>
+Subject: Re: [PATCH 1/3] ASoC: apple: mca: Fix final status read on SERDES
+ reset
+Message-Id: <167726276023.536872.10083688435650517455.b4-ty@kernel.org>
+Date: Fri, 24 Feb 2023 18:19:20 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: O2LM5E2GLRLZ26IQDH5SH2AKNXPHZO7M
-X-Message-ID-Hash: O2LM5E2GLRLZ26IQDH5SH2AKNXPHZO7M
-X-MailFrom: povik+lin@cutebit.org
+X-Mailer: b4 0.12.0
+Message-ID-Hash: AOBVBYVJNPSI3EW345RJTK32L2QDIMSE
+X-Message-ID-Hash: AOBVBYVJNPSI3EW345RJTK32L2QDIMSE
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -74,7 +83,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O2LM5E2GLRLZ26IQDH5SH2AKNXPHZO7M/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AOBVBYVJNPSI3EW345RJTK32L2QDIMSE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -83,67 +92,42 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Fix the reset sequence of reads and writes that we invoke from within
-the early trigger. It looks like there never was a SERDES_CONF_SOME_RST
-bit that should be involved in the reset sequence, and its presence in
-the driver code is a mistake from earlier.
+On Fri, 24 Feb 2023 16:33:00 +0100, Martin Povišer wrote:
+> From within the early trigger we are doing a reset of the SERDES unit,
+> but the final status read is on a bad address. Add the missing SERDES
+> unit offset in calculation of the address.
+> 
+> 
 
-Instead, the reset sequence should go as follows: We should switch the
-the SERDES unit's SYNC_SEL mux to the value of 7 (so outside the range
-of 1...6 representing cluster's SYNCGEN units), then raise the RST bit
-in SERDES_STATUS and wait for it to clear.
+Applied to
 
-Properly resetting the SERDES unit fixes frame desynchronization hazard
-in case of long frames (longer than 4 used slots). The desynchronization
-manifests itself by rotating the PCM channels.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Fixes: 3df5d0d97289 ("ASoC: apple: mca: Start new platform driver")
-Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
----
- sound/soc/apple/mca.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+Thanks!
 
-diff --git a/sound/soc/apple/mca.c b/sound/soc/apple/mca.c
-index 9cceeb259952..aea08c7b2ee8 100644
---- a/sound/soc/apple/mca.c
-+++ b/sound/soc/apple/mca.c
-@@ -101,7 +101,6 @@
- #define SERDES_CONF_UNK3	BIT(14)
- #define SERDES_CONF_NO_DATA_FEEDBACK	BIT(15)
- #define SERDES_CONF_SYNC_SEL	GENMASK(18, 16)
--#define SERDES_CONF_SOME_RST	BIT(19)
- #define REG_TX_SERDES_BITSTART	0x08
- #define REG_RX_SERDES_BITSTART	0x0c
- #define REG_TX_SERDES_SLOTMASK	0x0c
-@@ -203,15 +202,24 @@ static void mca_fe_early_trigger(struct snd_pcm_substream *substream, int cmd,
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		mca_modify(cl, serdes_conf, SERDES_CONF_SYNC_SEL,
-+			   FIELD_PREP(SERDES_CONF_SYNC_SEL, 0));
-+		mca_modify(cl, serdes_conf, SERDES_CONF_SYNC_SEL,
-+			   FIELD_PREP(SERDES_CONF_SYNC_SEL, 7));
- 		mca_modify(cl, serdes_unit + REG_SERDES_STATUS,
- 			   SERDES_STATUS_EN | SERDES_STATUS_RST,
- 			   SERDES_STATUS_RST);
--		mca_modify(cl, serdes_conf, SERDES_CONF_SOME_RST,
--			   SERDES_CONF_SOME_RST);
--		readl_relaxed(cl->base + serdes_conf);
--		mca_modify(cl, serdes_conf, SERDES_STATUS_RST, 0);
-+		/*
-+		 * Experiments suggest that it takes at most ~1 us
-+		 * for the bit to clear, so wait 2 us for good measure.
-+		 */
-+		udelay(2);
- 		WARN_ON(readl_relaxed(cl->base + serdes_unit + REG_SERDES_STATUS) &
- 			SERDES_STATUS_RST);
-+		mca_modify(cl, serdes_conf, SERDES_CONF_SYNC_SEL,
-+			   FIELD_PREP(SERDES_CONF_SYNC_SEL, 0));
-+		mca_modify(cl, serdes_conf, SERDES_CONF_SYNC_SEL,
-+			   FIELD_PREP(SERDES_CONF_SYNC_SEL, cl->no + 1));
- 		break;
- 	default:
- 		break;
--- 
-2.33.0
+[1/3] ASoC: apple: mca: Fix final status read on SERDES reset
+      commit: aaf5f0d76b6e1870e3674408de2b13a92a4d4059
+[2/3] ASoC: apple: mca: Fix SERDES reset sequence
+      commit: d8b3e396088d787771f19fd3b7949e080dc31d6f
+[3/3] ASoC: apple: mca: Improve handling of unavailable DMA channels
+      commit: fb1847cc460c127b12720119eae5f438ffc62e85
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
