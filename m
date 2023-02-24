@@ -4,82 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A10EAC61DA3
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Feb 2023 14:09:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFF9EC61DA4
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Feb 2023 14:10:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 569D2203;
-	Fri, 24 Feb 2023 15:09:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 569D2203
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E20F1EA;
+	Fri, 24 Feb 2023 15:09:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E20F1EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677247790;
-	bh=rybO/20a98fdHKZtAB7oYS7Qk4A/VAIx86q+e/5lOVk=;
+	s=default; t=1677247819;
+	bh=tJW69WWMKlprOa5Xp3MSQu9gJosO9MCtIHdxPOTSeTM=;
 	h=From:Date:Subject:References:In-Reply-To:To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=FsayqSer5tMuEYSS1tFJUjNYBEp/37XlYebkO7bzH2Go4Xl1ABQYnXSo9u7l8oMBt
-	 sZLH1s7qa6sQ4xQ+Qymg1vK0kyDVfQgw2dZsG3gbKhtvY8WJHMY7tg0wPujMld5zWR
-	 jEc6rFi7/InCdlHxk+CZrdnYB5ZLzVKDoHP5DLjo=
+	b=aHqs/gYDZnhrL0Xo9RcgYgBZDdnGsbNqsuhbm3v3oOJQonx3WT3UXm7p1ckI12D3B
+	 rMP/oDukpFAyBRRpypFayPzU1hqIUlevwiyxKpjb0BoTUuXomaVFw7UU89qfCpH4n3
+	 Pwq4102/OAZjIp41eYjg6L1T2MGxAhGxxuENw7OQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EA7F3F80551;
-	Fri, 24 Feb 2023 15:07:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88CE7F80558;
+	Fri, 24 Feb 2023 15:08:00 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 24765F800DF; Fri, 24 Feb 2023 15:07:53 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id 3BD12F80542; Fri, 24 Feb 2023 15:07:55 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5B2A7F800DF
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2023 15:07:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B2A7F800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id D9B2AF80116
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2023 15:07:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9B2AF80116
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=OmTs//tH
+ header.s=k20201202 header.b=exI1HPiq
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 349B7B81C96;
-	Fri, 24 Feb 2023 14:07:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B08BFC433EF;
-	Fri, 24 Feb 2023 14:07:37 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 88A2B618E8;
+	Fri, 24 Feb 2023 14:07:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2061C4339C;
+	Fri, 24 Feb 2023 14:07:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1677247659;
-	bh=rybO/20a98fdHKZtAB7oYS7Qk4A/VAIx86q+e/5lOVk=;
+	s=k20201202; t=1677247665;
+	bh=tJW69WWMKlprOa5Xp3MSQu9gJosO9MCtIHdxPOTSeTM=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=OmTs//tHgMOqlO4pBkuI4QNT+r3RvoMDvdw6thVQrGkpocB8Sbjw0sf0o8vq/PDCc
-	 1NrGOdY32Yy1zieCRxbHRtcTTwguX5Z3xNyM54a0t6kiBUCnOSEpGmaQNBlQJCKAVn
-	 jeNUxHqKEfDgZIVNxTdkxsT+MhaMA20dUZP4p3qfCX/OPzDLkm4V2SaBuEKPRyuqq0
-	 tc/9hNdSjA6NQH38QetCmZggKlxxXR0S+M1f/UinzPSFPIiWXdhakdRdgwWyJH1fg2
-	 MKUWaOJK2u9ZygQbyifTdd5m86m1a8n3tvtOXQ0O3f2cZI3UQ8ShV55MURfxZ8OEyp
-	 6zrH74kutPU5Q==
+	b=exI1HPiqonADtQ3JbWxYrA0MvmrGUJ5sDDyhhgai0FWcxboCZRDuUIN9TGWCn8104
+	 qHhSyUlgIZ5Oj3w6WRbc0L7gbUXFwRUemlpsSKCMj+W/i0+/Xew9NlBvV2FhT32G7G
+	 bVSBawb2n7XVXx01Pnun+OBBDIFvTcYq+Y4DyHwDDTh651L6T6s3FjaFUWvxHGAyZm
+	 QZXSbIcms4hzEkVPkuYb3Fk7EJoeNHlql3GBQCK7CnwVOjMR6dL6s6ZOb3hsKvG426
+	 dPuzGVEYhgx+fVPBl00LjM7RGxPcjNwRVNeRZUS5IrE8uckiZrDjYMpXfd0JxgUtI7
+	 oBdQkL2SN6uiw==
 From: Mark Brown <broonie@kernel.org>
-Date: Fri, 24 Feb 2023 14:03:56 +0000
-Subject: [PATCH 2/4] ASoC: mt8192: Fix event generation for controls
+Date: Fri, 24 Feb 2023 14:03:58 +0000
+Subject: [PATCH 4/4] ASoC: mt8192: Fix range for sidetone positive gain
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230223-asoc-mt8192-quick-fixes-v1-2-9a85f90368e1@kernel.org>
+Message-Id: <20230223-asoc-mt8192-quick-fixes-v1-4-9a85f90368e1@kernel.org>
 References: <20230223-asoc-mt8192-quick-fixes-v1-0-9a85f90368e1@kernel.org>
 In-Reply-To: <20230223-asoc-mt8192-quick-fixes-v1-0-9a85f90368e1@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
  Takashi Iwai <tiwai@suse.com>, Matthias Brugger <matthias.bgg@gmail.com>,
  AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2499; i=broonie@kernel.org;
- h=from:subject:message-id; bh=rybO/20a98fdHKZtAB7oYS7Qk4A/VAIx86q+e/5lOVk=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBj+MSi4fcXZN3SX4ycFjonmo5T8TgNsx4vC5u7yU/9
- bTHy3wOJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCY/jEogAKCRAk1otyXVSH0D3vB/
- 9ia/xAkAhL29HBF3oLJN4EAHzoTo9/U803oY9OmuCnbFYIyZfbExiJ6KEEtVehzMd2/QmsbP52SuSh
- lmofPFSTpP/RTnKEIIYTwtci+Zbs00fBAswcmXXZka9HvxLx+9Clo17BXibbr/LfXDvEFmew3hT8wj
- FETIwQi7SE4Z16st+sJz/+9U2vexecqNTjz8FpBvo9mU4iOOsJCoacyPafifC9MmIYca+0RzvJkL8h
- 6IYxu5L6Smkv6Pl0sqhhmI5SIQKzHu5Rvg7bFKut8PPA88GBms825FDxn4rAjObpCVhaPXdVDEXK5Y
- dl0sdV86a6hAyiIxp4EWsqi2ZErFF7
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1290; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=tJW69WWMKlprOa5Xp3MSQu9gJosO9MCtIHdxPOTSeTM=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBj+MSj76AsGbh8BaFvHgyLdCRoaexzbW9BgLDoOgOC
+ J6TdUxqJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCY/jEowAKCRAk1otyXVSH0EaCB/
+ 9Hy8hUSJ7pct+oUw+uwv5aFtd39IiXzilcaerZgNl786hX0BWJ6gN4wMCsKSctPepdVVMzytQkF9cu
+ gs5Rw3oo8vWL3QcSNuF/4kP/E1edK/fCedSR80cTmL9cxDyXXO+P8pbNcRMVeKsflgIUCNky5hlNzH
+ vxcEJeKM3g9AP7axDa0k+dQGySwQZkE6SK6dFfoh0Bt2X9PgXB9HO6yul6rgkqC1sz8LmD/jAi1Rik
+ ymG5hWRm1oOZ1/jcZT90v2D8WH7+5LeH+yhqlEjVKEOXE5Zs2M6bZs+6RuVOiX+q5gN9Mz+L+3+pCn
+ 1t2qHuh3soPr5qc6RDZ9JcSi6cwmvQ
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: XQR6UETNBMZK5EGQET34UII7SEPVKFN7
-X-Message-ID-Hash: XQR6UETNBMZK5EGQET34UII7SEPVKFN7
+Message-ID-Hash: H5VPWVFSZS3TPWOKVO2AOSMUIC6ZK4VC
+X-Message-ID-Hash: H5VPWVFSZS3TPWOKVO2AOSMUIC6ZK4VC
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -96,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XQR6UETNBMZK5EGQET34UII7SEPVKFN7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H5VPWVFSZS3TPWOKVO2AOSMUIC6ZK4VC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,78 +104,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-ALSA controls put() operations should return 1 if the value changed and 0
-if it remains the same, fix the mt8192 driver to do so.
+The Sidetone_Positive_Gain_dB control reports a range of 0..100 as valid
+but the put() function rejects anything larger than 24. Fix this.
+
+There are numerous other problems with this control, the name is very non
+idiomatic and it should be a TLV, but it's ABI so probably we should leave
+those alone.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt8192/mt8192-dai-adda.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+ sound/soc/mediatek/mt8192/mt8192-dai-adda.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/mediatek/mt8192/mt8192-dai-adda.c b/sound/soc/mediatek/mt8192/mt8192-dai-adda.c
-index bc8753f1001c..a33d1ce33349 100644
+index a02a297c0450..4919535e2759 100644
 --- a/sound/soc/mediatek/mt8192/mt8192-dai-adda.c
 +++ b/sound/soc/mediatek/mt8192/mt8192-dai-adda.c
-@@ -591,16 +591,19 @@ static int stf_positive_gain_set(struct snd_kcontrol *kcontrol,
- 	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(cmpnt);
- 	struct mt8192_afe_private *afe_priv = afe->platform_priv;
- 	int gain_db = ucontrol->value.integer.value[0];
-+	bool change = false;
- 
- 	afe_priv->stf_positive_gain_db = gain_db;
- 
- 	if (gain_db >= 0 && gain_db <= 24) {
--		regmap_update_bits(afe->regmap,
--				   AFE_SIDETONE_GAIN,
--				   POSITIVE_GAIN_MASK_SFT,
--				   (gain_db / 6) << POSITIVE_GAIN_SFT);
-+		regmap_update_bits_check(afe->regmap,
-+					 AFE_SIDETONE_GAIN,
-+					 POSITIVE_GAIN_MASK_SFT,
-+					 (gain_db / 6) << POSITIVE_GAIN_SFT,
-+					 &change);
- 	}
--	return 0;
-+
-+	return change;
- }
- 
- static int mt8192_adda_dmic_get(struct snd_kcontrol *kcontrol,
-@@ -621,12 +624,17 @@ static int mt8192_adda_dmic_set(struct snd_kcontrol *kcontrol,
- 	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(cmpnt);
- 	struct mt8192_afe_private *afe_priv = afe->platform_priv;
- 	int dmic_on;
-+	bool change;
- 
- 	dmic_on = ucontrol->value.integer.value[0];
- 
-+	change = (afe_priv->mtkaif_dmic != dmic_on) ||
-+		(afe_priv->mtkaif_dmic_ch34 != dmic_on);
-+
- 	afe_priv->mtkaif_dmic = dmic_on;
- 	afe_priv->mtkaif_dmic_ch34 = dmic_on;
--	return 0;
-+
-+	return change;
- }
- 
- static int mt8192_adda6_only_get(struct snd_kcontrol *kcontrol,
-@@ -647,11 +655,14 @@ static int mt8192_adda6_only_set(struct snd_kcontrol *kcontrol,
- 	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(cmpnt);
- 	struct mt8192_afe_private *afe_priv = afe->platform_priv;
- 	int mtkaif_adda6_only;
-+	bool change;
- 
- 	mtkaif_adda6_only = ucontrol->value.integer.value[0];
- 
-+	change = afe_priv->mtkaif_adda6_only != mtkaif_adda6_only;
- 	afe_priv->mtkaif_adda6_only = mtkaif_adda6_only;
--	return 0;
-+
-+	return change;
- }
- 
+@@ -670,7 +670,7 @@ static int mt8192_adda6_only_set(struct snd_kcontrol *kcontrol,
  static const struct snd_kcontrol_new mtk_adda_controls[] = {
+ 	SOC_SINGLE("Sidetone_Gain", AFE_SIDETONE_GAIN,
+ 		   SIDE_TONE_GAIN_SFT, SIDE_TONE_GAIN_MASK, 0),
+-	SOC_SINGLE_EXT("Sidetone_Positive_Gain_dB", SND_SOC_NOPM, 0, 100, 0,
++	SOC_SINGLE_EXT("Sidetone_Positive_Gain_dB", SND_SOC_NOPM, 0, 24, 0,
+ 		       stf_positive_gain_get, stf_positive_gain_set),
+ 	SOC_SINGLE("ADDA_DL_GAIN", AFE_ADDA_DL_SRC2_CON1,
+ 		   DL_2_GAIN_CTL_PRE_SFT, DL_2_GAIN_CTL_PRE_MASK, 0),
 
 -- 
 2.30.2
