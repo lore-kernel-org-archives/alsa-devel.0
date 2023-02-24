@@ -4,73 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F8A0C6FA8E
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Feb 2023 19:16:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C392C7EE23
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Feb 2023 19:16:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4238203;
-	Fri, 24 Feb 2023 20:15:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4238203
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36272829;
+	Fri, 24 Feb 2023 20:16:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36272829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677266209;
-	bh=wvpHz3Awiez4EzQ/5a9FnelPVKhKufDDpe5+aqSfoVY=;
+	s=default; t=1677266215;
+	bh=xPQw93D3GC9xcaHaoMbz6Z3gb4bco6b9wkvpXKsQuuw=;
 	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QOQ+cQCTpZ18TPILOeU7QMCvrgHmMeT9I+s56GNRw0viU1d9oTEF08tNGUoTKmQx0
-	 p6sdPRGrcpfRsbkDCWAjN4IY3BnAI2uSSccCo2hgjhDhAH1zyyt1d9IxlA1ZltvwBQ
-	 gvY3wCtHdGfYfxJo+jtOJgvIZCp++qz07Mxl+KjY=
+	b=SaxI/SPFTh/2CWahfdgO9ym1wcl95coqAjOazvfQoGnr82WC0JId1xL9bpWiOu25P
+	 aoZPx6Ko2iHYr78WRP5Fo+sgRNpmkcvu6IrYBleKf0+kaRDlpUAUWqdyCXi7pYJ8I9
+	 vcqVlnz7nr1El7/ULbcDdPKEF2ws1t4cnhwqFuG8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5DA72F80236;
-	Fri, 24 Feb 2023 20:15:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10DD2F80534;
+	Fri, 24 Feb 2023 20:15:33 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F3574F80290; Fri, 24 Feb 2023 20:15:12 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 11167F80542; Fri, 24 Feb 2023 20:15:30 +0100 (CET)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A9886F80125
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2023 20:15:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9886F80125
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2E9E7F80534
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2023 20:15:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E9E7F80534
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=K4ZimhzF
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ unprotected) header.d=collabora.com header.i=@collabora.com
+ header.a=rsa-sha256 header.s=mail header.b=Qp+ixLlo
+Received: from notapiano (unknown
+ [IPv6:2600:4041:5b1a:cd00:524d:e95d:1a9c:492a])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id CB989B81D03;
-	Fri, 24 Feb 2023 19:15:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F3DFC43442;
-	Fri, 24 Feb 2023 19:15:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1677266107;
-	bh=wvpHz3Awiez4EzQ/5a9FnelPVKhKufDDpe5+aqSfoVY=;
+	(Authenticated sender: nfraprado)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 550CF6602FCE;
+	Fri, 24 Feb 2023 19:15:26 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1677266127;
+	bh=xPQw93D3GC9xcaHaoMbz6Z3gb4bco6b9wkvpXKsQuuw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=K4ZimhzFe113b+q2l+n7gImRPaTvekuZtWzz9EMWw4/hQKQUV+HEXMrS3hANxJ8yn
-	 WqdkjEiYeWpIUNdSBNQ9QMOSW0Rzl0g70WzSSy6pxLnZA1vWq5uylWRFnY1RT+WTTM
-	 NxoZJPNUXCg2qWrXw8w+sRummFlXU/fYwgKjMVi60z/5sSC+bJVcSoWWMtNaBkaJQM
-	 rtIi0B7JJnzzbv388SsmJiqpS4hEwEnI7yp38zgLcm/9NHSmE0Q7/7UJg8GPYNpN88
-	 IzSSj8Ea7YFGFcORBpn2dkB9fsgnfJ9dxBI0WVwCLjVflshHTns4zXSUT9BH42tC4U
-	 BPBC+aVbYKQ/g==
-Date: Fri, 24 Feb 2023 19:15:01 +0000
-From: Mark Brown <broonie@kernel.org>
-To: =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>
-Subject: Re: [PATCH 1/4] ASoC: mt8192: Remove spammy log messages
-Message-ID: <Y/kMtXmrIYoLNV8a@sirena.org.uk>
+	b=Qp+ixLlo7jr5ro5GPvfJxyUteFRxrYXcU8fkkN/J7w7tJpKnmIsalL7EOdVw2rRPK
+	 hxT34DtB4CnYcg+sy4HTYgkXixZE4qQV0yo2HnJzf8LyKhoWCipoknyhuLVvW8/ap+
+	 MpQFnglphbUP8qdkyzNJi55Tn6CW7mWBShyzkWqo7NRzI9q3QN7hstBBIBB1qJGKxX
+	 onUG3AzRWntkms1QH40ykoIpvf3E9/bQRL4UJm3H5V+Mqtdgta223SXtw3dOzS7+vH
+	 c7D4tle6neUph2H/Twcx0GzTl5h+00snvJE8jP/wxWGjfw1vjR4mVQQAylaSTBHQn4
+	 /RVBn2TAfSu2A==
+Date: Fri, 24 Feb 2023 14:15:22 -0500
+From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/4] ASoC: mt8192: Report an error if when an invalid
+ sidetone gain is written
+Message-ID: <20230224191522.z4j4kipjh6y7lnqe@notapiano>
 References: <20230223-asoc-mt8192-quick-fixes-v1-0-9a85f90368e1@kernel.org>
- <20230223-asoc-mt8192-quick-fixes-v1-1-9a85f90368e1@kernel.org>
- <20230224190657.edrvkg22gz5gff4g@notapiano>
+ <20230223-asoc-mt8192-quick-fixes-v1-3-9a85f90368e1@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="udvt/bvCvfnRf3US"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230224190657.edrvkg22gz5gff4g@notapiano>
-X-Cookie: The early worm gets the bird.
-Message-ID-Hash: QPNJSIKXENP7DF45OUG3GKMYCMDXM3GS
-X-Message-ID-Hash: QPNJSIKXENP7DF45OUG3GKMYCMDXM3GS
-X-MailFrom: broonie@kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230223-asoc-mt8192-quick-fixes-v1-3-9a85f90368e1@kernel.org>
+Message-ID-Hash: 6YGH3UO7RH5EKU7V3EGWPERJ6BQM3ME3
+X-Message-ID-Hash: 6YGH3UO7RH5EKU7V3EGWPERJ6BQM3ME3
+X-MailFrom: nfraprado@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -87,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QPNJSIKXENP7DF45OUG3GKMYCMDXM3GS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6YGH3UO7RH5EKU7V3EGWPERJ6BQM3ME3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,70 +98,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Fri, Feb 24, 2023 at 02:03:57PM +0000, Mark Brown wrote:
+> Reporting an error on invalid values is optional but helpful to userspace
+> so do so.
+> 
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 
---udvt/bvCvfnRf3US
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 
-On Fri, Feb 24, 2023 at 02:06:57PM -0500, N=EDcolas F. R. A. Prado wrote:
-
-> Probably the spammiest messages are=20
-
-> [   33.881459] mt8192-audio 11210000.syscon:mt8192-afe-pcm: mt8192_afe_ru=
-ntime_resume()
-> [   33.889320] mt8192-audio 11210000.syscon:mt8192-afe-pcm: mt8192_afe_en=
-able_clock()
-> [   34.029456] mt8192-audio 11210000.syscon:mt8192-afe-pcm: mt8192_afe_ru=
-ntime_suspend()
-> [   34.041718] mt8192-audio 11210000.syscon:mt8192-afe-pcm: mt8192_afe_di=
-sable_clock()
-
-> from mt8192-afe-pcm.c, so I think it would make sense to get rid of those=
- in
-> this commit as well.
-
-They should definitely go as well, I don't know that there's a specific
-need for it to be this commit though - it was mostly just what I noticed
-while looking at the controls that were failing tests.
-
-> Way less spammy, but there are also
-
-> [  176.209790] mt8192-audio 11210000.syscon:mt8192-afe-pcm: mtk_dai_tdm_h=
-w_params(), id 43, rate 48000, channels 2, format 6, mclk_rate 24576000, bc=
-k_rate 3072000
-> [  176.224149] mt8192-audio 11210000.syscon:mt8192-afe-pcm: mtk_dai_tdm_h=
-w_params(), out_channels_per_sdata =3D 2
-> [  180.272153] mt8192-audio 11210000.syscon:mt8192-afe-pcm: mtk_tdm_en_ev=
-ent(), name TDM_EN, event 0x8
-> [  180.281462] mt8192-audio 11210000.syscon:mt8192-afe-pcm: mtk_tdm_bck_e=
-n_event(), name TDM_BCK, event 0x8, dai_id 43
-
-> from mt8192-dai-tdm.c.
-
-Yup.
-
-> Anyway, if you prefer to keep only changes in the ADDA driver for this co=
-mmit
-> that's fine too, and I can send another patch removing these other ones l=
-ater.
-
-That'd be great, I will probably take more passes at this stuff at some
-point but it's very much a background thing.
-
---udvt/bvCvfnRf3US
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmP5DLUACgkQJNaLcl1U
-h9DLFwf/YAM2Ep/kv6qQZQ6+TxtU7vTdLiprq5aQtl2WrtHV1TeDyqQh7kR9Li5D
-75H051WimadBJSKxF19fHEd3ISMefuIYUhpQACpS0xyyN5Dg8kbp/Kfp2HdIWLsl
-Kiptkup62x8YDVO1kVkyNrsJlimZU14yPx8OhPk475PB/pBXUXrozRiI9uwxHELc
-/GiMndnDjS/xHRHqIBvg2wrSQYaZblAw8NBNL5wbgc99twQ04kftOceFoY+LDZ1y
-ouTizm1i/w8ZtV9WjbQ2sq3/dMS3hSoXEMgQFcuZfyGdN/JTKKTwtg/2BiHr8k/J
-3+69dA+Tg4vSKZjKrkiZs6ROKKxJ4w==
-=J6dC
------END PGP SIGNATURE-----
-
---udvt/bvCvfnRf3US--
+Thanks,
+Nícolas
