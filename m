@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A67F9C61DA3
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Feb 2023 15:35:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60A06C678DB
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Feb 2023 15:35:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A7968827;
-	Fri, 24 Feb 2023 16:34:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7968827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8653E836;
+	Fri, 24 Feb 2023 16:34:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8653E836
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677252915;
-	bh=tnnkPb7i29LhvGhb9GsNiC1Maajm7+tK+6jwNm2U4/Y=;
+	s=default; t=1677252917;
+	bh=rCFXXTml1wABDxkMWr1I8LFjQLgiwH9druL0X7gY42I=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BNmo341NPXj7wE+nTGV/C5NvjVqpRylpbgq/5AOsQp7vAVdgVjSbrYfUDOyA2GcVt
-	 VdwZtHwy4Q8Lp34rfWOkyRoUgzX8dfC5bjsFUTvyiHl8pgYk5NMXQMLlGPcy1gOCrl
-	 rV7SOraaP8xYmHnUz5s0YTSAO5rNeVWF4L3PcstU=
+	b=juFmaikwekgmG3Jtwri5IeYTerhVXhThdkhrWgVb2665Taj5liCniP/WqnIyCf+oJ
+	 UyXDONC/dgF88jBRGwR5u1k1+uabyO2tFxPuTQvjaXdCmTCnl7AZfz4He6EFk6GjMa
+	 MKatKHujOcjeQDO3XDWkqt+02o6/8bZ7fA30ueUk=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64A23F80520;
-	Fri, 24 Feb 2023 16:33:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0FF8F80534;
+	Fri, 24 Feb 2023 16:33:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CB770F80130; Fri, 24 Feb 2023 16:33:30 +0100 (CET)
+	id BE095F800DF; Fri, 24 Feb 2023 16:33:34 +0100 (CET)
 Received: from hutie.ust.cz (hutie.ust.cz [185.8.165.127])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 21F67F800BA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 66257F800DF
 	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2023 16:33:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21F67F800BA
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66257F800DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=cutebit.org header.i=@cutebit.org header.a=rsa-sha256
- header.s=mail header.b=gvMicpRv
+ header.s=mail header.b=GWnPLTv6
 From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
-	t=1677252796; bh=YGinMNYfBj9tPJ7INLC5xM+c2L7Uf1eMU3rGvaMeVic=;
+	t=1677252795; bh=+kyfNHJb1YUWgssduOtt+KjIRL6xvmqOGLr82KEtgl8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=gvMicpRvMrcnvujo94b4P//HAZMsJSPEX6dUJTNPmGGqMUvLcOG0uoWY7QssQm5zC
-	 6wMeg0oEXLabG9bZ+kMeiqnh9j0qrnKtUCbbXc7CJIf4oMyewt/MEqHeLXSkZHSzD4
-	 0cM9EHBJ/VR3jl6vcqO+oLVgQsO4r5vJDLkTc81U=
+	b=GWnPLTv6eKrOX4bcSNlgD9Mb7givR36pFAi7Gfi9KoVsZN70u7rXMBFrRzGOPVMwr
+	 jiceOeT+ToeMqjK1nGqWPppC36U+e9WjwjaoqY+A34rKdKjgkQcdU6/IrG25pJy6yr
+	 4C8AjVoSeljoGitTwMFFiwThJXThpbDnVlzjZfW4=
 To: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>,
 	Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 3/3] ASoC: apple: mca: Improve handling of unavailable DMA
- channels
-Date: Fri, 24 Feb 2023 16:33:02 +0100
-Message-Id: <20230224153302.45365-3-povik+lin@cutebit.org>
+Subject: [PATCH 2/3] ASoC: apple: mca: Fix SERDES reset sequence
+Date: Fri, 24 Feb 2023 16:33:01 +0100
+Message-Id: <20230224153302.45365-2-povik+lin@cutebit.org>
 In-Reply-To: <20230224153302.45365-1-povik+lin@cutebit.org>
 References: <20230224153302.45365-1-povik+lin@cutebit.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: R5A5TBVN32H4PYM6DPCQU4R36DRZLY44
-X-Message-ID-Hash: R5A5TBVN32H4PYM6DPCQU4R36DRZLY44
+Message-ID-Hash: O2LM5E2GLRLZ26IQDH5SH2AKNXPHZO7M
+X-Message-ID-Hash: O2LM5E2GLRLZ26IQDH5SH2AKNXPHZO7M
 X-MailFrom: povik+lin@cutebit.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -75,7 +74,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R5A5TBVN32H4PYM6DPCQU4R36DRZLY44/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O2LM5E2GLRLZ26IQDH5SH2AKNXPHZO7M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -84,41 +83,67 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-When we fail to obtain a DMA channel, don't return a blanket -EINVAL,
-instead return the original error code if there's one. This makes
-deferring work as it should. Also don't print an error message for
--EPROBE_DEFER.
+Fix the reset sequence of reads and writes that we invoke from within
+the early trigger. It looks like there never was a SERDES_CONF_SOME_RST
+bit that should be involved in the reset sequence, and its presence in
+the driver code is a mistake from earlier.
 
-Fixes: 4ec8179c212f ("ASoC: apple: mca: Postpone requesting of DMA channels")
+Instead, the reset sequence should go as follows: We should switch the
+the SERDES unit's SYNC_SEL mux to the value of 7 (so outside the range
+of 1...6 representing cluster's SYNCGEN units), then raise the RST bit
+in SERDES_STATUS and wait for it to clear.
+
+Properly resetting the SERDES unit fixes frame desynchronization hazard
+in case of long frames (longer than 4 used slots). The desynchronization
+manifests itself by rotating the PCM channels.
+
+Fixes: 3df5d0d97289 ("ASoC: apple: mca: Start new platform driver")
 Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
 ---
- sound/soc/apple/mca.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/soc/apple/mca.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/apple/mca.c b/sound/soc/apple/mca.c
-index aea08c7b2ee8..64750db9b963 100644
+index 9cceeb259952..aea08c7b2ee8 100644
 --- a/sound/soc/apple/mca.c
 +++ b/sound/soc/apple/mca.c
-@@ -950,10 +950,17 @@ static int mca_pcm_new(struct snd_soc_component *component,
- 		chan = mca_request_dma_channel(cl, i);
- 
- 		if (IS_ERR_OR_NULL(chan)) {
-+			mca_pcm_free(component, rtd->pcm);
-+
-+			if (chan && PTR_ERR(chan) == -EPROBE_DEFER)
-+				return PTR_ERR(chan);
-+
- 			dev_err(component->dev, "unable to obtain DMA channel (stream %d cluster %d): %pe\n",
- 				i, cl->no, chan);
--			mca_pcm_free(component, rtd->pcm);
--			return -EINVAL;
-+
-+			if (!chan)
-+				return -EINVAL;
-+			return PTR_ERR(chan);
- 		}
- 
- 		cl->dma_chans[i] = chan;
+@@ -101,7 +101,6 @@
+ #define SERDES_CONF_UNK3	BIT(14)
+ #define SERDES_CONF_NO_DATA_FEEDBACK	BIT(15)
+ #define SERDES_CONF_SYNC_SEL	GENMASK(18, 16)
+-#define SERDES_CONF_SOME_RST	BIT(19)
+ #define REG_TX_SERDES_BITSTART	0x08
+ #define REG_RX_SERDES_BITSTART	0x0c
+ #define REG_TX_SERDES_SLOTMASK	0x0c
+@@ -203,15 +202,24 @@ static void mca_fe_early_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		mca_modify(cl, serdes_conf, SERDES_CONF_SYNC_SEL,
++			   FIELD_PREP(SERDES_CONF_SYNC_SEL, 0));
++		mca_modify(cl, serdes_conf, SERDES_CONF_SYNC_SEL,
++			   FIELD_PREP(SERDES_CONF_SYNC_SEL, 7));
+ 		mca_modify(cl, serdes_unit + REG_SERDES_STATUS,
+ 			   SERDES_STATUS_EN | SERDES_STATUS_RST,
+ 			   SERDES_STATUS_RST);
+-		mca_modify(cl, serdes_conf, SERDES_CONF_SOME_RST,
+-			   SERDES_CONF_SOME_RST);
+-		readl_relaxed(cl->base + serdes_conf);
+-		mca_modify(cl, serdes_conf, SERDES_STATUS_RST, 0);
++		/*
++		 * Experiments suggest that it takes at most ~1 us
++		 * for the bit to clear, so wait 2 us for good measure.
++		 */
++		udelay(2);
+ 		WARN_ON(readl_relaxed(cl->base + serdes_unit + REG_SERDES_STATUS) &
+ 			SERDES_STATUS_RST);
++		mca_modify(cl, serdes_conf, SERDES_CONF_SYNC_SEL,
++			   FIELD_PREP(SERDES_CONF_SYNC_SEL, 0));
++		mca_modify(cl, serdes_conf, SERDES_CONF_SYNC_SEL,
++			   FIELD_PREP(SERDES_CONF_SYNC_SEL, cl->no + 1));
+ 		break;
+ 	default:
+ 		break;
 -- 
 2.33.0
 
