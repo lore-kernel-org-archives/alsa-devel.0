@@ -4,111 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C2F6C61DA4
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Feb 2023 21:49:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90175C6379F
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Feb 2023 01:10:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D6F76826;
-	Thu, 23 Feb 2023 22:48:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6F76826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D57C823;
+	Fri, 24 Feb 2023 02:09:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D57C823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677188938;
-	bh=Dfqw8sapSjtjgdlWcdVpfySA8bxdV6bk8TMoqHqo2xs=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=KVXuOK2+jFVUt/wRWvefCYdWyRJGQ6iBFfI+bYbS9xRxeZnpHwP4btMNTHQGzeyb4
-	 jsWLaoCaGDc7I4DCm4eVnYMdHUN29xTnsdzYtwPdYio7+vIe6eORH93uiLGyAn9UFb
-	 vKQtx6x1pYnKAJKYAUYUAUl0JQoFPfO+GWYeVsbM=
+	s=default; t=1677201004;
+	bh=KE/0v749NOhj0oVLjbhpdEtVE51fA1OHQPFREe5UHso=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=g+qWFNREND/ApmtqF4Gmz9x3ALwEVAbtmsiYkiIuYXFVT4yrGB/yHat+6pem9ufnG
+	 viSwssLTwamNPtQnPOSanDtkP6RGoRFXKE13tCRScG+zDz7E1C7Q4VgnRQfWr2MjVY
+	 9bYiUO04pnUrY5GsgafsV2+5Q+cwK1ID1xjAncuQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76183F80496;
-	Thu, 23 Feb 2023 22:47:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02120F80130;
+	Fri, 24 Feb 2023 02:08:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6E4D5F8014C; Thu, 23 Feb 2023 22:47:44 +0100 (CET)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 86411F80130; Fri, 24 Feb 2023 02:08:47 +0100 (CET)
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com
+ [IPv6:2607:f8b0:4864:20::102a])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1F45EF802DB
-	for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2023 22:47:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F45EF802DB
+	by alsa1.perex.cz (Postfix) with ESMTPS id 22C69F800BA
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2023 02:08:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22C69F800BA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=S73TWyHt
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 31NBEP0c019239;
-	Thu, 23 Feb 2023 15:47:35 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=MPgklapgIivTZkEnsPfFYy3bgpg/8bL3U4Tfg87jGoc=;
- b=S73TWyHtEZvHhgwXXKV8PVmYcwAQkgFzS0eqKvsVbatLfvJcj4UskeFQm7Xb1kBKmvC8
- yGH23n9hwKgLi0jbs6wlALKw6rff38CFjz1JARpyxCNxMgUymP4gF5juKcIxKx3Qe6bI
- Ugkp/ED/9JUaMr41hDoxxShexo9cqZp8k1sWnVN0bNVNWWqai/AHEvMFZx/7GUEpEhvf
- API5+KaRwuW3tA5p0yEsIakLUGB8vwxD+sXbq0751BPoscTsTDvxXqFyFyFEcABYRwSY
- 8aBc6vXYY+YMlPrg1oSxZ84+JTrbyjJ5dxs7v8l3v2VtTHH5qleyFQ5CKQNp5mUtKMOI xQ==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3nwy4k1765-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 23 Feb 2023 15:47:34 -0600
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.21; Thu, 23 Feb
- 2023 15:47:33 -0600
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.21 via Frontend Transport; Thu, 23 Feb 2023 15:47:33 -0600
-Received: from [141.131.215.58] (david-linux.ad.cirrus.com [141.131.215.58])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 01DF745;
-	Thu, 23 Feb 2023 21:47:30 +0000 (UTC)
-Message-ID: <0e3ee09e-638a-060b-a4f2-95d45a9e1107@opensource.cirrus.com>
-Date: Thu, 23 Feb 2023 15:47:30 -0600
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20210112 header.b=YyJtXr4d
+Received: by mail-pj1-x102a.google.com with SMTP id x34so11464592pjj.0
+        for <alsa-devel@alsa-project.org>;
+ Thu, 23 Feb 2023 17:08:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vEGaxTrptF/i88hDG2ZZPDfmgm+Q0tSvkYEKB/u7k1M=;
+        b=YyJtXr4dCPBimtyO0bOKFjj9lpU+V6GliYEV7tT3zN2u+sfwV4sTTMiDL2XR+o7l50
+         B+pCrCrnMs2950ptW9F23gafbWVKjWxFhHfA3+HrN5+15ofJTKXD8oQGKnr70/fxFXty
+         nvt6zzjPLifLD2ZKoNOjPoudRHzs6P6LWu55Tj8eUGKzgo9d1RkoOscD4v51jfITbo3I
+         Y+dPA9ygtTSDnJFyHZMx8HgMPFMqRj5qfp1r6NopPa1grEsWVvsGMoHOkJskZ9vv22pb
+         wh5MALsek/GFvAjNFMulQyXMMYRY3tq1/y0c+Pu5XxNDvK2ZKD9W5zC5USIKJ0zjjJWy
+         tVjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vEGaxTrptF/i88hDG2ZZPDfmgm+Q0tSvkYEKB/u7k1M=;
+        b=UWGcyvUozaOPhm/vY1sQta0cdKRc/TiKZI6atrRYIXBjjViozuqsz8tLfBRRMtieIA
+         wlYGpYUnlh/+lsWkmCpW8ilpra2DNqP/TPy+fJtsNiLAv0rbqwzCuUV65gI1HymVZ7WB
+         +mHNSlP2FxIlcP4QDA0qFS6TCE89e7PzwlogqxrnHwpNgGC8YikKU/5km4Yl077l8fiG
+         AgAqkMZbEtNga9JCUHPFY8yBZCJUCvefnyqng5C7a2i+wRTBs7NQQlTRoGqzbUuv4Feb
+         aVwNXOLHuirthC+MsvN8LhFPvIwOInpKdsMUTkjOIGZlC0hKXl0FvKxyaJmT7fEzNEco
+         VTgw==
+X-Gm-Message-State: AO0yUKVv9C6Dpk4ehVyE6msKWyzPFtqHXgt3LVeHDciw8aFXaA0pOf1l
+	KOKGKxVSLcJcnQID/8vR56w=
+X-Google-Smtp-Source: 
+ AK7set9Br2M0tdazVDbZiCs0X3VbrL7as0h5R9J9TKRZGADBmXew7lvFqbL+fhZWHf0GFxrQlyz61Q==
+X-Received: by 2002:a17:90b:224f:b0:236:9eef:e280 with SMTP id
+ hk15-20020a17090b224f00b002369eefe280mr16311616pjb.46.1677200913497;
+        Thu, 23 Feb 2023 17:08:33 -0800 (PST)
+Received: from ryan-ThinkPad-T470.. (c-24-6-63-212.hsd1.ca.comcast.net.
+ [24.6.63.212])
+        by smtp.gmail.com with ESMTPSA id
+ p5-20020a170902a40500b0019adfb96084sm3821008plq.36.2023.02.23.17.08.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Feb 2023 17:08:33 -0800 (PST)
+From: =?UTF-8?q?=E2=80=9CRyan?= <ryan.lee.analog@gmail.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	krzysztof.kozlowski@linaro.org,
+	rf@opensource.cirrus.com,
+	ckeepax@opensource.cirrus.com,
+	pierre-louis.bossart@linux.intel.com,
+	herve.codina@bootlin.com,
+	wangweidong.a@awinic.com,
+	james.schulman@cirrus.com,
+	ajye_huang@compal.corp-partner.google.com,
+	shumingf@realtek.com,
+	povik+lin@cutebit.org,
+	flatmax@flatmax.com,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	robh+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	ryans.lee@analog.com
+Subject: [PATCH 2/2] ASoC: dt-bindings: max98363: add soundwire amplifier
+ driver
+Date: Thu, 23 Feb 2023 17:08:14 -0800
+Message-Id: <20230224010814.504016-2-ryan.lee.analog@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230224010814.504016-1-ryan.lee.analog@gmail.com>
+References: <20230224010814.504016-1-ryan.lee.analog@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v7 0/4] Add CS35L41 shared boost feature
-Content-Language: en-US
-To: Lucas Tanure <lucas.tanure@collabora.com>,
-        David Rhodes
-	<david.rhodes@cirrus.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Mark Brown <broonie@kernel.org>, "Rob
- Herring" <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
-	<tiwai@suse.com>
-References: <20230223084324.9076-1-lucas.tanure@collabora.com>
-From: David Rhodes <drhodes@opensource.cirrus.com>
-In-Reply-To: <20230223084324.9076-1-lucas.tanure@collabora.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: 69VSMWsx4T4dAY-4PoQ00VlaoHfWXYuS
-X-Proofpoint-GUID: 69VSMWsx4T4dAY-4PoQ00VlaoHfWXYuS
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: 6EHY27HZI4VAVRKDCSJQXKOIWM7UDH72
-X-Message-ID-Hash: 6EHY27HZI4VAVRKDCSJQXKOIWM7UDH72
-X-MailFrom: prvs=74182b8289=drhodes@opensource.cirrus.com
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: P2JNTRZYRL3WXWRH2ITWXL5IULBRGMS4
+X-Message-ID-Hash: P2JNTRZYRL3WXWRH2ITWXL5IULBRGMS4
+X-MailFrom: ryan.lee.analog@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- kernel@collabora.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6EHY27HZI4VAVRKDCSJQXKOIWM7UDH72/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P2JNTRZYRL3WXWRH2ITWXL5IULBRGMS4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,23 +132,78 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 2/23/23 02:43, Lucas Tanure wrote:
-> Valve's Steam Deck uses CS35L41 in shared boost mode, where both speakers
-> share the boost circuit.
-> Add this support in the shared lib, but for now, shared boost is not
-> supported in HDA systems as would require BIOS changes.
-> 
-> Based on David Rhodes shared boost patches.
-> 
-> Also, fix boost config overwriting in IRQ found in the review and do a
-> small refactor of the code.
-> 
-> Changes from V6:
->   - Fix TX/RX bits in passive amp
+From: Ryan Lee <ryans.lee@analog.com>
 
-v7 works as intended on my Deck.
+This patch adds dt-bindings information for Analog Devices MAX98363
+SoundWire Amplifier.
 
-Reviewed-by: David Rhodes <david.rhodes@cirrus.com>
+Signed-off-by: Ryan Lee <ryans.lee@analog.com>
+---
+ .../bindings/sound/adi,max98363.yaml          | 53 +++++++++++++++++++
+ 1 file changed, 53 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/adi,max98363.yaml
 
-Thanks,
-David
+diff --git a/Documentation/devicetree/bindings/sound/adi,max98363.yaml b/Documentation/devicetree/bindings/sound/adi,max98363.yaml
+new file mode 100644
+index 000000000000..fda571d04a64
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/adi,max98363.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/adi,max98363.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices MAX98363 SoundWire Amplifier
++
++maintainers:
++  - Ryan Lee <ryans.lee@analog.com>
++
++description:
++  The MAX98363 is a SoundWire input Class D mono amplifier that
++  supports MIPI SoundWire v1.2-compatible digital interface for
++  audio and control data.
++
++properties:
++  compatible:
++    enum:
++      - adi,max98363
++
++  reg:
++    maxItems: 1
++    description: Peripheral-device unique ID decoded from pin
++
++  vdd-supply:
++    description:
++      A 2.5V to 5.5V supply that powers up the VDD pin.
++
++  dvddio-supply:
++    description:
++      A 1.7V or 1.9V supply that powers up the DVDDIO pin.
++      This property is only needed for MAX98363A/B.
++
++required:
++  - compatible
++  - reg
++  - vdd-supply
++  - dvddio-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    soundwire {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        max98363: amplifier@3 {
++            compatible = "adi,max98363";
++            reg = <0x3>;
++            vdd-supply = <&regulator_vdd>;
++            dvddio-supply = <&regulator_1v8>;
++        };
++    };
+-- 
+2.34.1
+
