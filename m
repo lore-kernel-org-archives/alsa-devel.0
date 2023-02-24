@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C392C7EE23
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Feb 2023 19:16:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B3FAC6FA8E
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Feb 2023 19:21:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36272829;
-	Fri, 24 Feb 2023 20:16:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36272829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 59E801ED;
+	Fri, 24 Feb 2023 20:20:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59E801ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677266215;
-	bh=xPQw93D3GC9xcaHaoMbz6Z3gb4bco6b9wkvpXKsQuuw=;
+	s=default; t=1677266478;
+	bh=93WOmXt3Of9KXOA1+0JJLvM2QcA/MehDyh1OEKDHA+k=;
 	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=SaxI/SPFTh/2CWahfdgO9ym1wcl95coqAjOazvfQoGnr82WC0JId1xL9bpWiOu25P
-	 aoZPx6Ko2iHYr78WRP5Fo+sgRNpmkcvu6IrYBleKf0+kaRDlpUAUWqdyCXi7pYJ8I9
-	 vcqVlnz7nr1El7/ULbcDdPKEF2ws1t4cnhwqFuG8=
+	b=HfsXcynwI9uq3YUMyBGMWBA5ZM3gfXQl4chK9XXFuJiWD94HYGTbfQLPcyYsK5tIY
+	 SsWUnJEU20pgWRnDvcOMCZCpcpVEofmmveu8msUTZnIJnWI8PO9Kaw0/7UQ9t8SU7x
+	 /JMLnSi2OKP5PTXXHONOM5RzY2/PNAhAb/NzYQWk=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10DD2F80534;
-	Fri, 24 Feb 2023 20:15:33 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CFEB8F800BA;
+	Fri, 24 Feb 2023 20:20:08 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 11167F80542; Fri, 24 Feb 2023 20:15:30 +0100 (CET)
+	id 61A2FF80125; Fri, 24 Feb 2023 20:20:05 +0100 (CET)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
  [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 2E9E7F80534
-	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2023 20:15:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E9E7F80534
+	by alsa1.perex.cz (Postfix) with ESMTPS id 23199F800BA
+	for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2023 20:20:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23199F800BA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=Qp+ixLlo
+ header.a=rsa-sha256 header.s=mail header.b=OusYABMC
 Received: from notapiano (unknown
  [IPv6:2600:4041:5b1a:cd00:524d:e95d:1a9c:492a])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
@@ -45,33 +45,32 @@ Received: from notapiano (unknown
  server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: nfraprado)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id 550CF6602FCE;
-	Fri, 24 Feb 2023 19:15:26 +0000 (GMT)
+	by madras.collabora.co.uk (Postfix) with ESMTPSA id 1F2056602FCE;
+	Fri, 24 Feb 2023 19:20:00 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1677266127;
-	bh=xPQw93D3GC9xcaHaoMbz6Z3gb4bco6b9wkvpXKsQuuw=;
+	s=mail; t=1677266401;
+	bh=93WOmXt3Of9KXOA1+0JJLvM2QcA/MehDyh1OEKDHA+k=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Qp+ixLlo7jr5ro5GPvfJxyUteFRxrYXcU8fkkN/J7w7tJpKnmIsalL7EOdVw2rRPK
-	 hxT34DtB4CnYcg+sy4HTYgkXixZE4qQV0yo2HnJzf8LyKhoWCipoknyhuLVvW8/ap+
-	 MpQFnglphbUP8qdkyzNJi55Tn6CW7mWBShyzkWqo7NRzI9q3QN7hstBBIBB1qJGKxX
-	 onUG3AzRWntkms1QH40ykoIpvf3E9/bQRL4UJm3H5V+Mqtdgta223SXtw3dOzS7+vH
-	 c7D4tle6neUph2H/Twcx0GzTl5h+00snvJE8jP/wxWGjfw1vjR4mVQQAylaSTBHQn4
-	 /RVBn2TAfSu2A==
-Date: Fri, 24 Feb 2023 14:15:22 -0500
+	b=OusYABMC/GMZI+VunNJn3PdsgJr6AbABf3RI19Z1F5wcqComEwcdMt3gCFzU+VeML
+	 6AxCeO8L3MXcza4//XqoCgfkw0BS6i3wFu7D/X0JdzOZ6+paNaY7TqOwIWWJDmtjmI
+	 1SbSHD3oFMbBCS0BQdEZN4bIkyXnui+7nTUSVBjtGOR+gp2ijk6NOu15oIksRJqT5A
+	 cqcvCvUYNWL/TcK/jbaVSE5cEHPmJfR0da9XXJRaZopq6z0K24GUTQEpJeaqAOo9gP
+	 RDCe7n/j6Ig7Mna3GMw8pvbRqx5e53yUV/4pAPY+3ucozGAdr2F4Thmgo427LOW2SK
+	 5QN6mVPjtIW3Q==
+Date: Fri, 24 Feb 2023 14:19:55 -0500
 From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
 To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/4] ASoC: mt8192: Report an error if when an invalid
- sidetone gain is written
-Message-ID: <20230224191522.z4j4kipjh6y7lnqe@notapiano>
+Subject: Re: [PATCH 4/4] ASoC: mt8192: Fix range for sidetone positive gain
+Message-ID: <20230224191955.h74h3fcsj6w3k5al@notapiano>
 References: <20230223-asoc-mt8192-quick-fixes-v1-0-9a85f90368e1@kernel.org>
- <20230223-asoc-mt8192-quick-fixes-v1-3-9a85f90368e1@kernel.org>
+ <20230223-asoc-mt8192-quick-fixes-v1-4-9a85f90368e1@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230223-asoc-mt8192-quick-fixes-v1-3-9a85f90368e1@kernel.org>
-Message-ID-Hash: 6YGH3UO7RH5EKU7V3EGWPERJ6BQM3ME3
-X-Message-ID-Hash: 6YGH3UO7RH5EKU7V3EGWPERJ6BQM3ME3
+In-Reply-To: <20230223-asoc-mt8192-quick-fixes-v1-4-9a85f90368e1@kernel.org>
+Message-ID-Hash: SJ6QGLJCG4SPHAYUOGFXABXTR5S5UWH6
+X-Message-ID-Hash: SJ6QGLJCG4SPHAYUOGFXABXTR5S5UWH6
 X-MailFrom: nfraprado@collabora.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -89,7 +88,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6YGH3UO7RH5EKU7V3EGWPERJ6BQM3ME3/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SJ6QGLJCG4SPHAYUOGFXABXTR5S5UWH6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,9 +97,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, Feb 24, 2023 at 02:03:57PM +0000, Mark Brown wrote:
-> Reporting an error on invalid values is optional but helpful to userspace
-> so do so.
+On Fri, Feb 24, 2023 at 02:03:58PM +0000, Mark Brown wrote:
+> The Sidetone_Positive_Gain_dB control reports a range of 0..100 as valid
+> but the put() function rejects anything larger than 24. Fix this.
+> 
+> There are numerous other problems with this control, the name is very non
+> idiomatic and it should be a TLV, but it's ABI so probably we should leave
+> those alone.
 > 
 > Signed-off-by: Mark Brown <broonie@kernel.org>
 
