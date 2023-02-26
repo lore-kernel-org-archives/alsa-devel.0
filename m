@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3480AC7EE2D
-	for <alsa-devel@archiver.kernel.org>; Sun, 26 Feb 2023 22:23:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4F38C7EE2D
+	for <alsa-devel@archiver.kernel.org>; Sun, 26 Feb 2023 22:23:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C64B4836;
-	Sun, 26 Feb 2023 23:22:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C64B4836
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF0EB83D;
+	Sun, 26 Feb 2023 23:23:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF0EB83D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677450198;
-	bh=LCyTzTkZJZWVxeaKyfAFTdM/ep+FToZcZyWIkT/h/G0=;
+	s=default; t=1677450230;
+	bh=xu1+xPH3ZT+GzZ/4KUsRi8QOauozi4XykWVWvduG+X8=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=gRR6CBNpr9nvASLwQMlu6Nuz+LZGUvJgPAtJJ9scMVmzlDVoqs9Zfjs5YcKa/05KU
-	 aYw3h1zYA4f3SNNwA5G5uj7iMXHfx9ISz96iLasXvPzCifPQNWkAZ2SwTviYz6yRhu
-	 4OwqwEy0hGiG8y3LssRHVeHAthL7muDkkJDVpX4I=
+	b=Cojf5i1cDDby0YvWyToqfUmFp29EQLtgc9nBRHwrrB7+/MJEjLvrt5MUa2dV6u5Jo
+	 s13W2DFB0NdqN3eKuM0sZNLsUj2FVwXu3gDQ4g9RKTEBgA2QOssGLTrG8Sy0Fa6h14
+	 9maIRl4YdudbDT6apj7gUgE8cKtpXL5ZefO5n7zc=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5D89AF8049C;
-	Sun, 26 Feb 2023 23:22:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14D0EF80520;
+	Sun, 26 Feb 2023 23:22:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1471FF8049C; Sun, 26 Feb 2023 23:22:05 +0100 (CET)
+	id 05F80F8049C; Sun, 26 Feb 2023 23:22:06 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27FB3F80236
-	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2023 23:21:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27FB3F80236
+	by alsa1.perex.cz (Postfix) with ESMTP id 53194F800DF
+	for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2023 23:22:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53194F800DF
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
+From: GitHub issues - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1677450117577629089-webhooks-bot@alsa-project.org>
-References: <1677450117577629089-webhooks-bot@alsa-project.org>
+In-Reply-To: <1677450124311454535-webhooks-bot@alsa-project.org>
+References: <1677450124311454535-webhooks-bot@alsa-project.org>
 Subject: Alsamixer not detecting headphones
-Message-Id: <20230226222205.1471FF8049C@alsa1.perex.cz>
-Date: Sun, 26 Feb 2023 23:22:05 +0100 (CET)
-Message-ID-Hash: X5TWUTLGSNWKM3MX26JKWVTOJORFXL6M
-X-Message-ID-Hash: X5TWUTLGSNWKM3MX26JKWVTOJORFXL6M
+Message-Id: <20230226222206.05F80F8049C@alsa1.perex.cz>
+Date: Sun, 26 Feb 2023 23:22:06 +0100 (CET)
+Message-ID-Hash: MUGNEE3D6ELZWTAWEV5K6HHCJK55AA7P
+X-Message-ID-Hash: MUGNEE3D6ELZWTAWEV5K6HHCJK55AA7P
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -55,7 +55,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X5TWUTLGSNWKM3MX26JKWVTOJORFXL6M/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MUGNEE3D6ELZWTAWEV5K6HHCJK55AA7P/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -64,7 +64,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #283 was edited from lgmventura:
+alsa-project/alsa-ucm-conf issue #283 was opened from lgmventura:
 
 I'm using the motherboard ASUS ROG Strix B760-f Gaming Wifi, which has 7.1 audio channels on the back side and connectors for an audio panel at the front of the case - a microphone and a headphones jack.
 
