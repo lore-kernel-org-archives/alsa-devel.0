@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6DF7EC7EE30
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Feb 2023 02:09:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AFACC7EE30
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Feb 2023 02:10:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 34CBD83E;
-	Mon, 27 Feb 2023 03:08:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34CBD83E
+	by alsa0.perex.cz (Postfix) with ESMTPS id D86C4832;
+	Mon, 27 Feb 2023 03:10:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D86C4832
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677463739;
-	bh=MlICvfNlkt/04BgB922RhkwmhiqwArFoMZV1CyQ2w1o=;
+	s=default; t=1677463854;
+	bh=IS4E8InAGrbTyS6pyTXTPfpU5meQkkuySQEAfPB2g0k=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=EeUujG9LBiuFjQ9ybfbOBDhBxQF8AQRbGDXW7tntpT7mmmn8OymVYm5FoMWaBYaN/
-	 He88NsDR9NjJAdEDLY4ONKOQYvz9uAKB9VI46R0nBVbyzQ+t2sgmwbBRQz9z1ejnu3
-	 u18tGxkdcisZoNGVqXykMvSIEED3t8AatmSVVO+8=
+	b=q9vgVb42j2gywMrwfbQORBqu3RDAKQYOPUc0QhfeMRjEg+ow7cGLkrMHAWRXoW5A+
+	 67QpTgeKupRxJ01gCtOzZO65/63Nr48T0o0ZWw8Fa/D0TIVYNgsq4TEcYC/OqlT/AU
+	 TPSmgWDu/91jvOiSz/wVpmCJIC8Wf7kW0j1oUsR4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 78EB3F804FE;
-	Mon, 27 Feb 2023 03:07:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 643ACF8049C;
+	Mon, 27 Feb 2023 03:09:44 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AC701F8049C; Mon, 27 Feb 2023 03:07:14 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 06A52F8049C; Mon, 27 Feb 2023 03:09:41 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9833DF802BE
-	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2023 03:07:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9833DF802BE
+	by alsa1.perex.cz (Postfix) with ESMTPS id E8301F80236
+	for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2023 03:09:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8301F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=SfXucv6o
+ header.s=k20201202 header.b=RsHuURZ6
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 27D5560D14;
-	Mon, 27 Feb 2023 02:07:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4C4FC43442;
-	Mon, 27 Feb 2023 02:07:04 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id DC8C9B80CC1;
+	Mon, 27 Feb 2023 02:09:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C19DC433EF;
+	Mon, 27 Feb 2023 02:09:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1677463626;
-	bh=MlICvfNlkt/04BgB922RhkwmhiqwArFoMZV1CyQ2w1o=;
+	s=k20201202; t=1677463776;
+	bh=IS4E8InAGrbTyS6pyTXTPfpU5meQkkuySQEAfPB2g0k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SfXucv6oQsbnQZZYADAS8Or/Yq/Wy5DwuhXB+TyqCzMYf4iUJMYUdj6R/j6Cc4jRz
-	 LXFamvFScL4s54cnsvuidEtEctFLsCj2Yza7F+KY4oaY2NuKtTvBMSIxSKtNJOW1R8
-	 8C81yuywBW3OIQQRzhjymikQ6W9wX5ja3wqyBdaolsswt0NoeTcqE+a+BvCgHLjAkp
-	 OqOHNApxZEr3mzq/ynn7uJnV/qtK29Isf7IJuNFSSGLNgpBExJ3XiWneBGatFTMwEk
-	 ts1TLN5CjhlnXL7L+STfeIU3NRndGnlH/rSn2WLS7anznj5FkziYSy0+R4bfgoSDIL
-	 F7rijOKWRa2iQ==
+	b=RsHuURZ6D5BrEJyJ8814XFdCpU3Wnb+anDLXpRj0Z//qODXD2e1qFaPBODHPgen1l
+	 nIUBBvRJjDyJ8oom/7Xw9AkaMBKtdJGv++oCGyUOK+qIriCpWStBK/8UQfRvPFHa0K
+	 fHpF4eVq9C8w2AxWVdvouybMMipSHckPqm8UVtj1fzoCPbnYJm6X4faEmRGVbYSK0q
+	 +m+eGAKckITUHk874/4y1oVgG8pXsrNJTRkKPWj42ZXXs9slk8Z3GrTUo6GYcWkvMc
+	 RueIsS6hA6lKRvCyKxkyD45nMrczYG+iLWpZCewFb627N2KoLtvnoswrmWQfSM3DeI
+	 u9TlIv45eHVfw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 33/58] ASoC: soc-compress: Reposition and add
+Subject: [PATCH AUTOSEL 5.15 13/25] ASoC: soc-compress: Reposition and add
  pcm_mutex
-Date: Sun, 26 Feb 2023 21:04:31 -0500
-Message-Id: <20230227020457.1048737-33-sashal@kernel.org>
+Date: Sun, 26 Feb 2023 21:08:36 -0500
+Message-Id: <20230227020855.1051605-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230227020457.1048737-1-sashal@kernel.org>
-References: <20230227020457.1048737-1-sashal@kernel.org>
+In-Reply-To: <20230227020855.1051605-1-sashal@kernel.org>
+References: <20230227020855.1051605-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: IY7EHJJY3Q4QRDHXGEUERODTGLEZKP3I
-X-Message-ID-Hash: IY7EHJJY3Q4QRDHXGEUERODTGLEZKP3I
+Message-ID-Hash: NHSVW64RU56NUTVRDUFKVG4624JDP4GL
+X-Message-ID-Hash: NHSVW64RU56NUTVRDUFKVG4624JDP4GL
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IY7EHJJY3Q4QRDHXGEUERODTGLEZKP3I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NHSVW64RU56NUTVRDUFKVG4624JDP4GL/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -173,10 +173,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 870f13e1d389c..7bce5088b4554 100644
+index 2050728063a15..9146bec146c1e 100644
 --- a/sound/soc/soc-compress.c
 +++ b/sound/soc/soc-compress.c
-@@ -149,6 +149,8 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+@@ -116,6 +116,8 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
  	if (ret < 0)
  		goto be_err;
  
@@ -185,7 +185,7 @@ index 870f13e1d389c..7bce5088b4554 100644
  	/* calculate valid and active FE <-> BE dpcms */
  	dpcm_process_paths(fe, stream, &list, 1);
  	fe->dpcm[stream].runtime = fe_substream->runtime;
-@@ -184,7 +186,6 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+@@ -151,7 +153,6 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
  	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_OPEN;
  	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
  
@@ -193,7 +193,7 @@ index 870f13e1d389c..7bce5088b4554 100644
  	snd_soc_runtime_activate(fe, stream);
  	mutex_unlock(&fe->card->pcm_mutex);
  
-@@ -215,7 +216,6 @@ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
+@@ -182,7 +183,6 @@ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
  
  	mutex_lock_nested(&fe->card->pcm_mutex, fe->card->pcm_subclass);
  	snd_soc_runtime_deactivate(fe, stream);
@@ -201,7 +201,7 @@ index 870f13e1d389c..7bce5088b4554 100644
  
  	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
  
-@@ -234,6 +234,8 @@ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
+@@ -201,6 +201,8 @@ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
  
  	dpcm_be_disconnect(fe, stream);
  
@@ -210,7 +210,7 @@ index 870f13e1d389c..7bce5088b4554 100644
  	fe->dpcm[stream].runtime = NULL;
  
  	snd_soc_link_compr_shutdown(cstream, 0);
-@@ -409,8 +411,9 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
+@@ -376,8 +378,9 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
  	ret = snd_soc_link_compr_set_params(cstream);
  	if (ret < 0)
  		goto out;
