@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C257DC64ED6
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Feb 2023 18:02:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6ABCC64ED6
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Feb 2023 18:02:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 90BB2847;
-	Tue, 28 Feb 2023 19:01:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90BB2847
+	by alsa0.perex.cz (Postfix) with ESMTPS id E937D84D;
+	Tue, 28 Feb 2023 19:02:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E937D84D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677607355;
-	bh=OEe2wAjAN5Wk3+/Gr8WAFlMWCXBu8whw25LrAQEArjE=;
+	s=default; t=1677607372;
+	bh=CtORROMymsMyJjQe4L+MRP/NQSor1pQ4vG0KnQv8Nu8=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PlWUIHAoLwcIInrlU7NCqggI81+vFJv6yW0j6rR+KaCX7PHCMeuxrFrRTy8zVNF0C
-	 RvlC/6i0Z7K4fHtbhlcoxQXhC15BtkcUdbuBPfc542+e3Nb1kPqiisv/E1aAg9dK2i
-	 WaN7DxsYdWyJPjtpARxB1Jphd7HsxV1jt4Wg/GdM=
+	b=gbr8exIjzQrvLzf5en/CF4n/x4biv0zWCKtuJV4olRPp5/bCUO3GUipfE5mQJcrtM
+	 yuXwn20LWxUdaHfgZGem826hZ00gYdlGxgeuo//HGKTSBU2YZ6UJ1xZmUU8BImQq6P
+	 gqfn1+35uZWFPE3VYSLooVUgxQ0CLBLs4umUMKqw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B13A1F80534;
-	Tue, 28 Feb 2023 19:00:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 416DDF80544;
+	Tue, 28 Feb 2023 19:00:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32E93F804FE; Tue, 28 Feb 2023 19:00:45 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	id 0168AF8052D; Tue, 28 Feb 2023 19:00:50 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8FF47F8049C
-	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2023 19:00:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FF47F8049C
+	by alsa1.perex.cz (Postfix) with ESMTPS id E3958F8049C
+	for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2023 19:00:45 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3958F8049C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=fUlCaCrm
+ header.s=k20201202 header.b=D+JDrM7F
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 2F1B1B80E9B;
-	Tue, 28 Feb 2023 18:00:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C570AC4339C;
-	Tue, 28 Feb 2023 18:00:33 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 58A6861179;
+	Tue, 28 Feb 2023 18:00:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7776EC4339E;
+	Tue, 28 Feb 2023 18:00:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1677607235;
-	bh=OEe2wAjAN5Wk3+/Gr8WAFlMWCXBu8whw25LrAQEArjE=;
+	s=k20201202; t=1677607243;
+	bh=CtORROMymsMyJjQe4L+MRP/NQSor1pQ4vG0KnQv8Nu8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=fUlCaCrme1FbHiY+4s3OeDrWTDvt7fHBRl0xaqaILYRrDLdhpn62iLCwpX0Oh9206
-	 Ct1GeeXawus4QVZYYiHmMMdLF+xK4pmRH+zVFh9K+F7kuZ+Ap1W+evafNlck9QXwsp
-	 YlTHeccnaa96QFRp4Id+YULbn7dTGg2WMH+91yHb7oYCmnNlf72rkOlBIEjfF0frvU
-	 b5Xwte7IR9Cn/kMnvv3Tggtj0cXiSYKSe2Uh308K8VmCMrhiRSJegdg+nPm6tjaXsQ
-	 6QK0CexD+vrAVnKmX9MHf2HnkbIMNtLmJkCrecSFo00kMscjEiMBpTSrr5Dqi/PoEr
-	 dbDoSeqUwRffw==
+	b=D+JDrM7FFnr/CvTJVGPeOgFY/29a3BcR0x84d8f0v6NZ17C+65XFbkz60WJZMJkEz
+	 wukmGW2QnBQK5LhuXGrv7SXN5XHH9Le6Az2gvntrB7mybr2Qr6FxgDnGRQu7TxEH6k
+	 +XMLlUo+/Adf6119+ddW2QeQde1D9LvD6d9NhIzDLSHAFHqadUaTJgqiK6u4k6yc1B
+	 ZAw4LvykSyyorog4Iy9WvSrrxueaM9coeMFBylf8bSp+BRhic7hFn8IpbiUiMIwuKG
+	 6iXccpgSoYn1R9yy+f2ka/CXNGSATfJrH00lBFkSjfwBNpRGjRYuQccMMd+7xAUSQb
+	 mlXIO8jTlJm5A==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Mark Brown <broonie@kernel.org>
-In-Reply-To: <20230224-asoc-mt8183-quick-fixes-v1-0-041f29419ed5@kernel.org>
-References: <20230224-asoc-mt8183-quick-fixes-v1-0-041f29419ed5@kernel.org>
-Subject: Re: [PATCH 0/2] ASoC: mt8183: Fixes from an initial glance at a
- kselftest run
-Message-Id: <167760723351.68866.5282074700831903370.b4-ty@kernel.org>
-Date: Tue, 28 Feb 2023 18:00:33 +0000
+To: lgirdwood@gmail.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, perex@perex.cz, tiwai@suse.com,
+ nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+ Claudiu Beznea <claudiu.beznea@microchip.com>
+In-Reply-To: <20230228110145.3770525-1-claudiu.beznea@microchip.com>
+References: <20230228110145.3770525-1-claudiu.beznea@microchip.com>
+Subject: Re: [PATCH v3 0/3] ASoC: mchp-pdmc: fix poc noises when starting
+ capture
+Message-Id: <167760724120.68866.4932993791399800136.b4-ty@kernel.org>
+Date: Tue, 28 Feb 2023 18:00:41 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-ada30
-Message-ID-Hash: ETYJM7WRUB643I7AXX2SXFQ3QULI5DYE
-X-Message-ID-Hash: ETYJM7WRUB643I7AXX2SXFQ3QULI5DYE
+Message-ID-Hash: 7VRBILPLBQPI2KSSBEIS7VVDXO4WKYZW
+X-Message-ID-Hash: 7VRBILPLBQPI2KSSBEIS7VVDXO4WKYZW
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -77,15 +77,14 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>,
- alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ETYJM7WRUB643I7AXX2SXFQ3QULI5DYE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7VRBILPLBQPI2KSSBEIS7VVDXO4WKYZW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,13 +93,23 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, 26 Feb 2023 12:49:55 +0000, Mark Brown wrote:
-> This is a collection of fixes I came up after glancing through an
-> initial test run with the snappily named Kukui Jacuzzi SKU16 Chromebook
-> on KernelCI.  There are more issues flagged, this is just what I fixed
-> thus far.
+On Tue, 28 Feb 2023 13:01:42 +0200, Claudiu Beznea wrote:
+> To start capture on Microchip PDMC the enable bits for each supported
+> microphone need to be set. After this bit is set the PDMC starts to
+> receive data from microphones and it considers this data as valid data.
+> Thus if microphones are not ready the PDMC captures anyway data from its
+> lines. This data is interpreted by the human ear as poc noises.
 > 
+> To avoid this the following software workaround need to be applied when
+> starting capture:
+> 1/ enable PDMC channel
+> 2/ wait 150ms
+> 3/ execute 16 dummy reads from RHR
+> 4/ clear interrupts
+> 5/ enable interrupts
+> 6/ enable DMA channel
 > 
+> [...]
 
 Applied to
 
@@ -108,10 +117,12 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: mt8183: Remove spammy logging from I2S DAI driver
-      commit: d71ed1c8f0f458ae6852fdab055790fe1d9d19b6
-[2/2] ASoC: mt8183: Fix event generation for I2S DAI operations
-      commit: 18f51ed09888c8e48bd377d1715d4ff807b4c805
+[1/3] ASoC: soc-pcm: add option to start DMA after DAI
+      commit: 54fc4b72b630e1cb92a21140084c6852babbb234
+[2/3] ASoC: dt-bindings: sama7g5-pdmc: add microchip,startup-delay-us binding
+      commit: 143a2f011c4471511887807822d3fd71f25f5169
+[3/3] ASoC: mchp-pdmc: fix poc noise at capture startup
+      commit: c5682e2ba1327d08987a7cabc7b5b40bf3bc131f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
