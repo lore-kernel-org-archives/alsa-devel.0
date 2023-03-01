@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F124C64EC7
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Mar 2023 11:41:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0498AC64EC7
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Mar 2023 11:41:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 19785827;
-	Wed,  1 Mar 2023 12:40:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19785827
+	by alsa0.perex.cz (Postfix) with ESMTPS id D37F8847;
+	Wed,  1 Mar 2023 12:40:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D37F8847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677670868;
-	bh=XHLvCT8Nt8YmIKi30XtbTBcw6kinTTqUBJYbD4/6SFc=;
+	s=default; t=1677670880;
+	bh=5tklInZTjxW7nUOT7xUU9g3nrOpxKYCG1GaGB1k0my8=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=J3VlZoibDAXOiIBa+dl5fY1Ao4pS/YYvJvcGZPzdY0zjOUScvs5PBEV1h25uWtSLB
-	 CqeAj4DPOYWSDi1pYjQIrIo+ADTEFch42SB4L9doiG8NqoVK6voaKZChD9HWQvVSmz
-	 3mXCqHrG5iLsTfzNEkLoQlcyV5J7CaLFb4igLLb4=
+	b=pfXoAq+o6YSJkv/4pY/LIDJPjw+DqreyphK8uZ/PC2qrNuRlyktXtviqbzTsVMVY5
+	 dvUji2G/b59/QW9SrG6Gqu6zXHt3vZ49mZvTjMy0UhdxtFD1rX5eZGUk+zv+tgKD0m
+	 mJuiKOO2iFM/Gm35uobzYgbSsvZ/5HotpHnfBGEg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FDEDF8053B;
-	Wed,  1 Mar 2023 12:38:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F88BF80557;
+	Wed,  1 Mar 2023 12:38:59 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 26DA2F8052E; Wed,  1 Mar 2023 12:38:51 +0100 (CET)
+	id 7AD3EF80544; Wed,  1 Mar 2023 12:38:54 +0100 (CET)
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
  [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 099C0F8052D
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2023 12:38:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 099C0F8052D
+	by alsa1.perex.cz (Postfix) with ESMTPS id B9C75F8052E
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2023 12:38:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9C75F8052E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=microchip.com header.i=@microchip.com
- header.a=rsa-sha256 header.s=mchp header.b=UkbUi7MR
+ header.a=rsa-sha256 header.s=mchp header.b=2GbAd0fY
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1677670728; x=1709206728;
+  t=1677670731; x=1709206731;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=XHLvCT8Nt8YmIKi30XtbTBcw6kinTTqUBJYbD4/6SFc=;
-  b=UkbUi7MRXzqZfSBfd6PxuFQ7Z7dT5OSU0d1EIoxDuqwxfRWDAecS4EB8
-   9NI5c0hXNTnlR4nZ/cYC3vk0gcLr4QXkVkkuNe7Fas2CjnnCrshj7z7CZ
-   oDQpQwOpen8pFqXSXRaq3AyW0kupCEKg1Mfn2KXjpRQYOXliq+WUc95dk
-   WBs3+Ip5Uz5yl3LjWX4cAbYRKfsNQyG53htsfBQyR50vWEGG/K37Sw2ER
-   44DCcIyPx1PNa35SmA9iNZ3gIEQVc5bdI0gC0PSkjfmpghZwXZr7RhgWL
-   kGtlAvmJr5TqGhmms6fidGLEkglTYLGmybHtE04TsBnUqqHT127q+jDzn
-   w==;
+  bh=5tklInZTjxW7nUOT7xUU9g3nrOpxKYCG1GaGB1k0my8=;
+  b=2GbAd0fY1RigRvxtgc8ZfGhuN+5GLhmlX+dEpur6fCrZqx4XojQsnqLe
+   NKYuKLd/heECPSEZa0XXngaUC+bCGcO09L486QXrfkuuYMy/z61wdtid6
+   fYLLX7TbQSEkPoXKKYXIaKyQwWmUY6AuPfVsWVFaTD4DJV9grAcVibmHR
+   nllPSA0Q+17H5T4LLDPqzDw8OIZOWmT9PoCIt17JnEj9F0Qcxbc1OAnEZ
+   v5yvpK5mos+GWybFNj4M1ITbfQZBbym1WfE33V1Q6xfq48fHdaf17VhIx
+   6ZYWSqEIXv5pB0+wSkzluN3QpZAytLOjq3hWafFYeykTm5D6Z1zoF83N6
+   A==;
 X-IronPort-AV: E=Sophos;i="5.98,224,1673938800";
-   d="scan'208";a="202995026"
+   d="scan'208";a="139640258"
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 01 Mar 2023 04:38:45 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 01 Mar 2023 04:38:48 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Wed, 1 Mar 2023 04:38:45 -0700
+ 15.1.2507.16; Wed, 1 Mar 2023 04:38:41 -0700
 Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.16 via Frontend Transport; Wed, 1 Mar 2023 04:38:42 -0700
+ 15.1.2507.16 via Frontend Transport; Wed, 1 Mar 2023 04:38:37 -0700
 From: Claudiu Beznea <claudiu.beznea@microchip.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
 	<tiwai@suse.com>, <nicolas.ferre@microchip.com>,
 	<alexandre.belloni@bootlin.com>
-Subject: [PATCH 5/8] ASoC: mchp-pdmc: return directly ret
-Date: Wed, 1 Mar 2023 13:38:04 +0200
-Message-ID: <20230301113807.24036-6-claudiu.beznea@microchip.com>
+Subject: [PATCH 4/8] ASoC: mchp-pdmc: use FIELD_PREP() where possible
+Date: Wed, 1 Mar 2023 13:38:03 +0200
+Message-ID: <20230301113807.24036-5-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230301113807.24036-1-claudiu.beznea@microchip.com>
 References: <20230301113807.24036-1-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-Message-ID-Hash: S5DWWLI6ALFAIOXRU5QEVZKGLGZS4YSW
-X-Message-ID-Hash: S5DWWLI6ALFAIOXRU5QEVZKGLGZS4YSW
+Message-ID-Hash: CQNKYIZQGF3QGDCS7TDNCII75CYDAW3W
+X-Message-ID-Hash: CQNKYIZQGF3QGDCS7TDNCII75CYDAW3W
 X-MailFrom: Claudiu.Beznea@microchip.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S5DWWLI6ALFAIOXRU5QEVZKGLGZS4YSW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CQNKYIZQGF3QGDCS7TDNCII75CYDAW3W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,33 +101,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Return directly ret instead of having different branches for error and
-OK paths.
+Use FIELD_PREP() macro where possible instead of driver local defined
+macros.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- sound/soc/atmel/mchp-pdmc.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/atmel/mchp-pdmc.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/atmel/mchp-pdmc.c b/sound/soc/atmel/mchp-pdmc.c
-index 6ec5324fd65e..853a7adfd654 100644
+index 1aed3baa9369..6ec5324fd65e 100644
 --- a/sound/soc/atmel/mchp-pdmc.c
 +++ b/sound/soc/atmel/mchp-pdmc.c
-@@ -759,12 +759,10 @@ static int mchp_pdmc_pcm_new(struct snd_soc_pcm_runtime *rtd,
- 	int ret;
+@@ -8,6 +8,7 @@
  
- 	ret = mchp_pdmc_add_chmap_ctls(rtd->pcm, dd);
--	if (ret < 0) {
-+	if (ret < 0)
- 		dev_err(dd->dev, "failed to add channel map controls: %d\n", ret);
--		return ret;
--	}
+ #include <dt-bindings/sound/microchip,pdmc.h>
  
--	return 0;
-+	return ret;
- }
++#include <linux/bitfield.h>
+ #include <linux/clk.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+@@ -49,8 +50,6 @@
+ #define MCHP_PDMC_MR_OSR256		(3 << 16)
  
- static struct snd_soc_dai_driver mchp_pdmc_dai = {
+ #define MCHP_PDMC_MR_SINCORDER_MASK	GENMASK(23, 20)
+-#define MCHP_PDMC_MR_SINCORDER(order)	(((order) << 20) & \
+-					 MCHP_PDMC_MR_SINCORDER_MASK)
+ 
+ #define MCHP_PDMC_MR_SINC_OSR_MASK	GENMASK(27, 24)
+ #define MCHP_PDMC_MR_SINC_OSR_DIS	(0 << 24)
+@@ -62,8 +61,6 @@
+ #define MCHP_PDMC_MR_SINC_OSR_256	(6 << 24)
+ 
+ #define MCHP_PDMC_MR_CHUNK_MASK		GENMASK(31, 28)
+-#define MCHP_PDMC_MR_CHUNK(chunk)	(((chunk) << 28) & \
+-					 MCHP_PDMC_MR_CHUNK_MASK)
+ 
+ /*
+  * ---- Configuration Register (Read/Write) ----
+@@ -617,10 +614,10 @@ static int mchp_pdmc_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	mr_val |= mchp_pdmc_mr_set_osr(dd->audio_filter_en, osr);
+ 
+-	mr_val |= MCHP_PDMC_MR_SINCORDER(dd->sinc_order);
++	mr_val |= FIELD_PREP(MCHP_PDMC_MR_SINCORDER_MASK, dd->sinc_order);
+ 
+ 	dd->addr.maxburst = mchp_pdmc_period_to_maxburst(snd_pcm_lib_period_bytes(substream));
+-	mr_val |= MCHP_PDMC_MR_CHUNK(dd->addr.maxburst);
++	mr_val |= FIELD_PREP(MCHP_PDMC_MR_CHUNK_MASK, dd->addr.maxburst);
+ 	dev_dbg(comp->dev, "maxburst set to %d\n", dd->addr.maxburst);
+ 
+ 	snd_soc_component_update_bits(comp, MCHP_PDMC_MR,
 -- 
 2.34.1
 
