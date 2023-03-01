@@ -4,90 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2B06C7EE2D
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Mar 2023 11:12:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E1BEC64ED6
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Mar 2023 11:39:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 813AF827;
-	Wed,  1 Mar 2023 12:11:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 813AF827
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF4B81DC;
+	Wed,  1 Mar 2023 12:39:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF4B81DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677669123;
-	bh=eTzm+EIAjQcoyhPrp2GjtRD4G6+LecRvF0U2zjS/gWI=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=HbxNh/C2nrIaPxv3fyP/A+0ngt+tOEBV7Y/uClZaD9qfAzrYAMvDcXAF7WmsJk7M1
-	 8YBUNx9L6/T1VdVLUiDANlXL567dX5HiiXIwi6UDwVgXRKgML11+S4RTVjNC8gM9YT
-	 QFTIB912StSYN4xfMa7m4024jRIvYi5lMdV+ZLgo=
+	s=default; t=1677670792;
+	bh=AUr2Emb+cEOVy4hejcovcA9VOZoGsG9uyJUZz74KyAA=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=rM3ZtCKTouhnpgbwRkbicOhrZc4JpNR+h4kw9WyUZNGWnLeNVsXy2G+yiZw+lDS7T
+	 QzFEr8kQ3pCm73rd2i2uuW3AbdLruxX7cKZK+Mj5kuiHx4ne9O6iTMhfoy3Bb0utBV
+	 9lLwyRkE86+C6WU7sr6qHGJzNRLQ6Bq8nyPkeRXk=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23811F80520;
-	Wed,  1 Mar 2023 12:11:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1DE6F804B1;
+	Wed,  1 Mar 2023 12:38:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2F963F8051B; Wed,  1 Mar 2023 12:11:02 +0100 (CET)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk
- [46.235.227.172])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
+	id 5BB50F8049C; Wed,  1 Mar 2023 12:38:37 +0100 (CET)
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
+ [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 566F3F804B1
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2023 12:10:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 566F3F804B1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3454EF80236
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2023 12:38:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3454EF80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=collabora.com header.i=@collabora.com
- header.a=rsa-sha256 header.s=mail header.b=lVebGzc7
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
- [2.237.20.237])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madras.collabora.co.uk (Postfix) with ESMTPSA id C10A26602119;
-	Wed,  1 Mar 2023 11:10:57 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1677669058;
-	bh=eTzm+EIAjQcoyhPrp2GjtRD4G6+LecRvF0U2zjS/gWI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=lVebGzc7EXXg57QxAJY8TSgbomC8z/uuRcUJCDyjanimBugLk1aa/j0Hk6OUwe1Xf
-	 9B3TNWcQJDX8Hx83MU7TDiLzMIkWRPuM8J4L2b8tAErqpa0Zgbnpdp+knn1T/cTWsx
-	 07HzAGuMu3T9L1WfEIBzdSrkaRYGdC2BuKceOz6sWRWzGdvzpXliLZZzSWssspGi7g
-	 fh4gqh/zAgAQO6Vnh4HQM/j1v+4zEw9OgNpz7MF25PtcZMmIb7dw6fiw1AXfwWKLSt
-	 8Ssup+fNGEvcNie4yXyZJhRgWIMqnYDdjCU0rMAXlchXynaHiBkyXtxTfAoI3zKL7s
-	 nxGY/P4MKoHyg==
-Message-ID: <0c26685f-225a-8ef9-a4c4-0afaf9deb742@collabora.com>
-Date: Wed, 1 Mar 2023 12:10:55 +0100
+ unprotected) header.d=microchip.com header.i=@microchip.com
+ header.a=rsa-sha256 header.s=mchp header.b=FhPDpLag
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1677670711; x=1709206711;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=AUr2Emb+cEOVy4hejcovcA9VOZoGsG9uyJUZz74KyAA=;
+  b=FhPDpLags5vrnfmdKai6d5npVXkyHKsM6thEX3fckoYkGsCejiBByagz
+   DbWtDglJPV35V1pc60FEcOGhB4NOQaqrm2d2EiGHV9ZNPGLLmUjIU/eYH
+   ARL1SJLl5ynQazVG7O8h6bHGVeds3dxAU1c7HSc1z3mzDg5M86Avv5dVP
+   qbQDhzMwp0rP8XJ9DSumZolcng+FHbWyddjOHNiLsiH91xN26zAb+VxQN
+   YsyBjkJeux2Nc4v+sWn/w0wkn6mirO2RyIleYAfpj1LwvpM/u51cTkKeB
+   hPWuRyOhfzrt9yMlyX9UTwKo3jnKJe5NkvqqVEso8hy0S0o797iGB/AOh
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.98,224,1673938800";
+   d="scan'208";a="202746402"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 01 Mar 2023 04:38:26 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.16; Wed, 1 Mar 2023 04:38:26 -0700
+Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2507.16 via Frontend Transport; Wed, 1 Mar 2023 04:38:23 -0700
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+	<tiwai@suse.com>, <nicolas.ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>
+Subject: [PATCH 0/8] ASoC: microchip: some cleanups for AT91 sound drivers
+Date: Wed, 1 Mar 2023 13:37:59 +0200
+Message-ID: <20230301113807.24036-1-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v2 1/2] ASoC: mediatek: mt8188: add missing initialization
-Content-Language: en-US
-To: Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
- lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, matthias.bgg@gmail.com
-References: <20230301110200.26177-1-trevor.wu@mediatek.com>
- <20230301110200.26177-2-trevor.wu@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230301110200.26177-2-trevor.wu@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: L76AJW7HL43UAEPKL3O3Z5Y37K4CYTVT
-X-Message-ID-Hash: L76AJW7HL43UAEPKL3O3Z5Y37K4CYTVT
-X-MailFrom: angelogioacchino.delregno@collabora.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Message-ID-Hash: IOV5BNQPDBL5JJGL6IUQTCTOB27HYE3L
+X-Message-ID-Hash: IOV5BNQPDBL5JJGL6IUQTCTOB27HYE3L
+X-MailFrom: Claudiu.Beznea@microchip.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+CC: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-arm-kernel@lists.infradead.org,
+ Claudiu Beznea <claudiu.beznea@microchip.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L76AJW7HL43UAEPKL3O3Z5Y37K4CYTVT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IOV5BNQPDBL5JJGL6IUQTCTOB27HYE3L/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,18 +98,30 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Il 01/03/23 12:01, Trevor Wu ha scritto:
-> In etdm dai driver, dai_etdm_parse_of() function is used to parse dts
-> properties to get parameters. There are two for-loops which are
-> sepearately for all etdm and etdm input only cases. In etdm in only
-> loop, dai_id is not initialized, so it keeps the value intiliazed in
-> another loop.
-> 
-> In the patch, add the missing initialization to fix the unexpected
-> parsing problem.
-> 
-> Fixes: 2babb4777489 ("ASoC: mediatek: mt8188: support etdm in platform driver")
-> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+Hi,
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+The following patches do some cleanups for Microchip AT91 sound drivers.
+Along with it I took the chance and updated MAINTAINERS file.
+
+Thank you,
+Claudiu Beznea
+
+Claudiu Beznea (8):
+  ASoC: mchp-spdiftx: use FIELD_PREP() where possible
+  ASoC: mchp-spdiftx: use regmap_update_bits()
+  ASoC: mchp-spdiftx: update debug message
+  ASoC: mchp-pdmc: use FIELD_PREP() where possible
+  ASoC: mchp-pdmc: return directly ret
+  ASoC: mchp-pdmc: avoid casting to/from void pointer
+  MAINTAINERS: add myself as maintainer for Microchip AT91 sound drivers
+  MAINTAINERS: update Microchip AT91 sound entries with documentation
+    files
+
+ MAINTAINERS                    |  9 +++++--
+ sound/soc/atmel/mchp-pdmc.c    | 19 ++++++--------
+ sound/soc/atmel/mchp-spdiftx.c | 45 ++++++++++++----------------------
+ 3 files changed, 29 insertions(+), 44 deletions(-)
+
+-- 
+2.34.1
 
