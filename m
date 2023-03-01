@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D2BFC64ED6
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Mar 2023 11:40:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F124C64EC7
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Mar 2023 11:41:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C5D4829;
-	Wed,  1 Mar 2023 12:39:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C5D4829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19785827;
+	Wed,  1 Mar 2023 12:40:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19785827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677670846;
-	bh=clQO14yQ+ltRDG+JAi8cfBFkK9rtlbuvlOm22OW9SxU=;
+	s=default; t=1677670868;
+	bh=XHLvCT8Nt8YmIKi30XtbTBcw6kinTTqUBJYbD4/6SFc=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ZGTvMj90q9NaiD/rvX7dXjW+5heED4Stn30+31MmGmUzonrcTrBpGnHjKzSBHhHuV
-	 2mIwGoVwjg9f5RIJEvj+lA8WqwPPk4Y2VEMw9Hwpv1I/ooEMfd1p72tkhvb8W2dGRE
-	 6d91sNeGMU9I0ap53CRZS9wo6x30XJYzLS/iiK/s=
+	b=J3VlZoibDAXOiIBa+dl5fY1Ao4pS/YYvJvcGZPzdY0zjOUScvs5PBEV1h25uWtSLB
+	 CqeAj4DPOYWSDi1pYjQIrIo+ADTEFch42SB4L9doiG8NqoVK6voaKZChD9HWQvVSmz
+	 3mXCqHrG5iLsTfzNEkLoQlcyV5J7CaLFb4igLLb4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0498AF8053D;
-	Wed,  1 Mar 2023 12:38:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FDEDF8053B;
+	Wed,  1 Mar 2023 12:38:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 428FEF80533; Wed,  1 Mar 2023 12:38:50 +0100 (CET)
+	id 26DA2F8052E; Wed,  1 Mar 2023 12:38:51 +0100 (CET)
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
  [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 58FB1F80527
+	by alsa1.perex.cz (Postfix) with ESMTPS id 099C0F8052D
 	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2023 12:38:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58FB1F80527
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 099C0F8052D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=microchip.com header.i=@microchip.com
- header.a=rsa-sha256 header.s=mchp header.b=eVI5cQiS
+ header.a=rsa-sha256 header.s=mchp header.b=UkbUi7MR
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1677670727; x=1709206727;
+  t=1677670728; x=1709206728;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=clQO14yQ+ltRDG+JAi8cfBFkK9rtlbuvlOm22OW9SxU=;
-  b=eVI5cQiSzzjJaOPBUPeM5aQp4MdmdXguxHAQCqR9H+ExV5wKM2gUILuf
-   1mlrfzWicnCBRWbitjpACWjlZLpEg3sKeU9rlA+CilouCFsFZ8OId+bG8
-   xbpEPjzZCmVBrBXjemOK9HTH7oVohxl+sfcAFDeoLlJmBpqv2VaZ9Osa8
-   YZvOcnRCIU1MfdOl2lXGxDEORWVAlTn20hNb14/eSp98hMOnYfrWXxP8e
-   oDo+2aiPELYY2FrHino8WOPEREXDisxO+gMWlUB0drazf6LSDDYcPnvHv
-   q0X0AO7kv9bxJAyUgqhDPpfD5LNyG8i6/X9geY1fCm8aRXUBqIhONK+Zm
-   g==;
+  bh=XHLvCT8Nt8YmIKi30XtbTBcw6kinTTqUBJYbD4/6SFc=;
+  b=UkbUi7MRXzqZfSBfd6PxuFQ7Z7dT5OSU0d1EIoxDuqwxfRWDAecS4EB8
+   9NI5c0hXNTnlR4nZ/cYC3vk0gcLr4QXkVkkuNe7Fas2CjnnCrshj7z7CZ
+   oDQpQwOpen8pFqXSXRaq3AyW0kupCEKg1Mfn2KXjpRQYOXliq+WUc95dk
+   WBs3+Ip5Uz5yl3LjWX4cAbYRKfsNQyG53htsfBQyR50vWEGG/K37Sw2ER
+   44DCcIyPx1PNa35SmA9iNZ3gIEQVc5bdI0gC0PSkjfmpghZwXZr7RhgWL
+   kGtlAvmJr5TqGhmms6fidGLEkglTYLGmybHtE04TsBnUqqHT127q+jDzn
+   w==;
 X-IronPort-AV: E=Sophos;i="5.98,224,1673938800";
-   d="scan'208";a="202995020"
+   d="scan'208";a="202995026"
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
   by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 01 Mar 2023 04:38:44 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ 01 Mar 2023 04:38:45 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Wed, 1 Mar 2023 04:38:33 -0700
+ 15.1.2507.16; Wed, 1 Mar 2023 04:38:45 -0700
 Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.16 via Frontend Transport; Wed, 1 Mar 2023 04:38:30 -0700
+ 15.1.2507.16 via Frontend Transport; Wed, 1 Mar 2023 04:38:42 -0700
 From: Claudiu Beznea <claudiu.beznea@microchip.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
 	<tiwai@suse.com>, <nicolas.ferre@microchip.com>,
 	<alexandre.belloni@bootlin.com>
-Subject: [PATCH 2/8] ASoC: mchp-spdiftx: use regmap_update_bits()
-Date: Wed, 1 Mar 2023 13:38:01 +0200
-Message-ID: <20230301113807.24036-3-claudiu.beznea@microchip.com>
+Subject: [PATCH 5/8] ASoC: mchp-pdmc: return directly ret
+Date: Wed, 1 Mar 2023 13:38:04 +0200
+Message-ID: <20230301113807.24036-6-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230301113807.24036-1-claudiu.beznea@microchip.com>
 References: <20230301113807.24036-1-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-Message-ID-Hash: EOV27HQEBMJZ6IDMJE6QZ4A65G7L4H6Y
-X-Message-ID-Hash: EOV27HQEBMJZ6IDMJE6QZ4A65G7L4H6Y
+Message-ID-Hash: S5DWWLI6ALFAIOXRU5QEVZKGLGZS4YSW
+X-Message-ID-Hash: S5DWWLI6ALFAIOXRU5QEVZKGLGZS4YSW
 X-MailFrom: Claudiu.Beznea@microchip.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EOV27HQEBMJZ6IDMJE6QZ4A65G7L4H6Y/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S5DWWLI6ALFAIOXRU5QEVZKGLGZS4YSW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,70 +101,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Use regmap_update_bits() instead of regmap_read(), running variable,
-regmap_write(). There is no need for extra variables and checks around
-it as regmap_update_bits() already does this. With this code becomes
-simpler.
+Return directly ret instead of having different branches for error and
+OK paths.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- sound/soc/atmel/mchp-spdiftx.c | 22 +++++-----------------
- 1 file changed, 5 insertions(+), 17 deletions(-)
+ sound/soc/atmel/mchp-pdmc.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/atmel/mchp-spdiftx.c b/sound/soc/atmel/mchp-spdiftx.c
-index bf4252412f9f..e7241d819748 100644
---- a/sound/soc/atmel/mchp-spdiftx.c
-+++ b/sound/soc/atmel/mchp-spdiftx.c
-@@ -306,15 +306,10 @@ static int mchp_spdiftx_trigger(struct snd_pcm_substream *substream, int cmd,
- {
- 	struct mchp_spdiftx_dev *dev = snd_soc_dai_get_drvdata(dai);
- 	struct mchp_spdiftx_mixer_control *ctrl = &dev->control;
--	u32 mr;
--	int running;
+diff --git a/sound/soc/atmel/mchp-pdmc.c b/sound/soc/atmel/mchp-pdmc.c
+index 6ec5324fd65e..853a7adfd654 100644
+--- a/sound/soc/atmel/mchp-pdmc.c
++++ b/sound/soc/atmel/mchp-pdmc.c
+@@ -759,12 +759,10 @@ static int mchp_pdmc_pcm_new(struct snd_soc_pcm_runtime *rtd,
  	int ret;
  
- 	/* do not start/stop while channel status or user data is updated */
- 	spin_lock(&ctrl->lock);
--	regmap_read(dev->regmap, SPDIFTX_MR, &mr);
--	running = !!(mr & SPDIFTX_MR_TXEN_ENABLE);
--
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_START:
-@@ -323,10 +318,8 @@ static int mchp_spdiftx_trigger(struct snd_pcm_substream *substream, int cmd,
- 		dev->suspend_irq = 0;
- 		fallthrough;
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		if (!running) {
--			mr &= ~SPDIFTX_MR_TXEN_MASK;
--			mr |= SPDIFTX_MR_TXEN_ENABLE;
--		}
-+		ret = regmap_update_bits(dev->regmap, SPDIFTX_MR, SPDIFTX_MR_TXEN_MASK,
-+					 SPDIFTX_MR_TXEN_ENABLE);
- 		break;
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 		regmap_read(dev->regmap, SPDIFTX_IMR, &dev->suspend_irq);
-@@ -336,17 +329,12 @@ static int mchp_spdiftx_trigger(struct snd_pcm_substream *substream, int cmd,
- 			     SPDIFTX_IR_TXUDR | SPDIFTX_IR_TXOVR);
- 		fallthrough;
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		if (running) {
--			mr &= ~SPDIFTX_MR_TXEN_MASK;
--			mr |= SPDIFTX_MR_TXEN_DISABLE;
--		}
-+		ret = regmap_update_bits(dev->regmap, SPDIFTX_MR, SPDIFTX_MR_TXEN_MASK,
-+					 SPDIFTX_MR_TXEN_DISABLE);
- 		break;
- 	default:
--		spin_unlock(&ctrl->lock);
--		return -EINVAL;
-+		ret = -EINVAL;
- 	}
--
--	ret = regmap_write(dev->regmap, SPDIFTX_MR, mr);
- 	spin_unlock(&ctrl->lock);
- 	if (ret)
- 		dev_err(dev->dev, "unable to disable TX: %d\n", ret);
+ 	ret = mchp_pdmc_add_chmap_ctls(rtd->pcm, dd);
+-	if (ret < 0) {
++	if (ret < 0)
+ 		dev_err(dd->dev, "failed to add channel map controls: %d\n", ret);
+-		return ret;
+-	}
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static struct snd_soc_dai_driver mchp_pdmc_dai = {
 -- 
 2.34.1
 
