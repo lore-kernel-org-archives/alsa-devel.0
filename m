@@ -4,104 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFFE3C678D4
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Mar 2023 21:10:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1CA6C678D4
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Mar 2023 21:44:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4090F74C;
-	Wed,  1 Mar 2023 22:09:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4090F74C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93DB01DC;
+	Wed,  1 Mar 2023 22:43:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93DB01DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677705004;
-	bh=rCPgKyY8pL4WsWbwal7/GnROcvnC0cplhyx7czzuBrI=;
-	h=In-Reply-To:References:Subject:From:To:Date:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=LLAwsrKz24ir9BsgBHXpw187nUEVq17yKHpWOI9a6aqX+NBVAcV2UOGYcwta28IzQ
-	 4ymmDmUfQ1ySC/9ObIRTnXkX8AV1wqyWj8UYt4v69dxdYXf7htg/9EQbQww6AUBxDL
-	 eM3HZS5HqT0OoCyP1M49k5A8XYHWEkPoxjcIkxDE=
+	s=default; t=1677707063;
+	bh=AKnURuJj9VLqt2ym8PrCtCoFWFPGd/j3Rh0tEHi5hHw=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=nQevkW9gvnDuBbGZ90kByy9GhO3JJLkdsO2UYNWbtSFZcBwHGzQpgiJLoYKaIVi23
+	 k+GDbYPuc9n/uaARe97Ve+IkglSq/71Nho27aq5Dmt4z6r/xLgnL0bV7CEhoBfce7O
+	 yiVGwP9EEnkybziJ2WTq8JXuAPGtUGStbpH0X3ds=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF53DF800BA;
-	Wed,  1 Mar 2023 22:09:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9272F8049C;
+	Wed,  1 Mar 2023 22:43:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7EEB1F8049C; Wed,  1 Mar 2023 22:09:09 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 04166F800DF
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2023 22:09:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04166F800DF
-Authentication-Results: alsa1.perex.cz;
-	dkim=fail reason="signature verification failed" (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=XPtEoCOK
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 5C204B8111A;
-	Wed,  1 Mar 2023 21:09:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 074E4C433EF;
-	Wed,  1 Mar 2023 21:09:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1677704944;
-	bh=rCPgKyY8pL4WsWbwal7/GnROcvnC0cplhyx7czzuBrI=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=XPtEoCOK0uCzDk5+9/F+HsvDisG6x30coh35MtKooxhGCdVLAujsC16RjuFJNeJSs
-	 j7ciysEU7AIVDGDF0mVl0eCUtDQPZdCGf/LDWZa7s46dd2DQYHGUjBbGf6Ck8HIGfp
-	 QaPDKylGnfmK/uLRTK7f5kJ4WEuHlXrjDJUcqkdMIUgs9xlO4K/9BBusrKlAGzSaFK
-	 9bZOKQsXERsjEMkdZTHcBw9PEuUsfTHkY5vQ4UEhdVKlT6sTmtmkWE2uREh5ZQ3l4U
-	 XeMOJhBFHPbU3QD2rS1Om+3BJzD9KFZ3Tb2gxhY/s7cVeRc2dMWj7kw3wy45x80er/
-	 Aj12X7L3l1l0A==
-Message-ID: <5d53f8abdaa50b19ac60c198252c5a5e.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	id 2022FF8049C; Wed,  1 Mar 2023 22:43:08 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id DD122F80236
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2023 22:43:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD122F80236
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230228215433.3944508-1-robh@kernel.org>
-References: <20230228215433.3944508-1-robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: Fix SPI and I2C bus node names in examples
-From: Stephen Boyd <sboyd@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh@kernel.org>
-Date: Wed, 01 Mar 2023 13:09:01 -0800
-User-Agent: alot/0.10
-Message-ID-Hash: Y22N2KIKWW4WUJO5NQWIUOUMKDR6A34F
-X-Message-ID-Hash: Y22N2KIKWW4WUJO5NQWIUOUMKDR6A34F
-X-MailFrom: sboyd@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1677706985255067348-webhooks-bot@alsa-project.org>
+References: <1677706985255067348-webhooks-bot@alsa-project.org>
+Subject: Question: is it possible to subscribe a port to system announcer ?
+Message-Id: <20230301214308.2022FF8049C@alsa1.perex.cz>
+Date: Wed,  1 Mar 2023 22:43:08 +0100 (CET)
+Message-ID-Hash: WFZAO5A3ICAEYTGE27ZG4OPOPZV2B6N4
+X-Message-ID-Hash: WFZAO5A3ICAEYTGE27ZG4OPOPZV2B6N4
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: devicetree@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
- Benson Leung <bleung@chromium.org>, Guenter Roeck <groeck@chromium.org>,
- Andrzej Hajda <andrzej.hajda@intel.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>, Sam Ravnborg <sam@ravnborg.org>,
- MyungJoo Ham <myungjoo.ham@samsung.com>,
- Chanwoo Choi <cw00.choi@samsung.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Pavel Machek <pavel@ucw.cz>,
- Lee Jones <lee@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Wolfgang Grandegger <wg@grandegger.com>, Kalle Valo <kvalo@kernel.org>,
- Sebastian Reichel <sre@kernel.org>, Mark Brown <broonie@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-clk@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-gpio@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-leds@vger.kernel.org,
- linux-media@vger.kernel.org, netdev@vger.kernel.org,
- linux-can@vger.kernel.org, linux-wireless@vger.kernel.org,
- linux-pm@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-usb@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y22N2KIKWW4WUJO5NQWIUOUMKDR6A34F/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WFZAO5A3ICAEYTGE27ZG4OPOPZV2B6N4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -110,35 +64,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Quoting Rob Herring (2023-02-28 13:54:33)
-> SPI and I2C bus node names are expected to be "spi" or "i2c",
-> respectively, with nothing else, a unit-address, or a '-N' index. A
-> pattern of 'spi0' or 'i2c0' or similar has crept in. Fix all these
-> cases. Mostly scripted with the following commands:
->=20
-> git grep -l '\si2c[0-9] {' Documentation/devicetree/ | xargs sed -i -e 's=
-/i2c[0-9] {/i2c {/'
-> git grep -l '\sspi[0-9] {' Documentation/devicetree/ | xargs sed -i -e 's=
-/spi[0-9] {/spi {/'
->=20
-> With this, a few errors in examples were exposed and fixed.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
+alsa-project/alsa-python issue #7 was opened from Houston4444:
 
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+Hi. I try to add ALSA support to [Patchance](https://github.com/Houston4444/Patchance).
 
-> diff --git a/Documentation/devicetree/bindings/clock/ti,lmk04832.yaml b/D=
-ocumentation/devicetree/bindings/clock/ti,lmk04832.yaml
-> index 73d17830f165..13d7b3d03d84 100644
-> --- a/Documentation/devicetree/bindings/clock/ti,lmk04832.yaml
-> +++ b/Documentation/devicetree/bindings/clock/ti,lmk04832.yaml
-> @@ -160,7 +160,7 @@ examples:
->          };
->      };
-> =20
-> -    spi0 {
-> +    spi {
->          #address-cells =3D <1>;
->          #size-cells =3D <0>;
->
+I 'd like to create a port capable to receive events as SEQ_EVENT_PORT_START or SEQ_EVENT_PORT_EXIT in order to get a complete graph.
+
+I see in patchage source code (C++) that it uses 'snd_seq_connect_from' function to enable this events.
+
+Is it possible in python with this lib ?
+
+Thanks.
+
+Issue URL     : https://github.com/alsa-project/alsa-python/issues/7
+Repository URL: https://github.com/alsa-project/alsa-python
