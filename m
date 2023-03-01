@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EDDDC64EC7
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Mar 2023 11:03:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4C7AC64ED6
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Mar 2023 11:04:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A83E911C;
-	Wed,  1 Mar 2023 12:02:50 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A83E911C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39BE320C;
+	Wed,  1 Mar 2023 12:03:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39BE320C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677668620;
-	bh=6dUIO1zA/PijnHVIPvnVhYN2sFgYxl/lET641k9Ml9s=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=lMKV1HP3Z9r5tEzCdk/ZEn5BMPcCX6l0B5fwOOYrTq3jOGsovw323Yg+C96eXnv/b
-	 eHiNwQNszPZkDU13GQMSxKpcJyo+duk/q1I4UqEPeGCME/ce9R2j9oWutUcs9BDssw
-	 eThlISGUrqCjeSJ//KGGQEI8flVHa+lWnvCyCx+c=
+	s=default; t=1677668651;
+	bh=pBALsHODXBivH3xqKdlCHLJcE3QW2TJipYNZeqpkysg=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=QGoejcBdFkqXOAPOiQfTZwznLg1OVuIxVSRdKYOOyvvawwK4vA3A+C4xNoA0NVHnk
+	 qHSs2wYNAhknoqjd1rEkUBXJZ3kDyKhAv6AHvGNDug3Iqvf4wnvjB0J9qQVNqQcown
+	 YTXp21re/wkQvJ34+pltot+9NrneGI9Qm0IzgBiQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8311DF8049C;
-	Wed,  1 Mar 2023 12:02:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CBF45F804FE;
+	Wed,  1 Mar 2023 12:02:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D42E4F804FE; Wed,  1 Mar 2023 12:02:22 +0100 (CET)
+	id 6DD67F804B1; Wed,  1 Mar 2023 12:02:24 +0100 (CET)
 Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D3366F80236
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2023 12:02:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3366F80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 58CAEF800DF
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2023 12:02:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58CAEF800DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=mediatek.com header.i=@mediatek.com header.a=rsa-sha256
- header.s=dk header.b=egqhgcTJ
-X-UUID: 8001859ab82011eda06fc9ecc4dadd91-20230301
+ header.s=dk header.b=Zm+OPMeL
+X-UUID: 7f5ade8eb82011eda06fc9ecc4dadd91-20230301
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
  d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=JujL0zJMof6BeSlvA5bvmTeu3hHrd2enXVP0mfRzsrA=;
-	b=egqhgcTJMRLOXnyC2Ff0GDXNNYeukR0m3xLRRHFCd+mnOv0KWkc568qo0c0p29Vxjn4Ei6J71AJj/05oUc4KGk2qAmCcN1teh94ANqg4KUQBxN6IMxGToEZPeu030fhfBsadFTvqC0lEekh4EsOs+7/LjJAwD66QuPGBoN+TSbs=;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From;
+ bh=hEfAOvZJXLtdoX37aHyT09q7nlqO9HPu0KdVdJ5LDDc=;
+	b=Zm+OPMeLf5MzQ5BuPcFdPCddPFkY1CYUugR67Rj5OyMJhkEdlx0kRa9rgot4uJ7dnbqbHD79dNO3kmyrcMGJc68o+7a0EVAO34UrDRZP5ECQLEwHtu4TPcxsR2vAwxJ7t4UwYcFhgE6rdpeqki20M6T2yF5gMNSQ4Wq65gwu1qY=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.20,REQID:aeb25cc6-fab0-4870-898e-b1242d39c4ad,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:25b5999,CLOUDID:49ab6bf4-ddba-41c3-91d9-10eeade8eac7,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0
-X-CID-BVR: 0
-X-UUID: 8001859ab82011eda06fc9ecc4dadd91-20230301
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by
+X-CID-O-INFO: VERSION:1.1.20,REQID:49b1b3a6-f03a-416f-9541-c0e64fc07ed3,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:95
+X-CID-INFO: VERSION:1.1.20,REQID:49b1b3a6-f03a-416f-9541-c0e64fc07ed3,IP:0,URL
+	:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTION
+	:quarantine,TS:95
+X-CID-META: VersionHash:25b5999,CLOUDID:8009deb1-beed-4dfc-bd9c-e1b22fa6ccc4,B
+	ulkID:2303011902059S38TP4B,BulkQuantity:0,Recheck:0,SF:38|29|28|17|19|48,T
+	C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+	,OSI:0,OSA:0,AV:0
+X-CID-BVR: 0,NGT
+X-UUID: 7f5ade8eb82011eda06fc9ecc4dadd91-20230301
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by
  mailgw01.mediatek.com
 	(envelope-from <trevor.wu@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 92384482; Wed, 01 Mar 2023 19:02:04 +0800
+	with ESMTP id 1883867757; Wed, 01 Mar 2023 19:02:03 +0800
 Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.25; Wed, 1 Mar 2023 19:02:03 +0800
+ 15.2.1118.25; Wed, 1 Mar 2023 19:02:02 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.25 via Frontend Transport; Wed, 1 Mar 2023 19:02:03 +0800
+ 15.2.1118.25 via Frontend Transport; Wed, 1 Mar 2023 19:02:02 +0800
 From: Trevor Wu <trevor.wu@mediatek.com>
 To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <tiwai@suse.com>,
 	<perex@perex.cz>, <matthias.bgg@gmail.com>
-Subject: [PATCH v2 2/2] ASoC: mediatek: mt8195: add missing initialization
-Date: Wed, 1 Mar 2023 19:02:00 +0800
-Message-ID: <20230301110200.26177-3-trevor.wu@mediatek.com>
+Subject: [PATCH v2 0/2] ASoC: mediatek: add missing initialization
+Date: Wed, 1 Mar 2023 19:01:58 +0800
+Message-ID: <20230301110200.26177-1-trevor.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230301110200.26177-1-trevor.wu@mediatek.com>
-References: <20230301110200.26177-1-trevor.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK: N
-Message-ID-Hash: DJ7OH4UEVHG7AFMFRY3USTMNKSPPUYPN
-X-Message-ID-Hash: DJ7OH4UEVHG7AFMFRY3USTMNKSPPUYPN
+Message-ID-Hash: INZVQZAFE4M6WN5FYWSNSKX2IAX7S3E6
+X-Message-ID-Hash: INZVQZAFE4M6WN5FYWSNSKX2IAX7S3E6
 X-MailFrom: trevor.wu@mediatek.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DJ7OH4UEVHG7AFMFRY3USTMNKSPPUYPN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/INZVQZAFE4M6WN5FYWSNSKX2IAX7S3E6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,35 +104,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-In etdm dai driver, dai_etdm_parse_of() function is used to parse dts
-properties to get parameters. There are two for-loops which are
-sepearately for all etdm and etdm input only cases. In etdm in only
-loop, dai_id is not initialized, so it keeps the value intiliazed in
-another loop.
+Fix dts parsing problem in mt8188 and mt8195 etdm dai drivers.
 
-In the patch, add the missing initialization to fix the unexpected
-parsing problem.
+Changes since v1:
+  - split the patch into two commits and add Fixes tag.
 
-Fixes: 1de9a54acafb ("ASoC: mediatek: mt8195: support etdm in platform driver")
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
----
+Trevor Wu (2):
+  ASoC: mediatek: mt8188: add missing initialization
+  ASoC: mediatek: mt8195: add missing initialization
+
+ sound/soc/mediatek/mt8188/mt8188-dai-etdm.c | 3 +++
  sound/soc/mediatek/mt8195/mt8195-dai-etdm.c | 3 +++
- 1 file changed, 3 insertions(+)
+ 2 files changed, 6 insertions(+)
 
-diff --git a/sound/soc/mediatek/mt8195/mt8195-dai-etdm.c b/sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
-index c2e268054773..f2c9a1fdbe0d 100644
---- a/sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
-+++ b/sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
-@@ -2567,6 +2567,9 @@ static void mt8195_dai_etdm_parse_of(struct mtk_base_afe *afe)
- 
- 	/* etdm in only */
- 	for (i = 0; i < 2; i++) {
-+		dai_id = ETDM_TO_DAI_ID(i);
-+		etdm_data = afe_priv->dai_priv[dai_id];
-+
- 		ret = snprintf(prop, sizeof(prop),
- 			       "mediatek,%s-chn-disabled",
- 			       of_afe_etdms[i].name);
 -- 
 2.18.0
 
