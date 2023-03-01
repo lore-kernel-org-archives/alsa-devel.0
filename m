@@ -4,72 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D5ECC64ED6
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Mar 2023 07:43:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B030C7EE31
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Mar 2023 08:54:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7061874C;
-	Wed,  1 Mar 2023 08:42:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7061874C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 648C374C;
+	Wed,  1 Mar 2023 09:53:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 648C374C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677656622;
-	bh=S4qS7fQnS6CCNnABIXtxYmeMOeVmNr0YpRgUTLL7I84=;
+	s=default; t=1677660863;
+	bh=6c6cP/IHyRsWowu2tZHcz9eWebeuuAH5j8u2NP4wnVo=;
 	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=bBFPOaN6GL1wXP+Ab45tpc9TkRsmUxJgKqJ9bl9HnwmDwXfgTFPCbDJqpIS7Mdqhz
-	 WTJrpX5Z861tU2mN4oNGkqRs7nNYJXB9szZyXMXIv9IGxuVs+rsUfS+/pXFxkOgaCK
-	 fY9OZF2/cJhgkzA+t+aTyV4/I0by9vKOn36gPEmw=
+	b=KgUUDhsSnHj9XFq6WZPHWXt0w7q7nig1urrBl+VmnIrVhyTBM9qoSRYaoEYplo0dU
+	 487gygsYYE61p8qffzhD+Om0Jht9bHff1/e0fthP3bAv+ONCOD/ERoh1yadeWY8kfU
+	 v3cIYumvD1dlZrKMc5C6R1msLWA7sKT1b6gCgxNk=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D10D5F8049C;
-	Wed,  1 Mar 2023 08:42:31 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD9E7F8049C;
+	Wed,  1 Mar 2023 09:53:12 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1C0C3F8049C; Wed,  1 Mar 2023 08:42:27 +0100 (CET)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
+	id D643EF8049C; Wed,  1 Mar 2023 09:53:08 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BEA81F800DF
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2023 08:42:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEA81F800DF
-Received: from gallifrey.ext.pengutronix.de
- ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-	by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1pXH6G-0008PW-07; Wed, 01 Mar 2023 08:42:08 +0100
-Received: from pengutronix.de (hardanger-7.fritz.box
- [IPv6:2a03:f580:87bc:d400:23fb:f67d:29a6:be20])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits)
- server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 923BE1866E1;
-	Wed,  1 Mar 2023 07:42:03 +0000 (UTC)
-Date: Wed, 1 Mar 2023 08:42:03 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 88940F80236
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2023 09:52:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88940F80236
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=Ed999CG6
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 5A9866121F;
+	Wed,  1 Mar 2023 08:52:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 858A7C433D2;
+	Wed,  1 Mar 2023 08:52:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1677660774;
+	bh=6c6cP/IHyRsWowu2tZHcz9eWebeuuAH5j8u2NP4wnVo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ed999CG6d0eqg2KNSuFTYXnvp/Q1rvY1tRn4mnKA4qF8ZX8PN1/WRkwarGFe3iqCM
+	 pYHJVUDK6wZLZ/mGQD7NQAvj5FsLhd6M5DbTR9Z/eISLk2eLEATdrzaJcAIwfiCHrM
+	 +r4R+094Rn0yoanJXQ/s20157NcE7X+yPNos8t2UHzpO3F8DCDxmpfpFQJyntUFIA0
+	 e/aUT4GqmU0iSpooRfo62rBs/bYFTFogO7/QauFLK4pABdzo+bpArlplZdPH2/45nd
+	 Mlq/RI7xFBVNMdDKz87VMGoCD7gHidR4Z+8aiV+Yv/zp9lO9EqCQ9JTqbukJeqT5Qg
+	 8Vqy64XZU8Lww==
+Date: Wed, 1 Mar 2023 08:52:44 +0000
+From: Lee Jones <lee@kernel.org>
 To: Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH] dt-bindings: Fix SPI and I2C bus node names in examples
-Message-ID: <87lekgrk9v.fsf@hardanger.mail-host-address-is-not-set>
+Message-ID: <Y/8SXMHQtv6Er1Xx@google.com>
 References: <20230228215433.3944508-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6qigqggvs4mi6q4z"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 In-Reply-To: <20230228215433.3944508-1-robh@kernel.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Message-ID-Hash: Z2RS2RU7LW36YXRUCZUSUOXVNV47ULIS
-X-Message-ID-Hash: Z2RS2RU7LW36YXRUCZUSUOXVNV47ULIS
-X-MailFrom: mkl@pengutronix.de
+Message-ID-Hash: 223OPOE35BS7KXWZ3Y2DYHIF46YP72B2
+X-Message-ID-Hash: 223OPOE35BS7KXWZ3Y2DYHIF46YP72B2
+X-MailFrom: lee@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -86,7 +83,7 @@ CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  Chanwoo Choi <cw00.choi@samsung.com>,
  Linus Walleij <linus.walleij@linaro.org>,
  Bartosz Golaszewski <brgl@bgdev.pl>, Pavel Machek <pavel@ucw.cz>,
- Lee Jones <lee@kernel.org>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
  "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
  Wolfgang Grandegger <wg@grandegger.com>, Kalle Valo <kvalo@kernel.org>,
@@ -103,7 +100,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z2RS2RU7LW36YXRUCZUSUOXVNV47ULIS/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/223OPOE35BS7KXWZ3Y2DYHIF46YP72B2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,25 +109,18 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Tue, 28 Feb 2023, Rob Herring wrote:
 
---6qigqggvs4mi6q4z
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 28.02.2023 15:54:33, Rob Herring wrote:
 > SPI and I2C bus node names are expected to be "spi" or "i2c",
 > respectively, with nothing else, a unit-address, or a '-N' index. A
 > pattern of 'spi0' or 'i2c0' or similar has crept in. Fix all these
 > cases. Mostly scripted with the following commands:
->=20
-> git grep -l '\si2c[0-9] {' Documentation/devicetree/ | xargs sed -i -e 's=
-/i2c[0-9] {/i2c {/'
-> git grep -l '\sspi[0-9] {' Documentation/devicetree/ | xargs sed -i -e 's=
-/spi[0-9] {/spi {/'
->=20
+> 
+> git grep -l '\si2c[0-9] {' Documentation/devicetree/ | xargs sed -i -e 's/i2c[0-9] {/i2c {/'
+> git grep -l '\sspi[0-9] {' Documentation/devicetree/ | xargs sed -i -e 's/spi[0-9] {/spi {/'
+> 
 > With this, a few errors in examples were exposed and fixed.
->=20
+> 
 > Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
 > Cc: Miguel Ojeda <ojeda@kernel.org>
@@ -172,31 +162,47 @@ On 28.02.2023 15:54:33, Rob Herring wrote:
 > Cc: alsa-devel@alsa-project.org
 > Cc: linux-usb@vger.kernel.org
 > ---
+>  .../bindings/auxdisplay/holtek,ht16k33.yaml       |  2 +-
+>  .../bindings/chrome/google,cros-ec-typec.yaml     |  2 +-
+>  .../chrome/google,cros-kbd-led-backlight.yaml     |  2 +-
+>  .../devicetree/bindings/clock/ti,lmk04832.yaml    |  2 +-
+>  .../bindings/display/bridge/analogix,anx7625.yaml |  2 +-
+>  .../bindings/display/bridge/anx6345.yaml          |  2 +-
+>  .../bindings/display/bridge/lontium,lt8912b.yaml  |  2 +-
+>  .../bindings/display/bridge/nxp,ptn3460.yaml      |  2 +-
+>  .../bindings/display/bridge/ps8640.yaml           |  2 +-
+>  .../bindings/display/bridge/sil,sii9234.yaml      |  2 +-
+>  .../bindings/display/bridge/ti,dlpc3433.yaml      |  2 +-
+>  .../bindings/display/bridge/toshiba,tc358762.yaml |  2 +-
+>  .../bindings/display/bridge/toshiba,tc358768.yaml |  2 +-
+>  .../bindings/display/panel/nec,nl8048hl11.yaml    |  2 +-
+>  .../bindings/display/solomon,ssd1307fb.yaml       |  4 ++--
+>  .../devicetree/bindings/eeprom/at25.yaml          |  2 +-
+>  .../bindings/extcon/extcon-usbc-cros-ec.yaml      |  2 +-
+>  .../bindings/extcon/extcon-usbc-tusb320.yaml      |  2 +-
+>  .../devicetree/bindings/gpio/gpio-pca9570.yaml    |  2 +-
+>  .../devicetree/bindings/gpio/gpio-pca95xx.yaml    |  8 ++++----
+>  .../bindings/i2c/google,cros-ec-i2c-tunnel.yaml   |  2 +-
+>  .../bindings/leds/cznic,turris-omnia-leds.yaml    |  2 +-
 
->  .../bindings/net/can/microchip,mcp251xfd.yaml     |  2 +-
+[...]
 
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for the microchip,mcp251=
-xfd.yaml
+>  .../devicetree/bindings/leds/issi,is31fl319x.yaml |  2 +-
+>  .../devicetree/bindings/leds/leds-aw2013.yaml     |  2 +-
+>  .../devicetree/bindings/leds/leds-rt4505.yaml     |  2 +-
+>  .../devicetree/bindings/leds/ti,tca6507.yaml      |  2 +-
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+Acked-by: Lee Jones <lee@kernel.org>
 
---6qigqggvs4mi6q4z
-Content-Type: application/pgp-signature; name="signature.asc"
+>  .../devicetree/bindings/mfd/actions,atc260x.yaml  |  2 +-
+>  .../devicetree/bindings/mfd/google,cros-ec.yaml   |  6 +++---
+>  .../devicetree/bindings/mfd/ti,tps65086.yaml      |  2 +-
+>  .../devicetree/bindings/mfd/x-powers,axp152.yaml  |  4 ++--
+>  .../devicetree/bindings/net/asix,ax88796c.yaml    |  2 +-
 
------BEGIN PGP SIGNATURE-----
+Acked-by: Lee Jones <lee@kernel.org>
 
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmP/AcgACgkQvlAcSiqK
-BOi6Sgf+JKpaaA+WNPAITJwHhJ6KXpNOhPUfPrEJugitHdIDb6xJeU+KLdpQRHpT
-q3SPi/g56vowFbK8p+8n5g77heG7OjMB2fANmHb+AkMg1Cor8h0cXk+hsKmErvcx
-by+P11OhFxZEVk1lwfMmL9gRHWEvllRcEldvKGZ8cBE5/Wa0yrjRMP50Ocf+cZLT
-11GsPq6kGYbkC8zuIIVCVKZCpfAiLDZiMn3fXwFNELYwb336yBEi98pfAeCdiEWi
-Ko7HE8RwUjZP911rwg6b2eaN/qFHnQ48Rd353T5GUz36nC/+dktJ+V3qMnygq918
-wG5da/tbojnXrBmOBeLNZIqvIJc3pg==
-=0CPB
------END PGP SIGNATURE-----
+[...]
 
---6qigqggvs4mi6q4z--
+-- 
+Lee Jones [李琼斯]
