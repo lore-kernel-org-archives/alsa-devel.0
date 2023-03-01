@@ -4,76 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E1BEC64ED6
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Mar 2023 11:39:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1E6DC7EE2D
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Mar 2023 11:40:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BF4B81DC;
-	Wed,  1 Mar 2023 12:39:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF4B81DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8102A1DA;
+	Wed,  1 Mar 2023 12:39:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8102A1DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1677670792;
-	bh=AUr2Emb+cEOVy4hejcovcA9VOZoGsG9uyJUZz74KyAA=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=rM3ZtCKTouhnpgbwRkbicOhrZc4JpNR+h4kw9WyUZNGWnLeNVsXy2G+yiZw+lDS7T
-	 QzFEr8kQ3pCm73rd2i2uuW3AbdLruxX7cKZK+Mj5kuiHx4ne9O6iTMhfoy3Bb0utBV
-	 9lLwyRkE86+C6WU7sr6qHGJzNRLQ6Bq8nyPkeRXk=
+	s=default; t=1677670823;
+	bh=KXEtH9jKkzGjGt3ggsFrpH4RQJqfkFidzUrK69mPhKo=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=Bi3lPWIeAvmmboTQICvo34jm2/LaTS1wou3HkcUmvcs3aUQ8tuyb/q6VkBB46HL7/
+	 pukFt4J+bakcs04I5EUYhqOmjeMsdWh54B9lwMJLUqCk7hsSu/IAgcsJbj9tDz/Pex
+	 /tAP/1J4LdcKBe479xAEXmbKyMlbSo658BJYPQ+w=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1DE6F804B1;
-	Wed,  1 Mar 2023 12:38:41 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E828F8049C;
+	Wed,  1 Mar 2023 12:38:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 5BB50F8049C; Wed,  1 Mar 2023 12:38:37 +0100 (CET)
+	id 32912F80520; Wed,  1 Mar 2023 12:38:43 +0100 (CET)
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
  [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3454EF80236
-	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2023 12:38:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3454EF80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id A11DBF800BA
+	for <alsa-devel@alsa-project.org>; Wed,  1 Mar 2023 12:38:39 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A11DBF800BA
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=microchip.com header.i=@microchip.com
- header.a=rsa-sha256 header.s=mchp header.b=FhPDpLag
+ header.a=rsa-sha256 header.s=mchp header.b=qr0tge4i
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1677670711; x=1709206711;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=AUr2Emb+cEOVy4hejcovcA9VOZoGsG9uyJUZz74KyAA=;
-  b=FhPDpLags5vrnfmdKai6d5npVXkyHKsM6thEX3fckoYkGsCejiBByagz
-   DbWtDglJPV35V1pc60FEcOGhB4NOQaqrm2d2EiGHV9ZNPGLLmUjIU/eYH
-   ARL1SJLl5ynQazVG7O8h6bHGVeds3dxAU1c7HSc1z3mzDg5M86Avv5dVP
-   qbQDhzMwp0rP8XJ9DSumZolcng+FHbWyddjOHNiLsiH91xN26zAb+VxQN
-   YsyBjkJeux2Nc4v+sWn/w0wkn6mirO2RyIleYAfpj1LwvpM/u51cTkKeB
-   hPWuRyOhfzrt9yMlyX9UTwKo3jnKJe5NkvqqVEso8hy0S0o797iGB/AOh
-   Q==;
+  t=1677670720; x=1709206720;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=KXEtH9jKkzGjGt3ggsFrpH4RQJqfkFidzUrK69mPhKo=;
+  b=qr0tge4incRfzr6d+P5kZhABj29ehzqzAXjjgjFWanha2W51WAe1Jrly
+   kjrAaSiiG0r0rzWLxk6Dfu6Xq8LhMwWMwAQ+/IqmnBckEYJxcNZJlfBdO
+   Cy/U8mk/Kr04dbx9QpCa/+Rm/SQg4mwJ9d97/mXqHWdkKAl3xHhbjq2SH
+   p8w1KGdgD9Jetg8xnH48IiDVXFbG/qo7t9X/PRUWO1anS/AUWO9chhND1
+   n0WWNsWnEInmwzSRnQKYy7s3w/jIci7u36dn0osXAotiSJPyfGJh7gfcc
+   NlIY0XTrue0Mn3ycApp5Xak04fiLLiXGXW8l6pXRhvVLcrYm0HVFFtMm0
+   w==;
 X-IronPort-AV: E=Sophos;i="5.98,224,1673938800";
-   d="scan'208";a="202746402"
+   d="scan'208";a="202746412"
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
   by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 01 Mar 2023 04:38:26 -0700
+ 01 Mar 2023 04:38:37 -0700
 Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.16; Wed, 1 Mar 2023 04:38:26 -0700
+ 15.1.2507.16; Wed, 1 Mar 2023 04:38:37 -0700
 Received: from m18063-ThinkPad-T460p.mchp-main.com (10.10.115.15) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.16 via Frontend Transport; Wed, 1 Mar 2023 04:38:23 -0700
+ 15.1.2507.16 via Frontend Transport; Wed, 1 Mar 2023 04:38:34 -0700
 From: Claudiu Beznea <claudiu.beznea@microchip.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
 	<tiwai@suse.com>, <nicolas.ferre@microchip.com>,
 	<alexandre.belloni@bootlin.com>
-Subject: [PATCH 0/8] ASoC: microchip: some cleanups for AT91 sound drivers
-Date: Wed, 1 Mar 2023 13:37:59 +0200
-Message-ID: <20230301113807.24036-1-claudiu.beznea@microchip.com>
+Subject: [PATCH 3/8] ASoC: mchp-spdiftx: update debug message
+Date: Wed, 1 Mar 2023 13:38:02 +0200
+Message-ID: <20230301113807.24036-4-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230301113807.24036-1-claudiu.beznea@microchip.com>
+References: <20230301113807.24036-1-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-Message-ID-Hash: IOV5BNQPDBL5JJGL6IUQTCTOB27HYE3L
-X-Message-ID-Hash: IOV5BNQPDBL5JJGL6IUQTCTOB27HYE3L
+Message-ID-Hash: 3QZWV3CDI6K2QYTGZU3LMKTLAO3HIBRP
+X-Message-ID-Hash: 3QZWV3CDI6K2QYTGZU3LMKTLAO3HIBRP
 X-MailFrom: Claudiu.Beznea@microchip.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -89,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IOV5BNQPDBL5JJGL6IUQTCTOB27HYE3L/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3QZWV3CDI6K2QYTGZU3LMKTLAO3HIBRP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,30 +101,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi,
+Previous debug message states that there was a failure and tx was not
+disabled. Which is not true as the TX in this function could also be
+enabled. Thus improve a bit the debug message by s/disable/start\/stop/.
 
-The following patches do some cleanups for Microchip AT91 sound drivers.
-Along with it I took the chance and updated MAINTAINERS file.
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ sound/soc/atmel/mchp-spdiftx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you,
-Claudiu Beznea
-
-Claudiu Beznea (8):
-  ASoC: mchp-spdiftx: use FIELD_PREP() where possible
-  ASoC: mchp-spdiftx: use regmap_update_bits()
-  ASoC: mchp-spdiftx: update debug message
-  ASoC: mchp-pdmc: use FIELD_PREP() where possible
-  ASoC: mchp-pdmc: return directly ret
-  ASoC: mchp-pdmc: avoid casting to/from void pointer
-  MAINTAINERS: add myself as maintainer for Microchip AT91 sound drivers
-  MAINTAINERS: update Microchip AT91 sound entries with documentation
-    files
-
- MAINTAINERS                    |  9 +++++--
- sound/soc/atmel/mchp-pdmc.c    | 19 ++++++--------
- sound/soc/atmel/mchp-spdiftx.c | 45 ++++++++++++----------------------
- 3 files changed, 29 insertions(+), 44 deletions(-)
-
+diff --git a/sound/soc/atmel/mchp-spdiftx.c b/sound/soc/atmel/mchp-spdiftx.c
+index e7241d819748..02a2fa7a42dd 100644
+--- a/sound/soc/atmel/mchp-spdiftx.c
++++ b/sound/soc/atmel/mchp-spdiftx.c
+@@ -337,7 +337,7 @@ static int mchp_spdiftx_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	}
+ 	spin_unlock(&ctrl->lock);
+ 	if (ret)
+-		dev_err(dev->dev, "unable to disable TX: %d\n", ret);
++		dev_err(dev->dev, "unable to start/stop TX: %d\n", ret);
+ 
+ 	return ret;
+ }
 -- 
 2.34.1
 
