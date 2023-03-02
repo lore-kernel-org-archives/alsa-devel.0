@@ -4,99 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 172DAC64EC4
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 17:14:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 934C3C64EC4
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 17:40:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E20511135;
-	Mon,  6 Mar 2023 18:13:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E20511135
+	by alsa0.perex.cz (Postfix) with ESMTPS id 190201139;
+	Mon,  6 Mar 2023 18:39:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 190201139
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678122860;
-	bh=+tAyT3UdCX36GB3CTDFNB7mti8+xcEFZDOP01rqyk9g=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1678124399;
+	bh=NqqfRUX1WdUBgmU4CP14pjltPXWkZUXa0mllkkDuIsA=;
+	h=From:Date:Subject:References:In-Reply-To:To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=S8M9cbKZ9KWNIGU3ucjR0OA59InGvHpPJGBNgszVpUvXzDL/fgKyEqpgoXvl+7stt
-	 0I2OIpSEHjG7SHVlxV4OEgLJdROGyhtMDhC0L/xHIvedDeNwRY39/lRbzdt4u81AoO
-	 8cpYhUNlBscHR5BtTONSC8PTYw7yfhN0C8z9wtQ0=
+	b=mAAez59WhrFbPNhwmNP0GfjjaA9L8BsQcqq+43uES1+FIYH7FZ0Vli/Isd7dOJQPg
+	 hqsrDYIJh10DE+lg+xzNB8uvM5dKIPfHcXBKUWH99OjrLjD0Z4BnTLcgDZ7wAy1PV8
+	 8sffsLrIFL25w7pnKxEbEVOwHX3BIsAEOSOaimSE=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80275F8042F;
-	Mon,  6 Mar 2023 18:13:07 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6F20F8042F;
+	Mon,  6 Mar 2023 18:38:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 63CDBF8042F; Mon,  6 Mar 2023 18:13:03 +0100 (CET)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id D0DC5F8051B; Thu,  2 Mar 2023 12:57:28 +0100 (CET)
+Received: from out-37.mta1.migadu.com (out-37.mta1.migadu.com [95.215.58.37])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0EACEF800C9
-	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2023 18:12:52 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EACEF800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2217EF80310
+	for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2023 12:57:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2217EF80310
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=T+38ATFZ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678122778; x=1709658778;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+tAyT3UdCX36GB3CTDFNB7mti8+xcEFZDOP01rqyk9g=;
-  b=T+38ATFZpfCRUQKMSDufTQVk43vyUamY8w93L//+D9Izm37MTKRUPegT
-   4Z3bjP50VDICYhl2FBCq7XyFK26DsXWLCeE0zioCmFQVs0ciQ5gwE0xrO
-   a4MfA0E8qTuYqb2Ix0/pmfYHI2nbtfl5PvvoFq424pTYwHemYlAbf3Ryn
-   VeyEDfnn8nesgNNeBBtrMD5wRputWVGnXgpMZQpnzdf16UCkh7AuBSePL
-   4jGg+g31GRQ4c4Ao68a6lLuYc6xUKxIFfBddiVV5/q1tf5b6kkgqXYYIO
-   71cXOKkg7MtXvAqyfP9Tr9Ca8YSm8q5BeirsypBWrg/ySzqOQtMSGdmV9
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10641"; a="316012883"
-X-IronPort-AV: E=Sophos;i="5.98,238,1673942400";
-   d="scan'208";a="316012883"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Mar 2023 09:11:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10641"; a="786309787"
-X-IronPort-AV: E=Sophos;i="5.98,238,1673942400";
-   d="scan'208";a="786309787"
-Received: from malintan-mobl.amr.corp.intel.com (HELO [10.212.70.29])
- ([10.212.70.29])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Mar 2023 09:11:53 -0800
-Message-ID: <6d7e2834-f90c-6175-6b69-3779b819eb0b@linux.intel.com>
-Date: Mon, 6 Mar 2023 10:18:47 -0600
+	dkim=pass (1024-bit key,
+ unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256
+ header.s=key1 header.b=UPiAwD8A
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
+ include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1677758240;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lacV+ZSJrTyZ6DynOqgF52q9M292vYw544hATtzWJ1U=;
+	b=UPiAwD8Aezv+ZVDhgXZdkVwLDXFcVnot+rOvl2jJwf7c8Suxiy8q7GI6bPjtYSyIjA8tDk
+	fC221+XDLRZj9FDCNDJGtu6w0yl1R9tNbsw2+aONPjEsLCJJE7cGcqJqHMar//GHUUkIfc
+	3/rI1S39VCkas1vViAtLhi+5YWO6GtA=
+From: richard.leitner@linux.dev
+Date: Thu, 02 Mar 2023 12:55:01 +0100
+Subject: [PATCH 1/3] ASoC: dt-bindings: maxim,max9867: convert txt bindings
+ to yaml
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.7.1
-Subject: Re: soundwire: user space test utilities
-Content-Language: en-US
-To: Muni Sekhar <munisekharrms@gmail.com>
-References: 
- <CAHhAz+iuAYpxkpVGWp1g6u_j+wyB+vsFR8FGz1i_8G5TQhOVZw@mail.gmail.com>
- <9a68a02a-d724-8475-e6a0-082b20e93956@linux.intel.com>
- <CAHhAz+j88YwjBa2y2G8Hj20BksbeShf5TiuP3zqr6o5MBzvk_Q@mail.gmail.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: 
- <CAHhAz+j88YwjBa2y2G8Hj20BksbeShf5TiuP3zqr6o5MBzvk_Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: CALBSXHNEKOJ2UVU2KOCJZ2GQB6R2N3W
-X-Message-ID-Hash: CALBSXHNEKOJ2UVU2KOCJZ2GQB6R2N3W
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Message-Id: <20230302-max9867-v1-1-aa9f7f25db5e@skidata.com>
+References: <20230302-max9867-v1-0-aa9f7f25db5e@skidata.com>
+In-Reply-To: <20230302-max9867-v1-0-aa9f7f25db5e@skidata.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Ladislav Michl <ladis@linux-mips.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Benjamin Bara <benjamin.bara@skidata.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2215;
+ i=richard.leitner@skidata.com; h=from:subject:message-id;
+ bh=EaR0IGpFQVasEFVxFQvnkwT/6aa1vj6aIM7Wyp90Ang=;
+ b=owGbwMvMwCX2R2KahkXN7wuMp9WSGFIY+uUqpuu8L567xvpO/qcH++aum3UuKHtpqDmzzjSrfcIp
+ hi9ZO0pZGMS4GGTFFFnsjbna3XPL3lcq6uTCzGFlAhnCwMUpABOZYM3wh9Nz/dKzhxdN9tqkeExNj7
+ WC1bXg2LzqWQ5SrxRD8xg+6zEyrD716kr8idn3VK8Jh1j6Xt/AfyLhX/7yqCfTNmerz3nOwgsA
+X-Developer-Key: i=richard.leitner@skidata.com; a=openpgp;
+ fpr=3F330A87476D76EF79212C6DFC189628387CFBD0
+X-Migadu-Flow: FLOW_OUT
+X-MailFrom: richard.leitner@linux.dev
+X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-CC: vkoul@kernel.org, sanyog.r.kale@intel.com,
- alsa-devel <alsa-devel@alsa-project.org>
+ header-match-alsa-devel.alsa-project.org-1
+Message-ID-Hash: SNQUYOCERRYLVY6QKEDF5IZMTTZW4TYX
+X-Message-ID-Hash: SNQUYOCERRYLVY6QKEDF5IZMTTZW4TYX
+X-Mailman-Approved-At: Mon, 06 Mar 2023 17:38:42 +0000
+CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Richard Leitner <richard.leitner@skidata.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CALBSXHNEKOJ2UVU2KOCJZ2GQB6R2N3W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SNQUYOCERRYLVY6QKEDF5IZMTTZW4TYX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,29 +99,98 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+From: Richard Leitner <richard.leitner@skidata.com>
 
+Convert from max9867.txt to maxim,max9867.yaml and add missing
+'#sound-dai-cells' property.
 
-On 3/6/23 01:39, Muni Sekhar wrote:
-> On Tue, May 31, 2022 at 8:44 PM Pierre-Louis Bossart
-> <pierre-louis.bossart@linux.intel.com> wrote:
->>
->>
->>> I am looking for any existing user space test utilities to test
->>> SOUNDWIRE SUBSYSTEM in Linux kernel. Can someone please point me to
->>> this.
->>
->> There are no specific userspace utilities to test the bus itself, you
->> can use existing alsa-lib/alsa-utils applications to play/capture audio
->> and check for events, i.e. aplay, arecord, speaker-test, amixer,
->> alsamixer, evtest
-> alsa-lib/alsa-utils applications can be used for transmitting audio data.
-> How to transmit non-audio data over the Soundwire interface?
+Signed-off-by: Richard Leitner <richard.leitner@skidata.com>
+---
+ .../devicetree/bindings/sound/max9867.txt          | 17 --------
+ .../devicetree/bindings/sound/maxim,max9867.yaml   | 51 ++++++++++++++++++++++
+ 2 files changed, 51 insertions(+), 17 deletions(-)
 
-There's no good answer to such a vague question. "non-audio data" can be
-transmitted over the control channel or the "BRA" mode, if supported.
-That's how drivers provide firmware or configuration blobs, but that's
-internal to the kernel. There's no dedicated/standard interface to send
-"non-audio data" from userpace to a specific device. It's not SoundWire
-specific btw, you'd have the same answer for HDaudio.
+diff --git a/Documentation/devicetree/bindings/sound/max9867.txt b/Documentation/devicetree/bindings/sound/max9867.txt
+deleted file mode 100644
+index b8bd914ee697..000000000000
+--- a/Documentation/devicetree/bindings/sound/max9867.txt
++++ /dev/null
+@@ -1,17 +0,0 @@
+-max9867 codec
+-
+-This device supports I2C mode only.
+-
+-Required properties:
+-
+-- compatible : "maxim,max9867"
+-- reg : The chip select number on the I2C bus
+-
+-Example:
+-
+-&i2c {
+-	max9867: max9867@18 {
+-		compatible = "maxim,max9867";
+-		reg = <0x18>;
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/sound/maxim,max9867.yaml b/Documentation/devicetree/bindings/sound/maxim,max9867.yaml
+new file mode 100644
+index 000000000000..cefa43c3d34e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/maxim,max9867.yaml
+@@ -0,0 +1,51 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/max9867.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Maxim Integrated MAX9867 CODEC
++
++description: |
++  This device supports I2C only.
++  Pins on the device (for linking into audio routes):
++      * LOUT
++      * ROUT
++      * LINL
++      * LINR
++      * MICL
++      * MICR
++      * DMICL
++      * DMICR
++
++maintainers:
++  - Ladislav Michl <ladis@linux-mips.org>
++
++allOf:
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    enum:
++      - maxim,max9867
++
++  '#sound-dai-cells':
++    const: 0
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++examples:
++  - |
++    &i2c {
++            max9867: max9867@18 {
++                    compatible = "maxim,max9867";
++                    #sound-dai-cells = <0>;
++                    reg = <0x18>;
++            };
++    };
++...
 
+-- 
+2.39.2
 
