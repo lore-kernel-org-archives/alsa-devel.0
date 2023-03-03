@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B106C6FD1C
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 17:46:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABE1DC64EC4
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 17:46:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 360011171;
-	Mon,  6 Mar 2023 18:45:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 360011171
+	by alsa0.perex.cz (Postfix) with ESMTPS id A54B8119C;
+	Mon,  6 Mar 2023 18:46:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A54B8119C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678124794;
-	bh=KZVNSw75ngmGiGfBsX5eYIa8xKMP8iIO3YlsZahW4Ms=;
+	s=default; t=1678124811;
+	bh=ECgE7wlYKifutL2GqRzTfvS95/ho/+I+FJWeCxLC150=;
 	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=jZCVPBXkVWdtbwXDa35YPITSPt9CJanCYrRfBqYS6Dk4BcxiluegIO2vQNtu2Oz53
-	 C9Z4rEYe2UNXBZ2dSp40XckfrxbMAJJZnS24awBBGqcvLCFizKctFs6U8uBysLfja/
-	 YaLD4b7Ci9Fus9m7Mc2k4P2+CvyMkMrmUXzmULTE=
+	b=oLa7m84Cxqb1u1R4bHYawNaywJ9xJGD+IBPnCjptNjIHkgqduV0awEYJoXvNHldJV
+	 CQlW5j7kGTo6UHtapsdeWpmLStVoi/d3A16wdxaIwiPfvxQbeaiPaWRbQIe5XDGaI+
+	 08r0UOxk7kk/nxhqbyxRvomhlBiedViSl8HEakss=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B67A6F8055A;
-	Mon,  6 Mar 2023 18:41:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F0BBF80567;
+	Mon,  6 Mar 2023 18:41:54 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 679D3F80266; Fri,  3 Mar 2023 13:12:50 +0100 (CET)
+	id DB343F80266; Fri,  3 Mar 2023 13:59:34 +0100 (CET)
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
  [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C218BF800BA
-	for <alsa-devel@alsa-project.org>; Fri,  3 Mar 2023 13:12:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C218BF800BA
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6019CF80236
+	for <alsa-devel@alsa-project.org>; Fri,  3 Mar 2023 13:59:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6019CF80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=cjHZB/41
+ header.s=qcppdkim1 header.b=YKrU/vIG
 Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 323BtqGr014942;
-	Fri, 3 Mar 2023 12:12:36 GMT
+ 323BuYLB017371;
+	Fri, 3 Mar 2023 12:59:27 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
  subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=2GNAj3EuJVAUcJBgWkxCw7JKJx5QFlm4Tp4FLCSGW8Q=;
- b=cjHZB/41jACr8mmR5lEBEa7xl+2F/U/BI15eonbks5FG0UcmXIH7+toDt+DqJXtutSdP
- 8NkuHKjmRlWRf+i9HWCVbFlE7vIl0eIwt+PmMwhNp6g95NfiuQoeZF2m60DdCziF2JsO
- Pe5Yw1cQZTdfrZE7uwI8CX3b4D7MzOjSsG5w2fiIj6W7LFGiEAVPx4yi5oMPgYeuvMej
- IC6q0I+6K+b9XEcCR8hkBvKDtWmCLpCYLLJCw5uioH05t8P8GpL23rFJcw1kFhAiWZeT
- oDlghPywhyYQs4qokCOt93C1cAm/9Sfy74kATPsJdiHwUk1D0jrIwIuhlKKG7ZU5TUVw ZQ==
+ bh=8BafIE9o/pec5ROF3yZCe6ZMiFHXhnJvy21QiVOvAIM=;
+ b=YKrU/vIGWi0tdJ12Y3NFo4z6iLIMulZxlM8AyR3kPeBArH/slkdJ7g9yBB0MBGrnERBw
+ DTeMmE/p+fSU3QLcRu7F8g9oJaZyyI0QhS52KLIQ5mYeZpIqRo+1iFuWxwdCL4/IsHkl
+ hOTkujAIeTLXFtdiFjbDpIxSKO6jOy4/e6rQwwaf5hpE4nDnzo/NQMxPYqluPaiCImxt
+ 2vVo1Kd4+kwLMHLQFjXfGXPF5qo9hjfITfTvZJY3rqgUCzK+h5XAmO70tK4cHQwD23fi
+ D6jY0Ehptk+jNgocQbSO6pVBBJjgUQ9jg+i3nbN7CxYurIl7v0XDNSsuKql/SL11O6Ct UQ==
 Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com
  [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3p3dfrgm5f-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3p3dfrgqhg-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 03 Mar 2023 12:12:35 +0000
+	Fri, 03 Mar 2023 12:59:27 +0000
 Received: from nasanex01a.na.qualcomm.com ([10.52.223.231])
 	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 323CCZmZ023020
+ 323CxQGX011621
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 3 Mar 2023 12:12:35 GMT
+	Fri, 3 Mar 2023 12:59:26 GMT
 Received: from hu-visr-hyd.qualcomm.com (10.80.80.8) by
  nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Fri, 3 Mar 2023 04:12:32 -0800
+ 15.2.986.41; Fri, 3 Mar 2023 04:59:23 -0800
 From: Ravulapati Vishnu Vardhan Rao <quic_visr@quicinc.com>
 To: 
 Subject: [PATCH] ASoC: codecs: tx-macro: Fix for KASAN: slab-out-of-bounds
-Date: Fri, 3 Mar 2023 17:42:06 +0530
-Message-ID: <20230303121206.22177-1-quic_visr@quicinc.com>
+Date: Fri, 3 Mar 2023 18:27:16 +0530
+Message-ID: <20230303125717.29196-1-quic_visr@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -77,25 +77,27 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: 4Uc6POTNL_B4seard9bD3gRzsbenN80t
-X-Proofpoint-ORIG-GUID: 4Uc6POTNL_B4seard9bD3gRzsbenN80t
+X-Proofpoint-GUID: zjsKqT_8yFUdw4ttv4xaq7advTS_uKgx
+X-Proofpoint-ORIG-GUID: zjsKqT_8yFUdw4ttv4xaq7advTS_uKgx
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.219,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-03-03_01,2023-03-03_01,2023-02-09_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
  mlxscore=0 phishscore=0
- adultscore=0 impostorscore=0 bulkscore=0 mlxlogscore=987 clxscore=1011
+ adultscore=0 impostorscore=0 bulkscore=0 mlxlogscore=997 clxscore=1015
  priorityscore=1501 malwarescore=0 lowpriorityscore=0 spamscore=0
  suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2303030106
+ engine=8.12.0-2212070000 definitions=main-2303030112
 X-MailFrom: quic_visr@quicinc.com
-X-Mailman-Rule-Hits: nonmember-moderation
+X-Mailman-Rule-Hits: implicit-dest
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 52ZGYABELPHGJYYGR4ZXSKCLLGEPGXU7
-X-Message-ID-Hash: 52ZGYABELPHGJYYGR4ZXSKCLLGEPGXU7
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; max-recipients; max-size; news-moderation; no-subject;
+ digests; suspicious-header
+Message-ID-Hash: YFTIRBJIGQAJNRTAFEREMIQ6QHMGV6FC
+X-Message-ID-Hash: YFTIRBJIGQAJNRTAFEREMIQ6QHMGV6FC
 X-Mailman-Approved-At: Mon, 06 Mar 2023 17:41:48 +0000
 CC: quic_visr@quicinc.com,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
@@ -108,7 +110,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/52ZGYABELPHGJYYGR4ZXSKCLLGEPGXU7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YFTIRBJIGQAJNRTAFEREMIQ6QHMGV6FC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -139,10 +141,10 @@ snd_soc_component_update_bits+0xa8/0x22c
 snd_soc_component_write_field+0x68/0xd4
 tx_macro_digital_mute+0xec/0x140
 
-Actually There is no need to have decimator with 32 bytes.
+Actually There is no need to have decimator with 32 bits.
 By limiting the variable with short type u8 issue is resolved.
 
-Signed-off-by: visr <quic_visr@quicinc.com>
+Signed-off-by: RAVULAPATI VISHNUVARDHAN RAO <quic_visr@quicinc.com>
 ---
  sound/soc/codecs/lpass-tx-macro.c | 11 ++++++-----
  1 file changed, 6 insertions(+), 5 deletions(-)
