@@ -4,94 +4,99 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56BE5C61DA4
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 16:52:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 172DAC64EC4
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 17:14:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 366C41130;
-	Mon,  6 Mar 2023 17:52:00 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 366C41130
+	by alsa0.perex.cz (Postfix) with ESMTPS id E20511135;
+	Mon,  6 Mar 2023 18:13:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E20511135
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678121570;
-	bh=GVS/y+MCIowLXLF6a4iduBGUyMME07hIbPy+mGY4qhQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	s=default; t=1678122860;
+	bh=+tAyT3UdCX36GB3CTDFNB7mti8+xcEFZDOP01rqyk9g=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=SBhMRAAh2yMXueTGyo9/hbMUmgabEPdP2LWKMrytrC4WDDOxz60J3sJsF33qmjyQP
-	 krThSnhCShcqKHbl4lCyiquzLlE4NiTdu0zF4p6IUjiHlqjeO9o41zbPMDWOYPsEm6
-	 qeSbj7s2mwUswXzFicIZoKgpcDuuU0NAJAotD1Ik=
+	b=S8M9cbKZ9KWNIGU3ucjR0OA59InGvHpPJGBNgszVpUvXzDL/fgKyEqpgoXvl+7stt
+	 0I2OIpSEHjG7SHVlxV4OEgLJdROGyhtMDhC0L/xHIvedDeNwRY39/lRbzdt4u81AoO
+	 8cpYhUNlBscHR5BtTONSC8PTYw7yfhN0C8z9wtQ0=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A0AE2F80236;
-	Mon,  6 Mar 2023 17:51:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 80275F8042F;
+	Mon,  6 Mar 2023 18:13:07 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0F29AF8042F; Mon,  6 Mar 2023 17:51:33 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7060BF800DF
-	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2023 17:51:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7060BF800DF
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=OEhbI14s
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	id 63CDBF8042F; Mon,  6 Mar 2023 18:13:03 +0100 (CET)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 30218B80FD4;
-	Mon,  6 Mar 2023 16:51:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25CECC433D2;
-	Mon,  6 Mar 2023 16:51:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678121483;
-	bh=GVS/y+MCIowLXLF6a4iduBGUyMME07hIbPy+mGY4qhQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OEhbI14sE/tmSa23Y3HRKEw+FlapnlHMP0Tr/ds6t8hQR+rt2bjg2JIDC4nBZTY9u
-	 bnEse0o2RRMYYRkULM2NunUBvikQ6Cp1YcTMmp3FLkb9LYsCFL0Iol1bFVuqhhkKBK
-	 271YX+cqrqRC9Y3sVWqozdrO+ToHQJ8ywi3uwmU4o95upEb/nny1xnO7l7NMGJhH2q
-	 JmV12lo2yub9TFNMTE9fbx38iCzwvYi3Yr4ui29g3RKukkxRxpfufP6ndbxsu1V6nl
-	 x/+YfDb2x0ZrRs03CNeTObRowG1rZ5BqVn5XjB9AXZYLeth/x2udMaBeyE2zJ/un8O
-	 Dxak+Th/MwLoQ==
-Date: Mon, 6 Mar 2023 16:51:14 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Herve Codina <herve.codina@bootlin.com>
-Subject: Re: [PATCH v7 00/10] Add the PowerQUICC audio support using the QMC
-Message-ID: <824314e0-b459-498b-9a7c-7dd4c94900aa@sirena.org.uk>
-References: <20230306161754.89146-1-herve.codina@bootlin.com>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0EACEF800C9
+	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2023 18:12:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EACEF800C9
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=T+38ATFZ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1678122778; x=1709658778;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+tAyT3UdCX36GB3CTDFNB7mti8+xcEFZDOP01rqyk9g=;
+  b=T+38ATFZpfCRUQKMSDufTQVk43vyUamY8w93L//+D9Izm37MTKRUPegT
+   4Z3bjP50VDICYhl2FBCq7XyFK26DsXWLCeE0zioCmFQVs0ciQ5gwE0xrO
+   a4MfA0E8qTuYqb2Ix0/pmfYHI2nbtfl5PvvoFq424pTYwHemYlAbf3Ryn
+   VeyEDfnn8nesgNNeBBtrMD5wRputWVGnXgpMZQpnzdf16UCkh7AuBSePL
+   4jGg+g31GRQ4c4Ao68a6lLuYc6xUKxIFfBddiVV5/q1tf5b6kkgqXYYIO
+   71cXOKkg7MtXvAqyfP9Tr9Ca8YSm8q5BeirsypBWrg/ySzqOQtMSGdmV9
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10641"; a="316012883"
+X-IronPort-AV: E=Sophos;i="5.98,238,1673942400";
+   d="scan'208";a="316012883"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Mar 2023 09:11:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10641"; a="786309787"
+X-IronPort-AV: E=Sophos;i="5.98,238,1673942400";
+   d="scan'208";a="786309787"
+Received: from malintan-mobl.amr.corp.intel.com (HELO [10.212.70.29])
+ ([10.212.70.29])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Mar 2023 09:11:53 -0800
+Message-ID: <6d7e2834-f90c-6175-6b69-3779b819eb0b@linux.intel.com>
+Date: Mon, 6 Mar 2023 10:18:47 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="O5OaE2O/CRe4hVyU"
-Content-Disposition: inline
-In-Reply-To: <20230306161754.89146-1-herve.codina@bootlin.com>
-X-Cookie: teamwork, n.:
-Message-ID-Hash: W3R6EPF32AS3BIBPCU23GNUSZ566LTCA
-X-Message-ID-Hash: W3R6EPF32AS3BIBPCU23GNUSZ566LTCA
-X-MailFrom: broonie@kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.7.1
+Subject: Re: soundwire: user space test utilities
+Content-Language: en-US
+To: Muni Sekhar <munisekharrms@gmail.com>
+References: 
+ <CAHhAz+iuAYpxkpVGWp1g6u_j+wyB+vsFR8FGz1i_8G5TQhOVZw@mail.gmail.com>
+ <9a68a02a-d724-8475-e6a0-082b20e93956@linux.intel.com>
+ <CAHhAz+j88YwjBa2y2G8Hj20BksbeShf5TiuP3zqr6o5MBzvk_Q@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: 
+ <CAHhAz+j88YwjBa2y2G8Hj20BksbeShf5TiuP3zqr6o5MBzvk_Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: CALBSXHNEKOJ2UVU2KOCJZ2GQB6R2N3W
+X-Message-ID-Hash: CALBSXHNEKOJ2UVU2KOCJZ2GQB6R2N3W
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
- Qiang Zhao <qiang.zhao@nxp.com>, Takashi Iwai <tiwai@suse.com>,
- Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+CC: vkoul@kernel.org, sanyog.r.kale@intel.com,
+ alsa-devel <alsa-devel@alsa-project.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/W3R6EPF32AS3BIBPCU23GNUSZ566LTCA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CALBSXHNEKOJ2UVU2KOCJZ2GQB6R2N3W/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,36 +106,28 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---O5OaE2O/CRe4hVyU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 06, 2023 at 05:17:44PM +0100, Herve Codina wrote:
-> Hi,
->=20
-> This series adds support for audio using the QMC controller available in
-> some Freescale PowerQUICC SoCs.
->=20
-> This series contains three parts in order to show the different blocks
-> hierarchy and their usage in this support.
+On 3/6/23 01:39, Muni Sekhar wrote:
+> On Tue, May 31, 2022 at 8:44 PM Pierre-Louis Bossart
+> <pierre-louis.bossart@linux.intel.com> wrote:
+>>
+>>
+>>> I am looking for any existing user space test utilities to test
+>>> SOUNDWIRE SUBSYSTEM in Linux kernel. Can someone please point me to
+>>> this.
+>>
+>> There are no specific userspace utilities to test the bus itself, you
+>> can use existing alsa-lib/alsa-utils applications to play/capture audio
+>> and check for events, i.e. aplay, arecord, speaker-test, amixer,
+>> alsamixer, evtest
+> alsa-lib/alsa-utils applications can be used for transmitting audio data.
+> How to transmit non-audio data over the Soundwire interface?
 
-I already applied this series, please send incremental patches with any
-changes.
+There's no good answer to such a vague question. "non-audio data" can be
+transmitted over the control channel or the "BRA" mode, if supported.
+That's how drivers provide firmware or configuration blobs, but that's
+internal to the kernel. There's no dedicated/standard interface to send
+"non-audio data" from userpace to a specific device. It's not SoundWire
+specific btw, you'd have the same answer for HDaudio.
 
---O5OaE2O/CRe4hVyU
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQGGgIACgkQJNaLcl1U
-h9D0Wwf/T+XbDDJ+a7hIsyWhV5O7eQGUIMp42yn1EGIJovbiv+GGxdWWJH9rKyON
-muUMiRiUb1jwUtkZdtfqSLXj/jL5+2UTEEVUGOpp1MANtVFxkay56wtwpLOwXB9d
-JSJrgbGOnkejnZzEBo8vFwotGy5ZayuYSbPAY3tbkZoAa7Qwy93eGXPxlhVmoOXj
-lO84zg5BNwrtvmwc/FaeLwx6isoBXtGA+qg1+4uZ8L4c2mFVohVdNd4b7H0pqkP+
-WKVUA/m4UfJErspOWi7hWL1MHNOfBVzF6TQ5hvNhJCjU1avbk9TGDYrMDC8RCLr1
-2bNd1WOHiiLR0lfBX5wiro998wpLTA==
-=vRUD
------END PGP SIGNATURE-----
-
---O5OaE2O/CRe4hVyU--
