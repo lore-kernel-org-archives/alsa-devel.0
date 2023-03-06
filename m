@@ -4,88 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 222BFC678D4
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 13:36:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95E1BC678D4
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 13:41:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3CFA1102;
-	Mon,  6 Mar 2023 14:35:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3CFA1102
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20DD2110A;
+	Mon,  6 Mar 2023 14:40:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20DD2110A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678109806;
-	bh=XWT1IwidgLr0jSesGV2biIoL9GxsLvYYjcIQL1LYrxE=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Ar+63+dmj5HXRiqOwmJCRe8oW5LpecIGnuBi7fihd00L7L5Z5mDhgexVjvaU6QoSE
-	 9NVCFw1C8M1W++MHn7Vib0cBy7T6b4BDbr/cqhuEMQ4GkJpnlyYfz7aaiFe7rWh1VF
-	 acWRhXNJ+gvGpFbkTZyFH8m4JY78eCPKCHBUdXYI=
+	s=default; t=1678110097;
+	bh=1meHAk5JkmcN09XNU/5HFtbIzIzI7XKmhOlMn4e3u8c=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=TNZKxkvtMKvFrjjxjhMbIc1Obk+CYOKwIn+GJ/556dfZAIv1NcIANDphXFSicrPfY
+	 fj4FdLXvDmUNPTEmtV90EeBMS2CJTaHrrh8jwlURkEz8I1Y8GyRoTLZfRJJ1FY+U+Z
+	 N2mRBhpYQ2CorFbxcw2qqhcsRIncRKY94Q7B8FU4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F969F805A1;
-	Mon,  6 Mar 2023 14:33:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74B14F8042F;
+	Mon,  6 Mar 2023 14:40:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A92CCF8053B; Mon,  6 Mar 2023 14:32:23 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 6A24DF80482
-	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2023 14:32:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A24DF80482
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=uB0yv6OH
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 2D16160F38;
-	Mon,  6 Mar 2023 13:32:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 010F0C433AA;
-	Mon,  6 Mar 2023 13:32:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678109535;
-	bh=XWT1IwidgLr0jSesGV2biIoL9GxsLvYYjcIQL1LYrxE=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=uB0yv6OHWWrgXsCGkuGZios5vuvjuaFIsuHXPE9Q0EwjwKB5iqPZqdSb3R6IGfvjk
-	 51S0tyKXMeFP+7oq1NASdxg5LKBGyVIxKHVAkG4FqiPWJi2kmF0SAeGnUxawmOGylq
-	 AOO7Bopmbcaj48O715gMrNuzApcjR/AjAre8TgmQHejEuQ+Gq7aRZn43PdClV4uVk7
-	 RVzJUSTmNZWtRzZ55KaWZp637uszer5oeGXvFPPc0ZMcbUHSbwj9hBeaGlAhozVnrh
-	 HlbR0/dx3RASvcrfLpG0VXaMMjD5DlWxdIj87qab93L4vuoSbpKAH4IDsikJ2FsaRD
-	 AIsX4VlXnzSNg==
-From: Mark Brown <broonie@kernel.org>
-To: Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87ttzq8ga4.wl-kuninori.morimoto.gx@renesas.com>
-References: <87ttzq8ga4.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: (subset) [PATCH v3 0/2] ASoC: dt-bindings: renesas,rsnd.yaml:
- add R-Car Gen4 support
-Message-Id: <167810953370.75807.4506250468842557501.b4-ty@kernel.org>
-Date: Mon, 06 Mar 2023 13:32:13 +0000
+	id 1C32EF8042F; Mon,  6 Mar 2023 14:40:21 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 015E0F800C9
+	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2023 14:40:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 015E0F800C9
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bd1bf
-Message-ID-Hash: 2ZPQJIMTTA3X5YHNJRNUTWDFS5JMCETB
-X-Message-ID-Hash: 2ZPQJIMTTA3X5YHNJRNUTWDFS5JMCETB
-X-MailFrom: broonie@kernel.org
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1678110017406239986-webhooks-bot@alsa-project.org>
+References: <1678110017406239986-webhooks-bot@alsa-project.org>
+Subject: sof-hda-dsp: Add speaker led support
+Message-Id: <20230306134021.1C32EF8042F@alsa1.perex.cz>
+Date: Mon,  6 Mar 2023 14:40:21 +0100 (CET)
+Message-ID-Hash: DXM6HCLMSQQIHMCO3Y6GQJ6APBIKUPMV
+X-Message-ID-Hash: DXM6HCLMSQQIHMCO3Y6GQJ6APBIKUPMV
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Linux-DT <devicetree@vger.kernel.org>,
- Linux-ALSA <alsa-devel@alsa-project.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2ZPQJIMTTA3X5YHNJRNUTWDFS5JMCETB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DXM6HCLMSQQIHMCO3Y6GQJ6APBIKUPMV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,41 +64,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 13 Feb 2023 02:12:41 +0000, Kuninori Morimoto wrote:
-> These are v3 of R-Car Gen4 support for Renesas sound driver.
-> 
-> I have posted these patches as [RFC], because the schemas
-> doesn't work correctly for me under certain conditions.
-> "required: dmas/dma-names" always hits to "if-then" and
-> never hits to "else" for some reasons. I'm still not sure why...
-> 
-> [...]
+alsa-project/alsa-ucm-conf pull request #286 was opened from Kobatw:
 
-Applied to
+There's a speaker led on Dell G16 and use sof-hda-dsp to control.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[2/2] ASoC: dt-bindings: renesas,rsnd.yaml: add R-Car Gen4 support
-      commit: 7f8b5b24bbb463614dd6b797e6b2ee92b3e2a6a1
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/286
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/286.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
