@@ -4,69 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94605C678D4
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 12:47:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C81A7C61DA4
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 13:33:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76F161109;
-	Mon,  6 Mar 2023 13:46:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76F161109
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8BD5D1102;
+	Mon,  6 Mar 2023 14:32:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BD5D1102
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678106864;
-	bh=u39hN/wwIlITAu/b88DSvIgwjo46vuqUzKvxdfHdQ3Q=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=LYSMEc/um/Empge83yn2eArs6veK6AonFJGdPrSzO0D/Gh4MlfQptwCavJy+qWfKz
-	 HDyNBHv30evXfk1z4qILZqElH63+t0RvStJ/p+Jro3oCBnMxDI+9UgG9NZoSgbqInE
-	 InFu/xTz/LDeD0fjr8Pq+1X8k5l7nXLR7GvtOEZU=
+	s=default; t=1678109597;
+	bh=JHC0hb+WAOY9fqstxdj26yXXntSJNh6emfvVp8hEuGo=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=KUaA2l9NaOix9+N4pAvcIuUB2oEtq5iktMrtnVNAiyI6AjS4IlQdAbsAkJa4JyVlI
+	 79nOFOIwnw7E32vgUrb+gru8qqPDJG1G/pecYx6sbcYWQ1uCoXN1UO65xCd6BFKMDf
+	 nV56M2ORLw6KF5G4KmT8TE3AJ1pN4G+pm2m2RMAk=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9E77DF80529;
-	Mon,  6 Mar 2023 13:45:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C1BD8F804B1;
+	Mon,  6 Mar 2023 14:32:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 12828F8042F; Mon,  6 Mar 2023 13:45:55 +0100 (CET)
+	id 8C24CF80482; Mon,  6 Mar 2023 14:31:58 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 04F86F80236
-	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2023 13:45:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04F86F80236
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8A2D9F800C9
+	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2023 14:31:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A2D9F800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=IyaBW3m/
+ header.s=k20201202 header.b=D4YBAEUO
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 99FBF60E9C;
-	Mon,  6 Mar 2023 12:45:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75545C4339B;
-	Mon,  6 Mar 2023 12:45:42 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id B997360F24;
+	Mon,  6 Mar 2023 13:31:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB130C4339E;
+	Mon,  6 Mar 2023 13:31:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678106744;
-	bh=u39hN/wwIlITAu/b88DSvIgwjo46vuqUzKvxdfHdQ3Q=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=IyaBW3m/TuBgQD4m9tIIV/WVS4eiepeLHuNJbj2jyrN3Slk6DPYlyXTaMK/GXbCWa
-	 qRVqVICiOKDOLsd0KZTGhyo6h9OuEq02QP4dxSvQotq+rSbyNMnoEVPFy2N5mJKTI3
-	 H0XZIARYMt8mnYwlkF0COryGMj8ImRpOp9/CaYtb6jhdLX9EzDpkIkzNnDSLvgrcTY
-	 13E5SLkXO/oMVay0IYjKV7A9WH4eaEuev7r+9eoH/b/BKNUlyUeY/xa/GqO/aojkAW
-	 fecvpFJ/9mcunJEMhAIqasitC7+6yN8HS+Uv16yHnTHWd6ZuajGxayGt/mrZQVEdRS
-	 VcB9Psu1xdV5w==
+	s=k20201202; t=1678109509;
+	bh=JHC0hb+WAOY9fqstxdj26yXXntSJNh6emfvVp8hEuGo=;
+	h=From:To:In-Reply-To:References:Subject:Date:From;
+	b=D4YBAEUOswQGwANMpLl1pETCzSNx7Ao0XyXYhOD8oGJ4poUBPTQNlY9NI+tD8Rfa4
+	 v2tq1GTztJjUtuMysmF3B3Il4m5jJrMQlRaGF4jAIwl8PRnRc4gI+qlCdLBCJ0ecnf
+	 YELopH+vQwJpWojdhKHIkVT3hl03AdnipCaHlJK9qcGPcX0MiCrPI2vjNXiLFReAEr
+	 JxkrbpQ8YJfOxRKxmJAROGa34Pz1nby1g2F2GV2Uu6DnRpW+8Cx3vvk8uw4ao0L4BC
+	 H8fFgbKjK/y+riJuIzRwl04PmsZxb3+F+nFImjhxlRfdp3OW/eU/yAJ1ixjRe5/q80
+	 PU20dLstNpHnw==
 From: Mark Brown <broonie@kernel.org>
-To: Ravulapati Vishnu Vardhan Rao <quic_visr@quicinc.com>
-In-Reply-To: <20230304080702.609-1-quic_visr@quicinc.com>
-References: <20230304080702.609-1-quic_visr@quicinc.com>
-Subject: Re: [PATCH] ASoC: codecs: tx-macro: Fix for KASAN:
- slab-out-of-bounds
-Message-Id: <167810674220.45838.12997652294866709663.b4-ty@kernel.org>
-Date: Mon, 06 Mar 2023 12:45:42 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Kevin Cernekee <cernekee@chromium.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ Crt Mori <cmo@melexis.com>, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Kamel Bouhara <kamel.bouhara@bootlin.com>
+In-Reply-To: <20230222083300.218523-1-kamel.bouhara@bootlin.com>
+References: <20230222083300.218523-1-kamel.bouhara@bootlin.com>
+Subject: Re: [PATCH 0/2] Add support for the TAS5733
+Message-Id: <167810950662.75807.17494624901046895740.b4-ty@kernel.org>
+Date: Mon, 06 Mar 2023 13:31:46 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bd1bf
-Message-ID-Hash: GFTSRMQ4DFZPRBSBLSE6YO7G3GGPENQ2
-X-Message-ID-Hash: GFTSRMQ4DFZPRBSBLSE6YO7G3GGPENQ2
+Message-ID-Hash: SASSYRRM6SR7AOUQRLXKZNOU2MXQCUNG
+X-Message-ID-Hash: SASSYRRM6SR7AOUQRLXKZNOU2MXQCUNG
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -74,17 +79,12 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Takashi Iwai <tiwai@suse.com>,
- "moderated list:QCOM AUDIO (ASoC) DRIVERS" <alsa-devel@alsa-project.org>,
- open list <linux-kernel@vger.kernel.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GFTSRMQ4DFZPRBSBLSE6YO7G3GGPENQ2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SASSYRRM6SR7AOUQRLXKZNOU2MXQCUNG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,26 +93,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 04 Mar 2023 13:37:02 +0530, Ravulapati Vishnu Vardhan Rao wrote:
-> When we run syzkaller we get below Out of Bound.
->     "KASAN: slab-out-of-bounds Read in regcache_flat_read"
+On Wed, 22 Feb 2023 09:32:58 +0100, Kamel Bouhara wrote:
+> This small series extends the tas571x driver to support the TAS5733
+> audio power amplifier.
 > 
->     Below is the backtrace of the issue:
-> 
->     dump_backtrace+0x0/0x4c8
->     show_stack+0x34/0x44
->     dump_stack_lvl+0xd8/0x118
->     print_address_description+0x30/0x2d8
->     kasan_report+0x158/0x198
->     __asan_report_load4_noabort+0x44/0x50
->     regcache_flat_read+0x10c/0x110
->     regcache_read+0xf4/0x180
->     _regmap_read+0xc4/0x278
->     _regmap_update_bits+0x130/0x290
->     regmap_update_bits_base+0xc0/0x15c
->     snd_soc_component_update_bits+0xa8/0x22c
->     snd_soc_component_write_field+0x68/0xd4
->     tx_macro_digital_mute+0xec/0x140
+> Kamel Bouhara (2):
+>   ASoC: tas571x: add tas5733 compatible
+>   ASoC: tas571x: add support for TAS5733
 > 
 > [...]
 
@@ -122,8 +109,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: tx-macro: Fix for KASAN: slab-out-of-bounds
-      commit: e5e7e398f6bb7918dab0612eb6991f7bae95520d
+[1/2] ASoC: tas571x: add tas5733 compatible
+      commit: 95a29d5f626a37dbefd0883f294ec4e22a8a7911
+[2/2] ASoC: tas571x: add support for TAS5733
+      commit: f5db4d00f73871988beba0277ea29cff73d38445
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
