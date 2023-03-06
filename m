@@ -4,82 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4516AC678D4
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 15:35:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EFB8C64EC4
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 15:35:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D8531123;
-	Mon,  6 Mar 2023 16:34:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D8531123
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DE5D1129;
+	Mon,  6 Mar 2023 16:34:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DE5D1129
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678116911;
-	bh=JGgYx/uI5aY9ZoGSaizxDs76bAvvcZ+rsvaHP2l/hnY=;
-	h=From:Subject:Date:To:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=Z3MPwbv4s89AiLcJVX1O//YjRohJJfVt5ytxHItv52+V5bEm7cVZfyVSauaqrUrFZ
-	 eYUNo008DY8IyaXhcwwr0C/LlqE/kqplH6PFHcbEuivybsdE4ZoygltJn/0Tg0k0oP
-	 +JDyYTcG515OwSJj7yNt41Utn4sPlHBf0fB4OiuU=
+	s=default; t=1678116940;
+	bh=kjkLcMTHMhUQo+1dss9UtQxijigDsuNvBFLdj/WoWN4=;
+	h=From:Date:Subject:References:In-Reply-To:To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=L/BmObfdzSN5lE/gflmzfILimyZ5MM2n3i58asJ7F6mmxPygyVkVsAf8eP6ljJDtK
+	 WF2CQvF6Zb/7b58RKG3o5uxkakFTJKhz2BRHlmdO/0HW5oVeFTt+Fl6XXXtNwTUTLD
+	 3ppEfIU4diMI/RQfAj5yaW1l7zoMCC6hlB1ifXsY=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28BCDF8042F;
-	Mon,  6 Mar 2023 16:33:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A672DF8051B;
+	Mon,  6 Mar 2023 16:34:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 08A3EF80482; Mon,  6 Mar 2023 16:33:54 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 0AB31F8042F; Mon,  6 Mar 2023 16:33:58 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9C84EF800C9
-	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2023 16:33:38 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C84EF800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id A73ECF800DF
+	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2023 16:33:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A73ECF800DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=LwYuWAnp
+ header.s=k20201202 header.b=e+wX/eVs
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 1B63461006;
-	Mon,  6 Mar 2023 15:33:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B04AC433EF;
-	Mon,  6 Mar 2023 15:33:34 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 99DBEB80EBB;
+	Mon,  6 Mar 2023 15:33:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBBEBC433EF;
+	Mon,  6 Mar 2023 15:33:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678116816;
-	bh=JGgYx/uI5aY9ZoGSaizxDs76bAvvcZ+rsvaHP2l/hnY=;
-	h=From:Subject:Date:To:Cc:From;
-	b=LwYuWAnpqQgRgelz7boHiqr3Sces2Cd41NLDNo1Och4MKs8LZOjb5bJPKeXjppJUH
-	 4E2Ndruc0fxC/CysWs5vRHEtM2LzqYbtSEzD2Z+6XDjI854M5QKEu4oxwQd9+wyHsI
-	 CcbzO8EMRbb25s1MFxuZhR7O9Ii47TE94L2KkXls64WfmU/KZCVIzM3aePDqaKzhJS
-	 GmweDb4JI2d4dwMexWLB035B+h5SztguGsWyXda92PdgnWIE0X/6q1m/IYfOZ9/FX8
-	 qCL/y8ZEqv4pmwu2ponKCn2i3lIqwlLxUXwwhBCTKx/ZMpcHoRcXiiiVomPg2gdLtN
-	 PsGQqtlDu8U4g==
+	s=k20201202; t=1678116820;
+	bh=kjkLcMTHMhUQo+1dss9UtQxijigDsuNvBFLdj/WoWN4=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=e+wX/eVsuUJwCEoIWhFLHcOcuml9DySTPbsOllizEjQo1TjE5Bywzoi63J8GJjCzN
+	 TLiC1qgsF6kb9nDgF4k2VfYG2rCL4aBpYzN3mkgvT9vfEGk95EULm6aG5ZP/AM9KKv
+	 I6CA3hVLTYrI/QdlOC3+KoWlzkli/B3S9qXDbpoXEja5R7T6KD3JrPgYM9LccxR/IG
+	 KUfcMa1lnDiueTriDUmjA8cRUjxxhAq3ySSnyQOMEgjGMGvXrQHTeILZARmHzmMnKI
+	 4c2M5TZP61e5UlNXT7ZRJCLrVFGMcm+jLWIKetMIBHI+fbtnIt1V5wsjNnEopAEKgV
+	 iZvNHfqquevng==
 From: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 0/2] kselftest/alsa: Log card and control information
- during startup
-Date: Mon, 06 Mar 2023 15:33:27 +0000
-Message-Id: <20230223-alsa-log-ctl-name-v1-0-ac0f10cc4db2@kernel.org>
+Date: Mon, 06 Mar 2023 15:33:29 +0000
+Subject: [PATCH 2/2] kselftest/alsa: Log card names during startup
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAMcHBmQC/x2NQQqDMBAAvyJ77kLcHAL9SulhEze6EKNkpRTEv
- zf2OAPDnGDSVAyewwlNPmq61Q7jY4C0cJ0FdeoM5Mg7Io9cjLFsM6ajYOVVMEcXsndToDFA7yK
- bYGxc03KXx7rfdm+S9fs/vd7X9QOQ+aiueQAAAA==
+Message-Id: <20230223-alsa-log-ctl-name-v1-2-ac0f10cc4db2@kernel.org>
+References: <20230223-alsa-log-ctl-name-v1-0-ac0f10cc4db2@kernel.org>
+In-Reply-To: <20230223-alsa-log-ctl-name-v1-0-ac0f10cc4db2@kernel.org>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Shuah Khan <shuah@kernel.org>
 X-Mailer: b4 0.13-dev-bd1bf
-X-Developer-Signature: v=1; a=openpgp-sha256; l=706; i=broonie@kernel.org;
- h=from:subject:message-id; bh=JGgYx/uI5aY9ZoGSaizxDs76bAvvcZ+rsvaHP2l/hnY=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkBgfMGM9Zy2R7dyT5RvU9J/0EKw3gazoO6qRFaOOG
- V79NVtiJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZAYHzAAKCRAk1otyXVSH0FqBB/
- 9m/MqSkHSNGCQbNj6OnpHOoWQzC+I3KKuUQQKkAw/SfEqz5y2paOZxo1Eju/Bnj2jB6DcipbFoWMWZ
- +2246qEGBTxtOSY59v7LqdrheVOl8GJcKgDpD+tStISYVtCFFhDdqqnfSLXNDlvAXVM5r5cVinkbz0
- k4z8LmJlOE4ACjsIqvCqwyaiLkE9wa8Uwql1cHOLKlSk3MNkXEZDUrG7f19+9DMBMcitnyNhoOE1Kw
- jY5S5XRysl71ZFydgtEWsJyqAA0ymvUpCRN6HVyh+7yXadQpR0GxlR/dLLYqLd88nv+O1wTSqRin4D
- JI4db7Y3aZl6buRkuT75FHCQjrtEru
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2413; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=kjkLcMTHMhUQo+1dss9UtQxijigDsuNvBFLdj/WoWN4=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkBgfOjSTU6E4IeqLtriafYbjJ+o8/50y5yBIJdGX1
+ pRzA5bGJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZAYHzgAKCRAk1otyXVSH0A0qB/
+ 9cwhfgE/NUT2kBgs5Adm3g8+H0MgXxeiR3TOPMfeXM+L9An6QrYirbEneOjFDZ+l06jguu7mkg2FHS
+ eTm+KKN6FSizi9W1M5DCCbv0DojvNKD4MSI2WrCYkEDhM5kSTDjsnYSll97FCTURSkD+Vus4sCl/hi
+ wRQf8HC8o6rRerZjFc58AZNz/L0A8JcuSfg8j11IGILtpry3YC1TPDFARXTllbPjdtEu4bkbVD3V6e
+ p95SgsJyJhSZmFsnBMBTP+fQYAU3Qj7y96cWcxHv03Jl0+S1GEz+bGQ5ilG6agEstOBU0WM0jYmfKI
+ d701WCf5n/wMXeH/9dd3lU1QncEyJ1
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: HI3KDER3KMRFYJDQYXNQBSAQIMV2FNTV
-X-Message-ID-Hash: HI3KDER3KMRFYJDQYXNQBSAQIMV2FNTV
+Message-ID-Hash: AHPLRIS3YQQRXWOK5IIYDFSPF3QPUHAV
+X-Message-ID-Hash: AHPLRIS3YQQRXWOK5IIYDFSPF3QPUHAV
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HI3KDER3KMRFYJDQYXNQBSAQIMV2FNTV/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AHPLRIS3YQQRXWOK5IIYDFSPF3QPUHAV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,24 +101,74 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-These patches help make the logs a bit more friendly to work with by
-adding human readable names for cards and controls alongside the numbers
-assigned to them even when things are working well.
+It can be helpful to know which card numbers apply to which cards in a
+multi-card system so log the card names when we start the test programs.
+People looking at the logs may not have direct access to the systems being
+tested.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
-Mark Brown (2):
-      kselftest/alsa - mixer: Always log control names
-      kselftest/alsa: Log card names during startup
-
- tools/testing/selftests/alsa/mixer-test.c | 13 +++++++++++++
+ tools/testing/selftests/alsa/mixer-test.c | 10 ++++++++++
  tools/testing/selftests/alsa/pcm-test.c   | 10 ++++++++++
- 2 files changed, 23 insertions(+)
----
-base-commit: fe15c26ee26efa11741a7b632e9f23b01aca4cc6
-change-id: 20230223-alsa-log-ctl-name-fb07f30d7217
+ 2 files changed, 20 insertions(+)
 
-Best regards,
+diff --git a/tools/testing/selftests/alsa/mixer-test.c b/tools/testing/selftests/alsa/mixer-test.c
+index 12f58c9c17ab..f9307bb0e453 100644
+--- a/tools/testing/selftests/alsa/mixer-test.c
++++ b/tools/testing/selftests/alsa/mixer-test.c
+@@ -63,6 +63,7 @@ static void find_controls(void)
+ 	struct card_data *card_data;
+ 	struct ctl_data *ctl_data;
+ 	snd_config_t *config;
++	char *card_name, *card_longname;
+ 
+ 	card = -1;
+ 	if (snd_card_next(&card) < 0 || card < 0)
+@@ -84,6 +85,15 @@ static void find_controls(void)
+ 			goto next_card;
+ 		}
+ 
++		err = snd_card_get_name(card, &card_name);
++		if (err != 0)
++			card_name = "Unknown";
++		err = snd_card_get_longname(card, &card_longname);
++		if (err != 0)
++			card_longname = "Unknown";
++		ksft_print_msg("Card %d - %s (%s)\n", card,
++			       card_name, card_longname);
++
+ 		/* Count controls */
+ 		snd_ctl_elem_list_malloc(&card_data->ctls);
+ 		snd_ctl_elem_list(card_data->handle, card_data->ctls);
+diff --git a/tools/testing/selftests/alsa/pcm-test.c b/tools/testing/selftests/alsa/pcm-test.c
+index 58b525a4a32c..d73600e93e83 100644
+--- a/tools/testing/selftests/alsa/pcm-test.c
++++ b/tools/testing/selftests/alsa/pcm-test.c
+@@ -149,6 +149,7 @@ static void missing_devices(int card, snd_config_t *card_config)
+ static void find_pcms(void)
+ {
+ 	char name[32], key[64];
++	char *card_name, *card_longname;
+ 	int card, dev, subdev, count, direction, err;
+ 	snd_pcm_stream_t stream;
+ 	struct pcm_data *pcm_data;
+@@ -175,6 +176,15 @@ static void find_pcms(void)
+ 			goto next_card;
+ 		}
+ 
++		err = snd_card_get_name(card, &card_name);
++		if (err != 0)
++			card_name = "Unknown";
++		err = snd_card_get_longname(card, &card_longname);
++		if (err != 0)
++			card_longname = "Unknown";
++		ksft_print_msg("Card %d - %s (%s)\n", card,
++			       card_name, card_longname);
++
+ 		card_config = conf_by_card(card);
+ 
+ 		card_data = calloc(1, sizeof(*card_data));
+
 -- 
-Mark Brown <broonie@kernel.org>
+2.30.2
 
