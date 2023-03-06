@@ -4,80 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCB41C678D4
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 13:34:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42307C61DA4
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 13:34:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DAC231118;
-	Mon,  6 Mar 2023 14:33:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DAC231118
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1FD4910B5;
+	Mon,  6 Mar 2023 14:33:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FD4910B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678109647;
-	bh=n4vaoJypBj3ZnWOSr2/6ylu1yP0IfC9GLrLhygb790c=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=inP/dT/1feu6U0pcotFSSr+dNiJymWAhbIl2lK97co4ByAnEtaYpISO5orzrI5Czl
-	 EQOLDYof+U65xaRPwGt6M31Uw1Fx8l2jkd46SyGr/0KTYlWFv0GCNu3XI4ve9oZCC0
-	 o+q/VQ17XP3py2EkAGe4EGXNt9GgFAARo1aTcQ5Q=
+	s=default; t=1678109673;
+	bh=GGz/XSquEEkd/c1A8ozA7mQ9It/zjD2cp/cMY4WB4vA=;
+	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=qJvAgmHZ5RipO258mKagOfxdgnLG5F6pcqIAIb8bJ4cMUPIU8sO1l/wiLKWmOgrpv
+	 xaddnb5RffdHI5nSJAf/jfTVusW1XiTTJ/dvgTAjgVOYqvTR7llgwbJK7PYDTtwnhG
+	 2oRAtyepipH5G9/Avv8dcwdOU473PHJm7ClUcnz4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 381D8F804FE;
-	Mon,  6 Mar 2023 14:33:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55C97F8052D;
+	Mon,  6 Mar 2023 14:33:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BF0F6F80482; Mon,  6 Mar 2023 14:32:03 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+	id 10EFDF80520; Mon,  6 Mar 2023 14:32:06 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id AD75BF800DF
-	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2023 14:31:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD75BF800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id 1A9BCF80236
+	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2023 14:32:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A9BCF80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=aNtuJJnY
+ header.s=k20201202 header.b=iBaz7RSp
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id 0971ACE118D;
-	Mon,  6 Mar 2023 13:31:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0819FC433EF;
-	Mon,  6 Mar 2023 13:31:42 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id E474060EB8;
+	Mon,  6 Mar 2023 13:31:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61B25C4339C;
+	Mon,  6 Mar 2023 13:31:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678109506;
-	bh=n4vaoJypBj3ZnWOSr2/6ylu1yP0IfC9GLrLhygb790c=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=aNtuJJnY+2dUoUEevCcSGoR07uQjisGPJXDnw6+kOmA1iOd8khRlmgL5LGMuPca0/
-	 dTFzP9/v76YbRn+S94AAHQoalLL86WBptYI8NhOyngZIjCgFufmoDCbXft8sEAW159
-	 Vp71lQBEo44MT6gA2XFm6ewD5blb0GRGTpWUD3OcpmsbAo29kkj5CmJ2bmW+ppd8rf
-	 d82y5DTgy+GxpGVD7NnBED4cq16EmyOdq53WeT/c6nDZbEnkqiPLGvX0iOHYzYiDKw
-	 66JQZ++0QmDAFlX+nsZLG3c/9RsnEIHinD0SdkWHj4BUWxvRS4UgEo93sWG0AO4xq6
-	 2U5EKzICKSgJQ==
+	s=k20201202; t=1678109519;
+	bh=GGz/XSquEEkd/c1A8ozA7mQ9It/zjD2cp/cMY4WB4vA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=iBaz7RSpiIHju+faTJoDDbYnqmTn2YoDyADXL2vTPaHobu59JQLQT7lk3IOORGJdB
+	 0ike2irMWoLD0BnVbFfW4l4Vhd9zdBvaTqjmyqMrp30fQPZTk6z/SElweq1D/d2gO1
+	 M0Rfe35aZMF/Z/lnJEVVioyP6WK6U1VSJjhfXR6RzqAlYFWwkGLlbCGxBTNGFRjljk
+	 pd3D8BWREFA3wcQM8gLvC5JSxBhHzNCSw55xylUXpfeeEV6J3mp25lQ75K6wZXapTS
+	 PZq/MV4+1/V9uUTYi79oYIab4NqqASTK7vAWyVgeMlsS/uDLxPKdkCCbAi06YgHS+I
+	 fZNTLSfJsfAVw==
 From: Mark Brown <broonie@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Alim Akhtar <alim.akhtar@samsung.com>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- - <patches@opensource.cirrus.com>,
- Adrien Grassein <adrien.grassein@gmail.com>, Randy Li <ayaka@soulik.info>,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230217150627.779764-1-krzysztof.kozlowski@linaro.org>
-References: <20230217150627.779764-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: (subset) [PATCH 1/3] ASoC: dt-bindings: wlf,wm8960: Convert to
- dtschema
-Message-Id: <167810950275.75807.2993006253194931204.b4-ty@kernel.org>
-Date: Mon, 06 Mar 2023 13:31:42 +0000
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Magnus Damm <magnus.damm@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Prabhakar <prabhakar.csengg@gmail.com>
+In-Reply-To: <20230217185225.43310-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20230217185225.43310-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: (subset) [PATCH 0/4] RZ/G2L SSI: Update interrupt numbers
+Message-Id: <167810951612.75807.7701310254952965635.b4-ty@kernel.org>
+Date: Mon, 06 Mar 2023 13:31:56 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bd1bf
-Message-ID-Hash: NI4J2RBG6PETONWYAWGMKCLXXQINICAU
-X-Message-ID-Hash: NI4J2RBG6PETONWYAWGMKCLXXQINICAU
+Message-ID-Hash: FTOUCCAN4SU4NZJRGFLK5EXCSZJ7WFXJ
+X-Message-ID-Hash: FTOUCCAN4SU4NZJRGFLK5EXCSZJ7WFXJ
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -85,12 +78,16 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
+CC: alsa-devel@alsa-project.org, linux-renesas-soc@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Biju Das <biju.das.jz@bp.renesas.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NI4J2RBG6PETONWYAWGMKCLXXQINICAU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FTOUCCAN4SU4NZJRGFLK5EXCSZJ7WFXJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,13 +96,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 17 Feb 2023 16:06:25 +0100, Krzysztof Kozlowski wrote:
-> Convert the Wolfson WM8960 audio codecs bindings to DT schema.
+On Fri, 17 Feb 2023 18:52:21 +0000, Prabhakar wrote:
+> This patch series aims to fix interrupt numbers for SSI channels and updates
+> the DT binding and the driver accordingly.
 > 
-> Changes against original binding:
-> 1. Document clocks and clock-names - already present in DTS and used
->    by Linux driver.
+> Note, this patch series applies on top of [0].
 > 
+> [0] https://patchwork.kernel.org/project/linux-renesas-soc/cover/20230131223529.11905-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
 > 
 > [...]
 
@@ -115,8 +112,10 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: dt-bindings: wlf,wm8960: Convert to dtschema
-      commit: af5932fc58d351d3908d0a732ccabaef088311a0
+[1/4] ASoC: dt-bindings: renesas,rz-ssi: Update interrupts and interrupt-names properties
+      commit: 56a3840486ae22c42176828e25d4073712837bfd
+[2/4] ASoC: sh: rz-ssi: Update interrupt handling for half duplex channels
+      commit: 38c042b59af0248a8b13f01b1a09d890997c9f6e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
