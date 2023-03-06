@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76607C678D4
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 16:21:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74C95C64EC4
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 16:21:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 96BF61154;
-	Mon,  6 Mar 2023 17:20:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96BF61154
+	by alsa0.perex.cz (Postfix) with ESMTPS id 582161148;
+	Mon,  6 Mar 2023 17:20:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 582161148
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678119658;
-	bh=o1q5JE8AIj7mzLBDwH+p6PKewHYvOVsfNVomTeurdzc=;
+	s=default; t=1678119674;
+	bh=ruiIx0aSm70OgqnAeNm5GEhklZIZUnbrsElIWf+c7g8=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=STVNdFXm0xVnIGPLLv/crruvHIoykxmVaTBLdPXHbxkq2jg8bV+N35FJUVIU3ZRvp
-	 jK9rCrnzvncMvQ3ewVjWhhZZi5ien/9+9Yufj74Y3pte96wfCJjrYAfHYjdvUEylLW
-	 6WltbA0MkUUz7kpxwTKK7eZ7fDHpYzymW65FJ24w=
+	b=FaHQZ20CsKDKdBwnjXN8rsCOKZi91F9mAcJ3aYmvOVMhNC2v70zWxBUXWLfqeaNnG
+	 oTkAdBecvA6TjBObllyu5ucUjgOhQYKi6GYi7l8veOLn1szHJXcG8NSaTV9AR3Ho1Y
+	 cfoxmjZfBjEUx2rsduxABYjQyFzag6Ir6ej88Hqo=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2BA9F80552;
-	Mon,  6 Mar 2023 17:18:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7678F80578;
+	Mon,  6 Mar 2023 17:18:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8F00AF8052D; Mon,  6 Mar 2023 17:18:29 +0100 (CET)
+	id 50909F80549; Mon,  6 Mar 2023 17:18:31 +0100 (CET)
 Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net
  [IPv6:2001:4b98:dc4:8::221])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 11737F8053D
-	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2023 17:18:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11737F8053D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0535DF8052D
+	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2023 17:18:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0535DF8052D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=G6hBBgYH
+ header.s=gm1 header.b=f7mDZrRi
 Received: (Authenticated sender: herve.codina@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPA id 76FE5240014;
-	Mon,  6 Mar 2023 16:18:18 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPA id 0632624000D;
+	Mon,  6 Mar 2023 16:18:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1678119502;
+	t=1678119508;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/nlprenBg5iqK2v9en/Tyjgk9ugk7HcEW+YZA+BTTYg=;
-	b=G6hBBgYHQA8YT9J9tu6JtTEhegy5byDUMa2gAleEZyINPCNa+9uatw5zowELIfw4P5RVxI
-	1SqQNW8z0S44BvdZ66cuXpjwpR6Y+CBnlSFpfygamqqgZL8hVidTMZ06ajxlovc/Qsv6DO
-	G5CK3e8BT8+2GQsAZwbPIeSoJ8Zj7+q6lsmhbXiviTZu/BeyyY2oynxgtC5vtcu0Sd0iD0
-	oD1N9AZ4Oay+qIgGa64Br96aKDN+sJe3cdepLR9duPvRcyfZHin2J5e7SSZEJx7XGiXou2
-	uv8RzOOD1GhRvqqSe7KcP76TaFlN4Ml7q8vUA/CQZtXu57kELJwAV05wa7VFrw==
+	bh=IA21+0AaG8dZ3G+8rwSKU3/tdrWPdPAdyacTMchv+CY=;
+	b=f7mDZrRiRVuMDU7hTG34JXyWWIRO000PKUYm3/NJ1+3dfjaySRZ1UEFcRUWbCpU65mWUkF
+	ILLHRQR9eeoKJL41+P0Wl8XwMR1uek+hdsz++jxT9ORIOr+g76F449UTjmZOB1oE0jwCK+
+	uoMATaGIMCYPdc0Z33ZyE2B8TBjXs1J3yRhE0X4wFkFNdxOQ7e2wTJft9vEqLeJL0Zh1lQ
+	Qpd2DCYk+AQYR380uHBmIFOX2GKAH4o4hT7Pj76G83ggUA+DQ5w6HDYIjm99vv65gDiQtR
+	Rb84j/OE+3Nff9vGrzYnnIH8A7UfO8uvAx7YxqARih+q68Y852b6Zqn4LYQ3Mg==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Li Yang <leoyang.li@nxp.com>,
@@ -69,16 +69,16 @@ To: Herve Codina <herve.codina@bootlin.com>,
 	Xiubo Li <Xiubo.Lee@gmail.com>,
 	Fabio Estevam <festevam@gmail.com>,
 	Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: [PATCH v7 05/10] dt-bindings: soc: fsl: cpm_qe: Add QMC controller
-Date: Mon,  6 Mar 2023 17:17:49 +0100
-Message-Id: <20230306161754.89146-6-herve.codina@bootlin.com>
+Subject: [PATCH v7 07/10] MAINTAINERS: add the Freescale QMC controller entry
+Date: Mon,  6 Mar 2023 17:17:51 +0100
+Message-Id: <20230306161754.89146-8-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230306161754.89146-1-herve.codina@bootlin.com>
 References: <20230306161754.89146-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: QYTBGXSF4E2E4HVBK5M4ABVRR6RPUYTZ
-X-Message-ID-Hash: QYTBGXSF4E2E4HVBK5M4ABVRR6RPUYTZ
+Message-ID-Hash: VWTQ5PVYCFLQP6EECCIC43IGRXLBN5D5
+X-Message-ID-Hash: VWTQ5PVYCFLQP6EECCIC43IGRXLBN5D5
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,14 +88,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  no-subject; digests; suspicious-header
 CC: linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ alsa-devel@alsa-project.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QYTBGXSF4E2E4HVBK5M4ABVRR6RPUYTZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VWTQ5PVYCFLQP6EECCIC43IGRXLBN5D5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,185 +103,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add support for the QMC (QUICC Multichannel Controller) available in
-some PowerQUICC SoC such as MPC885 or MPC866.
+After contributing the driver, add myself as the maintainer for the
+Freescale QMC controller.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- .../soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml      | 162 ++++++++++++++++++
- 1 file changed, 162 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-new file mode 100644
-index 000000000000..ec888f48cac8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-@@ -0,0 +1,162 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/MAINTAINERS b/MAINTAINERS
+index fea9ee7ade8e..5597d402fbd8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8247,6 +8247,14 @@ S:	Maintained
+ F:	drivers/soc/fsl/qe/
+ F:	include/soc/fsl/qe/
+ 
++FREESCALE QUICC ENGINE QMC DRIVER
++M:	Herve Codina <herve.codina@bootlin.com>
++L:	linuxppc-dev@lists.ozlabs.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
++F:	drivers/soc/fsl/qe/qmc.c
++F:	include/soc/fsl/qe/qmc.h
 +
-+title: PowerQUICC CPM QUICC Multichannel Controller (QMC)
-+
-+maintainers:
-+  - Herve Codina <herve.codina@bootlin.com>
-+
-+description:
-+  The QMC (QUICC Multichannel Controller) emulates up to 64 channels within one
-+  serial controller using the same TDM physical interface routed from TSA.
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - fsl,mpc885-scc-qmc
-+          - fsl,mpc866-scc-qmc
-+      - const: fsl,cpm1-scc-qmc
-+
-+  reg:
-+    items:
-+      - description: SCC (Serial communication controller) register base
-+      - description: SCC parameter ram base
-+      - description: Dual port ram base
-+
-+  reg-names:
-+    items:
-+      - const: scc_regs
-+      - const: scc_pram
-+      - const: dpram
-+
-+  interrupts:
-+    maxItems: 1
-+    description: SCC interrupt line in the CPM interrupt controller
-+
-+  fsl,tsa-serial:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    items:
-+      - items:
-+          - description: phandle to TSA node
-+          - enum: [1, 2, 3]
-+            description: |
-+              TSA serial interface (dt-bindings/soc/cpm1-fsl,tsa.h defines these
-+              values)
-+               - 1: SCC2
-+               - 2: SCC3
-+               - 3: SCC4
-+    description:
-+      Should be a phandle/number pair. The phandle to TSA node and the TSA
-+      serial interface to use.
-+
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
-+
-+patternProperties:
-+  '^channel@([0-9]|[1-5][0-9]|6[0-3])$':
-+    description:
-+      A channel managed by this controller
-+    type: object
-+
-+    properties:
-+      reg:
-+        minimum: 0
-+        maximum: 63
-+        description:
-+          The channel number
-+
-+      fsl,operational-mode:
-+        $ref: /schemas/types.yaml#/definitions/string
-+        enum: [transparent, hdlc]
-+        default: transparent
-+        description: |
-+          The channel operational mode
-+            - hdlc: The channel handles HDLC frames
-+            - transparent: The channel handles raw data without any processing
-+
-+      fsl,reverse-data:
-+        $ref: /schemas/types.yaml#/definitions/flag
-+        description:
-+          The bit order as seen on the channels is reversed,
-+          transmitting/receiving the MSB of each octet first.
-+          This flag is used only in 'transparent' mode.
-+
-+      fsl,tx-ts-mask:
-+        $ref: /schemas/types.yaml#/definitions/uint64
-+        description:
-+          Channel assigned Tx time-slots within the Tx time-slots routed by the
-+          TSA to this cell.
-+
-+      fsl,rx-ts-mask:
-+        $ref: /schemas/types.yaml#/definitions/uint64
-+        description:
-+          Channel assigned Rx time-slots within the Rx time-slots routed by the
-+          TSA to this cell.
-+
-+    required:
-+      - reg
-+      - fsl,tx-ts-mask
-+      - fsl,rx-ts-mask
-+
-+required:
-+  - compatible
-+  - reg
-+  - reg-names
-+  - interrupts
-+  - fsl,tsa-serial
-+  - '#address-cells'
-+  - '#size-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/soc/cpm1-fsl,tsa.h>
-+
-+    qmc@a60 {
-+        compatible = "fsl,mpc885-scc-qmc", "fsl,cpm1-scc-qmc";
-+        reg = <0xa60 0x20>,
-+              <0x3f00 0xc0>,
-+              <0x2000 0x1000>;
-+        reg-names = "scc_regs", "scc_pram", "dpram";
-+        interrupts = <27>;
-+        interrupt-parent = <&CPM_PIC>;
-+
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        fsl,tsa-serial = <&tsa FSL_CPM_TSA_SCC4>;
-+
-+        channel@16 {
-+            /* Ch16 : First 4 even TS from all routed from TSA */
-+            reg = <16>;
-+            fsl,mode = "transparent";
-+            fsl,reverse-data;
-+            fsl,tx-ts-mask = <0x00000000 0x000000aa>;
-+            fsl,rx-ts-mask = <0x00000000 0x000000aa>;
-+        };
-+
-+        channel@17 {
-+            /* Ch17 : First 4 odd TS from all routed from TSA */
-+            reg = <17>;
-+            fsl,mode = "transparent";
-+            fsl,reverse-data;
-+            fsl,tx-ts-mask = <0x00000000 0x00000055>;
-+            fsl,rx-ts-mask = <0x00000000 0x00000055>;
-+        };
-+
-+        channel@19 {
-+            /* Ch19 : 8 TS (TS 8..15) from all routed from TSA */
-+            reg = <19>;
-+            fsl,mode = "hdlc";
-+            fsl,tx-ts-mask = <0x00000000 0x0000ff00>;
-+            fsl,rx-ts-mask = <0x00000000 0x0000ff00>;
-+        };
-+    };
+ FREESCALE QUICC ENGINE TSA DRIVER
+ M:	Herve Codina <herve.codina@bootlin.com>
+ L:	linuxppc-dev@lists.ozlabs.org
 -- 
 2.39.2
 
