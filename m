@@ -4,95 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90E80C64EC4
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 15:35:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 937AFC61DA4
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Mar 2023 15:43:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52AD51131;
-	Mon,  6 Mar 2023 16:34:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52AD51131
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88D9C1122;
+	Mon,  6 Mar 2023 16:42:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88D9C1122
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678116947;
-	bh=7+nAtHf2/40sJdNDudrlb9sywI5p24XSs9r4jtaXcho=;
-	h=From:Date:Subject:References:In-Reply-To:To:CC:List-Id:
+	s=default; t=1678117411;
+	bh=nB4ijDWwr++TTjml87oexpk5dGZAXKgKh6x6cTFPTAA=;
+	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=cvOdgYK7bZWyeAL6Qcicv7FUroIjKJV16kPXInEM3ivP6w0vGtNF/IoJYtylYAWk+
-	 MEqw3MCrrnNwA7LjW3xOzies6ng8Ty4QYjMzp0rWjv18hxC6IeBaCv7ZsHX7WQtJO0
-	 o5S/3AS3YcB42FEaBiS1ZyWW9wSP4Ot+KJBzV/rk=
+	b=gNjAKHL+U+MUhDpyTfQtw5iP3f/SvWFWn80ZGLJF8AD8a4bIQpjM/h5/6d3BTDWcs
+	 KKuZaPWoMyAdUWQr3eV22RfW2l4G/tyShdzUz1KlttyIjZ8W7fFrjmNgF7rBLkx/h7
+	 RGC+PpkDZSl59RsoK8cSZohDGuGGp3yARFhRKIbU=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49963F80529;
-	Mon,  6 Mar 2023 16:34:06 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35876F8042F;
+	Mon,  6 Mar 2023 16:42:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id CD29EF80529; Mon,  6 Mar 2023 16:34:01 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id B0F45F8042F; Mon,  6 Mar 2023 16:42:15 +0100 (CET)
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net
+ [217.70.183.193])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CD2EFF80431
-	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2023 16:33:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD2EFF80431
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7B9CCF800C9
+	for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2023 16:42:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B9CCF800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=swgC7WJo
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id B41E8B80EAE;
-	Mon,  6 Mar 2023 15:33:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECA15C433A7;
-	Mon,  6 Mar 2023 15:33:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678116818;
-	bh=7+nAtHf2/40sJdNDudrlb9sywI5p24XSs9r4jtaXcho=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=swgC7WJo+uPv82x70+Bo9D1vcq7rpG+Bp3FC2WVZCMnru14hGHhSmUpuNvozX5O5C
-	 0mVzx2BpmJ8kY47FTsnMdaYyNvnBq5yAeJuAsf/lJcAouob+vErhxr6YooyhDTgXRr
-	 /WZx18ciPEirdlqH80ylft6mTuitZzAjUdZNf86DZtZHEzAgCbaHqE9izbqHFnQtXX
-	 slSQxP5oPY0PvFizyZ5dpcNHU7CW9JcRvoO1yDpLWKwXXW4294ABbc8pJ2jAmWor4j
-	 QowkisyLZcUvhqd5wg5gMYVaTv+b9ZXX0G+Rg+IPsQjrlk/UgsSO3QKxANNtbMM45r
-	 l/F1L54KBmVAg==
-From: Mark Brown <broonie@kernel.org>
-Date: Mon, 06 Mar 2023 15:33:28 +0000
-Subject: [PATCH 1/2] kselftest/alsa - mixer: Always log control names
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=Y7pgUr7Q
+Received: (Authenticated sender: herve.codina@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id B37C4240009;
+	Mon,  6 Mar 2023 15:41:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1678117328;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4+e/cUqhhX/VA/vt11SGpFMg3F+XphXS1/Hro38i4j0=;
+	b=Y7pgUr7QHXRIZk9xlTpsJCwpUTN6J93viTIZPEPSAu5ZhECKJ2jOfMP9JFBqxLQNuei34Z
+	tKLWB7FoAqSYE1PTY6ROhpqYUfgTlToyScGeKDgIVmUER65rZTwF9S1kKKWTu/P2Wrno5b
+	fjLhWcgMRzdMyJCOtqls3mPQbmf6lgBIJJzqhScg+Vc5VY+ufSUGvRYmuaHL/vScl+JD+h
+	5iPYWJhDzoQX5TLjFPLfFYWP8nErrdcYz0KDIE1sjeJcH67gkRx79N2SEaiVlz/MkMJK4L
+	UwV37a+dm/zpn1w7yGKYoqjcPjwxlcQ7wOcVaX2spOpnPyfxvvOgD5jlmJbnAg==
+Date: Mon, 6 Mar 2023 16:41:58 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v6 01/10] dt-bindings: soc: fsl: cpm_qe: Add TSA
+ controller
+Message-ID: <20230306164158.767e6420@bootlin.com>
+In-Reply-To: <20230226174833.GA76710-robh@kernel.org>
+References: <20230217145645.1768659-1-herve.codina@bootlin.com>
+	<20230217145645.1768659-2-herve.codina@bootlin.com>
+	<20230226174833.GA76710-robh@kernel.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.36; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230223-alsa-log-ctl-name-v1-1-ac0f10cc4db2@kernel.org>
-References: <20230223-alsa-log-ctl-name-v1-0-ac0f10cc4db2@kernel.org>
-In-Reply-To: <20230223-alsa-log-ctl-name-v1-0-ac0f10cc4db2@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Shuah Khan <shuah@kernel.org>
-X-Mailer: b4 0.13-dev-bd1bf
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1108; i=broonie@kernel.org;
- h=from:subject:message-id; bh=7+nAtHf2/40sJdNDudrlb9sywI5p24XSs9r4jtaXcho=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkBgfNsxpvllJ20MQSB8Ro22PZttfPXnQqWNYGee+C
- JodG21iJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZAYHzQAKCRAk1otyXVSH0EF2B/
- 9Kpuja8aY4ykr8vAYRIXEzSKrLR3yhtIg2OPQ/XSUdv7+E+UvHmfF+8dZocSRsFZU5+VpFJ8qF8n2X
- o+ASKKAdLxmBHBN2Ob89qTbSbM8fYFxzE0E1OifWoXVOrSfkcJK+zcSiYezsQU/2vtlzPzVPzRqFHe
- aa5gN6X119dqj2G3KIqNQB1m0/k+im4ktAi6RPtk9KLlC3u8SWDs3zAJaUE6id9b7vgl8nKV70wpwt
- TCiZUjCsAkRGy6qhSS/WSy/Yo74qbolAJ5ongTq/XEfeV61L11ZZMGH1YoYLg2DDJs3CZmkhmwjxt1
- yydw2lis3VywnxrUHi8srI+AsNCefm
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Message-ID-Hash: Q5S36ADKOTAHQJFEPLIFLFBYPMZAVGUC
-X-Message-ID-Hash: Q5S36ADKOTAHQJFEPLIFLFBYPMZAVGUC
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: L2KRNLUPLMLXWTN45OYZRDSDRLLNDW3L
+X-Message-ID-Hash: L2KRNLUPLMLXWTN45OYZRDSDRLLNDW3L
+X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+CC: Li Yang <leoyang.li@nxp.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>,
+ Qiang Zhao <qiang.zhao@nxp.com>, Takashi Iwai <tiwai@suse.com>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Fabio Estevam <festevam@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q5S36ADKOTAHQJFEPLIFLFBYPMZAVGUC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/L2KRNLUPLMLXWTN45OYZRDSDRLLNDW3L/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,32 +101,35 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Currently we only log the names of controls on error but it can be useful
-to know what control we're testing (for example, when looking at why the
-tests are taking a while to run). People looking at test logs may not have
-direct access to the target system. This will increase the amount we write
-to the console, hopefully that's buffered.
+Hi Rob,
+On Sun, 26 Feb 2023 11:48:33 -0600
+Rob Herring <robh@kernel.org> wrote:
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- tools/testing/selftests/alsa/mixer-test.c | 3 +++
- 1 file changed, 3 insertions(+)
+[...]
+> > +  '#size-cells':
+> > +    const: 0
+> > +
+> > +  '#fsl,serial-cells': =20
+>=20
+> #foo-cells is for when there are differing foo providers which need=20
+> different number of cells. That's not the case here.
+>=20
 
-diff --git a/tools/testing/selftests/alsa/mixer-test.c b/tools/testing/selftests/alsa/mixer-test.c
-index 05f1749ae19d..12f58c9c17ab 100644
---- a/tools/testing/selftests/alsa/mixer-test.c
-+++ b/tools/testing/selftests/alsa/mixer-test.c
-@@ -422,6 +422,9 @@ static void test_ctl_name(struct ctl_data *ctl)
- 	bool name_ok = true;
- 	bool check;
- 
-+	ksft_print_msg("%d.%d %s\n", ctl->card->card, ctl->elem,
-+		       ctl->name);
-+
- 	/* Only boolean controls should end in Switch */
- 	if (strend(ctl->name, " Switch")) {
- 		if (snd_ctl_elem_info_get_type(ctl->info) != SND_CTL_ELEM_TYPE_BOOLEAN) {
+Ok, I will remove the #fsl,serial-cells property on the next iteration.
 
--- 
-2.30.2
+On the next series iteration, I will also remove the #fsl,chan-cells proper=
+ty
+present later on a patch related to the QMC binding. The #fsl,chan-cells ne=
+eds
+to be removed exactly for the same reason.
 
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    const: 1
+> > +    description:
+> > +      TSA consumers that use a phandle to TSA need to pass the serial =
+identifier
+> > +      with this phandle (defined in dt-bindings/soc/fsl,tsa.h).
+> > +      For instance "fsl,tsa-serial =3D <&tsa FSL_CPM_TSA_SCC4>;". =20
+
+Thanks for the review.
+Herv=C3=A9
