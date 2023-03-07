@@ -4,79 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC3BDC6FA99
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Mar 2023 20:45:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC237C6FA99
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Mar 2023 20:49:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0EDE5159A;
-	Tue,  7 Mar 2023 21:44:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EDE5159A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9AD18159D;
+	Tue,  7 Mar 2023 21:48:37 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9AD18159D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678221921;
-	bh=NuO8UAZcKVDSwoFoeZu9FBy6Ay4iiw09tdqRjBF8Ies=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=TaDr87458BzWii0LBFq+THCPB0/79qYrKORc+ifC6XH9mUWMGm3XMqEMz274S6WsJ
-	 oFMT49piJHzclRw6xA1jPNa/HSujAfQJFrDm47wn313iQmj/Xk9kKUhEuLEOTvZqgJ
-	 zNhACqN8dG6IEuUK/jvwP+wwGYo0+dB7BobltTUQ=
+	s=default; t=1678222167;
+	bh=/9hRjHkdO8S5xRlJr6uZkgy1JY1JFyYBLxygyfehtY8=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=glTCu2L4CWVvcQqyJFAUebHLDKhjx/PHJoKAs1N9uq+npJblCXXqHfFM6fe02Kr6R
+	 Yu2Oa+Cg0Eaz6wy7fAm0+xV+YOQ0nVJEVI8+4C3k8WwjB2FVnnQlBYL8DG9z56FZhP
+	 AxiWyqnoZ7TIG/TH4bxWUR1fLiUgnb1nwRlCq65w=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB1DEF8042F;
-	Tue,  7 Mar 2023 21:44:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91373F800C9;
+	Tue,  7 Mar 2023 21:48:14 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3F813F8042F; Tue,  7 Mar 2023 17:40:37 +0100 (CET)
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 35F1AF80236; Tue,  7 Mar 2023 21:48:10 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C30BBF800DF
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2023 17:40:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C30BBF800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id ED8C6F800DF
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2023 21:48:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED8C6F800DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=posteo.net header.i=@posteo.net header.a=rsa-sha256
- header.s=2017 header.b=D26WLG0/
-Received: from submission (posteo.de [185.67.36.169])
-	by mout01.posteo.de (Postfix) with ESMTPS id 266D5240540
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2023 17:40:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1678207229; bh=NuO8UAZcKVDSwoFoeZu9FBy6Ay4iiw09tdqRjBF8Ies=;
-	h=From:To:Cc:Subject:Date:From;
-	b=D26WLG0/L6TQuTI+MRYCsOI6ePQjCzQ3YOKIaJKeNyT1+ls/gowd/1N2v8uu1W0Ch
-	 wW9JSzkZ9lDYn37n3ecJIa9UpjuD8cTmV5QNRl6ksWCji0Ggd8sXu+0Z98FjpfEnO/
-	 KL3PTnT2/INqeEwHmbyC2oTOxUAWkB3VsVUCqZYfOFUPEFTkdMz6FHpwsaocOOHN0W
-	 K+FDCNih5W+1TKVygc0Jv9FoCu5TzeadVJhu+QTDSV3GSq2TImf9escB8WEPMqWoRL
-	 ozMtjvHUao+0WC0KIM9+AsGFjPV91BoeLDrG2W+QD8SVgQlzsUWfVB3UWJWvuLl/W7
-	 HhwuOLLnOng7Q==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4PWLlv686Dz9rxD;
-	Tue,  7 Mar 2023 17:40:27 +0100 (CET)
-From: "Hamidreza H. Fard" <nitocris@posteo.net>
-To: tiwai@suse.com
-Subject: [PATCH] ALSA: hda/realtek: Fix the speaker output on Samsung Galaxy
- Book2 Pro
-Date: Tue,  7 Mar 2023 16:37:41 +0000
-Message-Id: <20230307163741.3878-1-nitocris@posteo.net>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=XjZ5hrpy
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 469246154D;
+	Tue,  7 Mar 2023 20:48:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1B19C433EF;
+	Tue,  7 Mar 2023 20:47:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1678222081;
+	bh=/9hRjHkdO8S5xRlJr6uZkgy1JY1JFyYBLxygyfehtY8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XjZ5hrpyxhIe3tzJH+DkWY7Xq4F9MRm0OXOjpdnpEKbAQkfZL2u6rqDuF9cwCwtqc
+	 m9UvvvrouHS0UBgfV94RaN9WTzAEzAPbtx1KWkc7c1VFSLi+ruPmWCIEGaFpfxp5Wy
+	 ETUBGeynHnO22UhFYnNAfA4PGaRHondtYpY5zu32gPFMgvcDnf6D3IsS1IVEsE082r
+	 6t5EbOYYRCgWdxP1tOQF4zjmeCLqLPGYsJzE+bRNnG1T0kv4wYt6fODujtmRV34CG/
+	 upLvWoH4jF3glBz8sN5Q+8W8mnm2AkLd/f63qBiolSqnF1lGd4STW2ymbXJKv8LdBJ
+	 Kvjc1LhjWqwMQ==
+Date: Tue, 7 Mar 2023 20:47:56 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Kevin Lu <luminlong@139.com>
+Subject: Re: [PATCH v3] ASoC: tas2781: Add tas2781 driver
+Message-ID: <5c1969de-eecc-47c6-9d66-4214a94c7841@sirena.org.uk>
+References: <20230227153811.2395-1-luminlong@139.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: nitocris@posteo.net
-X-Mailman-Rule-Hits: nonmember-moderation
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="lQU1DPpVCHsKNNEx"
+Content-Disposition: inline
+In-Reply-To: <20230227153811.2395-1-luminlong@139.com>
+X-Cookie: A rolling stone gathers momentum.
+Message-ID-Hash: 2R4MZROPQPRLX5AK22NUZP33YP6YVHIT
+X-Message-ID-Hash: 2R4MZROPQPRLX5AK22NUZP33YP6YVHIT
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: O42VMA663KW44TELGOMSNZA7NJUC25KB
-X-Message-ID-Hash: O42VMA663KW44TELGOMSNZA7NJUC25KB
-X-Mailman-Approved-At: Tue, 07 Mar 2023 20:44:06 +0000
-CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- "Hamidreza H. Fard" <nitocris@posteo.net>
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com, tiwai@suse.com,
+ kevin-lu@ti.com, shenghao-ding@ti.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O42VMA663KW44TELGOMSNZA7NJUC25KB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2R4MZROPQPRLX5AK22NUZP33YP6YVHIT/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,29 +92,453 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Samsung Galaxy Book2 Pro (13" 2022 NP930XED-KA1DE) with codec SSID
-144d:c868 requires the same workaround for enabling the speaker amp
-like other Samsung models with ALC298 code.
 
-Signed-off-by: Hamidreza H. Fard <nitocris@posteo.net>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+--lQU1DPpVCHsKNNEx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 3c629f4ae080..ef78553fe6f0 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9539,6 +9539,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x144d, 0xc830, "Samsung Galaxy Book Ion (NT950XCJ-X716A)", ALC298_FIXUP_SAMSUNG_AMP),
- 	SND_PCI_QUIRK(0x144d, 0xc832, "Samsung Galaxy Book Flex Alpha (NP730QCJ)", ALC256_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
- 	SND_PCI_QUIRK(0x144d, 0xca03, "Samsung Galaxy Book2 Pro 360 (NP930QED)", ALC298_FIXUP_SAMSUNG_AMP),
-+	SND_PCI_QUIRK(0x144d, 0xc868, "Samsung Galaxy Book2 Pro (NP930XED)", ALC298_FIXUP_SAMSUNG_AMP),
- 	SND_PCI_QUIRK(0x1458, 0xfa53, "Gigabyte BXBT-2807", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1462, 0xb120, "MSI Cubi MS-B120", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1462, 0xb171, "Cubi N 8GL (MS-B171)", ALC283_FIXUP_HEADSET_MIC),
+On Mon, Feb 27, 2023 at 11:38:11PM +0800, Kevin Lu wrote:
+> Create tas2781 driver.
 
-base-commit: a1eeed68b1f1d23ed05f66f43058988ba734ba8f
--- 
-2.39.2
+Quite a few comments below, a lot of them are fairly simple stylistic
+ones rather than substantial things but there are a few bigger things.
+A lot of the bigger comments are essentially that the driver is doing
+more work than it needs to be and could either stop doing things that
+seem redundant or use generic functionality.
 
+The bulk of the code looks good though.
+
+>=20
+> ---
+> Changes in v3:
+>  - fixed issues reported-by: kernel test robot <lkp@intel.com>
+>  - correct all the inconsistent indenting warnings
+>  - correct uninitialized symbol 'pwr_state'
+>  - correct unsigned 'val' is never less than zero
+>  - correct 'tas_dev' could be null
+>=20
+> Signed-off-by: Kevin Lu <luminlong@139.com>
+
+Your signoff needs to go before the ---, tooling will remove anything
+after the --- but your signoff needs to stay.
+
+>  snd-soc-tas2562-objs :=3D tas2562.o
+>  snd-soc-tas2764-objs :=3D tas2764.o
+>  snd-soc-tas2780-objs :=3D tas2780.o
+> +snd-soc-tas2781-objs :=3D	tas2781-i2c.o tas2781-dsp.o
+>  # Mux
+
+Please keep the blank line in the file.
+
+> --- /dev/null
+> +++ b/sound/soc/codecs/tas2781-dsp.c
+> @@ -0,0 +1,2261 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * ALSA SoC Texas Instruments TAS2781 Audio Smart Amplifier
+> + *
+
+Please make the entire comment block a C++ one so things look more
+intentional.
+
+> +static const unsigned char crc8_lookup_table[CRC8_TABLE_SIZE] =3D {
+> +	0x00, 0x4D, 0x9A, 0xD7, 0x79, 0x34, 0xE3, 0xAE,
+> +	0xF2, 0xBF, 0x68, 0x25, 0x8B, 0xC6, 0x11, 0x5C,
+
+Should the driver be using one of the crc8_populate_() functions here?
+
+> +	ret =3D check_yram(&crc_data, book, page, reg, len);
+> +	dev_info(tasdevice->dev,
+> +		"isYRAM: Bk 0x%02x, Pg 0x%02x, Rg 0x%02x\n",
+> +		book, page, reg);
+> +	dev_info(tasdevice->dev,
+> +		"isYRAM: crc_data.mnLen 0x%x, len 0x%x, nResult %d\n",
+> +		crc_data.len, len, ret);
+
+There's a lot of logging in this firmware load code which should at
+least be reduced to dbg level if not vdbg, it's pretty loud and it looks
+like at least some of it can be triggered after initial boot.
+
+> +/* max. length of the alsa mixer control name */
+> +#define MAX_CONTROL_NAME		(48)
+
+This should be coming from the ALSA headers.
+
+
+> +{
+> +	struct tasdevice_priv *tas_dev =3D
+> +		(struct tasdevice_priv *)pContext;
+
+The kernel doesn't gennerally use hungarian notation (I see a bunch of
+it in the driver, n_result and p_tasdevice for example), and if there's
+a need to cast away from void that usually means something's gone wrong
+- it looks unneeded here so you can just remove the cast.
+
+> +	if (config_offset + 4 > (int)config_size) {
+> +		dev_err(tas_dev->dev,
+> +			"add config: Out of memory\n");
+
+This isn't OOM though?
+
+> +	cfg_info->blk_data =3D kcalloc(
+> +		cfg_info->nblocks, sizeof(struct tasdev_blk_data *),
+> +		GFP_KERNEL);
+> +	if (!cfg_info->blk_data) {
+> +		dev_err(tas_dev->dev,
+> +			"add config: blk_data alloc failed!\n");
+
+No need to log failures to allocate, the kernel is already pretty loud
+when it runs out of memory.
+
+> +static int tas2781_digital_getvol(struct snd_kcontrol *kcontrol,
+> +       struct snd_ctl_elem_value *ucontrol)
+
+> +	/* Read the primary device as the whole */
+> +	ret =3D tasdevice_dev_read(tas_dev, 0, mc->reg, &val);
+> +	if (ret) {
+> +		dev_err(tas_dev->dev,
+> +		"%s, get digital vol error\n",
+> +		__func__);
+> +		goto out;
+
+Your regmap looked like it already had paging support so I'm not clear
+why this is a custom control - can't you just use the standard ASoC
+helpers, the regmap paging support will work for paged register maps?
+
+> +	}
+> +	val =3D (val > mc->max) ? mc->max : val;
+> +	val =3D mc->invert ? mc->max - val : val;
+
+Please write normal conditional statements, they're easier to read than
+the ternery opreator.
+
+> +static int tas2781_digital_putvol(struct snd_kcontrol *kcontrol,
+> +	struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_component *codec
+> +		=3D snd_soc_kcontrol_component(kcontrol);
+> +	struct tasdevice_priv *tas_dev =3D
+> +		snd_soc_component_get_drvdata(codec);
+> +	struct soc_mixer_control *mc =3D
+> +		(struct soc_mixer_control *)kcontrol->private_value;
+> +	int val;
+> +	int i, ret =3D 0;
+
+Please run the mixer-test selftest on a card with this device, it'll
+tell you that this function doesn't return 1 on value changes so doesn't
+generate events for changes.  Similar issues with a lot of other custom
+controls.
+
+> +static const struct snd_kcontrol_new tas2781_snd_controls[] =3D {
+> +	SOC_SINGLE_RANGE_EXT_TLV("Amp Gain Volume", TAS2781_AMP_LEVEL,
+> +		1, 0, 20, 0, tas2781_amp_getvol,
+> +		tas2781_amp_putvol, amp_vol_tlv),
+> +	SOC_SINGLE_RANGE_EXT_TLV("Digital Volume Control", TAS2781_DVC_LVL,
+> +		0, 0, 200, 1, tas2781_digital_getvol,
+> +		tas2781_digital_putvol, dvc_tlv),
+
+Control names for volumes should end with Volume, see control-names.rst.
+
+> +static int tasdevice_info_programs(struct snd_kcontrol *kcontrol,
+> +			struct snd_ctl_elem_info *uinfo)
+> +{
+> +	struct snd_soc_component *codec
+> +		=3D snd_soc_kcontrol_component(kcontrol);
+> +	struct tasdevice_priv *p_tasdevice =3D
+> +		snd_soc_component_get_drvdata(codec);
+> +	struct tasdevice_fw *tas_fw =3D p_tasdevice->fmw;
+> +
+> +	uinfo->type =3D SNDRV_CTL_ELEM_TYPE_INTEGER;
+> +	/* Codec Lock Hold*/
+> +	mutex_lock(&p_tasdevice->codec_lock);
+> +	uinfo->count =3D 1;
+> +	uinfo->value.integer.min =3D 0;
+> +	uinfo->value.integer.max =3D (int)tas_fw->n_programs;
+> +	/* Codec Lock Release*/
+> +	mutex_unlock(&p_tasdevice->codec_lock);
+
+Why does this need a lock - what might be changing?  The casting is
+suspicious too.
+
+> +static void tasdevice_rca_ready(const struct firmware *fmw,
+> +	void *context)
+> +{
+
+> +	mutex_lock(&tas_dev->codec_lock);
+> +	rca =3D &(tas_dev->rcabin);
+> +	fw_hdr =3D &(rca->fw_hdr);
+> +	if (unlikely(!fmw) || unlikely(!fmw->data)) {
+
+If you're not in a *very* hot path it's seldom useful to annotate with
+likely() or unlikely().
+
+> +static void tasdevice_enable_irq(
+> +	struct tasdevice_priv *tas_dev, bool enable)
+> +{
+> +	if (enable) {
+> +		if (tas_dev->irq_info.is_irq_enable)
+> +			return;
+> +		if (gpio_is_valid(tas_dev->irq_info.irq_gpio))
+> +			enable_irq(tas_dev->irq_info.irq);
+> +		tas_dev->irq_info.is_irq_enable =3D true;
+
+The driver shouldn't need to care if the interrupt is implemented with
+something that can also be a GPIO, and indeed I can't see anything that
+actually looks at the GPIO other than these checks.  The check for
+double enalbes also seems suspicious, I don't think it's needed but...
+
+> +	} else {
+> +		if (gpio_is_valid(tas_dev->irq_info.irq_gpio))
+> +			disable_irq_nosync(tas_dev->irq_info.irq);
+
+=2E..it's certainly not matched in the disable path.  In general it looks
+like this function is just redundant and could be replaced by
+enable_irq()/disable_irq() calls in the callers, though I'm not sure
+it's needed at all.
+
+> +static void tasdevice_set_power_state(
+> +	struct tasdevice_priv *tas_dev, int state)
+> +{
+> +	switch (state) {
+> +	case 0:
+> +		schedule_delayed_work(&tas_dev->tuning_switch_wrk,
+> +			msecs_to_jiffies(20));
+> +		break;
+> +	default:
+> +		if (!(tas_dev->pstream || tas_dev->cstream)) {
+> +			if (tas_dev->irq_work_func)
+> +				tasdevice_enable_irq(tas_dev, false);
+> +			tasdevice_select_cfg_blk(tas_dev,
+> +				tas_dev->rcabin.profile_cfg_id,
+> +				TASDEVICE_BIN_BLK_PRE_SHUTDOWN);
+> +		}
+> +		break;
+> +	}
+
+It's really not clear what thisis supposed to do - what are the two
+power states here?
+
+> +static int tasdevice_dapm_event(struct snd_soc_dapm_widget *w,
+> +			struct snd_kcontrol *kcontrol, int event)
+> +{
+> +	struct snd_soc_component *codec =3D snd_soc_dapm_to_component(w->dapm);
+> +	struct tasdevice_priv *tas_dev =3D snd_soc_component_get_drvdata(codec);
+> +	int stream;
+> +
+> +	/* Codec Lock Hold */
+> +	mutex_lock(&tas_dev->codec_lock);
+> +	stream =3D strcmp(w->name, "SPK") ? SNDRV_PCM_STREAM_PLAYBACK :
+> +		SNDRV_PCM_STREAM_CAPTURE;
+> +
+> +	switch (event) {
+> +	case SND_SOC_DAPM_POST_PMU:
+> +		dev_info(tas_dev->dev, "SND_SOC_DAPM_POST_PMU\n");
+
+dev_info() on DAPM events is going to be way too noisy, there's a lot of
+logging in the core so you can probably just remove this.
+
+> +	case SND_SOC_DAPM_PRE_PMD:
+> +		dev_info(tas_dev->dev, "SND_SOC_DAPM_PRE_PMD\n");
+> +		/* stop DSP only when both playback and capture streams
+> +		 * are deactivated
+> +		 */
+> +		if (stream =3D=3D SNDRV_PCM_STREAM_PLAYBACK)
+> +			tas_dev->pstream =3D 0;
+> +		else
+> +			tas_dev->cstream =3D 0;
+> +		if (tas_dev->pstream !=3D 0 || tas_dev->cstream !=3D 0)
+> +			goto out;
+
+It would probably be easier to have a supply widget that feeds both the
+ASI and speaker widgets, that way DAPM will reference count for you and
+the driver can just handle the event without these checks.
+
+> +static int tasdevice_hw_params(struct snd_pcm_substream *substream,
+> +	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+> +{
+> +	struct tasdevice_priv *tas_dev =3D snd_soc_dai_get_drvdata(dai);
+> +	unsigned int fsrate;
+> +	unsigned int slot_width;
+> +	int bclk_rate;
+> +	int rc =3D 0;
+> +
+> +	dev_info(tas_dev->dev, "%s: %s\n",
+> +		__func__, substream->stream =3D=3D SNDRV_PCM_STREAM_PLAYBACK ?
+> +		"Playback":"Capture");
+
+Again, too much logging.  The driver should be silent during normal
+operation - some logging on boot or error is fine but userspace
+shouldn't be able to spam the logs and hide other information.
+
+> +static int tasdevice_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+> +	int clk_id, unsigned int freq, int dir)
+> +{
+> +	struct tasdevice_priv *tas_dev =3D snd_soc_dai_get_drvdata(codec_dai);
+> +
+> +	dev_info(tas_dev->dev,
+> +		"%s: clk_id =3D %d, freq =3D %u, CLK direction %s\n",
+> +		__func__, clk_id, freq,
+> +		dir =3D=3D TASDEVICE_CLK_DIR_OUT ? "OUT":"IN");
+> +
+> +	return 0;
+> +}
+
+You can just remove this, it doesn't do anything except log.
+
+> +static void tasdevice_codec_remove(
+> +	struct snd_soc_component *codec)
+> +{
+
+Weird indentation here.
+
+> +static void irq_work_routine(struct work_struct *pWork)
+> +{
+> +	struct tasdevice_priv *tas_dev =3D
+> +		container_of(pWork, struct tasdevice_priv,
+> +		irq_info.irq_work.work);
+> +
+> +	mutex_lock(&tas_dev->codec_lock);
+> +	if (tas_dev->runtime_suspend) {
+> +		dev_info(tas_dev->dev, "%s, Runtime Suspended\n", __func__);
+> +		goto end;
+> +	}
+> +	/*Logical Layer IRQ function, return is ignored*/
+> +	if (tas_dev->irq_work_func)
+> +		tas_dev->irq_work_func(tas_dev);
+> +	else
+> +		dev_info(tas_dev->dev,
+> +			"%s, irq_work_func is NULL\n", __func__);
+> +end:
+> +	mutex_unlock(&tas_dev->codec_lock);
+> +}
+
+There is only one function that's ever assigned for the irq_work_func,
+just inline it and don't bother with the pointer in the driver
+structure - that should be a lot simpler.
+
+> +static void tas2781_irq_work_func(struct tasdevice_priv *tas_dev)
+> +{
+> +	int rc =3D 0;
+> +	unsigned int reg_val =3D 0, array_size =3D 0, i =3D 0, ndev =3D 0;
+> +	unsigned int int_reg_array[] =3D {
+> +		TAS2781_REG_INT_LTCH0,
+> +		TAS2781_REG_INT_LTCH1,
+> +		TAS2781_REG_INT_LTCH1_0,
+> +		TAS2781_REG_INT_LTCH2,
+> +		TAS2781_REG_INT_LTCH3,
+> +		TAS2781_REG_INT_LTCH4};
+> +
+> +	tasdevice_enable_irq(tas_dev, false);
+
+It needs to be a lot clearer what will reenable the interrupt - some
+comments would help, I see there's some interlock with tuning_switch_routin=
+e()
+but I'm not clear what that does...
+
+> +	array_size =3D ARRAY_SIZE(int_reg_array);
+> +
+> +	for (ndev =3D 0; ndev < tas_dev->ndev; ndev++) {
+> +		for (i =3D 0; i < array_size; i++) {
+> +			rc =3D tasdevice_dev_read(tas_dev,
+> +				ndev, int_reg_array[i], &reg_val);
+> +			if (!rc)
+> +				dev_info(tas_dev->dev,
+> +					"INT STATUS REG 0x%04x=3D0x%02x\n",
+> +					int_reg_array[i], reg_val);
+> +			else
+> +				dev_err(tas_dev->dev,
+> +					"Read Reg 0x%04x error(rc=3D%d)\n",
+> +					int_reg_array[i], rc);
+> +		}
+> +	}
+> +}
+
+=2E..and this seems to just read the interrupt status registers and log
+the results so do we even need to enable the interrupt?
+
+> +static int tasdevice_parse_dt(struct tasdevice_priv *tas_dev)
+> +{
+> +	struct device_node *np =3D tas_dev->dev->of_node;
+> +	int rc =3D 0, i =3D 0, ndev =3D 0;
+> +	unsigned int dev_addrs[max_chn];
+> +	struct i2c_client *client =3D (struct i2c_client *)tas_dev->client;
+
+If you're adding DT bindings you need to send a DT bindings document.
+
+> +static int tasdevice_change_chn_book(struct tasdevice_priv *tas_dev,
+> +	enum channel chn, int book)
+> +{
+
+As I said earlier the regmap uses ranges so I'm not clear why there's
+open coding of page changing?
+
+> +static void tas2781_set_global_mode(struct tasdevice_priv *tas_dev)
+> +{
+> +	int i =3D 0;
+> +	int ret =3D 0;
+
+What's all this global mode stuff about?  It's not clear from the code.
+
+> +	mutex_init(&tas_dev->codec_lock);
+> +	ret =3D devm_snd_soc_register_component(tas_dev->dev,
+> +		&soc_codec_driver_tasdevice,
+> +		tasdevice_dai_driver, ARRAY_SIZE(tasdevice_dai_driver));
+> +	if (ret)
+> +		dev_err(tas_dev->dev, "%s: codec register error:0x%08x\n",
+> +			__func__, ret);
+> +
+> +	INIT_DELAYED_WORK(&tas_dev->irq_info.irq_work, irq_work_routine);
+> +	tas_dev->irq_info.is_irq_enable =3D false;
+
+Shouldn't this happen before we register with the core?
+
+> +static int tasdevice_pm_suspend(struct device *dev)
+> +{
+> +	struct tasdevice_priv *tas_dev =3D dev_get_drvdata(dev);
+> +
+> +	mutex_lock(&tas_dev->codec_lock);
+> +	tas_dev->runtime_suspend =3D true;
+> +
+> +	if (tas_dev->irq_work_func) {
+> +		if (delayed_work_pending(&tas_dev->irq_info.irq_work)) {
+> +			dev_dbg(tas_dev->dev, "cancel IRQ work\n");
+> +			cancel_delayed_work_sync(&tas_dev->irq_info.irq_work);
+> +		}
+> +	}
+
+Just cancelling the work unconditionally should do the right thing,
+though given that there's no configuration done for the device it's
+unclear why we're implementing runtime suspend at all?
+
+> +static int tasdevice_i2c_probe(struct i2c_client *i2c,
+> +	const struct i2c_device_id *id)
+> +{
+> +	struct tasdevice_priv *tas_dev =3D NULL;
+> +	int ret =3D 0;
+> +
+> +	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_I2C)) {
+> +		dev_err(&i2c->dev,
+> +			"%s: I2C check failed\n", __func__);
+> +		ret =3D -ENODEV;
+> +		goto out;
+> +	}
+
+Why the functionality check?
+
+--lQU1DPpVCHsKNNEx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQHovsACgkQJNaLcl1U
+h9Aelgf/WkJn8VsG53rO+GHNts0WNAKXwXm02eKypc7LCO+LntmsSCFmYuyLZPuN
+byT5pIl41XMMy25kgBzpoenM25BmPUZxuC37FJHR2KPFznIJKOX2sOnqq46vfv2J
+YPpwDE1JVmLS9Cpy/mRMFmRw1UemcVE9GmtOnQebtOVrvzI8/AMAb9wTnQNM3E27
+U5P/esjgRJ1rvd8/hVUSnTTuNNaCzB+vv5k4JdSZsc6plI/hh4z0J95ZidGM/29w
+pjv328Jtji0GfxJ1I5P3oqcfc2ql7tBGpxS5GsX9NhJTEfP5c/toQRexrdMOefEm
+Dl2wa8Xa8LDJHucRLqyzs0m9KQ/JRw==
+=+zaI
+-----END PGP SIGNATURE-----
+
+--lQU1DPpVCHsKNNEx--
