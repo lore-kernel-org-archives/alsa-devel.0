@@ -4,107 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9B74C6FD1B
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Mar 2023 15:52:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D888C6FD1B
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Mar 2023 16:08:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EFBA814B3;
-	Tue,  7 Mar 2023 16:51:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFBA814B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6871014BE;
+	Tue,  7 Mar 2023 17:07:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6871014BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678204365;
-	bh=S2jQAjivcxngj4YUsJsisYUEXEAEB8jJd7V/HXufd2Q=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	s=default; t=1678205290;
+	bh=XFYQawohbSYr8bhF+dM6UVdxGFOMa+fj/08Qh7g3brg=;
+	h=Date:From:To:Subject:CC:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=HMAWVi7K922ZX8HU9sey5zQsJg2aTAJsfG/1Zz5lghqqChrTo4P2OZzG9Zf1VawCU
-	 O7JzebDmtycpPCp1NZWJWPFkrZAAJMjDXEXbv4rk307wRBvKteFh819xrKJS631X4p
-	 I+K/gJ9XYVVuZWY6QCRgFCFqGGxKY9YfgVSZDvd4=
+	b=evCu1w4Dl1HFyK6Ude257mdAksMBfl1J+N3OP48/NN56xsmfHX9khyMA9qcDU7x/I
+	 zgZSztCoc8tBuqUV9Y8AvoN4iBarl4aCbUUoknkMdRrVvwQ4ToKV5GdzshSs/0m65v
+	 Zii7MsYRMHhw13iISi1lvEmfl4YW++ItWPdBw7cs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A879F8042F;
-	Tue,  7 Mar 2023 16:51:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E671F80093;
+	Tue,  7 Mar 2023 17:06:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A35CFF8042F; Tue,  7 Mar 2023 16:51:27 +0100 (CET)
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com
- [IPv6:2607:f8b0:4864:20::333])
+	id B70D2F8042F; Tue,  7 Mar 2023 17:06:54 +0100 (CET)
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com
+ [IPv6:2a00:1450:4864:20::52c])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F1C2AF800DF
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2023 16:51:17 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1C2AF800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id 86845F800DF
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2023 17:06:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86845F800DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=ofWVW8v5
-Received: by mail-ot1-x333.google.com with SMTP id
- r23-20020a05683001d700b00690eb18529fso7396815ota.1
+ header.s=20210112 header.b=RATBaQBy
+Received: by mail-ed1-x52c.google.com with SMTP id j11so34785797edq.4
         for <alsa-devel@alsa-project.org>;
- Tue, 07 Mar 2023 07:51:17 -0800 (PST)
+ Tue, 07 Mar 2023 08:06:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678204276;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=yaCugjNm/G2Z6PUshJITW/CcWRfLta4oMrbycqzUiTw=;
-        b=ofWVW8v5IS/sfA2wpQoe3EPCDzB6NbRGvZfG/XP5+Rgr2hhIxEHlRTtgPHdftwvUmN
-         V+4dLMf0bX3Qtj7+LeSTS1X576ZrS+iOxNml5NFce7UsaBKtgmOeXldVQwZrloheumYa
-         1EnC/9u7bbFYEzYJluPMGfBAALrjxz5dZFVWlf6CgQ9LhKi8qBFy8ZKYIi886g9AZxN5
-         9nQLu/EslJ3R0E+dCly00J/aWgyyhIX06tQgO2UYfML/MMtqNdpr2ArH7ySZ8BDEyn+a
-         LUEqyjRwJ1XQ6sxvxt9xhIn/1hafWFK6DhzqLToSds8v3TVrWzS/N/9aTxREMpitQJ+F
-         911w==
+        d=gmail.com; s=20210112; t=1678205208;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=o0QtJFX8gxtNTjJ6GRcfo1ZqDPziz/DQaZAItDNtjVA=;
+        b=RATBaQByyM1vTgAR8CPSxwA3nz4m5X4UQtn6YetWJMv1flgi7p3hAKMD5I3y6gX+2t
+         p/ZSMtgwOaAqmBRCFbLIFh6En+U52eCYXXHx3TfA22V3R4oiUV79gTB7gcfcWwdWb9Wd
+         u6N4MTyNtyFbb+tn+xMmhU0PNc7LvD5TzDqls1HXhPFWejrKNNZbyTf3XD/8v3JmEmNJ
+         pXrBXPdQ6V+cjBgoD3R6CQRcLWp8oThV4Blunfr/PUuN1qORsF7VJhJZamQ2bjlXLTjw
+         kbVkNunLRPH/zqeTusMeB3gf4upHhhcVejN60f6FswuXuTobxKNoenacxP5xkvYcS6yp
+         ML0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678204276;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yaCugjNm/G2Z6PUshJITW/CcWRfLta4oMrbycqzUiTw=;
-        b=xGkQhifpUteO17/bw4EssLRinO+n+bXSKoCaF/5V5kvUt97hKpDQvKwRwEeOok4x8K
-         jKFLFQyaHSzp/vq8nL/CING0FQkE0DCnc7g9lkqgoSW/Vltiv0aanWBQYr7FSCROBFnF
-         xFi2ihWJDB1ZHeDCGHRirwBRGgu1gwfr6wO260qK3MnO73rEQcEXmIWM69OLtWc/JVaC
-         +G2j8l+10I9bUI2pWneq0FvjPWkNMQMPdf7IrTQrKyF5nIW5OOsnkUOCXdL0gqjsv3eb
-         cEShLHTUlmaErdbTxB6oPSeyAZEuLS9yUW7nAwJNVvlb4iGr8AnOQzQNiKVoDjciB6iI
-         4uYA==
-X-Gm-Message-State: AO0yUKXqG5cfhxsM4QeinFJ6At0W+6V9zgobYzUiz3ojlvKVjfAHu8nd
-	6q5y0in3FPoNrFoSOBXSTes=
+        d=1e100.net; s=20210112; t=1678205208;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=o0QtJFX8gxtNTjJ6GRcfo1ZqDPziz/DQaZAItDNtjVA=;
+        b=OJUSfPzhMf7b20J6UlUeqCD5VKDyIh8FE1HoCaS9unP5drYVLwrrNbfNUIpNZP5jl5
+         B9Ujd9tX8sGclVe2PrrXMlhg1O7WNnXtXjwZ5YkB1ztANH6K/I21Hny5VySg1y5D5im1
+         vVyO8WkkP8d6tldebCQCmJ0AenHvVCk7e74q6EoP1T0phPllq6EEalP+VtVsvW5A9HAl
+         G+aQLA6GLiTG2FnOWuKtCT/SUGVKzoVsY15JXpBpmoYWcN82a0rgQdBJr2Z65bOtc2B8
+         LYNbOv/9nZ5VBRQ9qBa2yVjnV3Dc1WniYgjX75ZdmOmw4oXt7Zmg1LSsczSCc3U4C0Eb
+         WV7Q==
+X-Gm-Message-State: AO0yUKUR0Jje1GoBvs2RnNpIovtOOm5FrCQm/BDuZFcFmhLFRsRplMdt
+	HYHyVFpp+igr4wVrIty0xSY=
 X-Google-Smtp-Source: 
- AK7set+4tpOoPJzih4H3Nbev61S29Ht5G6Nq1DQL8Bcj7hhAxFBYuresSasJED2ckXYChGY6Tob/bQ==
-X-Received: by 2002:a9d:17cd:0:b0:670:885e:f8ff with SMTP id
- j71-20020a9d17cd000000b00670885ef8ffmr6011313otj.8.1678204275839;
-        Tue, 07 Mar 2023 07:51:15 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+ AK7set+9XuI/AXQypsOmDsZUmZRRNOxIrcqgRrYWkGACH7MQK4UwuDUIkPfngKJebvbaoErRNkhgGw==
+X-Received: by 2002:a17:906:ce46:b0:8b1:ce91:a40c with SMTP id
+ se6-20020a170906ce4600b008b1ce91a40cmr13493030ejb.53.1678205208204;
+        Tue, 07 Mar 2023 08:06:48 -0800 (PST)
+Received: from localhost ([102.36.222.112])
         by smtp.gmail.com with ESMTPSA id
- b26-20020a9d479a000000b0068bcb44e7f5sm5417243otf.68.2023.03.07.07.51.14
+ w22-20020a17090633d600b008b907006d5dsm6389333eja.173.2023.03.07.08.06.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Mar 2023 07:51:15 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: Support Opensource <support.opensource@diasemi.com>
-Subject: [PATCH] ASoC: da7219: Initialize jack_det_mutex
-Date: Tue,  7 Mar 2023 07:51:11 -0800
-Message-Id: <20230307155111.1985522-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
+        Tue, 07 Mar 2023 08:06:45 -0800 (PST)
+Date: Tue, 7 Mar 2023 19:06:29 +0300
+From: Dan Carpenter <error27@gmail.com>
+To: sbinding@opensource.cirrus.com
+Subject: [bug report] ALSA: hda: cs35l41: Ensure firmware/tuning pairs are
+ always loaded
+Message-ID: <7a8aa6df-5ff0-43a6-96bd-c591da97d0cd@kili.mountain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: KRZRFFTNM3A2GLQ3S55CK6YHJX4FQJDL
-X-Message-ID-Hash: KRZRFFTNM3A2GLQ3S55CK6YHJX4FQJDL
-X-MailFrom: groeck7@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Message-ID-Hash: 4KOJGBSAZCWKFCP4FKJFFAPHSMHDXSWG
+X-Message-ID-Hash: 4KOJGBSAZCWKFCP4FKJFFAPHSMHDXSWG
+X-MailFrom: error27@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
- David Rau <David.Rau.opensource@dm.renesas.com>
+CC: alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KRZRFFTNM3A2GLQ3S55CK6YHJX4FQJDL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4KOJGBSAZCWKFCP4FKJFFAPHSMHDXSWG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,70 +108,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The following traceback is reported if mutex debugging is enabled.
+Hello Stefan Binding,
 
-DEBUG_LOCKS_WARN_ON(lock->magic != lock)
-WARNING: CPU: 0 PID: 17 at kernel/locking/mutex.c:950 __mutex_lock_common+0x31c/0x11d4
-Modules linked in:
-CPU: 0 PID: 17 Comm: kworker/0:1 Not tainted 5.10.172-lockdep-21846-g849884cfca5a #1 fd2de466502012eb58bc8beb467f07d0b925611f
-Hardware name: MediaTek kakadu rev0/rev1 board (DT)
-Workqueue: events da7219_aad_jack_det_work
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-pc : __mutex_lock_common+0x31c/0x11d4
-lr : __mutex_lock_common+0x31c/0x11d4
-sp : ffffff80c0317ae0
-x29: ffffff80c0317b50 x28: ffffff80c0317b20
-x27: 0000000000000000 x26: 0000000000000000
-x25: 0000000000000000 x24: 0000000100000000
-x23: ffffffd0121d296c x22: dfffffd000000000
-x21: 0000000000000000 x20: 0000000000000000
-x19: ffffff80c73d7190 x18: 1ffffff018050f52
-x17: 0000000000000000 x16: 0000000000000000
-x15: 0000000000000000 x14: 0000000000000000
-x13: 0000000000000001 x12: 0000000000000001
-x11: 0000000000000000 x10: 0000000000000000
-x9 : 83f0d991da544b00 x8 : 83f0d991da544b00
-x7 : 0000000000000000 x6 : 0000000000000001
-x5 : ffffff80c03176a0 x4 : 0000000000000000
-x3 : ffffffd01067fd78 x2 : 0000000100000000
-x1 : ffffff80c030ba80 x0 : 0000000000000028
-Call trace:
-__mutex_lock_common+0x31c/0x11d4
-mutex_lock_nested+0x98/0xac
-da7219_aad_jack_det_work+0x54/0xf0
-process_one_work+0x6cc/0x19dc
-worker_thread+0x458/0xddc
-kthread+0x2fc/0x370
-ret_from_fork+0x10/0x30
-irq event stamp: 579
-hardirqs last enabled at (579): [<ffffffd012442b30>] exit_to_kernel_mode+0x108/0x138
-hardirqs last disabled at (577): [<ffffffd010001144>] __do_softirq+0x53c/0x125c
-softirqs last enabled at (578): [<ffffffd01009995c>] __irq_exit_rcu+0x264/0x4f4
-softirqs last disabled at (573): [<ffffffd01009995c>] __irq_exit_rcu+0x264/0x4f4
----[ end trace 26da674636181c40 ]---
+The patch cd40dad2ca91: "ALSA: hda: cs35l41: Ensure firmware/tuning
+pairs are always loaded" from Feb 13, 2023, leads to the following
+Smatch static checker warning:
 
-Initialize the mutex to fix the problem.
+	sound/pci/hda/cs35l41_hda.c:303 cs35l41_request_firmware_files()
+	warn: passing freed memory '*wmfw_firmware'
 
-Cc: David Rau <David.Rau.opensource@dm.renesas.com>
-Fixes: 7fde88eda855 ("ASoC: da7219: Improve the IRQ process to increase the stability")
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- sound/soc/codecs/da7219-aad.c | 2 ++
- 1 file changed, 2 insertions(+)
+sound/pci/hda/cs35l41_hda.c
+    291         release_firmware(*wmfw_firmware);
+    292         kfree(*wmfw_filename);
+                      ^^^^^^^^^^^^^^
 
-diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
-index 4a4f09f924bc..e3d398b8f54e 100644
---- a/sound/soc/codecs/da7219-aad.c
-+++ b/sound/soc/codecs/da7219-aad.c
-@@ -968,6 +968,8 @@ int da7219_aad_init(struct snd_soc_component *component)
- 	INIT_WORK(&da7219_aad->hptest_work, da7219_aad_hptest_work);
- 	INIT_WORK(&da7219_aad->jack_det_work, da7219_aad_jack_det_work);
- 
-+	mutex_init(&da7219_aad->jack_det_mutex);
-+
- 	ret = request_threaded_irq(da7219_aad->irq, da7219_aad_pre_irq_thread,
- 				   da7219_aad_irq_thread,
- 				   IRQF_TRIGGER_LOW | IRQF_ONESHOT,
--- 
-2.39.2
+    293 
+    294         /* fallback try cirrus/part-dspN-fwtype.wmfw */
+    295         ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
+                                                             ^^^^^^^^^^^^^
+Assume kasprintf() fails at the start of the function.  Better to set
+*wmfw_firmware = NULL as the very first line of the function.
 
+    296                                             CS35L41_FIRMWARE_ROOT, NULL, NULL, -1, "wmfw");
+    297         if (!ret)
+    298                 /* fallback try cirrus/part-dspN-fwtype.bin */
+    299                 ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
+    300                                                     CS35L41_FIRMWARE_ROOT, NULL, NULL, -1, "bin");
+    301 
+    302         if (ret) {
+--> 303                 release_firmware(*wmfw_firmware);
+                                         ^^^^^^^^^^^^^^
+Use after free.
+
+    304                 kfree(*wmfw_filename);
+    305                 dev_warn(cs35l41->dev, "Unable to find firmware and tuning\n");
+    306         }
+    307         return ret;
+    308 }
+
+regards,
+dan carpenter
