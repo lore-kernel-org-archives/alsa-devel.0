@@ -4,30 +4,29 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78850C678D5
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Mar 2023 13:30:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69EB2C678D5
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Mar 2023 13:30:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 521F01462;
-	Tue,  7 Mar 2023 14:29:36 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 521F01462
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2919F147F;
+	Tue,  7 Mar 2023 14:29:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2919F147F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678195826;
-	bh=8/xHit2M3vR6xWlZL8zw47LcECtWXAXg2M4H75PXG6M=;
+	s=default; t=1678195833;
+	bh=b6yDcKAUilXrtO9qE5oatGICUceedCxQ25aLCXK0jbw=;
 	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From:Reply-To:Cc:From;
-	b=tVxINI6Ls5HalMoRlY/7JKUoqJEKnz7xf/Wn3ymbl/mEFwqICvUEUkq2Ph3NvPScc
-	 yb09bL23cMw190OF/v1lXYEhg0qLL6oAbdEjocdioHiQd9VXnW5gDw/PMU9v5f9jdU
-	 ERT5CnZBXXjwYJRqCCwOqENYJ8jbIYdSTSxooBrI=
+	b=H7XbFsVX7UrbhtSG3SyapFe7wF46lKFEea2TAI2ZtR1RYxoLHCFlNq5B89XC00Wrq
+	 56wKSYv2EzcsDOeZ8NIVLRLjIwPHU0V42UDXwMM9yMSzXWgje/IBXy+88t6ngj0Cl0
+	 VZu7qIuwiwplJaLlcdv2D0kSXbBNduVTKe+Bycas=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6ADE5F80551;
-	Tue,  7 Mar 2023 14:28:20 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAFB3F8055B;
+	Tue,  7 Mar 2023 14:28:22 +0100 (CET)
 To: <vkoul@kernel.org>
-Subject: [PATCH V6 4/8] soundwire: amd: enable build for AMD SoundWire manager
- driver
-Date: Tue, 7 Mar 2023 19:01:31 +0530
+Subject: [PATCH V6 7/8] soundwire: amd: handle SoundWire wake enable interrupt
+Date: Tue, 7 Mar 2023 19:01:34 +0530
 In-Reply-To: <20230307133135.545952-1-Vijendar.Mukunda@amd.com>
 References: <20230307133135.545952-1-Vijendar.Mukunda@amd.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
@@ -41,7 +40,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KHFC7A2AO3O5XR344A5TGRUABYMV7ZOM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WUBSEM2JBE5IBJRBSMG5GYFAGQT75IPC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -51,7 +50,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <167819569917.26.14787124953803531960@mailman-core.alsa-project.org>
+ <167819570124.26.17364005822466614707@mailman-core.alsa-project.org>
 From: Vijendar Mukunda via Alsa-devel <alsa-devel@alsa-project.org>
 Reply-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
@@ -66,73 +65,76 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8B084F8053D; Tue,  7 Mar 2023 14:28:12 +0100 (CET)
+	id 7C645F80552; Tue,  7 Mar 2023 14:28:16 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
 	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_PASS,SPF_PASS,
 	URIBL_BLOCKED shortcircuit=no autolearn=ham autolearn_force=no
 	version=3.4.6
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam04on2062d.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7e8d::62d])
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com
+ (mail-mw2nam04on20618.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7e8c::618])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DBBA5F8051B
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2023 14:27:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBBA5F8051B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0EA23F80534
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2023 14:28:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0EA23F80534
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=StYxF7sp
+ header.s=selector1 header.b=zotZLHz3
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AWOot65iAI/4Gn281ocWJseQHqMhNmsV0xZb8fioGiZfFnQ1d9e1iIU/uJpKDlnngpAJ1OoGzkLAfL2ZxXygyAjPCT8b8AnS7qlPbIy2OnQa+5S5mXkeeq5XjpHz5BOeC7Rea0PpO2ChHWdH8nDMMZxuuCJHxHQ69MS/uH76Xs3ny2lp8k52700A57GKbVgDJIMVg4Rd2D6+6B7Nr9ViG7LTHpsm06G2NfSg2p+eRLrIdDroE7MHpAyjtC+lx6yWzFlIrzm+75RA/cdurXWPKe+Je/PTVwXjiU1hetOsifgDIZTUjHNy+seaJmBid40sBR0dzk+xTgwYIqDBsHkQEA==
+ b=mxWZuH4rvA5eXBMfMmB9FqsIc+JNBmdGM0+5zU1jnxDAc/zUmYA6bxEq8UPebQp/be9VhmjqM0fF/66KZFxiykz4FespAbEI53RfhItCU8FKay/gDI9UPhCM11G9uzkXNTDg4e1FeF3/3t/8QuDVDpzJUVekLfx2ZgfqJu87Zl2La4raXwRllkUNukcvFNbBUFkqN3eAVQua4Op2esRyxZzwZZV/QfIMeF0eBEU6RV/TH5ZaigAaJPanxvS/vbyjbEsMqwtlWPhVVkPuUxozmaamXYXEozgl2fTIqMo58fQYHd5BeFyMjZU6WthJiT8Yq5B2MY2Gjyu5MG6zTA2yTg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1fvAOQfxaPlgicNaCbaA/aLMaa2XDpwKEQXR95J+tCU=;
- b=lQj1eo9pxPwK9OjsrnSTMOFlyyvU1CPj6YNhha3hk2KjJna+JgCIzsrMNXidIo+kaddtor6lUtXaCmZHEkuBsyxRX5Ze/HP8hBQ2Mw281MM6Lh65230VJFM+Bk8ff2zc6f9+pHuuisfgB3oA9X/giLNNIENRDf+b5BIW1oPkFt37PMqeB2TJ5fV4DLRvB6aLI6uFx3kflntcjflzRT9uZRvSXCAZx5I/VPr5mYeNxIfH74DKcTMppANhRW8I5qNfWCuKuFEbwCg4uFkhtao40sepI2KG9lW+Hlwl8cgIRUfU9ItMWJw3o0/n1JzA01neQ3V66eDf34wwaqkAxFTiGg==
+ bh=m/nidqTc+ifLXEmwv71kIvEHYLzPNr0tMT2XSQej2c8=;
+ b=NL07KVSgCRN06P1e0i16/w9miPifzBfI4JAZacf3N8jUGcrXAmze5LOM4f0YHBxG49x/nucO4q6z64U04o8AwMjYDlkV90WtWK7n+jZ+QSjpb5hD/7AewPEw25HwUuEYX4nPsF2GUuSwZGgpYIV4WTaINc7FDv0nc3Mj65aC5QjTJQCRhEQp33oF51KT3f+xsOrQDAXoJIVunlmwOtPgpfxQit4rU3goqpRJKxAvsS2TVHZIPY+hzKfEjexF0WJS0xXTJEwMCprvDKTGY9P45j+317gjhitnhMABnjYVVpPnWrsoujjx6Y51HQjwddl9SS0RGjIh/rW4lVaw2WhrOg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1fvAOQfxaPlgicNaCbaA/aLMaa2XDpwKEQXR95J+tCU=;
- b=StYxF7spD6Et9fJxoxc3r7H7rjkoFz2J6awlG2gy+GmlBjnQkJoYGLVr1/qHKRMSje9Y/Ds1O5JjX5NaYkPA7//nf0uAehn5MgcK+VX2FDqVVpR1X8Xzt6FxoRt68SRB03VPBFHPn1yw1+gsr6Hwbhvhsv28gBJPm4h56qgYEs4=
-Received: from BN0PR03CA0013.namprd03.prod.outlook.com (2603:10b6:408:e6::18)
- by CH2PR12MB4200.namprd12.prod.outlook.com (2603:10b6:610:ac::16) with
+ bh=m/nidqTc+ifLXEmwv71kIvEHYLzPNr0tMT2XSQej2c8=;
+ b=zotZLHz3WcTTegG3JMZRrVltJ/AwrfusAPN+rx0b3N4FGl4dOyPYc5v3xZMVmlinimpbG72HyMHDtQVareugzNnSLdpizw6fDAiVdAZ0in3qygvOC2ZW7ddEmQS4btvGSbvQRlIEyPsh2UrtvjacimdLwsBAUoKqi9KMcySUsOM=
+Received: from DM6PR02CA0054.namprd02.prod.outlook.com (2603:10b6:5:177::31)
+ by BL3PR12MB6594.namprd12.prod.outlook.com (2603:10b6:208:38d::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6156.29; Tue, 7 Mar
- 2023 13:27:51 +0000
-Received: from BL02EPF0000EE3F.namprd05.prod.outlook.com
- (2603:10b6:408:e6:cafe::d6) by BN0PR03CA0013.outlook.office365.com
- (2603:10b6:408:e6::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6156.28; Tue, 7 Mar
+ 2023 13:28:04 +0000
+Received: from DM6NAM11FT075.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:177:cafe::c) by DM6PR02CA0054.outlook.office365.com
+ (2603:10b6:5:177::31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6156.29 via Frontend
- Transport; Tue, 7 Mar 2023 13:27:51 +0000
+ Transport; Tue, 7 Mar 2023 13:28:04 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BL02EPF0000EE3F.mail.protection.outlook.com (10.167.241.133) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6178.12 via Frontend Transport; Tue, 7 Mar 2023 13:27:51 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT075.mail.protection.outlook.com (10.13.173.42) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6178.16 via Frontend Transport; Tue, 7 Mar 2023 13:28:04 +0000
+Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 7 Mar
- 2023 07:27:51 -0600
+ 2023 07:28:04 -0600
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB07.amd.com
+ (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 7 Mar
+ 2023 05:28:03 -0800
 Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.34
- via Frontend Transport; Tue, 7 Mar 2023 07:27:47 -0600
+ via Frontend Transport; Tue, 7 Mar 2023 07:28:00 -0600
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 To: <vkoul@kernel.org>
-Subject: [PATCH V6 4/8] soundwire: amd: enable build for AMD SoundWire manager
- driver
-Date: Tue, 7 Mar 2023 19:01:31 +0530
-Message-ID: <20230307133135.545952-5-Vijendar.Mukunda@amd.com>
+Subject: [PATCH V6 7/8] soundwire: amd: handle SoundWire wake enable interrupt
+Date: Tue, 7 Mar 2023 19:01:34 +0530
+Message-ID: <20230307133135.545952-8-Vijendar.Mukunda@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230307133135.545952-1-Vijendar.Mukunda@amd.com>
 References: <20230307133135.545952-1-Vijendar.Mukunda@amd.com>
@@ -141,30 +143,30 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0000EE3F:EE_|CH2PR12MB4200:EE_
-X-MS-Office365-Filtering-Correlation-Id: 33b061ba-b572-4132-c64b-08db1f0fc079
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT075:EE_|BL3PR12MB6594:EE_
+X-MS-Office365-Filtering-Correlation-Id: f0847412-2c71-4500-88bd-08db1f0fc827
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	rjyuB4IaWfdOCEXdVtGeaxveEmGz54f/UnIBOEWncEAw1KvVU5mibIvjbe91H8cJnfjmLmvQ7pV3XRy3zUpFiqgX6ZvgU/+g5wrmtDieXT5MTNOswY9zEU1fz8c5uhEcG0haq3hog7aDgqkStRAhkrlwtG/vaLlTDBH7tWuvTbDqeRffXiSe+T39XkPk1c8yw7r0lH7ru9CyDvoKa3ercAubS1CCI1stxH5p6QfGRfkP7I4m7Np7fnJFJYhE+3olhK+oizlXg9HtvJrzIL/POzvwRthptB8976ya8lAlB8DNWO8SNknqTGN8u+pwlhhiAyKJ5TrdYQva8rDSw0SMabMb71ReD5ZD24tYyjq5EnfLlTO3zb/QsN4dRdHQl+2suBxts1n0WhSfGhZWPrGu1NCOoBMvIgmr6HSTB+dvTzljnJbnViXfGyBLbSlK2EOmH4+L0nIzmhu6WtQ+SQUxyJJnPZhJPZsYuA7VD2J+k4tX4m0PSopNoYSXmnE6GmsVEwC/qGtoTcpNhInsi3imWkEAC0Lnn/O4jbullMh6NehGqq8OMffM90Xc2rS8l0qePNy8aNanQ/umUpBIbClcFVK8+1IlgzzsSO32gnCv+BXs/lnKzP907sMApCxlcetdFxA/oYNPpJUvu319eFPPMig0oDcnGosTi/X1tk+KFAXKVyoh9+LbiJymqO34h7wf45RfoWAfPYvAMMppxW8HkKjgCqeCvnYXUxvAHKkjb0M=
+	Em96nQFljapMzif/jOuXyZD/MCrq0WjJSnL8UuhPv6PivhSKfzWNHntT3UCutsYKxI0UqlKf3Kq3UaKDn/DJ/3/jufOyELNcuyEzRZ0A2zLhNGOOKY8SEwquI0T9cRwyPoDRhuYpsWXoss7ag3PwvW2g9P6jursOO4dNyE4vSrBHuvmctfE+bMdZJMaqDpPlDla+VXgb1yosng30KAv6N4ggMd1V9crV5uc4j/+Fgn5erkP7BjeRuE3Zs9gcTjzbUg/vyJVgdXFvHTBma5mWRVBrZOMNf74cVLSuZ2TTem/QoTI/2hbPbPcd4kKfUPIrHfjhKuQ1qLOiESJphFIVMM/VUnl93OWdn9HgZBGUXupzshsYTJJleIf5KqV8e6pkCyfHVvZokUDwWYqa538Mb5ame4qT4gn+NXq1sm1YKN7b+0nZi0CQT3z8sBBkfIQr+14XSO1sIS+eX6VrXyMmp5D5S0u6LSUYM67I/ltVBc+Plznw7Xe6qNzM//rP1kuouplqj2zeCYmXsP9rZp2fX+46JZJLO1Y98SOj48KVf5js0/6wr+6N6dgOetE1iM/FeEocm6WeDBkxFFBKUYJWj6egcnZFVt0dd8D9Mu8ywEHRc0nG9FK/Xk84i5qOLLgFHPyZcmFe8Q2LzcAHCrkxtUP9DBmw4vZbuXOMs08VonXxjYfW15sKcxxrlmus2C8b3MXnmGGsUuB5iwAn9BwBIQjaFvK4RPh/H0/SJj7TX4Q=
 X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(136003)(396003)(39860400002)(346002)(376002)(451199018)(46966006)(36840700001)(40470700004)(2906002)(5660300002)(8936002)(41300700001)(4326008)(70206006)(6916009)(83380400001)(8676002)(70586007)(54906003)(316002)(6666004)(7696005)(478600001)(966005)(40460700003)(1076003)(2616005)(36756003)(40480700001)(47076005)(426003)(336012)(86362001)(186003)(82310400005)(81166007)(82740400003)(26005)(356005)(36860700001)(36900700001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(39860400002)(376002)(346002)(396003)(136003)(451199018)(46966006)(40470700004)(36840700001)(40460700003)(6916009)(966005)(83380400001)(8936002)(41300700001)(336012)(2906002)(2616005)(478600001)(426003)(54906003)(5660300002)(47076005)(7696005)(6666004)(186003)(82740400003)(70206006)(86362001)(70586007)(356005)(316002)(26005)(8676002)(4326008)(36756003)(40480700001)(82310400005)(1076003)(36860700001)(81166007)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2023 13:27:51.6764
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2023 13:28:04.5280
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 33b061ba-b572-4132-c64b-08db1f0fc079
+ f0847412-2c71-4500-88bd-08db1f0fc827
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+ TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	BL02EPF0000EE3F.namprd05.prod.outlook.com
+	DM6NAM11FT075.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4200
-Message-ID-Hash: KHFC7A2AO3O5XR344A5TGRUABYMV7ZOM
-X-Message-ID-Hash: KHFC7A2AO3O5XR344A5TGRUABYMV7ZOM
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6594
+Message-ID-Hash: WUBSEM2JBE5IBJRBSMG5GYFAGQT75IPC
+X-Message-ID-Hash: WUBSEM2JBE5IBJRBSMG5GYFAGQT75IPC
 X-MailFrom: Vijendar.Mukunda@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -185,7 +187,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KHFC7A2AO3O5XR344A5TGRUABYMV7ZOM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WUBSEM2JBE5IBJRBSMG5GYFAGQT75IPC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -194,47 +196,58 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Enable build for SoundWire manager driver for AMD platforms.
+Add wake enable interrupt support for both the SoundWire manager
+instances.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Signed-off-by: Mastan Katragadda <Mastan.Katragadda@amd.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/lkml/20230220100418.76754-5-Vijendar.Mukunda@amd.com
+Link: https://lore.kernel.org/lkml/20230227154801.50319-8-Vijendar.Mukunda@amd.com
 ---
- drivers/soundwire/Kconfig  | 10 ++++++++++
- drivers/soundwire/Makefile |  4 ++++
- 2 files changed, 14 insertions(+)
+ drivers/soundwire/amd_manager.c | 10 ++++++++++
+ drivers/soundwire/amd_manager.h |  1 +
+ 2 files changed, 11 insertions(+)
 
-diff --git a/drivers/soundwire/Kconfig b/drivers/soundwire/Kconfig
-index 2b7795233282..983afe3570b2 100644
---- a/drivers/soundwire/Kconfig
-+++ b/drivers/soundwire/Kconfig
-@@ -46,4 +46,14 @@ config SOUNDWIRE_QCOM
- config SOUNDWIRE_GENERIC_ALLOCATION
- 	tristate
+diff --git a/drivers/soundwire/amd_manager.c b/drivers/soundwire/amd_manager.c
+index c3c0bee57bd1..70e4fcd7e1e0 100644
+--- a/drivers/soundwire/amd_manager.c
++++ b/drivers/soundwire/amd_manager.c
+@@ -869,6 +869,13 @@ static void amd_sdw_update_slave_status(u32 status_change_0to7, u32 status_chang
+ 	}
+ }
  
-+config SOUNDWIRE_AMD
-+	tristate "AMD SoundWire Manager driver"
-+	select SOUNDWIRE_GENERIC_ALLOCATION
-+	depends on ACPI && SND_SOC
-+	help
-+	  SoundWire AMD Manager driver.
-+	  If you have an AMD platform which has a SoundWire Manager then
-+	  enable this config option to get the SoundWire support for that
-+	  device.
++static void amd_sdw_process_wake_event(struct amd_sdw_manager *amd_manager)
++{
++	pm_request_resume(amd_manager->dev);
++	acp_reg_writel(0x00, amd_manager->acp_mmio + ACP_SW_WAKE_EN(amd_manager->instance));
++	acp_reg_writel(0x00, amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_8TO11);
++}
 +
- endif
-diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-index ca97414ada70..5956229d3eb3 100644
---- a/drivers/soundwire/Makefile
-+++ b/drivers/soundwire/Makefile
-@@ -26,3 +26,7 @@ obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel.o
- #Qualcomm driver
- soundwire-qcom-y :=	qcom.o
- obj-$(CONFIG_SOUNDWIRE_QCOM) += soundwire-qcom.o
+ static void amd_sdw_irq_thread(struct work_struct *work)
+ {
+ 	struct amd_sdw_manager *amd_manager =
+@@ -880,6 +887,9 @@ static void amd_sdw_irq_thread(struct work_struct *work)
+ 	status_change_0to7 = acp_reg_readl(amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_0TO7);
+ 	dev_dbg(amd_manager->dev, "[SDW%d] SDW INT: 0to7=0x%x, 8to11=0x%x\n",
+ 		amd_manager->instance, status_change_0to7, status_change_8to11);
++	if (status_change_8to11 & AMD_SDW_WAKE_STAT_MASK)
++		return amd_sdw_process_wake_event(amd_manager);
 +
-+#AMD driver
-+soundwire-amd-y :=	amd_manager.o
-+obj-$(CONFIG_SOUNDWIRE_AMD) += soundwire-amd.o
+ 	if (status_change_8to11 & AMD_SDW_PREQ_INTR_STAT) {
+ 		amd_sdw_read_and_process_ping_status(amd_manager);
+ 	} else {
+diff --git a/drivers/soundwire/amd_manager.h b/drivers/soundwire/amd_manager.h
+index 65bc79d8f7c9..cc1a14731fd4 100644
+--- a/drivers/soundwire/amd_manager.h
++++ b/drivers/soundwire/amd_manager.h
+@@ -189,6 +189,7 @@
+ #define AMD_SDW_CLK_STOP_DONE				1
+ #define AMD_SDW_CLK_RESUME_REQ				2
+ #define AMD_SDW_CLK_RESUME_DONE				3
++#define AMD_SDW_WAKE_STAT_MASK				BIT(16)
+ 
+ enum amd_sdw_cmd_type {
+ 	AMD_SDW_CMD_PING = 0,
 -- 
 2.34.1
 
