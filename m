@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D116C678DB
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Mar 2023 18:31:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C149C678D5
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Mar 2023 19:06:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3DD57152C;
-	Tue,  7 Mar 2023 19:30:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3DD57152C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1CC3D1535;
+	Tue,  7 Mar 2023 20:05:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CC3D1535
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678213892;
+	s=default; t=1678215999;
 	bh=OvNyHpAAeeiTPusi5F0W7Sq5fJ9njNoI5QzTKir0DAQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=gnLYuC7yXgNfVN+V+GPnzhBfazYDan3NvMVwUap4X13YtY9wpJcwfLqWEjOOW5PEM
-	 1GTOfoZMDkc3n51y2GAn7SLhPfAEaPFh1VnV4fs9GVfeF6JLQcIS/A7/pwCstzxTN3
-	 KaCIaQ+6GswU7nAIEVlIWUurXOJn0cPYEqrTIlag=
+	b=L3fva7A1aw1iXj8x3eZZ44sKPrHSvt2itA/UjBl57MR8UJ2KeGeEHqXZZFBBKyDz2
+	 p8HsXayCudfmrhBfl4ZT20zyxHM2YFBz60sBb3n0hpWqzqYA6f8/2GXkNXNHLldX4w
+	 UOl/PQQFtNQws5nBbJTou30SHM/vU8XFfXFxbqrI=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60084F80093;
-	Tue,  7 Mar 2023 19:30:19 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 482ACF8042F;
+	Tue,  7 Mar 2023 20:05:26 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 03334F8042F; Tue,  7 Mar 2023 19:30:13 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	id 682DFF8042F; Tue,  7 Mar 2023 20:05:22 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 640C4F800DF
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2023 19:30:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 640C4F800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0CE97F800C9
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2023 20:05:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CE97F800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=2EsW21VQ
+ header.a=rsa-sha256 header.s=korg header.b=dIIPI4kb
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 6BC26B819BF;
-	Tue,  7 Mar 2023 18:30:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A287AC4339B;
-	Tue,  7 Mar 2023 18:30:01 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTPS id BA197CE1C5D;
+	Tue,  7 Mar 2023 19:05:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D471AC4339B;
+	Tue,  7 Mar 2023 19:05:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1678213802;
+	s=korg; t=1678215913;
 	bh=OvNyHpAAeeiTPusi5F0W7Sq5fJ9njNoI5QzTKir0DAQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=2EsW21VQDDps6xXht0c6wTaRKQ6nF9o8h1L2zref88TcaNAVzmUrvMhDo7nxGOTnA
-	 O3DDsX59CXBu4AS/RIDE7JDlXqoBPrJ8jr2fA5I8eO00mJ+qDjI6/QTj8XvBrq+gDB
-	 TMk6o1CoiexB/DPx2Ysok+rC63pcEOOkX8nu+aQM=
+	b=dIIPI4kbFFoL8NBh2kDLc5isY0P4VAv/b1Q2eL/SbkxXcCLc+iQJ3u76TnUMb4flL
+	 3GeEKSliUpVe2es1JVd6F3izwZOuhfgeLlAls2DeJ4hvKwEz7CyPwzxw6NaZW68mte
+	 bVJDztU73RifflfZDnLUqf9vRjacgYbPJm58MnLU=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
-Subject: [PATCH 6.1 623/885] ASoC: kirkwood: Iterate over array indexes
+Subject: [PATCH 5.15 415/567] ASoC: kirkwood: Iterate over array indexes
  instead of using pointer math
-Date: Tue,  7 Mar 2023 17:59:17 +0100
-Message-Id: <20230307170029.318797298@linuxfoundation.org>
+Date: Tue,  7 Mar 2023 18:02:31 +0100
+Message-Id: <20230307165923.857034050@linuxfoundation.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230307170001.594919529@linuxfoundation.org>
-References: <20230307170001.594919529@linuxfoundation.org>
+In-Reply-To: <20230307165905.838066027@linuxfoundation.org>
+References: <20230307165905.838066027@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7BC4WQN3CKCLHCJ4FOHK4YPQDJCXVO42
-X-Message-ID-Hash: 7BC4WQN3CKCLHCJ4FOHK4YPQDJCXVO42
+Message-ID-Hash: SBLEUYOGSO3H3HM5GT36XWCWPHP6Q7FD
+X-Message-ID-Hash: SBLEUYOGSO3H3HM5GT36XWCWPHP6Q7FD
 X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -80,7 +80,8 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SBLEUYOGSO3H3HM5GT36XWCWPHP6Q7FD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
