@@ -4,77 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A60B2C678D5
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Mar 2023 11:48:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3584C678D4
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Mar 2023 11:49:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53FD71446;
-	Tue,  7 Mar 2023 12:47:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53FD71446
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57A841429;
+	Tue,  7 Mar 2023 12:48:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57A841429
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678189721;
-	bh=JlJ5aUR6sZ6sHH4//Ptppet+3L2ZFYTBPHQYQR5HLTc=;
+	s=default; t=1678189741;
+	bh=r/sU/E7b5wsa73IBA9m15PzJf9Fl+jSWu5xbxRKqBLM=;
 	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
 	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=mitBEV4yTbc91msx1pPNSyGqBP1qgExEZLNKZx4tzlvxGT34ovNi8yU+GRU2TYRRA
-	 D5pXA5Y+WQfESK2trLzoqiMR7BB/ntaMPl+4oWpRPoQ/B3p4LpodDuPiiGFFEwr4Um
-	 IFSqfaFkmyyYOShPh2azpTKRCBmWXT4tV8CGcEz8=
+	b=fQAvQFKmlxHfPRFrRrVklQSTzQe7rq1XC1z8cxStIHo3IsQJSjYMeUC1ARLp4P+V5
+	 bzzhMe4MhY1+h6wq9/YhGJ5z/0RG7QNyL6p8jvJSJUbdwTXW4QY0ZxAqmFmxWEtSKU
+	 0aCNmPF/pQ6Koj3FfZ2INopP/ynQkoljIsaIxoHE=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F470F80236;
-	Tue,  7 Mar 2023 12:47:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2BF48F80431;
+	Tue,  7 Mar 2023 12:48:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id AC123F80431; Tue,  7 Mar 2023 12:47:45 +0100 (CET)
+	id 73A3DF80529; Tue,  7 Mar 2023 12:48:00 +0100 (CET)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1D2F1F8051B
-	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2023 12:47:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D2F1F8051B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 471D2F80431
+	for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2023 12:47:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 471D2F80431
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=LdZ1bPDx
+ header.s=Intel header.b=MEqIl2dC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678189663; x=1709725663;
+  t=1678189678; x=1709725678;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=JlJ5aUR6sZ6sHH4//Ptppet+3L2ZFYTBPHQYQR5HLTc=;
-  b=LdZ1bPDx2UIPXNUiUoADGRJPciCg/7S/e8vXTWwDKesz2U/7X8NvTGVH
-   KwGSfeGBc53J8p+9Ny8oa/1b/F7qRxQ+vs+ns/YK9++tIN4ylonPOyf7u
-   nRd7O1CUGlgvftlUqG8RAtipiA1xrXyNrnwTdh9jHveTnrxXSP3rtmAJ0
-   dOb0k815GOQ5s3e0FETokdPEekvfPtzUm9ENFtfh80y4nxc9p2uBTsOur
-   dO5sbdn+BNh7tJWU1KsFVNamKFyGuYywv1jsyiTmXjmk1PjjjOC5oLQ5F
-   F5/kfVrtxP16OdOpcRERdVuICuhmab3g8xRSv5n9t/TjrqvVVLInDQPdW
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10641"; a="363455410"
+  bh=r/sU/E7b5wsa73IBA9m15PzJf9Fl+jSWu5xbxRKqBLM=;
+  b=MEqIl2dCqdUEMOho6RBtxGsuhPUvqBQQj2ede1IoaEHNoh5yjPN/2+3O
+   31pxzHhTG3ihi0WfYjNL/6BKq6P90aZiafpSC10vZrfQ8GjcVLiCQwuBG
+   8F1ebbsg3agwkJq9mwk+3HeIrGsXoEQFaJC2/cRP0KWvFy51ptQRM5rOi
+   eIltvvaknxS/8slzc8qzv2g+Ll4RQRFMmXmxwtMNMzTyzbhhQBlz4GyaC
+   eo5JZJnveNM5f2eEriu7/FwWBb7td13Lg7pRZu/YBcfvFiUcuYe0QsHMG
+   fA4FumHamwTGBcDYOhqilhq2eXfj3MhB95t1Jhdp4GjguQqLN891UYiTP
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10641"; a="363455504"
 X-IronPort-AV: E=Sophos;i="5.98,240,1673942400";
-   d="scan'208";a="363455410"
+   d="scan'208";a="363455504"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
   by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Mar 2023 03:47:25 -0800
+ 07 Mar 2023 03:47:55 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10641"; a="678908628"
+X-IronPort-AV: E=McAfee;i="6500,9779,10641"; a="678908790"
 X-IronPort-AV: E=Sophos;i="5.98,240,1673942400";
-   d="scan'208";a="678908628"
+   d="scan'208";a="678908790"
 Received: from rganesh-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.47.75])
   by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Mar 2023 03:47:23 -0800
+ 07 Mar 2023 03:47:53 -0800
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH] ASoC: SOF: sof-audio: add support for setting up topology
- loopback routes
-Date: Tue,  7 Mar 2023 13:47:45 +0200
-Message-Id: <20230307114745.4800-1-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH] ASoC: SOF: topology: Fix error handling in sof_widget_ready()
+Date: Tue,  7 Mar 2023 13:48:15 +0200
+Message-Id: <20230307114815.4909-1-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 7IUGWPJ2KTNP333CQYMXRBA2L43RJOGK
-X-Message-ID-Hash: 7IUGWPJ2KTNP333CQYMXRBA2L43RJOGK
+Message-ID-Hash: WOVLJXBJ3S2UFVOUUO2STPPDAR7P2E6F
+X-Message-ID-Hash: WOVLJXBJ3S2UFVOUUO2STPPDAR7P2E6F
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -84,14 +83,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  no-subject; digests; suspicious-header
 CC: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
  ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- rander.wang@intel.com, yung-chuan.liao@linux.intel.com,
- chao.song@linux.intel.com
+ yung-chuan.liao@linux.intel.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7IUGWPJ2KTNP333CQYMXRBA2L43RJOGK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WOVLJXBJ3S2UFVOUUO2STPPDAR7P2E6F/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -100,111 +98,120 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Chao Song <chao.song@linux.intel.com>
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-During route setup, playback stream routes are setup by going through
-sink path, capture stream routes are set up by going through source path.
-This is not sufficient to handle loopback cases between pipelines
-configured with different directions, e.g. a sidetone or an amplifier
-feedback connected to a speaker protection module. So, add the logic to
-handle such routes between widgets that aren't in the list of DAPM widgets
-associated with the same PCM.
+Fix the error paths in sof_widget_ready() to free all allocated memory
+and prevent memory leaks.
 
-Link: https://github.com/thesofproject/linux/issues/4042
-
-Suggested-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Chao Song <chao.song@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Chao Song <chao.song@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/sof-audio.c | 61 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 60 insertions(+), 1 deletion(-)
+ sound/soc/sof/topology.c | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index 6de388a8d0b8..4f12e137ff63 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -280,9 +280,11 @@ int sof_route_setup(struct snd_sof_dev *sdev, struct snd_soc_dapm_widget *wsourc
- static int sof_setup_pipeline_connections(struct snd_sof_dev *sdev,
- 					  struct snd_soc_dapm_widget_list *list, int dir)
- {
-+	const struct sof_ipc_tplg_ops *tplg_ops = sof_ipc_get_ops(sdev, tplg);
- 	struct snd_soc_dapm_widget *widget;
-+	struct snd_sof_route *sroute;
- 	struct snd_soc_dapm_path *p;
--	int ret;
-+	int ret = 0;
- 	int i;
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 4a62ccc71fcb..9f3a038fe21a 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -1388,14 +1388,15 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ 	if (ret < 0) {
+ 		dev_err(scomp->dev, "failed to parse component pin tokens for %s\n",
+ 			w->name);
+-		return ret;
++		goto widget_free;
+ 	}
  
- 	/*
-@@ -325,6 +327,63 @@ static int sof_setup_pipeline_connections(struct snd_sof_dev *sdev,
+ 	if (swidget->num_sink_pins > SOF_WIDGET_MAX_NUM_PINS ||
+ 	    swidget->num_source_pins > SOF_WIDGET_MAX_NUM_PINS) {
+ 		dev_err(scomp->dev, "invalid pins for %s: [sink: %d, src: %d]\n",
+ 			swidget->widget->name, swidget->num_sink_pins, swidget->num_source_pins);
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto widget_free;
+ 	}
+ 
+ 	if (swidget->num_sink_pins > 1) {
+@@ -1404,7 +1405,7 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ 		if (ret < 0) {
+ 			dev_err(scomp->dev, "failed to parse sink pin binding for %s\n",
+ 				w->name);
+-			return ret;
++			goto widget_free;
  		}
  	}
  
-+	/*
-+	 * The above loop handles connections between widgets that belong to the DAPM widget list.
-+	 * This is not sufficient to handle loopback cases between pipelines configured with
-+	 * different directions, e.g. a sidetone or an amplifier feedback connected to a speaker
-+	 * protection module.
-+	 */
-+	list_for_each_entry(sroute, &sdev->route_list, list) {
-+		bool src_widget_in_dapm_list, sink_widget_in_dapm_list;
-+		struct snd_sof_widget *swidget;
-+
-+		if (sroute->setup)
-+			continue;
-+
-+		src_widget_in_dapm_list = widget_in_list(list, sroute->src_widget->widget);
-+		sink_widget_in_dapm_list = widget_in_list(list, sroute->sink_widget->widget);
-+
-+		/*
-+		 * if both source and sink are in the DAPM list, the route must already have been
-+		 * set up above. And if neither are in the DAPM list, the route shouldn't be
-+		 * handled now.
-+		 */
-+		if (src_widget_in_dapm_list == sink_widget_in_dapm_list)
-+			continue;
-+
-+		/*
-+		 * At this point either the source widget or the sink widget is in the DAPM list
-+		 * with a route that might need to be set up. Check the use_count of the widget
-+		 * that is not in the DAPM list to confirm if it is in use currently before setting
-+		 * up the route.
-+		 */
-+		if (src_widget_in_dapm_list)
-+			swidget = sroute->sink_widget;
-+		else
-+			swidget = sroute->src_widget;
-+
-+		mutex_lock(&swidget->setup_mutex);
-+		if (!swidget->use_count) {
-+			mutex_unlock(&swidget->setup_mutex);
-+			continue;
-+		}
-+
-+		if (tplg_ops && tplg_ops->route_setup) {
-+			/*
-+			 * this route will get freed when either the source widget or the sink
-+			 * widget is freed during hw_free
-+			 */
-+			ret = tplg_ops->route_setup(sdev, sroute);
-+			if (!ret)
-+				sroute->setup = true;
-+		}
-+
-+		mutex_unlock(&swidget->setup_mutex);
-+
-+		if (ret < 0)
-+			return ret;
-+	}
-+
- 	return 0;
+@@ -1414,7 +1415,7 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ 		if (ret < 0) {
+ 			dev_err(scomp->dev, "failed to parse source pin binding for %s\n",
+ 				w->name);
+-			return ret;
++			goto widget_free;
+ 		}
+ 	}
+ 
+@@ -1436,9 +1437,8 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ 	case snd_soc_dapm_dai_out:
+ 		dai = kzalloc(sizeof(*dai), GFP_KERNEL);
+ 		if (!dai) {
+-			kfree(swidget);
+-			return -ENOMEM;
+-
++			ret = -ENOMEM;
++			goto widget_free;
+ 		}
+ 
+ 		ret = sof_widget_parse_tokens(scomp, swidget, tw, token_list, token_list_size);
+@@ -1496,8 +1496,7 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ 			tw->shift, swidget->id, tw->name,
+ 			strnlen(tw->sname, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) > 0
+ 				? tw->sname : "none");
+-		kfree(swidget);
+-		return ret;
++		goto widget_free;
+ 	}
+ 
+ 	if (sof_debug_check_flag(SOF_DBG_DISABLE_MULTICORE)) {
+@@ -1518,10 +1517,7 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ 			if (ret) {
+ 				dev_err(scomp->dev, "widget event binding failed for %s\n",
+ 					swidget->widget->name);
+-				kfree(swidget->private);
+-				kfree(swidget->tuples);
+-				kfree(swidget);
+-				return ret;
++				goto free;
+ 			}
+ 		}
+ 	}
+@@ -1532,10 +1528,8 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ 
+ 		spipe = kzalloc(sizeof(*spipe), GFP_KERNEL);
+ 		if (!spipe) {
+-			kfree(swidget->private);
+-			kfree(swidget->tuples);
+-			kfree(swidget);
+-			return -ENOMEM;
++			ret = -ENOMEM;
++			goto free;
+ 		}
+ 
+ 		spipe->pipe_widget = swidget;
+@@ -1546,6 +1540,12 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ 	w->dobj.private = swidget;
+ 	list_add(&swidget->list, &sdev->widget_list);
+ 	return ret;
++free:
++	kfree(swidget->private);
++	kfree(swidget->tuples);
++widget_free:
++	kfree(swidget);
++	return ret;
  }
  
+ static int sof_route_unload(struct snd_soc_component *scomp,
 -- 
 2.39.2
 
