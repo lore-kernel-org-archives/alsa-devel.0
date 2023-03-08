@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C23B8C64EC4
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Mar 2023 13:53:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A793C6FD20
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Mar 2023 13:54:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAF53180D;
-	Wed,  8 Mar 2023 14:53:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAF53180D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73FC31817;
+	Wed,  8 Mar 2023 14:53:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73FC31817
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678283631;
-	bh=6oBAPpAul/0B5v6cpr4OU+Azi16vXki62V+RZ28bMsc=;
+	s=default; t=1678283660;
+	bh=1tZY/XORFIX9T6cMEG1p24MzYs/516rkOd6Cll+biuE=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=tSeaggnx6LYe68uYbG5jUYL10wJhDJYB6dVAFslg/r2psmb0Mp7lyUa8zPsAkFM6U
-	 rdUy+bGu+EQbX4s5aKcL2DhqSe8GDYR9qQqPflHTlZbYmmDkbH4Bp9pnBf9e02cvcT
-	 w/Mev4f+t0jPVr5hkmNmRYqnzUjzv+N63lb98v8k=
+	b=Bfzh8B6DTfj5gzzokxm+lh9BmIWoM4lgpTttEcuj7qnbBWrnCDe8EPFprr/tQv9u2
+	 q+q74R74eaTnPje/TVyvlOuLZ9ywLuhPxh3sbPOnY2bjWqHCqF9iGbBV+fk0t0s413
+	 Lm/+WlkDgh8+wIvo08hS6UEzbk8cKLVtgUj5VRSY=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 614AFF80431;
-	Wed,  8 Mar 2023 14:52:39 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73CBCF80529;
+	Wed,  8 Mar 2023 14:52:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0D4DFF80431; Wed,  8 Mar 2023 14:52:33 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+	id 73AB9F80482; Wed,  8 Mar 2023 14:52:34 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 957C2F8007E
-	for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2023 14:52:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 957C2F8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 72FB7F800DF
+	for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2023 14:52:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72FB7F800DF
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=SZcwnwMV
+ header.s=k20201202 header.b=NgtAV0LK
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id B3A50B81CD1;
-	Wed,  8 Mar 2023 13:52:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4868C433EF;
-	Wed,  8 Mar 2023 13:52:22 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id BA9BEB81CB2;
+	Wed,  8 Mar 2023 13:52:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFC5DC433D2;
+	Wed,  8 Mar 2023 13:52:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678283544;
-	bh=6oBAPpAul/0B5v6cpr4OU+Azi16vXki62V+RZ28bMsc=;
+	s=k20201202; t=1678283546;
+	bh=1tZY/XORFIX9T6cMEG1p24MzYs/516rkOd6Cll+biuE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=SZcwnwMV1JvZ+ZZBKu9u1pmxUeWwP7D4wovwrc6sl0E9KWpshp2b5IFw4DCr1SCvJ
-	 e/Frc/bwFATEa04M2AyONKeqUdAVZ01F+sbd+EfVEnsoqfAcWZHwaUBNgnZ40UolIz
-	 eNOkrfYc/0fEWA3M5GTsxgojbvgfdGPal+nSb1zSWX5zDWqcLf+OZZww47OSojczC9
-	 f9NT1PAoLsZoaSibiV4PbpkF9d0Zd7TDEX+BeAMIZvd6Cpg1q04cQX+Mhw9wo14BXR
-	 6oM2WC0dpln1QQl0OxdJS6EhurEg6n3Tsn3p4cfPGHwmar2LVnqb6hjURWhqF59Nz4
-	 WXjhbU+r0N48Q==
+	b=NgtAV0LKBWyRh2LbcqvSaen9TfGCg6pbpJgNx44B9Yc4ykLcqO4vJd9KqPXo3vY3b
+	 PfX6LIYL678mlvQKbH9/iU/39V6HBpczhDi7lJ84un43orj4FrHP2qYdfIU6Axioed
+	 JRG5nt+uNyeWwPvp0BFZ5dKd8ZGcCM20u/6kY6QcIY8FSPzUA17B+xh0bD2m+Yeycq
+	 DvsCfgMXQYVcv866dwUA50immteWMO9MzRyIZiL23LumqUjdehoXDx0t0zdIfYUPs5
+	 VAQCbSQzAtHcSCS+BsqxF9T/0uevaM4YZNifQJfgKamotaChhL/70R0xh7SRXuNxvP
+	 RtntstLGSWuPg==
 From: Mark Brown <broonie@kernel.org>
 To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230307095158.2818-1-peter.ujfalusi@linux.intel.com>
-References: <20230307095158.2818-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH resend] ASoC: SOF: Intel: hda-loader: use SOF helper
- for consistency
-Message-Id: <167828354251.31859.15116670989434071759.b4-ty@kernel.org>
-Date: Wed, 08 Mar 2023 13:52:22 +0000
+In-Reply-To: <20230307115018.5588-1-peter.ujfalusi@linux.intel.com>
+References: <20230307115018.5588-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: loader: Remove log prefixes for
+ snd_sof_run_firmware
+Message-Id: <167828354460.31859.11923350005052522167.b4-ty@kernel.org>
+Date: Wed, 08 Mar 2023 13:52:24 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bd1bf
-Message-ID-Hash: 2ADCOD6DRMZZPREKKHGKF6BFLB5P5R53
-X-Message-ID-Hash: 2ADCOD6DRMZZPREKKHGKF6BFLB5P5R53
+Message-ID-Hash: RJWASRNDAU65EPBCAQQM4AZTDSO3MY3B
+X-Message-ID-Hash: RJWASRNDAU65EPBCAQQM4AZTDSO3MY3B
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -77,13 +76,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  no-subject; digests; suspicious-header
 CC: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
  ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- yung-chuan.liao@linux.intel.com
+ cujomalainey@chromium.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2ADCOD6DRMZZPREKKHGKF6BFLB5P5R53/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/RJWASRNDAU65EPBCAQQM4AZTDSO3MY3B/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,9 +91,8 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 07 Mar 2023 11:51:58 +0200, Peter Ujfalusi wrote:
-> Update code to remove mix between legacy and SOF definitions. No
-> functionality change.
+On Tue, 07 Mar 2023 13:50:18 +0200, Peter Ujfalusi wrote:
+> Prefixs are unneeded since log level explains the same information
 > 
 > 
 
@@ -104,8 +102,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: Intel: hda-loader: use SOF helper for consistency
-      commit: 1d045d77756d07495ce379343455b1f829fe737d
+[1/1] ASoC: SOF: loader: Remove log prefixes for snd_sof_run_firmware
+      commit: 611fddf58862a9e77ae300605b2c00d54e973b1f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
