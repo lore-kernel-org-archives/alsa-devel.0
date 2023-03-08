@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C642DC64EC4
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Mar 2023 13:54:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB2D6C64EC4
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Mar 2023 13:54:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42124182B;
-	Wed,  8 Mar 2023 14:53:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42124182B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 88C9A1843;
+	Wed,  8 Mar 2023 14:53:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88C9A1843
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678283667;
-	bh=ArgMoV+CIfp0PQ40IL4GhFVGTJ2RvcKsT7ElUGkAhQc=;
+	s=default; t=1678283687;
+	bh=ItS8X4AoeRuIoBBX/czqfgxqxNMtPyoFJUXbc1Y0XE0=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=uiFNM+SPKPbEsXnWEkFYt1gR3X2xx85uAKLlUjP+ODFUGKVaWVy56P5vFFI7cRVZf
-	 Qo7Oh5i6DdtWmp+U4oAi+xjYGDtmfpIdRi1nBR1RS7WVeLN6io/8cJ166XBJguPVLp
-	 9lRhihfO63EfP6F3kIdMPTO4h3VGW6j+kestZrfw=
+	b=W3VDica1a1kEUa/vwfDv8kdxpTNl645Yhg8WCz20wx+3u3O+QltULU+VLjJFJSYnd
+	 9nypEdUeb4JCZh7TOz+uRIKKf4DAu61LgrGb+9bG4sb0SUcrCvp/SPVDvp1xO1ZYa9
+	 zbJ0i23FpRWgTd6AnZUCmpC9Moefv/0UQilzVP6w=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17BD1F80482;
-	Wed,  8 Mar 2023 14:52:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 539BAF80544;
+	Wed,  8 Mar 2023 14:52:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0B331F80431; Wed,  8 Mar 2023 14:52:36 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	id 9F3E1F80431; Wed,  8 Mar 2023 14:52:37 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 23E04F8007E
-	for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2023 14:52:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23E04F8007E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6125BF80236
+	for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2023 14:52:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6125BF80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Wo7H5IrX
+ header.s=k20201202 header.b=BvkwL3O7
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id BA727B81CB2;
-	Wed,  8 Mar 2023 13:52:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98D97C433D2;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id AB5316181B;
 	Wed,  8 Mar 2023 13:52:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F046CC433EF;
+	Wed,  8 Mar 2023 13:52:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678283551;
-	bh=ArgMoV+CIfp0PQ40IL4GhFVGTJ2RvcKsT7ElUGkAhQc=;
+	s=k20201202; t=1678283549;
+	bh=ItS8X4AoeRuIoBBX/czqfgxqxNMtPyoFJUXbc1Y0XE0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Wo7H5IrXZPPxTgXeeWI6QkmvzkNnbJSgP3HGja825aK5yGE/VwgCso7y/hWmxPHQN
-	 tt7sXZkKXXlmMYwpG4Htqi544XSWLiBB3HDtZgxTNaKPYZlYYeNmpHQs3YZYXyHD5D
-	 YcJwzCAqmh9hNBFZOW8+IAdHxjND/jtmQLG7xCQ8LeOU8Io7JtkuPRiL/1OsWXJbkF
-	 n+KVyyly9J8Ryw0TAAjJLqnYhLKc5slvd4Fb6ZYfjWG6MVWhnVbJHV8BXIzch+oTUA
-	 cSIP85SZnkCCY7Z2olncdiKVQUn9MHEzM67BGTQIIV8n4AHG0141lAz4azaxdp5ot4
-	 eyNmK5TPiMMHA==
+	b=BvkwL3O7OGogCZx3uL29M/HjtYCJ4ZVAazSQKSu4TZ1z+z0pzameD5qVKE++ZmoHM
+	 S9K97fb81Av2wwp71f5RZyxaJNxadIVYMaV1Q+ZFcIZsYR2GBpKgRe82m3onWH2UDU
+	 i8zq+JHRNSIlwD1Bv1rKyMyFKAulPxQFJ8cjDSCJp+KOCOY3QXqOKHlOIPn2y1hkNG
+	 doOluWw588ri215asub/3hZAxjEHZIBtKpzhI0lvJ3nvVO7ZS2pC9AWAhMP9BZVjyS
+	 8KOlfWaECCx/6i2kyjNxC9G12z83RI6Vlu7lu3/n7u4mcj4SKLNWFOdKr2k7FBHEFU
+	 9s8eYFmDsebWg==
 From: Mark Brown <broonie@kernel.org>
 To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230307114659.4614-1-peter.ujfalusi@linux.intel.com>
-References: <20230307114659.4614-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: sof-audio: don't squelch errors in
- WIDGET_SETUP phase
-Message-Id: <167828354931.31859.14989833967787242064.b4-ty@kernel.org>
-Date: Wed, 08 Mar 2023 13:52:29 +0000
+In-Reply-To: <20230307114639.4553-1-peter.ujfalusi@linux.intel.com>
+References: <20230307114639.4553-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: sof-audio: Fix broken early bclk feature
+ for SSP
+Message-Id: <167828354664.31859.5223340750732481127.b4-ty@kernel.org>
+Date: Wed, 08 Mar 2023 13:52:26 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bd1bf
-Message-ID-Hash: K3JPEE7YCD2OHD25RCX4XXIK2N3J75S5
-X-Message-ID-Hash: K3JPEE7YCD2OHD25RCX4XXIK2N3J75S5
+Message-ID-Hash: 35IX3PL67XEIYSHSPUMYOSZTXI4BETJG
+X-Message-ID-Hash: 35IX3PL67XEIYSHSPUMYOSZTXI4BETJG
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -82,23 +83,23 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/K3JPEE7YCD2OHD25RCX4XXIK2N3J75S5/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/35IX3PL67XEIYSHSPUMYOSZTXI4BETJG/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 07 Mar 2023 13:46:59 +0200, Peter Ujfalusi wrote:
-> When an IPC error happens while setting-up a widget during the FE
-> hw_params phase, the existing logic will unwind all previous
-> configurations but will overwrite the return status. The ALSA/ASoC
-> logic will then proceed with the prepare and trigger phases, even
-> though the firmware resources are not available.
+On Tue, 07 Mar 2023 13:46:39 +0200, Peter Ujfalusi wrote:
+> With the removal of widget setup during BE hw_params, the DAI config IPC
+> is never sent with the SOF_DAI_CONFIG_FLAGS_HW_PARAMS. This means that
+> the early bit clock feature required for certain codecs will be broken.
 > 
-> Fix by returning the initial error code and ignoring the code returned
-> in the UNPREPARE phase.
+> Fix this by saving the config flags sent during BE DAI hw_params and
+> reusing it when the DAI_CONFIG IPC is sent after the DAI widget is set
+> up. Also, free the DAI config before the widget is freed.
 > 
 > [...]
 
@@ -108,8 +109,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: sof-audio: don't squelch errors in WIDGET_SETUP phase
-      commit: c7e328f1cbf22efe23bc3cd7dd6bb14efccc28d0
+[1/1] ASoC: SOF: sof-audio: Fix broken early bclk feature for SSP
+      commit: b66bfc3a9810caed5d55dd8907110bdc8028b06b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
