@@ -4,72 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C848CC678D5
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Mar 2023 13:04:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C23B8C64EC4
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Mar 2023 13:53:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6AE9A17F2;
-	Wed,  8 Mar 2023 14:03:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AE9A17F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id BAF53180D;
+	Wed,  8 Mar 2023 14:53:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAF53180D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678280661;
-	bh=x8A3q/wxd5DEV+ev4toYHG9IDX85FAj/ubBlRoLj+rw=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	s=default; t=1678283631;
+	bh=6oBAPpAul/0B5v6cpr4OU+Azi16vXki62V+RZ28bMsc=;
+	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=PoAdPgBK/JVNEXJPaNIQDsQ9mXeM1l2yqeiyDoL+zdXBh3hEGJkURcpK0lIWPGhfa
-	 J5BxWMYXffhYLtoSeWOapSi1VdJqJ3xLNHEX4iuoRv1bG6C6SoomzLf4FtfBqgf0IC
-	 5QfMlZLxisnigBVmixQWlyYlTutKv6z0jzqEhdJQ=
+	b=tSeaggnx6LYe68uYbG5jUYL10wJhDJYB6dVAFslg/r2psmb0Mp7lyUa8zPsAkFM6U
+	 rdUy+bGu+EQbX4s5aKcL2DhqSe8GDYR9qQqPflHTlZbYmmDkbH4Bp9pnBf9e02cvcT
+	 w/Mev4f+t0jPVr5hkmNmRYqnzUjzv+N63lb98v8k=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D3B1F800DF;
-	Wed,  8 Mar 2023 14:03:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 614AFF80431;
+	Wed,  8 Mar 2023 14:52:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB50BF8042F; Wed,  8 Mar 2023 14:03:02 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id 0D4DFF80431; Wed,  8 Mar 2023 14:52:33 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 173C4F800DF
-	for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2023 14:02:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 173C4F800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id 957C2F8007E
+	for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2023 14:52:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 957C2F8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=VxQ78ea6
+ header.s=k20201202 header.b=SZcwnwMV
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 1FE45617A6;
-	Wed,  8 Mar 2023 13:02:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCAEBC433D2;
-	Wed,  8 Mar 2023 13:02:32 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id B3A50B81CD1;
+	Wed,  8 Mar 2023 13:52:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4868C433EF;
+	Wed,  8 Mar 2023 13:52:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678280556;
-	bh=x8A3q/wxd5DEV+ev4toYHG9IDX85FAj/ubBlRoLj+rw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VxQ78ea6I+OuV9L5hG5wgl8/LJYQDWgQhOsJViyJXBhzWDpaR6gkV/K0R5Lkt1+5P
-	 93MtM8ZGLHlgG7jSBo4khLN3SOPOzsTQRW9WFri/rQ7+y+tc1FNgG5OdLhQc19hqJN
-	 pCRtOXufu1/Bznv1fGpLpW28NeQo82hUmJrvH7KPSh/51iIVe/HRsXzGTMZBqVvi9H
-	 3hJSg0LnQ6BDajF0cZ1gybgn50iTEHglNtGdPt0rKOaKoZfWWtxRBevtdEbrS0n1Yc
-	 gRjUy8s0SEZENKmK7CTUIL5xTBs69RFrOBales9TfwTILFUQNrCKTf9NbXgMwuWENq
-	 u40bB2B8KKyoQ==
-Date: Wed, 8 Mar 2023 13:02:28 +0000
+	s=k20201202; t=1678283544;
+	bh=6oBAPpAul/0B5v6cpr4OU+Azi16vXki62V+RZ28bMsc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=SZcwnwMV1JvZ+ZZBKu9u1pmxUeWwP7D4wovwrc6sl0E9KWpshp2b5IFw4DCr1SCvJ
+	 e/Frc/bwFATEa04M2AyONKeqUdAVZ01F+sbd+EfVEnsoqfAcWZHwaUBNgnZ40UolIz
+	 eNOkrfYc/0fEWA3M5GTsxgojbvgfdGPal+nSb1zSWX5zDWqcLf+OZZww47OSojczC9
+	 f9NT1PAoLsZoaSibiV4PbpkF9d0Zd7TDEX+BeAMIZvd6Cpg1q04cQX+Mhw9wo14BXR
+	 6oM2WC0dpln1QQl0OxdJS6EhurEg6n3Tsn3p4cfPGHwmar2LVnqb6hjURWhqF59Nz4
+	 WXjhbU+r0N48Q==
 From: Mark Brown <broonie@kernel.org>
-To: Svyatoslav Ryhel <clamor95@gmail.com>
-Subject: Re: [PATCH v2 7/8] dt-bindings: sound: nvidia,tegra-audio: add
- MAX9808x CODEC
-Message-ID: <8c24e719-2ca8-4571-8d00-cc9d488d56ff@sirena.org.uk>
-References: <20230308073502.5421-1-clamor95@gmail.com>
- <20230308073502.5421-8-clamor95@gmail.com>
+To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20230307095158.2818-1-peter.ujfalusi@linux.intel.com>
+References: <20230307095158.2818-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH resend] ASoC: SOF: Intel: hda-loader: use SOF helper
+ for consistency
+Message-Id: <167828354251.31859.15116670989434071759.b4-ty@kernel.org>
+Date: Wed, 08 Mar 2023 13:52:22 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ay+UYMHLXfir5e0/"
-Content-Disposition: inline
-In-Reply-To: <20230308073502.5421-8-clamor95@gmail.com>
-X-Cookie: Minnie Mouse is a slow maze learner.
-Message-ID-Hash: MI3OSLD2FITUO7YCEVEDX3Y5LSEWITXK
-X-Message-ID-Hash: MI3OSLD2FITUO7YCEVEDX3Y5LSEWITXK
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-bd1bf
+Message-ID-Hash: 2ADCOD6DRMZZPREKKHGKF6BFLB5P5R53
+X-Message-ID-Hash: 2ADCOD6DRMZZPREKKHGKF6BFLB5P5R53
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -77,20 +75,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Takashi Iwai <tiwai@suse.com>,
- Maxim Schwalm <maxim.schwalm@gmail.com>, Dmitry Osipenko <digetx@gmail.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
- linux-staging@lists.linux.dev
+CC: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ yung-chuan.liao@linux.intel.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MI3OSLD2FITUO7YCEVEDX3Y5LSEWITXK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2ADCOD6DRMZZPREKKHGKF6BFLB5P5R53/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,30 +92,37 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+On Tue, 07 Mar 2023 11:51:58 +0200, Peter Ujfalusi wrote:
+> Update code to remove mix between legacy and SOF definitions. No
+> functionality change.
+> 
+> 
 
---ay+UYMHLXfir5e0/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Wed, Mar 08, 2023 at 09:35:01AM +0200, Svyatoslav Ryhel wrote:
-> Add dt-binding for MAX9808x CODEC.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-This is adding a binding for a machine driver with these CODECs, not for
-the CODEC itself.
+Thanks!
 
---ay+UYMHLXfir5e0/
-Content-Type: application/pgp-signature; name="signature.asc"
+[1/1] ASoC: SOF: Intel: hda-loader: use SOF helper for consistency
+      commit: 1d045d77756d07495ce379343455b1f829fe737d
 
------BEGIN PGP SIGNATURE-----
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQIh2MACgkQJNaLcl1U
-h9AnoQf+OpV1EbiGz6lefDAsEzUwcmFrYAkvKbhMSSQJK/tnDVX90PQPmPiL73dE
-rVZ5+RmaRPRtj4jism7vnVrgpzF5YBSwOWNc8+cDLOR7tqqDxg2E/p6qMjiBemvi
-kCWcaCb6PzRmkLSYdPBcqivC9gmbvD5eoMvrfMZkgmVXFbRoOIe2sdOpaTocmtgH
-RQM6W1nKzKs1ApPEqoIw9cX601szP8lT9oCT7Zu0f2yhYXm/olE8c5yshCMBEPWx
-dzLdZc/Rlq/5VUlrSHjdbRFNlzp7uQndVw1dP2LQot144rUnWea7YNTl2vzibRmn
-lOX5dskV+Eob2wbmJ2AKPCO/QBeo8g==
-=lQWu
------END PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---ay+UYMHLXfir5e0/--
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
