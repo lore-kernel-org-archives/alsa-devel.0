@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 194C3C678D5
-	for <alsa-devel@archiver.kernel.org>; Wed,  8 Mar 2023 13:58:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFAADC64EC4
+	for <alsa-devel@archiver.kernel.org>; Wed,  8 Mar 2023 13:58:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0877F188A;
-	Wed,  8 Mar 2023 14:57:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0877F188A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E21D1891;
+	Wed,  8 Mar 2023 14:57:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E21D1891
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678283894;
-	bh=RKlOKfdflVaSL+vC1j0jgRjXJ10a1RSkg6HbEdjp+mM=;
+	s=default; t=1678283912;
+	bh=j9Mhwz/qVbBK/bmvufxQsilCLcYcZBe7yhhQn1n+LiQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Ko1zvmgUmo1NL7EBZQO4pbOWJUaJ6r+JFyPGy53mmNtf0Crp67RGHzLcGOM/ulck4
-	 9sgRx1ULNl78RMIjfllpAw6x3v+L5OTtJd2vCxPYHW1b3ZUSxHGFcVDhmafH44ro0B
-	 ETNcw240tOL+t4NqOSHkVsaFcmps+cKlHaV7VpyU=
+	b=juH8pJRyn94HVFN9WhGexPdCl5V1xls6HJN3dk8E+wWfP7TILscFgfMy2MxP7B1+t
+	 zLslCKNY4vP/Eh46eNNwjueAGRB3n9EcAWvM48q13UsQla/joTbpR0dwHVd1HrhoWz
+	 Yzc0XgaVTyNAja0S0eorrMDu3NEMOkf1scTn8w94=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21020F805C8;
-	Wed,  8 Mar 2023 14:53:28 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07FC8F805CA;
+	Wed,  8 Mar 2023 14:53:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A39B1F80571; Wed,  8 Mar 2023 14:53:01 +0100 (CET)
+	id 1183DF8057B; Wed,  8 Mar 2023 14:53:04 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9CF81F80567
-	for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2023 14:52:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CF81F80567
+	by alsa1.perex.cz (Postfix) with ESMTPS id BA6B9F8056F
+	for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2023 14:53:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA6B9F8056F
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=ZIdEj5ey
+ header.s=k20201202 header.b=LJvHx9LU
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 3F14CB81CB2;
-	Wed,  8 Mar 2023 13:52:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8620C433D2;
-	Wed,  8 Mar 2023 13:52:56 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 38901B81CD1;
+	Wed,  8 Mar 2023 13:53:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 852CCC4339C;
+	Wed,  8 Mar 2023 13:52:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678283578;
-	bh=RKlOKfdflVaSL+vC1j0jgRjXJ10a1RSkg6HbEdjp+mM=;
+	s=k20201202; t=1678283580;
+	bh=j9Mhwz/qVbBK/bmvufxQsilCLcYcZBe7yhhQn1n+LiQ=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=ZIdEj5eyqXXw7x2wmw27zc/cuKSjgUhDFvYFCyWHqUoHSiqf4eiMa3dj8hxPbTkCR
-	 a6A6Jc/xHW4jyNJypIpVUemrBIQTvbzw0zQph2Ive1IjAr05Spgx0OUuLLUtrQlJyr
-	 /iRSaydeZBPggep11IR7GUOxX7PPeIxCNpf9ho/3P3LPHvwFbCcTVH/xoKOds1ndOq
-	 P/Zr7xNa0Tm21G9uOAKd8f5y+2paiY/itY1JBPHJsODISn89u0RC/CG8kOQHMw3nhM
-	 MbWTlGc6cOWgOevw+v5a+ljUS/sk9xcBCGqsneYNaUkskOaz1p9kU8hpnTLmFwFQ+X
-	 RPvGy7OthDR6Q==
+	b=LJvHx9LUPlFekT8DgO487HeJkGUn1MAa2VOsaCskTukTXluQ1BNg8L61rQPMXo/nb
+	 ASAoPMTfWPJRggddo/MOsWzhLv3ewndw/Bae7tOZd1p+eo4jJFcz8UdUmmGlO7a6JB
+	 DrVxz/E1Z04MsTcMhTLjFniWx+VgvNrxs9CTsaUdYnmENPlskWgON8eG3nIE6zK5+d
+	 SFjKTj2LRXNkJAawgF/opL3H4t9WCh+2u+vc2cwhLY8SVDoEcwJNyef9bKfCxuRQ7K
+	 kj8/jvN6bLZUmjMIBKBJqW0/YHPiaXAfD58FllihkpretNIclLJJ74C17T+DlJrVwi
+	 1EuIpAufqnDlA==
 From: Mark Brown <broonie@kernel.org>
 To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230307110830.2178-1-peter.ujfalusi@linux.intel.com>
-References: <20230307110830.2178-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: ipc4-topology: don't allocate blob if it
- will not be used
-Message-Id: <167828357647.31859.2408884578134591077.b4-ty@kernel.org>
-Date: Wed, 08 Mar 2023 13:52:56 +0000
+In-Reply-To: <20230307110846.2265-1-peter.ujfalusi@linux.intel.com>
+References: <20230307110846.2265-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: ipc4-mtrace: process pending logs upon FW
+ crash
+Message-Id: <167828357822.31859.5790787159246591803.b4-ty@kernel.org>
+Date: Wed, 08 Mar 2023 13:52:58 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bd1bf
-Message-ID-Hash: DKNZV6R2AJBTHI6AR626YXWAKQ4DDFY5
-X-Message-ID-Hash: DKNZV6R2AJBTHI6AR626YXWAKQ4DDFY5
+Message-ID-Hash: TB7SQIYRR6RYBV4IXHK6IF7ARJQ45RDI
+X-Message-ID-Hash: TB7SQIYRR6RYBV4IXHK6IF7ARJQ45RDI
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -82,7 +82,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DKNZV6R2AJBTHI6AR626YXWAKQ4DDFY5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TB7SQIYRR6RYBV4IXHK6IF7ARJQ45RDI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,13 +91,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 07 Mar 2023 13:08:30 +0200, Peter Ujfalusi wrote:
-> A copier blob will be only used when a copier is connected in the
-> topology. An ALH copier in playback direction that doesn't have any
-> source means the copier is not connected in the topology. Thus, we
-> don't need to allocate the blob.
-> The patch doesn't do the same test before freeing the blob because
-> the blob is null and it is fine to free null.
+On Tue, 07 Mar 2023 13:08:46 +0200, Peter Ujfalusi wrote:
+> If the DSP firmware has crashed, some log messages may be pending in the
+> mtrace buffer, but not consumed by the driver as no IPC notification has
+> been sent by the firmware. Check the buffer status for all mtrace slots
+> and ensure any pending log messages are processed before DSP is possibly
+> powered down and the log buffer contents is lost.
+> 
 > 
 > [...]
 
@@ -107,8 +107,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: ipc4-topology: don't allocate blob if it will not be used
-      commit: 3c50211f2d534a5b766b1ff3c6cf6f7bd0bae753
+[1/1] ASoC: SOF: ipc4-mtrace: process pending logs upon FW crash
+      commit: db97cc0f7459a2bee68e6e8bf0b2f7a286137fa8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
