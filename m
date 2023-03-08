@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27308C64EC4
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Mar 2023 00:04:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E175C678D5
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Mar 2023 00:04:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C142188B;
-	Thu,  9 Mar 2023 01:03:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C142188B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D8F518B6;
+	Thu,  9 Mar 2023 01:04:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D8F518B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678320284;
-	bh=Cla48Q+B6AMkTjwO20jprsPHvDhIDp+hHfGxvOmIRWg=;
+	s=default; t=1678320296;
+	bh=EpdClJ2o4Ijn9eyVDGA917bJ8/Zo09oT4oN3BhfaBbQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=fWz0NjbAG1IUDBZkmJrPJ65HXDjcZVLqI2GTz2VdPaWJG5nkNL1MYdSWkZIjt0CtT
-	 yJVSk+YNvkLhjOdsdCij8mPmfQSi/f0Vs0UoiyQMpByI8fvyIIz0Vsi3Q/3uNDbjey
-	 NWsVuWwVIj6LzZC5yF4Zi9twC/IPebQSq9B6pgms=
+	b=kJWjEnWN+op03QLjZlAd3uNOnkSU/wogiGTXF8FfEjK/4n3CSzQmpGs5C+tQcIAiY
+	 23wDiGnhgAxMUV+VYPWFpL5unoUz0x9/F0oyf/YaVYgQTMZ/llbP1TQyTHej9mwtFd
+	 ddo7faPCGir14xvrI4cQQTS0lxgu7H7IHBw1PNsU=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1757FF805E2;
-	Thu,  9 Mar 2023 00:59:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 94122F805E4;
+	Thu,  9 Mar 2023 00:59:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32536F805BF; Thu,  9 Mar 2023 00:58:59 +0100 (CET)
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
- [205.220.168.131])
+	id 4672FF805BE; Thu,  9 Mar 2023 00:59:00 +0100 (CET)
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com
+ [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A1438F80551
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6A214F80549
 	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2023 00:58:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1438F80551
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A214F80549
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
- header.s=qcppdkim1 header.b=etlWuK2f
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+ header.s=qcppdkim1 header.b=oUxvtSGk
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
 	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 328NU8pr001869;
-	Wed, 8 Mar 2023 23:58:12 GMT
+ 328D89M3012562;
+	Wed, 8 Mar 2023 23:58:13 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=5IqGnM08SWxXF8sTW/f2AkAFGv6jdwVbgFkdQ1MxpXU=;
- b=etlWuK2fveX4tXNz7hPxk55tUFawJRbePvAw7MLTiA1GjOY2rToSIssG32McpaykeDzn
- LzSELVHHibPQbVA3zAt0iko/IFWhRYQ0in6g5PpGzl/782MsDrv0wTvXUMTgSsdz/JmH
- TIliUAOizK2/rGDrOa47fDwmiB7slimECBXJkPcFd9fH2GpvWaPFnyySZss1/tJRS4qi
- bivg9N4b+sUuRv6u71OuMNO4vbO9GvUft9uK7I/C+MTe69ikvVvco36IVbNF2F8LmVNM
- IOCfVGEMq6Ri26vjCcMC4NrsbTCz2aMDO2c9j1M925jac/0cS+ZqCGnhnl+yJkwf2xnM 4w==
+ bh=huk+KaMEoKJXon78kCi9B0/eB6R2iMd3neoEP1lz1zk=;
+ b=oUxvtSGkvMefo27+fSEzURtmOw1IRSAmdjKqNTNceDG34SMoaM3auoE30gKMx5pp8a3g
+ GBT5qc2ZDT6s53tl1gJDAROJf1iqUu+/9zgu0a9y5lR4t13qko4lvjaeGjgW3Dmhf7Vl
+ EXcufhyceV6p60dnReknIwRxnzgjB57ZbBwiolj+tOnC9+PdhQkUBSgCRc3BTVHpQd8E
+ EhpbHTERv+MTVpMJcRLKlXYbgODUoh7yw8Xq1fGV+rrZakQZQQ86v3Zom/097N3z1Nke
+ BS4zfQrpF7ElSis08EVTzrlpCLQ2p1QqGWr2tbm94JpoVt9xFB4ZUVyxTZhbbTOfDbWq jw==
 Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
  [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3p6fetu630-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3p6fgfu8pw-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Wed, 08 Mar 2023 23:58:12 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
  [10.47.209.197])
 	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
- 328NwChp015046
+ 328NwBMS015030
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 8 Mar 2023 23:58:12 GMT
+	Wed, 8 Mar 2023 23:58:11 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
@@ -73,10 +73,10 @@ To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <Thinh.Nguyen@synopsys.com>, <bgoswami@quicinc.com>,
         <andersson@kernel.org>, <robh+dt@kernel.org>,
         <gregkh@linuxfoundation.org>, <tiwai@suse.com>
-Subject: [PATCH v3 23/28] sound: Pass USB SND card and PCM information to SOC
- USB
-Date: Wed, 8 Mar 2023 15:57:46 -0800
-Message-ID: <20230308235751.495-24-quic_wcheng@quicinc.com>
+Subject: [PATCH v3 22/28] ASoC: qcom: qdsp6: q6afe: Split USB AFE dev_token
+ param into separate API
+Date: Wed, 8 Mar 2023 15:57:45 -0800
+Message-ID: <20230308235751.495-23-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230308235751.495-1-quic_wcheng@quicinc.com>
 References: <20230308235751.495-1-quic_wcheng@quicinc.com>
@@ -88,19 +88,19 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
  signatures=585085
-X-Proofpoint-GUID: aSh3LHz5OMLYWoV0crBRcr6vIp4KYNTZ
-X-Proofpoint-ORIG-GUID: aSh3LHz5OMLYWoV0crBRcr6vIp4KYNTZ
+X-Proofpoint-GUID: OIRnSBwxU824tdyky7og2RoWXtFOu7bS
+X-Proofpoint-ORIG-GUID: OIRnSBwxU824tdyky7og2RoWXtFOu7bS
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-03-08_15,2023-03-08_03,2023-02-09_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 spamscore=0
- impostorscore=0 phishscore=0 malwarescore=0 mlxscore=0 bulkscore=0
- lowpriorityscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=708
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ spamscore=0 bulkscore=0
+ impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 lowpriorityscore=0
+ suspectscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=999
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2212070000 definitions=main-2303080200
-Message-ID-Hash: 3G32FZJ24GU2ZOF5ERLTYG5ZPRHQ3BCL
-X-Message-ID-Hash: 3G32FZJ24GU2ZOF5ERLTYG5ZPRHQ3BCL
+Message-ID-Hash: VSOJW7DTY3UCIBJB45XEDBWP7OITQOHW
+X-Message-ID-Hash: VSOJW7DTY3UCIBJB45XEDBWP7OITQOHW
 X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -117,7 +117,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/3G32FZJ24GU2ZOF5ERLTYG5ZPRHQ3BCL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VSOJW7DTY3UCIBJB45XEDBWP7OITQOHW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -126,179 +126,108 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Currently, only the index to the USB SND card array is passed to the USB
-backend.  Pass through more information, specifically the USB SND card
-number and the number of PCM devices available.  The USB backend should
-know about which sound resources are being shared between the ASoC and USB
-SND paths.  This can be utilized to properly select and maintain the
-offloading devices.
+The Q6USB backend can carry information about the available USB SND cards
+and PCM devices discovered on the USB bus.  The dev_token field is used by
+the audio DSP to notify the USB offload driver of which card and PCM index
+to enable playback on.  Separate this into a dedicated API, so the USB
+backend can set the dev_token accordingly.  The audio DSP does not utilize
+this information until the AFE port start command is sent, which is done
+during the PCM prepare phase.
 
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- include/sound/soc-usb.h           |  9 +++++----
- sound/soc/qcom/qdsp6/q6usb.c      | 20 ++++++++++++++++++--
- sound/soc/soc-usb.c               | 12 +++++++-----
- sound/usb/qcom/qc_audio_offload.c |  9 +++++----
- 4 files changed, 35 insertions(+), 15 deletions(-)
+ sound/soc/qcom/qdsp6/q6afe.c | 49 +++++++++++++++++++++++++-----------
+ sound/soc/qcom/qdsp6/q6afe.h |  1 +
+ 2 files changed, 36 insertions(+), 14 deletions(-)
 
-diff --git a/include/sound/soc-usb.h b/include/sound/soc-usb.h
-index 71e6e75e600a..606128332044 100644
---- a/include/sound/soc-usb.h
-+++ b/include/sound/soc-usb.h
-@@ -19,20 +19,21 @@ struct snd_soc_usb {
- 	struct device *dev;
- 	struct snd_soc_component *component;
- 	int (*connection_status_cb)(struct snd_soc_usb *usb, int card_idx,
--				int connected);
-+				int chip_idx, int num_pcm, int connected);
- 	void *priv_data;
- };
- 
- int snd_soc_usb_find_format(int card_idx, struct snd_pcm_hw_params *params,
- 			int direction);
- 
--int snd_soc_usb_connect(struct device *usbdev, int card_idx);
--int snd_soc_usb_disconnect(struct device *usbdev);
-+int snd_soc_usb_connect(struct device *usbdev, int card_idx, int chip_idx,
-+			int num_pcm);
-+int snd_soc_usb_disconnect(struct device *usbdev, int card_idx);
- void snd_soc_usb_set_priv_data(struct device *dev, void *priv);
- void *snd_soc_usb_get_priv_data(struct device *usbdev);
- 
- struct snd_soc_usb *snd_soc_usb_add_port(struct device *dev, void *priv,
- 			int (*connection_cb)(struct snd_soc_usb *usb, int card_idx,
--			int connected));
-+			int chip_idx, int num_pcm, int connected));
- int snd_soc_usb_remove_port(struct device *dev);
- #endif
-diff --git a/sound/soc/qcom/qdsp6/q6usb.c b/sound/soc/qcom/qdsp6/q6usb.c
-index c9d5c9eecf89..0dadc92b583f 100644
---- a/sound/soc/qcom/qdsp6/q6usb.c
-+++ b/sound/soc/qcom/qdsp6/q6usb.c
-@@ -25,10 +25,18 @@
- 
- #define SID_MASK	0xF
- 
-+struct q6usb_status {
-+	unsigned int num_pcm;
-+	unsigned int chip_index;
-+	unsigned int pcm_index;
-+};
-+
- struct q6usb_port_data {
- 	struct q6afe_usb_cfg usb_cfg;
- 	struct snd_soc_usb *usb;
- 	struct q6usb_offload priv;
-+	unsigned long available_card_slot;
-+	struct q6usb_status status[SNDRV_CARDS];
- 	int active_idx;
- };
- 
-@@ -97,7 +105,7 @@ static int q6usb_audio_ports_of_xlate_dai_name(struct snd_soc_component *compone
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index e9d5fa6b6b0d..505371c96987 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -1394,10 +1394,42 @@ void q6afe_tdm_port_prepare(struct q6afe_port *port,
  }
+ EXPORT_SYMBOL_GPL(q6afe_tdm_port_prepare);
  
- static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb, int card_idx,
--			int connected)
-+			int chip_idx, int num_pcm, int connected)
+-static int afe_port_send_usb_dev_param(struct q6afe_port *port, struct q6afe_usb_cfg *cfg)
++/**
++ * afe_port_send_usb_dev_param() - Send USB dev token
++ *
++ * @port: Instance of afe port
++ * @cardidx: USB SND card index to reference
++ * @pcmidx: USB SND PCM device index to reference
++ *
++ * The USB dev token carries information about which USB SND card instance and
++ * PCM device to execute the offload on.  This information is carried through
++ * to the stream enable QMI request, which is handled by the offload class
++ * driver.  The information is parsed to determine which USB device to query
++ * the required resources for.
++ */
++int afe_port_send_usb_dev_param(struct q6afe_port *port, int cardidx, int pcmidx)
  {
- 	struct snd_soc_dapm_context *dapm;
- 	struct q6usb_port_data *data;
-@@ -109,8 +117,16 @@ static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb, int card_idx,
- 		snd_soc_dapm_enable_pin(dapm, "USB_RX_BE");
- 		/* We only track the latest USB headset plugged in */
- 		data->active_idx = card_idx;
+-	union afe_port_config *pcfg = &port->port_cfg;
+ 	struct afe_param_id_usb_audio_dev_params usb_dev;
++	int ret;
 +
-+		set_bit(card_idx, &data->available_card_slot);
-+		data->status[card_idx].num_pcm = num_pcm;
-+		data->status[card_idx].chip_index = chip_idx;
- 	} else {
--		snd_soc_dapm_disable_pin(dapm, "USB_RX_BE");
-+		clear_bit(card_idx, &data->available_card_slot);
-+		data->status[card_idx].num_pcm = 0;
-+		data->status[card_idx].chip_index = 0;
-+		if (!data->available_card_slot)
-+			snd_soc_dapm_disable_pin(dapm, "USB_RX_BE");
++	memset(&usb_dev, 0, sizeof(usb_dev));
++
++	usb_dev.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
++	usb_dev.dev_token = (cardidx << 16) | (pcmidx << 8);
++	ret = q6afe_port_set_param_v2(port, &usb_dev,
++				AFE_PARAM_ID_USB_AUDIO_DEV_PARAMS,
++				AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(usb_dev));
++	if (ret)
++		dev_err(port->afe->dev, "%s: AFE device param cmd failed %d\n",
++			__func__, ret);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(afe_port_send_usb_dev_param);
++
++static int afe_port_send_usb_params(struct q6afe_port *port, struct q6afe_usb_cfg *cfg)
++{
++	union afe_port_config *pcfg = &port->port_cfg;
+ 	struct afe_param_id_usb_audio_dev_lpcm_fmt lpcm_fmt;
+ 	struct afe_param_id_usb_audio_svc_interval svc_int;
+ 	int ret = 0;
+@@ -1408,20 +1440,9 @@ static int afe_port_send_usb_dev_param(struct q6afe_port *port, struct q6afe_usb
+ 		goto exit;
  	}
- 	snd_soc_dapm_sync(dapm);
  
-diff --git a/sound/soc/soc-usb.c b/sound/soc/soc-usb.c
-index cdce1bb42df5..84dc6d0b2eab 100644
---- a/sound/soc/soc-usb.c
-+++ b/sound/soc/soc-usb.c
-@@ -95,7 +95,7 @@ EXPORT_SYMBOL_GPL(snd_soc_usb_find_format);
-  */
- struct snd_soc_usb *snd_soc_usb_add_port(struct device *dev, void *priv,
- 			int (*connection_cb)(struct snd_soc_usb *usb, int card_idx,
--			int connected))
-+			int chip_idx, int num_pcm, int connected))
- {
- 	struct snd_soc_usb *usb;
+-	memset(&usb_dev, 0, sizeof(usb_dev));
+ 	memset(&lpcm_fmt, 0, sizeof(lpcm_fmt));
+ 	memset(&svc_int, 0, sizeof(svc_int));
  
-@@ -149,7 +149,8 @@ EXPORT_SYMBOL_GPL(snd_soc_usb_remove_port);
-  * handle how the USB backend selects, which device to enable offloading on.
-  *
-  */
--int snd_soc_usb_connect(struct device *usbdev, int card_idx)
-+int snd_soc_usb_connect(struct device *usbdev, int card_idx, int chip_idx,
-+			int num_pcm)
- {
- 	struct snd_soc_usb *ctx;
- 
-@@ -161,7 +162,8 @@ int snd_soc_usb_connect(struct device *usbdev, int card_idx)
- 		return -ENODEV;
- 
- 	if (ctx->connection_status_cb)
--		ctx->connection_status_cb(ctx, card_idx, 1);
-+		ctx->connection_status_cb(ctx, card_idx, chip_idx,
-+						num_pcm, 1);
- 
- 	return 0;
- }
-@@ -174,7 +176,7 @@ EXPORT_SYMBOL_GPL(snd_soc_usb_connect);
-  * Notify of a new USB SND device disconnection to the USB backend.
-  *
-  */
--int snd_soc_usb_disconnect(struct device *usbdev)
-+int snd_soc_usb_disconnect(struct device *usbdev, int card_idx)
- {
- 	struct snd_soc_usb *ctx;
- 
-@@ -186,7 +188,7 @@ int snd_soc_usb_disconnect(struct device *usbdev)
- 		return -ENODEV;
- 
- 	if (ctx->connection_status_cb)
--		ctx->connection_status_cb(ctx, -1, 0);
-+		ctx->connection_status_cb(ctx, card_idx, 0, 0, 0);
- 
- 	return 0;
- }
-diff --git a/sound/usb/qcom/qc_audio_offload.c b/sound/usb/qcom/qc_audio_offload.c
-index 2c8dd5605849..7d6e7f946a47 100644
---- a/sound/usb/qcom/qc_audio_offload.c
-+++ b/sound/usb/qcom/qc_audio_offload.c
-@@ -1562,7 +1562,8 @@ static void qc_usb_audio_offload_probe(struct snd_usb_audio *chip)
- 	uadev[chip->card->number].chip = chip;
- 	uaudio_qdev->last_card_num = chip->card->number;
- 
--	snd_soc_usb_connect(usb_get_usb_backend(udev), chip->index);
-+	snd_soc_usb_connect(usb_get_usb_backend(udev), chip->card->number,
-+				chip->index, chip->pcm_devs);
- 	mutex_unlock(&chip->mutex);
- }
- 
-@@ -1649,12 +1650,12 @@ static void qc_usb_audio_offload_disconnect(struct snd_usb_audio *chip)
- 	uadev[card_num].chip = NULL;
- 	mutex_unlock(&chip->mutex);
- 
-+	snd_soc_usb_disconnect(usb_get_usb_backend(udev), card_num);
-+
- 	mutex_lock(&qdev_mutex);
- 	atomic_dec(&uaudio_qdev->qdev_in_use);
--	if (!atomic_read(&uaudio_qdev->qdev_in_use)) {
--		snd_soc_usb_disconnect(usb_get_usb_backend(udev));
-+	if (!atomic_read(&uaudio_qdev->qdev_in_use))
- 		qc_usb_audio_cleanup_qmi_dev();
+-	usb_dev.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
+-	q6afe_port_set_param_v2(port, &usb_dev,
+-				AFE_PARAM_ID_USB_AUDIO_DEV_PARAMS,
+-				AFE_MODULE_AUDIO_DEV_INTERFACE, sizeof(usb_dev));
+-	if (ret) {
+-		dev_err(port->afe->dev, "%s: AFE device param cmd failed %d\n",
+-			__func__, ret);
+-		goto exit;
 -	}
- 	mutex_unlock(&qdev_mutex);
- }
+-
+ 	lpcm_fmt.cfg_minor_version = AFE_API_MINOR_VERSION_USB_AUDIO_CONFIG;
+ 	lpcm_fmt.endian = pcfg->usb_cfg.endian;
+ 	ret = q6afe_port_set_param_v2(port, &lpcm_fmt,
+@@ -1465,7 +1486,7 @@ void q6afe_usb_port_prepare(struct q6afe_port *port,
+ 	pcfg->usb_cfg.num_channels = cfg->num_channels;
+ 	pcfg->usb_cfg.bit_width = cfg->bit_width;
  
+-	afe_port_send_usb_dev_param(port, cfg);
++	afe_port_send_usb_params(port, cfg);
+ }
+ EXPORT_SYMBOL_GPL(q6afe_usb_port_prepare);
+ 
+diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
+index e098a3e15135..7980416275e9 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.h
++++ b/sound/soc/qcom/qdsp6/q6afe.h
+@@ -274,6 +274,7 @@ void q6afe_tdm_port_prepare(struct q6afe_port *port, struct q6afe_tdm_cfg *cfg);
+ void q6afe_cdc_dma_port_prepare(struct q6afe_port *port,
+ 				struct q6afe_cdc_dma_cfg *cfg);
+ 
++int afe_port_send_usb_dev_param(struct q6afe_port *port, int cardidx, int pcmidx);
+ int q6afe_port_set_sysclk(struct q6afe_port *port, int clk_id,
+ 			  int clk_src, int clk_root,
+ 			  unsigned int freq, int dir);
