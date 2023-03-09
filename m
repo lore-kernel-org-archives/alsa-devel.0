@@ -4,195 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6B32C74A4B
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Mar 2023 20:45:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79A7FC64EC4
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Mar 2023 21:11:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66AA318B2;
-	Thu,  9 Mar 2023 21:44:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66AA318B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3184B1895;
+	Thu,  9 Mar 2023 22:10:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3184B1895
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678394731;
-	bh=sClGgJMOqiLyR5gJzID1/eRHH03dcO6tGY9/YjY3dOE=;
-	h=To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From:Reply-To:Cc:From;
-	b=bbMP058mRRgm1UEkikG8sForbjNbxehus/BAXV/ssM/oZZDSCZmDLtpRNjT3Yj/dL
-	 MimIS7HhCq7klN2NHDKNbzLofLMZbaBJOVfYnEG+iQ8VB2HG3HxLnOcFGeZpYS9yuj
-	 t2gp8MdkjnuwW1G4tjmVv4AtztqjuEj75zuScaPw=
+	s=default; t=1678396294;
+	bh=Kxq2N9hKwCgDa1WFQD/amsJdawfEayQDnRKBg1LGluA=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=jbtaeIzeFqJusX8NiNctkeFpXMw7NB27c8+3SF3qu/gfzpyc9OgwxAV0uAlZKKm2g
+	 i5uVezdhkSUsZj4Y2aGhA8ICLelJ2CKPaAi1x4qnQFFCW2XD4XRLmiyMIkONaMjMbE
+	 tCk0e5eAyJ8Iabi8xPqM9uIMfdxKynSXSYA0u2aE=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9D19F804FE;
-	Thu,  9 Mar 2023 21:44:03 +0100 (CET)
-To: "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com"
-	<lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>
-Subject: [PATCH] ASoC: hdmi-codec: fix inverted tx in shutdown/startup
-Date: Thu, 9 Mar 2023 15:21:59 +0000
-X-Mailman-Rule-Hits: nonmember-moderation
-X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
- loop; banned-address; member-moderation;
- header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-X-Mailman-Approved-At: Thu, 09 Mar 2023 20:44:01 +0000
-X-Mailman-Version: 3.3.8
-Precedence: list
-List-Id: "Alsa-devel mailing list for ALSA developers -
- http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JKTWGVNN4BLTRJMNFR7IACDT37MFFF5A/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
-List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
-MIME-Version: 1.0
-Message-ID: 
- <167839464271.26.16975349743399016667@mailman-core.alsa-project.org>
-From: Emil Abildgaard Svendsen via Alsa-devel <alsa-devel@alsa-project.org>
-Reply-To: Emil Abildgaard Svendsen <EMAS@bang-olufsen.dk>
-Cc: =?Windows-1252?Q?Alvin_=8Aipraga?= <ALSI@bang-olufsen.dk>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-patches@vger.kernel.org" <linux-patches@vger.kernel.org>,
- Emil Abildgaard Svendsen <EMAS@bang-olufsen.dk>
-Content-Type: message/rfc822
-Content-Disposition: inline
-
+	by alsa1.perex.cz (Postfix) with ESMTP id 8BF64F8042F;
+	Thu,  9 Mar 2023 22:10:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DCF91F8042F; Thu,  9 Mar 2023 16:22:07 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_PASS,SPF_PASS,
-	URIBL_BLOCKED shortcircuit=no autolearn=ham autolearn_force=no
-	version=3.4.6
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur01on072e.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe1e::72e])
+	id B5AF7F8042F; Thu,  9 Mar 2023 22:10:18 +0100 (CET)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 207BEF800C9
-	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2023 16:22:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 207BEF800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 93C60F8007E
+	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2023 22:10:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93C60F8007E
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=bang-olufsen.dk header.i=@bang-olufsen.dk
- header.a=rsa-sha256 header.s=selector1 header.b=QRxDn8TZ
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LDfmUNIVoq3ScxEktXLrLHb3Km7DXmaXp899ArYfUUxGabdHTwigzYaKGuo+i+/LXw1x8YaL0CN/S5Cyg7IwYrBDk7NIaW0mq6/uOGl4K4Z259ZyWyPw94CHcQKMEBlRYUIsJLEk47Hv03q0He18xPcZkSK57ep1bpRhe6drSGJ+LOdh8z4AbFeSz0LSPJL1UNMrDKR5bEf3NUx9D+UCuV5IPysb6fkfvh5OLCZgPXSmnKLE/T1WJxGAbAMpv7cx9X1UxTMKcoGgIPXuNV7QtZqemyGfEsj4E847/3fxyNI/FNn8j9YX1USfqd2+MPKwqQ5tlnJhxDDjJ64+8xbyUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CwROy5qyIt5ER1gQqGGwsyMQ+fwIwdA/fG9wGeiJnDc=;
- b=IhonkbaJW5CQAWElYybMFyH2DUWjjcHoGC0OIqEHWfRS9vlq4t3hgq8higmPKBFiaYTMzOrlGZkmCXhPquGhK9ettmxAybKH/yHebl14pNixeDOjThgimAFqkE6M6CBj4pfaIGgwxdleiQcGtsQRxPq1+g/fDtEjzesPE9RdBG6IVSZ7W9EXSVMf9aE/0LbMiqxj+A56m0BuwXq1x+C1ZQ75aRxkbYRCTKs+tPgKzn/BEviQfR6qovfS4bawLypWlLijSURIh5+5SpM5f+wuVnh0cxSn67op04nQYko7KArpZ2bsQD/0KourkFj3fm2mLtA+qOr3Ev8lTp98N0thEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bang-olufsen.dk; dmarc=pass action=none
- header.from=bang-olufsen.dk; dkim=pass header.d=bang-olufsen.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bang-olufsen.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CwROy5qyIt5ER1gQqGGwsyMQ+fwIwdA/fG9wGeiJnDc=;
- b=QRxDn8TZ0wvWZOLNh+27VEK+q7FuEC7D3vmPHN5uSIOPxzC/9OrGyqjdyvdJq03eE89S0+EgS4rcG3odgCTXro4BuFlOkjACA3g0n7OPWL/Jf5c7pnq30Gw22N9whxQh6vHN2K16MCkRqSqN5CIjSSJz57p5vAlb4+Xn+YBWDvs=
-Received: from VI1PR03MB4942.eurprd03.prod.outlook.com (2603:10a6:803:b6::20)
- by AM9PR03MB6978.eurprd03.prod.outlook.com (2603:10a6:20b:284::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.19; Thu, 9 Mar
- 2023 15:21:59 +0000
-Received: from VI1PR03MB4942.eurprd03.prod.outlook.com
- ([fe80::7ccd:3294:6981:aef7]) by VI1PR03MB4942.eurprd03.prod.outlook.com
- ([fe80::7ccd:3294:6981:aef7%3]) with mapi id 15.20.6178.019; Thu, 9 Mar 2023
- 15:21:59 +0000
-From: Emil Abildgaard Svendsen <EMAS@bang-olufsen.dk>
-To: "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com"
-	<lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>
-Subject: [PATCH] ASoC: hdmi-codec: fix inverted tx in shutdown/startup
-Thread-Topic: [PATCH] ASoC: hdmi-codec: fix inverted tx in shutdown/startup
-Thread-Index: AQHZUprkBFVptgPfxUK/uUb0FN0nZQ==
-Date: Thu, 9 Mar 2023 15:21:59 +0000
-Message-ID: <20230309152143.498933-1-emas@bang-olufsen.dk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bang-olufsen.dk;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: VI1PR03MB4942:EE_|AM9PR03MB6978:EE_
-x-ms-office365-filtering-correlation-id: ecc0ec3a-195e-47b9-7566-08db20b206db
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- KElxILb3VavTBJzqiEsmnimJMf2QywzIUojh/v4LnFpyDs3/spDLkIJNeTcBEqoeIg6OWWPbC4QrWNtOdjosAATGERxHpOHpe1jGoKLJFmil9b9kcW9lcbGGBOSkW7B9qj0CrDhGL0LPVcTWgduLVDFzFOLj6NzclIkgV2yuLrs6VbTSHJSxJqBaWUauRlYzcPNsAzGZFiBsqrJZ5bN7YYeMuZDpSU9nW8VFgQCGmCPk1xPJAD55lLNkKYHyJYgBblf4rPTZNXdttHz6E3G7rMFVlFoLaKhIYD2RcOm7okPrqAvjlpXtCJyLS91VfW0ilOyc5rfqgiRciV+UKcqfgdrsG3y34JNHanVHtM7SRaNE0cCNK99ukSJLagw49TsUovTVhkfJjW0fDsbp3XME1ALObn5MiUsFmHMhtuh1llqMZ3Qd7lWisoLNgK2JL2ksd0LJTUJSHiEbOvLG3ZrgZnf4W9wogHRBCQyRQCltqbFVTeSJLK8+K1kwRshua8V4/QqmM+pTkSiD1/s98SenW460sm2gi8gPrDS2hjXMAaRgFv/XzscDAl39HgqgZw2ndNnpdIFRaOLsg5VAJPAFk3mrTaXvQ9hgcpmd+Nfcalh87J/7zM8zSz5ZOuTBQHsJr8ELx1NS2tbR+F3B63N4mTZbb9Wn9hQKgXf/YA9hPrlTQF+ofKYU9fzrebCvT5Ao
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR03MB4942.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(346002)(396003)(39860400002)(366004)(376002)(136003)(451199018)(36756003)(110136005)(54906003)(6486002)(966005)(71200400001)(316002)(5660300002)(2906002)(8976002)(64756008)(8936002)(76116006)(66476007)(66946007)(66556008)(91956017)(8676002)(66446008)(41300700001)(4326008)(107886003)(122000001)(38070700005)(86362001)(1076003)(26005)(186003)(2616005)(478600001)(6512007)(6506007)(83380400001)(38100700002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?Windows-1252?Q?L0/rlwlamcmJ2eg+JBXNQ3sHTIoG07sAiwcnuv2TIQYWGXQ0eEQ/gcur?=
- =?Windows-1252?Q?hCwhqr/L7G+1PB44dH7XlenOBM0MUo6A64PRfQfUm5QGDum24uJ+9WVG?=
- =?Windows-1252?Q?mHf7TTKQ9e5fO8WvNp1PBdUpifmPY0rq+MXybkCNszLbUQSW6gx2YfRY?=
- =?Windows-1252?Q?y/2Pibdfj1ujJdDgh0sqBgtIAvlxzpgeXeImP1aQpXZ0PpQec9eaJynH?=
- =?Windows-1252?Q?1aZ0R4UDIauM6CDdSGlWZo4zipUF4BPftqElTN6bBkH6yNfv+44kMS4W?=
- =?Windows-1252?Q?lxT1mYp99OoCZ4nPxI+ba6xCWuxBLqLWEiFrzk/om1LajXbNvS6obzWC?=
- =?Windows-1252?Q?u+w9fuiw8Zrr7SGcdbIil7Se1D0i64Q2aWrFGYBGylpNBrSXMiJIiXOQ?=
- =?Windows-1252?Q?gpjEHzsjH99YNrZP9e12zMWE2OH7v6l4qJoz53Nc/bTDfKY0opoptAja?=
- =?Windows-1252?Q?L36CSQ+boIntbsdknKJvYv+2RFIN/+8nJHhHwCt30k9BQT6vZi8h3Rps?=
- =?Windows-1252?Q?M1wWYQqwJw84ku4lfJsZuwjcvyGmu/ebaNikHamUCwd7cF0b+i7uEHcT?=
- =?Windows-1252?Q?a2POVFj2ZzSS+J7XxngsQ5anYwEozuuMug7FTjuuFjid7+/JgyJG9oKi?=
- =?Windows-1252?Q?sTsBZRc8vxQUiGJdf8tqg/qs9vC15q1kcd0wsfPSp+JsnRSGycm9Z/7k?=
- =?Windows-1252?Q?sXSRp3RvFF3QrBgPL8/V8oLPsKi6Q40Oi3QrjwTo8LE3/5Uowhv9OmMX?=
- =?Windows-1252?Q?oZl4Ss/CHZ6Mfkr6CBcHsThzCS7gaDgUksELgzlgmLr/84ul4F72AP1R?=
- =?Windows-1252?Q?gRlUJiLeagtbN0wixhGj5Yh8/ujVOFPPgOnl7iYQTzrTw8TKH0fzR4f9?=
- =?Windows-1252?Q?8pa+0ibzXWJ4Tl8jONtOaFhFrtdsNpjRpBAJiOHMBdG/PorLQ2DlNVtw?=
- =?Windows-1252?Q?amOMnXAq6+MJdJSLb7oErEKRP2vFvr01zeqFjWlSONFtZjBw1JW8K0Iz?=
- =?Windows-1252?Q?CDxQCK6BHI7RytYA34B7aHrjMXvfVpxL7GkHzr207vJK8n7lQJY8aVUI?=
- =?Windows-1252?Q?UIKSE8WcHJB6OieACERWdhvUqHhWU0mJ9XTBKeCl2Hwvkniw0asXIt1t?=
- =?Windows-1252?Q?4o5FYcvMllJgIAjbQ6xlIykHudfg+U+Jgk2mWjId9QEddArnou8Kuxiq?=
- =?Windows-1252?Q?l5siQvRRnwSadCedhyJKiNxHbQ8F1wXEMP3vNNV/cvp2/U8pnUEEr1N/?=
- =?Windows-1252?Q?YiqNrZKXKRDGEaE4wn9iGa4A/zUIqU0pVNGISqqnQd9/ksmIWJ9dIRx3?=
- =?Windows-1252?Q?aDCfdpJrMHHYp2AfbRKIZAcxN62hSxNmSSGmL4c3g3lQPqWEmGaSjC2j?=
- =?Windows-1252?Q?nvk7wl61h76H5Xa1Yy2S144CBtXMl+lMkhRwM9wjJM9FBqxKpHScpT8n?=
- =?Windows-1252?Q?fWoXPP8kQdfSz/As11lgp2tIai3rSWz6INhWvAaf/cwmtfNcdWph4R1N?=
- =?Windows-1252?Q?BerfG0ebcSceUqwQchHKFgcnYV5T1B8lDk0ff3hTr67A6oFW2oStd9Jk?=
- =?Windows-1252?Q?ywQDmMRQwoMTBjGFAzeUflCNta3rshkX0qgV9PQxUj2CUIpXW17BjkAi?=
- =?Windows-1252?Q?J3Z6cKRXYF0AtoEx0DzlOACCRrvlIkqo+y4wmcc90tIwA4/2bz5l+NRN?=
- =?Windows-1252?Q?NmILfMC5Zw/XMrhlagwNySetHRd3M8YYwsd9gFcHVP1YSB8SEvyidw?=
- =?Windows-1252?Q?=3D=3D?=
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+	dkim=pass (2048-bit key,
+ unprotected) header.d=quicinc.com header.i=@quicinc.com header.a=rsa-sha256
+ header.s=qcppdkim1 header.b=R3hTZPGf
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 329IXgOP018291;
+	Thu, 9 Mar 2023 21:10:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
+ h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=8el4BNsj1CspilqeKLLsVHYfa8Yw1SbtZUvlg7ilTVs=;
+ b=R3hTZPGfy8WYMPksfZV27q+LnKBIRnmKIDJoBuUAzzFAGmYy1Udr4VuU2fk2RXmytBzu
+ XYmsXgiB1QOM5zM8WM3qddB3ImeRV7kJeiMnU/P6dfx82JNyKGcC8mR158bAxKKHYyFH
+ sHbffgFuzuhtG3uTemdKJSf8in1s3pphh/5IMkuAOs2SDxh5d43E0S+921SDm4WdlzeI
+ Sslt7uVh9m94LWnjwpk/wA5Imjn2HTMCOLiMoZD57iCmZAsbBEHs41Srrt4SGnFEyyAh
+ XebIcIdjNnzi7D65oroQnHr8mOGAQaQFZXfRzLAaow3MKQU/o15l9We+SPhu0u6uRsE8 Og==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com
+ [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3p7mgrgf6v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 09 Mar 2023 21:10:07 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com
+ [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id
+ 329LA6nA019125
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 9 Mar 2023 21:10:06 GMT
+Received: from [10.110.90.116] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 9 Mar 2023
+ 13:10:01 -0800
+Message-ID: <8b2f3ce7-3e0c-bdf0-8d9f-9aeabba09a15@quicinc.com>
+Date: Thu, 9 Mar 2023 13:10:00 -0800
 MIME-Version: 1.0
-X-OriginatorOrg: bang-olufsen.dk
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR03MB4942.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- ecc0ec3a-195e-47b9-7566-08db20b206db
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Mar 2023 15:21:59.4057
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 210d08b8-83f7-470a-bc96-381193ca14a1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 
- L1a5z6YaiD8BaIFfnOjdOfiSMqGkPrtZpLTCGcniiN+ZtxcVF2KklI2SgWNoecCK39mMCPRNDbBMRKxhDGUukw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR03MB6978
-X-MailFrom: EMAS@bang-olufsen.dk
-X-Mailman-Rule-Hits: nonmember-moderation
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v3 00/28] Introduce QC USB SND audio offloading support
+Content-Language: en-US
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <broonie@kernel.org>, <lgirdwood@gmail.com>,
+        <krzysztof.kozlowski+dt@linaro.org>, <agross@kernel.org>,
+        <Thinh.Nguyen@synopsys.com>, <bgoswami@quicinc.com>,
+        <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <gregkh@linuxfoundation.org>, <tiwai@suse.com>
+References: <20230308235751.495-1-quic_wcheng@quicinc.com>
+ <4f8a66c0-398f-5655-3aa7-a59bc9ba56cc@linux.intel.com>
+From: Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <4f8a66c0-398f-5655-3aa7-a59bc9ba56cc@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-ORIG-GUID: 1PbZ9S7KhArdbbBF6PRZi3aursefaom7
+X-Proofpoint-GUID: 1PbZ9S7KhArdbbBF6PRZi3aursefaom7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-09_12,2023-03-09_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ adultscore=0 mlxscore=0
+ lowpriorityscore=0 malwarescore=0 mlxlogscore=999 spamscore=0 phishscore=0
+ priorityscore=1501 clxscore=1015 impostorscore=0 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2303090172
+Message-ID-Hash: KZDKPQDFP5XPYVTCSUJVAGWKTRFZ6VGS
+X-Message-ID-Hash: KZDKPQDFP5XPYVTCSUJVAGWKTRFZ6VGS
+X-MailFrom: quic_wcheng@quicinc.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: JKTWGVNN4BLTRJMNFR7IACDT37MFFF5A
-X-Message-ID-Hash: JKTWGVNN4BLTRJMNFR7IACDT37MFFF5A
-X-Mailman-Approved-At: Thu, 09 Mar 2023 20:44:01 +0000
-CC: =?Windows-1252?Q?Alvin_=8Aipraga?= <ALSI@bang-olufsen.dk>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-patches@vger.kernel.org" <linux-patches@vger.kernel.org>,
- Emil Abildgaard Svendsen <EMAS@bang-olufsen.dk>
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-usb@vger.kernel.org, quic_jackp@quicinc.com, quic_plai@quicinc.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JKTWGVNN4BLTRJMNFR7IACDT37MFFF5A/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/KZDKPQDFP5XPYVTCSUJVAGWKTRFZ6VGS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -201,62 +129,264 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Fix ignore logic on shutdown and startup.
+Hi Pierre,
 
-It broke single cpu single hdmi-codec with a single supported stream
-direction. Inverting TX fixes it.
+On 3/9/2023 9:13 AM, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 3/8/23 17:57, Wesley Cheng wrote:
+>> Changes in v3:
+>> - Changed prefix from RFC to PATCH
+>> - Rebased entire series to usb-next
+>> - Updated copyright years
+> 
+> You may want to move the per-version changes after the description of
+> this patchset.
+> 
 
-Truth table for when to ignore.
-+--------------+----+--------+-----+ +--------+-----+
-| has_playback | has_capture | TX  | | Before | Now |
-+--------------+-------------+-----+ +--------+-----+
-|      0       |      0      |  0  | |   1    |  1  |
-+--------------+-------------+-----+ +--------+-----+
-|      0       |      0      |  1  | |   1    |  1  |
-+--------------+-------------+-----+ +--------+-----+
-|      0       |      1      |  0  | |   1    |  0  |
-+--------------+-------------+-----+ +--------+-----+
-|      0       |      1      |  1  | |   0    |  1  |
-+--------------+-------------+-----+ +--------+-----+
-|      1       |      0      |  0  | |   0    |  1  |
-+--------------+-------------+-----+ +--------+-----+
-|      1       |      0      |  1  | |   1    |  0  |
-+--------------+-------------+-----+ +--------+-----+
-|      1       |      1      |  0  | |   0    |  0  |
-+--------------+-------------+-----+ +--------+-----+
-|      1       |      1      |  1  | |   0    |  0  |
-+--------------+-------------+-----+ +--------+-----+
+Thanks for reading through this :).
 
-Signed-off-by: Emil Svendsen <emas@bang-olufsen.dk>
-Link: https://lore.kernel.org/r/20230308125503.3917903-1-emas@bang-olufsen.=
-dk
----
- sound/soc/codecs/hdmi-codec.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Sure, will do that going forward.
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index e111d9e60233..6d980fbc4207 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -432,7 +432,7 @@ static int hdmi_codec_startup(struct snd_pcm_substream =
-*substream,
- 	bool has_playback =3D !hcp->hcd.no_i2s_playback;
- 	int ret =3D 0;
-=20
--	if (!((has_playback && !tx) || (has_capture && tx)))
-+	if (!((has_playback && tx) || (has_capture && !tx)))
- 		return 0;
-=20
- 	mutex_lock(&hcp->lock);
-@@ -477,7 +477,7 @@ static void hdmi_codec_shutdown(struct snd_pcm_substrea=
-m *substream,
- 	bool has_capture =3D !hcp->hcd.no_i2s_capture;
- 	bool has_playback =3D !hcp->hcd.no_i2s_playback;
-=20
--	if (!((has_playback && !tx) || (has_capture && tx)))
-+	if (!((has_playback && tx) || (has_capture && !tx)))
- 		return;
-=20
- 	hcp->chmap_idx =3D HDMI_CODEC_CHMAP_IDX_UNKNOWN;
---=20
-2.34.1
+>> XHCI:
+>> - Rebased changes on top of XHCI changes merged into usb-next, and only added
+>> changes that were still under discussion.
+>> - Added change to read in the "num-hc-interrupters" device property.
+>>
+>> ASoC:
+>> - qusb6 USB backend
+>>    - Incorporated suggestions to fetch iommu information with existing APIs
+>>    - Added two new sound kcontrols to fetch offload status and offload device
+>>      selection.
+>>      - offload status - will return the card and pcm device in use
+>>          tinymix -D 0 get 1 --> 1, 0 (offload in progress on card#1 pcm#0)
+>>
+>>      - device selection - set the card and pcm device to enable offload on. Ex.:
+>>          tinymix -D 0 set 1 2 0  --> sets offload on card#2 pcm#0
+>>                                      (this should be the USB card)
+>>
+>> USB SND:
+>> - Fixed up some locking related concerns for registering platform ops.
+>>     - Moved callbacks under the register_mutex, so that
+>> - Modified APIs to properly pass more information about the USB SND device, so
+>> that the Q6USB backend can build a device list/map, in order to monitor offload
+>> status and device selection.
+>>
+>> Changes in v2:
+>>
+>> XHCI:
+>> - Replaced XHCI and HCD changes with Mathias' XHCI interrupter changes
+>> in his tree:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git/log/?h=feature_interrupters
+>>
+>> Adjustments made to Mathias' changes:
+>>    - Created xhci-intr.h to export/expose interrupter APIs versus exposing xhci.h.
+>>      Moved dependent structures to this file as well. (so clients can parse out
+>>      information from "struct xhci_interrupter")
+>>    - Added some basic locking when requesting interrupters.
+>>    - Fixed up some sanity checks.
+>>    - Removed clearing of the ERSTBA during freeing of the interrupter. (pending
+>>      issue where SMMU fault occurs if DMA addr returned is 64b - TODO)
+>>
+>> - Clean up pending events in the XHCI secondary interrupter.  While testing USB
+>> bus suspend, it was seen that on bus resume, the xHCI HC would run into a command
+>> timeout.
+>> - Added offloading APIs to xHCI to fetch transfer and event ring information.
+>>
+>> ASoC:
+>> - Modified soc-usb to allow for multiple USB port additions.  For this to work,
+>> the USB offload driver has to have a reference to the USB backend by adding
+>> a "usb-soc-be" DT entry to the device saved into XHCI sysdev.
+>> - Created separate dt-bindings for defining USB_RX port.
+>> - Increased APR timeout to accommodate the situation where the AFE port start
+>> command could be delayed due to having to issue a USB bus resume while
+>> handling the QMI stream start command.
+>>
+>> USB SND:
+>> - Added a platform ops during usb_audio_suspend().  This allows for the USB
+>> offload driver to halt the audio stream when system enters PM suspend.  This
+>> ensures the audio DSP is not issuing transfers on the USB bus.
+>> - Do not override platform ops if they are already populated.
+>> - Introduce a shared status variable between the USB offload and USB SND layers,
+>> to ensure that only one path is active at a time.  If the USB bus is occupied,
+>> then userspace is notified that the path is busy.
+> 
+> 
+> ---> start of the cover letter:
+> 
+>> Several Qualcomm based chipsets can support USB audio offloading to a
+>> dedicated audio DSP, which can take over issuing transfers to the USB
+>> host controller.  The intention is to reduce the load on the main
+>> processors in the SoC, and allow them to be placed into lower power modes.
+>> There are several parts to this design:
+>>    1. Adding ASoC binding layer
+>>    2. Create a USB backend for Q6DSP
+> 
+> clarify what 'backend' means. I would guess you are referring to the
+> ASoC DPCM concept of Back-End, which typically exposes an audio
+> interface controlled by a DSP?
+> 
+> If yes, the description should be
+> 
+> "Create a Q6DSP ASoC DPCM BackEnd for USB audio playback/record".
+> 
+
+You're correct.  "backend" was referring to a Q6DSP ASoC DPCM backend.
+
+>>    3. Introduce XHCI interrupter support
+>>    4. Create vendor ops for the USB SND driver
+> 
+> Add an introduction as to why this would be needed? which 'vendor' are
+> we talking about, is this on the SOC side or the USB device side?
+> 
+
+This would be referring to the SoC side.  For example, QCOM can 
+potentially have a different implementation of offloading USB SND to the 
+audio DSP versus another OEM.  This is to allow those other entities to 
+be able to define their own offload methodology.
+
+For the most part, the common operations across all offloading 
+implementations have so far is being able to handle USB SND 
+connect/disconnect events.
+
+>> Adding ASoC binding layer:
+>> soc-usb: Intention is to treat a USB port similar to a headphone jack.
+>> The port is always present on the device, but cable/pin status can be
+>> enabled/disabled.  Expose mechanisms for USB backend ASoC drivers to
+>> communicate with USB SND.
+> 
+> port == backend?
+> 
+> Using different words for the same concept is a sure way to lose the
+> reviewers, and not describing different concepts isn't much better.
+> 
+
+Yes, port is corresponding to the
+
+>> Create a USB backend for Q6DSP:
+>> q6usb: Basic backend driver that will be responsible for maintaining the
+> 
+> What does this mean? Is this a module that registers a set of ASoC DAIs?
+> 
+> It's not clear to me what a 'backend driver' means either in a USB or
+> ASoC context.
+> 
+
+Will fix this up next time.  It refers to a Q6DSP DPCM ASoC backend, as 
+you mentioned above.
+
+>> resources needed to initiate a playback stream using the Q6DSP.  Will
+>> be the entity that checks to make sure the connected USB audio device
+>> supports the requested PCM format.  If it does not, the PCM open call will
+>> fail, and userpsace ALSA can take action accordingly.
+> 
+> If it's an ASoC backend, there is no PCM open call. You're probably
+> referring to the hw_params, not the open/startup anyways.
+> 
+
+Correct.  Will fix this.
+
+>>
+>> Introduce XHCI interrupter support:
+>> XHCI HCD supports multiple interrupters, which allows for events to be routed
+>> to different event rings.  This is determined by "Interrupter Target" field
+>> specified in Section "6.4.1.1 Normal TRB" of the XHCI specification.
+>>
+>> Events in the offloading case will be routed to an event ring that is assigned
+>> to the audio DSP.
+>>
+>> Create vendor ops for the USB SND driver:
+>> qc_audio_offload: This particular driver has several components associated
+>> with it:
+>> - QMI stream request handler
+>> - XHCI interrupter and resource management
+>> - audio DSP memory management
+> 
+> so how does this 'qc_audio_offload' interface with 'q6usb' described
+> above? how are the roles different or complementary?
+> 
+So in general you can think that the qc_audio_offload is a complement to 
+the USB SND USB class driver, while q6usb is to ASoC.  Since the ASoC 
+framework doesn't have any communication with USB SND, the ASoC DPCM USB 
+backend (q6usb) will have to be the entity that maintains what is going 
+on in USB SND.  That way, sessions initiated through the ASoC managed 
+sound card can evaluate what is available based on information reported 
+by q6usb.
+
+qc_audio_offload and q6usb will have some interaction between each 
+other.  The majority of communication between qc_audio_offload and q6usb 
+is reporting the device connection events.
+
+>> When the audio DSP wants to enable a playback stream, the request is first
+>> received by the ASoC platform sound card.  Depending on the selected route,
+>> ASoC will bring up the individual DAIs in the path.  The Q6USB backend DAI
+>> will send an AFE port start command (with enabling the USB playback path), and
+>> the audio DSP will handle the request accordingly.
+>>
+>> Part of the AFE USB port start handling will have an exchange of control
+>> messages using the QMI protocol.  The qc_audio_offload driver will populate the
+>> buffer information:
+>> - Event ring base address
+>> - EP transfer ring base address
+>>
+>> and pass it along to the audio DSP.  All endpoint management will now be handed
+>> over to the DSP, and the main processor is not involved in transfers.
+>>
+>> Overall, implementing this feature will still expose separate sound card and PCM
+>> devices for both the platorm card and USB audio device:
+>>   0 [SM8250MTPWCD938]: sm8250 - SM8250-MTP-WCD9380-WSA8810-VA-D
+>>                        SM8250-MTP-WCD9380-WSA8810-VA-DMIC
+>>   1 [Audio          ]: USB-Audio - USB Audio
+>>                        Generic USB Audio at usb-xhci-hcd.1.auto-1.4, high speed
+>>
+>> This is to ensure that userspace ALSA entities can decide which route to take
+>> when executing the audio playback.  In the above, if card#1 is selected, then
+>> USB audio data will take the legacy path over the USB PCM drivers, etc...
+> 
+> I already voiced my concerns about exposing two cards, each with their
+> own set of volume controls with the same device. It would be much better
+> to have an additional offloaded PCM device for card0...
+> 
+> But if the consensus is to have two cards, it's still not clear how the
+> routing would be selected. In the case where there are two USB audio
+> devices attached, the offloaded path would only support one of the two.
+> How would userspace know which of the two is selected?
+> 
+
+With patch#24:
+https://lore.kernel.org/linux-usb/20230308235751.495-25-quic_wcheng@quicinc.com/T/#u
+
+Now, userspace can at least choose which device it wants to offload. 
+Part of doing that would mean userspace knows what USB SND card devices 
+are available, so it is aware of which devices are shared (between the 
+offload and USB SND path)
+
+> And how would userspace know the difference anyways between two physical
+> devices attached to the platform with no offload, and one physical
+> device with one additional offload path? The names you selected can't be
+> used to identify that card1 is the optimized version of card0.
+> 
+
+Is userspace currently able to differentiate between cards that are 
+created by USB SND versus ASoC?  How complex can the userspace card 
+discovery be?  Can it query kcontrols at this point in time?  If so, 
+maybe we can change the names of the newly added ones to reflect that it 
+is an offload device?
+
+SND kcontrol names are currently:
+Q6USB offload status
+Q6USB offload SND device select
+
+> Before we review low-level kernel plumbing, it would be good to give a
+> better overview of how userspace applications are supposed to interact
+> with the cards and identify the offloaded path. Testing with
+> tinyplay/tinymix is fine, but that's a developer-level or CI unit test.
+> we've got to see the broader picture of how a sound server would use
+> this USB offload capability.
+
+Sure, I think that is fine.  I was hoping that at least adding some of 
+the new kcontrols would help userspace make use of this path in general, 
+but we can add more information if required.
+
+Thanks
+Wesley Cheng
