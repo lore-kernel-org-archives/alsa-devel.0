@@ -4,89 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2DA8C64EC4
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Mar 2023 05:37:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E66FAC61DA4
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Mar 2023 06:31:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D5A5718AB;
-	Thu,  9 Mar 2023 06:36:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5A5718AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04CC218A6;
+	Thu,  9 Mar 2023 07:31:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04CC218A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678340220;
-	bh=h4Z7o2fU92HDfcLA/HWUmcnZgpdErsjzQ5HEffu/E6A=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=QtD2kF+Nm25IyEOAmaMx70XT9/Gi6so+dTQEAleTiAUcwJ+nLB35Di2Vu53YQCvmI
-	 4KFDsbnWTC1dfgbrAPh9zp6veaJxce/aHct49CTpsnUP8TtAoP5aWZfi7pOqHk1tee
-	 UBstFSyahriIHv1hPHpJRBHEhdnEh7ytCVedLD0o=
+	s=default; t=1678343510;
+	bh=Tcpfab2JI0O5gEZfjlyY40W1mTdC6WtNopP6Eni/ckg=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=F1dchZO3bbP3LzNAPvw3S1FmXce/rd4cc0lBGr/pOz6z/mZFUKXErpgLE5k+MJO7w
+	 J3njpywfT5SPS6P8b4RDbVBfja8aBRWKTAtXiDshFVTOABtdlC/lVmqr1fO+btSa5R
+	 NNAUkJ491/W8v2THic/1rPeGz8LqwIvIVLFovh+8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D23FCF8042F;
-	Thu,  9 Mar 2023 06:35:46 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51DA4F8042F;
+	Thu,  9 Mar 2023 07:30:37 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 184F0F8042F; Thu,  9 Mar 2023 06:35:40 +0100 (CET)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+	id 0506BF8042F; Thu,  9 Mar 2023 07:29:31 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2F106F800C9
+	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2023 07:29:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F106F800C9
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=v5FVmknk
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3492DF80093
-	for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2023 06:35:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3492DF80093
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=VB17D/lS
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678340133; x=1709876133;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=h4Z7o2fU92HDfcLA/HWUmcnZgpdErsjzQ5HEffu/E6A=;
-  b=VB17D/lS/kzihPA18lGibkaOgzaPGOWI6sW7XgwlJ7cUyXSvJwGG5SYt
-   0ToCuB4JozrAQxXsKIPUl0beuqFPjw8m6d2rexpCLMtFYujOA53JSTipr
-   ehsYV1howaSCXb1A0l3BtAm69qThK9zQYsPcXa3Acdv3OtCQluRbaVsn9
-   2Mlb8UB0cGZVzovMmR/7tdgMuZ1E9xO+l2vysJuEJeDJ2KUuw6aOoJkly
-   fflApI4r8L7ngeavSs9SH1xq0ZP1JpXSb7TO2f5bZQUWt9atbesL8mkm2
-   bp3DFpa4KoDYG6xkkeMldWR5iZ5vTKveA155bvuJcqkUdbxY4Z8lGvSU+
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10643"; a="335061911"
-X-IronPort-AV: E=Sophos;i="5.98,245,1673942400";
-   d="scan'208";a="335061911"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2023 21:35:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10643"; a="746177909"
-X-IronPort-AV: E=Sophos;i="5.98,245,1673942400";
-   d="scan'208";a="746177909"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Mar 2023 21:35:19 -0800
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Subject: [PATCH] soundwire: stream: uniquify dev_err() logs
-Date: Thu,  9 Mar 2023 13:49:05 +0800
-Message-Id: <20230309054905.21507-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+	by ams.source.kernel.org (Postfix) with ESMTPS id A1A85B81072;
+	Thu,  9 Mar 2023 06:29:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5BA9C433D2;
+	Thu,  9 Mar 2023 06:29:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1678343361;
+	bh=Tcpfab2JI0O5gEZfjlyY40W1mTdC6WtNopP6Eni/ckg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=v5FVmknkEuFfLZlBtpznXxjLEvesG63Cy7ilBoLMdtslhz32tEIiZraNRsf5/hJHr
+	 eAVk1U3GmJcAeFnQvKZHOQEzjch6XzBIYPgh1TSOyl/10hkKRGnmFCLG3LU5ibyOfq
+	 tNracjlV8quqiZc6FuZtWE8k7D+QvTOSksSJWTfU=
+Date: Thu, 9 Mar 2023 07:29:18 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Wesley Cheng <quic_wcheng@quicinc.com>
+Subject: Re: [PATCH v3 10/28] sound: usb: Export USB SND APIs for modules
+Message-ID: <ZAl8vtmoISvQYLJd@kroah.com>
+References: <20230308235751.495-1-quic_wcheng@quicinc.com>
+ <20230308235751.495-11-quic_wcheng@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 6VXZPSTCD7IPNS6STLVFGDVVX2Y7JUZX
-X-Message-ID-Hash: 6VXZPSTCD7IPNS6STLVFGDVVX2Y7JUZX
-X-MailFrom: yung-chuan.liao@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230308235751.495-11-quic_wcheng@quicinc.com>
+Message-ID-Hash: S7PY3ZOFWBNYDU2EKDGBQU6XW5NRMEBX
+X-Message-ID-Hash: S7PY3ZOFWBNYDU2EKDGBQU6XW5NRMEBX
+X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
+CC: srinivas.kandagatla@linaro.org, mathias.nyman@intel.com,
+ broonie@kernel.org, lgirdwood@gmail.com, krzysztof.kozlowski+dt@linaro.org,
+ agross@kernel.org, Thinh.Nguyen@synopsys.com, bgoswami@quicinc.com,
+ andersson@kernel.org, robh+dt@kernel.org, tiwai@suse.com,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-usb@vger.kernel.org, quic_jackp@quicinc.com, quic_plai@quicinc.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6VXZPSTCD7IPNS6STLVFGDVVX2Y7JUZX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/S7PY3ZOFWBNYDU2EKDGBQU6XW5NRMEBX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,95 +92,55 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Wed, Mar 08, 2023 at 03:57:33PM -0800, Wesley Cheng wrote:
+> -static const struct audioformat *
+> +const struct audioformat *
+>  find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
+>  	    unsigned int rate, unsigned int channels, bool strict_match,
+>  	    struct snd_usb_substream *subs)
+> @@ -147,8 +147,9 @@ find_format(struct list_head *fmt_list_head, snd_pcm_format_t format,
+>  	}
+>  	return found;
+>  }
+> +EXPORT_SYMBOL_GPL(find_format);
 
-There are a couple of duplicate logs which makes harder than needed to
-follow the error flows. Add __func__ or make the log unique.
+This is a horrible name for the global symbol namespace, right?
+It needs a "snd_" prefix at the very least, maybe even more.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/stream.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+>  
+> -static const struct audioformat *
+> +const struct audioformat *
+>  find_substream_format(struct snd_usb_substream *subs,
+>  		      const struct snd_pcm_hw_params *params)
+>  {
+> @@ -156,6 +157,7 @@ find_substream_format(struct snd_usb_substream *subs,
+>  			   params_rate(params), params_channels(params),
+>  			   true, subs);
+>  }
+> +EXPORT_SYMBOL_GPL(find_substream_format);
 
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index 2e39587ed1de..dd09855caac9 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -1389,7 +1389,7 @@ static int _sdw_prepare_stream(struct sdw_stream_runtime *stream,
- 
- 	ret = do_bank_switch(stream);
- 	if (ret < 0) {
--		dev_err(bus->dev, "Bank switch failed: %d\n", ret);
-+		pr_err("%s: do_bank_switch failed: %d\n", __func__, ret);
- 		goto restore_params;
- 	}
- 
-@@ -1477,7 +1477,7 @@ static int _sdw_enable_stream(struct sdw_stream_runtime *stream)
- 		/* Program params */
- 		ret = sdw_program_params(bus, false);
- 		if (ret < 0) {
--			dev_err(bus->dev, "Program params failed: %d\n", ret);
-+			dev_err(bus->dev, "%s: Program params failed: %d\n", __func__, ret);
- 			return ret;
- 		}
- 
-@@ -1497,7 +1497,7 @@ static int _sdw_enable_stream(struct sdw_stream_runtime *stream)
- 
- 	ret = do_bank_switch(stream);
- 	if (ret < 0) {
--		dev_err(bus->dev, "Bank switch failed: %d\n", ret);
-+		pr_err("%s: do_bank_switch failed: %d\n", __func__, ret);
- 		return ret;
- 	}
- 
-@@ -1567,14 +1567,14 @@ static int _sdw_disable_stream(struct sdw_stream_runtime *stream)
- 		/* Program params */
- 		ret = sdw_program_params(bus, false);
- 		if (ret < 0) {
--			dev_err(bus->dev, "Program params failed: %d\n", ret);
-+			dev_err(bus->dev, "%s: Program params failed: %d\n", __func__, ret);
- 			return ret;
- 		}
- 	}
- 
- 	ret = do_bank_switch(stream);
- 	if (ret < 0) {
--		pr_err("Bank switch failed: %d\n", ret);
-+		pr_err("%s: do_bank_switch failed: %d\n", __func__, ret);
- 		return ret;
- 	}
- 
-@@ -1664,7 +1664,7 @@ static int _sdw_deprepare_stream(struct sdw_stream_runtime *stream)
- 		/* Program params */
- 		ret = sdw_program_params(bus, false);
- 		if (ret < 0) {
--			dev_err(bus->dev, "Program params failed: %d\n", ret);
-+			dev_err(bus->dev, "%s: Program params failed: %d\n", __func__, ret);
- 			return ret;
- 		}
- 	}
-@@ -1893,7 +1893,8 @@ int sdw_stream_add_master(struct sdw_bus *bus,
- 
- 	m_rt = sdw_master_rt_alloc(bus, stream);
- 	if (!m_rt) {
--		dev_err(bus->dev, "Master runtime alloc failed for stream:%s\n", stream->name);
-+		dev_err(bus->dev, "%s: Master runtime alloc failed for stream:%s\n",
-+			__func__, stream->name);
- 		ret = -ENOMEM;
- 		goto unlock;
- 	}
-@@ -2012,7 +2013,8 @@ int sdw_stream_add_slave(struct sdw_slave *slave,
- 	 */
- 	m_rt = sdw_master_rt_alloc(slave->bus, stream);
- 	if (!m_rt) {
--		dev_err(&slave->dev, "Master runtime alloc failed for stream:%s\n", stream->name);
-+		dev_err(&slave->dev, "%s: Master runtime alloc failed for stream:%s\n",
-+			__func__, stream->name);
- 		ret = -ENOMEM;
- 		goto unlock;
- 	}
--- 
-2.25.1
+Same here.
 
+>  
+>  bool snd_usb_pcm_has_fixed_rate(struct snd_usb_substream *subs)
+>  {
+> @@ -446,7 +448,7 @@ int snd_usb_pcm_resume(struct snd_usb_stream *as)
+>  	return 0;
+>  }
+>  
+> -static void close_endpoints(struct snd_usb_audio *chip,
+> +void close_endpoints(struct snd_usb_audio *chip,
+>  			    struct snd_usb_substream *subs)
+>  {
+>  	if (subs->data_endpoint) {
+> @@ -460,6 +462,7 @@ static void close_endpoints(struct snd_usb_audio *chip,
+>  		subs->sync_endpoint = NULL;
+>  	}
+>  }
+> +EXPORT_SYMBOL(close_endpoints);
+
+Same here.
+
+thanks,
+
+greg k-h
