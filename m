@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA203C6FA99
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Mar 2023 13:24:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E5BAC64EC4
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Mar 2023 13:24:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F29751866;
-	Fri, 10 Mar 2023 14:23:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F29751866
+	by alsa0.perex.cz (Postfix) with ESMTPS id 676A11897;
+	Fri, 10 Mar 2023 14:24:06 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 676A11897
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678454687;
-	bh=4MWTDB6xmkyQqDGTss3nKymH9mFKCDBJEw0bzXEALnU=;
+	s=default; t=1678454696;
+	bh=fKbiEXDschISZbDjW6hzu3bB/M7LVonJ1Y9FKmZPDpU=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Uub2HO/09FP1WTI3JebrJJ4Tn8TCxS5Ws8n2pFSb4n9ObEqlWXzhxqzJtJRLTHwWN
-	 dMbcJxZvceJTetUJTOm1Xi6r8Y3fx8Wx6q2DS0D/6mA/BheBNglxopgqnI+d75lycO
-	 uDl3djrHZFZbOQP37iuYjNnU1/rtJ1JhYQjZamS4=
+	b=c3WcsJUl5ktmXTbew6BN8UcqbFnW633F/SDTK9xXsaYd8VFaBitFePN89FA7Eb87X
+	 TcIwBDfB2d1HSli81oh6GJ3rq9FiJOCEIj3CfQlakbLimRHSC92Y7TPkwOWdjLezhq
+	 BfJfTUStts3JIpMWwAiww5L/Nyj3FdgzAp2BHgEY=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6EC4CF80549;
-	Fri, 10 Mar 2023 14:22:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 126C9F80557;
+	Fri, 10 Mar 2023 14:22:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id A5310F8052E; Fri, 10 Mar 2023 14:22:21 +0100 (CET)
+	id E333FF80534; Fri, 10 Mar 2023 14:22:22 +0100 (CET)
 Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
  [IPv6:2a00:1450:4864:20::529])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3CA30F80093
-	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2023 14:22:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CA30F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 28154F80236
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2023 14:22:14 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28154F80236
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=jp1ewdyS
-Received: by mail-ed1-x529.google.com with SMTP id cw28so20368133edb.5
+ header.s=google header.b=JlQDMdsr
+Received: by mail-ed1-x529.google.com with SMTP id u9so20408812edd.2
         for <alsa-devel@alsa-project.org>;
- Fri, 10 Mar 2023 05:22:07 -0800 (PST)
+ Fri, 10 Mar 2023 05:22:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1678454525;
+        d=linaro.org; s=google; t=1678454532;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BbnW+HQXXMov2YCkKGIA3Ip1jgaMjvv36rVivoZ/sxY=;
-        b=jp1ewdyS3iKqffGyu1oG2Jm5BRpT1kO1nx77XSIFlV38VmHYOe38jBFOoVttHRTNe6
-         Roumacgk5N0FLiJzU1TCG67mhTvBAtUq2SY9pgVF8aeoZlfmWmQ3bBfYSzNQtJUahwkv
-         6GuIe/C+sTi5cKK2iaJgaC1NfPxcgD7jE6I0cagnZHfqfW5Yiq1DG6rjMeQ0KBSW1tTj
-         jLv6XmhE5Yhr+PORyykLpu3JaCfhuVclH4fH0S5t02UkST8thCLJSoRBot0XGvnTx4rw
-         2ivclRZvIL8g1fJ1UxDjcLRgvaYb5D1YveDZvT5HdTAvvcZXMtIMGE2DM9jfRCI39u3c
-         nE8A==
+        bh=xZM2NPsZ49ia+Dqe6wkMeZpgWpRvBEKr1bmuDVGwMmU=;
+        b=JlQDMdsrzCaAUa+EGwPt5baDL9e2sGUjcXtUdJmMtd7LdVysOe++LpLVZR62ZYEocf
+         GGVu0LPvWKnC66Cv9zwZp3AKNIEU1IsV+efkj4Zdhpi1Qn705w49uz4Qt4ogxN68cuty
+         0btX2P47p6t+EP6BHBkWAX6XjqGKRBGaLunRWDvwsqanUk9dOf8jvcK9ViDIqNgwdom1
+         k4NSndhZRy4ftXOedg/VJHgTL8ZCB6pJHn7t6u1DrjNOUZWGxzBqnHKGkXTE5Fh27rvy
+         b55y67Vv7B4MpMRYC+WHN+xQMbxaIMYtq4vueu0BPH6BTVqC6/qOMmKfnBkrNYJvSt06
+         0T8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678454525;
+        d=1e100.net; s=20210112; t=1678454532;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BbnW+HQXXMov2YCkKGIA3Ip1jgaMjvv36rVivoZ/sxY=;
-        b=t3h2H9ZxLL6g2dfYsBc/zqli8ebUrGGtrLjaF2rccNpHh+K/XLKSuENqbIzNVMMRsg
-         ARCHMGpoSpzg/xg4KPXXWglUUKTUKonjPrTdeDkS/AWtb+HlICkJpHMaQCozPSs/rqQv
-         ahmeX4pHkJ+Xev58FdV+9wIFjrllsPsmiHl4W+jEqUA9orwL54pc3WBaL5yg+jmG8/QT
-         lRRh8H2WfQ0ppO4Tc+8x1ZkdCHoGSmgB8BlFQz6xNS9UUzRVceDdY00beNR7tvxWAggI
-         m5ChlIl9qYCuqaw+A9FrJp1nH0Lw5d5I5ZeTblZynOnhtDmU5z7u8J5yv7ZNydsWgS3C
-         Avmw==
-X-Gm-Message-State: AO0yUKVuR63CZ76REQ0zJ/OSD6SMRXu4XSnjM+C4/Av6e2BApPqvEPDZ
-	dEb6o1iTo1J+k40PZbuJFgTmOg==
+        bh=xZM2NPsZ49ia+Dqe6wkMeZpgWpRvBEKr1bmuDVGwMmU=;
+        b=8LZAqucyxjxAAJVKjG79o806Rkvf2d9c8fsPviWlNWoze9qxeqJI+gsXfuAK1t1dSs
+         /J22hsXc3T8qgiIqx7xMgNl9umxudDtiV2VpvlmcvjS658CLWGO5UPOsNZA89QgY6WXa
+         JcHrB/v5XJoyywKKddtY4PZpy8Zm4QuBkD3mVH8cjgpZZNO2XpxSwdZU/1Swl8iNova1
+         qfu6v6zmaxRBRtYpzs7GuTntHqH8hS0EixTXAh+Q40uyBdd8pVPmdRpswC/MpqvoepQn
+         02uOHukEnHZzmkS0jMDNFWtPQMUoPixT/aXAw8dSR476eBBlc7Cux+WDYyfKGqYKhFtX
+         UH9g==
+X-Gm-Message-State: AO0yUKXTuj9K84G2VoLJuFm/jUuIrVVmXLLCnSoko4ZSoDj65+6fvvp8
+	42TOy48kJkDKmWV/EvL5NDi3qg==
 X-Google-Smtp-Source: 
- AK7set89bwlmiWBuUwrH1uGGkGVacmOgb9VNWvOfJbCJIbNr2Ma9v0H90OaSF5yRm6toBSO+Hozexw==
-X-Received: by 2002:a17:906:eecc:b0:90b:167e:3050 with SMTP id
- wu12-20020a170906eecc00b0090b167e3050mr31863715ejb.36.1678454525311;
-        Fri, 10 Mar 2023 05:22:05 -0800 (PST)
+ AK7set8fTAqNDHmQ2vbdeXcsnUybj+MQE1TaFOBt/wDYcsvEaTyVp4p/mNTUNlPd4pLUH6uptZ5WVw==
+X-Received: by 2002:a17:906:30d3:b0:878:7291:d558 with SMTP id
+ b19-20020a17090630d300b008787291d558mr23731297ejb.34.1678454532716;
+        Fri, 10 Mar 2023 05:22:12 -0800 (PST)
 Received: from krzk-bin.. ([2a02:810d:15c0:828:45c4:46be:ec71:4a51])
         by smtp.gmail.com with ESMTPSA id
- zc4-20020a170906988400b008b17879ec95sm959124ejb.22.2023.03.10.05.22.04
+ zc4-20020a170906988400b008b17879ec95sm959124ejb.22.2023.03.10.05.22.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Mar 2023 05:22:04 -0800 (PST)
+        Fri, 10 Mar 2023 05:22:12 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Andy Gross <agross@kernel.org>,
 	Bjorn Andersson <andersson@kernel.org>,
@@ -94,17 +94,17 @@ To: Andy Gross <agross@kernel.org>,
 	alsa-devel@alsa-project.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/9] ASoC: dt-bindings: qcom,lpass-rx-macro: narrow clocks per
- variants
-Date: Fri, 10 Mar 2023 14:21:53 +0100
-Message-Id: <20230310132201.322148-2-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 8/9] ASoC: dt-bindings: qcom,lpass-wsa-macro: Add SM8550 WSA
+ macro
+Date: Fri, 10 Mar 2023 14:22:00 +0100
+Message-Id: <20230310132201.322148-9-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230310132201.322148-1-krzysztof.kozlowski@linaro.org>
 References: <20230310132201.322148-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: SKCOCZE2NOQQSVIFHR3HJOCRGFCRAAWE
-X-Message-ID-Hash: SKCOCZE2NOQQSVIFHR3HJOCRGFCRAAWE
+Message-ID-Hash: FVQ7KQNJGPNZUJQQXFVXPZLTZQ7AITU3
+X-Message-ID-Hash: FVQ7KQNJGPNZUJQQXFVXPZLTZQ7AITU3
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -118,7 +118,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SKCOCZE2NOQQSVIFHR3HJOCRGFCRAAWE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FVQ7KQNJGPNZUJQQXFVXPZLTZQ7AITU3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,92 +127,65 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Currently the Qualcomm RX macro codec binding allows two different clock
-setups - with (for ADSP) and without macro/dcodec entries (for ADSP
-bypassed).  With more devices coming soon, this will keep growing, thus
-rework the clocks/clock-names to be specific for each binding.
+Add the WSA macro codec on Qualcomm SM8550, which comes without NPL clock
+exposed.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../bindings/sound/qcom,lpass-rx-macro.yaml   | 58 ++++++++++++++-----
- 1 file changed, 44 insertions(+), 14 deletions(-)
+ .../bindings/sound/qcom,lpass-wsa-macro.yaml  | 23 +++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
-index b0b95689d78b..8b3d617a9578 100644
---- a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
-@@ -9,9 +9,6 @@ title: LPASS(Low Power Audio Subsystem) RX Macro audio codec
- maintainers:
-   - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
+index 66cbb1f5e31a..eea7609d1b33 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
+@@ -15,6 +15,7 @@ properties:
+       - qcom,sc7280-lpass-wsa-macro
+       - qcom,sm8250-lpass-wsa-macro
+       - qcom,sm8450-lpass-wsa-macro
++      - qcom,sm8550-lpass-wsa-macro
+       - qcom,sc8280xp-lpass-wsa-macro
  
--allOf:
--  - $ref: dai-common.yaml#
--
- properties:
-   compatible:
-     enum:
-@@ -34,17 +31,8 @@ properties:
-     maxItems: 5
+   reg:
+@@ -27,11 +28,11 @@ properties:
+     const: 0
+ 
+   clocks:
+-    minItems: 5
++    minItems: 4
+     maxItems: 6
  
    clock-names:
--    oneOf:
--      - items:   #for ADSP based platforms
--          - const: mclk
--          - const: npl
--          - const: macro
--          - const: dcodec
--          - const: fsgen
--      - items:   #for ADSP bypass based platforms
--          - const: mclk
--          - const: npl
--          - const: fsgen
-+    minItems: 3
-+    maxItems: 5
+-    minItems: 5
++    minItems: 4
+     maxItems: 6
  
    clock-output-names:
-     maxItems: 1
-@@ -62,6 +50,48 @@ required:
-   - reg
-   - "#sound-dai-cells"
+@@ -62,6 +63,7 @@ allOf:
+     then:
+       properties:
+         clocks:
++          minItems: 5
+           maxItems: 5
+         clock-names:
+           items:
+@@ -89,6 +91,23 @@ allOf:
+             - const: va
+             - const: fsgen
  
-+allOf:
-+  - $ref: dai-common.yaml#
 +  - if:
 +      properties:
 +        compatible:
 +          enum:
-+            - qcom,sc7280-lpass-rx-macro
-+    then:
-+      properties:
-+        clock-names:
-+          oneOf:
-+            - items:   #for ADSP based platforms
-+                - const: mclk
-+                - const: npl
-+                - const: macro
-+                - const: dcodec
-+                - const: fsgen
-+            - items:   #for ADSP bypass based platforms
-+                - const: mclk
-+                - const: npl
-+                - const: fsgen
-+
-+  - if:
-+      properties:
-+        compatible:
-+          enum:
-+            - qcom,sc8280xp-lpass-rx-macro
-+            - qcom,sm8250-lpass-rx-macro
-+            - qcom,sm8450-lpass-rx-macro
++            - qcom,sm8550-lpass-wsa-macro
 +    then:
 +      properties:
 +        clocks:
-+          minItems: 5
-+          maxItems: 5
++          minItems: 4
++          maxItems: 4
 +        clock-names:
 +          items:
 +            - const: mclk
-+            - const: npl
 +            - const: macro
 +            - const: dcodec
 +            - const: fsgen
