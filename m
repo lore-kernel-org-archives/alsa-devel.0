@@ -4,72 +4,32 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E763C6FA99
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Mar 2023 13:38:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60C35C74A44
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Mar 2023 13:45:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5DDE5183B;
-	Fri, 10 Mar 2023 14:37:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DDE5183B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2F4BF1895;
+	Fri, 10 Mar 2023 14:44:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F4BF1895
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678455502;
-	bh=aAy0Lj+fHM1y5bA4dye14eUV1gEszDc0S4fp9Vd/pC8=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
+	s=default; t=1678455907;
+	bh=+oTjUT9dWlCUZC8w4w2lkVrrPHUfdJBooaWDyj+iano=;
+	h=Date:Subject:To:References:In-Reply-To:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=gN4XUYY8l5bvGJa2gGDBR9xxAekdwXNbSAnxEjwSHrBDDKB7Npv9r5/O15+CDvxJq
-	 G5LAAetYCt4Ad76rr0IZHeHL43tQmJoHEpUK4N+4cr+XfKLE3L44tMehOwjSNQJJU3
-	 6jD1g78Fm7aWKsM4TKM8D2Wq8hrcT53kvGBGTkTY=
+	 From:Reply-To:From;
+	b=pbk1vkQFXS0355AfHkZ78rNU8U62wJv1lqvrDmC/cXvwiZFzIYhc0gepIpfSG+PZy
+	 7qHBDLCr8ebaZyRMjA+xXayK5gozpjZO7f5KkqSl+fnxuJhN+5zzrBtq0w3VNHTadR
+	 CRRtyU1sGL8SqPW7L5rtcQEOFhG5/mFxySSfaOxs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 680CEF80236;
-	Fri, 10 Mar 2023 14:37:11 +0100 (CET)
-Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B9686F8042F; Fri, 10 Mar 2023 14:37:07 +0100 (CET)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7011AF800DF
-	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2023 14:37:01 +0100 (CET)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id F109011C8;
-	Fri, 10 Mar 2023 14:36:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz F109011C8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-	t=1678455420; bh=RinGyNJpsQxHWm4s5hWPI2K0uUCSkIS8RckCaICpbsY=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=FR7dvmbrGm/BDXDT4ibTGTUWcBTppgVv4G81sUer/PO7qpUqAlI/a7qWb8PNBVoke
-	 Uh72D0I76enE4C7BxWnRQNrLybwEZQxFU6XSA7YuG2Wq2sVrIFg4OlxQi4Cw27Ymyf
-	 apUUtUZZ293SF/rKmkCFpB/wPyDu52K7HVZhbT7k=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	(Authenticated sender: perex)
-	by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-	Fri, 10 Mar 2023 14:36:57 +0100 (CET)
-Message-ID: <6f003598-4cae-a521-233f-2c19eb439359@perex.cz>
-Date: Fri, 10 Mar 2023 14:36:57 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: alsa-devel - message mangling?
-Content-Language: en-US
-To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, alsa-devel@alsa-project.org
-References: <20230307103022.1007420-1-claudiu.beznea@microchip.com>
- <167818863631.26.6699494131684260973@mailman-core.alsa-project.org>
- <1232949a-0efd-9814-5587-bb5e0417bf1d@linux.intel.com>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <1232949a-0efd-9814-5587-bb5e0417bf1d@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 74TIX76ANYZDWRAEHWRO2LTVGQMFLK4B
-X-Message-ID-Hash: 74TIX76ANYZDWRAEHWRO2LTVGQMFLK4B
-X-MailFrom: perex@perex.cz
+	by alsa1.perex.cz (Postfix) with ESMTP id 5AB39F80431;
+	Fri, 10 Mar 2023 14:43:55 +0100 (CET)
+Date: Fri, 10 Mar 2023 14:43:25 +0100
+Subject: Re: TC-Helicon Blender
+To: alsa-devel@alsa-project.org
+References: <948733d5-cbea-2c9f-95c7-6e95fdcacaba@echtzeit.solutions>
+ <87fsafiy9t.wl-tiwai@suse.de>
+In-Reply-To: <87fsafiy9t.wl-tiwai@suse.de>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -81,7 +41,85 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/74TIX76ANYZDWRAEHWRO2LTVGQMFLK4B/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WLNFDO5ILEYF5ACBFSSYPNIRLG7BOGSF/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
+List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
+MIME-Version: 1.0
+Message-ID: 
+ <167845583457.26.16247414324665605100@mailman-core.alsa-project.org>
+From: =?utf-8?q?Florian_H=C3=A4nel_via_Alsa-devel?=
+ <alsa-devel@alsa-project.org>
+Reply-To: =?UTF-8?Q?Florian_H=c3=a4nel?= <florian.haenel@echtzeit.solutions>
+Content-Type: message/rfc822
+Content-Disposition: inline
+
+Received: by alsa1.perex.cz (Postfix, from userid 50401)
+	id 79572F8042F; Fri, 10 Mar 2023 14:43:51 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED shortcircuit=no autolearn=ham
+	autolearn_force=no version=3.4.6
+Received: from mail.echtzeit.solutions (echtzeit.solutions [116.203.43.208])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 588D8F80093
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2023 14:43:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 588D8F80093
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=echtzeit.solutions header.i=@echtzeit.solutions
+ header.a=rsa-sha256 header.s=dkim header.b=ZKIRrl6f
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon)
+ with ESMTPSA id BD2F9DB06D
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2023 14:43:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=echtzeit.solutions;
+	s=dkim; t=1678455822;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fh4ZSVN13PVjalXDGvWqe8/7Cr2aaG80RgAKnKnY3Ak=;
+	b=ZKIRrl6fOW5hZjT4355JnFBj0J2CxLo3pPKvRe1XYAKhHIZ5ZWTli1qagtU4wYyjeZzS/P
+	5RrooosyinOfPjaiBEXm1/Ghoj7NUXBFeDl4fekmRp0V8ZHtdRtvbmEVz8onN3QdzXTTZI
+	1MFxn5wqsStoIMGHmw+efRgLApdGYQpQHTGZtuyxeY6Ery3lyp4w8PZSO5LAA9+ntC6PQh
+	zO4LNBxSD4e8xO3hBZVbU6gqLSvGsQ1nuWt0AvirDUzLGk9bK9h28g8FhSSQoH0ttV+ywn
+	b0XxP6MkHGPsokNEr2s0nI3KpJ/MOYbD+Iw624qsfa9KVDa2ipF2CNEbPydegQ==
+Content-Type: multipart/mixed; boundary="------------2KUDlwlbFE00og4OLUeXK0zS"
+Message-ID: <123b29e0-b3f1-66b4-b69a-bcd0cadfed80@echtzeit.solutions>
+Date: Fri, 10 Mar 2023 14:43:25 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: TC-Helicon Blender
+Content-Language: en-US
+To: alsa-devel@alsa-project.org
+References: <948733d5-cbea-2c9f-95c7-6e95fdcacaba@echtzeit.solutions>
+ <87fsafiy9t.wl-tiwai@suse.de>
+From: =?UTF-8?Q?Florian_H=c3=a4nel?= <florian.haenel@echtzeit.solutions>
+In-Reply-To: <87fsafiy9t.wl-tiwai@suse.de>
+Message-ID-Hash: WLNFDO5ILEYF5ACBFSSYPNIRLG7BOGSF
+X-Message-ID-Hash: WLNFDO5ILEYF5ACBFSSYPNIRLG7BOGSF
+X-MailFrom: florian.haenel@echtzeit.solutions
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation;
+ header-match-alsa-devel.alsa-project.org-0;
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+X-Mailman-Version: 3.3.8
+Precedence: list
+List-Id: "Alsa-devel mailing list for ALSA developers -
+ http://www.alsa-project.org" <alsa-devel.alsa-project.org>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WLNFDO5ILEYF5ACBFSSYPNIRLG7BOGSF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,49 +128,81 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 10. 03. 23 9:40, Amadeusz Sławiński wrote:
-> On 3/7/2023 12:30 PM, Charles Keepax via Alsa-devel wrote:
-> 
-> Hi Jaroslav,
+This is a multi-part message in MIME format.
+--------------2KUDlwlbFE00og4OLUeXK0zS
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi,
 
-> any chance that you can take a look at mailing list settings, it seems
-> like from few days some messages to mailing list come as "Someone via
-> Alsa-devel", like in top line, also content is attached as messages, so
-> when I clicked reply it didn't quote the email, as message body is
-> "empty", because all content is in attachment. You can also see it on
-> archives:
-> https://lore.kernel.org/alsa-devel/167843595709.26.931771458197876919@mailman-core.alsa-project.org/T/#m543a4c13e2f291684e54807a10ba638d906006de
+On 08.03.23 06:54, Takashi Iwai wrote:
+> On Mon, 13 Feb 2023 08:57:19 +0100,
+> Florian Hänel wrote:
+>> I have this USB device called TC-Helicon Blender which provides 12
+>> input streams, 8 output streams (6/4 stereo plugs), in addition to
+>> some midi interface and internal playback and record channel.
+>>
+>> Bus 005 Device 016: ID 1220:8fe1 TC Electronic Blender
+>>
+>> If I power the device on while connected to a windows machine with its
+>> driver installed, then plug it into my linux machine, it appears to
+>> work correctly:
+>>
+>> arecord -D front:CARD=Blender  -r48000 -fS32_LE -c 12 blender.wav -d 20
+>> Recording WAVE 'blender.wav' : Signed 32 bit Little Endian, Rate 48000
+>> Hz, Channels 12
+>>
+>> 46080044 blender.wav
+>>
+>> However if I have it on my linux machine while powering it on, I only
+>> get timeouts and no samples from arecord:
+>>
+>> arecord -D front:CARD=Blender  -r48000 -fS32_LE -c 12 blender.wav -d 20
+>> Recording WAVE 'blender.wav' : Signed 32 bit Little Endian, Rate 48000
+>> Hz, Channels 12
+>> arecord: pcm_read:2221: read error: Input/output error
+>>
+>> 44 blender.wav
+> So the device didn't give any data.
 
-I've turned on for the testing purposes the DMARC [1] mitigation which 
-encapsulates the original message as attachment [2] in mailman 3. The original 
-message is not mangled. You should use the attachment as the source for the 
-reply. The other mitigation option is to mangle From, but I think that it's 
-even worse for the replies.
+The maintainer of  the userland utility that makes a device of the same 
+manufacturer work on osx and linux has provided this experimental patch.
 
-Note that this mitigation is only for senders which have strict DMARC rules 
-(reject or quarantine) in their DNS records like mentioned cirrus.com, 
-bootlin.com etc.
+Could you provide some feedback if this approach would be welcomed into 
+alsa?
 
-It is really difficult to play nicely here. But breaking DMARC rules means 
-delivery issues and putting the outbound SMTP server to the reject list (as a 
-spam source).
+As I understand it it requires sending some vendor configuration packets.
 
-If we cannot live with this settings, I can turn it off, but consider to:
 
-1) ask the senders with the strict DMARC to use another domain
-2) work with the attachment (original message) for those senders
-3) if the message is not delivered to all members, the purpose of this mailing 
-list is lost
+- Florian
 
-					Jaroslav
+--------------2KUDlwlbFE00og4OLUeXK0zS
+Content-Type: text/x-patch; charset=UTF-8; name="goxlr-patch.diff"
+Content-Disposition: attachment; filename="goxlr-patch.diff"
+Content-Transfer-Encoding: base64
 
-[1] https://dmarc.org
-[2] 
-https://docs.mailman3.org/projects/mailman/en/latest/src/mailman/handlers/docs/dmarc-mitigations.html
+ZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9xdWlya3MuYyBiL3NvdW5kL3VzYi9xdWlya3MuYwpp
+bmRleCAzZWNkMWJhN2ZkNGIuLjM2ZWE1YWFiZDQxZCAxMDA2NDQKLS0tIGEvc291bmQvdXNi
+L3F1aXJrcy5jCisrKyBiL3NvdW5kL3VzYi9xdWlya3MuYwpAQCAtMTM5MCw2ICsxMzkwLDI1
+IEBAIHN0YXRpYyBpbnQgc25kX3VzYl9tb3R1X21fc2VyaWVzX2Jvb3RfcXVpcmsoc3RydWN0
+IHVzYl9kZXZpY2UgKmRldikKIAlyZXR1cm4gMDsKIH0KIAorc3RhdGljIGludCBzbmRfdXNi
+X2dveGxyX2Jvb3RfcXVpcmsoc3RydWN0IHVzYl9kZXZpY2UgKmRldikKK3sKKwkvKiBMb2Fk
+IHRoZSA0ODAwMEh6IHJhdGUgaW50byBhIGJ1ZmZlciAqLworCXU4IHNyYXRlWzRdID0gezB4
+ODAsIDB4YmIsIDB4MDAsIDB4MDB9OworCXU4IHRlbXBbMjRdOworCisJLyogQ2xlYXIgdGhl
+IFZlbmRvciBidWZmZXIsIHdlIGRvbid0IG5lZWQgdG8gZG8gYW55dGhpbmcgd2l0aCB0aGlz
+IGRhdGEgKi8KKwlzbmRfdXNiX2N0bF9tc2coZGV2LCB1c2JfcmN2Y3RybHBpcGUoZGV2LDAp
+LCAweDAwLAorCQlVU0JfRElSX0lOIHwgVVNCX1RZUEVfVkVORE9SIHwgVVNCX1JFQ0lQX0lO
+VEVSRkFDRSwKKwkJMCwgMCwgJnRlbXAsIDB4MDAxOCk7CisKKwkvKiBTZW5kIHRoZSBwYWNr
+ZXQgdG8gYWN0aXZhdGUgdGhlIGF1ZGlvIGF0IDQ4MDAwSHogKi8KKwlzbmRfdXNiX2N0bF9t
+c2coZGV2LCB1c2Jfc25kY3RybHBpcGUoZGV2LCAwKSwgMHgwMSwKKwkJVVNCX0RJUl9PVVQg
+fCBVU0JfVFlQRV9DTEFTUyB8IFVTQl9SRUNJUF9JTlRFUkZBQ0UsCisJCTB4MDEwMCwgMHgy
+OTAwLCAmc3JhdGUsIDB4MDAwNCk7CisKKwlyZXR1cm4gMDsKK30KKwogLyoKICAqIFNldHVw
+IHF1aXJrcwogICovCkBAIC0xNjE3LDYgKzE2MzYsMTAgQEAgaW50IHNuZF91c2JfYXBwbHlf
+Ym9vdF9xdWlyayhzdHJ1Y3QgdXNiX2RldmljZSAqZGV2LAogCQkgICAgZ2V0X2lmYWNlX2Rl
+c2MoaW50Zi0+YWx0c2V0dGluZyktPmJJbnRlcmZhY2VOdW1iZXIgPCAzKQogCQkJcmV0dXJu
+IHNuZF91c2JfbW90dV9taWNyb2Jvb2tpaV9ib290X3F1aXJrKGRldik7CiAJCWJyZWFrOwor
+CisJY2FzZSBVU0JfSUQoMHgxMjIwLCAweDhmZTApOiAvKiBUQy1IZWxpY29uIEdvWExSICov
+CisJY2FzZSBVU0JfSUQoMHgxMjIwLCAweDhmZTQpOiAvKiBUQy1IZWxpY29uIEdvWExSIE1p
+bmkgKi8KKwkJcmV0dXJuIHNuZF91c2JfZ294bHJfYm9vdF9xdWlyayhkZXYpOwogCX0KIAog
+CXJldHVybiAwOwo=
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
-
+--------------2KUDlwlbFE00og4OLUeXK0zS--
