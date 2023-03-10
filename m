@@ -4,117 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3F91C6FA99
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Mar 2023 14:37:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84CCFC64EC4
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Mar 2023 14:37:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3290E189F;
-	Fri, 10 Mar 2023 15:36:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3290E189F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7979618BD;
+	Fri, 10 Mar 2023 15:36:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7979618BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678459041;
-	bh=BA5jj7odVQsVOQwlWGlf/l5b8Td2tbD8N4ebtC4yC1I=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=uBrWK2Dm4KLIdVgNSb09BJJzEx3h+9ExXHnGkEjmfEs+atcBKekWz++VFy5Xkgs6j
-	 UsXncO2Qv10Zj6ZGVC47cPVt+zIbvug9ccAfa/OEjRpA+uA4qcyEGf/9iZYsoi3uYd
-	 E2tWFEgkLifBft5/qgXTpuSsFk1OIswqzbxh3Yis=
+	s=default; t=1678459069;
+	bh=JXrBPWK6v7XL22BY75zHtPOkPrMbMF4KH72BNj9Zy1E=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=qgyaIF28mj8c/OUOuSt7FxxYFvQ5ReZbj/c5iwbQ0tcwReY7wL/u1+RjloMC24xRn
+	 upa6CbxrvVNhbutncfl752mvjMmjBZTKzpD9+WZGyZuy8ejAqSE9uZrYHYmuk7D3o0
+	 EJf2ody1PvO3WRURmHq0sNS5YJbeQW+3WvLyiOEU=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4EC5F80431;
-	Fri, 10 Mar 2023 15:36:08 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7BB99F8052D;
+	Fri, 10 Mar 2023 15:36:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7F2C7F8042F; Fri, 10 Mar 2023 15:36:03 +0100 (CET)
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com
- [IPv6:2a00:1450:4864:20::535])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 581FBF804FE; Fri, 10 Mar 2023 15:36:09 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9B43CF80093
-	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2023 15:35:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B43CF80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id DF3EFF80093
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2023 15:36:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF3EFF80093
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=NJm58VDW
-Received: by mail-ed1-x535.google.com with SMTP id x3so21195564edb.10
-        for <alsa-devel@alsa-project.org>;
- Fri, 10 Mar 2023 06:35:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1678458957;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=9dXUSpxrhc852kQQYbEFtQeOQhI46gAz+RPdDgDM6is=;
-        b=NJm58VDWAWv6i7hMdG19RulhdsV5x/wxmH+8isFWJXUEqhG9N1Iqam21CFjdWwOcf7
-         WbGU2ZLahrjJhgrwUXGZZOr/UUubNVwr+fffhEkmzZzlXjgYMTf5ileDas5NFPtnkRYz
-         rT1ppaC7hRiXW/QJZrnMQFTP/hrCdqvLkxJJnhQuhlTf8Vju7UjALujTrLiQiCu3pQ8n
-         0rBzVorTxQGCkdQN00kx2uvsvNBgqy/Ui+0y+4ofz7CSAFx+utphlSOdoiSIpzWxIxd8
-         piE0QUGtQ4uGoqve0lwBw8SSB6y06R3Awp5eeMjAxsRBNwq71v3OhLkmVdKccRmAi/nc
-         YzwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678458957;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9dXUSpxrhc852kQQYbEFtQeOQhI46gAz+RPdDgDM6is=;
-        b=h38G/q1WF3P+ogAe0kF+os413iVe42jKAjbutqdkNDNZ40q61w9kMC7xW20wPGYhlE
-         Mi7szOkT2tBBufBFwccLkpFS+gb+7U/xEuLdoz+PAUbPRFGaayBSP7ID8CJrS0GLCtoA
-         PfqoTQLCCohUbM+cRindql4f3El1M/eRQLF3qFmUJL6LrGTg4zIcmIauXtKJV5ybjf0L
-         xPvwCBc2/+R+RLLRcFjQSCzbJNjfoWGythiJxsgQAc7eBbGyzjxH9wQIPOth9G6SOI5t
-         O5h3MtDHm9zUzE7ov8aZ/+C+LLy8w/ixuCf9RoykVhLjsWZxqgE6WZeAEDKthSF3YFc4
-         1JDA==
-X-Gm-Message-State: AO0yUKVftQQbBzA/zdOaa0l3nr6y/wNrCSVsMDrtjHrPEqQU4Rx4bSY8
-	WB6hK5TwV9pZO60YK2iDbW+enQ==
-X-Google-Smtp-Source: 
- AK7set/cT6KeCdA2Ngom7Mk8z4udlb+B1Ld/45Z85Z40xRKfE+CLp5lePmjx8hRRhNtGefKW/p0Myw==
-X-Received: by 2002:a17:906:f255:b0:886:fcbf:a1e5 with SMTP id
- gy21-20020a170906f25500b00886fcbfa1e5mr22623077ejb.59.1678458956870;
-        Fri, 10 Mar 2023 06:35:56 -0800 (PST)
-Received: from ?IPV6:2a02:810d:15c0:828:45c4:46be:ec71:4a51?
- ([2a02:810d:15c0:828:45c4:46be:ec71:4a51])
-        by smtp.gmail.com with ESMTPSA id
- u23-20020a509517000000b004c0cc79f4aesm80130eda.92.2023.03.10.06.35.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Mar 2023 06:35:56 -0800 (PST)
-Message-ID: <b5e4c34b-b0d2-0f73-7c0b-8233e545c068@linaro.org>
-Date: Fri, 10 Mar 2023 15:35:55 +0100
+	dkim=pass (1024-bit key,
+ unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
+ header.a=rsa-sha256 header.s=korg header.b=PlLl1HQP
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id DD62E6195F;
+	Fri, 10 Mar 2023 14:36:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8C47C433A8;
+	Fri, 10 Mar 2023 14:35:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1678458960;
+	bh=JXrBPWK6v7XL22BY75zHtPOkPrMbMF4KH72BNj9Zy1E=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=PlLl1HQP2n7GGyOwkBSG5RmNsysBXVmok6F6o51UF6nRrlmHig3Xc/q5BJ26Rm/mJ
+	 3nDrhAYHOroA2BpwxwSq0GTKaiYYNUYf6r+oLqO3PNNxrqYtZQiXoyNSXLeBNKBw6f
+	 s9zkgp59W0VSB+KkTVaNRK6FrMz52U4ZYuf7OPuU=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Subject: [PATCH 5.4 202/357] ASoC: kirkwood: Iterate over array indexes
+ instead of using pointer math
+Date: Fri, 10 Mar 2023 14:38:11 +0100
+Message-Id: <20230310133743.639722209@linuxfoundation.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230310133733.973883071@linuxfoundation.org>
+References: <20230310133733.973883071@linuxfoundation.org>
+User-Agent: quilt/0.67
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH 0/9] ASoC: add audio digital codecs for Qualcomm SM8550
-To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230310132201.322148-1-krzysztof.kozlowski@linaro.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230310132201.322148-1-krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: JWADLMBEICKAA26ZXE2HGLCJCIWMWAIZ
-X-Message-ID-Hash: JWADLMBEICKAA26ZXE2HGLCJCIWMWAIZ
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: Y65UPTRANNPT5ZKCOU26FDB6667HXIQ2
+X-Message-ID-Hash: Y65UPTRANNPT5ZKCOU26FDB6667HXIQ2
+X-MailFrom: gregkh@linuxfoundation.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, patches@lists.linux.dev,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+ Kees Cook <keescook@chromium.org>, Sasha Levin <sashal@kernel.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JWADLMBEICKAA26ZXE2HGLCJCIWMWAIZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y65UPTRANNPT5ZKCOU26FDB6667HXIQ2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -123,23 +91,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 10/03/2023 14:21, Krzysztof Kozlowski wrote:
-> Hi,
-> 
-> Dependencies
-> ============
-> For va-macro bindings:
-> https://lore.kernel.org/r/20221118071849.25506-2-srinivas.kandagatla@linaro.org
-> 
-> NOT a dependency
-> ================
-> The patchset can be applied independently of my previous fix:
-> https://lore.kernel.org/linux-arm-msm/20230310100937.32485-1-krzysztof.kozlowski@linaro.org/T/#u
+From: Kees Cook <keescook@chromium.org>
 
-DTS implementing the bindings is here:
+[ Upstream commit b3bcedc0402fcdc5c8624c433562d9d1882749d8 ]
 
-https://lore.kernel.org/linux-arm-msm/20230310134925.514125-1-krzysztof.kozlowski@linaro.org/T/#u
+Walking the dram->cs array was seen as accesses beyond the first array
+item by the compiler. Instead, use the array index directly. This allows
+for run-time bounds checking under CONFIG_UBSAN_BOUNDS as well. Seen
+with GCC 13 with -fstrict-flex-arrays:
 
-Best regards,
-Krzysztof
+../sound/soc/kirkwood/kirkwood-dma.c: In function
+'kirkwood_dma_conf_mbus_windows.constprop':
+../sound/soc/kirkwood/kirkwood-dma.c:90:24: warning: array subscript 0 is outside array bounds of 'const struct mbus_dram_window[0]' [-Warray-bounds=]
+   90 |                 if ((cs->base & 0xffff0000) < (dma & 0xffff0000)) {
+      |                      ~~^~~~~~
+
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20230127224128.never.410-kees@kernel.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/kirkwood/kirkwood-dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
+index d2d5c25bf5502..0215d187bdff5 100644
+--- a/sound/soc/kirkwood/kirkwood-dma.c
++++ b/sound/soc/kirkwood/kirkwood-dma.c
+@@ -86,7 +86,7 @@ kirkwood_dma_conf_mbus_windows(void __iomem *base, int win,
+ 
+ 	/* try to find matching cs for current dma address */
+ 	for (i = 0; i < dram->num_cs; i++) {
+-		const struct mbus_dram_window *cs = dram->cs + i;
++		const struct mbus_dram_window *cs = &dram->cs[i];
+ 		if ((cs->base & 0xffff0000) < (dma & 0xffff0000)) {
+ 			writel(cs->base & 0xffff0000,
+ 				base + KIRKWOOD_AUDIO_WIN_BASE_REG(win));
+-- 
+2.39.2
+
+
 
