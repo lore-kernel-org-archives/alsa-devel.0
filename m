@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A238C6FD19
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Mar 2023 21:47:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E4E3C6FA99
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Mar 2023 21:47:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ABB6B185D;
-	Fri, 10 Mar 2023 22:46:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABB6B185D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 56E7C18B8;
+	Fri, 10 Mar 2023 22:46:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56E7C18B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678484825;
-	bh=ZSeMLLNPngyTlVkoTV+JqX7YhcDe5W0Zp/rCncNXDC8=;
+	s=default; t=1678484838;
+	bh=UG3AML3wN81g7jN7sBE6G6x2s9GGDjom6SNjDa8jdXQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=jKLGzsumm6MKvmJzaSp2LCmPCfLoXRgveP6iYYF35IBN/e59TUWd99sWq8Xvub/mD
-	 g9AEm219ytIm2XbPCqFb1/AbiCJ52JX+s52jn9TssFWs/v6fIvq6rCnS/XVe2xkNLe
-	 MlKWQXNm432tkY0dDyTnHSY62RA70/tjraBS9LGs=
+	b=eJxq8lN+nETV0WvdFkLjUUz3h1WLiRvO+rMGdXrDnhqFS8BXgDH9mQcuDgbfaM0wU
+	 AMfo3SYYnS/EPJ+Ky1i6vpZ9yC3AjE+qLaZEUp8shuziL10wz33G7ZqZsoqWVtqzNl
+	 XD0Pqvw9JJvPtnrUSDL0clVc8tfIHTrPe3PUNRps=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4A1AF8056F;
-	Fri, 10 Mar 2023 22:44:32 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 449ADF8057A;
+	Fri, 10 Mar 2023 22:44:36 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4E56AF80579; Fri, 10 Mar 2023 22:44:29 +0100 (CET)
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com
- [IPv6:2a00:1450:4864:20::534])
+	id BED08F80578; Fri, 10 Mar 2023 22:44:29 +0100 (CET)
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com
+ [IPv6:2a00:1450:4864:20::52a])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BE482F80482
+	by alsa1.perex.cz (Postfix) with ESMTPS id 65089F8007E
 	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2023 22:43:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE482F80482
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65089F8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=Xx3Srnmg
-Received: by mail-ed1-x534.google.com with SMTP id j11so26087142edq.4
+ header.s=google header.b=h8Q4NOjP
+Received: by mail-ed1-x52a.google.com with SMTP id da10so26157770edb.3
         for <alsa-devel@alsa-project.org>;
  Fri, 10 Mar 2023 13:43:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1678484628;
+        d=linaro.org; s=google; t=1678484626;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=TeP716t4cBIYV/Qo8houZ6GjE5tTEcSLUUsmtmHrwME=;
-        b=Xx3SrnmgKxS5czxvERbapZo0uZsV01LxxYnZdeXVvqWMaJbIqc6s7RwE0R1PdiZQbQ
-         5VvqmpWZBxmGyzQQmiflyogrwY/TNDk5BSD48fwB9vkiEReyJZQLKCSWQyW3GgMcaFvJ
-         GX9wIjCjB0UbY2BXuCkpTOkwcynB2cvUqjM8zQknB1+Nyrmgcc8UK/BpY39FN/n32OAj
-         lRJdt+Uj/pTnNn7dqxBx/km2qBCwBBtsKSatpPh8iDKCLwgNPmaNSXOLGzWfogNUMry6
-         aiKCN+Jk9unAevVTpYExN6ukJmrgIuhQ0/nio8/z1in77IIffGTubp9hE/ZgIiDkKu7G
-         QPMQ==
+        bh=EnYq1zeLkuGP06fgrJTup4yOJApLpMSwWcWTUqrcgj4=;
+        b=h8Q4NOjPl5R/WiIaAMHaK8PQKHkgJFxVXq8er9dUXTEb8Qxr+L09aiP7GPhzregD6W
+         AQOdeFCk9UrCUrhNz6fg10wdRXMjIaYNWbdEmveho99cZ6dcDq8HlC/Dh0hjyei/JSqI
+         8MpC93/Qz/cK4xwvixdyiajxszYgj68Hr6MPxaZU58xzx+0C+R2MFi+qOaIJXTLj5iVC
+         DHeGQHu5TMMDHr3N6XPjlxWg1ws2o5VzYPGrAqVip5ixR5jlb+9ubDA4K7ZM4xRrBDZx
+         PeFp0amXoCAgDfrywhfu+B/7m/1xYzMgQwfpYHtd5018ENWEr8AyBwSotrVt95xzcvZs
+         GljQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678484628;
+        d=1e100.net; s=20210112; t=1678484626;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TeP716t4cBIYV/Qo8houZ6GjE5tTEcSLUUsmtmHrwME=;
-        b=DiHfw24XHAiVdeMTqlxc1o3FHRI8WmCLubIbEE8TTrKDOlMDg76UvZK9qT1c7ZCY3J
-         Q463xoBp+eBhq+lLOfZsPHkLoGF972QUOxUKWoPNTjewGcG0DULhtgL+DL696CjcU7Kp
-         pAKJ/66A/4HOs75DxE/W1/nNrVXKd3u4MvUy+yMjoAChd963w5lPuqSNXRkeLSitmxuA
-         hTp0qhomMYWvgj9010Co+phPn2QlEfnQTTsVIXWLughm6oBYJ4gSFNE8ughj6V0mahW+
-         b3bbzOC2Q9ZHUDYkpyZzVY0293+jU6IPc7ZntF6uk6M4odmhY7l9veDUA/r1TKqmvfvn
-         NM7Q==
-X-Gm-Message-State: AO0yUKXP2+gJfdkfSVrANJ5xFXPeymcZl3iA2l0pAFwG+N7ZBZgyxZQy
-	3zQG5mZwgo6KMT++2Hl+0XkZlQ==
+        bh=EnYq1zeLkuGP06fgrJTup4yOJApLpMSwWcWTUqrcgj4=;
+        b=2SSRBKR43IPH+z7MY+S6Ag4iLyWzR9HtiegElzySNvvlI9Y/pac7aVdPhyhlVnRYdP
+         sFm6DwED+yOkH77VdLRtQ8FXyH+q1zV0qwLE2wvnZVDhEE50EOlanLb1/NnL4EAkKVgF
+         UKFkx/MpEvUNpdCxusVMKRhfN+/Xup3jn6OVwoKrf8A/JC8Ti/ApvYgkbQegl2OkXDLu
+         hOeuONdMnO8oZpn5ENqI1ZzRBatnk52wfFMEf71p1Ewj1HcFndYaMU+XCYLUM8MtrDEg
+         KqgmqMLlooHuxKh7aZxDB3IQu2zpMjS8/EKw61nqVNxTawsHyEInqXwHdOfjdSzdmEZC
+         MKgQ==
+X-Gm-Message-State: AO0yUKVMG41A/uw7dTyupYLG8p2GxiXy99aXjxBw2hQuVqrcRQjSeYGs
+	tC+jsixzsZHFJwVb0EInNODQyA==
 X-Google-Smtp-Source: 
- AK7set+FJFc4dSGpVtgH0w1GTDHbF5wg5x4nW3Gcxvq33tKawN+X7rAHAi4mTn8Xl6rlAxUk/Z87aw==
-X-Received: by 2002:a05:6402:391:b0:4fa:4b1c:5ea4 with SMTP id
- o17-20020a056402039100b004fa4b1c5ea4mr244220edv.29.1678484628394;
-        Fri, 10 Mar 2023 13:43:48 -0800 (PST)
+ AK7set8Q/apGzf5fRe9BKFf2BS/DHloQQwv+CX45f7pu7bcAkpBEYK89UNKobe0bpL8f4xQIHE7HQA==
+X-Received: by 2002:a17:907:c20a:b0:8b1:781d:f9a2 with SMTP id
+ ti10-20020a170907c20a00b008b1781df9a2mr26168137ejc.32.1678484626567;
+        Fri, 10 Mar 2023 13:43:46 -0800 (PST)
 Received: from krzk-bin.. ([2a02:810d:15c0:828:34:52e3:a77e:cac5])
         by smtp.gmail.com with ESMTPSA id
- f2-20020a1709064dc200b008dcf89a72d7sm327228ejw.147.2023.03.10.13.43.46
+ f2-20020a1709064dc200b008dcf89a72d7sm327228ejw.147.2023.03.10.13.43.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Mar 2023 13:43:47 -0800 (PST)
+        Fri, 10 Mar 2023 13:43:46 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Andy Gross <agross@kernel.org>,
 	Bjorn Andersson <andersson@kernel.org>,
@@ -102,18 +102,18 @@ To: Andy Gross <agross@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	alsa-devel@alsa-project.org,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 7/9] ASoC: codecs: rt1019: Mark OF related data as maybe
+Subject: [PATCH 6/9] ASoC: codecs: pcm179x-spi: Mark OF related data as maybe
  unused
-Date: Fri, 10 Mar 2023 22:43:31 +0100
-Message-Id: <20230310214333.274903-8-krzysztof.kozlowski@linaro.org>
+Date: Fri, 10 Mar 2023 22:43:30 +0100
+Message-Id: <20230310214333.274903-7-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230310214333.274903-1-krzysztof.kozlowski@linaro.org>
 References: <20230310214333.274903-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: PMHB6WPP623AOKCTUJSUC3NFSOQOPNTL
-X-Message-ID-Hash: PMHB6WPP623AOKCTUJSUC3NFSOQOPNTL
+Message-ID-Hash: FCCE5O5643NRWYX56H6NMHY6APLITHKS
+X-Message-ID-Hash: FCCE5O5643NRWYX56H6NMHY6APLITHKS
 X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -126,7 +126,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PMHB6WPP623AOKCTUJSUC3NFSOQOPNTL/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FCCE5O5643NRWYX56H6NMHY6APLITHKS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -138,25 +138,25 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 The driver can be compile tested with !CONFIG_OF making certain data
 unused:
 
-  sound/soc/codecs/rt1019.c:549:34: error: ‘rt1019_of_match’ defined but not used [-Werror=unused-const-variable=]
+  sound/soc/codecs/pcm179x-spi.c:32:34: error: ‘pcm179x_of_match’ defined but not used [-Werror=unused-const-variable=]
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/codecs/rt1019.c | 2 +-
+ sound/soc/codecs/pcm179x-spi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt1019.c b/sound/soc/codecs/rt1019.c
-index 49f527c61a7a..dff2596c81eb 100644
---- a/sound/soc/codecs/rt1019.c
-+++ b/sound/soc/codecs/rt1019.c
-@@ -546,7 +546,7 @@ static const struct i2c_device_id rt1019_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, rt1019_i2c_id);
+diff --git a/sound/soc/codecs/pcm179x-spi.c b/sound/soc/codecs/pcm179x-spi.c
+index ebf63ea90a1c..192fee90c971 100644
+--- a/sound/soc/codecs/pcm179x-spi.c
++++ b/sound/soc/codecs/pcm179x-spi.c
+@@ -29,7 +29,7 @@ static int pcm179x_spi_probe(struct spi_device *spi)
+ 	return pcm179x_common_init(&spi->dev, regmap);
+ }
  
--static const struct of_device_id rt1019_of_match[] = {
-+static const struct of_device_id rt1019_of_match[] __maybe_unused = {
- 	{ .compatible = "realtek,rt1019", },
- 	{},
+-static const struct of_device_id pcm179x_of_match[] = {
++static const struct of_device_id pcm179x_of_match[] __maybe_unused = {
+ 	{ .compatible = "ti,pcm1792a", },
+ 	{ }
  };
 -- 
 2.34.1
