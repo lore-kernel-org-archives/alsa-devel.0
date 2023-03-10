@@ -4,85 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84CCFC64EC4
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Mar 2023 14:37:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C666BC74A4B
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Mar 2023 14:49:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7979618BD;
-	Fri, 10 Mar 2023 15:36:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7979618BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id EEB7C18BA;
+	Fri, 10 Mar 2023 15:48:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EEB7C18BA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678459069;
-	bh=JXrBPWK6v7XL22BY75zHtPOkPrMbMF4KH72BNj9Zy1E=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=qgyaIF28mj8c/OUOuSt7FxxYFvQ5ReZbj/c5iwbQ0tcwReY7wL/u1+RjloMC24xRn
-	 upa6CbxrvVNhbutncfl752mvjMmjBZTKzpD9+WZGyZuy8ejAqSE9uZrYHYmuk7D3o0
-	 EJf2ody1PvO3WRURmHq0sNS5YJbeQW+3WvLyiOEU=
+	s=default; t=1678459757;
+	bh=KzD5GY515ptwHFTcAVXR8EtlJ5ilwmppy3W5Ka05Yc8=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=J+TEyg/RN7SYzLKl9U39eFxzoIcwiMzovDTGFgipeDVmykUk+aa6e9kRahAfKzpNV
+	 m8YohN9OKGe0wZ9yUEtD+zuPT9AcHAxILIaPVO46FhRDU6xMy35l9Uz0k8nB96R2Q4
+	 0v8gP+/kNqc8TZ4Dg6Y2Nz12SVRgZmaz+OqvjpPY=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7BB99F8052D;
-	Fri, 10 Mar 2023 15:36:13 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B94ACF80431;
+	Fri, 10 Mar 2023 15:48:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 581FBF804FE; Fri, 10 Mar 2023 15:36:09 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	id 1D6BBF8042F; Fri, 10 Mar 2023 15:48:04 +0100 (CET)
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com
+ [209.85.160.44])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DF3EFF80093
-	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2023 15:36:02 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF3EFF80093
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=linuxfoundation.org header.i=@linuxfoundation.org
- header.a=rsa-sha256 header.s=korg header.b=PlLl1HQP
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id DD62E6195F;
-	Fri, 10 Mar 2023 14:36:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8C47C433A8;
-	Fri, 10 Mar 2023 14:35:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1678458960;
-	bh=JXrBPWK6v7XL22BY75zHtPOkPrMbMF4KH72BNj9Zy1E=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PlLl1HQP2n7GGyOwkBSG5RmNsysBXVmok6F6o51UF6nRrlmHig3Xc/q5BJ26Rm/mJ
-	 3nDrhAYHOroA2BpwxwSq0GTKaiYYNUYf6r+oLqO3PNNxrqYtZQiXoyNSXLeBNKBw6f
-	 s9zkgp59W0VSB+KkTVaNRK6FrMz52U4ZYuf7OPuU=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Subject: [PATCH 5.4 202/357] ASoC: kirkwood: Iterate over array indexes
- instead of using pointer math
-Date: Fri, 10 Mar 2023 14:38:11 +0100
-Message-Id: <20230310133743.639722209@linuxfoundation.org>
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3BFA4F80093
+	for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2023 15:47:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BFA4F80093
+Received: by mail-oa1-f44.google.com with SMTP id
+ 586e51a60fabf-17638494edbso6034384fac.10
+        for <alsa-devel@alsa-project.org>;
+ Fri, 10 Mar 2023 06:47:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678459677;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8lNbDhvtNNABoeoJ1EEfrQ6VIu2kxnEGjaB82Wf/W24=;
+        b=cg0ATSKjxXf2zpc4n5qOy49F3mKo2sTtDM+RsczQ/qyLlzGxg/Sl+HmcQ6592ndDtG
+         mX9rEGngDPqb7PsuOOwNNASvYADFhkm4UyFdkFZl6bWRpAMgyGKwafxqBtpRB6M7FJTF
+         NAcFF7P/7vm50wjIPK5miljinI3WtkrOwvex8qlGnERjOiKveRFexMF7DWXusZYbOKOc
+         RsnWtShAGAhVdD6E9OOlcvvZFkZgEeJ3brdfxxTXYLoNqvBbYCJAQqU0xx5gvqd7ZYSt
+         usdvmfydnH0B2q67zVomEuvs8d0qWcUy5nGaZz80uZNzfyHzdFeMJcZ8Ys3XBwOliGR3
+         8XrA==
+X-Gm-Message-State: AO0yUKWTrWzhOALCEtnGIzP4Jom5gUgHtFDARwMFXLisKgMJ4aF+3TuN
+	xWmmk721IqgIMA5PaSsqxQ==
+X-Google-Smtp-Source: 
+ AK7set9I+4VRoGtOVjvZEWPeH4QUf03Pg5OM+6KwBoqWhi2Fyc9oRdnGlhttZ2bQMXTrEhf9nUK3ig==
+X-Received: by 2002:a05:6870:73c6:b0:163:535d:4a86 with SMTP id
+ a6-20020a05687073c600b00163535d4a86mr15295757oan.22.1678459676973;
+        Fri, 10 Mar 2023 06:47:56 -0800 (PST)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id
+ m3-20020a056870a40300b00172289de1besm115189oal.18.2023.03.10.06.47.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Mar 2023 06:47:56 -0800 (PST)
+Received: (nullmailer pid 1546370 invoked by uid 1000);
+	Fri, 10 Mar 2023 14:47:32 -0000
+From: Rob Herring <robh@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Olivier Moysan <olivier.moysan@foss.st.com>,
+ Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>
+Subject: [PATCH] ASoC: Use of_property_present() for testing DT property
+ presence
+Date: Fri, 10 Mar 2023 08:47:31 -0600
+Message-Id: <20230310144732.1546328-1-robh@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230310133733.973883071@linuxfoundation.org>
-References: <20230310133733.973883071@linuxfoundation.org>
-User-Agent: quilt/0.67
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: Y65UPTRANNPT5ZKCOU26FDB6667HXIQ2
-X-Message-ID-Hash: Y65UPTRANNPT5ZKCOU26FDB6667HXIQ2
-X-MailFrom: gregkh@linuxfoundation.org
+Message-ID-Hash: H5LKDWYGISI6QYYYBCINM3CCR55ZK2Z5
+X-Message-ID-Hash: H5LKDWYGISI6QYYYBCINM3CCR55ZK2Z5
+X-MailFrom: robherring2@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, patches@lists.linux.dev,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
- Kees Cook <keescook@chromium.org>, Sasha Levin <sashal@kernel.org>
+CC: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-tegra@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Y65UPTRANNPT5ZKCOU26FDB6667HXIQ2/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/H5LKDWYGISI6QYYYBCINM3CCR55ZK2Z5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,49 +112,152 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Kees Cook <keescook@chromium.org>
+It is preferred to use typed property access functions (i.e.
+of_property_read_<type> functions) rather than low-level
+of_get_property/of_find_property functions for reading properties. As
+part of this, convert of_get_property/of_find_property calls to the
+recently added of_property_present() helper when we just want to test
+for presence of a property and nothing more.
 
-[ Upstream commit b3bcedc0402fcdc5c8624c433562d9d1882749d8 ]
-
-Walking the dram->cs array was seen as accesses beyond the first array
-item by the compiler. Instead, use the array index directly. This allows
-for run-time bounds checking under CONFIG_UBSAN_BOUNDS as well. Seen
-with GCC 13 with -fstrict-flex-arrays:
-
-../sound/soc/kirkwood/kirkwood-dma.c: In function
-'kirkwood_dma_conf_mbus_windows.constprop':
-../sound/soc/kirkwood/kirkwood-dma.c:90:24: warning: array subscript 0 is outside array bounds of 'const struct mbus_dram_window[0]' [-Warray-bounds=]
-   90 |                 if ((cs->base & 0xffff0000) < (dma & 0xffff0000)) {
-      |                      ~~^~~~~~
-
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20230127224128.never.410-kees@kernel.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- sound/soc/kirkwood/kirkwood-dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/lpass-macro-common.c | 2 +-
+ sound/soc/generic/audio-graph-card.c  | 2 +-
+ sound/soc/generic/audio-graph-card2.c | 2 +-
+ sound/soc/mxs/mxs-sgtl5000.c          | 2 +-
+ sound/soc/samsung/i2s.c               | 2 +-
+ sound/soc/sh/fsi.c                    | 2 +-
+ sound/soc/stm/stm32_i2s.c             | 2 +-
+ sound/soc/stm/stm32_sai_sub.c         | 4 ++--
+ sound/soc/tegra/tegra_asoc_machine.c  | 2 +-
+ 9 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
-index d2d5c25bf5502..0215d187bdff5 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -86,7 +86,7 @@ kirkwood_dma_conf_mbus_windows(void __iomem *base, int win,
+diff --git a/sound/soc/codecs/lpass-macro-common.c b/sound/soc/codecs/lpass-macro-common.c
+index 1b9082d237c1..f54baaad54d4 100644
+--- a/sound/soc/codecs/lpass-macro-common.c
++++ b/sound/soc/codecs/lpass-macro-common.c
+@@ -16,7 +16,7 @@ struct lpass_macro *lpass_macro_pds_init(struct device *dev)
+ 	struct lpass_macro *l_pds;
+ 	int ret;
  
- 	/* try to find matching cs for current dma address */
- 	for (i = 0; i < dram->num_cs; i++) {
--		const struct mbus_dram_window *cs = dram->cs + i;
-+		const struct mbus_dram_window *cs = &dram->cs[i];
- 		if ((cs->base & 0xffff0000) < (dma & 0xffff0000)) {
- 			writel(cs->base & 0xffff0000,
- 				base + KIRKWOOD_AUDIO_WIN_BASE_REG(win));
+-	if (!of_find_property(dev->of_node, "power-domains", NULL))
++	if (!of_property_present(dev->of_node, "power-domains"))
+ 		return NULL;
+ 
+ 	l_pds = devm_kzalloc(dev, sizeof(*l_pds), GFP_KERNEL);
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index 5daa824a4ffc..d788f5f23a8a 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -78,7 +78,7 @@ static int graph_get_dai_id(struct device_node *ep)
+ 		 * only of_graph_parse_endpoint().
+ 		 * We need to check "reg" property
+ 		 */
+-		if (of_get_property(ep,   "reg", NULL))
++		if (of_property_present(ep,   "reg"))
+ 			return info.id;
+ 
+ 		node = of_get_parent(ep);
+diff --git a/sound/soc/generic/audio-graph-card2.c b/sound/soc/generic/audio-graph-card2.c
+index 06609a526b78..259544f64df9 100644
+--- a/sound/soc/generic/audio-graph-card2.c
++++ b/sound/soc/generic/audio-graph-card2.c
+@@ -376,7 +376,7 @@ static int graph_get_dai_id(struct device_node *ep)
+ 		 * only of_graph_parse_endpoint().
+ 		 * We need to check "reg" property
+ 		 */
+-		if (of_get_property(ep,   "reg", NULL))
++		if (of_property_present(ep,   "reg"))
+ 			return info.id;
+ 
+ 		node = of_get_parent(ep);
+diff --git a/sound/soc/mxs/mxs-sgtl5000.c b/sound/soc/mxs/mxs-sgtl5000.c
+index 746f40938675..a55e7256a4c3 100644
+--- a/sound/soc/mxs/mxs-sgtl5000.c
++++ b/sound/soc/mxs/mxs-sgtl5000.c
+@@ -150,7 +150,7 @@ static int mxs_sgtl5000_probe(struct platform_device *pdev)
+ 
+ 	card->dev = &pdev->dev;
+ 
+-	if (of_find_property(np, "audio-routing", NULL)) {
++	if (of_property_present(np, "audio-routing")) {
+ 		card->dapm_widgets = mxs_sgtl5000_dapm_widgets;
+ 		card->num_dapm_widgets = ARRAY_SIZE(mxs_sgtl5000_dapm_widgets);
+ 
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 6f96032090de..083e278aa021 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1289,7 +1289,7 @@ static int i2s_register_clock_provider(struct samsung_i2s_priv *priv)
+ 	int ret, i;
+ 
+ 	/* Register the clock provider only if it's expected in the DTB */
+-	if (!of_find_property(dev->of_node, "#clock-cells", NULL))
++	if (!of_property_present(dev->of_node, "#clock-cells"))
+ 		return 0;
+ 
+ 	/* Get the RCLKSRC mux clock parent clock names */
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index f3edc2e3d9d7..9f3f1af6349f 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -1855,7 +1855,7 @@ static void fsi_of_parse(char *name,
+ 
+ 	for (i = 0; i < ARRAY_SIZE(of_parse_property); i++) {
+ 		sprintf(prop, "%s,%s", name, of_parse_property[i].name);
+-		if (of_get_property(np, prop, NULL))
++		if (of_property_present(np, prop))
+ 			flags |= of_parse_property[i].val;
+ 	}
+ 	info->flags = flags;
+diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
+index f3dd9f8e621c..9dad85ecb93f 100644
+--- a/sound/soc/stm/stm32_i2s.c
++++ b/sound/soc/stm/stm32_i2s.c
+@@ -1066,7 +1066,7 @@ static int stm32_i2s_parse_dt(struct platform_device *pdev,
+ 				     "Could not get x11k parent clock\n");
+ 
+ 	/* Register mclk provider if requested */
+-	if (of_find_property(np, "#clock-cells", NULL)) {
++	if (of_property_present(np, "#clock-cells")) {
+ 		ret = stm32_i2s_add_mclk_provider(i2s);
+ 		if (ret < 0)
+ 			return ret;
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index eb31b49e6597..8ba4206f751d 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -1394,7 +1394,7 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
+ 
+ 	/* Get spdif iec60958 property */
+ 	sai->spdif = false;
+-	if (of_get_property(np, "st,iec60958", NULL)) {
++	if (of_property_present(np, "st,iec60958")) {
+ 		if (!STM_SAI_HAS_SPDIF(sai) ||
+ 		    sai->dir == SNDRV_PCM_STREAM_CAPTURE) {
+ 			dev_err(&pdev->dev, "S/PDIF IEC60958 not supported\n");
+@@ -1480,7 +1480,7 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
+ 		return 0;
+ 
+ 	/* Register mclk provider if requested */
+-	if (of_find_property(np, "#clock-cells", NULL)) {
++	if (of_property_present(np, "#clock-cells")) {
+ 		ret = stm32_sai_add_mclk_provider(sai);
+ 		if (ret < 0)
+ 			return ret;
+diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
+index 78faa8bcae27..2dc1f44c5a8b 100644
+--- a/sound/soc/tegra/tegra_asoc_machine.c
++++ b/sound/soc/tegra/tegra_asoc_machine.c
+@@ -502,7 +502,7 @@ int tegra_asoc_machine_probe(struct platform_device *pdev)
+ 	 * If clock parents are not set in DT, configure here to use clk_out_1
+ 	 * as mclk and extern1 as parent for Tegra30 and higher.
+ 	 */
+-	if (!of_find_property(dev->of_node, "assigned-clock-parents", NULL) &&
++	if (!of_property_present(dev->of_node, "assigned-clock-parents") &&
+ 	    !of_machine_is_compatible("nvidia,tegra20")) {
+ 		struct clk *clk_out_1, *clk_extern1;
+ 
 -- 
 2.39.2
-
-
 
