@@ -4,82 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 429DEC6FD1C
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Mar 2023 17:20:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94A68C6FD1C
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Mar 2023 17:21:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BDB015C2;
-	Sat, 11 Mar 2023 18:19:57 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BDB015C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3B071680;
+	Sat, 11 Mar 2023 18:20:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3B071680
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678555247;
-	bh=Xjh3wk7o+LHEFty4gqGN/nReXay+Bh8f9wzC52SXd8I=;
+	s=default; t=1678555278;
+	bh=gYQkLYUkx1K3uGDgxKkQD4VX8afsfuR+PMZMTcszPB4=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Z2EMYHswhzNPxMYlWY0Y96MlJmvixWEmWaqD8YFHUBmKvv6PEwGx71J5HUTKHsIeX
-	 4XB0xNKtl+p0xZDeu9Zt7dKworbVoKqwTqGa6dXVUvdmMzX+nC6WXcnebqjW2qx+6L
-	 AdWR4/ADymM24WQj2UnAmFjcdKLUcPtoY7PU3xJY=
+	b=GvtD/VmDBg+zz/Kyz8EylnqxwvuCor+e9L1wbTYNVO+2lLe4ORcaRmd1u/9PMu42B
+	 RF+M030nkfYQfYdsJ3LH4PEKEMIRii7GHsx7VLLC/DEbS1zxAZt2+++LUJbdk2AAtJ
+	 /ICwDPw/rUlo6btlx5q6Nvzcwx2HboM5ebsNjvFE=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F252F8042F;
-	Sat, 11 Mar 2023 18:19:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C93EF804FE;
+	Sat, 11 Mar 2023 18:19:38 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8DD45F80431; Sat, 11 Mar 2023 18:19:31 +0100 (CET)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+	id 9FBAEF8042F; Sat, 11 Mar 2023 18:19:32 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id BACF2F800DF
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2023 18:19:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BACF2F800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id DFA20F800C9
+	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2023 18:19:27 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFA20F800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=f1USAqYP
+ header.s=k20201202 header.b=jmj9901e
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.source.kernel.org (Postfix) with ESMTPS id 6D872CE01B9;
-	Sat, 11 Mar 2023 17:19:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ACB8C433EF;
-	Sat, 11 Mar 2023 17:19:16 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 016DC60D54;
+	Sat, 11 Mar 2023 17:19:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 338D3C4339E;
+	Sat, 11 Mar 2023 17:19:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678555160;
-	bh=Xjh3wk7o+LHEFty4gqGN/nReXay+Bh8f9wzC52SXd8I=;
+	s=k20201202; t=1678555164;
+	bh=gYQkLYUkx1K3uGDgxKkQD4VX8afsfuR+PMZMTcszPB4=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=f1USAqYP/WZKfWOMPPzlqNRuH6dR85MoHXKJAOkHhJlDyVC2Y46EFZKo2PaYhoQe/
-	 5ohqtnDj7HFtBOmCGuON1EvaAcYttVUYk2/w68eOv+dtJGdvJ7zUdFNclV1XRzfC/m
-	 efbuFaqK6qQc1CQWgS2bp51kXD5H3CGwvNNrr/L7nqRDccXnbRr2KORsIqzHv+81tR
-	 hQ9iYMZoNa0BHq7Ndtr7fNrIvrfXmkQf23fvYJrokU00lnRKjRfgyb1dwGygPyknk7
-	 rfHYBhD1WBLyOgOHoqQVwyEl89Ituwd0rijouTsYeRK0qb5qovaQjBgaXzUClAY+Ra
-	 PvfewW1M/Jsjw==
+	b=jmj9901erMgO5Qg/Job+i2yn0gkTkpnOXRJLD9SDx5ECiQSGhgjv0vfxDAIgr25RU
+	 56a3IEUtk0BceHVEAApcY8qO/eR+EHII8ZTs8XJnb7oVqIowVyhqX43nhPQ29ZPoJa
+	 1VfR+6QmopMC6s6RHktfbMjtXnR2GUy8+TIv366nQ12NIHSLZ18eDS5Zxn3QTzZGs3
+	 Ao1xjVlh5HN+stqLX2lmyphh8kazoWmSxFJoL/ggzx6NyOqwsRTEiX8nUVn7iYxQ6g
+	 FxhSm+EBe5DqLf6bugPVUEk+quT+UWIhvjrHD/bHdzHBS6EZ8C/nzt6kygdQBVH+NM
+	 HK7IOXmN5zoqg==
 From: Mark Brown <broonie@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Shengjiu Wang <shengjiu.wang@gmail.com>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
  Sascha Hauer <s.hauer@pengutronix.de>,
  Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Olivier Moysan <olivier.moysan@foss.st.com>,
- Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Rob Herring <robh@kernel.org>
-In-Reply-To: <20230310144732.1546328-1-robh@kernel.org>
-References: <20230310144732.1546328-1-robh@kernel.org>
-Subject: Re: [PATCH] ASoC: Use of_property_present() for testing DT
- property presence
-Message-Id: <167855515541.950365.6616901508065986731.b4-ty@kernel.org>
-Date: Sat, 11 Mar 2023 17:19:15 +0000
+ NXP Linux Team <linux-imx@nxp.com>, Rob Herring <robh@kernel.org>
+In-Reply-To: <20230310144733.1546413-1-robh@kernel.org>
+References: <20230310144733.1546413-1-robh@kernel.org>
+Subject: Re: [PATCH] ASoC: Use of_property_read_bool() for boolean
+ properties
+Message-Id: <167855516017.950365.11671456936566563006.b4-ty@kernel.org>
+Date: Sat, 11 Mar 2023 17:19:20 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-2eb1a
-Message-ID-Hash: VU27O3HKKBHJWSC5NXEZYR6CDEVQ2XOP
-X-Message-ID-Hash: VU27O3HKKBHJWSC5NXEZYR6CDEVQ2XOP
+Message-ID-Hash: YN2HEW6WUJAKYEGXTGWPSDGGIDHHXJVW
+X-Message-ID-Hash: YN2HEW6WUJAKYEGXTGWPSDGGIDHHXJVW
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -88,14 +81,14 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
 CC: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-stm32@st-md-mailman.stormreply.com, linux-tegra@vger.kernel.org
+ linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-arm-kernel@lists.infradead.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VU27O3HKKBHJWSC5NXEZYR6CDEVQ2XOP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/YN2HEW6WUJAKYEGXTGWPSDGGIDHHXJVW/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,15 +97,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Fri, 10 Mar 2023 08:47:31 -0600, Rob Herring wrote:
+On Fri, 10 Mar 2023 08:47:32 -0600, Rob Herring wrote:
 > It is preferred to use typed property access functions (i.e.
 > of_property_read_<type> functions) rather than low-level
-> of_get_property/of_find_property functions for reading properties. As
-> part of this, convert of_get_property/of_find_property calls to the
-> recently added of_property_present() helper when we just want to test
-> for presence of a property and nothing more.
+> of_get_property/of_find_property functions for reading properties.
+> Convert reading boolean properties to to of_property_read_bool().
 > 
-> [...]
+> 
 
 Applied to
 
@@ -120,8 +111,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Use of_property_present() for testing DT property presence
-      commit: 1e108e60a44a924e3666fa2a10b53f6c31522856
+[1/1] ASoC: Use of_property_read_bool() for boolean properties
+      commit: 2d2998b84330899bf88a0414f3356869be4a69eb
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
