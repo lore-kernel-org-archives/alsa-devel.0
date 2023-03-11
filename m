@@ -4,173 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4D8BC6FA99
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Mar 2023 23:57:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D80FCC6FA99
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Mar 2023 01:15:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED52618BB;
-	Sat, 11 Mar 2023 00:56:13 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED52618BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id C793A16B9;
+	Sat, 11 Mar 2023 02:15:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C793A16B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678492624;
-	bh=gWCrIQAIjd5XZRW/vE09X0yz6UogYDq9cnim+0nuoHs=;
-	h=References:In-Reply-To:Date:Subject:To:List-Id:List-Archive:
+	s=default; t=1678497350;
+	bh=B7O5+W8fliA+Gj0MqMlcX7fhvGB0lqdwmODxtc2X5Sk=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From:Reply-To:Cc:From;
-	b=YcleU3NUqhbeBbu5gL9QTVr/9y+NtYokdl7GUKdeAvP1X5NLw4iS/RUvm81lcC1Yw
-	 DGA/IJY0EORHZjZiGBzWc0cHhhcbaL4q811sRO9+ovhoUSP3Pi6VUwqdNRd6wiAxoc
-	 PGcokZzzJGIzZSWhDTNLLVBh/vsQ1vtZ/rZ0eqJ4=
+	 From;
+	b=DLE28wDt4b6vyzeM4MUmLlELvU8C9WJZg55pR2dF3jnHLHm91IwauFlT7DJMDOzhf
+	 credR4sBtWbSFKU8F+8LO0cVNbnmhMhj4gHJcFQ2jxHGSTvZj705A+i2BqXTLO0Sts
+	 SkGBfyLNfQZVjafJ6q18mqadpVqlKO4WnHegVi3I=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3917EF8007E;
-	Sat, 11 Mar 2023 00:55:52 +0100 (CET)
-References: 
- <20230310184201.1302232-1-ajye_huang@compal.corp-partner.google.com>
- <0456bd4e-cfee-b863-e02d-98084b5da0f6@linux.intel.com>
- <CALprXBamM-M-YdyfX9dQHp_AQAovcqzL5H4rMPsZPXS426+VgA@mail.gmail.com>
- <a5962d12-ccd2-79ea-27bc-674e0b3065f4@linux.intel.com>
-In-Reply-To: <a5962d12-ccd2-79ea-27bc-674e0b3065f4@linux.intel.com>
-Date: Sat, 11 Mar 2023 07:55:21 +0800
-Subject: Re: [PATCH v1] ASoC: Intel: sof_rt5682: Enable Bluetooth offload on
- adl_rt1019_rt5682
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
- loop; banned-address; member-moderation;
- header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-X-Mailman-Version: 3.3.8
-Precedence: list
-List-Id: "Alsa-devel mailing list for ALSA developers -
- http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JI4A2CNUC57NUBKUAD2BCVIRG2UR4HAN/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
-List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
-MIME-Version: 1.0
-Message-ID: 
- <167849255147.26.11242454718916669535@mailman-core.alsa-project.org>
-From: Ajye Huang via Alsa-devel <alsa-devel@alsa-project.org>
-Reply-To: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Brent Lu <brent.lu@intel.com>, Yong Zhi <yong.zhi@intel.com>,
- dharageswari.r@intel.com, Vamshi Krishna <vamshi.krishna.gopal@intel.com>,
- ye xingchen <ye.xingchen@zte.com.cn>, alsa-devel@alsa-project.org,
- Mac Chiang <mac.chiang@intel.com>
-Content-Type: message/rfc822
-Content-Disposition: inline
-
+	by alsa1.perex.cz (Postfix) with ESMTP id 32A88F80431;
+	Sat, 11 Mar 2023 02:14:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id BB8B6F8042F; Sat, 11 Mar 2023 00:55:47 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=5.0 tests=DKIMWL_WL_MED,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
-	shortcircuit=no autolearn=ham autolearn_force=no version=3.4.6
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com
- [IPv6:2607:f8b0:4864:20::112c])
+	id A4698F80431; Sat, 11 Mar 2023 02:14:33 +0100 (CET)
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com
+ [IPv6:2607:f8b0:4864:20::102b])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 29F05F800DF
-	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2023 00:55:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29F05F800DF
+	by alsa1.perex.cz (Postfix) with ESMTPS id A60AAF8007E
+	for <alsa-devel@alsa-project.org>; Sat, 11 Mar 2023 02:14:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A60AAF8007E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256
- header.s=20210112 header.b=hekJD/8G
-Received: by mail-yw1-x112c.google.com with SMTP id
- 00721157ae682-540a12e0e78so26712187b3.6
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20210112 header.b=iLXJ+8i7
+Received: by mail-pj1-x102b.google.com with SMTP id
+ u3-20020a17090a450300b00239db6d7d47so6737801pjg.4
         for <alsa-devel@alsa-project.org>;
- Fri, 10 Mar 2023 15:55:34 -0800 (PST)
+ Fri, 10 Mar 2023 17:14:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1678492533;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6T67u9qiBnxZK6yM+YE+DE3Z4ixj9FN+kLodEfozavM=;
-        b=hekJD/8GbJPOCYVthryCiglmil04QIVz2Wb49EuOE/weKVSADLVeLNz00i0R5VufQL
-         GpT+ZXcfpWswyppZzie4XnOUCpFsDRjTtBKni9ggjuDx4ut2+R7U9+ftpMPwu0xwbWrM
-         cJbQcupqnhiYYzK+9VQmG4+9qiNj0Sv9025l03X5pR5tIOFmOhsdzoKjCRxqFcC0fshv
-         WYRxf9y2MOCnEgdM5kuZ/RkJGlAXESEMb5YUmf21IPkzl78JQp+Qdl4D5bV+qZ/4ayQ9
-         kZo561kTK/XPG3ZHpywgd/wemUnSrRTmQgevgvaB3yrlSymWW6Y+SMJZZcxwOlKhpu+T
-         e1Ww==
+        d=gmail.com; s=20210112; t=1678497265;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rh7oDZ2wH8OxNXYeRmxDps+pFhJvkYtrO5SAgqEl724=;
+        b=iLXJ+8i7ZJHN+1fIKRoEzbeDSCB6SFWr0rbtzFMRW63cEG8sjqOjReUSSOTyVbkrrh
+         s/feFZkpMwQGwF/e3T1CxKOKtMwxKd/gdqPBO16gDrdGNMspugRV4e+InoZ+cypr2REg
+         DATA+01g+kPwenAiWdZbb49TuDRopFh+AIIWqiHaOzrTsZniZ87xgh+LH7Bl031qCTSd
+         7IjTvMq5d2Es9NGmjPp40ZAIy2bfJgMkX4JSXfajPhlTNEqPQyX4CPDhipaM0gzi/RDA
+         Zd81epkX7Kg23H2MsYEJNVpAzYL67iJBOS/HiSpo82/CDp4BmpqBxuO0VLLymwyFuy3L
+         IgOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678492533;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20210112; t=1678497265;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6T67u9qiBnxZK6yM+YE+DE3Z4ixj9FN+kLodEfozavM=;
-        b=m8YsUdfDVKTTh5xU6YrIfEICh+9OjF7SP0R9BPwmxsYcDySXG4hhyG7cN7ApT5TV6j
-         fm/6x4k9RUhEZhj/olLW1ZYxzBhTQdfbhBrA0KFr20xs4Xzy7zY7NgpbGV8wXLcbQKOt
-         nxcqWrte6pxfxU1YKGLtOiW/YrCWSYCjuINKPianTBMQOxiLEe0SDiTD37aEqA7mpUJq
-         RLsEph/gCurYND1+/4sZjtn+1CmBCN9o8ehw3ZlaIjrUB4Z4kfRk4Xlxyabh8UPqJNe7
-         1TnWawd7d6k+vU2pMu2ruXRu6bCofflbzg2jFUSx/zxKT6jlwHMMXOZKtmO7myn3hhRk
-         x9PQ==
-X-Gm-Message-State: AO0yUKWoTBnvJDp5C9oolMD1ZRrxwjISM1qWRz9fC2p/8YtB33TwO+XC
-	/Eq7CsJE3hUc+6vymUdxi2MlFkUHC/XudUnGNNmGbA==
+        bh=rh7oDZ2wH8OxNXYeRmxDps+pFhJvkYtrO5SAgqEl724=;
+        b=wM3muUPZyZtnfZGdriODkAhXkDQPWn5GFO2RgChsL8fTMHlaQSS5cB1DfPy6AaFDpo
+         CGlux1jHQOgauH2mxo+zdHE9IMueWmqlsv4gNs84W0f9L3fe0xJ4r4n2b0LdSBxeiS3e
+         pKM2/eJnFE1KlK+ZfSMgJuwpbPW72+Y/LMV5BU9O2Nah+17aTcy5vElA9KRqJ/1yjG8T
+         uUuIny2B1FusAvJ3gvBUUOMYVKmlfv1H8duNWbRMum4aa6ErotCI6VLX7Y7LHL9Z6XjU
+         BTF0hm3Bh+/DlQYmZBYyWjWklDnw598QufaroTdXCgM09yB1k67mEhK1MHi3z64192EM
+         v5rg==
+X-Gm-Message-State: AO0yUKWtrdZk6X/9dKezYxN6PMN+qrAoNDfLZrdpGocWQuG3s7f7oBZR
+	4CKseLBotJMjGKm3ZofQeuo=
 X-Google-Smtp-Source: 
- AK7set+wPxRik1vLXVOjZi47R3V+MThG93j9VO8C8SGLknV/y5pCvR1I7B5rqUkSyw2LwpPfYM/GuR7RJVFVs34KesI=
-X-Received: by 2002:a81:af4e:0:b0:521:db3f:9e27 with SMTP id
- x14-20020a81af4e000000b00521db3f9e27mr17774983ywj.2.1678492532641; Fri, 10
- Mar 2023 15:55:32 -0800 (PST)
+ AK7set+9UTvGbB9wlgUIPHEmDL2PHFkebYxlGCjJD3HnunYUU257fn+NuaCmmdq9Dzvnt4hGugeLkg==
+X-Received: by 2002:a17:90a:ae83:b0:237:ae98:a484 with SMTP id
+ u3-20020a17090aae8300b00237ae98a484mr4150329pjq.7.1678497264677;
+        Fri, 10 Mar 2023 17:14:24 -0800 (PST)
+Received: from ryan-ThinkPad-T470.. (c-24-6-63-212.hsd1.ca.comcast.net.
+ [24.6.63.212])
+        by smtp.gmail.com with ESMTPSA id
+ r20-20020a17090b051400b002376d85844dsm475323pjz.51.2023.03.10.17.14.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Mar 2023 17:14:24 -0800 (PST)
+From: =?UTF-8?q?=E2=80=9CRyan?= <ryan.lee.analog@gmail.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	krzysztof.kozlowski@linaro.org,
+	rf@opensource.cirrus.com,
+	ckeepax@opensource.cirrus.com,
+	pierre-louis.bossart@linux.intel.com,
+	herve.codina@bootlin.com,
+	wangweidong.a@awinic.com,
+	james.schulman@cirrus.com,
+	ajye_huang@compal.corp-partner.google.com,
+	shumingf@realtek.com,
+	povik+lin@cutebit.org,
+	flatmax@flatmax.com,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	robh+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	ryans.lee@analog.com
+Subject: [PATCH V2 2/2] ASoC: dt-bindings: max98363: add soundwire amplifier
+Date: Fri, 10 Mar 2023 17:14:09 -0800
+Message-Id: <20230311011409.210014-2-ryan.lee.analog@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230311011409.210014-1-ryan.lee.analog@gmail.com>
+References: <20230311011409.210014-1-ryan.lee.analog@gmail.com>
 MIME-Version: 1.0
-References: 
- <20230310184201.1302232-1-ajye_huang@compal.corp-partner.google.com>
- <0456bd4e-cfee-b863-e02d-98084b5da0f6@linux.intel.com>
- <CALprXBamM-M-YdyfX9dQHp_AQAovcqzL5H4rMPsZPXS426+VgA@mail.gmail.com>
- <a5962d12-ccd2-79ea-27bc-674e0b3065f4@linux.intel.com>
-In-Reply-To: <a5962d12-ccd2-79ea-27bc-674e0b3065f4@linux.intel.com>
-From: Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Date: Sat, 11 Mar 2023 07:55:21 +0800
-Message-ID: 
- <CALprXBYVFWDFkT5tnrj6Ef=+ibFLoBAnCnBHtZwSThDauN=uzw@mail.gmail.com>
-Subject: Re: [PATCH v1] ASoC: Intel: sof_rt5682: Enable Bluetooth offload on
- adl_rt1019_rt5682
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Message-ID-Hash: JI4A2CNUC57NUBKUAD2BCVIRG2UR4HAN
-X-Message-ID-Hash: JI4A2CNUC57NUBKUAD2BCVIRG2UR4HAN
-X-MailFrom: ajye_huang@compal.corp-partner.google.com
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: QYSJPGPEPPVSESJMXQZURFDXCYQFM7HP
+X-Message-ID-Hash: QYSJPGPEPPVSESJMXQZURFDXCYQFM7HP
+X-MailFrom: ryan.lee.analog@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Brent Lu <brent.lu@intel.com>, Yong Zhi <yong.zhi@intel.com>,
- dharageswari.r@intel.com, Vamshi Krishna <vamshi.krishna.gopal@intel.com>,
- ye xingchen <ye.xingchen@zte.com.cn>, alsa-devel@alsa-project.org,
- Mac Chiang <mac.chiang@intel.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JI4A2CNUC57NUBKUAD2BCVIRG2UR4HAN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QYSJPGPEPPVSESJMXQZURFDXCYQFM7HP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -179,39 +132,70 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, Mar 11, 2023 at 6:46=E2=80=AFAM Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
->
+From: Ryan Lee <ryans.lee@analog.com>
 
-> It's best if you provide a series that enables BT offload across the
-> board for ADL, if that's the intended goal.
-Hi Pierre,
+This patch adds dt-bindings information for Analog Devices MAX98363
+SoundWire Amplifier.
 
-  {        .name =3D "adl_mx98357_rt5682",
-        .driver_data =3D (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-                    SOF_RT5682_SSP_CODEC(0) |
-                    SOF_SPEAKER_AMP_PRESENT |
-                    SOF_RT5682_SSP_AMP(2) |
-                    SOF_RT5682_NUM_HDMIDEV(4)),
-    },
-The "adl_mx98357_rt5682" is the sound card of the google "Brya" Board proje=
-ct.
-Because the SSP2 is used for the max98357 amplifier, so SSP2
-bt_offload can't be enabled at the drv_name  "adl_mx98357_rt5682".
-(The hardway layout I2S port2 connected to max98357 amplifier)
+Signed-off-by: Ryan Lee <ryans.lee@analog.com>
+---
+Changes from v1:
+  Fixed a syntax error for the 'dt_binding_check' build.
+  Removed unnecessary properties.
+  Added description about SoundWire device ID of MAX98363
 
-The other adl projects that enabled the bt_offload feature were
-designed with ssp1 for amp, ssp2 for bt_offload based on pins
-definition.
-    {
-        .name =3D "adl_rt1019_rt5682",
-        .driver_data =3D (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-                    SOF_RT5682_SSP_CODEC(0) |
-                    SOF_SPEAKER_AMP_PRESENT |
-                    SOF_RT1019_SPEAKER_AMP_PRESENT |
-                    SOF_RT5682_SSP_AMP(1) |
-                    SOF_RT5682_NUM_HDMIDEV(4) |
-                    SOF_BT_OFFLOAD_SSP(2) |
-                    SOF_SSP_BT_OFFLOAD_PRESENT),
-    },
-thanks
+ .../bindings/sound/adi,max98363.yaml          | 42 +++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/adi,max98363.yaml
+
+diff --git a/Documentation/devicetree/bindings/sound/adi,max98363.yaml b/Documentation/devicetree/bindings/sound/adi,max98363.yaml
+new file mode 100644
+index 000000000000..0e71b6c84007
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/adi,max98363.yaml
+@@ -0,0 +1,42 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/adi,max98363.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices MAX98363 SoundWire Amplifier
++
++maintainers:
++  - Ryan Lee <ryans.lee@analog.com>
++
++description:
++  The MAX98363 is a SoundWire input Class D mono amplifier that
++  supports MIPI SoundWire v1.2-compatible digital interface for
++  audio and control data.
++  SoundWire peripheral device ID of MAX98363 is 0x3X019F836300
++  where X is the peripheral device unique ID decoded from pin.
++  It supports up to 10 peripheral devices(0x0 to 0x9).
++
++properties:
++  compatible:
++    enum:
++      - adi,max98363
++  reg:
++    maxItems: 1
++    description: Peripheral-device unique ID decoded from pin.
++
++required:
++  - compatible
++  - reg
++additionalProperties: false
++
++examples:
++  - |
++    soundwire {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        amplifier@3 {
++            compatible = "adi,max98363";
++            reg = <0x3>;
++        };
++    };
+-- 
+2.34.1
+
