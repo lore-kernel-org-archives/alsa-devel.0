@@ -4,99 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA06CC6FD19
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Mar 2023 16:37:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49089C6FD19
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Mar 2023 17:34:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 840DE1451;
-	Mon, 13 Mar 2023 17:37:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 840DE1451
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F5241457;
+	Mon, 13 Mar 2023 18:33:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F5241457
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678725475;
-	bh=4K4OZ7QhIrlKqDV5LSZoXddk+iy3Ac1/wXw2U+H9fXs=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	s=default; t=1678728842;
+	bh=H83J2XGvzC2ShkH/OLRzz6ikbS29s5L9MuDNtPWjalI=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:Reply-To:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RXNgC7z7yCtsIsUMwGDlruvX+ovas1Y9fKEwWVN3cAmZDxrtK1+0anRpPFPBVb+JK
-	 JAiB89jO07cq/Ou4IPc9aVQYRQTDJfjuwBRWGdP1FOUehdyQ4IBcyfvOYzjYNaxXwn
-	 SHsvqFspZK2AnbcsZBt243/7h3Tg/ggGPjUQAoSU=
+	b=DijdHpMymO8d5qA5q8v8/3hfWldfrvizGV9NywFvzgNX7pcOLqWZR2ySpFUAXXByo
+	 N7RKTCTVrwX2bSizpB9lj9Rtd10NgfIaFL1JHGB5Z1IGdMAxZpI+z5Xi40v/9+EC37
+	 sHg2SMuMDaxFQrEsuS/o35EyT1/wXAlCc5el40ok=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14C48F80423;
-	Mon, 13 Mar 2023 17:36:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id DE8BBF80423;
+	Mon, 13 Mar 2023 18:32:50 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2A9D9F80423; Mon, 13 Mar 2023 17:36:39 +0100 (CET)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 65C44F80423; Mon, 13 Mar 2023 18:32:45 +0100 (CET)
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de
+ [80.237.130.52])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3042CF8016C
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2023 17:36:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3042CF8016C
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=EmSI3Jn+
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678725393; x=1710261393;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=4K4OZ7QhIrlKqDV5LSZoXddk+iy3Ac1/wXw2U+H9fXs=;
-  b=EmSI3Jn+wPMsN5z7YrbUR3lpVKo1QVjeQccwS47TN0b8t5P2audDgrd8
-   bOHCeCMv2FyVH3ryKQKsg1FkoQOKitJB4Ao9Hi7Sak+f6Z37QhD4JHxgy
-   es+zgUSqcvdUm2+V/uYyFDlXRAcfsDzTqziu8HztgGWZWTx8igj4tuiSC
-   fls3y98XVl9xLc9RHfIAZjFkT0uUo4tBteHcRSYN2Ivlw8UXih/7RxVj+
-   B+gKaaUxYQpmKO09ng18VDONHmENZGLqOo9HxSiFGRHOAoysimlQUvoN5
-   J3OHrUlwgE2CJBZeO0TAkKtyUG0SXg6dtP4XDC+iqSs4SJBSA31AHKZWf
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10648"; a="339564285"
-X-IronPort-AV: E=Sophos;i="5.98,257,1673942400";
-   d="scan'208";a="339564285"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Mar 2023 09:36:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10648"; a="822025825"
-X-IronPort-AV: E=Sophos;i="5.98,257,1673942400";
-   d="scan'208";a="822025825"
-Received: from jlewis8x-mobl.amr.corp.intel.com (HELO [10.255.34.75])
- ([10.255.34.75])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Mar 2023 09:36:19 -0700
-Message-ID: <d06bf4b3-9dd2-eba3-4880-6de0bfea1048@linux.intel.com>
-Date: Mon, 13 Mar 2023 11:36:18 -0500
+	by alsa1.perex.cz (Postfix) with ESMTPS id C9733F8016C
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2023 18:32:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9733F8016C
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa
+ (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1pbm22-0004ev-Qp; Mon, 13 Mar 2023 18:32:22 +0100
+Message-ID: <f96431ee-abc0-ff76-3963-c45d3b092840@leemhuis.info>
+Date: Mon, 13 Mar 2023 18:32:22 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.7.1
-Subject: Re: dpcm_be_connect: FE is atomic but BE is nonatomic, invalid
- configuration
-Content-Language: en-US
-To: Daniel Baluta <daniel.baluta@gmail.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+ Thunderbird/102.8.0
+Subject: Re: [REGRESSION] kbl-r5514-5663-max hdmi no longer working
+Content-Language: en-US, de-DE
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 References: 
- <CAEnQRZBoo+v9JRztP_on7c_C_Laei5w8XAdZ7zaHxmGYAaKSeA@mail.gmail.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ <CAJD_bPKQdtaExvVEKxhQ47G-ZXDA=k+gzhMJRHLBe=mysPnuKA@mail.gmail.com>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
 In-Reply-To: 
- <CAEnQRZBoo+v9JRztP_on7c_C_Laei5w8XAdZ7zaHxmGYAaKSeA@mail.gmail.com>
+ <CAJD_bPKQdtaExvVEKxhQ47G-ZXDA=k+gzhMJRHLBe=mysPnuKA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: ZRDM3UATAJSA6HG7TCTB2IVJTMFRBNQE
-X-Message-ID-Hash: ZRDM3UATAJSA6HG7TCTB2IVJTMFRBNQE
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+X-bounce-key: 
+ webpack.hosteurope.de;regressions@leemhuis.info;1678728751;4b530073;
+X-HE-SMSGID: 1pbm22-0004ev-Qp
+Message-ID-Hash: 5SNMM3YB465RCAE7SDMH2CXY6ECB7RUG
+X-Message-ID-Hash: 5SNMM3YB465RCAE7SDMH2CXY6ECB7RUG
+X-MailFrom: regressions@leemhuis.info
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Linux-ALSA <alsa-devel@alsa-project.org>,
- Daniel Baluta <daniel.baluta@nxp.com>, Paul Olaru <paul.olaru@nxp.com>
+CC: Jason Montleon <jmontleo@redhat.com>, stable@vger.kernel.org,
+ Linux regressions mailing list <regressions@lists.linux.dev>,
+ Mark Brown <broonie@kernel.org>, Alsa-devel <alsa-devel@alsa-project.org>,
+ Takashi Iwai <tiwai@suse.com>, Bard Liao <yung-chuan.liao@linux.intel.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZRDM3UATAJSA6HG7TCTB2IVJTMFRBNQE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5SNMM3YB465RCAE7SDMH2CXY6ECB7RUG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,22 +86,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
+[adding a push of people and lists to the recipients that dealt with the
+culprit; leaving the stable list in CC for now, even if this is a
+mainline issue (apart from the backport of the culprit to 5.10.y Takashi
+asked for a while ago)]
 
+On 13.03.23 17:34, Jason Montleon wrote:
+> It looks like HDMI audio stopped working in 5.17-rc1. I ran a bisect
+> which points to 636110411ca726f19ef8e87b0be51bb9a4cdef06.
 
-On 3/13/23 10:10, Daniel Baluta wrote:
-> Hi Morimoto-san,
-> 
-> I would like to know your take on the following issue.
-> 
-> On I.MX with SOF we use simple-card and hit the following error:
-> 
->   sai1-wm8960-hifi: dpcm_be_connect: FE is atomic but BE is nonatomic,
-> invalid configuration
-> 
-> and I think it makes sense to have the BE nonatomic as set by SOF core.
+FWIW, that's "ASoC: Intel/SOF: use set_stream() instead of
+set_tdm_slots() for HDAudio" from Pierre-Louis Bossart.
 
-The SOF core does not change the BE, does it?
+> I built
+> 5.17.14 with it reverted and it restored HDMI output, but it doesn't
+> revert cleanly from 5.18 onward.
+> 
+>>From what I can tell it looks like -ENOTSUPP is returned from
+> snd_soc_dai_set_stream for hdmi1 and hdmi2 now. I'm not sure if that's
+> expected, but I made the following change and I have working HDMI
+> audio now. https://gist.github.com/jmontleon/4780154c309f956d97ca9a304a00da3f
 
-The only cases where we set the BE as nonatomic in Intel board is for
-the SoundWire BEs. All regular I2S/DMIC are atomic - there is no
-interaction with firmware.
+Thanks for the report and the patch. I CCed the relevant people for this.
+
+[TLDR For the rest of the mail: : I'm adding this report to the list of
+tracked Linux kernel regressions; the text you find below is based on a
+few templates paragraphs you might have encountered already in similar
+form. See link in footer if these mails annoy you.]
+
+To be sure the issue doesn't fall through the cracks unnoticed, I'm
+adding it to regzbot, the Linux kernel regression tracking bot:
+
+#regzbot ^introduced 636110411ca726f19ef8e87b0be51bb9a4cdef06
+#regzbot title alsa/asoc: kbl-r5514-5663-max hdmi stopped working
+#regzbot ignore-activity
+
+This isn't a regression? This issue or a fix for it are already
+discussed somewhere else? It was fixed already? You want to clarify when
+the regression started to happen? Or point out I got the title or
+something else totally wrong? Then just reply and tell me -- ideally
+while also telling regzbot about it, as explained by the page listed in
+the footer of this mail.
+
+Developers: When fixing the issue, remember to add 'Link:' tags pointing
+to the report (the parent of this mail). See page linked in footer for
+details.
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
