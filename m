@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 553BFC61DA4
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Mar 2023 11:05:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4D1AC6FD19
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Mar 2023 11:05:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 376FC149D;
-	Mon, 13 Mar 2023 12:04:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 376FC149D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3EE21492;
+	Mon, 13 Mar 2023 12:05:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3EE21492
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678705536;
-	bh=mnZnM/lXmOhF9nQCLHvwgqkizAqKJJjcvkNYZ9er5YU=;
+	s=default; t=1678705552;
+	bh=miL0D9BfCShEftzf2YWntzDjLwJZxpqx9D0xLPPlnNA=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Bepa9CXuLHwBMgwe9hhquZp9WvfCpib9vPtrQw8Yfvta4BvmH41LIxdzjwBPQ6I2M
-	 l5j8vgNfnqoIrngffevG5O+uF0xxnIyXN25at9XcM+f1zhy6Jaq5aX08UlQ+1H9sBJ
-	 0Iyw5CgDLlav30+AQnCnOiVJRC53Rah/bTqen6i8=
+	b=Gq28jJBNaqzbEvFmNzP6sZ2Xb/PCh/Uqo/LYRd3lpZDKlaxBTjabwE2CTkrq9pGUW
+	 u4qTqnJ530Irm9WSnZBvDGnyxosmZy8hwgpqMiu5sx/AlNSHIDAXAGktNRuJmuIFvv
+	 osrVJZhK8SLxC3bpa3Iq9N1iVrqdPAm3/fORyyvA=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBEB9F80544;
-	Mon, 13 Mar 2023 12:03:54 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2596F80552;
+	Mon, 13 Mar 2023 12:03:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1B118F8051B; Mon, 13 Mar 2023 12:03:48 +0100 (CET)
+	id 67932F8051B; Mon, 13 Mar 2023 12:03:48 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8E83BF8016C
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2023 12:03:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E83BF8016C
+	by alsa1.perex.cz (Postfix) with ESMTPS id BA82DF8032D
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2023 12:03:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA82DF8032D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=PQeT62cE
+ header.s=Intel header.b=WT50ErhR
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678705417; x=1710241417;
+  t=1678705423; x=1710241423;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=mnZnM/lXmOhF9nQCLHvwgqkizAqKJJjcvkNYZ9er5YU=;
-  b=PQeT62cEFQeyNoktkis5j1fpMUIp5goLKiVwwzbE38MRhQf4fypamnMR
-   JhsM71d5Y+WYc+hw2nl9b/p7r0TmK6okFJftN7Kd2HFc65d/q5OKTNf4k
-   4nEj7WO008HrRrI0ZBRj8kUSqaHJwlgaTkM/PUZlHV8alTPD/9u3PqNYT
-   p6+juTojZrzYHqsCE+PyclpWtsQExeNP/D0VG8F/ATwGEqHsgm65N2x7W
-   wBfCQBgwJEEAp/uiiunACcZRhAAH+WJbn2Gvlj0pXOKj9hYX6XHVrFxuK
-   Nv6FGDsVpgdfwVSd/OwyP0R/ra9SfHp1gV2l4nC7rxKu9tNnsO+AjNfao
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="423384075"
+  bh=miL0D9BfCShEftzf2YWntzDjLwJZxpqx9D0xLPPlnNA=;
+  b=WT50ErhRvGbJPs3CECkBwx/IEVF39dkfasYe//ayNn1bMOS6XUJvB6nF
+   U3KIuO56qTpY6Ls2M1sZKrfnlWxIEEsRsODn42ntPPe5AxiP9Q1FHpe1C
+   /yrYy+yeEZ9JZA7rdw+/vepgTN4RFQO0xmBW1itWEolQX0kLonuNuk2OK
+   0VLgutNqW2x48ArZZnnXPM5HxI7o5CviFCMXyKTRKMSOUxNKylRq/rI39
+   JhqMpgotheTi8aqO3zWCNszPe05Y/cJZeNWJtHg5TtouLbItNU7uXOcL+
+   Y8N2HJQJzFNVfKoDgkUjFMblEIZoOOoUNszycFn5x142qB2vzsfKeBDGO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="423384156"
 X-IronPort-AV: E=Sophos;i="5.98,256,1673942400";
-   d="scan'208";a="423384075"
+   d="scan'208";a="423384156"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Mar 2023 04:03:26 -0700
+ 13 Mar 2023 04:03:40 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="655939064"
+X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="655939099"
 X-IronPort-AV: E=Sophos;i="5.98,256,1673942400";
-   d="scan'208";a="655939064"
+   d="scan'208";a="655939099"
 Received: from tchambon-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.43.68])
   by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Mar 2023 04:03:23 -0700
+ 13 Mar 2023 04:03:37 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 1/7] ASoC: SOF: ipc3-control: Rename snd_sof_refresh_control()
-Date: Mon, 13 Mar 2023 13:03:38 +0200
-Message-Id: <20230313110344.16644-2-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 6/7] ASoC: SOF: ipc4-topology: Add support for TPLG_CTL_BYTES
+Date: Mon, 13 Mar 2023 13:03:43 +0200
+Message-Id: <20230313110344.16644-7-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230313110344.16644-1-peter.ujfalusi@linux.intel.com>
 References: <20230313110344.16644-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: P4NKSWFOYEHP2VPL6ZBXQJKF4SS3FFV7
-X-Message-ID-Hash: P4NKSWFOYEHP2VPL6ZBXQJKF4SS3FFV7
+Message-ID-Hash: JJGC5CGXVWOYRNOEPLHOPQWOBP5ML64H
+X-Message-ID-Hash: JJGC5CGXVWOYRNOEPLHOPQWOBP5ML64H
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -92,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/P4NKSWFOYEHP2VPL6ZBXQJKF4SS3FFV7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JJGC5CGXVWOYRNOEPLHOPQWOBP5ML64H/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,74 +102,106 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Rename the snd_sof_refresh_control() to sof_ipc3_refresh_control() to
-follow the function naming convention for IPC specific code.
+From: Libin Yang <libin.yang@intel.com>
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Add byte type support for IPC4. The bytes controls are used to transfer
+configuration blobs to/from firmware via large_config messages.
+
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/ipc3-control.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/sof/ipc4-topology.c | 67 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
 
-diff --git a/sound/soc/sof/ipc3-control.c b/sound/soc/sof/ipc3-control.c
-index 217ac5501a98..4e9d04124145 100644
---- a/sound/soc/sof/ipc3-control.c
-+++ b/sound/soc/sof/ipc3-control.c
-@@ -104,7 +104,7 @@ static int sof_ipc3_set_get_kcontrol_data(struct snd_sof_control *scontrol,
- 	return ret;
+diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
+index 0bb16ed38e48..7cc57e795f5a 100644
+--- a/sound/soc/sof/ipc4-topology.c
++++ b/sound/soc/sof/ipc4-topology.c
+@@ -1506,6 +1506,71 @@ static int sof_ipc4_control_load_volume(struct snd_sof_dev *sdev, struct snd_sof
+ 	return 0;
  }
  
--static void snd_sof_refresh_control(struct snd_sof_control *scontrol)
-+static void sof_ipc3_refresh_control(struct snd_sof_control *scontrol)
++static int sof_ipc4_control_load_bytes(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol)
++{
++	struct sof_ipc4_control_data *control_data;
++	struct sof_ipc4_msg *msg;
++	int ret;
++
++	if (scontrol->max_size < (sizeof(*control_data) + sizeof(struct sof_abi_hdr))) {
++		dev_err(sdev->dev, "insufficient size for a bytes control %s: %zu.\n",
++			scontrol->name, scontrol->max_size);
++		return -EINVAL;
++	}
++
++	if (scontrol->priv_size > scontrol->max_size - sizeof(*control_data)) {
++		dev_err(sdev->dev, "scontrol %s bytes data size %zu exceeds max %zu.\n",
++			scontrol->name, scontrol->priv_size,
++			scontrol->max_size - sizeof(*control_data));
++		return -EINVAL;
++	}
++
++	scontrol->size = sizeof(struct sof_ipc4_control_data) + scontrol->priv_size;
++
++	scontrol->ipc_control_data = kzalloc(scontrol->max_size, GFP_KERNEL);
++	if (!scontrol->ipc_control_data)
++		return -ENOMEM;
++
++	control_data = scontrol->ipc_control_data;
++	control_data->index = scontrol->index;
++	if (scontrol->priv_size > 0) {
++		memcpy(control_data->data, scontrol->priv, scontrol->priv_size);
++		kfree(scontrol->priv);
++		scontrol->priv = NULL;
++
++		if (control_data->data->magic != SOF_IPC4_ABI_MAGIC) {
++			dev_err(sdev->dev, "Wrong ABI magic (%#x) for control: %s\n",
++				control_data->data->magic, scontrol->name);
++			ret = -EINVAL;
++			goto err;
++		}
++
++		/* TODO: check the ABI version */
++
++		if (control_data->data->size + sizeof(struct sof_abi_hdr) !=
++		    scontrol->priv_size) {
++			dev_err(sdev->dev, "Control %s conflict in bytes %zu vs. priv size %zu.\n",
++				scontrol->name,
++				control_data->data->size + sizeof(struct sof_abi_hdr),
++				scontrol->priv_size);
++			ret = -EINVAL;
++			goto err;
++		}
++	}
++
++	msg = &control_data->msg;
++	msg->primary = SOF_IPC4_MSG_TYPE_SET(SOF_IPC4_MOD_LARGE_CONFIG_SET);
++	msg->primary |= SOF_IPC4_MSG_DIR(SOF_IPC4_MSG_REQUEST);
++	msg->primary |= SOF_IPC4_MSG_TARGET(SOF_IPC4_MODULE_MSG);
++
++	return 0;
++
++err:
++	kfree(scontrol->ipc_control_data);
++	scontrol->ipc_control_data = NULL;
++	return ret;
++}
++
+ static int sof_ipc4_control_setup(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol)
  {
- 	struct sof_ipc_ctrl_data *cdata = scontrol->ipc_control_data;
- 	struct snd_soc_component *scomp = scontrol->scomp;
-@@ -138,7 +138,7 @@ static int sof_ipc3_volume_get(struct snd_sof_control *scontrol,
- 	unsigned int channels = scontrol->num_channels;
- 	unsigned int i;
- 
--	snd_sof_refresh_control(scontrol);
-+	sof_ipc3_refresh_control(scontrol);
- 
- 	/* read back each channel */
- 	for (i = 0; i < channels; i++)
-@@ -189,7 +189,7 @@ static int sof_ipc3_switch_get(struct snd_sof_control *scontrol,
- 	unsigned int channels = scontrol->num_channels;
- 	unsigned int i;
- 
--	snd_sof_refresh_control(scontrol);
-+	sof_ipc3_refresh_control(scontrol);
- 
- 	/* read back each channel */
- 	for (i = 0; i < channels; i++)
-@@ -237,7 +237,7 @@ static int sof_ipc3_enum_get(struct snd_sof_control *scontrol,
- 	unsigned int channels = scontrol->num_channels;
- 	unsigned int i;
- 
--	snd_sof_refresh_control(scontrol);
-+	sof_ipc3_refresh_control(scontrol);
- 
- 	/* read back each channel */
- 	for (i = 0; i < channels; i++)
-@@ -286,7 +286,7 @@ static int sof_ipc3_bytes_get(struct snd_sof_control *scontrol,
- 	struct sof_abi_hdr *data = cdata->data;
- 	size_t size;
- 
--	snd_sof_refresh_control(scontrol);
-+	sof_ipc3_refresh_control(scontrol);
- 
- 	if (scontrol->max_size > sizeof(ucontrol->value.bytes.data)) {
- 		dev_err_ratelimited(scomp->dev, "data max %zu exceeds ucontrol data array size\n",
-@@ -352,7 +352,7 @@ static int sof_ipc3_bytes_ext_get(struct snd_sof_control *scontrol,
- 	struct snd_ctl_tlv header;
- 	size_t data_size;
- 
--	snd_sof_refresh_control(scontrol);
-+	sof_ipc3_refresh_control(scontrol);
- 
- 	/*
- 	 * Decrement the limit by ext bytes header size to
+ 	switch (scontrol->info_type) {
+@@ -1513,6 +1578,8 @@ static int sof_ipc4_control_setup(struct snd_sof_dev *sdev, struct snd_sof_contr
+ 	case SND_SOC_TPLG_CTL_VOLSW_SX:
+ 	case SND_SOC_TPLG_CTL_VOLSW_XR_SX:
+ 		return sof_ipc4_control_load_volume(sdev, scontrol);
++	case SND_SOC_TPLG_CTL_BYTES:
++		return sof_ipc4_control_load_bytes(sdev, scontrol);
+ 	default:
+ 		break;
+ 	}
 -- 
 2.39.2
 
