@@ -4,80 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7063FC61DA4
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Mar 2023 12:51:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B3ABC6FD19
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Mar 2023 12:51:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22679147B;
-	Mon, 13 Mar 2023 13:50:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22679147B
+	by alsa0.perex.cz (Postfix) with ESMTPS id C10081488;
+	Mon, 13 Mar 2023 13:50:24 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C10081488
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678711859;
-	bh=6lx+IDN7Vg0u/rxrZaaPYDHqLUGeCU+443PdxZesOfg=;
+	s=default; t=1678711874;
+	bh=gxYne5N84nDbkbGXmaHB/FzGIg4VUJXfPkUV50AnpPg=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=KkRcLKQ8F4XIq7jZLOeD7JJs9lqpMjUPNsmtP80Wsuxtu1jDvoIW/HXWdnV+TSn92
-	 nAl8h5qdDMsrgd3XZnTxofqh5f3XD2taq1vCS9pRKgpVUZVtVaORUtoAqQ5sW0AwoI
-	 LEzROaDMc3ESexHir5KYB8DrIrDBukEgTsvx5h8M=
+	b=odUgCDyAxLaprSHIdV5E//Z4n0Q20FS2FMFQzMcfzS0Pfy7TipY6L2QqHHuX+ijVL
+	 aT7aljsqYEYHHntjzs5hirdWX/tx6RS/r2Krxjeiwrl/f7dSTX8HtTIyH6j6Gi7lJz
+	 OgWh+5naCOieT+MIEeHAJM5C4IS3+iO4Maun6oXI=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2D20F8032D;
-	Mon, 13 Mar 2023 13:49:16 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E9AEF80534;
+	Mon, 13 Mar 2023 13:49:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2AF4DF8052E; Mon, 13 Mar 2023 13:49:13 +0100 (CET)
+	id 2AA61F8052D; Mon, 13 Mar 2023 13:49:14 +0100 (CET)
 Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 40D15F80482
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2023 13:49:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40D15F80482
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2246EF8032D
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2023 13:49:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2246EF8032D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=SRDNobR3
+ header.s=Intel header.b=gjH+/1Gk
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678711744; x=1710247744;
+  t=1678711742; x=1710247742;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=6lx+IDN7Vg0u/rxrZaaPYDHqLUGeCU+443PdxZesOfg=;
-  b=SRDNobR3lBsworW/CSsOSqbe4q8iOd/xOMsoW/MWtzDvNpkqwciGjVe7
-   pbjMuWF0WuNjUIvvO48DaVErAz1g1U4uJNQltcpakqxLWlfMMM32Ndgbi
-   vSc4EaqqGYvE6uty+nrSU7zdVdhrTZi2yYwPI0Nm4bLeLxGjrswwDVhO+
-   gY8rPtoObVX7G9W18VUIDGswPLgJLCdmkzHDrihKBLTZosigYms7Bf2Pg
-   8tNeOHCTucuBp9W1FzDkdv5JDbT4jcu3gFJP5MgJwgq+VOr/79CoQZyPk
-   su3P9PfYLVDoDUXxrQ/f4y7CLfcIyS+wa0f+BrnSeg3DibRnkY6rEEtzd
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="399728070"
+  bh=gxYne5N84nDbkbGXmaHB/FzGIg4VUJXfPkUV50AnpPg=;
+  b=gjH+/1GkqAgAKiRUUdmjRnvmnZafglhYk3HHPI2YHXoVcbxaSew83/3r
+   B48l5E6ervuFJivFZQXqdbksl/yNWvC4C0Y4Xe5mVOPwS6vlv3l7wBxdg
+   CPxLwXbNuCEx1XRiRCvpSHkUyraqORa89pDddkLO3mja+V7i2KrQCsd+k
+   5GP447H2SUCKfcL5XCVjHfQOM6hKC3fHQ0UKDck7qKauKTWT4tPyxUiSF
+   9jGnv0MU85WPqSBRqETY+pglylejESX6o2F4UMEJ8EEE9/SJMI6iiJ2Xg
+   myxQu4JwBGLzT+qymSSfjtFIu/OsEsM9YY20SllFwqspfSuTtvn9Swpnq
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="399728048"
 X-IronPort-AV: E=Sophos;i="5.98,256,1673942400";
-   d="scan'208";a="399728070"
+   d="scan'208";a="399728048"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Mar 2023 05:48:46 -0700
+ 13 Mar 2023 05:48:40 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="711116426"
+X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="711116406"
 X-IronPort-AV: E=Sophos;i="5.98,256,1673942400";
-   d="scan'208";a="711116426"
+   d="scan'208";a="711116406"
 Received: from tchambon-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.43.68])
   by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Mar 2023 05:48:43 -0700
+ 13 Mar 2023 05:48:37 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 04/11] ASoC: SOF: ipc4-topology: Do not parse the
- DMA_BUFFER_SIZE token
-Date: Mon, 13 Mar 2023 14:48:49 +0200
-Message-Id: <20230313124856.8140-5-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 02/11] ASoC: SOF: Use input/output pin consistently
+Date: Mon, 13 Mar 2023 14:48:47 +0200
+Message-Id: <20230313124856.8140-3-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230313124856.8140-1-peter.ujfalusi@linux.intel.com>
 References: <20230313124856.8140-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: AHIRCUUDR5GK6SLFZABED2XHPL4JWXYN
-X-Message-ID-Hash: AHIRCUUDR5GK6SLFZABED2XHPL4JWXYN
+Message-ID-Hash: I36YF2THVLWHYIDTE5GXWVW5EGPZRO2U
+X-Message-ID-Hash: I36YF2THVLWHYIDTE5GXWVW5EGPZRO2U
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +92,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/AHIRCUUDR5GK6SLFZABED2XHPL4JWXYN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I36YF2THVLWHYIDTE5GXWVW5EGPZRO2U/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -104,11 +103,9 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Do not parse the SOF_TKN_CAVS_AUDIO_FORMAT_DMA_BUFFER_SIZE token as the
-dma_buffer_size can be derived from the input/output buffer size and the
-type of widget during copier prepare. For the deep buffer case,
-introduce a new token that will be used to get the deep buffer DMA size
-for the host copier from topology.
+Currently we use input/output and sink/source pins interchangeably.
+Remove the references to sink/source pins and replace with input/output
+pins everywhere for consistency and clarity.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
@@ -117,348 +114,382 @@ Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- include/uapi/sound/sof/tokens.h |   1 +
- sound/soc/sof/ipc4-topology.c   | 112 ++++++++++++++------------------
- sound/soc/sof/ipc4-topology.h   |   5 +-
- sound/soc/sof/sof-audio.h       |   2 +-
- sound/soc/sof/topology.c        |   1 -
- 5 files changed, 52 insertions(+), 69 deletions(-)
+ include/uapi/sound/sof/tokens.h | 12 ++---
+ sound/soc/sof/ipc4-topology.c   | 48 ++++++++++----------
+ sound/soc/sof/sof-audio.h       | 32 ++++++-------
+ sound/soc/sof/topology.c        | 80 ++++++++++++++++-----------------
+ 4 files changed, 86 insertions(+), 86 deletions(-)
 
 diff --git a/include/uapi/sound/sof/tokens.h b/include/uapi/sound/sof/tokens.h
-index 0b5110427132..9e91e2640dd4 100644
+index a1ef6b5c0d45..0b5110427132 100644
 --- a/include/uapi/sound/sof/tokens.h
 +++ b/include/uapi/sound/sof/tokens.h
-@@ -197,6 +197,7 @@
+@@ -88,14 +88,14 @@
+ #define SOF_TKN_COMP_CPC			406
+ #define SOF_TKN_COMP_IS_PAGES			409
+ #define SOF_TKN_COMP_NUM_AUDIO_FORMATS		410
+-#define SOF_TKN_COMP_NUM_SINK_PINS		411
+-#define SOF_TKN_COMP_NUM_SOURCE_PINS		412
++#define SOF_TKN_COMP_NUM_INPUT_PINS		411
++#define SOF_TKN_COMP_NUM_OUTPUT_PINS		412
+ /*
+- * The token for sink/source pin binding, it specifies the widget
+- * name that the sink/source pin is connected from/to.
++ * The token for input/output pin binding, it specifies the widget
++ * name that the input/output pin is connected from/to.
+  */
+-#define SOF_TKN_COMP_SINK_PIN_BINDING_WNAME	413
+-#define SOF_TKN_COMP_SRC_PIN_BINDING_WNAME	414
++#define SOF_TKN_COMP_INPUT_PIN_BINDING_WNAME	413
++#define SOF_TKN_COMP_OUTPUT_PIN_BINDING_WNAME	414
  
- /* COPIER */
- #define SOF_TKN_INTEL_COPIER_NODE_TYPE		1980
-+#define SOF_TKN_INTEL_COPIER_DEEP_BUFFER_DMA_MS	1981
  
- /* ACP I2S */
- #define SOF_TKN_AMD_ACPI2S_RATE			1700
+ /* SSP */
 diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-index d56e0f12b5d0..50cd4fe3141c 100644
+index 0bb16ed38e48..a501eb9befa8 100644
 --- a/sound/soc/sof/ipc4-topology.c
 +++ b/sound/soc/sof/ipc4-topology.c
-@@ -78,8 +78,8 @@ static const struct sof_topology_token ipc4_out_audio_format_tokens[] = {
- 		offsetof(struct sof_ipc4_audio_format, fmt_cfg)},
- };
+@@ -1698,17 +1698,17 @@ static int sof_ipc4_get_queue_id(struct snd_sof_widget *src_widget,
+ 	u32 num_pins;
+ 	int i;
  
--static const struct sof_topology_token ipc4_copier_gateway_cfg_tokens[] = {
--	{SOF_TKN_CAVS_AUDIO_FORMAT_DMA_BUFFER_SIZE, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32, 0},
-+static const struct sof_topology_token ipc4_copier_deep_buffer_tokens[] = {
-+	{SOF_TKN_INTEL_COPIER_DEEP_BUFFER_DMA_MS, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32, 0},
- };
- 
- static const struct sof_topology_token ipc4_copier_tokens[] = {
-@@ -138,8 +138,8 @@ static const struct sof_token_info ipc4_token_list[SOF_TOKEN_COUNT] = {
- 	[SOF_AUDIO_FORMAT_BUFFER_SIZE_TOKENS] = {"IPC4 Audio format buffer size tokens",
- 		ipc4_audio_format_buffer_size_tokens,
- 		ARRAY_SIZE(ipc4_audio_format_buffer_size_tokens)},
--	[SOF_COPIER_GATEWAY_CFG_TOKENS] = {"IPC4 Copier gateway config tokens",
--		ipc4_copier_gateway_cfg_tokens, ARRAY_SIZE(ipc4_copier_gateway_cfg_tokens)},
-+	[SOF_COPIER_DEEP_BUFFER_TOKENS] = {"IPC4 Copier deep buffer tokens",
-+		ipc4_copier_deep_buffer_tokens, ARRAY_SIZE(ipc4_copier_deep_buffer_tokens)},
- 	[SOF_COPIER_TOKENS] = {"IPC4 Copier tokens", ipc4_copier_tokens,
- 		ARRAY_SIZE(ipc4_copier_tokens)},
- 	[SOF_AUDIO_FMT_NUM_TOKENS] = {"IPC4 Audio format number tokens",
-@@ -348,7 +348,7 @@ static int sof_ipc4_widget_setup_pcm(struct snd_sof_widget *swidget)
- 	struct snd_soc_component *scomp = swidget->scomp;
- 	struct sof_ipc4_copier *ipc4_copier;
- 	int node_type = 0;
--	int ret, i;
-+	int ret;
- 
- 	ipc4_copier = kzalloc(sizeof(*ipc4_copier), GFP_KERNEL);
- 	if (!ipc4_copier)
-@@ -363,13 +363,6 @@ static int sof_ipc4_widget_setup_pcm(struct snd_sof_widget *swidget)
- 	if (ret)
- 		goto free_copier;
- 
--	available_fmt->dma_buffer_size = kcalloc(available_fmt->audio_fmt_num, sizeof(u32),
--						 GFP_KERNEL);
--	if (!available_fmt->dma_buffer_size) {
--		ret = -ENOMEM;
--		goto free_available_fmt;
--	}
--
- 	/*
- 	 * This callback is used by host copier and module-to-module copier,
- 	 * and only host copier needs to set gtw_cfg.
-@@ -377,21 +370,6 @@ static int sof_ipc4_widget_setup_pcm(struct snd_sof_widget *swidget)
- 	if (!WIDGET_IS_AIF(swidget->id))
- 		goto skip_gtw_cfg;
- 
--	ret = sof_update_ipc_object(scomp, available_fmt->dma_buffer_size,
--				    SOF_COPIER_GATEWAY_CFG_TOKENS, swidget->tuples,
--				    swidget->num_tuples, sizeof(u32),
--				    available_fmt->audio_fmt_num);
--	if (ret) {
--		dev_err(scomp->dev, "Failed to parse dma buffer size in audio format for %s\n",
--			swidget->widget->name);
--		goto err;
--	}
--
--	dev_dbg(scomp->dev, "dma buffer size:\n");
--	for (i = 0; i < available_fmt->audio_fmt_num; i++)
--		dev_dbg(scomp->dev, "%d: %u\n", i,
--			available_fmt->dma_buffer_size[i]);
--
- 	ret = sof_update_ipc_object(scomp, &node_type,
- 				    SOF_COPIER_TOKENS, swidget->tuples,
- 				    swidget->num_tuples, sizeof(node_type), 1);
-@@ -399,7 +377,7 @@ static int sof_ipc4_widget_setup_pcm(struct snd_sof_widget *swidget)
- 	if (ret) {
- 		dev_err(scomp->dev, "parse host copier node type token failed %d\n",
- 			ret);
--		goto err;
-+		goto free_available_fmt;
- 	}
- 	dev_dbg(scomp->dev, "host copier '%s' node_type %u\n", swidget->widget->name, node_type);
- 
-@@ -407,7 +385,7 @@ static int sof_ipc4_widget_setup_pcm(struct snd_sof_widget *swidget)
- 	ipc4_copier->gtw_attr = kzalloc(sizeof(*ipc4_copier->gtw_attr), GFP_KERNEL);
- 	if (!ipc4_copier->gtw_attr) {
- 		ret = -ENOMEM;
--		goto err;
-+		goto free_available_fmt;
+-	if (pin_type == SOF_PIN_TYPE_SOURCE) {
++	if (pin_type == SOF_PIN_TYPE_OUTPUT) {
+ 		current_swidget = src_widget;
+-		pin_binding = src_widget->src_pin_binding;
+-		queue_ida = &src_widget->src_queue_ida;
+-		num_pins = src_widget->num_source_pins;
++		pin_binding = src_widget->output_pin_binding;
++		queue_ida = &src_widget->output_queue_ida;
++		num_pins = src_widget->num_output_pins;
+ 		buddy_name = sink_widget->widget->name;
+ 	} else {
+ 		current_swidget = sink_widget;
+-		pin_binding = sink_widget->sink_pin_binding;
+-		queue_ida = &sink_widget->sink_queue_ida;
+-		num_pins = sink_widget->num_sink_pins;
++		pin_binding = sink_widget->input_pin_binding;
++		queue_ida = &sink_widget->input_queue_ida;
++		num_pins = sink_widget->num_input_pins;
+ 		buddy_name = src_widget->widget->name;
  	}
  
- 	ipc4_copier->copier_config = (uint32_t *)ipc4_copier->gtw_attr;
-@@ -438,8 +416,6 @@ static int sof_ipc4_widget_setup_pcm(struct snd_sof_widget *swidget)
+@@ -1716,12 +1716,12 @@ static int sof_ipc4_get_queue_id(struct snd_sof_widget *src_widget,
  
- free_gtw_attr:
- 	kfree(ipc4_copier->gtw_attr);
--err:
--	kfree(available_fmt->dma_buffer_size);
- free_available_fmt:
- 	sof_ipc4_free_audio_fmt(available_fmt);
- free_copier:
-@@ -457,7 +433,6 @@ static void sof_ipc4_widget_free_comp_pcm(struct snd_sof_widget *swidget)
- 		return;
- 
- 	available_fmt = &ipc4_copier->available_fmt;
--	kfree(available_fmt->dma_buffer_size);
- 	kfree(available_fmt->base_config);
- 	kfree(available_fmt->out_audio_fmt);
- 	kfree(ipc4_copier->gtw_attr);
-@@ -472,7 +447,7 @@ static int sof_ipc4_widget_setup_comp_dai(struct snd_sof_widget *swidget)
- 	struct snd_sof_dai *dai = swidget->private;
- 	struct sof_ipc4_copier *ipc4_copier;
- 	int node_type = 0;
--	int ret, i;
-+	int ret;
- 
- 	ipc4_copier = kzalloc(sizeof(*ipc4_copier), GFP_KERNEL);
- 	if (!ipc4_copier)
-@@ -486,33 +461,12 @@ static int sof_ipc4_widget_setup_comp_dai(struct snd_sof_widget *swidget)
- 	if (ret)
- 		goto free_copier;
- 
--	available_fmt->dma_buffer_size = kcalloc(available_fmt->audio_fmt_num, sizeof(u32),
--						 GFP_KERNEL);
--	if (!available_fmt->dma_buffer_size) {
--		ret = -ENOMEM;
--		goto free_available_fmt;
--	}
--
--	ret = sof_update_ipc_object(scomp, available_fmt->dma_buffer_size,
--				    SOF_COPIER_GATEWAY_CFG_TOKENS, swidget->tuples,
--				    swidget->num_tuples, sizeof(u32),
--				    available_fmt->audio_fmt_num);
--	if (ret) {
--		dev_err(scomp->dev, "Failed to parse dma buffer size in audio format for %s\n",
--			swidget->widget->name);
--		goto err;
--	}
--
--	for (i = 0; i < available_fmt->audio_fmt_num; i++)
--		dev_dbg(scomp->dev, "%d: dma buffer size: %u\n", i,
--			available_fmt->dma_buffer_size[i]);
--
- 	ret = sof_update_ipc_object(scomp, &node_type,
- 				    SOF_COPIER_TOKENS, swidget->tuples,
- 				    swidget->num_tuples, sizeof(node_type), 1);
- 	if (ret) {
- 		dev_err(scomp->dev, "parse dai node type failed %d\n", ret);
--		goto err;
-+		goto free_available_fmt;
- 	}
- 
- 	ret = sof_update_ipc_object(scomp, ipc4_copier,
-@@ -520,7 +474,7 @@ static int sof_ipc4_widget_setup_comp_dai(struct snd_sof_widget *swidget)
- 				    swidget->num_tuples, sizeof(u32), 1);
- 	if (ret) {
- 		dev_err(scomp->dev, "parse dai copier node token failed %d\n", ret);
--		goto err;
-+		goto free_available_fmt;
- 	}
- 
- 	dev_dbg(scomp->dev, "dai %s node_type %u dai_type %u dai_index %d\n", swidget->widget->name,
-@@ -554,7 +508,7 @@ static int sof_ipc4_widget_setup_comp_dai(struct snd_sof_widget *swidget)
- 		blob = kzalloc(sizeof(*blob), GFP_KERNEL);
- 		if (!blob) {
- 			ret = -ENOMEM;
--			goto err;
-+			goto free_available_fmt;
- 		}
- 
- 		list_for_each_entry(w, &sdev->widget_list, list) {
-@@ -583,7 +537,7 @@ static int sof_ipc4_widget_setup_comp_dai(struct snd_sof_widget *swidget)
- 		ipc4_copier->gtw_attr = kzalloc(sizeof(*ipc4_copier->gtw_attr), GFP_KERNEL);
- 		if (!ipc4_copier->gtw_attr) {
- 			ret = -ENOMEM;
--			goto err;
-+			goto free_available_fmt;
- 		}
- 
- 		ipc4_copier->copier_config = (uint32_t *)ipc4_copier->gtw_attr;
-@@ -604,8 +558,6 @@ static int sof_ipc4_widget_setup_comp_dai(struct snd_sof_widget *swidget)
- 
- free_copier_config:
- 	kfree(ipc4_copier->copier_config);
--err:
--	kfree(available_fmt->dma_buffer_size);
- free_available_fmt:
- 	sof_ipc4_free_audio_fmt(available_fmt);
- free_copier:
-@@ -633,7 +585,6 @@ static void sof_ipc4_widget_free_comp_dai(struct snd_sof_widget *swidget)
- 	ipc4_copier = dai->private;
- 	available_fmt = &ipc4_copier->available_fmt;
- 
--	kfree(available_fmt->dma_buffer_size);
- 	kfree(available_fmt->base_config);
- 	kfree(available_fmt->out_audio_fmt);
- 	if (ipc4_copier->dai_type != SOF_DAI_INTEL_SSP &&
-@@ -1166,6 +1117,7 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
- 	int *ipc_config_size;
- 	u32 **data;
- 	int ipc_size, ret;
-+	u32 deep_buffer_dma_ms = 0;
- 
- 	dev_dbg(sdev->dev, "copier %s, type %d", swidget->widget->name, swidget->id);
- 
-@@ -1177,6 +1129,16 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
- 		struct snd_sof_widget *pipe_widget;
- 		struct sof_ipc4_pipeline *pipeline;
- 
-+		/* parse the deep buffer dma size */
-+		ret = sof_update_ipc_object(scomp, &deep_buffer_dma_ms,
-+					    SOF_COPIER_DEEP_BUFFER_TOKENS, swidget->tuples,
-+					    swidget->num_tuples, sizeof(u32), 1);
-+		if (ret) {
-+			dev_err(scomp->dev, "Failed to parse deep buffer dma size for %s\n",
-+				swidget->widget->name);
-+			return ret;
-+		}
-+
- 		pipe_widget = swidget->spipe->pipe_widget;
- 		pipeline = pipe_widget->private;
- 		ipc4_copier = (struct sof_ipc4_copier *)swidget->private;
-@@ -1367,8 +1329,29 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
+ 	if (num_pins < 1) {
+ 		dev_err(scomp->dev, "invalid %s num_pins: %d for queue allocation for %s\n",
+-			(pin_type == SOF_PIN_TYPE_SOURCE ? "source" : "sink"),
++			(pin_type == SOF_PIN_TYPE_OUTPUT ? "output" : "input"),
+ 			num_pins, current_swidget->widget->name);
  		return -EINVAL;
  	}
  
--	/* set the gateway dma_buffer_size using the matched ID returned above */
--	copier_data->gtw_cfg.dma_buffer_size = available_fmt->dma_buffer_size[ret];
-+	/*
-+	 * Set the gateway dma_buffer_size to 2ms buffer size to meet the FW expectation. In the
-+	 * deep buffer case, set the dma_buffer_size depending on the deep_buffer_dma_ms set
-+	 * in topology.
-+	 */
-+	switch (swidget->id) {
-+	case snd_soc_dapm_dai_in:
-+		copier_data->gtw_cfg.dma_buffer_size =
-+			SOF_IPC4_MIN_DMA_BUFFER_SIZE * copier_data->base_config.ibs;
-+		break;
-+	case snd_soc_dapm_aif_in:
-+			copier_data->gtw_cfg.dma_buffer_size =
-+				max((u32)SOF_IPC4_MIN_DMA_BUFFER_SIZE, deep_buffer_dma_ms) *
-+					copier_data->base_config.ibs;
-+		break;
-+	case snd_soc_dapm_dai_out:
-+	case snd_soc_dapm_aif_out:
-+		copier_data->gtw_cfg.dma_buffer_size =
-+			SOF_IPC4_MIN_DMA_BUFFER_SIZE * copier_data->base_config.obs;
-+		break;
-+	default:
-+		break;
-+	}
+-	/* If there is only one sink/source pin, queue id must be 0 */
++	/* If there is only one input/output pin, queue id must be 0 */
+ 	if (num_pins == 1)
+ 		return 0;
  
- 	data = &ipc4_copier->copier_config;
- 	ipc_config_size = &ipc4_copier->ipc_config_size;
-@@ -2170,7 +2153,7 @@ static enum sof_tokens common_copier_token_list[] = {
- 	SOF_AUDIO_FORMAT_BUFFER_SIZE_TOKENS,
- 	SOF_IN_AUDIO_FORMAT_TOKENS,
- 	SOF_OUT_AUDIO_FORMAT_TOKENS,
--	SOF_COPIER_GATEWAY_CFG_TOKENS,
-+	SOF_COPIER_DEEP_BUFFER_TOKENS,
- 	SOF_COPIER_TOKENS,
- 	SOF_COMP_EXT_TOKENS,
- };
-@@ -2186,7 +2169,6 @@ static enum sof_tokens dai_token_list[] = {
- 	SOF_AUDIO_FORMAT_BUFFER_SIZE_TOKENS,
- 	SOF_IN_AUDIO_FORMAT_TOKENS,
- 	SOF_OUT_AUDIO_FORMAT_TOKENS,
--	SOF_COPIER_GATEWAY_CFG_TOKENS,
- 	SOF_COPIER_TOKENS,
- 	SOF_DAI_TOKENS,
- 	SOF_COMP_EXT_TOKENS,
-diff --git a/sound/soc/sof/ipc4-topology.h b/sound/soc/sof/ipc4-topology.h
-index addc5b55cc10..696d6c39a21b 100644
---- a/sound/soc/sof/ipc4-topology.h
-+++ b/sound/soc/sof/ipc4-topology.h
-@@ -55,6 +55,9 @@
+@@ -1736,7 +1736,7 @@ static int sof_ipc4_get_queue_id(struct snd_sof_widget *src_widget,
+ 		 * mixed use pin binding array and ida for queue ID allocation.
+ 		 */
+ 		dev_err(scomp->dev, "no %s queue id found from pin binding array for %s\n",
+-			(pin_type == SOF_PIN_TYPE_SOURCE ? "source" : "sink"),
++			(pin_type == SOF_PIN_TYPE_OUTPUT ? "output" : "input"),
+ 			current_swidget->widget->name);
+ 		return -EINVAL;
+ 	}
+@@ -1752,14 +1752,14 @@ static void sof_ipc4_put_queue_id(struct snd_sof_widget *swidget, int queue_id,
+ 	char **pin_binding;
+ 	int num_pins;
  
- #define SOF_IPC4_INVALID_NODE_ID	0xffffffff
+-	if (pin_type == SOF_PIN_TYPE_SOURCE) {
+-		pin_binding = swidget->src_pin_binding;
+-		queue_ida = &swidget->src_queue_ida;
+-		num_pins = swidget->num_source_pins;
++	if (pin_type == SOF_PIN_TYPE_OUTPUT) {
++		pin_binding = swidget->output_pin_binding;
++		queue_ida = &swidget->output_queue_ida;
++		num_pins = swidget->num_output_pins;
+ 	} else {
+-		pin_binding = swidget->sink_pin_binding;
+-		queue_ida = &swidget->sink_queue_ida;
+-		num_pins = swidget->num_sink_pins;
++		pin_binding = swidget->input_pin_binding;
++		queue_ida = &swidget->input_queue_ida;
++		num_pins = swidget->num_input_pins;
+ 	}
  
-+/* FW requires minimum 2ms DMA buffer size */
-+#define SOF_IPC4_MIN_DMA_BUFFER_SIZE	2
-+
- /*
-  * The base of multi-gateways. Multi-gateways addressing starts from
-  * ALH_MULTI_GTW_BASE and there are ALH_MULTI_GTW_COUNT multi-sources
-@@ -148,7 +151,6 @@ struct ipc4_pipeline_set_state_data {
-  * @out_audio_fmt: Available output audio format
-  * @input_audio_fmts: Available input audio formats
-  * @ref_audio_fmt: Reference audio format to match runtime audio format
-- * @dma_buffer_size: Available Gateway DMA buffer size (in bytes)
-  * @audio_fmt_num: Number of available audio formats
-  */
- struct sof_ipc4_available_audio_format {
-@@ -156,7 +158,6 @@ struct sof_ipc4_available_audio_format {
- 	struct sof_ipc4_audio_format *out_audio_fmt;
- 	struct sof_ipc4_audio_format *input_audio_fmts;
- 	struct sof_ipc4_audio_format *ref_audio_fmt;
--	u32 *dma_buffer_size;
- 	int audio_fmt_num;
- };
+ 	/* Nothing to free if queue ID is not allocated with ida. */
+@@ -1829,7 +1829,7 @@ static int sof_ipc4_route_setup(struct snd_sof_dev *sdev, struct snd_sof_route *
+ 	int ret;
  
+ 	sroute->src_queue_id = sof_ipc4_get_queue_id(src_widget, sink_widget,
+-						     SOF_PIN_TYPE_SOURCE);
++						     SOF_PIN_TYPE_OUTPUT);
+ 	if (sroute->src_queue_id < 0) {
+ 		dev_err(sdev->dev, "failed to get queue ID for source widget: %s\n",
+ 			src_widget->widget->name);
+@@ -1837,12 +1837,12 @@ static int sof_ipc4_route_setup(struct snd_sof_dev *sdev, struct snd_sof_route *
+ 	}
+ 
+ 	sroute->dst_queue_id = sof_ipc4_get_queue_id(src_widget, sink_widget,
+-						     SOF_PIN_TYPE_SINK);
++						     SOF_PIN_TYPE_INPUT);
+ 	if (sroute->dst_queue_id < 0) {
+ 		dev_err(sdev->dev, "failed to get queue ID for sink widget: %s\n",
+ 			sink_widget->widget->name);
+ 		sof_ipc4_put_queue_id(src_widget, sroute->src_queue_id,
+-				      SOF_PIN_TYPE_SOURCE);
++				      SOF_PIN_TYPE_OUTPUT);
+ 		return sroute->dst_queue_id;
+ 	}
+ 
+@@ -1886,8 +1886,8 @@ static int sof_ipc4_route_setup(struct snd_sof_dev *sdev, struct snd_sof_route *
+ 	return ret;
+ 
+ out:
+-	sof_ipc4_put_queue_id(src_widget, sroute->src_queue_id, SOF_PIN_TYPE_SOURCE);
+-	sof_ipc4_put_queue_id(sink_widget, sroute->dst_queue_id, SOF_PIN_TYPE_SINK);
++	sof_ipc4_put_queue_id(src_widget, sroute->src_queue_id, SOF_PIN_TYPE_OUTPUT);
++	sof_ipc4_put_queue_id(sink_widget, sroute->dst_queue_id, SOF_PIN_TYPE_INPUT);
+ 	return ret;
+ }
+ 
+@@ -1932,8 +1932,8 @@ static int sof_ipc4_route_free(struct snd_sof_dev *sdev, struct snd_sof_route *s
+ 			src_widget->widget->name, sroute->src_queue_id,
+ 			sink_widget->widget->name, sroute->dst_queue_id);
+ out:
+-	sof_ipc4_put_queue_id(sink_widget, sroute->dst_queue_id, SOF_PIN_TYPE_SINK);
+-	sof_ipc4_put_queue_id(src_widget, sroute->src_queue_id, SOF_PIN_TYPE_SOURCE);
++	sof_ipc4_put_queue_id(sink_widget, sroute->dst_queue_id, SOF_PIN_TYPE_INPUT);
++	sof_ipc4_put_queue_id(src_widget, sroute->src_queue_id, SOF_PIN_TYPE_OUTPUT);
+ 
+ 	return ret;
+ }
 diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index a1c4d3f34153..4504f9efdc50 100644
+index 239b82f37976..a1c4d3f34153 100644
 --- a/sound/soc/sof/sof-audio.h
 +++ b/sound/soc/sof/sof-audio.h
-@@ -257,7 +257,7 @@ enum sof_tokens {
- 	SOF_IN_AUDIO_FORMAT_TOKENS,
- 	SOF_OUT_AUDIO_FORMAT_TOKENS,
- 	SOF_AUDIO_FORMAT_BUFFER_SIZE_TOKENS,
--	SOF_COPIER_GATEWAY_CFG_TOKENS,
-+	SOF_COPIER_DEEP_BUFFER_TOKENS,
- 	SOF_COPIER_TOKENS,
- 	SOF_AUDIO_FMT_NUM_TOKENS,
- 	SOF_COPIER_FORMAT_TOKENS,
+@@ -30,9 +30,9 @@
+  */
+ #define SOF_WIDGET_MAX_NUM_PINS	8
+ 
+-/* The type of a widget pin is either sink or source */
+-#define SOF_PIN_TYPE_SINK	0
+-#define SOF_PIN_TYPE_SOURCE	1
++/* Widget pin type */
++#define SOF_PIN_TYPE_INPUT	0
++#define SOF_PIN_TYPE_OUTPUT	1
+ 
+ /* max number of FE PCMs before BEs */
+ #define SOF_BE_PCM_BASE		16
+@@ -433,31 +433,31 @@ struct snd_sof_widget {
+ 	struct snd_sof_tuple *tuples;
+ 
+ 	/*
+-	 * The allowed range for num_sink/source_pins is [0, SOF_WIDGET_MAX_NUM_PINS].
+-	 * Widgets may have zero sink or source pins, for example the tone widget has
+-	 * zero sink pins.
++	 * The allowed range for num_input/output_pins is [0, SOF_WIDGET_MAX_NUM_PINS].
++	 * Widgets may have zero input or output pins, for example the tone widget has
++	 * zero input pins.
+ 	 */
+-	u32 num_sink_pins;
+-	u32 num_source_pins;
++	u32 num_input_pins;
++	u32 num_output_pins;
+ 
+ 	/*
+-	 * The sink/source pin binding array, it takes the form of
++	 * The input/output pin binding array, it takes the form of
+ 	 * [widget_name_connected_to_pin0, widget_name_connected_to_pin1, ...],
+ 	 * with the index as the queue ID.
+ 	 *
+ 	 * The array is used for special pin binding. Note that even if there
+-	 * is only one sink/source pin requires special pin binding, pin binding
+-	 * should be defined for all sink/source pins in topology, for pin(s) that
++	 * is only one input/output pin requires special pin binding, pin binding
++	 * should be defined for all input/output pins in topology, for pin(s) that
+ 	 * are not used, give the value "NotConnected".
+ 	 *
+ 	 * If pin binding is not defined in topology, nothing to parse in the kernel,
+-	 * sink_pin_binding and src_pin_binding shall be NULL.
++	 * input_pin_binding and output_pin_binding shall be NULL.
+ 	 */
+-	char **sink_pin_binding;
+-	char **src_pin_binding;
++	char **input_pin_binding;
++	char **output_pin_binding;
+ 
+-	struct ida src_queue_ida;
+-	struct ida sink_queue_ida;
++	struct ida output_queue_ida;
++	struct ida input_queue_ida;
+ 
+ 	void *private;		/* core does not touch this */
+ };
 diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 9f84b4c362c3..2d76ab13b3d1 100644
+index 9f3a038fe21a..9f84b4c362c3 100644
 --- a/sound/soc/sof/topology.c
 +++ b/sound/soc/sof/topology.c
-@@ -1232,7 +1232,6 @@ static int sof_widget_parse_tokens(struct snd_soc_component *scomp, struct snd_s
- 			continue;
- 		case SOF_IN_AUDIO_FORMAT_TOKENS:
- 		case SOF_OUT_AUDIO_FORMAT_TOKENS:
--		case SOF_COPIER_GATEWAY_CFG_TOKENS:
- 		case SOF_AUDIO_FORMAT_BUFFER_SIZE_TOKENS:
- 			num_sets = sof_get_token_value(SOF_TKN_COMP_NUM_AUDIO_FORMATS,
- 						       swidget->tuples, swidget->num_tuples);
+@@ -416,19 +416,19 @@ static const struct sof_topology_token led_tokens[] = {
+ };
+ 
+ static const struct sof_topology_token comp_pin_tokens[] = {
+-	{SOF_TKN_COMP_NUM_SINK_PINS, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
+-		offsetof(struct snd_sof_widget, num_sink_pins)},
+-	{SOF_TKN_COMP_NUM_SOURCE_PINS, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
+-		offsetof(struct snd_sof_widget, num_source_pins)},
++	{SOF_TKN_COMP_NUM_INPUT_PINS, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct snd_sof_widget, num_input_pins)},
++	{SOF_TKN_COMP_NUM_OUTPUT_PINS, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
++		offsetof(struct snd_sof_widget, num_output_pins)},
+ };
+ 
+-static const struct sof_topology_token comp_sink_pin_binding_tokens[] = {
+-	{SOF_TKN_COMP_SINK_PIN_BINDING_WNAME, SND_SOC_TPLG_TUPLE_TYPE_STRING,
++static const struct sof_topology_token comp_input_pin_binding_tokens[] = {
++	{SOF_TKN_COMP_INPUT_PIN_BINDING_WNAME, SND_SOC_TPLG_TUPLE_TYPE_STRING,
+ 		get_token_string, 0},
+ };
+ 
+-static const struct sof_topology_token comp_src_pin_binding_tokens[] = {
+-	{SOF_TKN_COMP_SRC_PIN_BINDING_WNAME, SND_SOC_TPLG_TUPLE_TYPE_STRING,
++static const struct sof_topology_token comp_output_pin_binding_tokens[] = {
++	{SOF_TKN_COMP_OUTPUT_PIN_BINDING_WNAME, SND_SOC_TPLG_TUPLE_TYPE_STRING,
+ 		get_token_string, 0},
+ };
+ 
+@@ -1286,12 +1286,12 @@ static void sof_free_pin_binding(struct snd_sof_widget *swidget,
+ 	u32 num_pins;
+ 	int i;
+ 
+-	if (pin_type == SOF_PIN_TYPE_SINK) {
+-		pin_binding = swidget->sink_pin_binding;
+-		num_pins = swidget->num_sink_pins;
++	if (pin_type == SOF_PIN_TYPE_INPUT) {
++		pin_binding = swidget->input_pin_binding;
++		num_pins = swidget->num_input_pins;
+ 	} else {
+-		pin_binding = swidget->src_pin_binding;
+-		num_pins = swidget->num_source_pins;
++		pin_binding = swidget->output_pin_binding;
++		num_pins = swidget->num_output_pins;
+ 	}
+ 
+ 	if (pin_binding) {
+@@ -1313,14 +1313,14 @@ static int sof_parse_pin_binding(struct snd_sof_widget *swidget,
+ 	int ret;
+ 	int i;
+ 
+-	if (pin_type == SOF_PIN_TYPE_SINK) {
+-		num_pins = swidget->num_sink_pins;
+-		pin_binding_token = comp_sink_pin_binding_tokens;
+-		token_count = ARRAY_SIZE(comp_sink_pin_binding_tokens);
++	if (pin_type == SOF_PIN_TYPE_INPUT) {
++		num_pins = swidget->num_input_pins;
++		pin_binding_token = comp_input_pin_binding_tokens;
++		token_count = ARRAY_SIZE(comp_input_pin_binding_tokens);
+ 	} else {
+-		num_pins = swidget->num_source_pins;
+-		pin_binding_token = comp_src_pin_binding_tokens;
+-		token_count = ARRAY_SIZE(comp_src_pin_binding_tokens);
++		num_pins = swidget->num_output_pins;
++		pin_binding_token = comp_output_pin_binding_tokens;
++		token_count = ARRAY_SIZE(comp_output_pin_binding_tokens);
+ 	}
+ 
+ 	memset(pin_binding, 0, SOF_WIDGET_MAX_NUM_PINS * sizeof(char *));
+@@ -1337,10 +1337,10 @@ static int sof_parse_pin_binding(struct snd_sof_widget *swidget,
+ 			ret = -ENOMEM;
+ 			goto err;
+ 		}
+-		if (pin_type == SOF_PIN_TYPE_SINK)
+-			swidget->sink_pin_binding = pb;
++		if (pin_type == SOF_PIN_TYPE_INPUT)
++			swidget->input_pin_binding = pb;
+ 		else
+-			swidget->src_pin_binding = pb;
++			swidget->output_pin_binding = pb;
+ 	}
+ 
+ 	return 0;
+@@ -1379,8 +1379,8 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ 	swidget->private = NULL;
+ 	mutex_init(&swidget->setup_mutex);
+ 
+-	ida_init(&swidget->src_queue_ida);
+-	ida_init(&swidget->sink_queue_ida);
++	ida_init(&swidget->output_queue_ida);
++	ida_init(&swidget->input_queue_ida);
+ 
+ 	ret = sof_parse_tokens(scomp, swidget, comp_pin_tokens,
+ 			       ARRAY_SIZE(comp_pin_tokens), priv->array,
+@@ -1391,29 +1391,29 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ 		goto widget_free;
+ 	}
+ 
+-	if (swidget->num_sink_pins > SOF_WIDGET_MAX_NUM_PINS ||
+-	    swidget->num_source_pins > SOF_WIDGET_MAX_NUM_PINS) {
+-		dev_err(scomp->dev, "invalid pins for %s: [sink: %d, src: %d]\n",
+-			swidget->widget->name, swidget->num_sink_pins, swidget->num_source_pins);
++	if (swidget->num_input_pins > SOF_WIDGET_MAX_NUM_PINS ||
++	    swidget->num_output_pins > SOF_WIDGET_MAX_NUM_PINS) {
++		dev_err(scomp->dev, "invalid pins for %s: [input: %d, output: %d]\n",
++			swidget->widget->name, swidget->num_input_pins, swidget->num_output_pins);
+ 		ret = -EINVAL;
+ 		goto widget_free;
+ 	}
+ 
+-	if (swidget->num_sink_pins > 1) {
+-		ret = sof_parse_pin_binding(swidget, priv, SOF_PIN_TYPE_SINK);
++	if (swidget->num_input_pins > 1) {
++		ret = sof_parse_pin_binding(swidget, priv, SOF_PIN_TYPE_INPUT);
+ 		/* on parsing error, pin binding is not allocated, nothing to free. */
+ 		if (ret < 0) {
+-			dev_err(scomp->dev, "failed to parse sink pin binding for %s\n",
++			dev_err(scomp->dev, "failed to parse input pin binding for %s\n",
+ 				w->name);
+ 			goto widget_free;
+ 		}
+ 	}
+ 
+-	if (swidget->num_source_pins > 1) {
+-		ret = sof_parse_pin_binding(swidget, priv, SOF_PIN_TYPE_SOURCE);
++	if (swidget->num_output_pins > 1) {
++		ret = sof_parse_pin_binding(swidget, priv, SOF_PIN_TYPE_OUTPUT);
+ 		/* on parsing error, pin binding is not allocated, nothing to free. */
+ 		if (ret < 0) {
+-			dev_err(scomp->dev, "failed to parse source pin binding for %s\n",
++			dev_err(scomp->dev, "failed to parse output pin binding for %s\n",
+ 				w->name);
+ 			goto widget_free;
+ 		}
+@@ -1422,7 +1422,7 @@ static int sof_widget_ready(struct snd_soc_component *scomp, int index,
+ 	dev_dbg(scomp->dev,
+ 		"tplg: widget %d (%s) is ready [type: %d, pipe: %d, pins: %d / %d, stream: %s]\n",
+ 		swidget->comp_id, w->name, swidget->id, index,
+-		swidget->num_sink_pins, swidget->num_source_pins,
++		swidget->num_input_pins, swidget->num_output_pins,
+ 		strnlen(w->sname, SNDRV_CTL_ELEM_ID_NAME_MAXLEN) > 0 ? w->sname : "none");
+ 
+ 	widget_ops = tplg_ops ? tplg_ops->widget : NULL;
+@@ -1643,11 +1643,11 @@ static int sof_widget_unload(struct snd_soc_component *scomp,
+ 	if (widget_ops && widget_ops[swidget->id].ipc_free)
+ 		widget_ops[swidget->id].ipc_free(swidget);
+ 
+-	ida_destroy(&swidget->src_queue_ida);
+-	ida_destroy(&swidget->sink_queue_ida);
++	ida_destroy(&swidget->output_queue_ida);
++	ida_destroy(&swidget->input_queue_ida);
+ 
+-	sof_free_pin_binding(swidget, SOF_PIN_TYPE_SINK);
+-	sof_free_pin_binding(swidget, SOF_PIN_TYPE_SOURCE);
++	sof_free_pin_binding(swidget, SOF_PIN_TYPE_INPUT);
++	sof_free_pin_binding(swidget, SOF_PIN_TYPE_OUTPUT);
+ 
+ 	kfree(swidget->tuples);
+ 
 -- 
 2.39.2
 
