@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F562C61DA4
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Mar 2023 11:06:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29E20C6FD19
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Mar 2023 11:06:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 35D7014A1;
-	Mon, 13 Mar 2023 12:05:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35D7014A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id C716E148C;
+	Mon, 13 Mar 2023 12:05:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C716E148C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678705575;
-	bh=PaZrZtWlkzJxawO1dITV7qlvYBknzDgGJ7kHMLhPzT8=;
+	s=default; t=1678705586;
+	bh=CCiur2tLL698axqnYuP9X//Owwgrw+C+vnxFz+5SzSA=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=b3ojiLw0KaBgOn0RhkVnHgZN4sfAzqkOHiR9oKqbhnI/SMWPbYXn9g7eFqy5PV2zy
-	 DGq12ikkwHACDeNY/v8UIkFFhlPYiswo817kcqiiU3S9KEstZRpLb6CO59nBV2NRbb
-	 bitSoy/ZqvMRCc4j09eLyUTFhV5k5tGRZMvk8qEc=
+	b=ubL2fNO8SNDeFxi/wgWW+Ff9zJmx7giavfjUwb8kDVNJ4RJSeh+qJweYkLF9NKEbJ
+	 /h5SCzBvt122lPuD8DM6u5sCCGtil534n0XIU1IRWhyI+HPzklU25KMyeFtuXpTyaq
+	 zXVQ1ByPqK+E3V203b5LaQzUvz160Mhp6lXgSmdg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30085F8055A;
-	Mon, 13 Mar 2023 12:03:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A17C9F80482;
+	Mon, 13 Mar 2023 12:04:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B12E4F8053B; Mon, 13 Mar 2023 12:03:53 +0100 (CET)
+	id CEC15F8055C; Mon, 13 Mar 2023 12:04:36 +0100 (CET)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E1525F80423
-	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2023 12:03:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1525F80423
+	by alsa1.perex.cz (Postfix) with ESMTPS id 81B40F80482
+	for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2023 12:03:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81B40F80482
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=HYgmkSVd
+ header.s=Intel header.b=B+v3Lf1O
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678705428; x=1710241428;
+  t=1678705419; x=1710241419;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=PaZrZtWlkzJxawO1dITV7qlvYBknzDgGJ7kHMLhPzT8=;
-  b=HYgmkSVdT2A7bWy/RZ/Td3vAuIRtgUHz8bawIfKTGcMM0UryCIGVstlR
-   yTXhACfUAbUD7Jhf0AYEloMe3+dLVhkBnxYfcvbaA/D0MJSxD1gaSPXBM
-   Lh6SbAq9nsYELYNdoShoQOjM5xoCi2wSHc2DqwIiNlcewxdx10UKI72lj
-   qiaKI85nvNgKAPaEzWP83Avt1lvG5jlzl4P+KM6p+y8tWhd5bMG8owEj7
-   zV/UPIV8j2PSEb2ANzxxFFDVJqv1+KD+4H2s7gu6piCzQl6wmO9sJCLl+
-   /FOJoC3ruCGgwxhCEleXi2kuI50FlEx5SFiYoWJCJZ4WMBsxLDOCZkNOt
+  bh=CCiur2tLL698axqnYuP9X//Owwgrw+C+vnxFz+5SzSA=;
+  b=B+v3Lf1Oz4Htae9hEffK5OM4lieTzyuPpv/NtzdCmGvk1pg2c8qh/bRN
+   Pu1Fp5Gr215vNmtgqjDToaASi/JGqjWZz3fEYobeykVQtTvkzfbejub3H
+   FWxLJE57g4v6gshM6hb1ryMX7tXpGqsYxA4lVMDF7HVaTleOFKQN42grs
+   LaTtimhKgbakdmXYBibukecAy4RSUBEmVcODin0/PLt8RE+Rw5EmkvuTQ
+   oTr06cM+N3q4//ikHRBhWiQOuEutt3QswXtiIlAQe0PvclBgx1FSG8qK9
+   lHrXx3dOdkkV/LOnCOImGBkcNs4JpnnfWGcKfRSMLjuCIP8RggkVahYzn
    A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="423384169"
+X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="423384122"
 X-IronPort-AV: E=Sophos;i="5.98,256,1673942400";
-   d="scan'208";a="423384169"
+   d="scan'208";a="423384122"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Mar 2023 04:03:43 -0700
+ 13 Mar 2023 04:03:34 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="655939104"
+X-IronPort-AV: E=McAfee;i="6500,9779,10647"; a="655939085"
 X-IronPort-AV: E=Sophos;i="5.98,256,1673942400";
-   d="scan'208";a="655939104"
+   d="scan'208";a="655939085"
 Received: from tchambon-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.43.68])
   by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Mar 2023 04:03:40 -0700
+ 13 Mar 2023 04:03:31 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 7/7] ASoC: SOF: ipc4-control: Add support for bytes control
- get and put
-Date: Mon, 13 Mar 2023 13:03:44 +0200
-Message-Id: <20230313110344.16644-8-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 4/7] ASoC: SOF: uapi: header: Update sof_abi_hdr doc for IPC4
+ use
+Date: Mon, 13 Mar 2023 13:03:41 +0200
+Message-Id: <20230313110344.16644-5-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230313110344.16644-1-peter.ujfalusi@linux.intel.com>
 References: <20230313110344.16644-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 5P7FXAE4ACEEFJBTDNE2SWAVIXMUHQHH
-X-Message-ID-Hash: 5P7FXAE4ACEEFJBTDNE2SWAVIXMUHQHH
+Message-ID-Hash: QYPFIMK335CUTN7Y5CEYSC5PF64ACOQX
+X-Message-ID-Hash: QYPFIMK335CUTN7Y5CEYSC5PF64ACOQX
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,7 +93,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5P7FXAE4ACEEFJBTDNE2SWAVIXMUHQHH/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QYPFIMK335CUTN7Y5CEYSC5PF64ACOQX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,310 +102,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Add support for bytes control by implementing bytes_get/put and
-bytes_ext_get/put and blobs with either module init instance or
-large config type.
+With IPC4 the sof_abit_hdr is only used between user space
+(and in topology) and kernel.
+The same abi header is used with small differencies like different
+magic number and the type field have slightly different name, but
+similar function in IPC4 (param_id).
 
-For module init instance type the put will only update the stored
-configuration blob and it is going to be taken into use next time the
-module is (re-)initialized.
-
-Large config type of blobs are sent to the firmware whenever the DSP is
-powered up.
+Update the kernel documentation to highlight the differences.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Jaska Uimonen <jaska.uimonen@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/ipc4-control.c | 248 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 241 insertions(+), 7 deletions(-)
+ include/uapi/sound/sof/abi.h    |  2 ++
+ include/uapi/sound/sof/header.h | 11 ++++++++---
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sof/ipc4-control.c b/sound/soc/sof/ipc4-control.c
-index 56d42f2eb6e2..d26ed2a6029f 100644
---- a/sound/soc/sof/ipc4-control.c
-+++ b/sound/soc/sof/ipc4-control.c
-@@ -181,11 +181,237 @@ static int sof_ipc4_volume_get(struct snd_sof_control *scontrol,
- 	return 0;
- }
+diff --git a/include/uapi/sound/sof/abi.h b/include/uapi/sound/sof/abi.h
+index 3566630ca965..45c657c3919e 100644
+--- a/include/uapi/sound/sof/abi.h
++++ b/include/uapi/sound/sof/abi.h
+@@ -60,5 +60,7 @@
  
-+static int sof_ipc4_set_get_bytes_data(struct snd_sof_dev *sdev,
-+				       struct snd_sof_control *scontrol,
-+				       bool set, bool lock)
-+{
-+	struct sof_ipc4_control_data *cdata = scontrol->ipc_control_data;
-+	struct sof_abi_hdr *data = cdata->data;
-+	struct sof_ipc4_msg *msg = &cdata->msg;
-+	int ret = 0;
-+
-+	/* Send the new data to the firmware only if it is powered up */
-+	if (set && !pm_runtime_active(sdev->dev))
-+		return 0;
-+
-+	msg->extension = SOF_IPC4_MOD_EXT_MSG_PARAM_ID(data->type);
-+
-+	msg->data_ptr = data->data;
-+	msg->data_size = data->size;
-+
-+	ret = sof_ipc4_set_get_kcontrol_data(scontrol, set, lock);
-+	if (ret < 0)
-+		dev_err(sdev->dev, "Failed to %s for %s\n",
-+			set ? "set bytes update" : "get bytes",
-+			scontrol->name);
-+
-+	msg->data_ptr = NULL;
-+	msg->data_size = 0;
-+
-+	return ret;
-+}
-+
-+static int sof_ipc4_bytes_put(struct snd_sof_control *scontrol,
-+			      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct sof_ipc4_control_data *cdata = scontrol->ipc_control_data;
-+	struct snd_soc_component *scomp = scontrol->scomp;
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
-+	struct sof_abi_hdr *data = cdata->data;
-+	size_t size;
-+
-+	if (scontrol->max_size > sizeof(ucontrol->value.bytes.data)) {
-+		dev_err_ratelimited(scomp->dev,
-+				    "data max %zu exceeds ucontrol data array size\n",
-+				    scontrol->max_size);
-+		return -EINVAL;
-+	}
-+
-+	/* scontrol->max_size has been verified to be >= sizeof(struct sof_abi_hdr) */
-+	if (data->size > scontrol->max_size - sizeof(*data)) {
-+		dev_err_ratelimited(scomp->dev,
-+				    "data size too big %u bytes max is %zu\n",
-+				    data->size, scontrol->max_size - sizeof(*data));
-+		return -EINVAL;
-+	}
-+
-+	size = data->size + sizeof(*data);
-+
-+	/* copy from kcontrol */
-+	memcpy(data, ucontrol->value.bytes.data, size);
-+
-+	sof_ipc4_set_get_bytes_data(sdev, scontrol, true, true);
-+
-+	return 0;
-+}
-+
-+static int sof_ipc4_bytes_get(struct snd_sof_control *scontrol,
-+			      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct sof_ipc4_control_data *cdata = scontrol->ipc_control_data;
-+	struct snd_soc_component *scomp = scontrol->scomp;
-+	struct sof_abi_hdr *data = cdata->data;
-+	size_t size;
-+
-+	if (scontrol->max_size > sizeof(ucontrol->value.bytes.data)) {
-+		dev_err_ratelimited(scomp->dev, "data max %zu exceeds ucontrol data array size\n",
-+				    scontrol->max_size);
-+		return -EINVAL;
-+	}
-+
-+	if (data->size > scontrol->max_size - sizeof(*data)) {
-+		dev_err_ratelimited(scomp->dev,
-+				    "%u bytes of control data is invalid, max is %zu\n",
-+				    data->size, scontrol->max_size - sizeof(*data));
-+		return -EINVAL;
-+	}
-+
-+	size = data->size + sizeof(*data);
-+
-+	/* copy back to kcontrol */
-+	memcpy(ucontrol->value.bytes.data, data, size);
-+
-+	return 0;
-+}
-+
-+static int sof_ipc4_bytes_ext_put(struct snd_sof_control *scontrol,
-+				  const unsigned int __user *binary_data,
-+				  unsigned int size)
-+{
-+	struct snd_ctl_tlv __user *tlvd = (struct snd_ctl_tlv __user *)binary_data;
-+	struct sof_ipc4_control_data *cdata = scontrol->ipc_control_data;
-+	struct snd_soc_component *scomp = scontrol->scomp;
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
-+	struct sof_abi_hdr *data = cdata->data;
-+	struct sof_abi_hdr abi_hdr;
-+	struct snd_ctl_tlv header;
-+
-+	/*
-+	 * The beginning of bytes data contains a header from where
-+	 * the length (as bytes) is needed to know the correct copy
-+	 * length of data from tlvd->tlv.
-+	 */
-+	if (copy_from_user(&header, tlvd, sizeof(struct snd_ctl_tlv)))
-+		return -EFAULT;
-+
-+	/* make sure TLV info is consistent */
-+	if (header.length + sizeof(struct snd_ctl_tlv) > size) {
-+		dev_err_ratelimited(scomp->dev,
-+				    "Inconsistent TLV, data %d + header %zu > %d\n",
-+				    header.length, sizeof(struct snd_ctl_tlv), size);
-+		return -EINVAL;
-+	}
-+
-+	/* be->max is coming from topology */
-+	if (header.length > scontrol->max_size) {
-+		dev_err_ratelimited(scomp->dev,
-+				    "Bytes data size %d exceeds max %zu\n",
-+				    header.length, scontrol->max_size);
-+		return -EINVAL;
-+	}
-+
-+	/* Verify the ABI header first */
-+	if (copy_from_user(&abi_hdr, tlvd->tlv, sizeof(abi_hdr)))
-+		return -EFAULT;
-+
-+	if (abi_hdr.magic != SOF_IPC4_ABI_MAGIC) {
-+		dev_err_ratelimited(scomp->dev, "Wrong ABI magic 0x%08x\n",
-+				    abi_hdr.magic);
-+		return -EINVAL;
-+	}
-+
-+	if (abi_hdr.size > scontrol->max_size - sizeof(abi_hdr)) {
-+		dev_err_ratelimited(scomp->dev,
-+				    "%u bytes of control data is invalid, max is %zu\n",
-+				    abi_hdr.size, scontrol->max_size - sizeof(abi_hdr));
-+		return -EINVAL;
-+	}
-+
-+	/* Copy the whole binary data which includes the ABI header and the payload */
-+	if (copy_from_user(data, tlvd->tlv, header.length))
-+		return -EFAULT;
-+
-+	sof_ipc4_set_get_bytes_data(sdev, scontrol, true, true);
-+
-+	return 0;
-+}
-+
-+static int _sof_ipc4_bytes_ext_get(struct snd_sof_control *scontrol,
-+				   const unsigned int __user *binary_data,
-+				   unsigned int size, bool from_dsp)
-+{
-+	struct snd_ctl_tlv __user *tlvd = (struct snd_ctl_tlv __user *)binary_data;
-+	struct sof_ipc4_control_data *cdata = scontrol->ipc_control_data;
-+	struct snd_soc_component *scomp = scontrol->scomp;
-+	struct sof_abi_hdr *data = cdata->data;
-+	struct snd_ctl_tlv header;
-+	size_t data_size;
-+
-+	/*
-+	 * Decrement the limit by ext bytes header size to ensure the user space
-+	 * buffer is not exceeded.
-+	 */
-+	if (size < sizeof(struct snd_ctl_tlv))
-+		return -ENOSPC;
-+
-+	size -= sizeof(struct snd_ctl_tlv);
-+
-+	/* get all the component data from DSP */
-+	if (from_dsp) {
-+		struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
-+		int ret = sof_ipc4_set_get_bytes_data(sdev, scontrol, false, true);
-+
-+		if (ret < 0)
-+			return ret;
-+
-+		/* Set the ABI magic (if the control is not initialized) */
-+		data->magic = SOF_IPC4_ABI_MAGIC;
-+	}
-+
-+	if (data->size > scontrol->max_size - sizeof(*data)) {
-+		dev_err_ratelimited(scomp->dev,
-+				    "%u bytes of control data is invalid, max is %zu\n",
-+				    data->size, scontrol->max_size - sizeof(*data));
-+		return -EINVAL;
-+	}
-+
-+	data_size = data->size + sizeof(struct sof_abi_hdr);
-+
-+	/* make sure we don't exceed size provided by user space for data */
-+	if (data_size > size)
-+		return -ENOSPC;
-+
-+	header.numid = scontrol->comp_id;
-+	header.length = data_size;
-+
-+	if (copy_to_user(tlvd, &header, sizeof(struct snd_ctl_tlv)))
-+		return -EFAULT;
-+
-+	if (copy_to_user(tlvd->tlv, data, data_size))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int sof_ipc4_bytes_ext_get(struct snd_sof_control *scontrol,
-+				  const unsigned int __user *binary_data,
-+				  unsigned int size)
-+{
-+	return _sof_ipc4_bytes_ext_get(scontrol, binary_data, size, false);
-+}
-+
-+static int sof_ipc4_bytes_ext_volatile_get(struct snd_sof_control *scontrol,
-+					   const unsigned int __user *binary_data,
-+					   unsigned int size)
-+{
-+	return _sof_ipc4_bytes_ext_get(scontrol, binary_data, size, true);
-+}
-+
- /* set up all controls for the widget */
- static int sof_ipc4_widget_kcontrol_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- {
- 	struct snd_sof_control *scontrol;
--	int ret;
-+	int ret = 0;
+ /* SOF ABI magic number "SOF\0". */
+ #define SOF_ABI_MAGIC		0x00464F53
++/* SOF IPC4 ABI magic number "SOF4". */
++#define SOF_IPC4_ABI_MAGIC	0x34464F53
  
- 	list_for_each_entry(scontrol, &sdev->kcontrol_list, list) {
- 		if (scontrol->comp_id == swidget->comp_id) {
-@@ -195,11 +421,10 @@ static int sof_ipc4_widget_kcontrol_setup(struct snd_sof_dev *sdev, struct snd_s
- 			case SND_SOC_TPLG_CTL_VOLSW_XR_SX:
- 				ret = sof_ipc4_set_volume_data(sdev, swidget,
- 							       scontrol, false);
--				if (ret < 0) {
--					dev_err(sdev->dev, "kcontrol %d set up failed for widget %s\n",
--						scontrol->comp_id, swidget->widget->name);
--					return ret;
--				}
-+				break;
-+			case SND_SOC_TPLG_CTL_BYTES:
-+				ret = sof_ipc4_set_get_bytes_data(sdev, scontrol,
-+								  true, false);
- 				break;
- 			default:
- 				break;
-@@ -207,7 +432,11 @@ static int sof_ipc4_widget_kcontrol_setup(struct snd_sof_dev *sdev, struct snd_s
- 		}
- 	}
+ #endif
+diff --git a/include/uapi/sound/sof/header.h b/include/uapi/sound/sof/header.h
+index e53b62b9e2c5..cb3c1ace69e3 100644
+--- a/include/uapi/sound/sof/header.h
++++ b/include/uapi/sound/sof/header.h
+@@ -13,10 +13,15 @@
  
--	return 0;
-+	if (ret < 0)
-+		dev_err(sdev->dev, "kcontrol %d set up failed for widget %s\n",
-+			scontrol->comp_id, swidget->widget->name);
-+
-+	return ret;
- }
- 
- static int
-@@ -235,6 +464,11 @@ sof_ipc4_set_up_volume_table(struct snd_sof_control *scontrol, int tlv[SOF_TLV_I
- const struct sof_ipc_tplg_control_ops tplg_ipc4_control_ops = {
- 	.volume_put = sof_ipc4_volume_put,
- 	.volume_get = sof_ipc4_volume_get,
-+	.bytes_put = sof_ipc4_bytes_put,
-+	.bytes_get = sof_ipc4_bytes_get,
-+	.bytes_ext_put = sof_ipc4_bytes_ext_put,
-+	.bytes_ext_get = sof_ipc4_bytes_ext_get,
-+	.bytes_ext_volatile_get = sof_ipc4_bytes_ext_volatile_get,
- 	.widget_kcontrol_setup = sof_ipc4_widget_kcontrol_setup,
- 	.set_up_volume_table = sof_ipc4_set_up_volume_table,
- };
+ /**
+  * struct sof_abi_hdr - Header for all non IPC ABI data.
+- * @magic: Magic number for validation: 0x00464F53 ('S', 'O', 'F', '\0')
+- * @type: Component specific type
++ * @magic: Magic number for validation
++ *	   for IPC3 data: 0x00464F53 ('S', 'O', 'F', '\0')
++ *	   for IPC4 data: 0x34464F53 ('S', 'O', 'F', '4')
++ * @type: module specific parameter
++ *	  for IPC3: Component specific type
++ *	  for IPC4: parameter ID (param_id) of the data
+  * @size: The size in bytes of the data, excluding this struct
+- * @abi: SOF ABI version
++ * @abi: SOF ABI version. The version is valid in scope of the 'magic', IPC3 and
++ *	 IPC4 ABI version numbers have no relationship.
+  * @reserved: Reserved for future use
+  * @data: Component data - opaque to core
+  *
 -- 
 2.39.2
 
