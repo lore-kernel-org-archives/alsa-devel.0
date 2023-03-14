@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5013C61DA4
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Mar 2023 01:44:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7555EC61DA4
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Mar 2023 01:44:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE5AFF6D;
-	Tue, 14 Mar 2023 02:43:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE5AFF6D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 497281464;
+	Tue, 14 Mar 2023 02:43:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 497281464
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678758260;
-	bh=2J/lbv6Wvy/4qm3q1nHlORWUYNqsoXkS5u9Wi+zdC3Q=;
+	s=default; t=1678758281;
+	bh=pL6YG6BMqzUVh4Kle1zgXWisMHBEcSc8c1jkWgAQStg=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jq0FB/GXJBtSCmEDmRcs5wmD7KQ+L4kvLGP0bq4fUBoQDSy4VaFrEynUtRzm5RH8R
-	 80aoo6EgBXDek2iuoxIXUh9aQ3fVm9yMlP79ajCldJTFDxpU2pDlXepOyGklKdfGGh
-	 mt3Mp/gR5m6y3i1C5kE0VeOWQxWnBuG5mJMPLiRg=
+	b=Z2CWkdPUkaDIa+rRosZxDHov/RbIesIY+CP2QS11HYCKkkRYN9H4eLkh0btTc0ZVE
+	 7oQUHAqGa8h3W8hbbh4tgk6oUDoRmxCKBjKxxD1mmsF2lDz3oNCLxKaoKuCZqDrlO4
+	 6n776Qg/hokaC6Xm5bsZaAAbAPlI+mAP8WuuQDO8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54176F8057A;
-	Tue, 14 Mar 2023 02:41:40 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 138D7F8057E;
+	Tue, 14 Mar 2023 02:41:43 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3A147F80552; Tue, 14 Mar 2023 02:41:29 +0100 (CET)
+	id F280CF80563; Tue, 14 Mar 2023 02:41:31 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C234EF80534
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2023 02:41:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C234EF80534
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9A40EF80551
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2023 02:41:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A40EF80551
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=MicChFg+
+ header.s=Intel header.b=lUCd2o8B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678758087; x=1710294087;
+  t=1678758089; x=1710294089;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=2J/lbv6Wvy/4qm3q1nHlORWUYNqsoXkS5u9Wi+zdC3Q=;
-  b=MicChFg+rn04+NAp/SGG7zPdqBvgPKxDfPXG94/1Y6MeExI+5j10xChP
-   4rcOWlioLe1S2PVB+QwZh/5Ox1jY8LjIsb+yvlLOW42nnffOrfHANWJfm
-   n79qW02BKQJwJEdOiW9CbLi1+NSrwGox8LVEc70BJygmPpbvaNDeXwwMY
-   JfvNhiqEiqYP1L2t4++XVDRqH1RiCCQGyWezGMjkApwb2ss50F0KPF7T5
-   cRdvtTxmSrMX2c0oI96Ofq/h15Qu0iAMyR7VJW9OmJrN3H/xQC+DNZEaF
-   0V5lUFCxsjLjo5/uAVU4NOgSoJi0ROhnd+ntpAsH/TZevtiF6KYq6h3pw
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10648"; a="316949258"
+  bh=pL6YG6BMqzUVh4Kle1zgXWisMHBEcSc8c1jkWgAQStg=;
+  b=lUCd2o8BJ7Q1+1AzeN2dr9XEWJrkqSFSH6MnuxqSM5X3yG8P0o2ifo/b
+   ksoLoUH7P8NOFxtS/A3ZOmPgjQsBEnyovgQDRFODEKOnqkck8u5k7QA8f
+   xw4xyU+1cKQrPZlgiqx4Y2gnXlKnhyH1ev4IGbL9Px+mLwPXhpQGa20vd
+   OGP182l4TcyZJJcvpgYl1aPz/26eRRUTT5cLTNzMilaiLApdWNvzv+cZC
+   0Xpy/epHswU615QgIK5Rndekfspe5U/VcfpG6EKFTJmPhf/klLkIFJv5Q
+   rNom0RnV1BPcdD1oQ5YES0HdFqpwf4IQgYG3GxMKU9R8anTqkvDX/jTxs
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10648"; a="316949277"
 X-IronPort-AV: E=Sophos;i="5.98,258,1673942400";
-   d="scan'208";a="316949258"
+   d="scan'208";a="316949277"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Mar 2023 18:41:22 -0700
+ 13 Mar 2023 18:41:24 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10648"; a="711327439"
+X-IronPort-AV: E=McAfee;i="6500,9779,10648"; a="711327475"
 X-IronPort-AV: E=Sophos;i="5.98,258,1673942400";
-   d="scan'208";a="711327439"
+   d="scan'208";a="711327475"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
   by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Mar 2023 18:41:18 -0700
+ 13 Mar 2023 18:41:22 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 07/16] soundwire: intel: use indirection before moving bus
- start/stop sequences
-Date: Tue, 14 Mar 2023 09:54:01 +0800
-Message-Id: <20230314015410.487311-8-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 09/16] soundwire: intel: add abstraction for cmdsync check
+Date: Tue, 14 Mar 2023 09:54:03 +0800
+Message-Id: <20230314015410.487311-10-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230314015410.487311-1-yung-chuan.liao@linux.intel.com>
 References: <20230314015410.487311-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: MY6HH3QY7IEZVDU2FNCVTRZVSF27EM3U
-X-Message-ID-Hash: MY6HH3QY7IEZVDU2FNCVTRZVSF27EM3U
+Message-ID-Hash: ONS7HORTKEAWW67SLUZTGVXREQ4P7YVI
+X-Message-ID-Hash: ONS7HORTKEAWW67SLUZTGVXREQ4P7YVI
 X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MY6HH3QY7IEZVDU2FNCVTRZVSF27EM3U/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ONS7HORTKEAWW67SLUZTGVXREQ4P7YVI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,36 +100,122 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-There was no benefit to using the existing abstraction, but since we
-are going to move the code make sure we do use the ops.
+If we add one more callback, we can have common bank switch sequences
+between old and new hardware: the only difference is where the CMDSYNC
+register is located.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/soundwire/intel.c           | 24 +++++++++++++-----------
+ drivers/soundwire/intel.h           |  7 +++++++
+ include/linux/soundwire/sdw_intel.h |  3 +++
+ 3 files changed, 23 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 902934cbb27b..8395a20e5739 100644
+index 77d698908595..1131ecb4b5e7 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -1311,13 +1311,13 @@ static int intel_stop_bus(struct sdw_intel *sdw, bool clock_stop)
- 		return ret;
- 	}
- 
--	ret = intel_link_power_down(sdw);
-+	ret = sdw_intel_link_power_down(sdw);
- 	if (ret) {
- 		dev_err(dev, "%s: Link power down failed: %d\n", __func__, ret);
- 		return ret;
- 	}
- 
--	intel_shim_wake(sdw, wake_enable);
-+	sdw_intel_shim_wake(sdw, wake_enable);
- 
- 	return 0;
+@@ -325,6 +325,15 @@ static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
+ 	mutex_unlock(sdw->link_res->shim_lock);
  }
+ 
++static bool intel_check_cmdsync_unlocked(struct sdw_intel *sdw)
++{
++	void __iomem *shim = sdw->link_res->shim;
++	int sync_reg;
++
++	sync_reg = intel_readl(shim, SDW_SHIM_SYNC);
++	return !!(sync_reg & SDW_SHIM_SYNC_CMDSYNC_MASK);
++}
++
+ static int intel_link_power_up(struct sdw_intel *sdw)
+ {
+ 	unsigned int link_id = sdw->instance;
+@@ -695,8 +704,7 @@ static int intel_post_bank_switch(struct sdw_intel *sdw)
+ {
+ 	struct sdw_cdns *cdns = &sdw->cdns;
+ 	struct sdw_bus *bus = &cdns->bus;
+-	void __iomem *shim = sdw->link_res->shim;
+-	int sync_reg, ret;
++	int ret = 0;
+ 
+ 	/* Write to register only for multi-link */
+ 	if (!bus->multi_link)
+@@ -704,9 +712,6 @@ static int intel_post_bank_switch(struct sdw_intel *sdw)
+ 
+ 	mutex_lock(sdw->link_res->shim_lock);
+ 
+-	/* Read SYNC register */
+-	sync_reg = intel_readl(shim, SDW_SHIM_SYNC);
+-
+ 	/*
+ 	 * post_bank_switch() ops is called from the bus in loop for
+ 	 * all the Masters in the steam with the expectation that
+@@ -715,13 +720,9 @@ static int intel_post_bank_switch(struct sdw_intel *sdw)
+ 	 *
+ 	 * So, set the SYNCGO bit only if CMDSYNC bit is set for any Master.
+ 	 */
+-	if (!(sync_reg & SDW_SHIM_SYNC_CMDSYNC_MASK)) {
+-		ret = 0;
+-		goto unlock;
+-	}
++	if (sdw_intel_sync_check_cmdsync_unlocked(sdw))
++		ret = sdw_intel_sync_go_unlocked(sdw);
+ 
+-	ret = sdw_intel_sync_go_unlocked(sdw);
+-unlock:
+ 	mutex_unlock(sdw->link_res->shim_lock);
+ 
+ 	if (ret < 0)
+@@ -1147,6 +1148,7 @@ const struct sdw_intel_hw_ops sdw_intel_cnl_hw_ops = {
+ 	.sync_arm = intel_shim_sync_arm,
+ 	.sync_go_unlocked = intel_shim_sync_go_unlocked,
+ 	.sync_go = intel_shim_sync_go,
++	.sync_check_cmdsync_unlocked = intel_check_cmdsync_unlocked,
+ };
+ EXPORT_SYMBOL_NS(sdw_intel_cnl_hw_ops, SOUNDWIRE_INTEL);
+ 
+diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
+index abd1a500defa..7a69cf755954 100644
+--- a/drivers/soundwire/intel.h
++++ b/drivers/soundwire/intel.h
+@@ -187,6 +187,13 @@ static inline int sdw_intel_sync_go(struct sdw_intel *sdw)
+ 	return -ENOTSUPP;
+ }
+ 
++static inline bool sdw_intel_sync_check_cmdsync_unlocked(struct sdw_intel *sdw)
++{
++	if (SDW_INTEL_CHECK_OPS(sdw, sync_check_cmdsync_unlocked))
++		return SDW_INTEL_OPS(sdw, sync_check_cmdsync_unlocked)(sdw);
++	return false;
++}
++
+ /* common bus management */
+ int intel_start_bus(struct sdw_intel *sdw);
+ int intel_start_bus_after_reset(struct sdw_intel *sdw);
+diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+index 06fa30929ebd..207701aeeb47 100644
+--- a/include/linux/soundwire/sdw_intel.h
++++ b/include/linux/soundwire/sdw_intel.h
+@@ -313,6 +313,8 @@ struct sdw_intel;
+  * @sync_go_unlocked: helper for multi-link synchronization -
+  * shim_lock is assumed to be locked at higher level
+  * @sync_go: helper for multi-link synchronization
++ * @sync_check_cmdsync_unlocked: helper for multi-link synchronization
++ * and bank switch - shim_lock is assumed to be locked at higher level
+  */
+ struct sdw_intel_hw_ops {
+ 	void (*debugfs_init)(struct sdw_intel *sdw);
+@@ -338,6 +340,7 @@ struct sdw_intel_hw_ops {
+ 	void (*sync_arm)(struct sdw_intel *sdw);
+ 	int (*sync_go_unlocked)(struct sdw_intel *sdw);
+ 	int (*sync_go)(struct sdw_intel *sdw);
++	bool (*sync_check_cmdsync_unlocked)(struct sdw_intel *sdw);
+ };
+ 
+ extern const struct sdw_intel_hw_ops sdw_intel_cnl_hw_ops;
 -- 
 2.25.1
 
