@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1440FC6FD19
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Mar 2023 01:45:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E523C61DA4
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Mar 2023 01:45:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 221E7147E;
-	Tue, 14 Mar 2023 02:44:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 221E7147E
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED6C91419;
+	Tue, 14 Mar 2023 02:44:51 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED6C91419
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678758329;
-	bh=sfcPRhRXNlasOblxff/iVuz7QEMX0M7uX02RWVIo8Q4=;
+	s=default; t=1678758342;
+	bh=az/KB86lRG095DZZ6RuZwSVMJqq3LS8MNxe03npvozo=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=iVljgHxM0WCh7sa8zvtFakMSBNmoWztpAV6iqCwR6KcQHGRHKaMb4wA7qXMBu8p4W
-	 RDTJuqHptmSLPOzgUs9U6R2AYDxjzpsjONGzQ4JcAarWh/HLBeNk65mA3jMxgEKqMt
-	 kEkQMP0jqVKaenZakB5N9t7jowQQmALx8Cl5zIXg=
+	b=WsMy52xNMND8yEVkn+oJyomcsjYF2Kd0164Vl722JMOL2zSgs7p31UJYkypiyI5WU
+	 MczfY4AhzFQ7zaZ4v4ZC+6m3O2DdDjIvOOjK/yve7e17XPnfER95WjrwxYf4S5OWft
+	 Q/f9nrtEOb8FRu2He/niMdABJ1oz5oaIH87a+eLg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6CA11F805AA;
-	Tue, 14 Mar 2023 02:41:51 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3612CF805B5;
+	Tue, 14 Mar 2023 02:41:53 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 6E7ADF80579; Tue, 14 Mar 2023 02:41:37 +0100 (CET)
+	id D355BF80578; Tue, 14 Mar 2023 02:41:37 +0100 (CET)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DF6AFF8055C
-	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2023 02:41:32 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF6AFF8055C
+	by alsa1.perex.cz (Postfix) with ESMTPS id 886FCF80557
+	for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2023 02:41:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 886FCF80557
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=aBLAq+qT
+ header.s=Intel header.b=Ky69POpo
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678758094; x=1710294094;
+  t=1678758091; x=1710294091;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=sfcPRhRXNlasOblxff/iVuz7QEMX0M7uX02RWVIo8Q4=;
-  b=aBLAq+qTkgOqAbB5rpE5PVagUjeZQ3riJRPIWG7/3fNEHteoWJyeN5kk
-   925JpqzUcDGPipnYvSlpdntnsWAX4IKdavt0F2Q/1ruTIUAcmt3dfUKWM
-   F950fzGgldMi0SLzZDtRWTJOCsVqw2SwzcLerOCjuxG0ITbjikodONQNZ
-   M56IZ5sY+WGl7wqEXM61CyF96c8rWMly1ThYtdD+NN6uDq5okOUS1ziGA
-   A0JWYTRf1tb47/tHNKNc0mQIUzO7FfnvM8ebXcGa1Nu/KPIa50Nj74/9r
-   OdQBE1sdF7BqPIjLSKwq/t0mfqV1/ksM/KYbLN9/Anikm4BidP0iFLCrB
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10648"; a="316949303"
+  bh=az/KB86lRG095DZZ6RuZwSVMJqq3LS8MNxe03npvozo=;
+  b=Ky69POpocCeqpGOryAqq9LJNYAbY8XE/10qhYvCQRsvyE3Sb6AX/rl9h
+   DG29eswhHI7x7fScHMgDD+yFoC8zEzmPS9J2lnZTzozWuWjAXo6Xu7Iim
+   2fmdy1MtHoj2IdnDPK7i6+Yfo5r9aR1Y7d3iau2VGfDmabu8v/Lfs+l3L
+   LNYh2RhB7UqN2sPJqbFwKWsxdxblpXgukwjhMFJ5B+XJZXzRZ0hU3DTbX
+   8gPZFZ4Oqb+/uSJgt/Bm9kvRx3fZL4x9Dr4nK9Z2Btjwsg0wUJdRXV9PA
+   mHR8iUSxn5V+2NEc7+XCDT+ZlOdGFKNZn0yo9fx26UuQcyvyCC/gXzisv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10648"; a="316949286"
 X-IronPort-AV: E=Sophos;i="5.98,258,1673942400";
-   d="scan'208";a="316949303"
+   d="scan'208";a="316949286"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Mar 2023 18:41:32 -0700
+ 13 Mar 2023 18:41:28 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10648"; a="711327538"
+X-IronPort-AV: E=McAfee;i="6500,9779,10648"; a="711327495"
 X-IronPort-AV: E=Sophos;i="5.98,258,1673942400";
-   d="scan'208";a="711327538"
+   d="scan'208";a="711327495"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
   by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Mar 2023 18:41:30 -0700
+ 13 Mar 2023 18:41:26 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 13/16] soundwire: cadence: split access to IP_MCP_CONFIG
- fields
-Date: Tue, 14 Mar 2023 09:54:07 +0800
-Message-Id: <20230314015410.487311-14-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 11/16] soundwire: cadence: remove CDNS_MCP_CONFIG_SSPMOD
+Date: Tue, 14 Mar 2023 09:54:05 +0800
+Message-Id: <20230314015410.487311-12-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230314015410.487311-1-yung-chuan.liao@linux.intel.com>
 References: <20230314015410.487311-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: U4OCWI5SQVACV37YD33P3QUV4A6L2RXB
-X-Message-ID-Hash: U4OCWI5SQVACV37YD33P3QUV4A6L2RXB
+Message-ID-Hash: SK7EUWNEXL4GSISAKK23RTNHEA4T5MWX
+X-Message-ID-Hash: SK7EUWNEXL4GSISAKK23RTNHEA4T5MWX
 X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,7 +89,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U4OCWI5SQVACV37YD33P3QUV4A6L2RXB/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/SK7EUWNEXL4GSISAKK23RTNHEA4T5MWX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,105 +100,28 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The latest Cadence IP splits the MCP_CONFIG fields in two registers:
-MCP_CONFIG and IP_MCP_CONFIG. Rename the relevant fields and change
-the access methods used for those fields.
-
-For existing solutions, this is an iso-functionality change.
+This field is not used, and its definition is not aligned with the
+hardware specification.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/cadence_master.c | 47 +++++++++++++++++-------------
- 1 file changed, 27 insertions(+), 20 deletions(-)
+ drivers/soundwire/cadence_master.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index 4461a7fa4124..f7499e126404 100644
+index e835dabb516c..4f34fc72dbd5 100644
 --- a/drivers/soundwire/cadence_master.c
 +++ b/drivers/soundwire/cadence_master.c
-@@ -27,15 +27,17 @@ module_param_named(cnds_mcp_int_mask, interrupt_mask, int, 0444);
- MODULE_PARM_DESC(cdns_mcp_int_mask, "Cadence MCP IntMask");
- 
- #define CDNS_MCP_CONFIG				0x0
--
--#define CDNS_MCP_CONFIG_MCMD_RETRY		GENMASK(27, 24)
--#define CDNS_MCP_CONFIG_MPREQ_DELAY		GENMASK(20, 16)
--#define CDNS_MCP_CONFIG_MMASTER			BIT(7)
+@@ -33,7 +33,6 @@ MODULE_PARM_DESC(cdns_mcp_int_mask, "Cadence MCP IntMask");
+ #define CDNS_MCP_CONFIG_MMASTER			BIT(7)
  #define CDNS_MCP_CONFIG_BUS_REL			BIT(6)
--#define CDNS_MCP_CONFIG_SNIFFER			BIT(5)
--#define CDNS_MCP_CONFIG_CMD			BIT(3)
--#define CDNS_MCP_CONFIG_OP			GENMASK(2, 0)
--#define CDNS_MCP_CONFIG_OP_NORMAL		0
-+
-+#define CDNS_IP_MCP_CONFIG			0x0 /* IP offset added at run-time */
-+
-+#define CDNS_IP_MCP_CONFIG_MCMD_RETRY		GENMASK(27, 24)
-+#define CDNS_IP_MCP_CONFIG_MPREQ_DELAY		GENMASK(20, 16)
-+#define CDNS_IP_MCP_CONFIG_MMASTER		BIT(7)
-+#define CDNS_IP_MCP_CONFIG_SNIFFER		BIT(5)
-+#define CDNS_IP_MCP_CONFIG_CMD			BIT(3)
-+#define CDNS_IP_MCP_CONFIG_OP			GENMASK(2, 0)
-+#define CDNS_IP_MCP_CONFIG_OP_NORMAL		0
- 
- #define CDNS_MCP_CONTROL			0x4
- 
-@@ -1348,28 +1350,33 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
- 	/* Configure mcp config */
- 	val = cdns_readl(cdns, CDNS_MCP_CONFIG);
- 
-+	/* Disable auto bus release */
-+	val &= ~CDNS_MCP_CONFIG_BUS_REL;
-+
-+	cdns_writel(cdns, CDNS_MCP_CONFIG, val);
-+
-+	/* Configure IP mcp config */
-+	val = cdns_ip_readl(cdns, CDNS_IP_MCP_CONFIG);
-+
- 	/* enable bus operations with clock and data */
--	val &= ~CDNS_MCP_CONFIG_OP;
--	val |= CDNS_MCP_CONFIG_OP_NORMAL;
-+	val &= ~CDNS_IP_MCP_CONFIG_OP;
-+	val |= CDNS_IP_MCP_CONFIG_OP_NORMAL;
- 
- 	/* Set cmd mode for Tx and Rx cmds */
--	val &= ~CDNS_MCP_CONFIG_CMD;
-+	val &= ~CDNS_IP_MCP_CONFIG_CMD;
- 
- 	/* Disable sniffer mode */
--	val &= ~CDNS_MCP_CONFIG_SNIFFER;
--
--	/* Disable auto bus release */
--	val &= ~CDNS_MCP_CONFIG_BUS_REL;
-+	val &= ~CDNS_IP_MCP_CONFIG_SNIFFER;
- 
- 	if (cdns->bus.multi_link)
- 		/* Set Multi-master mode to take gsync into account */
--		val |= CDNS_MCP_CONFIG_MMASTER;
-+		val |= CDNS_IP_MCP_CONFIG_MMASTER;
- 
- 	/* leave frame delay to hardware default of 0x1F */
- 
- 	/* leave command retry to hardware default of 0 */
- 
--	cdns_writel(cdns, CDNS_MCP_CONFIG, val);
-+	cdns_ip_writel(cdns, CDNS_IP_MCP_CONFIG, val);
- 
- 	/* changes will be committed later */
- 	return 0;
-@@ -1683,9 +1690,9 @@ int sdw_cdns_clock_restart(struct sdw_cdns *cdns, bool bus_reset)
- 	if (!bus_reset) {
- 
- 		/* enable bus operations with clock and data */
--		cdns_updatel(cdns, CDNS_MCP_CONFIG,
--			     CDNS_MCP_CONFIG_OP,
--			     CDNS_MCP_CONFIG_OP_NORMAL);
-+		cdns_ip_updatel(cdns, CDNS_IP_MCP_CONFIG,
-+				CDNS_IP_MCP_CONFIG_OP,
-+				CDNS_IP_MCP_CONFIG_OP_NORMAL);
- 
- 		ret = cdns_config_update(cdns);
- 		if (ret < 0) {
+ #define CDNS_MCP_CONFIG_SNIFFER			BIT(5)
+-#define CDNS_MCP_CONFIG_SSPMOD			BIT(4)
+ #define CDNS_MCP_CONFIG_CMD			BIT(3)
+ #define CDNS_MCP_CONFIG_OP			GENMASK(2, 0)
+ #define CDNS_MCP_CONFIG_OP_NORMAL		0
 -- 
 2.25.1
 
