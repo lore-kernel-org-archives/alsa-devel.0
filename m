@@ -4,89 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C4EBC61DA4
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 13:49:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6D49C61DA4
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 13:55:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CAA43125B;
-	Wed, 15 Mar 2023 14:48:18 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CAA43125B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BA4F125A;
+	Wed, 15 Mar 2023 14:54:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BA4F125A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678888148;
-	bh=SbeGpheoaIH+3SHeZqV2seC5XyA53aIcklBW6utJOhc=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	s=default; t=1678888539;
+	bh=yGS0GCC0GsTeb+jtCVuIDSjV+3hiMFhFbaDICAwfixs=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=q3Kwr9pDuxMf6pDmYkIEamzvRV/h4ekYqc/YIJ3+j4oVwLljeCutn2cXftJoszi73
-	 MvOln4UVPoLi3oJLUQmn3PHirB+2HOgOrlfCJKFB02bvbn0Sha9OZOrFT6s9r6qt4+
-	 KQyRP2FqQfWFvlJTYtk2XLyqM5frDX+nvWsHfs+Q=
+	b=MkxTgZ+PnRE/qtmYhLb4Kg87Shw2OpSPrQsuT9z9TOrJrpZIFsfdiadKqeL0An7Qt
+	 ouJLAwxlc5I2G7YHR4TZvsUdcENFxg8ry+iQ4N6SgOtsgKnJGDkzCSjlRgeWsln1Vl
+	 6sXOa4TbfktCXYMRWMizyFtTj+lrLAMQqta9NTN0=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45751F80423;
-	Wed, 15 Mar 2023 14:47:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C255F80423;
+	Wed, 15 Mar 2023 14:54:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 66165F80423; Wed, 15 Mar 2023 14:47:53 +0100 (CET)
+	id D1026F80423; Wed, 15 Mar 2023 14:54:22 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7CBD1F80093
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 14:47:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CBD1F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 18ADBF800C9
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 14:54:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18ADBF800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=QKPE5sYv
+ header.s=k20201202 header.b=qr0dllfQ
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 2647061D90;
-	Wed, 15 Mar 2023 13:47:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC8FAC433EF;
-	Wed, 15 Mar 2023 13:47:47 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2E86061D5C;
+	Wed, 15 Mar 2023 13:54:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D7B2C433EF;
+	Wed, 15 Mar 2023 13:54:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678888069;
-	bh=SbeGpheoaIH+3SHeZqV2seC5XyA53aIcklBW6utJOhc=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=QKPE5sYvdi64orFsHFqoGpw48cXbVJ5GgV/C61EV5vDdNa89OKJ5iXPj5tGIzAALP
-	 22M2r0RQRl5PlJVU0st+tEv873qOmbppjmfx1yndsJMBubOD9D+tf6NbDZcR8/Hvqn
-	 lFgKeHXqMDTevpLn+gDAuvBR8T2pBqX3fmzFO0Zy+6/+C7OobfDx+LL9vxEm18Hk0/
-	 DJTwNGMRjXo1N/T5s25FVBjixMOLxCvWDQ0WcXf6jskdC7MySCRBWYtFkNBHKS3FTV
-	 +XenpdoOPrXiGRZiD2OTK1WjXf2H4pVMIZboixtXbaHAPx96TeOkXP8scUNvkw/iQB
-	 HBdlhWMSZdtUA==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>
-In-Reply-To: 
- <ba4ec999dc152ea1f113253e497c093b8789d414.1678790879.git.geert+renesas@glider.be>
-References: 
- <ba4ec999dc152ea1f113253e497c093b8789d414.1678790879.git.geert+renesas@glider.be>
-Subject: Re: [PATCH] ASoC: dt-bindings: renesas: rsnd: Update example
-Message-Id: <167888806765.29884.1943433797878845928.b4-ty@kernel.org>
-Date: Wed, 15 Mar 2023 13:47:47 +0000
+	s=k20201202; t=1678888457;
+	bh=yGS0GCC0GsTeb+jtCVuIDSjV+3hiMFhFbaDICAwfixs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qr0dllfQS6siP2cK1jtNU4TyIqm5Zyo/KZbSvK02zdvSlhmFGh+YgnR/iDyeiQhKn
+	 eyG9B8zBv1sZl5oL4GHsaxgnXElVOKXjBz9nTPLCZfzglsaLVbYdzd4ULWy7PH8Ayi
+	 g1MT2MlAw6jvDNg+Iq6IdLOQdpNFIE0bdjzhpDO5l50zDNd1+bxy5BTeFa8VmWhtmq
+	 lTPKBXicQVXdEtJgP6NbULuksMUn8Xi+bkVEIKdIp9r6IdH60pPX0M8cMyLWXQ5g9d
+	 2QqM6AJzCwFNjz/3mdA9MIo/XodkyQKPr2jmZDiouf4/ijjRmWJNnVtC/zCC8RCySD
+	 Y9KcjIguDgABQ==
+Date: Wed, 15 Mar 2023 19:24:12 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH 00/16] soundwire: updates before LunarLake introduction
+Message-ID: <ZBHOBM2P1kTgdmer@matsya>
+References: <20230314015410.487311-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bd1bf
-Message-ID-Hash: I3LRU4JBMQDUL46LFBHOPGJLM57FTZKE
-X-Message-ID-Hash: I3LRU4JBMQDUL46LFBHOPGJLM57FTZKE
-X-MailFrom: broonie@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230314015410.487311-1-yung-chuan.liao@linux.intel.com>
+Message-ID-Hash: 4VTKAPYOZ3DH5PL674P65JX7BZAA6MZR
+X-Message-ID-Hash: 4VTKAPYOZ3DH5PL674P65JX7BZAA6MZR
+X-MailFrom: vkoul@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org
+CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I3LRU4JBMQDUL46LFBHOPGJLM57FTZKE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4VTKAPYOZ3DH5PL674P65JX7BZAA6MZR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,42 +89,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 14 Mar 2023 11:48:59 +0100, Geert Uytterhoeven wrote:
-> Miscellaneous updates to make the example match reality:
->   - Correct SSI resource region size,
->   - Complete half-conversion to new-style CPG/MSSR bindings,
->   - Add missing power-domains, resets, and reset-names properties,
->   - Use interrupt binding definitions instead of hardcoded numbers,
->   - Correct interrupt flags,
->   - Drop double blank line.
+On 14-03-23, 09:53, Bard Liao wrote:
+> This series provides a set of cleanups and new abstractions needed for the
+> introduction of LunarLake support.
 > 
-> [...]
+> For now this is an iso-functionality change, with changes on the Intel and
+> Cadence sides. The low-level support for LunarLake will be introduced in a
+> follow-up series that depends on HDaudio multi-link extensions.
 
-Applied to
+Applied, thanks
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: dt-bindings: renesas: rsnd: Update example
-      commit: ff750f8e9464e368fc92941553c9c385644ebfc1
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+-- 
+~Vinod
