@@ -4,26 +4,26 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6FEDC61DA4
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 13:44:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26897C6FD1D
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 13:45:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40E5F127A;
-	Wed, 15 Mar 2023 14:44:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40E5F127A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0DD3310C4;
+	Wed, 15 Mar 2023 14:44:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DD3310C4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678887896;
-	bh=MSEU+2iqBaDaVfbvmDiiO3huGdpJvy73stAKTSoEq74=;
+	s=default; t=1678887920;
+	bh=ZQ3EtPuJ3kEv1yhv044F4RDqdNGWO0aA69IEGPxt9P8=;
 	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From:Reply-To:Cc:From;
-	b=TG0BupBDrVwBRqx1uPifCD2ikOv80JCLkDzdoV5N1J/7ymoSMih5j/9KBB0t/rfVG
-	 2bsDa5piiMafmHf4mtC8mXtjAG5ZflTZ9gMhDP7Rgq2Nhjk0QSBg5lUKn9/2mj8KYP
-	 M2pu2x8xQEr0poQsbTjdjRdUjn2R//dTW86uAtbw=
+	b=GaKUHdDemjb5HzprH4kKGznnxyNr/Acxu8cn6dqS2Z7eTzWQoDc6dK4YCaEYJL58P
+	 VP/J3I99TlzvAkWdHDwZlHUemLFrwjGwkLAyfZUvXNIbmwwzXcg/CyTx43wxGQOS6R
+	 fHphhpaw3Zkf+lfmT1Mbj91rIPodrfhxYwxXX2OU=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id BFAB1F8052E;
-	Wed, 15 Mar 2023 14:43:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F606F80548;
+	Wed, 15 Mar 2023 14:43:08 +0100 (CET)
 To: Herve Codina <herve.codina@bootlin.com>,
 	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -35,9 +35,8 @@ To: Herve Codina <herve.codina@bootlin.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 5/7] dt-bindings: sound: Add support for the Lantiq PEF2256
- codec
-Date: Wed, 15 Mar 2023 14:42:29 +0100
+Subject: [PATCH 7/7] MAINTAINERS: Add the Lantiq PEF2256 ASoC codec entry
+Date: Wed, 15 Mar 2023 14:42:31 +0100
 In-Reply-To: <20230315134231.233193-1-herve.codina@bootlin.com>
 References: <20230315134231.233193-1-herve.codina@bootlin.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
@@ -51,7 +50,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VZTX55HGJFIXHYUIWIYAOTHIH22OCWTU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UNJZYK3PTLEMLQCTFEWB7CLLKQDRR4EU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -61,7 +60,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <167888778309.26.1564989339463535084@mailman-core.alsa-project.org>
+ <167888778658.26.1745346371068141095@mailman-core.alsa-project.org>
 From: Herve Codina via Alsa-devel <alsa-devel@alsa-project.org>
 Reply-To: Herve Codina <herve.codina@bootlin.com>
 Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
@@ -71,7 +70,7 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 8ECD1F8052D; Wed, 15 Mar 2023 14:42:57 +0100 (CET)
+	id 44BA0F804B1; Wed, 15 Mar 2023 14:42:58 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -82,28 +81,28 @@ Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
  [IPv6:2001:4b98:dc4:8::222])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8BDADF804B1
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 14:42:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BDADF804B1
+	by alsa1.perex.cz (Postfix) with ESMTPS id 86756F80425
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 14:42:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86756F80425
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=BRLGgg+d
+ header.s=gm1 header.b=UCbgN/TT
 Received: (Authenticated sender: herve.codina@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPA id 774C640004;
-	Wed, 15 Mar 2023 13:42:44 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPA id 57D2740009;
+	Wed, 15 Mar 2023 13:42:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1678887765;
+	t=1678887768;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nSK6QmzgFgboixiIAQGzqWb/rCb1DitwrXgQXi+UVkQ=;
-	b=BRLGgg+d1mebPDYbuEfKpLaT3Gaa7+FVrT/MFfJaKNsKHljpx9AktNDEsYo4Wat28bPvu7
-	upAw0DINnnx7y31brXY2IqqWJ7AqtEVStzfa7JpU4RxUrp/D8hIxjNZl5CEmn0pfXUQBwv
-	KZKZriRkwtu0E3JsH5rGIN1l8JFV22Lv7ziO5kXwz77dIESwF+JrnMgmx277EUMZtbRBUI
-	+FD+CtMrZUBUbiwbwPA64yNxPWFhJVS2C4zIAWa4KdpAcZ5zarFUe+gbqvWMZHtJVpPuZz
-	oZea7nyYkNu4Zw7TFlydTbk11+UlWqIZ6EAORyoDWnhwnD4AikYJ7BY2JfpcCA==
+	bh=DV4CC5O5iyRa+8OQdtxcgwDs8G2cCnQDmrmdt77V24E=;
+	b=UCbgN/TTtdKV/9x8toXtsODqKW0O040mbJ9e/phujjg/Qc+3nYDRI99siod/Tu9ZcK8hZD
+	iYBqUY7ePJgaGyROhbCesrw0CsU0DG9qZt3XyONF+/6KkCVI7hegBXoS4seKuiphZc8zqr
+	VJi2j9xVRYyRYeM8sBX7GHyUFj7bdBoLBz65A/RvAx13Uzn9/Ahbu89I163QhpxxQ4YaN5
+	3CUm0DvwoFocoKE8yCgpIWbN+vnqHmW6JaM4VUEuZrGRhrN8VEbFVD6Zgy6Qlh2LZ44jkA
+	vl937cZXH16OQLXz6RvyWU7dF3I8AQvBf5Fykoa0/Fjc8uTZxvxzuTCakr7R+Q==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -116,17 +115,16 @@ To: Herve Codina <herve.codina@bootlin.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 5/7] dt-bindings: sound: Add support for the Lantiq PEF2256
- codec
-Date: Wed, 15 Mar 2023 14:42:29 +0100
-Message-Id: <20230315134231.233193-6-herve.codina@bootlin.com>
+Subject: [PATCH 7/7] MAINTAINERS: Add the Lantiq PEF2256 ASoC codec entry
+Date: Wed, 15 Mar 2023 14:42:31 +0100
+Message-Id: <20230315134231.233193-8-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230315134231.233193-1-herve.codina@bootlin.com>
 References: <20230315134231.233193-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: VZTX55HGJFIXHYUIWIYAOTHIH22OCWTU
-X-Message-ID-Hash: VZTX55HGJFIXHYUIWIYAOTHIH22OCWTU
+Message-ID-Hash: UNJZYK3PTLEMLQCTFEWB7CLLKQDRR4EU
+X-Message-ID-Hash: UNJZYK3PTLEMLQCTFEWB7CLLKQDRR4EU
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -142,7 +140,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VZTX55HGJFIXHYUIWIYAOTHIH22OCWTU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UNJZYK3PTLEMLQCTFEWB7CLLKQDRR4EU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,84 +149,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The Lantiq PEF2256, also known as Infineon PEF2256 or FALC256, is a
-framer and line interface component designed to fulfill all required
-interfacing between an analog E1/T1/J1 line and the digital PCM system
-highway/H.100 bus.
-
-The codec support allows to use some of the PCM system highway
-time-slots as audio channels to transport audio data over the E1/T1/J1
-lines.
+After contributing the codec, add myself as the maintainer for the
+Lantiq PEF2256 codec.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- .../bindings/sound/lantiq,pef2256-codec.yaml  | 57 +++++++++++++++++++
- 1 file changed, 57 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/lantiq,pef2256-codec.yaml
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/lantiq,pef2256-codec.yaml b/Documentation/devicetree/bindings/sound/lantiq,pef2256-codec.yaml
-new file mode 100644
-index 000000000000..acba3a0ccd1b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/lantiq,pef2256-codec.yaml
-@@ -0,0 +1,57 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/lantiq,pef2256-codec.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b258498aa8ac..81c17580b402 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11651,6 +11651,13 @@ S:	Maintained
+ F:	arch/mips/lantiq
+ F:	drivers/soc/lantiq
+ 
++LANTIQ PEF2256 ASoC CODEC
++M:	Herve Codina <herve.codina@bootlin.com>
++L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
++S:	Maintained
++F:	Documentation/devicetree/bindings/sound/lantiq,pef2256-codec.yaml
++F:	sound/soc/codecs/pef2256-codec.c
 +
-+title: Lantiq PEF2256 codec device
-+
-+maintainers:
-+  - Herve Codina <herve.codina@bootlin.com>
-+
-+description: |
-+  Codec support for PEF2256.
-+
-+  The Lantiq PEF2256, also known as Infineon PEF2256 or FALC256, is a framer and
-+  line interface component designed to fulfill all required interfacing between
-+  an analog E1/T1/J1 line and the digital PCM system highway/H.100 bus.
-+
-+  The codec support allows to use some of the PCM system highway time-slots as
-+  audio channels to transport audio data over the E1/T1/J1 lines.
-+
-+  The time-slots used by the codec must be set and so, the properties
-+  'dai-tdm-slot-num', 'dai-tdm-slot-width', 'dai-tdm-slot-tx-mask' and
-+  'dai-tdm-slot-rx-mask' must be present in the ALSA sound card node for
-+  sub-nodes that involve the codec. The codec uses 8bit time-slots.
-+  'dai-tdm-tdm-slot-with' must be set to 8.
-+
-+allOf:
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-+  - $ref: dai-common.yaml#
-+
-+properties:
-+  compatible:
-+    const: lantiq,pef2256-codec
-+
-+  lantiq,pef2256:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      phandle to the PEF2256
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+required:
-+  - compatible
-+  - lantiq,pef2256
-+  - '#sound-dai-cells'
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    audio-codec {
-+        compatible = "lantiq,pef2256-codec";
-+        lantiq,pef2256 = <&pef2256>;
-+        #sound-dai-cells = <0>;
-+    };
+ LANTIQ PEF2256 DRIVER
+ M:	Herve Codina <herve.codina@bootlin.com>
+ S:	Maintained
 -- 
 2.39.2
 
