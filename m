@@ -4,26 +4,26 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02311C61DA4
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 13:44:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F4110C6FD1D
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 13:44:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86B511266;
-	Wed, 15 Mar 2023 14:43:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86B511266
+	by alsa0.perex.cz (Postfix) with ESMTPS id 113771269;
+	Wed, 15 Mar 2023 14:43:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 113771269
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678887875;
-	bh=qwCCAB1OTWTnadXT5rMVN2VEezZDbOMUpyQA5b3ENJg=;
+	s=default; t=1678887882;
+	bh=GniVGYLregPOXjp1wT/tF1yz162d6RElVAr6LXyvVj8=;
 	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From:Reply-To:Cc:From;
-	b=C6c6TymyuPKQVa/T5VA+06MlWzTiIgnS7x+anF3yaR46vHiRt7HORq4tpsh0azhwd
-	 5xpRydYfzJ1C0cgog5Q0AXYOEkStKod/2sYHwcqhSKB4vz1K1HWPnPhX+sKtuikuAP
-	 NMkaveP7YHltuUuEr55qdOTRtNwXV1A8s8YqonQE=
+	b=CKaigD15hc+oc3f8QhLHGH3SZoGusWXurdDPAInZjqP/SVwhunAGvSjuXwtX7OELe
+	 49RghQ/ynaohT0O+YgHTa681dqN2TsBQnyBRjZS3NP7YYOBiwnkpvp8wxlytoCekG8
+	 5467D0vv3RhDilwfaIXWZxjCvFnn7MrXEn+p+y/E=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 408CFF804B1;
-	Wed, 15 Mar 2023 14:42:59 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F23D0F80423;
+	Wed, 15 Mar 2023 14:43:01 +0100 (CET)
 To: Herve Codina <herve.codina@bootlin.com>,
 	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -35,9 +35,8 @@ To: Herve Codina <herve.codina@bootlin.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 1/7] dt-bindings: misc: Add the Lantiq  PEF2466 E1/T1/J1
- framer
-Date: Wed, 15 Mar 2023 14:42:25 +0100
+Subject: [PATCH 4/7] MAINTAINERS: Add the Lantiq PEF2256 driver entry
+Date: Wed, 15 Mar 2023 14:42:28 +0100
 In-Reply-To: <20230315134231.233193-1-herve.codina@bootlin.com>
 References: <20230315134231.233193-1-herve.codina@bootlin.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
@@ -51,7 +50,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IDXC7EAV6TLIHZBR4EERUXT4ETL3KHMG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7Q2TBUNSDF6WJ5GKFBI2FHONRB7CKQ44/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -61,7 +60,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <167888777889.26.12888795877484903185@mailman-core.alsa-project.org>
+ <167888778066.26.14287620950983525031@mailman-core.alsa-project.org>
 From: Herve Codina via Alsa-devel <alsa-devel@alsa-project.org>
 Reply-To: Herve Codina <herve.codina@bootlin.com>
 Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
@@ -71,7 +70,7 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 68727F80533; Wed, 15 Mar 2023 14:42:55 +0100 (CET)
+	id 731CBF8052E; Wed, 15 Mar 2023 14:42:56 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
@@ -82,28 +81,28 @@ Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
  [217.70.183.194])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 58EBCF800C9
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 14:42:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58EBCF800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9EC9AF80482
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 14:42:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EC9AF80482
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=AXxwJ8rx
+ header.s=gm1 header.b=OtOHDu0i
 Received: (Authenticated sender: herve.codina@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPA id 5FA2440009;
-	Wed, 15 Mar 2023 13:42:38 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPA id 1163E40007;
+	Wed, 15 Mar 2023 13:42:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1678887759;
+	t=1678887764;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FFGOza8KtxdlZJDJFifVkkqFS15G5C9LfrRj7KzUGtM=;
-	b=AXxwJ8rxhJ/yFOlfR/tRmskmlIw7AB6PMrEJQ9m4askK+OQKKrQygPVU1RAOEMgMPlrLRZ
-	npzfSE35hfzda/UBvtaCipg6O0z/jBSm7hOHPBb88JH1W5D8Ok4d13XA9+9qPVp+boirPT
-	U5BEAVq6wxEGwKZPAx6FB7yCw1F122H18ZgO7cR7wLSOMxDPjwaZOwbX3s0N2YDqXjWDJR
-	rJX3XsDsKAFO1lH/A86SMgsgC/j/0KI5/orQ4wpKvIEZjVVKJRJ5NGB3vwtTPZ9iRVy7O+
-	64frjMnMATKw7aewR6A2kH8My7a8dTSWwfqSMyrjgDveWZKDA5IXCuJUkvWYcA==
+	bh=0YBlfkWN4uRgoK2zQn1smyULeh9+sx/f01ppPsRKAF4=;
+	b=OtOHDu0irUG+ua7dX+nyKl7VYZNAhl/6cIYtsR7P0j7zjxfblyTd6dvHd83R0oswHcPZL9
+	ZkQI1zwNPDtlgLeU+Z/SJqrDW3TWVgZ+T57vA2Hhd1BiOeCinaEdPBjRCkG2Ht14HSDKef
+	Zl2YIrwFOcinxuWZN/sT728U3057ahrjTCCCRkG7h/pMcvVMjEIesdcr39Tk478FbgZ/o7
+	YFw2eHNFN9E67hS4+ruMA0t9K7GhkwCL22KgeyHR6VSXed9JnovG6+Fy0FgomxhOd+Lox1
+	JOt23rHieiZYSshG3vnE3PvOXL4eXZxYfC6+7t2qxQkLkFt1joPfIvt8fsHL8A==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -116,17 +115,16 @@ To: Herve Codina <herve.codina@bootlin.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 1/7] dt-bindings: misc: Add the Lantiq  PEF2466 E1/T1/J1
- framer
-Date: Wed, 15 Mar 2023 14:42:25 +0100
-Message-Id: <20230315134231.233193-2-herve.codina@bootlin.com>
+Subject: [PATCH 4/7] MAINTAINERS: Add the Lantiq PEF2256 driver entry
+Date: Wed, 15 Mar 2023 14:42:28 +0100
+Message-Id: <20230315134231.233193-5-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230315134231.233193-1-herve.codina@bootlin.com>
 References: <20230315134231.233193-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: IDXC7EAV6TLIHZBR4EERUXT4ETL3KHMG
-X-Message-ID-Hash: IDXC7EAV6TLIHZBR4EERUXT4ETL3KHMG
+Message-ID-Hash: 7Q2TBUNSDF6WJ5GKFBI2FHONRB7CKQ44
+X-Message-ID-Hash: 7Q2TBUNSDF6WJ5GKFBI2FHONRB7CKQ44
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -142,7 +140,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IDXC7EAV6TLIHZBR4EERUXT4ETL3KHMG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7Q2TBUNSDF6WJ5GKFBI2FHONRB7CKQ44/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -151,212 +149,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-The Lantiq PEF2256 is a framer and line interface component designed to
-fulfill all required interfacing between an analog E1/T1/J1 line and the
-digital PCM system highway/H.100 bus.
+After contributing the driver, add myself as the maintainer for the
+Lantiq PEF2256 driver.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- .../bindings/misc/lantiq,pef2256.yaml         | 190 ++++++++++++++++++
- 1 file changed, 190 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/misc/lantiq,pef2256.yaml
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/misc/lantiq,pef2256.yaml b/Documentation/devicetree/bindings/misc/lantiq,pef2256.yaml
-new file mode 100644
-index 000000000000..1ba788d06a14
---- /dev/null
-+++ b/Documentation/devicetree/bindings/misc/lantiq,pef2256.yaml
-@@ -0,0 +1,190 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/misc/lantiq,pef2256.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/MAINTAINERS b/MAINTAINERS
+index fcb69242cd19..b258498aa8ac 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11651,6 +11651,14 @@ S:	Maintained
+ F:	arch/mips/lantiq
+ F:	drivers/soc/lantiq
+ 
++LANTIQ PEF2256 DRIVER
++M:	Herve Codina <herve.codina@bootlin.com>
++S:	Maintained
++F:	Documentation/ABI/testing/sysfs-bus-platform-devices-pef2256
++F:	Documentation/devicetree/bindings/misc/lantiq,pef2256.yaml
++F:	drivers/misc/pef2256.c
++F:	include/linux/pef2256.h
 +
-+title: Lantiq PEF2256
-+
-+maintainers:
-+  - Herve Codina <herve.codina@bootlin.com>
-+
-+description:
-+  The Lantiq PEF2256, also known as Infineon PEF2256 or FALC256, is a framer and
-+  line interface component designed to fulfill all required interfacing between
-+  an analog E1/T1/J1 line and the digital PCM system highway/H.100 bus.
-+
-+properties:
-+  compatible:
-+    const: lantiq,pef2256
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: Master clock
-+
-+  clock-names:
-+    items:
-+      - const: mclk
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  reset-gpios:
-+    description:
-+      GPIO used to reset the device.
-+    maxItems: 1
-+
-+  pinctrl:
-+    allOf:
-+      - $ref: "/schemas/pinctrl/pinctrl.yaml#"
-+
-+    patternProperties:
-+      '-pins$':
-+        type: object
-+        allOf:
-+          - $ref: "/schemas/pinctrl/pincfg-node.yaml#"
-+
-+        properties:
-+          pins:
-+            enum: [ RPA, RPB, RPC, RPD, XPA, XPB, XPC, XPD ]
-+
-+          function:
-+            enum: [ SYPR, RFM, RFMB, RSIGM, RSIG, DLR, FREEZE, RFSP, LOS,
-+                    SYPX, XFMS, XSIG, TCLK, XMFB, XSIGM, DLX, XCLK, XLT,
-+                    GPI, GPOH, GPOL ]
-+
-+        required:
-+          - pins
-+          - function
-+
-+  lantiq,line-interface:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    enum: [e1, t1j1]
-+    default: e1
-+    description: |
-+      The line interface type
-+        - e1: E1 line
-+        - t1j1: T1/J1 line
-+
-+  lantiq,sysclk-rate-hz:
-+    enum: [2048000, 4096000, 8192000, 16384000]
-+    default: 2048000
-+    description:
-+      Clock rate (Hz) on the system highway.
-+
-+  lantiq,data-rate-bps:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [2048000, 4096000, 8192000, 16384000]
-+    default: 2048000
-+    description:
-+      Data rate (bit per seconds) on the system highway.
-+
-+  lantiq,clock-falling-edge:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Data is sent on falling edge of the clock (and received on the rising
-+      edge). If 'clock-falling-edge' is not present, data is sent on the
-+      rising edge (and received on the falling edge).
-+
-+  lantiq,channel-phase:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0, 1, 2, 3, 4, 5, 6, 7]
-+    default: 0
-+    description:
-+      The pef2256 delivers a full frame (32 8bit time-slots in E1 and 24 8bit
-+      time-slots 8 8bit signaling in E1/J1) every 125us. This lead to a data
-+      rate of 2048000 bit/s. When lantiq,data-rate-bps is more than 2048000
-+      bit/s, the data (all 32 8bit) present in the frame are interleave with
-+      unused time-slots. The lantiq,channel-phase property allows to set the
-+      correct alignment of the interleave mechanism.
-+      For instance, suppose lantiq,data-rate-bps = 8192000 (ie 4*2048000), and
-+      lantiq,channel-phase = 2, the interleave schema with unused time-slots
-+      (nu) and used time-slots (XX) for TSi is
-+        nu nu XX nu nu nu XX nu nu nu XX nu
-+        <-- TSi --> <- TSi+1 -> <- TSi+2 ->
-+      With lantiq,data-rate-bps = 8192000, and lantiq,channel-phase = 1, the
-+      interleave schema is
-+        nu XX nu nu nu XX nu nu nu XX nu nu
-+        <-- TSi --> <- TSi+1 -> <- TSi+2 ->
-+      With lantiq,data-rate-bps = 4096000 (ie 2*2048000), and
-+      lantiq,channel-phase = 1, the interleave schema is
-+        nu    XX    nu    XX    nu    XX
-+        <-- TSi --> <- TSi+1 -> <- TSi+2 ->
-+
-+  lantiq,subordinate:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      If present, the pef2256 works in subordinate mode. In this mode it
-+      synchronizes on line interface clock signals. Otherwise, it synchronizes
-+      on internal clocks.
-+
-+allOf:
-+  - if:
-+      properties:
-+        lantiq,line-interface:
-+          contains:
-+            const: e1
-+    then:
-+      properties:
-+        lantiq,frame-format:
-+          $ref: /schemas/types.yaml#/definitions/string
-+          enum: [doubleframe, crc4-multiframe, auto-multiframe]
-+          default: doubleframe
-+          description: |
-+            The E1 line interface frame format
-+              - doubleframe: Doubleframe format
-+              - crc4-multiframe: CRC4 multiframe format
-+              - auto-multiframe: CRC4 multiframe format with interworking
-+                                 capabilities (ITU-T G.706 Annex B)
-+
-+    else:
-+      # T1/J1 line
-+      properties:
-+        lantiq,frame-format:
-+          $ref: /schemas/types.yaml#/definitions/string
-+          enum: [4frame, 12frame, 24frame, 72frame]
-+          default: 12frame
-+          description: |
-+            The T1/J1 line interface frame format
-+              - 4frame: 4-frame multiframe format (F4)
-+              - 12frame: 12-frame multiframe format (F12, D3/4)
-+              - 24frame: 24-frame multiframe format (ESF)
-+              - 72frame: 72-frame multiframe format (F72, remote switch mode)
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    pef2256@2000000 {
-+      compatible = "lantiq,pef2256";
-+      reg = <0x2000000 0xFF>;
-+      interrupts = <8 1>;
-+      interrupt-parent = <&PIC>;
-+      clocks = <&clk_mclk>;
-+      clock-names = "mclk";
-+      reset-gpios = <&gpio 11 GPIO_ACTIVE_LOW>;
-+      lantiq,sysclk-rate-hz = <8192000>;
-+      lantiq,data-rate-bps = <4096000>;
-+
-+      pinctrl {
-+        pef2256_rpa_sypr: rpa-pins {
-+          pins = "RPA";
-+          function = "SYPR";
-+        };
-+        pef2256_xpa_sypx: xpa-pins {
-+          pins = "XPA";
-+          function = "SYPX";
-+        };
-+      };
-+    };
+ LASI 53c700 driver for PARISC
+ M:	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+ L:	linux-scsi@vger.kernel.org
 -- 
 2.39.2
 
