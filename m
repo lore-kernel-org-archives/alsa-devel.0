@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46246C61DA4
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 13:21:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B97DC61DA4
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 13:21:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 08E72125D;
-	Wed, 15 Mar 2023 14:20:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08E72125D
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD3851267;
+	Wed, 15 Mar 2023 14:20:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD3851267
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678886485;
-	bh=3djw40rUw+nNpWOAp6TWK8VOxJM0awfRn9QjEkHNKHU=;
+	s=default; t=1678886491;
+	bh=PK1O3y9+r1puzLG20UwgRR1S6gFSsEgasvLF9x6/5NY=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UW8At2GDPPilLZwzYUkZL87Y4GDqajC/XcrAqtBE7ZPuUvFaGaBZ6g4TVTM43L8Bs
-	 VF0wY7trRb2ecY5DPNeHvSJXjl/8YyUx6uv+AdakoYDa7KN29mHnOkSSL0MLkG70u8
-	 AgaeqpxgD1Cnsr7JXrY0jk/hEMYsfqmQS9udrFgY=
+	b=Rq3aLtBaxuYSVK/okCX/0KmMcIHrXGQF2ObJn842RSJARRzz+DkcCg2VJIsF9oHVz
+	 U2JQ4R5Ypj0/c0znfVHD/NTPDNcaeLkphGR1iEPVf2umhX/Oq48sZjlRmVeZZVglYI
+	 y9nFsc3oNZRWCIKzOqXG5Di3nnfuCKWX8k8mUtdA=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88EABF804FE;
-	Wed, 15 Mar 2023 14:19:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57140F80529;
+	Wed, 15 Mar 2023 14:19:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F3575F80423; Wed, 15 Mar 2023 14:19:39 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 17AECF80423; Wed, 15 Mar 2023 14:19:41 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 62E7BF80093
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 14:19:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62E7BF80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 12FEDF8032D
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 14:19:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12FEDF8032D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=p4mBqVpm
+ header.s=k20201202 header.b=SGJDQiCp
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4424561D78;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3731861D5E;
+	Wed, 15 Mar 2023 13:19:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19EF7C4339B;
 	Wed, 15 Mar 2023 13:19:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E55B2C4339B;
-	Wed, 15 Mar 2023 13:19:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678886368;
-	bh=3djw40rUw+nNpWOAp6TWK8VOxJM0awfRn9QjEkHNKHU=;
+	s=k20201202; t=1678886370;
+	bh=PK1O3y9+r1puzLG20UwgRR1S6gFSsEgasvLF9x6/5NY=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=p4mBqVpmQqEMVYVJfpmuIorD57kG3lYxffPv8FymWpo+oa1igyr9QmzShnpRkmQjr
-	 vUcbNL2SrLmsLfttD/qAkP83LbDvzTLCP+ZgFJ+vlpDkpj+ayiv9IyqhVi+PXTeD9R
-	 p5Rb6yfIoyAhcubaB6aPioQT17mW921CqMT0mF5INNZqY4xNVM6A0ckFvuECsO6P1N
-	 AupXtcFddWgsJzkScqnIio8WCUMa3CsufmGXHG9F/1DeTjngoc881sED5Ns3bE8sbL
-	 9Lku4MJXOK5zUofRkbF7LF9BE38dCCHJjHqSjeEi2Llwli+U4o4oCylraGLzAozTYE
-	 lIUBVexzbta2g==
+	b=SGJDQiCpfkjYDWVKIBsO0J50So8Ary9yLv5FfMndcD/tvAGNjnfSuHtLQ+rOeQc3h
+	 4g0WgVsV2XFQANFJnqOnwWZiSkpX3ERrw+oz5LplzMPd2wJ2m2e/LO4uLRY9DfaLDy
+	 f4uNKdRjtj2VuNqO9svQPOndXjjk++gq3XQjxnUcOWnUdbfoRWiUnDwvaSsmhbO8UX
+	 dLU97k3za/WV6V21yR2gbuceTE14TDCFUrj0/+MAT1I+5HXTp9oE6boCCbHKbkJPlH
+	 E6XSreONM40bx/RiK4+X2pg3JipvlFv89VpF49CxIv8YeAlMUqD3gdwBWwOkJzpfN/
+	 pecZNu0zBrXkA==
 From: Mark Brown <broonie@kernel.org>
-To: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-In-Reply-To: <20230313212908.2282961-1-nfraprado@collabora.com>
-References: <20230313212908.2282961-1-nfraprado@collabora.com>
-Subject: Re: [PATCH 0/2] ASoC: mt8192: Address spammy log messages
-Message-Id: <167888636565.25434.17339984677925115588.b4-ty@kernel.org>
-Date: Wed, 15 Mar 2023 13:19:25 +0000
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87v8je64dh.wl-kuninori.morimoto.gx@renesas.com>
+References: <87v8je64dh.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: soc-pcm.c: remove indirect runtime copy
+Message-Id: <167888636983.25434.15496395610678093750.b4-ty@kernel.org>
+Date: Wed, 15 Mar 2023 13:19:29 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bd1bf
-Message-ID-Hash: QJF27YEQNLFVMQMGKO5QLG5U6OVRQY4I
-X-Message-ID-Hash: QJF27YEQNLFVMQMGKO5QLG5U6OVRQY4I
+Message-ID-Hash: CF2DR4WTQ7YRAE7G3ELXEG6ZOD22JOM6
+X-Message-ID-Hash: CF2DR4WTQ7YRAE7G3ELXEG6ZOD22JOM6
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -73,19 +74,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- kernel@collabora.com, Akihiko Odaki <akihiko.odaki@gmail.com>,
- Jiaxin Yu <jiaxin.yu@mediatek.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Tzung-Bi Shih <tzungbi@kernel.org>, alsa-devel@alsa-project.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mediatek@lists.infradead.org
+CC: Linux-ALSA <alsa-devel@alsa-project.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QJF27YEQNLFVMQMGKO5QLG5U6OVRQY4I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CF2DR4WTQ7YRAE7G3ELXEG6ZOD22JOM6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -94,13 +89,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Mon, 13 Mar 2023 17:29:05 -0400, Nícolas F. R. A. Prado wrote:
-> A couple commits to make the mt8192 sound driver not spam the console.
+On Mon, 06 Mar 2023 01:43:54 +0000, Kuninori Morimoto wrote:
+> substream->runtime will be attached when substream was opened
+> at snd_pcm_attach_substream(). When it uses DPCM,
+> FE substream->runtime is attached, but BE substream->runtime is not.
+> Thus, we are copying FE substream->runtime to BE.
 > 
-> 
-> Nícolas F. R. A. Prado (2):
->   ASoC: mt8192: Remove function name log messages
->   ASoC: mt8192: Move spammy messages to debug level
+> But, we are copyig FE substream->runtime to FE dpcm->runtime first (A),
+> and copy it to BE dpcm->runtime (B), and copy it to
+> BE substream->runtime (C).
 > 
 > [...]
 
@@ -110,10 +107,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: mt8192: Remove function name log messages
-      commit: f147ca85d6ecaf65106d1650f3c2e8afacbc833f
-[2/2] ASoC: mt8192: Move spammy messages to debug level
-      commit: 5f2a53c0687b151c2ecad19995108b40df76ba86
+[1/1] ASoC: soc-pcm.c: remove indirect runtime copy
+      commit: 0d3a5178c2994eaf91ad135816a79138055b394a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
