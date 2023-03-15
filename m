@@ -4,75 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89045C61DA4
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 15:48:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 438EFC6FD1D
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 15:48:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7988414EF;
-	Wed, 15 Mar 2023 16:47:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7988414EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3EBCE14DC;
+	Wed, 15 Mar 2023 16:47:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EBCE14DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678895309;
-	bh=iAXa+gQ5+QmAZ1eedjZp+aDygsbSmdKjE3s1Tf/TVrg=;
+	s=default; t=1678895323;
+	bh=Xf5bOoH1MuminEEvN7xrWq25qG+rKH+DUyT1lZpw864=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=QWvsJ1syuSe+KXy1+lM8uM+Ivx0f9vhHbXSKAtXJnSOnSjYV4qG6waZK8My+8L3A8
-	 FiKRnefNk9wozRlEVUt6QJnE24bmuRGS43xzwlICPCF5kG+uytj3nUDpq4W4b9yyVL
-	 VwsAacU1phxQawZAsreRHkgvqMzDYbZ9IK5V+aD0=
+	b=PTp7wp1OgSiOisaT6GAIvPPW+F/NxX42WxGuNVXhLBjUsHY68i2gN4txqADiZeNeF
+	 xxR9ntzVrt6soPx+J14lMOUFxjot5PdI6XwojcDXaINJc8VLZogdknBja2w8AEFjWe
+	 89SlLr623iNQwuXMn/yeo4b+LW7sB1Ph8DrrIRMw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7330DF89693;
-	Wed, 15 Mar 2023 16:16:30 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39EB2F805E2;
+	Wed, 15 Mar 2023 16:16:34 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 23BC1F80611; Wed, 15 Mar 2023 16:10:42 +0100 (CET)
+	id CE36AF80614; Wed, 15 Mar 2023 16:10:42 +0100 (CET)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id E830EF80623
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 16:08:46 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E830EF80623
+	by alsa1.perex.cz (Postfix) with ESMTPS id BCC58F8056F
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 16:08:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCC58F8056F
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1pcSk3-0000jj-Om; Wed, 15 Mar 2023 16:08:39 +0100
+	id 1pcSjm-0008H9-Pu; Wed, 15 Mar 2023 16:08:22 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1pcSjz-004Kgz-8L; Wed, 15 Mar 2023 16:08:35 +0100
+	id 1pcSjj-004KbE-I0; Wed, 15 Mar 2023 16:08:19 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1pcSjy-0057mr-IK; Wed, 15 Mar 2023 16:08:34 +0100
+	id 1pcSjh-0057hk-2B; Wed, 15 Mar 2023 16:08:17 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Max Filippov <jcmvbkbc@gmail.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
 	Mark Brown <broonie@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 171/173] ASoC: xtensa: xtfpga-i2s: Convert to platform remove
- callback returning void
-Date: Wed, 15 Mar 2023 16:07:43 +0100
-Message-Id: <20230315150745.67084-172-u.kleine-koenig@pengutronix.de>
+	Takashi Iwai <tiwai@suse.com>,
+	Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH 092/173] ASoC: Intel: sst-mfld-platform-pcm: Convert to
+ platform remove callback returning void
+Date: Wed, 15 Mar 2023 16:06:24 +0100
+Message-Id: <20230315150745.67084-93-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230315150745.67084-1-u.kleine-koenig@pengutronix.de>
 References: <20230315150745.67084-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1800;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1628;
  i=u.kleine-koenig@pengutronix.de; h=from:subject;
- bh=iAXa+gQ5+QmAZ1eedjZp+aDygsbSmdKjE3s1Tf/TVrg=;
- b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBkEd8zyr82aJTdQ8YOVFWIy0tRydHZgVoe8tqp7
- HTWNDs6I9mJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCZBHfMwAKCRDB/BR4rcrs
- CQfgB/4i+oODZpz6sNeBnIrqgIdQArDSMtn+UMC8O7CDoowi1eOt4+x03juNePL/rAuLmcd6RIz
- hiJxs8ir2YUIRYTLLVA1GBvEy0jcqvIN9GxX73EgMkm3rlD4YMm/MwKzbjbzohDuXegtq6/Yk5o
- lyfkbaOCvydFhplpg8KUs/V2q7Yb+EQMmcAixdfjmG0ZWmOo3dbod7NNP381wMWEq2r+3tYFYjZ
- sEiAKhoF+qMa5kIriczBBZnyY0lXA1jgXh1VYbN7ohO7EnbHtduiBYGYuMH0oC1aP0iLuVX/ZB3
- PaCAAy7WocwqM92udaRS7WVyXb734JxUsQB/4XnXW49tIglR
+ bh=Xf5bOoH1MuminEEvN7xrWq25qG+rKH+DUyT1lZpw864=;
+ b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBkEd5AjIQMsP1ZGmj+E8+PZMMYcWdQIgsKkHCVk
+ O64mDbHPaGJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCZBHeQAAKCRDB/BR4rcrs
+ CcQEB/4kPikCvuYbKzprnOo2czc58UQugsjW3XyAx8akyThZEkMmY26c07ChRMLXXQvW22t1BMf
+ rVAdaoxXlZhOQVyIZZUWybIsdr1YCNUVTNw9MiIzKqJ8OU617Kc5BZKZuvkFS3vO0k9w9zfQ47U
+ qsX+2qmi37Oq/1/TMw+Hk5/O5j+SaMT8UOQXhWrt2FGVHro4sGYGEgsGNkmlX8DDY6Ku+KXZgdf
+ y6jEz8cEcGuSm0cnJhqxM7uiJIrhgJcjCjkAOxe48CGkBdTmfCaUPrYLmhTV85TFgFuik5jOb8j
+ ZhO+sBjhDYT7EHBaTCviMTTDBtLI8inQmJb8o5CCk+pYWSvK
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp;
  fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
@@ -81,8 +87,8 @@ X-SA-Exim-Mail-From: ukl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Message-ID-Hash: 6BUPCL35CGAAOTYPAMZJJFGZ4VTGBL2T
-X-Message-ID-Hash: 6BUPCL35CGAAOTYPAMZJJFGZ4VTGBL2T
+Message-ID-Hash: CHWJDRLMY4LDFEV3ML3YIYBGA6QUJJMQ
+X-Message-ID-Hash: CHWJDRLMY4LDFEV3ML3YIYBGA6QUJJMQ
 X-MailFrom: ukl@pengutronix.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,14 +96,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: linux-xtensa@linux-xtensa.org, alsa-devel@alsa-project.org,
- kernel@pengutronix.de
+CC: alsa-devel@alsa-project.org, kernel@pengutronix.de
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6BUPCL35CGAAOTYPAMZJJFGZ4VTGBL2T/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CHWJDRLMY4LDFEV3ML3YIYBGA6QUJJMQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,39 +124,34 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- sound/soc/xtensa/xtfpga-i2s.c | 5 ++---
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 5 ++---
  1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/xtensa/xtfpga-i2s.c b/sound/soc/xtensa/xtfpga-i2s.c
-index a8f156540b50..287407714af4 100644
---- a/sound/soc/xtensa/xtfpga-i2s.c
-+++ b/sound/soc/xtensa/xtfpga-i2s.c
-@@ -605,7 +605,7 @@ static int xtfpga_i2s_probe(struct platform_device *pdev)
- 	return err;
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index c75616a5fd0a..ba4597bdf32e 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -741,10 +741,9 @@ static int sst_platform_probe(struct platform_device *pdev)
+ 	return ret;
  }
  
--static int xtfpga_i2s_remove(struct platform_device *pdev)
-+static void xtfpga_i2s_remove(struct platform_device *pdev)
+-static int sst_platform_remove(struct platform_device *pdev)
++static void sst_platform_remove(struct platform_device *pdev)
  {
- 	struct xtfpga_i2s *i2s = dev_get_drvdata(&pdev->dev);
- 
-@@ -618,7 +618,6 @@ static int xtfpga_i2s_remove(struct platform_device *pdev)
- 	pm_runtime_disable(&pdev->dev);
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		xtfpga_i2s_runtime_suspend(&pdev->dev);
+ 	dev_dbg(&pdev->dev, "sst_platform_remove success\n");
 -	return 0;
  }
  
- #ifdef CONFIG_OF
-@@ -636,7 +635,7 @@ static const struct dev_pm_ops xtfpga_i2s_pm_ops = {
+ #ifdef CONFIG_PM_SLEEP
+@@ -813,7 +812,7 @@ static struct platform_driver sst_platform_driver = {
+ 		.pm             = &sst_platform_pm,
+ 	},
+ 	.probe		= sst_platform_probe,
+-	.remove		= sst_platform_remove,
++	.remove_new	= sst_platform_remove,
+ };
  
- static struct platform_driver xtfpga_i2s_driver = {
- 	.probe   = xtfpga_i2s_probe,
--	.remove  = xtfpga_i2s_remove,
-+	.remove_new = xtfpga_i2s_remove,
- 	.driver  = {
- 		.name = "xtfpga-i2s",
- 		.of_match_table = of_match_ptr(xtfpga_i2s_of_match),
+ module_platform_driver(sst_platform_driver);
 -- 
 2.39.2
 
