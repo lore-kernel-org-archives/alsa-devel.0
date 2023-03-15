@@ -4,78 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30908C6FD1D
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 15:42:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CCE2C6FD1D
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 15:42:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 292341482;
-	Wed, 15 Mar 2023 16:41:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 292341482
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4D56D1478;
+	Wed, 15 Mar 2023 16:42:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D56D1478
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678894959;
-	bh=xG7bgQl1WQ6zGD0G+sP96zZYOX6Rmgyluc+Vlw6F6Xw=;
+	s=default; t=1678894977;
+	bh=ywBag1HQp7FGXTggGcd6TDHEQeQ1oaRevehzmahx6qg=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DCU88m3K+bi+YrKWpvQpYn+hrWEQ1ogxbBStTM2bG/T2zeEs5OnOweKmTt5QVov6W
-	 Au30i4ji9VCk76XdT0HhyjgNygEjN5DMmymzNyNLphRJLiVTSAOazmbeCXQWeqUuBL
-	 SqVKaP6oKqURWLWETzQnIlAB1Hr0/AADDjti+F80=
+	b=Oa3QV6PjlExHzfYGtHFS/JpbUF2z/ZurTKjH+0U9K59xQcJSshABVDoVX4kAISAxy
+	 +NqIaPkhWDol9P7bxGyZ5QaornWxiIu45fNpo3ZcOP/PZqhYkuvIjd51bdOAQfNeTa
+	 enQk0htc/k+pY1lmIBQC2sOgFP4PrE5oKNavD/24=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0DC55F80C79;
-	Wed, 15 Mar 2023 16:15:15 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B435CF80C78;
+	Wed, 15 Mar 2023 16:15:18 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9E5E6F805FB; Wed, 15 Mar 2023 16:10:20 +0100 (CET)
+	id 6D2E6F805C8; Wed, 15 Mar 2023 16:10:21 +0100 (CET)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0D847F80612
+	by alsa1.perex.cz (Postfix) with ESMTPS id 02488F80610
 	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 16:08:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D847F80612
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02488F80610
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1pcSjw-0000L4-9o; Wed, 15 Mar 2023 16:08:32 +0100
+	id 1pcSjn-0008Gv-6Z; Wed, 15 Mar 2023 16:08:23 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1pcSjs-004KeS-KC; Wed, 15 Mar 2023 16:08:28 +0100
+	id 1pcSjj-004KbC-GN; Wed, 15 Mar 2023 16:08:19 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1pcSjr-0057kg-AW; Wed, 15 Mar 2023 16:08:27 +0100
+	id 1pcSji-0057i5-AW; Wed, 15 Mar 2023 16:08:18 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Olivier Moysan <olivier.moysan@foss.st.com>,
-	Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
 	Mark Brown <broonie@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>
-Subject: [PATCH 138/173] ASoC: stm: stm32_sai_sub: Convert to platform remove
- callback returning void
-Date: Wed, 15 Mar 2023 16:07:10 +0100
-Message-Id: <20230315150745.67084-139-u.kleine-koenig@pengutronix.de>
+	Charles Keepax <ckeepax@opensource.cirrus.com>,
+	Zhen Ni <nizhen@uniontech.com>,
+	=?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>,
+	Akihiko Odaki <akihiko.odaki@gmail.com>
+Subject: [PATCH 098/173] ASoC: Intel: cht_bsw_max98090_ti: Convert to platform
+ remove callback returning void
+Date: Wed, 15 Mar 2023 16:06:30 +0100
+Message-Id: <20230315150745.67084-99-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230315150745.67084-1-u.kleine-koenig@pengutronix.de>
 References: <20230315150745.67084-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1778;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1788;
  i=u.kleine-koenig@pengutronix.de; h=from:subject;
- bh=xG7bgQl1WQ6zGD0G+sP96zZYOX6Rmgyluc+Vlw6F6Xw=;
- b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBkEd7QZu6j8n8G0uOcXjx79C0pgFIGqDwF5fWYo
- pQIkZG9/fmJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCZBHe0AAKCRDB/BR4rcrs
- CansB/9BsX2txlHSdHcMeg+f3WY/EE4bSOWq3xqBnWRRe/ARYATwjTxGqKAyiVP0J2hrChbcUBs
- MrfzZu+FDutl48VHlwQtICETaBebUAl5vpaZsQQKHDXMdIkPSH+YxVhyFyCuwb02BtC6r5J60rI
- pP68z0qoh5xu3gef9Kzj0X1tmxtDxhpRwGeY5Z0absUWr4TRRMPYJU1lC2KWlfTC2vjFLSqbZZA
- W1Gy99aP5SSfjXWU6IQ+XaPNn2qjYHGAy/abQFM65OBIWN63xkM/WFcJyfOvGIOBtNe0bWZwMUg
- FQIjUoiXL5LkE9HmIrMNxPCm2KnSMn9KOkXBqnU4/v7BFzqu
+ bh=ywBag1HQp7FGXTggGcd6TDHEQeQ1oaRevehzmahx6qg=;
+ b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBkEd5T8qVVrv7XBiB2nQZZLhy+9v7kk/US8LLRf
+ HPBb0YRBGKJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCZBHeUwAKCRDB/BR4rcrs
+ CXPbB/9pj9/Wf6YftFjZIrZzCmC5crcnVrik8JfJpYfw3qTAWoKRtO+jGshhigfRaqvkEFKjSf1
+ Jb+KT288I9Nfrz/IL8sSDnb8VvruW5IiJMYsQme9uaLgLlR2e3pJdx85TR2VJA9P2F7yyBJTlEB
+ L6SNb8QSxc8/eJklsP32b7J3sjRjIONToHq1b2qNZ1a/LHeU9N/yCqSvB4Ade4Gy9a2tlTJ6d6n
+ AwMrjaLgfh7IJJ+7q5YQ+dWVoEBo0C2rXd7HHbbZLdqxygcYTK9Wqs6Um9kB1OeaetCJyAotTjI
+ WoIi0xK52ce47JAfXjUIA96zvghVIX9YIig0RSU9zp3mtyUc
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp;
  fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
@@ -84,8 +91,8 @@ X-SA-Exim-Mail-From: ukl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Message-ID-Hash: LKWSA32QBCWBQQSPHO45YQV5LSCPD6MU
-X-Message-ID-Hash: LKWSA32QBCWBQQSPHO45YQV5LSCPD6MU
+Message-ID-Hash: DOTCXG7ZB7X6PNGE4VDBYWT4H72L5Y2Z
+X-Message-ID-Hash: DOTCXG7ZB7X6PNGE4VDBYWT4H72L5Y2Z
 X-MailFrom: ukl@pengutronix.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -93,14 +100,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
+CC: alsa-devel@alsa-project.org, kernel@pengutronix.de
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LKWSA32QBCWBQQSPHO45YQV5LSCPD6MU/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DOTCXG7ZB7X6PNGE4VDBYWT4H72L5Y2Z/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -122,40 +128,39 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- sound/soc/stm/stm32_sai_sub.c | 6 ++----
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 6 ++----
  1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index eb31b49e6597..38e65e1f9496 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -1559,7 +1559,7 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
- 	return 0;
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index 2c086e901aae..850310de774b 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -623,15 +623,13 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	return ret_val;
  }
  
--static int stm32_sai_sub_remove(struct platform_device *pdev)
-+static void stm32_sai_sub_remove(struct platform_device *pdev)
+-static int snd_cht_mc_remove(struct platform_device *pdev)
++static void snd_cht_mc_remove(struct platform_device *pdev)
  {
- 	struct stm32_sai_sub_data *sai = dev_get_drvdata(&pdev->dev);
+ 	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(card);
  
-@@ -1567,8 +1567,6 @@ static int stm32_sai_sub_remove(struct platform_device *pdev)
- 	snd_dmaengine_pcm_unregister(&pdev->dev);
- 	snd_soc_unregister_component(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
+ 	if (ctx->quirks & QUIRK_PMC_PLT_CLK_0)
+ 		clk_disable_unprepare(ctx->mclk);
 -
 -	return 0;
  }
  
- #ifdef CONFIG_PM_SLEEP
-@@ -1618,7 +1616,7 @@ static struct platform_driver stm32_sai_sub_driver = {
- 		.pm = &stm32_sai_sub_pm_ops,
+ static struct platform_driver snd_cht_mc_driver = {
+@@ -639,7 +637,7 @@ static struct platform_driver snd_cht_mc_driver = {
+ 		.name = "cht-bsw-max98090",
  	},
- 	.probe = stm32_sai_sub_probe,
--	.remove = stm32_sai_sub_remove,
-+	.remove_new = stm32_sai_sub_remove,
+ 	.probe = snd_cht_mc_probe,
+-	.remove = snd_cht_mc_remove,
++	.remove_new = snd_cht_mc_remove,
  };
  
- module_platform_driver(stm32_sai_sub_driver);
+ module_platform_driver(snd_cht_mc_driver)
 -- 
 2.39.2
 
