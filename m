@@ -4,76 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31AA2C6FD1D
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 15:40:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF48BC61DA4
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 15:40:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6D6212FA;
-	Wed, 15 Mar 2023 16:39:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6D6212FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10FE6147B;
+	Wed, 15 Mar 2023 16:39:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10FE6147B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678894800;
-	bh=Au3//x6OBt/VH8WsuRCI66F0mKUyFRGgvmb7fHf0zhA=;
+	s=default; t=1678894819;
+	bh=2EZkQh4bCPryjNd8miKoVCiUSUuad0w0KQWPOfXF+Ek=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DVE7wZ05BeAQxjiShAlO4wJs+7gMExxgD4le6t1W5Pu29FqOZhJZ6pJ3mO9Up2TYv
-	 mpEdfg5xVWhBvDGyxkP8Dg69nr7nYmD9pH6mPqJ5UY6uoD7hGUVAIDy+JoR5yhgqDC
-	 rTVByPYK09OITM4itdo6tJgYqV5RRtkUPzoCN8NQ=
+	b=SyU3TFanDroRdQXgNQI7TeEOktTjy6CExK04duvBJOlqqvVsalsF06jG913XKeQ9Q
+	 xRyYK1kLvekhvcWYENiWjDxZh1KFkRtJ91CE3fEYqVxyAoIcRt4k/TDxXrvp2+7XJQ
+	 T/ZCHeT3CXuVZvs4HcrxMcCSB2ey+NXMvjduC9gs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7F97F808CA;
-	Wed, 15 Mar 2023 16:14:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74B32F808C9;
+	Wed, 15 Mar 2023 16:14:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7AC0CF805F5; Wed, 15 Mar 2023 16:10:11 +0100 (CET)
+	id BE111F805F7; Wed, 15 Mar 2023 16:10:12 +0100 (CET)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id B17A1F80605
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 16:08:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B17A1F80605
+	by alsa1.perex.cz (Postfix) with ESMTPS id 52856F80609
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 16:08:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52856F80609
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1pcSjv-0000GJ-8J; Wed, 15 Mar 2023 16:08:31 +0100
+	id 1pcSjm-0008Dw-66; Wed, 15 Mar 2023 16:08:22 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1pcSjr-004Kdq-3Q; Wed, 15 Mar 2023 16:08:27 +0100
+	id 1pcSji-004Kas-K0; Wed, 15 Mar 2023 16:08:18 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1pcSjp-0057kB-I0; Wed, 15 Mar 2023 16:08:25 +0100
+	id 1pcSjh-0057hv-MB; Wed, 15 Mar 2023 16:08:17 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Liam Girdwood <lgirdwood@gmail.com>,
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
 	Mark Brown <broonie@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
-	Charles Keepax <ckeepax@opensource.cirrus.com>,
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH 130/173] ASoC: sh: fsi: Convert to platform remove callback
- returning void
-Date: Wed, 15 Mar 2023 16:07:02 +0100
-Message-Id: <20230315150745.67084-131-u.kleine-koenig@pengutronix.de>
+	Hans de Goede <hdegoede@redhat.com>,
+	=?utf-8?q?Amadeusz_S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>,
+	Moises Cardona <moisesmcardona@gmail.com>,
+	Akihiko Odaki <akihiko.odaki@gmail.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 095/173] ASoC: Intel: bytcr_rt5640: Convert to platform remove
+ callback returning void
+Date: Wed, 15 Mar 2023 16:06:27 +0100
+Message-Id: <20230315150745.67084-96-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230315150745.67084-1-u.kleine-koenig@pengutronix.de>
 References: <20230315150745.67084-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1573;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1906;
  i=u.kleine-koenig@pengutronix.de; h=from:subject;
- bh=Au3//x6OBt/VH8WsuRCI66F0mKUyFRGgvmb7fHf0zhA=;
- b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBkEd658CIvuWY5xjRu3LWLWE60iXKh/V/OPGfVe
- b9an3rGPUGJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCZBHeuQAKCRDB/BR4rcrs
- CcUOCACChZbN3/GiZ3i+bh0LOoVF0A8mm2AnprcptgN+InIs0wU8++lj02Ezhvz/c2S6+s07BN6
- UXfNGJIlblxr+JMq3mw2nbaDsF9uTpOyTGIsDuKQy/siQ02qf7+gGDDx1fEFZt7p/pwizdff1JD
- u1TgTTLP9Fe0Y/eK+4fkwho0TNEu76M1y20OATElJ4HL0eUBtg1rWb2rNQY+6w/Owh8JjQWRSdO
- DGZHXzwtkmMbZFRnQaSDpcrvl1SQxRbCYLgqIUDUHnsiPO2MCIWVd2xxV2w6DbxuaLF2AWdexpS
- 8oySojrQtg5M1uNNAIXsjd7o0Rv7lHtgZwlgockkommvVG3g
+ bh=2EZkQh4bCPryjNd8miKoVCiUSUuad0w0KQWPOfXF+Ek=;
+ b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBkEd5JogqMbXzpYTLvjSkQgDGF9udcw2ZhFUFvI
+ h6Uk3M1B3yJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCZBHeSQAKCRDB/BR4rcrs
+ CbZYB/0TwaHEbp/rwVoG3kZyZj2X3vrMcFNkJVR3pLAH0+XBa+/EGHXX7qiPvPQuyFSllST23tU
+ Tf8uMo12jZqptDafETdmNa+kKmsLv+NEXZxU5mxMXpAoe6rwn51G1o9K+gqabhOUXPcnToPQGCa
+ RA+5xZJH+PdhL7r/+QHS/CDD55YZHfCTKPjewmYXtKV35nX3n6WFPUYv3mdfe8cLaaHmvj6bj+s
+ hO/rD89CBPcdNA43FhX+QxwpFVjiyh/SKudliUgTZesr1dwL5ZaSu6hlJJt4PHbdbJye/azSRNa
+ eIEpkQnHbPoCE0VIexUfVnMcfDnivrSbFTCMAUWfBbL2XDq5
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp;
  fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
@@ -82,8 +92,8 @@ X-SA-Exim-Mail-From: ukl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Message-ID-Hash: 2YQ5P6M4XTP5IRZP3TYIFU4ETLE2JSQT
-X-Message-ID-Hash: 2YQ5P6M4XTP5IRZP3TYIFU4ETLE2JSQT
+Message-ID-Hash: WBQGYEX36376UVREPCW7PFQWDYHHHKW7
+X-Message-ID-Hash: WBQGYEX36376UVREPCW7PFQWDYHHHKW7
 X-MailFrom: ukl@pengutronix.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2YQ5P6M4XTP5IRZP3TYIFU4ETLE2JSQT/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WBQGYEX36376UVREPCW7PFQWDYHHHKW7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -119,40 +129,39 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- sound/soc/sh/fsi.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-index f3edc2e3d9d7..47f051667050 100644
---- a/sound/soc/sh/fsi.c
-+++ b/sound/soc/sh/fsi.c
-@@ -2030,7 +2030,7 @@ static int fsi_probe(struct platform_device *pdev)
- 	return ret;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 79e0039c79a3..789609eb0884 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -1844,7 +1844,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	return ret_val;
  }
  
--static int fsi_remove(struct platform_device *pdev)
-+static void fsi_remove(struct platform_device *pdev)
+-static int snd_byt_rt5640_mc_remove(struct platform_device *pdev)
++static void snd_byt_rt5640_mc_remove(struct platform_device *pdev)
  {
- 	struct fsi_master *master;
+ 	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 	struct byt_rt5640_private *priv = snd_soc_card_get_drvdata(card);
+@@ -1854,7 +1854,6 @@ static int snd_byt_rt5640_mc_remove(struct platform_device *pdev)
  
-@@ -2040,8 +2040,6 @@ static int fsi_remove(struct platform_device *pdev)
- 
- 	fsi_stream_remove(&master->fsia);
- 	fsi_stream_remove(&master->fsib);
--
+ 	device_remove_software_node(priv->codec_dev);
+ 	put_device(priv->codec_dev);
 -	return 0;
  }
  
- static void __fsi_suspend(struct fsi_priv *fsi,
-@@ -2108,7 +2106,7 @@ static struct platform_driver fsi_driver = {
- 		.of_match_table = fsi_of_match,
+ static struct platform_driver snd_byt_rt5640_mc_driver = {
+@@ -1862,7 +1861,7 @@ static struct platform_driver snd_byt_rt5640_mc_driver = {
+ 		.name = "bytcr_rt5640",
  	},
- 	.probe		= fsi_probe,
--	.remove		= fsi_remove,
-+	.remove_new	= fsi_remove,
- 	.id_table	= fsi_id_table,
+ 	.probe = snd_byt_rt5640_mc_probe,
+-	.remove = snd_byt_rt5640_mc_remove,
++	.remove_new = snd_byt_rt5640_mc_remove,
  };
  
+ module_platform_driver(snd_byt_rt5640_mc_driver);
 -- 
 2.39.2
 
