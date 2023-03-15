@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7E4FC61DA4
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 15:34:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BF85C61DA4
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 15:34:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2FE7913E7;
-	Wed, 15 Mar 2023 16:33:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FE7913E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5A56B1432;
+	Wed, 15 Mar 2023 16:33:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A56B1432
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678894472;
-	bh=Vbc4xUnTL1Y0I7B/wT0bsowfdarYOTW4ugcUlyhtNZ0=;
+	s=default; t=1678894484;
+	bh=oy4WAcFg56RPxM4WdJAbkIaNY2s74SZyhCiy+bdWvBM=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=LcBbA1OD7m7mJOYE3Skh7i6tc6HJPdWIgr6JCBVoEl69nKcSj1pFQ3hWnbMRE4ERi
-	 /Q7oQKrQg+46eFbeq1b4885sCZah31OoFHiREXHoQHQch1u1Y5iVHgK7QnFPdxNWxd
-	 aRXwyvewa+Hz/wGD7egeRKldBbVl7O82/mCp3NFw=
+	b=l5/IpKhIZralonWIhKLpWLjZktcyCF1gZ3pWqsPDmt5rETH0z+xb94CS5OqeFw3LM
+	 a5gsXlqOUQ5aavYqoR/xxMwya1ZylTMdbYGfPTLzLggoef1whGnF//gFwIk/Q9TpUx
+	 WwOHs1SlqwX8pIRmodx7jY2n5VEx0RRfvTMYEy+w=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5E654F80774;
-	Wed, 15 Mar 2023 16:13:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B18A3F80793;
+	Wed, 15 Mar 2023 16:13:41 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D7865F805D9; Wed, 15 Mar 2023 16:09:53 +0100 (CET)
+	id A7B24F805D9; Wed, 15 Mar 2023 16:09:54 +0100 (CET)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
  server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 95C78F805EF
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 16:08:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95C78F805EF
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6CEE2F805F0
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 16:08:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CEE2F805F0
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1pcSjq-0008RT-3B; Wed, 15 Mar 2023 16:08:26 +0100
+	id 1pcSjq-0008Rt-Ax; Wed, 15 Mar 2023 16:08:26 +0100
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1pcSjm-004Kc6-75; Wed, 15 Mar 2023 16:08:22 +0100
+	id 1pcSjm-004KcD-CL; Wed, 15 Mar 2023 16:08:22 +0100
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
 	(envelope-from <ukl@pengutronix.de>)
-	id 1pcSjl-0057iv-37; Wed, 15 Mar 2023 16:08:21 +0100
+	id 1pcSjl-0057j2-Ha; Wed, 15 Mar 2023 16:08:21 +0100
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>,
 	Matthias Brugger <matthias.bgg@gmail.com>
-Subject: [PATCH 110/173] ASoC: mediatek: mt8183-afe-pcm: Convert to platform
+Subject: [PATCH 112/173] ASoC: mediatek: mt8192-afe-pcm: Convert to platform
  remove callback returning void
-Date: Wed, 15 Mar 2023 16:06:42 +0100
-Message-Id: <20230315150745.67084-111-u.kleine-koenig@pengutronix.de>
+Date: Wed, 15 Mar 2023 16:06:44 +0100
+Message-Id: <20230315150745.67084-113-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230315150745.67084-1-u.kleine-koenig@pengutronix.de>
 References: <20230315150745.67084-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1769;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1850;
  i=u.kleine-koenig@pengutronix.de; h=from:subject;
- bh=Vbc4xUnTL1Y0I7B/wT0bsowfdarYOTW4ugcUlyhtNZ0=;
- b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBkEd56cbEdE639c06BbjtIwKcsxlSF18v0KMOjU
- KcNVzNENRCJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCZBHeegAKCRDB/BR4rcrs
- CdMfCACXO8H0LPcx1idndfScu9x9KvAjfBRlRKsCPhrXYUUjpgScQjOLz+GCNqQFuU3+fmLA2r7
- /7u4opuAY4ecvMR7uPn+YV6Qywy3UZeYJuVJJsB/uoz+gCHtPX7gbF+AyGKy+WggPtb4LiBN4v4
- LZ2F4zzyu6+Vq5hKNd/XFDE8T2LPHS04ot1qNFx7tmCpSzjeLfNfnqrMWISI2RAByyt4grAtt45
- TpXXEFTmuudCbuFVrTGk231hw9Kip6LcapIFmfKlX0j5jwRA56sah0vySs57zcwc0M037mgRp9T
- 92lp6rk/SwLPOXM5g/7JZDOMNSMIribUc7HhDBLSlPj1k+wQ
+ bh=oy4WAcFg56RPxM4WdJAbkIaNY2s74SZyhCiy+bdWvBM=;
+ b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBkEd6Cm8pswKLfMzxnzK+YKyJGFeJFqLJyx/NjW
+ hDX4C58WXSJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCZBHeggAKCRDB/BR4rcrs
+ CWg4B/9BjBTomz49FUtXlQUBveDcQ04GYri71P24yDuc+2naiaNLblmOFsPC/Vuiz3rQxDHTPt8
+ 95WZRIVjAfudPk652joJo9clCuaA6T1beDGqocTG5/zs/BqAkpfYvqiiEj6ERwmpSSftRv8k0NR
+ sQZ+ZxzsTs/0QP9Mh+hcKAe2r06ShkxwMHIMfRfxLh4cOHdnljqMQEHe7739DqleBaKm3eKRVU6
+ ULgV5cpgHe91YVUnzKGFwpIQzolTeZyX8kDrZZUk0C8joTPX4DYy+wzP6027wZ+qRykBCG34Gen
+ O7vCXPJkjE5yU3dmuFYt1q6gOyyQOFkViIEDw3W22k2gSu8c
 X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp;
  fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
@@ -81,8 +81,8 @@ X-SA-Exim-Mail-From: ukl@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
  SAEximRunCond expanded to false
 X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Message-ID-Hash: R5H7EU45VJ4ZIFIH7NN3II7PVQZM544G
-X-Message-ID-Hash: R5H7EU45VJ4ZIFIH7NN3II7PVQZM544G
+Message-ID-Hash: LORQ6LYVOXBG4LS6PXC5BAPV5UJO3VGD
+X-Message-ID-Hash: LORQ6LYVOXBG4LS6PXC5BAPV5UJO3VGD
 X-MailFrom: ukl@pengutronix.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -98,7 +98,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/R5H7EU45VJ4ZIFIH7NN3II7PVQZM544G/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LORQ6LYVOXBG4LS6PXC5BAPV5UJO3VGD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -120,37 +120,39 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- sound/soc/mediatek/mt8183/mt8183-afe-pcm.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/mediatek/mt8192/mt8192-afe-pcm.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-index 86c8a523fe9e..90422ed2bbcc 100644
---- a/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-afe-pcm.c
-@@ -1255,13 +1255,11 @@ static int mt8183_afe_pcm_dev_probe(struct platform_device *pdev)
+diff --git a/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c b/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
+index e1e4ca931551..adff3d667267 100644
+--- a/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
++++ b/sound/soc/mediatek/mt8192/mt8192-afe-pcm.c
+@@ -2353,7 +2353,7 @@ static int mt8192_afe_pcm_dev_probe(struct platform_device *pdev)
  	return ret;
  }
  
--static int mt8183_afe_pcm_dev_remove(struct platform_device *pdev)
-+static void mt8183_afe_pcm_dev_remove(struct platform_device *pdev)
+-static int mt8192_afe_pcm_dev_remove(struct platform_device *pdev)
++static void mt8192_afe_pcm_dev_remove(struct platform_device *pdev)
  {
- 	pm_runtime_disable(&pdev->dev);
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		mt8183_afe_runtime_suspend(&pdev->dev);
--
+ 	struct mtk_base_afe *afe = platform_get_drvdata(pdev);
+ 
+@@ -2363,7 +2363,6 @@ static int mt8192_afe_pcm_dev_remove(struct platform_device *pdev)
+ 
+ 	/* disable afe clock */
+ 	mt8192_afe_disable_clock(afe);
 -	return 0;
  }
  
- static const struct of_device_id mt8183_afe_pcm_dt_match[] = {
-@@ -1282,7 +1280,7 @@ static struct platform_driver mt8183_afe_pcm_driver = {
- 		   .pm = &mt8183_afe_pm_ops,
+ static const struct of_device_id mt8192_afe_pcm_dt_match[] = {
+@@ -2384,7 +2383,7 @@ static struct platform_driver mt8192_afe_pcm_driver = {
+ 		   .pm = &mt8192_afe_pm_ops,
  	},
- 	.probe = mt8183_afe_pcm_dev_probe,
--	.remove = mt8183_afe_pcm_dev_remove,
-+	.remove_new = mt8183_afe_pcm_dev_remove,
+ 	.probe = mt8192_afe_pcm_dev_probe,
+-	.remove = mt8192_afe_pcm_dev_remove,
++	.remove_new = mt8192_afe_pcm_dev_remove,
  };
  
- module_platform_driver(mt8183_afe_pcm_driver);
+ module_platform_driver(mt8192_afe_pcm_driver);
 -- 
 2.39.2
 
