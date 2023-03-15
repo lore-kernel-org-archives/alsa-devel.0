@@ -4,139 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22E51C7618D
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 14:52:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A954C61DA4
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Mar 2023 15:09:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DA281134;
-	Wed, 15 Mar 2023 15:51:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DA281134
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B9C9125B;
+	Wed, 15 Mar 2023 16:08:32 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B9C9125B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678891940;
-	bh=U1T8gpYRnqUZqZkjW+AJ1ntz+/l5aR38aSJemQntQuk=;
-	h=To:Subject:Date:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From:Reply-To:Cc:From;
-	b=U8nB9T4eO08P+mhqG+DL3Gor6bCprEe2VqAgLkwo1hZ2Cs4ZEYcZmEnxXV2Hmr31y
-	 Tt256m2AuzeoI0izZWwQUwmS0OLVVfvnjY2VFw527eKsSP+65ug/FpYuVbvGpDWAYw
-	 ikVd7gpv1TidvK2SQL7L7iNCZd4PWlWcyRi1dhtM=
+	s=default; t=1678892962;
+	bh=BkYNWOii/aSgu1cgSXnsKX3v2rEwZqQ8wOTwIf7xwoU=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=BnLZQWKMF9XaoT6KXayIDz2E/AVxIJLcNtROE9PXzkC80nHosHmQDxIzPWmZJtCY8
+	 73TGWji1Xlg9RhFG3R3Q5/Ucz+b+j6ijZ55fm+ue+uV6mwFSVjALm/xshE0aHG1OwO
+	 TmA/qmn40Ef2z785ttDDsh+nSyPnUabC/f6/TNSQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 508A8F80423;
-	Wed, 15 Mar 2023 15:51:09 +0100 (CET)
-To: <vkoul@kernel.org>
-Subject: [PATCH v2] soundwire: bandwidth allocation: Use hweight32() to
- calculate set bits
-Date: Wed, 15 Mar 2023 14:50:51 +0000
-X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
- loop; banned-address; member-moderation;
- header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-X-Mailman-Version: 3.3.8
-Precedence: list
-List-Id: "Alsa-devel mailing list for ALSA developers -
- http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VAMBS6JK2RYCZF4OHBMXZWXASK2AFVTN/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
-List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
-MIME-Version: 1.0
-Message-ID: 
- <167889186802.26.13027272550025447563@mailman-core.alsa-project.org>
-From: Richard Fitzgerald via Alsa-devel <alsa-devel@alsa-project.org>
-Reply-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: yung-chuan.liao@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- sanyog.r.kale@intel.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
- Richard Fitzgerald <rf@opensource.cirrus.com>
-Content-Type: message/rfc822
-Content-Disposition: inline
-
+	by alsa1.perex.cz (Postfix) with ESMTP id 18ADFF8053D;
+	Wed, 15 Mar 2023 16:08:10 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 47E82F80423; Wed, 15 Mar 2023 15:51:04 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	shortcircuit=no autolearn=ham autolearn_force=no version=3.4.6
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 7BE0FF8016C; Wed, 15 Mar 2023 16:08:06 +0100 (CET)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits)
+ server-digest SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 0ACB8F8016C
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 15:50:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0ACB8F8016C
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=gYNIDjMB
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 32FDfUgM005537;
-	Wed, 15 Mar 2023 09:50:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=pWMqDfEbuDPsT+Ceamk5KjkKsq+KJmIB8Gqk1dqazgg=;
- b=gYNIDjMBTt+Sod5XDBaB75NnRFotHmJzrdT8SLq0FSfAfFWXCgGNbxS5XPbJ3mEkCmNp
- V4kx50nOxt3LMMw+g517S8CPKgr2ocsnLo2Nbn8W0bc+4ta1AZHQc2Y1FrcerozdUhy9
- 5F9sP79hL52r3qo9B0cr6za1LO4QPZGWeTsCOeKLl5/K3YH1pTyjCJItkuNBK4zAUnCH
- FfQRNPwUBSz3YtmUDkinjpRZqZ3sGnMOGF627YXfuGDNa6lir65P7qbjaAHTJYNOPAGK
- K2nYNEszSuCczRdLtH/eQSSUJgSFC7ev9EV8BQw/wthn0UNwGQo4gkvGTvkbYwZQgYgC PA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3pb2cr8ngr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 15 Mar 2023 09:50:53 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.25; Wed, 15 Mar
- 2023 09:50:51 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.25 via Frontend Transport; Wed, 15 Mar 2023 09:50:51 -0500
-Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
- [198.90.251.127])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5C2322A1;
-	Wed, 15 Mar 2023 14:50:51 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <vkoul@kernel.org>
-Subject: [PATCH v2] soundwire: bandwidth allocation: Use hweight32() to
- calculate set bits
-Date: Wed, 15 Mar 2023 14:50:51 +0000
-Message-ID: <20230315145051.2299822-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+	by alsa1.perex.cz (Postfix) with ESMTPS id DDAAEF8016C
+	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 16:08:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDAAEF8016C
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1pcSjP-00075X-Df; Wed, 15 Mar 2023 16:07:59 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1pcSjO-004KTo-N4; Wed, 15 Mar 2023 16:07:58 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1pcSjN-0057cA-Qn; Wed, 15 Mar 2023 16:07:57 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH 006/173] ALSA: portman2x4: Convert to platform remove callback
+ returning void
+Date: Wed, 15 Mar 2023 16:04:58 +0100
+Message-Id: <20230315150745.67084-7-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230315150745.67084-1-u.kleine-koenig@pengutronix.de>
+References: <20230315150745.67084-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1481;
+ i=u.kleine-koenig@pengutronix.de; h=from:subject;
+ bh=BkYNWOii/aSgu1cgSXnsKX3v2rEwZqQ8wOTwIf7xwoU=;
+ b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBkEd06tvs2NB1EuKqgYoRJLZvrhg3w9QUZ4qGSo
+ YEoKMKzADaJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCZBHdOgAKCRDB/BR4rcrs
+ CTRzB/9WQtnzMVowaVMqs9/JoqZz5nB/oVmCn0P+SmY0qTYf4sAyze2uQKtVRmC3ZC68Ib+myLd
+ nsijtaWfcn/R+G1PQJoqRkNinLDpDinDwzLRZL4NipQzrlv5rCD9RQ7x7xqvUM2I7wzlQTASwwp
+ 5x59u2f3QjUd0NZrjbfvkAfEYFjCxI5z0Mxuf3XtbjGoaFRtQxu2hrV7oka3Qo8BU3+fwgiWQlo
+ ee8DYvM7w49nZ8XstI4N9/wDQNV7mKZQlKgKX7iO16Ct7lkvJyWhrhLHPfalgkolmIOjck5odBT
+ LTQN6Y314SbK7rwn8KRlAqIiNyC6aBxDYO34tTAmjiT49Uee
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp;
+ fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: jD3WVWl48rhYLIXtKbWC8wHIP6IIUMbz
-X-Proofpoint-GUID: jD3WVWl48rhYLIXtKbWC8wHIP6IIUMbz
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: VAMBS6JK2RYCZF4OHBMXZWXASK2AFVTN
-X-Message-ID-Hash: VAMBS6JK2RYCZF4OHBMXZWXASK2AFVTN
-X-MailFrom: prvs=8438273865=rf@opensource.cirrus.com
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Message-ID-Hash: I27IESJDVMOD7C2AXNJRM6BQNFU4WUI7
+X-Message-ID-Hash: I27IESJDVMOD7C2AXNJRM6BQNFU4WUI7
+X-MailFrom: ukl@pengutronix.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: yung-chuan.liao@linux.intel.com, pierre-louis.bossart@linux.intel.com,
- sanyog.r.kale@intel.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
- Richard Fitzgerald <rf@opensource.cirrus.com>
+CC: alsa-devel@alsa-project.org, kernel@pengutronix.de
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VAMBS6JK2RYCZF4OHBMXZWXASK2AFVTN/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/I27IESJDVMOD7C2AXNJRM6BQNFU4WUI7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -145,63 +102,49 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Replace the call to sdw_ch_mask_to_ch() with a call to hweight32().
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is (mostly) ignored
+and this typically results in resource leaks. To improve here there is a
+quest to make the remove callback return void. In the first step of this
+quest all drivers are converted to .remove_new() which already returns
+void.
 
-sdw_ch_mask_to_ch() is counting the number of set bits. The hweight()
-family of functions already do this, and they have an advantage of
-using a bit-counting instruction if it is available on the target CPU.
-This also fixes a potential infinite loop bug in the implementation of
-sdw_ch_mask_to_ch().
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/soundwire/bus.h                          | 11 -----------
- drivers/soundwire/generic_bandwidth_allocation.c |  3 ++-
- 2 files changed, 2 insertions(+), 12 deletions(-)
+ sound/drivers/portman2x4.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index 7631ef5e71fb..4ce8d708a39c 100644
---- a/drivers/soundwire/bus.h
-+++ b/drivers/soundwire/bus.h
-@@ -159,17 +159,6 @@ int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_msg *msg,
- int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
- 		 u32 addr, size_t count, u16 dev_num, u8 flags, u8 *buf);
+diff --git a/sound/drivers/portman2x4.c b/sound/drivers/portman2x4.c
+index 52a656735365..a515c13a489f 100644
+--- a/sound/drivers/portman2x4.c
++++ b/sound/drivers/portman2x4.c
+@@ -795,20 +795,18 @@ static int snd_portman_probe(struct platform_device *pdev)
+ 	return err;
+ }
  
--/* Retrieve and return channel count from channel mask */
--static inline int sdw_ch_mask_to_ch(int ch_mask)
--{
--	int c = 0;
+-static int snd_portman_remove(struct platform_device *pdev)
++static void snd_portman_remove(struct platform_device *pdev)
+ {
+ 	struct snd_card *card = platform_get_drvdata(pdev);
+ 
+ 	if (card)
+ 		snd_card_free(card);
 -
--	for (c = 0; ch_mask; ch_mask >>= 1)
--		c += ch_mask & 1;
--
--	return c;
--}
--
- /* Fill transport parameter data structure */
- static inline void sdw_fill_xport_params(struct sdw_transport_params *params,
- 					 int port_num, bool grp_ctrl_valid,
-diff --git a/drivers/soundwire/generic_bandwidth_allocation.c b/drivers/soundwire/generic_bandwidth_allocation.c
-index f7c66083a4dd..ea3e8ef408e4 100644
---- a/drivers/soundwire/generic_bandwidth_allocation.c
-+++ b/drivers/soundwire/generic_bandwidth_allocation.c
-@@ -6,6 +6,7 @@
-  *
-  */
+-	return 0;
+ }
  
-+#include <linux/bitops.h>
- #include <linux/device.h>
- #include <linux/module.h>
- #include <linux/mod_devicetable.h>
-@@ -54,7 +55,7 @@ static void sdw_compute_slave_ports(struct sdw_master_runtime *m_rt,
- 		slave_total_ch = 0;
  
- 		list_for_each_entry(p_rt, &s_rt->port_list, port_node) {
--			ch = sdw_ch_mask_to_ch(p_rt->ch_mask);
-+			ch = hweight32(p_rt->ch_mask);
- 
- 			sdw_fill_xport_params(&p_rt->transport_params,
- 					      p_rt->num, false,
+ static struct platform_driver snd_portman_driver = {
+ 	.probe  = snd_portman_probe,
+-	.remove = snd_portman_remove,
++	.remove_new = snd_portman_remove,
+ 	.driver = {
+ 		.name = PLATFORM_DRIVER,
+ 	}
 -- 
-2.30.2
+2.39.2
 
