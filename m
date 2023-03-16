@@ -4,26 +4,26 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94765C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Mar 2023 12:30:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55959C6FD19
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Mar 2023 12:30:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6B6BA1144;
-	Thu, 16 Mar 2023 13:29:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B6BA1144
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26A6E113E;
+	Thu, 16 Mar 2023 13:29:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26A6E113E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678969812;
-	bh=hCbTkNpEo4LVzNNojtk66dA4FrGB7fKzbD4rV0YRqzY=;
+	s=default; t=1678969836;
+	bh=EWLFJ94opePlRYYupFELkQjSobCndV/mkvn4Azbg3Hc=;
 	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From:Reply-To:Cc:From;
-	b=u0W/idGhhIpzsxKTeVafqxUAQRrc5UuUXt+oeR9ZMoRoodQXuvQGYivYBGbWXZXuw
-	 IRubJPTu3J6okBGaU4FYU5MaH+HvGgumt9ZqBcrzJ8zi7QWbDTRnC9654IIno9foPD
-	 FAVI055rG2e8wiDpv7ez5OhiFPSTfQmd67xB3g+g=
+	b=RBv5gnEsDK7yz0IKzKaS+uNqujMGy6e10mqwS2YxlQRMjoLpqAfo8rqWxDMbTJMC3
+	 Pb8+3IBW7OPK10ytWfme06OIr1Ay+dpXCTGLae6mcnCks2fJgaVTRuXtp0oJBfT6r9
+	 6/Lk4stcztwF2yRDaQhjPdMo2Y0Cc7c1XApnBMSY=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC532F80557;
-	Thu, 16 Mar 2023 13:28:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B178CF80425;
+	Thu, 16 Mar 2023 13:28:23 +0100 (CET)
 To: Herve Codina <herve.codina@bootlin.com>,
 	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -35,8 +35,8 @@ To: Herve Codina <herve.codina@bootlin.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 4/7] MAINTAINERS: Add the Lantiq PEF2256 driver entry
-Date: Thu, 16 Mar 2023 13:27:38 +0100
+Subject: [PATCH v2 7/7] MAINTAINERS: Add the Lantiq PEF2256 ASoC codec entry
+Date: Thu, 16 Mar 2023 13:27:41 +0100
 In-Reply-To: <20230316122741.577663-1-herve.codina@bootlin.com>
 References: <20230316122741.577663-1-herve.codina@bootlin.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
@@ -50,7 +50,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IUPFZKZADDNTCBU72S4FVBMGMH5ZPVLZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U7DXZANMDJFLDPOQD4HNM32M6UQNL3JV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -59,7 +59,8 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
-Message-ID: <167896969706.26.588790668721488223@mailman-core.alsa-project.org>
+Message-ID: 
+ <167896970137.26.1848140838652769443@mailman-core.alsa-project.org>
 From: Herve Codina via Alsa-devel <alsa-devel@alsa-project.org>
 Reply-To: Herve Codina <herve.codina@bootlin.com>
 Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
@@ -69,39 +70,39 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id D6712F8052D; Thu, 16 Mar 2023 13:28:11 +0100 (CET)
+	id 1F5B1F8055B; Thu, 16 Mar 2023 13:28:18 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
 X-Spam-Status: No, score=-0.9 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED shortcircuit=no autolearn=ham autolearn_force=no
-	version=3.4.6
+	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED shortcircuit=no
+	autolearn=unavailable autolearn_force=no version=3.4.6
 Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::228])
+ [217.70.183.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3519AF8016C
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2023 13:28:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3519AF8016C
+	by alsa1.perex.cz (Postfix) with ESMTPS id E5605F80529
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2023 13:28:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5605F80529
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
- header.s=gm1 header.b=KXGDlvA1
+ header.s=gm1 header.b=W9X0VEUT
 Received: (Authenticated sender: herve.codina@bootlin.com)
-	by mail.gandi.net (Postfix) with ESMTPA id 398F11BF211;
-	Thu, 16 Mar 2023 12:28:00 +0000 (UTC)
+	by mail.gandi.net (Postfix) with ESMTPA id 2DBBA1BF20B;
+	Thu, 16 Mar 2023 12:28:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1678969682;
+	t=1678969687;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=0YBlfkWN4uRgoK2zQn1smyULeh9+sx/f01ppPsRKAF4=;
-	b=KXGDlvA1oa0LZyXwwPUkBgyyTl2OxkfkgX04AZQYysRiSHHc9GWOa6UDp29msCdOiY+URG
-	CNnzIkpGOJ3qw/A56Vq5kYjp2nHBoJQB10psAGvOOhPGV0f18lT71J2Nc6nHfY4uoWjTvv
-	M/5rgzn0w1m54jp0zIFg/pL4tbT1AMho7uyzl7PGO3/r45soEWUTy/vz9K4FkRAE/6PMMf
-	7O+Kk8egchORmAYky1y9tq4ONvOIYTr7LT7oQE5pZln/WnyiLWbe5E6kuxFciUu22RAiCs
-	5zFeMXM6BpR/6zkfnT+ZxOdCOAwsOoox0vpNyJsyEecIh4J8C3O9lx8kK9sCrw==
+	bh=DV4CC5O5iyRa+8OQdtxcgwDs8G2cCnQDmrmdt77V24E=;
+	b=W9X0VEUTnKlIqDMIQhKIIklbmTh83DTK5aI7TJxCI9EaaYxcRQPF/+zHObVTAuaPycXCLu
+	Br7j/H6/YAKyoGPkmyVcCdOEI6BF7cvDZ8JH47BlDES/o5e2fvt06tnWCyvo6mhaQ2TVFB
+	iqPPIF3lx4MTvoig1qfHCfecccARmSiC93pv0Px96lS9UdUUOsWudqXQNQlcRq9yMaaFwk
+	HtMisZsmDSIvOsLsw6aVruKG11UElfDN6UFwFHFKzaVocXkJaU5X/tBaMwpp4uv9J/ewfy
+	Eg4Kd9tMlD1uY/cdCHMMCX9LJ1wcCCxYyweaY3ywaEDvW3DU5Oq7du5AWsQugA==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Herve Codina <herve.codina@bootlin.com>,
 	Rob Herring <robh+dt@kernel.org>,
@@ -114,16 +115,16 @@ To: Herve Codina <herve.codina@bootlin.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v2 4/7] MAINTAINERS: Add the Lantiq PEF2256 driver entry
-Date: Thu, 16 Mar 2023 13:27:38 +0100
-Message-Id: <20230316122741.577663-5-herve.codina@bootlin.com>
+Subject: [PATCH v2 7/7] MAINTAINERS: Add the Lantiq PEF2256 ASoC codec entry
+Date: Thu, 16 Mar 2023 13:27:41 +0100
+Message-Id: <20230316122741.577663-8-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230316122741.577663-1-herve.codina@bootlin.com>
 References: <20230316122741.577663-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: IUPFZKZADDNTCBU72S4FVBMGMH5ZPVLZ
-X-Message-ID-Hash: IUPFZKZADDNTCBU72S4FVBMGMH5ZPVLZ
+Message-ID-Hash: U7DXZANMDJFLDPOQD4HNM32M6UQNL3JV
+X-Message-ID-Hash: U7DXZANMDJFLDPOQD4HNM32M6UQNL3JV
 X-MailFrom: herve.codina@bootlin.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -139,7 +140,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IUPFZKZADDNTCBU72S4FVBMGMH5ZPVLZ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/U7DXZANMDJFLDPOQD4HNM32M6UQNL3JV/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -148,33 +149,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-After contributing the driver, add myself as the maintainer for the
-Lantiq PEF2256 driver.
+After contributing the codec, add myself as the maintainer for the
+Lantiq PEF2256 codec.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index fcb69242cd19..b258498aa8ac 100644
+index b258498aa8ac..81c17580b402 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -11651,6 +11651,14 @@ S:	Maintained
+@@ -11651,6 +11651,13 @@ S:	Maintained
  F:	arch/mips/lantiq
  F:	drivers/soc/lantiq
  
-+LANTIQ PEF2256 DRIVER
++LANTIQ PEF2256 ASoC CODEC
 +M:	Herve Codina <herve.codina@bootlin.com>
++L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
 +S:	Maintained
-+F:	Documentation/ABI/testing/sysfs-bus-platform-devices-pef2256
-+F:	Documentation/devicetree/bindings/misc/lantiq,pef2256.yaml
-+F:	drivers/misc/pef2256.c
-+F:	include/linux/pef2256.h
++F:	Documentation/devicetree/bindings/sound/lantiq,pef2256-codec.yaml
++F:	sound/soc/codecs/pef2256-codec.c
 +
- LASI 53c700 driver for PARISC
- M:	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
- L:	linux-scsi@vger.kernel.org
+ LANTIQ PEF2256 DRIVER
+ M:	Herve Codina <herve.codina@bootlin.com>
+ S:	Maintained
 -- 
 2.39.2
 
