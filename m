@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA750C6FD19
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Mar 2023 15:14:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27CACC7619A
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Mar 2023 15:14:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 348BD1100;
-	Thu, 16 Mar 2023 16:13:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 348BD1100
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED68310F0;
+	Thu, 16 Mar 2023 16:13:31 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED68310F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678979654;
-	bh=+fELAHHCGHtwjSg9PKfN0tR420GUCCvMSdInmuqq9Fg=;
+	s=default; t=1678979662;
+	bh=PP0JSa9r/kGSqOHvB+GpmGsMZsIrt374WpL751nEgnE=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=G01fPT5DE2uOUueCWFbLw7hs8r6AiQZ8F1E+z4hpoGmW1gpysqyLuZWFK6turnI2U
-	 3NN1Aqd8X4CzOTthbL/+EuOcVWvNrzed1+FNXrK2w9k7yvRVRfKRRwz0QbWz1+O61W
-	 x3zPJFFMAqBGnNdNwOU+v78tyflIjLsRIN/Of9fk=
+	b=H+8d23Z2oAkr2wHn1QUmSpmnehDSgVPdDFfiCqhGci+do3Yyvi70IIMERSdqsz0pj
+	 SvQXyFdqJcaLpun8V4MT900UaFf3e3NGjm8M4CtQogaXi2w2U+/Vxq6s0VrYMqP5ET
+	 iuvCbqC85CHT/JhhARiuTb4gfG/QNpeKJ1m5a7Lc=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58021F80534;
-	Thu, 16 Mar 2023 16:12:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D983CF80558;
+	Thu, 16 Mar 2023 16:12:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C28D4F80558; Thu, 16 Mar 2023 16:11:59 +0100 (CET)
+	id B56BFF80557; Thu, 16 Mar 2023 16:12:01 +0100 (CET)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id A90BAF8032D
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2023 16:11:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A90BAF8032D
+	by alsa1.perex.cz (Postfix) with ESMTPS id 600BEF804B1
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2023 16:11:38 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 600BEF804B1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=AqRMS1i/
+ header.s=Intel header.b=hA7Ki1Pl
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678979498; x=1710515498;
+  t=1678979499; x=1710515499;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=+fELAHHCGHtwjSg9PKfN0tR420GUCCvMSdInmuqq9Fg=;
-  b=AqRMS1i/ra+iSpHiiDFHCl/pyDJKBOvhbZrHYiEd4N/i1PWqIODfknm0
-   o6L0qjUd/Rx5uG54EPt7MtpkFdup1MO9NtkCKm79+1GNUNVGNATrf9Ecm
-   ygipopjAiCaevDTnvz6pKkVhQEuTTNpSdSsTW2J78ZvBlh/OZCivvC5LN
-   JY6heH606obY6l7dZyFVANK6IP/xliOVlVwbb+AmCF+b/nOYgEmwrcK3E
-   sQMtXQZtzHa/Pzps03sJKcFyV1kmyq0zbZ8HAGW+kkO6lg55MxCrecRFt
-   GXeYMPbCD8jW+XtY55+1XY53Ys7TTqr5gevXA63NGe0PefT+amdzi38ZF
+  bh=PP0JSa9r/kGSqOHvB+GpmGsMZsIrt374WpL751nEgnE=;
+  b=hA7Ki1Plq6oS+BsKNI//ux8Y0S52RWnfw9bh3xzaU5W/h/HEf1C4sRI8
+   nzxo2ZByjKVi5E0NPiXtgxfWS3N5LyvCAe+pNCpMYZdc5W4E+UZlOzF9o
+   jx43xEfj/orUHuooZW8sAssR5+NIzNfPDrkgXSXdOeApuumUbJKZmOXQ+
+   JwZK0dtLEdxa3Ke/PCEAbHalXMR6Hl/1jhol0Ok35zhKE6AXkcRClJkL9
+   7XOgB4pGP83woUHiYLAUFChG8dMyuybi/xHYeHN/v7GLml8Iuf+BMR9Jd
+   eElOy2Ed1ZRvzeL6QA1dpsj6zTafAVMeN8uLVkBPI+UGE8i9LuBrB5cux
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10651"; a="335501626"
+X-IronPort-AV: E=McAfee;i="6600,9927,10651"; a="335501653"
 X-IronPort-AV: E=Sophos;i="5.98,265,1673942400";
-   d="scan'208";a="335501626"
+   d="scan'208";a="335501653"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Mar 2023 08:11:31 -0700
+ 16 Mar 2023 08:11:32 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10651"; a="823286505"
+X-IronPort-AV: E=McAfee;i="6600,9927,10651"; a="823286527"
 X-IronPort-AV: E=Sophos;i="5.98,265,1673942400";
-   d="scan'208";a="823286505"
+   d="scan'208";a="823286527"
 Received: from raberjix-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.62.186])
   by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Mar 2023 08:11:21 -0700
+ 16 Mar 2023 08:11:26 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org
-Subject: [PATCH 3/6] ASoC: SOF: ipc4-topology: add base module config
- extension structure
-Date: Thu, 16 Mar 2023 17:11:34 +0200
-Message-Id: <20230316151137.7598-4-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 5/6] ASoC: SOF: ipc4-topology: set copier output format for
+ process module
+Date: Thu, 16 Mar 2023 17:11:36 +0200
+Message-Id: <20230316151137.7598-6-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230316151137.7598-1-peter.ujfalusi@linux.intel.com>
 References: <20230316151137.7598-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: EK7ARYFYAUFTVLAUEQNFOBFGIL3AAHS7
-X-Message-ID-Hash: EK7ARYFYAUFTVLAUEQNFOBFGIL3AAHS7
+Message-ID-Hash: ZIMOZVWXUZ2BBXER3B2C4X5NGDLG5PCA
+X-Message-ID-Hash: ZIMOZVWXUZ2BBXER3B2C4X5NGDLG5PCA
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +94,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/EK7ARYFYAUFTVLAUEQNFOBFGIL3AAHS7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZIMOZVWXUZ2BBXER3B2C4X5NGDLG5PCA/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,18 +105,16 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Chao Song <chao.song@linux.intel.com>
 
-The modules currently supported by the SOF firmware use the base module
-config containing the audio format for the input/output pin 0 for
-initialization. But some processing modules with multiple input/output
-pins require the audio formats to be sent with the init instance IPC
-payload. Modules that require the base config extension will need to
-indicate this in the module information in the firmware manifest.
+The copier output pin 0 format is set with module instance
+initialization, format for additional copier output pin
+should be set before the pin is used.
 
-Introduce a new struct sof_ipc4_base_module_cfg_ext which contains the
-pin formats for the input and output pins. This will be appended to the
-init instance IPC payload for modules that require it.
+If a process module is connected to additional copier output
+pin, the copier output pin format should be set according to
+the corresponding input pin format of the process module.
 
 Signed-off-by: Chao Song <chao.song@linux.intel.com>
+Co-developed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
@@ -124,37 +122,81 @@ Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/ipc4-topology.h | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ sound/soc/sof/ipc4-topology.c | 46 ++++++++++++++++++++++++++++++++---
+ 1 file changed, 43 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sof/ipc4-topology.h b/sound/soc/sof/ipc4-topology.h
-index 9fcb978ebc63..97264454b8a6 100644
---- a/sound/soc/sof/ipc4-topology.h
-+++ b/sound/soc/sof/ipc4-topology.h
-@@ -347,6 +347,23 @@ struct sof_ipc4_src {
- 	struct sof_ipc4_msg msg;
- };
+diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
+index efd53e855601..962ec38b70cc 100644
+--- a/sound/soc/sof/ipc4-topology.c
++++ b/sound/soc/sof/ipc4-topology.c
+@@ -166,6 +166,37 @@ static void sof_ipc4_dbg_audio_format(struct device *dev, struct sof_ipc4_pin_fo
+ 	}
+ }
  
-+/**
-+ * struct sof_ipc4_base_module_cfg_ext - base module config extension containing the pin format
-+ * information for the module. Both @num_input_pin_fmts and @num_output_pin_fmts cannot be 0 for a
-+ * module.
-+ * @num_input_pin_fmts: number of input pin formats in the @pin_formats array
-+ * @num_output_pin_fmts: number of output pin formats in the @pin_formats array
-+ * @reserved: reserved for future use
-+ * @pin_formats: flexible array consisting of @num_input_pin_fmts input pin format items followed
-+ *		 by @num_output_pin_fmts output pin format items
-+ */
-+struct sof_ipc4_base_module_cfg_ext {
-+	u16 num_input_pin_fmts;
-+	u16 num_output_pin_fmts;
-+	u8 reserved[12];
-+	DECLARE_FLEX_ARRAY(struct sof_ipc4_pin_format, pin_formats);
-+} __packed;
++static const struct sof_ipc4_audio_format *
++sof_ipc4_get_input_pin_audio_fmt(struct snd_sof_widget *swidget, int pin_index)
++{
++	struct sof_ipc4_base_module_cfg_ext *base_cfg_ext;
++	struct sof_ipc4_process *process;
++	int i;
++
++	if (swidget->id != snd_soc_dapm_effect) {
++		struct sof_ipc4_base_module_cfg *base = swidget->private;
++
++		/* For non-process modules, base module config format is used for all input pins */
++		return &base->audio_fmt;
++	}
++
++	process = swidget->private;
++	base_cfg_ext = process->base_config_ext;
++
++	/*
++	 * If there are multiple input formats available for a pin, the first available format
++	 * is chosen.
++	 */
++	for (i = 0; i < base_cfg_ext->num_input_pin_fmts; i++) {
++		struct sof_ipc4_pin_format *pin_format = &base_cfg_ext->pin_formats[i];
++
++		if (pin_format->pin_index == pin_index)
++			return &pin_format->audio_fmt;
++	}
++
++	return NULL;
++}
 +
  /**
-  * struct sof_ipc4_process - process config data
-  * @base_config: IPC base config data
+  * sof_ipc4_get_audio_fmt - get available audio formats from swidget->tuples
+  * @scomp: pointer to pointer to SOC component
+@@ -2049,9 +2080,9 @@ static int sof_ipc4_set_copier_sink_format(struct snd_sof_dev *sdev,
+ 					   struct snd_sof_widget *sink_widget,
+ 					   int sink_id)
+ {
+-	struct sof_ipc4_base_module_cfg *sink_config = sink_widget->private;
+-	struct sof_ipc4_base_module_cfg *src_config;
+ 	struct sof_ipc4_copier_config_set_sink_format format;
++	struct sof_ipc4_base_module_cfg *src_config;
++	const struct sof_ipc4_audio_format *pin_fmt;
+ 	struct sof_ipc4_fw_module *fw_module;
+ 	struct sof_ipc4_msg msg = {{ 0 }};
+ 	u32 header, extension;
+@@ -2071,7 +2102,16 @@ static int sof_ipc4_set_copier_sink_format(struct snd_sof_dev *sdev,
+ 
+ 	format.sink_id = sink_id;
+ 	memcpy(&format.source_fmt, &src_config->audio_fmt, sizeof(format.source_fmt));
+-	memcpy(&format.sink_fmt, &sink_config->audio_fmt, sizeof(format.sink_fmt));
++
++	pin_fmt = sof_ipc4_get_input_pin_audio_fmt(sink_widget, sink_id);
++	if (!pin_fmt) {
++		dev_err(sdev->dev, "Unable to get pin %d format for %s",
++			sink_id, sink_widget->widget->name);
++		return -EINVAL;
++	}
++
++	memcpy(&format.sink_fmt, pin_fmt, sizeof(format.sink_fmt));
++
+ 	msg.data_size = sizeof(format);
+ 	msg.data_ptr = &format;
+ 
 -- 
 2.39.2
 
