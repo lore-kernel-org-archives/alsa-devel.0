@@ -4,84 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C161C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Mar 2023 06:05:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BA41C6FD19
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Mar 2023 06:10:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 59A131151;
-	Thu, 16 Mar 2023 07:04:45 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59A131151
+	by alsa0.perex.cz (Postfix) with ESMTPS id B68A1114F;
+	Thu, 16 Mar 2023 07:09:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B68A1114F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678946735;
-	bh=ww0ZocYsI+02bKy+ETdHwsgDsAG5ndYxat5xHnfTfiI=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=Qf8VJgHfamQtX09nLZJeOGECIBOwtiPD4fQ2gVorkHx1Kk6Qk0ObWguDcVx8sNnHp
-	 M2yx75DSQKOwOgT/LF8HByW9hUirkCfDbDXbRERQ/uLs2yAPU2W6Kb2Il6+DM8/oj6
-	 n920nk3JgbWnTijzL7pVNQ4GFX5qjLFOD1qEudXk=
+	s=default; t=1678947013;
+	bh=ru5APXhpAtkXVVmoWP5R8407qJfCY0OvWAdj4m4i9zI=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=C5XUTlTNyc4k+JRi65T3KxXfcHcI3wFC7NsyzGHJanSIaxG9B18e3QUzlRIu/ZO1H
+	 JhQulK7hFlHfNZtjJLWlbOfHXH5XO66zF25N/cWIFqn0oluEtKHwohn63ORGgFiigQ
+	 zZ3T1R90LF/V2WhlPAdlG5m3JCsW2n9MoR0iuYTs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2028F804B1;
-	Thu, 16 Mar 2023 07:04:44 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E364F80423;
+	Thu, 16 Mar 2023 07:09:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 21E83F80423; Thu, 16 Mar 2023 07:03:52 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 792AAF80272
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2023 07:03:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 792AAF80272
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=b4VG7dnf
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id EA378B81F15;
-	Thu, 16 Mar 2023 06:03:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D33CC433D2;
-	Thu, 16 Mar 2023 06:03:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678946621;
-	bh=ww0ZocYsI+02bKy+ETdHwsgDsAG5ndYxat5xHnfTfiI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=b4VG7dnf/DqeAEPohsBa/rE5su759zx0QSzs+nvK/FkE6yTEKDy6VdaHXfJVb8ATZ
-	 xsn/DNhc70ePNYS/OAHJKbwIJnHR1Co1kUHYHu/2TgNAjVT8AEGaFj2WgrdMBRsYWc
-	 1ue1ia4lNt1ptuNMA+86kZw7jrB34vNFFmTy3lgc+kzu54cuMpDytmf3xG2Asf+hho
-	 WCuGj/pwFoAB6kdugkw2UiWGoe5qho7yJK9eBfgjmtWrMPzUt4Q4sGQes/pp0ubxpD
-	 7ujHyh9zjfX+ShBA+ZVl7xwj22vCzYDwjavZyPL4imnPREJT5O8cxMoSgwkdZ8GM9t
-	 ZLDhWjltcGZ/A==
-Date: Thu, 16 Mar 2023 11:33:37 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH] soundwire: stream: restore cumulative bus bandwidth when
- compute_params callback failed
-Message-ID: <ZBKxObsivQKtGOhP@matsya>
-References: <20230316013041.1008003-1-yung-chuan.liao@linux.intel.com>
+	id 480BCF80423; Thu, 16 Mar 2023 07:08:58 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D086F800C9
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2023 07:08:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D086F800C9
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230316013041.1008003-1-yung-chuan.liao@linux.intel.com>
-Message-ID-Hash: 5RHQPP2ER2HHYID2T4VXW726KIC6S62N
-X-Message-ID-Hash: 5RHQPP2ER2HHYID2T4VXW726KIC6S62N
-X-MailFrom: vkoul@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1678946932870412588-webhooks-bot@alsa-project.org>
+References: <1678946932870412588-webhooks-bot@alsa-project.org>
+Subject: Dual monitors, no sound after the monitor sleeps
+Message-Id: <20230316060858.480BCF80423@alsa1.perex.cz>
+Date: Thu, 16 Mar 2023 07:08:58 +0100 (CET)
+Message-ID-Hash: IMTHNCCQZN2PLAYVCYBGBPAMAKFYUHDF
+X-Message-ID-Hash: IMTHNCCQZN2PLAYVCYBGBPAMAKFYUHDF
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/5RHQPP2ER2HHYID2T4VXW726KIC6S62N/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IMTHNCCQZN2PLAYVCYBGBPAMAKFYUHDF/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,17 +64,45 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 16-03-23, 09:30, Bard Liao wrote:
-> From: Shuming Fan <shumingf@realtek.com>
-> 
-> The _sdw_prepare_stream function just returns the error code when
-> compute_params callback failed.
-> The cumulative bus bandwidth will keep the value and won't be decreased
-> by sdw_deprepare_stream function.
-> We should restore the value of cumulative bus bandwidth when
-> compute_params callback failed.
+alsa-project/alsa-lib issue #307 was opened from viqbgrg:
 
-Applied, thanks
+```shell
+**** List of PLAYBACK Hardware Devices ****
+card 0: PCH [HDA Intel PCH], device 0: ALC887-VD Analog [ALC887-VD Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: PCH [HDA Intel PCH], device 1: ALC887-VD Digital [ALC887-VD Digital]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: PCH [HDA Intel PCH], device 3: HDMI 0 [2481W]
+  Subdevices: 0/1
+  Subdevice #0: subdevice #0
+card 0: PCH [HDA Intel PCH], device 7: HDMI 1 [PHL275E9]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: PCH [HDA Intel PCH], device 8: HDMI 2 [HDMI 2]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+```
+ ```shell
+**** List of PLAYBACK Hardware Devices ****
+card 0: PCH [HDA Intel PCH], device 0: ALC887-VD Analog [ALC887-VD Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: PCH [HDA Intel PCH], device 1: ALC887-VD Digital [ALC887-VD Digital]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: PCH [HDA Intel PCH], device 3: HDMI 0 [PHL275E9]
+  Subdevices: 0/1
+  Subdevice #0: subdevice #0
+card 0: PCH [HDA Intel PCH], device 7: HDMI 1 [2481W]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+card 0: PCH [HDA Intel PCH], device 8: HDMI 2 [HDMI 2]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+```
+PHL275E9 and 2481W are reversed after waking up, when I use linux 5 kernel there is no such problem
 
--- 
-~Vinod
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/307
+Repository URL: https://github.com/alsa-project/alsa-lib
