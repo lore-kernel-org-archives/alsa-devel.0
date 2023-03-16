@@ -4,107 +4,214 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 483C4C6FD1D
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Mar 2023 18:01:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06F6FC7618A
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Mar 2023 18:01:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D93C1E0;
-	Mon, 20 Mar 2023 19:00:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D93C1E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 24D4D1E3;
+	Mon, 20 Mar 2023 19:01:07 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24D4D1E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679335305;
-	bh=wLKqHQRjI2D2KZUIOXY/jJbOJxCaUAFsauLmbN33B2s=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=RvXi4u79LLLj8DgXHdwHbv1jyCaDAfe1k2c8Ee4In+gIvTD/pD8jvLGbS8IFLaJPX
-	 1+F8ZMeLKvdkO5fC4vETrjJC4ZOT+/B4u2qGFMvYLLza9hjCMsyBUy/aiBkwS+6AKq
-	 kfNUK4u+0de2QI/Yr4qGORYc88G74Pr0jseTEfBw=
+	s=default; t=1679335317;
+	bh=EHia0Z/ZV8IwonMqPduUm5/mXVgHjO/L0u7v1lqWyk4=;
+	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=JVMY0onHPC9RzDV3O+KOK/1msF8jioxytkdBTE0ruhehO9WcCeMrRWCHYsgUI43vh
+	 8nIwHkz6b9c5M/UC8QDvQB7jO/sLnZPvulNBHaS4qR9VzJpeTMnEWHDSS8L/og3qka
+	 zag/EvOpX7yNClmQ9+neyq+oZs6TShGPJ/PehNZo=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2FFFF80542;
-	Mon, 20 Mar 2023 18:59:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8D86AF8056F;
+	Mon, 20 Mar 2023 18:59:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DB588F80423; Wed, 15 Mar 2023 18:43:20 +0100 (CET)
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com
- [IPv6:2a00:1450:4864:20::22c])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	id 954D3F80423; Thu, 16 Mar 2023 10:32:22 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4E143F800C9
-	for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2023 18:43:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E143F800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7EB9CF80272
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2023 10:32:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EB9CF80272
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=PU6a6Bo1
-Received: by mail-lj1-x22c.google.com with SMTP id l22so2185539ljc.11
-        for <alsa-devel@alsa-project.org>;
- Wed, 15 Mar 2023 10:43:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678902191;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QOzpvocKnFn0bAY8kRGLV91Cn/phdFGP7VeaxQqiMc4=;
-        b=PU6a6Bo1HBsIOsXuNxNPjGHmlOnM3WpM2kO9fAy259HWUtfyjGdYxZEH9ZnYBkpVO5
-         kDEEmKGRrjskEwEsKOBIpNobTQVBUfhgjQUGxPl9LWd9iRUo8YUq06Q7PPUYIgZK/Kdx
-         ODcxcaefggEbctRVYy+yERJLWEi8azmbt9YFFgrhuuzQVMkOo8Rheo6Tte4ZmcKujJtM
-         lJgFaCS0o1yzqPWDb1diMRg5RQPOwmUcNa/Vm/FwIM3SRxwWmaKJuQwjpb4zjqUVnotp
-         eeqgpLeOkixV6RQ3MBZvfKkKHE8abN6nlPt4PTMtWgbJqLs4SC5Kmd0zAg3WQ/H429gR
-         afNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678902191;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QOzpvocKnFn0bAY8kRGLV91Cn/phdFGP7VeaxQqiMc4=;
-        b=Wu2OtBE6M3yn2CU8Zf9e88ULCokL7nv1OApp+8Cd6S1QU5yNuKfQveH3iG1LtNv03B
-         nt+WTlb9QTcxNScZCZzjfooFWrQrySvfBBhmTYvUjXRr7hGWa4e7nspNhF7GyE2tfsw7
-         GpQysC77TTx0jpVucX38Y8hTEiqgr3ZwLGvpac6Sd8IYVsd1INno2wDKi2AKxXuDyS5G
-         gW4VzhSNB+Ki3Qid9O7OtoosiF2azUSGDNXug8vEn8GS/fyqflnzjo7H1x7RHSwwwJ38
-         A5ZT7dBg7qACktGHN7+Ca408lrYzFT+QBsxUcfZmDDviMTgOjb9WtlPxNJ7WiMECx9hR
-         MJeA==
-X-Gm-Message-State: AO0yUKUmac9mKRta3rEPr5NMkdORUe9ecQWgAgvAITSOmDG4YXAq6N9x
-	riCzYKpGwOzKXq/51ReVsFY=
-X-Google-Smtp-Source: 
- AK7set9BOXMjvo9FUWWObEWS1XtxgqYPJQ6b1AdcZ2lDSva8HdsWyaENajgJqB/WNCNScPJPi6JWKA==
-X-Received: by 2002:a2e:a54a:0:b0:298:aa76:2fb8 with SMTP id
- e10-20020a2ea54a000000b00298aa762fb8mr1439229ljn.12.1678902190973;
-        Wed, 15 Mar 2023 10:43:10 -0700 (PDT)
-Received: from otabekn-HP-ProBook-650-G4.. ([93.170.231.237])
-        by smtp.googlemail.com with ESMTPSA id
- s25-20020a2e9c19000000b0029870223d23sm927000lji.73.2023.03.15.10.43.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Mar 2023 10:43:10 -0700 (PDT)
-From: Otabek Nazrullaev <otabeknazrullaev1998@gmail.com>
-To: 
-Subject: [PATCH] ASoC: dt-bindings: maxim,max9759: Convert to DT schema.
-Date: Thu, 16 Mar 2023 02:33:30 +0900
-Message-Id: <20230315173404.7215-1-otabeknazrullaev1998@gmail.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=H9aXq6XW;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=vrFmJJMH
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E4D3C1FDFB;
+	Thu, 16 Mar 2023 09:32:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1678959130;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LgQ6KC2ybaQuhcxvNbj5yWV84Hdg07Eok3qBPbbxY94=;
+	b=H9aXq6XWzgXy3V6gUMaMgKEQOC4u2wwCwuM31XT6epw3vcSavDTpG7v1DmpLitT3aAzvrb
+	Uij7YtTtCMzKsnoVFyM4P36fE8radT/BVqUmJO5oz33vf5WRPcRwuHN+AiCd+tOxzXuyQp
+	7HO6F55yqLXCARRi8VELwLEQafIfemA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1678959130;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LgQ6KC2ybaQuhcxvNbj5yWV84Hdg07Eok3qBPbbxY94=;
+	b=vrFmJJMHnJyGAG4vQo3kBbAm10wkR+7Kjjsf57BxURiziFHRuM5x12k5OToJ7bvAHK8XWM
+	BGwhhqI50dx0VBCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DE806133E0;
+	Thu, 16 Mar 2023 09:32:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id 9o+MNRjiEmRkRAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 16 Mar 2023 09:32:08 +0000
+Date: Thu, 16 Mar 2023 10:32:08 +0100
+Message-ID: <87ttylhwiv.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH 000/173] ALSA/ASoC: Convert to platform remove callback
+ returning void
+In-Reply-To: <20230315150745.67084-1-u.kleine-koenig@pengutronix.de>
+References: <20230315150745.67084-1-u.kleine-koenig@pengutronix.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8bit
-X-MailFrom: otabeknazrullaev1998@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+X-MailFrom: tiwai@suse.de
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 6GSNO5FTJTVTAZUJCGOMP7MIMWSH6J3Q
-X-Message-ID-Hash: 6GSNO5FTJTVTAZUJCGOMP7MIMWSH6J3Q
-X-Mailman-Approved-At: Mon, 20 Mar 2023 17:59:13 +0000
-CC: Otabek Nazrullaev <otabeknazrullaev1998@gmail.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: VECLOAKJOD4R6T5I63O7AM6LX466HQUG
+X-Message-ID-Hash: VECLOAKJOD4R6T5I63O7AM6LX466HQUG
+X-Mailman-Approved-At: Mon, 20 Mar 2023 17:59:14 +0000
+CC: Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>,
+ V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>,
+ Gaosheng Cui <cuigaosheng1@huawei.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Mohan Kumar <mkumard@nvidia.com>,
+ Geoff Levand <geoff@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+ syed saba kareem <syed.sabakareem@amd.com>,
+ Mario Limonciello <mario.limonciello@amd.com>,
+ Meng Tang <tangmeng@uniontech.com>,
+ Martin =?ISO-8859-2?Q?Povi=B9er?= <povik+lin@cutebit.org>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ Peter Rosin <peda@axentia.se>, Ray Jui <rjui@broadcom.com>,
+ Scott Branden <sbranden@broadcom.com>, Allison Randal <allison@lohutok.net>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Miaoqian Lin <linmq006@gmail.com>,
+ Colin Ian King <colin.i.king@gmail.com>,
+ Aidan MacDonald <aidanmacdonald.0x0@gmail.com>,
+ Zhang Qilong <zhangqilong3@huawei.com>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Liang He <windhl@126.com>,
+ Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Yang Yingliang <yangyingliang@huawei.com>,
+ Minghao Chi <chi.minghao@zte.com.cn>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Akihiko Odaki <akihiko.odaki@gmail.com>,
+ Amadeusz =?ISO-8859-2?Q?S=B3awi=F1ski?=
+ <amadeuszx.slawinski@linux.intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ Moises Cardona <moisesmcardona@gmail.com>, Zhen Ni <nizhen@uniontech.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Andrey Turkin <andrey.turkin@gmail.com>,
+ Muralidhar Reddy <muralidhar.reddy@intel.com>,
+ Zhu Ning <zhuning0077@gmail.com>, Gongjun Song <gongjun.song@intel.com>,
+ Shuming Fan <shumingf@realtek.com>, Yong Zhi <yong.zhi@intel.com>,
+ Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
+ Hezi Shahmoon <hezi@marvell.com>, Neta Zur Hershkovits <neta@marvell.com>,
+ Marcin Wojtas <mw@semihalf.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ Jiasheng Jiang <jiasheng@iscas.ac.cn>,
+ Ricardo Ribalda <ribalda@chromium.org>, Trevor Wu <trevor.wu@mediatek.com>,
+ Dan Carpenter <error27@gmail.com>, Jerome Brunet <jbrunet@baylibre.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Kevin Hilman <khilman@baylibre.com>, Heiko Stuebner <heiko@sntech.de>,
+ Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Linh Phung <linh.phung.jy@renesas.com>,
+ Shang XiaoJing <shangxiaojing@huawei.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Biju Das <biju.das.jz@bp.renesas.com>, Orson Zhai <orsonzhai@gmail.com>,
+ Baolin Wang <baolin.wang@linux.alibaba.com>,
+ Chunyan Zhang <zhang.lyra@gmail.com>,
+ Olivier Moysan <olivier.moysan@foss.st.com>,
+ Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Mikhail Rudenko <mike.rudenko@gmail.com>, Li Chen <lchen@ambarella.com>,
+ Ban Tao <fengzheng923@gmail.com>, Sameer Pujar <spujar@nvidia.com>,
+ YueHaibing <yuehaibing@huawei.com>,
+ Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+ Li kunyu <kunyu@nfschina.com>, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+ Jarkko Nikula <jarkko.nikula@bitmer.com>,
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+ Arnd Bergmann <arnd@arndb.de>, Linus Walleij <linus.walleij@linaro.org>,
+ Michal Simek <michal.simek@xilinx.com>, Max Filippov <jcmvbkbc@gmail.com>,
+ alsa-devel@alsa-project.org, kernel@pengutronix.de,
+ linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
+ Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ linuxppc-dev@lists.ozlabs.org, asahi@lists.linux.dev,
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+ patches@opensource.cirrus.com, Fabio Estevam <festevam@gmail.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ linux-mediatek@lists.infradead.org,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ linux-amlogic@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev,
+ linux-omap@vger.kernel.org, linux-xtensa@linux-xtensa.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6GSNO5FTJTVTAZUJCGOMP7MIMWSH6J3Q/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VECLOAKJOD4R6T5I63O7AM6LX466HQUG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,93 +220,39 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Convert Maxim MAX9759 Speaker Amplifier bindings to DT schema.
-Add missing gpio header file into examples section
+On Wed, 15 Mar 2023 16:04:52 +0100,
+Uwe Kleine-König wrote:
+> 
+> Hello,
+> 
+> this series adapts the platform drivers below sound/ to use the .remove_new()
+> callback. Compared to the traditional .remove() callback .remove_new() returns
+> no value. This is a good thing because the driver core doesn't (and cannot)
+> cope for errors during remove. The only effect of a non-zero return value in
+> .remove() is that the driver core emits a warning. The device is removed anyhow
+> and an early return from .remove() usually yields a resource leak.
+> 
+> By changing the remove callback to return void driver authors cannot
+> reasonably assume any more that there is some kind of cleanup later.
+> 
+> The first two patches simplify a driver each to return zero unconditionally,
+> and then all drivers are trivially converted to .remove_new().
+> 
+> There are nearly no interdependencies in this patch set---only 1 <- 11 and
+> 2 <- 16. So even if some individual problems are found (I don't expect that),
+> the other patches can (and from my POV should) still be applied.
+> 
+> Best regards
+> Uwe
+> 
+> Uwe Kleine-König (173):
+(snip)
 
-Signed-off-by: Otabek Nazrullaev <otabeknazrullaev1998@gmail.com>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>
----
- .../bindings/sound/maxim,max9759.txt          | 18 --------
- .../bindings/sound/maxim,max9759.yaml         | 45 +++++++++++++++++++
- 2 files changed, 45 insertions(+), 18 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/maxim,max9759.txt
- create mode 100644 Documentation/devicetree/bindings/sound/maxim,max9759.yaml
+For the whole series,
 
-diff --git a/Documentation/devicetree/bindings/sound/maxim,max9759.txt b/Documentation/devicetree/bindings/sound/maxim,max9759.txt
-deleted file mode 100644
-index 737a996374d3..000000000000
---- a/Documentation/devicetree/bindings/sound/maxim,max9759.txt
-+++ /dev/null
-@@ -1,18 +0,0 @@
--Maxim MAX9759 Speaker Amplifier
--===============================
--
--Required properties:
--- compatible : "maxim,max9759"
--- shutdown-gpios : the gpio connected to the shutdown pin
--- mute-gpios : the gpio connected to the mute pin
--- gain-gpios : the 2 gpios connected to the g1 and g2 pins
--
--Example:
--
--max9759: analog-amplifier {
--	compatible = "maxim,max9759";
--	shutdown-gpios = <&gpio3 20 GPIO_ACTIVE_LOW>;
--	mute-gpios = <&gpio3 19 GPIO_ACTIVE_LOW>;
--	gain-gpios = <&gpio3 23 GPIO_ACTIVE_LOW>,
--		     <&gpio3 25 GPIO_ACTIVE_LOW>;
--};
-diff --git a/Documentation/devicetree/bindings/sound/maxim,max9759.yaml b/Documentation/devicetree/bindings/sound/maxim,max9759.yaml
-new file mode 100644
-index 000000000000..a76ee6a635af
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/maxim,max9759.yaml
-@@ -0,0 +1,45 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/maxim,max9759.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Maxim MAX9759 Speaker Amplifier
-+
-+maintainers:
-+  - Otabek Nazrullaev <otabeknazrullaev1998@gmail.com>
-+
-+properties:
-+  compatible:
-+    const: maxim,max9759
-+
-+  shutdown-gpios:
-+    maxItems: 1
-+    description: the gpio connected to the shutdown pin
-+
-+  mute-gpios:
-+    maxItems: 1
-+    description: the gpio connected to the mute pin
-+
-+  gain-gpios:
-+    maxItems: 2
-+    description: the 2 gpios connected to the g1 and g2 pins
-+
-+required:
-+  - compatible
-+  - shutdown-gpios
-+  - mute-gpios
-+  - gain-gpios
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    amplifier {
-+      compatible = "maxim,max9759";
-+      shutdown-gpios = <&gpio3 20 GPIO_ACTIVE_LOW>;
-+      mute-gpios = <&gpio3 19 GPIO_ACTIVE_LOW>;
-+      gain-gpios = <&gpio3 23 GPIO_ACTIVE_LOW>,
-+             <&gpio3 25 GPIO_ACTIVE_LOW>;
-+    };
--- 
-2.34.1
+Acked-by: Takashi Iwai <tiwai@suse.de>
 
+
+thanks,
+
+Takashi
