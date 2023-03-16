@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66A4FC6FD19
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Mar 2023 15:15:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0348C6FD1F
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Mar 2023 15:15:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57A9B10E8;
-	Thu, 16 Mar 2023 16:14:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57A9B10E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 07E95111A;
+	Thu, 16 Mar 2023 16:14:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07E95111A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678979698;
-	bh=R1GEBVSX4RmYyh3Vng4K7jNaRTfW7mutv7gR5UToFaQ=;
+	s=default; t=1678979711;
+	bh=O0sBRmvlD45bT8bqFfRjRvTzq/YyEYUJR+CCtH6GALE=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=eD9YPglFNJ0Qjj2m1mNOVmo8ohks8Hg6r0oXeBUsucorImZqnFJC1MbySlPCkK7Ut
-	 vz5Vkc1WsQbz8rV/+fYmX44GVfQlMINRiQxQJOoo/szZ965wOIBJd7O5fuzME+aMsF
-	 l0yWzM3ZYJa2TtzPZoqOFRPV2jCwJ/lp2i/QUXms=
+	b=Msh7jO8DApbm+JgMw40r2OftZJWhhI+YHTeIiRj7HLt2P1Cf826NuF1mQHp3Fldxv
+	 5rt+5gH9kOgxp58Z+1bTtwP77Fim75t1OBI33Gn3+rP6YF2zMcXs5Uv0JBS+RaHo7t
+	 wvUtilwcmzF5L2PlWIbjueVo/WKbXfap+v9CRxxg=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E53AF8056F;
-	Thu, 16 Mar 2023 16:12:49 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7BCEAF8053B;
+	Thu, 16 Mar 2023 16:13:21 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 7854EF8052D; Thu, 16 Mar 2023 16:12:46 +0100 (CET)
+	id A3494F8053B; Thu, 16 Mar 2023 16:13:18 +0100 (CET)
 Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
  [207.180.221.201])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1AFF4F8051B
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2023 16:12:33 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AFF4F8051B
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CE1DF80425
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2023 16:13:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CE1DF80425
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1678979553805999041-webhooks-bot@alsa-project.org>
-References: <1678979553805999041-webhooks-bot@alsa-project.org>
-Subject: Maybe a bug: libasound_module_ctl_pulse.la uses
+In-Reply-To: <1678979596772945404-webhooks-bot@alsa-project.org>
+References: <1678979596772945404-webhooks-bot@alsa-project.org>
+Subject: Maybe a bug: libasound_module_pcm_pulse.la uses
  snd_pcm_sw_params_get_start_threshold but not linked against -lasound?
-Message-Id: <20230316151246.7854EF8052D@alsa1.perex.cz>
-Date: Thu, 16 Mar 2023 16:12:46 +0100 (CET)
-Message-ID-Hash: J35QBCU2WJPIPPOQXKJG2UERG6RN5SSI
-X-Message-ID-Hash: J35QBCU2WJPIPPOQXKJG2UERG6RN5SSI
+Message-Id: <20230316151318.A3494F8053B@alsa1.perex.cz>
+Date: Thu, 16 Mar 2023 16:13:18 +0100 (CET)
+Message-ID-Hash: DDZLHW2DOXFEBXPXT7B5WUFQWM3XYH3N
+X-Message-ID-Hash: DDZLHW2DOXFEBXPXT7B5WUFQWM3XYH3N
 X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -56,7 +56,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/J35QBCU2WJPIPPOQXKJG2UERG6RN5SSI/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DDZLHW2DOXFEBXPXT7B5WUFQWM3XYH3N/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -65,7 +65,7 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-alsa-project/alsa-plugins issue #52 was opened from MIvanchev:
+alsa-project/alsa-plugins issue #52 was edited from MIvanchev:
 
 I see pcm_pulse.c uses snd_pcm_sw_params_get_start_threshold from -lasound but AFAIK that is a bug, because libasound is loading the plugins and not the other way around.
 
