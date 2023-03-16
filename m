@@ -4,204 +4,160 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87980C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Mar 2023 19:18:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57713C6FD1F
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Mar 2023 19:18:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 523EC10B2;
-	Thu, 16 Mar 2023 20:17:37 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 523EC10B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id AD64D10B0;
+	Thu, 16 Mar 2023 20:18:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD64D10B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1678994307;
-	bh=bBOwFeYUzr32M6bMBria6jryjJC/PixHRLws/Jv8nec=;
+	s=default; t=1678994332;
+	bh=zpSchT2c64a7libe/XNU0fpVlU/BXgapVsZSY8MoD5Q=;
 	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=qoA7HtBqjkgBlPE3PDZvR447bTndsI9dpu5tyl5DxDg03tcH3e+SvN1dPsv57xJy7
-	 yXYQU7UhMoz+8cWCmZHgsa9wVVnJExz75un2rY3iTZv2lUbeBKxJRggTD82pNaLyiq
-	 vicGlv0sU8di83jQrG4ORxsB48GEI47AdTBslbPE=
+	b=FhP/rG+Safc8UVXQfRxF+7Q0z96lOfJN/LqbuRZjBD5XTf5SksorhrBqHSc2bT6k9
+	 wzq7q79tAxXbAP6MeJSFIIrS9EqYgfp15gr1sb/ELW6e1GBAR6qoWXxDrSw1t7fMP/
+	 oZXS4Lh02jlA8X6D1KyZFcbGLxAnQIgLglZaWpf8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C30B6F8032D;
-	Thu, 16 Mar 2023 20:17:17 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6902FF80425;
+	Thu, 16 Mar 2023 20:18:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0C814F804FE; Thu, 16 Mar 2023 20:17:14 +0100 (CET)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id D2161F80425; Thu, 16 Mar 2023 20:17:58 +0100 (CET)
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
+ [IPv6:2a00:1450:4864:20::529])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 061AEF80482
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2023 20:17:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 061AEF80482
+	by alsa1.perex.cz (Postfix) with ESMTPS id E4FEBF8016C
+	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2023 20:17:55 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4FEBF8016C
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=WXkqOgHP
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1678994229; x=1710530229;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=bBOwFeYUzr32M6bMBria6jryjJC/PixHRLws/Jv8nec=;
-  b=WXkqOgHPGPreIj9vQHa/113cUy50++0OCn0sl7KhzJxjipHl3s+mD1X2
-   LJq9ybws5KU4TxP+4fi0xX/Wwc9Me5YO4C+/WyT5XOrk2gyoOK3X6JS+/
-   RDSg5qJgrYNl8gXa4B+/tbjfwJ6/pjxR19qm+3cfqDX84BMWf6Ixq9x/E
-   zogJn7RbwgLBGZ9YVSqCpNrAvEF341AGZLmufsrsKTx9tyyPzlr0GLbu1
-   1aHLAWvVg8q+k9Cd5qxakK26cprsOsUiH63LFSGyvhyVVcQMPMKlhiJ80
-   kt/iodGRPErxGMIwAOPgHtPXX9KCPkOcKInjuRyxtFYXZ8KQ3bVjSNjzI
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10651"; a="424362294"
-X-IronPort-AV: E=Sophos;i="5.98,265,1673942400";
-   d="scan'208";a="424362294"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Mar 2023 12:16:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10651"; a="673278485"
-X-IronPort-AV: E=Sophos;i="5.98,265,1673942400";
-   d="scan'208";a="673278485"
-Received: from rljames-mobl1.amr.corp.intel.com (HELO [10.255.38.195])
- ([10.255.38.195])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Mar 2023 12:16:53 -0700
-Message-ID: <447cac77-4cc7-b2a3-23e7-978e1641a401@linux.intel.com>
-Date: Thu, 16 Mar 2023 13:46:57 -0500
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=g7oRUQ3Q
+Received: by mail-ed1-x529.google.com with SMTP id fd5so11730101edb.7
+        for <alsa-devel@alsa-project.org>;
+ Thu, 16 Mar 2023 12:17:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1678994274;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LUqUOWWiZli99bg9SVozznX57dV1t/fJ4AoOzF+lHVk=;
+        b=g7oRUQ3QlrKPdHr2cbg+8oDIky9CyeZzElETO/Dp6QH8wQeXufdGy32mxiliaTtF8p
+         +KRS0CFESrv7jyNf19H5VsZ+UOnq4qN9wGKuJ11KbE/k+43ilv2vQoWs4XqOsb4yewda
+         MtcejyLGAsLvljt40Cg0hAjodbZ7PxDoG73e6hai6MnIKiWksouTqzkMHPgbu5k5CLKZ
+         aJAx9fN6elcNFleWOwbSOddHJstrUvFH2WG1WO9iwVMenHMrz8n796jI3ejYttZ9qDzB
+         I/5NbvKCWHtiMq79TZeXk22lafidXAhsnWrmRqvpW9FD4HARJqwl/ZurUMAVgtQ3Bz5M
+         ZSNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678994274;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LUqUOWWiZli99bg9SVozznX57dV1t/fJ4AoOzF+lHVk=;
+        b=p17yipd31F/a+vPccCnt7oQvo4kMRDxDzyNTtSqBriZ1jo+gYkz4Dm/kllb9yXDZu/
+         M/vpKptSRNCF+XT5u5Cd055/gC953pkPabpRyUI2smaKsUOyOCcHFBTEbrozLS3cb2ru
+         GQNe+aFiflx30+gsXQOYLqL0lmB1uNyloZIwxuTsFXnX5UZGD2jDQ1UE+m7XkarQ3Oo6
+         I4pTTTzSmRDJx2HbK4px2DzxvS5v6NgwIclA4DhvJFNP/E3lRJpUQpCoLEyZwK1jWvU+
+         cjpCxndoOiUquF4OgufZN0HRTgDYSCwoyQn7Ia6vjPR+o5g3DntSXp3iOzQhMBaYELPH
+         a0fA==
+X-Gm-Message-State: AO0yUKW6T0RMrdHkKrSdj+aODAQLFPc5/hUNeguiq28spwCBemaZpLyv
+	a99oqzqwpVMIi2+pAi49/2g/Nw==
+X-Google-Smtp-Source: 
+ AK7set8YWZHXgEmHetI4JO8TbJOhcLvww2JEX6BbpNaPODsy3dOWflTX9OXBRY3f2eSxHuwvHRnOag==
+X-Received: by 2002:a17:906:b88d:b0:8b1:806b:7dbb with SMTP id
+ hb13-20020a170906b88d00b008b1806b7dbbmr10962635ejb.51.1678994274028;
+        Thu, 16 Mar 2023 12:17:54 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:9827:5f65:8269:a95f?
+ ([2a02:810d:15c0:828:9827:5f65:8269:a95f])
+        by smtp.gmail.com with ESMTPSA id
+ q27-20020a50aa9b000000b004af73333d6esm150320edc.53.2023.03.16.12.17.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Mar 2023 12:17:53 -0700 (PDT)
+Message-ID: <49790631-807e-4903-bd26-86a6cde41e46@linaro.org>
+Date: Thu, 16 Mar 2023 20:17:52 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.8.0
-Subject: Re: [PATCH 2/2] soundwire: bus: Update sdw_nread/nwrite_no_pm to
- handle page boundaries
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v2] ASoC: dt-bindings: adi,adau17x1: Convert to DT schema
 Content-Language: en-US
-To: Charles Keepax <ckeepax@opensource.cirrus.com>, vkoul@kernel.org
-References: <20230316155734.3191577-1-ckeepax@opensource.cirrus.com>
- <20230316155734.3191577-2-ckeepax@opensource.cirrus.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230316155734.3191577-2-ckeepax@opensource.cirrus.com>
+To: Rob Herring <robh@kernel.org>, Vijaya Anand <sunrockers8@gmail.com>
+References: <20230315231055.3067-1-sunrockers8@gmail.com>
+ <167897435177.2729678.7747291818682080828.robh@kernel.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <167897435177.2729678.7747291818682080828.robh@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-ID-Hash: JYU444W43BERDOY4FXHZ2LBGIWBSQSEX
-X-Message-ID-Hash: JYU444W43BERDOY4FXHZ2LBGIWBSQSEX
-X-MailFrom: pierre-louis.bossart@linux.intel.com
+Message-ID-Hash: FSXAGEFZAPHMGJGAQXVRNYNXEJYHDYD3
+X-Message-ID-Hash: FSXAGEFZAPHMGJGAQXVRNYNXEJYHDYD3
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com
+CC: broonie@kernel.org, Daniel Baluta <daniel.baluta@nxp.com>,
+ robh+dt@kernel.org, lgirdwood@gmail.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JYU444W43BERDOY4FXHZ2LBGIWBSQSEX/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FSXAGEFZAPHMGJGAQXVRNYNXEJYHDYD3/>
+List-Archive: <>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-
-
-On 3/16/23 10:57, Charles Keepax wrote:
-> Currently issuing a sdw_nread/nwrite_no_pm across a page boundary
-> will silently fail to write correctly as nothing updates the page
-> registers, meaning the same page of the chip will get rewritten
-> with each successive page of data.
+On 16/03/2023 14:53, Rob Herring wrote:
 > 
-> As the sdw_msg structure contains page information it seems
-> reasonable that a single sdw_msg should always be within one
-> page. It is also mostly simpler to handle the paging at the
-> bus level rather than each master having to handle it in their
-> xfer_msg callback.
+> On Thu, 16 Mar 2023 04:40:55 +0530, Vijaya Anand wrote:
+>> Convert the binding document for adi,adau17x1 from txt to yaml
+>> so one could validate dt-entries correctly and any future additions
+>> can go into yaml format. Add address and size cells to example to
+>> prevent errors regarding reg format.
+>>
+>> Signed-off-by: Vijaya Anand <sunrockers8@gmail.com>
+>> Cc: Daniel Baluta <daniel.baluta@nxp.com>
+>> ---
+>> Changes since v1:
+>> - added 'Codec' in title to clarify type of devices
+>> - put compatible devices in lexographic order
+>> - changed description of clocks
+>> - changed 'unevaluatedProperties' to 'additionalProperties'
+>> - changed node names to be generic
+>>
+>> ---
+>>  .../bindings/sound/adi,adau17x1.txt           | 32 ------------
+>>  .../bindings/sound/adi,adau17x1.yaml          | 52 +++++++++++++++++++
+>>  2 files changed, 52 insertions(+), 32 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/sound/adi,adau17x1.txt
+>>  create mode 100644 Documentation/devicetree/bindings/sound/adi,adau17x1.yaml
+>>
 > 
-> As such add handling to the bus code to split up a transfer into
-> multiple sdw_msg's when they go across page boundaries.
-
-This sounds good but we need to clarify that the multiple sdw_msg's will
-not necessarily be sent one after the other, the msg_lock is held in the
-sdw_transfer() function, so there should be no expectation that e.g. one
-big chunk of firmware code can be sent without interruption.
-
-I also wonder if we should have a lower bar than the page to avoid
-hogging the bus with large read/write transactions. If there are
-multiple devices on the same link and one of them signals an alert
-status while a large transfer is on-going, the alert handling will
-mechanically be delayed by up to a page - that's 32k reads/writes, isn't it?
-
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> ---
->  drivers/soundwire/bus.c | 47 +++++++++++++++++++++++------------------
->  1 file changed, 26 insertions(+), 21 deletions(-)
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
 > 
-> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-> index 3c67266f94834..bdd251e871694 100644
-> --- a/drivers/soundwire/bus.c
-> +++ b/drivers/soundwire/bus.c
-> @@ -386,37 +386,42 @@ int sdw_fill_msg(struct sdw_msg *msg, struct sdw_slave *slave,
->   * Read/Write IO functions.
->   */
->  
-> -int sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
-> +static int sdw_ntransfer_no_pm(struct sdw_slave *slave, u32 addr, u8 flags,
-> +			       size_t count, u8 *val)
->  {
->  	struct sdw_msg msg;
-> +	size_t size;
->  	int ret;
->  
-> -	ret = sdw_fill_msg(&msg, slave, addr, count,
-> -			   slave->dev_num, SDW_MSG_FLAG_READ, val);
-> -	if (ret < 0)
-> -		return ret;
-> +	while (count) {
-> +		// Only handle bytes up to next page boundary
-> +		size = min(count, (SDW_REGADDR + 1) - (addr & SDW_REGADDR));
->  
-> -	ret = sdw_transfer(slave->bus, &msg);
-> -	if (slave->is_mockup_device)
-> -		ret = 0;
-> -	return ret;
-> +		ret = sdw_fill_msg(&msg, slave, addr, size, slave->dev_num, flags, val);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		ret = sdw_transfer(slave->bus, &msg);
-> +		if (ret < 0 && !slave->is_mockup_device)
-> +			return ret;
-> +
-> +		addr += size;
-> +		val += size;
-> +		count -= size;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +int sdw_nread_no_pm(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
-> +{
-> +	return sdw_ntransfer_no_pm(slave, addr, SDW_MSG_FLAG_READ, count, val);
->  }
->  EXPORT_SYMBOL(sdw_nread_no_pm);
->  
->  int sdw_nwrite_no_pm(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
->  {
-> -	struct sdw_msg msg;
-> -	int ret;
-> -
-> -	ret = sdw_fill_msg(&msg, slave, addr, count,
-> -			   slave->dev_num, SDW_MSG_FLAG_WRITE, (u8 *)val);
-> -	if (ret < 0)
-> -		return ret;
-> -
-> -	ret = sdw_transfer(slave->bus, &msg);
-> -	if (slave->is_mockup_device)
-> -		ret = 0;
-> -	return ret;
-> +	return sdw_ntransfer_no_pm(slave, addr, SDW_MSG_FLAG_WRITE, count, (u8 *)val);
->  }
->  EXPORT_SYMBOL(sdw_nwrite_no_pm);
->  
+> yamllint warnings/errors:
+> ./Documentation/devicetree/bindings/sound/adi,adau17x1.yaml:8:2: [warning] wrong indentation: expected 2 but found 1 (indentation)
+> 
+> dtschema/dtc warnings/errors:
+> Error: Documentation/devicetree/bindings/sound/adi,adau17x1.example.dts:29.3-30.1 syntax error
+> FATAL ERROR: Unable to parse input tree
+> make[1]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/sound/adi,adau17x1.example.dtb] Error 1
+
+Test your patches before sending... this never worked.
+
+Best regards,
+Krzysztof
+
