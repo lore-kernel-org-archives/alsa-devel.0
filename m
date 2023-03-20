@@ -4,106 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 172F9C6FD1D
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Mar 2023 07:51:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2CB6C7618A
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Mar 2023 09:13:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09F221F7;
-	Mon, 20 Mar 2023 08:51:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09F221F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 731491F4;
+	Mon, 20 Mar 2023 10:13:02 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 731491F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679298715;
-	bh=vFbVBJpx+R5YyGo+E9uYKPdfdgli9wwn4gbIL3A5Q+w=;
-	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=BLi499ZZwNDre8xivMvbVKanT+9W3f4CadPujOxlva3IGks7zNMpnPzHHxR9nXeCN
-	 Ft6gJn03oOSRYPTb12hHuOMCv0lDkY9gZd1pSiDB+dHqhUT7OF/SCDRVNuqh3zGE1M
-	 Vpb2s0v1Hr2Pv2P9NhxnRdyE46LTeCraPOqPF6Qo=
+	s=default; t=1679303632;
+	bh=eJDi7VmCJPwdhn51rls84NY3kMe6hLd/04eqYQ7vwx4=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From;
+	b=NalMfi/bwGk6Lfzl1zUHlPXbE+M3872kTnv1Ipygismg/Dn5Gf+Zxyf4ygUqO1jLU
+	 BN8TawB13q4X/ayxDHCqwHoOQCc947iXjSiZ+Rjb6K9J8TxAvkgLib0mJVodp4HnCj
+	 xeuFICwSNtiMlZFanR8JTLNz9fTQNEpZ+9zkdtS8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E106BF80093;
-	Mon, 20 Mar 2023 08:50:43 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id EFBAFF8027B;
+	Mon, 20 Mar 2023 10:12:40 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id B58C4F8027B; Mon, 20 Mar 2023 08:50:37 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 5D63EF80093
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2023 08:50:30 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D63EF80093
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=L1X9g0Ud;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=s3KRZN6U
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 4541C21AA2;
-	Mon, 20 Mar 2023 07:50:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1679298630;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7wWFxNwBeI6QSlHFitfcPhehJyQxi9nEaShLJ5NEVOM=;
-	b=L1X9g0Ud8Wux2i8xISKl5VsEteG2EOpaG38S5l0rPLbymKyV1rRpeRUGn98oWjy31caBsT
-	Xv7gbC5wqHm12ScAoul3Kj/zf+u6AHkElvCKYEfn9RA72+W4E00DOhX9SW/7gBTlXBFqa1
-	9gDd2x0D5E70UgQ4o/JwgnfnpKmCfSg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1679298630;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7wWFxNwBeI6QSlHFitfcPhehJyQxi9nEaShLJ5NEVOM=;
-	b=s3KRZN6U79ZtB0Ry/XOLMdRSAsaHn21BfNrDlLMNKMqEkAtCZMpUdaMO6gDqujwDs8MCgi
-	Hlc/QTak8/1M9XDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 149C613A00;
-	Mon, 20 Mar 2023 07:50:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 17JTBEYQGGTUPAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Mon, 20 Mar 2023 07:50:30 +0000
-Date: Mon, 20 Mar 2023 08:50:29 +0100
-Message-ID: <87wn3blv3u.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: lizhe  <sensor1010@163.com>
-Subject: Re: [PATCH v1] ALSA:ac97: Remove redundant driver match function
-In-Reply-To: <77006340.15c8.186f97b96e7.Coremail.sensor1010@163.com>
-References: <20230319044733.327091-1-sensor1010@163.com>
-	<87h6uhma0g.wl-tiwai@suse.de>
-	<77006340.15c8.186f97b96e7.Coremail.sensor1010@163.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: Z2QRWNO3FQCFFBVDIULI7IGXU6CMLYBK
-X-Message-ID-Hash: Z2QRWNO3FQCFFBVDIULI7IGXU6CMLYBK
-X-MailFrom: tiwai@suse.de
+	id B1002F8027B; Mon, 20 Mar 2023 10:12:35 +0100 (CET)
+Received: from webhooks-bot.alsa-project.org (vmi242170.contaboserver.net
+ [207.180.221.201])
+	by alsa1.perex.cz (Postfix) with ESMTP id CFF3EF800C9
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2023 10:12:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CFF3EF800C9
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1679303549731095314-webhooks-bot@alsa-project.org>
+References: <1679303549731095314-webhooks-bot@alsa-project.org>
+Subject: Using mili/micro/nanoseconds in split files
+Message-Id: <20230320091235.B1002F8027B@alsa1.perex.cz>
+Date: Mon, 20 Mar 2023 10:12:35 +0100 (CET)
+Message-ID-Hash: WLWWZJQBYWKDCQFK7SPEB7HHC6GHJ3OJ
+X-Message-ID-Hash: WLWWZJQBYWKDCQFK7SPEB7HHC6GHJ3OJ
+X-MailFrom: github@alsa-project.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Z2QRWNO3FQCFFBVDIULI7IGXU6CMLYBK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WLWWZJQBYWKDCQFK7SPEB7HHC6GHJ3OJ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,38 +64,9 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sun, 19 Mar 2023 11:47:51 +0100,
-lizhe wrote:
-> 
-> 
-> HI : 
->      my name is li Zhe, I am Chinese
+alsa-project/alsa-tools issue #15 was opened from kfilipan:
 
-OK, then applied the patch now.
+This is more of a feature request rather than an issue. When using `arecord` with `--max-file-time` and `--use-strftime`, one cannot get nanoseconds in the file name. This is however available in the e.g. `date` command `date +"%Y-%m-%d_%H-%M-%S.%N"` (`%N` gives nanoseconds). This would be useful for testing sound card recording time delays because having only seconds is not precise enough, e.g. it could take days or weeks for even slightly better sound cards to experience a second of delay. Thank you!
 
-
-thanks,
-
-Takashi
-
-> At 2023-03-19 16:16:15, "Takashi Iwai" <tiwai@suse.de> wrote:
-> >On Sun, 19 Mar 2023 05:47:33 +0100,
-> >Lizhe wrote:
-> >> 
-> >> If there is no driver match function, the driver core assumes that each
-> >> candidate pair (driver, device) matches, see driver_match_device()
-> >> 
-> >> Drop the bus's match function that always returned 1 and so
-> >> implements the same behaviour as when there is no match function.
-> >> 
-> >> Signed-off-by: Lizhe <sensor1010@163.com>
-> >
-> >Is Lizeh your real full name?  (i.e. your name is "Li Zhe" ?)
-> >I'm asking because the Signed-off-by line is a legal requirement.
-> >
-> >
-> >thanks,
-> >
-> >Takashi
-> 
-> 
+Issue URL     : https://github.com/alsa-project/alsa-tools/issues/15
+Repository URL: https://github.com/alsa-project/alsa-tools
