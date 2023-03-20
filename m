@@ -4,97 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22FDCC6FD1C
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Mar 2023 20:37:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D65B5C6FD1C
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Mar 2023 20:38:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8151822;
-	Mon, 20 Mar 2023 21:36:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8151822
+	by alsa0.perex.cz (Postfix) with ESMTPS id D6675210;
+	Mon, 20 Mar 2023 21:37:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6675210
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679344663;
-	bh=q2WHkKbj/gorEAJvCbAOYCbTNV4/YP8lsrrEl2fs4ko=;
-	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
+	s=default; t=1679344686;
+	bh=3K+HfyPQjIbBIoDLQUwDUdraZ5M4IxrG2vAebklpJHk=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=DaphpXooN4P80CB7TXa2sni5bZyUpiqnH/SQf+8a5BYf/POv0L322jNyQSYIw1t1Y
-	 7gRAKaPlNoivp83ERA5PIh3Aotb5atXExOTmwUuYLBPK/0HAviTUkpNbrXOgTrchKr
-	 ADNjYl1cjtxti6WuwD7NyIkqvK9PtcDxjdKkq/hA=
+	b=D6no5jNwv6SisWuiAxkrQfAHnwEC9pYWDJiauT9Um8FqfXQM21YBf+1fEZ/yvKXhA
+	 jBRimu2X+z9luIttI9uTSPNNq49TiszgwEZU6IjP+/ZuNk4PH654yUPN/tOpspvqIj
+	 9qAXLFUisvabRLkt/LCsugPq93y3gRXWGUXKLJdw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 239DBF80482;
-	Mon, 20 Mar 2023 21:36:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2633F80549;
+	Mon, 20 Mar 2023 21:36:25 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0C314F80551; Mon, 20 Mar 2023 21:36:18 +0100 (CET)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id CDDE5F80549; Mon, 20 Mar 2023 21:36:21 +0100 (CET)
+Received: from mail.mutex.one (mail.mutex.one [62.77.152.124])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 14529F80548
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2023 21:36:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14529F80548
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0C0E6F8027B
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2023 21:35:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C0E6F8027B
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=K3PxAtxd
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679344570; x=1710880570;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=q2WHkKbj/gorEAJvCbAOYCbTNV4/YP8lsrrEl2fs4ko=;
-  b=K3PxAtxdcfbYOvpziH5aW7EQLGpfplbbJ+uFc41J09xGcGZCiXH9J0kX
-   Mt/1Ambj8sI8dFICgOenCjHQjpL7xjyYwyYKFLfUoiopAVIpFtQnitb+j
-   ZyWSaMFsohjqNkHUKzq88e2m7A4sqqSGm3LXWVsIXGn0WbgLE9qL/l7OE
-   KAQEcsDlGJqw3R9MSDcEYN6kgQg63xba2ggH2ETsm74zdtkd7fze4Yyvz
-   74cFlNGDGwQOOXyiOcv7WQs0VkNpacUj0g/C0Bx3bY2GTwzYmpZLZZH5n
-   Zk2QJGwo1ddrMLF3BxJ6fvUSDfcqGegpER9+QFmNzBpNzIbePDHYyWrFU
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10655"; a="318424171"
-X-IronPort-AV: E=Sophos;i="5.98,276,1673942400";
-   d="scan'208";a="318424171"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Mar 2023 13:36:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10655"; a="681223528"
-X-IronPort-AV: E=Sophos;i="5.98,276,1673942400";
-   d="scan'208";a="681223528"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 20 Mar 2023 13:36:01 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1peMEW-000BIc-0p;
-	Mon, 20 Mar 2023 20:35:56 +0000
-Date: Tue, 21 Mar 2023 04:34:58 +0800
-From: kernel test robot <lkp@intel.com>
-To: Shenghao Ding <13916275206@139.com>, broonie@kernel.org,
-	lgirdwood@gmail.com, perex@perex.cz,
-	pierre-louis.bossart@linux.intel.com
-Subject: Re: [PATCH v4] ASoC: tas2781: Add tas2781 driver
-Message-ID: <202303210435.ij3d6YHB-lkp@intel.com>
-References: <20230320150726.20573-1-13916275206@139.com>
+	dkim=pass (1024-bit key,
+ unprotected) header.d=mutex.one header.i=@mutex.one header.a=rsa-sha256
+ header.s=default header.b=mVDuEfLn
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.mutex.one (Postfix) with ESMTP id 69F2D16C0055;
+	Mon, 20 Mar 2023 22:35:29 +0200 (EET)
+X-Virus-Scanned: Debian amavisd-new at mail.mutex.one
+Received: from mail.mutex.one ([127.0.0.1])
+	by localhost (mail.mutex.one [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id YBJ1tyd7JdxF; Mon, 20 Mar 2023 22:35:27 +0200 (EET)
+From: Marian Postevca <posteuca@mutex.one>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mutex.one; s=default;
+	t=1679344527; bh=3K+HfyPQjIbBIoDLQUwDUdraZ5M4IxrG2vAebklpJHk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=mVDuEfLnU4h7PO9rqdJpGKlDnttj41EDc3enI4A9o6a6GoV/PJOnaMUz5g2HVj/RT
+	 m52HVBh6yGhfLUgkD4E1j4ryz2+W9pW1fiNLJW1Mmjj5aKOpcFYMSHcl2xahE797x+
+	 Ri38U5ziZHhGGry+yufasnCQnMwTCYwEugl0+MXM=
+To: Takashi Iwai <tiwai@suse.com>,
+	Mark Brown <broonie@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH 3/4] ASoC: amd: acp: Add machine driver that enables sound for
+ systems with a ES8336 codec
+Date: Mon, 20 Mar 2023 22:35:18 +0200
+Message-Id: <20230320203519.20137-4-posteuca@mutex.one>
+In-Reply-To: <20230320203519.20137-1-posteuca@mutex.one>
+References: <20230320203519.20137-1-posteuca@mutex.one>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230320150726.20573-1-13916275206@139.com>
-Message-ID-Hash: NTF6ISRR7B3SD5FD7TUNF2CBOBDFNHLK
-X-Message-ID-Hash: NTF6ISRR7B3SD5FD7TUNF2CBOBDFNHLK
-X-MailFrom: lkp@intel.com
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: O3ZWXYPRD2MBVEJWTQXVK6CUMD3CZZQQ
+X-Message-ID-Hash: O3ZWXYPRD2MBVEJWTQXVK6CUMD3CZZQQ
+X-MailFrom: posteuca@mutex.one
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: oe-kbuild-all@lists.linux.dev, kevin-lu@ti.com, shenghao-ding@ti.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, x1077012@ti.com,
- peeyush@ti.com, navada@ti.com, Shenghao Ding <13916275206@139.com>
+CC: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Marian Postevca <posteuca@mutex.one>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NTF6ISRR7B3SD5FD7TUNF2CBOBDFNHLK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/O3ZWXYPRD2MBVEJWTQXVK6CUMD3CZZQQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -103,90 +87,840 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Shenghao,
+This commit enables sound for a line of Huawei laptops that use
+the ES8336 codec which is connected to the ACP3X module.
 
-Thank you for the patch! Perhaps something to improve:
+Signed-off-by: Marian Postevca <posteuca@mutex.one>
+---
+ sound/soc/amd/acp-config.c                    |  70 +++
+ sound/soc/amd/acp/Makefile                    |   2 +-
+ sound/soc/amd/acp/acp-legacy-mach.c           | 105 +++-
+ sound/soc/amd/acp/acp-mach-common.c           |   8 +
+ sound/soc/amd/acp/acp-mach.h                  |   2 +
+ sound/soc/amd/acp/acp-renoir.c                |   4 +
+ sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.c | 471 ++++++++++++++++++
+ sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.h |  12 +
+ 8 files changed, 657 insertions(+), 17 deletions(-)
+ create mode 100644 sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.c
+ create mode 100644 sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.h
 
-[auto build test WARNING on broonie-sound/for-next]
-[also build test WARNING on linus/master v6.3-rc3 next-20230320]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Shenghao-Ding/ASoC-tas2781-Add-tas2781-driver/20230320-231125
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-patch link:    https://lore.kernel.org/r/20230320150726.20573-1-13916275206%40139.com
-patch subject: [PATCH v4] ASoC: tas2781: Add tas2781 driver
-config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230321/202303210435.ij3d6YHB-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/9620831afc4c833413c073a5b991d0f9be570754
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Shenghao-Ding/ASoC-tas2781-Add-tas2781-driver/20230320-231125
-        git checkout 9620831afc4c833413c073a5b991d0f9be570754
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=sparc olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=sparc SHELL=/bin/bash sound/soc/codecs/
-
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202303210435.ij3d6YHB-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   sound/soc/codecs/tas2781-i2c.c: In function 'tasdevice_tuning_switch':
->> sound/soc/codecs/tas2781-i2c.c:1007:13: warning: variable 'is_set_glb_mode' set but not used [-Wunused-but-set-variable]
-    1007 |         int is_set_glb_mode = 0;
-         |             ^~~~~~~~~~~~~~~
-   sound/soc/codecs/tas2781-i2c.c: At top level:
-   sound/soc/codecs/tas2781-i2c.c:42:27: warning: 'dts_dev_addr_tag' defined but not used [-Wunused-const-variable=]
-      42 | static const char * const dts_dev_addr_tag[] = {
-         |                           ^~~~~~~~~~~~~~~~
-
-
-vim +/is_set_glb_mode +1007 sound/soc/codecs/tas2781-i2c.c
-
-  1001	
-  1002	static void tasdevice_tuning_switch(
-  1003		struct tasdevice_priv *tas_dev, int state)
-  1004	{
-  1005		struct tasdevice_fw *tas_fmw = tas_dev->fmw;
-  1006		int profile_cfg_id = 0;
-> 1007		int is_set_glb_mode = 0;
-  1008	
-  1009		if (state == 0) {
-  1010			if (tas_fmw) {
-  1011				if (tas_dev->cur_prog >= tas_fmw->nr_programs)
-  1012					/*bypass all in rca is profile id 0*/
-  1013					profile_cfg_id = RCA_CONFIGID_BYPASS_ALL;
-  1014				else {
-  1015					/*dsp mode or tuning mode*/
-  1016					profile_cfg_id =
-  1017						tas_dev->rcabin.profile_cfg_id;
-  1018	
-  1019					is_set_glb_mode =
-  1020						tasdevice_select_tuningprm_cfg(tas_dev,
-  1021							tas_dev->cur_prog,
-  1022							tas_dev->cur_conf,
-  1023							profile_cfg_id);
-  1024					if (tas_dev->set_global_mode != NULL)
-  1025						tas_dev->set_global_mode(tas_dev);
-  1026				}
-  1027			}  else
-  1028				profile_cfg_id = RCA_CONFIGID_BYPASS_ALL;
-  1029	
-  1030			tasdevice_select_cfg_blk(tas_dev, profile_cfg_id,
-  1031				TASDEVICE_BIN_BLK_PRE_POWER_UP);
-  1032		} else
-  1033			tasdevice_select_cfg_blk(tas_dev,
-  1034				tas_dev->rcabin.profile_cfg_id,
-  1035				TASDEVICE_BIN_BLK_PRE_SHUTDOWN);
-  1036	}
-  1037	
-
+diff --git a/sound/soc/amd/acp-config.c b/sound/soc/amd/acp-config.c
+index 0932473b6394..76e65c0ad140 100644
+--- a/sound/soc/amd/acp-config.c
++++ b/sound/soc/amd/acp-config.c
+@@ -47,6 +47,76 @@ static const struct config_entry config_table[] = {
+ 			{}
+ 		},
+ 	},
++	{
++		.flags = FLAG_AMD_LEGACY,
++		.device = ACP_PCI_DEV_ID,
++		.dmi_table = (const struct dmi_system_id []) {
++			{
++				.matches = {
++					DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "KLVL-WXXW"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1010"),
++				},
++			},
++			{}
++		},
++	},
++	{
++		.flags = FLAG_AMD_LEGACY,
++		.device = ACP_PCI_DEV_ID,
++		.dmi_table = (const struct dmi_system_id []) {
++			{
++				.matches = {
++					DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "KLVL-WXX9"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1010"),
++				},
++			},
++			{}
++		},
++	},
++	{
++		.flags = FLAG_AMD_LEGACY,
++		.device = ACP_PCI_DEV_ID,
++		.dmi_table = (const struct dmi_system_id []) {
++			{
++				.matches = {
++					DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "BOM-WXX9"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1010"),
++				},
++			},
++			{}
++		},
++	},
++	{
++		.flags = FLAG_AMD_LEGACY,
++		.device = ACP_PCI_DEV_ID,
++		.dmi_table = (const struct dmi_system_id []) {
++			{
++				.matches = {
++					DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HVY-WXX9"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1020"),
++				},
++			},
++			{}
++		},
++	},
++	{
++		.flags = FLAG_AMD_LEGACY,
++		.device = ACP_PCI_DEV_ID,
++		.dmi_table = (const struct dmi_system_id []) {
++			{
++				.matches = {
++					DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HVY-WXX9"),
++					DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1040"),
++				},
++			},
++			{}
++		},
++	},
+ };
+ 
+ int snd_amd_acp_find_config(struct pci_dev *pci)
+diff --git a/sound/soc/amd/acp/Makefile b/sound/soc/amd/acp/Makefile
+index d9abb0ee5218..1bf64a9289a2 100644
+--- a/sound/soc/amd/acp/Makefile
++++ b/sound/soc/amd/acp/Makefile
+@@ -16,7 +16,7 @@ snd-acp-rembrandt-objs  := acp-rembrandt.o
+ 
+ #machine specific driver
+ snd-acp-mach-objs     := acp-mach-common.o
+-snd-acp-legacy-mach-objs     := acp-legacy-mach.o
++snd-acp-legacy-mach-objs     := acp-legacy-mach.o acp3x-es83xx/acp3x-es83xx.o
+ snd-acp-sof-mach-objs     := acp-sof-mach.o
+ 
+ obj-$(CONFIG_SND_SOC_AMD_ACP_PCM) += snd-acp-pcm.o
+diff --git a/sound/soc/amd/acp/acp-legacy-mach.c b/sound/soc/amd/acp/acp-legacy-mach.c
+index 676ad50638d0..8ecda4780d4a 100644
+--- a/sound/soc/amd/acp/acp-legacy-mach.c
++++ b/sound/soc/amd/acp/acp-legacy-mach.c
+@@ -20,6 +20,7 @@
+ #include <linux/module.h>
+ 
+ #include "acp-mach.h"
++#include "acp3x-es83xx/acp3x-es83xx.h"
+ 
+ static struct acp_card_drvdata rt5682_rt1019_data = {
+ 	.hs_cpu_id = I2S_SP,
+@@ -51,6 +52,14 @@ static struct acp_card_drvdata rt5682s_rt1019_data = {
+ 	.tdm_mode = false,
+ };
+ 
++static struct acp_card_drvdata es83xx_rn_data = {
++	.hs_cpu_id = I2S_SP,
++	.dmic_cpu_id = DMIC,
++	.hs_codec_id = ES83XX,
++	.dmic_codec_id = DMIC,
++	.platform = RENOIR,
++};
++
+ static struct acp_card_drvdata max_nau8825_data = {
+ 	.hs_cpu_id = I2S_HS,
+ 	.amp_cpu_id = I2S_HS,
+@@ -92,6 +101,33 @@ static const struct snd_soc_dapm_widget acp_widgets[] = {
+ 	SND_SOC_DAPM_SPK("Right Spk", NULL),
+ };
+ 
++static bool acp_asoc_init_ops(struct acp_card_drvdata *priv)
++{
++	bool has_ops = false;
++
++	if (priv->hs_codec_id == ES83XX) {
++		has_ops = true;
++		acp3x_es83xx_init_ops(&priv->ops);
++	}
++	return has_ops;
++}
++
++static int acp_asoc_suspend_pre(struct snd_soc_card *card)
++{
++	int ret;
++
++	ret = acp_ops_suspend_pre(card);
++	return ret == 1 ? 0 : ret;
++}
++
++static int acp_asoc_resume_post(struct snd_soc_card *card)
++{
++	int ret;
++
++	ret = acp_ops_resume_post(card);
++	return ret == 1 ? 0 : ret;
++}
++
+ static int acp_asoc_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = NULL;
+@@ -100,38 +136,70 @@ static int acp_asoc_probe(struct platform_device *pdev)
+ 	struct acp_card_drvdata *acp_card_drvdata;
+ 	int ret;
+ 
+-	if (!pdev->id_entry)
+-		return -EINVAL;
++	if (!pdev->id_entry) {
++		ret = -EINVAL;
++		goto out;
++	}
+ 
+ 	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
+-	if (!card)
+-		return -ENOMEM;
++	if (!card) {
++		ret = -ENOMEM;
++		goto out;
++	}
+ 
++	card->drvdata = (struct acp_card_drvdata *)pdev->id_entry->driver_data;
++	acp_card_drvdata = card->drvdata;
++	acp_card_drvdata->acpi_mach = (struct snd_soc_acpi_mach *)pdev->dev.platform_data;
+ 	card->dev = dev;
+ 	card->owner = THIS_MODULE;
+ 	card->name = pdev->id_entry->name;
+-	card->dapm_widgets = acp_widgets;
+-	card->num_dapm_widgets = ARRAY_SIZE(acp_widgets);
+-	card->controls = acp_controls;
+-	card->num_controls = ARRAY_SIZE(acp_controls);
+-	card->drvdata = (struct acp_card_drvdata *)pdev->id_entry->driver_data;
+ 
+-	acp_card_drvdata = card->drvdata;
++	acp_asoc_init_ops(card->drvdata);
++
++	ret = acp_ops_configure_widgets(card);
++	if (ret == 1) {
++		card->dapm_widgets = acp_widgets;
++		card->num_dapm_widgets = ARRAY_SIZE(acp_widgets);
++		card->controls = acp_controls;
++		card->num_controls = ARRAY_SIZE(acp_controls);
++	} else if (ret < 0) {
++		dev_err(&pdev->dev,
++			"Cannot configure widgets for card (%s): %d\n",
++			card->name, ret);
++		goto out;
++	}
++	card->suspend_pre = acp_asoc_suspend_pre;
++	card->resume_post = acp_asoc_resume_post;
++
++	ret = acp_ops_probe(card);
++	if (ret < 0) {
++		dev_err(&pdev->dev,
++			"Cannot probe card (%s): %d\n",
++			card->name, ret);
++		goto out;
++	}
++
+ 	dmi_id = dmi_first_match(acp_quirk_table);
+ 	if (dmi_id && dmi_id->driver_data)
+ 		acp_card_drvdata->tdm_mode = dmi_id->driver_data;
+ 
+-	acp_legacy_dai_links_create(card);
++	ret = acp_legacy_dai_links_create(card);
++	if (ret) {
++		dev_err(&pdev->dev,
++			"Cannot create dai links for card (%s): %d\n",
++			card->name, ret);
++		goto out;
++	}
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+ 	if (ret) {
+ 		dev_err(&pdev->dev,
+-				"devm_snd_soc_register_card(%s) failed: %d\n",
+-				card->name, ret);
+-		return ret;
++			"devm_snd_soc_register_card(%s) failed: %d\n",
++			card->name, ret);
++		goto out;
+ 	}
+-
+-	return 0;
++out:
++	return ret;
+ }
+ 
+ static const struct platform_device_id board_ids[] = {
+@@ -147,6 +215,10 @@ static const struct platform_device_id board_ids[] = {
+ 		.name = "acp3xalc5682s1019",
+ 		.driver_data = (kernel_ulong_t)&rt5682s_rt1019_data,
+ 	},
++	{
++		.name = "acp3x-es83xx",
++		.driver_data = (kernel_ulong_t)&es83xx_rn_data,
++	},
+ 	{
+ 		.name = "rmb-nau8825-max",
+ 		.driver_data = (kernel_ulong_t)&max_nau8825_data,
+@@ -173,6 +245,7 @@ MODULE_DESCRIPTION("ACP chrome audio support");
+ MODULE_ALIAS("platform:acp3xalc56821019");
+ MODULE_ALIAS("platform:acp3xalc5682sm98360");
+ MODULE_ALIAS("platform:acp3xalc5682s1019");
++MODULE_ALIAS("platform:acp3x-es83xx");
+ MODULE_ALIAS("platform:rmb-nau8825-max");
+ MODULE_ALIAS("platform:rmb-rt5682s-rt1019");
+ MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/amd/acp/acp-mach-common.c b/sound/soc/amd/acp/acp-mach-common.c
+index b4dcce4fbae9..16dfebfbb4b6 100644
+--- a/sound/soc/amd/acp/acp-mach-common.c
++++ b/sound/soc/amd/acp/acp-mach-common.c
+@@ -1053,6 +1053,7 @@ int acp_legacy_dai_links_create(struct snd_soc_card *card)
+ 	struct device *dev = card->dev;
+ 	struct acp_card_drvdata *drv_data = card->drvdata;
+ 	int i = 0, num_links = 0;
++	int rc;
+ 
+ 	if (drv_data->hs_cpu_id)
+ 		num_links++;
+@@ -1091,6 +1092,13 @@ int acp_legacy_dai_links_create(struct snd_soc_card *card)
+ 			links[i].init = acp_card_rt5682s_init;
+ 			links[i].ops = &acp_card_rt5682s_ops;
+ 		}
++		if (drv_data->hs_codec_id == ES83XX) {
++			rc = acp_ops_configure_link(card, &links[i]);
++			if (rc != 0) {
++				dev_err(dev, "Failed to configure link for ES83XX: %d\n", rc);
++				return rc;
++			}
++		}
+ 		i++;
+ 	}
+ 
+diff --git a/sound/soc/amd/acp/acp-mach.h b/sound/soc/amd/acp/acp-mach.h
+index 2cade68e6cc3..bb93c8b2dbfa 100644
+--- a/sound/soc/amd/acp/acp-mach.h
++++ b/sound/soc/amd/acp/acp-mach.h
+@@ -45,6 +45,7 @@ enum codec_endpoints {
+ 	MAX98360A,
+ 	RT5682S,
+ 	NAU8825,
++	ES83XX,
+ };
+ 
+ enum platform_end_point {
+@@ -72,6 +73,7 @@ struct acp_card_drvdata {
+ 	struct clk *wclk;
+ 	struct clk *bclk;
+ 	struct acp_mach_ops ops;
++	struct snd_soc_acpi_mach *acpi_mach;
+ 	void *mach_priv;
+ 	bool soc_mclk;
+ 	bool tdm_mode;
+diff --git a/sound/soc/amd/acp/acp-renoir.c b/sound/soc/amd/acp/acp-renoir.c
+index 2a89a0d2e601..1f04e08e15d4 100644
+--- a/sound/soc/amd/acp/acp-renoir.c
++++ b/sound/soc/amd/acp/acp-renoir.c
+@@ -83,6 +83,10 @@ static struct snd_soc_acpi_mach snd_soc_acpi_amd_acp_machines[] = {
+ 		.id = "AMDI1019",
+ 		.drv_name = "renoir-acp",
+ 	},
++	{
++		.id = "ESSX8336",
++		.drv_name = "acp3x-es83xx",
++	},
+ 	{},
+ };
+ 
+diff --git a/sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.c b/sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.c
+new file mode 100644
+index 000000000000..138a7c12669b
+--- /dev/null
++++ b/sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.c
+@@ -0,0 +1,471 @@
++// SPDX-License-Identifier: GPL-2.0+
++//
++// Machine driver for AMD ACP Audio engine using ES8336 codec.
++//
++// Copyright 2023 Marian Postevca <posteuca@mutex.one>
++
++#include <sound/core.h>
++#include <sound/soc.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc-dapm.h>
++#include <sound/jack.h>
++#include <sound/soc-acpi.h>
++#include <linux/clk.h>
++#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <linux/i2c.h>
++#include <linux/input.h>
++#include <linux/io.h>
++#include <linux/acpi.h>
++#include <linux/dmi.h>
++#include "../acp-mach.h"
++
++#define get_mach_priv(card) ((struct acp3x_es83xx_private *)((acp_get_drvdata(card))->mach_priv))
++
++/* mclk-div-by-2 + terminating entry */
++#define MAX_NO_PROPS 2
++
++#define DUAL_CHANNEL	2
++
++#define ES83XX_ENABLE_DMIC	BIT(4)
++#define ES83XX_48_MHZ_MCLK	BIT(5)
++
++struct acp3x_es83xx_private {
++	unsigned long quirk;
++	struct snd_soc_component *codec;
++	struct device *codec_dev;
++	struct gpio_desc *gpio_speakers, *gpio_headphone;
++	struct acpi_gpio_params enable_spk_gpio, enable_hp_gpio;
++	struct acpi_gpio_mapping gpio_mapping[3];
++	struct snd_soc_dapm_route mic_map[2];
++};
++
++static const unsigned int rates[] = {
++	8000, 11025, 16000, 22050, 32000,
++	44100, 48000, 64000, 88200, 96000,
++};
++
++static const unsigned int rates_48mhz_mclk[] = {
++	48000, 96000,
++};
++
++static const unsigned int channels[] = {
++	DUAL_CHANNEL,
++};
++
++static const struct snd_pcm_hw_constraint_list hw_constraint_rates_normal = {
++	.count = ARRAY_SIZE(rates),
++	.list = rates,
++	.mask = 0,
++};
++
++static const struct snd_pcm_hw_constraint_list hw_constraint_rates_48mhz = {
++	.count = ARRAY_SIZE(rates_48mhz_mclk),
++	.list = rates_48mhz_mclk,
++	.mask = 0,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_channels = {
++	.count = ARRAY_SIZE(channels),
++	.list = channels,
++	.mask = 0,
++};
++
++#define ES83xx_12288_KHZ_MCLK_FREQ   (48000 * 256)
++#define ES83xx_48_MHZ_MCLK_FREQ      (48000 * 1000)
++
++static int acp3x_es83xx_speaker_power_event(struct snd_soc_dapm_widget *w,
++					    struct snd_kcontrol *kcontrol, int event);
++
++static void acp3x_es83xx_set_gpios_values(struct acp3x_es83xx_private *priv,
++					  bool speaker, bool headphone)
++{
++	gpiod_set_value_cansleep(priv->gpio_speakers, speaker);
++	gpiod_set_value_cansleep(priv->gpio_headphone, headphone);
++}
++
++static int acp3x_es83xx_create_swnode(struct device *codec_dev)
++{
++	struct property_entry props[MAX_NO_PROPS] = {};
++	struct fwnode_handle *fwnode;
++	int ret;
++
++	props[0] = PROPERTY_ENTRY_BOOL("everest,mclk-div-by-2");
++
++	fwnode = fwnode_create_software_node(props, NULL);
++	if (IS_ERR(fwnode))
++		return PTR_ERR(fwnode);
++
++	ret = device_add_software_node(codec_dev, to_software_node(fwnode));
++
++	fwnode_handle_put(fwnode);
++	return ret;
++}
++
++static int acp3x_es83xx_codec_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime;
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_soc_dai *codec_dai;
++	struct acp3x_es83xx_private *priv;
++	unsigned int freq;
++	int ret;
++
++	runtime = substream->runtime;
++	rtd = asoc_substream_to_rtd(substream);
++	codec_dai = asoc_rtd_to_codec(rtd, 0);
++	priv = get_mach_priv(rtd->card);
++
++	if (priv->quirk & ES83XX_48_MHZ_MCLK) {
++		dev_dbg(priv->codec_dev, "using a 48Mhz MCLK\n");
++		snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++					   &hw_constraint_rates_48mhz);
++		freq = ES83xx_48_MHZ_MCLK_FREQ;
++	} else {
++		dev_dbg(priv->codec_dev, "using a 12.288Mhz MCLK\n");
++		snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++					   &hw_constraint_rates_normal);
++		freq = ES83xx_12288_KHZ_MCLK_FREQ;
++	}
++
++	ret = snd_soc_dai_set_sysclk(codec_dai, 0, freq, SND_SOC_CLOCK_OUT);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set codec sysclk: %d\n", ret);
++		return ret;
++	}
++
++	ret =  snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
++				   | SND_SOC_DAIFMT_CBP_CFP);
++	if (ret < 0) {
++		dev_err(rtd->dev, "failed to set DAI fmt: %d\n", ret);
++		return ret;
++	}
++
++	runtime->hw.channels_max = DUAL_CHANNEL;
++	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++				   &constraints_channels);
++	runtime->hw.formats = SNDRV_PCM_FMTBIT_S32_LE;
++
++	return 0;
++}
++
++static struct snd_soc_jack es83xx_jack;
++
++static struct snd_soc_jack_pin es83xx_jack_pins[] = {
++	{
++		.pin	= "Headphone",
++		.mask	= SND_JACK_HEADPHONE,
++	},
++	{
++		.pin	= "Headset Mic",
++		.mask	= SND_JACK_MICROPHONE,
++	},
++};
++
++static const struct snd_soc_dapm_widget acp3x_es83xx_widgets[] = {
++	SND_SOC_DAPM_SPK("Speaker", NULL),
++	SND_SOC_DAPM_HP("Headphone", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_MIC("Internal Mic", NULL),
++
++	SND_SOC_DAPM_SUPPLY("Speaker Power", SND_SOC_NOPM, 0, 0,
++			    acp3x_es83xx_speaker_power_event,
++			    SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
++};
++
++static const struct snd_soc_dapm_route acp3x_es83xx_audio_map[] = {
++	{"Headphone", NULL, "HPOL"},
++	{"Headphone", NULL, "HPOR"},
++
++	/*
++	 * There is no separate speaker output instead the speakers are muxed to
++	 * the HP outputs. The mux is controlled Speaker and/or headphone switch.
++	 */
++	{"Speaker", NULL, "HPOL"},
++	{"Speaker", NULL, "HPOR"},
++	{"Speaker", NULL, "Speaker Power"},
++};
++
++
++static const struct snd_kcontrol_new acp3x_es83xx_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Speaker"),
++	SOC_DAPM_PIN_SWITCH("Headphone"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++	SOC_DAPM_PIN_SWITCH("Internal Mic"),
++};
++
++static int acp3x_es83xx_configure_widgets(struct snd_soc_card *card)
++{
++	card->dapm_widgets = acp3x_es83xx_widgets;
++	card->num_dapm_widgets = ARRAY_SIZE(acp3x_es83xx_widgets);
++	card->controls = acp3x_es83xx_controls;
++	card->num_controls = ARRAY_SIZE(acp3x_es83xx_controls);
++	card->dapm_routes = acp3x_es83xx_audio_map;
++	card->num_dapm_routes = ARRAY_SIZE(acp3x_es83xx_audio_map);
++
++	return 0;
++}
++
++static int acp3x_es83xx_speaker_power_event(struct snd_soc_dapm_widget *w,
++					    struct snd_kcontrol *kcontrol, int event)
++{
++	struct acp3x_es83xx_private *priv = get_mach_priv(w->dapm->card);
++
++	dev_dbg(priv->codec_dev, "speaker power event: %d\n", event);
++	if (SND_SOC_DAPM_EVENT_ON(event))
++		acp3x_es83xx_set_gpios_values(priv, 1, 0);
++	else
++		acp3x_es83xx_set_gpios_values(priv, 0, 1);
++
++	return 0;
++}
++
++static int acp3x_es83xx_suspend_pre(struct snd_soc_card *card)
++{
++	struct acp3x_es83xx_private *priv = get_mach_priv(card);
++
++	dev_dbg(priv->codec_dev, "card suspend\n");
++	snd_soc_component_set_jack(priv->codec, NULL, NULL);
++	return 0;
++}
++
++static int acp3x_es83xx_resume_post(struct snd_soc_card *card)
++{
++	struct acp3x_es83xx_private *priv = get_mach_priv(card);
++
++	dev_dbg(priv->codec_dev, "card resume\n");
++	snd_soc_component_set_jack(priv->codec, &es83xx_jack, NULL);
++	return 0;
++}
++
++static int acp3x_es83xx_configure_gpios(struct acp3x_es83xx_private *priv)
++{
++	int ret = 0;
++
++	priv->enable_spk_gpio.crs_entry_index = 0;
++	priv->enable_hp_gpio.crs_entry_index = 1;
++
++	priv->enable_spk_gpio.active_low = false;
++	priv->enable_hp_gpio.active_low = false;
++
++	priv->gpio_mapping[0].name = "speakers-enable-gpios";
++	priv->gpio_mapping[0].data = &priv->enable_spk_gpio;
++	priv->gpio_mapping[0].size = 1;
++	priv->gpio_mapping[0].quirks = ACPI_GPIO_QUIRK_ONLY_GPIOIO;
++
++	priv->gpio_mapping[1].name = "headphone-enable-gpios";
++	priv->gpio_mapping[1].data = &priv->enable_hp_gpio;
++	priv->gpio_mapping[1].size = 1;
++	priv->gpio_mapping[1].quirks = ACPI_GPIO_QUIRK_ONLY_GPIOIO;
++
++	dev_info(priv->codec_dev, "speaker gpio %d active %s, headphone gpio %d active %s\n",
++		 priv->enable_spk_gpio.crs_entry_index,
++		 priv->enable_spk_gpio.active_low ? "low" : "high",
++		 priv->enable_hp_gpio.crs_entry_index,
++		 priv->enable_hp_gpio.active_low ? "low" : "high");
++	return ret;
++}
++
++static int acp3x_es83xx_configure_mics(struct acp3x_es83xx_private *priv)
++{
++	int num_routes = 0;
++	int i;
++
++	if (!(priv->quirk & ES83XX_ENABLE_DMIC)) {
++		priv->mic_map[num_routes].sink = "MIC1";
++		priv->mic_map[num_routes].source = "Internal Mic";
++		num_routes++;
++	}
++
++	priv->mic_map[num_routes].sink = "MIC2";
++	priv->mic_map[num_routes].source = "Headset Mic";
++	num_routes++;
++
++	for (i = 0; i < num_routes; i++)
++		dev_info(priv->codec_dev, "%s is %s\n",
++			 priv->mic_map[i].source, priv->mic_map[i].sink);
++
++	return num_routes;
++}
++
++static int acp3x_es83xx_init(struct snd_soc_pcm_runtime *runtime)
++{
++	struct snd_soc_component *codec = asoc_rtd_to_codec(runtime, 0)->component;
++	struct snd_soc_card *card = runtime->card;
++	struct acp3x_es83xx_private *priv = get_mach_priv(card);
++	int ret = 0;
++	int num_routes;
++
++	ret = snd_soc_card_jack_new_pins(card, "Headset",
++					 SND_JACK_HEADSET | SND_JACK_BTN_0,
++					 &es83xx_jack, es83xx_jack_pins,
++					 ARRAY_SIZE(es83xx_jack_pins));
++	if (ret) {
++		dev_err(card->dev, "jack creation failed %d\n", ret);
++		return ret;
++	}
++
++	snd_jack_set_key(es83xx_jack.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
++
++	snd_soc_component_set_jack(codec, &es83xx_jack, NULL);
++
++	priv->codec = codec;
++	acp3x_es83xx_configure_gpios(priv);
++
++	ret = devm_acpi_dev_add_driver_gpios(priv->codec_dev, priv->gpio_mapping);
++	if (ret)
++		dev_warn(priv->codec_dev, "failed to add speaker gpio\n");
++
++	priv->gpio_speakers = gpiod_get_optional(priv->codec_dev, "speakers-enable",
++				priv->enable_spk_gpio.active_low ? GPIOD_OUT_LOW : GPIOD_OUT_HIGH);
++	if (IS_ERR(priv->gpio_speakers)) {
++		dev_err(priv->codec_dev, "could not get speakers-enable GPIO\n");
++		return PTR_ERR(priv->gpio_speakers);
++	}
++
++	priv->gpio_headphone = gpiod_get_optional(priv->codec_dev, "headphone-enable",
++				priv->enable_hp_gpio.active_low ? GPIOD_OUT_LOW : GPIOD_OUT_HIGH);
++	if (IS_ERR(priv->gpio_headphone)) {
++		dev_err(priv->codec_dev, "could not get headphone-enable GPIO\n");
++		return PTR_ERR(priv->gpio_headphone);
++	}
++
++	if (priv->quirk & ES83XX_48_MHZ_MCLK) {
++		ret = acp3x_es83xx_create_swnode(priv->codec_dev);
++		if (ret != 0) {
++			dev_err(priv->codec_dev,
++				"could not create software node inside codec: %d\n", ret);
++			return ret;
++		}
++	}
++
++	num_routes = acp3x_es83xx_configure_mics(priv);
++	if (num_routes > 0) {
++		ret = snd_soc_dapm_add_routes(&card->dapm, priv->mic_map, num_routes);
++		if (ret != 0)
++			device_remove_software_node(priv->codec_dev);
++	}
++
++	return ret;
++}
++
++static const struct snd_soc_ops acp3x_es83xx_ops = {
++	.startup = acp3x_es83xx_codec_startup,
++};
++
++
++SND_SOC_DAILINK_DEF(codec,
++		    DAILINK_COMP_ARRAY(COMP_CODEC("i2c-ESSX8336:00", "ES8316 HiFi")));
++
++static const struct dmi_system_id acp3x_es83xx_dmi_table[] = {
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "KLVL-WXXW"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1010"),
++		},
++		.driver_data = (void *)(ES83XX_ENABLE_DMIC),
++	},
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "KLVL-WXX9"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1010"),
++		},
++		.driver_data = (void *)(ES83XX_ENABLE_DMIC),
++	},
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "BOM-WXX9"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1010"),
++		},
++		.driver_data = (void *)(ES83XX_ENABLE_DMIC|ES83XX_48_MHZ_MCLK),
++	},
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HVY-WXX9"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1020"),
++		},
++		.driver_data = (void *)(ES83XX_ENABLE_DMIC),
++	},
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "HUAWEI"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HVY-WXX9"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "M1040"),
++		},
++		.driver_data = (void *)(ES83XX_ENABLE_DMIC),
++	},
++	{}
++};
++
++static int acp3x_es83xx_configure_link(struct snd_soc_card *card, struct snd_soc_dai_link *link)
++{
++	link->codecs = codec;
++	link->num_codecs = ARRAY_SIZE(codec);
++	link->init = acp3x_es83xx_init;
++	link->ops = &acp3x_es83xx_ops;
++
++	return 0;
++}
++
++static int acp3x_es83xx_probe(struct snd_soc_card *card)
++{
++	int ret = 0;
++	struct device *dev = card->dev;
++	const struct dmi_system_id *dmi_id;
++
++	dmi_id = dmi_first_match(acp3x_es83xx_dmi_table);
++	if (dmi_id && dmi_id->driver_data) {
++		struct acp3x_es83xx_private *priv;
++		struct acp_card_drvdata *acp_drvdata;
++		struct acpi_device *adev;
++		struct device *codec_dev;
++
++		acp_drvdata = (struct acp_card_drvdata *)card->drvdata;
++
++		dev_info(dev, "matched DMI table with this system, trying to register sound card\n");
++
++		adev = acpi_dev_get_first_match_dev(acp_drvdata->acpi_mach->id, NULL, -1);
++		if (!adev) {
++			dev_err(dev, "Error cannot find '%s' dev\n", acp_drvdata->acpi_mach->id);
++			return -ENXIO;
++		}
++
++		codec_dev = acpi_get_first_physical_node(adev);
++		acpi_dev_put(adev);
++		if (!codec_dev) {
++			dev_warn(dev, "Error cannot find codec device, will defer probe\n");
++			return -EPROBE_DEFER;
++		}
++
++		priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++		if (!priv) {
++			put_device(codec_dev);
++			return -ENOMEM;
++		}
++
++		priv->codec_dev = codec_dev;
++		priv->quirk = (unsigned long)dmi_id->driver_data;
++		acp_drvdata->mach_priv = priv;
++		dev_info(dev, "successfully probed the sound card\n");
++	} else {
++		ret = -ENODEV;
++		dev_warn(dev, "this system has a ES83xx codec defined in ACPI, but the driver doesn't have this system registered in DMI table\n");
++	}
++	return ret;
++}
++
++
++void acp3x_es83xx_init_ops(struct acp_mach_ops *ops)
++{
++	ops->probe = acp3x_es83xx_probe;
++	ops->configure_widgets = acp3x_es83xx_configure_widgets;
++	ops->configure_link = acp3x_es83xx_configure_link;
++	ops->suspend_pre = acp3x_es83xx_suspend_pre;
++	ops->resume_post = acp3x_es83xx_resume_post;
++}
+diff --git a/sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.h b/sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.h
+new file mode 100644
+index 000000000000..03551ffdd9da
+--- /dev/null
++++ b/sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * Copyright 2023 Marian Postevca <posteuca@mutex.one>
++ */
++
++#ifndef __ACP3X_ES83XX_H
++#define __ACP3X_ES83XX_H
++
++void acp3x_es83xx_init_ops(struct acp_mach_ops *ops);
++
++#endif
++
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+2.39.1
+
