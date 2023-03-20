@@ -4,64 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D4BEC6FD1C
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Mar 2023 20:36:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12BEFC6FD1C
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Mar 2023 20:37:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 782F11DF;
-	Mon, 20 Mar 2023 21:35:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 782F11DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6C8E1F3;
+	Mon, 20 Mar 2023 21:36:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6C8E1F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679344609;
-	bh=R7uiQ1feQw6p3sdCJIwiFXfTPysR2lDfUQ/O3lrdZTw=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=bMtQsIi/+WVWn4BrxZJMuyBWkqC+FUh1CDy26iTyXNdnp3NhAkC9CcsR+wcCt6LoB
-	 SXHxk0UZmkCU8uNP0UhCiKcT1MvlWZtTuJwjIc3tYhJ0fHgL9qWn8h5uJZ+po2eg7a
-	 +NwQK8gCZILxS+WBkJ9aiE5eSCUv5wtPgf5ykA08=
+	s=default; t=1679344639;
+	bh=GC5sVkvOni4mr77iGtpCS30XrOnHNfFi25Iw8L/nRxE=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=u2pnM+Onfru1p0DdUdJ71TmyDARt3T9iRWBVvq99fm2mFKMO84Upi2hZw+5EbLTBm
+	 x9hLRjLRTcAlQbEBklJS8xNN8ShRi6EMXhd0IjQVOyCRaFmEeI+kiCXYEn+1OvluVZ
+	 cxYjCYVteKnNK6WyE2JCFpIQ52RoADiTb6Vbxlvk=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 034E1F804B1;
-	Mon, 20 Mar 2023 21:35:38 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8180DF80254;
+	Mon, 20 Mar 2023 21:35:39 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0017CF804FE; Mon, 20 Mar 2023 21:35:32 +0100 (CET)
+	id F34EAF804B1; Mon, 20 Mar 2023 21:35:35 +0100 (CET)
 Received: from mail.mutex.one (mail.mutex.one [62.77.152.124])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D0D7AF800C9
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2023 21:35:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0D7AF800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3B3AAF80093
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2023 21:35:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B3AAF80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=mutex.one header.i=@mutex.one header.a=rsa-sha256
- header.s=default header.b=bdzw+2ut
+ header.s=default header.b=PwrkcMN/
 Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.mutex.one (Postfix) with ESMTP id A146716C004D;
-	Mon, 20 Mar 2023 22:35:24 +0200 (EET)
+	by mail.mutex.one (Postfix) with ESMTP id E712C16C004E;
+	Mon, 20 Mar 2023 22:35:25 +0200 (EET)
 X-Virus-Scanned: Debian amavisd-new at mail.mutex.one
 Received: from mail.mutex.one ([127.0.0.1])
 	by localhost (mail.mutex.one [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id TRUwbhaV26Ey; Mon, 20 Mar 2023 22:35:23 +0200 (EET)
+	with ESMTP id ATKV22FdkbbL; Mon, 20 Mar 2023 22:35:24 +0200 (EET)
 From: Marian Postevca <posteuca@mutex.one>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mutex.one; s=default;
-	t=1679344523; bh=R7uiQ1feQw6p3sdCJIwiFXfTPysR2lDfUQ/O3lrdZTw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=bdzw+2utFb32iI1er0u+KgqIInBFKvoPWd/wyp2dCnSRGxjb9WxxZ2LWzfOjv2cDv
-	 YBzeZOlva+NYHs+3Mi/kHa84pu7q32G/A69xDJlgkmxhMemM40T/5NAx+IrSWJG7st
-	 s7bem0Zlr5GE/I0ozN9zG8rVlpMaQtsIzcKmLYsQ=
+	t=1679344524; bh=GC5sVkvOni4mr77iGtpCS30XrOnHNfFi25Iw8L/nRxE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=PwrkcMN/5cd3mPPHPOLS53EvBAgNRnUsMLad6JYLO2a2jtOT76H6k0XfOWmKQtmwG
+	 cDfmO79n3Z/hyodiC9iIMrBxOSpNyy1rwdnkEG4w8pOhX+tPD86whjfrCVRXGvMFGZ
+	 8yIKpVnFQWK5PI0CPZ76y/uG4B8SPaRnLUbI4lsI=
 To: Takashi Iwai <tiwai@suse.com>,
 	Mark Brown <broonie@kernel.org>,
 	Liam Girdwood <lgirdwood@gmail.com>,
 	Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH 0/4] ASoC: amd: acp: Add sound support for a line of HUAWEI
- laptops
-Date: Mon, 20 Mar 2023 22:35:15 +0200
-Message-Id: <20230320203519.20137-1-posteuca@mutex.one>
-Content-Type: text/plain; charset="utf-8"
+Subject: [PATCH 1/4] ASoC: es8316: Enable support for S32 LE format and MCLK
+ div by 2
+Date: Mon, 20 Mar 2023 22:35:16 +0200
+Message-Id: <20230320203519.20137-2-posteuca@mutex.one>
+In-Reply-To: <20230320203519.20137-1-posteuca@mutex.one>
+References: <20230320203519.20137-1-posteuca@mutex.one>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: XYKKSWC6GGZEEUNCVKILHSHBIBNFBL7O
-X-Message-ID-Hash: XYKKSWC6GGZEEUNCVKILHSHBIBNFBL7O
+Message-ID-Hash: WDBMYROMJE3VDAYMHYK2LMYZOGX6DDTB
+X-Message-ID-Hash: WDBMYROMJE3VDAYMHYK2LMYZOGX6DDTB
 X-MailFrom: posteuca@mutex.one
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -76,7 +78,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XYKKSWC6GGZEEUNCVKILHSHBIBNFBL7O/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WDBMYROMJE3VDAYMHYK2LMYZOGX6DDTB/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -85,45 +87,87 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This series adds support for a line of HUAWEI laptops with
-AMD CPUs that connect using the ACP3x module to a ES8336 codec.
+To properly support a line of Huawei laptops with AMD CPU and a
+ES8336 codec connected to the ACP3X module we need to enable
+the S32 LE format and the codec option to divide the MCLK by 2.
 
-The codec driver must be extended to support the S32 LE format
-and the MCLK div by 2 option. MCLK div by 2 is needed for one specific
-SKU which uses a 48Mhz MCLK which seems to be too high of a frequency
-for the codec and must be divided by 2.
+The option to divide the MCLK will be enabled for one SKU with a
+48Mhz MCLK. This frequency seems to be too high for the codec and
+leads to distorted sounds when the option is not enabled.
 
-The acp legacy driver must also be extended by using callbacks so that
-the more complicated handling for this specific codec can be moved
-outside the more generic ACP code.
+Signed-off-by: Marian Postevca <posteuca@mutex.one>
+---
+ sound/soc/codecs/es8316.c | 21 +++++++++++++++++----
+ sound/soc/codecs/es8316.h |  3 +++
+ 2 files changed, 20 insertions(+), 4 deletions(-)
 
-The last patch tries to avoid anoying pop sounds when the speaker/headphones
-are enabled/disabled by delaying the handling of the GPIOs and using a mutex
-to avoid race conditions between the speaker power event callback and the
-trigger callback.
-
-Marian Postevca (4):
-  ASoC: es8316: Enable support for S32 LE format and MCLK div by 2
-  ASoC: amd: acp: Add support for splitting the codec specific code from
-    the ACP driver
-  ASoC: amd: acp: Add machine driver that enables sound for systems with
-    a ES8336 codec
-  ASoC: amd: acp: Improve support for speaker power events
-
- sound/soc/amd/acp-config.c                    |  70 ++
- sound/soc/amd/acp/Makefile                    |   2 +-
- sound/soc/amd/acp/acp-legacy-mach.c           | 105 ++-
- sound/soc/amd/acp/acp-mach-common.c           |   8 +
- sound/soc/amd/acp/acp-mach.h                  |  67 ++
- sound/soc/amd/acp/acp-renoir.c                |   4 +
- sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.c | 615 ++++++++++++++++++
- sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.h |  12 +
- sound/soc/codecs/es8316.c                     |  21 +-
- sound/soc/codecs/es8316.h                     |   3 +
- 10 files changed, 886 insertions(+), 21 deletions(-)
- create mode 100644 sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.c
- create mode 100644 sound/soc/amd/acp/acp3x-es83xx/acp3x-es83xx.h
-
+diff --git a/sound/soc/codecs/es8316.c b/sound/soc/codecs/es8316.c
+index 056c3082fe02..acf21ef59b34 100644
+--- a/sound/soc/codecs/es8316.c
++++ b/sound/soc/codecs/es8316.c
+@@ -26,10 +26,11 @@
+ /* In slave mode at single speed, the codec is documented as accepting 5
+  * MCLK/LRCK ratios, but we also add ratio 400, which is commonly used on
+  * Intel Cherry Trail platforms (19.2MHz MCLK, 48kHz LRCK).
++ * Ratio 1000 is needed for at least one SKU where MCLK is 48Mhz.
+  */
+-#define NR_SUPPORTED_MCLK_LRCK_RATIOS 6
++#define NR_SUPPORTED_MCLK_LRCK_RATIOS 7
+ static const unsigned int supported_mclk_lrck_ratios[] = {
+-	256, 384, 400, 512, 768, 1024
++	256, 384, 400, 512, 768, 1000, 1024
+ };
+ 
+ struct es8316_priv {
+@@ -465,6 +466,8 @@ static int es8316_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	u8 bclk_divider;
+ 	u16 lrck_divider;
+ 	int i;
++	bool mclk_div_option = false;
++	unsigned int mclk_div = 1;
+ 
+ 	/* Validate supported sample rates that are autodetected from MCLK */
+ 	for (i = 0; i < NR_SUPPORTED_MCLK_LRCK_RATIOS; i++) {
+@@ -477,7 +480,17 @@ static int es8316_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 	if (i == NR_SUPPORTED_MCLK_LRCK_RATIOS)
+ 		return -EINVAL;
+-	lrck_divider = es8316->sysclk / params_rate(params);
++
++	mclk_div_option = device_property_read_bool(component->dev,
++						    "everest,mclk-div-by-2");
++	if (mclk_div_option) {
++		snd_soc_component_update_bits(component, ES8316_CLKMGR_CLKSW,
++					      ES8316_CLKMGR_CLKSW_MCLK_DIV,
++					      ES8316_CLKMGR_CLKSW_MCLK_DIV);
++		mclk_div = 2;
++	}
++
++	lrck_divider = es8316->sysclk / params_rate(params) / mclk_div;
+ 	bclk_divider = lrck_divider / 4;
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+@@ -520,7 +533,7 @@ static int es8316_mute(struct snd_soc_dai *dai, int mute, int direction)
+ }
+ 
+ #define ES8316_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
+-			SNDRV_PCM_FMTBIT_S24_LE)
++			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ static const struct snd_soc_dai_ops es8316_ops = {
+ 	.startup = es8316_pcm_startup,
+diff --git a/sound/soc/codecs/es8316.h b/sound/soc/codecs/es8316.h
+index c335138e2837..0ff16f948690 100644
+--- a/sound/soc/codecs/es8316.h
++++ b/sound/soc/codecs/es8316.h
+@@ -129,4 +129,7 @@
+ #define ES8316_GPIO_FLAG_GM_NOT_SHORTED		0x02
+ #define ES8316_GPIO_FLAG_HP_NOT_INSERTED	0x04
+ 
++/* ES8316_CLKMGR_CLKSW */
++#define ES8316_CLKMGR_CLKSW_MCLK_DIV	0x80
++
+ #endif
 -- 
 2.39.1
 
