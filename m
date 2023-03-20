@@ -4,123 +4,144 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46320C6FD1D
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Mar 2023 10:22:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D330EC7618A
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Mar 2023 11:24:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E07D1F4;
-	Mon, 20 Mar 2023 11:21:08 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E07D1F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id F050F1F3;
+	Mon, 20 Mar 2023 12:23:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F050F1F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679307718;
-	bh=7Ekhr+Bgrk2zZPq0jS4YiFJhUDR/LxnnP4C56s8lNM0=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=FUrzj8x0jnQTjqbx9I7lrDn7ncel/Z0eFQI+xyv6BzpjmPETPKVN2zfeZqbAApo2w
-	 F+FK4Q+TZDO/Rg38oXhqEH5ocD/41e83MNfvLoKMsRcxX7Dc4DJckOc2II8tAa+nsK
-	 0CJvKHa/F8cF94ZsrtJNvYRgB+yy+bPhwlPk42PM=
+	s=default; t=1679311466;
+	bh=+yUmQh4m7BCOdLRS16dFXQmw6BdnqZfFTSwdB4z7rYA=;
+	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From:Reply-To:Cc:From;
+	b=ozWKMLT1AZRhszfWLo2xR7bPs/zSYpRLMHcEXoLyQI2GXUiMV3SfppuPg0BlERJyw
+	 nHKtB+oZA99zOkqwB5pPJ6xMbgCImIGa5ngGsuzXMKuwYO2PNugky4lSR2aIHydjcS
+	 nZuLheRxtnFuvNtHCadtRFKZpyoTtl0hDUZhiuyk=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9E2FF80093;
-	Mon, 20 Mar 2023 11:20:46 +0100 (CET)
-Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0A4A5F8027B; Mon, 20 Mar 2023 11:20:42 +0100 (CET)
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com
- [IPv6:2a00:1450:4864:20::52a])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 3AC24F80093
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2023 11:20:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AC24F80093
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=Ju6zmO0M
-Received: by mail-ed1-x52a.google.com with SMTP id t5so7752062edd.7
-        for <alsa-devel@alsa-project.org>;
- Mon, 20 Mar 2023 03:20:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1679307634;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2kK6ZKQu/hSTehLzcd0ok1R36H64mU2xn5KpGhq6J1w=;
-        b=Ju6zmO0MlfizGGz7Jd7gcva/CJl93kFD7GL9WBLqwSkQXbm5diuXdjj66wL4FqPd0o
-         vDDspm4OpDKzQCvZjrw48YkcjilgM2DN0tTww/RgQ+zeLRf3ab6kDouqkBfp3Fs/lf5P
-         IiCthWkEFSAhHxMOTZONAInrmRc7bSZ4ytEHlYF1DSeNT71Oss6698O9b6VI3HSPWO51
-         7kV19EcKUprriQNj8EZkOrzRmEvpiM6MDK4EDxxcuULZyLikbgPLwLGGaw9jHZlad1/4
-         WY7GSPPz82nh7+5l+vQjbk23/B0uB2FuuZFy1+G0GmqeAjGX09lCzcMaPqIW7mn+QDVa
-         XPbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679307634;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2kK6ZKQu/hSTehLzcd0ok1R36H64mU2xn5KpGhq6J1w=;
-        b=MFkPjfcMhpsr5eEUlLNuHQAL9nRehla7D4+R2BALDY2GYtUL9k/yPiSazug7KrHXDT
-         /O2bROXD8P+AebI/RvMIDyECoJlgtXT6zvhR/QM8LFdk2IOliPX9cw8cgfDBlzIlA7s3
-         EVHSZ2n+SPoSJJg7f6NfawzwejqmciMyY8tehzjPJex/4Q/yi+X2QM8B6F72MMa8+fec
-         qX0dD9BR0cffIIyeUVtdz0AJpDzgzESEQQrpb7uzEn1WLnvhtXRXmdmD4njUlUHPHChv
-         WXRAIPxYU1a0O6slQFsC9kWt31k1p3+wMY5bw1OkEB3PZhIkOUhULzZ3Rjd1wo4aQLnX
-         c/Vw==
-X-Gm-Message-State: AO0yUKV20i+qIWfX8F/1/39ngiEiCQiJco3gaxRSpr6tPQzRfLc/RPNK
-	f6dIiVeztECCuJpgTQxyL/fuuQ==
-X-Google-Smtp-Source: 
- AK7set9UbCg3tUOgT6QPPPtQgc+SuVDmWxP5HoFhnXgAOMYpzcIlAvQy0NuhQuV0XfPLvoiivhc3GQ==
-X-Received: by 2002:aa7:db52:0:b0:4fa:ba60:8188 with SMTP id
- n18-20020aa7db52000000b004faba608188mr12697594edt.8.1679307633952;
-        Mon, 20 Mar 2023 03:20:33 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:15c0:828:4428:8354:afb6:2992?
- ([2a02:810d:15c0:828:4428:8354:afb6:2992])
-        by smtp.gmail.com with ESMTPSA id
- y70-20020a50bb4c000000b004fa380a14e7sm4663350ede.77.2023.03.20.03.20.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Mar 2023 03:20:33 -0700 (PDT)
-Message-ID: <f13b06e3-1947-b0f3-6523-d2986f085898@linaro.org>
-Date: Mon, 20 Mar 2023 11:20:32 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v2 1/7] dt-bindings: misc: Add the Lantiq PEF2466 E1/T1/J1
- framer
-Content-Language: en-US
-To: Herve Codina <herve.codina@bootlin.com>
-References: <20230316122741.577663-1-herve.codina@bootlin.com>
- <20230316122741.577663-2-herve.codina@bootlin.com>
- <96b01241-d57d-a460-4a8b-9e83eaab24ae@linaro.org>
- <20230320104619.468a304b@bootlin.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230320104619.468a304b@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: NRRDVTPZQ3WNOPM4353WCS73GVHFVPBR
-X-Message-ID-Hash: NRRDVTPZQ3WNOPM4353WCS73GVHFVPBR
-X-MailFrom: krzysztof.kozlowski@linaro.org
+	by alsa1.perex.cz (Postfix) with ESMTP id 07F07F8027B;
+	Mon, 20 Mar 2023 12:23:14 +0100 (CET)
+To: <broonie@kernel.org>, <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 1/8] firmware: cs_dsp: Introduce no_core_startstop for
+ self-booting DSPs
+Date: Mon, 20 Mar 2023 11:22:38 +0000
+In-Reply-To: <20230320112245.115720-1-rf@opensource.cirrus.com>
+References: <20230320112245.115720-1-rf@opensource.cirrus.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Derek Kiernan <derek.kiernan@xilinx.com>,
- Dragan Cvetic <dragan.cvetic@xilinx.com>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NRRDVTPZQ3WNOPM4353WCS73GVHFVPBR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TIG2C47TGJXX22HCPAOU3AKOXXJBU7J7/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
+List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
+MIME-Version: 1.0
+Message-ID: 
+ <167931139242.26.10799898013209983287@mailman-core.alsa-project.org>
+From: Richard Fitzgerald via Alsa-devel <alsa-devel@alsa-project.org>
+Reply-To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com, Simon Trimmer <simont@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>
+Content-Type: message/rfc822
+Content-Disposition: inline
+
+Received: by alsa1.perex.cz (Postfix, from userid 50401)
+	id 25EA0F80529; Mon, 20 Mar 2023 12:22:57 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	shortcircuit=no autolearn=ham autolearn_force=no version=3.4.6
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8A3D3F800C9
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2023 12:22:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A3D3F800C9
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
+ header.s=PODMain02222019 header.b=aJq0d7eO
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 32K6xMZf028388;
+	Mon, 20 Mar 2023 06:22:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=pKF0uI7lm6EPpC6Qzi9YRJ+YwdwwOiOgrKlQyRUjDH0=;
+ b=aJq0d7eOqPh3fDY/cEVN4n+vmmJ7tbE3EBDhnvKqAPy8ZPmoWcfwFONMVUUP+CqZy+C4
+ aTPiZDh+2PIyRWGNlws3a7oGuObxEYo0Ny5sLEB3utrxVFYeaPs4p3RdrnXI7PrtKCdD
+ n4ddhN5gbByTXCKRoZDClAY7HBukl9Tdgt4evfzGxQ+BC6UjH4tp8zpr6/92Q0iGcT3W
+ YpUhWbJAKvj/Lz8/dj92kQ4PSCpeZMnGrBcLe0z2sEUO5uwJazy2W3vUdenUmiwTmwht
+ Eo7ShnxfRQWHPkJyf/2Wp5ksl4UDT5Zlq1VD5zJhU1x26pzsJZGwJlGxJdFtDgD+ismK kw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3pd9qptc80-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 20 Mar 2023 06:22:47 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.25; Mon, 20 Mar
+ 2023 06:22:45 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.25 via Frontend Transport; Mon, 20 Mar 2023 06:22:45 -0500
+Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
+ [198.90.251.127])
+	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8F386B0E;
+	Mon, 20 Mar 2023 11:22:45 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <broonie@kernel.org>, <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 1/8] firmware: cs_dsp: Introduce no_core_startstop for
+ self-booting DSPs
+Date: Mon, 20 Mar 2023 11:22:38 +0000
+Message-ID: <20230320112245.115720-2-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230320112245.115720-1-rf@opensource.cirrus.com>
+References: <20230320112245.115720-1-rf@opensource.cirrus.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: 87Vl-qHZjsYT_z7Y3PqBjik6yzXav5o9
+X-Proofpoint-ORIG-GUID: 87Vl-qHZjsYT_z7Y3PqBjik6yzXav5o9
+X-Proofpoint-Spam-Reason: safe
+Message-ID-Hash: TIG2C47TGJXX22HCPAOU3AKOXXJBU7J7
+X-Message-ID-Hash: TIG2C47TGJXX22HCPAOU3AKOXXJBU7J7
+X-MailFrom: prvs=8443a53618=rf@opensource.cirrus.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation;
+ header-match-alsa-devel.alsa-project.org-0;
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com, Simon Trimmer <simont@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>
+X-Mailman-Version: 3.3.8
+Precedence: list
+List-Id: "Alsa-devel mailing list for ALSA developers -
+ http://www.alsa-project.org" <alsa-devel.alsa-project.org>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TIG2C47TGJXX22HCPAOU3AKOXXJBU7J7/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,50 +150,71 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 20/03/2023 10:46, Herve Codina wrote:
->>
->>> +
->>> +  lantiq,data-rate-bps:
->>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>> +    enum: [2048000, 4096000, 8192000, 16384000]
->>> +    default: 2048000
->>> +    description:
->>> +      Data rate (bit per seconds) on the system highway.  
->>
->> Why do you need it? How is it different from clock? Do you expect some
->> DDR here?
-> 
-> This is needed to set the data position on the data line.
-> If the data line clock (sysclk-rate-hz) is greater than 'data-rate-bps',
-> the device interleaves some holes between data in the full frame.
-> 
-> The exact position of the data and the holes is defined by 'channel-phase'
-> 
-> So, two information are needed:
-> - The number of slots available (deduced from 'lantiq,data-rate-bps')
-> - The slot to use in the available slots ('lantiq,channel-phase" property
-> 
-> lantiq,data-rate-bps is not a clock but a property used to set the frame
-> physical setting. ie the correct data position in the frame. 
+From: Simon Trimmer <simont@opensource.cirrus.com>
 
-OK
+There are devices containing Halo Core DSPs that self-boot, cs_dsp is
+used to manage the running firmware but the host does not have direct
+control over starting and stopping the DSP and so cs_dsp should consider
+the DSP to be always running.
 
-(...)
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ drivers/firmware/cirrus/cs_dsp.c       | 14 +++++++++++++-
+ include/linux/firmware/cirrus/cs_dsp.h |  1 +
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
->>> +additionalProperties: false
->>> +
->>> +examples:
->>> +  - |
->>> +    #include <dt-bindings/gpio/gpio.h>
->>> +    pef2256@2000000 {  
->>
->> Figure out some generic node name.
-> 
-> What do you think about 'framer' ?
-
-Sure, I don't have particular proposal.
-
-
-Best regards,
-Krzysztof
+diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
+index f558b390fbfe..97b73a254380 100644
+--- a/drivers/firmware/cirrus/cs_dsp.c
++++ b/drivers/firmware/cirrus/cs_dsp.c
+@@ -301,6 +301,7 @@ struct cs_dsp_ops {
+ static const struct cs_dsp_ops cs_dsp_adsp1_ops;
+ static const struct cs_dsp_ops cs_dsp_adsp2_ops[];
+ static const struct cs_dsp_ops cs_dsp_halo_ops;
++static const struct cs_dsp_ops cs_dsp_halo_ao_ops;
+ 
+ struct cs_dsp_buf {
+ 	struct list_head list;
+@@ -2821,7 +2822,10 @@ EXPORT_SYMBOL_NS_GPL(cs_dsp_adsp2_init, FW_CS_DSP);
+  */
+ int cs_dsp_halo_init(struct cs_dsp *dsp)
+ {
+-	dsp->ops = &cs_dsp_halo_ops;
++	if (dsp->no_core_startstop)
++		dsp->ops = &cs_dsp_halo_ao_ops;
++	else
++		dsp->ops = &cs_dsp_halo_ops;
+ 
+ 	return cs_dsp_common_init(dsp);
+ }
+@@ -3187,6 +3191,14 @@ static const struct cs_dsp_ops cs_dsp_halo_ops = {
+ 	.stop_core = cs_dsp_halo_stop_core,
+ };
+ 
++static const struct cs_dsp_ops cs_dsp_halo_ao_ops = {
++	.parse_sizes = cs_dsp_adsp2_parse_sizes,
++	.validate_version = cs_dsp_halo_validate_version,
++	.setup_algs = cs_dsp_halo_setup_algs,
++	.region_to_reg = cs_dsp_halo_region_to_reg,
++	.show_fw_status = cs_dsp_halo_show_fw_status,
++};
++
+ /**
+  * cs_dsp_chunk_write() - Format data to a DSP memory chunk
+  * @ch: Pointer to the chunk structure
+diff --git a/include/linux/firmware/cirrus/cs_dsp.h b/include/linux/firmware/cirrus/cs_dsp.h
+index cad828e21c72..29cd11d5a3cf 100644
+--- a/include/linux/firmware/cirrus/cs_dsp.h
++++ b/include/linux/firmware/cirrus/cs_dsp.h
+@@ -156,6 +156,7 @@ struct cs_dsp {
+ 	unsigned int sysclk_reg;
+ 	unsigned int sysclk_mask;
+ 	unsigned int sysclk_shift;
++	bool no_core_startstop;
+ 
+ 	struct list_head alg_regions;
+ 
+-- 
+2.30.2
 
