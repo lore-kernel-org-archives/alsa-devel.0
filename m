@@ -4,214 +4,145 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06F6FC7618A
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Mar 2023 18:01:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AF0EC7618A
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Mar 2023 18:18:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 24D4D1E3;
-	Mon, 20 Mar 2023 19:01:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24D4D1E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85C811E8;
+	Mon, 20 Mar 2023 19:17:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85C811E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679335317;
-	bh=EHia0Z/ZV8IwonMqPduUm5/mXVgHjO/L0u7v1lqWyk4=;
-	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=JVMY0onHPC9RzDV3O+KOK/1msF8jioxytkdBTE0ruhehO9WcCeMrRWCHYsgUI43vh
-	 8nIwHkz6b9c5M/UC8QDvQB7jO/sLnZPvulNBHaS4qR9VzJpeTMnEWHDSS8L/og3qka
-	 zag/EvOpX7yNClmQ9+neyq+oZs6TShGPJ/PehNZo=
+	s=default; t=1679336306;
+	bh=PFAWHnnp9pC4gb9VsWuvXnI09f7rrO87vdJezNoMkik=;
+	h=Date:To:Subject:In-Reply-To:References:List-Id:List-Archive:
+	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
+	 From:Reply-To:Cc:From;
+	b=G4CAae6q0BWaEtba3naYutYTtVeslP/ZU5pOTrDCIen951FFO9QCOCmmgG/pPBh7L
+	 YvyMWtBRYm2K/Tueu1ldi8WoNvJ6kbPfwi34ODvj9fbNfSN1pQGd6j9TrzZUWETAnP
+	 CaT2unWzrOiprR3dYKC0QOtgqZGwToT7UWls4DF8=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8D86AF8056F;
-	Mon, 20 Mar 2023 18:59:20 +0100 (CET)
-Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 954D3F80423; Thu, 16 Mar 2023 10:32:22 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 7EB9CF80272
-	for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2023 10:32:11 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7EB9CF80272
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=H9aXq6XW;
-	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=vrFmJJMH
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E4D3C1FDFB;
-	Thu, 16 Mar 2023 09:32:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_rsa;
-	t=1678959130;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LgQ6KC2ybaQuhcxvNbj5yWV84Hdg07Eok3qBPbbxY94=;
-	b=H9aXq6XWzgXy3V6gUMaMgKEQOC4u2wwCwuM31XT6epw3vcSavDTpG7v1DmpLitT3aAzvrb
-	Uij7YtTtCMzKsnoVFyM4P36fE8radT/BVqUmJO5oz33vf5WRPcRwuHN+AiCd+tOxzXuyQp
-	7HO6F55yqLXCARRi8VELwLEQafIfemA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1678959130;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LgQ6KC2ybaQuhcxvNbj5yWV84Hdg07Eok3qBPbbxY94=;
-	b=vrFmJJMHnJyGAG4vQo3kBbAm10wkR+7Kjjsf57BxURiziFHRuM5x12k5OToJ7bvAHK8XWM
-	BGwhhqI50dx0VBCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
- [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DE806133E0;
-	Thu, 16 Mar 2023 09:32:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 9o+MNRjiEmRkRAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 16 Mar 2023 09:32:08 +0000
-Date: Thu, 16 Mar 2023 10:32:08 +0100
-Message-ID: <87ttylhwiv.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH 000/173] ALSA/ASoC: Convert to platform remove callback
- returning void
-In-Reply-To: <20230315150745.67084-1-u.kleine-koenig@pengutronix.de>
-References: <20230315150745.67084-1-u.kleine-koenig@pengutronix.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-X-MailFrom: tiwai@suse.de
-X-Mailman-Rule-Hits: max-recipients
+	by alsa1.perex.cz (Postfix) with ESMTP id 43EC4F80105;
+	Mon, 20 Mar 2023 19:17:15 +0100 (CET)
+Date: Mon, 20 Mar 2023 19:17:00 +0100
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2 5/7] dt-bindings: sound: Add support for the Lantiq
+ PEF2256 codec
+In-Reply-To: <2d4dae57-e46d-7e81-9b56-2148074c8406@linaro.org>
+References: <20230316122741.577663-1-herve.codina@bootlin.com>
+	<20230316122741.577663-6-herve.codina@bootlin.com>
+	<2d4dae57-e46d-7e81-9b56-2148074c8406@linaro.org>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
- suspicious-header
-Message-ID-Hash: VECLOAKJOD4R6T5I63O7AM6LX466HQUG
-X-Message-ID-Hash: VECLOAKJOD4R6T5I63O7AM6LX466HQUG
-X-Mailman-Approved-At: Mon, 20 Mar 2023 17:59:14 +0000
-CC: Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Claudiu Beznea <claudiu.beznea@microchip.com>,
- Gaosheng Cui <cuigaosheng1@huawei.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>, Mohan Kumar <mkumard@nvidia.com>,
- Geoff Levand <geoff@infradead.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Charles Keepax <ckeepax@opensource.cirrus.com>,
- Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
- syed saba kareem <syed.sabakareem@amd.com>,
- Mario Limonciello <mario.limonciello@amd.com>,
- Meng Tang <tangmeng@uniontech.com>,
- Martin =?ISO-8859-2?Q?Povi=B9er?= <povik+lin@cutebit.org>,
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- Peter Rosin <peda@axentia.se>, Ray Jui <rjui@broadcom.com>,
- Scott Branden <sbranden@broadcom.com>, Allison Randal <allison@lohutok.net>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- James Schulman <james.schulman@cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>,
- Lucas Tanure <tanureal@opensource.cirrus.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Miaoqian Lin <linmq006@gmail.com>,
- Colin Ian King <colin.i.king@gmail.com>,
- Aidan MacDonald <aidanmacdonald.0x0@gmail.com>,
- Zhang Qilong <zhangqilong3@huawei.com>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Liang He <windhl@126.com>,
- Shengjiu Wang <shengjiu.wang@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Yang Yingliang <yangyingliang@huawei.com>,
- Minghao Chi <chi.minghao@zte.com.cn>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Akihiko Odaki <akihiko.odaki@gmail.com>,
- Amadeusz =?ISO-8859-2?Q?S=B3awi=F1ski?=
- <amadeuszx.slawinski@linux.intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>,
- Moises Cardona <moisesmcardona@gmail.com>, Zhen Ni <nizhen@uniontech.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Andrey Turkin <andrey.turkin@gmail.com>,
- Muralidhar Reddy <muralidhar.reddy@intel.com>,
- Zhu Ning <zhuning0077@gmail.com>, Gongjun Song <gongjun.song@intel.com>,
- Shuming Fan <shumingf@realtek.com>, Yong Zhi <yong.zhi@intel.com>,
- Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
- Hezi Shahmoon <hezi@marvell.com>, Neta Zur Hershkovits <neta@marvell.com>,
- Marcin Wojtas <mw@semihalf.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- Jiasheng Jiang <jiasheng@iscas.ac.cn>,
- Ricardo Ribalda <ribalda@chromium.org>, Trevor Wu <trevor.wu@mediatek.com>,
- Dan Carpenter <error27@gmail.com>, Jerome Brunet <jbrunet@baylibre.com>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Kevin Hilman <khilman@baylibre.com>, Heiko Stuebner <heiko@sntech.de>,
- Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Linh Phung <linh.phung.jy@renesas.com>,
- Shang XiaoJing <shangxiaojing@huawei.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Biju Das <biju.das.jz@bp.renesas.com>, Orson Zhai <orsonzhai@gmail.com>,
- Baolin Wang <baolin.wang@linux.alibaba.com>,
- Chunyan Zhang <zhang.lyra@gmail.com>,
- Olivier Moysan <olivier.moysan@foss.st.com>,
- Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>,
- Mikhail Rudenko <mike.rudenko@gmail.com>, Li Chen <lchen@ambarella.com>,
- Ban Tao <fengzheng923@gmail.com>, Sameer Pujar <spujar@nvidia.com>,
- YueHaibing <yuehaibing@huawei.com>,
- Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
- Li kunyu <kunyu@nfschina.com>, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
- Jarkko Nikula <jarkko.nikula@bitmer.com>,
- Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Arnd Bergmann <arnd@arndb.de>, Linus Walleij <linus.walleij@linaro.org>,
- Michal Simek <michal.simek@xilinx.com>, Max Filippov <jcmvbkbc@gmail.com>,
- alsa-devel@alsa-project.org, kernel@pengutronix.de,
- linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
- Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- linuxppc-dev@lists.ozlabs.org, asahi@lists.linux.dev,
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
- patches@opensource.cirrus.com, Fabio Estevam <festevam@gmail.com>,
- Nicolin Chen <nicoleotsuka@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- linux-mediatek@lists.infradead.org,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- linux-amlogic@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev,
- linux-omap@vger.kernel.org, linux-xtensa@linux-xtensa.org
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VECLOAKJOD4R6T5I63O7AM6LX466HQUG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A2FOQYYAX4ZCPM344AGC2DRPQADG4JT3/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
+List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
+MIME-Version: 1.0
+Message-ID: 
+ <167933623411.26.9841076287693661943@mailman-core.alsa-project.org>
+From: Herve Codina via Alsa-devel <alsa-devel@alsa-project.org>
+Reply-To: Herve Codina <herve.codina@bootlin.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Derek Kiernan <derek.kiernan@xilinx.com>,
+ Dragan Cvetic <dragan.cvetic@xilinx.com>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Content-Type: message/rfc822
+Content-Disposition: inline
+
+Received: by alsa1.perex.cz (Postfix, from userid 50401)
+	id BBFC3F8027B; Mon, 20 Mar 2023 19:17:09 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED shortcircuit=no autolearn=ham autolearn_force=no
+	version=3.4.6
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net
+ [IPv6:2001:4b98:dc4:8::229])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 24B66F80105
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2023 19:17:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24B66F80105
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (2048-bit key,
+ unprotected) header.d=bootlin.com header.i=@bootlin.com header.a=rsa-sha256
+ header.s=gm1 header.b=kDEgygYG
+Received: (Authenticated sender: herve.codina@bootlin.com)
+	by mail.gandi.net (Postfix) with ESMTPSA id 8D6CDFF806;
+	Mon, 20 Mar 2023 18:17:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1679336224;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VE9iFwvJbQJycN1cPQjjeYOTfZMxlt7ktbeI3hjJv3I=;
+	b=kDEgygYGf8SV8e3tktz1z2mhccSlvObV3fCD3DrW5M9t918MS6QTjTiAjvXiTl2BtbmIsm
+	ypWfutueHQJNM7ICR3KerrnkG83/CHZrLE1twQUP54YXYWuqw8Du0smDHY0p+Zzig4ssUy
+	Ehzbm6JZz4A52ajdBtOAIgNdTZEVNyjY5FeY4ZXDXpEWVsryqpiEm3cBTA1z6XNYYtFv0+
+	keqOPc3+aS2CJq1Kq9AQynr00z8AUTEPiJyprIRXuNv9bDdEqXh+YDjcamfJEYTBive77P
+	y0AeyEcxd1aZPGcZ2oZy3AxuTAqcsqfjX12Ua3+p/1iBwid8dabF51X1S+XpBA==
+Date: Mon, 20 Mar 2023 19:17:00 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2 5/7] dt-bindings: sound: Add support for the Lantiq
+ PEF2256 codec
+Message-ID: <20230320191700.3d48e264@bootlin.com>
+In-Reply-To: <2d4dae57-e46d-7e81-9b56-2148074c8406@linaro.org>
+References: <20230316122741.577663-1-herve.codina@bootlin.com>
+	<20230316122741.577663-6-herve.codina@bootlin.com>
+	<2d4dae57-e46d-7e81-9b56-2148074c8406@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Message-ID-Hash: A2FOQYYAX4ZCPM344AGC2DRPQADG4JT3
+X-Message-ID-Hash: A2FOQYYAX4ZCPM344AGC2DRPQADG4JT3
+X-MailFrom: herve.codina@bootlin.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation;
+ header-match-alsa-devel.alsa-project.org-0;
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Derek Kiernan <derek.kiernan@xilinx.com>,
+ Dragan Cvetic <dragan.cvetic@xilinx.com>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+X-Mailman-Version: 3.3.8
+Precedence: list
+List-Id: "Alsa-devel mailing list for ALSA developers -
+ http://www.alsa-project.org" <alsa-devel.alsa-project.org>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/A2FOQYYAX4ZCPM344AGC2DRPQADG4JT3/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -220,39 +151,147 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 15 Mar 2023 16:04:52 +0100,
-Uwe Kleine-König wrote:
-> 
-> Hello,
-> 
-> this series adapts the platform drivers below sound/ to use the .remove_new()
-> callback. Compared to the traditional .remove() callback .remove_new() returns
-> no value. This is a good thing because the driver core doesn't (and cannot)
-> cope for errors during remove. The only effect of a non-zero return value in
-> .remove() is that the driver core emits a warning. The device is removed anyhow
-> and an early return from .remove() usually yields a resource leak.
-> 
-> By changing the remove callback to return void driver authors cannot
-> reasonably assume any more that there is some kind of cleanup later.
-> 
-> The first two patches simplify a driver each to return zero unconditionally,
-> and then all drivers are trivially converted to .remove_new().
-> 
-> There are nearly no interdependencies in this patch set---only 1 <- 11 and
-> 2 <- 16. So even if some individual problems are found (I don't expect that),
-> the other patches can (and from my POV should) still be applied.
-> 
-> Best regards
-> Uwe
-> 
-> Uwe Kleine-König (173):
-(snip)
+Hi Krzysztof
 
-For the whole series,
+On Fri, 17 Mar 2023 09:57:11 +0100
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-Acked-by: Takashi Iwai <tiwai@suse.de>
+> On 16/03/2023 13:27, Herve Codina wrote:
+> > The Lantiq PEF2256, also known as Infineon PEF2256 or FALC256, is a
+> > framer and line interface component designed to fulfill all required
+> > interfacing between an analog E1/T1/J1 line and the digital PCM system
+> > highway/H.100 bus.
+> >=20
+> > The codec support allows to use some of the PCM system highway
+> > time-slots as audio channels to transport audio data over the E1/T1/J1
+> > lines.
+> >  =20
+>=20
+> Your other file should also have specific compatible, unless this codec
+> is actually part of the framer. Did not look like this in the binding -
+> not $ref.
 
+No sure to understand what you mean.
 
-thanks,
+Anyway, I plan to use a MFD device for pef2256 and reference this yaml
+from the lantiq,pef2256.yaml in the node related to the codec.
 
-Takashi
+One question related to bindings and related checks:
+Is there a way to check the compatible property of the parent node.
+I mean, here is the binding of a child node of a MFD node.
+=46rom this binding, I would like to be sure that the parent is really a
+pef2256 MFD node.
+
+May be something like:
+  parent-properties:
+    allOf:
+      compatible:
+        contains:
+          const: lantiq,pef2256
+
+The idea is to have dtbs_check raise an error if the parent's compatible
+property is not 'lantiq,pef2256'.
+
+=46rom parent, the link is checked using:
+  properties:
+    codec:
+      $ref: /schemas/sound/lantiq,pef2256-codec.yaml
+
+but nothing prevent to use this 'lantiq,pef2256-codec' binding from a node
+that has nothing to do with pef2256.
+
+>=20
+> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> > ---
+> >  .../bindings/sound/lantiq,pef2256-codec.yaml  | 57 +++++++++++++++++++
+> >  1 file changed, 57 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/sound/lantiq,pef2=
+256-codec.yaml
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/sound/lantiq,pef2256-cod=
+ec.yaml b/Documentation/devicetree/bindings/sound/lantiq,pef2256-codec.yaml
+> > new file mode 100644
+> > index 000000000000..acba3a0ccd1b
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/sound/lantiq,pef2256-codec.yaml
+> > @@ -0,0 +1,57 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/sound/lantiq,pef2256-codec.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Lantiq PEF2256 codec device =20
+>=20
+> Drop "device". Everything is "device".
+
+Will be dropped in v3 series.
+
+>=20
+> > +
+> > +maintainers:
+> > +  - Herve Codina <herve.codina@bootlin.com>
+> > +
+> > +description: |
+> > +  Codec support for PEF2256.
+> > +
+> > +  The Lantiq PEF2256, also known as Infineon PEF2256 or FALC256, is a =
+framer and
+> > +  line interface component designed to fulfill all required interfacin=
+g between
+> > +  an analog E1/T1/J1 line and the digital PCM system highway/H.100 bus.
+> > +
+> > +  The codec support allows to use some of the PCM system highway time-=
+slots as
+> > +  audio channels to transport audio data over the E1/T1/J1 lines.
+> > +
+> > +  The time-slots used by the codec must be set and so, the properties
+> > +  'dai-tdm-slot-num', 'dai-tdm-slot-width', 'dai-tdm-slot-tx-mask' and
+> > +  'dai-tdm-slot-rx-mask' must be present in the ALSA sound card node f=
+or
+> > +  sub-nodes that involve the codec. The codec uses 8bit time-slots.
+> > +  'dai-tdm-tdm-slot-with' must be set to 8.
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
+
+Oups,
+This device is not on a SPI bus -> will be dropped in v3 series.
+
+> > +  - $ref: dai-common.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: lantiq,pef2256-codec
+> > +
+> > +  lantiq,pef2256:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > +    description:
+> > +      phandle to the PEF2256 =20
+>=20
+> Why not its child? Why this is in parallel ?
+
+Indeed,
+I will move to MFD, remove this phandle and use the lantiq,pef2256-codec
+node as a child node of lantiq,pef2256.
+
+>=20
+> > +
+> > +  '#sound-dai-cells':
+> > +    const: 0
+> > + =20
+>=20
+>=20
+> Best regards,
+> Krzysztof
+>=20
+
+Thanks for the review,
+
+Best regards,
+Herv=C3=A9
+
+--=20
+Herv=C3=A9 Codina, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
