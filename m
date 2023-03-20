@@ -4,70 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CE3BC6FD1D
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Mar 2023 16:51:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7615DC7619A
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Mar 2023 17:50:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1BA5A1E3;
-	Mon, 20 Mar 2023 17:51:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BA5A1E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 593CA1DF;
+	Mon, 20 Mar 2023 18:49:44 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 593CA1DF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679331117;
-	bh=E0ClaU5YCHQBfzgXU30uuxfmPFXZyvuONYhWTPogYUE=;
+	s=default; t=1679334634;
+	bh=zjLHx55WQN88QLGQ5Bg8DnmZqdBFoBXYE8SLNsHlriQ=;
 	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=HRckD+sPJyd7T1fCdtHofBpc0lVVAqXS3oWGqIVnk5+IQIkbjZfJyFMsm2KN+MR36
-	 A1Nq90rd+a0KXWd2rBZ43CSpDIB5EkO2SHXn4sfFKk1Y4UxgCfhbeMxFTfz2jZvWod
-	 jBAc8GKJwNNckaKFY7G+UWtPFleWC9dAf+4rlUTs=
+	b=FbbWgcPwFHBQLOVDtZhMRli/ulFpc+i9l40h/be+dvs3dDTLTUOI7QP/WD8vjGC5T
+	 gRAveA+cc75P3N10hI41x7rKtfl6/gWXjFSbix1fQFJlCZ5Oa2570Ef4PNA+eaR/Ya
+	 2ZzId+mf96GajnhxTiik3P738imHACR2PGCC0s9U=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94CE5F80093;
-	Mon, 20 Mar 2023 17:50:45 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F943F8027B;
+	Mon, 20 Mar 2023 18:49:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id F3B5DF8027B; Mon, 20 Mar 2023 17:50:42 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 40548F8027B; Mon, 20 Mar 2023 18:49:18 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 172E1F80093
-	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2023 17:50:39 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 172E1F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9C297F80093
+	for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2023 18:49:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C297F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=H0EscW+D
+ header.s=k20201202 header.b=NS88N7Wu
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 00D526164B;
-	Mon, 20 Mar 2023 16:50:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37C5BC433D2;
-	Mon, 20 Mar 2023 16:50:35 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id CAD40B8104D;
+	Mon, 20 Mar 2023 17:49:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 634A5C433D2;
+	Mon, 20 Mar 2023 17:49:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679331037;
-	bh=E0ClaU5YCHQBfzgXU30uuxfmPFXZyvuONYhWTPogYUE=;
+	s=k20201202; t=1679334550;
+	bh=zjLHx55WQN88QLGQ5Bg8DnmZqdBFoBXYE8SLNsHlriQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=H0EscW+DR0mPhT3QtBlpDa7AOZkr5gLAthRiYn5FTINn2m90qil1B2yyqIHijePVs
-	 zspxjDzllLPFn1fdAITUAWbNdv2DkFYdqY++kgTjz6l+QY3K/pzAWQo0WVmp2+JYLN
-	 Cxpyo4zAmRvMEPOry+Dm1/XLc6WjmyBrFi/X0ma0FOZro2f8vpMFy316vH1PhzSNqK
-	 JmEAketSXrwiWemVSyfGFg9u44CtxUxoQA82N+E/nV5QKERvDTWQCypTMrRMQBP1/N
-	 oAjgk+pSFFOSaR5o3iWB3PKg6+9be1t4OoWxEEGlSOPztqHMfNef9QloTia7GwcCRy
-	 NTnghhXpPkJ1g==
-Date: Mon, 20 Mar 2023 16:50:31 +0000
+	b=NS88N7WuClRD4kj10ERIrBQhAO1l25vbvRX2n6ZFxxfGqoeMC8na18WtE4M+vjI4T
+	 lJv8Lm3lxKOT+GyzgV0zw5wilF7B083anJBdfnGigwLvicqBNUXfFteduvqdHS+TA+
+	 XJmkPGQajOqPY2X1Z055ItIMfpVb6SCZV6BBG2GxAGkBAhT9PxYD+1tT10f9e1mEau
+	 xDd1V6FiBIVnKAhQQkQxvsUSJsYyTm0+z6th/HUm152DyRseDKfUmu49oL17VZCp+g
+	 2KFDpmQ4e9twvYOJotOaVihWbDuk9hXWUol6oQoRiv6h2LaP3iqSKgDXTiQ4v6i82J
+	 TP0aZ7WD/Zp7w==
+Date: Mon, 20 Mar 2023 17:49:06 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v4] ASoC: tas2781: Add tas2781 driver
-Message-ID: <160416ce-a262-4012-84af-16873588cee7@sirena.org.uk>
-References: <20230320150726.20573-1-13916275206@139.com>
- <aea0c730-898d-7326-d245-79bc124bca0d@linux.intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 3/6] ASoC: ti: remove unnecessary dai_link->platform
+Message-ID: <2b8ac344-820b-4481-9b96-6225e29ab0f2@sirena.org.uk>
+References: <878rfyjz4p.wl-kuninori.morimoto.gx@renesas.com>
+ <874jqmjz25.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="kyRgx4I2BnEQBwi+"
+	protocol="application/pgp-signature"; boundary="qvUB3v94kvrV1DnL"
 Content-Disposition: inline
-In-Reply-To: <aea0c730-898d-7326-d245-79bc124bca0d@linux.intel.com>
-X-Cookie: Keep away from fire or flame.
-Message-ID-Hash: MAVDUTVY7HHDD6IAYVKAPZ7W4XYLAFAD
-X-Message-ID-Hash: MAVDUTVY7HHDD6IAYVKAPZ7W4XYLAFAD
+In-Reply-To: <874jqmjz25.wl-kuninori.morimoto.gx@renesas.com>
+X-Cookie: Stay on the trail.
+Message-ID-Hash: DP456U3NHEMOYCBG5RZYG4MMJNFRQ7HG
+X-Message-ID-Hash: DP456U3NHEMOYCBG5RZYG4MMJNFRQ7HG
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -75,15 +76,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Shenghao Ding <13916275206@139.com>, lgirdwood@gmail.com, kevin-lu@ti.com,
- shenghao-ding@ti.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, x1077012@ti.com, peeyush@ti.com, navada@ti.com
+CC: Linux-ALSA <alsa-devel@alsa-project.org>,
+ Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+ Jarkko Nikula <jarkko.nikula@bitmer.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MAVDUTVY7HHDD6IAYVKAPZ7W4XYLAFAD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DP456U3NHEMOYCBG5RZYG4MMJNFRQ7HG/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,34 +94,38 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 
---kyRgx4I2BnEQBwi+
+--qvUB3v94kvrV1DnL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 20, 2023 at 10:47:08AM -0500, Pierre-Louis Bossart wrote:
+On Wed, Mar 15, 2023 at 06:42:10AM +0000, Kuninori Morimoto wrote:
+> dai_link->platform is no longer needed if CPU and Platform are
+> same Component. This patch removes unnecessary dai_link->platform.
 
-> > +#define BINFILE_VER				0
-> > +#define DRV_VER				1
-> > +#define	PPC_DRIVER_CRCCHK			0x00000200
+I've not poked at things to try to figure out if it's this specific
+patch yet but this series is breaking BeagleBone Black in my CI, none of
+the sample rates covered by pcm-test are supported:
 
-> indentation after define?
+  https://lava.sirena.org.uk/scheduler/job/195516#L1430
 
-That's a value for the DRV_VER field - that's a thing people do, it's
-fine.
+some should be skipped due to being unsupported but we should see 48kHz
+playback covered:
 
---kyRgx4I2BnEQBwi+
+  https://lava.sirena.org.uk/scheduler/job/195338#L1433
+
+--qvUB3v94kvrV1DnL
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQYjtcACgkQJNaLcl1U
-h9DHXAf/dpmPmlYmze3xNFrCCmS8YhPy8RbOsqEPQQtXoRhNxk8Jg8Pb2Tc//eSh
-kogvV04aaVs0dDKiU94nsGwPT1nR7FNjMXEKCS/OIgcLQajxRHNnvESp7gFSWzFu
-igWlcABy646MPtds6ttgiakT97/SX9bOKyyXi1YPWCYN+5Isr6IpJed++oY2w2k5
-F4gJDthUKk8S2FgJyDqvlwcLgY/iJ+5TMb7M2ZbR7T8Ot9gXXiUEEkzbZRjuAg6/
-LcNibrXeY429OZqT6Qw3jxApz8RiNlSKEA9EECOIIQJuBb+ARKcg5rAXyoDnpCbh
-wu/x1va0GRzwvK2OEOA/93T0XqdVXA==
-=GzKh
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQYnJEACgkQJNaLcl1U
+h9C9awf+LRlv5bWW3ZLtrIcAVklPG6bPq7e2UYpowRQdTMXV+GB3rFIMe+PHHZq6
+yYnIkIUE4+YwZykMHJ3E6zjmTLgO3KGm6ZKSzBvG6WnB0F4484LsquOagu+mCWoN
+6yzgoS9HzlxTvSX4Ou+sHDUzudlKpcLXPx861EG3P60YKrAlAKMIesPgQEvbujmt
+0nRvCfGqMhMw+glqEzADG+6jB3UO/EQLaIESkgRMo9lleS/jjdNHY0Y9ujQPtuDH
+xFuAY26fspgZ4XaVq/o7lB5nVE+t5OtH6CdEcufD+uIEmKTJJmjukefrM+Kn6dlk
+67JXyouP8dV6X1FE7uUG6zidWXQo1A==
+=pmKZ
 -----END PGP SIGNATURE-----
 
---kyRgx4I2BnEQBwi+--
+--qvUB3v94kvrV1DnL--
