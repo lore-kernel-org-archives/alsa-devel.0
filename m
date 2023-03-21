@@ -4,111 +4,31 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8CE3C6FD1D
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Mar 2023 04:25:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B146C74A5B
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Mar 2023 05:14:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F25E1EF;
-	Tue, 21 Mar 2023 05:25:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F25E1EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B73C1F4;
+	Tue, 21 Mar 2023 06:14:00 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B73C1F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679372751;
-	bh=c+m+6s63SPq0G660YruIajDtnsqUjZPuQwL4lY1SAdM=;
-	h=Date:From:To:Subject:References:In-Reply-To:List-Id:List-Archive:
+	s=default; t=1679375690;
+	bh=6Z9OPsbBZmU8XOZ3nZWBgbfr2+9DfdGe6hborx09jWg=;
+	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From;
-	b=K5J8n/BnmWHw8SL6T+jeGQ6mgWNoxTPmv8i/5gPUEJNCHHAkIe73FAFk2eWUHuqDp
-	 Z3jhkYmTO7onxEYkX1mRwKE+ih06g45XWPnBfvzCCax30eytC5av/PruoZajJKNI5c
-	 1rWM5ou627tInYorYXMWkElCfRsncOxr/GDjquUc=
+	 From:Reply-To:Cc:From;
+	b=mnh9mUeXWf+fblOYO6Uqv8Rf78LymvXof40TG6B6F5Yzbk+VKNQB+AJHSgWlWdNxI
+	 ++V9BtNqYW9lmlUF7hjKEBZY6+Z8vWXlfi8MIEMvmVgpsPvIzjqWA539z6b0h8vH2g
+	 AGhVUMw7RHYoEa+FPWIsGAJySAVbdJ9irqNLsko4=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9EB9F8027B;
-	Tue, 21 Mar 2023 05:24:39 +0100 (CET)
-Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1B915F8027B; Tue, 21 Mar 2023 05:24:08 +0100 (CET)
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com
- [64.147.123.25])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 60B43F80105
-	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2023 05:23:53 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60B43F80105
-Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.a=rsa-sha256 header.s=fm2 header.b=Y05LcxB7;
-	dkim=pass (2048-bit key,
- unprotected) header.d=messagingengine.com header.i=@messagingengine.com
- header.a=rsa-sha256 header.s=fm2 header.b=oSZK+W5c
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.west.internal (Postfix) with ESMTP id 530B83200AAC;
-	Tue, 21 Mar 2023 00:23:51 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Tue, 21 Mar 2023 00:23:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm2; t=1679372630; x=1679459030; bh=xL
-	GmrZ3DOIqIyKerLmV7JY4LZ459NQloUiyAwQYnAkI=; b=Y05LcxB7nmmBe7yYl4
-	rSJipRl8mf4U3VTkfn043LsZsNnZyfN+TgsZM9Hseaggd7sLDYVv+7HarLgyqSlv
-	736N/jjX2jkpZGu+6LbYMdW8jkxCxLXKPediZ0UcswKQZBLOW102ByeTk2hCNe1w
-	CMG7plxiEXSjvytZ6eAfSAUgMXpLNITo7dtIN2GcqPZTI+TJeX+LaHV3I7yvWjMa
-	xu8FKiviEh6b6E/KKq8OcWqrr4/RsU/WF2Gyik9+8Livyzv/80tNWRkC+opThdIZ
-	MLriDhck8HVtOtJzJSPYeiOUtZjWjkGO3elxy9elYnkRBpYfWRyg+ZXi/XCsmW1Y
-	0kLg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm2; t=1679372630; x=1679459030; bh=xLGmrZ3DOIqIy
-	KerLmV7JY4LZ459NQloUiyAwQYnAkI=; b=oSZK+W5cJMuZ/QNCJOAsRPMZRgdxv
-	/xIEpaQjCRFAtHWw95EhmfDyDkZ/WW0RgNLQKIVwDatJjvOkMvdI4tutd5w+a1oG
-	4Xv2HyOETQo/yRdB6ROAeamkfR4Ytg+ZJQr0hF8/tsskojm8nRf1eRIEc8lwBZy4
-	OfK4qx8X6v2fLgDEStE+PT875miSWCnqJkWa94vl+4s7vqyVzBwKyBf8KWWjLHrI
-	w5YqAOp8Om5hPvQnwuKDevvodaDsZmE+uOceKd+XnOuUROxMtS9MfBPPyqkbMoLR
-	KIL8f1tSjNR7ifxYP4Zo+pbYtsWRvVxy3jkr8ugyOtwKP/Zy+lD7ZX0Dg==
-X-ME-Sender: <xms:VjEZZFlgSE-2WV80EQMNYMeW9jrTvoDYSVQFIUbxL0Szq3bFNJtdCg>
-    <xme:VjEZZA0YYxA-xxDedUzaIxdGaOTVN-BsFbvNno7J8v0LBokxsNAIV3c0AxFTZqs6d
-    M-0e-b7d-8LFShTsZU>
-X-ME-Received: 
- <xmr:VjEZZLpDKWuOoxtZXfS2M33mKnvM3bIAAlJipSQurvK2Y2zsKSSY2qyKwhBs7gfSDQdaJKyUmNpkXJdVZJzIz65ggIs>
-X-ME-Proxy-Cause: 
- gggruggvucftvghtrhhoucdtuddrgedvhedrvdefledgieejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
-    hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
-    hpqeenucggtffrrghtthgvrhhnpeejgeeifeeuveeufeeigeegjeelvdfgjeegffejgfdv
-    keelhefgtdefteejleekjeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluh
-    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhh
-    ihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:VjEZZFlexrNIJBP3vkMSlwXyBTPniRLJC4i4sywC1MBqnJzaeo5P6Q>
-    <xmx:VjEZZD3miSgyQrCXsE7qawHAxI4JLiT7kxACbv-DS_Tl9w_B1HDoyA>
-    <xmx:VjEZZEtytM4XanTJD9vcynIlaJNoI0vS_hp1Wys-IiOWAgGFlAfv8w>
-    <xmx:VjEZZM97X2ZqryC7cR41e5akwcGmfTbN9SlJufY0ztiMaPLzo7fnmA>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 21 Mar 2023 00:23:49 -0400 (EDT)
-Date: Tue, 21 Mar 2023 13:23:47 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
-	John Keeping <john@metanate.com>
-Subject: Re: [PATCH] ALSA: usb-audio: Fix recursive locking at XRUN during
- syncing
-Message-ID: <20230321042347.GA165562@workstation>
-Mail-Followup-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
-	John Keeping <john@metanate.com>
-References: <20230320142838.494-1-tiwai@suse.de>
- <20230321040258.GA164337@workstation>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230321040258.GA164337@workstation>
-Message-ID-Hash: NMJFQAEILNJMNQIDPDNYC6CNTRQPS4JQ
-X-Message-ID-Hash: NMJFQAEILNJMNQIDPDNYC6CNTRQPS4JQ
-X-MailFrom: o-takashi@sakamocchi.jp
+	by alsa1.perex.cz (Postfix) with ESMTP id 522AFF80520;
+	Tue, 21 Mar 2023 06:13:31 +0100 (CET)
+To: <vkoul@kernel.org>
+Subject: [PATCH V8 1/8] soundwire: export sdw_compute_slave_ports() function
+Date: Tue, 21 Mar 2023 10:38:54 +0530
+In-Reply-To: <20230321050901.115439-1-Vijendar.Mukunda@amd.com>
+References: <20230321050901.115439-1-Vijendar.Mukunda@amd.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -120,7 +40,155 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/NMJFQAEILNJMNQIDPDNYC6CNTRQPS4JQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VKPB3J7NSOHINBRBUUB7GK7T3TUX6TAI/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
+List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
+MIME-Version: 1.0
+Message-ID: 
+ <167937547418.26.17643929569554590362@mailman-core.alsa-project.org>
+From: Vijendar Mukunda via Alsa-devel <alsa-devel@alsa-project.org>
+Reply-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: vinod.koul@linaro.org, alsa-devel@alsa-project.org,
+ pierre-louis.bossart@linux.intel.com, Basavaraj.Hiregoudar@amd.com,
+ Sunil-kumar.Dommati@amd.com, Mario.Limonciello@amd.com,
+ amadeuszx.slawinski@linux.intel.com, Mastan.Katragadda@amd.com,
+ Arungopal.kondaveeti@amd.com, claudiu.beznea@microchip.com,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ open list <linux-kernel@vger.kernel.org>
+Content-Type: message/rfc822
+Content-Disposition: inline
+
+Received: by alsa1.perex.cz (Postfix, from userid 50401)
+	id BA161F80529; Tue, 21 Mar 2023 06:08:02 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_PASS,URIBL_BLOCKED
+	shortcircuit=no autolearn=unavailable autolearn_force=no version=3.4.6
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com
+ (mail-co1nam11on20607.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7eab::607])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by alsa1.perex.cz (Postfix) with ESMTPS id 67E6FF800C9
+	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2023 06:05:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67E6FF800C9
+Authentication-Results: alsa1.perex.cz;
+	dkim=pass (1024-bit key,
+ unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
+ header.s=selector1 header.b=Jmmdl914
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cU/3UWSpM1TxZN+NaA99/0NCE3Gfz7hczLsyQpErAcaFy9r58CjzVsZ687T4HBPT9V0SJwWFV30q9MCOHWjpleTYxbfR7h3GFm4Oy6orLYzQvrfoLaITEGrfeY55wGd56z4Qjw5hhgS63fhX4P+6dRNsidixOmdX6rORB1qRm9bc7MD8ZKHHoX1LI+kPaWxLWikdgYLGEyBglHhqQDjyFGCJk9KmG2bwx5lY8VlU2JAPOHX1P6Ie6EA+zmboM74L6/+EaWHQ4THokKVzLbF7UVyZvBbkrxN9ptubXjDEsAVSKmx2AoPeJdsNoMwS32MZEh0RHJPyV4Af2ofZTftvbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WUrMAhuQVof+ju/n9q/rmSwMNJzF/yYd0v9PWitn7Oc=;
+ b=HLXqIKGRfn7qDhALxhmgi0MyPyk3oZMmtz5l0yyvlZm30HepGn2pZLvkd3fm6luycNndtxTlTfloiTBmC0rNQ6Z3DvNI2gwN9bmtpk1Th9kVk3H128i5tq7KwVBjrUMSBIxVrvQlGxLlb1KTNG8c8FBykMaiIJmQ2akBzD/GXbX6c2/U+r/zWVhu5uj8hmLZj95BRAzu4W4H0jkTZWg08B353IipONoVmM7qS6LtcJJcFDUo2ut/R3mQ0CujgtVLoGX2qHu8hX1toTsERaInXZ8NZW8gVQnVokf+y7wJq2aev0t6znOMSdHiBaI2fkMeXliZwPVNUeiRuog2KjxqDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WUrMAhuQVof+ju/n9q/rmSwMNJzF/yYd0v9PWitn7Oc=;
+ b=Jmmdl914LFu3uFRn8XFShvnLeLiIdZKQDZDEH6791xKEMHuxrpXybz+BnIpp+exykXvqJv35TTMXO7s59Xq0AF5Lf1AvJyF0i3/9PZH9nDk6hxhrf/vr/OyPJZUf7j6DUJqqOpWAj52qA92/SE3Zz9Vv/XlS1sq124yXU9NoygY=
+Received: from BN9PR03CA0038.namprd03.prod.outlook.com (2603:10b6:408:fb::13)
+ by DM4PR12MB6254.namprd12.prod.outlook.com (2603:10b6:8:a5::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.37; Tue, 21 Mar
+ 2023 05:05:18 +0000
+Received: from BL02EPF00010207.namprd05.prod.outlook.com
+ (2603:10b6:408:fb:cafe::c6) by BN9PR03CA0038.outlook.office365.com
+ (2603:10b6:408:fb::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.37 via Frontend
+ Transport; Tue, 21 Mar 2023 05:05:18 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ BL02EPF00010207.mail.protection.outlook.com (10.167.241.197) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6178.30 via Frontend Transport; Tue, 21 Mar 2023 05:05:17 +0000
+Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 21 Mar
+ 2023 00:05:17 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB08.amd.com
+ (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 20 Mar
+ 2023 22:05:16 -0700
+Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.34
+ via Frontend Transport; Tue, 21 Mar 2023 00:05:13 -0500
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To: <vkoul@kernel.org>
+Subject: [PATCH V8 1/8] soundwire: export sdw_compute_slave_ports() function
+Date: Tue, 21 Mar 2023 10:38:54 +0530
+Message-ID: <20230321050901.115439-2-Vijendar.Mukunda@amd.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230321050901.115439-1-Vijendar.Mukunda@amd.com>
+References: <20230321050901.115439-1-Vijendar.Mukunda@amd.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF00010207:EE_|DM4PR12MB6254:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5be76ed4-5442-4d98-9b64-08db29c9dd2e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	9wolNxDVbyH1m2W+G1NyyXBiBASeDZfQ8jVxgi1OxPZFLyK9piCtzX9cT2wcZUupLKZPLfab48Aicibdb/t9tUmjx8MRjJlm3dIaIxiVj3QM9IPQ9KyYUGAKrNuBaWu0etGdvVi7ujfvyGldCOb9PY2SGIOTzMKh2NZpQth94+GTCjKVO4bXxDTmUazaqk0csx1IC11Fq158QLGZez64ASoFNH8mbCCqRj5Rnsn+m7XF2I0YetX8qk3OBY1TjrgHssn0cGTAAuAMT0i5WEZQVMEiha4/lxffuK76mtzB50idRftMIGtsOcmigaiKlDVNUcGcVbT3CTfFfnSHujqhnt67VwIh63ig6rSSVGWPAa64EgPd/Tov3czNFvvUvXvDLh/qmlYVxVF30PL1BmrYaddHXMoD0lQU7zf1kvgn9kYbBeVHwS9HjRUXJSApGjvn4XK1oUu0P2YsK/g+7DuuSwHZ9hm/d7vsSwRXLzCSkBCW2z+Nw88iUMwb0+Y6K333EfkFBG8MDV/LR66v7qkqZCnBvss//TIW8/m56ieMQeN9ZUnnokW6RIaRL9isJPqlpSMJ068DC3ZBRVLe2dz48LPWyaU3Yy2PpknAcyCBpaWnWDD62OsSzsNL7dy6trCKols9L05PA/NvHOzmGesL3Z+Mz6hEBMcDzZH0ahEe09vt/a05fGivyVHiDvfI+yBZLdpo5sPtNnTpgdvJrVjzsJTfxx1y+4lmAJ5m1gs2POM=
+X-Forefront-Antispam-Report: 
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(136003)(346002)(396003)(376002)(39860400002)(451199018)(36840700001)(40470700004)(46966006)(82310400005)(83380400001)(478600001)(54906003)(82740400003)(81166007)(2616005)(356005)(2906002)(26005)(47076005)(5660300002)(426003)(7696005)(186003)(316002)(1076003)(36756003)(8936002)(966005)(40480700001)(86362001)(6666004)(70586007)(336012)(70206006)(8676002)(36860700001)(6916009)(4326008)(41300700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2023 05:05:17.8573
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+ 5be76ed4-5442-4d98-9b64-08db29c9dd2e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
+ TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: 
+	BL02EPF00010207.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6254
+Message-ID-Hash: VKPB3J7NSOHINBRBUUB7GK7T3TUX6TAI
+X-Message-ID-Hash: VKPB3J7NSOHINBRBUUB7GK7T3TUX6TAI
+X-MailFrom: Vijendar.Mukunda@amd.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation;
+ header-match-alsa-devel.alsa-project.org-0;
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-recipients; max-size; news-moderation;
+ no-subject; digests; suspicious-header
+CC: vinod.koul@linaro.org, alsa-devel@alsa-project.org,
+ pierre-louis.bossart@linux.intel.com, Basavaraj.Hiregoudar@amd.com,
+ Sunil-kumar.Dommati@amd.com, Mario.Limonciello@amd.com,
+ amadeuszx.slawinski@linux.intel.com, Mastan.Katragadda@amd.com,
+ Arungopal.kondaveeti@amd.com, claudiu.beznea@microchip.com,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ open list <linux-kernel@vger.kernel.org>
+X-Mailman-Version: 3.3.8
+Precedence: list
+List-Id: "Alsa-devel mailing list for ALSA developers -
+ http://www.alsa-project.org" <alsa-devel.alsa-project.org>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VKPB3J7NSOHINBRBUUB7GK7T3TUX6TAI/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -129,169 +197,75 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, Mar 21, 2023 at 01:02:58PM +0900, Takashi Sakamoto wrote:
-> Hi,
-> 
-> On Mon, Mar 20, 2023 at 03:28:38PM +0100, Takashi Iwai wrote:
-> > The recent support of low latency playback in USB-audio driver made
-> > the snd_usb_queue_pending_output_urbs() function to be called via PCM
-> > ack ops.  In the new code path, the function is performed alread in
-> 
-> 's/alread/already/' or slang.
-> 
-> > the PCM stream lock.  The problem is that, when an XRUN is detected,
-> > the  function calls snd_pcm_xrun() to notify, but snd_pcm_xrun() is
-> 
-> 's/the  function/the function/'
-> 
-> > supposed to be called only outside the stream lock.  As a result, it
-> > leads to a deadlock of PCM stream locking.
-> > 
-> > For avoiding such a recursive locking, this patch adds an additional
-> > check to the code paths in PCM core that call the ack callback; now it
-> > checks the error code from the callback, and if it's -EPIPE, the XRUN
-> > is handled in the PCM core side gracefully.  Along with it, the
-> > USB-audio driver code is changed to follow that, i.e. -EPIPE is
-> > returned instead of the explicit snd_pcm_xrun() call when the function
-> > is performed already in the stream lock.
->  
-> Practically, the implementation of 'pcm_hw' in alsa-lib never evaluates
-> the return value (see 'snd_pcm_hw_mmap_commit()' and the others). I guess
-> that it is inconvenient for the low-latency mode of USB Audio device class
-> driver for the case of failure.
-> 
-> My additional concern is PCM indirect layer, since typically the layer
-> is used by drivers with SNDRV_PCM_INFO_SYNC_APPLPTR. But as long as I
-> read, the change does not matter to them.
-> 
-> > Fixes: d5f871f89e21 ("ALSA: usb-audio: Improved lowlatency playback support")
-> > Reported-and-tested-by: John Keeping <john@metanate.com>
-> > Link: https://lore.kernel.org/r/20230317195128.3911155-1-john@metanate.com
-> > Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > ---
-> >  sound/core/pcm_lib.c |  2 ++
-> >  sound/usb/endpoint.c | 22 ++++++++++++++--------
-> >  sound/usb/endpoint.h |  4 ++--
-> >  sound/usb/pcm.c      |  2 +-
-> >  4 files changed, 19 insertions(+), 11 deletions(-)
->  
-> Anyway, John Keeping reports the change works well to solve the issue. I
-> have no objection to it.
-> 
-> Reviewed-by; Takashi Sakamoto <o-takashi@sakamocchi.jp>
- 
-I forgot to mention that it is preferable to update 'ack callback' clause
-of API Documentation (i.e. writing-an-alsa-driver.rst) as well.
+Export sdw_compute_slave_ports() function to use it in another
+soundwire manager module.
+Move sdw_transport_data structure to bus header file to export
+sdw_compute_slave_ports() function.
 
-> It is also convenient to IEC 61883-1/6 packet streaming engine for audio
-> and music unit in IEEE 1394 bus. I will post patches enough later for it.
-> 
-> > diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-> > index 8b6aeb8a78f7..02fd65993e7e 100644
-> > --- a/sound/core/pcm_lib.c
-> > +++ b/sound/core/pcm_lib.c
-> > @@ -2155,6 +2155,8 @@ int pcm_lib_apply_appl_ptr(struct snd_pcm_substream *substream,
-> >  		ret = substream->ops->ack(substream);
-> >  		if (ret < 0) {
-> >  			runtime->control->appl_ptr = old_appl_ptr;
-> > +			if (ret == -EPIPE)
-> > +				__snd_pcm_xrun(substream);
-> >  			return ret;
-> >  		}
-> >  	}
-> > diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-> > index 419302e2057e..647fa054d8b1 100644
-> > --- a/sound/usb/endpoint.c
-> > +++ b/sound/usb/endpoint.c
-> > @@ -455,8 +455,8 @@ static void push_back_to_ready_list(struct snd_usb_endpoint *ep,
-> >   * This function is used both for implicit feedback endpoints and in low-
-> >   * latency playback mode.
-> >   */
-> > -void snd_usb_queue_pending_output_urbs(struct snd_usb_endpoint *ep,
-> > -				       bool in_stream_lock)
-> > +int snd_usb_queue_pending_output_urbs(struct snd_usb_endpoint *ep,
-> > +				      bool in_stream_lock)
-> >  {
-> >  	bool implicit_fb = snd_usb_endpoint_implicit_feedback_sink(ep);
-> >  
-> > @@ -480,7 +480,7 @@ void snd_usb_queue_pending_output_urbs(struct snd_usb_endpoint *ep,
-> >  		spin_unlock_irqrestore(&ep->lock, flags);
-> >  
-> >  		if (ctx == NULL)
-> > -			return;
-> > +			break;
-> >  
-> >  		/* copy over the length information */
-> >  		if (implicit_fb) {
-> > @@ -495,11 +495,14 @@ void snd_usb_queue_pending_output_urbs(struct snd_usb_endpoint *ep,
-> >  			break;
-> >  		if (err < 0) {
-> >  			/* push back to ready list again for -EAGAIN */
-> > -			if (err == -EAGAIN)
-> > +			if (err == -EAGAIN) {
-> >  				push_back_to_ready_list(ep, ctx);
-> > -			else
-> > +				break;
-> > +			}
-> > +
-> > +			if (!in_stream_lock)
-> >  				notify_xrun(ep);
-> > -			return;
-> > +			return -EPIPE;
-> >  		}
-> >  
-> >  		err = usb_submit_urb(ctx->urb, GFP_ATOMIC);
-> > @@ -507,13 +510,16 @@ void snd_usb_queue_pending_output_urbs(struct snd_usb_endpoint *ep,
-> >  			usb_audio_err(ep->chip,
-> >  				      "Unable to submit urb #%d: %d at %s\n",
-> >  				      ctx->index, err, __func__);
-> > -			notify_xrun(ep);
-> > -			return;
-> > +			if (!in_stream_lock)
-> > +				notify_xrun(ep);
-> > +			return -EPIPE;
-> >  		}
-> >  
-> >  		set_bit(ctx->index, &ep->active_mask);
-> >  		atomic_inc(&ep->submitted_urbs);
-> >  	}
-> > +
-> > +	return 0;
-> >  }
-> >  
-> >  /*
-> > diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
-> > index 924f4351588c..c09f68ce08b1 100644
-> > --- a/sound/usb/endpoint.h
-> > +++ b/sound/usb/endpoint.h
-> > @@ -52,7 +52,7 @@ int snd_usb_endpoint_implicit_feedback_sink(struct snd_usb_endpoint *ep);
-> >  int snd_usb_endpoint_next_packet_size(struct snd_usb_endpoint *ep,
-> >  				      struct snd_urb_ctx *ctx, int idx,
-> >  				      unsigned int avail);
-> > -void snd_usb_queue_pending_output_urbs(struct snd_usb_endpoint *ep,
-> > -				       bool in_stream_lock);
-> > +int snd_usb_queue_pending_output_urbs(struct snd_usb_endpoint *ep,
-> > +				      bool in_stream_lock);
-> >  
-> >  #endif /* __USBAUDIO_ENDPOINT_H */
-> > diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-> > index d959da7a1afb..eec5232f9fb2 100644
-> > --- a/sound/usb/pcm.c
-> > +++ b/sound/usb/pcm.c
-> > @@ -1639,7 +1639,7 @@ static int snd_usb_pcm_playback_ack(struct snd_pcm_substream *substream)
-> >  	 * outputs here
-> >  	 */
-> >  	if (!ep->active_mask)
-> > -		snd_usb_queue_pending_output_urbs(ep, true);
-> > +		return snd_usb_queue_pending_output_urbs(ep, true);
-> >  	return 0;
-> >  }
-> >  
-> > -- 
-> > 2.35.3
-> 
-> 
-> Thanks
-> 
-> Takashi Sakamoto
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/lkml/20230201165944.3169125-1-Vijendar.Mukunda@amd.com
+---
+ drivers/soundwire/bus.h                          |  9 +++++++++
+ drivers/soundwire/generic_bandwidth_allocation.c | 12 +++---------
+ 2 files changed, 12 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+index 96927a143796..0ea0412842c5 100644
+--- a/drivers/soundwire/bus.h
++++ b/drivers/soundwire/bus.h
+@@ -144,6 +144,13 @@ struct sdw_master_runtime {
+ 	struct list_head bus_node;
+ };
+ 
++struct sdw_transport_data {
++	int hstart;
++	int hstop;
++	int block_offset;
++	int sub_block_offset;
++};
++
+ struct sdw_dpn_prop *sdw_get_slave_dpn_prop(struct sdw_slave *slave,
+ 					    enum sdw_data_direction direction,
+ 					    unsigned int port_num);
+@@ -212,5 +219,7 @@ int sdw_bwrite_no_pm_unlocked(struct sdw_bus *bus, u16 dev_num, u32 addr, u8 val
+ 
+ void sdw_clear_slave_status(struct sdw_bus *bus, u32 request);
+ int sdw_slave_modalias(const struct sdw_slave *slave, char *buf, size_t size);
++void sdw_compute_slave_ports(struct sdw_master_runtime *m_rt,
++			     struct sdw_transport_data *t_data);
+ 
+ #endif /* __SDW_BUS_H */
+diff --git a/drivers/soundwire/generic_bandwidth_allocation.c b/drivers/soundwire/generic_bandwidth_allocation.c
+index f7c66083a4dd..39543048baa7 100644
+--- a/drivers/soundwire/generic_bandwidth_allocation.c
++++ b/drivers/soundwire/generic_bandwidth_allocation.c
+@@ -28,15 +28,8 @@ struct sdw_group {
+ 	unsigned int *rates;
+ };
+ 
+-struct sdw_transport_data {
+-	int hstart;
+-	int hstop;
+-	int block_offset;
+-	int sub_block_offset;
+-};
+-
+-static void sdw_compute_slave_ports(struct sdw_master_runtime *m_rt,
+-				    struct sdw_transport_data *t_data)
++void sdw_compute_slave_ports(struct sdw_master_runtime *m_rt,
++			     struct sdw_transport_data *t_data)
+ {
+ 	struct sdw_slave_runtime *s_rt = NULL;
+ 	struct sdw_port_runtime *p_rt;
+@@ -85,6 +78,7 @@ static void sdw_compute_slave_ports(struct sdw_master_runtime *m_rt,
+ 		}
+ 	}
+ }
++EXPORT_SYMBOL(sdw_compute_slave_ports);
+ 
+ static void sdw_compute_master_ports(struct sdw_master_runtime *m_rt,
+ 				     struct sdw_group_params *params,
+-- 
+2.34.1
+
