@@ -4,29 +4,30 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF5F6C74A5B
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Mar 2023 05:15:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1953C74A5B
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Mar 2023 05:16:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3EB256C0;
-	Tue, 21 Mar 2023 06:14:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EB256C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C65E7F1;
+	Tue, 21 Mar 2023 06:15:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C65E7F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679375738;
-	bh=WCNM6RUMbLVFuLtBk7LyGh05NxuSo9qCI0ynt3cNYkE=;
+	s=default; t=1679375759;
+	bh=tuPiOXkfoN9ovGvUxsLQqP6pojguotino1nlMwo/PeA=;
 	h=To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From:Reply-To:Cc:From;
-	b=U+aJGVwSL93mPqyIwxtXtPM7Vn/U0tQI2OGd6EhtdA49Xo7Vcray07bnSp4C8nZes
-	 vYCVqyk2UILtF0LJI1ZK0BEeRSzsdiHyD3cinPznHgsHUkRG/7Zsau9lkQNSTY/XO2
-	 8tc9msNofo5WSJIcdNZkam5Tut+Em0uIE2XnzaKY=
+	b=S2IGXjaLlx7anNzEkZXtsxXKZLFNj6FSPirOY/ucaad5IwHNtjqwP9+CgPMMV2G+G
+	 yiwqK3TdZdmY/IzS8CDKkQyLE6BT5RqKgaam9w0oaCS22hd40oUNwsFurkJ+pxVFWj
+	 5VcG6OIKGYQprQbaPNjuo3d/EKWfQWcPUpT/D0EM=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3C653F8052D;
-	Tue, 21 Mar 2023 06:14:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 798ACF80482;
+	Tue, 21 Mar 2023 06:14:30 +0100 (CET)
 To: <vkoul@kernel.org>
-Subject: [PATCH V8 3/8] soundwire: amd: register SoundWire manager dai ops
-Date: Tue, 21 Mar 2023 10:38:56 +0530
+Subject: [PATCH V8 5/8] soundwire: amd: add SoundWire manager interrupt
+ handling
+Date: Tue, 21 Mar 2023 10:38:58 +0530
 In-Reply-To: <20230321050901.115439-1-Vijendar.Mukunda@amd.com>
 References: <20230321050901.115439-1-Vijendar.Mukunda@amd.com>
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
@@ -40,7 +41,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2YORRWFVZIP7ZTSZ3RN6VAX3FVMHZBBQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2VJZQNAAKHSJDF6ZEKZABLFAI25CZAXX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -50,7 +51,7 @@ List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 MIME-Version: 1.0
 Message-ID: 
- <167937566649.26.8898858379874810296@mailman-core.alsa-project.org>
+ <167937566865.26.3804047394196601171@mailman-core.alsa-project.org>
 From: Vijendar Mukunda via Alsa-devel <alsa-devel@alsa-project.org>
 Reply-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Cc: vinod.koul@linaro.org, alsa-devel@alsa-project.org,
@@ -66,71 +67,73 @@ Content-Type: message/rfc822
 Content-Disposition: inline
 
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 9C63AF80527; Tue, 21 Mar 2023 06:08:31 +0100 (CET)
+	id 062FCF8027B; Tue, 21 Mar 2023 06:08:44 +0100 (CET)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
 X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-	shortcircuit=no autolearn=unavailable autolearn_force=no version=3.4.6
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com
- (mail-bn8nam11on20601.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7eae::601])
+X-Spam-Status: No, score=-5.2 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
+	DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_PASS,SPF_PASS,
+	URIBL_BLOCKED shortcircuit=no autolearn=unavailable autolearn_force=no
+	version=3.4.6
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam12on20600.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:fe5b::600])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 693C8F8027B
-	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2023 06:05:35 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 693C8F8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6A125F80482
+	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2023 06:05:53 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A125F80482
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=amd.com header.i=@amd.com header.a=rsa-sha256
- header.s=selector1 header.b=bFk3krFC
+ header.s=selector1 header.b=zd9/W1sV
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=asRs36n3K0Ge3wAv+XKY8Q+vtlXi6Q0qKAj6Pm6y2KXdmbmS9lbLMlrP1rGsYy2c9n4D33Q9zCiRsE1lf3S6BVXW/JIkK03iwgtqsJdL7tam+XkNMYVo69QBngcUhypgMD9LKbbDqa4b+TJwJEK4TyjKzs86lBSY74GBh0uWYhMamte/l6orB7OtiZFyEXyjf74Nx10gLMVy/v+7Jk8mRiIP7ud31UmPP1l2pv7LfvlTVwkB3oepYCfjVMPHznLSybXi4rhHsSjxehPlYgep7w8gHT/oU82CaSYk5dji4erAIkpOYqaC6vBfdwaR3Wn6yIXkmu1wLOi8I4HD/b8Pvw==
+ b=Bmkcg513LcT8z6OwYZOSSb34V0s+DxazqXAlRmDFVHeGIPhrI+nFKB6oFjG+SyS+87ykVTe25k92H5Pxopjc0c7kg+9ZqA8daLo1jUzfmrhXPRKCuft3Xok+mKYIjbss9DBqOUI4NbhOdczueIl+D6ONeqpiMg7q1gF7qky9m38lIfDrYirqpzOuDgP6t+sv7NzlC4lyix2euUrsF11u25uiJAnanRjT4crkBhFaBgXnFmfqxqdTvKJJKrqN99B6cDuNh9IDF99xD7RINKwwRBCyi6KglCkGyObqhB4zk4HLEVaPRqWhB7aTLM9fsqc77pifGNiEvWOzXUtuaVqSlw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8rIFWM0EKbnttYQY8hl3zdcfv7wtHQobBoy1T1dU0HA=;
- b=bpRSVKS4JF9lvKTGKz7cghbFogipDLSJhk2FdKPLPsECUuxdll+15H/VnxrH/rxR77JkQQGMga+AjnGD0bENTrGKGfvkLvrjSvwob3JDBgJAoy/94N4ovDZQEROikVqkREOm9FX+md3U1QSAcHKZ/4e3ovBWO+S8ON9U0d0R3+XbCMFtmUN7Mekw9S7NR5VvVBr5q4myWwn9Bhq+wiM6aLKEDaS/e3Cq5m5kamQ6fJXOhV6icx+BoKkwmg2VgVTnIykTr48136x9+9HhrZmqXFy2d+idKUbbPwtDLLRXcQ8l6fOah/5HYfqkxoqpCRaeUioHlqiYe8uQSsbE5xWVuQ==
+ bh=Dxgqav6RsLOzhn1anXycTvwnKGG9i3FZy91IMfltUl4=;
+ b=Osp3BaSt0Pi0Yx7un3NRh0WJNAsuTnmkIXFFPbYN8M8oRCXe7tWr9jW/m9zSmytsml6QStLnHzcIxvyGUR0y+ZBlo203dPfhdyFAy39J4hrBe9fK8R/Rzt/ELG7va5ZFAs7Y2MdrlV+QSjfW5XZg7ywpTsywWR/MwzrbwUUT2QIIbkPBZxZCT2QiBrMql+7EbbPZAyY3pRQ3/bbztNjQTNyi1BhQNb8VfmyTiZTzQXFG0HhxD2slv1FRmpdT/GwZ0v9RstQJ2BRqbqMbw/bYuwj6YZcppm4bCTgd5BUdJFlnWG0vQmnXR4UFkVWc45wB04ByN+UtQNdOTzet2GHc4Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8rIFWM0EKbnttYQY8hl3zdcfv7wtHQobBoy1T1dU0HA=;
- b=bFk3krFCH0JcDoXEL83SLMDGmn03gE9oGADkA7HIio+qSDPlMYJL90xUkeDwj8aLMH4Z+lEoXD2mrYOHdMQ6mHMMLZ5oDlJcMkYgk9s9rr/oRW+fjZ96uG4wvcoWH5vls4DjKls/Zl81eoRsLco9jNSXX7dwkh4NQGA+ENYTRpc=
-Received: from BN1PR12CA0030.namprd12.prod.outlook.com (2603:10b6:408:e1::35)
- by SA1PR12MB7222.namprd12.prod.outlook.com (2603:10b6:806:2bf::15) with
+ bh=Dxgqav6RsLOzhn1anXycTvwnKGG9i3FZy91IMfltUl4=;
+ b=zd9/W1sVfM13Zjvvuekv20uWPUaqbBfBc9HNuR3Trqhl4CzuGFii2wlJfEMDuaL8OwgbW9vjS9RB1KgwFcg2GS9p6JMIzQf6f1/Zwo/RdEERxhI7pd/pSqc/tnDMsxBg5lowcWj4jFQkvQgean8VcW30DDUnqYWxv0S/vYBVCcI=
+Received: from MN2PR15CA0007.namprd15.prod.outlook.com (2603:10b6:208:1b4::20)
+ by PH7PR12MB8122.namprd12.prod.outlook.com (2603:10b6:510:2b7::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.37; Tue, 21 Mar
- 2023 05:05:28 +0000
-Received: from BN8NAM11FT095.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:e1:cafe::96) by BN1PR12CA0030.outlook.office365.com
- (2603:10b6:408:e1::35) with Microsoft SMTP Server (version=TLS1_2,
+ 2023 05:05:48 +0000
+Received: from BL02EPF00010207.namprd05.prod.outlook.com
+ (2603:10b6:208:1b4:cafe::d3) by MN2PR15CA0007.outlook.office365.com
+ (2603:10b6:208:1b4::20) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.37 via Frontend
- Transport; Tue, 21 Mar 2023 05:05:28 +0000
+ Transport; Tue, 21 Mar 2023 05:05:48 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
 Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT095.mail.protection.outlook.com (10.13.176.206) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6222.16 via Frontend Transport; Tue, 21 Mar 2023 05:05:28 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ BL02EPF00010207.mail.protection.outlook.com (10.167.241.197) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6178.30 via Frontend Transport; Tue, 21 Mar 2023 05:05:47 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 21 Mar
- 2023 00:05:28 -0500
+ 2023 00:05:47 -0500
 Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
  SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.34
- via Frontend Transport; Tue, 21 Mar 2023 00:05:24 -0500
+ via Frontend Transport; Tue, 21 Mar 2023 00:05:43 -0500
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 To: <vkoul@kernel.org>
-Subject: [PATCH V8 3/8] soundwire: amd: register SoundWire manager dai ops
-Date: Tue, 21 Mar 2023 10:38:56 +0530
-Message-ID: <20230321050901.115439-4-Vijendar.Mukunda@amd.com>
+Subject: [PATCH V8 5/8] soundwire: amd: add SoundWire manager interrupt
+ handling
+Date: Tue, 21 Mar 2023 10:38:58 +0530
+Message-ID: <20230321050901.115439-6-Vijendar.Mukunda@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230321050901.115439-1-Vijendar.Mukunda@amd.com>
 References: <20230321050901.115439-1-Vijendar.Mukunda@amd.com>
@@ -139,30 +142,30 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT095:EE_|SA1PR12MB7222:EE_
-X-MS-Office365-Filtering-Correlation-Id: de234c35-e950-4ca9-1385-08db29c9e399
+X-MS-TrafficTypeDiagnostic: BL02EPF00010207:EE_|PH7PR12MB8122:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9ef421c8-c7da-4ab3-b89a-08db29c9ef12
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	gA1AWx8jamjn/Kov5RSZOqFsnT5MgEbF/er33JqHzDbp94fzsj913TFZolANyGxUxilv2STYrjzxM/qZMoIQKGIKv9FTd1QfQ5CiyQDqKmu89xvyCC6HEIaXlfy+45a6mT0ryotdHJ/zaxM8phvLE/xdz2t/a50kdCKVdAQmnlOXGyqmZYJ/FXW9odZ/Mejkj7UFsLy+EvttiUBLoWZNRTInBP6b1PI5vueuWYJmPRLFvdKEAdak2HBeyWoSIS9qm27iocRPek7nOcztB8SB5dYWrhNS4+Z73KJl0fQd1nmkbQAoNUW6kUpU+Y/tpA2EiLd61NjqmoV8G3+YfP26QBY99HYypni3dRJlNqeGmV1okMoZbsTi6AGPf/hY/u4m1sPkNRvshBEL4WKIqwhoSzVUEwWO35jL22y5BL7bo3IGJS6tGUx6LmpDCDQA1f3Hw1c69Dve7O+JS8Nzlny87Lp2h/7UTSv4TYNa14k0Tz6N2uoarh9Cg67JH+tt5CGUFrjP67tztzSO0LvIfQ3hCPVRtIOkkmw+cvnvSYs0xCOccbZqQdkKOCHoazCHxHFY/rN2EbTlICBMLBunLLco7RGbZrEYir+AuK7Z1ffEGxZM7FjP5AOd4X56+fvrK2p+Xll8i/lfSfliMU4DNNI67VNKPCLVw8Opf5GjjzLpu9HqaT3l8nf5JSvrijncm2BlkRPGetU1TiodPBOUFvU5HoIYcTAfxxMwQ64SihTvCsE=
+	quGk0OaYpt5+XLEoMUh63/JNyhsoJDZQs6ff6CD1ucHgaa4DHxBeudKt37HJEwIj6THsLA1C3k5rZ7jY2iuTH5i+7ic5yKWUNoGxTPloNoAAUCycLwcg3SdK232AXfR26+P91iM4BChmFfJ/W2LBS9YLhmgSsmJ6CawtNG4fMQI7QGYIw7Vje3UvUPaNUqho2rk+RH9wRGtNaFty6xyAuYqJ8Ut0I2uBb3zumx1ND8sUHYZEQlhoee0j2k+dkB5JAvAKjyCmxivc6rZMTnD3lGxRlLfcdKhehyw9jzrlyuAKaPaGhCBWGMFOMOnNcSQZ7iCjHXLNI1pvfc/mYAAw+efi2XLFkmMO++bJlB4/fJpxOEhgioJAixZxWBienMYJy4CPuxxVlCQs81R2xtUatZgTZVym9qoBozUUVsBqyex9mb/LSzZQ6vc2hxSOZX9+pRvbrGwKjXcGrG2AmXB0C/a4Z5fLAB29l70tQwJDWe6//gKbKepFW5iYJEKWolLahYCKGQ1CSoLsuuKUVUlpK3qlgT/PZ7NYHADnDvDD6ezpTNiz2NP99CBSEKUbORzOyDyuRv8ZWjV8isgZU0yGLw8t5kBJcP4PwBAgXi1e+aSkR+pFNLemkOOeJJtYBjZGSdNvUo2vxbOiUDH0djiUWhaRsYYQeZIfN8KtJQ0umLwcxxdd1vbYQPE+gws1BN0slZAvmKmjQd6IKnR2c8iHbz8dvqTy29kqO7/nRcjbAdc=
 X-Forefront-Antispam-Report: 
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(39860400002)(136003)(396003)(346002)(376002)(451199018)(40470700004)(46966006)(36840700001)(82310400005)(2616005)(426003)(47076005)(83380400001)(40460700003)(86362001)(336012)(356005)(36860700001)(81166007)(82740400003)(40480700001)(4326008)(6916009)(8676002)(41300700001)(36756003)(70206006)(2906002)(8936002)(70586007)(186003)(26005)(5660300002)(316002)(6666004)(7696005)(966005)(54906003)(478600001)(1076003)(36900700001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230025)(4636009)(39860400002)(346002)(136003)(396003)(376002)(451199018)(40470700004)(46966006)(36840700001)(26005)(478600001)(2906002)(40480700001)(54906003)(83380400001)(316002)(336012)(47076005)(426003)(2616005)(356005)(82740400003)(36860700001)(86362001)(82310400005)(966005)(7696005)(40460700003)(81166007)(36756003)(6666004)(6916009)(186003)(4326008)(70586007)(70206006)(8676002)(5660300002)(41300700001)(8936002)(1076003)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2023 05:05:28.6213
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Mar 2023 05:05:47.8735
  (UTC)
 X-MS-Exchange-CrossTenant-Network-Message-Id: 
- de234c35-e950-4ca9-1385-08db29c9e399
+ 9ef421c8-c7da-4ab3-b89a-08db29c9ef12
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: 
- TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+ TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: 
-	BN8NAM11FT095.eop-nam11.prod.protection.outlook.com
+	BL02EPF00010207.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7222
-Message-ID-Hash: 2YORRWFVZIP7ZTSZ3RN6VAX3FVMHZBBQ
-X-Message-ID-Hash: 2YORRWFVZIP7ZTSZ3RN6VAX3FVMHZBBQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8122
+Message-ID-Hash: 2VJZQNAAKHSJDF6ZEKZABLFAI25CZAXX
+X-Message-ID-Hash: 2VJZQNAAKHSJDF6ZEKZABLFAI25CZAXX
 X-MailFrom: Vijendar.Mukunda@amd.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -184,7 +187,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2YORRWFVZIP7ZTSZ3RN6VAX3FVMHZBBQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2VJZQNAAKHSJDF6ZEKZABLFAI25CZAXX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -193,284 +196,212 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Register dai ops for SoundWire manager instances.
+Add support for handling SoundWire manager interrupts.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Signed-off-by: Mastan Katragadda <Mastan.Katragadda@amd.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/lkml/20230227154801.50319-4-Vijendar.Mukunda@amd.com
+Link: https://lore.kernel.org/lkml/20230227154801.50319-6-Vijendar.Mukunda@amd.com
 ---
- drivers/soundwire/amd_manager.c   | 178 ++++++++++++++++++++++++++++++
- drivers/soundwire/amd_manager.h   |  18 +++
- include/linux/soundwire/sdw_amd.h |  18 +++
- 3 files changed, 214 insertions(+)
+ drivers/soundwire/amd_manager.c   | 126 ++++++++++++++++++++++++++++++
+ drivers/soundwire/amd_manager.h   |   1 +
+ include/linux/soundwire/sdw_amd.h |   7 ++
+ 3 files changed, 134 insertions(+)
 
 diff --git a/drivers/soundwire/amd_manager.c b/drivers/soundwire/amd_manager.c
-index f02522d11417..f12dad6c3226 100644
+index f12dad6c3226..49b7133cb41f 100644
 --- a/drivers/soundwire/amd_manager.c
 +++ b/drivers/soundwire/amd_manager.c
-@@ -551,6 +551,178 @@ static const struct sdw_master_ops amd_sdw_ops = {
- 	.read_ping_status = amd_sdw_read_ping_status,
- };
+@@ -327,6 +327,47 @@ static enum sdw_command_response amd_sdw_xfer_msg(struct sdw_bus *bus, struct sd
+ 	return SDW_CMD_OK;
+ }
  
-+static int amd_sdw_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params,
-+			     struct snd_soc_dai *dai)
++static void amd_sdw_fill_slave_status(struct amd_sdw_manager *amd_manager, u16 index, u32 status)
 +{
-+	struct amd_sdw_manager *amd_manager = snd_soc_dai_get_drvdata(dai);
-+	struct sdw_amd_dai_runtime *dai_runtime;
-+	struct sdw_stream_config sconfig;
-+	struct sdw_port_config *pconfig;
-+	int ch, dir;
-+	int ret;
++	switch (status) {
++	case SDW_SLAVE_ATTACHED:
++	case SDW_SLAVE_UNATTACHED:
++	case SDW_SLAVE_ALERT:
++		amd_manager->status[index] = status;
++		break;
++	default:
++		amd_manager->status[index] = SDW_SLAVE_RESERVED;
++		break;
++	}
++}
 +
-+	dai_runtime = amd_manager->dai_runtime_array[dai->id];
-+	if (!dai_runtime)
-+		return -EIO;
++static void amd_sdw_process_ping_status(u64 response, struct amd_sdw_manager *amd_manager)
++{
++	u64 slave_stat;
++	u32 val;
++	u16 dev_index;
 +
-+	ch = params_channels(params);
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		dir = SDW_DATA_DIR_RX;
-+	else
-+		dir = SDW_DATA_DIR_TX;
-+	dev_dbg(amd_manager->dev, "dir:%d dai->id:0x%x\n", dir, dai->id);
++	/* slave status response */
++	slave_stat = FIELD_GET(AMD_SDW_MCP_SLAVE_STAT_0_3, response);
++	slave_stat |= FIELD_GET(AMD_SDW_MCP_SLAVE_STAT_4_11, response) << 8;
++	dev_dbg(amd_manager->dev, "slave_stat:0x%llx\n", slave_stat);
++	for (dev_index = 0; dev_index <= SDW_MAX_DEVICES; ++dev_index) {
++		val = (slave_stat >> (dev_index * 2)) & AMD_SDW_MCP_SLAVE_STATUS_MASK;
++		dev_dbg(amd_manager->dev, "val:0x%x\n", val);
++		amd_sdw_fill_slave_status(amd_manager, dev_index, val);
++	}
++}
 +
-+	sconfig.direction = dir;
-+	sconfig.ch_count = ch;
-+	sconfig.frame_rate = params_rate(params);
-+	sconfig.type = dai_runtime->stream_type;
++static void amd_sdw_read_and_process_ping_status(struct amd_sdw_manager *amd_manager)
++{
++	u64 response;
 +
-+	sconfig.bps = snd_pcm_format_width(params_format(params));
++	mutex_lock(&amd_manager->bus.msg_lock);
++	response = amd_sdw_send_cmd_get_resp(amd_manager, 0, 0);
++	mutex_unlock(&amd_manager->bus.msg_lock);
++	amd_sdw_process_ping_status(response, amd_manager);
++}
 +
-+	/* Port configuration */
-+	pconfig = kzalloc(sizeof(*pconfig), GFP_KERNEL);
-+	if (!pconfig) {
-+		ret =  -ENOMEM;
-+		goto error;
+ static u32 amd_sdw_read_ping_status(struct sdw_bus *bus)
+ {
+ 	struct amd_sdw_manager *amd_manager = to_amd_sdw(bus);
+@@ -723,6 +764,89 @@ static int amd_sdw_register_dais(struct amd_sdw_manager *amd_manager)
+ 					       dais, num_dais);
+ }
+ 
++static void amd_sdw_update_slave_status_work(struct work_struct *work)
++{
++	struct amd_sdw_manager *amd_manager =
++		container_of(work, struct amd_sdw_manager, amd_sdw_work);
++	int retry_count = 0;
++
++	if (amd_manager->status[0] == SDW_SLAVE_ATTACHED) {
++		writel(0, amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_MASK_0TO7);
++		writel(0, amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_MASK_8TO11);
 +	}
 +
-+	pconfig->num = dai->id;
-+	pconfig->ch_mask = (1 << ch) - 1;
-+	ret = sdw_stream_add_master(&amd_manager->bus, &sconfig,
-+				    pconfig, 1, dai_runtime->stream);
-+	if (ret)
-+		dev_err(amd_manager->dev, "add manager to stream failed:%d\n", ret);
-+
-+	kfree(pconfig);
-+error:
-+	return ret;
-+}
-+
-+static int amd_sdw_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
-+{
-+	struct amd_sdw_manager *amd_manager = snd_soc_dai_get_drvdata(dai);
-+	struct sdw_amd_dai_runtime *dai_runtime;
-+	int ret;
-+
-+	dai_runtime = amd_manager->dai_runtime_array[dai->id];
-+	if (!dai_runtime)
-+		return -EIO;
-+
-+	ret = sdw_stream_remove_master(&amd_manager->bus, dai_runtime->stream);
-+	if (ret < 0)
-+		dev_err(dai->dev, "remove manager from stream %s failed: %d\n",
-+			dai_runtime->stream->name, ret);
-+	return ret;
-+}
-+
-+static int amd_set_sdw_stream(struct snd_soc_dai *dai, void *stream, int direction)
-+{
-+	struct amd_sdw_manager *amd_manager = snd_soc_dai_get_drvdata(dai);
-+	struct sdw_amd_dai_runtime *dai_runtime;
-+
-+	dai_runtime = amd_manager->dai_runtime_array[dai->id];
-+	if (stream) {
-+		/* first paranoia check */
-+		if (dai_runtime) {
-+			dev_err(dai->dev, "dai_runtime already allocated for dai %s\n",	dai->name);
-+			return -EINVAL;
++update_status:
++	sdw_handle_slave_status(&amd_manager->bus, amd_manager->status);
++	/*
++	 * During the peripheral enumeration sequence, the SoundWire manager interrupts
++	 * are masked. Once the device number programming is done for all peripherals,
++	 * interrupts will be unmasked. Read the peripheral device status from ping command
++	 * and process the response. This sequence will ensure all peripheral devices enumerated
++	 * and initialized properly.
++	 */
++	if (amd_manager->status[0] == SDW_SLAVE_ATTACHED) {
++		if (retry_count++ < SDW_MAX_DEVICES) {
++			writel(AMD_SDW_IRQ_MASK_0TO7, amd_manager->mmio +
++			       ACP_SW_STATE_CHANGE_STATUS_MASK_0TO7);
++			writel(AMD_SDW_IRQ_MASK_8TO11, amd_manager->mmio +
++			       ACP_SW_STATE_CHANGE_STATUS_MASK_8TO11);
++			amd_sdw_read_and_process_ping_status(amd_manager);
++			goto update_status;
++		} else {
++			dev_err_ratelimited(amd_manager->dev,
++					    "Device0 detected after %d iterations\n",
++					    retry_count);
 +		}
++	}
++}
 +
-+		/* allocate and set dai_runtime info */
-+		dai_runtime = kzalloc(sizeof(*dai_runtime), GFP_KERNEL);
-+		if (!dai_runtime)
-+			return -ENOMEM;
++static void amd_sdw_update_slave_status(u32 status_change_0to7, u32 status_change_8to11,
++					struct amd_sdw_manager *amd_manager)
++{
++	u64 slave_stat;
++	u32 val;
++	int dev_index;
 +
-+		dai_runtime->stream_type = SDW_STREAM_PCM;
-+		dai_runtime->bus = &amd_manager->bus;
-+		dai_runtime->stream = stream;
-+		amd_manager->dai_runtime_array[dai->id] = dai_runtime;
++	if (status_change_0to7 == AMD_SDW_SLAVE_0_ATTACHED)
++		memset(amd_manager->status, 0, sizeof(amd_manager->status));
++	slave_stat = status_change_0to7;
++	slave_stat |= FIELD_GET(AMD_SDW_MCP_SLAVE_STATUS_8TO_11, status_change_8to11) << 32;
++	dev_dbg(amd_manager->dev, "status_change_0to7:0x%x status_change_8to11:0x%x\n",
++		status_change_0to7, status_change_8to11);
++	if (slave_stat) {
++		for (dev_index = 0; dev_index <= SDW_MAX_DEVICES; ++dev_index) {
++			if (slave_stat & AMD_SDW_MCP_SLAVE_STATUS_VALID_MASK(dev_index)) {
++				val = (slave_stat >> AMD_SDW_MCP_SLAVE_STAT_SHIFT_MASK(dev_index)) &
++				      AMD_SDW_MCP_SLAVE_STATUS_MASK;
++				amd_sdw_fill_slave_status(amd_manager, dev_index, val);
++			}
++		}
++	}
++}
++
++static void amd_sdw_irq_thread(struct work_struct *work)
++{
++	struct amd_sdw_manager *amd_manager =
++			container_of(work, struct amd_sdw_manager, amd_sdw_irq_thread);
++	u32 status_change_8to11;
++	u32 status_change_0to7;
++
++	status_change_8to11 = readl(amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_8TO11);
++	status_change_0to7 = readl(amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_0TO7);
++	dev_dbg(amd_manager->dev, "[SDW%d] SDW INT: 0to7=0x%x, 8to11=0x%x\n",
++		amd_manager->instance, status_change_0to7, status_change_8to11);
++	if (status_change_8to11 & AMD_SDW_PREQ_INTR_STAT) {
++		amd_sdw_read_and_process_ping_status(amd_manager);
 +	} else {
-+		/* second paranoia check */
-+		if (!dai_runtime) {
-+			dev_err(dai->dev, "dai_runtime not allocated for dai %s\n", dai->name);
-+			return -EINVAL;
-+		}
-+
-+		/* for NULL stream we release allocated dai_runtime */
-+		kfree(dai_runtime);
-+		amd_manager->dai_runtime_array[dai->id] = NULL;
++		/* Check for the updated status on peripheral device */
++		amd_sdw_update_slave_status(status_change_0to7, status_change_8to11, amd_manager);
 +	}
-+	return 0;
-+}
-+
-+static int amd_pcm_set_sdw_stream(struct snd_soc_dai *dai, void *stream, int direction)
-+{
-+	return amd_set_sdw_stream(dai, stream, direction);
-+}
-+
-+static void *amd_get_sdw_stream(struct snd_soc_dai *dai, int direction)
-+{
-+	struct amd_sdw_manager *amd_manager = snd_soc_dai_get_drvdata(dai);
-+	struct sdw_amd_dai_runtime *dai_runtime;
-+
-+	dai_runtime = amd_manager->dai_runtime_array[dai->id];
-+	if (!dai_runtime)
-+		return ERR_PTR(-EINVAL);
-+
-+	return dai_runtime->stream;
-+}
-+
-+static const struct snd_soc_dai_ops amd_sdw_dai_ops = {
-+	.hw_params = amd_sdw_hw_params,
-+	.hw_free = amd_sdw_hw_free,
-+	.set_stream = amd_pcm_set_sdw_stream,
-+	.get_stream = amd_get_sdw_stream,
-+};
-+
-+static const struct snd_soc_component_driver amd_sdw_dai_component = {
-+	.name = "soundwire",
-+};
-+
-+static int amd_sdw_register_dais(struct amd_sdw_manager *amd_manager)
-+{
-+	struct sdw_amd_dai_runtime **dai_runtime_array;
-+	struct snd_soc_dai_driver *dais;
-+	struct snd_soc_pcm_stream *stream;
-+	struct device *dev;
-+	int i, num_dais;
-+
-+	dev = amd_manager->dev;
-+	num_dais = amd_manager->num_dout_ports + amd_manager->num_din_ports;
-+	dais = devm_kcalloc(dev, num_dais, sizeof(*dais), GFP_KERNEL);
-+	if (!dais)
-+		return -ENOMEM;
-+
-+	dai_runtime_array = devm_kcalloc(dev, num_dais,
-+					 sizeof(struct sdw_amd_dai_runtime *),
-+					 GFP_KERNEL);
-+	if (!dai_runtime_array)
-+		return -ENOMEM;
-+	amd_manager->dai_runtime_array = dai_runtime_array;
-+	for (i = 0; i < num_dais; i++) {
-+		dais[i].name = devm_kasprintf(dev, GFP_KERNEL, "SDW%d Pin%d", amd_manager->instance,
-+					      i);
-+		if (!dais[i].name)
-+			return -ENOMEM;
-+		if (i < amd_manager->num_dout_ports)
-+			stream = &dais[i].playback;
-+		else
-+			stream = &dais[i].capture;
-+
-+		stream->channels_min = 2;
-+		stream->channels_max = 2;
-+		stream->rates = SNDRV_PCM_RATE_48000;
-+		stream->formats = SNDRV_PCM_FMTBIT_S16_LE;
-+
-+		dais[i].ops = &amd_sdw_dai_ops;
-+		dais[i].id = i;
-+	}
-+
-+	return devm_snd_soc_register_component(dev, &amd_sdw_dai_component,
-+					       dais, num_dais);
++	if (status_change_8to11 || status_change_0to7)
++		schedule_work(&amd_manager->amd_sdw_work);
++	writel(0x00, amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_8TO11);
++	writel(0x00, amd_manager->mmio + ACP_SW_STATE_CHANGE_STATUS_0TO7);
 +}
 +
  static void amd_sdw_probe_work(struct work_struct *work)
  {
  	struct amd_sdw_manager *amd_manager = container_of(work, struct amd_sdw_manager,
-@@ -636,6 +808,12 @@ static int amd_sdw_manager_probe(struct platform_device *pdev)
- 		dev_err(dev, "Failed to register SoundWire manager(%d)\n", ret);
+@@ -815,6 +939,8 @@ static int amd_sdw_manager_probe(struct platform_device *pdev)
  		return ret;
  	}
-+	ret = amd_sdw_register_dais(amd_manager);
-+	if (ret) {
-+		dev_err(dev, "CPU DAI registration failed\n");
-+		sdw_bus_master_delete(&amd_manager->bus);
-+		return ret;
-+	}
  	dev_set_drvdata(dev, amd_manager);
++	INIT_WORK(&amd_manager->amd_sdw_irq_thread, amd_sdw_irq_thread);
++	INIT_WORK(&amd_manager->amd_sdw_work, amd_sdw_update_slave_status_work);
  	INIT_WORK(&amd_manager->probe_work, amd_sdw_probe_work);
  	/*
+ 	 * Instead of having lengthy probe sequence, use deferred probe.
 diff --git a/drivers/soundwire/amd_manager.h b/drivers/soundwire/amd_manager.h
-index f7106521b500..c92e0dee2cb1 100644
+index c92e0dee2cb1..fca7d792bf5f 100644
 --- a/drivers/soundwire/amd_manager.h
 +++ b/drivers/soundwire/amd_manager.h
-@@ -198,6 +198,24 @@ struct sdw_manager_dp_reg {
- 	u32 lane_ctrl_ch_en_reg;
- };
+@@ -185,6 +185,7 @@
+ #define AMD_SDW1_PAD_KEEPER_EN_MASK			0x10
+ #define AMD_SDW0_PAD_KEEPER_DISABLE_MASK		0x1e
+ #define AMD_SDW1_PAD_KEEPER_DISABLE_MASK		0xf
++#define AMD_SDW_PREQ_INTR_STAT				BIT(19)
  
-+/*
-+ * SDW0 Manager instance registers  6 CPU DAI (3 TX & 3 RX Ports)
-+ * whereas SDW1  Manager Instance registers 2 CPU DAI (one TX & one RX port)
-+ * Below is the CPU DAI <->Manager port number mapping
-+ * i.e SDW0 Pin0 -> port number 0 -> AUDIO0 TX
-+ *     SDW0 Pin1 -> Port number 1 -> AUDIO1 TX
-+ *     SDW0 Pin2 -> Port number 2 -> AUDIO2 TX
-+ *     SDW0 Pin3 -> port number 3 -> AUDIO0 RX
-+ *     SDW0 Pin4 -> Port number 4 -> AUDIO1 RX
-+ *     SDW0 Pin5 -> Port number 5 -> AUDIO2 RX
-+ *  Whereas for SDW1 instance
-+ *  SDW1 Pin0 -> port number 0 -> AUDIO1 TX
-+ *  SDW1 Pin1 -> Port number 1 -> AUDIO1 RX
-+ *  Same mapping should be used for programming DMA controller registers in SoundWire DMA driver.
-+ * i.e if AUDIO0 TX channel is selected then we need to use AUDIO0 TX registers for DMA programming
-+ * in SoundWire DMA driver.
-+ */
-+
- static struct sdw_manager_dp_reg sdw0_manager_dp_reg[AMD_SDW0_MAX_DAI] =  {
- 	{ACP_SW_AUDIO0_TX_FRAME_FORMAT, ACP_SW_AUDIO0_TX_SAMPLEINTERVAL, ACP_SW_AUDIO0_TX_HCTRL_DP0,
- 	 ACP_SW_AUDIO0_TX_OFFSET_DP0, ACP_SW_AUDIO0_TX_CHANNEL_ENABLE_DP0},
+ static u32 amd_sdw_freq_tbl[AMD_SDW_MAX_FREQ_NUM] = {
+ 	AMD_SDW_DEFAULT_CLK_FREQ,
 diff --git a/include/linux/soundwire/sdw_amd.h b/include/linux/soundwire/sdw_amd.h
-index c14a291a40e8..ac537419301d 100644
+index ac537419301d..df60bc0de6fc 100644
 --- a/include/linux/soundwire/sdw_amd.h
 +++ b/include/linux/soundwire/sdw_amd.h
-@@ -23,6 +23,21 @@ struct sdw_manager_reg_mask {
- 	u32 acp_sdw_intr_mask;
- };
+@@ -45,8 +45,11 @@ struct sdw_amd_dai_runtime {
+  * @mmio: SoundWire registers mmio base
+  * @acp_mmio: acp registers mmio base
+  * @reg_mask: register mask structure per manager instance
++ * @amd_sdw_irq_thread: SoundWire manager irq workqueue
++ * @amd_sdw_work: peripheral status work queue
+  * @probe_work: SoundWire manager probe workqueue
+  * @acp_sdw_lock: mutex to protect acp share register access
++ * @status: peripheral devices status array
+  * @num_din_ports: number of input ports
+  * @num_dout_ports: number of output ports
+  * @cols_index: Column index in frame shape
+@@ -65,10 +68,14 @@ struct amd_sdw_manager {
+ 	void __iomem *acp_mmio;
  
-+/**
-+ * struct sdw_amd_dai_runtime: AMD sdw dai runtime  data
-+ *
-+ * @name: SoundWire stream name
-+ * @stream: stream runtime
-+ * @bus: Bus handle
-+ * @stream_type: Stream type
-+ */
-+struct sdw_amd_dai_runtime {
-+	char *name;
-+	struct sdw_stream_runtime *stream;
-+	struct sdw_bus *bus;
-+	enum sdw_stream_type stream_type;
-+};
+ 	struct sdw_manager_reg_mask *reg_mask;
++	struct work_struct amd_sdw_irq_thread;
++	struct work_struct amd_sdw_work;
+ 	struct work_struct probe_work;
+ 	/* mutex to protect acp common register access */
+ 	struct mutex *acp_sdw_lock;
+ 
++	enum sdw_slave_status status[SDW_MAX_DEVICES + 1];
 +
- /**
-  * struct amd_sdw_manager - amd manager driver context
-  * @bus: bus handle
-@@ -40,6 +55,7 @@ struct sdw_manager_reg_mask {
-  * @quirks: SoundWire manager quirks
-  * @wake_en_mask: wake enable mask per SoundWire manager
-  * @power_mode_mask: flag interprets amd SoundWire manager power mode
-+ * @dai_runtime_array: dai runtime array
-  */
- struct amd_sdw_manager {
- 	struct sdw_bus bus;
-@@ -63,5 +79,7 @@ struct amd_sdw_manager {
- 	u32 quirks;
- 	u32 wake_en_mask;
- 	u32 power_mode_mask;
-+
-+	struct sdw_amd_dai_runtime **dai_runtime_array;
- };
- #endif
+ 	int num_din_ports;
+ 	int num_dout_ports;
+ 
 -- 
 2.34.1
 
