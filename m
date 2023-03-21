@@ -4,74 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3E5EC74A5B
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Mar 2023 12:48:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7220AC6FD1D
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Mar 2023 13:23:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D0891F3;
-	Tue, 21 Mar 2023 13:47:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D0891F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BFC11F3;
+	Tue, 21 Mar 2023 14:22:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BFC11F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679402882;
-	bh=NK7Qa4/kmnTtDIuShrMbbctCm/ZSCmINfV6f2ojz/kY=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	s=default; t=1679405012;
+	bh=6nQmTXWR0S5yZAO/vh9jjHZ8e6HnzfqVY7IbBOcHD98=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=jHan3f788CD8OrXelbbWi3AT+9VJMU9E6jmewlJAOnOat4pgf2R7ZN33O5O1eZuHq
-	 uADeda2294BoAsTtFAL9KM8E0eN3JyfFluYFYb9xKug+xW+W1NcCmIVFIZZYLdmWQ+
-	 HPtc6ZFqMuY0bOQ2IGY7VhOyszYIC4eSquGHdBH4=
+	b=T5i21IA2mQbsD96C865hs5KGdvmhZUsIcciHLw0KYH8VOsP9qH2PnoFJTbKHDoJLj
+	 TSyMGsmUIkkoXZ8xw+eIsVAJi6bgBKlcielq3j78rnoy5UtjZ8ScWpKTp92Nv55ulo
+	 wEO4c7/YnLpHWZ1XDwKi7AxEPBqI1liY18K1zyOw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7265F8024E;
-	Tue, 21 Mar 2023 13:46:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9F6AF8027B;
+	Tue, 21 Mar 2023 14:22:20 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 627A5F8027B; Tue, 21 Mar 2023 13:46:32 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	id 7DDC0F8027B; Tue, 21 Mar 2023 14:22:17 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 85CE7F800C9
-	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2023 13:46:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85CE7F800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 00867F800C9
+	for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2023 14:22:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00867F800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=eUphMwq+
+ header.s=k20201202 header.b=IogLwT03
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id B91EAB8164A;
-	Tue, 21 Mar 2023 12:46:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8BF7C433D2;
-	Tue, 21 Mar 2023 12:46:21 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id EC6BA61BBB;
+	Tue, 21 Mar 2023 13:22:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D9C3C433EF;
+	Tue, 21 Mar 2023 13:22:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679402784;
-	bh=NK7Qa4/kmnTtDIuShrMbbctCm/ZSCmINfV6f2ojz/kY=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=eUphMwq+Y1iiFAmpinx4VQbhWdgjf4hPT4v/XzR2fbGs8jdXQYtftiVcArvK/1F4H
-	 s/lAIzEzxGXY4Agf1HzZ8Mh82B0dK5LiPiPisTqjsDGBV7vC99KgTEy4xkyogmQlN3
-	 l3TcSKUeoBEvO7164xC+MPFOiho+o6vzFII2oeylo71PWPfpeHCLUWqcqMqBVnxl8C
-	 I/gbU7WL9tNQx85G0PuDjNcKRgt5gGOvvBjk9q6ml7VcdfkwC/iWOsDr0JsfvQ/hyi
-	 KPfmxCnyVYcXhal5IAgqdaQKYsTO0bgL0STyMVO507EmSLCWwD6daFUj+Kq4hZKtCd
-	 YqCyu98JGBDWw==
+	s=k20201202; t=1679404931;
+	bh=6nQmTXWR0S5yZAO/vh9jjHZ8e6HnzfqVY7IbBOcHD98=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IogLwT033y5KY0sEFYrePVyrpD/N7OIvRDlrC1p1hfhU5OympYUhOIxEjPufXraKm
+	 4uaW4oOp+iHIM/DapN1B5HEmFbzIFjmFMdD29Q0B0gX1BaaVqtvAG8dE7qARlNLMo9
+	 XNG4c84zR+JBic2jq8DtdWDyTVuoetX0c35821RLP4UhBE8sF7vmmREfkdk6Y4qbIZ
+	 QEB/VY96BlWHnz4SbUdk97TZ6IoV0GSw44yxItISmOGId/Hitq9Eym29EnJFoS5O8S
+	 Kb5j44ouix6KCCasa5HvkvSvY9opaFER5fcr1qC9KFnqbnuA5YlcGLSSVU9tKuYJFK
+	 +SyIPYTHna8tw==
+Date: Tue, 21 Mar 2023 13:22:05 +0000
 From: Mark Brown <broonie@kernel.org>
-To: James Schulman <james.schulman@cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>,
- Lucas Tanure <tanureal@opensource.cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Jianhua Lu <lujianhua000@gmail.com>
-In-Reply-To: <20230318141440.29023-1-lujianhua000@gmail.com>
-References: <20230318141440.29023-1-lujianhua000@gmail.com>
-Subject: Re: [PATCH] ASoC: cs35l41: Add 12288000 clk freq to cs35l41_fs_mon
- clk config
-Message-Id: <167940278163.26969.15643936747688736434.b4-ty@kernel.org>
-Date: Tue, 21 Mar 2023 12:46:21 +0000
+To: Shenghao Ding <13916275206@139.com>
+Subject: Re: [PATCH v5] ASoC: tas2781: Add tas2781 driver
+Message-ID: <e9134abb-5caa-45aa-b623-e1ceb40223d1@sirena.org.uk>
+References: <20230321113130.25853-1-13916275206@139.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bd1bf
-Message-ID-Hash: OUF2ONWQ64RN7HX3ECFLK5OHEWLXNZLX
-X-Message-ID-Hash: OUF2ONWQ64RN7HX3ECFLK5OHEWLXNZLX
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="0KwVVK9qwawOe9aF"
+Content-Disposition: inline
+In-Reply-To: <20230321113130.25853-1-13916275206@139.com>
+X-Cookie: Will it improve my CASH FLOW?
+Message-ID-Hash: 33XGU22GTJ2JLJOA65CRL2Y2LPTLAQB5
+X-Message-ID-Hash: 33XGU22GTJ2JLJOA65CRL2Y2LPTLAQB5
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -79,15 +75,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
- phone-devel@vger.kernel.org
+CC: lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
+ kevin-lu@ti.com, shenghao-ding@ti.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, x1077012@ti.com, peeyush@ti.com, navada@ti.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OUF2ONWQ64RN7HX3ECFLK5OHEWLXNZLX/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/33XGU22GTJ2JLJOA65CRL2Y2LPTLAQB5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,41 +92,34 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Sat, 18 Mar 2023 22:14:39 +0800, Jianhua Lu wrote:
-> There are 8 cs35l41 speaker amplifier connected to TDM
-> in my Xiaomi Mi Pad 5 Pro tablet. In this case, it's necessary
-> to set 12288000 (48000 * 32 * 8) clk freq for it.
-> 
-> rate=48000, slot_width=32, slots=8.
-> 
-> 
-> [...]
 
-Applied to
+--0KwVVK9qwawOe9aF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Tue, Mar 21, 2023 at 07:31:30PM +0800, Shenghao Ding wrote:
+> Create tas2781 driver.
+>=20
+> Signed-off-by: Shenghao Ding <13916275206@139.com>
 
-Thanks!
+Not looked at the code properly yet but as previously noted you are
+adding a new DT binding so you need to send a patch documenting that
+binding along with the driver.
 
-[1/1] ASoC: cs35l41: Add 12288000 clk freq to cs35l41_fs_mon clk config
-      commit: 00a7ef3242f42c38c9ffdf14ab2d729fd9754391
+--0KwVVK9qwawOe9aF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+-----BEGIN PGP SIGNATURE-----
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQZr3wACgkQJNaLcl1U
+h9A6Cgf/dONTG2ih8NwPlAV46YcR7SHyEM6ke3V0bNPQrib8DgEyj9w86A4dskHF
+2EpQaQOVpGTgjS6pYH2srs2i30iV7yYLb+a1rSCt/QzBzJL0bolEskKXCHCqk/+L
++yMBi/zXMpIZtXaBZ9LWFt+7s07/CaaBtrxam4yMs8gM/YACW6RRZXIjCXX90Rc5
+zkXIkHHxN01RZlcXf8sWqpeB8hn71MdWr0bKzlBCk8/xs7ygKffLmB9PyYASoepZ
+S1E6uxk83SBXDaf5xFEwxD3cHucGrretW8yvy06vdYfrvTEKsac6afts/TWDtHmJ
+VFRyjEqZHbMQZgBaQaaLm3nIdsGVKw==
+=30hx
+-----END PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+--0KwVVK9qwawOe9aF--
