@@ -4,73 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EB21C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 21:16:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D06BEC6FD1F
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 21:29:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F4219F12;
-	Wed, 22 Mar 2023 22:15:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F4219F12
+	by alsa0.perex.cz (Postfix) with ESMTPS id 51B3DEA1;
+	Wed, 22 Mar 2023 22:28:36 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51B3DEA1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679519800;
-	bh=3OcMtAwVCVTk3fxEOINaXblRIkfJB++1ofjraGTQbWU=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	s=default; t=1679520566;
+	bh=U7ZA4ZzajtB3yTZYIzLq7NVdSezmrWNVSZd/pwipOXw=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=UID9Mkx8tU7KU7ZrHjp9r4e32p0JVpd+aaVs0SFFoq6fUVYm7pQm+eZ/W/Z/EcP0Q
-	 GmQnSv0ouAcYMgbESD4KX282d9IRqmG8mrD9bkrMuPxnoVgDKAAmC6YUzvz1/SrbtA
-	 I/o1E2FEL1/yrKwoI90IkWW8ZkDs8i4ibydkK35A=
+	b=NXjCZnbXAgysMUfbwCevR6gSb8KLSL7xLDC8cGafYf4IGKyklnq8tT+RljehQ5DIA
+	 6wlA6mmM+p3SfbdmQsqH0FvLtB+OwhbyVheVBG3n79pUHP4unQzkRU951f80XkImw1
+	 EWmhtlI2R8Fe/R1cD9mkBCQ5Q0SQGKzNfj4RmY4Y=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEA20F8027B;
-	Wed, 22 Mar 2023 22:15:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E18B0F8024E;
+	Wed, 22 Mar 2023 22:28:13 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 32412F8027B; Wed, 22 Mar 2023 22:15:24 +0100 (CET)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	id 0F583F8027B; Wed, 22 Mar 2023 22:28:08 +0100 (CET)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C2E37F8024E
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2023 22:15:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2E37F8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 88811F80093
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2023 22:27:59 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88811F80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=rD7l1bvU
+ header.s=k20201202 header.b=BDZg1c8e
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 6BA89B81E22;
-	Wed, 22 Mar 2023 21:15:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC09BC433D2;
-	Wed, 22 Mar 2023 21:15:18 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTPS id 195D6CE1EB8;
+	Wed, 22 Mar 2023 21:27:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7943C433D2;
+	Wed, 22 Mar 2023 21:27:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679519720;
-	bh=3OcMtAwVCVTk3fxEOINaXblRIkfJB++1ofjraGTQbWU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=rD7l1bvUIGpYovtnO+hFtqZSDQ1vw2CwIqJtMz5sKZs6vJ6jdNAi+XpNZi/g/oy3A
-	 2FtOiP52NLEp8ueA3S0dglj2SFHEYfTM0D90BwdPZnwkfTXBiroWyXlRcZ+1koR6wx
-	 UYOe82UwH6L0LtpyDvK95b1I4b7RkbBNJSixlZe/ChvUrujJv1LWcCNloTzZUVPegp
-	 IhRnIM0iPJUrxrMkfY4K2HpJxo154S3UGb/ikkl8HyuJnLuGLchkLQ+LzQQvsLYm+U
-	 1ZKy5zmFf073hrCHnBB8idrOG/vsFdLfWdbE5JkFtPRy7kilIxQu5YTQFCAPnzkK1v
-	 qSfghdOqrskFw==
+	s=k20201202; t=1679520472;
+	bh=U7ZA4ZzajtB3yTZYIzLq7NVdSezmrWNVSZd/pwipOXw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BDZg1c8eq+qM8F9GtHtE2Y2kTFca3WB/rFf41Ha7wwWW9LML0iSBduYNCnEJk2vTa
+	 LYY14IoAvBZbPDCeXFKjIALMDsLAAnl4S8CXw2W5e3q7x+GceFIg6jO85axrHVAoBx
+	 cyq5iikM13aTNELSCBQg2JvRAokB7MDdFUcIBgbPuMeqdyP/vzlFryjh0CvRaDbpHr
+	 gqIgNcy6J5dL9Ega9tBSRZbf7uNDvJbDSdMdYZ8l9nb4zYXXQh5W7m1A4Q2Myfi2CN
+	 KbCby2aHF7/pK6HDzctw1G1VigHL9beGCVSVZH1Hvjhp5iAkGoFqs5wqLcPf57v0Yw
+	 ESKr4gNeRwzoA==
+Date: Wed, 22 Mar 2023 21:27:48 +0000
 From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230322145332.131525-1-hdegoede@redhat.com>
-References: <20230322145332.131525-1-hdegoede@redhat.com>
-Subject: Re: [PATCH resend] ASoC: Intel: bytcr_rt5640: Add quirk for the
- Acer Iconia One 7 B1-750
-Message-Id: <167951971796.1351141.13026018831927360162.b4-ty@kernel.org>
-Date: Wed, 22 Mar 2023 21:15:17 +0000
+To: Marian Postevca <posteuca@mutex.one>
+Subject: Re: [PATCH 3/4] ASoC: amd: acp: Add machine driver that enables
+ sound for systems with a ES8336 codec
+Message-ID: <ZBty1CdPaWm0IcRi@sirena.org.uk>
+References: <20230320203519.20137-1-posteuca@mutex.one>
+ <20230320203519.20137-4-posteuca@mutex.one>
+ <141a3320-ff65-459f-9d00-c8bed691dcfc@sirena.org.uk>
+ <87lejpwxzf.fsf@mutex.one>
+ <ZBr9rJn50ovG1w9W@sirena.org.uk>
+ <87ttycjyw3.fsf@mutex.one>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-2eb1a
-Message-ID-Hash: 7LF64Z2TT6CRGIIDDVXBWSDDHMXJ4XWQ
-X-Message-ID-Hash: 7LF64Z2TT6CRGIIDDVXBWSDDHMXJ4XWQ
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="pZnMYUgZ7ZDcg5Bx"
+Content-Disposition: inline
+In-Reply-To: <87ttycjyw3.fsf@mutex.one>
+X-Cookie: Single tasking: Just Say No.
+Message-ID-Hash: 2LOMQAFXMVXJO74DRHCSVFNQNT47ZTXP
+X-Message-ID-Hash: 2LOMQAFXMVXJO74DRHCSVFNQNT47ZTXP
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -78,13 +80,17 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org
+CC: =?utf-8?B?5rKI5LiA6LaF?= <zhuning0077@gmail.com>,
+ yangxiaohua <yangxiaohua@everest-semi.com>,
+ Zhu Ning <zhuning@everest-semi.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7LF64Z2TT6CRGIIDDVXBWSDDHMXJ4XWQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2LOMQAFXMVXJO74DRHCSVFNQNT47ZTXP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -93,41 +99,52 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 22 Mar 2023 15:53:32 +0100, Hans de Goede wrote:
-> The Acer Iconia One 7 B1-750 tablet mostly works fine with the defaults
-> for an Bay Trail CR tablet. Except for the internal mic, instead of
-> an analog mic on IN3 a digital mic on DMIC1 is uses.
-> 
-> Add a quirk with these settings for this tablet.
-> 
-> 
-> [...]
 
-Applied to
+--pZnMYUgZ7ZDcg5Bx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   broonie/sound.git for-next
+On Wed, Mar 22, 2023 at 10:48:28PM +0200, Marian Postevca wrote:
 
-Thanks!
+> Regarding playing the speaker and headphone simultaneously, is not
+> something I took into account. Is this even a valid usecase? The intel driver
+> for es8336 doesn't seem to support it.
 
-[1/1] ASoC: Intel: bytcr_rt5640: Add quirk for the Acer Iconia One 7 B1-750
-      commit: e38c5e80c3d293a883c6f1d553f2146ec0bda35e
+Yes, for example consider a critical notification - the system
+may wish to ensure it is audible even if the user has taken off
+their headphones for some reason.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> >> This is needed because if suspending the laptop with the headphones
+> >> inserted, when resuming, the sound is not working anymore. Sound stops
+> >> working on speakers and headphones. Reinsertion and removals of the
+> >> headphone doesn't solve the problem.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> >> This seems to be caused by the fact
+> >> that the GPIO IRQ stops working in es8316_irq() after resume.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> > That's a bug that should be fixed.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> Agreed, but I don't know how easy it is to fix, and I would like to
+> first offer users of these laptops a working sound driver.
+> Afterwards this issue can be analyzed and properly fixed.
 
-Thanks,
-Mark
+Surely if nothing else a good first step would be to have the
+CODEC driver do whatever disabling the jack does on suspend
+without needing the machine driver to bodge things?
 
+--pZnMYUgZ7ZDcg5Bx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQbctEACgkQJNaLcl1U
+h9CSngf/VGQQgPsTs+Ok0ohatQmEmhxeehBDIScHFJ/0wlEFMpzy6WXr9xcN/C8P
+lGJtD2RikJ423HM4rEtzq0DlG2aJXYJ7A52dsrWVT9hVj+5cgnIx7c+h5WoeRwTn
+0OCUzvb//tBIDkkqK9mWEMj1Vv0KO8GAFKeLwo6tU8Ag0u9s+RRlQjY4k/k/JGOj
+AOG4QVYsxgP3YQC8V7ldUwMLiKfFKPBkXp97/30jMEIlCY5EXkHnWra9JG5WcH9r
+mLFKPePvZH2jbnXu2auZj/7ksXx60vQT7fr5e8p08nxk/amtGc8jsb0szpEo7/47
+wuaf5Z6OGcxilwC7OHSRd/1etcOl0A==
+=WEnp
+-----END PGP SIGNATURE-----
+
+--pZnMYUgZ7ZDcg5Bx--
