@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C8F1C6FD1C
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 20:00:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1E69C76196
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 20:01:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64CCEE91;
-	Wed, 22 Mar 2023 20:59:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64CCEE91
+	by alsa0.perex.cz (Postfix) with ESMTPS id 849A0EBD;
+	Wed, 22 Mar 2023 21:00:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 849A0EBD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679515245;
-	bh=O/mOkDZ/o5RV/YSv+1yrLgRr2ghtm1kQQ5uzPclGIAs=;
+	s=default; t=1679515269;
+	bh=mX+f6M4NzGYTdlnA/2Arcb1IOK+FIYPDFY/pPmN2tmo=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lWZTvGgAAOBMpR//UkcU1JqSrdorJU6u5kHyK0lE/Dlmmm+MnHaDDeOo4W/LDlEqr
-	 AQjpqfqlS5GPGcc4oEBXVs3q/6KX9iW/vO1DE2OwHg7Ih+6kbApAVmDBgLTCe2GZXI
-	 ZYGqX7gV+XoKIY2iuyAnqncmBB5Z9a4WzHgAzbOo=
+	b=M2I3rYONdY7G+9/zt3e7cqU/oV2llfR+bjg8b+dFkC2J1W7SdKEvCu6XK2vWrY56H
+	 li9Dg8oNwkUErYAZibNHUAW21A/q0CXZLupUXxCyxHc/YD4vr2XCEVqOlO+3E7Fcnd
+	 wdrqHhyyWo11nfcKicdJMt02m17wxdhKQvKp1w88=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0FE8AF80589;
-	Wed, 22 Mar 2023 20:58:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4541F80588;
+	Wed, 22 Mar 2023 20:58:31 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4B7CDF80571; Wed, 22 Mar 2023 20:58:21 +0100 (CET)
+	id 0E854F80588; Wed, 22 Mar 2023 20:58:26 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8122BF8027B;
-	Wed, 22 Mar 2023 20:58:15 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8122BF8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id B2413F802E8;
+	Wed, 22 Mar 2023 20:58:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2413F802E8
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Gpzf8q0w
+ header.s=k20201202 header.b=O1x2gz0L
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 6170862276;
-	Wed, 22 Mar 2023 19:58:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45DFDC433EF;
-	Wed, 22 Mar 2023 19:58:12 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 9ED8B622B4;
+	Wed, 22 Mar 2023 19:58:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BFE7C433A7;
+	Wed, 22 Mar 2023 19:58:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679515093;
-	bh=O/mOkDZ/o5RV/YSv+1yrLgRr2ghtm1kQQ5uzPclGIAs=;
+	s=k20201202; t=1679515099;
+	bh=mX+f6M4NzGYTdlnA/2Arcb1IOK+FIYPDFY/pPmN2tmo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Gpzf8q0wD2Wx2Rmxw+F8Zuj2vsuibPmY+6A4e0Afy4Vz097/z4nl3vq9DqMTJ89Sv
-	 ZmjhUVT2cs/IIGugnirabAIPN2z9HqbSEb1+1gcOGL/kNVUkd6oL4F87WIzCp/pQI1
-	 AcDleaND9NiFP2M6KoropgWpdrd4B3HVUUBmj4dPSMoQuuL6kfoJCiHv2vgePc2Cro
-	 o839pQHli9MIiRD8qfx5/0g85yiv1CEgCtlptdzZhlNRg/AXOz97YVDjOAnt/FWLBw
-	 guZDrLqAFwjL4G9EbRX5DYcKc88TWndpTS9versDMttOcOqvHNHlLCI1tE6cMmJtKC
-	 yzcT+raajwO9g==
+	b=O1x2gz0L5DKY0TZ2xNqJW0rkgbYlODKm+G3irJbDJF0HvFzYAQC99aSDwT2BazGgg
+	 pXw1WSWoRK7qApd6qck0ZmIhNvoimgT/famCH8sBOWkBA8Xe47NhZG/yImpUZWwqXl
+	 SmFTQpbWDlDdWA3Z2A9ZOgglrG6sqLtwLJfieMVzl0WEJrPhtZ48TJObFUGcuYPKCu
+	 ASNuZgP9v1jsr8BnzFWv/tma9rBnh0ctxXWn/J2hItPWS6m2IDcBpan20XVd5IM56r
+	 itarP+3vLPv7PoH5wHEIvTyS5sKjlZWXk9rDfYC5PlnL/s/eYffu6sreWxfankbFUY
+	 3Y91Bfr9WA9Ow==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.2 17/45] ASoC: SOF: Intel: hda-dsp: harden D0i3
- programming sequence
-Date: Wed, 22 Mar 2023 15:56:11 -0400
-Message-Id: <20230322195639.1995821-17-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.2 19/45] ASoC: SOF: IPC4: update gain ipc msg
+ definition to align with fw
+Date: Wed, 22 Mar 2023 15:56:13 -0400
+Message-Id: <20230322195639.1995821-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230322195639.1995821-1-sashal@kernel.org>
 References: <20230322195639.1995821-1-sashal@kernel.org>
@@ -69,8 +69,8 @@ Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: M77RQCDBSQK27C443XARITXHON7JYDCA
-X-Message-ID-Hash: M77RQCDBSQK27C443XARITXHON7JYDCA
+Message-ID-Hash: LXOK3XZO3CFM2P7YPVWTTZIX5E2B363V
+X-Message-ID-Hash: LXOK3XZO3CFM2P7YPVWTTZIX5E2B363V
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -79,19 +79,19 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
 CC: Rander Wang <rander.wang@intel.com>,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
  Mark Brown <broonie@kernel.org>, Sasha Levin <sashal@kernel.org>,
- lgirdwood@gmail.com, yung-chuan.liao@linux.intel.com, daniel.baluta@nxp.com,
- tiwai@suse.com, kai.vehmanen@linux.intel.com,
+ lgirdwood@gmail.com, daniel.baluta@nxp.com, tiwai@suse.com,
  sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/M77RQCDBSQK27C443XARITXHON7JYDCA/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LXOK3XZO3CFM2P7YPVWTTZIX5E2B363V/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,54 +102,96 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Rander Wang <rander.wang@intel.com>
 
-[ Upstream commit 52a55779ed14792a150421339664193d6eb8e036 ]
+[ Upstream commit e45cd86c3a78bfb9875a5eb8ab5dab459b59bbe2 ]
 
-Add delay between set and wait command according to hardware programming
-sequence. Also add debug log to detect error.
+Recent firmware changes modified the curve duration from 32 to 64 bits,
+which breaks volume ramps. A simple solution would be to change the
+definition, but unfortunately the ASoC topology framework only supports
+up to 32 bit tokens.
+
+This patch suggests breaking the 64 bit value in low and high parts, with
+only the low-part extracted from topology and high-part only zeroes. Since
+the curve duration is represented in hundred of nanoseconds, we can still
+represent a 400s ramp, which is just fine. The defacto ABI change has no
+effect on existing users since the IPC4 firmware has not been released just
+yet.
+
+Link: https://github.com/thesofproject/linux/issues/4026
 
 Signed-off-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Link: https://lore.kernel.org/r/20230307095453.3719-1-peter.ujfalusi@linux.intel.com
+Link: https://lore.kernel.org/r/20230307110656.1816-1-peter.ujfalusi@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/intel/hda-dsp.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/sof/ipc4-control.c  | 3 ++-
+ sound/soc/sof/ipc4-topology.c | 4 ++--
+ sound/soc/sof/ipc4-topology.h | 6 ++++--
+ 3 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index b4eacae8564c8..6b2094f74c9c0 100644
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -399,6 +399,12 @@ static int hda_dsp_update_d0i3c_register(struct snd_sof_dev *sdev, u8 value)
- 	snd_sof_dsp_update8(sdev, HDA_DSP_HDA_BAR, chip->d0i3_offset,
- 			    SOF_HDA_VS_D0I3C_I3, value);
+diff --git a/sound/soc/sof/ipc4-control.c b/sound/soc/sof/ipc4-control.c
+index 0d5a578c34962..7442ec1c5a4d4 100644
+--- a/sound/soc/sof/ipc4-control.c
++++ b/sound/soc/sof/ipc4-control.c
+@@ -84,7 +84,8 @@ sof_ipc4_set_volume_data(struct snd_sof_dev *sdev, struct snd_sof_widget *swidge
+ 		}
  
-+	/*
-+	 * The value written to the D0I3C::I3 bit may not be taken into account immediately.
-+	 * A delay is recommended before checking if D0I3C::CIP is cleared
-+	 */
-+	usleep_range(30, 40);
-+
- 	/* Wait for cmd in progress to be cleared before exiting the function */
- 	ret = hda_dsp_wait_d0i3c_done(sdev);
- 	if (ret < 0) {
-@@ -407,6 +413,12 @@ static int hda_dsp_update_d0i3c_register(struct snd_sof_dev *sdev, u8 value)
- 	}
+ 		/* set curve type and duration from topology */
+-		data.curve_duration = gain->data.curve_duration;
++		data.curve_duration_l = gain->data.curve_duration_l;
++		data.curve_duration_h = gain->data.curve_duration_h;
+ 		data.curve_type = gain->data.curve_type;
  
- 	reg = snd_sof_dsp_read8(sdev, HDA_DSP_HDA_BAR, chip->d0i3_offset);
-+	/* Confirm d0i3 state changed with paranoia check */
-+	if ((reg ^ value) & SOF_HDA_VS_D0I3C_I3) {
-+		dev_err(sdev->dev, "failed to update D0I3C!\n");
-+		return -EIO;
-+	}
-+
- 	trace_sof_intel_D0I3C_updated(sdev, reg);
+ 		msg->data_ptr = &data;
+diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
+index 65da1cf790d9c..6da6137fa2cbc 100644
+--- a/sound/soc/sof/ipc4-topology.c
++++ b/sound/soc/sof/ipc4-topology.c
+@@ -107,7 +107,7 @@ static const struct sof_topology_token gain_tokens[] = {
+ 		get_token_u32, offsetof(struct sof_ipc4_gain_data, curve_type)},
+ 	{SOF_TKN_GAIN_RAMP_DURATION,
+ 		SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
+-		offsetof(struct sof_ipc4_gain_data, curve_duration)},
++		offsetof(struct sof_ipc4_gain_data, curve_duration_l)},
+ 	{SOF_TKN_GAIN_VAL, SND_SOC_TPLG_TUPLE_TYPE_WORD,
+ 		get_token_u32, offsetof(struct sof_ipc4_gain_data, init_val)},
+ };
+@@ -670,7 +670,7 @@ static int sof_ipc4_widget_setup_comp_pga(struct snd_sof_widget *swidget)
  
- 	return 0;
+ 	dev_dbg(scomp->dev,
+ 		"pga widget %s: ramp type: %d, ramp duration %d, initial gain value: %#x, cpc %d\n",
+-		swidget->widget->name, gain->data.curve_type, gain->data.curve_duration,
++		swidget->widget->name, gain->data.curve_type, gain->data.curve_duration_l,
+ 		gain->data.init_val, gain->base_config.cpc);
+ 
+ 	ret = sof_ipc4_widget_setup_msg(swidget, &gain->msg);
+diff --git a/sound/soc/sof/ipc4-topology.h b/sound/soc/sof/ipc4-topology.h
+index 0aa87a8add5d3..edf1638221a4b 100644
+--- a/sound/soc/sof/ipc4-topology.h
++++ b/sound/soc/sof/ipc4-topology.h
+@@ -217,14 +217,16 @@ struct sof_ipc4_control_data {
+  * @init_val: Initial value
+  * @curve_type: Curve type
+  * @reserved: reserved for future use
+- * @curve_duration: Curve duration
++ * @curve_duration_l: Curve duration low part
++ * @curve_duration_h: Curve duration high part
+  */
+ struct sof_ipc4_gain_data {
+ 	uint32_t channels;
+ 	uint32_t init_val;
+ 	uint32_t curve_type;
+ 	uint32_t reserved;
+-	uint32_t curve_duration;
++	uint32_t curve_duration_l;
++	uint32_t curve_duration_h;
+ } __aligned(8);
+ 
+ /**
 -- 
 2.39.2
 
