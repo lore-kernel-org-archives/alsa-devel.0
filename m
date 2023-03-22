@@ -4,68 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B265C6FD1C
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 21:14:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EB21C6FD1F
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 21:16:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94BD5F12;
-	Wed, 22 Mar 2023 22:13:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94BD5F12
+	by alsa0.perex.cz (Postfix) with ESMTPS id F4219F12;
+	Wed, 22 Mar 2023 22:15:49 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F4219F12
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679519689;
-	bh=b0tqNz5qRvFuUe9O+wh3yQl6MkbGVlBusNKdzOJHp30=;
+	s=default; t=1679519800;
+	bh=3OcMtAwVCVTk3fxEOINaXblRIkfJB++1ofjraGTQbWU=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=AYumSm++VUUWbuGAVDL7G/LSzWe8i6tGG/3pgbVWGmdLsNZRmR4PuU1hhAwgVSrzd
-	 E+zctMUNYKImUe8HCZSMu2/ke8w2PLtI2PQy9jN7fGuDC53mcgV2grtvh+38Biyb5M
-	 cpZXffeELG2c/1+WiRJ7p82dZrkjN6BhARC907wo=
+	b=UID9Mkx8tU7KU7ZrHjp9r4e32p0JVpd+aaVs0SFFoq6fUVYm7pQm+eZ/W/Z/EcP0Q
+	 GmQnSv0ouAcYMgbESD4KX282d9IRqmG8mrD9bkrMuPxnoVgDKAAmC6YUzvz1/SrbtA
+	 I/o1E2FEL1/yrKwoI90IkWW8ZkDs8i4ibydkK35A=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28727F8027B;
-	Wed, 22 Mar 2023 22:13:37 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id CEA20F8027B;
+	Wed, 22 Mar 2023 22:15:27 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 29C79F8027B; Wed, 22 Mar 2023 22:13:33 +0100 (CET)
+	id 32412F8027B; Wed, 22 Mar 2023 22:15:24 +0100 (CET)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id DDAA7F80105
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2023 22:13:24 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDAA7F80105
+	by alsa1.perex.cz (Postfix) with ESMTPS id C2E37F8024E
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2023 22:15:21 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2E37F8024E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=EbVnFg6w
+ header.s=k20201202 header.b=rD7l1bvU
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 28C6DB81DF0;
-	Wed, 22 Mar 2023 21:13:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C3BDC433D2;
-	Wed, 22 Mar 2023 21:13:20 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 6BA89B81E22;
+	Wed, 22 Mar 2023 21:15:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC09BC433D2;
+	Wed, 22 Mar 2023 21:15:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679519602;
-	bh=b0tqNz5qRvFuUe9O+wh3yQl6MkbGVlBusNKdzOJHp30=;
+	s=k20201202; t=1679519720;
+	bh=3OcMtAwVCVTk3fxEOINaXblRIkfJB++1ofjraGTQbWU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=EbVnFg6wzQzrw5PA2DgIsl63Kh4iZgFYIFD5v63bM/D9fkO1fdIJ1dy6L/D1EIdS6
-	 0yB5uyopq0rvkcyf51lpd+1430XuHdZjY+4Dzv8iU0zxbAV3CRU/dpXjnMAnyeIuFy
-	 LYMMUlYesgoPKX0AGhUErVBUN/6aGg5dX8rjOX+oqvLyajLuS/5EwBUZkaeOGYmkeN
-	 bXnfGW3Cd1CpYiD4TO2oY6qLnhC+d+v39eiYh8+WpilQPAzAhw170+taz0YJSW2FKs
-	 jSChYSiADPOcXPKOFEaWxido9ROIJnLYZuYxF0hHWAxKnxsdgXz4OnO16STuAVCI1C
-	 8K130uPs6beMg==
+	b=rD7l1bvUIGpYovtnO+hFtqZSDQ1vw2CwIqJtMz5sKZs6vJ6jdNAi+XpNZi/g/oy3A
+	 2FtOiP52NLEp8ueA3S0dglj2SFHEYfTM0D90BwdPZnwkfTXBiroWyXlRcZ+1koR6wx
+	 UYOe82UwH6L0LtpyDvK95b1I4b7RkbBNJSixlZe/ChvUrujJv1LWcCNloTzZUVPegp
+	 IhRnIM0iPJUrxrMkfY4K2HpJxo154S3UGb/ikkl8HyuJnLuGLchkLQ+LzQQvsLYm+U
+	 1ZKy5zmFf073hrCHnBB8idrOG/vsFdLfWdbE5JkFtPRy7kilIxQu5YTQFCAPnzkK1v
+	 qSfghdOqrskFw==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Jyri Sarha <jyri.sarha@linux.intel.com>
-In-Reply-To: <20230322181830.574635-1-jyri.sarha@linux.intel.com>
-References: <20230322181830.574635-1-jyri.sarha@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: ipc4/intel: Add missing mutex_unlock()
-Message-Id: <167951960011.1349664.16227769838319076312.b4-ty@kernel.org>
-Date: Wed, 22 Mar 2023 21:13:20 +0000
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230322145332.131525-1-hdegoede@redhat.com>
+References: <20230322145332.131525-1-hdegoede@redhat.com>
+Subject: Re: [PATCH resend] ASoC: Intel: bytcr_rt5640: Add quirk for the
+ Acer Iconia One 7 B1-750
+Message-Id: <167951971796.1351141.13026018831927360162.b4-ty@kernel.org>
+Date: Wed, 22 Mar 2023 21:15:17 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-2eb1a
-Message-ID-Hash: DYSPB7GB3BZ3S4NSAOXOX74DSIQIRKPC
-X-Message-ID-Hash: DYSPB7GB3BZ3S4NSAOXOX74DSIQIRKPC
+Message-ID-Hash: 7LF64Z2TT6CRGIIDDVXBWSDDHMXJ4XWQ
+X-Message-ID-Hash: 7LF64Z2TT6CRGIIDDVXBWSDDHMXJ4XWQ
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -73,15 +78,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- peter.ujfalusi@linux.intel.com, rander.wang@intel.com, error27@gmail.com
+CC: alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DYSPB7GB3BZ3S4NSAOXOX74DSIQIRKPC/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7LF64Z2TT6CRGIIDDVXBWSDDHMXJ4XWQ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,13 +93,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 22 Mar 2023 20:18:30 +0200, Jyri Sarha wrote:
-> There was a missing mutex_unlock() in sof_ipc4_widget_free()
-> use_chain_dma if-branch that caused a static analysis error. The
-> branch should not be used in a normal working configuration and if its
-> used its an indication of a bad topology. Add missing mutex_unlock()
-> and a warning print if the if-branch is taken, and another warning
-> print to a symmetric place in sof_ipc4_widget_setup().
+On Wed, 22 Mar 2023 15:53:32 +0100, Hans de Goede wrote:
+> The Acer Iconia One 7 B1-750 tablet mostly works fine with the defaults
+> for an Bay Trail CR tablet. Except for the internal mic, instead of
+> an analog mic on IN3 a digital mic on DMIC1 is uses.
+> 
+> Add a quirk with these settings for this tablet.
+> 
 > 
 > [...]
 
@@ -106,8 +109,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: ipc4/intel: Add missing mutex_unlock()
-      commit: 935d31fdda2c69324b3eeb648a73fdedf4131474
+[1/1] ASoC: Intel: bytcr_rt5640: Add quirk for the Acer Iconia One 7 B1-750
+      commit: e38c5e80c3d293a883c6f1d553f2146ec0bda35e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
