@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55D70C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 20:03:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 183B5C7619A
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 20:04:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E115EEBF;
-	Wed, 22 Mar 2023 21:02:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E115EEBF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 118C2EF0;
+	Wed, 22 Mar 2023 21:03:09 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 118C2EF0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679515424;
-	bh=9S1fCicaRG3d3lX/No9ATx7sKBwV0UjVkrklEWUwE18=;
+	s=default; t=1679515439;
+	bh=k+hmGhSaD1+QaJ7ZakF1ukiTvaTebvpE8t6aMcJUf28=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Xx1FdDr4/6zdPQM5PFres72h75trjoOH/IVSbNnPmDhxhJHb17FCx8JaJko5mzF3K
-	 ycfW3VQurKWpYERoETIE3TKn6rpO/XFLanlvd2j9YZ4eYJP1IOt7/Rdis+oY3d81k+
-	 nexNYz1q4J2EwygvcZFRU30OMYegb3e8W95RsSY4=
+	b=pZOFmhR2x+sUs1ehfKB52HBJSbEelIcwUqBzbt4IWYeAHIdOEwpK+b2zcS5kMV/Xt
+	 8o67SYbKPuke/oSw2f9aCRd+E4D99zIs7uH6qTGTnZy659w6GWsB4kgE2CSWpcoP4Y
+	 EtoWv4WwbByjsSIiF2+hv9uPB+ipa02i7UQdqk20=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28CB4F8027B;
-	Wed, 22 Mar 2023 21:00:27 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id C01B0F805A8;
+	Wed, 22 Mar 2023 21:00:35 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 39D05F8059F; Wed, 22 Mar 2023 21:00:23 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id E82C7F805A0; Wed, 22 Mar 2023 21:00:31 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 00799F80568
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2023 21:00:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00799F80568
+	by alsa1.perex.cz (Postfix) with ESMTPS id 0A0B5F80578;
+	Wed, 22 Mar 2023 21:00:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A0B5F80578
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=OibcPTaj
+ header.s=k20201202 header.b=bigz0qnT
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E3094622B9;
-	Wed, 22 Mar 2023 20:00:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8776C433D2;
-	Wed, 22 Mar 2023 20:00:17 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id A74D6B81DE8;
+	Wed, 22 Mar 2023 20:00:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3BF5C433A0;
+	Wed, 22 Mar 2023 20:00:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679515219;
-	bh=9S1fCicaRG3d3lX/No9ATx7sKBwV0UjVkrklEWUwE18=;
+	s=k20201202; t=1679515227;
+	bh=k+hmGhSaD1+QaJ7ZakF1ukiTvaTebvpE8t6aMcJUf28=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OibcPTajPRACxaVKxmt84DBDBjsUmM2BV/unuHiZJV5YQKR1eeIWL0pkmI6VmLXJy
-	 Wwz9QH/6k06EcH/c05GGqUgA/etgN9Q6g9Jh1I+Zj0rERfCHaDftv8cYwo25oww+Ic
-	 AUnEHvQWlgxHxJreTJoTiOaSnKlFZ/AEdl2e2KLFtwe5ncvTmh92yW2qdrsl4rLd0d
-	 Y2d12+4VqDMITF+rCeX5/U3igsMWGkpT9CAJ4uR9LKIosMZ+NT2a515ac7R2UVdVkL
-	 9HhjIquRnVZOTc4zzTAp4IzcynwxG19nt/q+n1jqVL0vSXJmM97d9GkvzA2NwwtaY1
-	 hIIqPDOoL7E0A==
+	b=bigz0qnTTorcAD6Yg4qL5KvBO9GtSD9mAPWi9caoxRJHuJ2t9rdKCqqucvOnpb2k2
+	 0btBuESJx2pkt+fZO6RhTVwcNfAQYfqWcBkcIxHd4vD2j+eFVlNOOpVVGXg//lhkQd
+	 KBWJpy8pQ5Tr+fMVWEZEzA/R2AFfdHLKKRAp2L/r2CMHHyjwbPIQBkyfMUaQ9VJ0P0
+	 ql9xA9nimX0d/VVs80RN7Dt1Xvdb0Dl44wv2ipYFQZuggUgKufef84Qn32fQ+w+3hT
+	 QeLZZc+N8HvqjWqahmp4sLbjswtU5dHX/qVtawiwzEIt3OyveZXb0pcKcA/+5l+DuS
+	 L7r0flaHf/h3g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 06/34] ASoC: Intel: avs: nau8825: Adjust clock
- control
-Date: Wed, 22 Mar 2023 15:58:58 -0400
-Message-Id: <20230322195926.1996699-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 10/34] ASoC: SOF: ipc3: Check for upper size limit
+ for the received message
+Date: Wed, 22 Mar 2023 15:59:02 -0400
+Message-Id: <20230322195926.1996699-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230322195926.1996699-1-sashal@kernel.org>
 References: <20230322195926.1996699-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: LYM2Y22ASVINMOYL6PGLKAUCK3HB5UHD
-X-Message-ID-Hash: LYM2Y22ASVINMOYL6PGLKAUCK3HB5UHD
+Message-ID-Hash: X2TAAQXHH24BW6NTFQXBC7FQTTDJZRGC
+X-Message-ID-Hash: X2TAAQXHH24BW6NTFQXBC7FQTTDJZRGC
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -77,19 +77,20 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Cezary Rojewski <cezary.rojewski@intel.com>,
- =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, Mark Brown <broonie@kernel.org>,
- Sasha Levin <sashal@kernel.org>, pierre-louis.bossart@linux.intel.com,
- liam.r.girdwood@linux.intel.com, peter.ujfalusi@linux.intel.com,
+CC: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Curtis Malainey <cujomalainey@chromium.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Curtis Malainey <curtis@malainey.com>, Mark Brown <broonie@kernel.org>,
+ Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
  yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
- kai.vehmanen@linux.intel.com, tiwai@suse.com, alsa-devel@alsa-project.org
+ daniel.baluta@nxp.com, tiwai@suse.com, sound-open-firmware@alsa-project.org,
+ alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LYM2Y22ASVINMOYL6PGLKAUCK3HB5UHD/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/X2TAAQXHH24BW6NTFQXBC7FQTTDJZRGC/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -98,49 +99,43 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Cezary Rojewski <cezary.rojewski@intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-[ Upstream commit 6206b2e787da2ed567922c37bb588a44f6fb6705 ]
+[ Upstream commit 989a3e4479177d0f4afab8be1960731bc0ffbbd0 ]
 
-Internal clock shall be adjusted also in cases when DAPM event other
-than 'ON' is triggered.
+The sof_ipc3_rx_msg() checks for minimum size of a new rx message but it is
+missing the check for upper limit.
+Corrupted or compromised firmware might be able to take advantage of this
+to cause out of bounds reads outside of the message area.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Link: https://lore.kernel.org/r/20230303134854.2277146-6-amadeuszx.slawinski@linux.intel.com
+Reported-by: Curtis Malainey <cujomalainey@chromium.org>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Curtis Malainey <curtis@malainey.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Link: https://lore.kernel.org/r/20230307114917.5124-1-peter.ujfalusi@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/avs/boards/nau8825.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/sof/ipc3.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/avs/boards/nau8825.c b/sound/soc/intel/avs/boards/nau8825.c
-index f76909e9f990a..8392d8fac8f9c 100644
---- a/sound/soc/intel/avs/boards/nau8825.c
-+++ b/sound/soc/intel/avs/boards/nau8825.c
-@@ -33,15 +33,15 @@ avs_nau8825_clock_control(struct snd_soc_dapm_widget *w, struct snd_kcontrol *co
- 		return -EINVAL;
+diff --git a/sound/soc/sof/ipc3.c b/sound/soc/sof/ipc3.c
+index b28af3a48b707..60b96b0c2412f 100644
+--- a/sound/soc/sof/ipc3.c
++++ b/sound/soc/sof/ipc3.c
+@@ -970,8 +970,9 @@ static void sof_ipc3_rx_msg(struct snd_sof_dev *sdev)
+ 		return;
  	}
  
--	if (!SND_SOC_DAPM_EVENT_ON(event)) {
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		ret = snd_soc_dai_set_sysclk(codec_dai, NAU8825_CLK_MCLK, 24000000,
-+					     SND_SOC_CLOCK_IN);
-+	else
- 		ret = snd_soc_dai_set_sysclk(codec_dai, NAU8825_CLK_INTERNAL, 0, SND_SOC_CLOCK_IN);
--		if (ret < 0) {
--			dev_err(card->dev, "set sysclk err = %d\n", ret);
--			return ret;
--		}
--	}
-+	if (ret < 0)
-+		dev_err(card->dev, "Set sysclk failed: %d\n", ret);
+-	if (hdr.size < sizeof(hdr)) {
+-		dev_err(sdev->dev, "The received message size is invalid\n");
++	if (hdr.size < sizeof(hdr) || hdr.size > SOF_IPC_MSG_MAX_SIZE) {
++		dev_err(sdev->dev, "The received message size is invalid: %u\n",
++			hdr.size);
+ 		return;
+ 	}
  
--	return 0;
-+	return ret;
- }
- 
- static const struct snd_kcontrol_new card_controls[] = {
 -- 
 2.39.2
 
