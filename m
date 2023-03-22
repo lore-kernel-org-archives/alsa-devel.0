@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D08EC6FD1F
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 18:49:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73B0CC6FD1F
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 18:50:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E208AEAE;
-	Wed, 22 Mar 2023 19:49:03 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E208AEAE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5EE0EEAA;
+	Wed, 22 Mar 2023 19:49:23 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EE0EEAA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679510994;
-	bh=u8UI3anzvvAnUM7lDxG8OSsCeqbCrYbcKIou7gbQiO0=;
+	s=default; t=1679511013;
+	bh=0MKVtGl8bw1gko7gFoRNgHaoCQ3xOdagFVezvAYbH/0=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=BzIQu/z8Jg1R+Czj0Z+BnTYTw1YD1Cu4vIw6t9esC0NManXRcprNFnEYd4Rxeyugk
-	 /QZce6/JvMwbrEZgzKuEsb6z8kfIm8DabfPCoiZ2bhEL+yK3gwz6Sd1MACZJ0J+dTz
-	 DaBv07sj0/w9evluEgOzKdllRlGiOEV7ci7zreZ0=
+	b=p6LQNiK5qYds7ZUs04F5El3WA+YZoBIcmdd9mFHgI4KZSSOiqYS/wo5vJQI/T16NX
+	 hhpGXlJdVms7ayOPz8tzsiZNUBgZnCOJKqVkmlfiBhy8CgVYIkHMwBkk+cP8/dKNMn
+	 XslMtMPoEYoGixiiKJhNvQJyWKpsauEBhiWgNdVI=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B7750F80534;
-	Wed, 22 Mar 2023 19:47:56 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33D66F80544;
+	Wed, 22 Mar 2023 19:47:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 45EA5F80482; Wed, 22 Mar 2023 19:47:49 +0100 (CET)
+	id E84B3F8052D; Wed, 22 Mar 2023 19:47:51 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 80832F8027B
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2023 19:47:34 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80832F8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 589EAF8024E
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2023 19:47:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 589EAF8024E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=d5L8Ulkw
+ header.s=k20201202 header.b=D1hyEHPL
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 79BE161D9B;
-	Wed, 22 Mar 2023 18:47:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6634BC433D2;
-	Wed, 22 Mar 2023 18:47:29 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4681862273;
+	Wed, 22 Mar 2023 18:47:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08632C433D2;
+	Wed, 22 Mar 2023 18:47:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679510851;
-	bh=u8UI3anzvvAnUM7lDxG8OSsCeqbCrYbcKIou7gbQiO0=;
+	s=k20201202; t=1679510859;
+	bh=0MKVtGl8bw1gko7gFoRNgHaoCQ3xOdagFVezvAYbH/0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=d5L8UlkwOmiMvW1Ci3xQaHqkhzMx8WEMMEy+gVMlth9c4VVAXoN8K5BPZMyEAAgQh
-	 hXWgDA52UnBQpAkAauWlPic8ML/U53LDT0qncnlYkGte5ZJfq8GeeGpUW8xYSM+voA
-	 wWmqvggAAI6sskpVHXYNNcX76aHXyXNQ9x4mCon0PD7W8aIS7B7oJ2sCPwolfGanGc
-	 hWj/LMLMHSV1pXLH6lF8oDihzfU6nJ4p3qJvtT3lwAmiazEbYbO+LeILg9tBzITwvg
-	 Il2d4oQodVziSwt22ZevbLfmb+0iOTw5DQGQRJDug/HpkFzrJw+ebC9z1TwT28Fmuf
-	 T1b8DpXCwF0xw==
+	b=D1hyEHPLTkVXDm9L77ArSjAnVY5nLZmZe26Y7x+qEz1JuxzAeeBE7XssH2EqNaRVm
+	 d1vHQaLp7g9hWB0PadCYqN/ysu285rrjGQkOO5cv14V+tWtYrKazj+rqwmyQwu+8Eu
+	 H/2mOErLDiI8aWmLMUcHtJySSVQ/HZSP+lwfB0mu4qS4Tx8XEcLHXNcpdLj372Gm57
+	 JlEWu1h4GdjIHZZJFhv7OplrQkv8E47YnWPhZuVctUMwTAll0tf2JyLVxkPFPk2nb2
+	 nb8Ey6wC7ZYqwxImPtqBxdSl3sPMwwxuSOgWKsDwBmNvyilGRd8PuRaiXumtvicsfL
+	 ZwByoXoqcfPxA==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <20230322014330.97079-1-jiapeng.chong@linux.alibaba.com>
-References: <20230322014330.97079-1-jiapeng.chong@linux.alibaba.com>
-Subject: Re: [PATCH] ASoC: tegra: remove unneeded semicolon
-Message-Id: <167951084865.1092488.3890931311762738091.b4-ty@kernel.org>
-Date: Wed, 22 Mar 2023 18:47:28 +0000
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <875yattwqv.wl-kuninori.morimoto.gx@renesas.com>
+References: <875yattwqv.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v2] ASoC: simple-card: add comment to indicate don't
+ remove platforms
+Message-Id: <167951085838.1092488.3241114576781694006.b4-ty@kernel.org>
+Date: Wed, 22 Mar 2023 18:47:38 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-2eb1a
-Message-ID-Hash: GQGR266SQSZA4UQVFOSAVHAWMMPJ6LDP
-X-Message-ID-Hash: GQGR266SQSZA4UQVFOSAVHAWMMPJ6LDP
+Message-ID-Hash: MIE2XH22ZIPWAFVY7QRB5UBR76ELDG7C
+X-Message-ID-Hash: MIE2XH22ZIPWAFVY7QRB5UBR76ELDG7C
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -73,15 +74,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: tiwai@suse.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
- alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
- linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+CC: Linux-ALSA <alsa-devel@alsa-project.org>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GQGR266SQSZA4UQVFOSAVHAWMMPJ6LDP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MIE2XH22ZIPWAFVY7QRB5UBR76ELDG7C/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,10 +89,15 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 22 Mar 2023 09:43:30 +0800, Jiapeng Chong wrote:
-> ./sound/soc/tegra/tegra_asoc_machine.c:206:3-4: Unneeded semicolon.
+On Wed, 22 Mar 2023 01:12:24 +0000, Kuninori Morimoto wrote:
+> Basically CPU and Platform are different Component, but if CPU is using
+> soc-generic-dmaengine-pcm, same dev will be shared between CPU and
+> Platform, and Simple Card had been supporting it.
 > 
+> When we focus to clean up Simple Card driver, we tend to remove platforms
+> if no Platform was selected, but it is wrong because of above reasons.
 > 
+> [...]
 
 Applied to
 
@@ -101,8 +105,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tegra: remove unneeded semicolon
-      commit: 59385ed41c37b609c70a1ebb46003e4cc6685ec0
+[1/1] ASoC: simple-card: add comment to indicate don't remove platforms
+      commit: dcf084247e376b35c139c922d30917f4ff716a4c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
