@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73B0CC6FD1F
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 18:50:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6791C6FD1F
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 19:07:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5EE0EEAA;
-	Wed, 22 Mar 2023 19:49:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5EE0EEAA
+	by alsa0.perex.cz (Postfix) with ESMTPS id A1F0DEB4;
+	Wed, 22 Mar 2023 20:06:20 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1F0DEB4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679511013;
-	bh=0MKVtGl8bw1gko7gFoRNgHaoCQ3xOdagFVezvAYbH/0=;
+	s=default; t=1679512030;
+	bh=6rcg4uj15QVYMi2J+hY4jBwV1ucCpwKHQq8ZSr5pQ80=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=p6LQNiK5qYds7ZUs04F5El3WA+YZoBIcmdd9mFHgI4KZSSOiqYS/wo5vJQI/T16NX
-	 hhpGXlJdVms7ayOPz8tzsiZNUBgZnCOJKqVkmlfiBhy8CgVYIkHMwBkk+cP8/dKNMn
-	 XslMtMPoEYoGixiiKJhNvQJyWKpsauEBhiWgNdVI=
+	b=CpETGJuYhpWif44rJ/oYM9/EsqviKpRp9Ho42AT1lHBUmYjib8cvMKWcCACG7qxHX
+	 IfF7a6SZPaSXJO8YKH26l+TRjB3+hEkg77abbrrTDO15+vWBW3CDYNJSz4oGyzD+YQ
+	 SWRFf4uvjsBjkZRIEXd0+tdJDNNwTs4bKoulAyZY=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33D66F80544;
-	Wed, 22 Mar 2023 19:47:58 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E1AEF8027B;
+	Wed, 22 Mar 2023 20:05:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E84B3F8052D; Wed, 22 Mar 2023 19:47:51 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 36672F8027B; Wed, 22 Mar 2023 20:05:55 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 589EAF8024E
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2023 19:47:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 589EAF8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5D8FAF80105
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2023 20:05:52 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D8FAF80105
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=D1hyEHPL
+ header.s=k20201202 header.b=ToNCA8IG
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4681862273;
-	Wed, 22 Mar 2023 18:47:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08632C433D2;
-	Wed, 22 Mar 2023 18:47:38 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id A1201B81DB5;
+	Wed, 22 Mar 2023 19:05:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9B9FC433EF;
+	Wed, 22 Mar 2023 19:05:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679510859;
-	bh=0MKVtGl8bw1gko7gFoRNgHaoCQ3xOdagFVezvAYbH/0=;
+	s=k20201202; t=1679511949;
+	bh=6rcg4uj15QVYMi2J+hY4jBwV1ucCpwKHQq8ZSr5pQ80=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=D1hyEHPLTkVXDm9L77ArSjAnVY5nLZmZe26Y7x+qEz1JuxzAeeBE7XssH2EqNaRVm
-	 d1vHQaLp7g9hWB0PadCYqN/ysu285rrjGQkOO5cv14V+tWtYrKazj+rqwmyQwu+8Eu
-	 H/2mOErLDiI8aWmLMUcHtJySSVQ/HZSP+lwfB0mu4qS4Tx8XEcLHXNcpdLj372Gm57
-	 JlEWu1h4GdjIHZZJFhv7OplrQkv8E47YnWPhZuVctUMwTAll0tf2JyLVxkPFPk2nb2
-	 nb8Ey6wC7ZYqwxImPtqBxdSl3sPMwwxuSOgWKsDwBmNvyilGRd8PuRaiXumtvicsfL
-	 ZwByoXoqcfPxA==
+	b=ToNCA8IGfn4Beadm+osz7HXxavprKcjqS9q9DGjGWPsXWaIZ13griAm3Oc1M3OZvR
+	 JwFTYxKu+eQclO9l00p3ayqYr0LoShd0GKtNXLh1zKBLhhZAw49EHhlBC6QpT63Tvc
+	 qL1L/11IYAr++hIiTlmSmrH204UlyiJK9Ptp1zxLpWOzQNosNe7DpipPR0H/QwoZoE
+	 Kr0CUXNiF8XLO/61nNFd5a4zLja1hwlhUiH8HJDeAjiq7D/qhveQpn7q5vJJUKcFpi
+	 rwPZJy3jP9AXvxOpBNf4IOqiuP+ZICRxBNWE49JnuEKewrASJkebeXhzTq58PCs6CH
+	 UGbEBRnMlUu8g==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <875yattwqv.wl-kuninori.morimoto.gx@renesas.com>
-References: <875yattwqv.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH v2] ASoC: simple-card: add comment to indicate don't
- remove platforms
-Message-Id: <167951085838.1092488.3241114576781694006.b4-ty@kernel.org>
-Date: Wed, 22 Mar 2023 18:47:38 +0000
+To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20230322085538.10214-1-peter.ujfalusi@linux.intel.com>
+References: <20230322085538.10214-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: ipc4: Ensure DSP is in D0I0 during
+ sof_ipc4_set_get_data()
+Message-Id: <167951194699.1096244.1422143438627508157.b4-ty@kernel.org>
+Date: Wed, 22 Mar 2023 19:05:46 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-2eb1a
-Message-ID-Hash: MIE2XH22ZIPWAFVY7QRB5UBR76ELDG7C
-X-Message-ID-Hash: MIE2XH22ZIPWAFVY7QRB5UBR76ELDG7C
+Message-ID-Hash: LUCCZ33WM7MPJ5V5EQTBZCUALT2HVGUD
+X-Message-ID-Hash: LUCCZ33WM7MPJ5V5EQTBZCUALT2HVGUD
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -74,13 +74,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Linux-ALSA <alsa-devel@alsa-project.org>
+CC: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ yung-chuan.liao@linux.intel.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MIE2XH22ZIPWAFVY7QRB5UBR76ELDG7C/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/LUCCZ33WM7MPJ5V5EQTBZCUALT2HVGUD/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -89,15 +91,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 22 Mar 2023 01:12:24 +0000, Kuninori Morimoto wrote:
-> Basically CPU and Platform are different Component, but if CPU is using
-> soc-generic-dmaengine-pcm, same dev will be shared between CPU and
-> Platform, and Simple Card had been supporting it.
+On Wed, 22 Mar 2023 10:55:38 +0200, Peter Ujfalusi wrote:
+> The set_get_data() IPC op bypasses the check for the no_pm flag as done
+> with the regular IPC tx_msg op. Since set_get_data should be performed
+> when the DSP is in D0I0, set the DSP power state to D0I0 before sending
+> the IPC's in sof_ipc4_set_get_data().
 > 
-> When we focus to clean up Simple Card driver, we tend to remove platforms
-> if no Platform was selected, but it is wrong because of above reasons.
 > 
-> [...]
 
 Applied to
 
@@ -105,8 +105,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: simple-card: add comment to indicate don't remove platforms
-      commit: dcf084247e376b35c139c922d30917f4ff716a4c
+[1/1] ASoC: SOF: ipc4: Ensure DSP is in D0I0 during sof_ipc4_set_get_data()
+      commit: e51f49512d98783b90799c9cc2002895ec3aa0eb
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
