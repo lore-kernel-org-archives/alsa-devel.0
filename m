@@ -4,112 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A91BC6FD1F
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 07:39:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FBB5C6FD1F
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 07:53:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 43974847;
-	Wed, 22 Mar 2023 08:38:51 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43974847
+	by alsa0.perex.cz (Postfix) with ESMTPS id B486084A;
+	Wed, 22 Mar 2023 08:52:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B486084A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679470781;
-	bh=sKGJjMoP8fvL6AXbiisJ8Bj1a/nq1rL2Q6j68gmxwUo=;
-	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=iKZIlPTLTKBsKKF4vyYzDiaZqIT6gewjEwV7XX1KWOejSkRDCh2G7raLkA1G3JHK8
-	 yaEbFDCQXZNrLG/7jdK6kzN8E6HRcRYGv3AFaTUD8EsrOZJ1XC/lgYvc+AdZ3R9BgS
-	 5ezm9oxJl/TbWh69Lug16FOOUEKm7VKk0aF5XLl8=
+	s=default; t=1679471581;
+	bh=7a2GhfW7324e6g9+ok85VKCv04RxfgGwknInfHrga8Y=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=U5efW485Rv61rvpBDmVuk7Vtb7UCFEaGRK03yVAsap3kqZRBACzojm+zb07LDyuAh
+	 rQRhfeNkuDXYMggWvmDoVfyJSVS1wj7kWCp9URFwwM5AjkbEZqrccSCVWuSE3TkEYZ
+	 vZAdQYI8PySfV+dbsTRGKvuy6/5RZRQ9mTRBk2go=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5A70F80254;
-	Wed, 22 Mar 2023 08:38:29 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9543F802E8;
+	Wed, 22 Mar 2023 08:51:49 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ECDC8F8027B; Wed, 22 Mar 2023 08:38:22 +0100 (CET)
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com
- [IPv6:2a00:1450:4864:20::534])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 9943AF8024E; Wed, 22 Mar 2023 08:49:55 +0100 (CET)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id C9046F8024E
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2023 08:38:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9046F8024E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 8D896F80105
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2023 08:49:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D896F80105
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=Ovk6gx9L
-Received: by mail-ed1-x534.google.com with SMTP id eg48so68985030edb.13
-        for <alsa-devel@alsa-project.org>;
- Wed, 22 Mar 2023 00:38:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1679470683;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fIlFrePZXbAkRU2ELLJPQAlw9IYOtHNm0vNBQivbWPw=;
-        b=Ovk6gx9LBcuOvIdpF+utI2+huZW2TwdhnKy6VxEQRwDCZA9TY4mdwyiqUaV/Q0Ue4i
-         t6IQatnKJOtNRArp68GUTKweCl0MlKdRfog2LEAolB4T7hzD70haB7PLcvCCN85tjkG4
-         Ffd3aNS8kKC1a3YTllsPUi64p+SQbAKjB89v0mexDiB0guMTeC6Wuyk503iTcsh+Rv/m
-         e0bAZnP3FxV4ktpIDfsRFBoPOauLZJM7zoaWTj9ZRQtq6faWDENs04KxRhFVdiqtiwAb
-         pI2vcKOq5KKoCWZREkNLl+6B6AOS7uDTBO7viKCZcHMHZ8sbbw7yPndR6ciO6jVrTeSu
-         Pnvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679470683;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fIlFrePZXbAkRU2ELLJPQAlw9IYOtHNm0vNBQivbWPw=;
-        b=ZhwpId0KI8ldQS/wHH0Cv7I2EIXOgI9PKYZNZWw5yO5mZYw3a3mHWeVRFqOFYB0/Do
-         PPWXE7h4hvlL6xc5nl4eifLSbEEDvFM0vlKFUURIxTGIYwzgWUqcAE1CMzLtBQBTjsB/
-         ps6rHDKSN+cIJag5JTcPWE96KTU/WS/h9ddc7G7oPHRnLLPARqnPrIsIYvuMgjNPEv9J
-         46vqXxCmqrq+OiAwmvdmM3DU7ySWsMiJ/SVbxLFFx88dif0X3FBxt324bmy1Flgw3bTm
-         Gil87AGgKspxcJzPl0DWcrwm54h4y8Yae0dQB9AHyQiCQuDS4OL4lJibhjVifCoQnNzy
-         0Szg==
-X-Gm-Message-State: AO0yUKXhu4eKXpFZZiqTqb/TTJyvcHuiz1Rm1gCX2RjrtEp/EpSwZaET
-	XxzCiFaS2kgQolPyITjIBTfSFg==
-X-Google-Smtp-Source: 
- AK7set9uNqqqp+RTyy+Lsso2YFsulLEsLgbXC/U05maYZvjld3UjEALosJg2dArGoCc9ViY65hz1fA==
-X-Received: by 2002:aa7:c84e:0:b0:4fb:e9b8:ca5a with SMTP id
- g14-20020aa7c84e000000b004fbe9b8ca5amr5669909edt.40.1679470682958;
-        Wed, 22 Mar 2023 00:38:02 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:15c0:828:5050:151b:e755:1c6?
- ([2a02:810d:15c0:828:5050:151b:e755:1c6])
-        by smtp.gmail.com with ESMTPSA id
- g4-20020a170906520400b0093a35f65a30sm1619990ejm.41.2023.03.22.00.38.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Mar 2023 00:38:02 -0700 (PDT)
-Message-ID: <d1559192-8f6d-26e0-ef19-d14ac7987a74@linaro.org>
-Date: Wed, 22 Mar 2023 08:38:01 +0100
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=K/hgZYzp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1679471391; x=1711007391;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=7a2GhfW7324e6g9+ok85VKCv04RxfgGwknInfHrga8Y=;
+  b=K/hgZYzp1CbY25ZTkn5JkUtO/TSZ4NGgz6uYD6fgjqwOVoKu5CdDNADk
+   9oAlo7z03h04wA+GNmZiUJxj9v1kXknK8ZQUBGflnPL4VqQg2gWE2HUzk
+   d2nNzvrGG1BGrJk3odspSa/vz6TtETf9GHM/b+oe0bmjCQB1nnVKA2Ogl
+   iTCcIxBeVWEtJ7h5j157vWeojH1yNTJfqi8CIdQ/3P8naJbBoBe/WlJhd
+   9AbsNJzKcuecML+D/pb0ROhN0fceJhlvPe3hq0hRhgUOX+GRv1XVR9ban
+   rkb5CxKV+lARxPytxQxvGEMw2NCi9n1cKNxPtZ1FHGpt4/NJXLDrq6jru
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10656"; a="322990572"
+X-IronPort-AV: E=Sophos;i="5.98,281,1673942400";
+   d="scan'208";a="322990572"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Mar 2023 00:49:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10656"; a="792439608"
+X-IronPort-AV: E=Sophos;i="5.98,281,1673942400";
+   d="scan'208";a="792439608"
+Received: from gjantea-mobl.ger.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.251.222.2])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Mar 2023 00:49:42 -0700
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org
+Subject: [PATCH] ASoC: Intel: sof_rt5682: Remove conditional dpcm_capture
+ setting
+Date: Wed, 22 Mar 2023 09:50:12 +0200
+Message-Id: <20230322075012.23463-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH] ASoC: dt-bindings: ak5558: Convert to dtschema
-Content-Language: en-US
-To: Saalim Quadri <danascape@gmail.com>, broonie@kernel.org,
- robh+dt@kernel.org, lgirdwood@gmail.com, krzysztof.kozlowski+dt@linaro.org
-References: <20230321180809.9215-1-danascape@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230321180809.9215-1-danascape@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Message-ID-Hash: D6VQXYQ2UTQ64SXPEGNGFRJ2VVOSYQ4Y
-X-Message-ID-Hash: D6VQXYQ2UTQ64SXPEGNGFRJ2VVOSYQ4Y
-X-MailFrom: krzysztof.kozlowski@linaro.org
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: WTRAE2LHEIZVIRBYCLCTCGMDU7YV2KA6
+X-Message-ID-Hash: WTRAE2LHEIZVIRBYCLCTCGMDU7YV2KA6
+X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
+CC: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ yong.zhi@intel.com, yung-chuan.liao@linux.intel.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/D6VQXYQ2UTQ64SXPEGNGFRJ2VVOSYQ4Y/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WTRAE2LHEIZVIRBYCLCTCGMDU7YV2KA6/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,102 +98,32 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 21/03/2023 19:08, Saalim Quadri wrote:
-> Convert the AK5558 ADC audio codec bindings to DT schema.
-> 
-> Signed-off-by: Saalim Quadri <danascape@gmail.com>
-> ---
->  .../devicetree/bindings/sound/ak5558.txt      | 24 ---------
->  .../devicetree/bindings/sound/ak5558.yaml     | 49 +++++++++++++++++++
->  2 files changed, 49 insertions(+), 24 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/ak5558.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/ak5558.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/ak5558.txt b/Documentation/devicetree/bindings/sound/ak5558.txt
-> deleted file mode 100644
-> index e28708db6686..000000000000
-> --- a/Documentation/devicetree/bindings/sound/ak5558.txt
-> +++ /dev/null
-> @@ -1,24 +0,0 @@
-> -AK5558 8 channel differential 32-bit delta-sigma ADC
-> -
-> -This device supports I2C mode only.
-> -
-> -Required properties:
-> -
-> -- compatible : "asahi-kasei,ak5558" or "asahi-kasei,ak5552".
-> -- reg : The I2C address of the device.
-> -
-> -Optional properties:
-> -
-> -- reset-gpios: A GPIO specifier for the power down & reset pin.
-> -- AVDD-supply: Analog power supply
-> -- DVDD-supply: Digital power supply
-> -
-> -Example:
-> -
-> -&i2c {
-> -	ak5558: adc@10 {
-> -		compatible = "asahi-kasei,ak5558";
-> -		reg = <0x10>;
-> -		reset-gpios = <&gpio1 10 GPIO_ACTIVE_LOW>;
-> -	};
-> -};
-> diff --git a/Documentation/devicetree/bindings/sound/ak5558.yaml b/Documentation/devicetree/bindings/sound/ak5558.yaml
-> new file mode 100644
-> index 000000000000..90fd734daeec
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/ak5558.yaml
+From: Yong Zhi <yong.zhi@intel.com>
 
-Missing vendor prefix, so
-asahi-kasei,ak5558.yaml
+The dpcm_capture is set unconditionally, we can drop the conditional
+setting of it.
 
-> @@ -0,0 +1,49 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/ak5558.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: AK5558 ADC Device Tree Bindings
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+ sound/soc/intel/boards/sof_rt5682.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-drop "Device Tree Bindings"
-
-You dropped few pieces of device description. Why? Also ADC is very
-confusing.
-
-> +
-> +maintainers:
-> +  - Junichi Wakasugi <wakasugi.jb@om.asahi-kasei.co.jp>
-> +  - Mihai Serban <mihai.serban@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - asahi-kasei,ak5558
-> +      - asahi-kasei,ak5552
-
-Keep them ordered by name.
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description: I2C address of the device.
-
-Drop description, obvious.
-
-> +
-> +  avdd-supply:
-> +    description: A 1.8V supply that powers up the AVDD pin.
-> +
-> +  dvdd-supply:
-> +    description: A 1.2V supply that powers up the DVDD pin.
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +
-
-
-Best regards,
-Krzysztof
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 2eec32846078..76ee2e35e1ef 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -793,7 +793,6 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 			}
+ 			links[id].init = max_98390_spk_codec_init;
+ 			links[id].ops = &max_98390_ops;
+-			links[id].dpcm_capture = 1;
+ 
+ 		} else {
+ 			max_98357a_dai_link(&links[id]);
+-- 
+2.40.0
 
