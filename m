@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B7E3C6FD1F
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 18:49:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D08EC6FD1F
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 18:49:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C7B1EB5;
-	Wed, 22 Mar 2023 19:48:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C7B1EB5
+	by alsa0.perex.cz (Postfix) with ESMTPS id E208AEAE;
+	Wed, 22 Mar 2023 19:49:03 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E208AEAE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679510977;
-	bh=vRyCJMnCyAuoopNjeih/gjR5r8abLDcNg5cK2aKkEdY=;
+	s=default; t=1679510994;
+	bh=u8UI3anzvvAnUM7lDxG8OSsCeqbCrYbcKIou7gbQiO0=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Yi1sYH5Ap1jRjUOkauVRsliVIiKh0YZKEnGrbMP9qu1qEKwh2+6i7UVzMoGdXCnH0
-	 dKZEpiKl6yg8r8dcieu7t1nzTJQa4fIeFIb4mY+4+Pqo2pAsVfQMsUGQvQtGzH8HUs
-	 fqJLY68R6W1jvmbdVGGDDv7Z0MFxGC7YacCJVvUk=
+	b=BzIQu/z8Jg1R+Czj0Z+BnTYTw1YD1Cu4vIw6t9esC0NManXRcprNFnEYd4Rxeyugk
+	 /QZce6/JvMwbrEZgzKuEsb6z8kfIm8DabfPCoiZ2bhEL+yK3gwz6Sd1MACZJ0J+dTz
+	 DaBv07sj0/w9evluEgOzKdllRlGiOEV7ci7zreZ0=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9355F80529;
-	Wed, 22 Mar 2023 19:47:53 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B7750F80534;
+	Wed, 22 Mar 2023 19:47:56 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id DEB91F80482; Wed, 22 Mar 2023 19:47:46 +0100 (CET)
+	id 45EA5F80482; Wed, 22 Mar 2023 19:47:49 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 55638F80105
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2023 19:47:40 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55638F80105
+	by alsa1.perex.cz (Postfix) with ESMTPS id 80832F8027B
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2023 19:47:34 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80832F8027B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=SkdUh7TS
+ header.s=k20201202 header.b=d5L8Ulkw
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 22DEF62274;
-	Wed, 22 Mar 2023 18:47:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED422C433EF;
-	Wed, 22 Mar 2023 18:47:36 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 79BE161D9B;
+	Wed, 22 Mar 2023 18:47:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6634BC433D2;
+	Wed, 22 Mar 2023 18:47:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679510858;
-	bh=vRyCJMnCyAuoopNjeih/gjR5r8abLDcNg5cK2aKkEdY=;
+	s=k20201202; t=1679510851;
+	bh=u8UI3anzvvAnUM7lDxG8OSsCeqbCrYbcKIou7gbQiO0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=SkdUh7TSuokwkeyO6DMCF3J2HwB7HC577bzat0hmYQdlNkBB2/LpK2zfmWP1ZRr55
-	 FPwliJ9T4hxShtPLK9/LAXGCBhNsiNQswytSrmfdubywfU5vvYBwDkUWJPPuEXXB92
-	 TFLcRiUOt/mqtcGPmwE4kQ3ML6mVKFy7irD79twMxACY4Shv2DV1KzHiYlgsEu4La+
-	 O9zYgJb+ZO4wNcR3RjKXVTxoOJbXa0pFcaiGaiTigPsXbXtBor+hCXAwRSiRZnJZp6
-	 7GT4WjXCfgg94cUtNEg6809SQYXC/DvIwr9mOw7xkvtSCpjQi/mdKus9V2r7mWTKhF
-	 QINfSHnqg3lVw==
+	b=d5L8UlkwOmiMvW1Ci3xQaHqkhzMx8WEMMEy+gVMlth9c4VVAXoN8K5BPZMyEAAgQh
+	 hXWgDA52UnBQpAkAauWlPic8ML/U53LDT0qncnlYkGte5ZJfq8GeeGpUW8xYSM+voA
+	 wWmqvggAAI6sskpVHXYNNcX76aHXyXNQ9x4mCon0PD7W8aIS7B7oJ2sCPwolfGanGc
+	 hWj/LMLMHSV1pXLH6lF8oDihzfU6nJ4p3qJvtT3lwAmiazEbYbO+LeILg9tBzITwvg
+	 Il2d4oQodVziSwt22ZevbLfmb+0iOTw5DQGQRJDug/HpkFzrJw+ebC9z1TwT28Fmuf
+	 T1b8DpXCwF0xw==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230322094346.6019-1-peter.ujfalusi@linux.intel.com>
-References: <20230322094346.6019-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH 0/3] ASoC: SOF: pcm/Intel: Handle IPC dependent
- sequencing correctly
-Message-Id: <167951085623.1092488.1260839501140903476.b4-ty@kernel.org>
-Date: Wed, 22 Mar 2023 18:47:36 +0000
+To: lgirdwood@gmail.com, Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <20230322014330.97079-1-jiapeng.chong@linux.alibaba.com>
+References: <20230322014330.97079-1-jiapeng.chong@linux.alibaba.com>
+Subject: Re: [PATCH] ASoC: tegra: remove unneeded semicolon
+Message-Id: <167951084865.1092488.3890931311762738091.b4-ty@kernel.org>
+Date: Wed, 22 Mar 2023 18:47:28 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-2eb1a
-Message-ID-Hash: 4TS7ZSZNBRYL4SKCH4ES2E22LELCIIVG
-X-Message-ID-Hash: 4TS7ZSZNBRYL4SKCH4ES2E22LELCIIVG
+Message-ID-Hash: GQGR266SQSZA4UQVFOSAVHAWMMPJ6LDP
+X-Message-ID-Hash: GQGR266SQSZA4UQVFOSAVHAWMMPJ6LDP
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -74,15 +73,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- yung-chuan.liao@linux.intel.com
+CC: tiwai@suse.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
+ alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4TS7ZSZNBRYL4SKCH4ES2E22LELCIIVG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GQGR266SQSZA4UQVFOSAVHAWMMPJ6LDP/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -91,16 +90,10 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Wed, 22 Mar 2023 11:43:43 +0200, Peter Ujfalusi wrote:
-> IPC3 and IPC4 firmwares handle and execute tasks at different stages, like
-> managing DMAs.
-> In most cases these are aligned, but we have few exceptions that needs to be
-> handled differently.
+On Wed, 22 Mar 2023 09:43:30 +0800, Jiapeng Chong wrote:
+> ./sound/soc/tegra/tegra_asoc_machine.c:206:3-4: Unneeded semicolon.
 > 
-> This series introduces flags to handle the differing cases to make sure that
-> the correct sequencing is used regerless of the IPC version.
 > 
-> [...]
 
 Applied to
 
@@ -108,12 +101,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: SOF: Intel: hda-dai: Do not perform DMA cleanup during stop
-      commit: 1bf83fa6654ce8959948878aad14a6db586125b8
-[2/3] ASoC: SOF: pcm: Make hw_params reset conditional for IPC3
-      commit: 7d6f623c6a9d05195d1b19120383d4f42a1747db
-[3/3] ASoC: SOF: pcm: Improve the pcm trigger sequence
-      commit: 51ce3e6effab4fd4e13a3f187f4e256259f6e5a4
+[1/1] ASoC: tegra: remove unneeded semicolon
+      commit: 59385ed41c37b609c70a1ebb46003e4cc6685ec0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
