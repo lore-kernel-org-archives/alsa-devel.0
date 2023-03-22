@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C19E1C6FD1C
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 20:06:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13265C6FD1C
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Mar 2023 20:06:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 324D8EC9;
-	Wed, 22 Mar 2023 21:05:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 324D8EC9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8976FF0C;
+	Wed, 22 Mar 2023 21:05:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8976FF0C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679515566;
-	bh=I86NJCPu1+KiO59bQFYOpha356Tl4KQfy3wuYdiGe9c=;
+	s=default; t=1679515580;
+	bh=2pa5qYOH99HejMlK7P61qqxdiYP9eVCz52UkJjVO/bc=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=lW826pKJ1Cz/AW+YWJueKvf0sQqXHDzrqPrNewDxZYOuFzG+gEFDQkfQtd5PpWhme
-	 44W+gRQlPzL/5GT5OXLDjYUMEEgu5IJhpLTf/p3Y8QnFDBVX0a1VGM8/Yc7xVbvwxl
-	 jW1c9G4bxxhwDCTEVrMUg9tMUa4Z4uZEtMfC3vZU=
+	b=XPXnv94e9c2I57ORiyTTYCfRPUgyBMYxyE82s8wELn+rB8tRl+Z0gv0R0j2bJ4CvM
+	 6KszryentKQrxNcuIAjXo8kghJEj1I4ZC6epOqmZ3kgESkrfRE3etGeKK/tL6yoZcq
+	 dgqoNEaT7QVJMIXoajIFHWH+eJtKABNd3+5O0KsQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 480A6F80588;
-	Wed, 22 Mar 2023 21:01:47 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id E82D6F805B5;
+	Wed, 22 Mar 2023 21:01:51 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1B2A4F80588; Wed, 22 Mar 2023 21:01:44 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	id 3A198F805AE; Wed, 22 Mar 2023 21:01:49 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 518A3F8057E
-	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2023 21:01:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 518A3F8057E
+	by alsa1.perex.cz (Postfix) with ESMTPS id 85024F805A1
+	for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2023 21:01:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85024F805A1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=iaBPA+jm
+ header.s=k20201202 header.b=BnILllBQ
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4374F622B8;
-	Wed, 22 Mar 2023 20:01:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24067C433D2;
-	Wed, 22 Mar 2023 20:01:40 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 5ADCAB81DF3;
+	Wed, 22 Mar 2023 20:01:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00999C433EF;
+	Wed, 22 Mar 2023 20:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679515301;
-	bh=I86NJCPu1+KiO59bQFYOpha356Tl4KQfy3wuYdiGe9c=;
+	s=k20201202; t=1679515305;
+	bh=2pa5qYOH99HejMlK7P61qqxdiYP9eVCz52UkJjVO/bc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iaBPA+jm6/HVuGCfU2Ea0ZeHJXpU7bbToNSE3+pBx+ndbqQaxhuBR8euFnlMfmsXu
-	 UllRsS6V7Cj8E6Wjz/4m2xYK4CbeNv/ObNCiTLvyD7MWfmYxb4fjyCpswhQfPWxvjQ
-	 bbACR4ucZmS4L4LdgUS7w+yU3LVZPxgnsYyc2tmbONkIGWqgt3CJ5zwaLRlavyEI+f
-	 ubuQScY40J9LL/RKARg0lXK7oEcp3ZZny2McJphn8+8Zs1Cn9lSmubxTIChG2oHFuX
-	 9YlUxLVFFUBf8/H2m7bz1a/6SAnb6GzuU0bKx7tLTP1DddFYq7OYAhq0SpHxsnBDSu
-	 znOGrCkEc3WbQ==
+	b=BnILllBQIdVJPs+pHlhOz0rwl8Xn6XB159vj13IshiOAuM4IOVr/VFdt0sTRO024/
+	 wmIAvwAqznwFDFCzJOjFI2v3eWwY/BSwlpzOki1wGAezHUR9RrXj821lzRwYOe5oEY
+	 8EZBL6AOLkmxFh6fHZAER/5BUfiivMKX9zwrDJByjitdFKZ8FgTC24bW3vAHJH8+tO
+	 rqNf62JJGE5ruD4NivqwRnElKxeoifY8zDYfiC8z7+PNKkyGpguuhc8KzVKmG8ZlbE
+	 fWa5GundDI+0K4Jm+ysFl2QNvJUkia2LJFFyGc1wcLgNl2FScWNOHdpncT/6GFOt6t
+	 87kF40aA1F7Zg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 06/16] ALSA: asihpi: check pao in
- control_message()
-Date: Wed, 22 Mar 2023 16:01:10 -0400
-Message-Id: <20230322200121.1997157-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 07/16] ALSA: hda/ca0132: fixup buffer overrun at
+ tuning_ctl_set()
+Date: Wed, 22 Mar 2023 16:01:11 -0400
+Message-Id: <20230322200121.1997157-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230322200121.1997157-1-sashal@kernel.org>
 References: <20230322200121.1997157-1-sashal@kernel.org>
@@ -67,8 +68,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: CEVDMV7D2ZT7DTR22SNYZFFEFNS5MRUE
-X-Message-ID-Hash: CEVDMV7D2ZT7DTR22SNYZFFEFNS5MRUE
+Message-ID-Hash: MPCOAVOAAUM7H64S7UERV3P5YTC7BWQK
+X-Message-ID-Hash: MPCOAVOAAUM7H64S7UERV3P5YTC7BWQK
 X-MailFrom: sashal@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -78,13 +79,14 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  no-subject; digests; suspicious-header
 CC: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
  Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- tiwai@suse.com, dengshaomin@cdjrlc.com, alsa-devel@alsa-project.org
+ tiwai@suse.com, dev@xianwang.io, gremlin@altlinux.org,
+ ye.xingchen@zte.com.cn, alsa-devel@alsa-project.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CEVDMV7D2ZT7DTR22SNYZFFEFNS5MRUE/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MPCOAVOAAUM7H64S7UERV3P5YTC7BWQK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -95,68 +97,58 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-[ Upstream commit 9026c0bf233db53b86f74f4c620715e94eb32a09 ]
+[ Upstream commit 98e5eb110095ec77cb6d775051d181edbf9cd3cf ]
 
-control_message() might be called with pao = NULL.
-Here indicates control_message() as sample.
+tuning_ctl_set() might have buffer overrun at (X) if it didn't break
+from loop by matching (A).
 
-(B)	static void control_message(struct hpi_adapter_obj *pao, ...)
-	{                                                   ^^^
-		struct hpi_hw_obj *phw = pao->priv;
-		...                      ^^^
-	}
-
-(A)	void _HPI_6205(struct hpi_adapter_obj *pao, ...)
-	{                                      ^^^
-		...
-		case HPI_OBJ_CONTROL:
-(B)			control_message(pao, phm, phr);
-			break;          ^^^
-		...
-	}
-
-	void HPI_6205(...)
+	static int tuning_ctl_set(...)
 	{
-		...
-(A)		_HPI_6205(NULL, phm, phr);
-		...       ^^^^
+		for (i = 0; i < TUNING_CTLS_COUNT; i++)
+(A)			if (nid == ca0132_tuning_ctls[i].nid)
+				break;
+
+		snd_hda_power_up(...);
+(X)		dspio_set_param(..., ca0132_tuning_ctls[i].mid, ...);
+		snd_hda_power_down(...);                ^
+
+		return 1;
 	}
 
-Therefore, We will get too many warning via cppcheck, like below
+We will get below error by cppcheck
 
-	sound/pci/asihpi/hpi6205.c:238:27: warning: Possible null pointer dereference: pao [nullPointer]
-		 struct hpi_hw_obj *phw = pao->priv;
-		                          ^
-	sound/pci/asihpi/hpi6205.c:433:13: note: Calling function '_HPI_6205', 1st argument 'NULL' value is 0
-		  _HPI_6205(NULL, phm, phr);
-		            ^
-	sound/pci/asihpi/hpi6205.c:401:20: note: Calling function 'control_message', 1st argument 'pao' value is 0
-	   control_message(pao, phm, phr);
-	                   ^
-Set phr->error like many functions doing, and don't call _HPI_6205()
-with NULL.
+	sound/pci/hda/patch_ca0132.c:4229:2: note: After for loop, i has value 12
+	 for (i = 0; i < TUNING_CTLS_COUNT; i++)
+	 ^
+	sound/pci/hda/patch_ca0132.c:4234:43: note: Array index out of bounds
+	 dspio_set_param(codec, ca0132_tuning_ctls[i].mid, 0x20,
+	                                           ^
+This patch cares non match case.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/87ttypeaqz.wl-kuninori.morimoto.gx@renesas.com
+Link: https://lore.kernel.org/r/87sfe9eap7.wl-kuninori.morimoto.gx@renesas.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/asihpi/hpi6205.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_ca0132.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/asihpi/hpi6205.c b/sound/pci/asihpi/hpi6205.c
-index 3d6914c64c4a8..4cdaeefeb6885 100644
---- a/sound/pci/asihpi/hpi6205.c
-+++ b/sound/pci/asihpi/hpi6205.c
-@@ -430,7 +430,7 @@ void HPI_6205(struct hpi_message *phm, struct hpi_response *phr)
- 		pao = hpi_find_adapter(phm->adapter_index);
- 	} else {
- 		/* subsys messages don't address an adapter */
--		_HPI_6205(NULL, phm, phr);
-+		phr->error = HPI_ERROR_INVALID_OBJ_INDEX;
- 		return;
- 	}
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index c0cb6e49a9b65..2646663e03426 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -4231,8 +4231,10 @@ static int tuning_ctl_set(struct hda_codec *codec, hda_nid_t nid,
  
+ 	for (i = 0; i < TUNING_CTLS_COUNT; i++)
+ 		if (nid == ca0132_tuning_ctls[i].nid)
+-			break;
++			goto found;
+ 
++	return -EINVAL;
++found:
+ 	snd_hda_power_up(codec);
+ 	dspio_set_param(codec, ca0132_tuning_ctls[i].mid, 0x20,
+ 			ca0132_tuning_ctls[i].req,
 -- 
 2.39.2
 
