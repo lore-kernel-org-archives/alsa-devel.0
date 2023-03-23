@@ -4,94 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2151BC6FD1C
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 16:46:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02C42C6FD1C
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 17:09:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94548ED6;
-	Thu, 23 Mar 2023 17:46:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94548ED6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D71FECB;
+	Thu, 23 Mar 2023 18:08:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D71FECB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679590011;
-	bh=k/nBt9BcNetiA5WNTIRYwtPGuZUtxqlhDa1YecEFAeI=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	s=default; t=1679591358;
+	bh=Mnq81XCGcegs74LRsDuIx4dZTAsSFp8XLS29lvLFKOY=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=It3+k+iOZHpTnmMKyGpTFKLAegSKCeUyMBkLAHk1r3h18ZZLBqYGjScbhCoStVF6o
-	 ndWk0buoPKzxCoL5B5yd9xA7rGTvxbicJxVBR+lEs7gey8fR5ldTa5Mkzo6pCO7dQC
-	 0ekVzB3WaXGJOogFzAuj/cdgm5bEhEJotNuqOI04=
+	b=WSJEpmSRIyIIHVD6Jm6Q93pbq+th2TzlaHEqXX5TuUgdelTW7OL+YChhg5k3V7TpK
+	 Ln5ppvhyuvpDwQiArJnxuM+fQW7Nvn+pvrSrQ4oduzQc7AcPfmxtgk+5FMxtVBe04g
+	 roYVnKT9TMi67WYMuhhypzpINlrzuX7VdSlgrc+0=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A83BF80557;
-	Thu, 23 Mar 2023 17:44:36 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id A88ACF80093;
+	Thu, 23 Mar 2023 18:08:05 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id C5E1BF8051B; Thu, 23 Mar 2023 17:44:26 +0100 (CET)
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com
- [IPv6:2a00:1450:4864:20::52b])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 9EDE1F802E8; Thu, 23 Mar 2023 18:08:01 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 06780F80093
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 17:44:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06780F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 27EF5F800C9
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 18:07:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27EF5F800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=hsU07gcm
-Received: by mail-ed1-x52b.google.com with SMTP id cn12so43857188edb.4
-        for <alsa-devel@alsa-project.org>;
- Thu, 23 Mar 2023 09:44:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1679589855;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V9hR2ta52bACZknOtBgzAtIQixsM2cnIaeXyomXOX0M=;
-        b=hsU07gcm4byF9ZYlXK1WlYHz20he7E5os8F7BoiRYFqBoQ2LrF2tAJIR9eVB89B8Uy
-         HJA8JeTi7FwzRJ9QxYCsEuIBXYiMTMb1rDVSxF4Q/n0XMr/M4RFU6tkGTphQfVx4uG71
-         l5UlNqW7RwV16UokCSfFHyRmu8oAgTKWjS8tWQtIe5h/PGz52NnEbauFdC0hY47EMOgS
-         SOTX0YK+AtNfFB4fQyOEqxMCyZHkHGoA+mSLPFbuU4KUzJ7iT2zGM9o8cDWy0W066NRI
-         FquE+gLVNO9wbeZ7aJh0yrRbmLCExY1uQ7JeyDp7ZrXtcJ+GS4EGqeX6jb6AUxU2ZUqV
-         I1Jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679589855;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V9hR2ta52bACZknOtBgzAtIQixsM2cnIaeXyomXOX0M=;
-        b=h6U6WJx6+f9jNM2p+VaCwwI0h6VXg3wl0VDq9qzSH70rr2RnSRd8E4uDGa9aCdM6qE
-         0vNJAbWGo+0ipMnsIZqaUxhFi3j5kgeY6E3QKsG44TvhEwbyn6D4epvCTvbwde1CTh60
-         ycSdfCdySYTbW1HBmx/wlfC8kXFWeYPZbp6dMufIghJcM4LUEOXwdXoo2MWbSFeTnR3i
-         4Xtt61O87rU2dPTOY3jOycLoeqZh2Q0g3alewrmgzxWDmlZ5bxZ8vnn3xu82Ij0W47kM
-         AvpXR2Zls5VmNayh5iMkzcnlw+RWau2eHtCACzcNw/6Vdl4zGxX0ThjHWjRFn/v8UWue
-         MQiw==
-X-Gm-Message-State: AO0yUKXbpSFZC2AOLxvjHZfbiORwEsEoNmu6rSvFT/jcomyi4TpsHnox
-	b6NwgZMb9E6pW0GrHS5hwMu/nbtnIYLdl+wHkI0=
-X-Google-Smtp-Source: 
- AK7set9SrJMpkEy99egze/q3burIKmKgQxPwfncKKS5udbZI/dH1Vt0lijTuLG5/wJEWwSEzEDNPxw==
-X-Received: by 2002:a50:e619:0:b0:4fd:298a:62cb with SMTP id
- y25-20020a50e619000000b004fd298a62cbmr6183375edm.21.1679589854783;
-        Thu, 23 Mar 2023 09:44:14 -0700 (PDT)
-Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id
- m10-20020a50998a000000b004e48f8df7e2sm9542187edb.72.2023.03.23.09.44.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Mar 2023 09:44:13 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH 1/4] ASoC: qcom: q6apm-lpass-dai: close graphs before opening
- a new one
-Date: Thu, 23 Mar 2023 16:44:00 +0000
-Message-Id: <20230323164403.6654-2-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20230323164403.6654-1-srinivas.kandagatla@linaro.org>
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=pXc6esDa
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id CB26EB821E6;
+	Thu, 23 Mar 2023 17:07:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AD13C433EF;
+	Thu, 23 Mar 2023 17:07:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1679591275;
+	bh=Mnq81XCGcegs74LRsDuIx4dZTAsSFp8XLS29lvLFKOY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pXc6esDa/tcLM4IUZDV0IWI8IFMvBD6gdFyIaWPdrl31D1IRew8qbmnPs92hiJQTQ
+	 dDlfVZ+i5gYGDMxhnqVfwwhCosAKWAMHdYNctzKycS8XFMulVd9eTvGVW04NKNOJZ4
+	 JnERdDInNUWAewoGaSjTUONI3I4aTE8hYO93NDUVfh5W8BFRlqJX5PufKbdGrWSMEJ
+	 4OF3M7xaLI9/W9gWQFhmzfCdf2MMuDgrXb0OZE8lxbwjL1IrgbF7jBEo20xz0sz7aX
+	 lu/oEzThfjAwQcSHeu9ALK3LFnPm/3+di7KagLlVoJUUbeSAnEe8CDOEsgZFJ/vONA
+	 rwFv9nDcYc6OA==
+Date: Thu, 23 Mar 2023 17:07:49 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 3/4] ASoC: codecs: wsa883x: mute/unmute PA in correct
+ sequence
+Message-ID: <ff3eb88a-6941-4303-a4ba-17cad3842b88@sirena.org.uk>
 References: <20230323164403.6654-1-srinivas.kandagatla@linaro.org>
+ <20230323164403.6654-4-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 47VCBCU2OQIAA3NH6KXM6GGPLLVJCMA7
-X-Message-ID-Hash: 47VCBCU2OQIAA3NH6KXM6GGPLLVJCMA7
-X-MailFrom: srinivas.kandagatla@linaro.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="J/cCEY6usy6hBul2"
+Content-Disposition: inline
+In-Reply-To: <20230323164403.6654-4-srinivas.kandagatla@linaro.org>
+X-Cookie: A lie in time saves nine.
+Message-ID-Hash: 4CFSOQDXNTHN273FZ6S3DUMCAWGGRK2M
+X-Message-ID-Hash: 4CFSOQDXNTHN273FZ6S3DUMCAWGGRK2M
+X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -100,14 +78,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  no-subject; digests; suspicious-header
 CC: tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
  alsa-devel@alsa-project.org, johan+linaro@kernel.org, steev@kali.org,
- dmitry.baryshkov@linaro.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+ dmitry.baryshkov@linaro.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/47VCBCU2OQIAA3NH6KXM6GGPLLVJCMA7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/4CFSOQDXNTHN273FZ6S3DUMCAWGGRK2M/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -116,30 +93,63 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On multiple prepare calls, its possible that the playback graphs are
-not unloaded from the DSP, which can have some wierd side-effects,
-one of them is that the data not consumed without any errors.
 
-Fixes: c2ac3aec474d("ASoC: qcom: q6apm-lpass-dai: unprepare stream if its already prepared")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/qdsp6/q6apm-lpass-dais.c | 3 +++
- 1 file changed, 3 insertions(+)
+--J/cCEY6usy6hBul2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
-index 23d23bc6fbaa..420e8aa11f42 100644
---- a/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
-+++ b/sound/soc/qcom/qdsp6/q6apm-lpass-dais.c
-@@ -130,6 +130,9 @@ static int q6apm_lpass_dai_prepare(struct snd_pcm_substream *substream, struct s
- 	if (dai_data->is_port_started[dai->id]) {
- 		q6apm_graph_stop(dai_data->graph[dai->id]);
- 		dai_data->is_port_started[dai->id] = false;
-+
-+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			q6apm_graph_close(dai_data->graph[dai->id]);
- 	}
- 
- 	/**
--- 
-2.21.0
+On Thu, Mar 23, 2023 at 04:44:02PM +0000, Srinivas Kandagatla wrote:
+> In the current setup the PA is left unmuted even when the
+> Soundwire ports are not started streaming. This can lead to click
+> and pop sounds during start.
+> There is a same issue in the reverse order where in the PA is
+> left unmute even after the data stream is stopped, the time
+> between data stream stopping and port closing is long enough
+> to accumulate DC on the line resulting in Click/Pop noise
+> during end of stream.
 
+Wow, that hardware sounds *super* fragile.
+
+> Moving the mute/unmute to trigger stop/start respectively seems to
+> help a lot with this Click/Pop issues reported on this Codec.
+
+> +static int wsa883x_trigger(struct snd_pcm_substream *s, int cmd,
+> +			   struct snd_soc_dai *dai)
+> +{
+> +	switch (cmd) {
+> +	case SNDRV_PCM_TRIGGER_START:
+> +	case SNDRV_PCM_TRIGGER_RESUME:
+> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> +		wsa883x_digital_mute(dai, false, 0);
+> +		break;
+
+>  static const struct snd_soc_dai_ops wsa883x_dai_ops = {
+> +	.startup = wsa883x_startup,
+>  	.hw_params = wsa883x_hw_params,
+>  	.hw_free = wsa883x_hw_free,
+> -	.mute_stream = wsa883x_digital_mute,
+> +	.trigger = wsa883x_trigger,
+
+The trigger is run in atomic context, can you really write safely to a
+SoundWire device there?
+
+This feels like we should be doing it at the framework level, either
+tightening up where the mute happens in general or having some option
+that devices can select if they really need it.
+
+--J/cCEY6usy6hBul2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQch2QACgkQJNaLcl1U
+h9CdLAf/V22IjvGkc6ep2k+xNGFGZdI59ZoRgE4Sqa7d9kEiMBjiMx9SSCz/LJnI
+knGwmxnaSzXxhHXelAWPr9dis09vqeciiuxerX4dkPjOB5UF5TwFPTWOpDRICuKs
+XaETlp285PZ/v4ew94q8wAEGEafARsTo52P2qjzLDKvAZVW9uOfbxwL36vqa/ZZW
+WHrvSJItQdagVjYdHKVyrLqvU7PrHCkqg58OmQmv6JIpXRlSg2+yTHCGmZJRKKYE
+SNZOMPB0wZfJvcRrhEI5R4ia8X5SBjRg98IgYd/kG19bsSye13usKxZuIGgtZgXW
+2eDN0wDoFyF296QftPJpLxB1jFyLhw==
+=yGjx
+-----END PGP SIGNATURE-----
+
+--J/cCEY6usy6hBul2--
