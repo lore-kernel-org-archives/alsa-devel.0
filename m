@@ -4,76 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D352C6FD1D
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 05:31:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DBD6C6FD1C
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 05:34:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C938BEC8;
-	Thu, 23 Mar 2023 06:30:48 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C938BEC8
+	by alsa0.perex.cz (Postfix) with ESMTPS id E94C4EB9;
+	Thu, 23 Mar 2023 06:33:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E94C4EB9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679549498;
-	bh=9WAW0zepnYSbfRRjixmplrT7V+yloxeDYYdsHsolz/4=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=c76NdG3n9ooFeteVI/GorDpzVpMuHjs9X2DkrUyeeBGDV2gPSwjBsmnASAdxjwivD
-	 4Rv97mb3GM6/KIW0hRe5pezjjKnKhtjw9n246RWBsNERB2YWdL/byHfT9MKSLEgZdx
-	 ScG1HIO92O7tDrfJynbJONwUlSrMPmrDeLWeXzmA=
+	s=default; t=1679549639;
+	bh=yZvrzQd70YjHlJlmhsCqEtarCH/SM9v+ndjTDzenB98=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=K3HpzwEgCbtD1YAqCKjHS3xoZw/dd6dO4d8pKHOAhYOKuMvo6U7FLpzdP1flOD/VB
+	 MHFk7hSgvJWc92vnpdTWVyvWIdJuLQ9ZbEQV+X+KBH7L6D4mYgnX9m+H2/7YoWI1nH
+	 3arfD2SY+dlR1dPb1G0KB8guHidQnr3ckZorT8qM=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90E1BF8052D;
-	Thu, 23 Mar 2023 06:30:24 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 672C9F802E8;
+	Thu, 23 Mar 2023 06:32:46 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id EA202F80482; Thu, 23 Mar 2023 06:30:06 +0100 (CET)
+	id E91B5F8053D; Thu, 23 Mar 2023 06:30:25 +0100 (CET)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 207DFF80254
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 06:29:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 207DFF80254
+	by alsa1.perex.cz (Postfix) with ESMTPS id B4389F80254
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 06:30:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4389F80254
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=LlyMGkLZ
+ header.s=Intel header.b=g98uJldm
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679549396; x=1711085396;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=9WAW0zepnYSbfRRjixmplrT7V+yloxeDYYdsHsolz/4=;
-  b=LlyMGkLZruc9ECAeabrkE8dp57F39D8UlUZ8aZUiJT4FLnwRSHM93xoB
-   0yEEeUbiDSF3+l6zHwqPgV5kepVyLtnnPRP5IZOqP9TRuhysmG+7978il
-   xdYw6kUZD8Vwlbsz6F5qYXs4518gJDyy5AJylmvbkReNj2wDH18qklK/0
-   Ktg8Fny0vMefBnnWRFSXpz5YMaBFFS1bSbjX96HT8+JqA7yndS6HnNZta
-   8JbTQdjc9A6sUdDGsBVgA7eBNTifUTx8GTV55veIehxRfcike+K3Bw+rz
-   AZ+8r38/LSV5X4HEZB6VREze+clPBosc68ah7sVBzE3Pj/H8VptyGe7BI
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="327779267"
+  t=1679549418; x=1711085418;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=yZvrzQd70YjHlJlmhsCqEtarCH/SM9v+ndjTDzenB98=;
+  b=g98uJldmxFKa6ipHAayDfifYmkiK5xFPek1U8Ta4fsnBUz+5UI3yg0iv
+   MD3AbzbHqZL0k+9TX76+WxTnknQkLvOqPolFA7njIXje/usZGSHci06oG
+   dYW4FpuJ5palNN5Lk29FOT+00tVPSffF/9eMBWswR8jDEhTgPQobXeT/6
+   9f2yK4ck1jun5nuuXcQtHQH995/OEyfRVj2iF2eyx0dTpxJppQDPVRBno
+   HlSGJbJ+MG17O1PhI0Jrls9Q7bXH4zLMx3hBWFP1OVIXQExz4bx6JJ0nq
+   KlQxwNnmNXxqF6UEJlust5kuH/BBNkG2ih5r15xY/Sk8eaDf65BvgM8iR
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="327779289"
 X-IronPort-AV: E=Sophos;i="5.98,283,1673942400";
-   d="scan'208";a="327779267"
+   d="scan'208";a="327779289"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Mar 2023 22:29:50 -0700
+ 22 Mar 2023 22:29:55 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="675566983"
+X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="675566989"
 X-IronPort-AV: E=Sophos;i="5.98,283,1673942400";
-   d="scan'208";a="675566983"
+   d="scan'208";a="675566989"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
   by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Mar 2023 22:29:48 -0700
+ 22 Mar 2023 22:29:53 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org,
 	broonie@kernel.org
-Subject: [PATCH 00/20] ASoC/soundwire: add support for ACE2.x
-Date: Thu, 23 Mar 2023 13:44:32 +0800
-Message-Id: <20230323054452.1543233-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 02/20] soundwire: intel: add ACE2.x SHIM definitions
+Date: Thu, 23 Mar 2023 13:44:34 +0800
+Message-Id: <20230323054452.1543233-3-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230323054452.1543233-1-yung-chuan.liao@linux.intel.com>
+References: <20230323054452.1543233-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: UFAONDYB5MSLA26VUG2CEQ5MH2Z7NKPZ
-X-Message-ID-Hash: UFAONDYB5MSLA26VUG2CEQ5MH2Z7NKPZ
+Message-ID-Hash: Q5QZLQ5XUVE5LZLE57QE45WZ2ZKLF2G2
+X-Message-ID-Hash: Q5QZLQ5XUVE5LZLE57QE45WZ2ZKLF2G2
 X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -87,7 +90,8 @@ X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: <>
+Archived-At: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/Q5QZLQ5XUVE5LZLE57QE45WZ2ZKLF2G2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -96,58 +100,119 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-This series uses the abstraction added in past kernel cycles to provide
-support for the ACE2.x integration. The existing SHIM and Cadence
-registers are now split in 3 (SHIM, IP, SHIM vendor-specific), with some
-parts also moved to the HDaudio Extended Multi link structures. Nothing
-fundamentally different except for the register map.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-This series only provides the basic mechanisms to expose SoundWire-based
-DAIs. The PCI parts and DSP management will be contributed later, and the
-DAI ops are now empty as well.
+With the HDaudio extended link integration, the SHIM and IP registers
+are split in blocks
 
-The change is mainly on SoundWire. It would be better to go through
-SoundWire tree.
+a) SHIM generic registers
+b) IP registers (same offsets for Cadence IP as before)
+c) SHIM vendor-specific registers
 
-Pierre-Louis Bossart (20):
-  ASoC: SOF: Intel: shim: add enum for ACE 2.0 IP used in LunarLake
-  soundwire: intel: add ACE2.x SHIM definitions
-  soundwire: intel_ace2x: add empty new ops for LunarLake
-  soundwire/ASOC: Intel: update offsets for LunarLake
-  soundwire: intel/cadence: set ip_offset at run-time
-  ASoC/soundwire: intel: pass hdac_bus pointer for link management
-  soundwire: intel: add eml_lock in the interface for new platforms
-  ASoC: SOF: Intel: hda: retrieve SoundWire eml_lock and pass pointer
-  soundwire: intel_init: use eml_lock parameter
-  soundwire: intel_ace2x: add debugfs support
-  soundwire: intel_ace2x: add link power-up/down helpers
-  soundwire: intel_ace2x: set SYNCPRD before powering-up
-  soundwire: intel_ace2x: configure link PHY
-  soundwire: intel_ace2x: add DAI registration
-  soundwire: intel_ace2x: add sync_arm/sync_go helpers
-  soundwire: intel_ace2x: use common helpers for bus start/stop
-  soundwire: intel_ace2x: enable wake support
-  soundwire: intel_ace2x: add check_cmdsync_unlocked helper
-  soundwire: bus: add new manager callback to deal with peripheral
-    enumeration
-  soundwire: intel_ace2x: add new_peripheral_assigned callback
+Add offsets and definitions as defined in the hardware specifications.
 
- drivers/soundwire/Makefile              |   3 +-
- drivers/soundwire/bus.c                 |   3 +
- drivers/soundwire/cadence_master.h      |   2 +
- drivers/soundwire/intel.h               |  16 +
- drivers/soundwire/intel_ace2x.c         | 390 ++++++++++++++++++++++++
- drivers/soundwire/intel_ace2x_debugfs.c | 147 +++++++++
- drivers/soundwire/intel_auxdevice.c     |  17 ++
- drivers/soundwire/intel_init.c          |  21 +-
- include/linux/soundwire/sdw.h           |   3 +-
- include/linux/soundwire/sdw_intel.h     |  88 ++++++
- sound/soc/sof/intel/hda.c               |  31 +-
- sound/soc/sof/intel/shim.h              |   1 +
- 12 files changed, 711 insertions(+), 11 deletions(-)
- create mode 100644 drivers/soundwire/intel_ace2x.c
- create mode 100644 drivers/soundwire/intel_ace2x_debugfs.c
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ include/linux/soundwire/sdw_intel.h | 75 +++++++++++++++++++++++++++++
+ 1 file changed, 75 insertions(+)
 
+diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+index 207701aeeb47..8e6183e029fa 100644
+--- a/include/linux/soundwire/sdw_intel.h
++++ b/include/linux/soundwire/sdw_intel.h
+@@ -7,6 +7,10 @@
+ #include <linux/irqreturn.h>
+ #include <linux/soundwire/sdw.h>
+ 
++/*********************************************************************
++ * cAVS and ACE1.x definitions
++ *********************************************************************/
++
+ #define SDW_SHIM_BASE			0x2C000
+ #define SDW_ALH_BASE			0x2C800
+ #define SDW_SHIM_BASE_ACE		0x38000
+@@ -101,6 +105,77 @@
+ #define SDW_ALH_STRMZCFG_DMAT		GENMASK(7, 0)
+ #define SDW_ALH_STRMZCFG_CHN		GENMASK(19, 16)
+ 
++/*********************************************************************
++ * ACE2.x definitions for SHIM registers - only accessible when the
++ * HDAudio extended link LCTL.SPA/CPA = 1.
++ *********************************************************************/
++/* x variable is link index */
++#define SDW_SHIM2_GENERIC_BASE(x)	(0x00030000 + 0x8000 * (x))
++#define SDW_IP_BASE(x)			(0x00030100 + 0x8000 * (x))
++#define SDW_SHIM2_VS_BASE(x)		(0x00036000 + 0x8000 * (x))
++
++/* SHIM2 Generic Registers */
++/* Read-only capabilities */
++#define SDW_SHIM2_LECAP			0x00
++#define SDW_SHIM2_LECAP_HDS		BIT(0)		/* unset -> Host mode */
++#define SDW_SHIM2_LECAP_MLC		GENMASK(3, 1)	/* Number of Lanes */
++
++/* PCM Stream capabilities */
++#define SDW_SHIM2_PCMSCAP		0x10
++#define SDW_SHIM2_PCMSCAP_ISS		GENMASK(3, 0)	/* Input-only streams */
++#define SDW_SHIM2_PCMSCAP_OSS		GENMASK(7, 4)	/* Output-only streams */
++#define SDW_SHIM2_PCMSCAP_BSS		GENMASK(12, 8)	/* Bidirectional streams */
++
++/* Read-only PCM Stream Channel Count, y variable is stream */
++#define SDW_SHIM2_PCMSYCHC(y)		(0x14 + (0x4 * (y)))
++#define SDW_SHIM2_PCMSYCHC_CS		GENMASK(3, 0)	/* Channels Supported */
++
++/* PCM Stream Channel Map */
++#define SDW_SHIM2_PCMSYCHM(y)		(0x16 + (0x4 * (y)))
++#define SDW_SHIM2_PCMSYCHM_LCHAN	GENMASK(3, 0)	/* Lowest channel used by the FIFO port */
++#define SDW_SHIM2_PCMSYCHM_HCHAN	GENMASK(7, 4)	/* Lowest channel used by the FIFO port */
++#define SDW_SHIM2_PCMSYCHM_STRM		GENMASK(13, 8)	/* HDaudio stream tag */
++#define SDW_SHIM2_PCMSYCHM_DIR		BIT(15)		/* HDaudio stream direction */
++
++/* SHIM2 vendor-specific registers */
++#define SDW_SHIM2_INTEL_VS_LVSCTL	0x04
++#define SDW_SHIM2_INTEL_VS_LVSCTL_FCG	BIT(26)
++#define SDW_SHIM2_INTEL_VS_LVSCTL_MLCS	GENMASK(29, 27)
++#define SDW_SHIM2_INTEL_VS_LVSCTL_DCGD	BIT(30)
++#define SDW_SHIM2_INTEL_VS_LVSCTL_ICGD	BIT(31)
++
++#define SDW_SHIM2_MLCS_XTAL_CLK		0x0
++#define SDW_SHIM2_MLCS_CARDINAL_CLK	0x1
++#define SDW_SHIM2_MLCS_AUDIO_PLL_CLK	0x2
++#define SDW_SHIM2_MLCS_MCLK_INPUT_CLK	0x3
++#define SDW_SHIM2_MLCS_WOV_RING_OSC_CLK 0x4
++
++#define SDW_SHIM2_INTEL_VS_WAKEEN	0x08
++#define SDW_SHIM2_INTEL_VS_WAKEEN_PWE	BIT(0)
++
++#define SDW_SHIM2_INTEL_VS_WAKESTS	0x0A
++#define SDW_SHIM2_INTEL_VS_WAKEEN_PWS	BIT(0)
++
++#define SDW_SHIM2_INTEL_VS_IOCTL	0x0C
++#define SDW_SHIM2_INTEL_VS_IOCTL_MIF	BIT(0)
++#define SDW_SHIM2_INTEL_VS_IOCTL_CO	BIT(1)
++#define SDW_SHIM2_INTEL_VS_IOCTL_COE	BIT(2)
++#define SDW_SHIM2_INTEL_VS_IOCTL_DO	BIT(3)
++#define SDW_SHIM2_INTEL_VS_IOCTL_DOE	BIT(4)
++#define SDW_SHIM2_INTEL_VS_IOCTL_BKE	BIT(5)
++#define SDW_SHIM2_INTEL_VS_IOCTL_WPDD	BIT(6)
++#define SDW_SHIM2_INTEL_VS_IOCTL_ODC	BIT(7)
++#define SDW_SHIM2_INTEL_VS_IOCTL_CIBD	BIT(8)
++#define SDW_SHIM2_INTEL_VS_IOCTL_DIBD	BIT(9)
++#define SDW_SHIM2_INTEL_VS_IOCTL_HAMIFD	BIT(10)
++
++#define SDW_SHIM2_INTEL_VS_ACTMCTL	0x0E
++#define SDW_SHIM2_INTEL_VS_ACTMCTL_DACTQE	BIT(0)
++#define SDW_SHIM2_INTEL_VS_ACTMCTL_DODS		BIT(1)
++#define SDW_SHIM2_INTEL_VS_ACTMCTL_DODSE	BIT(2)
++#define SDW_SHIM2_INTEL_VS_ACTMCTL_DOAIS	GENMASK(4, 3)
++#define SDW_SHIM2_INTEL_VS_ACTMCTL_DOAISE	BIT(5)
++
+ /**
+  * struct sdw_intel_stream_params_data: configuration passed during
+  * the @params_stream callback, e.g. for interaction with DSP
 -- 
 2.25.1
 
