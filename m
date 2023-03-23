@@ -4,156 +4,142 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1022CC6FD18
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Mar 2023 15:39:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25526C74A5B
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Mar 2023 16:06:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD1811F0;
-	Wed, 29 Mar 2023 17:38:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD1811F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id DEF5D1F9;
+	Wed, 29 Mar 2023 18:05:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DEF5D1F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680104373;
-	bh=ae3Gsf8ZZgEJQYRKRJ1T9OYlHkM7FTSpggnjr0/tnrw=;
-	h=Date:Subject:To:References:In-Reply-To:List-Id:List-Archive:
-	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
-	 From:Reply-To:Cc:From;
-	b=XkrU7OExq+8KVynj8O3dNdqXy2IudRFRJkGYRD0Ywj2W39ur5tJFZkIB4gK6NWZ9m
-	 TFKzaXi9xQsximtaErn3XvXa9n+wTWvTKTl3qFdRukX2huRqOGPpidNesaB49/aRqs
-	 ZqpiD+Zxbji+UdaLX1H5G2MNNQ6mT6t0MhY1SXXY=
+	s=default; t=1680105974;
+	bh=LVdvufZV56apmT3wmD9ncMcsijkg1/WCzRLjEqhYbYk=;
+	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=a+w4zlgZnPOqnudKLgbv9WXE92WHJTMHyvDUAdHh09wK04UloWrOJsAcgWgQzCWXA
+	 PbOe9kP+IE8xOH8DckyE1mqgW6VeTvcs9cPyU8WhFY57jxjIJU/ui5eW7t58ppyHTe
+	 YJnup0pY0e1JmdCZ5dzQjoK7wmfLGQ6L9Irg73EQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A4B9F80272;
-	Wed, 29 Mar 2023 17:38:19 +0200 (CEST)
-Date: Wed, 29 Mar 2023 16:38:07 +0100
-Subject: Re: [PATCH] Asoc: wm_adsp: Add support for loading firmware with
- prefix name
-To: Jianhua Lu <lujianhua000@gmail.com>,
-        Charles Keepax
-	<ckeepax@opensource.cirrus.com>
-References: <20230329130525.15830-1-lujianhua000@gmail.com>
- <20230329140524.GU68926@ediswmail.ad.cirrus.com> <ZCRNRhI3+6jUbqvy@Gentoo>
-In-Reply-To: <ZCRNRhI3+6jUbqvy@Gentoo>
-X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
- loop; banned-address; member-moderation;
- header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-X-Mailman-Version: 3.3.8
-Precedence: list
-List-Id: "Alsa-devel mailing list for ALSA developers -
- http://www.alsa-project.org" <alsa-devel.alsa-project.org>
-Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WSS2VPV4NUML36P4B2O6DWMFK67PZJ35/>
-List-Archive: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
-List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
-MIME-Version: 1.0
-Message-ID: 
- <168010429890.26.8313999940354105292@mailman-core.alsa-project.org>
-From: Richard Fitzgerald via Alsa-devel <alsa-devel@alsa-project.org>
-Reply-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Simon Trimmer <simont@opensource.cirrus.com>,
- Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
- patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
- phone-devel@vger.kernel.org
-Content-Type: message/rfc822
-Content-Disposition: inline
-
+	by alsa1.perex.cz (Postfix) with ESMTP id 96310F8032D;
+	Wed, 29 Mar 2023 18:05:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 42267F80272; Wed, 29 Mar 2023 17:38:16 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on alsa1.perex.cz
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=5.0 tests=DKIM_SIGNED,DKIM_VALID,
-	DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED shortcircuit=no autolearn=ham autolearn_force=no
-	version=3.4.6
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id A770FF802E8; Thu, 23 Mar 2023 09:40:19 +0100 (CET)
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com
+ [IPv6:2607:f8b0:4864:20::b2f])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 39DA6F80249
-	for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2023 17:38:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39DA6F80249
+	by alsa1.perex.cz (Postfix) with ESMTPS id 6B567F80254
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 09:40:10 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B567F80254
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=cirrus.com header.i=@cirrus.com header.a=rsa-sha256
- header.s=PODMain02222019 header.b=ptz/49+K
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-	by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 32T9DfOv021397;
-	Wed, 29 Mar 2023 10:38:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=gquVTUvHedpHcdq5AeqiVp3y34dsTEeVrnOo0Yqlu7c=;
- b=ptz/49+KmM8VdXSGhmnQfUcyrszhHBjZslOfE4fVZyaBu0oGQk7/e/WBjbNX9r/eo9UN
- swETDuMBeM+2a5yU0vA3NdkDLbYBXyp2M12HNs9w6ISua/AOUzX1MuVEpe3hsxfGgoFH
- 3FwZekUJc9bVBbeVpZZlfw+6rsh28HJVW9iKvZ9rQAhpJmv/kEVYigcDEkd3mnx7S6eV
- 2LAbX1Hdf6RC6PpQzeDb4vrdXuJE5uq/X0gRA6VQ0Vee/Q75qieWX2IiHQUJGqKGs/NS
- mAwNv30FX0TtjLw1X/kRM/UEaIuesEUgndwnuWonp3/fBo4kAcRv7XCF9pKX/MGvy7cD iA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3pmjghgk5u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 29 Mar 2023 10:38:09 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.25; Wed, 29 Mar
- 2023 10:38:08 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.25 via Frontend Transport; Wed, 29 Mar 2023 10:38:08 -0500
-Received: from [198.61.65.23] (EDIN4L06LR3.ad.cirrus.com [198.61.65.23])
-	by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 07FE5B38;
-	Wed, 29 Mar 2023 15:38:06 +0000 (UTC)
-Message-ID: <51cdc8df-9472-a604-3cca-ebaa7ae5d899@opensource.cirrus.com>
-Date: Wed, 29 Mar 2023 16:38:07 +0100
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=jt0T1kyT
+Received: by mail-yb1-xb2f.google.com with SMTP id p204so12781332ybc.12
+        for <alsa-devel@alsa-project.org>;
+ Thu, 23 Mar 2023 01:40:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1679560808;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LVdvufZV56apmT3wmD9ncMcsijkg1/WCzRLjEqhYbYk=;
+        b=jt0T1kyTzkSVHHCl6C3RepTUHJHJMJwp3E7PBrhT2/xYa5EtksiTTG/c8wwIzIU4Z/
+         SP6qSrUD+NxMXZX1bTG8PCQpgfuHP59u0Np8wiu0KUJPXSqAJzXQDAgAhdBdm4ERqTZu
+         W1iU/UXMn4o+x12ZfA1TbzzlGle1mhqc6+pCFoTYeSycXLH0chaeh9w1eBTkD2vOP8sA
+         vAdlNnAtJbu1a1BYoccU9GKqHc2Cvh+aARoS6g2QyjguTZ3KI+BylBNheh9Xg9t4NtTd
+         2k3OHgvwLC4ljAJqFRZ+gv0eOvpjcGObjDM/uBGal3iyuErBjVTwBqdgO9KbDxL+mVt4
+         VMjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679560808;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LVdvufZV56apmT3wmD9ncMcsijkg1/WCzRLjEqhYbYk=;
+        b=sKLD/WpmFmwdUACtK8HXQORqUC8canpOcVz6fwzLLbqfJmtr/lMOxc+giLH/dO+Sji
+         FM4GQG1RK0WW/7lkZqCcMCGBjg2q0mBFmGEqS3TUIDSKlJoxMX3YwuD+VRzt26SboAHh
+         Rx9YqOcnllw/tray2ZyjjcfEsZmW+UXlli0Bx13IHikj5quOmTvcJUMZxLkCIa9gKlay
+         /kLstgS/1neknNy7Kse7/FHutpF4204MobxyW6cz58XavPywhUolPhOri9t2HRup9Q9T
+         SRbaYkjGEUHSW9BqMAy2xNEe5OHbNRq2qlCSPlZzxXOcyTfTNJnpcOm58/aknttq+XVU
+         ZJ7g==
+X-Gm-Message-State: AAQBX9czCt/Wp0waELV0dpCzfXZNDz9ncFkiXWBqrycaCARbtBfTcCxh
+	6GHKGRE/f6ai9s/NFkXdo+xRyUtNcgTJuy6H9TDTPA==
+X-Google-Smtp-Source: 
+ AKy350aSyoiWihVzfFCCUghPO+0y8OTXazqo59ZooJtguYITdbyYyykALVgXcFtgTaOhhPAE83rDbJuRGMjWP7pJT3I=
+X-Received: by 2002:a25:8712:0:b0:b26:47f3:6cb with SMTP id
+ a18-20020a258712000000b00b2647f306cbmr1346675ybl.4.1679560808264; Thu, 23 Mar
+ 2023 01:40:08 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH] Asoc: wm_adsp: Add support for loading firmware with
- prefix name
-Content-Language: en-US
-To: Jianhua Lu <lujianhua000@gmail.com>,
-        Charles Keepax
-	<ckeepax@opensource.cirrus.com>
-References: <20230329130525.15830-1-lujianhua000@gmail.com>
- <20230329140524.GU68926@ediswmail.ad.cirrus.com> <ZCRNRhI3+6jUbqvy@Gentoo>
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <ZCRNRhI3+6jUbqvy@Gentoo>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: oqzieBcBoMJu0JrbVmSUGjtJEtY2GhHN
-X-Proofpoint-ORIG-GUID: oqzieBcBoMJu0JrbVmSUGjtJEtY2GhHN
-X-Proofpoint-Spam-Reason: safe
-Message-ID-Hash: WSS2VPV4NUML36P4B2O6DWMFK67PZJ35
-X-Message-ID-Hash: WSS2VPV4NUML36P4B2O6DWMFK67PZJ35
-X-MailFrom: prvs=9452efeff7=rf@opensource.cirrus.com
+References: <20230317233623.3968172-1-robh@kernel.org>
+In-Reply-To: <20230317233623.3968172-1-robh@kernel.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 23 Mar 2023 09:39:57 +0100
+Message-ID: 
+ <CACRpkdYq4jE7Qn1w8iPeGz7vxj_CeZ+H48B0TVYmeF4Tt=kHgA@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: pinctrl: Drop unneeded quotes
+To: Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-MailFrom: linus.walleij@linaro.org
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
- administrivia; implicit-dest; max-recipients; max-size; news-moderation;
- no-subject; digests; suspicious-header
-CC: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Simon Trimmer <simont@opensource.cirrus.com>,
- Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
- patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
- phone-devel@vger.kernel.org
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: VOQRQGIT75WNQQPR6TVWW5QHSNBY5DOR
+X-Message-ID-Hash: VOQRQGIT75WNQQPR6TVWW5QHSNBY5DOR
+X-Mailman-Approved-At: Wed, 29 Mar 2023 16:05:20 +0000
+CC: =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+ Manivannan Sadhasivam <mani@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>, Hector Martin <marcan@marcan.st>,
+ Sven Peter <sven@svenpeter.dev>, Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+ Andrew Jeffery <andrew@aj.id.au>, Joel Stanley <joel@jms.id.au>,
+ Damien Le Moal <damien.lemoal@wdc.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Dong Aisheng <aisheng.dong@nxp.com>, Fabio Estevam <festevam@gmail.com>,
+ Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Sascha Hauer <s.hauer@pengutronix.de>, NXP Linux Team <linux-imx@nxp.com>,
+ Sean Wang <sean.wang@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Heiko Stuebner <heiko@sntech.de>, Tomasz Figa <tomasz.figa@gmail.com>,
+ Alim Akhtar <alim.akhtar@samsung.com>,
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Emil Renner Berthing <kernel@esmil.dk>,
+ Jianlong Huang <jianlong.huang@starfivetech.com>,
+ Dvorkin Dmitry <dvorkin@tibbo.com>, Wells Lu <wellslutw@gmail.com>,
+ Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+ Michal Simek <michal.simek@xilinx.com>, linux-arm-kernel@lists.infradead.org,
+ linux-actions@lists.infradead.org, linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-sunxi@lists.linux.dev, asahi@lists.linux.dev,
+ linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, patches@opensource.cirrus.com,
+ alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/WSS2VPV4NUML36P4B2O6DWMFK67PZJ35/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VOQRQGIT75WNQQPR6TVWW5QHSNBY5DOR/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -162,31 +148,16 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On 29/3/23 15:37, Jianhua Lu wrote:
-> On Wed, Mar 29, 2023 at 02:05:24PM +0000, Charles Keepax wrote:
->>
->> This direction seems slightly problematic, especially in the
->> context of amps (which I presume this relates to, please let know
->> if that is wrong). It would probably be better to be fixing
->> things up such that the amp in question sets system_name when
->> registered through DT. Generally speaking the idea is the amp
-> I also consider setting system_name when registered by DT, but I don't
-> known setting what name to it. Card name or something else?
+On Sat, Mar 18, 2023 at 12:36=E2=80=AFAM Rob Herring <robh@kernel.org> wrot=
+e:
 
-It just has to be a unique string.
-The normal process is that Cirrus would release the firmware with the
-correct name for the platform, so the system-name matches the string in
-those release firmware files.
+> Cleanup bindings dropping unneeded quotes. Once all these are fixed,
+> checking for this can be enabled in yamllint.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Do you have an official firmware for your platform?
+Should I queue this patch by the way, or do you need it to go into some
+DT-related tree?
 
->> tuning is going to be specific to the enclosure/speaker involved,
->> so a generic tuning for say left amps doesn't really make a lot
->> of sense.
-> I don't known about amp tuning much, my need just is loading firmware for
-> more than 1 speaker amp at the platform using fdt.
-> 
-> One of the both way is good to me.
->>
->> Thanks,
->> Charles
+Yours,
+Linus Walleij
