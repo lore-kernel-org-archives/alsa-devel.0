@@ -4,93 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88D31C6FD1D
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 06:54:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DDC1C6FD1C
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 06:54:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4CAB7ED5;
-	Thu, 23 Mar 2023 07:53:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CAB7ED5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 149BAEDA;
+	Thu, 23 Mar 2023 07:54:04 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 149BAEDA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679554477;
-	bh=GhNqXSwzW3W51qSV0YrGDGApLsXAA1qmwF0CHISP3QQ=;
+	s=default; t=1679554494;
+	bh=xUMXMcJ0y6HcNVGe6ccqmKmvRprZG3PMML60AvdQP0s=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=tVCLq2SuLKhA2bRuOhXQmmenKg1biu99Q3EQXxzWU2tIkQi5rTb7MHS0R1Q0C3DvN
-	 kltxgI1oF7znu1byDXrpJjAP7jAfUvc1zQlfhvMDYAdAvOQiDB4HTwp3QNYSnTVIAX
-	 kksVhX4Cgfq5MSKxeoFBvkk1b8gnoY7Ar/QVtVZQ=
+	b=QFRzDl1k+KRFAQbtL+hLSDyrscQcFCvZecnNaVVW0TrrD7C0QovcKEl0olQgHtTe2
+	 AfkiHUFaH87/X9Ol+ZLMmLqS4UKyi6j0ay6Ear5H9QPpGfkx5GqopAbcBVxC2FI6xB
+	 XNy1jaILBQY1Xpp3++FOp2vVt8Ypi4eDcuXJf0Fk=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 595DDF80533;
-	Thu, 23 Mar 2023 07:52:52 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B2479F8053B;
+	Thu, 23 Mar 2023 07:52:55 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1E9E7F802E8; Thu, 23 Mar 2023 07:52:48 +0100 (CET)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de
- [IPv6:2001:67c:2178:6::1d])
+	id 53EDBF804B1; Thu, 23 Mar 2023 07:52:52 +0100 (CET)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de
+ [IPv6:2001:67c:2178:6::1c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 969DCF80254
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 07:52:41 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 969DCF80254
+	by alsa1.perex.cz (Postfix) with ESMTPS id 3BAE6F804B1
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 07:52:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BAE6F804B1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=xzsFkUDG;
+ header.s=susede2_rsa header.b=xqk5w9e7;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=xO71Gb9Z
+ header.s=susede2_ed25519 header.b=s+szM6H0
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E6FF55C441;
-	Thu, 23 Mar 2023 06:52:40 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 68699343D6;
+	Thu, 23 Mar 2023 06:52:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1679554360; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1679554363; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=w7DgMhstBA1sVwZ4ao6LCJN/mChAq5Mir/EE5WLuT2k=;
-	b=xzsFkUDGRUDNyyyGxFe1KtbjKuc3Pi5t2b14Zc1UA92HryG7xPjQL0rUs7EGMmp0Cu8C0O
-	y3wx8GL+iMgm3nmQ+u70hGiKe+oxXPFeq7SL+jFofWu0k0l7jJJJ7Wn221pozkXFoOhNUY
-	pYjGbmhcLaUrAlPRlkvm3/OHvziole8=
+	bh=la69nbGyKIu8Re0yRxWaK1dihnrS3qIKPsKGsLWm2h4=;
+	b=xqk5w9e7bCQnaBENC21fc3dD4FwAFFKm6I8N4AaH1f4oJmtHXyI1HDpRBrtzGwEwSq5k95
+	/Aw8XNjOvr7xWFprcZbDiC77/AylR0LvSJsPdfLhsCArnNN4I+FBd2BgLtON7JsyX05xy9
+	vmXBQcNape2RZqt4fDW2r7B2OUEuR8g=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1679554360;
+	s=susede2_ed25519; t=1679554363;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=w7DgMhstBA1sVwZ4ao6LCJN/mChAq5Mir/EE5WLuT2k=;
-	b=xO71Gb9ZQVZCN8QrV7EPOhICvQk1b2AIl+ezIW7spitE+fKvbpXzP/Vow3OOPV/KsBvlYN
-	nRaEnr//gSleaPBg==
+	bh=la69nbGyKIu8Re0yRxWaK1dihnrS3qIKPsKGsLWm2h4=;
+	b=s+szM6H01vrmKf6yq9P/dA8ZB4Btoap2ayryxdtMiV8DkkaE6K/sYG5fNSloZHrTfKRdfc
+	e29TLylQ6qu2GpDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D051E13596;
-	Thu, 23 Mar 2023 06:52:40 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 41DBB13596;
+	Thu, 23 Mar 2023 06:52:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id qKoqMjj3G2QJcQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Thu, 23 Mar 2023 06:52:40 +0000
+	id qCNXDzv3G2QJcQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 23 Mar 2023 06:52:43 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/3] ALSA: pcm: Improved XRUN handling for indirect PCM
- helpers
-Date: Thu, 23 Mar 2023 07:52:35 +0100
-Message-Id: <20230323065237.5062-2-tiwai@suse.de>
+Subject: [PATCH 3/3] ALSA: docs: A few more words for PCM XRUN handling and
+ stream locks
+Date: Thu, 23 Mar 2023 07:52:37 +0100
+Message-Id: <20230323065237.5062-4-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230323065237.5062-1-tiwai@suse.de>
 References: <20230323065237.5062-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: JBUD7OJXBIPH2XQJJEA2NYBRSCQHLHZR
-X-Message-ID-Hash: JBUD7OJXBIPH2XQJJEA2NYBRSCQHLHZR
+Message-ID-Hash: XFZM74HJUMM24VKJEAS743HZ7QSMG7RY
+X-Message-ID-Hash: XFZM74HJUMM24VKJEAS743HZ7QSMG7RY
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -103,7 +103,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JBUD7OJXBIPH2XQJJEA2NYBRSCQHLHZR/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/XFZM74HJUMM24VKJEAS743HZ7QSMG7RY/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -112,86 +112,57 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-As PCM ack callback may handle the XRUN situation gracefully now,
-change the indirect PCM helpers to give a proper error (-EPIPE).
-Also, change the pointer callback helpers to deal with the XRUN error
-properly, too.
-
-This requires the PCM core change by the commit 8c721c53dda5
-("ALSA: usb-audio: Fix recursive locking at XRUN during syncing").
+Enhance the documents about the PCM, missing descriptions for a couple
+of helpers like snd_pcm_period_elapsed_under_stream_lock() and
+snd_pcm_stop_xrun().
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/pcm-indirect.h | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+ .../kernel-api/writing-an-alsa-driver.rst      | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/pcm-indirect.h b/include/sound/pcm-indirect.h
-index 04127686e8d0..98e06ea73b2b 100644
---- a/include/sound/pcm-indirect.h
-+++ b/include/sound/pcm-indirect.h
-@@ -44,7 +44,7 @@ snd_pcm_indirect_playback_transfer(struct snd_pcm_substream *substream,
- 		if (diff < -(snd_pcm_sframes_t) (runtime->boundary / 2))
- 			diff += runtime->boundary;
- 		if (diff < 0)
--			return -EINVAL;
-+			return -EPIPE;
- 		rec->sw_ready += (int)frames_to_bytes(runtime, diff);
- 		rec->appl_ptr = appl_ptr;
- 	}
-@@ -83,6 +83,8 @@ snd_pcm_indirect_playback_pointer(struct snd_pcm_substream *substream,
- 				  struct snd_pcm_indirect *rec, unsigned int ptr)
- {
- 	int bytes = ptr - rec->hw_io;
-+	int err;
-+
- 	if (bytes < 0)
- 		bytes += rec->hw_buffer_size;
- 	rec->hw_io = ptr;
-@@ -90,8 +92,11 @@ snd_pcm_indirect_playback_pointer(struct snd_pcm_substream *substream,
- 	rec->sw_io += bytes;
- 	if (rec->sw_io >= rec->sw_buffer_size)
- 		rec->sw_io -= rec->sw_buffer_size;
--	if (substream->ops->ack)
--		substream->ops->ack(substream);
-+	if (substream->ops->ack) {
-+		err = substream->ops->ack(substream);
-+		if (err == -EPIPE)
-+			return SNDRV_PCM_POS_XRUN;
-+	}
- 	return bytes_to_frames(substream->runtime, rec->sw_io);
- }
+diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+index 6b8f3495407f..a368529e8ed3 100644
+--- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
++++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+@@ -2215,6 +2215,12 @@ Typical code would be like:
+               return IRQ_HANDLED;
+       }
  
-@@ -112,7 +117,7 @@ snd_pcm_indirect_capture_transfer(struct snd_pcm_substream *substream,
- 		if (diff < -(snd_pcm_sframes_t) (runtime->boundary / 2))
- 			diff += runtime->boundary;
- 		if (diff < 0)
--			return -EINVAL;
-+			return -EPIPE;
- 		rec->sw_ready -= frames_to_bytes(runtime, diff);
- 		rec->appl_ptr = appl_ptr;
- 	}
-@@ -152,6 +157,8 @@ snd_pcm_indirect_capture_pointer(struct snd_pcm_substream *substream,
- {
- 	int qsize;
- 	int bytes = ptr - rec->hw_io;
-+	int err;
++Also, when the device can detect a buffer underrun/overrun, the driver
++can notify the XRUN status to the PCM core by calling
++:c:func:`snd_pcm_stop_xrun()`. This function stops the stream and sets
++the PCM state to ``SNDRV_PCM_STATE_XRUN``. Note that it must be called
++outside the PCM stream lock, hence it can't be called from the atomic
++callback.
+ 
+ 
+ High frequency timer interrupts
+@@ -2294,8 +2300,9 @@ mutexes or semaphores instead.
+ As already seen, some pcm callbacks are atomic and some are not. For
+ example, the ``hw_params`` callback is non-atomic, while ``trigger``
+ callback is atomic. This means, the latter is called already in a
+-spinlock held by the PCM middle layer. Please take this atomicity into
+-account when you choose a locking scheme in the callbacks.
++spinlock held by the PCM middle layer, the PCM stream lock. Please
++take this atomicity into account when you choose a locking scheme in
++the callbacks.
+ 
+ In the atomic callbacks, you cannot use functions which may call
+ :c:func:`schedule()` or go to :c:func:`sleep()`. Semaphores and
+@@ -2318,6 +2325,13 @@ in the PCM core instead of spin and rwlocks, so that you can call all PCM
+ functions safely in a non-atomic
+ context.
+ 
++Also, in some cases, you might need to call
++:c:func:`snd_pcm_period_elapsed()` in the atomic context (e.g. the
++period gets elapsed during ``ack`` or other callback). There is a
++variant that can be called inside the PCM stream lock
++:c:func:`snd_pcm_period_elapsed_under_stream_lock()` for that purpose,
++too.
 +
- 	if (bytes < 0)
- 		bytes += rec->hw_buffer_size;
- 	rec->hw_io = ptr;
-@@ -162,8 +169,11 @@ snd_pcm_indirect_capture_pointer(struct snd_pcm_substream *substream,
- 	rec->sw_io += bytes;
- 	if (rec->sw_io >= rec->sw_buffer_size)
- 		rec->sw_io -= rec->sw_buffer_size;
--	if (substream->ops->ack)
--		substream->ops->ack(substream);
-+	if (substream->ops->ack) {
-+		err = substream->ops->ack(substream);
-+		if (err == -EPIPE)
-+			return SNDRV_PCM_POS_XRUN;
-+	}
- 	return bytes_to_frames(substream->runtime, rec->sw_io);
- }
+ Constraints
+ -----------
  
 -- 
 2.35.3
