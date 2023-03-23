@@ -4,95 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E84B3C6FD1C
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 05:39:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A772CC6FD1C
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 06:21:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C796CEC5;
-	Thu, 23 Mar 2023 06:38:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C796CEC5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 75982EC1;
+	Thu, 23 Mar 2023 07:20:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75982EC1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679549939;
-	bh=xKsOmGgpfRTaoYi/C0Rex9lD4JYFMvLzVqkjtEvqo9k=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	s=default; t=1679552475;
+	bh=v5/X3NetNicrtZVtfhXCKnWJmMxgErbklbiCtQx1sZE=;
+	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=VdMBN92QZ58/F2LNWuYLN9lhuh5aXp7cUeiUfhiATxZcDKwH841641B1sMtCKjRZs
-	 E/J+pI6qbHn99bIOjfISevfKTH0/jT/GFTmoXQHkJS6FYPXKD+fXZICgyaA9CmdkXU
-	 S1DVNv2w3tHEchi1ms2COEbGrY7Y5esDfAsy1tMg=
+	b=QandKwa6/z9lEgYQhJ4AO98YESn/2OHpAxw3GZRHbwFN+Pn16E4Eky/b8fcuh8ypL
+	 /IN3m4zGUmChfDsgZ6l3Gf05QZU50eA6mfmXjiomxzeAe6x4LuK0YpOSlaGPh55uJ7
+	 wXW643h49I0VqWgLal9wdF08/nAwycYwG/FYaWUs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B991BF805C3;
-	Thu, 23 Mar 2023 06:33:50 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B551EF8027B;
+	Thu, 23 Mar 2023 07:20:02 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3ED1CF8027B; Thu, 23 Mar 2023 06:33:47 +0100 (CET)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 30E00F8027B; Thu, 23 Mar 2023 07:19:57 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 611CCF8051B
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 06:30:21 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 611CCF8051B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 5793BF800C9
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 07:19:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5793BF800C9
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (2048-bit key,
- unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=bpAdcGkD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679549422; x=1711085422;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=xKsOmGgpfRTaoYi/C0Rex9lD4JYFMvLzVqkjtEvqo9k=;
-  b=bpAdcGkDoPQmwXsfJ3oBlQK4ax3zPyA3zIQSRDTrGEiJDoR+M4gWvGV1
-   ftEaFrW2kJ2ld8B0Mnrt8b6LeYUJkNAYrFiW6Jba9bqlouzaqXvbEmbPJ
-   8yVqnQATYW0v3VZP1YOlV2Ftpeje9P3Z0w42KhgN4obEmcWhGP5WLMJaM
-   6n97jg0f/ykGgp9N3zZm0AVmHf67RATWKqK70dyi16C5xgemg2Pr1UtB+
-   YH0QZ1tu6c5tZeEfunwtA20JAAsrDNzRqZr7q14KrLjMfLiaG0R7RYOU/
-   /Ky9Z0BIHTcEoJ1+CxxkTcVW+3vCWf6cSHWOEAF7LGfKepu9WlpMNW/xO
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="327779353"
-X-IronPort-AV: E=Sophos;i="5.98,283,1673942400";
-   d="scan'208";a="327779353"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Mar 2023 22:30:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="675567039"
-X-IronPort-AV: E=Sophos;i="5.98,283,1673942400";
-   d="scan'208";a="675567039"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Mar 2023 22:30:05 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org,
-	broonie@kernel.org
-Subject: [PATCH 07/20] soundwire: intel: add eml_lock in the interface for new
- platforms
-Date: Thu, 23 Mar 2023 13:44:39 +0800
-Message-Id: <20230323054452.1543233-8-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230323054452.1543233-1-yung-chuan.liao@linux.intel.com>
-References: <20230323054452.1543233-1-yung-chuan.liao@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Message-ID-Hash: C67ENKQLBD5YWU4CEZED7QVL72Z7SUF7
-X-Message-ID-Hash: C67ENKQLBD5YWU4CEZED7QVL72Z7SUF7
-X-MailFrom: yung-chuan.liao@linux.intel.com
+	dkim=pass (1024-bit key,
+ unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
+ header.s=susede2_rsa header.b=e/8a+V3A;
+	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
+ header.s=susede2_ed25519 header.b=Y0n2FhdE
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A177D5C3F0;
+	Thu, 23 Mar 2023 06:19:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_rsa;
+	t=1679552385;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EYi4fD8rvvMEL4nOPWgKnVgUrejpR5/mRke3S4EHm3M=;
+	b=e/8a+V3Aji1uw4KG3zYIuw8eJDmijLTbitDcQvw+6pxfRZfDh1l8C1mA2DQ2Aspty2Rcp8
+	pKvRFzfeQVXMHsR0wRKEnnf0+fQD1fNZLux6MmQnn+3PqFUfdNZ+t2FnKpp/NMtiQwUtjF
+	AGsdaqjiDYHnv7RyjHk9MlsD8+aqW18=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1679552385;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EYi4fD8rvvMEL4nOPWgKnVgUrejpR5/mRke3S4EHm3M=;
+	b=Y0n2FhdEszVSJcTqHvOLoBuX2hy1iyLDnTODBYU9qgk8coQdwdVCbZwxiTEFKRWIMs0ia2
+	4ypwCi8iw8TWE5DA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
+ [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7F42C132C2;
+	Thu, 23 Mar 2023 06:19:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id SNuOHYHvG2SlYwAAMHmgww
+	(envelope-from <tiwai@suse.de>); Thu, 23 Mar 2023 06:19:45 +0000
+Date: Thu, 23 Mar 2023 07:19:45 +0100
+Message-ID: <87cz50htvi.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: usb-audio: Fix recursive locking at XRUN during
+ syncing
+In-Reply-To: <20230321040258.GA164337@workstation>
+References: <20230320142838.494-1-tiwai@suse.de>
+	<20230321040258.GA164337@workstation>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Message-ID-Hash: UHHVFOG2TMOHENO3FSTRYCIDHTWA7FXK
+X-Message-ID-Hash: UHHVFOG2TMOHENO3FSTRYCIDHTWA7FXK
+X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
- pierre-louis.bossart@linux.intel.com, bard.liao@intel.com, tiwai@suse.de
+CC: alsa-devel@alsa-project.org, John Keeping <john@metanate.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/C67ENKQLBD5YWU4CEZED7QVL72Z7SUF7/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/UHHVFOG2TMOHENO3FSTRYCIDHTWA7FXK/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -101,52 +112,54 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Tue, 21 Mar 2023 05:02:58 +0100,
+Takashi Sakamoto wrote:
+> 
+> Hi,
+> 
+> On Mon, Mar 20, 2023 at 03:28:38PM +0100, Takashi Iwai wrote:
+> > The recent support of low latency playback in USB-audio driver made
+> > the snd_usb_queue_pending_output_urbs() function to be called via PCM
+> > ack ops.  In the new code path, the function is performed alread in
+> 
+> 's/alread/already/' or slang.
+> 
+> > the PCM stream lock.  The problem is that, when an XRUN is detected,
+> > the  function calls snd_pcm_xrun() to notify, but snd_pcm_xrun() is
+> 
+> 's/the  function/the function/'
 
-In existing Intel/SoundWire systems, all the SoundWire configuration
-is 'self-contained', with the 'shim_lock' mutex used to protect access
-to shared registers in multi-link configurations.
+Corrected at applying.
 
-With the move of part of the SoundWire registers to the HDaudio
-multi-link structure, we need a unified lock. The hda-mlink
-implementation provides an 'eml_lock' that is used to protect shared
-registers such as LCTL and LSYNC, we can pass it to the SoundWire
-side. There is no issue with possible dangling pointers since the
-SoundWire auxiliary devices are children of the PCI device, so the
-'eml_lock' cannot be removed while the SoundWire side is in use.
+> > supposed to be called only outside the stream lock.  As a result, it
+> > leads to a deadlock of PCM stream locking.
+> > 
+> > For avoiding such a recursive locking, this patch adds an additional
+> > check to the code paths in PCM core that call the ack callback; now it
+> > checks the error code from the callback, and if it's -EPIPE, the XRUN
+> > is handled in the PCM core side gracefully.  Along with it, the
+> > USB-audio driver code is changed to follow that, i.e. -EPIPE is
+> > returned instead of the explicit snd_pcm_xrun() call when the function
+> > is performed already in the stream lock.
+>  
+> Practically, the implementation of 'pcm_hw' in alsa-lib never evaluates
+> the return value (see 'snd_pcm_hw_mmap_commit()' and the others). I guess
+> that it is inconvenient for the low-latency mode of USB Audio device class
+> driver for the case of failure.
+> 
+> My additional concern is PCM indirect layer, since typically the layer
+> is used by drivers with SNDRV_PCM_INFO_SYNC_APPLPTR. But as long as I
+> read, the change does not matter to them.
 
-This patch only adds the interface for now.
+I find rather that's an extra bonus :)  It allows the existing code to
+give a more proper error handling.  For example, the indirect PCM
+helper returned -EINVAL, but this can be switched to -EPIPE for
+stopping the stream.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- include/linux/soundwire/sdw_intel.h | 3 +++
- 1 file changed, 3 insertions(+)
+I'm going to submit the patch together with the documentation
+updates.
 
-diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-index c4281aa06e2e..bafc6f2554b0 100644
---- a/include/linux/soundwire/sdw_intel.h
-+++ b/include/linux/soundwire/sdw_intel.h
-@@ -327,6 +327,8 @@ struct sdw_intel_ctx {
-  * @alh_base: sdw alh base.
-  * @ext: extended HDaudio link support
-  * @hbus: hdac_bus pointer, needed for power management
-+ * @eml_lock: mutex protecting shared registers in the HDaudio multi-link
-+ * space
-  */
- struct sdw_intel_res {
- 	const struct sdw_intel_hw_ops *hw_ops;
-@@ -343,6 +345,7 @@ struct sdw_intel_res {
- 	u32 alh_base;
- 	bool ext;
- 	struct hdac_bus *hbus;
-+	struct mutex *eml_lock;
- };
- 
- /*
--- 
-2.25.1
 
+thanks,
+
+Takashi
