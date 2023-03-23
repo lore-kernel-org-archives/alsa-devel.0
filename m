@@ -4,88 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E97FDC761AF
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 16:45:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22612C74A5B
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 16:46:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F34FECE;
-	Thu, 23 Mar 2023 17:44:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F34FECE
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4071ED8;
+	Thu, 23 Mar 2023 17:45:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4071ED8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679589939;
-	bh=j1+rjliOoMwpOo6oBxWTV8LTlVszSnP2Ss4RNNsBvZg=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=psUd7veJNoltXJgKU7zKxsFpHN9kMS98fihxuhqbZ5KqY8ktH6NldiFn6DJslsTE9
-	 eP36h+KriOMfyqKwQ5SqHVu+qAbuW778wqDifzR8LXZ8UNgmqLS3wYw73DAu1K5/6n
-	 fbwPj/JvaR1WmgCXGsGae8X8qM5jeXTtXQ0jiBkI=
+	s=default; t=1679589967;
+	bh=dGCMfukBL90fVjVt/PN8ob3e5yVFQAtXFokv1zgd0RM=;
+	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=A25gWxth9X4qEh/qBsVN2nMljzoWkN6W8ehZMgr7TKYzhaBtwhCPxJI7nxH54lHmJ
+	 /peeBCQEQQwzIuHwjuUMJ1rvxuGHHX4KzGdSRnxNpyJ1EyIXnvjdw/9/cIicdcSAcJ
+	 StuhZy3OpvuXMh5TI6JI4ZM9JK+Ujw1KwKFnTebs=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F054F80482;
-	Thu, 23 Mar 2023 17:44:26 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15369F8051B;
+	Thu, 23 Mar 2023 17:44:28 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 71BA6F804FE; Thu, 23 Mar 2023 17:44:21 +0100 (CET)
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com
- [IPv6:2a00:1450:4864:20::52b])
+	id E2B3FF804FE; Thu, 23 Mar 2023 17:44:22 +0100 (CET)
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com
+ [IPv6:2a00:1450:4864:20::52a])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 18E6BF80254
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 17:44:14 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18E6BF80254
+	by alsa1.perex.cz (Postfix) with ESMTPS id 9F3C8F8027B
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 17:44:17 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F3C8F8027B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
- header.s=google header.b=i8j2uvRh
-Received: by mail-ed1-x52b.google.com with SMTP id ew6so26502393edb.7
+ header.s=google header.b=mkSLbSGc
+Received: by mail-ed1-x52a.google.com with SMTP id x3so89456790edb.10
         for <alsa-devel@alsa-project.org>;
- Thu, 23 Mar 2023 09:44:14 -0700 (PDT)
+ Thu, 23 Mar 2023 09:44:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1679589853;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aq8I2aQyBQpQohRa/OmaNRySLUW3o0D8LtVSY1bY2Uk=;
-        b=i8j2uvRhu/5srg+g6xmmwsESyfuQnVDMI5KyBWiLslaiqQL7dU9DU84/TdN0Q+eLzw
-         6taTI13nhfp2y2YEGn0Hrr4kFVGXb78eIEcExnJVzfYHGz/ZmXYZL020gxxZu8OA7Ocq
-         Sv4XUZJ4SOq1DcAZj7aWgqq1kE6aQX8NQJ3mav4r9NEvrgZ/eY5b1OkgT/1Dl+f4QSfM
-         f/VmnMVblSBhhO9mU28hArJ6fqDOLiGNGTfyVgy9ZK/jFg/ee3YNTUPwHJUgBWAESz67
-         z49b5h51zWrldIzaGa1AuFx+MI1hQWXSo5yu4yjbndx8fmGpJCt4yuwekJkiQowWtGUO
-         Mfng==
+        d=linaro.org; s=google; t=1679589856;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4p58Lw+agHASsKfJ6aDJH9J3fw9PY/7V6UBtha5qnBQ=;
+        b=mkSLbSGc8DserzlRocfmGovK4CVXM9wFX93zf+RwrfRNWUdp0Aqb3/jH+3ZaNQ99Mu
+         5pnqk8ZX63k1t+viVUk0gpVnV4uNs+fEL6HN7KBXrplCxQSWeBe+qV8rUHCuZCVMfaUJ
+         UCmEeyBAG8reHjZxRR+Uk1XhfRgn/00G0CNcSpQfjbGGoeNF/kyd5/CbsnC+e7IoKdo6
+         8JzuammEipu17QgSECVds5BEVRGVaL0mooaiJqUw+B6oO2CWoShT5kq9DFIZ3jTg1n+2
+         1WaNZ7pGrmOJhHD7qg9vPhIorYzlbU8fynb98St6KupzEuMSjsPbYpaE4hzjlEHyIKqq
+         OIdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679589853;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aq8I2aQyBQpQohRa/OmaNRySLUW3o0D8LtVSY1bY2Uk=;
-        b=Pll8WioqMAe5+re9eTiifhDWAZnXc5+GwBaemnfSRnZzIwKcDsHqpI3iHUm0NyJj6u
-         R2K5p/bV9ST67MwWzYFrq7InbOJxOKlRYzzQn7op0vj4ubbFvMihWPkikOnRBQQAeEdv
-         9TN3dotv4Lf3dQeLRlS6cVSCVF9ARASScQMP01qQMLH3oWbfPkm4JjrwwUQK2u11NoHQ
-         BGOclk2vKSJEYi3q22WKslR5O68Y0nrJsPrIpNb4OYLVHkkdu8p98RkOCoRIewiAZhtF
-         RD+7wdc/bbKWSorJxdAPw7LaAT+DKzwHwYepN6WjQ8t/KlqkDTOkCvl71SE7GNukCSEb
-         fw0w==
-X-Gm-Message-State: AO0yUKVqBwdTttBGdjb7LZtGJQnkBBwJXq/gp/m1fk8KflZrZjrOFfjh
-	rKJSTK03WK0d/H866HepOdAvJQ==
+        d=1e100.net; s=20210112; t=1679589856;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4p58Lw+agHASsKfJ6aDJH9J3fw9PY/7V6UBtha5qnBQ=;
+        b=fqVY7n+2yLmU2df815iOXDjsaWMPa/G7ph+D/QU4MADYNdcrGokysND+zRFgt2EaI+
+         ORzNdmaMgI4ozC9VRn+waqRcAn+pXM4FhgJmgGtSzbz/FOaOzKbmtg/NRqlHrTVyrvSp
+         vosdhgpegoxfv5umvvdbqMZTPDm41RNfDeBZsewei4QPTLFMG4l4wJw+EIu0AuN0je8B
+         oE4fvh2zUebg5hzBCO4SECpH18/Nh2qNQlsTQv8QTDryRyM+qcZk5mut2fWRX/km43Al
+         amrDEVx+Ac/LwcjWuVf/5VC35yBH25AE2blkhiYbcd0nucjwivui1NPTCC0egpzRW16J
+         ZVeA==
+X-Gm-Message-State: AO0yUKV0C/6yqk6eQlifqEIJ6SEovG9QmW8SR6lYKQzMi14BL0VbibqQ
+	g+9icB2KfDwAU17/nDRbT7JnUg==
 X-Google-Smtp-Source: 
- AK7set969B/opsIF2lkPrgqWd55/tFs4Pt60GbdmFaX5Rle7aj7sZbfopjrhzqmZAx1xHx5JbfZGVQ==
-X-Received: by 2002:aa7:d34a:0:b0:4fd:2b05:aa2 with SMTP id
- m10-20020aa7d34a000000b004fd2b050aa2mr10877110edr.42.1679589853009;
-        Thu, 23 Mar 2023 09:44:13 -0700 (PDT)
+ AK7set/1iEUyO0rmlFJ0I7ZZcuxj1Fi1IMkDzUKyo1qAoN5vycDXyk/M6lvLxoh02t6QggEmrhoOiA==
+X-Received: by 2002:a17:906:6d4e:b0:8b8:c06e:52d8 with SMTP id
+ a14-20020a1709066d4e00b008b8c06e52d8mr11481150ejt.36.1679589855954;
+        Thu, 23 Mar 2023 09:44:15 -0700 (PDT)
 Received: from localhost.localdomain ([5.133.47.210])
         by smtp.gmail.com with ESMTPSA id
- m10-20020a50998a000000b004e48f8df7e2sm9542187edb.72.2023.03.23.09.44.11
+ m10-20020a50998a000000b004e48f8df7e2sm9542187edb.72.2023.03.23.09.44.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Mar 2023 09:44:12 -0700 (PDT)
+        Thu, 23 Mar 2023 09:44:15 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 0/4] ASoC: qcom: fixes for Click/Pop Noise
-Date: Thu, 23 Mar 2023 16:43:59 +0000
-Message-Id: <20230323164403.6654-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 2/4] ASoC: qcom: sdw: do not restart soundwire ports for every
+ prepare
+Date: Thu, 23 Mar 2023 16:44:01 +0000
+Message-Id: <20230323164403.6654-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20230323164403.6654-1-srinivas.kandagatla@linaro.org>
+References: <20230323164403.6654-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: TZG3DMLO26HDSFUFUY653USLGNEXSKD6
-X-Message-ID-Hash: TZG3DMLO26HDSFUFUY653USLGNEXSKD6
+Message-ID-Hash: ULU4FVP5MKKS37H6OMJMQB4SFJY2ZWCU
+X-Message-ID-Hash: ULU4FVP5MKKS37H6OMJMQB4SFJY2ZWCU
 X-MailFrom: srinivas.kandagatla@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -102,7 +107,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/TZG3DMLO26HDSFUFUY653USLGNEXSKD6/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ULU4FVP5MKKS37H6OMJMQB4SFJY2ZWCU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -111,29 +116,33 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Click/Pop Noise was a long pending issue with WSA Codecs which are prone
-to accumlate DC when ports are active but without any data streams.
-There are multiple places in the current setup, where this could happen
-in both startup as well as shutdown path.
+unpreparing/disabling and preparing/reenabling soundwire ports is not required
+for every prepare call, this add lots of click and pop noise if we do this in
+middle of playback or capture.
 
-This patches help fix those issues by making sure the PA is Muted/Unmuted
-inline with the stream start/stop events.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/qcom/sdw.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Other than this there is a patch to fix DSP graph saturation issue as we never unload
-playback graph before loading same graph.
-
-Srinivas Kandagatla (4):
-  ASoC: qcom: q6apm-lpass-dai: close graphs before opening a new one
-  ASoC: qcom: sdw: do not restart soundwire ports for every prepare
-  ASoC: codecs: wsa883x: mute/unmute PA in correct sequence
-  ASoC: codecs: wsa881x: mute/unmute PA in correct sequence
-
- sound/soc/codecs/wsa881x.c              | 30 ++++++++++++++++++++-
- sound/soc/codecs/wsa883x.c              | 36 ++++++++++++++++++++-----
- sound/soc/qcom/qdsp6/q6apm-lpass-dais.c |  3 +++
- sound/soc/qcom/sdw.c                    |  7 ++---
- 4 files changed, 63 insertions(+), 13 deletions(-)
-
+diff --git a/sound/soc/qcom/sdw.c b/sound/soc/qcom/sdw.c
+index 10249519a39e..1a41419c7eb8 100644
+--- a/sound/soc/qcom/sdw.c
++++ b/sound/soc/qcom/sdw.c
+@@ -32,11 +32,8 @@ int qcom_snd_sdw_prepare(struct snd_pcm_substream *substream,
+ 		return 0;
+ 	}
+ 
+-	if (*stream_prepared) {
+-		sdw_disable_stream(sruntime);
+-		sdw_deprepare_stream(sruntime);
+-		*stream_prepared = false;
+-	}
++	if (*stream_prepared)
++		return 0;
+ 
+ 	ret = sdw_prepare_stream(sruntime);
+ 	if (ret)
 -- 
 2.21.0
 
