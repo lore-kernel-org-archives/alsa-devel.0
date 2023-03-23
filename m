@@ -4,102 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50C99C6FD1C
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 14:56:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E10BBC74A5B
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 15:16:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ADE55ECE;
-	Thu, 23 Mar 2023 15:55:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADE55ECE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 06929ECE;
+	Thu, 23 Mar 2023 16:15:42 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 06929ECE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679583376;
-	bh=/jeA5Jt8G2DqLNSQGfU2EB2D0objIv0MFbrfIGmrT4o=;
-	h=Date:From:To:Subject:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=TfdWGp1PLl76uYrVuCyk5KLt8T+SFmqwpAeZwGQ8+u6bTtirYkyi3Zuj8HlfAfuAi
-	 xqBPqfromXh1UFFYgQJWXEgPpQvHY/S/uGWQ2Xl/fXhi32RHH6Zh4Bv6glI8y7xPZs
-	 qAhH6+Ig36VW33fd2afevrr+gGo1yKXnCg6ruvng=
+	s=default; t=1679584592;
+	bh=hCse1MpUBPapUf/FTQ7UDasLpBENrjlCa+gCSGqPihY=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=JrPj8F0ks2hPkHXJcDmg5LYpQOCwexPtnmIzgVznWEivfcsh1cG2SWwkMNuQH6YVx
+	 Da73d2z6fTahs/qNctiUnd7nWE6n2Tz7mGPCCS4bicJyAfEo410VTWQ8mDNMigWu3f
+	 f/aUjMULgowPvvBL7u7sQA/KqgiF/BedGPJ12nIQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6FA8FF802E8;
-	Thu, 23 Mar 2023 15:55:04 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1188F802E8;
+	Thu, 23 Mar 2023 16:15:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0BA93F802E8; Thu, 23 Mar 2023 15:55:01 +0100 (CET)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
- [IPv6:2a00:1450:4864:20::32a])
+	id A6957F802E8; Thu, 23 Mar 2023 16:15:15 +0100 (CET)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com
+ [IPv6:2a00:1450:4864:20::536])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 44F3AF80093
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 15:54:56 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44F3AF80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 44E0BF800C9
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 16:15:08 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44E0BF800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=Th+8LMcG
-Received: by mail-wm1-x32a.google.com with SMTP id
- p13-20020a05600c358d00b003ed346d4522so1290455wmq.2
+ unprotected) header.d=linaro.org header.i=@linaro.org header.a=rsa-sha256
+ header.s=google header.b=a9yJXmVY
+Received: by mail-ed1-x536.google.com with SMTP id ew6so25091206edb.7
         for <alsa-devel@alsa-project.org>;
- Thu, 23 Mar 2023 07:54:56 -0700 (PDT)
+ Thu, 23 Mar 2023 08:15:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679583295;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=linaro.org; s=google; t=1679584506;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=o6aVynE3tzKOe+EPhG8xR2UfB9e2rvt1+UB40cAUBf0=;
-        b=Th+8LMcGMoWGV2bK2jbl+mT/x0IvVvYVSG/ygQgFu6Q3In0+t1fexwGqgy0Ke7pdYh
-         f94Wd8Pw9NXSNt550f3xNVje7sYSX9WNWEwH6Bq1z+fm11JwAte3IJhOXTgjfL+4KzIi
-         kPvEzwdFUaIsrCsLdy3KTrxzOYwq3VvAGCgMI2L00unnGOlpFVtVDvyynMOuA1TeF3pt
-         uDI6EwCy/Pm+brI+xkHB7Yv6tfSlH3Lskd/nx5Q0/dMo3705DD4mfWxQ+95fdb9cY0Jx
-         RM4LfkfBJO/4c7B+k46aLAR2y2s7n5mQ1veV3IgaxRsEtMM/4T7ITdXo7M/Xuj6lq/X2
-         RtPw==
+        bh=T0EIRlor9wN9UbhWdsh79YHQkDroJAzuUdmd2X+qriQ=;
+        b=a9yJXmVYDeK0NwIHu2IpvL74NnIG0899faHFGDMQlG8vSHbEOejUzIgt0eogbaoQiU
+         hlLIpsoKk6glSaVvbIf+Yj12Z6ycPS6erte8U77kqVNLYSVW/XRMb+4Qx33/gxDnknr2
+         dZIKgEEdP6APYawwVA0zOJCj0/oAhGazZ+ELnvidtKXj57Xwf2anyencQLxMpcDBtVlZ
+         LCDTVcJCpLDA79ilaf9E5z1hXRQOczmxdA2U8Hd+tlZ522QkWp1+cEpRozgb3Pmdq5i/
+         Q2eOGz89jQ1AHUNUgFL7FN2Hel1yuoS26IZhfm/m3ibo2OnWzIe1zK8PxNQMAO42oYCj
+         C5Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679583295;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20210112; t=1679584506;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=o6aVynE3tzKOe+EPhG8xR2UfB9e2rvt1+UB40cAUBf0=;
-        b=zyqh4jPwc/Ha2zb6xtHUNkCx3N7NvDMOVIWuwC8F2TuP4vGUezTw+4dbMkZcYtgTCB
-         BkM1i7l69AD6AjuFPJBYBjL6daL5RKS9TSFoKF3/Gsl8Kyz/FNVymFlkiOdVA+qsx16M
-         n9ax0tpNBacV6pMJLuY8Rg+5jjjqdvGHVXjeVd56ERU/jXXcCXPVXrJEDlvSIpA/HyKn
-         6iI+jmdr1yPBGWRfzBWU9QUjTVnOhBQO9nRm44e8q0b7vcRERVfEPWoUY0B8jgmedAV+
-         dNcaZJM0DDsTUdnU8rgFafQC/jSWhsJHBiQSEuuVeuZ0qR2+g8jwQBqgNXsAZOsDhIE2
-         n3Zw==
-X-Gm-Message-State: AO0yUKXlTJiOm5y1JApH283WMSFYmbmo2UmPO/pBonp81DFMkhVQ7Pbj
-	xvnf+4rZoouVfIYOsLhB/Vk=
+        bh=T0EIRlor9wN9UbhWdsh79YHQkDroJAzuUdmd2X+qriQ=;
+        b=bVDNk/oEJSvGY9ntxSubaV3kk3vuCztFGbPBJk3f3lgPFFEEXI3WqMzwfWjkH6B6zg
+         RYWuahxKlIaKzyy3LH5TJThX4KRasrY8bW3ke7O5qgoiFUB/cw5JNbAZ4edB5f+skWoU
+         SE4peR+BwYlBCwh6a3/hYPhZr7VyLOKk5Cmp3sN3+fndn3Fkgl7KQJZwo7eFxE/hbt5V
+         BmuU2yQgXwPN3C11MwjWx3GH5z0PZJf+54wknMz8OmnhP6z3iu4r+Lu8OQAMD4fLiCPP
+         U0I5zW0N8v0d+FTXEx+9eGeOXFd+Hwr2kcUqkWbYK4scEh4cPEmdOr5S57JjTdjUasgV
+         3W1Q==
+X-Gm-Message-State: AO0yUKWCYAVn+3cxG/jyEY2oNPdFhtagOkITqXx6mF51m/oP4rfCV9mN
+	G79egmPA9ROLPFZrf0ao+qr40w==
 X-Google-Smtp-Source: 
- AK7set/8jmJuusKCQhoBcly1Tq47qNCZOmH5Ckd2yJUO8QhiPZIoNHqciMNXXa93j67Yrfd+p3lNYQ==
-X-Received: by 2002:a1c:4c1a:0:b0:3ea:f6c4:305e with SMTP id
- z26-20020a1c4c1a000000b003eaf6c4305emr2491863wmf.38.1679583295377;
-        Thu, 23 Mar 2023 07:54:55 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
+ AK7set8gtYX838jmT3vkdbM6ajyzGH8Lai6OGJWibken05c+x+1ZWKC1tz/RH7h9iUeekgQDHZHt3g==
+X-Received: by 2002:a17:906:28c9:b0:934:8043:ebf8 with SMTP id
+ p9-20020a17090628c900b009348043ebf8mr10909795ejd.26.1679584506221;
+        Thu, 23 Mar 2023 08:15:06 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:d350:23b1:cb94:f39d?
+ ([2a02:810d:15c0:828:d350:23b1:cb94:f39d])
         by smtp.gmail.com with ESMTPSA id
- q6-20020a7bce86000000b003db0bb81b6asm2141400wmj.1.2023.03.23.07.54.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Mar 2023 07:54:54 -0700 (PDT)
-Date: Thu, 23 Mar 2023 17:54:48 +0300
-From: Dan Carpenter <error27@gmail.com>
-To: srinivas.kandagatla@linaro.org
-Subject: [bug report] ASoC: qcom: audioreach: fix ADSP ready check
-Message-ID: <ceb17cc7-11cd-496f-944e-c9d3ddb14b9e@kili.mountain>
+ gz14-20020a170906f2ce00b00923221f4062sm8777740ejb.112.2023.03.23.08.15.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Mar 2023 08:15:05 -0700 (PDT)
+Message-ID: <1a2e0f7a-771f-5590-fc54-b9dbf059a925@linaro.org>
+Date: Thu, 23 Mar 2023 16:15:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Message-ID-Hash: 2LDM3KYLICDWSIAETBIZ7ACBGZ4WCC7I
-X-Message-ID-Hash: 2LDM3KYLICDWSIAETBIZ7ACBGZ4WCC7I
-X-MailFrom: error27@gmail.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH] ASoC: dt-bindings: alc5632: Convert to dtschema
+To: Saalim Quadri <danascape@gmail.com>, lgirdwood@gmail.com,
+ broonie@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ daniel.baluta@nxp.com
+References: <20230323130511.16367-1-danascape@gmail.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230323130511.16367-1-danascape@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: MFZW75DSE57VBSLAIUTK4B5R5YE2LI3P
+X-Message-ID-Hash: MFZW75DSE57VBSLAIUTK4B5R5YE2LI3P
+X-MailFrom: krzysztof.kozlowski@linaro.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org
+CC: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2LDM3KYLICDWSIAETBIZ7ACBGZ4WCC7I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/MFZW75DSE57VBSLAIUTK4B5R5YE2LI3P/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -108,26 +119,89 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hello Srinivas Kandagatla,
+On 23/03/2023 14:05, Saalim Quadri wrote:
+> Convert the ALC5632 audio codec bindings to DT schema.
+> 
+> Signed-off-by: Saalim Quadri <danascape@gmail.com>
 
-The patch dd33c2e7b21d: "ASoC: qcom: audioreach: fix ADSP ready
-check" from Feb 9, 2023, leads to the following Smatch static checker
-warning:
 
-	sound/soc/qcom/qdsp6/q6apm.c:167 q6apm_is_adsp_ready()
-	warn: signedness bug returning '(-12)'
+Thank you for your patch. There is something to discuss/improve.
 
-sound/soc/qcom/qdsp6/q6apm.c
-    164 bool q6apm_is_adsp_ready(void)
-    165 {
-    166         if (g_apm)
---> 167                 return q6apm_get_apm_state(g_apm);
-                               ^^^^^^^^^^^^^^^^^^^
-This can return negative error codes on allocation failure.
 
-    168 
-    169         return false;
-    170 }
+> @@ -0,0 +1,63 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/realtek,alc5632.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: ALC5632 audio CODEC
+> +
+> +description: |
+> +  Pins on the device (for linking into audio routes):
+> +      * SPK_OUTP
+> +      * SPK_OUTN
+> +      * HP_OUT_L
+> +      * HP_OUT_R
+> +      * AUX_OUT_P
+> +      * AUX_OUT_N
+> +      * LINE_IN_L
+> +      * LINE_IN_R
+> +      * PHONE_P
+> +      * PHONE_N
+> +      * MIC1_P
+> +      * MIC1_N
+> +      * MIC2_P
+> +      * MIC2_N
+> +      * MICBIAS1
+> +      * DMICDAT
+> +
+> +maintainers:
+> +  - Liam Girdwood <lgirdwood@gmail.com>
 
-regards,
-dan carpenter
+This should not be subsystem maintainer but someone related to the
+device. It's maintainer or interested contributor. Unless that's the
+case here?
+
+> +
+> +properties:
+> +  compatible:
+> +    const: realtek,alc5632
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#gpio-cells':
+> +    const: 2
+> +
+> +  gpio-controller: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#gpio-cells'
+> +  - gpio-controller
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        alc5632: alc5632@1a {
+
+Node name: codec
+and drop alc5632 label
+
+> +            compatible = "realtek,alc5632";
+> +            reg = <0x1a>;
+> +            gpio-controller;
+> +            #gpio-cells = <2>;
+> +        };
+> +    };
+
+Best regards,
+Krzysztof
+
