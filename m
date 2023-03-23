@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FB71C6FD1C
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 05:35:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DD44C6FD1C
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 05:36:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 257AEEE9;
-	Thu, 23 Mar 2023 06:34:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 257AEEE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63470ED5;
+	Thu, 23 Mar 2023 06:35:19 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63470ED5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679549745;
-	bh=zfPDFAUHD0yEFTAl6FmNYsvKI40bPenFTeUs36GSzIY=;
+	s=default; t=1679549769;
+	bh=kjKTx32w9YdnZJ7K83qEoOALY8hrbkCtcZcfoAY0U2Q=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=ciGNtA74+V2wc4qo7KcUma7cBqwkK26+aWoJrnRWBw/p509TcVWwQHF/hGqF5SWMb
-	 XZKsDraqQ0K8sRelgKGD1KQ0IczbSGGtuCtBq5VzlM/HXL3r71BKUznCUaq+4CGHiR
-	 uyJg+Xo4WCDx7iOKi944ecn59ZPI2W5Zsh0NwQNw=
+	b=mV3jZXO3C4yFf9rTtJXKIkYG0nRbTA/nb5HOf1kkpNTfF26k8fFcQ9ajydTuXiBAB
+	 58X+vMd2qL7PR/VMK5i8eM5MsiPSKXUYe99dIBER8U3iwI2O98iiD1Z87haC0zHl9l
+	 6hd07NaBuP2PYWtR/Tp8NJqAjteu0pgVOjM4d9TI=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D124AF8055C;
-	Thu, 23 Mar 2023 06:32:57 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90B6AF8057A;
+	Thu, 23 Mar 2023 06:33:01 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 0F7C9F8052E; Thu, 23 Mar 2023 06:30:56 +0100 (CET)
+	id B0945F8052E; Thu, 23 Mar 2023 06:31:00 +0100 (CET)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 9413DF80254
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 06:30:25 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9413DF80254
+	by alsa1.perex.cz (Postfix) with ESMTPS id 336BAF8053D
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 06:30:26 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 336BAF8053D
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=XxALgGX7
+ header.s=Intel header.b=S30YqFmA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679549426; x=1711085426;
+  t=1679549427; x=1711085427;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=zfPDFAUHD0yEFTAl6FmNYsvKI40bPenFTeUs36GSzIY=;
-  b=XxALgGX7SEmjID1HGr2Ndus3d80YaqLybJfdTtkXg3VU7tYf8f5+5A9w
-   F+0o71/ylESRpzN1Is8/7eejRoJ2qNOGsGR1zdA0Mnlyf41LsxuG1CIRT
-   QVh87rffX5SfcjwRkc22UzFI7aPGX5XvHj916AbIK6Am8gy/2nsN1GMIN
-   xfkjaHV5hV4llWKG6UpLk0w2Ltd4oDpVCMdJr8YEWZkOTvXyc7mOmBFQT
-   WTLRZSwTk538A+SebSYIzsOK0aXuMQ+ZfszDzHLG7yOwjNh1JVkhzoCGM
-   bEZ3IfAw6B/6Ju0v7wdWLyYuwAgb7AyEjWGAFmdHKNf3BpTDzs6nEdGEj
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="327779410"
+  bh=kjKTx32w9YdnZJ7K83qEoOALY8hrbkCtcZcfoAY0U2Q=;
+  b=S30YqFmA5qwYSwccvxBicIiSa+Wtr4r+fc+lDTPBjKIwMxIF7GcolVb7
+   XebLz00iWtk92KbadOvZ5EBddno47cx0TirbjLkFNeNMz57HAPzyc0hJt
+   +x3J9g4Y2xY2DmuvYPkqNELren6JJzNVugb9/4q3R6BX/vrNbhki2RVbH
+   6wVkf1OWd+xai0E3GHDVxdD54ginQFfyQPHeM52Pa6xMRyASCEcDq/3Ix
+   J2N5p+md3GNFh34s35AoyIGXBJXh2NMccCclY4cEd3ZWycE8tAa1uOPXa
+   k9dP45N1k0nHm5XQ9g2OGZbpCAraYNlB1d0Tjxieq/7SLEMEWOJbT4/oB
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="327779436"
 X-IronPort-AV: E=Sophos;i="5.98,283,1673942400";
-   d="scan'208";a="327779410"
+   d="scan'208";a="327779436"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Mar 2023 22:30:18 -0700
+ 22 Mar 2023 22:30:23 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="675567117"
+X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="675567149"
 X-IronPort-AV: E=Sophos;i="5.98,283,1673942400";
-   d="scan'208";a="675567117"
+   d="scan'208";a="675567149"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
   by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Mar 2023 22:30:16 -0700
+ 22 Mar 2023 22:30:21 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org,
 	broonie@kernel.org
-Subject: [PATCH 11/20] soundwire: intel_ace2x: add link power-up/down helpers
-Date: Thu, 23 Mar 2023 13:44:43 +0800
-Message-Id: <20230323054452.1543233-12-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 13/20] soundwire: intel_ace2x: configure link PHY
+Date: Thu, 23 Mar 2023 13:44:45 +0800
+Message-Id: <20230323054452.1543233-14-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230323054452.1543233-1-yung-chuan.liao@linux.intel.com>
 References: <20230323054452.1543233-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: OY75RKOWOT4WG7CFJRGU577QOBGZCFAG
-X-Message-ID-Hash: OY75RKOWOT4WG7CFJRGU577QOBGZCFAG
+Message-ID-Hash: DRFIZT46KLZAJ7IH5RXXJYDRI7OGUBZZ
+X-Message-ID-Hash: DRFIZT46KLZAJ7IH5RXXJYDRI7OGUBZZ
 X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/OY75RKOWOT4WG7CFJRGU577QOBGZCFAG/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DRFIZT46KLZAJ7IH5RXXJYDRI7OGUBZZ/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,7 +102,12 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-only power-up/down for now, the frequency is not set.
+Unlike previous hardware generations, the glue-to-master transition is
+not managed by software, instead the transitions are managed as part
+of the power-up/down sequences controlled by SPA/CPA bits.
+
+The only thing that's required is to configure the link PHY for
+'normal' operation instead of the PHY test mode.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
@@ -110,76 +115,46 @@ Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel_ace2x.c | 50 +++++++++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
+ drivers/soundwire/intel_ace2x.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
 diff --git a/drivers/soundwire/intel_ace2x.c b/drivers/soundwire/intel_ace2x.c
-index 1c47bb2adb93..5b6a608e63ba 100644
+index 01668246b7ba..5deff32976f1 100644
 --- a/drivers/soundwire/intel_ace2x.c
 +++ b/drivers/soundwire/intel_ace2x.c
-@@ -10,12 +10,62 @@
- #include <linux/soundwire/sdw_registers.h>
- #include <linux/soundwire/sdw.h>
- #include <linux/soundwire/sdw_intel.h>
-+#include <sound/hda-mlink.h>
- #include "cadence_master.h"
+@@ -15,6 +15,22 @@
  #include "bus.h"
  #include "intel.h"
  
-+static int intel_link_power_up(struct sdw_intel *sdw)
++/*
++ * shim vendor-specific (vs) ops
++ */
++
++static void intel_shim_vs_init(struct sdw_intel *sdw)
 +{
-+	int ret;
++	void __iomem *shim_vs = sdw->link_res->shim_vs;
++	u16 act = 0;
 +
-+	mutex_lock(sdw->link_res->shim_lock);
-+
-+	ret = hdac_bus_eml_sdw_power_up_unlocked(sdw->link_res->hbus, sdw->instance);
-+	if (ret < 0) {
-+		dev_err(sdw->cdns.dev, "%s: hdac_bus_eml_sdw_power_up failed: %d\n",
-+			__func__, ret);
-+		goto out;
-+	}
-+
-+	sdw->cdns.link_up = true;
-+out:
-+	mutex_unlock(sdw->link_res->shim_lock);
-+
-+	return ret;
++	u16p_replace_bits(&act, 0x1, SDW_SHIM2_INTEL_VS_ACTMCTL_DOAIS);
++	act |= SDW_SHIM2_INTEL_VS_ACTMCTL_DACTQE;
++	act |=  SDW_SHIM2_INTEL_VS_ACTMCTL_DODS;
++	intel_writew(shim_vs, SDW_SHIM2_INTEL_VS_ACTMCTL, act);
++	usleep_range(10, 15);
 +}
 +
-+static int intel_link_power_down(struct sdw_intel *sdw)
-+{
-+	int ret;
+ static int intel_link_power_up(struct sdw_intel *sdw)
+ {
+ 	struct sdw_bus *bus = &sdw->cdns.bus;
+@@ -63,6 +79,9 @@ static int intel_link_power_up(struct sdw_intel *sdw)
+ 	*shim_mask |= BIT(link_id);
+ 
+ 	sdw->cdns.link_up = true;
 +
-+	mutex_lock(sdw->link_res->shim_lock);
++	intel_shim_vs_init(sdw);
 +
-+	sdw->cdns.link_up = false;
-+
-+	ret = hdac_bus_eml_sdw_power_down_unlocked(sdw->link_res->hbus, sdw->instance);
-+	if (ret < 0) {
-+		dev_err(sdw->cdns.dev, "%s: hdac_bus_eml_sdw_power_down failed: %d\n",
-+			__func__, ret);
-+
-+		/*
-+		 * we leave the sdw->cdns.link_up flag as false since we've disabled
-+		 * the link at this point and cannot handle interrupts any longer.
-+		 */
-+	}
-+
-+	mutex_unlock(sdw->link_res->shim_lock);
-+
-+	return ret;
-+}
-+
- const struct sdw_intel_hw_ops sdw_intel_lnl_hw_ops = {
- 	.debugfs_init = intel_ace2x_debugfs_init,
- 	.debugfs_exit = intel_ace2x_debugfs_exit,
-+
-+	.link_power_up = intel_link_power_up,
-+	.link_power_down = intel_link_power_down,
- };
- EXPORT_SYMBOL_NS(sdw_intel_lnl_hw_ops, SOUNDWIRE_INTEL);
-+
-+MODULE_IMPORT_NS(SND_SOC_SOF_HDA_MLINK);
+ out:
+ 	mutex_unlock(sdw->link_res->shim_lock);
+ 
 -- 
 2.25.1
 
