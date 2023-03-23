@@ -4,224 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F636C6FD1C
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 17:52:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64E47C6FD1C
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 17:54:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA869207;
-	Thu, 23 Mar 2023 18:51:43 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA869207
+	by alsa0.perex.cz (Postfix) with ESMTPS id E68C0ED1;
+	Thu, 23 Mar 2023 18:53:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E68C0ED1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679593953;
-	bh=1dSw3LEQOYAbj3Xtg1g6bMXrfT41wysKKLimxMmLx7g=;
-	h=From:To:Subject:Date:References:In-Reply-To:List-Id:List-Archive:
+	s=default; t=1679594072;
+	bh=IHf8bYuMbBrnQz1WQ5fZkgiHtkTPtj41LjUsiFQ97TY=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:List-Archive:
 	 List-Help:List-Owner:List-Post:List-Subscribe:List-Unsubscribe:
 	 From;
-	b=kaXknOiBPw4qNSFb+Qaa9zFkB6cHuZLRFbKr3v1hHSUu1IxV8eHxZsd6BFfayDLK3
-	 SMgA6NT3pgjlLN4bTSg/RpQTJ7YhEbPbVxGUYFRnnvYpzjD11MaMfEA9ILSf87ucbI
-	 SpkxZdbUXeiLds/+dlT6DTJD6HkfF6G71RZauPgs=
+	b=f6KCZQRW5T/2FSfnbx78QGuopPnRXVEbusUe6GT59vZH5K1N/7rhVDBWKuP7JDs9o
+	 TjPqaVLwHlYD1SAotqo+O5DV+21tlGFh8mFmRspGkWKY1YrZtUzZxaWIUc1qAqZl0b
+	 l/cpevXuJqVCd6RLib9gEnem9+1zK5WYUEZ5ICeA=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6867F80093;
-	Thu, 23 Mar 2023 18:51:21 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id F3B96F804FE;
+	Thu, 23 Mar 2023 18:53:19 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 783DFF802E8; Thu, 23 Mar 2023 18:51:17 +0100 (CET)
-Received: from mx0b-00128a01.pphosted.com (mx0b-00128a01.pphosted.com
- [148.163.139.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 35A74F804FE; Thu, 23 Mar 2023 18:53:16 +0100 (CET)
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com
+ [IPv6:2607:f8b0:4864:20::52d])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
+ SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 56C5CF80093
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 18:51:06 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56C5CF80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 04445F80093
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 18:53:05 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04445F80093
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=analog.onmicrosoft.com header.i=@analog.onmicrosoft.com
- header.a=rsa-sha256 header.s=selector2-analog-onmicrosoft-com
- header.b=2pufru8Q
-Received: from pps.filterd (m0167091.ppops.net [127.0.0.1])
-	by mx0b-00128a01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
- 32NF49ns031470;
-	Thu, 23 Mar 2023 13:51:04 -0400
-Received: from nam11-co1-obe.outbound.protection.outlook.com
- (mail-co1nam11lp2176.outbound.protection.outlook.com [104.47.56.176])
-	by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3pfx3ss792-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 23 Mar 2023 13:51:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LdnrQM9iqQVpKNfLFhpyZhcdnfzj3VzphD0wgDvz6Q2dWgUxdJ24CJUzu6GQuVULA34a+DJfJ8AWG0PX2D2vHUFeHDX/lv3m/Iw8DBMtEfWWKgw19mgxJB9blyGnWe5adWVgECcBQnEDPf/3wWRR9x/uO2z9J94DZtHuOAIXRZ/7OWUL6Chsq1v82fgmuLI8mhhJlHXleQ+/dpiooW5avjyIpgQXQVhgsH1A9X/XyMGhnW26+MOKiaPxD3zAKx1nzIxOgbIz1ERt6V5S4wz3LDI8Q7rVo7HvCUjhQkUyVShWmHeQWYvxkXmLPVR8Dxsfggo68l0KdZ7vPzfrN4b5eg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1dSw3LEQOYAbj3Xtg1g6bMXrfT41wysKKLimxMmLx7g=;
- b=no3XzrtF1StGQb5IPBfo5iBhwdGPidhQp1+SccuGjITIX0TVsNno74GpI/f1vBgI8zXarc9yXWm2+Ocu4RDKRPQBmcVrOyFDYNiClXsuWI8nB7bBn1onc1ZQfa6ep+MVEpFSTzb3qQRds97ty/atQ7QVjGquoIquJcPnDyj8dRxyryuY9b15kN0zVpaV7bm2PKbqlh31QwLllhSkbrOhBr83yLdwzxVuxAVyjp19IWVVEYD9zKtDXYwTy2FZi0sNe+19MX9dXF6Q8wKU74E8uOl9JzApvgF0XfcY7RMNZGGPDt9x7se2eLBEKUdbrkwn3zb5ZdYS6FbO+UTNH+x8rw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
- dkim=pass header.d=analog.com; arc=none
+	dkim=pass (2048-bit key,
+ unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
+ header.s=20210112 header.b=L+NEcWGj
+Received: by mail-pg1-x52d.google.com with SMTP id s19so7723129pgi.0
+        for <alsa-devel@alsa-project.org>;
+ Thu, 23 Mar 2023 10:53:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1dSw3LEQOYAbj3Xtg1g6bMXrfT41wysKKLimxMmLx7g=;
- b=2pufru8QhgB2wBq2j15t6DxZLvUh7y9dArd3SAlvTvQTDiJh+Z/gdULWRGb3dy8qtS9dpq3joKES8zt8A+VojA+wu67rsbCLuVdkovrfnZSvJPuf108B29A2sF5U3+atX7YgIeFVfeM/m8ibvVbSsNgN7KOchKTvDVP3PRSHzWQ=
-Received: from SJ0PR03MB6681.namprd03.prod.outlook.com (2603:10b6:a03:400::6)
- by CH2PR03MB5287.namprd03.prod.outlook.com (2603:10b6:610:9e::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6178.38; Thu, 23 Mar
- 2023 17:51:01 +0000
-Received: from SJ0PR03MB6681.namprd03.prod.outlook.com
- ([fe80::546:72be:4164:dde7]) by SJ0PR03MB6681.namprd03.prod.outlook.com
- ([fe80::546:72be:4164:dde7%7]) with mapi id 15.20.6178.037; Thu, 23 Mar 2023
- 17:51:01 +0000
-From: "Lee, RyanS" <RyanS.Lee@analog.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        =?utf-8?B?4oCcUnlhbg==?= <ryan.lee.analog@gmail.com>,
-        "lgirdwood@gmail.com"
-	<lgirdwood@gmail.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>,
-        "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
-        "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>,
-        "ckeepax@opensource.cirrus.com" <ckeepax@opensource.cirrus.com>,
-        "herve.codina@bootlin.com" <herve.codina@bootlin.com>,
-        "wangweidong.a@awinic.com" <wangweidong.a@awinic.com>,
-        "james.schulman@cirrus.com" <james.schulman@cirrus.com>,
-        "ajye_huang@compal.corp-partner.google.com"
-	<ajye_huang@compal.corp-partner.google.com>,
-        "shumingf@realtek.com"
-	<shumingf@realtek.com>,
-        "povik+lin@cutebit.org" <povik+lin@cutebit.org>,
-        "flatmax@flatmax.com" <flatmax@flatmax.com>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        "alsa-devel@alsa-project.org"
-	<alsa-devel@alsa-project.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCH V2 1/2] ASoC: max98363: add soundwire amplifier driver
-Thread-Topic: [PATCH V2 1/2] ASoC: max98363: add soundwire amplifier driver
-Thread-Index: AQHZU7bTh6oTfV36r0G0vxHx+yvH0q74zcWAgA5ku3A=
-Date: Thu, 23 Mar 2023 17:51:01 +0000
-Message-ID: 
- <SJ0PR03MB66812CB6A3AB99B87EE870438A879@SJ0PR03MB6681.namprd03.prod.outlook.com>
-References: <20230311011409.210014-1-ryan.lee.analog@gmail.com>
- <6fbd4471-9f72-c87c-3803-90f7224abce0@linux.intel.com>
-In-Reply-To: <6fbd4471-9f72-c87c-3803-90f7224abce0@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-rorf: true
-x-dg-ref: 
- =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
- =?utf-8?B?bk5jY214bFpURXpYR0Z3Y0dSaGRHRmNjbTloYldsdVoxd3dPV1E0TkRsaU5p?=
- =?utf-8?B?MHpNbVF6TFRSaE5EQXRPRFZsWlMwMllqZzBZbUV5T1dVek5XSmNiWE5uYzF4?=
- =?utf-8?B?dGMyY3RORFEyTURVM09XTXRZemxoTXkweE1XVmtMV0poWWpRdE56QXhZV0k0?=
- =?utf-8?B?TURkbFpHSTVYR0Z0WlMxMFpYTjBYRFEwTmpBMU56bGtMV001WVRNdE1URmxa?=
- =?utf-8?B?QzFpWVdJMExUY3dNV0ZpT0RBM1pXUmlPV0p2WkhrdWRIaDBJaUJ6ZWowaU1U?=
- =?utf-8?B?ZzJOaUlnZEQwaU1UTXpNalF3TmpjME5UazJNVFUzTlRZd0lpQm9QU0pZYjFK?=
- =?utf-8?B?alVuZzRWbWRNYnpWdFJrWnRkMEpoZWxkcGJucHhhR005SWlCcFpEMGlJaUJp?=
- =?utf-8?B?YkQwaU1DSWdZbTg5SWpFaUlHTnBQU0pqUVVGQlFVVlNTRlV4VWxOU1ZVWk9R?=
- =?utf-8?B?MmRWUVVGRmIwTkJRVUkwSzA4NFIzTkdNMXBCVWtkeVNsaEVWa3hMT0d0RllY?=
- =?utf-8?B?TnNZMDVWYzNKNVVVUkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlNFRkJRVUZFWVVGUlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UlVGQlVVRkNRVUZCUVZGa2FXczFVVUZCUVVGQlFVRkJRVUZCUVVGQlFVbzBR?=
- =?utf-8?B?VUZCUW1oQlIxRkJZVkZDWmtGSVRVRmFVVUpxUVVoVlFXTm5RbXhCUmpoQlkw?=
- =?utf-8?B?RkNlVUZIT0VGaFowSnNRVWROUVdSQlFucEJSamhCV21kQ2FFRkhkMEZqZDBK?=
- =?utf-8?B?c1FVWTRRVnBuUW5aQlNFMUJZVkZDTUVGSGEwRmtaMEpzUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZGUVVGQlFVRkJRVUZCUVdk?=
- =?utf-8?B?QlFVRkJRVUZ1WjBGQlFVZEZRVnBCUW5CQlJqaEJZM2RDYkVGSFRVRmtVVUo1?=
- =?utf-8?B?UVVkVlFWaDNRbmRCU0VsQlluZENjVUZIVlVGWmQwSXdRVWhOUVZoM1FqQkJS?=
- =?utf-8?B?MnRCV2xGQ2VVRkVSVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlVVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVTkJRVUZCUVVGRFpVRkJRVUZaVVVKclFVZHJRVmgzUW5wQlIx?=
- =?utf-8?B?VkJXWGRDTVVGSVNVRmFVVUptUVVoQlFXTm5RblpCUjI5QldsRkNha0ZJVVVG?=
- =?utf-8?B?amQwSm1RVWhSUVdGUlFteEJTRWxCVFdkQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRa0ZCUVVGQlFVRkJRVUZKUVVGQlFVRkJRVDA5SWk4K1BDOXRaWFJo?=
- =?utf-8?B?UGc9PQ==?=
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR03MB6681:EE_|CH2PR03MB5287:EE_
-x-ms-office365-filtering-correlation-id: 1774d93e-63b8-4eb2-b387-08db2bc72a8f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- V8c3rv7W0vjJ1QM63C4Y7pK1ZOzQaBdoRx41Yz5kknBz4uvyTPXARleVcv+/yKrghjKwvhUTeDQQrIpQ7hJgYfyRBykQfkrVqjm5aZ8wcnZvQ+AaqoXXqY2EtK41bUoCQsSuwxqyuRp4zg0CcYan9FZQWqA7W1+jfceUdSyCqSsQMnX8WyfCeQuc49fNcAlCM7ANEZkZN7ye5KGebg+kMam+IJNV4Q24+lOM7GrkzYxLE2WG8kWl7b5Ca0tubfN5Eh52jP8LC/+r5nwrMMgmEIMwEBWQ+pbBb6JGawjdvErg7uKdzvyiQ8MGS3dYHOrjHutUNfJWiqd56eTVFwUaiWnl3rvKFYb88ALL6WuY6YdQ1LmqVuy7ZQRWDBKywM+t2hzvSO5aqTpqaEC71wOJPAOwV6IPQv8Vdj3qBAbt9QMLJ3D5Vl//I3FZbGtGSyzqeEibjrPn3XRvbHKX7+Ld/P390M4Vr1Go8ohqwD4MNwG0Qmx8yjJgPgXCpZepqrk2aIKgvaNtCHpGEJ2h1Q6oPeF4cFodGIFwGF1FXKLoeecPPxHKglHM4NGDoxZ//jevkahCO68/MSBNkcAGfugQ50y0zOS97lNnpTBsHLKYVah0Pg/kTkI6dXGa1yVqEznbuiJoNhRmsRgSrdCG7F3bya1TP2G1UWSmi4G+L738L1TO6Bz1anmOWpvdoYmHPzB1qXC6G6tTLGeFaLmpJjVK0Q==
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR03MB6681.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230025)(4636009)(39860400002)(136003)(376002)(346002)(366004)(396003)(451199018)(71200400001)(66446008)(8676002)(66476007)(64756008)(52536014)(66946007)(76116006)(66556008)(110136005)(5660300002)(41300700001)(7416002)(122000001)(53546011)(8936002)(26005)(6506007)(186003)(9686003)(478600001)(83380400001)(33656002)(316002)(7696005)(86362001)(55016003)(921005)(38070700005)(38100700002)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?utf-8?B?NGdJZ1ptMEkvaU9GS0JiUUhLOFVpemUrc0NRdTBzN0RjNS9FejVmOVArQnE4?=
- =?utf-8?B?VnlRRSthYWk5Y0ZSeThjRHBXd21zMVVsdlNLOE5ML00zMjNCQXg0Um0vWG5t?=
- =?utf-8?B?TDc3V3NxeVdWR0ZxeEZvdVVPMmU4YU9BUXRFU0c2MEpKaUt2amVobVYySlVz?=
- =?utf-8?B?b0tMRUVreWs4OWJBNlp1aVZ2Ry8yMllRYjM5S09QSSt4c2twbE9QVStLUFFD?=
- =?utf-8?B?ZVBPbCtNNmhXWmVRbUg2VWtraFV5RWF4Vk9XRjlYamkvalNKSndod2xJTmlw?=
- =?utf-8?B?S2J2N3M5bUNJOWtFZGdZbFpIQVdFZ05FaytxSFQ4ZHQyejVNMFRBM1A0bGM1?=
- =?utf-8?B?OW9WcEUyTWdoYU1IU2JmRFI0UGFEVFRvcFRWV3ZvdlA2ZkNmNnRJcXgvcWFJ?=
- =?utf-8?B?TkhQeVR5dVcrbnR3cW5jSndnMkRrc1g1OWtBR0UzYmFoc1FMaGFPMGwrQ2dG?=
- =?utf-8?B?eXZLU2RLOCtKNTYzeW9UMnBSbzVKNzA0bW5Dc1NqZjBVVklGUmljQzN1ajFl?=
- =?utf-8?B?b3BGM2w5UEN3alRmVVVSb0lvbndqdG1hSmRRbXY2Q3pvNSsybDNCT3lqRXBT?=
- =?utf-8?B?alo0UjhDcWNpRkpmTnB0YndzNmtqMW1Lc2xXU1Vpa3crZU54d3k0dWhrRG80?=
- =?utf-8?B?UmdtWGJiTnd5L3hvK0R6U1kzQzJEMStTY01DdFA1VXBlNFVGRHhvUmNYOERT?=
- =?utf-8?B?cHRaUW45WUVHREFwdk4zcXloRUp4Yzc2K2tWcWRaSUt4RUFyY3VwRzh2QWZF?=
- =?utf-8?B?czFoOE5xRmpsVzZtTEhzU1J0OU11VXpGSlBBNnRLaWJ3MG1reFhlTEpQYkNG?=
- =?utf-8?B?NTg1TTVtYWJRNTF3TzlrWFdYSDNEWFA4Nno3MnVXMW5sQVFtREl0NFQyNXhP?=
- =?utf-8?B?L2JtYlp3Z1l1WjVsTG9qb05RRmlVdi9qOFArc2JIeGlucnJ2S1ZVZUNrclU4?=
- =?utf-8?B?VldhS3YwdGMwTE4yemlUaEUyMnVCS2xwRTkzYVpvVVFzcXNQd2xWSWZUcTRa?=
- =?utf-8?B?R2NlMnh0aFg0cThzRUhYQnVyWWFtdFkrdDE4Q3haNUxtU0lUeE1kRTJseSts?=
- =?utf-8?B?QzZnbGtSMXpzTjVNeWlHdTdIb3FGYzhpUmdIa1hxaFAxZzNEejBTMG1Va252?=
- =?utf-8?B?MmJERC9VUmo1a0VDSGJLOERZV0dxQVdkbWg1OUo1eEsxaGlDK2xuNll3Tzd1?=
- =?utf-8?B?dVpKMStsOXBRbXQrSFRwZUdEODdGYWNuZ3NyNGhsREFacXlUSGtuN0E3WTl6?=
- =?utf-8?B?NWllcE5peWtoeXB1azZ5YTNLMnIrdXJTZTU4UHpuckhmVDdRanphbjZuT3Vz?=
- =?utf-8?B?ZExWMFB0WStoUGJwdTZaRFpZeXBkKzR6MlpLNzl1YU1NWUQ4eS9UbjFURkZC?=
- =?utf-8?B?dHNCMlZuN24ybytuRkY5OVhxTjBJME1halp4Y2hmRzVpc280VTNrdGlZRmU3?=
- =?utf-8?B?Y21Wanc5TnFWWG1pY0FEWHRCSFpsUUgxa0V6Q1czODFqQ0U5RkttZGJoSDlU?=
- =?utf-8?B?ME5aYXcwS05GU1RWTGNTUTk5M1V1b0d4NVA5aFdkUzc2WWx5TndCalFtRFJL?=
- =?utf-8?B?WjlvVXBPTGNFM1hCbGVFN3VuTmRJWkh6emcrN1lVSnhsbFliTG5wUFBLZVV0?=
- =?utf-8?B?ZmU0OWg3REY1bkdRQ1I0d0M4VHNLRG5FKzVzcE4wM0trRlpsYmpPWHNkNjZO?=
- =?utf-8?B?Q2RXVzBEcnZna1J1cVRJUnNuQXhHeFRjU3BTNE5CUlBXaUM0YmRHRm5oRkx1?=
- =?utf-8?B?dEFjWmJldEtMNktVcHNSdFZ4RHJhRTlSTlVCNUFvdTRmNnFvOEoyeVhKdWpD?=
- =?utf-8?B?SktiSXNWV08vY0l3ZERqSHRWemdUeCsxVHpRZGRBNkJPeXZ3QVhORnRXNmZq?=
- =?utf-8?B?NXo4WCt0eXJnVjFkUWhiSzBRMHlPWTl4WTROc0dycjUyeUtHbFJicFNDcEVE?=
- =?utf-8?B?TzZjUVNCMU5oT2tKKytHc2tscGx3T0pkQ3VPdnRqWmkweTl1ajdNdWl1MTdD?=
- =?utf-8?B?ZHkvQ1hzVXliSk5kcXpTSkZYR2t2YVF3MWlFQk9vaytHMFM0RDZ0SnlXKzd1?=
- =?utf-8?B?dWNleTNNRzFzRkl1U3ozUjd4bEUrdXBlbkdBYnRnclhtcXNGVVIyZkpPTnVU?=
- =?utf-8?Q?x2ULVRi5SzFFfNyFwqyFO8kim?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20210112; t=1679593983;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UNlU/dImMAR9PDxxI0s95TJ5dyS1Y5Lepeba170fA/o=;
+        b=L+NEcWGjZ/go6ert+EXlAxDJQnO06RSthhAMwsWd7rmvImymaL+4KN8NFxdrw8GLob
+         HHE9dKnnd8BKaQ0JZaAVkh7U0vAyOT9U0x8S0MSShwIbt6PJOimRhT2Dj98tbIOECiGl
+         5ZHFJJGF63W4PAzFhHvPr0e5soCYrCdWi6fx0GUuGvoe9zYMbRycvd+tk/NBnBPWPCh6
+         F7+zi3O5+ooxvsNQsXKlVI0Jm1w56HdPpk6qy6OdpLWEbdoeaphDQLSBK/dslMNSpmBe
+         +db93Fi9h7bq5eBCpiD3ngTAwAOkkh/KEb0R6TtJM+yrdMcwN2GlHv0ufT8vuDnDeXDU
+         pXwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679593983;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UNlU/dImMAR9PDxxI0s95TJ5dyS1Y5Lepeba170fA/o=;
+        b=oqCeJCOztGax9JaxOIAsdEL+7257STsAzAUyoh1gVZt970bDlfAln8u1UE6w7++OQw
+         r21bbKRXI81A8++jNZwxhUFPXUiNyD3HGAq3PuIan3ty/5AUaHEsYGO3Qrz3kpY9Xuli
+         XcjvW5jeA8ZeAY5pHOykiatGeAXein18g0qjt4aboVKlMlnK/sQo4ZJbtjQVQTgDLo0S
+         vNlG49u5lih9EBUH+QWr/OabM6LGA1wwnkUF0/8tN4rRyTyUPx2SCsiBBwQ+1v44hEcb
+         yPvuI0M1Oz4xp3Lf6B49+hGkO8urW1lezYpPEsY7nGkClQFCsG/5TRwrHm0f/JtBUzvL
+         ohZw==
+X-Gm-Message-State: AO0yUKXianP0UA32KDjTwz7u0F3Npw1TipVYDMPo79FxSs5E1DEvdByr
+	kukFJ+hWKCmQRpfEmDFxVlY=
+X-Google-Smtp-Source: 
+ AK7set9IWYkq8vOqWDrw2argZnBJ+KtjvpJcDPy+i5/sNZPDv/rFGbOe/tskaGFQHckkuiBG3yNsmw==
+X-Received: by 2002:aa7:9e04:0:b0:625:500c:35bd with SMTP id
+ y4-20020aa79e04000000b00625500c35bdmr6854610pfq.6.1679593983704;
+        Thu, 23 Mar 2023 10:53:03 -0700 (PDT)
+Received: from ryan-ThinkPad-T470.. (c-24-6-63-212.hsd1.ca.comcast.net.
+ [24.6.63.212])
+        by smtp.gmail.com with ESMTPSA id
+ k17-20020a63d111000000b004fbb4a55b64sm11761040pgg.86.2023.03.23.10.53.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Mar 2023 10:53:03 -0700 (PDT)
+From: =?UTF-8?q?=E2=80=9CRyan?= <ryan.lee.analog@gmail.com>
+To: lgirdwood@gmail.com,
+	broonie@kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	krzysztof.kozlowski@linaro.org,
+	rf@opensource.cirrus.com,
+	ckeepax@opensource.cirrus.com,
+	pierre-louis.bossart@linux.intel.com,
+	herve.codina@bootlin.com,
+	wangweidong.a@awinic.com,
+	james.schulman@cirrus.com,
+	ajye_huang@compal.corp-partner.google.com,
+	shumingf@realtek.com,
+	povik+lin@cutebit.org,
+	flatmax@flatmax.com,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	robh+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	ryans.lee@analog.com
+Subject: [PATCH V3 2/2] ASoC: dt-bindings: max98363: add soundwire amplifier
+Date: Thu, 23 Mar 2023 10:52:56 -0700
+Message-Id: <20230323175256.2606939-2-ryan.lee.analog@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230323175256.2606939-1-ryan.lee.analog@gmail.com>
+References: <20230323175256.2606939-1-ryan.lee.analog@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: analog.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR03MB6681.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 
- 1774d93e-63b8-4eb2-b387-08db2bc72a8f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Mar 2023 17:51:01.5291
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 
- hoKCpl8Z/DhEqLLnM6Xb94W6aq1wEhVyOqamksVXAF38O0Ev6ojTWwh/xFreWova2AOFVVBX4zTlPR58s0Lfkw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR03MB5287
-X-Proofpoint-GUID: UIl6GWf15A1gBCEINLRtpj7493UKPyMB
-X-Proofpoint-ORIG-GUID: UIl6GWf15A1gBCEINLRtpj7493UKPyMB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-03-22_21,2023-03-23_02,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0
- impostorscore=0 adultscore=0 priorityscore=1501 mlxlogscore=732 mlxscore=0
- phishscore=0 bulkscore=0 lowpriorityscore=0 suspectscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303150002 definitions=main-2303230130
-Message-ID-Hash: BHVUOWT6VNPXCMBZIQ2EYUQKVBAKFQGZ
-X-Message-ID-Hash: BHVUOWT6VNPXCMBZIQ2EYUQKVBAKFQGZ
-X-MailFrom: RyanS.Lee@analog.com
+Content-Transfer-Encoding: 8bit
+Message-ID-Hash: CNXCSGQN3QT57CUEBV4PWLDQAROTF3O4
+X-Message-ID-Hash: CNXCSGQN3QT57CUEBV4PWLDQAROTF3O4
+X-MailFrom: ryan.lee.analog@gmail.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
@@ -233,7 +122,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ZHVUJWA4PFTJPM7I2FAWMKZW3F2UEU4K/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CNXCSGQN3QT57CUEBV4PWLDQAROTF3O4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -242,35 +131,93 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBQaWVycmUtTG91aXMgQm9zc2Fy
-dCA8cGllcnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tPg0KPiBTZW50OiBNb25kYXks
-IE1hcmNoIDEzLCAyMDIzIDc6NDcgQU0NCj4gVG86IOKAnFJ5YW4gPHJ5YW4ubGVlLmFuYWxvZ0Bn
-bWFpbC5jb20+OyBsZ2lyZHdvb2RAZ21haWwuY29tOw0KPiBicm9vbmllQGtlcm5lbC5vcmc7IHBl
-cmV4QHBlcmV4LmN6OyB0aXdhaUBzdXNlLmNvbTsNCj4ga3J6eXN6dG9mLmtvemxvd3NraUBsaW5h
-cm8ub3JnOyByZkBvcGVuc291cmNlLmNpcnJ1cy5jb207DQo+IGNrZWVwYXhAb3BlbnNvdXJjZS5j
-aXJydXMuY29tOyBoZXJ2ZS5jb2RpbmFAYm9vdGxpbi5jb207DQo+IHdhbmd3ZWlkb25nLmFAYXdp
-bmljLmNvbTsgamFtZXMuc2NodWxtYW5AY2lycnVzLmNvbTsNCj4gYWp5ZV9odWFuZ0Bjb21wYWwu
-Y29ycC1wYXJ0bmVyLmdvb2dsZS5jb207IHNodW1pbmdmQHJlYWx0ZWsuY29tOw0KPiBwb3Zpayts
-aW5AY3V0ZWJpdC5vcmc7IGZsYXRtYXhAZmxhdG1heC5jb207IGxpbnV4LWtlcm5lbEB2Z2VyLmtl
-cm5lbC5vcmc7DQo+IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgcm9iaCtkdEBrZXJuZWwu
-b3JnOw0KPiBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgTGVlLCBSeWFuUyA8UnlhblMuTGVl
-QGFuYWxvZy5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggVjIgMS8yXSBBU29DOiBtYXg5ODM2
-MzogYWRkIHNvdW5kd2lyZSBhbXBsaWZpZXIgZHJpdmVyDQo+IA0KPiBbRXh0ZXJuYWxdDQo+IA0K
-PiANCj4gPiArCXJldCA9IHNkd19zdHJlYW1fYWRkX3NsYXZlKG1heDk4MzYzLT5zbGF2ZSwgJnN0
-cmVhbV9jb25maWcsDQo+ID4gKwkJCQkgICAmcG9ydF9jb25maWcsIDEsIHN0cmVhbSk7DQo+ID4g
-KwlpZiAocmV0KSB7DQo+ID4gKwkJZGV2X2VycihkYWktPmRldiwgIlVuYWJsZSB0byBjb25maWd1
-cmUgcG9ydFxuIik7DQo+ID4gKwkJcmV0dXJuIHJldDsNCj4gPiArCX0NCj4gPiArDQo+ID4gKwlp
-ZiAocGFyYW1zX2NoYW5uZWxzKHBhcmFtcykgPiAxNikgew0KPiA+ICsJCWRldl9lcnIoY29tcG9u
-ZW50LT5kZXYsICJVbnN1cHBvcnRlZCBjaGFubmVscyAlZFxuIiwNCj4gPiArCQkJcGFyYW1zX2No
-YW5uZWxzKHBhcmFtcykpOw0KPiA+ICsJCXJldHVybiAtRUlOVkFMOw0KPiA+ICsJfQ0KPiANCj4g
-RG8geW91IGFjdHVhbGx5IHN1cHBvcnQgbW9yZSB0aGFuIDggY2hhbm5lbHM/DQo+IA0KPiBUaGUg
-ZGF0YSBwb3J0IERQblByZXBhcmVDdGwgYW5kIERQbl9DaGFubmVsRW4gcmVnaXN0ZXJzIGV4cG9z
-ZSA4DQo+IGNoYW5uZWxzIG1heC4gSXQncyBhbHdheXMgcG9zc2libGUgdG8gJ2NoZWF0JyBieSBw
-YWNraW5nIHR3byBjaGFubmVscyBpbiB0aGUNCj4gc2FtZSBzYW1wbGUsIGJ1dCB0aGF0IHdvdWxk
-IHJlcXVpcmUgY3VzdG9tIHNpZ25hbGluZyBiZXR3ZWVuIG1hbmFnZXIgYW5kDQo+IHBlcmlwaGVy
-YWwgdGhhdCBpc24ndCBwcmVzZW50Lg0KPiANCj4gQ291bGQgaXQgYmUgYSBsZWZ0LW92ZXIgZnJv
-bSBhIFRETSBpbXBsZW1lbnRhdGlvbj8NCg0KVGhhbmtzIGZvciB0aGUgY29tbWVudC4NCkkgdGhp
-bmsgaXQgaXMgYSBsZWZ0LW92ZXIgZnJvbSBhIFRETSBpbXBsZW1lbnRhdGlvbi4NCkkgc2hhbGwg
-bW9kaWZ5IHRoZSBjb2RlIHRvIGFjY2VwdCBvbmx5IG1heCBudW1iZXIgb2YgY2hhbm5lbHMgc3Vw
-cG9ydGVkIGJ5IHRoZSBhbXAuDQoNCj4gDQo+IFRoZSByZXN0IG9mIHRoZSBwYXRjaCBsb29rcyBm
-aW5lLg0K
+From: Ryan Lee <ryans.lee@analog.com>
+
+This patch adds dt-bindings information for Analog Devices MAX98363
+SoundWire Amplifier.
+
+Signed-off-by: Ryan Lee <ryans.lee@analog.com>
+---
+Changes from v1:
+  Fixed a syntax error for the 'dt_binding_check' build.
+  Removed unnecessary properties.
+  Added description about SoundWire device ID of MAX98363
+Changes from v2:
+  Removed the legacy from i2c/i2s driver and added SoundWire device ID info.
+  Added missing information about DAI.
+
+ .../bindings/sound/adi,max98363.yaml          | 62 +++++++++++++++++++
+ 1 file changed, 62 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/adi,max98363.yaml
+
+diff --git a/Documentation/devicetree/bindings/sound/adi,max98363.yaml b/Documentation/devicetree/bindings/sound/adi,max98363.yaml
+new file mode 100644
+index 000000000000..92352a23e1cb
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/adi,max98363.yaml
+@@ -0,0 +1,62 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/adi,max98363.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices MAX98363 SoundWire Amplifier
++
++maintainers:
++  - Ryan Lee <ryans.lee@analog.com>
++
++description:
++  The MAX98363 is a SoundWire input Class D mono amplifier that
++  supports MIPI SoundWire v1.2-compatible digital interface for
++  audio and control data.
++  SoundWire peripheral device ID of MAX98363 is 0x3X019F836300
++  where X is the peripheral device unique ID decoded from pin.
++  It supports up to 10 peripheral devices(0x0 to 0x9).
++
++allOf:
++  - $ref: dai-common.yaml#
++
++properties:
++  compatible:
++    const: sdw3019F836300
++
++  reg:
++    maxItems: 1
++
++  '#sound-dai-cells':
++    const: 0
++
++  sound-name-prefix: true
++
++required:
++  - compatible
++  - reg
++  - "#sound-dai-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    soundwire-controller@3250000 {
++        #address-cells = <2>;
++        #size-cells = <0>;
++        reg = <0x3250000 0x2000>;
++
++        speaker@0,0 {
++            compatible = "sdw3019F836300";
++            reg = <0 0>;
++            #sound-dai-cells = <0>;
++            sound-name-prefix = "Speaker Left";
++        };
++
++        speaker@0,1 {
++            compatible = "sdw3019F836300";
++            reg = <0 1>;
++            #sound-dai-cells = <0>;
++            sound-name-prefix = "Speaker Right";
++        };
++    };
+-- 
+2.34.1
+
