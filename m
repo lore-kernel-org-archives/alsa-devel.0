@@ -4,70 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B71FFC6FD1D
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 13:51:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2C3EC6FD1C
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 13:56:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 77AB3ED7;
-	Thu, 23 Mar 2023 14:51:01 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77AB3ED7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4093EEC6;
+	Thu, 23 Mar 2023 14:55:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4093EEC6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679579511;
-	bh=T4lJix39AUgNhUucqrDmDhh1MHwVpu3ucBlsDSHRGiI=;
-	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
+	s=default; t=1679579765;
+	bh=YN3pd5fa+PABp2NpDPUc5U8fZzNOy4moYU5bs9sls9k=;
+	h=Date:From:To:Subject:References:In-Reply-To:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=Zly3DAZ8ysHsI6fB/HTFPTeTFioSIMEPTTTBLov/7Bhcis9KV7RI+fvuUHFsYtji4
-	 ElwcDJQ6zCJ1OFJVqhAMe3QPOW0xd67hmlL+JSj45o19RX1MamrZeUdlb6nFYiPMla
-	 oWWMWBRcQFp5+Wlfn5z+tY3ZzKqRX0IyqBIRDmpo=
+	b=mshOQyzyWB3TaZLxa9hFwt3nCD0te2DcIvKeg0zayKM+fbfOoRIpSwEcqf5yi1Ucn
+	 8QxwZupEDD6FaQkjyOExcida5l+p0P050gfYUWm2j1iktW+0Yk+tKn9AZe+MkzNC8b
+	 ubTPsSLIltra7tnJBO4kdndyslDev5MP42DjyfrU=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9851F8052D;
-	Thu, 23 Mar 2023 14:50:09 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66D39F802E8;
+	Thu, 23 Mar 2023 14:54:52 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 3C3BAF802E8; Thu, 23 Mar 2023 14:50:01 +0100 (CET)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+	id F28C1F802E8; Thu, 23 Mar 2023 14:54:47 +0100 (CET)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id F0430F8027B
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 14:49:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0430F8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 127CEF800C9
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 14:54:43 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 127CEF800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=fDoTgyYT
+ header.s=k20201202 header.b=j0ikepir
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 60E286270A;
-	Thu, 23 Mar 2023 13:49:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E45CC4339B;
-	Thu, 23 Mar 2023 13:49:52 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 158EAB81E21;
+	Thu, 23 Mar 2023 13:54:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBC88C433D2;
+	Thu, 23 Mar 2023 13:54:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679579393;
-	bh=T4lJix39AUgNhUucqrDmDhh1MHwVpu3ucBlsDSHRGiI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=fDoTgyYTQn9i2Ae2EVZfJnRUuebxlkf+/7sKrO1wmSXZT4m+E4XkSu+NQubANarjx
-	 +sxXYTz7hW5YpQPNXskSsSYBTaqVvK4jy3QwUMgabWxDB3dE3uYdKteapEeNQDeZco
-	 GLW3nPbQtMmCMC7ExGSF3wI09YoOYEIY8glOv2N89j8GJREt7XwUpKGJ7h6tJnUd3N
-	 /RBclVFy9cyCJkTSdrEtPwkqNgHBLwVcWXJDn+cHQTNZVOfwb4tTHYr7fwoLFRzp3V
-	 21CHMyLr6sM5f2odTa8pE96tKSb8bvEn1txo1vEZLAAR6czX6sLuS3C6oeSOt2PP0Y
-	 2x7GFow78hD8g==
+	s=k20201202; t=1679579681;
+	bh=YN3pd5fa+PABp2NpDPUc5U8fZzNOy4moYU5bs9sls9k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=j0ikepir2a4P6A5QIXaDyC5op/5TG0l/bm+uANGiOdsLVO5NCliC56Pxj7aPJ72kv
+	 NVwEOhgI+HwWqSN0tnk1vEHyeREGjnq/Z/BWlgZcKjma4eEDrc6H/pO9MIQLihFaPc
+	 2+h5m0JtOvmXmLkOuV8fC7Kzj1rTUeGRKTp2ctiZkz2XXdqydC5K6QYKmNv1mvLhqZ
+	 efJuGJRmrNyQo9EU43ctAu61zs7SbFcJwce51llkGvZsvez78msOYTSUDwQxAI2q6O
+	 bROFjq2zaMng+TMs9r6V8vf1dhaEgAuYji9QhFXcCKuuXX6Usf13rsXUHso22TJy4d
+	 waC0AR3lbc2KA==
+Date: Thu, 23 Mar 2023 13:54:36 +0000
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230321134919.25844-1-peter.ujfalusi@linux.intel.com>
-References: <20230321134919.25844-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: ipc4-control: Return on error in
- sof_ipc4_widget_kcontrol_setup()
-Message-Id: <167957939191.26985.13455051100847092987.b4-ty@kernel.org>
-Date: Thu, 23 Mar 2023 13:49:51 +0000
+To: =?utf-8?B?5rKI5LiA6LaF?= <zhuning0077@gmail.com>
+Subject: Re: [PATCH 3/4] ASoC: amd: acp: Add machine driver that enables
+ sound for systems with a ES8336 codec
+Message-ID: <42b02a34-1b96-4699-8b0d-3610c5376a7c@sirena.org.uk>
+References: 
+ <CANPLYpD8Ty9QjMf3vs9n8wCCFyaHiiRpYM-b3kNGiA0r3q+sEg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-bd1bf
-Message-ID-Hash: N7UBMFZ4QMVDFAGPUDVQGKP4LDZCZKTW
-X-Message-ID-Hash: N7UBMFZ4QMVDFAGPUDVQGKP4LDZCZKTW
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="8VlENQAJDfsfHDVY"
+Content-Disposition: inline
+In-Reply-To: 
+ <CANPLYpD8Ty9QjMf3vs9n8wCCFyaHiiRpYM-b3kNGiA0r3q+sEg@mail.gmail.com>
+X-Cookie: A lie in time saves nine.
+Message-ID-Hash: GHFVRH55Y6P6IDVOCI3IF7B2JVUKFWQX
+X-Message-ID-Hash: GHFVRH55Y6P6IDVOCI3IF7B2JVUKFWQX
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -75,15 +78,16 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- error27@gmail.com
+CC: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, posteuca@mutex.one, tiwai@suse.com,
+ yangxiaohua <yangxiaohua@everest-semi.com>,
+ Zhu Ning <zhuning@everest-semi.com>
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/N7UBMFZ4QMVDFAGPUDVQGKP4LDZCZKTW/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/GHFVRH55Y6P6IDVOCI3IF7B2JVUKFWQX/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -92,41 +96,60 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 21 Mar 2023 15:49:19 +0200, Peter Ujfalusi wrote:
-> The patch adding the bytes control support moved the error check outside
-> of the list_for_each_entry() which will cause issues when we will have
-> support for multiple controls per widgets.
-> 
-> Restore the original logic and return on the first error with the error
-> code.
-> 
-> [...]
 
-Applied to
+--8VlENQAJDfsfHDVY
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Thu, Mar 23, 2023 at 09:56:56AM +0800, =E6=B2=88=E4=B8=80=E8=B6=85 wrote:
 
-Thanks!
+> > Yes, for example consider a critical notification - the system
+> > may wish to ensure it is audible even if the user has taken off
+> > their headphones for some reason.
 
-[1/1] ASoC: SOF: ipc4-control: Return on error in sof_ipc4_widget_kcontrol_setup()
-      commit: 1c12e032cc43256d75fdd22e60a7df85e8df4549
+> In practice the speaker and the headphone are conflicting devices, see
+> https://github.com/alsa-project/alsa-ucm-conf/blob/master/ucm2/Intel/sof-=
+essx8336/HiFi.conf
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+That's a particular UCM configuration that someone has created, someone
+with a different set of use cases might create a different UCM setup (or
+not use UCM at all).  This is a large part of the point of having use
+case configuration in userspace.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> There is no such situation, and the system doesn't produce sound from spe=
+aker
+> when headphones are plugged in. The user may manually open speaker using
+> amixer sset 'Speaker' on or pavucontrol.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Again, you're describing a specific configuration - someone might want
+to do something different.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> The GPIO thing on Huawei Intel platform is too complicated, they use two =
+GPIOs
+> for headphone and speaker, and the headphone GPIO is inverted, which mean=
+s low
+> means on and high means off. Luckily there should be only one hardware co=
+nfig
+> for the AMD acp3x platform GPIO and you may just choose the correct one.
 
-Thanks,
-Mark
+There being two different GPIOs sounds like it just allows the headphone
+and speaker to be controlled separately - that seems more flexible, not
+a problem?
 
+--8VlENQAJDfsfHDVY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmQcWhsACgkQJNaLcl1U
+h9AN5gf/RQqA84CKvfzCVkUU7Gd3CL1ND9/ZkZ1k/a4lEqn0Rpq99tbk1hCUuFvq
+2jAhp8Sd0XtxLl8FO4WqQxpiIxWMs1Vkp5Hwz0N+Admm4yvfjnX8UUf9GULKqbNb
+2dSarPGe7SASIjJl2YWa8L4H2HSgGOoAe8TNaY5o3CZafqWVRCZXEuX5QCzDm260
+fVN5vgAQjqG+IJoYz2uBLSPp2snzCM+L+yB1nZeMxEsTVLgSmXyyM/KWHVEdOzvJ
+FxYrFITGKsk2ejLd2p+QuYIk0t0EPEQxWL59Ti/BHk7kiQbskwQEKNJuNDO8fb6G
+RhHDDOMZChSuipICfkUAOsAt/sCPiQ==
+=+n6T
+-----END PGP SIGNATURE-----
+
+--8VlENQAJDfsfHDVY--
