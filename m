@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56D2DC6FD1D
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 13:51:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14BD5C6FD1C
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 13:51:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8023EEC7;
-	Thu, 23 Mar 2023 14:50:26 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8023EEC7
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9D12ECD;
+	Thu, 23 Mar 2023 14:50:54 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9D12ECD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679579476;
-	bh=yAzkV6grSee3ZhAMytDT78qAG+Cw2Q+FPunKiJuj/lw=;
+	s=default; t=1679579504;
+	bh=OQKP1F3tlBZ6sra4wC2k5OiScd+cqQpojwW0mTkO2w0=;
 	h=From:To:In-Reply-To:References:Subject:Date:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=q/m7oWIClJzdTwARtHmamcnCNdZNZDlX+JdzZDUpPD7dejTPm2DkTKg6HJuDLCLEz
-	 hHFXP3XpusByc3qb7qpzARXPRBBvCv3vPrJgVTnNMTGR8zkilt/xBMfWQXglyzi2oQ
-	 zQpJt7T9K0F5LKDIj7P8iTMXWs7oudXcuG2vCE88=
+	b=FVNbsD0a7R7Zy9dNcAYDHb1lzV4rEkRp/WJkaPZwxpvLmehjCE2w8yKWunAgo8/du
+	 illu/THfwZLyedu9RfQbuhY6hauhRUQp0kpuZlpUn0lMOF4zEOxRld0slMsrMiQ4EV
+	 DHlMDMqGqtlyRmDpZHk3JjuTuNJHw3xflsZuyyLw=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B9B3F802E8;
-	Thu, 23 Mar 2023 14:50:03 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29106F8051B;
+	Thu, 23 Mar 2023 14:50:06 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 2ED68F804B1; Thu, 23 Mar 2023 14:49:59 +0100 (CET)
+	id DE2F7F80482; Thu, 23 Mar 2023 14:49:59 +0100 (CET)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 70980F800C9
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 14:49:54 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70980F800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id D0873F80254
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 14:49:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0873F80254
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
- header.s=k20201202 header.b=Nq68+a6B
+ header.s=k20201202 header.b=objQDM4I
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4F689626BB;
-	Thu, 23 Mar 2023 13:49:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23815C433EF;
-	Thu, 23 Mar 2023 13:49:49 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id A09AC626D2;
+	Thu, 23 Mar 2023 13:49:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E95BC4339C;
+	Thu, 23 Mar 2023 13:49:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1679579391;
-	bh=yAzkV6grSee3ZhAMytDT78qAG+Cw2Q+FPunKiJuj/lw=;
+	s=k20201202; t=1679579395;
+	bh=OQKP1F3tlBZ6sra4wC2k5OiScd+cqQpojwW0mTkO2w0=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Nq68+a6BvMZaLwlV29Ile/3Db56WqBNHtLNH+SLq1M8HU3mqXhmcp4wEqXjAv+JJJ
-	 zap+FM6qd0kHcLyaamnCnhKmnodFB/FtE0kdpPy3tS4rUKkmopsPqK87FTaHrCqdz4
-	 ettwr7s4SWQMQ9R1Xp/7IkuizvXI4WXRVVt4eoq63nevG/h9IeD422J29IW554jtA7
-	 HhJioogWYOBH2DDdWCRQxpZDTgNi2v8ysnYQNLSRuBZuyyAF/PlOXEPaNvU2KjlrnS
-	 j1t5nbM8fiTCfQ3EGlweehbzDL3h/pN0d7FjdTweJ8iNxemcGyq3RHz5ZL/TkI98Zf
-	 G+7S6RLR+QwWg==
+	b=objQDM4I4H0tKSfP320A6WpVFIaBHuuuFvIcfVTvw/Cp8dsU9Ey4A+r+oDKdqCFJx
+	 k9luy3ZYSwo7cDqpQGIC27ikMX9TysDUTp0r8pDFleZrRi4Mp9WLsxQt4Q8fHCBMJ1
+	 18cBkvPPTnm+owKXeC6LMJmSMGBGM68c9aw2QjYcpu73ZS0MJdmq8c5VRUPEAVC1+m
+	 CgeDRaGB/C/+E+JofJ3M25i54Mf7F6iFB+Ti7q/VtQIv8+fMmJe4lbvpe6Tt3cbbcq
+	 BxMnoDIF55oznIsPwKQQsw6cktnsbYQWX9dyEmbmpWpqxX5DxAMG18Bxu9m1luuHfl
+	 uIgNfKXjuvefQ==
 From: Mark Brown <broonie@kernel.org>
 To: lgirdwood@gmail.com, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20230321092654.7292-1-peter.ujfalusi@linux.intel.com>
-References: <20230321092654.7292-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH 0/3] ASoC: SOF: ipc4/intel: Support for ChainDMA
-Message-Id: <167957938986.26985.1129337044165292533.b4-ty@kernel.org>
-Date: Thu, 23 Mar 2023 13:49:49 +0000
+In-Reply-To: <20230321145651.9118-1-peter.ujfalusi@linux.intel.com>
+References: <20230321145651.9118-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH v2] ASoC: SOF: ipc4-control: Return on error in
+ sof_ipc4_widget_kcontrol_setup()
+Message-Id: <167957939378.26985.6396240503012708805.b4-ty@kernel.org>
+Date: Thu, 23 Mar 2023 13:49:53 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-bd1bf
-Message-ID-Hash: CJJG3C3YL3OTIFAZ7JQLMIHSLH7QA6EK
-X-Message-ID-Hash: CJJG3C3YL3OTIFAZ7JQLMIHSLH7QA6EK
+Message-ID-Hash: HEPMMTPZVVRM57S6BJETVN2TGG2TJ5P5
+X-Message-ID-Hash: HEPMMTPZVVRM57S6BJETVN2TGG2TJ5P5
 X-MailFrom: broonie@kernel.org
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -75,13 +76,13 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  no-subject; digests; suspicious-header
 CC: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
  ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- jyri.sarha@intel.com, rander.wang@intel.com
+ error27@gmail.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/CJJG3C3YL3OTIFAZ7JQLMIHSLH7QA6EK/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HEPMMTPZVVRM57S6BJETVN2TGG2TJ5P5/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -90,15 +91,14 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Tue, 21 Mar 2023 11:26:51 +0200, Peter Ujfalusi wrote:
-> On a platform when the DSP is in use, we cannot select individual links to use
-> or not use the DSP, it is either all or none.
-> On some audio endpoint, like HDMI/DP, it is preferred to not use any processing
-> in DSP to reduce the latency and to allow bytestream pass-through (DTS, DD, etc)
+On Tue, 21 Mar 2023 16:56:51 +0200, Peter Ujfalusi wrote:
+> The patch adding the bytes control support moved the error check outside
+> of the list_for_each_entry() which was not correct as at the end of the
+> list_for_each_entry() the scontrol will no longer point where the error
+> happened, but it to the list head.
 > 
-> IPC4 introduces a new type of end-to-end connection within the DSP which is using
-> the host DMA and link DMA in a single buffer, working back-to-back, passing the
-> received data without looking at it or trying to understand the format, content.
+> Restore the original logic and return on the first error with the error
+> code.
 > 
 > [...]
 
@@ -108,12 +108,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: SOF: topology: Set pipeline widget before updating IPC structures
-      commit: 3d3e223f09ed59f7a47d27cf4301b4d0d5c7fc3d
-[2/3] ASoC: SOF: ipc4: Add macros for chain-dma message bits
-      commit: cb3cdef33136baceada86ba2a21ba30cd53a9087
-[3/3] ASoC: SOF: ipc4/intel: Add support for chained DMA
-      commit: ca5ce0caa67fa9eeecaa29d895c2e4c3151c159e
+[1/1] ASoC: SOF: ipc4-control: Return on error in sof_ipc4_widget_kcontrol_setup()
+      commit: 1c12e032cc43256d75fdd22e60a7df85e8df4549
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
