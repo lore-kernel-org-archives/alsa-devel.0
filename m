@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1839C6FD1D
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 05:35:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1337C6FD1C
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Mar 2023 05:35:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49506EDF;
-	Thu, 23 Mar 2023 06:34:28 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49506EDF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E34CECE;
+	Thu, 23 Mar 2023 06:34:50 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E34CECE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679549718;
-	bh=i8UIQbcY1RfdSYTZStIqpYEudpa7eTQXB2/ovkpVbLI=;
+	s=default; t=1679549740;
+	bh=aNL2KliVK/W0PGGaQa+13McnVurhskx2OOU+yOO7uSY=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=mfUkTBu+N5tcu4QQRwCfmCA31cLJ8/zdnJhon1R3DjsOixwTy9wkB5gZym4DkNK4c
-	 8N1IcAmYxVHI33tJu7ZyuLLQkotE1OZrDxejC7Ps/RUp+QVvJQq6AOKB0nWqV3K+DE
-	 EvDFUbKy0ShKz7KM5NPBP1zYtHW9EaUUAUNLvso0=
+	b=GCEDPQJ8WBnLtsnFZYiTvJMjnBYa4UTkhkUpQnTrKm0qq52JRyKWvc1ySt7ms7GXS
+	 5Fh7knuKRAXw5FrSVIWlHKBdsnSKCZsy5fYvQNkyvrGesGgcKj6zESIbz8dyTJTmKj
+	 KZ32Xq8xX/+wMHLS4HmjqxsFkVX57jthGa2mZg6A=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 038F9F8055A;
-	Thu, 23 Mar 2023 06:32:55 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 797FFF80570;
+	Thu, 23 Mar 2023 06:32:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 919D8F80549; Thu, 23 Mar 2023 06:30:53 +0100 (CET)
+	id EDD5FF80527; Thu, 23 Mar 2023 06:30:58 +0100 (CET)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 1C6CEF80527
-	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 06:30:23 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C6CEF80527
+	by alsa1.perex.cz (Postfix) with ESMTPS id C400CF8053B
+	for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2023 06:30:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C400CF8053B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=OsMALcgX
+ header.s=Intel header.b=BsZQB9SO
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679549425; x=1711085425;
+  t=1679549427; x=1711085427;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=i8UIQbcY1RfdSYTZStIqpYEudpa7eTQXB2/ovkpVbLI=;
-  b=OsMALcgXPUDnUaXLEzq88E8SHw+3/3QI+Q0x++APCLPLN0R4knm+vmIW
-   2ETJ+he7uPm85DBhOKsmmjlfMED3YFngDtExXTQcRtj023AA0wyElB+Z+
-   dsMs9pdYQlKHAXX0YzM0VL+hzxYAbLvKEciY9nVteXhkz5hbntdg7GbUP
-   jI+8+ouNV/mCqCBdF5BDcXnSaXUVhhEwUW5wza3M2AuWiuO3vP274Acp+
-   ohzLZoHd59zEgLNOgDd7Q/cGI1STcZKF9LeCB5rRTMzZGA3QVY/UPVuXy
-   P6iakbYHbQb4L4kWXX2iXNFdxk3hoOUaMfHhqAxz/0CeCgj6GO6YwjRyV
+  bh=aNL2KliVK/W0PGGaQa+13McnVurhskx2OOU+yOO7uSY=;
+  b=BsZQB9SOIi2/VHr5WxwK2lH3l+bRSMa985S8nuZwDyxImEGitJCuvrjv
+   tsdfAjpH4dsV4K6S5kdB6SwSQtMRHkK6cx36OwlDiGa4xjdu2oZObeOE/
+   qb4oCfgRiiS2R//NZTS2vjLy5v2P0vC1BUZLJQojC5h0mbZ9Qrac5EDBS
+   whMIZCm9zpcx8aTgV3nRHjDYxe1KL5j38bCILzJ0NCl5JOHoDPPEi9eiu
+   2ymCb6zFm8E7wMErT2byg0A0rcDdOCwVvPSm1i1SAg5yuaqMlhUigWRHc
+   ZHwOiDJP3cMyo41jggLsUBfSZdWQGkSRySEpHtn+4qdS7gAqbfKwY8Lk+
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="327779400"
+X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="327779424"
 X-IronPort-AV: E=Sophos;i="5.98,283,1673942400";
-   d="scan'208";a="327779400"
+   d="scan'208";a="327779424"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Mar 2023 22:30:15 -0700
+ 22 Mar 2023 22:30:21 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="675567094"
+X-IronPort-AV: E=McAfee;i="6600,9927,10657"; a="675567132"
 X-IronPort-AV: E=Sophos;i="5.98,283,1673942400";
-   d="scan'208";a="675567094"
+   d="scan'208";a="675567132"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
   by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Mar 2023 22:30:13 -0700
+ 22 Mar 2023 22:30:18 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org,
 	broonie@kernel.org
-Subject: [PATCH 10/20] soundwire: intel_ace2x: add debugfs support
-Date: Thu, 23 Mar 2023 13:44:42 +0800
-Message-Id: <20230323054452.1543233-11-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 12/20] soundwire: intel_ace2x: set SYNCPRD before powering-up
+Date: Thu, 23 Mar 2023 13:44:44 +0800
+Message-Id: <20230323054452.1543233-13-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230323054452.1543233-1-yung-chuan.liao@linux.intel.com>
 References: <20230323054452.1543233-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: ICOFGGM54QH4FOXP7LW54LM2QTT2CIGY
-X-Message-ID-Hash: ICOFGGM54QH4FOXP7LW54LM2QTT2CIGY
+Message-ID-Hash: VLARTQMHJ64S5JJG4WEJKIPVZTOGXUI4
+X-Message-ID-Hash: VLARTQMHJ64S5JJG4WEJKIPVZTOGXUI4
 X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -91,7 +91,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/ICOFGGM54QH4FOXP7LW54LM2QTT2CIGY/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/VLARTQMHJ64S5JJG4WEJKIPVZTOGXUI4/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -102,7 +102,14 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Add access to registers in SHIM and SHIM_VS (vendor-specific) areas.
+The registers used for multi-link synchronization are no longer in the
+SHIM but in the HDaudio multi-link capability space. Use helpers to
+configure the SYNCPRD value, and wait for SYNCPU to change after
+powering-up.
+
+Note that the SYNCPRD value is shared between all sublinks, for
+obvious reasons if those links are supposed to be synchronized. The
+value of SYNCPRD is programmed only once for all sublinks.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
@@ -110,211 +117,85 @@ Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/Makefile              |   3 +-
- drivers/soundwire/intel.h               |   8 ++
- drivers/soundwire/intel_ace2x.c         |   2 +
- drivers/soundwire/intel_ace2x_debugfs.c | 147 ++++++++++++++++++++++++
- 4 files changed, 159 insertions(+), 1 deletion(-)
- create mode 100644 drivers/soundwire/intel_ace2x_debugfs.c
+ drivers/soundwire/intel_ace2x.c | 42 +++++++++++++++++++++++++++++++--
+ 1 file changed, 40 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soundwire/Makefile b/drivers/soundwire/Makefile
-index d7212777a927..c57571c82e04 100644
---- a/drivers/soundwire/Makefile
-+++ b/drivers/soundwire/Makefile
-@@ -20,7 +20,8 @@ soundwire-cadence-y := cadence_master.o
- obj-$(CONFIG_SOUNDWIRE_CADENCE) += soundwire-cadence.o
- 
- #Intel driver
--soundwire-intel-y :=	intel.o  intel_ace2x.o intel_auxdevice.o intel_init.o dmi-quirks.o \
-+soundwire-intel-y :=	intel.o intel_ace2x.o intel_ace2x_debugfs.o \
-+			intel_auxdevice.o intel_init.o dmi-quirks.o \
- 			intel_bus_common.o
- obj-$(CONFIG_SOUNDWIRE_INTEL) += soundwire-intel.o
- 
-diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
-index cf9db4906de4..511932c55216 100644
---- a/drivers/soundwire/intel.h
-+++ b/drivers/soundwire/intel.h
-@@ -95,6 +95,14 @@ static inline void intel_writew(void __iomem *base, int offset, u16 value)
- 					 (sdw)->link_res->hw_ops->cb)
- #define SDW_INTEL_OPS(sdw, cb)		((sdw)->link_res->hw_ops->cb)
- 
-+#ifdef CONFIG_DEBUG_FS
-+void intel_ace2x_debugfs_init(struct sdw_intel *sdw);
-+void intel_ace2x_debugfs_exit(struct sdw_intel *sdw);
-+#else
-+static inline void intel_ace2x_debugfs_init(struct sdw_intel *sdw) {}
-+static inline void intel_ace2x_debugfs_exit(struct sdw_intel *sdw) {}
-+#endif
-+
- static inline void sdw_intel_debugfs_init(struct sdw_intel *sdw)
- {
- 	if (SDW_INTEL_CHECK_OPS(sdw, debugfs_init))
 diff --git a/drivers/soundwire/intel_ace2x.c b/drivers/soundwire/intel_ace2x.c
-index 623e4fd7db91..1c47bb2adb93 100644
+index 5b6a608e63ba..01668246b7ba 100644
 --- a/drivers/soundwire/intel_ace2x.c
 +++ b/drivers/soundwire/intel_ace2x.c
-@@ -15,5 +15,7 @@
- #include "intel.h"
+@@ -17,17 +17,51 @@
  
- const struct sdw_intel_hw_ops sdw_intel_lnl_hw_ops = {
-+	.debugfs_init = intel_ace2x_debugfs_init,
-+	.debugfs_exit = intel_ace2x_debugfs_exit,
- };
- EXPORT_SYMBOL_NS(sdw_intel_lnl_hw_ops, SOUNDWIRE_INTEL);
-diff --git a/drivers/soundwire/intel_ace2x_debugfs.c b/drivers/soundwire/intel_ace2x_debugfs.c
-new file mode 100644
-index 000000000000..3d24661ffd37
---- /dev/null
-+++ b/drivers/soundwire/intel_ace2x_debugfs.c
-@@ -0,0 +1,147 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+// Copyright(c) 2023 Intel Corporation. All rights reserved.
+ static int intel_link_power_up(struct sdw_intel *sdw)
+ {
++	struct sdw_bus *bus = &sdw->cdns.bus;
++	struct sdw_master_prop *prop = &bus->prop;
++	u32 *shim_mask = sdw->link_res->shim_mask;
++	unsigned int link_id = sdw->instance;
++	u32 syncprd;
+ 	int ret;
+ 
+ 	mutex_lock(sdw->link_res->shim_lock);
+ 
+-	ret = hdac_bus_eml_sdw_power_up_unlocked(sdw->link_res->hbus, sdw->instance);
++	if (!*shim_mask) {
++		/* we first need to program the SyncPRD/CPU registers */
++		dev_dbg(sdw->cdns.dev, "first link up, programming SYNCPRD\n");
 +
-+#include <linux/acpi.h>
-+#include <linux/debugfs.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/io.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/soundwire/sdw.h>
-+#include <linux/soundwire/sdw_intel.h>
-+#include <linux/soundwire/sdw_registers.h>
-+#include "bus.h"
-+#include "cadence_master.h"
-+#include "intel.h"
++		if (prop->mclk_freq % 6000000)
++			syncprd = SDW_SHIM_SYNC_SYNCPRD_VAL_38_4;
++		else
++			syncprd = SDW_SHIM_SYNC_SYNCPRD_VAL_24;
 +
-+/*
-+ * debugfs
-+ */
-+#ifdef CONFIG_DEBUG_FS
-+
-+#define RD_BUF (2 * PAGE_SIZE)
-+
-+static ssize_t intel_sprintf(void __iomem *mem, bool l,
-+			     char *buf, size_t pos, unsigned int reg)
-+{
-+	int value;
-+
-+	if (l)
-+		value = intel_readl(mem, reg);
-+	else
-+		value = intel_readw(mem, reg);
-+
-+	return scnprintf(buf + pos, RD_BUF - pos, "%4x\t%4x\n", reg, value);
-+}
-+
-+static int intel_reg_show(struct seq_file *s_file, void *data)
-+{
-+	struct sdw_intel *sdw = s_file->private;
-+	void __iomem *s = sdw->link_res->shim;
-+	void __iomem *vs_s = sdw->link_res->shim_vs;
-+	ssize_t ret;
-+	u32 pcm_cap;
-+	int pcm_bd;
-+	char *buf;
-+	int j;
-+
-+	buf = kzalloc(RD_BUF, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	ret = scnprintf(buf, RD_BUF, "Register  Value\n");
-+	ret += scnprintf(buf + ret, RD_BUF - ret, "\nShim\n");
-+
-+	ret += intel_sprintf(s, true, buf, ret, SDW_SHIM2_LECAP);
-+	ret += intel_sprintf(s, false, buf, ret, SDW_SHIM2_PCMSCAP);
-+
-+	pcm_cap = intel_readw(s, SDW_SHIM2_PCMSCAP);
-+	pcm_bd = FIELD_GET(SDW_SHIM2_PCMSCAP_BSS, pcm_cap);
-+
-+	for (j = 0; j < pcm_bd; j++) {
-+		ret += intel_sprintf(s, false, buf, ret,
-+				SDW_SHIM2_PCMSYCHM(j));
-+		ret += intel_sprintf(s, false, buf, ret,
-+				SDW_SHIM2_PCMSYCHC(j));
++		ret =  hdac_bus_eml_sdw_set_syncprd_unlocked(sdw->link_res->hbus, syncprd);
++		if (ret < 0) {
++			dev_err(sdw->cdns.dev, "%s: hdac_bus_eml_sdw_set_syncprd failed: %d\n",
++				__func__, ret);
++			goto out;
++		}
 +	}
 +
-+	ret += scnprintf(buf + ret, RD_BUF - ret, "\nVS CLK controls\n");
-+	ret += intel_sprintf(vs_s, true, buf, ret, SDW_SHIM2_INTEL_VS_LVSCTL);
++	ret = hdac_bus_eml_sdw_power_up_unlocked(sdw->link_res->hbus, link_id);
+ 	if (ret < 0) {
+ 		dev_err(sdw->cdns.dev, "%s: hdac_bus_eml_sdw_power_up failed: %d\n",
+ 			__func__, ret);
+ 		goto out;
+ 	}
+ 
++	if (!*shim_mask) {
++		/* SYNCPU will change once link is active */
++		ret =  hdac_bus_eml_sdw_wait_syncpu_unlocked(sdw->link_res->hbus);
++		if (ret < 0) {
++			dev_err(sdw->cdns.dev, "%s: hdac_bus_eml_sdw_wait_syncpu failed: %d\n",
++				__func__, ret);
++			goto out;
++		}
++	}
 +
-+	ret += scnprintf(buf + ret, RD_BUF - ret, "\nVS Wake registers\n");
-+	ret += intel_sprintf(vs_s, false, buf, ret, SDW_SHIM2_INTEL_VS_WAKEEN);
-+	ret += intel_sprintf(vs_s, false, buf, ret, SDW_SHIM2_INTEL_VS_WAKESTS);
++	*shim_mask |= BIT(link_id);
 +
-+	ret += scnprintf(buf + ret, RD_BUF - ret, "\nVS IOCTL, ACTMCTL\n");
-+	ret += intel_sprintf(vs_s, false, buf, ret, SDW_SHIM2_INTEL_VS_IOCTL);
-+	ret += intel_sprintf(vs_s, false, buf, ret, SDW_SHIM2_INTEL_VS_ACTMCTL);
+ 	sdw->cdns.link_up = true;
+ out:
+ 	mutex_unlock(sdw->link_res->shim_lock);
+@@ -37,13 +71,17 @@ static int intel_link_power_up(struct sdw_intel *sdw)
+ 
+ static int intel_link_power_down(struct sdw_intel *sdw)
+ {
++	u32 *shim_mask = sdw->link_res->shim_mask;
++	unsigned int link_id = sdw->instance;
+ 	int ret;
+ 
+ 	mutex_lock(sdw->link_res->shim_lock);
+ 
+ 	sdw->cdns.link_up = false;
+ 
+-	ret = hdac_bus_eml_sdw_power_down_unlocked(sdw->link_res->hbus, sdw->instance);
++	*shim_mask &= ~BIT(link_id);
 +
-+	seq_printf(s_file, "%s", buf);
-+	kfree(buf);
-+
-+	return 0;
-+}
-+DEFINE_SHOW_ATTRIBUTE(intel_reg);
-+
-+static int intel_set_m_datamode(void *data, u64 value)
-+{
-+	struct sdw_intel *sdw = data;
-+	struct sdw_bus *bus = &sdw->cdns.bus;
-+
-+	if (value > SDW_PORT_DATA_MODE_STATIC_1)
-+		return -EINVAL;
-+
-+	/* Userspace changed the hardware state behind the kernel's back */
-+	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
-+
-+	bus->params.m_data_mode = value;
-+
-+	return 0;
-+}
-+DEFINE_DEBUGFS_ATTRIBUTE(intel_set_m_datamode_fops, NULL,
-+			 intel_set_m_datamode, "%llu\n");
-+
-+static int intel_set_s_datamode(void *data, u64 value)
-+{
-+	struct sdw_intel *sdw = data;
-+	struct sdw_bus *bus = &sdw->cdns.bus;
-+
-+	if (value > SDW_PORT_DATA_MODE_STATIC_1)
-+		return -EINVAL;
-+
-+	/* Userspace changed the hardware state behind the kernel's back */
-+	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
-+
-+	bus->params.s_data_mode = value;
-+
-+	return 0;
-+}
-+DEFINE_DEBUGFS_ATTRIBUTE(intel_set_s_datamode_fops, NULL,
-+			 intel_set_s_datamode, "%llu\n");
-+
-+void intel_ace2x_debugfs_init(struct sdw_intel *sdw)
-+{
-+	struct dentry *root = sdw->cdns.bus.debugfs;
-+
-+	if (!root)
-+		return;
-+
-+	sdw->debugfs = debugfs_create_dir("intel-sdw", root);
-+
-+	debugfs_create_file("intel-registers", 0400, sdw->debugfs, sdw,
-+			    &intel_reg_fops);
-+
-+	debugfs_create_file("intel-m-datamode", 0200, sdw->debugfs, sdw,
-+			    &intel_set_m_datamode_fops);
-+
-+	debugfs_create_file("intel-s-datamode", 0200, sdw->debugfs, sdw,
-+			    &intel_set_s_datamode_fops);
-+
-+	sdw_cdns_debugfs_init(&sdw->cdns, sdw->debugfs);
-+}
-+
-+void intel_ace2x_debugfs_exit(struct sdw_intel *sdw)
-+{
-+	debugfs_remove_recursive(sdw->debugfs);
-+}
-+#endif /* CONFIG_DEBUG_FS */
++	ret = hdac_bus_eml_sdw_power_down_unlocked(sdw->link_res->hbus, link_id);
+ 	if (ret < 0) {
+ 		dev_err(sdw->cdns.dev, "%s: hdac_bus_eml_sdw_power_down failed: %d\n",
+ 			__func__, ret);
 -- 
 2.25.1
 
