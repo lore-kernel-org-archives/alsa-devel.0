@@ -4,78 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 368C6C6FD1C
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Mar 2023 01:30:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6D31C74A5B
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Mar 2023 01:31:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1FEF1E95;
-	Fri, 24 Mar 2023 02:29:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FEF1E95
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B502ECD;
+	Fri, 24 Mar 2023 02:30:15 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B502ECD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679621437;
-	bh=gcrf/FbQBSeQnVxYB0FjcaGgfLmGLOOfeKwKl/xbKbI=;
-	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=XgL7GoV2Qk3HoKPdtBL3P7Tp//pr3JEcTJJwPViPsTHbw/YuWZvcRKNTXFZEXOmFY
-	 oyb+ll8DrdNoxEsn4274/uA64D0s2qmsGEuQdDmvBzfK4xNvd+fkj0bPWwOcTaRAh/
-	 bQHrEJAAlGzFpPdwQOBmqZEn/tm9uFBb/Z4dqjUA=
+	s=default; t=1679621465;
+	bh=gcQ6UQrUlVVTApT6cZ2UZ1sHzf5CgvGiFtKMcNWJAD4=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Zv4fUv98oc2wZrJyRxe7enDCvey4w/ge8uvIpNoa22LnCv1fLY+NHwmd1uJ3Rr4om
+	 nKWCvWbkDSxK0ayFl/i0MomDZ/S0nPJ/AkRpSTR1zCOpIjAFDZed8td1alzDAWyKnk
+	 acO4AhnhWEsxp8FJzotKnKQBqdpIL7QXMd0pO1SE=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B44B0F80534;
-	Fri, 24 Mar 2023 02:29:23 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4CA33F8053D;
+	Fri, 24 Mar 2023 02:29:24 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 16086F8052E; Fri, 24 Mar 2023 02:29:13 +0100 (CET)
+	id 5ED0CF8052E; Fri, 24 Mar 2023 02:29:15 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 63B63F8027B
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2023 02:28:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63B63F8027B
+	by alsa1.perex.cz (Postfix) with ESMTPS id 7F85BF80093
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2023 02:28:57 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F85BF80093
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=jBmzR015
+ header.s=Intel header.b=JUJDiXcC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679621340; x=1711157340;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=gcrf/FbQBSeQnVxYB0FjcaGgfLmGLOOfeKwKl/xbKbI=;
-  b=jBmzR015SL2jOez7xgVOO2PeFoV1/t56WBV3L/89tXbFcxcijmyYktsR
-   rMwM8GllhIFeOkAYM9dg9gNnpOqCCDiRZ9tlrIe3uISVdwEVhDsQd26LB
-   qexWbmhwNJdNiiHq3CWTa/ImvAOsB323PjJ8IXKLpEQpxJUG8Np5vbxv2
-   7IIfqwZXuECFDybc3+W0qpOMgQApeeRISZ5KgVodZ+5edmkc3EnwAqqjg
-   o0rlhmrfkxCgF+/fntvsQDTxrF/HQPc82QNWpRZFRidkXdwvUKlgaN0WB
-   r+rscWk1FwdnHvrJg+oaqBqK67sbYMnhSXTxGI70gR659TUfuOhql1FJp
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="404584848"
+  t=1679621339; x=1711157339;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=gcQ6UQrUlVVTApT6cZ2UZ1sHzf5CgvGiFtKMcNWJAD4=;
+  b=JUJDiXcC25GZTd8q0kxVe+j2EM74K6j0zlMPyIbFGY4cVX5JQbQs5PZN
+   ElOpa9vBxuDpaRhkEMLvlA5vz6UbuU2Mx/nqxodUDcwcqARJZ6PO/Z756
+   E3z1jhR/x50EZKYojbkQWns25UtpR+M3jshLhR4J8iCK6jc+39BdZdTdA
+   zQMTiBPco2IBCnroOgPnSLSwnFok71+/zgtLCfmsssxLikb8Z/vwCaxnV
+   GQnCAwz+M0w0XF5IVrtYiHxMVXl4/szQIELSt2NMvUW9agBEfVSMCVxvO
+   HgLbYUoYNHl928JklTrZFM/z1KreUn9q2xNFbdvBire/gddZg1sJTZbAs
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="404584840"
 X-IronPort-AV: E=Sophos;i="5.98,286,1673942400";
-   d="scan'208";a="404584848"
+   d="scan'208";a="404584840"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Mar 2023 18:28:55 -0700
+ 23 Mar 2023 18:28:53 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="659872992"
+X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="659872985"
 X-IronPort-AV: E=Sophos;i="5.98,286,1673942400";
-   d="scan'208";a="659872992"
+   d="scan'208";a="659872985"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
   by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Mar 2023 18:28:53 -0700
+ 23 Mar 2023 18:28:51 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.de
-Subject: [PATCH 01/13] ASoC: codecs: cs42l42-sdw: clear stream
-Date: Fri, 24 Mar 2023 09:43:56 +0800
-Message-Id: <20230324014408.1677505-2-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 00/13] ASoC: SoundWire codecs: simplify/fix set_stream
+Date: Fri, 24 Mar 2023 09:43:55 +0800
+Message-Id: <20230324014408.1677505-1-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230324014408.1677505-1-yung-chuan.liao@linux.intel.com>
-References: <20230324014408.1677505-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: DFLHVFLMDZJYA3WUIHHNNARGYJTOVQ7W
-X-Message-ID-Hash: DFLHVFLMDZJYA3WUIHHNNARGYJTOVQ7W
+Message-ID-Hash: PPMZPGTYNOVS5KTFECV7V6YYGZ55MGYU
+X-Message-ID-Hash: PPMZPGTYNOVS5KTFECV7V6YYGZ55MGYU
 X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,7 +87,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/DFLHVFLMDZJYA3WUIHHNNARGYJTOVQ7W/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/PPMZPGTYNOVS5KTFECV7V6YYGZ55MGYU/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -99,33 +96,47 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Simplify set_stream in SoundWire codecs.
 
-The API requires the stream info to be cleared when the argument is
-NULL.
+Pierre-Louis Bossart (13):
+  ASoC: codecs: cs42l42-sdw: clear stream
+  ASoC: codecs: sdw-mockup: simplify set_stream
+  ASoC: codecs: max98373-sdw: simplify set_stream
+  ASoC: codecs: rt1308-sdw: simplify set_stream
+  ASoC: codecs: rt1316-sdw: simplify set_stream
+  ASoC: codecs: rt1318-sdw: simplify set_stream
+  ASoC: codecs: rt700-sdw: simplify set_stream
+  ASoC: codecs: rt711-sdw: simplify set_stream
+  ASoC: codecs: rt711-sdca: simplify set_stream
+  ASoC: codecs: rt712-sdca: simplify set_stream
+  ASoC: codecs: rt715: simplify set_stream
+  ASoC: codecs: rt715-sdca: simplify set_stream
+  ASoC: codecs: rt5682-sdw: simplify set_stream
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- sound/soc/codecs/cs42l42-sdw.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/codecs/cs42l42-sdw.c  |  3 ---
+ sound/soc/codecs/max98373-sdw.c | 34 +++++++--------------------------
+ sound/soc/codecs/rt1308-sdw.c   | 30 +++++++----------------------
+ sound/soc/codecs/rt1308-sdw.h   |  4 ----
+ sound/soc/codecs/rt1316-sdw.c   | 30 +++++++----------------------
+ sound/soc/codecs/rt1316-sdw.h   |  4 ----
+ sound/soc/codecs/rt1318-sdw.c   | 30 +++++++----------------------
+ sound/soc/codecs/rt1318-sdw.h   |  4 ----
+ sound/soc/codecs/rt5682-sdw.c   | 34 +++++++--------------------------
+ sound/soc/codecs/rt700.c        | 30 +++++++----------------------
+ sound/soc/codecs/rt700.h        |  4 ----
+ sound/soc/codecs/rt711-sdca.c   | 30 +++++++----------------------
+ sound/soc/codecs/rt711-sdca.h   |  4 ----
+ sound/soc/codecs/rt711.c        | 30 +++++++----------------------
+ sound/soc/codecs/rt711.h        |  4 ----
+ sound/soc/codecs/rt712-sdca.c   | 30 +++++++----------------------
+ sound/soc/codecs/rt712-sdca.h   |  4 ----
+ sound/soc/codecs/rt715-sdca.c   | 30 +++++++----------------------
+ sound/soc/codecs/rt715-sdca.h   |  4 ----
+ sound/soc/codecs/rt715.c        | 30 +++++++----------------------
+ sound/soc/codecs/rt715.h        |  4 ----
+ sound/soc/codecs/sdw-mockup.c   | 34 ++++++---------------------------
+ 22 files changed, 83 insertions(+), 328 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l42-sdw.c b/sound/soc/codecs/cs42l42-sdw.c
-index 7b539ee55499..eeab07c850f9 100644
---- a/sound/soc/codecs/cs42l42-sdw.c
-+++ b/sound/soc/codecs/cs42l42-sdw.c
-@@ -152,9 +152,6 @@ static int cs42l42_sdw_port_prep(struct sdw_slave *slave,
- static int cs42l42_sdw_dai_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
- 					  int direction)
- {
--	if (!sdw_stream)
--		return 0;
--
- 	snd_soc_dai_dma_data_set(dai, direction, sdw_stream);
- 
- 	return 0;
 -- 
 2.25.1
 
