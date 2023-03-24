@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BAC6C74A5B
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Mar 2023 01:33:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7194C7619A
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Mar 2023 01:33:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09A1DEDB;
-	Fri, 24 Mar 2023 02:32:19 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09A1DEDB
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6755EDF;
+	Fri, 24 Mar 2023 02:32:25 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6755EDF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679621589;
-	bh=o4qd2sv2ZOppsjBTKo/y1CYVg/dHsho3gT1BEbOKJc8=;
+	s=default; t=1679621595;
+	bh=WDhsEqG4VZdPy8eVjOW22Vlhck7ur3f3lTWKvWSSEwE=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RuwDy4S2BTXB7s96oGRqOOLZohyGwSdChYI15QAtUzj1YnamB/JIMsvJqhJGSO7mE
-	 98q2yTg75zbr/GLnPLEQ8WRA3uYy/KoEa6dLLEPRmdAnsMsJfPTbeFLsidInU/D0wY
-	 s5ArUtoycRFJ0t3+BOGFj4AIQU0WI8Koy116pUno=
+	b=CwGfAupo1DGmJLCAUlkehce2ExaPqH2xJwRKncGRofQdsVWfMm6pHsEDYdMg6WHhU
+	 F/zmGfhJGcjGiITdP8nEDe9z1WLKekHrxCAtI0SlEdg4eU6uLXLA3FRpD1E0UZfc03
+	 +3RdfFOov7A9ir+X0vPoAnMhA4CeE7WUJCwo6t+k=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B4D3F805A8;
-	Fri, 24 Mar 2023 02:30:00 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14314F805AA;
+	Fri, 24 Mar 2023 02:30:04 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 4CC83F80580; Fri, 24 Mar 2023 02:29:55 +0100 (CET)
+	id 074D7F805A8; Fri, 24 Mar 2023 02:29:59 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id D67AAF80529
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2023 02:29:16 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D67AAF80529
+	by alsa1.perex.cz (Postfix) with ESMTPS id BABD1F8052E
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2023 02:29:18 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BABD1F8052E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=dADXlDTK
+ header.s=Intel header.b=kwtPo767
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679621358; x=1711157358;
+  t=1679621360; x=1711157360;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=o4qd2sv2ZOppsjBTKo/y1CYVg/dHsho3gT1BEbOKJc8=;
-  b=dADXlDTKeO9uuSNPtKNQXD9rR/Vcpl0pi3sKRdZWQ84xY/3Z4ms1DVN8
-   p6icJEd1HsHPu7taE3i+dBGuqviYnu7crCRG2TTbWjRRUqHGawlnoDO8W
-   Awy7i7XsaRKc03LUQJFcaDnZvdzBf3FWiOeLe8bCw+CKw6g2ykcDr5d5u
-   HYoE1TwtU93EihBVYOBkcqZHNhM/uIziCusKQvO+Ne63lfEQWAp5juN7Z
-   hEPuVbwTl+emp+PU6NCr9QXYifGLkX9jnpioWQ3syOZM5OVpGbBtAm+g2
-   EYapmJjnDT9kgWAvtYzGEjeIJ4ShvW//UUcgNPQfZ9AtrZIO+DagC3tVc
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="404584928"
+  bh=WDhsEqG4VZdPy8eVjOW22Vlhck7ur3f3lTWKvWSSEwE=;
+  b=kwtPo767OYXZKrnQ04Y+bVCGcrIHyKR/WL+VcDtHFugueD0pLvbuytW2
+   Iyiv3EQPJIta9dmHDHrr2xA1Bb44LvT1rfISTaeViZsgD5G4ccbdqSA/Y
+   ANiHV/50y6f6nQDp51jyp/69L/ju4EqkpmpZ495CWauC4fz+Uj6kqCAhR
+   nxOBDyO7vnaokHLobCYUk9ChZjOTDgTJFvnsxqLNOis5xJTTwWuTnkqzG
+   WwZuyfrnsuns+BaNHkHIbeXLpF9/DIkgV4oKG+PZXnLDkTSBUMWJxBPSQ
+   lUbp8ken3eoqEmLq/u0mkvecieXQqZe6y+30rJrEZG4QmIXLWaujVjTiJ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="404584939"
 X-IronPort-AV: E=Sophos;i="5.98,286,1673942400";
-   d="scan'208";a="404584928"
+   d="scan'208";a="404584939"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Mar 2023 18:29:16 -0700
+ 23 Mar 2023 18:29:18 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="659873150"
+X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="659873156"
 X-IronPort-AV: E=Sophos;i="5.98,286,1673942400";
-   d="scan'208";a="659873150"
+   d="scan'208";a="659873156"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
   by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Mar 2023 18:29:14 -0700
+ 23 Mar 2023 18:29:16 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.de
-Subject: [PATCH 12/13] ASoC: codecs: rt715-sdca: simplify set_stream
-Date: Fri, 24 Mar 2023 09:44:07 +0800
-Message-Id: <20230324014408.1677505-13-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 13/13] ASoC: codecs: rt5682-sdw: simplify set_stream
+Date: Fri, 24 Mar 2023 09:44:08 +0800
+Message-Id: <20230324014408.1677505-14-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230324014408.1677505-1-yung-chuan.liao@linux.intel.com>
 References: <20230324014408.1677505-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 67ZHRPQCRXOOH4H2VSAL4E3XYJBBFSJR
-X-Message-ID-Hash: 67ZHRPQCRXOOH4H2VSAL4E3XYJBBFSJR
+Message-ID-Hash: QQCBTQ2RMWU2NH3E3PEKBUNTTI2B7GEW
+X-Message-ID-Hash: QQCBTQ2RMWU2NH3E3PEKBUNTTI2B7GEW
 X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,8 +90,9 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/67ZHRPQCRXOOH4H2VSAL4E3XYJBBFSJR/>
-List-Archive: <>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/QQCBTQ2RMWU2NH3E3PEKBUNTTI2B7GEW/>
+List-Archive: 
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Owner: <mailto:alsa-devel-owner@alsa-project.org>
 List-Post: <mailto:alsa-devel@alsa-project.org>
@@ -116,19 +117,28 @@ Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/codecs/rt715-sdca.c | 30 +++++++-----------------------
- sound/soc/codecs/rt715-sdca.h |  4 ----
- 2 files changed, 7 insertions(+), 27 deletions(-)
+ sound/soc/codecs/rt5682-sdw.c | 34 +++++++---------------------------
+ 1 file changed, 7 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/codecs/rt715-sdca.c b/sound/soc/codecs/rt715-sdca.c
-index 920510365fd7..b989f907784b 100644
---- a/sound/soc/codecs/rt715-sdca.c
-+++ b/sound/soc/codecs/rt715-sdca.c
-@@ -784,16 +784,7 @@ static const struct snd_soc_component_driver soc_codec_dev_rt715_sdca = {
- static int rt715_sdca_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
- 				int direction)
+diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
+index 5f80a5d59b65..23f17f70d7e9 100644
+--- a/sound/soc/codecs/rt5682-sdw.c
++++ b/sound/soc/codecs/rt5682-sdw.c
+@@ -88,26 +88,10 @@ static const struct regmap_config rt5682_sdw_indirect_regmap = {
+ 	.reg_write = rt5682_sdw_write,
+ };
+ 
+-struct sdw_stream_data {
+-	struct sdw_stream_runtime *sdw_stream;
+-};
+-
+ static int rt5682_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
+ 				 int direction)
  {
--	struct rt715_sdw_stream_data *stream;
+-	struct sdw_stream_data *stream;
+-
+-	if (!sdw_stream)
+-		return 0;
 -
 -	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
 -	if (!stream)
@@ -142,78 +152,61 @@ index 920510365fd7..b989f907784b 100644
  
  	return 0;
  }
-@@ -802,14 +793,7 @@ static void rt715_sdca_shutdown(struct snd_pcm_substream *substream,
+@@ -115,11 +99,7 @@ static int rt5682_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
+ static void rt5682_sdw_shutdown(struct snd_pcm_substream *substream,
  				struct snd_soc_dai *dai)
- 
  {
--	struct rt715_sdw_stream_data *stream;
+-	struct sdw_stream_data *stream;
 -
 -	stream = snd_soc_dai_get_dma_data(dai, substream);
--	if (!stream)
--		return;
--
  	snd_soc_dai_set_dma_data(dai, substream, NULL);
 -	kfree(stream);
  }
  
- static int rt715_sdca_pcm_hw_params(struct snd_pcm_substream *substream,
-@@ -820,13 +804,13 @@ static int rt715_sdca_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct rt715_sdca_priv *rt715 = snd_soc_component_get_drvdata(component);
+ static int rt5682_sdw_hw_params(struct snd_pcm_substream *substream,
+@@ -130,14 +110,14 @@ static int rt5682_sdw_hw_params(struct snd_pcm_substream *substream,
+ 	struct rt5682_priv *rt5682 = snd_soc_component_get_drvdata(component);
  	struct sdw_stream_config stream_config = {0};
  	struct sdw_port_config port_config = {0};
--	struct rt715_sdw_stream_data *stream;
+-	struct sdw_stream_data *stream;
 +	struct sdw_stream_runtime *sdw_stream;
  	int retval;
- 	unsigned int val;
+ 	unsigned int val_p = 0, val_c = 0, osr_p = 0, osr_c = 0;
+ 
+ 	dev_dbg(dai->dev, "%s %s", __func__, dai->name);
  
 -	stream = snd_soc_dai_get_dma_data(dai, substream);
-+	sdw_stream = snd_soc_dai_get_dma_data(dai, substream);
- 
 -	if (!stream)
++	sdw_stream = snd_soc_dai_get_dma_data(dai, substream);
 +	if (!sdw_stream)
- 		return -EINVAL;
+ 		return -ENOMEM;
  
- 	if (!rt715->slave)
-@@ -851,7 +835,7 @@ static int rt715_sdca_pcm_hw_params(struct snd_pcm_substream *substream,
- 	}
+ 	if (!rt5682->slave)
+@@ -152,7 +132,7 @@ static int rt5682_sdw_hw_params(struct snd_pcm_substream *substream,
+ 		port_config.num = 2;
  
- 	retval = sdw_stream_add_slave(rt715->slave, &stream_config,
--					&port_config, 1, stream->sdw_stream);
-+					&port_config, 1, sdw_stream);
+ 	retval = sdw_stream_add_slave(rt5682->slave, &stream_config,
+-				      &port_config, 1, stream->sdw_stream);
++				      &port_config, 1, sdw_stream);
  	if (retval) {
- 		dev_err(component->dev, "Unable to configure port, retval:%d\n",
- 			retval);
-@@ -922,13 +906,13 @@ static int rt715_sdca_pcm_hw_free(struct snd_pcm_substream *substream,
+ 		dev_err(dai->dev, "Unable to configure port\n");
+ 		return retval;
+@@ -246,13 +226,13 @@ static int rt5682_sdw_hw_free(struct snd_pcm_substream *substream,
  {
  	struct snd_soc_component *component = dai->component;
- 	struct rt715_sdca_priv *rt715 = snd_soc_component_get_drvdata(component);
--	struct rt715_sdw_stream_data *stream =
+ 	struct rt5682_priv *rt5682 = snd_soc_component_get_drvdata(component);
+-	struct sdw_stream_data *stream =
 +	struct sdw_stream_runtime *sdw_stream =
  		snd_soc_dai_get_dma_data(dai, substream);
  
- 	if (!rt715->slave)
+ 	if (!rt5682->slave)
  		return -EINVAL;
  
--	sdw_stream_remove_slave(rt715->slave, stream->sdw_stream);
-+	sdw_stream_remove_slave(rt715->slave, sdw_stream);
+-	sdw_stream_remove_slave(rt5682->slave, stream->sdw_stream);
++	sdw_stream_remove_slave(rt5682->slave, sdw_stream);
  	return 0;
  }
  
-diff --git a/sound/soc/codecs/rt715-sdca.h b/sound/soc/codecs/rt715-sdca.h
-index 90881b455ece..7577f3151934 100644
---- a/sound/soc/codecs/rt715-sdca.h
-+++ b/sound/soc/codecs/rt715-sdca.h
-@@ -37,10 +37,6 @@ struct rt715_sdca_priv {
- 	int kctl_8ch_orig[8];
- };
- 
--struct rt715_sdw_stream_data {
--	struct sdw_stream_runtime *sdw_stream;
--};
--
- struct rt715_sdca_kcontrol_private {
- 	unsigned int reg_base;
- 	unsigned int count;
 -- 
 2.25.1
 
