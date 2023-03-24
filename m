@@ -4,121 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2925C6FD1C
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Mar 2023 17:10:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C847C6FD20
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Mar 2023 19:06:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A426E89;
-	Fri, 24 Mar 2023 18:10:04 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A426E89
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB6DAE8C;
+	Fri, 24 Mar 2023 20:05:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB6DAE8C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679677854;
-	bh=+u+a7N16H7bcue6Y7HFd49XNMnpQsi2wyCf6IgUkH5A=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=L2W3gRqsO+nfOjidl3qyLd3U+tOtlbir0njXukT90zU2fnrNqm3FuD3SbmqrJ0iyk
-	 da2+cTIcPIwU7yK2RK8gHqpvlI3JffMDIg5pHbMuFpAwl3ZEkkOqFg6C9iXZkEOyxx
-	 nK2UPdEWsIUnZNBNSiP5PH7WV4iF6IefeXcMuSwU=
+	s=default; t=1679684809;
+	bh=X9n+yet3Mi5pd0MngLxWhEELp+DUWqRTDu9B5UBwZKc=;
+	h=Date:Subject:To:References:From:In-Reply-To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=q7QouGdUY3ljrsT/Cc0wk6ESmvE1vkMOmEODMPEmUJS68t65XsEwxyu93nX8Higfx
+	 Wf73VrOfGnLvf6IQG+7J3acTbUm/jWX/cXfmFS3KOPPnze6GzmajwLWcPBPU86iLwc
+	 sDwVCnSKjLxDqJ3hRLzNmS/OiADCJL9sFEsZg5mY=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B97BF80093;
-	Fri, 24 Mar 2023 18:09:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 257C4F80093;
+	Fri, 24 Mar 2023 20:05:58 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 681E4F8027B; Fri, 24 Mar 2023 18:09:38 +0100 (CET)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 01D34F802E8; Fri, 24 Mar 2023 20:05:54 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id CBAF4F80093
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2023 18:09:31 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBAF4F80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id ED9B9F80093
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2023 20:05:41 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED9B9F80093
 Authentication-Results: alsa1.perex.cz;
-	dkim=pass (1024-bit key,
- unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256
- header.s=mimecast20190719 header.b=Ogf6aLdc
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1679677770;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=JLRKnXRPip+ks27gdmBMUhtEnFO7L9UtH6SSkGcCZo0=;
-	b=Ogf6aLdcPryHSL5lluKXHRR5F94BPJXOdFsxI48Ydq9t/iK8fTTfWhAidgzu9EPOqwQU7Q
-	RLmr0sNpGj/qJH7hh2sNBrk1oVtxBpWUsg4wqK4Kgglh1Epq42pceSJkmfEp7TYreInR9f
-	uEKa0Gf33ZkVpf1y46udTijdfZmpiYg=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-608-nNyU2mvONsWYuUBx53Gj4w-1; Fri, 24 Mar 2023 13:09:29 -0400
-X-MC-Unique: nNyU2mvONsWYuUBx53Gj4w-1
-Received: by mail-qt1-f199.google.com with SMTP id
- c11-20020ac85a8b000000b003bfdd43ac76so1401121qtc.5
-        for <alsa-devel@alsa-project.org>;
- Fri, 24 Mar 2023 10:09:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679677768;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JLRKnXRPip+ks27gdmBMUhtEnFO7L9UtH6SSkGcCZo0=;
-        b=qe/YQajPVXzcnUPtD8jdpe6LkyYlUrNgoCO+BAgsbckzFvRIZ1S81pQ9jFHHNOHHo8
-         LtVHQdwW/NrPQnUOtwM+mY5esAq6kPfM3IIGFsre72XjtiSCtSBmGEFWnV0Z/v01DJTq
-         9WjyWGnbphJB3Ou3RNnSjmRbS98KPofUarhew7hRjTMd3zIYbP3o+KIwaMKeNqmG1OBf
-         sbccQuQyV/m1hHsF1/Q7yLViy/tcLG5w5U/tOSWpjhGiYHx9vfMFidZdKs9YKayVulDZ
-         maBeLV/pKdu8ny2WRepM0b/S8EzR+cndkN1VyX/mBNZ1FfsnU67JK0GF11KHlinG9YzA
-         VufA==
-X-Gm-Message-State: AAQBX9cGCiOUANvuv4hky88ka/ong1Q4L/+/TAre8ZwPWI+xw7h9rN/g
-	77eXEIduFsfsUGTA/Dxb9Ev6d0KrQqY7JYCZdV9pKfgAp43jb1728aNfp55YOIFNcCUEDox0BlQ
-	bYappZG7Cmyglri7PZW9QyIE/yIQmiRZ9JeZBJEv4tTSytGoMMG7UmLPyj2WC52Fln+OCBz4c5V
-	/AIk8gPEk=
-X-Received: by 2002:a05:622a:352:b0:3e4:d90a:b12a with SMTP id
- r18-20020a05622a035200b003e4d90ab12amr1803641qtw.17.1679677767928;
-        Fri, 24 Mar 2023 10:09:27 -0700 (PDT)
-X-Google-Smtp-Source: 
- AKy350apy3oW7a9FJs0e8hOcJ3R4VeI8/w3JZazN2ebmIBP53MZF2bGhguV/L5X6EHjjOcdVuhZaIQ==
-X-Received: by 2002:a05:622a:352:b0:3e4:d90a:b12a with SMTP id
- r18-20020a05622a035200b003e4d90ab12amr1803594qtw.17.1679677767627;
-        Fri, 24 Mar 2023 10:09:27 -0700 (PDT)
-Received: from p1.montleon.net (066-026-073-226.inf.spectrum.com.
- [66.26.73.226])
-        by smtp.gmail.com with ESMTPSA id
- de21-20020a05620a371500b007422fd3009esm14460324qkb.20.2023.03.24.10.09.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Mar 2023 10:09:27 -0700 (PDT)
-From: Jason Montleon <jmontleo@redhat.com>
-To: alsa-devel@alsa-project.org,
-	regressions@lists.linux.dev,
-	yung-chuan.liao@linux.intel.com,
-	broonie@kernel.org,
-	tiwai@suse.com,
-	bagasdotme@gmail.com,
-	pierre-louis.bossart@linux.intel.com
-Subject: [PATCH] ASoC: hdac_hdmi: use set_stream() instead of set_tdm_slots()
-Date: Fri, 24 Mar 2023 13:07:11 -0400
-Message-Id: <20230324170711.2526-1-jmontleo@redhat.com>
-X-Mailer: git-send-email 2.40.0
+	dkim=pass (2048-bit key,
+ unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
+ header.s=Intel header.b=QPeM0jxQ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1679684748; x=1711220748;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=X9n+yet3Mi5pd0MngLxWhEELp+DUWqRTDu9B5UBwZKc=;
+  b=QPeM0jxQMw56dL1mr+uWRID/Y/ijBrNYczDiX7iEGLji9DixkAAH6zML
+   W+opuEcddoR4dM0IIung4KSdPLr+xLHdb/0TbnKyLj1qHzZFCr4RsR4T0
+   gUXiYX8dDjZc/xc/RqRaTcLAQi7cj7OEEkVvoumv2OSu3u9hqKDHcXQbR
+   VU6Ce6enrQPAtLF4P/wva2UcU62kIwmZgrJWRqVqnwKX4BdscVcCHZqDA
+   Toc7XidjrIk9lf208A4GRrXyGmNFkr3Emohw6ZLdmiPj/emjYLlK9BxQG
+   P+4S9crJE74p2hz9vgbI/Skzw90v9kJjF7r/LQldo+ZSzVb9OoLOGdM/Q
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10659"; a="338585084"
+X-IronPort-AV: E=Sophos;i="5.98,288,1673942400";
+   d="scan'208";a="338585084"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Mar 2023 12:05:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10659"; a="632936329"
+X-IronPort-AV: E=Sophos;i="5.98,288,1673942400";
+   d="scan'208";a="632936329"
+Received: from kvnguye3-mobl1.amr.corp.intel.com (HELO [10.212.145.31])
+ ([10.212.145.31])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Mar 2023 12:05:26 -0700
+Message-ID: <060ebffd-6ecd-f2f7-6fdf-5e7b8c544d0a@linux.intel.com>
+Date: Fri, 24 Mar 2023 14:05:25 -0500
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="US-ASCII"; x-default=true
-Message-ID-Hash: 775LLUGGZOSDSXKA5J7IKOUSLSWUZDJ5
-X-Message-ID-Hash: 775LLUGGZOSDSXKA5J7IKOUSLSWUZDJ5
-X-MailFrom: jmontleo@redhat.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.8.0
+Subject: Re: [PATCH] ASoC: hdac_hdmi: use set_stream() instead of
+ set_tdm_slots()
+To: Jason Montleon <jmontleo@redhat.com>, alsa-devel@alsa-project.org,
+ regressions@lists.linux.dev, yung-chuan.liao@linux.intel.com,
+ broonie@kernel.org, tiwai@suse.com, bagasdotme@gmail.com
+References: <20230324170711.2526-1-jmontleo@redhat.com>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20230324170711.2526-1-jmontleo@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Message-ID-Hash: IDJNRMLL4SZIRKZISXCW3CSWUJZMP5SE
+X-Message-ID-Hash: IDJNRMLL4SZIRKZISXCW3CSWUJZMP5SE
+X-MailFrom: pierre-louis.bossart@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Jason Montleon <jmontleo@redhat.com>, stable@vger.kernel.org
+CC: stable@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/775LLUGGZOSDSXKA5J7IKOUSLSWUZDJ5/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/IDJNRMLL4SZIRKZISXCW3CSWUJZMP5SE/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -127,64 +103,17 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-hdac_hdmi was not updated to use set_stream() instead of set_tdm_slots()
-in the original commit so HDMI no longer produces audio.
 
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/regressions/CAJD_bPKQdtaExvVEKxhQ47G-ZXDA=k+gzhMJRHLBe=mysPnuKA@mail.gmail.com/
-Fixes: 636110411ca7 ("ASoC: Intel/SOF: use set_stream() instead of set_tdm_slots() for HDAudio")
-Signed-off-by: Jason Montleon <jmontleo@redhat.com>
----
- sound/soc/codecs/hdac_hdmi.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index ed4f7cdda04f..8b6b76029694 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -436,23 +436,28 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_device *hdev,
- 	return 0;
- }
- 
--static int hdac_hdmi_set_tdm_slot(struct snd_soc_dai *dai,
--		unsigned int tx_mask, unsigned int rx_mask,
--		int slots, int slot_width)
-+static int hdac_hdmi_set_stream(struct snd_soc_dai *dai,
-+				void *stream, int direction)
- {
- 	struct hdac_hdmi_priv *hdmi = snd_soc_dai_get_drvdata(dai);
- 	struct hdac_device *hdev = hdmi->hdev;
- 	struct hdac_hdmi_dai_port_map *dai_map;
- 	struct hdac_hdmi_pcm *pcm;
-+	struct hdac_stream *hstream;
- 
--	dev_dbg(&hdev->dev, "%s: strm_tag: %d\n", __func__, tx_mask);
-+	if (!stream)
-+		return -EINVAL;
-+
-+	hstream = (struct hdac_stream *)stream;
-+
-+	dev_dbg(&hdev->dev, "%s: strm_tag: %d\n", __func__, hstream->stream_tag);
- 
- 	dai_map = &hdmi->dai_map[dai->id];
- 
- 	pcm = hdac_hdmi_get_pcm_from_cvt(hdmi, dai_map->cvt);
- 
- 	if (pcm)
--		pcm->stream_tag = (tx_mask << 4);
-+		pcm->stream_tag = (hstream->stream_tag << 4);
- 
- 	return 0;
- }
-@@ -1544,7 +1549,7 @@ static const struct snd_soc_dai_ops hdmi_dai_ops = {
- 	.startup = hdac_hdmi_pcm_open,
- 	.shutdown = hdac_hdmi_pcm_close,
- 	.hw_params = hdac_hdmi_set_hw_params,
--	.set_tdm_slot = hdac_hdmi_set_tdm_slot,
-+	.set_stream = hdac_hdmi_set_stream,
- };
- 
- /*
--- 
-2.40.0
+On 3/24/23 12:07, Jason Montleon wrote:
+> hdac_hdmi was not updated to use set_stream() instead of set_tdm_slots()
+> in the original commit so HDMI no longer produces audio.
+> 
+> Cc: stable@vger.kernel.org
+> Link: https://lore.kernel.org/regressions/CAJD_bPKQdtaExvVEKxhQ47G-ZXDA=k+gzhMJRHLBe=mysPnuKA@mail.gmail.com/
+> Fixes: 636110411ca7 ("ASoC: Intel/SOF: use set_stream() instead of set_tdm_slots() for HDAudio")
+> Signed-off-by: Jason Montleon <jmontleo@redhat.com>
 
+Good catch indeed. Thanks Jason!
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
