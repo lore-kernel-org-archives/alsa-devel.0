@@ -4,109 +4,136 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DAD1C761AF
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Mar 2023 16:08:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21B14C74A5B
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Mar 2023 16:09:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5AFC0823;
-	Wed, 29 Mar 2023 18:07:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AFC0823
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4435F857;
+	Wed, 29 Mar 2023 18:08:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4435F857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680106127;
-	bh=BmukuPyGrELSIfOYBSOISTs0JPdz+ugxI8JreU0NXSA=;
-	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
-	 List-Post:List-Subscribe:List-Unsubscribe:From;
-	b=tZuIVDvlVo1nzVi6u07czRrnGy7QzcVajbQwGje2N1gCjXxML+so3chXpPmT/ME/e
-	 LM9eKUBqpH3Kam2VCEy7SEt5Rh/VR+x4tHxRknJcux84lmbvCJo6wvX4qywLJ5nH85
-	 sSOti8VGbUP/1f7g/XFzxHmK5rZvoX7D8a/DITSM=
+	s=default; t=1680106148;
+	bh=ozq+vH75mAjNkKi3jfaobvjryF3L2Ni1S1Tn6tmagvQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:CC:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe:From;
+	b=JO86XihSEbzq5PBCYB+r0ozXxljnrZdHU60PE4m/2gly3StR5eRegWuaMIIHrsZV6
+	 FfDt3FVO9hu6tVidiYs1Qt1SR7Oy+2dUMUp6kYchTVJGlX19yM5OImUNvhvwOHQDP7
+	 Fdz50bfYs9ztUzqkrCBfCDHBNrK9sbXXpCuM4p3Q=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id D1AEEF805A1;
-	Wed, 29 Mar 2023 18:06:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 79D4CF80534;
+	Wed, 29 Mar 2023 18:06:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id ECE9FF80482; Sat, 25 Mar 2023 09:37:01 +0100 (CET)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id 9D386F802E8; Fri, 24 Mar 2023 15:34:27 +0100 (CET)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 50CCFF80093
-	for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2023 09:36:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50CCFF80093
+	by alsa1.perex.cz (Postfix) with ESMTPS id 2181FF800C9
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2023 15:34:16 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2181FF800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256
- header.s=20210112 header.b=nSdPmhPF
-Received: by mail-wr1-x434.google.com with SMTP id l12so3858861wrm.10
+ unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256
+ header.s=k20201202 header.b=lwiXRb2i
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 9A8A662B2C
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2023 14:34:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7143C433A7
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2023 14:34:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1679668454;
+	bh=ozq+vH75mAjNkKi3jfaobvjryF3L2Ni1S1Tn6tmagvQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=lwiXRb2iEXrDB+SiECZJsaGr+ZPWpvDVobXKSZxI3R/2BonDrW+T45JU8V4ybQXkf
+	 WpLnx1F2jVOz+eboiDJaGWwG8JzHp+W8OKnzQxEXWIq1g4E1nBUlyqrOn/RqhecPgY
+	 8pY7Mv53TIN43pmE6/SegvDys/Qur4lldwf0dKGTRHtzggZmldApWpq/M/G0n+eZSg
+	 A3me5yZQSwEwtxCSVcCpaM+cw+ptQ1Hpv1QKX5CdY4Vd2wKjMnu6uYZht5FGsBTyhF
+	 OBnRRMLMC5Q1Yns01rzlcZ2fPGF4vchj1Vedc2mx5/hp23hx7F5jOd3WxH/7g7OQ+B
+	 G2cX5HrcJiQEA==
+Received: by mail-pf1-f173.google.com with SMTP id cu12so1347405pfb.13
         for <alsa-devel@alsa-project.org>;
- Sat, 25 Mar 2023 01:36:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679733414;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FmwKZTyx9Z9VsH3coz8KtKIUIkVFs5TGDymBrUlW+VY=;
-        b=nSdPmhPFeqM8PxiyL9536x3V5AVdqBfQuWHjSiTAfYcThUoM66QHsxP0n0Z56fLjpz
-         7LKB3DZyL7KCtPqeznklYToKAdNWtn8kIRW0ytcBeBDKvswcE/WnipOzp7Xhhc7hQX32
-         1Y0BqEq002MtCvNmT8ELPVjrxy4PaGYmnsLZXkui50XNGjYJmUpPNsndH7V1TD2K/peB
-         4NhxcHoTPzYZ4gMIcfiT+kQwD8LFnlQ//TA4nVL4ZUQ8/ZKNZsaM31ZAEEXvCiufj8Qx
-         BskHuet930W06whR4/RdM2imXw1r8C2Dl6v3YOYVXsSHpK+DfEQ/PSrnLyBargQdEg7D
-         EswA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679733414;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FmwKZTyx9Z9VsH3coz8KtKIUIkVFs5TGDymBrUlW+VY=;
-        b=uVyM1TRfRxXZnR+x3MH9OQ/hddI9nQZrD/Q3SJYoaFKlk2tWYbbz51LH56zePFvVc1
-         W9/3gUWu2h5CUITN8T5i+FhfLsPU7vUKiMNXfbdqxaP/jv3XjORl3QSNEXWiRW1cnPH2
-         KJ0Bwx9Cr/RCIg4Fwu8ZWD8PG79tZhBklJEJSl/AfNDG9az2gtqwJTduTWMwL3ZQfk5g
-         rnVvxn2ySVlRl4WSwt/n4z/dWryfJ4tT8JPG8GmHWMr9krCidyFNZlhMVxZ9HH9S1TEa
-         NtGszVTET+EIetxxhD958y+HtaO3v1jdt12nnqa8oW/3TcYbed7RkYtQ2/SrO9s4Q4TO
-         3i9A==
-X-Gm-Message-State: AAQBX9coB26KIM6fJzm9WvTsR7LINij5FUs/peE8ybWsasdSyfQ9mvUY
-	oiI1bScI6Plst2AmywduDyQ=
+ Fri, 24 Mar 2023 07:34:14 -0700 (PDT)
+X-Gm-Message-State: AAQBX9fK85a9cgHVkfsgjf3ionEtwEuX/vTW63Jbiutj3JsXZXISDqvm
+	YQrgjUyQLvfHbbLI1VZe36iDRU1Dk6gKIcmFqw==
 X-Google-Smtp-Source: 
- AKy350b9CWWzsdEZarwhYE+Q+QjWZTkaNpSjlJgYXcm32An/25brR65A1UXP3A0fnebplApa6Ayizg==
-X-Received: by 2002:adf:ee51:0:b0:2ce:98fc:f289 with SMTP id
- w17-20020adfee51000000b002ce98fcf289mr3790656wro.49.1679733414260;
-        Sat, 25 Mar 2023 01:36:54 -0700 (PDT)
-Received: from xeon.. ([188.163.112.76])
-        by smtp.gmail.com with ESMTPSA id
- a18-20020a5d4d52000000b002d1e49cff35sm20108204wru.40.2023.03.25.01.36.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Mar 2023 01:36:54 -0700 (PDT)
-From: Svyatoslav Ryhel <clamor95@gmail.com>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Svyatoslav Ryhel <clamor95@gmail.com>,
-	Maxim Schwalm <maxim.schwalm@gmail.com>,
-	Dmitry Osipenko <digetx@gmail.com>
-Subject: [PATCH v1 0/1] Implement DMIC support in WM8903
-Date: Sat, 25 Mar 2023 10:36:42 +0200
-Message-Id: <20230325083643.7575-1-clamor95@gmail.com>
-X-Mailer: git-send-email 2.37.2
+ AKy350Y57cQ3/TzcctMtJeBkZVGy3RaGVnEiqyzqBxcgVPo3gFc72P+HHXJ3tIgI+qnw4mjDX3xPaiNQsV4yB10ee/Y=
+X-Received: by 2002:a81:b149:0:b0:543:9065:b225 with SMTP id
+ p70-20020a81b149000000b005439065b225mr1122523ywh.5.1679668433642; Fri, 24 Mar
+ 2023 07:33:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MailFrom: clamor95@gmail.com
-X-Mailman-Rule-Hits: nonmember-moderation
+References: <20230317233623.3968172-1-robh@kernel.org>
+ <CACRpkdYq4jE7Qn1w8iPeGz7vxj_CeZ+H48B0TVYmeF4Tt=kHgA@mail.gmail.com>
+In-Reply-To: 
+ <CACRpkdYq4jE7Qn1w8iPeGz7vxj_CeZ+H48B0TVYmeF4Tt=kHgA@mail.gmail.com>
+From: Rob Herring <robh@kernel.org>
+Date: Fri, 24 Mar 2023 09:33:42 -0500
+X-Gmail-Original-Message-ID: 
+ <CAL_JsqL+nF_WwZ-EDpUSD2yrxPLZWxaeb=WpTtPnnbpgcXT7qA@mail.gmail.com>
+Message-ID: 
+ <CAL_JsqL+nF_WwZ-EDpUSD2yrxPLZWxaeb=WpTtPnnbpgcXT7qA@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: pinctrl: Drop unneeded quotes
+To: Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-MailFrom: robh@kernel.org
+X-Mailman-Rule-Hits: max-recipients
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
- header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: 2B66O276CAC6CEBE4WJMIITANDUWOFOP
-X-Message-ID-Hash: 2B66O276CAC6CEBE4WJMIITANDUWOFOP
-X-Mailman-Approved-At: Wed, 29 Mar 2023 16:05:52 +0000
-CC: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+ header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
+ administrivia; implicit-dest; max-size; news-moderation; no-subject; digests;
+ suspicious-header
+Message-ID-Hash: 6PZWGL2ASTLF6DLBNLQ7VKKIQZB32RNS
+X-Message-ID-Hash: 6PZWGL2ASTLF6DLBNLQ7VKKIQZB32RNS
+X-Mailman-Approved-At: Wed, 29 Mar 2023 16:06:15 +0000
+CC: =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+ Manivannan Sadhasivam <mani@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>, Hector Martin <marcan@marcan.st>,
+ Sven Peter <sven@svenpeter.dev>, Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+ Andrew Jeffery <andrew@aj.id.au>, Joel Stanley <joel@jms.id.au>,
+ Damien Le Moal <damien.lemoal@wdc.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Dong Aisheng <aisheng.dong@nxp.com>, Fabio Estevam <festevam@gmail.com>,
+ Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Sascha Hauer <s.hauer@pengutronix.de>, NXP Linux Team <linux-imx@nxp.com>,
+ Sean Wang <sean.wang@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Heiko Stuebner <heiko@sntech.de>, Tomasz Figa <tomasz.figa@gmail.com>,
+ Alim Akhtar <alim.akhtar@samsung.com>,
+ Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Emil Renner Berthing <kernel@esmil.dk>,
+ Jianlong Huang <jianlong.huang@starfivetech.com>,
+ Dvorkin Dmitry <dvorkin@tibbo.com>, Wells Lu <wellslutw@gmail.com>,
+ Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+ Michal Simek <michal.simek@xilinx.com>, linux-arm-kernel@lists.infradead.org,
+ linux-actions@lists.infradead.org, linux-gpio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-sunxi@lists.linux.dev, asahi@lists.linux.dev,
+ linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, patches@opensource.cirrus.com,
+ alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2B66O276CAC6CEBE4WJMIITANDUWOFOP/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6PZWGL2ASTLF6DLBNLQ7VKKIQZB32RNS/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -115,18 +142,20 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-According to comments in wm8903, driver lacks DMIC support.
-My wm8903 based devices (ASUS TF300T and TF101) require DMIC
-support for correct internal mic work. I have used downstream
-sources to implement DMIC input support for this driver and
-I can confirm that internal mic now works as intended.
+On Thu, Mar 23, 2023 at 3:40=E2=80=AFAM Linus Walleij <linus.walleij@linaro=
+.org> wrote:
+>
+> On Sat, Mar 18, 2023 at 12:36=E2=80=AFAM Rob Herring <robh@kernel.org> wr=
+ote:
+>
+> > Cleanup bindings dropping unneeded quotes. Once all these are fixed,
+> > checking for this can be enabled in yamllint.
+> >
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+>
+> Should I queue this patch by the way, or do you need it to go into some
+> DT-related tree?
 
-Svyatoslav Ryhel (1):
-  ASoC: wm8903: implement DMIC support
+Stands on its own. You can take it.
 
- sound/soc/codecs/wm8903.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
--- 
-2.37.2
-
+Rob
