@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3746CC74A5B
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Mar 2023 01:32:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 691E2C74A5B
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Mar 2023 01:32:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E92B7EE7;
-	Fri, 24 Mar 2023 02:31:07 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E92B7EE7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A8E4EEC;
+	Fri, 24 Mar 2023 02:31:28 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A8E4EEC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679621518;
-	bh=yWKTdjTalqvw+4k9e+5wDSSpz/nWuKDr1M8WkzT7cNs=;
+	s=default; t=1679621538;
+	bh=rXzyOVa6hGhSz8CheEMCIVTNqh5vslmX0LZ52J+Uwag=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=dQ7MrUtoa9ekCKIN/FxX9e1UEEYNKToMIIB+ndnmMGcCq7EjMezPJnWtW/5c6x51D
-	 6oMEgttQTigbDlys6NU91gyvAWFpiN7V5iZsjXF6oLyxcPxEuKiQYvTbBOUesFhEuL
-	 77R1C1HxQtvReJXYe8Kw9V9g6sHAZGuG5Ts/yfBg=
+	b=q8mAtHQE9qwwgM+cSDXSSNkxsldH8PlJO/jJScRxNLY63mL1CEG8YA3Om46aPnJDi
+	 KZvM7SDRxWzRxrveHeCD7DHYVX0xohLm/B8atsa6gltx67hvcdJcRjhtrNdIWpnbZv
+	 5pvQV79ERLRdckW21wicyemIEB5SsUDlZinVBEpo=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id B146BF80564;
-	Fri, 24 Mar 2023 02:29:42 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6BEB5F8057B;
+	Fri, 24 Mar 2023 02:29:47 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 10D13F80482; Fri, 24 Mar 2023 02:29:36 +0100 (CET)
+	id 7F863F80564; Fri, 24 Mar 2023 02:29:41 +0100 (CET)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 8FC23F804FE
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2023 02:29:05 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FC23F804FE
+	by alsa1.perex.cz (Postfix) with ESMTPS id 91F01F8051B
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2023 02:29:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91F01F8051B
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=MEWwZsoR
+ header.s=Intel header.b=U5oS4hlD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1679621346; x=1711157346;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=yWKTdjTalqvw+4k9e+5wDSSpz/nWuKDr1M8WkzT7cNs=;
-  b=MEWwZsoRdJAny7fCejlkbGkXOc+YddOF3rEu75d8Gx4VbGNoJQhSwQSj
-   LYEOmcnk1jQqXcSE6CiWSCREOGqjHm5GPFO7L8Cncvg69W0LrIzxifQOK
-   dFazQNtXM/iLL6OHUljZCjz7aJZ8Kc7fse1OcOYGR6gtinWBQl82Y/e2r
-   K0LBB4ZWyK1TApxAn8ocYYAf73+xjUURY+yfvBK0CcLyr16kB0WIc+txv
-   fKkwbxVXToe0PHgEu8qrmULwy2OMG51JyezJuv7vofy6mWSCS4/+TTaHN
-   N6BIdlb1JMb97iy2FgNcpB5KDifQRDCz9wYbZcxQmcqcg60VAdWVxqX1J
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="404584885"
+  bh=rXzyOVa6hGhSz8CheEMCIVTNqh5vslmX0LZ52J+Uwag=;
+  b=U5oS4hlD8s3Y6zJC/g/fhqC6GrQgT8KdZcsrLuTlXq+kF19vXTwc3uEc
+   NL3+1LeqtKU2vEzBAB3A1vFCPrPO53UCjMdyI/1wueL2M/6laLdZ3hpzI
+   7A7ge3gPStsvmWtkgPkO3dojaFqrqMzn+2aTAPK9y1jsLQM+Y54vuR2uy
+   +rXfFxahyL03Iu5zbGYZiaMEAJA4M4FM8TdZU6LrPuzQ1pfR1owEFcw/q
+   5UWe6nKhUyyElz6TqrtmQjjvhHqKMJBNlJ2jwFMv+cIoncobeguxbyhDY
+   XCPlMfSNRJZn3YWIQ0bziSPnemirwxRIS4uC17cNlhtTB3BP3o521idbG
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="404584857"
 X-IronPort-AV: E=Sophos;i="5.98,286,1673942400";
-   d="scan'208";a="404584885"
+   d="scan'208";a="404584857"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Mar 2023 18:29:05 -0700
+ 23 Mar 2023 18:28:59 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="659873035"
+X-IronPort-AV: E=McAfee;i="6600,9927,10658"; a="659873004"
 X-IronPort-AV: E=Sophos;i="5.98,286,1673942400";
-   d="scan'208";a="659873035"
+   d="scan'208";a="659873004"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
   by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Mar 2023 18:29:03 -0700
+ 23 Mar 2023 18:28:57 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: broonie@kernel.org,
 	tiwai@suse.de
-Subject: [PATCH 06/13] ASoC: codecs: rt1318-sdw: simplify set_stream
-Date: Fri, 24 Mar 2023 09:44:01 +0800
-Message-Id: <20230324014408.1677505-7-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 03/13] ASoC: codecs: max98373-sdw: simplify set_stream
+Date: Fri, 24 Mar 2023 09:43:58 +0800
+Message-Id: <20230324014408.1677505-4-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230324014408.1677505-1-yung-chuan.liao@linux.intel.com>
 References: <20230324014408.1677505-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 2PBUCPVZDP5Q5265HQMPPHNTMDGRVZPM
-X-Message-ID-Hash: 2PBUCPVZDP5Q5265HQMPPHNTMDGRVZPM
+Message-ID-Hash: FVTQ75JMKEJ7PKWSZDSGDANHRTJFN7X2
+X-Message-ID-Hash: FVTQ75JMKEJ7PKWSZDSGDANHRTJFN7X2
 X-MailFrom: yung-chuan.liao@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -90,7 +90,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2PBUCPVZDP5Q5265HQMPPHNTMDGRVZPM/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/FVTQ75JMKEJ7PKWSZDSGDANHRTJFN7X2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -117,17 +117,67 @@ Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/codecs/rt1318-sdw.c | 30 +++++++-----------------------
- sound/soc/codecs/rt1318-sdw.h |  4 ----
- 2 files changed, 7 insertions(+), 27 deletions(-)
+ sound/soc/codecs/max98373-sdw.c | 34 +++++++--------------------------
+ 1 file changed, 7 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/codecs/rt1318-sdw.c b/sound/soc/codecs/rt1318-sdw.c
-index c32d8ae77981..795accedc22c 100644
---- a/sound/soc/codecs/rt1318-sdw.c
-+++ b/sound/soc/codecs/rt1318-sdw.c
-@@ -562,19 +562,7 @@ static const struct snd_soc_dapm_route rt1318_dapm_routes[] = {
- static int rt1318_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
- 				int direction)
+diff --git a/sound/soc/codecs/max98373-sdw.c b/sound/soc/codecs/max98373-sdw.c
+index c9a2d4dabd3c..df92242af960 100644
+--- a/sound/soc/codecs/max98373-sdw.c
++++ b/sound/soc/codecs/max98373-sdw.c
+@@ -20,10 +20,6 @@
+ #include "max98373.h"
+ #include "max98373-sdw.h"
+ 
+-struct sdw_stream_data {
+-	struct sdw_stream_runtime *sdw_stream;
+-};
+-
+ static const u32 max98373_sdw_cache_reg[] = {
+ 	MAX98373_R2054_MEAS_ADC_PVDD_CH_READBACK,
+ 	MAX98373_R2055_MEAS_ADC_THERM_CH_READBACK,
+@@ -536,12 +532,12 @@ static int max98373_sdw_dai_hw_params(struct snd_pcm_substream *substream,
+ 		snd_soc_component_get_drvdata(component);
+ 	struct sdw_stream_config stream_config = {0};
+ 	struct sdw_port_config port_config = {0};
+-	struct sdw_stream_data *stream;
++	struct sdw_stream_runtime *sdw_stream;
+ 	int ret, chan_sz, sampling_rate;
+ 
+-	stream = snd_soc_dai_get_dma_data(dai, substream);
++	sdw_stream = snd_soc_dai_get_dma_data(dai, substream);
+ 
+-	if (!stream)
++	if (!sdw_stream)
+ 		return -EINVAL;
+ 
+ 	if (!max98373->slave)
+@@ -565,7 +561,7 @@ static int max98373_sdw_dai_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	ret = sdw_stream_add_slave(max98373->slave, &stream_config,
+-				   &port_config, 1, stream->sdw_stream);
++				   &port_config, 1, sdw_stream);
+ 	if (ret) {
+ 		dev_err(dai->dev, "Unable to configure port\n");
+ 		return ret;
+@@ -664,32 +660,20 @@ static int max98373_pcm_hw_free(struct snd_pcm_substream *substream,
+ 	struct snd_soc_component *component = dai->component;
+ 	struct max98373_priv *max98373 =
+ 		snd_soc_component_get_drvdata(component);
+-	struct sdw_stream_data *stream =
++	struct sdw_stream_runtime *sdw_stream =
+ 		snd_soc_dai_get_dma_data(dai, substream);
+ 
+ 	if (!max98373->slave)
+ 		return -EINVAL;
+ 
+-	sdw_stream_remove_slave(max98373->slave, stream->sdw_stream);
++	sdw_stream_remove_slave(max98373->slave, sdw_stream);
+ 	return 0;
+ }
+ 
+ static int max98373_set_sdw_stream(struct snd_soc_dai *dai,
+ 				   void *sdw_stream, int direction)
  {
 -	struct sdw_stream_data *stream;
 -
@@ -146,9 +196,9 @@ index c32d8ae77981..795accedc22c 100644
  
  	return 0;
  }
-@@ -582,11 +570,7 @@ static int rt1318_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
- static void rt1318_sdw_shutdown(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
+@@ -697,11 +681,7 @@ static int max98373_set_sdw_stream(struct snd_soc_dai *dai,
+ static void max98373_shutdown(struct snd_pcm_substream *substream,
+ 			      struct snd_soc_dai *dai)
  {
 -	struct sdw_stream_data *stream;
 -
@@ -157,63 +207,7 @@ index c32d8ae77981..795accedc22c 100644
 -	kfree(stream);
  }
  
- static int rt1318_sdw_hw_params(struct snd_pcm_substream *substream,
-@@ -598,14 +582,14 @@ static int rt1318_sdw_hw_params(struct snd_pcm_substream *substream,
- 	struct sdw_stream_config stream_config;
- 	struct sdw_port_config port_config;
- 	enum sdw_data_direction direction;
--	struct sdw_stream_data *stream;
-+	struct sdw_stream_runtime *sdw_stream;
- 	int retval, port, num_channels, ch_mask;
- 	unsigned int sampling_rate;
- 
- 	dev_dbg(dai->dev, "%s %s", __func__, dai->name);
--	stream = snd_soc_dai_get_dma_data(dai, substream);
-+	sdw_stream = snd_soc_dai_get_dma_data(dai, substream);
- 
--	if (!stream)
-+	if (!sdw_stream)
- 		return -EINVAL;
- 
- 	if (!rt1318->sdw_slave)
-@@ -633,7 +617,7 @@ static int rt1318_sdw_hw_params(struct snd_pcm_substream *substream,
- 	port_config.num = port;
- 
- 	retval = sdw_stream_add_slave(rt1318->sdw_slave, &stream_config,
--				&port_config, 1, stream->sdw_stream);
-+				&port_config, 1, sdw_stream);
- 	if (retval) {
- 		dev_err(dai->dev, "Unable to configure port\n");
- 		return retval;
-@@ -679,13 +663,13 @@ static int rt1318_sdw_pcm_hw_free(struct snd_pcm_substream *substream,
- 	struct snd_soc_component *component = dai->component;
- 	struct rt1318_sdw_priv *rt1318 =
- 		snd_soc_component_get_drvdata(component);
--	struct sdw_stream_data *stream =
-+	struct sdw_stream_runtime *sdw_stream =
- 		snd_soc_dai_get_dma_data(dai, substream);
- 
- 	if (!rt1318->sdw_slave)
- 		return -EINVAL;
- 
--	sdw_stream_remove_slave(rt1318->sdw_slave, stream->sdw_stream);
-+	sdw_stream_remove_slave(rt1318->sdw_slave, sdw_stream);
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/rt1318-sdw.h b/sound/soc/codecs/rt1318-sdw.h
-index 4d7ac9c4bd8d..85918c184f16 100644
---- a/sound/soc/codecs/rt1318-sdw.h
-+++ b/sound/soc/codecs/rt1318-sdw.h
-@@ -94,8 +94,4 @@ struct rt1318_sdw_priv {
- 	bool first_hw_init;
- };
- 
--struct sdw_stream_data {
--	struct sdw_stream_runtime *sdw_stream;
--};
--
- #endif /* __RT1318_SDW_H__ */
+ static int max98373_sdw_set_tdm_slot(struct snd_soc_dai *dai,
 -- 
 2.25.1
 
