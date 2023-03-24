@@ -4,112 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06313C6FD18
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Mar 2023 16:08:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F5DEC6FD18
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Mar 2023 16:08:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0F90F741;
-	Wed, 29 Mar 2023 18:07:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0F90F741
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08D01844;
+	Wed, 29 Mar 2023 18:07:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08D01844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1680106082;
-	bh=/BnjmxS7L0+apEiuUwsijqlY5TxC1O4BR+IoVkYGEpU=;
-	h=Date:To:Subject:From:References:In-Reply-To:CC:List-Id:
-	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
-	 List-Unsubscribe:From;
-	b=BORaHAi9FufogL+TDSxfMS4sG9Br+YTl0nuNLmwoucFhr9EvT6V73S+qcwZ5KpA7E
-	 Z2rXMzYOiXWgXAONM0lZwqaA1JBnqPQXhBlCewvN5dAQIZXEWxLmfBXLWmnHnt/Gyg
-	 eYRy4/5kTy5QqrX+v1LXbX1qXZLkUoFc+6n8xXxg=
+	s=default; t=1680106095;
+	bh=G73bPPq+mgOejSMC0IfV5XAR0FSepGCObl4MXLPqVCA=;
+	h=From:To:Subject:Date:CC:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=NcYTYkXccYjBFPONJ39dDiBJs0C1IKLxOCO5KeYUskgUDLTvxCpuEE3/dQrYs5rfK
+	 h0s9IfS93q6G6pVHOwaPsNm5wa4eG8ACWKR3t949oPxDF3de8nBzsp229rmxaCiXT1
+	 Qo68BVnB6rdM14OTNV9RpYVyKbj/wypKgGq0VsuM=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0BBE3F8056F;
-	Wed, 29 Mar 2023 18:05:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC0C3F8057A;
+	Wed, 29 Mar 2023 18:06:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id E0E0DF802E8; Fri, 24 Mar 2023 12:22:23 +0100 (CET)
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com
- [IPv6:2a00:1450:4864:20::52a])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
- SHA256)
+	id B353FF802E8; Fri, 24 Mar 2023 16:05:53 +0100 (CET)
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com
+ [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 4499AF800C9
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2023 12:22:20 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4499AF800C9
+	by alsa1.perex.cz (Postfix) with ESMTPS id 89943F800C9
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2023 16:05:46 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89943F800C9
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
- unprotected) header.d=fairphone.com header.i=@fairphone.com
- header.a=rsa-sha256 header.s=fair header.b=rByZavlt
-Received: by mail-ed1-x52a.google.com with SMTP id o12so6533091edb.9
-        for <alsa-devel@alsa-project.org>;
- Fri, 24 Mar 2023 04:22:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1679656938;
-        h=in-reply-to:references:from:subject:cc:to:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HRr72t+4UZ9OP3mnlpRJ8YUSEtD1+XLxKD3GEqqnIeE=;
-        b=rByZavltipXd6PeR2v95ebI03dIGh+3m2D/LZWooOg5lz5WRzXzg/D3YV9l6c0uKxL
-         jmZHyS9y3jTCVpIFONpkVGKNXMgqnEoCtaALhrvBxRcbhy7HZAO65bc/g/LbBuXCXQQq
-         I0GAjGQd/+iNmUagoaSY16uUt3vBsSa/WZr3QMIH9KM3NswBASm4ZC0Y4Mn2CONJZed9
-         gY6oxtGvKUnV7EMSeoXWDnT23dCbFjxq4MKzORJ1TDHUbU2+aP0X8kol/QZ89GQ3s0Ec
-         bcIzag9bxLfvF2eRS7XN3NkjTpxb97uICwhyXyalcsyXQH5rGpou8OAfP+VUeZHyMHz4
-         6Feg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679656938;
-        h=in-reply-to:references:from:subject:cc:to:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=HRr72t+4UZ9OP3mnlpRJ8YUSEtD1+XLxKD3GEqqnIeE=;
-        b=P22CmCtfYkA8K8vKmzStwJ3bbge1hsVt4tjPSPBZOZUCoZy4FZ2fqdmpJgzt4GNbim
-         iBEpy5C8UaQSH9axvYqIWUq1RFfZ9S3iPsPXOqm7uUd63/iXES7AQlnG/nv4cjRDNG/f
-         XPWXBRDkCmWauXBCVetIT/NZgu22T5htLJnYKsRABxue08pcF84yQ/8LUbhIIqp88XBx
-         n7CPAc0MwL+lHLwRUXMvgjFMhnzDEn+1EoSegXjA+8bVoA/T+FR66FhH+nJnIuk6cZjF
-         HUMWQvCp434i88WNjfDwVYpUdBhDujKoxN79iT/74h9LKlQyO9hl6nuE1Th4mZF4sZQl
-         hwjg==
-X-Gm-Message-State: AAQBX9ckpqgiv9TarAfLSrpQ1pE6xfWcY37+NPABDLyXm/8J+GZsGXbZ
-	g/w2hyPxsQuLk90aocDMLMPBvnFnlUakG86AiNDOrQ==
-X-Google-Smtp-Source: 
- AKy350bjEB9tApb06Tb8yG8b1P3/ZPV+Lg4I1D0D6bOj4xxx8mW783dZePdsRRnmgNADtBJDf0pU8g==
-X-Received: by 2002:a17:906:5288:b0:932:3d1b:b67a with SMTP id
- c8-20020a170906528800b009323d1bb67amr2333180ejm.41.1679656938274;
-        Fri, 24 Mar 2023 04:22:18 -0700 (PDT)
-Received: from localhost (84-115-214-73.cable.dynamic.surfer.at.
- [84.115.214.73])
-        by smtp.gmail.com with ESMTPSA id
- g9-20020a056402320900b004fd219242a5sm10458496eda.7.2023.03.24.04.22.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Mar 2023 04:22:18 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 24 Mar 2023 12:22:17 +0100
-Message-Id: <CREKOWOABXLP.28VKF824CFB3O@otso>
-To: "Srinivas Kandagatla" <srinivas.kandagatla@linaro.org>,
- <broonie@kernel.org>
-Subject: Re: [PATCH 5/8] ASoC: codecs: lpass: register mclk after runtime pm
-From: "Luca Weiss" <luca.weiss@fairphone.com>
-X-Mailer: aerc 0.14.0
-References: <20230209122806.18923-1-srinivas.kandagatla@linaro.org>
- <20230209122806.18923-6-srinivas.kandagatla@linaro.org>
-In-Reply-To: <20230209122806.18923-6-srinivas.kandagatla@linaro.org>
-X-MailFrom: luca.weiss@fairphone.com
+ unprotected) header.d=oracle.com header.i=@oracle.com header.a=rsa-sha256
+ header.s=corp-2022-7-12 header.b=alkTre79
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id
+ 32OF4ERE023932;
+	Fri, 24 Mar 2023 15:05:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2022-7-12; bh=bbarXCl626B39KPisJMC+F/vsaqimQLhqQdGF0IiSTY=;
+ b=alkTre79gDNlGUovG8GXVbG9mVDEOfFcIXswnosA8ogwQH3gBfCKdi3KayGsBFi51/FY
+ tf5THEmfnjvn7OIkbYYJgWQlLoS9HWDubGkhPypUjf7SCgWHcsQSkl0sLFLnr9aUTyot
+ c4Gv6f/k0LT8uZBKrRUhYXuLtLZNcyX8zxBiE7780cvpvej73R23ezVWrHKugriN+cO4
+ gCwFUeUAc7cAiHq0S2AcmQo/B/ETDmSSANPFOoUucaqbM/d5HZqv8AYNY2IK1fjSOWCh
+ oIFEaHFWe4+2dzSe2/43487TG/kU/DQt1nl2Y1CCPLw0xvPrnGL6I+vEoCTwf1KmdCFv TA==
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com
+ (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3phe69r0fd-25
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 24 Mar 2023 15:05:45 +0000
+Received: from pps.filterd
+ (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5)
+ with ESMTP id 32OEkqVf037930;
+	Fri, 24 Mar 2023 14:55:39 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id
+ 3pgxpy4d73-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 24 Mar 2023 14:55:39 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com
+ (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 32OEtcBl033198;
+	Fri, 24 Mar 2023 14:55:39 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com
+ [10.129.136.47])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id
+ 3pgxpy4d6j-1;
+	Fri, 24 Mar 2023 14:55:38 +0000
+From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To: 
+Subject: [PATCH next] ASoC: cs35l56: Remove redundant return statement in
+ cs35l56_spi_probe()
+Date: Fri, 24 Mar 2023 07:55:35 -0700
+Message-Id: <20230324145535.3951689-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-24_08,2023-03-24_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999
+ malwarescore=0
+ adultscore=0 spamscore=0 suspectscore=0 bulkscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2303200000 definitions=main-2303240120
+X-Proofpoint-ORIG-GUID: FtsxNHGA5rOB_qmHc35Rq0PHR0iURuRI
+X-Proofpoint-GUID: FtsxNHGA5rOB_qmHc35Rq0PHR0iURuRI
+X-MailFrom: harshit.m.mogalapalli@oracle.com
 X-Mailman-Rule-Hits: nonmember-moderation
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
  header-match-alsa-devel.alsa-project.org-0;
  header-match-alsa-devel.alsa-project.org-1
-Message-ID-Hash: HVVRNY3RF7L7D2ZYXHLI7DQRKL4W33VQ
-X-Message-ID-Hash: HVVRNY3RF7L7D2ZYXHLI7DQRKL4W33VQ
+Message-ID-Hash: T5V3LADYUGLADRRRTXDDLQJWWLCGFEI2
+X-Message-ID-Hash: T5V3LADYUGLADRRRTXDDLQJWWLCGFEI2
 X-Mailman-Approved-At: Wed, 29 Mar 2023 16:05:52 +0000
-CC: lgirdwood@gmail.com, tiwai@suse.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, steev@kali.org, johan+linaro@kernel.org,
- quic_bjorande@quicinc.com
+CC: error27@gmail.com, Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+ James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Simon Trimmer <simont@opensource.cirrus.com>,
+ alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-kernel@vger.kernel.org
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/HVVRNY3RF7L7D2ZYXHLI7DQRKL4W33VQ/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/T5V3LADYUGLADRRRTXDDLQJWWLCGFEI2/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -118,185 +124,31 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-Hi Srinivas,
+We have unreachable 'return ret' statement in cs35l56_spi_probe(),
+delete it as its dead code..
 
-On Thu Feb 9, 2023 at 1:28 PM CET, Srinivas Kandagatla wrote:
-> move mclk out registration after runtime pm is enabled so that the
-> clk framework can resume the codec if it requires to enable the mclk out.
->
-> Fixes: c96baa2949b2 ("ASoC: codecs: wsa-macro: add runtime pm support")
-> Fixes: 72ad25eabda0 ("ASoC: codecs: va-macro: add runtime pm support")
-> Fixes: 366ff79ed539 ("ASoC: codecs: rx-macro: add runtime pm support")
-> Fixes: 1fb83bc5cf64 ("ASoC: codecs: tx-macro: add runtime pm support")
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+This is found by static analysis with smatch.
 
-I see the following remoteproc crash with this patch in on
-sm6350/sm7225-fairphone-fp4.
+Fixes: e49611252900 ("ASoC: cs35l56: Add driver for Cirrus Logic CS35L56")
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+Only compile tested.
+---
+ sound/soc/codecs/cs35l56-spi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-To be clear, all the audio parts for that SoC are not upstream (yet) and
-there's still many issues to solve so not sure if it's actually my fault.
-
-Anyways, getting this crash after starting adsp.
-
-[   97.212943] qcom_q6v5_pas 3000000.remoteproc: fatal error received: ABT_=
-dal.c:287:ABTimeout: AHB Bus hang is detected, Number of bus hang detected =
-:=3D 1 , addr0 =3D 0x3370000 , addr1 =3D 0x0!!!
-[   97.212995] remoteproc remoteproc0: crash detected in 3000000.remoteproc=
-: type fatal error
-[   97.213015] remoteproc remoteproc0: handling crash #1 in 3000000.remotep=
-roc
-[   97.213022] remoteproc remoteproc0: recovering 3000000.remoteproc
-
-This happens just after some clocks on the adsp get disabled, this is
-from my own debug prints:
-[   97.189097] q6afe_set_lpass_clock: clk_id=3D780, attri=3D1, clk_root=3D0=
-, freq=3D0
-[   97.189426] q6afe_set_lpass_clock: clk_id=3D781, attri=3D1, clk_root=3D0=
-, freq=3D0
-
-And then a couple of seconds later the whole phone just crashes into the
-900e mode.
-
-Regards
-Luca
-
-
-> ---
->  sound/soc/codecs/lpass-rx-macro.c  |  8 ++++----
->  sound/soc/codecs/lpass-tx-macro.c  |  8 ++++----
->  sound/soc/codecs/lpass-va-macro.c  | 20 ++++++++++----------
->  sound/soc/codecs/lpass-wsa-macro.c |  9 ++++-----
->  4 files changed, 22 insertions(+), 23 deletions(-)
->
-> diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-r=
-x-macro.c
-> index a9ef9d5ffcc5..dd6970d5eb8d 100644
-> --- a/sound/soc/codecs/lpass-rx-macro.c
-> +++ b/sound/soc/codecs/lpass-rx-macro.c
-> @@ -3601,10 +3601,6 @@ static int rx_macro_probe(struct platform_device *=
-pdev)
->  	if (ret)
->  		goto err_fsgen;
-> =20
-> -	ret =3D rx_macro_register_mclk_output(rx);
-> -	if (ret)
-> -		goto err_clkout;
-> -
->  	ret =3D devm_snd_soc_register_component(dev, &rx_macro_component_drv,
->  					      rx_macro_dai,
->  					      ARRAY_SIZE(rx_macro_dai));
-> @@ -3618,6 +3614,10 @@ static int rx_macro_probe(struct platform_device *=
-pdev)
->  	pm_runtime_set_active(dev);
->  	pm_runtime_enable(dev);
-> =20
-> +	ret =3D rx_macro_register_mclk_output(rx);
-> +	if (ret)
-> +		goto err_clkout;
-> +
->  	return 0;
-> =20
->  err_clkout:
-> diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpass-t=
-x-macro.c
-> index 2ef62d6edc30..b9475ba55e20 100644
-> --- a/sound/soc/codecs/lpass-tx-macro.c
-> +++ b/sound/soc/codecs/lpass-tx-macro.c
-> @@ -2036,10 +2036,6 @@ static int tx_macro_probe(struct platform_device *=
-pdev)
->  	if (ret)
->  		goto err_fsgen;
-> =20
-> -	ret =3D tx_macro_register_mclk_output(tx);
-> -	if (ret)
-> -		goto err_clkout;
-> -
->  	ret =3D devm_snd_soc_register_component(dev, &tx_macro_component_drv,
->  					      tx_macro_dai,
->  					      ARRAY_SIZE(tx_macro_dai));
-> @@ -2052,6 +2048,10 @@ static int tx_macro_probe(struct platform_device *=
-pdev)
->  	pm_runtime_set_active(dev);
->  	pm_runtime_enable(dev);
-> =20
-> +	ret =3D tx_macro_register_mclk_output(tx);
-> +	if (ret)
-> +		goto err_clkout;
-> +
->  	return 0;
-> =20
->  err_clkout:
-> diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-v=
-a-macro.c
-> index b0b6cf29cba3..1623ba78ddb3 100644
-> --- a/sound/soc/codecs/lpass-va-macro.c
-> +++ b/sound/soc/codecs/lpass-va-macro.c
-> @@ -1524,16 +1524,6 @@ static int va_macro_probe(struct platform_device *=
-pdev)
->  	if (ret)
->  		goto err_mclk;
-> =20
-> -	ret =3D va_macro_register_fsgen_output(va);
-> -	if (ret)
-> -		goto err_clkout;
-> -
-> -	va->fsgen =3D clk_hw_get_clk(&va->hw, "fsgen");
-> -	if (IS_ERR(va->fsgen)) {
-> -		ret =3D PTR_ERR(va->fsgen);
-> -		goto err_clkout;
-> -	}
-> -
->  	if (va->has_swr_master) {
->  		/* Set default CLK div to 1 */
->  		regmap_update_bits(va->regmap, CDC_VA_TOP_CSR_SWR_MIC_CTL0,
-> @@ -1560,6 +1550,16 @@ static int va_macro_probe(struct platform_device *=
-pdev)
->  	pm_runtime_set_active(dev);
->  	pm_runtime_enable(dev);
-> =20
-> +	ret =3D va_macro_register_fsgen_output(va);
-> +	if (ret)
-> +		goto err_clkout;
-> +
-> +	va->fsgen =3D clk_hw_get_clk(&va->hw, "fsgen");
-> +	if (IS_ERR(va->fsgen)) {
-> +		ret =3D PTR_ERR(va->fsgen);
-> +		goto err_clkout;
-> +	}
-> +
->  	return 0;
-> =20
->  err_clkout:
-> diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-=
-wsa-macro.c
-> index 5cfe96f6e430..c0b86d69c72e 100644
-> --- a/sound/soc/codecs/lpass-wsa-macro.c
-> +++ b/sound/soc/codecs/lpass-wsa-macro.c
-> @@ -2451,11 +2451,6 @@ static int wsa_macro_probe(struct platform_device =
-*pdev)
->  	if (ret)
->  		goto err_fsgen;
-> =20
-> -	ret =3D wsa_macro_register_mclk_output(wsa);
-> -	if (ret)
-> -		goto err_clkout;
-> -
-> -
->  	ret =3D devm_snd_soc_register_component(dev, &wsa_macro_component_drv,
->  					      wsa_macro_dai,
->  					      ARRAY_SIZE(wsa_macro_dai));
-> @@ -2468,6 +2463,10 @@ static int wsa_macro_probe(struct platform_device =
-*pdev)
->  	pm_runtime_set_active(dev);
->  	pm_runtime_enable(dev);
-> =20
-> +	ret =3D wsa_macro_register_mclk_output(wsa);
-> +	if (ret)
-> +		goto err_clkout;
-> +
->  	return 0;
-> =20
->  err_clkout:
-> --=20
-> 2.21.0
+diff --git a/sound/soc/codecs/cs35l56-spi.c b/sound/soc/codecs/cs35l56-spi.c
+index 80dcf37daae2..4b2084e85f29 100644
+--- a/sound/soc/codecs/cs35l56-spi.c
++++ b/sound/soc/codecs/cs35l56-spi.c
+@@ -29,7 +29,6 @@ static int cs35l56_spi_probe(struct spi_device *spi)
+ 	if (IS_ERR(cs35l56->regmap)) {
+ 		ret = PTR_ERR(cs35l56->regmap);
+ 		return dev_err_probe(&spi->dev, ret, "Failed to allocate register map\n");
+-		return ret;
+ 	}
+ 
+ 	cs35l56->dev = &spi->dev;
+-- 
+2.38.1
 
