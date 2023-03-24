@@ -4,92 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74A67C6FD20
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Mar 2023 06:53:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCEC1C6FD1C
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Mar 2023 06:54:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09A1FEA6;
-	Fri, 24 Mar 2023 07:52:44 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09A1FEA6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64C0AEB9;
+	Fri, 24 Mar 2023 07:53:13 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64C0AEB9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679640814;
-	bh=Zc9d007BOjsTQeq6gXFVP7Cbh8k5dq7+H8vo99Yucrk=;
+	s=default; t=1679640843;
+	bh=RVrfTYavLSCvzp45XV3/e0Y9zjshm3m4CQiVJWZAAR0=;
 	h=Date:From:To:Subject:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=RX++QEOjVkaHJh9D+t5nVYA3dzGGVJjE1c3V9LBJKP72QBUj93bPYvjYVuyybJqEC
-	 0yPaCHMSfzNqdmyp5xln5zPL5msIsbtBNZeFx9M90DX9BFRFUKxkp/1oT4zuwBmUCk
-	 RaDixi93DxddweaMPMWJCmV642Z/z5S87GKTBF2s=
+	b=ibhjdnOnS7cCtSkhYO0v1F90EZlnv7QwHdGe3yrgwShv/zwuF9fQ6cZQq+pXKUzaW
+	 xY59G16YpWscUuTHfMo8fZ39dEpyrsifEIo7oguUaJCR/Qw7gprquEvCFl2OIo8g5N
+	 TMoQ7N6QwfW5AHTAPcbud0FjcAavJBZiOYDMUgBU=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id 336B5F802E8;
-	Fri, 24 Mar 2023 07:52:22 +0100 (CET)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA5CEF8051B;
+	Fri, 24 Mar 2023 07:52:23 +0100 (CET)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 51B13F8051B; Fri, 24 Mar 2023 07:50:58 +0100 (CET)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de
- [IPv6:2001:67c:2178:6::1c])
+	id 7061DF8051B; Fri, 24 Mar 2023 07:51:17 +0100 (CET)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de
+ [IPv6:2001:67c:2178:6::1d])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest
  SHA256)
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 15E09F80482
-	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2023 07:50:55 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15E09F80482
+	by alsa1.perex.cz (Postfix) with ESMTPS id 33B59F804B1
+	for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2023 07:51:11 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33B59F804B1
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (1024-bit key,
  unprotected) header.d=suse.de header.i=@suse.de header.a=rsa-sha256
- header.s=susede2_rsa header.b=rCUi29E2;
+ header.s=susede2_rsa header.b=qWmmyq+r;
 	dkim=pass header.d=suse.de header.i=@suse.de header.a=ed25519-sha256
- header.s=susede2_ed25519 header.b=bCxQiSTO
+ header.s=susede2_ed25519 header.b=XscY3IZ8
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1F061339D0;
-	Fri, 24 Mar 2023 06:50:55 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B858C1FE73;
+	Fri, 24 Mar 2023 06:51:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_rsa;
-	t=1679640655;
+	t=1679640671;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NxyX9q1VYVSFzYPMQaaKPjGrb1QDBq295V4jkkU49IY=;
-	b=rCUi29E2/NT6lntN1p6jq6ObXr/jOE+j8IljXyD7/G+eEVOxpRWRT9U8wJOn11jUJWoB5i
-	FoOiMiJtv4Ib8SyxdLHL5g2nxIgWv/33A42zC90OgygYgDy8LW6yEyJzHWjeUyf/27i+7d
-	ZijIAXorRvzH3GiG0ds0ezefJZ3zBXo=
+	bh=kumoekrAR6uPIqgjGzGwR0o/XoKFHU6/vV26z2T8d3k=;
+	b=qWmmyq+rrXGhqtKDUOLclw+67JZrJGNCLvCp+v9IZC8MO95/zXAltir4LyM5q/3TjS/QQm
+	SGbT5oXVABlb9oDYdXRloUSas6bIyRJqlJjSuR1xNl4ydEBz0PoaQSRl0dK8Mm5ryE4oiC
+	X1/bLQn1TpVOSLkmeH7Otv+5LG9LOSU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1679640655;
+	s=susede2_ed25519; t=1679640671;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NxyX9q1VYVSFzYPMQaaKPjGrb1QDBq295V4jkkU49IY=;
-	b=bCxQiSTOMwt/7tpEJF/Dsrch7G8gETK9f2Wx4LHCAx7QSsNxHmWcXhFshqkD3P8gd/PBLz
-	Rz5tGhdkFREy5/BQ==
+	bh=kumoekrAR6uPIqgjGzGwR0o/XoKFHU6/vV26z2T8d3k=;
+	b=XscY3IZ88fbydSIGUNdUyPmmk8QvuLYacZBgbtgJkNceceYydG0+oR7gCk9GlacTwlqiEG
+	yY5wFArqpXqpsODw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de
  [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EDB5F133E5;
-	Fri, 24 Mar 2023 06:50:54 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8A147133E5;
+	Fri, 24 Mar 2023 06:51:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id z9NOOU5IHWQtTAAAMHmgww
-	(envelope-from <tiwai@suse.de>); Fri, 24 Mar 2023 06:50:54 +0000
-Date: Fri, 24 Mar 2023 07:50:54 +0100
-Message-ID: <87a602hcc1.wl-tiwai@suse.de>
+	id /EXkIF9IHWRXTAAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 24 Mar 2023 06:51:11 +0000
+Date: Fri, 24 Mar 2023 07:51:11 +0100
+Message-ID: <878rfmhcbk.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] kselftest/alsa - pcm-test: Don't include diagnostic
- message in test name
-In-Reply-To: <20230323-alsa-pcm-test-names-v1-1-8be67a8885ff@kernel.org>
-References: <20230323-alsa-pcm-test-names-v1-1-8be67a8885ff@kernel.org>
+To: Tom Rix <trix@redhat.com>
+Subject: Re: [PATCH] ALSA: hdspm: remove unused copy_u32_le function
+In-Reply-To: <20230323202713.2637150-1-trix@redhat.com>
+References: <20230323202713.2637150-1-trix@redhat.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Message-ID-Hash: 7OLH3Q42ESMZNTYKXVU4LB4VCRYFI63U
-X-Message-ID-Hash: 7OLH3Q42ESMZNTYKXVU4LB4VCRYFI63U
+Message-ID-Hash: JJYBERLZVTJMJLUDSPQC26O4GGWTIM32
+X-Message-ID-Hash: JJYBERLZVTJMJLUDSPQC26O4GGWTIM32
 X-MailFrom: tiwai@suse.de
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -97,14 +96,15 @@ X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  header-match-alsa-devel.alsa-project.org-1; nonmember-moderation;
  administrivia; implicit-dest; max-recipients; max-size; news-moderation;
  no-subject; digests; suspicious-header
-CC: Takashi Iwai <tiwai@suse.com>, Shuah Khan <shuah@kernel.org>,
- alsa-devel@alsa-project.org, linux-kselftest@vger.kernel.org
+CC: tiwai@suse.com, nathan@kernel.org, ndesaulniers@google.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ llvm@lists.linux.dev
 X-Mailman-Version: 3.3.8
 Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/7OLH3Q42ESMZNTYKXVU4LB4VCRYFI63U/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/JJYBERLZVTJMJLUDSPQC26O4GGWTIM32/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -113,20 +113,19 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Subscribe: <mailto:alsa-devel-join@alsa-project.org>
 List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
-On Thu, 23 Mar 2023 19:48:28 +0100,
-Mark Brown wrote:
+On Thu, 23 Mar 2023 21:27:13 +0100,
+Tom Rix wrote:
 > 
-> When reporting errors or skips we currently include the diagnostic message
-> indicating why we're failing or skipping. This isn't ideal since KTAP
-> defines the entire print as the test name, so if there's an error then test
-> systems won't detect the test as being the same one as a passing test. Move
-> the diagnostic to a separate ksft_print_msg() to avoid this issue, the test
-> name part will always be the same for passes, fails and skips and the
-> diagnostic information is still displayed.
+> clang with W=1 reports
+> sound/pci/rme9652/hdspm.c:6149:19: error: unused function
+>   'copy_u32_le' [-Werror,-Wunused-function]
+> static inline int copy_u32_le(void __user *dest, void __iomem *src)
+>                   ^
+> This function is not used so remove it.
 > 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-Thanks, applied now.
+Applied to for-next branch.  Thanks.
 
 
 Takashi
