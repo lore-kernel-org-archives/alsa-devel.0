@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC017C761A6
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Mar 2023 11:31:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86B04C7619A
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Mar 2023 11:31:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6CCAA839;
-	Mon, 27 Mar 2023 13:30:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CCAA839
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1628EA4E;
+	Mon, 27 Mar 2023 13:30:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1628EA4E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1679916672;
-	bh=sgWAGpUpuULR9ufUWY8Fv4poewr+OpDHDk3bXhgKmJI=;
+	s=default; t=1679916688;
+	bh=KfGBZudyBZ9lt5YaTLKo6s4hoj8exPpG3tx6NZCKxp8=;
 	h=From:To:Subject:Date:In-Reply-To:References:CC:List-Id:
 	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
 	 List-Unsubscribe:From;
-	b=pe02jkv3IbKGAooDhWBZ+xIHy6XQ/L+69zXtL4xjBz2ddTUkHLY6sfu1Gs9w3tDX7
-	 1EEsaa5rxzNka0vM7SV3qBCj6Puc/9C755qx5AVRlrbz4iWZ75cAV39TNMhGqKn71l
-	 qsUQ07RoaT1QxluiFPOqQ0l7+We3haSZvqsrZOk4=
+	b=ccMxRgixD8Q3Pub9Sg2j0fSKshh7SbAkKuQv2Tw+qUV6TH6adEl+Adc/2IP3ruEdb
+	 RDpMGHLIvGVsGqy5cyKJFr3LcI/RTQnEye6d/koxFsHdxoG4LMkhuRVo1/yH5KOv+V
+	 OQm/HKxIjADFG5766sWBTCMddLI//RVnwJGtFHyQ=
 Received: from mailman-core.alsa-project.org (mailman-core.alsa-project.org [10.254.200.10])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE16BF80542;
-	Mon, 27 Mar 2023 13:29:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A69BF80548;
+	Mon, 27 Mar 2023 13:29:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
-	id 1DB27F80527; Mon, 27 Mar 2023 13:29:26 +0200 (CEST)
+	id E79F8F8053D; Mon, 27 Mar 2023 13:29:28 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by alsa1.perex.cz (Postfix) with ESMTPS id 39361F80272
-	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2023 13:29:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39361F80272
+	by alsa1.perex.cz (Postfix) with ESMTPS id 885DDF8024E
+	for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2023 13:29:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 885DDF8024E
 Authentication-Results: alsa1.perex.cz;
 	dkim=pass (2048-bit key,
  unprotected) header.d=intel.com header.i=@intel.com header.a=rsa-sha256
- header.s=Intel header.b=CwOI367R
+ header.s=Intel header.b=ALdMg+Tv
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1679916551; x=1711452551;
+  t=1679916556; x=1711452556;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=sgWAGpUpuULR9ufUWY8Fv4poewr+OpDHDk3bXhgKmJI=;
-  b=CwOI367RnReX8Mw8XJzmZ6E2Spr8i/BrUii41I53hzVrfzkh35NR7K/+
-   v6xhGPtp83yUZRGrlcV9ZWMJ3V5nrjdhlJ5+T1KVkBUTkxO+siMgTm4VE
-   u2g+fSZAp3bvnFEzgguQUJrdg/HyOlfWkBx8fdZHzkvwvmgWgiSdJ0UyZ
-   V7FgHRKf7PPqCVjHBM19Ey9nF3AwyhMF52EaoQsl8djaw9IRcfuuVGjf+
-   ArUi5hOfv0tSanyX1UXSqKu4GhQ+7LLrOiq/bWwZixdBF+pi+Oq1jNKYU
-   MVOvbYm05p1MNZDbfB4QMr1B4hRFLBNBCeaClDR73CjzSBtKrK4u2JlQH
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10661"; a="367986887"
+  bh=KfGBZudyBZ9lt5YaTLKo6s4hoj8exPpG3tx6NZCKxp8=;
+  b=ALdMg+TvXFKB+hoZA1TzqzGewUHADq0C6uSFhp/HnPIPUCIhzSRJucrj
+   MyqfL/JFkVOUqbRIWwThm3ox5bSR+FzkFhO6rW6U04h3zWGVCOhi2SxFm
+   GQQUjujJjwTrZrVzW0H82oFuo+PO1LVi0K7gJVPGTxYILjMBr5LY37ORV
+   HRct9stjLultzW8HUa4McwmoyMG9+wsFvoTm1u0RsWKFPiS6yXDd5qeJ/
+   HYVVRT1iRVutlIJpEAAulXaawEIxEKHPeduCqATus40iBHtUAO/cDZsht
+   y5XszkpsTucHKBa9wtkPXyD7eskZhrIM0+dWuGt2J4vpaR9K8Y8A5mEjh
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10661"; a="367986917"
 X-IronPort-AV: E=Sophos;i="5.98,294,1673942400";
-   d="scan'208";a="367986887"
+   d="scan'208";a="367986917"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
   by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Mar 2023 04:29:07 -0700
+ 27 Mar 2023 04:29:13 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10661"; a="857620370"
+X-IronPort-AV: E=McAfee;i="6600,9927,10661"; a="857620391"
 X-IronPort-AV: E=Sophos;i="5.98,294,1673942400";
-   d="scan'208";a="857620370"
+   d="scan'208";a="857620391"
 Received: from asebenix-mobl1.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.251.223.110])
   by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Mar 2023 04:29:04 -0700
+ 27 Mar 2023 04:29:10 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com,
 	broonie@kernel.org,
 	tiwai@suse.de,
 	perex@perex.cz
-Subject: [PATCH 02/18] ALSA: hda: add HDaudio Extended link definitions
-Date: Mon, 27 Mar 2023 14:29:15 +0300
-Message-Id: <20230327112931.23411-3-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 04/18] ASoC: SOF: Intel: hda-mlink: add return value for
+ hda_bus_ml_get_capabilities()
+Date: Mon, 27 Mar 2023 14:29:17 +0300
+Message-Id: <20230327112931.23411-5-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230327112931.23411-1-peter.ujfalusi@linux.intel.com>
 References: <20230327112931.23411-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID-Hash: 2VGMSXLZDRHL4JPDVMWGUR23F73BOS6I
-X-Message-ID-Hash: 2VGMSXLZDRHL4JPDVMWGUR23F73BOS6I
+Message-ID-Hash: 6WCLMIEL5JDICVN6BCCRIMV5X4N3GO53
+X-Message-ID-Hash: 6WCLMIEL5JDICVN6BCCRIMV5X4N3GO53
 X-MailFrom: peter.ujfalusi@linux.intel.com
 X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
  loop; banned-address; member-moderation;
@@ -94,7 +95,7 @@ Precedence: list
 List-Id: "Alsa-devel mailing list for ALSA developers -
  http://www.alsa-project.org" <alsa-devel.alsa-project.org>
 Archived-At: 
- <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/2VGMSXLZDRHL4JPDVMWGUR23F73BOS6I/>
+ <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/message/6WCLMIEL5JDICVN6BCCRIMV5X4N3GO53/>
 List-Archive: 
  <https://mailman.alsa-project.org/hyperkitty/list/alsa-devel@alsa-project.org/>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
@@ -105,9 +106,7 @@ List-Unsubscribe: <mailto:alsa-devel-leave@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Add new definitions for the HDaudio Extended link support,
-specifically new registers for SoundWire, Intel DMIC and INTEL SSP
-interfaces.
+Add return value - this will need additional work in the caller.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
@@ -115,79 +114,50 @@ Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- include/sound/hda_register.h | 40 ++++++++++++++++++++++++++++++++++--
- 1 file changed, 38 insertions(+), 2 deletions(-)
+ sound/soc/sof/intel/hda-mlink.c | 5 +++--
+ sound/soc/sof/intel/hda.h       | 4 ++--
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
-index d37cf43546eb..9c7872c0ca79 100644
---- a/include/sound/hda_register.h
-+++ b/include/sound/hda_register.h
-@@ -258,14 +258,27 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
- #define AZX_ML_BASE			0x40
- #define AZX_ML_INTERVAL			0x40
+diff --git a/sound/soc/sof/intel/hda-mlink.c b/sound/soc/sof/intel/hda-mlink.c
+index ac9bf477f413..e426d5e41e52 100644
+--- a/sound/soc/sof/intel/hda-mlink.c
++++ b/sound/soc/sof/intel/hda-mlink.c
+@@ -28,10 +28,11 @@
  
-+/* HDaudio registers valid for HDaudio and HDaudio extended links */
- #define AZX_REG_ML_LCAP			0x00
--#define AZX_REG_ML_LCTL			0x04
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
  
-+#define AZX_ML_HDA_LCAP_ALT		BIT(28)
-+#define AZX_ML_HDA_LCAP_ALT_HDA		0x0
-+#define AZX_ML_HDA_LCAP_ALT_HDA_EXT	0x1
-+
-+#define AZX_ML_HDA_LCAP_INTC		BIT(27)		/* only used if ALT == 1 */
-+#define AZX_ML_HDA_LCAP_OFLS		BIT(26)		/* only used if ALT == 1 */
-+#define AZX_ML_HDA_LCAP_LSS		BIT(23)		/* only used if ALT == 1 */
-+#define AZX_ML_HDA_LCAP_SLCOUNT		GENMASK(22, 20)	/* only used if ALT == 1 */
-+
-+#define AZX_REG_ML_LCTL			0x04
-+#define AZX_ML_LCTL_INTSTS		BIT(31)		/* only used if ALT == 1 */
- #define AZX_ML_LCTL_CPA			BIT(23)
- #define AZX_ML_LCTL_CPA_SHIFT		23
- #define AZX_ML_LCTL_SPA			BIT(16)
- #define AZX_ML_LCTL_SPA_SHIFT		16
--#define AZX_ML_LCTL_SCF			GENMASK(3, 0)
-+#define AZX_ML_LCTL_INTEN		BIT(5)		/* only used if ALT == 1 */
-+#define AZX_ML_LCTL_OFLEN		BIT(4)		/* only used if ALT == 1 */
-+#define AZX_ML_LCTL_SCF			GENMASK(3, 0)	/* only used if ALT == 0 */
+-void hda_bus_ml_get_capabilities(struct hdac_bus *bus)
++int hda_bus_ml_get_capabilities(struct hdac_bus *bus)
+ {
+ 	if (bus->mlcap)
+-		snd_hdac_ext_bus_get_ml_capabilities(bus);
++		return snd_hdac_ext_bus_get_ml_capabilities(bus);
++	return 0;
+ }
  
- #define AZX_REG_ML_LOSIDV		0x08
+ void hda_bus_ml_free(struct hdac_bus *bus)
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 2a43bfc14583..259b34eea677 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -765,7 +765,7 @@ static inline int hda_codec_i915_exit(struct snd_sof_dev *sdev) { return 0; }
  
-@@ -273,12 +286,35 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
- #define AZX_ML_LOSIDV_STREAM_MASK	0xFFFE
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
  
- #define AZX_REG_ML_LSDIID		0x0C
-+#define AZX_REG_ML_LSDIID_OFFSET(x)	(0x0C + (x) * 0x02)	/* only used if ALT == 1 */
-+
-+/* HDaudio registers only valid if LCAP.ALT == 0 */
- #define AZX_REG_ML_LPSOO		0x10
- #define AZX_REG_ML_LPSIO		0x12
- #define AZX_REG_ML_LWALFC		0x18
- #define AZX_REG_ML_LOUTPAY		0x20
- #define AZX_REG_ML_LINPAY		0x30
+-void hda_bus_ml_get_capabilities(struct hdac_bus *bus);
++int hda_bus_ml_get_capabilities(struct hdac_bus *bus);
+ void hda_bus_ml_free(struct hdac_bus *bus);
+ void hda_bus_ml_put_all(struct hdac_bus *bus);
+ void hda_bus_ml_reset_losidv(struct hdac_bus *bus);
+@@ -774,7 +774,7 @@ int hda_bus_ml_suspend(struct hdac_bus *bus);
  
-+/* HDaudio Extended link registers only valid if LCAP.ALT == 1 */
-+#define AZX_REG_ML_LSYNC		0x1C
-+
-+#define AZX_REG_ML_LSYNC_CMDSYNC	BIT(24)
-+#define AZX_REG_ML_LSYNC_CMDSYNC_SHIFT	24
-+#define AZX_REG_ML_LSYNC_SYNCGO		BIT(23)
-+#define AZX_REG_ML_LSYNC_SYNCPU		BIT(20)
-+#define AZX_REG_ML_LSYNC_SYNCPRD	GENMASK(19, 0)
-+
-+#define AZX_REG_ML_LEPTR		0x20
-+
-+#define AZX_REG_ML_LEPTR_ID		GENMASK(31, 24)
-+#define AZX_REG_ML_LEPTR_ID_SHIFT	24
-+#define AZX_REG_ML_LEPTR_ID_SDW		0x00
-+#define AZX_REG_ML_LEPTR_ID_INTEL_SSP	0xC0
-+#define AZX_REG_ML_LEPTR_ID_INTEL_DMIC  0xC1
-+#define AZX_REG_ML_LEPTR_ID_INTEL_UAOL  0xC2
-+#define AZX_REG_ML_LEPTR_VER		GENMASK(23, 20)
-+#define AZX_REG_ML_LEPTR_PTR		GENMASK(19, 0)
-+
- /* registers for DMA Resume Capability Structure */
- #define AZX_DRSM_CAP_ID			0x5
- #define AZX_REG_DRSM_CTL		0x4
+ #else
+ 
+-static inline void hda_bus_ml_get_capabilities(struct hdac_bus *bus) { }
++static inline int hda_bus_ml_get_capabilities(struct hdac_bus *bus) { return 0; }
+ static inline void hda_bus_ml_free(struct hdac_bus *bus) { }
+ static inline void hda_bus_ml_put_all(struct hdac_bus *bus) { }
+ static inline void hda_bus_ml_reset_losidv(struct hdac_bus *bus) { }
 -- 
 2.40.0
 
